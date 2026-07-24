@@ -1,4 +1,4 @@
-// graphviz-ts reference input: undirected graph, small tree
+// @knowvah/dot-engine reference input: undirected graph, small tree
 // engine: dot
 // tolerance: deterministic
 graph G {

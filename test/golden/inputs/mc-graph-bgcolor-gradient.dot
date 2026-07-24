@@ -1,4 +1,4 @@
-// graphviz-ts reference input: graph background linear gradient
+// @knowvah/dot-engine reference input: graph background linear gradient
 // engine: dot
 // tolerance: deterministic
 digraph G {

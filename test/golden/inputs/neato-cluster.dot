@@ -1,4 +1,4 @@
-// graphviz-ts reference input: undirected graph with a cluster subgraph
+// @knowvah/dot-engine reference input: undirected graph with a cluster subgraph
 // engine: neato
 // tolerance: iterative
 graph G {

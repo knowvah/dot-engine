@@ -1,4 +1,4 @@
-// graphviz-ts reference input: striped box node with weighted bands
+// @knowvah/dot-engine reference input: striped box node with weighted bands
 // engine: dot
 // tolerance: deterministic
 digraph G {

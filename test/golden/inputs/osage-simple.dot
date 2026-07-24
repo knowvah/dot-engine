@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 6-node graph with two cluster subgraphs
+// @knowvah/dot-engine reference input: 6-node graph with two cluster subgraphs
 // engine: osage
 // tolerance: deterministic
 graph G {

@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * `graphviz-ts/api` — the build + inspect + geometry entry point (ADR-2).
+ * `@knowvah/dot-engine/api` — the build + inspect + geometry entry point (ADR-2).
  *
  * Pure re-export barrel for the api layer: programmatic graph construction
  * (the builder), the safe edge helper, and the computed-geometry snapshot.
  *
  * Typical flow: call {@link createGraph} to build nodes/edges/subgraphs
  * without hand-writing DOT text, hand the builder's `.graph` (or a
- * `parse()` result) to `render()` from `graphviz-ts/render` (or the root
+ * `parse()` result) to `render()` from `@knowvah/dot-engine/render` (or the root
  * package) to lay out and emit an output format, then optionally call
  * {@link getLayout} here to read back computed node/edge/cluster geometry
  * from the laid-out graph.

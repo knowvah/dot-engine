@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 4-node digraph with dashed, dotted, and bold edges
+// @knowvah/dot-engine reference input: 4-node digraph with dashed, dotted, and bold edges
 // engine: dot
 // tolerance: deterministic
 digraph G {

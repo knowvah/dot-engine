@@ -1,4 +1,4 @@
-// graphviz-ts reference input: undirected graph, single edge (no arrowhead)
+// @knowvah/dot-engine reference input: undirected graph, single edge (no arrowhead)
 // engine: dot
 // tolerance: deterministic
 graph G {

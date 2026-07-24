@@ -1,4 +1,4 @@
-// graphviz-ts reference input: star graph with center and 5 leaf nodes
+// @knowvah/dot-engine reference input: star graph with center and 5 leaf nodes
 // engine: twopi
 // tolerance: deterministic
 graph G {

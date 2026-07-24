@@ -59,7 +59,7 @@ function adviseHostFaithful(): void {
   if (process.env?.GV_FONT_QUIET || !process.stderr?.isTTY) return;
   adviceShown = true;
   process.stderr.write(
-    'graphviz-ts: measuring text with built-in metrics (kerning/shaping not applied). '
+    '@knowvah/dot-engine: measuring text with built-in metrics (kerning/shaping not applied). '
     + 'For host-faithful sizing matching the rendering font, install `canvas` and call '
     + "setTextMeasurer(new CanvasTextMeasurer(createCanvas(0,0).getContext('2d'))). "
     + 'Silence with GV_FONT_QUIET=1.\n',

@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 6-node digraph with 2 subgraph clusters
+// @knowvah/dot-engine reference input: 6-node digraph with 2 subgraph clusters
 // engine: dot
 // tolerance: deterministic
 digraph G {

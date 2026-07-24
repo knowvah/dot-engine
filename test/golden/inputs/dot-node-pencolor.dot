@@ -1,4 +1,4 @@
-// graphviz-ts reference input: node with a non-default pen color
+// @knowvah/dot-engine reference input: node with a non-default pen color
 // engine: dot
 // tolerance: deterministic
 digraph G {

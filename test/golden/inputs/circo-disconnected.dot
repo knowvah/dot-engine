@@ -1,4 +1,4 @@
-// graphviz-ts reference input: two separate 4-node cycles
+// @knowvah/dot-engine reference input: two separate 4-node cycles
 // engine: circo
 // tolerance: deterministic
 graph G {

@@ -1,4 +1,4 @@
-// graphviz-ts reference input: single dashed edge
+// @knowvah/dot-engine reference input: single dashed edge
 // engine: dot
 // tolerance: deterministic
 digraph G {

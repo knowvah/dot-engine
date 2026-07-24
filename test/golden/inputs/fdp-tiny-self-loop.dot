@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 3-node undirected graph with a self-loop
+// @knowvah/dot-engine reference input: 3-node undirected graph with a self-loop
 // engine: fdp
 // tolerance: iterative
 graph G {

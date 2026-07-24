@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 2-node digraph with a record node
+// @knowvah/dot-engine reference input: 2-node digraph with a record node
 // engine: dot
 // tolerance: deterministic
 digraph G {

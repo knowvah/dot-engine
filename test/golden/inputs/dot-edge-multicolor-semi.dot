@@ -1,4 +1,4 @@
-// graphviz-ts reference input: two-color split-along-length edge (semicolon)
+// @knowvah/dot-engine reference input: two-color split-along-length edge (semicolon)
 // engine: dot
 // tolerance: deterministic
 digraph G {

@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 4-node cycle with one HTML table label
+// @knowvah/dot-engine reference input: 4-node cycle with one HTML table label
 // engine: circo
 // tolerance: deterministic
 graph G {

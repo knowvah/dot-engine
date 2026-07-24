@@ -1,4 +1,4 @@
-// graphviz-ts reference input: double-ended edge with colored arrowheads
+// @knowvah/dot-engine reference input: double-ended edge with colored arrowheads
 // engine: dot
 // tolerance: deterministic
 digraph G {

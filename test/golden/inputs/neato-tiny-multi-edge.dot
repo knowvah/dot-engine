@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 3-node undirected graph with a doubled edge
+// @knowvah/dot-engine reference input: 3-node undirected graph with a doubled edge
 // engine: neato
 // tolerance: iterative
 graph G {

@@ -1,4 +1,4 @@
-// graphviz-ts reference input: node radial gradient fill (style=radial)
+// @knowvah/dot-engine reference input: node radial gradient fill (style=radial)
 // engine: dot
 // tolerance: deterministic
 digraph G {

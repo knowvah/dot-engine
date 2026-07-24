@@ -1,4 +1,4 @@
-// graphviz-ts reference input: cluster filled via bgcolor backward-compat
+// @knowvah/dot-engine reference input: cluster filled via bgcolor backward-compat
 // engine: dot
 // tolerance: deterministic
 digraph G {

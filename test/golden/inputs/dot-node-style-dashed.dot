@@ -1,4 +1,4 @@
-// graphviz-ts reference input: node with dashed boundary
+// @knowvah/dot-engine reference input: node with dashed boundary
 // engine: dot
 // tolerance: deterministic
 digraph G {

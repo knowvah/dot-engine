@@ -1,4 +1,4 @@
-// graphviz-ts reference input: graph with 4 levels of cluster nesting
+// @knowvah/dot-engine reference input: graph with 4 levels of cluster nesting
 // engine: osage
 // tolerance: deterministic
 graph G {

@@ -53,7 +53,7 @@ export interface RenderOptions {
    * `false` — unset reproduces the pre-AD-1 raw `xlink:href="src"`
    * passthrough byte-for-byte. When `true`, the SVG emitter consults the
    * process-global resolver registered via `setImageResolver` (from
-   * `graphviz-ts`) for each `image=`/HTML `<IMG>` source; a hit is inlined
+   * `@knowvah/dot-engine`) for each `image=`/HTML `<IMG>` source; a hit is inlined
    * as `data:<mime>;base64,<...>`, a miss (or no resolver registered) falls
    * back to the raw src passthrough. Has no effect on non-SVG formats.
    */

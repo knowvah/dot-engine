@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 2-node digraph with HTML label
+// @knowvah/dot-engine reference input: 2-node digraph with HTML label
 // engine: dot
 // tolerance: deterministic
 digraph G {

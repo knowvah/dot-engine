@@ -1,4 +1,4 @@
-// graphviz-ts reference input: box-node linear gradient fill
+// @knowvah/dot-engine reference input: box-node linear gradient fill
 // engine: dot
 // tolerance: deterministic
 digraph G {

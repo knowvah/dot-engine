@@ -1,4 +1,4 @@
-// graphviz-ts reference input: gradient node + striped node + gradient cluster bg + multicolor edge
+// @knowvah/dot-engine reference input: gradient node + striped node + gradient cluster bg + multicolor edge
 // engine: dot
 // tolerance: deterministic
 digraph G {

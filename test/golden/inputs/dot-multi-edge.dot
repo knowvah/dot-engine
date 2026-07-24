@@ -1,4 +1,4 @@
-// graphviz-ts reference input: digraph with 3 parallel edges between A and B
+// @knowvah/dot-engine reference input: digraph with 3 parallel edges between A and B
 // engine: dot
 // tolerance: deterministic
 digraph G {

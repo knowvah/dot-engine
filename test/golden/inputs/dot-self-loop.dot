@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 3-node digraph with a self-loop on one node
+// @knowvah/dot-engine reference input: 3-node digraph with a self-loop on one node
 // engine: dot
 // tolerance: deterministic
 digraph G {

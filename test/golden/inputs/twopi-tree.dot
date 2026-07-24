@@ -1,4 +1,4 @@
-// graphviz-ts reference input: binary tree with 7 nodes
+// @knowvah/dot-engine reference input: binary tree with 7 nodes
 // engine: twopi
 // tolerance: deterministic
 graph G {

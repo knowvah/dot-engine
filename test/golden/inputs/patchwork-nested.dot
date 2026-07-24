@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 10-node graph with nested clusters
+// @knowvah/dot-engine reference input: 10-node graph with nested clusters
 // engine: patchwork
 // tolerance: deterministic
 graph G {

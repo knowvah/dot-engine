@@ -138,7 +138,7 @@ function layoutAndRenderXdot(g: Graph, engine: EngineName): string {
  * @example
  * ```ts
  * import { parse } from '@knowvah/dot-engine';
- * import { getDrawOps } from 'graphviz-ts/render';
+ * import { getDrawOps } from '@knowvah/dot-engine/render';
  *
  * const g = parse('digraph { a -> b; }');
  * for (const op of getDrawOps(g)) {

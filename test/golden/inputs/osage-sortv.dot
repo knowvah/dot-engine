@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 4-node graph with sortv attribute on nodes
+// @knowvah/dot-engine reference input: 4-node graph with sortv attribute on nodes
 // engine: osage
 // tolerance: deterministic
 graph G {

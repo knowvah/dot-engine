@@ -1,4 +1,4 @@
-// graphviz-ts reference input: nodes with shape=circle
+// @knowvah/dot-engine reference input: nodes with shape=circle
 // engine: neato
 // tolerance: iterative
 graph G {

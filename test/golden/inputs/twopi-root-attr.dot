@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 6-node graph with one node having root=true
+// @knowvah/dot-engine reference input: 6-node graph with one node having root=true
 // engine: twopi
 // tolerance: deterministic
 graph G {

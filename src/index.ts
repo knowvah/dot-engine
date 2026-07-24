@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * Public entry point for the graphviz-ts library.
+ * Public entry point for the @knowvah/dot-engine library.
  *
  * Wires together the parser, layout engines, SVG renderer, and GVC
  * orchestration layer into a single renderSvg function.
@@ -154,8 +154,8 @@ export type { BuiltinEngine, EngineName } from './gvc/context.js';
 export { render as renderWithContext } from './gvc/device.js';
 
 // Discoverable root re-exports of the api + render surfaces (ADR-2): root
-// `graphviz-ts` exposes everything from `graphviz-ts/api` and
-// `graphviz-ts/render` for one-import discoverability.
+// `@knowvah/dot-engine` exposes everything from `@knowvah/dot-engine/api` and
+// `@knowvah/dot-engine/render` for one-import discoverability.
 //
 // Collision resolution: the root `render` is the new public
 // `render(g, format, opts?)` from `./render`. The low-level

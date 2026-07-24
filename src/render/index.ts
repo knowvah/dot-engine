@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * `graphviz-ts/render` — the output-formats + draw-ops entry point (ADR-2).
+ * `@knowvah/dot-engine/render` — the output-formats + draw-ops entry point (ADR-2).
  *
  * Pure re-export barrel for the public render surface: the multi-format
  * `render()` entry and the structured xdot draw-op access.
  *
- * Typical flow: build or `parse()` a graph (see `graphviz-ts/api`), then
+ * Typical flow: build or `parse()` a graph (see `@knowvah/dot-engine/api`), then
  * either call `render(g, format, opts?)` for a serialized output string —
  * `format` is one of {@link OutputFormat} (`'svg'`, `'dot'`, `'xdot'`,
  * `'json'`, `'plain'`, ...) — or call {@link getDrawOps} to skip string

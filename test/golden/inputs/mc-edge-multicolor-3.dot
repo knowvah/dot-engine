@@ -1,4 +1,4 @@
-// graphviz-ts reference input: directed three-color parallel edge
+// @knowvah/dot-engine reference input: directed three-color parallel edge
 // engine: dot
 // tolerance: deterministic
 digraph G {

@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 8-node graph with two cluster subgraphs
+// @knowvah/dot-engine reference input: 8-node graph with two cluster subgraphs
 // engine: patchwork
 // tolerance: deterministic
 graph G {

@@ -1,4 +1,4 @@
-// graphviz-ts reference input: node gradient with a color-stop fraction
+// @knowvah/dot-engine reference input: node gradient with a color-stop fraction
 // engine: dot
 // tolerance: deterministic
 digraph G {

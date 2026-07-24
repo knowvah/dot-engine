@@ -1,4 +1,4 @@
-// graphviz-ts reference input: three-color split-along-length edge
+// @knowvah/dot-engine reference input: three-color split-along-length edge
 // engine: dot
 // tolerance: deterministic
 digraph G {
