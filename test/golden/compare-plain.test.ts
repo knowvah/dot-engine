@@ -118,6 +118,28 @@ describe('comparePlain', () => {
     expect(diffs).toEqual([]);
   });
 
+  test('iterative mode ignores differing spline point counts; deterministic diverges', () => {
+    const native = baseDoc();
+    const port = plainDoc([
+      graphLine(1, 2.5, 1.9722),
+      nodeLine('a', 0.75, 1.4722, 0.75, 0.5),
+      nodeLine('b', 0.75, 0.25, 0.75, 0.5),
+      edgeLine('a', 'b', [
+        [0.75, 1.222],
+        [0.75, 0.9],
+        [0.75, 0.75],
+        [0.75, 0.6],
+        [0.75, 0.55],
+        [0.75, 0.5],
+        [0.75, 0.5],
+      ]),
+    ]);
+    expect(comparePlain(port, native, { iterative: true }).verdict).toBe('pass');
+    const det = comparePlain(port, native, { iterative: false });
+    expect(det.verdict).toBe('diverged');
+    expect(findDiff(det.diffs, 'a->b#0', 'pointCount')).toBeDefined();
+  });
+
   test('AC4: differing node shape diverges in BOTH deterministic and iterative modes', () => {
     const native = baseDoc();
     const port = plainDoc([

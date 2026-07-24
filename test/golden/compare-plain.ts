@@ -440,17 +440,21 @@ function compareEdgeFields(
 ): void {
   strField('edge', id, 'tailPort', port.tailPort, native.tailPort, diffs);
   strField('edge', id, 'headPort', port.headPort, native.headPort, diffs);
-  // Point count is structural (route shape), not a coordinate value, so it
-  // is compared in BOTH modes — only the individual x/y values are skipped
-  // under `iterative` (AD-4).
-  strField(
-    'edge',
-    id,
-    'pointCount',
-    String(port.points.length),
-    String(native.points.length),
-    diffs,
-  );
+  // Point count is position-derived on iterative engines: node drift changes
+  // spline piece counts, so under `iterative` the count is skipped along with
+  // the coordinates (AD-4 — corpus evidence: neato/fdp/sfdp arrow graphs
+  // legitimately route with differing piece counts). Deterministic engines
+  // compare it exactly.
+  if (!iterative) {
+    strField(
+      'edge',
+      id,
+      'pointCount',
+      String(port.points.length),
+      String(native.points.length),
+      diffs,
+    );
+  }
   if (port.points.length === native.points.length) {
     for (let i = 0; i < port.points.length; i++) {
       numField('edge', id, `point[${i}].x`, port.points[i]!.x, native.points[i]!.x, iterative, diffs);
