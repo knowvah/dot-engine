@@ -1,0 +1,4 @@
+{
+  "comment": "Accepted plain/plain-ext divergences (mission: format-parity-matrix, T5, AD-2/AD-4). Each entry records one (id, engine) pair that is a documented, won't-fix difference for the plain/plain-ext track — e.g. an A1 iterative-drift coordinate tie already accepted for the xdot/json tracks on that same (id, engine). The walker (test/corpus/plain-walk.ts) treats a listed (id, engine) pair as verdict 'accepted' rather than 'diverged' for whichever of plain/plain-ext diverges, and excludes it from the diverged bucket while still counting it separately in the summary. Entry shape: { id, engine, reason }. Empty at initial survey time (T5) — this is the first triage pass for the plain/plain-ext track; any acceptances are a follow-up mission and MUST be referenced in the decision journal.",
+  "divergences": []
+}
