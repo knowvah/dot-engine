@@ -68,9 +68,9 @@ Corpus fixes and accepted divergences → **repo-root `plans/decision-journal.md
 | [1](./batch-1/overview.md) | Harness plumbing (parallel) | T1 T2 T3 T4 | [x] |
 | [2](./batch-2/overview.md) | Plain walker | T5 | [x] |
 | [3](./batch-3/overview.md) | Plain triage | T6 | [x] |
-| [4](./batch-4/overview.md) | json triage (7 engines) | T7 | [ ] |
-| [5](./batch-5/overview.md) | imagemap triage (7 engines) | T8 | [ ] |
-| [6](./batch-6/overview.md) | Integrate report + docs + close | T9 T10 T11 | [ ] |
+| [4](./batch-4/overview.md) | json triage (7 engines) | T7 | [x] |
+| [5](./batch-5/overview.md) | imagemap triage (7 engines) | T8 | [x] |
+| [6](./batch-6/overview.md) | Integrate report + docs + close | T9 T10 T11 | [x] |
 
 ## Stop conditions
 
@@ -89,3 +89,29 @@ Corpus fixes and accepted divergences → **repo-root `plans/decision-journal.md
 ## Diagrams
 
 [data-flow](./diagrams/data-flow.md) · [component-map](./diagrams/component-map.md)
+
+## Mission summary (2026-07-24)
+
+All 11 tasks complete; all batches `[x]`. 22 new conformance tracks live in
+`PARITY.md`: **plain ×8 engines** (95.8–99.1% pass), **json ×7 non-dot**
+(deterministic 97.6–99.7%; iterative 68.9–90.2% with drift-tail acceptances),
+**imagemap ×7 non-dot** (96.2–100%). 0 unexplained divergences on every track.
+
+- **7 src fixes** (all C-verified, journaled): full `_agstrcanon` port +
+  write_plain label/style/shape/zoom semantics, `bz.size` spline reads,
+  `printG5` exact-tie half-to-even, bind_shape naming, cluster-proxy
+  suppression, failed-html label fallback, root imagemap rect = 0-based clip
+  window (`src/gvc/anchor.ts`, write-set extension journaled).
+- **615 registry acceptances** across three registries, each with mechanism:
+  oracle canon() use-after-free (A4, newly root-caused), engine-track-inherited
+  drift (majority), engine-track blind spots (follow-up flagged), osage
+  inf/nan invalid JSON (A4), A8 rounding-boundary dust.
+- **Comparator/harness corrections** driven by sweep evidence: AD-4 iterative
+  bars for json (0.5pt) and imagemap (±1px), plain pointCount skip,
+  compare-json positional `rects`/`head_lp`/`tail_lp`/`xlp`, engine-scoped
+  acceptance entries in json/map walkers.
+- **Follow-ups flagged in registries**: twopi/neato shape=plain init defect;
+  ~12 engine-layout blind-spot ids (2095_1 circo, 1879/2619 family, fdp
+  b53/badvoro/2108/1652); fdp big-graph map timeouts.
+- Gates at close: `tsc` clean · 3271 tests green · `docs:build` clean ·
+  existing tracks byte-identical in PARITY.md · src diff = journaled write-set.
