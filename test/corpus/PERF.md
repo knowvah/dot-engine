@@ -7,7 +7,7 @@ Warm, in-process timing of @knowvah/dot-engine vs the native `dot` oracle over t
 test corpus. **Peer to [PARITY.md](./PARITY.md)** — PARITY tracks *correctness*,
 PERF tracks *speed*. A report, not a gate. The fidelity target is **≤3× native**.
 
-Regenerate: `npm run build:js && node test/corpus/bench.mjs && node test/corpus/perf-dashboard.mjs`.
+Regenerate: `npm run build:js && node test/corpus/bench.mjs && npm run bench:wasm && node test/corpus/perf-dashboard.mjs` (the `bench:wasm` step is optional — it adds the [dot-engine vs WASM](#dot-engine-vs-wasm-hpcc-js-wasm-graphviz) section below).
 
 ## Method
 
@@ -68,3 +68,58 @@ Regenerate: `npm run build:js && node test/corpus/bench.mjs && node test/corpus/
 ## Over-cap / possible hang
 
 _None — no input exceeded the per-render cap (no hangs)._
+
+## dot-engine vs WASM (@hpcc-js/wasm-graphviz)
+
+A **different axis** from the table above: this compares the pure-TS port against
+the WASM build a browser would otherwise ship (@hpcc-js/wasm-graphviz@1.28.0) — both warm,
+in-process, best-of-3 (min). A report, not a gate: WASM is
+compiled C, so the port is expected to be a small constant factor slower; the
+port's wins are bundle size and no wasm fetch+instantiate, not raw layout compute.
+Source: [`wasm-perf.json`](./wasm-perf.json). Regenerate: `npm run bench:wasm`.
+
+- **Compared:** 765 inputs · **ratio (dot-engine / wasm):** p50 3.63× · p90 4.53× · max 7.60× · mean 3.58×
+- **Excluded:** 12 heavy (native > 2000ms) · 4 large-source (> 1 MB) · 4 port-error · 7 wasm-error · 0 missing
+
+### Ratio distribution (dot-engine / wasm)
+
+| band | count |
+|---|---:|
+| dot-engine faster (<1×) | 1 |
+| 1–2× | 31 |
+| 2–4× | 509 |
+| 4–6× | 214 |
+| 6–10× | 10 |
+| >10× | 0 |
+
+### Slowest for the port vs WASM (worst first)
+
+| id | dot-engine ms | wasm ms | ratio |
+|---|---:|---:|---:|
+| `graphs-Heawood` | 6.113 | 0.804 | 7.604× |
+| `2609` | 1.312 | 0.178 | 7.375× |
+| `share-Heawood` | 5.358 | 0.762 | 7.033× |
+| `macosx-ordering_dot` | 2.586 | 0.384 | 6.729× |
+| `graphs-rd_rules` | 3.613 | 0.553 | 6.53× |
+| `graphs-grdfillcolor` | 5.742 | 0.899 | 6.385× |
+| `macosx-nestedclust_dot` | 1.332 | 0.211 | 6.324× |
+| `share-train11` | 5.148 | 0.826 | 6.232× |
+| `macosx-ordering_dot1` | 2.413 | 0.388 | 6.222× |
+| `graphs-sq_rules` | 3.112 | 0.517 | 6.02× |
+| `graphs-pslib` | 5.571 | 0.929 | 5.998× |
+| `graphs-ER` | 2.501 | 0.421 | 5.94× |
+| `graphs-b786` | 2.078 | 0.36 | 5.775× |
+| `share-ER` | 2.709 | 0.47 | 5.763× |
+| `graphs-grdshapes` | 6.117 | 1.079 | 5.667× |
+| `graphs-grdlinear` | 5.721 | 1.018 | 5.62× |
+| `share-trapeziumlr` | 8.139 | 1.462 | 5.566× |
+| `121` | 2.463 | 0.444 | 5.544× |
+| `share-labelclust-nbl` | 0.982 | 0.179 | 5.48× |
+| `1408` | 1.092 | 0.2 | 5.455× |
+
+### Excluded / not compared
+
+- **Heavy (native > 2000ms):** 12 inputs — warm best-of-N over multi-second layouts is impractical here; their vs-native behavior is in the main table above.
+- **Large source (> 1 MB):** `1864` (14.1 MB), `2064` (4.9 MB), `2475_1` (9.3 MB), `2593` (13.2 MB) — multi-MB disassembly/CFG dumps (~10k+ nodes) that are impractical for a warm best-of-N. These are hard for Graphviz **generally**, not port-specific: spot-checked, `2064` fails to render in native `dot` (>120s), the WASM build (>60s in `layout()`), and the port (>30s) alike; `1864` OOMs **both** the port (>1 GB) and the WASM build ("out of memory") while native times out. The port does **not** leak (with GC its per-render heap is flat ~17 MB) — this is a scale ceiling shared with upstream, not a defect.
+- Per-side error ids are listed in `wasm-perf.json`.
+

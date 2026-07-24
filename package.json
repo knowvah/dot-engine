@@ -65,6 +65,7 @@
     "survey:gate": "tsx test/corpus/rules-gate.ts",
     "survey:dashboard": "tsx test/corpus/dashboard.ts",
     "survey:baseline": "GV_TEXT_MEASURER=lut tsx test/corpus/survey.ts",
+    "bench:wasm": "node --expose-gc test/corpus/wasm-bench.mjs",
     "docs:copy-reports": "node docs-site/copy-reports.mjs",
     "docs:copy-goldens": "node docs-site/copy-goldens.mjs",
     "docs:api": "typedoc",
@@ -87,6 +88,7 @@
     }
   },
   "devDependencies": {
+    "@hpcc-js/wasm-graphviz": "1.28.0",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/github": "^12.0.9",
     "@semantic-release/npm": "^13.1.5",
