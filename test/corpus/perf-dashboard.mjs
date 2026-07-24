@@ -129,7 +129,7 @@ ${slowTable()}
 ## Over-cap / possible hang
 
 ${capTable()}
-${errored.length ? `\n## Errored (${errored.length})\n\nPort threw before producing output (often the same parser-gap inputs PARITY.md lists).\n\n| id | message |\n|---|---|\n${errored.map((r) => `| \`${r.id}\` | ${(r.errMsg ?? '').replace(/\|/g, '\\|').slice(0, 120)} |`).join('\n')}\n` : ''}`;
+${errored.length ? `\n## Errored (${errored.length})\n\nPort threw before producing output (often the same parser-gap inputs PARITY.md lists).\n\n| id | message |\n|---|---|\n${errored.map((r) => `| \`${r.id}\` | ${(r.errMsg ?? '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').slice(0, 120)} |`).join('\n')}\n` : ''}`;
 
 writeFileSync(OUT, md);
 process.stderr.write(`PERF.md written — ${rated.length} rated, ${within} within ${report.budgetMult}x, ${report.counts.slow} slow, ${report.counts['over-cap']} over-cap\n`);

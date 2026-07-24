@@ -225,7 +225,7 @@ for (const { src, dst, rewrites } of REPORTS) {
   let md = readFileSync(here(src), 'utf8');
   for (const [re, to] of rewrites) md = md.replace(re, to);
   const note =
-    `<!-- Mirrored from ${src.replace('../', '')} by docs-site/copy-reports.mjs ` +
+    `<!-- Mirrored from ${src.replaceAll('../', '')} by docs-site/copy-reports.mjs ` +
     `at docs build time. Edit the source report, not this copy. -->\n`;
   writeFileSync(here(dst), note + md);
   process.stderr.write(`copy-reports: wrote docs-site/${dst}\n`);

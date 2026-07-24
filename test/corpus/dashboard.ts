@@ -53,7 +53,7 @@ interface Bucket {
 /** Escape a markdown table cell (pipes + newlines). Use for BACKTICKED cells;
  *  markdown-it escapes `<`/`>` inside code spans, so they stay raw here. */
 function cell(s: string | undefined): string {
-  return (s ?? '').replace(/\|/g, '\\|').replace(/\n/g, ' ');
+  return (s ?? '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\n/g, ' ');
 }
 
 /** Escape a FREE-TEXT (non-code) cell: pipes, newlines, and raw `<`/`>`.
