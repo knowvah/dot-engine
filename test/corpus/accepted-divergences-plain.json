@@ -1,4 +1,410 @@
 {
-  "comment": "Accepted plain/plain-ext divergences (mission: format-parity-matrix, T5, AD-2/AD-4). Each entry records one (id, engine) pair that is a documented, won't-fix difference for the plain/plain-ext track — e.g. an A1 iterative-drift coordinate tie already accepted for the xdot/json tracks on that same (id, engine). The walker (test/corpus/plain-walk.ts) treats a listed (id, engine) pair as verdict 'accepted' rather than 'diverged' for whichever of plain/plain-ext diverges, and excludes it from the diverged bucket while still counting it separately in the summary. Entry shape: { id, engine, reason }. Empty at initial survey time (T5) — this is the first triage pass for the plain/plain-ext track; any acceptances are a follow-up mission and MUST be referenced in the decision journal.",
-  "divergences": []
+  "comment": "Accepted plain/plain-ext divergences (mission: format-parity-matrix, T5, AD-2/AD-4). Each entry records one (id, engine) pair that is a documented, won't-fix difference for the plain/plain-ext track \u2014 e.g. an A1 iterative-drift coordinate tie already accepted for the xdot/json tracks on that same (id, engine). The walker (test/corpus/plain-walk.ts) treats a listed (id, engine) pair as verdict 'accepted' rather than 'diverged' for whichever of plain/plain-ext diverges, and excludes it from the diverged bucket while still counting it separately in the summary. Entry shape: { id, engine, reason }. Empty at initial survey time (T5) \u2014 this is the first triage pass for the plain/plain-ext track; any acceptances are a follow-up mission and MUST be referenced in the decision journal.",
+  "divergences": [
+    {
+      "id": "graphs-Latin1",
+      "engine": "dot",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Latin1",
+      "engine": "circo",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Latin1",
+      "engine": "twopi",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Latin1",
+      "engine": "osage",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Latin1",
+      "engine": "patchwork",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Latin1",
+      "engine": "neato",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Latin1",
+      "engine": "fdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Latin1",
+      "engine": "sfdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "share-Latin1",
+      "engine": "dot",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "share-Latin1",
+      "engine": "circo",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "share-Latin1",
+      "engine": "twopi",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "share-Latin1",
+      "engine": "osage",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "share-Latin1",
+      "engine": "patchwork",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "share-Latin1",
+      "engine": "neato",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "share-Latin1",
+      "engine": "fdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "share-Latin1",
+      "engine": "sfdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-Latin1",
+      "engine": "dot",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-Latin1",
+      "engine": "circo",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-Latin1",
+      "engine": "twopi",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-Latin1",
+      "engine": "osage",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-Latin1",
+      "engine": "patchwork",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-Latin1",
+      "engine": "neato",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-Latin1",
+      "engine": "fdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-Latin1",
+      "engine": "sfdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Symbol",
+      "engine": "dot",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Symbol",
+      "engine": "circo",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Symbol",
+      "engine": "twopi",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Symbol",
+      "engine": "osage",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Symbol",
+      "engine": "patchwork",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Symbol",
+      "engine": "neato",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Symbol",
+      "engine": "fdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-Symbol",
+      "engine": "sfdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b34",
+      "engine": "dot",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b34",
+      "engine": "circo",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b34",
+      "engine": "twopi",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b34",
+      "engine": "osage",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b34",
+      "engine": "patchwork",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b34",
+      "engine": "neato",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b34",
+      "engine": "fdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b34",
+      "engine": "sfdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b56",
+      "engine": "dot",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b56",
+      "engine": "circo",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b56",
+      "engine": "twopi",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b56",
+      "engine": "osage",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b56",
+      "engine": "patchwork",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b56",
+      "engine": "neato",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b56",
+      "engine": "fdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b56",
+      "engine": "sfdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b60",
+      "engine": "dot",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b60",
+      "engine": "circo",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b60",
+      "engine": "twopi",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b60",
+      "engine": "osage",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b60",
+      "engine": "patchwork",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b60",
+      "engine": "neato",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b60",
+      "engine": "fdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b60",
+      "engine": "sfdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
+    },
+    {
+      "id": "1855",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "2239",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "2470",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "241_0",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-arrows",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-arrowsize",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b29",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-newarrows",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.i386-b29",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.x86-arrows_dot",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "macosx-arrows_dot",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "nshare-arrows_dot",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "share-newarrows",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-newarrows",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "1652",
+      "engine": "osage",
+      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "1855",
+      "engine": "osage",
+      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-polypoly",
+      "engine": "osage",
+      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.i386-b29",
+      "engine": "osage",
+      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "share-b29",
+      "engine": "osage",
+      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "share-polypoly",
+      "engine": "osage",
+      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-polypoly",
+      "engine": "osage",
+      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "241_0",
+      "engine": "circo",
+      "reason": "layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "2475_2",
+      "engine": "circo",
+      "reason": "layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-tree",
+      "engine": "circo",
+      "reason": "layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "regression_tests-shapes-reference-plain",
+      "engine": "twopi",
+      "reason": "port bug (follow-up): twopi/neato node init falls back to default size (0.75x0.5) for a shape=plain node with width=0/height=0 and pinned pos; the dot path sizes it 0x0 like native (poly_init IS_PLAIN). Engine-init defect class; fix is in src/layout/twopi init, outside the plain-track write-set. Journal 2026-07-24."
+    }
+  ]
 }

@@ -67,7 +67,7 @@ Corpus fixes and accepted divergences → **repo-root `plans/decision-journal.md
 |---|---|---|---|
 | [1](./batch-1/overview.md) | Harness plumbing (parallel) | T1 T2 T3 T4 | [x] |
 | [2](./batch-2/overview.md) | Plain walker | T5 | [x] |
-| [3](./batch-3/overview.md) | Plain triage | T6 | [ ] |
+| [3](./batch-3/overview.md) | Plain triage | T6 | [x] |
 | [4](./batch-4/overview.md) | json triage (7 engines) | T7 | [ ] |
 | [5](./batch-5/overview.md) | imagemap triage (7 engines) | T8 | [ ] |
 | [6](./batch-6/overview.md) | Integrate report + docs + close | T9 T10 T11 | [ ] |

@@ -8,7 +8,7 @@ mechanism, no guessing) and the stop conditions.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |----|-------------|-------|--------|-----------|------|
-| T6 | plain sweep ×8 + fix/accept all divergences | (main, diagnosis mode) | `src/render/map.ts`, `test/corpus/accepted-divergences-plain.json`, `test/corpus/plain-parity-*.json`, repo-root `plans/decision-journal.md` | T5 | [ ] |
+| T6 | plain sweep ×8 + fix/accept all divergences | (main, diagnosis mode) | `src/render/map.ts`, `test/corpus/accepted-divergences-plain.json`, `test/corpus/plain-parity-*.json`, repo-root `plans/decision-journal.md` | T5 | [x] |
 
 Sequenced (not parallel with T7/T8 — shares `src/render/map.ts`). Known first
 target: node + edge label DOT-canonicalization in `writePlain` (labels with
