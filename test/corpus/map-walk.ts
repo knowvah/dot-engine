@@ -335,8 +335,15 @@ function judgeFormat(
   portText: string,
   oracleText: string,
   accepted: boolean,
+  engine: EngineName = 'dot',
 ): { result: MapFormatResult; diffs: MapDiff[] } {
-  const { pass, diffs } = format === 'cmapx' ? compareCmapx(portText, oracleText) : compareImap(portText, oracleText);
+  // Deterministic engines are exact-after-round (MAP_TOLERANCE=0). Iterative
+  // engines carry the documented 0.5pt model-drift bar, which after integer
+  // rounding is a ±1 hotspot-coordinate window (AD-4).
+  const tolerance = engine === 'neato' || engine === 'fdp' || engine === 'sfdp' ? 1 : 0;
+  const { pass, diffs } = format === 'cmapx'
+    ? compareCmapx(portText, oracleText, tolerance)
+    : compareImap(portText, oracleText, tolerance);
   if (pass) return { result: { verdict: 'conformant' }, diffs: [] };
   const verdict: MapVerdict = accepted ? 'accepted' : 'diverged';
   return { result: { verdict, ...summarize(diffs) }, diffs };
@@ -389,8 +396,8 @@ async function walkOne(
     };
   }
   const isAccepted = accepted.has(item.id);
-  const { result: cmapxResult, diffs: cmapxDiffs } = judgeFormat('cmapx', port.cmapx, oCmapx.text, isAccepted);
-  const { result: imapResult, diffs: imapDiffs } = judgeFormat('imap', port.imap, oImap.text, isAccepted);
+  const { result: cmapxResult, diffs: cmapxDiffs } = judgeFormat('cmapx', port.cmapx, oCmapx.text, isAccepted, engine);
+  const { result: imapResult, diffs: imapDiffs } = judgeFormat('imap', port.imap, oImap.text, isAccepted, engine);
   return {
     result: {
       ...meta,
@@ -427,10 +434,17 @@ function conformantItems(): Item[] {
   return LIMIT > 0 ? items.slice(0, LIMIT) : items;
 }
 
-function loadAccepted(): Set<string> {
+function loadAccepted(engine: EngineName): Set<string> {
   try {
-    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as { divergences?: Array<{ id: string }> };
-    return new Set((raw.divergences ?? []).map((d) => d.id));
+    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as {
+      divergences?: Array<{ id: string; engine?: string }>;
+    };
+    // Entries may be engine-scoped; an engine-less entry applies everywhere.
+    return new Set(
+      (raw.divergences ?? [])
+        .filter((d) => d.engine === undefined || d.engine === engine)
+        .map((d) => d.id),
+    );
   } catch {
     return new Set();
   }
@@ -626,7 +640,7 @@ async function main(): Promise<void> {
   }
   const argv = process.argv.slice(2);
   const positional = argv.filter((a) => !a.startsWith('--'));
-  const accepted = loadAccepted();
+  const accepted = loadAccepted((positional[0] as EngineName | undefined) ?? 'dot');
   const tsx = resolveTsx();
 
   if (positional.length > 0) {
