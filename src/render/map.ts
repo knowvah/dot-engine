@@ -252,12 +252,15 @@ export function writePlainNode(n: Node, g: Graph, out: string[]): void {
     + ' ' + a.label + ' ' + a.style + ' ' + a.shape + ' ' + a.color + ' ' + a.fill + '\n');
 }
 
-/** Flatten all Bezier curves in an edge spline into a point array. */
+/** Flatten all Bezier curves in an edge spline into a point array. Reads
+ * exactly bz.size points — routing can leave over-allocated scratch entries
+ * past size in bz.list (C sums ED_spl sizes, never the allocation).
+ * @see lib/common/output.c:write_plain (183-195) */
 export function collectSplinePts(e: Edge): Point[] {
   if (!e.info.spl) return [];
   const pts: Point[] = [];
   for (const bz of e.info.spl.list) {
-    for (const pt of bz.list) pts.push(pt);
+    for (let i = 0; i < bz.size; i++) pts.push(bz.list[i]!);
   }
   return pts;
 }
