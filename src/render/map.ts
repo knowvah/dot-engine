@@ -16,8 +16,11 @@ import type { Edge } from '../model/edge.js';
 import type { Point, Box } from '../model/geom.js';
 import { POINTS_PER_INCH } from '../model/geom.js';
 import type { TextSpan } from '../common/emit-types.js';
-import type { TextlabelT } from '../common/types.js';
+import { ShapeKind, type ShapeDesc, type TextlabelT } from '../common/types.js';
 import { lateDouble } from '../common/nodeinit.js';
+import { nodeAttr } from '../common/poly-init.js';
+import { htmlValueContent, isHtmlValue } from '../common/html-string.js';
+import { nodesInSeq } from '../layout/dot/decomp.js';
 import { substObjAnchor } from '../common/subst.js';
 import type { RendererPlugin } from '../gvc/context.js';
 import type { ObjState, RenderJob } from '../gvc/job.js';
@@ -72,40 +75,180 @@ export function plainCoord(v: number): string {
   return printG5(v / 72);
 }
 
+// ---------------------------------------------------------------------------
+// agstrcanon — DOT-canonical string form for plain names/labels/ports.
+// @see lib/cgraph/write.c:_agstrcanon / agstrcanon / agcanonhtmlstr
+// ---------------------------------------------------------------------------
+
+/** must agree with scan.l @see lib/cgraph/write.c:120 tokenlist */
+const CANON_KEYWORDS = ['node', 'edge', 'strict', 'graph', 'digraph', 'subgraph'];
+
+/** Line-break threshold. agwrite may override via `linelength` but always
+ * restores this value, so the plain path (direct agstrcanon, no agwrite)
+ * observes the default. @see lib/cgraph/write.c:44,676,692 */
+const MAX_OUTPUTLINE = 128;
+
+function isDigitByte(b: number): boolean { return b >= 0x30 && b <= 0x39; }
+
+function isAlnumByte(b: number): boolean {
+  return isDigitByte(b) || (b >= 0x41 && b <= 0x5a) || (b >= 0x61 && b <= 0x7a);
+}
+
+/** alphanumeric, '.', '-', or non-ascii byte. @see lib/cgraph/write.c:is_id_char */
+function isIdCharByte(b: number): boolean {
+  return isAlnumByte(b) || b === 0x2e || b === 0x2d || b >= 0x80;
+}
+
+/** Recognized escString escape starting at bytes[i]. @see lib/cgraph/write.c:is_escape */
+function isEscapeAt(bytes: Uint8Array, i: number): boolean {
+  if (bytes[i] !== 0x5c) return false;
+  const c = bytes[i + 1];
+  return c !== undefined && 'EGHLNTlnr\\"'.includes(String.fromCharCode(c));
+}
+
+/** The needs-quotes / numeral / escape state scan of `_agstrcanon`, over UTF-8
+ * BYTES (C iterates bytes: cnt counts bytes for line breaking, and non-ascii
+ * bytes are id chars). Returns the quoted buffer or the untouched input.
+ * @see lib/cgraph/write.c:_agstrcanon */
+export function agstrcanonText(arg: string): string {
+  if (arg.length === 0) return '""';
+  const bytes = new TextEncoder().encode(arg);
+  const out: number[] = [0x22];
+  let needsQuotes = false;
+  let partOfEscape = false;
+  let backslashPending = false;
+  let cnt = 0;
+  let dotcnt = 0;
+  let maybeNum = isDigitByte(bytes[0]!) || bytes[0] === 0x2e || bytes[0] === 0x2d;
+  for (let i = 0; i < bytes.length; i++) {
+    const uc = bytes[i]!;
+    if (uc === 0x22 && !partOfEscape) { // '"' not already part of an escape
+      out.push(0x5c);
+      needsQuotes = true;
+    } else if (!partOfEscape && isEscapeAt(bytes, i)) {
+      needsQuotes = true;
+      partOfEscape = true;
+    } else if (maybeNum) {
+      if (uc === 0x2d) { // '-' legal only as the first char of a numeral
+        if (cnt) { maybeNum = false; needsQuotes = true; }
+      } else if (uc === 0x2e) { // one '.' allowed
+        if (dotcnt++) { maybeNum = false; needsQuotes = true; }
+      } else if (!isDigitByte(uc)) {
+        maybeNum = false;
+        needsQuotes = true;
+      }
+      partOfEscape = false;
+    } else if (!(isAlnumByte(uc) || uc === 0x5f || uc >= 0x80)) {
+      needsQuotes = true;
+      partOfEscape = false;
+    } else {
+      partOfEscape = false;
+    }
+    out.push(uc);
+    cnt++;
+    const next = bytes[i + 1];
+    // Long-string line breaking: only after a non-id, non-backslash output
+    // char where the next input char is an id char. @see write.c:170-190
+    if (next !== undefined) {
+      const last = out[out.length - 1]!;
+      const canBreak = !(isIdCharByte(last) || last === 0x5c) && isIdCharByte(next);
+      if (backslashPending && canBreak) {
+        out.push(0x5c, 0x0a);
+        needsQuotes = true;
+        backslashPending = false;
+        cnt = 0;
+      } else if (cnt >= MAX_OUTPUTLINE) {
+        if (canBreak) {
+          out.push(0x5c, 0x0a);
+          needsQuotes = true;
+          cnt = 0;
+        } else {
+          backslashPending = true;
+        }
+      }
+    }
+  }
+  out.push(0x22);
+  const first = bytes[0]!;
+  if (needsQuotes || (cnt === 1 && (first === 0x2e || first === 0x2d))) {
+    return new TextDecoder().decode(new Uint8Array(out));
+  }
+  // Quotes protect DOT keywords (e.g. a node named "node"). @see write.c:199-203
+  const lower = arg.toLowerCase();
+  for (const tok of CANON_KEYWORDS) {
+    if (tok === lower) return new TextDecoder().decode(new Uint8Array(out));
+  }
+  return arg;
+}
+
+/** late_nnstring: default when the attr is missing OR empty.
+ * @see lib/common/utils.c:late_nnstring */
+function lateNN(v: string | undefined, def: string): string {
+  return v !== undefined && v !== '' ? v : def;
+}
+
 /** Resolve fill color: fillcolor attr, then color attr, then lightgrey. */
-export function plainNodeFill(n: Node): string {
+export function plainNodeFill(n: Node, g: Graph): string {
   // @see lib/common/output.c:write_plain (167-169): fillcolor attr if non-empty,
   // else the color attr, else DEFAULT_FILL ("lightgrey"). Note the fallback is
   // DEFAULT_FILL, not DEFAULT_COLOR — an unfilled node's plain fill field is
   // "lightgrey", not "black".
-  const fillcolor = n.attrs.get('fillcolor') ?? '';
+  const fillcolor = lateNN(nodeAttr(n, g, 'fillcolor'), '');
   if (fillcolor !== '') return fillcolor;
-  return n.attrs.get('color') ?? 'lightgrey';
+  return lateNN(nodeAttr(n, g, 'color'), 'lightgrey');
 }
 
 // ---------------------------------------------------------------------------
 // Plain format helpers — @see lib/common/output.c:write_plain
 // ---------------------------------------------------------------------------
 
+/** The label field of a plain node line: HTML labels re-wrap the ORIGINAL
+ * label attr in `<...>` (agstrcanon's aghtmlstr branch on agxget(n, N_label));
+ * everything else — including record labels, whose textlabel keeps the raw
+ * unsubstituted source — canonicalizes ND_label(n)->text.
+ * @see lib/common/output.c:write_plain (152-158) */
+function plainNodeLabel(n: Node, g: Graph): string {
+  const lbl = n.info.label as TextlabelT | undefined;
+  if (lbl !== undefined && lbl.u.kind === 'html') {
+    const attr = nodeAttr(n, g, 'label') ?? '';
+    return '<' + (isHtmlValue(attr) ? htmlValueContent(attr) : attr) + '>';
+  }
+  // C record textlabels keep the raw UNSUBSTITUTED label source (make_label's
+  // is_record branch gv_strdup's it; substitution happens per-field at record
+  // parse). The port's record label resolves the default to the node name, so
+  // reconstruct C's text: the label attr, or cgraph's always-present N_label
+  // default "\N". @see lib/common/labels.c:make_label ; lib/common/input.c:468
+  const shape = n.info.shape as ShapeDesc | undefined;
+  if (shape !== undefined && shape.kind === ShapeKind.SH_RECORD) {
+    return agstrcanonText(nodeAttr(n, g, 'label') ?? '\\N');
+  }
+  const text = lbl !== undefined ? lbl.text : (n.attrs.get('label') ?? n.name);
+  return agstrcanonText(text);
+}
+
 /** Read the five style attrs needed for a plain node line. */
-export function plainNodeAttrs(n: Node): PlainNodeAttrs {
+export function plainNodeAttrs(n: Node, g: Graph): PlainNodeAttrs {
+  // style/shape/color resolve through the node-defaults chain (C agxget sees
+  // `node [...]` defaults); shape is the RESOLVED ND_shape(n)->name.
+  // @see lib/common/output.c:write_plain (163-166)
+  const shape = n.info.shape as ShapeDesc | undefined;
   return {
-    label: n.attrs.get('label') ?? n.name,
-    style: n.attrs.get('style') ?? 'solid',
-    shape: n.attrs.get('shape') ?? 'ellipse',
-    color: n.attrs.get('color') ?? 'black',
-    fill: plainNodeFill(n),
+    label: plainNodeLabel(n, g),
+    style: lateNN(nodeAttr(n, g, 'style'), 'solid'),
+    shape: shape !== undefined ? shape.name : (nodeAttr(n, g, 'shape') ?? 'ellipse'),
+    color: lateNN(nodeAttr(n, g, 'color'), 'black'),
+    fill: plainNodeFill(n, g),
   };
 }
 
 /** Write one node line: `node name x y w h label style shape color fill\n` */
-export function writePlainNode(n: Node, out: string[]): void {
+export function writePlainNode(n: Node, g: Graph, out: string[]): void {
   const x = plainCoord(n.info.coord.x);
   const y = plainCoord(n.info.coord.y);
   const w = printG5(n.info.width);
   const h = printG5(n.info.height);
-  const a = plainNodeAttrs(n);
-  out.push('node ' + n.name + ' ' + x + ' ' + y + ' ' + w + ' ' + h
+  const a = plainNodeAttrs(n, g);
+  out.push('node ' + agstrcanonText(n.name) + ' ' + x + ' ' + y + ' ' + w + ' ' + h
     + ' ' + a.label + ' ' + a.style + ' ' + a.shape + ' ' + a.color + ' ' + a.fill + '\n');
 }
 
@@ -124,48 +267,67 @@ export function portSuffix(name: string | null): string {
   return name ? ':' + name : '';
 }
 
+/** Write ` name[:port]`, both parts DOT-canonicalized.
+ * @see lib/common/output.c:writenodeandport */
+function writeNodeAndPort(name: string, portname: string, out: string[]): void {
+  out.push(' ' + agstrcanonText(name));
+  if (portname !== '') out.push(':' + agstrcanonText(portname));
+}
+
 /** Write the `edge tail head n pt...` prefix when spline data exists. */
 export function writePlainEdgeHead(
   e: Edge, tport: string, hport: string, pts: Point[], out: string[],
 ): void {
-  out.push('edge ' + e.tail.name + tport + ' ' + e.head.name + hport
-    + ' ' + String(pts.length));
+  out.push('edge');
+  writeNodeAndPort(e.tail.name, tport, out);
+  writeNodeAndPort(e.head.name, hport, out);
+  out.push(' ' + String(pts.length));
   for (const pt of pts) {
     out.push(' ' + plainCoord(pt.x) + ' ' + plainCoord(pt.y));
   }
 }
 
 /** Write one edge — spline prefix if available, then the edge label (when
- * present), always appends `style color\n`.
+ * present), always appends `style color\n`. plain-ext ports come from the
+ * tailport/headport ATTRS (C agget), which keep any `:compass` suffix the
+ * resolved port objects have already split off.
  * @see lib/common/output.c:write_plain (200-208) */
 export function writePlainEdge(e: Edge, extend: boolean, out: string[]): void {
-  const tport = extend ? portSuffix(e.info.tail_port.name) : '';
-  const hport = extend ? portSuffix(e.info.head_port.name) : '';
+  const tport = extend ? (e.attrs.get('tailport') ?? '') : '';
+  const hport = extend ? (e.attrs.get('headport') ?? '') : '';
   const pts = collectSplinePts(e);
   if (pts.length > 0) writePlainEdgeHead(e, tport, hport, pts, out);
-  // Edge label: text then position, mirroring `if (ED_label(e)) { ...text...;
-  // printpoint(pos) }`. Text is emitted as the node label is (raw); full DOT
-  // canonicalization of plain labels is tracked for the format-parity work.
+  // Edge label: canon(text) then position, mirroring `if (ED_label(e)) {
+  // printstring(canon(...)); printpoint(pos) }`.
   const lbl = e.info.label;
   if (lbl !== undefined) {
-    out.push(' ' + lbl.text + ' ' + plainCoord(lbl.pos.x) + ' ' + plainCoord(lbl.pos.y));
+    out.push(' ' + agstrcanonText(lbl.text)
+      + ' ' + plainCoord(lbl.pos.x) + ' ' + plainCoord(lbl.pos.y));
   }
-  const style = e.attrs.get('style') ?? 'solid';
-  const color = e.attrs.get('color') ?? 'black';
+  const style = lateNN(e.attrs.get('style'), 'solid');
+  const color = lateNN(e.attrs.get('color'), 'black');
   out.push(' ' + style + ' ' + color + '\n');
 }
 
-/** Write the full plain output: graph header, nodes, edges, stop. */
+/** Write the full plain output: graph header, nodes, edges, stop.
+ * Node iteration is agfstnode/agnxtnode (AGSEQ) order, not insertion-Map
+ * order; the graph line's scale is job->zoom — the size= fit factor, computed
+ * with the dot renderer's pad of 0 (render_features_dot).
+ * @see lib/common/output.c:write_plain
+ * @see plugin/core/gvrender_core_dot.c:render_features_dot */
 export function writePlain(g: Graph, job: RenderJob, extend: boolean): void {
   const w = plainCoord(g.info.bb.ur.x);
   const h = plainCoord(g.info.bb.ur.y);
-  job.write('graph ' + printG5(job.zoom) + ' ' + w + ' ' + h + '\n');
-  for (const [, n] of g.nodes) {
+  const zoom = initJobViewportZoom(
+    job.bb, parseDrawingSize(g.attrs.get('size')), { x: 0, y: 0 });
+  job.write('graph ' + printG5(zoom) + ' ' + w + ' ' + h + '\n');
+  const nodes = nodesInSeq(g);
+  for (const n of nodes) {
     const buf: string[] = [];
-    writePlainNode(n, buf);
+    writePlainNode(n, g, buf);
     job.write(buf.join(''));
   }
-  for (const [, n] of g.nodes) {
+  for (const n of nodes) {
     for (const e of n.outEdges(g)) {
       const buf: string[] = [];
       writePlainEdge(e, extend, buf);
