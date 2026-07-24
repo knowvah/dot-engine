@@ -1,4 +1,4 @@
-// graphviz-ts reference input: graph with one cluster that has no nodes
+// @knowvah/dot-engine reference input: graph with one cluster that has no nodes
 // engine: osage
 // tolerance: deterministic
 graph G {

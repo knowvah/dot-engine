@@ -1,4 +1,4 @@
-// graphviz-ts reference input: cluster inside a cluster
+// @knowvah/dot-engine reference input: cluster inside a cluster
 // engine: fdp
 // tolerance: iterative
 graph G {

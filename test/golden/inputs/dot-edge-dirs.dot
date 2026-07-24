@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 4 edges with varying dir attributes
+// @knowvah/dot-engine reference input: 4 edges with varying dir attributes
 // engine: dot
 // tolerance: deterministic
 digraph G {

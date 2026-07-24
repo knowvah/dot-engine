@@ -1,4 +1,4 @@
-// graphviz-ts reference input: star with center connected to 6 leaf nodes
+// @knowvah/dot-engine reference input: star with center connected to 6 leaf nodes
 // engine: circo
 // tolerance: deterministic
 graph G {

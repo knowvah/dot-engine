@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 5-node graph with all nodes having area=1
+// @knowvah/dot-engine reference input: 5-node graph with all nodes having area=1
 // engine: patchwork
 // tolerance: deterministic
 graph G {

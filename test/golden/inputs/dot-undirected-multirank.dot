@@ -1,4 +1,4 @@
-// graphviz-ts reference input: undirected edge spanning two ranks (curves around)
+// @knowvah/dot-engine reference input: undirected edge spanning two ranks (curves around)
 // engine: dot
 // tolerance: deterministic
 graph G {

@@ -2,7 +2,7 @@
 
 # Conformance: what "match" means
 
-graphviz-ts is validated against the canonical C Graphviz binary as an oracle.
+@knowvah/dot-engine is validated against the canonical C Graphviz binary as an oracle.
 When this project says a graph **matches** C — the parity verdict named
 `conformant` — it means a specific, mechanically-checked property, **not**
 literal byte-for-byte equality of the SVG text.
@@ -33,7 +33,7 @@ small enough to be sub-perceptual.
 ## The exact tolerance
 
 The tolerance is **per engine class**, defined in
-[`test/golden/compare.ts`](https://github.com/sseely/graphviz-ts/blob/main/test/golden/compare.ts):
+[`test/golden/compare.ts`](https://github.com/knowvah/dot-engine/blob/main/test/golden/compare.ts):
 
 | Class | Tolerance (pt) | Engines |
 |---|---:|---|
@@ -48,7 +48,7 @@ are additionally checked for **structural** equality (same element tree).
 
 The **corpus parity survey** evaluates every graph in the `deterministic` mode
 (±0.01) regardless of engine — see
-[`test/corpus/survey.ts`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/survey.ts)
+[`test/corpus/survey.ts`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/survey.ts)
 (`diffVerdict` → `compareSvg(port, oracle, 'deterministic')`).
 
 ## Read the code
@@ -56,30 +56,30 @@ The **corpus parity survey** evaluates every graph in the `deterministic` mode
 The definition above is not prose aspiration — it is exactly what the
 comparison code does. To verify it yourself:
 
-- [`test/golden/compare.ts`](https://github.com/sseely/graphviz-ts/blob/main/test/golden/compare.ts)
+- [`test/golden/compare.ts`](https://github.com/knowvah/dot-engine/blob/main/test/golden/compare.ts)
   — `TOLERANCES` (the ±0.01 / ±0.5 table), and `compareSvg`, which walks the two
   normalized trees and applies rule (1) numeric-within-tolerance and rule (2)
   non-numeric-exact attribute by attribute.
-- [`test/golden/normalize.ts`](https://github.com/sseely/graphviz-ts/blob/main/test/golden/normalize.ts)
+- [`test/golden/normalize.ts`](https://github.com/knowvah/dot-engine/blob/main/test/golden/normalize.ts)
   — how raw SVG is parsed into the comparable element tree.
-- [`test/corpus/survey.ts`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/survey.ts)
+- [`test/corpus/survey.ts`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/survey.ts)
   — `diffVerdict`, which assigns one of the verdicts below. `survey.ts` covers
   the `dot` SVG track only.
-- [`test/corpus/engine-walk.ts`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/engine-walk.ts)
+- [`test/corpus/engine-walk.ts`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/engine-walk.ts)
   — the per-engine **xdot** survey (`npx tsx test/corpus/engine-walk.ts <engine>`),
   which applies the same class split as the table above
   (`TOLERANCE = 0.5` for `neato`/`fdp`/`sfdp`, `0.01` for every other engine)
   and compares semantic draw-op streams (`compareXdot`) rather than SVG. This
   is how the `circo`/`twopi`/`osage`/`patchwork`/`neato`/`fdp`/`sfdp` tracks
   are measured; `dot`'s own xdot track uses the sibling
-  [`xdot-walk.ts`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/xdot-walk.ts).
+  [`xdot-walk.ts`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/xdot-walk.ts).
 
 ## The verdicts
 
 The survey assigns each graph exactly one verdict. Live counts per track:
-[`PARITY.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY.md)
+[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 rolls up every engine × surface track (deterministic and iterative alike);
-[`PARITY-dot.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY-dot.md)
+[`PARITY-dot.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-dot.md)
 is the `dot` SVG dashboard, and each other engine has its own
 `PARITY-<engine>.md` dashboard alongside it in `test/corpus/`:
 

@@ -1,4 +1,4 @@
-// graphviz-ts reference input: digraph with headlabel and taillabel on an edge
+// @knowvah/dot-engine reference input: digraph with headlabel and taillabel on an edge
 // engine: dot
 // tolerance: deterministic
 digraph G {

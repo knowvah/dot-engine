@@ -1,4 +1,4 @@
-// graphviz-ts reference input: node linear gradient with gradientangle
+// @knowvah/dot-engine reference input: node linear gradient with gradientangle
 // engine: dot
 // tolerance: deterministic
 digraph G {

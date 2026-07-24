@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 4-node digraph with rankdir=BT (bottom to top)
+// @knowvah/dot-engine reference input: 4-node digraph with rankdir=BT (bottom to top)
 // engine: dot
 // tolerance: deterministic
 digraph G {

@@ -1,4 +1,4 @@
-// graphviz-ts reference input: edge into a thick-bordered (penwidth=2) node clips to the outline
+// @knowvah/dot-engine reference input: edge into a thick-bordered (penwidth=2) node clips to the outline
 // engine: dot
 // tolerance: deterministic
 digraph G {

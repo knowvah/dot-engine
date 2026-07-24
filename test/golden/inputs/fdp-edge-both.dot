@@ -1,4 +1,4 @@
-// graphviz-ts reference input: edges with dir=both
+// @knowvah/dot-engine reference input: edges with dir=both
 // engine: fdp
 // tolerance: iterative
 graph G {

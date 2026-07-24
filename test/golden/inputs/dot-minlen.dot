@@ -1,4 +1,4 @@
-// graphviz-ts reference input: digraph with minlen=2 on one edge
+// @knowvah/dot-engine reference input: digraph with minlen=2 on one edge
 // engine: dot
 // tolerance: deterministic
 digraph G {

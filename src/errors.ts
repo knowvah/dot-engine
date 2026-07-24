@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * Public structured-error contract for graphviz-ts.
+ * Public structured-error contract for @knowvah/dot-engine.
  *
  * Consumers branch on the stable `code` / `type` fields; the
  * `code -> friendlyMessage` map is the single seam a future i18n library

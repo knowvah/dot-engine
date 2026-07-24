@@ -1,4 +1,4 @@
-// graphviz-ts reference input: filled node with explicit fillcolor (ellipse)
+// @knowvah/dot-engine reference input: filled node with explicit fillcolor (ellipse)
 // engine: dot
 // tolerance: deterministic
 digraph G {

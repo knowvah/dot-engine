@@ -1,4 +1,4 @@
-// graphviz-ts reference input: three 5-node undirected components
+// @knowvah/dot-engine reference input: three 5-node undirected components
 // engine: sfdp
 // tolerance: iterative
 graph G {

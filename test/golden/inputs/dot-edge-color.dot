@@ -1,4 +1,4 @@
-// graphviz-ts reference input: edge with a non-default color (path + arrow)
+// @knowvah/dot-engine reference input: edge with a non-default color (path + arrow)
 // engine: dot
 // tolerance: deterministic
 digraph G {

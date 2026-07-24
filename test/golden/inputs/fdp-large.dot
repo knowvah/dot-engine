@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 20-node undirected graph
+// @knowvah/dot-engine reference input: 20-node undirected graph
 // engine: fdp
 // tolerance: iterative
 graph G {

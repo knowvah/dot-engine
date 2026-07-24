@@ -2,7 +2,7 @@
 
 # Known divergences from C Graphviz
 
-graphviz-ts aims for the closest possible fidelity to the canonical C
+@knowvah/dot-engine aims for the closest possible fidelity to the canonical C
 implementation. The C source is the specification; an unlisted difference is
 treated as a defect, not accepted behavior.
 
@@ -22,19 +22,19 @@ Where the output *does* differ, it falls into exactly one of three classes:
    "fixed" without a specific, separately-scoped reason.
 2. **Tracked long tail** — known gaps that *will* be closed, each with an
    oracle-pinned fix. These live with live counts in
-   [`test/corpus/PARITY-dot.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY-dot.md).
+   [`test/corpus/PARITY-dot.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-dot.md).
 3. **Non-goals** — intentional scope boundaries (formats and mechanics we never
    set out to reproduce).
 
 The authoritative, continuously-updated records are
-[`PARITY-dot.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY-dot.md)
+[`PARITY-dot.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-dot.md)
 (per-input parity dashboard vs. native `dot`) and
-[`plans/port-catalog/README.md`](https://github.com/sseely/graphviz-ts/blob/main/plans/port-catalog/README.md)
+[`plans/port-catalog/README.md`](https://github.com/knowvah/dot-engine/blob/main/plans/port-catalog/README.md)
 (algorithm-level port-status inventory).
 
 The **machine-readable** source of truth for which graphs are *accepted* (class 1
 below) is
-[`test/corpus/accepted-divergences.json`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/accepted-divergences.json).
+[`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 The tooling joins it at report time: `PARITY-dot.md` splits **accepted deltas** from
 the **tracked** backlog, and the rules gate sources its allowlist from it. The
 prose sections below explain each entry (A1 and A3 are live; A2 is closed and
@@ -87,7 +87,7 @@ floating-point delta is covered in **A3** below.
 > triage ("Engine-track acceptance" below); `neato`/`fdp`/`sfdp` run at a
 > looser **±0.5 characterization** tolerance with no per-id triage yet
 > ("Iterative-engine characterization" below). Current cross-engine numbers:
-> [`PARITY.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY.md).
+> [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
 **Characterization.** These engines run iterative numerical layouts whose results
 depend on floating-point rounding — specifically fused multiply-add (FMA) and
@@ -157,7 +157,7 @@ Unlike the `circo`/`twopi`/`osage` engine tracks above, `neato`/`fdp`/`sfdp`
 are **not** yet triaged per-id — `engine-walk.ts` records a `tolerance: 0.5`
 field for these three and `parity-report.ts` renders them in a separate
 "Iterative engines (±0.5 characterization)" section of
-[`PARITY.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY.md),
+[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explicitly **not** comparable to the ±0.01 deterministic pass rates elsewhere
 in this document. First sweep (2026-07-11):
 
@@ -174,9 +174,9 @@ rows have been individually root-caused yet — this is a **characterization**,
 not an accepted-deltas list, and no id here is (yet) claimed as a verified A1
 instance the way the twopi arrows family and `1855` are above. Per-id triage
 of this backlog is future work; live counts in the per-engine dashboards
-([`PARITY-neato.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY-neato.md),
-[`PARITY-fdp.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY-fdp.md),
-[`PARITY-sfdp.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY-sfdp.md)).
+([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
+[`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
+[`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
 **A1-drift class acceptance (iterative engines, computed membership).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -321,14 +321,14 @@ a fraction of a point. Measured example — Times-Roman 14 pt, the string
 | | width |
 |---|---|
 | native C (FreeType) | 176.00 pt |
-| graphviz-ts (estimate) | 176.75 pt |
+| @knowvah/dot-engine (estimate) | 176.75 pt |
 | delta | **+0.75 pt (+0.43%)** |
 
 The same node's other label line, `"93736-32246"`, measured **identically**
 (96.00 pt both) — the error is string-dependent and accumulates per glyph,
 not a uniform scale factor. This FreeType-vs-estimate gap is real but is
 **not** what the parity survey measures (both sides run `estimate`); it would
-only matter if graphviz-ts output were compared against a real-font C
+only matter if @knowvah/dot-engine output were compared against a real-font C
 rendering outside this survey.
 
 **Downstream effect on the former `proc3d` divergence (historical).** Label
@@ -346,18 +346,18 @@ width feeds node size, which feeds layout:
 For the non-corpus `proc3d.gv` (`graphs/directed/proc3d.gv`, ~2620 pt, not a
 parity-survey member), that produced a **≤ 3.55 pt** difference in x-extent
 (**0.13%**), overlaid below — **green = native C `dot` (golden), red =
-graphviz-ts (ours)**:
+@knowvah/dot-engine (ours)**:
 
-![proc3d golden-vs-ours overlay: green = C, red = graphviz-ts](/img/proc3d-overlay.svg)
+![proc3d golden-vs-ours overlay: green = C, red = @knowvah/dot-engine](/img/proc3d-overlay.svg)
 
 Zoomed in, the fringe appeared almost entirely on the long file-path oval
 labels:
 
-![proc3d overlay, zoomed on the wide path-label ovals: green = C, red = graphviz-ts](/img/proc3d-overlay-zoom.png)
+![proc3d overlay, zoomed on the wide path-label ovals: green = C, red = @knowvah/dot-engine](/img/proc3d-overlay-zoom.png)
 
-| Golden — native `dot` | Ours — graphviz-ts |
+| Golden — native `dot` | Ours — @knowvah/dot-engine |
 |---|---|
-| ![proc3d rendered by C Graphviz](/img/proc3d-golden.svg) | ![proc3d rendered by graphviz-ts](/img/proc3d-ours.svg) |
+| ![proc3d rendered by C Graphviz](/img/proc3d-golden.svg) | ![proc3d rendered by @knowvah/dot-engine](/img/proc3d-ours.svg) |
 
 The standalone write-up (root cause, per-metric numbers, reproduce command)
 is on its own page:
@@ -467,19 +467,19 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 ```
 
 The entire delta, overlaid (12× zoom on the `376->76` / `to1` arc) — **green = C
-Graphviz, red = graphviz-ts**. Both are the same shallow down-arc between the
+Graphviz, red = @knowvah/dot-engine**. Both are the same shallow down-arc between the
 same node boundaries; they differ by ~1–2 pt at the belly (the mid bezier
 control point), where C's tie broke toward the opposite corner:
 
-![2368 376->76 arc: green = C, red = graphviz-ts](/img/2368-376to76-overlay.png)
+![2368 376->76 arc: green = C, red = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
 
 Everything else matches within tolerance — same bounding box (608×148), node positions,
 labels, arrowheads, and all other edges. The full renders are visually
 indistinguishable:
 
-| C Graphviz | graphviz-ts |
+| C Graphviz | @knowvah/dot-engine |
 |---|---|
-| ![2368 rendered by C Graphviz](/img/2368-c.png) | ![2368 rendered by graphviz-ts](/img/2368-port.png) |
+| ![2368 rendered by C Graphviz](/img/2368-c.png) | ![2368 rendered by @knowvah/dot-engine](/img/2368-port.png) |
 
 The port uses a **translation-equivariant** tie-break (a true tie always resolves
 to the first index), so it draws *every* such arc the same way regardless of
@@ -548,7 +548,7 @@ of both parts. `1581` never reaches the inconsistent state at all (a
 *different* upstream cluster-window bug, not `rebuild_vlists`), so it lays
 out its surviving graph in full — that gap remains open. The oracle output
 on `1581` is recovery debris with no upstream-defined semantics. Evidence:
-[`1581`](https://github.com/sseely/graphviz-ts/blob/main/plans/fix-element-count-bucket/comparisons/1581.md). On
+[`1581`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1581.md). On
 every one of these inputs it is the **C oracle** that is broken, by
 graphviz's own account: `2471`, `1939` and `1435` are
 [`xfail(strict=True)`](https://gitlab.com/graphviz/graphviz/-/blob/9d6e3abfd2c7/tests/test_regression.py)
@@ -574,7 +574,7 @@ triangulation dead ends; a lost record-port edge).
 
 **Inputs verified, then made faithful (this is the load-bearing part).**
 The `verify-oracle-bug-family` mission
-([brief](https://github.com/sseely/graphviz-ts/blob/main/plans/verify-oracle-bug-family/README.md))
+([brief](https://github.com/knowvah/dot-engine/blob/main/plans/verify-oracle-bug-family/README.md))
 dumped the constraint graph both sides feed network simplex, line-by-line,
 for every family member — and found the port's earlier "clean" behavior on
 this family came from **four genuine port defects**, all fixed:
@@ -613,13 +613,13 @@ is by design, not rot).
 
 **Evidence.** Per-id comparison pages (side-by-side renders + evidence
 records):
-[`2471`](https://github.com/sseely/graphviz-ts/blob/main/plans/verify-oracle-bug-family/comparisons/2471.md),
-[`1939`](https://github.com/sseely/graphviz-ts/blob/main/plans/verify-oracle-bug-family/comparisons/1939.md),
-[`1435`](https://github.com/sseely/graphviz-ts/blob/main/plans/verify-oracle-bug-family/comparisons/1435.md),
-[`graphs-structs`](https://github.com/sseely/graphviz-ts/blob/main/plans/verify-oracle-bug-family/comparisons/graphs-structs.md),
-[`2796 post-fix addendum`](https://github.com/sseely/graphviz-ts/blob/main/plans/verify-oracle-bug-family/comparisons/2796-post.md)
+[`2471`](https://github.com/knowvah/dot-engine/blob/main/plans/verify-oracle-bug-family/comparisons/2471.md),
+[`1939`](https://github.com/knowvah/dot-engine/blob/main/plans/verify-oracle-bug-family/comparisons/1939.md),
+[`1435`](https://github.com/knowvah/dot-engine/blob/main/plans/verify-oracle-bug-family/comparisons/1435.md),
+[`graphs-structs`](https://github.com/knowvah/dot-engine/blob/main/plans/verify-oracle-bug-family/comparisons/graphs-structs.md),
+[`2796 post-fix addendum`](https://github.com/knowvah/dot-engine/blob/main/plans/verify-oracle-bug-family/comparisons/2796-post.md)
 (pre-fix baseline preserved at
-[`2796-cluster-ranking.md`](https://github.com/sseely/graphviz-ts/blob/main/plans/fix-2796-cluster-ranking/comparisons/2796-cluster-ranking.md)).
+[`2796-cluster-ranking.md`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-2796-cluster-ranking/comparisons/2796-cluster-ranking.md)).
 Diagnosis artifacts: `.agent-notes/2471-stale-cluster-windows-missing-reset.md`,
 `.agent-notes/1939-group-penalty-clcross-misports.md`.
 
@@ -647,7 +647,7 @@ Everything else in 1367 is conformant: element counts (23 polyline /
 decorate (T6) fix.
 
 **Evidence.**
-[`1367`](https://github.com/sseely/graphviz-ts/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)
+[`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)
 comparison page (side-by-side render + evidence record).
 
 ---
@@ -1072,7 +1072,7 @@ top). The remaining differences are the **long tail of attributes and
 edge cases** — the historically hard part of any Graphviz port. Unlike the
 accepted deltas above, these *will* be closed; they are tracked live, with
 counts, in
-[`PARITY-dot.md`](https://github.com/sseely/graphviz-ts/blob/main/test/corpus/PARITY-dot.md):
+[`PARITY-dot.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-dot.md):
 
 | Category | What differs |
 |---|---|

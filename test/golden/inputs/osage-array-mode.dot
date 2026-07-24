@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 6-node graph with packmode=array
+// @knowvah/dot-engine reference input: 6-node graph with packmode=array
 // engine: osage
 // tolerance: deterministic
 graph G {

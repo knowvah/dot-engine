@@ -1,4 +1,4 @@
-// graphviz-ts reference input: node fill + node pen + edge color/style + cluster fill + bgcolor together
+// @knowvah/dot-engine reference input: node fill + node pen + edge color/style + cluster fill + bgcolor together
 // engine: dot
 // tolerance: deterministic
 digraph G {

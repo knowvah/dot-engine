@@ -1,4 +1,4 @@
-// graphviz-ts reference input: edge with penwidth=2
+// @knowvah/dot-engine reference input: edge with penwidth=2
 // engine: dot
 // tolerance: deterministic
 digraph G {

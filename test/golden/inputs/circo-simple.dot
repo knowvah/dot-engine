@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 6-node undirected cycle
+// @knowvah/dot-engine reference input: 6-node undirected cycle
 // engine: circo
 // tolerance: deterministic
 graph G {

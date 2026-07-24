@@ -1,4 +1,4 @@
-// graphviz-ts reference input: 100-node undirected graph in a ring pattern
+// @knowvah/dot-engine reference input: 100-node undirected graph in a ring pattern
 // engine: sfdp
 // tolerance: iterative
 graph G {

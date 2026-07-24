@@ -1,4 +1,4 @@
-// graphviz-ts reference input: striped box node, three colors
+// @knowvah/dot-engine reference input: striped box node, three colors
 // engine: dot
 // tolerance: deterministic
 digraph G {

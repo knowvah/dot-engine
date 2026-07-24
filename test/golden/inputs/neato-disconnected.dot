@@ -1,4 +1,4 @@
-// graphviz-ts reference input: two 3-node undirected components
+// @knowvah/dot-engine reference input: two 3-node undirected components
 // engine: neato
 // tolerance: iterative
 graph G {

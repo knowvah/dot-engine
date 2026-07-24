@@ -1,4 +1,4 @@
-// graphviz-ts reference input: undirected graph with two cluster subgraphs
+// @knowvah/dot-engine reference input: undirected graph with two cluster subgraphs
 // engine: fdp
 // tolerance: iterative
 graph G {

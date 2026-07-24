@@ -1,4 +1,4 @@
-// graphviz-ts reference input: filled node, no fillcolor (default lightgrey)
+// @knowvah/dot-engine reference input: filled node, no fillcolor (default lightgrey)
 // engine: dot
 // tolerance: deterministic
 digraph G {

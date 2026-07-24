@@ -1,4 +1,4 @@
-// graphviz-ts reference input: clusters with label attributes
+// @knowvah/dot-engine reference input: clusters with label attributes
 // engine: osage
 // tolerance: deterministic
 graph G {

@@ -1,4 +1,4 @@
-// graphviz-ts reference input: node with bold boundary (penwidth 2)
+// @knowvah/dot-engine reference input: node with bold boundary (penwidth 2)
 // engine: dot
 // tolerance: deterministic
 digraph G {

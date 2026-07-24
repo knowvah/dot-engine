@@ -1,4 +1,4 @@
-// graphviz-ts reference input: path graph with 5 nodes in a chain
+// @knowvah/dot-engine reference input: path graph with 5 nodes in a chain
 // engine: twopi
 // tolerance: deterministic
 graph G {
