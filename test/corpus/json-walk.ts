@@ -312,7 +312,10 @@ async function walkOne(
   if (port.json === undefined) {
     return { result: { ...meta, verdict: port.verdict!, errMsg: scrubHome(port.errMsg ?? '') }, diffs: [] };
   }
-  const { pass, diffs } = compareJson(port.json, oracle.json);
+  // Engine-dependent bar mirroring engine-walk.ts: deterministic engines at
+  // 0.01, iterative (neato/fdp/sfdp) at their documented 0.5pt drift bar.
+  const tolerance = ['neato', 'fdp', 'sfdp'].includes(engine) ? 0.5 : 0.01;
+  const { pass, diffs } = compareJson(port.json, oracle.json, tolerance);
   if (pass) return { result: { ...meta, verdict: 'conformant' }, diffs: [] };
   const verdict: JsonVerdict = accepted.has(item.id) ? 'accepted' : 'diverged';
   return {
@@ -344,8 +347,16 @@ function conformantItems(): Item[] {
 
 function loadAccepted(): Set<string> {
   try {
-    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as { divergences?: Array<{ id: string }> };
-    return new Set((raw.divergences ?? []).map((d) => d.id));
+    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as {
+      divergences?: Array<{ id: string; engine?: string }>;
+    };
+    // Entries may be engine-scoped; an entry without `engine` applies to every
+    // engine (legacy dot-era rows). Only matching-engine entries accept here.
+    return new Set(
+      (raw.divergences ?? [])
+        .filter((d) => d.engine === undefined || d.engine === ENGINE)
+        .map((d) => d.id),
+    );
   } catch {
     return new Set();
   }
