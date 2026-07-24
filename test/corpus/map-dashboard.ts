@@ -56,7 +56,7 @@ interface DivergedRow {
 
 /** Escape a markdown table cell (pipes + newlines). */
 function cell(s: string | undefined): string {
-  return (s ?? '').replace(/\|/g, '\\|').replace(/\n/g, ' ');
+  return (s ?? '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\n/g, ' ');
 }
 
 /** Escape a free-text cell: pipes, newlines, and raw `<`/`>` (VitePress-safe). */
