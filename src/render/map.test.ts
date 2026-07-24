@@ -69,7 +69,9 @@ export function testPlainCoord(): void {
 export function testPlainNodeFillDefault(): void {
   const g = makeGraph();
   const n = makeNode(g);
-  expect(plainNodeFill(n)).toBe('black');
+  // Unfilled node with no color: the plain fill field is DEFAULT_FILL, not
+  // DEFAULT_COLOR. @see lib/common/output.c:write_plain (167-169)
+  expect(plainNodeFill(n)).toBe('lightgrey');
 }
 
 export function testPlainNodeFillColor(): void {
@@ -374,7 +376,7 @@ describe('plainCoord', () => {
 });
 
 describe('plainNodeFill', () => {
-  it('defaults to color attr (black)', testPlainNodeFillDefault);
+  it('defaults unfilled node to lightgrey (DEFAULT_FILL)', testPlainNodeFillDefault);
   it('uses color attr when set', testPlainNodeFillColor);
   it('prefers fillcolor over color', testPlainNodeFillFillcolor);
 });

@@ -74,8 +74,13 @@ export function plainCoord(v: number): string {
 
 /** Resolve fill color: fillcolor attr, then color attr, then lightgrey. */
 export function plainNodeFill(n: Node): string {
-  const color = n.attrs.get('color') ?? 'black';
-  return n.attrs.get('fillcolor') || color || 'lightgrey';
+  // @see lib/common/output.c:write_plain (167-169): fillcolor attr if non-empty,
+  // else the color attr, else DEFAULT_FILL ("lightgrey"). Note the fallback is
+  // DEFAULT_FILL, not DEFAULT_COLOR — an unfilled node's plain fill field is
+  // "lightgrey", not "black".
+  const fillcolor = n.attrs.get('fillcolor') ?? '';
+  if (fillcolor !== '') return fillcolor;
+  return n.attrs.get('color') ?? 'lightgrey';
 }
 
 // ---------------------------------------------------------------------------
@@ -130,12 +135,21 @@ export function writePlainEdgeHead(
   }
 }
 
-/** Write one edge — spline prefix if available, always appends `style color\n`. */
+/** Write one edge — spline prefix if available, then the edge label (when
+ * present), always appends `style color\n`.
+ * @see lib/common/output.c:write_plain (200-208) */
 export function writePlainEdge(e: Edge, extend: boolean, out: string[]): void {
   const tport = extend ? portSuffix(e.info.tail_port.name) : '';
   const hport = extend ? portSuffix(e.info.head_port.name) : '';
   const pts = collectSplinePts(e);
   if (pts.length > 0) writePlainEdgeHead(e, tport, hport, pts, out);
+  // Edge label: text then position, mirroring `if (ED_label(e)) { ...text...;
+  // printpoint(pos) }`. Text is emitted as the node label is (raw); full DOT
+  // canonicalization of plain labels is tracked for the format-parity work.
+  const lbl = e.info.label;
+  if (lbl !== undefined) {
+    out.push(' ' + lbl.text + ' ' + plainCoord(lbl.pos.x) + ' ' + plainCoord(lbl.pos.y));
+  }
   const style = e.attrs.get('style') ?? 'solid';
   const color = e.attrs.get('color') ?? 'black';
   out.push(' ' + style + ' ' + color + '\n');
