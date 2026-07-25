@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-21T18:47:33.786Z",
+  "generatedAt": "2026-07-25T03:19:10.751Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "neato",
   "tolerance": 0.5,
   "total": 762,
   "counts": {
-    "pass": 685,
-    "diverged": 70,
-    "oracle-error": 7,
+    "pass": 689,
+    "diverged": 71,
+    "oracle-error": 1,
     "port-error": 0,
-    "timeout": 0
+    "timeout": 1
   },
   "results": [
     {
@@ -228,12 +228,6 @@
       "status": "pass"
     },
     {
-      "id": "2619",
-      "size": 79,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K neato -Txdot /Users/scottseely/git/graphviz/tests/2619.dot"
-    },
-    {
       "id": "165",
       "size": 81,
       "status": "pass"
@@ -332,12 +326,6 @@
       "id": "2460",
       "size": 93,
       "status": "pass"
-    },
-    {
-      "id": "2516",
-      "size": 97,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K neato -Txdot /Users/scottseely/git/graphviz/tests/2516.dot"
     },
     {
       "id": "2437",
@@ -3320,12 +3308,6 @@
       "firstDiff": "edge:0x00400ba6->0x00400b68#0 _draw_ edge:0x00400ba6->0x00400b68#0/_draw_/op[1].unfilled_bezier[0]: 223.96 vs 223.14"
     },
     {
-      "id": "2619_1",
-      "size": 6721,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K neato -Txdot /Users/scottseely/git/graphviz/tests/2619_1.dot"
-    },
-    {
       "id": "graphs-grdradial_angle",
       "size": 6918,
       "status": "pass"
@@ -3413,12 +3395,6 @@
       "status": "diverged",
       "nDiffs": 46,
       "firstDiff": "edge:2->18#0 _draw_ edge:2->18#0/_draw_/op[1].unfilled_bezier[0]: 515.84 vs 516.48"
-    },
-    {
-      "id": "2619_2",
-      "size": 7596,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K neato -Txdot /Users/scottseely/git/graphviz/tests/2619_2.dot"
     },
     {
       "id": "share-abstract",
@@ -3907,12 +3883,6 @@
       "firstDiff": "edge:Op_10->Op_35#0 _ldraw_ edge:Op_10->Op_35#0/_ldraw_/op[2].text[1]: 2105.66 vs 2088.86"
     },
     {
-      "id": "1879",
-      "size": 287816,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K neato -Txdot /Users/scottseely/git/graphviz/tests/1879.dot"
-    },
-    {
       "id": "linux.x86-root_twopi",
       "size": 287907,
       "status": "diverged",
@@ -3958,6 +3928,33 @@
       "status": "pass"
     },
     {
+      "id": "2619",
+      "size": 79,
+      "status": "pass"
+    },
+    {
+      "id": "2516",
+      "size": 97,
+      "status": "pass"
+    },
+    {
+      "id": "2619_1",
+      "size": 6721,
+      "status": "pass"
+    },
+    {
+      "id": "2619_2",
+      "size": 7596,
+      "status": "diverged",
+      "nDiffs": 8,
+      "firstDiff": "edge:I57->F7#0 _draw_ edge:I57->F7#0/_draw_/op[2].unfilled_bezier[0]: 433.76 vs 434.57"
+    },
+    {
+      "id": "1879",
+      "size": 287816,
+      "status": "pass"
+    },
+    {
       "id": "2222",
       "size": 2384469,
       "status": "oracle-error",
@@ -3966,8 +3963,7 @@
     {
       "id": "2108",
       "size": 3136769,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
+      "status": "timeout"
     }
   ]
 }

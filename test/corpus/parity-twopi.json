@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-21T20:20:47.502Z",
+  "generatedAt": "2026-07-25T03:09:07.544Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "twopi",
   "tolerance": 0.01,
   "total": 762,
   "counts": {
-    "pass": 740,
+    "pass": 746,
     "diverged": 14,
-    "oracle-error": 8,
+    "oracle-error": 1,
     "port-error": 0,
-    "timeout": 0
+    "timeout": 1
   },
   "results": [
     {
@@ -228,12 +228,6 @@
       "status": "pass"
     },
     {
-      "id": "2619",
-      "size": 79,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2619.dot"
-    },
-    {
       "id": "165",
       "size": 81,
       "status": "pass"
@@ -332,12 +326,6 @@
       "id": "2460",
       "size": 93,
       "status": "pass"
-    },
-    {
-      "id": "2516",
-      "size": 97,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2516.dot"
     },
     {
       "id": "2437",
@@ -3150,12 +3138,6 @@
       "status": "pass"
     },
     {
-      "id": "2095",
-      "size": 4865,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2095.dot"
-    },
-    {
       "id": "share-viewfile",
       "size": 4916,
       "status": "pass"
@@ -3275,12 +3257,6 @@
       "status": "pass"
     },
     {
-      "id": "2619_1",
-      "size": 6721,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2619_1.dot"
-    },
-    {
       "id": "graphs-grdradial_angle",
       "size": 6918,
       "status": "pass"
@@ -3360,12 +3336,6 @@
       "id": "windows-fig6",
       "size": 7553,
       "status": "pass"
-    },
-    {
-      "id": "2619_2",
-      "size": 7596,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2619_2.dot"
     },
     {
       "id": "share-abstract",
@@ -3804,12 +3774,6 @@
       "status": "pass"
     },
     {
-      "id": "1879",
-      "size": 287816,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/1879.dot"
-    },
-    {
       "id": "linux.x86-root_twopi",
       "size": 287907,
       "status": "pass"
@@ -3847,6 +3811,36 @@
       "firstDiff": "edge:n13->n12#0 _ldraw_ edge:n13->n12#0/_ldraw_/op[2].text[0]: 7270.33 vs 7192.55"
     },
     {
+      "id": "2619",
+      "size": 79,
+      "status": "pass"
+    },
+    {
+      "id": "2516",
+      "size": 97,
+      "status": "pass"
+    },
+    {
+      "id": "2095",
+      "size": 4865,
+      "status": "pass"
+    },
+    {
+      "id": "2619_1",
+      "size": 6721,
+      "status": "pass"
+    },
+    {
+      "id": "2619_2",
+      "size": 7596,
+      "status": "pass"
+    },
+    {
+      "id": "1879",
+      "size": 287816,
+      "status": "pass"
+    },
+    {
       "id": "2222",
       "size": 2384469,
       "status": "oracle-error",
@@ -3855,8 +3849,7 @@
     {
       "id": "2108",
       "size": 3136769,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
+      "status": "timeout"
     }
   ]
 }
