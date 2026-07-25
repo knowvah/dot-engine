@@ -87,6 +87,11 @@
       "class": "A9",
       "bound": "989 draw-op diffs confined to one 28-node 590_ component (18 nodes move, max 296.7pt; 10744/10762 nodes bit-identical). Mechanism: circo getRotation->closestNode (circpos.c:73-92) cocircular hypot tie \u2014 at the bit-identical placement offset the two candidate distances round 2 ULP apart between V8 Math.hypot and Apple libm, flipping the strict < and rotating/reflecting the sub-block ~20deg. Block tree, circle order, and all centerAngles bit-identical; CR-hypot policy previously refuted. Repro: .agent-notes/circo-2475-590-repro.dot; RCA: .agent-notes/circo-b81-2475-rca.md.",
       "ref": "known-divergences.md#a9-engine-track-twopi-circo"
+    },
+    "2095_1": {
+      "class": "A1",
+      "bound": 66.12,
+      "ref": "plans/decision-journal.md 2026-07-24 T3: getRotation closest-node exact-tie knife edge; injection A/B proved irreducible (2197 diffs -> 0)"
     }
   },
   "osage": {
@@ -134,12 +139,12 @@
     },
     "2239": {
       "class": "A1",
-      "bound": "1862 draw-op diffs (was 3838 before the pinned-node fixed-packing protocol was ported). 7-component disconnected layout with a pinned `legend` (pos=0,0!); every node box is bit-identical to the oracle (0 size diffs) — the divergence is component PLACEMENT. With C's node positions injected the port's polyomino cell counts match C exactly (81,66,42,57,25,21,6,6,6,6), so the packer is byte-faithful; the residual is float32 stress-majorization drift in edge splines amplified through the discrete greedy packer (a few drifted cells flip a later component's slot). Not auto-verified by attribution: injection is per-component pre-pack, so on a multi-component graph it re-packs (double-transform) rather than reproducing C.",
+      "bound": "1862 draw-op diffs (was 3838 before the pinned-node fixed-packing protocol was ported). 7-component disconnected layout with a pinned `legend` (pos=0,0!); every node box is bit-identical to the oracle (0 size diffs) \u2014 the divergence is component PLACEMENT. With C's node positions injected the port's polyomino cell counts match C exactly (81,66,42,57,25,21,6,6,6,6), so the packer is byte-faithful; the residual is float32 stress-majorization drift in edge splines amplified through the discrete greedy packer (a few drifted cells flip a later component's slot). Not auto-verified by attribution: injection is per-component pre-pack, so on a multi-component graph it re-packs (double-transform) rather than reproducing C.",
       "ref": "known-divergences.md#a1-drift-iterative-engines"
     },
     "241_0": {
       "class": "A9",
-      "bound": "13 draw-op diffs confined to edges 1->6 and 2->3; edge 1->6 routed as a 14-pt multispline corridor (port) vs the native plain per-member fallback (8-pt) (unfilled_bezier[ptCount]: 8 vs 14), the rest its consequent arrowhead points (<=5.8pt). Same graph, edge and ptCount signature as the accepted twopi/circo 241_0: CDT cocircular incircle tie flipped by libm sin/cos 1-ULP (V8 vs Apple libm) — the port's multispline routing is faithful; the tie is irreducible.",
+      "bound": "13 draw-op diffs confined to edges 1->6 and 2->3; edge 1->6 routed as a 14-pt multispline corridor (port) vs the native plain per-member fallback (8-pt) (unfilled_bezier[ptCount]: 8 vs 14), the rest its consequent arrowhead points (<=5.8pt). Same graph, edge and ptCount signature as the accepted twopi/circo 241_0: CDT cocircular incircle tie flipped by libm sin/cos 1-ULP (V8 vs Apple libm) \u2014 the port's multispline routing is faithful; the tie is irreducible.",
       "ref": "known-divergences.md#a9-engine-track-twopi-circo"
     }
   },
@@ -151,7 +156,7 @@
     },
     "241_0": {
       "class": "A9",
-      "bound": "11 numeric draw-op diffs confined to edge 0->1#0's unfilled_bezier (maxΔ 3.39pt), under injected-identical node positions ⇒ pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible.",
+      "bound": "11 numeric draw-op diffs confined to edge 0->1#0's unfilled_bezier (max\u0394 3.39pt), under injected-identical node positions \u21d2 pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible.",
       "ref": "known-divergences.md#a9-sfdp-fp-ties"
     }
   },

@@ -3217,7 +3217,7 @@
       "engine": "circo",
       "opClass": "edge:1083->1084#0/_draw_/op[1].b[0]",
       "delta": 66.11999999999898,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-circo.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the circo layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 irreducible (proven by injection A/B 2026-07-24): circo getRotation's closest-node selection (circpos.c:79-91) is an exact-tie knife edge for this graph's three copies of a symmetric 5-node block \u2014 the cut vertex and its mirror node are equidistant from the rotated origin in real arithmetic. V8's trig chain yields an exact FP tie (both 1.9333108975227196) so strict < keeps the neighbor (rot=0); Apple libm gives the neighbor +1 ULP so the mirror wins (rot 0.15/0.09/0.03 rad), rigidly rotating 3 blocks / 55 nodes by up to 5.2deg / 66pt. Injecting libm's ~2-ULP y asymmetry into just the 3 cut vertices makes the port match the oracle EXACTLY (2197 diffs -> 0 at 0.01): every port stage downstream is exonerated. Same class as the twopi 1855 radial mirror."
     },
     {
       "id": "241_0",
