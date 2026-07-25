@@ -196,6 +196,21 @@ describe('neatoInitNode', () => {
     neatoInitNode(n);
     expect(n.info.pos).toEqual([3, 4]);
   });
+
+  it('preserves a legitimate zero size (shape=plain, width=0)', () => {
+    // C neato_init_node has no size defaulting; poly_init's IS_PLAIN branch
+    // legitimately produces width=height=0 for a BOUND plain shape, which a
+    // bare falsy check clobbered. Unshaped zero stays the unset-0 fallback.
+    // @see lib/neatogen/neatoinit.c:60-66 ; lib/common/shapes.c:1962
+    const g = new Graph('g', 'undirected');
+    const n = new Node(0, 'n', g);
+    n.info.shape = { name: 'plain', fns: null, polygon: null, kind: 1 };
+    n.info.width = 0;
+    n.info.height = 0;
+    neatoInitNode(n);
+    expect(n.info.width).toBe(0);
+    expect(n.info.height).toBe(0);
+  });
 });
 
 // ---------------------------------------------------------------------------

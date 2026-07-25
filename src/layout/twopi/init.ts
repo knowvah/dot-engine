@@ -8,6 +8,7 @@
  * @see lib/twopigen/twopiinit.c
  */
 
+import type { ShapeDesc } from '../../common/types.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
@@ -47,8 +48,12 @@ function makeRdata(INF: number): TwopiAlgData {
  */
 export function twopiInitNode(n: Node): void {
   if (!n.info.pos || n.info.pos.length < 2) n.info.pos = [0, 0];
-  if (!n.info.width) n.info.width = 0.75;
-  if (!n.info.height) n.info.height = 0.5;
+  // shape=plain legitimately sizes 0×0 (poly_init IS_PLAIN) — never clobber
+  // it; all other zero widths are the port's unset-0. See neatoInitNode's
+  // note for the full rationale. @see lib/neatogen/neatoinit.c:60-66
+  const plainShaped = (n.info.shape as ShapeDesc | undefined)?.name === 'plain';
+  if (!n.info.width && !plainShaped) n.info.width = 0.75;
+  if (!n.info.height && !plainShaped) n.info.height = 0.5;
 }
 
 /**

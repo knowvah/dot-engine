@@ -50,7 +50,7 @@ import { emitRoundedBezier } from '../common/poly-shapes.js';
 import { applyClusterObjState, clusterStyle, clusterPeripheries } from './device-cluster.js';
 /** Cluster labels go through the single emit_label port. @see labels.c:emit_label */
 export function renderClusterLabel(sg: Graph, renderer: RendererPlugin, job: RenderJob): void {
-  renderOneLabel(sg.info.label as TextlabelT | undefined, renderer, job);
+  renderOneLabel(sg.info.label as TextlabelT | undefined, renderer, job, false);
 }
 import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId } from '../render/svg-id.js';
 
@@ -302,8 +302,15 @@ export function renderOneLabel(
   lp: TextlabelT | undefined,
   renderer: RendererPlugin,
   job: RenderJob,
+  requireSet = true,
 ): void {
-  if (!lp?.set) return; // emit_label: lbl == NULL || !lbl->set
+  // C gates `->set` at the xlabel/edge-label CALL SITES (emit.c:1829,
+  // emit_edge_label:2891), but draws root-graph and cluster labels on
+  // existence alone (emit.c:3656, 3920) — an unplaced label (e.g. fdp's
+  // non-comparable-clusters abort skips gv_postprocess) still renders at its
+  // default pos. Callers mirroring the existence-only sites pass false.
+  if (!lp) return;
+  if (requireSet && !lp.set) return;
   // HTML branch: @see lib/common/labels.c:emit_label (226-230)
   // C routes to emit_html_label(job, lp->u.html, lp) using lp->pos as anchor.
   if (lp.html) {
@@ -346,7 +353,7 @@ export function renderNodeXLabel(n: Node, renderer: RendererPlugin, job: RenderJ
 export function renderGraphLabel(g: Graph, renderer: RendererPlugin, job: RenderJob): void {
   // @see lib/common/emit.c:emit_begin_graph / getObjId (root graph → graph0)
   setHtmlAnchorObj(svgGraphId(g, job), labelTextOf(g.info.label), job.obj ?? undefined);
-  renderOneLabel(g.info.label as TextlabelT | undefined, renderer, job);
+  renderOneLabel(g.info.label as TextlabelT | undefined, renderer, job, false);
 }
 
 // ---------------------------------------------------------------------------

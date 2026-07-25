@@ -263,7 +263,7 @@
       "engine": "neato",
       "opClass": "edge:I57->F7#0/_draw_/op[2].b[0]",
       "delta": 0.8100000000000023,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-neato.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the neato layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift + degenerate-clip amplification (diagnosed 2026-07-24): all 6 node positions differ only 0.13-0.18pt (within the 0.5 iterative bar); the sole over-bar values are 4 x-coords of ONE sub-point-long stub spline (I57->F7 between overlapping nodes), where clipping a near-zero-length bezier amplifies the in-bar endpoint drift to 0.81pt. Spline shape matches modulo the clip start; no port stage implicated."
     },
     {
       "id": "nshare-dotsplines_dot",
@@ -1057,13 +1057,6 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-b53",
-      "engine": "fdp",
-      "opClass": "[graph]/_ldraw_[missing]",
-      "delta": 0,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-sl_box",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
@@ -1467,7 +1460,7 @@
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 70136.48000000001,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail."
     },
     {
       "id": "2343",
@@ -1544,21 +1537,21 @@
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 4266.280000000001,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail."
     },
     {
       "id": "2108",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 60118.06,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as timeout so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail. (2108/1652: layout additionally exceeds the xdot-track port time budget; perf class, see 2621.)"
     },
     {
       "id": "1652",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 6880.22,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail. (2108/1652: layout additionally exceeds the xdot-track port time budget; perf class, see 2621.)"
     },
     {
       "id": "graphs-radius",
@@ -2608,7 +2601,7 @@
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[4]",
       "delta": 1.4400000000000546,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-sfdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the sfdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 sfdp spring drift (diagnosed 2026-07-24): 6 nodes, positional drift 0.7-1.3pt \u2014 the documented chaotic-engine regime, mildly above the 0.5 bar on a small graph. Same class as the sfdp engine track's 232-id tail."
     },
     {
       "id": "1447",
@@ -3126,7 +3119,7 @@
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 7596.32,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-sfdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the sfdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 sfdp chaotic drift (2026-07-24): whole-layout basin divergence on a huge graph (maxDelta 7.6kpt), the documented sfdp spring chaos regime \u2014 same class as fdp 1879 (chaos proven by perturbation A/B on the fdp family; sfdp is the measured chaotic engine)."
     },
     {
       "id": "2095_1",
@@ -3217,7 +3210,7 @@
       "engine": "circo",
       "opClass": "edge:1083->1084#0/_draw_/op[1].b[0]",
       "delta": 66.11999999999898,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-circo.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the circo layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 irreducible (proven by injection A/B 2026-07-24): circo getRotation's closest-node selection (circpos.c:79-91) is an exact-tie knife edge for this graph's three copies of a symmetric 5-node block \u2014 the cut vertex and its mirror node are equidistant from the rotated origin in real arithmetic. V8's trig chain yields an exact FP tie (both 1.9333108975227196) so strict < keeps the neighbor (rot=0); Apple libm gives the neighbor +1 ULP so the mirror wins (rot 0.15/0.09/0.03 rad), rigidly rotating 3 blocks / 55 nodes by up to 5.2deg / 66pt. Injecting libm's ~2-ULP y asymmetry into just the 3 cut vertices makes the port match the oracle EXACTLY (2197 diffs -> 0 at 0.01): every port stage downstream is exonerated. Same class as the twopi 1855 radial mirror."
     },
     {
       "id": "241_0",

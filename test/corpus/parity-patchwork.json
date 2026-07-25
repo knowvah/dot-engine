@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-07-21T20:47:26.964Z",
+  "generatedAt": "2026-07-25T03:09:19.320Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "patchwork",
   "tolerance": 0.01,
   "total": 762,
   "counts": {
-    "pass": 757,
+    "pass": 762,
     "diverged": 0,
-    "oracle-error": 5,
+    "oracle-error": 0,
     "port-error": 0,
     "timeout": 0
   },
@@ -228,12 +228,6 @@
       "status": "pass"
     },
     {
-      "id": "2619",
-      "size": 79,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K patchwork -Txdot /Users/scottseely/git/graphviz/tests/2619.dot"
-    },
-    {
       "id": "165",
       "size": 81,
       "status": "pass"
@@ -332,12 +326,6 @@
       "id": "2460",
       "size": 93,
       "status": "pass"
-    },
-    {
-      "id": "2516",
-      "size": 97,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K patchwork -Txdot /Users/scottseely/git/graphviz/tests/2516.dot"
     },
     {
       "id": "2437",
@@ -3260,12 +3248,6 @@
       "status": "pass"
     },
     {
-      "id": "2619_1",
-      "size": 6721,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K patchwork -Txdot /Users/scottseely/git/graphviz/tests/2619_1.dot"
-    },
-    {
       "id": "graphs-grdradial_angle",
       "size": 6918,
       "status": "pass"
@@ -3339,12 +3321,6 @@
       "id": "windows-fig6",
       "size": 7553,
       "status": "pass"
-    },
-    {
-      "id": "2619_2",
-      "size": 7596,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K patchwork -Txdot /Users/scottseely/git/graphviz/tests/2619_2.dot"
     },
     {
       "id": "share-abstract",
@@ -3777,12 +3753,6 @@
       "status": "pass"
     },
     {
-      "id": "1879",
-      "size": 287816,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K patchwork -Txdot /Users/scottseely/git/graphviz/tests/1879.dot"
-    },
-    {
       "id": "linux.x86-root_twopi",
       "size": 287907,
       "status": "pass"
@@ -3825,6 +3795,31 @@
     {
       "id": "2108",
       "size": 3136769,
+      "status": "pass"
+    },
+    {
+      "id": "2619",
+      "size": 79,
+      "status": "pass"
+    },
+    {
+      "id": "2516",
+      "size": 97,
+      "status": "pass"
+    },
+    {
+      "id": "2619_1",
+      "size": 6721,
+      "status": "pass"
+    },
+    {
+      "id": "2619_2",
+      "size": 7596,
+      "status": "pass"
+    },
+    {
+      "id": "1879",
+      "size": 287816,
       "status": "pass"
     }
   ]

@@ -400,11 +400,6 @@
       "id": "windows-tree",
       "engine": "circo",
       "reason": "layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "regression_tests-shapes-reference-plain",
-      "engine": "twopi",
-      "reason": "port bug (follow-up): twopi/neato node init falls back to default size (0.75x0.5) for a shape=plain node with width=0/height=0 and pinned pos; the dot path sizes it 0x0 like native (poly_init IS_PLAIN). Engine-init defect class; fix is in src/layout/twopi init, outside the plain-track write-set. Journal 2026-07-24."
     }
   ]
 }

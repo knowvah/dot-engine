@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-24T23:27:31.040Z",
+  "generatedAt": "2026-07-25T05:21:33.480Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "fdp",
   "oracleVersion": "dot 15.1.0",
@@ -8,10 +8,10 @@
   "counts": {
     "conformant": 739,
     "diverged": 0,
-    "accepted": 14,
+    "accepted": 18,
     "port-error": 0,
     "oracle-error": 5,
-    "timeout": 4
+    "timeout": 0
   },
   "results": [
     {
@@ -9991,47 +9991,23 @@
       "hasHref": true
     },
     {
-      "id": "nshare-root_twopi",
-      "path": "nshare/root_twopi.gv",
-      "size": 287916,
-      "verdict": "timeout",
-      "cmapx": {
-        "verdict": "timeout",
-        "errMsg": ""
-      },
-      "imap": {
-        "verdict": "timeout",
-        "errMsg": ""
-      },
-      "hasHref": true
-    },
-    {
       "id": "graphs-root",
       "path": "graphs/root.gv",
       "size": 128221,
-      "verdict": "timeout",
+      "verdict": "accepted",
       "cmapx": {
-        "verdict": "timeout",
-        "errMsg": ""
+        "verdict": "accepted",
+        "diffCount": 16,
+        "firstDiff": "area[0].coords[0]",
+        "maxDelta": 612,
+        "maxDeltaPath": "area[0].coords[0]"
       },
       "imap": {
-        "verdict": "timeout",
-        "errMsg": ""
-      },
-      "hasHref": true
-    },
-    {
-      "id": "graphs-b103",
-      "path": "graphs/b103.gv",
-      "size": 377525,
-      "verdict": "timeout",
-      "cmapx": {
-        "verdict": "timeout",
-        "errMsg": ""
-      },
-      "imap": {
-        "verdict": "timeout",
-        "errMsg": ""
+        "verdict": "accepted",
+        "diffCount": 16,
+        "firstDiff": "imap/line[1].coords[0]",
+        "maxDelta": 612,
+        "maxDeltaPath": "imap/line[1].coords[0]"
       },
       "hasHref": true
     },
@@ -10039,14 +10015,62 @@
       "id": "linux.x86-root_twopi",
       "path": "linux.x86/root_twopi.gv",
       "size": 287907,
-      "verdict": "timeout",
+      "verdict": "accepted",
       "cmapx": {
-        "verdict": "timeout",
-        "errMsg": ""
+        "verdict": "accepted",
+        "diffCount": 16,
+        "firstDiff": "area[0].coords[0]",
+        "maxDelta": 406,
+        "maxDeltaPath": "area[0].coords[0]"
       },
       "imap": {
-        "verdict": "timeout",
-        "errMsg": ""
+        "verdict": "accepted",
+        "diffCount": 16,
+        "firstDiff": "imap/line[1].coords[0]",
+        "maxDelta": 406,
+        "maxDeltaPath": "imap/line[1].coords[0]"
+      },
+      "hasHref": true
+    },
+    {
+      "id": "nshare-root_twopi",
+      "path": "nshare/root_twopi.gv",
+      "size": 287916,
+      "verdict": "accepted",
+      "cmapx": {
+        "verdict": "accepted",
+        "diffCount": 16,
+        "firstDiff": "area[0].coords[0]",
+        "maxDelta": 423,
+        "maxDeltaPath": "area[0].coords[1]"
+      },
+      "imap": {
+        "verdict": "accepted",
+        "diffCount": 16,
+        "firstDiff": "imap/line[1].coords[0]",
+        "maxDelta": 423,
+        "maxDeltaPath": "imap/line[1].coords[1]"
+      },
+      "hasHref": true
+    },
+    {
+      "id": "graphs-b103",
+      "path": "graphs/b103.gv",
+      "size": 377525,
+      "verdict": "accepted",
+      "cmapx": {
+        "verdict": "accepted",
+        "diffCount": 3766,
+        "firstDiff": "area[0].coords[0]",
+        "maxDelta": 3546,
+        "maxDeltaPath": "area[589].coords[0]"
+      },
+      "imap": {
+        "verdict": "accepted",
+        "diffCount": 3766,
+        "firstDiff": "imap/line[1].coords[0]",
+        "maxDelta": 3546,
+        "maxDeltaPath": "imap/line[590].coords[0]"
       },
       "hasHref": true
     }

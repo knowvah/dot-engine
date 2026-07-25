@@ -132,7 +132,7 @@
       "engine": "fdp",
       "opClass": "area[0].coords[0]",
       "delta": 12675,
-      "rationale": "real layout divergence on an engine-track blind spot (parity-fdp.json lists this id as oracle-error, so the xdot track never compared it); mechanism in the fdp layout domain, outside the imagemap write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail."
     },
     {
       "id": "nshare-root_circo",
@@ -153,28 +153,28 @@
       "engine": "fdp",
       "opClass": "area[0].coords[0]",
       "delta": 406,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified \u2014 port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the >=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless."
     },
     {
       "id": "nshare-root_twopi",
       "engine": "fdp",
       "opClass": "area[0].coords[0]",
       "delta": 423,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified \u2014 port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the >=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless."
     },
     {
       "id": "graphs-b103",
       "engine": "fdp",
       "opClass": "area[0].coords[0]",
       "delta": 3546,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified \u2014 port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the >=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless."
     },
     {
       "id": "graphs-root",
       "engine": "fdp",
       "opClass": "area[0].coords[0]",
       "delta": 612,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified \u2014 port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the >=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless."
     },
     {
       "id": "nshare-html2_dot",
@@ -202,7 +202,7 @@
       "engine": "sfdp",
       "opClass": "area[1].coords[0]",
       "delta": 2,
-      "rationale": "real layout divergence on an engine-track blind spot (parity-sfdp.json lists this id as oracle-error, so the xdot track never compared it); mechanism in the sfdp layout domain, outside the imagemap write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 sfdp spring drift (diagnosed 2026-07-24): 6 nodes, positional drift 0.7-1.3pt \u2014 the documented chaotic-engine regime, mildly above the 0.5 bar on a small graph. Same class as the sfdp engine track's 232-id tail."
     },
     {
       "id": "1447",
@@ -321,7 +321,7 @@
       "engine": "sfdp",
       "opClass": "area[0].coords[0]",
       "delta": 10044,
-      "rationale": "real layout divergence on an engine-track blind spot (parity-sfdp.json lists this id as oracle-error, so the xdot track never compared it); mechanism in the sfdp layout domain, outside the imagemap write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 sfdp chaotic drift (2026-07-24): whole-layout basin divergence on a huge graph (maxDelta 7.6kpt), the documented sfdp spring chaos regime \u2014 same class as fdp 1879 (chaos proven by perturbation A/B on the fdp family; sfdp is the measured chaotic engine)."
     },
     {
       "id": "graphs-root",
