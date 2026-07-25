@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 762 (generated 2026-07-21T20:47:26.964Z)
-- **pass:** 757 (99.3%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
-- **oracle-error:** 5 · **port-error:** 0 · **timeout:** 0
+- **Surveyed:** 762 (generated 2026-07-25T03:09:19.320Z)
+- **pass:** 762 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
+- **oracle-error:** 0 · **port-error:** 0 · **timeout:** 0
 
 ## Accepted deltas (0) — documented, not chased
 
@@ -29,16 +29,10 @@ _(none in this corpus)_
 
 _(none)_
 
-## Errors and timeouts (5)
+## Errors and timeouts (0)
 
-| id | status | message |
-|---|---|---|
-| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | oracle-error | Command failed: dot -K patchwork -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot |
-| [`2516`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2516.dot) | oracle-error | Command failed: dot -K patchwork -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2516.dot |
-| [`2619`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619.dot) | oracle-error | Command failed: dot -K patchwork -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619.dot |
-| [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | oracle-error | Command failed: dot -K patchwork -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot |
-| [`2619_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot) | oracle-error | Command failed: dot -K patchwork -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot |
+_(none)_
 
 **oracle errors:** 5 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (757) are omitted for brevity — the full roster is in
+_Passing ids (762) are omitted for brevity — the full roster is in
 `parity-patchwork.json`._

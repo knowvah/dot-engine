@@ -64,9 +64,9 @@ Mission-flow decisions → [decision-journal.md](./decision-journal.md) here.
 |---|---|---|---|
 | [1](./batch-1/overview.md) | Baseline refresh (stale oracle-errors) | T1 | [x] |
 | [2](./batch-2/overview.md) | shape=plain init defect | T2 | [x] |
-| [3](./batch-3/overview.md) | Blind-spot diagnoses (sequential) | T3 T4 T5 | [ ] |
-| [4](./batch-4/overview.md) | fdp map timeout classification | T6 | [ ] |
-| [5](./batch-5/overview.md) | Reconcile + report + close | T7 | [ ] |
+| [3](./batch-3/overview.md) | Blind-spot diagnoses (sequential) | T3 T4 T5 | [x] |
+| [4](./batch-4/overview.md) | fdp map timeout classification | T6 | [x] |
+| [5](./batch-5/overview.md) | Reconcile + report + close | T7 | [x] |
 
 ## Stop conditions
 
@@ -90,3 +90,15 @@ Mission-flow decisions → [decision-journal.md](./decision-journal.md) here.
 ## Diagrams
 
 [data-flow](./diagrams/data-flow.md) · [component-map](./diagrams/component-map.md)
+
+## Mission summary (2026-07-25)
+
+All 7 tasks complete. Three src fixes (engine-walk oracle classifier;
+neato/twopi shape=plain falsy-zero clobber; root/cluster label emit gate at
+C's call-site semantics), one injection-proven A1 (circo 2095_1), one
+perturbation-proven chaos family (fdp), two drift mechanisms (neato stub-clip
+amplification, sfdp spring), and a timeout classification (load artifacts,
+1.7-2.3x). 40 phantom oracle-errors reclassified to pass; patchwork xdot
+100%; every PARITY delta an improvement; zero placeholder rationales remain.
+DEVIATION flagged for review: commit be31756 touched dot-shared
+src/gvc/device.ts without a pre-commit stop-confirm (see decision-journal.md).

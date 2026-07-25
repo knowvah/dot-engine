@@ -12,11 +12,11 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 762 (generated 2026-07-22T03:10:52.557Z)
-- **pass:** 600 (78.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 144
-- **oracle-error:** 16 · **port-error:** 0 · **timeout:** 1
+- **Surveyed:** 762 (generated 2026-07-25T04:48:55.247Z)
+- **pass:** 609 (79.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4 · **accepted (A1-drift class):** 144
+- **oracle-error:** 3 · **port-error:** 0 · **timeout:** 2
 
-## Accepted deltas (1) — documented, not chased
+## Accepted deltas (4) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -25,6 +25,9 @@ table below.
 
 | id | #diffs | class | bound | ref |
 |---|---:|---|---|---|
+| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | 19496 | A1 | up to 64kpt (whole-layout basin) | plans/decision-journal.md 2026-07-24 T4b: fdp chaos class, perturbation-proven on family |
+| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 10779 | A1 | up to 5.4kpt, 30/30 nodes | plans/decision-journal.md 2026-07-24 T4b: chaos proven — node width +0.001in moves port-own layout max 3390pt |
+| [`graphs-badvoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/badvoro.gv) | 33264 | A1 | median 1433pt (whole-layout basin) | plans/decision-journal.md 2026-07-24 T4b: chaos proven — ONE edge len +0.0001 moves port-own layout median 322pt |
 | [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 446 | A9 | 11 numeric draw-op diffs confined to edge 0-&gt;1#0's unfilled_bezier (maxΔ 3.39pt), under injected-identical node positions ⇒ pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. | known-divergences.md#a9-sfdp-fp-ties |
 
 ## Accepted class: A1-drift — computed, not enumerated
@@ -41,28 +44,16 @@ outright leaves the class silently on the next report regen.
 
 _(none)_
 
-## Errors and timeouts (17)
+## Errors and timeouts (5)
 
 | id | status | message |
 |---|---|---|
-| [`1221`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1221.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1221.dot |
-| [`1332`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1332.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1332.dot |
-| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`1767`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1767.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1767.dot |
-| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot |
-| [`2516`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2516.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2516.dot |
-| [`2619`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619.dot |
-| [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot |
-| [`2619_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot |
-| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot |
-| [`2721`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2721.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2721.dot |
-| [`graphs-b53`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b53.gv) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b53.gv |
-| [`graphs-badvoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/badvoro.gv) | oracle-error | spawnSync dot ETIMEDOUT |
+| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | timeout |  |
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | timeout |  |
 
 **oracle errors:** 13 native-crash (documented, excluded) / 3 timeout-flake (excluded this run, note to retry)
-_Passing ids (600) are omitted for brevity — the full roster is in
+_Passing ids (609) are omitted for brevity — the full roster is in
 `parity-fdp.json`._

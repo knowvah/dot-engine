@@ -90,7 +90,7 @@
     },
     "2095_1": {
       "class": "A1",
-      "bound": 66.12,
+      "bound": "<= 66.12pt (3 rigid block rotations)",
       "ref": "plans/decision-journal.md 2026-07-24 T3: getRotation closest-node exact-tie knife edge; injection A/B proved irreducible (2197 diffs -> 0)"
     }
   },
@@ -146,6 +146,11 @@
       "class": "A9",
       "bound": "13 draw-op diffs confined to edges 1->6 and 2->3; edge 1->6 routed as a 14-pt multispline corridor (port) vs the native plain per-member fallback (8-pt) (unfilled_bezier[ptCount]: 8 vs 14), the rest its consequent arrowhead points (<=5.8pt). Same graph, edge and ptCount signature as the accepted twopi/circo 241_0: CDT cocircular incircle tie flipped by libm sin/cos 1-ULP (V8 vs Apple libm) \u2014 the port's multispline routing is faithful; the tie is irreducible.",
       "ref": "known-divergences.md#a9-engine-track-twopi-circo"
+    },
+    "2619_2": {
+      "class": "A1",
+      "bound": "0.81pt on 4 x-coords of one sub-point stub spline; nodes 0.13-0.18pt",
+      "ref": "plans/decision-journal.md 2026-07-24 T5: in-bar drift amplified by degenerate near-zero-length spline clip"
     }
   },
   "fdp": {
@@ -158,6 +163,21 @@
       "class": "A9",
       "bound": "11 numeric draw-op diffs confined to edge 0->1#0's unfilled_bezier (max\u0394 3.39pt), under injected-identical node positions \u21d2 pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible.",
       "ref": "known-divergences.md#a9-sfdp-fp-ties"
+    },
+    "graphs-badvoro": {
+      "class": "A1",
+      "bound": "median 1433pt (whole-layout basin)",
+      "ref": "plans/decision-journal.md 2026-07-24 T4b: chaos proven \u2014 ONE edge len +0.0001 moves port-own layout median 322pt"
+    },
+    "1879": {
+      "class": "A1",
+      "bound": "up to 64kpt (whole-layout basin)",
+      "ref": "plans/decision-journal.md 2026-07-24 T4b: fdp chaos class, perturbation-proven on family"
+    },
+    "2620": {
+      "class": "A1",
+      "bound": "up to 5.4kpt, 30/30 nodes",
+      "ref": "plans/decision-journal.md 2026-07-24 T4b: chaos proven \u2014 node width +0.001in moves port-own layout max 3390pt"
     }
   },
   "sfdp": {
@@ -180,6 +200,16 @@
       "class": "A6",
       "bound": "degenerate NaN layout: repulsiveforce=100 drives the spring-electrical solver to NaN in BOTH engines (the native oracle emits all-nan positions). Residual 54 diffs are NaN-garbage serialization only - C rounds NaN->int (bb -4.295e9 vs port 0) and suppresses NaN-spline edge draws (port emits them). No real layout exists on either side. The armPow throw + bezierClip NaN-hang that previously blocked rendering are fixed (C-faithful, NaN-only).",
       "ref": "known-divergences.md#a6b-degenerate-nan-layout"
+    },
+    "2619_1": {
+      "class": "A1",
+      "bound": "0.7-1.3pt on 6 nodes",
+      "ref": "plans/decision-journal.md 2026-07-24 T5: sfdp spring drift regime"
+    },
+    "1879": {
+      "class": "A1",
+      "bound": "up to 7.6kpt (whole-layout basin)",
+      "ref": "plans/decision-journal.md 2026-07-24 T5: sfdp chaos regime, same family as fdp 1879"
     }
   }
 }

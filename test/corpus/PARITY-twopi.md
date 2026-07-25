@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 762 (generated 2026-07-21T20:20:47.502Z)
-- **pass:** 740 (97.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 14
-- **oracle-error:** 8 · **port-error:** 0 · **timeout:** 0
+- **Surveyed:** 762 (generated 2026-07-25T03:56:05.961Z)
+- **pass:** 746 (97.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 14
+- **oracle-error:** 1 · **port-error:** 0 · **timeout:** 1
 
 ## Accepted deltas (14) — documented, not chased
 
@@ -44,19 +44,13 @@ table below.
 
 _(none)_
 
-## Errors and timeouts (8)
+## Errors and timeouts (2)
 
 | id | status | message |
 |---|---|---|
-| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | oracle-error | Command failed: dot -K twopi -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot |
-| [`2095`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095.dot) | oracle-error | Command failed: dot -K twopi -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095.dot |
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`2516`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2516.dot) | oracle-error | Command failed: dot -K twopi -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2516.dot |
-| [`2619`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619.dot) | oracle-error | Command failed: dot -K twopi -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619.dot |
-| [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | oracle-error | Command failed: dot -K twopi -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot |
-| [`2619_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot) | oracle-error | Command failed: dot -K twopi -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot |
+| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | timeout |  |
 
 **oracle errors:** 8 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (740) are omitted for brevity — the full roster is in
+_Passing ids (746) are omitted for brevity — the full roster is in
 `parity-twopi.json`._

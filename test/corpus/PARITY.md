@@ -22,14 +22,14 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 | [dot (SVG)](./PARITY-dot.md) | 788 | 762 | 0 | 16 | 10 | 96.7% |
 | [dot (xdot)](./PARITY-XDOT.md) | 761 | 761 | 0 | 0 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 761 | 759 | 0 | 2 | 0 | 99.7% |
-| [circo (xdot)](./PARITY-circo.md) | 762 | 745 | 0 | 3 | 14 | 97.8% |
-| [twopi (xdot)](./PARITY-twopi.md) | 762 | 740 | 0 | 14 | 8 | 97.1% |
-| [osage (xdot)](./PARITY-osage.md) | 762 | 750 | 0 | 7 | 5 | 98.4% |
-| [patchwork (xdot)](./PARITY-patchwork.md) | 762 | 757 | 0 | 0 | 5 | 99.3% |
+| [circo (xdot)](./PARITY-circo.md) | 762 | 752 | 0 | 4 | 6 | 98.7% |
+| [twopi (xdot)](./PARITY-twopi.md) | 762 | 746 | 0 | 14 | 2 | 97.9% |
+| [osage (xdot)](./PARITY-osage.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
+| [patchwork (xdot)](./PARITY-patchwork.md) | 762 | 762 | 0 | 0 | 0 | 100.0% |
 | [dot (imagemap)](./PARITY-MAP.md) | 761 | 755 | 0 | 0 | 6 | 99.2% |
 | [dot (plain)](./PARITY-dot-plain.md) | 762 | 754 | 0 | 7 | 1 | 99.0% |
 | [circo (plain)](./PARITY-circo-plain.md) | 762 | 731 | 0 | 10 | 21 | 95.9% |
-| [twopi (plain)](./PARITY-twopi-plain.md) | 762 | 730 | 0 | 22 | 10 | 95.8% |
+| [twopi (plain)](./PARITY-twopi-plain.md) | 762 | 731 | 0 | 21 | 10 | 95.9% |
 | [osage (plain)](./PARITY-osage-plain.md) | 762 | 747 | 0 | 14 | 1 | 98.0% |
 | [patchwork (plain)](./PARITY-patchwork-plain.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
 | [circo (json)](./PARITY-circo-json.md) | 762 | 750 | 0 | 6 | 6 | 98.4% |
@@ -54,17 +54,17 @@ bar above.
 
 | track | surveyed | conformant / pass | diverged | accepted | errors | pass % |
 |---|---:|---:|---:|---:|---:|---:|
-| [neato (xdot)](./PARITY-neato.md) | 762 | 685 | 0 | 70 | 7 | 89.9% |
-| [fdp (xdot)](./PARITY-fdp.md) | 762 | 600 | 0 | 145 | 17 | 78.7% |
-| [sfdp (xdot)](./PARITY-sfdp.md) | 762 | 524 | 0 | 231 | 7 | 68.8% |
+| [neato (xdot)](./PARITY-neato.md) | 762 | 689 | 0 | 71 | 2 | 90.4% |
+| [fdp (xdot)](./PARITY-fdp.md) | 762 | 609 | 0 | 148 | 5 | 79.9% |
+| [sfdp (xdot)](./PARITY-sfdp.md) | 762 | 527 | 0 | 232 | 3 | 69.2% |
 | [neato (plain)](./PARITY-neato-plain.md) | 762 | 753 | 0 | 7 | 2 | 98.8% |
 | [fdp (plain)](./PARITY-fdp-plain.md) | 762 | 750 | 0 | 7 | 5 | 98.4% |
 | [sfdp (plain)](./PARITY-sfdp-plain.md) | 762 | 753 | 0 | 7 | 2 | 98.8% |
 | [neato (json)](./PARITY-neato-json.md) | 762 | 687 | 0 | 73 | 2 | 90.2% |
-| [fdp (json)](./PARITY-fdp-json.md) | 762 | 606 | 0 | 152 | 4 | 79.5% |
+| [fdp (json)](./PARITY-fdp-json.md) | 762 | 607 | 0 | 151 | 4 | 79.7% |
 | [sfdp (json)](./PARITY-sfdp-json.md) | 762 | 525 | 0 | 235 | 2 | 68.9% |
 | [neato (imagemap)](./PARITY-neato-map.md) | 762 | 754 | 0 | 6 | 2 | 99.0% |
-| [fdp (imagemap)](./PARITY-fdp-map.md) | 762 | 739 | 0 | 14 | 9 | 97.0% |
+| [fdp (imagemap)](./PARITY-fdp-map.md) | 762 | 739 | 0 | 18 | 5 | 97.0% |
 | [sfdp (imagemap)](./PARITY-sfdp-map.md) | 762 | 733 | 0 | 27 | 2 | 96.2% |
 
 
