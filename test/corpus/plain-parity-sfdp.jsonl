@@ -78,7 +78,6 @@
 {"id": "2087", "path": "2087.dot", "size": 118, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-b993", "path": "graphs/b993.gv", "size": 118, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1902", "path": "1902.dot", "size": 119, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "regression_tests-shapes-reference-plain", "path": "regression_tests/shapes/reference/plain.gv", "size": 121, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-b62", "path": "graphs/b62.gv", "size": 123, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "reference-test_reference-001.001", "path": "reference/test_reference/001.001.gv", "size": 126, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "regression_tests-shapes-reference-box", "path": "regression_tests/shapes/reference/box.gv", "size": 128, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -122,7 +121,6 @@
 {"id": "regression_tests-shapes-reference-promoter", "path": "regression_tests/shapes/reference/promoter.gv", "size": 133, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "regression_tests-shapes-reference-insulator", "path": "regression_tests/shapes/reference/insulator.gv", "size": 134, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "regression_tests-shapes-reference-lpromoter", "path": "regression_tests/shapes/reference/lpromoter.gv", "size": 134, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "regression_tests-shapes-reference-plaintext", "path": "regression_tests/shapes/reference/plaintext.gv", "size": 134, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "regression_tests-shapes-reference-noverhang", "path": "regression_tests/shapes/reference/noverhang.gv", "size": 134, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "regression_tests-shapes-reference-rectangle", "path": "regression_tests/shapes/reference/rectangle.gv", "size": 134, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "regression_tests-shapes-reference-rpromoter", "path": "regression_tests/shapes/reference/rpromoter.gv", "size": 134, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -172,7 +170,6 @@
 {"id": "graphs-labelclust-ndr", "path": "graphs/labelclust-ndr.gv", "size": 209, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-labelclust-ndc", "path": "graphs/labelclust-ndc.gv", "size": 210, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2563", "path": "2563.dot", "size": 213, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "2295", "path": "2295.dot", "size": 221, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-b7", "path": "graphs/b7.gv", "size": 222, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-labelclust-ftd", "path": "graphs/labelclust-ftd.gv", "size": 222, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1879-2", "path": "1879-2.dot", "size": 221, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -223,7 +220,6 @@
 {"id": "graphs-labelroot-fdl", "path": "graphs/labelroot-fdl.gv", "size": 263, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-labelroot-fdr", "path": "graphs/labelroot-fdr.gv", "size": 264, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-labelroot-fdc", "path": "graphs/labelroot-fdc.gv", "size": 265, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "1622_3", "path": "1622_3.dot", "size": 265, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-labelroot-ntl", "path": "graphs/labelroot-ntl.gv", "size": 265, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1624", "path": "1624.dot", "size": 266, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-a1", "path": "share/a1.gv", "size": 266, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -248,7 +244,6 @@
 {"id": "graphs-colorscheme", "path": "graphs/colorscheme.gv", "size": 290, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1939", "path": "1939.dot", "size": 307, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-structs", "path": "graphs/structs.gv", "size": 308, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "1622_1", "path": "1622_1.dot", "size": 311, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-p4", "path": "graphs/p4.gv", "size": 309, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2825", "path": "2825.dot", "size": 312, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2521", "path": "2521.dot", "size": 320, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -256,12 +251,9 @@
 {"id": "2717", "path": "2717.dot", "size": 325, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1767", "path": "1767.dot", "size": 326, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-flatedge", "path": "graphs/flatedge.gv", "size": 330, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-b117", "path": "graphs/b117.gv", "size": 338, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-b", "path": "graphs/b.gv", "size": 338, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2168_2", "path": "2168_2.dot", "size": 349, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-ZapfDingbats", "path": "graphs/ZapfDingbats.gv", "size": 360, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-colors", "path": "graphs/colors.gv", "size": 376, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-nhg", "path": "graphs/nhg.gv", "size": 339, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-ZapfChancery", "path": "graphs/ZapfChancery.gv", "size": 386, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-mike", "path": "graphs/mike.gv", "size": 381, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2184", "path": "2184.dot", "size": 393, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -290,21 +282,16 @@
 {"id": "2556", "path": "2556.dot", "size": 469, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-b491", "path": "windows/b491.gv", "size": 486, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-b491", "path": "share/b491.gv", "size": 486, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-b22", "path": "graphs/b22.gv", "size": 488, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "1622_0", "path": "1622_0.dot", "size": 489, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-states", "path": "graphs/states.gv", "size": 492, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-grdcluster", "path": "graphs/grdcluster.gv", "size": 497, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-grdradial_node", "path": "graphs/grdradial_node.gv", "size": 519, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-russian", "path": "graphs/russian.gv", "size": 520, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-grdlinear_node", "path": "graphs/grdlinear_node.gv", "size": 523, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "2159", "path": "2159.dot", "size": 538, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1213-2", "path": "1213-2.dot", "size": 530, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-b155", "path": "graphs/b155.gv", "size": 542, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1408", "path": "1408.dot", "size": 544, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1425_1", "path": "1425_1.dot", "size": 544, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-nul_nul", "path": "graphs/nul_nul.gv", "size": 576, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-labelclust-ndd", "path": "share/labelclust-ndd.gv", "size": 586, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-inv_nul", "path": "graphs/inv_nul.gv", "size": 588, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-labelclust-ndd", "path": "windows/labelclust-ndd.gv", "size": 586, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-labelclust-fdd", "path": "share/labelclust-fdd.gv", "size": 595, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-tree", "path": "graphs/tree.gv", "size": 588, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -336,12 +323,10 @@
 {"id": "windows-labelclust-fdc", "path": "windows/labelclust-fdc.gv", "size": 616, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "linux.x86-rowcolsep_dot1", "path": "linux.x86/rowcolsep_dot1.gv", "size": 619, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-labelclust-fdr", "path": "windows/labelclust-fdr.gv", "size": 616, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-inv_inv", "path": "graphs/inv_inv.gv", "size": 618, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-labelroot-ntd", "path": "windows/labelroot-ntd.gv", "size": 619, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "macosx-rowcolsep_dot1", "path": "macosx/rowcolsep_dot1.gv", "size": 619, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "nshare-rowcolsep_dot1", "path": "nshare/rowcolsep_dot1.gv", "size": 619, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-labelroot-ntd", "path": "share/labelroot-ntd.gv", "size": 619, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-nul_inv", "path": "graphs/nul_inv.gv", "size": 620, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "linux.x86-rowcolsep_dot", "path": "linux.x86/rowcolsep_dot.gv", "size": 622, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2325", "path": "2325.dot", "size": 621, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1856", "path": "1856.dot", "size": 621, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -361,7 +346,6 @@
 {"id": "windows-labelroot-ndd", "path": "windows/labelroot-ndd.gv", "size": 628, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-labelroot-fbd", "path": "windows/labelroot-fbd.gv", "size": 629, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-labelroot-fbd", "path": "share/labelroot-fbd.gv", "size": 629, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-val_nul", "path": "graphs/val_nul.gv", "size": 630, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-hashtable", "path": "graphs/hashtable.gv", "size": 629, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-labelclust-nbl", "path": "share/labelclust-nbl.gv", "size": 630, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-labelclust-ftl", "path": "share/labelclust-ftl.gv", "size": 631, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -378,7 +362,6 @@
 {"id": "windows-labelclust-ftc", "path": "windows/labelclust-ftc.gv", "size": 633, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-labelclust-ftr", "path": "windows/labelclust-ftr.gv", "size": 633, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-labelclust-fbl", "path": "share/labelclust-fbl.gv", "size": 634, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-inv_val", "path": "graphs/inv_val.gv", "size": 636, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-labelroot-ntl", "path": "windows/labelroot-ntl.gv", "size": 635, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-labelclust-fbc", "path": "share/labelclust-fbc.gv", "size": 636, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-labelclust-fbl", "path": "windows/labelclust-fbl.gv", "size": 634, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -422,17 +405,13 @@
 {"id": "2801", "path": "2801.dot", "size": 651, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-labelroot-fdr", "path": "share/labelroot-fdr.gv", "size": 652, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-labelroot-fdr", "path": "windows/labelroot-fdr.gv", "size": 652, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-nul_val", "path": "graphs/nul_val.gv", "size": 659, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-val_inv", "path": "graphs/val_inv.gv", "size": 660, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-b786", "path": "graphs/b786.gv", "size": 667, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-b85", "path": "graphs/b85.gv", "size": 668, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-val_val", "path": "graphs/val_val.gv", "size": 678, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-sides", "path": "graphs/sides.gv", "size": 680, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-ports", "path": "graphs/ports.gv", "size": 677, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-structs", "path": "share/structs.gv", "size": 710, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-structs", "path": "windows/structs.gv", "size": 728, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1658", "path": "1658.dot", "size": 711, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-html", "path": "graphs/html.gv", "size": 738, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2168_1", "path": "2168_1.dot", "size": 729, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-b3", "path": "graphs/b3.gv", "size": 754, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2497", "path": "2497.dot", "size": 763, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -442,29 +421,22 @@
 {"id": "graphs-abstract", "path": "graphs/abstract.gv", "size": 770, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-japanese", "path": "graphs/japanese.gv", "size": 789, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-Heawood", "path": "graphs/Heawood.gv", "size": 790, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-jcctree", "path": "graphs/jcctree.gv", "size": 778, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-fig6", "path": "graphs/fig6.gv", "size": 835, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-states", "path": "share/states.gv", "size": 858, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-states", "path": "windows/states.gv", "size": 878, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-shapes", "path": "graphs/shapes.gv", "size": 840, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-Petersen", "path": "graphs/Petersen.gv", "size": 904, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "macosx-nestedclust_dot", "path": "macosx/nestedclust_dot.gv", "size": 907, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "linux.x86-nestedclust_dot", "path": "linux.x86/nestedclust_dot.gv", "size": 907, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "nshare-nestedclust_dot", "path": "nshare/nestedclust_dot.gv", "size": 907, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "share-nhg", "path": "share/nhg.gv", "size": 938, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "windows-nhg", "path": "windows/nhg.gv", "size": 926, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-flatedge", "path": "share/flatedge.gv", "size": 918, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-alf", "path": "graphs/alf.gv", "size": 958, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-dfa", "path": "graphs/dfa.gv", "size": 959, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-record", "path": "graphs/record.gv", "size": 958, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-world", "path": "graphs/world.gv", "size": 980, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "linux.x86-html_dot", "path": "linux.x86/html_dot.gv", "size": 1057, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-dd", "path": "graphs/dd.gv", "size": 1053, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "nshare-html_dot", "path": "nshare/html_dot.gv", "size": 1058, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2521_1", "path": "2521_1.dot", "size": 1062, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-style", "path": "graphs/style.gv", "size": 983, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-grdangles", "path": "graphs/grdangles.gv", "size": 1076, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-shells", "path": "graphs/shells.gv", "size": 1102, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-try", "path": "share/try.gv", "size": 1141, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-try", "path": "windows/try.gv", "size": 1142, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-ctext", "path": "windows/ctext.gv", "size": 1171, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -483,7 +455,6 @@
 {"id": "graphs-url", "path": "graphs/url.gv", "size": 1242, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-clust1", "path": "windows/clust1.gv", "size": 1261, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-grammar", "path": "graphs/grammar.gv", "size": 1302, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-html2", "path": "graphs/html2.gv", "size": 1414, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-records", "path": "share/records.gv", "size": 1398, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-dpd", "path": "graphs/dpd.gv", "size": 1357, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-records", "path": "windows/records.gv", "size": 1416, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -526,17 +497,13 @@
 {"id": "share-KW91", "path": "share/KW91.gv", "size": 1824, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-KW91", "path": "windows/KW91.gv", "size": 1824, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-Petersen", "path": "windows/Petersen.gv", "size": 1768, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "nshare-html2_dot", "path": "nshare/html2_dot.gv", "size": 1946, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "linux.x86-html2_dot", "path": "linux.x86/html2_dot.gv", "size": 1945, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-tree", "path": "windows/tree.gv", "size": 1825, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-pm2way", "path": "share/pm2way.gv", "size": 1974, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-sq_rules", "path": "graphs/sq_rules.gv", "size": 1979, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-pm2way", "path": "windows/pm2way.gv", "size": 1998, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "linux.x86-ordering_dot1", "path": "linux.x86/ordering_dot1.gv", "size": 2042, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-pm2way", "path": "graphs/pm2way.gv", "size": 2020, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "macosx-ordering_dot1", "path": "macosx/ordering_dot1.gv", "size": 2042, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "nshare-ordering_dot1", "path": "nshare/ordering_dot1.gv", "size": 2042, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "graphs-rd_rules", "path": "graphs/rd_rules.gv", "size": 2043, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-ER", "path": "windows/ER.gv", "size": 2051, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-st_box", "path": "graphs/st_box.gv", "size": 2068, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "linux.i386-ER", "path": "linux.i386/ER.gv", "size": 2072, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -546,7 +513,6 @@
 {"id": "share-ER", "path": "share/ER.gv", "size": 2072, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "nshare-ordering_dot", "path": "nshare/ordering_dot.gv", "size": 2097, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-fsm", "path": "windows/fsm.gv", "size": 2124, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "2242", "path": "2242.dot", "size": 2125, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-fsm", "path": "share/fsm.gv", "size": 2142, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-sr_box", "path": "graphs/sr_box.gv", "size": 2149, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-sl_box", "path": "graphs/sl_box.gv", "size": 2156, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -559,8 +525,6 @@
 {"id": "windows-Heawood", "path": "windows/Heawood.gv", "size": 2340, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1453", "path": "1453.dot", "size": 2446, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1436", "path": "1436.dot", "size": 2599, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "share-jcctree", "path": "share/jcctree.gv", "size": 2612, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "windows-jcctree", "path": "windows/jcctree.gv", "size": 2612, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "linux.i386-dfa", "path": "linux.i386/dfa.gv", "size": 2651, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-pgram", "path": "graphs/pgram.gv", "size": 2614, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-dfa", "path": "share/dfa.gv", "size": 2651, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -580,7 +544,6 @@
 {"id": "graphs-biglabel", "path": "graphs/biglabel.gv", "size": 3246, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-train11", "path": "windows/train11.gv", "size": 3257, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2734", "path": "2734.dot", "size": 3272, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "1622_2", "path": "1622_2.dot", "size": 3299, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-pmpipe", "path": "share/pmpipe.gv", "size": 3346, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-pmpipe", "path": "windows/pmpipe.gv", "size": 3346, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1880", "path": "1880.dot", "size": 3451, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -600,21 +563,16 @@
 {"id": "graphs-grdlinear", "path": "graphs/grdlinear.gv", "size": 4071, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-grdfillcolor", "path": "graphs/grdfillcolor.gv", "size": 4075, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-triedds", "path": "windows/triedds.gv", "size": 3948, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "56", "path": "56.dot", "size": 4247, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-mike", "path": "share/mike.gv", "size": 4090, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-mike", "path": "windows/mike.gv", "size": 4090, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2669", "path": "2669.dot", "size": 3835, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "linux.x86-record_dot", "path": "linux.x86/record_dot.gv", "size": 4541, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "nshare-record_dot", "path": "nshare/record_dot.gv", "size": 4632, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "nshare-shapes_dot", "path": "nshare/shapes_dot.gv", "size": 4692, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "linux.x86-shapes_dot", "path": "linux.x86/shapes_dot.gv", "size": 4861, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-viewfile", "path": "windows/viewfile.gv", "size": 4916, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-viewfile", "path": "share/viewfile.gv", "size": 4916, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1898", "path": "1898.dot", "size": 5067, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-grdradial", "path": "graphs/grdradial.gv", "size": 5370, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-ldbxtried", "path": "graphs/ldbxtried.gv", "size": 5155, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "share-shells", "path": "share/shells.gv", "size": 5493, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "windows-shells", "path": "windows/shells.gv", "size": 5589, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-crazy", "path": "graphs/crazy.gv", "size": 5556, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "2095", "path": "2095.dot", "size": 4865, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-grdlinear_angle", "path": "graphs/grdlinear_angle.gv", "size": 5758, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -627,7 +585,6 @@
 {"id": "2193", "path": "2193.dot", "size": 6399, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-unix", "path": "share/unix.gv", "size": 6603, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-unix", "path": "windows/unix.gv", "size": 6603, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "2619_1", "path": "2619_1.dot", "size": 6721, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "graphs-grdradial_angle", "path": "graphs/grdradial_angle.gv", "size": 6918, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "1447", "path": "1447.dot", "size": 6707, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-trapeziumlr", "path": "windows/trapeziumlr.gv", "size": 7229, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -641,7 +598,6 @@
 {"id": "share-rowe", "path": "share/rowe.gv", "size": 7448, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-rowe", "path": "windows/rowe.gv", "size": 7506, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-fig6", "path": "share/fig6.gv", "size": 7553, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id": "2619_2", "path": "2619_2.dot", "size": 7596, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "windows-abstract", "path": "windows/abstract.gv", "size": 7664, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-abstract", "path": "share/abstract.gv", "size": 7614, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "share-world", "path": "share/world.gv", "size": 8062, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
@@ -753,10 +709,54 @@
 {"id": "nshare-neatosplines_neato1", "path": "nshare/neatosplines_neato1.gv", "size": 12051, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "nshare-neatosplines_neato", "path": "nshare/neatosplines_neato.gv", "size": 11700, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
 {"id": "linux.x86-neatosplines_neato1", "path": "linux.x86/neatosplines_neato1.gv", "size": 12061, "verdict": "pass", "formats": {"plain": {"verdict": "pass"}, "plain-ext": {"verdict": "pass"}}}
-{"id":"graphs-Latin1","path":"graphs/Latin1.gv","size":99,"verdict":"accepted","formats":{"plain":{"verdict":"accepted","diffCount":5,"firstDiffs":["[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid","[node] a/style: port=solid native=ellipse","[node] a/shape: port=ellipse native=black","[node] a/color: port=black native=lightgrey","[node] a/fillcolor: port=lightgrey native="]},"plain-ext":{"verdict":"accepted","diffCount":5,"firstDiffs":["[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid","[node] a/style: port=solid native=ellipse","[node] a/shape: port=ellipse native=black","[node] a/color: port=black native=lightgrey","[node] a/fillcolor: port=lightgrey native="]}}}
-{"id":"share-Latin1","path":"share/Latin1.gv","size":155,"verdict":"accepted","formats":{"plain":{"verdict":"accepted","diffCount":5,"firstDiffs":["[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid","[node] a/style: port=solid native=ellipse","[node] a/shape: port=ellipse native=black","[node] a/color: port=black native=lightgrey","[node] a/fillcolor: port=lightgrey native="]},"plain-ext":{"verdict":"accepted","diffCount":5,"firstDiffs":["[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid","[node] a/style: port=solid native=ellipse","[node] a/shape: port=ellipse native=black","[node] a/color: port=black native=lightgrey","[node] a/fillcolor: port=lightgrey native="]}}}
-{"id":"windows-Latin1","path":"windows/Latin1.gv","size":155,"verdict":"accepted","formats":{"plain":{"verdict":"accepted","diffCount":5,"firstDiffs":["[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid","[node] a/style: port=solid native=ellipse","[node] a/shape: port=ellipse native=black","[node] a/color: port=black native=lightgrey","[node] a/fillcolor: port=lightgrey native="]},"plain-ext":{"verdict":"accepted","diffCount":5,"firstDiffs":["[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid","[node] a/style: port=solid native=ellipse","[node] a/shape: port=ellipse native=black","[node] a/color: port=black native=lightgrey","[node] a/fillcolor: port=lightgrey native="]}}}
-{"id":"graphs-b60","path":"graphs/b60.gv","size":112,"verdict":"accepted","formats":{"plain":{"verdict":"accepted","diffCount":5,"firstDiffs":["[node] 0/label: port=XXXrôôôôôôôôôôôôôôleXXX native=solid","[node] 0/style: port=solid native=ellipse","[node] 0/shape: port=ellipse native=black","[node] 0/color: port=black native=lightgrey","[node] 0/fillcolor: port=lightgrey native="]},"plain-ext":{"verdict":"accepted","diffCount":5,"firstDiffs":["[node] 0/label: port=XXXrôôôôôôôôôôôôôôleXXX native=solid","[node] 0/style: port=solid native=ellipse","[node] 0/shape: port=ellipse native=black","[node] 0/color: port=black native=lightgrey","[node] 0/fillcolor: port=lightgrey native="]}}}
-{"id":"graphs-b34","path":"graphs/b34.gv","size":814,"verdict":"accepted","formats":{"plain":{"verdict":"accepted","diffCount":1,"firstDiffs":["[node] 7/label: port=montañas native=\b"]},"plain-ext":{"verdict":"accepted","diffCount":1,"firstDiffs":["[node] 7/label: port=montañas native=\u0007"]}}}
-{"id":"graphs-Symbol","path":"graphs/Symbol.gv","size":924,"verdict":"accepted","formats":{"plain":{"verdict":"accepted","diffCount":6,"firstDiffs":["[node] greek/label: port=αβγδεζηθικλμνξοπρςστυφχψωϒϖ native=solid","[node] greek/style: port=solid native=ellipse","[node] greek/shape: port=ellipse native=black","[node] greek/color: port=black native=lightgrey","[node] greek/fillcolor: port=lightgrey native="]},"plain-ext":{"verdict":"accepted","diffCount":2,"firstDiffs":["[node] greek/label: port=αβγδεζηθικλμνξοπρςστυφχψωϒϖ native=\u0005","[node] o/label: port=infinity∞ native=\u0006�"]}}}
-{"id":"graphs-b56","path":"graphs/b56.gv","size":1421,"verdict":"accepted","formats":{"plain":{"verdict":"accepted","diffCount":6,"firstDiffs":["[node] Schluesseloel/label: port=Schluesselöl native=��\u0001","[node] Schluesseltraeger/label: port=Schlueßelträger native=��\u0001","[node] Torschluessel/label: port=Torschlüssel native=��\u0001","[node] Torwaechter/label: port=Torwächter native=��\u0001","[node] creation/label: port=<f0>genPräfix|<f1>legennStamm|<f2>heitnSuffix native=<f0>genPr�fix|<f1>legennStamm|<f2>heitnSuffix"]},"plain-ext":{"verdict":"accepted","diffCount":6,"firstDiffs":["[node] Schluesseloel/label: port=Schluesselöl native=$(\u0002","[node] Schluesseltraeger/label: port=Schlueßelträger native=$(\u0002","[node] Torschluessel/label: port=Torschlüssel native=$(\u0002","[node] Torwaechter/label: port=Torwächter native=$(\u0002","[node] creation/label: port=<f0>genPräfix|<f1>legennStamm|<f2>heitnSuffix native=<f0>genPr�fix|<f1>legennStamm|<f2>heitnSuffix"]}}}
+{"id": "graphs-Latin1", "path": "graphs/Latin1.gv", "size": 99, "verdict": "accepted", "formats": {"plain": {"verdict": "accepted", "diffCount": 5, "firstDiffs": ["[node] a/label: port=\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7\u00e8\u00e9\u00ea\u00eb\u00ec\u00ed\u00ee\u00ef\u00f0\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6\u00f8\u00f9\u00fa\u00fb\u00fc native=solid", "[node] a/style: port=solid native=ellipse", "[node] a/shape: port=ellipse native=black", "[node] a/color: port=black native=lightgrey", "[node] a/fillcolor: port=lightgrey native="]}, "plain-ext": {"verdict": "accepted", "diffCount": 5, "firstDiffs": ["[node] a/label: port=\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7\u00e8\u00e9\u00ea\u00eb\u00ec\u00ed\u00ee\u00ef\u00f0\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6\u00f8\u00f9\u00fa\u00fb\u00fc native=solid", "[node] a/style: port=solid native=ellipse", "[node] a/shape: port=ellipse native=black", "[node] a/color: port=black native=lightgrey", "[node] a/fillcolor: port=lightgrey native="]}}}
+{"id": "share-Latin1", "path": "share/Latin1.gv", "size": 155, "verdict": "accepted", "formats": {"plain": {"verdict": "accepted", "diffCount": 5, "firstDiffs": ["[node] a/label: port=\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7\u00e8\u00e9\u00ea\u00eb\u00ec\u00ed\u00ee\u00ef\u00f0\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6\u00f8\u00f9\u00fa\u00fb\u00fc native=solid", "[node] a/style: port=solid native=ellipse", "[node] a/shape: port=ellipse native=black", "[node] a/color: port=black native=lightgrey", "[node] a/fillcolor: port=lightgrey native="]}, "plain-ext": {"verdict": "accepted", "diffCount": 5, "firstDiffs": ["[node] a/label: port=\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7\u00e8\u00e9\u00ea\u00eb\u00ec\u00ed\u00ee\u00ef\u00f0\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6\u00f8\u00f9\u00fa\u00fb\u00fc native=solid", "[node] a/style: port=solid native=ellipse", "[node] a/shape: port=ellipse native=black", "[node] a/color: port=black native=lightgrey", "[node] a/fillcolor: port=lightgrey native="]}}}
+{"id": "windows-Latin1", "path": "windows/Latin1.gv", "size": 155, "verdict": "accepted", "formats": {"plain": {"verdict": "accepted", "diffCount": 5, "firstDiffs": ["[node] a/label: port=\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7\u00e8\u00e9\u00ea\u00eb\u00ec\u00ed\u00ee\u00ef\u00f0\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6\u00f8\u00f9\u00fa\u00fb\u00fc native=solid", "[node] a/style: port=solid native=ellipse", "[node] a/shape: port=ellipse native=black", "[node] a/color: port=black native=lightgrey", "[node] a/fillcolor: port=lightgrey native="]}, "plain-ext": {"verdict": "accepted", "diffCount": 5, "firstDiffs": ["[node] a/label: port=\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7\u00e8\u00e9\u00ea\u00eb\u00ec\u00ed\u00ee\u00ef\u00f0\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6\u00f8\u00f9\u00fa\u00fb\u00fc native=solid", "[node] a/style: port=solid native=ellipse", "[node] a/shape: port=ellipse native=black", "[node] a/color: port=black native=lightgrey", "[node] a/fillcolor: port=lightgrey native="]}}}
+{"id": "graphs-b60", "path": "graphs/b60.gv", "size": 112, "verdict": "accepted", "formats": {"plain": {"verdict": "accepted", "diffCount": 5, "firstDiffs": ["[node] 0/label: port=XXXr\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4leXXX native=solid", "[node] 0/style: port=solid native=ellipse", "[node] 0/shape: port=ellipse native=black", "[node] 0/color: port=black native=lightgrey", "[node] 0/fillcolor: port=lightgrey native="]}, "plain-ext": {"verdict": "accepted", "diffCount": 5, "firstDiffs": ["[node] 0/label: port=XXXr\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4\u00f4leXXX native=solid", "[node] 0/style: port=solid native=ellipse", "[node] 0/shape: port=ellipse native=black", "[node] 0/color: port=black native=lightgrey", "[node] 0/fillcolor: port=lightgrey native="]}}}
+{"id": "graphs-b34", "path": "graphs/b34.gv", "size": 814, "verdict": "accepted", "formats": {"plain": {"verdict": "accepted", "diffCount": 1, "firstDiffs": ["[node] 7/label: port=monta\u00f1as native=\b"]}, "plain-ext": {"verdict": "accepted", "diffCount": 1, "firstDiffs": ["[node] 7/label: port=monta\u00f1as native=\u0007"]}}}
+{"id": "graphs-Symbol", "path": "graphs/Symbol.gv", "size": 924, "verdict": "accepted", "formats": {"plain": {"verdict": "accepted", "diffCount": 6, "firstDiffs": ["[node] greek/label: port=\u03b1\u03b2\u03b3\u03b4\u03b5\u03b6\u03b7\u03b8\u03b9\u03ba\u03bb\u03bc\u03bd\u03be\u03bf\u03c0\u03c1\u03c2\u03c3\u03c4\u03c5\u03c6\u03c7\u03c8\u03c9\u03d2\u03d6 native=solid", "[node] greek/style: port=solid native=ellipse", "[node] greek/shape: port=ellipse native=black", "[node] greek/color: port=black native=lightgrey", "[node] greek/fillcolor: port=lightgrey native="]}, "plain-ext": {"verdict": "accepted", "diffCount": 2, "firstDiffs": ["[node] greek/label: port=\u03b1\u03b2\u03b3\u03b4\u03b5\u03b6\u03b7\u03b8\u03b9\u03ba\u03bb\u03bc\u03bd\u03be\u03bf\u03c0\u03c1\u03c2\u03c3\u03c4\u03c5\u03c6\u03c7\u03c8\u03c9\u03d2\u03d6 native=\u0005", "[node] o/label: port=infinity\u221e native=\u0006\ufffd"]}}}
+{"id": "graphs-b56", "path": "graphs/b56.gv", "size": 1421, "verdict": "accepted", "formats": {"plain": {"verdict": "accepted", "diffCount": 6, "firstDiffs": ["[node] Schluesseloel/label: port=Schluessel\u00f6l native=\ufffd\ufffd\u0001", "[node] Schluesseltraeger/label: port=Schlue\u00dfeltr\u00e4ger native=\ufffd\ufffd\u0001", "[node] Torschluessel/label: port=Torschl\u00fcssel native=\ufffd\ufffd\u0001", "[node] Torwaechter/label: port=Torw\u00e4chter native=\ufffd\ufffd\u0001", "[node] creation/label: port=<f0>genPr\u00e4fix|<f1>legennStamm|<f2>heitnSuffix native=<f0>genPr\ufffdfix|<f1>legennStamm|<f2>heitnSuffix"]}, "plain-ext": {"verdict": "accepted", "diffCount": 6, "firstDiffs": ["[node] Schluesseloel/label: port=Schluessel\u00f6l native=$(\u0002", "[node] Schluesseltraeger/label: port=Schlue\u00dfeltr\u00e4ger native=$(\u0002", "[node] Torschluessel/label: port=Torschl\u00fcssel native=$(\u0002", "[node] Torwaechter/label: port=Torw\u00e4chter native=$(\u0002", "[node] creation/label: port=<f0>genPr\u00e4fix|<f1>legennStamm|<f2>heitnSuffix native=<f0>genPr\ufffdfix|<f1>legennStamm|<f2>heitnSuffix"]}}}
+{"id":"2295","path":"2295.dot","size":221,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"regression_tests-shapes-reference-plain","path":"regression_tests/shapes/reference/plain.gv","size":121,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"regression_tests-shapes-reference-plaintext","path":"regression_tests/shapes/reference/plaintext.gv","size":134,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"1622_1","path":"1622_1.dot","size":311,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-b117","path":"graphs/b117.gv","size":338,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-b","path":"graphs/b.gv","size":338,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"1622_3","path":"1622_3.dot","size":265,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-nhg","path":"graphs/nhg.gv","size":339,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-b22","path":"graphs/b22.gv","size":488,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"1622_0","path":"1622_0.dot","size":489,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"2159","path":"2159.dot","size":538,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-inv_nul","path":"graphs/inv_nul.gv","size":588,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-nul_inv","path":"graphs/nul_inv.gv","size":620,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-inv_inv","path":"graphs/inv_inv.gv","size":618,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-val_nul","path":"graphs/val_nul.gv","size":630,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-nul_nul","path":"graphs/nul_nul.gv","size":576,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-inv_val","path":"graphs/inv_val.gv","size":636,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-nul_val","path":"graphs/nul_val.gv","size":659,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-val_inv","path":"graphs/val_inv.gv","size":660,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-val_val","path":"graphs/val_val.gv","size":678,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"windows-nhg","path":"windows/nhg.gv","size":926,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"share-nhg","path":"share/nhg.gv","size":938,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-jcctree","path":"graphs/jcctree.gv","size":778,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-html","path":"graphs/html.gv","size":738,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"linux.x86-html_dot","path":"linux.x86/html_dot.gv","size":1057,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"nshare-html_dot","path":"nshare/html_dot.gv","size":1058,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-shapes","path":"graphs/shapes.gv","size":840,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-shells","path":"graphs/shells.gv","size":1102,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-html2","path":"graphs/html2.gv","size":1414,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-sq_rules","path":"graphs/sq_rules.gv","size":1979,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"nshare-html2_dot","path":"nshare/html2_dot.gv","size":1946,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"linux.x86-html2_dot","path":"linux.x86/html2_dot.gv","size":1945,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"graphs-rd_rules","path":"graphs/rd_rules.gv","size":2043,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"share-jcctree","path":"share/jcctree.gv","size":2612,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"2242","path":"2242.dot","size":2125,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"windows-jcctree","path":"windows/jcctree.gv","size":2612,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"1622_2","path":"1622_2.dot","size":3299,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"56","path":"56.dot","size":4247,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"linux.x86-shapes_dot","path":"linux.x86/shapes_dot.gv","size":4861,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"nshare-shapes_dot","path":"nshare/shapes_dot.gv","size":4692,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"share-shells","path":"share/shells.gv","size":5493,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"2619_1","path":"2619_1.dot","size":6721,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"windows-shells","path":"windows/shells.gv","size":5589,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"2619_2","path":"2619_2.dot","size":7596,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}

@@ -9,6 +9,7 @@
  * @see lib/neatogen/neatoprocs.h
  */
 
+import type { ShapeDesc } from '../../common/types.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
@@ -85,8 +86,18 @@ export function neatoInitNode(n: Node, dim = DFLT_DIM): void {
     n.info.pos = pos;
   }
   if (n.info.UF_size === undefined) n.info.UF_size = 1;
-  if (!n.info.width) n.info.width = 0.75;
-  if (!n.info.height) n.info.height = 0.5;
+  // C neato_init_node has NO size defaulting (neatoinit.c:60-66) — after
+  // common_init_node, ND_width is always written (late_double clamps a 0
+  // attr to the 0.75 default; every initfn assigns). The port's NodeInfo
+  // zero-initializes width/height (calloc mirror) and two port-only paths
+  // leave them at that unset-0 (no-measurer initNodeDefaults; poly-null
+  // custom/epsf shapes — C gives customs box geometry, a modeling gap
+  // flagged in the journal), so a fallback is still needed. The ONE case
+  // where 0 is a legitimate post-init size is shape=plain (poly_init
+  // IS_PLAIN, shapes.c:1962) — never clobber it.
+  const plainShaped = (n.info.shape as ShapeDesc | undefined)?.name === 'plain';
+  if (!n.info.width && !plainShaped) n.info.width = 0.75;
+  if (!n.info.height && !plainShaped) n.info.height = 0.5;
 }
 
 // ---------------------------------------------------------------------------

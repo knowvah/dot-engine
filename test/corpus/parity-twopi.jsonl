@@ -80,7 +80,6 @@
 {"id": "2087", "size": 118, "status": "pass"}
 {"id": "graphs-b993", "size": 118, "status": "pass"}
 {"id": "1902", "size": 119, "status": "pass"}
-{"id": "regression_tests-shapes-reference-plain", "size": 121, "status": "pass"}
 {"id": "graphs-b62", "size": 123, "status": "pass"}
 {"id": "graphs-b73", "size": 124, "status": "pass"}
 {"id": "reference-test_reference-001.001", "size": 126, "status": "pass"}
@@ -126,7 +125,6 @@
 {"id": "regression_tests-shapes-reference-insulator", "size": 134, "status": "pass"}
 {"id": "regression_tests-shapes-reference-lpromoter", "size": 134, "status": "pass"}
 {"id": "regression_tests-shapes-reference-noverhang", "size": 134, "status": "pass"}
-{"id": "regression_tests-shapes-reference-plaintext", "size": 134, "status": "pass"}
 {"id": "regression_tests-shapes-reference-rectangle", "size": 134, "status": "pass"}
 {"id": "regression_tests-shapes-reference-rpromoter", "size": 134, "status": "pass"}
 {"id": "regression_tests-shapes-reference-signature", "size": 134, "status": "pass"}
@@ -179,7 +177,6 @@
 {"id": "2563", "size": 213, "status": "pass"}
 {"id": "258", "size": 218, "status": "pass"}
 {"id": "1879-2", "size": 221, "status": "pass"}
-{"id": "2295", "size": 221, "status": "pass"}
 {"id": "graphs-b7", "size": 222, "status": "pass"}
 {"id": "graphs-labelclust-ftd", "size": 222, "status": "pass"}
 {"id": "2683", "size": 223, "status": "pass"}
@@ -227,7 +224,6 @@
 {"id": "graphs-labelroot-fdl", "size": 263, "status": "pass"}
 {"id": "graphs-labelroot-fbd", "size": 264, "status": "pass"}
 {"id": "graphs-labelroot-fdr", "size": 264, "status": "pass"}
-{"id": "1622_3", "size": 265, "status": "pass"}
 {"id": "graphs-labelroot-fdc", "size": 265, "status": "pass"}
 {"id": "graphs-labelroot-ntl", "size": 265, "status": "pass"}
 {"id": "1624", "size": 266, "status": "pass"}
@@ -254,16 +250,12 @@
 {"id": "1939", "size": 307, "status": "pass"}
 {"id": "graphs-structs", "size": 308, "status": "pass"}
 {"id": "graphs-p4", "size": 309, "status": "pass"}
-{"id": "1622_1", "size": 311, "status": "pass"}
 {"id": "2825", "size": 312, "status": "pass"}
 {"id": "2521", "size": 320, "status": "pass"}
 {"id": "2168_3", "size": 322, "status": "pass"}
 {"id": "2717", "size": 325, "status": "pass"}
 {"id": "1767", "size": 326, "status": "pass"}
 {"id": "graphs-flatedge", "size": 330, "status": "pass"}
-{"id": "graphs-b", "size": 338, "status": "pass"}
-{"id": "graphs-b117", "size": 338, "status": "pass"}
-{"id": "graphs-nhg", "size": 339, "status": "pass"}
 {"id": "2168_2", "size": 349, "status": "pass"}
 {"id": "graphs-ZapfDingbats", "size": 360, "status": "pass"}
 {"id": "graphs-colors", "size": 376, "status": "pass"}
@@ -295,23 +287,18 @@
 {"id": "1213-1", "size": 481, "status": "pass"}
 {"id": "share-b491", "size": 486, "status": "pass"}
 {"id": "windows-b491", "size": 486, "status": "pass"}
-{"id": "graphs-b22", "size": 488, "status": "pass"}
-{"id": "1622_0", "size": 489, "status": "pass"}
 {"id": "graphs-states", "size": 492, "status": "pass"}
 {"id": "graphs-grdcluster", "size": 497, "status": "pass"}
 {"id": "graphs-grdradial_node", "size": 519, "status": "pass"}
 {"id": "graphs-russian", "size": 520, "status": "pass"}
 {"id": "graphs-grdlinear_node", "size": 523, "status": "pass"}
 {"id": "1213-2", "size": 530, "status": "pass"}
-{"id": "2159", "size": 538, "status": "pass"}
 {"id": "graphs-b155", "size": 542, "status": "pass"}
 {"id": "1408", "size": 544, "status": "pass"}
 {"id": "1425_1", "size": 544, "status": "pass"}
-{"id": "graphs-nul_nul", "size": 576, "status": "pass"}
 {"id": "241_0", "size": 578, "status": "diverged", "nDiffs": 6, "firstDiff": "edge:1->6#0 _draw_ edge:1->6#0/_draw_/op[1].unfilled_bezier[ptCount]: 14 vs 8"}
 {"id": "share-labelclust-ndd", "size": 586, "status": "pass"}
 {"id": "windows-labelclust-ndd", "size": 586, "status": "pass"}
-{"id": "graphs-inv_nul", "size": 588, "status": "pass"}
 {"id": "graphs-tree", "size": 588, "status": "pass"}
 {"id": "graphs-b68", "size": 595, "status": "pass"}
 {"id": "share-labelclust-fdd", "size": 595, "status": "pass"}
@@ -341,13 +328,11 @@
 {"id": "share-labelclust-fdr", "size": 616, "status": "pass"}
 {"id": "windows-labelclust-fdc", "size": 616, "status": "pass"}
 {"id": "windows-labelclust-fdr", "size": 616, "status": "pass"}
-{"id": "graphs-inv_inv", "size": 618, "status": "pass"}
 {"id": "linux.x86-rowcolsep_dot1", "size": 619, "status": "pass"}
 {"id": "macosx-rowcolsep_dot1", "size": 619, "status": "pass"}
 {"id": "nshare-rowcolsep_dot1", "size": 619, "status": "pass"}
 {"id": "share-labelroot-ntd", "size": 619, "status": "pass"}
 {"id": "windows-labelroot-ntd", "size": 619, "status": "pass"}
-{"id": "graphs-nul_inv", "size": 620, "status": "pass"}
 {"id": "1856", "size": 621, "status": "pass"}
 {"id": "2325", "size": 621, "status": "pass"}
 {"id": "linux.x86-rowcolsep_dot", "size": 622, "status": "pass"}
@@ -368,7 +353,6 @@
 {"id": "graphs-hashtable", "size": 629, "status": "pass"}
 {"id": "share-labelroot-fbd", "size": 629, "status": "pass"}
 {"id": "windows-labelroot-fbd", "size": 629, "status": "pass"}
-{"id": "graphs-val_nul", "size": 630, "status": "pass"}
 {"id": "share-labelclust-nbl", "size": 630, "status": "pass"}
 {"id": "windows-labelclust-nbl", "size": 630, "status": "pass"}
 {"id": "share-labelclust-ftl", "size": 631, "status": "pass"}
@@ -387,7 +371,6 @@
 {"id": "windows-labelclust-fbl", "size": 634, "status": "pass"}
 {"id": "share-labelroot-ntl", "size": 635, "status": "pass"}
 {"id": "windows-labelroot-ntl", "size": 635, "status": "pass"}
-{"id": "graphs-inv_val", "size": 636, "status": "pass"}
 {"id": "share-labelclust-fbc", "size": 636, "status": "pass"}
 {"id": "share-labelclust-fbr", "size": 636, "status": "pass"}
 {"id": "windows-labelclust-fbc", "size": 636, "status": "pass"}
@@ -428,30 +411,24 @@
 {"id": "2801", "size": 651, "status": "pass"}
 {"id": "share-labelroot-fdr", "size": 652, "status": "pass"}
 {"id": "windows-labelroot-fdr", "size": 652, "status": "pass"}
-{"id": "graphs-nul_val", "size": 659, "status": "pass"}
-{"id": "graphs-val_inv", "size": 660, "status": "pass"}
 {"id": "graphs-b786", "size": 667, "status": "pass"}
 {"id": "graphs-b85", "size": 668, "status": "pass"}
 {"id": "graphs-ports", "size": 677, "status": "pass"}
-{"id": "graphs-val_val", "size": 678, "status": "pass"}
 {"id": "graphs-sides", "size": 680, "status": "pass"}
 {"id": "share-structs", "size": 710, "status": "pass"}
 {"id": "1658", "size": 711, "status": "pass"}
 {"id": "windows-structs", "size": 728, "status": "pass"}
 {"id": "2168_1", "size": 729, "status": "pass"}
-{"id": "graphs-html", "size": 738, "status": "pass"}
 {"id": "graphs-b3", "size": 754, "status": "pass"}
 {"id": "2497", "size": 763, "status": "pass"}
 {"id": "graphs-rowe", "size": 765, "status": "pass"}
 {"id": "graphs-abstract", "size": 770, "status": "pass"}
 {"id": "2168_5", "size": 777, "status": "pass"}
 {"id": "graphs-train11", "size": 777, "status": "pass"}
-{"id": "graphs-jcctree", "size": 778, "status": "pass"}
 {"id": "graphs-japanese", "size": 789, "status": "pass"}
 {"id": "graphs-Heawood", "size": 790, "status": "pass"}
 {"id": "graphs-b34", "size": 814, "status": "pass"}
 {"id": "graphs-fig6", "size": 835, "status": "pass"}
-{"id": "graphs-shapes", "size": 840, "status": "pass"}
 {"id": "share-states", "size": 858, "status": "pass"}
 {"id": "windows-states", "size": 878, "status": "pass"}
 {"id": "graphs-Petersen", "size": 904, "status": "pass"}
@@ -460,19 +437,14 @@
 {"id": "nshare-nestedclust_dot", "size": 907, "status": "pass"}
 {"id": "share-flatedge", "size": 918, "status": "pass"}
 {"id": "graphs-Symbol", "size": 924, "status": "pass"}
-{"id": "windows-nhg", "size": 926, "status": "pass"}
-{"id": "share-nhg", "size": 938, "status": "pass"}
 {"id": "graphs-alf", "size": 958, "status": "pass"}
 {"id": "graphs-record", "size": 958, "status": "pass"}
 {"id": "graphs-dfa", "size": 959, "status": "pass"}
 {"id": "graphs-world", "size": 980, "status": "pass"}
 {"id": "graphs-style", "size": 983, "status": "pass"}
 {"id": "graphs-dd", "size": 1053, "status": "pass"}
-{"id": "linux.x86-html_dot", "size": 1057, "status": "pass"}
-{"id": "nshare-html_dot", "size": 1058, "status": "pass"}
 {"id": "2521_1", "size": 1062, "status": "pass"}
 {"id": "graphs-grdangles", "size": 1076, "status": "pass"}
-{"id": "graphs-shells", "size": 1102, "status": "pass"}
 {"id": "share-try", "size": 1141, "status": "pass"}
 {"id": "windows-try", "size": 1142, "status": "pass"}
 {"id": "share-ctext", "size": 1171, "status": "pass"}
@@ -495,7 +467,6 @@
 {"id": "graphs-dpd", "size": 1357, "status": "pass"}
 {"id": "graphs-overlap", "size": 1357, "status": "pass"}
 {"id": "share-records", "size": 1398, "status": "pass"}
-{"id": "graphs-html2", "size": 1414, "status": "pass"}
 {"id": "windows-records", "size": 1416, "status": "pass"}
 {"id": "2361", "size": 1419, "status": "pass"}
 {"id": "graphs-b56", "size": 1421, "status": "pass"}
@@ -537,10 +508,7 @@
 {"id": "windows-KW91", "size": 1824, "status": "pass"}
 {"id": "share-tree", "size": 1825, "status": "pass"}
 {"id": "windows-tree", "size": 1825, "status": "pass"}
-{"id": "linux.x86-html2_dot", "size": 1945, "status": "pass"}
-{"id": "nshare-html2_dot", "size": 1946, "status": "pass"}
 {"id": "share-pm2way", "size": 1974, "status": "pass"}
-{"id": "graphs-sq_rules", "size": 1979, "status": "pass"}
 {"id": "windows-pm2way", "size": 1998, "status": "pass"}
 {"id": "graphs-pm2way", "size": 2020, "status": "pass"}
 {"id": "graphs-arrows", "size": 2029, "status": "diverged", "nDiffs": 40, "firstDiff": "edge:Z->I#0 _draw_ edge:Z->I#0/_draw_/op[1].unfilled_bezier[ptCount]: 8 vs 14"}
@@ -548,7 +516,6 @@
 {"id": "linux.x86-ordering_dot1", "size": 2042, "status": "pass"}
 {"id": "macosx-ordering_dot1", "size": 2042, "status": "pass"}
 {"id": "nshare-ordering_dot1", "size": 2042, "status": "pass"}
-{"id": "graphs-rd_rules", "size": 2043, "status": "pass"}
 {"id": "graphs-newarrows", "size": 2045, "status": "diverged", "nDiffs": 40, "firstDiff": "edge:Z->I#0 _draw_ edge:Z->I#0/_draw_/op[1].unfilled_bezier[ptCount]: 8 vs 14"}
 {"id": "windows-ER", "size": 2051, "status": "pass"}
 {"id": "graphs-st_box", "size": 2068, "status": "pass"}
@@ -559,7 +526,6 @@
 {"id": "macosx-ordering_dot", "size": 2097, "status": "pass"}
 {"id": "nshare-ordering_dot", "size": 2097, "status": "pass"}
 {"id": "windows-fsm", "size": 2124, "status": "pass"}
-{"id": "2242", "size": 2125, "status": "pass"}
 {"id": "share-fsm", "size": 2142, "status": "pass"}
 {"id": "graphs-sr_box", "size": 2149, "status": "pass"}
 {"id": "graphs-sr_circle", "size": 2152, "status": "pass"}
@@ -572,8 +538,6 @@
 {"id": "windows-Heawood", "size": 2340, "status": "pass"}
 {"id": "1453", "size": 2446, "status": "pass"}
 {"id": "1436", "size": 2599, "status": "pass"}
-{"id": "share-jcctree", "size": 2612, "status": "pass"}
-{"id": "windows-jcctree", "size": 2612, "status": "pass"}
 {"id": "graphs-pgram", "size": 2614, "status": "pass"}
 {"id": "linux.i386-dfa", "size": 2651, "status": "pass"}
 {"id": "share-dfa", "size": 2651, "status": "pass"}
@@ -593,7 +557,6 @@
 {"id": "graphs-biglabel", "size": 3246, "status": "pass"}
 {"id": "windows-train11", "size": 3257, "status": "pass"}
 {"id": "2734", "size": 3272, "status": "pass"}
-{"id": "1622_2", "size": 3299, "status": "pass"}
 {"id": "share-pmpipe", "size": 3346, "status": "pass"}
 {"id": "windows-pmpipe", "size": 3346, "status": "pass"}
 {"id": "1880", "size": 3451, "status": "pass"}
@@ -616,19 +579,14 @@
 {"id": "graphs-grdfillcolor", "size": 4075, "status": "pass"}
 {"id": "share-mike", "size": 4090, "status": "pass"}
 {"id": "windows-mike", "size": 4090, "status": "pass"}
-{"id": "56", "size": 4247, "status": "pass"}
 {"id": "linux.x86-record_dot", "size": 4541, "status": "pass"}
 {"id": "nshare-record_dot", "size": 4632, "status": "pass"}
-{"id": "nshare-shapes_dot", "size": 4692, "status": "pass"}
-{"id": "linux.x86-shapes_dot", "size": 4861, "status": "pass"}
 {"id": "share-viewfile", "size": 4916, "status": "pass"}
 {"id": "windows-viewfile", "size": 4916, "status": "pass"}
 {"id": "1898", "size": 5067, "status": "pass"}
 {"id": "graphs-ldbxtried", "size": 5155, "status": "pass"}
 {"id": "graphs-grdradial", "size": 5370, "status": "pass"}
-{"id": "share-shells", "size": 5493, "status": "pass"}
 {"id": "graphs-crazy", "size": 5556, "status": "pass"}
-{"id": "windows-shells", "size": 5589, "status": "pass"}
 {"id": "windows-grammar", "size": 5612, "status": "pass"}
 {"id": "share-grammar", "size": 5613, "status": "pass"}
 {"id": "1949", "size": 5632, "status": "pass"}
@@ -752,11 +710,53 @@
 {"id": "graphs-b103", "size": 377525, "status": "pass"}
 {"id": "2475_2", "size": 641284, "status": "pass"}
 {"id": "2470", "size": 734358, "status": "diverged", "nDiffs": 596, "firstDiff": "edge:n13->n12#0 _ldraw_ edge:n13->n12#0/_ldraw_/op[2].text[0]: 7270.33 vs 7192.55"}
-{"id":"2619","size":79,"status":"pass"}
-{"id":"2516","size":97,"status":"pass"}
-{"id":"2095","size":4865,"status":"pass"}
+{"id": "2619", "size": 79, "status": "pass"}
+{"id": "2516", "size": 97, "status": "pass"}
+{"id": "2095", "size": 4865, "status": "pass"}
+{"id": "1879", "size": 287816, "status": "pass"}
+{"id": "2222", "size": 2384469, "status": "oracle-error", "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
+{"id": "2108", "size": 3136769, "status": "timeout"}
+{"id":"regression_tests-shapes-reference-plain","size":121,"status":"pass"}
+{"id":"regression_tests-shapes-reference-plaintext","size":134,"status":"pass"}
+{"id":"2295","size":221,"status":"pass"}
+{"id":"1622_3","size":265,"status":"pass"}
+{"id":"1622_1","size":311,"status":"pass"}
+{"id":"graphs-b","size":338,"status":"pass"}
+{"id":"graphs-b117","size":338,"status":"pass"}
+{"id":"graphs-nhg","size":339,"status":"pass"}
+{"id":"graphs-b22","size":488,"status":"pass"}
+{"id":"1622_0","size":489,"status":"pass"}
+{"id":"2159","size":538,"status":"pass"}
+{"id":"graphs-nul_nul","size":576,"status":"pass"}
+{"id":"graphs-inv_nul","size":588,"status":"pass"}
+{"id":"graphs-inv_inv","size":618,"status":"pass"}
+{"id":"graphs-nul_inv","size":620,"status":"pass"}
+{"id":"graphs-val_nul","size":630,"status":"pass"}
+{"id":"graphs-inv_val","size":636,"status":"pass"}
+{"id":"graphs-nul_val","size":659,"status":"pass"}
+{"id":"graphs-val_inv","size":660,"status":"pass"}
+{"id":"graphs-val_val","size":678,"status":"pass"}
+{"id":"graphs-html","size":738,"status":"pass"}
+{"id":"graphs-jcctree","size":778,"status":"pass"}
+{"id":"graphs-shapes","size":840,"status":"pass"}
+{"id":"windows-nhg","size":926,"status":"pass"}
+{"id":"share-nhg","size":938,"status":"pass"}
+{"id":"linux.x86-html_dot","size":1057,"status":"pass"}
+{"id":"nshare-html_dot","size":1058,"status":"pass"}
+{"id":"graphs-shells","size":1102,"status":"pass"}
+{"id":"graphs-html2","size":1414,"status":"pass"}
+{"id":"linux.x86-html2_dot","size":1945,"status":"pass"}
+{"id":"nshare-html2_dot","size":1946,"status":"pass"}
+{"id":"graphs-sq_rules","size":1979,"status":"pass"}
+{"id":"graphs-rd_rules","size":2043,"status":"pass"}
+{"id":"2242","size":2125,"status":"pass"}
+{"id":"share-jcctree","size":2612,"status":"pass"}
+{"id":"windows-jcctree","size":2612,"status":"pass"}
+{"id":"1622_2","size":3299,"status":"pass"}
+{"id":"56","size":4247,"status":"pass"}
+{"id":"nshare-shapes_dot","size":4692,"status":"pass"}
+{"id":"linux.x86-shapes_dot","size":4861,"status":"pass"}
+{"id":"share-shells","size":5493,"status":"pass"}
+{"id":"windows-shells","size":5589,"status":"pass"}
 {"id":"2619_1","size":6721,"status":"pass"}
 {"id":"2619_2","size":7596,"status":"pass"}
-{"id":"1879","size":287816,"status":"pass"}
-{"id":"2222","size":2384469,"status":"oracle-error","err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
-{"id":"2108","size":3136769,"status":"timeout"}
