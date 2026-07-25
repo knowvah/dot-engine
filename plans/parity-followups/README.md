@@ -62,8 +62,8 @@ Mission-flow decisions → [decision-journal.md](./decision-journal.md) here.
 
 | # | Focus | Tasks | Status |
 |---|---|---|---|
-| [1](./batch-1/overview.md) | Baseline refresh (stale oracle-errors) | T1 | [ ] |
-| [2](./batch-2/overview.md) | shape=plain init defect | T2 | [ ] |
+| [1](./batch-1/overview.md) | Baseline refresh (stale oracle-errors) | T1 | [x] |
+| [2](./batch-2/overview.md) | shape=plain init defect | T2 | [x] |
 | [3](./batch-3/overview.md) | Blind-spot diagnoses (sequential) | T3 T4 T5 | [ ] |
 | [4](./batch-4/overview.md) | fdp map timeout classification | T6 | [ ] |
 | [5](./batch-5/overview.md) | Reconcile + report + close | T7 | [ ] |
