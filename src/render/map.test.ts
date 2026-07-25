@@ -69,14 +69,16 @@ export function testPlainCoord(): void {
 export function testPlainNodeFillDefault(): void {
   const g = makeGraph();
   const n = makeNode(g);
-  expect(plainNodeFill(n)).toBe('black');
+  // Unfilled node with no color: the plain fill field is DEFAULT_FILL, not
+  // DEFAULT_COLOR. @see lib/common/output.c:write_plain (167-169)
+  expect(plainNodeFill(n, g)).toBe('lightgrey');
 }
 
 export function testPlainNodeFillColor(): void {
   const g = makeGraph();
   const n = makeNode(g);
   n.attrs.set('color', 'red');
-  expect(plainNodeFill(n)).toBe('red');
+  expect(plainNodeFill(n, g)).toBe('red');
 }
 
 export function testPlainNodeFillFillcolor(): void {
@@ -84,7 +86,7 @@ export function testPlainNodeFillFillcolor(): void {
   const n = makeNode(g);
   n.attrs.set('color', 'red');
   n.attrs.set('fillcolor', 'blue');
-  expect(plainNodeFill(n)).toBe('blue');
+  expect(plainNodeFill(n, g)).toBe('blue');
 }
 
 // ---------------------------------------------------------------------------
@@ -94,7 +96,7 @@ export function testPlainNodeFillFillcolor(): void {
 export function testPlainNodeAttrsDefaults(): void {
   const g = makeGraph();
   const n = makeNode(g);
-  const a = plainNodeAttrs(n);
+  const a = plainNodeAttrs(n, g);
   expect(a.label).toBe('A');
   expect(a.style).toBe('solid');
   expect(a.shape).toBe('ellipse');
@@ -109,7 +111,7 @@ export function testPlainNodeAttrsCustom(): void {
   n.attrs.set('shape', 'box');
   n.attrs.set('color', 'green');
   n.attrs.set('fillcolor', 'yellow');
-  const a = plainNodeAttrs(n);
+  const a = plainNodeAttrs(n, g);
   expect(a.label).toBe('myLabel');
   expect(a.style).toBe('dashed');
   expect(a.shape).toBe('box');
@@ -374,7 +376,7 @@ describe('plainCoord', () => {
 });
 
 describe('plainNodeFill', () => {
-  it('defaults to color attr (black)', testPlainNodeFillDefault);
+  it('defaults unfilled node to lightgrey (DEFAULT_FILL)', testPlainNodeFillDefault);
   it('uses color attr when set', testPlainNodeFillColor);
   it('prefers fillcolor over color', testPlainNodeFillFillcolor);
 });

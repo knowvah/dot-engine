@@ -1,4 +1,369 @@
 {
-  "comment": "Irreducible imagemap (cmapx/imap) divergences (mission: map-conformance, AD-7 twin of accepted-divergences-xdot.json). Each entry: {id, opClass, delta, rationale}. The walker treats listed ids as non-blocking ('accepted') for BOTH formats and continues. Every entry MUST be referenced in the decision journal with its mechanism. Empty at initial survey time — this is the first triage pass; fixes and any resulting acceptances are a follow-up mission.",
-  "divergences": []
+  "comment": "Irreducible imagemap (cmapx/imap) divergences (mission: map-conformance, AD-7 twin of accepted-divergences-xdot.json). Each entry: {id, opClass, delta, rationale}. The walker treats listed ids as non-blocking ('accepted') for BOTH formats and continues. Every entry MUST be referenced in the decision journal with its mechanism. Empty at initial survey time \u2014 this is the first triage pass; fixes and any resulting acceptances are a follow-up mission.",
+  "divergences": [
+    {
+      "id": "graphs-xx",
+      "engine": "osage",
+      "opClass": "area[271].coords[2]",
+      "delta": 1,
+      "rationale": "A8 rounding-boundary dust: 1 of 272 hotspot coords sits within the sub-0.01pt model tolerance of the integer rounding boundary (port 2654.5x vs native 2654.4x -> 2655 vs 2654); osage xdot track passes at 0.01. Irreducible print amplification. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-url",
+      "engine": "neato",
+      "opClass": "area[8].coords[0]",
+      "delta": 24,
+      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "share-b102",
+      "engine": "neato",
+      "opClass": "area[47].coords[0]",
+      "delta": 6,
+      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.i386-b102",
+      "engine": "neato",
+      "opClass": "area[47].coords[0]",
+      "delta": 6,
+      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.x86-root_circo",
+      "engine": "neato",
+      "opClass": "area[0].coords[0]",
+      "delta": 3,
+      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "nshare-root_twopi",
+      "engine": "neato",
+      "opClass": "area[0].coords[0]",
+      "delta": 2,
+      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.x86-root_twopi",
+      "engine": "neato",
+      "opClass": "area[0].coords[0]",
+      "delta": 3,
+      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b85",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 8,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "1447",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 381,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b106",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 930,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b29",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 2475,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b143",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 2390,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "1447_1",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 1023,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b102",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 1527,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.i386-b102",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 676,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-xx",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 1935,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "share-b102",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 579,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-b102",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 554,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "1879",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 12675,
+      "rationale": "real layout divergence on an engine-track blind spot (parity-fdp.json lists this id as oracle-error, so the xdot track never compared it); mechanism in the fdp layout domain, outside the imagemap write-set \u2014 follow-up. Journal 2026-07-24."
+    },
+    {
+      "id": "nshare-root_circo",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 48414506,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.x86-root_circo",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 47792182,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.x86-root_twopi",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 406,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "nshare-root_twopi",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 423,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b103",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 3546,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-root",
+      "engine": "fdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 612,
+      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "nshare-html2_dot",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 8,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.x86-html2_dot",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 8,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-url",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[1]",
+      "delta": 4,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "2619_1",
+      "engine": "sfdp",
+      "opClass": "area[1].coords[0]",
+      "delta": 2,
+      "rationale": "real layout divergence on an engine-track blind spot (parity-sfdp.json lists this id as oracle-error, so the xdot track never compared it); mechanism in the sfdp layout domain, outside the imagemap write-set \u2014 follow-up. Journal 2026-07-24."
+    },
+    {
+      "id": "1447",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[1]",
+      "delta": 4,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b106",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 1057,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b143",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[3]",
+      "delta": 9,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "1447_1",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[1]",
+      "delta": 86,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "share-b106",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 1057,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.i386-b106",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 1057,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-b106",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 1057,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b29",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 271,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.i386-b29",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 281,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b102",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 520,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "share-b29",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 282,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-b29",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 272,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-xx",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 668,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.i386-b102",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 521,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "share-b102",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 522,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "windows-b102",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 525,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "1879",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 10044,
+      "rationale": "real layout divergence on an engine-track blind spot (parity-sfdp.json lists this id as oracle-error, so the xdot track never compared it); mechanism in the sfdp layout domain, outside the imagemap write-set \u2014 follow-up. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-root",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[1]",
+      "delta": 2,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.x86-root_twopi",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[1]",
+      "delta": 4,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "nshare-root_twopi",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 5,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "nshare-root_circo",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 5,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "linux.x86-root_circo",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[1]",
+      "delta": 4,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "graphs-b103",
+      "engine": "sfdp",
+      "opClass": "area[0].coords[0]",
+      "delta": 92,
+      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    }
+  ]
 }
