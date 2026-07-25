@@ -263,7 +263,7 @@
       "engine": "neato",
       "opClass": "edge:I57->F7#0/_draw_/op[2].b[0]",
       "delta": 0.8100000000000023,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-neato.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the neato layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift + degenerate-clip amplification (diagnosed 2026-07-24): all 6 node positions differ only 0.13-0.18pt (within the 0.5 iterative bar); the sole over-bar values are 4 x-coords of ONE sub-point-long stub spline (I57->F7 between overlapping nodes), where clipping a near-zero-length bezier amplifies the in-bar endpoint drift to 0.81pt. Spline shape matches modulo the clip start; no port stage implicated."
     },
     {
       "id": "nshare-dotsplines_dot",
@@ -2601,7 +2601,7 @@
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[4]",
       "delta": 1.4400000000000546,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-sfdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the sfdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 sfdp spring drift (diagnosed 2026-07-24): 6 nodes, positional drift 0.7-1.3pt \u2014 the documented chaotic-engine regime, mildly above the 0.5 bar on a small graph. Same class as the sfdp engine track's 232-id tail."
     },
     {
       "id": "1447",
@@ -3119,7 +3119,7 @@
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 7596.32,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-sfdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the sfdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 sfdp chaotic drift (2026-07-24): whole-layout basin divergence on a huge graph (maxDelta 7.6kpt), the documented sfdp spring chaos regime \u2014 same class as fdp 1879 (chaos proven by perturbation A/B on the fdp family; sfdp is the measured chaotic engine)."
     },
     {
       "id": "2095_1",

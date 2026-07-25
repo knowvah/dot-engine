@@ -202,7 +202,7 @@
       "engine": "sfdp",
       "opClass": "area[1].coords[0]",
       "delta": 2,
-      "rationale": "real layout divergence on an engine-track blind spot (parity-sfdp.json lists this id as oracle-error, so the xdot track never compared it); mechanism in the sfdp layout domain, outside the imagemap write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 sfdp spring drift (diagnosed 2026-07-24): 6 nodes, positional drift 0.7-1.3pt \u2014 the documented chaotic-engine regime, mildly above the 0.5 bar on a small graph. Same class as the sfdp engine track's 232-id tail."
     },
     {
       "id": "1447",
@@ -321,7 +321,7 @@
       "engine": "sfdp",
       "opClass": "area[0].coords[0]",
       "delta": 10044,
-      "rationale": "real layout divergence on an engine-track blind spot (parity-sfdp.json lists this id as oracle-error, so the xdot track never compared it); mechanism in the sfdp layout domain, outside the imagemap write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 sfdp chaotic drift (2026-07-24): whole-layout basin divergence on a huge graph (maxDelta 7.6kpt), the documented sfdp spring chaos regime \u2014 same class as fdp 1879 (chaos proven by perturbation A/B on the fdp family; sfdp is the measured chaotic engine)."
     },
     {
       "id": "graphs-root",
