@@ -708,7 +708,6 @@
 {"id": "1221", "size": 149, "status": "pass"}
 {"id": "2717", "size": 325, "status": "oracle-error", "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K fdp -Txdot /Users/scottseely/git/graphviz/tests/2717.dot"}
 {"id": "1767", "size": 326, "status": "pass"}
-{"id": "graphs-b53", "size": 2287, "status": "diverged", "nDiffs": 1, "firstDiff": "[graph] _ldraw_ [graph]/_ldraw_[missing]: <absent> vs <present>"}
 {"id": "1332", "size": 13890, "status": "pass"}
 {"id": "graphs-badvoro", "size": 33949, "status": "diverged", "nDiffs": 33264, "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2655.55 vs 2321.24"}
 {"id": "2239", "size": 48090, "status": "oracle-error", "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K fdp -Txdot /Users/scottseely/git/graphviz/tests/2239.dot"}
@@ -716,47 +715,48 @@
 {"id": "1879", "size": 287816, "status": "diverged", "nDiffs": 19496, "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 18207.16 vs 78856.27"}
 {"id": "2222", "size": 2384469, "status": "oracle-error", "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
 {"id": "2108", "size": 3136769, "status": "timeout"}
-{"id":"regression_tests-shapes-reference-plain","size":121,"status":"pass"}
-{"id":"regression_tests-shapes-reference-plaintext","size":134,"status":"pass"}
-{"id":"2295","size":221,"status":"pass"}
-{"id":"1622_3","size":265,"status":"pass"}
-{"id":"1622_1","size":311,"status":"pass"}
-{"id":"graphs-b","size":338,"status":"pass"}
-{"id":"graphs-b117","size":338,"status":"pass"}
-{"id":"graphs-nhg","size":339,"status":"pass"}
-{"id":"graphs-b22","size":488,"status":"pass"}
-{"id":"1622_0","size":489,"status":"pass"}
-{"id":"2159","size":538,"status":"pass"}
-{"id":"graphs-nul_nul","size":576,"status":"pass"}
-{"id":"graphs-inv_nul","size":588,"status":"pass"}
-{"id":"graphs-inv_inv","size":618,"status":"pass"}
-{"id":"graphs-nul_inv","size":620,"status":"pass"}
-{"id":"graphs-val_nul","size":630,"status":"pass"}
-{"id":"graphs-inv_val","size":636,"status":"pass"}
-{"id":"graphs-nul_val","size":659,"status":"pass"}
-{"id":"graphs-val_inv","size":660,"status":"pass"}
-{"id":"graphs-val_val","size":678,"status":"pass"}
-{"id":"graphs-html","size":738,"status":"diverged","nDiffs":116,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 172.07 vs 181.8"}
-{"id":"graphs-jcctree","size":778,"status":"diverged","nDiffs":521,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 338.8 vs 346.84"}
-{"id":"graphs-shapes","size":840,"status":"pass"}
-{"id":"windows-nhg","size":926,"status":"pass"}
-{"id":"share-nhg","size":938,"status":"pass"}
-{"id":"linux.x86-html_dot","size":1057,"status":"pass"}
-{"id":"nshare-html_dot","size":1058,"status":"pass"}
-{"id":"graphs-shells","size":1102,"status":"diverged","nDiffs":1092,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 745 vs 1005.96"}
-{"id":"graphs-html2","size":1414,"status":"pass"}
-{"id":"linux.x86-html2_dot","size":1945,"status":"pass"}
-{"id":"nshare-html2_dot","size":1946,"status":"pass"}
-{"id":"graphs-sq_rules","size":1979,"status":"pass"}
-{"id":"graphs-rd_rules","size":2043,"status":"pass"}
-{"id":"2242","size":2125,"status":"diverged","nDiffs":757,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 555.68 vs 625.45"}
-{"id":"share-jcctree","size":2612,"status":"pass"}
-{"id":"windows-jcctree","size":2612,"status":"pass"}
-{"id":"1622_2","size":3299,"status":"pass"}
-{"id":"56","size":4247,"status":"diverged","nDiffs":512,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1082.12 vs 923.41"}
-{"id":"nshare-shapes_dot","size":4692,"status":"pass"}
-{"id":"linux.x86-shapes_dot","size":4861,"status":"pass"}
-{"id":"share-shells","size":5493,"status":"pass"}
-{"id":"windows-shells","size":5589,"status":"pass"}
-{"id":"2619_1","size":6721,"status":"pass"}
-{"id":"2619_2","size":7596,"status":"pass"}
+{"id": "regression_tests-shapes-reference-plain", "size": 121, "status": "pass"}
+{"id": "regression_tests-shapes-reference-plaintext", "size": 134, "status": "pass"}
+{"id": "2295", "size": 221, "status": "pass"}
+{"id": "1622_3", "size": 265, "status": "pass"}
+{"id": "1622_1", "size": 311, "status": "pass"}
+{"id": "graphs-b", "size": 338, "status": "pass"}
+{"id": "graphs-b117", "size": 338, "status": "pass"}
+{"id": "graphs-nhg", "size": 339, "status": "pass"}
+{"id": "graphs-b22", "size": 488, "status": "pass"}
+{"id": "1622_0", "size": 489, "status": "pass"}
+{"id": "2159", "size": 538, "status": "pass"}
+{"id": "graphs-nul_nul", "size": 576, "status": "pass"}
+{"id": "graphs-inv_nul", "size": 588, "status": "pass"}
+{"id": "graphs-inv_inv", "size": 618, "status": "pass"}
+{"id": "graphs-nul_inv", "size": 620, "status": "pass"}
+{"id": "graphs-val_nul", "size": 630, "status": "pass"}
+{"id": "graphs-inv_val", "size": 636, "status": "pass"}
+{"id": "graphs-nul_val", "size": 659, "status": "pass"}
+{"id": "graphs-val_inv", "size": 660, "status": "pass"}
+{"id": "graphs-val_val", "size": 678, "status": "pass"}
+{"id": "graphs-html", "size": 738, "status": "diverged", "nDiffs": 116, "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 172.07 vs 181.8"}
+{"id": "graphs-jcctree", "size": 778, "status": "diverged", "nDiffs": 521, "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 338.8 vs 346.84"}
+{"id": "graphs-shapes", "size": 840, "status": "pass"}
+{"id": "windows-nhg", "size": 926, "status": "pass"}
+{"id": "share-nhg", "size": 938, "status": "pass"}
+{"id": "linux.x86-html_dot", "size": 1057, "status": "pass"}
+{"id": "nshare-html_dot", "size": 1058, "status": "pass"}
+{"id": "graphs-shells", "size": 1102, "status": "diverged", "nDiffs": 1092, "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 745 vs 1005.96"}
+{"id": "graphs-html2", "size": 1414, "status": "pass"}
+{"id": "linux.x86-html2_dot", "size": 1945, "status": "pass"}
+{"id": "nshare-html2_dot", "size": 1946, "status": "pass"}
+{"id": "graphs-sq_rules", "size": 1979, "status": "pass"}
+{"id": "graphs-rd_rules", "size": 2043, "status": "pass"}
+{"id": "2242", "size": 2125, "status": "diverged", "nDiffs": 757, "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 555.68 vs 625.45"}
+{"id": "share-jcctree", "size": 2612, "status": "pass"}
+{"id": "windows-jcctree", "size": 2612, "status": "pass"}
+{"id": "1622_2", "size": 3299, "status": "pass"}
+{"id": "56", "size": 4247, "status": "diverged", "nDiffs": 512, "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1082.12 vs 923.41"}
+{"id": "nshare-shapes_dot", "size": 4692, "status": "pass"}
+{"id": "linux.x86-shapes_dot", "size": 4861, "status": "pass"}
+{"id": "share-shells", "size": 5493, "status": "pass"}
+{"id": "windows-shells", "size": 5589, "status": "pass"}
+{"id": "2619_1", "size": 6721, "status": "pass"}
+{"id": "2619_2", "size": 7596, "status": "pass"}
+{"id":"graphs-b53","size":2287,"status":"pass"}

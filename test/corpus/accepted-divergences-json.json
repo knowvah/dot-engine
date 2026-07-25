@@ -1057,13 +1057,6 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-b53",
-      "engine": "fdp",
-      "opClass": "[graph]/_ldraw_[missing]",
-      "delta": 0,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-sl_box",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",

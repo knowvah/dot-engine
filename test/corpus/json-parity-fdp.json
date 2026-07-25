@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-07-24T20:42:50.947Z",
+  "generatedAt": "2026-07-25T04:50:11.573Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "fdp",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 762,
   "counts": {
-    "conformant": 606,
+    "conformant": 607,
     "diverged": 0,
-    "accepted": 152,
+    "accepted": 151,
     "port-error": 0,
     "oracle-error": 4,
     "timeout": 0
@@ -3765,9 +3765,7 @@
       "id": "graphs-b53",
       "path": "graphs/b53.gv",
       "size": 2287,
-      "verdict": "accepted",
-      "diffCount": 1,
-      "firstDiff": "[graph]/_ldraw_[missing]"
+      "verdict": "conformant"
     },
     {
       "id": "share-Heawood",

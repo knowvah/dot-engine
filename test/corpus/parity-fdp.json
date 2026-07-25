@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-07-25T03:57:35.195Z",
+  "generatedAt": "2026-07-25T04:48:55.247Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "fdp",
   "tolerance": 0.5,
   "total": 762,
   "counts": {
-    "pass": 608,
-    "diverged": 149,
+    "pass": 609,
+    "diverged": 148,
     "oracle-error": 3,
     "port-error": 0,
     "timeout": 2
@@ -3846,13 +3846,6 @@
       "status": "pass"
     },
     {
-      "id": "graphs-b53",
-      "size": 2287,
-      "status": "diverged",
-      "nDiffs": 1,
-      "firstDiff": "[graph] _ldraw_ [graph]/_ldraw_[missing]: <absent> vs <present>"
-    },
-    {
       "id": "1332",
       "size": 13890,
       "status": "pass"
@@ -4121,6 +4114,11 @@
     {
       "id": "2619_2",
       "size": 7596,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-b53",
+      "size": 2287,
       "status": "pass"
     }
   ]
