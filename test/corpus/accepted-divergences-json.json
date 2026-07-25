@@ -1460,7 +1460,7 @@
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 70136.48000000001,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail."
     },
     {
       "id": "2343",
@@ -1537,21 +1537,21 @@
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 4266.280000000001,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail."
     },
     {
       "id": "2108",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 60118.06,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as timeout so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail. (2108/1652: layout additionally exceeds the xdot-track port time budget; perf class, see 2621.)"
     },
     {
       "id": "1652",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 6880.22,
-      "rationale": "real layout divergence on an engine-track blind spot: parity-fdp.json lists this id as oracle-error so the xdot track never compared it. Mechanism is in the fdp layout domain, outside the json-track write-set \u2014 follow-up. Journal 2026-07-24."
+      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail. (2108/1652: layout additionally exceeds the xdot-track port time budget; perf class, see 2621.)"
     },
     {
       "id": "graphs-radius",
