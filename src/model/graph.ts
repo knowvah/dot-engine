@@ -106,6 +106,18 @@ export class Graph {
   graphDefaultsSnapshot?: Map<string, string>;
 
   /**
+   * Keys in `attrs` the BUILDER seeded from `graphDefaultsSnapshot` rather than
+   * the input declaring them in this scope (see builder.ts GRAPH_LABEL_INHERIT_
+   * KEYS). cgraph distinguishes these structurally — a seeded value is inherited
+   * through the dict view and has no local symbol, while a local declaration
+   * creates one even when its value equals the inherited value — so the
+   * serializer needs the provenance to decide what write_dict would print.
+   * Undefined on the root graph and on any scope that seeded nothing.
+   * @see lib/cgraph/write.c:262 write_dict
+   */
+  seededAttrs?: Set<string>;
+
+  /**
    * Layout-engine info; replaces GD_* macros via agbindrec (AD-1).
    * @see lib/cgraph/cgraph.h:agbindrec
    */

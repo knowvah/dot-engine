@@ -261,9 +261,16 @@ export class StmtProcessor {
     // copy attrs but not the snapshot. Mirrors cgraph's agsubg defval copy; kept
     // to the keys do_graph_label reads so the blast radius stays in label render.
     // @see lib/common/input.c:do_graph_label (agget label/font*)
+    // The seeded keys are recorded so the -Tdot serializer can tell them from a
+    // genuine local declaration: cgraph gives a local declaration its own dict
+    // symbol (printed by write_dict) even when the value equals the inherited
+    // one, whereas a seeded value must stay invisible. @see src/render/dot.ts
     for (const key of GRAPH_LABEL_INHERIT_KEYS) {
       const v = sg.graphDefaultsSnapshot.get(key);
-      if (v !== undefined && !sg.attrs.has(key)) sg.attrs.set(key, v);
+      if (v !== undefined && !sg.attrs.has(key)) {
+        sg.attrs.set(key, v);
+        (sg.seededAttrs ??= new Set()).add(key);
+      }
     }
     graph.subgraphs.set(sgName, sg);
     return sg;

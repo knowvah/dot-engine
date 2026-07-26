@@ -1,0 +1,10 @@
+{
+  "comment": "Accepted `-Tdot` (agwrite) divergences. Each entry records one (id, engine) pair that is a documented, won't-fix difference for the -Tdot track. The walker (test/corpus/dot-walk.ts) treats a listed pair as verdict 'accepted' rather than 'diverged', excluding it from the diverged bucket while still counting it separately. Entry shape: { id, engine, reason }. Seeded from the 13-id triage smoke taken when the track was built; any addition MUST be referenced in the decision journal.",
+  "divergences": [
+    {
+      "id": "1435",
+      "engine": "dot",
+      "reason": "A8-class numeric: edge:8->10#0/pos differs by 0.30 on one spline (`s,377.76,150 e,230.46,150 ...` vs native `s,377.54,150 e,230.24,150 ...`). PRE-EXISTING and not agwrite-related \u2014 `pos` comes from the shared formatEdgePos, so the same value feeds -Txdot. Follow-up: confirm whether the xdot track sees it too or accepts/errors this id; if xdot compares it cleanly the two comparators disagree and that is the real bug."
+    }
+  ]
+}
