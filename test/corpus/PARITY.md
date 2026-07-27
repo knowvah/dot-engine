@@ -26,13 +26,13 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 | [twopi (xdot)](./PARITY-twopi.md) | 762 | 746 | 0 | 14 | 2 | 97.9% |
 | [osage (xdot)](./PARITY-osage.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
 | [patchwork (xdot)](./PARITY-patchwork.md) | 762 | 762 | 0 | 0 | 0 | 100.0% |
-| [dot (imagemap)](./PARITY-MAP.md) | 761 | 755 | 0 | 0 | 6 | 99.2% |
-| [dot (plain)](./PARITY-dot-plain.md) | 762 | 754 | 0 | 7 | 1 | 99.0% |
+| [dot (imagemap)](./PARITY-MAP.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
+| [dot (plain)](./PARITY-dot-plain.md) | 905 | 897 | 0 | 8 | 0 | 99.1% |
 | [circo (plain)](./PARITY-circo-plain.md) | 762 | 731 | 0 | 10 | 21 | 95.9% |
 | [twopi (plain)](./PARITY-twopi-plain.md) | 762 | 731 | 0 | 21 | 10 | 95.9% |
 | [osage (plain)](./PARITY-osage-plain.md) | 762 | 747 | 0 | 14 | 1 | 98.0% |
 | [patchwork (plain)](./PARITY-patchwork-plain.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
-| [dot (dot)](./PARITY-dot-dot.md) | 762 | 761 | 0 | 0 | 1 | 99.9% |
+| [dot (dot)](./PARITY-dot-dot.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [circo (json)](./PARITY-circo-json.md) | 762 | 750 | 0 | 6 | 6 | 98.4% |
 | [twopi (json)](./PARITY-twopi-json.md) | 762 | 744 | 0 | 16 | 2 | 97.6% |
 | [osage (json)](./PARITY-osage-json.md) | 762 | 750 | 0 | 12 | 0 | 98.4% |
