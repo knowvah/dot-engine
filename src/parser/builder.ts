@@ -187,6 +187,28 @@ export class StmtProcessor {
     return swap ? `${head.id}\u0000${tail.id}` : `${tail.id}\u0000${head.id}`;
   }
 
+  /**
+   * Apply the DOT-syntax `:port:compass` endpoints to an edge's attrs.
+   *
+   * C's precedence is explicit attr > `:port` syntax > edge default (verified
+   * against the oracle: with `edge [headport=n]` declared, `a:e -> b:sw` yields
+   * headport `sw`, while `c:e -> d:sw [headport=w]` yields `w`). The guard is
+   * therefore against THIS statement's own attribute list — not the edge's
+   * accumulated map, which also holds inherited defaults and, for a strict
+   * duplicate, the earlier statement's values.
+   * @see lib/cgraph/grammar.y:396 (mkport)
+   */
+  private static applySyntaxPorts(
+    target: Map<string, string>,
+    stmtAttrs: AttrPair[],
+    tailPort: string,
+    headPort: string,
+  ): void {
+    const setByStmt = (k: string): boolean => stmtAttrs.some((a) => a.key === k);
+    if (tailPort && !setByStmt('tailport')) target.set('tailport', tailPort);
+    if (headPort && !setByStmt('headport')) target.set('headport', headPort);
+  }
+
   /** Consume one anonymous id, returning cgraph's `2*counter+1`. */
   private nextAnonId(): number {
     return this.anonCounter++ * 2 + 1;
@@ -393,8 +415,7 @@ export class StmtProcessor {
           // here — that counter drives sibling subgraphs' `%N` names.
           // @see lib/cgraph/edge.c:agedge:276-277
           applyAttrs(attrs, existing.attrs);
-          if (tailPort && !existing.attrs.has('tailport')) existing.attrs.set('tailport', tailPort);
-          if (headPort && !existing.attrs.has('headport')) existing.attrs.set('headport', headPort);
+          StmtProcessor.applySyntaxPorts(existing.attrs, attrs, tailPort, headPort);
           // subedge: the pre-existing edge joins any enclosing subgraph that
           // does not already hold it. @see lib/cgraph/edge.c:agedge:283
           for (let g: Graph | null = graph; g !== null && g !== root; g = g.parent) {
@@ -407,9 +428,12 @@ export class StmtProcessor {
         const edge = new Edge(tail, head, '');
         this.advanceAnonId(); // keyless edge = anonymous cgraph id (see method)
         applyAttrs(attrs, edge.attrs);
+        // Syntax ports BEFORE the defaults snapshot: C's precedence is
+        // explicit attr > `:port` syntax > edge default. Seeding the defaults
+        // first made the `!has` guard below true for a declared
+        // `edge [headport=…]`, silently dropping every `a:w -> b:e` port.
+        StmtProcessor.applySyntaxPorts(edge.attrs, attrs, tailPort, headPort);
         this.snapshotEdgeDefaults(edge, graph);
-        if (tailPort && !edge.attrs.has('tailport')) edge.attrs.set('tailport', tailPort);
-        if (headPort && !edge.attrs.has('headport')) edge.attrs.set('headport', headPort);
         if (strict) this.strictEdges.set(key, edge);
         root.edges.push(edge);
         edge.graphSeq = root.edges.length;

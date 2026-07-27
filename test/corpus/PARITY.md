@@ -21,7 +21,7 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 |---|---:|---:|---:|---:|---:|---:|
 | [dot (SVG)](./PARITY-dot.md) | 939 | 905 | 6 | 16 | 12 | 96.4% |
 | [dot (xdot)](./PARITY-XDOT.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
-| [dot (json)](./PARITY-JSON.md) | 761 | 759 | 0 | 2 | 0 | 99.7% |
+| [dot (json)](./PARITY-JSON.md) | 905 | 903 | 0 | 2 | 0 | 99.8% |
 | [circo (xdot)](./PARITY-circo.md) | 762 | 752 | 0 | 4 | 6 | 98.7% |
 | [twopi (xdot)](./PARITY-twopi.md) | 762 | 746 | 0 | 14 | 2 | 97.9% |
 | [osage (xdot)](./PARITY-osage.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
@@ -75,13 +75,13 @@ bar above.
 
 How faithfully the port renders each input across all three deterministic
 dot outputs, joined by id. xdot and json survey the SVG-conformant roster,
-so this is the intersection (761 inputs); an input is *conformant in all
+so this is the intersection (905 inputs); an input is *conformant in all
 three* only when every format agrees with the oracle within tolerance.
 
 | status across SVG · xdot · json | count | % |
 |---|---:|---:|
-| conformant in all three | 759 | 99.7% |
-| accepted (won't-fix) in ≥1, diverged in none | 2 | 0.3% |
+| conformant in all three | 903 | 99.8% |
+| accepted (won't-fix) in ≥1, diverged in none | 2 | 0.2% |
 | diverged / errored in ≥1 | 0 | 0.0% |
 
 Per-format status of the ids not conformant in all three:
