@@ -1,0 +1,12 @@
+// @knowvah/dot-engine reference input: graph `phase` attribute stops the
+// pipeline after dot_position (phase 3) — ranks and coordinates are computed
+// but dot_splines never runs, so edges are absent from the drawing.
+// The C local is called maxphase; the ATTRIBUTE is `phase`.
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    phase=3;
+    a -> b -> c;
+    a -> c;
+    b -> d;
+}
