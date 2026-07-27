@@ -12,8 +12,8 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 762
-- **pass:** 759 (99.6%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
-- **errors (oracle/port/timeout, excluded from scoring):** 3
+- **pass:** 761 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
+- **errors (oracle/port/timeout, excluded from scoring):** 1
 
 ## Diverged (0)
 
@@ -23,13 +23,11 @@ _(none)_
 
 _(none)_
 
-## Errors and timeouts (3)
+## Errors and timeouts (1)
 
 | id | message |
 |---|---|
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) |  |
-| [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) |  |
-| [`2343`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2343.dot) |  |
 
-_Passing ids (759) are omitted for brevity — the full roster is in
+_Passing ids (761) are omitted for brevity — the full roster is in
 `dot-parity-dot.json`._

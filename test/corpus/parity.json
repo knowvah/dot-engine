@@ -1,18 +1,791 @@
 {
-  "generatedAt": "2026-07-16T19:14:38.263Z",
+  "generatedAt": "2026-07-27T13:26:01.980Z",
   "generatedWith": "test/corpus/survey.ts",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 788,
+  "total": 939,
   "counts": {
-    "conformant": 762,
-    "structural-match": 14,
-    "diverged": 2,
+    "conformant": 900,
+    "structural-match": 19,
+    "diverged": 8,
     "errored": 0,
     "timeout": 0,
-    "oracle-error": 10
+    "oracle-error": 12
   },
   "results": [
+    {
+      "id": "tree-contrib-dirgraph-apache",
+      "path": "../contrib/dirgraph/apache.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-contrib-dirgraph-bsdarch",
+      "path": "../contrib/dirgraph/bsdarch.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-contrib-dirgraph-bsdkernel",
+      "path": "../contrib/dirgraph/bsdkernel.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-contrib-dirgraph-linux",
+      "path": "../contrib/dirgraph/linux.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-contrib-dirgraph-named",
+      "path": "../contrib/dirgraph/named.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-contrib-java-dot-uml",
+      "path": "../contrib/java-dot/uml.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-contrib-prune-test",
+      "path": "../contrib/prune/test.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-contrib-sdlshapes-sdlshapes",
+      "path": "../contrib/sdlshapes/sdlshapes.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-Mcircle",
+      "path": "../doc/dotguide/Mcircle.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-Mdiamond",
+      "path": "../doc/dotguide/Mdiamond.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-Mrecord",
+      "path": "../doc/dotguide/Mrecord.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-Msquare",
+      "path": "../doc/dotguide/Msquare.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-asde91",
+      "path": "../doc/dotguide/asde91.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-box",
+      "path": "../doc/dotguide/box.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-boxarrow",
+      "path": "../doc/dotguide/boxarrow.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-circle",
+      "path": "../doc/dotguide/circle.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-clust1",
+      "path": "../doc/dotguide/clust1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-clust2",
+      "path": "../doc/dotguide/clust2.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-compound",
+      "path": "../doc/dotguide/compound.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-constraint",
+      "path": "../doc/dotguide/constraint.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-crow",
+      "path": "../doc/dotguide/crow.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-curve",
+      "path": "../doc/dotguide/curve.dot",
+      "verdict": "structural-match",
+      "maxDelta": 0.379999999999999,
+      "maxDeltaPath": "svg/g[1]/g[3]/path[2]/@d[5]"
+    },
+    {
+      "id": "tree-doc-dotguide-diamond",
+      "path": "../doc/dotguide/diamond.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-diamondarrow",
+      "path": "../doc/dotguide/diamondarrow.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-dot",
+      "path": "../doc/dotguide/dot.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-doublecircle",
+      "path": "../doc/dotguide/doublecircle.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-doubleoctagon",
+      "path": "../doc/dotguide/doubleoctagon.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-egg",
+      "path": "../doc/dotguide/egg.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-ellipse",
+      "path": "../doc/dotguide/ellipse.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-fsm",
+      "path": "../doc/dotguide/fsm.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-graph1",
+      "path": "../doc/dotguide/graph1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-graph2",
+      "path": "../doc/dotguide/graph2.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-hashtable",
+      "path": "../doc/dotguide/hashtable.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-hexagon",
+      "path": "../doc/dotguide/hexagon.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-house",
+      "path": "../doc/dotguide/house.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-html",
+      "path": "../doc/dotguide/html.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-icurve",
+      "path": "../doc/dotguide/icurve.dot",
+      "verdict": "structural-match",
+      "maxDelta": 0.3800000000000008,
+      "maxDeltaPath": "svg/g[1]/g[3]/path[2]/@d[3]"
+    },
+    {
+      "id": "tree-doc-dotguide-inv",
+      "path": "../doc/dotguide/inv.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-invdot",
+      "path": "../doc/dotguide/invdot.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-invhouse",
+      "path": "../doc/dotguide/invhouse.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-invodot",
+      "path": "../doc/dotguide/invodot.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-invtrapezium",
+      "path": "../doc/dotguide/invtrapezium.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-invtriangle",
+      "path": "../doc/dotguide/invtriangle.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-no_arrow",
+      "path": "../doc/dotguide/no_arrow.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-none",
+      "path": "../doc/dotguide/none.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-normal",
+      "path": "../doc/dotguide/normal.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-octagon",
+      "path": "../doc/dotguide/octagon.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-odot",
+      "path": "../doc/dotguide/odot.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-oinvdot",
+      "path": "../doc/dotguide/oinvdot.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-parallelogram",
+      "path": "../doc/dotguide/parallelogram.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-plaintext",
+      "path": "../doc/dotguide/plaintext.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-point",
+      "path": "../doc/dotguide/point.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-poly",
+      "path": "../doc/dotguide/poly.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-polygon",
+      "path": "../doc/dotguide/polygon.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-record",
+      "path": "../doc/dotguide/record.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-recordex",
+      "path": "../doc/dotguide/recordex.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-smlred",
+      "path": "../doc/dotguide/smlred.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-tee",
+      "path": "../doc/dotguide/tee.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-trapezium",
+      "path": "../doc/dotguide/trapezium.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-tree",
+      "path": "../doc/dotguide/tree.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-triangle",
+      "path": "../doc/dotguide/triangle.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-tripleoctagon",
+      "path": "../doc/dotguide/tripleoctagon.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-vee",
+      "path": "../doc/dotguide/vee.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-back",
+      "path": "../doc/infosrc/back.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-both",
+      "path": "../doc/infosrc/both.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-colorlist",
+      "path": "../doc/infosrc/colorlist.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-constraint",
+      "path": "../doc/infosrc/constraint.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-fill",
+      "path": "../doc/infosrc/fill.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "path": "../doc/infosrc/fixed.gv",
+      "verdict": "structural-match",
+      "maxDelta": 111.27000000000001,
+      "maxDeltaPath": "svg/g[1]/g[2]/ellipse[1]/@rx"
+    },
+    {
+      "id": "tree-doc-infosrc-forward",
+      "path": "../doc/infosrc/forward.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-mrecord",
+      "path": "../doc/infosrc/mrecord.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-nohead",
+      "path": "../doc/infosrc/nohead.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-plugins",
+      "path": "../doc/infosrc/plugins.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-round",
+      "path": "../doc/infosrc/round.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-sdlshapes",
+      "path": "../doc/infosrc/sdlshapes.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-tee",
+      "path": "../doc/infosrc/tee.gv",
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiffPath": "svg/g[1]/g[1][childCount]"
+    },
+    {
+      "id": "tree-doc-neato-ER",
+      "path": "../doc/neato/ER.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-neato-G4_lenwt",
+      "path": "../doc/neato/G4_lenwt.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-neato-G4_orig",
+      "path": "../doc/neato/G4_orig.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-neato-G4_pinned",
+      "path": "../doc/neato/G4_pinned.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-neato-fancy",
+      "path": "../doc/neato/fancy.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-neato-inet",
+      "path": "../doc/neato/inet.dot",
+      "verdict": "diverged",
+      "maxDelta": 41,
+      "firstDiffPath": "svg/g[1][childCount]",
+      "maxDeltaPath": "svg/@viewBox[2]"
+    },
+    {
+      "id": "tree-doc-neato-jho",
+      "path": "../doc/neato/jho.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-neato-process",
+      "path": "../doc/neato/process.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-neato-typeshar",
+      "path": "../doc/neato/typeshar.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-KW91",
+      "path": "../graphs/directed/KW91.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "path": "../graphs/directed/Latin1.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-NaN",
+      "path": "../graphs/directed/NaN.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-abstract",
+      "path": "../graphs/directed/abstract.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-alf",
+      "path": "../graphs/directed/alf.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-arr_none",
+      "path": "../graphs/directed/arr_none.gv",
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiffPath": "svg/g[1]/g[3][childCount]"
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "path": "../graphs/directed/arrows.gv",
+      "verdict": "structural-match",
+      "maxDelta": 0.25,
+      "maxDeltaPath": "svg/g[1]/g[156]/path[2]/@d[3]"
+    },
+    {
+      "id": "tree-graphs-directed-awilliams",
+      "path": "../graphs/directed/awilliams.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-biological",
+      "path": "../graphs/directed/biological.gv",
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiffPath": "svg/g[1]/g[2]/text[1]/@fill"
+    },
+    {
+      "id": "tree-graphs-directed-clust",
+      "path": "../graphs/directed/clust.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-clust1",
+      "path": "../graphs/directed/clust1.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-clust2",
+      "path": "../graphs/directed/clust2.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-clust3",
+      "path": "../graphs/directed/clust3.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-clust4",
+      "path": "../graphs/directed/clust4.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-clust5",
+      "path": "../graphs/directed/clust5.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-crazy",
+      "path": "../graphs/directed/crazy.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-ctext",
+      "path": "../graphs/directed/ctext.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-dfa",
+      "path": "../graphs/directed/dfa.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-fig6",
+      "path": "../graphs/directed/fig6.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-fsm",
+      "path": "../graphs/directed/fsm.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-grammar",
+      "path": "../graphs/directed/grammar.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-hashtable",
+      "path": "../graphs/directed/hashtable.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-honda-tokoro",
+      "path": "../graphs/directed/honda-tokoro.gv",
+      "verdict": "structural-match",
+      "maxDelta": 1.0600000000000023,
+      "maxDeltaPath": "svg/g[1]/g[35]/path[1]/@d[5]"
+    },
+    {
+      "id": "tree-graphs-directed-japanese",
+      "path": "../graphs/directed/japanese.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-jcctree",
+      "path": "../graphs/directed/jcctree.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-jsort",
+      "path": "../graphs/directed/jsort.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-ldbxtried",
+      "path": "../graphs/directed/ldbxtried.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-longflat",
+      "path": "../graphs/directed/longflat.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-mike",
+      "path": "../graphs/directed/mike.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-nhg",
+      "path": "../graphs/directed/nhg.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-oldarrows",
+      "path": "../graphs/directed/oldarrows.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-pgram",
+      "path": "../graphs/directed/pgram.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-pm2way",
+      "path": "../graphs/directed/pm2way.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-pmpipe",
+      "path": "../graphs/directed/pmpipe.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-polypoly",
+      "path": "../graphs/directed/polypoly.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-proc3d",
+      "path": "../graphs/directed/proc3d.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-psfonttest",
+      "path": "../graphs/directed/psfonttest.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-record2",
+      "path": "../graphs/directed/record2.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-records",
+      "path": "../graphs/directed/records.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-rowe",
+      "path": "../graphs/directed/rowe.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-russian",
+      "path": "../graphs/directed/russian.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-sdh",
+      "path": "../graphs/directed/sdh.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-shells",
+      "path": "../graphs/directed/shells.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-states",
+      "path": "../graphs/directed/states.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-switch",
+      "path": "../graphs/directed/switch.gv",
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiffPath": "svg/g[1][childCount]"
+    },
+    {
+      "id": "tree-graphs-directed-table",
+      "path": "../graphs/directed/table.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-train11",
+      "path": "../graphs/directed/train11.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-trapeziumlr",
+      "path": "../graphs/directed/trapeziumlr.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-tree",
+      "path": "../graphs/directed/tree.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-triedds",
+      "path": "../graphs/directed/triedds.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-try",
+      "path": "../graphs/directed/try.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-unix",
+      "path": "../graphs/directed/unix.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-unix2",
+      "path": "../graphs/directed/unix2.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-viewfile",
+      "path": "../graphs/directed/viewfile.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-world",
+      "path": "../graphs/directed/world.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-undirected-ER",
+      "path": "../graphs/undirected/ER.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-undirected-Heawood",
+      "path": "../graphs/undirected/Heawood.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-undirected-Petersen",
+      "path": "../graphs/undirected/Petersen.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-undirected-ngk10_4",
+      "path": "../graphs/undirected/ngk10_4.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-undirected-process",
+      "path": "../graphs/undirected/process.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-share-examples-4elt",
+      "path": "../share/examples/4elt.gv",
+      "verdict": "oracle-error",
+      "errMsg": "oracle exit null"
+    },
+    {
+      "id": "tree-share-examples-world",
+      "path": "../share/examples/world.gv",
+      "verdict": "oracle-error",
+      "errMsg": "oracle exit null"
+    },
+    {
+      "id": "tree-tclpkg-gv-hello",
+      "path": "../tclpkg/gv/hello.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-tclpkg-tcldot-examples-data-demo",
+      "path": "../tclpkg/tcldot/examples/data/demo.gv",
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-tclpkg-tcldot-examples-data-poly",
+      "path": "../tclpkg/tcldot/examples/data/poly.gv",
+      "verdict": "conformant"
+    },
     {
       "id": "121",
       "path": "121.dot",
@@ -725,6 +1498,14 @@
       "id": "2620",
       "path": "2620.dot",
       "verdict": "conformant"
+    },
+    {
+      "id": "2621",
+      "path": "2621.dot",
+      "verdict": "diverged",
+      "maxDelta": 18188.6,
+      "firstDiffPath": "svg/g[1]/g[14]/path[1]/@d",
+      "maxDeltaPath": "svg/g[1]/g[2520]/path[1]/@d[107]"
     },
     {
       "id": "2636",

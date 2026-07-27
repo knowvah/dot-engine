@@ -19,7 +19,7 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 
 | track | surveyed | conformant / pass | diverged | accepted | errors | pass % |
 |---|---:|---:|---:|---:|---:|---:|
-| [dot (SVG)](./PARITY-dot.md) | 788 | 762 | 0 | 16 | 10 | 96.7% |
+| [dot (SVG)](./PARITY-dot.md) | 939 | 900 | 11 | 16 | 12 | 95.8% |
 | [dot (xdot)](./PARITY-XDOT.md) | 761 | 761 | 0 | 0 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 761 | 759 | 0 | 2 | 0 | 99.7% |
 | [circo (xdot)](./PARITY-circo.md) | 762 | 752 | 0 | 4 | 6 | 98.7% |
@@ -32,7 +32,7 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 | [twopi (plain)](./PARITY-twopi-plain.md) | 762 | 731 | 0 | 21 | 10 | 95.9% |
 | [osage (plain)](./PARITY-osage-plain.md) | 762 | 747 | 0 | 14 | 1 | 98.0% |
 | [patchwork (plain)](./PARITY-patchwork-plain.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
-| [dot (dot)](./PARITY-dot-dot.md) | 762 | 759 | 0 | 0 | 3 | 99.6% |
+| [dot (dot)](./PARITY-dot-dot.md) | 762 | 761 | 0 | 0 | 1 | 99.9% |
 | [circo (json)](./PARITY-circo-json.md) | 762 | 750 | 0 | 6 | 6 | 98.4% |
 | [twopi (json)](./PARITY-twopi-json.md) | 762 | 744 | 0 | 16 | 2 | 97.6% |
 | [osage (json)](./PARITY-osage-json.md) | 762 | 750 | 0 | 12 | 0 | 98.4% |
@@ -94,18 +94,18 @@ Per-format status of the ids not conformant in all three:
 
 ## Goldens
 
-211 pinned golden inputs (`test/golden/manifest.json`), by engine:
+232 pinned golden inputs (`test/golden/manifest.json`), by engine:
 
 | engine | goldens |
 |---|---:|
-| dot | 160 |
-| neato | 8 |
+| dot | 172 |
+| neato | 14 |
 | fdp | 7 |
 | sfdp | 6 |
-| circo | 8 |
+| circo | 10 |
 | twopi | 8 |
 | osage | 7 |
-| patchwork | 7 |
+| patchwork | 8 |
 
 The golden xdot suite gates these in CI (`test/golden/xdot-suite.test.ts`).
 
