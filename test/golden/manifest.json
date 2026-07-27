@@ -1724,5 +1724,77 @@
     "input": "test/golden/inputs/dot-mclimit.dot",
     "reference": "test/golden/refs/dot-mclimit.svg",
     "description": "mclimit=0.01 truncates the mincross search, changing node order vs the default; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-fontnames-svg",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-fontnames-svg.dot",
+    "reference": "test/golden/refs/dot-fontnames-svg.svg",
+    "description": "fontnames=svg selects the generic SVG family and svg_font_* fields; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-fontnames-ps",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-fontnames-ps.dot",
+    "reference": "test/golden/refs/dot-fontnames-ps.svg",
+    "description": "fontnames=ps uses the PostScript name as the SVG font-family; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-labelfloat",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-labelfloat.dot",
+    "reference": "test/golden/refs/dot-labelfloat.svg",
+    "description": "labelfloat=true (no underscore) sets ED_label_ontop; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-labelfontname",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-labelfontname.dot",
+    "reference": "test/golden/refs/dot-labelfontname.svg",
+    "description": "labelfontname/labelfontsize on head+tail labels; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-landscape",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-landscape.dot",
+    "reference": "test/golden/refs/dot-landscape.svg",
+    "description": "landscape=true rotates the drawing 90 degrees; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-layerlistsep",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-layerlistsep.dot",
+    "reference": "test/golden/refs/dot-layerlistsep.svg",
+    "description": "layerlistsep delimits a node's layer LIST; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-quantum",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-quantum.dot",
+    "reference": "test/golden/refs/dot-quantum.svg",
+    "description": "quantum rounds node dimensions up to a multiple; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-resolution",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-resolution.dot",
+    "reference": "test/golden/refs/dot-resolution.svg",
+    "description": "resolution overrides device DPI; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-samplepoints",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-samplepoints.dot",
+    "reference": "test/golden/refs/dot-samplepoints.svg",
+    "description": "samplepoints node attribute \u2014 ellipse vertex count; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
   }
 ]

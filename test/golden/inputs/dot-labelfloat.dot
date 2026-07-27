@@ -1,0 +1,10 @@
+// @knowvah/dot-engine reference input: labelfloat=true (NO underscore) sets
+// ED_label_ontop, letting the edge label overlap the spline instead of
+// reserving space for it. @see lib/common/input.c:770 / utils.c:522
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    a -> b [label="L", labelfloat=true];
+    a -> c [label="M"];
+    b -> c;
+}

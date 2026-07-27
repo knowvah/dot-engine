@@ -1,0 +1,10 @@
+// @knowvah/dot-engine reference input: quantum rounds node dimensions up to a
+// multiple of the given value. @see lib/common/graph-init.ts
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    quantum=0.5;
+    a [label="wide label here"];
+    b;
+    a -> b;
+}

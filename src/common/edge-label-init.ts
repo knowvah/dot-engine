@@ -145,8 +145,15 @@ function applyLabel(e: Edge, g: Graph, fi: FontInfo, measurer: TextMeasurer): vo
   e.info.label = makeAnyLabel(content, isHtml, fi, measurer, e);
   g.root.info.has_labels |= EDGE_LABEL;
   // ED_label_ontop: mapbool(late_string(e, E_label_float, "false"))
-  // @see lib/common/utils.c:522
-  e.info.label_ontop = mapbool(e.attrs.get('label_float')) ? 1 : 0;
+  //
+  // The user-facing attribute is `labelfloat`, with no underscore — that is the
+  // name E_label_float is BOUND from (input.c:770). `label_float` (underscore)
+  // appears only at dotsplines.c:738, where it is rebound against the internal
+  // aux graph. Reading the underscored name here honoured an attribute C
+  // ignores and ignored the one it honours; no corpus graph declares either, so
+  // no parity track could see it (test/corpus/attr-frequency.ts).
+  // @see lib/common/utils.c:522 · lib/common/input.c:770
+  e.info.label_ontop = mapbool(e.attrs.get('labelfloat')) ? 1 : 0;
 }
 
 // ---------------------------------------------------------------------------

@@ -330,7 +330,7 @@ export function svgTextspan(pos: Point, span: TextSpan, job: RenderJob): void {
   job.write('" y="');
   job.printDouble(y);
   job.write('"');
-  const ff = fontFamilyAttrs(span.fontName);
+  const ff = fontFamilyAttrs(span.fontName, job.fontnames);
   if (ff !== null) job.write(ff.attrs);
   else job.write(' font-family="' + escapeXml(span.fontName ?? 'Times,serif') + '"');
   emitFontAttrs(span.fontFlags, job, ff ?? { weight: false, style: false });

@@ -1,0 +1,12 @@
+// @knowvah/dot-engine reference input: layerlistsep sets the delimiter for a
+// NODE`s layer LIST (layer="a|c"), distinct from layersep which splits the
+// graph`s layers= string. @see lib/common/emit.c:1046
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    layers="a:b:c";
+    layerlistsep="|";
+    a [layer="a|c"];
+    b [layer=b];
+    a -> b;
+}

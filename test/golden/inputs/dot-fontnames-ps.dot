@@ -1,0 +1,10 @@
+// @knowvah/dot-engine reference input: fontnames=ps uses the PostScript name
+// itself as the SVG font-family. @see gvrender_core_svg.c:464
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    fontnames="ps";
+    a [label="Hi", fontname="Helvetica-Bold"];
+    b [label="It", fontname="Courier-Oblique"];
+    a -> b;
+}

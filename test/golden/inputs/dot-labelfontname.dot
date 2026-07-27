@@ -1,0 +1,8 @@
+// @knowvah/dot-engine reference input: labelfontname/labelfontsize apply to
+// HEAD and TAIL labels (not the main edge label).
+// @see lib/common/input.c:775 / edge-label-init initFontLabelEdgeAttr
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    a -> b [headlabel="H", taillabel="T", labelfontname="Courier", labelfontsize=18];
+}
