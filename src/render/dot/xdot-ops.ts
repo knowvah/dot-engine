@@ -303,11 +303,24 @@ export function xdotStrOp(prefix: string, s: string): string {
  * doubling it (`\\n`) would change the name (`a\n(b\n"c")` must stay `a\n…`, not
  * `a\\n…`). Over-quoting a value native leaves bare is harmless: both parse to
  * the same name. @see lib/cgraph/write.c:_agstrcanon (escapes '"', keeps '\')
+ *
+ * ONE DELIBERATE DIVERGENCE from _agstrcanon: an ODD trailing backslash run is
+ * padded to even. C copies it verbatim and appends the closing quote, so a name
+ * ending in a single `\` serializes as `"a\"` — the backslash escapes the quote
+ * and the output does not reparse. The DOT lexer cannot produce such a name
+ * (source `"a\"` never terminates), so this is unreachable from any file and no
+ * corpus id changes; it is reachable only through the programmatic API, where a
+ * caller supplies the string directly. Padding costs a name that round-trips to
+ * `a\\` instead of `a\`, which beats emitting a document that cannot be parsed.
+ * @see CodeQL "Incomplete string escaping or encoding" — the alert's own remedy
+ *      (escape every `\`) is wrong here and breaks `\n`/`\l` parity.
  */
 export function xdotId(s: string): string {
   if (/^[A-Za-z_][A-Za-z_0-9]*$/.test(s)) return s;
   if (/^-?(\.[0-9]+|[0-9]+(\.[0-9]*)?)$/.test(s)) return s;
-  return '"' + s.replace(/"/g, '\\"') + '"';
+  const body = s.replace(/"/g, '\\"');
+  const trailingBackslashes = /\\*$/.exec(body)![0].length;
+  return '"' + body + (trailingBackslashes % 2 === 1 ? '\\' : '') + '"';
 }
 
 /**
