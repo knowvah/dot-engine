@@ -1,0 +1,8 @@
+// @knowvah/dot-engine reference input: neato overlap_scaling scales the PRISM overlap-removal step
+// engine: neato
+// tolerance: iterative
+digraph G {
+    overlap=prism; overlap_scaling=-5;
+    a -> b -> c -> d -> a;
+    a -> c; b -> d; d -> e; e -> f; f -> a;
+}

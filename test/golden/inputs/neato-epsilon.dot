@@ -1,0 +1,8 @@
+// @knowvah/dot-engine reference input: neato epsilon sets the stress-majorization convergence threshold
+// engine: neato
+// tolerance: iterative
+digraph G {
+    epsilon=0.1;
+    a -> b -> c -> d -> a;
+    a -> c; b -> d; d -> e; e -> f; f -> a;
+}

@@ -1,0 +1,8 @@
+// @knowvah/dot-engine reference input: neato maxiter caps the stress-majorization iteration count
+// engine: neato
+// tolerance: iterative
+digraph G {
+    maxiter=2;
+    a -> b -> c -> d -> a;
+    a -> c; b -> d; d -> e; e -> f; f -> a;
+}

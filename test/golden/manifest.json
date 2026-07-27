@@ -1820,5 +1820,53 @@
     "input": "test/golden/inputs/patchwork-inset.dot",
     "reference": "test/golden/refs/patchwork-inset.svg",
     "description": "patchwork inset shrinks each cell; ref: graphviz 15.0.0 -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "neato-epsilon",
+    "engine": "neato",
+    "toleranceClass": "iterative",
+    "input": "test/golden/inputs/neato-epsilon.dot",
+    "reference": "test/golden/refs/neato-epsilon.svg",
+    "description": "epsilon sets the stress convergence threshold; ref: graphviz 15.0.0 neato -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "neato-maxiter",
+    "engine": "neato",
+    "toleranceClass": "iterative",
+    "input": "test/golden/inputs/neato-maxiter.dot",
+    "reference": "test/golden/refs/neato-maxiter.svg",
+    "description": "maxiter caps stress-majorization iterations; ref: graphviz 15.0.0 neato -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "neato-start",
+    "engine": "neato",
+    "toleranceClass": "iterative",
+    "input": "test/golden/inputs/neato-start.dot",
+    "reference": "test/golden/refs/neato-start.svg",
+    "description": "start seeds the initial random placement; ref: graphviz 15.0.0 neato -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "neato-overlap-scaling",
+    "engine": "neato",
+    "toleranceClass": "iterative",
+    "input": "test/golden/inputs/neato-overlap-scaling.dot",
+    "reference": "test/golden/refs/neato-overlap-scaling.svg",
+    "description": "overlap_scaling scales the PRISM overlap-removal step; ref: graphviz 15.0.0 neato -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "neato-overlap-shrink",
+    "engine": "neato",
+    "toleranceClass": "iterative",
+    "input": "test/golden/inputs/neato-overlap-shrink.dot",
+    "reference": "test/golden/refs/neato-overlap-shrink.svg",
+    "description": "overlap_shrink toggles the PRISM shrink pass; ref: graphviz 15.0.0 neato -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "neato-pin",
+    "engine": "neato",
+    "toleranceClass": "iterative",
+    "input": "test/golden/inputs/neato-pin.dot",
+    "reference": "test/golden/refs/neato-pin.svg",
+    "description": "pin=true holds a node at its pos=; ref: graphviz 15.0.0 neato -Tsvg; closes an attr-frequency blind spot"
   }
 ]

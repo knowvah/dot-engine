@@ -1,0 +1,10 @@
+// @knowvah/dot-engine reference input: neato pin=true holds a node at its
+// pos= instead of letting the solver move it.
+// engine: neato
+// tolerance: iterative
+digraph G {
+    a [pos="10,10", pin=true];
+    b [pos="20,20"];
+    c;
+    a -> b; b -> c; c -> a;
+}
