@@ -1,5 +1,940 @@
 [
   {
+    "id": "tree-contrib-dirgraph-apache",
+    "path": "../contrib/dirgraph/apache.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-contrib-dirgraph-bsdarch",
+    "path": "../contrib/dirgraph/bsdarch.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-contrib-dirgraph-bsdkernel",
+    "path": "../contrib/dirgraph/bsdkernel.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-contrib-dirgraph-linux",
+    "path": "../contrib/dirgraph/linux.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-contrib-dirgraph-named",
+    "path": "../contrib/dirgraph/named.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-contrib-java-dot-uml",
+    "path": "../contrib/java-dot/uml.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-contrib-prune-test",
+    "path": "../contrib/prune/test.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-contrib-sdlshapes-sdlshapes",
+    "path": "../contrib/sdlshapes/sdlshapes.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-Mcircle",
+    "path": "../doc/dotguide/Mcircle.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-Mdiamond",
+    "path": "../doc/dotguide/Mdiamond.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-Mrecord",
+    "path": "../doc/dotguide/Mrecord.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-Msquare",
+    "path": "../doc/dotguide/Msquare.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-asde91",
+    "path": "../doc/dotguide/asde91.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-box",
+    "path": "../doc/dotguide/box.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-boxarrow",
+    "path": "../doc/dotguide/boxarrow.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-circle",
+    "path": "../doc/dotguide/circle.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-clust1",
+    "path": "../doc/dotguide/clust1.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-clust2",
+    "path": "../doc/dotguide/clust2.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-compound",
+    "path": "../doc/dotguide/compound.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-constraint",
+    "path": "../doc/dotguide/constraint.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-crow",
+    "path": "../doc/dotguide/crow.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-curve",
+    "path": "../doc/dotguide/curve.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-diamond",
+    "path": "../doc/dotguide/diamond.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-diamondarrow",
+    "path": "../doc/dotguide/diamondarrow.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-dot",
+    "path": "../doc/dotguide/dot.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-doublecircle",
+    "path": "../doc/dotguide/doublecircle.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-doubleoctagon",
+    "path": "../doc/dotguide/doubleoctagon.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-egg",
+    "path": "../doc/dotguide/egg.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-ellipse",
+    "path": "../doc/dotguide/ellipse.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-fsm",
+    "path": "../doc/dotguide/fsm.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-graph1",
+    "path": "../doc/dotguide/graph1.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-graph2",
+    "path": "../doc/dotguide/graph2.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-hashtable",
+    "path": "../doc/dotguide/hashtable.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-hexagon",
+    "path": "../doc/dotguide/hexagon.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-house",
+    "path": "../doc/dotguide/house.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-html",
+    "path": "../doc/dotguide/html.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-icurve",
+    "path": "../doc/dotguide/icurve.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-inv",
+    "path": "../doc/dotguide/inv.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-invdot",
+    "path": "../doc/dotguide/invdot.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-invhouse",
+    "path": "../doc/dotguide/invhouse.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-invodot",
+    "path": "../doc/dotguide/invodot.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-invtrapezium",
+    "path": "../doc/dotguide/invtrapezium.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-invtriangle",
+    "path": "../doc/dotguide/invtriangle.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-no_arrow",
+    "path": "../doc/dotguide/no_arrow.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-none",
+    "path": "../doc/dotguide/none.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-normal",
+    "path": "../doc/dotguide/normal.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-octagon",
+    "path": "../doc/dotguide/octagon.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-odot",
+    "path": "../doc/dotguide/odot.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-oinvdot",
+    "path": "../doc/dotguide/oinvdot.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-parallelogram",
+    "path": "../doc/dotguide/parallelogram.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-plaintext",
+    "path": "../doc/dotguide/plaintext.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-point",
+    "path": "../doc/dotguide/point.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-poly",
+    "path": "../doc/dotguide/poly.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-polygon",
+    "path": "../doc/dotguide/polygon.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-record",
+    "path": "../doc/dotguide/record.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-recordex",
+    "path": "../doc/dotguide/recordex.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-smlred",
+    "path": "../doc/dotguide/smlred.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-structs",
+    "path": "../doc/dotguide/structs.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "oracle-crash"
+  },
+  {
+    "id": "tree-doc-dotguide-tee",
+    "path": "../doc/dotguide/tee.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-trapezium",
+    "path": "../doc/dotguide/trapezium.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-tree",
+    "path": "../doc/dotguide/tree.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-triangle",
+    "path": "../doc/dotguide/triangle.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-tripleoctagon",
+    "path": "../doc/dotguide/tripleoctagon.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-dotguide-vee",
+    "path": "../doc/dotguide/vee.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-back",
+    "path": "../doc/infosrc/back.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-both",
+    "path": "../doc/infosrc/both.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-colorlist",
+    "path": "../doc/infosrc/colorlist.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-constraint",
+    "path": "../doc/infosrc/constraint.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-fill",
+    "path": "../doc/infosrc/fill.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-fixed",
+    "path": "../doc/infosrc/fixed.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-forward",
+    "path": "../doc/infosrc/forward.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-mrecord",
+    "path": "../doc/infosrc/mrecord.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-nohead",
+    "path": "../doc/infosrc/nohead.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-plugins",
+    "path": "../doc/infosrc/plugins.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-record",
+    "path": "../doc/infosrc/record.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "oracle-crash"
+  },
+  {
+    "id": "tree-doc-infosrc-round",
+    "path": "../doc/infosrc/round.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-sdlshapes",
+    "path": "../doc/infosrc/sdlshapes.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-infosrc-tee",
+    "path": "../doc/infosrc/tee.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-neato-ER",
+    "path": "../doc/neato/ER.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-neato-G4_lenwt",
+    "path": "../doc/neato/G4_lenwt.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-neato-G4_orig",
+    "path": "../doc/neato/G4_orig.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-neato-G4_pinned",
+    "path": "../doc/neato/G4_pinned.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-neato-fancy",
+    "path": "../doc/neato/fancy.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-neato-inet",
+    "path": "../doc/neato/inet.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-neato-jho",
+    "path": "../doc/neato/jho.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-neato-process",
+    "path": "../doc/neato/process.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-doc-neato-typeshar",
+    "path": "../doc/neato/typeshar.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-KW91",
+    "path": "../graphs/directed/KW91.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-Latin1",
+    "path": "../graphs/directed/Latin1.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-NaN",
+    "path": "../graphs/directed/NaN.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-abstract",
+    "path": "../graphs/directed/abstract.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-alf",
+    "path": "../graphs/directed/alf.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-arr_none",
+    "path": "../graphs/directed/arr_none.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-arrows",
+    "path": "../graphs/directed/arrows.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-awilliams",
+    "path": "../graphs/directed/awilliams.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-biological",
+    "path": "../graphs/directed/biological.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-clust",
+    "path": "../graphs/directed/clust.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-clust1",
+    "path": "../graphs/directed/clust1.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-clust2",
+    "path": "../graphs/directed/clust2.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-clust3",
+    "path": "../graphs/directed/clust3.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-clust4",
+    "path": "../graphs/directed/clust4.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-clust5",
+    "path": "../graphs/directed/clust5.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-crazy",
+    "path": "../graphs/directed/crazy.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-ctext",
+    "path": "../graphs/directed/ctext.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-dfa",
+    "path": "../graphs/directed/dfa.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-fig6",
+    "path": "../graphs/directed/fig6.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-fsm",
+    "path": "../graphs/directed/fsm.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-grammar",
+    "path": "../graphs/directed/grammar.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-hashtable",
+    "path": "../graphs/directed/hashtable.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-honda-tokoro",
+    "path": "../graphs/directed/honda-tokoro.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-japanese",
+    "path": "../graphs/directed/japanese.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-jcctree",
+    "path": "../graphs/directed/jcctree.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-jsort",
+    "path": "../graphs/directed/jsort.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-ldbxtried",
+    "path": "../graphs/directed/ldbxtried.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-longflat",
+    "path": "../graphs/directed/longflat.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-mike",
+    "path": "../graphs/directed/mike.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-nhg",
+    "path": "../graphs/directed/nhg.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-oldarrows",
+    "path": "../graphs/directed/oldarrows.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-pgram",
+    "path": "../graphs/directed/pgram.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-pm2way",
+    "path": "../graphs/directed/pm2way.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-pmpipe",
+    "path": "../graphs/directed/pmpipe.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-polypoly",
+    "path": "../graphs/directed/polypoly.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-proc3d",
+    "path": "../graphs/directed/proc3d.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-psfonttest",
+    "path": "../graphs/directed/psfonttest.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-record2",
+    "path": "../graphs/directed/record2.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-records",
+    "path": "../graphs/directed/records.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-rowe",
+    "path": "../graphs/directed/rowe.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-russian",
+    "path": "../graphs/directed/russian.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-sdh",
+    "path": "../graphs/directed/sdh.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-shells",
+    "path": "../graphs/directed/shells.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-states",
+    "path": "../graphs/directed/states.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-structs",
+    "path": "../graphs/directed/structs.gv",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "oracle-crash"
+  },
+  {
+    "id": "tree-graphs-directed-switch",
+    "path": "../graphs/directed/switch.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-table",
+    "path": "../graphs/directed/table.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-train11",
+    "path": "../graphs/directed/train11.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-trapeziumlr",
+    "path": "../graphs/directed/trapeziumlr.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-tree",
+    "path": "../graphs/directed/tree.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-triedds",
+    "path": "../graphs/directed/triedds.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-try",
+    "path": "../graphs/directed/try.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-unix",
+    "path": "../graphs/directed/unix.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-unix2",
+    "path": "../graphs/directed/unix2.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-viewfile",
+    "path": "../graphs/directed/viewfile.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-directed-world",
+    "path": "../graphs/directed/world.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-undirected-ER",
+    "path": "../graphs/undirected/ER.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-undirected-Heawood",
+    "path": "../graphs/undirected/Heawood.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-undirected-Petersen",
+    "path": "../graphs/undirected/Petersen.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-undirected-ngk10_4",
+    "path": "../graphs/undirected/ngk10_4.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-graphs-undirected-process",
+    "path": "../graphs/undirected/process.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-share-examples-4elt",
+    "path": "../share/examples/4elt.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-share-examples-world",
+    "path": "../share/examples/world.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-share-gui-attr_widgets",
+    "path": "../share/gui/attr_widgets.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "not-a-layout-test"
+  },
+  {
+    "id": "tree-share-gui-template",
+    "path": "../share/gui/template.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "not-a-layout-test"
+  },
+  {
+    "id": "tree-tclpkg-gv-hello",
+    "path": "../tclpkg/gv/hello.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-tclpkg-tcldot-examples-data-demo",
+    "path": "../tclpkg/tcldot/examples/data/demo.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "tree-tclpkg-tcldot-examples-data-poly",
+    "path": "../tclpkg/tcldot/examples/data/poly.gv",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
     "id": "121",
     "path": "121.dot",
     "engine": "dot",
@@ -909,8 +1844,7 @@
     "id": "2621",
     "path": "2621.dot",
     "engine": "dot",
-    "status": "quarantined",
-    "reason": "perf"
+    "status": "applicable"
   },
   {
     "id": "2636",
