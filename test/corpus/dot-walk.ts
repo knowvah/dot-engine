@@ -157,6 +157,35 @@ function spawnCapture(
   env: NodeJS.ProcessEnv,
   timeoutMs: number,
 ): Promise<SpawnResult> {
+  return decodeSpawn(cmd, args, env, timeoutMs);
+}
+
+/**
+ * Decode `-Tdot` output the way dot itself reads a DOT file: strict UTF-8, and
+ * on invalid UTF-8 fall back to Latin-1 (utils.c:1218 latin1ToUTF8) — the same
+ * rule render-one-dot.ts applies to the INPUT.
+ *
+ * Load-bearing for `charset=latin1` graphs. cgraph stores the raw input bytes
+ * in the attribute and agwrite echoes them, so the oracle's own output is
+ * Latin-1; decoding it as UTF-8 turned every accented character into U+FFFD and
+ * made 5 ids (the Latin1 family, b34, b56, b60) look like label divergences
+ * when both sides carry the same TEXT. The port emits the same text as UTF-8,
+ * which is valid UTF-8 and so decodes unchanged by the strict branch.
+ */
+function decodeDotBytes(buf: Buffer): string {
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(buf);
+  } catch {
+    return new TextDecoder('latin1').decode(buf);
+  }
+}
+
+function decodeSpawn(
+  cmd: string,
+  args: string[],
+  env: NodeJS.ProcessEnv,
+  timeoutMs: number,
+): Promise<SpawnResult> {
   return new Promise((resolve) => {
     const child = spawn(cmd, args, { env, detached: true });
     // Accumulate raw BYTES, decode once at close: `stdout += d` decodes each
@@ -175,7 +204,7 @@ function spawnCapture(
     child.on('error', (e) => (stderr += e.message));
     child.on('close', (code) => {
       clearTimeout(timer);
-      const stdout = Buffer.concat(stdoutChunks).toString('utf8');
+      const stdout = decodeDotBytes(Buffer.concat(stdoutChunks));
       resolve({ stdout, stderr, code, timedOut });
     });
   });
