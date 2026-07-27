@@ -1796,5 +1796,29 @@
     "input": "test/golden/inputs/dot-samplepoints.dot",
     "reference": "test/golden/refs/dot-samplepoints.svg",
     "description": "samplepoints node attribute \u2014 ellipse vertex count; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "circo-mindist",
+    "engine": "circo",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/circo-mindist.dot",
+    "reference": "test/golden/refs/circo-mindist.svg",
+    "description": "circo mindist sets minimum node separation on a circle; ref: graphviz 15.0.0 -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "circo-oneblock",
+    "engine": "circo",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/circo-oneblock.dot",
+    "reference": "test/golden/refs/circo-oneblock.svg",
+    "description": "circo oneblock lays the graph out as one block; ref: graphviz 15.0.0 -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "patchwork-inset",
+    "engine": "patchwork",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/patchwork-inset.dot",
+    "reference": "test/golden/refs/patchwork-inset.svg",
+    "description": "patchwork inset shrinks each cell; ref: graphviz 15.0.0 -Tsvg; closes an attr-frequency blind spot"
   }
 ]

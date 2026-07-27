@@ -1,0 +1,10 @@
+// @knowvah/dot-engine reference input: patchwork inset shrinks each cell by the
+// given amount. @see lib/patchwork/patchwork.c
+// engine: patchwork
+// tolerance: deterministic
+digraph G {
+    inset=5;
+    a [area=3];
+    b [area=5];
+    c [area=2];
+}

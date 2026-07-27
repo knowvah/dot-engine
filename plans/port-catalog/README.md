@@ -673,6 +673,41 @@ Actions, in dependence order:
    (non-numeric -> 0) where the port uses `parseInt` (-> NaN). Neither is
    observable through output today.
 
+   **Batches 2-3 (2026-07-27).** device/render + labels/text + circo/patchwork/
+   neato closed. Two more wrong-name defects of the `phase` class: `labelfloat`
+   (the port read the underscored `label_float`, which is C-internal) and
+   `fontnames` (parsed into GD_fontnames but never read — the SVGFONTS/PSFONTS
+   branches of gvrender_core_svg.c:464 were unimplemented, including the
+   separate svg_font_weight/svg_font_style fields). Both fixed; goldens added
+   for `phase`, `clusterrank`, `mclimit`, `fontnames` (svg+ps), `labelfloat`,
+   `labelfontname`, `landscape`, `layerlistsep`, `quantum`, `resolution`,
+   `samplepoints`, `circo mindist`, `circo oneblock`, `patchwork inset`.
+
+   Verified correct, no fix needed: neato `epsilon`, `maxiter`, `start`, `pin`,
+   `overlap_scaling` (native moves 106.03pt, port 106.00), `overlap_shrink`
+   (ignored by BOTH here). For iterative engines compare by node-delta against
+   the 0.5pt bar, not by string equality — an exact-match probe reports the
+   documented PRISM drift (0.27pt) as a failure.
+
+   **sfdp gaps still open** (found by the scan, not yet closed):
+   - `rotation` — C rotates before overlap removal (spring_electrical.c:1181);
+     `rotate()` is unported and nothing read `ctrl.rotation`, so a non-zero
+     value silently produced an UNROTATED layout (native moves ~320pt at
+     rotation=45). Now THROWS, matching the existing `smoothing` precedent:
+     a loud unported-feature error beats silently wrong geometry.
+   - `quadtree` — parsed into `ctrl.tscheme`, but nothing reads it; the layout
+     hardcodes one scheme. Native moves 138.74pt at `quadtree=none`, the port
+     0. Still silent; needs the scheme threaded through the force approximation.
+   - `smoothing` — already threw before this work (post_process_smoothing
+     unported). Native moves 11.01pt at `smoothing=rng`.
+   - Vacuous on both sides, so unmeasurable rather than wrong: sfdp `levels`,
+     `label_scheme`; fdp `normalize`. fdp `T0` moves both sides but the engine
+     is chaos-measured, so a golden would pin noise.
+
+   **Probe hazard.** A probe must check the reference is non-trivial. Writing
+   `graph{a->b}` (a syntax error) makes both sides fail identically, which reads
+   as VACUOUS + MATCH — it briefly hid all three circo attributes.
+
    Sequence dot first, per this file's own prioritization. Note several are
    iterative-engine tuning knobs (`epsilon`, `maxiter`, `T0`, `levels`) whose
    effect is a layout DELTA — a fixture for those must assert the knob changed
