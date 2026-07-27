@@ -173,11 +173,19 @@ function nodeInBox(n: Node, job: RenderJob): boolean {
 function emitNodeBody(n: Node, renderer: RendererPlugin, job: RenderJob): void {
   setHtmlAnchorObj(svgNodeId(n, job), labelTextOf(n.info.label), job.obj ?? undefined);
   setHtmlObjImgscale(nodeAttr(n, n.root, 'imagescale'));
-  renderer.beginNode(n, job);
-  const shape = n.info.shape as ShapeDesc | undefined;
-  if (shape?.fns?.codefn) shape.fns.codefn(job, n);
-  renderNodeXLabel(n, renderer, job);
-  renderer.endNode(n, job);
+  // C sets the node's colorscheme at the tail of emit_begin_node and restores
+  // it at the head of emit_end_node, so the window spans codefn AND the xlabel
+  // — not just the color block. Bare scheme indices in the node's LABEL (e.g.
+  // `fontcolor=3` under `colorscheme=rdbu5`) resolve inside this window; with
+  // the window scoped to the fill/pen block they fell back to black.
+  // @see lib/common/emit.c:1781/1789 · emit_node:1826-1831
+  withColorScheme(nodeAttr(n, n.root, 'colorscheme'), () => {
+    renderer.beginNode(n, job);
+    const shape = n.info.shape as ShapeDesc | undefined;
+    if (shape?.fns?.codefn) shape.fns.codefn(job, n);
+    renderNodeXLabel(n, renderer, job);
+    renderer.endNode(n, job);
+  });
 }
 
 /**
@@ -193,8 +201,12 @@ export function renderNode(n: Node, renderer: RendererPlugin, job: RenderJob, do
   // "and is in page/view" gate. @see lib/common/emit.c:1808 node_in_box
   if (!nodeInBox(n, job)) return;
   // Shortcircuit invisible nodes: C omits the whole node before emit_begin_node.
+  // C reads late_string(n, N_style, ""), i.e. agxget — which resolves the
+  // node's DECLARATION-SCOPE default, so `{ node [style=invis] p q }` hides p
+  // and q. Reading n.attrs directly sees only a style set on the node itself
+  // and drew every subgraph-scoped invisible node (switch.gv: 16 of them).
   // @see lib/common/emit.c:emit_node (style "invis" return)
-  const nodeStyle = n.attrs.get('style');
+  const nodeStyle = nodeAttr(n, n.root, 'style');
   if (parseStyleFlags(nodeStyle).invis) return;
   // The "invisible" alias also suppresses drawing (gvrender_set_style →
   // PEN_NONE) for shapes that pass their raw style through — but NOT the point

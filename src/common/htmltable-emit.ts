@@ -258,6 +258,23 @@ export function emitHtmlImg(
  *
  * @see lib/common/htmltable.c:emit_html_cell
  */
+/**
+ * True when an HTML element's STYLE declares it invisible.
+ *
+ * HTML STYLE is lexed by its OWN parser, not the node/edge one: tokens are
+ * split on space or comma, compared case-insensitively, and BOTH "INVIS" and
+ * "INVISIBLE" set the flag. (The node/edge parser splits on comma only and
+ * matches exact-case, so it cannot be reused here.)
+ * @see lib/common/htmllex.c:168 (DELIM " ,", strview_case_str_eq)
+ */
+function htmlStyleInvisible(style: string | undefined): boolean {
+  if (style === undefined) return false;
+  return style.split(/[ ,]+/).some((tok) => {
+    const t = tok.toUpperCase();
+    return t === 'INVIS' || t === 'INVISIBLE';
+  });
+}
+
 export function emitHtmlCell(
   cell: PlacedCell,
   pos: Point,
@@ -268,6 +285,12 @@ export function emitHtmlCell(
     { href: cell.href, title: cell.title, target: cell.target, id: cell.id },
     absBox(cell.box, pos), renderer, job,
   );
+  // An invisible cell emits no fill, no border and no content — only the
+  // anchor, which C opens before the gate. @see htmltable.c:emit_html_cell:643
+  if (htmlStyleInvisible(cell.style)) {
+    if (inAnchor) endHtmlAnchor(renderer, job);
+    return;
+  }
   emitCellDecoration(cell, pos, renderer, job);
   if (cell.nested !== undefined) {
     // C: emit_html_cell recurses emit_html_tbl for an HTML_TBL child.
@@ -329,14 +352,19 @@ export function emitHtmlLabel(
   // @see lib/common/htmltable.c:emit_html_tbl (537, 583-588)
   const clustersLast = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
   const inAnchor = clustersLast ? false : initHtmlAnchor(anchorData, tblBox, renderer, job);
-  if (placed.bgcolor !== undefined) {
-    emitBgFill({ bgcolor: placed.bgcolor, box: placed.box, pos, border: placed.border,
-      renderer, job, gradientangle: placed.gradientangle, style: placed.style });
-  }
-  for (const cell of placed.cells) emitHtmlCell(cell, pos, renderer, job);
-  emitTableRules(placed, pos, renderer, job);
-  if (placed.border > 0) {
-    emitBorder({ box: placed.box, pos, border: placed.border, color: placed.color, sides: placed.sides, style: placed.style }, renderer, job);
+  // An invisible TABLE suppresses its fill, ALL its cells, and its rules and
+  // border — the whole block C guards at emit_html_tbl:542.
+  const tblInvisible = htmlStyleInvisible(placed.style);
+  if (!tblInvisible) {
+    if (placed.bgcolor !== undefined) {
+      emitBgFill({ bgcolor: placed.bgcolor, box: placed.box, pos, border: placed.border,
+        renderer, job, gradientangle: placed.gradientangle, style: placed.style });
+    }
+    for (const cell of placed.cells) emitHtmlCell(cell, pos, renderer, job);
+    emitTableRules(placed, pos, renderer, job);
+    if (placed.border > 0) {
+      emitBorder({ box: placed.box, pos, border: placed.border, color: placed.color, sides: placed.sides, style: placed.style }, renderer, job);
+    }
   }
   if (inAnchor) endHtmlAnchor(renderer, job);
   if (clustersLast && initHtmlAnchor(anchorData, tblBox, renderer, job)) {

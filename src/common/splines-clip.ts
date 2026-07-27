@@ -97,6 +97,22 @@ class SplineClipHelper {
     return [sflag, eflag];
   }
 
+  /**
+   * The ORIGINAL edge's arrow end whose TYPE applies at a geometric spline end.
+   *
+   * C resolves both arrow types once from the original edge (arrow_flags) and
+   * encodes each type in its flag, so swapping the two flags when swapEnds is
+   * true carries the type along with it. This port keeps only the presence bit
+   * in the flag and re-reads the type from the `arrowhead`/`arrowtail`
+   * attribute, so the same swap has to be applied to the NAME lookup — without
+   * it a reversed back edge (`C->A [arrowhead=tee]`, head ranked above tail)
+   * draws its `arrowtail` type at the end where C draws the arrowhead.
+   * @see lib/common/splines.c:arrow_clip (if (j) SWAP(sflag, eflag))
+   */
+  static arrowAttrEnd(isTail: boolean, j: boolean): 'head' | 'tail' {
+    return isTail !== j ? 'tail' : 'head';
+  }
+
   static resolveArrowFlags(info: SplineInfo, hn: Node, fe: Edge, orig: Edge, j: boolean): [number, number] {
     let [sflag, eflag] = SplineClipHelper.arrowFlags(orig);
     if (info.splineMerge != null) {
@@ -147,9 +163,10 @@ class SplineClipHelper {
    */
   static arrowEndClip(
     e: Edge, ps: Point[], startp: number, endpIn: number, spl: Bezier, eflag: number,
+    attrEnd: 'head' | 'tail' = 'head',
   ): number {
     let endp = endpIn;
-    const elen = arrowClipLength(edgeArrowName(e, 'head'),
+    const elen = arrowClipLength(edgeArrowName(e, attrEnd),
       SplineClipHelper.clipArrowsize(e), SplineClipHelper.clipPenwidth(e));
     spl.eflag = eflag;
     spl.ep = ps[endp + 3]!;
@@ -174,9 +191,10 @@ class SplineClipHelper {
    */
   static arrowStartClip(
     e: Edge, ps: Point[], startpIn: number, endp: number, spl: Bezier, sflag: number,
+    attrEnd: 'head' | 'tail' = 'tail',
   ): number {
     let startp = startpIn;
-    const slen = arrowClipLength(edgeArrowName(e, 'tail'),
+    const slen = arrowClipLength(edgeArrowName(e, attrEnd),
       SplineClipHelper.clipArrowsize(e), SplineClipHelper.clipPenwidth(e));
     spl.sflag = sflag;
     spl.sp = ps[startp]!;
@@ -231,24 +249,29 @@ class SplineClipHelper {
     newspl.eflag = eflag;
     // C: ortho edges use arrowOrthoClip (keeps segments axis-aligned), not the
     // De-Casteljau start/end clips. @see lib/common/splines.c:90
+    // The arrow TYPE follows the flag swap, not the geometric end: see
+    // arrowAttrEnd. (Under ortho, ignoreSwap forces j=false, so these are the
+    // plain tail/head ends.)
+    const startEnd = SplineClipHelper.arrowAttrEnd(true, j);
+    const endEnd = SplineClipHelper.arrowAttrEnd(false, j);
     if (info.isOrtho) {
       if (sflag || eflag) {
         SplineClipHelper.arrowOrthoClip(
           orig, ps, bounds.start, bounds.end, newspl, sflag, eflag);
-        if (sflag) SplineClipHelper.stashArrow(orig, newspl.sp, ps[bounds.start]!, true);
-        if (eflag) SplineClipHelper.stashArrow(orig, newspl.ep, ps[bounds.end + 3]!, false);
+        if (sflag) SplineClipHelper.stashArrow(orig, newspl.sp, ps[bounds.start]!, true, startEnd);
+        if (eflag) SplineClipHelper.stashArrow(orig, newspl.ep, ps[bounds.end + 3]!, false, endEnd);
       }
       return;
     }
     if (sflag) {
       bounds.start = SplineClipHelper.arrowStartClip(
-        orig, ps, bounds.start, bounds.end, newspl, sflag);
-      SplineClipHelper.stashArrow(orig, newspl.sp, ps[bounds.start]!, true);
+        orig, ps, bounds.start, bounds.end, newspl, sflag, startEnd);
+      SplineClipHelper.stashArrow(orig, newspl.sp, ps[bounds.start]!, true, startEnd);
     }
     if (eflag) {
       bounds.end = SplineClipHelper.arrowEndClip(
-        orig, ps, bounds.start, bounds.end, newspl, eflag);
-      SplineClipHelper.stashArrow(orig, newspl.ep, ps[bounds.end + 3]!, false);
+        orig, ps, bounds.start, bounds.end, newspl, eflag, endEnd);
+      SplineClipHelper.stashArrow(orig, newspl.ep, ps[bounds.end + 3]!, false, endEnd);
     }
   }
 
@@ -314,9 +337,12 @@ class SplineClipHelper {
   }
 
   /** Record an arrow polygon on the edge for svgArrowPolygons. */
-  static stashArrow(e: Edge, tip: Point, base: Point, isTail: boolean): void {
+  static stashArrow(
+    e: Edge, tip: Point, base: Point, isTail: boolean, attrEnd?: 'head' | 'tail',
+  ): void {
     const dir = { x: base.x - tip.x, y: base.y - tip.y };
-    const ops = arrowDrawOpsForEnd(e, isTail ? 'tail' : 'head', tip, dir, SplineClipHelper.renderPenwidth(e));
+    const end = attrEnd ?? (isTail ? 'tail' : 'head');
+    const ops = arrowDrawOpsForEnd(e, end, tip, dir, SplineClipHelper.renderPenwidth(e));
     if (isTail) e.info.tailArrowOps = ops;
     else e.info.headArrowOps = ops;
   }

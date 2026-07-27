@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-07-27T13:26:01.980Z",
+  "generatedAt": "2026-07-27T16:58:33.745Z",
   "generatedWith": "test/corpus/survey.ts",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 939,
   "counts": {
-    "conformant": 900,
+    "conformant": 905,
     "structural-match": 19,
-    "diverged": 8,
+    "diverged": 3,
     "errored": 0,
     "timeout": 0,
     "oracle-error": 12
@@ -397,9 +397,7 @@
     {
       "id": "tree-doc-infosrc-tee",
       "path": "../doc/infosrc/tee.gv",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiffPath": "svg/g[1]/g[1][childCount]"
+      "verdict": "conformant"
     },
     {
       "id": "tree-doc-neato-ER",
@@ -429,10 +427,7 @@
     {
       "id": "tree-doc-neato-inet",
       "path": "../doc/neato/inet.dot",
-      "verdict": "diverged",
-      "maxDelta": 41,
-      "firstDiffPath": "svg/g[1][childCount]",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "id": "tree-doc-neato-jho",
@@ -477,9 +472,7 @@
     {
       "id": "tree-graphs-directed-arr_none",
       "path": "../graphs/directed/arr_none.gv",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiffPath": "svg/g[1]/g[3][childCount]"
+      "verdict": "conformant"
     },
     {
       "id": "tree-graphs-directed-arrows",
@@ -496,9 +489,7 @@
     {
       "id": "tree-graphs-directed-biological",
       "path": "../graphs/directed/biological.gv",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiffPath": "svg/g[1]/g[2]/text[1]/@fill"
+      "verdict": "conformant"
     },
     {
       "id": "tree-graphs-directed-clust",
@@ -680,9 +671,7 @@
     {
       "id": "tree-graphs-directed-switch",
       "path": "../graphs/directed/switch.gv",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiffPath": "svg/g[1][childCount]"
+      "verdict": "conformant"
     },
     {
       "id": "tree-graphs-directed-table",

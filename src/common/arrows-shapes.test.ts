@@ -93,7 +93,9 @@ describe('tee / gap / curve', () => {
     expect((ops[0] as { points: Point[] }).points.length).toBe(4);
   });
   it('none(gap) → single polyline; curve → polyline+bezier', () => {
-    expect(dispatchSimple(resolve('none'), TIP, DIR, 1, 1).ops.map((o) => o.kind)).toEqual(['polyline']);
+    // "nonenone": a LONE gap is dropped by arrow_match_name, so the gap
+    // component is taken from a two-component spec. @see arrows.test.ts AC3
+    expect(dispatchSimple(resolve('nonenone'), TIP, DIR, 1, 1).ops.map((o) => o.kind)).toEqual(['polyline']);
     expect(dispatchSimple(resolve('curve'), TIP, DIR, 1, 1).ops.map((o) => o.kind)).toEqual(['polyline', 'bezier']);
   });
 });

@@ -46,7 +46,9 @@ describe('resolveArrowType — full type table lenfacts', () => {
     expect(resolve('box')).toMatchObject({ type: ARR_TYPE_BOX, lenfact: 1.0 });
     expect(resolve('diamond')).toMatchObject({ type: ARR_TYPE_DIAMOND, lenfact: 1.2 });
     expect(resolve('dot')).toMatchObject({ type: ARR_TYPE_DOT, lenfact: 0.8 });
-    expect(resolve('none')).toMatchObject({ type: ARR_TYPE_GAP, lenfact: 0.5 });
+    // "nonenone", not "none": a LONE gap is dropped by arrow_match_name, so a
+    // second component is needed to obtain a gap to resolve. @see arrows.test.ts AC3
+    expect(resolve('nonenone')).toMatchObject({ type: ARR_TYPE_GAP, lenfact: 0.5 });
     expect(resolve('curve')).toMatchObject({ type: ARR_TYPE_CURVE, lenfact: 1.0 });
     expect(resolve('icurve')).toMatchObject({ type: ARR_TYPE_CURVE | ARR_MOD_INV, lenfact: 1.0 });
   });
