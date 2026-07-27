@@ -13,7 +13,7 @@ import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import { IGNORED } from '../../layout/dot/rank.js';
-import { agstrcanonText } from '../map.js';
+import { agstrcanon } from '../map.js';
 import { POINTS_PER_INCH } from '../../model/geom.js';
 import type { TextlabelT, FieldT } from '../../common/types.js';
 import { agcanonEscape, gfmt2, gfmt5, lpStr } from './xdot-ops.js';
@@ -154,7 +154,7 @@ export function objInputParts(
     if (computed.has(k)) continue;
     const v = record.get(k) ?? '';
     if (v === (defaults.get(k) ?? '')) continue;
-    parts.push(k + '=' + agstrcanonText(v));
+    parts.push(k + '=' + agstrcanon(v));
   }
   return parts;
 }
@@ -233,7 +233,7 @@ export function graphInputParts(g: Graph, top: boolean): string[] {
     if (COMPUTED_GRAPH_ATTRS.has(k)) continue;
     if (!top && seeded !== undefined && seeded.has(k)) continue;
     if (writeDictSkips(v, snap?.get(k))) continue;
-    parts.push(k + '=' + agstrcanonText(v));
+    parts.push(k + '=' + agstrcanon(v));
   }
   if (!top && snap !== undefined) parts.push(...eagerEmptyParts(g, snap));
   return parts;
@@ -254,7 +254,7 @@ function eagerEmptyParts(g: Graph, snap: Map<string, string>): string[] {
   for (const k of rootOf(g).attrs.keys()) {
     if (COMPUTED_GRAPH_ATTRS.has(k)) continue;
     if (snap.has(k) || g.attrs.has(k)) continue;
-    parts.push(k + '=' + agstrcanonText(''));
+    parts.push(k + '=' + agstrcanon(''));
   }
   return parts;
 }
@@ -266,7 +266,7 @@ function eagerEmptyParts(g: Graph, snap: Map<string, string>): string[] {
  */
 export function dictParts(defaults: Map<string, string>): string[] {
   const parts: string[] = [];
-  for (const [k, v] of defaults) parts.push(k + '=' + agstrcanonText(v));
+  for (const [k, v] of defaults) parts.push(k + '=' + agstrcanon(v));
   return parts;
 }
 

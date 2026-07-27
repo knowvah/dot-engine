@@ -32,7 +32,7 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 | [twopi (plain)](./PARITY-twopi-plain.md) | 762 | 731 | 0 | 21 | 10 | 95.9% |
 | [osage (plain)](./PARITY-osage-plain.md) | 762 | 747 | 0 | 14 | 1 | 98.0% |
 | [patchwork (plain)](./PARITY-patchwork-plain.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
-| [dot (dot)](./PARITY-dot-dot.md) | 762 | 689 | 72 | 0 | 1 | 90.4% |
+| [dot (dot)](./PARITY-dot-dot.md) | 762 | 747 | 14 | 0 | 1 | 98.0% |
 | [circo (json)](./PARITY-circo-json.md) | 762 | 750 | 0 | 6 | 6 | 98.4% |
 | [twopi (json)](./PARITY-twopi-json.md) | 762 | 744 | 0 | 16 | 2 | 97.6% |
 | [osage (json)](./PARITY-osage-json.md) | 762 | 750 | 0 | 12 | 0 | 98.4% |

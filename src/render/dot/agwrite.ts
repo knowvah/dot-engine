@@ -18,7 +18,7 @@ import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { TextlabelT, FieldT, ShapeDesc } from '../../common/types.js';
-import { agstrcanonText } from '../map.js';
+import { agstrcanon } from '../map.js';
 import { XDOT_VERSION, agcanonEscape, gfmt5, lpStr, xdotId } from './xdot-ops.js';
 import {
   COMPUTED_EDGE_ATTRS, COMPUTED_NODE_ATTRS, appendRecordRects, computedPart, dictParts,
@@ -327,7 +327,7 @@ export abstract class DotWriterBase {
     // @see plugin/core/gvrender_core_dot.c:341 xdot_begin_graph
     // Canonicalized like any other dict value: `1.7` needs no quotes, and
     // native emits it bare. @see lib/cgraph/write.c:write_canonstr
-    if (this.emitDraws) parts.push('xdotversion=' + agstrcanonText(XDOT_VERSION));
+    if (this.emitDraws) parts.push('xdotversion=' + agstrcanon(XDOT_VERSION));
     parts.push(...graphInputParts(g, true));
     return parts;
   }
