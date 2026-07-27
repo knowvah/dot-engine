@@ -622,13 +622,44 @@ Reported findings:
 
 Actions, in dependence order:
 
-1. Reproduce the attribute-frequency count against our own corpus manifest, so
-   the blind-spot list is ours and not inherited on trust. `test/corpus/blind-spots.ts`
-   is the existing home for this kind of check.
+1. ~~Reproduce the attribute-frequency count against our own corpus manifest, so
+   the blind-spot list is ours and not inherited on trust.~~ **DONE 2026-07-26** —
+   `test/corpus/attr-frequency.ts` (a separate scanner from `blind-spots.ts`,
+   which asks a different question: co-occurrence, not per-attribute use). It
+   reads scope off the BUILT MODEL rather than by regex, so `edge/fillcolor` is
+   distinguishable from `node/fillcolor`. Result over 1021 files (1010 parsed,
+   11 unparsed): 201 distinct scoped attributes, 111 attribute names read by the
+   port, **29 read-but-never-declared**.
+
+   Two of the three inherited claims do NOT hold for our tree, which is exactly
+   why the doc said not to take them on trust: `graph/sep` is declared by 1 file
+   (reported as zero) and `fillcolor` appears 59x on nodes / 16x on graphs —
+   only the EDGE scope is dark, as reported. `graph/overlap_shrink` is confirmed
+   absent. Counts also differ where the universes do (`edge/weight` 15 vs 18,
+   `graph/ordering` 31 vs 23) — we include golden inputs.
 2. Cross-reference the zero-coverage attributes against the port: `graph/sep`
    and `graph/overlap_shrink` land in the neato/fdp overlap family (`sep-factor.ts`,
    `overlap.ts`) — both **implemented**, neither corpus-exercised, so their
    status is *unmeasured*, not *passing*. `edge/fillcolor` likewise.
+
+   **Cross-reference DONE 2026-07-26**; the 29 unmeasured names group by the
+   file that reads them. Each is implemented and needs a fixture, not a port:
+
+   | Family | Unmeasured |
+   |---|---|
+   | dot | `mclimit`, `searchsize`, `maxphase`, `clusterrank` |
+   | neato | `epsilon`, `maxiter`, `start`, `pin`, `overlap_scaling`, `overlap_shrink` |
+   | sfdp | `label_scheme`, `levels`, `quadtree`, `rotation`, `smoothing` |
+   | fdp | `T0`, `coords`, `normalize` |
+   | circo | `mindist`, `oneblock` |
+   | patchwork | `inset` |
+   | device/render | `landscape`, `resolution`, `samplepoints`, `quantum` |
+   | labels/text | `label_float`, `labelfontname`, `fontnames`, `layerlistsep` |
+
+   Sequence dot first, per this file's own prioritization. Note several are
+   iterative-engine tuning knobs (`epsilon`, `maxiter`, `T0`, `levels`) whose
+   effect is a layout DELTA — a fixture for those must assert the knob changed
+   the result in the direction C changes it, not byte-match a chaotic engine.
 3. Evaluate the ~3,700-file set as an **additional** sweep tier. Do not fold it
    into the primary corpus: our ids, acceptance registries, and PARITY baselines
    are keyed to the current universe, and swapping the universe would invalidate
