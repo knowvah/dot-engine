@@ -12,31 +12,24 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 762
-- **pass:** 753 (98.8%) · **diverged (tracked):** 8 · **accepted (documented, won't-fix):** 0
-- **errors (oracle/port/timeout, excluded from scoring):** 1
+- **pass:** 759 (99.6%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
+- **errors (oracle/port/timeout, excluded from scoring):** 3
 
-## Diverged (8)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`graphs-b15`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b15.gv) | 8774 | 15 | `[value] edge:Fall->HoverRest#1/pos: port=e,1880,309.5 1828.8,183 1828.8,199.7 1820.4,202.48 1818,219 1815.6,235.27 1811.2,241.05 1818,256 1831.4,285.21 1864.9,276.54 1876.6,298.83 1880,311.5 1887.7,359.34 2032.5,396.3 2080.9,396.3 native=e,1880,309.5 1828.8,183 1828.8,199.7 1820.4,202.48 1818,219 1815.6,235.27 1811.2,241.05 1818,256 1831.4,285.21 1864.9,276.54 1876.6,298.83;1880,311.5 1887.7,359.34 2032.5,396.3 2080.9,396.3` |
-| [`2184`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2184.dot) | 393 | 8 | `[attr-set] subgraph:cluster1/fontcolor: port= native=<absent>` |
-| [`graphs-b69`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b69.gv) | 33033 | 6 | `[value] edge:WAR-WR1PT1->MRS305-LOAD-WR1RP1#0/pos: port=1929.2,252.6 1951.4,300.82 2019.7,431.93 2124.9,472.59 2126.9,472.59 2169.1,488.87 2179.9,492.86 2219.5,514.59 2271.6,543.17 2273.4,575.05 2331.5,587.59 e,2453.3,615.13 2333.5,587.59 2369.3,595.32 2408.6,604.46 2442.5,612.54 native=1929.2,252.6 1951.4,300.82 2019.7,431.93 2124.9,472.59;2126.9,472.59 2169.1,488.87 2179.9,492.86 2219.5,514.59 2271.6,543.17 2273.4,575.05 2331.5,587.59;e,2453.3,615.13 2333.5,587.59 2369.3,595.32 2408.6,604.46 2442.5,612.54` |
-| [`1436`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1436.dot) | 2599 | 2 | `[value] edge:tmp-outdir/_fqw3_kw->tmp-outdir/rokz370o#0/pos: port=e,906.41,201.53 2010,257 1970,184.29 1907.7,238.52 1825,232 1632.9,216.85 1149,237.53 958,212 944.71,210.22 930.64,207.38 917.35,204.23 1241.9,532.23 1285,523.49 1343,511.45 1394,500 1537.4,467.8 2080.8,387.81 2010,259 native=e,906.41,201.53 2010,257 1970,184.29 1907.7,238.52 1825,232 1632.9,216.85 1149,237.53 958,212 944.71,210.22 930.64,207.38 917.35,204.23;1241.9,532.23 1285,523.49 1343,511.45 1394,500 1537.4,467.8 2080.8,387.81 2010,259` |
-| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 48090 | 2 | `[attr-set] subgraph:cluster_capsfilter3_0x56412434cb80_sink/fillcolor: port=<absent> native=` |
-| [`2559`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2559.dot) | 78 | 1 | `[value] edge:c->b#0/pos: port=119.03,94.496 130.53,86.448 141.5,75.036 135,63.4 e,87.499,26.169 135,61.4 127.06,47.168 112.22,37.261 98.062,30.624 native=119.03,94.496 130.53,86.448 141.5,75.036 135,63.4;e,87.499,26.169 135,61.4 127.06,47.168 112.22,37.261 98.062,30.624` |
-| [`358`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/358.dot) | 429 | 1 | `[attr-set] [graph]/xdotversion: port=<absent> native=1.7` |
-| [`graphs-clustlabel`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/clustlabel.gv) | 78 | 1 | `[attr-set] subgraph:<anon>/label: port=<absent> native=` |
+_(none)_
 
 ## Accepted (0) — documented, not chased
 
 _(none)_
 
-## Errors and timeouts (1)
+## Errors and timeouts (3)
 
 | id | message |
 |---|---|
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) |  |
+| [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) |  |
+| [`2343`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2343.dot) |  |
 
-_Passing ids (753) are omitted for brevity — the full roster is in
+_Passing ids (759) are omitted for brevity — the full roster is in
 `dot-parity-dot.json`._

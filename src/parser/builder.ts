@@ -185,13 +185,23 @@ export class StmtProcessor {
     graph.attrs.set(stmt.key, normaliseAttrValue(stmt.value));
     // cgraph: assigning a graph attr on any (sub)graph declares it graph-wide
     // with an empty default → the root sees "" for it. @see agattr declaration.
-    graph.root.declaredGraphAttrs.add(stmt.key);
+    this.declareGraphAttr(graph, stmt.key);
+  }
+
+  /** Record a graph-attribute declaration, noting whether THIS scope was the
+   *  first to declare the key anywhere — the branch selector in cgraph's
+   *  setattr. @see lib/cgraph/attr.c:257 · model/graph.ts firstGraphDecl */
+  private declareGraphAttr(graph: Graph, key: string): void {
+    if (!graph.root.declaredGraphAttrs.has(key)) {
+      (graph.firstGraphDecl ??= new Set()).add(key);
+      graph.root.declaredGraphAttrs.add(key);
+    }
   }
 
   processAttr(stmt: AttrStmt, graph: Graph): void {
     if (stmt.target === 'graph') {
       applyAttrs(stmt.attrs, graph.attrs);
-      for (const a of stmt.attrs) graph.root.declaredGraphAttrs.add(a.key);
+      for (const a of stmt.attrs) this.declareGraphAttr(graph, a.key);
     } else if (stmt.target === 'node') {
       applyAttrs(stmt.attrs, graph.nodeDefaults);
     } else {

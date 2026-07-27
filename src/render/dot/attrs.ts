@@ -178,18 +178,33 @@ export function objInputParts(
 export function computedPart(
   key: string,
   raw: string,
-  formatted: string,
   defaults: Map<string, string> | undefined,
 ): string[] {
   if (defaults !== undefined && defaults.get(key) === raw) return [];
-  return [formatted];
+  // C agsets the raw computed text (output.c) and lets agwrite canonicalize it
+  // on the way out, so the quoting DECISION and the 128-byte line breaking both
+  // belong here rather than at the call site: `lheight=0.23` prints bare while
+  // a long `pos` is split across lines with a trailing backslash.
+  // @see lib/cgraph/write.c:481 write_nondefault_attrs -> write_canonstr
+  return [key + '=' + agstrcanon(raw)];
 }
 
 /** Attribute names the serializer computes itself; input values are echoed by
  *  `graphInputParts`, so these must not be echoed twice. */
 export const COMPUTED_GRAPH_ATTRS = new Set([
-  '_draw_', '_ldraw_', 'bb', 'lp', 'lwidth', 'lheight', 'xdotversion',
+  '_draw_', '_ldraw_', 'bb', 'lp', 'lwidth', 'lheight',
 ]);
+
+/** `COMPUTED_GRAPH_ATTRS` for a renderer that emits draw ops. Only
+ *  `xdot_begin_graph` agsets `xdotversion` (gvrender_core_dot.c:341); plain
+ *  `-Tdot` never computes it, so an input `xdotversion=1.7` stays an ordinary
+ *  attribute there and write.c echoes it like any other. */
+const COMPUTED_GRAPH_ATTRS_XDOT = new Set([...COMPUTED_GRAPH_ATTRS, 'xdotversion']);
+
+/** The computed-attr set in force for this renderer. */
+function computedGraphAttrs(emitDraws: boolean): Set<string> {
+  return emitDraws ? COMPUTED_GRAPH_ATTRS_XDOT : COMPUTED_GRAPH_ATTRS;
+}
 
 /** Walk to the root graph (cgraph `agroot`). */
 export function rootOf(g: Graph): Graph {
@@ -225,34 +240,49 @@ export function rootOf(g: Graph): Graph {
  * scope opened" is `root.attrs.has(k) && !snapshot.has(k)`.
  * @see lib/cgraph/attr.c:287 (agapply/addattr) · lib/cgraph/write.c:262
  */
-export function graphInputParts(g: Graph, top: boolean): string[] {
+export function graphInputParts(g: Graph, top: boolean, emitDraws: boolean): string[] {
+  const computed = computedGraphAttrs(emitDraws);
   const parts: string[] = [];
   const snap = g.graphDefaultsSnapshot;
   const seeded = g.seededAttrs;
   for (const [k, v] of g.attrs) {
-    if (COMPUTED_GRAPH_ATTRS.has(k)) continue;
+    if (computed.has(k)) continue;
     if (!top && seeded !== undefined && seeded.has(k)) continue;
     if (writeDictSkips(v, snap?.get(k))) continue;
     parts.push(k + '=' + agstrcanon(v));
   }
-  if (!top && snap !== undefined) parts.push(...eagerEmptyParts(g, snap));
+  if (!top && snap !== undefined) parts.push(...eagerEmptyParts(g, snap, computed));
   return parts;
 }
 
 /**
- * C's EAGER-propagation artifact. `agattr` creating a NEW global graph
- * attribute runs `agapply(root, addattr, rsym, true)`, installing the symbol —
- * with its pre-declaration (empty) default — on every subgraph that ALREADY
- * EXISTS. So a subgraph opened before the declaration carries a local empty
- * value and agwrite prints e.g. `rankdir=""`, while a sibling opened after it
- * inherits and prints nothing. "Declared at root after this scope opened" is
- * exactly `root.attrs.has(k) && !snapshot.has(k)`.
- * @see lib/cgraph/attr.c:287 (agapply/addattr)
+ * C's EAGER-propagation artifact. Setting a graph attribute in scope S runs
+ * `unviewsubgraphsattr(S, name)`, which walks `agfstsubg(S)` and gives every
+ * subgraph with no local definition its own symbol holding the value it had at
+ * that moment — empty, when the attribute is only now being declared. agwrite
+ * then prints that local `rankdir=""`, while a sibling opened afterwards simply
+ * inherits and prints nothing.
+ *
+ * Two things narrow this. The walk is over DIRECT subgraphs and is NOT
+ * recursive, so the trigger is the immediate PARENT declaring the key, not any
+ * ancestor: in `A { B { C {…} } graph[label=x] }` only B prints `label=""`,
+ * never C. And setattr only reaches `unviewsubgraphsattr` on the branch where
+ * the key had no symbol yet, so the parent's declaration must be the FIRST
+ * anywhere (`firstGraphDecl`) — once a sibling scope has declared the key, the
+ * same statement takes the "new local definition" branch and seeds nothing.
+ * @see lib/cgraph/attr.c:232 unviewsubgraphsattr · :257 setattr (branch split)
  */
-function eagerEmptyParts(g: Graph, snap: Map<string, string>): string[] {
+function eagerEmptyParts(g: Graph, snap: Map<string, string>, computed: Set<string>): string[] {
   const parts: string[] = [];
-  for (const k of rootOf(g).attrs.keys()) {
-    if (COMPUTED_GRAPH_ATTRS.has(k)) continue;
+  const p = g.parent;
+  if (p === null) return parts;
+  // The ROOT is special: a global declaration made anywhere inserts its symbol
+  // into the root's OWN dict, so by the time the root declares the key setattr
+  // always finds a local symbol and takes the unview branch. A non-root scope
+  // only holds a local symbol for a key it declared first.
+  const keys = p.parent === null ? p.attrs.keys() : (p.firstGraphDecl ?? []);
+  for (const k of keys) {
+    if (computed.has(k)) continue;
     if (snap.has(k) || g.attrs.has(k)) continue;
     parts.push(k + '=' + agstrcanon(''));
   }
@@ -361,7 +391,8 @@ export function graphLabelAttrs(g: Graph): string[] {
  * Format edge spline points for the DOT `pos` attribute. Per bezier: the start
  * endpoint `s,sp` when `sflag` set, then the end endpoint `e,ep` when `eflag`
  * set, then `bez.size` control points — all at `%.5g`, exactly as native's
- * spline serialization. @see lib/common/output.c:357-372
+ * spline serialization. Beziers are separated by `;`, points within one by a
+ * space. @see lib/common/output.c:353-372
  */
 export function formatEdgePos(e: Edge): string {
   const raw = edgePosRaw(e);
@@ -377,14 +408,22 @@ export function edgePosRaw(e: Edge): string | null {
   // an edge into its opposite and marks the absorbed one IGNORED; it is still
   // drawn (has _draw_) but carries no `pos`. @see lib/common/output.c:349-353
   if (e.info.edge_type === IGNORED) return null;
-  const parts: string[] = [];
-  for (const bez of spl.list) {
-    if (bez.sflag) parts.push('s,' + gfmt5(bez.sp.x) + ',' + gfmt5(bez.sp.y));
-    if (bez.eflag) parts.push('e,' + gfmt5(bez.ep.x) + ',' + gfmt5(bez.ep.y));
-    const pts = bez.list.slice(0, bez.size);
-    for (const p of pts) parts.push(gfmt5(p.x) + ',' + gfmt5(p.y));
+  // Built imperatively rather than by join() because C's separators are not
+  // uniform: beziers are separated by ';' with no space, while the `s,`/`e,`
+  // endpoints each carry a trailing space from their own format string.
+  let out = '';
+  for (let i = 0; i < spl.size; i++) {
+    const bez = spl.list[i];
+    if (i > 0) out += ';';
+    if (bez.sflag) out += 's,' + gfmt5(bez.sp.x) + ',' + gfmt5(bez.sp.y) + ' ';
+    if (bez.eflag) out += 'e,' + gfmt5(bez.ep.x) + ',' + gfmt5(bez.ep.y) + ' ';
+    for (let j = 0; j < bez.size; j++) {
+      if (j > 0) out += ' ';
+      const p = bez.list[j];
+      out += gfmt5(p.x) + ',' + gfmt5(p.y);
+    }
   }
-  return parts.join(' ');
+  return out;
 }
 
 /** Return the edge connector token. */

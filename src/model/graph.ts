@@ -118,6 +118,20 @@ export class Graph {
   seededAttrs?: Set<string>;
 
   /**
+   * Graph-attribute keys whose declaration in THIS scope was the first anywhere
+   * in the graph. cgraph's `setattr` splits on exactly this: a key with no
+   * existing symbol takes the global-declaration branch, which ends up seeding
+   * every direct subgraph that already exists with a local empty value (see
+   * `eagerEmptyParts`); a key some earlier scope already declared takes the
+   * "new local definition" branch and touches no subgraph at all. So an
+   * identical `graph [fill=x]` statement makes a child print `fill=""` or print
+   * nothing purely according to whether a SIBLING declared `fill` first.
+   * Undefined on any scope that declared nothing new.
+   * @see lib/cgraph/attr.c:257 setattr (lsym / psym / global branches)
+   */
+  firstGraphDecl?: Set<string>;
+
+  /**
    * Layout-engine info; replaces GD_* macros via agbindrec (AD-1).
    * @see lib/cgraph/cgraph.h:agbindrec
    */

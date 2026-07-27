@@ -18,7 +18,8 @@ import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { TextlabelT, FieldT, ShapeDesc } from '../../common/types.js';
-import { agstrcanon } from '../map.js';
+import { agstrcanon, agstrcanonText } from '../map.js';
+import { isHtmlValue } from '../../common/html-string.js';
 import { XDOT_VERSION, agcanonEscape, gfmt5, lpStr, xdotId } from './xdot-ops.js';
 import {
   COMPUTED_EDGE_ATTRS, COMPUTED_NODE_ATTRS, appendRecordRects, computedPart, dictParts,
@@ -26,6 +27,7 @@ import {
   effectiveEdgeDefaults, effectiveNodeDefaults, graphInputParts, graphLabelAttrs,
   isDirected, nodeDictParts, nodeRecord, objInputParts,
 } from './attrs.js';
+import { nodesInSeq } from '../../layout/dot/decomp.js';
 import type { XdotDraws, SerCtx } from './types.js';
 
 /** write.c's serializer half of the dot/xdot renderer. @see lib/cgraph/write.c */
@@ -140,7 +142,7 @@ export abstract class DotWriterBase {
     const parts: string[] = [];
     parts.push(...echoGraphAttr(sg, 'bb'));
     parts.push(...graphLabelAttrs(sg));
-    parts.push(...graphInputParts(sg, false));
+    parts.push(...graphInputParts(sg, false, this.emitDraws));
     return parts;
   }
 
@@ -254,7 +256,11 @@ export abstract class DotWriterBase {
   /** @see write.c:write_body — subgraphs, then this scope's nodes and edges. */
   private writeBody(g: Graph, ctx: SerCtx): void {
     this.writeSubgs(g, ctx);
-    for (const n of g.nodes.values()) {
+    // agfstnode/agnxtnode walk a subgraph's node set in AGSEQ (root creation)
+    // order, NOT the order nodes were added to this subgraph, so a node first
+    // referenced by an earlier edge is emitted before one declared above it in
+    // the subgraph's own text. @see lib/cgraph/node.c:43 · decomp.ts nodesInSeq
+    for (const n of nodesInSeq(g)) {
       if (this.writeNodeTest(g, n, ctx)) this.writeNode(g, n, ctx);
       let prev: Node = n;
       for (const e of n.outEdges(g)) {
@@ -303,10 +309,36 @@ export abstract class DotWriterBase {
   }
 
   /** @see write.c:write_edge — attrs only on first emission, bare thereafter. */
+  /**
+   * The `:port` / `:port:compass` suffix C writes after an endpoint name.
+   *
+   * These are NOT ordinary attributes on the way out: write_nondefault_attrs
+   * skips the tailport/headport symbols (write.c:487-492) precisely because
+   * this function re-emits them as endpoint syntax, so an edge parsed from
+   * `A:f0:ne -> B` round-trips through the port syntax rather than through a
+   * `tailport="f0:ne"` attribute.
+   *
+   * C reads the value with agxget, which falls back to the edge dict default,
+   * and gates on the SYMBOL existing at all — both are subsumed here by the
+   * attr-then-default lookup coming back undefined. An html-like value is
+   * canonicalized whole; a plain one splits on its FIRST `:` (strchr) so the
+   * port and the compass point are canonicalized separately.
+   * @see lib/cgraph/write.c:565 write_port
+   */
+  private portSuffix(e: Edge, g: Graph, key: 'tailport' | 'headport'): string {
+    const val = e.attrs.get(key) ?? effectiveEdgeDefaults(g).get(key);
+    if (val === undefined || val.length === 0) return '';
+    if (isHtmlValue(val)) return ':' + agstrcanon(val);
+    const i = val.indexOf(':');
+    if (i < 0) return ':' + agstrcanonText(val);
+    return ':' + agstrcanonText(val.slice(0, i)) + ':' + agstrcanonText(val.slice(i + 1));
+  }
+
   private writeEdge(g: Graph, e: Edge, ctx: SerCtx): void {
     const conn = edgeConnector(isDirected(g));
-    let s = this.indent(ctx) + xdotId(this.emitNodeName(e.tail)) + ' ' + conn + ' ' +
-      xdotId(this.emitNodeName(e.head));
+    let s = this.indent(ctx) + xdotId(this.emitNodeName(e.tail)) +
+      this.portSuffix(e, g, 'tailport') + ' ' + conn + ' ' +
+      xdotId(this.emitNodeName(e.head)) + this.portSuffix(e, g, 'headport');
     if (!ctx.attrsWritten.has(e)) {
       s += this.objAttrBlock(this.edgeAttrStr(e, g), ctx);
       ctx.attrsWritten.add(e);
@@ -328,7 +360,7 @@ export abstract class DotWriterBase {
     // Canonicalized like any other dict value: `1.7` needs no quotes, and
     // native emits it bare. @see lib/cgraph/write.c:write_canonstr
     if (this.emitDraws) parts.push('xdotversion=' + agstrcanon(XDOT_VERSION));
-    parts.push(...graphInputParts(g, true));
+    parts.push(...graphInputParts(g, true, this.emitDraws));
     return parts;
   }
 
@@ -344,7 +376,7 @@ export abstract class DotWriterBase {
     // rec_attach_bb recurses into GD_clust, so a labelled cluster carries the
     // same lp/lwidth/lheight triple as the root. @see lib/common/output.c:249
     parts.push(...graphLabelAttrs(sg));
-    parts.push(...graphInputParts(sg, false));
+    parts.push(...graphInputParts(sg, false, this.emitDraws));
     return parts;
   }
 
@@ -362,9 +394,9 @@ export abstract class DotWriterBase {
     const widthRaw = gfmt5((info.lw + info.rw) / 72);
     const heightRaw = gfmt5(info.ht / 72);
     const parts: string[] = [
-      ...computedPart('pos', posRaw, 'pos="' + posRaw + '"', defs),
-      ...computedPart('width', widthRaw, 'width=' + widthRaw, defs),
-      ...computedPart('height', heightRaw, 'height=' + heightRaw, defs),
+      ...computedPart('pos', posRaw, defs),
+      ...computedPart('width', widthRaw, defs),
+      ...computedPart('height', heightRaw, defs),
     ];
     parts.push(...this.nodeXlpPart(n, defs));
     parts.push(...this.nodeRectsPart(n, defs));
@@ -381,7 +413,7 @@ export abstract class DotWriterBase {
     const parts: string[] = this.edgeDrawParts(e);
     const posRaw = edgePosRaw(e);
     if (posRaw !== null) {
-      parts.push(...computedPart('pos', posRaw, 'pos="' + posRaw + '"', defs));
+      parts.push(...computedPart('pos', posRaw, defs));
     } else {
       // C's attach_attrs only agsets `pos` when the edge HAS a spline
       // (output.c:348); an engine that never routes (patchwork) leaves the
@@ -409,7 +441,7 @@ export abstract class DotWriterBase {
     const xlabel = n.info.xlabel as TextlabelT | undefined;
     if (!xlabel || !xlabel.set) return echoAttr(n.attrs, 'xlp');
     const raw = lpStr(xlabel.pos);
-    return computedPart('xlp', raw, 'xlp="' + raw + '"', defs);
+    return computedPart('xlp', raw, defs);
   }
 
   /** `rects` — record field boxes. C gates on the SHAPE NAME being exactly
@@ -424,7 +456,7 @@ export abstract class DotWriterBase {
     const rects: string[] = [];
     appendRecordRects(n, n.info.shape_info as FieldT, rects);
     const raw = rects.join(' ');
-    return computedPart('rects', raw, 'rects="' + raw + '"', defs);
+    return computedPart('rects', raw, defs);
   }
 
   /** The six `_draw_`-family attributes of an edge, in C's order. */
@@ -456,7 +488,7 @@ export abstract class DotWriterBase {
     const parts: string[] = [];
     const lpPart = (key: string, label: TextlabelT): string[] => {
       const raw = lpStr(label.pos);
-      return computedPart(key, raw, key + '="' + raw + '"', defs);
+      return computedPart(key, raw, defs);
     };
     if (attached && info.label) parts.push(...lpPart('lp', info.label));
     else parts.push(...echoAttr(e.attrs, 'lp'));
