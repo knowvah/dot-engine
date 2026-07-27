@@ -656,6 +656,23 @@ Actions, in dependence order:
    | device/render | `landscape`, `resolution`, `samplepoints`, `quantum` |
    | labels/text | `label_float`, `labelfontname`, `fontnames`, `layerlistsep` |
 
+   **dot family CLOSED 2026-07-26.** `phase` turned out to be a real port
+   defect, not just a missing fixture (wrong attribute name + skipped
+   postprocess + late_int clamp asymmetry) — see the decision journal and
+   `src/layout/dot/phase-attr.test.ts`. Goldens added for `phase`,
+   `clusterrank`, `mclimit`; each was A/B'd against the C binary first to prove
+   the attribute actually changes the drawing, so none is vacuous.
+
+   `searchsize` is deliberately NOT given a golden: it bounds the network-simplex
+   candidate search, and NS converges to the same optimum either way, so it is
+   **output-invariant** — a golden would pass no matter what the code did.
+   Verified invariant on both sides across {1, 2, 100, 0, abc}, with and without
+   `newrank`. Two latent notes for whoever makes it observable: C reads it in
+   TWO places (`ns.c:1034` for regular ranking, `dotgen/rank.c:1097` for
+   newrank) and the port only has the newrank site; and C uses `atoi`
+   (non-numeric -> 0) where the port uses `parseInt` (-> NaN). Neither is
+   observable through output today.
+
    Sequence dot first, per this file's own prioritization. Note several are
    iterative-engine tuning knobs (`epsilon`, `maxiter`, `T0`, `levels`) whose
    effect is a layout DELTA — a fixture for those must assert the knob changed

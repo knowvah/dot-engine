@@ -1716,5 +1716,13 @@
     "input": "test/golden/inputs/dot-clusterrank-none.dot",
     "reference": "test/golden/refs/dot-clusterrank-none.svg",
     "description": "clusterrank=none disables cluster-local ranking; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "dot-mclimit",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-mclimit.dot",
+    "reference": "test/golden/refs/dot-mclimit.svg",
+    "description": "mclimit=0.01 truncates the mincross search, changing node order vs the default; ref: graphviz 15.0.0 dot -Kdot -Tsvg; closes an attr-frequency blind spot"
   }
 ]
