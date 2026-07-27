@@ -11,15 +11,17 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 731 (95.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 21
-- **errors (oracle/port/timeout, excluded from scoring):** 10
+- **Surveyed:** 905
+- **pass:** 881 (97.3%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 22
+- **errors (oracle/port/timeout, excluded from scoring):** 1
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 1998 | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` |
 
-## Accepted (21) — documented, not chased
+## Accepted (22) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
@@ -42,23 +44,15 @@ _(none)_
 | [`nshare-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/arrows_dot.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 5 | `[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid; [node] a/style: port=solid native=ellipse; [node] a/shape: port=ellipse native=black; [node] a/color: port=black native=lightgrey; [node] a/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
 | [`share-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/newarrows.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
+| [`tree-graphs-directed-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/Latin1.gv) | 5 | `[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid; [node] a/style: port=solid native=ellipse; [node] a/shape: port=ellipse native=black; [node] a/color: port=black native=lightgrey; [node] a/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 5 | `[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid; [node] a/style: port=solid native=ellipse; [node] a/shape: port=ellipse native=black; [node] a/color: port=black native=lightgrey; [node] a/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
 | [`windows-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/newarrows.gv) | 7 | `[edge] i->Z#0/point[0].x: port=3.7887 native=4.2544; [edge] i->Z#0/point[1].x: port=3.7214 native=4.3217; [edge] i->Z#0/point[2].x: port=3.6572 native=4.386; [edge] i->Z#0/point[3].x: port=3.6239 native=4.4193; [edge] i->Z#0/point[4].x: port=3.11 native=4.9332` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (10)
+## Errors and timeouts (1)
 
 | id | message |
 |---|---|
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | oracle exit null |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
-| [`share-labelroot-ftl`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/labelroot-ftl.gv) |  |
-| [`share-labelroot-nbc`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/labelroot-nbc.gv) |  |
-| [`share-labelroot-nbl`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/labelroot-nbl.gv) |  |
-| [`share-labelroot-nbr`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/labelroot-nbr.gv) |  |
-| [`windows-labelroot-ftl`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/labelroot-ftl.gv) |  |
-| [`windows-labelroot-nbc`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/labelroot-nbc.gv) |  |
-| [`windows-labelroot-nbl`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/labelroot-nbl.gv) |  |
-| [`windows-labelroot-nbr`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/labelroot-nbr.gv) |  |
 
-_Passing ids (731) are omitted for brevity — the full roster is in
+_Passing ids (881) are omitted for brevity — the full roster is in
 `plain-parity-twopi.json`._

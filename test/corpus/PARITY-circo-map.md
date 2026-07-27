@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 756 (99.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
-- **errors (oracle/port/timeout, excluded from scoring):** 6
+- **Surveyed:** 905
+- **pass:** 900 (99.4%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
+- **errors (oracle/port/timeout, excluded from scoring):** 5
 
 ## Diverged (0)
 
@@ -23,16 +23,15 @@ _(none)_
 
 _(none)_
 
-## Errors and timeouts (6)
+## Errors and timeouts (5)
 
 | id | message |
 |---|---|
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | oracle exit null |
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | oracle exit null |
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | oracle exit null |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle exit null |
 
-_Passing ids (756) are omitted for brevity — the full roster is in
+_Passing ids (900) are omitted for brevity — the full roster is in
 `map-parity-circo.json`._

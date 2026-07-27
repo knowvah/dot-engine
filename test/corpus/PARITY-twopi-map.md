@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 760 (99.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
-- **errors (oracle/port/timeout, excluded from scoring):** 2
+- **Surveyed:** 905
+- **pass:** 904 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
+- **errors (oracle/port/timeout, excluded from scoring):** 1
 
 ## Diverged (0)
 
@@ -23,12 +23,11 @@ _(none)_
 
 _(none)_
 
-## Errors and timeouts (2)
+## Errors and timeouts (1)
 
 | id | message |
 |---|---|
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
-_Passing ids (760) are omitted for brevity — the full roster is in
+_Passing ids (904) are omitted for brevity — the full roster is in
 `map-parity-twopi.json`._

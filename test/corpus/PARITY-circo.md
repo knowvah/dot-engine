@@ -12,8 +12,8 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 762 (generated 2026-07-25T02:59:13.532Z)
-- **pass:** 752 (98.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4
+- **Surveyed:** 905 (generated 2026-07-27T22:03:58.294Z)
+- **pass:** 895 (98.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4
 - **oracle-error:** 5 · **port-error:** 0 · **timeout:** 1
 
 ## Accepted deltas (4) — documented, not chased
@@ -46,5 +46,5 @@ _(none)_
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | timeout |  |
 
 **oracle errors:** 10 native-crash (documented, excluded) / 5 timeout-flake (excluded this run, note to retry)
-_Passing ids (752) are omitted for brevity — the full roster is in
+_Passing ids (895) are omitted for brevity — the full roster is in
 `parity-circo.json`._

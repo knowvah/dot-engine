@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 750 (98.4%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6
-- **errors (oracle/port/timeout, excluded from scoring):** 6
+- **Surveyed:** 905
+- **pass:** 894 (98.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6
+- **errors (oracle/port/timeout, excluded from scoring):** 5
 
 ## Diverged (0)
 
@@ -30,16 +30,15 @@ _(none)_
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
 | [`windows-tree`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/tree.gv) | 10 | `edge:node2->node8#0/_draw_/op[1].b[5]` | layout drift inherited from the circo xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (6)
+## Errors and timeouts (5)
 
 | id | message |
 |---|---|
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | oracle exit null |
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | oracle exit null |
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | oracle exit null |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle exit null |
 
-_Passing ids (750) are omitted for brevity — the full roster is in
+_Passing ids (894) are omitted for brevity — the full roster is in
 `json-parity-circo.json`._

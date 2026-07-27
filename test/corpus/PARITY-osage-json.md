@@ -11,13 +11,15 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 750 (98.4%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 12
+- **Surveyed:** 905
+- **pass:** 892 (98.6%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 12
 - **errors (oracle/port/timeout, excluded from scoring):** 0
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 5155 | 112 | `edge:9000->8000#0/_draw_/op[1].b[0]` |
 
 ## Accepted (12) — documented, not chased
 
@@ -40,5 +42,5 @@ _(none)_
 
 _(none)_
 
-_Passing ids (750) are omitted for brevity — the full roster is in
+_Passing ids (892) are omitted for brevity — the full roster is in
 `json-parity-osage.json`._

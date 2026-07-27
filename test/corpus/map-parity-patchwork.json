@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-07-24T21:34:10.827Z",
+  "generatedAt": "2026-07-27T23:54:28.377Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "patchwork",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 762,
+  "total": 905,
   "counts": {
-    "conformant": 762,
+    "conformant": 905,
     "diverged": 0,
     "accepted": 0,
     "port-error": 0,
@@ -14,58 +14,6 @@
     "timeout": 0
   },
   "results": [
-    {
-      "id": "1724",
-      "path": "1724.dot",
-      "size": 36,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "negative-dpi",
-      "path": "negative-dpi.dot",
-      "size": 33,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "graphs-trivial",
-      "path": "graphs/trivial.gv",
-      "size": 16,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "1909",
-      "path": "1909.dot",
-      "size": 29,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
     {
       "id": "2285",
       "path": "2285.dot",
@@ -93,9 +41,61 @@
       "hasHref": false
     },
     {
-      "id": "2699",
-      "path": "2699.dot",
-      "size": 35,
+      "id": "graphs-trivial",
+      "path": "graphs/trivial.gv",
+      "size": 16,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-tclpkg-gv-hello",
+      "path": "../tclpkg/gv/hello.gv",
+      "size": 25,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "negative-dpi",
+      "path": "negative-dpi.dot",
+      "size": 33,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "1909",
+      "path": "1909.dot",
+      "size": 29,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-infosrc-forward",
+      "path": "../doc/infosrc/forward.dot",
+      "size": 30,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -119,22 +119,9 @@
       "hasHref": false
     },
     {
-      "id": "2614",
-      "path": "2614.dot",
-      "size": 39,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "graphs-center",
-      "path": "graphs/center.gv",
-      "size": 42,
+      "id": "2699",
+      "path": "2699.dot",
+      "size": 35,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -158,6 +145,32 @@
       "hasHref": false
     },
     {
+      "id": "2614",
+      "path": "2614.dot",
+      "size": 39,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "1724",
+      "path": "1724.dot",
+      "size": 36,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "813",
       "path": "813.dot",
       "size": 39,
@@ -171,9 +184,9 @@
       "hasHref": false
     },
     {
-      "id": "2636_1",
-      "path": "2636_1.dot",
-      "size": 45,
+      "id": "tree-doc-infosrc-back",
+      "path": "../doc/infosrc/back.dot",
+      "size": 40,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -184,9 +197,48 @@
       "hasHref": false
     },
     {
-      "id": "1585_0",
-      "path": "1585_0.dot",
-      "size": 44,
+      "id": "tree-doc-infosrc-both",
+      "path": "../doc/infosrc/both.dot",
+      "size": 40,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-infosrc-nohead",
+      "path": "../doc/infosrc/nohead.dot",
+      "size": 40,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-center",
+      "path": "graphs/center.gv",
+      "size": 42,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2636",
+      "path": "2636.dot",
+      "size": 43,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -210,9 +262,35 @@
       "hasHref": false
     },
     {
-      "id": "2636",
-      "path": "2636.dot",
-      "size": 43,
+      "id": "1585_0",
+      "path": "1585_0.dot",
+      "size": 44,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2636_1",
+      "path": "2636_1.dot",
+      "size": 45,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-a",
+      "path": "graphs/a.gv",
+      "size": 49,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -238,19 +316,6 @@
     {
       "id": "1702",
       "path": "1702.dot",
-      "size": 49,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "graphs-a",
-      "path": "graphs/a.gv",
       "size": 49,
       "verdict": "conformant",
       "cmapx": {
@@ -340,6 +405,19 @@
       "hasHref": false
     },
     {
+      "id": "tree-doc-dotguide-none",
+      "path": "../doc/dotguide/none.dot",
+      "size": 54,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-ps",
       "path": "graphs/ps.gv",
       "size": 55,
@@ -353,9 +431,9 @@
       "hasHref": false
     },
     {
-      "id": "2391",
-      "path": "2391.dot",
-      "size": 61,
+      "id": "tree-contrib-prune-test",
+      "path": "../contrib/prune/test.gv",
+      "size": 56,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -369,6 +447,32 @@
       "id": "graphs-b123",
       "path": "graphs/b123.gv",
       "size": 59,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-plaintext",
+      "path": "../doc/dotguide/plaintext.dot",
+      "size": 64,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2391",
+      "path": "2391.dot",
+      "size": 61,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -405,6 +509,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-b76",
+      "path": "graphs/b76.gv",
+      "size": 69,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-clover",
       "path": "graphs/clover.gv",
       "size": 69,
@@ -418,9 +535,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b76",
-      "path": "graphs/b76.gv",
-      "size": 69,
+      "id": "2168",
+      "path": "2168.dot",
+      "size": 70,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -444,9 +561,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b80a",
-      "path": "graphs/b80a.gv",
-      "size": 71,
+      "id": "tree-doc-dotguide-box",
+      "path": "../doc/dotguide/box.dot",
+      "size": 70,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -457,8 +574,8 @@
       "hasHref": false
     },
     {
-      "id": "2168",
-      "path": "2168.dot",
+      "id": "tree-doc-dotguide-egg",
+      "path": "../doc/dotguide/egg.dot",
       "size": 70,
       "verdict": "conformant",
       "cmapx": {
@@ -483,9 +600,9 @@
       "hasHref": false
     },
     {
-      "id": "1925",
-      "path": "1925.dot",
-      "size": 72,
+      "id": "graphs-b80a",
+      "path": "graphs/b80a.gv",
+      "size": 71,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -509,8 +626,34 @@
       "hasHref": false
     },
     {
+      "id": "1925",
+      "path": "1925.dot",
+      "size": 72,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-radius",
       "path": "graphs/radius.gv",
+      "size": 74,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-diamond",
+      "path": "../doc/dotguide/diamond.dot",
       "size": 74,
       "verdict": "conformant",
       "cmapx": {
@@ -525,6 +668,45 @@
       "id": "167",
       "path": "167.dot",
       "size": 75,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-house",
+      "path": "../doc/dotguide/house.dot",
+      "size": 74,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-circle",
+      "path": "../doc/dotguide/circle.dot",
+      "size": 76,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-neato-G4_orig",
+      "path": "../doc/neato/G4_orig.dot",
+      "size": 76,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -561,9 +743,139 @@
       "hasHref": false
     },
     {
+      "id": "tree-doc-dotguide-ellipse",
+      "path": "../doc/dotguide/ellipse.dot",
+      "size": 78,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-hexagon",
+      "path": "../doc/dotguide/hexagon.dot",
+      "size": 78,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-Mcircle",
+      "path": "../doc/dotguide/Mcircle.dot",
+      "size": 78,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-Msquare",
+      "path": "../doc/dotguide/Msquare.dot",
+      "size": 78,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-octagon",
+      "path": "../doc/dotguide/octagon.dot",
+      "size": 78,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "1865",
       "path": "1865.dot",
       "size": 79,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2619",
+      "path": "2619.dot",
+      "size": 79,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-invhouse",
+      "path": "../doc/dotguide/invhouse.dot",
+      "size": 80,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-Mdiamond",
+      "path": "../doc/dotguide/Mdiamond.dot",
+      "size": 80,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-record",
+      "path": "../doc/dotguide/record.dot",
+      "size": 80,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-triangle",
+      "path": "../doc/dotguide/triangle.dot",
+      "size": 80,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -587,9 +899,9 @@
       "hasHref": false
     },
     {
-      "id": "2619",
-      "path": "2619.dot",
-      "size": 79,
+      "id": "graphs-b80",
+      "path": "graphs/b80.gv",
+      "size": 81,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -616,19 +928,6 @@
       "id": "1585_1",
       "path": "1585_1.dot",
       "size": 82,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "graphs-b80",
-      "path": "graphs/b80.gv",
-      "size": 81,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -678,6 +977,19 @@
       "hasHref": false
     },
     {
+      "id": "2721",
+      "path": "2721.dot",
+      "size": 82,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-b79",
       "path": "graphs/b79.gv",
       "size": 82,
@@ -691,8 +1003,21 @@
       "hasHref": false
     },
     {
-      "id": "2721",
-      "path": "2721.dot",
+      "id": "tree-doc-dotguide-Mrecord",
+      "path": "../doc/dotguide/Mrecord.dot",
+      "size": 82,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-trapezium",
+      "path": "../doc/dotguide/trapezium.dot",
       "size": 82,
       "verdict": "conformant",
       "cmapx": {
@@ -717,9 +1042,9 @@
       "hasHref": false
     },
     {
-      "id": "165_3",
-      "path": "165_3.dot",
-      "size": 84,
+      "id": "tree-doc-neato-G4_lenwt",
+      "path": "../doc/neato/G4_lenwt.dot",
+      "size": 83,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -730,9 +1055,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-longflat",
-      "path": "graphs/longflat.gv",
-      "size": 86,
+      "id": "165_3",
+      "path": "165_3.dot",
+      "size": 84,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -756,9 +1081,35 @@
       "hasHref": false
     },
     {
-      "id": "2168_4",
-      "path": "2168_4.dot",
-      "size": 87,
+      "id": "graphs-longflat",
+      "path": "graphs/longflat.gv",
+      "size": 86,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-invtriangle",
+      "path": "../doc/dotguide/invtriangle.dot",
+      "size": 86,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-longflat",
+      "path": "../graphs/directed/longflat.gv",
+      "size": 86,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -795,6 +1146,19 @@
       "hasHref": false
     },
     {
+      "id": "2168_4",
+      "path": "2168_4.dot",
+      "size": 87,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "165_2",
       "path": "165_2.dot",
       "size": 88,
@@ -808,9 +1172,48 @@
       "hasHref": false
     },
     {
-      "id": "1644",
-      "path": "1644.dot",
-      "size": 92,
+      "id": "tree-doc-dotguide-doublecircle",
+      "path": "../doc/dotguide/doublecircle.dot",
+      "size": 88,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-invtrapezium",
+      "path": "../doc/dotguide/invtrapezium.dot",
+      "size": 88,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-doubleoctagon",
+      "path": "../doc/dotguide/doubleoctagon.dot",
+      "size": 90,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-parallelogram",
+      "path": "../doc/dotguide/parallelogram.dot",
+      "size": 90,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -834,9 +1237,100 @@
       "hasHref": false
     },
     {
+      "id": "tree-doc-dotguide-tripleoctagon",
+      "path": "../doc/dotguide/tripleoctagon.dot",
+      "size": 90,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "1644",
+      "path": "1644.dot",
+      "size": 92,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-infosrc-mrecord",
+      "path": "../doc/infosrc/mrecord.dot",
+      "size": 92,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "2460",
       "path": "2460.dot",
       "size": 93,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-constraint",
+      "path": "../doc/dotguide/constraint.dot",
+      "size": 93,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-infosrc-constraint",
+      "path": "../doc/infosrc/constraint.dot",
+      "size": 93,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-point",
+      "path": "../doc/dotguide/point.dot",
+      "size": 95,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-polygon",
+      "path": "../doc/dotguide/polygon.dot",
+      "size": 96,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -860,6 +1354,19 @@
       "hasHref": false
     },
     {
+      "id": "2437",
+      "path": "2437.dot",
+      "size": 98,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-Latin1",
       "path": "graphs/Latin1.gv",
       "size": 99,
@@ -873,9 +1380,22 @@
       "hasHref": false
     },
     {
-      "id": "2437",
-      "path": "2437.dot",
-      "size": 98,
+      "id": "tree-doc-infosrc-colorlist",
+      "path": "../doc/infosrc/colorlist.dot",
+      "size": 99,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "path": "../graphs/directed/Latin1.gv",
+      "size": 99,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -912,19 +1432,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b545",
-      "path": "graphs/b545.gv",
-      "size": 104,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "2352_2",
       "path": "2352_2.dot",
       "size": 102,
@@ -938,8 +1445,112 @@
       "hasHref": false
     },
     {
+      "id": "tree-doc-dotguide-crow",
+      "path": "../doc/dotguide/crow.dot",
+      "size": 102,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-boxarrow",
+      "path": "../doc/dotguide/boxarrow.dot",
+      "size": 103,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-dot",
+      "path": "../doc/dotguide/dot.dot",
+      "size": 103,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-inv",
+      "path": "../doc/dotguide/inv.dot",
+      "size": 103,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-tee",
+      "path": "../doc/dotguide/tee.dot",
+      "size": 103,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-vee",
+      "path": "../doc/dotguide/vee.dot",
+      "size": 103,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "1308",
       "path": "1308.dot",
+      "size": 104,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-b545",
+      "path": "graphs/b545.gv",
+      "size": 104,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-no_arrow",
+      "path": "../doc/dotguide/no_arrow.dot",
       "size": 104,
       "verdict": "conformant",
       "cmapx": {
@@ -964,9 +1575,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-trivial_dot",
-      "path": "linux.x86/trivial_dot.gv",
-      "size": 105,
+      "id": "tree-doc-dotguide-odot",
+      "path": "../doc/dotguide/odot.dot",
+      "size": 104,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -990,8 +1601,8 @@
       "hasHref": false
     },
     {
-      "id": "nshare-trivial_dot",
-      "path": "nshare/trivial_dot.gv",
+      "id": "linux.x86-trivial_dot",
+      "path": "linux.x86/trivial_dot.gv",
       "size": 105,
       "verdict": "conformant",
       "cmapx": {
@@ -1016,9 +1627,87 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b491",
-      "path": "graphs/b491.gv",
-      "size": 113,
+      "id": "nshare-trivial_dot",
+      "path": "nshare/trivial_dot.gv",
+      "size": 105,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-trivial_dot",
+      "path": "windows/trivial_dot.gv",
+      "size": 105,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-invdot",
+      "path": "../doc/dotguide/invdot.dot",
+      "size": 106,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-normal",
+      "path": "../doc/dotguide/normal.dot",
+      "size": 106,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-diamondarrow",
+      "path": "../doc/dotguide/diamondarrow.dot",
+      "size": 107,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-invodot",
+      "path": "../doc/dotguide/invodot.dot",
+      "size": 107,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-oinvdot",
+      "path": "../doc/dotguide/oinvdot.dot",
+      "size": 107,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1042,9 +1731,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-trivial_dot",
-      "path": "windows/trivial_dot.gv",
-      "size": 105,
+      "id": "graphs-b491",
+      "path": "graphs/b491.gv",
+      "size": 113,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1133,19 +1822,6 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-box",
-      "path": "regression_tests/shapes/reference/box.gv",
-      "size": 128,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "reference-test_reference-001.001",
       "path": "reference/test_reference/001.001.gv",
       "size": 126,
@@ -1162,6 +1838,19 @@
       "id": "graphs-b73",
       "path": "graphs/b73.gv",
       "size": 124,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "regression_tests-shapes-reference-box",
+      "path": "regression_tests/shapes/reference/box.gv",
+      "size": 128,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1224,8 +1913,8 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-note",
-      "path": "regression_tests/shapes/reference/note.gv",
+      "id": "graphs-edgeclip",
+      "path": "graphs/edgeclip.gv",
       "size": 129,
       "verdict": "conformant",
       "cmapx": {
@@ -1250,48 +1939,22 @@
       "hasHref": false
     },
     {
+      "id": "regression_tests-shapes-reference-note",
+      "path": "regression_tests/shapes/reference/note.gv",
+      "size": 129,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "regression_tests-shapes-reference-oval",
       "path": "regression_tests/shapes/reference/oval.gv",
       "size": 129,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "graphs-edgeclip",
-      "path": "graphs/edgeclip.gv",
-      "size": 129,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "regression_tests-shapes-reference-house",
-      "path": "regression_tests/shapes/reference/house.gv",
-      "size": 130,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "regression_tests-shapes-reference-box3d",
-      "path": "regression_tests/shapes/reference/box3d.gv",
-      "size": 130,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1315,8 +1978,34 @@
       "hasHref": false
     },
     {
+      "id": "regression_tests-shapes-reference-box3d",
+      "path": "regression_tests/shapes/reference/box3d.gv",
+      "size": 130,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "regression_tests-shapes-reference-circle",
       "path": "regression_tests/shapes/reference/circle.gv",
+      "size": 130,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "regression_tests-shapes-reference-house",
+      "path": "regression_tests/shapes/reference/house.gv",
       "size": 130,
       "verdict": "conformant",
       "cmapx": {
@@ -1341,19 +2030,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-pack",
-      "path": "graphs/pack.gv",
-      "size": 131,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "regression_tests-shapes-reference-folder",
       "path": "regression_tests/shapes/reference/folder.gv",
       "size": 131,
@@ -1367,8 +2043,8 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-Msquare",
-      "path": "regression_tests/shapes/reference/Msquare.gv",
+      "id": "graphs-pack",
+      "path": "graphs/pack.gv",
       "size": 131,
       "verdict": "conformant",
       "cmapx": {
@@ -1393,9 +2069,22 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-diamond",
-      "path": "regression_tests/shapes/reference/diamond.gv",
-      "size": 132,
+      "id": "regression_tests-shapes-reference-Mcircle",
+      "path": "regression_tests/shapes/reference/Mcircle.gv",
+      "size": 131,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "regression_tests-shapes-reference-Msquare",
+      "path": "regression_tests/shapes/reference/Msquare.gv",
+      "size": 131,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1419,9 +2108,22 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-Mcircle",
-      "path": "regression_tests/shapes/reference/Mcircle.gv",
+      "id": "tree-doc-neato-G4_pinned",
+      "path": "../doc/neato/G4_pinned.dot",
       "size": 131,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "regression_tests-shapes-reference-diamond",
+      "path": "regression_tests/shapes/reference/diamond.gv",
+      "size": 132,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1484,9 +2186,9 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-assembly",
-      "path": "regression_tests/shapes/reference/assembly.gv",
-      "size": 133,
+      "id": "regression_tests-shapes-reference-rnastab",
+      "path": "regression_tests/shapes/reference/rnastab.gv",
+      "size": 132,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1510,9 +2212,9 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-rnastab",
-      "path": "regression_tests/shapes/reference/rnastab.gv",
-      "size": 132,
+      "id": "regression_tests-shapes-reference-assembly",
+      "path": "regression_tests/shapes/reference/assembly.gv",
+      "size": 133,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1525,19 +2227,6 @@
     {
       "id": "graphs-user_shapes",
       "path": "graphs/user_shapes.gv",
-      "size": 133,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "regression_tests-shapes-reference-invhouse",
-      "path": "regression_tests/shapes/reference/invhouse.gv",
       "size": 133,
       "verdict": "conformant",
       "cmapx": {
@@ -1562,8 +2251,8 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-Mdiamond",
-      "path": "regression_tests/shapes/reference/Mdiamond.gv",
+      "id": "regression_tests-shapes-reference-invhouse",
+      "path": "regression_tests/shapes/reference/invhouse.gv",
       "size": 133,
       "verdict": "conformant",
       "cmapx": {
@@ -1588,34 +2277,8 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-promoter",
-      "path": "regression_tests/shapes/reference/promoter.gv",
-      "size": 133,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "regression_tests-shapes-reference-triangle",
-      "path": "regression_tests/shapes/reference/triangle.gv",
-      "size": 133,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "regression_tests-shapes-reference-septagon",
-      "path": "regression_tests/shapes/reference/septagon.gv",
+      "id": "regression_tests-shapes-reference-Mdiamond",
+      "path": "regression_tests/shapes/reference/Mdiamond.gv",
       "size": 133,
       "verdict": "conformant",
       "cmapx": {
@@ -1640,8 +2303,73 @@
       "hasHref": false
     },
     {
+      "id": "regression_tests-shapes-reference-promoter",
+      "path": "regression_tests/shapes/reference/promoter.gv",
+      "size": 133,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "regression_tests-shapes-reference-septagon",
+      "path": "regression_tests/shapes/reference/septagon.gv",
+      "size": 133,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "regression_tests-shapes-reference-triangle",
+      "path": "regression_tests/shapes/reference/triangle.gv",
+      "size": 133,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "regression_tests-shapes-reference-component",
+      "path": "regression_tests/shapes/reference/component.gv",
+      "size": 134,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-b73a",
       "path": "graphs/b73a.gv",
+      "size": 134,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "regression_tests-shapes-reference-lpromoter",
+      "path": "regression_tests/shapes/reference/lpromoter.gv",
       "size": 134,
       "verdict": "conformant",
       "cmapx": {
@@ -1666,19 +2394,6 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-component",
-      "path": "regression_tests/shapes/reference/component.gv",
-      "size": 134,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "regression_tests-shapes-reference-noverhang",
       "path": "regression_tests/shapes/reference/noverhang.gv",
       "size": 134,
@@ -1692,8 +2407,8 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-lpromoter",
-      "path": "regression_tests/shapes/reference/lpromoter.gv",
+      "id": "regression_tests-shapes-reference-plaintext",
+      "path": "regression_tests/shapes/reference/plaintext.gv",
       "size": 134,
       "verdict": "conformant",
       "cmapx": {
@@ -1731,8 +2446,8 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-plaintext",
-      "path": "regression_tests/shapes/reference/plaintext.gv",
+      "id": "regression_tests-shapes-reference-trapezium",
+      "path": "regression_tests/shapes/reference/trapezium.gv",
       "size": 134,
       "verdict": "conformant",
       "cmapx": {
@@ -1757,8 +2472,8 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-trapezium",
-      "path": "regression_tests/shapes/reference/trapezium.gv",
+      "id": "regression_tests-shapes-reference-underline",
+      "path": "regression_tests/shapes/reference/underline.gv",
       "size": 134,
       "verdict": "conformant",
       "cmapx": {
@@ -1770,9 +2485,9 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-underline",
-      "path": "regression_tests/shapes/reference/underline.gv",
-      "size": 134,
+      "id": "regression_tests-shapes-reference-point",
+      "path": "regression_tests/shapes/reference/point.gv",
+      "size": 135,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1796,8 +2511,8 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-point",
-      "path": "regression_tests/shapes/reference/point.gv",
+      "id": "regression_tests-shapes-reference-terminator",
+      "path": "regression_tests/shapes/reference/terminator.gv",
       "size": 135,
       "verdict": "conformant",
       "cmapx": {
@@ -1825,19 +2540,6 @@
       "id": "regression_tests-shapes-reference-proteinstab",
       "path": "regression_tests/shapes/reference/proteinstab.gv",
       "size": 136,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "regression_tests-shapes-reference-terminator",
-      "path": "regression_tests/shapes/reference/terminator.gv",
-      "size": 135,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1887,8 +2589,8 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-egg",
-      "path": "regression_tests/shapes/reference/egg.gv",
+      "id": "1425",
+      "path": "1425.dot",
       "size": 139,
       "verdict": "conformant",
       "cmapx": {
@@ -1900,8 +2602,8 @@
       "hasHref": false
     },
     {
-      "id": "1425",
-      "path": "1425.dot",
+      "id": "regression_tests-shapes-reference-egg",
+      "path": "regression_tests/shapes/reference/egg.gv",
       "size": 139,
       "verdict": "conformant",
       "cmapx": {
@@ -1926,9 +2628,9 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-restrictionsite",
-      "path": "regression_tests/shapes/reference/restrictionsite.gv",
-      "size": 140,
+      "id": "regression_tests-shapes-reference-star",
+      "path": "regression_tests/shapes/reference/star.gv",
+      "size": 141,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -1939,9 +2641,9 @@
       "hasHref": false
     },
     {
-      "id": "regression_tests-shapes-reference-star",
-      "path": "regression_tests/shapes/reference/star.gv",
-      "size": 141,
+      "id": "regression_tests-shapes-reference-restrictionsite",
+      "path": "regression_tests/shapes/reference/restrictionsite.gv",
+      "size": 140,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2004,6 +2706,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-clust2",
+      "path": "graphs/clust2.gv",
+      "size": 146,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-clust1",
       "path": "graphs/clust1.gv",
       "size": 146,
@@ -2030,8 +2745,34 @@
       "hasHref": false
     },
     {
-      "id": "graphs-clust2",
-      "path": "graphs/clust2.gv",
+      "id": "tree-graphs-directed-clust1",
+      "path": "../graphs/directed/clust1.gv",
+      "size": 146,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-clust3",
+      "path": "../graphs/directed/clust3.gv",
+      "size": 146,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-clust2",
+      "path": "../graphs/directed/clust2.gv",
       "size": 146,
       "verdict": "conformant",
       "cmapx": {
@@ -2056,22 +2797,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-record2",
-      "path": "graphs/record2.gv",
-      "size": 155,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "705",
-      "path": "705.dot",
-      "size": 155,
+      "id": "tree-doc-infosrc-fill",
+      "path": "../doc/infosrc/fill.dot",
+      "size": 147,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2095,8 +2823,8 @@
       "hasHref": false
     },
     {
-      "id": "windows-Latin1",
-      "path": "windows/Latin1.gv",
+      "id": "705",
+      "path": "705.dot",
       "size": 155,
       "verdict": "conformant",
       "cmapx": {
@@ -2110,6 +2838,45 @@
     {
       "id": "share-Latin1",
       "path": "share/Latin1.gv",
+      "size": 155,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-record2",
+      "path": "graphs/record2.gv",
+      "size": 155,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-Latin1",
+      "path": "windows/Latin1.gv",
+      "size": 155,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-record2",
+      "path": "../graphs/directed/record2.gv",
       "size": 155,
       "verdict": "conformant",
       "cmapx": {
@@ -2160,6 +2927,19 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-directed-try",
+      "path": "../graphs/directed/try.gv",
+      "size": 163,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "2436",
       "path": "2436.dot",
       "size": 168,
@@ -2186,19 +2966,6 @@
       "hasHref": false
     },
     {
-      "id": "2639",
-      "path": "2639.dot",
-      "size": 170,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "2615",
       "path": "2615.dot",
       "size": 173,
@@ -2212,9 +2979,9 @@
       "hasHref": false
     },
     {
-      "id": "2484",
-      "path": "2484.dot",
-      "size": 182,
+      "id": "2639",
+      "path": "2639.dot",
+      "size": 170,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2238,9 +3005,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b58",
-      "path": "graphs/b58.gv",
-      "size": 194,
+      "id": "2484",
+      "path": "2484.dot",
+      "size": 182,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2254,6 +3021,32 @@
       "id": "graphs-labelclust-ndd",
       "path": "graphs/labelclust-ndd.gv",
       "size": 186,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-graph1",
+      "path": "../doc/dotguide/graph1.dot",
+      "size": 186,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-b58",
+      "path": "graphs/b58.gv",
+      "size": 194,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2331,6 +3124,19 @@
     {
       "id": "graphs-labelclust-ndr",
       "path": "graphs/labelclust-ndr.gv",
+      "size": 209,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-infosrc-round",
+      "path": "../doc/infosrc/round.dot",
       "size": 209,
       "verdict": "conformant",
       "cmapx": {
@@ -2472,6 +3278,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-labelclust-fdr",
+      "path": "graphs/labelclust-fdr.gv",
+      "size": 225,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-labelclust-fdc",
       "path": "graphs/labelclust-fdc.gv",
       "size": 226,
@@ -2498,9 +3317,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-labelclust-fdr",
-      "path": "graphs/labelclust-fdr.gv",
-      "size": 225,
+      "id": "graphs-rootlabel",
+      "path": "graphs/rootlabel.gv",
+      "size": 227,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2511,8 +3330,8 @@
       "hasHref": false
     },
     {
-      "id": "graphs-rootlabel",
-      "path": "graphs/rootlabel.gv",
+      "id": "tree-doc-dotguide-poly",
+      "path": "../doc/dotguide/poly.dot",
       "size": 227,
       "verdict": "conformant",
       "cmapx": {
@@ -2602,6 +3421,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-process",
+      "path": "graphs/process.gv",
+      "size": 234,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "144_no_ortho",
       "path": "144_no_ortho.dot",
       "size": 237,
@@ -2615,8 +3447,8 @@
       "hasHref": false
     },
     {
-      "id": "graphs-process",
-      "path": "graphs/process.gv",
+      "id": "tree-graphs-undirected-process",
+      "path": "../graphs/undirected/process.gv",
       "size": 234,
       "verdict": "conformant",
       "cmapx": {
@@ -2667,6 +3499,32 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-directed-clust5",
+      "path": "../graphs/directed/clust5.gv",
+      "size": 238,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-labelclust-ftl",
+      "path": "graphs/labelclust-ftl.gv",
+      "size": 244,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-labelroot-fdd",
       "path": "graphs/labelroot-fdd.gv",
       "size": 243,
@@ -2680,8 +3538,8 @@
       "hasHref": false
     },
     {
-      "id": "graphs-labelclust-ftl",
-      "path": "graphs/labelclust-ftl.gv",
+      "id": "graphs-sb_circle",
+      "path": "graphs/sb_circle.gv",
       "size": 244,
       "verdict": "conformant",
       "cmapx": {
@@ -2706,9 +3564,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-sb_circle",
-      "path": "graphs/sb_circle.gv",
-      "size": 244,
+      "id": "graphs-labelroot-ntd",
+      "path": "graphs/labelroot-ntd.gv",
+      "size": 245,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2732,9 +3590,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-labelroot-ntd",
-      "path": "graphs/labelroot-ntd.gv",
-      "size": 245,
+      "id": "graphs-labelclust-fbl",
+      "path": "graphs/labelclust-fbl.gv",
+      "size": 247,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2758,9 +3616,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-labelclust-fbl",
-      "path": "graphs/labelclust-fbl.gv",
-      "size": 247,
+      "id": "graphs-labelroot-nbd",
+      "path": "graphs/labelroot-nbd.gv",
+      "size": 248,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2784,8 +3642,8 @@
       "hasHref": false
     },
     {
-      "id": "graphs-labelroot-nbd",
-      "path": "graphs/labelroot-nbd.gv",
+      "id": "graphs-labelroot-ndr",
+      "path": "graphs/labelroot-ndr.gv",
       "size": 248,
       "verdict": "conformant",
       "cmapx": {
@@ -2823,19 +3681,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-labelroot-ndr",
-      "path": "graphs/labelroot-ndr.gv",
-      "size": 248,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "graphs-labelclust-fbc",
       "path": "graphs/labelclust-fbc.gv",
       "size": 249,
@@ -2852,6 +3697,19 @@
       "id": "graphs-labelroot-ndc",
       "path": "graphs/labelroot-ndc.gv",
       "size": 249,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-clust",
+      "path": "../graphs/directed/clust.gv",
+      "size": 255,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -2888,6 +3746,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-p2",
+      "path": "graphs/p2.gv",
+      "size": 256,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-clust",
       "path": "graphs/clust.gv",
       "size": 256,
@@ -2904,19 +3775,6 @@
       "id": "144_ortho",
       "path": "144_ortho.dot",
       "size": 257,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "graphs-p2",
-      "path": "graphs/p2.gv",
-      "size": 256,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3018,8 +3876,8 @@
       "hasHref": false
     },
     {
-      "id": "graphs-labelroot-ntl",
-      "path": "graphs/labelroot-ntl.gv",
+      "id": "1622_3",
+      "path": "1622_3.dot",
       "size": 265,
       "verdict": "conformant",
       "cmapx": {
@@ -3044,9 +3902,9 @@
       "hasHref": false
     },
     {
-      "id": "1622_3",
-      "path": "1622_3.dot",
-      "size": 265,
+      "id": "1624",
+      "path": "1624.dot",
+      "size": 266,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3057,9 +3915,9 @@
       "hasHref": false
     },
     {
-      "id": "1624",
-      "path": "1624.dot",
-      "size": 266,
+      "id": "graphs-labelroot-ntl",
+      "path": "graphs/labelroot-ntl.gv",
+      "size": 265,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3096,8 +3954,8 @@
       "hasHref": false
     },
     {
-      "id": "share-a2",
-      "path": "share/a2.gv",
+      "id": "share-a3",
+      "path": "share/a3.gv",
       "size": 266,
       "verdict": "conformant",
       "cmapx": {
@@ -3109,8 +3967,8 @@
       "hasHref": false
     },
     {
-      "id": "share-a3",
-      "path": "share/a3.gv",
+      "id": "share-a2",
+      "path": "share/a2.gv",
       "size": 266,
       "verdict": "conformant",
       "cmapx": {
@@ -3148,6 +4006,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-color",
+      "path": "graphs/color.gv",
+      "size": 270,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-labelroot-nbr",
       "path": "graphs/labelroot-nbr.gv",
       "size": 269,
@@ -3163,19 +4034,6 @@
     {
       "id": "graphs-labelroot-nbc",
       "path": "graphs/labelroot-nbc.gv",
-      "size": 270,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "graphs-color",
-      "path": "graphs/color.gv",
       "size": 270,
       "verdict": "conformant",
       "cmapx": {
@@ -3203,6 +4061,19 @@
       "id": "graphs-labelroot-ftl",
       "path": "graphs/labelroot-ftl.gv",
       "size": 281,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-neato-process",
+      "path": "../doc/neato/process.dot",
+      "size": 274,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3252,19 +4123,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-compound",
-      "path": "graphs/compound.gv",
-      "size": 286,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "graphs-labelroot-fbr",
       "path": "graphs/labelroot-fbr.gv",
       "size": 285,
@@ -3291,9 +4149,35 @@
       "hasHref": false
     },
     {
+      "id": "graphs-compound",
+      "path": "graphs/compound.gv",
+      "size": 286,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-colorscheme",
       "path": "graphs/colorscheme.gv",
       "size": 290,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-recordex",
+      "path": "../doc/dotguide/recordex.dot",
+      "size": 287,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3315,6 +4199,45 @@
         "verdict": "conformant"
       },
       "hasHref": false
+    },
+    {
+      "id": "tree-tclpkg-tcldot-examples-data-demo",
+      "path": "../tclpkg/tcldot/examples/data/demo.gv",
+      "size": 295,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": true
+    },
+    {
+      "id": "tree-doc-dotguide-compound",
+      "path": "../doc/dotguide/compound.dot",
+      "size": 303,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-tclpkg-tcldot-examples-data-poly",
+      "path": "../tclpkg/tcldot/examples/data/poly.gv",
+      "size": 305,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": true
     },
     {
       "id": "2727",
@@ -3382,19 +4305,6 @@
       "hasHref": false
     },
     {
-      "id": "2521",
-      "path": "2521.dot",
-      "size": 320,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "2825",
       "path": "2825.dot",
       "size": 312,
@@ -3421,9 +4331,35 @@
       "hasHref": false
     },
     {
+      "id": "2521",
+      "path": "2521.dot",
+      "size": 320,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "2717",
       "path": "2717.dot",
       "size": 325,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "1767",
+      "path": "1767.dot",
+      "size": 326,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3460,9 +4396,9 @@
       "hasHref": false
     },
     {
-      "id": "1767",
-      "path": "1767.dot",
-      "size": 326,
+      "id": "graphs-nhg",
+      "path": "graphs/nhg.gv",
+      "size": 339,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3499,8 +4435,8 @@
       "hasHref": false
     },
     {
-      "id": "graphs-nhg",
-      "path": "graphs/nhg.gv",
+      "id": "tree-graphs-directed-nhg",
+      "path": "../graphs/directed/nhg.gv",
       "size": 339,
       "verdict": "conformant",
       "cmapx": {
@@ -3515,6 +4451,19 @@
       "id": "graphs-ZapfDingbats",
       "path": "graphs/ZapfDingbats.gv",
       "size": 360,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-neato-inet",
+      "path": "../doc/neato/inet.dot",
+      "size": 349,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3551,6 +4500,32 @@
       "hasHref": false
     },
     {
+      "id": "graphs-ZapfChancery",
+      "path": "graphs/ZapfChancery.gv",
+      "size": 386,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-mike",
+      "path": "../graphs/directed/mike.gv",
+      "size": 381,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "2184",
       "path": "2184.dot",
       "size": 393,
@@ -3564,9 +4539,22 @@
       "hasHref": false
     },
     {
-      "id": "graphs-ZapfChancery",
-      "path": "graphs/ZapfChancery.gv",
-      "size": 386,
+      "id": "graphs-sb_box_dbl",
+      "path": "graphs/sb_box_dbl.gv",
+      "size": 397,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-clust4",
+      "path": "graphs/clust4.gv",
+      "size": 401,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3590,9 +4578,22 @@
       "hasHref": false
     },
     {
-      "id": "graphs-sb_box_dbl",
-      "path": "graphs/sb_box_dbl.gv",
-      "size": 397,
+      "id": "tree-doc-dotguide-clust1",
+      "path": "../doc/dotguide/clust1.dot",
+      "size": 401,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-clust4",
+      "path": "../graphs/directed/clust4.gv",
+      "size": 401,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3629,19 +4630,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-clust4",
-      "path": "graphs/clust4.gv",
-      "size": 401,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "2368_1",
       "path": "2368_1.dot",
       "size": 405,
@@ -3668,19 +4656,6 @@
       "hasHref": false
     },
     {
-      "id": "2613",
-      "path": "2613.dot",
-      "size": 411,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "windows-longflat",
       "path": "windows/longflat.gv",
       "size": 409,
@@ -3694,9 +4669,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.i386-radius_dot",
-      "path": "linux.i386/radius_dot.gv",
-      "size": 418,
+      "id": "2613",
+      "path": "2613.dot",
+      "size": 411,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3720,9 +4695,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-radius_dot",
-      "path": "linux.x86/radius_dot.gv",
-      "size": 418,
+      "id": "tree-graphs-directed-KW91",
+      "path": "../graphs/directed/KW91.gv",
+      "size": 416,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3736,6 +4711,45 @@
       "id": "graphs-records",
       "path": "graphs/records.gv",
       "size": 417,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-records",
+      "path": "../graphs/directed/records.gv",
+      "size": 417,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "linux.i386-radius_dot",
+      "path": "linux.i386/radius_dot.gv",
+      "size": 418,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "linux.x86-radius_dot",
+      "path": "linux.x86/radius_dot.gv",
+      "size": 418,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3811,8 +4825,34 @@
       "hasHref": false
     },
     {
+      "id": "tree-doc-dotguide-html",
+      "path": "../doc/dotguide/html.dot",
+      "size": 422,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-ctext",
       "path": "graphs/ctext.gv",
+      "size": 425,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-ctext",
+      "path": "../graphs/directed/ctext.gv",
       "size": 425,
       "verdict": "conformant",
       "cmapx": {
@@ -3827,6 +4867,19 @@
       "id": "358",
       "path": "358.dot",
       "size": 429,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-graph2",
+      "path": "../doc/dotguide/graph2.dot",
+      "size": 434,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3863,8 +4916,34 @@
       "hasHref": false
     },
     {
+      "id": "1213-1",
+      "path": "1213-1.dot",
+      "size": 481,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "share-b491",
       "path": "share/b491.gv",
+      "size": 486,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-b491",
+      "path": "windows/b491.gv",
       "size": 486,
       "verdict": "conformant",
       "cmapx": {
@@ -3889,22 +4968,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-b491",
-      "path": "windows/b491.gv",
-      "size": 486,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "1213-1",
-      "path": "1213-1.dot",
-      "size": 481,
+      "id": "1622_0",
+      "path": "1622_0.dot",
+      "size": 489,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3928,9 +4994,9 @@
       "hasHref": false
     },
     {
-      "id": "1622_0",
-      "path": "1622_0.dot",
-      "size": 489,
+      "id": "graphs-grdcluster",
+      "path": "graphs/grdcluster.gv",
+      "size": 497,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3941,9 +5007,22 @@
       "hasHref": false
     },
     {
-      "id": "graphs-grdcluster",
-      "path": "graphs/grdcluster.gv",
-      "size": 497,
+      "id": "tree-graphs-directed-states",
+      "path": "../graphs/directed/states.gv",
+      "size": 492,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-infosrc-tee",
+      "path": "../doc/infosrc/tee.gv",
+      "size": 506,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -3969,6 +5048,19 @@
     {
       "id": "graphs-russian",
       "path": "graphs/russian.gv",
+      "size": 520,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-russian",
+      "path": "../graphs/directed/russian.gv",
       "size": 520,
       "verdict": "conformant",
       "cmapx": {
@@ -4032,19 +5124,6 @@
       "hasHref": true
     },
     {
-      "id": "1425_1",
-      "path": "1425_1.dot",
-      "size": 544,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": true
-    },
-    {
       "id": "1408",
       "path": "1408.dot",
       "size": 544,
@@ -4056,6 +5135,19 @@
         "verdict": "conformant"
       },
       "hasHref": false
+    },
+    {
+      "id": "1425_1",
+      "path": "1425_1.dot",
+      "size": 544,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": true
     },
     {
       "id": "graphs-nul_nul",
@@ -4074,6 +5166,19 @@
       "id": "241_0",
       "path": "241_0.dot",
       "size": 578,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-labelclust-ndd",
+      "path": "share/labelclust-ndd.gv",
+      "size": 586,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4110,19 +5215,6 @@
       "hasHref": false
     },
     {
-      "id": "share-labelclust-ndd",
-      "path": "share/labelclust-ndd.gv",
-      "size": 586,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "graphs-tree",
       "path": "graphs/tree.gv",
       "size": 588,
@@ -4136,9 +5228,48 @@
       "hasHref": false
     },
     {
-      "id": "share-labelclust-fdd",
-      "path": "share/labelclust-fdd.gv",
-      "size": 595,
+      "id": "tree-doc-dotguide-tree",
+      "path": "../doc/dotguide/tree.dot",
+      "size": 588,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-tree",
+      "path": "../graphs/directed/tree.gv",
+      "size": 588,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-arr_none",
+      "path": "../graphs/directed/arr_none.gv",
+      "size": 591,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-fsm",
+      "path": "../doc/dotguide/fsm.dot",
+      "size": 592,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4175,6 +5306,19 @@
       "hasHref": false
     },
     {
+      "id": "share-labelclust-fdd",
+      "path": "share/labelclust-fdd.gv",
+      "size": 595,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "linux.x86-edgeclip_dot",
       "path": "linux.x86/edgeclip_dot.gv",
       "size": 599,
@@ -4188,9 +5332,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelclust-ntd",
-      "path": "windows/labelclust-ntd.gv",
-      "size": 603,
+      "id": "macosx-edgeclip_dot",
+      "path": "macosx/edgeclip_dot.gv",
+      "size": 599,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4227,9 +5371,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-fsm",
-      "path": "graphs/fsm.gv",
-      "size": 605,
+      "id": "windows-labelclust-ntd",
+      "path": "windows/labelclust-ntd.gv",
+      "size": 603,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4240,9 +5384,9 @@
       "hasHref": false
     },
     {
-      "id": "macosx-edgeclip_dot",
-      "path": "macosx/edgeclip_dot.gv",
-      "size": 599,
+      "id": "graphs-fsm",
+      "path": "graphs/fsm.gv",
+      "size": 605,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4268,6 +5412,19 @@
     {
       "id": "windows-labelclust-ndl",
       "path": "windows/labelclust-ndl.gv",
+      "size": 605,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-fsm",
+      "path": "../graphs/directed/fsm.gv",
       "size": 605,
       "verdict": "conformant",
       "cmapx": {
@@ -4305,9 +5462,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelclust-ndr",
-      "path": "windows/labelclust-ndr.gv",
-      "size": 606,
+      "id": "share-labelclust-ndc",
+      "path": "share/labelclust-ndc.gv",
+      "size": 607,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4318,9 +5475,9 @@
       "hasHref": false
     },
     {
-      "id": "share-labelclust-ndc",
-      "path": "share/labelclust-ndc.gv",
-      "size": 607,
+      "id": "windows-labelclust-ndr",
+      "path": "windows/labelclust-ndr.gv",
+      "size": 606,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4448,8 +5605,8 @@
       "hasHref": false
     },
     {
-      "id": "share-labelclust-fdc",
-      "path": "share/labelclust-fdc.gv",
+      "id": "windows-labelclust-fdc",
+      "path": "windows/labelclust-fdc.gv",
       "size": 616,
       "verdict": "conformant",
       "cmapx": {
@@ -4461,8 +5618,8 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelclust-fdr",
-      "path": "windows/labelclust-fdr.gv",
+      "id": "share-labelclust-fdc",
+      "path": "share/labelclust-fdc.gv",
       "size": 616,
       "verdict": "conformant",
       "cmapx": {
@@ -4487,8 +5644,8 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelclust-fdc",
-      "path": "windows/labelclust-fdc.gv",
+      "id": "windows-labelclust-fdr",
+      "path": "windows/labelclust-fdr.gv",
       "size": 616,
       "verdict": "conformant",
       "cmapx": {
@@ -4513,9 +5670,9 @@
       "hasHref": false
     },
     {
-      "id": "macosx-rowcolsep_dot1",
-      "path": "macosx/rowcolsep_dot1.gv",
-      "size": 619,
+      "id": "tree-doc-neato-fancy",
+      "path": "../doc/neato/fancy.dot",
+      "size": 617,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4526,8 +5683,8 @@
       "hasHref": false
     },
     {
-      "id": "nshare-rowcolsep_dot1",
-      "path": "nshare/rowcolsep_dot1.gv",
+      "id": "macosx-rowcolsep_dot1",
+      "path": "macosx/rowcolsep_dot1.gv",
       "size": 619,
       "verdict": "conformant",
       "cmapx": {
@@ -4552,8 +5709,8 @@
       "hasHref": false
     },
     {
-      "id": "share-labelroot-ntd",
-      "path": "share/labelroot-ntd.gv",
+      "id": "nshare-rowcolsep_dot1",
+      "path": "nshare/rowcolsep_dot1.gv",
       "size": 619,
       "verdict": "conformant",
       "cmapx": {
@@ -4580,6 +5737,19 @@
     {
       "id": "windows-labelroot-ntd",
       "path": "windows/labelroot-ntd.gv",
+      "size": 619,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-labelroot-ntd",
+      "path": "share/labelroot-ntd.gv",
       "size": 619,
       "verdict": "conformant",
       "cmapx": {
@@ -4643,6 +5813,19 @@
       "hasHref": false
     },
     {
+      "id": "nshare-rowcolsep_dot",
+      "path": "nshare/rowcolsep_dot.gv",
+      "size": 622,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "share-labelclust-ntl",
       "path": "share/labelclust-ntl.gv",
       "size": 622,
@@ -4656,8 +5839,8 @@
       "hasHref": false
     },
     {
-      "id": "nshare-rowcolsep_dot",
-      "path": "nshare/rowcolsep_dot.gv",
+      "id": "windows-labelclust-ntl",
+      "path": "windows/labelclust-ntl.gv",
       "size": 622,
       "verdict": "conformant",
       "cmapx": {
@@ -4672,19 +5855,6 @@
       "id": "share-labelclust-ntr",
       "path": "share/labelclust-ntr.gv",
       "size": 623,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "windows-labelclust-ntl",
-      "path": "windows/labelclust-ntl.gv",
-      "size": 622,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4721,9 +5891,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelclust-ntc",
-      "path": "windows/labelclust-ntc.gv",
-      "size": 624,
+      "id": "share-labelroot-nbd",
+      "path": "share/labelroot-nbd.gv",
+      "size": 625,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4734,9 +5904,9 @@
       "hasHref": false
     },
     {
-      "id": "share-labelroot-nbd",
-      "path": "share/labelroot-nbd.gv",
-      "size": 625,
+      "id": "windows-labelclust-ntc",
+      "path": "windows/labelclust-ntc.gv",
+      "size": 624,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4827,6 +5997,32 @@
     {
       "id": "share-labelroot-fbd",
       "path": "share/labelroot-fbd.gv",
+      "size": 629,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-hashtable",
+      "path": "../doc/dotguide/hashtable.dot",
+      "size": 629,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-hashtable",
+      "path": "../graphs/directed/hashtable.gv",
       "size": 629,
       "verdict": "conformant",
       "cmapx": {
@@ -4968,9 +6164,9 @@
       "hasHref": false
     },
     {
-      "id": "share-labelclust-ftc",
-      "path": "share/labelclust-ftc.gv",
-      "size": 633,
+      "id": "windows-labelclust-nbc",
+      "path": "windows/labelclust-nbc.gv",
+      "size": 632,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -4994,21 +6190,8 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelclust-nbc",
-      "path": "windows/labelclust-nbc.gv",
-      "size": 632,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "windows-labelclust-ftc",
-      "path": "windows/labelclust-ftc.gv",
+      "id": "share-labelclust-ftc",
+      "path": "share/labelclust-ftc.gv",
       "size": 633,
       "verdict": "conformant",
       "cmapx": {
@@ -5022,6 +6205,19 @@
     {
       "id": "share-labelclust-ftr",
       "path": "share/labelclust-ftr.gv",
+      "size": 633,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-labelclust-ftc",
+      "path": "windows/labelclust-ftc.gv",
       "size": 633,
       "verdict": "conformant",
       "cmapx": {
@@ -5085,6 +6281,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-inv_val",
+      "path": "graphs/inv_val.gv",
+      "size": 636,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "windows-labelroot-ntl",
       "path": "windows/labelroot-ntl.gv",
       "size": 635,
@@ -5100,19 +6309,6 @@
     {
       "id": "share-labelclust-fbc",
       "path": "share/labelclust-fbc.gv",
-      "size": 636,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "graphs-inv_val",
-      "path": "graphs/inv_val.gv",
       "size": 636,
       "verdict": "conformant",
       "cmapx": {
@@ -5215,19 +6411,6 @@
       "hasHref": false
     },
     {
-      "id": "share-labelroot-nbl",
-      "path": "share/labelroot-nbl.gv",
-      "size": 641,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "windows-labelroot-nbl",
       "path": "windows/labelroot-nbl.gv",
       "size": 641,
@@ -5241,9 +6424,9 @@
       "hasHref": false
     },
     {
-      "id": "share-labelroot-ftl",
-      "path": "share/labelroot-ftl.gv",
-      "size": 643,
+      "id": "share-labelroot-nbl",
+      "path": "share/labelroot-nbl.gv",
+      "size": 641,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -5267,8 +6450,8 @@
       "hasHref": false
     },
     {
-      "id": "share-labelroot-nbr",
-      "path": "share/labelroot-nbr.gv",
+      "id": "share-labelroot-ftl",
+      "path": "share/labelroot-ftl.gv",
       "size": 643,
       "verdict": "conformant",
       "cmapx": {
@@ -5282,6 +6465,19 @@
     {
       "id": "windows-labelroot-ftl",
       "path": "windows/labelroot-ftl.gv",
+      "size": 643,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-labelroot-nbr",
+      "path": "share/labelroot-nbr.gv",
       "size": 643,
       "verdict": "conformant",
       "cmapx": {
@@ -5319,8 +6515,8 @@
       "hasHref": false
     },
     {
-      "id": "share-labelroot-ndl",
-      "path": "share/labelroot-ndl.gv",
+      "id": "windows-labelroot-ndl",
+      "path": "windows/labelroot-ndl.gv",
       "size": 644,
       "verdict": "conformant",
       "cmapx": {
@@ -5332,8 +6528,8 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelroot-ndl",
-      "path": "windows/labelroot-ndl.gv",
+      "id": "share-labelroot-ndl",
+      "path": "share/labelroot-ndl.gv",
       "size": 644,
       "verdict": "conformant",
       "cmapx": {
@@ -5436,9 +6632,9 @@
       "hasHref": false
     },
     {
-      "id": "share-labelroot-fbc",
-      "path": "share/labelroot-fbc.gv",
-      "size": 647,
+      "id": "windows-labelroot-ndc",
+      "path": "windows/labelroot-ndc.gv",
+      "size": 646,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -5449,9 +6645,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelroot-ndc",
-      "path": "windows/labelroot-ndc.gv",
-      "size": 646,
+      "id": "share-labelroot-fbc",
+      "path": "share/labelroot-fbc.gv",
+      "size": 647,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -5475,8 +6671,8 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelroot-ftr",
-      "path": "windows/labelroot-ftr.gv",
+      "id": "windows-labelroot-fbc",
+      "path": "windows/labelroot-fbc.gv",
       "size": 647,
       "verdict": "conformant",
       "cmapx": {
@@ -5488,8 +6684,8 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelroot-fbc",
-      "path": "windows/labelroot-fbc.gv",
+      "id": "windows-labelroot-ftr",
+      "path": "windows/labelroot-ftr.gv",
       "size": 647,
       "verdict": "conformant",
       "cmapx": {
@@ -5527,8 +6723,8 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelroot-fbr",
-      "path": "windows/labelroot-fbr.gv",
+      "id": "share-labelroot-fbr",
+      "path": "share/labelroot-fbr.gv",
       "size": 649,
       "verdict": "conformant",
       "cmapx": {
@@ -5540,8 +6736,8 @@
       "hasHref": false
     },
     {
-      "id": "share-labelroot-fbr",
-      "path": "share/labelroot-fbr.gv",
+      "id": "windows-labelroot-fbr",
+      "path": "windows/labelroot-fbr.gv",
       "size": 649,
       "verdict": "conformant",
       "cmapx": {
@@ -5592,6 +6788,19 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-undirected-ER",
+      "path": "../graphs/undirected/ER.gv",
+      "size": 650,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "2801",
       "path": "2801.dot",
       "size": 651,
@@ -5618,19 +6827,6 @@
       "hasHref": false
     },
     {
-      "id": "windows-labelroot-fdr",
-      "path": "windows/labelroot-fdr.gv",
-      "size": 652,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "graphs-nul_val",
       "path": "graphs/nul_val.gv",
       "size": 659,
@@ -5644,9 +6840,35 @@
       "hasHref": false
     },
     {
+      "id": "windows-labelroot-fdr",
+      "path": "windows/labelroot-fdr.gv",
+      "size": 652,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-val_inv",
       "path": "graphs/val_inv.gv",
       "size": 660,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-neato-ER",
+      "path": "../doc/neato/ER.dot",
+      "size": 665,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -5709,9 +6931,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-sides",
-      "path": "graphs/sides.gv",
-      "size": 680,
+      "id": "share-structs",
+      "path": "share/structs.gv",
+      "size": 710,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -5722,9 +6944,9 @@
       "hasHref": false
     },
     {
-      "id": "share-structs",
-      "path": "share/structs.gv",
-      "size": 710,
+      "id": "graphs-sides",
+      "path": "graphs/sides.gv",
+      "size": 680,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -5813,6 +7035,32 @@
       "hasHref": false
     },
     {
+      "id": "graphs-rowe",
+      "path": "graphs/rowe.gv",
+      "size": 765,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-rowe",
+      "path": "../graphs/directed/rowe.gv",
+      "size": 765,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-abstract",
       "path": "graphs/abstract.gv",
       "size": 770,
@@ -5826,9 +7074,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-rowe",
-      "path": "graphs/rowe.gv",
-      "size": 765,
+      "id": "tree-graphs-directed-abstract",
+      "path": "../graphs/directed/abstract.gv",
+      "size": 770,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -5865,6 +7113,32 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-directed-train11",
+      "path": "../graphs/directed/train11.gv",
+      "size": 777,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-jcctree",
+      "path": "graphs/jcctree.gv",
+      "size": 778,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-japanese",
       "path": "graphs/japanese.gv",
       "size": 789,
@@ -5878,8 +7152,8 @@
       "hasHref": false
     },
     {
-      "id": "graphs-jcctree",
-      "path": "graphs/jcctree.gv",
+      "id": "tree-graphs-directed-jcctree",
+      "path": "../graphs/directed/jcctree.gv",
       "size": 778,
       "verdict": "conformant",
       "cmapx": {
@@ -5904,6 +7178,19 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-directed-japanese",
+      "path": "../graphs/directed/japanese.gv",
+      "size": 789,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-b34",
       "path": "graphs/b34.gv",
       "size": 814,
@@ -5917,9 +7204,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-shapes",
-      "path": "graphs/shapes.gv",
-      "size": 840,
+      "id": "tree-graphs-undirected-Heawood",
+      "path": "../graphs/undirected/Heawood.gv",
+      "size": 790,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -5943,9 +7230,22 @@
       "hasHref": false
     },
     {
-      "id": "windows-states",
-      "path": "windows/states.gv",
-      "size": 878,
+      "id": "tree-graphs-directed-fig6",
+      "path": "../graphs/directed/fig6.gv",
+      "size": 835,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-shapes",
+      "path": "graphs/shapes.gv",
+      "size": 840,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -5969,6 +7269,32 @@
       "hasHref": false
     },
     {
+      "id": "windows-states",
+      "path": "windows/states.gv",
+      "size": 878,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-Petersen",
+      "path": "graphs/Petersen.gv",
+      "size": 904,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "linux.x86-nestedclust_dot",
       "path": "linux.x86/nestedclust_dot.gv",
       "size": 907,
@@ -5982,8 +7308,8 @@
       "hasHref": false
     },
     {
-      "id": "graphs-Petersen",
-      "path": "graphs/Petersen.gv",
+      "id": "tree-graphs-undirected-Petersen",
+      "path": "../graphs/undirected/Petersen.gv",
       "size": 904,
       "verdict": "conformant",
       "cmapx": {
@@ -6021,19 +7347,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-Symbol",
-      "path": "graphs/Symbol.gv",
-      "size": 924,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "share-flatedge",
       "path": "share/flatedge.gv",
       "size": 918,
@@ -6047,9 +7360,9 @@
       "hasHref": false
     },
     {
-      "id": "share-nhg",
-      "path": "share/nhg.gv",
-      "size": 938,
+      "id": "graphs-Symbol",
+      "path": "graphs/Symbol.gv",
+      "size": 924,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6063,6 +7376,19 @@
       "id": "windows-nhg",
       "path": "windows/nhg.gv",
       "size": 926,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-nhg",
+      "path": "share/nhg.gv",
+      "size": 938,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6112,9 +7438,35 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-directed-alf",
+      "path": "../graphs/directed/alf.gv",
+      "size": 958,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-world",
       "path": "graphs/world.gv",
       "size": 980,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-dfa",
+      "path": "../graphs/directed/dfa.gv",
+      "size": 959,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6138,9 +7490,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-dd",
-      "path": "graphs/dd.gv",
-      "size": 1053,
+      "id": "tree-graphs-directed-world",
+      "path": "../graphs/directed/world.gv",
+      "size": 980,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6151,9 +7503,9 @@
       "hasHref": false
     },
     {
-      "id": "nshare-html_dot",
-      "path": "nshare/html_dot.gv",
-      "size": 1058,
+      "id": "graphs-dd",
+      "path": "graphs/dd.gv",
+      "size": 1053,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6177,9 +7529,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-grdangles",
-      "path": "graphs/grdangles.gv",
-      "size": 1076,
+      "id": "2521_1",
+      "path": "2521_1.dot",
+      "size": 1062,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6190,9 +7542,22 @@
       "hasHref": false
     },
     {
-      "id": "2521_1",
-      "path": "2521_1.dot",
-      "size": 1062,
+      "id": "nshare-html_dot",
+      "path": "nshare/html_dot.gv",
+      "size": 1058,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-grdangles",
+      "path": "graphs/grdangles.gv",
+      "size": 1076,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6242,9 +7607,9 @@
       "hasHref": false
     },
     {
-      "id": "share-ctext",
-      "path": "share/ctext.gv",
-      "size": 1171,
+      "id": "tree-graphs-directed-shells",
+      "path": "../graphs/directed/shells.gv",
+      "size": 1102,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6255,22 +7620,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-ctext",
-      "path": "windows/ctext.gv",
-      "size": 1171,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "linux.x86-flatedge_dot",
-      "path": "linux.x86/flatedge_dot.gv",
-      "size": 1177,
+      "id": "tree-graphs-directed-table",
+      "path": "../graphs/directed/table.gv",
+      "size": 1127,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6294,9 +7646,48 @@
       "hasHref": false
     },
     {
-      "id": "share-clust3",
-      "path": "share/clust3.gv",
-      "size": 1195,
+      "id": "linux.x86-flatedge_dot",
+      "path": "linux.x86/flatedge_dot.gv",
+      "size": 1177,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-ctext",
+      "path": "windows/ctext.gv",
+      "size": 1171,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-ctext",
+      "path": "share/ctext.gv",
+      "size": 1171,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-clust2",
+      "path": "windows/clust2.gv",
+      "size": 1200,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6320,6 +7711,19 @@
       "hasHref": false
     },
     {
+      "id": "share-clust3",
+      "path": "share/clust3.gv",
+      "size": 1195,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "windows-clust3",
       "path": "windows/clust3.gv",
       "size": 1195,
@@ -6333,9 +7737,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-clust2",
-      "path": "windows/clust2.gv",
-      "size": 1200,
+      "id": "share-clust1",
+      "path": "share/clust1.gv",
+      "size": 1239,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6398,9 +7802,9 @@
       "hasHref": true
     },
     {
-      "id": "share-clust1",
-      "path": "share/clust1.gv",
-      "size": 1239,
+      "id": "windows-clust1",
+      "path": "windows/clust1.gv",
+      "size": 1261,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6413,19 +7817,6 @@
     {
       "id": "1896",
       "path": "1896.dot",
-      "size": 1261,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "windows-clust1",
-      "path": "windows/clust1.gv",
       "size": 1261,
       "verdict": "conformant",
       "cmapx": {
@@ -6450,6 +7841,32 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-directed-grammar",
+      "path": "../graphs/directed/grammar.gv",
+      "size": 1302,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-dpd",
+      "path": "graphs/dpd.gv",
+      "size": 1357,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "1855",
       "path": "1855.dot",
       "size": 1335,
@@ -6463,9 +7880,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-overlap",
-      "path": "graphs/overlap.gv",
-      "size": 1357,
+      "id": "tree-graphs-directed-switch",
+      "path": "../graphs/directed/switch.gv",
+      "size": 1344,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6476,8 +7893,8 @@
       "hasHref": false
     },
     {
-      "id": "graphs-dpd",
-      "path": "graphs/dpd.gv",
+      "id": "graphs-overlap",
+      "path": "graphs/overlap.gv",
       "size": 1357,
       "verdict": "conformant",
       "cmapx": {
@@ -6502,6 +7919,32 @@
       "hasHref": false
     },
     {
+      "id": "tree-doc-dotguide-clust2",
+      "path": "../doc/dotguide/clust2.dot",
+      "size": 1407,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-biological",
+      "path": "../graphs/directed/biological.gv",
+      "size": 1360,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-html2",
       "path": "graphs/html2.gv",
       "size": 1414,
@@ -6515,9 +7958,9 @@
       "hasHref": true
     },
     {
-      "id": "2361",
-      "path": "2361.dot",
-      "size": 1419,
+      "id": "windows-records",
+      "path": "windows/records.gv",
+      "size": 1416,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6528,9 +7971,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-records",
-      "path": "windows/records.gv",
-      "size": 1416,
+      "id": "2361",
+      "path": "2361.dot",
+      "size": 1419,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6567,9 +8010,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-Bookman",
-      "path": "graphs/Bookman.gv",
-      "size": 1454,
+      "id": "tree-graphs-directed-unix",
+      "path": "../graphs/directed/unix.gv",
+      "size": 1433,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6583,6 +8026,19 @@
       "id": "graphs-Times",
       "path": "graphs/Times.gv",
       "size": 1437,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-Bookman",
+      "path": "graphs/Bookman.gv",
+      "size": 1454,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6671,6 +8127,32 @@
       "hasHref": false
     },
     {
+      "id": "linux.x86-compound_dot",
+      "path": "linux.x86/compound_dot.gv",
+      "size": 1496,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-trapeziumlr",
+      "path": "../graphs/directed/trapeziumlr.gv",
+      "size": 1484,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "macosx-compound_dot",
       "path": "macosx/compound_dot.gv",
       "size": 1496,
@@ -6684,8 +8166,8 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-compound_dot",
-      "path": "linux.x86/compound_dot.gv",
+      "id": "nshare-compound_dot",
+      "path": "nshare/compound_dot.gv",
       "size": 1496,
       "verdict": "conformant",
       "cmapx": {
@@ -6700,19 +8182,6 @@
       "id": "windows-process",
       "path": "windows/process.gv",
       "size": 1511,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "nshare-compound_dot",
-      "path": "nshare/compound_dot.gv",
-      "size": 1496,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6749,19 +8218,6 @@
       "hasHref": false
     },
     {
-      "id": "2183",
-      "path": "2183.dot",
-      "size": 1601,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "1323_1",
       "path": "1323_1.dot",
       "size": 1588,
@@ -6775,9 +8231,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-clust5",
-      "path": "windows/clust5.gv",
-      "size": 1695,
+      "id": "2183",
+      "path": "2183.dot",
+      "size": 1601,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6801,9 +8257,22 @@
       "hasHref": false
     },
     {
-      "id": "graphs-grdcolors",
-      "path": "graphs/grdcolors.gv",
-      "size": 1704,
+      "id": "tree-graphs-directed-triedds",
+      "path": "../graphs/directed/triedds.gv",
+      "size": 1610,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-clust5",
+      "path": "windows/clust5.gv",
+      "size": 1695,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6827,6 +8296,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-grdcolors",
+      "path": "graphs/grdcolors.gv",
+      "size": 1704,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-size",
       "path": "graphs/size.gv",
       "size": 1706,
@@ -6840,8 +8322,8 @@
       "hasHref": false
     },
     {
-      "id": "windows-clust4",
-      "path": "windows/clust4.gv",
+      "id": "share-clust4",
+      "path": "share/clust4.gv",
       "size": 1709,
       "verdict": "conformant",
       "cmapx": {
@@ -6853,8 +8335,8 @@
       "hasHref": false
     },
     {
-      "id": "share-clust4",
-      "path": "share/clust4.gv",
+      "id": "windows-clust4",
+      "path": "windows/clust4.gv",
       "size": 1709,
       "verdict": "conformant",
       "cmapx": {
@@ -6879,6 +8361,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-unix2",
+      "path": "graphs/unix2.gv",
+      "size": 1719,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-unix2k",
       "path": "graphs/unix2k.gv",
       "size": 1719,
@@ -6892,9 +8387,35 @@
       "hasHref": false
     },
     {
-      "id": "graphs-unix2",
-      "path": "graphs/unix2.gv",
+      "id": "graphs-weight",
+      "path": "graphs/weight.gv",
+      "size": 1720,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-unix2",
+      "path": "../graphs/directed/unix2.gv",
       "size": 1719,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-undirected-ngk10_4",
+      "path": "../graphs/undirected/ngk10_4.gv",
+      "size": 1754,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6931,35 +8452,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-weight",
-      "path": "graphs/weight.gv",
-      "size": 1720,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "windows-hashtable",
       "path": "windows/hashtable.gv",
       "size": 1756,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "share-Petersen",
-      "path": "share/Petersen.gv",
-      "size": 1768,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -6983,9 +8478,48 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-directed-viewfile",
+      "path": "../graphs/directed/viewfile.gv",
+      "size": 1767,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-Petersen",
+      "path": "share/Petersen.gv",
+      "size": 1768,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "windows-Petersen",
       "path": "windows/Petersen.gv",
       "size": 1768,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-contrib-dirgraph-named",
+      "path": "../contrib/dirgraph/named.dot",
+      "size": 1804,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7009,9 +8543,9 @@
       "hasHref": false
     },
     {
-      "id": "share-tree",
-      "path": "share/tree.gv",
-      "size": 1825,
+      "id": "windows-KW91",
+      "path": "windows/KW91.gv",
+      "size": 1824,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7022,9 +8556,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-KW91",
-      "path": "windows/KW91.gv",
-      "size": 1824,
+      "id": "share-tree",
+      "path": "share/tree.gv",
+      "size": 1825,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7087,19 +8621,6 @@
       "hasHref": false
     },
     {
-      "id": "windows-pm2way",
-      "path": "windows/pm2way.gv",
-      "size": 1998,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "graphs-sq_rules",
       "path": "graphs/sq_rules.gv",
       "size": 1979,
@@ -7113,9 +8634,61 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-directed-oldarrows",
+      "path": "../graphs/directed/oldarrows.gv",
+      "size": 1998,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-pm2way",
+      "path": "windows/pm2way.gv",
+      "size": 1998,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-pm2way",
       "path": "graphs/pm2way.gv",
       "size": 2020,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-pm2way",
+      "path": "../graphs/directed/pm2way.gv",
+      "size": 2020,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-arrowsize",
+      "path": "graphs/arrowsize.gv",
+      "size": 2039,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7152,19 +8725,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-arrowsize",
-      "path": "graphs/arrowsize.gv",
-      "size": 2039,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "macosx-ordering_dot1",
       "path": "macosx/ordering_dot1.gv",
       "size": 2042,
@@ -7191,19 +8751,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-rd_rules",
-      "path": "graphs/rd_rules.gv",
-      "size": 2043,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "graphs-newarrows",
       "path": "graphs/newarrows.gv",
       "size": 2045,
@@ -7217,9 +8764,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-ER",
-      "path": "windows/ER.gv",
-      "size": 2051,
+      "id": "graphs-rd_rules",
+      "path": "graphs/rd_rules.gv",
+      "size": 2043,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7230,9 +8777,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-st_box",
-      "path": "graphs/st_box.gv",
-      "size": 2068,
+      "id": "windows-ER",
+      "path": "windows/ER.gv",
+      "size": 2051,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7269,9 +8816,9 @@
       "hasHref": false
     },
     {
-      "id": "share-ER",
-      "path": "share/ER.gv",
-      "size": 2072,
+      "id": "graphs-st_box",
+      "path": "graphs/st_box.gv",
+      "size": 2068,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7282,9 +8829,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-ordering_dot",
-      "path": "linux.x86/ordering_dot.gv",
-      "size": 2097,
+      "id": "share-ER",
+      "path": "share/ER.gv",
+      "size": 2072,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7321,9 +8868,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-fsm",
-      "path": "windows/fsm.gv",
-      "size": 2124,
+      "id": "linux.x86-ordering_dot",
+      "path": "linux.x86/ordering_dot.gv",
+      "size": 2097,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7334,9 +8881,9 @@
       "hasHref": false
     },
     {
-      "id": "2242",
-      "path": "2242.dot",
-      "size": 2125,
+      "id": "windows-fsm",
+      "path": "windows/fsm.gv",
+      "size": 2124,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7363,6 +8910,19 @@
       "id": "graphs-sr_box",
       "path": "graphs/sr_box.gv",
       "size": 2149,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2242",
+      "path": "2242.dot",
+      "size": 2125,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7438,35 +8998,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b53",
-      "path": "graphs/b53.gv",
-      "size": 2287,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "windows-Heawood",
       "path": "windows/Heawood.gv",
       "size": 2340,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "1453",
-      "path": "1453.dot",
-      "size": 2446,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7490,9 +9024,22 @@
       "hasHref": false
     },
     {
-      "id": "1436",
-      "path": "1436.dot",
-      "size": 2599,
+      "id": "graphs-b53",
+      "path": "graphs/b53.gv",
+      "size": 2287,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "1453",
+      "path": "1453.dot",
+      "size": 2446,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7529,9 +9076,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.i386-dfa",
-      "path": "linux.i386/dfa.gv",
-      "size": 2651,
+      "id": "1436",
+      "path": "1436.dot",
+      "size": 2599,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7555,9 +9102,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-dfa",
-      "path": "windows/dfa.gv",
-      "size": 2714,
+      "id": "linux.i386-dfa",
+      "path": "linux.i386/dfa.gv",
+      "size": 2651,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7581,9 +9128,22 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b71",
-      "path": "graphs/b71.gv",
-      "size": 2748,
+      "id": "tree-graphs-directed-psfonttest",
+      "path": "../graphs/directed/psfonttest.gv",
+      "size": 2634,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-pgram",
+      "path": "../graphs/directed/pgram.gv",
+      "size": 2614,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7607,9 +9167,35 @@
       "hasHref": false
     },
     {
-      "id": "nshare-pack_neato",
-      "path": "nshare/pack_neato.gv",
-      "size": 2870,
+      "id": "tree-graphs-directed-NaN",
+      "path": "../graphs/directed/NaN.gv",
+      "size": 2672,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-dfa",
+      "path": "windows/dfa.gv",
+      "size": 2714,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-b71",
+      "path": "graphs/b71.gv",
+      "size": 2748,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7633,9 +9219,9 @@
       "hasHref": false
     },
     {
-      "id": "nshare-pack_neato1",
-      "path": "nshare/pack_neato1.gv",
-      "size": 2884,
+      "id": "nshare-pack_neato",
+      "path": "nshare/pack_neato.gv",
+      "size": 2870,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7659,9 +9245,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-pack_neato2",
-      "path": "linux.x86/pack_neato2.gv",
-      "size": 2890,
+      "id": "nshare-pack_neato1",
+      "path": "nshare/pack_neato1.gv",
+      "size": 2884,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7672,9 +9258,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-Helvetica",
-      "path": "graphs/Helvetica.gv",
-      "size": 2966,
+      "id": "linux.x86-pack_neato2",
+      "path": "linux.x86/pack_neato2.gv",
+      "size": 2890,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7698,9 +9284,9 @@
       "hasHref": false
     },
     {
-      "id": "2592",
-      "path": "2592.dot",
-      "size": 3001,
+      "id": "graphs-Helvetica",
+      "path": "graphs/Helvetica.gv",
+      "size": 2966,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7711,9 +9297,9 @@
       "hasHref": false
     },
     {
-      "id": "share-train11",
-      "path": "share/train11.gv",
-      "size": 3220,
+      "id": "2592",
+      "path": "2592.dot",
+      "size": 3001,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7737,9 +9323,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-train11",
-      "path": "windows/train11.gv",
-      "size": 3257,
+      "id": "share-train11",
+      "path": "share/train11.gv",
+      "size": 3220,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7763,9 +9349,9 @@
       "hasHref": false
     },
     {
-      "id": "2734",
-      "path": "2734.dot",
-      "size": 3272,
+      "id": "windows-train11",
+      "path": "windows/train11.gv",
+      "size": 3257,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7789,9 +9375,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-pmpipe",
-      "path": "windows/pmpipe.gv",
-      "size": 3346,
+      "id": "2734",
+      "path": "2734.dot",
+      "size": 3272,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7815,9 +9401,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-ports_dot",
-      "path": "linux.x86/ports_dot.gv",
-      "size": 3470,
+      "id": "windows-pmpipe",
+      "path": "windows/pmpipe.gv",
+      "size": 3346,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7831,6 +9417,32 @@
       "id": "1880",
       "path": "1880.dot",
       "size": 3451,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "linux.x86-ports_dot",
+      "path": "linux.x86/ports_dot.gv",
+      "size": 3470,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-asde91",
+      "path": "../doc/dotguide/asde91.dot",
+      "size": 3383,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7857,6 +9469,32 @@
       "id": "graphs-pmpipe",
       "path": "graphs/pmpipe.gv",
       "size": 3499,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-pmpipe",
+      "path": "../graphs/directed/pmpipe.gv",
+      "size": 3499,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-infosrc-sdlshapes",
+      "path": "../doc/infosrc/sdlshapes.dot",
+      "size": 3557,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7932,9 +9570,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-sr_box_dbl",
-      "path": "graphs/sr_box_dbl.gv",
-      "size": 3777,
+      "id": "graphs-sr_circle_dbl",
+      "path": "graphs/sr_circle_dbl.gv",
+      "size": 3780,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7945,9 +9583,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-sr_circle_dbl",
-      "path": "graphs/sr_circle_dbl.gv",
-      "size": 3780,
+      "id": "graphs-sr_box_dbl",
+      "path": "graphs/sr_box_dbl.gv",
+      "size": 3777,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -7984,19 +9622,6 @@
       "hasHref": false
     },
     {
-      "id": "2669",
-      "path": "2669.dot",
-      "size": 3835,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "share-triedds",
       "path": "share/triedds.gv",
       "size": 3852,
@@ -8023,19 +9648,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-grdfillcolor",
-      "path": "graphs/grdfillcolor.gv",
-      "size": 4075,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "graphs-grdlinear",
       "path": "graphs/grdlinear.gv",
       "size": 4071,
@@ -8049,9 +9661,22 @@
       "hasHref": false
     },
     {
-      "id": "windows-mike",
-      "path": "windows/mike.gv",
-      "size": 4090,
+      "id": "2669",
+      "path": "2669.dot",
+      "size": 3835,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-grdfillcolor",
+      "path": "graphs/grdfillcolor.gv",
+      "size": 4075,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8064,6 +9689,19 @@
     {
       "id": "share-mike",
       "path": "share/mike.gv",
+      "size": 4090,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-mike",
+      "path": "windows/mike.gv",
       "size": 4090,
       "verdict": "conformant",
       "cmapx": {
@@ -8088,6 +9726,19 @@
       "hasHref": false
     },
     {
+      "id": "linux.x86-record_dot",
+      "path": "linux.x86/record_dot.gv",
+      "size": 4541,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "nshare-record_dot",
       "path": "nshare/record_dot.gv",
       "size": 4632,
@@ -8101,9 +9752,22 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-record_dot",
-      "path": "linux.x86/record_dot.gv",
-      "size": 4541,
+      "id": "tree-contrib-dirgraph-apache",
+      "path": "../contrib/dirgraph/apache.dot",
+      "size": 4584,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-neato-typeshar",
+      "path": "../doc/neato/typeshar.dot",
+      "size": 4584,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8140,6 +9804,19 @@
       "hasHref": false
     },
     {
+      "id": "share-viewfile",
+      "path": "share/viewfile.gv",
+      "size": 4916,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "2095",
       "path": "2095.dot",
       "size": 4865,
@@ -8153,8 +9830,8 @@
       "hasHref": false
     },
     {
-      "id": "share-viewfile",
-      "path": "share/viewfile.gv",
+      "id": "windows-viewfile",
+      "path": "windows/viewfile.gv",
       "size": 4916,
       "verdict": "conformant",
       "cmapx": {
@@ -8179,9 +9856,22 @@
       "hasHref": false
     },
     {
-      "id": "windows-viewfile",
-      "path": "windows/viewfile.gv",
-      "size": 4916,
+      "id": "graphs-ldbxtried",
+      "path": "graphs/ldbxtried.gv",
+      "size": 5155,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-ldbxtried",
+      "path": "../graphs/directed/ldbxtried.gv",
+      "size": 5155,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8205,9 +9895,22 @@
       "hasHref": false
     },
     {
-      "id": "graphs-ldbxtried",
-      "path": "graphs/ldbxtried.gv",
+      "id": "tree-graphs-directed-polypoly",
+      "path": "../graphs/directed/polypoly.gv",
       "size": 5155,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-sdh",
+      "path": "../graphs/directed/sdh.gv",
+      "size": 5428,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8234,6 +9937,19 @@
       "id": "graphs-crazy",
       "path": "graphs/crazy.gv",
       "size": 5556,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-crazy",
+      "path": "../graphs/directed/crazy.gv",
+      "size": 5572,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8296,6 +10012,19 @@
       "hasHref": false
     },
     {
+      "id": "graphs-grdlinear_angle",
+      "path": "graphs/grdlinear_angle.gv",
+      "size": 5758,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "graphs-cairo",
       "path": "graphs/cairo.gv",
       "size": 5866,
@@ -8322,9 +10051,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-grdlinear_angle",
-      "path": "graphs/grdlinear_angle.gv",
-      "size": 5758,
+      "id": "tree-contrib-sdlshapes-sdlshapes",
+      "path": "../contrib/sdlshapes/sdlshapes.dot",
+      "size": 5900,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8337,6 +10066,19 @@
     {
       "id": "graphs-proc3d",
       "path": "graphs/proc3d.gv",
+      "size": 6121,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-proc3d",
+      "path": "../graphs/directed/proc3d.gv",
       "size": 6121,
       "verdict": "conformant",
       "cmapx": {
@@ -8361,8 +10103,34 @@
       "hasHref": false
     },
     {
+      "id": "tree-graphs-directed-jsort",
+      "path": "../graphs/directed/jsort.gv",
+      "size": 6189,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "share-newarrows",
       "path": "share/newarrows.gv",
+      "size": 6364,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "windows-newarrows",
+      "path": "windows/newarrows.gv",
       "size": 6364,
       "verdict": "conformant",
       "cmapx": {
@@ -8377,19 +10145,6 @@
       "id": "2193",
       "path": "2193.dot",
       "size": 6399,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "windows-newarrows",
-      "path": "windows/newarrows.gv",
-      "size": 6364,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8426,19 +10181,6 @@
       "hasHref": false
     },
     {
-      "id": "1447",
-      "path": "1447.dot",
-      "size": 6707,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": true
-    },
-    {
       "id": "graphs-polypoly",
       "path": "graphs/polypoly.gv",
       "size": 6617,
@@ -8452,9 +10194,9 @@
       "hasHref": false
     },
     {
-      "id": "2619_1",
-      "path": "2619_1.dot",
-      "size": 6721,
+      "id": "1447",
+      "path": "1447.dot",
+      "size": 6707,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8478,6 +10220,19 @@
       "hasHref": false
     },
     {
+      "id": "2619_1",
+      "path": "2619_1.dot",
+      "size": 6721,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": true
+    },
+    {
       "id": "windows-trapeziumlr",
       "path": "windows/trapeziumlr.gv",
       "size": 7229,
@@ -8494,6 +10249,19 @@
       "id": "share-trapeziumlr",
       "path": "share/trapeziumlr.gv",
       "size": 7233,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "macosx-arrows_dot",
+      "path": "macosx/arrows_dot.gv",
+      "size": 7235,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8543,9 +10311,9 @@
       "hasHref": false
     },
     {
-      "id": "macosx-arrows_dot",
-      "path": "macosx/arrows_dot.gv",
-      "size": 7235,
+      "id": "share-unix2",
+      "path": "share/unix2.gv",
+      "size": 7421,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8556,9 +10324,9 @@
       "hasHref": false
     },
     {
-      "id": "share-unix2",
-      "path": "share/unix2.gv",
-      "size": 7421,
+      "id": "tree-graphs-directed-awilliams",
+      "path": "../graphs/directed/awilliams.gv",
+      "size": 7305,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8585,6 +10353,19 @@
       "id": "windows-unix2",
       "path": "windows/unix2.gv",
       "size": 7421,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-rowe",
+      "path": "share/rowe.gv",
+      "size": 7448,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8647,9 +10428,9 @@
       "hasHref": false
     },
     {
-      "id": "share-rowe",
-      "path": "share/rowe.gv",
-      "size": 7448,
+      "id": "2619_2",
+      "path": "2619_2.dot",
+      "size": 7596,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8657,7 +10438,7 @@
       "imap": {
         "verdict": "conformant"
       },
-      "hasHref": false
+      "hasHref": true
     },
     {
       "id": "share-abstract",
@@ -8671,19 +10452,6 @@
         "verdict": "conformant"
       },
       "hasHref": false
-    },
-    {
-      "id": "2619_2",
-      "path": "2619_2.dot",
-      "size": 7596,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": true
     },
     {
       "id": "windows-abstract",
@@ -8702,6 +10470,19 @@
       "id": "share-world",
       "path": "share/world.gv",
       "size": 8062,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-contrib-dirgraph-bsdkernel",
+      "path": "../contrib/dirgraph/bsdkernel.dot",
+      "size": 7803,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8751,9 +10532,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-polypoly",
-      "path": "windows/polypoly.gv",
-      "size": 8872,
+      "id": "graphs-b15",
+      "path": "graphs/b15.gv",
+      "size": 8774,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8764,9 +10545,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b15",
-      "path": "graphs/b15.gv",
-      "size": 8774,
+      "id": "nshare-dotsplines_dot",
+      "path": "nshare/dotsplines_dot.gv",
+      "size": 8836,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8790,9 +10571,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-dotsplines_dot1",
-      "path": "linux.x86/dotsplines_dot1.gv",
-      "size": 9206,
+      "id": "windows-polypoly",
+      "path": "windows/polypoly.gv",
+      "size": 8872,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8803,9 +10584,9 @@
       "hasHref": false
     },
     {
-      "id": "nshare-dotsplines_dot",
-      "path": "nshare/dotsplines_dot.gv",
-      "size": 8836,
+      "id": "linux.x86-dotsplines_dot1",
+      "path": "linux.x86/dotsplines_dot1.gv",
+      "size": 9206,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8868,19 +10649,6 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b36",
-      "path": "graphs/b36.gv",
-      "size": 10388,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "share-b94",
       "path": "share/b94.gv",
       "size": 9831,
@@ -8894,9 +10662,22 @@
       "hasHref": false
     },
     {
-      "id": "share-proc3d",
-      "path": "share/proc3d.gv",
-      "size": 10429,
+      "id": "tree-contrib-java-dot-uml",
+      "path": "../contrib/java-dot/uml.dot",
+      "size": 10213,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-b36",
+      "path": "graphs/b36.gv",
+      "size": 10388,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8910,6 +10691,19 @@
       "id": "graphs-b124",
       "path": "graphs/b124.gv",
       "size": 10284,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-proc3d",
+      "path": "share/proc3d.gv",
+      "size": 10429,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8985,9 +10779,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-overlap_neato1",
-      "path": "linux.x86/overlap_neato1.gv",
-      "size": 10554,
+      "id": "nshare-overlap_neato1",
+      "path": "nshare/overlap_neato1.gv",
+      "size": 10511,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -8998,9 +10792,9 @@
       "hasHref": false
     },
     {
-      "id": "nshare-overlap_neato1",
-      "path": "nshare/overlap_neato1.gv",
-      "size": 10511,
+      "id": "linux.x86-overlap_neato1",
+      "path": "linux.x86/overlap_neato1.gv",
+      "size": 10554,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9050,6 +10844,32 @@
       "hasHref": false
     },
     {
+      "id": "windows-pgram",
+      "path": "windows/pgram.gv",
+      "size": 11001,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-infosrc-plugins",
+      "path": "../doc/infosrc/plugins.gv",
+      "size": 11343,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "share-ldbxtried",
       "path": "share/ldbxtried.gv",
       "size": 11505,
@@ -9063,9 +10883,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-pgram",
-      "path": "windows/pgram.gv",
-      "size": 11001,
+      "id": "nshare-neatosplines_neato",
+      "path": "nshare/neatosplines_neato.gv",
+      "size": 11700,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9089,19 +10909,6 @@
       "hasHref": false
     },
     {
-      "id": "share-ngk10_4",
-      "path": "share/ngk10_4.gv",
-      "size": 11842,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "windows-ldbxtried",
       "path": "windows/ldbxtried.gv",
       "size": 11805,
@@ -9115,9 +10922,9 @@
       "hasHref": false
     },
     {
-      "id": "nshare-neatosplines_neato",
-      "path": "nshare/neatosplines_neato.gv",
-      "size": 11700,
+      "id": "share-ngk10_4",
+      "path": "share/ngk10_4.gv",
+      "size": 11842,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9154,19 +10961,6 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-neatosplines_neato1",
-      "path": "linux.x86/neatosplines_neato1.gv",
-      "size": 12061,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "nshare-neatosplines_neato1",
       "path": "nshare/neatosplines_neato1.gv",
       "size": 12051,
@@ -9180,9 +10974,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-rankdir_dot1",
-      "path": "linux.x86/rankdir_dot1.gv",
-      "size": 12673,
+      "id": "linux.x86-neatosplines_neato1",
+      "path": "linux.x86/neatosplines_neato1.gv",
+      "size": 12061,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9196,6 +10990,19 @@
       "id": "nshare-rankdir_dot1",
       "path": "nshare/rankdir_dot1.gv",
       "size": 12675,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "linux.x86-rankdir_dot1",
+      "path": "linux.x86/rankdir_dot1.gv",
+      "size": 12673,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9232,9 +11039,9 @@
       "hasHref": false
     },
     {
-      "id": "nshare-rankdir_dot",
-      "path": "nshare/rankdir_dot.gv",
-      "size": 12803,
+      "id": "linux.x86-rankdir_dot2",
+      "path": "linux.x86/rankdir_dot2.gv",
+      "size": 12815,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9245,9 +11052,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-rankdir_dot2",
-      "path": "linux.x86/rankdir_dot2.gv",
-      "size": 12815,
+      "id": "nshare-rankdir_dot",
+      "path": "nshare/rankdir_dot.gv",
+      "size": 12803,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9297,9 +11104,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-b94",
-      "path": "windows/b94.gv",
-      "size": 14509,
+      "id": "tree-doc-dotguide-smlred",
+      "path": "../doc/dotguide/smlred.dot",
+      "size": 14247,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9310,9 +11117,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-mode",
-      "path": "graphs/mode.gv",
-      "size": 14907,
+      "id": "windows-b94",
+      "path": "windows/b94.gv",
+      "size": 14509,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9336,6 +11143,19 @@
       "hasHref": true
     },
     {
+      "id": "graphs-mode",
+      "path": "graphs/mode.gv",
+      "size": 14907,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "windows-b36",
       "path": "windows/b36.gv",
       "size": 15050,
@@ -9349,8 +11169,34 @@
       "hasHref": false
     },
     {
+      "id": "tree-doc-neato-jho",
+      "path": "../doc/neato/jho.dot",
+      "size": 14828,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
       "id": "linux.i386-b36",
       "path": "linux.i386/b36.gv",
+      "size": 15051,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-b36",
+      "path": "share/b36.gv",
       "size": 15051,
       "verdict": "conformant",
       "cmapx": {
@@ -9375,9 +11221,9 @@
       "hasHref": false
     },
     {
-      "id": "share-b36",
-      "path": "share/b36.gv",
-      "size": 15051,
+      "id": "windows-NaN",
+      "path": "windows/NaN.gv",
+      "size": 17050,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9401,9 +11247,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-NaN",
-      "path": "windows/NaN.gv",
-      "size": 17050,
+      "id": "tree-contrib-dirgraph-linux",
+      "path": "../contrib/dirgraph/linux.dot",
+      "size": 21860,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9414,9 +11260,9 @@
       "hasHref": false
     },
     {
-      "id": "1718",
-      "path": "1718.dot",
-      "size": 22038,
+      "id": "windows-b124",
+      "path": "windows/b124.gv",
+      "size": 28038,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9440,9 +11286,9 @@
       "hasHref": false
     },
     {
-      "id": "windows-b124",
-      "path": "windows/b124.gv",
-      "size": 28038,
+      "id": "1718",
+      "path": "1718.dot",
+      "size": 22038,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9492,9 +11338,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-viewport",
-      "path": "graphs/viewport.gv",
-      "size": 37292,
+      "id": "tree-contrib-dirgraph-bsdarch",
+      "path": "../contrib/dirgraph/bsdarch.dot",
+      "size": 30782,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9505,9 +11351,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-badvoro",
-      "path": "graphs/badvoro.gv",
-      "size": 33949,
+      "id": "graphs-viewport",
+      "path": "graphs/viewport.gv",
+      "size": 37292,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9531,9 +11377,9 @@
       "hasHref": false
     },
     {
-      "id": "graphs-b106",
-      "path": "graphs/b106.gv",
-      "size": 48933,
+      "id": "graphs-badvoro",
+      "path": "graphs/badvoro.gv",
+      "size": 33949,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9541,12 +11387,12 @@
       "imap": {
         "verdict": "conformant"
       },
-      "hasHref": true
+      "hasHref": false
     },
     {
-      "id": "graphs-b143",
-      "path": "graphs/b143.gv",
-      "size": 62055,
+      "id": "graphs-b106",
+      "path": "graphs/b106.gv",
+      "size": 48933,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9568,6 +11414,19 @@
         "verdict": "conformant"
       },
       "hasHref": false
+    },
+    {
+      "id": "graphs-b143",
+      "path": "graphs/b143.gv",
+      "size": 62055,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": true
     },
     {
       "id": "graphs-b29",
@@ -9596,19 +11455,6 @@
       "hasHref": false
     },
     {
-      "id": "linux.i386-b106",
-      "path": "linux.i386/b106.gv",
-      "size": 92005,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": true
-    },
-    {
       "id": "share-b106",
       "path": "share/b106.gv",
       "size": 92301,
@@ -9625,6 +11471,19 @@
       "id": "windows-b106",
       "path": "windows/b106.gv",
       "size": 95634,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": true
+    },
+    {
+      "id": "linux.i386-b106",
+      "path": "linux.i386/b106.gv",
+      "size": 92005,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9661,35 +11520,9 @@
       "hasHref": true
     },
     {
-      "id": "2095_1",
-      "path": "2095_1.dot",
-      "size": 105083,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "linux.i386-b29",
       "path": "linux.i386/b29.gv",
       "size": 136753,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": true
-    },
-    {
-      "id": "share-b29",
-      "path": "share/b29.gv",
-      "size": 137802,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9713,6 +11546,32 @@
       "hasHref": true
     },
     {
+      "id": "2095_1",
+      "path": "2095_1.dot",
+      "size": 105083,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "share-b29",
+      "path": "share/b29.gv",
+      "size": 137802,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": true
+    },
+    {
       "id": "windows-b29",
       "path": "windows/b29.gv",
       "size": 149114,
@@ -9726,8 +11585,8 @@
       "hasHref": true
     },
     {
-      "id": "linux.i386-b102",
-      "path": "linux.i386/b102.gv",
+      "id": "share-b102",
+      "path": "share/b102.gv",
       "size": 161479,
       "verdict": "conformant",
       "cmapx": {
@@ -9739,8 +11598,8 @@
       "hasHref": true
     },
     {
-      "id": "share-b102",
-      "path": "share/b102.gv",
+      "id": "linux.i386-b102",
+      "path": "linux.i386/b102.gv",
       "size": 161479,
       "verdict": "conformant",
       "cmapx": {
@@ -9778,9 +11637,9 @@
       "hasHref": false
     },
     {
-      "id": "linux.x86-root_twopi",
-      "path": "linux.x86/root_twopi.gv",
-      "size": 287907,
+      "id": "1879",
+      "path": "1879.dot",
+      "size": 287816,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9804,9 +11663,9 @@
       "hasHref": false
     },
     {
-      "id": "nshare-root_twopi",
-      "path": "nshare/root_twopi.gv",
-      "size": 287916,
+      "id": "linux.x86-root_twopi",
+      "path": "linux.x86/root_twopi.gv",
+      "size": 287907,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -9817,9 +11676,9 @@
       "hasHref": true
     },
     {
-      "id": "1879",
-      "path": "1879.dot",
-      "size": 287816,
+      "id": "nshare-root_twopi",
+      "path": "nshare/root_twopi.gv",
+      "size": 287916,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-25T03:09:19.320Z",
+  "generatedAt": "2026-07-27T22:25:50.513Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "patchwork",
   "tolerance": 0.01,
-  "total": 762,
+  "total": 905,
   "counts": {
-    "pass": 762,
+    "pass": 905,
     "diverged": 0,
     "oracle-error": 0,
     "port-error": 0,
@@ -28,6 +28,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-tclpkg-gv-hello",
+      "size": 25,
+      "status": "pass"
+    },
+    {
       "id": "1909",
       "size": 29,
       "status": "pass"
@@ -35,6 +40,11 @@
     {
       "id": "graphs-ps_user_shapes",
       "size": 29,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-forward",
+      "size": 30,
       "status": "pass"
     },
     {
@@ -65,6 +75,21 @@
     {
       "id": "813",
       "size": 39,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-back",
+      "size": 40,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-both",
+      "size": 40,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-nohead",
+      "size": 40,
       "status": "pass"
     },
     {
@@ -133,6 +158,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-none",
+      "size": 54,
+      "status": "pass"
+    },
+    {
       "id": "graphs-in",
       "size": 55,
       "status": "pass"
@@ -143,6 +173,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-contrib-prune-test",
+      "size": 56,
+      "status": "pass"
+    },
+    {
       "id": "graphs-b123",
       "size": 59,
       "status": "pass"
@@ -150,6 +185,11 @@
     {
       "id": "2391",
       "size": 61,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-plaintext",
+      "size": 64,
       "status": "pass"
     },
     {
@@ -183,6 +223,16 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-box",
+      "size": 70,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-egg",
+      "size": 70,
+      "status": "pass"
+    },
+    {
       "id": "2682",
       "size": 71,
       "status": "pass"
@@ -208,8 +258,28 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-diamond",
+      "size": 74,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-house",
+      "size": 74,
+      "status": "pass"
+    },
+    {
       "id": "167",
       "size": 75,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-circle",
+      "size": 76,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-neato-G4_orig",
+      "size": 76,
       "status": "pass"
     },
     {
@@ -223,8 +293,58 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-Mcircle",
+      "size": 78,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-Msquare",
+      "size": 78,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-ellipse",
+      "size": 78,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-hexagon",
+      "size": 78,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-octagon",
+      "size": 78,
+      "status": "pass"
+    },
+    {
       "id": "1865",
       "size": 79,
+      "status": "pass"
+    },
+    {
+      "id": "2619",
+      "size": 79,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-Mdiamond",
+      "size": 80,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-invhouse",
+      "size": 80,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-record",
+      "size": 80,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-triangle",
+      "size": 80,
       "status": "pass"
     },
     {
@@ -273,7 +393,22 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-Mrecord",
+      "size": 82,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-trapezium",
+      "size": 82,
+      "status": "pass"
+    },
+    {
       "id": "2406",
+      "size": 83,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-neato-G4_lenwt",
       "size": 83,
       "status": "pass"
     },
@@ -289,6 +424,16 @@
     },
     {
       "id": "graphs-rowcolsep",
+      "size": 86,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-invtriangle",
+      "size": 86,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-longflat",
       "size": 86,
       "status": "pass"
     },
@@ -313,6 +458,31 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-doublecircle",
+      "size": 88,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-invtrapezium",
+      "size": 88,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-doubleoctagon",
+      "size": 90,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-parallelogram",
+      "size": 90,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-tripleoctagon",
+      "size": 90,
+      "status": "pass"
+    },
+    {
       "id": "2643",
       "size": 91,
       "status": "pass"
@@ -323,8 +493,38 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-infosrc-mrecord",
+      "size": 92,
+      "status": "pass"
+    },
+    {
       "id": "2460",
       "size": 93,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-constraint",
+      "size": 93,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-constraint",
+      "size": 93,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-point",
+      "size": 95,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-polygon",
+      "size": 96,
+      "status": "pass"
+    },
+    {
+      "id": "2516",
+      "size": 97,
       "status": "pass"
     },
     {
@@ -334,6 +534,16 @@
     },
     {
       "id": "graphs-Latin1",
+      "size": 99,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-colorlist",
+      "size": 99,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
       "size": 99,
       "status": "pass"
     },
@@ -353,12 +563,52 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-crow",
+      "size": 102,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-boxarrow",
+      "size": 103,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-dot",
+      "size": 103,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-inv",
+      "size": 103,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-tee",
+      "size": 103,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-vee",
+      "size": 103,
+      "status": "pass"
+    },
+    {
       "id": "1308",
       "size": 104,
       "status": "pass"
     },
     {
       "id": "graphs-b545",
+      "size": 104,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-no_arrow",
+      "size": 104,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-odot",
       "size": 104,
       "status": "pass"
     },
@@ -390,6 +640,31 @@
     {
       "id": "windows-trivial_dot",
       "size": 105,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-invdot",
+      "size": 106,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-normal",
+      "size": 106,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-diamondarrow",
+      "size": 107,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-invodot",
+      "size": 107,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-oinvdot",
+      "size": 107,
       "status": "pass"
     },
     {
@@ -539,6 +814,11 @@
     },
     {
       "id": "regression_tests-shapes-reference-rarrow",
+      "size": 131,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-neato-G4_pinned",
       "size": 131,
       "status": "pass"
     },
@@ -783,6 +1063,26 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-clust1",
+      "size": 146,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-clust2",
+      "size": 146,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-clust3",
+      "size": 146,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-fill",
+      "size": 147,
+      "status": "pass"
+    },
+    {
       "id": "1221",
       "size": 149,
       "status": "pass"
@@ -808,6 +1108,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-record2",
+      "size": 155,
+      "status": "pass"
+    },
+    {
       "id": "windows-Latin1",
       "size": 155,
       "status": "pass"
@@ -819,6 +1124,11 @@
     },
     {
       "id": "graphs-try",
+      "size": 163,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-try",
       "size": 163,
       "status": "pass"
     },
@@ -863,6 +1173,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-graph1",
+      "size": 186,
+      "status": "pass"
+    },
+    {
       "id": "graphs-b58",
       "size": 194,
       "status": "pass"
@@ -894,6 +1209,11 @@
     },
     {
       "id": "graphs-labelclust-ndr",
+      "size": 209,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-round",
       "size": 209,
       "status": "pass"
     },
@@ -968,6 +1288,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-poly",
+      "size": 227,
+      "status": "pass"
+    },
+    {
       "id": "graphs-labelclust-ntl",
       "size": 228,
       "status": "pass"
@@ -1003,6 +1328,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-undirected-process",
+      "size": 234,
+      "status": "pass"
+    },
+    {
       "id": "144_no_ortho",
       "size": 237,
       "status": "pass"
@@ -1014,6 +1344,11 @@
     },
     {
       "id": "graphs-clust5",
+      "size": 238,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-clust5",
       "size": 238,
       "status": "pass"
     },
@@ -1095,6 +1430,11 @@
     {
       "id": "graphs-labelroot-ndc",
       "size": 249,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-clust",
+      "size": 255,
       "status": "pass"
     },
     {
@@ -1228,6 +1568,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-neato-process",
+      "size": 274,
+      "status": "pass"
+    },
+    {
       "id": "graphs-labelroot-ftl",
       "size": 281,
       "status": "pass"
@@ -1263,13 +1608,33 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-recordex",
+      "size": 287,
+      "status": "pass"
+    },
+    {
       "id": "graphs-colorscheme",
       "size": 290,
       "status": "pass"
     },
     {
+      "id": "tree-tclpkg-tcldot-examples-data-demo",
+      "size": 295,
+      "status": "pass"
+    },
+    {
       "id": "graphs-nojustify",
       "size": 298,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-compound",
+      "size": 303,
+      "status": "pass"
+    },
+    {
+      "id": "tree-tclpkg-tcldot-examples-data-poly",
+      "size": 305,
       "status": "pass"
     },
     {
@@ -1343,7 +1708,17 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-nhg",
+      "size": 339,
+      "status": "pass"
+    },
+    {
       "id": "2168_2",
+      "size": 349,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-neato-inet",
       "size": 349,
       "status": "pass"
     },
@@ -1359,6 +1734,11 @@
     },
     {
       "id": "graphs-mike",
+      "size": 381,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-mike",
       "size": 381,
       "status": "pass"
     },
@@ -1384,6 +1764,16 @@
     },
     {
       "id": "graphs-clust4",
+      "size": 401,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-clust1",
+      "size": 401,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-clust4",
       "size": 401,
       "status": "pass"
     },
@@ -1423,7 +1813,17 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-KW91",
+      "size": 416,
+      "status": "pass"
+    },
+    {
       "id": "graphs-records",
+      "size": 417,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-records",
       "size": 417,
       "status": "pass"
     },
@@ -1463,13 +1863,28 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-html",
+      "size": 422,
+      "status": "pass"
+    },
+    {
       "id": "graphs-ctext",
+      "size": 425,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-ctext",
       "size": 425,
       "status": "pass"
     },
     {
       "id": "358",
       "size": 429,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-graph2",
+      "size": 434,
       "status": "pass"
     },
     {
@@ -1513,8 +1928,18 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-states",
+      "size": 492,
+      "status": "pass"
+    },
+    {
       "id": "graphs-grdcluster",
       "size": 497,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-tee",
+      "size": 506,
       "status": "pass"
     },
     {
@@ -1524,6 +1949,11 @@
     },
     {
       "id": "graphs-russian",
+      "size": 520,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-russian",
       "size": 520,
       "status": "pass"
     },
@@ -1588,6 +2018,26 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-tree",
+      "size": 588,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-tree",
+      "size": 588,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-arr_none",
+      "size": 591,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-fsm",
+      "size": 592,
+      "status": "pass"
+    },
+    {
       "id": "graphs-b68",
       "size": 595,
       "status": "pass"
@@ -1634,6 +2084,11 @@
     },
     {
       "id": "share-labelclust-ndl",
+      "size": 605,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-fsm",
       "size": 605,
       "status": "pass"
     },
@@ -1725,6 +2180,11 @@
     {
       "id": "windows-labelclust-fdr",
       "size": 616,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-neato-fancy",
+      "size": 617,
       "status": "pass"
     },
     {
@@ -1854,6 +2314,16 @@
     },
     {
       "id": "share-labelroot-fbd",
+      "size": 629,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-hashtable",
+      "size": 629,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-hashtable",
       "size": 629,
       "status": "pass"
     },
@@ -2143,6 +2613,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-undirected-ER",
+      "size": 650,
+      "status": "pass"
+    },
+    {
       "id": "windows-labelroot-fdc",
       "size": 650,
       "status": "pass"
@@ -2170,6 +2645,11 @@
     {
       "id": "graphs-val_inv",
       "size": 660,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-neato-ER",
+      "size": 665,
       "status": "pass"
     },
     {
@@ -2238,7 +2718,17 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-rowe",
+      "size": 765,
+      "status": "pass"
+    },
+    {
       "id": "graphs-abstract",
+      "size": 770,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-abstract",
       "size": 770,
       "status": "pass"
     },
@@ -2253,7 +2743,17 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-train11",
+      "size": 777,
+      "status": "pass"
+    },
+    {
       "id": "graphs-jcctree",
+      "size": 778,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-jcctree",
       "size": 778,
       "status": "pass"
     },
@@ -2263,7 +2763,17 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-japanese",
+      "size": 789,
+      "status": "pass"
+    },
+    {
       "id": "graphs-Heawood",
+      "size": 790,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-undirected-Heawood",
       "size": 790,
       "status": "pass"
     },
@@ -2274,6 +2784,11 @@
     },
     {
       "id": "graphs-fig6",
+      "size": 835,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-fig6",
       "size": 835,
       "status": "pass"
     },
@@ -2294,6 +2809,11 @@
     },
     {
       "id": "graphs-Petersen",
+      "size": 904,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-undirected-Petersen",
       "size": 904,
       "status": "pass"
     },
@@ -2343,12 +2863,27 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-alf",
+      "size": 958,
+      "status": "pass"
+    },
+    {
       "id": "graphs-dfa",
       "size": 959,
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-dfa",
+      "size": 959,
+      "status": "pass"
+    },
+    {
       "id": "graphs-world",
+      "size": 980,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-world",
       "size": 980,
       "status": "pass"
     },
@@ -2385,6 +2920,16 @@
     {
       "id": "graphs-shells",
       "size": 1102,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-shells",
+      "size": 1102,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-table",
+      "size": 1127,
       "status": "pass"
     },
     {
@@ -2478,8 +3023,18 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-grammar",
+      "size": 1302,
+      "status": "pass"
+    },
+    {
       "id": "1855",
       "size": 1335,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-switch",
+      "size": 1344,
       "status": "pass"
     },
     {
@@ -2493,8 +3048,18 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-biological",
+      "size": 1360,
+      "status": "pass"
+    },
+    {
       "id": "share-records",
       "size": 1398,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-clust2",
+      "size": 1407,
       "status": "pass"
     },
     {
@@ -2519,6 +3084,11 @@
     },
     {
       "id": "graphs-unix",
+      "size": 1433,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-unix",
       "size": 1433,
       "status": "pass"
     },
@@ -2559,6 +3129,11 @@
     },
     {
       "id": "graphs-trapeziumlr",
+      "size": 1484,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-trapeziumlr",
       "size": 1484,
       "status": "pass"
     },
@@ -2608,6 +3183,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-triedds",
+      "size": 1610,
+      "status": "pass"
+    },
+    {
       "id": "windows-clust5",
       "size": 1695,
       "status": "pass"
@@ -2653,8 +3233,18 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-unix2",
+      "size": 1719,
+      "status": "pass"
+    },
+    {
       "id": "graphs-weight",
       "size": 1720,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-undirected-ngk10_4",
+      "size": 1754,
       "status": "pass"
     },
     {
@@ -2678,6 +3268,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-viewfile",
+      "size": 1767,
+      "status": "pass"
+    },
+    {
       "id": "share-Petersen",
       "size": 1768,
       "status": "pass"
@@ -2685,6 +3280,11 @@
     {
       "id": "windows-Petersen",
       "size": 1768,
+      "status": "pass"
+    },
+    {
+      "id": "tree-contrib-dirgraph-named",
+      "size": 1804,
       "status": "pass"
     },
     {
@@ -2728,12 +3328,22 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-oldarrows",
+      "size": 1998,
+      "status": "pass"
+    },
+    {
       "id": "windows-pm2way",
       "size": 1998,
       "status": "pass"
     },
     {
       "id": "graphs-pm2way",
+      "size": 2020,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-pm2way",
       "size": 2020,
       "status": "pass"
     },
@@ -2898,6 +3508,16 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-pgram",
+      "size": 2614,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-psfonttest",
+      "size": 2634,
+      "status": "pass"
+    },
+    {
       "id": "linux.i386-dfa",
       "size": 2651,
       "status": "pass"
@@ -2909,6 +3529,11 @@
     },
     {
       "id": "graphs-NaN",
+      "size": 2672,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-NaN",
       "size": 2672,
       "status": "pass"
     },
@@ -3003,6 +3628,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-asde91",
+      "size": 3383,
+      "status": "pass"
+    },
+    {
       "id": "1880",
       "size": 3451,
       "status": "pass"
@@ -3020,6 +3650,16 @@
     {
       "id": "graphs-pmpipe",
       "size": 3499,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-pmpipe",
+      "size": 3499,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-sdlshapes",
+      "size": 3557,
       "status": "pass"
     },
     {
@@ -3113,6 +3753,16 @@
       "status": "pass"
     },
     {
+      "id": "tree-contrib-dirgraph-apache",
+      "size": 4584,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-neato-typeshar",
+      "size": 4584,
+      "status": "pass"
+    },
+    {
       "id": "nshare-record_dot",
       "size": 4632,
       "status": "pass"
@@ -3153,8 +3803,23 @@
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-ldbxtried",
+      "size": 5155,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-polypoly",
+      "size": 5155,
+      "status": "pass"
+    },
+    {
       "id": "graphs-grdradial",
       "size": 5370,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-sdh",
+      "size": 5428,
       "status": "pass"
     },
     {
@@ -3165,6 +3830,11 @@
     {
       "id": "graphs-crazy",
       "size": 5556,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-crazy",
+      "size": 5572,
       "status": "pass"
     },
     {
@@ -3203,12 +3873,27 @@
       "status": "pass"
     },
     {
+      "id": "tree-contrib-sdlshapes-sdlshapes",
+      "size": 5900,
+      "status": "pass"
+    },
+    {
       "id": "graphs-proc3d",
       "size": 6121,
       "status": "pass"
     },
     {
+      "id": "tree-graphs-directed-proc3d",
+      "size": 6121,
+      "status": "pass"
+    },
+    {
       "id": "graphs-jsort",
+      "size": 6189,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-jsort",
       "size": 6189,
       "status": "pass"
     },
@@ -3248,6 +3933,11 @@
       "status": "pass"
     },
     {
+      "id": "2619_1",
+      "size": 6721,
+      "status": "pass"
+    },
+    {
       "id": "graphs-grdradial_angle",
       "size": 6918,
       "status": "pass"
@@ -3279,6 +3969,11 @@
     },
     {
       "id": "graphs-awilliams",
+      "size": 7305,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-awilliams",
       "size": 7305,
       "status": "pass"
     },
@@ -3323,6 +4018,11 @@
       "status": "pass"
     },
     {
+      "id": "2619_2",
+      "size": 7596,
+      "status": "pass"
+    },
+    {
       "id": "share-abstract",
       "size": 7614,
       "status": "pass"
@@ -3330,6 +4030,11 @@
     {
       "id": "windows-abstract",
       "size": 7664,
+      "status": "pass"
+    },
+    {
+      "id": "tree-contrib-dirgraph-bsdkernel",
+      "size": 7803,
       "status": "pass"
     },
     {
@@ -3403,6 +4108,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-contrib-java-dot-uml",
+      "size": 10213,
+      "status": "pass"
+    },
+    {
       "id": "graphs-b124",
       "size": 10284,
       "status": "pass"
@@ -3470,6 +4180,11 @@
     {
       "id": "windows-pgram",
       "size": 11001,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-plugins",
+      "size": 11343,
       "status": "pass"
     },
     {
@@ -3558,6 +4273,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-doc-dotguide-smlred",
+      "size": 14247,
+      "status": "pass"
+    },
+    {
       "id": "windows-jsort",
       "size": 14425,
       "status": "pass"
@@ -3570,6 +4290,11 @@
     {
       "id": "1447_1",
       "size": 14827,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-neato-jho",
+      "size": 14828,
       "status": "pass"
     },
     {
@@ -3608,6 +4333,11 @@
       "status": "pass"
     },
     {
+      "id": "tree-contrib-dirgraph-linux",
+      "size": 21860,
+      "status": "pass"
+    },
+    {
       "id": "1718",
       "size": 22038,
       "status": "pass"
@@ -3630,6 +4360,11 @@
     {
       "id": "windows-b51",
       "size": 29685,
+      "status": "pass"
+    },
+    {
+      "id": "tree-contrib-dirgraph-bsdarch",
+      "size": 30782,
       "status": "pass"
     },
     {
@@ -3753,6 +4488,11 @@
       "status": "pass"
     },
     {
+      "id": "1879",
+      "size": 287816,
+      "status": "pass"
+    },
+    {
       "id": "linux.x86-root_twopi",
       "size": 287907,
       "status": "pass"
@@ -3795,31 +4535,6 @@
     {
       "id": "2108",
       "size": 3136769,
-      "status": "pass"
-    },
-    {
-      "id": "2619",
-      "size": 79,
-      "status": "pass"
-    },
-    {
-      "id": "2516",
-      "size": 97,
-      "status": "pass"
-    },
-    {
-      "id": "2619_1",
-      "size": 6721,
-      "status": "pass"
-    },
-    {
-      "id": "2619_2",
-      "size": 7596,
-      "status": "pass"
-    },
-    {
-      "id": "1879",
-      "size": 287816,
       "status": "pass"
     }
   ]

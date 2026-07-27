@@ -22,25 +22,25 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 | [dot (SVG)](./PARITY-dot.md) | 939 | 905 | 6 | 16 | 12 | 96.4% |
 | [dot (xdot)](./PARITY-XDOT.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 905 | 903 | 0 | 2 | 0 | 99.8% |
-| [circo (xdot)](./PARITY-circo.md) | 762 | 752 | 0 | 4 | 6 | 98.7% |
-| [twopi (xdot)](./PARITY-twopi.md) | 762 | 746 | 0 | 14 | 2 | 97.9% |
-| [osage (xdot)](./PARITY-osage.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
-| [patchwork (xdot)](./PARITY-patchwork.md) | 762 | 762 | 0 | 0 | 0 | 100.0% |
+| [circo (xdot)](./PARITY-circo.md) | 905 | 895 | 0 | 4 | 6 | 98.9% |
+| [twopi (xdot)](./PARITY-twopi.md) | 905 | 888 | 1 | 14 | 2 | 98.1% |
+| [osage (xdot)](./PARITY-osage.md) | 905 | 897 | 1 | 7 | 0 | 99.1% |
+| [patchwork (xdot)](./PARITY-patchwork.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (imagemap)](./PARITY-MAP.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (plain)](./PARITY-dot-plain.md) | 905 | 897 | 0 | 8 | 0 | 99.1% |
-| [circo (plain)](./PARITY-circo-plain.md) | 762 | 731 | 0 | 10 | 21 | 95.9% |
-| [twopi (plain)](./PARITY-twopi-plain.md) | 762 | 731 | 0 | 21 | 10 | 95.9% |
-| [osage (plain)](./PARITY-osage-plain.md) | 762 | 747 | 0 | 14 | 1 | 98.0% |
-| [patchwork (plain)](./PARITY-patchwork-plain.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
+| [circo (plain)](./PARITY-circo-plain.md) | 905 | 887 | 2 | 11 | 5 | 98.0% |
+| [twopi (plain)](./PARITY-twopi-plain.md) | 905 | 881 | 1 | 22 | 1 | 97.3% |
+| [osage (plain)](./PARITY-osage-plain.md) | 905 | 889 | 1 | 15 | 0 | 98.2% |
+| [patchwork (plain)](./PARITY-patchwork-plain.md) | 905 | 897 | 0 | 8 | 0 | 99.1% |
 | [dot (dot)](./PARITY-dot-dot.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
-| [circo (json)](./PARITY-circo-json.md) | 762 | 750 | 0 | 6 | 6 | 98.4% |
-| [twopi (json)](./PARITY-twopi-json.md) | 762 | 744 | 0 | 16 | 2 | 97.6% |
-| [osage (json)](./PARITY-osage-json.md) | 762 | 750 | 0 | 12 | 0 | 98.4% |
-| [patchwork (json)](./PARITY-patchwork-json.md) | 762 | 760 | 0 | 2 | 0 | 99.7% |
-| [circo (imagemap)](./PARITY-circo-map.md) | 762 | 756 | 0 | 0 | 6 | 99.2% |
-| [twopi (imagemap)](./PARITY-twopi-map.md) | 762 | 760 | 0 | 0 | 2 | 99.7% |
-| [osage (imagemap)](./PARITY-osage-map.md) | 762 | 761 | 0 | 1 | 0 | 99.9% |
-| [patchwork (imagemap)](./PARITY-patchwork-map.md) | 762 | 762 | 0 | 0 | 0 | 100.0% |
+| [circo (json)](./PARITY-circo-json.md) | 905 | 894 | 0 | 6 | 5 | 98.8% |
+| [twopi (json)](./PARITY-twopi-json.md) | 905 | 887 | 1 | 16 | 1 | 98.0% |
+| [osage (json)](./PARITY-osage-json.md) | 905 | 892 | 1 | 12 | 0 | 98.6% |
+| [patchwork (json)](./PARITY-patchwork-json.md) | 905 | 903 | 0 | 2 | 0 | 99.8% |
+| [circo (imagemap)](./PARITY-circo-map.md) | 905 | 900 | 0 | 0 | 5 | 99.4% |
+| [twopi (imagemap)](./PARITY-twopi-map.md) | 905 | 904 | 0 | 0 | 1 | 99.9% |
+| [osage (imagemap)](./PARITY-osage-map.md) | 905 | 904 | 0 | 1 | 0 | 99.9% |
+| [patchwork (imagemap)](./PARITY-patchwork-map.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 
 
 ### Iterative engines (±0.5 characterization)

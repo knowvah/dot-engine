@@ -11,13 +11,15 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 744 (97.6%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 16
-- **errors (oracle/port/timeout, excluded from scoring):** 2
+- **Surveyed:** 905
+- **pass:** 887 (98.0%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 16
+- **errors (oracle/port/timeout, excluded from scoring):** 1
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 1998 | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` |
 
 ## Accepted (16) — documented, not chased
 
@@ -40,12 +42,11 @@ _(none)_
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
 | [`windows-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/newarrows.gv) | 20 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (2)
+## Errors and timeouts (1)
 
 | id | message |
 |---|---|
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
-_Passing ids (744) are omitted for brevity — the full roster is in
+_Passing ids (887) are omitted for brevity — the full roster is in
 `json-parity-twopi.json`._

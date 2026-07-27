@@ -12,8 +12,8 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 762 (generated 2026-07-25T03:56:05.961Z)
-- **pass:** 746 (97.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 14
+- **Surveyed:** 905 (generated 2026-07-27T21:43:30.140Z)
+- **pass:** 888 (98.1%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 14
 - **oracle-error:** 1 · **port-error:** 0 · **timeout:** 1
 
 ## Accepted deltas (14) — documented, not chased
@@ -27,9 +27,9 @@ table below.
 |---|---:|---|---|---|
 | [`1855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1855.dot) | 842 | A1 | 842 xdot draw-op diffs; whole radial layout is the exact x-axis mirror of the oracle's (y-&gt;-y, ring relabel k&lt;-&gt;34-k), max node displacement 6.04pt. Mechanism: 1-ULP V8-vs-libm cos/sin in circleLayout setAbsolutePos, amplified by the symmetry-unstable PRISM overlap-removal equilibrium on the cocircular star. Injection A/B: feeding C's exact circleLayout pos into the port's PRISM reproduces the oracle node-for-node (3e-14). | known-divergences.md#a1-twopi-arrows-family |
 | [`graphs-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrows.gv) | 40 | A1 | 32 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 | known-divergences.md#a1-twopi-arrows-family |
-| [`graphs-arrowsize`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrowsize.gv) | 23 | A1 | 64 draw-op diffs on edge Z-&gt;I; first diff unfilled_bezier[0]: 289.55 vs 297.2 (position drift, not a ptCount flip, but same pre-routing mechanism) | known-divergences.md#a1-twopi-arrows-family |
+| [`graphs-arrowsize`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrowsize.gv) | 72 | A1 | 64 draw-op diffs on edge Z-&gt;I; first diff unfilled_bezier[0]: 289.55 vs 297.2 (position drift, not a ptCount flip, but same pre-routing mechanism) | known-divergences.md#a1-twopi-arrows-family |
 | [`graphs-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/newarrows.gv) | 40 | A1 | 32 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (same graph family as graphs-arrows) | known-divergences.md#a1-twopi-arrows-family |
-| [`linux.x86-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/arrows_dot.gv) | 29 | A1 | 32 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (arrows_dot variant of graphs-arrows) | known-divergences.md#a1-twopi-arrows-family |
+| [`linux.x86-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/arrows_dot.gv) | 40 | A1 | 32 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (arrows_dot variant of graphs-arrows) | known-divergences.md#a1-twopi-arrows-family |
 | [`macosx-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/macosx/arrows_dot.gv) | 40 | A1 | 32 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (arrows_dot variant of graphs-arrows) | known-divergences.md#a1-twopi-arrows-family |
 | [`nshare-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/arrows_dot.gv) | 40 | A1 | 25 draw-op diffs on edge i-&gt;Z; first diff unfilled_bezier[0]: 265.18 vs 313.93 (position drift, not a ptCount flip, but same pre-routing mechanism) | known-divergences.md#a1-twopi-arrows-family |
 | [`share-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/newarrows.gv) | 20 | A1 | 12 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (newarrows variant of graphs-newarrows) | known-divergences.md#a1-twopi-arrows-family |
@@ -40,9 +40,11 @@ table below.
 | [`graphs-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b29.gv) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 368.1 vs 356.1 (same knife-edge previously accepted for share-b29/windows-b29; variants swapped when polylineMidpoint gained the faithful fmadd contraction - anchor now bit-identical to C, flip is a placeLabels tie on 1-ULP-drifted surrounding objects) | known-divergences.md#a9-engine-track-twopi-circo |
 | [`linux.i386-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b29.gv) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 368.1 vs 356.1 (identical mechanism to graphs-b29) | known-divergences.md#a9-engine-track-twopi-circo |
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 1998 | 40 | `edge:Z->I#0 _draw_ edge:Z->I#0/_draw_/op[1].unfilled_bezier[ptCount]: 8 vs 14` |
 
 ## Errors and timeouts (2)
 
@@ -52,5 +54,5 @@ _(none)_
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | timeout |  |
 
 **oracle errors:** 8 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (746) are omitted for brevity — the full roster is in
+_Passing ids (888) are omitted for brevity — the full roster is in
 `parity-twopi.json`._

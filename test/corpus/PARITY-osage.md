@@ -12,8 +12,8 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 762 (generated 2026-07-25T03:56:50.617Z)
-- **pass:** 755 (99.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 7
+- **Surveyed:** 905 (generated 2026-07-27T21:34:14.801Z)
+- **pass:** 897 (99.1%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 7
 - **oracle-error:** 0 · **port-error:** 0 · **timeout:** 0
 
 ## Accepted deltas (7) — documented, not chased
@@ -33,14 +33,16 @@ table below.
 | [`share-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/polypoly.gv) | 12 | A9 | Rigid pack-cell swap of the 9000-series distorted-quad components (whole-node ±(182,338)/±2909 translations; &lt;=24 draw-op diffs per id, no shape/routing error). Mechanism: bare transcendental cos(pi+theta) — V8 Math.cos is correctly rounded while Apple libm's cos carries a 1-ULP argument-dependent error, so \|cos(pi+theta)\| != \|cos(theta)\| only under libm; the 1-ULP size delta feeds pack GRID ceil, tips a perimeter tie, and qsort swaps two components' cells. No deterministic rewrite reproduces a non-correctly-rounded libm transcendental. osage only. Full RCA: .agent-notes/patchwork-tail-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
 | [`windows-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/polypoly.gv) | 12 | A9 | Rigid pack-cell swap of the 9000-series distorted-quad components (whole-node ±(182,338)/±2909 translations; &lt;=24 draw-op diffs per id, no shape/routing error). Mechanism: bare transcendental cos(pi+theta) — V8 Math.cos is correctly rounded while Apple libm's cos carries a 1-ULP argument-dependent error, so \|cos(pi+theta)\| != \|cos(theta)\| only under libm; the 1-ULP size delta feeds pack GRID ceil, tips a perimeter tie, and qsort swaps two components' cells. No deterministic rewrite reproduces a non-correctly-rounded libm transcendental. osage only. Full RCA: .agent-notes/patchwork-tail-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 5155 | 112 | `edge:9000->8000#0 _draw_ edge:9000->8000#0/_draw_/op[1].unfilled_bezier[0]: 2946.9 vs 2676.36` |
 
 ## Errors and timeouts (0)
 
 _(none)_
 
 **oracle errors:** 5 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (755) are omitted for brevity — the full roster is in
+_Passing ids (897) are omitted for brevity — the full roster is in
 `parity-osage.json`._
