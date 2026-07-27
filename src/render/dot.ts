@@ -227,7 +227,10 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
     } else if (edgeIsTapered(e)) {
       this.emitTaperedSpline(e, spl.list[0], edraw, job);
     } else if (numc > 0) {
-      this.emitParallelSpline(spl.list as (Bezier | undefined)[], colorAttr, numc, edraw, job);
+      const c = this.emitParallelSpline(
+        spl.list as (Bezier | undefined)[], colorAttr, numc, edraw, job);
+      tailArrowColor = c.tailColor;
+      headArrowColor = c.headColor;
     } else {
       this.emitPlainSpline(e, spl.list, edraw, job);
     }

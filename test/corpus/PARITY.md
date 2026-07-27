@@ -20,7 +20,7 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 | track | surveyed | conformant / pass | diverged | accepted | errors | pass % |
 |---|---:|---:|---:|---:|---:|---:|
 | [dot (SVG)](./PARITY-dot.md) | 939 | 905 | 6 | 16 | 12 | 96.4% |
-| [dot (xdot)](./PARITY-XDOT.md) | 761 | 761 | 0 | 0 | 0 | 100.0% |
+| [dot (xdot)](./PARITY-XDOT.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 761 | 759 | 0 | 2 | 0 | 99.7% |
 | [circo (xdot)](./PARITY-circo.md) | 762 | 752 | 0 | 4 | 6 | 98.7% |
 | [twopi (xdot)](./PARITY-twopi.md) | 762 | 746 | 0 | 14 | 2 | 97.9% |

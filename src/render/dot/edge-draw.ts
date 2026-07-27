@@ -28,6 +28,9 @@ import { buildOffsetLists, advanceTmpList } from '../../common/edge-offset.js';
 import { xdotFillColor, xdotNum, xdotPenColor, xdotPoint, xdotPoints, xdotStrOp, trimFixed3 } from './xdot-ops.js';
 import { DotWriterBase } from './agwrite.js';
 
+/** Pen colour when a colour-list entry is empty. @see lib/common/emit.c:2485 */
+const DEFAULT_COLOR = 'black';
+
 /**
  * One arrow primitive as an xdot op. Lifted out of emitArrows' loop unchanged —
  * the four cases and their `filled` variants are exactly arrow_gen's.
@@ -124,7 +127,7 @@ export abstract class EdgeDrawBase extends DotWriterBase {
     job: RenderJob,
   ): { firstColor: string; endColor: string } {
     const segs = parseSegs(colorAttr).segs;
-    const firstColor = segs[0]?.color ?? 'black';
+    const firstColor = segs[0]?.color ?? DEFAULT_COLOR;
     let endColor = firstColor;
     for (const bz of bzList) {
       if (bz === undefined || bz.size < 4) continue;
@@ -149,13 +152,13 @@ export abstract class EdgeDrawBase extends DotWriterBase {
     numc: number,
     edraw: string[],
     job: RenderJob,
-  ): void {
+  ): { headColor: string; tailColor: string } {
     const segData = bzList.map((bz) =>
       bz !== undefined && bz.size >= 4
         ? buildOffsetLists(bz.list, (2 + numc) / 2)
         : { offlist: [] as Point[], tmplist: [] as Point[] },
     );
-    const colors = parseSegs(colorAttr).segs.map((s) => s.color ?? 'black');
+    const colors = parseSegs(colorAttr).segs.map((s) => s.color ?? DEFAULT_COLOR);
     for (const color of colors) {
       const pen = xdotPenColor(resolveRenderColor(color));
       for (const sd of segData) {
@@ -164,6 +167,14 @@ export abstract class EdgeDrawBase extends DotWriterBase {
         edraw.push(this.styleOp(job), pen, xdotPoints('B', sd.tmplist));
       }
     }
+    // C sets headcolor=tailcolor at cnum==0 and tailcolor again at cnum==1, so
+    // the HEAD arrow takes the first colour and the TAIL arrow the second (or
+    // the first when only one was given). Note this is the INVERSE of the `;`
+    // split branch above (tail=first, head=end). @see lib/common/emit.c:2493-2497
+    return {
+      headColor: colors[0] ?? DEFAULT_COLOR,
+      tailColor: colors[1] ?? colors[0] ?? DEFAULT_COLOR,
+    };
   }
 
   /** Emit one arrow's primitive ops into `buf` (pen/fill from the edge color).
