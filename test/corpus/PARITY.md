@@ -28,7 +28,7 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 | [patchwork (xdot)](./PARITY-patchwork.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (imagemap)](./PARITY-MAP.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (plain)](./PARITY-dot-plain.md) | 905 | 897 | 0 | 8 | 0 | 99.1% |
-| [circo (plain)](./PARITY-circo-plain.md) | 905 | 887 | 2 | 11 | 5 | 98.0% |
+| [circo (plain)](./PARITY-circo-plain.md) | 905 | 887 | 0 | 13 | 5 | 98.0% |
 | [twopi (plain)](./PARITY-twopi-plain.md) | 905 | 881 | 0 | 23 | 1 | 97.3% |
 | [osage (plain)](./PARITY-osage-plain.md) | 905 | 889 | 0 | 16 | 0 | 98.2% |
 | [patchwork (plain)](./PARITY-patchwork-plain.md) | 905 | 897 | 0 | 8 | 0 | 99.1% |

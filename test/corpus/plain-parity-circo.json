@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T22:35:26.978Z",
+  "generatedAt": "2026-07-28T17:36:56.851Z",
   "generatedWith": "test/corpus/plain-walk.ts",
   "engine": "circo",
   "oracleVersion": "dot 15.1.0",
@@ -7,8 +7,8 @@
   "total": 905,
   "counts": {
     "pass": 887,
-    "diverged": 2,
-    "accepted": 11,
+    "diverged": 0,
+    "accepted": 13,
     "oracleError": 5,
     "portError": 0,
     "timeout": 0
@@ -12781,36 +12781,6 @@
       }
     },
     {
-      "id": "2095_1",
-      "path": "2095_1.dot",
-      "size": 105083,
-      "verdict": "diverged",
-      "formats": {
-        "plain": {
-          "verdict": "diverged",
-          "diffCount": 605,
-          "firstDiffs": [
-            "[node] 1083/x: port=1066.1 native=1065.9",
-            "[node] 1083/y: port=297.29 native=297.53",
-            "[node] 1084/x: port=1067.8 native=1067.6",
-            "[node] 1084/y: port=297.29 native=297.79",
-            "[node] 1085/x: port=1062.6 native=1062.4"
-          ]
-        },
-        "plain-ext": {
-          "verdict": "diverged",
-          "diffCount": 605,
-          "firstDiffs": [
-            "[node] 1083/x: port=1066.1 native=1065.9",
-            "[node] 1083/y: port=297.29 native=297.53",
-            "[node] 1084/x: port=1067.8 native=1067.6",
-            "[node] 1084/y: port=297.29 native=297.79",
-            "[node] 1085/x: port=1062.6 native=1062.4"
-          ]
-        }
-      }
-    },
-    {
       "id": "1652",
       "path": "1652.dot",
       "size": 240391,
@@ -12859,13 +12829,43 @@
       }
     },
     {
+      "id": "2095_1",
+      "path": "2095_1.dot",
+      "size": 105083,
+      "verdict": "accepted",
+      "formats": {
+        "plain": {
+          "verdict": "accepted",
+          "diffCount": 605,
+          "firstDiffs": [
+            "[node] 1083/x: port=1066.1 native=1065.9",
+            "[node] 1083/y: port=297.29 native=297.53",
+            "[node] 1084/x: port=1067.8 native=1067.6",
+            "[node] 1084/y: port=297.29 native=297.79",
+            "[node] 1085/x: port=1062.6 native=1062.4"
+          ]
+        },
+        "plain-ext": {
+          "verdict": "accepted",
+          "diffCount": 605,
+          "firstDiffs": [
+            "[node] 1083/x: port=1066.1 native=1065.9",
+            "[node] 1083/y: port=297.29 native=297.53",
+            "[node] 1084/x: port=1067.8 native=1067.6",
+            "[node] 1084/y: port=297.29 native=297.79",
+            "[node] 1085/x: port=1062.6 native=1062.4"
+          ]
+        }
+      }
+    },
+    {
       "id": "2108",
       "path": "2108.dot",
       "size": 3136769,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "formats": {
         "plain": {
-          "verdict": "diverged",
+          "verdict": "accepted",
           "diffCount": 118,
           "firstDiffs": [
             "[node] BI_12158-at-SITE_18-29567/y: port=108.28 native=108.27",
@@ -12876,7 +12876,7 @@
           ]
         },
         "plain-ext": {
-          "verdict": "diverged",
+          "verdict": "accepted",
           "diffCount": 118,
           "firstDiffs": [
             "[node] BI_12158-at-SITE_18-29567/y: port=108.28 native=108.27",

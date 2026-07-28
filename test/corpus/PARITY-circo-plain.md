@@ -12,20 +12,19 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 905
-- **pass:** 887 (98.0%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 11
+- **pass:** 887 (98.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 13
 - **errors (oracle/port/timeout, excluded from scoring):** 5
 
-## Diverged (2)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) | 105083 | 605 | `[node] 1083/x: port=1066.1 native=1065.9; [node] 1083/y: port=297.29 native=297.53; [node] 1084/x: port=1067.8 native=1067.6; [node] 1084/y: port=297.29 native=297.79; [node] 1085/x: port=1062.6 native=1062.4` |
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | 3136769 | 118 | `[node] BI_12158-at-SITE_18-29567/y: port=108.28 native=108.27; [node] BI_12159-at-SITE_18-29570/y: port=108.28 native=108.27; [node] ITEM_10959-at-SITE_18/y: port=108.28 native=108.27; [node] ITEM_10965-at-SITE_18/y: port=108.28 native=108.27; [node] ITEM_11599-at-SITE_68/y: port=108.78 native=108.77` |
+_(none)_
 
-## Accepted (11) — documented, not chased
+## Accepted (13) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
+| [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) | 605 | `[node] 1083/x: port=1066.1 native=1065.9; [node] 1083/y: port=297.29 native=297.53; [node] 1084/x: port=1067.8 native=1067.6; [node] 1084/y: port=297.29 native=297.79; [node] 1085/x: port=1062.6 native=1062.4` | layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (A1 getRotation closest-node exact-tie knife edge, injection A/B 2197 -&gt; 0 diffs, journal 2026-07-24 T3; engine acceptance registry); plain re-emits the same rigidly-rotated blocks (605 diffs, node deltas &lt;= ~0.5in). First compared 2026-07-27 when the oracle timeout raise took this id out of oracleError. Journal 2026-07-28. |
+| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | 118 | `[node] BI_12158-at-SITE_18-29567/y: port=108.28 native=108.27; [node] BI_12159-at-SITE_18-29570/y: port=108.28 native=108.27; [node] ITEM_10959-at-SITE_18/y: port=108.28 native=108.27; [node] ITEM_10965-at-SITE_18/y: port=108.28 native=108.27; [node] ITEM_11599-at-SITE_68/y: port=108.78 native=108.77` | A1 micro-drift amplified by plain's print quantum (RCA 2026-07-28): raw ND_coord dumps over all 27547 nodes show max \|delta\| 5.8e-11pt (~6 ULP accumulation; e.g. y 7795.799999999998 vs 7795.800000000007) - circo json is CONFORMANT on the identical layout. The 118 plain diffs are the subset of coordinates landing on a %.5g 5th-significant-digit rounding boundary: y/72 = 108.27499999999998 vs 108.27500000000009 straddles the 108.275 tie, printing 108.27 vs 108.28. At magnitudes &gt;= 100in the %.5g quantum (0.01) equals PLAIN_TOLERANCE (0.01), so the plain surface structurally cannot distinguish sub-ULP drift from real 0.01in divergence on huge graphs; both printers are correct (tie-to-even verified). Not comparable on circo xdot (engine-walk 90s port cap -&gt; timeout). Journal 2026-07-28. |
 | [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 14 | `[edge] 1->2#0/point[2].x: port=3.2757 native=3.2536; [edge] 1->2#0/point[2].y: port=2.9389 native=3.2113; [edge] 1->2#0/point[3].y: port=2.87 native=3.2973; [edge] 1->2#0/point[4].x: port=3.0064 native=2.8453; [edge] 1->2#0/point[4].y: port=2.6791 native=3.9238` | layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`2475_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_2.dot) | 320 | `[node] 590_174412/x: port=2226.9 native=2226; [node] 590_174412/y: port=1842.8 native=1842.5; [node] 590_174423/x: port=2223.4 native=2222.9; [node] 590_174423/y: port=1843.4 native=1844.3; [node] 590_174425/x: port=2235.1 native=2235.7` | layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-b34`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b34.gv) | 1 | `[node] 7/label: port=montañas native=(�` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |

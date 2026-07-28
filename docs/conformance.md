@@ -46,6 +46,15 @@ exactly, so ±0.01 only absorbs decimal-formatting noise. The iterative
 results are not reproducible across platforms, so they carry a looser bound and
 are additionally checked for **structural** equality (same element tree).
 
+One caveat for the **plain/plain-ext** surface: plain prints coordinates in
+inches at 5 significant digits (`%.5g`), so at magnitudes ≥ 100 in the print
+quantum (0.01) equals the ±0.01 tolerance. On very large graphs a sub-ULP
+layout difference that happens to straddle a 5th-digit rounding boundary
+prints as a full 0.01 step and is flagged, even though the underlying
+geometry is identical to ~1e-11 pt (see the circo `2108` acceptance,
+journal 2026-07-28). The xdot/json surfaces, which print in points, are the
+authoritative geometry comparison in that regime.
+
 The **corpus parity survey** evaluates every graph in the `deterministic` mode
 (±0.01) regardless of engine — see
 [`test/corpus/survey.ts`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/survey.ts)

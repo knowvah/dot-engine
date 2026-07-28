@@ -437,6 +437,16 @@
       "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
     },
     {
+      "id": "2095_1",
+      "engine": "circo",
+      "reason": "layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (A1 getRotation closest-node exact-tie knife edge, injection A/B 2197 -> 0 diffs, journal 2026-07-24 T3; engine acceptance registry); plain re-emits the same rigidly-rotated blocks (605 diffs, node deltas <= ~0.5in). First compared 2026-07-27 when the oracle timeout raise took this id out of oracleError. Journal 2026-07-28."
+    },
+    {
+      "id": "2108",
+      "engine": "circo",
+      "reason": "A1 micro-drift amplified by plain's print quantum (RCA 2026-07-28): raw ND_coord dumps over all 27547 nodes show max |delta| 5.8e-11pt (~6 ULP accumulation; e.g. y 7795.799999999998 vs 7795.800000000007) - circo json is CONFORMANT on the identical layout. The 118 plain diffs are the subset of coordinates landing on a %.5g 5th-significant-digit rounding boundary: y/72 = 108.27499999999998 vs 108.27500000000009 straddles the 108.275 tie, printing 108.27 vs 108.28. At magnitudes >= 100in the %.5g quantum (0.01) equals PLAIN_TOLERANCE (0.01), so the plain surface structurally cannot distinguish sub-ULP drift from real 0.01in divergence on huge graphs; both printers are correct (tie-to-even verified). Not comparable on circo xdot (engine-walk 90s port cap -> timeout). Journal 2026-07-28."
+    },
+    {
       "id": "241_0",
       "engine": "circo",
       "reason": "layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."

@@ -105,4 +105,10 @@ universe grew 762 → 905.
   `oracleError -> diverged` is a coverage gain, not a defect introduced.
   The headline pass % also drops for the same reason, because errors are
   excluded from scoring while divergences are not.
+- **RESOLVED 2026-07-28**: both accepted (journal 2026-07-28). `2095_1` =
+  the already-accepted circo A1 getRotation tie, re-emitted in plain
+  (inherited entry). `2108` = NEW class: layouts agree to 5.8e-11pt over all
+  27547 nodes (circo json conformant), but plain's %.5g quantum at >= 100in
+  equals the 0.01 tolerance, so 118 numbers straddling a 5th-digit rounding
+  boundary print one 0.01 step apart. Documented in docs/conformance.md.
 - **Confidence**: High (baseline verdicts read directly from git HEAD).
