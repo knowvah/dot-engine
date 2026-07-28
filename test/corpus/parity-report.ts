@@ -24,10 +24,14 @@ import type { XdotVerdict, XdotWalkResult } from './xdot-walk.js';
 import type { JsonVerdict, JsonWalkResult } from './json-walk.js';
 import type { EngineParityReport, EngineWalkRow } from './engine-walk.js';
 import type { CorpusEntry } from './enumerate.js';
+// format-parity-matrix (BEGIN): plain/plain-ext (all 8 engines) + per-engine
+// json/imagemap (7 non-dot engines) track types — see FORMAT block below.
+import type { PlainVerdict, PlainWalkResult, PlainParityReport, PlainFormatResult } from './plain-walk.js';
+// format-parity-matrix (END)
 import { loadAccepted, matchAccepted } from './accepted.js';
 import { testIdLink, scrubLocalPaths } from './corpus-links.js';
 // map-conformance (BEGIN): dot (imagemap) track types — see MAP block below.
-import type { MapVerdict, MapWalkResult } from './map-walk.js';
+import type { MapVerdict, MapWalkResult, MapFormatResult } from './map-walk.js';
 // map-conformance (END)
 // T3's oracle-error classifier hook (batch-1/overview.md coordination note —
 // T3 exposed renderOracleErrorsSidecar as a standalone export; T2 wires the
@@ -51,6 +55,19 @@ const OUT = new URL('./PARITY.md', import.meta.url);
 // map-conformance (BEGIN): dot (imagemap) track artifact path — see MAP block below.
 const MAP_PARITY = new URL('./map-parity.json', import.meta.url);
 // map-conformance (END)
+// format-parity-matrix (BEGIN): new tracks (mission: format-parity-matrix,
+// T9). plain/plain-ext is surveyed for all 8 engines (dot included, one
+// walker per AD-2); json/imagemap are surveyed per-engine only for the 7
+// non-dot engines (dot's own json/imagemap tracks are JSON_PARITY/MAP_PARITY
+// above, AD-3). Accepted-divergence registries are shared across engines,
+// scoped per-entry by an optional `engine` field (same convention
+// accepted-divergences-engines.json and json-walk.ts/map-walk.ts use).
+const PLAIN_ENGINES = ['dot', ...ENGINES, ...ITERATIVE_ENGINES] as const;
+const NON_DOT_ENGINES = [...ENGINES, ...ITERATIVE_ENGINES] as const;
+const ACCEPTED_PLAIN = new URL('./accepted-divergences-plain.json', import.meta.url);
+const ACCEPTED_JSON_ENGINES = new URL('./accepted-divergences-json.json', import.meta.url);
+const ACCEPTED_MAP_ENGINES = new URL('./accepted-divergences-map.json', import.meta.url);
+// format-parity-matrix (END)
 
 interface SvgParityReport {
   total: number;
@@ -296,6 +313,63 @@ function dotMapRow(report: MapParityReport): TrackRow {
 }
 // map-conformance (END)
 
+// format-parity-matrix (BEGIN): plain/plain-ext + per-engine json/imagemap
+// track rows (mission: format-parity-matrix, T9). Unlike the xdot engineRow
+// above, these three walkers (plain-walk.ts/json-walk.ts/map-walk.ts) already
+// resolve `accepted` into the verdict themselves (per-engine accepted-
+// divergence registry join happens at walk time, not report time) — no
+// separate registry join needed here, only a straight counts read.
+
+/** `dot` + the plain-track engine set: plain/plain-ext is surveyed for every
+ * engine (AD-2), unlike json/imagemap below which stay dot-only + 7 others. */
+function plainRow(engine: string, report: PlainParityReport): TrackRow {
+  const c: Record<PlainVerdict, number> = Object.assign(
+    { pass: 0, diverged: 0, accepted: 0, oracleError: 0, portError: 0, timeout: 0 },
+    report.counts,
+  );
+  return {
+    track: `[${engine} (plain)](./PARITY-${engine}-plain.md)`,
+    surveyed: report.total,
+    pass: c.pass,
+    diverged: c.diverged,
+    accepted: c.accepted,
+    errors: c.oracleError + c.portError + c.timeout,
+  };
+}
+
+/** Per-engine json track row (AD-3 — dot's own json track is dotJsonRow above). */
+function jsonEngineRow(engine: string, report: JsonParityReport): TrackRow {
+  const c: Record<JsonVerdict, number> = Object.assign(
+    { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0 },
+    report.counts,
+  );
+  return {
+    track: `[${engine} (json)](./PARITY-${engine}-json.md)`,
+    surveyed: report.total,
+    pass: c.conformant,
+    diverged: c.diverged,
+    accepted: c.accepted,
+    errors: c['port-error'] + c['oracle-error'] + c.timeout,
+  };
+}
+
+/** Per-engine imagemap track row (AD-3 — dot's own map track is dotMapRow above). */
+function mapEngineRow(engine: string, report: MapParityReport): TrackRow {
+  const c: Record<MapVerdict, number> = Object.assign(
+    { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0 },
+    report.counts,
+  );
+  return {
+    track: `[${engine} (imagemap)](./PARITY-${engine}-map.md)`,
+    surveyed: report.total,
+    pass: c.conformant,
+    diverged: c.diverged,
+    accepted: c.accepted,
+    errors: c['port-error'] + c['oracle-error'] + c.timeout,
+  };
+}
+// format-parity-matrix (END)
+
 function engineRow(
   engine: string,
   report: EngineParityReport,
@@ -508,6 +582,217 @@ function engineMarkdown(
   ].join('\n');
 }
 
+// format-parity-matrix (BEGIN): plain/plain-ext + per-engine json/imagemap
+// detail pages (mission: format-parity-matrix, T9). Each of the three
+// walkers already bakes 'accepted' into its own per-id verdict (unlike the
+// xdot engineMarkdown above, whose accepted set is computed by a report-time
+// registry join), so the detail-page adapters below only need to normalize
+// each walker's own verdict enum + pick a single diff summary out of the
+// dual-format (plain/plain-ext, cmapx/imap) shapes — no join required.
+
+/** One shared per-id row shape the three new tracks' detail pages render
+ * from, after each track's own result shape (dual-format for plain/map,
+ * single-value for json) has been normalized to it. */
+interface FormatDetailRow {
+  id: string;
+  path: string;
+  size: number;
+  status: 'pass' | 'accepted' | 'diverged' | 'error';
+  nDiffs: number;
+  firstDiff: string;
+  errMsg: string;
+}
+
+const PLAIN_VERDICT_RANK: Record<PlainVerdict, number> = {
+  pass: 0, accepted: 1, diverged: 2, timeout: 3, portError: 4, oracleError: 5,
+};
+
+/** The worse of a plain-track row's `plain` / `plain-ext` sub-results (AD-2's
+ * worst-of aggregation, mirrored here for the detail-page diff summary). */
+function plainWorstFormat(r: PlainWalkResult): PlainFormatResult {
+  return PLAIN_VERDICT_RANK[r.formats.plain.verdict] >= PLAIN_VERDICT_RANK[r.formats['plain-ext'].verdict]
+    ? r.formats.plain
+    : r.formats['plain-ext'];
+}
+
+function plainDetailRow(r: PlainWalkResult): FormatDetailRow {
+  const worst = plainWorstFormat(r);
+  const status: FormatDetailRow['status'] =
+    r.verdict === 'pass' ? 'pass' : r.verdict === 'accepted' ? 'accepted' : r.verdict === 'diverged' ? 'diverged' : 'error';
+  return {
+    id: r.id,
+    path: r.path,
+    size: r.size,
+    status,
+    nDiffs: worst.diffCount ?? 0,
+    firstDiff: (worst.firstDiffs ?? []).join('; '),
+    errMsg: worst.errMsg ?? '',
+  };
+}
+
+const MAP_VERDICT_RANK: Record<MapVerdict, number> = {
+  conformant: 0, accepted: 1, diverged: 2, timeout: 3, 'port-error': 4, 'oracle-error': 5,
+};
+
+/** The worse of a map-track row's `cmapx` / `imap` sub-results (map-walk.ts's
+ * own worst-of aggregation, mirrored here for the diff summary). */
+function mapWorstFormat(r: MapWalkResult): MapFormatResult {
+  return MAP_VERDICT_RANK[r.cmapx.verdict] >= MAP_VERDICT_RANK[r.imap.verdict] ? r.cmapx : r.imap;
+}
+
+function mapDetailRow(r: MapWalkResult): FormatDetailRow {
+  const worst = mapWorstFormat(r);
+  const status: FormatDetailRow['status'] =
+    r.verdict === 'conformant' ? 'pass' : r.verdict === 'accepted' ? 'accepted' : r.verdict === 'diverged' ? 'diverged' : 'error';
+  return {
+    id: r.id,
+    path: r.path,
+    size: r.size,
+    status,
+    nDiffs: worst.diffCount ?? 0,
+    firstDiff: worst.firstDiff ?? '',
+    errMsg: worst.errMsg ?? '',
+  };
+}
+
+function jsonDetailRow(r: JsonWalkResult): FormatDetailRow {
+  const status: FormatDetailRow['status'] =
+    r.verdict === 'conformant' ? 'pass' : r.verdict === 'accepted' ? 'accepted' : r.verdict === 'diverged' ? 'diverged' : 'error';
+  return {
+    id: r.id,
+    path: r.path,
+    size: r.size,
+    status,
+    nDiffs: r.diffCount ?? 0,
+    firstDiff: r.firstDiff ?? '',
+    errMsg: r.errMsg ?? '',
+  };
+}
+
+/** One accepted-divergence registry entry, shared shape across the
+ * plain/json/map registries (field names vary slightly — `reason` for plain,
+ * `rationale` for json/map — normalized by `acceptedReasonsForEngine`). An
+ * entry without `engine` applies to every engine (same convention
+ * json-walk.ts's own loadAccepted uses). */
+interface FormatAcceptedEntry {
+  id: string;
+  engine?: string;
+  reason?: string;
+  rationale?: string;
+}
+
+/** Read `<url>`'s `{ divergences: [...] }` roster, tolerating a missing file
+ * (registries may not exist for a track yet) the same way loadAttribution
+ * does for the class-acceptance registry above. */
+function loadFormatAccepted(url: URL): FormatAcceptedEntry[] {
+  if (!existsSync(url)) return [];
+  const raw = JSON.parse(readFileSync(fileURLToPath(url), 'utf8')) as { divergences?: FormatAcceptedEntry[] };
+  return raw.divergences ?? [];
+}
+
+/** id -> reason text, scoped to `engine` (entries without `engine` apply to
+ * every engine). */
+function acceptedReasonsForEngine(entries: FormatAcceptedEntry[], engine: string): Map<string, string> {
+  const m = new Map<string, string>();
+  for (const e of entries) {
+    if (e.engine !== undefined && e.engine !== engine) continue;
+    m.set(e.id, e.reason ?? e.rationale ?? '');
+  }
+  return m;
+}
+
+/** Per-track detail page (PARITY-<engine>-plain.md / -json.md / -map.md):
+ * summary line, diverged table (worst-first), accepted table (with reason,
+ * when the registry carries one), and an errors/timeouts table. Mirrors
+ * engineMarkdown's section shape, simplified to these tracks' own
+ * already-resolved verdicts (no class-acceptance section — none of these
+ * three registries define a class entry). */
+function formatDetailMarkdown(
+  surface: 'plain' | 'json' | 'map',
+  engine: string,
+  sourceFile: string,
+  total: number,
+  row: TrackRow,
+  rows: FormatDetailRow[],
+  reasons: Map<string, string>,
+): string {
+  const surfaceLabel = surface === 'plain' ? 'plain/plain-ext' : surface === 'json' ? 'json' : 'imagemap (cmapx/imap)';
+  const walker = surface === 'plain' ? 'plain-walk.ts' : surface === 'json' ? 'json-walk.ts' : 'map-walk.ts';
+
+  const diverged = rows
+    .filter((r) => r.status === 'diverged')
+    .sort((a, b) => b.nDiffs - a.nDiffs || a.id.localeCompare(b.id));
+  const acceptedRows = rows
+    .filter((r) => r.status === 'accepted')
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const faults = rows
+    .filter((r) => r.status === 'error')
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  const divergedTable = diverged.length === 0
+    ? '_(none)_\n'
+    : [
+        '| id | size | #diffs | firstDiff |',
+        '|---|---:|---:|---|',
+        ...diverged.map((r) => `| ${testIdLink(r.id, r.path)} | ${r.size} | ${r.nDiffs} | \`${cell(r.firstDiff)}\` |`),
+        '',
+      ].join('\n');
+
+  const acceptedTable = acceptedRows.length === 0
+    ? '_(none)_\n'
+    : [
+        '| id | #diffs | firstDiff | reason |',
+        '|---|---:|---|---|',
+        ...acceptedRows.map(
+          (r) => `| ${testIdLink(r.id, r.path)} | ${r.nDiffs} | \`${cell(r.firstDiff)}\` | ${escText(reasons.get(r.id))} |`,
+        ),
+        '',
+      ].join('\n');
+
+  const faultTable = faults.length === 0
+    ? '_(none)_\n'
+    : [
+        '| id | message |',
+        '|---|---|',
+        ...faults.map((r) => `| ${testIdLink(r.id, r.path)} | ${escText(scrubLocalPaths(r.errMsg))} |`),
+        '',
+      ].join('\n');
+
+  return [
+    '<!-- SPDX-License-Identifier: EPL-2.0 -->',
+    `<!-- GENERATED by test/corpus/parity-report.ts from ${sourceFile} — do not edit by hand. -->`,
+    '',
+    `# ${engine} ${surfaceLabel} parity dashboard`,
+    '',
+    `Differential survey of @knowvah/dot-engine \`${engine}\` ${surfaceLabel} output vs the`,
+    `native \`dot -K ${engine}\` oracle (\`test/corpus/${walker}\`), semantic`,
+    'comparison per [docs/conformance.md](../../docs/conformance.md) (±0.01',
+    'deterministic tolerance, ±0.5 for the iterative engines). Regenerate:',
+    `\`npx tsx test/corpus/${walker} ${engine} && npx tsx test/corpus/parity-report.ts\`.`,
+    '',
+    '## Summary',
+    '',
+    `- **Surveyed:** ${total}`,
+    `- **pass:** ${row.pass} (${pct(row.pass, total)}) · **diverged (tracked):** ${diverged.length} · ` +
+      `**accepted (documented, won't-fix):** ${acceptedRows.length}`,
+    `- **errors (oracle/port/timeout, excluded from scoring):** ${row.errors}`,
+    '',
+    `## Diverged (${diverged.length})`,
+    '',
+    divergedTable,
+    `## Accepted (${acceptedRows.length}) — documented, not chased`,
+    '',
+    acceptedTable,
+    `## Errors and timeouts (${faults.length})`,
+    '',
+    faultTable,
+    `_Passing ids (${row.pass}) are omitted for brevity — the full roster is in`,
+    `\`${sourceFile}\`._`,
+    '',
+  ].join('\n');
+}
+// format-parity-matrix (END)
+
 /** Normalized per-id status in one output format. */
 type FmtStatus = 'conformant' | 'accepted' | 'diverged' | 'error';
 const FMT_RANK: Record<FmtStatus, number> = {
@@ -592,6 +877,16 @@ function dotFormatsSection(
   ].join('\n');
 }
 
+/** One "not yet surveyed" note line for a track group, matching the wording
+ * convention of the xdot-track missingNote below — `''` (rendered as
+ * nothing) when every engine in the group has a summary file. */
+function missingTrackNote(label: string, missing: string[], cmd: string): string {
+  return missing.length
+    ? `_${label} not yet surveyed: ${missing.map((e) => `\`${e}\``).join(', ')} ` +
+      `(run \`${cmd}\` to add a track)._`
+    : '';
+}
+
 /** Build the cross-engine PARITY.md summary page. */
 function buildSummary(
   rows: TrackRow[],
@@ -605,6 +900,13 @@ function buildSummary(
   // Pre-rendered "Dot output formats (SVG · xdot · json)" cross-format section
   // (dotFormatsSection); '' when the json survey artifact is absent.
   dotFormats = '',
+  // format-parity-matrix (BEGIN): additional per-track dashboard links +
+  // "not yet surveyed" notes for the plain/json/imagemap tracks (T9) — kept
+  // as pre-rendered strings (rather than more positional params per track)
+  // so this signature doesn't keep growing per new track added later.
+  extraLinks: string[] = [],
+  extraMissingNotes: string[] = [],
+  // format-parity-matrix (END)
 ): string {
   const links = [
     '- [PARITY-dot.md](./PARITY-dot.md) — dot (SVG) dashboard (`dashboard.ts`)',
@@ -616,6 +918,7 @@ function buildSummary(
     ...presentEngines.map(
       (e) => `- [PARITY-${e}.md](./PARITY-${e}.md) — ${e} (xdot) dashboard (\`parity-report.ts\`)`,
     ),
+    ...extraLinks,
   ];
   const missingNote = missingEngines.length
     ? `_Not yet surveyed: ${missingEngines.map((e) => `\`${e}\``).join(', ')} ` +
@@ -660,6 +963,7 @@ function buildSummary(
         ]
       : []),
     missingNote,
+    ...extraMissingNotes,
     '',
     ...(dotFormats ? [dotFormats, ''] : []),
     goldensSection(),
@@ -721,9 +1025,114 @@ function main(): void {
   }
   // map-conformance (END)
 
+  // format-parity-matrix (BEGIN): plain/plain-ext (8 engines, dot included,
+  // AD-2) + per-engine json/imagemap (7 non-dot engines, AD-3) tracks
+  // (mission: format-parity-matrix, T9). Same deterministic/iterative split
+  // and "not yet surveyed" tolerance as the xdot per-engine loop above; each
+  // present track also gets its own PARITY-<engine>-<surface>.md detail page.
+  const acceptedPlain = loadFormatAccepted(ACCEPTED_PLAIN);
+  const acceptedJsonEngines = loadFormatAccepted(ACCEPTED_JSON_ENGINES);
+  const acceptedMapEngines = loadFormatAccepted(ACCEPTED_MAP_ENGINES);
+
+  const missingPlain: string[] = [];
+  const presentPlain: string[] = [];
+  for (const engine of PLAIN_ENGINES) {
+    const url = new URL(`./plain-parity-${engine}.json`, import.meta.url);
+    if (!existsSync(url)) {
+      missingPlain.push(engine);
+      continue;
+    }
+    const report = JSON.parse(readFileSync(url, 'utf8')) as PlainParityReport;
+    const row = plainRow(engine, report);
+    const isIterative = (ITERATIVE_ENGINES as readonly string[]).includes(engine);
+    (isIterative ? iterativeRows : rows).push(row);
+    presentPlain.push(engine);
+    const reasons = acceptedReasonsForEngine(acceptedPlain, engine);
+    const sourceFile = `plain-parity-${engine}.json`;
+    const out = fileURLToPath(new URL(`./PARITY-${engine}-plain.md`, import.meta.url));
+    writeFileSync(
+      out,
+      formatDetailMarkdown('plain', engine, sourceFile, report.total, row, report.results.map(plainDetailRow), reasons),
+    );
+    process.stderr.write(`wrote PARITY-${engine}-plain.md (${report.total} surveyed)\n`);
+  }
+
+  const missingJsonEngines: string[] = [];
+  const presentJsonEngines: string[] = [];
+  for (const engine of NON_DOT_ENGINES) {
+    const url = new URL(`./json-parity-${engine}.json`, import.meta.url);
+    if (!existsSync(url)) {
+      missingJsonEngines.push(engine);
+      continue;
+    }
+    const report = JSON.parse(readFileSync(url, 'utf8')) as JsonParityReport;
+    const row = jsonEngineRow(engine, report);
+    const isIterative = (ITERATIVE_ENGINES as readonly string[]).includes(engine);
+    (isIterative ? iterativeRows : rows).push(row);
+    presentJsonEngines.push(engine);
+    const reasons = acceptedReasonsForEngine(acceptedJsonEngines, engine);
+    const sourceFile = `json-parity-${engine}.json`;
+    const out = fileURLToPath(new URL(`./PARITY-${engine}-json.md`, import.meta.url));
+    writeFileSync(
+      out,
+      formatDetailMarkdown('json', engine, sourceFile, report.total, row, report.results.map(jsonDetailRow), reasons),
+    );
+    process.stderr.write(`wrote PARITY-${engine}-json.md (${report.total} surveyed)\n`);
+  }
+
+  const missingMapEngines: string[] = [];
+  const presentMapEngines: string[] = [];
+  for (const engine of NON_DOT_ENGINES) {
+    const url = new URL(`./map-parity-${engine}.json`, import.meta.url);
+    if (!existsSync(url)) {
+      missingMapEngines.push(engine);
+      continue;
+    }
+    const report = JSON.parse(readFileSync(url, 'utf8')) as MapParityReport;
+    const row = mapEngineRow(engine, report);
+    const isIterative = (ITERATIVE_ENGINES as readonly string[]).includes(engine);
+    (isIterative ? iterativeRows : rows).push(row);
+    presentMapEngines.push(engine);
+    const reasons = acceptedReasonsForEngine(acceptedMapEngines, engine);
+    const sourceFile = `map-parity-${engine}.json`;
+    const out = fileURLToPath(new URL(`./PARITY-${engine}-map.md`, import.meta.url));
+    writeFileSync(
+      out,
+      formatDetailMarkdown('map', engine, sourceFile, report.total, row, report.results.map(mapDetailRow), reasons),
+    );
+    process.stderr.write(`wrote PARITY-${engine}-map.md (${report.total} surveyed)\n`);
+  }
+
+  const extraLinks = [
+    ...presentPlain.map(
+      (e) => `- [PARITY-${e}-plain.md](./PARITY-${e}-plain.md) — ${e} (plain) dashboard (\`parity-report.ts\`)`,
+    ),
+    ...presentJsonEngines.map(
+      (e) => `- [PARITY-${e}-json.md](./PARITY-${e}-json.md) — ${e} (json) dashboard (\`parity-report.ts\`)`,
+    ),
+    ...presentMapEngines.map(
+      (e) => `- [PARITY-${e}-map.md](./PARITY-${e}-map.md) — ${e} (imagemap) dashboard (\`parity-report.ts\`)`,
+    ),
+  ];
+  const extraMissingNotes = [
+    missingTrackNote('plain', missingPlain, 'test/corpus/plain-walk.ts <engine>'),
+    missingTrackNote('json', missingJsonEngines, 'test/corpus/json-walk.ts <engine>'),
+    missingTrackNote('imagemap', missingMapEngines, 'test/corpus/map-walk.ts <engine>'),
+  ].filter((n) => n.length > 0);
+  // format-parity-matrix (END)
+
   writeFileSync(
     OUT,
-    buildSummary(rows, missingEngines, presentEngines, iterativeRows, mapPresent, dotFormats),
+    buildSummary(
+      rows,
+      missingEngines,
+      presentEngines,
+      iterativeRows,
+      mapPresent,
+      dotFormats,
+      extraLinks,
+      extraMissingNotes,
+    ),
   );
   process.stderr.write(
     `wrote PARITY.md (${rows.length} tracks; not yet surveyed: ${missingEngines.join(', ') || 'none'})\n`,

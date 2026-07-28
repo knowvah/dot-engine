@@ -295,13 +295,18 @@ describe('AC8: renderGraphLabel — label suppressed when absent or set=false', 
     expect(renderer.spans).toHaveLength(0);
   });
 
-  it('does not call textspan when graph label has set=false', () => {
+  it('draws an UNPLACED (set=false) graph label at its default pos', () => {
+    // C draws the root-graph label on existence alone (emit.c:3656 gates only
+    // `if (GD_label(g))`, and emit_label has no ->set check) — an aborted
+    // layout (fdp non-comparable clusters) still renders the label. Only the
+    // xlabel/edge-label call sites gate on ->set.
     const g = new GraphClass('G', 'directed');
     g.info.label = makePlacedLabel('gl', false);
     const renderer = new TextCapture();
     const job = new RenderJob('svg', stubMeasurer);
     renderGraphLabel(g, renderer, job);
-    expect(renderer.spans).toHaveLength(0);
+    expect(renderer.spans).toHaveLength(1);
+    expect(renderer.spans[0]!.str).toBe('gl');
   });
 });
 

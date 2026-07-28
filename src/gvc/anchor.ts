@@ -392,8 +392,16 @@ export function computeNodeUrlMap(n: Node, obj: ObjState, ctx: MapCtx): void {
  * @see lib/common/emit.c:emit_page (3623-3642)
  */
 export function computeGraphUrlMap(obj: ObjState, ctx: MapCtx): void {
-  const ll = { x: ctx.bb.ll.x - ctx.pad.x, y: ctx.bb.ll.y - ctx.pad.y };
-  const ur = { x: ctx.bb.ur.x + ctx.pad.x, y: ctx.bb.ur.y + ctx.pad.y };
+  // C uses job->clip — the 0-BASED page window ([-pad, (UR-LL)+pad] in graph
+  // coords), not bb±pad. Identical when bb.LL is the origin, but engines that
+  // keep a negative bb.LL (fdp graph labels: bb "0,-24.8,...") shift the root
+  // rect: native url.gv fdp emits 0,-33,539,374 where bb±pad would give
+  // 0,0,539,407. @see lib/common/emit.c:3652 emit_map_rect(job, job->clip)
+  const ll = { x: -ctx.pad.x, y: -ctx.pad.y };
+  const ur = {
+    x: ctx.bb.ur.x - ctx.bb.ll.x + ctx.pad.x,
+    y: ctx.bb.ur.y - ctx.bb.ll.y + ctx.pad.y,
+  };
   obj.urlMapShape = MapShape.Rectangle;
   obj.urlMapPts = [mapTransform(ll, ctx), mapTransform(ur, ctx)];
 }

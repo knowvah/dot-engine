@@ -1,35 +1,61 @@
 // SPDX-License-Identifier: EPL-2.0
 //
-// json conformance walker (mission: json-conformance).
+// json conformance walker (mission: json-conformance; format-parity-matrix
+// AD-3 parameterized this by engine).
 //
 // Walks the SVG-conformant corpus items sorted by input file size (small →
 // large, mirrors xdot-walk.ts AD-2), rendering each to json through the
-// native oracle (`dot -Tjson`, GVBINDIR=/tmp/ghl — AD-4) and through the port
-// (render-one-json.ts), and diffs the two with the semantic comparator
-// (compare-json.ts). Two modes (mirrors xdot-walk.ts AD-6):
+// native oracle (`dot -K<engine> -Tjson`, GVBINDIR=/tmp/ghl — AD-4) and
+// through the port (render-one-json.ts), and diffs the two with the semantic
+// comparator (compare-json.ts). Two modes (mirrors xdot-walk.ts AD-6):
 //
 //   • DEFAULT (stop-on-first-divergence): render/compare in size order, HALT at
 //     the first non-accepted divergence and print its op-level diff. Exit 0 iff
 //     the whole conformant set passes; exit 1 when it stops at a divergence
 //     (or a port/oracle/timeout fault).
 //
-//   • --survey: render every item, record a verdict, and write json-parity.json
-//     (consumed by json-dashboard.ts). Never halts on a divergence.
+//   • --survey: render every item, record a verdict, and write the summary
+//     report (consumed by json-dashboard.ts / parity-report.ts). Never halts
+//     on a divergence. Per-item rows are appended to a JSONL file as they
+//     complete (engine-walk.ts's resume model): a re-run reads that JSONL
+//     first and skips ids already recorded, so an interrupted survey resumes
+//     instead of re-rendering everything.
+//
+// Engine parameterization (format-parity-matrix AD-3): an optional leading
+// positional CLI arg selects the layout engine (default `dot`, back-compat).
+// The oracle command becomes `dot -K<engine> -Tjson` (verified byte-identical
+// to bare `dot -Tjson` for the `dot` engine) and the port renderer
+// (render-one-json.ts) is invoked with the same engine. Output naming stays
+// engine-specific so parallel engine sweeps never collide:
+//   dot            -> json-parity.json       / json-parity.jsonl
+//   <other engine> -> json-parity-<engine>.json / json-parity-<engine>.jsonl
+// `json-parity.json` remains the `dot` alias so existing consumers
+// (parity-report.ts) are unaffected until they're updated to read the matrix.
+//
+// Usage: npx tsx test/corpus/json-walk.ts [engine] [--survey] [outJsonlPath]
 //
 // Reuses xdot-walk.ts's spawn + oracle-cache model: every port render is a
 // group-killed subprocess with a wall-clock budget; the native oracle outputs
-// are cached under a signature of (binary, GVBINDIR, format, mtime) so a
-// rebuilt `dot` auto-invalidates and different oracles never collide.
+// are cached under a signature of (binary, GVBINDIR, format, engine, mtime) so
+// a rebuilt `dot` (or a different engine) auto-invalidates and never collides.
 //
 // Item set: reuses parity.json's `conformant` roster exactly as xdot-walk.ts
-// does — this already excludes the known hang (241_1: SVG verdict
-// `structural-match`, not `conformant`) and every perf-quarantined id (they
-// carry a non-conformant SVG verdict too), so no separate exclusion list is
-// needed here. Node-only dev/test infra.
+// and engine-walk.ts do — this already excludes the known hang (241_1: SVG
+// verdict `structural-match`, not `conformant`) and every perf-quarantined id
+// (they carry a non-conformant SVG verdict too), so no separate exclusion
+// list is needed here. Node-only dev/test infra.
 
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,16 +67,38 @@ const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/d
 const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
 const RENDER_ONE = join(REPO, 'test/corpus/render-one-json.ts');
 const PARITY = new URL('./parity.json', import.meta.url);
-const JSON_PARITY = new URL('./json-parity.json', import.meta.url);
 const ACCEPTED = new URL('./accepted-divergences-json.json', import.meta.url);
 
-/** Oracle-cache identity: same scheme as xdot-walk.ts, namespaced for json. */
+// ---------------------------------------------------------------------------
+// CLI args (mirrors engine-walk.ts: `<engine> [outJsonl]`, plus json-walk's
+// pre-existing `--survey` mode flag).
+// ---------------------------------------------------------------------------
+
+const CLI_FLAGS = process.argv.slice(2);
+const CLI_POSITIONAL = CLI_FLAGS.filter((a) => !a.startsWith('--'));
+/** Layout engine to sweep. Default `dot` — back-compat with the pre-AD-3 CLI. */
+const ENGINE = CLI_POSITIONAL[0] ?? 'dot';
+const OUT_JSONL_ARG = CLI_POSITIONAL[1];
+const SURVEY = CLI_FLAGS.includes('--survey');
+
+/** `json-parity.json` stays the `dot` alias; other engines get their own file. */
+const JSON_PARITY = fileURLToPath(
+  new URL(ENGINE === 'dot' ? './json-parity.json' : `./json-parity-${ENGINE}.json`, import.meta.url),
+);
+/** Resume stream: engine-specific so parallel engine sweeps never collide. */
+const JSON_PARITY_JSONL =
+  OUT_JSONL_ARG ??
+  fileURLToPath(
+    new URL(ENGINE === 'dot' ? './json-parity.jsonl' : `./json-parity-${ENGINE}.jsonl`, import.meta.url),
+  );
+
+/** Oracle-cache identity: same scheme as xdot-walk.ts, namespaced for json+engine. */
 const ORACLE_SIG = (() => {
   let mt = '';
   try { mt = String(statSync(DOT_BIN).mtimeMs); } catch { /* checked in main */ }
-  return createHash('sha1').update(`${DOT_BIN}\0${GVBINDIR}\0json\0${mt}`).digest('hex').slice(0, 12);
+  return createHash('sha1').update(`${DOT_BIN}\0${GVBINDIR}\0json\0${ENGINE}\0${mt}`).digest('hex').slice(0, 12);
 })();
-const CACHE = process.env.JSON_ORACLE_CACHE ?? join(tmpdir(), 'dot-corpus-json-oracle', ORACLE_SIG);
+const CACHE = process.env.JSON_ORACLE_CACHE ?? join(tmpdir(), 'dot-corpus-json-oracle', ENGINE, ORACLE_SIG);
 
 const TIMEOUT_MULT = Number(process.env.JSON_TIMEOUT_MULT ?? 3);
 const TIMEOUT_FLOOR_MS = Number(process.env.JSON_TIMEOUT_FLOOR_MS ?? 180_000);
@@ -173,7 +221,11 @@ function portErrMsg(stderr: string): string {
 // ---------------------------------------------------------------------------
 
 /** Render an input to json with the native oracle, caching text + native ms. */
-async function oracleJson(absInput: string, id: string): Promise<{ json?: string; ms?: number; err?: string }> {
+async function oracleJson(
+  absInput: string,
+  id: string,
+  engine: string,
+): Promise<{ json?: string; ms?: number; err?: string }> {
   const cacheFile = join(CACHE, `${id}.json`);
   const msFile = join(CACHE, `${id}.ms`);
   if (existsSync(cacheFile) && existsSync(msFile)) {
@@ -183,7 +235,7 @@ async function oracleJson(absInput: string, id: string): Promise<{ json?: string
   }
   const env = { ...process.env, GVBINDIR };
   const t = Date.now();
-  const r = await spawnCapture(DOT_BIN, ['-Tjson', absInput], env, ORACLE_TIMEOUT_MS);
+  const r = await spawnCapture(DOT_BIN, ['-K', engine, '-Tjson', absInput], env, ORACLE_TIMEOUT_MS);
   const ms = Date.now() - t;
   // Native dot exits nonzero on recoverable warnings while still emitting a
   // COMPLETE json document. Completeness (a closing `}`) is the validity
@@ -202,8 +254,9 @@ async function portJson(
   absInput: string,
   tsx: { cmd: string; pre: string[] },
   budgetMs: number,
+  engine: string,
 ): Promise<{ json?: string; verdict?: JsonVerdict; errMsg?: string }> {
-  const args = [...tsx.pre, RENDER_ONE, absInput, 'dot'];
+  const args = [...tsx.pre, RENDER_ONE, absInput, engine];
   const r = await spawnCapture(tsx.cmd, args, process.env, budgetMs);
   if (r.timedOut) return { verdict: 'timeout' };
   if (r.code !== 0 || r.stdout.length === 0) {
@@ -246,19 +299,23 @@ async function walkOne(
   item: Item,
   tsx: { cmd: string; pre: string[] },
   accepted: Set<string>,
+  engine: string,
 ): Promise<{ result: JsonWalkResult; diffs: JsonDiff[]; oracle?: string; port?: string }> {
   const absInput = join(ROOT, item.path);
   const meta = { id: item.id, path: item.path, size: item.size };
-  const oracle = await oracleJson(absInput, item.id);
+  const oracle = await oracleJson(absInput, item.id, engine);
   if (oracle.json === undefined) {
     return { result: { ...meta, verdict: 'oracle-error', errMsg: scrubHome(oracle.err ?? '') }, diffs: [] };
   }
   const budgetMs = Math.max(TIMEOUT_FLOOR_MS, Math.ceil(TIMEOUT_MULT * (oracle.ms ?? 0)));
-  const port = await portJson(absInput, tsx, budgetMs);
+  const port = await portJson(absInput, tsx, budgetMs, engine);
   if (port.json === undefined) {
     return { result: { ...meta, verdict: port.verdict!, errMsg: scrubHome(port.errMsg ?? '') }, diffs: [] };
   }
-  const { pass, diffs } = compareJson(port.json, oracle.json);
+  // Engine-dependent bar mirroring engine-walk.ts: deterministic engines at
+  // 0.01, iterative (neato/fdp/sfdp) at their documented 0.5pt drift bar.
+  const tolerance = ['neato', 'fdp', 'sfdp'].includes(engine) ? 0.5 : 0.01;
+  const { pass, diffs } = compareJson(port.json, oracle.json, tolerance);
   if (pass) return { result: { ...meta, verdict: 'conformant' }, diffs: [] };
   const verdict: JsonVerdict = accepted.has(item.id) ? 'accepted' : 'diverged';
   return {
@@ -290,11 +347,33 @@ function conformantItems(): Item[] {
 
 function loadAccepted(): Set<string> {
   try {
-    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as { divergences?: Array<{ id: string }> };
-    return new Set((raw.divergences ?? []).map((d) => d.id));
+    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as {
+      divergences?: Array<{ id: string; engine?: string }>;
+    };
+    // Entries may be engine-scoped; an entry without `engine` applies to every
+    // engine (legacy dot-era rows). Only matching-engine entries accept here.
+    return new Set(
+      (raw.divergences ?? [])
+        .filter((d) => d.engine === undefined || d.engine === ENGINE)
+        .map((d) => d.id),
+    );
   } catch {
     return new Set();
   }
+}
+
+/** Read a resume JSONL: id -> last recorded row (partial trailing lines skipped). */
+function loadResumed(jsonlPath: string): Map<string, JsonWalkResult> {
+  const resumed = new Map<string, JsonWalkResult>();
+  if (!existsSync(jsonlPath)) return resumed;
+  for (const ln of readFileSync(jsonlPath, 'utf8').split('\n')) {
+    if (!ln) continue;
+    try {
+      const row = JSON.parse(ln) as JsonWalkResult;
+      resumed.set(row.id, row);
+    } catch { /* partial line */ }
+  }
+  return resumed;
 }
 
 async function oracleVersion(): Promise<string> {
@@ -321,8 +400,8 @@ function printDivergence(result: JsonWalkResult, diffs: JsonDiff[]): void {
   if (diffs.length > 25) process.stderr.write(`  ... and ${diffs.length - 25} more diff(s)\n`);
   process.stderr.write(
     `\nInspect:\n` +
-      `  GVBINDIR=${GVBINDIR} ${DOT_BIN} -Tjson ${join(ROOT, result.path)}\n` +
-      `  npx tsx ${RENDER_ONE} ${join(ROOT, result.path)}\n`,
+      `  GVBINDIR=${GVBINDIR} ${DOT_BIN} -K ${ENGINE} -Tjson ${join(ROOT, result.path)}\n` +
+      `  npx tsx ${RENDER_ONE} ${join(ROOT, result.path)} ${ENGINE}\n`,
   );
 }
 
@@ -331,10 +410,15 @@ function printDivergence(result: JsonWalkResult, diffs: JsonDiff[]): void {
 // ---------------------------------------------------------------------------
 
 /** Stop-on-first-divergence: sequential, halt at the first real divergence. */
-async function runDefault(items: Item[], tsx: { cmd: string; pre: string[] }, accepted: Set<string>): Promise<void> {
+async function runDefault(
+  items: Item[],
+  tsx: { cmd: string; pre: string[] },
+  accepted: Set<string>,
+  engine: string,
+): Promise<void> {
   let passed = 0;
   for (const item of items) {
-    const { result, diffs } = await walkOne(item, tsx, accepted);
+    const { result, diffs } = await walkOne(item, tsx, accepted, engine);
     if (result.verdict === 'conformant' || result.verdict === 'accepted') {
       passed++;
       continue;
@@ -354,14 +438,37 @@ async function runDefault(items: Item[], tsx: { cmd: string; pre: string[] }, ac
   process.exit(0);
 }
 
-/** Survey: render all, write json-parity.json (never halts). */
-async function runSurvey(items: Item[], tsx: { cmd: string; pre: string[] }, accepted: Set<string>): Promise<void> {
+/**
+ * Survey: render all, write the summary report (never halts).
+ *
+ * Resumable (engine-walk.ts model): rows are appended to JSON_PARITY_JSONL as
+ * they complete; a re-run reads that file first and reuses already-recorded
+ * rows for their ids instead of re-rendering, so an interrupted sweep picks
+ * up where it left off.
+ */
+async function runSurvey(
+  items: Item[],
+  tsx: { cmd: string; pre: string[] },
+  accepted: Set<string>,
+  engine: string,
+): Promise<void> {
+  const resumed = loadResumed(JSON_PARITY_JSONL);
+  if (!existsSync(JSON_PARITY_JSONL)) writeFileSync(JSON_PARITY_JSONL, '');
+
   const results: JsonWalkResult[] = new Array(items.length);
   let next = 0;
   let done = 0;
   const worker = async (): Promise<void> => {
     for (let i = next++; i < items.length; i = next++) {
-      results[i] = (await walkOne(items[i], tsx, accepted)).result;
+      const item = items[i];
+      const prior = resumed.get(item.id);
+      if (prior) {
+        results[i] = prior;
+      } else {
+        const row = (await walkOne(item, tsx, accepted, engine)).result;
+        appendFileSync(JSON_PARITY_JSONL, JSON.stringify(row) + '\n');
+        results[i] = row;
+      }
       if (++done % 50 === 0) process.stderr.write(`  ${done}/${items.length}\n`);
     }
   };
@@ -375,6 +482,7 @@ async function runSurvey(items: Item[], tsx: { cmd: string; pre: string[] }, acc
   const report = {
     generatedAt: new Date().toISOString(),
     generatedWith: 'test/corpus/json-walk.ts --survey',
+    engine,
     oracleVersion: await oracleVersion(),
     corpusRoot: scrubHome(ROOT),
     total: results.length,
@@ -382,7 +490,7 @@ async function runSurvey(items: Item[], tsx: { cmd: string; pre: string[] }, acc
     results,
   };
   writeFileSync(JSON_PARITY, JSON.stringify(report, null, 2) + '\n');
-  process.stderr.write(`wrote json-parity.json — ${JSON.stringify(counts)}\n`);
+  process.stderr.write(`[${engine}] wrote ${JSON_PARITY} — ${JSON.stringify(counts)}\n`);
 }
 
 // ---------------------------------------------------------------------------
@@ -394,17 +502,16 @@ async function main(): Promise<void> {
     process.stderr.write(`harness fault: oracle binary not found at ${DOT_BIN}\n`);
     process.exit(2);
   }
-  const survey = process.argv.includes('--survey');
   const items = conformantItems();
   const accepted = loadAccepted();
   const tsx = resolveTsx();
   process.stderr.write(
-    `json ${survey ? 'survey' : 'walk (stop-on-first)'}: ${items.length} conformant items, ` +
-      `size-sorted small→large\noracle ${DOT_BIN} (GVBINDIR=${GVBINDIR})\ncache ${CACHE}\n` +
+    `json[${ENGINE}] ${SURVEY ? 'survey' : 'walk (stop-on-first)'}: ${items.length} conformant items, ` +
+      `size-sorted small→large\noracle ${DOT_BIN} -K ${ENGINE} (GVBINDIR=${GVBINDIR})\ncache ${CACHE}\n` +
       `accepted divergences: ${accepted.size}\n`,
   );
-  if (survey) await runSurvey(items, tsx, accepted);
-  else await runDefault(items, tsx, accepted);
+  if (SURVEY) await runSurvey(items, tsx, accepted, ENGINE);
+  else await runDefault(items, tsx, accepted, ENGINE);
 }
 
 const isMain =

@@ -22,11 +22,24 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 | [dot (SVG)](./PARITY-dot.md) | 788 | 762 | 0 | 16 | 10 | 96.7% |
 | [dot (xdot)](./PARITY-XDOT.md) | 761 | 761 | 0 | 0 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 761 | 759 | 0 | 2 | 0 | 99.7% |
-| [circo (xdot)](./PARITY-circo.md) | 762 | 745 | 0 | 3 | 14 | 97.8% |
-| [twopi (xdot)](./PARITY-twopi.md) | 762 | 740 | 0 | 14 | 8 | 97.1% |
-| [osage (xdot)](./PARITY-osage.md) | 762 | 750 | 0 | 7 | 5 | 98.4% |
-| [patchwork (xdot)](./PARITY-patchwork.md) | 762 | 757 | 0 | 0 | 5 | 99.3% |
+| [circo (xdot)](./PARITY-circo.md) | 762 | 752 | 0 | 4 | 6 | 98.7% |
+| [twopi (xdot)](./PARITY-twopi.md) | 762 | 746 | 0 | 14 | 2 | 97.9% |
+| [osage (xdot)](./PARITY-osage.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
+| [patchwork (xdot)](./PARITY-patchwork.md) | 762 | 762 | 0 | 0 | 0 | 100.0% |
 | [dot (imagemap)](./PARITY-MAP.md) | 761 | 755 | 0 | 0 | 6 | 99.2% |
+| [dot (plain)](./PARITY-dot-plain.md) | 762 | 754 | 0 | 7 | 1 | 99.0% |
+| [circo (plain)](./PARITY-circo-plain.md) | 762 | 731 | 0 | 10 | 21 | 95.9% |
+| [twopi (plain)](./PARITY-twopi-plain.md) | 762 | 731 | 0 | 21 | 10 | 95.9% |
+| [osage (plain)](./PARITY-osage-plain.md) | 762 | 747 | 0 | 14 | 1 | 98.0% |
+| [patchwork (plain)](./PARITY-patchwork-plain.md) | 762 | 755 | 0 | 7 | 0 | 99.1% |
+| [circo (json)](./PARITY-circo-json.md) | 762 | 750 | 0 | 6 | 6 | 98.4% |
+| [twopi (json)](./PARITY-twopi-json.md) | 762 | 744 | 0 | 16 | 2 | 97.6% |
+| [osage (json)](./PARITY-osage-json.md) | 762 | 750 | 0 | 12 | 0 | 98.4% |
+| [patchwork (json)](./PARITY-patchwork-json.md) | 762 | 760 | 0 | 2 | 0 | 99.7% |
+| [circo (imagemap)](./PARITY-circo-map.md) | 762 | 756 | 0 | 0 | 6 | 99.2% |
+| [twopi (imagemap)](./PARITY-twopi-map.md) | 762 | 760 | 0 | 0 | 2 | 99.7% |
+| [osage (imagemap)](./PARITY-osage-map.md) | 762 | 761 | 0 | 1 | 0 | 99.9% |
+| [patchwork (imagemap)](./PARITY-patchwork-map.md) | 762 | 762 | 0 | 0 | 0 | 100.0% |
 
 
 ### Iterative engines (±0.5 characterization)
@@ -41,9 +54,18 @@ bar above.
 
 | track | surveyed | conformant / pass | diverged | accepted | errors | pass % |
 |---|---:|---:|---:|---:|---:|---:|
-| [neato (xdot)](./PARITY-neato.md) | 762 | 685 | 0 | 70 | 7 | 89.9% |
-| [fdp (xdot)](./PARITY-fdp.md) | 762 | 600 | 0 | 145 | 17 | 78.7% |
-| [sfdp (xdot)](./PARITY-sfdp.md) | 762 | 524 | 0 | 231 | 7 | 68.8% |
+| [neato (xdot)](./PARITY-neato.md) | 762 | 689 | 0 | 71 | 2 | 90.4% |
+| [fdp (xdot)](./PARITY-fdp.md) | 762 | 609 | 0 | 148 | 5 | 79.9% |
+| [sfdp (xdot)](./PARITY-sfdp.md) | 762 | 527 | 0 | 232 | 3 | 69.2% |
+| [neato (plain)](./PARITY-neato-plain.md) | 762 | 753 | 0 | 7 | 2 | 98.8% |
+| [fdp (plain)](./PARITY-fdp-plain.md) | 762 | 750 | 0 | 7 | 5 | 98.4% |
+| [sfdp (plain)](./PARITY-sfdp-plain.md) | 762 | 753 | 0 | 7 | 2 | 98.8% |
+| [neato (json)](./PARITY-neato-json.md) | 762 | 687 | 0 | 73 | 2 | 90.2% |
+| [fdp (json)](./PARITY-fdp-json.md) | 762 | 607 | 0 | 151 | 4 | 79.7% |
+| [sfdp (json)](./PARITY-sfdp-json.md) | 762 | 525 | 0 | 235 | 2 | 68.9% |
+| [neato (imagemap)](./PARITY-neato-map.md) | 762 | 754 | 0 | 6 | 2 | 99.0% |
+| [fdp (imagemap)](./PARITY-fdp-map.md) | 762 | 739 | 0 | 18 | 5 | 97.0% |
+| [sfdp (imagemap)](./PARITY-sfdp-map.md) | 762 | 733 | 0 | 27 | 2 | 96.2% |
 
 
 
@@ -99,3 +121,25 @@ The golden xdot suite gates these in CI (`test/golden/xdot-suite.test.ts`).
 - [PARITY-neato.md](./PARITY-neato.md) — neato (xdot) dashboard (`parity-report.ts`)
 - [PARITY-fdp.md](./PARITY-fdp.md) — fdp (xdot) dashboard (`parity-report.ts`)
 - [PARITY-sfdp.md](./PARITY-sfdp.md) — sfdp (xdot) dashboard (`parity-report.ts`)
+- [PARITY-dot-plain.md](./PARITY-dot-plain.md) — dot (plain) dashboard (`parity-report.ts`)
+- [PARITY-circo-plain.md](./PARITY-circo-plain.md) — circo (plain) dashboard (`parity-report.ts`)
+- [PARITY-twopi-plain.md](./PARITY-twopi-plain.md) — twopi (plain) dashboard (`parity-report.ts`)
+- [PARITY-osage-plain.md](./PARITY-osage-plain.md) — osage (plain) dashboard (`parity-report.ts`)
+- [PARITY-patchwork-plain.md](./PARITY-patchwork-plain.md) — patchwork (plain) dashboard (`parity-report.ts`)
+- [PARITY-neato-plain.md](./PARITY-neato-plain.md) — neato (plain) dashboard (`parity-report.ts`)
+- [PARITY-fdp-plain.md](./PARITY-fdp-plain.md) — fdp (plain) dashboard (`parity-report.ts`)
+- [PARITY-sfdp-plain.md](./PARITY-sfdp-plain.md) — sfdp (plain) dashboard (`parity-report.ts`)
+- [PARITY-circo-json.md](./PARITY-circo-json.md) — circo (json) dashboard (`parity-report.ts`)
+- [PARITY-twopi-json.md](./PARITY-twopi-json.md) — twopi (json) dashboard (`parity-report.ts`)
+- [PARITY-osage-json.md](./PARITY-osage-json.md) — osage (json) dashboard (`parity-report.ts`)
+- [PARITY-patchwork-json.md](./PARITY-patchwork-json.md) — patchwork (json) dashboard (`parity-report.ts`)
+- [PARITY-neato-json.md](./PARITY-neato-json.md) — neato (json) dashboard (`parity-report.ts`)
+- [PARITY-fdp-json.md](./PARITY-fdp-json.md) — fdp (json) dashboard (`parity-report.ts`)
+- [PARITY-sfdp-json.md](./PARITY-sfdp-json.md) — sfdp (json) dashboard (`parity-report.ts`)
+- [PARITY-circo-map.md](./PARITY-circo-map.md) — circo (imagemap) dashboard (`parity-report.ts`)
+- [PARITY-twopi-map.md](./PARITY-twopi-map.md) — twopi (imagemap) dashboard (`parity-report.ts`)
+- [PARITY-osage-map.md](./PARITY-osage-map.md) — osage (imagemap) dashboard (`parity-report.ts`)
+- [PARITY-patchwork-map.md](./PARITY-patchwork-map.md) — patchwork (imagemap) dashboard (`parity-report.ts`)
+- [PARITY-neato-map.md](./PARITY-neato-map.md) — neato (imagemap) dashboard (`parity-report.ts`)
+- [PARITY-fdp-map.md](./PARITY-fdp-map.md) — fdp (imagemap) dashboard (`parity-report.ts`)
+- [PARITY-sfdp-map.md](./PARITY-sfdp-map.md) — sfdp (imagemap) dashboard (`parity-report.ts`)

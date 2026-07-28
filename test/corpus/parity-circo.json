@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-21T20:05:42.572Z",
+  "generatedAt": "2026-07-25T02:59:13.532Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "circo",
   "tolerance": 0.01,
   "total": 762,
   "counts": {
-    "pass": 745,
-    "diverged": 3,
-    "oracle-error": 14,
+    "pass": 752,
+    "diverged": 4,
+    "oracle-error": 5,
     "port-error": 0,
-    "timeout": 0
+    "timeout": 1
   },
   "results": [
     {
@@ -228,12 +228,6 @@
       "status": "pass"
     },
     {
-      "id": "2619",
-      "size": 79,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/2619.dot"
-    },
-    {
       "id": "165",
       "size": 81,
       "status": "pass"
@@ -332,12 +326,6 @@
       "id": "2460",
       "size": 93,
       "status": "pass"
-    },
-    {
-      "id": "2516",
-      "size": 97,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/2516.dot"
     },
     {
       "id": "2437",
@@ -3019,12 +3007,6 @@
       "status": "pass"
     },
     {
-      "id": "1880",
-      "size": 3451,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/1880.dot"
-    },
-    {
       "id": "linux.x86-ports_dot",
       "size": 3470,
       "status": "pass"
@@ -3260,18 +3242,6 @@
       "status": "pass"
     },
     {
-      "id": "1447",
-      "size": 6707,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/1447.dot"
-    },
-    {
-      "id": "2619_1",
-      "size": 6721,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/2619_1.dot"
-    },
-    {
       "id": "graphs-grdradial_angle",
       "size": 6918,
       "status": "pass"
@@ -3345,12 +3315,6 @@
       "id": "windows-fig6",
       "size": 7553,
       "status": "pass"
-    },
-    {
-      "id": "2619_2",
-      "size": 7596,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/2619_2.dot"
     },
     {
       "id": "share-abstract",
@@ -3638,12 +3602,6 @@
       "status": "pass"
     },
     {
-      "id": "1718",
-      "size": 22038,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
-    },
-    {
       "id": "windows-b124",
       "size": 28038,
       "status": "pass"
@@ -3689,12 +3647,6 @@
       "status": "pass"
     },
     {
-      "id": "2343",
-      "size": 59368,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
-    },
-    {
       "id": "graphs-b143",
       "size": 62055,
       "status": "pass"
@@ -3733,12 +3685,6 @@
       "id": "graphs-xx",
       "size": 102329,
       "status": "pass"
-    },
-    {
-      "id": "2095_1",
-      "size": 105083,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     },
     {
       "id": "graphs-root",
@@ -3781,18 +3727,6 @@
       "status": "pass"
     },
     {
-      "id": "1652",
-      "size": 240391,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
-    },
-    {
-      "id": "1879",
-      "size": 287816,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/1879.dot"
-    },
-    {
       "id": "linux.x86-root_twopi",
       "size": 287907,
       "status": "pass"
@@ -3813,12 +3747,6 @@
       "status": "pass"
     },
     {
-      "id": "graphs-b103",
-      "size": 377525,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
-    },
-    {
       "id": "2475_2",
       "size": 641284,
       "status": "diverged",
@@ -3831,6 +3759,72 @@
       "status": "pass"
     },
     {
+      "id": "2619",
+      "size": 79,
+      "status": "pass"
+    },
+    {
+      "id": "2516",
+      "size": 97,
+      "status": "pass"
+    },
+    {
+      "id": "1880",
+      "size": 3451,
+      "status": "oracle-error",
+      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/1880.dot"
+    },
+    {
+      "id": "1447",
+      "size": 6707,
+      "status": "oracle-error",
+      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/1447.dot"
+    },
+    {
+      "id": "2619_1",
+      "size": 6721,
+      "status": "pass"
+    },
+    {
+      "id": "2619_2",
+      "size": 7596,
+      "status": "pass"
+    },
+    {
+      "id": "1718",
+      "size": 22038,
+      "status": "pass"
+    },
+    {
+      "id": "2343",
+      "size": 59368,
+      "status": "pass"
+    },
+    {
+      "id": "2095_1",
+      "size": 105083,
+      "status": "diverged",
+      "nDiffs": 2197,
+      "firstDiff": "edge:1083->1084#0 _draw_ edge:1083->1084#0/_draw_/op[1].unfilled_bezier[0]: 76784.4 vs 76768.63"
+    },
+    {
+      "id": "1652",
+      "size": 240391,
+      "status": "oracle-error",
+      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
+    },
+    {
+      "id": "1879",
+      "size": 287816,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-b103",
+      "size": 377525,
+      "status": "oracle-error",
+      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
+    },
+    {
       "id": "2222",
       "size": 2384469,
       "status": "oracle-error",
@@ -3839,8 +3833,7 @@
     {
       "id": "2108",
       "size": 3136769,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
+      "status": "timeout"
     }
   ]
 }

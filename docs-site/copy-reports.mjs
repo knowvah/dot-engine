@@ -46,6 +46,14 @@ const REPORTS = [
       // map-conformance (BEGIN)
       [/\]\(\.\/PARITY-MAP\.md\)/g, '](/parity-map)'],
       // map-conformance (END)
+      // format-parity-matrix (BEGIN): PARITY.md's Tracks table and per-track
+      // dashboard list link to the 22 new plain/json/map per-engine reports.
+      [/\]\(\.\/PARITY-dot-plain\.md\)/g, '](/parity-dot-plain)'],
+      [
+        /\]\(\.\/PARITY-(circo|twopi|osage|patchwork|neato|fdp|sfdp)-(plain|json|map)\.md\)/g,
+        '](/parity-$1-$2)',
+      ],
+      // format-parity-matrix (END)
       [/\]\(\.\/(parity[^)]*\.json[l]?)\)/g, '](https://github.com/knowvah/dot-engine/blob/main/test/corpus/$1)'],
       [/\]\(\.\/(accepted-divergences[^)]*\.json)\)/g, '](https://github.com/knowvah/dot-engine/blob/main/test/corpus/$1)'],
     ],
@@ -220,6 +228,55 @@ const REPORTS = [
     rewrites: [[/\]\(\.\/PARITY\.md\)/g, '](/parity)']],
   },
 ];
+
+// format-parity-matrix (BEGIN): per-engine dashboards for the plain/plain-ext
+// and json output formats, plus imagemap, mirroring the per-engine xdot
+// dashboards above (PARITY-circo.md etc.). These reports only ever contain
+// one relative link (../../docs/conformance.md) — no self-references to
+// sibling PARITY-*.md files — so the standard rewrite set used by the xdot
+// dashboards above covers them; generate all 22 entries from it rather than
+// hand-duplicating the array 22 times.
+const STANDARD_REWRITES = [
+  [/\]\(\.\.\/\.\.\/docs\/known-divergences\.md(#[^)]*)?\)/g, '](/divergences$1)'],
+  [/\]\(\.\.\/\.\.\/docs\/conformance\.md\)/g, '](/conformance)'],
+  [/\]\(\.\.\/\.\.\/plans\/([^)]+)\)/g, '](https://github.com/knowvah/dot-engine/blob/main/plans/$1)'],
+  [/\]\(\.\/PARITY\.md\)/g, '](/engines)'],
+  [/\]\(\.\/PARITY-dot\.md\)/g, '](/parity)'],
+  [/\]\(\.\/PARITY-(circo|twopi|osage|patchwork|neato|fdp|sfdp)\.md\)/g, '](/parity-$1)'],
+  [/\]\(\.\/PARITY-XDOT\.md\)/g, '](/parity-xdot)'],
+  [/\]\(\.\/PARITY-JSON\.md\)/g, '](/parity-json)'],
+  [/\]\(\.\/(parity[^)]*\.json[l]?)\)/g, '](https://github.com/knowvah/dot-engine/blob/main/test/corpus/$1)'],
+  [/\]\(\.\/(accepted-divergences[^)]*\.json)\)/g, '](https://github.com/knowvah/dot-engine/blob/main/test/corpus/$1)'],
+];
+const FORMAT_MATRIX_ENGINES = [
+  'circo',
+  'twopi',
+  'osage',
+  'patchwork',
+  'neato',
+  'fdp',
+  'sfdp',
+];
+const FORMAT_MATRIX_SURFACES = ['plain', 'json', 'map'];
+
+// dot's SVG/xdot/json/imagemap dashboards are already mirrored above
+// (PARITY-dot.md, PARITY-XDOT.md, PARITY-JSON.md, PARITY-MAP.md); plain is
+// the one dot-specific report still missing a mirror.
+REPORTS.push({
+  src: '../test/corpus/PARITY-dot-plain.md',
+  dst: 'parity-dot-plain.md',
+  rewrites: STANDARD_REWRITES,
+});
+for (const engine of FORMAT_MATRIX_ENGINES) {
+  for (const surface of FORMAT_MATRIX_SURFACES) {
+    REPORTS.push({
+      src: `../test/corpus/PARITY-${engine}-${surface}.md`,
+      dst: `parity-${engine}-${surface}.md`,
+      rewrites: STANDARD_REWRITES,
+    });
+  }
+}
+// format-parity-matrix (END)
 
 for (const { src, dst, rewrites } of REPORTS) {
   let md = readFileSync(here(src), 'utf8');

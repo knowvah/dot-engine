@@ -103,17 +103,31 @@ for (const it of items) {
   if (done.has(it.id)) continue;
   const rec: EngineWalkRow = { id: it.id, size: it.size, status: 'pass' };
 
-  // oracle
+  // oracle — native dot exits nonzero on recoverable warnings (e.g. a
+  // missing image file) while still emitting a COMPLETE xdot document.
+  // Completeness (a closing `}`) is the validity signal, not the exit code —
+  // the json/map/plain walkers already classify this way; exit-code-fatal
+  // here left 45 comparable ids as phantom "oracle-error" rows.
   let oracle = '';
   try {
     oracle = execFileSync(DOT_BIN, ['-K', engine, '-Txdot', it.path], {
-      env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: 60_000,
+      env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: 300_000,
       maxBuffer: 512 * 1024 * 1024,
     });
-    if (!oracle.trimEnd().endsWith('}')) throw new Error('incomplete oracle output');
   } catch (err) {
+    const out = (err as { stdout?: unknown }).stdout;
+    if (typeof out === 'string' && out.trimEnd().endsWith('}')) {
+      oracle = out; // complete despite nonzero exit
+    } else {
+      rec.status = 'oracle-error';
+      rec.err = String((err as Error).message).split('\n')[0]!.slice(0, 160);
+      appendFileSync(OUT, JSON.stringify(rec) + '\n');
+      continue;
+    }
+  }
+  if (!oracle.trimEnd().endsWith('}')) {
     rec.status = 'oracle-error';
-    rec.err = String((err as Error).message).split('\n')[0]!.slice(0, 160);
+    rec.err = 'incomplete oracle output';
     appendFileSync(OUT, JSON.stringify(rec) + '\n');
     continue;
   }

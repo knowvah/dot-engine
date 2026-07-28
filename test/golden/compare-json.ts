@@ -118,7 +118,13 @@ const RESERVED_TOP = new Set([
 ]);
 
 /** Attrs whose string value is a space/comma-separated list of numbers. */
-const POSITIONAL_ATTRS = new Set(['pos', 'bb', 'width', 'height', 'lp', 'lwidth', 'lheight']);
+const POSITIONAL_ATTRS = new Set([
+  'pos', 'bb', 'width', 'height', 'lp', 'lwidth', 'lheight',
+  // Coordinate-list strings emitted for record fields and edge-label
+  // positions — compared numerically at tolerance, not textually (native
+  // emits float dust like -2.8e-14 where the port has 0).
+  'rects', 'head_lp', 'tail_lp', 'xlp',
+]);
 
 /** True for any xdot draw attribute: `_draw_`, `_ldraw_`, `_hdraw_`, ... */
 function isDrawAttr(name: string): boolean {

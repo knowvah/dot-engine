@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-21T20:20:47.502Z",
+  "generatedAt": "2026-07-25T03:56:05.961Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "twopi",
   "tolerance": 0.01,
   "total": 762,
   "counts": {
-    "pass": 740,
+    "pass": 746,
     "diverged": 14,
-    "oracle-error": 8,
+    "oracle-error": 1,
     "port-error": 0,
-    "timeout": 0
+    "timeout": 1
   },
   "results": [
     {
@@ -228,12 +228,6 @@
       "status": "pass"
     },
     {
-      "id": "2619",
-      "size": 79,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2619.dot"
-    },
-    {
       "id": "165",
       "size": 81,
       "status": "pass"
@@ -334,12 +328,6 @@
       "status": "pass"
     },
     {
-      "id": "2516",
-      "size": 97,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2516.dot"
-    },
-    {
       "id": "2437",
       "size": 98,
       "status": "pass"
@@ -432,11 +420,6 @@
     {
       "id": "1902",
       "size": 119,
-      "status": "pass"
-    },
-    {
-      "id": "regression_tests-shapes-reference-plain",
-      "size": 121,
       "status": "pass"
     },
     {
@@ -661,11 +644,6 @@
     },
     {
       "id": "regression_tests-shapes-reference-noverhang",
-      "size": 134,
-      "status": "pass"
-    },
-    {
-      "id": "regression_tests-shapes-reference-plaintext",
       "size": 134,
       "status": "pass"
     },
@@ -930,11 +908,6 @@
       "status": "pass"
     },
     {
-      "id": "2295",
-      "size": 221,
-      "status": "pass"
-    },
-    {
       "id": "graphs-b7",
       "size": 222,
       "status": "pass"
@@ -1170,11 +1143,6 @@
       "status": "pass"
     },
     {
-      "id": "1622_3",
-      "size": 265,
-      "status": "pass"
-    },
-    {
       "id": "graphs-labelroot-fdc",
       "size": 265,
       "status": "pass"
@@ -1305,11 +1273,6 @@
       "status": "pass"
     },
     {
-      "id": "1622_1",
-      "size": 311,
-      "status": "pass"
-    },
-    {
       "id": "2825",
       "size": 312,
       "status": "pass"
@@ -1337,21 +1300,6 @@
     {
       "id": "graphs-flatedge",
       "size": 330,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-b",
-      "size": 338,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-b117",
-      "size": 338,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-nhg",
-      "size": 339,
       "status": "pass"
     },
     {
@@ -1510,16 +1458,6 @@
       "status": "pass"
     },
     {
-      "id": "graphs-b22",
-      "size": 488,
-      "status": "pass"
-    },
-    {
-      "id": "1622_0",
-      "size": 489,
-      "status": "pass"
-    },
-    {
       "id": "graphs-states",
       "size": 492,
       "status": "pass"
@@ -1550,11 +1488,6 @@
       "status": "pass"
     },
     {
-      "id": "2159",
-      "size": 538,
-      "status": "pass"
-    },
-    {
       "id": "graphs-b155",
       "size": 542,
       "status": "pass"
@@ -1567,11 +1500,6 @@
     {
       "id": "1425_1",
       "size": 544,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-nul_nul",
-      "size": 576,
       "status": "pass"
     },
     {
@@ -1589,11 +1517,6 @@
     {
       "id": "windows-labelclust-ndd",
       "size": 586,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-inv_nul",
-      "size": 588,
       "status": "pass"
     },
     {
@@ -1742,11 +1665,6 @@
       "status": "pass"
     },
     {
-      "id": "graphs-inv_inv",
-      "size": 618,
-      "status": "pass"
-    },
-    {
       "id": "linux.x86-rowcolsep_dot1",
       "size": 619,
       "status": "pass"
@@ -1769,11 +1687,6 @@
     {
       "id": "windows-labelroot-ntd",
       "size": 619,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-nul_inv",
-      "size": 620,
       "status": "pass"
     },
     {
@@ -1877,11 +1790,6 @@
       "status": "pass"
     },
     {
-      "id": "graphs-val_nul",
-      "size": 630,
-      "status": "pass"
-    },
-    {
       "id": "share-labelclust-nbl",
       "size": 630,
       "status": "pass"
@@ -1969,11 +1877,6 @@
     {
       "id": "windows-labelroot-ntl",
       "size": 635,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-inv_val",
-      "size": 636,
       "status": "pass"
     },
     {
@@ -2177,16 +2080,6 @@
       "status": "pass"
     },
     {
-      "id": "graphs-nul_val",
-      "size": 659,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-val_inv",
-      "size": 660,
-      "status": "pass"
-    },
-    {
       "id": "graphs-b786",
       "size": 667,
       "status": "pass"
@@ -2199,11 +2092,6 @@
     {
       "id": "graphs-ports",
       "size": 677,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-val_val",
-      "size": 678,
       "status": "pass"
     },
     {
@@ -2229,11 +2117,6 @@
     {
       "id": "2168_1",
       "size": 729,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-html",
-      "size": 738,
       "status": "pass"
     },
     {
@@ -2267,11 +2150,6 @@
       "status": "pass"
     },
     {
-      "id": "graphs-jcctree",
-      "size": 778,
-      "status": "pass"
-    },
-    {
       "id": "graphs-japanese",
       "size": 789,
       "status": "pass"
@@ -2289,11 +2167,6 @@
     {
       "id": "graphs-fig6",
       "size": 835,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-shapes",
-      "size": 840,
       "status": "pass"
     },
     {
@@ -2337,16 +2210,6 @@
       "status": "pass"
     },
     {
-      "id": "windows-nhg",
-      "size": 926,
-      "status": "pass"
-    },
-    {
-      "id": "share-nhg",
-      "size": 938,
-      "status": "pass"
-    },
-    {
       "id": "graphs-alf",
       "size": 958,
       "status": "pass"
@@ -2377,16 +2240,6 @@
       "status": "pass"
     },
     {
-      "id": "linux.x86-html_dot",
-      "size": 1057,
-      "status": "pass"
-    },
-    {
-      "id": "nshare-html_dot",
-      "size": 1058,
-      "status": "pass"
-    },
-    {
       "id": "2521_1",
       "size": 1062,
       "status": "pass"
@@ -2394,11 +2247,6 @@
     {
       "id": "graphs-grdangles",
       "size": 1076,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-shells",
-      "size": 1102,
       "status": "pass"
     },
     {
@@ -2511,11 +2359,6 @@
     {
       "id": "share-records",
       "size": 1398,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-html2",
-      "size": 1414,
       "status": "pass"
     },
     {
@@ -2724,23 +2567,8 @@
       "status": "pass"
     },
     {
-      "id": "linux.x86-html2_dot",
-      "size": 1945,
-      "status": "pass"
-    },
-    {
-      "id": "nshare-html2_dot",
-      "size": 1946,
-      "status": "pass"
-    },
-    {
       "id": "share-pm2way",
       "size": 1974,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-sq_rules",
-      "size": 1979,
       "status": "pass"
     },
     {
@@ -2780,11 +2608,6 @@
     {
       "id": "nshare-ordering_dot1",
       "size": 2042,
-      "status": "pass"
-    },
-    {
-      "id": "graphs-rd_rules",
-      "size": 2043,
       "status": "pass"
     },
     {
@@ -2837,11 +2660,6 @@
     {
       "id": "windows-fsm",
       "size": 2124,
-      "status": "pass"
-    },
-    {
-      "id": "2242",
-      "size": 2125,
       "status": "pass"
     },
     {
@@ -2902,16 +2720,6 @@
     {
       "id": "1436",
       "size": 2599,
-      "status": "pass"
-    },
-    {
-      "id": "share-jcctree",
-      "size": 2612,
-      "status": "pass"
-    },
-    {
-      "id": "windows-jcctree",
-      "size": 2612,
       "status": "pass"
     },
     {
@@ -3007,11 +2815,6 @@
     {
       "id": "2734",
       "size": 3272,
-      "status": "pass"
-    },
-    {
-      "id": "1622_2",
-      "size": 3299,
       "status": "pass"
     },
     {
@@ -3125,11 +2928,6 @@
       "status": "pass"
     },
     {
-      "id": "56",
-      "size": 4247,
-      "status": "pass"
-    },
-    {
       "id": "linux.x86-record_dot",
       "size": 4541,
       "status": "pass"
@@ -3138,22 +2936,6 @@
       "id": "nshare-record_dot",
       "size": 4632,
       "status": "pass"
-    },
-    {
-      "id": "nshare-shapes_dot",
-      "size": 4692,
-      "status": "pass"
-    },
-    {
-      "id": "linux.x86-shapes_dot",
-      "size": 4861,
-      "status": "pass"
-    },
-    {
-      "id": "2095",
-      "size": 4865,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2095.dot"
     },
     {
       "id": "share-viewfile",
@@ -3181,18 +2963,8 @@
       "status": "pass"
     },
     {
-      "id": "share-shells",
-      "size": 5493,
-      "status": "pass"
-    },
-    {
       "id": "graphs-crazy",
       "size": 5556,
-      "status": "pass"
-    },
-    {
-      "id": "windows-shells",
-      "size": 5589,
       "status": "pass"
     },
     {
@@ -3275,12 +3047,6 @@
       "status": "pass"
     },
     {
-      "id": "2619_1",
-      "size": 6721,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2619_1.dot"
-    },
-    {
       "id": "graphs-grdradial_angle",
       "size": 6918,
       "status": "pass"
@@ -3360,12 +3126,6 @@
       "id": "windows-fig6",
       "size": 7553,
       "status": "pass"
-    },
-    {
-      "id": "2619_2",
-      "size": 7596,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/2619_2.dot"
     },
     {
       "id": "share-abstract",
@@ -3804,12 +3564,6 @@
       "status": "pass"
     },
     {
-      "id": "1879",
-      "size": 287816,
-      "status": "oracle-error",
-      "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz/tests/1879.dot"
-    },
-    {
       "id": "linux.x86-root_twopi",
       "size": 287907,
       "status": "pass"
@@ -3847,6 +3601,26 @@
       "firstDiff": "edge:n13->n12#0 _ldraw_ edge:n13->n12#0/_ldraw_/op[2].text[0]: 7270.33 vs 7192.55"
     },
     {
+      "id": "2619",
+      "size": 79,
+      "status": "pass"
+    },
+    {
+      "id": "2516",
+      "size": 97,
+      "status": "pass"
+    },
+    {
+      "id": "2095",
+      "size": 4865,
+      "status": "pass"
+    },
+    {
+      "id": "1879",
+      "size": 287816,
+      "status": "pass"
+    },
+    {
       "id": "2222",
       "size": 2384469,
       "status": "oracle-error",
@@ -3855,8 +3629,227 @@
     {
       "id": "2108",
       "size": 3136769,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
+      "status": "timeout"
+    },
+    {
+      "id": "regression_tests-shapes-reference-plain",
+      "size": 121,
+      "status": "pass"
+    },
+    {
+      "id": "regression_tests-shapes-reference-plaintext",
+      "size": 134,
+      "status": "pass"
+    },
+    {
+      "id": "2295",
+      "size": 221,
+      "status": "pass"
+    },
+    {
+      "id": "1622_3",
+      "size": 265,
+      "status": "pass"
+    },
+    {
+      "id": "1622_1",
+      "size": 311,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-b",
+      "size": 338,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-b117",
+      "size": 338,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-nhg",
+      "size": 339,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-b22",
+      "size": 488,
+      "status": "pass"
+    },
+    {
+      "id": "1622_0",
+      "size": 489,
+      "status": "pass"
+    },
+    {
+      "id": "2159",
+      "size": 538,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-nul_nul",
+      "size": 576,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-inv_nul",
+      "size": 588,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-inv_inv",
+      "size": 618,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-nul_inv",
+      "size": 620,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-val_nul",
+      "size": 630,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-inv_val",
+      "size": 636,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-nul_val",
+      "size": 659,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-val_inv",
+      "size": 660,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-val_val",
+      "size": 678,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-html",
+      "size": 738,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-jcctree",
+      "size": 778,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-shapes",
+      "size": 840,
+      "status": "pass"
+    },
+    {
+      "id": "windows-nhg",
+      "size": 926,
+      "status": "pass"
+    },
+    {
+      "id": "share-nhg",
+      "size": 938,
+      "status": "pass"
+    },
+    {
+      "id": "linux.x86-html_dot",
+      "size": 1057,
+      "status": "pass"
+    },
+    {
+      "id": "nshare-html_dot",
+      "size": 1058,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-shells",
+      "size": 1102,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-html2",
+      "size": 1414,
+      "status": "pass"
+    },
+    {
+      "id": "linux.x86-html2_dot",
+      "size": 1945,
+      "status": "pass"
+    },
+    {
+      "id": "nshare-html2_dot",
+      "size": 1946,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-sq_rules",
+      "size": 1979,
+      "status": "pass"
+    },
+    {
+      "id": "graphs-rd_rules",
+      "size": 2043,
+      "status": "pass"
+    },
+    {
+      "id": "2242",
+      "size": 2125,
+      "status": "pass"
+    },
+    {
+      "id": "share-jcctree",
+      "size": 2612,
+      "status": "pass"
+    },
+    {
+      "id": "windows-jcctree",
+      "size": 2612,
+      "status": "pass"
+    },
+    {
+      "id": "1622_2",
+      "size": 3299,
+      "status": "pass"
+    },
+    {
+      "id": "56",
+      "size": 4247,
+      "status": "pass"
+    },
+    {
+      "id": "nshare-shapes_dot",
+      "size": 4692,
+      "status": "pass"
+    },
+    {
+      "id": "linux.x86-shapes_dot",
+      "size": 4861,
+      "status": "pass"
+    },
+    {
+      "id": "share-shells",
+      "size": 5493,
+      "status": "pass"
+    },
+    {
+      "id": "windows-shells",
+      "size": 5589,
+      "status": "pass"
+    },
+    {
+      "id": "2619_1",
+      "size": 6721,
+      "status": "pass"
+    },
+    {
+      "id": "2619_2",
+      "size": 7596,
+      "status": "pass"
     }
   ]
 }
