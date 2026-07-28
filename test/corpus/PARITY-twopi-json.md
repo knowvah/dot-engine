@@ -12,16 +12,14 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 905
-- **pass:** 887 (98.0%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 16
+- **pass:** 887 (98.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 17
 - **errors (oracle/port/timeout, excluded from scoring):** 1
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 1998 | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` |
+_(none)_
 
-## Accepted (16) — documented, not chased
+## Accepted (17) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
@@ -39,6 +37,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`nshare-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/arrows_dot.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 1 | `node:a/label` | Input is Latin-1 with NO `charset` declaration, so the bytes are invalid UTF-8. Native dot's -Tjson then emits a MIXED-ENCODING document: attribute values (e.g. node `label`) are echoed as RAW Latin-1 bytes (0xe1 0xe2 ... unconverted), while the DRAWN label text (_ldraw_ T op, via make_label) is UTF-8 (0xc3 0xa1 ...). No single decode reads both halves correctly: Latin-1 recovers the attribute but mojibakes the text, UTF-8 does the reverse (and the attribute bytes are not valid UTF-8). The port decodes the input once (utils.c latin1ToUTF8 fallback) and is internally consistent valid UTF-8 on BOTH surfaces, so it cannot reproduce the oracle's split encoding. A4 class: the oracle output is an encoding bug; the port declines to emit invalid/mixed-encoding JSON. The DECLARED charset=latin1 case (graphs-Latin1/b60) IS handled via the stoj double-encode fix; only the UNDECLARED-charset case is irreducible. |
 | [`share-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/newarrows.gv) | 22 | `edge:i->Z#0/_draw_/op[1].b[0]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (A1 arrows family, injection A/B 40-&gt;0 diffs; engine registry + decision journal); json re-emits the same layout. Journal 2026-07-28. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
 | [`windows-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/newarrows.gv) | 20 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 

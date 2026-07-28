@@ -65,7 +65,14 @@ universe grew 762 → 905.
 - **Impact**: a pre-existing twopi edge-routing/segmentation divergence (oracle
   emits a 14-point bezier where the port emits 8), newly visible. Tracked gap,
   not accepted, not a regression.
-- **Confidence**: High (byte-identical A/B).
+- **RESOLVED 2026-07-28**: confirmed as the 9th a1-twopi-arrows-family id and
+  accepted (journal 2026-07-28). It is a mirrored PAIR (Z->I and i->Z swap
+  straight/curved), driven by PRISM position drift (~1e-12) through pathplan
+  directVis's degenerate collinear test: wind()'s 1e-4 tolerance + inBetween()'s
+  x-only projection make the bend depend on the last-ULP ordering of three
+  nominally equal x values. Injection A/B 40 -> 0 diffs (attribution-twopi.json).
+- **Confidence**: High (offline directVis replication reproduces both sides;
+  injection exoneration).
 
 ## Observation: two engine-track error classes are harness artifacts, not port defects
 

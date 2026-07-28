@@ -342,6 +342,11 @@
       "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
     },
     {
+      "id": "tree-graphs-directed-oldarrows",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (A1 arrows family, injection A/B 40->0 diffs; engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-28."
+    },
+    {
       "id": "graphs-arrows",
       "engine": "twopi",
       "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."

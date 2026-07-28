@@ -13,10 +13,10 @@ test/corpus/parity-report.ts`.
 ## Summary
 
 - **Surveyed:** 905 (generated 2026-07-27T21:43:30.140Z)
-- **pass:** 888 (98.1%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 14
+- **pass:** 888 (98.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 15
 - **oracle-error:** 1 · **port-error:** 0 · **timeout:** 1
 
-## Accepted deltas (14) — documented, not chased
+## Accepted deltas (15) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -33,6 +33,7 @@ table below.
 | [`macosx-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/macosx/arrows_dot.gv) | 40 | A1 | 32 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (arrows_dot variant of graphs-arrows) | known-divergences.md#a1-twopi-arrows-family |
 | [`nshare-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/arrows_dot.gv) | 40 | A1 | 25 draw-op diffs on edge i-&gt;Z; first diff unfilled_bezier[0]: 265.18 vs 313.93 (position drift, not a ptCount flip, but same pre-routing mechanism) | known-divergences.md#a1-twopi-arrows-family |
 | [`share-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/newarrows.gv) | 20 | A1 | 12 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (newarrows variant of graphs-newarrows) | known-divergences.md#a1-twopi-arrows-family |
+| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 40 | A1 | 40 draw-op diffs confined to the mirrored radial edge pair Z-&gt;I / i-&gt;Z, which swap straight (8-coord) vs routed (14-coord) splines; node positions and every other edge conformant. Injection A/B 2026-07-28: oracle pre-routing ND_pos injected into the port -&gt; 0 diffs, routing/emission exonerated (attribution-twopi.json). Refined flip site: with i-Z-I collinear on a ring diameter, pathplan directVis's intersect() treats the segment as blocked when a third node's axis vertex x falls strictly inside the ULP-wide (tail.x, head.x) interval (wind's 1e-4 tolerance makes 270pt-distant vertices 'collinear', and inBetween then tests ONLY the x projection) - so the straight/curved choice per side hinges on the last-ULP ordering of three nominally equal x coordinates out of PRISM's solve. Verified by replicating directVis offline on both sides' dumped obstacle sets: each reproduces its own side's decision exactly. | known-divergences.md#a1-twopi-arrows-family |
 | [`windows-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/newarrows.gv) | 20 | A1 | 12 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (newarrows variant of graphs-newarrows) | known-divergences.md#a1-twopi-arrows-family |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 183.86 vs 173.06 | known-divergences.md#a9-engine-track-twopi-circo |
 | [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 6 | A9 | 6 draw-op diffs; edge 1-&gt;6 routed as a 14-pt multispline corridor (port) vs the native plain per-member fallback (8-pt), point deltas &lt;0.07pt. CDT cocircular incircle tie flipped by libm sin/cos 1-ULP — sibling of the accepted circo/241_0 entry. | known-divergences.md#a9-engine-track-twopi-circo |
@@ -40,11 +41,9 @@ table below.
 | [`graphs-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b29.gv) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 368.1 vs 356.1 (same knife-edge previously accepted for share-b29/windows-b29; variants swapped when polylineMidpoint gained the faithful fmadd contraction - anchor now bit-identical to C, flip is a placeLabels tie on 1-ULP-drifted surrounding objects) | known-divergences.md#a9-engine-track-twopi-circo |
 | [`linux.i386-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b29.gv) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 368.1 vs 356.1 (identical mechanism to graphs-b29) | known-divergences.md#a9-engine-track-twopi-circo |
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 1998 | 40 | `edge:Z->I#0 _draw_ edge:Z->I#0/_draw_/op[1].unfilled_bezier[ptCount]: 8 vs 14` |
+_(none)_
 
 ## Errors and timeouts (2)
 

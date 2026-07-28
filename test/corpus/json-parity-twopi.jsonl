@@ -661,7 +661,6 @@
 {"id":"nshare-html2_dot","path":"nshare/html2_dot.gv","size":1946,"verdict":"conformant"}
 {"id":"share-pm2way","path":"share/pm2way.gv","size":1974,"verdict":"conformant"}
 {"id":"graphs-sq_rules","path":"graphs/sq_rules.gv","size":1979,"verdict":"conformant"}
-{"id":"tree-graphs-directed-oldarrows","path":"../graphs/directed/oldarrows.gv","size":1998,"verdict":"diverged","diffCount":40,"firstDiff":"edge:Z->I#0/_draw_/op[1].b[ptCount]","maxDelta":42.50999999999999,"maxDeltaPath":"edge:Z->I#0/_hldraw_/op[2].T[0]"}
 {"id":"windows-pm2way","path":"windows/pm2way.gv","size":1998,"verdict":"conformant"}
 {"id":"graphs-pm2way","path":"graphs/pm2way.gv","size":2020,"verdict":"conformant"}
 {"id":"tree-graphs-directed-pm2way","path":"../graphs/directed/pm2way.gv","size":2020,"verdict":"conformant"}
@@ -903,3 +902,4 @@
 {"id":"2475_2","path":"2475_2.dot","size":641284,"verdict":"conformant"}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant"}
 {"id":"2222","path":"2222.dot","size":2384469,"verdict":"oracle-error","errMsg":"oracle exit null"}
+{"id":"tree-graphs-directed-oldarrows","path":"../graphs/directed/oldarrows.gv","size":1998,"verdict":"accepted","diffCount":40,"firstDiff":"edge:Z->I#0/_draw_/op[1].b[ptCount]","maxDelta":42.50999999999999,"maxDeltaPath":"edge:Z->I#0/_hldraw_/op[2].T[0]"}

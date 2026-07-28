@@ -1,0 +1,176 @@
+{
+  "generatedAt": "2026-07-28T16:45:00.120Z",
+  "oracleSha1": "8fdd1294b3726c2a19fe384ca48f44a2954d1944",
+  "tolerance": 0.01,
+  "results": [
+    {
+      "id": "241_0",
+      "verdict": "not-cleared",
+      "baseDiffs": 6,
+      "injectedDiffs": 6,
+      "bucket": {
+        "shape": "edge/_draw_/structural",
+        "kind": "count",
+        "signature": "edge/_draw_/structural+edge/_hdraw_/numeric+edge/pos/structural",
+        "uniformDelta": [
+          0,
+          0.07
+        ]
+      }
+    },
+    {
+      "id": "1855",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 842,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-oldarrows",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 40,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "graphs-arrows",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 40,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "graphs-arrowsize",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 72,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "graphs-newarrows",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 40,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "share-newarrows",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 20,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "windows-newarrows",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 20,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "linux.x86-arrows_dot",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 40,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "macosx-arrows_dot",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 40,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "nshare-arrows_dot",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 40,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2239",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_ldraw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "graphs-b29",
+      "verdict": "not-cleared",
+      "baseDiffs": 2,
+      "injectedDiffs": 2,
+      "bucket": {
+        "shape": "edge/_ldraw_/numeric",
+        "kind": "position",
+        "signature": "edge/_ldraw_/numeric+edge/lp/numeric"
+      }
+    },
+    {
+      "id": "linux.i386-b29",
+      "verdict": "not-cleared",
+      "baseDiffs": 2,
+      "injectedDiffs": 2,
+      "bucket": {
+        "shape": "edge/_ldraw_/numeric",
+        "kind": "position",
+        "signature": "edge/_ldraw_/numeric+edge/lp/numeric"
+      }
+    },
+    {
+      "id": "2470",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 596,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_ldraw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    }
+  ]
+}

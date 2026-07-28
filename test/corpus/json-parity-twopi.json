@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T23:13:58.517Z",
+  "generatedAt": "2026-07-28T16:47:16.443Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "twopi",
   "oracleVersion": "dot 15.1.0",
@@ -7,8 +7,8 @@
   "total": 905,
   "counts": {
     "conformant": 887,
-    "diverged": 1,
-    "accepted": 16,
+    "diverged": 0,
+    "accepted": 17,
     "port-error": 0,
     "oracle-error": 1,
     "timeout": 0
@@ -4008,7 +4008,7 @@
       "id": "tree-graphs-directed-oldarrows",
       "path": "../graphs/directed/oldarrows.gv",
       "size": 1998,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 40,
       "firstDiff": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
       "maxDelta": 42.50999999999999,

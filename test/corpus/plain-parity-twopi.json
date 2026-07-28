@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T22:37:06.193Z",
+  "generatedAt": "2026-07-28T16:47:15.240Z",
   "generatedWith": "test/corpus/plain-walk.ts",
   "engine": "twopi",
   "oracleVersion": "dot 15.1.0",
@@ -7,8 +7,8 @@
   "total": 905,
   "counts": {
     "pass": 881,
-    "diverged": 1,
-    "accepted": 22,
+    "diverged": 0,
+    "accepted": 23,
     "oracleError": 1,
     "portError": 0,
     "timeout": 0
@@ -9465,30 +9465,6 @@
       }
     },
     {
-      "id": "tree-graphs-directed-oldarrows",
-      "path": "../graphs/directed/oldarrows.gv",
-      "size": 1998,
-      "verdict": "diverged",
-      "formats": {
-        "plain": {
-          "verdict": "diverged",
-          "diffCount": 2,
-          "firstDiffs": [
-            "[edge] Z->I#0/pointCount: port=4 native=7",
-            "[edge] i->Z#0/pointCount: port=7 native=4"
-          ]
-        },
-        "plain-ext": {
-          "verdict": "diverged",
-          "diffCount": 2,
-          "firstDiffs": [
-            "[edge] Z->I#0/pointCount: port=4 native=7",
-            "[edge] i->Z#0/pointCount: port=7 native=4"
-          ]
-        }
-      }
-    },
-    {
       "id": "tree-graphs-directed-pm2way",
       "path": "../graphs/directed/pm2way.gv",
       "size": 2020,
@@ -12971,6 +12947,30 @@
         },
         "plain-ext": {
           "verdict": "pass"
+        }
+      }
+    },
+    {
+      "id": "tree-graphs-directed-oldarrows",
+      "path": "../graphs/directed/oldarrows.gv",
+      "size": 1998,
+      "verdict": "accepted",
+      "formats": {
+        "plain": {
+          "verdict": "accepted",
+          "diffCount": 2,
+          "firstDiffs": [
+            "[edge] Z->I#0/pointCount: port=4 native=7",
+            "[edge] i->Z#0/pointCount: port=7 native=4"
+          ]
+        },
+        "plain-ext": {
+          "verdict": "accepted",
+          "diffCount": 2,
+          "firstDiffs": [
+            "[edge] Z->I#0/pointCount: port=4 native=7",
+            "[edge] i->Z#0/pointCount: port=7 native=4"
+          ]
         }
       }
     }
