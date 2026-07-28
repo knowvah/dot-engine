@@ -100,11 +100,32 @@ export function generalPolyVertices(poly: PolygonT, w: number, h: number): Point
  * which grows bb to the outermost ring after placing rings outward.
  * @see lib/common/shapes.c:poly_init (ellipse peripheries, :2173-2184)
  */
-function ellipseRings(w: number, h: number, peripheries: number): Point[] {
+function ellipseRings(
+  w: number,
+  h: number,
+  peripheries: number,
+  base?: { w: number; h: number },
+): Point[] {
+  if (base === undefined) {
+    const out: Point[] = [];
+    for (let j = 0; j < peripheries; j++) {
+      const inset = (peripheries - 1 - j) * GAP;
+      out.push(...ellipseVertices(w - 2 * inset, h - 2 * inset));
+    }
+    return out;
+  }
+  // C's forward order: the base ring at the shape box, each further ring
+  // stepping the half-extent OUTWARD by GAP. Needed under fixedshape, where
+  // the stored width is label-grown and the inset-from-width form above
+  // cannot recover the shape box. @see lib/common/shapes.c:poly_init
+  // (sides < 3: vertices[0/1] = ±bb/2, then P.x += GAP per periphery)
   const out: Point[] = [];
+  let px = base.w / 2;
+  let py = base.h / 2;
   for (let j = 0; j < peripheries; j++) {
-    const inset = (peripheries - 1 - j) * GAP;
-    out.push(...ellipseVertices(w - 2 * inset, h - 2 * inset));
+    out.push({ x: -px, y: -py }, { x: px, y: py });
+    px += GAP;
+    py += GAP;
   }
   return out;
 }
@@ -221,13 +242,25 @@ export function computeVertices(
   base?: { w: number; h: number },
 ): Point[] {
   const sides = poly.sides;
+  // C builds vertices from the constrained shape box (bb) BEFORE the
+  // fixedshape branch sets ND_width/ND_height to max(label, bb)
+  // (shapes.c:poly_init tail), so under fixedsize="shape" the stored width
+  // is label-grown while the drawn shape stays at the attr box. Substitute
+  // the stored base box (= that bb) as the vertex source; every other case
+  // has width == shape box and is untouched.
+  if (poly.option.fixedshape && base !== undefined) {
+    w = base.w;
+    h = base.h;
+  }
   // Cylinder is a 19-point bezier control polygon, not a regular 19-gon.
   if (poly.option.shape === CYLINDER) return cylinderVertices(w, h);
   // C generates one ring even for peripheries=0 (outp >= 1); the draw
   // loop is what skips it. @see lib/common/shapes.c:poly_init (outp)
   const peripheries = Math.max(poly.peripheries, 1);
   if (poly.option.shape === STAR) return starRings({ w, h, base }, peripheries);
-  if (sides <= 2) return ellipseRings(w, h, peripheries);
+  if (sides <= 2) {
+    return ellipseRings(w, h, peripheries, poly.option.fixedshape ? base : undefined);
+  }
   // C's isBox test: right angles only (diamond = orientation 45).
   if (sides === 4 && Math.abs(poly.orientation % 90) < 0.5
       && poly.distortion === 0 && poly.skew === 0) {

@@ -32,7 +32,7 @@ export function sameSide(p0: Point, p1: Point, L0: Point, L1: Point): boolean {
 }
 
 /** Vertex-extent box of a fixedshape polygon. @see lib/common/shapes.c:polyBB */
-function fixedShapeSize(poly: PolygonT): { w: number; h: number } {
+export function fixedShapeSize(poly: PolygonT): { w: number; h: number } {
   let xmax = 0;
   let ymax = 0;
   for (const v of poly.vertices ?? []) {
@@ -50,13 +50,10 @@ interface InsideScale {
   boxURy: number;
 }
 
-/** Node size + outline extents (points) for the inside scale. */
-function insideDims(n: Node, poly: PolygonT, xsize: number, ysize: number):
+/** Node size + outline extents (points) for the inside scale (non-fixedshape;
+ * the fixedshape branch short-circuits in insideScale). */
+function insideDims(n: Node, xsize: number, ysize: number):
   { w: number; h: number; ow: number; oh: number } {
-  if (poly.option.fixedshape) {
-    const { w, h } = fixedShapeSize(poly);
-    return { w, h, ow: w, oh: h };
-  }
   const w = 72 * (n.info.width || xsize / 72);
   const h = 72 * (n.info.height || ysize / 72);
   // Nodes that skipped poly_init (no measurer) have no outline dims.
@@ -67,10 +64,26 @@ function insideDims(n: Node, poly: PolygonT, xsize: number, ysize: number):
 function insideScale(n: Node, poly: PolygonT): InsideScale {
   // C swaps the node extents for flipped (LR/RL) layouts. @see poly_inside (GD_flip)
   const flip = n.root.info.flip === true;
+  // C's fixedshape branch derives xsize/ysize from the polyBB shape box
+  // itself (NOT ND_lw/rw/ht, which are label-grown there), so the scale
+  // collapses to 1 (swapped under flip) and the boundary is the pure vertex
+  // extent with no penwidth outline growth.
+  // @see shapes.c:poly_inside (option.fixedshape branch)
+  if (poly.option.fixedshape) {
+    const { w, h } = fixedShapeSize(poly);
+    const xsize = flip ? h : w;
+    const ysize = flip ? w : h;
+    return {
+      scalex: xsize !== 0 ? w / xsize : w,
+      scaley: ysize !== 0 ? h / ysize : h,
+      boxURx: w / 2,
+      boxURy: h / 2,
+    };
+  }
   const lwrw = n.info.lw + n.info.rw;
   const xsize = flip ? n.info.ht : lwrw;
   const ysize = flip ? lwrw : n.info.ht;
-  const { w, h, ow, oh } = insideDims(n, poly, xsize, ysize);
+  const { w, h, ow, oh } = insideDims(n, xsize, ysize);
   return {
     scalex: xsize !== 0 ? w / xsize : w,
     scaley: ysize !== 0 ? h / ysize : h,

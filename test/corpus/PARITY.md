@@ -19,7 +19,7 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 
 | track | surveyed | conformant / pass | diverged | accepted | errors | pass % |
 |---|---:|---:|---:|---:|---:|---:|
-| [dot (SVG)](./PARITY-dot.md) | 939 | 905 | 6 | 16 | 12 | 96.4% |
+| [dot (SVG)](./PARITY-dot.md) | 939 | 905 | 5 | 16 | 13 | 96.4% |
 | [dot (xdot)](./PARITY-XDOT.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 905 | 903 | 0 | 2 | 0 | 99.8% |
 | [circo (xdot)](./PARITY-circo.md) | 905 | 895 | 0 | 4 | 6 | 98.9% |
@@ -80,14 +80,15 @@ three* only when every format agrees with the oracle within tolerance.
 
 | status across SVG · xdot · json | count | % |
 |---|---:|---:|
-| conformant in all three | 903 | 99.8% |
+| conformant in all three | 902 | 99.7% |
 | accepted (won't-fix) in ≥1, diverged in none | 2 | 0.2% |
-| diverged / errored in ≥1 | 0 | 0.0% |
+| diverged / errored in ≥1 | 1 | 0.1% |
 
 Per-format status of the ids not conformant in all three:
 
 | id | SVG | xdot | json |
 |---|---|---|---|
+| `1652` | error | conformant | conformant |
 | `share-Latin1` | conformant | conformant | accepted |
 | `windows-Latin1` | conformant | conformant | accepted |
 

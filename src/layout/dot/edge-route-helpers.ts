@@ -15,6 +15,8 @@ import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge as GraphEdge } from '../../model/edge.js';
 import { nodeAttr } from '../../common/poly-init.js';
+import { fixedShapeSize } from '../../common/poly-inside.js';
+import type { PolygonT } from '../../common/types.js';
 import type { Point, Bezier, Spline } from '../../model/geom.js';
 import { routeSpline } from '../../pathplan/route.js';
 import type { Edge as BarrierEdge } from '../../pathplan/types.js';
@@ -68,6 +70,23 @@ export function nodeBoxOf(n: Node, g: Graph): NodeBox {
   if (shapeName === 'record' || shapeName === 'Mrecord') {
     const rb = recordClipBox(n);
     if (rb) return { center: n.info.coord, ...rb, isEllipse: false, penwidth };
+  }
+  // C poly_inside sizes the boundary from polyBB (the vertex extent) under
+  // fixedshape — ND_lw/rw/ht are label-grown there and must not clip the
+  // edge, and the boundary carries NO penwidth outline growth.
+  // @see lib/common/shapes.c:poly_inside (option.fixedshape branch)
+  const si = n.info.shape_info as PolygonT | undefined;
+  if (si?.option?.fixedshape === true && si.vertices) {
+    const ext = fixedShapeSize(si);
+    const flip = g.root.info.flip === true;
+    const w = flip ? ext.h : ext.w;
+    const h = flip ? ext.w : ext.h;
+    return {
+      center: n.info.coord,
+      lw: w / 2, rw: w / 2, ht: h,
+      isEllipse: ELLIPSE_SHAPES.has(shapeName),
+      penwidth: 0,
+    };
   }
   return {
     center: n.info.coord,

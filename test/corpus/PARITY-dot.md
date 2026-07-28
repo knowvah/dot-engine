@@ -13,9 +13,9 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 
 - **Oracle:** dot 15.1.0 · **corpus:** [graphviz `tests/`](https://gitlab.com/graphviz/graphviz/-/tree/main/tests) (local clone `~/git/graphviz/tests`)
 - **Surveyed (applicable):** 939
-- **conformant\*:** 905 (96.4%) · structural-match: 19 → 924/939 structurally equal (98.4%)
-- **Accepted deltas (documented, won't-fix):** 16 · **Tracked gaps (unaccepted, will-fix):** 6 → of 22 non-conformant graphs
-- **errored:** 0 · **timeout:** 0 · **oracle-error:** 12 (excluded from scoring)
+- **conformant\*:** 905 (96.4%) · structural-match: 18 → 923/939 structurally equal (98.3%)
+- **Accepted deltas (documented, won't-fix):** 16 · **Tracked gaps (unaccepted, will-fix):** 5 → of 21 non-conformant graphs
+- **errored:** 0 · **timeout:** 1 · **oracle-error:** 12 (excluded from scoring)
 - **Quarantined (not surveyed, from corpus-manifest.json):** oracle-crash 3, not-a-layout-test 2, malformed 6, engine-deferred 6, multi-graph 3, perf 1
 
 \* **conformant** is a *deterministic-tolerance* verdict, not literal byte equality: numeric coordinates/paths agree within ±0.01 and all non-numeric content (tags, colors, text) is exactly equal (`compareSvg(…, 'deterministic')`). Full definition: [docs/conformance.md](../../docs/conformance.md).
@@ -56,7 +56,7 @@ the diverged table and the backlog below.
 | [`graphs-honda-tokoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/honda-tokoro.gv) | structural-match | 1.06 | A7 | maxΔ ~1pt on one edge (n012-&gt;n011); every node/label/bbox conformant | known-divergences.md#a7-round-box-wall-rounding-boundary-dot |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | structural-match | 42.09 | A8 | maxΔ 42.09 on 3 of 21,216 edges (edge2575 g[4639], edge3905 g[7777], edge15467 g[30201]; all record-port :c-&gt;:nb_part smode long-edge routes) | known-divergences.md#a8-fp-contractfma-rounding-vs-strict-ieee-dot |
 
-## Tracked structural-match (5)
+## Tracked structural-match (4)
 
 Same element tree; only numeric coordinate diffs above tolerance (no missing
 or extra elements). Near-misses — sub-pixel-to-modest position drift — that we
@@ -72,12 +72,10 @@ for driving groups to conformance. Mechanism-family attribution: see
 | bucket | count | examples | hypothesis |
 |---|---:|---|---|
 | `edge-path · Δ<1` | 3 | `tree-doc-dotguide-curve`, `tree-doc-dotguide-icurve`, `tree-graphs-directed-arrows` | spline routing residual — x-coord/NS placement, clip endpoint, or ortho tie-break |
-| `node-ellipse · Δ100-1000` | 1 | `tree-doc-infosrc-fixed` | node x-coord placement drift (NS / LR_balance) |
 | `edge-path · Δ1-10` | 1 | `tree-graphs-directed-honda-tokoro` | spline routing residual — x-coord/NS placement, clip endpoint, or ortho tie-break |
 
 | id | maxΔ | kind | worst-diff path |
 |---|---:|---|---|
-| [`tree-doc-infosrc-fixed`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/infosrc/fixed.gv) | 111.27 | `node-ellipse` | `svg/g[1]/g[2]/ellipse[1]/@rx` |
 | [`tree-graphs-directed-honda-tokoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/honda-tokoro.gv) | 1.06 | `edge-path` | `svg/g[1]/g[35]/path[1]/@d[5]` |
 | [`tree-doc-dotguide-icurve`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/icurve.dot) | 0.38 | `edge-path` | `svg/g[1]/g[3]/path[2]/@d[3]` |
 | [`tree-doc-dotguide-curve`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/curve.dot) | 0.38 | `edge-path` | `svg/g[1]/g[3]/path[2]/@d[5]` |
@@ -94,10 +92,11 @@ for driving groups to conformance. Mechanism-family attribution: see
 | id | path | message |
 |---|---|---|
 
-## timeout (0)
+## timeout (1)
 
 | id | path | message |
 |---|---|---|
+| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | `1652.dot` |  |
 
 ## oracle-error (12) — excluded from port scoring
 
