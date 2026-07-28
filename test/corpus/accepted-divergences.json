@@ -150,6 +150,17 @@
     },
     {
       "match": {
+        "id": "tree-graphs-directed-honda-tokoro"
+      },
+      "class": "A7",
+      "scope": "parity",
+      "verdict": "structural-match",
+      "bound": "max\u0394 1.06pt on the n012->n011 parallel pair; every node/label/bbox conformant",
+      "reason": "graphs/directed/honda-tokoro.gv is the graphs-honda-tokoro sibling (differs only by samearrowhead attrs, which do not touch this pair's routing): the n012->n011 pair's SVG geometry is BYTE-IDENTICAL to the accepted id on both the port and oracle sides, so the ground-truthed maximal_bbox round() box-wall mechanism (internal x=90 C vs 89 port) transfers verbatim. Verified 2026-07-28 by rendering both variants both sides. Full diagnosis: .agent-notes/honda-samehead-shared-port.md.",
+      "ref": "known-divergences.md#a7-round-box-wall-rounding-boundary-dot"
+    },
+    {
+      "match": {
         "id": "2413_1"
       },
       "class": "A3",

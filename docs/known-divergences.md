@@ -733,8 +733,12 @@ terminates on NaN. Both are C-faithful and affect only NaN inputs.
 
 ### A7. `round()` box-wall rounding boundary (`dot`)
 
-**Affected:** `graphs-honda-tokoro` (structural-match, maxΔ ≈ 1 pt on the single
-edge `n012->n011`).
+**Affected:** `graphs-honda-tokoro` and (added 2026-07-28, new to the 905-item
+universe) its `graphs/directed/` sibling `tree-graphs-directed-honda-tokoro`
+(both structural-match, maxΔ ≈ 1 pt on the single edge `n012->n011`). The
+sibling differs only by `samearrowhead` attrs, which do not touch this pair's
+routing — its `n012->n011` geometry is byte-identical to the accepted id on
+both the port and oracle sides, so the mechanism below transfers verbatim.
 
 **What differs.** `maximal_bbox`'s head-corridor box wall lands at internal
 x=90 in C versus x=89 in the port for the shared `samehead` port of the two
