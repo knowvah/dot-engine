@@ -145,6 +145,20 @@ export function ccwrotatepf(p: Point, ccwrot: number): Point {
 }
 
 /**
+ * Clockwise counterpart — the exact inverse of {@link ccwrotatepf} per case.
+ * @see lib/common/geom.c:cwrotatepf
+ */
+export function cwrotatepf(p: Point, cwrot: number): Point {
+  switch (cwrot) {
+    case 0:   return p;
+    case 90:  return { x: p.y, y: -p.x };
+    case 180: return { x: p.x, y: -p.y };
+    case 270: return { x: p.y, y: p.x };
+    default:  return p;
+  }
+}
+
+/**
  * Returns true if box `b0` completely contains box `b1`.
  *
  * Matches the C `CONTAINS` macro exactly:

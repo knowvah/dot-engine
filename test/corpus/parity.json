@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-07-28T20:31:52.820Z",
+  "generatedAt": "2026-07-28T22:21:49.643Z",
   "generatedWith": "test/corpus/survey.ts",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 939,
   "counts": {
-    "conformant": 905,
-    "structural-match": 18,
+    "conformant": 908,
+    "structural-match": 15,
     "diverged": 3,
     "errored": 0,
     "timeout": 1,
@@ -121,9 +121,7 @@
     {
       "id": "tree-doc-dotguide-curve",
       "path": "../doc/dotguide/curve.dot",
-      "verdict": "structural-match",
-      "maxDelta": 0.379999999999999,
-      "maxDeltaPath": "svg/g[1]/g[3]/path[2]/@d[5]"
+      "verdict": "conformant"
     },
     {
       "id": "tree-doc-dotguide-diamond",
@@ -198,9 +196,7 @@
     {
       "id": "tree-doc-dotguide-icurve",
       "path": "../doc/dotguide/icurve.dot",
-      "verdict": "structural-match",
-      "maxDelta": 0.3800000000000008,
-      "maxDeltaPath": "svg/g[1]/g[3]/path[2]/@d[3]"
+      "verdict": "conformant"
     },
     {
       "id": "tree-doc-dotguide-inv",
@@ -475,9 +471,7 @@
     {
       "id": "tree-graphs-directed-arrows",
       "path": "../graphs/directed/arrows.gv",
-      "verdict": "structural-match",
-      "maxDelta": 0.25,
-      "maxDeltaPath": "svg/g[1]/g[156]/path[2]/@d[3]"
+      "verdict": "conformant"
     },
     {
       "id": "tree-graphs-directed-awilliams",

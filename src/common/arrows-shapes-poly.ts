@@ -9,6 +9,7 @@
  */
 
 import type { Point } from '../model/geom.js';
+import { ccwrotatepf, cwrotatepf } from '../model/geom.js';
 import type { GenResult } from './arrows-shapes-util.js';
 import {
   vsub, vadd, miterShape, negUnit, backwardDelta, axialProjection,
@@ -217,7 +218,25 @@ function curveControlPoints(p: Point, v: Point, w: Point, flag: number): Point[]
 }
 
 /** @see lib/common/arrows.c:arrow_type_curve */
-export function genCurve(p0: Point, u: Point, _arrowsize: number, penwidth: number, flag: number): GenResult {
+export function genCurve(
+  p0: Point, u: Point, _arrowsize: number, penwidth: number, flag: number,
+  rankdir = 0,
+): GenResult {
+  // C generates arrowheads at RENDER time, in the final (post-rankdir) frame;
+  // the port generates during routing and postproc rotates the stored ops.
+  // That round-trip is exact for every other generator, but this formula is
+  // not rotation-equivariant (0.95 shortens the x arm only; the y arm comes
+  // from AF0/AF3 verbatim), so run it in the final frame and rotate back.
+  // The rankdir maps are pure sign/swaps — rankdir 0 (TB) is untouched.
+  if (rankdir !== 0) {
+    const rot = rankdir * 90;
+    const fin = genCurve(ccwrotatepf(p0, rot), ccwrotatepf(u, rot), _arrowsize, penwidth, flag);
+    return {
+      ops: fin.ops.map((op) =>
+        'points' in op ? { ...op, points: op.points.map((pt) => cwrotatepf(pt, rot)) } : op),
+      q: cwrotatepf(fin.q, rot),
+    };
+  }
   const arrowwidth = penwidth > 4 ? (0.5 * penwidth) / 4 : 0.5;
   const noShift = (flag & ARR_MOD_INV) || (u.x === 0 && u.y === 0);
   const p = noShift ? p0 : vsub(p0, backwardDelta(u, penwidth));
