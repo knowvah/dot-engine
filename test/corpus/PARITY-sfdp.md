@@ -12,11 +12,11 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 762 (generated 2026-07-25T04:16:34.660Z)
-- **pass:** 527 (69.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4 · **accepted (A1-drift class):** 228
-- **oracle-error:** 1 · **port-error:** 1 · **timeout:** 1
+- **Surveyed:** 905 (generated 2026-07-28T00:37:39.169Z)
+- **pass:** 617 (68.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 5 · **accepted (A1-drift class):** 281
+- **oracle-error:** 1 · **port-error:** 0 · **timeout:** 1
 
-## Accepted deltas (4) — documented, not chased
+## Accepted deltas (5) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -27,6 +27,7 @@ table below.
 |---|---:|---|---|---|
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | 17606 | A1 | up to 7.6kpt (whole-layout basin) | plans/decision-journal.md 2026-07-24 T5: sfdp chaos regime, same family as fdp 1879 |
 | [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | 100 | A1 | 0.7-1.3pt on 6 nodes | plans/decision-journal.md 2026-07-24 T5: sfdp spring drift regime |
+| [`2556`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2556.dot) | 54 | A6 | degenerate NaN layout: repulsiveforce=100 drives the spring-electrical solver to NaN in BOTH engines (the native oracle emits all-nan positions). Residual 54 diffs are NaN-garbage serialization only - C rounds NaN-&gt;int (bb -4.295e9 vs port 0) and suppresses NaN-spline edge draws (port emits them). No real layout exists on either side. The armPow throw + bezierClip NaN-hang that previously blocked rendering are fixed (C-faithful, NaN-only). | known-divergences.md#a6b-degenerate-nan-layout |
 | [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 20 | A9 | flat-edge ptCount 14 vs 8 (3-&gt;2); same CDT/hypot tie as twopi/circo 241_0 (corridor succeeds N-pt vs plain fallback); findMaxDev hypot ULP | known-divergences.md#a9-sfdp-fp-ties |
 | [`42`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/42.dot) | 200 | A9 | CDT cocircular incircle tie: opCount 5 vs 9 (0-&gt;3), ptCount 32 vs 26 (3-&gt;7); multispline corridor flip. fma+robust-incircle applied; residual is V8-vs-Apple-libm sin/hypot 1-ULP in the predicate input | known-divergences.md#a9-sfdp-fp-ties |
 
@@ -38,20 +39,19 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **228** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **281** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
 ## Diverged (0)
 
 _(none)_
 
-## Errors and timeouts (3)
+## Errors and timeouts (2)
 
 | id | status | message |
 |---|---|---|
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`2556`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2556.dot) | port-error | armPow: argument outside the ported normal-finite fast path |
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | timeout |  |
 
 **oracle errors:** 7 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (527) are omitted for brevity — the full roster is in
+_Passing ids (617) are omitted for brevity — the full roster is in
 `parity-sfdp.json`._

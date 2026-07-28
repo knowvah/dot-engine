@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-21T00:28:28.045Z",
+  "generatedAt": "2026-07-28T03:12:57.817Z",
   "oracleSha1": "8fdd1294b3726c2a19fe384ca48f44a2954d1944",
   "tolerance": 0.5,
   "results": [
@@ -769,6 +769,128 @@
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-clust1",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 42,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "cluster/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-neato-inet",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 721,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-jcctree",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 113,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-grammar",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 38,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-undirected-ngk10_4",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-dotguide-asde91",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 100,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-polypoly",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 3221,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2619_2",
+      "verdict": "harness-error",
+      "baseDiffs": 8,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "unknown",
+        "kind": "position",
+        "signature": "none"
+      },
+      "err": "oracle exit 1: Warning: cell size too small for content"
+    },
+    {
+      "id": "tree-contrib-java-dot-uml",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 148,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-neato-jho",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 426,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-contrib-dirgraph-linux",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
         "kind": "position",
         "signature": "none"
       }

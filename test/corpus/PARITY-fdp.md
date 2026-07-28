@@ -12,8 +12,8 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 762 (generated 2026-07-25T04:48:55.247Z)
-- **pass:** 609 (79.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4 · **accepted (A1-drift class):** 144
+- **Surveyed:** 905 (generated 2026-07-28T00:48:50.611Z)
+- **pass:** 700 (77.3%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4 · **accepted (A1-drift class):** 196
 - **oracle-error:** 3 · **port-error:** 0 · **timeout:** 2
 
 ## Accepted deltas (4) — documented, not chased
@@ -26,7 +26,7 @@ table below.
 | id | #diffs | class | bound | ref |
 |---|---:|---|---|---|
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | 19496 | A1 | up to 64kpt (whole-layout basin) | plans/decision-journal.md 2026-07-24 T4b: fdp chaos class, perturbation-proven on family |
-| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 10779 | A1 | up to 5.4kpt, 30/30 nodes | plans/decision-journal.md 2026-07-24 T4b: chaos proven — node width +0.001in moves port-own layout max 3390pt |
+| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 11103 | A1 | up to 5.4kpt, 30/30 nodes | plans/decision-journal.md 2026-07-24 T4b: chaos proven — node width +0.001in moves port-own layout max 3390pt |
 | [`graphs-badvoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/badvoro.gv) | 33264 | A1 | median 1433pt (whole-layout basin) | plans/decision-journal.md 2026-07-24 T4b: chaos proven — ONE edge len +0.0001 moves port-own layout median 322pt |
 | [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 446 | A9 | 11 numeric draw-op diffs confined to edge 0-&gt;1#0's unfilled_bezier (maxΔ 3.39pt), under injected-identical node positions ⇒ pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. | known-divergences.md#a9-sfdp-fp-ties |
 
@@ -38,7 +38,7 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **144** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **197** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
 ## Diverged (0)
 
@@ -55,5 +55,5 @@ _(none)_
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | timeout |  |
 
 **oracle errors:** 13 native-crash (documented, excluded) / 3 timeout-flake (excluded this run, note to retry)
-_Passing ids (609) are omitted for brevity — the full roster is in
+_Passing ids (700) are omitted for brevity — the full roster is in
 `parity-fdp.json`._
