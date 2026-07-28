@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-27T19:15:16.994Z",
+  "generatedAt": "2026-07-28T20:31:52.820Z",
   "generatedWith": "test/corpus/survey.ts",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 939,
   "counts": {
     "conformant": 905,
-    "structural-match": 19,
+    "structural-match": 18,
     "diverged": 3,
     "errored": 0,
-    "timeout": 0,
+    "timeout": 1,
     "oracle-error": 12
   },
   "results": [
@@ -360,9 +360,7 @@
     {
       "id": "tree-doc-infosrc-fixed",
       "path": "../doc/infosrc/fixed.gv",
-      "verdict": "structural-match",
-      "maxDelta": 111.27000000000001,
-      "maxDeltaPath": "svg/g[1]/g[2]/ellipse[1]/@rx"
+      "verdict": "conformant"
     },
     {
       "id": "tree-doc-infosrc-forward",
@@ -974,7 +972,7 @@
     {
       "id": "1652",
       "path": "1652.dot",
-      "verdict": "conformant"
+      "verdict": "timeout"
     },
     {
       "id": "1658",

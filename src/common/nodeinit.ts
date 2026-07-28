@@ -201,6 +201,7 @@ function pointSizeResult(
   return {
     ...gvNodesize(sz, sz, false),
     outlineW: szOutline, outlineH: szOutline, baseW: sz0, baseH: sz0,
+    fixedshape: false, // C point_init never sets option.fixedshape
   };
 }
 
@@ -262,17 +263,20 @@ function initNodeFromLabel(n: Node, g: Graph, measurer: TextMeasurer): boolean {
   // C poly_init installs the ATTR-RESOLVED polygon into ND_shape_info
   // (sides/orientation/skew/distortion/peripheries/regular); edge
   // clipping and rendering read it.
-  assignShapeInfo(n, effectivePolygon(poly, params));
+  assignShapeInfo(n, effectivePolygon(poly, params, sz.fixedshape));
   return true;
 }
 
 /** The attr-resolved polygon poly_init stores. @see shapes.c:poly_init (poly->... assignments) */
-function effectivePolygon(poly: PolygonT, p: PolySizeParams): PolygonT {
+function effectivePolygon(poly: PolygonT, p: PolySizeParams, fixedshape: boolean): PolygonT {
   let sides = p.sides;
   // ellipses with distortion/skew become 120-gons
   if (sides <= 2 && (p.distortion !== 0 || p.skew !== 0)) sides = 120;
   return {
     ...poly,
+    // C: poly->option.fixedshape = true inside the fixedsize="shape" branch;
+    // poly-inside and computeVertices key the shape-box/width split on it.
+    option: { ...poly.option, fixedshape },
     regular: p.regular,
     peripheries: p.peripheries,
     sides,

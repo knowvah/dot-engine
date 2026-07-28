@@ -111,6 +111,14 @@ export interface PolySizeResult extends NodeSize {
   baseW: number;
   baseH: number;
   /**
+   * fixedsize="shape": the drawn shape stays at the attr box while
+   * width/height grow to max(label, shape). Installed on the polygon
+   * descriptor as `option.fixedshape`; vertex generation and insideness
+   * must read the base box, not the label-grown width.
+   * @see lib/common/shapes.c:poly_init (poly->option.fixedshape)
+   */
+  fixedshape: boolean;
+  /**
    * Justification borders — the space available for the label within the node
    * box. `emit_label` reads this (not `dimen`) for `labelloc` top/bottom and
    * left/right justification; without it a `labelloc=b` label centers.
@@ -628,6 +636,7 @@ function assembleResult(
       outlineW: Math.max(dimen.x, grown.outline.x),
       outlineH: Math.max(dimen.y, grown.outline.y),
       baseW: grown.base.x, baseH: grown.base.y,
+      fixedshape,
     };
   }
   return {
@@ -635,5 +644,6 @@ function assembleResult(
     outlineW: grown.outline.x,
     outlineH: grown.outline.y,
     baseW: grown.base.x, baseH: grown.base.y,
+    fixedshape,
   };
 }
