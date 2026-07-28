@@ -49,6 +49,8 @@ const REPORTS = [
       // format-parity-matrix (BEGIN): PARITY.md's Tracks table and per-track
       // dashboard list link to the 22 new plain/json/map per-engine reports.
       [/\]\(\.\/PARITY-dot-plain\.md\)/g, '](/parity-dot-plain)'],
+      // dot-agwrite track: the `-Tdot` (agwrite) dashboard row.
+      [/\]\(\.\/PARITY-dot-dot\.md\)/g, '](/parity-dot-dot)'],
       [
         /\]\(\.\/PARITY-(circo|twopi|osage|patchwork|neato|fdp|sfdp)-(plain|json|map)\.md\)/g,
         '](/parity-$1-$2)',
@@ -265,6 +267,12 @@ const FORMAT_MATRIX_SURFACES = ['plain', 'json', 'map'];
 REPORTS.push({
   src: '../test/corpus/PARITY-dot-plain.md',
   dst: 'parity-dot-plain.md',
+  rewrites: STANDARD_REWRITES,
+});
+// dot-agwrite track: the `-Tdot` (agwrite) dashboard.
+REPORTS.push({
+  src: '../test/corpus/PARITY-dot-dot.md',
+  dst: 'parity-dot-dot.md',
   rewrites: STANDARD_REWRITES,
 });
 for (const engine of FORMAT_MATRIX_ENGINES) {
