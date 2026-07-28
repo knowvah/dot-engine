@@ -12,16 +12,14 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 905
-- **pass:** 889 (98.2%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 15
+- **pass:** 889 (98.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 16
 - **errors (oracle/port/timeout, excluded from scoring):** 0
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 5155 | 20 | `[node] 9000/x: port=40.929 native=36.901; [node] 9001/x: port=36.893 native=31.824; [node] 9002/x: port=2.8854 native=40.927; [node] 9002/y: port=2.512 native=4.9555; [node] 9003/x: port=31.824 native=40.935` |
+_(none)_
 
-## Accepted (15) — documented, not chased
+## Accepted (16) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
@@ -38,6 +36,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 5 | `[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid; [node] a/style: port=solid native=ellipse; [node] a/shape: port=ellipse native=black; [node] a/color: port=black native=lightgrey; [node] a/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
 | [`share-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/polypoly.gv) | 2 | `[node] 9002/x: port=2.805 native=8.2217; [node] 9004/x: port=8.2252 native=2.7947` | layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`tree-graphs-directed-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/Latin1.gv) | 5 | `[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid; [node] a/style: port=solid native=ellipse; [node] a/shape: port=ellipse native=black; [node] a/color: port=black native=lightgrey; [node] a/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id. |
+| [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 20 | `[node] 9000/x: port=40.929 native=36.901; [node] 9001/x: port=36.893 native=31.824; [node] 9002/x: port=2.8854 native=40.927; [node] 9002/y: port=2.512 native=4.9555; [node] 9003/x: port=31.824 native=40.935` | layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (A9, same node-9004 cos(pi+theta) 1-ULP as graphs-polypoly, propagated via arrayRects acmpf raw width+height tie; engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-28. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 5 | `[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid; [node] a/style: port=solid native=ellipse; [node] a/shape: port=ellipse native=black; [node] a/color: port=black native=lightgrey; [node] a/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
 | [`windows-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/polypoly.gv) | 2 | `[node] 9002/x: port=2.8189 native=8.2633; [node] 9004/x: port=8.2669 native=2.8086` | layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T22:40:30.665Z",
+  "generatedAt": "2026-07-28T16:19:31.639Z",
   "generatedWith": "test/corpus/plain-walk.ts",
   "engine": "osage",
   "oracleVersion": "dot 15.1.0",
@@ -7,8 +7,8 @@
   "total": 905,
   "counts": {
     "pass": 889,
-    "diverged": 1,
-    "accepted": 15,
+    "diverged": 0,
+    "accepted": 16,
     "oracleError": 0,
     "portError": 0,
     "timeout": 0
@@ -10785,36 +10785,6 @@
       }
     },
     {
-      "id": "tree-graphs-directed-polypoly",
-      "path": "../graphs/directed/polypoly.gv",
-      "size": 5155,
-      "verdict": "diverged",
-      "formats": {
-        "plain": {
-          "verdict": "diverged",
-          "diffCount": 20,
-          "firstDiffs": [
-            "[node] 9000/x: port=40.929 native=36.901",
-            "[node] 9001/x: port=36.893 native=31.824",
-            "[node] 9002/x: port=2.8854 native=40.927",
-            "[node] 9002/y: port=2.512 native=4.9555",
-            "[node] 9003/x: port=31.824 native=40.935"
-          ]
-        },
-        "plain-ext": {
-          "verdict": "diverged",
-          "diffCount": 20,
-          "firstDiffs": [
-            "[node] 9000/x: port=40.929 native=36.901",
-            "[node] 9001/x: port=36.893 native=31.824",
-            "[node] 9002/x: port=2.8854 native=40.927",
-            "[node] 9002/y: port=2.512 native=4.9555",
-            "[node] 9003/x: port=31.824 native=40.935"
-          ]
-        }
-      }
-    },
-    {
       "id": "graphs-grdradial",
       "path": "graphs/grdradial.gv",
       "size": 5370,
@@ -12901,6 +12871,36 @@
         },
         "plain-ext": {
           "verdict": "pass"
+        }
+      }
+    },
+    {
+      "id": "tree-graphs-directed-polypoly",
+      "path": "../graphs/directed/polypoly.gv",
+      "size": 5155,
+      "verdict": "accepted",
+      "formats": {
+        "plain": {
+          "verdict": "accepted",
+          "diffCount": 20,
+          "firstDiffs": [
+            "[node] 9000/x: port=40.929 native=36.901",
+            "[node] 9001/x: port=36.893 native=31.824",
+            "[node] 9002/x: port=2.8854 native=40.927",
+            "[node] 9002/y: port=2.512 native=4.9555",
+            "[node] 9003/x: port=31.824 native=40.935"
+          ]
+        },
+        "plain-ext": {
+          "verdict": "accepted",
+          "diffCount": 20,
+          "firstDiffs": [
+            "[node] 9000/x: port=40.929 native=36.901",
+            "[node] 9001/x: port=36.893 native=31.824",
+            "[node] 9002/x: port=2.8854 native=40.927",
+            "[node] 9002/y: port=2.512 native=4.9555",
+            "[node] 9003/x: port=31.824 native=40.935"
+          ]
         }
       }
     }

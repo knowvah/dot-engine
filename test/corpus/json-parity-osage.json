@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T22:59:28.916Z",
+  "generatedAt": "2026-07-28T16:25:07.783Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "osage",
   "oracleVersion": "dot 15.1.0",
@@ -7,8 +7,8 @@
   "total": 905,
   "counts": {
     "conformant": 892,
-    "diverged": 1,
-    "accepted": 12,
+    "diverged": 0,
+    "accepted": 13,
     "port-error": 0,
     "oracle-error": 0,
     "timeout": 0
@@ -4584,7 +4584,7 @@
       "id": "tree-graphs-directed-polypoly",
       "path": "../graphs/directed/polypoly.gv",
       "size": 5155,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 112,
       "firstDiff": "edge:9000->8000#0/_draw_/op[1].b[0]",
       "maxDelta": 2739.05,

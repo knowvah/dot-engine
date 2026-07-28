@@ -757,7 +757,6 @@
 {"id":"1898","path":"1898.dot","size":5067,"verdict":"conformant"}
 {"id":"graphs-ldbxtried","path":"graphs/ldbxtried.gv","size":5155,"verdict":"conformant"}
 {"id":"tree-graphs-directed-ldbxtried","path":"../graphs/directed/ldbxtried.gv","size":5155,"verdict":"conformant"}
-{"id":"tree-graphs-directed-polypoly","path":"../graphs/directed/polypoly.gv","size":5155,"verdict":"diverged","diffCount":112,"firstDiff":"edge:9000->8000#0/_draw_/op[1].b[0]","maxDelta":2739.05,"maxDeltaPath":"node:9002/pos[0]"}
 {"id":"graphs-grdradial","path":"graphs/grdradial.gv","size":5370,"verdict":"conformant"}
 {"id":"tree-graphs-directed-sdh","path":"../graphs/directed/sdh.gv","size":5428,"verdict":"conformant"}
 {"id":"share-shells","path":"share/shells.gv","size":5493,"verdict":"conformant"}
@@ -903,3 +902,4 @@
 {"id":"2222","path":"2222.dot","size":2384469,"verdict":"conformant"}
 {"id":"2475_2","path":"2475_2.dot","size":641284,"verdict":"conformant"}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant"}
+{"id":"tree-graphs-directed-polypoly","path":"../graphs/directed/polypoly.gv","size":5155,"verdict":"accepted","diffCount":112,"firstDiff":"edge:9000->8000#0/_draw_/op[1].b[0]","maxDelta":2739.05,"maxDeltaPath":"node:9002/pos[0]"}

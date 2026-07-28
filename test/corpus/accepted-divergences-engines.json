@@ -95,6 +95,11 @@
     }
   },
   "osage": {
+    "tree-graphs-directed-polypoly": {
+      "class": "A9",
+      "bound": "Rigid pack-cell re-order of the 9000-series distorted quads (112 draw-op diffs; 10 of 76 nodes move, the rest bit-identical; 9002/9006 swap cells with -(2739,176)/+(2449,176) translations, 8 neighbours shift in x only; no shape/routing error). Mechanism: the SAME node-9004 cos(pi+theta) 1-ULP as graphs-polypoly (C bb.x 57.754149262393340791 vs port 57.754149262393326580 - byte-identical to the patchwork-tail RCA values). Propagation on this larger input is osage arrayRects acmpf, which sorts by the RAW width+height sum: under Apple libm 9004's key is strictly 1 ULP above its rotated siblings 9000/9002/9006 and sorts first; under V8's correctly-rounded cos the four keys tie exactly and unstable qsort orders the group differently -> different row-major 9x9 cells -> the 9002/9006 swap plus a column-width fmax cascade. Reproduced exactly by feeding the port's own arrayRects the C sizes vs the port sizes (10 place diffs, dx byte-matching the sweep). Irreducible per the A9 controlled experiment (bare transcendental, bit-identical argument). osage only; same input passes the other engines.",
+      "ref": "known-divergences.md#a9-engine-track-twopi-circo"
+    },
     "graphs-polypoly": {
       "class": "A9",
       "bound": "Rigid pack-cell swap of the 9000-series distorted-quad components (whole-node \u00b1(182,338)/\u00b12909 translations; <=24 draw-op diffs per id, no shape/routing error). Mechanism: bare transcendental cos(pi+theta) \u2014 V8 Math.cos is correctly rounded while Apple libm's cos carries a 1-ULP argument-dependent error, so |cos(pi+theta)| != |cos(theta)| only under libm; the 1-ULP size delta feeds pack GRID ceil, tips a perimeter tie, and qsort swaps two components' cells. No deterministic rewrite reproduces a non-correctly-rounded libm transcendental. osage only. Full RCA: .agent-notes/patchwork-tail-rca.md.",

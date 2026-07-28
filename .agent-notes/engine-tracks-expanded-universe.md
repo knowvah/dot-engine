@@ -43,7 +43,13 @@ universe grew 762 → 905.
   the way patchwork-tail-rca.md did, and confirm the cell swap is driven by the
   same `cos(pi+theta)` 1-ULP delta. If confirmed, extend the A9 entry with the
   wider bound rather than inventing a new class.
-- **Confidence**: Medium (signature match, mechanism unverified).
+- **RESOLVED 2026-07-28**: confirmed A9 and accepted (journal 2026-07-28). Same
+  node-9004 cos ULP byte-for-byte; propagation on this input is **arrayRects
+  acmpf** (raw width+height sort-key tie), NOT the polyomino GRID path — osage
+  packs in array mode because l_graph(3) < l_array(4) survives the mode raise.
+  Port's own arrayRects fed C-vs-port sizes reproduces all 10 moved nodes with
+  byte-matching dx. `dot -v2` dumps the pack decisions without edits.
+- **Confidence**: High (isolated reproduction; per-id re-walk flipped only this id).
 
 ## Observation: `tree-graphs-directed-oldarrows` (twopi) is pre-existing, NOT an arrow regression
 

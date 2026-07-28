@@ -996,6 +996,21 @@ cells — a rigid whole-node swap with no shape or routing error. No
 deterministic rewrite can reproduce a non-correctly-rounded libm
 transcendental, the textbook A9 shape.
 
+The same mechanism was confirmed 2026-07-28 on the larger sibling
+`tree-graphs-directed-polypoly` (`graphs/directed/polypoly.gv`, new to the
+905-item universe; 112 draw-op diffs, osage only). The diverging operation
+is the identical node-`9004` `cos(π+θ)` 1-ULP site — the C and port `bb.x`
+values match the original RCA byte for byte — but on this 76-node input the
+propagation runs through osage's `arrayRects` instead: `acmpf` sorts pack
+cells by the raw `width+height` sum, and libm's 1-ULP-high width makes
+`9004` sort strictly ahead of its rotated siblings `9000/9002/9006` while
+V8's correctly-rounded value leaves an exact 4-way tie for the unstable
+qsort to order differently — different row-major cells, a `9002`/`9006`
+swap, and a column-width `fmax` cascade shifting 8 neighbours in x.
+Feeding the port's own `arrayRects` the C node sizes versus the port node
+sizes reproduces the sweep's 10 moved nodes with byte-matching x deltas,
+closing the causal chain.
+
 Two further engine-track instances were root-caused and accepted 2026-07-11
 (full RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 draw-op
 diffs — the sibling of the circo entry above: the same CDT cocircular
