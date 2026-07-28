@@ -108,10 +108,12 @@ input under its own engine instead of `dot`. The honest ceiling on that work is
 to **narrow** A1 to "no active divergence on the reference platform," never to
 eliminate the cross-platform caveat; the results so far (below) hold to that
 ceiling: `circo`/`twopi`/`osage` have each surfaced and root-caused a handful of
-genuine A1/A9 instances, and `neato`/`fdp`/`sfdp`'s first characterization sweep
-shows roughly a third of the corpus already within 0.5pt of native, meaning the
-ported arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most small/
-medium graphs — the rest is untriaged drift, not yet individually root-caused.
+genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 90.8/77.3/68.2%
+within 0.5pt of native over the 905-item universe, meaning the ported
+arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most graphs — and
+every remaining diverged id is individually attributed by injection (solver
+drift vs. port defect) rather than left as untriaged drift; see the
+iterative-engine characterization below.
 
 **Engine-track acceptance: twopi arrows family.** <a id="a1-twopi-arrows-family"></a>
 The blockquote above describes the dot-engine SVG survey, where A1 matches zero
@@ -176,21 +178,28 @@ field for these three and `parity-report.ts` renders them in a separate
 "Iterative engines (±0.5 characterization)" section of
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explicitly **not** comparable to the ±0.01 deterministic pass rates elsewhere
-in this document. First sweep (2026-07-11):
+in this document. Re-swept 2026-07-27 over the expanded 905-item universe:
 
-| engine | surveyed | within ±0.5pt | diverged | errors |
+| engine | surveyed | within ±0.5pt | diverged (all attributed) | errors |
 |---|---:|---:|---:|---:|
-| `neato` | 762 | 263 (34.5%) | 492 | 7 |
-| `fdp`   | 762 | 311 (40.8%) | 435 | 16 |
-| `sfdp`  | 762 | 260 (34.1%) | 494 | 8 |
+| `neato` | 905 | 822 (90.8%) | 81 | 2 |
+| `fdp`   | 905 | 700 (77.3%) | 200 | 5 |
+| `sfdp`  | 905 | 617 (68.2%) | 286 | 2 |
 
-Reading: roughly a third of the corpus lands within 0.5pt of native even on
-these engines, i.e. the ported iterative arithmetic holds for most small/
-medium graphs; drift dominates the rest. None of the 1,421 combined diverged
-rows have been individually root-caused yet — this is a **characterization**,
-not an accepted-deltas list, and no id here is (yet) claimed as a verified A1
-instance the way the twopi arrows family and `1855` are above. Per-id triage
-of this backlog is future work; live counts in the per-engine dashboards
+(The first sweep, 2026-07-11 at 762 items, measured 263/311/260 within
+±0.5pt — the jump to the current rates came from per-id fixes landed since,
+chiefly neato's unported `user_pos`/`P_SET` handling, the engine-init
+consolidation, and the `setEdgeType` macro-vs-function fix.)
+
+Unlike at first sweep, every diverged row is now individually attributed:
+the injection harness (`test/corpus/attribute-divergence.ts`) feeds the
+native oracle's pre-routing `ND_pos` into the port and re-compares, and
+every current diverged id is either `drift-exonerated` (the port's routing
+and emission reproduce the oracle exactly once the solver drift is removed)
+or one of the handful of separately accepted per-id residuals (`241_0`'s
+CDT incircle tie on all three engines, neato `2239`, sfdp `42`/`2556`).
+The class acceptance below formalizes the exonerated set; live counts in
+the per-engine dashboards
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
