@@ -60,3 +60,30 @@ The library targets **SVG** (plus `json` / `xdot` / `dot` / imagemap text
 formats). Raster output (PNG/JPG), PostScript/PDF, and interactive/GUI backends
 are out of scope — convert the SVG downstream if you need another format. See
 [Known divergences](/divergences) for the full scope boundary.
+
+## Large graphs: pre-render to SVG
+
+Very large graphs — roughly **>10k nodes or a few MB of DOT source** — are
+impractical to lay out at runtime in the browser. Layout (mincross, ranking,
+spline routing) is superlinear, so this is a **scale ceiling shared with
+upstream Graphviz, not a limitation specific to this engine**: on such inputs
+native `dot`, the WASM builds (`@hpcc-js/wasm-graphviz`), and this engine all
+time out or run out of memory alike. (This engine does **not** leak — its
+per-render heap is flat; the limit is strictly graph size. See the
+[performance dashboard](/perf) for the measured comparison.)
+
+For graphs at that scale, **render once at build time and serve the resulting
+`.svg`** rather than laying out in the browser on every view — the same pattern
+you would use even with native `dot`, since it is too slow to run per request.
+
+The build-time site adapters in
+[knowvah/dot-plugins](https://github.com/knowvah/dot-plugins) (published on NPM)
+do exactly this:
+
+- `@knowvah/vitepress-plugin-dot` — VitePress (markdown-it), build-time
+- `@knowvah/eleventy-plugin-dot` — Eleventy (markdown-it), build-time
+- `@knowvah/docusaurus-plugin-dot` — Docusaurus (MDX/remark), build-time
+- `@knowvah/dot-markdown-it` — framework-agnostic markdown-it integration
+
+For dynamic, user-supplied graphs where build-time rendering is not an option,
+keep interactive rendering to reasonably sized graphs and cache the emitted SVG.

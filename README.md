@@ -287,6 +287,22 @@ from the canonical C Graphviz. New behavior is pinned to the C source — see
 
 - **Feature coverage is incomplete.** The C source defines completeness; gaps
   are tracked in the port catalog rather than hidden.
+- **Very large graphs are impractical to lay out at runtime.** Graphs beyond
+  roughly 10k nodes or a few MB of DOT source hit a scale ceiling — layout
+  (mincross, ranking, spline routing) is superlinear. This is **shared with
+  upstream Graphviz, not a port-specific defect**: on such inputs native `dot`,
+  the WASM builds (`@hpcc-js/wasm-graphviz`), and this engine all time out or
+  run out of memory alike (see the large-source note in
+  [`test/corpus/PERF.md`](test/corpus/PERF.md)). This engine does **not** leak —
+  its per-render heap is flat; the limit is strictly graph size.
+
+  For graphs at that scale, **pre-render to SVG once at build time and serve the
+  static `.svg`** rather than laying out in the browser on every view. The
+  build-time site adapters in
+  [knowvah/dot-plugins](https://github.com/knowvah/dot-plugins) (published on
+  NPM) do exactly this — e.g. `@knowvah/vitepress-plugin-dot`,
+  `@knowvah/eleventy-plugin-dot`, `@knowvah/docusaurus-plugin-dot`, and the
+  framework-agnostic `@knowvah/dot-markdown-it`.
 
 ## License
 
