@@ -76,7 +76,7 @@
 {"id":"tree-graphs-undirected-ngk10_4","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-doc-dotguide-asde91","verdict":"drift-exonerated","baseDiffs":100,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-graphs-directed-polypoly","verdict":"drift-exonerated","baseDiffs":3221,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
-{"id":"2619_2","verdict":"harness-error","baseDiffs":8,"injectedDiffs":0,"bucket":{"shape":"unknown","kind":"position","signature":"none"},"err":"oracle exit 1: Warning: cell size too small for content"}
 {"id":"tree-contrib-java-dot-uml","verdict":"drift-exonerated","baseDiffs":148,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-doc-neato-jho","verdict":"drift-exonerated","baseDiffs":426,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-contrib-dirgraph-linux","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"2619_2","verdict":"drift-exonerated","baseDiffs":8,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}

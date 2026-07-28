@@ -196,6 +196,6 @@
 {"id":"tree-doc-neato-jho","verdict":"drift-exonerated","baseDiffs":7313,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-contrib-dirgraph-linux","verdict":"drift-exonerated","baseDiffs":5412,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-contrib-dirgraph-bsdarch","verdict":"drift-exonerated","baseDiffs":9108,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
-{"id":"graphs-badvoro","verdict":"harness-error","baseDiffs":33264,"injectedDiffs":0,"bucket":{"shape":"unknown","kind":"position","signature":"none"},"err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
 {"id":"2620","verdict":"drift-exonerated","baseDiffs":11103,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
-{"id":"1879","verdict":"harness-error","baseDiffs":19496,"injectedDiffs":0,"bucket":{"shape":"unknown","kind":"position","signature":"none"},"err":"oracle exit 1: Warning: Warning: no value for width of non-ASCII character 195. Falling back to width of space character"}
+{"id":"graphs-badvoro","verdict":"drift-exonerated","baseDiffs":33264,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"1879","verdict":"drift-exonerated","baseDiffs":19496,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}

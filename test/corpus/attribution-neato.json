@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-28T03:12:57.817Z",
+  "generatedAt": "2026-07-28T18:47:03.024Z",
   "oracleSha1": "8fdd1294b3726c2a19fe384ca48f44a2954d1944",
   "tolerance": 0.5,
   "results": [
@@ -851,18 +851,6 @@
       }
     },
     {
-      "id": "2619_2",
-      "verdict": "harness-error",
-      "baseDiffs": 8,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "unknown",
-        "kind": "position",
-        "signature": "none"
-      },
-      "err": "oracle exit 1: Warning: cell size too small for content"
-    },
-    {
       "id": "tree-contrib-java-dot-uml",
       "verdict": "drift-exonerated",
       "baseDiffs": 148,
@@ -888,6 +876,17 @@
       "id": "tree-contrib-dirgraph-linux",
       "verdict": "drift-exonerated",
       "baseDiffs": 2,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2619_2",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 8,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",

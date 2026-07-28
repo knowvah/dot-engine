@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-28T03:15:32.781Z",
+  "generatedAt": "2026-07-28T18:49:46.872Z",
   "oracleSha1": "8fdd1294b3726c2a19fe384ca48f44a2954d1944",
   "tolerance": 0.5,
   "results": [
@@ -2171,18 +2171,6 @@
       }
     },
     {
-      "id": "graphs-badvoro",
-      "verdict": "harness-error",
-      "baseDiffs": 33264,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "unknown",
-        "kind": "position",
-        "signature": "none"
-      },
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
-    },
-    {
       "id": "2620",
       "verdict": "drift-exonerated",
       "baseDiffs": 11103,
@@ -2194,16 +2182,26 @@
       }
     },
     {
+      "id": "graphs-badvoro",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 33264,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "1879",
-      "verdict": "harness-error",
+      "verdict": "drift-exonerated",
       "baseDiffs": 19496,
       "injectedDiffs": 0,
       "bucket": {
-        "shape": "unknown",
+        "shape": "graph/_draw_/unknown",
         "kind": "position",
         "signature": "none"
-      },
-      "err": "oracle exit 1: Warning: Warning: no value for width of non-ASCII character 195. Falling back to width of space character"
+      }
     }
   ]
 }

@@ -300,21 +300,28 @@ type OracleDumpResult =
   | { ok: true; xdot: string; dumpLines: string[] }
   | { ok: false; err: string };
 
+const ORACLE_TIMEOUT_MS = Number(process.env.ATTR_ORACLE_TIMEOUT_MS ?? 300_000);
+
 function runOracleWithDump(engine: string, path: string): OracleDumpResult {
   const r = spawnSync(DOT_BIN, ['-K', engine, '-Txdot', path], {
     env: { ...process.env, GVBINDIR, GVTS_POS_DUMP: '1' },
     encoding: 'utf8',
-    timeout: 60_000,
+    timeout: ORACLE_TIMEOUT_MS,
     maxBuffer: 512 * 1024 * 1024,
   });
   if (r.error) {
     return { ok: false, err: String(r.error.message).split('\n')[0]!.slice(0, 200) };
   }
-  if (r.status !== 0) {
-    return { ok: false, err: `oracle exit ${r.status}: ${(r.stderr ?? '').split('\n')[0]!.slice(0, 160)}` };
-  }
+  // Judge by output completeness, NOT exit status: the oracle exits 1 while
+  // emitting only warnings ("cell size too small", non-ASCII width fallback)
+  // with complete, valid output — the same rule engine-walk.ts applies.
   const xdot = r.stdout ?? '';
-  if (!xdot.trimEnd().endsWith('}')) return { ok: false, err: 'incomplete oracle output' };
+  if (!xdot.trimEnd().endsWith('}')) {
+    const reason = r.status !== 0
+      ? `oracle exit ${r.status}: ${(r.stderr ?? '').split('\n')[0]!.slice(0, 160)}`
+      : 'incomplete oracle output';
+    return { ok: false, err: reason };
+  }
   // `GVTS_BB` is emitted by the fdp dump site only (see injection-recipe.md):
   // fdp's GD_bb is computed *inside* fdpLayout, upstream of the injection
   // point, so unlike neato/sfdp it is not re-derived from the injected
