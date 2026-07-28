@@ -264,23 +264,34 @@ describe('initEdgeLabels — label creation', () => {
 });
 
 describe('initEdgeLabels — label_ontop', () => {
-  it('defaults label_ontop to 0 when label_float absent', () => {
+  it('defaults label_ontop to 0 when labelfloat absent', () => {
     const { g, e } = makeEdgeInGraph(new Map([['label', 'el']]));
     initEdgeLabels(e, g, stubMeasurer);
     expect(e.info.label_ontop).toBe(0);
   });
 
-  it('sets label_ontop to 1 when label_float="true"', () => {
+  it('sets label_ontop to 1 when labelfloat="true"', () => {
     const { g, e } = makeEdgeInGraph(new Map([
-      ['label', 'el'], ['label_float', 'true'],
+      ['label', 'el'], ['labelfloat', 'true'],
     ]));
     initEdgeLabels(e, g, stubMeasurer);
     expect(e.info.label_ontop).toBe(1);
   });
 
-  it('sets label_ontop to 0 when label_float="false"', () => {
+  it('sets label_ontop to 0 when labelfloat="false"', () => {
     const { g, e } = makeEdgeInGraph(new Map([
-      ['label', 'el'], ['label_float', 'false'],
+      ['label', 'el'], ['labelfloat', 'false'],
+    ]));
+    initEdgeLabels(e, g, stubMeasurer);
+    expect(e.info.label_ontop).toBe(0);
+  });
+
+  it('IGNORES label_float — the underscored name is C-internal, not an attribute', () => {
+    // E_label_float is bound from "labelfloat" (input.c:770). The underscored
+    // spelling appears only at dotsplines.c:738, rebound against the internal
+    // aux graph, so a user-supplied `label_float` must have no effect.
+    const { g, e } = makeEdgeInGraph(new Map([
+      ['label', 'el'], ['label_float', 'true'],
     ]));
     initEdgeLabels(e, g, stubMeasurer);
     expect(e.info.label_ontop).toBe(0);

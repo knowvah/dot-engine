@@ -1,0 +1,11 @@
+// @knowvah/dot-engine reference input: circo oneblock lays the whole graph out
+// as a single block instead of one circle per biconnected component.
+// @see lib/circogen/circularinit.c
+// engine: circo
+// tolerance: deterministic
+digraph G {
+    oneblock=true;
+    a -> b -> c -> a;
+    c -> d;
+    d -> e -> f -> d;
+}

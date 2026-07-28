@@ -69,3 +69,14 @@
 {"id":"nshare-root_circo","verdict":"drift-exonerated","baseDiffs":22549,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"linux.x86-root_circo","verdict":"drift-exonerated","baseDiffs":31581,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2475_2","verdict":"drift-exonerated","baseDiffs":283014,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-graphs-directed-clust1","verdict":"drift-exonerated","baseDiffs":42,"injectedDiffs":0,"bucket":{"shape":"cluster/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-doc-neato-inet","verdict":"drift-exonerated","baseDiffs":721,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-graphs-directed-jcctree","verdict":"drift-exonerated","baseDiffs":113,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-graphs-directed-grammar","verdict":"drift-exonerated","baseDiffs":38,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-graphs-undirected-ngk10_4","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-doc-dotguide-asde91","verdict":"drift-exonerated","baseDiffs":100,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-graphs-directed-polypoly","verdict":"drift-exonerated","baseDiffs":3221,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-contrib-java-dot-uml","verdict":"drift-exonerated","baseDiffs":148,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-doc-neato-jho","verdict":"drift-exonerated","baseDiffs":426,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-contrib-dirgraph-linux","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"2619_2","verdict":"drift-exonerated","baseDiffs":8,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}

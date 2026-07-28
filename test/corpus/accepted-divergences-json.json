@@ -3227,6 +3227,13 @@
       "rationale": "layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
+      "id": "tree-graphs-directed-oldarrows",
+      "engine": "twopi",
+      "opClass": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
+      "delta": 42.51,
+      "rationale": "layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (A1 arrows family, injection A/B 40->0 diffs; engine registry + decision journal); json re-emits the same layout. Journal 2026-07-28."
+    },
+    {
       "id": "graphs-arrows",
       "engine": "twopi",
       "opClass": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
@@ -3344,6 +3351,13 @@
       "opClass": "node:9000/_draw_/op[1].p[0]",
       "delta": 2909.02,
       "rationale": "layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "tree-graphs-directed-polypoly",
+      "engine": "osage",
+      "opClass": "node:9002/pos[0]",
+      "delta": 2739.05,
+      "rationale": "layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (A9, same node-9004 cos(pi+theta) 1-ULP as graphs-polypoly, propagated via arrayRects acmpf raw width+height tie; engine registry + decision journal); json re-emits the same layout. Journal 2026-07-28."
     },
     {
       "id": "1855",

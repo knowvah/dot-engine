@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 739 (97.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 18
-- **errors (oracle/port/timeout, excluded from scoring):** 5
+- **Surveyed:** 905
+- **pass:** 883 (97.6%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 18
+- **errors (oracle/port/timeout, excluded from scoring):** 4
 
 ## Diverged (0)
 
@@ -42,15 +42,14 @@ _(none)_
 | [`share-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b102.gv) | 1198 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`windows-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b102.gv) | 1186 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 
-## Errors and timeouts (5)
+## Errors and timeouts (4)
 
 | id | message |
 |---|---|
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | Warning: Warning: no hard-coded metrics for 'sans'.  Falling back to 'Times' metrics |
-| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | Warning: Warning: no hard-coded metrics for 'Times-Bold'.  Falling back to 'Times' metrics |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle exit null |
 
-_Passing ids (739) are omitted for brevity — the full roster is in
+_Passing ids (883) are omitted for brevity — the full roster is in
 `map-parity-fdp.json`._

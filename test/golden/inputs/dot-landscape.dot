@@ -1,0 +1,9 @@
+// @knowvah/dot-engine reference input: landscape=true rotates the drawing 90
+// degrees, as `rotate=90` does. @see src/gvc/viewport.ts
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    landscape=true;
+    a -> b -> c;
+    a -> c;
+}

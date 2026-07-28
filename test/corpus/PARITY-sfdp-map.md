@@ -11,13 +11,15 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 733 (96.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 27
+- **Surveyed:** 905
+- **pass:** 875 (96.7%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 27
 - **errors (oracle/port/timeout, excluded from scoring):** 2
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`tree-tclpkg-tcldot-examples-data-demo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../tclpkg/tcldot/examples/data/demo.gv) | 295 | 125 | `area[0].coords[1]` |
 
 ## Accepted (27) — documented, not chased
 
@@ -58,5 +60,5 @@ _(none)_
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
-_Passing ids (733) are omitted for brevity — the full roster is in
+_Passing ids (875) are omitted for brevity — the full roster is in
 `map-parity-sfdp.json`._

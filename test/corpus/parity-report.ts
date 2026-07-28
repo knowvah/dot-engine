@@ -65,6 +65,7 @@ const MAP_PARITY = new URL('./map-parity.json', import.meta.url);
 const PLAIN_ENGINES = ['dot', ...ENGINES, ...ITERATIVE_ENGINES] as const;
 const NON_DOT_ENGINES = [...ENGINES, ...ITERATIVE_ENGINES] as const;
 const ACCEPTED_PLAIN = new URL('./accepted-divergences-plain.json', import.meta.url);
+const ACCEPTED_DOTFMT = new URL('./accepted-divergences-dot.json', import.meta.url);
 const ACCEPTED_JSON_ENGINES = new URL('./accepted-divergences-json.json', import.meta.url);
 const ACCEPTED_MAP_ENGINES = new URL('./accepted-divergences-map.json', import.meta.url);
 // format-parity-matrix (END)
@@ -708,7 +709,7 @@ function acceptedReasonsForEngine(entries: FormatAcceptedEntry[], engine: string
  * already-resolved verdicts (no class-acceptance section — none of these
  * three registries define a class entry). */
 function formatDetailMarkdown(
-  surface: 'plain' | 'json' | 'map',
+  surface: 'plain' | 'json' | 'map' | 'dot',
   engine: string,
   sourceFile: string,
   total: number,
@@ -716,8 +717,16 @@ function formatDetailMarkdown(
   rows: FormatDetailRow[],
   reasons: Map<string, string>,
 ): string {
-  const surfaceLabel = surface === 'plain' ? 'plain/plain-ext' : surface === 'json' ? 'json' : 'imagemap (cmapx/imap)';
-  const walker = surface === 'plain' ? 'plain-walk.ts' : surface === 'json' ? 'json-walk.ts' : 'map-walk.ts';
+  const surfaceLabel = surface === 'plain'
+    ? 'plain/plain-ext'
+    : surface === 'json' ? 'json'
+    : surface === 'dot' ? 'dot (agwrite)'
+    : 'imagemap (cmapx/imap)';
+  const walker = surface === 'plain'
+    ? 'plain-walk.ts'
+    : surface === 'json' ? 'json-walk.ts'
+    : surface === 'dot' ? 'dot-walk.ts'
+    : 'map-walk.ts';
 
   const diverged = rows
     .filter((r) => r.status === 'diverged')
@@ -1055,6 +1064,43 @@ function main(): void {
       formatDetailMarkdown('plain', engine, sourceFile, report.total, row, report.results.map(plainDetailRow), reasons),
     );
     process.stderr.write(`wrote PARITY-${engine}-plain.md (${report.total} surveyed)\n`);
+  }
+
+  // `-Tdot` (agwrite) track. dot engine only for now: the format's fidelity
+  // question is the serializer, which is engine-independent, so a second engine
+  // would re-measure the same code. Report shape matches the plain walker's, so
+  // the row/detail builders are shared; only the `formats` key differs.
+  const dotFmtUrl = new URL('./dot-parity-dot.json', import.meta.url);
+  if (existsSync(dotFmtUrl)) {
+    const report = JSON.parse(readFileSync(dotFmtUrl, 'utf8')) as PlainParityReport;
+    const row = plainRow('dot', report);
+    row.track = '[dot (dot)](./PARITY-dot-dot.md)';
+    rows.push(row);
+    const reasons = acceptedReasonsForEngine(loadFormatAccepted(ACCEPTED_DOTFMT), 'dot');
+    writeFileSync(
+      fileURLToPath(new URL('./PARITY-dot-dot.md', import.meta.url)),
+      formatDetailMarkdown(
+        'dot', 'dot', 'dot-parity-dot.json', report.total, row,
+        report.results.map((r) => {
+          const f = (r.formats as unknown as Record<string, { diffCount: number; firstDiffs: string[]; err?: string }>).dot;
+          const status: FormatDetailRow['status'] =
+            r.verdict === 'pass' ? 'pass'
+              : r.verdict === 'accepted' ? 'accepted'
+                : r.verdict === 'diverged' ? 'diverged' : 'error';
+          return {
+            id: r.id,
+            path: r.path,
+            size: r.size,
+            status,
+            nDiffs: f?.diffCount ?? 0,
+            firstDiff: f?.firstDiffs?.[0] ?? '',
+            errMsg: f?.err ?? '',
+          };
+        }),
+        reasons,
+      ),
+    );
+    process.stderr.write(`wrote PARITY-dot-dot.md (${report.total} surveyed)\n`);
   }
 
   const missingJsonEngines: string[] = [];

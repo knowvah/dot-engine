@@ -23,7 +23,10 @@ import { renderSvg } from '../../index.js';
 import { parse } from '../../parser/index.js';
 import { GvcContext } from '../../gvc/context.js';
 import { createMeasurer } from '../../common/textmeasure-factory.js';
-import { DOT_LAYOUT_ENGINE } from './index.js';
+import { DOT_LAYOUT_ENGINE, dotPhaseInit } from './index.js';
+import { dotRank } from './rank.js';
+import { dotMincross } from './mincross.js';
+import { dotPosition } from './position.js';
 import { routeOneEdge } from './edge-route.js';
 import type { Edge as GraphEdge } from '../../model/edge.js';
 import type { Graph } from '../../model/graph.js';
@@ -246,12 +249,25 @@ describe('T5: rankdir=LR/RL/BT regular edges via faithful pathplan (dot oracle)'
  *  curve, lone column at x=0. @see edge-route-splines maxphase=3 routing note. */
 const DOT_BT_CHAIN_AB_INTERNAL: Pt[] = DOT_BT_CHAIN_AB.map(p => ({ x: 0, y: p.y }));
 
-/** Lay out `src` to maxphase=3 (ranks + coords, before spline routing). */
+/**
+ * Lay out `src` through position only (ranks + coords, before spline routing),
+ * in the internal PRE-gvPostprocess frame.
+ *
+ * Composed from the phase functions rather than driven by a graph attribute:
+ * C's `phase=3` is a SUCCESS stop, so `dot_layout` still runs
+ * dotneato_postprocess afterwards (dotinit.c:512-517) and coordinates come back
+ * translated. These tests pin router geometry in the un-normalized frame, which
+ * C's `phase` cannot expose.
+ */
 function layoutToPosition(src: string): Graph {
   const g = parse(src);
   const ctx = new GvcContext(createMeasurer());
   ctx.register(DOT_LAYOUT_ENGINE);
-  ctx.layout(g, 'dot');
+  if (g.info) g.info.gvc = ctx; // the only state GvcContext.layout adds
+  dotPhaseInit(g);
+  dotRank(g);
+  dotMincross(g);
+  dotPosition(g);
   return g;
 }
 
@@ -280,7 +296,7 @@ function arrowPts(e: GraphEdge): Pt[] | undefined {
 
 describe('T1 (DOT-1b): faithful adjacent back edge via makefwdedge (dot oracle)', () => {
   it('b->a routes through the faithful single-edge path with the arrow at a', () => {
-    const g = layoutToPosition('digraph{maxphase=3; a->b; b->a}');
+    const g = layoutToPosition('digraph{a->b; b->a}');
     const ba = findEdge(g, 'b', 'a');
     expect(ba).toBeDefined();
     routeOneEdge(ba!, g);
@@ -296,7 +312,7 @@ describe('T1 (DOT-1b): faithful adjacent back edge via makefwdedge (dot oracle)'
   });
 
   it('the forward partner a->b still matches the lone-edge dot oracle', () => {
-    const g = layoutToPosition('digraph{maxphase=3; a->b; b->a}');
+    const g = layoutToPosition('digraph{a->b; b->a}');
     const ab = findEdge(g, 'a', 'b');
     expect(ab).toBeDefined();
     routeOneEdge(ab!, g);

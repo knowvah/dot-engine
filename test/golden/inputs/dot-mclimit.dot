@@ -1,0 +1,48 @@
+// @knowvah/dot-engine reference input: mclimit scales the mincross iteration
+// budget. On a crossing-heavy bipartite graph a low limit stops the crossing
+// search early and yields a DIFFERENT (worse) node order than the default —
+// verified against the C binary, so this fixture is not vacuous.
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    mclimit=0.01;
+  a0 -> b0;
+  a0 -> b1;
+  a0 -> b2;
+  a0 -> b3;
+  a0 -> b4;
+  a0 -> b5;
+  a0 -> b6;
+  a0 -> b7;
+  a1 -> b0;
+  a1 -> b3;
+  a1 -> b6;
+  a2 -> b0;
+  a2 -> b3;
+  a2 -> b6;
+  a3 -> b0;
+  a3 -> b1;
+  a3 -> b2;
+  a3 -> b3;
+  a3 -> b4;
+  a3 -> b5;
+  a3 -> b6;
+  a3 -> b7;
+  a4 -> b0;
+  a4 -> b3;
+  a4 -> b6;
+  a5 -> b0;
+  a5 -> b3;
+  a5 -> b6;
+  a6 -> b0;
+  a6 -> b1;
+  a6 -> b2;
+  a6 -> b3;
+  a6 -> b4;
+  a6 -> b5;
+  a6 -> b6;
+  a6 -> b7;
+  a7 -> b0;
+  a7 -> b3;
+  a7 -> b6;
+}

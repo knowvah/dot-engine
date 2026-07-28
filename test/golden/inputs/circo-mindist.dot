@@ -1,0 +1,8 @@
+// @knowvah/dot-engine reference input: circo mindist sets the minimum
+// separation between nodes on a circle. @see lib/circogen/circularinit.c
+// engine: circo
+// tolerance: deterministic
+digraph G {
+    mindist=5;
+    a -> b -> c -> d -> e -> f -> g -> h -> a;
+}

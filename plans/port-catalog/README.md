@@ -169,9 +169,10 @@ attempts broke. The remaining `[ ]` / `[~]` work, by area:
 ### common rendering
 14. `taper.c` tapered edges (`style=tapered`) — **DONE** (`src/common/taper.ts`
     → `src/render/svg-tapered-edge.ts`).
-15. full `ellipse.c` arc subdivision; `pointset.c`/`intset.c` utilities
-16. verify `input.c` graph-init/`setEdgeType`/default-binding equivalents
-    survived the peggy-parser substitution
+15. full `ellipse.c` arc subdivision (`pointset.c` resolved `N/A (arch)`;
+    `intset.c` was a phantom file)
+16. ~~verify `input.c` graph-init/`setEdgeType`/default-binding equivalents
+    survived the peggy-parser substitution~~ — **verified**, see the `input.c` row
 
 ### filters / output / cgraph transforms
 17. `mingle` edge bundling; `edgepaint` color-separation filter
@@ -198,9 +199,12 @@ Everything below is the full per-module catalog backing this list.
 - [x] dtstrhash.c → `src/cdt/strhash.ts`; Dtbag (ordered multiset) → `src/cdt/bag.ts`
 - [x] dtopen/dtsize/dtwalk — lifecycle/iterate → folded into splay/hash
 - [~] **dtview.c** — view-dict over a parent. C uses this for **subgraph
-  attribute-default inheritance**. TS replaces dicts with `Map`s — **verify the
-  inheritance/override semantics are reproduced** (`agget` walking to root); do
-  not assume. The structure is `N/A (arch)`; the *semantics* are load-bearing.
+  attribute-default inheritance**. TS replaces dicts with `Map`s. The structure
+  is `N/A (arch)`; the *semantics* are load-bearing — and are reproduced:
+  `aggetGraph` walks the parent chain to root (`@see lib/cgraph/attr.c:agget`)
+  and `Graph.graphDefaultsSnapshot` carries the agsubg defval copy
+  (`@see lib/cgraph/graph.c:agsubg`). Remaining wart: `aggetGraph` lives in
+  `src/layout/fdp/fdp-model.ts`, an odd home for a core cgraph primitive.
 - `N/A (arch)` dtclose/dtextract/dtflatten/dtrenew/dtrestore/dtstat/dtdisc/
   dtmethod — GC / constructor-param equivalents; no behavioral semantics lost
 
@@ -212,13 +216,33 @@ Everything below is the full per-module catalog backing this list.
 - [x] write.c — agWrite → `src/parser/index.ts`
 - [~] obj.c — agdelete/agroot/agraphof → partial in `cgraph-ops.ts`; confirm
   full object-kind dispatch
-- [ ] **acyclic.c** (cgraph) — standalone acyclic transform (distinct from
-  dotgen/acyclic). Confirm not invoked internally, else port.
-- [ ] **apply.c** (agapply) — filter/map walk; **may be called internally** —
-  verify before deferring
+- `N/A (scope)` **acyclic.c** (cgraph) — standalone acyclic transform. Its only
+  public symbol `graphviz_acyclic` has exactly one caller, `cmd/tools/acyclic.c:110`
+  (the standalone `acyclic` CLI binary); the file's own docblock says as much.
+  Not invoked internally — confirmed by caller scan, not assumed.
+  **Name collision:** `src/layout/dot/acyclic.ts` ports `lib/dotgen/acyclic.c`,
+  a different file.
+- [~] **apply.c** (`agapply`) — "apply `fn` to an object *and its image in every
+  subgraph containing it*", pre/post-order. The "may be called internally"
+  caution was correct: callers are `attr.c` ×2, `node.c` ×8, `edge.c`, `rec.c`.
+  Per use:
+  - node-delete cascade (`node.c:209 agdelnodeimage`) → **reproduced** as
+    `removeNodeImageFromSubtree` in `src/layout/dot/cluster.ts` (image only, no
+    edge purge; corpus-proven by 1514/2825/1332/b53)
+  - `rec.c` record deletion → `N/A (arch)`, `agbindrec` replaced by `info` fields
+  - `node.c` relabel/renew (`dict_relabel`, `agnoderenew`) → unreachable from
+    parse→layout→render
+  - **residual risk:** `attr.c:287` propagates a *new global graph-attribute
+    default* **eagerly** (`agapply(root, …, addattr, rsym, true)` installs the
+    symbol on every subgraph); the port resolves **lazily** via `aggetGraph`
+    walk-to-root. Equivalent for attribute *reads* — so layout is unaffected —
+    but they can diverge wherever a graph's attribute *set* is enumerated, i.e.
+    `agwrite`. See the `-Tdot` track note in `test/corpus/PARITY.md`.
 - [ ] tred.c (transitive reduction), unflatten.c — graph-transform filters;
   port if any layout path or supported CLI surface needs them
-- [ ] node_induce.c — edge induction
+- [ ] node_induce.c — edge induction. **Name collision:** `nodeInduce` in
+  `src/layout/dot/rank.ts` ports `lib/dotgen/rank.c:node_induce`, a *different*
+  function; `lib/cgraph/node_induce.c` itself is unported.
 - `N/A (env)` refstr.c (string interning), rec.c (user-records), id.c/imap.c
   (id alloc / id→obj map) — replaced by `info` fields + Map keys; io.c,
   ingraphs.c — FILE / multi-file reading (caller supplies the source string)
@@ -226,16 +250,24 @@ Everything below is the full per-module catalog backing this list.
 ### `lib/ast/` — string utilities
 - [~] fmtesc.c / chresc.c / stresc.c — escaping → `src/parser/index.ts`,
   `src/common/html-string.ts` (simplified — confirm it covers all C escape cases)
-- [ ] **strmatch.c** — glob/grp pattern matching. Used by attribute pattern
-  matching; port rather than assume unreachable.
-- [ ] chrtoi.c — char→numeric (escape decoding edge cases)
+- `N/A (scope)` **strmatch.c** — glob/grp pattern matching. Sole callers are
+  `lib/expr/exeval.c` (×4), `lib/expr/excc.c`, `lib/gvpr/actions.c` — all inside
+  the gvpr/expr surface resolved out of scope (2026-06-18). The earlier note
+  here claimed "used by attribute pattern matching"; that pattern matching is
+  **gvpr's**, not DOT attribute resolution, which reaches this file never.
+  Reinstate as `[ ]` if gvpr scope is revisited.
+- `N/A (scope)` chrtoi.c — char→numeric (packs ≤4 escaped chars into an int via
+  `chresc`). Sole caller is `lib/expr/extoken.c:515` (the expr tokenizer);
+  unreachable from any DOT attribute/mode/shape. Out of scope with gvpr/expr.
 - `N/A (arch)` error.c — error context → `ParseError`
 
 ### `lib/rbtree/` — [x] red_black_tree.c → `src/rbtree/index.ts` (faithful)
 
 ### `lib/util/`
 - [x] list.c, xml.c, random.c (MT19937), gv_math.h → `src/util/*`
-- [ ] base64.c — used for embedded data URIs in SVG (`<image>`); port when image embed lands
+- [x] base64.c — embedded data URIs in SVG (`<image>`) → `base64Encode` /
+  `toDataUri` in `src/gvc/image-resolver.ts` (RFC 4648 alphabet, manual table:
+  no host `btoa` dependency, O(1) stack depth)
 - `N/A (env)` arena.c, gv_find_me.c, gv_fopen.c — memory/FS/exec
 
 ---
@@ -264,11 +296,25 @@ Everything below is the full per-module catalog backing this list.
   arc→bezier subdivision not ported** — needed for faithful curved shapes
 - [x] taper.c — tapered edges (`style=tapered`) → `src/common/taper.ts`
   (`taperfun`/`taper`), rendered via `src/render/svg-tapered-edge.ts`
-- [ ] **pointset.c / intset.c** — point/int set utilities (currently inlined ad hoc)
-- [~] **input.c** — DOT scanning replaced by peggy parser, BUT `graph_init`,
-  `setEdgeType`, attribute/default binding, label preprocessing live here —
-  **verify each has a ported equivalent**; not purely CLI
-- [ ] **output.c** — `-Tplain` text output (faithful text format; deferred, not N/A)
+- `N/A (arch)` **pointset.c** — `PointSet` is a cdt dict of int pairs; the port
+  uses native structures at each of the three C call sites, behavior preserved
+  and verified: `lib/pack/pack.c` → `PointSet` class in `poly-place.ts`;
+  `lib/common/htmltable.c:findCol` → `htmltable.ts:findCol` over a `used`
+  structure; `lib/ortho/ortho.c:1215` Concentrate dedup → `buildEdges` unordered
+  `(tail,head)` `Set` in `ortho-adapter.ts` (corpus-proven by the 2361 fix).
+  Extracting a shared util would be a refactor, not a gap.
+  **`intset.c` does not exist** in the C tree (only `pointset.c`/`.h`) — the
+  earlier entry named a phantom file.
+- [~] **input.c** — DOT scanning replaced by peggy parser. The non-CLI pieces
+  that live here are each accounted for: `graph_init` → `src/common/graph-init.ts`
+  (per-engine binding, e.g. `dotGraphInit`); `setEdgeType` → `src/layout/dot/index.ts`
+  (mirrors the C *macro* — note the macro/function split that made `splines=`
+  a no-op on neato/fdp/sfdp); label preprocessing → `graph-label.ts`
+  (`do_graph_label`); attribute/default binding → the dtview row above.
+  Remainder is CLI/config.
+- [x] **output.c** — `-Tplain` / `-Tplain-ext` text output → `src/render/dot.ts`
+  (`write_plain` canonicalization, `%.5g` formatting); swept per-engine in the
+  plain parity tracks
 - `N/A (env)` globals.c (no globals — init values reproduced elsewhere),
   timing.c (instrumentation), args.c (CLI args → library API)
 - `N/A (PS)` psusershape.c — PostScript user shapes (SVG path via gvusershape)
@@ -290,7 +336,11 @@ Everything below is the full per-module catalog backing this list.
   `checkLabelOrder` in (see 2471 memory); confirm no residual order desync
 - [~] position.c (~1133) → `position*.ts` — mostly ported;
   - [ ] `nslimit` (nsiter2 cap) — DOT-6
-  - [ ] `expand_leaves` (newrank leafsets) — DOT-4
+  - [x] `expand_leaves` → `expandLeaves` in `position.ts`, called from
+    `dotPosition`. Faithful: upstream's per-node loop is dead code (dormant
+    self-subtraction at position.c:1025 makes `d` identically 0) and LEAFSET
+    ranktype is never assigned anywhere upstream, so the port is
+    `makeLeafslots(g)` only — see the note at the call site
 - [~] dotsplines.c (~2309) → `splines*.ts`/`edge-route*.ts` — dispatch + flat +
   `line`/`polyline`/`ortho`/`curved` conformant;
   - [x] `splines=curved` → `curvedTop` in `splines.ts` (edge labels warn→xlabels,
@@ -345,11 +395,18 @@ Everything below is the full per-module catalog backing this list.
   (`spring-driver.ts` routes overlap through `overlap-prism.ts:removeOverlapPrism`,
   with `resolveControl` in `index.ts` selecting in-layout vs post-layout
   `adjustNodesScale`); Triangle/StressMajorization smoothers still open
-- [ ] sfdpinit `edge_labeling_scheme > 0`; sparse_solve.c; stress_model.c
+- [x] sparse_solve.c → `src/layout/sfdp/sparse-solve.ts` (`diag_precon_new`,
+  `conjugate_gradient`, `SparseMatrix_solve`)
+- [ ] sfdpinit `edge_labeling_scheme > 0` (init.ts parses `label_scheme` but the
+  `|edgelabel|` branch is unported); stress_model.c
 - **`lib/sparse/`**: [x] SparseMatrix.c, QuadTree.c (Barnes-Hut), general.c → `src/layout/sfdp/{sparse-matrix*,quadtree}.ts`
   - [x] brewer color tables — ported in `src/common/colorData.ts`
   - [ ] clustering.c (modularity_clustering), mq.c — used by clustering/coloring & mingle
-  - [ ] colorutil.c rgb2hex (trivial); DotIO.c — matrix dot-I/O (confirm unused, else port)
+  - `N/A (scope)` colorutil.c `rgb2hex` — callers are `lib/sparse/DotIO.c` and
+    `cmd/gvmap/make_map.c`; gvmap is a separate CLI binary, not this library,
+    and no DOT→SVG path reaches it.
+  - `N/A (scope)` DotIO.c — matrix dot-I/O, reached only from gvmap/sparse
+    tooling (confirmed by caller scan, not assumed).
 - **`lib/topfish/`**: [ ] hierarchy.c, rescale_layout.c — multilevel coordinate
   rescaling; verify whether neato multilevel / `mode=hier` reaches it
 
@@ -392,8 +449,12 @@ Everything below is the full per-module catalog backing this list.
   `device.ts`; gvtextlayout.c → `textlayout.ts`
 - [~] gvrender.c → `device.ts` + callbacks — confirm color resolution / feature
   negotiation parity
-- [~] **gvloadimage.c / gvusershape.c** — SVG `<image href>` embedding partial —
-  real feature (raster *embed*, not raster *render*); base64 data URIs need util/base64
+- [~] **gvloadimage.c / gvusershape.c** — `gvusershape_find`/`_size` → `usershape.ts`
+  + `image-resolver.ts`; SVG `<image xlink:href>` emitted in `svg.ts`, with
+  optional byte inlining via `toDataUri` when `job.inlineImages` and a resolver
+  are set (AD-1, *additive* — native Graphviz never inlines image bytes).
+  base64 is no longer a blocker (see util/base64.c row). Still partial: format
+  probing beyond extension-based MIME inference.
 - `N/A (arch)` gvplugin.c / gvconfig.c / gvlayout.c — dynamic `dlopen` discovery
   → **static registration** (`src/render/index.ts`, direct layout dispatch); behavior preserved
 - `N/A (GUI)` gvevent.c — interactive event dispatch
@@ -535,6 +596,126 @@ is inapplicable (ps/png/jpg references, gvpr, C-API memory/lifecycle tests).
    [`test/corpus/PARITY-dot.md`](../../test/corpus/PARITY-dot.md), the
    cross-engine overview at
    [`test/corpus/PARITY.md`](../../test/corpus/PARITY.md) (see headline above).
+
+### TODO: corpus attribute-coverage blind spots (upstream analysis)
+
+**Source:** [forum.graphviz.org — "Test cases in the codebase"](https://forum.graphviz.org/t/test-cases-in-the-codebase/3301)
+(Steven Roush; smattr responding for upstream). Unverified against our own tree —
+the counts below are as reported there, not independently reproduced. Logged
+2026-07-26.
+
+Why it matters here: our sweep universe **is** that corpus, so every attribute
+the corpus never exercises is a blind spot our tracks cannot see. "0 unaccepted
+tracked gaps" means zero gaps *in what the corpus exercises* — the same
+distinction as the `pack` conjunction that hid three defects.
+
+Reported findings:
+
+- 822 unique `.dot`/`.gv` files in the upstream tree, 717 under `tests/`
+  (broadly consistent with the ~800-input figure above).
+- Attribute usage is heavily skewed: `node/label` 516 files, `node/shape` 482,
+  `node/width` 436 — but `graph/ordering` only 23 and `edge/weight` only 18.
+- **Zero coverage** named for `graph/sep`, `graph/overlap_shrink`, and
+  `edge/fillcolor`, among others.
+- Roush compiled **~3,700 additional `.gv` files** for donation, published via a
+  GitLab fork (`steveroush/graphviz`) after contribution friction.
+
+Actions, in dependence order:
+
+1. ~~Reproduce the attribute-frequency count against our own corpus manifest, so
+   the blind-spot list is ours and not inherited on trust.~~ **DONE 2026-07-26** —
+   `test/corpus/attr-frequency.ts` (a separate scanner from `blind-spots.ts`,
+   which asks a different question: co-occurrence, not per-attribute use). It
+   reads scope off the BUILT MODEL rather than by regex, so `edge/fillcolor` is
+   distinguishable from `node/fillcolor`. Result over 1021 files (1010 parsed,
+   11 unparsed): 201 distinct scoped attributes, 111 attribute names read by the
+   port, **29 read-but-never-declared**.
+
+   Two of the three inherited claims do NOT hold for our tree, which is exactly
+   why the doc said not to take them on trust: `graph/sep` is declared by 1 file
+   (reported as zero) and `fillcolor` appears 59x on nodes / 16x on graphs —
+   only the EDGE scope is dark, as reported. `graph/overlap_shrink` is confirmed
+   absent. Counts also differ where the universes do (`edge/weight` 15 vs 18,
+   `graph/ordering` 31 vs 23) — we include golden inputs.
+2. Cross-reference the zero-coverage attributes against the port: `graph/sep`
+   and `graph/overlap_shrink` land in the neato/fdp overlap family (`sep-factor.ts`,
+   `overlap.ts`) — both **implemented**, neither corpus-exercised, so their
+   status is *unmeasured*, not *passing*. `edge/fillcolor` likewise.
+
+   **Cross-reference DONE 2026-07-26**; the 29 unmeasured names group by the
+   file that reads them. Each is implemented and needs a fixture, not a port:
+
+   | Family | Unmeasured |
+   |---|---|
+   | dot | `mclimit`, `searchsize`, `maxphase`, `clusterrank` |
+   | neato | `epsilon`, `maxiter`, `start`, `pin`, `overlap_scaling`, `overlap_shrink` |
+   | sfdp | `label_scheme`, `levels`, `quadtree`, `rotation`, `smoothing` |
+   | fdp | `T0`, `coords`, `normalize` |
+   | circo | `mindist`, `oneblock` |
+   | patchwork | `inset` |
+   | device/render | `landscape`, `resolution`, `samplepoints`, `quantum` |
+   | labels/text | `label_float`, `labelfontname`, `fontnames`, `layerlistsep` |
+
+   **dot family CLOSED 2026-07-26.** `phase` turned out to be a real port
+   defect, not just a missing fixture (wrong attribute name + skipped
+   postprocess + late_int clamp asymmetry) — see the decision journal and
+   `src/layout/dot/phase-attr.test.ts`. Goldens added for `phase`,
+   `clusterrank`, `mclimit`; each was A/B'd against the C binary first to prove
+   the attribute actually changes the drawing, so none is vacuous.
+
+   `searchsize` is deliberately NOT given a golden: it bounds the network-simplex
+   candidate search, and NS converges to the same optimum either way, so it is
+   **output-invariant** — a golden would pass no matter what the code did.
+   Verified invariant on both sides across {1, 2, 100, 0, abc}, with and without
+   `newrank`. Two latent notes for whoever makes it observable: C reads it in
+   TWO places (`ns.c:1034` for regular ranking, `dotgen/rank.c:1097` for
+   newrank) and the port only has the newrank site; and C uses `atoi`
+   (non-numeric -> 0) where the port uses `parseInt` (-> NaN). Neither is
+   observable through output today.
+
+   **Batches 2-3 (2026-07-27).** device/render + labels/text + circo/patchwork/
+   neato closed. Two more wrong-name defects of the `phase` class: `labelfloat`
+   (the port read the underscored `label_float`, which is C-internal) and
+   `fontnames` (parsed into GD_fontnames but never read — the SVGFONTS/PSFONTS
+   branches of gvrender_core_svg.c:464 were unimplemented, including the
+   separate svg_font_weight/svg_font_style fields). Both fixed; goldens added
+   for `phase`, `clusterrank`, `mclimit`, `fontnames` (svg+ps), `labelfloat`,
+   `labelfontname`, `landscape`, `layerlistsep`, `quantum`, `resolution`,
+   `samplepoints`, `circo mindist`, `circo oneblock`, `patchwork inset`.
+
+   Verified correct, no fix needed: neato `epsilon`, `maxiter`, `start`, `pin`,
+   `overlap_scaling` (native moves 106.03pt, port 106.00), `overlap_shrink`
+   (ignored by BOTH here). For iterative engines compare by node-delta against
+   the 0.5pt bar, not by string equality — an exact-match probe reports the
+   documented PRISM drift (0.27pt) as a failure.
+
+   **sfdp gaps still open** (found by the scan, not yet closed):
+   - `rotation` — C rotates before overlap removal (spring_electrical.c:1181);
+     `rotate()` is unported and nothing read `ctrl.rotation`, so a non-zero
+     value silently produced an UNROTATED layout (native moves ~320pt at
+     rotation=45). Now THROWS, matching the existing `smoothing` precedent:
+     a loud unported-feature error beats silently wrong geometry.
+   - `quadtree` — parsed into `ctrl.tscheme`, but nothing reads it; the layout
+     hardcodes one scheme. Native moves 138.74pt at `quadtree=none`, the port
+     0. Still silent; needs the scheme threaded through the force approximation.
+   - `smoothing` — already threw before this work (post_process_smoothing
+     unported). Native moves 11.01pt at `smoothing=rng`.
+   - Vacuous on both sides, so unmeasurable rather than wrong: sfdp `levels`,
+     `label_scheme`; fdp `normalize`. fdp `T0` moves both sides but the engine
+     is chaos-measured, so a golden would pin noise.
+
+   **Probe hazard.** A probe must check the reference is non-trivial. Writing
+   `graph{a->b}` (a syntax error) makes both sides fail identically, which reads
+   as VACUOUS + MATCH — it briefly hid all three circo attributes.
+
+   Sequence dot first, per this file's own prioritization. Note several are
+   iterative-engine tuning knobs (`epsilon`, `maxiter`, `T0`, `levels`) whose
+   effect is a layout DELTA — a fixture for those must assert the knob changed
+   the result in the direction C changes it, not byte-match a chaotic engine.
+3. Evaluate the ~3,700-file set as an **additional** sweep tier. Do not fold it
+   into the primary corpus: our ids, acceptance registries, and PARITY baselines
+   are keyed to the current universe, and swapping the universe would invalidate
+   every baseline at once. A separate tier can grow without disturbing them.
 
 ## Maintenance
 

@@ -27,16 +27,31 @@ import { createMeasurer } from '../../common/textmeasure-factory.js';
 import type { Graph } from '../../model/graph.js';
 import type { Edge } from '../../model/edge.js';
 import type { Point } from '../../model/geom.js';
-import { DOT_LAYOUT_ENGINE } from './index.js';
+import { DOT_LAYOUT_ENGINE, dotPhaseInit } from './index.js';
+import { dotRank } from './rank.js';
+import { dotMincross } from './mincross.js';
+import { dotPosition } from './position.js';
 import { routeRegularEdgeFaithful } from './edge-route-faithful.js';
 
-/** Lay out `src` through position only (maxphase=3) and return the graph. */
+/**
+ * Lay out `src` through position only, in the internal PRE-gvPostprocess
+ * frame the router works in.
+ *
+ * Composed from the phase functions rather than driven by the `phase`
+ * attribute: C's `phase=3` is a SUCCESS stop, so `dot_layout` still runs
+ * dotneato_postprocess after it (dotinit.c:512-517) and the coordinates come
+ * back translated. These tests pin router geometry before that translate, so
+ * they must stop where C's `phase` cannot.
+ */
 function layoutToPosition(src: string): Graph {
   const g = parse(src);
-  g.attrs.set('maxphase', '3'); // stop after dotPosition, before dotSplines
   const ctx = new GvcContext(createMeasurer());
   ctx.register(DOT_LAYOUT_ENGINE);
-  ctx.layout(g, 'dot');
+  if (g.info) g.info.gvc = ctx; // the only state GvcContext.layout adds
+  dotPhaseInit(g);
+  dotRank(g);
+  dotMincross(g);
+  dotPosition(g);
   return g;
 }
 

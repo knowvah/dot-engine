@@ -12,8 +12,8 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 762 (generated 2026-07-25T03:09:19.320Z)
-- **pass:** 762 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
+- **Surveyed:** 905 (generated 2026-07-27T22:25:50.513Z)
+- **pass:** 905 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
 - **oracle-error:** 0 · **port-error:** 0 · **timeout:** 0
 
 ## Accepted deltas (0) — documented, not chased
@@ -34,5 +34,5 @@ _(none)_
 _(none)_
 
 **oracle errors:** 5 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (762) are omitted for brevity — the full roster is in
+_Passing ids (905) are omitted for brevity — the full roster is in
 `parity-patchwork.json`._

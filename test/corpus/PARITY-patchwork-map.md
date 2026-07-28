@@ -11,8 +11,8 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 762 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
+- **Surveyed:** 905
+- **pass:** 905 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
 - **errors (oracle/port/timeout, excluded from scoring):** 0
 
 ## Diverged (0)
@@ -27,5 +27,5 @@ _(none)_
 
 _(none)_
 
-_Passing ids (762) are omitted for brevity — the full roster is in
+_Passing ids (905) are omitted for brevity — the full roster is in
 `map-parity-patchwork.json`._

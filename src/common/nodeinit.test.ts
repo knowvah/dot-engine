@@ -301,11 +301,21 @@ function renderXdotWithXlabel(shape: string): string {
   return render(g, 'xdot', { engine: 'dot' });
 }
 
-/** The attribute block xdot emits for node `name`. */
+/** The attribute block xdot emits for node `name`.
+ *
+ * agwrite opens an object block with a literal TAB before `[` and breaks
+ * multi-attribute blocks across lines (write.c:471 write_nondefault_attrs), so
+ * this collects every line of the block, not just the first. */
 function nodeBlock(xdot: string, name: string): string {
-  const line = xdot.split('\n').find((l) => l.trimStart().startsWith(`${name} [`));
-  expect(line, `no xdot block for node ${name}`).toBeDefined();
-  return line!;
+  const lines = xdot.split('\n');
+  const i = lines.findIndex((l) => l.trimStart().startsWith(`${name}\t[`));
+  expect(i >= 0 || undefined, `no xdot block for node ${name}`).toBeDefined();
+  const acc: string[] = [];
+  for (let j = i; j < lines.length; j++) {
+    acc.push(lines[j]!);
+    if (lines[j]!.trimEnd().endsWith('];')) break;
+  }
+  return acc.join('\n');
 }
 
 describe.each(['record', 'Mrecord', 'box'])('xdot output — xlabel on shape=%s', (shape) => {

@@ -1,0 +1,8 @@
+// @knowvah/dot-engine reference input: neato overlap_shrink toggles the PRISM shrink pass
+// engine: neato
+// tolerance: iterative
+digraph G {
+    overlap=prism; overlap_shrink=false;
+    a -> b -> c -> d -> a;
+    a -> c; b -> d; d -> e; e -> f; f -> a;
+}

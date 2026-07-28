@@ -11,15 +11,15 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 750 (98.4%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 12
+- **Surveyed:** 905
+- **pass:** 892 (98.6%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 13
 - **errors (oracle/port/timeout, excluded from scoring):** 0
 
 ## Diverged (0)
 
 _(none)_
 
-## Accepted (12) — documented, not chased
+## Accepted (13) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
@@ -33,6 +33,7 @@ _(none)_
 | [`share-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b29.gv) | 3 | `edge:Node14663->Node14649#0/_ldraw_/op[2].T[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 1 | `node:a/label` | Input is Latin-1 with NO `charset` declaration, so the bytes are invalid UTF-8. Native dot's -Tjson then emits a MIXED-ENCODING document: attribute values (e.g. node `label`) are echoed as RAW Latin-1 bytes (0xe1 0xe2 ... unconverted), while the DRAWN label text (_ldraw_ T op, via make_label) is UTF-8 (0xc3 0xa1 ...). No single decode reads both halves correctly: Latin-1 recovers the attribute but mojibakes the text, UTF-8 does the reverse (and the attribute bytes are not valid UTF-8). The port decodes the input once (utils.c latin1ToUTF8 fallback) and is internally consistent valid UTF-8 on BOTH surfaces, so it cannot reproduce the oracle's split encoding. A4 class: the oracle output is an encoding bug; the port declines to emit invalid/mixed-encoding JSON. The DECLARED charset=latin1 case (graphs-Latin1/b60) IS handled via the stoj double-encode fix; only the UNDECLARED-charset case is irreducible. |
 | [`share-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/polypoly.gv) | 12 | `node:9002/_draw_/op[1].p[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 112 | `edge:9000->8000#0/_draw_/op[1].b[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (A9, same node-9004 cos(pi+theta) 1-ULP as graphs-polypoly, propagated via arrayRects acmpf raw width+height tie; engine registry + decision journal); json re-emits the same layout. Journal 2026-07-28. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
 | [`windows-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/polypoly.gv) | 12 | `node:9002/_draw_/op[1].p[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 
@@ -40,5 +41,5 @@ _(none)_
 
 _(none)_
 
-_Passing ids (750) are omitted for brevity — the full roster is in
+_Passing ids (892) are omitted for brevity — the full roster is in
 `json-parity-osage.json`._

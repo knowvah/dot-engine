@@ -11,13 +11,23 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 687 (90.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 73
+- **Surveyed:** 905
+- **pass:** 821 (90.7%) · **diverged (tracked):** 9 · **accepted (documented, won't-fix):** 73
 - **errors (oracle/port/timeout, excluded from scoring):** 2
 
-## Diverged (0)
+## Diverged (9)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 5155 | 3221 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-neato-inet`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/inet.dot) | 349 | 721 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-neato-jho`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/jho.dot) | 14828 | 426 | `edge:ccsfpr2_0_1t_99->359100#0/_draw_/op[1].b[0]` |
+| [`tree-contrib-java-dot-uml`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/java-dot/uml.dot) | 10213 | 148 | `edge:class_dot_DotAttr->tri_class_dot_DotAttr#0/_draw_/op[2].b[0]` |
+| [`tree-graphs-directed-jcctree`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/jcctree.gv) | 778 | 113 | `edge:DEF2->ID2#0/_draw_/op[1].b[1]` |
+| [`tree-doc-dotguide-asde91`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/asde91.dot) | 3383 | 100 | `edge:1980->1982#0/_draw_/op[1].b[0]` |
+| [`tree-graphs-directed-clust1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/clust1.gv) | 146 | 42 | `cluster:cluster_c1/_draw_/op[1].p[0]` |
+| [`tree-graphs-directed-grammar`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/grammar.gv) | 1302 | 38 | `edge:n10->n11#0/_draw_/op[1].b[0]` |
+| [`tree-contrib-dirgraph-linux`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/dirgraph/linux.dot) | 21860 | 2 | `edge:__usr_src_linux_fs->__usr_src_linux_fs_isofs#0/_draw_/op[1].b[5]` |
 
 ## Accepted (73) — documented, not chased
 
@@ -104,5 +114,5 @@ _(none)_
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
-_Passing ids (687) are omitted for brevity — the full roster is in
+_Passing ids (821) are omitted for brevity — the full roster is in
 `json-parity-neato.json`._

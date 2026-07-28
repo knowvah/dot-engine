@@ -1,0 +1,28 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 110 110 110 110 0 ",
+		bb="0,0,110,110",
+		inset=5,
+		xdotversion=1.7
+	];
+	node [label="\N",
+		shape=box
+	];
+	a	[_draw_="c 7 -#000000 p 4 65 55 5 55 5 5 65 5 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 35 25.8 0 6.21 1 -a ",
+		area=3,
+		height=0.69444,
+		pos="35,30",
+		width=0.83333];
+	b	[_draw_="c 7 -#000000 p 4 105 105 5 105 5 55 105 55 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 55 75.8 0 7 1 -b ",
+		area=5,
+		height=0.69444,
+		pos="55,80",
+		width=1.3889];
+	c	[_draw_="c 7 -#000000 p 4 105 55 65 55 65 5 105 5 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 85 25.8 0 6.21 1 -c ",
+		area=2,
+		height=0.69444,
+		pos="85,30",
+		width=0.55556];
+}

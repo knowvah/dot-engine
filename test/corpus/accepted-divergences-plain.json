@@ -42,6 +42,46 @@
       "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
     },
     {
+      "id": "tree-graphs-directed-Latin1",
+      "engine": "dot",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id."
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "engine": "circo",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id."
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "engine": "twopi",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id."
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "engine": "osage",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id."
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "engine": "patchwork",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id."
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "engine": "neato",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id."
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "engine": "fdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id."
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "engine": "sfdp",
+      "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. Same input under a second path: graphs/directed/Latin1.gv is byte-identical (sha1 b2c41851e950) to tests/graphs/Latin1.gv, which this list already accepts; the corpus expansion of 2026-07-27 gave that file a second id."
+    },
+    {
       "id": "share-Latin1",
       "engine": "dot",
       "reason": "oracle bug (A4): canon() use-after-free \u2014 output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24."
@@ -302,6 +342,11 @@
       "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
     },
     {
+      "id": "tree-graphs-directed-oldarrows",
+      "engine": "twopi",
+      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (A1 arrows family, injection A/B 40->0 diffs; engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-28."
+    },
+    {
       "id": "graphs-arrows",
       "engine": "twopi",
       "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
@@ -367,6 +412,11 @@
       "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
     },
     {
+      "id": "tree-graphs-directed-polypoly",
+      "engine": "osage",
+      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (A9, same node-9004 cos(pi+theta) 1-ULP as graphs-polypoly, propagated via arrayRects acmpf raw width+height tie; engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-28."
+    },
+    {
       "id": "linux.i386-b29",
       "engine": "osage",
       "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
@@ -385,6 +435,16 @@
       "id": "windows-polypoly",
       "engine": "osage",
       "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "2095_1",
+      "engine": "circo",
+      "reason": "layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (A1 getRotation closest-node exact-tie knife edge, injection A/B 2197 -> 0 diffs, journal 2026-07-24 T3; engine acceptance registry); plain re-emits the same rigidly-rotated blocks (605 diffs, node deltas <= ~0.5in). First compared 2026-07-27 when the oracle timeout raise took this id out of oracleError. Journal 2026-07-28."
+    },
+    {
+      "id": "2108",
+      "engine": "circo",
+      "reason": "A1 micro-drift amplified by plain's print quantum (RCA 2026-07-28): raw ND_coord dumps over all 27547 nodes show max |delta| 5.8e-11pt (~6 ULP accumulation; e.g. y 7795.799999999998 vs 7795.800000000007) - circo json is CONFORMANT on the identical layout. The 118 plain diffs are the subset of coordinates landing on a %.5g 5th-significant-digit rounding boundary: y/72 = 108.27499999999998 vs 108.27500000000009 straddles the 108.275 tie, printing 108.27 vs 108.28. At magnitudes >= 100in the %.5g quantum (0.01) equals PLAIN_TOLERANCE (0.01), so the plain surface structurally cannot distinguish sub-ULP drift from real 0.01in divergence on huge graphs; both printers are correct (tie-to-even verified). Not comparable on circo xdot (engine-walk 90s port cap -> timeout). Journal 2026-07-28."
     },
     {
       "id": "241_0",

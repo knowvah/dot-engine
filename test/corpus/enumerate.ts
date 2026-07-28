@@ -14,7 +14,7 @@
 
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join, relative } from 'node:path';
+import { join, relative, dirname, basename } from 'node:path';
 
 /** A single classified corpus entry (interface contract consumed by T2). */
 export interface CorpusEntry {
@@ -35,7 +35,11 @@ export type QuarantineReason =
   | 'raster-only-ref'
   | 'parse-unsupported'
   | 'malformed'
-  | 'perf';
+  | 'perf'
+  /** DOT used as a config/settings format, not a layout input (smyrna GUI). */
+  | 'not-a-layout-test'
+  /** The native oracle itself aborts, so there is no reference to compare. */
+  | 'oracle-crash';
 
 /** Non-dot engines: an explicit `layout=` to one of these defers the input. */
 const FORCE_ENGINES = ['neato', 'fdp', 'sfdp', 'circo', 'twopi', 'osage', 'patchwork'];
@@ -141,7 +145,14 @@ export function classify(src: string): { status: CorpusEntry['status']; reason?:
 
 /** Stable slug from a relative path: drop extension, `/` → `-`. */
 function slug(relPath: string): string {
-  return relPath.replace(/\.(gv|dot)$/i, '').replace(/[/\\]/g, '-');
+  // A path starting `../` comes from the SIBLING root (the upstream tree
+  // outside tests/); it is prefixed `tree-` so provenance is visible in every
+  // id, dashboard row and journal reference, and so the two roots can never
+  // collide as directories are added upstream.
+  const outside = relPath.startsWith('../');
+  const base = (outside ? relPath.slice(3) : relPath)
+    .replace(/\.(gv|dot)$/i, '').replace(/[/\\]/g, '-');
+  return outside ? 'tree-' + base : base;
 }
 
 /**
@@ -187,11 +198,58 @@ const MANUAL_QUARANTINE: Record<string, QuarantineReason> = {
   '1494.dot': 'malformed',
   '1676.dot': 'malformed',
   '2854.dot': 'perf',
+
+  // --- sibling root (outside tests/), added 2026-07-27 -------------------
+  // smyrna GUI settings files: DOT used as a CONFIG format (check_box_*,
+  // hostbtncolor*, topologicalfisheye*), not layout inputs. They render, but a
+  // parity verdict on them measures nothing.
+  '../share/gui/attr_widgets.dot': 'not-a-layout-test',
+  '../share/gui/template.dot': 'not-a-layout-test',
+  // The ORACLE aborts on these three with
+  //   lib/pathplan/shortest.c:193: destination point not in any triangle
+  // — an upstream bug, reproducible on the native binary alone, so there is no
+  // reference to compare against. Re-test when upstream fixes pathplan.
+  '../doc/infosrc/record.dot': 'oracle-crash',
+  '../doc/dotguide/structs.dot': 'oracle-crash',
+  '../graphs/directed/structs.gv': 'oracle-crash',
 };
 
 /** Build the manifest from the corpus root, ensuring unique ids. */
+/**
+ * Files of the upstream tree that live OUTSIDE the corpus root — `graphs/`,
+ * `doc/`, `contrib/`, `share/`, `tclpkg/`.
+ *
+ * The universe was `tests/` alone until 2026-07-27, which was simply too
+ * narrow: 155 further inputs ship in the same repo we treat as the canonical
+ * spec, 97 of them under basenames `tests/` does not have. Sweeping them turned
+ * up 5 real divergences that no track could see.
+ *
+ * They are recorded as paths RELATIVE TO THE CORPUS ROOT (`../graphs/...`), so
+ * every existing consumer's `join(ROOT, path)` keeps resolving and no existing
+ * id changes. Re-rooting to the repo top instead would rename every id
+ * (`2559` -> `tests-2559`) and invalidate every baseline, acceptance registry
+ * and journal reference at once.
+ *
+ * `.git`, `build` and `.claude` (agent worktrees — ~960 stray .dot files) are
+ * excluded; so is the corpus root itself, which is walked separately.
+ */
+function siblingFiles(root: string): string[] {
+  const top = dirname(root);
+  const skip = new Set(['.git', '.claude', 'build', basename(root)]);
+  const out: string[] = [];
+  for (const name of readdirSync(top)) {
+    if (skip.has(name)) continue;
+    const full = join(top, name);
+    try {
+      if (statSync(full).isDirectory()) walk(full, out);
+      else if (/\.(gv|dot)$/i.test(name)) out.push(full);
+    } catch { /* unreadable entry — skip */ }
+  }
+  return out;
+}
+
 export function buildManifest(root: string): CorpusEntry[] {
-  const files = walk(root).sort();
+  const files = [...walk(root), ...siblingFiles(root)].sort();
   const seen = new Map<string, number>();
   const entries: CorpusEntry[] = [];
   for (const full of files) {

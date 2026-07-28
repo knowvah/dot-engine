@@ -140,6 +140,17 @@ export function tuneControl(g: Graph, ctrl: SpringElectricalControl): void {
   ctrl.beautifyLeaves = mapBool(aggetGraph(g, 'beautify'), false);
   ctrl.doShrinking = mapBool(aggetGraph(g, 'overlap_shrink'), true);
   ctrl.rotation = lateDouble(aggetGraph(g, 'rotation'), 0.0, -Number.MAX_VALUE);
+  // C rotates the layout before overlap removal (spring_electrical.c:1181).
+  // `rotate()` is not ported, and nothing reads ctrl.rotation, so a non-zero
+  // value silently produced an UNROTATED layout — native moves nodes ~320pt on
+  // a 6-node graph at rotation=45. Fail the way `smoothing` above does: a loud
+  // unported-feature error beats silently wrong geometry.
+  // Found by the attribute blind-spot scan; no corpus graph sets it.
+  if (ctrl.rotation !== 0) {
+    throw new Error(
+      `sfdp rotation="${ctrl.rotation}": rotate() is not ported ` +
+      '(unreachable at sfdp defaults); see plans/port-catalog/README.md');
+  }
   ctrl.edgeLabelingScheme = lateInt(aggetGraph(g, 'label_scheme'), 0, 0);
   if (ctrl.edgeLabelingScheme > 4) ctrl.edgeLabelingScheme = 0;
 }

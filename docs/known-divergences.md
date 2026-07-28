@@ -117,11 +117,12 @@ medium graphs — the rest is untriaged drift, not yet individually root-caused.
 The blockquote above describes the dot-engine SVG survey, where A1 matches zero
 graphs; the separate `twopi` **xdot engine track** (`parity-twopi.json`, native
 `dot -K twopi -Txdot` oracle, `test/corpus/engine-walk.ts`) *does* run under its
-native engine and surfaces a concrete, verified A1 instance on 8 corpus ids:
+native engine and surfaces a concrete, verified A1 instance on 9 corpus ids:
 `graphs-arrows`, `graphs-newarrows`, `graphs-arrowsize`, `linux.x86-arrows_dot`,
-`macosx-arrows_dot`, `nshare-arrows_dot`, `share-newarrows`, `windows-newarrows`
-— each diverging on a single dominant edge (`Z->I` or `i->Z`; 12–64 draw-op
-diffs). Injection A/B (decision journal, 2026-07-10 "injection A/B verdicts:
+`macosx-arrows_dot`, `nshare-arrows_dot`, `share-newarrows`, `windows-newarrows`,
+and (added 2026-07-28, new to the 905-item universe) the directed/ sibling
+`tree-graphs-directed-oldarrows` — each diverging on a single dominant edge
+(`Z->I` or `i->Z`; 12–64 draw-op diffs). Injection A/B (decision journal, 2026-07-10 "injection A/B verdicts:
 twopi arrows family EXONERATED..." entry) proved the mechanism directly:
 dumping native `spline_edges`'s entry `ND_pos` and injecting it into the
 port's `splineEdgesShifted` produces **fully conformant** output on
@@ -138,6 +139,22 @@ position-only delta with no piece-count flip). Accepted at the engine-track
 level via `test/corpus/accepted-divergences-engines.json`, joined into
 `PARITY-twopi.md` by `parity-report.ts` — the same join `accepted.ts` performs
 for the dot-track `PARITY-dot.md`.
+
+The `oldarrows` RCA (2026-07-28) pinned the exact flip site of the family's
+point-count symptom. Its `i`–`Z`–`I` fan is collinear on a ring diameter, and
+pathplan `directVis`'s `intersect()` blocks a sight-line when an obstacle
+vertex lies "on" the segment — where `wind()`'s 1e-4 collinearity tolerance
+makes even a node 270pt away from the segment count as collinear, and
+`inBetween()` (which assumes collinearity) then degenerates to testing only
+the **x projection**: the vertex blocks iff its x falls strictly inside the
+ULP-wide interval between the two endpoint x coordinates. Which of the two
+mirrored radial edges bends therefore hinges on the last-ULP ordering of
+three nominally equal x values out of PRISM's solve — C bends `Z->I`
+(node `i`'s axis vertex lands inside its interval), the port bends `i->Z`
+(node `I`'s vertex lands inside its own). Replicating `directVis` offline on
+each side's dumped obstacle set reproduces each side's decision exactly, and
+injecting the oracle's pre-routing `ND_pos` into the port yields 0 diffs
+(`attribution-twopi.json`) — routing and emission are byte-faithful.
 
 `1855` is the radial/star **mirror** variant of the same pre-routing PRISM FP
 mechanism (accepted 2026-07-11): its 31 leaves are exactly cocircular, so the
@@ -995,6 +1012,21 @@ perimeter tie, and the qsort places two components in each other's packing
 cells — a rigid whole-node swap with no shape or routing error. No
 deterministic rewrite can reproduce a non-correctly-rounded libm
 transcendental, the textbook A9 shape.
+
+The same mechanism was confirmed 2026-07-28 on the larger sibling
+`tree-graphs-directed-polypoly` (`graphs/directed/polypoly.gv`, new to the
+905-item universe; 112 draw-op diffs, osage only). The diverging operation
+is the identical node-`9004` `cos(π+θ)` 1-ULP site — the C and port `bb.x`
+values match the original RCA byte for byte — but on this 76-node input the
+propagation runs through osage's `arrayRects` instead: `acmpf` sorts pack
+cells by the raw `width+height` sum, and libm's 1-ULP-high width makes
+`9004` sort strictly ahead of its rotated siblings `9000/9002/9006` while
+V8's correctly-rounded value leaves an exact 4-way tie for the unstable
+qsort to order differently — different row-major cells, a `9002`/`9006`
+swap, and a column-width `fmax` cascade shifting 8 neighbours in x.
+Feeding the port's own `arrayRects` the C node sizes versus the port node
+sizes reproduces the sweep's 10 moved nodes with byte-matching x deltas,
+closing the causal chain.
 
 Two further engine-track instances were root-caused and accepted 2026-07-11
 (full RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 draw-op

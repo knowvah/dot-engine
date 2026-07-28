@@ -164,7 +164,50 @@ export class StmtProcessor {
    */
   private anonCounter = 0;
 
+  /**
+   * Strict-graph edge index: canonical endpoint-pair key → the edge already
+   * created for it. `agedge` on a strict graph probes for a pre-existing edge
+   * and returns it instead of creating a second one, so `strict digraph
+   * { a->b; a->b }` holds ONE edge. A Map (rather than scanning root.edges)
+   * keeps that probe O(1); it stays empty for non-strict graphs.
+   * @see lib/cgraph/edge.c:agedge (agfindedge_by_key probe, :262-287)
+   */
+  private readonly strictEdges = new Map<string, Edge>();
+
   constructor(private readonly registry: NodeRegistry) {}
+
+  /**
+   * Canonical key for a strict-graph endpoint pair. C probes (t,h) and then,
+   * for an UNDIRECTED graph, (h,t) — so an undirected pair matches either way
+   * round and is canonicalized here by node id; a directed pair is not.
+   * @see lib/cgraph/edge.c:agedge:274-275 (`if (e == NULL && agisundirected(g))`)
+   */
+  private static strictKey(tail: Node, head: Node, undirected: boolean): string {
+    const swap = undirected && head.id < tail.id;
+    return swap ? `${head.id}\u0000${tail.id}` : `${tail.id}\u0000${head.id}`;
+  }
+
+  /**
+   * Apply the DOT-syntax `:port:compass` endpoints to an edge's attrs.
+   *
+   * C's precedence is explicit attr > `:port` syntax > edge default (verified
+   * against the oracle: with `edge [headport=n]` declared, `a:e -> b:sw` yields
+   * headport `sw`, while `c:e -> d:sw [headport=w]` yields `w`). The guard is
+   * therefore against THIS statement's own attribute list — not the edge's
+   * accumulated map, which also holds inherited defaults and, for a strict
+   * duplicate, the earlier statement's values.
+   * @see lib/cgraph/grammar.y:396 (mkport)
+   */
+  private static applySyntaxPorts(
+    target: Map<string, string>,
+    stmtAttrs: AttrPair[],
+    tailPort: string,
+    headPort: string,
+  ): void {
+    const setByStmt = (k: string): boolean => stmtAttrs.some((a) => a.key === k);
+    if (tailPort && !setByStmt('tailport')) target.set('tailport', tailPort);
+    if (headPort && !setByStmt('headport')) target.set('headport', headPort);
+  }
 
   /** Consume one anonymous id, returning cgraph's `2*counter+1`. */
   private nextAnonId(): number {
@@ -185,13 +228,23 @@ export class StmtProcessor {
     graph.attrs.set(stmt.key, normaliseAttrValue(stmt.value));
     // cgraph: assigning a graph attr on any (sub)graph declares it graph-wide
     // with an empty default → the root sees "" for it. @see agattr declaration.
-    graph.root.declaredGraphAttrs.add(stmt.key);
+    this.declareGraphAttr(graph, stmt.key);
+  }
+
+  /** Record a graph-attribute declaration, noting whether THIS scope was the
+   *  first to declare the key anywhere — the branch selector in cgraph's
+   *  setattr. @see lib/cgraph/attr.c:257 · model/graph.ts firstGraphDecl */
+  private declareGraphAttr(graph: Graph, key: string): void {
+    if (!graph.root.declaredGraphAttrs.has(key)) {
+      (graph.firstGraphDecl ??= new Set()).add(key);
+      graph.root.declaredGraphAttrs.add(key);
+    }
   }
 
   processAttr(stmt: AttrStmt, graph: Graph): void {
     if (stmt.target === 'graph') {
       applyAttrs(stmt.attrs, graph.attrs);
-      for (const a of stmt.attrs) graph.root.declaredGraphAttrs.add(a.key);
+      for (const a of stmt.attrs) this.declareGraphAttr(graph, a.key);
     } else if (stmt.target === 'node') {
       applyAttrs(stmt.attrs, graph.nodeDefaults);
     } else {
@@ -261,9 +314,16 @@ export class StmtProcessor {
     // copy attrs but not the snapshot. Mirrors cgraph's agsubg defval copy; kept
     // to the keys do_graph_label reads so the blast radius stays in label render.
     // @see lib/common/input.c:do_graph_label (agget label/font*)
+    // The seeded keys are recorded so the -Tdot serializer can tell them from a
+    // genuine local declaration: cgraph gives a local declaration its own dict
+    // symbol (printed by write_dict) even when the value equals the inherited
+    // one, whereas a seeded value must stay invisible. @see src/render/dot.ts
     for (const key of GRAPH_LABEL_INHERIT_KEYS) {
       const v = sg.graphDefaultsSnapshot.get(key);
-      if (v !== undefined && !sg.attrs.has(key)) sg.attrs.set(key, v);
+      if (v !== undefined && !sg.attrs.has(key)) {
+        sg.attrs.set(key, v);
+        (sg.seededAttrs ??= new Set()).add(key);
+      }
     }
     graph.subgraphs.set(sgName, sg);
     return sg;
@@ -342,14 +402,39 @@ export class StmtProcessor {
     // DOT-syntax ports land in tailport/headport attrs; explicit attrs win.
     const tailPort = tailEnd.port;
     const headPort = headEnd.port;
+    const strict = root.kind === 'strict-directed' || root.kind === 'strict-undirected';
+    const undirected = root.kind === 'strict-undirected';
     for (const tail of tailEnd.nodes) {
       for (const head of headEnd.nodes) {
+        const key = strict ? StmtProcessor.strictKey(tail, head, undirected) : '';
+        const existing = strict ? this.strictEdges.get(key) : undefined;
+        if (existing !== undefined) {
+          // A strict duplicate is NOT a new edge: agedge returns the existing
+          // one, so this statement's attributes land on it. It returns before
+          // agmapnametoid reserves an id, so the anon counter must NOT advance
+          // here — that counter drives sibling subgraphs' `%N` names.
+          // @see lib/cgraph/edge.c:agedge:276-277
+          applyAttrs(attrs, existing.attrs);
+          StmtProcessor.applySyntaxPorts(existing.attrs, attrs, tailPort, headPort);
+          // subedge: the pre-existing edge joins any enclosing subgraph that
+          // does not already hold it. @see lib/cgraph/edge.c:agedge:283
+          for (let g: Graph | null = graph; g !== null && g !== root; g = g.parent) {
+            g.nodes.set(tail.name, tail);
+            g.nodes.set(head.name, head);
+            if (!g.edges.includes(existing)) g.edges.push(existing);
+          }
+          continue;
+        }
         const edge = new Edge(tail, head, '');
         this.advanceAnonId(); // keyless edge = anonymous cgraph id (see method)
         applyAttrs(attrs, edge.attrs);
+        // Syntax ports BEFORE the defaults snapshot: C's precedence is
+        // explicit attr > `:port` syntax > edge default. Seeding the defaults
+        // first made the `!has` guard below true for a declared
+        // `edge [headport=…]`, silently dropping every `a:w -> b:e` port.
+        StmtProcessor.applySyntaxPorts(edge.attrs, attrs, tailPort, headPort);
         this.snapshotEdgeDefaults(edge, graph);
-        if (tailPort && !edge.attrs.has('tailport')) edge.attrs.set('tailport', tailPort);
-        if (headPort && !edge.attrs.has('headport')) edge.attrs.set('headport', headPort);
+        if (strict) this.strictEdges.set(key, edge);
         root.edges.push(edge);
         edge.graphSeq = root.edges.length;
         // cgraph: nodes and edges belong to every enclosing graph.

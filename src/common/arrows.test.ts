@@ -21,8 +21,22 @@ describe('parseArrow — ACs', () => {
   it('AC2: "normal" → normal component', () => {
     expect(parseArrow('normal')).toEqual([{ name: 'normal', open: false, left: false, right: false }]);
   });
-  it('AC3: "none" → none component', () => {
-    expect(parseArrow('none')).toEqual([{ name: 'none', open: false, left: false, right: false }]);
+  it('AC3: a lone "none" is DROPPED (C gap rule), but a non-lone gap is kept', () => {
+    // arrow_match_name discards a GAP that is the entire spec, so `arrowhead=none`
+    // yields flag 0 — no arrow at all, not a gap component.
+    // @see lib/common/arrows.c:arrow_match_name (`i == 0 && *rest == '\0'`)
+    expect(parseArrow('none')).toEqual([]);
+    // A gap followed by anything survives.
+    expect(parseArrow('nonenone')).toEqual([
+      { name: 'none', open: false, left: false, right: false },
+      { name: 'none', open: false, left: false, right: false },
+    ]);
+  });
+  it('a GAP in the LAST of the four slots is dropped', () => {
+    // @see lib/common/arrows.c:arrow_match_name (`i == NUMB_OF_ARROW_HEADS - 1`)
+    expect(parseArrow('teeteeteenone').map((c) => c.name)).toEqual(['tee', 'tee', 'tee']);
+    // ...and only the first four components are read at all.
+    expect(parseArrow('teeteeteeteetee').map((c) => c.name)).toEqual(['tee', 'tee', 'tee', 'tee']);
   });
   it('AC4: "odot" → dot open=true', () => {
     expect(parseArrow('odot')).toEqual([{ name: 'dot', open: true, left: false, right: false }]);

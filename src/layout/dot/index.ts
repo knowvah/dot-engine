@@ -165,9 +165,36 @@ export function dotPhasePost(g: Graph): void {
 // ---------------------------------------------------------------------------
 
 /**
+ * How many pipeline phases to run: C's
+ * `late_int(g, agfindgraphattr(g, "phase"), -1, 1)`.
+ *
+ * The DOT attribute is `phase`; `maxphase` is only the name of C's local
+ * variable. The port read `maxphase` as the attribute name, so it responded to
+ * a name C ignores and ignored the one C honours — invisible to every parity
+ * track, because no corpus graph declares either (found via the attribute
+ * blind-spot scan, test/corpus/attr-frequency.ts).
+ *
+ * late_int's `minimum` argument is 1, and it clamps rather than rejects, so a
+ * present-but-smaller value becomes 1 — only an ABSENT or unparseable value
+ * yields the -1 "run everything" default.
+ * @see lib/dotgen/dotinit.c:297 · lib/common/utils.c:40 late_int
+ */
+function graphPhase(g: Graph): number {
+  const v = g.attrs.get('phase');
+  if (v === undefined || v === '') return -1;
+  // strtol parses a numeric PREFIX, so "3abc" is 3, and parseInt agrees. The
+  // two failure exits return defaultValue WITHOUT clamping, so `phase=abc`
+  // runs the whole pipeline while `phase=0` clamps up to 1 — the distinction
+  // getAttrInt cannot express, since it collapses both onto defaultVal.
+  const n = parseInt(v, 10);
+  if (isNaN(n) || n > 2147483647) return -1;
+  return n < 1 ? 1 : n;
+}
+
+/**
  * Runs the full dot layout pipeline on graph g.
  *
- * The optional `maxphase` attribute (read from g.attrs) controls how many
+ * The optional `phase` attribute (read from g.attrs) controls how many
  * phases run (1=rank only, 2=+mincross, 3=+position, ≥4 or absent=all).
  *
  * C's `dotLayout` checks `dot_mincross`'s return code and returns immediately
@@ -198,16 +225,21 @@ export function dotPhasePost(g: Graph): void {
  * where C produces near-empty output.
  */
 export function dotLayoutPipeline(g: Graph): void {
-  const maxphase = getAttrInt(g, 'maxphase', -1);
+  const maxphase = graphPhase(g);
   dotPhaseInit(g);
   dotRank(g);
-  if (maxphase === 1) return;
+  // A phase stop is a SUCCESS return in C (dotLayout returns 0), and
+  // `dot_layout` skips dotneato_postprocess only when doDot reports an ERROR
+  // (dotinit.c:512-517). So the postprocess still runs on every phase stop —
+  // without it the drawing keeps raw layout coordinates and is translated off
+  // the origin. The rc/posRc paths below are the error paths and stay bare.
+  if (maxphase === 1) { gvPostprocess(g); return; }
   const rc = dotMincross(g);
   if (rc !== 0) return;
-  if (maxphase === 2) return;
+  if (maxphase === 2) { gvPostprocess(g); return; }
   const posRc = dotPosition(g);
   if (posRc !== 0) return;
-  if (maxphase === 3) return;
+  if (maxphase === 3) { gvPostprocess(g); return; }
   dotPhasePost(g);
 }
 

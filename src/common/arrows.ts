@@ -14,7 +14,7 @@ import {
   ARR_MOD_OPEN, ARR_MOD_INV, ARR_MOD_LEFT, ARR_MOD_RIGHT,
   ARR_TYPE_NORM, ARR_TYPE_CROW, ARR_TYPE_TEE, ARR_TYPE_BOX,
   ARR_TYPE_DIAMOND, ARR_TYPE_DOT, ARR_TYPE_CURVE, ARR_TYPE_GAP,
-  ARR_TYPE_MASK, ARR_LENFACT_BY_TYPE,
+  ARR_TYPE_MASK, ARR_LENFACT_BY_TYPE, NUMB_OF_ARROW_HEADS,
 } from './arrows-constants.js';
 
 // ---------------------------------------------------------------------------
@@ -125,13 +125,26 @@ const parseOne = (s: string): { comp: ArrowComponent; rest: string } | null => {
 export function parseArrow(str: string): ArrowComponent[] {
   const result: ArrowComponent[] = [];
   let s = str;
-  while (s.length > 0) {
+  // C warns and returns on an unparseable fragment, leaving *flag as whatever
+  // was accumulated; only a name that fails on the FIRST fragment yields the
+  // "no arrow spec at all" case the caller's `normal` default covers.
+  let parsedAny = false;
+  // C's loop counter `i` advances only when a component is STORED, so a gap
+  // dropped by the rules below does not consume one of the four slots.
+  while (s.length > 0 && result.length < NUMB_OF_ARROW_HEADS) {
     const m = parseOne(s);
     if (!m) break;
-    result.push(m.comp);
+    parsedAny = true;
     s = m.rest;
+    const isGap = m.comp.name === 'none';
+    // A GAP in the LAST slot is dropped — `arrowhead="teeteeteenone"` draws
+    // three arrows, not three plus a trailing spacer.
+    if (isGap && result.length === NUMB_OF_ARROW_HEADS - 1) continue;
+    // A GAP that is the entire spec is dropped (`arrowhead=none` → no arrow).
+    if (isGap && result.length === 0 && s.length === 0) continue;
+    result.push(m.comp);
   }
-  if (result.length === 0) result.push({ name: 'normal', open: false, left: false, right: false });
+  if (!parsedAny) result.push({ name: 'normal', open: false, left: false, right: false });
   return result;
 }
 

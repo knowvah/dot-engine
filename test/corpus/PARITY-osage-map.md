@@ -11,8 +11,8 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 761 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
+- **Surveyed:** 905
+- **pass:** 904 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
 - **errors (oracle/port/timeout, excluded from scoring):** 0
 
 ## Diverged (0)
@@ -29,5 +29,5 @@ _(none)_
 
 _(none)_
 
-_Passing ids (761) are omitted for brevity — the full roster is in
+_Passing ids (904) are omitted for brevity — the full roster is in
 `map-parity-osage.json`._

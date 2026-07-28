@@ -1,0 +1,12 @@
+// @knowvah/dot-engine reference input: clusterrank=none disables cluster-local
+// ranking, so cluster members rank against the root graph and the cluster
+// boxes are not drawn as separate layout units.
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    clusterrank=none;
+    subgraph cluster0 { a -> b; }
+    subgraph cluster1 { c -> d; }
+    a -> c;
+    b -> d;
+}

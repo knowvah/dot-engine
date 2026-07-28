@@ -1,0 +1,8 @@
+// @knowvah/dot-engine reference input: resolution overrides the device DPI,
+// scaling the emitted drawing. @see src/gvc/device.ts
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    resolution=100;
+    a -> b -> c;
+}

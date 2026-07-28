@@ -1,0 +1,10 @@
+// @knowvah/dot-engine reference input: samplepoints is a NODE attribute setting
+// how many vertices approximate an ellipse; observable in -Tdot as `vertices`.
+// @see lib/common/output.c:324 / neatogen/poly.c:94
+// engine: dot
+// tolerance: deterministic
+digraph G {
+    a [shape=circle, samplepoints=4];
+    b [shape=circle];
+    a -> b;
+}

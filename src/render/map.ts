@@ -167,10 +167,27 @@ function isEscapeAt(bytes: Uint8Array, i: number): boolean {
   return c !== undefined && 'EGHLNTlnr\\"'.includes(String.fromCharCode(c));
 }
 
+/**
+ * Canonicalize an attribute value for printing — cgraph's `agstrcanon`, which
+ * DISPATCHES on the html flag before falling back to the plain-string scan.
+ *
+ * An HTML-like value (`label=<<table…>>`) is emitted angle-bracket delimited
+ * and VERBATIM: no quoting, and no escaping of the `"` inside its markup.
+ * Routing it through `agstrcanonText` instead produces a quoted string with
+ * every attribute quote backslash-escaped, and leaks the port's marker byte.
+ *
+ * @see lib/cgraph/write.c:219 agstrcanon · :209 agcanonhtmlstr
+ */
+export function agstrcanon(arg: string): string {
+  if (isHtmlValue(arg)) return '<' + htmlValueContent(arg) + '>';
+  return agstrcanonText(arg);
+}
+
 /** The needs-quotes / numeral / escape state scan of `_agstrcanon`, over UTF-8
  * BYTES (C iterates bytes: cnt counts bytes for line breaking, and non-ascii
  * bytes are id chars). Returns the quoted buffer or the untouched input.
- * @see lib/cgraph/write.c:_agstrcanon */
+ * NOTE: this is `_agstrcanon`, the non-html half — call `agstrcanon` unless you
+ * know the value cannot be html. @see lib/cgraph/write.c:_agstrcanon */
 export function agstrcanonText(arg: string): string {
   if (arg.length === 0) return '""';
   const bytes = new TextEncoder().encode(arg);

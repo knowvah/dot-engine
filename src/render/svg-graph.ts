@@ -22,6 +22,7 @@ import { svgGraphId, svgGraphClass } from './svg-id.js';
 import { parseGradientSpec } from '../common/htmltable-emit-fill.js';
 import { findStopColor, parseStyleFlags } from '../common/style-resolve.js';
 import { cround } from '../common/arith.js';
+import { FontnameKind } from '../model/layoutParams.js';
 import {
   emitLinearGradient,
   emitRadialGradient,
@@ -323,6 +324,9 @@ function emitBgcolorBackground(g: Graph, bb: Box, bgcolorAttr: string | undefine
 export function svgBeginGraph(g: Graph, job: RenderJob): void {
   job.devscale = { x: 1, y: -1 };
   job.directed = g.kind === 'directed' || g.kind === 'strict-directed';
+  // C reads GD_fontnames(job->gvc->g) at each span; the port carries it on the
+  // job, set here alongside the other root-graph-derived fields.
+  job.fontnames = g.info.fontnames ?? FontnameKind.NativeFonts;
   // GD_drawing(root)->id — used as the `<gid>_` prefix for non-root object ids.
   job.drawingId = g.attrs.get('id') ?? '';
   job.write(SVG_XML_DECL);

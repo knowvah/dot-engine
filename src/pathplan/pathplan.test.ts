@@ -124,11 +124,16 @@ describe("triangulate / large polygon is stack-safe (regression: 2095_1)", () =>
   }
   let count = 0;
   let rc = -1;
+  // N=8000 through an O(N^2) clip runs ~1s bare but ~10s under the v8 coverage
+  // provider's instrumentation, which blows the 5s default and fails only in
+  // `npm run coverage`. Timeout raised rather than N lowered: N must stay above
+  // the ~6k-8k overflow point for the regression to mean anything. Still
+  // bounded, so a real perf regression here fails instead of hanging.
   it("does not overflow the stack and triangulates fully", () => {
     expect(() => { rc = triangulate({ ps }, () => { count++; }); }).not.toThrow();
     expect(rc).toBe(0);
     expect(count).toBe(N - 2);
-  });
+  }, 30_000);
 });
 
 // ─── shortestPath (shortest.c:Pshortestpath) ─────────────────────────────────

@@ -33,7 +33,7 @@ import {
   styleTokens,
 } from './style-resolve.js';
 import { stripedBox, wedgedEllipse } from '../render/svg-multicolor.js';
-import { resolveRenderColor, withColorScheme } from '../render/color-resolve.js';
+import { resolveRenderColor } from '../render/color-resolve.js';
 import { svgNodeId } from '../render/svg-id.js';
 import { drawRoundCorners, mcircleHack, underlineDraw } from './poly-shapes.js';
 
@@ -349,13 +349,13 @@ function applyPenState(obj: ObjState, styleAttr: string | undefined,
 export function applyNodeStyle(obj: ObjState, n: Node, job: RenderJob): boolean {
   const styleAttr = nodeAttr(n, n.root, 'style');
   const colorAttr = nodeAttr(n, n.root, 'color');
-  // C wraps each node's color block with setColorScheme so a `colorscheme`
-  // attr applies to bare scheme indices. @see lib/common/emit.c:1781/1789
-  return withColorScheme(nodeAttr(n, n.root, 'colorscheme'), () => {
-    const filled = applyFillState(obj, n, job);
-    applyPenState(obj, styleAttr, colorAttr, nodeAttr(n, n.root, 'penwidth'));
-    return filled;
-  });
+  // The node's `colorscheme` window is NOT opened here: C opens it once around
+  // the whole node emission (emit_begin_node..emit_end_node), which covers both
+  // this color block and the label textspans. Both callers of this function are
+  // codefns, so they already run inside that window. @see gvc/device.ts
+  const filled = applyFillState(obj, n, job);
+  applyPenState(obj, styleAttr, colorAttr, nodeAttr(n, n.root, 'penwidth'));
+  return filled;
 }
 
 /**

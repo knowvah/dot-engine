@@ -11,6 +11,7 @@
  */
 
 import type { Graph } from '../model/graph.js';
+import { FontnameKind } from '../model/layoutParams.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
 import type { Point, Box } from '../model/geom.js';
@@ -297,6 +298,9 @@ export class RenderJob {
   radialGradId: number = 0;
   /** Whether the graph being rendered is directed (edge titles use -> vs --). */
   directed: boolean = true;
+  /** GD_fontnames of the root graph — selects which PostScript-alias fields the
+   *  SVG emitter uses. @see plugin/core/gvrender_core_svg.c:464 */
+  fontnames: FontnameKind = FontnameKind.NativeFonts;
   /** Root graph's `id` attribute (GD_drawing(root)->id), '' if unset. Used as
    * the `<gid>_` prefix for non-root object ids. @see lib/common/emit.c:getObjId */
   drawingId: string = '';

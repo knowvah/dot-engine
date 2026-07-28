@@ -69,7 +69,9 @@ describe('pack + newrank + cluster + disconnected node (native SIGSEGVs)', () =>
     expect(bbOf(cluster)).toBe(ORACLE_CLUSTER_BB);
 
     // Every node survives the component projection (`d` is its own component).
-    for (const n of ['a', 'b', 'c', 'd']) expect(xdot).toContain(`${n} [`);
+    // agwrite opens an object block with a literal TAB before `[`.
+    // @see lib/cgraph/write.c:471 write_nondefault_attrs
+    for (const n of ['a', 'b', 'c', 'd']) expect(xdot).toContain(`${n}\t[`);
   });
 
   it('is layout-identical to the same graph without newrank (the proxy is sound)', () => {

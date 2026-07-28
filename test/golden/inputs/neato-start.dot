@@ -1,0 +1,8 @@
+// @knowvah/dot-engine reference input: neato start seeds the initial random placement
+// engine: neato
+// tolerance: iterative
+digraph G {
+    start=7;
+    a -> b -> c -> d -> a;
+    a -> c; b -> d; d -> e; e -> f; f -> a;
+}

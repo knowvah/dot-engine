@@ -11,13 +11,67 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 762
-- **pass:** 525 (68.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 235
+- **Surveyed:** 905
+- **pass:** 615 (68.0%) · **diverged (tracked):** 53 · **accepted (documented, won't-fix):** 235
 - **errors (oracle/port/timeout, excluded from scoring):** 2
 
-## Diverged (0)
+## Diverged (53)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`tree-contrib-dirgraph-bsdarch`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/dirgraph/bsdarch.dot) | 30782 | 7578 | `edge:_sys_arch->_sys_arch_alpha#0/_draw_/op[1].b[0]` |
+| [`tree-doc-dotguide-smlred`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/smlred.dot) | 14247 | 5794 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-neato-jho`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/jho.dot) | 14828 | 5516 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-contrib-dirgraph-linux`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/dirgraph/linux.dot) | 21860 | 5092 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-infosrc-plugins`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/infosrc/plugins.gv) | 11343 | 3818 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-NaN`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/NaN.gv) | 2672 | 3532 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-awilliams`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/awilliams.gv) | 7305 | 3258 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-pgram`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/pgram.gv) | 2614 | 3070 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-switch`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/switch.gv) | 1344 | 2402 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-jsort`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/jsort.gv) | 6189 | 2359 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-contrib-dirgraph-bsdkernel`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/dirgraph/bsdkernel.dot) | 7803 | 2242 | `edge:_sys->_sys_adosfs#0/_draw_/op[1].b[0]` |
+| [`tree-graphs-directed-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/world.gv) | 980 | 1938 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-undirected-ngk10_4`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/undirected/ngk10_4.gv) | 1754 | 1896 | `edge:10->33#0/_draw_/op[1].b[ptCount]` |
+| [`tree-graphs-directed-fig6`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/fig6.gv) | 835 | 1850 | `[graph]/_draw_/op[2].P[4]` |
+| [`tree-graphs-directed-proc3d`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/proc3d.gv) | 6121 | 1735 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-crazy`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/crazy.gv) | 5572 | 1656 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-rowe`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/rowe.gv) | 765 | 1602 | `[graph]/_draw_/op[2].P[4]` |
+| [`tree-graphs-directed-grammar`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/grammar.gv) | 1302 | 1416 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-contrib-java-dot-uml`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/java-dot/uml.dot) | 10213 | 1295 | `[graph]/_draw_/op[2].P[4]` |
+| [`tree-graphs-directed-unix`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/unix.gv) | 1433 | 1191 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 1998 | 1136 | `edge:Z->E#0/_draw_/op[1].b[ptCount]` |
+| [`tree-doc-dotguide-clust2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/clust2.dot) | 1407 | 926 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-unix2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/unix2.gv) | 1719 | 677 | `edge:1 BSD->2 BSD#0/_draw_/op[1].b[1]` |
+| [`tree-contrib-dirgraph-apache`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/dirgraph/apache.dot) | 4584 | 606 | `edge:_apache_1_3_22->_apache_1_3_22_cgi_bin#0/_draw_/op[1].b[1]` |
+| [`tree-contrib-dirgraph-named`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/dirgraph/named.dot) | 1804 | 452 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-alf`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/alf.gv) | 958 | 429 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-dotguide-fsm`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/fsm.dot) | 592 | 423 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-fsm`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/fsm.gv) | 605 | 423 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-train11`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/train11.gv) | 777 | 390 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-dotguide-hashtable`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/hashtable.dot) | 629 | 352 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-hashtable`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/hashtable.gv) | 629 | 352 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-viewfile`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/viewfile.gv) | 1767 | 336 | `edge:chkmalloc->malloc#0/_draw_/op[1].b[6]` |
+| [`tree-doc-neato-fancy`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/fancy.dot) | 617 | 295 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-pm2way`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/pm2way.gv) | 2020 | 246 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-undirected-Heawood`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/undirected/Heawood.gv) | 790 | 202 | `edge:0->1#0/_draw_/op[1].b[0]` |
+| [`tree-graphs-undirected-Petersen`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/undirected/Petersen.gv) | 904 | 188 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-nhg`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/nhg.gv) | 339 | 176 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-neato-ER`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/ER.dot) | 665 | 131 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-undirected-ER`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/undirected/ER.gv) | 650 | 131 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-dotguide-clust1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/clust1.dot) | 401 | 112 | `edge:a1->b3#0/_draw_/op[1].b[5]` |
+| [`tree-graphs-directed-clust4`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/clust4.gv) | 401 | 112 | `edge:a1->b3#0/_draw_/op[1].b[5]` |
+| [`tree-doc-dotguide-constraint`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/constraint.dot) | 93 | 90 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-infosrc-constraint`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/infosrc/constraint.dot) | 93 | 90 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-tclpkg-tcldot-examples-data-demo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../tclpkg/tcldot/examples/data/demo.gv) | 295 | 89 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-neato-G4_lenwt`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/G4_lenwt.dot) | 83 | 88 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-neato-G4_pinned`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/G4_pinned.dot) | 131 | 88 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-clust5`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/clust5.gv) | 238 | 79 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-graphs-directed-mike`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/mike.gv) | 381 | 76 | `edge:C->Z#0/pos[1]` |
+| [`tree-doc-dotguide-compound`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/compound.dot) | 303 | 69 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-neato-inet`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/inet.dot) | 349 | 63 | `[graph]/_draw_/op[2].P[4]` |
+| [`tree-graphs-directed-biological`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/biological.gv) | 1360 | 46 | `[graph]/_draw_/op[2].P[4]` |
+| [`tree-graphs-directed-ldbxtried`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/ldbxtried.gv) | 5155 | 25 | `edge:n0->n2#1/_draw_/op[1].b[4]` |
+| [`tree-graphs-directed-clust3`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/clust3.gv) | 146 | 4 | `edge:b0->b1#0/_draw_/op[1].b[4]` |
 
 ## Accepted (235) — documented, not chased
 
@@ -266,5 +320,5 @@ _(none)_
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
-_Passing ids (525) are omitted for brevity — the full roster is in
+_Passing ids (615) are omitted for brevity — the full roster is in
 `json-parity-sfdp.json`._

@@ -8,7 +8,6 @@ import {
   xdotFont,
   xdotPenColor,
   xdotFillColor,
-  formatNodeAttrs,
   formatEdgePos,
   edgeConnector,
   isDirected,
@@ -120,19 +119,6 @@ export function testXdotColors(): void {
 }
 
 // ---------------------------------------------------------------------------
-// formatNodeAttrs test body
-// ---------------------------------------------------------------------------
-
-export function testFormatNodeAttrs(): void {
-  const g = makeGraph();
-  const n = makeNode(g);
-  const s = formatNodeAttrs(n);
-  expect(s).toContain('pos="50,40"');
-  expect(s).toContain('width=1');
-  expect(s).toContain('height=.5');
-}
-
-// ---------------------------------------------------------------------------
 // formatEdgePos test body
 // ---------------------------------------------------------------------------
 
@@ -168,6 +154,12 @@ export function testDotRendererFactory(): void {
   expect(r.quality).toBe(0);
 }
 
+/**
+ * `-Tdot` is agwrite: like C's FORMAT_DOT it writes nothing until
+ * `dot_end_graph` serializes the whole graph (gvrender_core_dot.c:472), so the
+ * graph must be walked before the first byte. These assert the serialized
+ * result, not per-object streaming.
+ */
 export function testDotBeginEndGraph(): void {
   const r = new DotRenderer();
   const job = makeJob();
@@ -177,26 +169,48 @@ export function testDotBeginEndGraph(): void {
   const out = job.output.join('');
   expect(out).toContain('digraph G {');
   expect(out).toContain('bb="0,0,200,100"');
-  expect(out).toContain('}');
+  expect(out).toContain('node [label="\\N"];');
+  expect(out.trimEnd().endsWith('}')).toBe(true);
 }
 
-export function testDotEndNode(): void {
+export function testDotSerializesNode(): void {
   const r = new DotRenderer();
   const job = makeJob();
   const g = makeGraph();
-  r.endNode(makeNode(g), job);
+  const n = makeNode(g);
+  g.nodes.set(n.name, n);
+  r.beginGraph(g, job);
+  r.endGraph(g, job);
   const out = job.output.join('');
-  expect(out).toContain('A [');
+  expect(out).toContain('A\t[');
   expect(out).toContain('pos="50,40"');
 }
 
-export function testDotEndEdge(): void {
+export function testDotSerializesEdge(): void {
   const r = new DotRenderer();
   const job = makeJob();
   const g = makeGraph();
-  const e = new Edge(makeNode(g), makeNode(g), '');
-  r.endEdge(e, job);
+  const n = makeNode(g);
+  g.nodes.set(n.name, n);
+  g.edges.push(new Edge(n, n, ''));
+  r.beginGraph(g, job);
+  r.endGraph(g, job);
   expect(job.output.join('')).toContain('A -> A');
+}
+
+/** `-Tdot` attaches no xdot draw attributes — the only difference from
+ *  `-Txdot`, which shares this serializer. @see gvrender_core_dot.c:404 vs :418 */
+export function testDotOmitsDrawAttrs(): void {
+  const r = new DotRenderer();
+  const job = makeJob();
+  const g = makeGraph();
+  const n = makeNode(g);
+  g.nodes.set(n.name, n);
+  r.beginGraph(g, job);
+  r.endGraph(g, job);
+  const out = job.output.join('');
+  expect(out).not.toContain('_draw_');
+  expect(out).not.toContain('xdotversion');
 }
 
 // ---------------------------------------------------------------------------
@@ -219,7 +233,9 @@ export function testXdotBeginGraph(): void {
   r.endGraph(g, job);
   const out = job.output.join('');
   expect(out).toContain('digraph G {');
-  expect(out).toContain('xdotversion="1.7"');
+  // Bare, not quoted: dict values go through write_canonstr, and `1.7` needs
+  // no quoting — native emits `xdotversion=1.7`.
+  expect(out).toContain('xdotversion=1.7');
   expect(out).toContain('bb="0,0,200,100"');
 }
 
@@ -245,10 +261,6 @@ describe('xdot helpers', () => {
   it('color ops format correctly', testXdotColors);
 });
 
-describe('formatNodeAttrs', () => {
-  it('includes pos/width/height', testFormatNodeAttrs);
-});
-
 describe('formatEdgePos', () => {
   it('returns empty string when no spline', testFormatEdgePosEmpty);
 });
@@ -261,8 +273,9 @@ describe('edgeConnector / isDirected', () => {
 describe('DotRenderer', () => {
   it('factory returns type=dot quality=0', testDotRendererFactory);
   it('beginGraph/endGraph emit DOT wrapper', testDotBeginEndGraph);
-  it('endNode emits node with pos attribute', testDotEndNode);
-  it('endEdge emits directed arrow', testDotEndEdge);
+  it('serializes nodes with pos at endGraph', testDotSerializesNode);
+  it('serializes a directed edge at endGraph', testDotSerializesEdge);
+  it('omits xdot draw attributes', testDotOmitsDrawAttrs);
 });
 
 describe('XdotRenderer', () => {
