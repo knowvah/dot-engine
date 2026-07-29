@@ -13,8 +13,8 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 
 - **Oracle:** dot 15.1.0 · **corpus:** [graphviz `tests/`](https://gitlab.com/graphviz/graphviz/-/tree/main/tests) (local clone `~/git/graphviz/tests`)
 - **Surveyed (applicable):** 939
-- **conformant\*:** 905 (96.4%) · structural-match: 18 → 923/939 structurally equal (98.3%)
-- **Accepted deltas (documented, won't-fix):** 17 · **Tracked gaps (unaccepted, will-fix):** 4 → of 21 non-conformant graphs
+- **conformant\*:** 908 (96.7%) · structural-match: 15 → 923/939 structurally equal (98.3%)
+- **Accepted deltas (documented, won't-fix):** 17 · **Tracked gaps (unaccepted, will-fix):** 1 → of 18 non-conformant graphs
 - **errored:** 0 · **timeout:** 1 · **oracle-error:** 12 (excluded from scoring)
 - **Quarantined (not surveyed, from corpus-manifest.json):** oracle-crash 3, not-a-layout-test 2, malformed 6, engine-deferred 6, multi-graph 3, perf 1
 
@@ -22,11 +22,11 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 
 Accepted deltas are deliberate, root-caused, won't-fix differences (`test/corpus/accepted-divergences.json` → [Known divergences](../../docs/known-divergences.md)). Everything else non-conformant is a tracked gap we intend to close.
 
-## conformant (905)
+## conformant (908)
 
 Port SVG is *conformant* with the oracle: numeric coordinates/paths agree within the `deterministic` tolerance (±0.01) and all non-numeric content is exactly equal — not literal byte equality. See [docs/conformance.md](../../docs/conformance.md).
 
-_Conformant ids (905) are omitted for brevity — the full roster is in
+_Conformant ids (908) are omitted for brevity — the full roster is in
 [parity.json](parity.json)._
 
 ## Accepted deltas (17) — documented, not chased
@@ -57,7 +57,7 @@ the diverged table and the backlog below.
 | [`tree-graphs-directed-honda-tokoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/honda-tokoro.gv) | structural-match | 1.06 | A7 | maxΔ 1.06pt on the n012-&gt;n011 parallel pair; every node/label/bbox conformant | known-divergences.md#a7-round-box-wall-rounding-boundary-dot |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | structural-match | 42.09 | A8 | maxΔ 42.09 on 3 of 21,216 edges (edge2575 g[4639], edge3905 g[7777], edge15467 g[30201]; all record-port :c-&gt;:nb_part smode long-edge routes) | known-divergences.md#a8-fp-contractfma-rounding-vs-strict-ieee-dot |
 
-## Tracked structural-match (3)
+## Tracked structural-match (0)
 
 Same element tree; only numeric coordinate diffs above tolerance (no missing
 or extra elements). Near-misses — sub-pixel-to-modest position drift — that we
@@ -68,17 +68,9 @@ diff (`maxDeltaPath`) crossed with a magnitude band — an equivalence-class map
 for driving groups to conformance. Mechanism-family attribution: see
 [analysis](../../plans/structural-match-buckets/analysis/README.md).
 
-### tracked structural-match — by worst-diff signature
-
-| bucket | count | examples | hypothesis |
-|---|---:|---|---|
-| `edge-path · Δ<1` | 3 | `tree-doc-dotguide-curve`, `tree-doc-dotguide-icurve`, `tree-graphs-directed-arrows` | spline routing residual — x-coord/NS placement, clip endpoint, or ortho tie-break |
 
 | id | maxΔ | kind | worst-diff path |
 |---|---:|---|---|
-| [`tree-doc-dotguide-icurve`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/icurve.dot) | 0.38 | `edge-path` | `svg/g[1]/g[3]/path[2]/@d[3]` |
-| [`tree-doc-dotguide-curve`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/curve.dot) | 0.38 | `edge-path` | `svg/g[1]/g[3]/path[2]/@d[5]` |
-| [`tree-graphs-directed-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/arrows.gv) | 0.25 | `edge-path` | `svg/g[1]/g[156]/path[2]/@d[3]` |
 
 ## Tracked diverged (1) — worst-first
 

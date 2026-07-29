@@ -319,6 +319,7 @@ export function arrowLength(comps: ResolvedArrow[], arrowsize: number, penwidth:
  */
 export function dispatchSimple(
   r: ResolvedArrow, tip: Point, dir: Point, arrowsize: number, penwidth: number,
+  rankdir = 0,
 ): GenResult {
   const flag = arrowFlag(r);
   const u = componentU(dir, r.lenfact, arrowsize);
@@ -328,7 +329,9 @@ export function dispatchSimple(
     case ARR_TYPE_BOX: return genBox(tip, u, arrowsize, penwidth, flag);
     case ARR_TYPE_DIAMOND: return genDiamond(tip, u, arrowsize, penwidth, flag);
     case ARR_TYPE_DOT: return genDot(tip, u, arrowsize, penwidth, flag);
-    case ARR_TYPE_CURVE: return genCurve(tip, u, arrowsize, penwidth, flag);
+    // curve is the one generator that is not rotation-equivariant; it needs
+    // the rankdir to reproduce C's render-time (final-frame) generation.
+    case ARR_TYPE_CURVE: return genCurve(tip, u, arrowsize, penwidth, flag, rankdir);
     case ARR_TYPE_GAP: return genGap(tip, u, arrowsize, penwidth, flag);
     case ARR_TYPE_NORM:
     default:
@@ -345,6 +348,7 @@ export function dispatchSimple(
  */
 export function arrowDrawOps(
   comps: ResolvedArrow[], tip: Point, dir: Point, arrowsize: number, penwidth: number,
+  rankdir = 0,
 ): ArrowDrawOp[] {
   const ops: ArrowDrawOp[] = [];
   let p = tip;
@@ -352,7 +356,7 @@ export function arrowDrawOps(
   for (let i = 0; i < n; i++) {
     const r = comps[i];
     if ((r.type & ARR_TYPE_MASK) === ARR_TYPE_NONE) break;
-    const res = dispatchSimple(r, p, dir, arrowsize, penwidth);
+    const res = dispatchSimple(r, p, dir, arrowsize, penwidth, rankdir);
     ops.push(...res.ops);
     p = res.q;
   }

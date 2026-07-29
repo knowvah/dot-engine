@@ -56,7 +56,11 @@ export function arrowheadPolygon(arrowTip: Point, arrowDir: Point, penwidth = 1.
 // ---------------------------------------------------------------------------
 
 /** Minimal edge shape exposing the arrow-related attributes. */
-interface ArrowAttrEdge { attrs: Map<string, string> }
+interface ArrowAttrEdge {
+  attrs: Map<string, string>;
+  /** Present on real edges; the curve generator needs the rankdir frame. */
+  tail?: { root?: { info?: { rankdir?: number } } };
+}
 
 /** The arrowhead/arrowtail name for an edge end (default "normal"). */
 export function edgeArrowName(e: ArrowAttrEdge, end: 'head' | 'tail'): string {
@@ -81,7 +85,8 @@ export function arrowDrawOpsForEnd(
   e: ArrowAttrEdge, end: 'head' | 'tail', tip: Point, dir: Point, penwidth: number,
 ): ArrowDrawOp[] {
   const comps = parseArrow(edgeArrowName(e, end)).map(resolveArrowType);
+  const rankdir = (e.tail?.root?.info?.rankdir ?? 0) & 0x3;
   // Pass the RAW direction (not normalized): componentU reproduces arrow_gen's
   // EPSILON normalization, which is relative to the raw shaft magnitude.
-  return arrowDrawOps(comps, tip, dir, edgeArrowsize(e), penwidth);
+  return arrowDrawOps(comps, tip, dir, edgeArrowsize(e), penwidth, rankdir);
 }
