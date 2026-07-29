@@ -66,13 +66,25 @@ function parseAttrs(raw: string) {
   return out;
 }
 
+/**
+ * TH is a row-boundary synonym for TR, not a cell tag: the C lexer
+ * dispatches both open and close TH identically to TR (T_row/T_end_row).
+ * Normalizing here — the single point where tags become tokens — means
+ * every downstream consumer (parser) sees TH and TR as structurally
+ * identical, mirroring the C lexer's dispatch exactly.
+ * @see lib/common/htmllex.c:614,669 (startElement/endElement)
+ */
+function normalizeTag(tag: string): string {
+  return tag === 'TH' ? 'TR' : tag;
+}
+
 /** Parse close tag. @see lib/common/htmllex.c:endElement */
 function parseCloseToken(inner: string) {
   const body = inner.slice(1).trim();
   const sp = body.search(/\s/);
   const tag = (sp === -1 ? body : body.slice(0, sp)).toUpperCase();
   checkTag(tag);
-  return { type: 'close' as const, tag };
+  return { type: 'close' as const, tag: normalizeTag(tag) };
 }
 
 /** @see lib/common/htmllex.c:characterData */
@@ -119,12 +131,13 @@ function scanTag(src: string, start: number, tokens: Token[]) {
 function parseOpenToken(inner: string) {
   const sp = inner.search(/\s/);
   if (sp === -1) {
-    checkTag(inner.toUpperCase());
-    return { type: 'open' as const, tag: inner.toUpperCase(), attrs: parseAttrs('') };
+    const tag = inner.toUpperCase();
+    checkTag(tag);
+    return { type: 'open' as const, tag: normalizeTag(tag), attrs: parseAttrs('') };
   }
   const tag = inner.slice(0, sp).toUpperCase();
   checkTag(tag);
-  return { type: 'open' as const, tag, attrs: parseAttrs(inner.slice(sp + 1)) };
+  return { type: 'open' as const, tag: normalizeTag(tag), attrs: parseAttrs(inner.slice(sp + 1)) };
 }
 
 /** @see lib/common/htmllex.c:findNext */

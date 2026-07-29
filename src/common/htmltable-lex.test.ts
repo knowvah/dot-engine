@@ -128,6 +128,34 @@ describe('attribute scanning', () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// TH is a row-boundary synonym for TR, not a cell tag.
+// @see lib/common/htmllex.c:614,669 (startElement/endElement T_row dispatch)
+// ---------------------------------------------------------------------------
+
+describe('TH normalizes to TR', () => {
+  it('open <TH> emits an open token tagged TR', () => {
+    expect(tokenize('<TH>')).toEqual([{ type: 'open', tag: 'TR', attrs: {} }]);
+  });
+
+  it('open <TH> with attrs keeps the attrs on the normalized TR token', () => {
+    const tok = tokenize('<TH ALIGN="CENTER">')[0] as OpenToken;
+    expect(tok).toMatchObject({ type: 'open', tag: 'TR' });
+    expect(tok.attrs['align']).toBe('CENTER');
+  });
+
+  it('close </TH> emits a close token tagged TR', () => {
+    expect(tokenize('</TH>')).toEqual([{ type: 'close', tag: 'TR' }]);
+  });
+
+  it('self-closing <TH/> lexes as an open+close TR pair', () => {
+    expect(tokenize('<TH/>')).toEqual([
+      { type: 'open', tag: 'TR', attrs: {} },
+      { type: 'close', tag: 'TR' },
+    ]);
+  });
+});
+
 describe('tokenize — entity decoding in text runs', () => {
   // C's HTML lexer resolves entities via expat during tokenization, so both
   // sizing and emit see decoded UTF-8. Skipping this measured the raw entity
