@@ -104,36 +104,25 @@ describe('DtBag — delete', () => {
     expect(dt.size()).toBe(2);
   });
 
-  // BUG (found while writing this coverage suite, not fixed per task
-  // boundaries — NEVER edit src behavior): bagInsert's found-branch merge
-  // (splay-core.ts) threads the OLD (matched) node onto the NEW node's
-  // `.right`, in every insertion path traced (both the zero-rotation
-  // "match is already root" fast path, and the general path reached via an
-  // intervening rotation past a distinct-key node) — contradicting this
-  // module's own doc comment ("new node is inserted immediately to the LEFT
-  // of the matching node") and bag.ts's findByIdentity/unlinkNode, which
-  // only ever descend `.left`. Consequently delete() by object identity
-  // returns false for a duplicate immediately after it is inserted, unless
-  // some unrelated splay (e.g. an intervening first()/next() walk or
-  // another delete) happens to reposition it. Confirmed via direct `_root`
-  // inspection with 5/10/3 distinct keys + a duplicate of 10: the original
-  // id=10 object ends up on the new root's `.right`, and delete(original)
-  // returns false when called immediately after insert (no intervening
-  // walk) — see the passing test below, which pins the *actual* (buggy)
-  // behavior rather than the documented one.
-  // @see src/cdt/splay-core.ts:bagInsert (found-branch merge, ~line 156)
-  // @see src/cdt/bag.ts:findByIdentity (left-only walk)
-  it.todo(
-    'BUG: delete() of a non-root duplicate fails because bagInsert threads ' +
-    'matched nodes onto `.right`, but findByIdentity/unlinkNode only walk `.left`',
-  );
-
-  it('pins the actual (buggy) behavior: delete() of a just-inserted duplicate fails', () => {
+  // FIXED (was a BUG found while writing this coverage suite): bagInsert's
+  // found-branch merge (splay-core.ts) threads the OLD (matched) node onto
+  // the NEW node's `.right` (C-faithful — see dttree.c:223-231; the module
+  // doc comment above, previously claiming "immediately to the LEFT", was
+  // wrong and has been corrected). delete()'s original findByIdentity
+  // walked `.left` only, so a duplicate inserted after its match was
+  // unreachable. delete() now mirrors dttree.c:67-79's DT_OBAG delete
+  // pre-pass: dtsearch splays an equal-key node to root, then dtnext (also
+  // splaying) walks the equal-key group by pointer identity until it finds
+  // the target — reachable regardless of which side of the splayed root the
+  // duplicate lands on, since C threads it to `.right`.
+  // @see src/cdt/splay-core.ts:bagInsert (found-branch merge, ~line 160)
+  // @see src/cdt/bag.ts:DtBag/delete (splay + next-walk, C-faithful)
+  it('delete() of a non-root duplicate succeeds via the splay+next-walk (C-faithful)', () => {
     // A fresh top-down splay-insert always makes the JUST-inserted node the
     // new root. With three prior distinct keys (5, 10, 3 — 3 last, so root
     // is 3, not 10) the id=10 duplicate must descend past root to find its
-    // match — yet the original id=10 object still ends up unreachable via
-    // findByIdentity's left-only walk (see the BUG note above).
+    // match — bagInsert threads that match onto the new node's `.right`,
+    // and delete()'s next()-walk finds it there.
     const objDt = new DtBag<{ id: number; tag: string }, number>((o) => o.id, cmp);
     const origTen = { id: 10, tag: 'ten' };
     objDt.insert({ id: 5, tag: 'five' });
@@ -142,16 +131,12 @@ describe('DtBag — delete', () => {
     const dupTen = { id: 10, tag: 'dupTen' };
     objDt.insert(dupTen);
     expect(objDt.size()).toBe(4);
-    // Deliberately do NOT iterate/search the bag before deleting — walking
-    // it (first()/next()) splays nodes and would mask the bug by
-    // incidentally repositioning origTen.
-    expect(objDt.delete(origTen)).toBe(false); // BUG: should be true
-    expect(objDt.size()).toBe(4); // nothing was removed
-    // The object is still logically present (confirmed via the root-level
-    // delete, which DOES work — see 'removes whichever duplicate is
-    // currently splayed to the root' above — and via iteration).
+    // Deliberately do NOT iterate/search the bag before deleting — delete()
+    // must find origTen via its own splay+next walk, unaided.
+    expect(objDt.delete(origTen)).toBe(true);
+    expect(objDt.size()).toBe(3);
     const remaining = [...objDt].map((o) => o.tag).sort();
-    expect(remaining).toEqual(['dupTen', 'five', 'ten', 'three']);
+    expect(remaining).toEqual(['dupTen', 'five', 'three']);
   });
 
   it('delete() returns false when identity is not found among same-key nodes', () => {
