@@ -16,6 +16,50 @@ import type { Poly } from '../pathplan/types.js';
 import { INIT_DELTA, LOOP_TRIES, ROUTESPL_FUDGE } from './splines-constants.js';
 
 // ---------------------------------------------------------------------------
+// Stage-dump hook (diagnosis only; null in production — same pattern as
+// mincross-order.ts:setMincrossTrace). The callback receives the routing
+// stage name, the real edge's tail/head names (resolved through to_orig like
+// C's routesplines_ realedge walk), and a stage payload; filtering and
+// serialization are the callback's job. Browser-safe: no env reads here.
+// ---------------------------------------------------------------------------
+
+/** Stage payload consumer installed by a diagnosis harness. */
+export type RouteDumpFn = (
+  stage: string, tail: string, head: string, payload: unknown,
+) => void;
+
+let routeDump: RouteDumpFn | null = null;
+
+/** Install (or clear) the routing stage-dump callback. Diagnosis only. */
+export function setRouteDump(fn: RouteDumpFn | null): void {
+  routeDump = fn;
+}
+
+interface DumpEdgeLike {
+  tail?: { name?: string }; head?: { name?: string };
+  info?: { edge_type?: number; to_orig?: DumpEdgeLike };
+}
+
+function dumpIsVirtual(e: DumpEdgeLike): boolean {
+  return (e.info?.edge_type ?? 0) !== 0;
+}
+
+/** Resolve pp.data through to_orig to the real edge's names, as C does. */
+function dumpEdgeNames(pp: Path): [string, string] {
+  let e = pp.data as DumpEdgeLike | null;
+  // C: for (realedge = pp->data; realedge && ED_edge_type(realedge) != NORMAL;
+  //         realedge = ED_to_orig(realedge));  (NORMAL === 0)
+  while (e !== null && dumpIsVirtual(e)) e = e.info?.to_orig ?? null;
+  if (e === null) return ['?', '?'];
+  return [e.tail?.name ?? '?', e.head?.name ?? '?'];
+}
+
+/** Invoke the dump callback when installed; payload built lazily. */
+function emitDump(stage: string, names: [string, string] | null, mk: () => unknown): void {
+  if (routeDump !== null && names !== null) routeDump(stage, names[0], names[1], mk());
+}
+
+// ---------------------------------------------------------------------------
 // overlap helper
 // ---------------------------------------------------------------------------
 
@@ -353,8 +397,20 @@ function runLimitLoop(
 
 function routeSplinesInternal(pp: Path, polyline: boolean): Point[] | null {
   const boxes = pp.boxes;
+  const dumpNames = routeDump ? dumpEdgeNames(pp) : null;
+  emitDump('S1_INPUT', dumpNames, () => ({
+    nbox: pp.nbox,
+    boxes: pp.boxes.slice(0, pp.nbox).map(b => ({ ll: { ...b.ll }, ur: { ...b.ur } })),
+    start: { p: { ...pp.start.p }, theta: pp.start.theta, constrained: pp.start.constrained },
+    end: { p: { ...pp.end.p }, theta: pp.end.theta, constrained: pp.end.constrained },
+  }));
   if (checkPath(pp.nbox, boxes, pp)) return null;
   const effectiveBoxn = pp.nbox;
+  emitDump('S2_CHECKED', dumpNames, () => ({
+    nbox: effectiveBoxn,
+    boxes: boxes.slice(0, effectiveBoxn).map(b => ({ ll: { ...b.ll }, ur: { ...b.ur } })),
+    start: { p: { ...pp.start.p } }, end: { p: { ...pp.end.p } },
+  }));
 
   let flip = false;
   if (effectiveBoxn > 1 && boxes[0].ll.y > boxes[1].ll.y) {
@@ -389,6 +445,11 @@ function routeSplinesInternal(pp: Path, polyline: boolean): Point[] | null {
     console.warn('in routesplines, Pshortestpath failed');
     return null;
   }
+  emitDump('S3_POLY', dumpNames, () => ({
+    poly: polypoints.map(p => ({ ...p })),
+    eps: [{ ...eps[0] }, { ...eps[1] }],
+    pl: pl.map(p => ({ ...p })),
+  }));
 
   let ps: Point[];
   if (polyline) {
@@ -399,6 +460,11 @@ function routeSplinesInternal(pp: Path, polyline: boolean): Point[] | null {
     ps = routeSpline(edges, pl, evs);
     if (ps.length === 0) return null;
   }
+  emitDump('S4_SPL', dumpNames, () => ({
+    polyline,
+    evs: polyline ? undefined : buildConstraintVectors(pp).map(v => ({ ...v })),
+    ps: ps.map(p => ({ ...p })),
+  }));
 
   if (isTriviallyBounded(ps)) {
     applyTrivialBounds(boxes, effectiveBoxn, ps);

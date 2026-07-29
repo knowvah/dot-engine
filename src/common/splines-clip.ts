@@ -472,4 +472,29 @@ export function clipAndInstall(fe: Edge, hn: Node, ps: Point[], pn: number, info
   SplineClipHelper.arrowClip(fe, hn, ps, bounds, newspl, info);
   // C: update_bb_bz(&GD_bb(g), cp) — expand g's bb by each installed bezier.
   SplineClipHelper.copyToBezier(newspl, ps, bounds.start, bounds.end, g.info.bb);
+  if (clipDump) {
+    let cur = fe;
+    while (cur.info.to_orig != null && cur.info.edge_type !== 0) cur = cur.info.to_orig;
+    clipDump('S5_CLIP', cur.tail.name, cur.head.name, {
+      inputPn: pn,
+      bounds: { start: bounds.start, end: bounds.end },
+      sflag: newspl.sflag, eflag: newspl.eflag,
+      sp: { ...newspl.sp }, ep: { ...newspl.ep },
+      size: newspl.size,
+      // emit reads bz.size, not list.length (memory: bezier-emit-size-not-length)
+      list: newspl.list.slice(0, newspl.size).map(p => ({ ...p })),
+    });
+  }
+}
+
+/**
+ * Stage-dump hook for the clip/install output (diagnosis only; null in
+ * production — same pattern as splines-routespl.ts:setRouteDump).
+ */
+type ClipDumpFn = (stage: string, tail: string, head: string, payload: unknown) => void;
+let clipDump: ClipDumpFn | null = null;
+
+/** Install (or clear) the clip-stage dump callback. Diagnosis only. */
+export function setClipDump(fn: ClipDumpFn | null): void {
+  clipDump = fn;
 }

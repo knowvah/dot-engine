@@ -19,7 +19,7 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 
 | track | surveyed | conformant / pass | diverged | accepted | errors | pass % |
 |---|---:|---:|---:|---:|---:|---:|
-| [dot (SVG)](./PARITY-dot.md) | 939 | 908 | 1 | 17 | 13 | 96.7% |
+| [dot (SVG)](./PARITY-dot.md) | 939 | 909 | 0 | 17 | 13 | 96.8% |
 | [dot (xdot)](./PARITY-XDOT.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 905 | 903 | 0 | 2 | 0 | 99.8% |
 | [circo (xdot)](./PARITY-circo.md) | 905 | 895 | 0 | 4 | 6 | 98.9% |
@@ -95,15 +95,15 @@ Per-format status of the ids not conformant in all three:
 
 ## Goldens
 
-232 pinned golden inputs (`test/golden/manifest.json`), by engine:
+247 pinned golden inputs (`test/golden/manifest.json`), by engine:
 
 | engine | goldens |
 |---|---:|
-| dot | 172 |
-| neato | 14 |
+| dot | 178 |
+| neato | 18 |
 | fdp | 7 |
 | sfdp | 6 |
-| circo | 10 |
+| circo | 15 |
 | twopi | 8 |
 | osage | 7 |
 | patchwork | 8 |
