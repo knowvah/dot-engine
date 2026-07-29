@@ -1,0 +1,9 @@
+// @knowvah/dot-engine reference input: 5-cycle with one chord
+// engine: circo
+// tolerance: deterministic
+// T2e: exercises blockpath.ts findPairEdges "has pair edge" branches
+// (the chord a--c gives node b's neighbours a mutual pair edge).
+graph G {
+    a -- b -- c -- d -- e -- a;
+    a -- c;
+}

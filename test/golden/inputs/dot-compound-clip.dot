@@ -1,0 +1,10 @@
+digraph C {
+  compound=true
+  subgraph cluster_a { label="A"; a1; a2; a1->a2 }
+  subgraph cluster_b { label="B"; b1; b2; b1->b2 }
+  a1->b1 [lhead=cluster_b]
+  a2->b2 [ltail=cluster_a]
+  a1->b2 [ltail=cluster_a lhead=cluster_b]
+  x->a1
+  b2->y
+}

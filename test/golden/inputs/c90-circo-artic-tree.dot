@@ -1,0 +1,10 @@
+// @knowvah/dot-engine reference input: triangle block with a tree tail
+// engine: circo
+// tolerance: deterministic
+// T2e: exercises blockGraph/createBlocktree with a biconnected block (the
+// triangle) plus a chain of articulation-point single-node blocks hanging
+// off it (d, e are cut off from the cycle).
+graph G {
+    a -- b -- c -- a;
+    c -- d -- e;
+}

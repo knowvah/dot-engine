@@ -1,0 +1,12 @@
+digraph O {
+  splines=ortho
+  nodesep=0.6 ranksep=0.7
+  a->b
+  a->b
+  a->b
+  b->c
+  a->c
+  c->d
+  b->d
+  d->a
+}

@@ -1,0 +1,8 @@
+graph R {
+  layout=neato
+  ratio=0.5
+  size="6,6"
+  a -- b -- c -- d -- a
+  a -- c
+  e -- a
+}

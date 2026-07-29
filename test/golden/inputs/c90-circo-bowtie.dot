@@ -1,0 +1,12 @@
+// @knowvah/dot-engine reference input: two triangles sharing one vertex,
+// plus a pendant leaf off the shared vertex
+// engine: circo
+// tolerance: deterministic
+// T2e: two biconnected components (each a 3-cycle) joined at cut vertex c,
+// with a degree-1 residual node hanging off c -- exercises multi-block
+// placement and placeResiduals.
+graph G {
+    a -- b -- c -- a;
+    c -- d -- e -- c;
+    c -- f;
+}

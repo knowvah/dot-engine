@@ -1,0 +1,34 @@
+digraph Z {
+  rankdir=LR
+  node [width=1.1 height=0.6]
+  n01 [shape=box3d label="box3d"]
+  n02 [shape=note label="note"]
+  n03 [shape=tab label="tab"]
+  n04 [shape=folder label="folder"]
+  n05 [shape=component label="component"]
+  n06 [shape=cds label="cds"]
+  n07 [shape=terminator label="terminator"]
+  n08 [shape=utr label="utr"]
+  n09 [shape=insulator label="insulator"]
+  n10 [shape=promoter label="promoter"]
+  n11 [shape=ribosite label="ribosite"]
+  n12 [shape=rnastab label="rnastab"]
+  n13 [shape=proteasesite label="proteasesite"]
+  n14 [shape=proteinstab label="proteinstab"]
+  n15 [shape=primersite label="primersite"]
+  n16 [shape=restrictionsite label="restrictionsite"]
+  n17 [shape=fivepoverhang label="fivepoverhang"]
+  n18 [shape=threepoverhang label="threepoverhang"]
+  n19 [shape=noverhang label="noverhang"]
+  n20 [shape=assembly label="assembly"]
+  n21 [shape=signature label="signature"]
+  n22 [shape=rpromoter label="rpromoter"]
+  n23 [shape=rarrow label="rarrow"]
+  n24 [shape=larrow label="larrow"]
+  n25 [shape=lpromoter label="lpromoter"]
+  n01->n02->n03->n04->n05
+  n06->n07->n08->n09->n10
+  n11->n12->n13->n14->n15
+  n16->n17->n18->n19->n20
+  n21->n22->n23->n24->n25
+}
