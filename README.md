@@ -172,6 +172,21 @@ Trade-off: the built-in model is reproducible across machines; the host-faithful
 path matches the rendering font but is platform-dependent (as native graphviz is).
 See the Text measurement guide for the full contract.
 
+`CanvasTextMeasurer` accepts **any** 2D context that implements `font` +
+`measureText().width` — the `canvas` package is one provider, not a requirement.
+`@napi-rs/canvas` (prebuilt N-API binaries, no `prebuild-install`) works too:
+
+```ts
+import { createCanvas } from '@napi-rs/canvas';
+setTextMeasurer(new CanvasTextMeasurer(createCanvas(0, 0).getContext('2d') as unknown as CanvasRenderingContext2D));
+```
+
+Pick the engine you **render** with: the two libraries resolve system fonts
+differently (measured on macOS: `bold` Helvetica and Times/Courier substitution
+diverge by 4–14% between them, while regular-weight Helvetica/Arial agree to
+&lt;0.2%). "Host-faithful" means measuring with the same font stack that later
+draws the text — mixing engines reintroduces the mismatch you opted in to avoid.
+
 ## Security
 
 **Treat rendered output as attacker-controlled markup whenever the DOT source is
