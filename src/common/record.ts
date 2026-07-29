@@ -25,6 +25,7 @@ import { renderLabel, applyNodeStyle } from './poly-gencode.js';
 import { transformPoint } from '../gvc/device.js';
 import { emitRoundedBezier } from './poly-shapes.js';
 import { parseStyleFlags } from './style-resolve.js';
+import { mapbool } from '../layout/dot/rank.js';
 
 // Parse-mode bits. @see lib/common/shapes.c
 const HASTEXT = 1;
@@ -344,12 +345,9 @@ export function posReclbl(f: FieldT, ul: Point, sides: number): void {
 // record_init
 // ---------------------------------------------------------------------------
 
-/** mapbool for attr strings. @see lib/common/utils.c:mapbool */
+/** mapbool for attr strings. @see lib/common/utils.c:mapBool */
 function attrBool(n: Node, g: Graph, key: string): boolean {
-  const s = nodeAttr(n, g, key);
-  if (!s || s.toLowerCase() === 'false' || s.toLowerCase() === 'no') return false;
-  if (s.toLowerCase() === 'true' || s.toLowerCase() === 'yes') return true;
-  return parseInt(s, 10) !== 0;
+  return mapbool(nodeAttr(n, g, key));
 }
 
 function recAttrSize(n: Node, g: Graph): Point {

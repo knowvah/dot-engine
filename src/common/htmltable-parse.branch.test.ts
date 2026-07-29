@@ -186,30 +186,37 @@ describe('VR between cells', () => {
 // ---------------------------------------------------------------------------
 
 describe('TH cells', () => {
-  // BUG (do not exercise): processRowToken (htmltable-parse.ts:365) treats
-  // `<TH>` as a cell-opening tag alias for `<TD>`, but parseCellContent's
-  // closing-tag matcher (htmltable-parse.ts:260,264) only recognises
-  // `close TD`. A `<TH>...</TH>` cell's content loop then never observes
-  // its own closing tag (parseText breaks on the close token WITHOUT
-  // consuming it), so parseCellContent's `while` loop re-reads the same
-  // unconsumed token forever — an infinite loop / hang on any HTML label
-  // containing `<TH>`.
-  //
-  // The canonical C lexer (lib/common/htmllex.c:614,669 startElement/
-  // endElement) does NOT treat TH as a cell at all: `TH` is dispatched
-  // identically to `TR` (T_row / T_end_row) — i.e. TH is a row-boundary
-  // synonym, never a cell. The port's `t.tag === 'TD' || t.tag === 'TH'`
-  // disjunct at L365 is a genuine divergence from the spec, not merely an
-  // uncovered branch.
-  //
-  // Fixing this requires editing src/common/htmltable-parse.ts (out of
-  // T4c's write-set — test-only). Left as `.todo` so this branch is not
-  // silently exercised into a hang in this or a future coverage pass.
-  it.todo(
-    '<TH> is misrouted to the TD cell-parsing path and hangs ' +
-    '(processRowToken L365 should treat TH as a TR/row synonym per ' +
-    'lib/common/htmllex.c:614,669, not as a TD-cell alias)',
-  );
+  // TH is a row-boundary synonym for TR, never a cell tag.
+  // @see lib/common/htmllex.c:614,669 (startElement/endElement T_row dispatch)
+  it('<TH> delimits a row exactly like <TR> and terminates', () => {
+    const tbl = firstTable('<TABLE><TH><TD>x</TD></TH></TABLE>');
+    expect(tbl.rows).toHaveLength(1);
+    expect(tbl.rows[0].cells).toHaveLength(1);
+    expect(tbl.rows[0].cells[0].content).toEqual([
+      { kind: 'text', items: [{ text: 'x' }] },
+    ]);
+  }, 2000);
+
+  it('<TH>...<TD>...<TD>...</TH> is structurally identical to the <TR> form', () => {
+    const th = firstTable('<TABLE><TH><TD>a</TD><TD>b</TD></TH></TABLE>');
+    const tr = firstTable('<TABLE><TR><TD>a</TD><TD>b</TD></TR></TABLE>');
+    expect(th).toEqual(tr);
+  }, 2000);
+
+  // Direct hang repro (pre-fix): before D3, processRowToken (htmltable-
+  // parse.ts:365) treated a nested `<TH>` as a TD-cell alias, but
+  // parseCellContent's close-tag matcher only recognised `close TD` — the
+  // cell's content loop never observed its own (TH) closing tag and spun
+  // forever. Confirmed via a 5s subprocess timeout against the pre-fix
+  // source (exit 124). Post-fix, TH lexes as TR, so a <TH> nested inside
+  // an already-open <TR> is a malformed nested row (no grammar rule for
+  // it): the outer parseRow's own `close TR` check (normalized from the
+  // inner TH's close tag) ends the row early, discarding the "x" text and
+  // the real </TR> as unrecognised trailing tokens — one row, zero cells.
+  it('terminates on a <TH> nested inside <TR> instead of looping forever', () => {
+    const tbl = firstTable('<TABLE><TR><TH>x</TH></TR></TABLE>');
+    expect(tbl.rows).toEqual([{ cells: [] }]);
+  }, 2000);
 });
 
 describe('empty cell content', () => {

@@ -107,7 +107,7 @@ describe("AC3 round-trip — font, style, image, fontchar", () => {
   });
 
   it("image", () => {
-    const { x1, x2 } = roundTrip("I 0 0 100 50 8-img.png");
+    const { x1, x2 } = roundTrip("I 0 0 100 50 7-img.png");
     if (x1.ops[0].kind !== "image" || x2.ops[0].kind !== "image") throw new Error("kind");
     expect(x2.ops[0].image.name).toBe(x1.ops[0].image.name);
     expect(x2.ops[0].image.pos).toEqual(x1.ops[0].image.pos);

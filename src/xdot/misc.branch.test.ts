@@ -65,7 +65,7 @@ describe("sprintXDot — exact strings per op kind", () => {
   });
 
   it("font: 'F <size> <len> -<name>'", () => {
-    expect(sprintXDot(parseXDot("F 12 10-Helvetica")!)).toBe("F 12 9 -Helvetica");
+    expect(sprintXDot(parseXDot("F 12 9-Helvetica")!)).toBe("F 12 9 -Helvetica");
   });
 
   it("style: 'S <len> -<style>'", () => {
@@ -168,7 +168,7 @@ describe("jsonXDot — per op kind", () => {
   });
 
   it("font: {\"F\": [size, \"<name>\"]}", () => {
-    const s = jsonXDot(parseXDot("F 12 10-Helvetica")!);
+    const s = jsonXDot(parseXDot("F 12 9-Helvetica")!);
     expect(s).toContain('{"F":{"size":12.000000,"name":"Helvetica"}}');
   });
 
@@ -211,6 +211,9 @@ describe("statXDot — remaining shape and attr kinds", () => {
 
   it("font, style, image, fontchar counted independently", () => {
     const sp = makeStats();
+    // "10-Helvetica " is intentional: with trailing input the declared count
+    // is satisfiable, so C consumes 10 bytes ("Helvetica " incl. the space)
+    // as the font name — valid input, unlike the exhausted-input cases.
     statXDot(
       parseXDot("F 12 10-Helvetica S 6-dashed I 10 20 100 50 7-foo.png t 7")!,
       sp,

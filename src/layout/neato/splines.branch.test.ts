@@ -17,7 +17,7 @@
  * @see lib/neatogen/neatosplines.c
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, afterAll, vi } from 'vitest';
 import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
 import { Edge } from '../../model/edge.js';
@@ -871,8 +871,16 @@ describe('splineEdgesShifted — shiftAllPos', () => {
 // ---------------------------------------------------------------------------
 
 describe('injectOraclePositions', () => {
-  const scratchDir = '/private/tmp/claude-501/-Users-scottseely-git-graphviz-ts/5d0eda32-e144-4798-b05b-31d8979e45a1/scratchpad';
+  // A machine-independent temp dir: hardcoding a session scratchpad path made
+  // these tests fail with ENOENT on any other machine/session.
+  const scratchDir = process.getBuiltinModule('node:fs')!.mkdtempSync(
+    `${process.getBuiltinModule('node:os')!.tmpdir()}/gvts-inject-`,
+  );
   let dumpPath: string;
+
+  afterAll(() => {
+    process.getBuiltinModule('node:fs')!.rmSync(scratchDir, { recursive: true, force: true });
+  });
 
   afterEach(() => {
     delete process.env['GVTS_POS_INJECT'];
