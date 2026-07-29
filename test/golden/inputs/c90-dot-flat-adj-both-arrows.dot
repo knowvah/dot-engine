@@ -1,0 +1,4 @@
+digraph {
+  {rank=same; a; b}
+  a:e -> b:w [dir=both];
+}
