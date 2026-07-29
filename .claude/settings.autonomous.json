@@ -54,30 +54,86 @@
       "mcp__serena__insert_after_symbol",
       "mcp__serena__insert_before_symbol",
       "mcp__serena__safe_delete_symbol",
-      "mcp__serena__rename_symbol"
+      "mcp__serena__rename_symbol",
+      "Bash(GVBINDIR=*)",
+      "Bash(DYLD_LIBRARY_PATH=*)",
+      "Bash(~/git/graphviz/build/cmd/dot/dot *:*)",
+      "Bash(timeout *:*)",
+      "Bash(shasum *:*)",
+      "Bash(ps *:*)",
+      "Bash(kill *:*)",
+      "Bash(time *:*)"
     ]
   },
   "hooks": {
     "SessionStart": [
-      { "hooks": [ { "type": "command", "command": "~/.claude/hooks/session-start.sh", "async": true } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/session-start.sh",
+            "async": true
+          }
+        ]
+      }
     ],
     "UserPromptSubmit": [
-      { "hooks": [
-        { "type": "command", "command": "~/.claude/hooks/record-turn-start.sh", "async": true },
-        { "type": "command", "command": "~/.claude/hooks/project-init.sh", "async": true }
-      ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/record-turn-start.sh",
+            "async": true
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/project-init.sh",
+            "async": true
+          }
+        ]
+      }
     ],
     "PostCompact": [
-      { "hooks": [ { "type": "command", "command": "cat ~/.claude/post-compact-context.md" } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat ~/.claude/post-compact-context.md"
+          }
+        ]
+      }
     ],
     "PreCompact": [
-      { "hooks": [ { "type": "command", "command": "echo '-- COMPACTING: re-read plans/sfdp-tracked-divergences/README.md + decision-journal.md from disk; verify open task commits --'" } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '-- COMPACTING: re-read plans/sfdp-tracked-divergences/README.md + decision-journal.md from disk; verify open task commits --'"
+          }
+        ]
+      }
     ],
     "PostToolUse": [
-      { "matcher": "Write|Edit|MultiEdit", "hooks": [ { "type": "command", "command": "python3 ~/.claude/hooks/check-complexity.py" } ] }
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/check-complexity.py"
+          }
+        ]
+      }
     ],
     "Stop": [
-      { "hooks": [ { "type": "command", "command": "~/.claude/hooks/notify-on-stop.sh", "async": true } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify-on-stop.sh",
+            "async": true
+          }
+        ]
+      }
     ]
   }
 }
