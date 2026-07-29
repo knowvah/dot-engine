@@ -52,7 +52,7 @@ attempts at one site; contradiction of a faithful-port rule.
 
 | Batch | Purpose | Status |
 |-------|---------|--------|
-| [batch-1](./batch-1/overview.md) — Localize | T1 baseline+target, T2 dump inventory, T3 staged localization, T4 isolated replay, T5 RCA (commit 1) | [ ] |
+| [batch-1](./batch-1/overview.md) — Localize | T1 baseline+target, T2 dump inventory, T3 staged localization, T4 isolated replay, T5 RCA (commit 1) | [x] |
 | [batch-2](./batch-2/overview.md) — Resolve | T6a fix OR T6b acceptance (commit 2), T7 end gates + closeout (commit 3) | [ ] |
 
 ## Index
