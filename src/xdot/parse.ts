@@ -122,7 +122,9 @@ class XdotParser {
     let accounted = 0;
     let j = 0;
     while (accounted < len) {
-      if (cur + j >= s.length) break; // C strncpy semantics: stop at end of input
+      // C fails hard the moment input runs out before the byte budget is
+      // satisfied (`s[j] == '\0'` mid-loop). @see xdot/xdot.c:139-141.
+      if (cur + j >= s.length) return null;
       const ch = s[cur + j];
       const prev = j > 0 ? s[cur + j - 1] : "";
       out += ch;

@@ -178,20 +178,16 @@ describe("parseString — UTF-8 byte-length dispatch (cpByteLen)", () => {
   });
 });
 
-describe("parseString — truncated input (documented port bug)", () => {
-  // BUG: C's parseString (xdot.c:138-142) returns 0/NULL the moment the
-  // input runs out (`s[j] == '\0'`) before the declared byte count is
-  // satisfied. The port instead breaks out of the loop and returns a
-  // partial string as if parsing had succeeded (parse.ts:124-125,
-  // "// C strncpy semantics: stop at end of input" — this gloss is
-  // inaccurate; C does not use strncpy here, it fails hard). Confirmed via
-  // direct probe: parseString("5-ab", 0) currently returns
-  // { val: "ab", pos: 4 } instead of null.
-  it.todo(
-    "declared byte count exceeds available input -> should return null " +
-      "per C xdot.c:139-142 (currently returns partial {val:'ab',pos:4}); " +
-      "see src/xdot/parse.ts:124-125",
-  );
+describe("parseString — truncated input", () => {
+  // C's parseString (xdot.c:138-142) returns 0/NULL the moment the input
+  // runs out (`s[j] == '\0'`) before the declared byte count is satisfied.
+  it("declared byte count exceeds available input -> returns null per xdot.c:139-141", () => {
+    expect(parseString("5-ab", 0)).toBeNull();
+  });
+
+  it("truncated string inside a full op fails the whole op parse", () => {
+    expect(parseXDot("T 0 0 0 50 5-ab")).toBeNull();
+  });
 });
 
 // ---------------------------------------------------------------------------
