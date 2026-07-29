@@ -362,7 +362,7 @@ const parseCell = (
 const processRowToken = (
   s: ParseState, t: Token, cells: HtmlCell[], fontStack: FontState[],
 ): void => {
-  if (t.type === 'open' && (t.tag === 'TD' || t.tag === 'TH')) {
+  if (t.type === 'open' && t.tag === 'TD') {
     consume(s);
     cells.push(parseCell(s, t.attrs, fontStack));
     return;

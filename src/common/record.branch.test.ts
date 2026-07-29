@@ -426,20 +426,15 @@ describe('recordInit — fixedsize (attrBool) branch matrix', () => {
     expect(widthHeight('0').w).toBeCloseTo(3.0, 4);
   });
 
-  // KNOWN PORT BUG (not fixed here — test-only task): C's mapBool takes the
-  // atoi() fallback only when the FIRST character is a digit (gv_isdigit);
-  // for any other string it returns the default (false). record.ts's local
-  // attrBool always falls through to `parseInt(s, 10) !== 0`, and
-  // parseInt('abc', 10) is NaN, so attrBool('abc') is TRUE instead of C's
-  // FALSE. The project's own canonical mapbool (src/layout/dot/rank.ts)
-  // already gets this right — record.ts should delegate to it instead of
-  // reimplementing a divergent copy.
+  // C's mapBool takes the atoi() fallback only when the FIRST character is a
+  // digit (gv_isdigit); for any other string it returns the default (false).
   // @see lib/common/utils.c:325 mapBool (gv_isdigit(*p) guard)
-  // @see src/layout/dot/rank.ts:mapbool (the correct port)
-  it.todo(
-    'fixedsize="abc" (non-digit) should expand like C (defaultValue=false); ' +
-    'attrBool\'s unconditional parseInt fallback makes it clamp instead',
-  );
+  // @see src/layout/dot/rank.ts:mapbool (the correct port; attrBool delegates)
+  it('fixedsize="abc" (non-digit) expands like C (defaultValue=false)', () => {
+    const { w, h } = widthHeight('abc');
+    expect(w).toBeCloseTo(3.0, 4);
+    expect(h).toBeCloseTo(109 / 72, 4);
+  });
 });
 
 describe('recordInit — rankdir ?? fallback', () => {

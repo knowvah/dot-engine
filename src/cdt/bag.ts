@@ -3,10 +3,12 @@
  * DtBag — ordered multiset (Dtobag) backed by a splay tree.
  *
  * Unlike DtSplay (DT_OSET), DtBag allows duplicate keys.  On insert of a
- * duplicate, the new node is inserted immediately to the LEFT of the
- * matching node (mirrors C dttree.c DT_OBAG insert: new node placed in
- * link.left, i.e. the right partition, becoming the successor of the
- * matching group — faithfully ported from dttree.c lines 226-230).
+ * duplicate, the matched (old) node is threaded onto the new node's RIGHT
+ * subtree — not the left, as an earlier version of this comment claimed.
+ * C dttree.c DT_INSERT's DT_OBAG found-branch does
+ * `root->left = NULL; root->right = link.left; link.left = root;`
+ * (dttree.c:223-231): the old matched node is pushed onto the head of the
+ * RIGHT partition, which becomes the new root's `.right` subtree.
  *
  * Iteration (first/next) produces ascending comparator order.  Among
  * equal-key nodes the sub-order is the deterministic order CDT's Dtobag
@@ -32,50 +34,20 @@ import type { SplayNode } from "./splay-core.js";
 // ---------------------------------------------------------------------------
 
 /**
- * Walk left-spine from `start` to find a node whose `.obj === target`.
- * All nodes on the spine share the same key.
- * Returns [node, parent] or [null, null] when not found.
- */
-function findByIdentity<T, K>(
-  start: SplayNode<T>,
-  target: T,
-  key: K,
-  keyOf: KeyOf<T, K>,
-  compare: Comparator<K>,
-): [SplayNode<T> | null, SplayNode<T> | null] {
-  let cur: SplayNode<T> | null = start;
-  let parent: SplayNode<T> | null = null;
-  while (cur !== null) {
-    if (cur.obj === target) return [cur, parent];
-    if (compare(key, keyOf(cur.obj)) !== 0) return [null, null];
-    parent = cur;
-    cur = cur.left;
-  }
-  return [null, null];
-}
-
-/**
- * Unlink `cur` from the tree.  `parent` is its direct parent (null → root).
+ * Remove `root` itself from the tree, joining its two subtrees.  delete()
+ * always walks the equal-key duplicate group (via splay + next()) until the
+ * target identity is splayed to root, so unlinking only ever needs to
+ * handle the "match is at root" case — mirrors dttree.c:211-222 dt_delete's
+ * reassembly (`l->right = root->left; r->left = root->right; ...`).
  * Returns the new root.
  */
-function unlinkNode<T>(
-  root: SplayNode<T>,
-  cur: SplayNode<T>,
-  parent: SplayNode<T> | null,
-): SplayNode<T> | null {
-  const left  = cur.left;
-  const right = cur.right;
-  let replacement: SplayNode<T> | null;
-  if (left === null) {
-    replacement = right;
-  } else {
-    const maxLeft = splayMax(left);
-    maxLeft.right = right;
-    replacement = maxLeft;
-  }
-  if (parent === null) return replacement;
-  parent.left = replacement;
-  return root;
+function removeRoot<T>(root: SplayNode<T>): SplayNode<T> | null {
+  const left  = root.left;
+  const right = root.right;
+  if (left === null) return right;
+  const maxLeft = splayMax(left);
+  maxLeft.right = right;
+  return maxLeft;
 }
 
 // ---------------------------------------------------------------------------
@@ -123,12 +95,18 @@ export class DtBag<T, K = T> {
     const key = this._keyOf(obj);
     this._root = splay(this._root, key, this._keyOf, this._compare);
     if (this._compare(key, this._keyOf(this._root.obj)) !== 0) return false;
-    const [cur, parent] = findByIdentity(
-      this._root, obj, key, this._keyOf, this._compare,
-    );
-    if (cur === null) return false;
-    const newRoot = unlinkNode(this._root, cur, parent);
-    this._root = newRoot;
+    // Mirror dttree.c:67-79's DT_OBAG DELETE/DETACH pre-pass: dtsearch
+    // splays an equal-key node to root, then dtnext (also splaying) walks
+    // the equal-key duplicate group by pointer identity until it finds
+    // `obj`. Each next() call re-splays `this._root`, mirroring C's
+    // mutate-on-lookup contract.
+    while (this._root.obj !== obj) {
+      const nxt = this.next(this._root.obj);
+      if (nxt === undefined || this._compare(key, this._keyOf(nxt)) !== 0) {
+        return false;
+      }
+    }
+    this._root = removeRoot(this._root);
     this._size--;
     return true;
   }

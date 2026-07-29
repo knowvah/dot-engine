@@ -184,7 +184,7 @@ describe("parseXDot — text and color ops", () => {
 
 describe("parseXDot — font, style, image, fontchar", () => {
   it("F: font size and name", () => {
-    const op = parseXDot("F 12 10-Helvetica")!.ops[0];
+    const op = parseXDot("F 12 9-Helvetica")!.ops[0];
     if (op.kind !== "font") throw new Error("wrong kind");
     expect(op.font.size).toBe(12);
     expect(op.font.name).toBe("Helvetica");
