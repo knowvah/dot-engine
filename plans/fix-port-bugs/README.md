@@ -20,12 +20,12 @@ red→green. All four are independent; one parallel batch.
 
 | Batch | Description | Status |
 |-------|-------------|--------|
-| [batch-1](./batch-1/overview.md) | 4 parallel independent bug fixes | [ ] |
+| [batch-1](./batch-1/overview.md) | 4 parallel independent bug fixes | [x] |
 
-- [ ] T1 — xdot parseString rejects truncated input ([spec](./batch-1/T1-xdot-parsestring.md))
-- [ ] T2 — record attrBool delegates to mapbool ([spec](./batch-1/T2-record-attrbool.md))
-- [ ] T3 — HTML `<TH>` is a row synonym, not a TD alias ([spec](./batch-1/T3-html-th-row.md))
-- [ ] T4 — DtBag.delete finds non-root duplicates ([spec](./batch-1/T4-cdt-bag-delete.md))
+- [x] T1 — xdot parseString rejects truncated input ([spec](./batch-1/T1-xdot-parsestring.md))
+- [x] T2 — record attrBool delegates to mapbool ([spec](./batch-1/T2-record-attrbool.md))
+- [x] T3 — HTML `<TH>` is a row synonym, not a TD alias ([spec](./batch-1/T3-html-th-row.md))
+- [x] T4 — DtBag.delete finds non-root duplicates ([spec](./batch-1/T4-cdt-bag-delete.md))
 
 ## Quality Gates
 
@@ -92,3 +92,21 @@ Never edit `src/` while the sweep runs.
   the orchestrator (not task agents) writes all journal entries post-batch
 - Prior record: `plans/coverage-90/decision-journal.md` (gate-by-gate discovery
   record for all four bugs)
+
+## Mission summary (2026-07-29)
+
+- **Tasks: 4/4 complete** — one commit each: T1 `b52df39`, T2 `faea147`,
+  T3 `c1a3db3`, T4 `970d644` on `fix/port-bugs`.
+- **Decisions:** 12 journal entries; one human escalation (stop conditions
+  1+6): T1 unmasked malformed byte-count fixtures in three xdot test files
+  outside all write-sets; approved amendment folded the corrections into the
+  T1 commit. One flagged scope bound for review: C's dtsearch OBAG
+  group-normalization back-walk (dttree.c:167-181) not ported in T4 — safe
+  while DtBag.delete has no production caller.
+- **Quality gates:** typecheck clean; full suite 6021/6021; coverage
+  95.55/90.64/97.36/96.88 (≥90 floor); fresh corpus sweep GATE PASS —
+  0 regressions (908 conformant, pre-existing set unchanged).
+- **Known issues / follow-ups:** `tsx` is not a devDependency — npm survey
+  scripts assume a global; sweep was run via `npx -y tsx` (candidate cleanup:
+  add tsx to devDependencies). Merge to base via merge commit (never squash)
+  left to the user.
