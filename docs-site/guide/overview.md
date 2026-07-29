@@ -52,7 +52,7 @@ shape: get a `Graph` (by parsing DOT or building one programmatically), run a
 layout engine over it, then either serialize the result or read the computed
 geometry back off the same graph object.
 
-```dot render
+```graphviz
 digraph pipeline {
   rankdir=LR;
   bgcolor="transparent";

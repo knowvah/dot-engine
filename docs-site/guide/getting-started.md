@@ -56,6 +56,17 @@ console.log(svg); // <svg ...>...</svg>
 `renderSvg(dotSource, engine)` parses the DOT source, runs the named
 [layout engine](/guide/engines), renders to SVG, and returns the SVG string.
 
+Here is that exact graph, rendered on this page by the engine itself (via
+[`@knowvah/vitepress-plugin-dot`](https://www.npmjs.com/package/@knowvah/vitepress-plugin-dot)):
+
+```graphviz
+digraph {
+  a -> b;
+  b -> c;
+  a -> c;
+}
+```
+
 New to DOT? It is a small plain-text language for describing graphs — the
 canonical **[DOT language reference](https://graphviz.org/doc/info/lang.html)** is
 the syntax guide, and [Overview](/guide/overview#what-is-dot-what-is-graphviz)

@@ -1,33 +1,12 @@
 // SPDX-License-Identifier: EPL-2.0
 import { defineConfig } from 'vitepress';
+import { dotMarkdown } from '@knowvah/vitepress-plugin-dot/markdown-it';
 import { fileURLToPath, URL } from 'node:url';
 import { dotLang } from './dot.tmLanguage';
-import { renderSvg } from '../../src/index.js';
 
 // Deployed at https://knowvah.github.io/dot-engine/ — base MUST match the repo
 // name (Pages serves the site under /<repo>/), or every CSS/JS/font asset 404s
 // and the page renders unstyled.
-
-/**
- * Render a ` ```dot render ` fenced block to inline SVG at build time, using the
- * library itself (dogfooding the port), mapping graphviz's black → currentColor
- * so the diagram follows the light/dark theme. Plain ` ```dot ` fences stay
- * highlighted code blocks.
- */
-function renderDotFigure(dot: string): string {
-  try {
-    const raw = renderSvg(dot, 'dot');
-    const i = raw.indexOf('<svg');
-    const svg = (i >= 0 ? raw.slice(i) : raw)
-      .replace(/(stroke|fill)="black"/g, '$1="currentColor"')
-      .replace(/(stroke|fill)="#000000"/g, '$1="currentColor"')
-      .replace(/(stroke|fill)="#000"/g, '$1="currentColor"');
-    return `<figure class="dot-figure">${svg}</figure>\n`;
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return `<pre class="dot-figure-error">DOT render error: ${msg}</pre>\n`;
-  }
-}
 
 export default defineConfig({
     base: '/dot-engine/',
@@ -40,15 +19,24 @@ export default defineConfig({
   markdown: {
     // Register the DOT grammar so ```dot fences highlight (Shiki bundles none).
     languages: [dotLang],
-    // A ```dot render fence → inline SVG rendered by the library (renderDotFigure).
-    config(md) {
-      const fence = md.renderer.rules.fence!;
-      md.renderer.rules.fence = (tokens, idx, options, env, self) => {
-        const token = tokens[idx];
-        if (token.info.trim() === 'dot render') return renderDotFigure(token.content);
-        return fence(tokens, idx, options, env, self);
-      };
-    },
+    // ```graphviz fences render to SVG via @knowvah/vitepress-plugin-dot (the
+    // plugin extracted from these docs' former inline fence hook). Options:
+    // - renderLanguage 'graphviz': plain ```dot fences stay highlighted
+    //   source — the guides include a documented infinite-loop example that
+    //   must NOT render.
+    // - mode 'client': DotDiagram renders in the browser through the vite
+    //   alias below, so diagrams use the live `src` engine and docs stay in
+    //   lockstep with the library — same reason the playground imports the
+    //   real source. (Build mode would resolve @knowvah/dot-engine from
+    //   node_modules — a published snapshot, not this repo's src.)
+    // - wrapperClass 'dot-figure': reuse the existing custom.css styling.
+    config: (md) =>
+      dotMarkdown(md, {
+        renderLanguage: 'graphviz',
+        mode: 'client',
+        useCurrentColor: true,
+        wrapperClass: 'dot-figure',
+      }),
   },
   themeConfig: {
     // Built-in offline search (MiniSearch); no external service.
