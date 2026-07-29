@@ -105,7 +105,10 @@ Never edit `src/` while the sweep runs.
   while DtBag.delete has no production caller.
 - **Quality gates:** typecheck clean; full suite 6021/6021; coverage
   95.55/90.64/97.36/96.88 (≥90 floor); fresh corpus sweep GATE PASS —
-  0 regressions (908 conformant, pre-existing set unchanged).
+  0 regressions (908 conformant). Per-id audit: 1652's conformant→timeout
+  flip investigated and proven load-marginal perf-class (standalone render
+  completes, 969s; see journal), not a regression; tree-doc-infosrc-fixed
+  improved to conformant as a direct T2 effect (`fixedsize=shape`).
 - **Known issues / follow-ups:** `tsx` is not a devDependency — npm survey
   scripts assume a global; sweep was run via `npx -y tsx` (candidate cleanup:
   add tsx to devDependencies). Merge to base via merge commit (never squash)
