@@ -44,7 +44,7 @@ is fine at PR time.
 | [batch-1](./batch-1/T1-gap-map.md) — T1 gap map + prompt payloads (serial) | [x] |
 | [batch-2](./batch-2/overview.md) — 6 parallel test-writer agents, top families | [x] |
 | [batch-3](./batch-3/overview.md) — 6 parallel agents, next families | [x] |
-| [batch-4](./batch-4/overview.md) — long-tail sweep, ratchet, closeout | [ ] |
+| [batch-4](./batch-4/overview.md) — long-tail sweep, ratchet, closeout | [x] |
 
 ## Index
 
@@ -66,3 +66,26 @@ is fine at PR time.
 - Coverage-probe hazard (learned this session): a test importing src by
   ABSOLUTE path from outside the project measures 0% — always verify
   coverage with in-project test files and relative imports.
+
+## Mission summary (closed 2026-07-28)
+
+- Globals: statements 86.13 -> 95.54, branches 73.72 -> 90.64,
+  functions 91.06 -> 97.36, lines 89.23 -> 96.87. Thresholds ratcheted
+  to 90/90/90/90 in vitest.config.ts (gate-bite proven).
+- Tasks: 15/15 planned tasks completed (T1; T2a-f; T3a-f incl. two
+  transient-API-error agent resumes; T4 sweep as 6 agents; T5; T6).
+- Suite: 3406 -> 6015 tests (337 files), ~9s wall. 10 golden fixtures
+  added (manifest 238 -> 247); zero churn on existing refs throughout.
+- Findings (4 real port bugs, .todo-skipped, NOT patched — follow-up
+  src fixes needed):
+  1. xdot/parse.ts parseString accepts truncated byte-counted strings
+     (C returns NULL) — corrupt xdot survives parsing.
+  2. common/record.ts attrBool lacks C mapBool's digit guard —
+     attrBool('abc') is true, C says false.
+  3. common/htmltable-parse.ts: `<TH>` in an HTML label hangs the
+     parser (C treats TH as a row synonym, port opens an unclosable
+     cell). Dormant but a DoS-shaped input.
+  4. cdt DtBag.delete misses non-root duplicates (bagInsert threads
+     .right, lookups walk .left). Latent, no production caller.
+- Deletions (T1, evidence journaled): gvc/textlayout.ts,
+  layout/pack/test-helpers.ts, layout/patchwork/tree-node.ts.
