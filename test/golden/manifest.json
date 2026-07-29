@@ -1868,5 +1868,13 @@
     "input": "test/golden/inputs/neato-pin.dot",
     "reference": "test/golden/refs/neato-pin.svg",
     "description": "pin=true holds a node at its pos=; ref: graphviz 15.0.0 neato -Tsvg; closes an attr-frequency blind spot"
+  },
+  {
+    "id": "neato-multispline",
+    "engine": "neato",
+    "toleranceClass": "iterative",
+    "input": "test/golden/inputs/neato-multispline.dot",
+    "reference": "test/golden/refs/neato-multispline.svg",
+    "description": "pinned parallel-edge pairs with on-corridor blockers drive the GTS/CDT multispline router (mkRouter/makeMultiSpline); ref: headless oracle neato -Tsvg"
   }
 ]
