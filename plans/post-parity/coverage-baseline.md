@@ -1,4 +1,4 @@
-# Coverage Baseline — graphviz-ts
+# Coverage Baseline — dot-engine
 
 Generated: 2026-06-11  
 Provider: @vitest/coverage-v8 1.6.1  

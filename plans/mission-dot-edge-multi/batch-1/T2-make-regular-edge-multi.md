@@ -2,13 +2,13 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of graphviz C (tag 15.0.0, the spec). The
+dot-engine is a faithful TS port of graphviz C (tag 15.0.0, the spec). The
 corpus (`route-reverification.md`) shows two regular-edge divergences:
 - **labeled parallel** (`a->b[label="1"]; a->b[label="2"]`): dot routes each
-  around its label virtual node and splays them; graphviz-ts produces a wiggly
+  around its label virtual node and splays them; dot-engine produces a wiggly
   single path (pathΔ 23pt).
 - **opposing** (`a->b; b->a`): dot offsets each ~6.5pt to opposite sides of
-  center; graphviz-ts draws one straight and one malformed (pathΔ 53pt).
+  center; dot-engine draws one straight and one malformed (pathΔ 53pt).
 
 `makeRegularEdge` in `src/layout/dot/splines-route.ts:254` is a **stub**. Plain
 regular edges currently route correctly via the live path in `edge-route*.ts`

@@ -2,7 +2,7 @@
 # T1 — shape=point: sizing + fill + label suppression
 
 ## Context
-graphviz-ts is a faithful TS port of C graphviz; `~/git/graphviz` is the spec.
+dot-engine is a faithful TS port of C graphviz; `~/git/graphviz` is the spec.
 `shape=point` is registered (`shapes.ts:83`, `kind: SH_POINT`) but never
 specialized — it renders as a default ellipse. Port C's `point_init` sizing and
 `point_gencode` rendering via an `SH_POINT` branch (AD-1).

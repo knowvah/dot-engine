@@ -1,7 +1,7 @@
 # T4 — Diagnose x-NS residuals: graphs-b51, 2475_2
 
 ## Context
-graphviz-ts is a faithful TS port of C Graphviz (`~/git/graphviz` = spec; read
+dot-engine is a faithful TS port of C Graphviz (`~/git/graphviz` = spec; read
 project `CLAUDE.md`). Two tracked diverged ids sit in the known x-coordinate
 network-simplex family:
 

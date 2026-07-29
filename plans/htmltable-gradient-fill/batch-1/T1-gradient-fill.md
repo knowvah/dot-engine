@@ -4,7 +4,7 @@
 
 ## Context
 
-`graphviz-ts` is a faithful TypeScript port of Graphviz; the C source at
+`dot-engine` is a faithful TypeScript port of Graphviz; the C source at
 `~/git/graphviz` is the spec. This task makes HTML-like label **tables** emit
 gradient `bgcolor` fills. Today the port emits a solid first-stop color for a
 gradient bgcolor (`bgcolor="yellow:violet"` → `fill="yellow"`) and omits the

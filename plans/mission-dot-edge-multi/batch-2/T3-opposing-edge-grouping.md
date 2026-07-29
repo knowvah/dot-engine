@@ -5,7 +5,7 @@
 The C `_dot_splines` gathers consecutive edges that share a main edge into
 `cnt`-groups and dispatches each group to `make_regular_edge` /
 `make_flat_edge` / `makeSelfEdge` / `makeStraightEdges`
-(`lib/dotgen/dotsplines.c:343-420`). graphviz-ts has partial scaffolding
+(`lib/dotgen/dotsplines.c:343-420`). dot-engine has partial scaffolding
 (`getMainEdge`, `groupSize`, `dispatchEdgeGroup` in `src/layout/dot/splines.ts`)
 but the corpus shows opposing/labeled-parallel groups are not assembled or
 dispatched the way C does. T2 made `make_regular_edge` correct; this task makes

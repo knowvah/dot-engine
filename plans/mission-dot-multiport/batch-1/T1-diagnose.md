@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TypeScript port of C Graphviz (`~/git/graphviz`, tag
+dot-engine is a faithful TypeScript port of C Graphviz (`~/git/graphviz`, tag
 15.0.0 — the spec). The dot engine is the priority engine. The routing
 re-verification corpus (`.probes/route-corpus.ts`) is **24/25**; the lone
 divergence is `ports both dense` (`digraph{a:e->b; a:w->c; a->d}`), backlog G2.

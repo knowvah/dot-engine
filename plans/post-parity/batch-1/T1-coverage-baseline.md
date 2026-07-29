@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts: browser-targeted TypeScript port of C graphviz. Vitest 1.6,
+dot-engine: browser-targeted TypeScript port of C graphviz. Vitest 1.6,
 strict TS, esbuild. Suite currently 1027 passed / 0 failed. No coverage
 provider installed yet. Scott wants per-file
 statements/branches/functions/lines numbers BEFORE any threshold is set

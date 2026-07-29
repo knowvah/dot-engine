@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C at ~/git/graphviz/lib (15.0.0) is the spec;
+dot-engine port; C at ~/git/graphviz/lib (15.0.0) is the spec;
 installed `dot` binary is 15.0.0. Hook rule: smallest fix, ≤2 attempts
 per file, then move on.
 

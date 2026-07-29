@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C source is the spec; suite baseline ~1059/0 after
+dot-engine port; C source is the spec; suite baseline ~1059/0 after
 batch 1.
 
 `A->B; A->B; A->B` renders with overlapping/wrong paths (quarantined

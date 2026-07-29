@@ -2,7 +2,7 @@
 
 ```mermaid
 graph LR
-  subgraph port[graphviz-ts src/layout/dot]
+  subgraph port[dot-engine src/layout/dot]
     POS[position.ts<br/>setXcoords, createAuxEdges,<br/>connectGraph, normalizeXcoords]
     AUX[position-aux.ts<br/>make_LR_constraints]
     NS[ns.ts / ns-core.ts<br/>feasibleTree, enter/leave,<br/>lrBalance ★]

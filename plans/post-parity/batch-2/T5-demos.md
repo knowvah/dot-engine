@@ -4,7 +4,7 @@
 
 The library targets browsers (CLAUDE.md: no Node-only APIs in src/).
 Scott wants a demos page: for every golden test, the C graphviz SVG
-(from the stored ref) next to the graphviz-ts SVG. decisions.md D1: the
+(from the stored ref) next to the dot-engine SVG. decisions.md D1: the
 TS side renders LIVE in the browser — this is both a demo and a proof of
 the browser target. Must open from `file://` (no fetch, no server).
 

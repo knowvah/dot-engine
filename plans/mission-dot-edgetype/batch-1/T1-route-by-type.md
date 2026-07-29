@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of Graphviz (C at `~/git/graphviz`, tag
+dot-engine is a faithful TS port of Graphviz (C at `~/git/graphviz`, tag
 15.0.0 = spec). This task creates the shared dispatch that lets regular-edge
 routers emit lines/polylines instead of always splines. Pure function — no
 wiring yet (T2 wires it).

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts (TS port of Graphviz, ESM, strict TS, vitest). Today `renderSvg`
+dot-engine (TS port of Graphviz, ESM, strict TS, vitest). Today `renderSvg`
 hardcodes SVG. With T1's `createDefaultContext()` registering every renderer,
 this task exposes one ergonomic entry that renders a (parsed or built) graph to
 any supported format.

@@ -4,7 +4,7 @@
 ## Objective
 
 Port the C `point` shape (`lib/common/shapes.c` `point_init`/`point_gencode`)
-into graphviz-ts. The port registers `point` (Shapes[5]) with the generic
+into dot-engine. The port registers `point` (Shapes[5]) with the generic
 `POLY_FNS` and `kind: SH_POINT`, but **`SH_POINT` is never branched on**, so a
 point node is sized and drawn as an ordinary ellipse — full default size,
 `fill=none`, and the label rendered. C gives it `DEF_POINT=0.05in` size (rx

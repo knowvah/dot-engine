@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TypeScript port of C graphviz. This task touches only
+dot-engine is a faithful TypeScript port of C graphviz. This task touches only
 the **parity survey harness** (`test/corpus/`), not `src/`. The survey renders
 each corpus input through native `dot` (the oracle) and the port, then compares
 the two SVGs with `compareSvg` (`test/golden/compare.ts`), which normalizes both

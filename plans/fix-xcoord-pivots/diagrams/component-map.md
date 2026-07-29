@@ -4,7 +4,7 @@ Components touched by the mission and how they relate.
 
 ```mermaid
 graph LR
-  subgraph port[graphviz-ts src/layout/dot]
+  subgraph port[dot-engine src/layout/dot]
     POS[position.ts<br/>dotPosition]
     AUX[position-aux.ts<br/>createAuxEdges family]
     NS[ns.ts<br/>rank2Loop / leave/enter / update]

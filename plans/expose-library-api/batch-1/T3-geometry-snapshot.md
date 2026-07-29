@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts (TS port of Graphviz, ESM, strict TS, vitest). After
+dot-engine (TS port of Graphviz, ESM, strict TS, vitest). After
 `ctx.layout(g, engine)` runs, computed geometry is stored on the internal model
 but is not readable through any public API. This task exposes it as a plain,
 JSON-serializable **snapshot** (ADR-3) with an optional coordinate flip (ADR-4).

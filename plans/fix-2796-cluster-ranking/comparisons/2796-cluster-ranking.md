@@ -9,11 +9,11 @@ compareSvg childCount blindness; real deltas below).
 > **Visual side-by-side (DOT source, golden-vs-ours, delta table):**
 > [`2796-cluster-ranking.html`](2796-cluster-ranking.html) — open in a browser.
 > Rendered SVGs: [`2796-golden.svg`](2796-golden.svg) (native dot, headless
-> /tmp/ghl), [`2796-ours.svg`](2796-ours.svg) (graphviz-ts).
+> /tmp/ghl), [`2796-ours.svg`](2796-ours.svg) (dot-engine).
 
 ## The two sides
 
-| | native C (golden) | graphviz-ts (ours) |
+| | native C (golden) | dot-engine (ours) |
 |---|---|---|
 | exit | **1** (`trouble in init_rank` ×~90 lines, then `lost 3 16 edge`) | 0, silent |
 | canvas | 1943 × 2950 | 1938 × 2888 |
@@ -35,7 +35,7 @@ compareSvg childCount blindness; real deltas below).
 
 ## Issue #2796 expectations vs both sides (measured 2026-07-02)
 
-| expectation (reporter + xfail test) | native C | graphviz-ts |
+| expectation (reporter + xfail test) | native C | dot-engine |
 |---|---|---|
 | no `trouble in init_rank` | ✗ (~90 diagnostic lines) | ✓ silent |
 | no triangulation failure / lost edges | ✗ loses `3->16` (14.0.5 lost `54 22` — unstable debris) | ✓ 213/213 routed |

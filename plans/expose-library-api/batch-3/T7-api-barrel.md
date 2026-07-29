@@ -1,8 +1,8 @@
-# T7 — graphviz-ts/api barrel
+# T7 — @knowvah/dot-engine/api barrel
 
 ## Context
 
-graphviz-ts (TS port of Graphviz, ESM, strict TS). The `graphviz-ts/api` subpath
+dot-engine (TS port of Graphviz, ESM, strict TS). The `@knowvah/dot-engine/api` subpath
 (ADR-2) is the "build + inspect + geometry" entry. This task is the barrel that
 re-exports the Batch 1–2 api pieces. Keep it pure re-exports — no logic.
 
@@ -35,7 +35,7 @@ ADR-1 (type-only `Graph`, no class internals), ADR-2.
 
 ## Interface contract (output)
 
-Module `graphviz-ts/api` (built to `dist/api.js`) exporting all of the above.
+Module `@knowvah/dot-engine/api` (built to `dist/api.js`) exporting all of the above.
 
 ## Acceptance criteria
 

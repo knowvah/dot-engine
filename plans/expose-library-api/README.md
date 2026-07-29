@@ -25,7 +25,7 @@ referenced in the decision journal).
 ## Constraints (stop conditions)
 
 - STOP if a task must change files outside its write-set not owned by another task.
-- STOP if the `package.json` `"exports"` map breaks `import 'graphviz-ts'` (root
+- STOP if the `package.json` `"exports"` map breaks `import 'dot-engine'` (root
   must keep resolving to `dist/index.js`).
 - STOP on 2 consecutive gate failures on the same check, or 3 consecutive fixes
   to the same location.
@@ -92,12 +92,12 @@ the brief — do NOT squash; per-task commit IDs are referenced above).
 - **Batch 4** — T10 docs (0003125), T11 follow-on briefs (4b06640).
 
 ### Public surface delivered
-- `graphviz-ts` (root) — existing `renderSvg`/`tryRenderSvg`/`parse`/errors
+- `dot-engine` (root) — existing `renderSvg`/`tryRenderSvg`/`parse`/errors
   (unchanged) **plus** re-exports of everything below + `renderWithContext`.
-- `graphviz-ts/api` — `createGraph` builder (typed `GvNode`/`GvEdge` handles),
+- `@knowvah/dot-engine/api` — `createGraph` builder (typed `GvNode`/`GvEdge` handles),
   `getLayout` geometry snapshot (`yAxis` flip, points), `addEdge`, opaque
   `Graph` type.
-- `graphviz-ts/render` — `render(g, format, opts?)` over 8 formats,
+- `@knowvah/dot-engine/render` — `render(g, format, opts?)` over 8 formats,
   `getDrawOps` typed xdot draw-ops.
 - `package.json` `exports` map (`.` / `./api` / `./render`); 3-bundle build.
 

@@ -1,7 +1,7 @@
 # Graphviz → TypeScript Port Catalog (SVG-only)
 
 **Purpose.** A complete, checkable inventory of every algorithm / piece in the
-C Graphviz source (`~/git/graphviz`) and its port status in `graphviz-ts`,
+C Graphviz source (`~/git/graphviz`) and its port status in `dot-engine`,
 scoped to what is needed to **produce SVG** (plus the `json` / `xdot` / `dot` /
 imagemap intermediate text formats).
 
@@ -578,7 +578,7 @@ is inapplicable (ps/png/jpg references, gvpr, C-API memory/lifecycle tests).
    do not translate assertions verbatim.
 2. **Differential corpus harness, not hand-written tests.** Render each
    applicable input through the **native binary oracle** (`dot -Tsvg`, etc. —
-   the established oracle pattern) and through graphviz-ts, then diff. Scales to
+   the established oracle pattern) and through dot-engine, then diff. Scales to
    ~800 inputs without authoring ~800 tests.
 3. **Tier the comparison by engine.** The bar is always the **conformance
    verdict** of [docs/conformance.md](../../docs/conformance.md) — never literal

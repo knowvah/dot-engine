@@ -18,12 +18,12 @@ Rework `docs-site/guide/api.md`:
 1. **Keep the existing intro** about the small surface and shipped `.d.ts` /
    source maps.
 2. **Organize by entry point** (matching the overview's "three doors"):
-   - `graphviz-ts` (root): `renderSvg`, `tryRenderSvg`/`RenderResult`, `parse`/
+   - `dot-engine` (root): `renderSvg`, `tryRenderSvg`/`RenderResult`, `parse`/
      `ParseError`, `RenderError`, `setTextMeasurer`/`getTextMeasurer`,
      `setImageSizer`, **`setImageResolver`** (T1), `GvcContext`/`renderWithContext`.
-   - `graphviz-ts/api`: `createGraph`, `addEdge`, `getLayout`, and the `Graph`
+   - `@knowvah/dot-engine/api`: `createGraph`, `addEdge`, `getLayout`, and the `Graph`
      opaque handle.
-   - `graphviz-ts/render`: `render` (+ `OutputFormat`, `RenderOptions` incl.
+   - `@knowvah/dot-engine/render`: `render` (+ `OutputFormat`, `RenderOptions` incl.
      **`inlineImages`**), `getDrawOps`/`DEFAULT_DRAW_ENGINE`.
    For each function: signature, one-paragraph description, params, throws,
    and a one-line link to its full TypeDoc reference entry.

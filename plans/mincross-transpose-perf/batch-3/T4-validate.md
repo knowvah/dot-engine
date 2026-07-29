@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts (faithful TS port; `~/git/graphviz` is the spec). T2 (+T3) optimized
+dot-engine (faithful TS port; `~/git/graphviz` is the spec). T2 (+T3) optimized
 the mincross transpose hot path. This task proves 2471 completes, the output is
 conformant to C (AD-1), and leaves a permanent regression so the win cannot
 silently rot.

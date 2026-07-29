@@ -4,7 +4,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TypeScript port of C graphviz; the C source at
+dot-engine is a faithful TypeScript port of C graphviz; the C source at
 `~/git/graphviz` is the spec. Cluster SVG ids come from `getObjId`
 (`lib/common/emit.c:230`): `clust<AGSEQ(subgraph)>`. `AGSEQ` for a subgraph is a
 **global counter on the root graph**, assigned at creation in source order:

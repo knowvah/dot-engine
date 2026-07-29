@@ -1,4 +1,4 @@
-# Error Handling Design — graphviz-ts / plantuml-ts engine
+# Error Handling Design — dot-engine / plantuml-ts engine
 
 Captured design notes for how the rendering engine handles malformed / errored
 input, and how that interacts with the (deliberately tiny) API surface.

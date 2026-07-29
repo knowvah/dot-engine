@@ -1,7 +1,7 @@
 # Layout-Engine Porting Gaps — Triage Backlog
 
 **Objective:** Catalogue, prioritise, and sequence the layout-engine
-porting gaps in graphviz-ts so each gap can be promoted to a mission
+porting gaps in dot-engine so each gap can be promoted to a mission
 brief or explicitly left guarded.
 
 This is NOT a single executable mission. Each row in the priority

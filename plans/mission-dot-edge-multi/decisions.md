@@ -25,13 +25,13 @@ this is a hard gate. Do not replace the working plain-edge router.
 **Context:** New geometry needs regression protection.
 **Decision:** Pin each new case as a dot-oracle test (assert vs the built dot's
 values, tol 0.5 deterministic), in the existing `*-oracle.test.ts` style.
-**Consequences:** Tests encode dot parity, not graphviz-ts self-output. A value
+**Consequences:** Tests encode dot parity, not dot-engine self-output. A value
 that can't reach tol 0.5 is not silently pinned — see AD-4.
 
 ## AD-4: Un-reachable parity is quarantined with a comparison page
 
 **Context:** Some sub-case may not reach tol 0.5 within the mission.
-**Decision:** Quarantine it: pin graphviz-ts's actual output, write a
+**Decision:** Quarantine it: pin dot-engine's actual output, write a
 `comparisons/<case>.html` page (dot vs ts SVG side-by-side + measured delta +
 root-cause), and reference it in the journal. A batch with any quarantined case
 is not complete until its page exists.

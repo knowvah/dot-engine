@@ -1,7 +1,7 @@
 # T2 — Diagnose 1879: bbox + translate-x divergence
 
 ## Context
-graphviz-ts is a faithful TS port of C Graphviz (`~/git/graphviz` = spec; read
+dot-engine is a faithful TS port of C Graphviz (`~/git/graphviz` = spec; read
 project `CLAUDE.md`). Corpus `1879.dot` (8876 lines, clusters, family-tree
 style `couple_*`/`node_*`) is tracked diverged, maxΔ 875.68, firstDiffPath an
 edge `@d`. Triage (2026-07-02):

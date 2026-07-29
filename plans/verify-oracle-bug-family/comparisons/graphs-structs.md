@@ -3,7 +3,7 @@
 # graphs-structs — oracle-bug family comparison (2026-07-02, post-fixes)
 
 Input: `~/git/graphviz/tests/graphs/structs.gv` · corpus id `graphs-structs` · oracle = headless
-native dot (`GVBINDIR=/tmp/ghl`, estimate metrics) · port = graphviz-ts at
+native dot (`GVBINDIR=/tmp/ghl`, estimate metrics) · port = dot-engine at
 `chore/verify-oracle-bug-family`.
 
 > **Visual side-by-side:** [`graphs-structs.html`](graphs-structs.html) · golden:
@@ -13,7 +13,7 @@ native dot (`GVBINDIR=/tmp/ghl`, estimate metrics) · port = graphviz-ts at
 
 **diverged, maxΔ 0 — element-tree difference only (the oracle's lost edge)**
 
-| | native C oracle | graphviz-ts |
+| | native C oracle | dot-engine |
 |---|---|---|
 | stderr / exit | exit 1; `destination point not in any triangle` + `Pshortestpath failed`; loses struct1:f2→struct3:here | exit 0; silent; routes both edges |
 | edges rendered | 1 / 2 (oracle / port) | — |

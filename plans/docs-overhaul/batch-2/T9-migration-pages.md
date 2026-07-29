@@ -11,7 +11,7 @@ libraries convert quickly.
 
 ### `docs-site/guide/migrate-from-c-cli.md`
 
-- **Mental shift:** the C tool reads files and writes files; graphviz-ts takes a
+- **Mental shift:** the C tool reads files and writes files; dot-engine takes a
   DOT **string** and returns a **string** (or a geometry object). No filesystem.
 - **Flag/format mapping table:**
   - `-K<engine>` → the `engine` argument (`renderSvg(dot,'neato')` /
@@ -30,17 +30,17 @@ libraries convert quickly.
 ### `docs-site/guide/migrate-from-js-libs.md`
 
 - **Positioning vs viz.js / @hpcc-js/wasm / d3-graphviz:** those wrap the C via
-  **WASM**; graphviz-ts is **pure TypeScript** — no WASM asset to host, no async
+  **WASM**; dot-engine is **pure TypeScript** — no WASM asset to host, no async
   module init, tree-shakeable, "go to definition" into real TS. State this as
   the headline advantage.
 - **API deltas table** (approximate — verify claims you make, hedge where
   unsure): typical `new Viz().renderString(dot)` / `graphviz().renderDot(dot)`
   → `renderSvg(dot, engine)` (synchronous, no `await` init). Note d3-graphviz's
-  DOM-binding/animation is out of scope — graphviz-ts returns an SVG string; you
+  DOM-binding/animation is out of scope — dot-engine returns an SVG string; you
   bind it yourself.
 - **Getting layout data** — `getLayout()` as the structured alternative to
   parsing `-Tjson`/`-Tplain` output.
-- **When to stay on WASM** — be honest: if you need a `-T` format graphviz-ts
+- **When to stay on WASM** — be honest: if you need a `-T` format dot-engine
   doesn't emit (raster/PDF), the WASM libs still cover it. Link `/divergences`.
 
 Both pages: front-loaded, tables over prose, cross-link the overview, engines,
@@ -79,7 +79,7 @@ library claims are accurate or explicitly hedged.
 
 - **Always:** verify format/engine names against source; hedge uncertain
   third-party API claims.
-- **Never:** overstate parity (don't claim graphviz-ts emits formats it
+- **Never:** overstate parity (don't claim dot-engine emits formats it
   doesn't); never disparage — state trade-offs factually.
 
 ## Commit

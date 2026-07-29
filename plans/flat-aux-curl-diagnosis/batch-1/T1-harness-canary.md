@@ -1,7 +1,7 @@
 # T1 — Build + canary the aux rank/chain dump harness
 
 ## Context
-graphviz-ts is a faithful TS port of C graphviz; the C source at `~/git/graphviz`
+dot-engine is a faithful TS port of C graphviz; the C source at `~/git/graphviz`
 is the spec. Flat (same-rank) edges with ports route through an **auxiliary
 graph**: C `make_flat_adj_edges` (`lib/dotgen/dotsplines.c:1122-1281`) clones the
 two endpoints + edges into a rotated graph, runs the full dot pipeline

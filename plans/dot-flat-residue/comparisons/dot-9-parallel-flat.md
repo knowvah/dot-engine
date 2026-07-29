@@ -16,7 +16,7 @@ M48.66,-6.64  C54.49,-4.9  60.32,-4.22  66.15,-4.6
 M48.66,-29.36 C54.49,-31.1 60.32,-31.78 66.15,-31.4
 ```
 
-## Port (graphviz-ts, this branch)
+## Port (dot-engine, this branch)
 
 `renderSvg('digraph{ {rank=same; a b} a->b; a->b }', 'dot')` emits two
 4-point splines matching both oracle control-point lists within 0.5pt

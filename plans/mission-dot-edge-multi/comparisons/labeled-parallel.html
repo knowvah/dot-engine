@@ -27,16 +27,16 @@ write-set and is pinned at TS's actual output (AD-4).</p>
 <p class="legend">The drawings below are the actual rendered SVGs.</p>
 <div class="cols">
 <div class="col"><div class="lbl">dot 15.x</div><img src="labeled-parallel-dot1500.svg" alt="dot — labeled parallel"></div>
-<div class="col"><div class="lbl">graphviz-ts</div><img src="labeled-parallel-ts.svg" alt="graphviz-ts — labeled parallel"></div>
+<div class="col"><div class="lbl">dot-engine</div><img src="labeled-parallel-ts.svg" alt="dot-engine — labeled parallel"></div>
 </div>
 <h2>Geometry</h2>
 <p class="caption">Edge "1" (bends around its label box) — exact.</p>
-<table><tr><th>pt</th><th>dot</th><th>graphviz-ts</th><th>Δ</th></tr>
+<table><tr><th>pt</th><th>dot</th><th>dot-engine</th><th>Δ</th></tr>
 <tr class="ok"><td>start</td><td>20.13,-88.69</td><td>20.13,-88.69</td><td>0.00</td></tr>
 <tr class="ok"><td>mid</td><td>14.07,-63.26</td><td>14.07,-63.26</td><td>0.00</td></tr>
 <tr class="ok"><td>end</td><td>16.78,-46.78</td><td>16.78,-46.78</td><td>0.00</td></tr></table>
 <p class="caption">Edge "2" — dot straightens it to 4 points at x=27; TS routes a 10-point near-straight spline ~0.8pt right.</p>
-<table><tr><th></th><th>dot</th><th>graphviz-ts</th></tr>
+<table><tr><th></th><th>dot</th><th>dot-engine</th></tr>
 <tr class="bad"><td>path</td><td>M27,-88.41 C27,-76.76 27,-61.05 27,-47.52</td><td>M27.45,-88.05 C27.57,-82.45 … 27.66,-47.69 (10 pts)</td></tr></table>
 <p class="caption">Label centres.</p>
 <table><tr><th>label</th><th>dot x</th><th>ts x</th><th>Δ</th></tr>

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of graphviz C (`~/git/graphviz`). DOT-3's
+dot-engine is a faithful TS port of graphviz C (`~/git/graphviz`). DOT-3's
 `fillRanks` needs to create a `_new_rank` subgraph and add anonymous placeholder
 nodes (AD-1). The model already has subgraph infrastructure (`Graph.subgraphs`
 map, `parent`, `root`) but the cgraph operations are not exported as functions.

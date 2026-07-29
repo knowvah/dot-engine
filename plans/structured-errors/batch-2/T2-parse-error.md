@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts faithful port; browser library. `src/parser/index.ts` wraps the
+dot-engine faithful port; browser library. `src/parser/index.ts` wraps the
 peggy-generated parser (`src/parser/dot.js`). Today `ParseError` carries only
 `message`/`line`/`column` and is thrown for both peggy syntax errors and
 edge-operator violations. peggy already tracks position — the prerequisite is

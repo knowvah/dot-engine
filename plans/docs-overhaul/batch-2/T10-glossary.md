@@ -13,7 +13,7 @@ Write `docs-site/guide/glossary.md` as an alphabetized definition list. Each
 entry: 1-3 sentences, and a link to the guide page that covers it in depth.
 Include at least:
 
-- **DOT** — the graph description language graphviz-ts parses. Link
+- **DOT** — the graph description language dot-engine parses. Link
   getting-started.
 - **Layout engine** — `dot`/`neato`/`fdp`/`sfdp`/`circo`/`twopi`/`osage`/
   `patchwork`; what each is for. Link `/guide/engines`.
@@ -25,7 +25,7 @@ Include at least:
   `/guide/xdot-drawops`.
 - **Conformance** — what "matches the C" means (±0.01 numeric, exact non-numeric
   on the golden corpus). Link `/conformance`.
-- **Oracle** — the native C `dot` binary graphviz-ts is verified against. Link
+- **Oracle** — the native C `dot` binary dot-engine is verified against. Link
   `/conformance` / `/parity`.
 - **Divergence** — an accepted, catalogued difference from the oracle. Link
   `/divergences`.
@@ -68,4 +68,4 @@ N/A / Reversible.
 
 ## Commit
 
-`docs(T10): add glossary of graphviz-ts and Graphviz domain terms`
+`docs(T10): add glossary of dot-engine and Graphviz domain terms`

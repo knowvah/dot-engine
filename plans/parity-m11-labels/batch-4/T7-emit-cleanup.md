@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port. The src/common/emit*.ts family is M9's emit.c port
+dot-engine port. The src/common/emit*.ts family is M9's emit.c port
 that was never wired into the live render path (gvc/device.ts +
 render/svg*.ts, which now carries all label emission after M10/T4).
 Import-level grep (2026-06-12, .agent-notes/label-creation-gaps-2026-06.md)

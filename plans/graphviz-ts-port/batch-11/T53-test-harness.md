@@ -44,7 +44,7 @@ while IFS= read -r entry; do
   engine=$(echo "$entry" | jq -r '.engine')
   tol=$(echo "$entry" | jq -r '.toleranceClass')
 
-  actual=$(mktemp /tmp/graphviz-ts-XXXXXX.svg)
+  actual=$(mktemp /tmp/dot-engine-XXXXXX.svg)
   node dist/cli.js -K "$engine" -Tsvg "$input" > "$actual"
 
   if node dist/test/golden/compare.js "$actual" "$ref" "$tol"; then

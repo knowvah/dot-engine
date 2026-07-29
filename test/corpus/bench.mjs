@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: EPL-2.0
 //
-// Warm in-process perf bench for graphviz-ts vs native graphviz.
+// Warm in-process perf bench for dot-engine vs native graphviz.
 //
 // Motivation: the parity survey spawns a fresh `tsx` subprocess per render, so
 // every timing carries ~0.75s of transpile + module-load overhead unrelated to

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts (TS port of Graphviz, ESM, strict TS, vitest). `model/cgraph-ops.ts`
+dot-engine (TS port of Graphviz, ESM, strict TS, vitest). `model/cgraph-ops.ts`
 provides `agnode`, `agsubg`, `agsubnode`, `agdelnode`, `agdelsubg` — but there is
 **no** safe edge-creation helper (no `agedge` equivalent). Edges are currently
 created only inside the parser: `parser/builder.ts:233` does

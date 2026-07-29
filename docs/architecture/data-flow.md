@@ -2,7 +2,7 @@
 
 # Data Flow — Sequence Diagrams
 
-The three most important flows in graphviz-ts. All are synchronous, in-process,
+The three most important flows in dot-engine. All are synchronous, in-process,
 and dependency-free.
 
 ## 1. DOT string → SVG (the primary flow)
@@ -65,7 +65,7 @@ sequenceDiagram
 
 `getDrawOps()` exposes per-object draw operations so a downstream consumer
 can paint with a custom renderer instead of the built-in SVG emitter. This is
-the integration seam by which graphviz-ts can replace a consumer's in-house
+the integration seam by which dot-engine can replace a consumer's in-house
 dot engine.
 
 ```mermaid

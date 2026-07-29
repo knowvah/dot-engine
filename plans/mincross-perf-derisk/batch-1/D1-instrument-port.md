@@ -4,7 +4,7 @@
 
 ## Context
 
-`graphviz-ts` is a faithful pure-TS port of Graphviz; `~/git/graphviz` is the
+`dot-engine` is a faithful pure-TS port of Graphviz; `~/git/graphviz` is the
 spec. 2108 is mincross-bound (`reorderInner` 47%, `accumCross` 17%). The port's
 mincross lives in `src/layout/dot/mincross.ts` (driver: `mincrossMain`,
 `mincrossIter`, `mincrossStep`, `reorder`, `transpose`, `runRemincross`,

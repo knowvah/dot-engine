@@ -2,7 +2,7 @@
 # T0 — Diagnose the exact addTreeEdge order divergence
 
 ## Context
-graphviz-ts is a faithful C→TS port; `~/git/graphviz` is the spec. The x-coord
+dot-engine is a faithful C→TS port; `~/git/graphviz` is the spec. The x-coord
 network simplex builds a tight spanning tree whose `Tree_edge` LIST ORDER drives
 `LR_balance`'s degenerate-rerank sequence. That order diverges from C (root cause
 pinned — read `.agent-notes/b51-blok60-is-xcoord-ns-selection.md` first). The port

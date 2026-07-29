@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C at ~/git/graphviz/lib (15.0.0). Baseline 1584/0, 97
+dot-engine port; C at ~/git/graphviz/lib (15.0.0). Baseline 1584/0, 97
 goldens. Hook rule: smallest fix, ≤2 attempts/file, then move on.
 
 G1 added the discriminated `resolveNodeFill`/`resolveClusterFill` (kinds

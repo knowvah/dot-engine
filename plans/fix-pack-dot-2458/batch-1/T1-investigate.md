@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of C Graphviz (`~/git/graphviz` = spec). Corpus
+dot-engine is a faithful TS port of C Graphviz (`~/git/graphviz` = spec). Corpus
 **2458** (`digraph { pack=1; q16; q1 -> q2[label=connected] }`) is `diverged`: the
 port's `dotLayoutEntry` (`src/layout/dot/index.ts`) calls `dotLayoutPipeline(g)`
 directly and is missing C's `doDot` wrapper (`dotinit.c:doDot` ≈437-500) that, when

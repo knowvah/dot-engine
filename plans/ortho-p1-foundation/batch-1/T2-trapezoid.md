@@ -2,7 +2,7 @@
 
 ## Context
 Faithful TS port of Graphviz `lib/ortho/trapezoid.c` (898 LOC) + `trap.h` for the
-`graphviz-ts` faithful-port project (root `CLAUDE.md`). This is the algorithmic
+`dot-engine` faithful-port project (root `CLAUDE.md`). This is the algorithmic
 heart of ortho: Seidel's randomized-incremental trapezoidal decomposition of the
 segment set, producing the trap table the maze (P2) is built from. **Standalone**
 — depends only on geometry primitives (`pointf`), NOT on rawgraph/sgraph. The

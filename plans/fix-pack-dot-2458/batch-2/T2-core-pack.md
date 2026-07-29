@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of C Graphviz (`~/git/graphviz` = spec). T1 pinned
+dot-engine is a faithful TS port of C Graphviz (`~/git/graphviz` = spec). T1 pinned
 the wiring. Port C's `doDot` pack branch (`dotinit.c:doDot` ≈437-500), **cluster-free
 path**, so corpus 2458 (`pack=1`, two components, no clusters) decomposes into
 connected components, lays out each via `dotLayoutPipeline`, and `packSubgraphs`-packs

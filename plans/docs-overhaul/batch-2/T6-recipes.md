@@ -3,11 +3,11 @@
 
 ## Context
 
-`~/git/plantuml-ts` is a real production consumer of graphviz-ts. Its
+`~/git/plantuml-ts` is a real production consumer of dot-engine. Its
 `src/core/graph-layout.ts` exercises the full build→layout→read-geometry path
 and solves the genuinely tricky bits: triggering layout, reconciling the
 `render()` SVG coordinate frame with `getLayout()`'s frame, re-keying clusters
-from graphviz-ts's `cluster<N>` names back to caller names, and recovering
+from dot-engine's `cluster<N>` names back to caller names, and recovering
 edge-label positions. Harvest these into task-oriented recipes — the "how do I
 actually…" page React/Angular docs call a cookbook.
 
@@ -16,7 +16,7 @@ actually…" page React/Angular docs call a cookbook.
 Write `docs-site/guide/recipes.md` as a sequence of focused recipes, each:
 a one-line problem statement, a minimal runnable `ts` snippet, and a short
 "why". Derive them from the real patterns in plantuml-ts (adapt/simplify — do
-not copy proprietary specifics; distill to the graphviz-ts API). Recipes to
+not copy proprietary specifics; distill to the dot-engine API). Recipes to
 include (at least):
 
 1. **Build a graph in code and render it** — `createGraph` → `addNode`/
@@ -33,7 +33,7 @@ include (at least):
    *why* the two frames differ.
 5. **Recover edge-label positions** — getLayout exposes the label position;
    show reading it and echoing back caller data (graph-layout.ts ≈line 87, 255).
-6. **Map graphviz-ts cluster names back to yours** — the `cluster<N>` →
+6. **Map dot-engine cluster names back to yours** — the `cluster<N>` →
    caller-name re-key (graph-layout.ts ≈line 110-132). Show building an
    `idByName` map before layout and re-keying `snapshot.clusters` after.
 7. **Add many edges safely** — `addEdge` helper usage and why the safe helper
@@ -55,8 +55,8 @@ plantuml-ts's `layoutGraph` produces.
 ## Acceptance criteria
 
 - Given the page, then it contains ≥7 recipes, each with a runnable `ts`
-  snippet using only the **public** graphviz-ts API (imports from
-  `graphviz-ts`, `graphviz-ts/api`, `graphviz-ts/render`).
+  snippet using only the **public** dot-engine API (imports from
+  `dot-engine`, `@knowvah/dot-engine/api`, `@knowvah/dot-engine/render`).
 - Given the frame-reconciliation recipe, then it explains the render-vs-getLayout
   frame difference and shows the constant-offset derivation.
 - Given the cluster recipe, then it shows the `cluster<N>` re-key with an
@@ -74,10 +74,10 @@ consistent with the current type shapes.
 
 ## Boundaries
 
-- **Always:** distill to the public graphviz-ts API; adapt plantuml-ts patterns
+- **Always:** distill to the public dot-engine API; adapt plantuml-ts patterns
   generically.
 - **Never:** copy plantuml-ts business logic verbatim or reference its private
-  types in snippets; never show internal graphviz-ts imports.
+  types in snippets; never show internal dot-engine imports.
 - **Ask first:** if a harvested pattern depends on API not publicly exported —
   log it (candidate future export) rather than documenting a private path.
 

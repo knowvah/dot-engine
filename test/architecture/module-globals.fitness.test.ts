@@ -3,7 +3,7 @@
 /**
  * Fitness function: enforce the multi-diagram global-state invariant.
  *
- * graphviz-ts must render 2+ diagrams on one page without cross-diagram
+ * dot-engine must render 2+ diagrams on one page without cross-diagram
  * interaction (the consumer renders many diagrams per page). `renderSvg` is
  * self-contained (fresh Graph + GVC per call) and synchronous, so the only
  * way to break this is a MODULE-LEVEL MUTABLE GLOBAL whose state survives one

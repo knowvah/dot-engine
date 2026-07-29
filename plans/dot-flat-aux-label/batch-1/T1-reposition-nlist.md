@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port; C at `~/git/graphviz` (15.0.0) is the
+dot-engine is a faithful TS port; C at `~/git/graphviz` (15.0.0) is the
 spec. `make_flat_adj_edges` (`splines-flat.ts:makeFlatAdjEdges`) lays out a
 rotated aux graph then `repositionFlatAux` rotates it back. The loop
 iterates `aux.auxg.nodes.values()` (named nodes only), so virtual nodes

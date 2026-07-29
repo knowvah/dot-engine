@@ -48,7 +48,7 @@ if the value looks numeric. This matches the C behavior.
    // Validates edge direction consistency (-> vs --).
 
    // parseFile is Node.js-only; not exported from the browser entry point.
-   // In Node environments, import { parseFile } from 'graphviz-ts/node'
+   // In Node environments, import { parseFile } from '@knowvah/dot-engine/node'
    export async function parseFile(path: string): Promise<Graph>;
    ```
 

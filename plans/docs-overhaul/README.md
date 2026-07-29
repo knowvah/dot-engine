@@ -3,7 +3,7 @@
 
 ## Objective
 
-Bolster graphviz-ts documentation to a React/Angular-style standard: a
+Bolster dot-engine documentation to a React/Angular-style standard: a
 comprehensive information architecture (Guide / Recipes / Reference), a
 hand-written **types reference** with shapes and relationships, a
 **recipes cookbook** harvested from the real `plantuml-ts` consumer, a

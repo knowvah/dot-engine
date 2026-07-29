@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of Graphviz; C at `~/git/graphviz`
+dot-engine is a faithful TS port of Graphviz; C at `~/git/graphviz`
 (tag 15.0.0) is the spec. Flat (same-rank) adjacent edges with no ports
 and no labels must fan into a spindle. Today the no-port dispatcher
 `makeAdjFlatLabeledEdge` (`splines-flat-labeled.ts:269`) declines no-label

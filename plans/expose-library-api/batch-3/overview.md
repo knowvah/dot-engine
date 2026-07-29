@@ -5,8 +5,8 @@ Assemble the two subpath entries and wire the root. T7/T8 are independent
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |----|-------------|-------|--------|------------|------|
-| T7 | `graphviz-ts/api` barrel | typescript-pro | `src/api/index.ts` | T2, T3, T4 | [x] |
-| T8 | `graphviz-ts/render` barrel | typescript-pro | `src/render/index.ts` | T5, T6 | [x] |
+| T7 | `@knowvah/dot-engine/api` barrel | typescript-pro | `src/api/index.ts` | T2, T3, T4 | [x] |
+| T8 | `@knowvah/dot-engine/render` barrel | typescript-pro | `src/render/index.ts` | T5, T6 | [x] |
 | T9 | Root wiring + package exports + build | typescript-pro | `src/index.ts` (mod), `package.json` (mod), `src/entry.test.ts` | T7, T8 | [x] |
 
 ## Notes
@@ -18,8 +18,8 @@ Assemble the two subpath entries and wire the root. T7/T8 are independent
 
 ## Interface outputs
 
-- T7 → module `graphviz-ts/api` exporting builder + geometry + edge-ops + types.
-- T8 → module `graphviz-ts/render` exporting `render`, `OutputFormat`,
+- T7 → module `@knowvah/dot-engine/api` exporting builder + geometry + edge-ops + types.
+- T8 → module `@knowvah/dot-engine/render` exporting `render`, `OutputFormat`,
   `getDrawOps`, xdot op types.
 - T9 → `package.json` `"exports"` map (`.` / `./api` / `./render`), 3-output
   esbuild build, root re-exports.

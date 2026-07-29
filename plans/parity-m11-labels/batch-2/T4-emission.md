@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C at ~/git/graphviz/lib (15.0.0) is the spec. Hook
+dot-engine port; C at ~/git/graphviz/lib (15.0.0) is the spec. Hook
 rule: smallest fix, ≤2 attempts per file, then move on.
 
 The live render path is src/gvc/device.ts + src/render/svg*.ts. M10

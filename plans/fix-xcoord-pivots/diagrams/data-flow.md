@@ -17,7 +17,7 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   participant N as native dot (T1)
-  participant P as graphviz-ts (T2)
+  participant P as dot-engine (T2)
   participant C as compare (T3)
   N->>C: aux-edge list + per-pivot trace (8748)
   P->>C: aux-edge list + per-pivot trace (34434)

@@ -7,7 +7,7 @@ discovers a conflicting constraint, STOP and log to
 
 ## AD-1: Image-embedding API — global resolver + render option {#image-api}
 
-**Context.** graphviz-ts emits external images as a verbatim passthrough:
+**Context.** dot-engine emits external images as a verbatim passthrough:
 `src/render/svg.ts:usershape()` (≈line 268) writes
 `<image xlink:href="src" …>`. There is no way to produce a self-contained
 SVG (one that carries the image bytes inline). The library must stay
@@ -38,7 +38,7 @@ behind it. One seam (`usershape()`) covers both node `image=` and HTML
 `docs-site/reference/`, wired into `docs:build` via a `docs:api` script. The
 generated pages are added to the VitePress sidebar (a "Reference (generated)"
 group) and are **gitignored** — regenerated at build time. Entry points:
-`graphviz-ts`, `graphviz-ts/api`, `graphviz-ts/render`.
+`dot-engine`, `@knowvah/dot-engine/api`, `@knowvah/dot-engine/render`.
 
 **Consequences.** One unified site (shared theme + search). Adds a build
 dependency (accepted trade-off). Generated pages never hand-edited.

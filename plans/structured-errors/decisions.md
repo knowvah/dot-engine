@@ -21,7 +21,7 @@ because it must match C. `code` is the stable i18n key.
 ## ADR-1: `ParseError implements GvError`
 
 - Context: `ParseError` exists in `src/parser/index.ts`. No back-compat
-  constraint — plantuml-js will bend to graphviz-ts, not the reverse.
+  constraint — plantuml-js will bend to dot-engine, not the reverse.
 - Decision: `ParseError implements GvError`. Structured `location` is primary;
   `line`/`column` are thin convenience getters delegating to `location`. No new
   class, no deprecation.

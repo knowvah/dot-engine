@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts faithful port; browser library. `HtmlParseError`
+dot-engine faithful port; browser library. `HtmlParseError`
 (`src/common/htmltable-types.ts`) is thrown when an HTML-like label fails to
 parse. Current shape:
 ```ts

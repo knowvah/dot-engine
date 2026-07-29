@@ -60,7 +60,7 @@ Each file should be self-contained, under 30 lines, and include a
 comment at the top:
 
 ```dot
-// graphviz-ts reference input: <brief description>
+// dot-engine reference input: <brief description>
 // engine: <engine name>
 // tolerance: <deterministic|iterative>
 ```

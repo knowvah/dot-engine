@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TypeScript port of C graphviz, consumed as a
+dot-engine is a faithful TypeScript port of C graphviz, consumed as a
 browser library (no Node-only APIs). This task creates the **public structured
 error contract**. Read `decisions.md` (the whole file is short) — especially
 the faithfulness line and the "Final shape" block, which is the literal target.

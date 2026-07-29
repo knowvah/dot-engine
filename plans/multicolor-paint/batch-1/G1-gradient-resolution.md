@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts: faithful browser-targeted TS port of C graphviz; C at
+dot-engine: faithful browser-targeted TS port of C graphviz; C at
 ~/git/graphviz/lib (tag 15.0.0) is the spec. Vitest, strict TS, JSDoc
 @see per ported block. Baseline 1584/0, 97 goldens. Hook rule: smallest
 fix, ≤2 attempts/file, then move on (limits: 30 lines/fn, CCN 10, 5

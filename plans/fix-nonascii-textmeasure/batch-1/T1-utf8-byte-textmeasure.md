@@ -2,7 +2,7 @@
 # T1 — UTF-8-byte iteration in the estimate + LUT measure paths
 
 ## Context
-graphviz-ts is a faithful TypeScript port; C is the spec. `graphs-japanese` (CJK
+dot-engine is a faithful TypeScript port; C is the spec. `graphs-japanese` (CJK
 labels) diverges because the port measures text per UTF-16 code unit while C
 measures per UTF-8 byte (each byte ≥128 → space-width fallback). See
 `README.md` (confirmed root cause) and `decisions.md` (AD-1..AD-3).

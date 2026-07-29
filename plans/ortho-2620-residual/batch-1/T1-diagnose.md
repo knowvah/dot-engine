@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: EPL-2.0 -->
 # T1 — Diagnose the 2620 pure-ortho edge-routing residual
 
-You are T1 in mission plans/ortho-2620-residual/ for graphviz-ts (faithful
+You are T1 in mission plans/ortho-2620-residual/ for dot-engine (faithful
 TypeScript port of C graphviz; ~/git/graphviz is the canonical spec).
 DIAGNOSIS ONLY — worktree-isolated; your writes DO NOT persist. Your final
 message IS the deliverable (a markdown analysis doc); the orchestrator writes

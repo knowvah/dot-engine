@@ -1,7 +1,7 @@
 # T1 — Instrument the C oracle's aux graph
 
 ## Context
-graphviz-ts is a faithful TS port of graphviz C (`~/git/graphviz` = read-only
+dot-engine is a faithful TS port of graphviz C (`~/git/graphviz` = read-only
 spec). Corpus `1949.dot` diverges on two flat adjacent compass-port edges
 routed by C `make_flat_adj_edges` (`lib/dotgen/dotsplines.c:1123`). We need
 the ground-truth aux graph C builds so we can diff the port against it. The

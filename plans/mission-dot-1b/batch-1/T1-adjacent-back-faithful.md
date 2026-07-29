@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of graphviz C (`~/git/graphviz`). After DOT-1,
+dot-engine is a faithful TS port of graphviz C (`~/git/graphviz`). After DOT-1,
 single regular edges route faithfully — except **adjacent back edges** (b→a
 spanning 1 rank): `routeRegularEdgeFaithful` declines back edges, so they fall to
 the fitter (`straightEdgeSplineWithRank` via `routeForwardEdge`, or `routeEdgeRaw`

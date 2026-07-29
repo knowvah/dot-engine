@@ -13,12 +13,12 @@ generated reference for exhaustive field lists.
 
 Write `docs-site/guide/types.md`. Cover the public types grouped by entry point:
 
-- **`graphviz-ts/api` (build + inspect):** `Graph` (opaque handle),
+- **`@knowvah/dot-engine/api` (build + inspect):** `Graph` (opaque handle),
   `GvGraphBuilder`, `GvNode`, `GvEdge`, `CreateGraphOptions`.
-- **`graphviz-ts/api` (geometry snapshot):** `LayoutSnapshot`, `NodeGeometry`,
+- **`@knowvah/dot-engine/api` (geometry snapshot):** `LayoutSnapshot`, `NodeGeometry`,
   `EdgeGeometry`, `ClusterGeometry`, `BoundsGeometry`, `YAxis`,
   `GeometryOptions`.
-- **`graphviz-ts/render`:** `OutputFormat`, `RenderOptions` (including the new
+- **`@knowvah/dot-engine/render`:** `OutputFormat`, `RenderOptions` (including the new
   `inlineImages` from T1), `Xdot`, `XdotOp`, `XdotColor`, `DrawOpsOptions`.
 - **root:** `EngineName`, `ImageSizer`, `ImageResolver` (T1),
   `TextMeasurer`/`TextSize`, `RenderResult`, error types

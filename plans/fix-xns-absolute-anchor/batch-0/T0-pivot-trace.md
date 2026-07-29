@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of Graphviz C. The x-coord network simplex
+dot-engine is a faithful TS port of Graphviz C. The x-coord network simplex
 (`src/layout/dot/ns.ts`, called from `position.ts` `dotPosition` via
 `rank(g, 2, …)`) produces x-coords that are a *uniform shift* of C's — same
 relative layout, different absolute anchor (see `decisions.md` ground-truth).

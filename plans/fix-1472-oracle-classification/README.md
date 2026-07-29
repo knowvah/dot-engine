@@ -23,7 +23,7 @@ change. This is a test-harness classification fix.
 |---|---|---|
 | brew graphviz 15.0.0 (Pango) | 101,974 B | ❌ `svg != g` |
 | dev graphviz 15.1.0 (oracle) | 102,071 B | ❌ `svg != g` |
-| graphviz-ts port | 90,591 B, exit 0 | ✅ parses OK |
+| dot-engine port | 90,591 B, exit 0 | ✅ parses OK |
 
 Both native versions emit invalid XML; the brew output even has a closing
 `</svg>` yet is still not well-formed — which is why the current
