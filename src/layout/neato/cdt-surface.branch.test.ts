@@ -9,6 +9,29 @@
  *
  * @see lib/neatogen/delaunay.c:tri / mkSurface
  * @see gts-0.7.6/src/cdt.c
+ *
+ * Residual branches (86.4% branch coverage; T4e pass — cdt-surface.ts is
+ * the most algorithmically dense file in scope, so this pass added
+ * targeted duplicate-vertex/degenerate cases but did not chase every deep
+ * path; documenting what was checked rather than leaving silent gaps):
+ *  - closestFace's `nt === 0` guard (L187) and addVertex's "outside hull"
+ *    throw (L401): the `Cdt` class is NOT exported — only `mkSurface` is.
+ *    mkSurface always creates the enclosing triangle face BEFORE the first
+ *    addVertex call (surface is never empty), and pushes every input
+ *    point through the SAME bbox that sized the enclosing triangle at
+ *    100x radius (a point can never be outside it). Both branches are
+ *    unreachable via the public API — verified by reading mkSurface's
+ *    call order, not merely "no test found one".
+ *  - destroyEdge's/rewireVertex's "map already points elsewhere" guards
+ *    (L110, L119) and detachFace's "edge not found" guard (L147): tried a
+ *    two-duplicates-to-the-same-target constraint scenario (both rewiring
+ *    to the same key) without success; not pursued further given this
+ *    file's size relative to the mission's remaining scope.
+ *  - triangleNextEdge/pointLocateWalk's onSummit/restart sub-branches
+ *    (L222-244, L271-315) and the constraint-crossing o3>0 / walk-left-
+ *    surface throws (L451, L493, L503, L512, L547): require precise
+ *    cocircular/collinear point placements to force specific walk
+ *    restarts; not pursued further within this pass's effort budget.
  */
 
 import { describe, test, expect } from 'vitest';
