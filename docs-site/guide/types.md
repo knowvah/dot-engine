@@ -407,7 +407,7 @@ layout/render-stage failures. Callers that want structured errors without a
 
 ## Relationships
 
-```dot render
+```graphviz
 digraph types {
   rankdir=LR;
   bgcolor="transparent";

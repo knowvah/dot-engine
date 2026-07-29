@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: EPL-2.0 */
-/* Diagrams rendered from ```dot render fences at build time (config.ts). */
+/* Diagrams rendered from ```graphviz fences (@knowvah/vitepress-plugin-dot, client mode). */
 .dot-figure {
   margin: 20px 0;
   text-align: center;
