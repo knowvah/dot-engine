@@ -1876,5 +1876,45 @@
     "input": "test/golden/inputs/neato-multispline.dot",
     "reference": "test/golden/refs/neato-multispline.svg",
     "description": "pinned parallel-edge pairs with on-corridor blockers drive the GTS/CDT multispline router (mkRouter/makeMultiSpline); ref: headless oracle neato -Tsvg"
+  },
+  {
+    "id": "dot-shape-zoo",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-shape-zoo.dot",
+    "reference": "test/golden/refs/dot-shape-zoo.svg",
+    "description": "all 25 round_corners SBOLv/misc shapes (box3d..lpromoter); drives poly-shapes-cases/cases2 vertex generators; ref: headless oracle dot -Tsvg"
+  },
+  {
+    "id": "dot-compound-clip",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-compound-clip.dot",
+    "reference": "test/golden/refs/dot-compound-clip.svg",
+    "description": "compound=true lhead/ltail cluster clipping; drives compound.ts + compound-geom; ref: headless oracle dot -Tsvg"
+  },
+  {
+    "id": "dot-ortho-parallel",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-ortho-parallel.dot",
+    "reference": "test/golden/refs/dot-ortho-parallel.svg",
+    "description": "splines=ortho with a 3-way parallel bundle and a back edge; drives ortho maze/parallel track assignment; ref: headless oracle -Tsvg"
+  },
+  {
+    "id": "neato-ratio-aspect",
+    "engine": "neato",
+    "toleranceClass": "iterative",
+    "input": "test/golden/inputs/neato-ratio-aspect.dot",
+    "reference": "test/golden/refs/neato-ratio-aspect.svg",
+    "description": "ratio=0.5 + size under neato; drives neato set-aspect/ratio scaling; ref: headless oracle -Tsvg"
+  },
+  {
+    "id": "dot-xlabels",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/dot-xlabels.dot",
+    "reference": "test/golden/refs/dot-xlabels.svg",
+    "description": "forcelabels node+edge xlabels; drives the xlabel placer and intersection tests; ref: headless oracle -Tsvg"
   }
 ]

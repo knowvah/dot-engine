@@ -1,0 +1,12 @@
+digraph X {
+  forcelabels=true
+  a [xlabel="xa"]
+  b [xlabel="xb"]
+  c [xlabel="xc"]
+  d [xlabel="xd"]
+  a->b [xlabel="e1"]
+  b->c [xlabel="e2"]
+  a->c [xlabel="e3"]
+  c->d [xlabel="e4"]
+  a->d [xlabel="e5"]
+}
