@@ -118,8 +118,12 @@ function buildDiffError(id: string, diffs: Diff[]): string {
 //   sep[1]=5 on odd ranks); dot-pack-flat-label-vnode pins dot_root() (C's
 //   flat_node/checkFlatAdjacent index the COMPONENT's rank table, while the true
 //   root has none under pack — the port used to crash there)
-test('manifest has 238 entries', () => {
-  expect(manifest).toHaveLength(238);
+// + 7 coverage-90 batch-2 fixtures (c90-rank-zoo, c90-cdt-concentrate-corridor,
+//   c90-circo-{chord,artic-tree,bowtie,parallel,wheel6}): coverage-driven
+//   topology/attr fixtures, each oracle-verified at authoring time; see
+//   plans/coverage-90/decision-journal.md
+test('manifest has 245 entries', () => {
+  expect(manifest).toHaveLength(245);
 });
 
 // ---------------------------------------------------------------------------
