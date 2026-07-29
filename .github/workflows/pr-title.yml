@@ -1,0 +1,55 @@
+name: PR title
+
+# Squash-merge makes the PR title the commit message that semantic-release
+# analyzes on main: a mistyped title either publishes an unintended npm
+# release (docs-only PR titled `fix:`) or silently skips a real one
+# (non-conventional title, cf. #30/#31). Lint titles against the
+# Conventional Commits spec in ~/.claude/rules/commits.md (types + lowercase
+# subject, no trailing period, ≤72 chars).
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  lint-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v6.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            chore
+            refactor
+            test
+            docs
+            style
+            perf
+            ci
+          # Subject must start lowercase (matches commits.md); the action
+          # already rejects an empty subject and enforces type/format.
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: >
+            The subject "{subject}" must start with a lowercase letter
+            (Conventional Commits, see commits.md).
+
+      # commits.md: full header `<type>(<scope>): <desc>` ≤72 chars, no
+      # trailing period. Checked here rather than via a custom headerPattern
+      # so the action keeps its stock (correct) `!`/scope parsing.
+      - name: Enforce length and no trailing period
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          len=${#TITLE}
+          if [ "$len" -gt 72 ]; then
+            echo "::error::PR title is $len chars; commits.md caps the subject line at 72."
+            exit 1
+          fi
+          case "$TITLE" in
+            *.) echo "::error::PR title must not end with a period (commits.md)."; exit 1 ;;
+          esac
