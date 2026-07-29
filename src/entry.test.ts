@@ -3,8 +3,8 @@
 /**
  * Entry-point smoke test (T9 / ADR-2).
  *
- * Guards the three package entries — root `graphviz-ts`, `graphviz-ts/api`,
- * and `graphviz-ts/render` — by importing each barrel and asserting a
+ * Guards the three package entries — root `dot-engine`, `@knowvah/dot-engine/api`,
+ * and `@knowvah/dot-engine/render` — by importing each barrel and asserting a
  * representative symbol resolves. This is the guard for the sole rollback
  * risk: the `package.json` "exports" map and the root re-exports must not
  * break the existing root import.
@@ -30,7 +30,7 @@ import {
 import * as apiEntry from './api/index.js';
 import * as renderEntry from './render/index.js';
 
-describe('root entry (graphviz-ts)', () => {
+describe('root entry (dot-engine)', () => {
   it('keeps the existing public render surface', () => {
     expect(typeof renderSvg).toBe('function');
     expect(typeof tryRenderSvg).toBe('function');
@@ -61,7 +61,7 @@ describe('root entry (graphviz-ts)', () => {
   });
 });
 
-describe('graphviz-ts/api entry', () => {
+describe('@knowvah/dot-engine/api entry', () => {
   it('resolves the builder + geometry + edge-ops symbols', () => {
     expect(typeof apiEntry.createGraph).toBe('function');
     expect(typeof apiEntry.getLayout).toBe('function');
@@ -69,7 +69,7 @@ describe('graphviz-ts/api entry', () => {
   });
 });
 
-describe('graphviz-ts/render entry', () => {
+describe('@knowvah/dot-engine/render entry', () => {
   it('resolves the render + draw-ops symbols', () => {
     expect(typeof renderEntry.render).toBe('function');
     expect(typeof renderEntry.getDrawOps).toBe('function');

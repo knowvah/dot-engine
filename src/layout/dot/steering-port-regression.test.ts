@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * Dot-oracle pins for graphviz-ts steering-port routing. These cases were once
+ * Dot-oracle pins for dot-engine steering-port routing. These cases were once
  * accepted divergences (mid-corridor too narrow, left bulge clamped at x=0,
  * node region shifted, drawing bbox too large). Two faithful fixes closed the
  * whole class:

@@ -3,7 +3,7 @@
 /**
  * style=invis must omit the whole node/edge from the SVG, matching dot 15.0.0
  * (C emit_node / emit_edge `return` on an "invis" style token, before the group
- * is begun). Regression for the bug where graphviz-ts drew invisible edges and
+ * is begun). Regression for the bug where dot-engine drew invisible edges and
  * nodes with a visible black stroke.
  *
  * @see lib/common/emit.c:emit_edge (style "invis" return)

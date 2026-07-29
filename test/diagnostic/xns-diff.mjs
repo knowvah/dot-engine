@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 //
 // xns-diff.mjs — diff the x-coordinate network-simplex (balance=2) frame of
-// Graphviz C against the graphviz-ts port, to locate where (and whether) the
+// Graphviz C against the dot-engine port, to locate where (and whether) the
 // port's x-NS solution diverges from C's.
 //
 // Usage:
