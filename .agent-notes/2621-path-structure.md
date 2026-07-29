@@ -57,3 +57,10 @@
   stale ">30 min never finished" figure. Native: 298s xdot / 276s svg.
 - **Confidence**: High (numeric identity of the scale factor; S1-level first
   divergence; x-axis and call-structure equality).
+- **Status: CLOSED (2026-07-29).** Fix 206b2460 (wire `'value'` into
+  parseRatioDrawing). Post-fix render: bb identical, 0/2553 edges and
+  0/1255 nodes beyond 0.01. Fresh 939-sweep: 2621 diverged→conformant, the
+  only per-id change (909 conformant, 0 regressions). Dot SVG track now has
+  0 unaccepted divergences. Native tree restored (temp GV_XDUMP patches
+  reverted; oracle rebuilt). Port dump hooks kept permanently
+  (setRouteDump/setClipDump).

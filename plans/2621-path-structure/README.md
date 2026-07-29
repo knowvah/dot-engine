@@ -53,7 +53,7 @@ attempts at one site; contradiction of a faithful-port rule.
 | Batch | Purpose | Status |
 |-------|---------|--------|
 | [batch-1](./batch-1/overview.md) — Localize | T1 baseline+target, T2 dump inventory, T3 staged localization, T4 isolated replay, T5 RCA (commit 1) | [x] |
-| [batch-2](./batch-2/overview.md) — Resolve | T6a fix OR T6b acceptance (commit 2), T7 end gates + closeout (commit 3) | [ ] |
+| [batch-2](./batch-2/overview.md) — Resolve | T6a fix OR T6b acceptance (commit 2), T7 end gates + closeout (commit 3) | [x] |
 
 ## Index
 
@@ -75,3 +75,24 @@ attempts at one site; contradiction of a faithful-port rule.
 - Memories `c-harness-raw-intermediate-dump`, `instrument-c-before-quarantine`,
   `v8-prof-for-hangs`, `bezier-emit-size-not-length`,
   `edge-routing-order-done` (routeSplines MUTATES boxes — dump before/after)
+
+## Mission summary (2026-07-29)
+
+- **Outcome**: 2621 diverged → **conformant**; dot SVG track now has **0
+  unaccepted divergences** (909 conformant / 15 structural-match / 2 diverged,
+  both accepted-registry / 0 tracked gaps).
+- **Mechanism**: not routing — the port never applied C set_aspect's R_VALUE
+  numeric-ratio y-stretch (`ratio=0.5625` → yf 1.1881). `parseRatioDrawing`
+  deliberately skipped ratioKind `value`; one-guard wiring fix at the RCA
+  origin (src/common/graph-init.ts). RCA: `.agent-notes/2621-path-structure.md`.
+- **Tasks**: T1–T5, T6a, T7 complete (T4's isolated replay skipped — divergence
+  proven upstream of routing; T6b not applicable).
+- **Gates**: tsc clean · npm test 6024/6024 · fresh 939-sweep with exactly the
+  intended flip, 0 regressions · native tree restored · lizard caps (2
+  pre-existing CCN>10 logged for cleanup).
+- **Budget**: 2 of 3 full port renders (T1+T3 combined into one instrumented
+  render; render calibrated at ~23 min, not >30 min).
+- **Kept**: permanent null-by-default stage-dump hooks
+  (`setRouteDump`/`setClipDump`) for future spline missions.
+- **Follow-ups**: `ratio=expand`/`auto` stay deferred (no corpus coverage /
+  `idealsize` unported).
