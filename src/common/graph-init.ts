@@ -181,29 +181,34 @@ function parseRatioKind(g: Graph): RatioKind | undefined {
 
 /**
  * Populate `g.info.drawing` for the ratio kinds whose layout reshape is ported
- * AND corpus-validated: `compress` (compressGraph x-NS, position-cluster.ts)
- * and `fill` (setAspect R_FILL, position-bbox.ts). `expand`/`value` have the
- * math in setAspect but no corpus coverage, and `auto` needs `idealsize`
- * (unported); all three stay deferred — leaving `drawing` unset keeps
- * setAspect/compressGraph a no-op for them.
+ * AND corpus-validated: `compress` (compressGraph x-NS, position-cluster.ts),
+ * `fill` (setAspect R_FILL, position-bbox.ts), and numeric `value` (setAspect
+ * R_VALUE; corpus coverage: 2621, `ratio=0.5625` — see
+ * `.agent-notes/2621-path-structure.md`). C stores the parsed ratio only for
+ * R_VALUE (`input.c setRatio: ratio = atof(p); if > 0`). `expand` has the math
+ * in setAspect but no corpus coverage, and `auto` needs `idealsize` (unported);
+ * both stay deferred — leaving `drawing` unset keeps setAspect a no-op for
+ * them.
  *
  * DELIBERATE DEVIATION from C, carried over verbatim from dot's old init: C
  * allocates GD_drawing unconditionally (`input.c:609`) and stores the parsed
  * ratio_kind for EVERY kind. Allocating it here would flip the
  * `drawing === undefined` guards at `dot/position-bbox.ts:142` (setAspect) and
- * `neato/set-aspect.ts:57`, activating the unvalidated expand/value/auto
- * reshapes and changing dot output. Scope is therefore unchanged by the
- * graph_init consolidation. See `.agent-notes/graph-init-consolidation.md`.
+ * `neato/set-aspect.ts:57`, activating the unvalidated expand/auto reshapes and
+ * changing dot output. Scope is therefore unchanged by the graph_init
+ * consolidation. See `.agent-notes/graph-init-consolidation.md`.
  *
  * @see lib/dotgen/position.c:set_aspect (904), compress_graph (501)
  * @see lib/common/input.c:576 setRatio, 693-694 (size)
  */
 function parseRatioDrawing(g: Graph): void {
   const kind = parseRatioKind(g);
-  if (kind !== 'compress' && kind !== 'fill') return;
+  if (kind !== 'compress' && kind !== 'fill' && kind !== 'value') return;
   const sz = parseSizePoints(g.attrs.get('size'));
   g.info.drawing = makeDrawing({
     ratioKind: kind,
+    // C: GD_drawing(g)->ratio = atof(p), set only for R_VALUE (setRatio).
+    ratio: kind === 'value' ? Number.parseFloat(g.attrs.get('ratio')!) : 0,
     size: sz ? { x: sz.x, y: sz.y } : { x: 0, y: 0 },
     filled: sz?.filled ?? false,
   });

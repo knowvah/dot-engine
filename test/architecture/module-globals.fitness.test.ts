@@ -81,6 +81,10 @@ const ALLOWLIST: Readonly<Record<string, string>> = {
     'DI wiring for the record split-node impl; set once at import, not per render',
   'src/layout/dot/mincross-order.ts::mincrossTrace':
     'debug trace hook; null in production, never set during rendering',
+  'src/common/splines-routespl.ts::routeDump':
+    'debug stage-dump hook set via setRouteDump; null in production, never set during rendering (2621 diagnosis, twin of mincrossTrace)',
+  'src/common/splines-clip.ts::clipDump':
+    'debug clip-dump hook set via setClipDump; null in production, never set during rendering (2621 diagnosis, twin of mincrossTrace)',
   'src/layout/twopi/twopi-test-helpers.ts::_id':
     'test-only helper module; not reachable from the render path',
 };

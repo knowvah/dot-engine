@@ -28,6 +28,7 @@ import {
   dotGraphInit,
 } from './index.js';
 import { parse } from '../../parser/index.js';
+import { render } from '../../index.js';
 
 // ---------------------------------------------------------------------------
 // Graph builder helpers
@@ -220,6 +221,60 @@ describe('dotGraphInit: ratio → g.info.drawing', () => {
     dotGraphInit(g);
     expect(g.info.drawing?.ratioKind).toBe('compress');
     expect(g.info.drawing?.size).toEqual({ x: 0, y: 0 });
+  });
+
+  it("numeric ratio → drawing {ratioKind 'value', ratio} (setAspect R_VALUE; 2621)", () => {
+    // C setRatio: ratio = atof(p); if (ratio > 0) { R_VALUE; GD_drawing->ratio }.
+    // @see lib/common/input.c:576, .agent-notes/2621-path-structure.md
+    const g = makeGraph('rv');
+    g.attrs.set('ratio', '0.5625');
+    dotGraphInit(g);
+    expect(g.info.drawing?.ratioKind).toBe('value');
+    expect(g.info.drawing?.ratio).toBe(0.5625);
+    expect(g.info.drawing?.size).toEqual({ x: 0, y: 0 });
+  });
+
+  it('ratio=0 or negative → drawing stays undefined (C: atof(p) > 0 guard)', () => {
+    const g = makeGraph('rv0');
+    g.attrs.set('ratio', '0');
+    dotGraphInit(g);
+    expect(g.info.drawing).toBeUndefined();
+    const g2 = makeGraph('rvneg');
+    g2.attrs.set('ratio', '-2');
+    dotGraphInit(g2);
+    expect(g2.info.drawing).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// set_aspect R_VALUE end-to-end: numeric ratio rescales the layout.
+// Expected values are the NATIVE oracle's (build/cmd/dot, 2026-07-29):
+//   raw bb 126x180 (actual 180/126 > 0.5625) → xf = actual/desired = 2.5397,
+//   node x = round(x * xf): a 63→160, b 27→69, c 99→251, d 63→160; bb 320x180.
+// @see lib/dotgen/position.c:set_aspect (R_VALUE branch)
+// ---------------------------------------------------------------------------
+
+describe('dot layout: numeric ratio (R_VALUE) end-to-end', () => {
+  const SRC = 'digraph r { graph [ratio=0.5625]; a -> b; a -> c; b -> d; c -> d; }';
+
+  function nodePos(xdot: string): Map<string, [number, number]> {
+    const out = new Map<string, [number, number]>();
+    const re = /^\s*(\w+)\s*\[(?:[^\]]*?)pos="([-\d.]+),([-\d.]+)"/gm;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(xdot)) !== null) {
+      out.set(m[1], [Number(m[2]), Number(m[3])]);
+    }
+    return out;
+  }
+
+  it('matches the C oracle node positions and bb for ratio=0.5625', () => {
+    const xdot = render(parse(SRC), 'xdot', { engine: 'dot' });
+    expect(xdot).toContain('bb="0,0,320,180"');
+    const pos = nodePos(xdot);
+    expect(pos.get('a')).toEqual([160, 162]);
+    expect(pos.get('b')).toEqual([69, 90]);
+    expect(pos.get('c')).toEqual([251, 90]);
+    expect(pos.get('d')).toEqual([160, 18]);
   });
 });
 
