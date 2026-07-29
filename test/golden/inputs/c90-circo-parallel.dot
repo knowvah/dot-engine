@@ -1,0 +1,10 @@
+// @knowvah/dot-engine reference input: parallel edge inside a 4-cycle
+// engine: circo
+// tolerance: deterministic
+// T2e: a--b duplicated -- exercises findPairEdges/xIncident with multiple
+// live edges between the same node pair (degree-vs-edge-count divergence).
+graph G {
+    a -- b;
+    a -- b;
+    b -- c -- d -- a;
+}
