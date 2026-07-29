@@ -113,3 +113,6 @@ Never edit `src/` while the sweep runs.
   scripts assume a global; sweep was run via `npx -y tsx` (candidate cleanup:
   add tsx to devDependencies). Merge to base via merge commit (never squash)
   left to the user.
+- **Release note:** the repo is squash-merge-only and PR #30's untyped squash
+  subject made semantic-release no-op, so the npm release for these fixes was
+  cut by a follow-up `fix:`-titled PR (this commit).
