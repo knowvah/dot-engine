@@ -122,8 +122,10 @@ function buildDiffError(id: string, diffs: Diff[]): string {
 //   c90-circo-{chord,artic-tree,bowtie,parallel,wheel6}): coverage-driven
 //   topology/attr fixtures, each oracle-verified at authoring time; see
 //   plans/coverage-90/decision-journal.md
-test('manifest has 245 entries', () => {
-  expect(manifest).toHaveLength(245);
+// + 2 coverage-90 batch-3 fixtures (c90-neato-overlap-ratio,
+//   c90-dot-flat-adj-both-arrows), oracle-verified at authoring time
+test('manifest has 247 entries', () => {
+  expect(manifest).toHaveLength(247);
 });
 
 // ---------------------------------------------------------------------------

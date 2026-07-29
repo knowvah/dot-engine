@@ -1972,5 +1972,21 @@
     "input": "test/golden/inputs/c90-circo-wheel6.dot",
     "reference": "test/golden/refs/c90-circo-wheel6.svg",
     "description": "6-cycle with all diagonal chords; multi-pass reduceEdgeCrossings"
+  },
+  {
+    "id": "c90-neato-overlap-ratio",
+    "engine": "neato",
+    "toleranceClass": "iterative",
+    "input": "test/golden/inputs/c90-neato-overlap-ratio.dot",
+    "reference": "test/golden/refs/c90-neato-overlap-ratio.svg",
+    "description": "overlap=false (PRISM) + ratio=fill/size + pinned pos!: overlap-prism/set-aspect/init pipeline integration"
+  },
+  {
+    "id": "c90-dot-flat-adj-both-arrows",
+    "engine": "dot",
+    "toleranceClass": "deterministic",
+    "input": "test/golden/inputs/c90-dot-flat-adj-both-arrows.dot",
+    "reference": "test/golden/refs/c90-dot-flat-adj-both-arrows.svg",
+    "description": "dir=both adjacent flat edge; exercises copyFlatArrow tailArrowOps copy branch"
   }
 ]

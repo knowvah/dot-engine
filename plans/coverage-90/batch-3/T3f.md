@@ -7,34 +7,28 @@ with this appendix embedded. Baseline: 2026-07-28 T1 run.
 
 ## Uncovered appendix
 
-### src/gvc/anchor.ts — 41/107 branch paths uncovered
+### src/gvc/anchor.ts — 20/107 branch paths uncovered
 
-Uncovered statement lines: 180, 183, 281, 287-290, 295-300, 302, 309, 311, 314-315, 322-328, 331-333, 336, 341-345, 347, 352-353, 355, 377, 411-412, 438, 450-457, 460, 472-474
+Uncovered statement lines: 183, 289-290, 311, 322-328, 331-333, 336, 347, 355, 438, 450-457, 460, 472-474
 
 Uncovered branch paths (line: type, missed path indices/total):
 
-- L180: if [0]/2
 - L183: if [0]/2
 - L200: binary-expr [1]/2
 - L212: binary-expr [1]/2
-- L281: binary-expr [0,1,2,3]/4
-- L288: if [0,1]/2
+- L288: if [1]/2
 - L290: cond-expr [0,1]/2
 - L290: binary-expr [0,1,2]/3
-- L309: if [0,1]/2
+- L309: if [0]/2
 - L324: if [0,1]/2
-- L341: cond-expr [0,1]/2
-- L345: if [0,1]/2
-- L345: binary-expr [0,1]/2
-- L352: if [0,1]/2
-- L352: binary-expr [0,1,2]/3
-- L371: binary-expr [1,2,3]/4
-- L376: if [0]/2
-- L376: binary-expr [1,2,3]/4
+- L341: cond-expr [1]/2
+- L345: if [0]/2
+- L345: binary-expr [1]/2
+- L352: if [1]/2
+- L371: binary-expr [3]/4
 - L437: if [1]/2
 - L468: if [1]/2
 - L469: if [1]/2
-- L493: if [1]/2
 
 ### src/layout/pack/index.ts — 50/163 branch paths uncovered
 

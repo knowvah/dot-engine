@@ -7,28 +7,21 @@ with this appendix embedded. Baseline: 2026-07-28 T1 run.
 
 ## Uncovered appendix
 
-### src/common/record.ts — 61/208 branch paths uncovered
+### src/common/record.ts — 47/208 branch paths uncovered
 
-Uncovered statement lines: 94, 96-97, 99, 109, 118, 120, 128-135, 139, 159, 167, 183, 196, 203, 207, 219, 222, 224, 248, 250, 252, 268-269, 352, 371-372, 439-440, 491, 493
+Uncovered statement lines: 94, 109, 118, 120, 129, 132, 139, 159, 183, 196, 203, 207, 219, 222, 248, 250, 252, 268-269, 352, 371-372, 439-440, 491, 493
 
 Uncovered branch paths (line: type, missed path indices/total):
 
 - L94: if [0]/2
-- L96: if [0]/2
-- L97: if [0]/2
-- L99: if [0]/2
 - L109: if [0]/2
 - L118: if [0]/2
 - L120: if [0]/2
-- L129: if [0,1]/2
-- L129: binary-expr [0,1]/2
-- L131: cond-expr [0,1]/2
-- L132: if [0,1]/2
+- L129: if [0]/2
+- L131: cond-expr [1]/2
+- L132: if [0]/2
 - L139: if [0]/2
-- L140: if [1]/2
 - L159: if [0]/2
-- L160: if [1]/2
-- L167: if [0]/2
 - L179: if [1]/2
 - L180: if [0]/2
 - L182: if [0]/2
@@ -41,7 +34,6 @@ Uncovered branch paths (line: type, missed path indices/total):
 - L203: if [0]/2
 - L207: if [0]/2
 - L207: binary-expr [1]/2
-- L217: switch [2,3]/8
 - L219: if [0]/2
 - L222: if [0]/2
 - L248: if [0]/2
@@ -61,7 +53,6 @@ Uncovered branch paths (line: type, missed path indices/total):
 - L351: binary-expr [1]/2
 - L370: if [1]/2
 - L386: binary-expr [1]/2
-- L421: binary-expr [1]/2
 - L450: binary-expr [1]/2
 - L491: if [0]/2
 - L493: if [0]/2

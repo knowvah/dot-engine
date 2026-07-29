@@ -43,7 +43,7 @@ is fine at PR time.
 |-------|---------|--------|
 | [batch-1](./batch-1/T1-gap-map.md) — T1 gap map + prompt payloads (serial) | [x] |
 | [batch-2](./batch-2/overview.md) — 6 parallel test-writer agents, top families | [x] |
-| [batch-3](./batch-3/overview.md) — 6 parallel agents, next families | [ ] |
+| [batch-3](./batch-3/overview.md) — 6 parallel agents, next families | [x] |
 | [batch-4](./batch-4/overview.md) — long-tail sweep, ratchet, closeout | [ ] |
 
 ## Index
