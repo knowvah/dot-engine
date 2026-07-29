@@ -9,7 +9,7 @@ both in the `lib/dotgen/dotsplines.c` spline family:
 - **G1 — multi-edge / opposing / labeled-parallel routing.** dot splays
   multiple edges between the same node pair (and opposing `a->b`/`b->a`) into
   separate lanes and routes labeled-parallel edges around their label virtual
-  nodes. graphviz-ts overlaps them (one straight, one malformed). Plain
+  nodes. dot-engine overlaps them (one straight, one malformed). Plain
   unlabeled parallel-x3 already matches, so scope is opposing-direction pairs
   and label-bearing parallels.
 - **G4 — flat labeled edges drop the label.** `make_flat_labeled_edge` is
@@ -30,7 +30,7 @@ time — do not route autonomous execution to it.
 
 ## The hybrid constraint (READ — AD2/AD3)
 
-graphviz-ts routes plain edges with a simplified fitter that is conformant to
+dot-engine routes plain edges with a simplified fitter that is conformant to
 the 115 goldens; only side-port / flat / steering edges use the faithful
 `routeSplines` pipeline. **The new multi-edge / labeled / opposing cases route
 through the faithful pipeline; plain single edges keep the simplified fitter.**

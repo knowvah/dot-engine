@@ -3,7 +3,7 @@
 # T1 — Gap map + agent prompt payloads (serial; commit 1)
 
 ## Context
-graphviz-ts coverage mission (see ../README.md). Coverage artifacts land in
+dot-engine coverage mission (see ../README.md). Coverage artifacts land in
 `coverage/` (`coverage-summary.json` per-file pcts; `coverage-final.json`
 per-statement/branch maps).
 

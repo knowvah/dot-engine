@@ -3,7 +3,7 @@
 
 ## Context
 
-graphviz-ts is a faithful, browser-safe TypeScript port of Graphviz. External
+dot-engine is a faithful, browser-safe TypeScript port of Graphviz. External
 images are currently emitted as a verbatim passthrough:
 `src/render/svg.ts` `usershape()` (≈line 268–275) writes
 `<image xlink:href="<src>" width=… height=… …>`. There is no way to produce a
@@ -70,8 +70,8 @@ Add an additive, non-breaking image-inlining feature. See
 ```ts
 type ImageResolver = (src: string) =>
   { bytes: Uint8Array; mime?: string } | Uint8Array | null;
-function setImageResolver(fn: ImageResolver | null): void;    // from 'graphviz-ts'
-// RenderOptions gains:  inlineImages?: boolean   // from 'graphviz-ts/render'
+function setImageResolver(fn: ImageResolver | null): void;    // from 'dot-engine'
+// RenderOptions gains:  inlineImages?: boolean   // from '@knowvah/dot-engine/render'
 ```
 
 ## Acceptance criteria (Given/When/Then → tests)

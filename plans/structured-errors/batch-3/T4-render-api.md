@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts public entry is `src/index.ts`. It exports `renderSvg(dotSource,
+dot-engine public entry is `src/index.ts`. It exports `renderSvg(dotSource,
 engine): string`, which runs `parse → ctx.layout → render → ctx.freeLayout`.
 Parse failures throw `ParseError` (now a `GvError` after T2); layout/render
 failures throw a **bare `Error`** today. This task adds the structured,

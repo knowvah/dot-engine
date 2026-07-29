@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts: faithful browser-targeted TS port of C graphviz (tag
+dot-engine: faithful browser-targeted TS port of C graphviz (tag
 15.0.0). Strict TS, vitest, 86 SVG goldens. Suite baseline 1466/0.
 
 The emit-family source deletion (`emit.ts`, `emit-node.ts`,

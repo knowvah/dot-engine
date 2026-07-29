@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of Graphviz C. After the prior mission,
+dot-engine is a faithful TS port of Graphviz C. After the prior mission,
 `2368.dot` conforms to C on edge count/labels but diverges geometrically by two
 root causes (see `decisions.md#ground-truth-data`). Pin each to its exact C-vs-
 port first-divergence before any fix. C is the spec.

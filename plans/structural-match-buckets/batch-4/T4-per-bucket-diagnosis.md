@@ -21,7 +21,7 @@ Known residual families for the corpus (evidence in `.agent-notes/` + auto-memor
 
 ## Context
 
-`graphviz-ts` is a faithful TS port of Graphviz; the C source at `~/git/graphviz`
+`dot-engine` is a faithful TS port of Graphviz; the C source at `~/git/graphviz`
 is the spec. This is **diagnosis, not fixing** — attribute each case to a
 mechanism; do not change port source. The 163 structural-match cases have an
 identical SVG element tree vs the native oracle and differ only in numeric

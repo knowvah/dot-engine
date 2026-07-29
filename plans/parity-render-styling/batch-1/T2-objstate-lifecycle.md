@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C at ~/git/graphviz/lib (15.0.0) is the spec. Suite
+dot-engine port; C at ~/git/graphviz/lib (15.0.0) is the spec. Suite
 baseline 1466/0, 82 goldens. Hook rule: smallest fix, ≤2 attempts per
 file, then move on.
 

@@ -1,7 +1,7 @@
 # T1 — Native C oracle dump
 
 ## Context
-graphviz-ts is a faithful TS port of C graphviz (`~/git/graphviz`). We need the
+dot-engine is a faithful TS port of C graphviz (`~/git/graphviz`). We need the
 native x-coord network-simplex ground truth to compare against the port. Native
 renders `2475_2.dot` in 3.77s doing 8748 x-coord pivots; the port does 34434.
 `dot -v` only prints counts (`network simplex: 26849 nodes 391709 edges 8748 iter`)

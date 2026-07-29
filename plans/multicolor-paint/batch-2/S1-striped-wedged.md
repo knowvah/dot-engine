@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C at ~/git/graphviz/lib (15.0.0). Baseline: post-Batch-1
+dot-engine port; C at ~/git/graphviz/lib (15.0.0). Baseline: post-Batch-1
 count, 0 failed; 97 goldens. Hook rule: smallest fix, ≤2 attempts/file,
 then move on.
 

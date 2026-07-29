@@ -6,7 +6,7 @@ code ships in this task (probe lives under `.probes/`, untracked).
 
 ## Context
 
-graphviz-ts is a faithful C→TS port (C at `~/git/graphviz/lib`, tag 15.0.0,
+dot-engine is a faithful C→TS port (C at `~/git/graphviz/lib`, tag 15.0.0,
 is the spec). The faithful `routesplines` pipeline (`beginPath`, `routeSplines`,
 `endPath`, `clipAndInstall`, `Proutespline`, `Pshortestpath`) is ported and
 used by neato/pack/ortho, but dot routes regular edges through a simplified

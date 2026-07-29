@@ -8,7 +8,7 @@ Corpus ids: `graphs-NaN`, `share-NaN`, `windows-NaN` — all `diverged`.
 > **Visual side-by-side (engine, DOT source, golden-vs-ours, delta overlay):**
 > [`nan-compress-xcoord.html`](nan-compress-xcoord.html) — open in a browser.
 > Rendered SVGs: [`nan-golden.svg`](nan-golden.svg) (native dot),
-> [`nan-ours.svg`](nan-ours.svg) (graphviz-ts).
+> [`nan-ours.svg`](nan-ours.svg) (dot-engine).
 
 ## Before (symptom)
 

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of C Graphviz (spec `~/git/graphviz`). After
+dot-engine is a faithful TS port of C Graphviz (spec `~/git/graphviz`). After
 the cluster-ranking fix, the dot mincross on a clustered graph fails to remove
 crossings C removes. On `mc3` (see README), C and TS both start at cur_cross 1;
 C reaches 0 in one `mincross_step`, TS stays at 1. Same start → swap-legality

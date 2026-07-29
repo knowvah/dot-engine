@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of C Graphviz (spec at `~/git/graphviz`, tag
+dot-engine is a faithful TS port of C Graphviz (spec at `~/git/graphviz`, tag
 15.0.0). In the dot ranking phase, clusters are ranked recursively: C's
 `collapse_cluster(g, subg)` calls `dot1_rank(subg)` to rank the cluster's nodes
 **locally** (a 4-node chain → local ranks 0,1,2,3), then `cluster_leader`

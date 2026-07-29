@@ -1,7 +1,7 @@
 # T1 — Instrument C + locate the segmentation divergence
 
 ## Context
-graphviz-ts is a faithful TS port of C graphviz (`~/git/graphviz` = spec). The
+dot-engine is a faithful TS port of C graphviz (`~/git/graphviz` = spec). The
 dot parity survey flags `graphs/jcctree.gv`, `graphs/p2.gv`, `graphs/pm2way.gv`
 as `diverged` with first-diff on an edge `@d` path: same command letters
 (`M`+`C` cubic beziers), but a DIFFERENT NUMBER of bezier control points than the

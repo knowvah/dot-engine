@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts (TS port of Graphviz, ESM, strict TS, vitest). Today the only way to
+dot-engine (TS port of Graphviz, ESM, strict TS, vitest). Today the only way to
 get a graph is `parse(dotSource)`. This task adds idiomatic **programmatic
 construction** so consumers can build a graph in TS without emitting DOT. Per
 ADR-1 we do NOT re-export the internal mutable `Graph`/`Node`/`Edge` classes;

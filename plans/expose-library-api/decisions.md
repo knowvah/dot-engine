@@ -15,8 +15,8 @@ classes are **not** re-exported.
 
 ## ADR-2: Two subpath entries + discoverable root
 
-**Decision:** `graphviz-ts/api` (build, inspect, geometry) and `graphviz-ts/render`
-(output formats, xdot ops). Root `graphviz-ts` re-exports both plus today's
+**Decision:** `@knowvah/dot-engine/api` (build, inspect, geometry) and `@knowvah/dot-engine/render`
+(output formats, xdot ops). Root `dot-engine` re-exports both plus today's
 `renderSvg`/`parse`.
 **Consequences:** Adds a `package.json` `"exports"` map and per-entry build
 outputs. The existing `"."` → `dist/index.js` import MUST stay intact.

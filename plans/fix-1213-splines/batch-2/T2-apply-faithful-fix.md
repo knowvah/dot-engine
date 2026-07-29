@@ -2,7 +2,7 @@
 # T2 — Apply faithful fix at the pinned origin + regression test
 
 ## Context
-graphviz-ts is a faithful port; C is the spec. Batch 1 pinned the exact routing stage/
+dot-engine is a faithful port; C is the spec. Batch 1 pinned the exact routing stage/
 line where the port's `constraint=false` edge splines diverge from C on 1213-1, and
 classified it. Read the mechanism artifact in `decision-journal.md` before starting — it
 supplies `originFile`, `originLine`, `cPrimitive`, and `bugClass` (interface contract in

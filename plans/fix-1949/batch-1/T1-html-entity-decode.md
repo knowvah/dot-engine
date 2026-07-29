@@ -1,7 +1,7 @@
 # T1 — Decode HTML entities in HTML-label text runs (D1)
 
 ## Context
-graphviz-ts is a faithful TS port of graphviz C (`~/git/graphviz` is the
+dot-engine is a faithful TS port of graphviz C (`~/git/graphviz` is the
 spec). HTML-like labels (`label=<...>`) are lexed by
 `src/common/htmltable-lex.ts:scanText`, which currently pushes the raw text
 run as a `text` token WITHOUT decoding XML/HTML entities. C decodes entities

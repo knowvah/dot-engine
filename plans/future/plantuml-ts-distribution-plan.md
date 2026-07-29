@@ -217,7 +217,7 @@ that review *easier* than the incumbent's — a real advantage at submission.
 ## Surface 4 — Jira plugin (the commercial surface)
 
 **Product shape:** charge for the *integration/config convenience*, not for
-closed code. The libraries (graphviz-TS, PlantUML-TS) stay public. The Jira
+closed code. The libraries (dot-engine, PlantUML-TS) stay public. The Jira
 plugin is the separate consuming product — "the ability to install the thing in
 Jira and have it just work." Target price point explored: ~$100/year; 1,000
 customers = a happy outcome.
@@ -228,7 +228,7 @@ This is the part that needs **actual verification before building**, not
 assumption. Status as of capture: still unverified — the single most important
 fact to nail down.
 
-- **graphviz-TS port is EPL** (inherited from graphviz, carried forward). EPL is
+- **dot-engine port is EPL** (inherited from graphviz, carried forward). EPL is
   **file-level copyleft** and explicitly permits commercial use. A *separate*
   product that consumes EPL libraries (without modifying the EPL files) keeps the
   consuming code under whatever license you want. The open release of the port

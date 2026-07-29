@@ -1,7 +1,7 @@
 # T1 — Instrument C x-coord NS; dump 4-stage oracle
 
 ## Context
-graphviz-ts ports native dot layout. honda-tokoro's only divergence is the
+dot-engine ports native dot layout. honda-tokoro's only divergence is the
 x-coordinate (cross-rank) network simplex resolving weight=0 slack differently
 than C. We need C's ground-truth NS trace before touching the port. The x-coord
 NS is `rank(g, 2, …)` in `lib/dotgen/position.c:142` (balance mode 2 →

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C at ~/git/graphviz/lib (15.0.0) is the spec. Hook
+dot-engine port; C at ~/git/graphviz/lib (15.0.0) is the spec. Hook
 rule: smallest fix, ≤2 attempts per file, then move on.
 
 The bold-drop bug (SCOPE.md §1 render comparison): C tracks

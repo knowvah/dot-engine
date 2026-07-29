@@ -2,7 +2,7 @@
 
 # Component Diagrams
 
-## graphviz-ts (this project)
+## dot-engine (this project)
 
 `src/` mirrors the C Graphviz module layout. Porting proceeds bottom-up:
 container types → graph model → shared rendering utilities → layout engines →

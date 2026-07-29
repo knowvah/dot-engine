@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TypeScript port of Graphviz (C source at
+dot-engine is a faithful TypeScript port of Graphviz (C source at
 `~/git/graphviz` is canonical). `test/corpus/engine-walk.ts` already
 walks the corpus through one non-dot engine and writes
 `parity-<engine>.json` (pass/diverged/oracle-error/port-error/timeout

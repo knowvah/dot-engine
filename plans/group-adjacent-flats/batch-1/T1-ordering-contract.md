@@ -1,7 +1,7 @@
 # T1 — Pin the C ordering contract + write the red test
 
 ## Context
-graphviz-ts is a faithful TS port of C graphviz (`~/git/graphviz` = spec). The
+dot-engine is a faithful TS port of C graphviz (`~/git/graphviz` = spec). The
 `#241_0` flat-curl residual is fully diagnosed (`plans/flat-aux-curl-diagnosis/`,
 merged `7490f43`): C groups all adjacent flat edges between a node pair into ONE
 `make_flat_adj_edges` call; the port routes each in an isolated `cnt=1` aux

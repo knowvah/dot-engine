@@ -145,4 +145,4 @@ size=7 in both C and port; grouping does not change its direction).
 - Oracle SVG of `241_0.dot` from clean binary verified (no DIAG lines,
   valid SVG output).
 - `tsc --noEmit` passes with zero errors.
-- `git diff --name-only main` in graphviz-ts shows no `src/` file changed.
+- `git diff --name-only main` in dot-engine shows no `src/` file changed.

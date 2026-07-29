@@ -3,7 +3,7 @@
 # T1 — Port conc_opp_flag branch into arrowFlags
 
 ## Context
-graphviz-ts is a faithful TS port of C Graphviz; the C source is the spec. Edge
+dot-engine is a faithful TS port of C Graphviz; the C source is the spec. Edge
 arrowheads are computed in `SplineClipHelper.arrowFlags` and consumed by the
 spline-clip path, which both emits the arrowhead polygon and clips the spline end
 back to the arrow base. Under `concentrate=true`, `classify.ts` merges an

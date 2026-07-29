@@ -1,7 +1,7 @@
 # T1 — render-one-xdot.ts
 
 ## Context
-graphviz-ts is a C-faithful TypeScript port of Graphviz. The SVG parity survey
+dot-engine is a C-faithful TypeScript port of Graphviz. The SVG parity survey
 uses `test/corpus/render-one.ts` — a spawned subprocess that renders ONE corpus
 input to SVG and writes it to stdout, so a hang is killed by the parent's
 wall-clock timeout. This task is the xdot analogue.

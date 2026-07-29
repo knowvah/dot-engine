@@ -9,7 +9,7 @@ defines the **capability**; the TS public surface is **idiomatic**, not an
 
 ## Objective
 
-Surface, through the `graphviz-ts/api` + `graphviz-ts/render` entries, two
+Surface, through the `@knowvah/dot-engine/api` + `@knowvah/dot-engine/render` entries, two
 capabilities that are already implemented internally but unreachable publicly:
 
 - **pack** — multi-component packing (lay out disconnected components, then

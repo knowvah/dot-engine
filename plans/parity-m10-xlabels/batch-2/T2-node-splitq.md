@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts lib/label port (mission 10), batch 2. T1 landed
+dot-engine lib/label port (mission 10), batch 2. T1 landed
 src/label/rectangle.ts (Rect flat-array + ops) — import it, don't
 re-port. C is the spec; SPDX headers; JSDoc @see cites; strict TS.
 Suite baseline 1138/0 plus T1's tests.

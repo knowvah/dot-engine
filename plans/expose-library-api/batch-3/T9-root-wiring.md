@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts (TS port of Graphviz, ESM, strict TS, esbuild bundling, vitest).
+dot-engine (TS port of Graphviz, ESM, strict TS, esbuild bundling, vitest).
 Final integration. Wire the two new subpath entries into the package, switch the
 default context to the all-renderers factory, and guarantee the existing root
 import is non-breaking (the single rollback risk per Phase 4).
@@ -48,15 +48,15 @@ ADR-2 (exports map, root re-exports, `"."` preserved), ADR-5 (shared context).
 
 ## Interface contract (output)
 
-- `import 'graphviz-ts'` exposes today's symbols + the new surfaces.
-- `import 'graphviz-ts/api'`, `import 'graphviz-ts/render'` resolve.
+- `import 'dot-engine'` exposes today's symbols + the new surfaces.
+- `import '@knowvah/dot-engine/api'`, `import '@knowvah/dot-engine/render'` resolve.
 
 ## Acceptance criteria
 
-- Given `import { renderSvg, parse, tryRenderSvg } from 'graphviz-ts'`, then all
+- Given `import { renderSvg, parse, tryRenderSvg } from 'dot-engine'`, then all
   resolve and `renderSvg` output is unchanged vs before this task (parity).
-- Given `import { createGraph } from 'graphviz-ts/api'`, then it resolves.
-- Given `import { render } from 'graphviz-ts/render'`, then it resolves.
+- Given `import { createGraph } from '@knowvah/dot-engine/api'`, then it resolves.
+- Given `import { render } from '@knowvah/dot-engine/render'`, then it resolves.
 - Given `npm run build`, then `dist/index.js`, `dist/api.js`, `dist/render.js`
   are all produced.
 - Given `npm test`, then the full suite (incl. `entry.test.ts`) passes.

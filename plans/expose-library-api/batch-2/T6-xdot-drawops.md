@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts (TS port of Graphviz, ESM, strict TS, vitest). The xdot format
+dot-engine (TS port of Graphviz, ESM, strict TS, vitest). The xdot format
 encodes every drawing primitive (ellipses, polygons, polylines, beziers, text,
 color/font ops) as a structured op stream — the basis for consumers who render
 with their own primitives (canvas/WebGL/PDF/native UI) instead of taking SVG.

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts lib/label port (mission 10), batch 4. T1–T3 landed
+dot-engine lib/label port (mission 10), batch 4. T1–T3 landed
 src/label/{rectangle,node,split-q,index}.ts — import, don't re-port.
 C is the spec; SPDX; @see cites; strict TS. Hook rule: ≤2 attempts per
 file. A parallel agent owns src/common/postproc.ts,

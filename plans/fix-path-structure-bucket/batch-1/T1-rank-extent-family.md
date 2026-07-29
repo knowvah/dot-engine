@@ -1,7 +1,7 @@
 # T1 — Diagnose the rank-extent family: 2521 (anchor), 1718, 2239
 
 ## Context
-graphviz-ts is a faithful TypeScript port of C Graphviz (`~/git/graphviz` is
+dot-engine is a faithful TypeScript port of C Graphviz (`~/git/graphviz` is
 the spec; read the project `CLAUDE.md`). Three corpus ids diverge on
 rank-axis bbox EXTENT, which triage says is a ranking/y (or LR rank-axis)
 divergence upstream of edge splines:

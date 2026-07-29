@@ -2,7 +2,7 @@
 # T1 — Instrument edge routing; pin the root_twopi spline divergence origin
 
 ## Context
-graphviz-ts is a faithful TypeScript port of C Graphviz; the C source is the spec.
+dot-engine is a faithful TypeScript port of C Graphviz; the C source is the spec.
 `nshare-root_twopi` (rendered with **dot**, not twopi) diverges only in
 edge-spline control points; node positions, ranks, and SVG element counts match
 the oracle exactly (see README scouting table and

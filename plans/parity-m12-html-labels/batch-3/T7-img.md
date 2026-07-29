@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C at ~/git/graphviz/lib (15.0.0) is the spec. Hook
+dot-engine port; C at ~/git/graphviz/lib (15.0.0) is the spec. Hook
 rule: smallest fix, ≤2 attempts per file, then move on.
 
 `<IMG>` parses to HtmlImage (T3 added size fields) but no

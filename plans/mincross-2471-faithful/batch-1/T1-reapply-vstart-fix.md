@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts ports Graphviz C faithfully; `~/git/graphviz` is the spec. The
+dot-engine ports Graphviz C faithfully; `~/git/graphviz` is the spec. The
 mincross `medians` and `reorder` functions index `rk.v[i]` from 0, ignoring the
 `vStart` window offset, so for windowed graphs (multi-component comp≥2, all
 clusters) they process the wrong nodes. `transpose` already uses `rankGet`

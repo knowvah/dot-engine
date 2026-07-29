@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of graphviz C (tag 15.0.0, `~/git/graphviz`).
+dot-engine is a faithful TS port of graphviz C (tag 15.0.0, `~/git/graphviz`).
 Regular dot edges default to the simplified fitter, which diverges from dot on
 edge-condition geometries (see `.agent-notes/dot-splines-reverification.md`).
 The mission (AD-1) migrates all regular edges to the faithful pathplan path.

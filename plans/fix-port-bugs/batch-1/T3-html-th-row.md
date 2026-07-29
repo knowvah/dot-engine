@@ -4,7 +4,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TypeScript port of Graphviz; the C source at
+dot-engine is a faithful TypeScript port of Graphviz; the C source at
 `~/git/graphviz` is the canonical spec. Tests use vitest; strict TS. TDD:
 convert the existing `it.todo` into a real red test FIRST, verify red
 (CAUTION: the current bug is a HANG — red manifests as a vitest timeout, so

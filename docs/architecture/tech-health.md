@@ -8,11 +8,11 @@ NVD/OSV. Date of check: 2026-06-22.
 
 | Repo | Component | Version | EOL Date | CVEs (High+) | Action |
 |------|-----------|---------|----------|--------------|--------|
-| graphviz-ts | Node.js (Volta pin) | 26.3.1 | 2029-04-30 | None known at 26.3.1 | OK |
-| graphviz-ts | TypeScript | ^5.4.0 | n/a (tooling) | None | Update available |
-| graphviz-ts | esbuild | ^0.28.1 | n/a | None | OK |
-| graphviz-ts | vitest | ^4.1.9 | n/a | None | OK |
-| graphviz-ts | peggy | ^4.0.0 | n/a | None | OK |
+| dot-engine | Node.js (Volta pin) | 26.3.1 | 2029-04-30 | None known at 26.3.1 | OK |
+| dot-engine | TypeScript | ^5.4.0 | n/a (tooling) | None | Update available |
+| dot-engine | esbuild | ^0.28.1 | n/a | None | OK |
+| dot-engine | vitest | ^4.1.9 | n/a | None | OK |
+| dot-engine | peggy | ^4.0.0 | n/a | None | OK |
 | graphviz (C) | Graphviz | 15.0.0 | n/a (upstream spec) | n/a | OK (reference only) |
 
 ## Notes
@@ -31,7 +31,7 @@ NVD/OSV. Date of check: 2026-06-22.
   ([TypeScript releases](https://github.com/microsoft/typescript/releases))
 - **esbuild / vitest / peggy** — Recent versions, no known High+ CVEs. OK.
 - **graphviz (C)** is a reference source, not a shipped dependency of
-  graphviz-ts, so its version health does not affect the runtime/security
+  dot-engine, so its version health does not affect the runtime/security
   posture of the published library. The C checkout at tag 15.0.0 simply pins
   the spec being ported.
 

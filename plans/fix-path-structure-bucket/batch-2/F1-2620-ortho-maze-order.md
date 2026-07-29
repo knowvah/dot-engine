@@ -1,7 +1,7 @@
 # F1 — 2620/2361-class: ortho maze build/insertion-order conformance
 
 ## Context
-graphviz-ts is a faithful TS port of C Graphviz (`~/git/graphviz` = spec; read
+dot-engine is a faithful TS port of C Graphviz (`~/git/graphviz` = spec; read
 project `CLAUDE.md`). `2620.dot` (clusters, rankdir=LR, splines=ortho) is
 tracked diverged maxΔ 3207 on an edge `@d`. The mechanism is ALREADY PINNED
 (`.agent-notes/2361-ortho-maze-corridor-tiebreak.md` — read fully before

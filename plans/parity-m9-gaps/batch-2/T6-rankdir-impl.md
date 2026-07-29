@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C source is the spec; suite baseline ~1059/0 after
+dot-engine port; C source is the spec; suite baseline ~1059/0 after
 batch 1 (62 goldens).
 
 The port already has gvNodesize (src/common/poly-sizing.ts:382, called

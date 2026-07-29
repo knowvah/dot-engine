@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C spec at ~/git/graphviz/lib (15.0.0). Baseline
+dot-engine port; C spec at ~/git/graphviz/lib (15.0.0). Baseline
 1466/0, 82 goldens. Hook rule: smallest fix, ≤2 attempts/file, move on.
 
 Edge paths and arrows render via src/render/svg-helpers.ts

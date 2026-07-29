@@ -39,7 +39,7 @@ graphviz 15.0.0.
 - Edge `a->b` path (7-point polyline, rendered):
   `M50.18,-27.27C76.84,-37.94 117,-54 117,-54 117,-54 147.74,-41.7 173.3,-31.48`
 
-## graphviz-ts (actual)
+## dot-engine (actual)
 
 `splines=line` is ignored, so TS renders the **spline** path instead:
 `M45.88,-31.26C62.74,-42.24 88.59,-57 113.62,-63.12 138.5,-69.21 164.55,-54.61 182.8,-40.43`

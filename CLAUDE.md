@@ -1,4 +1,4 @@
-# graphviz-ts — Claude Code Instructions
+# dot-engine — Claude Code Instructions
 
 ## Mission
 

@@ -2,7 +2,7 @@
 # T2 — Apply faithful fix at the pinned origin + regression test
 
 ## Context
-graphviz-ts is a faithful port; C is the spec. Batch 1 pinned the exact mincross
+dot-engine is a faithful port; C is the spec. Batch 1 pinned the exact mincross
 stage/line where the port's within-rank order diverges from C on the three
 shells flat ranks, and classified it (tie-break vs heuristic-miss). Read the
 mechanism artifact in `decision-journal.md` before starting — it supplies the

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts: faithful browser-targeted TS port of C graphviz; C source
+dot-engine: faithful browser-targeted TS port of C graphviz; C source
 at ~/git/graphviz/lib (tag 15.0.0) is the spec. Vitest, strict TS, tests
 co-located, SPDX EPL-2.0 headers on new files, JSDoc `@see` cites per
 ported symbol. Suite baseline 1138/0. This is the first module of the

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of C graphviz. The mincross fix (this branch)
+dot-engine is a faithful TS port of C graphviz. The mincross fix (this branch)
 makes 2471 produce the correct rank order, which exposes a network-simplex
 non-convergence in `dotPosition`'s x-coordinate pass. C renders the same graph
 fast; TS hangs. This task reproduces and classifies the hang. Investigative —

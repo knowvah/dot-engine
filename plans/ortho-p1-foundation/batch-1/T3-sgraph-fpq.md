@@ -2,7 +2,7 @@
 
 ## Context
 Faithful TS port of Graphviz `lib/ortho/sgraph.c` (191 LOC) and `lib/ortho/fPQ.c`
-(119 LOC) for the `graphviz-ts` faithful-port project (root `CLAUDE.md`). The
+(119 LOC) for the `dot-engine` faithful-port project (root `CLAUDE.md`). The
 search graph (`snode`/`sedge`/`sgraph`) is the maze routing graph; `fPQ` is its
 binary-heap priority queue; `shortPath` is Dijkstra over the sgraph using the PQ.
 One agent owns BOTH files because `fPQ` operates on `snode` and `shortPath` ties

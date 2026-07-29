@@ -4,7 +4,7 @@ Paste the block below into a fresh session.
 
 ---
 
-Continue the graphviz-ts parity/conformance work on branch
+Continue the dot-engine parity/conformance work on branch
 `feature/xdot-conformance` (repo `/Users/scottseely/git/graphviz-ts`,
 HEAD should be `a8c7e41` "merge(review): alias the cluster rank window in
 conc.ts").

@@ -4,7 +4,7 @@
 
 ## Context
 
-`graphviz-ts` is a faithful pure-TS port of Graphviz; the C source at
+`dot-engine` is a faithful pure-TS port of Graphviz; the C source at
 `~/git/graphviz` is the spec. The dot parity survey renders every corpus input
 with engine `dot` under a 20s timeout. Seven inputs currently `timeout`; the
 dominant cause is the network-simplex re-ranging DFS `dfsRange`, which is **40%

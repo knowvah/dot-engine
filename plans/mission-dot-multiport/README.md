@@ -107,7 +107,7 @@ Architecture decisions (locked): see [decisions.md](decisions.md).
 
 ## Operational readiness
 
-N/A — graphviz-ts is a browser layout library, not a service. No SLIs,
+N/A — dot-engine is a browser layout library, not a service. No SLIs,
 dashboards, traces, or on-call story. **Rollback: Reversible** (revert the
 merge commit; no data or API migration). No backwards-compat concern: the only
 output change is for graphs using multiple compass ports off one node — that

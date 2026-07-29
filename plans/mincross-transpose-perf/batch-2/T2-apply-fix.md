@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts (faithful TS port of C graphviz; `~/git/graphviz` is the spec).
+dot-engine (faithful TS port of C graphviz; `~/git/graphviz` is the spec).
 Batch 1 (T1) measured the transpose perf gap and routed this fix. Read the T1
 journal row first — it names the dominant cause (AD-4: a/b/c) and the exact
 target site. The cardinal rule (AD-1): **output node order must stay

@@ -123,4 +123,4 @@ After T2: port must emit 7-point curl with Y-range > 10pt.
 - git -C ~/git/graphviz status -- nothing to commit, working tree clean.
 - Clean gvplugin_dot_layout rebuilt and copied to /tmp/gvplugins/.
 - GVBINDIR=/tmp/gvplugins dot -Tsvg tests/241_0.dot emits 0 T1DIAG lines.
-- npx tsc --noEmit in graphviz-ts -- exit 0.
+- npx tsc --noEmit in dot-engine -- exit 0.

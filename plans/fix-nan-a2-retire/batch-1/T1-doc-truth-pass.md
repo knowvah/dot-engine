@@ -2,7 +2,7 @@
 # T1 — Stage-1 truth pass: §A2 doc + honest JSON reasons
 
 ## Context
-graphviz-ts, faithful TS port of C graphviz. `docs/known-divergences.md` §A2
+dot-engine, faithful TS port of C graphviz. `docs/known-divergences.md` §A2
 carries a 2026-06-30 status note admitting its own body is stale: A2 has
 largely collapsed (proc3d conformant); only the `NaN` family remains, its
 node geometry now matches C exactly, and the residual is 8 edge endpoints —

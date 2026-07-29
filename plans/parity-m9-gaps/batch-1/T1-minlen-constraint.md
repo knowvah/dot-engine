@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts: faithful browser-targeted TS port of C graphviz; C source at
+dot-engine: faithful browser-targeted TS port of C graphviz; C source at
 ~/git/graphviz/lib is the spec. Vitest 1.6, strict TS, tests co-located.
 Suite baseline 1054/0.
 

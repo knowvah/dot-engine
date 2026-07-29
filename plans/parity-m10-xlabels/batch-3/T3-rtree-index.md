@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts lib/label port (mission 10), batch 3. T1 (rectangle.ts) and
+dot-engine lib/label port (mission 10), batch 3. T1 (rectangle.ts) and
 T2 (node.ts, split-q.ts) are landed — import them. C is the spec; SPDX;
 @see cites; strict TS. Hook rule: ≤2 attempts per file.
 

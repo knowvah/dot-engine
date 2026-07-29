@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C source is the spec; suite baseline 1054/0.
+dot-engine port; C source is the spec; suite baseline 1054/0.
 
 The shared self-loop module src/common/splines-selfedge.ts is FULLY
 ported (makeSelfEdge dispatcher + selfTop/Bottom/Left/Right, 381 lines,

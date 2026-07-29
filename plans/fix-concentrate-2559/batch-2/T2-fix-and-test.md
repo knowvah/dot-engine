@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of C Graphviz (`~/git/graphviz` = spec). T1 has
+dot-engine is a faithful TS port of C Graphviz (`~/git/graphviz` = spec). T1 has
 pinned the exact location where the port drops the concentrate merged-trunk
 segment for corpus 2559. The merge itself (`conc.ts`/`classify.ts`) is correct
 and **must not be touched**. The fix ports C's `spline_merge` trunk-routing

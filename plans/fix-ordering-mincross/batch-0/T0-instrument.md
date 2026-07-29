@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of C Graphviz; the C source is the spec. Graphs
+dot-engine is a faithful TS port of C Graphviz; the C source is the spec. Graphs
 with `ordering=out`/`in` get the wrong in-rank node order in the port (see
 `../README.md` for pinned b58 node-x). The port HAS the machinery
 (`doOrderingNode`/`orderedEdges`, wired at `mincross.ts:164,274`), so the bug is

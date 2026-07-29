@@ -1,7 +1,7 @@
 # T2 — Rewrite fdp core: derived graphs, tlayout, xlayout, flat pipeline
 
 ## Context
-graphviz-ts is a faithful TS port of C graphviz. The current
+dot-engine is a faithful TS port of C graphviz. The current
 `src/layout/fdp/` is a loose approximation (Math.random, no derived
 graphs, no x_layout, no ×72 conversion) and must be rewritten to the C
 architecture. **Read the C spec at the 15.0.0 tag only**

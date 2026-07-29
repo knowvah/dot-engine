@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port. C's lib/common/postproc.c gv_postprocess translates
+dot-engine port. C's lib/common/postproc.c gv_postprocess translates
 ALL layouts (rankdir=TB included: rotation 0°, offset = bb.LL) — yet
 the port passes 57 goldens with NO postprocess pass. Therefore an
 equivalent TB-case translation exists somewhere in the port (suspects:

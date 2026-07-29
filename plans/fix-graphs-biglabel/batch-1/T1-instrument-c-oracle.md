@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TypeScript port of C graphviz; `~/git/graphviz` is the
+dot-engine is a faithful TypeScript port of C graphviz; `~/git/graphviz` is the
 spec. `graphs-biglabel` diverges only on the edge spline for
 `struct1:f2 → struct3:here` (`biglabel.gv:90`; `here` is nested 3 levels deep at
 `biglabel.gv:88`). The oracle SVG's `g[5]/path[1]/@d` is **2 cubic beziers**

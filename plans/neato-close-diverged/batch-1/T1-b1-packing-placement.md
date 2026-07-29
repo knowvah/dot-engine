@@ -4,7 +4,7 @@
 
 ## Context
 
-`graphviz-ts` is a faithful TypeScript port of Graphviz C (canonical spec at
+`dot-engine` is a faithful TypeScript port of Graphviz C (canonical spec at
 `~/git/graphviz/lib`). Neato = force-directed engine; its deterministic loop is
 bounded to ~1e-6, so a >0.5pt divergence is a real defect. The **B1 bucket (44
 ids)** shows the graph `_draw_` background-fill polygon diverging — that polygon

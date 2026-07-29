@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts lib/label port (mission 10), batch 4. C is the spec; @see
+dot-engine lib/label port (mission 10), batch 4. C is the spec; @see
 cites; strict TS. Hook rule: ≤2 attempts per file. A PARALLEL agent is
 writing src/label/xlabels.ts — import `placeLabels` and its types
 against the T4 contract in batch-4/overview.md (it mirrors C

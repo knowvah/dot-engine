@@ -2,7 +2,7 @@
 # T0 — Diagnose the ldbxtried X-coordinate / ordering divergence
 
 ## Context
-graphviz-ts is a faithful C→TS port; `~/git/graphviz` is the spec. On
+dot-engine is a faithful C→TS port; `~/git/graphviz` is the spec. On
 `graphs/ldbxtried.gv` (a clustered graph, `cluster0` "toucan") the port
 mispositions 13 of 32 nodes in **X only** (every cy/rank matches) and reorders at
 least one node within its rank. Counts + bbox match (60 nodes, 70 edges, viewBox

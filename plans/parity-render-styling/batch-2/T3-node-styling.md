@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C spec at ~/git/graphviz/lib (15.0.0). Baseline
+dot-engine port; C spec at ~/git/graphviz/lib (15.0.0). Baseline
 1466/0, 82 goldens. Hook rule: smallest fix, ≤2 attempts/file, move on.
 
 The node shape codefn (src/common/poly-gencode.ts `polyGencode` →

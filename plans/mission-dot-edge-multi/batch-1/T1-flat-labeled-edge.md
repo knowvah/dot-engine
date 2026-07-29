@@ -2,11 +2,11 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of graphviz C (tag 15.0.0, `~/git/graphviz`,
+dot-engine is a faithful TS port of graphviz C (tag 15.0.0, `~/git/graphviz`,
 the spec). A `rank=same` edge that carries a label (e.g.
 `digraph{{rank=same a b} a->b[label="lbl"]}`) currently renders with **no label
 `<text>`**: the corpus diff (`route-reverification.md`, case "flat labeled")
-shows C emits 3 texts, graphviz-ts 2. `make_flat_labeled_edge` is unported;
+shows C emits 3 texts, dot-engine 2. `make_flat_labeled_edge` is unported;
 `makeFlatEdge` never dispatches to it.
 
 ## Task

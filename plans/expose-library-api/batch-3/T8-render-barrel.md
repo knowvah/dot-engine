@@ -1,8 +1,8 @@
-# T8 — graphviz-ts/render barrel
+# T8 — @knowvah/dot-engine/render barrel
 
 ## Context
 
-graphviz-ts (TS port of Graphviz, ESM, strict TS). The `graphviz-ts/render`
+dot-engine (TS port of Graphviz, ESM, strict TS). The `@knowvah/dot-engine/render`
 subpath (ADR-2) is the "output formats + draw-ops" entry. This task is the barrel
 re-exporting the Batch 2 render pieces.
 
@@ -33,7 +33,7 @@ ADR-2, ADR-5.
 
 ## Interface contract (output)
 
-Module `graphviz-ts/render` (built to `dist/render.js`) exporting `render`,
+Module `@knowvah/dot-engine/render` (built to `dist/render.js`) exporting `render`,
 `OutputFormat`, `getDrawOps`, and xdot op types.
 
 ## Acceptance criteria

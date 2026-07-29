@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of C Graphviz (`~/git/graphviz` = spec). T2 landed
+dot-engine is a faithful TS port of C Graphviz (`~/git/graphviz` = spec). T2 landed
 the cluster-free `doDot` pack branch (2458). This task extends it to **clustered
 multi-component** graphs, porting C's `copyClusterInfo`/`copyCluster`/`mapClust`
 (`dotinit.c:388-432`): after packing, copy each component's cluster tree (bb, label,

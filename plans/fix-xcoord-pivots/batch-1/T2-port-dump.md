@@ -1,7 +1,7 @@
 # T2 — Port-side dump (matching native format)
 
 ## Context
-We need the graphviz-ts x-coord network-simplex trace in the SAME schema as T1 so
+We need the dot-engine x-coord network-simplex trace in the SAME schema as T1 so
 T3 can diff them. The x-coord NS is `rank(g, 2, nsiter2(g))` in
 `dotPosition` (position.ts:210), operating on the aux graph from
 `createAuxEdges` (position-aux.ts). The pivot loop is `rank2Loop` (ns.ts);

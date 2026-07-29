@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TypeScript port of C Graphviz; the C source at
+dot-engine is a faithful TypeScript port of C Graphviz; the C source at
 `~/git/graphviz` is the canonical spec. Corpus test **2559**
 (`digraph { concentrate=true; a->b [label="1"]; c->b; d->b }`) renders
 `diverged`. The `concentrate=true` merge of the `c->b` and `d->b` virtual nodes

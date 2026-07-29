@@ -2,9 +2,9 @@
 
 ## Context
 
-graphviz-ts now exposes (after Batch 3) programmatic construction, geometry
-readout, multi-format rendering, and xdot draw-ops via `graphviz-ts/api` and
-`graphviz-ts/render`. Docs are built with VitePress (`docs-site/`,
+dot-engine now exposes (after Batch 3) programmatic construction, geometry
+readout, multi-format rendering, and xdot draw-ops via `@knowvah/dot-engine/api` and
+`@knowvah/dot-engine/render`. Docs are built with VitePress (`docs-site/`,
 `npm run docs:build`). Document the new capabilities for library consumers
 (primary consumer: plantuml-js).
 

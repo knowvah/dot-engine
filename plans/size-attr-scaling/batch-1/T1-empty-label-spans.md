@@ -4,7 +4,7 @@
 
 ## Context
 
-`graphviz-ts` is a faithful TypeScript port of Graphviz; the C source at
+`dot-engine` is a faithful TypeScript port of Graphviz; the C source at
 `~/git/graphviz` is the spec. When emitting a multi-line label, the port emits
 one `<text>` element per line **including blank lines**, producing empty
 `<text></text>` elements. The native oracle emits a text element only for

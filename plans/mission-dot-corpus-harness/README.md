@@ -5,7 +5,7 @@
 Build the **differential corpus harness** the port catalog has long deferred
 (`plans/port-catalog/README.md` §"Verifying fidelity"): render the real
 graphviz **dot** test corpus (~256+ `.gv`/`.dot` inputs) through the native
-binary oracle and through graphviz-ts, diff each, and emit a **parity
+binary oracle and through dot-engine, diff each, and emit a **parity
 dashboard** plus a **triaged divergence backlog**.
 
 This converts "24/25 hand-picked cases pass" into a measured verdict over the

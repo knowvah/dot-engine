@@ -5,9 +5,9 @@ New public layer (green) over untouched internals (grey). Arrows = "depends on".
 ```mermaid
 graph TD
   subgraph entries[Package entries — ADR-2]
-    ROOT["graphviz-ts (root)<br/>src/index.ts (T9)"]
-    API["graphviz-ts/api<br/>src/api/index.ts (T7)"]
-    REND["graphviz-ts/render<br/>src/render/index.ts (T8)"]
+    ROOT["dot-engine (root)<br/>src/index.ts (T9)"]
+    API["@knowvah/dot-engine/api<br/>src/api/index.ts (T7)"]
+    REND["@knowvah/dot-engine/render<br/>src/render/index.ts (T8)"]
   end
 
   subgraph newapi[New api layer]

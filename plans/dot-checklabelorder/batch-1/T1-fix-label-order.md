@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port; C at `~/git/graphviz` (15.0.0) is the
+dot-engine is a faithful TS port; C at `~/git/graphviz` (15.0.0) is the
 spec. `fixLabelOrder` reorders a rank's flat-label vnodes when their rank
 order conflicts with their endpoint intervals.
 

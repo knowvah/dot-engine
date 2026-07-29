@@ -1,7 +1,7 @@
 # T3 — Diagnose 1447: node-x shifts under splines=ortho
 
 ## Context
-graphviz-ts is a faithful TS port of C Graphviz (`~/git/graphviz` = spec; read
+dot-engine is a faithful TS port of C Graphviz (`~/git/graphviz` = spec; read
 project `CLAUDE.md`). Corpus `1447.dot` (97 lines, radare2 CFG style,
 `splines="ortho"`, shape=box, empty labels) is tracked diverged maxΔ 192.39.
 Triage (2026-07-02): bbox width Δ30 (C 860 vs port 830), height exact; nodes

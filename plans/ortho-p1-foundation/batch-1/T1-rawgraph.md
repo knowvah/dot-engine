@@ -1,7 +1,7 @@
 # T1 — Port rawgraph.c (adjacency graph + topological sort)
 
 ## Context
-Faithful TS port of Graphviz `lib/ortho/rawgraph.c` (100 LOC) for the `graphviz-ts`
+Faithful TS port of Graphviz `lib/ortho/rawgraph.c` (100 LOC) for the `dot-engine`
 project (faithful C→TS port; see root `CLAUDE.md`). This is the directed
 adjacency graph used by P2/P3 ortho channel routing. **Standalone** — no deps on
 other ortho modules. Tests use **vitest**; TS strict mode; no Node-only APIs.

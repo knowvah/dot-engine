@@ -2,7 +2,7 @@
 # T1 — Instrument edge routing; pin the constraint=false spline divergence origin
 
 ## Context
-graphviz-ts is a faithful TypeScript port of C Graphviz; the C source is the spec.
+dot-engine is a faithful TypeScript port of C Graphviz; the C source is the spec.
 `1213-1`/`1213-2` diverge only in the spline control points of three
 `constraint=false` edges; node positions, ranks, and 14/17 edges match the oracle
 exactly (see README diagnosis table and

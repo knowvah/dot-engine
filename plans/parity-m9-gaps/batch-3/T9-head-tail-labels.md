@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C source is the spec; suite baseline ~1065/0 after
+dot-engine port; C source is the spec; suite baseline ~1065/0 after
 batch 2 (66 goldens).
 
 Quarantined repro: dot-head-tail-label (`A->B[headlabel="h"

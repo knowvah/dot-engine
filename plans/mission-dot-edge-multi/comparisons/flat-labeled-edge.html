@@ -16,13 +16,13 @@ p{margin:.6rem 0} code{background:#f0f0f0;padding:.05rem .3rem;border-radius:3px
 <h1>Flat labeled edge (G4) — deferred to its own mission</h1>
 <p class="status"><strong>2026-06-16.</strong> <code>digraph{{rank=same a b} a-&gt;b[label="x"]}</code>:
 dot emits 3 <code>&lt;text&gt;</code> (a, b, and the edge label <code>x</code> at
-<code>lp="72,29.25"</code>); graphviz-ts emits 2 — the label is dropped. This case
+<code>lp="72,29.25"</code>); dot-engine emits 2 — the label is dropped. This case
 is <strong>deferred</strong>: it cannot be fixed inside <code>make_flat_labeled_edge</code>
 alone, because the label virtual node it depends on is never created.</p>
 <p class="legend">The drawings below are the actual rendered SVGs.</p>
 <div class="cols">
 <div class="col"><div class="lbl">dot 15.x (3 texts — has label)</div><img src="flat-labeled-dot1500.svg" alt="dot — flat labeled edge"></div>
-<div class="col"><div class="lbl">graphviz-ts (2 texts — label dropped)</div><img src="flat-labeled-ts.svg" alt="graphviz-ts — flat labeled edge"></div>
+<div class="col"><div class="lbl">dot-engine (2 texts — label dropped)</div><img src="flat-labeled-ts.svg" alt="dot-engine — flat labeled edge"></div>
 </div>
 <h2>Diagnosis</h2>
 <p><strong>Root cause — the flat label virtual node is never created.</strong>

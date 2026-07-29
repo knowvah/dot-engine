@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: EPL-2.0 -->
 # T2a — Implement the localized 2620 ortho fix (dispatch only if T1 verdict=fix)
 
-You are T2a in mission plans/ortho-2620-residual/ for graphviz-ts (faithful
+You are T2a in mission plans/ortho-2620-residual/ for dot-engine (faithful
 TypeScript port of C graphviz; ~/git/graphviz is the spec). Worktree-isolated;
 commit on the worktree branch — the orchestrator merges after the batch gate.
 

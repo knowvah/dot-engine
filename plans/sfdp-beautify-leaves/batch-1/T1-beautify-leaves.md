@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port; C at `~/git/graphviz` (15.0.0) is the
+dot-engine is a faithful TS port; C at `~/git/graphviz` (15.0.0) is the
 spec. `beautify_leaves` fans each node's degree-1 leaves around it at their
 average distance. Building blocks exist: `distance` (`spring-electrical.ts:155`),
 `fma` (`common/fma.ts`), SparseMatrix `ia/ja/m`.

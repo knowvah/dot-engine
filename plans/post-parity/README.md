@@ -2,7 +2,7 @@
 
 **Objective:** Three additive enhancements now that the test-parity project
 is complete (suite 1027/0): (1) a `demos/` folder rendering side-by-side
-C-graphviz SVG (stored refs) vs live in-browser graphviz-ts SVG; (2) new
+C-graphviz SVG (stored refs) vs live in-browser dot-engine SVG; (2) new
 tests mined from mission gap-analyses, guarded-unported paths, and golden
 coverage gaps; (3) coverage measurement now, a 90/90/90 check-in gate after
 a human checkpoint.

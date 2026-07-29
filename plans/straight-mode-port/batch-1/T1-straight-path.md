@@ -2,7 +2,7 @@
 # T1 — Port `straightPath`; pin `straightLen`
 
 ## Context
-graphviz-ts is a faithful TS port of C graphviz; the C source at
+dot-engine is a faithful TS port of C graphviz; the C source at
 `~/git/graphviz` is the spec. This task ports one small helper used by the
 straight-mode chain router (T2b).
 

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port. Decision D2 (decisions.md) deferred HTML label
+dot-engine port. Decision D2 (decisions.md) deferred HTML label
 support to a future mission; this task writes that mission's
 scoping seed. HTML is PARTIALLY live today: poly-gencode.ts imports
 emitHtmlLabel from htmltable-emit.js (node main labels). The dead

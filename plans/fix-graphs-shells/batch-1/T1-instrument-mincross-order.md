@@ -2,7 +2,7 @@
 # T1 — Instrument mincross order; pin the divergence origin
 
 ## Context
-graphviz-ts is a faithful TypeScript port of C Graphviz; the C source is the
+dot-engine is a faithful TypeScript port of C Graphviz; the C source is the
 spec. `graphs-shells` diverges only in within-rank left-right order on three
 `rank=same` flat groups (see README diagnosis table and
 `.agent-notes/graphs-shells-flat-order-divergence.md`). Ranks all match. The

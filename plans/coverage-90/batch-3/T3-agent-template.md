@@ -7,7 +7,7 @@ and the T1 appendix.
 
 0. Prior observations: fixture recipe + coverage-probe hazard from
    ../README.md "Executor notes"; vacuous-test policy from decisions.md D1.
-1. Context: graphviz-ts, faithful TS port of Graphviz; C source at
+1. Context: dot-engine, faithful TS port of Graphviz; C source at
    ~/git/graphviz is the spec; tests are vitest, colocated
    `<module>.branch.test.ts`; strict no-behavior-change rule (test-only).
 2. Task: raise {family} branch coverage using its Uncovered appendix

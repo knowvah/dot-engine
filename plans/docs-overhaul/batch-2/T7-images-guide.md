@@ -5,7 +5,7 @@
 
 Two things about images are currently under-documented: (a) how an external
 image referenced by a graph actually ends up in the output, and (b) how to make
-those images *appear* wherever the SVG is displayed. graphviz-ts emits
+those images *appear* wherever the SVG is displayed. dot-engine emits
 `<image xlink:href="src">` referencing the source **verbatim** (it does not
 embed by default). T1 adds `setImageResolver` + `render({ inlineImages: true })`
 to inline images as `data:` URIs. This guide ties it together and gives

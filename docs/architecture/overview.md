@@ -13,7 +13,7 @@
 
 ## What the system does
 
-`graphviz-ts` is a **faithful, pure-TypeScript port of Graphviz**, the
+`dot-engine` is a **faithful, pure-TypeScript port of Graphviz**, the
 graph-visualization toolkit originally written in C. It takes a graph described
 in the DOT language, runs one of Graphviz's eight layout engines to compute node
 and edge geometry, and emits a rendered diagram — primarily SVG, with `json`,
@@ -34,7 +34,7 @@ specification.
 graphviz (C, canonical spec)
         │ ported module-by-module
         ▼
-   graphviz-ts
+   dot-engine
    (this repo)
 ```
 
@@ -43,7 +43,7 @@ graphviz (C, canonical spec)
   TypeScript module under `src/`. Behavior, function boundaries, and even odd
   edge-case branches are preserved deliberately, validated against the native C
   binary as an oracle.
-- **graphviz-ts** is the port itself: this repository. The `dot` engine
+- **dot-engine** is the port itself: this repository. The `dot` engine
   receives the most fidelity attention because downstream consumers depend
   on it, which makes `dot`-engine fidelity the top correctness priority for
   this project.
@@ -63,7 +63,7 @@ graphviz (C, canonical spec)
 
 | Repo | Language | Runtime | Framework | Database | External deps |
 |------|----------|---------|-----------|----------|---------------|
-| graphviz-ts | TypeScript (ES2022, strict) | Node 26.3.1 + browser | none | — | none at runtime (esbuild/vitest/peggy dev-only) |
+| dot-engine | TypeScript (ES2022, strict) | Node 26.3.1 + browser | none | — | none at runtime (esbuild/vitest/peggy dev-only) |
 | graphviz | C | native | none | — | autotools/libgvc |
 
 See [tech-health.md](./tech-health.md) for EOL and CVE status of each version.

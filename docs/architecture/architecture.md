@@ -2,7 +2,7 @@
 
 # System Architecture
 
-graphviz-ts is a single in-process library, not a distributed system. The
+dot-engine is a single in-process library, not a distributed system. The
 "architecture" is the rendering pipeline and its relationship to the upstream
 spec. There are no network calls, data stores, or queues — the only external
 seam is a caller-supplied image-sizing callback.
@@ -12,7 +12,7 @@ seam is a caller-supplied image-sizing callback.
 ```mermaid
 graph TD
     GVC["graphviz (C)<br/>canonical spec<br/>gitlab tag 15.0.0"]
-    GVTS["graphviz-ts<br/>(this library)<br/>pure TypeScript, 0 runtime deps"]
+    GVTS["dot-engine<br/>(this library)<br/>pure TypeScript, 0 runtime deps"]
 
     GVC -->|"ported module-by-module<br/>(validated vs native C oracle)"| GVTS
 

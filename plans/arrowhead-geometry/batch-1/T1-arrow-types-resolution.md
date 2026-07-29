@@ -1,7 +1,7 @@
 # T1 — Arrow types, name→ARR_TYPE resolution, draw-op union
 
 ## Context
-graphviz-ts: faithful TS port of graphviz C. `src/common/arrows.ts` already has
+dot-engine: faithful TS port of graphviz C. `src/common/arrows.ts` already has
 `parseArrow(str) → ArrowComponent[]` ({name, open, left, right}) and
 `arrows-constants.ts` has `ARR_TYPE_*` codes. We need to (a) define the typed
 draw-op union (ADR-1), and (b) resolve a parsed component's `name` → `ARR_TYPE`

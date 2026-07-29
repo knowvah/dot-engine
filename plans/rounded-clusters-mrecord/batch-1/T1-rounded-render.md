@@ -2,7 +2,7 @@
 # T1 — rounded-path rendering: shared helper + cluster + Mrecord/record
 
 ## Context
-graphviz-ts is a faithful TS port of C graphviz; `~/git/graphviz` is the spec.
+dot-engine is a faithful TS port of C graphviz; `~/git/graphviz` is the spec.
 Clusters with `style=rounded` and `shape=Mrecord` nodes render as sharp
 `<polygon>` where C emits a rounded `<path>`. The rounded-bezier logic already
 exists for poly nodes (`roundedDraw` in `src/common/poly-shapes.ts`); wire it

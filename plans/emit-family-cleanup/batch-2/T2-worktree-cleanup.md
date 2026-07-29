@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts: faithful browser-targeted TS port of C graphviz.
+dot-engine: faithful browser-targeted TS port of C graphviz.
 Current branch: `feature/emit-family-cleanup` (off `feature/post-
 parity`). T1 has verified all gates pass.
 

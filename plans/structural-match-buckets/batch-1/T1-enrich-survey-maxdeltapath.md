@@ -3,7 +3,7 @@
 
 ## Context
 
-`graphviz-ts` is a faithful TypeScript port of Graphviz. `test/corpus/survey.ts`
+`dot-engine` is a faithful TypeScript port of Graphviz. `test/corpus/survey.ts`
 is Node-only dev/test infra: it renders each corpus input through the native
 `dot` oracle and the port, diffs the two SVGs with `compareSvg`, and writes
 `parity.json`. `dashboard.ts` reads that and writes `PARITY.md`.

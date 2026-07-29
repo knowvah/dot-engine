@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of C Graphviz (`~/git/graphviz`, tag 15.0.0 —
+dot-engine is a faithful TS port of C Graphviz (`~/git/graphviz`, tag 15.0.0 —
 the spec). This mission builds a differential parity **survey** over the real
 graphviz dot corpus; T1 produces the input inventory the survey consumes.
 

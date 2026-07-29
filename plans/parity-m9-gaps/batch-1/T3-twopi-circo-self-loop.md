@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C source is the spec; suite baseline 1054/0.
+dot-engine port; C source is the spec; suite baseline 1054/0.
 
 Unlike dot (T2), twopi and circo ALREADY route self-loops: both
 delegate to neato's splineEdgesShifted → splineEdges →

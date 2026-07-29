@@ -1,7 +1,7 @@
 # T1 — ellipse-wedge arc tessellation
 
 ## Context
-graphviz-ts is a faithful TypeScript port of graphviz `dot`. This task ports the
+dot-engine is a faithful TypeScript port of graphviz `dot`. This task ports the
 elliptic-wedge bezier tessellation that the ortho rounded-corner emit (T3) uses
 to build each corner arc. Pure geometry — deterministic, no I/O, no graph access.
 

@@ -374,7 +374,7 @@ placement / position phase), upstream of the copy-back.
 
 **Evidence:** input `digraph{ {rank=same; a b} a:e->b:w[label="x"] }`.
 - dot 15.0.0: label (72, -32.91); spline `M54,-18C62.13,-18 60.91,-26.42 68.62,-29...`
-- graphviz-ts: label (77.6, -54.2); spline `M54,-18C64.24,-18 64.32,-26.48 74.25,-29...`
+- dot-engine: label (77.6, -54.2); spline `M54,-18C64.24,-18 64.32,-26.48 74.25,-29...`
 - aux edge raw: `ED_label.pos = {66.375, 59.25}`, `dimen = {6.75, 16.5}`,
   `del = {11.25, 0}`, flip = false.
 

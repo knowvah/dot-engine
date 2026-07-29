@@ -118,7 +118,7 @@ Fail: gzipped bundle ≥ 512000 bytes.
 
 ```bash
 #!/usr/bin/env bash
-# test/golden/gates.sh — Final quality gates for graphviz-ts
+# test/golden/gates.sh — Final quality gates for dot-engine
 # Run from the repository root: bash test/golden/gates.sh
 set -euo pipefail
 

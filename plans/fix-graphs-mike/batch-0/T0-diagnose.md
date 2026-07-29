@@ -2,7 +2,7 @@
 # T0 — Diagnose the L→U edge-spline divergence
 
 ## Context
-graphviz-ts is a faithful C→TS port; `~/git/graphviz` is the spec. On
+dot-engine is a faithful C→TS port; `~/git/graphviz` is the spec. On
 `graphs/mike.gv` the port routes edge **L→U** as an over-segmented spline (14
 points, start `M397.09,-504.12`) where C uses one cubic (8 points, start
 `M387.79,-434.5`); maxΔ 72.12. Counts and bbox match, so this is pure edge

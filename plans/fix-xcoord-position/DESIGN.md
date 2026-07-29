@@ -4,7 +4,7 @@
 framing — investigation proved the x-coord divergence is a *font-measurement*
 issue, not a layout-rules bug. (Dir name predates that finding.)
 
-**Author:** layout-engine work, graphviz-ts.
+**Author:** layout-engine work, dot-engine.
 
 ---
 

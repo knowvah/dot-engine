@@ -9,9 +9,9 @@ the same site (shared theme + search), generated from the public TSDoc.
 See [decisions.md#typedoc](../decisions.md#typedoc).
 
 Public entry points and their barrels:
-- `graphviz-ts` → `src/index.ts`
-- `graphviz-ts/api` → `src/api/index.ts`
-- `graphviz-ts/render` → `src/render/index.ts`
+- `dot-engine` → `src/index.ts`
+- `@knowvah/dot-engine/api` → `src/api/index.ts`
+- `@knowvah/dot-engine/render` → `src/render/index.ts`
 
 ## Task
 

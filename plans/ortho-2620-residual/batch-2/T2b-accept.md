@@ -2,7 +2,7 @@
 # T2b — Register the 2620 divergence (dispatch only if T1 verdict=accept)
 
 You are T2b, the single registry writer in mission plans/ortho-2620-residual/
-for graphviz-ts (faithful TypeScript port of C graphviz). Worktree-isolated;
+for dot-engine (faithful TypeScript port of C graphviz). Worktree-isolated;
 commit on the worktree branch — the orchestrator merges after the batch gate.
 
 ALWAYS start Bash commands with:

@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TS port of graphviz C (tag 15.0.0, `~/git/graphviz`,
+dot-engine is a faithful TS port of graphviz C (tag 15.0.0, `~/git/graphviz`,
 the spec). A `rank=same` labeled edge drops its label because the label virtual
 node is never created in the live pipeline. The flat-edge machinery
 (`flat.ts`: `flatNode`, `abomination`, `makeVnSlot`, `flatEdges`,

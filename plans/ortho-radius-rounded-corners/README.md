@@ -2,7 +2,7 @@
 # Mission: ortho-edge rounded-corner rendering (`radius`)
 
 ## Objective
-Port native dot's orthogonal-edge **rounded-corner** rendering to graphviz-ts.
+Port native dot's orthogonal-edge **rounded-corner** rendering to dot-engine.
 When an edge has `splines=ortho` and `radius=N>0` (or `style=rounded`), native
 emits straight `<polyline>` segments between corners (truncated by `radius`) plus
 a `<polyline>` arc at each corner; the port currently ignores `radius` and emits

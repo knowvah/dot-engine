@@ -4,7 +4,7 @@
 
 ## Context
 
-`graphviz-ts` is a faithful TypeScript port of Graphviz; the C source at
+`dot-engine` is a faithful TypeScript port of Graphviz; the C source at
 `~/git/graphviz` is the spec. A prior mission (`htmltable-gradient-fill`) made
 HTML tables emit gradient `bgcolor` fills, but the fill is always a square
 `<polygon>`. For `style="rounded"` tables/cells the native oracle emits a

@@ -1,7 +1,7 @@
 # T1 — Port poly_init size computation
 
 ## Context
-graphviz-ts is a faithful TS port of C graphviz (`~/git/graphviz` is
+dot-engine is a faithful TS port of C graphviz (`~/git/graphviz` is
 the spec; see project CLAUDE.md). Node dimensions (`lw`/`rw`/`ht`)
 currently come from fixed defaults (54×36) for plain-text labels; only
 dot's record/html nodes are sized from content. C sizes EVERY node from

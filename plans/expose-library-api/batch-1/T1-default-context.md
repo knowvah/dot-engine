@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a TypeScript port of Graphviz (browser-safe, ESM, strict TS,
+dot-engine is a TypeScript port of Graphviz (browser-safe, ESM, strict TS,
 vitest). Today `src/index.ts:makeContext()` builds a `GvcContext`, registers all
 8 layout engines, but registers **only** the SVG renderer. Other renderers
 (dot, xdot, json, json0, plain, plain-ext, imap, imap_np, cmapx, cmapx_np) are

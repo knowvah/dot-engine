@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts is a faithful TypeScript port of C graphviz (`~/git/graphviz` is the
+dot-engine is a faithful TypeScript port of C graphviz (`~/git/graphviz` is the
 spec). `tests/2471.dot` has correct mincross order but does not complete: a
 single `transpose()` runs >90s (V8 `--prof`: 98% in `transposeStep`). C renders
 all of 2471 in 2.78s. This task DIAGNOSES the cost and routes the fix; it makes

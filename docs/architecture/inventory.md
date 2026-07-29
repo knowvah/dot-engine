@@ -2,18 +2,18 @@
 
 # Repository Inventory
 
-Repos analyzed: the current project (`graphviz-ts`) plus its directly related
+Repos analyzed: the current project (`dot-engine`) plus its directly related
 sibling in `~/git`. It was already cloned locally; no new clones were
 required.
 
 | Repo | Language | Runtime | Framework | Database | Key Deps | Entry | Notes |
 |------|----------|---------|-----------|----------|----------|-------|-------|
-| graphviz-ts | TypeScript (ES2022, strict) | Node 26.3.1 (Volta) + browser | none (zero runtime deps) | — | esbuild, peggy, vitest, vitepress | `src/index.ts` → `renderSvg` / `render` | This project; faithful port of C Graphviz |
+| dot-engine | TypeScript (ES2022, strict) | Node 26.3.1 (Volta) + browser | none (zero runtime deps) | — | esbuild, peggy, vitest, vitepress | `src/index.ts` → `renderSvg` / `render` | This project; faithful port of C Graphviz |
 | graphviz | C | native binary | none | — | autotools, libgvc | `lib/` (cgraph, dotgen, …) | Canonical C spec (gitlab upstream, tag 15.0.0) |
 
 ## Per-repo detail
 
-### graphviz-ts (this project)
+### dot-engine (this project)
 
 - **Runtime versions**: TypeScript `^5.4.0`, target ES2022, `module: NodeNext`,
   `strict: true`. Pinned Node 26.3.1 via Volta. Designed to run in a browser
@@ -27,11 +27,11 @@ required.
 - **External services**: none. `setImageSizer` is a caller-supplied callback
   for image intrinsic dimensions (the one I/O seam).
 - **Entry points**:
-  - `graphviz-ts` (root) → `renderSvg(dot, engine)`, `tryRenderSvg`,
+  - `dot-engine` (root) → `renderSvg(dot, engine)`, `tryRenderSvg`,
     `render(ctx, g, format)` (as `renderWithContext`), `parse`.
-  - `graphviz-ts/api` → `createGraph`, `addEdge`, `getLayout` (geometry
+  - `@knowvah/dot-engine/api` → `createGraph`, `addEdge`, `getLayout` (geometry
     snapshot).
-  - `graphviz-ts/render` → `render(g, format, opts)`, `getDrawOps`.
+  - `@knowvah/dot-engine/render` → `render(g, format, opts)`, `getDrawOps`.
   - Output formats: `svg`, `json`, `dot`, `xdot`, `plain`, `imap`, `cmapx`.
 
 ### graphviz (C — canonical spec)
@@ -44,5 +44,5 @@ required.
   `lib/neatogen`, `lib/circogen`, `lib/osage`, `lib/sfdpgen`, `lib/pathplan`,
   `lib/common`, `lib/label`, `lib/gvc`, `lib/cdt`, `lib/ast`.
 - **Entry points**: the `dot`/`neato`/… CLIs and `libgvc`.
-- **Role**: the canonical specification. graphviz-ts ports it module-by-module
+- **Role**: the canonical specification. dot-engine ports it module-by-module
   (`cdt` → `ast` → `cgraph` → `common` → engines → `gvc`).

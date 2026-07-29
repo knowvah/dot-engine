@@ -2,7 +2,7 @@
 
 ## Context
 
-graphviz-ts port; C source at ~/git/graphviz/lib is the spec; suite
+dot-engine port; C source at ~/git/graphviz/lib is the spec; suite
 baseline 1090/0 (post batch-1).
 
 Batch-1 T3 root-caused the remaining twopi-self-loop failure (maxDelta
