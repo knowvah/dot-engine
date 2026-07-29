@@ -1,0 +1,18 @@
+digraph c90_rank_zoo {
+  newrank=true;
+  a -> b -> c;
+  subgraph cluster_0 {
+    label="outer";
+    x1 -> x2;
+    subgraph cluster_1 {
+      label="inner";
+      y1 -> y2;
+    }
+  }
+  { rank=min; lo }
+  { rank=max; hi }
+  a -> x1;
+  x2 -> hi;
+  lo -> a;
+  { rank=same; b; y1 }
+}
