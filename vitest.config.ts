@@ -18,6 +18,14 @@ export default defineConfig({
         'src/**/__fixtures__/**',
       ],
       reporter: ['text', 'json-summary'],
+      // coverage-90 mission ratchet (D6): actuals at close were
+      // st 95.54 / br 90.64 / fn 97.36 / ln 96.87 (2026-07-28).
+      thresholds: {
+        statements: 90,
+        branches: 90,
+        functions: 90,
+        lines: 90,
+      },
     },
   },
 });
