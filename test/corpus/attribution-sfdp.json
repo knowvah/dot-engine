@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-28T18:49:51.047Z",
+  "generatedAt": "2026-07-30T13:50:47.871Z",
   "oracleSha1": "8fdd1294b3726c2a19fe384ca48f44a2954d1944",
   "tolerance": 0.5,
   "results": [
@@ -3142,6 +3142,39 @@
       "id": "1879",
       "verdict": "drift-exonerated",
       "baseDiffs": 17606,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 120,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2221,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2621",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 78938,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
