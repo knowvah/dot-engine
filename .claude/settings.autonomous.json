@@ -1,5 +1,8 @@
 {
-  "fallbackModel": ["opus", "sonnet"],
+  "fallbackModel": [
+    "opus",
+    "sonnet"
+  ],
   "permissions": {
     "allow": [
       "Bash(npm *:*)",
@@ -39,6 +42,16 @@
       "Bash(curl -s https://raw.githubusercontent.com/**:*)",
       "Bash(~/.claude/hooks/quality-gate.sh:*)",
       "Bash(GVBINDIR=*)",
+      "Bash(ATTR_ORACLE_TIMEOUT_MS=*)",
+      "Bash(ENGINE_TIMEOUT_MULT=*)",
+      "Bash(ENGINE_TIMEOUT_FLOOR_MS=*)",
+      "Bash(ENGINE_ORACLE_TIMEOUT_MS=*)",
+      "Bash(JSON_CONCURRENCY=*)",
+      "Bash(MAP_CONCURRENCY=*)",
+      "Bash(ORACLE_CACHE=*)",
+      "Bash(PARITY_OUT=*)",
+      "Bash(SURVEY_CONCURRENCY=*)",
+      "Bash(SURVEY_HEAVY_SLOTS=*)",
       "Bash(DYLD_LIBRARY_PATH=*)",
       "Bash(~/git/graphviz/build/cmd/dot/dot *:*)",
       "Bash(timeout *:*)",

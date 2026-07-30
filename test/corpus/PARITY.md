@@ -55,18 +55,18 @@ bar above.
 
 | track | surveyed | conformant / pass | diverged | accepted | errors | pass % |
 |---|---:|---:|---:|---:|---:|---:|
-| [neato (xdot)](./PARITY-neato.md) | 905 | 822 | 0 | 81 | 2 | 90.8% |
-| [fdp (xdot)](./PARITY-fdp.md) | 905 | 700 | 0 | 200 | 5 | 77.3% |
-| [sfdp (xdot)](./PARITY-sfdp.md) | 905 | 617 | 0 | 286 | 2 | 68.2% |
+| [neato (xdot)](./PARITY-neato.md) | 910 | 826 | 0 | 82 | 2 | 90.8% |
+| [fdp (xdot)](./PARITY-fdp.md) | 910 | 703 | 0 | 202 | 5 | 77.3% |
+| [sfdp (xdot)](./PARITY-sfdp.md) | 910 | 619 | 0 | 289 | 2 | 68.0% |
 | [neato (plain)](./PARITY-neato-plain.md) | 905 | 896 | 0 | 8 | 1 | 99.0% |
 | [fdp (plain)](./PARITY-fdp-plain.md) | 905 | 893 | 0 | 8 | 4 | 98.7% |
 | [sfdp (plain)](./PARITY-sfdp-plain.md) | 905 | 896 | 0 | 8 | 1 | 99.0% |
-| [neato (json)](./PARITY-neato-json.md) | 909 | 825 | 1 | 81 | 2 | 90.8% |
-| [fdp (json)](./PARITY-fdp-json.md) | 909 | 701 | 2 | 202 | 4 | 77.1% |
-| [sfdp (json)](./PARITY-sfdp-json.md) | 909 | 617 | 3 | 287 | 2 | 67.9% |
+| [neato (json)](./PARITY-neato-json.md) | 910 | 825 | 0 | 83 | 2 | 90.7% |
+| [fdp (json)](./PARITY-fdp-json.md) | 910 | 701 | 0 | 205 | 4 | 77.0% |
+| [sfdp (json)](./PARITY-sfdp-json.md) | 910 | 617 | 0 | 291 | 2 | 67.8% |
 | [neato (imagemap)](./PARITY-neato-map.md) | 905 | 897 | 0 | 6 | 2 | 99.1% |
 | [fdp (imagemap)](./PARITY-fdp-map.md) | 905 | 883 | 0 | 18 | 4 | 97.6% |
-| [sfdp (imagemap)](./PARITY-sfdp-map.md) | 910 | 879 | 1 | 28 | 2 | 96.6% |
+| [sfdp (imagemap)](./PARITY-sfdp-map.md) | 910 | 879 | 0 | 29 | 2 | 96.6% |
 
 
 

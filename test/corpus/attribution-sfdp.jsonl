@@ -285,3 +285,6 @@
 {"id":"tree-contrib-dirgraph-bsdarch","verdict":"drift-exonerated","baseDiffs":7578,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2619_1","verdict":"drift-exonerated","baseDiffs":100,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"1879","verdict":"drift-exonerated","baseDiffs":17606,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-doc-infosrc-fixed","verdict":"drift-exonerated","baseDiffs":120,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-graphs-directed-arrows","verdict":"drift-exonerated","baseDiffs":2221,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"2621","verdict":"drift-exonerated","baseDiffs":78938,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}

@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-07-30T00:51:35.122Z",
+  "generatedAt": "2026-07-30T13:59:01.315Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "sfdp",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 909,
+  "total": 910,
   "counts": {
     "conformant": 617,
-    "diverged": 3,
-    "accepted": 287,
+    "diverged": 0,
+    "accepted": 291,
     "port-error": 0,
     "oracle-error": 1,
     "timeout": 1
@@ -1668,7 +1668,7 @@
       "id": "tree-doc-infosrc-fixed",
       "path": "../doc/infosrc/fixed.gv",
       "size": 230,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 120,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
       "maxDelta": 133.76,
@@ -5260,7 +5260,7 @@
       "id": "tree-graphs-directed-arrows",
       "path": "../graphs/directed/arrows.gv",
       "size": 4766,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 2221,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
       "maxDelta": 496.7444,
@@ -6523,6 +6523,16 @@
       "verdict": "conformant"
     },
     {
+      "id": "1652",
+      "path": "1652.dot",
+      "size": 240391,
+      "verdict": "accepted",
+      "diffCount": 114198,
+      "firstDiff": "[graph]/_draw_/op[2].P[3]",
+      "maxDelta": 114.75,
+      "maxDeltaPath": "edge:Op_1804->Op_1805#0/_ldraw_/op[2].T[0]"
+    },
+    {
       "id": "1879",
       "path": "1879.dot",
       "size": 287816,
@@ -6596,7 +6606,7 @@
       "id": "2621",
       "path": "2621.dot",
       "size": 721934,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 78938,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
       "maxDelta": 4491,

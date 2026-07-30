@@ -11,23 +11,22 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 909
-- **pass:** 825 (90.8%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 81
+- **Surveyed:** 910
+- **pass:** 825 (90.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 83
 - **errors (oracle/port/timeout, excluded from scoring):** 2
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 721934 | 79577 | `[graph]/_draw_/op[2].P[3]` |
+_(none)_
 
-## Accepted (81) — documented, not chased
+## Accepted (83) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
 | [`1332`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1332.dot) | 1049 | `edge:c5381->c5382#0/_draw_/op[1].b[5]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`1436`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1436.dot) | 385 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | 98 | `edge:0x00400ba6->0x00400b68#0/_draw_/op[1].b[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | 58 | `edge:Op_10->Op_35#0/_ldraw_/op[2].T[1]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`1949`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1949.dot) | 151 | `[graph]/_draw_/op[2].P[4]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`1990`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1990.dot) | 17 | `edge:0⋯7 ❰A❱->0⋯1 'a'#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2095`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095.dot) | 7323 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
@@ -41,6 +40,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`2475_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_2.dot) | 283014 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2619_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot) | 8 | `edge:I57->F7#0/_draw_/op[2].b[0]` | A1 drift + degenerate-clip amplification (diagnosed 2026-07-24): all 6 node positions differ only 0.13-0.18pt (within the 0.5 iterative bar); the sole over-bar values are 4 x-coords of ONE sub-point-long stub spline (I57-&gt;F7 between overlapping nodes), where clipping a near-zero-length bezier amplifies the in-bar endpoint drift to 0.81pt. Spline shape matches modulo the clip start; no port stage implicated. |
 | [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 2 | `edge:visualcron_skat_pere_archive_reciept_org->visualcron#0/_draw_/op[1].b[6]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 79577 | `[graph]/_draw_/op[2].P[3]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`graphs-b15`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b15.gv) | 8 | `edge:FaceBack->JumpVertical#0/_draw_/op[1].b[4]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-b81`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b81.gv) | 5348 | `[graph]/_draw_/op[2].P[4]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-clust1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/clust1.gv) | 42 | `cluster:cluster_c1/_draw_/op[1].p[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |

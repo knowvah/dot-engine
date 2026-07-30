@@ -199,3 +199,5 @@
 {"id":"2620","verdict":"drift-exonerated","baseDiffs":11103,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"graphs-badvoro","verdict":"drift-exonerated","baseDiffs":33264,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"1879","verdict":"drift-exonerated","baseDiffs":19496,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"tree-graphs-directed-arrows","verdict":"drift-exonerated","baseDiffs":62,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"2621","verdict":"drift-exonerated","baseDiffs":79648,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}

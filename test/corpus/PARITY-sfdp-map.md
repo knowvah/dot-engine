@@ -12,16 +12,14 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 910
-- **pass:** 879 (96.6%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 28
+- **pass:** 879 (96.6%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 29
 - **errors (oracle/port/timeout, excluded from scoring):** 2
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 721934 | 4961 | `area[0].coords[0]` |
+_(none)_
 
-## Accepted (28) — documented, not chased
+## Accepted (29) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
@@ -29,6 +27,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`1447_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447_1.dot) | 590 | `area[0].coords[1]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | 2118 | `area[0].coords[0]` | A1 sfdp chaotic drift (2026-07-24): whole-layout basin divergence on a huge graph (maxDelta 7.6kpt), the documented sfdp spring chaos regime — same class as fdp 1879 (chaos proven by perturbation A/B on the fdp family; sfdp is the measured chaotic engine). |
 | [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | 12 | `area[1].coords[0]` | A1 sfdp spring drift (diagnosed 2026-07-24): 6 nodes, positional drift 0.7-1.3pt — the documented chaotic-engine regime, mildly above the 0.5 bar on a small graph. Same class as the sfdp engine track's 232-id tail. |
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 4961 | `area[0].coords[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-sfdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`graphs-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b102.gv) | 1174 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | 3164 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`graphs-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b106.gv) | 206 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |

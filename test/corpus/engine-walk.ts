@@ -14,7 +14,9 @@
 //
 // Usage: npx tsx test/corpus/engine-walk.ts <engine> [outJsonlPath]
 //
-// Node-only dev/test infra — never imported by src/index.ts.
+// Node-only dev/test infra — never imported by src/index.ts. The sweep runs
+// only under the `isMain` guard at the bottom, so the pure budget helpers above
+// can be imported by engine-walk.test.ts without kicking off a corpus walk.
 
 import { readFileSync, statSync, appendFileSync, writeFileSync, existsSync } from 'node:fs';
 import { execFileSync, spawn } from 'node:child_process';
@@ -53,12 +55,6 @@ const CORPUS = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
 const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
 const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
 
-const engine = process.argv[2];
-if (!engine) {
-  console.error('usage: npx tsx test/corpus/engine-walk.ts <engine> [outJsonlPath]');
-  process.exit(2);
-}
-
 /**
  * Per-engine comparison tolerance. The deterministic engines are held to
  * the 0.01 bar (every diff is a chaseable defect); the ITERATIVE
@@ -68,140 +64,273 @@ if (!engine) {
  * than gating byte-fidelity. @see docs/known-divergences.md#a1
  */
 const ITERATIVE_ENGINES = new Set(['neato', 'fdp', 'sfdp']);
-const TOLERANCE = ITERATIVE_ENGINES.has(engine) ? 0.5 : 0.01;
-const OUT = process.argv[3] ?? fileURLToPath(new URL(`./parity-${engine}.jsonl`, import.meta.url));
-const SUMMARY = fileURLToPath(new URL(`./parity-${engine}.json`, import.meta.url));
 
-interface ParityEntry { id: string; path: string; verdict: string }
-const parity = JSON.parse(
-  readFileSync(join(REPO, 'test/corpus/parity.json'), 'utf8'),
-) as { results: ParityEntry[] };
-const items = parity.results
-  .filter((r) => r.verdict === 'conformant')
-  .map((r) => {
-    const p = join(CORPUS, r.path);
-    let size = Number.MAX_SAFE_INTEGER;
-    try { size = statSync(p).size; } catch { /* missing file -> sort last */ }
-    return { id: r.id, path: p, size };
-  })
-  .sort((a, b) => a.size - b.size || (a.id < b.id ? -1 : 1));
+// ---------------------------------------------------------------------------
+// Render budget (pure + injectable, so engine-walk.test.ts can exercise it)
+// ---------------------------------------------------------------------------
 
-// resume: skip ids already in the output file
-const done = new Set<string>();
-if (existsSync(OUT)) {
-  for (const ln of readFileSync(OUT, 'utf8').split('\n')) {
-    if (!ln) continue;
-    try { done.add((JSON.parse(ln) as { id: string }).id); } catch { /* partial line */ }
-  }
-} else {
-  writeFileSync(OUT, '');
+/** Resolved budget knobs. */
+export interface BudgetConfig {
+  /** Multiplier applied to a graph's known cost. */
+  mult: number;
+  /** Lower bound for any port render, for graphs with no recorded cost. */
+  floorMs: number;
+  /** Cap on one oracle invocation. */
+  oracleMs: number;
 }
 
-let n = 0;
-for (const it of items) {
-  n++;
-  if (done.has(it.id)) continue;
-  const rec: EngineWalkRow = { id: it.id, size: it.size, status: 'pass' };
+/** Recorded per-id costs the budget scales by. Empty tables are valid. */
+export interface CostTables {
+  /** id -> warm port render ms (perf.json). */
+  portMs: Record<string, number>;
+  /** id -> canonical native render ms (native-timings.json). */
+  nativeMs: Record<string, number>;
+}
 
-  // oracle — native dot exits nonzero on recoverable warnings (e.g. a
-  // missing image file) while still emitting a COMPLETE xdot document.
-  // Completeness (a closing `}`) is the validity signal, not the exit code —
-  // the json/map/plain walkers already classify this way; exit-code-fatal
-  // here left 45 comparable ids as phantom "oracle-error" rows.
-  let oracle = '';
+/**
+ * Default budget knobs, overridable per run.
+ *
+ * The floor is 300s rather than the 90s this walker used to hard-code. That 90s
+ * was the only un-scaled, un-overridable timeout among the five walkers, and it
+ * manufactured phantom `timeout` rows: `2108` on all three iterative xdot tracks
+ * and `1652` on fdp (while the same graph rendered fine on neato/sfdp). A
+ * `timeout` row is invisible to attribute-divergence.ts, which selects only
+ * `status === 'diverged'`, so a phantom timeout silently removes a graph from
+ * attribution forever. 300s matches the floor family the sibling json/map/plain
+ * walkers use; genuinely heavy graphs are covered by the `mult x cost` terms
+ * below rather than by inflating this floor.
+ */
+export function budgetConfigFromEnv(env: Record<string, string | undefined> = process.env): BudgetConfig {
+  return {
+    mult: Number(env['ENGINE_TIMEOUT_MULT'] ?? 3),
+    floorMs: Number(env['ENGINE_TIMEOUT_FLOOR_MS'] ?? 300_000),
+    oracleMs: Number(env['ENGINE_ORACLE_TIMEOUT_MS'] ?? 300_000),
+  };
+}
+
+/**
+ * Read a `{ results: [{id, portMs}] }` cost table (perf.json). Never throws: a
+ * missing or malformed file yields an empty table, which degrades the budget to
+ * its floor rather than taking the sweep down.
+ */
+export function loadPortTimes(path: string): Record<string, number> {
   try {
-    oracle = execFileSync(DOT_BIN, ['-K', engine, '-Txdot', it.path], {
-      env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: 300_000,
-      maxBuffer: 512 * 1024 * 1024,
-    });
-  } catch (err) {
-    const out = (err as { stdout?: unknown }).stdout;
-    if (typeof out === 'string' && out.trimEnd().endsWith('}')) {
-      oracle = out; // complete despite nonzero exit
-    } else {
+    const rows = (JSON.parse(readFileSync(path, 'utf8')) as { results?: { id: string; portMs?: number }[] })
+      .results ?? [];
+    const out: Record<string, number> = {};
+    for (const r of rows) if (r.portMs !== undefined && r.portMs > 0) out[r.id] = r.portMs;
+    return out;
+  } catch { return {}; }
+}
+
+/** Read a `{ timings: {id: ms} }` table (native-timings.json). Never throws. */
+export function loadNativeTimes(path: string): Record<string, number> {
+  try {
+    return (JSON.parse(readFileSync(path, 'utf8')) as { timings?: Record<string, number> }).timings ?? {};
+  } catch { return {}; }
+}
+
+/**
+ * Wall-clock budget for one port render:
+ * `max(floor, mult x native, mult x recorded port time)`.
+ *
+ * The third term is the one that matters for the heavy tail, and it is why the
+ * budget cannot be a single constant: `2621` renders in 1237s (measured
+ * 2026-07-29) against a 256s native, so any floor small enough to bound a
+ * runaway is far too small for it, while a floor large enough for it would blunt
+ * runaway detection for the other 900+ inputs. Scaling by the graph's own known
+ * cost gives every input the same headroom.
+ *
+ * Cost data is a loose upper bound here: perf.json records SVG (`dot`) port
+ * times, and an xdot render of another engine is usually cheaper. That is the
+ * safe direction for a runaway bound. Note `survey.ts` needs a third signal (the
+ * oracle ms cached beside each SVG) because 2621 was absent from both cost
+ * files; it now has entries in both, and this walker keeps no oracle cache, so
+ * two terms suffice.
+ */
+export function renderBudgetMs(
+  id: string,
+  nativeMs: number,
+  cfg: BudgetConfig = CONFIG,
+  costs: CostTables = COSTS,
+): number {
+  return Math.max(
+    cfg.floorMs,
+    Math.ceil(cfg.mult * nativeMs),
+    Math.ceil(cfg.mult * (costs.portMs[id] ?? 0)),
+    Math.ceil(cfg.mult * (costs.nativeMs[id] ?? 0)),
+  );
+}
+
+const CONFIG: BudgetConfig = budgetConfigFromEnv();
+const COSTS: CostTables = {
+  portMs: loadPortTimes(join(REPO, 'test/corpus/perf.json')),
+  nativeMs: loadNativeTimes(join(REPO, 'test/corpus/native-timings.json')),
+};
+
+// ---------------------------------------------------------------------------
+// Sweep
+// ---------------------------------------------------------------------------
+
+async function main(): Promise<void> {
+  const engine = process.argv[2];
+  if (!engine) {
+    console.error('usage: npx tsx test/corpus/engine-walk.ts <engine> [outJsonlPath]');
+    process.exit(2);
+  }
+  const TOLERANCE = ITERATIVE_ENGINES.has(engine) ? 0.5 : 0.01;
+  const OUT = process.argv[3] ?? fileURLToPath(new URL(`./parity-${engine}.jsonl`, import.meta.url));
+  const SUMMARY = fileURLToPath(new URL(`./parity-${engine}.json`, import.meta.url));
+
+  interface ParityEntry { id: string; path: string; verdict: string }
+  const parity = JSON.parse(
+    readFileSync(join(REPO, 'test/corpus/parity.json'), 'utf8'),
+  ) as { results: ParityEntry[] };
+  const items = parity.results
+    .filter((r) => r.verdict === 'conformant')
+    .map((r) => {
+      const p = join(CORPUS, r.path);
+      let size = Number.MAX_SAFE_INTEGER;
+      try { size = statSync(p).size; } catch { /* missing file -> sort last */ }
+      return { id: r.id, path: p, size };
+    })
+    .sort((a, b) => a.size - b.size || (a.id < b.id ? -1 : 1));
+
+  // resume: skip ids already in the output file
+  const done = new Set<string>();
+  if (existsSync(OUT)) {
+    for (const ln of readFileSync(OUT, 'utf8').split('\n')) {
+      if (!ln) continue;
+      try { done.add((JSON.parse(ln) as { id: string }).id); } catch { /* partial line */ }
+    }
+  } else {
+    writeFileSync(OUT, '');
+  }
+
+  // State the budget actually in force. survey.ts shipped a stale banner that
+  // reported a formula it no longer used, which cost real debugging time.
+  console.error(
+    `[${engine}] ${items.length} conformant items (${done.size} already recorded), tolerance ${TOLERANCE}\n` +
+      `[${engine}] port budget max(${CONFIG.floorMs}ms, ${CONFIG.mult}x native, ${CONFIG.mult}x recorded cost), ` +
+      `oracle cap ${CONFIG.oracleMs}ms\n` +
+      `[${engine}] cost tables: ${Object.keys(COSTS.portMs).length} port, ` +
+      `${Object.keys(COSTS.nativeMs).length} native\n`,
+  );
+
+  let n = 0;
+  for (const it of items) {
+    n++;
+    if (done.has(it.id)) continue;
+    const rec: EngineWalkRow = { id: it.id, size: it.size, status: 'pass' };
+
+    // oracle — native dot exits nonzero on recoverable warnings (e.g. a
+    // missing image file) while still emitting a COMPLETE xdot document.
+    // Completeness (a closing `}`) is the validity signal, not the exit code —
+    // the json/map/plain walkers already classify this way; exit-code-fatal
+    // here left 45 comparable ids as phantom "oracle-error" rows.
+    let oracle = '';
+    try {
+      oracle = execFileSync(DOT_BIN, ['-K', engine, '-Txdot', it.path], {
+        env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: CONFIG.oracleMs,
+        maxBuffer: 512 * 1024 * 1024,
+      });
+    } catch (err) {
+      const out = (err as { stdout?: unknown }).stdout;
+      if (typeof out === 'string' && out.trimEnd().endsWith('}')) {
+        oracle = out; // complete despite nonzero exit
+      } else {
+        rec.status = 'oracle-error';
+        rec.err = String((err as Error).message).split('\n')[0]!.slice(0, 160);
+        appendFileSync(OUT, JSON.stringify(rec) + '\n');
+        continue;
+      }
+    }
+    if (!oracle.trimEnd().endsWith('}')) {
       rec.status = 'oracle-error';
-      rec.err = String((err as Error).message).split('\n')[0]!.slice(0, 160);
+      rec.err = 'incomplete oracle output';
       appendFileSync(OUT, JSON.stringify(rec) + '\n');
       continue;
     }
-  }
-  if (!oracle.trimEnd().endsWith('}')) {
-    rec.status = 'oracle-error';
-    rec.err = 'incomplete oracle output';
-    appendFileSync(OUT, JSON.stringify(rec) + '\n');
-    continue;
-  }
 
-  // port (spawned, hang-safe). detached + negative-pid kill takes the WHOLE
-  // process group: killing only the npx wrapper leaves the node grandchild
-  // spinning forever on a hung render (observed: a 241_1/circo render
-  // orphaned at 100% CPU for 20h after spawnSync's killSignal).
-  const r = await new Promise<{ stdout: string; stderr: string; status: number | null; timedOut: boolean }>(
-    (resolve) => {
-      const child = spawn('npx', ['tsx', join(REPO, 'test/corpus/render-one-xdot.ts'), it.path, engine], {
-        cwd: REPO, env: process.env, detached: true,
-      });
-      let stdout = '';
-      let stderr = '';
-      let timedOut = false;
-      const timer = setTimeout(() => {
-        timedOut = true;
-        if (child.pid !== undefined) {
-          try { process.kill(-child.pid, 'SIGKILL'); } catch { /* gone */ }
-        }
-      }, 90_000);
-      child.stdout.on('data', (d: Buffer) => (stdout += d));
-      child.stderr.on('data', (d: Buffer) => (stderr += d));
-      child.on('error', (e) => (stderr += String(e)));
-      child.on('close', (status) => {
-        clearTimeout(timer);
-        resolve({ stdout, stderr, status, timedOut });
-      });
-    },
-  );
-  if (r.timedOut) {
-    rec.status = 'timeout';
-  } else if (r.status !== 0) {
-    const m = /__RENDER_ERROR__ (.*)/.exec(r.stderr ?? '');
-    rec.status = 'port-error';
-    rec.err = (m?.[1] ?? (r.stderr ?? '')).slice(0, 200);
-  } else {
-    const res = compareXdot(r.stdout, oracle, TOLERANCE);
-    if (res.pass) {
-      rec.status = 'pass';
+    // port (spawned, hang-safe). detached + negative-pid kill takes the WHOLE
+    // process group: killing only the npx wrapper leaves the node grandchild
+    // spinning forever on a hung render (observed: a 241_1/circo render
+    // orphaned at 100% CPU for 20h after spawnSync's killSignal).
+    const budgetMs = renderBudgetMs(it.id, COSTS.nativeMs[it.id] ?? 0);
+    const r = await new Promise<{ stdout: string; stderr: string; status: number | null; timedOut: boolean }>(
+      (resolve) => {
+        const child = spawn('npx', ['tsx', join(REPO, 'test/corpus/render-one-xdot.ts'), it.path, engine], {
+          cwd: REPO, env: process.env, detached: true,
+        });
+        let stdout = '';
+        let stderr = '';
+        let timedOut = false;
+        const timer = setTimeout(() => {
+          timedOut = true;
+          if (child.pid !== undefined) {
+            try { process.kill(-child.pid, 'SIGKILL'); } catch { /* gone */ }
+          }
+        }, budgetMs);
+        child.stdout.on('data', (d: Buffer) => (stdout += d));
+        child.stderr.on('data', (d: Buffer) => (stderr += d));
+        child.on('error', (e) => (stderr += String(e)));
+        child.on('close', (status) => {
+          clearTimeout(timer);
+          resolve({ stdout, stderr, status, timedOut });
+        });
+      },
+    );
+    if (r.timedOut) {
+      rec.status = 'timeout';
+      rec.err = `exceeded ${budgetMs}ms budget`;
+    } else if (r.status !== 0) {
+      const m = /__RENDER_ERROR__ (.*)/.exec(r.stderr ?? '');
+      rec.status = 'port-error';
+      rec.err = (m?.[1] ?? (r.stderr ?? '')).slice(0, 200);
     } else {
-      const d = res.diffs[0];
-      rec.status = 'diverged';
-      rec.nDiffs = res.diffs.length;
-      rec.firstDiff = d
-        ? `${d.object} ${d.attr} ${d.path}: ${d.actual} vs ${d.expected}`
-        : 'no-diff-detail';
+      const res = compareXdot(r.stdout, oracle, TOLERANCE);
+      if (res.pass) {
+        rec.status = 'pass';
+      } else {
+        const d = res.diffs[0];
+        rec.status = 'diverged';
+        rec.nDiffs = res.diffs.length;
+        rec.firstDiff = d
+          ? `${d.object} ${d.attr} ${d.path}: ${d.actual} vs ${d.expected}`
+          : 'no-diff-detail';
+      }
     }
+    appendFileSync(OUT, JSON.stringify(rec) + '\n');
+    if (n % 50 === 0) console.error(`[${engine}] ${n}/${items.length}`);
   }
-  appendFileSync(OUT, JSON.stringify(rec) + '\n');
-  if (n % 50 === 0) console.error(`[${engine}] ${n}/${items.length}`);
+
+  // summary: re-read the (possibly resumed) JSONL so the JSON reflects every row.
+  const results: EngineWalkRow[] = [];
+  for (const ln of readFileSync(OUT, 'utf8').split('\n')) {
+    if (!ln) continue;
+    try { results.push(JSON.parse(ln) as EngineWalkRow); } catch { /* partial line */ }
+  }
+  const counts: Record<EngineWalkStatus, number> = {
+    pass: 0, diverged: 0, 'oracle-error': 0, 'port-error': 0, timeout: 0,
+  };
+  for (const row of results) counts[row.status] = (counts[row.status] ?? 0) + 1;
+  const summary: EngineParityReport = {
+    generatedAt: new Date().toISOString(),
+    generatedWith: 'test/corpus/engine-walk.ts',
+    engine,
+    tolerance: TOLERANCE,
+    total: results.length,
+    counts,
+    results,
+  };
+  writeFileSync(SUMMARY, JSON.stringify(summary, null, 2) + '\n');
+
+  console.log(`[${engine}] done: ${items.length} items -> ${OUT}`);
+  console.log(`[${engine}] summary -> ${SUMMARY}`);
 }
 
-// summary: re-read the (possibly resumed) JSONL so the JSON reflects every row.
-const results: EngineWalkRow[] = [];
-for (const ln of readFileSync(OUT, 'utf8').split('\n')) {
-  if (!ln) continue;
-  try { results.push(JSON.parse(ln) as EngineWalkRow); } catch { /* partial line */ }
+const isMain =
+  process.argv[1] !== undefined && import.meta.url === new URL(`file://${process.argv[1]}`).href;
+if (isMain) {
+  await main();
 }
-const counts: Record<EngineWalkStatus, number> = {
-  pass: 0, diverged: 0, 'oracle-error': 0, 'port-error': 0, timeout: 0,
-};
-for (const row of results) counts[row.status] = (counts[row.status] ?? 0) + 1;
-const summary: EngineParityReport = {
-  generatedAt: new Date().toISOString(),
-  generatedWith: 'test/corpus/engine-walk.ts',
-  engine,
-  tolerance: TOLERANCE,
-  total: results.length,
-  counts,
-  results,
-};
-writeFileSync(SUMMARY, JSON.stringify(summary, null, 2) + '\n');
-
-console.log(`[${engine}] done: ${items.length} items -> ${OUT}`);
-console.log(`[${engine}] summary -> ${SUMMARY}`);
