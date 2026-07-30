@@ -42,7 +42,7 @@ describe('budgetConfigFromEnv', () => {
     expect(DEFAULTS.mult).toBe(3);
     expect(DEFAULTS.floorMs).toBe(3_600_000);
     expect(DEFAULTS.floorMs).toBeGreaterThan(90_000);
-    expect(DEFAULTS.oracleMs).toBe(300_000);
+    expect(DEFAULTS.oracleMs).toBe(3_600_000);
   });
 
   it('honours each env override', () => {

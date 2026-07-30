@@ -109,7 +109,13 @@ export function budgetConfigFromEnv(env: Record<string, string | undefined> = pr
   return {
     mult: Number(env['ENGINE_TIMEOUT_MULT'] ?? 3),
     floorMs: Number(env['ENGINE_TIMEOUT_FLOOR_MS'] ?? 3_600_000),
-    oracleMs: Number(env['ENGINE_ORACLE_TIMEOUT_MS'] ?? 300_000),
+    // One hour, for the same reason as the port floor: a 300s oracle cap turned
+    // slow-but-valid native renders into `oracle-error` rows, which read as "the
+    // oracle cannot render this" when the truth is "we did not wait". Nine such
+    // rows existed across the five xdot tracks (`2222` on all five; `1652`,
+    // `graphs-b103`, `2621` on circo), each an unexamined id wearing a failure's
+    // clothing. `2621`'s oracle alone needs ~256s for `dot` and more under circo.
+    oracleMs: Number(env['ENGINE_ORACLE_TIMEOUT_MS'] ?? 3_600_000),
   };
 }
 

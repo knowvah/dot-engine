@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-27T22:03:58.294Z",
+  "generatedAt": "2026-07-30T17:31:37.584Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "circo",
   "tolerance": 0.01,
-  "total": 905,
+  "total": 910,
   "counts": {
-    "pass": 895,
+    "pass": 900,
     "diverged": 4,
-    "oracle-error": 5,
+    "oracle-error": 6,
     "port-error": 0,
-    "timeout": 1
+    "timeout": 0
   },
   "results": [
     {
@@ -4546,9 +4546,35 @@
       "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     },
     {
+      "id": "tree-doc-dotguide-curve",
+      "size": 106,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-icurve",
+      "size": 107,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "size": 230,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "size": 4766,
+      "status": "pass"
+    },
+    {
+      "id": "2621",
+      "size": 721934,
+      "status": "oracle-error",
+      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
+    },
+    {
       "id": "2108",
       "size": 3136769,
-      "status": "timeout"
+      "status": "pass"
     }
   ]
 }

@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-07-28T02:57:39.793Z",
+  "generatedAt": "2026-07-30T18:58:06.067Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "neato",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 905,
+  "total": 910,
   "counts": {
-    "conformant": 897,
+    "conformant": 902,
     "diverged": 0,
-    "accepted": 6,
+    "accepted": 7,
     "port-error": 0,
     "oracle-error": 1,
-    "timeout": 1
+    "timeout": 0
   },
   "results": [
     {
@@ -11817,17 +11817,88 @@
       "hasHref": false
     },
     {
+      "id": "tree-doc-dotguide-icurve",
+      "path": "../doc/dotguide/icurve.dot",
+      "size": 107,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-curve",
+      "path": "../doc/dotguide/curve.dot",
+      "size": 106,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "path": "../doc/infosrc/fixed.gv",
+      "size": 230,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "path": "../graphs/directed/arrows.gv",
+      "size": 4766,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2621",
+      "path": "2621.dot",
+      "size": 721934,
+      "verdict": "accepted",
+      "cmapx": {
+        "verdict": "accepted",
+        "diffCount": 5044,
+        "firstDiff": "area[0].coords[0]",
+        "maxDelta": 398,
+        "maxDeltaPath": "area[0].coords[3]"
+      },
+      "imap": {
+        "verdict": "accepted",
+        "diffCount": 3828,
+        "firstDiff": "imap/line[1].coords[0]",
+        "maxDelta": 398,
+        "maxDeltaPath": "imap/line[1].coords[3]"
+      },
+      "hasHref": true
+    },
+    {
       "id": "2108",
       "path": "2108.dot",
       "size": 3136769,
-      "verdict": "timeout",
+      "verdict": "conformant",
       "cmapx": {
-        "verdict": "timeout",
-        "errMsg": ""
+        "verdict": "conformant"
       },
       "imap": {
-        "verdict": "timeout",
-        "errMsg": ""
+        "verdict": "conformant"
       },
       "hasHref": false
     }

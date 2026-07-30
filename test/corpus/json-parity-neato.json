@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T13:57:45.102Z",
+  "generatedAt": "2026-07-30T18:05:50.404Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "neato",
   "oracleVersion": "dot 15.1.0",
@@ -8,10 +8,10 @@
   "counts": {
     "conformant": 825,
     "diverged": 0,
-    "accepted": 83,
+    "accepted": 84,
     "port-error": 0,
     "oracle-error": 1,
-    "timeout": 1
+    "timeout": 0
   },
   "results": [
     {
@@ -5801,8 +5801,11 @@
       "id": "2108",
       "path": "2108.dot",
       "size": 3136769,
-      "verdict": "timeout",
-      "errMsg": ""
+      "verdict": "accepted",
+      "diffCount": 6256,
+      "firstDiff": "edge:BI_12612-at-SITE_75-141170->ITEM_6558-at-SITE_75#0/pos[1]",
+      "maxDelta": 10,
+      "maxDeltaPath": "edge:SITE_90-x-VR_2880->MV_46447-at-SITE_90-165961#0/pos[0]"
     }
   ]
 }

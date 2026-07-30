@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T13:59:01.315Z",
+  "generatedAt": "2026-07-30T18:24:03.958Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "sfdp",
   "oracleVersion": "dot 15.1.0",
@@ -8,10 +8,10 @@
   "counts": {
     "conformant": 617,
     "diverged": 0,
-    "accepted": 291,
+    "accepted": 292,
     "port-error": 0,
     "oracle-error": 1,
-    "timeout": 1
+    "timeout": 0
   },
   "results": [
     {
@@ -6633,8 +6633,11 @@
       "id": "2108",
       "path": "2108.dot",
       "size": 3136769,
-      "verdict": "timeout",
-      "errMsg": ""
+      "verdict": "accepted",
+      "diffCount": 1044748,
+      "firstDiff": "[graph]/_draw_/op[2].P[4]",
+      "maxDelta": 67424.47,
+      "maxDeltaPath": "edge:RT_35563-at-SITE_18-29986->ITEM_2317-at-SITE_18#0/pos[0]"
     }
   ]
 }

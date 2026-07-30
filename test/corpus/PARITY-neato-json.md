@@ -12,14 +12,14 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 910
-- **pass:** 825 (90.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 83
-- **errors (oracle/port/timeout, excluded from scoring):** 2
+- **pass:** 825 (90.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 84
+- **errors (oracle/port/timeout, excluded from scoring):** 1
 
 ## Diverged (0)
 
 _(none)_
 
-## Accepted (83) — documented, not chased
+## Accepted (84) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
@@ -31,6 +31,7 @@ _(none)_
 | [`1990`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1990.dot) | 17 | `edge:0⋯7 ❰A❱->0⋯1 'a'#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2095`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095.dot) | 7323 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) | 35525 | `[graph]/_draw_/op[2].P[4]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | 6256 | `edge:BI_12612-at-SITE_75-141170->ITEM_6558-at-SITE_75#0/pos[1]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`2183`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2183.dot) | 22 | `edge:c->m#0/_draw_/op[2].b[5]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2193`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2193.dot) | 1085 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 1862 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
@@ -107,11 +108,10 @@ _(none)_
 | [`windows-trapeziumlr`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/trapeziumlr.gv) | 1777 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`windows-viewfile`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/viewfile.gv) | 5 | `edge:printf->write#0/_hdraw_/op[3].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (2)
+## Errors and timeouts (1)
 
 | id | message |
 |---|---|
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
 _Passing ids (825) are omitted for brevity — the full roster is in

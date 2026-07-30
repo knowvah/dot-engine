@@ -12,8 +12,8 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 910
-- **pass:** 879 (96.6%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 29
-- **errors (oracle/port/timeout, excluded from scoring):** 2
+- **pass:** 880 (96.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 29
+- **errors (oracle/port/timeout, excluded from scoring):** 1
 
 ## Diverged (0)
 
@@ -53,12 +53,11 @@ _(none)_
 | [`windows-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b106.gv) | 207 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`windows-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b29.gv) | 418 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 
-## Errors and timeouts (2)
+## Errors and timeouts (1)
 
 | id | message |
 |---|---|
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
-_Passing ids (879) are omitted for brevity — the full roster is in
+_Passing ids (880) are omitted for brevity — the full roster is in
 `map-parity-sfdp.json`._

@@ -902,4 +902,9 @@
 {"id":"2475_2","size":641284,"status":"pass"}
 {"id":"2470","size":734358,"status":"diverged","nDiffs":596,"firstDiff":"edge:n13->n12#0 _ldraw_ edge:n13->n12#0/_ldraw_/op[2].text[0]: 7270.33 vs 7192.55"}
 {"id":"2222","size":2384469,"status":"oracle-error","err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
-{"id":"2108","size":3136769,"status":"timeout"}
+{"id":"tree-doc-dotguide-curve","size":106,"status":"pass"}
+{"id":"tree-doc-dotguide-icurve","size":107,"status":"pass"}
+{"id":"tree-doc-infosrc-fixed","size":230,"status":"pass"}
+{"id":"tree-graphs-directed-arrows","size":4766,"status":"diverged","nDiffs":6,"firstDiff":"edge:lcrow->lcrowlcrow#0 _ldraw_ edge:lcrow->lcrowlcrow#0/_ldraw_/op[2].text[0]: 672.44 vs 695.21"}
+{"id":"2621","size":721934,"status":"pass"}
+{"id":"2108","size":3136769,"status":"pass"}

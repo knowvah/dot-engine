@@ -11,18 +11,19 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 905
-- **pass:** 897 (99.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6
-- **errors (oracle/port/timeout, excluded from scoring):** 2
+- **Surveyed:** 910
+- **pass:** 902 (99.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 7
+- **errors (oracle/port/timeout, excluded from scoring):** 1
 
 ## Diverged (0)
 
 _(none)_
 
-## Accepted (6) — documented, not chased
+## Accepted (7) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 5044 | `area[0].coords[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`graphs-url`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/url.gv) | 21 | `area[8].coords[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`linux.i386-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b102.gv) | 13 | `area[47].coords[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`linux.x86-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_circo.gv) | 8 | `area[0].coords[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
@@ -30,12 +31,11 @@ _(none)_
 | [`nshare-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_twopi.gv) | 8 | `area[0].coords[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`share-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b102.gv) | 13 | `area[47].coords[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 
-## Errors and timeouts (2)
+## Errors and timeouts (1)
 
 | id | message |
 |---|---|
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
-_Passing ids (897) are omitted for brevity — the full roster is in
+_Passing ids (902) are omitted for brevity — the full roster is in
 `map-parity-neato.json`._
