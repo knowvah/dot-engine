@@ -62,9 +62,9 @@ There is **no linter** in this project (no eslint config, no lint script).
 | 1 | [T1 — scale engine-walk's render budget](./batch-1/T1-engine-walk-budget.md) | — | [x] |
 | 2 | [T2 — resume-walk xdot for neato/fdp/sfdp](./batch-2/T2-xdot-rewalk.md) | T1 | [x] |
 | 3 | [T3 — attribute the newly diverged ids](./batch-3/T3-attribution.md) | T2 | [x] |
-| 4 | [T4 — verify json-surface transfer](./batch-4/T4-json-transfer-verify.md) | T3 | [ ] |
+| 4 | [T4 — verify json-surface transfer](./batch-4/T4-json-transfer-verify.md) | T3 | [x] |
 | 5 | [T5 — re-walk json/map so the class absorbs](./batch-5/T5-json-map-rewalk.md) | T4 | [ ] |
-| 6 | [T6 — address not-cleared ids (CONDITIONAL)](./batch-6/T6-address-not-cleared.md) | T3, T4 | [ ] |
+| 6 | [T6 — address not-cleared ids (CONDITIONAL)](./batch-6/T6-address-not-cleared.md) | T3, T4 | [x] SKIPPED (P4) |
 | 7 | [T7 — regenerate dashboards, final gates](./batch-7/T7-closeout.md) | T5, T6 | [ ] |
 
 Every batch holds one task. They are strictly sequential — not because the

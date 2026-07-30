@@ -8,4 +8,4 @@ PR #37.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| T4 | [Verify json-surface transfer](./T4-json-transfer-verify.md) | executor | `evidence/json-transfer.md` | T3 | [ ] |
+| T4 | [Verify json-surface transfer](./T4-json-transfer-verify.md) | executor | `evidence/json-transfer.md` | T3 | [x] |
