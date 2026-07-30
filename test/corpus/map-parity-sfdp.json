@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-07-28T02:57:41.361Z",
+  "generatedAt": "2026-07-30T00:51:44.981Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "sfdp",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 905,
+  "total": 910,
   "counts": {
-    "conformant": 875,
+    "conformant": 879,
     "diverged": 1,
-    "accepted": 27,
+    "accepted": 28,
     "port-error": 0,
     "oracle-error": 1,
     "timeout": 1
@@ -4199,27 +4199,6 @@
         "verdict": "conformant"
       },
       "hasHref": false
-    },
-    {
-      "id": "tree-tclpkg-tcldot-examples-data-demo",
-      "path": "../tclpkg/tcldot/examples/data/demo.gv",
-      "size": 295,
-      "verdict": "diverged",
-      "cmapx": {
-        "verdict": "diverged",
-        "diffCount": 125,
-        "firstDiff": "area[0].coords[1]",
-        "maxDelta": 319,
-        "maxDeltaPath": "area[1].coords[0]"
-      },
-      "imap": {
-        "verdict": "diverged",
-        "diffCount": 123,
-        "firstDiff": "imap/line[2].coords[1]",
-        "maxDelta": 319,
-        "maxDeltaPath": "imap/line[3].coords[0]"
-      },
-      "hasHref": true
     },
     {
       "id": "2727",
@@ -12006,6 +11985,100 @@
         "errMsg": ""
       },
       "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-icurve",
+      "path": "../doc/dotguide/icurve.dot",
+      "size": 107,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-dotguide-curve",
+      "path": "../doc/dotguide/curve.dot",
+      "size": 106,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-tclpkg-tcldot-examples-data-demo",
+      "path": "../tclpkg/tcldot/examples/data/demo.gv",
+      "size": 295,
+      "verdict": "accepted",
+      "cmapx": {
+        "verdict": "accepted",
+        "diffCount": 125,
+        "firstDiff": "area[0].coords[1]",
+        "maxDelta": 319,
+        "maxDeltaPath": "area[1].coords[0]"
+      },
+      "imap": {
+        "verdict": "accepted",
+        "diffCount": 123,
+        "firstDiff": "imap/line[2].coords[1]",
+        "maxDelta": 319,
+        "maxDeltaPath": "imap/line[3].coords[0]"
+      },
+      "hasHref": true
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "path": "../doc/infosrc/fixed.gv",
+      "size": 230,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "path": "../graphs/directed/arrows.gv",
+      "size": 4766,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2621",
+      "path": "2621.dot",
+      "size": 721934,
+      "verdict": "diverged",
+      "cmapx": {
+        "verdict": "diverged",
+        "diffCount": 4961,
+        "firstDiff": "area[0].coords[0]",
+        "maxDelta": 5694,
+        "maxDeltaPath": "area[1248].coords[1]"
+      },
+      "imap": {
+        "verdict": "diverged",
+        "diffCount": 3761,
+        "firstDiff": "imap/line[1].coords[0]",
+        "maxDelta": 2472,
+        "maxDeltaPath": "imap/line[957].coords[0]"
+      },
+      "hasHref": true
     }
   ]
 }

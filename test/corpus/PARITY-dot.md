@@ -13,20 +13,20 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 
 - **Oracle:** dot 15.1.0 · **corpus:** [graphviz `tests/`](https://gitlab.com/graphviz/graphviz/-/tree/main/tests) (local clone `~/git/graphviz/tests`)
 - **Surveyed (applicable):** 939
-- **conformant\*:** 909 (96.8%) · structural-match: 15 → 924/939 structurally equal (98.4%)
+- **conformant\*:** 910 (96.9%) · structural-match: 15 → 925/939 structurally equal (98.5%)
 - **Accepted deltas (documented, won't-fix):** 17 · **Tracked gaps (unaccepted, will-fix):** 0 → of 17 non-conformant graphs
-- **errored:** 0 · **timeout:** 1 · **oracle-error:** 12 (excluded from scoring)
+- **errored:** 0 · **timeout:** 0 · **oracle-error:** 12 (excluded from scoring)
 - **Quarantined (not surveyed, from corpus-manifest.json):** oracle-crash 3, not-a-layout-test 2, malformed 6, engine-deferred 6, multi-graph 3, perf 1
 
 \* **conformant** is a *deterministic-tolerance* verdict, not literal byte equality: numeric coordinates/paths agree within ±0.01 and all non-numeric content (tags, colors, text) is exactly equal (`compareSvg(…, 'deterministic')`). Full definition: [docs/conformance.md](../../docs/conformance.md).
 
 Accepted deltas are deliberate, root-caused, won't-fix differences (`test/corpus/accepted-divergences.json` → [Known divergences](../../docs/known-divergences.md)). Everything else non-conformant is a tracked gap we intend to close.
 
-## conformant (909)
+## conformant (910)
 
 Port SVG is *conformant* with the oracle: numeric coordinates/paths agree within the `deterministic` tolerance (±0.01) and all non-numeric content is exactly equal — not literal byte equality. See [docs/conformance.md](../../docs/conformance.md).
 
-_Conformant ids (909) are omitted for brevity — the full roster is in
+_Conformant ids (910) are omitted for brevity — the full roster is in
 [parity.json](parity.json)._
 
 ## Accepted deltas (17) — documented, not chased
@@ -82,11 +82,10 @@ for driving groups to conformance. Mechanism-family attribution: see
 | id | path | message |
 |---|---|---|
 
-## timeout (1)
+## timeout (0)
 
 | id | path | message |
 |---|---|---|
-| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | `1652.dot` |  |
 
 ## oracle-error (12) — excluded from port scoring
 

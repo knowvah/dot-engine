@@ -1,5 +1,25 @@
 {
-  "comment": "Irreducible json divergences (mission: json-conformance). Each entry: {id, opClass, delta, rationale}. The walker treats listed ids as non-blocking ('accepted') and continues. Every entry MUST be referenced in the decision journal with its mechanism.",
+  "comment": "Irreducible json divergences (mission: json-conformance). Each entry: {id, opClass, delta, rationale}. The walker treats listed ids as non-blocking ('accepted') and continues. Every entry MUST be referenced in the decision journal with its mechanism. Class acceptance (added 2026-07-29): the A1-drift roster for the iterative engines is COMPUTED from attribution-<engine>.json's drift-exonerated verdicts via `classes` + test/corpus/accepted-class.ts, mirroring what parity-report.ts already does for the xdot tracks \u2014 a hand-enumerated roster of a growing set went stale on the 2026-07-27 corpus expansion. Per-id `divergences` rows still apply and are unioned with the class.",
+  "classes": [
+    {
+      "class": true,
+      "engine": "neato",
+      "attributionFile": "attribution-neato.json",
+      "ref": "known-divergences.md#a1-drift-iterative-engines"
+    },
+    {
+      "class": true,
+      "engine": "fdp",
+      "attributionFile": "attribution-fdp.json",
+      "ref": "known-divergences.md#a1-drift-iterative-engines"
+    },
+    {
+      "class": true,
+      "engine": "sfdp",
+      "attributionFile": "attribution-sfdp.json",
+      "ref": "known-divergences.md#a1-drift-iterative-engines"
+    }
+  ],
   "divergences": [
     {
       "id": "share-Latin1",

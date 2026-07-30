@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-07-28T02:00:37.143Z",
+  "generatedAt": "2026-07-30T00:49:33.672Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "neato",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 905,
+  "total": 909,
   "counts": {
-    "conformant": 821,
-    "diverged": 9,
-    "accepted": 73,
+    "conformant": 825,
+    "diverged": 1,
+    "accepted": 81,
     "port-error": 0,
     "oracle-error": 1,
     "timeout": 1
@@ -771,6 +771,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "tree-doc-dotguide-curve",
+      "path": "../doc/dotguide/curve.dot",
+      "size": 106,
+      "verdict": "conformant"
+    },
+    {
       "id": "tree-doc-dotguide-invdot",
       "path": "../doc/dotguide/invdot.dot",
       "size": 106,
@@ -785,6 +791,12 @@
     {
       "id": "tree-doc-dotguide-diamondarrow",
       "path": "../doc/dotguide/diamondarrow.dot",
+      "size": 107,
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-icurve",
+      "path": "../doc/dotguide/icurve.dot",
       "size": 107,
       "verdict": "conformant"
     },
@@ -1282,7 +1294,7 @@
       "id": "tree-graphs-directed-clust1",
       "path": "../graphs/directed/clust1.gv",
       "size": 146,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 42,
       "firstDiff": "cluster:cluster_c1/_draw_/op[1].p[0]",
       "maxDelta": 0.8499999999999943,
@@ -1577,6 +1589,12 @@
     {
       "id": "graphs-labelclust-ntc",
       "path": "graphs/labelclust-ntc.gv",
+      "size": 230,
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "path": "../doc/infosrc/fixed.gv",
       "size": 230,
       "verdict": "conformant"
     },
@@ -2080,7 +2098,7 @@
       "id": "tree-doc-neato-inet",
       "path": "../doc/neato/inet.dot",
       "size": 349,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 721,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
       "maxDelta": 225.61999999999998,
@@ -3338,7 +3356,7 @@
       "id": "tree-graphs-directed-jcctree",
       "path": "../graphs/directed/jcctree.gv",
       "size": 778,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 113,
       "firstDiff": "edge:DEF2->ID2#0/_draw_/op[1].b[1]",
       "maxDelta": 0.6000000000000227,
@@ -3690,7 +3708,7 @@
       "id": "tree-graphs-directed-grammar",
       "path": "../graphs/directed/grammar.gv",
       "size": 1302,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 38,
       "firstDiff": "edge:n10->n11#0/_draw_/op[1].b[0]",
       "maxDelta": 0.660000000000025,
@@ -4452,7 +4470,7 @@
       "id": "tree-doc-dotguide-asde91",
       "path": "../doc/dotguide/asde91.dot",
       "size": 3383,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 100,
       "firstDiff": "edge:1980->1982#0/_draw_/op[1].b[0]",
       "maxDelta": 0.8600000000000136,
@@ -4635,6 +4653,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "tree-graphs-directed-arrows",
+      "path": "../graphs/directed/arrows.gv",
+      "size": 4766,
+      "verdict": "conformant"
+    },
+    {
       "id": "linux.x86-shapes_dot",
       "path": "linux.x86/shapes_dot.gv",
       "size": 4861,
@@ -4688,7 +4712,7 @@
       "id": "tree-graphs-directed-polypoly",
       "path": "../graphs/directed/polypoly.gv",
       "size": 5155,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 3221,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
       "maxDelta": 1496,
@@ -5128,7 +5152,7 @@
       "id": "tree-contrib-java-dot-uml",
       "path": "../contrib/java-dot/uml.dot",
       "size": 10213,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 148,
       "firstDiff": "edge:class_dot_DotAttr->tri_class_dot_DotAttr#0/_draw_/op[2].b[0]",
       "maxDelta": 0.5800000000000409,
@@ -5402,7 +5426,7 @@
       "id": "tree-doc-neato-jho",
       "path": "../doc/neato/jho.dot",
       "size": 14828,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 426,
       "firstDiff": "edge:ccsfpr2_0_1t_99->359100#0/_draw_/op[1].b[0]",
       "maxDelta": 2.900000000000091,
@@ -5458,7 +5482,7 @@
       "id": "tree-contrib-dirgraph-linux",
       "path": "../contrib/dirgraph/linux.dot",
       "size": 21860,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "diffCount": 2,
       "firstDiff": "edge:__usr_src_linux_fs->__usr_src_linux_fs_isofs#0/_draw_/op[1].b[5]",
       "maxDelta": 0.5299999999999727,
@@ -5679,16 +5703,6 @@
       "maxDeltaPath": "edge:75->76#0/lp[0]"
     },
     {
-      "id": "1652",
-      "path": "1652.dot",
-      "size": 240391,
-      "verdict": "accepted",
-      "diffCount": 58,
-      "firstDiff": "edge:Op_10->Op_35#0/_ldraw_/op[2].T[1]",
-      "maxDelta": 68.80999999999995,
-      "maxDeltaPath": "edge:Op_716->Op_750#0/_ldraw_/op[2].T[0]"
-    },
-    {
       "id": "1879",
       "path": "1879.dot",
       "size": 287816,
@@ -5749,6 +5763,16 @@
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
       "maxDelta": 13237.49,
       "maxDeltaPath": "edge:464_61105->464_61103#0/pos[7]"
+    },
+    {
+      "id": "2621",
+      "path": "2621.dot",
+      "size": 721934,
+      "verdict": "diverged",
+      "diffCount": 79577,
+      "firstDiff": "[graph]/_draw_/op[2].P[3]",
+      "maxDelta": 254.3199999999997,
+      "maxDeltaPath": "edge:deploy_indicators/prod/custom_axis/man_distance_to_charging_stations_one->deploy_indicators/prod/custom_axis/all_custom_axis#0/_draw_/op[1].b[7]"
     },
     {
       "id": "2470",
