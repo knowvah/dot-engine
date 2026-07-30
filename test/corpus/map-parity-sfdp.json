@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T00:51:44.981Z",
+  "generatedAt": "2026-07-30T13:59:11.861Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "sfdp",
   "oracleVersion": "dot 15.1.0",
@@ -7,8 +7,8 @@
   "total": 910,
   "counts": {
     "conformant": 879,
-    "diverged": 1,
-    "accepted": 28,
+    "diverged": 0,
+    "accepted": 29,
     "port-error": 0,
     "oracle-error": 1,
     "timeout": 1
@@ -12063,16 +12063,16 @@
       "id": "2621",
       "path": "2621.dot",
       "size": 721934,
-      "verdict": "diverged",
+      "verdict": "accepted",
       "cmapx": {
-        "verdict": "diverged",
+        "verdict": "accepted",
         "diffCount": 4961,
         "firstDiff": "area[0].coords[0]",
         "maxDelta": 5694,
         "maxDeltaPath": "area[1248].coords[1]"
       },
       "imap": {
-        "verdict": "diverged",
+        "verdict": "accepted",
         "diffCount": 3761,
         "firstDiff": "imap/line[1].coords[0]",
         "maxDelta": 2472,
