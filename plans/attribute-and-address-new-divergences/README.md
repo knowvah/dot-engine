@@ -60,7 +60,7 @@ There is **no linter** in this project (no eslint config, no lint script).
 | # | Task | Depends on | Done |
 |---|---|---|---|
 | 1 | [T1 — scale engine-walk's render budget](./batch-1/T1-engine-walk-budget.md) | — | [x] |
-| 2 | [T2 — resume-walk xdot for neato/fdp/sfdp](./batch-2/T2-xdot-rewalk.md) | T1 | [ ] |
+| 2 | [T2 — resume-walk xdot for neato/fdp/sfdp](./batch-2/T2-xdot-rewalk.md) | T1 | [x] |
 | 3 | [T3 — attribute the newly diverged ids](./batch-3/T3-attribution.md) | T2 | [ ] |
 | 4 | [T4 — verify json-surface transfer](./batch-4/T4-json-transfer-verify.md) | T3 | [ ] |
 | 5 | [T5 — re-walk json/map so the class absorbs](./batch-5/T5-json-map-rewalk.md) | T4 | [ ] |

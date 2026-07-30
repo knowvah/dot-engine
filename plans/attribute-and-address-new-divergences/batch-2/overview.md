@@ -6,7 +6,7 @@ absent from all three iterative xdot tracks, so they must enter first.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| T2 | [Resume-walk xdot for neato/fdp/sfdp](./T2-xdot-rewalk.md) | executor | `parity-{neato,fdp,sfdp}.json(l)` | T1 | [ ] |
+| T2 | [Resume-walk xdot for neato/fdp/sfdp](./T2-xdot-rewalk.md) | executor | `parity-{neato,fdp,sfdp}.json(l)` | T1 | [x] |
 
 Engines run **sequentially**, concurrency <= 4, oracle cache warm. Concurrent
 heavy sweeps were measured to inflate wall time 3.8-5.7x and produce false

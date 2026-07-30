@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-07-28T00:37:39.169Z",
+  "generatedAt": "2026-07-30T13:46:28.555Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "sfdp",
   "tolerance": 0.5,
-  "total": 905,
+  "total": 910,
   "counts": {
-    "pass": 617,
-    "diverged": 286,
+    "pass": 619,
+    "diverged": 289,
     "oracle-error": 1,
     "port-error": 0,
     "timeout": 1
@@ -5109,6 +5109,37 @@
       "id": "2108",
       "size": 3136769,
       "status": "timeout"
+    },
+    {
+      "id": "tree-doc-dotguide-curve",
+      "size": 106,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-icurve",
+      "size": 107,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "size": 230,
+      "status": "diverged",
+      "nDiffs": 120,
+      "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 502.31 vs 447.55"
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "size": 4766,
+      "status": "diverged",
+      "nDiffs": 2221,
+      "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 470.47 vs 471.12"
+    },
+    {
+      "id": "2621",
+      "size": 721934,
+      "status": "diverged",
+      "nDiffs": 78938,
+      "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 7614.98 vs 7393.88"
     }
   ]
 }
