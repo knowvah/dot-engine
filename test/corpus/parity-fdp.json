@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-30T13:46:19.294Z",
+  "generatedAt": "2026-07-30T15:38:34.016Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "fdp",
   "tolerance": 0.5,
   "total": 910,
   "counts": {
     "pass": 703,
-    "diverged": 202,
+    "diverged": 204,
     "oracle-error": 3,
     "port-error": 0,
-    "timeout": 2
+    "timeout": 0
   },
   "results": [
     {
@@ -4869,11 +4869,6 @@
       "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[0]: -32074.67 vs -34924.12"
     },
     {
-      "id": "1652",
-      "size": 240391,
-      "status": "timeout"
-    },
-    {
       "id": "1879",
       "size": 287816,
       "status": "diverged",
@@ -4936,11 +4931,6 @@
       "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     },
     {
-      "id": "2108",
-      "size": 3136769,
-      "status": "timeout"
-    },
-    {
       "id": "tree-doc-dotguide-curve",
       "size": 106,
       "status": "pass"
@@ -4968,6 +4958,20 @@
       "status": "diverged",
       "nDiffs": 79648,
       "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 27415.25 vs 22950.76"
+    },
+    {
+      "id": "1652",
+      "size": 240391,
+      "status": "diverged",
+      "nDiffs": 115987,
+      "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 3842.24 vs 4337.07"
+    },
+    {
+      "id": "2108",
+      "size": 3136769,
+      "status": "diverged",
+      "nDiffs": 1062804,
+      "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 59306.09 vs 59529.28"
     }
   ]
 }

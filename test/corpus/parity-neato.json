@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-30T13:44:25.356Z",
+  "generatedAt": "2026-07-30T15:28:20.467Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "neato",
   "tolerance": 0.5,
   "total": 910,
   "counts": {
     "pass": 826,
-    "diverged": 82,
+    "diverged": 83,
     "oracle-error": 1,
     "port-error": 0,
-    "timeout": 1
+    "timeout": 0
   },
   "results": [
     {
@@ -4696,11 +4696,6 @@
       "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     },
     {
-      "id": "2108",
-      "size": 3136769,
-      "status": "timeout"
-    },
-    {
       "id": "tree-doc-dotguide-curve",
       "size": 106,
       "status": "pass"
@@ -4726,6 +4721,13 @@
       "status": "diverged",
       "nDiffs": 79577,
       "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 5148.83 vs 5192.88"
+    },
+    {
+      "id": "2108",
+      "size": 3136769,
+      "status": "diverged",
+      "nDiffs": 6256,
+      "firstDiff": "edge:BI_12612-at-SITE_75-141170->ITEM_6558-at-SITE_75#0 pos edge:BI_12612-at-SITE_75-141170->ITEM_6558-at-SITE_75#0/pos[1]: 14216 vs 14217"
     }
   ]
 }

@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 910 (generated 2026-07-30T13:46:28.555Z)
-- **pass:** 619 (68.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 5 · **accepted (A1-drift class):** 284
-- **oracle-error:** 1 · **port-error:** 0 · **timeout:** 1
+- **Surveyed:** 910 (generated 2026-07-30T15:54:13.590Z)
+- **pass:** 619 (68.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 5 · **accepted (A1-drift class):** 285
+- **oracle-error:** 1 · **port-error:** 0 · **timeout:** 0
 
 ## Accepted deltas (5) — documented, not chased
 
@@ -39,18 +39,17 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **286** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **287** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
 ## Diverged (0)
 
 _(none)_
 
-## Errors and timeouts (2)
+## Errors and timeouts (1)
 
 | id | status | message |
 |---|---|---|
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | timeout |  |
 
 **oracle errors:** 7 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
 _Passing ids (619) are omitted for brevity — the full roster is in

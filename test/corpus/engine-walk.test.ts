@@ -33,9 +33,14 @@ const NO_COSTS: CostTables = { portMs: {}, nativeMs: {} };
 const scratch = mkdtempSync(join(tmpdir(), 'engine-walk-budget-'));
 
 describe('budgetConfigFromEnv', () => {
-  it('defaults to a 3x multiplier and a floor far above the old 90s cap', () => {
+  it('defaults to a 3x multiplier and a one-hour floor', () => {
+    // `timeout` must mean runaway, not slow: an item may legitimately run for up
+    // to an hour at this stage of the port, and a tight floor does not fail safe
+    // — it fabricates verdicts that are invisible to attribution. The 90s cap
+    // produced four such phantom rows; the 300s that briefly replaced it was
+    // still chosen to "bound a runaway cheaply" rather than from real costs.
     expect(DEFAULTS.mult).toBe(3);
-    expect(DEFAULTS.floorMs).toBe(300_000);
+    expect(DEFAULTS.floorMs).toBe(3_600_000);
     expect(DEFAULTS.floorMs).toBeGreaterThan(90_000);
     expect(DEFAULTS.oracleMs).toBe(300_000);
   });
@@ -52,13 +57,19 @@ describe('budgetConfigFromEnv', () => {
 
 describe('renderBudgetMs', () => {
   it('scales by a recorded port time when that exceeds the floor (AC1)', () => {
-    const costs: CostTables = { portMs: { big: 500_000 }, nativeMs: {} };
-    expect(renderBudgetMs('big', 0, DEFAULTS, costs)).toBe(1_500_000);
+    // Must exceed the one-hour floor to be the binding term — 2621's real
+    // measured cost (1237043ms) is in this range, which is the point: the heavy
+    // tail is budgeted from its own cost, not from the floor.
+    const costs: CostTables = { portMs: { big: 1_500_000 }, nativeMs: {} };
+    expect(renderBudgetMs('big', 0, DEFAULTS, costs)).toBe(4_500_000);
+    // A cost below the floor is not the binding term.
+    expect(renderBudgetMs('small', 0, DEFAULTS, { portMs: { small: 500_000 }, nativeMs: {} }))
+      .toBe(3_600_000);
   });
 
   it('falls back to the floor for an id absent from both cost tables, and is never 90s (AC2)', () => {
     const budget = renderBudgetMs('unknown-id', 0, DEFAULTS, NO_COSTS);
-    expect(budget).toBe(300_000);
+    expect(budget).toBe(3_600_000);
     expect(budget).not.toBe(90_000);
   });
 
@@ -74,11 +85,15 @@ describe('renderBudgetMs', () => {
   });
 
   it('takes the largest of floor, native, port and native-table terms', () => {
+    // Use an explicit low floor so the cost terms are what is being measured.
+    const cfg = budgetConfigFromEnv({ ENGINE_TIMEOUT_FLOOR_MS: '1000' });
     const costs: CostTables = { portMs: { x: 100_000 }, nativeMs: { x: 200_000 } };
-    // 3x200_000 = 600_000 beats both 3x100_000 and the 300_000 floor.
-    expect(renderBudgetMs('x', 1_000, DEFAULTS, costs)).toBe(600_000);
+    // 3x200_000 = 600_000 beats both 3x100_000 and the floor.
+    expect(renderBudgetMs('x', 1_000, cfg, costs)).toBe(600_000);
     // The passed-in nativeMs is honoured even when the tables are empty.
-    expect(renderBudgetMs('y', 400_000, DEFAULTS, NO_COSTS)).toBe(1_200_000);
+    expect(renderBudgetMs('y', 400_000, cfg, NO_COSTS)).toBe(1_200_000);
+    // And a cost term below the DEFAULT floor loses to it.
+    expect(renderBudgetMs('x', 1_000, DEFAULTS, costs)).toBe(3_600_000);
   });
 
   it('rounds up rather than truncating a fractional product', () => {
@@ -95,7 +110,7 @@ describe('cost table loaders', () => {
     };
     expect(costs.portMs).toEqual({});
     expect(costs.nativeMs).toEqual({});
-    expect(renderBudgetMs('anything', 0, DEFAULTS, costs)).toBe(300_000);
+    expect(renderBudgetMs('anything', 0, DEFAULTS, costs)).toBe(3_600_000);
   });
 
   it('degrades to an empty table when a cost file is malformed (AC4)', () => {

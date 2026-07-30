@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 910 (generated 2026-07-30T13:46:19.294Z)
-- **pass:** 703 (77.3%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4 · **accepted (A1-drift class):** 198
-- **oracle-error:** 3 · **port-error:** 0 · **timeout:** 2
+- **Surveyed:** 910 (generated 2026-07-30T15:38:34.016Z)
+- **pass:** 703 (77.3%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4 · **accepted (A1-drift class):** 200
+- **oracle-error:** 3 · **port-error:** 0 · **timeout:** 0
 
 ## Accepted deltas (4) — documented, not chased
 
@@ -38,21 +38,19 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **201** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **203** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
 ## Diverged (0)
 
 _(none)_
 
-## Errors and timeouts (5)
+## Errors and timeouts (3)
 
 | id | status | message |
 |---|---|---|
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot |
-| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | timeout |  |
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | timeout |  |
 
 **oracle errors:** 13 native-crash (documented, excluded) / 3 timeout-flake (excluded this run, note to retry)
 _Passing ids (703) are omitted for brevity — the full roster is in

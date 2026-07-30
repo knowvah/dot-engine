@@ -90,20 +90,25 @@ export interface CostTables {
 /**
  * Default budget knobs, overridable per run.
  *
- * The floor is 300s rather than the 90s this walker used to hard-code. That 90s
- * was the only un-scaled, un-overridable timeout among the five walkers, and it
- * manufactured phantom `timeout` rows: `2108` on all three iterative xdot tracks
- * and `1652` on fdp (while the same graph rendered fine on neato/sfdp). A
- * `timeout` row is invisible to attribute-divergence.ts, which selects only
- * `status === 'diverged'`, so a phantom timeout silently removes a graph from
- * attribution forever. 300s matches the floor family the sibling json/map/plain
- * walkers use; genuinely heavy graphs are covered by the `mult x cost` terms
- * below rather than by inflating this floor.
+ * The floor is **one hour**, replacing the 90s this walker used to hard-code and
+ * the 300s that briefly replaced it. `timeout` must mean *runaway*, not *slow*:
+ * the row is indistinguishable from a real failure in every consumer, and
+ * `attribute-divergence.ts` selects only `status === 'diverged'`, so a phantom
+ * timeout silently removes a graph from attribution forever. A tight budget
+ * therefore does not fail safe — it fabricates verdicts. That is not theoretical:
+ * the 90s cap produced four such rows (`2108` on all three iterative tracks,
+ * `1652` on fdp), and the 300s replacement was still chosen by the wrong
+ * reasoning ("bound a runaway cheaply") rather than by what a real render costs.
+ *
+ * At this stage of the port, sweep wall-clock is cheap relative to a wrong
+ * verdict, so an individual item may legitimately run for up to an hour. Genuinely
+ * heavy graphs are ALSO covered by the `mult x cost` terms below; the floor exists
+ * for graphs with no recorded cost, of which there are currently 151.
  */
 export function budgetConfigFromEnv(env: Record<string, string | undefined> = process.env): BudgetConfig {
   return {
     mult: Number(env['ENGINE_TIMEOUT_MULT'] ?? 3),
-    floorMs: Number(env['ENGINE_TIMEOUT_FLOOR_MS'] ?? 300_000),
+    floorMs: Number(env['ENGINE_TIMEOUT_FLOOR_MS'] ?? 3_600_000),
     oracleMs: Number(env['ENGINE_ORACLE_TIMEOUT_MS'] ?? 300_000),
   };
 }
@@ -257,6 +262,7 @@ async function main(): Promise<void> {
     // spinning forever on a hung render (observed: a 241_1/circo render
     // orphaned at 100% CPU for 20h after spawnSync's killSignal).
     const budgetMs = renderBudgetMs(it.id, COSTS.nativeMs[it.id] ?? 0);
+    const startedAt = Date.now();
     const r = await new Promise<{ stdout: string; stderr: string; status: number | null; timedOut: boolean }>(
       (resolve) => {
         const child = spawn('npx', ['tsx', join(REPO, 'test/corpus/render-one-xdot.ts'), it.path, engine], {
@@ -280,9 +286,12 @@ async function main(): Promise<void> {
         });
       },
     );
+    const elapsedMs = Date.now() - startedAt;
     if (r.timedOut) {
+      // State elapsed AND budget so a reader can tell a genuine runaway from a
+      // render that was merely long, without re-running anything.
       rec.status = 'timeout';
-      rec.err = `exceeded ${budgetMs}ms budget`;
+      rec.err = `ran ${elapsedMs}ms, exceeded ${budgetMs}ms budget`;
     } else if (r.status !== 0) {
       const m = /__RENDER_ERROR__ (.*)/.exec(r.stderr ?? '');
       rec.status = 'port-error';
