@@ -7,6 +7,6 @@ proceed until it scales.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| T1 | [Scale engine-walk's render budget](./T1-engine-walk-budget.md) | typescript-pro | `engine-walk.ts`, `engine-walk.test.ts` | — | [ ] |
+| T1 | [Scale engine-walk's render budget](./T1-engine-walk-budget.md) | typescript-pro | `engine-walk.ts`, `engine-walk.test.ts` | — | [x] |
 
 No sweep runs in this batch.
