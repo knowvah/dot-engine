@@ -5,7 +5,7 @@
   "budgetMult": 3,
   "counts": {
     "ok": 761,
-    "slow": 18,
+    "slow": 19,
     "over-cap": 0,
     "errored": 0,
     "oracle-error": 9
@@ -7066,6 +7066,15 @@
       "portMs": 11,
       "ratio": 0.18,
       "runs": 5
+    },
+    {
+      "id": "2621",
+      "path": "2621.dot",
+      "verdict": "slow",
+      "nativeMs": 256000,
+      "portMs": 1237043,
+      "ratio": 4.83,
+      "runs": 1
     }
   ]
 }

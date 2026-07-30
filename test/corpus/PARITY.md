@@ -19,7 +19,7 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 
 | track | surveyed | conformant / pass | diverged | accepted | errors | pass % |
 |---|---:|---:|---:|---:|---:|---:|
-| [dot (SVG)](./PARITY-dot.md) | 939 | 909 | 0 | 17 | 13 | 96.8% |
+| [dot (SVG)](./PARITY-dot.md) | 939 | 910 | 0 | 17 | 12 | 96.9% |
 | [dot (xdot)](./PARITY-XDOT.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 905 | 903 | 0 | 2 | 0 | 99.8% |
 | [circo (xdot)](./PARITY-circo.md) | 905 | 895 | 0 | 4 | 6 | 98.9% |
@@ -61,12 +61,12 @@ bar above.
 | [neato (plain)](./PARITY-neato-plain.md) | 905 | 896 | 0 | 8 | 1 | 99.0% |
 | [fdp (plain)](./PARITY-fdp-plain.md) | 905 | 893 | 0 | 8 | 4 | 98.7% |
 | [sfdp (plain)](./PARITY-sfdp-plain.md) | 905 | 896 | 0 | 8 | 1 | 99.0% |
-| [neato (json)](./PARITY-neato-json.md) | 905 | 821 | 9 | 73 | 2 | 90.7% |
-| [fdp (json)](./PARITY-fdp-json.md) | 905 | 698 | 53 | 151 | 3 | 77.1% |
-| [sfdp (json)](./PARITY-sfdp-json.md) | 905 | 615 | 53 | 235 | 2 | 68.0% |
+| [neato (json)](./PARITY-neato-json.md) | 909 | 825 | 1 | 81 | 2 | 90.8% |
+| [fdp (json)](./PARITY-fdp-json.md) | 909 | 701 | 2 | 202 | 4 | 77.1% |
+| [sfdp (json)](./PARITY-sfdp-json.md) | 909 | 617 | 3 | 287 | 2 | 67.9% |
 | [neato (imagemap)](./PARITY-neato-map.md) | 905 | 897 | 0 | 6 | 2 | 99.1% |
 | [fdp (imagemap)](./PARITY-fdp-map.md) | 905 | 883 | 0 | 18 | 4 | 97.6% |
-| [sfdp (imagemap)](./PARITY-sfdp-map.md) | 905 | 875 | 1 | 27 | 2 | 96.7% |
+| [sfdp (imagemap)](./PARITY-sfdp-map.md) | 910 | 879 | 1 | 28 | 2 | 96.6% |
 
 
 
@@ -80,15 +80,14 @@ three* only when every format agrees with the oracle within tolerance.
 
 | status across SVG · xdot · json | count | % |
 |---|---:|---:|
-| conformant in all three | 902 | 99.7% |
+| conformant in all three | 903 | 99.8% |
 | accepted (won't-fix) in ≥1, diverged in none | 2 | 0.2% |
-| diverged / errored in ≥1 | 1 | 0.1% |
+| diverged / errored in ≥1 | 0 | 0.0% |
 
 Per-format status of the ids not conformant in all three:
 
 | id | SVG | xdot | json |
 |---|---|---|---|
-| `1652` | error | conformant | conformant |
 | `share-Latin1` | conformant | conformant | accepted |
 | `windows-Latin1` | conformant | conformant | accepted |
 

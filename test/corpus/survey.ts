@@ -51,10 +51,10 @@ const ORACLE_SIG = (() => {
   return createHash('sha1').update(`${DOT_BIN}\0${GVBINDIR}\0${mt}`).digest('hex').slice(0, 12);
 })();
 const CACHE = process.env.ORACLE_CACHE ?? join(tmpdir(), 'dot-corpus-oracle', ORACLE_SIG);
-// A render is a `timeout` only if it does not error and runs past its budget:
-// max(MULT × native, FLOOR). The flat-20s budget mis-flagged graphs that are
-// merely slow-but-valid (e.g. 2108 ~70s, native ~12s); only a true runaway past
-// 3× native or 3 minutes — whichever is greater — counts.
+// A render is a `timeout` only if it does not error and runs past its budget
+// (`renderBudgetMs`). The flat-20s budget mis-flagged graphs that are merely
+// slow-but-valid (e.g. 2108 ~70s, native ~12s); only a true runaway past 3x the
+// graph's own known cost — or the floor, whichever is greater — counts.
 const TIMEOUT_MULT = Number(process.env.RENDER_TIMEOUT_MULT ?? 3);
 // TIMEOUT_FLOOR_MS is derived from the canonical native times below (5x the
 // slowest native render) so it scales with the host instead of a fixed 180s.
@@ -77,14 +77,13 @@ const CANON_NATIVE: Record<string, number> = (() => {
   catch { return {}; }
 })();
 /**
- * A render is a `timeout` only if it does not error and runs past its budget:
- * `max(MULT x native, FLOOR)`. The FLOOR is derived as 5x the slowest canonical
- * native render so it scales with the host (native-timings.json is frozen
- * per-hardware). This keeps a slow-but-valid port render from falsely timing out
- * under concurrency — e.g. the mincross-heavy 2108 is ~7x its native time and,
- * with 8-way CPU contention, can run several hundred seconds though native is
- * only ~13s — while a true runaway is still bounded. Env override wins; falls
- * back to 180s only when no native timings are available.
+ * FLOOR term of the render budget (see `renderBudgetMs` for the full formula),
+ * derived as 5x the slowest canonical native render so it scales with the host
+ * (native-timings.json is frozen per-hardware). This keeps a slow-but-valid port
+ * render from falsely timing out under concurrency — e.g. the mincross-heavy 2108
+ * is ~7x its native time and, with 8-way CPU contention, can run several hundred
+ * seconds though native is only ~13s — while a true runaway is still bounded.
+ * Env override wins; falls back to 180s when no native timings are available.
  */
 const MAX_NATIVE_MS = Math.max(0, ...Object.values(CANON_NATIVE));
 const TIMEOUT_FLOOR_MS = Number(
@@ -112,6 +111,117 @@ const PORT_TIMES: Record<string, number> = (() => {
 const MAX_PORT_MS = Number(process.env.SURVEY_MAX_PORT_MS ?? 0);
 /** Extracts a semantic version from `dot -V` output. */
 const VERSION_RE = /version (\d+\.\d+\.\d+)/;
+
+/**
+ * Wall-clock budget for one port render: `max(FLOOR, MULT x native, MULT x own
+ * recorded port time)`.
+ *
+ * The third term exists because the first two are blind to a graph whose port
+ * cost far exceeds its native cost. 1652 renders in 823s against a 270s native
+ * (3.0x), so `MULT x native` (810s) lands *below* its own uncontended time and
+ * only the FLOOR (5x the slowest native = 1351s) kept it alive — 1.6x headroom.
+ * LPT dispatch then starts the eight most expensive graphs together, so 1652 met
+ * its worst contention exactly where it had the least room and was recorded
+ * `timeout` despite being conformant standalone (measured 2026-07-29: conformant,
+ * 823s). Scaling by the graph's own known cost gives every input the same 3x
+ * headroom the MULT was meant to express, and still bounds a true runaway.
+ *
+ * Residual: this is a wall-clock bound on a CPU-cost estimate, so a graph can
+ * still flip under pathological contention. If that recurs, re-verdict the id
+ * with SURVEY_CONCURRENCY=1 before treating it as a regression.
+ */
+function renderBudgetMs(id: string, nativeMs: number): number {
+  return Math.max(
+    TIMEOUT_FLOOR_MS,
+    Math.ceil(TIMEOUT_MULT * nativeMs),
+    Math.ceil(TIMEOUT_MULT * (PORT_TIMES[id] ?? 0)),
+  );
+}
+
+/**
+ * Oracle render times (id -> ms) already recorded beside each cached oracle SVG.
+ * A third cost signal for graphs the perf bench and the frozen native capture
+ * both missed: 2621 appears in neither, so without this it scored 0 and sorted
+ * as the cheapest possible render despite a ~4min oracle and a multi-minute port
+ * render — it dispatched last AND escaped the heavy cap. Read once at startup;
+ * an absent/unreadable cache simply contributes nothing.
+ */
+const CACHED_ORACLE_MS: Record<string, number> = (() => {
+  const out: Record<string, number> = {};
+  try {
+    for (const f of readdirSync(CACHE)) {
+      if (!f.endsWith('.ms')) continue;
+      const ms = Number(readFileSync(join(CACHE, f), 'utf8'));
+      if (Number.isFinite(ms) && ms > 0) out[f.slice(0, -3)] = ms;
+    }
+  } catch { /* no cache yet */ }
+  return out;
+})();
+
+/**
+ * Expected cost of one render: the recorded warm port time when we have one,
+ * else the canonical native time, else the oracle time recorded in the cache,
+ * else 0 (unknown = assumed cheap). Same measure LPT dispatch orders by, so
+ * "heavy" means the same thing in both places.
+ */
+function expectedCostMs(id: string): number {
+  return PORT_TIMES[id] || CANON_NATIVE[id] || CACHED_ORACLE_MS[id] || 0;
+}
+
+/**
+ * Cost above which a render competes for a heavy slot. Renders under this run
+ * freely in any worker slot.
+ */
+const HEAVY_MS = Number(process.env.SURVEY_HEAVY_MS ?? 120_000);
+/**
+ * How many heavy renders may run at once.
+ *
+ * LPT dispatch (cost-descending) was introduced so the slowest renders start at
+ * t=0 and overlap the fast bulk rather than bunching into a mutually-contending
+ * tail — but it thereby guarantees the `concurrency` most expensive graphs run
+ * *simultaneously*, which is the same contention it was meant to avoid, just
+ * moved to the front. Measured on a 12-core/96GB host at concurrency 8: 1652
+ * renders in 823s alone but blew a 2403s budget in the pool, and 2371/2646
+ * inflated 3.8-5.7x over their standalone times — enough to flip four of the
+ * heaviest graphs to `timeout` in a single sweep. Capping co-scheduled heavy
+ * renders bounds that peak while light work still fills every worker slot, so
+ * throughput is broadly preserved and the tail stays short.
+ *
+ * This is the same remedy the perf bench already applies for the same reason:
+ * bench.mjs times heavy inputs serially (BENCH_HEAVY_POOL=1) because running
+ * them concurrently was measured to inflate 2620's sample ~66% (1969->3268ms)
+ * "via memory-bandwidth + scheduler cross-talk". The survey was simply missing
+ * that protection.
+ *
+ * Known inefficiency: because dispatch is cost-descending, the first few workers
+ * all draw heavy entries and those beyond HEAVY_SLOTS block on the semaphore
+ * rather than moving on to light work, so a couple of worker slots idle during
+ * the heavy phase. That is a throughput cost, not a correctness one — and it
+ * lands exactly when less load is wanted. Fixing it properly means a separate
+ * heavy queue; not worth the restructuring unless sweep wall-clock regresses.
+ */
+const HEAVY_SLOTS = Number(process.env.SURVEY_HEAVY_SLOTS ?? 2);
+
+/** Minimal FIFO counting semaphore (no deps; used only by runPool). */
+class Semaphore {
+  private free: number;
+  private readonly waiters: (() => void)[] = [];
+  constructor(slots: number) {
+    this.free = Math.max(1, slots);
+  }
+  async acquire(): Promise<void> {
+    if (this.free > 0) {
+      this.free--;
+      return;
+    }
+    await new Promise<void>((resolve) => this.waiters.push(resolve));
+  }
+  release(): void {
+    const nextWaiter = this.waiters.shift();
+    if (nextWaiter === undefined) this.free++;
+    else nextWaiter();
+  }
+}
 
 /** Verdict for one surveyed input. */
 export type Verdict =
@@ -396,7 +506,7 @@ async function surveyOne(
   // timeout. Native time is the canonical (frozen) value when captured, else the
   // time the oracle run just measured.
   const nativeMs = CANON_NATIVE[entry.id] ?? oracle.ms ?? 0;
-  const budgetMs = Math.max(TIMEOUT_FLOOR_MS, Math.ceil(TIMEOUT_MULT * nativeMs));
+  const budgetMs = renderBudgetMs(entry.id, nativeMs);
   const port = await portSvg(absInput, tsx, budgetMs);
   if (port.svg === undefined) return { ...meta, verdict: port.verdict!, errMsg: port.errMsg };
   const co = clipOverflow(port.svg, oracle.svg);
@@ -414,11 +524,20 @@ async function runPool(
   concurrency: number,
 ): Promise<SurveyResult[]> {
   const results: SurveyResult[] = new Array(entries.length);
+  const heavy = new Semaphore(HEAVY_SLOTS);
   let next = 0;
   let done = 0;
   const worker = async (): Promise<void> => {
     for (let i = next++; i < entries.length; i = next++) {
-      results[i] = await surveyOne(entries[i], tsx);
+      const entry = entries[i];
+      // Heavy renders take a heavy slot as well as their worker slot, so at most
+      // HEAVY_SLOTS of them ever run together (see HEAVY_MS).
+      if (expectedCostMs(entry.id) > HEAVY_MS) {
+        await heavy.acquire();
+        try { results[i] = await surveyOne(entry, tsx); } finally { heavy.release(); }
+      } else {
+        results[i] = await surveyOne(entry, tsx);
+      }
       if (++done % 50 === 0) process.stderr.write(`  ${done}/${entries.length}\n`);
     }
   };
@@ -467,7 +586,8 @@ async function main(): Promise<void> {
   const tsx = resolveTsx();
   process.stderr.write(
     `surveying ${applicable.length} applicable inputs ` +
-      `(concurrency ${CONCURRENCY}, budget max(${TIMEOUT_MULT}x native, ${TIMEOUT_FLOOR_MS}ms))\n` +
+      `(concurrency ${CONCURRENCY}, budget max(${TIMEOUT_MULT}x native, ` +
+      `${TIMEOUT_MULT}x recorded port, ${TIMEOUT_FLOOR_MS}ms))\n` +
       (MAX_PORT_MS > 0 ? `fast mode: excluded ${skippedSlow} graphs with port time > ${MAX_PORT_MS}ms\n` : '') +
       `oracle ${DOT_BIN} (cap ${ORACLE_TIMEOUT_MS}ms)\ncache ${CACHE}\nport via ${tsx.cmd}\n`,
   );
@@ -478,7 +598,7 @@ async function main(): Promise<void> {
   // port time when recorded, else canonical native time. Results are restored
   // to manifest order below, so parity.json ordering is unchanged.
   const manifestIdx = new Map(applicable.map((e, i) => [e.id, i]));
-  const cost = (e: CorpusEntry): number => PORT_TIMES[e.id] ?? CANON_NATIVE[e.id] ?? 0;
+  const cost = (e: CorpusEntry): number => expectedCostMs(e.id);
   const dispatch = [...applicable].sort((a, b) => cost(b) - cost(a));
   const pooled = await runPool(dispatch, tsx, CONCURRENCY);
   const results: SurveyResult[] = new Array(applicable.length);
