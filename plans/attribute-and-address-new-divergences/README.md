@@ -65,7 +65,7 @@ There is **no linter** in this project (no eslint config, no lint script).
 | 4 | [T4 — verify json-surface transfer](./batch-4/T4-json-transfer-verify.md) | T3 | [x] |
 | 5 | [T5 — re-walk json/map so the class absorbs](./batch-5/T5-json-map-rewalk.md) | T4 | [x] |
 | 6 | [T6 — address not-cleared ids (CONDITIONAL)](./batch-6/T6-address-not-cleared.md) | T3, T4 | [x] SKIPPED (P4) |
-| 7 | [T7 — regenerate dashboards, final gates](./batch-7/T7-closeout.md) | T5, T6 | [ ] |
+| 7 | [T7 — regenerate dashboards, final gates](./batch-7/T7-closeout.md) | T5, T6 | [x] |
 
 Every batch holds one task. They are strictly sequential — not because the
 write-sets collide (they mostly don't) but because **concurrent sweeps produce
