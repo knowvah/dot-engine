@@ -49,6 +49,7 @@ import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareCmapx, compareImap, type MapDiff } from '../golden/compare-map.js';
+import { classAcceptedIds } from './accepted-class.js';
 import { CMAPX_SENTINEL, IMAP_SENTINEL } from './render-one-map.js';
 import type { EngineName } from '../../src/gvc/context.js';
 
@@ -435,19 +436,21 @@ function conformantItems(): Item[] {
 }
 
 function loadAccepted(engine: EngineName): Set<string> {
+  // Class members first: computed from the attribution harness, so the A1-drift
+  // roster cannot go stale as the corpus grows (@see accepted-class.ts).
+  const accepted = classAcceptedIds(ACCEPTED, engine);
   try {
     const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as {
       divergences?: Array<{ id: string; engine?: string }>;
     };
     // Entries may be engine-scoped; an engine-less entry applies everywhere.
-    return new Set(
-      (raw.divergences ?? [])
-        .filter((d) => d.engine === undefined || d.engine === engine)
-        .map((d) => d.id),
-    );
+    for (const d of raw.divergences ?? []) {
+      if (d.engine === undefined || d.engine === engine) accepted.add(d.id);
+    }
   } catch {
-    return new Set();
+    // A missing/unreadable registry accepts only whatever the class resolved.
   }
+  return accepted;
 }
 
 async function oracleVersion(): Promise<string> {

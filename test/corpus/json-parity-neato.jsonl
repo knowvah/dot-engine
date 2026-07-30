@@ -209,7 +209,6 @@
 {"id":"graphs-clust2","path":"graphs/clust2.gv","size":146,"verdict":"conformant"}
 {"id":"graphs-clust3","path":"graphs/clust3.gv","size":146,"verdict":"conformant"}
 {"id":"tree-graphs-directed-clust2","path":"../graphs/directed/clust2.gv","size":146,"verdict":"conformant"}
-{"id":"tree-graphs-directed-clust1","path":"../graphs/directed/clust1.gv","size":146,"verdict":"diverged","diffCount":42,"firstDiff":"cluster:cluster_c1/_draw_/op[1].p[0]","maxDelta":0.8499999999999943,"maxDeltaPath":"edge:x->a0#0/_hdraw_/op[3].P[0]"}
 {"id":"tree-doc-infosrc-fill","path":"../doc/infosrc/fill.dot","size":147,"verdict":"conformant"}
 {"id":"tree-graphs-directed-clust3","path":"../graphs/directed/clust3.gv","size":146,"verdict":"conformant"}
 {"id":"1221","path":"1221.dot","size":149,"verdict":"conformant"}
@@ -340,7 +339,6 @@
 {"id":"2168_2","path":"2168_2.dot","size":349,"verdict":"conformant"}
 {"id":"tree-graphs-directed-nhg","path":"../graphs/directed/nhg.gv","size":339,"verdict":"conformant"}
 {"id":"graphs-ZapfDingbats","path":"graphs/ZapfDingbats.gv","size":360,"verdict":"conformant"}
-{"id":"tree-doc-neato-inet","path":"../doc/neato/inet.dot","size":349,"verdict":"diverged","diffCount":721,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":225.61999999999998,"maxDeltaPath":"node:IHC/_draw_/op[1].e[0]"}
 {"id":"graphs-colors","path":"graphs/colors.gv","size":376,"verdict":"conformant"}
 {"id":"graphs-mike","path":"graphs/mike.gv","size":381,"verdict":"conformant"}
 {"id":"graphs-ZapfChancery","path":"graphs/ZapfChancery.gv","size":386,"verdict":"conformant"}
@@ -547,7 +545,6 @@
 {"id":"tree-graphs-directed-train11","path":"../graphs/directed/train11.gv","size":777,"verdict":"conformant"}
 {"id":"graphs-jcctree","path":"graphs/jcctree.gv","size":778,"verdict":"accepted","diffCount":113,"firstDiff":"edge:DEF2->ID2#0/_draw_/op[1].b[1]","maxDelta":0.6000000000000227,"maxDeltaPath":"node:CLOSE1/_ldraw_/op[2].T[1]"}
 {"id":"graphs-Heawood","path":"graphs/Heawood.gv","size":790,"verdict":"conformant"}
-{"id":"tree-graphs-directed-jcctree","path":"../graphs/directed/jcctree.gv","size":778,"verdict":"diverged","diffCount":113,"firstDiff":"edge:DEF2->ID2#0/_draw_/op[1].b[1]","maxDelta":0.6000000000000227,"maxDeltaPath":"node:CLOSE1/_ldraw_/op[2].T[1]"}
 {"id":"graphs-japanese","path":"graphs/japanese.gv","size":789,"verdict":"conformant"}
 {"id":"tree-graphs-directed-japanese","path":"../graphs/directed/japanese.gv","size":789,"verdict":"conformant"}
 {"id":"tree-graphs-undirected-Heawood","path":"../graphs/undirected/Heawood.gv","size":790,"verdict":"conformant"}
@@ -600,7 +597,6 @@
 {"id":"graphs-url","path":"graphs/url.gv","size":1242,"verdict":"accepted","diffCount":8,"firstDiff":"cluster:cluster0/_draw_/op[2].P[4]","maxDelta":18,"maxDeltaPath":"node:name/_draw_/op[1].e[0]"}
 {"id":"windows-clust1","path":"windows/clust1.gv","size":1261,"verdict":"accepted","diffCount":43,"firstDiff":"cluster:cluster_c1/_draw_/op[1].p[3]","maxDelta":0.6500000000000057,"maxDeltaPath":"edge:x->b0#0/_draw_/op[1].b[3]"}
 {"id":"graphs-grammar","path":"graphs/grammar.gv","size":1302,"verdict":"accepted","diffCount":38,"firstDiff":"edge:n10->n11#0/_draw_/op[1].b[0]","maxDelta":0.660000000000025,"maxDeltaPath":"edge:n10->n11#0/_hdraw_/op[3].P[2]"}
-{"id":"tree-graphs-directed-grammar","path":"../graphs/directed/grammar.gv","size":1302,"verdict":"diverged","diffCount":38,"firstDiff":"edge:n10->n11#0/_draw_/op[1].b[0]","maxDelta":0.660000000000025,"maxDeltaPath":"edge:n10->n11#0/_hdraw_/op[3].P[2]"}
 {"id":"1855","path":"1855.dot","size":1335,"verdict":"conformant"}
 {"id":"tree-graphs-directed-switch","path":"../graphs/directed/switch.gv","size":1344,"verdict":"conformant"}
 {"id":"graphs-dpd","path":"graphs/dpd.gv","size":1357,"verdict":"conformant"}
@@ -721,7 +717,6 @@
 {"id":"1622_2","path":"1622_2.dot","size":3299,"verdict":"conformant"}
 {"id":"share-pmpipe","path":"share/pmpipe.gv","size":3346,"verdict":"conformant"}
 {"id":"windows-pmpipe","path":"windows/pmpipe.gv","size":3346,"verdict":"conformant"}
-{"id":"tree-doc-dotguide-asde91","path":"../doc/dotguide/asde91.dot","size":3383,"verdict":"diverged","diffCount":100,"firstDiff":"edge:1980->1982#0/_draw_/op[1].b[0]","maxDelta":0.8600000000000136,"maxDeltaPath":"node:1987/_ldraw_/op[2].T[0]"}
 {"id":"1880","path":"1880.dot","size":3451,"verdict":"conformant"}
 {"id":"linux.x86-ports_dot","path":"linux.x86/ports_dot.gv","size":3470,"verdict":"conformant"}
 {"id":"nshare-ports_dot","path":"nshare/ports_dot.gv","size":3493,"verdict":"conformant"}
@@ -760,7 +755,6 @@
 {"id":"graphs-grdradial","path":"graphs/grdradial.gv","size":5370,"verdict":"conformant"}
 {"id":"share-shells","path":"share/shells.gv","size":5493,"verdict":"conformant"}
 {"id":"tree-graphs-directed-sdh","path":"../graphs/directed/sdh.gv","size":5428,"verdict":"conformant"}
-{"id":"tree-graphs-directed-polypoly","path":"../graphs/directed/polypoly.gv","size":5155,"verdict":"diverged","diffCount":3221,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":1496,"maxDeltaPath":"node:6110/_draw_/op[1].p[0]"}
 {"id":"graphs-crazy","path":"graphs/crazy.gv","size":5556,"verdict":"conformant"}
 {"id":"tree-graphs-directed-crazy","path":"../graphs/directed/crazy.gv","size":5572,"verdict":"conformant"}
 {"id":"windows-shells","path":"windows/shells.gv","size":5589,"verdict":"accepted","diffCount":14,"firstDiff":"edge:Thompson->Mashey#0/_draw_/op[1].b[5]","maxDelta":0.8000000000000114,"maxDeltaPath":"edge:Thompson->Mashey#0/_draw_/op[1].b[7]"}
@@ -817,7 +811,6 @@
 {"id":"share-b94","path":"share/b94.gv","size":9831,"verdict":"conformant"}
 {"id":"nshare-weight_dot","path":"nshare/weight_dot.gv","size":9391,"verdict":"accepted","diffCount":36,"firstDiff":"edge:7th Edition->UniPlus+#0/_draw_/op[1].b[1]","maxDelta":1.079999999999984,"maxDeltaPath":"edge:7th Edition->UniPlus+#0/pos[1]"}
 {"id":"nshare-dotsplines_dot1","path":"nshare/dotsplines_dot1.gv","size":9332,"verdict":"accepted","diffCount":23,"firstDiff":"edge:7th Edition->Ultrix-11#0/_draw_/op[1].b[0]","maxDelta":0.82000000000005,"maxDeltaPath":"edge:7th Edition->Ultrix-11#0/_draw_/op[1].b[0]"}
-{"id":"tree-contrib-java-dot-uml","path":"../contrib/java-dot/uml.dot","size":10213,"verdict":"diverged","diffCount":148,"firstDiff":"edge:class_dot_DotAttr->tri_class_dot_DotAttr#0/_draw_/op[2].b[0]","maxDelta":0.5800000000000409,"maxDeltaPath":"edge:class_dot_DotNodeAttr->tri_class_dot_DotNodeAttr#0/_draw_/op[2].b[4]"}
 {"id":"graphs-b36","path":"graphs/b36.gv","size":10388,"verdict":"conformant"}
 {"id":"share-proc3d","path":"share/proc3d.gv","size":10429,"verdict":"conformant"}
 {"id":"graphs-b124","path":"graphs/b124.gv","size":10284,"verdict":"conformant"}
@@ -855,14 +848,12 @@
 {"id":"windows-b94","path":"windows/b94.gv","size":14509,"verdict":"conformant"}
 {"id":"1447_1","path":"1447_1.dot","size":14827,"verdict":"conformant"}
 {"id":"windows-b36","path":"windows/b36.gv","size":15050,"verdict":"conformant"}
-{"id":"tree-doc-neato-jho","path":"../doc/neato/jho.dot","size":14828,"verdict":"diverged","diffCount":426,"firstDiff":"edge:ccsfpr2_0_1t_99->359100#0/_draw_/op[1].b[0]","maxDelta":2.900000000000091,"maxDeltaPath":"node:fcfpr1_1_3g_2/pos[0]"}
 {"id":"graphs-mode","path":"graphs/mode.gv","size":14907,"verdict":"accepted","diffCount":474,"firstDiff":"edge:ccsfpr2_0_1t_99->359100#0/_draw_/op[1].b[0]","maxDelta":2.8599999999999,"maxDeltaPath":"node:fcfpr1_1_3g_2/_draw_/op[1].e[0]"}
 {"id":"linux.i386-b36","path":"linux.i386/b36.gv","size":15051,"verdict":"conformant"}
 {"id":"share-b36","path":"share/b36.gv","size":15051,"verdict":"conformant"}
 {"id":"share-NaN","path":"share/NaN.gv","size":16328,"verdict":"conformant"}
 {"id":"graphs-b51","path":"graphs/b51.gv","size":19886,"verdict":"conformant"}
 {"id":"windows-NaN","path":"windows/NaN.gv","size":17050,"verdict":"conformant"}
-{"id":"tree-contrib-dirgraph-linux","path":"../contrib/dirgraph/linux.dot","size":21860,"verdict":"diverged","diffCount":2,"firstDiff":"edge:__usr_src_linux_fs->__usr_src_linux_fs_isofs#0/_draw_/op[1].b[5]","maxDelta":0.5299999999999727,"maxDeltaPath":"edge:__usr_src_linux_fs->__usr_src_linux_fs_isofs#0/_draw_/op[1].b[5]"}
 {"id":"windows-b124","path":"windows/b124.gv","size":28038,"verdict":"conformant"}
 {"id":"share-b124","path":"share/b124.gv","size":28041,"verdict":"conformant"}
 {"id":"share-b51","path":"share/b51.gv","size":29420,"verdict":"conformant"}
@@ -903,3 +894,17 @@
 {"id":"1652","path":"1652.dot","size":240391,"verdict":"accepted","diffCount":58,"firstDiff":"edge:Op_10->Op_35#0/_ldraw_/op[2].T[1]","maxDelta":68.80999999999995,"maxDeltaPath":"edge:Op_716->Op_750#0/_ldraw_/op[2].T[0]"}
 {"id":"2222","path":"2222.dot","size":2384469,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"timeout","errMsg":""}
+{"id":"tree-doc-dotguide-icurve","path":"../doc/dotguide/icurve.dot","size":107,"verdict":"conformant"}
+{"id":"tree-doc-infosrc-fixed","path":"../doc/infosrc/fixed.gv","size":230,"verdict":"conformant"}
+{"id":"tree-doc-dotguide-curve","path":"../doc/dotguide/curve.dot","size":106,"verdict":"conformant"}
+{"id":"tree-graphs-directed-clust1","path":"../graphs/directed/clust1.gv","size":146,"verdict":"accepted","diffCount":42,"firstDiff":"cluster:cluster_c1/_draw_/op[1].p[0]","maxDelta":0.8499999999999943,"maxDeltaPath":"edge:x->a0#0/_hdraw_/op[3].P[0]"}
+{"id":"tree-graphs-directed-jcctree","path":"../graphs/directed/jcctree.gv","size":778,"verdict":"accepted","diffCount":113,"firstDiff":"edge:DEF2->ID2#0/_draw_/op[1].b[1]","maxDelta":0.6000000000000227,"maxDeltaPath":"node:CLOSE1/_ldraw_/op[2].T[1]"}
+{"id":"tree-doc-neato-inet","path":"../doc/neato/inet.dot","size":349,"verdict":"accepted","diffCount":721,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":225.61999999999998,"maxDeltaPath":"node:IHC/_draw_/op[1].e[0]"}
+{"id":"tree-graphs-directed-grammar","path":"../graphs/directed/grammar.gv","size":1302,"verdict":"accepted","diffCount":38,"firstDiff":"edge:n10->n11#0/_draw_/op[1].b[0]","maxDelta":0.660000000000025,"maxDeltaPath":"edge:n10->n11#0/_hdraw_/op[3].P[2]"}
+{"id":"tree-contrib-java-dot-uml","path":"../contrib/java-dot/uml.dot","size":10213,"verdict":"accepted","diffCount":148,"firstDiff":"edge:class_dot_DotAttr->tri_class_dot_DotAttr#0/_draw_/op[2].b[0]","maxDelta":0.5800000000000409,"maxDeltaPath":"edge:class_dot_DotNodeAttr->tri_class_dot_DotNodeAttr#0/_draw_/op[2].b[4]"}
+{"id":"tree-graphs-directed-arrows","path":"../graphs/directed/arrows.gv","size":4766,"verdict":"conformant"}
+{"id":"tree-doc-dotguide-asde91","path":"../doc/dotguide/asde91.dot","size":3383,"verdict":"accepted","diffCount":100,"firstDiff":"edge:1980->1982#0/_draw_/op[1].b[0]","maxDelta":0.8600000000000136,"maxDeltaPath":"node:1987/_ldraw_/op[2].T[0]"}
+{"id":"tree-graphs-directed-polypoly","path":"../graphs/directed/polypoly.gv","size":5155,"verdict":"accepted","diffCount":3221,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":1496,"maxDeltaPath":"node:6110/_draw_/op[1].p[0]"}
+{"id":"tree-doc-neato-jho","path":"../doc/neato/jho.dot","size":14828,"verdict":"accepted","diffCount":426,"firstDiff":"edge:ccsfpr2_0_1t_99->359100#0/_draw_/op[1].b[0]","maxDelta":2.900000000000091,"maxDeltaPath":"node:fcfpr1_1_3g_2/pos[0]"}
+{"id":"tree-contrib-dirgraph-linux","path":"../contrib/dirgraph/linux.dot","size":21860,"verdict":"accepted","diffCount":2,"firstDiff":"edge:__usr_src_linux_fs->__usr_src_linux_fs_isofs#0/_draw_/op[1].b[5]","maxDelta":0.5299999999999727,"maxDeltaPath":"edge:__usr_src_linux_fs->__usr_src_linux_fs_isofs#0/_draw_/op[1].b[5]"}
+{"id":"2621","path":"2621.dot","size":721934,"verdict":"diverged","diffCount":79577,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":254.3199999999997,"maxDeltaPath":"edge:deploy_indicators/prod/custom_axis/man_distance_to_charging_stations_one->deploy_indicators/prod/custom_axis/all_custom_axis#0/_draw_/op[1].b[7]"}

@@ -60,6 +60,7 @@ import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareJson, type JsonDiff } from '../golden/compare-json.js';
+import { classAcceptedIds } from './accepted-class.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -346,20 +347,22 @@ function conformantItems(): Item[] {
 }
 
 function loadAccepted(): Set<string> {
+  // Class members first: computed from the attribution harness, so the A1-drift
+  // roster cannot go stale as the corpus grows (@see accepted-class.ts).
+  const accepted = classAcceptedIds(ACCEPTED, ENGINE);
   try {
     const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as {
       divergences?: Array<{ id: string; engine?: string }>;
     };
     // Entries may be engine-scoped; an entry without `engine` applies to every
     // engine (legacy dot-era rows). Only matching-engine entries accept here.
-    return new Set(
-      (raw.divergences ?? [])
-        .filter((d) => d.engine === undefined || d.engine === ENGINE)
-        .map((d) => d.id),
-    );
+    for (const d of raw.divergences ?? []) {
+      if (d.engine === undefined || d.engine === ENGINE) accepted.add(d.id);
+    }
   } catch {
-    return new Set();
+    // A missing/unreadable registry accepts only whatever the class resolved.
   }
+  return accepted;
 }
 
 /** Read a resume JSONL: id -> last recorded row (partial trailing lines skipped). */

@@ -29,6 +29,7 @@ import type { CorpusEntry } from './enumerate.js';
 import type { PlainVerdict, PlainWalkResult, PlainParityReport, PlainFormatResult } from './plain-walk.js';
 // format-parity-matrix (END)
 import { loadAccepted, matchAccepted } from './accepted.js';
+import { classAcceptedIds, type FormatAcceptedClassEntry, type FormatAcceptedRegistry } from './accepted-class.js';
 import { testIdLink, scrubLocalPaths } from './corpus-links.js';
 // map-conformance (BEGIN): dot (imagemap) track types — see MAP block below.
 import type { MapVerdict, MapWalkResult, MapFormatResult } from './map-walk.js';
@@ -691,10 +692,42 @@ function loadFormatAccepted(url: URL): FormatAcceptedEntry[] {
   return raw.divergences ?? [];
 }
 
+/** The class-acceptance entries a format registry declares (empty when the
+ * registry predates the shape, e.g. the plain/dot registries). */
+function loadFormatClasses(url: URL): FormatAcceptedClassEntry[] {
+  if (!existsSync(url)) return [];
+  const raw = JSON.parse(readFileSync(fileURLToPath(url), 'utf8')) as FormatAcceptedRegistry;
+  return (raw.classes ?? []).filter((c) => c.class === true);
+}
+
+/** Reason text shared by every member of a computed class. Class members have
+ * no per-id registry row by design (membership is computed, not enumerated), so
+ * without this the accepted table would render them with a blank reason. */
+function classReasonText(entry: FormatAcceptedClassEntry): string {
+  return (
+    `A1 iterative-solver drift (class) — membership computed from ` +
+    `\`${entry.attributionFile}\`: injecting the oracle's pre-routing node positions ` +
+    `makes the port reproduce the oracle with zero diffs, so the residual is the ` +
+    `solver's fp-chaotic positions alone. See ${entry.ref}.`
+  );
+}
+
 /** id -> reason text, scoped to `engine` (entries without `engine` apply to
- * every engine). */
-function acceptedReasonsForEngine(entries: FormatAcceptedEntry[], engine: string): Map<string, string> {
+ * every engine). Class members are seeded first so an explicit per-id row for
+ * the same id still wins. */
+function acceptedReasonsForEngine(
+  entries: FormatAcceptedEntry[],
+  engine: string,
+  registryUrl?: URL,
+): Map<string, string> {
   const m = new Map<string, string>();
+  if (registryUrl !== undefined) {
+    const cls = loadFormatClasses(registryUrl).find((c) => c.engine === engine);
+    if (cls !== undefined) {
+      const reason = classReasonText(cls);
+      for (const id of classAcceptedIds(registryUrl, engine)) m.set(id, reason);
+    }
+  }
   for (const e of entries) {
     if (e.engine !== undefined && e.engine !== engine) continue;
     m.set(e.id, e.reason ?? e.rationale ?? '');
@@ -706,8 +739,10 @@ function acceptedReasonsForEngine(entries: FormatAcceptedEntry[], engine: string
  * summary line, diverged table (worst-first), accepted table (with reason,
  * when the registry carries one), and an errors/timeouts table. Mirrors
  * engineMarkdown's section shape, simplified to these tracks' own
- * already-resolved verdicts (no class-acceptance section — none of these
- * three registries define a class entry). */
+ * already-resolved verdicts: the walkers resolve class membership at walk time
+ * (accepted-class.ts), so an id accepted by the json/map A1-drift class arrives
+ * here already verdicted `accepted` and needs no separate class section — only
+ * its reason text, which acceptedReasonsForEngine seeds from the class. */
 function formatDetailMarkdown(
   surface: 'plain' | 'json' | 'map' | 'dot',
   engine: string,
@@ -1116,7 +1151,7 @@ function main(): void {
     const isIterative = (ITERATIVE_ENGINES as readonly string[]).includes(engine);
     (isIterative ? iterativeRows : rows).push(row);
     presentJsonEngines.push(engine);
-    const reasons = acceptedReasonsForEngine(acceptedJsonEngines, engine);
+    const reasons = acceptedReasonsForEngine(acceptedJsonEngines, engine, ACCEPTED_JSON_ENGINES);
     const sourceFile = `json-parity-${engine}.json`;
     const out = fileURLToPath(new URL(`./PARITY-${engine}-json.md`, import.meta.url));
     writeFileSync(
@@ -1139,7 +1174,7 @@ function main(): void {
     const isIterative = (ITERATIVE_ENGINES as readonly string[]).includes(engine);
     (isIterative ? iterativeRows : rows).push(row);
     presentMapEngines.push(engine);
-    const reasons = acceptedReasonsForEngine(acceptedMapEngines, engine);
+    const reasons = acceptedReasonsForEngine(acceptedMapEngines, engine, ACCEPTED_MAP_ENGINES);
     const sourceFile = `map-parity-${engine}.json`;
     const out = fileURLToPath(new URL(`./PARITY-${engine}-map.md`, import.meta.url));
     writeFileSync(

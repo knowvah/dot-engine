@@ -11,32 +11,23 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 905
-- **pass:** 821 (90.7%) · **diverged (tracked):** 9 · **accepted (documented, won't-fix):** 73
+- **Surveyed:** 909
+- **pass:** 825 (90.8%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 81
 - **errors (oracle/port/timeout, excluded from scoring):** 2
 
-## Diverged (9)
+## Diverged (1)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 5155 | 3221 | `[graph]/_draw_/op[2].P[3]` |
-| [`tree-doc-neato-inet`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/inet.dot) | 349 | 721 | `[graph]/_draw_/op[2].P[3]` |
-| [`tree-doc-neato-jho`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/jho.dot) | 14828 | 426 | `edge:ccsfpr2_0_1t_99->359100#0/_draw_/op[1].b[0]` |
-| [`tree-contrib-java-dot-uml`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/java-dot/uml.dot) | 10213 | 148 | `edge:class_dot_DotAttr->tri_class_dot_DotAttr#0/_draw_/op[2].b[0]` |
-| [`tree-graphs-directed-jcctree`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/jcctree.gv) | 778 | 113 | `edge:DEF2->ID2#0/_draw_/op[1].b[1]` |
-| [`tree-doc-dotguide-asde91`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/asde91.dot) | 3383 | 100 | `edge:1980->1982#0/_draw_/op[1].b[0]` |
-| [`tree-graphs-directed-clust1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/clust1.gv) | 146 | 42 | `cluster:cluster_c1/_draw_/op[1].p[0]` |
-| [`tree-graphs-directed-grammar`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/grammar.gv) | 1302 | 38 | `edge:n10->n11#0/_draw_/op[1].b[0]` |
-| [`tree-contrib-dirgraph-linux`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/dirgraph/linux.dot) | 21860 | 2 | `edge:__usr_src_linux_fs->__usr_src_linux_fs_isofs#0/_draw_/op[1].b[5]` |
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 721934 | 79577 | `[graph]/_draw_/op[2].P[3]` |
 
-## Accepted (73) — documented, not chased
+## Accepted (81) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
 | [`1332`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1332.dot) | 1049 | `edge:c5381->c5382#0/_draw_/op[1].b[5]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`1436`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1436.dot) | 385 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | 98 | `edge:0x00400ba6->0x00400b68#0/_draw_/op[1].b[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | 58 | `edge:Op_10->Op_35#0/_ldraw_/op[2].T[1]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`1949`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1949.dot) | 151 | `[graph]/_draw_/op[2].P[4]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`1990`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1990.dot) | 17 | `edge:0⋯7 ❰A❱->0⋯1 'a'#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2095`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095.dot) | 7323 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
@@ -93,6 +84,15 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`share-ngk10_4`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/ngk10_4.gv) | 75 | `edge:14->18#0/_draw_/op[1].b[2]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`share-pgram`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/pgram.gv) | 2073 | `edge:Parallelogram->A#0/_draw_/op[1].b[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`share-trapeziumlr`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/trapeziumlr.gv) | 1818 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`tree-contrib-dirgraph-linux`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/dirgraph/linux.dot) | 2 | `edge:__usr_src_linux_fs->__usr_src_linux_fs_isofs#0/_draw_/op[1].b[5]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`tree-contrib-java-dot-uml`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../contrib/java-dot/uml.dot) | 148 | `edge:class_dot_DotAttr->tri_class_dot_DotAttr#0/_draw_/op[2].b[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`tree-doc-dotguide-asde91`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/asde91.dot) | 100 | `edge:1980->1982#0/_draw_/op[1].b[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`tree-doc-neato-inet`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/inet.dot) | 721 | `[graph]/_draw_/op[2].P[3]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`tree-doc-neato-jho`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/neato/jho.dot) | 426 | `edge:ccsfpr2_0_1t_99->359100#0/_draw_/op[1].b[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`tree-graphs-directed-clust1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/clust1.gv) | 42 | `cluster:cluster_c1/_draw_/op[1].p[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`tree-graphs-directed-grammar`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/grammar.gv) | 38 | `edge:n10->n11#0/_draw_/op[1].b[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`tree-graphs-directed-jcctree`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/jcctree.gv) | 113 | `edge:DEF2->ID2#0/_draw_/op[1].b[1]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 3221 | `[graph]/_draw_/op[2].P[3]` | A1 iterative-solver drift (class) — membership computed from `attribution-neato.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`windows-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b102.gv) | 66 | `edge:Node109->Node79#0/_draw_/op[2].b[1]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`windows-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b29.gv) | 357 | `edge:Node14650->Node14649#0/_ldraw_/op[2].T[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`windows-clust1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/clust1.gv) | 43 | `cluster:cluster_c1/_draw_/op[1].p[3]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
@@ -114,5 +114,5 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
-_Passing ids (821) are omitted for brevity — the full roster is in
+_Passing ids (825) are omitted for brevity — the full roster is in
 `json-parity-neato.json`._
