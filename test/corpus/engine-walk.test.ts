@@ -15,12 +15,14 @@
 // overrides, and degrade to the floor (never throw) when a cost file is
 // unreadable.
 
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
 import {
   budgetConfigFromEnv,
+  oracleCacheSig,
   loadNativeTimes,
   loadPortTimes,
   renderBudgetMs,
@@ -99,6 +101,51 @@ describe('renderBudgetMs', () => {
   it('rounds up rather than truncating a fractional product', () => {
     const cfg = budgetConfigFromEnv({ ENGINE_TIMEOUT_MULT: '1.5', ENGINE_TIMEOUT_FLOOR_MS: '0' });
     expect(renderBudgetMs('z', 1_001, cfg, NO_COSTS)).toBe(1_502);
+  });
+});
+
+describe('oracleCacheSig', () => {
+  it('is stable for identical inputs and 12 hex chars', () => {
+    const a = oracleCacheSig('/bin/dot', '/tmp/ghl', '1234');
+    expect(a).toBe(oracleCacheSig('/bin/dot', '/tmp/ghl', '1234'));
+    expect(a).toMatch(/^[0-9a-f]{12}$/);
+  });
+
+  it('changes when the binary, GVBINDIR, or mtime changes', () => {
+    // Each component must participate, or two differently-built oracles could
+    // read each other's cached renders — the cross-contamination survey.ts
+    // documents from experience. mtime is what makes a rebuild self-invalidating.
+    const base = oracleCacheSig('/bin/dot', '/tmp/ghl', '1234');
+    expect(oracleCacheSig('/other/dot', '/tmp/ghl', '1234')).not.toBe(base);
+    expect(oracleCacheSig('/bin/dot', '/tmp/pango', '1234')).not.toBe(base);
+    expect(oracleCacheSig('/bin/dot', '/tmp/ghl', '9999')).not.toBe(base);
+  });
+});
+
+describe('per-row timings in the committed artifacts', () => {
+  // Non-vacuous by construction: 2285 was re-walked 2026-07-31 specifically so at
+  // least one row carries the fields, i.e. this CAN fail. Rows recorded before the
+  // fields existed legitimately lack them, so the guard is conditional on presence
+  // rather than asserting every row has them.
+  const TRACKS = ['neato', 'fdp', 'sfdp', 'circo', 'twopi'] as const;
+
+  it('records positive oracleMs/portMs wherever they are present', () => {
+    let seen = 0;
+    for (const eng of TRACKS) {
+      const rows = JSON.parse(
+        readFileSync(fileURLToPath(new URL(`./parity-${eng}.json`, import.meta.url)), 'utf8'),
+      ).results as Array<{ id: string; oracleMs?: number; portMs?: number }>;
+      for (const r of rows) {
+        if (r.oracleMs !== undefined) {
+          expect(r.oracleMs, `${eng}/${r.id} oracleMs`).toBeGreaterThan(0);
+          seen++;
+        }
+        if (r.portMs !== undefined) expect(r.portMs, `${eng}/${r.id} portMs`).toBeGreaterThan(0);
+      }
+    }
+    // If this ever drops to 0 the guard has gone vacuous — a re-walk should have
+    // populated at least one row.
+    expect(seen, 'rows carrying oracleMs').toBeGreaterThan(0);
   });
 });
 

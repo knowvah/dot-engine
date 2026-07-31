@@ -18,10 +18,11 @@
 // only under the `isMain` guard at the bottom, so the pure budget helpers above
 // can be imported by engine-walk.test.ts without kicking off a corpus walk.
 
-import { readFileSync, statSync, appendFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, statSync, appendFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { execFileSync, spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
+import { homedir, tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
 
@@ -36,6 +37,32 @@ export interface EngineWalkRow {
   nDiffs?: number;
   firstDiff?: string;
   err?: string;
+  /**
+   * Wall-clock ms for the native oracle invocation, recorded on EVERY row —
+   * including `oracle-error`, where it says how long the oracle ran before
+   * failing (a cap-induced ETIMEDOUT then reads as ~the cap, distinguishing "the
+   * oracle cannot render this" from "we did not wait").
+   *
+   * The walker always measured this and threw it away, which made a basic
+   * question — is a slow row the port's fault or the oracle's? — unanswerable
+   * from the artifact and payable only by re-running the render. `survey.ts`
+   * caches oracle ms beside each cached SVG for exactly this reason.
+   */
+  oracleMs?: number;
+  /**
+   * Wall-clock ms for the port render. Present on `timeout` rows too, where it
+   * is the budget that was consumed. With `oracleMs` this makes the port/oracle
+   * ratio readable per row, so a legitimately heavy graph is distinguishable
+   * from a port-side pathology without re-measuring anything.
+   *
+   * NOT comparable to `oracleMs` on cheap graphs: this spawns `npx tsx`, so it
+   * carries ~1s of node/tsx startup, while `oracleMs` is a direct `execFileSync`
+   * of a native binary. Measured example — `2285` (an 11-byte graph) records
+   * oracleMs 42 / portMs 1294, a 30x "ratio" that is almost entirely process
+   * boot. Only read the ratio where render time dominates startup (say portMs
+   * over ~10s); below that it says nothing about the port's speed.
+   */
+  portMs?: number;
 }
 
 /** parity-<engine>.json shape (consumed by parity-report.ts). */
@@ -156,8 +183,11 @@ export function loadNativeTimes(path: string): Record<string, number> {
  * times, and an xdot render of another engine is usually cheaper. That is the
  * safe direction for a runaway bound. Note `survey.ts` needs a third signal (the
  * oracle ms cached beside each SVG) because 2621 was absent from both cost
- * files; it now has entries in both, and this walker keeps no oracle cache, so
- * two terms suffice.
+ * files; it now has entries in both, so two terms suffice here. (This walker did
+ * gain an oracle cache — see `oracleXdot` — but deliberately does NOT feed it
+ * into the budget: cached oracle time says what the ORACLE costs, and using it to
+ * bound the PORT is the conflation that produced the `3x native` term being
+ * smaller than a graph's own render.)
  */
 export function renderBudgetMs(
   id: string,
@@ -180,6 +210,79 @@ const COSTS: CostTables = {
 };
 
 // ---------------------------------------------------------------------------
+// Oracle cache (mirrors json-walk.ts's engine-scoped cache)
+// ---------------------------------------------------------------------------
+
+/**
+ * Cache identity: (binary, GVBINDIR, binary mtime). Namespacing by this means two
+ * differently-built oracles can never read each other's entries, and rebuilding
+ * `dot` auto-invalidates — the failure mode survey.ts documents from experience,
+ * where a bare shared directory silently cross-contaminated a headless and a
+ * pango oracle because they shared ids.
+ */
+export function oracleCacheSig(dotBin: string, gvbindir: string, mtimeMs: string): string {
+  return createHash('sha1').update(`${dotBin}\0${gvbindir}\0${mtimeMs}`).digest('hex').slice(0, 12);
+}
+
+const ORACLE_SIG = oracleCacheSig(DOT_BIN, GVBINDIR, (() => {
+  try { return String(statSync(DOT_BIN).mtimeMs); } catch { return ''; }
+})());
+
+/** Per-engine cache dir: the same id renders differently per engine, so the
+ *  engine must be part of the key (survey.ts is dot-only and omits it). */
+function oracleCacheDir(engine: string): string {
+  return process.env['ENGINE_ORACLE_CACHE'] ?? join(tmpdir(), 'dot-corpus-xdot-oracle', engine, ORACLE_SIG);
+}
+
+/**
+ * Fetch the oracle's xdot for one input, caching complete renders.
+ *
+ * Without this the walker re-rendered the oracle on every walk, so re-verdicting
+ * a heavy id cost its full oracle time again — 46 minutes for `2222`, for output
+ * already on disk. That turned staged investigation into something to ration.
+ *
+ * Only COMPLETE output is cached (a closing `}`): completeness, not exit status,
+ * is the validity signal, because native `dot` exits nonzero on recoverable
+ * warnings while still emitting a whole document. Errors and timeouts are
+ * deliberately NOT cached — a cap-induced failure must not become sticky.
+ *
+ * `ms` is the ORIGINAL measured render time, returned unchanged on a cache hit,
+ * so a row's `oracleMs` always states what the oracle actually costs rather than
+ * how long a file read took.
+ */
+function oracleXdot(path: string, id: string, engine: string, cacheDir: string):
+  { xdot?: string; ms?: number; err?: string } {
+  const cacheFile = join(cacheDir, `${id}.xdot`);
+  const msFile = join(cacheDir, `${id}.ms`);
+  if (existsSync(cacheFile) && existsSync(msFile)) {
+    const cached = readFileSync(cacheFile, 'utf8');
+    const ms = Number(readFileSync(msFile, 'utf8'));
+    if (cached.trimEnd().endsWith('}') && Number.isFinite(ms)) return { xdot: cached, ms };
+  }
+  const startedAt = Date.now();
+  let out = '';
+  try {
+    out = execFileSync(DOT_BIN, ['-K', engine, '-Txdot', path], {
+      env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: CONFIG.oracleMs,
+      maxBuffer: 512 * 1024 * 1024,
+    });
+  } catch (err) {
+    const so = (err as { stdout?: unknown }).stdout;
+    if (typeof so === 'string' && so.trimEnd().endsWith('}')) {
+      out = so; // complete despite nonzero exit
+    } else {
+      return { ms: Date.now() - startedAt, err: String((err as Error).message).split('\n')[0]!.slice(0, 160) };
+    }
+  }
+  const ms = Date.now() - startedAt;
+  if (!out.trimEnd().endsWith('}')) return { ms, err: 'incomplete oracle output' };
+  mkdirSync(cacheDir, { recursive: true });
+  writeFileSync(cacheFile, out);
+  writeFileSync(msFile, String(ms));
+  return { xdot: out, ms };
+}
+
+// ---------------------------------------------------------------------------
 // Sweep
 // ---------------------------------------------------------------------------
 
@@ -192,6 +295,7 @@ async function main(): Promise<void> {
   const TOLERANCE = ITERATIVE_ENGINES.has(engine) ? 0.5 : 0.01;
   const OUT = process.argv[3] ?? fileURLToPath(new URL(`./parity-${engine}.jsonl`, import.meta.url));
   const SUMMARY = fileURLToPath(new URL(`./parity-${engine}.json`, import.meta.url));
+  const CACHE = oracleCacheDir(engine);
 
   interface ParityEntry { id: string; path: string; verdict: string }
   const parity = JSON.parse(
@@ -225,7 +329,8 @@ async function main(): Promise<void> {
       `[${engine}] port budget max(${CONFIG.floorMs}ms, ${CONFIG.mult}x native, ${CONFIG.mult}x recorded cost), ` +
       `oracle cap ${CONFIG.oracleMs}ms\n` +
       `[${engine}] cost tables: ${Object.keys(COSTS.portMs).length} port, ` +
-      `${Object.keys(COSTS.nativeMs).length} native\n`,
+      `${Object.keys(COSTS.nativeMs).length} native\n` +
+      `[${engine}] oracle cache ${CACHE}\n`,
   );
 
   let n = 0;
@@ -239,29 +344,15 @@ async function main(): Promise<void> {
     // Completeness (a closing `}`) is the validity signal, not the exit code —
     // the json/map/plain walkers already classify this way; exit-code-fatal
     // here left 45 comparable ids as phantom "oracle-error" rows.
-    let oracle = '';
-    try {
-      oracle = execFileSync(DOT_BIN, ['-K', engine, '-Txdot', it.path], {
-        env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: CONFIG.oracleMs,
-        maxBuffer: 512 * 1024 * 1024,
-      });
-    } catch (err) {
-      const out = (err as { stdout?: unknown }).stdout;
-      if (typeof out === 'string' && out.trimEnd().endsWith('}')) {
-        oracle = out; // complete despite nonzero exit
-      } else {
-        rec.status = 'oracle-error';
-        rec.err = String((err as Error).message).split('\n')[0]!.slice(0, 160);
-        appendFileSync(OUT, JSON.stringify(rec) + '\n');
-        continue;
-      }
-    }
-    if (!oracle.trimEnd().endsWith('}')) {
+    const o = oracleXdot(it.path, it.id, engine, CACHE);
+    rec.oracleMs = o.ms;
+    if (o.xdot === undefined) {
       rec.status = 'oracle-error';
-      rec.err = 'incomplete oracle output';
+      rec.err = o.err;
       appendFileSync(OUT, JSON.stringify(rec) + '\n');
       continue;
     }
+    const oracle = o.xdot;
 
     // port (spawned, hang-safe). detached + negative-pid kill takes the WHOLE
     // process group: killing only the npx wrapper leaves the node grandchild
@@ -293,6 +384,7 @@ async function main(): Promise<void> {
       },
     );
     const elapsedMs = Date.now() - startedAt;
+    rec.portMs = elapsedMs;
     if (r.timedOut) {
       // State elapsed AND budget so a reader can tell a genuine runaway from a
       // render that was merely long, without re-running anything.
