@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 905 (generated 2026-07-27T22:03:58.294Z)
-- **pass:** 895 (98.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4
-- **oracle-error:** 5 · **port-error:** 0 · **timeout:** 1
+- **Surveyed:** 910 (generated 2026-07-31T04:51:11.317Z)
+- **pass:** 902 (99.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4
+- **oracle-error:** 3 · **port-error:** 0 · **timeout:** 1
 
 ## Accepted deltas (4) — documented, not chased
 
@@ -34,17 +34,15 @@ table below.
 
 _(none)_
 
-## Errors and timeouts (6)
+## Errors and timeouts (4)
 
 | id | status | message |
 |---|---|---|
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | oracle-error | Command failed: dot -K circo -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot |
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | oracle-error | Command failed: dot -K circo -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot |
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | timeout |  |
+| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | timeout | ran 3600093ms, exceeded 3600000ms budget |
 
 **oracle errors:** 10 native-crash (documented, excluded) / 5 timeout-flake (excluded this run, note to retry)
-_Passing ids (895) are omitted for brevity — the full roster is in
+_Passing ids (902) are omitted for brevity — the full roster is in
 `parity-circo.json`._

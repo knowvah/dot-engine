@@ -12,14 +12,14 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 910
-- **pass:** 617 (67.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 291
-- **errors (oracle/port/timeout, excluded from scoring):** 2
+- **pass:** 617 (67.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 292
+- **errors (oracle/port/timeout, excluded from scoring):** 1
 
 ## Diverged (0)
 
 _(none)_
 
-## Accepted (291) — documented, not chased
+## Accepted (292) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
@@ -43,6 +43,7 @@ _(none)_
 | [`1902`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1902.dot) | 163 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2095`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095.dot) | 6014 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) | 55818 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | 1044748 | `[graph]/_draw_/op[2].P[4]` | A1 iterative-solver drift (class) — membership computed from `attribution-sfdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`2168`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2168.dot) | 57 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 2040 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2242`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2242.dot) | 105 | `edge:NE4->NF4#0/_draw_/op[2].b[4]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
@@ -315,11 +316,10 @@ _(none)_
 | [`windows-viewfile`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/viewfile.gv) | 336 | `edge:chkmalloc->malloc#0/_draw_/op[1].b[6]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`windows-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/world.gv) | 1938 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (2)
+## Errors and timeouts (1)
 
 | id | message |
 |---|---|
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
 | [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
 
 _Passing ids (617) are omitted for brevity — the full roster is in

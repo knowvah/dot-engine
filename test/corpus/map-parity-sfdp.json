@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-07-30T13:59:11.861Z",
+  "generatedAt": "2026-07-30T19:30:41.847Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "sfdp",
   "oracleVersion": "dot 15.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 910,
   "counts": {
-    "conformant": 879,
+    "conformant": 880,
     "diverged": 0,
     "accepted": 29,
     "port-error": 0,
     "oracle-error": 1,
-    "timeout": 1
+    "timeout": 0
   },
   "results": [
     {
@@ -11972,21 +11972,6 @@
       "hasHref": false
     },
     {
-      "id": "2108",
-      "path": "2108.dot",
-      "size": 3136769,
-      "verdict": "timeout",
-      "cmapx": {
-        "verdict": "timeout",
-        "errMsg": ""
-      },
-      "imap": {
-        "verdict": "timeout",
-        "errMsg": ""
-      },
-      "hasHref": false
-    },
-    {
       "id": "tree-doc-dotguide-icurve",
       "path": "../doc/dotguide/icurve.dot",
       "size": 107,
@@ -12079,6 +12064,19 @@
         "maxDeltaPath": "imap/line[957].coords[0]"
       },
       "hasHref": true
+    },
+    {
+      "id": "2108",
+      "path": "2108.dot",
+      "size": 3136769,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
     }
   ]
 }

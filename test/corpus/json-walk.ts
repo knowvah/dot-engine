@@ -102,7 +102,12 @@ const ORACLE_SIG = (() => {
 const CACHE = process.env.JSON_ORACLE_CACHE ?? join(tmpdir(), 'dot-corpus-json-oracle', ENGINE, ORACLE_SIG);
 
 const TIMEOUT_MULT = Number(process.env.JSON_TIMEOUT_MULT ?? 3);
-const TIMEOUT_FLOOR_MS = Number(process.env.JSON_TIMEOUT_FLOOR_MS ?? 180_000);
+// One hour, not 3 minutes: `timeout` must mean *runaway*, not *slow*. A tight
+// floor does not fail safe — the row is indistinguishable from a real failure in
+// every consumer, and it hides the id from analysis (2108 sat `timeout` here and
+// on five other tracks purely because its render outlives a short budget). Sweep
+// wall-clock is cheap relative to a fabricated verdict at this stage of the port.
+const TIMEOUT_FLOOR_MS = Number(process.env.JSON_TIMEOUT_FLOOR_MS ?? 3_600_000);
 const ORACLE_TIMEOUT_MS = Number(process.env.JSON_ORACLE_TIMEOUT_MS ?? 300_000);
 const CONCURRENCY = Number(process.env.JSON_CONCURRENCY ?? 8);
 const LIMIT = Number(process.env.JSON_LIMIT ?? 0);

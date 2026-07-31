@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-07-27T21:43:30.140Z",
+  "generatedAt": "2026-07-31T06:34:45.730Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "twopi",
   "tolerance": 0.01,
-  "total": 905,
+  "total": 910,
   "counts": {
-    "pass": 888,
-    "diverged": 15,
-    "oracle-error": 1,
+    "pass": 893,
+    "diverged": 16,
+    "oracle-error": 0,
     "port-error": 0,
     "timeout": 1
   },
@@ -4558,15 +4558,42 @@
       "firstDiff": "edge:n13->n12#0 _ldraw_ edge:n13->n12#0/_ldraw_/op[2].text[0]: 7270.33 vs 7192.55"
     },
     {
-      "id": "2222",
-      "size": 2384469,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
+      "id": "tree-doc-dotguide-curve",
+      "size": 106,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-dotguide-icurve",
+      "size": 107,
+      "status": "pass"
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "size": 230,
+      "status": "pass"
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "size": 4766,
+      "status": "diverged",
+      "nDiffs": 6,
+      "firstDiff": "edge:lcrow->lcrowlcrow#0 _ldraw_ edge:lcrow->lcrowlcrow#0/_ldraw_/op[2].text[0]: 672.44 vs 695.21"
+    },
+    {
+      "id": "2621",
+      "size": 721934,
+      "status": "pass"
     },
     {
       "id": "2108",
       "size": 3136769,
-      "status": "timeout"
+      "status": "pass"
+    },
+    {
+      "id": "2222",
+      "size": 2384469,
+      "status": "timeout",
+      "err": "ran 3600052ms, exceeded 3600000ms budget"
     }
   ]
 }

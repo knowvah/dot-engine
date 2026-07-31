@@ -22,8 +22,8 @@ equality. **errors** = oracle-error + port-error/errored + timeout
 | [dot (SVG)](./PARITY-dot.md) | 939 | 910 | 0 | 17 | 12 | 96.9% |
 | [dot (xdot)](./PARITY-XDOT.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 905 | 903 | 0 | 2 | 0 | 99.8% |
-| [circo (xdot)](./PARITY-circo.md) | 905 | 895 | 0 | 4 | 6 | 98.9% |
-| [twopi (xdot)](./PARITY-twopi.md) | 905 | 888 | 0 | 15 | 2 | 98.1% |
+| [circo (xdot)](./PARITY-circo.md) | 910 | 902 | 0 | 4 | 4 | 99.1% |
+| [twopi (xdot)](./PARITY-twopi.md) | 910 | 893 | 0 | 16 | 1 | 98.1% |
 | [osage (xdot)](./PARITY-osage.md) | 905 | 897 | 0 | 8 | 0 | 99.1% |
 | [patchwork (xdot)](./PARITY-patchwork.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
 | [dot (imagemap)](./PARITY-MAP.md) | 905 | 905 | 0 | 0 | 0 | 100.0% |
@@ -55,18 +55,18 @@ bar above.
 
 | track | surveyed | conformant / pass | diverged | accepted | errors | pass % |
 |---|---:|---:|---:|---:|---:|---:|
-| [neato (xdot)](./PARITY-neato.md) | 910 | 826 | 0 | 82 | 2 | 90.8% |
-| [fdp (xdot)](./PARITY-fdp.md) | 910 | 703 | 0 | 202 | 5 | 77.3% |
-| [sfdp (xdot)](./PARITY-sfdp.md) | 910 | 619 | 0 | 289 | 2 | 68.0% |
+| [neato (xdot)](./PARITY-neato.md) | 910 | 826 | 0 | 83 | 1 | 90.8% |
+| [fdp (xdot)](./PARITY-fdp.md) | 910 | 703 | 0 | 204 | 3 | 77.3% |
+| [sfdp (xdot)](./PARITY-sfdp.md) | 910 | 619 | 0 | 290 | 1 | 68.0% |
 | [neato (plain)](./PARITY-neato-plain.md) | 905 | 896 | 0 | 8 | 1 | 99.0% |
 | [fdp (plain)](./PARITY-fdp-plain.md) | 905 | 893 | 0 | 8 | 4 | 98.7% |
 | [sfdp (plain)](./PARITY-sfdp-plain.md) | 905 | 896 | 0 | 8 | 1 | 99.0% |
-| [neato (json)](./PARITY-neato-json.md) | 910 | 825 | 0 | 83 | 2 | 90.7% |
+| [neato (json)](./PARITY-neato-json.md) | 910 | 825 | 0 | 84 | 1 | 90.7% |
 | [fdp (json)](./PARITY-fdp-json.md) | 910 | 701 | 0 | 205 | 4 | 77.0% |
-| [sfdp (json)](./PARITY-sfdp-json.md) | 910 | 617 | 0 | 291 | 2 | 67.8% |
-| [neato (imagemap)](./PARITY-neato-map.md) | 905 | 897 | 0 | 6 | 2 | 99.1% |
+| [sfdp (json)](./PARITY-sfdp-json.md) | 910 | 617 | 0 | 292 | 1 | 67.8% |
+| [neato (imagemap)](./PARITY-neato-map.md) | 910 | 902 | 0 | 7 | 1 | 99.1% |
 | [fdp (imagemap)](./PARITY-fdp-map.md) | 905 | 883 | 0 | 18 | 4 | 97.6% |
-| [sfdp (imagemap)](./PARITY-sfdp-map.md) | 910 | 879 | 0 | 29 | 2 | 96.6% |
+| [sfdp (imagemap)](./PARITY-sfdp-map.md) | 910 | 880 | 0 | 29 | 1 | 96.7% |
 
 
 

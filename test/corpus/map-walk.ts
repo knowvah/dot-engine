@@ -83,7 +83,9 @@ function cacheDir(engine: EngineName): string {
 }
 
 const TIMEOUT_MULT = Number(process.env.MAP_TIMEOUT_MULT ?? 3);
-const TIMEOUT_FLOOR_MS = Number(process.env.MAP_TIMEOUT_FLOOR_MS ?? 180_000);
+// One hour, not 3 minutes — `timeout` must mean runaway, not slow. See the same
+// note in json-walk.ts; 2108 sat `timeout` on six tracks for want of budget.
+const TIMEOUT_FLOOR_MS = Number(process.env.MAP_TIMEOUT_FLOOR_MS ?? 3_600_000);
 const ORACLE_TIMEOUT_MS = Number(process.env.MAP_ORACLE_TIMEOUT_MS ?? 300_000);
 const CONCURRENCY = Number(process.env.MAP_CONCURRENCY ?? 8);
 const LIMIT = Number(process.env.MAP_LIMIT ?? 0);

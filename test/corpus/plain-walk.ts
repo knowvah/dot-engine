@@ -86,7 +86,9 @@ function cacheDir(engine: EngineName): string {
 }
 
 const TIMEOUT_MULT = Number(process.env.PLAIN_TIMEOUT_MULT ?? 3);
-const TIMEOUT_FLOOR_MS = Number(process.env.PLAIN_TIMEOUT_FLOOR_MS ?? 180_000);
+// One hour, not 3 minutes — `timeout` must mean runaway, not slow. See the same
+// note in json-walk.ts.
+const TIMEOUT_FLOOR_MS = Number(process.env.PLAIN_TIMEOUT_FLOOR_MS ?? 3_600_000);
 const ORACLE_TIMEOUT_MS = Number(process.env.PLAIN_ORACLE_TIMEOUT_MS ?? 300_000);
 const CONCURRENCY = Number(process.env.PLAIN_CONCURRENCY ?? 8);
 const LIMIT = Number(process.env.PLAIN_LIMIT ?? 0);
@@ -472,7 +474,6 @@ async function main(): Promise<void> {
   if (!engineArg) {
     console.error('usage: npx tsx test/corpus/plain-walk.ts <engine> [outJsonlPath]');
     process.exit(2);
-    return;
   }
   const engine = engineArg as EngineName;
   const outJsonlArg = positional[1];

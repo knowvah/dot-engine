@@ -81,3 +81,4 @@
 {"id":"tree-contrib-dirgraph-linux","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2619_2","verdict":"drift-exonerated","baseDiffs":8,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2621","verdict":"drift-exonerated","baseDiffs":79577,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"2108","verdict":"drift-exonerated","baseDiffs":6256,"injectedDiffs":0,"bucket":{"shape":"edge/pos/unknown","kind":"position","signature":"none"}}

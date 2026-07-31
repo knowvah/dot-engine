@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T13:50:47.871Z",
+  "generatedAt": "2026-07-30T16:54:10.292Z",
   "oracleSha1": "8fdd1294b3726c2a19fe384ca48f44a2954d1944",
   "tolerance": 0.5,
   "results": [
@@ -3175,6 +3175,17 @@
       "id": "2621",
       "verdict": "drift-exonerated",
       "baseDiffs": 78938,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2108",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1044748,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",

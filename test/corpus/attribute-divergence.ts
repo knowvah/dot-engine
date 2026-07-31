@@ -351,6 +351,17 @@ function runOracleWithDump(engine: string, path: string): OracleDumpResult {
 
 interface PortResult { stdout: string; stderr: string; status: number | null; timedOut: boolean }
 
+/**
+ * Port-render budget for the injected re-render. Generous by design: `timeout`
+ * here does not merely mislabel a row, it produces a `harness-error` that leaves
+ * the id **un-attributed**, and an un-attributed id can never earn A1-drift class
+ * membership — so a tight budget silently strands graphs. This was a hard-coded
+ * 90s, inherited from engine-walk.ts's old cap, and it would have stranded
+ * exactly the ids that cap had already stranded once (2108 renders ~83s for the
+ * dot engine, 1652 ~801s). Reserve `timeout` for a genuine runaway.
+ */
+const PORT_TIMEOUT_MS = Number(process.env['ATTR_PORT_TIMEOUT_MS'] ?? 3_600_000);
+
 async function renderPortInjected(path: string, engine: string, dumpFile: string): Promise<PortResult> {
   return new Promise<PortResult>((resolve) => {
     const child = spawn('npx', ['tsx', join(REPO, 'test/corpus/render-one-xdot.ts'), path, engine], {
@@ -366,7 +377,7 @@ async function renderPortInjected(path: string, engine: string, dumpFile: string
       if (child.pid !== undefined) {
         try { process.kill(-child.pid, 'SIGKILL'); } catch { /* gone */ }
       }
-    }, 90_000);
+    }, PORT_TIMEOUT_MS);
     child.stdout.on('data', (d: Buffer) => (stdout += d));
     child.stderr.on('data', (d: Buffer) => (stderr += d));
     child.on('error', (e) => (stderr += String(e)));
@@ -528,7 +539,7 @@ async function sweep(engine: string, args: string[]): Promise<void> {
     }
 
     if (port.timedOut) {
-      rec.err = 'port render timeout (injected)';
+      rec.err = `port render timeout (injected), budget ${PORT_TIMEOUT_MS}ms`;
     } else if (port.status !== 0) {
       const m = /__RENDER_ERROR__ (.*)/.exec(port.stderr ?? '');
       rec.err = `port render error: ${(m?.[1] ?? (port.stderr ?? '')).slice(0, 200)}`;

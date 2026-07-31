@@ -87,7 +87,11 @@ const CANON_NATIVE: Record<string, number> = (() => {
  */
 const MAX_NATIVE_MS = Math.max(0, ...Object.values(CANON_NATIVE));
 const TIMEOUT_FLOOR_MS = Number(
-  process.env.RENDER_TIMEOUT_FLOOR_MS ?? (Math.ceil(5 * MAX_NATIVE_MS) || 180_000),
+  // At least one hour, then host-scaled beyond that: `timeout` must mean
+  // *runaway*, not *slow*. The 5x-slowest-native derivation alone yields ~22min
+  // here, which is under the time a legitimately heavy render can take (2621
+  // measured 20.6min, 1652 13.7min — both uncomfortably close to being clipped).
+  process.env.RENDER_TIMEOUT_FLOOR_MS ?? Math.max(3_600_000, Math.ceil(5 * MAX_NATIVE_MS)),
 );
 /** Oracle render cap: must comfortably exceed the corpus's slowest canonical
  *  native render even under survey concurrency (1652 = 270s native blew the old

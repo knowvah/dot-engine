@@ -901,10 +901,10 @@
 {"id":"1652","path":"1652.dot","size":240391,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2475_2","path":"2475_2.dot","size":641284,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2222","path":"2222.dot","size":2384469,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"oracle exit null"},"imap":{"verdict":"oracle-error","errMsg":"oracle exit null"},"hasHref":false}
-{"id":"2108","path":"2108.dot","size":3136769,"verdict":"timeout","cmapx":{"verdict":"timeout","errMsg":""},"imap":{"verdict":"timeout","errMsg":""},"hasHref":false}
 {"id":"tree-doc-dotguide-icurve","path":"../doc/dotguide/icurve.dot","size":107,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"tree-doc-dotguide-curve","path":"../doc/dotguide/curve.dot","size":106,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"tree-tclpkg-tcldot-examples-data-demo","path":"../tclpkg/tcldot/examples/data/demo.gv","size":295,"verdict":"accepted","cmapx":{"verdict":"accepted","diffCount":125,"firstDiff":"area[0].coords[1]","maxDelta":319,"maxDeltaPath":"area[1].coords[0]"},"imap":{"verdict":"accepted","diffCount":123,"firstDiff":"imap/line[2].coords[1]","maxDelta":319,"maxDeltaPath":"imap/line[3].coords[0]"},"hasHref":true}
 {"id":"tree-doc-infosrc-fixed","path":"../doc/infosrc/fixed.gv","size":230,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"tree-graphs-directed-arrows","path":"../graphs/directed/arrows.gv","size":4766,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2621","path":"2621.dot","size":721934,"verdict":"accepted","cmapx":{"verdict":"accepted","diffCount":4961,"firstDiff":"area[0].coords[0]","maxDelta":5694,"maxDeltaPath":"area[1248].coords[1]"},"imap":{"verdict":"accepted","diffCount":3761,"firstDiff":"imap/line[1].coords[0]","maxDelta":2472,"maxDeltaPath":"imap/line[957].coords[0]"},"hasHref":true}
+{"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}

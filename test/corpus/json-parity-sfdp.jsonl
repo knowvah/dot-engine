@@ -849,7 +849,6 @@
 {"id":"1652","path":"1652.dot","size":240391,"verdict":"accepted","diffCount":114198,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":114.75,"maxDeltaPath":"edge:Op_1804->Op_1805#0/_ldraw_/op[2].T[0]"}
 {"id":"2475_2","path":"2475_2.dot","size":641284,"verdict":"accepted","diffCount":309794,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":14336.44,"maxDeltaPath":"edge:39_145817->39_144736#0/pos[6]"}
 {"id":"2222","path":"2222.dot","size":2384469,"verdict":"oracle-error","errMsg":"oracle exit null"}
-{"id":"2108","path":"2108.dot","size":3136769,"verdict":"timeout","errMsg":""}
 {"id":"tree-doc-dotguide-constraint","path":"../doc/dotguide/constraint.dot","size":93,"verdict":"accepted","diffCount":90,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":151.094,"maxDeltaPath":"node:c/pos[0]"}
 {"id":"tree-doc-dotguide-icurve","path":"../doc/dotguide/icurve.dot","size":107,"verdict":"conformant"}
 {"id":"tree-doc-dotguide-curve","path":"../doc/dotguide/curve.dot","size":106,"verdict":"conformant"}
@@ -908,3 +907,4 @@
 {"id":"tree-doc-infosrc-fixed","path":"../doc/infosrc/fixed.gv","size":230,"verdict":"accepted","diffCount":120,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":133.76,"maxDeltaPath":"node:c/_draw_/op[1].e[0]"}
 {"id":"tree-graphs-directed-arrows","path":"../graphs/directed/arrows.gv","size":4766,"verdict":"accepted","diffCount":2221,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":496.7444,"maxDeltaPath":"node:teetee/pos[0]"}
 {"id":"2621","path":"2621.dot","size":721934,"verdict":"accepted","diffCount":78938,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":4491,"maxDeltaPath":"node:db/procedures/_draw_/op[2].P[1]"}
+{"id":"2108","path":"2108.dot","size":3136769,"verdict":"accepted","diffCount":1044748,"firstDiff":"[graph]/_draw_/op[2].P[4]","maxDelta":67424.47,"maxDeltaPath":"edge:RT_35563-at-SITE_18-29986->ITEM_2317-at-SITE_18#0/pos[0]"}
