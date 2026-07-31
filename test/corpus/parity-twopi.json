@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T06:34:45.730Z",
+  "generatedAt": "2026-07-31T19:12:40.005Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "twopi",
   "tolerance": 0.01,
@@ -12,11 +12,6 @@
     "timeout": 1
   },
   "results": [
-    {
-      "id": "2285",
-      "size": 11,
-      "status": "pass"
-    },
     {
       "id": "graphs-trivial",
       "size": 16,
@@ -4590,10 +4585,19 @@
       "status": "pass"
     },
     {
+      "id": "2285",
+      "size": 11,
+      "status": "pass",
+      "oracleMs": 42,
+      "portMs": 1294
+    },
+    {
       "id": "2222",
       "size": 2384469,
       "status": "timeout",
-      "err": "ran 3600052ms, exceeded 3600000ms budget"
+      "oracleMs": 2892934,
+      "portMs": 8110856,
+      "err": "ran 8110856ms, exceeded 7200000ms budget"
     }
   ]
 }

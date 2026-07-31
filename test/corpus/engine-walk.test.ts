@@ -15,18 +15,21 @@
 // overrides, and degrade to the floor (never throw) when a cost file is
 // unreadable.
 
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
 import {
   budgetConfigFromEnv,
+  oracleCacheSig,
   loadNativeTimes,
   loadPortTimes,
   renderBudgetMs,
   type BudgetConfig,
   type CostTables,
 } from './engine-walk.js';
+import { preventIdleSleep, sleepInflated } from './keep-awake.js';
 
 const DEFAULTS: BudgetConfig = budgetConfigFromEnv({});
 const NO_COSTS: CostTables = { portMs: {}, nativeMs: {} };
@@ -102,6 +105,51 @@ describe('renderBudgetMs', () => {
   });
 });
 
+describe('oracleCacheSig', () => {
+  it('is stable for identical inputs and 12 hex chars', () => {
+    const a = oracleCacheSig('/bin/dot', '/tmp/ghl', '1234');
+    expect(a).toBe(oracleCacheSig('/bin/dot', '/tmp/ghl', '1234'));
+    expect(a).toMatch(/^[0-9a-f]{12}$/);
+  });
+
+  it('changes when the binary, GVBINDIR, or mtime changes', () => {
+    // Each component must participate, or two differently-built oracles could
+    // read each other's cached renders — the cross-contamination survey.ts
+    // documents from experience. mtime is what makes a rebuild self-invalidating.
+    const base = oracleCacheSig('/bin/dot', '/tmp/ghl', '1234');
+    expect(oracleCacheSig('/other/dot', '/tmp/ghl', '1234')).not.toBe(base);
+    expect(oracleCacheSig('/bin/dot', '/tmp/pango', '1234')).not.toBe(base);
+    expect(oracleCacheSig('/bin/dot', '/tmp/ghl', '9999')).not.toBe(base);
+  });
+});
+
+describe('per-row timings in the committed artifacts', () => {
+  // Non-vacuous by construction: 2285 was re-walked 2026-07-31 specifically so at
+  // least one row carries the fields, i.e. this CAN fail. Rows recorded before the
+  // fields existed legitimately lack them, so the guard is conditional on presence
+  // rather than asserting every row has them.
+  const TRACKS = ['neato', 'fdp', 'sfdp', 'circo', 'twopi'] as const;
+
+  it('records positive oracleMs/portMs wherever they are present', () => {
+    let seen = 0;
+    for (const eng of TRACKS) {
+      const rows = JSON.parse(
+        readFileSync(fileURLToPath(new URL(`./parity-${eng}.json`, import.meta.url)), 'utf8'),
+      ).results as Array<{ id: string; oracleMs?: number; portMs?: number }>;
+      for (const r of rows) {
+        if (r.oracleMs !== undefined) {
+          expect(r.oracleMs, `${eng}/${r.id} oracleMs`).toBeGreaterThan(0);
+          seen++;
+        }
+        if (r.portMs !== undefined) expect(r.portMs, `${eng}/${r.id} portMs`).toBeGreaterThan(0);
+      }
+    }
+    // If this ever drops to 0 the guard has gone vacuous — a re-walk should have
+    // populated at least one row.
+    expect(seen, 'rows carrying oracleMs').toBeGreaterThan(0);
+  });
+});
+
 describe('cost table loaders', () => {
   it('degrades to the floor instead of throwing when perf.json is missing (AC4)', () => {
     const costs: CostTables = {
@@ -150,5 +198,53 @@ describe('cost table loaders', () => {
     expect(Object.keys(portMs).length).toBeGreaterThan(400);
     expect(portMs['2621']).toBeGreaterThan(1_000_000);
     expect(nativeMs['2621']).toBeGreaterThan(200_000);
+  });
+});
+
+describe('sleepInflated', () => {
+  it('reports nothing when wall and active agree (no sleep)', () => {
+    expect(sleepInflated(1000, 1000)).toBeUndefined();
+    // Clocks are read microseconds apart, so small drift must NOT be flagged —
+    // otherwise the field stops meaning "sleep happened here".
+    expect(sleepInflated(1000, 1040)).toBeUndefined();
+  });
+
+  it('reports the wall time when sleep inflated it past the 5% band', () => {
+    expect(sleepInflated(1000, 1051)).toBe(1051);
+    // The real case: 2222/twopi recorded 7.2ks active against 8.1Ms wall.
+    expect(sleepInflated(7_200_000, 8_110_856)).toBe(8_110_856);
+  });
+
+  it('never reports when wall is somehow below active', () => {
+    expect(sleepInflated(1000, 900)).toBeUndefined();
+  });
+});
+
+describe('preventIdleSleep', () => {
+  it('is a no-op off Darwin (returns false, spawns nothing)', () => {
+    let called = 0;
+    const r = preventIdleSleep('linux', 123, () => { called++; return {}; });
+    expect(r).toBe(false);
+    expect(called).toBe(0);
+  });
+
+  it('ties the assertion to our pid and unrefs it', () => {
+    const seen: { cmd: string; args: string[]; detached?: boolean } = { cmd: '', args: [] };
+    let unrefed = false;
+    const r = preventIdleSleep('darwin', 4242, (cmd, args, opts) => {
+      seen.cmd = cmd; seen.args = args; seen.detached = opts.detached as boolean;
+      return { unref: () => { unrefed = true; } };
+    });
+    expect(r).toBe(true);
+    expect(seen.cmd).toBe('caffeinate');
+    // `-w <pid>` is the point: the assertion cannot outlive the sweep, unlike the
+    // `-t 300` window already running on this machine.
+    expect(seen.args).toEqual(['-i', '-w', '4242']);
+    expect(seen.detached).toBe(true);
+    expect(unrefed, 'must unref so it cannot hold the event loop open').toBe(true);
+  });
+
+  it('swallows a spawn failure — a sweep must never die over power management', () => {
+    expect(preventIdleSleep('darwin', 1, () => { throw new Error('ENOENT'); })).toBe(false);
   });
 });

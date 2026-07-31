@@ -61,6 +61,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareJson, type JsonDiff } from '../golden/compare-json.js';
 import { classAcceptedIds } from './accepted-class.js';
+import { preventIdleSleep, startClock } from './keep-awake.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -240,9 +241,9 @@ async function oracleJson(
     if (cached.length > 0 && Number.isFinite(ms)) return { json: cached, ms };
   }
   const env = { ...process.env, GVBINDIR };
-  const t = Date.now();
+  const readClock = startClock();
   const r = await spawnCapture(DOT_BIN, ['-K', engine, '-Tjson', absInput], env, ORACLE_TIMEOUT_MS);
-  const ms = Date.now() - t;
+  const ms = readClock().activeMs;
   // Native dot exits nonzero on recoverable warnings while still emitting a
   // COMPLETE json document. Completeness (a closing `}`) is the validity
   // signal, not the exit code — mirrors xdot-walk.ts's `}` check.
@@ -512,11 +513,13 @@ async function main(): Promise<void> {
   }
   const items = conformantItems();
   const accepted = loadAccepted();
+  const awake = preventIdleSleep();
   const tsx = resolveTsx();
   process.stderr.write(
     `json[${ENGINE}] ${SURVEY ? 'survey' : 'walk (stop-on-first)'}: ${items.length} conformant items, ` +
       `size-sorted small→large\noracle ${DOT_BIN} -K ${ENGINE} (GVBINDIR=${GVBINDIR})\ncache ${CACHE}\n` +
-      `accepted divergences: ${accepted.size}\n`,
+      `accepted divergences: ${accepted.size}\n` +
+      `idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
   );
   if (SURVEY) await runSurvey(items, tsx, accepted, ENGINE);
   else await runDefault(items, tsx, accepted, ENGINE);

@@ -21,6 +21,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareSvg, type Diff } from '../golden/compare.js';
 import { normalizeSvg } from '../golden/normalize.js';
+import { preventIdleSleep, startClock } from './keep-awake.js';
 import type { CorpusEntry } from './enumerate.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
@@ -356,9 +357,9 @@ async function oracleSvg(absInput: string, id: string): Promise<{ svg?: string; 
     if (cached.length > 0 && Number.isFinite(ms)) return { svg: cached, ms };
   }
   const env = { ...process.env, GVBINDIR };
-  const t = Date.now();
+  const readClock = startClock();
   const r = await spawnCapture(DOT_BIN, ['-Tsvg', absInput], env, ORACLE_TIMEOUT_MS);
-  const ms = Date.now() - t;
+  const ms = readClock().activeMs;
   // The native `dot` exits nonzero on warnings AND on recoverable errors (e.g.
   // "trouble in init_rank") while still emitting a COMPLETE SVG. Exit code is
   // therefore not a validity signal — completeness (a closing </svg>) is. Only
@@ -588,12 +589,16 @@ async function main(): Promise<void> {
   }
   mkdirSync(CACHE, { recursive: true });
   const tsx = resolveTsx();
+  // Hold an idle-sleep assertion for the sweep: sleep does not break the timeout
+  // (libuv's clock pauses too) but it corrupts every wall-clock number recorded.
+  const awake = preventIdleSleep();
   process.stderr.write(
     `surveying ${applicable.length} applicable inputs ` +
       `(concurrency ${CONCURRENCY}, budget max(${TIMEOUT_MULT}x native, ` +
       `${TIMEOUT_MULT}x recorded port, ${TIMEOUT_FLOOR_MS}ms))\n` +
       (MAX_PORT_MS > 0 ? `fast mode: excluded ${skippedSlow} graphs with port time > ${MAX_PORT_MS}ms\n` : '') +
-      `oracle ${DOT_BIN} (cap ${ORACLE_TIMEOUT_MS}ms)\ncache ${CACHE}\nport via ${tsx.cmd}\n`,
+      `oracle ${DOT_BIN} (cap ${ORACLE_TIMEOUT_MS}ms)\ncache ${CACHE}\nport via ${tsx.cmd}\n` +
+      `idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
   );
   // LPT dispatch (longest expected job first): start the slowest renders at
   // t=0 so they overlap the fast bulk of the corpus instead of bunching into a

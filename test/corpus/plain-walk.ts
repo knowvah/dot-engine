@@ -50,6 +50,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { comparePlain, type PlainDiff } from '../golden/compare-plain.js';
 import type { EngineName } from '../../src/gvc/context.js';
+import { preventIdleSleep, startClock } from './keep-awake.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -251,9 +252,9 @@ async function oracleFormat(
   }
   const env = { ...process.env, GVBINDIR };
   const args = ['-K', String(engine), `-T${format}`, absInput];
-  const t = Date.now();
+  const readClock = startClock();
   const r = await spawnCapture(DOT_BIN, args, env, ORACLE_TIMEOUT_MS);
-  const ms = Date.now() - t;
+  const ms = readClock().activeMs;
   const lines = r.stdout.trimEnd().split('\n');
   if (r.timedOut || lines[lines.length - 1] !== 'stop') {
     return { err: firstLine(r.stderr) || `oracle exit ${r.code}` };
@@ -480,10 +481,14 @@ async function main(): Promise<void> {
   const accepted = loadAccepted();
   const tsx = resolveTsx();
   const items = conformantItems();
+  // Hold an idle-sleep assertion for the sweep: sleep does not break the timeout
+  // (libuv's clock pauses too) but it corrupts every wall-clock number recorded.
+  const awake = preventIdleSleep();
   process.stderr.write(
     `plain[${engine}] walk: ${items.length} conformant items, size-sorted small→large\n` +
       `oracle ${DOT_BIN} -K ${engine} (GVBINDIR=${GVBINDIR})\ncache ${cacheDir(engine)}\n` +
-      `accepted divergences: ${accepted.size}\n`,
+      `accepted divergences: ${accepted.size}\n` +
+      `idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
   );
   await runEngineWalk(engine, outJsonlArg, items, tsx, accepted);
 }
