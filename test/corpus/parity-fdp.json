@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T15:38:34.016Z",
+  "generatedAt": "2026-07-30T22:39:57.191Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "fdp",
   "tolerance": 0.5,
@@ -4925,12 +4925,6 @@
       "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 9488.17 vs 7690.38"
     },
     {
-      "id": "2222",
-      "size": 2384469,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
-    },
-    {
       "id": "tree-doc-dotguide-curve",
       "size": 106,
       "status": "pass"
@@ -4972,6 +4966,12 @@
       "status": "diverged",
       "nDiffs": 1062804,
       "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 59306.09 vs 59529.28"
+    },
+    {
+      "id": "2222",
+      "size": 2384469,
+      "status": "oracle-error",
+      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     }
   ]
 }

@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 910 (generated 2026-07-30T15:54:13.590Z)
+- **Surveyed:** 910 (generated 2026-07-31T00:23:37.832Z)
 - **pass:** 619 (68.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 5 · **accepted (A1-drift class):** 285
-- **oracle-error:** 1 · **port-error:** 0 · **timeout:** 0
+- **oracle-error:** 0 · **port-error:** 0 · **timeout:** 1
 
 ## Accepted deltas (5) — documented, not chased
 
@@ -49,7 +49,7 @@ _(none)_
 
 | id | status | message |
 |---|---|---|
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle-error | spawnSync dot ETIMEDOUT |
+| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | timeout | ran 3600016ms, exceeded 3600000ms budget |
 
 **oracle errors:** 7 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
 _Passing ids (619) are omitted for brevity — the full roster is in

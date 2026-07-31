@@ -892,19 +892,19 @@
 {"id":"share-b102","size":161479,"status":"pass"}
 {"id":"windows-b102","size":184125,"status":"pass"}
 {"id":"graphs-b81","size":191024,"status":"pass"}
-{"id":"1652","size":240391,"status":"oracle-error","err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
 {"id":"1879","size":287816,"status":"pass"}
 {"id":"linux.x86-root_twopi","size":287907,"status":"pass"}
 {"id":"nshare-root_twopi","size":287916,"status":"pass"}
 {"id":"nshare-root_circo","size":313126,"status":"pass"}
 {"id":"linux.x86-root_circo","size":313168,"status":"pass"}
-{"id":"graphs-b103","size":377525,"status":"oracle-error","err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
 {"id":"2475_2","size":641284,"status":"diverged","nDiffs":989,"firstDiff":"edge:590_174423->590_174412#0 _draw_ edge:590_174423->590_174412#0/_draw_/op[1].unfilled_bezier[0]: 160109.37 vs 160068.09"}
 {"id":"2470","size":734358,"status":"pass"}
-{"id":"2222","size":2384469,"status":"oracle-error","err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
 {"id":"tree-doc-dotguide-curve","size":106,"status":"pass"}
 {"id":"tree-doc-dotguide-icurve","size":107,"status":"pass"}
 {"id":"tree-doc-infosrc-fixed","size":230,"status":"pass"}
 {"id":"tree-graphs-directed-arrows","size":4766,"status":"pass"}
-{"id":"2621","size":721934,"status":"oracle-error","err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
 {"id":"2108","size":3136769,"status":"pass"}
+{"id":"1652","size":240391,"status":"oracle-error","err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
+{"id":"graphs-b103","size":377525,"status":"pass"}
+{"id":"2621","size":721934,"status":"pass"}
+{"id":"2222","size":2384469,"status":"timeout","err":"ran 3600093ms, exceeded 3600000ms budget"}

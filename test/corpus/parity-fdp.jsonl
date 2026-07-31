@@ -900,7 +900,6 @@
 {"id":"graphs-b103","size":377525,"status":"diverged","nDiffs":69777,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1840.48 vs 2176.86"}
 {"id":"2475_2","size":641284,"status":"diverged","nDiffs":323062,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 18385.95 vs 18432"}
 {"id":"2470","size":734358,"status":"diverged","nDiffs":20080,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 9488.17 vs 7690.38"}
-{"id":"2222","size":2384469,"status":"oracle-error","err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
 {"id":"tree-doc-dotguide-curve","size":106,"status":"pass"}
 {"id":"tree-doc-dotguide-icurve","size":107,"status":"pass"}
 {"id":"tree-doc-infosrc-fixed","size":230,"status":"pass"}
@@ -908,3 +907,4 @@
 {"id":"2621","size":721934,"status":"diverged","nDiffs":79648,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 27415.25 vs 22950.76"}
 {"id":"1652","size":240391,"status":"diverged","nDiffs":115987,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 3842.24 vs 4337.07"}
 {"id":"2108","size":3136769,"status":"diverged","nDiffs":1062804,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 59306.09 vs 59529.28"}
+{"id":"2222","size":2384469,"status":"oracle-error","err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}

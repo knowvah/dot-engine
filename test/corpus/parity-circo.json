@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-30T17:31:37.584Z",
+  "generatedAt": "2026-07-31T04:51:11.317Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "circo",
   "tolerance": 0.01,
   "total": 910,
   "counts": {
-    "pass": 900,
+    "pass": 902,
     "diverged": 4,
-    "oracle-error": 6,
+    "oracle-error": 3,
     "port-error": 0,
-    "timeout": 0
+    "timeout": 1
   },
   "results": [
     {
@@ -4491,12 +4491,6 @@
       "status": "pass"
     },
     {
-      "id": "1652",
-      "size": 240391,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
-    },
-    {
       "id": "1879",
       "size": 287816,
       "status": "pass"
@@ -4522,12 +4516,6 @@
       "status": "pass"
     },
     {
-      "id": "graphs-b103",
-      "size": 377525,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
-    },
-    {
       "id": "2475_2",
       "size": 641284,
       "status": "diverged",
@@ -4538,12 +4526,6 @@
       "id": "2470",
       "size": 734358,
       "status": "pass"
-    },
-    {
-      "id": "2222",
-      "size": 2384469,
-      "status": "oracle-error",
-      "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     },
     {
       "id": "tree-doc-dotguide-curve",
@@ -4566,15 +4548,31 @@
       "status": "pass"
     },
     {
-      "id": "2621",
-      "size": 721934,
+      "id": "2108",
+      "size": 3136769,
+      "status": "pass"
+    },
+    {
+      "id": "1652",
+      "size": 240391,
       "status": "oracle-error",
       "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     },
     {
-      "id": "2108",
-      "size": 3136769,
+      "id": "graphs-b103",
+      "size": 377525,
       "status": "pass"
+    },
+    {
+      "id": "2621",
+      "size": 721934,
+      "status": "pass"
+    },
+    {
+      "id": "2222",
+      "size": 2384469,
+      "status": "timeout",
+      "err": "ran 3600093ms, exceeded 3600000ms budget"
     }
   ]
 }
