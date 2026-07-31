@@ -50,6 +50,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareCmapx, compareImap, type MapDiff } from '../golden/compare-map.js';
 import { classAcceptedIds } from './accepted-class.js';
+import { preventIdleSleep, startClock } from './keep-awake.js';
 import { CMAPX_SENTINEL, IMAP_SENTINEL } from './render-one-map.js';
 import type { EngineName } from '../../src/gvc/context.js';
 
@@ -263,9 +264,9 @@ async function oracleFormat(
   }
   const env = { ...process.env, GVBINDIR };
   const args = engine === 'dot' ? [`-T${format}`, absInput] : ['-K', String(engine), `-T${format}`, absInput];
-  const t = Date.now();
+  const readClock = startClock();
   const r = await spawnCapture(DOT_BIN, args, env, ORACLE_TIMEOUT_MS);
-  const ms = Date.now() - t;
+  const ms = readClock().activeMs;
   // Native dot exits nonzero on recoverable warnings while still emitting
   // complete output — completeness is the validity signal, not exit code
   // (mirrors xdot-walk.ts / survey.ts).
@@ -647,6 +648,7 @@ async function main(): Promise<void> {
   const positional = argv.filter((a) => !a.startsWith('--'));
   const accepted = loadAccepted((positional[0] as EngineName | undefined) ?? 'dot');
   const tsx = resolveTsx();
+  const awake = preventIdleSleep();
 
   if (positional.length > 0) {
     // AD-3: tsx map-walk.ts <engine> [outJsonl] — any engine incl. `dot`.
@@ -656,7 +658,8 @@ async function main(): Promise<void> {
     process.stderr.write(
       `map engine-walk: ${items.length} conformant items, size-sorted small→large\n` +
         `oracle ${DOT_BIN} (GVBINDIR=${GVBINDIR}, engine=${engine})\ncache ${cacheDir(engine)}\n` +
-        `accepted divergences: ${accepted.size}\n`,
+        `accepted divergences: ${accepted.size}\n` +
+        `idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
     );
     await runEngineWalk(engine, outJsonlArg, items, tsx, accepted);
     return;
@@ -668,7 +671,8 @@ async function main(): Promise<void> {
   process.stderr.write(
     `map ${survey ? 'survey' : 'walk (stop-on-first)'}: ${items.length} conformant items, ` +
       `size-sorted small→large\noracle ${DOT_BIN} (GVBINDIR=${GVBINDIR})\ncache ${cacheDir('dot')}\n` +
-      `accepted divergences: ${accepted.size}\n`,
+      `accepted divergences: ${accepted.size}\n` +
+        `idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
   );
   if (survey) await runSurvey(items, tsx, accepted);
   else await runDefault(items, tsx, accepted);

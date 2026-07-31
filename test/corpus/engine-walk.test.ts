@@ -29,6 +29,7 @@ import {
   type BudgetConfig,
   type CostTables,
 } from './engine-walk.js';
+import { preventIdleSleep, sleepInflated } from './keep-awake.js';
 
 const DEFAULTS: BudgetConfig = budgetConfigFromEnv({});
 const NO_COSTS: CostTables = { portMs: {}, nativeMs: {} };
@@ -197,5 +198,53 @@ describe('cost table loaders', () => {
     expect(Object.keys(portMs).length).toBeGreaterThan(400);
     expect(portMs['2621']).toBeGreaterThan(1_000_000);
     expect(nativeMs['2621']).toBeGreaterThan(200_000);
+  });
+});
+
+describe('sleepInflated', () => {
+  it('reports nothing when wall and active agree (no sleep)', () => {
+    expect(sleepInflated(1000, 1000)).toBeUndefined();
+    // Clocks are read microseconds apart, so small drift must NOT be flagged —
+    // otherwise the field stops meaning "sleep happened here".
+    expect(sleepInflated(1000, 1040)).toBeUndefined();
+  });
+
+  it('reports the wall time when sleep inflated it past the 5% band', () => {
+    expect(sleepInflated(1000, 1051)).toBe(1051);
+    // The real case: 2222/twopi recorded 7.2ks active against 8.1Ms wall.
+    expect(sleepInflated(7_200_000, 8_110_856)).toBe(8_110_856);
+  });
+
+  it('never reports when wall is somehow below active', () => {
+    expect(sleepInflated(1000, 900)).toBeUndefined();
+  });
+});
+
+describe('preventIdleSleep', () => {
+  it('is a no-op off Darwin (returns false, spawns nothing)', () => {
+    let called = 0;
+    const r = preventIdleSleep('linux', 123, () => { called++; return {}; });
+    expect(r).toBe(false);
+    expect(called).toBe(0);
+  });
+
+  it('ties the assertion to our pid and unrefs it', () => {
+    const seen: { cmd: string; args: string[]; detached?: boolean } = { cmd: '', args: [] };
+    let unrefed = false;
+    const r = preventIdleSleep('darwin', 4242, (cmd, args, opts) => {
+      seen.cmd = cmd; seen.args = args; seen.detached = opts.detached as boolean;
+      return { unref: () => { unrefed = true; } };
+    });
+    expect(r).toBe(true);
+    expect(seen.cmd).toBe('caffeinate');
+    // `-w <pid>` is the point: the assertion cannot outlive the sweep, unlike the
+    // `-t 300` window already running on this machine.
+    expect(seen.args).toEqual(['-i', '-w', '4242']);
+    expect(seen.detached).toBe(true);
+    expect(unrefed, 'must unref so it cannot hold the event loop open').toBe(true);
+  });
+
+  it('swallows a spawn failure — a sweep must never die over power management', () => {
+    expect(preventIdleSleep('darwin', 1, () => { throw new Error('ENOENT'); })).toBe(false);
   });
 });

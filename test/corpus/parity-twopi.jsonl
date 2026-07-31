@@ -1,4 +1,3 @@
-{"id":"2285","size":11,"status":"pass"}
 {"id":"graphs-trivial","size":16,"status":"pass"}
 {"id":"2257","size":18,"status":"pass"}
 {"id":"tree-tclpkg-gv-hello","size":25,"status":"pass"}
@@ -907,4 +906,5 @@
 {"id":"tree-graphs-directed-arrows","size":4766,"status":"diverged","nDiffs":6,"firstDiff":"edge:lcrow->lcrowlcrow#0 _ldraw_ edge:lcrow->lcrowlcrow#0/_ldraw_/op[2].text[0]: 672.44 vs 695.21"}
 {"id":"2621","size":721934,"status":"pass"}
 {"id":"2108","size":3136769,"status":"pass"}
-{"id":"2222","size":2384469,"status":"timeout","err":"ran 3600052ms, exceeded 3600000ms budget"}
+{"id":"2285","size":11,"status":"pass","oracleMs":42,"portMs":1294}
+{"id":"2222","size":2384469,"status":"timeout","oracleMs":2892934,"portMs":8110856,"err":"ran 8110856ms, exceeded 7200000ms budget"}

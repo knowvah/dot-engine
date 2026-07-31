@@ -25,6 +25,7 @@ import { join } from 'node:path';
 import { homedir, tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
+import { preventIdleSleep, startClock, sleepInflated } from './keep-awake.js';
 
 /** Per-item outcome of the walk (one JSONL line each). */
 export type EngineWalkStatus = 'pass' | 'diverged' | 'oracle-error' | 'port-error' | 'timeout';
@@ -38,10 +39,11 @@ export interface EngineWalkRow {
   firstDiff?: string;
   err?: string;
   /**
-   * Wall-clock ms for the native oracle invocation, recorded on EVERY row —
-   * including `oracle-error`, where it says how long the oracle ran before
-   * failing (a cap-induced ETIMEDOUT then reads as ~the cap, distinguishing "the
-   * oracle cannot render this" from "we did not wait").
+   * ACTIVE ms for the native oracle invocation (monotonic clock, so sleep is
+   * excluded — see `portMs`), recorded on EVERY row including `oracle-error`,
+   * where it says how long the oracle ran before failing. A cap-induced ETIMEDOUT
+   * then reads as ~the cap, distinguishing "the oracle cannot render this" from
+   * "we did not wait".
    *
    * The walker always measured this and threw it away, which made a basic
    * question — is a slow row the port's fault or the oracle's? — unanswerable
@@ -50,10 +52,12 @@ export interface EngineWalkRow {
    */
   oracleMs?: number;
   /**
-   * Wall-clock ms for the port render. Present on `timeout` rows too, where it
-   * is the budget that was consumed. With `oracleMs` this makes the port/oracle
-   * ratio readable per row, so a legitimately heavy graph is distinguishable
-   * from a port-side pathology without re-measuring anything.
+   * ACTIVE ms for the port render, from the monotonic clock — which on Darwin does
+   * not advance while the system sleeps. This is the number comparable to the
+   * budget, because node/libuv timers run on that same clock, so the timeout is
+   * enforced on active time too.
+   *
+   * Present on `timeout` rows, where it is the budget that was consumed.
    *
    * NOT comparable to `oracleMs` on cheap graphs: this spawns `npx tsx`, so it
    * carries ~1s of node/tsx startup, while `oracleMs` is a direct `execFileSync`
@@ -63,6 +67,20 @@ export interface EngineWalkRow {
    * over ~10s); below that it says nothing about the port's speed.
    */
   portMs?: number;
+  /**
+   * WALL-clock ms for the port render, recorded only when it exceeds the active
+   * time by more than 5% — i.e. only when the machine slept or the process was
+   * suspended mid-render.
+   *
+   * Its presence is the signal: it means this row's wall-clock cost is inflated by
+   * `portWallMs - portMs` of not-running, so do not read it as compute. A 2222
+   * walk on 2026-07-31 recorded 8110856ms wall against a 7200000ms budget — an
+   * impossibility that took a `pmset -g log` archaeology session to explain, and
+   * that this field now states outright. @see keep-awake.ts
+   */
+  portWallMs?: number;
+  /** Same relationship to `oracleMs`: present only when sleep inflated it. */
+  oracleWallMs?: number;
 }
 
 /** parity-<engine>.json shape (consumed by parity-report.ts). */
@@ -251,7 +269,7 @@ function oracleCacheDir(engine: string): string {
  * how long a file read took.
  */
 function oracleXdot(path: string, id: string, engine: string, cacheDir: string):
-  { xdot?: string; ms?: number; err?: string } {
+  { xdot?: string; ms?: number; wallMs?: number; err?: string } {
   const cacheFile = join(cacheDir, `${id}.xdot`);
   const msFile = join(cacheDir, `${id}.ms`);
   if (existsSync(cacheFile) && existsSync(msFile)) {
@@ -259,7 +277,7 @@ function oracleXdot(path: string, id: string, engine: string, cacheDir: string):
     const ms = Number(readFileSync(msFile, 'utf8'));
     if (cached.trimEnd().endsWith('}') && Number.isFinite(ms)) return { xdot: cached, ms };
   }
-  const startedAt = Date.now();
+  const read = startClock();
   let out = '';
   try {
     out = execFileSync(DOT_BIN, ['-K', engine, '-Txdot', path], {
@@ -271,15 +289,19 @@ function oracleXdot(path: string, id: string, engine: string, cacheDir: string):
     if (typeof so === 'string' && so.trimEnd().endsWith('}')) {
       out = so; // complete despite nonzero exit
     } else {
-      return { ms: Date.now() - startedAt, err: String((err as Error).message).split('\n')[0]!.slice(0, 160) };
+      const t = read();
+      return { ms: t.activeMs, wallMs: sleepInflated(t.activeMs, t.wallMs),
+               err: String((err as Error).message).split('\n')[0]!.slice(0, 160) };
     }
   }
-  const ms = Date.now() - startedAt;
-  if (!out.trimEnd().endsWith('}')) return { ms, err: 'incomplete oracle output' };
+  const t = read();
+  const ms = t.activeMs;
+  const wallMs = sleepInflated(t.activeMs, t.wallMs);
+  if (!out.trimEnd().endsWith('}')) return { ms, wallMs, err: 'incomplete oracle output' };
   mkdirSync(cacheDir, { recursive: true });
   writeFileSync(cacheFile, out);
   writeFileSync(msFile, String(ms));
-  return { xdot: out, ms };
+  return { xdot: out, ms, wallMs };
 }
 
 // ---------------------------------------------------------------------------
@@ -296,6 +318,10 @@ async function main(): Promise<void> {
   const OUT = process.argv[3] ?? fileURLToPath(new URL(`./parity-${engine}.jsonl`, import.meta.url));
   const SUMMARY = fileURLToPath(new URL(`./parity-${engine}.json`, import.meta.url));
   const CACHE = oracleCacheDir(engine);
+  // Hold an idle-sleep assertion for the whole walk: sleep does not break the
+  // timeout (libuv's clock pauses too) but it corrupts every wall-clock number
+  // we record. @see keep-awake.ts
+  const awake = preventIdleSleep();
 
   interface ParityEntry { id: string; path: string; verdict: string }
   const parity = JSON.parse(
@@ -330,7 +356,8 @@ async function main(): Promise<void> {
       `oracle cap ${CONFIG.oracleMs}ms\n` +
       `[${engine}] cost tables: ${Object.keys(COSTS.portMs).length} port, ` +
       `${Object.keys(COSTS.nativeMs).length} native\n` +
-      `[${engine}] oracle cache ${CACHE}\n`,
+      `[${engine}] oracle cache ${CACHE}\n` +
+      `[${engine}] idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
   );
 
   let n = 0;
@@ -346,6 +373,7 @@ async function main(): Promise<void> {
     // here left 45 comparable ids as phantom "oracle-error" rows.
     const o = oracleXdot(it.path, it.id, engine, CACHE);
     rec.oracleMs = o.ms;
+    if (o.wallMs !== undefined) rec.oracleWallMs = o.wallMs;
     if (o.xdot === undefined) {
       rec.status = 'oracle-error';
       rec.err = o.err;
@@ -359,7 +387,7 @@ async function main(): Promise<void> {
     // spinning forever on a hung render (observed: a 241_1/circo render
     // orphaned at 100% CPU for 20h after spawnSync's killSignal).
     const budgetMs = renderBudgetMs(it.id, COSTS.nativeMs[it.id] ?? 0);
-    const startedAt = Date.now();
+    const readPortClock = startClock();
     const r = await new Promise<{ stdout: string; stderr: string; status: number | null; timedOut: boolean }>(
       (resolve) => {
         const child = spawn('npx', ['tsx', join(REPO, 'test/corpus/render-one-xdot.ts'), it.path, engine], {
@@ -383,8 +411,10 @@ async function main(): Promise<void> {
         });
       },
     );
-    const elapsedMs = Date.now() - startedAt;
+    const pt = readPortClock();
+    const elapsedMs = pt.activeMs;
     rec.portMs = elapsedMs;
+    if (sleepInflated(pt.activeMs, pt.wallMs) !== undefined) rec.portWallMs = pt.wallMs;
     if (r.timedOut) {
       // State elapsed AND budget so a reader can tell a genuine runaway from a
       // render that was merely long, without re-running anything.
