@@ -61,6 +61,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareJson, type JsonDiff } from '../golden/compare-json.js';
 import { classAcceptedIds } from './accepted-class.js';
+import { excludedFor } from './engine-exclusions.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
@@ -339,6 +340,8 @@ async function walkOne(
 
 interface ParityRow { id: string; path: string; verdict: string; }
 
+const EXCLUSIONS = new URL('./engine-exclusions.json', import.meta.url);
+
 function conformantItems(): Item[] {
   const parity = JSON.parse(readFileSync(PARITY, 'utf8')) as { results: ParityRow[] };
   const items: Item[] = [];
@@ -511,7 +514,8 @@ async function main(): Promise<void> {
     process.stderr.write(`harness fault: oracle binary not found at ${DOT_BIN}\n`);
     process.exit(2);
   }
-  const items = conformantItems();
+  const excluded = excludedFor(EXCLUSIONS, ENGINE);
+  const items = conformantItems().filter((it) => !excluded.has(it.id));
   const accepted = loadAccepted();
   const awake = preventIdleSleep();
   const tsx = resolveTsx();

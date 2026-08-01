@@ -50,6 +50,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareCmapx, compareImap, type MapDiff } from '../golden/compare-map.js';
 import { classAcceptedIds } from './accepted-class.js';
+import { excludedFor } from './engine-exclusions.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
 import { CMAPX_SENTINEL, IMAP_SENTINEL } from './render-one-map.js';
 import type { EngineName } from '../../src/gvc/context.js';
@@ -425,6 +426,8 @@ async function walkOne(
 
 interface ParityRow { id: string; path: string; verdict: string; }
 
+const EXCLUSIONS = new URL('./engine-exclusions.json', import.meta.url);
+
 function conformantItems(): Item[] {
   const parity = JSON.parse(readFileSync(PARITY, 'utf8')) as { results: ParityRow[] };
   const items: Item[] = [];
@@ -654,7 +657,8 @@ async function main(): Promise<void> {
     // AD-3: tsx map-walk.ts <engine> [outJsonl] — any engine incl. `dot`.
     const engine = positional[0] as EngineName;
     const outJsonlArg = positional[1];
-    const items = conformantItems();
+    const excluded = excludedFor(EXCLUSIONS, engine);
+  const items = conformantItems().filter((it) => !excluded.has(it.id));
     process.stderr.write(
       `map engine-walk: ${items.length} conformant items, size-sorted small→large\n` +
         `oracle ${DOT_BIN} (GVBINDIR=${GVBINDIR}, engine=${engine})\ncache ${cacheDir(engine)}\n` +

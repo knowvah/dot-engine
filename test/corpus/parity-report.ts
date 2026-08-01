@@ -30,6 +30,7 @@ import type { PlainVerdict, PlainWalkResult, PlainParityReport, PlainFormatResul
 // format-parity-matrix (END)
 import { loadAccepted, matchAccepted } from './accepted.js';
 import { classAcceptedIds, type FormatAcceptedClassEntry, type FormatAcceptedRegistry } from './accepted-class.js';
+import { loadExclusions } from './engine-exclusions.js';
 import { testIdLink, scrubLocalPaths } from './corpus-links.js';
 // map-conformance (BEGIN): dot (imagemap) track types — see MAP block below.
 import type { MapVerdict, MapWalkResult, MapFormatResult } from './map-walk.js';
@@ -407,6 +408,33 @@ function trackTable(rows: TrackRow[]): string {
   ].join('\n');
 }
 
+/**
+ * Per-(graph, engine) exclusions, rendered so they are never silent. An
+ * excluded id yields NO verdict on that engine, which is indistinguishable from
+ * coverage unless it is stated here with its mechanism.
+ */
+function exclusionsSection(): string {
+  const entries = loadExclusions(new URL('./engine-exclusions.json', import.meta.url));
+  if (entries.length === 0) return '';
+  return [
+    '## Engine exclusions',
+    '',
+    'Graphs NOT walked on the listed engines, because the engine cannot',
+    'meaningfully exercise them. These carry **no verdict** — they are not',
+    'accepted divergences. An entry requires all three of: structurally',
+    'degenerate for that engine, expensive enough that skipping it buys',
+    'something, and covered on a cheaper track. Source of truth:',
+    '`test/corpus/engine-exclusions.json`.',
+    '',
+    '| id | engines | why it measures nothing | covered instead by |',
+    '|---|---|---|---|',
+    ...entries.map((e) =>
+      `| ${testIdLink(e.id, `${e.id}.dot`)} | ${e.engines.join(', ')} | ${escText(e.mechanism)} | ${escText(e.coveredBy)} |`,
+    ),
+    '',
+  ].join('\n');
+}
+
 /** Golden counts per engine from test/golden/manifest.json. */
 function goldensSection(): string {
   const manifest = JSON.parse(readFileSync(GOLDEN_MANIFEST, 'utf8')) as Array<{ engine: string }>;
@@ -414,6 +442,7 @@ function goldensSection(): string {
   for (const e of manifest) byEngine.set(e.engine, (byEngine.get(e.engine) ?? 0) + 1);
   const rows = [...byEngine.entries()].map(([eng, n]) => `| ${eng} | ${n} |`);
   return [
+    exclusionsSection(),
     '## Goldens',
     '',
     `${manifest.length} pinned golden inputs (\`test/golden/manifest.json\`), by engine:`,

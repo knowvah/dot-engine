@@ -143,8 +143,56 @@ Each applicable input gets one verdict in `parity.json`:
 | `structural-match` | same element tree; only numeric coordinate diffs above tolerance. |
 | `diverged` | a structural difference (missing/extra node, wrong tag, text mismatch). |
 | `errored` | the port threw (e.g. unported attribute, parser gap) — message captured. |
-| `timeout` | non-erroring, but ran past `max(3× native, 3 min)` — a true runaway, not merely slow. |
+| `timeout` | non-erroring, but ran past `max(FLOOR, 3× native, 3× recorded port cost)` — a true runaway, not merely slow. |
 | `oracle-error` | the native oracle failed to render — excluded from port scoring. |
+
+### `timeout` means runaway, not slow
+
+The floor is **one hour** across all five walkers, env-overridable. A tight
+budget does not fail safe — it *fabricates* verdicts, and a `timeout` row is
+invisible to `attribute-divergence.ts` (which selects only `diverged`), so a
+phantom timeout silently removes a graph from attribution forever. Four such
+rows existed under an old 90s cap; re-run with real budgets, `2108` turned out
+to be **conformant** on both circo and twopi. The cap had been concealing a
+pass, not guarding against a failure.
+
+Timings are **active** ms from the monotonic clock, not wall-clock, and every
+walker holds an idle-sleep assertion for its duration
+([`keep-awake.ts`](./keep-awake.ts)). Sleep does not break the timeout — libuv's
+timers pause too — but it inflates any wall-clock number recorded. When wall
+exceeds active by >5% the row also carries `portWallMs`/`oracleWallMs`; the
+field's presence *is* the signal that the row was sleep-inflated.
+
+### Engine exclusions — no verdict at all
+
+Three mechanisms look similar and are not:
+
+| mechanism | effect |
+|---|---|
+| `corpus-manifest.json` `status: quarantined` | **global** — the id is dropped from every track |
+| `accepted-divergences-*.json` | the id **is** walked; a real divergence is recorded and forgiven with a documented cause |
+| [`engine-exclusions.json`](./engine-exclusions.json) | the id is not walked on **one engine**, because that engine cannot meaningfully exercise it — so it gets **no verdict** |
+
+An exclusion is more dangerous than an acceptance: a bad acceptance forgives a
+known difference, a bad exclusion means nobody ever looks. Add an entry only when
+**all three** hold:
+
+1. **Structurally degenerate** for that engine — its algorithm provably cannot
+   engage. A mechanism, not an observation.
+2. **Expensive** — skipping it actually buys something (say >5 min).
+3. **Covered elsewhere** — the same code path is verified on a cheaper track.
+
+Explicitly *not* a criterion: **"the port is slow here."** A high port/oracle
+ratio is what a real performance defect looks like, so excluding on slowness
+would suppress the findings this corpus exists to surface. Ratio disparity across
+engines may *nominate* a candidate for review; it must never excuse one by itself.
+
+Current entries render in [`PARITY.md`](./PARITY.md) under **Engine exclusions**,
+so an exclusion is never silent. Today there is one: `2222` (28,303 nodes, zero
+edges) on the five non-dot engines — with no edges every node is its own
+component, so they all collapse into the shared component packer and their own
+algorithms never run. All four measured oracle outputs are byte-identical, and
+`dot` covers the graph conformantly in 6s.
 
 The survey isolates every port render in a **spawned subprocess with a timeout**
 (AD-2): the port has no CLI and some inputs trigger synchronous infinite loops

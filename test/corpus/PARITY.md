@@ -92,6 +92,19 @@ Per-format status of the ids not conformant in all three:
 | `windows-Latin1` | conformant | conformant | accepted |
 
 
+## Engine exclusions
+
+Graphs NOT walked on the listed engines, because the engine cannot
+meaningfully exercise them. These carry **no verdict** — they are not
+accepted divergences. An entry requires all three of: structurally
+degenerate for that engine, expensive enough that skipping it buys
+something, and covered on a cheaper track. Source of truth:
+`test/corpus/engine-exclusions.json`.
+
+| id | engines | why it measures nothing | covered instead by |
+|---|---|---|---|
+| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | neato, fdp, sfdp, circo, twopi | 28,303 node declarations and ZERO edges, so every node is its own connected component. With no edges there are no springs to relax, no circular ordering and no radial tree: all five engines delegate to the engine-INDEPENDENT component packer (lib/pack), whose polyomino packing is visible in the output as a grid (861 distinct x by 1632 distinct y). Their own algorithms never run — confirmed by all four measured oracle outputs being BYTE-IDENTICAL (16,390,698 bytes, cmp-verified). Ruled out a `layout=` attribute override (none) and fixed `pos=` (none). | The four dot tracks (SVG, xdot, json, imagemap), where 2222 is conformant and the native render takes 6s. dot does NOT use lib/pack — its output differs from the neato-family — so dot coverage exercises a different disconnected-component path, and the packer path itself remains covered by the 157 other edgeless corpus graphs, all of which are cheap (&lt;=7KB). |
+
 ## Goldens
 
 247 pinned golden inputs (`test/golden/manifest.json`), by engine:
