@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T19:12:40.005Z",
+  "generatedAt": "2026-08-01T00:38:08.731Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "twopi",
   "tolerance": 0.01,
@@ -4595,9 +4595,9 @@
       "id": "2222",
       "size": 2384469,
       "status": "timeout",
-      "oracleMs": 2892934,
-      "portMs": 8110856,
-      "err": "ran 8110856ms, exceeded 7200000ms budget"
+      "oracleMs": 2880603,
+      "portMs": 14400034,
+      "err": "ran 14400034ms, exceeded 14400000ms budget"
     }
   ]
 }
