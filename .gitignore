@@ -67,3 +67,6 @@ docs-site/showcase/
 # gitignored; default cache lives under the OS tmpdir, outside the repo)
 survey.log
 test/corpus/oracle-cache/
+
+# Transient skill working file (/upgrade-deps resume state)
+.upgrade-deps-progress.md
