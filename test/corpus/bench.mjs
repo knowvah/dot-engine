@@ -272,8 +272,21 @@ async function portRun(entries, indices, out, concurrency, label) {
 }
 
 /** Port phase: heavy inputs (native > HEAVY_MS) run at low concurrency for
- *  clean numbers; light inputs run at full POOL for throughput. Heavy first so
- *  the two sets never contend with each other. */
+ *  clean numbers; light inputs run at full POOL for throughput. The two sets are
+ *  never in flight together — each portRun is awaited before the next starts.
+ *
+ *  LIGHT RUNS FIRST, and the order is load-bearing. It used to be heavy-first,
+ *  which was fine while the heaviest graph took ~4 min. Once `tree-share-examples-world`
+ *  (native 1572s) and `2475_1` (native 1103s) gained canonical native times they
+ *  became "heavy", and running them first meant ~2h of extreme memory + CPU load
+ *  BEFORE a single light graph was timed. Measured, not assumed: in that run
+ *  nativeMs was unchanged on all 699 comparable ids while portMs rose >25% on 653
+ *  of them, ratios inflating 3-10x (graphs-b103 4.04x->28.36x, 1447_1 1.25x->13.57x);
+ *  re-timing six of those ids in isolation immediately afterward returned every one
+ *  to ~baseline (1447_1 13.57x->1.74x). The graphs had not regressed — the machine
+ *  had. Sequencing light first means the 880+ rows that make up the corpus are
+ *  measured on a clean machine, and only the handful of heavy rows absorb the
+ *  degradation their own renders cause. */
 async function portPhase(entries, native) {
   const out = new Array(entries.length);
   const heavy = [];
@@ -283,8 +296,8 @@ async function portPhase(entries, native) {
     (native[i].ms > HEAVY_MS ? heavy : light).push(i);
   }
   process.stderr.write(`  ${heavy.length} heavy (solo x${HEAVY_POOL}), ${light.length} light (pool ${POOL})\n`);
-  await portRun(entries, heavy, out, HEAVY_POOL, 'heavy');
   await portRun(entries, light, out, POOL, 'light');
+  await portRun(entries, heavy, out, HEAVY_POOL, 'heavy');
   return out;
 }
 
