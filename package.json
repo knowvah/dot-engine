@@ -77,7 +77,7 @@
     "prepublishOnly": "npm run typecheck && npm run build"
   },
   "engines": {
-    "node": ">=18.12.0"
+    "node": ">=22.0.0"
   },
   "peerDependencies": {
     "canvas": ">=2 <4"
@@ -94,7 +94,7 @@
     "@semantic-release/npm": "^13.1.5",
     "@semantic-release/release-notes-generator": "^14.1.1",
     "@types/fontkit": "^2.0.9",
-    "@types/node": "^26.0.0",
+    "@types/node": "^22.0.0",
     "@typescript/native-preview": "^7.0.0-dev.20260622.1",
     "@vitest/coverage-v8": "^4.1.9",
     "@xmldom/xmldom": "^0.9.10",
