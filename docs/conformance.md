@@ -98,6 +98,32 @@ is the `dot` SVG dashboard, and each other engine has its own
 | **`structural-match`** | Same element tree, but one or more numeric values exceed the tolerance. |
 | **`diverged`** | The element trees differ (a missing/extra element or a non-numeric mismatch). |
 | **`oracle-error`** | The C oracle failed to render the input (excluded from port scoring). |
+
+Some graphs carry **no verdict at all** on a given engine: see *engine
+exclusions* below.
+
+### Engine exclusions
+
+An excluded `(graph, engine)` pair is not walked, so it is neither conformant nor
+divergent — it is simply not measured there. This is distinct from an accepted
+divergence, where the comparison *did* happen and the difference is forgiven with
+a documented cause.
+
+The bar is deliberately high, because an unexamined graph is a coverage hole
+rather than a known cost. An entry requires all three: the engine's algorithm
+provably cannot engage with the input, skipping it saves real time, and the same
+behaviour is verified on a cheaper track. Being *slow* is explicitly not
+sufficient — a poor port/oracle ratio is what a genuine performance defect looks
+like, and excluding on it would hide exactly what the corpus is for.
+
+Every exclusion is listed with its mechanism in
+[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md#engine-exclusions);
+the registry is `test/corpus/engine-exclusions.json`. The motivating case is
+`2222`, which declares 28,303 nodes and no edges: with nothing to relate, every
+force-directed and radial engine delegates to the shared component packer and
+none of their own algorithms run — confirmed by their oracle outputs being
+byte-identical. `dot` takes a different path and covers it conformantly in six
+seconds.
 | **`errored` / `timeout`** | The port failed to render or exceeded the time budget. |
 
 "Conformant" is the bar; "structural-match" is meaningful progress (right shape,

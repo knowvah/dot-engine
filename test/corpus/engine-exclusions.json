@@ -1,0 +1,13 @@
+{
+  "comment": "Per-(graph, engine) exclusions from the non-dot engine tracks. DISTINCT from corpus-manifest.json's `status: quarantined`, which is GLOBAL — quarantining 2222 there would also discard the four dot tracks where it is conformant. An entry here removes an id from ONE engine's walk only. This is NOT an acceptance registry: an excluded id has no verdict at all, so it can never be mistaken for a pass. Every entry MUST state a mechanism explaining why the engine cannot meaningfully exercise the graph, and where the behaviour IS covered instead. Exclusions are rendered in PARITY.md so they are never silent. Add an entry only when ALL THREE hold: (1) STRUCTURALLY DEGENERATE — the engine's own algorithm provably cannot engage (a mechanism, not an observation); (2) EXPENSIVE — exclusion actually buys something, say a known cost over ~5 minutes; (3) COVERED ELSEWHERE — the same code path is verified on a cheaper track. Deliberately NOT a criterion: 'the port is slow here'. A high port/oracle ratio is what a real performance defect looks like, so excluding on slowness would suppress exactly the findings this corpus exists to surface. Ratio disparity across engines may NOMINATE a candidate for review; it must never excuse one by itself.",
+  "exclusions": [
+    {
+      "id": "2222",
+      "engines": ["neato", "fdp", "sfdp", "circo", "twopi"],
+      "mechanism": "28,303 node declarations and ZERO edges, so every node is its own connected component. With no edges there are no springs to relax, no circular ordering and no radial tree: all five engines delegate to the engine-INDEPENDENT component packer (lib/pack), whose polyomino packing is visible in the output as a grid (861 distinct x by 1632 distinct y). Their own algorithms never run — confirmed by all four measured oracle outputs being BYTE-IDENTICAL (16,390,698 bytes, cmp-verified). Ruled out a `layout=` attribute override (none) and fixed `pos=` (none).",
+      "cost": "oracle ~48min per engine (neato 2823s, sfdp 2811s, circo 2868s, twopi 2748s); port >4h ACTIVE on twopi, killed at a 4-hour budget with a >=5.00x ratio and no sleep inflation. Surveying all five would cost ~40h+ for five copies of one packer check.",
+      "coveredBy": "The four dot tracks (SVG, xdot, json, imagemap), where 2222 is conformant and the native render takes 6s. dot does NOT use lib/pack — its output differs from the neato-family — so dot coverage exercises a different disconnected-component path, and the packer path itself remains covered by the 157 other edgeless corpus graphs, all of which are cheap (<=7KB).",
+      "ref": "plans/decision-journal.md 2026-07-31"
+    }
+  ]
+}

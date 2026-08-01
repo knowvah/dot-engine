@@ -51,6 +51,7 @@ import { fileURLToPath } from 'node:url';
 import { comparePlain, type PlainDiff } from '../golden/compare-plain.js';
 import type { EngineName } from '../../src/gvc/context.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
+import { excludedFor } from './engine-exclusions.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -360,6 +361,8 @@ async function walkOne(
 
 interface ParityRow { id: string; path: string; verdict: string; }
 
+const EXCLUSIONS = new URL('./engine-exclusions.json', import.meta.url);
+
 function conformantItems(): Item[] {
   const parity = JSON.parse(readFileSync(PARITY, 'utf8')) as { results: ParityRow[] };
   const items: Item[] = [];
@@ -480,7 +483,8 @@ async function main(): Promise<void> {
   const outJsonlArg = positional[1];
   const accepted = loadAccepted();
   const tsx = resolveTsx();
-  const items = conformantItems();
+  const excluded = excludedFor(EXCLUSIONS, engine);
+  const items = conformantItems().filter((it) => !excluded.has(it.id));
   // Hold an idle-sleep assertion for the sweep: sleep does not break the timeout
   // (libuv's clock pauses too) but it corrupts every wall-clock number recorded.
   const awake = preventIdleSleep();

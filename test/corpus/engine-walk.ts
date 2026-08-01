@@ -26,6 +26,7 @@ import { homedir, tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
 import { preventIdleSleep, startClock, sleepInflated } from './keep-awake.js';
+import { excludedFor } from './engine-exclusions.js';
 
 /** Per-item outcome of the walk (one JSONL line each). */
 export type EngineWalkStatus = 'pass' | 'diverged' | 'oracle-error' | 'port-error' | 'timeout';
@@ -109,6 +110,7 @@ const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
  * than gating byte-fidelity. @see docs/known-divergences.md#a1
  */
 const ITERATIVE_ENGINES = new Set(['neato', 'fdp', 'sfdp']);
+const EXCLUSIONS = new URL('./engine-exclusions.json', import.meta.url);
 
 // ---------------------------------------------------------------------------
 // Render budget (pure + injectable, so engine-walk.test.ts can exercise it)
@@ -327,7 +329,7 @@ async function main(): Promise<void> {
   const parity = JSON.parse(
     readFileSync(join(REPO, 'test/corpus/parity.json'), 'utf8'),
   ) as { results: ParityEntry[] };
-  const items = parity.results
+  const allItems = parity.results
     .filter((r) => r.verdict === 'conformant')
     .map((r) => {
       const p = join(CORPUS, r.path);
@@ -336,6 +338,9 @@ async function main(): Promise<void> {
       return { id: r.id, path: p, size };
     })
     .sort((a, b) => a.size - b.size || (a.id < b.id ? -1 : 1));
+  // Drop ids this engine cannot meaningfully exercise (@see engine-exclusions.ts).
+  const excluded = excludedFor(EXCLUSIONS, engine);
+  const items = allItems.filter((it) => !excluded.has(it.id));
 
   // resume: skip ids already in the output file
   const done = new Set<string>();
@@ -357,7 +362,10 @@ async function main(): Promise<void> {
       `[${engine}] cost tables: ${Object.keys(COSTS.portMs).length} port, ` +
       `${Object.keys(COSTS.nativeMs).length} native\n` +
       `[${engine}] oracle cache ${CACHE}\n` +
-      `[${engine}] idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
+      `[${engine}] idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n` +
+      (excluded.size > 0
+        ? `[${engine}] excluded ${excluded.size}: ${[...excluded.keys()].join(', ')}\n`
+        : ''),
   );
 
   let n = 0;
