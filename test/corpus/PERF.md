@@ -19,55 +19,69 @@ Regenerate: `npm run build:js && node test/corpus/bench.mjs && npm run bench:was
   inflates a concurrent big render's single sample materially (≈66% on 2620). Set
   `BENCH_HEAVY_POOL>1` for a faster, noisier scan.
 - **Native:** `dot -Tsvg` best-of-3 (min).
-- **Budget:** target ≤3× native. Per-render cap **1351530ms**
+- **Budget:** target ≤3× native. Per-render cap **4800000ms**
   (SIGKILL → `over-cap`, i.e. a true synchronous hang).
 - **Caveat:** light graphs are timed under up-to-6-way load; for a
   precise single number re-run `BENCH_POOL=1 BENCH_IDS=<id> node test/corpus/bench.mjs`.
 
 ## Summary
 
-- **Rated inputs:** 779 · **within ≤3× native:** 762 (97.8%)
-- **ok (≤3×):** 761 · **slow (>3×):** 18 · **over-cap (hang):** 0 · **errored:** 0 · **oracle-error:** 9
-- **ratio (port/native):** p50 0.01× · p90 0.23× · max 6.48×
+- **Rated inputs:** 928 · **within ≤3× native:** 902 (97.2%)
+- **ok (≤3×):** 902 · **slow (>3×):** 26 · **over-cap (hang):** 2 · **errored:** 0 · **oracle-error:** 9
+- **ratio (port/native):** p50 0.02× · p90 0.70× · max 7.54×
 
 ## Ratio distribution
 
 | band | count |
 |---|---:|
-| ≤1× (port ≥ native, warm) | 737 |
-| 1–2× | 11 |
-| 2–3× | 14 |
-| 3–4× | 11 |
-| 4–6× | 5 |
+| ≤1× (port ≥ native, warm) | 851 |
+| 1–2× | 31 |
+| 2–3× | 20 |
+| 3–4× | 17 |
+| 4–6× | 8 |
 | 6–10× | 1 |
 | >10× | 0 |
-| over-cap (≥1351530ms, possible hang) | 0 |
+| over-cap (≥4800000ms, possible hang) | 2 |
 
 ## Over budget — slower than 3× native (worst first)
 
 | id | native ms | port ms (warm) | ratio |
 |---|---:|---:|---:|
-| `2108` | 12849 | 83220 | 6.48× |
-| `2471` | 3269 | 17929 | 5.48× |
-| `2095` | 261 | 1155 | 4.42× |
-| `graphs-b100` | 8646 | 37691 | 4.36× |
-| `graphs-b104` | 8635 | 35254 | 4.08× |
-| `graphs-b103` | 1210 | 4883 | 4.04× |
-| `2095_1` | 22309 | 88075 | 3.95× |
-| `linux.x86-root_circo` | 245 | 943 | 3.85× |
-| `nshare-root_twopi` | 247 | 900 | 3.65× |
-| `2646` | 97463 | 352989 | 3.62× |
-| `2743` | 201 | 721 | 3.59× |
-| `graphs-root` | 214 | 757 | 3.54× |
-| `nshare-root_circo` | 247 | 809 | 3.28× |
-| `linux.x86-root_twopi` | 248 | 805 | 3.25× |
-| `2371` | 73639 | 235360 | 3.2× |
-| `graphs-b29` | 585 | 1852 | 3.17× |
-| `2620` | 371 | 1122 | 3.02× |
+| `2108` | 12849 | 96837 | 7.54× |
+| `2471` | 3269 | 19162 | 5.86× |
+| `graphs-b103` | 1210 | 6676 | 5.52× |
+| `graphs-b100` | 8646 | 47617 | 5.51× |
+| `2095` | 261 | 1216 | 4.66× |
+| `2621` | 256000 | 1131355 | 4.42× |
+| `linux.x86-root_circo` | 245 | 1044 | 4.26× |
+| `tree-contrib-dirgraph-bsdarch` | 12 | 50 | 4.19× |
+| `graphs-b104` | 8635 | 34857 | 4.04× |
+| `nshare-root_circo` | 247 | 988 | 4× |
+| `graphs-root` | 214 | 839 | 3.92× |
+| `share-b29` | 578 | 2269 | 3.92× |
+| `linux.x86-root_twopi` | 248 | 947 | 3.82× |
+| `nshare-root_twopi` | 247 | 934 | 3.78× |
+| `tree-contrib-dirgraph-linux` | 8 | 30 | 3.75× |
+| `2620` | 371 | 1382 | 3.73× |
+| `2743` | 201 | 748 | 3.72× |
+| `graphs-badvoro` | 320 | 1183 | 3.7× |
+| `2095_1` | 22309 | 82302 | 3.69× |
+| `linux.i386-b29` | 582 | 2039 | 3.5× |
+| `tree-doc-neato-jho` | 11 | 38 | 3.45× |
+| `tree-graphs-undirected-ngk10_4` | 15 | 51 | 3.43× |
+| `graphs-b29` | 585 | 1989 | 3.4× |
+| `1652` | 270306 | 894623 | 3.31× |
+| `windows-b29` | 597 | 1939 | 3.25× |
+| `tree-doc-dotguide-smlred` | 21 | 65 | 3.11× |
 
 ## Over-cap / possible hang
 
-_None — no input exceeded the per-render cap (no hangs)._
+| id | native ms | cap ms | native×budget | status |
+|---|---:|---:|---:|---|
+| `tree-share-examples-world` | 1572090 | 4800000 | 4716270 | exceeds budget (likely hang/runaway) |
+| `2475_1` | 1103343 | 4800000 | 3310029 | exceeds budget (likely hang/runaway) |
+
+Raise `BENCH_CAP_MS` and re-run these ids to resolve an inconclusive status.
 
 ## dot-engine vs WASM (@hpcc-js/wasm-graphviz)
 
