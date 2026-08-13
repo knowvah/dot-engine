@@ -162,6 +162,8 @@ interface EdgeGeometry {
   label?: { x: number; y: number };
   tailLabel?: { x: number; y: number };
   headLabel?: { x: number; y: number };
+  sp?: { x: number; y: number };
+  ep?: { x: number; y: number };
 }
 ```
 
@@ -174,6 +176,18 @@ positions. Each is present only once layout has placed it — the same condition
 under which `render()` emits its `<text>` — so a port label that could not be
 placed (an edge with no routed spline, for instance) is reported as absent
 rather than as a label at the origin.
+
+`sp` and `ep` are the arrow attachment points at the tail and head ends. When
+an end carries an arrow, the spline is shortened to leave room for it and the
+arrow spans from the terminal control point out to this point — so a consumer
+drawing its own arrowheads reads the tip here instead of extrapolating one.
+Each is present only when that end actually has an arrow, so a plain
+`digraph { a -> b }` edge reports `ep` and no `sp`, and `arrowhead=none`
+reports neither.
+
+These are the attachment points on the node boundary. Graphviz's own renderer
+insets the arrow polygon it draws from them by a penwidth-dependent amount, so
+`ep` is the point to draw an arrow *to*, not a copy of the rendered tip.
 
 ### `ClusterGeometry`
 
