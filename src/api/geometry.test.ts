@@ -256,6 +256,59 @@ describe('getLayout edge port labels', () => {
 });
 
 // ---------------------------------------------------------------------------
+// AC7: spline arrow attachment points (sp / ep)
+// @see docs/graphviz-issues/10-edge-spline-sp-ep-not-exposed.md
+// ---------------------------------------------------------------------------
+
+describe('getLayout edge arrow attachment points', () => {
+  it('head arrow: ep is published and the spline stops short of it', () => {
+    const gA = layoutGraph('digraph { a -> b }');
+    const edge = getLayout(gA, { yAxis: 'up' }).edges[0];
+    expect(edge.ep).toBeDefined();
+    // The gap ep leaves for the arrow is the whole point of the field.
+    const last = edge.points[edge.points.length - 1];
+    expect(edge.ep!.y).toBeLessThan(last.y);
+    expect(edge.ep).toEqual({
+      x: gA.edges[0].info.spl!.list[0].ep.x,
+      y: gA.edges[0].info.spl!.list[0].ep.y,
+    });
+  });
+
+  it('no arrow at an end: that field is absent, not (0, 0)', () => {
+    // arrowhead=none clears eflag, leaving ep at its calloc-zero value.
+    const noHead = getLayout(layoutGraph('digraph { a -> b [arrowhead=none] }')).edges[0];
+    expect(noHead.ep).toBeUndefined();
+    expect(noHead.sp).toBeUndefined();
+    // A plain digraph edge has no tail arrow either.
+    expect(getLayout(layoutGraph('digraph { a -> b }')).edges[0].sp).toBeUndefined();
+  });
+
+  it('dir=both: both ends are published', () => {
+    const edge = getLayout(layoutGraph('digraph { a -> b [dir=both] }')).edges[0];
+    expect(edge.sp).toBeDefined();
+    expect(edge.ep).toBeDefined();
+  });
+
+  it('arrowsize is honoured: a smaller arrow leaves a smaller gap', () => {
+    const gap = (src: string): number => {
+      const e = getLayout(layoutGraph(src), { yAxis: 'up' }).edges[0];
+      return e.points[e.points.length - 1].y - e.ep!.y;
+    };
+    // ep is the node boundary either way; only the spline's end moves.
+    expect(gap('digraph { a -> b [arrowsize="0.75"] }'))
+      .toBeLessThan(gap('digraph { a -> b }'));
+  });
+
+  it('y is flipped like every other coordinate', () => {
+    const gA = layoutGraph('digraph { a -> b }');
+    const down = getLayout(gA).edges[0];
+    const up = getLayout(gA, { yAxis: 'up' }).edges[0];
+    expect(down.ep!.y).toBeCloseTo(bbH(gA) - up.ep!.y, 5);
+    expect(down.ep!.x).toBe(up.ep!.x);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // AC5: JSON round-trip
 // ---------------------------------------------------------------------------
 

@@ -177,6 +177,27 @@ Each is present only once layout placed it — the same condition under which
 `render()` emits the label's `<text>` — so there is no need to scrape the
 rendered SVG to recover these positions.
 
+## 5b. Draw your own arrowheads
+
+```ts
+for (const e of getLayout(b.graph).edges) {
+  const last = e.points[e.points.length - 1];
+  if (e.ep) drawArrow(last, e.ep);   // tip at ep, base at the spline's end
+  if (e.sp) drawArrow(e.points[0], e.sp);
+}
+```
+
+**Why:** when an end carries an arrow, layout shortens the spline to leave room
+for it and records where the arrow should reach — `ep` at the head end, `sp` at
+the tail. Both are absent when that end has no arrow, so the checks above
+double as "does this end need an arrow at all". Extrapolating a tip from the
+spline's final direction gets the direction right but guesses the depth; these
+are the values graphviz itself computed.
+
+Note they are attachment points on the node boundary. Graphviz's own renderer
+insets the polygon it draws from them by a penwidth-dependent amount, so draw
+*to* `ep` rather than expecting it to equal a rendered arrow's tip.
+
 ## 6. Map @knowvah/dot-engine cluster names back to yours
 
 ```ts

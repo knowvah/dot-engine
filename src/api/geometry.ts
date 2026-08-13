@@ -106,13 +106,37 @@ export interface NodeGeometry {
  * type) still holds calloc-zero coordinates, so it is reported as absent
  * rather than as a label at the origin.
  *
+ * `sp`/`ep` are the arrow attachment points. When an end carries an arrow the
+ * spline is shortened to leave room for it, and the arrow spans from the
+ * terminal control point out to this point — so a consumer drawing its own
+ * arrowheads reads the tip here instead of extrapolating one. Each is present
+ * only when that end actually has an arrow (C `sflag`/`eflag`); with no arrow
+ * the field holds the calloc-zero point, which is not geometry.
+ *
+ * These are the *attachment* points on the node boundary, verbatim from the
+ * bezier — with `arrowhead=none` the spline simply ends there. Graphviz's own
+ * renderer insets the arrow polygon it draws by a penwidth-dependent amount
+ * (measured: ~1.5pt at `penwidth=1`, ~6.2pt at `penwidth=5`), so `ep` is the
+ * point to draw an arrow *to*, not a copy of the rendered polygon's tip.
+ *
  * @see lib/common/types.h:ED_spl, ED_label, ED_tail_label, ED_head_label
+ * @see lib/common/types.h:bezier (sflag/eflag, sp/ep)
  */
 export interface EdgeGeometry {
   tail: string;
   head: string;
   /** Bezier control points for the edge spline, in points. */
   points: { x: number; y: number }[];
+  /**
+   * Arrow attachment point at the tail end, if that end carries an arrow.
+   * @see lib/common/types.h:bezier.sp
+   */
+  sp?: { x: number; y: number };
+  /**
+   * Arrow attachment point at the head end, if that end carries an arrow.
+   * @see lib/common/types.h:bezier.ep
+   */
+  ep?: { x: number; y: number };
   /** Centre edge label position, if present. @see lib/common/types.h:ED_label */
   label?: { x: number; y: number };
   /**
@@ -238,9 +262,32 @@ function placedLabelPos(
 }
 
 /**
+ * Arrow attachment points, one per end that actually carries an arrow.
+ * C keeps `sp`/`ep` beside the control points and gates them on
+ * `sflag`/`eflag`; with no arrow at that end the flag is 0 and the point is
+ * still calloc-zero, so an ungated read would publish (0, 0) as geometry.
+ * Indexes the bezier array by `spl.size` (not `list.length`), matching C.
+ * @see lib/common/types.h:bezier
+ * @see lib/common/postproc.c:endPoints
+ */
+function arrowAttachPoints(
+  edge: Edge,
+  flipY: (y: number) => number,
+): { sp?: { x: number; y: number }; ep?: { x: number; y: number } } {
+  const spl = edge.info.spl;
+  if (spl === undefined || spl.size === 0) return {};
+  const out: { sp?: { x: number; y: number }; ep?: { x: number; y: number } } = {};
+  const first = spl.list[0];
+  if (first.sflag !== 0) out.sp = { x: first.sp.x, y: flipY(first.sp.y) };
+  const last = spl.list[spl.size - 1];
+  if (last.eflag !== 0) out.ep = { x: last.ep.x, y: flipY(last.ep.y) };
+  return out;
+}
+
+/**
  * Snapshot one edge's geometry.
  * @see lib/common/types.h:ED_spl, ED_label, ED_tail_label, ED_head_label
- *   (textlabel_t.pos)
+ *   (textlabel_t.pos), bezier.sp/ep
  */
 function snapshotEdge(edge: Edge, flipY: (y: number) => number): EdgeGeometry {
   const geom: EdgeGeometry = {
@@ -256,6 +303,9 @@ function snapshotEdge(edge: Edge, flipY: (y: number) => number): EdgeGeometry {
   if (tailLabel !== undefined) geom.tailLabel = tailLabel;
   const headLabel = placedLabelPos(edge.info.head_label, flipY);
   if (headLabel !== undefined) geom.headLabel = headLabel;
+  const { sp, ep } = arrowAttachPoints(edge, flipY);
+  if (sp !== undefined) geom.sp = sp;
+  if (ep !== undefined) geom.ep = ep;
   return geom;
 }
 
