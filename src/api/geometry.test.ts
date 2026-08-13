@@ -194,6 +194,68 @@ describe('getLayout edge label', () => {
 });
 
 // ---------------------------------------------------------------------------
+// AC6: edge port labels (taillabel / headlabel) present/absent
+// @see docs/graphviz-issues/13-edge-tail-head-label-positions-not-in-getlayout.md
+// ---------------------------------------------------------------------------
+
+// Two fixed-size unlabelled boxes so the only <text> in the SVG are the port
+// labels themselves — the repro from issue 13.
+const PORT_LABEL_SRC = `digraph G {
+  rankdir=TB;
+  a [shape=box, width=1, height=1, fixedsize=true, label=""];
+  b [shape=box, width=1, height=1, fixedsize=true, label=""];
+  a -> b [taillabel="T", headlabel="H"];
+}`;
+
+/** x of the `<text>` whose content is `ch`, from a rendered SVG string. */
+function svgTextX(svg: string, ch: string): number {
+  const m = new RegExp(`<text[^>]*\\bx="([-\\d.]+)"[^>]*>${ch}</text>`).exec(svg);
+  expect(m).not.toBeNull();
+  return Number(m![1]);
+}
+
+describe('getLayout edge port labels', () => {
+  it('edge without taillabel/headlabel: both fields are absent', () => {
+    const edge = getLayout(g).edges.find((e) => e.tail === 'a' && e.head === 'b');
+    expect(edge!.tailLabel).toBeUndefined();
+    expect(edge!.headLabel).toBeUndefined();
+  });
+
+  it('taillabel/headlabel are published and y is flipped', () => {
+    const gP = layoutGraph(PORT_LABEL_SRC);
+    const down = getLayout(gP).edges[0];
+    const up = getLayout(gP, { yAxis: 'up' }).edges[0];
+    expect(down.tailLabel).toBeDefined();
+    expect(down.headLabel).toBeDefined();
+    const h = bbH(gP);
+    expect(down.tailLabel!.y).toBeCloseTo(h - up.tailLabel!.y, 5);
+    expect(down.headLabel!.y).toBeCloseTo(h - up.headLabel!.y, 5);
+    // 'up' is the native frame, so it must equal the model's own label pos.
+    const e0 = gP.edges[0];
+    expect(up.tailLabel).toEqual({ x: e0.info.tail_label!.pos.x, y: e0.info.tail_label!.pos.y });
+    expect(up.headLabel).toEqual({ x: e0.info.head_label!.pos.x, y: e0.info.head_label!.pos.y });
+  });
+
+  // The point of the API: a consumer reading the snapshot lands where the
+  // scraped <text> did, so the SVG regex scraping can be deleted.
+  it('positions agree with the <text> render() emits', () => {
+    const edge = getLayout(layoutGraph(PORT_LABEL_SRC)).edges[0];
+    const svg = render(parse(PORT_LABEL_SRC), 'svg');
+    expect(edge.tailLabel!.x).toBeCloseTo(svgTextX(svg, 'T'), 1);
+    expect(edge.headLabel!.x).toBeCloseTo(svgTextX(svg, 'H'), 1);
+  });
+
+  it('a declared but unplaced port label is absent, as in render()', () => {
+    const gP = layoutGraph(PORT_LABEL_SRC);
+    // place_portlabel never ran (no spline / IGNORED edge): pos is calloc-zero
+    // and emit_edge_label skips it, so the snapshot must skip it too.
+    gP.edges[0].info.head_label!.set = false;
+    expect(getLayout(gP).edges[0].headLabel).toBeUndefined();
+    expect(getLayout(gP).edges[0].tailLabel).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
 // AC5: JSON round-trip
 // ---------------------------------------------------------------------------
 

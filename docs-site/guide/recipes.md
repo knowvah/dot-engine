@@ -160,6 +160,23 @@ measured for that label text on your own side (e.g. by echoing back your
 own per-edge label-size map, keyed by the same tail/head pair you used to
 build the edge).
 
+The `taillabel` and `headlabel` port labels come back the same way, on
+`tailLabel` and `headLabel`:
+
+```ts
+b.addEdge('client', 'server', { taillabel: '1', headlabel: '*' });
+render(b.graph, 'svg');
+
+for (const e of getLayout(b.graph).edges) {
+  if (e.tailLabel) console.log(`${e.tail} end: (${e.tailLabel.x}, ${e.tailLabel.y})`);
+  if (e.headLabel) console.log(`${e.head} end: (${e.headLabel.x}, ${e.headLabel.y})`);
+}
+```
+
+Each is present only once layout placed it — the same condition under which
+`render()` emits the label's `<text>` — so there is no need to scrape the
+rendered SVG to recover these positions.
+
 ## 6. Map @knowvah/dot-engine cluster names back to yours
 
 ```ts

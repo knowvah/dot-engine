@@ -50,10 +50,12 @@ interface NodeGeometry {
 }
 
 interface EdgeGeometry {
-  tail:    string;
-  head:    string;
-  points:  { x: number; y: number }[];  // bezier control points, in points
-  label?:  { x: number; y: number };    // centre label position (if present)
+  tail:       string;
+  head:       string;
+  points:     { x: number; y: number }[];  // bezier control points, in points
+  label?:     { x: number; y: number };    // centre label position (if present)
+  tailLabel?: { x: number; y: number };    // taillabel position (if placed)
+  headLabel?: { x: number; y: number };    // headlabel position (if placed)
 }
 ```
 

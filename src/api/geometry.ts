@@ -33,6 +33,7 @@
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
+import type { TextlabelT } from '../common/types.js';
 import { RenderError } from '../errors.js';
 
 // ---------------------------------------------------------------------------
@@ -98,7 +99,14 @@ export interface NodeGeometry {
  * in order. An edge with no routed spline produces an empty `points` array.
  * `label` is present only when the edge carries a centre label.
  *
- * @see lib/common/types.h:ED_spl, ED_label
+ * `tailLabel`/`headLabel` are the `taillabel`/`headlabel` port labels. They
+ * are present only once the layout has actually *placed* them (C `lp->set`),
+ * which is the same gate `render()` applies before emitting the `<text>`:
+ * a declared port label that place_portlabel skipped (no spline, IGNORED edge
+ * type) still holds calloc-zero coordinates, so it is reported as absent
+ * rather than as a label at the origin.
+ *
+ * @see lib/common/types.h:ED_spl, ED_label, ED_tail_label, ED_head_label
  */
 export interface EdgeGeometry {
   tail: string;
@@ -107,6 +115,16 @@ export interface EdgeGeometry {
   points: { x: number; y: number }[];
   /** Centre edge label position, if present. @see lib/common/types.h:ED_label */
   label?: { x: number; y: number };
+  /**
+   * `taillabel` position, if placed.
+   * @see lib/common/types.h:ED_tail_label
+   */
+  tailLabel?: { x: number; y: number };
+  /**
+   * `headlabel` position, if placed.
+   * @see lib/common/types.h:ED_head_label
+   */
+  headLabel?: { x: number; y: number };
 }
 
 /**
@@ -204,8 +222,25 @@ function collectEdgePoints(
 }
 
 /**
+ * Position of a port label that layout actually placed, else undefined.
+ * `set` is C's own "this label has coordinates" flag, and the gate
+ * emit_edge_label uses before drawing; an unplaced label still holds the
+ * calloc-zero pos and must not be published as geometry.
+ * @see lib/common/splines.c:place_portlabel (l->set = TRUE)
+ * @see lib/common/emit.c:emit_edge_label (lbl == NULL || !lbl->set)
+ */
+function placedLabelPos(
+  lbl: TextlabelT | undefined,
+  flipY: (y: number) => number,
+): { x: number; y: number } | undefined {
+  if (lbl === undefined || !lbl.set) return undefined;
+  return { x: lbl.pos.x, y: flipY(lbl.pos.y) };
+}
+
+/**
  * Snapshot one edge's geometry.
- * @see lib/common/types.h:ED_spl, ED_label (textlabel_t.pos)
+ * @see lib/common/types.h:ED_spl, ED_label, ED_tail_label, ED_head_label
+ *   (textlabel_t.pos)
  */
 function snapshotEdge(edge: Edge, flipY: (y: number) => number): EdgeGeometry {
   const geom: EdgeGeometry = {
@@ -217,6 +252,10 @@ function snapshotEdge(edge: Edge, flipY: (y: number) => number): EdgeGeometry {
   if (lbl !== undefined) {
     geom.label = { x: lbl.pos.x, y: flipY(lbl.pos.y) };
   }
+  const tailLabel = placedLabelPos(edge.info.tail_label, flipY);
+  if (tailLabel !== undefined) geom.tailLabel = tailLabel;
+  const headLabel = placedLabelPos(edge.info.head_label, flipY);
+  if (headLabel !== undefined) geom.headLabel = headLabel;
   return geom;
 }
 

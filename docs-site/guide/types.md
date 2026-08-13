@@ -160,12 +160,20 @@ interface EdgeGeometry {
   head: string;
   points: { x: number; y: number }[];
   label?: { x: number; y: number };
+  tailLabel?: { x: number; y: number };
+  headLabel?: { x: number; y: number };
 }
 ```
 
 Per-edge geometry. `points` concatenates every bezier control point from the
 routed spline, in order (empty if the edge has no routed spline). `label` is
 present only when the edge carries a centre label.
+
+`tailLabel` and `headLabel` are the `taillabel`/`headlabel` port-label
+positions. Each is present only once layout has placed it — the same condition
+under which `render()` emits its `<text>` — so a port label that could not be
+placed (an edge with no routed spline, for instance) is reported as absent
+rather than as a label at the origin.
 
 ### `ClusterGeometry`
 
