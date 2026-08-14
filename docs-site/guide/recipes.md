@@ -239,6 +239,28 @@ graphviz would accept), keep the id-to-name mapping yourself while building
 the graph and re-key the `clusters` snapshot after layout; don't try to
 recover meaning from graphviz's own name.
 
+## 6b. Draw your own cluster title block
+
+```ts
+for (const c of getLayout(b.graph).clusters) {
+  if (!c.label) continue;                     // cluster declared no title
+  drawBox(c.x, c.y, c.width, c.height);
+  drawTextCentred(c.label.x, c.label.y, c.label.width, c.label.height);
+}
+```
+
+**Why:** layout reserves room for a cluster title inside the cluster box and
+then resolves where it goes — honouring `labelloc`, `labeljust`, `rankdir`,
+and the label's own measured size. `ClusterGeometry.label` publishes that
+resolved placement, so a consumer drawing its own title block reads it instead
+of re-measuring the text and re-deriving an offset that has to agree with the
+engine's.
+
+`label.x`/`label.y` are the **centre** of the label space, unlike the box's
+`x`/`y`, which is a corner. The `<text>` `render()` emits carries the *baseline*
+instead, which sits below the centre — so if you are matching rendered output,
+compare centres to centres, not to the emitted `y`.
+
 ## 7. Add many edges safely
 
 ```ts

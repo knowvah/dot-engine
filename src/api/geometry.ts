@@ -164,7 +164,15 @@ export interface EdgeGeometry {
  * `class="cluster"` polygon, so a consumer quantizing to SVG precision gets
  * byte-conformant geometry.
  *
+ * `label` is the cluster title's placed position and measured size, present
+ * only when the cluster declares a label. Unlike the edge port labels, it is
+ * *not* gated on the label's `set` flag: C draws a cluster label on existence
+ * alone (emit.c:3920 has no `->set` test, unlike emit_edge_label:2891), so an
+ * unplaced one still renders at whatever pos it holds. Gating here would hide
+ * geometry `render()` acts on.
+ *
  * @see lib/common/types.h:GD_bb (of a cluster subgraph)
+ * @see lib/common/types.h:GD_label (textlabel_t.pos / .dimen)
  */
 export interface ClusterGeometry {
   /** Cluster subgraph name (e.g. `cluster6`); encodes nesting. */
@@ -173,6 +181,13 @@ export interface ClusterGeometry {
   y: number;
   width: number;
   height: number;
+  /**
+   * Cluster label placement, if the cluster has one. `x`/`y` are the **centre**
+   * of the label space (matching `EdgeGeometry.label`, not the box corner
+   * `x`/`y` above); `width`/`height` are its measured size.
+   * @see lib/common/postproc.c:place_graph_label
+   */
+  label?: { x: number; y: number; width: number; height: number };
 }
 
 /**
@@ -316,13 +331,18 @@ function snapshotEdge(edge: Edge, flipY: (y: number) => number): EdgeGeometry {
  * native lower-left corner (ll); `yAxis:'down'` returns the top-left corner
  * (ll.x, flipped ur.y). `width`/`height` are frame-independent (ur - ll).
  *
+ * The label rides in the same call because place_graph_label runs on the same
+ * layout pass that fills GD_bb; `pos` is the centre of the label space, so it
+ * flips like any other coordinate rather than like the box corner.
+ *
  * @see lib/common/types.h:GD_bb (cluster subgraph)
+ * @see lib/common/postproc.c:place_graph_label
  */
 function snapshotCluster(
   sg: Graph, yAxis: YAxis, flipY: (y: number) => number,
 ): ClusterGeometry {
   const bb = sg.info.bb;
-  return {
+  const geom: ClusterGeometry = {
     name: sg.name,
     x: bb.ll.x,
     // 'up' keeps the lower-left y; 'down' flips the upper-right y to the
@@ -331,6 +351,16 @@ function snapshotCluster(
     width: bb.ur.x - bb.ll.x,
     height: bb.ur.y - bb.ll.y,
   };
+  const lab = sg.info.label as TextlabelT | undefined;
+  if (lab !== undefined) {
+    geom.label = {
+      x: lab.pos.x,
+      y: flipY(lab.pos.y),
+      width: lab.dimen.x,
+      height: lab.dimen.y,
+    };
+  }
+  return geom;
 }
 
 /**
