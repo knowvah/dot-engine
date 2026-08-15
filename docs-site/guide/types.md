@@ -198,6 +198,7 @@ interface ClusterGeometry {
   y: number;
   width: number;
   height: number;
+  label?: { x: number; y: number; width: number; height: number };
 }
 ```
 
@@ -205,6 +206,14 @@ Per-cluster bounding box. `name` is the cluster subgraph's name (e.g.
 `cluster6`); nested clusters encode their hierarchy in the name, so no
 explicit parent link is exposed. Follows the same frame convention as
 `BoundsGeometry`.
+
+`label` is the cluster title's placement, present only when the cluster
+declares one. Its `x`/`y` are the **centre** of the label space — matching
+`EdgeGeometry.label`, not the box corner `x`/`y` above — and `width`/`height`
+are the measured text size, so the label box is
+`[x - width/2, x + width/2] × [y - height/2, y + height/2]` and always lies
+within the cluster box. Note this is the label *centre*, while the `<text>`
+`render()` emits carries the baseline, which sits lower.
 
 ## Render (`@knowvah/dot-engine/render`)
 

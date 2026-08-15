@@ -31,9 +31,10 @@ the graph object after `render` returns and is readable via `getLayout`.
 
 ```ts
 interface LayoutSnapshot {
-  bounds: BoundsGeometry;          // overall bounding box
-  nodes:  NodeGeometry[];          // one entry per node
-  edges:  EdgeGeometry[];          // one entry per edge
+  bounds:   BoundsGeometry;        // overall bounding box
+  nodes:    NodeGeometry[];        // one entry per node
+  edges:    EdgeGeometry[];        // one entry per edge
+  clusters: ClusterGeometry[];     // one entry per cluster, nested included
 }
 
 interface BoundsGeometry {
@@ -58,6 +59,18 @@ interface EdgeGeometry {
   headLabel?: { x: number; y: number };    // headlabel position (if placed)
   sp?:        { x: number; y: number };    // tail arrow attachment (if arrowed)
   ep?:        { x: number; y: number };    // head arrow attachment (if arrowed)
+}
+
+interface ClusterGeometry {
+  name:   string;   // cluster subgraph name (e.g. cluster6); encodes nesting
+  x:      number;   // box corner, same frame convention as bounds
+  y:      number;
+  width:  number;
+  height: number;
+  label?: {         // cluster title, if declared
+    x: number; y: number;          // centre of the label space
+    width: number; height: number; // measured text size
+  };
 }
 ```
 

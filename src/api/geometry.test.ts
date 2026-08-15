@@ -20,6 +20,7 @@ import { GvcContext } from '../gvc/context.js';
 import { createMeasurer } from '../common/textmeasure-factory.js';
 import { DOT_LAYOUT_ENGINE } from '../layout/dot/index.js';
 import type { Graph } from '../model/graph.js';
+import type { TextlabelT } from '../common/types.js';
 import { getLayout } from './geometry.js';
 import { render } from '../index.js';
 
@@ -424,6 +425,102 @@ describe('getLayout clusters', () => {
   it('cluster snapshot is JSON-serializable', () => {
     const gc = layoutGraph(CLUSTER_SRC);
     const snap = getLayout(gc);
+    const round = JSON.parse(JSON.stringify(snap)) as typeof snap;
+    expect(round.clusters).toEqual(snap.clusters);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// AC8: cluster label position + size
+// @see docs/graphviz-issues/14-cluster-label-position-not-in-getlayout.md
+// ---------------------------------------------------------------------------
+
+// The issue's repro: two fixed-size unlabelled boxes so the cluster title is
+// the only <text> in the rendered SVG.
+const CLUSTER_LABEL_SRC = `digraph G {
+  subgraph cluster0 {
+    label="pack";
+    a [shape=box, width=1, height=0.7, fixedsize=true, label=""];
+    b [shape=box, width=1, height=0.7, fixedsize=true, label=""];
+    a -> b;
+  }
+}`;
+
+describe('getLayout cluster label', () => {
+  it('cluster without a label has no label field', () => {
+    // CLUSTER_SRC declares label="" — no textlabel is built, so nothing to
+    // publish; a cluster declaring no label at all likewise reports none.
+    expect(getLayout(layoutGraph(CLUSTER_SRC)).clusters[0].label).toBeUndefined();
+    const bare = layoutGraph('digraph { subgraph cluster6 { a } b; a->b }');
+    expect(getLayout(bare).clusters[0].label).toBeUndefined();
+  });
+
+  it("yAxis:'up' equals the subgraph's own label pos and dimen", () => {
+    const gc = layoutGraph(CLUSTER_LABEL_SRC);
+    const lab = gc.info.clust![0].info.label as TextlabelT;
+    expect(getLayout(gc, { yAxis: 'up' }).clusters[0].label).toEqual({
+      x: lab.pos.x,
+      y: lab.pos.y,
+      width: lab.dimen.x,
+      height: lab.dimen.y,
+    });
+  });
+
+  it('y is flipped like every other coordinate; x and size are not', () => {
+    const gc = layoutGraph(CLUSTER_LABEL_SRC);
+    const down = getLayout(gc).clusters[0].label!;
+    const up = getLayout(gc, { yAxis: 'up' }).clusters[0].label!;
+    expect(down.y).toBeCloseTo(bbH(gc) - up.y, 5);
+    expect(down.x).toBe(up.x);
+    expect(down.width).toBe(up.width);
+    expect(down.height).toBe(up.height);
+  });
+
+  // The point of the API: the label box sits inside the cluster box it belongs
+  // to, so a consumer can lay out a title block without re-measuring the text.
+  it('the label box lies within its own cluster box', () => {
+    const snap = getLayout(layoutGraph(CLUSTER_LABEL_SRC));
+    const c = snap.clusters[0];
+    const l = c.label!;
+    expect(l.x - l.width / 2).toBeGreaterThanOrEqual(c.x);
+    expect(l.x + l.width / 2).toBeLessThanOrEqual(c.x + c.width);
+    expect(l.y - l.height / 2).toBeGreaterThanOrEqual(c.y);
+    expect(l.y + l.height / 2).toBeLessThanOrEqual(c.y + c.height);
+  });
+
+  it('x agrees with the <text> render() emits', () => {
+    const gc = layoutGraph(CLUSTER_LABEL_SRC);
+    const svg = render(parse(CLUSTER_LABEL_SRC), 'svg', { engine: 'dot' });
+    // text-anchor is middle, so the emitted x is the label centre; y is the
+    // baseline, not the centre, so only x is directly comparable.
+    expect(getLayout(gc).clusters[0].label!.x).toBeCloseTo(svgTextX(svg, 'pack'), 1);
+  });
+
+  it('labelloc=b moves the label to the bottom of the same box', () => {
+    const bottom = getLayout(
+      layoutGraph(CLUSTER_LABEL_SRC.replace('label="pack";', 'label="pack"; labelloc="b";')),
+    ).clusters[0];
+    const top = getLayout(layoutGraph(CLUSTER_LABEL_SRC)).clusters[0];
+    // y-down frame: bottom placement has the larger y.
+    expect(bottom.label!.y).toBeGreaterThan(top.label!.y);
+    expect(bottom.height).toBeCloseTo(top.height, 5);
+  });
+
+  it('nested clusters each carry their own label', () => {
+    const snap = getLayout(layoutGraph(
+      'digraph { subgraph cluster_o { label="Outer"; subgraph cluster_i { label="I"; a } b } c; a->c }',
+    ));
+    const outer = snap.clusters.find((c) => c.name === 'cluster_o')!;
+    const inner = snap.clusters.find((c) => c.name === 'cluster_i')!;
+    expect(outer.label).toBeDefined();
+    expect(inner.label).toBeDefined();
+    // Distinct text, so distinct measured widths — not one label reported twice.
+    expect(outer.label!.width).toBeGreaterThan(inner.label!.width);
+    expect(inner.label!.y).toBeGreaterThan(outer.label!.y);
+  });
+
+  it('cluster label survives JSON round-trip', () => {
+    const snap = getLayout(layoutGraph(CLUSTER_LABEL_SRC));
     const round = JSON.parse(JSON.stringify(snap)) as typeof snap;
     expect(round.clusters).toEqual(snap.clusters);
   });
