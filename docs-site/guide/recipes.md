@@ -177,6 +177,20 @@ Each is present only once layout placed it — the same condition under which
 `render()` emits the label's `<text>` — so there is no need to scrape the
 rendered SVG to recover these positions.
 
+An `xlabel` comes back on `xlabel`, under the same placed-only gate. It is
+worth reading rather than approximating: graphviz positions an external label
+by a force search over candidate slots, not by offsetting the spline midpoint,
+so no arithmetic on `label` or `points` reproduces it.
+
+```ts
+b.addEdge('a', 'b', { xlabel: 'X' });
+render(b.graph, 'svg');
+
+for (const e of getLayout(b.graph).edges) {
+  if (e.xlabel) console.log(`xlabel at (${e.xlabel.x}, ${e.xlabel.y})`);
+}
+```
+
 ## 5b. Draw your own arrowheads
 
 ```ts

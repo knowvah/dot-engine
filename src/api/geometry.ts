@@ -106,6 +106,12 @@ export interface NodeGeometry {
  * type) still holds calloc-zero coordinates, so it is reported as absent
  * rather than as a label at the origin.
  *
+ * `xlabel` is the `xlabel` external label, positioned by the force-placement
+ * search rather than by spline midpoint arithmetic, so it is not derivable
+ * from `label` or `points`. It carries the same `lp->set` gate: a declared
+ * xlabel the search could not fit is reported as absent, exactly as
+ * `render()` declines to draw it.
+ *
  * `sp`/`ep` are the arrow attachment points. When an end carries an arrow the
  * spline is shortened to leave room for it, and the arrow spans from the
  * terminal control point out to this point — so a consumer drawing its own
@@ -119,7 +125,8 @@ export interface NodeGeometry {
  * (measured: ~1.5pt at `penwidth=1`, ~6.2pt at `penwidth=5`), so `ep` is the
  * point to draw an arrow *to*, not a copy of the rendered polygon's tip.
  *
- * @see lib/common/types.h:ED_spl, ED_label, ED_tail_label, ED_head_label
+ * @see lib/common/types.h:ED_spl, ED_label, ED_tail_label, ED_head_label,
+ *   ED_xlabel
  * @see lib/common/types.h:bezier (sflag/eflag, sp/ep)
  */
 export interface EdgeGeometry {
@@ -149,6 +156,11 @@ export interface EdgeGeometry {
    * @see lib/common/types.h:ED_head_label
    */
   headLabel?: { x: number; y: number };
+  /**
+   * `xlabel` (external label) position, if placed.
+   * @see lib/common/types.h:ED_xlabel
+   */
+  xlabel?: { x: number; y: number };
 }
 
 /**
@@ -301,8 +313,8 @@ function arrowAttachPoints(
 
 /**
  * Snapshot one edge's geometry.
- * @see lib/common/types.h:ED_spl, ED_label, ED_tail_label, ED_head_label
- *   (textlabel_t.pos), bezier.sp/ep
+ * @see lib/common/types.h:ED_spl, ED_label, ED_tail_label, ED_head_label,
+ *   ED_xlabel (textlabel_t.pos), bezier.sp/ep
  */
 function snapshotEdge(edge: Edge, flipY: (y: number) => number): EdgeGeometry {
   const geom: EdgeGeometry = {
@@ -318,6 +330,8 @@ function snapshotEdge(edge: Edge, flipY: (y: number) => number): EdgeGeometry {
   if (tailLabel !== undefined) geom.tailLabel = tailLabel;
   const headLabel = placedLabelPos(edge.info.head_label, flipY);
   if (headLabel !== undefined) geom.headLabel = headLabel;
+  const xlabel = placedLabelPos(edge.info.xlabel, flipY);
+  if (xlabel !== undefined) geom.xlabel = xlabel;
   const { sp, ep } = arrowAttachPoints(edge, flipY);
   if (sp !== undefined) geom.sp = sp;
   if (ep !== undefined) geom.ep = ep;
