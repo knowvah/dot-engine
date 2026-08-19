@@ -162,6 +162,7 @@ interface EdgeGeometry {
   label?: { x: number; y: number };
   tailLabel?: { x: number; y: number };
   headLabel?: { x: number; y: number };
+  xlabel?: { x: number; y: number };
   sp?: { x: number; y: number };
   ep?: { x: number; y: number };
 }
@@ -176,6 +177,12 @@ positions. Each is present only once layout has placed it — the same condition
 under which `render()` emits its `<text>` — so a port label that could not be
 placed (an edge with no routed spline, for instance) is reported as absent
 rather than as a label at the origin.
+
+`xlabel` is the `xlabel` external-label position. Unlike `label`, it is chosen
+by graphviz's force-placement search over candidate positions around the edge,
+so it is not derivable from `label` or from the spline midpoint. It carries the
+same placed-only gate: a declared xlabel the search could not fit reports as
+absent, exactly as `render()` declines to draw it.
 
 `sp` and `ep` are the arrow attachment points at the tail and head ends. When
 an end carries an arrow, the spline is shortened to leave room for it and the

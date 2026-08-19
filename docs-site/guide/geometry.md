@@ -57,6 +57,7 @@ interface EdgeGeometry {
   label?:     { x: number; y: number };    // centre label position (if present)
   tailLabel?: { x: number; y: number };    // taillabel position (if placed)
   headLabel?: { x: number; y: number };    // headlabel position (if placed)
+  xlabel?:    { x: number; y: number };    // xlabel position (if placed)
   sp?:        { x: number; y: number };    // tail arrow attachment (if arrowed)
   ep?:        { x: number; y: number };    // head arrow attachment (if arrowed)
 }

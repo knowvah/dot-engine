@@ -257,6 +257,50 @@ describe('getLayout edge port labels', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Edge external label (xlabel)
+// @see docs/graphviz-issues/16-edge-xlabel-position-not-in-getlayout.md
+// ---------------------------------------------------------------------------
+
+// Two fixed-size unlabelled boxes so the only <text> in the SVG is the xlabel
+// itself. Native `dot -Tdot` reports xlp="30.945,98.35" for this graph.
+const XLABEL_SRC = `digraph G {
+  a [shape=box, width=1, height=1, fixedsize=true, label=""];
+  b [shape=box, width=1, height=1, fixedsize=true, label=""];
+  a -> b [xlabel="X"];
+}`;
+
+describe('getLayout edge xlabel', () => {
+  it('edge without an xlabel: the field is absent', () => {
+    expect(getLayout(g).edges[0].xlabel).toBeUndefined();
+  });
+
+  it('xlabel is published at the force-search position and y is flipped', () => {
+    const gX = layoutGraph(XLABEL_SRC);
+    const up = getLayout(gX, { yAxis: 'up' }).edges[0];
+    const down = getLayout(gX).edges[0];
+    expect(up.xlabel).toBeDefined();
+    // 'up' is the native frame: native dot reports xlp="30.945,98.35".
+    expect(up.xlabel!.x).toBeCloseTo(30.945, 2);
+    expect(up.xlabel!.y).toBeCloseTo(98.35, 2);
+    expect(down.xlabel!.y).toBeCloseTo(bbH(gX) - up.xlabel!.y, 5);
+  });
+
+  // The xlabel is placed by the force search, not by spline-midpoint
+  // arithmetic: a consumer cannot derive it from `label` or `points`.
+  it('position agrees with the <text> render() emits', () => {
+    const edge = getLayout(layoutGraph(XLABEL_SRC)).edges[0];
+    const svg = render(parse(XLABEL_SRC), 'svg');
+    expect(edge.xlabel!.x).toBeCloseTo(svgTextX(svg, 'X'), 1);
+  });
+
+  it('a declared but unplaced xlabel is absent, as in render()', () => {
+    const gX = layoutGraph(XLABEL_SRC);
+    gX.edges[0].info.xlabel!.set = false;
+    expect(getLayout(gX).edges[0].xlabel).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
 // AC7: spline arrow attachment points (sp / ep)
 // @see docs/graphviz-issues/10-edge-spline-sp-ep-not-exposed.md
 // ---------------------------------------------------------------------------
