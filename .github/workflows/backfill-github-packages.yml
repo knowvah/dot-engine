@@ -1,0 +1,59 @@
+# One-shot, manual: copy already-published npm versions to GitHub Packages.
+#
+# `release.yml` mirrors every *future* release. Consumers need the versions
+# that exist today — @knowvah/dot-engine 1.2.6 — before they can
+# drop their tarball-URL pins, and no future release puts those there. This
+# downloads each version's published npm tarball and republishes it byte for
+# byte, so the two registries hold the identical artifact.
+#
+# Run it from the Actions tab with a comma-separated list, e.g.
+#   @knowvah/dot-engine@1.2.6
+# Already-present versions are skipped, so re-running is safe.
+#
+# Delete this workflow once the backfill is done; release.yml covers the rest.
+name: Backfill GitHub Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      specs:
+        description: 'Comma-separated name@version list to copy from npmjs'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency: backfill-github-packages
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22
+
+      - name: Copy each version from npmjs to GitHub Packages
+        env:
+          SPECS: ${{ inputs.specs }}
+          GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          registry=https://npm.pkg.github.com
+          npm config set //npm.pkg.github.com/:_authToken "$GH_PACKAGES_TOKEN"
+          echo "$SPECS" | tr ',' '\n' | sed 's/[[:space:]]//g' | grep . | while read -r spec; do
+            case "$spec" in
+              @knowvah/*@*) ;;
+              *) echo "::error::refusing '$spec': expected @knowvah/<name>@<version>"; exit 1 ;;
+            esac
+            if npm view --registry "$registry" "$spec" version >/dev/null 2>&1; then
+              echo "==> $spec already on GitHub Packages, skipping"
+              continue
+            fi
+            echo "==> fetching $spec from npmjs"
+            tgz="$(npm pack "$spec" --registry https://registry.npmjs.org --pack-destination "$RUNNER_TEMP" | tail -1)"
+            echo "==> publishing $RUNNER_TEMP/$tgz"
+            npm publish "$RUNNER_TEMP/$tgz" --registry "$registry" --access public
+          done
