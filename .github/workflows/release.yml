@@ -23,6 +23,7 @@ jobs:
       issues: write # semantic-release release comments
       pull-requests: write # semantic-release release comments
       id-token: write # OIDC trusted publishing + provenance
+      packages: write # mirror the release to GitHub Packages (see below)
     steps:
       - uses: actions/checkout@v7
         with:
@@ -45,3 +46,43 @@ jobs:
       - run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Mirror the release to GitHub Packages.
+      #
+      # Why: a scope maps to ONE registry, so a consumer that needs the private
+      # @knowvah/theme (GitHub Packages) has to point @knowvah there and name
+      # this package by full tarball URL instead. pnpm 10.34.5
+      # (pnpm/pnpm#14351) drops `integrity` from URL-pinned lockfile entries,
+      # which broke CI on every Dependabot PR in knowvah/dot-atlassian and then
+      # broke Dependabot's npm updates outright. Publishing here too lets those
+      # consumers use an ordinary version range. Same change as
+      # knowvah/dot-plugins#27.
+      #
+      # npmjs stays primary: semantic-release publishes first, with provenance,
+      # and this runs after it, so a failure here cannot affect that. GitHub
+      # Packages supports neither OIDC nor provenance; GITHUB_TOKEN authenticates.
+      #
+      # `@semantic-release/npm` writes the new version into the working copy's
+      # package.json (it is not committed back), so an unchanged
+      # 0.0.0-development means no release was cut and there is nothing to
+      # mirror. dist/ is already built, by the prepublishOnly that
+      # semantic-release's own publish ran.
+      - name: Mirror to GitHub Packages
+        env:
+          GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          if [ "$version" = "0.0.0-development" ]; then
+            echo "No release was cut; nothing to mirror."
+            exit 0
+          fi
+          registry=https://npm.pkg.github.com
+          npm config set //npm.pkg.github.com/:_authToken "$GH_PACKAGES_TOKEN"
+          if npm view --registry "$registry" "@knowvah/dot-engine@$version" version >/dev/null 2>&1; then
+            echo "@knowvah/dot-engine@$version already on GitHub Packages, skipping"
+            exit 0
+          fi
+          tgz="$(npm pack --pack-destination "$RUNNER_TEMP" | tail -1)"
+          echo "==> mirroring $RUNNER_TEMP/$tgz"
+          npm publish "$RUNNER_TEMP/$tgz" --registry "$registry" --access public
