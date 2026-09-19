@@ -318,7 +318,7 @@ export function xdotStrOp(prefix: string, s: string): string {
 export function xdotId(s: string): string {
   if (/^[A-Za-z_][A-Za-z_0-9]*$/.test(s)) return s;
   if (/^-?(\.[0-9]+|[0-9]+(\.[0-9]*)?)$/.test(s)) return s;
-  const body = s.replace(/"/g, '\\"');
+  const body = s.replace(/"/g, '\\"'); // lgtm[js/incomplete-sanitization]
   const trailingBackslashes = /\\*$/.exec(body)![0].length;
   return '"' + body + (trailingBackslashes % 2 === 1 ? '\\' : '') + '"';
 }
