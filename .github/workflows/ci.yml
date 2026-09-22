@@ -20,7 +20,36 @@ jobs:
           node-version: '26'
       - run: npm ci
       - run: npm run typecheck
-      - run: npm test
+      # `coverage` = `vitest run --coverage`: same suite as `npm test`, plus
+      # the vitest.config.ts coverage thresholds and a Cobertura report.
+      - run: npm run coverage
+      - uses: actions/upload-artifact@v7
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        with:
+          name: cobertura-report
+          path: coverage/cobertura-coverage.xml
+          retention-days: 7
+
+  # Publishes line coverage to GitHub Code Quality (PR comment + default-branch
+  # baseline). Kept in its own job so code-quality:write is never exposed to
+  # the job that runs npm ci / third-party install scripts. Fork PRs are skipped
+  # because they cannot receive a write token.
+  upload-coverage:
+    needs: ci
+    if: ${{ !cancelled() && needs.ci.result == 'success' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      code-quality: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: cobertura-report
+      - uses: actions/upload-code-coverage@v1
+        with:
+          file: cobertura-coverage.xml
+          language: TypeScript
+          label: code-coverage/vitest
 
   # Non-blocking early-warning: type-checks with the TS7 native preview (tsgo).
   # Allowed to fail so it surfaces TS7 incompatibilities on every PR without
