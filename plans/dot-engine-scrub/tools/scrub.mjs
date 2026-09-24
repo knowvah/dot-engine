@@ -177,10 +177,6 @@ function makeEmptyTreeStats() {
   };
 }
 
-function addInto(agg, delta) {
-  for (const key of Object.keys(agg)) agg[key] += delta[key] ?? 0;
-}
-
 function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");

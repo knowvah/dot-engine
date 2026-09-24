@@ -21,7 +21,6 @@
 
 import { describe, it, expect } from 'vitest';
 import { Graph } from '../../model/graph.js';
-import { renderSvg } from '../../index.js';
 import { parse } from '../../parser/index.js';
 import { setEdgeTypeFromAttr, getAttrInt, doDot } from './index.js';
 import { EDGETYPE_NONE, EDGETYPE_SPLINE, edgeTypeFromString } from './splines.js';

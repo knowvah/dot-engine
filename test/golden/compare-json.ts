@@ -389,8 +389,8 @@ function comparePositional(
 
 /** Compare one generic (non-positional, non-draw) scalar attr exactly. */
 function compareScalar(pv: string, ov: string, objKey: string, attr: string, diffs: JsonDiff[]): void {
-  let a = pv;
-  let b = ov;
+  let a: string;
+  let b: string;
   if (/color$/i.test(attr)) {
     a = canonColor(pv);
     b = canonColor(ov);

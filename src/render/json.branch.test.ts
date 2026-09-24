@@ -13,7 +13,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { stoj, buildJson, Json0Renderer, JsonRenderer } from './json.js';
+import { stoj, buildJson, Json0Renderer } from './json.js';
 import { parse } from '../parser/index.js';
 import { renderFormat } from '../../test/helpers/render-format.js';
 import { RenderJob } from '../gvc/job.js';

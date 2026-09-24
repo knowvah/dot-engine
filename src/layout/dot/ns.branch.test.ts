@@ -30,7 +30,7 @@ import {
   dfsEnterOutScan, dfsEnterOutTreeIn, dfsEnterOutedge,
   dfsEnterInScan, dfsEnterInTreeOut, dfsEnterInedge,
   enterEdge, treeupdate, rerank, updateRerank, nsUpdate,
-  scanAndNormalize, freeTreeNode, resetLists, freeTreeList,
+  scanAndNormalize, resetLists, freeTreeList,
   lrBalance, tbGetAdj, tbForceAdj, tbSortCompare, tbSortNodes,
   tbComputeBounds, tbMoveNode, tbBalance,
   initGraphEdge, initGraph, rank2Loop, rank2Balance, rank2, rank,
@@ -722,7 +722,7 @@ describe('tbSortNodes', () => {
 
 describe('tbComputeBounds', () => {
   it('sums in/out weights and tightens [low,high] from both sides', () => {
-    const [g, [a, b, c]] = buildNsGraph(3, [[0, 1, 2], [1, 2, 3]]);
+    const [, [a, b, c]] = buildNsGraph(3, [[0, 1, 2], [1, 2, 3]]);
     a.info.rank = 0; b.info.rank = 2; c.info.rank = 10;
     const [inw, outw, low, high] = tbComputeBounds(b, 20);
     expect(inw).toBe(1); // default edge weight
@@ -731,7 +731,7 @@ describe('tbComputeBounds', () => {
     expect(high).toBe(7); // c.rank(10)-minlen(3)
   });
   it('clamps low to 0 and defaults bounds to [0,maxrank] with no in/out edges', () => {
-    const [g, [a]] = buildNsGraph(1, []);
+    const [, [a]] = buildNsGraph(1, []);
     a.info.rank = -5;
     const [inw, outw, low, high] = tbComputeBounds(a, 10);
     expect(inw).toBe(0);
@@ -829,7 +829,7 @@ describe('initGraph', () => {
     expect(ctx.nEdges).toBe(0);
   });
   it('returns false when any in-edge is infeasible, and counts out-edges into nEdges', () => {
-    const [g, [a, b]] = buildNsGraph(2, [[0, 1, 5]]); // minlen 5, ranks default 0
+    const [g] = buildNsGraph(2, [[0, 1, 5]]); // minlen 5, ranks default 0
     const ctx = mkCtx(g);
     expect(initGraph(ctx, g)).toBe(false);
     expect(ctx.nEdges).toBe(1);
@@ -886,7 +886,7 @@ describe('rank2Loop', () => {
     // `lim` afterward, breaking the invariant the two treeupdate() DFS
     // walks depend on to agree on the LCA — the only way to reach this
     // defensive branch without a genuine port bug.
-    const [g, nodes] = buildNsGraph(6, [
+    const [g] = buildNsGraph(6, [
       [0, 1, 1], [1, 2, 1], [2, 3, 1], [0, 4, 1], [4, 5, 1], [5, 3, 1], [1, 5, 1],
     ]);
     const ctx = mkCtx(g);
@@ -937,7 +937,7 @@ describe('rank2 — end-to-end network simplex on small real graphs', () => {
     expect(c.info.rank).toBe(2);
   });
   it('returns 0 without ranking further when maxiter <= 0', () => {
-    const [g, [a, b]] = buildNsGraph(2, [[0, 1, 1]]);
+    const [g] = buildNsGraph(2, [[0, 1, 1]]);
     expect(rank2(g, 0, 0, 30)).toBe(0);
   });
   it('propagates a non-zero feasibleTree error (disconnected graph) without ranking', () => {
@@ -945,7 +945,7 @@ describe('rank2 — end-to-end network simplex on small real graphs', () => {
     expect(rank2(g, 0, 100, 30)).toBe(1);
   });
   it('uses the provided searchSize when >= 0, applying TB balance across a diamond', () => {
-    const [g, [a, b, c, d]] = buildNsGraph(4, [[0, 1, 1], [0, 2, 1], [1, 3, 1], [2, 3, 3]]);
+    const [g, [a, , , d]] = buildNsGraph(4, [[0, 1, 1], [0, 2, 1], [1, 3, 1], [2, 3, 3]]);
     g.attrs.set('TBbalance', 'max');
     expect(rank2(g, 1, 100, 5)).toBe(0);
     expect(a.info.rank).toBe(0);
@@ -962,7 +962,7 @@ describe('rank — reads searchsize from graph attrs, defaulting when absent/inv
     expect(b.info.rank).toBe(1);
   });
   it('defaults to SEARCHSIZE when the attr is unset', () => {
-    const [g, [a, b]] = buildNsGraph(2, [[0, 1, 1]]);
+    const [g, [a]] = buildNsGraph(2, [[0, 1, 1]]);
     expect(rank(g, 0, 100)).toBe(0);
     expect(a.info.rank).toBe(0);
   });

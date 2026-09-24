@@ -148,14 +148,13 @@ describe('duplicate keys', () => {
     expect(n1).not.toBe(n2);
     // Full traversal should visit both
     let count = 0;
-    let node = t.root.left;
     // Min-first traversal via finding leftmost then successor
     const findMin = (): ReturnType<typeof rbTreeInsert> => {
       let x = t.root.left;
       while (x.left !== t.nil) x = x.left;
       return x;
     };
-    node = findMin();
+    let node = findMin();
     while (node !== t.nil) {
       count++;
       node = treeSuccessor(t, node);

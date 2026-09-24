@@ -28,7 +28,7 @@ import {
   routeSelfEdgeGroup,
   buildDotSinfo,
 } from './self-loop.js';
-import { NORMAL, VIRTUAL } from './fastgr.js';
+import { VIRTUAL } from './fastgr.js';
 
 // ---------------------------------------------------------------------------
 // Shared builders

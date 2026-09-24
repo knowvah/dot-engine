@@ -30,7 +30,7 @@ import {
   shiftSlotRight, makeVnSlot, findlr, setBoundsFlat, setBoundsForward, setBounds,
   flatLimits, graphRanksep, flatLabelYpos, flatNodeDims, flatNodeEdges, flatNode,
   emptyRankEntry, shiftClusterRanks, abomination, hasInterveningNode,
-  checkFlatAdjacent, isLabeledFlat, markEdgeList, markAdjacent,
+  checkFlatAdjacent, markEdgeList, markAdjacent,
   rankHasNonAdjacentLabel, needsAbomination, applyLabelDist,
   processFlatOutLabel, processOtherLabel, processNodes, flatEdges,
 } from './flat.js';

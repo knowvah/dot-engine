@@ -47,7 +47,6 @@ describe('rTreeClose', () => {
 
   it('does not throw when closing a tree with inserted data', () => {
     const rt = rTreeOpen();
-    const root = rt.root!;
     rTreeInsert(rt, rect(0, 0, 1, 1), { id: 1 });
     expect(() => rTreeClose(rt)).not.toThrow();
   });

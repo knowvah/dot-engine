@@ -162,11 +162,11 @@ describe('transposeCounts — undefined endpoint order defaults to 0', () => {
 // ---------------------------------------------------------------------------
 
 describe('exchange', () => {
-  it('no-ops (returns undefined) when ctx.root.info.rank is undefined', () => {
+  it('no-ops when ctx.root.info.rank is undefined', () => {
     const v = { info: { rank: 0, order: 0 } } as unknown as Node;
     const w = { info: { rank: 0, order: 1 } } as unknown as Node;
     const ctx = { root: { info: { rank: undefined } } } as unknown as MincrossContext;
-    expect(exchange(ctx, v, w)).toBeUndefined();
+    exchange(ctx, v, w);
     expect(v.info.order).toBe(0);
     expect(w.info.order).toBe(1);
   });
@@ -334,10 +334,12 @@ describe('transposeStep', () => {
 // ---------------------------------------------------------------------------
 
 describe('transpose', () => {
-  it('returns undefined immediately when g.info.rank is undefined', () => {
+  it('returns immediately, touching nothing, when g.info.rank is undefined', () => {
     const g = { info: { rank: undefined } } as unknown as Graph;
     const ctx = {} as unknown as MincrossContext;
-    expect(transpose(ctx, g, false)).toBeUndefined();
+    transpose(ctx, g, false);
+    expect(ctx).toEqual({});
+    expect(g).toEqual({ info: { rank: undefined } });
   });
 
   it('skips a hole in the rank array during initCandidates without throwing', () => {
