@@ -12,7 +12,7 @@ import type {
   OrthoSegment, Route, Cell, SGraph, SNode, SEdge,
   Channel, ChanDict, Maze,
 } from "./types.js";
-import { Bend, M_LEFT, M_RIGHT, M_TOP, M_BOTTOM } from "./types.js";
+import { Bend } from "./types.js";
 import { chanSearch, chansInOrder } from "./maze-channels.js";
 import { makeGraph } from "./rawgraph.js";
 import { insertEdge, edgeExists, removeRedge, topSort } from "./rawgraph.js";
@@ -22,8 +22,6 @@ import { cround } from "../common/arith.js";
 
 // ─── weight constants ─────────────────────────────────────────────────────────
 
-const delta = 1;   // weight per unit length
-const mu = 500;    // bend penalty per bend edge
 export const BIG = 16384;  // near-infinite weight
 
 // ─── Segment construction ─────────────────────────────────────────────────────

@@ -85,11 +85,11 @@ const POW_LOG_TABLE_BITS = 7;
 const N_LOG = 1 << POW_LOG_TABLE_BITS;
 const EXP_TABLE_BITS = 7;
 const N_EXP = 1 << EXP_TABLE_BITS;
-const OFF = 0x3fe6955500000000n;
+const OFF = BigInt('0x3fe6955500000000');
 
 /** Bit patterns and sign bias for the pow special-case branch. */
-const INF_BITS = 0x7ff0000000000000n;
-const ONE_BITS = 0x3ff0000000000000n; // asuint64(1.0)
+const INF_BITS = BigInt('0x7ff0000000000000');
+const ONE_BITS = BigInt('0x3ff0000000000000'); // asuint64(1.0)
 /** SIGN_BIAS = 0x800 << EXP_TABLE_BITS. @see ARM pow.c */
 const SIGN_BIAS = 0x800 << EXP_TABLE_BITS;
 

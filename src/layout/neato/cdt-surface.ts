@@ -286,7 +286,7 @@ class Cdt {
     let e2: CEdge | null = null; let e3: CEdge | null = null;
     if (f !== null) {
       const r = this.ringFrom(f, prev);
-      v1 = r.v1; v2 = r.v2; v3 = r.v3; prev = r.e1; e2 = r.e2; e3 = r.e3;
+      v1 = r.v1; v2 = r.v2; v3 = r.v3; e2 = r.e2; e3 = r.e3;
     }
     while (f !== null) {
       const orient = this.orientPt(ox, oy, v3, x, y);

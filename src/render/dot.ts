@@ -19,14 +19,8 @@ import type { ArrowDrawOp } from '../common/arrows-types.js';
 import type { GVColor } from '../common/color.js';
 import { resolveRenderColor } from './color-resolve.js';
 import { edgeIsTapered } from './svg-tapered-edge.js';
-import { taper, taperfun } from '../common/taper.js';
-import { orthoRoundedRadius } from './svg-helpers.js';
-import { orthoRoundedPolylines } from './svg-edge-ortho-radius.js';
 import { findStopColor, parseStyleFlags } from '../common/style-resolve.js';
 import { parseGraphPad } from '../gvc/viewport.js';
-import { parseSegs } from '../common/multicolor.js';
-import { splitSplineByColor } from './svg-edge-split.js';
-import { buildOffsetLists, advanceTmpList } from '../common/edge-offset.js';
 import { edgeHasDrawableContent } from './svg.js';
 import type { Bezier } from '../model/geom.js';
 import type { RendererPlugin } from '../gvc/context.js';
@@ -41,11 +35,10 @@ import { renderEdgeLabels } from '../gvc/edge-labels.js';
 export * from './dot/xdot-ops.js';
 export * from './dot/attrs.js';
 import {
-  NON_LINE_STYLES, XDOT_VERSION, agcanonEscape, escBackslash, gfmt5, linearGradientOp,
-  lpStr, makeXbufs, radialGradientOp, trimFixed3, utf8Len, xdotFillColor, xdotFont,
-  xdotId, xdotNum, xdotPenColor, xdotPoint, xdotPoints, xdotStrOp,
+  NON_LINE_STYLES, escBackslash, linearGradientOp,
+  makeXbufs, radialGradientOp, trimFixed3, utf8Len, xdotFillColor, xdotFont,
+  xdotNum, xdotPenColor, xdotPoint, xdotPoints, xdotStrOp,
 } from './dot/xdot-ops.js';
-import { isDirected } from './dot/attrs.js';
 
 
 // ---------------------------------------------------------------------------

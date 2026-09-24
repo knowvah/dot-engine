@@ -15,7 +15,6 @@ import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { VtxData } from './dijkstra.js';
 import {
-  stressMajorizationKD,
   DFLT_ITERATIONS,
   MODEL_MDS as STRESS_MODEL_MDS,
   MODEL_CIRCUIT as STRESS_MODEL_CIRCUIT,

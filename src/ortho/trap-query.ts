@@ -7,7 +7,7 @@
  */
 
 import {
-  T_X, T_Y, T_SINK, FIRSTPT, LASTPT,
+  T_X, T_Y, T_SINK, FIRSTPT,
   S_LEFT,
   fpEqual, equalTo, greaterThan, isValidTrap,
   cross, TRAP_MAX,

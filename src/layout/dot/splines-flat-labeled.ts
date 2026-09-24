@@ -130,7 +130,7 @@ export function makeFlatLabeledEdge(g: Graph, e: Edge): boolean {
   const et = edgeType(g);
   if (et === EDGETYPE_LINE) {
     const ps = flatLabeledLinePoints(e.tail, e.head, e);
-    if (ps !== null && ps.length !== 0) clipAndInstall(e, e.head, ps, ps.length, buildDotSinfo());
+    clipAndInstall(e, e.head, ps, ps.length, buildDotSinfo());
     return true;
   }
   // C make_flat_edge forward-normalizes a backward (tail right of head by node
