@@ -23,7 +23,7 @@ import {
   sfdpInitGraph, tuneControl, makeMatrix, getSizes, getPos,
 } from './init.js';
 import {
-  springElectricalControlNew, QUAD_TREE_NONE, QUAD_TREE_NORMAL, QUAD_TREE_FAST,
+  springElectricalControlNew, QUAD_TREE_NORMAL, QUAD_TREE_FAST,
 } from './spring-electrical.js';
 import { GvcContext } from '../../gvc/context.js';
 import { EstimateTextMeasurer } from '../../common/textmeasure.js';

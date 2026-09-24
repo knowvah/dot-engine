@@ -60,7 +60,7 @@ describe('scAdjust — overlap=scale (equal=1, uniform)', () => {
   it('handles boxes sharing the same x position (infinite pt.x)', () => {
     const g = makeGraph();
     const a = makeNode(g, 'a', 5, 0, 2, 2);
-    const b = makeNode(g, 'b', 5, 1, 2, 2);
+    makeNode(g, 'b', 5, 1, 2, 2);
     expect(scAdjust(g, 1)).toBe(1);
     expect(a.info.pos![1]).toBe(0);
   });
@@ -68,7 +68,7 @@ describe('scAdjust — overlap=scale (equal=1, uniform)', () => {
   it('handles boxes sharing the same y position (infinite pt.y)', () => {
     const g = makeGraph();
     const a = makeNode(g, 'a', 0, 5, 2, 2);
-    const b = makeNode(g, 'b', 1, 5, 2, 2);
+    makeNode(g, 'b', 1, 5, 2, 2);
     expect(scAdjust(g, 1)).toBe(1);
     expect(a.info.pos![0]).toBe(0);
   });

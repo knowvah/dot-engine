@@ -169,7 +169,7 @@ describe('placeRegularEdgeLabels', () => {
 
   it('expands g.info.bb to include the label bounding box', () => {
     // @see lib/dotgen/dotsplines.c:updateBB call at 422-430
-    const [g, , label] = buildSingleVnChain(20, 20, 40, 20);
+    const [g] = buildSingleVnChain(20, 20, 40, 20);
     g.info.bb = { ll: { x: 50, y: 50 }, ur: { x: 100, y: 100 } };
     placeRegularEdgeLabels(g);
     // pos.x=40 pos.y=20; label hw=20 hh=10 → extends to ll=(20,10)

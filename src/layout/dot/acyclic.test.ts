@@ -84,7 +84,7 @@ describe('decompose', () => {
     expect(g.info.comp).toHaveLength(1);
   });
   it('places every node in exactly one component', () => {
-    const [g, [a, b, c]] = makeGraph(3);
+    const [g, [a, b]] = makeGraph(3);
     addFastEdge(a, b);
     decompose(g, 0);
     const all: Node[] = [];

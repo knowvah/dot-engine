@@ -20,9 +20,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { transformPoint, renderGraph, renderOneLabel, renderNodeXLabel, renderGraphLabel, renderClusterLabel, renderNode } from './device.js';
+import { transformPoint, renderGraph, renderOneLabel, renderNodeXLabel, renderGraphLabel, renderClusterLabel } from './device.js';
 import { RenderJob, GVRENDER_DOES_TRANSFORM } from './job.js';
-import { createSvgRenderer } from '../render/svg.js';
 import type { RendererPlugin } from './context.js';
 import type { TextMeasurer } from '../common/textmeasure.js';
 import type { Graph } from '../model/graph.js';

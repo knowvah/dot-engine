@@ -103,16 +103,6 @@ function scrubHome(s: string): string {
 
 export type DotVerdict = 'pass' | 'diverged' | 'accepted' | 'oracleError' | 'portError' | 'timeout';
 
-/** Rank used to pick the "worst" of the plain/plain-ext verdicts (higher = worse). */
-const VERDICT_RANK: Record<DotVerdict, number> = {
-  pass: 0,
-  accepted: 1,
-  diverged: 2,
-  timeout: 3,
-  portError: 4,
-  oracleError: 5,
-};
-
 /** One format's (plain or plain-ext) walk outcome for one corpus item. */
 export interface DotFormatResult {
   verdict: DotVerdict;

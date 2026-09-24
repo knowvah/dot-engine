@@ -16,7 +16,7 @@ import { makeCData, FLAGS_ONPATH, FLAGS_ISPARENT } from './blocks.js';
 import type { DerivedNode, DerivedEdge } from './blocks.js';
 import {
   derivedOf, countCrossings, insertNode, reducePass, reduceEdgeCrossings,
-  spanIncident, dfsSpan, buildSpanTree, measureDist, pathToNode, leafDegree,
+  spanIncident, buildSpanTree, measureDist, pathToNode, leafDegree,
   findCommon, findLongestPath, largestNodesize, neighborSet, isNeighbor,
   placeNodeBetweenTwo, placeNodeAfterAny, placeNode, placeResiduals,
   realignToParent, assignPositions, findPairEdges, removePairEdges,

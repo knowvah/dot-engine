@@ -15,7 +15,7 @@ import {
   emitArrowPolygon, svgArrowPolygons,
 } from './svg-helpers.js';
 import { RenderJob, createObjState, ObjType } from '../gvc/job.js';
-import { PenType, FillType } from '../gvc/context.js';
+import { PenType } from '../gvc/context.js';
 import type { ObjState } from '../gvc/job.js';
 import type { TextMeasurer } from '../common/textmeasure.js';
 import { HTML_OL } from '../common/emit-types.js';

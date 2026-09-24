@@ -22,12 +22,10 @@ import {
   computeGrid,
   buildAInfo,
   sortAInfo,
-  accumulateMaxima,
   widthsToCumulative,
   heightsToCumulative,
   placeX,
   placeY,
-  positionRects,
   arrayRects,
   cmpByPerimeter,
 } from './array-pack.js';

@@ -20,7 +20,7 @@ import {
   mapbool, scaleClamp, cleanup1, cleanup1CompSlot, edgelabelRanks, rankSetClass,
   collapseRanksetMinMax, collapseRankset, nodeInduce, clusterLeaderScan,
   clusterLeader, collapseCluster, findClusters, minmaxEdgesReverse,
-  minmaxEdges, mmEdges2CheckMax, mmEdges2CheckMin, minmaxEdges2, rank1,
+  minmaxEdges, mmEdges2CheckMax, mmEdges2CheckMin, minmaxEdges2,
   dot1Rank, dotRank, setClType,
   MINRANK, SOURCERANK, MAXRANK, SINKRANK, SAMERANK, SLACKNODE, CLUSTER,
   NEW_RANK, LOCAL, GLOBAL,
