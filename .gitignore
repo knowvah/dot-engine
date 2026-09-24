@@ -15,8 +15,10 @@ build/
 # TypeScript
 *.tsbuildinfo
 
-# Parser generator output is committed (see AD-11), so only ignore
-# intermediate build artifacts here
+# Peggy parser output is generated, not committed (supersedes AD-11): the
+# pre* npm hooks run `npm run parser:regen` before test/typecheck/build/docs.
+src/parser/dot.js
+src/parser/dot.d.ts
 *.js.map
 
 # Test
