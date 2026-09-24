@@ -10,8 +10,6 @@
 
 import type { Comparator, KeyOf } from "./types.js";
 import {
-  lrotate,
-  rrotate,
   splay,
   splayMax,
   splayMin,

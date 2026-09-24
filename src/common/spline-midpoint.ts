@@ -52,7 +52,7 @@ export function dotneatoClosest(spl: SplLike, pt: Point): Point {
   const c = [bz.list[j], bz.list[j + 1], bz.list[j + 2], bz.list[j + 3]];
   let lo = 0.0; let hi = 1.0;
   let dlo2 = dist2(c[0], pt); let dhi2 = dist2(c[3], pt);
-  let pt2 = c[0];
+  let pt2: Point;
   for (;;) {
     const t = (lo + hi) / 2.0;
     pt2 = evalBez4(c, t);

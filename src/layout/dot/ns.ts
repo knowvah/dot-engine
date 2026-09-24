@@ -98,7 +98,7 @@ export function leaveEdge(ctx: NsCtx): Edge | undefined {
     }
     ctx.sI++;
   }
-  if (j > 0) { ctx.sI = 0; [rv, cnt] = leaveEdgeScan(ctx, j, cnt, rv); }
+  if (j > 0) { ctx.sI = 0; [rv] = leaveEdgeScan(ctx, j, cnt, rv); }
   return rv;
 }
 

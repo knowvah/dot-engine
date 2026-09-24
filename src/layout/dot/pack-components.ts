@@ -37,7 +37,6 @@ import { dotRank, isACluster } from './rank.js';
 import { dotMincross } from './mincross.js';
 import { dotPosition } from './position.js';
 import { gvPostprocess } from '../../common/postproc.js';
-import { mapArrowOpPoints } from '../../common/arrows-shapes-util.js';
 import type { ArrowDrawOp } from '../../common/arrows-types.js';
 
 // ---------------------------------------------------------------------------

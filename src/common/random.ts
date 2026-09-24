@@ -14,8 +14,8 @@
  * @see lib/neatogen/neatoinit.c:checkStart (srand48 call)
  */
 
-const A = 0x5deece66dn;
-const C = 0xbn;
+const A = BigInt('0x5deece66d');
+const C = BigInt('0xb');
 const MASK48 = (1n << 48n) - 1n;
 const TWO48 = 2 ** 48;
 

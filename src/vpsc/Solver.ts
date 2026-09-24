@@ -237,7 +237,7 @@ export class IncVPSC extends VPSC {
    * @see lib/vpsc/solve_VPSC.cpp: IncVPSC::solve()
    */
   override solve(): void {
-    let lastCost = Infinity;
+    let lastCost: number;
     let cost = this.bs.cost();
     do {
       lastCost = cost;

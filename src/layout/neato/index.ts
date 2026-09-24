@@ -16,10 +16,7 @@ import type { LayoutEngine } from '../../gvc/context.js';
 import {
   neatoInitNode,
   userPos,
-  setSeed,
   solveModel,
-  neatoTranslate,
-  neatoSetAspect,
   neatoCleanup,
   MODE_KK,
   MODE_MAJOR,

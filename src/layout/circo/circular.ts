@@ -182,7 +182,7 @@ export function circoLayout(g: Graph): void {
   dg.components = comps;
   let blockCount = 0;
   if (comps.length === 1) {
-    blockCount = circularLayout(comps[0]!, g, blockCount, allEdges);
+    circularLayout(comps[0]!, g, blockCount, allEdges);
     copyPositions(comps[0]!);
     // C: adjustNodes(g) on the REAL graph — overlap=false resolves to
     // PRISM on the GTS reference build. @see circularinit.c:203

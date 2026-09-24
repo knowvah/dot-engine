@@ -218,16 +218,6 @@ export function resetHtmlAnchorIds(): void {
   anchorEnv.imgscale = 'false';
 }
 
-/** Normalise AnchorData to plain strings (empty when absent). */
-function normaliseAnchor(data: AnchorData): { h: string; t: string; tg: string; i: string } {
-  return {
-    h:  data.href   !== undefined ? data.href   : '',
-    t:  data.title  !== undefined ? data.title  : '',
-    tg: data.target !== undefined ? data.target : '',
-    i:  data.id     !== undefined ? data.id     : '',
-  };
-}
-
 /**
  * Open an anchor when the data carries href/title/target.
  *
