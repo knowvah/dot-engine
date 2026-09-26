@@ -13,9 +13,7 @@ import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { Point, Port } from '../../model/geom.js';
 import { VIRTUAL, MC_SCALE } from './fastgr.js';
-import { nodeBoxOf } from './edge-route-helpers.js';
-import { bezierClipNode } from './edge-route-clip.js';
-import { nodeInsideFn } from './edge-route-routing.js';
+import { shapeClip } from '../../common/shape-clip.js';
 import { nodesInSeq } from './decomp.js';
 import { cround } from '../../common/arith.js';
 
@@ -49,28 +47,6 @@ export function sameedge(same: SameGroup[], e: Edge, id: string): void {
     if (grp.id === id) { grp.edges.push(e); return; }
   }
   same.push({ id, edges: [e] });
-}
-
-// ---------------------------------------------------------------------------
-// shapeClip — move curve[0] to the node boundary
-// @see lib/dotgen/sameport.c — calls shape_clip(u, curve)
-// ---------------------------------------------------------------------------
-
-/**
- * Move curve[0] to node u's shape boundary along the Bézier, exactly as C's
- * shape_clip: build the node's shape inside-function (ellipse vs polygon, pen-
- * width aware) and bezier-clip with left_inside = insidefn(curve[0]). curve[0]
- * is the node center, which is always inside, so left_inside is true.
- *
- * Replaces an earlier rectangle approximation, which was wrong for ellipse
- * nodes (every honda head is an ellipse) and shifted the shared port ~17px.
- *
- * @see lib/common/splines.c:shape_clip / shape_clip0
- */
-export function shapeClip(u: Node, curve: Point[]): void {
-  const box = nodeBoxOf(u, u.root);
-  const clipped = bezierClipNode(curve, box.center.x, box.center.y, nodeInsideFn(box), true);
-  for (let i = 0; i < curve.length && i < clipped.length; i++) curve[i] = clipped[i];
 }
 
 // ---------------------------------------------------------------------------
