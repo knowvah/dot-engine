@@ -298,15 +298,27 @@ function hasSidePort(e: GraphEdge): boolean {
   return (tp.side ?? 0) !== 0 || (hp.side ?? 0) !== 0;
 }
 
-/** True when x is an unrouted adjacent same-rank side-port flat edge. */
+/** C's make_flat_adj_edges port test: either end has a defined port, of any
+ *  side (an interior HTML cell's port has side 0).
+ *  @see lib/dotgen/dotsplines.c:make_flat_adj_edges (`ports = true`) */
+function hasDefinedPort(e: GraphEdge): boolean {
+  return e.info.tail_port.defined || e.info.head_port.defined;
+}
+
+/** True when e is a same-rank adjacent flat edge with a defined port — the
+ *  make_flat_adj_edges rotated-aux case. */
+function isAdjacentPortFlat(e: GraphEdge, g: Graph): boolean {
+  return e.tail.info.rank !== undefined && e.tail.info.rank === e.head.info.rank
+    && isFlatAdjacent(g, e) && hasDefinedPort(e);
+}
+
+/** True when x is an unrouted adjacent same-rank flat edge with a port. */
 function isGroupableFlat(x: GraphEdge, g: Graph): boolean {
-  return x.info.spl === undefined
-    && x.tail.info.rank === x.head.info.rank
-    && isFlatAdjacent(g, x) && hasSidePort(x);
+  return x.info.spl === undefined && isAdjacentPortFlat(x, g);
 }
 
 /**
- * Collect all unrouted adjacent same-rank side-port flat edges between e's two
+ * Collect all unrouted adjacent same-rank ported flat edges between e's two
  * endpoints (either direction), ordered so group[0].tail is the lower-order
  * (left) node. C's dispatch loop sorts edges by edgecmp (equivalent edges
  * contiguous) and groups a run while `getmainedge(e0) === getmainedge(e1)`
@@ -399,7 +411,7 @@ function routeFlatEdge(e: GraphEdge, g: Graph): boolean {
   // other edge, so only labeled flats are diverted. @see dotsplines.c:1527-1533
   if (makeFlatLabeledEdge(g, e)) return true;
   if (makeAdjFlatNoPortEdge(g, e)) return true;
-  if (hasSidePort(e) && routeFaithfulSidePort(e, g)) return true;
+  if ((hasSidePort(e) || isAdjacentPortFlat(e, g)) && routeFaithfulSidePort(e, g)) return true;
   // Non-adjacent unlabeled flat with no side port (e.g. a same-rank cross-cluster
   // edge with an intervening node): C make_flat_edge routes it UP through the box
   // corridor, not straight through. @see lib/dotgen/dotsplines.c:make_flat_edge
