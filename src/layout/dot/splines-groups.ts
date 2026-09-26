@@ -112,8 +112,15 @@ function dispatchEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): void {
     }
     return;
   }
-  if (nodeRankOf(e0.tail) === nodeRankOf(e0.head)) return;
   const uniq = dedupByOrig(group);
+  // Flat group: route HERE at its edgecmp position, as C's make_flat_edge call
+  // does, so it reads vnodes before later regular edges' recover_slack moves
+  // them. The flat routers gather their own group and skip routed members.
+  // @see lib/dotgen/dotsplines.c:dot_splines_ (410-411)
+  if (nodeRankOf(e0.tail) === nodeRankOf(e0.head)) {
+    for (const e of uniq) routeLoneEdge(e, g);
+    return;
+  }
   // Lone edge: route HERE at its edgecmp position (interleaved with groups), as C
   // does, so it reads recover_slack-moved vnodes correctly. @see root-cause.md
   if (uniq.length <= 1) {
