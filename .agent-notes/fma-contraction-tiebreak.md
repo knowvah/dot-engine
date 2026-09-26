@@ -20,3 +20,17 @@
   oracle should be an `-ffp-contract=off` build (source semantics) — which
   would make strict `>` the faithful rule.
 - **Confidence**: High (controlled A/B build, only CMAKE_C_FLAGS differs)
+
+## Observation: literal rank-index tests need abomShift after abomination
+- **Context**: plantuml-ts issue 26 (self-loop taller than native when a flat
+  labelled edge sits on rank 0).
+- **Finding**: C's abomination keeps ND_rank and moves minrank to -1; the port
+  renumbers +1 (AD-2, `g.info.abomShift`). Rank-vs-rank tests survive the
+  renumber; tests against a LITERAL rank do not. dotsplines.c:392 `r > 0` was
+  one (fixed in self-loop.ts). Remaining literal tests not audited against the
+  abomination phase: mincross-cross.ts:245 `useIn = r > 0`,
+  mincross-order.ts:314, conc.ts:402, splines-flat.ts:512 `r <= 0` (the last is
+  output-equivalent today: its r-2 lookup falls below minrank to ranksep).
+- **Impact**: any consumer of ND_rank that compares to 0/1 after flat_edges
+  should use `r - abomShift`.
+- **Confidence**: High for self-loop; unverified for the others
