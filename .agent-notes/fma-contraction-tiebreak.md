@@ -11,14 +11,16 @@
   The port with C's literal strict `if (d > maxd)` (src/pathplan/route.ts
   findMaxDev) is byte-identical to the no-FMA C build on all of these: nugecu
   5/9/12/20/30, 2368.dot (0 diff lines), cnt=3 SVG paths. The no-FMA build still
-  calls Apple libm `hypot`, so hypot is NOT the deciding variable here — this
-  corrects .agent-notes/2368-residual-flat-label-ranksep.md's attribution.
+  calls Apple libm `hypot`, so on THESE cases hypot is not the deciding
+  variable (corrects 2368-residual-flat-label-ranksep.md for 2368). NOT
+  re-tested: the other A3 members (graphs-b100/b104, 241_1, 2413_1/_2,
+  graphs-decorate, 2371). Which contracted expression flips the choice is not
+  isolated (bezier eval vs mkspline vs upstream).
 - **Impact**: against the FMA oracle no tie rule is faithful: tolerant (current)
   matches FMA C on nugecu 5/12/30 and cnt=3, strict matches it on 9/30. Matching
   the oracle exactly would require emulating clang's contraction choices
-  (JS has no fma). Issue 23 is left as-is pending a decision on whether the
-  oracle should be an `-ffp-contract=off` build (source semantics) — which
-  would make strict `>` the faithful rule.
+  (JS has no fma). plantuml-ts closed its issue 23 as an instance of A3; the
+  tolerant rule stays.
 - **Confidence**: High (controlled A/B build, only CMAKE_C_FLAGS differs)
 
 ## Observation: literal rank-index tests need abomShift after abomination
