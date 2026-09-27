@@ -97,7 +97,10 @@ export interface NodeGeometry {
  *
  * `points` concatenates all bezier control points from the edge spline,
  * in order. An edge with no routed spline produces an empty `points` array.
- * `label` is present only when the edge carries a centre label.
+ * `label` is present only when the edge carries a centre label that layout
+ * placed. It carries the same `lp->set` gate as the labels below: dot's
+ * label search can leave a centre label unplaced (sentinel pos), and
+ * `render()` then declines to draw it.
  *
  * `tailLabel`/`headLabel` are the `taillabel`/`headlabel` port labels. They
  * are present only once the layout has actually *placed* them (C `lp->set`),
@@ -144,7 +147,7 @@ export interface EdgeGeometry {
    * @see lib/common/types.h:bezier.ep
    */
   ep?: { x: number; y: number };
-  /** Centre edge label position, if present. @see lib/common/types.h:ED_label */
+  /** Centre edge label position, if placed. @see lib/common/types.h:ED_label */
   label?: { x: number; y: number };
   /**
    * `taillabel` position, if placed.
@@ -273,7 +276,7 @@ function collectEdgePoints(
 }
 
 /**
- * Position of a port label that layout actually placed, else undefined.
+ * Position of an edge label that layout actually placed, else undefined.
  * `set` is C's own "this label has coordinates" flag, and the gate
  * emit_edge_label uses before drawing; an unplaced label still holds the
  * calloc-zero pos and must not be published as geometry.
@@ -322,10 +325,8 @@ function snapshotEdge(edge: Edge, flipY: (y: number) => number): EdgeGeometry {
     head: edge.head.name,
     points: collectEdgePoints(edge, flipY),
   };
-  const lbl = edge.info.label;
-  if (lbl !== undefined) {
-    geom.label = { x: lbl.pos.x, y: flipY(lbl.pos.y) };
-  }
+  const label = placedLabelPos(edge.info.label, flipY);
+  if (label !== undefined) geom.label = label;
   const tailLabel = placedLabelPos(edge.info.tail_label, flipY);
   if (tailLabel !== undefined) geom.tailLabel = tailLabel;
   const headLabel = placedLabelPos(edge.info.head_label, flipY);

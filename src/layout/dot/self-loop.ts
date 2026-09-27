@@ -79,9 +79,11 @@ function rankY(g: Graph, r: number): number {
   return g.info.rank![r].v[0].info.coord?.y ?? 0;
 }
 
-/** sizey when n is at the maximum rank. @see lib/dotgen/dotsplines.c:392-396 */
+/** sizey when n is at the maximum rank. C's `r > 0` is a literal index test;
+ * after abomination C's rank is r - abomShift (AD-2 renumbers +1 where C uses
+ * index -1). @see lib/dotgen/dotsplines.c:392-396 */
 function sizeyAtMaxrank(g: Graph, n: Node, r: number): number {
-  if (r > 0) return rankY(g, r - 1) - (n.info.coord?.y ?? 0);
+  if (r - (g.info.abomShift ?? 0) > 0) return rankY(g, r - 1) - (n.info.coord?.y ?? 0);
   return n.info.ht ?? 0;
 }
 
