@@ -195,10 +195,9 @@ class RouteHelper {
       // absolute-coordinate bezier eval above — whose sign depends on absolute
       // position. So C is NOT consistent: it splits two translation-congruent
       // arcs toward opposite corners (e.g. 2368 `376->76` mirrors `256->436`),
-      // because the oracle build (Apple clang -O3, arm64) contracts this eval
-      // into FMA. Built with -ffp-contract=off, C matches the port under strict
-      // `>` byte-for-byte (see .agent-notes/fma-contraction-tiebreak.md; libm
-      // hypot is not the variable). We deliberately keep the tolerant tie-break: a true tie
+      // because Apple's macOS libm `hypot` (which generated the oracle) is a
+      // proprietary ~1-ULP-divergent implementation that no portable hypot
+      // reproduces. We deliberately keep the tolerant tie-break: a true tie
       // always resolves to the first index, so the port is TRANSLATION-
       // EQUIVARIANT (same channel anywhere -> same spline). This matches C where
       // C's noise also keeps-first (#241_0 5:ne->8:nw, and the cnt=3 oracle
