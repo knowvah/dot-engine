@@ -4,12 +4,12 @@ import { dotMarkdown } from '@knowvah/vitepress-plugin-dot/markdown-it';
 import { fileURLToPath, URL } from 'node:url';
 import { dotLang } from './dot.tmLanguage';
 
-// Deployed at https://knowvah.github.io/dot-engine/ — base MUST match the repo
-// name (Pages serves the site under /<repo>/), or every CSS/JS/font asset 404s
-// and the page renders unstyled.
+// Deployed at https://dot-engine.knowvah.com/ (GitHub Pages custom domain) —
+// the site is served from the domain root, so base MUST be '/'. A '/<repo>/'
+// base makes every CSS/JS/font asset 404 and the page renders unstyled.
 
 export default defineConfig({
-    base: '/dot-engine/',
+  base: '/',
   title: '@knowvah/dot-engine',
   description:
     'A faithful, pure-TypeScript port of Graphviz. DOT in, SVG out — no Java, ' +
