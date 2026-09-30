@@ -1,7 +1,8 @@
 # Playground
 
 Edit the DOT on the left and the SVG updates live. Everything runs in your
-browser — there is no server. Switch engines with the dropdown.
+browser — there is no server. Switch engines with the dropdown, and use
+**Export SVG** / **Export PNG** to download the current render.
 
 <Playground height="600px" />
 

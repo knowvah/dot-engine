@@ -96,6 +96,70 @@ onMounted(async () => {
   }
 });
 
+// --- export ---
+// Raster scale for PNG export: 2× the SVG's CSS-pixel size so the image stays
+// crisp on high-DPI displays and when zoomed.
+const PNG_SCALE = 2;
+const EXPORT_BASENAME = 'graph';
+
+function downloadBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  // Defer revocation so the browser has started the download.
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function exportSvg(): void {
+  // renderSvg emits a complete standalone document (XML prolog + doctype).
+  downloadBlob(
+    new Blob([svg.value], { type: 'image/svg+xml' }),
+    `${EXPORT_BASENAME}.svg`,
+  );
+}
+
+function svgToPng(markup: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(
+      new Blob([markup], { type: 'image/svg+xml' }),
+    );
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.ceil(img.naturalWidth * PNG_SCALE);
+      canvas.height = Math.ceil(img.naturalHeight * PNG_SCALE);
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Canvas 2D context unavailable'));
+        return;
+      }
+      // No background fill: the SVG paints its own bgcolor polygon, and a
+      // bgcolor=transparent graph should stay transparent in the PNG.
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (b) => (b ? resolve(b) : reject(new Error('PNG encoding failed'))),
+        'image/png',
+      );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Could not rasterize the SVG'));
+    };
+    img.src = url;
+  });
+}
+
+async function exportPng(): Promise<void> {
+  try {
+    downloadBlob(await svgToPng(svg.value), `${EXPORT_BASENAME}.png`);
+  } catch (e) {
+    error.value = `PNG export failed: ${e instanceof Error ? e.message : String(e)}`;
+  }
+}
+
 watch(source, () => { paintHighlight(); scheduleRender(); });
 watch(engine, scheduleRender);
 </script>
@@ -109,6 +173,14 @@ watch(engine, scheduleRender);
           <option v-for="e in ENGINES" :key="e" :value="e">{{ e }}</option>
         </select>
       </label>
+      <div class="gv-export">
+        <button type="button" :disabled="!svg || !!error" @click="exportSvg">
+          Export SVG
+        </button>
+        <button type="button" :disabled="!svg || !!error" @click="exportPng">
+          Export PNG
+        </button>
+      </div>
     </div>
     <div class="gv-panes" :style="{ height: props.height ?? '420px' }">
       <div class="gv-editor">
@@ -158,6 +230,27 @@ watch(engine, scheduleRender);
   border-radius: 4px;
   padding: 0.15rem 0.4rem;
   background: var(--vp-c-bg);
+}
+.gv-export {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+.gv-export button {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 4px;
+  padding: 0.15rem 0.6rem;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+}
+.gv-export button:hover:not(:disabled) {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+}
+.gv-export button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .gv-panes {
   display: grid;
