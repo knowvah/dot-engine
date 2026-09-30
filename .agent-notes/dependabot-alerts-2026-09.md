@@ -9,3 +9,9 @@
 - **Finding**: `@semantic-release/npm` depends on `npm` (^11.6.2), which ships those as bundleDependencies. `npm update ip-address undici` is a no-op for them; `npm update npm` (11.18.0 -> 11.19.1) is what clears them.
 - **Impact**: Future alerts on packages under `node_modules/npm/` are fixed by bumping `npm` itself.
 - **Confidence**: High
+
+## Observation: ip-address GHSA-2vr4-cq9g-pvrc (alert #38) has no upstream fix path yet
+- **Context**: Triaging Dependabot alert #38 (ip-address <= 10.5.0, patched 10.5.1), 2026-09-29.
+- **Finding**: The only copy is `node_modules/npm/node_modules/ip-address` 10.5.0, bundled in `npm` (via `@semantic-release/npm` -> `npm ^11.6.2`). The newest npm releases (11.20.0 and 12.1.0, both published 2026-09-22) still bundle 10.5.0, so bumping `npm` doesn't clear it yet. The only importer is `socks` (helpers.js, socksclient.js), which only constructs `Address4`/`Address6` for parsing. Nothing in the bundled tree calls `isPrivate`/`isLoopback`/`isLinkLocal`/`isHostInSubnet`, which is where the advisory's bug is.
+- **Impact**: The vulnerable path isn't reachable, and the package is dev-only (release tooling). The fix is `npm update npm` once an npm release bundles ip-address >= 10.5.1. Alert #38 was dismissed as `not_used` on 2026-09-30. A top-level `npm i ip-address@latest` and an `overrides` entry were both tested; neither changes the bundled copy.
+- **Confidence**: High
