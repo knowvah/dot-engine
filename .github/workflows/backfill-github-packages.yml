@@ -53,7 +53,10 @@ jobs:
               continue
             fi
             echo "==> fetching $spec from npmjs"
-            tgz="$(npm pack "$spec" --registry https://registry.npmjs.org --pack-destination "$RUNNER_TEMP" | tail -1)"
+            # .npmrc maps @knowvah to GitHub Packages and package.json's
+            # publishConfig pins `@knowvah:registry` to npmjs; npm picks a scope
+            # registry over --registry, so the scope key is what selects here.
+            tgz="$(npm pack "$spec" "--@knowvah:registry=https://registry.npmjs.org" --pack-destination "$RUNNER_TEMP" | tail -1)"
             echo "==> publishing $RUNNER_TEMP/$tgz"
-            npm publish "$RUNNER_TEMP/$tgz" --registry "$registry" --access public
+            npm publish "$RUNNER_TEMP/$tgz" "--@knowvah:registry=$registry" --access public
           done

@@ -17,7 +17,9 @@
   "license": "EPL-2.0",
   "author": "Scott Seely",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "@knowvah:registry": "https://registry.npmjs.org/"
   },
   "repository": {
     "type": "git",
@@ -71,12 +73,13 @@
     "survey:dashboard": "tsx test/corpus/dashboard.ts",
     "survey:baseline": "GV_TEXT_MEASURER=lut tsx test/corpus/survey.ts",
     "bench:wasm": "node --expose-gc test/corpus/wasm-bench.mjs",
+    "docs:brand": "node docs-site/copy-brand-assets.mjs",
     "docs:copy-reports": "node docs-site/copy-reports.mjs",
     "docs:copy-goldens": "node docs-site/copy-goldens.mjs",
     "docs:api": "typedoc",
-    "docs:dev": "npm run docs:copy-reports && npm run docs:copy-goldens && npm run docs:api && vitepress dev docs-site",
+    "docs:dev": "npm run docs:brand && npm run docs:copy-reports && npm run docs:copy-goldens && npm run docs:api && vitepress dev docs-site",
     "predocs:build": "npm run parser:regen",
-    "docs:build": "npm run docs:copy-reports && npm run docs:copy-goldens && npm run docs:api && vitepress build docs-site",
+    "docs:build": "npm run docs:brand && npm run docs:copy-reports && npm run docs:copy-goldens && npm run docs:api && vitepress build docs-site",
     "docs:preview": "vitepress preview docs-site",
     "release": "semantic-release",
     "publish:check": "npm run typecheck && npm run build && npm pack --dry-run",
@@ -94,7 +97,10 @@
     }
   },
   "devDependencies": {
+    "@fontsource/jetbrains-mono": "^5.3.0",
     "@hpcc-js/wasm-graphviz": "1.28.0",
+    "@knowvah/theme": "0.3.0",
+    "@knowvah/vitepress-plugin-dot": "^3.0.1",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/github": "^12.0.9",
     "@semantic-release/npm": "^13.1.5",
@@ -111,7 +117,6 @@
     "tsx": "^4.23.1",
     "typedoc": "^0.28.20",
     "typedoc-plugin-markdown": "^4.12.0",
-    "@knowvah/vitepress-plugin-dot": "^1.0.0",
     "typedoc-vitepress-theme": "^1.1.3",
     "typescript": "^6.0.0",
     "vitepress": "^1.6.0",
@@ -122,7 +127,8 @@
     "brace-expansion": "^5.0.9",
     "vitepress": {
       "vite": "^6.4.3"
-    }
+    },
+    "@knowvah/dot-engine": "https://registry.npmjs.org/@knowvah/dot-engine/-/dot-engine-1.7.0.tgz"
   },
   "volta": {
     "node": "26.3.1"

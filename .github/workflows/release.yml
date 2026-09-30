@@ -39,6 +39,16 @@ jobs:
       # Trusted publishing (OIDC) requires npm >= 11.5.1.
       - run: npm install -g npm@latest
 
+      # `@knowvah/*` installs from GitHub Packages (see .npmrc), but setup-node
+      # above points at npmjs for OIDC publishing and can hold only one
+      # registry-url, so add the GitHub Packages read auth separately.
+      # package.json's publishConfig (`registry` for semantic-release, and
+      # `@knowvah:registry`, which npm prefers over any --registry) keeps
+      # the release publishing to npmjs despite the .npmrc scope mapping.
+      - name: Authenticate to GitHub Packages
+        env:
+          GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm config set //npm.pkg.github.com/:_authToken "$GH_PACKAGES_TOKEN"
       - run: npm ci
 
       - run: npm run typecheck
@@ -85,4 +95,7 @@ jobs:
           fi
           tgz="$(npm pack --pack-destination "$RUNNER_TEMP" | tail -1)"
           echo "==> mirroring $RUNNER_TEMP/$tgz"
-          npm publish "$RUNNER_TEMP/$tgz" --registry "$registry" --access public
+          # .npmrc maps @knowvah to GitHub Packages and package.json's
+          # publishConfig pins `@knowvah:registry` to npmjs; npm picks a scope
+          # registry over --registry, so the scope key is what selects here.
+          npm publish "$RUNNER_TEMP/$tgz" "--@knowvah:registry=$registry" --access public
