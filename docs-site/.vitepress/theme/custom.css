@@ -1,4 +1,34 @@
 /* SPDX-License-Identifier: EPL-2.0 */
+/*
+ * Site-specific styling on top of the Warm Studio tokens that
+ * `@knowvah/theme/vitepress` sets (imported in index.ts).
+ *
+ * The corporate site sets JetBrains Mono for everything, prose included.
+ * Documentation is long-form reading, where a monospace body face costs
+ * more than it gives, so the brand face goes on the parts a reader scans —
+ * the title, nav, sidebar, hero, and headings — and body text stays on
+ * VitePress's sans stack. Matches plantuml-ts's docs site.
+ *
+ * Selectors are VitePress default-theme class names (1.6.x). If a VitePress
+ * upgrade renames one, the affected element silently falls back to sans;
+ * check the home page after upgrading.
+ */
+.VPNavBarTitle .title,
+.VPNavBarMenuLink,
+.VPNavBarMenuGroup .button,
+.VPSidebarItem .text,
+.VPHero .name,
+.VPHero .text,
+.VPFeature .title,
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.vp-doc h4,
+.vp-doc h5,
+.vp-doc h6 {
+  font-family: var(--vp-font-family-mono);
+}
+
 /* Diagrams rendered from ```graphviz fences (@knowvah/vitepress-plugin-dot, client mode). */
 .dot-figure {
   margin: 20px 0;

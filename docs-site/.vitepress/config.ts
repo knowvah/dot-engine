@@ -38,7 +38,17 @@ export default defineConfig({
         wrapperClass: 'dot-figure',
       }),
   },
+  head: [
+    // The mark comes from @knowvah/theme, copied into docs-site/public/ by
+    // `npm run docs:brand` (docs-site/copy-brand-assets.mjs).
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/knowvah_logo.svg' }],
+    ['meta', { name: 'theme-color', content: '#c45d3e' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: '@knowvah/dot-engine' }],
+  ],
   themeConfig: {
+    // Nav-bar mark, beside the site title.
+    logo: '/knowvah_logo.svg',
     // Built-in offline search (MiniSearch); no external service.
     search: { provider: 'local' },
     nav: [

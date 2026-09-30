@@ -10,6 +10,8 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  # `@knowvah/*` installs from GitHub Packages; see .npmrc.
+  packages: read
 
 # Allow one concurrent deployment; skip runs queued behind a newer one.
 concurrency:
@@ -24,7 +26,14 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '26'
+          # Writes the npm.pkg.github.com auth line so `@knowvah/*` (the docs
+          # theme is on GitHub Packages only) resolves; the scope mapping
+          # itself is in the repo's .npmrc.
+          registry-url: https://npm.pkg.github.com
+          scope: '@knowvah'
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run docs:build
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5

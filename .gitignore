@@ -72,3 +72,6 @@ test/corpus/oracle-cache/
 
 # Transient skill working file (/upgrade-deps resume state)
 .upgrade-deps-progress.md
+
+# Brand assets copied from @knowvah/theme by docs-site/copy-brand-assets.mjs
+docs-site/public/knowvah_logo.svg

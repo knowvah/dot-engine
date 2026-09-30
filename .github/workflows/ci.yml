@@ -6,9 +6,11 @@ on:
   pull_request:
     branches: [main]
 
-# Least-privilege GITHUB_TOKEN; these jobs only read the repo (checkout + test).
+# Least-privilege GITHUB_TOKEN; these jobs only read the repo (checkout + test)
+# and the @knowvah packages on GitHub Packages (see .npmrc).
 permissions:
   contents: read
+  packages: read
 
 jobs:
   ci:
@@ -18,7 +20,14 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '26'
+          # Writes the npm.pkg.github.com auth line so `@knowvah/*` (the docs
+          # theme is on GitHub Packages only) resolves; the scope mapping
+          # itself is in the repo's .npmrc.
+          registry-url: https://npm.pkg.github.com
+          scope: '@knowvah'
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run typecheck
       # `coverage` = `vitest run --coverage`: same suite as `npm test`, plus
       # the vitest.config.ts coverage thresholds and a Cobertura report.
@@ -63,5 +72,12 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '26'
+          # Writes the npm.pkg.github.com auth line so `@knowvah/*` (the docs
+          # theme is on GitHub Packages only) resolves; the scope mapping
+          # itself is in the repo's .npmrc.
+          registry-url: https://npm.pkg.github.com
+          scope: '@knowvah'
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run typecheck:ts7
