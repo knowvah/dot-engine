@@ -9,6 +9,7 @@
 
 import { type FontFamilyData } from "./textmeasure-lut-data.js";
 import { getFamilyMetrics, normalizeFontName } from "./textmeasure-lookup.js";
+import { canvasFont } from "./css-font.js";
 
 /** Number of hard-coded font families in the LUT. */
 export const LUT_FAMILY_COUNT = 11;
@@ -265,11 +266,25 @@ export class LutTextMeasurer implements TextMeasurer {
 }
 
 /**
+ * Two distinct, always-valid fonts used to detect a rejected `ctx.font`
+ * assignment: a candidate is accepted when assigning it changes the read-back
+ * after either probe (it cannot serialize identically to both).
+ */
+const FONT_PROBES: readonly string[] = ['1px serif', '2px monospace'];
+
+/**
  * Canvas-based TextMeasurer via CanvasRenderingContext2D.
- * Height is fontsize (matches C behavior).
+ * The font is the face the SVG emitter renders with (canvasFont), so browser
+ * measurement and rendering agree. Height is fontsize (matches C behavior).
  * @see lib/common/textspan.c:estimate_textspan_size
  */
 export class CanvasTextMeasurer implements TextMeasurer {
+  /**
+   * fontname|fontsize|bold|italic → accepted font string. Mirrors pango's
+   * font reuse (plugin/pango/gvtextlayout_pango.c:99-100).
+   */
+  private readonly fonts = new Map<string, string>();
+
   constructor(private readonly ctx: CanvasRenderingContext2D) {}
 
   measure(
@@ -278,15 +293,33 @@ export class CanvasTextMeasurer implements TextMeasurer {
     fontsize: number,
     flags?: TextVariantFlags,
   ): TextSize {
-    const bold = flags?.bold === true;
-    const italic = flags?.italic === true;
-    const style = bold && italic ? 'bold italic'
-      : bold ? 'bold'
-      : italic ? 'italic'
-      : '';
-    this.ctx.font = style ? `${style} ${fontsize}px ${fontname}` : `${fontsize}px ${fontname}`;
+    this.ctx.font = this.fontFor(fontname, fontsize, flags);
     const m = this.ctx.measureText(text);
     return { w: m.width, h: fontsize };
+  }
+
+  /** Cached font string; built and validated once per distinct font. */
+  private fontFor(fontname: string, fontsize: number, flags?: TextVariantFlags): string {
+    const key = `${fontname}|${fontsize}|${flags?.bold === true}|${flags?.italic === true}`;
+    let font = this.fonts.get(key);
+    if (font === undefined) {
+      font = canvasFont(fontname, fontsize, flags);
+      // A string the browser rejects is silently ignored, keeping the previous
+      // font AND size; fall back to the default family at the requested size.
+      if (!this.accepts(font)) font = canvasFont(null, fontsize, flags);
+      this.fonts.set(key, font);
+    }
+    return font;
+  }
+
+  /** True when the context accepts `font` as a `ctx.font` value. */
+  private accepts(font: string): boolean {
+    return FONT_PROBES.some((probe) => {
+      this.ctx.font = probe;
+      const before = this.ctx.font;
+      this.ctx.font = font;
+      return this.ctx.font !== before;
+    });
   }
 }
 
