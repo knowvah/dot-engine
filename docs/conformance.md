@@ -97,7 +97,14 @@ is the `dot` SVG dashboard, and each other engine has its own
 | **`conformant`** | Matches the oracle per the definition above (numeric within tolerance, non-numeric exact). |
 | **`structural-match`** | Same element tree, but one or more numeric values exceed the tolerance. |
 | **`diverged`** | The element trees differ (a missing/extra element or a non-numeric mismatch). |
-| **`oracle-error`** | The C oracle failed to render the input (excluded from port scoring). |
+| **`errored` / `timeout`** | The port failed to render the input (`errored`; `port-error` on the per-engine tracks) or ran past its time budget (`timeout`). Scored as a failure: counted in the pass-% denominator, never as a pass. |
+| **`oracle-error`** | The C oracle failed to render the input, so there is no reference to compare against. Out of scope: excluded from the pass-% denominator. |
+
+**Pass %** on every dashboard is `conformant / (surveyed − oracle-error)`.
+
+"Conformant" is the bar; "structural-match" is meaningful progress (right shape,
+coordinates still drifting); "diverged", "errored" and "timeout" are real gaps.
+None of these is a claim of byte-for-byte output.
 
 Some graphs carry **no verdict at all** on a given engine: see *engine
 exclusions* below.
@@ -124,8 +131,3 @@ force-directed and radial engine delegates to the shared component packer and
 none of their own algorithms run — confirmed by their oracle outputs being
 byte-identical. `dot` takes a different path and covers it conformantly in six
 seconds.
-| **`errored` / `timeout`** | The port failed to render or exceeded the time budget. |
-
-"Conformant" is the bar; "structural-match" is meaningful progress (right shape,
-coordinates still drifting); "diverged" is a real gap. None of these is a claim
-of byte-for-byte output.

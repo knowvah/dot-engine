@@ -250,18 +250,21 @@ function summary(
   const q = quarantineTotals(manifest);
   const qLine = Object.entries(q).map(([k, v]) => `${k} ${v}`).join(', ') || 'none';
   const matched = c.conformant + c['structural-match'];
+  // oracle-error inputs are out of scope (the C oracle failed), so they leave the
+  // pass-% denominator; port errors and timeouts stay in it as failures.
+  const scored = report.total - c['oracle-error'];
   return [
     '## Summary',
     '',
     `- **Oracle:** ${report.oracleVersion} · **corpus:** ${corpusRootMd(report.corpusRoot)}`,
     `- **Surveyed (applicable):** ${report.total}`,
-    `- **conformant\\*:** ${c.conformant} (${pct(c.conformant, report.total)}) · ` +
-      `structural-match: ${c['structural-match']} → ${matched}/${report.total} structurally equal ` +
-      `(${pct(matched, report.total)})`,
+    `- **conformant\\*:** ${c.conformant} (${pct(c.conformant, scored)}) · ` +
+      `structural-match: ${c['structural-match']} → ${matched}/${scored} structurally equal ` +
+      `(${pct(matched, scored)})`,
     `- **Accepted deltas (documented, won't-fix):** ${accepted.length} · ` +
       `**Tracked gaps (unaccepted, will-fix):** ${tracked.length} ` +
       `→ of ${matched - c.conformant + c.diverged} non-conformant graphs`,
-    `- **errored:** ${c.errored} · **timeout:** ${c.timeout} · **oracle-error:** ${c['oracle-error']} (excluded from scoring)`,
+    `- **errored:** ${c.errored} · **timeout:** ${c.timeout} · **oracle-error:** ${c['oracle-error']} (excluded from pass %)`,
     `- **Quarantined (not surveyed, from corpus-manifest.json):** ${qLine}`,
     '',
     '\\* **conformant** is a *deterministic-tolerance* verdict, not literal byte ' +

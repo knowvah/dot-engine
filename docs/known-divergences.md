@@ -108,8 +108,8 @@ input under its own engine instead of `dot`. The honest ceiling on that work is
 to **narrow** A1 to "no active divergence on the reference platform," never to
 eliminate the cross-platform caveat; the results so far (below) hold to that
 ceiling: `circo`/`twopi`/`osage` have each surfaced and root-caused a handful of
-genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 90.8/77.3/68.2%
-within 0.5pt of native over the 905-item universe, meaning the ported
+genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 90.8/77.5/68.0%
+within 0.5pt of native over the 910-item universe, meaning the ported
 arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most graphs — and
 every remaining diverged id is individually attributed by injection (solver
 drift vs. port defect) rather than left as untriaged drift; see the
@@ -178,13 +178,14 @@ field for these three and `parity-report.ts` renders them in a separate
 "Iterative engines (±0.5 characterization)" section of
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explicitly **not** comparable to the ±0.01 deterministic pass rates elsewhere
-in this document. Re-swept 2026-07-27 over the expanded 905-item universe:
+in this document. Current counts (910-item universe; pass % leaves out
+inputs the C oracle cannot render, per [Conformance](./conformance.md)):
 
-| engine | surveyed | within ±0.5pt | diverged (all attributed) | errors |
-|---|---:|---:|---:|---:|
-| `neato` | 905 | 822 (90.8%) | 81 | 2 |
-| `fdp`   | 905 | 700 (77.3%) | 200 | 5 |
-| `sfdp`  | 905 | 617 (68.2%) | 286 | 2 |
+| engine | surveyed | within ±0.5pt | non-conformant (all attributed, accepted) | port error / timeout | oracle error |
+|---|---:|---:|---:|---:|---:|
+| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
+| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
+| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
 
 (The first sweep, 2026-07-11 at 762 items, measured 263/311/260 within
 ±0.5pt — the jump to the current rates came from per-id fixes landed since,
@@ -529,7 +530,7 @@ a bounded, sub-perceptual `dot` delta — not an open bug. Full investigation:
 ### A4. Oracle in an acknowledged-broken state (the init_rank / pathplan family)
 
 **Affected:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (diverged, maxΔ 503), `1581` (diverged, maxΔ 465). Family
+maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). Family
 members `1939` and `2825` are **conformant** and carry no entry, and `2470`
 and `graphs-structs` joined them 2026-07-11 (both collapsed to conformant
 after the ortho adjacency-spill/chancmpid, fmadd `polylineMidpoint`, and
