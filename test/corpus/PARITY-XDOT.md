@@ -15,7 +15,7 @@ canonicalized — see `test/golden/compare-xdot.ts`). Regenerate:
 - **Walked (conformant SVG set):** 905
 - **xdot-conformant:** 905 (100.0%)
 - **diverged (tracked, will-fix):** 0 · **accepted (documented, won't-fix):** 0
-- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 0 (excluded from scoring)
+- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 0 (excluded from pass %)
 
 ## xdot-conformant (905)
 
@@ -58,7 +58,7 @@ mission decision journal with its mechanism.
 | id | path | message |
 |---|---|---|
 
-## oracle-error (0) — excluded from scoring
+## oracle-error (0) — excluded from pass %
 
 | id | path | message |
 |---|---|---|

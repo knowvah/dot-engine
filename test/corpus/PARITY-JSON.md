@@ -18,7 +18,7 @@ numeric-tolerant — see `test/golden/compare-json.ts`). Regenerate:
 - **Walked (conformant SVG set):** 905
 - **json-conformant:** 903 (99.8%)
 - **diverged (tracked, will-fix):** 0 · **accepted (documented, won't-fix):** 2
-- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 0 (excluded from scoring)
+- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 0 (excluded from pass %)
 
 ## json-conformant (903)
 
@@ -507,6 +507,7 @@ mission decision journal with its mechanism.
 | `2095_1` | edge:1083-&gt;1084#0/_draw_/op[1].b[0] | 66.11999999999898 | A1 irreducible (proven by injection A/B 2026-07-24): circo getRotation's closest-node selection (circpos.c:79-91) is an exact-tie knife edge for this graph's three copies of a symmetric 5-node block — the cut vertex and its mirror node are equidistant from the rotated origin in real arithmetic. V8's trig chain yields an exact FP tie (both 1.9333108975227196) so strict &lt; keeps the neighbor (rot=0); Apple libm gives the neighbor +1 ULP so the mirror wins (rot 0.15/0.09/0.03 rad), rigidly rotating 3 blocks / 55 nodes by up to 5.2deg / 66pt. Injecting libm's ~2-ULP y asymmetry into just the 3 cut vertices makes the port match the oracle EXACTLY (2197 diffs -&gt; 0 at 0.01): every port stage downstream is exonerated. Same class as the twopi 1855 radial mirror. |
 | `241_0` | edge:1-&gt;6#0/_draw_/op[1].b[ptCount] | 0.06999999999999318 | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `1855` | edge:10-&gt;1#0/_draw_/op[1].b[0] | 7.8700000000000045 | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| `tree-graphs-directed-oldarrows` | edge:Z-&gt;I#0/_draw_/op[1].b[ptCount] | 42.51 | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (A1 arrows family, injection A/B 40-&gt;0 diffs; engine registry + decision journal); json re-emits the same layout. Journal 2026-07-28. |
 | `graphs-arrows` | edge:Z-&gt;I#0/_draw_/op[1].b[ptCount] | 42.50999999999999 | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `graphs-arrowsize` | edge:i-&gt;Z#0/_draw_/op[1].b[0] | 121.10000000000002 | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `windows-newarrows` | edge:Z-&gt;I#0/_draw_/op[1].b[ptCount] | 45.14000000000004 | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
@@ -524,6 +525,7 @@ mission decision journal with its mechanism.
 | `share-polypoly` | node:9002/_draw_/op[1].p[0] | 391.00000000000006 | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `windows-polypoly` | node:9002/_draw_/op[1].p[0] | 393.00000000000006 | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `graphs-polypoly` | node:9000/_draw_/op[1].p[0] | 2909.02 | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| `tree-graphs-directed-polypoly` | node:9002/pos[0] | 2739.05 | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (A9, same node-9004 cos(pi+theta) 1-ULP as graphs-polypoly, propagated via arrayRects acmpf raw width+height tie; engine registry + decision journal); json re-emits the same layout. Journal 2026-07-28. |
 | `1855` | edge:16-&gt;1#0/_draw_/op[1].b[0] | 62.629999999999995 | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `1332` | [parse]/oracle | 0 | oracle bug (A4): native -Kosage -Tjson emits bare inf/nan tokens (invalid JSON) for degenerate cluster draw coordinates; the document is unparseable so no comparison is possible. Port emits finite, valid JSON. Journal 2026-07-24. |
 | `linux.i386-b29` | edge:Node14663-&gt;Node14649#0/_ldraw_/op[2].T[0] | 37.22000000000003 | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
@@ -540,7 +542,7 @@ mission decision journal with its mechanism.
 | id | path | message |
 |---|---|---|
 
-## oracle-error (0) — excluded from scoring
+## oracle-error (0) — excluded from pass %
 
 | id | path | message |
 |---|---|---|

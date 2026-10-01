@@ -13,9 +13,9 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 
 - **Oracle:** dot 15.1.0 · **corpus:** [graphviz `tests/`](https://gitlab.com/graphviz/graphviz/-/tree/main/tests) (local clone `~/git/graphviz/tests`)
 - **Surveyed (applicable):** 939
-- **conformant\*:** 910 (96.9%) · structural-match: 15 → 925/939 structurally equal (98.5%)
+- **conformant\*:** 910 (98.2%) · structural-match: 15 → 925/927 structurally equal (99.8%)
 - **Accepted deltas (documented, won't-fix):** 17 · **Tracked gaps (unaccepted, will-fix):** 0 → of 17 non-conformant graphs
-- **errored:** 0 · **timeout:** 0 · **oracle-error:** 12 (excluded from scoring)
+- **errored:** 0 · **timeout:** 0 · **oracle-error:** 12 (excluded from pass %)
 - **Quarantined (not surveyed, from corpus-manifest.json):** oracle-crash 3, not-a-layout-test 2, malformed 6, engine-deferred 6, multi-graph 3, perf 1
 
 \* **conformant** is a *deterministic-tolerance* verdict, not literal byte equality: numeric coordinates/paths agree within ±0.01 and all non-numeric content (tags, colors, text) is exactly equal (`compareSvg(…, 'deterministic')`). Full definition: [docs/conformance.md](../../docs/conformance.md).

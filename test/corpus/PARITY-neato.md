@@ -14,7 +14,7 @@ test/corpus/parity-report.ts`.
 
 - **Surveyed:** 910 (generated 2026-07-30T21:26:35.545Z)
 - **pass:** 826 (90.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 3 · **accepted (A1-drift class):** 80
-- **oracle-error:** 0 · **port-error:** 0 · **timeout:** 1
+- **port-error:** 0 · **timeout:** 1 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
 
 ## Accepted deltas (3) — documented, not chased
 

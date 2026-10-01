@@ -19,7 +19,7 @@ EXACTLY, coords compared exact-after-round — both sides are already
 - **map-conformant (overall, worst-of-both-formats):** 905 (100.0%)
 - **cmapx-conformant:** 905 (100.0%) · **imap-conformant:** 905 (100.0%)
 - **diverged (tracked, will-fix, either format):** 0 · **accepted (documented, won't-fix):** 0
-- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 0 (excluded from scoring)
+- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 0 (excluded from pass %)
 - **href-bearing ids in the surveyed set:** 36 — the substantive
   coverage (ids whose ORACLE output actually emits ≥1 real href, not an
   empty or tooltip-only map); see the dedicated table below.
@@ -158,7 +158,7 @@ Each is referenced in the mission decision journal with its mechanism.
 | id | path | message |
 |---|---|---|
 
-## oracle-error (0) — excluded from scoring
+## oracle-error (0) — excluded from pass %
 
 | id | path | message |
 |---|---|---|

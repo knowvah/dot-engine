@@ -223,6 +223,9 @@ function buildMarkdown(report: MapParityReport, accepted: AcceptedEntry[]): stri
     { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0 },
     report.counts,
   );
+  // oracle-error inputs are out of scope (the C oracle failed), so they leave the
+  // pass-% denominator; port errors and timeouts stay in it as failures.
+  const scored = report.total - c['oracle-error'];
   const conformantIds = byVerdict('conformant').map((r) => r.id);
   const diverged = divergedRows(report.results);
   const acceptedD = acceptedRows(report.results);
@@ -250,13 +253,13 @@ function buildMarkdown(report: MapParityReport, accepted: AcceptedEntry[]): stri
     '',
     `- **Oracle:** ${report.oracleVersion} · **corpus:** \`${report.corpusRoot}\``,
     `- **Walked (conformant SVG set):** ${report.total}`,
-    `- **map-conformant (overall, worst-of-both-formats):** ${c.conformant} (${pct(c.conformant, report.total)})`,
-    `- **cmapx-conformant:** ${cmapxConformant} (${pct(cmapxConformant, report.total)}) · ` +
-      `**imap-conformant:** ${imapConformant} (${pct(imapConformant, report.total)})`,
+    `- **map-conformant (overall, worst-of-both-formats):** ${c.conformant} (${pct(c.conformant, scored)})`,
+    `- **cmapx-conformant:** ${cmapxConformant} (${pct(cmapxConformant, scored)}) · ` +
+      `**imap-conformant:** ${imapConformant} (${pct(imapConformant, scored)})`,
     `- **diverged (tracked, will-fix, either format):** ${c.diverged} · ` +
       `**accepted (documented, won't-fix):** ${c.accepted}`,
     `- **port-error:** ${c['port-error']} · **timeout:** ${c.timeout} · ` +
-      `**oracle-error:** ${c['oracle-error']} (excluded from scoring)`,
+      `**oracle-error:** ${c['oracle-error']} (excluded from pass %)`,
     `- **href-bearing ids in the surveyed set:** ${hrefResults.length} — the substantive`,
     '  coverage (ids whose ORACLE output actually emits ≥1 real href, not an',
     '  empty or tooltip-only map); see the dedicated table below.',
@@ -296,7 +299,7 @@ function buildMarkdown(report: MapParityReport, accepted: AcceptedEntry[]): stri
     `## timeout (${c.timeout})`,
     '',
     msgTable(byVerdict('timeout')),
-    `## oracle-error (${c['oracle-error']}) — excluded from scoring`,
+    `## oracle-error (${c['oracle-error']}) — excluded from pass %`,
     '',
     msgTable(byVerdict('oracle-error')),
   ];

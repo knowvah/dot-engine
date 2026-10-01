@@ -163,6 +163,9 @@ function buildMarkdown(report: XdotParityReport, accepted: AcceptedEntry[]): str
     { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0 },
     report.counts,
   );
+  // oracle-error inputs are out of scope (the C oracle failed), so they leave the
+  // pass-% denominator; port errors and timeouts stay in it as failures.
+  const scored = report.total - c['oracle-error'];
   const conformantIds = byVerdict('conformant').map((r) => r.id);
   const diverged = byVerdict('diverged');
   const acceptedResults = byVerdict('accepted');
@@ -183,11 +186,11 @@ function buildMarkdown(report: XdotParityReport, accepted: AcceptedEntry[]): str
     '',
     `- **Oracle:** ${report.oracleVersion} · **corpus:** \`${report.corpusRoot}\``,
     `- **Walked (conformant SVG set):** ${report.total}`,
-    `- **xdot-conformant:** ${c.conformant} (${pct(c.conformant, report.total)})`,
+    `- **xdot-conformant:** ${c.conformant} (${pct(c.conformant, scored)})`,
     `- **diverged (tracked, will-fix):** ${c.diverged} · ` +
       `**accepted (documented, won't-fix):** ${c.accepted}`,
     `- **port-error:** ${c['port-error']} · **timeout:** ${c.timeout} · ` +
-      `**oracle-error:** ${c['oracle-error']} (excluded from scoring)`,
+      `**oracle-error:** ${c['oracle-error']} (excluded from pass %)`,
     '',
     `## xdot-conformant (${conformantIds.length})`,
     '',
@@ -217,7 +220,7 @@ function buildMarkdown(report: XdotParityReport, accepted: AcceptedEntry[]): str
     `## timeout (${c.timeout})`,
     '',
     msgTable(byVerdict('timeout')),
-    `## oracle-error (${c['oracle-error']}) — excluded from scoring`,
+    `## oracle-error (${c['oracle-error']}) — excluded from pass %`,
     '',
     msgTable(byVerdict('oracle-error')),
   ];

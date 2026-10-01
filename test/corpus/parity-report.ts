@@ -223,7 +223,10 @@ interface TrackRow {
   pass: number;
   diverged: number;
   accepted: number;
-  errors: number;
+  /** Port failed or ran past its budget — scored as a failure. */
+  portFaults: number;
+  /** The C oracle failed — out of scope, excluded from the pass-% denominator. */
+  oracleErrors: number;
 }
 
 /** Escape a markdown table cell (pipes + newlines). */
@@ -238,6 +241,15 @@ function escText(s: string | undefined): string {
 
 function pct(n: number, d: number): string {
   return d === 0 ? '0%' : `${((100 * n) / d).toFixed(1)}%`;
+}
+
+/**
+ * Pass-% denominator: every surveyed input except oracle errors. An input the C
+ * oracle cannot render has no reference to score against; a port error or
+ * timeout is the port's failure and stays in.
+ */
+function scoredOf(r: TrackRow): number {
+  return r.surveyed - r.oracleErrors;
 }
 
 /**
@@ -263,7 +275,8 @@ function dotSvgRow(report: SvgParityReport, manifest: CorpusEntry[]): TrackRow {
     pass: c.conformant,
     diverged: c.diverged + c['structural-match'] - accepted,
     accepted,
-    errors: c.errored + c.timeout + c['oracle-error'],
+    portFaults: c.errored + c.timeout,
+    oracleErrors: c['oracle-error'],
   };
 }
 
@@ -278,7 +291,8 @@ function dotXdotRow(report: XdotParityReport): TrackRow {
     pass: c.conformant,
     diverged: c.diverged,
     accepted: c.accepted,
-    errors: c['port-error'] + c['oracle-error'] + c.timeout,
+    portFaults: c['port-error'] + c.timeout,
+    oracleErrors: c['oracle-error'],
   };
 }
 
@@ -293,7 +307,8 @@ function dotJsonRow(report: JsonParityReport): TrackRow {
     pass: c.conformant,
     diverged: c.diverged,
     accepted: c.accepted,
-    errors: c['port-error'] + c['oracle-error'] + c.timeout,
+    portFaults: c['port-error'] + c.timeout,
+    oracleErrors: c['oracle-error'],
   };
 }
 
@@ -311,7 +326,8 @@ function dotMapRow(report: MapParityReport): TrackRow {
     pass: c.conformant,
     diverged: c.diverged,
     accepted: c.accepted,
-    errors: c['port-error'] + c['oracle-error'] + c.timeout,
+    portFaults: c['port-error'] + c.timeout,
+    oracleErrors: c['oracle-error'],
   };
 }
 // map-conformance (END)
@@ -336,7 +352,8 @@ function plainRow(engine: string, report: PlainParityReport): TrackRow {
     pass: c.pass,
     diverged: c.diverged,
     accepted: c.accepted,
-    errors: c.oracleError + c.portError + c.timeout,
+    portFaults: c.portError + c.timeout,
+    oracleErrors: c.oracleError,
   };
 }
 
@@ -352,7 +369,8 @@ function jsonEngineRow(engine: string, report: JsonParityReport): TrackRow {
     pass: c.conformant,
     diverged: c.diverged,
     accepted: c.accepted,
-    errors: c['port-error'] + c['oracle-error'] + c.timeout,
+    portFaults: c['port-error'] + c.timeout,
+    oracleErrors: c['oracle-error'],
   };
 }
 
@@ -368,7 +386,8 @@ function mapEngineRow(engine: string, report: MapParityReport): TrackRow {
     pass: c.conformant,
     diverged: c.diverged,
     accepted: c.accepted,
-    errors: c['port-error'] + c['oracle-error'] + c.timeout,
+    portFaults: c['port-error'] + c.timeout,
+    oracleErrors: c['oracle-error'],
   };
 }
 // format-parity-matrix (END)
@@ -390,7 +409,8 @@ function engineRow(
     pass: c.pass,
     diverged: c.diverged - accepted,
     accepted,
-    errors: c['oracle-error'] + c['port-error'] + c.timeout,
+    portFaults: c['port-error'] + c.timeout,
+    oracleErrors: c['oracle-error'],
   };
 }
 
@@ -398,11 +418,11 @@ function trackTable(rows: TrackRow[]): string {
   const body = rows.map(
     (r) =>
       `| ${r.track} | ${r.surveyed} | ${r.pass} | ${r.diverged} | ${r.accepted} | ` +
-      `${r.errors} | ${pct(r.pass, r.surveyed)} |`,
+      `${r.portFaults} | ${r.oracleErrors} | ${pct(r.pass, scoredOf(r))} |`,
   );
   return [
-    '| track | surveyed | conformant / pass | diverged | accepted | errors | pass % |',
-    '|---|---:|---:|---:|---:|---:|---:|',
+    '| track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | pass % |',
+    '|---|---:|---:|---:|---:|---:|---:|---:|',
     ...body,
     '',
   ].join('\n');
@@ -585,11 +605,11 @@ function engineMarkdown(
     '## Summary',
     '',
     `- **Surveyed:** ${report.total} (generated ${report.generatedAt})`,
-    `- **pass:** ${c.pass} (${pct(c.pass, report.total)}) · **diverged (tracked):** ${diverged.length} · ` +
+    `- **pass:** ${c.pass} (${pct(c.pass, report.total - c['oracle-error'])}) · **diverged (tracked):** ${diverged.length} · ` +
       `**accepted (documented, won't-fix):** ${acceptedRows.length}` +
       (classes.length ? ` · **accepted (A1-drift class):** ${classAcceptedCount}` : ''),
-    `- **oracle-error:** ${c['oracle-error']} · **port-error:** ${c['port-error']} · ` +
-      `**timeout:** ${c.timeout}`,
+    `- **port-error:** ${c['port-error']} · **timeout:** ${c.timeout} (scored as failures) · ` +
+      `**oracle-error:** ${c['oracle-error']} (excluded from pass %)`,
     '',
     `## Accepted deltas (${acceptedRows.length}) — documented, not chased`,
     '',
@@ -846,9 +866,10 @@ function formatDetailMarkdown(
     '## Summary',
     '',
     `- **Surveyed:** ${total}`,
-    `- **pass:** ${row.pass} (${pct(row.pass, total)}) · **diverged (tracked):** ${diverged.length} · ` +
+    `- **pass:** ${row.pass} (${pct(row.pass, scoredOf(row))}) · **diverged (tracked):** ${diverged.length} · ` +
       `**accepted (documented, won't-fix):** ${acceptedRows.length}`,
-    `- **errors (oracle/port/timeout, excluded from scoring):** ${row.errors}`,
+    `- **port-error / timeout (scored as failures):** ${row.portFaults} · ` +
+      `**oracle-error (excluded from pass %):** ${row.oracleErrors}`,
     '',
     `## Diverged (${diverged.length})`,
     '',
@@ -1011,9 +1032,11 @@ function buildSummary(
     '**conformant / pass** is the ±0.01 deterministic-tolerance verdict per',
     '[docs/conformance.md](../../docs/conformance.md) — numeric payloads agree',
     'within tolerance and non-numeric content is exactly equal — not byte',
-    'equality. **errors** = oracle-error + port-error/errored + timeout',
-    '(excluded from scoring). **accepted** = documented won\'t-fix deltas',
-    '(0 for engines without an acceptance list).',
+    'equality. **port error / timeout** = the port failed to render or ran past',
+    'its time budget; scored as a failure. **oracle error** = the C oracle',
+    'failed, so there is no reference to compare against; out of scope.',
+    '**pass %** = pass / (surveyed − oracle error). **accepted** = documented',
+    'won\'t-fix deltas (0 for engines without an acceptance list).',
     '',
     '## Tracks',
     '',
