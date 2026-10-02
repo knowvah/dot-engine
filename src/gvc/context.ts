@@ -166,6 +166,24 @@ class PluginRegistry {
   }
 }
 
+/** Argument check for a TextMeasurer parameter (ADR-3). */
+function checkMeasurer(m: unknown): void {
+  if (typeof m !== 'object' || m === null
+      || typeof (m as { measure?: unknown }).measure !== 'function') {
+    throw invalidArgType('measurer', 'TextMeasurer', m);
+  }
+}
+
+/** Argument check for `register` (ADR-3): shape of a plugin, not its behaviour. */
+function checkPlugin(p: unknown): void {
+  const o = p as { type?: unknown; quality?: unknown; layout?: unknown; cleanup?: unknown };
+  const ok = typeof p === 'object' && p !== null && typeof o.type === 'string'
+    && ('quality' in o
+      ? typeof o.quality === 'number'
+      : typeof o.layout === 'function' && typeof o.cleanup === 'function');
+  if (!ok) throw invalidArgType('p', 'RendererPlugin or LayoutEngine', p);
+}
+
 /**
  * Root Graphviz context.  Owns the plugin registry, text measurer, and
  * the layout-engine dispatch.
@@ -181,15 +199,29 @@ export class GvcContext {
   textMeasurer: TextMeasurer;
   readonly debug: DebugOptions | undefined;
 
+  /**
+   * @throws TypeError `ERR_INVALID_ARG_TYPE` if `measurer` has no `measure`
+   *   function or `options` is neither undefined nor an object
+   */
   constructor(measurer: TextMeasurer, options?: { debug?: DebugOptions }) {
+    checkMeasurer(measurer);
+    if (options !== undefined && (typeof options !== 'object' || options === null)) {
+      throw invalidArgType('options', 'object or undefined', options);
+    }
     this.textMeasurer = measurer;
     this.debug = options?.debug;
   }
 
-  /** Register a renderer or layout engine; overload discriminated by `quality`. */
+  /**
+   * Register a renderer or layout engine; overload discriminated by `quality`.
+   * @throws TypeError `ERR_INVALID_ARG_TYPE` if `p` is not a renderer plugin
+   *   (string `type`, numeric `quality`) or a layout engine (string `type`,
+   *   `layout` and `cleanup` functions)
+   */
   register(p: RendererPlugin): void;
   register(p: LayoutEngine): void;
   register(p: RendererPlugin | LayoutEngine): void {
+    checkPlugin(p);
     if ('quality' in p) {
       const idx = PluginRegistry.insertionIdx(this.renderers, p);
       this.renderers.splice(idx, 0, p);

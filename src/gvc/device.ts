@@ -18,8 +18,9 @@ import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, p
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
-import type { RendererPlugin, GvcContext } from './context.js';
-import { PenType } from './context.js';
+import type { RendererPlugin } from './context.js';
+import { GvcContext, PenType } from './context.js';
+import { invalidArgType } from '../errors.js';
 import { gvrenderTextspan, withLabelEmitState } from './textspan-emit.js';
 import { resolveEdgeAnchor, resolveObjAnchor, beginAnchorIf } from './anchor.js';
 import type { ShapeDesc, TextlabelT } from '../common/types.js';
@@ -536,10 +537,14 @@ function renderPage(g: Graph, renderer: RendererPlugin, job: RenderJob, info: La
  *   (`setImageResolver`) and inlines a `data:` URI on a hit instead of the
  *   raw src passthrough. Unset/false reproduces byte-identical pre-AD-1
  *   output. @see src/render/public.ts:RenderOptions.inlineImages
- * @throws Error if no renderer is registered for format
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `ctx` is not a GvcContext, `g`
+ *   is not an object, or `format` is not a string
+ * @throws TypeError `ERR_INVALID_ARG_VALUE` if no renderer is registered for format
  * @see lib/gvc/gvrender.c:gvrender_select
  */
 export function render(ctx: GvcContext, g: Graph, format: string, inlineImages = false): string {
+  if (!(ctx instanceof GvcContext)) throw invalidArgType('ctx', 'GvcContext', ctx);
+  if (typeof g !== 'object' || g === null) throw invalidArgType('g', 'object', g);
   const renderer = ctx.bestRenderer(format);
   const job = new RenderJob(format, ctx.textMeasurer);
   job.inlineImages = inlineImages;
