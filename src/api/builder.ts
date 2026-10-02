@@ -16,8 +16,8 @@ import { Graph, type GraphKind } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
 import { agnode, agsubg, agsubnode } from '../model/cgraph-ops.js';
-import { addEdge as cgraphAddEdge } from './edge-ops.js';
-import { RenderError } from '../errors.js';
+import { addEdge as cgraphAddEdge, requireObject } from './edge-ops.js';
+import { InternalError, invalidArgType } from '../errors.js';
 import { HTML_STRING_MARK } from '../common/html-string.js';
 
 // ── Public interfaces ──────────────────────────────────────────────────────────
@@ -101,14 +101,17 @@ class NodeHandle implements GvNode {
   }
 
   setAttr(k: string, v: string): void {
+    requireKeyValue(k, v);
     this._node.attrs.set(k, v);
   }
 
   setHtmlAttr(k: string, v: string): void {
+    requireKeyValue(k, v);
     this._node.attrs.set(k, HTML_STRING_MARK + v);
   }
 
   getAttr(k: string): string | undefined {
+    requireString('k', k);
     return this._node.attrs.get(k);
   }
 }
@@ -130,15 +133,64 @@ class EdgeHandle implements GvEdge {
   }
 
   setAttr(k: string, v: string): void {
+    requireKeyValue(k, v);
     this._edge.attrs.set(k, v);
   }
 
   setHtmlAttr(k: string, v: string): void {
+    requireKeyValue(k, v);
     this._edge.attrs.set(k, HTML_STRING_MARK + v);
   }
 
   getAttr(k: string): string | undefined {
+    requireString('k', k);
     return this._edge.attrs.get(k);
+  }
+}
+
+// ── Argument checks (ADR-3: typeof / null only) ───────────────────────────────
+
+/** `name`, `k`, `v`: must be a string. */
+function requireString(param: string, v: unknown): void {
+  if (typeof v !== 'string') throw invalidArgType(param, 'string', v);
+}
+
+/** `attrs`: `undefined` or a plain object whose values are strings. */
+function requireAttrs(param: string, attrs: unknown): void {
+  if (attrs === undefined) return;
+  requireObject(param, attrs);
+  if (Array.isArray(attrs)) throw invalidArgType(param, 'plain object', attrs);
+  for (const [k, v] of Object.entries(attrs as Record<string, unknown>)) {
+    if (typeof v !== 'string') {
+      throw invalidArgType(`${param}.${k}`, 'string', v);
+    }
+  }
+}
+
+/** Node ref: a string or a handle created by this library. */
+function requireNodeRef(param: string, ref: unknown): void {
+  if (typeof ref === 'string' || ref instanceof NodeHandle) return;
+  throw invalidArgType(param, 'string or GvNode', ref);
+}
+
+/** Key/value pair of setAttr/setHtmlAttr. */
+function requireKeyValue(k: unknown, v: unknown): void {
+  requireString('k', k);
+  requireString('v', v);
+}
+
+/** `createGraph` options: `undefined` or an object with typed fields. */
+function requireGraphOptions(opts: unknown): void {
+  if (opts === undefined) return;
+  requireObject('opts', opts);
+  const o = opts as Record<string, unknown>;
+  for (const key of ['directed', 'strict'] as const) {
+    if (o[key] !== undefined && typeof o[key] !== 'boolean') {
+      throw invalidArgType(`opts.${key}`, 'boolean or undefined', o[key]);
+    }
+  }
+  if (o['name'] !== undefined && typeof o['name'] !== 'string') {
+    throw invalidArgType('opts.name', 'string or undefined', o['name']);
   }
 }
 
@@ -149,7 +201,9 @@ function resolveNode(g: Graph, ref: GvNode | string): Node {
   if (typeof ref === 'string') {
     const node = agnode(g, ref, true);
     if (node === null) {
-      throw new RenderError(`Failed to resolve node '${ref}' in graph '${g.name}'`, 'GENERIC_ERROR');
+      throw new InternalError(
+        `Failed to resolve node '${ref}' in graph '${g.name}'`,
+      );
     }
     return node;
   }
@@ -194,6 +248,9 @@ class GraphBuilder implements GvGraphBuilder {
     head: GvNode | string,
     attrs?: Record<string, string>,
   ): GvEdge {
+    requireNodeRef('tail', tail);
+    requireNodeRef('head', head);
+    requireAttrs('attrs', attrs);
     const tailNode = resolveNode(this._graph, tail);
     const headNode = resolveNode(this._graph, head);
     const edge = cgraphAddEdge(this._graph, tailNode, headNode);
@@ -202,23 +259,28 @@ class GraphBuilder implements GvGraphBuilder {
   }
 
   addSubgraph(name: string, attrs?: Record<string, string>): GvGraphBuilder {
+    requireString('name', name);
+    requireAttrs('attrs', attrs);
     const sg = agsubg(this._context, name, true);
     if (sg === null) {
-      throw new RenderError(`Failed to create subgraph '${name}'`, 'GENERIC_ERROR');
+      throw new InternalError(`Failed to create subgraph '${name}'`);
     }
     applyAttrs(sg.attrs, attrs);
     return new GraphBuilder(this._graph, sg);
   }
 
   setAttr(k: string, v: string): void {
+    requireKeyValue(k, v);
     this._context.attrs.set(k, v);
   }
 
   setHtmlAttr(k: string, v: string): void {
+    requireKeyValue(k, v);
     this._context.attrs.set(k, HTML_STRING_MARK + v);
   }
 
   getAttr(k: string): string | undefined {
+    requireString('k', k);
     return this._context.attrs.get(k);
   }
 }
@@ -233,8 +295,10 @@ function addNodeToContext(
   name: string,
   attrs: Record<string, string> | undefined,
 ): GvNode {
+  requireString('name', name);
+  requireAttrs('attrs', attrs);
   const node = agnode(root, name, true);
-  if (node === null) throw new RenderError(`Failed to create node '${name}'`, 'GENERIC_ERROR');
+  if (node === null) throw new InternalError(`Failed to create node '${name}'`);
   applyAttrs(node.attrs, attrs);
   if (context !== root) agsubnode(context, node, true);
   return new NodeHandle(node);
@@ -272,6 +336,7 @@ function resolveKind(opts: CreateGraphOptions | undefined): GraphKind {
  * @see lib/cgraph/graph.c:agopen
  */
 export function createGraph(opts?: CreateGraphOptions): GvGraphBuilder {
+  requireGraphOptions(opts);
   const g = new Graph(opts?.name ?? '', resolveKind(opts));
   return new GraphBuilder(g, g);
 }
