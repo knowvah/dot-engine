@@ -628,6 +628,17 @@ lost edges (`3->16` on 2796; the identical 6 on 2471), same element trees.
 differing pathplan debris) are behavior *inside* the recovery state, which
 project policy deliberately does not chase.
 
+**`2723` (segfault; pinned, not chased).** Native `dot` segfaults (exit 139)
+on `tests/2723.dot` (undirected, `rank=same` groups, labeled edges), so C has
+no output to match. Upstream
+[issue #2723](https://gitlab.com/graphviz/graphviz/-/issues/2723) is open and
+`tests/test_regression.py:test_2723` is `xfail`. The port throws
+`InternalError` (`INTERNAL_ERROR`, with a `TypeError` cause from
+`src/layout/dot/flat.ts:flatLabelYpos`, where `rank[r-1]` is undefined). With
+no correct oracle the honest failure stands and the port is not changed;
+`src/layout/dot/flat-2723.test.ts` pins it. Update that test if upstream fixes
+the issue.
+
 **Policy note.** The earlier A4 stance ("the port meets the issue's
 expectations; do not replicate") was based on the belief that the port's
 acyclic aux graph came from a benign local variant. It did not — it came
