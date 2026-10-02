@@ -1182,6 +1182,16 @@ These are deliberate scope boundaries, not bugs. The library targets **SVG**
 - **C++ convenience wrappers** (`cgraph++`, `gvc++`) — the C API is ported
   first; an idiomatic-TypeScript convenience layer, if wanted, would be a
   separate package.
+- **`fontnames=svg|ps` in browser text measurement.** In a browser the
+  canvas measurer builds its font from the PostScript alias's
+  `fontnames=native` family list (`Times-Roman` → `Times, serif`), the same
+  face the SVG emitter renders by default. `TextMeasurer` carries no graph
+  context, so graphs that set `fontnames=svg` or `fontnames=ps` are measured
+  against the native list while the SVG names the svg/ps family. Alias
+  weights CSS does not define (`book`, `demi`, `light`, `medium`, `roman`)
+  are emitted verbatim, as in C; browsers ignore them and render normal
+  weight, and the measurer measures normal weight to match. Node output is
+  unaffected (it never uses the canvas measurer).
 - **Native-only mechanics** replaced by browser-safe equivalents: dynamic
   plugin loading (`dlopen`) is replaced by static engine/renderer registration;
   filesystem reads (fonts, images, config) are replaced by caller-supplied
