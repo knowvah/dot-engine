@@ -407,7 +407,8 @@ interface GvError {
   type: 'syntax' | 'semantic' | 'render';
   code: 'SYNTAX_ERROR' | 'SYNTAX_UNEXPECTED_EOF'
       | 'EDGE_OP_DIRECTED_IN_UNDIRECTED' | 'EDGE_OP_UNDIRECTED_IN_DIRECTED'
-      | 'HTML_PARSE_ERROR' | 'RENDER_ERROR' | 'GENERIC_ERROR';
+      | 'HTML_PARSE_ERROR' | 'RENDER_ERROR' | 'INTERNAL_ERROR'
+      | 'UNKNOWN_LAYOUT' | 'UNSUPPORTED_FEATURE' | 'GENERIC_ERROR';
   message: string;
   friendlyMessage: string;
   location?: { line: number; column: number; offset?: number };
@@ -417,12 +418,21 @@ interface GvError {
 
 `tryRenderSvg(dotSource, engine)` is the result-style counterpart to
 `renderSvg`: it returns `{ svg }` on success or `{ errors: [one] }` on the
-first failure instead of throwing.
+first failure instead of throwing. It returns for any DOT input and throws only
+for invalid arguments. Entries in `errors` are plain data with no `cause` and no
+stack.
 
-`ParseError` and `RenderError` both `implement GvError` and extend `Error`:
+Every thrown dot-engine error extends the abstract `DotEngineError` and
+implements `GvError`:
 
 ```ts
-class ParseError extends Error implements GvError {
+abstract class DotEngineError extends Error implements GvError {
+  abstract readonly type: GvErrorType;
+  abstract readonly code: GvErrorCode;
+  abstract readonly friendlyMessage: string;
+}
+
+class ParseError extends DotEngineError {
   readonly type = 'syntax';
   readonly code: GvErrorCode;
   readonly friendlyMessage: string;
@@ -432,16 +442,28 @@ class ParseError extends Error implements GvError {
   get column(): number; // convenience getter -> location.column
 }
 
-class RenderError extends Error implements GvError {
-  readonly type = 'render';
-  readonly code: GvErrorCode; // 'RENDER_ERROR' | 'GENERIC_ERROR'
+class RenderError extends DotEngineError {
+  readonly type: 'render' | 'semantic'; // 'semantic' for UNKNOWN_LAYOUT / UNSUPPORTED_FEATURE
+  readonly code: GvErrorCode; // 'RENDER_ERROR' | 'UNKNOWN_LAYOUT' | 'UNSUPPORTED_FEATURE'
   readonly friendlyMessage: string;
 }
+
+class InternalError extends DotEngineError {
+  readonly type = 'render';
+  readonly code = 'INTERNAL_ERROR';
+  readonly friendlyMessage: string;
+}
+
+function isGvError(e: unknown): e is GvError; // structural; works across bundles
 ```
 
-`renderSvg` throws `ParseError` for invalid DOT source and `RenderError` for
-layout/render-stage failures. Callers that want structured errors without a
-`try`/`catch` should use `tryRenderSvg` instead.
+`renderSvg` throws `ParseError` for invalid DOT source, `RenderError` for
+layout/render-stage failures and `InternalError` for a dot-engine bug. Caller
+mistakes throw a standard `TypeError` / `RangeError` / `Error` whose `code` is a
+`UsageErrorCode` (`'ERR_INVALID_ARG_TYPE' | 'ERR_INVALID_ARG_VALUE' |
+'ERR_OUT_OF_RANGE' | 'ERR_INVALID_STATE'`); those are not `GvError`s. Callers
+that want structured errors without a `try`/`catch` should use `tryRenderSvg`
+instead. See [Errors and exceptions](/guide/errors) for every code.
 
 ## Relationships
 
@@ -495,7 +517,7 @@ digraph types {
 | `render(g, format, opts?)` | `string` |
 | `getLayout(g, opts?)` | `LayoutSnapshot` |
 | `getDrawOps(g, opts?)` | `XdotOp[]` |
-| `renderSvg(dotSource, engine)` | `string` (throws `ParseError`/`RenderError`) |
+| `renderSvg(dotSource, engine)` | `string` (throws `DotEngineError`, or a usage `TypeError`) |
 | `tryRenderSvg(dotSource, engine)` | `RenderResult` |
 
 For every field on every type above — including the ones this page

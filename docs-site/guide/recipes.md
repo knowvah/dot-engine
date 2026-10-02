@@ -47,7 +47,8 @@ for (const n of layout.nodes) {
 
 **Why:** `getLayout` is a pure reader over already-computed geometry — it
 does not run layout itself. Call it before any layout call runs and it
-throws a `RenderError` ("getLayout requires a laid-out graph") rather than
+throws an `Error` with `code` `ERR_INVALID_STATE` ("getLayout requires a
+laid-out graph"; see [Errors and exceptions](/guide/errors)) rather than
 handing back stale or zeroed coordinates. If you only need the geometry and
 never need the rendered string, discard `render`'s return value — the
 layout side effect is what you're actually paying for.
