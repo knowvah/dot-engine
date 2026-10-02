@@ -37,7 +37,7 @@ describe('renderSvg engine dispatch', () => {
 
   test('throws on an unregistered engine name', () => {
     expect(() => renderSvg('digraph { a }', 'bogus')).toThrow(
-      /no layout engine registered: bogus/,
+      /The argument "engine" is invalid\. Received "bogus"/,
     );
   });
 });

@@ -15,6 +15,7 @@ import { GvcContext } from './context.js';
 import type { RendererPlugin, LayoutEngine } from './context.js';
 import type { TextMeasurer } from '../common/textmeasure.js';
 import type { Graph } from '../model/graph.js';
+import { RenderError } from '../errors.js';
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -128,5 +129,114 @@ describe('AC5: layout() engine dispatch', () => {
     const ctx = new GvcContext(stubMeasurer);
     const g = {} as unknown as Graph;
     expect(() => ctx.layout(g, 'neato')).toThrow('neato');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Registry error classification (ADR-3, ADR-4, ADR-5)
+// ---------------------------------------------------------------------------
+
+function graphWithLayoutAttr(value: string): Graph {
+  return { attrs: new Map([['layout', value]]) } as unknown as Graph;
+}
+
+function catchError(fn: () => unknown): unknown {
+  try {
+    fn();
+  } catch (e) {
+    return e;
+  }
+  return undefined;
+}
+
+describe('registry errors: unknown engine argument', () => {
+  it('layout() throws TypeError ERR_INVALID_ARG_VALUE listing engines', () => {
+    const ctx = new GvcContext(stubMeasurer);
+    ctx.register(makeEngine('dot'));
+    ctx.register(makeEngine('neato'));
+    const e = catchError(() => ctx.layout({} as unknown as Graph, 'nope'));
+    expect(e).toBeInstanceOf(TypeError);
+    expect((e as { code: string }).code).toBe('ERR_INVALID_ARG_VALUE');
+    expect((e as Error).message).toContain('"nope"');
+    expect((e as Error).message).toContain('dot, neato');
+  });
+
+  it('fails even when the layout= attribute names a valid engine', () => {
+    const ctx = new GvcContext(stubMeasurer);
+    ctx.register(makeEngine('dot'));
+    const e = catchError(() => ctx.layout(graphWithLayoutAttr('dot'), 'nope'));
+    expect((e as { code: string }).code).toBe('ERR_INVALID_ARG_VALUE');
+  });
+
+  it('freeLayout() throws TypeError ERR_INVALID_ARG_VALUE', () => {
+    const ctx = new GvcContext(stubMeasurer);
+    ctx.register(makeEngine('dot'));
+    const e = catchError(() => ctx.freeLayout({} as unknown as Graph, 'nope'));
+    expect(e).toBeInstanceOf(TypeError);
+    expect((e as { code: string }).code).toBe('ERR_INVALID_ARG_VALUE');
+    expect((e as Error).message).toContain('dot');
+  });
+});
+
+describe('registry errors: layout= attribute', () => {
+  it('unknown attribute throws RenderError UNKNOWN_LAYOUT (semantic)', () => {
+    const ctx = new GvcContext(stubMeasurer);
+    ctx.register(makeEngine('dot'));
+    const e = catchError(() => ctx.layout(graphWithLayoutAttr('nope'), 'dot'));
+    expect(e).toBeInstanceOf(RenderError);
+    expect((e as RenderError).code).toBe('UNKNOWN_LAYOUT');
+    expect((e as RenderError).type).toBe('semantic');
+    expect((e as RenderError).message).toBe('Layout type: "nope" not recognized');
+  });
+
+  it('a valid attribute still overrides the selected engine', () => {
+    const ctx = new GvcContext(stubMeasurer);
+    const dot = makeEngine('dot');
+    const neato = makeEngine('neato');
+    ctx.register(dot);
+    ctx.register(neato);
+    ctx.layout(graphWithLayoutAttr('neato'), 'dot');
+    expect(neato.calls).toEqual(['layout']);
+    expect(dot.calls).toEqual([]);
+  });
+
+  it('an empty attribute is ignored', () => {
+    const ctx = new GvcContext(stubMeasurer);
+    const dot = makeEngine('dot');
+    ctx.register(dot);
+    ctx.layout(graphWithLayoutAttr(''), 'dot');
+    expect(dot.calls).toEqual(['layout']);
+  });
+});
+
+describe('registry errors: bestRenderer unknown format', () => {
+  it('throws TypeError ERR_INVALID_ARG_VALUE listing format prefixes', () => {
+    const ctx = new GvcContext(stubMeasurer);
+    ctx.register(new StubPlugin('svg', 1));
+    ctx.register(new StubPlugin('dot:core', 1));
+    const e = catchError(() => ctx.bestRenderer('pdf'));
+    expect(e).toBeInstanceOf(TypeError);
+    expect((e as { code: string }).code).toBe('ERR_INVALID_ARG_VALUE');
+    expect((e as Error).message).toContain('"pdf"');
+    expect((e as Error).message).toContain('dot, svg');
+  });
+});
+
+describe('registry errors: argument type checks', () => {
+  const ctx = new GvcContext(stubMeasurer);
+  ctx.register(makeEngine('dot'));
+  const bad: [string, () => unknown][] = [
+    ['layout g null', () => ctx.layout(null as unknown as Graph, 'dot')],
+    ['layout g string', () => ctx.layout('x' as unknown as Graph, 'dot')],
+    ['layout name number', () => ctx.layout({} as Graph, 1 as unknown as string)],
+    ['freeLayout g null', () => ctx.freeLayout(null as unknown as Graph, 'dot')],
+    ['freeLayout name undefined', () =>
+      ctx.freeLayout({} as Graph, undefined as unknown as string)],
+    ['bestRenderer number', () => ctx.bestRenderer(5 as unknown as string)],
+  ];
+  it.each(bad)('%s -> TypeError ERR_INVALID_ARG_TYPE', (_label, fn) => {
+    const e = catchError(fn);
+    expect(e).toBeInstanceOf(TypeError);
+    expect((e as { code: string }).code).toBe('ERR_INVALID_ARG_TYPE');
   });
 });
