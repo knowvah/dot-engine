@@ -76,8 +76,9 @@ footer. Scope `textmeasure`. One commit per task.
 
 ## Session summary (2026-10-02)
 
-- **Tasks:** 3/3 complete. T1 `4178c3dc`, T2 `37add7cc`, T3 = this journal
-  commit. Executed directly rather than by subagents (journaled).
+- **Tasks:** 3/3 complete. T1 `f7d39b25`, T2 `91627f41`, T3 `6845c749` (journal
+  commit). Executed directly rather than by subagents (journaled). Hashes are
+  the rebased ones on main.
 - **Decisions:** 12 journal rows. Flagged for review:
   - ADR-2 implemented keyword-only (no numeric alias weights exist).
   - known-divergences entry placed under non-goals rather than a new
