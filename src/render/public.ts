@@ -105,7 +105,6 @@ function checkRenderArgs(g: unknown, format: unknown, opts: unknown): void {
  *   is not a string, or `opts` is neither undefined nor an object
  * @throws TypeError `ERR_INVALID_ARG_VALUE` if the engine or format is not
  *   registered
- * @throws HtmlParseError `HTML_PARSE_ERROR` for an unparsable HTML-like label
  * @throws RenderError `RENDER_ERROR`, `UNKNOWN_LAYOUT` or `UNSUPPORTED_FEATURE`
  *   on layout or render failure
  * @throws InternalError `INTERNAL_ERROR` on a dot-engine bug

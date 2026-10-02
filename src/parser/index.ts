@@ -218,7 +218,10 @@ export function isPeggyError(err: unknown): err is {
 
 /**
  * Parse a DOT-language string and return a Graph model.
- * @throws ParseError for syntax errors or edge-direction violations.
+ * @throws ParseError `SYNTAX_ERROR`, `SYNTAX_UNEXPECTED_EOF`, `EDGE_OP_*` for
+ *   syntax errors or edge-direction violations; `GENERIC_ERROR` when nesting
+ *   is too deep
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `src` is not a string
  */
 export function parse(src: string): Graph {
   if (typeof src !== 'string') {

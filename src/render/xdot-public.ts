@@ -130,7 +130,6 @@ function layoutAndRenderXdot(g: Graph, engine: EngineName): string {
  * @throws TypeError `ERR_INVALID_ARG_TYPE` if `g` is not an object or `opts`
  *   is neither undefined nor an object
  * @throws TypeError `ERR_INVALID_ARG_VALUE` if `opts.engine` is not registered
- * @throws HtmlParseError `HTML_PARSE_ERROR` for an unparsable HTML-like label
  * @throws RenderError `RENDER_ERROR`, `UNKNOWN_LAYOUT` or `UNSUPPORTED_FEATURE`
  *   if layout or rendering fails
  * @throws ParseError if the xdot output cannot be re-parsed (a dot-engine bug)

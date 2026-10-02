@@ -23,6 +23,8 @@ let activeSizer: ImageSizer | null = null;
 /**
  * Register (or clear, with null) the global image sizer consulted by
  * HTML <IMG> sizing. Mirrors gvusershape's process-global dictionary.
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `sizer` is neither a function
+ *   nor null
  */
 export function setImageSizer(sizer: ImageSizer | null): void {
   if (sizer !== null && typeof sizer !== 'function') {

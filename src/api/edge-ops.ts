@@ -102,6 +102,8 @@ function insertEdge(g: Graph, root: Graph, edge: Edge): void {
  * // edge.tail === a, edge.head === b
  * ```
  *
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `g`, `tail` or `head` is not an
+ *   object, or `name` is neither undefined nor a string
  * @see lib/cgraph/edge.c:agedge
  */
 export function addEdge(

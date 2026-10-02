@@ -276,6 +276,9 @@ export class GvcContext {
    *   bad `g`, or an engine argument that is not registered
    * @throws RenderError (UNKNOWN_LAYOUT) if the `layout` attribute names no
    *   registered engine
+   * @throws RenderError (RENDER_ERROR / UNSUPPORTED_FEATURE) or InternalError
+   *   from the engine itself, unwrapped; a foreign throw from an engine bug
+   *   also propagates unwrapped (only the public render functions wrap it)
    * @see lib/gvc/gvlayout.c:gvLayoutJobs
    */
   layout(g: Graph, engineName: EngineName): void {

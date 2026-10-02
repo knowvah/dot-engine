@@ -333,6 +333,9 @@ function resolveKind(opts: CreateGraphOptions | undefined): GraphKind {
  * The builder's `.graph` is a fresh Graph ready for handoff to layout/render.
  * Defaults: directed=true, strict=false, name=''.
  *
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `opts` or one of its fields has
+ *   the wrong type. Builder and handle methods throw the same for wrong
+ *   argument types, and `InternalError` if node/subgraph creation fails.
  * @see lib/cgraph/graph.c:agopen
  */
 export function createGraph(opts?: CreateGraphOptions): GvGraphBuilder {

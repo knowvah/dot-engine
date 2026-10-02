@@ -58,11 +58,13 @@ function classifyError(err: unknown): GvError {
  * Render a DOT-language string to SVG using the specified layout engine.
  *
  * Throws a {@link DotEngineError} for any problem with the input: `ParseError`
- * (`SYNTAX_*`, `EDGE_OP_*`) for invalid DOT, `HtmlParseError`
- * (`HTML_PARSE_ERROR`) for a bad HTML-like label, `RenderError`
+ * (`SYNTAX_*`, `EDGE_OP_*`, `GENERIC_ERROR` for nesting too deep) for invalid
+ * DOT, `RenderError`
  * (`RENDER_ERROR`, `UNKNOWN_LAYOUT`, `UNSUPPORTED_FEATURE`) for layout/render
  * failures, and `InternalError` (`INTERNAL_ERROR`, `cause` = original) for a
- * dot-engine bug. Invalid arguments throw a `TypeError` carrying a `code`.
+ * dot-engine bug. Invalid arguments throw a `TypeError` carrying a `code`. A
+ * malformed HTML-like label does not throw: as in C (htmlparse.y YYABORT) the
+ * label renders empty.
  *
  * @remarks
  * Security: when `dotSource` is untrusted, treat the returned SVG as
@@ -82,7 +84,6 @@ function classifyError(err: unknown): GvError {
  * @throws ParseError `SYNTAX_ERROR`, `SYNTAX_UNEXPECTED_EOF`,
  *   `EDGE_OP_DIRECTED_IN_UNDIRECTED`, `EDGE_OP_UNDIRECTED_IN_DIRECTED` if
  *   `dotSource` is not valid DOT
- * @throws HtmlParseError `HTML_PARSE_ERROR` for an unparsable HTML-like label
  * @throws RenderError `RENDER_ERROR`, `UNKNOWN_LAYOUT` or `UNSUPPORTED_FEATURE`
  *   if layout or rendering fails
  * @throws InternalError `INTERNAL_ERROR` on a dot-engine bug
