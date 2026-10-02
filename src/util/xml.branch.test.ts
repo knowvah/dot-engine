@@ -100,38 +100,26 @@ describe('gvXmlEscape — UTF-8 encoding (flags.utf8)', () => {
   });
 
   it('leaves a non-ASCII char unescaped when utf8=false (binary-expr right operand false)', () => {
-    // U+00E9 encoded as two Latin-1 "bytes" (0xC3, 0xA9) stored one per char,
-    // the convention this module's UTF-8 decoder expects.
-    const s = String.fromCharCode(0xc3) + String.fromCharCode(0xa9);
-    expect(gvXmlEscape(s, flags({ utf8: false }))).toBe(s);
+    expect(gvXmlEscape('\u00e9', flags({ utf8: false }))).toBe('\u00e9');
   });
 
-  it('decodes a 2-byte UTF-8 sequence (U+00E9 "é") to &#xe9;', () => {
-    const s = String.fromCharCode(0xc3) + String.fromCharCode(0xa9);
-    expect(gvXmlEscape(s, flags({ utf8: true }))).toBe('&#xe9;');
+  it('escapes a BMP code point (U+00E9 "é") to &#xe9;', () => {
+    expect(gvXmlEscape('\u00e9', flags({ utf8: true }))).toBe('&#xe9;');
   });
 
-  it('decodes a 3-byte UTF-8 sequence (U+4E2D "中") to &#x4e2d;', () => {
-    const s =
-      String.fromCharCode(0xe4) + String.fromCharCode(0xb8) + String.fromCharCode(0xad);
-    expect(gvXmlEscape(s, flags({ utf8: true }))).toBe('&#x4e2d;');
+  it('escapes a BMP code point (U+4E2D "中") to &#x4e2d;', () => {
+    expect(gvXmlEscape('\u4e2d', flags({ utf8: true }))).toBe('&#x4e2d;');
   });
 
-  it('decodes a 4-byte UTF-8 sequence (U+1F600 emoji) to &#x1f600;', () => {
-    const s =
-      String.fromCharCode(0xf0) + String.fromCharCode(0x9f) +
-      String.fromCharCode(0x98) + String.fromCharCode(0x80);
-    expect(gvXmlEscape(s, flags({ utf8: true }))).toBe('&#x1f600;');
+  it('escapes an astral code point (U+1F600) as one entity', () => {
+    expect(gvXmlEscape('\u{1f600}', flags({ utf8: true }))).toBe('&#x1f600;');
   });
 
-  it('consumes exactly the byte length of a multi-byte sequence, resuming after it', () => {
-    const s = 'a' + String.fromCharCode(0xc3) + String.fromCharCode(0xa9) + 'b';
-    expect(gvXmlEscape(s, flags({ utf8: true }))).toBe('a&#xe9;b');
+  it('consumes exactly the UTF-16 length of a character, resuming after it', () => {
+    expect(gvXmlEscape('a\u{1f600}b', flags({ utf8: true }))).toBe('a&#x1f600;b');
   });
 
-  it('throws on a malformed UTF-8 leading byte (decodeUtf8)', () => {
-    // 0xF8 (0b11111000) does not match any of the 2/3/4-byte lead patterns.
-    const s = String.fromCharCode(0xf8);
-    expect(() => gvXmlEscape(s, flags({ utf8: true }))).toThrow(/malformed UTF-8/);
+  it('throws on a lone surrogate (the UTF-16 analogue of malformed UTF-8)', () => {
+    expect(() => gvXmlEscape('\ud800', flags({ utf8: true }))).toThrow(/malformed UTF-8/);
   });
 });
