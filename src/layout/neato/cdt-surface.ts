@@ -35,6 +35,7 @@
  */
 
 import { incircle, orient2d } from './delaunay.js';
+import { InternalError } from '../../errors.js';
 
 /** Triangulated surface. @see lib/neatogen/delaunay.h:surface_t */
 export interface Surface {
@@ -164,7 +165,7 @@ class Cdt {
     let i = 0;
     if (e !== null) {
       i = f.e.indexOf(e);
-      if (i < 0) throw new Error('cdt: edge not in face');
+      if (i < 0) throw new InternalError('cdt: edge not in face');
     }
     const j = (i + 1) % 3;
     const k = (i + 2) % 3;
@@ -490,7 +491,7 @@ class Cdt {
       const next = this.neighbor(f, edge);
       this.removeTriangles(e);
       if (e.tris.length === 0) this.destroyEdge(e);
-      if (next === null) throw new Error('cdt: constraint walk left the surface');
+      if (next === null) throw new InternalError('cdt: constraint walk left the surface');
       list.push(edge1);
       this.removeIntersectedEdge(sv1, sv2, edge, next, left, right);
     };
@@ -544,11 +545,11 @@ class Cdt {
       this.removeFace(t, true);
       left.push(e2);
       right.push(e1);
-      if (next === null) throw new Error('cdt: constraint walk left the surface');
+      if (next === null) throw new InternalError('cdt: constraint walk left the surface');
       this.removeIntersectedEdge(sv1, sv2, e, next, left, right);
       return t;
     }
-    throw new Error('cdt: no wedge triangle found at constraint endpoint');
+    throw new InternalError('cdt: no wedge triangle found at constraint endpoint');
   }
 
   /** @see cdt.c:gts_delaunay_add_constraint */

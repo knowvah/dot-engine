@@ -19,6 +19,7 @@
 import type { Point, Poly } from '../../pathplan/types.js';
 import { wind } from '../../pathplan/visibility.js';
 import { mkSurface } from './cdt-surface.js';
+import { InternalError } from '../../errors.js';
 
 /** index pair. @see multispline.c:ipair */
 export interface Ipair { i: number; j: number }
@@ -165,7 +166,7 @@ export function mkRouter(obsp: Poly[]): Router {
   const y = pts.map((p) => p.y);
   const sf = mkSurface(x, y, npts, segs, npts);
   if (sf === null) {
-    throw new Error('mkRouter: constrained triangulation failed');
+    throw new InternalError('mkRouter: constrained triangulation failed');
   }
 
   /* map from obstacle side to its unique adjacent kept triangle */
@@ -193,7 +194,7 @@ export function mkRouter(obsp: Poly[]): Router {
 /** @see multispline.c:findMap */
 export function findMap(trimap: Map<number, number>, a: number, b: number): number {
   const t = trimap.get(segKey(a, b));
-  if (t === undefined) throw new Error('findMap: no triangle for segment');
+  if (t === undefined) throw new InternalError('findMap: no triangle for segment');
   return t;
 }
 
@@ -286,7 +287,7 @@ export function edgeToSeg(tg: Tgraph, i: number, j: number): Ipair {
     const ep = tg.edges[k]!;
     if (ep.t === j || ep.h === j) return ep.seg;
   }
-  throw new Error('edgeToSeg: no edge between triangles');
+  throw new InternalError('edgeToSeg: no edge between triangles');
 }
 
 // ---------------------------------------------------------------------------
