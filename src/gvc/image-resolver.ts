@@ -16,6 +16,8 @@
  * @see lib/gvc/gvusershape.c (ImageDict, gvusershape_find/size)
  */
 
+import { invalidArgType } from '../errors.js';
+
 // ---------------------------------------------------------------------------
 // Resolver registry
 // ---------------------------------------------------------------------------
@@ -37,6 +39,9 @@ let activeResolver: ImageResolver | null = null;
  * dictionary and `setImageSizer`'s registration shape.
  */
 export function setImageResolver(fn: ImageResolver | null): void {
+  if (fn !== null && typeof fn !== 'function') {
+    throw invalidArgType('resolver', 'function or null', fn);
+  }
   activeResolver = fn;
 }
 

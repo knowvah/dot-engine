@@ -23,6 +23,8 @@ import {
   LutTextMeasurer, CanvasTextMeasurer, EstimateTextMeasurer, type TextMeasurer,
 } from './textmeasure.js';
 
+import { invalidArgType } from '../errors.js';
+
 let override: TextMeasurer | undefined;
 
 /**
@@ -33,6 +35,13 @@ let override: TextMeasurer | undefined;
  * resolution note above.
  */
 export function setTextMeasurer(m: TextMeasurer | undefined): void {
+  if (
+    m !== undefined
+    && (typeof m !== 'object' || m === null
+      || typeof (m as { measure?: unknown }).measure !== 'function')
+  ) {
+    throw invalidArgType('measurer', 'TextMeasurer or undefined', m);
+  }
   override = m;
 }
 
