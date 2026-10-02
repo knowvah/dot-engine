@@ -7,6 +7,7 @@
  */
 
 import { type Rect, overlap, combineRect, NUMDIMS } from './rectangle.js';
+import { InternalError } from '../errors.js';
 import {
   NODECARD,
   type Branch,
@@ -256,11 +257,14 @@ function rTreeInsert2(
   return 0; // should never happen
 }
 
-/** Validate rect: low side must be <= high side per dimension. */
+/**
+ * Validate rect: low side must be <= high side per dimension.
+ * @see label/index.c:RTreeInsert (assert at index.c:178)
+ */
 function validateRect(r: Rect): void {
   for (let i = 0; i < NUMDIMS; i++) {
     if (r.boundary[i] > r.boundary[NUMDIMS + i]) {
-      throw new Error('rTreeInsert: rect low > high');
+      throw new InternalError('rTreeInsert: rect low > high');
     }
   }
 }

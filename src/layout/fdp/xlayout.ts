@@ -17,6 +17,7 @@
  * @see lib/fdpgen/xlayout.c (15.0.0)
  */
 
+import { RenderError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import { sepFactor, type ExpandT } from '../neato/sep-factor.js';
@@ -333,9 +334,10 @@ function removeOverlapAs(g: Graph, flag: string): void {
   // Genuinely unported adjust algorithms: throw rather than silently leave
   // overlaps (no supported corpus input reaches these).
   if (UNPORTED_MODES.has(mode)) {
-    throw new Error(
+    throw new RenderError(
       `fdp: removeOverlapAs mode "${mode}" reached for graph "${g.name}" — ` +
       'that adjust algorithm (voronoi/oscale/vpsc/ortho/ipsep) is not ported',
+      'UNSUPPORTED_FEATURE',
     );
   }
   // AM_NONE ('', 'true', any boolean-true) → no overlap removal.

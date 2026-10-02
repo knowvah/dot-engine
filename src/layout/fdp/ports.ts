@@ -11,6 +11,7 @@
  *      (15.0.0)
  */
 
+import { InternalError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
@@ -78,7 +79,7 @@ export function getEdgeList(n: Node, g: Graph): Erec[] {
     erecs.push({ e, alpha: Math.atan2(dy, dx), dist2: dx * dx + dy * dy });
   }
   if (erecs.length !== deg) {
-    throw new Error(`fdp getEdgeList: ${erecs.length} edges vs deg ${deg}`);
+    throw new InternalError(`fdp getEdgeList: ${erecs.length} edges vs deg ${deg}`);
   }
   erecs.sort(ecmp);
 
@@ -151,7 +152,7 @@ export function expandCluster(n: Node, cg: Graph): Graph {
       idx = genPorts(n, es[k]!, pp, idx, bnd);
     }
     if (idx !== sz) {
-      throw new Error(`fdp expandCluster: ${idx} ports vs wdeg ${sz}`);
+      throw new InternalError(`fdp expandCluster: ${idx} ports vs wdeg ${sz}`);
     }
 
     gdata(sg).ports = pp;

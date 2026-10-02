@@ -20,6 +20,7 @@
  * @see lib/dotgen/dotinit.c:copyClusterInfo
  */
 
+import { InternalError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Point, Box } from '../../model/geom.js';
@@ -253,10 +254,13 @@ export function dotLayoutComponent(sg: Graph, root: Graph): void {
 // @see lib/dotgen/dotinit.c:copyClusterInfo (412)
 // ---------------------------------------------------------------------------
 
-/** Map a cluster clone back to its original root cluster. C's `mapClust`. */
+/**
+ * Map a cluster clone back to its original root cluster. C's `mapClust`.
+ * @see lib/pack/ccomps.c:mapClust (assert(op) at ccomps.c:366)
+ */
 function mapClust(clone: Graph, origOf: Map<Graph, Graph>): Graph {
   const orig = origOf.get(clone);
-  if (orig === undefined) throw new Error(`mapClust: no original for cluster ${clone.name}`);
+  if (orig === undefined) throw new InternalError(`mapClust: no original for cluster ${clone.name}`);
   return orig;
 }
 

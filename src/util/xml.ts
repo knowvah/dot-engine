@@ -6,6 +6,8 @@
  * @see lib/util/xml.c
  */
 
+import { RenderError } from '../errors.js';
+
 /** Options to tweak the behaviour of XML escaping. @see lib/util/xml.h:xml_flags_t */
 export interface XmlFlags {
   /** Escape & unconditionally; also escape \n and \r. */
@@ -135,7 +137,10 @@ class XmlEscaper {
     return [`&#x${cp.toString(16)};`, consumed];
   }
 
-  /** Decode the codepoint value from a multi-byte UTF-8 sequence. */
+  /**
+   * Decode the codepoint value from a multi-byte UTF-8 sequence.
+   * @see lib/util/xml.c:xml_core (fprintf + graphviz_exit at xml.c:135)
+   */
   static decodeUtf8(s: string, pos: number, b0: number): number {
     if ((b0 >> 5) === 6) {
       return ((b0 & 0x1f) << 6) | (s.charCodeAt(pos + 1) & 0x3f);
@@ -155,15 +160,18 @@ class XmlEscaper {
         (s.charCodeAt(pos + 3) & 0x3f)
       );
     }
-    throw new Error(`gvXmlEscape: malformed UTF-8 at position ${pos}`);
+    throw new RenderError(`gvXmlEscape: malformed UTF-8 at position ${pos}`, 'RENDER_ERROR');
   }
 
-  /** Return the byte-length of a UTF-8 sequence from its leading byte. */
+  /**
+   * Return the byte-length of a UTF-8 sequence from its leading byte.
+   * @see lib/util/xml.c:xml_core (fprintf + graphviz_exit at xml.c:135)
+   */
   static utf8ByteLen(b0: number): number {
     if ((b0 >> 5) === 6) return 2;
     if ((b0 >> 4) === 14) return 3;
     if ((b0 >> 3) === 30) return 4;
-    throw new Error(`gvXmlEscape: invalid UTF-8 leading byte 0x${b0.toString(16)}`);
+    throw new RenderError(`gvXmlEscape: invalid UTF-8 leading byte 0x${b0.toString(16)}`, 'RENDER_ERROR');
   }
 
   static isDecDigit(c: string): boolean {
