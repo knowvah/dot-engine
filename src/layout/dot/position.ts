@@ -10,7 +10,11 @@ import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import { virtualNode } from './fastgr.js';
-import { SLACKNODE, LEAFSET } from './rank.js';
+import { SLACKNODE, LEAFSET, scaleClamp } from './rank.js';
+import { agGraphAttr } from '../../model/cgraph-ops.js';
+
+/** @see C INT_MAX — default network simplex iteration cap */
+const INT_MAX = 2147483647;
 import { rank } from './ns.js';
 import { markLowclusters } from './cluster.js';
 import {
@@ -103,8 +107,22 @@ export function connectGraph(g: Graph): void {
 // nsiter2 — @see lib/dotgen/position.c:nsiter2
 // ---------------------------------------------------------------------------
 
-/** @see lib/dotgen/position.c:nsiter2 — nslimit attribute not yet ported */
-export function nsiter2(_g: Graph): number { return 2147483647; }
+/**
+ * C's agget(g, "nslimit") INHERITS the root default, so a graph whose own
+ * attrs lack the key falls back to the parse-time snapshot, then the root
+ * (the same chain rank1 uses for nslimit1).
+ * @see lib/dotgen/position.c:nsiter2
+ */
+export function nsiter2(g: Graph): number {
+  const s = g.attrs.get('nslimit')
+    ?? g.graphDefaultsSnapshot?.get('nslimit')
+    ?? g.root.attrs.get('nslimit')
+    // Set only inside a subgraph: C declared it on the root with default "".
+    ?? agGraphAttr(g.root, 'nslimit');
+  if (s === undefined) return INT_MAX;
+  // atof: a non-numeric prefix parses as 0, not NaN.
+  return scaleClamp(g.nodes.size, parseFloat(s) || 0);
+}
 
 // ---------------------------------------------------------------------------
 // make_leafslots / expand_leaves — @see lib/dotgen/position.c
