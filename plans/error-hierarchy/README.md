@@ -72,7 +72,7 @@ limits (≤30 NLOC/function, CCN ≤10, ≤500 lines/file).
 | [2a](batch-2a/overview.md) | T2 parse errors · T3 registry · T4 C-port sites A · T4b GTS-faithful CDT | T1 | [x] |
 | [2b](batch-2b/overview.md) | T5 C-port sites B · T6 `/api` · T7 host hooks | T1 | [x] |
 | [3](batch-3/overview.md) | T8 public boundaries (BREAKING CHANGE) | 2a, 2b | [x] |
-| [4](batch-4/overview.md) | T9 error reference page, README migration, guide updates | T8 | [ ] |
+| [4](batch-4/overview.md) | T9 error reference page, README migration, guide updates | T8 | [x] |
 
 2a and 2b have disjoint write-sets and may run concurrently.
 
@@ -98,3 +98,22 @@ One commit per task. Scope `errors`. T8 carries the `BREAKING CHANGE:` footer.
 
 Execute with `fable` (long-horizon). Task agents: `typescript-pro` on `sonnet`
 (T9: `documentation-engineer` on `sonnet`).
+
+## Session summary (2026-10-02)
+
+- **Tasks:** 9/9 planned + 2 added (T4b GTS-faithful CDT, owner option B; T8b
+  last unguarded entry points). 13 commits on `feature/error-hierarchy`; the
+  breaking one is d40c6695.
+- **Gates (final):** typecheck, typecheck:ts7, vitest 6297/6297, build:js OK.
+  Corpus gate after batches 2 and 3: every success byte-identical; the only
+  failure change is 2723 RENDER_ERROR → INTERNAL_ERROR (a foreign throw, as
+  designed).
+- **Stops:** T4 hit stop condition 5 at two CDT sites; resolved by owner (B)
+  with a GTS 0.7.6 C oracle (500 random cases, all agree).
+- **Not merged, by design:** this is the 2.0 integration branch. The
+  unported-features follow-on mission lands here first; one `feat!:` PR then
+  releases 2.0.0.
+- **Follow-ups for that mission** (journal): freeLayout cleans up the wrong
+  engine; gvXmlEscape UTF-8 path treats JS chars as bytes; 2723 port bug;
+  silent no-op unported features (owner: fail loudly or port, inside 2.0);
+  move `requireObject` into errors.ts; `ERR_OUT_OF_RANGE` has no caller yet.
