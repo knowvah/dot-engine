@@ -34,8 +34,7 @@ import { render as gvcRender } from '../gvc/device.js';
 import { createDefaultContext } from '../gvc/default-context.js';
 import { parseXDot } from '../xdot/index.js';
 import type { EngineName } from '../gvc/context.js';
-import { RenderError } from '../errors.js';
-import type { GvError } from '../errors.js';
+import { invalidArgType, rethrowAtBoundary } from '../errors.js';
 
 /**
  * `Xdot` — the parsed result of one xdot attribute stream: `ops` (the
@@ -76,20 +75,16 @@ const XDOT_DRAW_ATTRS = [
   '_draw_', '_ldraw_', '_hdraw_', '_tdraw_', '_hldraw_', '_tldraw_',
 ] as const;
 
-function isGvErrorLike(err: unknown): err is GvError {
-  return (
-    typeof err === 'object' &&
-    err !== null &&
-    typeof (err as { type?: unknown }).type === 'string' &&
-    typeof (err as { code?: unknown }).code === 'string'
-  );
-}
 
-/** Re-throw GvError-like values; otherwise wrap as RENDER_ERROR. */
-function rethrowAsRender(err: unknown): never {
-  if (isGvErrorLike(err)) throw err;
-  const msg = err instanceof Error ? err.message : String(err);
-  throw new RenderError(msg, 'RENDER_ERROR');
+
+/** Reject a bad `g` / `opts` before any work starts. */
+function checkDrawOpsArgs(g: unknown, opts: unknown): void {
+  if (typeof g !== 'object' || g === null) {
+    throw invalidArgType('g', 'object', g);
+  }
+  if (opts !== undefined && (typeof opts !== 'object' || opts === null)) {
+    throw invalidArgType('opts', 'object or undefined', opts);
+  }
 }
 
 /** Append XdotOps found in `attrs` for each xdot draw key into `out`. */
@@ -118,7 +113,7 @@ function layoutAndRenderXdot(g: Graph, engine: EngineName): string {
     ctx.freeLayout(g, engine);
     return src;
   } catch (err: unknown) {
-    rethrowAsRender(err);
+    return rethrowAtBoundary(err);
   }
 }
 
@@ -132,8 +127,14 @@ function layoutAndRenderXdot(g: Graph, engine: EngineName): string {
  * @param g    - A Graph from `parse()` or the builder API.
  * @param opts - Optional: `{ engine }` overrides the default `'dot'`.
  * @returns Flat typed draw-op array covering the full graph.
- * @throws ParseError  if the xdot DOT output cannot be re-parsed.
- * @throws RenderError if layout or rendering fails.
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `g` is not an object or `opts`
+ *   is neither undefined nor an object
+ * @throws TypeError `ERR_INVALID_ARG_VALUE` if `opts.engine` is not registered
+ * @throws HtmlParseError `HTML_PARSE_ERROR` for an unparsable HTML-like label
+ * @throws RenderError `RENDER_ERROR`, `UNKNOWN_LAYOUT` or `UNSUPPORTED_FEATURE`
+ *   if layout or rendering fails
+ * @throws ParseError if the xdot output cannot be re-parsed (a dot-engine bug)
+ * @throws InternalError `INTERNAL_ERROR` on any other dot-engine bug
  *
  * @example
  * ```ts
@@ -159,6 +160,7 @@ function layoutAndRenderXdot(g: Graph, engine: EngineName): string {
  * @see lib/gvc/gvc.h:gvRender
  */
 export function getDrawOps(g: Graph, opts?: DrawOpsOptions): XdotOp[] {
+  checkDrawOpsArgs(g, opts);
   const engine = opts?.engine ?? DEFAULT_DRAW_ENGINE;
   return collectGraphOps(parse(layoutAndRenderXdot(g, engine)));
 }

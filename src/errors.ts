@@ -259,3 +259,20 @@ export function isUsageError(e: unknown): boolean {
     e instanceof UsageStateError
   );
 }
+
+// ── Public-boundary catch (shared by every entry point; not re-exported) ────
+
+/** Message of any thrown value. */
+export function messageOf(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+/**
+ * Boundary `catch` (ADR-5): usage errors and {@link GvError}s re-surface
+ * unchanged; anything else is a dot-engine bug and becomes an
+ * {@link InternalError} keeping the original as `cause`.
+ */
+export function rethrowAtBoundary(err: unknown): never {
+  if (isUsageError(err) || isGvError(err)) throw err;
+  throw new InternalError(messageOf(err), { cause: err });
+}

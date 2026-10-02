@@ -10,46 +10,42 @@
  */
 
 import { parse } from './parser/index.js';
-import { RenderError } from './errors.js';
+import {
+  InternalError,
+  invalidArgType,
+  isGvError,
+  isUsageError,
+  messageOf,
+  rethrowAtBoundary,
+} from './errors.js';
 import type { GvError, RenderResult } from './errors.js';
 import type { EngineName } from './gvc/context.js';
 import { render as deviceRender } from './gvc/device.js';
 import { createDefaultContext } from './gvc/default-context.js';
 
-/**
- * Duck-type a thrown value as a {@link GvError}: an object carrying a string
- * `type` and a string `code`. Covers `ParseError`, `HtmlParseError`, and
- * `RenderError` without per-subclass `instanceof`.
- */
-function isGvErrorLike(err: unknown): err is GvError {
-  return (
-    typeof err === 'object' &&
-    err !== null &&
-    typeof (err as { type?: unknown }).type === 'string' &&
-    typeof (err as { code?: unknown }).code === 'string'
-  );
+
+
+/** Reject non-string `dotSource` / `engine` before any work starts. */
+function checkRenderArgs(dotSource: unknown, engine: unknown): void {
+  if (typeof dotSource !== 'string') {
+    throw invalidArgType('dotSource', 'string', dotSource);
+  }
+  if (typeof engine !== 'string') {
+    throw invalidArgType('engine', 'string', engine);
+  }
 }
 
-/* v8 ignore start -- defensive normalizers for non-Error / genuinely-unknown
-   throws. Unreachable via the public API (renderSvg normalizes every throw to
-   GvError-like; parse only throws ParseError) but mandated by ADR-3 and the
-   render wrap. */
-function messageOf(err: unknown): string {
-  return err instanceof Error ? err.message : String(err);
-}
-function renderErrorFromUnknown(err: unknown): RenderError {
-  return new RenderError(messageOf(err), 'GENERIC_ERROR');
-}
-/* v8 ignore stop */
-
 /**
- * Normalize any thrown value to a plain, JSON-serializable {@link GvError}
- * (no stack). Structured throws are copied; unknown throws → `GENERIC_ERROR`.
+ * Normalize a thrown {@link GvError} to a plain, JSON-serializable data object
+ * (no stack, no `cause`). A value that is not a GvError is wrapped as an
+ * `InternalError` first.
  */
 function classifyError(err: unknown): GvError {
-  /* v8 ignore next -- the unknown-throw fallback is unreachable via the public
-     API (see helpers above); ADR-3 still mandates it. */
-  const gv: GvError = isGvErrorLike(err) ? err : renderErrorFromUnknown(err);
+  /* v8 ignore next 3 -- renderSvg already normalizes every non-usage throw to
+     a GvError, so only a throw escaping its context setup could land here. */
+  const gv: GvError = isGvError(err)
+    ? err
+    : new InternalError(messageOf(err), { cause: err });
   const out: GvError = {
     type: gv.type, code: gv.code, message: gv.message, friendlyMessage: gv.friendlyMessage,
   };
@@ -61,9 +57,12 @@ function classifyError(err: unknown): GvError {
 /**
  * Render a DOT-language string to SVG using the specified layout engine.
  *
- * Always throws a value implementing {@link GvError}: parse failures throw
- * `ParseError`; layout/render failures surface as `RenderError`
- * (`RENDER_ERROR`).
+ * Throws a {@link DotEngineError} for any problem with the input: `ParseError`
+ * (`SYNTAX_*`, `EDGE_OP_*`) for invalid DOT, `HtmlParseError`
+ * (`HTML_PARSE_ERROR`) for a bad HTML-like label, `RenderError`
+ * (`RENDER_ERROR`, `UNKNOWN_LAYOUT`, `UNSUPPORTED_FEATURE`) for layout/render
+ * failures, and `InternalError` (`INTERNAL_ERROR`, `cause` = original) for a
+ * dot-engine bug. Invalid arguments throw a `TypeError` carrying a `code`.
  *
  * @remarks
  * Security: when `dotSource` is untrusted, treat the returned SVG as
@@ -78,15 +77,22 @@ function classifyError(err: unknown): GvError {
  *                    ('dot', 'neato', 'fdp', 'sfdp', 'circo', 'twopi',
  *                    'osage', 'patchwork') or any custom-registered name
  * @returns SVG string
- * @throws ParseError if dotSource is not valid DOT
- * @throws RenderError if layout or rendering fails
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `dotSource` or `engine` is not a string
+ * @throws TypeError `ERR_INVALID_ARG_VALUE` if `engine` names no registered engine
+ * @throws ParseError `SYNTAX_ERROR`, `SYNTAX_UNEXPECTED_EOF`,
+ *   `EDGE_OP_DIRECTED_IN_UNDIRECTED`, `EDGE_OP_UNDIRECTED_IN_DIRECTED` if
+ *   `dotSource` is not valid DOT
+ * @throws HtmlParseError `HTML_PARSE_ERROR` for an unparsable HTML-like label
+ * @throws RenderError `RENDER_ERROR`, `UNKNOWN_LAYOUT` or `UNSUPPORTED_FEATURE`
+ *   if layout or rendering fails
+ * @throws InternalError `INTERNAL_ERROR` on a dot-engine bug
  */
 export function renderSvg(dotSource: string, engine: EngineName): string {
+  checkRenderArgs(dotSource, engine);
   const ctx = createDefaultContext();
   try {
     // parse() is inside the try so any non-ParseError throw (e.g. a raw
-    // RangeError from stack exhaustion) is still normalized to a GvError,
-    // honoring the "always throws a value implementing GvError" contract.
+    // RangeError from stack exhaustion) is still normalized (InternalError).
     const g = parse(dotSource);
     ctx.layout(g, engine);
     const svg = deviceRender(ctx, g, 'svg');
@@ -94,37 +100,40 @@ export function renderSvg(dotSource: string, engine: EngineName): string {
     ctx.freeLayout(g, engine);
     return svg;
   } catch (err: unknown) {
-    // A render-stage throw already implementing GvError (e.g. HtmlParseError)
-    // is re-surfaced unchanged; only genuinely-unknown throws become RENDER_ERROR.
-    /* v8 ignore next -- current engines don't throw a GvError-like value here */
-    if (isGvErrorLike(err)) throw err;
-    throw new RenderError(messageOf(err), 'RENDER_ERROR');
+    return rethrowAtBoundary(err);
   }
 }
 
 /**
  * Result-style render: returns `{ svg }` on success or `{ errors: [one] }` on
  * the first failure (svg XOR errors). Errors are plain JSON-serializable
- * {@link GvError} data objects.
+ * {@link GvError} data objects. Returns (never throws) for any DOT input and
+ * any failure of the graph itself; throws only for invalid arguments.
  *
  * @remarks
  * Security: same untrusted-input caveat as {@link renderSvg} — the returned
  * `svg` is attacker-controlled markup for untrusted `dotSource`; apply a CSP or
  * sanitize before embedding. See the README "Security" section.
+ *
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `dotSource` or `engine` is not a string
+ * @throws TypeError `ERR_INVALID_ARG_VALUE` if `engine` names no registered engine
  */
 export function tryRenderSvg(dotSource: string, engine: EngineName): RenderResult {
+  checkRenderArgs(dotSource, engine);
   try {
     return { svg: renderSvg(dotSource, engine) };
   } catch (err: unknown) {
+    if (isUsageError(err)) throw err;
     return { errors: [classifyError(err)] };
   }
 }
 
 export { parse } from './parser/index.js';
 export { ParseError } from './parser/index.js';
-export { RenderError } from './errors.js';
+export { DotEngineError, InternalError, RenderError, isGvError } from './errors.js';
 export type {
   GvError,
+  UsageErrorCode,
   GvErrorType,
   GvErrorCode,
   GvExpectation,

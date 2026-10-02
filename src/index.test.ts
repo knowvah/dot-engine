@@ -38,19 +38,21 @@ describe('tryRenderSvg syntax failure', () => {
 });
 
 describe('render-stage failure', () => {
-  it('tryRenderSvg classifies an unregistered engine as RENDER_ERROR', () => {
-    const r = tryRenderSvg(VALID, 'bogus');
-    expect(r.svg).toBeUndefined();
-    expect(r.errors![0]!.type).toBe('render');
-    expect(r.errors![0]!.code).toBe('RENDER_ERROR');
+  // 2.0: an unregistered engine argument is a caller mistake (ADR-3), thrown
+  // as TypeError ERR_INVALID_ARG_VALUE by both entry points (ADR-5).
+  it('tryRenderSvg throws (not returns) for an unregistered engine', () => {
+    let err: unknown;
+    try { tryRenderSvg(VALID, 'bogus'); } catch (e) { err = e; }
+    expect(err).toBeInstanceOf(TypeError);
+    expect((err as { code?: string }).code).toBe('ERR_INVALID_ARG_VALUE');
   });
 
-  it('renderSvg throws a structured Error (not a bare Error)', () => {
+  it('renderSvg throws TypeError ERR_INVALID_ARG_VALUE, not a RenderError', () => {
     let err: unknown;
     try { renderSvg(VALID, 'bogus'); } catch (e) { err = e; }
-    expect(err).toBeInstanceOf(Error);
-    expect(err).toBeInstanceOf(RenderError);
-    expect((err as RenderError).code).toBe('RENDER_ERROR');
+    expect(err).toBeInstanceOf(TypeError);
+    expect(err).not.toBeInstanceOf(RenderError);
+    expect((err as { code?: string }).code).toBe('ERR_INVALID_ARG_VALUE');
   });
 });
 

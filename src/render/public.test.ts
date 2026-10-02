@@ -103,17 +103,16 @@ function captureRenderError(format: OutputFormat): unknown {
   }
 }
 
-describe('render — unknown format throws structured error', () => {
-  it('throws a value with string type and string code', () => {
+describe('render — unknown format is a caller mistake (2.0, ADR-3)', () => {
+  it('throws TypeError with code ERR_INVALID_ARG_VALUE', () => {
     const err = captureRenderError('unknown-format' as OutputFormat);
-    expect(err).not.toBeNull();
-    expect(typeof (err as { type?: unknown }).type).toBe('string');
-    expect(typeof (err as { code?: unknown }).code).toBe('string');
+    expect(err).toBeInstanceOf(TypeError);
+    expect((err as { code?: unknown }).code).toBe('ERR_INVALID_ARG_VALUE');
   });
 
-  it('thrown error is a RenderError instance', () => {
+  it('is not a RenderError', () => {
     const err = captureRenderError('unknown-format' as OutputFormat);
-    expect(err).toBeInstanceOf(RenderError);
+    expect(err).not.toBeInstanceOf(RenderError);
   });
 });
 
