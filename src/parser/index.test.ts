@@ -16,6 +16,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { parse, Stripper, ParseError } from './index.js';
+import { DotEngineError } from '../errors.js';
 
 const MULTILINE_DASH = 'digraph{a[label="x -- y\\\nz"]; a->b}';
 
@@ -126,5 +127,45 @@ describe('validateEdgeOperators — real top-level operators still rejected', ()
     }
     expect(thrown).toBeInstanceOf(ParseError);
     expect((thrown as ParseError).code).toBe('EDGE_OP_DIRECTED_IN_UNDIRECTED');
+  });
+});
+
+describe('parse — error hierarchy', () => {
+  it('throws a ParseError that is a DotEngineError for truncated input', () => {
+    let thrown: unknown;
+    try {
+      parse('digraph{');
+    } catch (e) {
+      thrown = e;
+    }
+    expect(thrown).toBeInstanceOf(ParseError);
+    expect(thrown).toBeInstanceOf(DotEngineError);
+    expect((thrown as ParseError).code).toBe('SYNTAX_UNEXPECTED_EOF');
+    expect((thrown as ParseError).name).toBe('ParseError');
+  });
+
+  it('throws a usage TypeError (not a DotEngineError) for a non-string', () => {
+    let thrown: unknown;
+    try {
+      parse(null as unknown as string);
+    } catch (e) {
+      thrown = e;
+    }
+    expect(thrown).toBeInstanceOf(TypeError);
+    expect(thrown).not.toBeInstanceOf(DotEngineError);
+    expect((thrown as { code: string }).code).toBe('ERR_INVALID_ARG_TYPE');
+    expect((thrown as TypeError).message).toContain('"dotSource"');
+  });
+
+  it('forwards options.cause from the constructor', () => {
+    const cause = new Error('root');
+    const e = new ParseError(
+      'm',
+      'SYNTAX_ERROR',
+      { line: 1, column: 1 },
+      undefined,
+      { cause },
+    );
+    expect(e.cause).toBe(cause);
   });
 });

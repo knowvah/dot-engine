@@ -9,8 +9,7 @@
 // Error
 // ---------------------------------------------------------------------------
 
-import type { GvError } from '../errors.js';
-import { friendlyMessageFor } from '../errors.js';
+import { DotEngineError, friendlyMessageFor } from '../errors.js';
 
 /**
  * Thrown when an unrecognized HTML tag is encountered during parsing.
@@ -21,14 +20,14 @@ import { friendlyMessageFor } from '../errors.js';
  *
  * @see lib/common/htmllex.c:lexerror
  */
-export class HtmlParseError extends Error implements GvError {
+export class HtmlParseError extends DotEngineError {
   readonly type = 'semantic';
   readonly code = 'HTML_PARSE_ERROR';
   readonly friendlyMessage = friendlyMessageFor('HTML_PARSE_ERROR');
   readonly tag: string;
 
-  constructor(tag: string) {
-    super(`Unknown HTML element <${tag}>`);
+  constructor(tag: string, options?: ErrorOptions) {
+    super(`Unknown HTML element <${tag}>`, options);
     this.tag = tag;
     this.name = 'HtmlParseError';
   }

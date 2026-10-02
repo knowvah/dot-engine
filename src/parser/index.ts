@@ -14,18 +14,18 @@ import type { Edge } from '../model/edge.js';
 import { isHtmlValue, htmlValueContent } from '../common/html-string.js';
 import { buildFromAst } from './builder.js';
 import type { ParsedGraph } from './ast.js';
-import type { GvError, GvErrorCode, GvExpectation } from '../errors.js';
-import { friendlyMessageFor } from '../errors.js';
+import type { GvErrorCode, GvExpectation } from '../errors.js';
+import { DotEngineError, friendlyMessageFor, invalidArgType } from '../errors.js';
 
 // ── ParseError ────────────────────────────────────────────────────────────────
 
 /**
  * Thrown for syntax errors or edge-direction violations.
  *
- * Implements the structured {@link GvError} contract: `location` is primary;
+ * Implements the structured {@link DotEngineError} / `GvError` contract: `location` is primary;
  * `line`/`column` are convenience getters that delegate to it.
  */
-export class ParseError extends Error implements GvError {
+export class ParseError extends DotEngineError {
   readonly type = 'syntax';
   readonly code: GvErrorCode;
   readonly friendlyMessage: string;
@@ -37,8 +37,9 @@ export class ParseError extends Error implements GvError {
     code: GvErrorCode,
     location: { line: number; column: number; offset?: number },
     expected?: GvExpectation[],
+    options?: ErrorOptions,
   ) {
-    super(message);
+    super(message, options);
     this.name = 'ParseError';
     this.code = code;
     this.location = location;
@@ -223,11 +224,7 @@ export function parse(src: string): Graph {
   if (typeof src !== 'string') {
     // Runtime guard for JS callers (the TS signature already forbids this):
     // a non-string argument must not surface as an opaque internal TypeError.
-    throw new ParseError('DOT source must be a string', 'GENERIC_ERROR', {
-      line: 1,
-      column: 1,
-      offset: 0,
-    });
+    throw invalidArgType('dotSource', 'string', src);
   }
   let ast: ParsedGraph;
   try {
