@@ -20,6 +20,7 @@ import {
 } from '../../common/nodeinit.js';
 import { initEdgeLabels } from '../../common/edge-label-init.js';
 import { aggetGraph } from '../fdp/fdp-model.js';
+import { overlapPrismTries } from '../neato/fdp-adjust.js';
 import {
   type SpMatrix,
   smFromCoordinateArrays,
@@ -37,6 +38,11 @@ import {
 export const SMOOTHING_NONE = 0;
 
 const INT_MAX = 2147483647;
+
+/** @see lib/neatogen/overlap.h:ELSCHEME_PENALTY2 (schemes 3, 4 are STRAIGHTLINE) */
+const ELSCHEME_PENALTY2 = 2;
+/** @see lib/neatogen/adjust.c:ELS */
+const EDGE_LABEL_NODE_PREFIX = '|edgelabel|';
 
 /**
  * Graph-level init: line edges, 2-D, per-node neato init.
@@ -156,6 +162,33 @@ export function tuneControl(g: Graph, ctrl: SpringElectricalControl): void {
   }
   ctrl.edgeLabelingScheme = lateInt(aggetGraph(g, 'label_scheme'), 0, 0);
   if (ctrl.edgeLabelingScheme > 4) ctrl.edgeLabelingScheme = 0;
+  assertEdgeLabelSchemeSupported(g, ctrl.edgeLabelingScheme);
+}
+
+/**
+ * Fail loudly where C would take the unported edge-label path. C reaches it
+ * only when sfdp removes overlap itself (sfdp_layout: AM_PRISM, ctrl.overlap
+ * >= 0, so getSizes collects the "|edgelabel|" nodes) and at least one such
+ * node exists. Schemes 1-2 then act inside remove_overlap, which returns
+ * early when ntry == 0 (prism0, the default); schemes 3-4 shorten the
+ * label nodes in multilevel_spring_electrical_embedding regardless of ntry.
+ * Ordinary edge labels never trigger it: only nodes named "|edgelabel|...".
+ * @see lib/sfdpgen/sfdpinit.c:sfdpLayout
+ * @see lib/neatogen/adjust.c:getSizes (IS_LNODE)
+ * @see lib/sfdpgen/spring_electrical.c:multilevel_spring_electrical_embedding
+ * @see lib/neatogen/overlap.c:remove_overlap
+ */
+function assertEdgeLabelSchemeSupported(g: Graph, scheme: number): void {
+  if (scheme <= 0) return;
+  const ntry = overlapPrismTries(aggetGraph(g, 'overlap') ?? 'prism0');
+  if (ntry === null) return; // ctrl.overlap = -1: getSizes gets no elabels
+  if (scheme <= ELSCHEME_PENALTY2 && ntry === 0) return;
+  for (const n of g.nodes.values()) {
+    if (!n.name.startsWith(EDGE_LABEL_NODE_PREFIX)) continue;
+    throw new RenderError(
+      `label_scheme=${scheme}: edge-label node handling is not supported yet`,
+      'UNSUPPORTED_FEATURE');
+  }
 }
 
 /**

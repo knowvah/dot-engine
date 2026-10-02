@@ -11,6 +11,7 @@
  * @see lib/neatogen/overlap.c:remove_overlap (15.0.0)
  */
 
+import { RenderError } from '../../errors.js';
 import { fma } from '../../common/fma.js';
 import { cdrand } from '../../common/crand.js';
 import {
@@ -30,9 +31,37 @@ import {
 import {
   type SpringElectricalControl,
   AUTOP,
+  QUAD_TREE_NONE,
+  QUAD_TREE_FAST,
   springElectricalEmbedding,
 } from './spring-electrical.js';
 import { removeOverlapPrism } from '../neato/overlap-prism.js';
+
+// ---------------------------------------------------------------------------
+// Quadtree scheme dispatch (loud for the unported embeddings)
+// ---------------------------------------------------------------------------
+
+/**
+ * Mirror of the per-level dispatch: NONE -> _slow, FAST (or HYBRID above
+ * QUAD_TREE_HYBRID_SIZE) -> _fast, else the NORMAL embedding. The first two
+ * are not ported. HYBRID is unreachable here: sfdp's quadtree parser only
+ * yields NONE/NORMAL/FAST (sfdpinit.c:late_quadtree_scheme).
+ * @see lib/sfdpgen/spring_electrical.c:multilevel_spring_electrical_embedding (1140-1148)
+ */
+function embedLevel(
+  dim: number, A: SpMatrix, ctrl: SpringElectricalControl, xc: number[],
+): void {
+  if (ctrl.tscheme === QUAD_TREE_NONE || ctrl.tscheme === QUAD_TREE_FAST) {
+    // Name the resolved scheme: "0"/"false" select none, "2" selects fast.
+    const [value, what] = ctrl.tscheme === QUAD_TREE_NONE
+      ? ['none', 'spring_electrical_embedding_slow']
+      : ['fast', 'spring_electrical_embedding_fast'];
+    throw new RenderError(
+      `quadtree=${value}: ${what} is not supported yet`,
+      'UNSUPPORTED_FEATURE');
+  }
+  springElectricalEmbedding(dim, A, ctrl, xc);
+}
 
 // ---------------------------------------------------------------------------
 // Multilevel driver helpers
@@ -178,7 +207,7 @@ export function multilevelSpringElectricalEmbedding(
   }
 
   for (;;) {
-    springElectricalEmbedding(dim, grid!.A, ctrl, xc);
+    embedLevel(dim, grid!.A, ctrl, xc);
     if (multilevelIsFinest(grid!)) break;
     const P = grid!.P!;
     grid = grid!.prev;
