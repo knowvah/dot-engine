@@ -23,3 +23,15 @@
   diredgeconstraints, clusters, or overlap=ipsep.
 - **Impact**: any loud check must be conditional on C building constraints.
 - **Confidence**: High
+
+## Observation: neato-internal C oracles — use neato, link dylibs
+- **Context**: v2-silent-gaps T1/T5 native oracles for poly.c and cAdjust.
+- **Finding**: under dot, native ND_clust is set on every node, so makePoly collapses to the cluster box — drive poly.c oracles with neato. A scratch C driver can compile an unmodified copy of a neatogen .c against the build's dylibs (static libneatogen symbols are LTO-hidden). For adjust-only native baselines use `neato -n1 -Goverlap=true`; `overlap=false` runs prism, not a no-op.
+- **Impact**: cheap exact oracles for internal neatogen functions.
+- **Confidence**: High
+
+## Observation: rotated polygon vertices differ from native by 1 ulp
+- **Context**: v2-silent-gaps T1.
+- **Finding**: shape=box orientation=20 vertex[2].y is exactly -18 in the port, -17.999999999999996 natively; flips inclusive-bbox polyOverlap verdicts at exact touch. Generator (src/common/poly-vertices.ts / poly-sizing.ts) origin not pinpointed.
+- **Impact**: overlap counting may differ from native for rotated shapes at exact-touch boundaries.
+- **Confidence**: High (observation), mechanism unknown
