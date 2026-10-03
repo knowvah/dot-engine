@@ -19,12 +19,12 @@ import type { Edge } from '../model/edge.js';
 import type { Node } from '../model/node.js';
 import type { TextVariantFlags } from '../common/textmeasure.js';
 import { canvasFont } from '../common/css-font.js';
-import { DEFAULT_FONTNAME, DEFAULT_FONTSIZE } from '../common/make-label.js';
 import { isHtmlValue, htmlValueContent } from '../common/html-string.js';
 import { nodeAttr, readFontAttrs } from '../common/poly-init.js';
 import { initFontEdgeAttr, initFontLabelEdgeAttr } from '../common/edge-label-init.js';
 import { parseHtmlLabel } from '../common/htmltable-parse.js';
 import { isACluster } from '../layout/dot/rank.js';
+import { readFontParams } from '../layout/dot/graph-label.js';
 import type {
   HtmlCellContent, HtmlLabel, HtmlTable, HtmlTextItem,
 } from '../common/htmltable-types.js';
@@ -160,21 +160,9 @@ function collectEdge(acc: Acc, e: Edge): void {
   addLabel(acc, e.attrs.get('taillabel'), lfi);
 }
 
-/**
- * Root/cluster label font. A subgraph reads through its parse-time defaults
- * snapshot, as doGraphLabel does. @see src/layout/dot/graph-label.ts:readFontParams
- */
-function graphLabelFont(sg: Graph): LabelFont {
-  const get = (k: string): string | undefined => sg.attrs.get(k) ?? sg.graphDefaultsSnapshot?.get(k);
-  return {
-    fontname: get('fontname') ?? DEFAULT_FONTNAME,
-    fontsize: parseFloat(get('fontsize') ?? '') || DEFAULT_FONTSIZE,
-  };
-}
-
 function collectGraphLabels(acc: Acc, sg: Graph, root: Graph): void {
   if (isACluster(sg)) {
-    addLabel(acc, sg.attrs.get('label') ?? sg.graphDefaultsSnapshot?.get('label'), graphLabelFont(sg));
+    addLabel(acc, sg.attrs.get('label') ?? sg.graphDefaultsSnapshot?.get('label'), readFontParams(sg));
   }
   for (const child of sg.subgraphs.values()) collectGraphLabels(acc, child, root);
 }

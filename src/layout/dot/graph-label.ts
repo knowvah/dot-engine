@@ -60,7 +60,12 @@ function graphAttrInherited(sg: Graph, key: string): string | undefined {
   return sg.attrs.get(key) ?? sg.graphDefaultsSnapshot?.get(key);
 }
 
-function readFontParams(sg: Graph): { fontsize: number; fontname: string; fontcolor: string } {
+/**
+ * Graph/cluster label font, read through graphAttrInherited.
+ * @internal also used by src/async/collect.ts to request the same face.
+ * @see lib/common/input.c:do_graph_label
+ */
+export function readFontParams(sg: Graph): { fontsize: number; fontname: string; fontcolor: string } {
   return {
     fontsize: parseFloat(graphAttrInherited(sg, 'fontsize') ?? '') || DEFAULT_FONTSIZE,
     fontname: graphAttrInherited(sg, 'fontname') ?? DEFAULT_FONTNAME,

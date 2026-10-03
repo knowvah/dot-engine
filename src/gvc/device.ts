@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * Device render loop and coordinate transform.
+ * Device render loop (point transform: device-transform.ts; label emission:
+ * device-labels.ts).
  *
  * Ports gvrender_ptf, gvrender_begin_graph, and gvrender_end_graph from
  * lib/gvc/gvrender.c.  render() is the top-level entry point; it lives here
@@ -11,7 +12,7 @@
  * @see lib/gvc/gvdevice.c
  */
 
-import type { Point, Box } from '../model/geom.js';
+import type { Box } from '../model/geom.js';
 import { boxOverlap, POINTS_PER_INCH } from '../model/geom.js';
 import { lateDouble } from '../common/nodeinit.js';
 import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin } from './viewport.js';
@@ -21,22 +22,18 @@ import type { Edge } from '../model/edge.js';
 import type { RendererPlugin } from './context.js';
 import { GvcContext, PenType } from './context.js';
 import { invalidArgType } from '../errors.js';
-import { gvrenderTextspan, withLabelEmitState } from './textspan-emit.js';
 import { resolveEdgeAnchor, resolveObjAnchor, beginAnchorIf } from './anchor.js';
 import type { ShapeDesc, TextlabelT } from '../common/types.js';
-import type { TextSpan } from '../common/emit-types.js';
 import { type LayerInfo, parseLayers } from '../common/layers.js';
-import { RenderJob, GVRENDER_DOES_TRANSFORM, EMIT_CLUSTERS_LAST, createObjState, ObjType, EmitState } from './job.js';
+import { RenderJob, EMIT_CLUSTERS_LAST, createObjState, ObjType, EmitState } from './job.js';
 import { walkNodesAndEdges } from './emit-walk.js';
 import { polyInit } from '../common/poly-init.js';
-import { emitHtmlLabel } from '../common/htmltable-emit.js';
 import {
   setHtmlAnchorObj,
   setHtmlObjImgscale,
   resetHtmlAnchorIds,
 } from '../common/htmltable-emit-rules.js';
 import { nodeAttr } from '../common/poly-init.js';
-import type { PlacedHtml } from '../common/htmltable-pos.js';
 import {
   parseStyleFlags,
   resolvePenColor,
@@ -49,10 +46,10 @@ import { isPointNode } from '../common/poly-gencode.js';
 import { resolveRenderColor, withColorScheme } from '../render/color-resolve.js';
 import { emitRoundedBezier } from '../common/poly-shapes.js';
 import { applyClusterObjState, clusterStyle, clusterPeripheries } from './device-cluster.js';
-/** Cluster labels go through the single emit_label port. @see labels.c:emit_label */
-export function renderClusterLabel(sg: Graph, renderer: RendererPlugin, job: RenderJob): void {
-  renderOneLabel(sg.info.label as TextlabelT | undefined, renderer, job, false);
-}
+import { transformPoint } from './device-transform.js';
+import { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
+export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
+export { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
 import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId } from '../render/svg-id.js';
 
 // ---------------------------------------------------------------------------
@@ -70,53 +67,6 @@ declare module './job.js' {
     /** When true, usershape() inlines resolved image bytes as a data: URI. */
     inlineImages?: boolean;
   }
-}
-
-// ---------------------------------------------------------------------------
-// transformPoint — @see lib/gvc/gvrender.c:gvrender_ptf
-// ---------------------------------------------------------------------------
-
-/**
- * Transform a point from graph to device coordinates.
- * Short-circuits when GVRENDER_DOES_TRANSFORM is set (renderer owns mapping).
- *
- * @see lib/gvc/gvrender.c:gvrender_ptf
- */
-export function transformPoint(p: Point, job: RenderJob): Point {
-  if ((job.flags & GVRENDER_DOES_TRANSFORM) !== 0) {
-    return p;
-  }
-  const sx = job.zoom * job.devscale.x;
-  const sy = job.zoom * job.devscale.y;
-  const tx = job.translation.x;
-  const ty = job.translation.y;
-  // ADR-2: SVG landscape rotation lives entirely in the graph `<g>` group
-  // transform (svg_begin_page emits rotate(-job->rotation)); inner coords stay
-  // in the unrotated frame. The ptf rotation branch (applyRotation) is the
-  // raster/imagemap path and must NOT fire here, else job.rotation=90 would
-  // double-rotate every SVG coordinate. applyRotation stays exported as the
-  // faithful gvrender_ptf port (currently dead). @see ADR-2; gvrender.c:gvrender_ptf
-  return applyScale(p, tx, ty, sx, sy);
-}
-
-/** Rotation branch: out.x = -(p.y+ty)*sx, out.y = (p.x+tx)*sy @see gvrender_ptf */
-export function applyRotation(p: Point, tx: number, ty: number, sx: number, sy: number): Point {
-  const x = -(p.y + ty) * sx;
-  const y = (p.x + tx) * sy;
-  return buildPoint(x, y);
-}
-
-/** No-rotation branch: out.x = (p.x+tx)*sx, out.y = (p.y+ty)*sy @see gvrender_ptf */
-export function applyScale(p: Point, tx: number, ty: number, sx: number, sy: number): Point {
-  const x = (p.x + tx) * sx;
-  const y = (p.y + ty) * sy;
-  return buildPoint(x, y);
-}
-
-/** Construct a Point value. Extracted to avoid inline object literals in return position. */
-export function buildPoint(x: number, y: number): Point {
-  const pt: Point = { x, y };
-  return pt;
 }
 
 // ---------------------------------------------------------------------------
@@ -280,80 +230,6 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
     // pop_obj_state in emit_end_edge (line 3028)
     job.popObj();
   }
-}
-
-/** valign codes stored on textlabel_t. @see lib/common/types.h:textlabel_t.valign */
-const VALIGN_TOP = 't'.charCodeAt(0);
-const VALIGN_BOTTOM = 'b'.charCodeAt(0);
-
-/** First-span baseline y per valign. @see lib/common/labels.c:emit_label (240-251) */
-function labelFirstSpanY(lp: TextlabelT): number {
-  if (lp.valign === VALIGN_TOP) return lp.pos.y + lp.space.y / 2.0 - lp.fontsize;
-  if (lp.valign === VALIGN_BOTTOM) {
-    return lp.pos.y - lp.space.y / 2.0 + lp.dimen.y - lp.fontsize;
-  }
-  return lp.pos.y + lp.dimen.y / 2.0 - lp.fontsize;
-}
-
-/** Span x position per justification. @see lib/common/labels.c:emit_label (254-266) */
-function labelSpanX(lp: TextlabelT, just: 'l' | 'n' | 'r'): number {
-  if (just === 'l') return lp.pos.x - lp.space.x / 2.0;
-  if (just === 'r') return lp.pos.x + lp.space.x / 2.0;
-  return lp.pos.x;
-}
-
-/**
- * Emit one label's text spans if present and placed.
- * Shared by edge-label, node-xlabel, and graph-label slots.
- * URL/anchor/map machinery and E_decorate attachment (emit.c:emit_attachment)
- * are not ported, matching the live path's AD-2 scope.
- * @see lib/common/emit.c:emit_label
- * @see lib/common/labels.c:emit_label
- */
-export function renderOneLabel(
-  lp: TextlabelT | undefined,
-  renderer: RendererPlugin,
-  job: RenderJob,
-  requireSet = true,
-): void {
-  // C gates `->set` at the xlabel/edge-label CALL SITES (emit.c:1829,
-  // emit_edge_label:2891), but draws root-graph and cluster labels on
-  // existence alone (emit.c:3656, 3920) — an unplaced label (e.g. fdp's
-  // non-comparable-clusters abort skips gv_postprocess) still renders at its
-  // default pos. Callers mirroring the existence-only sites pass false.
-  if (!lp) return;
-  if (requireSet && !lp.set) return;
-  // HTML branch: @see lib/common/labels.c:emit_label (226-230)
-  // C routes to emit_html_label(job, lp->u.html, lp) using lp->pos as anchor.
-  if (lp.html) {
-    if (lp.u.kind === 'html') {
-      // Route the whole HTML label (table box/fill polygons + text) into the
-      // object's LABEL emit-state so its ops land in _ldraw_, not _draw_.
-      const html = lp.u.html as PlacedHtml;
-      const pos = lp.pos;
-      withLabelEmitState(job, () => emitHtmlLabel(html, pos, renderer, job));
-    }
-    return;
-  }
-  if (lp.u.kind !== 'txt' || lp.u.nspans < 1) return;
-  let y = labelFirstSpanY(lp);
-  for (let i = 0; i < lp.u.nspans; i++) {
-    const span = lp.u.span[i] as TextSpan | undefined;
-    if (!span) break;
-    // Emit only visible spans; the baseline still advances below so blank
-    // lines reserve vertical space. @see gvrender_textspan (gvrender.c:419).
-    gvrenderTextspan(renderer, { x: labelSpanX(lp, span.just), y }, span, job);
-    y -= span.size.y; // UL position for next span (unconditional)
-  }
-}
-
-/**
- * Emit node external label (ND_xlabel) if placed.
- * Must run inside the node group, after codefn (shape draw), matching C order.
- * @see lib/common/emit.c:emit_node (1829-1830)
- */
-export function renderNodeXLabel(n: Node, renderer: RendererPlugin, job: RenderJob): void {
-  renderOneLabel(n.info.xlabel as TextlabelT | undefined, renderer, job);
 }
 
 /**
