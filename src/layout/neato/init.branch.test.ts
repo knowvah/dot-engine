@@ -456,15 +456,17 @@ describe('solveModel', () => {
     warn.mockRestore();
   });
 
-  it('MODE_KK runs majorization with maxiter forced to 0', () => {
+  it('MODE_KK routes to kkNeato, which springs the edge to its len', () => {
     const g = new Graph('g', 'undirected');
     const a = new Node(0, 'A', g); const b = new Node(1, 'B', g);
     g.nodes.set('A', a); g.nodes.set('B', b);
     const e = new Edge(a, b, 'AB'); e.attrs.set('len', '1.5');
     g.edges.push(e);
+    // neatoInitNode allocates ND_pos before solve_model (C gv_calloc).
+    a.info.pos = [0, 0]; b.info.pos = [0, 0];
     solveModel(g, MODE_KK, MODEL_SHORTPATH);
-    expect(a.info.pos).toBeDefined();
-    expect(Number.isFinite(a.info.pos![0])).toBe(true);
+    const d = Math.hypot(a.info.pos![0] - b.info.pos![0], a.info.pos![1] - b.info.pos![1]);
+    expect(d).toBeCloseTo(1.5, 3);
   });
 
   it('MODE_MAJOR with a len attr uses the weighted APSP path', () => {

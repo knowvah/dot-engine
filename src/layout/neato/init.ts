@@ -21,6 +21,7 @@ import {
   MODEL_SUBSET as STRESS_MODEL_SUBSET,
 } from './stress.js';
 import { sgdLayout } from './sgd.js';
+import { kkNeato } from './kk.js';
 import { checkStart, assertSupported, parseStart, INIT_RANDOM, INIT_REGULAR } from './start.js';
 
 export { checkStart };
@@ -88,15 +89,10 @@ export function neatoInitNode(n: Node, dim = DFLT_DIM): void {
     n.info.pos = pos;
   }
   if (n.info.UF_size === undefined) n.info.UF_size = 1;
-  // C neato_init_node has NO size defaulting (neatoinit.c:60-66) — after
-  // common_init_node, ND_width is always written (late_double clamps a 0
-  // attr to the 0.75 default; every initfn assigns). The port's NodeInfo
-  // zero-initializes width/height (calloc mirror) and two port-only paths
-  // leave them at that unset-0 (no-measurer initNodeDefaults; poly-null
-  // custom/epsf shapes — C gives customs box geometry, a modeling gap
-  // flagged in the journal), so a fallback is still needed. The ONE case
-  // where 0 is a legitimate post-init size is shape=plain (poly_init
-  // IS_PLAIN, shapes.c:1962) — never clobber it.
+  // C neato_init_node has no size defaulting (neatoinit.c:60-66); the port's
+  // zero-initialised width/height need a fallback on two port-only paths
+  // (no-measurer initNodeDefaults, poly-null custom/epsf shapes). The one
+  // legitimate post-init 0 is shape=plain (poly_init IS_PLAIN) — never clobber it.
   const plainShaped = (n.info.shape as ShapeDesc | undefined)?.name === 'plain';
   if (!n.info.width && !plainShaped) n.info.width = 0.75;
   if (!n.info.height && !plainShaped) n.info.height = 0.5;
@@ -337,7 +333,7 @@ export function runMajorization(g: Graph, mode: number, model: number): void {
   const haveLen = graphHasLen(g);
   const vtx = makeGraphDataC(g, nodeList, haveLen);
   checkStart(g); // C: srand48(seed) immediately before initLayout draws
-  const maxi = mode === MODE_KK ? 0 : lateDouble(g.attrs.get('maxiter'), DFLT_ITERATIONS, 0);
+  const maxi = lateDouble(g.attrs.get('maxiter'), DFLT_ITERATIONS, 0);
   const epsilon = lateDouble(g.attrs.get('epsilon'), 1e-4, 0); // DFLT_TOLERANCE
   const Dij = haveLen ? computeWeightedApspPacked(vtx, n) : computeApspPacked(vtx, n);
   const dCoords = [new Float64Array(n), new Float64Array(n)];
@@ -401,6 +397,7 @@ export function makeGraphDataC(g: Graph, nodeList: Node[], haveLen: boolean): Vt
 export function solveModel(g: Graph, mode: number, model: number): void {
   if (g.nodes.size < 2) return;
   assertSupported(g, mode, model);
+  if (mode === MODE_KK) return kkNeato(g, g.nodes.size, model);
   if (mode === MODE_SGD) {
     // C initial_positions -> checkStart: regular positions are kept
     if (parseStart(g.root.attrs.get('start'), INIT_RANDOM).init === INIT_REGULAR) checkStart(g);

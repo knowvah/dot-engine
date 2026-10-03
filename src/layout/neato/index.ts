@@ -14,6 +14,7 @@
 import type { Graph } from '../../model/graph.js';
 import type { LayoutEngine } from '../../gvc/context.js';
 import {
+  MODE_KK,
   neatoInitNode,
   userPos,
   solveModel,
@@ -31,7 +32,9 @@ import { setEdgeTypeFromAttr } from '../dot/index.js';
 import {
   pccomps,
   computeSubgraphBB,
+  getPack,
   getPackInfo,
+  getPackModeInfo,
   packGraphs,
   PackMode,
   type PackInfo,
@@ -190,7 +193,9 @@ export function neatoLayout(g: Graph): void {
 
   // C uses pccomps (pin-aware): components with a pinned node are collected
   // first (index 0) so the packer can hold them fixed. @see neatoinit.c:1391
-  const { graphs: comps, pinned } = pccomps(g, '_neato_cc');
+  const { graphs: comps, pinned } = neatoPack(g, mode) >= 0
+    ? pccomps(g, '_neato_cc')
+    : { graphs: [g], pinned: false };
   if (comps.length > 1) {
     layoutComponents(g, comps, mode, model, pinned);
   } else {
@@ -210,6 +215,23 @@ export function neatoLayout(g: Graph): void {
   // xlabel map placement pass. @see lib/neatogen/neatoinit.c:1440
   placeGraphLabel(g);
   gvPostprocess(g);
+}
+
+/**
+ * C's Pack decision: unset `pack` with no `packmode` packs (CL_OFFSET) unless
+ * layoutMode is MODE_KK (0); a set `packmode` always packs. Negative means the
+ * whole graph is laid out at once.
+ * @see lib/neatogen/neatoinit.c:1371-1383 (neato_layout)
+ */
+function neatoPack(g: Graph, layoutMode: number): number {
+  const pinfo: PackInfo = {
+    aspect: 1, sz: 0, margin: CL_OFFSET, doSplines: false,
+    mode: PackMode.Undef, fixed: null, vals: null, flags: 0,
+  };
+  const mode = getPackModeInfo(g, PackMode.Undef, pinfo);
+  const pack = getPack(g, -1, CL_OFFSET);
+  if (mode === PackMode.Undef) return pack < 0 && layoutMode !== MODE_KK ? CL_OFFSET : pack;
+  return pack < 0 ? CL_OFFSET : pack;
 }
 
 /**
