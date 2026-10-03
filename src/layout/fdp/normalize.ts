@@ -14,6 +14,7 @@
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import { aggetGraph } from './fdp-model.js';
+import { RADIANS } from '../../common/arith.js';
 
 /** mapbool for the "normalize" attr. @see lib/common/utils.c:mapbool */
 function mapbool(s: string): boolean {
@@ -34,7 +35,7 @@ function angleSet(g: Graph): number | null {
   if (a === undefined || a === '') return null;
   const ang = parseAngle(a);
   if (ang === null) return null;
-  return (wrapDegrees(ang) / 180.0) * Math.PI; // RADIANS(a) = a/180.0*M_PI
+  return RADIANS(wrapDegrees(ang));
 }
 
 /** strtod (leading whitespace, sign) with the mapbool fallback of angleSet. */
