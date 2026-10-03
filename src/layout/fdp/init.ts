@@ -17,6 +17,7 @@ import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import { commonInitNodeEdge, lateDouble, layoutMeasurer } from '../../common/nodeinit.js';
+import { inputscaleDivisor } from '../../common/utils-inputscale.js';
 import { initEdgeLabels } from '../../common/edge-label-init.js';
 import type { TextMeasurer } from '../../common/textmeasure.js';
 import { fdpParms } from './tlayout-parms.js';
@@ -25,24 +26,24 @@ import { processClusterEdges } from './cluster-edges.js';
 
 /**
  * Read user-supplied positions from the pos attribute (P_SET; P_PIN
- * with a "!" suffix or pin=true). PSinputscale (inputscale) is not
- * ported — no supported input sets it.
+ * with a "!" suffix or pin=true), divided by PSinputscale when > 0.
  * @see lib/fdpgen/fdpinit.c:initialPositions
  */
 function initialPositions(g: Graph): void {
+  const div = inputscaleDivisor(g);
   for (const np of g.nodes.values()) {
     const p = np.attrs.get('pos');
     if (p === undefined || p === '') continue;
-    applyPosAttr(np, p);
+    applyPosAttr(np, p, div);
   }
 }
 
 /** Parse one "x,y[!]" pos value onto np. @see fdpinit.c:47-66 */
-function applyPosAttr(np: Node, p: string): void {
+function applyPosAttr(np: Node, p: string, div: number): void {
   const m = /^(-?[\d.]+),(-?[\d.]+)\s*(!)?/.exec(p);
   if (m === null) return; // C warns "expected two floats"
-  np.info.pos![0] = parseFloat(m[1]!);
-  np.info.pos![1] = parseFloat(m[2]!);
+  np.info.pos![0] = parseFloat(m[1]!) / div;
+  np.info.pos![1] = parseFloat(m[2]!) / div;
   const pinAttr = np.attrs.get('pin');
   const pinned = m[3] === '!' ||
     (pinAttr !== undefined && /^(true|yes|1)$/i.test(pinAttr));

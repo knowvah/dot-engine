@@ -118,7 +118,8 @@ describe('AC5: layout() engine dispatch', () => {
     const ctx = new GvcContext(stubMeasurer);
     const engine = makeEngine('dot');
     ctx.register(engine);
-    const g = {} as unknown as Graph;
+    // C binds Agraphinfo_t before layout (gvlayout.c:58), so a graph always has info.
+    const g = { info: {} } as unknown as Graph;
     ctx.layout(g, 'dot');
     expect(engine.calls).toEqual(['layout']);
     ctx.freeLayout(g, 'dot');

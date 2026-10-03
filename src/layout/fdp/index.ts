@@ -14,8 +14,10 @@ import type { Graph } from '../../model/graph.js';
 import type { LayoutEngine } from '../../gvc/context.js';
 import { setEdgeTypeFromAttr } from '../dot/index.js';
 import {
-  EDGETYPE_LINE, EDGETYPE_NONE, splineEdges, injectOraclePositions,
+  EDGETYPE_LINE, EDGETYPE_NONE, EDGETYPE_ORTHO, splineEdges, injectOraclePositions,
 } from '../neato/splines.js';
+import { EDGETYPE_COMPOUND } from '../dot/splines.js';
+import { RenderError } from '../../errors.js';
 import { neatoSetAspect } from '../neato/init.js';
 import { placeGraphLabel } from '../dot/position-bbox.js';
 import { gvPostprocess } from '../../common/postproc.js';
@@ -33,6 +35,10 @@ export { findCComp } from './comp.js';
 export { deriveGraph, type LayoutInfo } from './derive.js';
 export { fdpInitNodeEdge, fdpCleanup } from './init.js';
 export { fdpInitParams, fdpParms } from './tlayout-parms.js';
+
+/** @see lib/fdpgen/layout.c:fdpSplines (agwarningf text) */
+const CLUSTER_EDGE_WARNING =
+  'splines and cluster edges not supported - using line segments';
 
 /**
  * Graph-level initialization: edge type, gdata, clusters, parameters,
@@ -54,13 +60,47 @@ export function fdpInitGraph(g: Graph): void {
 }
 
 /**
- * Route edges by the resolved edge type. Compound (cluster) edges and
- * the HAS_CLUST_EDGE warning path are not ported — no supported input
- * has cluster-endpoint edges.
+ * Route edges with edge type `et`: splineEdges reads the type from GD_flags,
+ * so the C local `et = EDGETYPE_LINE` is applied for the call and restored.
+ * @see lib/neatogen/neatosplines.c:spline_edges1
+ */
+function splineEdges1(g: Graph, et: number): void {
+  const saved = g.info.flags;
+  g.info.flags = (saved & ~0xf) | et;
+  try {
+    splineEdges(g);
+  } finally {
+    g.info.flags = saved;
+  }
+}
+
+/**
+ * Route edges by the resolved edge type. C's State/Nop globals are not
+ * modeled: State < GVSPLINES at the tail holds exactly when the
+ * `et > EDGETYPE_ORTHO` block did not route (types <= ORTHO, or the
+ * HAS_CLUST_EDGE fallback), and Nop = 2 is only set on the compoundEdges
+ * path, which throws here. So the tail is the `else` of the block.
  * @see lib/fdpgen/layout.c:fdpSplines
  */
 function fdpSplines(g: Graph): void {
-  splineEdges(g); // spline_edges1(g, et) — straight lines + clipping
+  let et = g.info.flags & 0xf;
+  if (et > EDGETYPE_ORTHO) {
+    if (et === EDGETYPE_COMPOUND) {
+      // C: splineEdges(g, compoundEdges, EDGETYPE_SPLINE) — unported router.
+      throw new RenderError(
+        'splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet',
+        'UNSUPPORTED_FEATURE',
+      );
+    }
+    if (g.info.n_cluster_edges) { // HAS_CLUST_EDGE(g)
+      console.warn(CLUSTER_EDGE_WARNING);
+      et = EDGETYPE_LINE;
+    } else {
+      splineEdges1(g, et);
+      return; // State == GVSPLINES
+    }
+  }
+  splineEdges1(g, et); // State < GVSPLINES
 }
 
 /**

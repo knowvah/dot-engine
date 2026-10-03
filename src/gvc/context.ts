@@ -300,6 +300,9 @@ export class GvcContext {
     }
     if (g.info) g.info.gvc = this;
     engine.layout(g);
+    // C: GD_cleanup(g) = gvle->cleanup — freeLayout must use the engine that
+    // actually ran, not its argument. @see lib/gvc/gvlayout.c:88
+    if (g.info) g.info.cleanup = (x: Graph): void => engine.cleanup(x);
     // Mark the graph laid-out so the public getLayout can reject a graph that
     // still carries calloc-zero geometry defaults.
     if (g.info) g.info.laidOut = true;
@@ -313,6 +316,11 @@ export class GvcContext {
    * @see lib/gvc/gvlayout.c:gvFreeLayout
    */
   freeLayout(g: Graph, engineName: EngineName): void {
-    this.checkLayoutArgs(g, engineName).cleanup(g);
+    this.checkLayoutArgs(g, engineName); // argument validation only
+    const cleanup = g.info?.cleanup;
+    if (cleanup) {
+      cleanup(g);
+      g.info.cleanup = undefined;
+    }
   }
 }

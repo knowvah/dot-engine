@@ -84,7 +84,7 @@ describe('C-port throw sites (group B): direct calls', () => {
   });
 
   it('gvXmlEscape malformed UTF-8 -> RENDER_ERROR (C exit)', () => {
-    const e = caught(() => gvXmlEscape('ÿ', NO_FLAGS));
+    const e = caught(() => gvXmlEscape('\ud800', NO_FLAGS)); // lone surrogate
     expect(e).toBeInstanceOf(RenderError);
     expect((e as RenderError).code).toBe('RENDER_ERROR');
     expect((e as RenderError).message).toBe(

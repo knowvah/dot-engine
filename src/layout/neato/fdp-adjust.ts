@@ -11,6 +11,7 @@
  */
 
 import type { Graph } from '../../model/graph.js';
+import type { Node } from '../../model/node.js';
 import { makeMatrix, getSizes } from '../sfdp/init.js';
 import {
   smIsSymmetric, smRemoveDiagonal, smGetRealAdjacencySymmetrized,
@@ -20,6 +21,7 @@ import { removeOverlapPrism } from './overlap-prism.js';
 import { adjustNodesScale } from './sc-adjust.js';
 import { sepFactor } from './sep-factor.js';
 import { lateDouble } from '../../common/nodeinit.js';
+import { RenderError } from '../../errors.js';
 
 /** @see lib/neatogen/adjust.c:DFLT_MARGIN (points) */
 const DFLT_MARGIN = 4;
@@ -106,14 +108,64 @@ export function fdpAdjust(g: Graph, ntry: number): void {
   }
 }
 
+/** Axis-aligned half extents (inches) of `n` inflated by the `sep` margin.
+ * @see lib/neatogen/poly.c:makePoly / makeAddPoly (bbox of the vertices) */
+function inflatedHalfSize(
+  n: Node,
+  sep: ReturnType<typeof sepFactor>,
+): { x: number; y: number } {
+  const hw = (n.info.width ?? 0) / 2;
+  const hh = (n.info.height ?? 0) / 2;
+  return sep.doAdd
+    ? { x: hw + sep.x / 72, y: hh + sep.y / 72 }
+    : { x: hw * sep.x, y: hh * sep.y };
+}
+
+/**
+ * True when at least one pair of nodes overlaps. Approximates C's
+ * polyOverlap by its first test (bounding-box intersection, inclusive);
+ * that test is exact for box/record shapes and conservative for rounded
+ * shapes, whose polygon-level tests are not ported.
+ * @see lib/neatogen/adjust.c:countOverlap
+ * @see lib/neatogen/poly.c:pintersect / polyOverlap
+ */
+function anyNodesOverlap(g: Graph): boolean {
+  const sep = sepFactor(g);
+  const boxes = Array.from(g.nodes.values(), (n) => {
+    const h = inflatedHalfSize(n, sep);
+    const [x, y] = n.info.pos ?? [0, 0];
+    return { lx: x! - h.x, ly: y! - h.y, ux: x! + h.x, uy: y! + h.y };
+  });
+  return boxes.some((p, i) => boxes.slice(i + 1).some((q) =>
+    p.lx <= q.ux && q.lx <= p.ux && p.ly <= q.uy && q.ly <= p.uy));
+}
+
+/**
+ * AM_VOR (`overlap=voronoi`, matched case-insensitively) is the only value
+ * selecting vAdjust; its Voronoi adjuster is not ported. C reaches it only
+ * with 2+ nodes and when countOverlap finds an overlap (vAdjust returns 0
+ * first otherwise).
+ * @see lib/neatogen/adjust.c:vAdjust
+ */
+function rejectVoronoi(g: Graph, flag: string | undefined): void {
+  if (flag?.toLowerCase() !== 'voronoi' || g.nodes.size < 2) return;
+  if (!anyNodesOverlap(g)) return;
+  throw new RenderError(
+    `overlap=${flag}: Voronoi overlap removal is not supported yet`,
+    'UNSUPPORTED_FEATURE',
+  );
+}
+
 /**
  * Full adjustNodes: scale-family via scAdjust, PRISM via fdpAdjust,
- * everything else a no-op (AM_NONE, or a mode with no divergent corpus
- * coverage — see sc-adjust module doc).
+ * `voronoi` fails loudly when overlaps exist, everything else a no-op
+ * (AM_NONE, or a mode with no divergent corpus coverage — see sc-adjust
+ * module doc).
  * @see lib/neatogen/adjust.c:adjustNodes / removeOverlapWith
  */
 export function adjustNodesFull(g: Graph): number {
   const flag = g.attrs.get('overlap') ?? g.root.attrs.get('overlap');
+  rejectVoronoi(g, flag);
   const ntry = overlapPrismTries(flag);
   // C removeOverlapWith: fewer than 2 nodes short-circuits every mode.
   if (ntry !== null && g.nodes.size >= 2) {

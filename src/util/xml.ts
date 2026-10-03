@@ -127,51 +127,37 @@ class XmlEscaper {
   }
 
   /**
-   * Decode a multi-byte UTF-8 sequence at s[pos] and emit &#xNNNN;.
+   * Emit &#xNNNN; for the Unicode code point at s[pos]. JS strings are
+   * UTF-16, so the code point (what C decodes from UTF-8) comes from
+   * codePointAt, and an astral character consumes two units.
    * @see lib/util/xml.c:xml_core (UTF-8 block)
    */
   static utf8Entity(s: string, pos: number): [string, number] {
-    const b0 = s.charCodeAt(pos) & 0xff;
-    const cp = XmlEscaper.decodeUtf8(s, pos, b0);
-    const consumed = XmlEscaper.utf8ByteLen(b0);
+    const cp = XmlEscaper.decodeUtf8(s, pos);
+    const consumed = XmlEscaper.utf8ByteLen(cp);
     return [`&#x${cp.toString(16)};`, consumed];
   }
 
   /**
-   * Decode the codepoint value from a multi-byte UTF-8 sequence.
+   * Return the code point at s[pos]. A lone surrogate is the analogue of
+   * malformed UTF-8, where C reports an error and exits (xml.c:135).
    * @see lib/util/xml.c:xml_core (fprintf + graphviz_exit at xml.c:135)
    */
-  static decodeUtf8(s: string, pos: number, b0: number): number {
-    if ((b0 >> 5) === 6) {
-      return ((b0 & 0x1f) << 6) | (s.charCodeAt(pos + 1) & 0x3f);
+  static decodeUtf8(s: string, pos: number): number {
+    const cp = s.codePointAt(pos)!; // caller: pos < s.length
+    if (cp >= 0xd800 && cp <= 0xdfff) {
+      throw new RenderError(`gvXmlEscape: malformed UTF-8 at position ${pos}`, 'RENDER_ERROR');
     }
-    if ((b0 >> 4) === 14) {
-      return (
-        ((b0 & 0x0f) << 12) |
-        ((s.charCodeAt(pos + 1) & 0x3f) << 6) |
-        (s.charCodeAt(pos + 2) & 0x3f)
-      );
-    }
-    if ((b0 >> 3) === 30) {
-      return (
-        ((b0 & 0x07) << 18) |
-        ((s.charCodeAt(pos + 1) & 0x3f) << 12) |
-        ((s.charCodeAt(pos + 2) & 0x3f) << 6) |
-        (s.charCodeAt(pos + 3) & 0x3f)
-      );
-    }
-    throw new RenderError(`gvXmlEscape: malformed UTF-8 at position ${pos}`, 'RENDER_ERROR');
+    return cp;
   }
 
   /**
-   * Return the byte-length of a UTF-8 sequence from its leading byte.
-   * @see lib/util/xml.c:xml_core (fprintf + graphviz_exit at xml.c:135)
+   * Return how many UTF-16 units encode the code point (C: the UTF-8 byte
+   * length from the leading byte).
+   * @see lib/util/xml.c:xml_core (length computation)
    */
-  static utf8ByteLen(b0: number): number {
-    if ((b0 >> 5) === 6) return 2;
-    if ((b0 >> 4) === 14) return 3;
-    if ((b0 >> 3) === 30) return 4;
-    throw new RenderError(`gvXmlEscape: invalid UTF-8 leading byte 0x${b0.toString(16)}`, 'RENDER_ERROR');
+  static utf8ByteLen(cp: number): number {
+    return cp > 0xffff ? 2 : 1;
   }
 
   static isDecDigit(c: string): boolean {

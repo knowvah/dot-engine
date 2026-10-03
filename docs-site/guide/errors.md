@@ -70,7 +70,7 @@ identifies it.
 | `type` | `render` for `RENDER_ERROR`; `semantic` for `UNKNOWN_LAYOUT` and `UNSUPPORTED_FEATURE` |
 | Codes | `RENDER_ERROR`, `UNKNOWN_LAYOUT`, `UNSUPPORTED_FEATURE` |
 | Fields | `cause` when the failure wrapped another error. No `location` |
-| Caller action | `RENDER_ERROR`: change the graph. `UNKNOWN_LAYOUT`: fix the `layout=` attribute. `UNSUPPORTED_FEATURE`: avoid the feature (for example, sfdp with `rotation=45`) |
+| Caller action | `RENDER_ERROR`: change the graph. `UNKNOWN_LAYOUT`: fix the `layout=` attribute. `UNSUPPORTED_FEATURE`: avoid the feature (for example, sfdp with `rotation=45`; see the [table](#unsupported-feature-reference)) |
 
 ### `InternalError`
 
@@ -112,6 +112,42 @@ Nothing the DOT author can change will reliably avoid an `InternalError`.
 
 An unregistered engine argument is rejected even when the DOT source sets a valid
 `layout=` attribute. The argument is checked first.
+
+## `UNSUPPORTED_FEATURE` reference
+
+Every attribute value below makes layout throw a `RenderError` with code
+`UNSUPPORTED_FEATURE` where native Graphviz would run an algorithm that
+dot-engine has not ported. The alternative was to render a layout that differs
+from Graphviz without saying so. The check fires only when the condition in
+the "Fires when" column holds; the same attribute elsewhere renders normally.
+To avoid the error, remove the attribute or change it to a supported value.
+
+| Engine | Attribute and value | Fires when | Graphviz feature needed |
+|--------|--------------------|------------|-------------------------|
+| neato | `mode=hier` | Always (after the graph has 2+ nodes and `maxiter` is not negative) | Hierarchical stress majorization (`stress_majorization_with_hierarchy`) |
+| neato | `mode=ipsep` | Only when Graphviz would build constraints: `diredgeconstraints` is true or `hier*`, `overlap=ipsep`, or the graph has a top-level cluster. Without constraints it runs as stress majorization, as in Graphviz | Constrained majorization (`stress_majorization_cola`) |
+| neato | `start=self` | `mode` is `major` (the default) or `ipsep` | Smart initialisation (`smart_ini`). Under `mode=KK` or `mode=sgd` it logs `start=0 not supported with mode=self - ignored` once per render, as Graphviz does |
+| neato | `model=subset` | `mode` is `major` or `KK` | The subset distance model |
+| neato | `model=circuit` | `mode` is `major`, or `KK` on a connected graph. `KK` on a disconnected graph with no `pack` or `packmode` logs a warning and uses shortest paths, as Graphviz does | The circuit distance model (`circuit_model`) |
+| neato, twopi, circo | `overlap=voronoi` (case-insensitive) | The graph has 2+ nodes and at least two nodes overlap. twopi and circo reach it only for a single-component graph. The overlap test uses inflated bounding boxes (see [known divergences](https://github.com/knowvah/dot-engine/blob/main/docs/known-divergences.md)) | Voronoi overlap removal (`vAdjust`) |
+| fdp | `overlap=` one of `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | The mode is reached after the `N:` force-iteration tries, which is when those tries do not remove every overlap (or `N` is 0 or absent). The `N:` prefix is allowed, for example `3:voronoi` | The matching `removeOverlapWith` adjust algorithm |
+| fdp | `splines=compound` | Always, with or without clusters | Cluster-avoiding edge routing (`compoundEdges`) |
+| sfdp | `smoothing=` anything except `none` or `0` | Always | `post_process_smoothing` |
+| sfdp | `rotation=` any non-zero number | Always | `rotate()` before overlap removal |
+| sfdp | `label_scheme=1` to `4` | A node named `|edgelabel|...` exists, `overlap` resolves to `prism` mode, and either the scheme is 3 or 4, or the scheme is 1 or 2 and the prism tries are above 0 (`overlap=prism` with a count, not the default `prism0`). Values above 4 count as 0. Ordinary edge labels never trigger it | Edge-label node handling (`edge_labeling_scheme`) |
+| sfdp | `quadtree=none` (also `0`, `false`) | Any graph with at least one node. The message names the resolved scheme | `spring_electrical_embedding_slow` |
+| sfdp | `quadtree=fast` (also `2`) | Any graph with at least one node. The message names the resolved scheme | `spring_electrical_embedding_fast` |
+| all engines | A node shape drawn by a special `round_corners` case that is not ported | The node uses that shape. Message: `special shape N not yet ported` | The shape's `round_corners` drawing branch. This is an internal guard against a shape number with no drawing case; no named shape is known to reach it |
+
+Most messages have the form `<attribute>=<value>: <what> is not supported yet`.
+The exceptions are `smoothing` and `rotation` (which name the missing routine),
+the fdp rows, and the shape row, which use the wordings above. Branch on
+`err.code === 'UNSUPPORTED_FEATURE'`, not on the text.
+
+Values that select the default (for example `quadtree=normal`, `true`, `yes`,
+`1`) and the Graphviz-accepted values that are ported (for example
+`start=regular`, `start=random`, `model=mds`, `overlap=prism` and the `scale`
+family) render normally.
 
 ## Per-function reference
 
