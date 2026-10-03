@@ -159,14 +159,17 @@ export function copyPositions(_sg: SubGraph): void {
 // ---------------------------------------------------------------------------
 
 /**
- * Multi-component overlap adjustment stub. C runs adjustNodes(sg) on each
- * DERIVED component subgraph before packing (circularinit.c:212); porting
- * that requires width/pos plumbing on derived nodes and no divergent
- * corpus case reaches it yet. The single-component path (adjustNodesFull
- * on the real graph, circularinit.c:203) IS ported — see circoLayout.
+ * Per-component adjustNodes(sg). C calls it on each DERIVED component
+ * (circularinit.c:212), but the derived graph is a fresh root that never
+ * declares `overlap`, `normalize` or `scale`: agget(sg, "overlap") is NULL
+ * (AM_NONE) and removeOverlapWith only runs the no-op normalize/simpleScale.
+ * Verified against the native binary (T8, v2-silent-gaps): output is
+ * independent of those attributes, so this is a faithful no-op, not a gap.
+ * The single-component path (adjustNodesFull on the real graph,
+ * circularinit.c:203) IS ported — see circoLayout.
  */
 export function adjustNodes(_sg: SubGraph): void {
-  // deferred: see plans/xdot-conformance/decision-journal.md (PRISM entry)
+  // faithful no-op: the derived graph carries no overlap/normalize/scale attrs
 }
 
 // ---------------------------------------------------------------------------
