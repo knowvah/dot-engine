@@ -37,3 +37,12 @@
 export function cround(v: number): number {
   return v >= 0 ? Math.floor(v + 0.5) : Math.ceil(v - 0.5);
 }
+
+/**
+ * Degrees to radians in C's operation order, `(deg)/180.0 * M_PI`.
+ * `deg * Math.PI / 180` rounds differently for some angles (e.g. 33°).
+ * @see lib/common/arith.h:49 (RADIANS)
+ */
+export function RADIANS(deg: number): number {
+  return (deg / 180.0) * Math.PI;
+}

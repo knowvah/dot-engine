@@ -22,6 +22,7 @@ import type { Point } from '../model/geom.js';
 import { STAR, CYLINDER } from './shapeData.js';
 import { starVertices } from './poly-vertices.js';
 import { fma } from './fma.js';
+import { RADIANS } from './arith.js';
 
 /** Whitespace in points around labels / between peripheries. @see lib/common/const.h:GAP */
 export const GAP = 4;
@@ -277,7 +278,7 @@ export interface PolyGeom {
 /** Distort, skew, orient, and scale one unit vertex. @see shapes.c:poly_init */
 function transformUnitVertex(R: Point, g: PolyGeom, c: { skewdist: number; gdistortion: number; gskew: number }, bb: Point): Point {
   const D = { x: R.x * (c.skewdist + R.y * c.gdistortion) + R.y * c.gskew, y: R.y };
-  const alpha = (g.orientation * Math.PI) / 180 + Math.atan2(D.y, D.x);
+  const alpha = RADIANS(g.orientation) + Math.atan2(D.y, D.x);
   // C uses libm hypot(D.x, D.y). V8's Math.hypot is a scaled algorithm that
   // returns a result 1 ULP off from libm hypot for in-range polygon vertices
   // (e.g. hypot(0.35355…, 0.35355…): libm = 0.5 exactly, Math.hypot = 0.5+1ULP),
