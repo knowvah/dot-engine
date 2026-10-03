@@ -11,14 +11,16 @@
  */
 
 import type { Graph } from '../../model/graph.js';
-import type { Node } from '../../model/node.js';
 import { makeMatrix, getSizes } from '../sfdp/init.js';
 import {
   smIsSymmetric, smRemoveDiagonal, smGetRealAdjacencySymmetrized,
   MATRIX_TYPE_REAL,
 } from '../sfdp/sparse-matrix.js';
 import { removeOverlapPrism } from './overlap-prism.js';
-import { adjustNodesScale } from './sc-adjust.js';
+import { scAdjust } from './sc-adjust.js';
+import { AM_ORTHO, AM_ORTHO_YX, AM_ORTHOXY, AM_ORTHOYX, AM_PORTHO, AM_PORTHO_YX, AM_PORTHOXY, AM_PORTHOYX, cAdjust } from './constraint-adjust.js';
+import { countOverlapIn, sAdjustGraph } from './adjust-info.js';
+import { vpscAdjust } from './vpsc-adjust.js';
 import { sepFactor } from './sep-factor.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { RenderError } from '../../errors.js';
@@ -108,69 +110,120 @@ export function fdpAdjust(g: Graph, ntry: number): void {
   }
 }
 
-/** Axis-aligned half extents (inches) of `n` inflated by the `sep` margin.
- * @see lib/neatogen/poly.c:makePoly / makeAddPoly (bbox of the vertices) */
-function inflatedHalfSize(
-  n: Node,
-  sep: ReturnType<typeof sepFactor>,
-): { x: number; y: number } {
-  const hw = (n.info.width ?? 0) / 2;
-  const hh = (n.info.height ?? 0) / 2;
-  return sep.doAdd
-    ? { x: hw + sep.x / 72, y: hh + sep.y / 72 }
-    : { x: hw * sep.x, y: hh * sep.y };
+/** Adjust modes, in C's enum order (modes above AM_SCALE take the early switch).
+ * @see lib/neatogen/adjust.h:AM_NONE */
+export const AM_NONE = 0;
+export const AM_VOR = 1;
+export const AM_SCALE = 2;
+export const AM_NSCALE = 3;
+export const AM_SCALEXY = 4;
+export const AM_COMPRESS = 13;
+export const AM_VPSC = 14;
+export const AM_IPSEP = 15;
+export const AM_PRISM = 16;
+
+/** @see lib/neatogen/adjust.h:adjust_data (mode, print, value) */
+export interface AdjustData {
+  mode: number;
+  print: string;
+  value: number;
 }
 
+/** `overlap` value (lowercase) to mode and print string.
+ * @see lib/neatogen/adjust.c:adjustMode */
+const ADJUST_MODES = new Map<string, readonly [number, string]>([
+  ['voronoi', [AM_VOR, 'Voronoi']],
+  ['scale', [AM_NSCALE, 'scaling']],
+  ['compress', [AM_COMPRESS, 'compress']],
+  ['vpsc', [AM_VPSC, 'vpsc']],
+  ['ipsep', [AM_IPSEP, 'ipsep']],
+  ['oscale', [AM_SCALE, 'old scaling']],
+  ['scalexy', [AM_SCALEXY, 'x and y scaling']],
+  ['ortho', [AM_ORTHO, 'orthogonal constraints']],
+  ['ortho_yx', [AM_ORTHO_YX, 'orthogonal constraints']],
+  ['orthoxy', [AM_ORTHOXY, 'xy orthogonal constraints']],
+  ['orthoyx', [AM_ORTHOYX, 'yx orthogonal constraints']],
+  ['portho', [AM_PORTHO, 'pseudo-orthogonal constraints']],
+  ['portho_yx', [AM_PORTHO_YX, 'pseudo-orthogonal constraints']],
+  ['porthoxy', [AM_PORTHOXY, 'xy pseudo-orthogonal constraints']],
+  ['porthoyx', [AM_PORTHOYX, 'yx pseudo-orthogonal constraints']],
+]);
+
 /**
- * True when at least one pair of nodes overlaps. Approximates C's
- * polyOverlap by its first test (bounding-box intersection, inclusive);
- * that test is exact for box/record shapes and conservative for rounded
- * shapes, whose polygon-level tests are not ported.
- * @see lib/neatogen/adjust.c:countOverlap
- * @see lib/neatogen/poly.c:pintersect / polyOverlap
+ * Resolve an `overlap` value to its adjust mode (the PRISM try count lands in
+ * `value`).
+ * @see lib/neatogen/adjust.c:getAdjustMode
  */
-function anyNodesOverlap(g: Graph): boolean {
-  const sep = sepFactor(g);
-  const boxes = Array.from(g.nodes.values(), (n) => {
-    const h = inflatedHalfSize(n, sep);
-    const [x, y] = n.info.pos ?? [0, 0];
-    return { lx: x! - h.x, ly: y! - h.y, ux: x! + h.x, uy: y! + h.y };
-  });
-  return boxes.some((p, i) => boxes.slice(i + 1).some((q) =>
-    p.lx <= q.ux && q.lx <= p.ux && p.ly <= q.uy && q.ly <= p.uy));
+export function getAdjustMode(flag: string | undefined): AdjustData {
+  const ntry = overlapPrismTries(flag);
+  if (ntry !== null) return { mode: AM_PRISM, print: 'prism', value: ntry };
+  const named = ADJUST_MODES.get((flag ?? '').toLowerCase());
+  if (named !== undefined) return { mode: named[0], print: named[1], value: 0 };
+  return { mode: AM_NONE, print: 'none', value: 0 };
+}
+
+/** Modes handled by cAdjust. @see lib/neatogen/adjust.c:removeOverlapWith */
+function isConstraintMode(mode: number): boolean {
+  return mode >= AM_ORTHO && mode <= AM_PORTHOYX;
 }
 
 /**
- * AM_VOR (`overlap=voronoi`, matched case-insensitively) is the only value
- * selecting vAdjust; its Voronoi adjuster is not ported. C reaches it only
- * with 2+ nodes and when countOverlap finds an overlap (vAdjust returns 0
- * first otherwise).
+ * The `am->mode > AM_SCALE` switch of removeOverlapWith. Under IPSEPCOLA (on in
+ * the reference build) ipsep is handled during layout; anything else warns.
+ * @see lib/neatogen/adjust.c:removeOverlapWith
+ */
+function adjustLate(g: Graph, am: AdjustData): number {
+  if (isConstraintMode(am.mode)) {
+    cAdjust(g, am.mode);
+    return 0;
+  }
+  switch (am.mode) {
+    case AM_NSCALE: return scAdjust(g, 1);
+    case AM_SCALEXY: return scAdjust(g, 0);
+    case AM_COMPRESS: return scAdjust(g, -1);
+    case AM_PRISM:
+      fdpAdjust(g, am.value);
+      return 0;
+    case AM_IPSEP: return 0;
+    case AM_VPSC: return vpscAdjust(g);
+    default:
+      console.warn(`Unhandled adjust option ${am.print}`);
+      return 0;
+  }
+}
+
+/**
+ * AM_VOR (`overlap=voronoi`) is vAdjust: it returns 0 when countOverlap finds
+ * nothing, otherwise runs the Voronoi adjuster, which is not ported (loud).
  * @see lib/neatogen/adjust.c:vAdjust
  */
-function rejectVoronoi(g: Graph, flag: string | undefined): void {
-  if (flag?.toLowerCase() !== 'voronoi' || g.nodes.size < 2) return;
-  if (!anyNodesOverlap(g)) return;
+function adjustVoronoi(g: Graph, am: AdjustData): number {
+  if (countOverlapIn(g) === 0) return 0;
   throw new RenderError(
-    `overlap=${flag}: Voronoi overlap removal is not supported yet`,
+    `overlap=${(g.attrs.get('overlap') ?? g.root.attrs.get('overlap')) ?? am.print}: ` +
+      'Voronoi overlap removal is not supported yet',
     'UNSUPPORTED_FEATURE',
   );
 }
 
 /**
- * Full adjustNodes: scale-family via scAdjust, PRISM via fdpAdjust,
- * `voronoi` fails loudly when overlaps exist, everything else a no-op
- * (AM_NONE, or a mode with no divergent corpus coverage — see sc-adjust
- * module doc).
- * @see lib/neatogen/adjust.c:adjustNodes / removeOverlapWith
+ * Use `am` to decide if and how to remove node overlaps. normalize and
+ * simpleScale (only active with the `normalize`/`scale` attributes) are not
+ * ported (see sc-adjust module doc).
+ * @see lib/neatogen/adjust.c:removeOverlapWith
+ */
+export function removeOverlapWith(g: Graph, am: AdjustData): number {
+  if (g.nodes.size < 2) return 0;
+  if (am.mode === AM_NONE) return 0;
+  if (am.mode > AM_SCALE) return adjustLate(g, am);
+  return am.mode === AM_SCALE ? sAdjustGraph(g) : adjustVoronoi(g, am);
+}
+
+/**
+ * Remove node overlap relying on the graph's `overlap` attribute.
+ * @see lib/neatogen/adjust.c:adjustNodes / removeOverlapAs
  */
 export function adjustNodesFull(g: Graph): number {
   const flag = g.attrs.get('overlap') ?? g.root.attrs.get('overlap');
-  rejectVoronoi(g, flag);
-  const ntry = overlapPrismTries(flag);
-  // C removeOverlapWith: fewer than 2 nodes short-circuits every mode.
-  if (ntry !== null && g.nodes.size >= 2) {
-    fdpAdjust(g, ntry);
-    return 1;
-  }
-  return adjustNodesScale(g);
+  return removeOverlapWith(g, getAdjustMode(flag));
 }
