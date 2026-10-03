@@ -141,18 +141,27 @@ attempts broke. The remaining `[ ]` / `[~]` work, by area:
    (2026-06-19): a mincross `accumCross` tiebreak fix (tie by port `p.x`, not the
    angular `port.order`; C `mincross.c:593,611`), not a splines fix. Corpus 25/25._
 3. `newrank=true`: `fillRanks` + `expand_leaves` — `mission-dot-newrank`
-4. `nslimit` position-NS iteration cap — DOT-6 (inline)
+4. `nslimit` position-NS iteration cap — **DONE** (v2-fidelity T4; `nsiter2`
+   cap in `position.ts`, native-verified)
 5. class1/class2 intercluster-edge merging — confirm completeness
 
 ### neato / sgd (still the largest gap cluster — non-default models & modes)
 6. overlap modes: **prism DONE** (`overlap-prism.ts` + `fdp-adjust.ts`, Delaunay
    via `delaunay.ts`), **scale family DONE** (`scalexy`/`compress`/`nscale` →
-   `sc-adjust.ts`). Still open: **voronoi**, **scan** (Voronoi/Fortune stack).
-7. distance models: **circuit**, **mds**, **closest-pair** — NEA-1/NEA-2
-   (still open — `runMajorization` in `init.ts` uses only `MODEL_SHORTPATH`).
-8. init: **smart_init** (sparse-subspace PCA), **start=regular**, **start=self** — NEA-3/4
-9. **`mode=hier`** (digcola) and **`mode=ipsep`** — still `console.warn` +
-   majorization fallback (`init.ts:391`)
+   `sc-adjust.ts`). **voronoi** is now **loud** (`UNSUPPORTED_FEATURE`, see
+   [Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)); still open and silent: **scan**,
+   `oscale`, `ortho*`/`portho*` (see `docs/known-divergences.md`).
+7. distance models: **mds** is ported (native Δ0, uniform and varied `len`);
+   **circuit** and **subset** are **loud** ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)); **closest-pair**
+   still open.
+8. init: **start=regular** — **DONE** (`start.ts:initRegular`); `start=randomN`
+   now seeds N as C does; **start=self** (`smart_init`, sparse-subspace PCA) is
+   **loud** for `mode=major`/`ipsep` and warns-and-ignores under KK/sgd, as C.
+9. **`mode=hier`** (digcola) is **loud**; **`mode=ipsep`** is **loud** only when
+   C builds constraints (`diredgeconstraints`, `overlap=ipsep`, top-level
+   cluster) and otherwise runs majorization as C does. Gap: the `mode`
+   attribute itself is never read, so `mode=KK`/`sgd` silently run majorization
+   (`docs/known-divergences.md`).
 10. edge routing `multispline.c` — **DONE** (`multispline.ts` +
     `multispline-router.ts`, GTS-faithful CDT via `cdt-surface.ts`, 2026-07-10);
     edge `xlabel` placement (NEA-5) — **DONE**, live corpus-wide
@@ -335,7 +344,7 @@ Everything below is the full per-module catalog backing this list.
 - [~] mincross.c (~1809) → `mincross*.ts` — crossing-min + `fillRanks` +
   `checkLabelOrder` in (see 2471 memory); confirm no residual order desync
 - [~] position.c (~1133) → `position*.ts` — mostly ported;
-  - [ ] `nslimit` (nsiter2 cap) — DOT-6
+  - [x] `nslimit` (nsiter2 cap) — v2-fidelity T4
   - [x] `expand_leaves` → `expandLeaves` in `position.ts`, called from
     `dotPosition`. Faithful: upstream's per-node loop is dead code (dormant
     self-subtraction at position.c:1025 makes `d` identically 0) and LEAFSET
@@ -360,25 +369,26 @@ Everything below is the full per-module catalog backing this list.
 - [~] adjust.c / overlap.c → `overlap.ts`, `sep-factor.ts`, `fdp-adjust.ts`,
   `sc-adjust.ts` — **modes none/vpsc DONE; PRISM DONE** (`overlap-prism.ts`);
   **scale family DONE** (`scalexy`/`compress`/`nscale` → `sc-adjust.ts`). The
-  overlap-removal *ipsep-cola* mode and voronoi/scan remain unported. (Do not
+  overlap-removal *ipsep-cola* mode and scan remain unported; `voronoi` is
+  loud ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)). (Do not
   confuse with `mode=ipsep` layout, below.)
 
 **Real gaps (reachable; previously mislabeled "unused"):**
 - [~] **overlap modes** — prism + scale family (scalexy/nscale/compress) DONE
-  (see adjust.c row). Still open: **voronoi**, **scan** (need the Fortune stack).
+  (see adjust.c row). Still open: **voronoi** (now loud, [Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)),
+  **scan** (need the Fortune stack).
 - [~] **Voronoi/Delaunay stack**: delaunay.c → `delaunay.ts` and legal.c
   (`Plegal_arrangement`) → `legal.ts` **DONE** (2026-07-10, back PRISM's
   triangulation). Still open for `overlap=voronoi`: voronoi.c, hedges.c, heap.c,
   geometry.c, edges.c, site.c, call_tri.c.
 - [ ] **constraint layout**: constrained_majorization.c,
-  constrained_majorization_ipsep.c, constraint.c, quad_prog_solve.c,
-  quad_prog_vpsc.c, compute_hierarchy.c — backs **`mode=hier`** and
-  **`mode=ipsep`** (confirmed `console.warn` + majorization fallback at
-  `init.ts:391`)
-- [ ] **distance models**: circuit.c (`model=circuit`), embed_graph.c +
-  closest.c (`model=mds`/closest), stress.c circuit/mds branches — NEA-1/2
-  (`runMajorization` still uses only `MODEL_SHORTPATH`)
-- [ ] **init**: smart_ini_x.c + pca.c (`smart_init`/`start=N`), start=regular/self — NEA-3/4
+  quad_prog_vpsc.c, compute_hierarchy.c — back **`mode=hier`** and constrained
+  **`mode=ipsep`**, both now **loud** ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference))
+- [~] **distance models**: embed_graph.c (`model=mds`) **[x] ported**;
+  circuit.c (`model=circuit`) and the subset model **[ ] unported, loud**
+  ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)); closest.c (closest-pair) [ ] open
+- [~] **init**: `start=regular` **[x] ported** (`start.ts`); smart_ini_x.c +
+  pca.c (`start=self`) **[ ] unported, loud** ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference))
 - [x] **edge routing**: multispline.c — multi-obstacle spline routing →
   `multispline.ts` + `multispline-router.ts`, GTS-faithful CDT via
   `cdt-surface.ts` (2026-07-10)
@@ -394,11 +404,14 @@ Everything below is the full per-module catalog backing this list.
 - [~] post_process.c — the PRISM `OverlapSmoother` path is wired
   (`spring-driver.ts` routes overlap through `overlap-prism.ts:removeOverlapPrism`,
   with `resolveControl` in `index.ts` selecting in-layout vs post-layout
-  `adjustNodesScale`); Triangle/StressMajorization smoothers still open
+  `adjustNodesScale`); `beautify` is ported (native-exact); the
+  Triangle/StressMajorization smoothers (`smoothing=`) are unported and loud
+  ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference))
 - [x] sparse_solve.c → `src/layout/sfdp/sparse-solve.ts` (`diag_precon_new`,
   `conjugate_gradient`, `SparseMatrix_solve`)
-- [ ] sfdpinit `edge_labeling_scheme > 0` (init.ts parses `label_scheme` but the
-  `|edgelabel|` branch is unported); stress_model.c
+- [ ] sfdpinit `edge_labeling_scheme > 0` — the `|edgelabel|` branch is unported
+  and **loud** when C would take it ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)); `quadtree=none`/`fast`
+  (`spring_electrical_embedding_slow`/`_fast`) and `rotation` likewise; stress_model.c
 - **`lib/sparse/`**: [x] SparseMatrix.c, QuadTree.c (Barnes-Hut), general.c → `src/layout/sfdp/{sparse-matrix*,quadtree}.ts`
   - [x] brewer color tables — ported in `src/common/colorData.ts`
   - [ ] clustering.c (modularity_clustering), mq.c — used by clustering/coloring & mingle
@@ -412,7 +425,11 @@ Everything below is the full per-module catalog backing this list.
 
 ### `lib/fdpgen/` — **fdp** → `src/layout/fdp/`
 - [x] layout.c, tlayout.c, xlayout.c, grid.c, fdpinit.c, comp.c
-- [ ] clusteredges.c — compound cluster-endpoint edge routing in fdp
+- [ ] clusteredges.c (`compoundEdges`) — cluster-avoiding edge routing in fdp.
+  Its trigger is `splines=compound` (`fdpSplines` dispatch, ported); that value
+  is **loud** ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)). With cluster-endpoint edges under other spline
+  types the port now prints C's warning and draws line segments.
+- [x] `inputscale` (neato user positions, fdp `pos` and cluster `coords`)
 - `N/A (debug)` dbg.c
 
 ### `lib/circogen/` — **circo** → `src/layout/circo/` — [x] fully ported
@@ -695,13 +712,14 @@ Actions, in dependence order:
      value silently produced an UNROTATED layout (native moves ~320pt at
      rotation=45). Now THROWS, matching the existing `smoothing` precedent:
      a loud unported-feature error beats silently wrong geometry.
-   - `quadtree` — parsed into `ctrl.tscheme`, but nothing reads it; the layout
-     hardcodes one scheme. Native moves 138.74pt at `quadtree=none`, the port
-     0. Still silent; needs the scheme threaded through the force approximation.
+   - `quadtree` — native moves 138.74pt at `quadtree=none`. Now THROWS at C's
+     per-level dispatch (`spring-driver.ts:embedLevel`) for `none` and `fast`;
+     the slow and fast embeddings are unported (v2-fidelity T5).
    - `smoothing` — already threw before this work (post_process_smoothing
      unported). Native moves 11.01pt at `smoothing=rng`.
-   - Vacuous on both sides, so unmeasurable rather than wrong: sfdp `levels`,
-     `label_scheme`; fdp `normalize`. fdp `T0` moves both sides but the engine
+   - Vacuous on both sides, so unmeasurable rather than wrong: sfdp `levels`;
+     fdp `normalize`. sfdp `label_scheme` is vacuous except on graphs with
+     user `|edgelabel|` nodes, where it is now loud (v2-fidelity T5). fdp `T0` moves both sides but the engine
      is chaos-measured, so a golden would pin noise.
 
    **Probe hazard.** A probe must check the reference is non-trivial. Writing

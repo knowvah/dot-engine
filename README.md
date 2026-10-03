@@ -143,6 +143,37 @@ only the class changes:
 | Graphviz features the port has not implemented (fdp overlap modes, sfdp `smoothing=` / `rotation=`, special shapes) | `Error` | `RenderError` `UNSUPPORTED_FEATURE` (`type: 'semantic'`) |
 | gts constrained-Delaunay paths where C continues instead of failing | `Error` | No throw; behaviour now matches C |
 
+Attributes that rendered an approximation in 1.x and now throw
+`RenderError` `UNSUPPORTED_FEATURE`. The conditions are exact; the full list,
+with every message, is the table in
+[Errors and exceptions](./docs-site/guide/errors.md#unsupported-feature-reference):
+
+| Engine | Attribute | Throws when |
+|--------|-----------|-------------|
+| neato | `mode=hier` | Always |
+| neato | `mode=ipsep` | Only when Graphviz builds constraints (`diredgeconstraints`, `overlap=ipsep`, or a top-level cluster); otherwise unchanged |
+| neato | `start=self` | `mode` is `major` or `ipsep` |
+| neato | `model=subset` | `mode` is `major` or `KK` |
+| neato | `model=circuit` | `mode` is `major`, or `KK` on a connected graph |
+| neato, twopi, circo | `overlap=voronoi` | 2+ nodes and an overlap exists (twopi and circo: single-component graphs) |
+| fdp | `splines=compound` | Always |
+| fdp | `overlap=` `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho*`, `portho*` | The mode is reached after the force-iteration tries |
+| sfdp | `label_scheme=1`..`4` | A `\|edgelabel\|` node exists and Graphviz takes the edge-label path |
+| sfdp | `quadtree=none` or `quadtree=fast` | Always |
+
+Behaviour fixes. These render differently from 1.x because 1.x did not match
+Graphviz; no code change is needed:
+
+| Area | Before | After |
+|------|--------|-------|
+| dot `nslimit` | Ignored; network simplex ran to convergence | Caps the x-coordinate iterations, as Graphviz does |
+| neato `start=regular` | Treated as random | Nodes start on a regular polygon, as Graphviz does |
+| neato `start=randomN` | Only digit-led values were seeded | `N` seeds the generator, as Graphviz does |
+| neato and fdp `inputscale` | Ignored | Divides user `pos` values (and fdp cluster `coords`); `0` or a negative value means 72, absent means no scaling |
+| `ctx.freeLayout(g, engine)` | Cleaned up with the engine argument | Cleans up with the engine that ran the layout |
+| XML escaping in UTF-8 mode (no public API sets this mode) | Decoded UTF-16 units as UTF-8 bytes, so a character such as U+00FF raised `RENDER_ERROR` | Escapes by code point (`&#x1f600;`), matching Graphviz; a lone surrogate still raises `RENDER_ERROR` |
+| fdp edges to cluster endpoints under spline routing (for example `splines=true`) | Drew line segments silently | Also prints the Graphviz warning (`splines and cluster edges not supported - using line segments`) |
+
 New exports: `DotEngineError`, `InternalError`, `isGvError`, and the type
 `UsageErrorCode`. `GvErrorCode` gains `INTERNAL_ERROR`, `UNKNOWN_LAYOUT` and
 `UNSUPPORTED_FEATURE`.

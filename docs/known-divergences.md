@@ -1174,6 +1174,54 @@ delta (x-network-simplex / compass-port), not an arrowhead defect:
 
 These are tracked x-coordinate / structural items, **not** arrowhead bugs.
 
+### Layout-fidelity gaps from the 2.0 fidelity mission (neato, sfdp, fdp, twopi, circo)
+
+The 2.0 fidelity mission made unported attribute values fail loudly (see the
+`UNSUPPORTED_FEATURE` table in
+[Errors and exceptions](https://github.com/knowvah/dot-engine/blob/main/docs-site/guide/errors.md)).
+It left the following, recorded in `plans/v2-fidelity/decision-journal.md`.
+
+**Accepted residual.**
+
+- **`overlap=voronoi` overlap test.** The loud check fires when two or more
+  nodes overlap. C's `countOverlap` uses `polyOverlap`; the port approximates
+  its first test, an inflated bounding-box intersection
+  (`src/layout/neato/fdp-adjust.ts`). That is exact for `box` and `record`
+  nodes. For rounded shapes whose bounding boxes touch but whose outlines do
+  not, the port can raise `UNSUPPORTED_FEATURE` where C finds no overlap and
+  never runs Voronoi. The error is spurious, never silent. An exact test needs
+  `makePoly` + `polyOverlap`. Reference build: `HAVE_GTS` (on a non-GTS build C
+  maps `overlap=false` to Voronoi; the port assumes GTS). C:
+  `lib/neatogen/adjust.c:vAdjust`, `getAdjustMode`.
+
+**Known gaps, still silent (deferred by the owner).** The port renders these
+without an error and differs from native Graphviz. They are candidates for a
+later scope amendment, not accepted deltas.
+
+- **neato `mode` attribute is never read.** `parseMode`
+  (`src/layout/neato/index.ts:80`) reads `g.info.mode`, which nothing assigns,
+  so `mode=KK` and `mode=sgd` run stress majorization. Measured against the
+  native binary: `mode=KK` differs by 93 to 322 pt, `mode=sgd` by 47 to 323 pt.
+  `mode=hier` and constrained `mode=ipsep` are loud because the new check reads
+  the attribute directly (`src/layout/neato/start.ts`). Also behind it: the
+  port's SGD seeds MT19937 where C uses `drand48`, and KK's `runMajorization`
+  uses `maxi=0`. C: `lib/neatogen/neatoinit.c:neatoMode`.
+- **sfdp `overlap=voronoi`.** C calls `removeOverlapWith` with `AM_VOR`
+  (`lib/sfdpgen/sfdpinit.c:272,283`); the port's sfdp uses prism only.
+- **`overlap=oscale` and `overlap=ortho*` / `portho*`** for neato, twopi and
+  circo. C maps `oscale` to `AM_SCALE` (`sAdjust`) and the ortho names to
+  `cAdjust` (`lib/neatogen/adjust.c:getAdjustMode`). The port does nothing.
+  (fdp throws for these.)
+- **twopi per-component and circo multi-component overlap removal.** C runs
+  `adjustNodes` per component in twopi (`lib/twopigen/twopiinit.c:135`); circo's
+  multi-component path is a stub in the port
+  (`src/layout/circo/circular.ts`).
+- **fdp cluster `coords=` set only on a subgraph is ignored.** `hasCoords`
+  (`src/layout/fdp/layout.ts:63`) checks the root graph's attributes; C
+  declares the attribute graph-wide when any subgraph sets it. A fixture with
+  `coords` on a subgraph differs from native by 156 pt even with `inputscale`
+  absent; with `coords=""` on the root it matches.
+
 ---
 
 ## Intentionally not ported (non-goals)
