@@ -222,6 +222,55 @@ caller-supplied hook may be required:
   setImageSizer((src) => ({ w: 64, h: 64 })); // return null if unknown
   ```
 
+### Rendering into a page
+
+`renderSvgInto` renders DOT, **waits for the web fonts the graph uses**, and
+replaces the children of an element with the resulting `<svg>`. Insertion goes
+through `DOMParser` + `importNode` (never `innerHTML`) and the SVG is scrubbed by
+default (see [Security](#security)).
+
+```html
+<div id="graph"></div>
+<script type="module">
+  import { renderSvgInto } from '@knowvah/dot-engine';
+
+  const dot = 'digraph { node [fontname="JetBrains Mono"]; a -> b }';
+  const { element, fontIssues } = await renderSvgInto('graph', dot, 'dot');
+
+  for (const { face, reason } of fontIssues) {
+    // reason is 'failed' (the face errored) or 'timeout' (not loaded within
+    // fontTimeoutMs, default 3000). Layout used a fallback font for this face.
+    console.warn(`font ${face}: ${reason}`);
+  }
+</script>
+```
+
+Fonts only need prefetching when they are declared with `@font-face`; an unloaded
+face is measured as the fallback font and the labels come out the wrong size.
+`fontIssues` never causes a rejection — it reports what could not be loaded.
+
+To get the SVG string instead of inserting it, use `renderSvgAsync`. It also
+accepts an **async** `imageSizer` (and `imageResolver`), awaited once per distinct
+image before layout:
+
+```ts
+import { renderSvgAsync } from '@knowvah/dot-engine';
+
+const { svg, fontIssues } = await renderSvgAsync(
+  'digraph { a [label=<<TABLE><TR><TD><IMG SRC="logo.png"/></TD></TR></TABLE>>] }',
+  'dot',
+  {
+    imageSizer: async (src) => {
+      const img = new Image();
+      img.src = src;
+      await img.decode(); // a rejection counts as "unknown size" (a miss)
+      return { w: img.naturalWidth, h: img.naturalHeight };
+    },
+    fontTimeoutMs: 5000,
+  },
+);
+```
+
 ### Text measurement
 
 Layout needs to know how wide each label is. By default this uses a **built-in,
@@ -288,6 +337,45 @@ a **Content-Security-Policy** on the host page as the control point:
 If you cannot set a CSP, sanitize the returned markup (e.g. DOMPurify with an
 SVG profile) before inserting it, or render from trusted DOT only.
 
+### `renderSvgInto` and the built-in scrubber
+
+`renderSvgInto` sanitizes by default, so inserting untrusted DOT does not need
+extra work for the common vectors. The built-in scrubber **removes**:
+
+- `<script>` and `<foreignObject>` elements (with their subtrees),
+- every `on*` event-handler attribute,
+- `href` / `xlink:href` values using `javascript:` or `vbscript:`, and `data:`
+  hrefs other than `data:image/*` on `<image>`,
+- SMIL animations (`set`, `animate`, `animateMotion`, `animateTransform`) that
+  target `href` or an event handler,
+- `xml-stylesheet` processing instructions.
+
+It **keeps** `http(s)` hrefs and image origins (they are normal, working links
+and images) and `data:image/*` on `<image>`. Origin policy is therefore still
+yours: it is a deny-list for the vectors this library's own output can carry,
+**not** a replacement for a Content-Security-Policy, which remains recommended.
+
+Options, in precedence order:
+
+- `trusted: true` — insert exactly as rendered, no sanitizing. Only for DOT you
+  authored.
+- `sanitize: (svg: string) => string` — replace the built-in scrubber with your
+  own, e.g. DOMPurify:
+
+  ```ts
+  import DOMPurify from 'dompurify';
+  import { renderSvgInto } from '@knowvah/dot-engine';
+
+  await renderSvgInto('graph', dot, 'dot', {
+    sanitize: (svg) => DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } }),
+  });
+  ```
+
+- neither — the built-in scrubber runs.
+
+`renderSvgAsync` and `renderAsync` return raw markup and do **not** sanitize;
+the caveats above apply to their output exactly as for `renderSvg`.
+
 ## Public API
 
 ```ts
@@ -317,6 +405,42 @@ function parse(dotSource: string): Graph;
 // Supply intrinsic dimensions for external image references (browser/Node).
 function setImageSizer(sizer: ImageSizer | null): void;
 type ImageSizer = (src: string) => { w: number; h: number } | null;
+
+// Async counterparts: prefetch web fonts and image data, then render. Font
+// problems never reject; they are returned in `fontIssues`.
+function renderSvgAsync(
+  dotSource: string,
+  engine: EngineName,
+  opts?: AsyncSvgOptions,
+): Promise<{ svg: string; fontIssues: FontIssue[] }>;
+function renderAsync(
+  g: Graph,
+  format: OutputFormat,
+  opts?: AsyncRenderOptions,
+): Promise<{ output: string; fontIssues: FontIssue[] }>;
+
+// Render and insert into the element with the given id (browser; sanitizes by
+// default).
+function renderSvgInto(
+  id: string,
+  src: string,
+  engine: EngineName,
+  opts?: RenderSvgIntoOptions,
+): Promise<{ element: SVGSVGElement; fontIssues: FontIssue[] }>;
+
+type FontIssue = { face: string; reason: 'failed' | 'timeout' };
+interface AsyncRenderOptions extends RenderOptions {
+  imageSizer?: (src: string) => Promise<{ w: number; h: number } | null>;
+  imageResolver?: (src: string) => Promise<{ bytes: Uint8Array; mime?: string } | Uint8Array | null>;
+  fontTimeoutMs?: number; // default 3000
+  fontSet?: FontSetLike;  // default document.fonts
+}
+type AsyncSvgOptions = Omit<AsyncRenderOptions, 'engine'>;
+interface RenderSvgIntoOptions extends AsyncSvgOptions {
+  sanitize?: (svg: string) => string;
+  trusted?: boolean;
+  document?: Document;
+}
 
 // Multi-format render + structured xdot draw-ops (from `@knowvah/dot-engine/render`,
 // also re-exported from the root package).

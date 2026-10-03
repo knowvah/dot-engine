@@ -17,12 +17,14 @@ show up, and the CSP implications of each.
 
 1. The graph declares `image="logo.png"` on a node, or an HTML-like label
    contains an `<IMG>` cell.
-2. Graphviz needs the image's **intrinsic width/height** to size the node box
-   before it can lay out anything else — the library never touches the
-   filesystem or the network to find this out, so you register a sizer
-   (`setImageSizer`, covered in [Browser usage](/guide/browser) and again
-   below for Node).
-3. Layout runs using the dimensions your sizer returned.
+2. For an HTML-like `<IMG>` cell, Graphviz needs the image's **intrinsic
+   width/height** to size the cell before it can lay out anything else — the
+   library never touches the filesystem or the network to find this out, so
+   you register a sizer (`setImageSizer`, covered in
+   [Browser usage](/guide/browser) and again below for Node). A node's
+   `image=` attribute is **not** sized by the sizer: like headless native
+   Graphviz, the node keeps its normal box and the image is drawn into it.
+3. Layout runs using the dimensions your sizer returned for each `<IMG>`.
 4. The SVG emitter (`src/render/svg.ts`'s `usershape()`) writes
    `<image xlink:href="...">` with the box computed in step 3. By default the
    `href` is the raw `src` string, XML-escaped, nothing else.
@@ -89,6 +91,47 @@ setImageSizer((src) => (manifest.get(src) as { w: number; h: number }) ?? null);
 ```
 
 If your graphs never reference external images, skip this entirely.
+
+## Async sizer and resolver (per render)
+
+`setImageSizer` / `setImageResolver` are synchronous, process-global
+registrations, so the browser pattern above has to pre-warm a cache. The async
+entry points take the hooks **per call** and await them for you:
+
+```ts
+import { renderSvgAsync } from '@knowvah/dot-engine';
+
+const { svg } = await renderSvgAsync(
+  'digraph { a [label=<<TABLE><TR><TD><IMG SRC="logo.png"/></TD></TR></TABLE>>] }',
+  'dot',
+  {
+    imageSizer: async (src) => {
+      const img = new Image();
+      img.src = src;
+      await img.decode();
+      return { w: img.naturalWidth, h: img.naturalHeight };
+    },
+    inlineImages: true,
+    imageResolver: async (src) => {
+      const res = await fetch(src);
+      return { bytes: new Uint8Array(await res.arrayBuffer()), mime: res.headers.get('content-type') ?? undefined };
+    },
+  },
+);
+```
+
+- Each hook is called **at most once per distinct `src`**, in parallel, before
+  layout starts. The engine then runs its normal synchronous layout against the
+  collected results.
+- A hook that **throws or rejects** is treated as a miss (`null`), exactly like a
+  sync hook returning `null`: zero size for the sizer, raw `src` passthrough for
+  the resolver.
+- When an async hook is given, a miss does **not** fall back to the global
+  `setImageSizer` / `setImageResolver`. When it is not given, the globals apply
+  as in `renderSvg`.
+- The hooks apply to that one render only; nothing global is registered.
+- `imageResolver` is only consulted when `inlineImages` is `true`.
+- `renderSvgInto` accepts the same options.
 
 ## Making the image appear
 

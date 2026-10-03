@@ -37,10 +37,68 @@ automatically:
 
 No font files are required for layout in any case.
 
+## Web fonts: why prefetching matters
+
+Label sizes come from measuring text with a font. If a face is declared with
+`@font-face` but has not finished loading, the browser measures with the
+**fallback** font instead, and the layout is wrong once the real font arrives.
+Measured in Chromium with JetBrains Mono: a label box was **70.68 pt** wide when
+measured before the face loaded (fallback) and **124.8 pt** after it loaded.
+
+The async entry points (`renderSvgAsync`, `renderAsync`, `renderSvgInto`) avoid
+this: they collect the fonts the graph will request, load them through
+`document.fonts`, and only then run layout. `renderSvgAsync` produced the
+same 124.8 pt as measuring after load.
+
+```ts
+import { renderSvgAsync } from '@knowvah/dot-engine';
+
+const { svg, fontIssues } = await renderSvgAsync(
+  'digraph { node [fontname="JetBrains Mono"]; a -> b }',
+  'dot',
+  { fontTimeoutMs: 5000 },
+);
+```
+
+- **`fontTimeoutMs`** (default `3000`) is one deadline shared by all faces, not
+  per face.
+- **`fontIssues`** is a list of `{ face, reason }`. `reason: 'failed'` means the
+  face errored (for example a 404) or its load rejected; `reason: 'timeout'`
+  means it had not loaded within `fontTimeoutMs`. In both cases layout proceeds
+  with a fallback font. Each issue is also `console.warn`ed. Font problems never
+  reject the promise.
+- **Limitation:** only families declared with `@font-face` can be reported.
+  A system font or an unknown family name resolves as "loaded" (there is nothing
+  to wait for), so a misspelled `fontname` is never listed in `fontIssues`.
+- **Node and Workers** have no `document.fonts`, so font prefetch is skipped and
+  `fontIssues` is `[]`. Image hooks still work. You can pass a `fontSet`
+  (anything with `load(font)`) to supply your own.
+
+## Rendering into a page: `renderSvgInto`
+
+```ts
+import { renderSvgInto } from '@knowvah/dot-engine';
+
+// <div id="graph"></div>
+const { element, fontIssues } = await renderSvgInto('graph', dot, 'dot');
+if (fontIssues.length > 0) {
+  console.warn('fallback fonts used for', fontIssues.map((i) => i.face));
+}
+```
+
+It replaces the children of the element with the given id by the rendered
+`<svg>` (returned as `element`), using `DOMParser` and `importNode`, never
+`innerHTML`. A missing id rejects with `ERR_INVALID_ARG_VALUE`. The SVG is
+scrubbed by default; pass `sanitize` to use your own sanitizer or `trusted: true`
+to skip sanitizing. See the README "Security" section for what the scrubber
+removes and keeps, and keep a Content-Security-Policy in place.
+
 ## External images: `setImageSizer`
 
-When a graph references an external image (e.g. `node [image="logo.png"]`),
-Graphviz needs that image's intrinsic dimensions. Because the library cannot
+When an HTML-like label contains an external image
+(`<IMG SRC="logo.png"/>`), Graphviz needs that image's intrinsic dimensions to
+size the cell. (A node's `image=` attribute is not sized: the node keeps its
+normal box, as in headless native Graphviz.) Because the library cannot
 read the filesystem, you supply a sizer:
 
 ```ts
@@ -53,6 +111,8 @@ setImageSizer((src) => {
 ```
 
 If your graphs never reference external images, you do not need to call this.
+To size images asynchronously (for example by loading them), pass an async
+`imageSizer` to `renderSvgAsync` instead; see [Images](/guide/images).
 
 ## What not to expect
 
