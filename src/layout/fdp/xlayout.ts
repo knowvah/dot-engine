@@ -21,7 +21,7 @@ import { RenderError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import { sepFactor, type ExpandT } from '../neato/sep-factor.js';
-import { fdpAdjust, overlapPrismTries } from '../neato/fdp-adjust.js';
+import { fdpAdjust, overlapPrismTries, warnUnrecognizedOverlap } from '../neato/fdp-adjust.js';
 import { scAdjust } from '../neato/sc-adjust.js';
 import {
   type XParams,
@@ -321,6 +321,7 @@ export function fdpXLayout(g: Graph, xpms: XParams): void {
  */
 function removeOverlapAs(g: Graph, flag: string): void {
   if (g.nodes.size < 2) return; // removeOverlapWith: <2 nodes short-circuits
+  warnUnrecognizedOverlap(flag); // getAdjustMode
   normalizeG(g); // removeOverlapWith runs normalize + simpleScale first
   simpleScale(g);
   const ntry = overlapPrismTries(flag);
