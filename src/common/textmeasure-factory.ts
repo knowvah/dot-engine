@@ -23,6 +23,8 @@ import {
   LutTextMeasurer, CanvasTextMeasurer, EstimateTextMeasurer, type TextMeasurer,
 } from './textmeasure.js';
 
+import { invalidArgType } from '../errors.js';
+
 let override: TextMeasurer | undefined;
 
 /**
@@ -31,8 +33,17 @@ let override: TextMeasurer | undefined;
  * render (renderSvg resolves the measurer per call). Use for deterministic
  * tests or to wire a host-faithful Node measurer (e.g. node-canvas) — see the
  * resolution note above.
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `m` is neither undefined nor an
+ *   object with a `measure` function
  */
 export function setTextMeasurer(m: TextMeasurer | undefined): void {
+  if (
+    m !== undefined
+    && (typeof m !== 'object' || m === null
+      || typeof (m as { measure?: unknown }).measure !== 'function')
+  ) {
+    throw invalidArgType('measurer', 'TextMeasurer or undefined', m);
+  }
   override = m;
 }
 

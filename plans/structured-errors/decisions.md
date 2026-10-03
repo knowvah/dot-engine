@@ -40,6 +40,15 @@ because it must match C. `code` is the stable i18n key.
   stays a lean, JSON-serializable data array. Consumers branch on `.code` /
   `.type`, never per-subclass `instanceof`.
 
+**Amended by error-hierarchy (2026-10).** Thrown values now extend an abstract
+`DotEngineError` (which implements `GvError`), so `instanceof DotEngineError`
+means "dot-engine failed on this input". `InternalError` is new, and `RenderError`
+gains the codes `UNKNOWN_LAYOUT` and `UNSUPPORTED_FEATURE`. Branching on `.code`
+remains the recommended style; `instanceof DotEngineError` is the one class check
+that is now supported. `tryRenderSvg` returns for any DOT input and throws only
+usage errors. See [error-hierarchy decisions](../error-hierarchy/decisions.md)
+(ADR-1, ADR-4, ADR-4a, ADR-5).
+
 ## ADR-3: All three error sources implement `GvError` directly
 
 - Context: parser, html-label, and render stages each throw their own error.
@@ -51,6 +60,16 @@ because it must match C. `code` is the stable i18n key.
   `.type`/`.code` and only wraps genuinely-unknown throws.
 - Consequences: no central mapping table to maintain; engine internals stay
   faithful and unaware of error packaging.
+
+**Amended by error-hierarchy (2026-10).** The "implement `GvError` directly"
+rule now holds through `DotEngineError`. Caller mistakes are no longer
+`GvError`s: they throw standard `TypeError` / `RangeError` / `Error` carrying a
+Node-style `code` (`ERR_INVALID_ARG_TYPE`, ...). The boundary no longer
+duck-types every throw as a `GvError`: usage errors and `GvError`s are re-thrown
+unchanged, and any other throw becomes an `InternalError` with `cause` set. A
+single exported `isGvError` guard replaces the three private copies. See
+[error-hierarchy decisions](../error-hierarchy/decisions.md) (ADR-3, ADR-5,
+ADR-6).
 
 ## ADR-4: Stable `code` for i18n + non-localized `friendlyMessage`
 

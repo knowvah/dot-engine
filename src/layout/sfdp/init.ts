@@ -10,6 +10,7 @@
  * @see lib/neatogen/adjust.c:makeMatrix / getSizes (15.0.0)
  */
 
+import { RenderError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
 import { setEdgeTypeFromAttr } from '../dot/index.js';
 import { EDGETYPE_LINE } from '../neato/splines.js';
@@ -131,9 +132,10 @@ export function tuneControl(g: Graph, ctrl: SpringElectricalControl): void {
   const smoothing = aggetGraph(g, 'smoothing');
   if (smoothing !== undefined && smoothing.toLowerCase() !== 'none' &&
       smoothing !== String(SMOOTHING_NONE)) {
-    throw new Error(
+    throw new RenderError(
       `sfdp smoothing="${smoothing}": post_process_smoothing is not ` +
-      'ported (unreachable at sfdp defaults); see mission 8 journal');
+      'ported (unreachable at sfdp defaults); see mission 8 journal',
+      'UNSUPPORTED_FEATURE');
   }
   ctrl.smoothing = SMOOTHING_NONE;
   ctrl.tscheme = lateQuadtreeScheme(aggetGraph(g, 'quadtree'), QUAD_TREE_NORMAL);
@@ -147,9 +149,10 @@ export function tuneControl(g: Graph, ctrl: SpringElectricalControl): void {
   // unported-feature error beats silently wrong geometry.
   // Found by the attribute blind-spot scan; no corpus graph sets it.
   if (ctrl.rotation !== 0) {
-    throw new Error(
+    throw new RenderError(
       `sfdp rotation="${ctrl.rotation}": rotate() is not ported ` +
-      '(unreachable at sfdp defaults); see plans/port-catalog/README.md');
+      '(unreachable at sfdp defaults); see plans/port-catalog/README.md',
+      'UNSUPPORTED_FEATURE');
   }
   ctrl.edgeLabelingScheme = lateInt(aggetGraph(g, 'label_scheme'), 0, 0);
   if (ctrl.edgeLabelingScheme > 4) ctrl.edgeLabelingScheme = 0;

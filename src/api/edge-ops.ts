@@ -11,6 +11,17 @@
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import { Edge } from '../model/edge.js';
+import { invalidArgType } from '../errors.js';
+
+/**
+ * Argument check shared by the /api entry points: a non-null object.
+ * @internal
+ */
+export function requireObject(param: string, v: unknown): void {
+  if (typeof v !== 'object' || v === null) {
+    throw invalidArgType(param, 'object', v);
+  }
+}
 
 /** @see lib/cgraph/cgraph.h:agisundirected */
 function isUndirected(g: Graph): boolean {
@@ -91,6 +102,8 @@ function insertEdge(g: Graph, root: Graph, edge: Edge): void {
  * // edge.tail === a, edge.head === b
  * ```
  *
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `g`, `tail` or `head` is not an
+ *   object, or `name` is neither undefined nor a string
  * @see lib/cgraph/edge.c:agedge
  */
 export function addEdge(
@@ -99,6 +112,12 @@ export function addEdge(
   head: Node,
   name?: string,
 ): Edge {
+  requireObject('g', g);
+  requireObject('tail', tail);
+  requireObject('head', head);
+  if (name !== undefined && typeof name !== 'string') {
+    throw invalidArgType('name', 'string or undefined', name);
+  }
   const root = g.root;
   const undirected = isUndirected(g);
 

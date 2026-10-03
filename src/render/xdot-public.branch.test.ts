@@ -10,7 +10,7 @@
 
 import { describe, it, expect, vi } from "vitest";
 import { Graph } from "../model/graph.js";
-import { RenderError } from "../errors.js";
+import { InternalError } from "../errors.js";
 
 const layoutMock = vi.fn();
 
@@ -37,16 +37,18 @@ describe("getDrawOps — error normalization in layoutAndRenderXdot's catch", ()
     }
   });
 
-  it("wraps a real Error instance using its .message", async () => {
+  it("wraps a real Error instance as InternalError keeping it as cause", async () => {
     const { getDrawOps } = await import("./xdot-public.js");
-    layoutMock.mockImplementationOnce(() => { throw new Error("boom"); });
+    const boom = new Error("boom");
+    layoutMock.mockImplementationOnce(() => { throw boom; });
     const g = new Graph("G", "directed");
     try {
       getDrawOps(g);
       expect.unreachable();
     } catch (err) {
-      expect(err).toBeInstanceOf(RenderError);
-      expect((err as RenderError).message).toBe("boom");
+      expect(err).toBeInstanceOf(InternalError);
+      expect((err as InternalError).message).toBe("boom");
+      expect((err as InternalError).cause).toBe(boom);
     }
   });
 
@@ -58,8 +60,9 @@ describe("getDrawOps — error normalization in layoutAndRenderXdot's catch", ()
       getDrawOps(g);
       expect.unreachable();
     } catch (err) {
-      expect(err).toBeInstanceOf(RenderError);
-      expect((err as RenderError).message).toBe("plain string failure");
+      expect(err).toBeInstanceOf(InternalError);
+      expect((err as InternalError).message).toBe("plain string failure");
+      expect((err as InternalError).cause).toBe("plain string failure");
     }
   });
 });

@@ -35,6 +35,7 @@
  */
 
 import { incircle, orient2d } from './delaunay.js';
+import { InternalError } from '../../errors.js';
 
 /** Triangulated surface. @see lib/neatogen/delaunay.h:surface_t */
 export interface Surface {
@@ -164,7 +165,7 @@ class Cdt {
     let i = 0;
     if (e !== null) {
       i = f.e.indexOf(e);
-      if (i < 0) throw new Error('cdt: edge not in face');
+      if (i < 0) throw new InternalError('cdt: edge not in face');
     }
     const j = (i + 1) % 3;
     const k = (i + 2) % 3;
@@ -395,10 +396,12 @@ class Cdt {
   }
 
   /** gts_delaunay_add_vertex. Returns null on success, the duplicate
-   * vertex id for coincident points, or throws if outside the hull. */
+   * vertex id for coincident points, or `v` itself when `v` lies outside
+   * the hull: C does not add it and the caller (tri) carries on.
+   * @see gts-0.7.6/src/cdt.c:668-680 gts_delaunay_add_vertex */
   addVertex(v: number): number | null {
     const f = this.pointLocate(this.px[v]!, this.py[v]!);
-    if (f === null) throw new Error('cdt: vertex outside triangulation hull');
+    if (f === null) return v;
     return this.addVertexToFace(v, f);
   }
 
@@ -476,48 +479,59 @@ class Cdt {
     }
   }
 
-  /** @see cdt.c:remove_intersected_edge (incl. the NEXT_CUT macro) */
+  /**
+   * Returns the constraints the walk crossed and removed (C's returned
+   * GSList): a crossed constraint edge is collected, kept even when it loses
+   * all its triangles, and the walk continues through it.
+   * @see cdt.c:remove_intersected_edge (incl. the NEXT_CUT macro)
+   */
   private removeIntersectedEdge(
     sv1: number, sv2: number, e: CEdge, f: CFace,
     left: CEdge[], right: CEdge[],
-  ): void {
-    if (e.constraint) throw new Error('cdt: constraint edges cross');
+  ): CEdge[] {
+    const constraint: CEdge[] = e.constraint ? [e] : [];
 
     const r = this.ringFrom(f, e);
     const v1 = r.v1; const v2 = r.v2; const v3 = r.v3;
     const e1 = r.e2; const e2 = r.e3; // C shadows: e←r.e1, e1←r.e2, e2←r.e3
-    const cut = (edge: CEdge, edge1: CEdge, list: CEdge[]): void => {
+    const cut = (edge: CEdge, edge1: CEdge, list: CEdge[]): CEdge[] => {
       const next = this.neighbor(f, edge);
       this.removeTriangles(e);
-      if (e.tris.length === 0) this.destroyEdge(e);
-      if (next === null) throw new Error('cdt: constraint walk left the surface');
+      if (constraint.length === 0 && e.tris.length === 0) this.destroyEdge(e);
+      if (next === null) throw new InternalError('cdt: constraint walk left the surface');
       list.push(edge1);
-      this.removeIntersectedEdge(sv1, sv2, edge, next, left, right);
+      return constraint.concat(
+        this.removeIntersectedEdge(sv1, sv2, edge, next, left, right));
     };
 
     const o1 = this.orient(v2, v3, sv2);
     const o2 = this.orient(v3, v1, sv2);
     if (o1 === 0) {
       // terminal: s.v2 is v3
+      if (o2 !== 0) throw new InternalError('cdt: remove_intersected_edge: o2 != 0 at terminal'); // cdt.c:887 g_assert
       this.removeTriangles(e);
-      if (e.tris.length === 0) this.destroyEdge(e);
+      if (constraint.length === 0 && e.tris.length === 0) this.destroyEdge(e);
       left.push(e2);
       right.push(e1);
-    } else if (o1 > 0) {
-      cut(e2, e1, right);
-    } else if (o2 >= 0) {
-      cut(e1, e2, left);
-    } else {
-      const o3 = this.orient(sv1, sv2, v3);
-      if (o3 > 0) cut(e1, e2, left);
-      else cut(e2, e1, right);
+      return constraint;
     }
+    if (o1 > 0) {
+      if (o2 > 0) throw new InternalError('cdt: remove_intersected_edge: o2 > 0 with o1 > 0'); // cdt.c:895 g_assert
+      return cut(e2, e1, right);
+    }
+    if (o2 >= 0) return cut(e1, e2, left);
+    const o3 = this.orient(sv1, sv2, v3);
+    return o3 > 0 ? cut(e1, e2, left) : cut(e2, e1, right);
   }
 
-  /** @see cdt.c:remove_intersected_vertex */
+  /**
+   * Returns the reference face (C's `*ref` out-param) and the constraints the
+   * walk crossed and removed (C's returned GSList).
+   * @see cdt.c:remove_intersected_vertex
+   */
   private removeIntersectedVertex(
     sv1: number, sv2: number, left: CEdge[], right: CEdge[],
-  ): CFace {
+  ): { ref: CFace; constraints: CEdge[] } {
     // triangles around sv1 in the surface
     for (const t of this.surface) {
       if (t.v[0] !== sv1 && t.v[1] !== sv1 && t.v[2] !== sv1) continue;
@@ -538,25 +552,30 @@ class Cdt {
       const e2 = rr.e2; // v3–sv1 side
       const e1 = rr.e3; // sv1–v2 side
 
-      if (o3 >= 0) return t; // s.v2 inside (or on far edge of) t — nothing to remove
+      // s.v2 inside (or on far edge of) t — nothing to remove
+      if (o3 >= 0) return { ref: t, constraints: [] };
 
       // remove t but keep it floating as the attribute reference
       this.removeFace(t, true);
       left.push(e2);
       right.push(e1);
-      if (next === null) throw new Error('cdt: constraint walk left the surface');
-      this.removeIntersectedEdge(sv1, sv2, e, next, left, right);
-      return t;
+      if (next === null) throw new InternalError('cdt: constraint walk left the surface');
+      const constraints = this.removeIntersectedEdge(sv1, sv2, e, next, left, right);
+      return { ref: t, constraints };
     }
-    throw new Error('cdt: no wedge triangle found at constraint endpoint');
+    throw new InternalError('cdt: no wedge triangle found at constraint endpoint');
   }
 
-  /** @see cdt.c:gts_delaunay_add_constraint */
-  addConstraint(c: CEdge): void {
+  /**
+   * Returns the constraints crossing `c` that were removed (C's return
+   * value; tri() ignores it).
+   * @see cdt.c:gts_delaunay_add_constraint
+   */
+  addConstraint(c: CEdge): CEdge[] {
     const left: CEdge[] = [];
     const right: CEdge[] = [];
-    const ref = this.removeIntersectedVertex(c.v1, c.v2, left, right);
-    if (ref.inSurface) return; // constraint already realized (o3 >= 0 path)
+    const { ref, constraints } = this.removeIntersectedVertex(c.v1, c.v2, left, right);
+    if (ref.inSurface) return constraints; // already realized (o3 >= 0 path)
 
     // C: triangulate_polygon(prepend(reverse(right), c)) then
     //    triangulate_polygon(prepend(left, c)).
@@ -576,6 +595,7 @@ class Cdt {
     this.triangulatePolygon([c, ...[...left].reverse()]);
     // ref face was kept floating; destroy it now (detach from edges)
     this.detachFace(ref);
+    return constraints;
   }
 
   // -------------------------------------------------------------------

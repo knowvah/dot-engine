@@ -7,6 +7,7 @@
  * @see label/index.h
  */
 
+import { InternalError } from '../errors.js';
 import { type Rect, initRect, combineRect, rectArea, nullRect } from './rectangle.js';
 
 // C node.c uses uint64_t for bestIncr, bestArea, increase — subtraction wraps.
@@ -261,7 +262,7 @@ let _splitNodeImpl: (
   b: Branch,
   newNodeOut: { value: Node | null },
 ) => void = () => {
-  throw new Error('splitNode not yet registered — import split-q.ts first');
+  throw new InternalError('splitNode not yet registered — import split-q.ts first');
 };
 
 /** Register the splitNode implementation. Called by split-q.ts at load time. */

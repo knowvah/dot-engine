@@ -13,6 +13,7 @@
  * @see lib/gvc/gvusershape.c (ImageDict, gvusershape_find/size)
  */
 
+import { invalidArgType } from '../errors.js';
 import type { ImageSizer } from '../common/htmltable-types.js';
 
 export type { ImageSizer } from '../common/htmltable-types.js';
@@ -22,8 +23,13 @@ let activeSizer: ImageSizer | null = null;
 /**
  * Register (or clear, with null) the global image sizer consulted by
  * HTML <IMG> sizing. Mirrors gvusershape's process-global dictionary.
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `sizer` is neither a function
+ *   nor null
  */
 export function setImageSizer(sizer: ImageSizer | null): void {
+  if (sizer !== null && typeof sizer !== 'function') {
+    throw invalidArgType('sizer', 'function or null', sizer);
+  }
   activeSizer = sizer;
 }
 

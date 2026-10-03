@@ -13,6 +13,7 @@ import { Variable } from "./Variable.js";
 import { Constraint } from "./Constraint.js";
 import { Block } from "./Block.js";
 import { Blocks } from "./Blocks.js";
+import { InternalError } from "../errors.js";
 
 // ---------------------------------------------------------------------------
 // Rectangle
@@ -126,10 +127,11 @@ export class VPSC {
   /**
    * Throw if any constraint has slack < -1e-7.
    * Shared between satisfy() and refine().
+   * @see lib/vpsc/solve_VPSC.cpp:VPSC::satisfy (uncaught std::runtime_error)
    */
   private verifyConstraints(): void {
     for (const c of this.cs) {
-      if (c.slack() < -0.0000001) throw new Error("Unsatisfied constraint");
+      if (c.slack() < -0.0000001) throw new InternalError("Unsatisfied constraint");
     }
   }
 
@@ -183,7 +185,7 @@ export class IncVPSC extends VPSC {
       if (lb !== rb) {
         lb.mergeTwoArg(rb, vc);
       } else {
-        if (++splitCtr > 10000) throw new Error("Cycle Error!");
+        if (++splitCtr > 10000) throw new InternalError("Cycle Error!");
         const [splitC, newLb, newRb] = lb.splitBetween(vc.left, vc.right);
         this.inactive.push(splitC);
         newLb.mergeTwoArg(newRb, vc);
@@ -192,7 +194,7 @@ export class IncVPSC extends VPSC {
     }
     this.bs.cleanup();
     for (const c of this.cs) {
-      if (c.slack() < -0.0000001) throw new Error("Unsatisfied constraint");
+      if (c.slack() < -0.0000001) throw new InternalError("Unsatisfied constraint");
     }
   }
 

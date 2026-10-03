@@ -27,6 +27,7 @@ import { Bend } from "./types.js";
 import { chanSearch, chansInOrder } from "./maze-channels.js";
 import { insertEdge, edgeExists, removeRedge } from "./rawgraph.js";
 import { segCmp } from "./ortho-route.js";
+import { InternalError } from "../errors.js";
 
 /** @see lib/ortho/ortho.c:next_seg */
 function nextSeg(seg: OrthoSegment, dir: number): OrthoSegment | null {
@@ -81,7 +82,7 @@ function decidePoint(
     sj = np2; // eslint-disable-line no-param-reassign
   }
   if (np1 === null) prec = 0;
-  else if (np2 === null) throw new Error("decide_point: np2 null (C assert(0))");
+  else if (np2 === null) throw new InternalError("decide_point: np2 null (C assert(0))");
   else {
     const temp = segCmp(np1, np2);
     if (temp === -2) return -1;

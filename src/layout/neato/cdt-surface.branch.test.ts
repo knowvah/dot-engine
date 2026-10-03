@@ -204,9 +204,13 @@ describe('mkSurface — constraint insertion: crossing multiple triangles', () =
     expect(hasEdge01(0, 8)).toBe(true);
   });
 
-  test('two crossing constraint edges are rejected as an invalid triangulation', () => {
-    expect(() => mkSurface([0, 10, 10, 0], [0, 0, 10, 10], 4, [0, 2, 1, 3], 2))
-      .toThrow('cdt: constraint edges cross');
+  test('two crossing constraint edges: the later one wins, as in GTS', () => {
+    // gts cdt.c remove_intersected_edge collects the crossed constraint and
+    // continues; native mkSurface yields exactly this one face.
+    const sf = mkSurface([0, 10, 10, 0], [0, 0, 10, 10], 4, [0, 2, 1, 3], 2);
+    expect(sf).not.toBeNull();
+    expect(sf!.nfaces).toBe(1);
+    expect([...sf!.faces.slice(0, 3)].sort((a, b) => a - b)).toEqual([0, 1, 3]);
   });
 });
 

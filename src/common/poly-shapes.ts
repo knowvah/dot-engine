@@ -9,6 +9,7 @@
 // poly-shapes-util.ts and the per-shape vertex generators in
 // poly-shapes-cases.ts.
 
+import { RenderError } from '../errors.js';
 import type { Point } from '../model/geom.js';
 import {
   type ShapeCtx, interpolationPoints, renderShapeBezier,
@@ -73,7 +74,9 @@ export function drawSpecialShape(
   }
   const draw = CASES.get(shape);
   if (draw === undefined) {
-    throw new Error('special shape ' + String(shape) + ' not yet ported');
+    throw new RenderError(
+      'special shape ' + String(shape) + ' not yet ported', 'UNSUPPORTED_FEATURE',
+    );
   }
   const b = interpolationPoints(ring, ring.length, shape);
   draw(ring, b, coord, filled, ctx);

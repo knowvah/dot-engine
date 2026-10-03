@@ -7,6 +7,8 @@
  * @see label/index.h
  */
 
+import { RenderError } from '../errors.js';
+
 /** @see label/index.h:NUMDIMS */
 export const NUMDIMS = 2;
 
@@ -71,7 +73,7 @@ export function nullRect(): Rect {
  * Returns 0 for undefined rects or zero-width dimensions.
  * Throws if area overflows Number.MAX_SAFE_INTEGER (browser-safe substitute
  * for C's graphviz_exit on UINT64_MAX overflow).
- * @see label/rectangle.c:RectArea
+ * @see label/rectangle.c:RectArea (agerrorf + graphviz_exit at rectangle.c:73)
  */
 export function rectArea(r: Rect): number {
   if (isUndefined(r)) return 0;
@@ -81,7 +83,7 @@ export function rectArea(r: Rect): number {
     const dim = r.boundary[i + NUMDIMS] - r.boundary[i];
     if (dim === 0) return 0;
     if (Number.MAX_SAFE_INTEGER / dim < area) {
-      throw new Error('label: area too large for rtree');
+      throw new RenderError('label: area too large for rtree', 'RENDER_ERROR');
     }
     area *= dim;
   }

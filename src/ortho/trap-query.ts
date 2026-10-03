@@ -13,6 +13,7 @@ import {
   cross, TRAP_MAX,
 } from "./trap-types.js";
 import type { SegPoint, SegmentT, TrapT, QNode } from "./trap-types.js";
+import { InternalError } from "../errors.js";
 
 /**
  * Test whether point v is to the left of segment segnum.
@@ -96,7 +97,7 @@ export function locateEndpoint(
       }
       return locateEndpoint(v, vo, rptr.left, seg, qs);
     case T_X: return locateX(v, vo, rptr, seg, qs);
-    default: throw new Error("locateEndpoint: unreachable");
+    default: throw new InternalError("locateEndpoint: unreachable");
   }
 }
 

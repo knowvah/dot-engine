@@ -10,6 +10,7 @@
  * @see lib/gvc/gvdevice.c:gvprintdouble
  */
 
+import { InternalError } from '../errors.js';
 import type { Graph } from '../model/graph.js';
 import { FontnameKind } from '../model/layoutParams.js';
 import type { Node } from '../model/node.js';
@@ -361,11 +362,12 @@ export class RenderJob {
 
   /**
    * Pop the top object state from the stack.
+   * @see lib/common/emit.c:pop_obj_state (assert(obj) at emit.c:135)
    * @throws Error if the stack is empty.
    */
   popObj(): void {
     if (this.objStack.length === 0) {
-      throw new Error('RenderJob.popObj: stack is empty');
+      throw new InternalError('RenderJob.popObj: stack is empty');
     }
     this.objStack.pop();
   }

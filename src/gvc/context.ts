@@ -24,6 +24,7 @@ import type { TextSpan } from '../common/emit-types.js';
 import type { TextMeasurer } from '../common/textmeasure.js';
 import type { DebugOptions } from '../debug.js';
 import type { RenderJob } from './job.js';  // scaffold in T25; full class in T26
+import { RenderError, invalidArgType, invalidArgValue } from '../errors.js';
 
 // ---------------------------------------------------------------------------
 // Enums — match C definitions in lib/gvc/gvcjob.h exactly
@@ -165,6 +166,24 @@ class PluginRegistry {
   }
 }
 
+/** Argument check for a TextMeasurer parameter (ADR-3). */
+function checkMeasurer(m: unknown): void {
+  if (typeof m !== 'object' || m === null
+      || typeof (m as { measure?: unknown }).measure !== 'function') {
+    throw invalidArgType('measurer', 'TextMeasurer', m);
+  }
+}
+
+/** Argument check for `register` (ADR-3): shape of a plugin, not its behaviour. */
+function checkPlugin(p: unknown): void {
+  const o = p as { type?: unknown; quality?: unknown; layout?: unknown; cleanup?: unknown };
+  const ok = typeof p === 'object' && p !== null && typeof o.type === 'string'
+    && ('quality' in o
+      ? typeof o.quality === 'number'
+      : typeof o.layout === 'function' && typeof o.cleanup === 'function');
+  if (!ok) throw invalidArgType('p', 'RendererPlugin or LayoutEngine', p);
+}
+
 /**
  * Root Graphviz context.  Owns the plugin registry, text measurer, and
  * the layout-engine dispatch.
@@ -180,15 +199,29 @@ export class GvcContext {
   textMeasurer: TextMeasurer;
   readonly debug: DebugOptions | undefined;
 
+  /**
+   * @throws TypeError `ERR_INVALID_ARG_TYPE` if `measurer` has no `measure`
+   *   function or `options` is neither undefined nor an object
+   */
   constructor(measurer: TextMeasurer, options?: { debug?: DebugOptions }) {
+    checkMeasurer(measurer);
+    if (options !== undefined && (typeof options !== 'object' || options === null)) {
+      throw invalidArgType('options', 'object or undefined', options);
+    }
     this.textMeasurer = measurer;
     this.debug = options?.debug;
   }
 
-  /** Register a renderer or layout engine; overload discriminated by `quality`. */
+  /**
+   * Register a renderer or layout engine; overload discriminated by `quality`.
+   * @throws TypeError `ERR_INVALID_ARG_TYPE` if `p` is not a renderer plugin
+   *   (string `type`, numeric `quality`) or a layout engine (string `type`,
+   *   `layout` and `cleanup` functions)
+   */
   register(p: RendererPlugin): void;
   register(p: LayoutEngine): void;
   register(p: RendererPlugin | LayoutEngine): void {
+    checkPlugin(p);
     if ('quality' in p) {
       const idx = PluginRegistry.insertionIdx(this.renderers, p);
       this.renderers.splice(idx, 0, p);
@@ -202,14 +235,35 @@ export class GvcContext {
    * Because renderers are sorted quality-descending within a prefix, the first
    * match is always the highest-quality one (last-registered wins on tie).
    *
-   * @throws Error if no renderer is registered for format
+   * @throws TypeError (ERR_INVALID_ARG_TYPE) if format is not a string
+   * @throws TypeError (ERR_INVALID_ARG_VALUE) if no renderer is registered
+   *   for format
    * @see lib/gvc/gvplugin.c:gvplugin_find
    */
   bestRenderer(format: string): RendererPlugin {
+    if (typeof format !== 'string') {
+      throw invalidArgType('format', 'string', format);
+    }
     for (const r of this.renderers) {
       if (r.type.split(':')[0] === format) return r;
     }
-    throw new Error(`no renderer registered for format: ${format}`);
+    const prefixes = new Set(this.renderers.map((r) => r.type.split(':')[0]!));
+    throw invalidArgValue('format', format, [...prefixes]);
+  }
+
+  /** Validate the `(g, engineName)` arguments shared by layout/freeLayout. */
+  private checkLayoutArgs(g: Graph, engineName: EngineName): LayoutEngine {
+    if (typeof g !== 'object' || g === null) {
+      throw invalidArgType('g', 'object', g);
+    }
+    if (typeof engineName !== 'string') {
+      throw invalidArgType('engine', 'string', engineName);
+    }
+    const engine = this.layouts.get(engineName);
+    if (engine === undefined) {
+      throw invalidArgValue('engine', engineName, [...this.layouts.keys()]);
+    }
+    return engine;
   }
 
   /**
@@ -218,24 +272,31 @@ export class GvcContext {
    * rendering happens in between and must see the layout state
    * (e.g. cluster arrays).
    *
-   * @throws Error if the engine is not registered
+   * @throws TypeError (ERR_INVALID_ARG_TYPE / ERR_INVALID_ARG_VALUE) for a
+   *   bad `g`, or an engine argument that is not registered
+   * @throws RenderError (UNKNOWN_LAYOUT) if the `layout` attribute names no
+   *   registered engine
+   * @throws RenderError (RENDER_ERROR / UNSUPPORTED_FEATURE) or InternalError
+   *   from the engine itself, unwrapped; a foreign throw from an engine bug
+   *   also propagates unwrapped (only the public render functions wrap it)
    * @see lib/gvc/gvlayout.c:gvLayoutJobs
    */
   layout(g: Graph, engineName: EngineName): void {
+    const selected = this.checkLayoutArgs(g, engineName);
     // C gvLayoutJobs: the graph's `layout` ATTRIBUTE unconditionally
     // overrides the selected engine (-K / API choice); an unrecognized
     // value is an error, not a fallback. @see lib/gvc/gvlayout.c:66-73
     const attr = g.attrs?.get('layout'); // test doubles may lack attrs
-    let name = engineName;
+    let engine = selected;
     if (attr !== undefined && attr !== '') {
-      if (!this.layouts.has(attr as EngineName)) {
-        throw new Error(`Layout type: "${attr}" not recognized`);
+      const override = this.layouts.get(attr);
+      if (override === undefined) {
+        throw new RenderError(
+          `Layout type: "${attr}" not recognized`,
+          'UNKNOWN_LAYOUT',
+        );
       }
-      name = attr as EngineName;
-    }
-    const engine = this.layouts.get(name);
-    if (engine === undefined) {
-      throw new Error(`no layout engine registered: ${name}`);
+      engine = override;
     }
     if (g.info) g.info.gvc = this;
     engine.layout(g);
@@ -247,14 +308,11 @@ export class GvcContext {
   /**
    * Release engine layout state after rendering.
    *
-   * @throws Error if the engine is not registered
+   * @throws TypeError (ERR_INVALID_ARG_TYPE / ERR_INVALID_ARG_VALUE) for a
+   *   bad `g`, or an engine argument that is not registered
    * @see lib/gvc/gvlayout.c:gvFreeLayout
    */
   freeLayout(g: Graph, engineName: EngineName): void {
-    const engine = this.layouts.get(engineName);
-    if (engine === undefined) {
-      throw new Error(`no layout engine registered: ${engineName}`);
-    }
-    engine.cleanup(g);
+    this.checkLayoutArgs(g, engineName).cleanup(g);
   }
 }

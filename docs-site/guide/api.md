@@ -43,8 +43,12 @@ you need those steps separated.
 - **`dotSource`** — DOT-language graph source.
 - **`engine`** — `EngineName`: one of the built-ins (`dot`, `neato`, `fdp`,
   `sfdp`, `circo`, `twopi`, `osage`, `patchwork`) or any custom-registered name.
-- **Throws** `ParseError` if `dotSource` is invalid; `RenderError` if layout or
-  rendering fails. Every throw implements the shared `GvError` shape.
+- **Throws** a `DotEngineError` for any problem with the input: `ParseError` if
+  `dotSource` is invalid, `RenderError` if layout or rendering fails,
+  `InternalError` (with `cause`) for a dot-engine bug. A `TypeError` with
+  `code` `ERR_INVALID_ARG_TYPE` / `ERR_INVALID_ARG_VALUE` if `dotSource` or
+  `engine` is invalid (including an engine name that is not registered). See
+  [Errors and exceptions](/guide/errors).
 
 Full signature, JSDoc, and the `GvError` field list: [Reference](/reference/).
 
@@ -54,13 +58,16 @@ Full signature, JSDoc, and the `GvError` field list: [Reference](/reference/).
 function tryRenderSvg(dotSource: string, engine: EngineName): RenderResult;
 ```
 
-Result-style sibling of `renderSvg` — never throws. Returns `{ svg }` on
-success or `{ errors: [one] }` on the first failure; `svg` and `errors` are
-mutually exclusive. Each entry in `errors` is a plain, JSON-serializable
-`GvError` object (no stack trace), so it's safe to send across a
-worker/postMessage boundary or serialize into a log. Prefer this over
-`renderSvg` + `try`/`catch` when the caller wants to branch on `code` /
-`type` rather than catch an exception. [Reference](/reference/).
+Result-style sibling of `renderSvg`. Returns (never throws) for any DOT input:
+`{ svg }` on success or `{ errors: [one] }` on the first failure; `svg` and
+`errors` are mutually exclusive. It throws only for invalid arguments (`TypeError`
+`ERR_INVALID_ARG_TYPE` / `ERR_INVALID_ARG_VALUE`). Each entry in `errors` is
+plain, JSON-serializable data (`type`, `code`, `message`, `friendlyMessage`, plus
+`location` / `expected` when present; no `cause`, no stack trace), so it's safe to
+send across a worker/postMessage boundary or serialize into a log. Prefer this over
+`renderSvg` + `try`/`catch` when the caller wants to branch on `code` / `type`
+rather than catch an exception. See [Errors and exceptions](/guide/errors).
+[Reference](/reference/).
 
 ### `parse` / `ParseError`
 
@@ -73,26 +80,40 @@ for inspecting or transforming the graph — or handing it to `@knowvah/dot-engi
 `getLayout` / `@knowvah/dot-engine/render`'s `render` — before rendering.
 
 - **Throws** `ParseError` for syntax errors or edge-direction violations (e.g.
-  `->` in an undirected graph). `ParseError` implements `GvError` with
-  `type: 'syntax'` and carries a `location: { line, column, offset? }` when the
-  parser can pinpoint one. [Reference](/reference/).
+  `->` in an undirected graph). `ParseError` extends `DotEngineError` and
+  implements `GvError` with `type: 'syntax'`; it carries a
+  `location: { line, column, offset? }`. `TypeError` `ERR_INVALID_ARG_TYPE` if
+  `dotSource` is not a string. [Errors and exceptions](/guide/errors),
+  [Reference](/reference/).
 
-### `RenderError`
+### `DotEngineError` / `RenderError` / `InternalError`
 
 ```ts
-class RenderError extends Error implements GvError {
-  readonly type: 'render';
-  readonly code: GvErrorCode;
-  readonly friendlyMessage: string;
+abstract class DotEngineError extends Error implements GvError {
+  abstract readonly type: GvErrorType;
+  abstract readonly code: GvErrorCode;
+  abstract readonly friendlyMessage: string;
 }
+class RenderError extends DotEngineError {
+  readonly type: 'render' | 'semantic';
+  readonly code: GvErrorCode; // 'RENDER_ERROR' | 'UNKNOWN_LAYOUT' | 'UNSUPPORTED_FEATURE'
+}
+class InternalError extends DotEngineError {
+  readonly type: 'render';
+  readonly code: 'INTERNAL_ERROR';
+}
+function isGvError(e: unknown): e is GvError;
 ```
 
-Thrown for known layout/render-stage failures (`code` is `'RENDER_ERROR'` or
-`'GENERIC_ERROR'`). Every @knowvah/dot-engine throw — `ParseError`, `RenderError`, or
-an `HtmlParseError` from an HTML-like label — implements the shared `GvError`
-contract, so callers can branch on `err.type` / `err.code` without an
-`instanceof` chain per error class. See [Types](/guide/types) for the full
-`GvError` shape and [Reference](/reference/) for `GvErrorCode`'s member list.
+`instanceof DotEngineError` means dot-engine failed on this input. `RenderError`
+covers known layout/render failures (`type` is `semantic` for `UNKNOWN_LAYOUT` and
+`UNSUPPORTED_FEATURE`). `InternalError` is a dot-engine bug; `cause` holds the
+original error when one was wrapped. Caller mistakes throw a standard `TypeError`
+/ `RangeError` / `Error` with a `code` instead. `isGvError` checks for a string
+`type` and `code`, so it works across duplicate bundles. See
+[Errors and exceptions](/guide/errors) for every code and what each function can
+throw, [Types](/guide/types) for the `GvError` shape, and
+[Reference](/reference/) for `GvErrorCode`'s member list.
 
 ### `setTextMeasurer` / `getTextMeasurer`
 
@@ -229,7 +250,9 @@ boxes, and the overall graph bounds — all in points.
   increases downward, and `bounds` is normalized to `(0, 0)`. `'up'` returns
   native Graphviz coordinates (origin bottom-left, y increases upward) with
   `bounds.x`/`bounds.y` at the raw lower-left corner.
-- **Throws** `RenderError` if `g` has not been laid out.
+- **Throws** `Error` with `code` `ERR_INVALID_STATE` if `g` has not been laid
+  out; `TypeError` `ERR_INVALID_ARG_TYPE` / `ERR_INVALID_ARG_VALUE` for a bad `g`
+  or `opts`. See [Errors and exceptions](/guide/errors).
 
 Node `width`/`height` are converted to points (the internal model stores
 inches); every other coordinate is already in points. See
@@ -267,7 +290,9 @@ Lays out and renders a graph to the requested format string.
   'plain-ext' | 'imap' | 'cmapx'`.
 - **`opts.engine`** — layout engine (default `'dot'`).
 - **`opts.inlineImages`** — see [below](#inlineimages).
-- **Throws** `RenderError` on layout or render failure.
+- **Throws** `RenderError` on layout or render failure; `InternalError` on a
+  dot-engine bug; `TypeError` with a `code` for invalid arguments (including an
+  unregistered engine or format). See [Errors and exceptions](/guide/errors).
 
 `opts.engine` mirrors `renderSvg`'s `engine` parameter; `format` is the axis
 `renderSvg` doesn't expose (`renderSvg` is hardcoded to `'svg'`). See
@@ -318,8 +343,9 @@ without touching SVG or xdot's string encoding. `opts.engine` defaults to
 `DEFAULT_DRAW_ENGINE` (`'dot'`).
 
 - **Throws** `ParseError` if the intermediate xdot output can't be re-parsed
-  (defensive; not expected in practice); `RenderError` on layout/render
-  failure.
+  (a dot-engine bug; not expected in practice); `RenderError` on layout/render
+  failure; `InternalError` on any other dot-engine bug; `TypeError` with a
+  `code` for invalid arguments. See [Errors and exceptions](/guide/errors).
 
 See [Custom rendering with xdot draw-ops](/guide/xdot-drawops) for the op-kind
 list and a worked canvas example, and [Types](/guide/types) /

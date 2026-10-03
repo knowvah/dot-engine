@@ -77,42 +77,75 @@ structured error — see [Error handling](#error-handling).
 
 ## Error handling
 
-`renderSvg` throws on any failure; for a result-style alternative that never
-throws, use `tryRenderSvg`:
+dot-engine raises two kinds of error:
+
+- `err instanceof DotEngineError` — dot-engine failed on this input: bad DOT
+  (`ParseError`), a layout/render failure (`RenderError`, including
+  `UNKNOWN_LAYOUT` and `UNSUPPORTED_FEATURE`), or a dot-engine bug
+  (`InternalError`).
+- A standard `TypeError` / `RangeError` / `Error` with `code: 'ERR_…'` — the call
+  was wrong (bad argument type, unregistered engine, wrong call order).
+
+Branch on `.code`, not on message text. For a result-style alternative that does
+not throw for bad DOT, use `tryRenderSvg`:
 
 ```ts
 import { tryRenderSvg } from '@knowvah/dot-engine';
 
 const result = tryRenderSvg('digraph { a ->', 'dot');
-if (result.svg) {
+if (result.svg !== undefined) {
   // success
 } else {
-  const err = result.errors[0];
-  console.error(err.code, err.friendlyMessage, err.location);
+  const err = result.errors?.[0];
+  console.error(err?.code, err?.friendlyMessage, err?.location);
   // 'SYNTAX_UNEXPECTED_EOF' · 'The DOT source ended unexpectedly …' · { line, column, offset }
 }
 ```
 
-A `RenderResult` is `{ svg }` **or** `{ errors }` (never both); `errors` holds at
-most the first failure. Each entry is a plain, JSON-serializable `GvError`:
+`tryRenderSvg` returns for any DOT input and throws only for invalid arguments.
+Each entry in `errors` is plain data (`type`, `code`, `message`,
+`friendlyMessage`, plus `location` / `expected` when present) with no `cause` and
+no stack.
 
-| Field | Meaning |
-|-------|---------|
-| `type` | `'syntax'` · `'semantic'` · `'render'` |
-| `code` | Stable machine key (an i18n key) — branch on this |
-| `message` | Concise technical text |
-| `friendlyMessage` | Approachable, non-localized English for end users |
-| `location?` | `{ line, column, offset? }` — the real error position |
-| `expected?` | Parser expectation list, for syntax errors only |
+Every code, class, and the exceptions each public function can throw:
+[Errors and exceptions](https://dot-engine.knowvah.com/guide/errors).
 
-The `code` values are a closed union: `SYNTAX_ERROR`, `SYNTAX_UNEXPECTED_EOF`,
-`EDGE_OP_DIRECTED_IN_UNDIRECTED`, `EDGE_OP_UNDIRECTED_IN_DIRECTED`,
-`HTML_PARSE_ERROR`, `RENDER_ERROR`, `GENERIC_ERROR`.
+## Migrating to 2.0
 
-The throwing `renderSvg` raises the same structured values as real `Error`
-subclasses — `ParseError` (syntax) and `RenderError` (render) — each carrying
-`code`, `type`, `friendlyMessage`, and (for `ParseError`) `location`/`expected`.
-Branch on `.code`/`.type` rather than `instanceof` per subclass.
+2.0 changes which errors are thrown. Code that branches on `.code` keeps working
+for DOT errors; the changes below are the ones that can affect callers.
+
+| Situation | Before | After |
+|-----------|--------|-------|
+| `parse(non-string)` / `renderSvg(non-string, …)` | `ParseError` `GENERIC_ERROR` | `TypeError` `ERR_INVALID_ARG_TYPE` |
+| Engine argument not registered | `RenderError` `RENDER_ERROR` | `TypeError` `ERR_INVALID_ARG_VALUE` |
+| `tryRenderSvg` with invalid arguments (non-string source, unregistered engine) | Returned `{ errors: [...] }` (`GENERIC_ERROR` / `RENDER_ERROR`) | Throws `TypeError` (`ERR_INVALID_ARG_TYPE` / `ERR_INVALID_ARG_VALUE`) |
+| Engine argument not registered, but the DOT sets a valid `layout=` | Rendered with the attribute's engine | `TypeError` `ERR_INVALID_ARG_VALUE` (the argument is checked first) |
+| Format argument not registered (`render(g, 'pdf')`) | `RenderError` `RENDER_ERROR` | `TypeError` `ERR_INVALID_ARG_VALUE` |
+| DOT `layout="foo"` unknown | `RenderError` `RENDER_ERROR` | `RenderError` `UNKNOWN_LAYOUT` (`type: 'semantic'`) |
+| `render(null)` / `getDrawOps(null)` | `RenderError` ("Cannot read properties of null") | `TypeError` `ERR_INVALID_ARG_TYPE` |
+| `getLayout(null)` / `addEdge(null, …)` | Raw `TypeError` (no code) | `TypeError` `ERR_INVALID_ARG_TYPE` |
+| `getLayout` before layout | `RenderError` `GENERIC_ERROR` | `Error` `ERR_INVALID_STATE` |
+| Builder fails to create a node or subgraph | `RenderError` `GENERIC_ERROR` | `InternalError` `INTERNAL_ERROR` |
+| `ctx.layout` / `freeLayout` with a non-object `g` or non-string engine; `bestRenderer` with a non-string format | Incidental `TypeError` / generic `Error` | `TypeError` `ERR_INVALID_ARG_TYPE` |
+| `getLayout(g, { yAxis: 'other' })` | Silently treated as y-up | `TypeError` `ERR_INVALID_ARG_VALUE` |
+| `createGraph`, builder methods and handles with wrong argument types; `addEdge` with a non-string `name` | Accepted or coerced | `TypeError` `ERR_INVALID_ARG_TYPE` |
+| `setImageSizer` / `setImageResolver` / `setTextMeasurer` with a wrong value | Accepted; failed later inside layout | `TypeError` `ERR_INVALID_ARG_TYPE` |
+| Foreign throw inside layout or render (a bug) | `RenderError` `RENDER_ERROR`, original stack lost | `InternalError` `INTERNAL_ERROR`, `cause` is the original error |
+
+Internal throw sites ported from Graphviz C keep the same condition and message;
+only the class changes:
+
+| Group | Before | After |
+|-------|--------|-------|
+| C `assert` / uncaught C++ `throw` sites (neato gts triangulation and multispline router, vpsc solver, ortho, label index, pack-components, fdp ports, twopi circle, gvc job) | `Error` | `InternalError` `INTERNAL_ERROR` |
+| C `agerr` + `exit` sites (label rectangle-tree overflow, XML escape of malformed UTF-8) | `Error` | `RenderError` `RENDER_ERROR` |
+| Graphviz features the port has not implemented (fdp overlap modes, sfdp `smoothing=` / `rotation=`, special shapes) | `Error` | `RenderError` `UNSUPPORTED_FEATURE` (`type: 'semantic'`) |
+| gts constrained-Delaunay paths where C continues instead of failing | `Error` | No throw; behaviour now matches C |
+
+New exports: `DotEngineError`, `InternalError`, `isGvError`, and the type
+`UsageErrorCode`. `GvErrorCode` gains `INTERNAL_ERROR`, `UNKNOWN_LAYOUT` and
+`UNSUPPORTED_FEATURE`.
 
 ## Layout engines
 
@@ -219,19 +252,25 @@ SVG profile) before inserting it, or render from trusted DOT only.
 ## Public API
 
 ```ts
-// Primary entry point. Throws a structured GvError (ParseError / RenderError).
+// Primary entry point. Throws a DotEngineError (ParseError / RenderError /
+// InternalError) for bad input, or a TypeError with a code for a bad call.
 function renderSvg(dotSource: string, engine: string): string;
 
-// Result-style entry point: returns { svg } or { errors: [GvError] }, never throws.
+// Result-style entry point: returns { svg } or { errors: [GvError] } for any DOT
+// input; throws only for invalid arguments.
 function tryRenderSvg(dotSource: string, engine: string): RenderResult;
 
 // Structured error contract (see "Error handling").
 interface GvError { type; code; message; friendlyMessage; location?; expected?; }
 interface RenderResult { svg?: string; errors?: GvError[]; }
 type GvErrorType = 'syntax' | 'semantic' | 'render';
-type GvErrorCode = 'SYNTAX_ERROR' | 'SYNTAX_UNEXPECTED_EOF' | /* …7 total */ 'GENERIC_ERROR';
-class ParseError extends Error implements GvError { /* type:'syntax' */ }
-class RenderError extends Error implements GvError { /* type:'render' */ }
+type GvErrorCode = 'SYNTAX_ERROR' | 'SYNTAX_UNEXPECTED_EOF' | /* …10 total */ 'GENERIC_ERROR';
+type UsageErrorCode = 'ERR_INVALID_ARG_TYPE' | 'ERR_INVALID_ARG_VALUE' | 'ERR_OUT_OF_RANGE' | 'ERR_INVALID_STATE';
+abstract class DotEngineError extends Error implements GvError {}
+class ParseError extends DotEngineError { /* type:'syntax' */ }
+class RenderError extends DotEngineError { /* type:'render' | 'semantic' */ }
+class InternalError extends DotEngineError { /* type:'render' */ }
+function isGvError(e: unknown): e is GvError;
 
 // Parse DOT into the in-memory graph model (without laying it out).
 function parse(dotSource: string): Graph;

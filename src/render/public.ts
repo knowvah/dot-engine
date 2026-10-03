@@ -13,8 +13,7 @@
 import type { Graph } from '../model/graph.js';
 import { createDefaultContext } from '../gvc/default-context.js';
 import { render as deviceRender } from '../gvc/device.js';
-import { RenderError } from '../errors.js';
-import type { GvError } from '../errors.js';
+import { invalidArgType, rethrowAtBoundary } from '../errors.js';
 import type { EngineName } from '../gvc/context.js';
 
 // ---------------------------------------------------------------------------
@@ -64,23 +63,19 @@ export interface RenderOptions {
 // Private helpers (mirrors index.ts)
 // ---------------------------------------------------------------------------
 
-/**
- * Duck-type a thrown value as a {@link GvError}: object with string `type`
- * and string `code`. Re-implemented here (not imported) so this module has
- * no circular dependency on `src/index.ts`.
- */
-function isGvErrorLike(err: unknown): err is GvError {
-  return (
-    typeof err === 'object' &&
-    err !== null &&
-    typeof (err as { type?: unknown }).type === 'string' &&
-    typeof (err as { code?: unknown }).code === 'string'
-  );
-}
 
-/* v8 ignore next -- defensive normalizer; unreachable via public API */
-function messageOf(err: unknown): string {
-  return err instanceof Error ? err.message : String(err);
+
+/** Reject a bad `g` / `format` / `opts` before any work starts. */
+function checkRenderArgs(g: unknown, format: unknown, opts: unknown): void {
+  if (typeof g !== 'object' || g === null) {
+    throw invalidArgType('g', 'object', g);
+  }
+  if (typeof format !== 'string') {
+    throw invalidArgType('format', 'string', format);
+  }
+  if (opts !== undefined && (typeof opts !== 'object' || opts === null)) {
+    throw invalidArgType('opts', 'object or undefined', opts);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -91,8 +86,8 @@ function messageOf(err: unknown): string {
  * Render a (parsed or built) graph to the requested format string.
  *
  * Lifecycle: createDefaultContext → layout → deviceRender → freeLayout.
- * Error handling mirrors `renderSvg`: GvError-like throws re-surface
- * unchanged; unknown throws become `RenderError('RENDER_ERROR')`.
+ * Error handling mirrors `renderSvg`: usage errors and GvErrors re-surface
+ * unchanged; any other throw becomes an `InternalError` with `cause` set.
  *
  * @remarks
  * Security: for the markup formats (`svg`, `cmapx`, `imap`), treat the output
@@ -106,7 +101,13 @@ function messageOf(err: unknown): string {
  * @param format - target output format
  * @param opts   - optional engine override (default: `'dot'`)
  * @returns rendered string in the requested format
- * @throws RenderError on layout or render failure
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `g` is not an object, `format`
+ *   is not a string, or `opts` is neither undefined nor an object
+ * @throws TypeError `ERR_INVALID_ARG_VALUE` if the engine or format is not
+ *   registered
+ * @throws RenderError `RENDER_ERROR`, `UNKNOWN_LAYOUT` or `UNSUPPORTED_FEATURE`
+ *   on layout or render failure
+ * @throws InternalError `INTERNAL_ERROR` on a dot-engine bug
  *
  * @see lib/gvc/gvc.c:gvRender
  */
@@ -115,6 +116,7 @@ export function render(
   format: OutputFormat,
   opts?: RenderOptions,
 ): string {
+  checkRenderArgs(g, format, opts);
   const engine: EngineName = opts?.engine ?? 'dot';
   const inlineImages = opts?.inlineImages ?? false;
   const ctx = createDefaultContext();
@@ -124,8 +126,6 @@ export function render(
     ctx.freeLayout(g, engine);
     return result;
   } catch (err: unknown) {
-    /* v8 ignore next -- current engines don't throw a GvError-like value here */
-    if (isGvErrorLike(err)) throw err;
-    throw new RenderError(messageOf(err), 'RENDER_ERROR');
+    return rethrowAtBoundary(err);
   }
 }

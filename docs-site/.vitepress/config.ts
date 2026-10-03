@@ -113,6 +113,7 @@ export default defineConfig({
         text: 'Reference',
         items: [
           { text: 'API reference (curated)', link: '/guide/api' },
+          { text: 'Errors and exceptions', link: '/guide/errors' },
           { text: 'Types', link: '/guide/types' },
           { text: 'Generated API (TypeDoc)', link: '/reference/' },
           { text: 'Playground', link: '/playground' },

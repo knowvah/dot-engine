@@ -8,6 +8,7 @@
  * @see lib/twopigen/circle.h
  */
 
+import { InternalError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
@@ -23,7 +24,7 @@ export const MIN_RANKSEP = 0.02;
 /** Get the TwopiAlgData record for a node; throws if absent. */
 function rdata(n: Node): TwopiAlgData {
   const d = n.info.alg;
-  if (!d || d.kind !== 'twopi') throw new Error(`twopi: missing rdata on node ${n.name}`);
+  if (!d || d.kind !== 'twopi') throw new InternalError(`twopi: missing rdata on node ${n.name}`);
   return d;
 }
 

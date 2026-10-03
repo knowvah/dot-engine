@@ -16,6 +16,8 @@
  * @see lib/gvc/gvusershape.c (ImageDict, gvusershape_find/size)
  */
 
+import { invalidArgType } from '../errors.js';
+
 // ---------------------------------------------------------------------------
 // Resolver registry
 // ---------------------------------------------------------------------------
@@ -35,8 +37,13 @@ let activeResolver: ImageResolver | null = null;
  * Register (or clear, with null) the global image resolver consulted when
  * `RenderOptions.inlineImages` is set. Mirrors gvusershape's process-global
  * dictionary and `setImageSizer`'s registration shape.
+ * @throws TypeError `ERR_INVALID_ARG_TYPE` if `fn` is neither a function nor
+ *   null
  */
 export function setImageResolver(fn: ImageResolver | null): void {
+  if (fn !== null && typeof fn !== 'function') {
+    throw invalidArgType('resolver', 'function or null', fn);
+  }
   activeResolver = fn;
 }
 
