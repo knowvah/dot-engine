@@ -152,11 +152,25 @@ const ADJUST_MODES = new Map<string, readonly [number, string]>([
 ]);
 
 /**
+ * getAdjustMode's fallback warning: a value that is not a mode name, not
+ * prism*, and not a boolean is used as `false` (prism) with this warning.
+ * @see lib/neatogen/adjust.c:getAdjustMode (unmappable branch)
+ */
+export function warnUnrecognizedOverlap(flag: string | undefined): void {
+  if (flag === undefined || flag === '') return;
+  const s = flag.toLowerCase();
+  if (s.startsWith('prism') || NAMED_MODES.has(s)) return;
+  if (mapBoolDflt(flag, false) === mapBoolDflt(flag, true)) return;
+  console.warn(`Unrecognized overlap value "${flag}" - using false`);
+}
+
+/**
  * Resolve an `overlap` value to its adjust mode (the PRISM try count lands in
- * `value`).
+ * `value`), warning as C does for an unrecognized value.
  * @see lib/neatogen/adjust.c:getAdjustMode
  */
 export function getAdjustMode(flag: string | undefined): AdjustData {
+  warnUnrecognizedOverlap(flag);
   const ntry = overlapPrismTries(flag);
   if (ntry !== null) return { mode: AM_PRISM, print: 'prism', value: ntry };
   const named = ADJUST_MODES.get((flag ?? '').toLowerCase());
@@ -227,6 +241,14 @@ export function removeOverlapWith(g: Graph, am: AdjustData): number {
  * @see lib/neatogen/adjust.c:adjustNodes / removeOverlapAs
  */
 export function adjustNodesFull(g: Graph): number {
-  const flag = g.attrs.get('overlap') ?? g.root.attrs.get('overlap');
-  return removeOverlapWith(g, getAdjustMode(flag));
+  if (g.nodes.size < 2) return 0; // removeOverlapAs returns before getAdjustMode
+  return removeOverlapWith(g, graphAdjustMode(g));
+}
+
+/**
+ * The graph's `overlap` value resolved once (agget falls back to the root).
+ * @see lib/neatogen/adjust.c:graphAdjustMode
+ */
+export function graphAdjustMode(g: Graph): AdjustData {
+  return getAdjustMode(g.attrs.get('overlap') ?? g.root.attrs.get('overlap'));
 }
