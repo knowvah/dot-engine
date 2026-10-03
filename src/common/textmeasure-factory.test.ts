@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: EPL-2.0
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
@@ -8,7 +8,7 @@ import {
   createMeasurer, setTextMeasurer, getTextMeasurer,
 } from './textmeasure-factory.js';
 import {
-  LutTextMeasurer, EstimateTextMeasurer, type TextMeasurer, type TextSize,
+  LutTextMeasurer, EstimateTextMeasurer, CanvasTextMeasurer, type TextMeasurer, type TextSize,
 } from './textmeasure.js';
 
 afterEach(() => {
@@ -51,6 +51,37 @@ describe('createMeasurer auto-resolution (Node, no document)', () => {
   it('GV_TEXT_MEASURER=lut forces the hinted built-in measurer', () => {
     process.env.GV_TEXT_MEASURER = 'lut';
     expect(createMeasurer()).toBeInstanceOf(LutTextMeasurer);
+  });
+});
+
+// ── auto-resolution (Worker: no document, OffscreenCanvas) ───────────────────
+
+describe('createMeasurer auto-resolution (Worker, OffscreenCanvas)', () => {
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  /** A fake OffscreenCanvas whose 2d context measures 7px per character. */
+  function stubOffscreen(ctx: unknown): void {
+    vi.stubGlobal('OffscreenCanvas', class {
+      constructor(public width: number, public height: number) {}
+      getContext(kind: string): unknown { return kind === '2d' ? ctx : null; }
+    });
+  }
+
+  it('measures with an OffscreenCanvas 2d context when there is no document', () => {
+    stubOffscreen({ font: '', measureText: (t: string) => ({ width: 7 * t.length }) });
+    const m = createMeasurer();
+    expect(m).toBeInstanceOf(CanvasTextMeasurer);
+    expect(m.measure('abc', 'Times-Roman', 14)).toEqual({ w: 21, h: 14 });
+  });
+
+  it('falls back to the estimate measurer when getContext returns null', () => {
+    stubOffscreen(null);
+    expect(createMeasurer()).toBeInstanceOf(EstimateTextMeasurer);
+  });
+
+  it('falls back to the estimate measurer when OffscreenCanvas throws', () => {
+    vi.stubGlobal('OffscreenCanvas', class { constructor() { throw new Error('no'); } });
+    expect(createMeasurer()).toBeInstanceOf(EstimateTextMeasurer);
   });
 });
 

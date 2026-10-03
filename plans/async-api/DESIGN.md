@@ -98,13 +98,18 @@ unquoted multi-word names silently fall back. That is fixed separately
 (see `plans/canvas-font-mapping/`); this design depends on its mapping
 function.
 
-### D5 — Worker support is a separate, later step
+### D5 — Worker support (implemented 2026-10-03)
 
 `createMeasurer()` gates canvas use on `document`, so inside a Worker it
 falls back to `EstimateTextMeasurer`. Adding an `OffscreenCanvas` branch,
 plus `self.fonts` for preloading, would make Worker renders host-faithful.
-Confidence that `WorkerGlobalScope.fonts` is available: MEDIUM for
-Chromium/Firefox, LOW for Safari — verify before relying on it.
+Implemented: `createMeasurer` uses an `OffscreenCanvas` 2d context when there
+is no `document`, and the async API's default font set falls back to
+`self.fonts`. Verified in Chromium 153 (module Worker, `FontFace` added to
+`self.fonts`): web-font label 124.8 pt, same as the page. Chromium quirk: a
+font string measured in a Worker before its face loads stays on the fallback
+face afterwards, so Workers should render through the async API. Firefox and
+Safari not verified.
 
 ## Open questions
 

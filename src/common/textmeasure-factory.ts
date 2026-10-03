@@ -6,7 +6,8 @@
  *   1. explicit override via setTextMeasurer (tests, host-faithful Node opt-in)
  *   2. GV_TEXT_MEASURER=estimate|lut — test/CI hook to force a specific measurer
  *   3. browser (document present) — CanvasTextMeasurer over the page canvas
- *      (host-faithful: the same font the browser renders the SVG with)
+ *      (host-faithful: the same font the browser renders the SVG with);
+ *      Worker (no document) — the same over an OffscreenCanvas
  *   4. Node default               — EstimateTextMeasurer (deterministic; matches
  *      graphviz's own headless estimate_textspan_size)
  *
@@ -77,6 +78,21 @@ function adviseHostFaithful(): void {
   );
 }
 
+/**
+ * A CanvasTextMeasurer over an OffscreenCanvas 2d context, for Workers (no
+ * `document`); undefined where OffscreenCanvas is missing or unusable (Node).
+ * @see plans/async-api/DESIGN.md D5
+ */
+function offscreenMeasurer(): CanvasTextMeasurer | undefined {
+  if (typeof OffscreenCanvas === 'undefined') return undefined;
+  try {
+    const ctx2d = new OffscreenCanvas(0, 0).getContext('2d');
+    return ctx2d ? new CanvasTextMeasurer(ctx2d) : undefined;
+  } catch {
+    return undefined; // OffscreenCanvas present but no 2d context
+  }
+}
+
 /** Resolve the text measurer for this render (see resolution order above). */
 export function createMeasurer(): TextMeasurer {
   if (override) return override;
@@ -88,6 +104,9 @@ export function createMeasurer(): TextMeasurer {
       const ctx2d = document.createElement('canvas').getContext('2d');
       if (ctx2d) return new CanvasTextMeasurer(ctx2d);
     } catch { /* canvas unavailable */ }
+  } else {
+    const offscreen = offscreenMeasurer(); // Worker: no document, same fonts API
+    if (offscreen) return offscreen;
   }
   adviseHostFaithful(); // Node, no host canvas → built-in deterministic metrics
   // Node default = EstimateTextMeasurer: the deterministic reference that matches
