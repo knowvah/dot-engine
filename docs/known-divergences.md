@@ -1191,17 +1191,40 @@ differs from native Graphviz. Found by the `v2-silent-gaps` mission
 (`plans/v2-silent-gaps/decision-journal.md`); not accepted deltas.
 
 - **`getAdjustMode`'s "Unrecognized overlap value" warning is not emitted.**
-- **Rotated-shape polygon vertices can differ from native by 1 ulp.** The
-  port's `shape_info.vertices` for a box with `orientation=20` gives -18 where
-  native gives -17.999999999999996 (origin not pinpointed; generator in
-  `src/common/poly-vertices.ts` or `poly-sizing.ts`). That flips 4 exact-touch
-  `polyOverlap` verdicts; with native vertices all verdicts match, so
-  `src/layout/neato/poly.ts` is not the cause.
-- **sfdp differs from native on some multi-component graphs with no `overlap`
-  attribute.** Example: mixed triangles plus an isolated node, node `a` y
-  2.35 native versus 5.734 port. Outside overlap removal; undiagnosed.
-- **fdp: one cluster without `coords` differs from native by about 0.24 in**
-  on a small graph. Undiagnosed.
+- **Rotated polygon vertices can differ from native in the last bits
+  (irreducible: host math library).** `poly_init` orients each vertex with
+  `atan2`, `hypot`, `sin` and `cos`. With bit-identical inputs, macOS libm and
+  V8 return different last bits (e.g. `atan2(0x3fd6a09e667f3bce,
+  0xbfd6a09e667f3bca)`: libm `…21d1`, V8 `…21d2`; `hypot` at the next vertex:
+  libm `…fffd`, V8 `…fffe`), so a box with `orientation=20` gets vertex y
+  `-18` in the port and `-17.999999999999996` natively. Native Graphviz itself
+  varies with the platform's libm, and a browser cannot call it. The port's own
+  arithmetic matches C (`RADIANS` order fixed; 776 of 1664 sampled vertex
+  coordinates are bit-identical, the rest differ through libm only). Effect:
+  exact-touch `polyOverlap` verdicts can flip; with native vertices every
+  verdict matches.
+- **sfdp can differ from native on macOS (irreducible: host libm `pow`).**
+  Diagnosed with an instrumented native sfdp: positions stay bit-identical
+  until one repulsive-force term, `pow(dist, 1 - p)` (`spring_electrical.c`,
+  `p = -1` so `pow(x, 2)`), returns 1 ulp less than `x*x` from macOS libm
+  (`pow(1.4116727416983157, 2)`: libm `1.9928199296540394`, correctly rounded
+  `…396`; macOS `pow(v, 2) != v*v` for 20 of 16201 sampled `v`). That changes
+  the iteration's `Fnorm` in the last bit; sfdp's adaptive cooling amplifies it
+  into a different (often mirrored) layout. The port's `armPow` is ARM's
+  optimized-routines `pow` (glibc ≥ 2.28), i.e. what Linux Graphviz computes;
+  the macOS oracle is the outlier. Ruled out: seeding (explicit `start=` values
+  match), `pcp_rotate` (same input gives the same output), positions and the
+  attractive term (bit-identical). Example: a lone triangle `a--b; a--c; b--c`
+  at the default seed.
+- **fdp follows Graphviz 15.0.0, the oracle is newer.** The port's repulsive
+  force is 15.0.0's (`doRep` on `dist²`, no cutoff; see
+  `src/layout/fdp/tlayout.ts`). Graphviz after 15.0.0 uses `hypot(dist)` and an
+  `Mlimit` cutoff (upstream `56edd7483`, `a46354c82`, `c9423d349`), so the
+  current native build differs on graphs where those round differently (e.g.
+  one cluster with edges leaving it: about 0.24 in). Verified: an oracle built
+  with only 15.0.0's `doRep`/`applyRep`/`doNeighbor` matches the port exactly
+  on those graphs. Moving fdp to the newer behaviour is an owner decision (the
+  fdp goldens are 15.0.0 output).
 - **Native crashes the port defines.** Native Graphviz exits 139 on neato
   `mode=KK` with `model=mds` and an edge `len` (`mds_model` indexes `GD_dist`
   by a 1-based sequence number: heap overflow), and on `model=circuit` with a
