@@ -155,7 +155,7 @@ with every message, is the table in
 | neato | `start=self` | `mode` is `major` or `ipsep` |
 | neato | `model=subset` | `mode` is `major` or `KK` |
 | neato | `model=circuit` | `mode` is `major`, or `KK` on a connected graph |
-| neato, twopi, circo | `overlap=voronoi` | 2+ nodes and an overlap exists (twopi and circo: single-component graphs) |
+| neato, twopi, circo, sfdp | `overlap=voronoi` | 2+ nodes and Graphviz's own overlap count (node polygons, not bounding boxes) is above 0. circo: single-component graphs; sfdp: new in 2.0 (the mode was previously ignored); only when `overlap` is not a prism mode |
 | fdp | `splines=compound` | Always |
 | fdp | `overlap=` `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho*`, `portho*` | The mode is reached after the force-iteration tries |
 | sfdp | `label_scheme=1`..`4` | A `\|edgelabel\|` node exists and Graphviz takes the edge-label path |
@@ -170,6 +170,14 @@ Graphviz; no code change is needed:
 | neato `start=regular` | Treated as random | Nodes start on a regular polygon, as Graphviz does |
 | neato `start=randomN` | Only digit-led values were seeded | `N` seeds the generator, as Graphviz does |
 | neato and fdp `inputscale` | Ignored | Divides user `pos` values (and fdp cluster `coords`); `0` or a negative value means 72, absent means no scaling |
+| neato `mode=KK` | Ran stress majorization | Runs Kamada-Kawai, as Graphviz. A disconnected graph without `pack` or `packmode` is laid out whole, not packed |
+| neato `mode=sgd` | Ran stress majorization | Runs stochastic gradient descent, as Graphviz; honours edge `len` and seeds from `start`. Graphviz seeds from the clock when `start` is unset, so set `start=<n>` for reproducible output |
+| neato unknown `mode` value | Ignored without a message | Warns `Illegal value X for attribute "mode" in graph G - ignored` and runs `major`, as Graphviz |
+| neato, twopi, circo, sfdp `overlap=oscale`, `ortho*`, `portho*` | Ignored; overlaps left in place | Removed, as Graphviz (`oscale` scales, the others run constraint-based removal) |
+| neato `overlap=vpsc` | Gap of `nodesep/2` between nodes | Gap of `2*sep` (additive) or 2 x 4 pt, as Graphviz; output changes on every graph using this mode |
+| sfdp `overlap=` any non-prism mode other than `voronoi` | Ignored except `scale` | Runs Graphviz's removal after layout (`voronoi` with overlapping nodes is now an error; see above) |
+| fdp cluster `coords` set only on a subgraph | Ignored | Honoured, as Graphviz |
+| `overlap=voronoi` with nodes that only touch by bounding box | `UNSUPPORTED_FEATURE` | Renders: the overlap test now uses node polygons, as Graphviz |
 | `ctx.freeLayout(g, engine)` | Cleaned up with the engine argument | Cleans up with the engine that ran the layout |
 | XML escaping in UTF-8 mode (no public API sets this mode) | Decoded UTF-16 units as UTF-8 bytes, so a character such as U+00FF raised `RENDER_ERROR` | Escapes by code point (`&#x1f600;`), matching Graphviz; a lone surrogate still raises `RENDER_ERROR` |
 | fdp edges to cluster endpoints under spline routing (for example `splines=true`) | Drew line segments silently | Also prints the Graphviz warning (`splines and cluster edges not supported - using line segments`) |

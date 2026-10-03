@@ -2,7 +2,7 @@
 /**
  * Neato layout engine entry point.
  *
- * Wires together neatoInitNode, setSeed, solveModel, removeOverlap,
+ * Wires together neatoInitNode, setSeed, solveModel, adjustNodes,
  * splineEdges, neatoTranslate, and neatoSetAspect into the full neato
  * layout pipeline, and exports NEATO_LAYOUT_ENGINE for registration with
  * GvcContext.
@@ -14,28 +14,26 @@
 import type { Graph } from '../../model/graph.js';
 import type { LayoutEngine } from '../../gvc/context.js';
 import {
+  MODE_KK,
   neatoInitNode,
   userPos,
   solveModel,
   neatoCleanup,
-  MODE_KK,
-  MODE_MAJOR,
-  MODE_HIER,
-  MODE_IPSEP,
-  MODE_SGD,
   MODEL_SHORTPATH,
   MODEL_CIRCUIT,
   MODEL_SUBSET,
   MODEL_MDS,
 } from './init.js';
-import { removeOverlap } from './overlap.js';
+import { neatoMode } from './start.js';
 import { adjustNodesFull } from './fdp-adjust.js';
 import { splineEdgesShifted, EDGETYPE_LINE } from './splines.js';
 import { setEdgeTypeFromAttr } from '../dot/index.js';
 import {
   pccomps,
   computeSubgraphBB,
+  getPack,
   getPackInfo,
+  getPackModeInfo,
   packGraphs,
   PackMode,
   type PackInfo,
@@ -43,7 +41,7 @@ import {
 import { CL_OFFSET } from '../twopi/pipeline.js';
 import { isACluster } from '../dot/rank.js';
 import { doGraphLabel } from '../dot/graph-label.js';
-import { graphInit, DEFAULT_NODESEP_POINTS } from '../../common/graph-init.js';
+import { graphInit } from '../../common/graph-init.js';
 import { placeGraphLabel } from '../dot/position-bbox.js';
 import { gvPostprocess } from '../../common/postproc.js';
 import { layoutMeasurer } from '../../common/nodeinit.js';
@@ -62,25 +60,14 @@ export {
 // Mode parsing
 // ---------------------------------------------------------------------------
 
-/** Map from mode string to numeric constant. @see lib/neatogen/neato.h */
-const MODE_MAP: Record<string, number> = {
-  KK: MODE_KK,
-  major: MODE_MAJOR,
-  hier: MODE_HIER,
-  ipsep: MODE_IPSEP,
-  sgd: MODE_SGD,
-};
-
 /**
- * Parse `g.info.mode` string into a numeric mode constant.
- * Defaults to MODE_MAJOR when unset or unrecognised.
+ * Parse the root `mode` attribute into a numeric mode constant (C neatoMode).
+ * Defaults to MODE_MAJOR when unset; warns and defaults on an unknown value.
  *
- * @see lib/neatogen/neato.h:neatoMode
+ * @see lib/neatogen/neatoinit.c:neatoMode
  */
 export function parseMode(g: Graph): number {
-  const s = g.info.mode;
-  if (!s) return MODE_MAJOR;
-  return MODE_MAP[s] ?? MODE_MAJOR;
+  return neatoMode(g);
 }
 
 // ---------------------------------------------------------------------------
@@ -113,39 +100,15 @@ export function parseModel(g: Graph): number {
 // ---------------------------------------------------------------------------
 
 /**
- * Apply VPSC overlap removal unless `g.info.overlap === 'false'`.
+ * Remove node overlaps per the `overlap` attribute: C's removeOverlapWith
+ * dispatch (prism, scale family, oscale, ortho*, portho*, vpsc, voronoi) for
+ * every mode, as neato_layout's adjustNodes call does.
  *
- * @see lib/neatogen/neatoinit.c:neato_layout (removeOverlapWith call)
+ * @see lib/neatogen/neatoinit.c:neato_layout (adjustNodes call)
+ * @see lib/neatogen/adjust.c:removeOverlapWith
  */
 export function maybeRemoveOverlap(g: Graph): void {
-  // C: graphAdjustMode defaults to AM_NONE — no overlap attr means no
-  // overlap removal ("overlap: none"). VPSC runs only on request.
-  const overlap = g.attrs.get('overlap');
-  if (overlap === undefined || overlap === 'true') return;
-  // C removeOverlapWith dispatches by adjust mode. `overlap=false` resolves to
-  // AM_PRISM (getAdjustMode's boolean fallback lands on adjustMode[1] on a
-  // GTS+SFDP build), `overlap=scale/scalexy/compress` to the scale family, only
-  // `overlap=vpsc` to VPSC. Previously neato hardcoded VPSC for ALL of these,
-  // under-scaling every overlap=false graph (bb ~0.4-0.8x the oracle) and
-  // scaling scale-mode graphs wrong. adjustNodesFull is the ported
-  // removeOverlapWith body (PRISM via fdpAdjust + scale via scAdjust); VPSC is
-  // the one mode it does not cover. @see lib/neatogen/adjust.c:removeOverlapWith
-  if (overlap !== 'vpsc') {
-    adjustNodesFull(g);
-    return;
-  }
-  const nodes = Array.from(g.nodes.values());
-  // Separation is DELIBERATELY the *default* nodesep, not GD_nodesep(g). C's
-  // overlap removal derives its padding from `sep`/DFLT_MARGIN (adjust.c:591-600
-  // sepFactor) and never reads GD_nodesep — that field is used only by
-  // makeSelfArcs (neatosplines.c:673) and routespl.c:1006. Before graph_init was
-  // consolidated, GD_nodesep was unset under neato at this point, so this site
-  // always saw the 18pt default; now that graphInit parses `nodesep` for every
-  // engine (as C does), reading it here would silently change the VPSC
-  // separation on graphs that set both `nodesep` and `overlap` (corpus: 1554,
-  // 2242) — a divergence C does not have. Pinned to the default it always used.
-  const nodesep = DEFAULT_NODESEP_POINTS / 72; // points → inches
-  removeOverlap(nodes, { x: nodesep / 2, y: nodesep / 2 });
+  adjustNodesFull(g);
 }
 
 // ---------------------------------------------------------------------------
@@ -205,7 +168,9 @@ export function neatoLayout(g: Graph): void {
 
   // C uses pccomps (pin-aware): components with a pinned node are collected
   // first (index 0) so the packer can hold them fixed. @see neatoinit.c:1391
-  const { graphs: comps, pinned } = pccomps(g, '_neato_cc');
+  const { graphs: comps, pinned } = neatoPack(g, mode) >= 0
+    ? pccomps(g, '_neato_cc')
+    : { graphs: [g], pinned: false };
   if (comps.length > 1) {
     layoutComponents(g, comps, mode, model, pinned);
   } else {
@@ -225,6 +190,23 @@ export function neatoLayout(g: Graph): void {
   // xlabel map placement pass. @see lib/neatogen/neatoinit.c:1440
   placeGraphLabel(g);
   gvPostprocess(g);
+}
+
+/**
+ * C's Pack decision: unset `pack` with no `packmode` packs (CL_OFFSET) unless
+ * layoutMode is MODE_KK (0); a set `packmode` always packs. Negative means the
+ * whole graph is laid out at once.
+ * @see lib/neatogen/neatoinit.c:1371-1383 (neato_layout)
+ */
+function neatoPack(g: Graph, layoutMode: number): number {
+  const pinfo: PackInfo = {
+    aspect: 1, sz: 0, margin: CL_OFFSET, doSplines: false,
+    mode: PackMode.Undef, fixed: null, vals: null, flags: 0,
+  };
+  const mode = getPackModeInfo(g, PackMode.Undef, pinfo);
+  const pack = getPack(g, -1, CL_OFFSET);
+  if (mode === PackMode.Undef) return pack < 0 && layoutMode !== MODE_KK ? CL_OFFSET : pack;
+  return pack < 0 ? CL_OFFSET : pack;
 }
 
 /**

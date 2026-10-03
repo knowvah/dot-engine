@@ -62,6 +62,12 @@ describe('overlap=voronoi', () => {
     expect(failure(pair('0.01'), 'neato')).toBeUndefined();
   });
 
+  it('does not throw for ellipses whose boxes touch but outlines do not (exact countOverlap)', () => {
+    const src = 'graph G { overlap=voronoi; sep="+0"; node[shape=ellipse,width=1,height=1,fixedsize=true]; ' +
+      'a [pos="0,0!"]; b [pos="0.95,0.95!"] }';
+    expect(failure(src, 'neato')).toBeUndefined();
+  });
+
   it('throws for twopi, which calls adjustNodes in C', () => {
     const err = failure(`graph G { overlap=voronoi; ${BOXES}; a--b; a--c; a--d; a--e; a--f }`, 'twopi');
     expect((err as RenderError).code).toBe('UNSUPPORTED_FEATURE');

@@ -16,6 +16,7 @@ import type { Box, Point } from '../../model/geom.js';
 import type { TextlabelT } from '../../common/types.js';
 import { lateInt, lateDouble } from '../../common/nodeinit.js';
 import type { PolygonT } from '../../common/types.js';
+import { agGraphAttr } from '../../model/cgraph-ops.js';
 import { isACluster } from '../dot/rank.js';
 import { BOTTOM_IX, TOP_IX } from '../dot/position-aux.js';
 import {
@@ -60,7 +61,7 @@ export function initInfo(g: Graph): LayoutInfo {
   getPackInfo(g, PackMode.Node, CL_OFFSET / 2, pack);
   return {
     rootg: g,
-    hasCoords: g.attrs.has('coords'),
+    hasCoords: agGraphAttr(g, 'coords') !== undefined,
     gid: 0,
     pack,
   };

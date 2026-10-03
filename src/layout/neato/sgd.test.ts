@@ -74,14 +74,16 @@ describe('sgdLayout: same seed produces identical positions', () => {
 // Test 1b: different seeds → different positions
 // ---------------------------------------------------------------------------
 
-describe('sgdLayout: different seeds produce different positions', () => {
-  it('seed=1 and seed=99999 yield at least one differing coordinate', () => {
+describe('sgdLayout: different start seeds produce different positions', () => {
+  // C seeds drand48 from `start` for the initial positions; the shuffle RNG is
+  // always rk_seed(0), so `g.info.seed` is not consulted.
+  it('start=1 and start=99999 yield at least one differing coordinate', () => {
     const g1 = buildGraph(5);
-    g1.info.seed = 1;
+    g1.attrs.set('start', '1');
     sgdLayout(g1, MODEL_SHORTPATH);
 
     const g2 = buildGraph(5);
-    g2.info.seed = 99999;
+    g2.attrs.set('start', '99999');
     sgdLayout(g2, MODEL_SHORTPATH);
 
     const xs1 = [...g1.nodes.values()].map(n => n.info.pos![0]);

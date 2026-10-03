@@ -149,8 +149,10 @@ attempts broke. The remaining `[ ]` / `[~]` work, by area:
 6. overlap modes: **prism DONE** (`overlap-prism.ts` + `fdp-adjust.ts`, Delaunay
    via `delaunay.ts`), **scale family DONE** (`scalexy`/`compress`/`nscale` →
    `sc-adjust.ts`). **voronoi** is now **loud** (`UNSUPPORTED_FEATURE`, see
-   [Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)); still open and silent: **scan**,
-   `oscale`, `ortho*`/`portho*` (see `docs/known-divergences.md`).
+   [Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)); **oscale** (`adjust-info.ts` `sAdjust`),
+   **ortho\*/portho\*** (`constraint-adjust.ts` `cAdjust`) and **vpsc**
+   (`vpsc-adjust.ts`) are **DONE** for neato/twopi/circo/sfdp via one
+   `removeOverlapWith` dispatch (v2-silent-gaps); still open: **scan**.
 7. distance models: **mds** is ported (native Δ0, uniform and varied `len`);
    **circuit** and **subset** are **loud** ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)); **closest-pair**
    still open.
@@ -159,9 +161,10 @@ attempts broke. The remaining `[ ]` / `[~]` work, by area:
    **loud** for `mode=major`/`ipsep` and warns-and-ignores under KK/sgd, as C.
 9. **`mode=hier`** (digcola) is **loud**; **`mode=ipsep`** is **loud** only when
    C builds constraints (`diredgeconstraints`, `overlap=ipsep`, top-level
-   cluster) and otherwise runs majorization as C does. Gap: the `mode`
-   attribute itself is never read, so `mode=KK`/`sgd` silently run majorization
-   (`docs/known-divergences.md`).
+   cluster) and otherwise runs majorization as C does. The `mode` attribute is
+   now read (`neatoMode` in `start.ts`): **`mode=KK`** (`kk.ts`, `kk-paths.ts`,
+   `kk-solve.ts`) and **`mode=sgd`** (native-exact; `start`, `len`) are
+   **DONE**; an unknown value warns and runs `major`, as C.
 10. edge routing `multispline.c` — **DONE** (`multispline.ts` +
     `multispline-router.ts`, GTS-faithful CDT via `cdt-surface.ts`, 2026-07-10);
     edge `xlabel` placement (NEA-5) — **DONE**, live corpus-wide
@@ -370,13 +373,17 @@ Everything below is the full per-module catalog backing this list.
   `sc-adjust.ts` — **modes none/vpsc DONE; PRISM DONE** (`overlap-prism.ts`);
   **scale family DONE** (`scalexy`/`compress`/`nscale` → `sc-adjust.ts`). The
   overlap-removal *ipsep-cola* mode and scan remain unported; `voronoi` is
-  loud ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)). (Do not
-  confuse with `mode=ipsep` layout, below.)
+  loud ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)). **oscale** (`adjust-info.ts`),
+  **ortho\*/portho\*** (`constraint-adjust.ts`) and **vpsc** (`vpsc-adjust.ts`) are
+  **DONE**; the overlap test is poly.c (`poly.ts`). `normalize`/`simpleScale`
+  are not run (see `docs/known-divergences.md`). (Do not confuse with
+  `mode=ipsep` layout, below.)
 
 **Real gaps (reachable; previously mislabeled "unused"):**
 - [~] **overlap modes** — prism + scale family (scalexy/nscale/compress) DONE
   (see adjust.c row). Still open: **voronoi** (now loud, [Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)),
-  **scan** (need the Fortune stack).
+  **scan** (need the Fortune stack). oscale, ortho\*/portho\* and vpsc are
+  DONE (see adjust.c row).
 - [~] **Voronoi/Delaunay stack**: delaunay.c → `delaunay.ts` and legal.c
   (`Plegal_arrangement`) → `legal.ts` **DONE** (2026-07-10, back PRISM's
   triangulation). Still open for `overlap=voronoi`: voronoi.c, hedges.c, heap.c,
@@ -392,8 +399,11 @@ Everything below is the full per-module catalog backing this list.
 - [x] **edge routing**: multispline.c — multi-obstacle spline routing →
   `multispline.ts` + `multispline-router.ts`, GTS-faithful CDT via
   `cdt-surface.ts` (2026-07-10)
-- [ ] **solver deps** the still-open models need: lu.c, matinv.c, solve.c,
-  opt_arrangement.c, poly.c
+- [~] **solver deps** the still-open models need: lu.c, matinv.c,
+  opt_arrangement.c [ ] open; **solve.c** [x] (`kk-solve.ts`), **poly.c** [x]
+  (`poly.ts`), constraint.c (`cAdjust`) [x] (`constraint-adjust.ts`)
+- [x] **Kamada-Kawai** (`mode=KK`): kkNeato + stuff.c KK path →
+  `kk.ts`, `kk-paths.ts`, `kk-solve.ts` (v2-silent-gaps)
 - [~] kkutils.c — some APSP ported in bfs/dijkstra/stress; confirm
   neighbor-vector utilities covered
 

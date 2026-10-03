@@ -8,10 +8,15 @@
  */
 
 import type { Graph } from '../../model/graph.js';
+import type { Node } from '../../model/node.js';
 import type { TermSgd } from './dijkstra.js';
-import { dijkstraSgd } from './dijkstra.js';
+import { dijkstraSgd } from './sgd-dijkstra.js';
+import { setEdgeLen } from './edge-len.js';
 import { rkNewState, rkSeed, rkInterval } from '../../util/mt19937.js';
 import type { RkState } from '../../util/mt19937.js';
+import { drand48 } from '../../common/random.js';
+import { lateDouble } from '../../common/nodeinit.js';
+import { checkStart, parseStart, INIT_RANDOM, INIT_REGULAR } from './start.js';
 
 // ---------------------------------------------------------------------------
 // Model constants — @see lib/neatogen/defs.h
@@ -26,11 +31,14 @@ export const MODEL_SUBSET = 2;
 /** MDS distance model (falls back to MODEL_SHORTPATH). */
 export const MODEL_MDS = 3;
 
-/** Default tolerance (Epsilon in neato). @see lib/neatogen/sgd.c */
-const DFLT_TOLERANCE = 1e-4;
+/** Epsilon under MODE_SGD: a minimum step size, not the 1e-4 energy tolerance. @see lib/neatogen/stuff.c:scan_graph_mode */
+const SGD_EPSILON = 0.01;
 
-/** Default maximum number of SGD iterations. @see lib/neatogen/neato.h */
-const MAX_ITER = 30;
+/** MaxIter when `maxiter` is unset under MODE_SGD. @see lib/neatogen/neatoinit.c:1288 */
+const SGD_DFLT_ITERATIONS = 30;
+
+/** C's rk_seed(0, &rstate) in sgd(): the shuffle seed is fixed. @see lib/neatogen/sgd.c:215 */
+const SHUFFLE_SEED = 0;
 
 // ---------------------------------------------------------------------------
 // GraphSgd — CSR sparse-graph for Dijkstra
@@ -78,27 +86,31 @@ export function assignNodeIds(g: Graph): { nNodes: number; nEdges: number } {
 }
 
 /**
- * Append CSR entries for all non-self-loop edges incident on node `np`.
+ * Append CSR entries for all non-self-loop edges incident on node `np`
+ * (out-edges first, then in-edges, as agfstedge/agnxtedge).
  * Returns the number of edges appended.
  * @internal
  */
 export function fillNodeEdges(
-  np: import('../../model/node.js').Node,
+  np: Node,
   g: Graph,
   graph: GraphSgd,
   edgeOffset: number,
 ): number {
   let nEdges = edgeOffset;
-  for (const ep of g.edges) {
-    if (ep.tail === np && ep.head !== np) {
-      graph.targets[nEdges] = ep.head.info.id ?? 0;
-      graph.weights[nEdges] = ep.info.dist ?? 1;
-      nEdges++;
-    } else if (ep.head === np && ep.tail !== np) {
-      graph.targets[nEdges] = ep.tail.info.id ?? 0;
-      graph.weights[nEdges] = ep.info.dist ?? 1;
-      nEdges++;
-    }
+  // agfstedge/agnxtedge: every out-edge, then every in-edge, each dict ordered
+  // by (other endpoint's seq, edge seq). The order is load-bearing: dijkstra
+  // tie-breaking sets the term order that the shuffle then permutes.
+  // ND_id is assigned and setEdgeLen sets ED_dist on every edge before
+  // extractAdjacency runs (sgd() below), so both are defined here.
+  for (const ep of np.outEdges(g)) {
+    if (ep.head === np) continue;
+    graph.targets[nEdges] = ep.head.info.id!;
+    graph.weights[nEdges++] = ep.info.dist!;
+  }
+  for (const ep of np.inEdges(g)) {
+    graph.targets[nEdges] = ep.tail.info.id!;
+    graph.weights[nEdges++] = ep.info.dist!;
   }
   return nEdges;
 }
@@ -252,21 +264,25 @@ export function fisheryatesShuffle(terms: TermSgd[], state: RkState): void {
 // Initial positions
 // ---------------------------------------------------------------------------
 
+/** C hasPos: ND_pinned > 0 (P_SET from `pos=`, or P_PIN). @see lib/neatogen/stress.c:hasPos */
+function hasPos(np: Node): boolean {
+  return np.info.posSet === true || np.info.pinned === true;
+}
+
 /**
- * Assign random initial positions to unpinned nodes with no position set.
- * Uses MT19937 for deterministic, seed-controlled output.
+ * Seed drand48 from `start` (checkStart) and give every node without a
+ * position a random one. start=regular keeps the regular placement that
+ * solveModel already made (checkStart's INIT_REGULAR early return).
  *
  * @see lib/neatogen/stuff.c:initial_positions
  * @see lib/neatogen/stuff.c:randompos
  */
-export function initialPositions(g: Graph, state: RkState): void {
-  for (const [, np] of g.nodes) {
-    if (np.info.pinned === true) continue;
-    if (np.info.pos != null) continue;
-    np.info.pos = [
-      rkInterval(0xffff, state) / 0x10000,
-      rkInterval(0xffff, state) / 0x10000,
-    ];
+export function initialPositions(g: Graph, nG: number = g.nodes.size): void {
+  if (parseStart(g.root.attrs.get('start'), INIT_RANDOM).init === INIT_REGULAR) return;
+  checkStart(g, nG, INIT_RANDOM);
+  for (const np of g.nodes.values()) {
+    if (hasPos(np)) continue;
+    np.info.pos = [drand48(), drand48()];
   }
 }
 
@@ -277,7 +293,7 @@ export function initialPositions(g: Graph, state: RkState): void {
 /**
  * Compute the annealing schedule parameters from the term weights.
  *
- * eta_max = 1/w_min; eta_min = DFLT_TOLERANCE/w_max
+ * eta_max = 1/w_min; eta_min = Epsilon/w_max
  * lambda  = log(eta_max/eta_min) / (maxIter - 1)
  *
  * @see lib/neatogen/sgd.c:sgd (initialise annealing schedule)
@@ -285,6 +301,7 @@ export function initialPositions(g: Graph, state: RkState): void {
 export function computeSchedule(
   terms: TermSgd[],
   maxIter: number,
+  epsilon: number = SGD_EPSILON,
 ): { etaMax: number; lambda: number } {
   let wMin = terms[0].w;
   let wMax = terms[0].w;
@@ -293,7 +310,7 @@ export function computeSchedule(
     if (terms[ij].w > wMax) wMax = terms[ij].w;
   }
   const etaMax = 1 / wMin;
-  const etaMin = DFLT_TOLERANCE / wMax;
+  const etaMin = epsilon / wMax;
   const lambda = Math.log(etaMax / etaMin) / (maxIter - 1);
   return { etaMax, lambda };
 }
@@ -404,15 +421,15 @@ export function resolveModel(model: number): number {
   return model;
 }
 
-/** Optimisation loop: shuffle and step for MAX_ITER iterations. @see lib/neatogen/sgd.c:sgd */
+/** Optimisation loop: shuffle and step for `sched.maxIter` iterations. @see lib/neatogen/sgd.c:sgd */
 export function runSgdLoop(
   pos: Float64Array,
   terms: TermSgd[],
   unfixed: boolean[],
-  sched: { etaMax: number; lambda: number },
+  sched: { etaMax: number; lambda: number; maxIter: number },
   state: RkState,
 ): void {
-  for (let t = 0; t < MAX_ITER; t++) {
+  for (let t = 0; t < sched.maxIter; t++) {
     fisheryatesShuffle(terms, state);
     const eta = sched.etaMax * Math.exp(-sched.lambda * t);
     sgdIteration(pos, terms, unfixed, eta);
@@ -431,7 +448,8 @@ export function runSgdLoop(
  *
  * Node positions are written to `node.info.pos` ([x, y]).
  * Nodes with `node.info.pinned === true` are not moved.
- * `g.info.seed` controls the MT19937 seed (default 0).
+ * The shuffle RNG is seeded with 0 as in C; `start` seeds only the initial
+ * positions (drand48, via checkStart).
  *
  * @see lib/neatogen/sgd.c:sgd
  */
@@ -440,22 +458,27 @@ export function sgdLayout(g: Graph, model: number): void {
   const n = g.nodes.size;
   if (n === 0) return;
 
-  const state = rkNewState();
-  rkSeed(g.info.seed ?? 0, state);
-
   let idx = 0;
   for (const [, node] of g.nodes) { node.info.id = idx++; }
 
-  initialPositions(g, state);
-
+  setEdgeLen(g);
   const graph = extractAdjacency(g, resolvedModel);
   const terms = sgdBuildTerms(graph);
   if (terms.length === 0) return;
 
-  const { etaMax, lambda } = computeSchedule(terms, MAX_ITER);
+  // C: MaxIter = atoi(maxiter) else 30; Epsilon = late_double(epsilon, 1e-4)
+  // @see lib/neatogen/neatoinit.c:1283-1288
+  const maxIterAttr = g.attrs.get('maxiter');
+  const maxIter = maxIterAttr !== undefined ? parseInt(maxIterAttr, 10) || 0 : SGD_DFLT_ITERATIONS;
+  const epsilon = lateDouble(g.attrs.get('epsilon'), SGD_EPSILON, 0);
+  const { etaMax, lambda } = computeSchedule(terms, maxIter, epsilon);
+
+  initialPositions(g, n);
   const pos = posToArray(g, n);
   const unfixed = buildUnfixed(g, n);
 
-  runSgdLoop(pos, terms, unfixed, { etaMax, lambda }, state);
+  const state = rkNewState();
+  rkSeed(SHUFFLE_SEED, state);
+  runSgdLoop(pos, terms, unfixed, { etaMax, lambda, maxIter }, state);
   posFromArray(g, pos);
 }

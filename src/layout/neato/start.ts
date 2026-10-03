@@ -123,18 +123,26 @@ function maxIterNegative(g: Graph): boolean {
   return !Number.isNaN(n) && n < 0;
 }
 
-/** @see lib/neatogen/neatoinit.c:neatoMode (digcola + ipsepcola builds) */
-const modeByName = (): Readonly<Record<string, number>> => ({
-  KK: MODE_KK, major: MODE_MAJOR, sgd: MODE_SGD, hier: MODE_HIER, ipsep: MODE_IPSEP,
-});
+/** @see lib/neatogen/neatoinit.c:neatoMode (DIGCOLA + IPSEPCOLA builds) */
+// A function, not a constant: init.ts and start.ts import each other, so the
+// MODE_* values are not yet initialised when this module body runs.
+const modeByName = (): ReadonlyMap<string, number> => new Map([
+  ['KK', MODE_KK], ['major', MODE_MAJOR], ['sgd', MODE_SGD],
+  ['hier', MODE_HIER], ['ipsep', MODE_IPSEP],
+]);
 
 /**
- * The mode C would run: the `mode` attribute when it names one, else the
- * caller's. (index.ts:parseMode reads g.info.mode, which nothing populates
- * from the DOT attribute, so the attribute is consulted directly here.)
+ * Read the root `mode` attribute: empty/absent is MODE_MAJOR, an unknown value
+ * warns with C's text and is ignored. Case sensitive, as C's streq.
+ * @see lib/neatogen/neatoinit.c:neatoMode
  */
-function effectiveMode(g: Graph, mode: number): number {
-  return modeByName()[g.root.attrs.get('mode') ?? ''] ?? mode;
+export function neatoMode(g: Graph): number {
+  const str = g.root.attrs.get('mode');
+  if (str === undefined || str === '') return MODE_MAJOR;
+  const mode = modeByName().get(str);
+  if (mode !== undefined) return mode;
+  console.warn(`Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
+  return MODE_MAJOR;
 }
 
 function checkMode(g: Graph, mode: number): void {
@@ -208,8 +216,7 @@ function checkModel(g: Graph, mode: number, model: number): void {
  */
 export function assertSupported(g: Graph, mode: number, model: number): void {
   if (maxIterNegative(g)) return;
-  const eff = effectiveMode(g, mode);
-  checkMode(g, eff);
-  checkStartAttr(g, eff);
-  checkModel(g, eff, model);
+  checkMode(g, mode);
+  checkStartAttr(g, mode);
+  checkModel(g, mode, model);
 }
