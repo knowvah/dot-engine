@@ -31,8 +31,7 @@ import { CL_OFFSET } from '../twopi/pipeline.js';
 import { placeGraphLabel } from '../dot/position-bbox.js';
 import { gvPostprocess } from '../../common/postproc.js';
 import { aggetGraph } from '../fdp/fdp-model.js';
-import { overlapPrismTries } from '../neato/fdp-adjust.js';
-import { adjustNodesScale } from '../neato/sc-adjust.js';
+import { overlapPrismTries, adjustNodesFull } from '../neato/fdp-adjust.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import {
   type SpringElectricalControl,
@@ -85,7 +84,7 @@ export function sfdpLayoutComponent(
  * for prism/false), ctrl.initialScaling = overlap_scaling (default −4), and
  * doAdjust is false. Otherwise (scale family, AM_NONE, unported modes) sfdp's
  * in-layout removal is off (ctrl.overlap = −1) and doAdjust drives a
- * post-layout removeOverlapWith (adjustNodesScale).
+ * post-layout removeOverlapWith (adjustNodesFull).
  * @see lib/neatogen/adjust.c:graphAdjustMode / getAdjustMode (15.0.0)
  * @see lib/sfdpgen/sfdpinit.c:sfdp_layout (HAVE_GTS branch)
  */
@@ -139,7 +138,7 @@ function layoutComponents(
   for (const sg of comps) {
     // ccomps already node-induces edges (graphviz_node_induce).
     sfdpLayoutComponent(sg, ctrl, pad);
-    if (doAdjust) adjustNodesScale(sg); // removeOverlapWith (non-PRISM modes)
+    if (doAdjust) adjustNodesFull(sg); // removeOverlapWith (non-PRISM modes)
     // @see lib/sfdpgen/sfdpinit.c:284 (setEdgeType FUNCTION, per component)
     setEdgeTypeFromAttr(sg, EDGETYPE_LINE);
     splineEdgesShifted(sg);
@@ -213,7 +212,7 @@ export function sfdpLayout(g: Graph): void {
     singleComponent = comps.length === 1;
     if (singleComponent) {
       sfdpLayoutComponent(g, ctrl, pad);
-      if (doAdjust) adjustNodesScale(g); // removeOverlapWith (non-PRISM modes)
+      if (doAdjust) adjustNodesFull(g); // removeOverlapWith (non-PRISM modes)
       splineEdgesShifted(g); // C spline_edges: shift + coord sync + route
     } else {
       layoutComponents(g, comps, ctrl, pad, doAdjust);
