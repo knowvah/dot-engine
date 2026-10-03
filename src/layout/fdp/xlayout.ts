@@ -32,6 +32,7 @@ import {
 } from './fdp-model.js';
 import { coincidentDelta } from './tlayout.js';
 import { normalizeG } from './normalize.js';
+import { simpleScale } from '../neato/simple-scale.js';
 
 /** @see lib/fdpgen/xlayout.c:DFLT_overlap */
 const DFLT_OVERLAP = '9:prism';
@@ -314,14 +315,14 @@ export function fdpXLayout(g: Graph, xpms: XParams): void {
  *   scale family (scale/scalexy/compress) → scAdjust;
  *   AM_NONE ('' / 'true') and unported modes (voronoi) → no-op.
  * normalize reads "normalize" and simpleScale reads "scale"; deriveGraph
- * copies only overlap/sep/K, so both are faithfully dead here (as noted in
- * normalize.ts / sc-adjust.ts) unless set on the derived chain — simpleScale
- * follows the project's decision to leave it unported.
+ * copies only overlap/sep/K, so both are faithfully dead here unless set on
+ * the derived chain (native fdp ignores both attributes).
  * @see lib/neatogen/adjust.c:removeOverlapAs / removeOverlapWith / getAdjustMode
  */
 function removeOverlapAs(g: Graph, flag: string): void {
   if (g.nodes.size < 2) return; // removeOverlapWith: <2 nodes short-circuits
-  normalizeG(g); // removeOverlapWith runs normalize before the mode switch
+  normalizeG(g); // removeOverlapWith runs normalize + simpleScale first
+  simpleScale(g);
   const ntry = overlapPrismTries(flag);
   if (ntry !== null) {
     fdpAdjust(g, ntry); // AM_PRISM

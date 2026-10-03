@@ -34,12 +34,12 @@ function angleSet(g: Graph): number | null {
   if (a === undefined || a === '') return null;
   const ang = parseAngle(a);
   if (ang === null) return null;
-  return wrapDegrees(ang) * (Math.PI / 180);
+  return (wrapDegrees(ang) / 180.0) * Math.PI; // RADIANS(a) = a/180.0*M_PI
 }
 
-/** strtod with the mapbool fallback of angleSet. */
+/** strtod (leading whitespace, sign) with the mapbool fallback of angleSet. */
 function parseAngle(a: string): number | null {
-  const m = /^-?[\d.]+(?:[eE][-+]?\d+)?/.exec(a);
+  const m = /^\s*[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/.exec(a);
   if (m !== null) return parseFloat(m[0]);
   /* no number */
   return mapbool(a) ? 0.0 : null;
@@ -55,34 +55,38 @@ function wrapDegrees(ang: number): number {
 /**
  * If "normalize" is set, move the first node to the origin, then
  * rotate the layout so the first edge sits at the given angle.
+ * Returns 1 if nodes moved, else 0.
  * @see lib/neatogen/adjust.c:normalize (15.0.0)
  */
-export function normalizeG(g: Graph): void {
+export function normalizeG(g: Graph): number {
   const phi0 = angleSet(g);
-  if (phi0 === null) return;
+  if (phi0 === null) return 0;
 
   const nodes = [...g.nodes.values()];
   const first = nodes[0];
-  if (first === undefined) return;
+  if (first === undefined) return 0;
   const px = first.info.pos![0]!;
   const py = first.info.pos![1]!;
   for (const v of nodes) {
     v.info.pos![0]! -= px;
     v.info.pos![1]! -= py;
   }
+  const ret = px || py ? 1 : 0;
 
   let e = null;
   for (const v of nodes) {
     const out = v.outEdges(g);
     if (out.length > 0) { e = out[0]!; break; }
   }
-  if (e === null) return;
+  if (e === null) return ret;
 
   /* rotation necessary; pos => ccw */
   const phi = phi0 - Math.atan2(
     e.head.info.pos![1]! - e.tail.info.pos![1]!,
     e.head.info.pos![0]! - e.tail.info.pos![0]!);
-  if (phi) rotateAll(nodes, e.tail, phi);
+  if (!phi) return ret;
+  rotateAll(nodes, e.tail, phi);
+  return 1;
 }
 
 /** Rotate all positions by phi about the orig node. */

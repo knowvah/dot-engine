@@ -2,11 +2,11 @@
 
 /**
  * Branch coverage for scale-based overlap removal (scAdjust /
- * adjustNodesScale): overlap()'s four-way AABB test, sortf's x/y tie
+ * scAdjust): overlap()'s four-way AABB test, sortf's x/y tie
  * ordering (drives computeScaleXY's gvQsort), mkOverlapSet's same-position
  * infinities and sub-1 clamps, computeScaleXY's suffix-max DP loop,
  * compress()'s early-exit-on-overlap and ptx/pty ternaries, and
- * scAdjust/adjustNodesScale's mode dispatch.
+ * scAdjust's equal modes.
  *
  * @see lib/neatogen/constraint.c
  *
@@ -23,7 +23,7 @@
 import { describe, it, expect } from 'vitest';
 import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
-import { scAdjust, adjustNodesScale } from './sc-adjust.js';
+import { scAdjust } from './sc-adjust.js';
 
 function makeGraph(): Graph {
   return new Graph('g', 'undirected');
@@ -227,64 +227,5 @@ describe('scAdjust — overlap=compress (equal=-1)', () => {
     makeNode(g, 'b', 3, 0, 1, 1);
     makeNode(g, 'c', 50, 50, 1, 1);
     expect(scAdjust(g, -1)).toBe(1);
-  });
-});
-
-describe('adjustNodesScale — overlap attribute dispatch', () => {
-  it('overlap=scale calls scAdjust with equal=1', () => {
-    const g = makeGraph();
-    makeNode(g, 'a', 0, 0, 2, 2);
-    makeNode(g, 'b', 1, 1, 2, 2);
-    g.attrs.set('overlap', 'scale');
-    expect(adjustNodesScale(g)).toBe(1);
-  });
-
-  it('overlap=scalexy calls scAdjust with equal=0', () => {
-    const g = makeGraph();
-    makeNode(g, 'a', 0, 0, 2, 2);
-    makeNode(g, 'b', 1, 1, 2, 2);
-    g.attrs.set('overlap', 'scalexy');
-    expect(adjustNodesScale(g)).toBe(1);
-  });
-
-  it('overlap=compress calls scAdjust with equal=-1', () => {
-    const g = makeGraph();
-    makeNode(g, 'a', 0, 0, 1, 1);
-    makeNode(g, 'b', 20, 20, 1, 1);
-    g.attrs.set('overlap', 'compress');
-    expect(adjustNodesScale(g)).toBe(1);
-  });
-
-  it('overlap is case-insensitive ("SCALE" still dispatches to scAdjust)', () => {
-    const g = makeGraph();
-    makeNode(g, 'a', 0, 0, 2, 2);
-    makeNode(g, 'b', 1, 1, 2, 2);
-    g.attrs.set('overlap', 'SCALE');
-    expect(adjustNodesScale(g)).toBe(1);
-  });
-
-  it('an unset overlap attribute is a no-op (AM_NONE)', () => {
-    const g = makeGraph();
-    makeNode(g, 'a', 0, 0, 2, 2);
-    makeNode(g, 'b', 1, 1, 2, 2);
-    expect(adjustNodesScale(g)).toBe(0);
-  });
-
-  it('an unrecognized overlap value (e.g. an unported mode) is a no-op', () => {
-    const g = makeGraph();
-    makeNode(g, 'a', 0, 0, 2, 2);
-    makeNode(g, 'b', 1, 1, 2, 2);
-    g.attrs.set('overlap', 'voronoi');
-    expect(adjustNodesScale(g)).toBe(0);
-  });
-
-  it('a component subgraph without its own overlap attr falls back to the root graph', () => {
-    const root = makeGraph();
-    root.attrs.set('overlap', 'scale');
-    const comp = new Graph('comp', 'undirected');
-    comp.root = root;
-    makeNode(comp, 'a', 0, 0, 2, 2);
-    makeNode(comp, 'b', 1, 1, 2, 2);
-    expect(adjustNodesScale(comp)).toBe(1);
   });
 });

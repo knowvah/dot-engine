@@ -376,7 +376,7 @@ Everything below is the full per-module catalog backing this list.
   loud ([Errors and exceptions](../../docs-site/guide/errors.md#unsupported-feature-reference)). **oscale** (`adjust-info.ts`),
   **ortho\*/portho\*** (`constraint-adjust.ts`) and **vpsc** (`vpsc-adjust.ts`) are
   **DONE**; the overlap test is poly.c (`poly.ts`). `normalize`/`simpleScale`
-  are not run (see `docs/known-divergences.md`). (Do not confuse with
+  run first, as C does (`simple-scale.ts`, `fdp/normalize.ts`). (Do not confuse with
   `mode=ipsep` layout, below.)
 
 **Real gaps (reachable; previously mislabeled "unused"):**

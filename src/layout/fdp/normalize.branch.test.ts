@@ -48,15 +48,13 @@ describe('normalizeG — no-op paths', () => {
     expect(a.info.pos).toEqual([5, 5]);
   });
 
-  it('does nothing when "normalize" is a non-numeric-regex zero value (mapbool v===0 path)', () => {
-    // "+0" fails parseAngle's leading -?[\d.]+ regex (no unary plus support)
-    // and falls to mapbool's parseInt fallback, which parses to exactly 0
-    // -> mapbool returns false -> angleSet returns null.
+  it('reads "+0" as 0 degrees, as C strtod does (normalize active)', () => {
+    // Native neato: normalize="+0" renders identically to normalize=0.
     const g = makeGraph();
     const a = makeNode(g, 'a', 5, 5);
     g.attrs.set('normalize', '+0');
-    normalizeG(g);
-    expect(a.info.pos).toEqual([5, 5]);
+    expect(normalizeG(g)).toBe(1);
+    expect(a.info.pos).toEqual([0, 0]);
   });
 
   it('does nothing when "normalize" parses to neither a number nor a bool', () => {

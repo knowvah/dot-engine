@@ -11,9 +11,8 @@
  * Using Constrained Optimization", Constraints 8(2):143-172, 2003 (per the
  * C source comment).
  *
- * Other overlap modes (voronoi, prism, vpsc, ortho*) remain unported; with
- * the attr unset C's getAdjustMode resolves to AM_NONE and the pass is a
- * no-op (normalize/simpleScale only fire on rare attrs, also unported).
+ * Dispatched from removeOverlapWith (fdp-adjust.ts) for overlap=scale,
+ * scalexy and compress.
  *
  * @see lib/neatogen/constraint.c:scAdjust
  * @see lib/neatogen/adjust.c:removeOverlapWith / getAdjustMode
@@ -191,16 +190,3 @@ export function scAdjust(g: Graph, equal: number): number {
   return 1;
 }
 
-/**
- * The adjustNodes overlap-mode subset reaching scAdjust; other modes are
- * no-ops (see module doc).
- * @see lib/neatogen/adjust.c:999 adjustNodes, :776 adjustMode table
- */
-export function adjustNodesScale(g: Graph): number {
-  // agget falls back to the root graph's attrs for component subgraphs.
-  const flag = (g.attrs.get('overlap') ?? g.root.attrs.get('overlap') ?? '').toLowerCase();
-  if (flag === 'scale') return scAdjust(g, 1);       // AM_NSCALE
-  if (flag === 'scalexy') return scAdjust(g, 0);     // AM_SCALEXY
-  if (flag === 'compress') return scAdjust(g, -1);   // AM_COMPRESS
-  return 0; // unset -> AM_NONE; other modes unported
-}
