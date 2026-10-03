@@ -22,6 +22,11 @@
 // --- Multi-format render entry (T5) ---------------------------------------
 export { render } from './public.js';
 export type { OutputFormat, RenderOptions } from './public.js';
+export { renderAsync } from '../async/render-async.js';
+export type {
+  AsyncRenderOptions, AsyncRenderResult, AsyncImageSize, AsyncImageBytes,
+  FontIssue, FontSetLike,
+} from '../async/render-async.js';
 
 // --- Structured xdot draw-ops (T6) ----------------------------------------
 export { getDrawOps, DEFAULT_DRAW_ENGINE } from './xdot-public.js';
