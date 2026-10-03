@@ -18,16 +18,12 @@ import {
   userPos,
   solveModel,
   neatoCleanup,
-  MODE_KK,
-  MODE_MAJOR,
-  MODE_HIER,
-  MODE_IPSEP,
-  MODE_SGD,
   MODEL_SHORTPATH,
   MODEL_CIRCUIT,
   MODEL_SUBSET,
   MODEL_MDS,
 } from './init.js';
+import { neatoMode } from './start.js';
 import { removeOverlap } from './overlap.js';
 import { adjustNodesFull } from './fdp-adjust.js';
 import { splineEdgesShifted, EDGETYPE_LINE } from './splines.js';
@@ -62,25 +58,14 @@ export {
 // Mode parsing
 // ---------------------------------------------------------------------------
 
-/** Map from mode string to numeric constant. @see lib/neatogen/neato.h */
-const MODE_MAP: Record<string, number> = {
-  KK: MODE_KK,
-  major: MODE_MAJOR,
-  hier: MODE_HIER,
-  ipsep: MODE_IPSEP,
-  sgd: MODE_SGD,
-};
-
 /**
- * Parse `g.info.mode` string into a numeric mode constant.
- * Defaults to MODE_MAJOR when unset or unrecognised.
+ * Parse the root `mode` attribute into a numeric mode constant (C neatoMode).
+ * Defaults to MODE_MAJOR when unset; warns and defaults on an unknown value.
  *
- * @see lib/neatogen/neato.h:neatoMode
+ * @see lib/neatogen/neatoinit.c:neatoMode
  */
 export function parseMode(g: Graph): number {
-  const s = g.info.mode;
-  if (!s) return MODE_MAJOR;
-  return MODE_MAP[s] ?? MODE_MAJOR;
+  return neatoMode(g);
 }
 
 // ---------------------------------------------------------------------------

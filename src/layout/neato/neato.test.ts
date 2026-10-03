@@ -146,7 +146,7 @@ describe('NEATO_LAYOUT_ENGINE', () => {
 describe('neatoLayout: non-zero coord', () => {
   it('at least one node has non-zero coord after sgd layout', () => {
     const g = H.buildTriangle();
-    g.info.mode = 'sgd';
+    g.attrs.set('mode', 'sgd');
     g.info.seed = 0;
     g.info.overlap = 'false';
     neatoLayout(g);
@@ -161,7 +161,7 @@ describe('neatoLayout: non-zero coord', () => {
 describe('neatoLayout: finite coords', () => {
   it('all nodes have finite coord after sgd layout', () => {
     const g = H.buildTriangle();
-    g.info.mode = 'sgd';
+    g.attrs.set('mode', 'sgd');
     g.info.seed = 1;
     g.info.overlap = 'false';
     neatoLayout(g);
@@ -260,7 +260,7 @@ describe('parseMode', () => {
 
   it('returns MODE_SGD for mode="sgd"', () => {
     const g = new Graph('g', 'undirected');
-    g.info.mode = 'sgd';
+    g.attrs.set('mode', 'sgd');
     expect(parseMode(g)).toBe(MODE_SGD);
   });
 });
