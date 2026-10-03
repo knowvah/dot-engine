@@ -173,3 +173,9 @@ export { render as renderWithContext } from './gvc/device.js';
 // rather than `render`. See decisions.md ADR-5 and the decision journal.
 export * from './api/index.js';
 export * from './render/index.js';
+
+// Async API (async-api ADR-7): renderAsync is re-exported via ./render above.
+export { renderSvgAsync } from './async/render-async.js';
+export type { AsyncSvgOptions, AsyncSvgResult } from './async/render-async.js';
+export { renderSvgInto } from './async/render-into.js';
+export type { RenderSvgIntoOptions, RenderSvgIntoResult } from './async/render-into.js';

@@ -282,7 +282,7 @@ export class SvgRenderer implements RendererPlugin {
     const originy = (b.ur.y + b.ll.y + height) / 2;
     let href = src;
     if (job.inlineImages === true) {
-      const found = findImageBytes(src);
+      const found = findImageBytes(src, job.imageResolver);
       if (found !== null) href = toDataUri(found.bytes, found.mime);
     }
     job.write('<image xlink:href="' + escapeXml(href) + '" width="' + g(width)

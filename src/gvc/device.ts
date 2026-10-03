@@ -58,9 +58,8 @@ import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId } from '../render/svg-id
 // ---------------------------------------------------------------------------
 // AD-1 (image-api): `inlineImages` on RenderJob via module augmentation
 //
-// Declared here (not as an edit to job.ts) so the field lives with the one
-// caller that sets it (render(), below) and the one caller that reads it
-// (svg.ts usershape()). Purely additive: an unset field reads `undefined`,
+// Declared here (not in job.ts), beside render() which sets it; svg.ts
+// usershape() reads it. Purely additive: an unset field reads `undefined`,
 // which is falsy, so any RenderJob built without going through this render()
 // (tests, other call sites) keeps today's raw-src passthrough unchanged.
 // @see src/render/public.ts:RenderOptions.inlineImages
@@ -548,6 +547,7 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   const renderer = ctx.bestRenderer(format);
   const job = new RenderJob(format, ctx.textMeasurer);
   job.inlineImages = inlineImages;
+  if (ctx.imageResolver !== undefined) job.imageResolver = ctx.imageResolver;
   // gvc->bb = GD_bb(g) verbatim -- no recompute fallback. Every layout engine
   // sets g.info.bb itself before render() runs (set_aspect for dot,
   // compute_bb-equivalent computeSubgraphBB calls in neato/circo/sfdp/fdp/

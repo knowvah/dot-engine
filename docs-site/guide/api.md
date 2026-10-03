@@ -165,6 +165,41 @@ Registering a resolver has no effect by itself; it's consulted only when
 [Working with images](/guide/images) for a worked example and
 [Reference](/reference/) for both callback types.
 
+### `renderSvgAsync` / `renderSvgInto`
+
+```ts
+function renderSvgAsync(
+  dotSource: string,
+  engine: EngineName,
+  opts?: AsyncSvgOptions,
+): Promise<{ svg: string; fontIssues: FontIssue[] }>;
+
+function renderSvgInto(
+  id: string,
+  src: string,
+  engine: EngineName,
+  opts?: RenderSvgIntoOptions,
+): Promise<{ element: SVGSVGElement; fontIssues: FontIssue[] }>;
+
+type FontIssue = { face: string; reason: 'failed' | 'timeout' };
+type AsyncSvgOptions = Omit<AsyncRenderOptions, 'engine'>;
+interface RenderSvgIntoOptions extends AsyncSvgOptions {
+  sanitize?: (svg: string) => string;
+  trusted?: boolean;
+  document?: Document;
+}
+```
+
+`renderSvgAsync` is the async counterpart of `renderSvg`: it prefetches the web
+fonts and image data the graph needs, then lays out and renders. `renderSvgInto`
+renders and replaces the children of the element with id `id`, sanitizing the SVG
+by default (`trusted: true` skips it; `sanitize` replaces the built-in scrubber).
+Failures, including bad arguments, are promise rejections with the same error
+classes as `renderSvg`; a missing element id rejects with `ERR_INVALID_ARG_VALUE`.
+Font problems never reject; they come back in `fontIssues`. See
+[Browser usage](/guide/browser) and [Images](/guide/images), and
+[Reference](/reference/).
+
 ### `GvcContext` / `renderWithContext`
 
 ```ts
@@ -327,6 +362,30 @@ const svg = render(g, 'svg', { inlineImages: true });
 
 See [Working with images](/guide/images) for the full guide, including
 resolving from `fetch` in the browser and from the filesystem in Node.
+
+### `renderAsync`
+
+```ts
+function renderAsync(
+  g:      Graph,
+  format: OutputFormat,
+  opts?:  AsyncRenderOptions,
+): Promise<{ output: string; fontIssues: FontIssue[] }>;
+
+interface AsyncRenderOptions extends RenderOptions {
+  imageSizer?: (src: string) => Promise<{ w: number; h: number } | null>;
+  imageResolver?: (
+    src: string,
+  ) => Promise<{ bytes: Uint8Array; mime?: string } | Uint8Array | null>;
+  fontTimeoutMs?: number; // default 3000
+  fontSet?: FontSetLike;  // default document.fonts when present
+}
+```
+
+Async counterpart of `render`: same formats and `engine`/`inlineImages` options,
+plus per-call async image hooks and font prefetch. Each image hook runs at most
+once per distinct `src`; a throw or reject is a miss. Output is unsanitized
+markup for the markup formats; see the README "Security" section.
 
 ### `getDrawOps` / `DEFAULT_DRAW_ENGINE`
 
