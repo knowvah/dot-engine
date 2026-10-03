@@ -71,11 +71,14 @@ function checkRenderArgs(g: unknown, format: unknown, opts: unknown): void {
   }
 }
 
-/** `document.fonts` when a document exposes one (absent in Node and Workers). */
+/**
+ * `document.fonts` in a page, else `self.fonts` (WorkerGlobalScope.fonts) in a
+ * Worker; undefined in Node. @see plans/async-api/DESIGN.md D5
+ */
 function defaultFontSet(): FontSetLike | undefined {
   const doc: unknown = Reflect.get(globalThis, 'document');
-  if (typeof doc !== 'object' || doc === null) return undefined;
-  const fonts: unknown = Reflect.get(doc, 'fonts');
+  const owner: unknown = typeof doc === 'object' && doc !== null ? doc : globalThis;
+  const fonts: unknown = Reflect.get(owner as object, 'fonts');
   if (typeof fonts !== 'object' || fonts === null) return undefined;
   return fonts as FontSetLike; // structural: FontFaceSet.load
 }

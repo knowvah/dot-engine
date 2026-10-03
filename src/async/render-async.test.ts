@@ -232,6 +232,14 @@ describe('default font set (document.fonts)', () => {
     expect(svg).toContain('<svg');
   });
 
+  it('loads through globalThis.fonts in a Worker (no document)', async () => {
+    const load = vi.fn(async () => []);
+    vi.stubGlobal('fonts', { load });
+    const { fontIssues } = await renderSvgAsync(DOT, 'dot');
+    expect(fontIssues).toEqual([]);
+    expect(load).toHaveBeenCalledWith(canvasFont('Inter', 14));
+  });
+
   it('skips font loading when document is not an object', async () => {
     vi.stubGlobal('document', null);
     const { fontIssues } = await renderSvgAsync(DOT, 'dot');
