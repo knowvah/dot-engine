@@ -285,7 +285,7 @@ export class CanvasTextMeasurer implements TextMeasurer {
    */
   private readonly fonts = new Map<string, string>();
 
-  constructor(private readonly ctx: CanvasRenderingContext2D) {}
+  constructor(private readonly ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {}
 
   measure(
     text: string,
