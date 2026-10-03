@@ -32,6 +32,7 @@ import {
   OPT_EXP_FLAG,
 } from './stress-kernel.js';
 import { lateDouble } from '../../common/nodeinit.js';
+import { inputscaleDivisor } from '../../common/utils-inputscale.js';
 import { parseNeatoDrawing, neatoSetAspectRatio } from './set-aspect.js';
 
 // ---------------------------------------------------------------------------
@@ -111,10 +112,8 @@ export function neatoInitNode(n: Node, dim = DFLT_DIM): void {
  * majorization starts from the input layout instead of a random init; a `!`
  * suffix or `pin=true` additionally sets info.pinned (P_PIN → isFixed).
  *
- * PSinputscale (the `inputscale` attr) is not tracked — the suite has
- * PSinputscale <= 0, so positions stay in points exactly as native leaves them
- * (a `pos="27,42"` seeds (27,42), which orthog1 then centres). Must run AFTER
- * neatoInitNode, which zeroes info.pos.
+ * `pos` is divided by PSinputscale when > 0 (neatoinit.c:90-95). Must run
+ * AFTER neatoInitNode, which zeroes info.pos.
  * @see lib/neatogen/neatoinit.c:user_pos
  */
 export function userPos(n: Node): boolean {
@@ -124,7 +123,8 @@ export function userPos(n: Node): boolean {
   const num = '(-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)';
   const m = new RegExp(`^\\s*${num}\\s*,\\s*${num}(.?)`).exec(p);
   if (m === null) return false; // C agerrorf: malformed pos, non-fatal
-  n.info.pos = [Number(m[1]), Number(m[2])];
+  const div = inputscaleDivisor(n.root);
+  n.info.pos = [Number(m[1]) / div, Number(m[2]) / div];
   n.info.posSet = true;
   const pin = n.attrs.get('pin');
   if (m[3] === '!' || (pin !== undefined && mapbool(pin))) n.info.pinned = true;

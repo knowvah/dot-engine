@@ -22,6 +22,7 @@ import { Edge } from '../../model/edge.js';
 import type { Box } from '../../model/geom.js';
 import { doGraphLabel } from '../dot/graph-label.js';
 import { layoutMeasurer } from '../../common/nodeinit.js';
+import { inputscaleDivisor } from '../../common/utils-inputscale.js';
 import {
   type Bport,
   gdata,
@@ -79,8 +80,7 @@ function copyAttr(g: Graph, dg: Graph, attr: string): void {
 
 /**
  * Use a cluster's "coords" attribute, if any, for the initial position
- * of its derived node. PSinputscale (inputscale attr) is not ported —
- * no supported input sets it.
+ * of its derived node, divided by PSinputscale when > 0.
  * @see lib/fdpgen/layout.c:chkPos
  */
 function chkPos(g: Graph, n: Node, infop: LayoutInfo, bbp: Box): void {
@@ -92,10 +92,11 @@ function chkPos(g: Graph, n: Node, infop: LayoutInfo, bbp: Box): void {
   }
   const parsed = scanCoords(p);
   if (parsed === null) return; // C warns "expected four doubles"
-  bbp.ll.x = parsed.box.ll.x;
-  bbp.ll.y = parsed.box.ll.y;
-  bbp.ur.x = parsed.box.ur.x;
-  bbp.ur.y = parsed.box.ur.y;
+  const div = inputscaleDivisor(infop.rootg); // layout.c:320-324
+  bbp.ll.x = parsed.box.ll.x / div;
+  bbp.ll.y = parsed.box.ll.y / div;
+  bbp.ur.x = parsed.box.ur.x / div;
+  bbp.ur.y = parsed.box.ur.y / div;
   dndata(n).pinned = parsed.pinned;
 }
 
