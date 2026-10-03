@@ -1191,12 +1191,18 @@ differs from native Graphviz. Found by the `v2-silent-gaps` mission
 (`plans/v2-silent-gaps/decision-journal.md`); not accepted deltas.
 
 - **`getAdjustMode`'s "Unrecognized overlap value" warning is not emitted.**
-- **Rotated-shape polygon vertices can differ from native by 1 ulp.** The
-  port's `shape_info.vertices` for a box with `orientation=20` gives -18 where
-  native gives -17.999999999999996 (origin not pinpointed; generator in
-  `src/common/poly-vertices.ts` or `poly-sizing.ts`). That flips 4 exact-touch
-  `polyOverlap` verdicts; with native vertices all verdicts match, so
-  `src/layout/neato/poly.ts` is not the cause.
+- **Rotated polygon vertices can differ from native in the last bits
+  (irreducible: host math library).** `poly_init` orients each vertex with
+  `atan2`, `hypot`, `sin` and `cos`. With bit-identical inputs, macOS libm and
+  V8 return different last bits (e.g. `atan2(0x3fd6a09e667f3bce,
+  0xbfd6a09e667f3bca)`: libm `…21d1`, V8 `…21d2`; `hypot` at the next vertex:
+  libm `…fffd`, V8 `…fffe`), so a box with `orientation=20` gets vertex y
+  `-18` in the port and `-17.999999999999996` natively. Native Graphviz itself
+  varies with the platform's libm, and a browser cannot call it. The port's own
+  arithmetic matches C (`RADIANS` order fixed; 776 of 1664 sampled vertex
+  coordinates are bit-identical, the rest differ through libm only). Effect:
+  exact-touch `polyOverlap` verdicts can flip; with native vertices every
+  verdict matches.
 - **sfdp differs from native on some multi-component graphs with no `overlap`
   attribute.** Example: mixed triangles plus an isolated node, node `a` y
   2.35 native versus 5.734 port. Outside overlap removal; undiagnosed.

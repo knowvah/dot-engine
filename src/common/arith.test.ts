@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 
 import { describe, expect, it } from 'vitest';
-import { cround } from './arith.js';
+import { cround, RADIANS } from './arith.js';
 
 /**
  * Oracle values below are C's libm `round()` (half away from zero), which is
@@ -49,5 +49,15 @@ describe('cround', () => {
     // both stringify to "0", so no emitted coordinate can observe this.
     expect(cround(-0)).toBe(0);
     expect(Object.is(cround(0), 0)).toBe(true);
+  });
+});
+
+describe('RADIANS (C operation order)', () => {
+  it('divides by 180 before multiplying by pi, as arith.h does', () => {
+    // 33 * PI / 180 = 0.5759586531581288; 33 / 180 * PI = 0.5759586531581287.
+    expect(RADIANS(33)).toBe(33 / 180 * Math.PI);
+    expect(RADIANS(33)).not.toBe((33 * Math.PI) / 180);
+    expect(RADIANS(180)).toBe(Math.PI);
+    expect(RADIANS(-90)).toBe(-Math.PI / 2);
   });
 });

@@ -16,6 +16,7 @@ import { VIRTUAL } from './fastgr.js';
 import { IGNORED } from './rank.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { nodesInSeq } from './decomp.js';
+import { RADIANS } from '../../common/arith.js';
 
 // ---------------------------------------------------------------------------
 // TextLabel interface (minimal — full type deferred to Batch 5b)
@@ -286,7 +287,7 @@ function writePortlabelPos(
   distanceStr: string,
 ): void {
   const angleDeg = lateDouble(angleStr, PORT_LABEL_ANGLE, -180.0);
-  const angle    = Math.atan2(pf.y - pe.y, pf.x - pe.x) + (Math.PI / 180) * angleDeg;
+  const angle    = Math.atan2(pf.y - pe.y, pf.x - pe.x) + RADIANS(angleDeg);
   const distMult = lateDouble(distanceStr || undefined, 1.0, 0.0);
   const dist     = PORT_LABEL_DISTANCE * distMult;
   l.pos.x = pe.x + dist * Math.cos(angle);
