@@ -1181,46 +1181,38 @@ The 2.0 fidelity mission made unported attribute values fail loudly (see the
 [Errors and exceptions](https://github.com/knowvah/dot-engine/blob/main/docs-site/guide/errors.md)).
 It left the following, recorded in `plans/v2-fidelity/decision-journal.md`.
 
-**Accepted residual.**
+**Loud, unported.** `overlap=voronoi` with overlapping nodes still throws
+`UNSUPPORTED_FEATURE` in neato, twopi, circo and sfdp: the Voronoi adjuster
+itself (`vAdjust`'s algorithm) is not ported. The overlap test that decides
+whether to throw is C's own (`countOverlap` over `poly.c` node polygons).
 
-- **`overlap=voronoi` overlap test.** The loud check fires when two or more
-  nodes overlap. C's `countOverlap` uses `polyOverlap`; the port approximates
-  its first test, an inflated bounding-box intersection
-  (`src/layout/neato/fdp-adjust.ts`). That is exact for `box` and `record`
-  nodes. For rounded shapes whose bounding boxes touch but whose outlines do
-  not, the port can raise `UNSUPPORTED_FEATURE` where C finds no overlap and
-  never runs Voronoi. The error is spurious, never silent. An exact test needs
-  `makePoly` + `polyOverlap`. Reference build: `HAVE_GTS` (on a non-GTS build C
-  maps `overlap=false` to Voronoi; the port assumes GTS). C:
-  `lib/neatogen/adjust.c:vAdjust`, `getAdjustMode`.
+**Known gaps, still silent.** The port renders these without an error and
+differs from native Graphviz. Found by the `v2-silent-gaps` mission
+(`plans/v2-silent-gaps/decision-journal.md`); not accepted deltas.
 
-**Known gaps, still silent (deferred by the owner).** The port renders these
-without an error and differs from native Graphviz. They are candidates for a
-later scope amendment, not accepted deltas.
-
-- **neato `mode` attribute is never read.** `parseMode`
-  (`src/layout/neato/index.ts:80`) reads `g.info.mode`, which nothing assigns,
-  so `mode=KK` and `mode=sgd` run stress majorization. Measured against the
-  native binary: `mode=KK` differs by 93 to 322 pt, `mode=sgd` by 47 to 323 pt.
-  `mode=hier` and constrained `mode=ipsep` are loud because the new check reads
-  the attribute directly (`src/layout/neato/start.ts`). Also behind it: the
-  port's SGD seeds MT19937 where C uses `drand48`, and KK's `runMajorization`
-  uses `maxi=0`. C: `lib/neatogen/neatoinit.c:neatoMode`.
-- **sfdp `overlap=voronoi`.** C calls `removeOverlapWith` with `AM_VOR`
-  (`lib/sfdpgen/sfdpinit.c:272,283`); the port's sfdp uses prism only.
-- **`overlap=oscale` and `overlap=ortho*` / `portho*`** for neato, twopi and
-  circo. C maps `oscale` to `AM_SCALE` (`sAdjust`) and the ortho names to
-  `cAdjust` (`lib/neatogen/adjust.c:getAdjustMode`). The port does nothing.
-  (fdp throws for these.)
-- **twopi per-component and circo multi-component overlap removal.** C runs
-  `adjustNodes` per component in twopi (`lib/twopigen/twopiinit.c:135`); circo's
-  multi-component path is a stub in the port
-  (`src/layout/circo/circular.ts`).
-- **fdp cluster `coords=` set only on a subgraph is ignored.** `hasCoords`
-  (`src/layout/fdp/layout.ts:63`) checks the root graph's attributes; C
-  declares the attribute graph-wide when any subgraph sets it. A fixture with
-  `coords` on a subgraph differs from native by 156 pt even with `inputscale`
-  absent; with `coords=""` on the root it matches.
+- **`normalize` and `scale` are ignored by neato, twopi, circo and sfdp.** C's
+  `removeOverlapWith` runs `normalize` and `simpleScale` before the overlap
+  mode (`lib/neatogen/adjust.c:699,876`). The port does not: native output
+  changes with `normalize=true` or `scale=2`, the port's does not. fdp
+  honours `normalize`.
+- **`getAdjustMode`'s "Unrecognized overlap value" warning is not emitted.**
+- **Rotated-shape polygon vertices can differ from native by 1 ulp.** The
+  port's `shape_info.vertices` for a box with `orientation=20` gives -18 where
+  native gives -17.999999999999996 (origin not pinpointed; generator in
+  `src/common/poly-vertices.ts` or `poly-sizing.ts`). That flips 4 exact-touch
+  `polyOverlap` verdicts; with native vertices all verdicts match, so
+  `src/layout/neato/poly.ts` is not the cause.
+- **sfdp differs from native on some multi-component graphs with no `overlap`
+  attribute.** Example: mixed triangles plus an isolated node, node `a` y
+  2.35 native versus 5.734 port. Outside overlap removal; undiagnosed.
+- **fdp: one cluster without `coords` differs from native by about 0.24 in**
+  on a small graph. Undiagnosed.
+- **Native crashes the port defines.** Native Graphviz exits 139 on neato
+  `mode=KK` with `model=mds` and an edge `len` (`mds_model` indexes `GD_dist`
+  by a 1-based sequence number: heap overflow), and on `model=circuit` with a
+  disconnected graph. The port drops out-of-range cells in the first case and
+  falls back to shortest paths in the second; there is no native output to
+  compare against.
 
 ---
 

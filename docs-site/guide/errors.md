@@ -129,7 +129,7 @@ To avoid the error, remove the attribute or change it to a supported value.
 | neato | `start=self` | `mode` is `major` (the default) or `ipsep` | Smart initialisation (`smart_ini`). Under `mode=KK` or `mode=sgd` it logs `start=0 not supported with mode=self - ignored` once per render, as Graphviz does |
 | neato | `model=subset` | `mode` is `major` or `KK` | The subset distance model |
 | neato | `model=circuit` | `mode` is `major`, or `KK` on a connected graph. `KK` on a disconnected graph with no `pack` or `packmode` logs a warning and uses shortest paths, as Graphviz does | The circuit distance model (`circuit_model`) |
-| neato, twopi, circo | `overlap=voronoi` (case-insensitive) | The graph has 2+ nodes and at least two nodes overlap. twopi and circo reach it only for a single-component graph. The overlap test uses inflated bounding boxes (see [known divergences](https://github.com/knowvah/dot-engine/blob/main/docs/known-divergences.md)) | Voronoi overlap removal (`vAdjust`) |
+| neato, twopi, circo, sfdp | `overlap=voronoi` (case-insensitive) | The graph (for twopi, a component; for sfdp, the whole graph or a component) has 2+ nodes and Graphviz's own overlap count (`countOverlap`, which tests node polygons) is above 0. Nodes that only touch by bounding box do not trigger it. circo reaches it only for a single-component graph (on several components Graphviz ignores `overlap` too). sfdp reaches it only when `overlap` is not a prism mode | Voronoi overlap removal (`vAdjust`) |
 | fdp | `overlap=` one of `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | The mode is reached after the `N:` force-iteration tries, which is when those tries do not remove every overlap (or `N` is 0 or absent). The `N:` prefix is allowed, for example `3:voronoi` | The matching `removeOverlapWith` adjust algorithm |
 | fdp | `splines=compound` | Always, with or without clusters | Cluster-avoiding edge routing (`compoundEdges`) |
 | sfdp | `smoothing=` anything except `none` or `0` | Always | `post_process_smoothing` |
@@ -146,8 +146,9 @@ the fdp rows, and the shape row, which use the wordings above. Branch on
 
 Values that select the default (for example `quadtree=normal`, `true`, `yes`,
 `1`) and the Graphviz-accepted values that are ported (for example
-`start=regular`, `start=random`, `model=mds`, `overlap=prism` and the `scale`
-family) render normally.
+`start=regular`, `start=random`, `model=mds`, `mode=KK`, `mode=sgd`,
+`overlap=prism`, the `scale` family and, on neato, twopi, circo and sfdp,
+`overlap=oscale`, `vpsc` and the `ortho*` / `portho*` modes) render normally.
 
 ## Per-function reference
 
