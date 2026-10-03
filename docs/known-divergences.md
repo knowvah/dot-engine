@@ -1190,11 +1190,6 @@ whether to throw is C's own (`countOverlap` over `poly.c` node polygons).
 differs from native Graphviz. Found by the `v2-silent-gaps` mission
 (`plans/v2-silent-gaps/decision-journal.md`); not accepted deltas.
 
-- **`normalize` and `scale` are ignored by neato, twopi, circo and sfdp.** C's
-  `removeOverlapWith` runs `normalize` and `simpleScale` before the overlap
-  mode (`lib/neatogen/adjust.c:699,876`). The port does not: native output
-  changes with `normalize=true` or `scale=2`, the port's does not. fdp
-  honours `normalize`.
 - **`getAdjustMode`'s "Unrecognized overlap value" warning is not emitted.**
 - **Rotated-shape polygon vertices can differ from native by 1 ulp.** The
   port's `shape_info.vertices` for a box with `orientation=20` gives -18 where

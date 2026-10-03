@@ -18,6 +18,8 @@ import {
 } from '../sfdp/sparse-matrix.js';
 import { removeOverlapPrism } from './overlap-prism.js';
 import { scAdjust } from './sc-adjust.js';
+import { simpleScale } from './simple-scale.js';
+import { normalizeG } from '../fdp/normalize.js';
 import { AM_ORTHO, AM_ORTHO_YX, AM_ORTHOXY, AM_ORTHOYX, AM_PORTHO, AM_PORTHO_YX, AM_PORTHOXY, AM_PORTHOYX, cAdjust } from './constraint-adjust.js';
 import { countOverlapIn, sAdjustGraph } from './adjust-info.js';
 import { vpscAdjust } from './vpsc-adjust.js';
@@ -208,15 +210,16 @@ function adjustVoronoi(g: Graph, am: AdjustData): number {
 
 /**
  * Use `am` to decide if and how to remove node overlaps. normalize and
- * simpleScale (only active with the `normalize`/`scale` attributes) are not
- * ported (see sc-adjust module doc).
+ * simpleScale run first, whatever the mode (the `normalize` / `scale`
+ * attributes); returns non-zero if nodes moved.
  * @see lib/neatogen/adjust.c:removeOverlapWith
  */
 export function removeOverlapWith(g: Graph, am: AdjustData): number {
   if (g.nodes.size < 2) return 0;
-  if (am.mode === AM_NONE) return 0;
-  if (am.mode > AM_SCALE) return adjustLate(g, am);
-  return am.mode === AM_SCALE ? sAdjustGraph(g) : adjustVoronoi(g, am);
+  const nret = normalizeG(g) + simpleScale(g);
+  if (am.mode === AM_NONE) return nret;
+  if (am.mode > AM_SCALE) return nret + adjustLate(g, am);
+  return nret + (am.mode === AM_SCALE ? sAdjustGraph(g) : adjustVoronoi(g, am));
 }
 
 /**
