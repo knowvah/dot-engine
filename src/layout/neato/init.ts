@@ -21,7 +21,9 @@ import {
   MODEL_SUBSET as STRESS_MODEL_SUBSET,
 } from './stress.js';
 import { sgdLayout } from './sgd.js';
-import { srand48 } from '../../common/random.js';
+import { checkStart, assertSupported, parseStart, INIT_RANDOM, INIT_REGULAR } from './start.js';
+
+export { checkStart };
 import { mapbool } from '../dot/rank.js';
 import {
   computeApspPacked,
@@ -356,22 +358,6 @@ export function graphHasLen(g: Graph): boolean {
 }
 
 /**
- * Seed the RNG from the start attr; no attr means the default seed 1.
- * start=regular/self are not ported (no suite input uses them).
- * @see lib/neatogen/neatoinit.c:setSeed
- * @see lib/neatogen/neatoinit.c:checkStart
- */
-export function checkStart(g: Graph): void {
-  const p = g.root.attrs.get('start');
-  let seed = 1;
-  if (p !== undefined && /^\d/.test(p)) {
-    const v = parseInt(p, 10);
-    if (!Number.isNaN(v)) seed = v;
-  }
-  srand48(seed);
-}
-
-/**
  * Build the vtx_data adjacency in C's makeGraphData shape: per node,
  * out-edges then in-edges (agfstedge order), self entry at index 0,
  * duplicate neighbours merged (len keeps the max). ewgts are edge
@@ -414,10 +400,12 @@ export function makeGraphDataC(g: Graph, nodeList: Node[], haveLen: boolean): Vt
  */
 export function solveModel(g: Graph, mode: number, model: number): void {
   if (g.nodes.size < 2) return;
-  if (mode === MODE_SGD) { sgdLayout(g, model); return; }
-  if (mode === MODE_HIER || mode === MODE_IPSEP) {
-    const name = mode === MODE_HIER ? 'hier' : 'ipsep';
-    console.warn(`neato: mode ${name} not fully implemented; falling back to majorization`);
+  assertSupported(g, mode, model);
+  if (mode === MODE_SGD) {
+    // C initial_positions -> checkStart: regular positions are kept
+    if (parseStart(g.root.attrs.get('start'), INIT_RANDOM).init === INIT_REGULAR) checkStart(g);
+    sgdLayout(g, model);
+    return;
   }
   runMajorization(g, mode, model);
 }

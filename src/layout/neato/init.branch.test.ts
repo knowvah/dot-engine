@@ -433,26 +433,26 @@ describe('solveModel', () => {
     expect(b.info.pos).toBeDefined();
   });
 
-  it('warns and falls back to majorization for MODE_HIER', () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  it('throws UNSUPPORTED_FEATURE for MODE_HIER', () => {
     const g = new Graph('g', 'undirected');
     const a = new Node(0, 'A', g); const b = new Node(1, 'B', g);
     g.nodes.set('A', a); g.nodes.set('B', b);
     g.edges.push(new Edge(a, b, 'AB'));
-    solveModel(g, MODE_HIER, MODEL_SHORTPATH);
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('hier'));
-    expect(a.info.pos).toBeDefined();
-    warn.mockRestore();
+    g.root.attrs.set('mode', 'hier');
+    expect(() => solveModel(g, MODE_HIER, MODEL_SHORTPATH)).toThrow(
+      expect.objectContaining({ code: 'UNSUPPORTED_FEATURE' }),
+    );
   });
 
-  it('warns and falls back to majorization for MODE_IPSEP', () => {
+  it('runs unconstrained MODE_IPSEP as plain majorization without warning', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const g = new Graph('g', 'undirected');
     const a = new Node(0, 'A', g); const b = new Node(1, 'B', g);
     g.nodes.set('A', a); g.nodes.set('B', b);
     g.edges.push(new Edge(a, b, 'AB'));
     solveModel(g, MODE_IPSEP, MODEL_SHORTPATH);
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('ipsep'));
+    expect(warn).not.toHaveBeenCalled();
+    expect(a.info.pos).toBeDefined();
     warn.mockRestore();
   });
 
