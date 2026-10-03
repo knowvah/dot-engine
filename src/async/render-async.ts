@@ -16,6 +16,7 @@ import { parse } from '../parser/index.js';
 import { invalidArgType, rethrowAtBoundary } from '../errors.js';
 import type { EngineName } from '../gvc/context.js';
 import { createDefaultContext } from '../gvc/default-context.js';
+import { checkRenderArgs } from '../render/public.js';
 import { render as deviceRender } from '../gvc/device.js';
 import type { ImageSizer } from '../common/htmltable-types.js';
 import type { ImageResolver } from '../gvc/image-resolver.js';
@@ -60,15 +61,6 @@ export interface AsyncRenderResult {
 export interface AsyncSvgResult {
   svg: string;
   fontIssues: FontIssue[];
-}
-
-/** Reject a bad `g` / `format` / `opts` before any work starts (mirrors `render`). */
-function checkRenderArgs(g: unknown, format: unknown, opts: unknown): void {
-  if (typeof g !== 'object' || g === null) throw invalidArgType('g', 'object', g);
-  if (typeof format !== 'string') throw invalidArgType('format', 'string', format);
-  if (opts !== undefined && (typeof opts !== 'object' || opts === null)) {
-    throw invalidArgType('opts', 'object or undefined', opts);
-  }
 }
 
 /** `document.fonts` when a document exposes one (absent in Node and Workers). */

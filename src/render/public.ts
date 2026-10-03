@@ -60,13 +60,14 @@ export interface RenderOptions {
 }
 
 // ---------------------------------------------------------------------------
-// Private helpers (mirrors index.ts)
+// Argument validation (shared with the async entry points)
 // ---------------------------------------------------------------------------
 
-
-
-/** Reject a bad `g` / `format` / `opts` before any work starts. */
-function checkRenderArgs(g: unknown, format: unknown, opts: unknown): void {
+/**
+ * Reject a bad `g` / `format` / `opts` before any work starts.
+ * @internal shared with src/async/render-async.ts; not part of the public API.
+ */
+export function checkRenderArgs(g: unknown, format: unknown, opts: unknown): void {
   if (typeof g !== 'object' || g === null) {
     throw invalidArgType('g', 'object', g);
   }

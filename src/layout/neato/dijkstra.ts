@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: EPL-2.0
 /** @see lib/neatogen/dijkstra.c */
 
-import type { GraphSgd } from './sgd.js';
-
 /**
  * Sparse-graph vertex descriptor used by neato layout algorithms.
  * Matches `vtx_data` in lib/neatogen/sparsegraph.h.
@@ -30,9 +28,6 @@ export interface TermSgd {
   d: number;  // ideal distance
   w: number;  // weight = 1/d²
 }
-
-/** Sentinel used for unvisited BFS nodes (matches C INT_MAX). */
-const BFS_INF = 0x7fffffff;
 
 // ---------------------------------------------------------------------------
 // Min-heap (keyed by Float32Array distances)
@@ -157,140 +152,4 @@ export function dijkstra(
     if (!isFinite(closestDist)) break;
     dijkstraRelax(closest, closestDist, graph, dist, heap);
   }
-}
-
-// ---------------------------------------------------------------------------
-// Public: All-pairs shortest paths (packed upper-triangular)
-// ---------------------------------------------------------------------------
-
-/**
- * BFS single-source distances for unweighted graphs.
- * Fills `dist` with hop counts; unreachable nodes get BFS_INF (0x7fffffff).
- * edges[0] of each vertex is the self-loop and is skipped.
- * @see lib/neatogen/bfs.c:bfs
- */
-export function bfsDistances(
-  src: number,
-  graph: VtxData[],
-  n: number,
-  dist: Float32Array,
-): void {
-  for (let i = 0; i < n; i++) dist[i] = BFS_INF;
-  dist[src] = 0;
-  const queue = new Int32Array(n);
-  let head = 0, tail = 0;
-  queue[tail++] = src;
-  while (head < tail) {
-    const u = queue[head++];
-    const d = dist[u] + 1;
-    const vtx = graph[u];
-    for (let e = 1; e < vtx.nedges; e++) {
-      const v = vtx.edges[e];
-      if (dist[v] === BFS_INF) { dist[v] = d; queue[tail++] = v; }
-    }
-  }
-}
-
-/**
- * All-pairs shortest paths (unweighted), packed upper-triangular.
- * Length n*(n+1)/2; index for (i,j) j>=i: i*(2n-i-1)/2 + j.
- * @see lib/neatogen/stress.c:compute_apsp_packed
- */
-export function computeApspPacked(graph: VtxData[], n: number): Float32Array {
-  const result = new Float32Array(n * (n + 1) / 2);
-  const di = new Float32Array(n);
-  let count = 0;
-  for (let i = 0; i < n; i++) {
-    bfsDistances(i, graph, n, di);
-    for (let j = i; j < n; j++) result[count++] = di[j];
-  }
-  return result;
-}
-
-/**
- * All-pairs shortest paths (weighted), packed upper-triangular.
- * Length n*(n+1)/2.
- * @see lib/neatogen/stress.c:compute_weighted_apsp_packed
- */
-export function computeWeightedApspPacked(
-  graph: VtxData[],
-  n: number,
-): Float32Array {
-  const result = new Float32Array(n * (n + 1) / 2);
-  const di = new Float32Array(n);
-  let count = 0;
-  for (let i = 0; i < n; i++) {
-    dijkstra(i, graph, n, di);
-    for (let j = i; j < n; j++) result[count++] = di[j];
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// dijkstraSgd helpers
-// ---------------------------------------------------------------------------
-
-/** Initialise SGD dists from source's adjacency list. @internal */
-export function sgdInitDist(
-  graph: GraphSgd,
-  src: number,
-  dists: Float32Array,
-): void {
-  dists[src] = 0;
-  const end = graph.sources[src + 1];
-  for (let i = graph.sources[src]; i < end; i++) {
-    dists[graph.targets[i]] = graph.weights[i];
-  }
-}
-
-/** Relax SGD neighbours of `closest` and push updates onto `heap`. @internal */
-export function sgdRelaxNeighbors(
-  graph: GraphSgd,
-  closest: number,
-  d: number,
-  dists: Float32Array,
-  heap: number[],
-): void {
-  const end = graph.sources[closest + 1];
-  for (let i = graph.sources[closest]; i < end; i++) {
-    const target = graph.targets[i];
-    const nd = d + graph.weights[i];
-    if (nd < dists[target]) {
-      dists[target] = nd;
-      heapPush(heap, dists, target);
-    }
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Public: dijkstraSgd
-// ---------------------------------------------------------------------------
-
-/**
- * Single-source shortest paths for the SGD engine.
- * Writes terms for all reachable `j < src` and pinned nodes.
- * Returns the count of terms written.
- *
- * @see lib/neatogen/dijkstra.c:dijkstra_sgd
- */
-export function dijkstraSgd(
-  graph: GraphSgd,
-  src: number,
-  terms: TermSgd[],
-): number {
-  const n = graph.n;
-  const dists = new Float32Array(n).fill(Infinity);
-  sgdInitDist(graph, src, dists);
-  const heap = heapBuildExcluding(src, n, dists);
-  let offset = 0;
-  while (heap.length > 0) {
-    const closest = heapPop(heap, dists);
-    const d = dists[closest];
-    if (!isFinite(d)) break;
-    if (graph.pinneds[closest] || closest < src) {
-      terms[offset++] = { i: src, j: closest, d, w: 1 / (d * d) };
-    }
-    sgdRelaxNeighbors(graph, closest, d, dists, heap);
-  }
-  return offset;
 }

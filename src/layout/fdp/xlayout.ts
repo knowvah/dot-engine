@@ -295,7 +295,7 @@ function parseOverlapTries(ovlp: string): { tries: number; rest: string } {
 /**
  * Overlap-removal dispatch on the overlap attribute:
  *   ""/null → default "9:prism"; "n:mode" → n x_layout tries, then
- *   removeOverlap with mode; "true" → keep overlaps.
+ *   removeOverlapAs with mode; "true" → keep overlaps.
  * @see lib/fdpgen/xlayout.c:fdp_xLayout
  */
 export function fdpXLayout(g: Graph, xpms: XParams): void {
