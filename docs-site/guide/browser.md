@@ -114,6 +114,34 @@ If your graphs never reference external images, you do not need to call this.
 To size images asynchronously (for example by loading them), pass an async
 `imageSizer` to `renderSvgAsync` instead; see [Images](/guide/images).
 
+## Web Workers
+
+Layout runs synchronously, so a large graph blocks the thread it runs on. Run
+it in a Worker to keep the page responsive. Inside a Worker there is no
+`document`, so the library measures text with an `OffscreenCanvas` and the
+async API loads fonts through the Worker's own font set (`self.fonts`).
+
+Fonts in a Worker are separate from the page's: register them in the Worker
+with the `FontFace` API (CSS `@font-face` rules don't reach Workers).
+
+```ts
+// graph-worker.ts (module worker)
+import { renderSvgAsync } from '@knowvah/dot-engine';
+
+self.fonts.add(new FontFace('Inter', 'url(/fonts/Inter.woff2)'));
+
+self.onmessage = async (e: MessageEvent<string>) => {
+  const { svg, fontIssues } = await renderSvgAsync(e.data, 'dot');
+  self.postMessage({ svg, fontIssues });
+};
+```
+
+Render with `renderSvgAsync` (or `renderAsync`) in a Worker, not `renderSvg`,
+at least until each web font has loaded. Chromium keeps measuring a font string
+with the fallback face if that exact string was measured in the Worker before
+the face loaded, even after it loads; the async API loads fonts before it
+measures, so it never hits this.
+
 ## What not to expect
 
 The library targets **SVG** (plus `json` / `xdot` / `dot` / imagemap text
