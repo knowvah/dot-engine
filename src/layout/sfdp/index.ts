@@ -31,7 +31,7 @@ import { CL_OFFSET } from '../twopi/pipeline.js';
 import { placeGraphLabel } from '../dot/position-bbox.js';
 import { gvPostprocess } from '../../common/postproc.js';
 import { aggetGraph } from '../fdp/fdp-model.js';
-import { overlapPrismTries, adjustNodesFull } from '../neato/fdp-adjust.js';
+import { overlapPrismTries, adjustNodesFull, warnUnrecognizedOverlap } from '../neato/fdp-adjust.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import {
   type SpringElectricalControl,
@@ -98,6 +98,7 @@ function resolveControl(g: Graph): {
   // graphAdjustMode(g, &am, "prism0"): agget NULL (unset) → "prism0" default.
   const overlap = aggetGraph(g, 'overlap');
   const flag = overlap === undefined ? 'prism0' : overlap;
+  warnUnrecognizedOverlap(flag); // graphAdjustMode → getAdjustMode, once per layout
   const ntry = overlapPrismTries(flag);
   if (ntry !== null) {
     // AM_PRISM && doAdjust: overlap removal happens inside sfdp.

@@ -25,7 +25,7 @@ import {
   MODEL_MDS,
 } from './init.js';
 import { neatoMode } from './start.js';
-import { adjustNodesFull } from './fdp-adjust.js';
+import { removeOverlapWith, graphAdjustMode, type AdjustData } from './fdp-adjust.js';
 import { splineEdgesShifted, EDGETYPE_LINE } from './splines.js';
 import { setEdgeTypeFromAttr } from '../dot/index.js';
 import {
@@ -100,15 +100,14 @@ export function parseModel(g: Graph): number {
 // ---------------------------------------------------------------------------
 
 /**
- * Remove node overlaps per the `overlap` attribute: C's removeOverlapWith
- * dispatch (prism, scale family, oscale, ortho*, portho*, vpsc, voronoi) for
- * every mode, as neato_layout's adjustNodes call does.
+ * Remove node overlaps with the mode neato_layout resolved once
+ * (graphAdjustMode): C's removeOverlapWith dispatch for every mode.
  *
- * @see lib/neatogen/neatoinit.c:neato_layout (adjustNodes call)
+ * @see lib/neatogen/neatoinit.c:neato_layout (removeOverlapWith calls)
  * @see lib/neatogen/adjust.c:removeOverlapWith
  */
-export function maybeRemoveOverlap(g: Graph): void {
-  adjustNodesFull(g);
+export function maybeRemoveOverlap(g: Graph, am: AdjustData): void {
+  removeOverlapWith(g, am);
 }
 
 // ---------------------------------------------------------------------------
@@ -164,6 +163,8 @@ export function neatoLayout(g: Graph): void {
   }
 
   const mode = parseMode(g);
+  // C resolves the overlap mode once, before any component. @see neatoinit.c:1369
+  const am = graphAdjustMode(g);
   const model = parseModel(g);
 
   // C uses pccomps (pin-aware): components with a pinned node are collected
@@ -172,10 +173,10 @@ export function neatoLayout(g: Graph): void {
     ? pccomps(g, '_neato_cc')
     : { graphs: [g], pinned: false };
   if (comps.length > 1) {
-    layoutComponents(g, comps, mode, model, pinned);
+    layoutComponents(g, comps, { mode, model, am }, pinned);
   } else {
     solveModel(g, mode, model); // srand48 happens inside (C checkStart)
-    maybeRemoveOverlap(g);
+    maybeRemoveOverlap(g, am);
     // C: spline_edges shifts pos to the origin, syncs coord, routes.
     splineEdgesShifted(g);
   }
@@ -236,13 +237,13 @@ function addClusters(g: Graph): void {
  * @see lib/neatogen/neatoinit.c:neato_layout (Pack >= 0 branch)
  */
 function layoutComponents(
-  g: Graph, comps: Graph[], mode: number, model: number, pinned: boolean,
+  g: Graph, comps: Graph[], solve: { mode: number; model: number; am: AdjustData }, pinned: boolean,
 ): void {
   for (const gc of comps) {
     // @see lib/neatogen/neatoinit.c:1398 (setEdgeType FUNCTION, per component)
     setEdgeTypeFromAttr(gc, EDGETYPE_LINE);
-    solveModel(gc, mode, model);
-    maybeRemoveOverlap(gc);
+    solveModel(gc, solve.mode, solve.model);
+    maybeRemoveOverlap(gc, solve.am);
     splineEdgesShifted(gc);
   }
   // C sets fixed[0]=true when a pinned node is present: pccomps merges every
