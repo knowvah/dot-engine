@@ -23,6 +23,8 @@ import type { Point, Box } from '../model/geom.js';
 import type { TextSpan } from '../common/emit-types.js';
 import type { TextMeasurer } from '../common/textmeasure.js';
 import type { DebugOptions } from '../debug.js';
+import type { ImageSizer } from '../common/htmltable-types.js';
+import type { ImageResolver } from './image-resolver.js';
 import type { RenderJob } from './job.js';  // scaffold in T25; full class in T26
 import { RenderError, invalidArgType, invalidArgValue } from '../errors.js';
 
@@ -198,6 +200,17 @@ export class GvcContext {
 
   textMeasurer: TextMeasurer;
   readonly debug: DebugOptions | undefined;
+
+  /**
+   * Per-context HTML `<IMG>` sizer; takes precedence over the global
+   * `setImageSizer`. Undefined by default. @see ADR-2 (async-api)
+   */
+  imageSizer?: ImageSizer;
+  /**
+   * Per-context image resolver for `inlineImages`; takes precedence over the
+   * global `setImageResolver`. Undefined by default. @see ADR-2 (async-api)
+   */
+  imageResolver?: ImageResolver;
 
   /**
    * @throws TypeError `ERR_INVALID_ARG_TYPE` if `measurer` has no `measure`

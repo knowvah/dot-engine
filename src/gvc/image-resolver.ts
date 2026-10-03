@@ -31,6 +31,17 @@ export type ImageResolver = (
   src: string,
 ) => { bytes: Uint8Array; mime?: string } | Uint8Array | null;
 
+/**
+ * Per-render resolver on the render job (async-api ADR-2): device.ts render()
+ * copies `GvcContext.imageResolver` here; svg.ts usershape() passes it to
+ * findImageBytes, which then skips the global resolver.
+ */
+declare module './job.js' {
+  interface RenderJob {
+    imageResolver?: ImageResolver;
+  }
+}
+
 let activeResolver: ImageResolver | null = null;
 
 /**
@@ -80,12 +91,17 @@ function inferMimeFromSrc(src: string): string {
  * when the resolver omits it). Returns `null` when no resolver is set or the
  * resolver itself returns `null` — the graceful-miss path that keeps the raw
  * `src` passthrough in `usershape()`.
+ *
+ * @param resolver - per-context resolver (ADR-2); when given it is consulted
+ *   instead of the global one, with the same normalization.
  */
 export function findImageBytes(
   src: string,
+  resolver?: ImageResolver,
 ): { bytes: Uint8Array; mime: string } | null {
-  if (activeResolver === null) return null;
-  const result = activeResolver(src);
+  const active = resolver ?? activeResolver;
+  if (active === null) return null;
+  const result = active(src);
   if (result === null) return null;
   if (result instanceof Uint8Array) {
     return { bytes: result, mime: inferMimeFromSrc(src) };

@@ -14,6 +14,8 @@ import type { TextMeasurer, TextSize } from './textmeasure.js';
 import type { TextSpan } from './emit-types.js';
 import { makeHtmlLabel } from './htmltable-pos.js';
 import { substObj, type GraphObj } from './subst.js';
+import { Edge } from '../model/edge.js';
+import type { Graph } from '../model/graph.js';
 import { htmlEntityUTF8 } from './html-entities.js';
 
 export const DEFAULT_FONTSIZE = 14.0;
@@ -37,6 +39,11 @@ function getPenColor(obj?: GraphObj): string | undefined {
   const c = obj.attrs.get('color');
   if (c !== undefined && c !== '') return c;
   return undefined;
+}
+
+/** The root graph owning `obj` (edges resolve through their tail node). */
+function rootOf(obj: GraphObj): Graph {
+  return obj instanceof Edge ? obj.tail.root : obj.root;
 }
 
 /** Font attributes bundle — mirrors C fontinfo_t fields used in label init. */
@@ -180,7 +187,9 @@ export function makeAnyLabel(
     // plain text (html=false) per htmltable.c:1892. Thread the owning object's
     // pen color so an HTML table/cell border with no explicit COLOR inherits
     // it (htmltable.c:1911 getPenColor). @see getPenColor
-    return makeHtmlLabel(content, { ...font, pencolor: getPenColor(obj) }, measurer);
+    // ADR-2: a per-context sizer (when set) wins over the global one.
+    const imageSizer = obj !== undefined ? rootOf(obj).info.gvc?.imageSizer : undefined;
+    return makeHtmlLabel(content, { ...font, pencolor: getPenColor(obj), imageSizer }, measurer);
   }
   // Plain path: resolve \G \N \E \T \H \L against the owning object
   // BEFORE measuring, as C does (labels.c:169, escBackslash=0; the
