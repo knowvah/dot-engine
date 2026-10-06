@@ -18,6 +18,7 @@ import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { Point } from '../../model/geom.js';
 import { srand48, drand48 } from '../../common/random.js';
+import { fma } from '../../common/fma.js';
 import {
   type Bport,
   dndata,
@@ -53,8 +54,9 @@ function placeByNeighbors(g: Graph, np: Node, ctr: Point): void {
     np.info.pos![0] = p.x;
     np.info.pos![1] = p.y;
   } else if (cnt === 1) {
-    np.info.pos![0] = 0.98 * p.x + 0.1 * ctr.x;
-    np.info.pos![1] = 0.9 * p.y + 0.1 * ctr.y;
+    // contracted (-ffp-contract=on): fmadd of the first product
+    np.info.pos![0] = fma(0.98, p.x, 0.1 * ctr.x);
+    np.info.pos![1] = fma(0.9, p.y, 0.1 * ctr.y);
   } else {
     const angle = Math.PI * 2.0 * drand48();
     const radius = 0.9 * drand48();
@@ -76,8 +78,8 @@ function averagePlacedNeighbors(g: Graph, np: Node, p: Point): number {
     const op = ep.head === np ? ep.tail : ep.head;
     if (!hasPos(op)) continue;
     if (cnt) {
-      p.x = (p.x * cnt + op.info.pos![0]!) / (cnt + 1);
-      p.y = (p.y * cnt + op.info.pos![1]!) / (cnt + 1);
+      p.x = fma(p.x, cnt, op.info.pos![0]!) / (cnt + 1); // contracted
+      p.y = fma(p.y, cnt, op.info.pos![1]!) / (cnt + 1);
     } else {
       p.x = op.info.pos![0]!;
       p.y = op.info.pos![1]!;
@@ -162,8 +164,8 @@ function sizeBoundary(width: number, height: number): void {
 function placeWithPorts(g: Graph, pp: Bport[], ctr: Point): void {
   for (const port of pp) { /* position ports on ellipse */
     const np = port.n;
-    np.info.pos![0] = parms.Wd * Math.cos(port.alpha) + ctr.x;
-    np.info.pos![1] = parms.Ht * Math.sin(port.alpha) + ctr.y;
+    np.info.pos![0] = fma(parms.Wd, Math.cos(port.alpha), ctr.x); // contracted
+    np.info.pos![1] = fma(parms.Ht, Math.sin(port.alpha), ctr.y);
     dndata(np).pinned = P_SET;
   }
   for (const np of g.nodes.values()) {

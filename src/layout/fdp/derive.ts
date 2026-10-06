@@ -21,6 +21,7 @@ import { Node } from '../../model/node.js';
 import { Edge } from '../../model/edge.js';
 import type { Box } from '../../model/geom.js';
 import { doGraphLabel } from '../dot/graph-label.js';
+import { nodesInSeq } from '../dot/decomp.js';
 import { layoutMeasurer } from '../../common/nodeinit.js';
 import { inputscaleDivisor } from '../../common/utils-inputscale.js';
 import {
@@ -145,7 +146,9 @@ function deriveClusterNodes(g: Graph, dg: Graph, infop: LayoutInfo): void {
  * @see layout.c:deriveGraph (remaining-nodes loop)
  */
 function deriveRealNodes(g: Graph, dg: Graph): boolean {
-  for (const n of g.nodes.values()) {
+  // agfstnode/agnxtnode: a cluster subgraph iterates in node sequence order,
+  // not statement order; it fixes derived-node creation (and so id) order.
+  for (const n of nodesInSeq(g)) {
     if (getDnode(n) !== null) continue;
     const par = getParent(n);
     if (par !== null && par !== gdata(g).parent) {
@@ -195,7 +198,7 @@ function deriveEdge(dg: Graph, byPair: Map<string, Edge>, tl: Node, hd: Node): E
 
 /** Derived edges. @see layout.c:deriveGraph (edge loop) */
 function deriveEdges(g: Graph, dg: Graph, byPair: Map<string, Edge>): void {
-  for (const n of g.nodes.values()) {
+  for (const n of nodesInSeq(g)) { // agfstnode order, as in deriveRealNodes
     const tl = getDnode(n)!;
     for (const e of n.outEdges(g)) {
       const hd = getDnode(e.head)!;
