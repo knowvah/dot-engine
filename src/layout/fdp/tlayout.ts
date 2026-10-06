@@ -4,9 +4,8 @@
  * fdp initial layout — grid-accelerated Fruchterman–Reingold on point
  * nodes with boundary ports.
  *
- * Spec read at the 15.0.0 tag: the post-tag tree reorders doRep floats
- * (hypot vs sqrt(x²·y²)) and adds an Mlimit cutoff; the golden refs are
- * 15.0.0 output, so neither is ported.
+ * Repulsion follows Graphviz after 15.0.0: doRep takes the hypot distance
+ * (the host libm's, see libm-hypot.ts) and honours the Mlimit cutoff.
  *
  * All math is double precision (unlike neato's float32 stress kernel).
  * Force-accumulation order is load-bearing: node iteration is the
@@ -16,13 +15,14 @@
  * Parameter state lives in tlayout-parms.ts; initial placement in
  * tlayout-init.ts.
  *
- * @see lib/fdpgen/tlayout.c (15.0.0)
+ * @see lib/fdpgen/tlayout.c
  */
 
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import { fma, fms } from '../../common/fma.js';
+import { libmHypot } from '../../common/libm-hypot.js';
 import { Grid, type Cell } from './grid.js';
 import {
   type Bport,
@@ -33,7 +33,7 @@ import {
   gdata,
   P_FIX,
 } from './fdp-model.js';
-import { parms, cool, initParams, resetParams } from './tlayout-parms.js';
+import { parms, cool, initParams, resetParams, fdpParms } from './tlayout-parms.js';
 import { initPositions } from './tlayout-init.js';
 import { crand } from '../../common/crand.js';
 
@@ -66,25 +66,26 @@ export function coincidentDelta(): { xdelta: number; ydelta: number } {
 }
 
 /**
- * Repulsive force = K²/d (useNew) or K²/d².
+ * Repulsive force = K²/d² (useNew) or K²/d, zero beyond Mlimit.
  * @see lib/fdpgen/tlayout.c:doRep
  */
 function doRep(
-  p: Node, q: Node, xdelta: number, ydelta: number, dist2: number,
+  p: Node, q: Node, xdelta: number, ydelta: number, dist: number,
 ): void {
   let force: number;
 
-  if (dist2 === 0.0) {
-    const d = coincidentDelta();
+  if (!(dist > 0)) {
+    const d = coincidentDelta(); // C re-rolls rand() until hypot > 0
     xdelta = d.xdelta;
     ydelta = d.ydelta;
-    dist2 = fma(xdelta, xdelta, ydelta * ydelta);
+    dist = libmHypot(xdelta, ydelta);
   }
-  if (parms.useNew) {
-    const dist = Math.sqrt(dist2);
-    force = parms.K * parms.K / (dist * dist2);
+  if (dist > fdpParms.Mlimit) {
+    force = 0;
+  } else if (parms.useNew) {
+    force = parms.K * parms.K / (dist * dist * dist);
   } else {
-    force = parms.K * parms.K / dist2;
+    force = parms.K * parms.K / (dist * dist);
   }
   if (isPort(p) && isPort(q)) force *= 10.0;
   const dq = disp(q);
@@ -100,7 +101,7 @@ function doRep(
 function applyRep(p: Node, q: Node): void {
   const xdelta = q.info.pos![0]! - p.info.pos![0]!;
   const ydelta = q.info.pos![1]! - p.info.pos![1]!;
-  doRep(p, q, xdelta, ydelta, fma(xdelta, xdelta, ydelta * ydelta));
+  doRep(p, q, xdelta, ydelta, libmHypot(xdelta, ydelta));
 }
 
 /** @see lib/fdpgen/tlayout.c:doNeighbor */
@@ -111,8 +112,8 @@ function doNeighbor(grid: Grid, i: number, j: number, nodes: Node[]): void {
     for (const q of cellp.nodes) {
       const xdelta = q.info.pos![0]! - p.info.pos![0]!;
       const ydelta = q.info.pos![1]! - p.info.pos![1]!;
-      const dist2 = fma(xdelta, xdelta, ydelta * ydelta);
-      if (dist2 < parms.Cell * parms.Cell) doRep(p, q, xdelta, ydelta, dist2);
+      const dist = libmHypot(xdelta, ydelta);
+      if (dist < parms.Cell) doRep(p, q, xdelta, ydelta, dist);
     }
   }
 }

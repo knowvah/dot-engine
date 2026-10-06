@@ -4,11 +4,11 @@
  * fdp engine data model — gdata, dndata, bport_t, xparams, and the
  * accessor macros of the C private interface.
  *
- * Spec read at the 15.0.0 tag (post-tag fdpgen commits add an Mlimit
- * branch and float reorderings the golden refs do not have).
+ * Matches Graphviz after 15.0.0 (fdpParms.Mlimit lives in
+ * tlayout-parms.ts).
  *
- * @see lib/fdpgen/fdp.h (15.0.0)
- * @see lib/fdpgen/xlayout.h (15.0.0)
+ * @see lib/fdpgen/fdp.h
+ * @see lib/fdpgen/xlayout.h
  */
 
 import type { Graph } from '../../model/graph.js';
