@@ -5,9 +5,11 @@
 // view) so the 160-entry `dot` page stays snappy. `@knowvah/dot-engine` is
 // aliased to src/index.ts in config.ts, so this runs the library as it ships.
 // Clicking a rendered diagram opens an enlarged lightbox view.
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { useData } from 'vitepress';
 import { tryRenderSvg } from '@knowvah/dot-engine';
 import goldensJson from '../goldens.json';
+import { pickStrings } from './strings';
 
 interface Golden {
   id: string;
@@ -15,12 +17,32 @@ interface Golden {
   toleranceClass: string;
   dot: string;
 }
-const goldens = goldensJson as unknown as {
+interface GoldenData {
   byEngine: Record<string, Golden[]>;
-};
+}
+const rootGoldens = goldensJson as unknown as GoldenData;
+
+// Per-locale data (goldens.<prefix>.json, written by copy-goldens.mjs) is
+// loaded lazily so a reader only downloads their own language. The glob is
+// empty when no locale is registered; the root locale uses goldens.json.
+const localeLoaders = import.meta.glob<GoldenData>('../goldens.*.json', {
+  import: 'default',
+});
+
+const { lang, theme, localeIndex } = useData();
+const t = computed(() => pickStrings(lang.value, theme.value.componentsByLang));
 
 const props = defineProps<{ engine: string }>();
-const items = computed<Golden[]>(() => goldens.byEngine[props.engine] ?? []);
+const goldens = ref<GoldenData>(rootGoldens);
+watch(
+  localeIndex,
+  async (prefix) => {
+    const load = localeLoaders[`../goldens.${prefix}.json`];
+    goldens.value = load ? await load() : rootGoldens;
+  },
+  { immediate: true },
+);
+const items = computed<Golden[]>(() => goldens.value.byEngine[props.engine] ?? []);
 
 const rendered = ref<Record<string, { svg?: string; error?: string }>>({});
 const cards = new Map<string, HTMLElement>();
@@ -46,7 +68,7 @@ function renderOne(id: string): void {
       ...rendered.value,
       [id]: r.svg
         ? { svg: themeAware(r.svg) }
-        : { error: r.errors?.[0]?.friendlyMessage ?? 'Render failed' },
+        : { error: r.errors?.[0]?.friendlyMessage ?? t.value.renderFailed },
     };
   } catch (e) {
     rendered.value = {
@@ -113,7 +135,7 @@ onBeforeUnmount(() => {
       <div
         class="golden-frame"
         :class="{ clickable: rendered[g.id]?.svg }"
-        :title="rendered[g.id]?.svg ? 'Click to enlarge' : undefined"
+        :title="rendered[g.id]?.svg ? t.clickToEnlarge : undefined"
         role="button"
         tabindex="0"
         @click="open(g)"
@@ -127,7 +149,7 @@ onBeforeUnmount(() => {
         <div v-else-if="rendered[g.id]?.error" class="golden-err" role="alert">
           {{ rendered[g.id]!.error }}
         </div>
-        <div v-else class="golden-wait">rendering…</div>
+        <div v-else class="golden-wait">{{ t.rendering }}</div>
         <span v-if="rendered[g.id]?.svg" class="golden-zoom" aria-hidden="true">⤢</span>
       </div>
       <figcaption>
@@ -136,7 +158,7 @@ onBeforeUnmount(() => {
         <span class="golden-desc">{{ g.description }}</span>
       </figcaption>
       <details class="golden-src">
-        <summary>DOT source</summary>
+        <summary>{{ t.dotSource }}</summary>
         <pre><code>{{ g.dot }}</code></pre>
       </details>
     </figure>
@@ -155,7 +177,7 @@ onBeforeUnmount(() => {
         <header class="golden-modal-head">
           <code class="golden-id">{{ active.id }}</code>
           <span class="golden-desc">{{ active.description }}</span>
-          <button class="golden-modal-x" aria-label="Close" @click="close">✕</button>
+          <button class="golden-modal-x" :aria-label="t.close" @click="close">✕</button>
         </header>
         <div class="golden-modal-body" v-html="rendered[active.id]?.svg"></div>
       </div>

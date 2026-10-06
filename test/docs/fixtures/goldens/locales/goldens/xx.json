@@ -1,0 +1,11 @@
+{
+  "g-one": "Ferst gulden",
+  "g-three": "Therd gulden",
+  "$showcase": {
+    "indexTitle": "Shoecase",
+    "indexHeading": "Shoecase - the gulden corpus",
+    "conformanceLabel": "Conformens",
+    "engineHeading": "{engine} - {count} guldens",
+    "blurbs": { "dot": "Layerd layout." }
+  }
+}

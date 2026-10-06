@@ -1,0 +1,5 @@
+[
+  { "id": "g-one", "engine": "dot", "toleranceClass": "deterministic", "input": "g-one.dot", "description": "First golden" },
+  { "id": "g-two", "engine": "dot", "toleranceClass": "deterministic", "input": "g-two.dot", "description": "Second golden" },
+  { "id": "g-three", "engine": "neato", "toleranceClass": "iterative", "input": "g-three.dot", "description": "Third golden" }
+]
