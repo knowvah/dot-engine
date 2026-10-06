@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: EPL-2.0
+import { h } from 'vue';
 import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
 // Brand: the Warm Studio palette as VitePress variables, the brand mono
@@ -10,11 +11,14 @@ import '@fontsource/jetbrains-mono/700.css';
 import './custom.css';
 import Playground from './Playground.vue';
 import GoldenGallery from './GoldenGallery.vue';
+import StaleBanner from './StaleBanner.vue';
 import { DotDiagram } from '@knowvah/vitepress-plugin-dot/client';
 import '@knowvah/vitepress-plugin-dot/style.css';
 
 export default {
   extends: DefaultTheme,
+  // Localized "English source changed" notice above translated pages.
+  Layout: () => h(DefaultTheme.Layout, null, { 'doc-before': () => h(StaleBanner) }),
   enhanceApp({ app }) {
     app.component('Playground', Playground);
     app.component('GoldenGallery', GoldenGallery);
