@@ -74,7 +74,7 @@ with a quarantined case is not complete until it is in the journal.
 |---|---|---|
 | [1](batch-1/overview.md) | Registry + config (T1), then Playground strings, localized goldens/showcase, drift tracking, translation lint (T2–T5) | [x] |
 | [2](batch-2/overview.md) | German — the worked example (T6). **Stop for review.** | [x] |
-| [3](batch-3/overview.md) | cs, da, es, et, fi (T7–T11) | [ ] |
+| [3](batch-3/overview.md) | cs, da, es, et, fi (T7–T11) | [x] |
 | [4](batch-4/overview.md) | fr, hu, is, it, ja (T12–T16) | [ ] |
 | [5](batch-5/overview.md) | ko, nl, no, pl, pt-br (T17–T21) | [ ] |
 | [6](batch-6/overview.md) | ro, ru, sk, sv, tr (T22–T26) | [ ] |
