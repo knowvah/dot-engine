@@ -7,6 +7,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { parse, render } from '../index.js';
 import {
   polySize,
   gvNodesize,
@@ -258,5 +259,18 @@ describe('gvNodesize', () => {
   });
   it('flip swaps width and height', () => {
     expect(gvNodesize(54, 36, true)).toEqual({ lw: 18, rw: 18, ht: 54 });
+  });
+});
+
+describe('polygon vertices match the native build bit for bit', () => {
+  // C poly_init: hypot() is the host libm's (libmHypot) and both multiply-adds
+  // of the distort/skew statement are fused (clang -ffp-contract=on). Values:
+  // native ND_shape_info(n)->polygon->vertices, dumped by a C driver.
+  it('distorted, skewed pentagon at orientation=14', () => {
+    const g = parse('graph { n [shape=polygon sides=5 distortion=0.5 skew=0.2 orientation=14] }');
+    render(g, 'plain', { engine: 'neato' });
+    const verts = (g.nodes.get('n')!.info.shape_info as { vertices: { x: number; y: number }[] }).vertices;
+    const native = [32.569421508355255, 11.208013663445993, -3.9120927202458256, 18.000000000000000, -34.987227776608208, -0.083401865947886789, -10.187373872236964, -16.794012666470429, 16.517272860735758, -12.330599131027673];
+    expect(verts.slice(0, 5).flatMap((p) => [p.x, p.y])).toEqual(native);
   });
 });
