@@ -98,16 +98,16 @@ its commit body rather than editing this table (one writer).
 
 | English | de |
 |---|---|
-| node | _(T6)_ |
-| edge | |
-| cluster / subgraph | |
-| layout engine | |
-| spline / edge routing | |
-| golden (test case) | |
-| oracle (native binary) | |
-| conformance / divergence | |
-| tolerance | |
-| port (of Graphviz) | |
+| node | Knoten |
+| edge | Kante |
+| cluster / subgraph | Cluster / Teilgraph |
+| layout engine | Layout-Engine |
+| spline / edge routing | Spline / Kantenführung |
+| golden (test case) | Golden-Testfall (kurz: Golden) |
+| oracle (native binary) | Orakel (natives Binary) |
+| conformance / divergence | Konformität / Abweichung |
+| tolerance | Toleranz |
+| port (of Graphviz) | Portierung (ein Knoten-*port* bleibt „Port“) |
 
 ## Tone
 
