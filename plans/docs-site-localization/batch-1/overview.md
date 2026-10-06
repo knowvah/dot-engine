@@ -11,7 +11,7 @@ exists and is tested against a fixture locale.
 | [T2](T2-playground-strings.md) | Playground resolves its strings from the locale | typescript-pro | `.vitepress/theme/Playground.vue`, `test/docs/playground-strings.test.ts` | T1 | [x] |
 | [T3](T3-localized-goldens.md) | Per-locale showcase pages and golden descriptions | typescript-pro | `copy-goldens.mjs`, `.vitepress/theme/GoldenGallery.vue`, `.gitignore`, `test/docs/goldens-i18n.test.ts` | T1 | [x] |
 | [T4](T4-drift-tracking.md) | `sourceHash`, stale banner, `docs:i18n-status` | typescript-pro | `scripts/i18n-hash.mjs`, `scripts/docs-i18n-status.mjs`, `.vitepress/theme/StaleBanner.vue`, `.vitepress/theme/index.ts`, `package.json`, `test/docs/i18n-status.test.ts` | T3 | [x] |
-| [T5](T5-translation-lint.md) | Translation lint tests | typescript-pro | `test/docs/translation-lint.test.ts`, `test/helpers/docs.ts` | T1, T4 | [ ] |
+| [T5](T5-translation-lint.md) | Translation lint tests | typescript-pro | `test/docs/translation-lint.test.ts`, `test/helpers/docs.ts` | T1, T4 | [x] |
 
 Paths in the Writes column without a top-level directory are under
 `docs-site/`.
