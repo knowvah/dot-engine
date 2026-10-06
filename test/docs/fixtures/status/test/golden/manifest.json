@@ -1,0 +1,1 @@
+[{"id":"g-one","engine":"dot","toleranceClass":"deterministic","input":"a.dot","description":"One"},{"id":"g-two","engine":"dot","toleranceClass":"deterministic","input":"b.dot","description":"Two"}]
