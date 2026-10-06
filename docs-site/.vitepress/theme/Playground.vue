@@ -1,6 +1,7 @@
 <!-- SPDX-License-Identifier: EPL-2.0 -->
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
+import { useData } from 'vitepress';
 // Aliased in .vitepress/config.ts to the real engine source (src/index.ts),
 // so the playground always runs the library exactly as shipped.
 import { renderSvg } from '@knowvah/dot-engine';
@@ -13,6 +14,7 @@ import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 import githubLight from '@shikijs/themes/github-light';
 import githubDark from '@shikijs/themes/github-dark';
 import { dotLang } from '../dot.tmLanguage';
+import { pickStrings } from './strings';
 
 const ENGINES = [
   'dot', 'neato', 'fdp', 'sfdp', 'circo', 'twopi', 'osage', 'patchwork',
@@ -29,6 +31,12 @@ const props = defineProps<{
   engine?: string;
   height?: string;
 }>();
+
+// Control labels in the page's language. The registry (i18n.ts) reads the
+// filesystem, so config.ts publishes each locale's strings as
+// themeConfig.componentsByLang; English for the root or an unknown lang.
+const { lang, theme } = useData();
+const t = computed(() => pickStrings(lang.value, theme.value.componentsByLang));
 
 const source = ref(props.initial ?? DEFAULT_DOT);
 const engine = ref(props.engine ?? 'dot');
@@ -168,17 +176,17 @@ watch(engine, scheduleRender);
   <div class="gv-playground">
     <div class="gv-toolbar">
       <label>
-        Engine:
+        {{ t.engineLabel }}:
         <select v-model="engine">
           <option v-for="e in ENGINES" :key="e" :value="e">{{ e }}</option>
         </select>
       </label>
       <div class="gv-export">
         <button type="button" :disabled="!svg || !!error" @click="exportSvg">
-          Export SVG
+          {{ t.exportSvg }}
         </button>
         <button type="button" :disabled="!svg || !!error" @click="exportPng">
-          Export PNG
+          {{ t.exportPng }}
         </button>
       </div>
     </div>
@@ -197,11 +205,11 @@ watch(engine, scheduleRender);
           spellcheck="false"
           autocapitalize="off"
           autocomplete="off"
-          aria-label="DOT source"
+          :aria-label="t.dotSource"
           @scroll="syncScroll"
         ></textarea>
       </div>
-      <div class="gv-output" aria-label="Rendered SVG">
+      <div class="gv-output" :aria-label="t.renderedSvg">
         <pre v-if="error" class="gv-error">{{ error }}</pre>
         <div v-else class="gv-svg" v-html="svg"></div>
       </div>
