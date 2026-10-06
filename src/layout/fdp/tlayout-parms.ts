@@ -9,7 +9,7 @@
  *
  * @see lib/fdpgen/tlayout.c (15.0.0) — parms_t, fdp_initParams,
  *      init_params, cool, reset_params
- * @see lib/common/globals.c (15.0.0) — fdpParms defaults
+ * @see lib/common/globals.c — fdpParms defaults
  */
 
 import type { Graph } from '../../model/graph.js';
@@ -41,7 +41,7 @@ export const INIT_RANDOM = 2;
 const DFLT_SMODE = INIT_RANDOM;
 
 // ---------------------------------------------------------------------------
-// fdp_parms defaults — @see lib/common/globals.c (15.0.0)
+// fdp_parms defaults — @see lib/common/globals.c
 // ---------------------------------------------------------------------------
 
 /**
@@ -61,6 +61,9 @@ export const fdpParms = {
   Tfact: 1.0,
   K: -1.0,
   T0: -1.0,
+  /** Distance beyond which repulsion is 0; HUGE_VAL unless `dot -Lm` (no library
+   *  equivalent). @see lib/fdpgen/fdp.h:fdpParms_s.Mlimit */
+  Mlimit: Infinity,
 };
 
 // ---------------------------------------------------------------------------

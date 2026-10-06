@@ -1216,15 +1216,15 @@ differs from native Graphviz. Found by the `v2-silent-gaps` mission
   match), `pcp_rotate` (same input gives the same output), positions and the
   attractive term (bit-identical). Example: a lone triangle `a--b; a--c; b--c`
   at the default seed.
-- **fdp follows Graphviz 15.0.0, the oracle is newer.** The port's repulsive
-  force is 15.0.0's (`doRep` on `dist²`, no cutoff; see
-  `src/layout/fdp/tlayout.ts`). Graphviz after 15.0.0 uses `hypot(dist)` and an
-  `Mlimit` cutoff (upstream `56edd7483`, `a46354c82`, `c9423d349`), so the
-  current native build differs on graphs where those round differently (e.g.
-  one cluster with edges leaving it: about 0.24 in). Verified: an oracle built
-  with only 15.0.0's `doRep`/`applyRep`/`doNeighbor` matches the port exactly
-  on those graphs. Moving fdp to the newer behaviour is an owner decision (the
-  fdp goldens are 15.0.0 output).
+- **fdp can differ from native through host libm `cos`/`sin`.** fdp follows
+  Graphviz after 15.0.0 (hypot-distance repulsion, `Mlimit`), with the host
+  libm's `hypot` reproduced bit-for-bit (`src/common/libm-hypot.ts`, 0
+  mismatches on 400k samples). 251 of the 252 fdp-renderable golden inputs
+  match the native build exactly; the remaining one
+  (`parallel-cluster-ldbxtried`) places cluster port nodes with
+  `T_Wd * cos(alpha)`, and macOS libm `cos(-2.3840764867756761)` is 1 ulp from
+  V8's `Math.cos`; fdp's force loop amplifies that to about 3 in. Apple's
+  `cos` is not reproducible from a short model the way `hypot` is.
 - **Native crashes the port defines.** Native Graphviz exits 139 on neato
   `mode=KK` with `model=mds` and an edge `len` (`mds_model` indexes `GD_dist`
   by a 1-based sequence number: heap overflow), and on `model=circuit` with a

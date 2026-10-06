@@ -4,8 +4,8 @@
  * fdp expansion layout: grow the point-node layout so sized nodes do
  * not overlap, by force iteration with overlap-aware repulsion.
  *
- * Spec read at the 15.0.0 tag (the post-tag Mlimit force cutoff is
- * deliberately NOT ported — the golden refs predate it).
+ * Follows Graphviz after 15.0.0: repulsion uses the hypot distance (the
+ * host libm's, see libm-hypot.ts) and the Mlimit cutoff.
  *
  * The default overlap attribute is "9:prism": up to 9 x_layout tries,
  * then removeOverlapAs with the remaining mode. x_layout does NOT always
@@ -14,7 +14,7 @@
  * fdpAdjust, the scale family via scAdjust. On the GTS reference build
  * overlap=false resolves to AM_PRISM (value 1000), not a no-op.
  *
- * @see lib/fdpgen/xlayout.c (15.0.0)
+ * @see lib/fdpgen/xlayout.c
  */
 
 import { RenderError } from '../../errors.js';
@@ -31,6 +31,9 @@ import {
   P_PIN,
 } from './fdp-model.js';
 import { coincidentDelta } from './tlayout.js';
+import { fdpParms } from './tlayout-parms.js';
+import { libmHypot } from '../../common/libm-hypot.js';
+import { fma, fms } from '../../common/fma.js';
 import { normalizeG } from './normalize.js';
 import { simpleScale } from '../neato/simple-scale.js';
 
@@ -76,7 +79,7 @@ function ht2(n: Node): number {
 
 /** Expanded radius of n. @see lib/fdpgen/xlayout.c:RAD */
 function rad(n: Node): number {
-  return Math.hypot(wd2(n), ht2(n));
+  return libmHypot(wd2(n), ht2(n));
 }
 
 /**
@@ -129,31 +132,32 @@ function cntOverlaps(g: Graph): number {
 // ---------------------------------------------------------------------------
 
 /**
- * Overlap-aware repulsion; returns 1 if the pair overlaps.
- * The delta/dist2 computation of C's applyRep is inlined here; the
- * C doRep/applyRep split exists for the rand() re-roll loop on
- * coincident nodes (coincidentDelta), shared with tlayout.
+ * Overlap-aware repulsion; returns 1 if the pair overlaps. Zero beyond
+ * Mlimit. C's applyRep (delta + hypot) is inlined; its doRep re-rolls rand()
+ * deltas while the distance is not positive (coincidentDelta).
  * @see lib/fdpgen/xlayout.c:doRep
  * @see lib/fdpgen/xlayout.c:applyRep
  */
 function applyRep(p: Node, q: Node, rs: RepStrength): number {
   let xdelta = q.info.pos![0]! - p.info.pos![0]!;
   let ydelta = q.info.pos![1]! - p.info.pos![1]!;
-  let dist2 = xdelta * xdelta + ydelta * ydelta;
-  if (dist2 === 0.0) {
+  let dist = libmHypot(xdelta, ydelta);
+  if (!(dist > 0)) {
     const d = coincidentDelta();
     xdelta = d.xdelta;
     ydelta = d.ydelta;
-    dist2 = xdelta * xdelta + ydelta * ydelta;
+    dist = libmHypot(xdelta, ydelta);
   }
   const ov = overlap(p, q) ? 1 : 0;
-  const force = ov ? rs.ov / dist2 : rs.nonov / dist2;
+  let force = ov ? rs.ov / (dist * dist) : rs.nonov / (dist * dist);
+  if (dist > fdpParms.Mlimit) force = 0;
   const dq = disp(q);
   const dp = disp(p);
-  dq[0] += xdelta * force;
-  dq[1] += ydelta * force;
-  dp[0] -= xdelta * force;
-  dp[1] -= ydelta * force;
+  // arm64 contraction (-ffp-contract=on): DISP ± delta·force are fmadd/fmsub
+  dq[0] = fma(xdelta, force, dq[0]!);
+  dq[1] = fma(ydelta, force, dq[1]!);
+  dp[0] = fms(xdelta, force, dp[0]!);
+  dp[1] = fms(ydelta, force, dp[1]!);
   return ov;
 }
 
@@ -165,16 +169,16 @@ function applyAttr(p: Node, q: Node): void {
   if (overlap(p, q)) return;
   const xdelta = q.info.pos![0]! - p.info.pos![0]!;
   const ydelta = q.info.pos![1]! - p.info.pos![1]!;
-  const dist = Math.hypot(xdelta, ydelta);
+  const dist = libmHypot(xdelta, ydelta);
   const din = rad(p) + rad(q);
   const dout = dist - din;
   const force = dout * dout / ((xParams.K + din) * dist);
   const dq = disp(q);
   const dp = disp(p);
-  dq[0] -= xdelta * force;
-  dq[1] -= ydelta * force;
-  dp[0] += xdelta * force;
-  dp[1] += ydelta * force;
+  dq[0] = fms(xdelta, force, dq[0]!);
+  dq[1] = fms(ydelta, force, dq[1]!);
+  dp[0] = fma(xdelta, force, dp[0]!);
+  dp[1] = fma(ydelta, force, dp[1]!);
 }
 
 // ---------------------------------------------------------------------------
@@ -204,7 +208,7 @@ function moveNodes(g: Graph, temp: number): void {
     if (dndata(n).pinned === P_PIN) continue;
     const dx = disp(n)[0];
     const dy = disp(n)[1];
-    const len2 = dx * dx + dy * dy;
+    const len2 = fma(dx, dx, dy * dy); // contracted, as in tlayout
     if (len2 < temp2) {
       n.info.pos![0]! += dx;
       n.info.pos![1]! += dy;
