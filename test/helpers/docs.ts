@@ -248,7 +248,10 @@ export function checkComponents(
     const local = strings.locale[key];
     if (local === english || !containsWord(en.prose, english)) continue;
     if (!containsWord(tr.prose, local)) out.push(v('components', file, `${key}: missing "${local}"`));
-    if (containsWord(tr.prose, english)) out.push(v('components', file, `${key}: English "${english}" remains`));
+    // "Layout-Engine" contains the word "Engine": look for the English string
+    // only in prose with the locale's string removed.
+    const rest = tr.prose.split(local).join(' ');
+    if (containsWord(rest, english)) out.push(v('components', file, `${key}: English "${english}" remains`));
   }
   return out;
 }
