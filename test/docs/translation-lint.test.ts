@@ -129,6 +129,17 @@ describe('lint against planted defects (fixture locale xx)', () => {
     expect(checkComponents(en, tr, strings, 'xx/guide/prose.md')).toEqual([]);
   });
 
+  it('does not see the English string inside a locale string that contains it', () => {
+    const en = parsePage('# E\n\n<Playground />\n\nPick an Engine.\n');
+    const tr = parsePage('# E\n\n<Playground />\n\nWählen Sie eine Layout-Engine.\n');
+    const locale = { ...EN_COMPONENTS, engineLabel: 'Layout-Engine' };
+    expect(checkComponents(en, tr, { en: EN_COMPONENTS, locale }, 'xx/e.md')).toEqual([]);
+    const left = parsePage('# E\n\n<Playground />\n\nLayout-Engine oder Engine.\n');
+    expect(checkComponents(en, left, { en: EN_COMPONENTS, locale }, 'xx/e.md')).toEqual([
+      'engineLabel: English "Engine" remains',
+    ].map((message) => ({ check: 'components', file: 'xx/e.md', message })));
+  });
+
   it('fails a missing sourceHash', () => {
     expect(lint('guide/hash.md').map((x) => x.message)).toEqual([
       'front matter has no sourceHash',
