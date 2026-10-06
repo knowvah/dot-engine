@@ -23,6 +23,7 @@ import { STAR, CYLINDER } from './shapeData.js';
 import { starVertices } from './poly-vertices.js';
 import { fma } from './fma.js';
 import { RADIANS } from './arith.js';
+import { libmHypot } from './libm-hypot.js';
 
 /** Whitespace in points around labels / between peripheries. @see lib/common/const.h:GAP */
 export const GAP = 4;
@@ -277,16 +278,15 @@ export interface PolyGeom {
 
 /** Distort, skew, orient, and scale one unit vertex. @see shapes.c:poly_init */
 function transformUnitVertex(R: Point, g: PolyGeom, c: { skewdist: number; gdistortion: number; gskew: number }, bb: Point): Point {
-  const D = { x: R.x * (c.skewdist + R.y * c.gdistortion) + R.y * c.gskew, y: R.y };
+  // clang -ffp-contract=on fuses both multiply-adds of this one statement
+  // (the first product of the outer sum, as elsewhere in the port).
+  const D = { x: fma(R.x, fma(R.y, c.gdistortion, c.skewdist), R.y * c.gskew), y: R.y };
   const alpha = RADIANS(g.orientation) + Math.atan2(D.y, D.x);
-  // C uses libm hypot(D.x, D.y). V8's Math.hypot is a scaled algorithm that
-  // returns a result 1 ULP off from libm hypot for in-range polygon vertices
-  // (e.g. hypot(0.35355…, 0.35355…): libm = 0.5 exactly, Math.hypot = 0.5+1ULP),
-  // whereas the naive sqrt(x²+y²) reproduces libm's value bit-for-bit here.
-  // That ULP inflated ND_ht by ~7e-15, and pack.c genPoly's GRID(=ceil) rounded
-  // an exactly-on-boundary component height up a cell, reordering polyomino
-  // packing and swapping two circo/osage components. @see shapes.c:poly_init
-  const r = Math.sqrt(D.x * D.x + D.y * D.y);
+  // C uses libm hypot(D.x, D.y); libmHypot reproduces the host libm bit for bit.
+  // Neither V8's Math.hypot (hypot(0.35355339059327379, same) = 0.5+1ULP, which once
+  // inflated ND_ht by ~7e-15 and swapped two packed circo/osage components) nor
+  // sqrt(x²+y²) (off on e.g. the orientation=20 box) does. @see shapes.c:poly_init
+  const r = libmHypot(D.x, D.y);
   return { x: r * Math.cos(alpha) * bb.x, y: r * Math.sin(alpha) * bb.y };
 }
 
@@ -303,7 +303,7 @@ export function polygonVertices(
   const sectorangle = (2 * Math.PI) / g.sides;
   const sidelength = Math.sin(sectorangle / 2);
   const c = {
-    skewdist: Math.hypot(Math.abs(g.distortion) + Math.abs(g.skew), 1),
+    skewdist: libmHypot(Math.abs(g.distortion) + Math.abs(g.skew), 1),
     gdistortion: (g.distortion * SQRT2) / Math.cos(sectorangle / 2),
     gskew: g.skew / 2,
   };
