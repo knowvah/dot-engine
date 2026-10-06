@@ -1,14 +1,63 @@
 // SPDX-License-Identifier: EPL-2.0
-import { defineConfig } from 'vitepress';
+import { defineConfigWithTheme, type DefaultTheme } from 'vitepress';
 import { dotMarkdown } from '@knowvah/vitepress-plugin-dot/markdown-it';
+import path from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
-import { dotLang } from './dot.tmLanguage';
+import { dotLang } from './dot.tmLanguage.js';
+import type { ComponentStrings } from './theme/strings.js';
+import {
+  assertLocaleComplete,
+  COMPONENTS_BY_LANG,
+  EN,
+  LOCALES,
+  navFor,
+  sidebarFor,
+  TRANSLATABLE_EXCLUDES,
+} from './i18n.js';
+
+/** The default theme's config plus this site's component-strings table. */
+export interface SiteThemeConfig extends DefaultTheme.Config {
+  componentsByLang?: Readonly<Record<string, ComponentStrings>>;
+}
+
+const DOCS_ROOT = path.resolve(import.meta.dirname, '..');
+for (const prefix of Object.keys(LOCALES)) {
+  assertLocaleComplete(DOCS_ROOT, prefix, TRANSLATABLE_EXCLUDES);
+}
+
+/**
+ * The `locales:` block — root English plus every registered translation.
+ * Only complete languages appear; see `i18n.ts` on why a half-translated
+ * locale is worse than an absent one.
+ */
+function localesConfig() {
+  return {
+    root: {
+      label: 'English',
+      lang: 'en-US',
+      themeConfig: { nav: navFor('', EN), sidebar: sidebarFor('', EN) },
+    },
+    ...Object.fromEntries(
+      Object.entries(LOCALES).map(([prefix, loc]) => [
+        prefix,
+        {
+          label: loc.label,
+          lang: loc.lang,
+          themeConfig: {
+            nav: navFor(`/${prefix}`, loc.ui),
+            sidebar: sidebarFor(`/${prefix}`, loc.ui),
+          },
+        },
+      ]),
+    ),
+  };
+}
 
 // Deployed at https://dot-engine.knowvah.com/ (GitHub Pages custom domain) —
 // the site is served from the domain root, so base MUST be '/'. A '/<repo>/'
 // base makes every CSS/JS/font asset 404 and the page renders unstyled.
 
-export default defineConfig({
+export default defineConfigWithTheme<SiteThemeConfig>({
   base: '/',
   title: '@knowvah/dot-engine',
   description:
@@ -16,6 +65,7 @@ export default defineConfig({
     'no native binary, no WASM. Runs in the browser.',
   lang: 'en-US',
   cleanUrls: true,
+  locales: localesConfig(),
   markdown: {
     // Register the DOT grammar so ```dot fences highlight (Shiki bundles none).
     languages: [dotLang],
@@ -51,80 +101,10 @@ export default defineConfig({
     logo: '/knowvah_logo.svg',
     // Built-in offline search (MiniSearch); no external service.
     search: { provider: 'local' },
-    nav: [
-      { text: 'Overview', link: '/guide/overview' },
-      { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'Showcase', link: '/showcase/' },
-      { text: 'Playground', link: '/playground' },
-      { text: 'API', link: '/guide/api' },
-      { text: 'Conformance', link: '/conformance' },
-      { text: 'Parity', link: '/engines' },
-    ],
-    sidebar: [
-      {
-        text: 'Introduction',
-        items: [
-          { text: 'Overview (mental model)', link: '/guide/overview' },
-          { text: 'Getting started', link: '/guide/getting-started' },
-          { text: 'Layout engines', link: '/guide/engines' },
-          { text: 'Glossary', link: '/guide/glossary' },
-        ],
-      },
-      {
-        text: 'Guides',
-        items: [
-          { text: 'Browser usage', link: '/guide/browser' },
-          { text: 'Build a graph in code', link: '/guide/build-a-graph' },
-          { text: 'Read computed geometry', link: '/guide/geometry' },
-          { text: 'Text measurement', link: '/guide/text-measurement' },
-          { text: 'Working with images', link: '/guide/images' },
-          { text: 'Render to other formats', link: '/guide/render-formats' },
-          { text: 'Custom rendering with xdot', link: '/guide/xdot-drawops' },
-        ],
-      },
-      {
-        text: 'Showcase',
-        items: [
-          { text: 'The golden corpus', link: '/showcase/' },
-          { text: 'dot', link: '/showcase/dot' },
-          { text: 'neato', link: '/showcase/neato' },
-          { text: 'fdp', link: '/showcase/fdp' },
-          { text: 'sfdp', link: '/showcase/sfdp' },
-          { text: 'circo', link: '/showcase/circo' },
-          { text: 'twopi', link: '/showcase/twopi' },
-          { text: 'osage', link: '/showcase/osage' },
-          { text: 'patchwork', link: '/showcase/patchwork' },
-        ],
-      },
-      {
-        text: 'Recipes',
-        items: [
-          { text: 'Recipes cookbook', link: '/guide/recipes' },
-        ],
-      },
-      {
-        text: 'Migrating',
-        items: [
-          { text: 'From the C dot CLI', link: '/guide/migrate-from-c-cli' },
-          { text: 'From JS graphviz libraries', link: '/guide/migrate-from-js-libs' },
-        ],
-      },
-      {
-        text: 'Reference',
-        items: [
-          { text: 'API reference (curated)', link: '/guide/api' },
-          { text: 'Errors and exceptions', link: '/guide/errors' },
-          { text: 'Types', link: '/guide/types' },
-          { text: 'Generated API (TypeDoc)', link: '/reference/' },
-          { text: 'Playground', link: '/playground' },
-          { text: 'Conformance (what "match" means)', link: '/conformance' },
-          { text: 'Known divergences', link: '/divergences' },
-          { text: 'Parity dashboard (dot)', link: '/parity' },
-          { text: 'Engine parity (all engines)', link: '/engines' },
-          { text: 'Performance dashboard', link: '/perf' },
-        ],
-      },
-    ],
+    // `lang` → component strings for every registered locale; theme
+    // components resolve theirs with `pickStrings` (theme/strings.ts), since
+    // the filesystem-reading registry cannot reach the client bundle.
+    componentsByLang: COMPONENTS_BY_LANG,
     socialLinks: [
       { icon: 'github', link: 'https://github.com/knowvah/dot-engine' },
     ],
