@@ -27,6 +27,7 @@ interface CopyGoldens {
     strings: Showcase | undefined,
   ): string;
   renderEnginePage(engine: string, count: number, strings: Showcase | undefined): string;
+  yamlScalar(value: string): string;
   listLocalePrefixes(dir: string): string[];
 }
 
@@ -92,6 +93,13 @@ describe('showcase rendering', () => {
     expect(md).toContain('(see [Conformens](/xx/conformance)).');
     expect(md).not.toContain('](/conformance)');
     expect(md).not.toContain('](/showcase/');
+  });
+
+  it('quotes a translated title that YAML cannot read as a plain scalar', () => {
+    const md = mod.renderEnginePage('dot', 2, { engineTitle: '{engine}: golden' } as Showcase);
+    expect(md.startsWith('---\ntitle: "dot: golden"\n---\n')).toBe(true);
+    expect(mod.yamlScalar('dot goldens')).toBe('dot goldens');
+    expect(mod.yamlScalar('#1 "x"')).toBe('"#1 \\"x\\""');
   });
 
   it('renders an engine page with translated heading and the gallery tag', () => {
