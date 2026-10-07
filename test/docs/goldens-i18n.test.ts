@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { EN_COMPONENTS, pickStrings } from '../../docs-site/.vitepress/theme/strings.js';
+import { LOCALES } from '../../docs-site/.vitepress/i18n.js';
 
 interface Entry {
   id: string;
@@ -153,4 +154,125 @@ describe('GoldenGallery strings', () => {
       expect(SRC).toContain(usage);
     }
   });
+});
+
+/**
+ * Golden ids in `test/golden/manifest.json` when the shipped translations were
+ * completed (decision 2). Every registered locale must translate all of
+ * these; an id added to the manifest later falls back to English in the
+ * gallery and is reported by `docs:i18n-status`, not failed here.
+ */
+const FROZEN_GOLDEN_IDS: readonly string[] = [
+  'dot-simple-box', 'dot-record-node', 'dot-html-label', 'dot-cluster',
+  'dot-cluster-external-edge', 'dot-nested-cluster', 'dot-edge-styles',
+  'dot-disconnected', 'dot-edge-dirs', 'neato-simple', 'neato-weighted',
+  'neato-diamond', 'neato-cluster', 'neato-disconnected', 'neato-polygon',
+  'neato-circle', 'fdp-simple', 'fdp-cluster', 'fdp-disconnected',
+  'fdp-edge-both', 'fdp-large', 'fdp-nested-cluster', 'sfdp-simple',
+  'sfdp-medium', 'sfdp-large', 'sfdp-disconnected', 'sfdp-weighted',
+  'circo-simple', 'circo-biconn', 'circo-star', 'circo-html-label',
+  'circo-disconnected', 'circo-record', 'twopi-star', 'twopi-chain',
+  'twopi-tree', 'twopi-root-attr', 'twopi-disconnected', 'twopi-ranksep',
+  'osage-simple', 'osage-nested', 'osage-sortv', 'osage-array-mode',
+  'osage-labels', 'osage-empty-cluster', 'patchwork-simple',
+  'patchwork-weighted', 'patchwork-cluster', 'patchwork-nested',
+  'patchwork-default-area', 'patchwork-html-label', 'twopi-single-node',
+  'circo-single-node', 'osage-deep-nesting', 'patchwork-single-node',
+  'sfdp-single-node', 'neato-tiny-multi-edge', 'fdp-tiny-self-loop',
+  'dot-constraint-false', 'dot-self-loop', 'circo-self-loop', 'dot-minlen',
+  'twopi-self-loop', 'dot-rankdir-lr', 'dot-rankdir-bt', 'dot-multi-edge',
+  'dot-rankdir-rl', 'dot-head-tail-label', 'dot-node-xlabel',
+  'dot-edge-label', 'dot-edge-xlabel', 'dot-graph-label',
+  'dot-labels-combined', 'dot-html-node-label', 'dot-html-node-xlabel',
+  'dot-html-edge-label', 'dot-html-edge-xlabel', 'dot-html-head-tail-label',
+  'dot-html-graph-label', 'dot-html-cluster-label', 'dot-html-fonts',
+  'dot-html-table-styling', 'dot-html-combined', 'dot-node-fillcolor',
+  'dot-node-pencolor', 'dot-node-penwidth', 'dot-node-style-dashed',
+  'dot-node-style-dotted', 'dot-node-style-bold', 'dot-node-filled-default',
+  'dot-edge-color', 'dot-edge-penwidth', 'dot-edge-style-dashed',
+  'dot-edge-colored-arrow', 'dot-graph-bgcolor', 'dot-cluster-filled',
+  'dot-cluster-bgcolor', 'dot-styled-combined', 'mc-node-gradient-linear',
+  'mc-node-gradient-radial', 'mc-node-gradient-frac',
+  'mc-node-gradient-angle', 'mc-node-box-gradient', 'mc-cluster-gradient',
+  'mc-graph-bgcolor-gradient', 'mc-node-striped', 'mc-node-striped-weighted',
+  'mc-edge-multicolor', 'mc-edge-multicolor-3', 'mc-combined',
+  'dot-edge-multicolor-semi', 'dot-edge-multicolor-semi-3',
+  'dot-undirected-simple', 'dot-undirected-tree', 'dot-undirected-multirank',
+  'dot-node-penwidth-edge-clip', 'dot-port-compass-aligned',
+  'dot-port-steering-east', 'dot-port-steering-west',
+  'dot-port-record-aligned', 'dot-ortho-chain', 'dot-ortho-branch',
+  'dot-ortho-multirank', 'dot-ortho-label', 'dot-curved-single',
+  'dot-curved-parallel', 'dot-compound-splines', 'dot-curved-cycle',
+  'dot-compound-lhead', 'dot-long-edge-straight', 'dot-long-edge-p2',
+  'dot-long-edge-polyline', 'dot-point-shape', 'dot-rounded-clusters-mrecord',
+  'dot-record-fill-pen', 'dot-bgcolor-x11name', 'dot-node-setlinewidth',
+  'dot-style-funlimit', 'dot-edge-fontcolor-scheme',
+  'dot-cluster-peripheries0', 'dot-label-xml-entity', 'dot-string-no-concat',
+  'dot-cluster-id-attr', 'dot-node-class-attr', 'dot-id-stylesheet',
+  'dot-unicode-name', 'dot-arrow-dot', 'dot-arrow-crow', 'dot-arrow-box',
+  'dot-arrow-diamond', 'dot-arrow-tee', 'dot-arrow-curve',
+  'dot-arrow-compound', 'dot-arrow-side', 'dot-htmltable-grad-linear',
+  'dot-htmltable-grad-radial', 'dot-htmltable-rounded-grad',
+  'dot-label-blank-lines', 'dot-size-scaling', 'dot-long-edge-order',
+  'concentrate-b135', 'concentrate-167', 'parallel-multirank-min',
+  'edge-order-min', 'parallel-cluster-ldbxtried',
+  'dot-cluster-labeled-minlen0', 'dot-pack-flat-label',
+  'dot-pack-flat-label-vnode', 'dot-pack-concentrate', 'dot-pack-record',
+  'dot-pack-samehead', 'dot-pack-ordering', 'dot-pack-headtail-label',
+  'dot-conc-headtail', 'dot-conc-samehead', 'dot-record-splines',
+  'dot-cluster-samehead', 'dot-record-xlabel', 'dot-pack-constraint',
+  'dot-pack-fixedsize', 'dot-pack-selfloop',
+  'dot-gap-compound-newrank-samehead', 'dot-gap-concentrate-html-ports',
+  'dot-gap-record-invis-ratio', 'dot-gap-xlabel-headtail',
+  'dot-gap-selfloop-record-html', 'dot-gap-rankdir-ranksame-splines',
+  'dot-gap-ports-xlabel-samehead', 'dot-gap-ordering-invis',
+  'dot-gap-headtail-record', 'dot-pack-portlabel-angle',
+  'dot-newrank-minlen0', 'dot-newrank-cluster-ranksame',
+  'dot-pack-cluster-edgelabel', 'dot-pack-cluster-minlen0',
+  'dot-pack-cluster-minlen0-edgelabel', 'dot-pack-cluster-ranksame',
+  'dot-pack-nestedcluster-ranksame', 'dot-pack-cluster-compound',
+  'dot-cluster-edgelabel-ranksame', 'dot-pack-cluster-rankdir',
+  'dot-pack-cluster-ordering-constraint', 'dot-pack-cluster-concentrate',
+  'dot-pack-cluster-rankdir-edgelabel',
+  'dot-pack-cluster-minlen0-ranksame-edgelabel',
+  'dot-pack-cluster-concentrate-edgelabel', 'dot-newrank-compact-weak',
+  'dot-newrank-compact-single', 'dot-newrank-compact-three',
+  'dot-newrank-compact-nested', 'dot-newrank-compact-mixed', 'dot-phase',
+  'dot-clusterrank-none', 'dot-mclimit', 'dot-fontnames-svg',
+  'dot-fontnames-ps', 'dot-labelfloat', 'dot-labelfontname', 'dot-landscape',
+  'dot-layerlistsep', 'dot-quantum', 'dot-resolution', 'dot-samplepoints',
+  'circo-mindist', 'circo-oneblock', 'patchwork-inset', 'neato-epsilon',
+  'neato-maxiter', 'neato-start', 'neato-overlap-scaling',
+  'neato-overlap-shrink', 'neato-pin', 'neato-multispline', 'dot-shape-zoo',
+  'dot-compound-clip', 'dot-ortho-parallel', 'neato-ratio-aspect',
+  'dot-xlabels', 'c90-rank-zoo', 'c90-cdt-concentrate-corridor',
+  'c90-circo-chord', 'c90-circo-artic-tree', 'c90-circo-bowtie',
+  'c90-circo-parallel', 'c90-circo-wheel6', 'c90-neato-overlap-ratio',
+  'c90-dot-flat-adj-both-arrows',
+];
+
+/** Frozen ids `translations` lacks (absent, non-string or blank). */
+function missingFrozenIds(translations: Record<string, unknown>): string[] {
+  return FROZEN_GOLDEN_IDS.filter((id) => {
+    const value = translations[id];
+    return typeof value !== 'string' || value.trim() === '';
+  });
+}
+
+describe('shipped locales translate every frozen golden id', () => {
+  it('names the id a locale is missing', () => {
+    const all = Object.fromEntries(FROZEN_GOLDEN_IDS.map((id) => [id, 'x']));
+    const [first] = FROZEN_GOLDEN_IDS;
+    expect(missingFrozenIds({ ...all, [first!]: undefined })).toEqual([first]);
+    expect(missingFrozenIds({ ...all, [first!]: ' ' })).toEqual([first]);
+    expect(FROZEN_GOLDEN_IDS).toHaveLength(247);
+  });
+
+  for (const prefix of Object.keys(LOCALES).sort()) {
+    it(`${prefix} covers all ${FROZEN_GOLDEN_IDS.length} frozen ids`, () => {
+      const file = here(`../../docs-site/.vitepress/locales/goldens/${prefix}.json`);
+      const translations = JSON.parse(readFileSync(file, 'utf8')) as Record<string, unknown>;
+      expect(missingFrozenIds(translations).map((id) => `${prefix}: ${id}`)).toEqual([]);
+    });
+  }
 });
