@@ -79,7 +79,7 @@ with a quarantined case is not complete until it is in the journal.
 | [5](batch-5/overview.md) | ko, nl, no, pl, pt-br (T17–T21) | [x] |
 | [6](batch-6/overview.md) | ro, ru, sk, sv, tr (T22–T26) | [x] |
 | [7](batch-7/overview.md) | zh-cn, zh-tw (T27–T28) | [x] |
-| [8](batch-8/overview.md) | Closeout: hard goldens coverage, measurements, README, PR (T29) | [ ] |
+| [8](batch-8/overview.md) | Closeout: hard goldens coverage, measurements, README, PR (T29) | [x] |
 
 ## Execution model
 
@@ -112,3 +112,36 @@ JSON, no screenshots, no R2).
   `reference/` — English-only, linked unprefixed from every locale
 - Native-speaker review
 - Any change to `src/` or to English page content
+
+## Mission summary (2026-10-06)
+
+**Completed: 29 / 29 tasks.** 23 locales shipped (de, cs, da, es, et, fi,
+fr, hu, is, it, ja, ko, nl, no, pl, pt-br, ro, ru, sk, sv, tr, zh-cn,
+zh-tw), each 22 translated pages + 9 generated showcase pages + 247 golden
+descriptions. **No quarantined locale.**
+
+**Stops:** German review (condition 4) — approved. Build time (condition 6)
+at 12 locales (~33 s > 3 × 9.9 s) — user raised the limit to ~90 s.
+
+**Final gates:** typecheck clean; `npm test` 387 files / 9840 tests;
+`docs:build` 52.0 s; root search index 615 KB, locale indexes 292–396 KB;
+0 broken anchors in every locale; `docs:i18n-status` all zeros.
+
+**Fix commits beyond the plan:** `fix(T5)` (English control word inside the
+locale's own string, "Layout-Engine"), `fix(T3)` (YAML-quote translated
+showcase titles, Polish "dot: golden").
+
+**Deviations (journaled):** pure nav/completeness helpers live in `i18n.ts`
+(tsc + vitepress types); component strings reach the client via
+`themeConfig.componentsByLang`; the component-string lint applies only to
+pages that embed a component; maintainer docs at
+`docs-site/.vitepress/README.md` (a `docs-site/README.md` would be a page
+every locale must translate); no session-attribution trailer (commits.md).
+
+**Follow-ups (English defects, logged not fixed — stop condition 5):**
+`guide/getting-started.md:34` `cd @knowvah/dot-engine` (clone dir is
+`dot-engine`); `guide/images.md:151` "T1's inlining API" (internal task id);
+`divergences-proc3d-a2.md` A2 anchor no longer exists in English. Fixing
+each will mark that page stale in all 23 locales (banner + status), by
+design. Native-speaker review was out of scope; weakest by translator
+self-report: is, et.
