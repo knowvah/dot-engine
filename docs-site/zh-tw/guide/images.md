@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # 使用圖片
 
@@ -151,7 +151,7 @@ CSP 的地方，該來源也必須在那裡列入允許清單（見下文）。
 
 ### 2. 以 `data:` URI 內嵌 {#2-inline-as-a-data-uri}
 
-使用 T1 的內嵌 API，產生一個完全不需要外部擷取、自成一體的 SVG 字串：
+使用內嵌 API，產生一個完全不需要外部擷取、自成一體的 SVG 字串：
 `setImageResolver` 提供原始位元組，而
 `render(g, 'svg', { inlineImages: true })` 會將它們嵌入。
 

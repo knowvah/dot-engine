@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Afbeeldingen
 
@@ -151,7 +151,7 @@ herkomst daar ook op de toelatingslijst staan (zie hieronder).
 
 ### 2. Inlinen als `data:`-URI
 
-Gebruik de inlining-API van T1 om één zelfstandige SVG-string te produceren zonder
+Gebruik de inlining-API om één zelfstandige SVG-string te produceren zonder
 enige externe fetch: `setImageResolver` levert ruwe bytes aan, en
 `render(g, 'svg', { inlineImages: true })` sluit ze in.
 

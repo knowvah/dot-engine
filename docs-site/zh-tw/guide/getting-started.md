@@ -1,5 +1,5 @@
 ---
-sourceHash: a354a8419286d5de8996750df6df057f503adbf322c4d1b993a1c47271b167f6
+sourceHash: a0e726c1265c3ad23449f195fb8803501c8d9fa9d668e955c18ad8e90254c043
 ---
 # 快速入門
 
@@ -33,7 +33,7 @@ TypeScript 原始碼，原始碼與建置結果一併發佈。
 
 ```bash
 git clone https://github.com/knowvah/dot-engine.git
-cd @knowvah/dot-engine
+cd dot-engine
 npm install
 npm run build        # → dist/index.js (ESM bundle, via esbuild) + .d.ts
 ```

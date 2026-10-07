@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Immagini
 
@@ -151,7 +151,7 @@ restrittiva, anche quell'origine deve essere inserita nell'elenco consentito lì
 
 ### 2. Incorporare come URI `data:`
 
-Usa l'API di inlining di T1 per produrre un'unica stringa SVG autonoma, senza
+Usa l'API di inlining per produrre un'unica stringa SVG autonoma, senza
 alcun recupero esterno: `setImageResolver` fornisce i byte grezzi e
 `render(g, 'svg', { inlineImages: true })` li incorpora.
 

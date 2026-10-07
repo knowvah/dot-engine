@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # 이미지 다루기
 
@@ -139,7 +139,7 @@ const { svg } = await renderSvgAsync(
 
 ### 2. `data:` URI로 인라인하기 {#2-inline-as-a-data-uri}
 
-T1의 인라인 처리 API를 사용하면 외부 가져오기가 전혀 없는 하나의 자체 완결형 SVG 문자열을 만들 수
+인라인 처리 API를 사용하면 외부 가져오기가 전혀 없는 하나의 자체 완결형 SVG 문자열을 만들 수
 있습니다. `setImageResolver`가 원시 바이트를 제공하고, `render(g, 'svg', { inlineImages: true })`가
 이를 삽입합니다.
 

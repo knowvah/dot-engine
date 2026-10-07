@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Images
 
@@ -151,7 +151,7 @@ origine doit aussi y être autorisée (voir ci-dessous).
 
 ### 2. Inliner sous forme d’URI `data:`
 
-Utilisez l’API d’inlining de T1 pour produire une chaîne SVG autonome sans aucune
+Utilisez l’API d’inlining pour produire une chaîne SVG autonome sans aucune
 récupération externe : `setImageResolver` fournit les octets bruts, et
 `render(g, 'svg', { inlineImages: true })` les intègre.
 

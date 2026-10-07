@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Bilder
 
@@ -151,7 +151,7 @@ måste den ursprungsadressen tillåtlistas även där (se nedan).
 
 ### 2. Infoga som `data:`-URI
 
-Använd T1:s infognings-API för att skapa en fristående SVG-sträng helt utan
+Använd infognings-API:t för att skapa en fristående SVG-sträng helt utan
 externa hämtningar: `setImageResolver` levererar de råa byten, och
 `render(g, 'svg', { inlineImages: true })` bäddar in dem.
 

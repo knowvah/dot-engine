@@ -230,6 +230,8 @@ acceptance edit required, and no guard-test failure. Engines whose
 all — the class entry is allowed to precede its data (see
 `test/corpus/accepted-divergences-engines.test.ts`).
 
+<a id="a2-text-measurement-font-metrics-label-driven-layout"></a>
+
 ### A2. Text measurement (font metrics) → label-driven layout — CLOSED
 
 **Status (2026-07-01): closed.** No corpus id is accepted under this class

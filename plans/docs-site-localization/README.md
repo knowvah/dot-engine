@@ -138,10 +138,7 @@ pages that embed a component; maintainer docs at
 `docs-site/.vitepress/README.md` (a `docs-site/README.md` would be a page
 every locale must translate); no session-attribution trailer (commits.md).
 
-**Follow-ups (English defects, logged not fixed — stop condition 5):**
-`guide/getting-started.md:34` `cd @knowvah/dot-engine` (clone dir is
-`dot-engine`); `guide/images.md:151` "T1's inlining API" (internal task id);
-`divergences-proc3d-a2.md` A2 anchor no longer exists in English. Fixing
-each will mark that page stale in all 23 locales (banner + status), by
-design. Native-speaker review was out of scope; weakest by translator
+**English defects found during translation:** fixed in a follow-up commit
+(`cd dot-engine`, the T1 task id in images.md, a stable A2 anchor); all 23
+locales updated and re-hashed. Native-speaker review was out of scope; weakest by translator
 self-report: is, et.

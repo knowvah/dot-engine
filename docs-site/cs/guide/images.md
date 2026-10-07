@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Obrázky
 
@@ -151,7 +151,7 @@ CSP, musí být tento původ povolen i tam (viz níže).
 
 ### 2. Vložit jako URI `data:`
 
-Pomocí API pro vkládání z T1 vytvořte jeden samostatný řetězec SVG bez
+Pomocí API pro vkládání vytvořte jeden samostatný řetězec SVG bez
 jakéhokoli externího stahování: `setImageResolver` dodá surové bajty
 a `render(g, 'svg', { inlineImages: true })` je vloží.
 

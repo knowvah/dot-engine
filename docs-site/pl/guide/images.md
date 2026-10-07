@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Obrazy
 
@@ -152,7 +152,7 @@ w CSP, to źródło musi tam również być dopuszczone (zobacz niżej).
 
 ### 2. Osadzenie inline jako URI `data:` {#2-inline-as-a-data-uri}
 
-Użyj API osadzania z T1, by uzyskać jeden samodzielny ciąg SVG bez żadnego
+Użyj API osadzania, by uzyskać jeden samodzielny ciąg SVG bez żadnego
 zewnętrznego pobierania: `setImageResolver` dostarcza surowe bajty,
 a `render(g, 'svg', { inlineImages: true })` je osadza.
 

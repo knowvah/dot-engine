@@ -148,7 +148,7 @@ CSP, that origin must be allow-listed there too (see below).
 
 ### 2. Inline as a `data:` URI
 
-Use T1's inlining API to produce one self-contained SVG string with no
+Use the inlining API to produce one self-contained SVG string with no
 external fetch at all: `setImageResolver` supplies raw bytes, and
 `render(g, 'svg', { inlineImages: true })` embeds them.
 
