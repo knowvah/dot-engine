@@ -78,7 +78,7 @@ with a quarantined case is not complete until it is in the journal.
 | [4](batch-4/overview.md) | fr, hu, is, it, ja (T12–T16) | [x] |
 | [5](batch-5/overview.md) | ko, nl, no, pl, pt-br (T17–T21) | [x] |
 | [6](batch-6/overview.md) | ro, ru, sk, sv, tr (T22–T26) | [x] |
-| [7](batch-7/overview.md) | zh-cn, zh-tw (T27–T28) | [ ] |
+| [7](batch-7/overview.md) | zh-cn, zh-tw (T27–T28) | [x] |
 | [8](batch-8/overview.md) | Closeout: hard goldens coverage, measurements, README, PR (T29) | [ ] |
 
 ## Execution model

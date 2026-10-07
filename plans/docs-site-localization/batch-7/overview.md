@@ -8,8 +8,8 @@ across locales.
 
 | ID | Language | Agents | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T27](T27-translate-zh-cn.md) | Simplified Chinese | 3 Sonnet + orchestrator | `docs-site/zh-cn/**`, `locales/zh-cn.ts`, `locales/goldens/zh-cn.json` | T6 | [ ] |
-| [T28](T28-translate-zh-tw.md) | Traditional Chinese | 3 Sonnet + orchestrator | `docs-site/zh-tw/**`, `locales/zh-tw.ts`, `locales/goldens/zh-tw.json` | T6 | [ ] |
+| [T27](T27-translate-zh-cn.md) | Simplified Chinese | 3 Sonnet + orchestrator | `docs-site/zh-cn/**`, `locales/zh-cn.ts`, `locales/goldens/zh-cn.json` | T6 | [x] |
+| [T28](T28-translate-zh-tw.md) | Traditional Chinese | 3 Sonnet + orchestrator | `docs-site/zh-tw/**`, `locales/zh-tw.ts`, `locales/goldens/zh-tw.json` | T6 | [x] |
 
 Batch done when every locale is committed or quarantined (journaled), and
 `npm run docs:build` passes with all committed locales registered. Record
