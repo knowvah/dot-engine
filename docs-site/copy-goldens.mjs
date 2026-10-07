@@ -136,7 +136,7 @@ export function renderShowcaseIndex(prefix, order, counts, strings) {
     .join('\n');
   const conformance = `[${s.conformanceLabel}](${base}/conformance)`;
   return `---
-title: ${s.indexTitle}
+title: ${yamlScalar(s.indexTitle)}
 ---
 
 # ${s.indexHeading}
@@ -149,12 +149,21 @@ ${fillTemplate(s.indexOutro, { conformance })}
 `;
 }
 
+/**
+ * A front-matter value: plain when YAML reads it back unchanged, else
+ * double-quoted (JSON strings are valid YAML). Translated titles can contain
+ * `: ` (Polish "dot: golden"), which a plain scalar cannot.
+ */
+export function yamlScalar(value) {
+  return /[:#]|^[\s'"{}[\]&*!|>%@`,?-]|\s$/.test(value) ? JSON.stringify(value) : value;
+}
+
 /** Markdown of one engine's showcase page. */
 export function renderEnginePage(engine, count, strings) {
   const s = resolveShowcase(strings);
   const vars = { engine, count };
   return `---
-title: ${fillTemplate(s.engineTitle, vars)}
+title: ${yamlScalar(fillTemplate(s.engineTitle, vars))}
 ---
 
 # ${fillTemplate(s.engineHeading, vars)}
