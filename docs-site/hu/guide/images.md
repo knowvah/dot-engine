@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Képek
 
@@ -153,7 +153,7 @@ CSP-vel rendelkező helyen mutatják, ott is engedélyezni kell azt a származá
 
 ### 2. Beágyazás `data:` URI-ként
 
-Használja a T1 beágyazási API-ját, hogy egyetlen önálló SVG-sztringet állítson
+Használja a beágyazási API-t, hogy egyetlen önálló SVG-sztringet állítson
 elő külső lekérés nélkül: a `setImageResolver` szolgáltatja a nyers bájtokat, a
 `render(g, 'svg', { inlineImages: true })` pedig beágyazza őket.
 

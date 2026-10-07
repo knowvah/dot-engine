@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Obrázky
 
@@ -151,7 +151,7 @@ CSP, tento pôvod musí byť tam tiež povolený (pozri nižšie).
 
 ### 2. Vložiť ako URI `data:` {#2-inline-as-a-data-uri}
 
-Použite inlining API z T1 na vytvorenie jedného samostatného reťazca SVG bez
+Použite inlining API na vytvorenie jedného samostatného reťazca SVG bez
 akéhokoľvek externého načítania: `setImageResolver` dodáva surové bajty
 a `render(g, 'svg', { inlineImages: true })` ich vloží.
 

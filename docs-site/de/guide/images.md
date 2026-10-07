@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Bilder
 
@@ -150,7 +150,7 @@ angezeigt wird, muss dieser Origin dort ebenfalls freigegeben sein (siehe unten)
 
 ### 2. Als `data:`-URI inlinen
 
-Verwenden Sie die Inlining-API aus T1, um einen einzigen, in sich geschlossenen SVG-String
+Verwenden Sie die Inlining-API, um einen einzigen, in sich geschlossenen SVG-String
 ganz ohne externen Abruf zu erzeugen: `setImageResolver` liefert die rohen Bytes, und
 `render(g, 'svg', { inlineImages: true })` bettet sie ein.
 

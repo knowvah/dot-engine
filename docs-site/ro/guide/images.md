@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Imagini
 
@@ -151,7 +151,7 @@ acea origine trebuie să fie pusă pe lista de permisiuni și acolo (vedeți mai
 
 ### 2. Încorporați ca URI `data:`
 
-Folosiți API-ul de încorporare T1 pentru a produce un singur șir SVG autonom, fără
+Folosiți API-ul de încorporare pentru a produce un singur șir SVG autonom, fără
 nicio preluare externă: `setImageResolver` furnizează octeții bruți, iar
 `render(g, 'svg', { inlineImages: true })` îi încorporează.
 

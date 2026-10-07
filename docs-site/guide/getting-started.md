@@ -31,7 +31,7 @@ To build from source instead:
 
 ```bash
 git clone https://github.com/knowvah/dot-engine.git
-cd @knowvah/dot-engine
+cd dot-engine
 npm install
 npm run build        # → dist/index.js (ESM bundle, via esbuild) + .d.ts
 ```

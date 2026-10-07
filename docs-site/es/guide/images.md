@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Imágenes
 
@@ -151,7 +151,7 @@ estricta, ese origen también debe estar en la lista de permitidos allí (ver m�
 
 ### 2. Insertar en línea como URI `data:`
 
-Usa la API de inserción en línea de T1 para producir una única cadena SVG autocontenida, sin
+Usa la API de inserción en línea para producir una única cadena SVG autocontenida, sin
 ninguna descarga externa: `setImageResolver` proporciona los bytes sin procesar y
 `render(g, 'svg', { inlineImages: true })` los incrusta.
 

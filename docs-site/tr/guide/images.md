@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Görseller
 
@@ -148,7 +148,7 @@ bir yerde gösteriliyorsa o kaynak orada da izin listesine alınmalıdır (aşa�
 
 ### 2. `data:` URI'si olarak gömme
 
-Hiç harici getirme olmadan tek bir kendi içinde tam SVG dizgisi üretmek için T1'in gömme
+Hiç harici getirme olmadan tek bir kendi içinde tam SVG dizgisi üretmek için gömme
 API'sini kullanın: `setImageResolver` ham baytları sağlar ve
 `render(g, 'svg', { inlineImages: true })` onları gömer.
 

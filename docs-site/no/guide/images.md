@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # Bilder
 
@@ -151,7 +151,7 @@ CSP, må den opprinnelsen også tillates der (se nedenfor).
 
 ### 2. Bygg inn som `data:`-URI
 
-Bruk T1s innbyggings-API for å produsere én selvstendig SVG-streng uten
+Bruk innbyggings-API-et for å produsere én selvstendig SVG-streng uten
 noen ekstern henting i det hele tatt: `setImageResolver` leverer råbytene, og
 `render(g, 'svg', { inlineImages: true })` bygger dem inn.
 

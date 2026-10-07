@@ -1,5 +1,5 @@
 ---
-sourceHash: 724c941cdb4449b62d97fc99fbcfbbd209d304f41b096bc7948b89c1c51b222b
+sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 ---
 # 画像
 
@@ -143,7 +143,7 @@ const { svg } = await renderSvgAsync(
 
 ### 2. `data:` URI としてインライン化する {#2-inline-as-a-data-uri}
 
-T1 のインライン化 API を使うと、外部取得が一切ない、自己完結した 1 つの SVG 文字列を作れます。
+インライン化 API を使うと、外部取得が一切ない、自己完結した 1 つの SVG 文字列を作れます。
 `setImageResolver` が生のバイト列を供給し、`render(g, 'svg', { inlineImages: true })` がそれを埋め込みます。
 
 ```ts
