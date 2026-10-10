@@ -276,10 +276,9 @@ describe('scrubSvgString: processing instructions', () => {
 });
 
 describe('scrubSvgDocument', () => {
-  it('mutates the given document in place and returns void', () => {
+  it('mutates the given document in place', () => {
     const doc = parser.parseFromString(`${SVG_OPEN}<script/><rect onclick="x()"/>${SVG_CLOSE}`, SVG_MIME);
-    const result: void = scrubSvgDocument(doc);
-    expect(result).toBeUndefined();
+    scrubSvgDocument(doc);
     expect(doc.getElementsByTagName('script').length).toBe(0);
     expect(doc.getElementsByTagName('rect').item(0)?.hasAttribute('onclick')).toBe(false);
   });
