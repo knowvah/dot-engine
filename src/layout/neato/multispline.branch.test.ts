@@ -59,8 +59,8 @@ describe('makeMultiSpline — single boundary-port edge through a real corridor'
     `;
     const svg = renderSvg(dot, 'neato');
     const ds = paths(svg);
-    expect(ds).toEqual([
-      'd="M36,-20.81C36,-20.81 133.69,-8.14 212.3,-4.51 310.11,0 432,-20.81 432,-20.81"',
+    expect(ds).toEqual([ // from native oracle (headless core+dot_layout+neato_layout)
+      'd="M36,-20.81C36,-20.81 157.89,0 255.7,-4.51 334.31,-8.14 432,-20.81 432,-20.81"',
     ]);
   });
 });
