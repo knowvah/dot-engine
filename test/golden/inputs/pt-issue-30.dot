@@ -1,0 +1,6 @@
+digraph g {
+{rank=same; a; b;}
+node [shape=box,label=""];
+a -> b;
+a:e -> b:w;
+}
