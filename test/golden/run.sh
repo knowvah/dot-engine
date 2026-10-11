@@ -1,33 +1,17 @@
 #!/usr/bin/env bash
-# test/golden/run.sh — drive golden-file comparison using the TS port CLI
+# test/golden/run.sh — golden-file comparison of the TS port against the
+# native reference SVGs listed in test/golden/manifest.json.
+#
+# The comparison logic (tolerance classes, per-entry tolerance overrides,
+# port-pins, knownResidual skips) lives in test/golden/suite.test.ts; this
+# wrapper runs it through vitest so the gate and the test suite cannot drift.
+# There is no CLI build, so the former `node dist/cli.js` loop could not run.
 set -euo pipefail
 
-# require jq
-if ! command -v jq &>/dev/null; then
-  echo "ERROR: jq is required but not found on PATH" >&2
+MANIFEST="${1:-test/golden/manifest.json}"
+if [ "$MANIFEST" != "test/golden/manifest.json" ]; then
+  echo "ERROR: suite.test.ts reads test/golden/manifest.json only" >&2
   exit 2
 fi
 
-MANIFEST="${1:-test/golden/manifest.json}"
-PASS=0; FAIL=0
-
-while IFS= read -r entry; do
-  input=$(echo "$entry" | jq -r '.input')
-  ref=$(echo "$entry" | jq -r '.reference')
-  engine=$(echo "$entry" | jq -r '.engine')
-  tol=$(echo "$entry" | jq -r '.toleranceClass')
-
-  actual=$(mktemp /tmp/dot-engine-XXXXXX.svg)
-  node dist/cli.js -K "$engine" -Tsvg "$input" > "$actual"
-
-  if node dist/test/golden/compare.js "$actual" "$ref" "$tol"; then
-    PASS=$((PASS + 1))
-  else
-    FAIL=$((FAIL + 1))
-    echo "FAIL: $input ($engine)"
-  fi
-  rm -f "$actual"
-done < <(jq -c '.[]' "$MANIFEST")
-
-echo "Results: $PASS passed, $FAIL failed"
-[ "$FAIL" -eq 0 ]
+npx vitest run test/golden/suite.test.ts

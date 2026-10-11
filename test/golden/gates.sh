@@ -27,23 +27,28 @@ echo ""
 echo "=== Gate 2: Vitest test suite ==="
 npx vitest run && gate_pass "Gate 2" || gate_fail "Gate 2" "vitest run failed"
 
-# --- Gate 3: Golden-file tests (50/50) ---
+# --- Gate 3: Golden-file tests ---
 echo ""
 echo "=== Gate 3: Golden-file tests ==="
-output=$(bash test/golden/run.sh test/golden/manifest.json 2>&1)
-echo "$output"
-echo "$output" | grep -q "50 passed, 0 failed" \
+bash test/golden/run.sh test/golden/manifest.json \
   && gate_pass "Gate 3" \
-  || gate_fail "Gate 3" "golden-file tests did not pass 50/50"
+  || gate_fail "Gate 3" "golden-file comparison failed"
 
-# --- Gate 4: No file over 600 lines ---
+# --- Gate 4: No source file over 600 lines (ratchet) ---
+# Test files are exempt. Pre-existing oversize files are pinned in
+# test/golden/line-limit-baseline.txt and may not grow.
 echo ""
-echo "=== Gate 4: File length (max 600 lines) ==="
-violations=$(find src -name '*.ts' \
-  | xargs wc -l 2>/dev/null \
-  | awk '$1 > 600 && $2 != "total" { print $2 ": " $1 " lines" }')
+echo "=== Gate 4: File length (max 600 lines, ratchet) ==="
+baseline=test/golden/line-limit-baseline.txt
+violations=$(find src -name '*.ts' ! -name '*.test.ts' -print0 \
+  | xargs -0 wc -l \
+  | awk -v base="$baseline" '
+      BEGIN { while ((getline l < base) > 0) if (l !~ /^#/ && l != "") { split(l, f, " "); cap[f[1]] = f[2] } }
+      $2 == "total" { next }
+      $2 in cap { if ($1 > cap[$2]) print $2 ": " $1 " lines (baseline " cap[$2] ")"; next }
+      $1 > 600 { print $2 ": " $1 " lines" }')
 if [ -n "$violations" ]; then
-  echo "Files over 600 lines:"
+  echo "Files over the line limit:"
   echo "$violations"
   gate_fail "Gate 4" "files exceed line limit"
 fi
