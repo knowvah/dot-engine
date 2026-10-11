@@ -3,6 +3,8 @@
 
 import type { Point, Poly, Edge } from './types.js';
 import { solve3 } from './solvers.js';
+import { fma } from '../common/fma.js';
+import { libmHypot } from '../common/libm-hypot.js';
 
 const EPSILON1 = 1e-3;
 const EPSILON2 = 1e-6;
@@ -18,19 +20,36 @@ class RouteHelper {
   static B1(t: number): number { const u = 1-t; return 3*t*u*u; }
   static B2(t: number): number { const u = 1-t; return 3*t*t*u; }
   static B3(t: number): number { return t*t*t; }
-  static B01(t: number): number { const u = 1-t; return u*u*(u+3*t); }
-  static B23(t: number): number { const u = 1-t; return t*t*(3*u+t); }
+  /** @see lib/pathplan/route.c:B01 */
+  static B01(t: number): number {
+    const u = 1-t;
+    // clang -ffp-contract=on: fmadd at route.c:488 (`tmp + 3*t`)
+    return (u*u) * fma(3, t, u);
+  }
+  /** @see lib/pathplan/route.c:B23 */
+  static B23(t: number): number {
+    const u = 1-t;
+    // clang -ffp-contract=on: fmadd at route.c:494 (`3*tmp + t`)
+    return (t*t) * fma(3, u, t);
+  }
 
+  /** @see lib/pathplan/route.c:normv */
   static normv(v: Point): Point {
-    const d = v.x*v.x + v.y*v.y;
+    // clang -ffp-contract=on: fmadd at route.c:413 (v.x*v.x fused, v.y*v.y rounded)
+    const d = fma(v.x, v.x, v.y*v.y);
     if (d > 1e-6) { const s = Math.sqrt(d); return { x: v.x/s, y: v.y/s }; }
     return v;
   }
   static ptAdd(a: Point, b: Point): Point { return { x: a.x+b.x, y: a.y+b.y }; }
   static ptSub(a: Point, b: Point): Point { return { x: a.x-b.x, y: a.y-b.y }; }
   static ptScale(p: Point, c: number): Point { return { x: p.x*c, y: p.y*c }; }
-  static ptDot(a: Point, b: Point): number { return a.x*b.x + a.y*b.y; }
-  static ptDist(a: Point, b: Point): number { return Math.hypot(a.x-b.x, a.y-b.y); }
+  /** @see lib/pathplan/route.c:dot */
+  static ptDot(a: Point, b: Point): number {
+    // clang -ffp-contract=on: fmadd at route.c:459 (p1.x*p2.x fused, p1.y*p2.y rounded)
+    return fma(a.x, b.x, a.y*b.y);
+  }
+  /** @see lib/pathplan/route.c:dist (libm hypot, no contraction) */
+  static ptDist(a: Point, b: Point): number { return libmHypot(a.x-b.x, a.y-b.y); }
   static distN(pts: Point[]): number {
     let rv = 0;
     for (let i = 1; i < pts.length; i++) rv += RouteHelper.ptDist(pts[i], pts[i-1]);
@@ -156,8 +175,13 @@ class RouteHelper {
       x0 += RouteHelper.ptDot(tnas[i].a[0], tmp);
       x1 += RouteHelper.ptDot(tnas[i].a[1], tmp);
     }
-    const det01 = c00*c11 - c01*c01;
-    const detX1 = x0*c11 - x1*c01, det0X = c00*x1 - c01*x0;
+    // C's c[1][0] is a copy of c[0][1] (route.c:174), so c10 == c01 here.
+    // clang -ffp-contract=on: fnmul+fmadd at route.c:181 (c00*c11 fused, c10*c01 rounded)
+    const det01 = fma(c00, c11, -(c01*c01));
+    // clang -ffp-contract=on: fnmul+fmadd at route.c:182 (c00*x1 fused, c01*x0 rounded)
+    const det0X = fma(c00, x1, -(c01*x0));
+    // clang -ffp-contract=on: fnmul+fmadd at route.c:183 (x0*c11 fused, x1*c01 rounded)
+    const detX1 = fma(x0, c11, -(x1*c01));
     if (Math.abs(det01) >= 1e-6) { scale0 = detX1/det01; scale3 = det0X/det01; }
     if (Math.abs(det01) < 1e-6 || scale0 <= 0 || scale3 <= 0) {
       const d = RouteHelper.ptDist(inps[0], inps[n-1]) / 3;
@@ -179,6 +203,27 @@ class RouteHelper {
     return tnas;
   }
 
+  /**
+   * The max-deviation split of `reallyroutespline` (route.c:130-143): the
+   * interior polyline point farthest from the fitted bezier.
+   *
+   * Faithful contract. On a geometrically symmetric channel two interior
+   * deviations tie to within an ulp, so the split point (and the whole
+   * spline) is decided by C's exact arithmetic, which this mirrors bit for
+   * bit against the native arm64 oracle:
+   * - `dist` is libm `hypot` (route.c:448) -> `libmHypot` via `ptDist`;
+   * - the test is C's strict `(d = dist(p, inps[i])) > maxd` (route.c:139),
+   *   so an exact tie keeps the first index;
+   * - clang's default `-ffp-contract=on` fuses the bezier eval at
+   *   route.c:137-138 as `fma(B3,p2, fma(B2,cp2, fma(B0,p1, B1*cp1)))`; the
+   *   B0..B3 weights and cp1/cp2 (route.c:130-131) are not fused. Fusing the
+   *   other product first is NOT equivalent (flips pt-issue-23-w9 and 32).
+   * C is therefore not translation-equivariant on such ties (the winner
+   * depends on absolute-coordinate rounding), and neither is this port.
+   * This supersedes the former tolerant tie-break (accepted divergence A3).
+   * Contraction map: .agent-notes/pathplan-fma-contraction-map.md.
+   * @see lib/pathplan/route.c:reallyroutespline
+   */
   static findMaxDev(inps: Point[], tnas: Tna[], ends: SplineEndpoints): number {
     const { p0, v0, p1, v1 } = ends;
     const cp1 = RouteHelper.ptAdd(p0, RouteHelper.ptScale(v0, 1/3));
@@ -186,27 +231,14 @@ class RouteHelper {
     let maxi = -1, maxd = -1;
     for (let i = 1; i < inps.length - 1; i++) {
       const t = tnas[i].t;
-      const px = RouteHelper.B0(t)*p0.x + RouteHelper.B1(t)*cp1.x + RouteHelper.B2(t)*cp2.x + RouteHelper.B3(t)*p1.x;
-      const py = RouteHelper.B0(t)*p0.y + RouteHelper.B1(t)*cp1.y + RouteHelper.B2(t)*cp2.y + RouteHelper.B3(t)*p1.y;
+      const b0 = RouteHelper.B0(t), b1 = RouteHelper.B1(t);
+      const b2 = RouteHelper.B2(t), b3 = RouteHelper.B3(t);
+      // clang -ffp-contract=on: fmadd at route.c:137 (x3; B1*cp1.x rounded first)
+      const px = fma(b3, p1.x, fma(b2, cp2.x, fma(b0, p0.x, b1*cp1.x)));
+      // clang -ffp-contract=on: fmadd at route.c:138 (x3; B1*cp1.y rounded first)
+      const py = fma(b3, p1.y, fma(b2, cp2.y, fma(b0, p0.y, b1*cp1.y)));
       const d = RouteHelper.ptDist({ x: px, y: py }, inps[i]);
-      // C `reallyroutespline` uses strict `if (d > maxd)`. On a geometrically
-      // SYMMETRIC channel the two interior deviations are an exact tie, and the
-      // winner is then decided by ~1e-14 cancellation noise in the
-      // absolute-coordinate bezier eval above — whose sign depends on absolute
-      // position. So C is NOT consistent: it splits two translation-congruent
-      // arcs toward opposite corners (e.g. 2368 `376->76` mirrors `256->436`),
-      // because Apple's macOS libm `hypot` (which generated the oracle) is a
-      // proprietary ~1-ULP-divergent implementation that no portable hypot
-      // reproduces. We deliberately keep the tolerant tie-break: a true tie
-      // always resolves to the first index, so the port is TRANSLATION-
-      // EQUIVARIANT (same channel anywhere -> same spline). This matches C where
-      // C's noise also keeps-first (#241_0 5:ne->8:nw, and the cnt=3 oracle
-      // case) and consciously diverges where C's noise keeps-second (2368
-      // `376->76`, the lone surviving residual: structural-match, maxΔ ~10pt on
-      // one flat-edge arc). See .agent-notes/2368-residual-flat-label-ranksep.md
-      // and the pow precedent (src/common/arm-pow.ts) for the same Apple-libm
-      // boundary. @see lib/pathplan/route.c:reallyroutespline (max-deviation split)
-      if (d > maxd * (1 + 1e-10) + 1e-10) { maxd = d; maxi = i; }
+      if (d > maxd) { maxd = d; maxi = i; }
     }
     return maxi;
   }

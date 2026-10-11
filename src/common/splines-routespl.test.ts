@@ -1,26 +1,24 @@
 // SPDX-License-Identifier: EPL-2.0
 /**
- * Translation-equivariance of routeSplines (the shared box-channel spline
- * fitter). A shortest-path funnel + bezier fit is translation-invariant, so a
- * faithful port MUST be translation-EQUIVARIANT: feeding routeSplines a box
- * channel and the same channel shifted by a constant must yield outputs that
- * differ only by that constant.
+ * Max-deviation knot of routeSplines (the shared box-channel spline fitter) on
+ * the #241_0 non-adjacent flat edge `5:ne->8:nw`.
  *
- * The #241_0 non-adjacent flat edge `5:ne->8:nw` exposed a violation: its box
- * channel is geometrically symmetric about its mid-x, so the bezier fitter's
- * max-deviation split (routeSpline -> findMaxDev) hits an EXACT geometric tie
- * between the two interior points. C resolves the tie deterministically (strict
- * `>` keeps the first/tail), but the port's absolute-coordinate deviation eval
- * carries ~1e-14 catastrophic-cancellation noise whose sign depends on absolute
- * x, so the knot mirrors to the head side at this edge's actual frame.
+ * The channel is geometrically symmetric about its mid-x, so the bezier
+ * fitter's max-deviation split (routeSpline -> findMaxDev) sees two interior
+ * points whose deviations tie to within one ulp. C's own arithmetic decides
+ * that tie: strict `d > maxd` (route.c:139), libm `hypot` for `dist`
+ * (route.c:448) and clang's fused bezier eval at route.c:137-138. The port
+ * mirrors all three bit for bit (.agent-notes/pathplan-fma-contraction-map.md),
+ * so, like C, the result depends on absolute coordinates: the fitter is NOT
+ * translation-equivariant on such ties, and the knot must be checked in the
+ * frame C routes in. The former premises of this file (a "+27 port frame" and
+ * a tolerant tie-break that restored equivariance) are stale: the port now
+ * routes this edge in C's frame (route start x=375.0169...).
  *
- * The fix (T2) makes the findMaxDev tie-break tolerant so a true tie always
- * resolves to the first index, matching C and restoring equivariance.
- *
- * Channel + ports below were captured from `routeSplines` during a native dot
- * render of tests/241_0.dot (see plans/nonadjacent-flat-5ne8nw/
- * findings-mirror-mechanism.md). C ground truth: knot lands TAIL-side
- * (internal x=405 in C frame = 432 in the port frame, which is +27).
+ * Channel + ports below were captured from `routeSplines` during a render of
+ * tests/241_0.dot (see plans/nonadjacent-flat-5ne8nw/
+ * findings-mirror-mechanism.md) and are re-based to C's frame by C_FRAME_DX.
+ * C ground truth: the knot lands TAIL-side at internal x=405.
  *
  * @see lib/common/routespl.c:routesplines
  * @see lib/pathplan/route.c:reallyroutespline (the max-deviation tie-break)
@@ -32,7 +30,8 @@ import type { Box } from '../model/geom.js';
 import type { Path } from './types.js';
 import { routeSplines } from './splines-routespl.js';
 
-// The captured `5:ne->8:nw` channel (port frame). [ll.x, ll.y, ur.x, ur.y].
+// The captured `5:ne->8:nw` channel as originally recorded (+27 from C's
+// frame). [ll.x, ll.y, ur.x, ur.y].
 const CHANNEL: ReadonlyArray<readonly [number, number, number, number]> = [
   [351, 0, 423, 36], [351, 36, 432, 54], [351, 54, 639, 72],
   [558, 36, 639, 54], [567, 0, 639, 36],
@@ -56,31 +55,20 @@ function channelPath(dx: number): Path {
   return { start, end, nbox: boxes.length, boxes, data: null };
 }
 
-// Midpoint of the (symmetric) endpoints in the port frame.
-const MID_X = (START.x + END.x) / 2; // ~495
-const SHIFT = 27;
+/** Shift that re-bases the recorded constants into C's routing frame. */
+const C_FRAME_DX = -27;
 
-describe('routeSplines translation-equivariance (#241_0 5:ne->8:nw)', () => {
-  // Green since T2: the tolerant findMaxDev tie-break restores equivariance.
-  it('is translation-equivariant: routeSplines(channel+27) === routeSplines(channel)+27', () => {
-    const psA = routeSplines(channelPath(0));
-    const psB = routeSplines(channelPath(SHIFT));
-    expect(psA).not.toBeNull();
-    expect(psB).not.toBeNull();
-    expect(psB!.length).toBe(psA!.length);
-    for (let i = 0; i < psA!.length; i++) {
-      expect(psB![i].x - SHIFT).toBeCloseTo(psA![i].x, 9);
-      expect(psB![i].y).toBeCloseTo(psA![i].y, 9);
-    }
-  });
+// Midpoint of the (symmetric) endpoints in C's frame.
+const MID_X = (START.x + END.x) / 2 + C_FRAME_DX; // ~468
 
-  it('places the two-bezier knot on the TAIL side (matching native dot)', () => {
-    const ps = routeSplines(channelPath(0));
+describe('routeSplines max-deviation knot (#241_0 5:ne->8:nw)', () => {
+  it("places the two-bezier knot on the TAIL side in C's frame (matching native dot)", () => {
+    const ps = routeSplines(channelPath(C_FRAME_DX));
     expect(ps).not.toBeNull();
     // 7 control points = two cubic beziers; ps[3] is the join (knot).
     expect(ps!.length).toBe(7);
-    // C frame knot x=405 (tail) -> port frame 432; bug value was 558 (head).
-    expect(ps![3].x).toBeCloseTo(432, 3);
+    // C knot x=405 (tail side of MID_X).
+    expect(ps![3].x).toBeCloseTo(405, 3);
     expect(ps![3].x).toBeLessThan(MID_X);
   });
 });
