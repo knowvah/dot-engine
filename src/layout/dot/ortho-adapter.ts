@@ -58,7 +58,9 @@ function buildNodes(nodeArr: Node[]): OrthoNodeArr {
  * parallel multi-edge) is skipped. This is ortho's own concentrate mechanism,
  * distinct from class2's `edge_type == IGNORED` marking, and the keep-first
  * decision depends on this iteration order matching C's.
- * Self-loops (tail === head) are routed elsewhere and excluded here.
+ * Self-loops (tail === head) are gathered like any other edge; orthoEdges
+ * routes them via addLoop. Only Concentrate dedup skips edges.
+ * @see lib/ortho/ortho.c:orthoEdges
  * @see lib/ortho/ortho.c:1207-1228 (orthoEdges edge gather + Concentrate PS)
  */
 function buildEdges(
@@ -74,7 +76,6 @@ function buildEdges(
     const oes = outIndex.get(n);
     if (oes === undefined) continue;
     for (const e of oes) {
-      if (e.tail === e.head) continue;
       if (concentrate) {
         const ti = e.tail.id;
         const hi = e.head.id;
@@ -103,7 +104,7 @@ function buildEdges(
   return result;
 }
 
-/** Build an OrthoGraph from the dot Graph (tail≠head edges only). */
+/** Build an OrthoGraph from the dot Graph (every out-edge, self-loops included). */
 export function buildOrthoGraph(g: Graph): OrthoGraph {
   const nodeArr = nodesInSeq(g);
   const orthoNodes = buildNodes(nodeArr);
