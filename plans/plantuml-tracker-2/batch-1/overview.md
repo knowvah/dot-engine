@@ -9,7 +9,7 @@ a time — never while another task is editing `src/`.
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
 | T1 | Map clang FMA contractions in `route.c`/`solvers.c` (research only) | cpp-pro | `.agent-notes/pathplan-fma-contraction-map.md` | T0 | [ ] |
-| T2 | Issue 27: reject `node/edge/graph { }` | typescript-pro | `src/parser/dot.pegjs`, `src/parser/parser.test.ts`, `test/golden/pt-issue-27.test.ts` | T0 | [ ] |
+| T2 | Issue 27: reject `node/edge/graph { }` | typescript-pro | `src/parser/dot.pegjs`, `src/parser/parser.test.ts`, `test/golden/pt-issue-27.test.ts` | T0 | [x] |
 | T3 | Issue 28: flat edge honours `splines=line/polyline` | typescript-pro | `src/layout/dot/splines-flat.ts`, `splines-flat-multi.ts`, `edge-route.ts` (+ their tests), `test/golden/pt-issue-28.test.ts` | T0 | [ ] |
 | T4 | Issue 29: ortho self-loop | typescript-pro | `src/ortho/index.ts`, `src/ortho/sgraph.ts` (+ their tests), `test/golden/pt-issue-29.test.ts`, `.agent-notes/pt29-ortho-loop.md` | T0 | [ ] |
 
