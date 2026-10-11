@@ -17,6 +17,10 @@ gate_fail() {
   exit 1
 }
 
+# The parser is generated from src/parser/dot.pegjs and untracked; npx tsc /
+# npx vitest bypass the npm pre-hooks that regenerate it, so do it here.
+npm run --silent parser:regen
+
 # --- Gate 1: TypeScript type check ---
 echo ""
 echo "=== Gate 1: TypeScript type check ==="
