@@ -19,6 +19,7 @@ import {
   triangulate,
 } from "./index.js";
 import type { Point, Poly, Edge } from "./index.js";
+import { solve3 } from "./solvers.js";
 
 function pt(x: number, y: number): Point { return { x, y }; }
 function ptEq(a: Point, b: Point): boolean {
@@ -235,5 +236,62 @@ describe("obsPath / POLYID_UNKNOWN", () => {
   it("returns at least 2 points", () => {
     const path = openRoute(pt(0, 5), pt(10, 5), POLYID_UNKNOWN, POLYID_UNKNOWN);
     expect(path.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+// ─── solve3 (solvers.c) — clang fma contraction ─────────────────────────────
+// The native oracle's libpathplan is built by clang with the default
+// -ffp-contract=on, which fuses five expressions in solvers.c (lines 41, 43,
+// 46, 80, 85). Expected values are what the ORACLE dylib's exported solve3
+// returns on the same inputs; toEqual compares doubles exactly. Contraction
+// map: .agent-notes/pathplan-fma-contraction-map.md.
+
+function solve3Of(coeff: number[]): number[] {
+  const roots = [0, 0, 0];
+  const n = solve3(coeff.slice(), roots);
+  return n === 4 ? [4] : [n, ...roots.slice(0, n)];
+}
+
+describe("solve3 / clang fma contraction", () => {
+  it("2646 edge2575: the fused discriminant (solvers.c:43) keeps one root", () => {
+    // Captured from the oracle on tests/2646.dot (final routesplines leg of
+    // edge2575): points2coeff's cubic for the barrier the spline is tangent
+    // to. Strict IEEE gives disc < 0 and three roots, a spurious one at
+    // t = 0.99999998708 inside [0, 1].
+    const got = solve3Of([85.90000000000009, -687.5964425284483,
+      1117.4928850568963, -515.7964425284481]);
+    expect(got).toEqual([1, 0.1665385662198754]);
+  });
+
+  // Each case below differs from the oracle if ONLY the named site is
+  // evaluated strictly (the other fused sites kept).
+  it("fuses 2*b_over_3a*p into q (solvers.c:41)", () => {
+    const got = solve3Of([9.690728187561035, -9.8750638961792,
+      5.217271372675896, -2.949957847595215]);
+    expect(got).toEqual([1, 1.2250131745648647]);
+  });
+
+  it("fuses q*q into disc (solvers.c:43)", () => {
+    const got = solve3Of([-777.3227691650391, -59.22502279281616,
+      462.66627311706543, -267.9731845855713]);
+    expect(got).toEqual([1, -0.9929523684946855]);
+  });
+
+  it("fuses -disc + q*q in the three-real-roots branch (solvers.c:46)", () => {
+    const got = solve3Of([87.5338077545166, -89.99056816101074,
+      -71.88581824302673, 69.52203512191772]);
+    expect(got).toEqual([3, 1.2745001521884785, -1.1214296782932105, 0.8809300141077625]);
+  });
+
+  it("solve2 fall-through fuses b2a*b2a - c/a (solvers.c:80)", () => {
+    const got = solve3Of([93.9143419265747, 40.119004249572754,
+      3.6244630813598633, 3.261071443557739e-8]);
+    expect(got).toEqual([2, -3.362108925262225, -7.706842074928538]);
+  });
+
+  it("solve2 fall-through fuses -2*b2a - roots[0] (solvers.c:85)", () => {
+    const got = solve3Of([76.5833854675293, -622.8585243225098,
+      931.9186806678772, -3.9134967327117916e-8]);
+    expect(got).toEqual([2, 0.5059322147444226, 0.1624292391499519]);
   });
 });
