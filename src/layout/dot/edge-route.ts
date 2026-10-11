@@ -33,7 +33,7 @@ import { ShapeKind, type ShapeDesc } from '../../common/types.js';
 import {
   collectNonAdjacentFlatGroup, routeFlatEdgeGroupFaithful,
 } from './splines-flat-multi.js';
-import { makeFlatLabeledEdge, makeAdjFlatNoPortEdge } from './splines-flat-labeled.js';
+import { makeFlatLabeledEdge, makeAdjFlatNoPortEdge, isAdjFlatCandidate } from './splines-flat-labeled.js';
 import { edgeType, swapEndsP, swapEdgeSpline, getMainEdge } from './splines.js';
 import { FLATORDER } from './fastgr.js';
 import { IGNORED } from './rank.js';
@@ -312,9 +312,18 @@ function isAdjacentPortFlat(e: GraphEdge, g: Graph): boolean {
     && isFlatAdjacent(g, e) && hasDefinedPort(e);
 }
 
-/** True when x is an unrouted adjacent same-rank flat edge with a port. */
+/** True when x is an unrouted adjacent same-rank flat edge (port or not): C
+ *  groups by main edge only, so a port-less sibling joins the aux call. */
 function isGroupableFlat(x: GraphEdge, g: Graph): boolean {
-  return x.info.spl === undefined && isAdjacentPortFlat(x, g);
+  return x.info.spl === undefined && x.tail.info.rank !== undefined
+    && x.tail.info.rank === x.head.info.rank && isFlatAdjacent(g, x);
+}
+
+/** True when a port-less adjacent flat edge shares its group with a ported one:
+ *  C's `ports` flag covers the whole group, so it routes via the aux graph. */
+function joinsPortedFlatGroup(e: GraphEdge, g: Graph): boolean {
+  return isAdjFlatCandidate(e) && isGroupableFlat(e, g)
+    && collectAdjacentFlatGroup(e, g).some(hasDefinedPort);
 }
 
 /**
@@ -410,6 +419,7 @@ function routeFlatEdge(e: GraphEdge, g: Graph): boolean {
   // above (make_flat_adj_edges → makeSimpleFlatLabels). Both decline for every
   // other edge, so only labeled flats are diverted. @see dotsplines.c:1527-1533
   if (makeFlatLabeledEdge(g, e)) return true;
+  if (joinsPortedFlatGroup(e, g) && routeFaithfulSidePort(e, g)) return true;
   if (makeAdjFlatNoPortEdge(g, e)) return true;
   if ((hasSidePort(e) || isAdjacentPortFlat(e, g)) && routeFaithfulSidePort(e, g)) return true;
   // Non-adjacent unlabeled flat with no side port (e.g. a same-rank cross-cluster
