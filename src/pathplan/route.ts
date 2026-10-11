@@ -3,7 +3,7 @@
 
 import type { Point, Poly, Edge } from './types.js';
 import { solve3 } from './solvers.js';
-import { fma } from '../common/fma.js';
+import { fma, fms } from '../common/fma.js';
 import { libmHypot } from '../common/libm-hypot.js';
 
 const EPSILON1 = 1e-3;
@@ -56,9 +56,17 @@ class RouteHelper {
     return rv;
   }
 
+  /**
+   * The cubic's coefficients come out of catastrophic cancellation when the
+   * spline is tangent to a barrier (tests/2646.dot), so clang's contraction
+   * here decides solve3's root count; mirror it exactly.
+   * @see lib/pathplan/route.c:points2coeff
+   */
   static points2coeff(v0: number, v1: number, v2: number, v3: number, c: number[]): void {
-    c[3] = v3 + 3*v1 - (v0 + 3*v2);
-    c[2] = 3*v0 + 3*v2 - 6*v1;
+    // clang -ffp-contract=on: fmadd x2 at route.c:397 (`v3 + 3*v1`, `v0 + 3*v2`; outer sub rounded)
+    c[3] = fma(3, v1, v3) - fma(3, v2, v0);
+    // clang -ffp-contract=on: fmadd at route.c:398 (`3*v0` fused onto rounded `3*v2`, then `- 6*v1` fused)
+    c[2] = fma(-6, v1, fma(3, v0, 3*v2));
     c[1] = 3*(v1 - v0);
     c[0] = v0;
   }
@@ -98,7 +106,8 @@ class RouteHelper {
       const tv = xr[i];
       if (tv >= 0 && tv <= 1) {
         RouteHelper.points2coeff(sps[0].y, sps[1].y, sps[2].y, sps[3].y, sc);
-        const sv = (sc[0] + tv*(sc[1] + tv*(sc[2] + tv*sc[3])) - lc.yc0) / lc.yc1;
+        // clang -ffp-contract=on: fmadd x3 at route.c:360-361 (Horner `sv`; `(sv - ycoeff[0]) / ycoeff[1]` plain)
+        const sv = (fma(tv, fma(tv, fma(tv, sc[3], sc[2]), sc[1]), sc[0]) - lc.yc0) / lc.yc1;
         if (sv >= 0 && sv <= 1) RouteHelper.addRoot(tv, acc);
       }
     }
@@ -108,23 +117,27 @@ class RouteHelper {
   static silGeneral(sps: Point[], lc: LineCoeff, acc: RootAccum): number {
     const sc = [0,0,0,0], xr = [0,0,0];
     const rat = lc.yc1 / lc.xc1;
+    // clang -ffp-contract=on: fmsub x4 at route.c:371-372 (`sps[k].y - rat*sps[k].x`)
     RouteHelper.points2coeff(
-      sps[0].y - rat*sps[0].x, sps[1].y - rat*sps[1].x,
-      sps[2].y - rat*sps[2].x, sps[3].y - rat*sps[3].x, sc);
-    sc[0] += rat*lc.xc0 - lc.yc0;
+      fms(rat, sps[0].x, sps[0].y), fms(rat, sps[1].x, sps[1].y),
+      fms(rat, sps[2].x, sps[2].y), fms(rat, sps[3].x, sps[3].y), sc);
+    // clang -ffp-contract=on: fnmsub at route.c:374 (`rat*xcoeff[0] - ycoeff[0]`; `+=` rounded)
+    sc[0] += fma(rat, lc.xc0, -lc.yc0);
     const xn = solve3(sc, xr);
     if (xn === 4) return 4;
     for (let i = 0; i < xn; i++) {
       const tv = xr[i];
       if (tv >= 0 && tv <= 1) {
         RouteHelper.points2coeff(sps[0].x, sps[1].x, sps[2].x, sps[3].x, sc);
-        const sv = (sc[0] + tv*(sc[1] + tv*(sc[2] + tv*sc[3])) - lc.xc0) / lc.xc1;
+        // clang -ffp-contract=on: fmadd x3 at route.c:383-384 (Horner `sv`; `(sv - xcoeff[0]) / xcoeff[1]` plain)
+        const sv = (fma(tv, fma(tv, fma(tv, sc[3], sc[2]), sc[1]), sc[0]) - lc.xc0) / lc.xc1;
         if (sv >= 0 && sv <= 1) RouteHelper.addRoot(tv, acc);
       }
     }
     return acc.n;
   }
 
+  /** @see lib/pathplan/route.c:splineintersectsline */
   static splineIntersectsLine(sps: Point[], lps: Point[], roots: number[]): number {
     const lc: LineCoeff = {
       xc0: lps[0].x, xc1: lps[1].x - lps[0].x,

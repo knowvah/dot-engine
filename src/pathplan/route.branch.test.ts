@@ -84,6 +84,69 @@ describe('routeSpline — max-deviation split decided by C arithmetic', () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// tests/2646.dot (accepted divergence A8): the final routesplines leg of three
+// smode edges ends ON the corridor's bottom wall with its tangent parallel to
+// it, so every splinefits candidate is tangent to that barrier at t=1 and the
+// intersection cubic has a near-double root. points2coeff builds the cubic by
+// catastrophic cancellation, and the root count then depends on clang's fma
+// contraction in points2coeff (route.c:397-398), splineintersectsline
+// (route.c:360-384) and solve3 (solvers.c:41-46). Inputs and expected outputs
+// were captured from the native oracle's Proutespline (instrumented copy of
+// libpathplan loaded into the unmodified dot; its SVG is byte-identical to
+// the oracle's) and are asserted exactly.
+// ---------------------------------------------------------------------------
+
+/** The 20-vertex rank-box corridor the three 2646 legs route through. */
+function corridor2646(xs: readonly number[], ys: readonly number[]): Edge[] {
+  const [xA, xB, xC, xD, xE, xF] = xs;
+  const [yT, y1, y2, y3, y4, yB] = ys;
+  const R = 373148, L = -585149;
+  const ring = [pt(xA, yT), pt(xA, y1), pt(R, y1), pt(R, y2), pt(xB, y2),
+    pt(xB, y3), pt(R, y3), pt(R, y4), pt(xC, y4), pt(xC, yB), pt(xD, yB),
+    pt(xD, y4), pt(L, y4), pt(L, y3), pt(xE, y3), pt(xE, y2), pt(L, y2),
+    pt(L, y1), pt(xF, y1), pt(xF, yT)];
+  return polyBarriers([{ ps: ring }]);
+}
+
+/** Proutespline's endpoint slopes for these legs (down, then right). */
+const SLOPES_2646: [Point, Point] = [
+  pt(6.123233995736766e-17, -1), pt(1, -1.2246467991473532e-16)];
+const YS_RANK2 = [1926.5000000000002, 1926.0000000000002, 1890.0000000000002,
+  1889.0000000000002, 1853.0000000000002, 1840.1000000000001];
+
+describe('routeSpline — 2646 tangent legs follow clang fma contraction', () => {
+  it('edge2575: one root, no extra a-halving', () => {
+    const bars = corridor2646(
+      [-468573, -468573, -468729, -472781, -472815, -472815], YS_RANK2);
+    const out = routeSpline(bars,
+      [pt(-470791, 1926.0000000000002), pt(-468730, 1840.1000000000001)], SLOPES_2646);
+    expect(out).toEqual([
+      pt(-470791, 1926.0000000000002), pt(-470791, 1868.7002964559629),
+      pt(-468787.29970354406, 1840.1000000000001), pt(-468730, 1840.1000000000001)]);
+  });
+
+  it('edge3905: one root, no extra a-halving', () => {
+    const bars = corridor2646(
+      [-404613, -404599, -405158, -405493, -405579, -405573],
+      [1037.7, 1037.2, 1001.2, 1000.2, 964.2, 951.3]);
+    const out = routeSpline(bars, [pt(-405402, 1037.2), pt(-405159, 951.3)], SLOPES_2646);
+    expect(out).toEqual([
+      pt(-405402, 1037.2), pt(-405402, 1008.5626743610183),
+      pt(-405187.63732563896, 951.3), pt(-405159, 951.3)]);
+  });
+
+  it('edge15467: one root, no extra a-halving', () => {
+    const bars = corridor2646(
+      [115709, 115587, 110481, 106189, 104543, 104236], YS_RANK2);
+    const out = routeSpline(bars,
+      [pt(107390, 1926.0000000000002), pt(110480, 1840.1000000000001)], SLOPES_2646);
+    expect(out).toEqual([
+      pt(107390, 1926.0000000000002), pt(107390, 1883.066753449845),
+      pt(110437.06675344985, 1840.1000000000001), pt(110480, 1840.1000000000001)]);
+  });
+});
+
 describe('routeSpline — degenerate zero-length barrier (silBothZero)', () => {
   it('a point-barrier exactly on a vertical route drives the all-zero x-cubic (xn=4) path', () => {
     // route is a pure vertical line (constant x=0); slopes vertical too,
