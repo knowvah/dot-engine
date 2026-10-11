@@ -255,3 +255,46 @@ describe('HTML label preservation', () => {
     expect(isHtmlValue(g.nodes.get('a')!.attrs.get('label')!)).toBe(false);
   });
 });
+
+// ── attrstmt requires a bracket list ─────────────────────────────────────────
+// lib/cgraph/grammar.y: attrstmt : attrtype optmacroname attrlist
+//                       attrlist : optattr '[' optattrdefs ']'
+// Native `dot` results recorded per construct (GVBINDIR=/tmp/ghl build).
+
+describe('attribute statement requires a bracket list (grammar.y attrlist)', () => {
+  const NATIVE_REJECTED = [
+    'digraph g { node { shape=box } a -> b }', // native: syntax error near '{'
+    'digraph g { edge { } }', // native: syntax error near '{'
+    'digraph g { graph { } }', // native: syntax error near '{'
+    'digraph g { node; a }', // native: syntax error near ';'
+    'digraph g { node }', // native: syntax error near '}'
+    'digraph g { node a }', // native: syntax error near '}'
+    'digraph g { graph; }', // native: syntax error near ';'
+    'digraph g { edge; a->b }', // native: syntax error near ';'
+  ];
+  for (const src of NATIVE_REJECTED) {
+    it(`rejects ${src}`, () => {
+      expect(parseErr(src).code).toBe('SYNTAX_ERROR');
+    });
+  }
+
+  const NATIVE_ACCEPTED = [
+    'digraph g { node [shape=box] a }',
+    'digraph g { node [a=1][b=2] }',
+    'digraph g { subgraph { a } }',
+    'digraph g { { a b } }',
+    'digraph g { graph [rankdir=LR] }',
+    'digraph g { node [] }',
+  ];
+  for (const src of NATIVE_ACCEPTED) {
+    it(`accepts ${src}`, () => {
+      expect(parse(src)).toBeDefined();
+    });
+  }
+
+  it('merges chained bracket groups in order', () => {
+    const out = serialize(parse('digraph g { node [a=1][b=2] }'));
+    expect(out.indexOf('a=1')).toBeGreaterThan(-1);
+    expect(out.indexOf('b=2')).toBeGreaterThan(out.indexOf('a=1'));
+  });
+});

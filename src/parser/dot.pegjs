@@ -57,7 +57,7 @@ Stmt
 // grammar.y: attrtype : T_graph | T_node | T_edge
 // grammar.y: graphattrdefs : attrassignment  (bare key=value at graph level)
 AttrStmt
-  = t:AttrType _ attrs:AttrList
+  = t:AttrType _ attrs:AttrListReq
     { return { type: "attr", target: t, attrs: attrs }; }
   / a:AttrAssignment
     { return { type: "assign", key: a.key, value: a.value }; }
@@ -68,13 +68,14 @@ AttrType
   / NodeKw   { return "node"; }
   / EdgeKw   { return "edge"; }
 
-// grammar.y: optattr : attrlist | /* empty */
-// grammar.y: attrlist : optattr '[' optattrdefs ']'
-AttrList
+// grammar.y: attrlist : optattr '[' optattrdefs ']'   (one or more bracket groups)
+AttrListReq
   = _ "[" _ defs:AttrDefs _ "]" rest:AttrList
     { return defs.concat(rest); }
-  / _ "[" _ defs:AttrDefs _ "]"
-    { return defs; }
+
+// grammar.y: optattr : attrlist | /* empty */
+AttrList
+  = AttrListReq
   / "" { return []; }
 
 // grammar.y: optattrdefs : optattrdefs attrdefs | /* empty */
