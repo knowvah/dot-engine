@@ -1,0 +1,6 @@
+digraph g {
+nodesep=0.486111;
+node [shape=rect,label="",width=0.25,height=0.25];
+a -> b [minlen=0,arrowhead=none,arrowtail=none,label=<<TABLE FIXEDSIZE="TRUE" WIDTH="6" HEIGHT="15"><TR><TD></TD></TR></TABLE>>];
+a -> b [minlen=0,arrowhead=none,arrowtail=none,label=<<TABLE FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="15"><TR><TD></TD></TR></TABLE>>];
+}

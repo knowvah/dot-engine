@@ -1,0 +1,7 @@
+digraph g {
+splines=polyline;
+node [shape=box,label=""];
+{rank=same; a; x; b;}
+a -> x -> b;
+a -> b;
+}

@@ -1,0 +1,7 @@
+digraph g {
+nodesep=0.6;
+ranksep=1;
+node [shape=rect,label="",height=0.611111];
+a -> b [label=<<TABLE FIXEDSIZE="TRUE" WIDTH="80" HEIGHT="14"><TR><TD></TD></TR></TABLE>>];
+a -> b [label=<<TABLE FIXEDSIZE="TRUE" WIDTH="66" HEIGHT="14"><TR><TD></TD></TR></TABLE>>];
+}
