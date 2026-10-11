@@ -1,0 +1,12 @@
+# Pre-existing non-test src files over the 600-line Gate 4 limit, with their
+# line counts when the gate was repaired (2026-10-11). Gate 4 is a ratchet:
+# a listed file may shrink (lower its number here) but must not grow; any
+# unlisted non-test file over 600 lines fails. Test files are exempt, as in
+# the complexity hook.
+src/common/htmltable-pos.ts 601
+src/common/poly-sizing.ts 650
+src/layout/neato/cdt-surface.ts 713
+src/layout/neato/splines.ts 1014
+src/render/json.ts 734
+src/render/map.ts 808
+src/render/svg-helpers.ts 623
