@@ -21,11 +21,11 @@ import { dotRank } from './rank.js';
 import { dotMincross } from './mincross.js';
 import { dotPosition } from './position.js';
 import { dotSameports } from './sameport.js';
-import { dotSplines_, swapEndsP, swapEdgeSpline } from './splines.js';
+import { dotSplines_, swapEndsP, swapEdgeSpline, EDGETYPE_SPLINE } from './splines.js';
 import { makePort } from '../../model/edgeInfo.js';
 import { beginPath } from '../../common/splines-path-begin.js';
 import { endPath } from '../../common/splines-path-end.js';
-import { routeSplines } from '../../common/splines-routespl.js';
+import { routeSplines, routePolylines } from '../../common/splines-routespl.js';
 import { addBox, resolvePort } from '../../common/splines-path-shared.js';
 import { TOP, BOTTOM, FLATEDGE } from '../../common/splines-constants.js';
 import {
@@ -363,8 +363,11 @@ function normalizeCopiedFlatSpline(orig: Edge, auxe: Edge): void {
  * makeSimpleFlat branch are out of scope (callers gate on a side port).
  * @see lib/dotgen/dotsplines.c:make_flat_adj_edges
  */
-export function makeFlatAdjEdges(g: Graph, edges: Edge[], cnt: number, _et: number): number {
+export function makeFlatAdjEdges(g: Graph, edges: Edge[], cnt: number, et: number): number {
   const aux = buildFlatAux(g, edges, cnt);
+  // C setEdgeType(auxg, et); inlined (index.ts's setEdgeType would be an import cycle).
+  // @see lib/dotgen/dotsplines.c:make_flat_adj_edges
+  aux.auxg.info.flags = (aux.auxg.info.flags & ~0xf) | (et & 0xf);
   dotInitNodeEdge(aux.auxg);
   dotRank(aux.auxg);
   if (dotMincross(aux.auxg) !== 0) return 1;
@@ -571,12 +574,11 @@ export function assembleFlatPath(P: Path, tend: PathendT, hend: PathendT, mid: B
  * faithful `beginPath → routeSplines → endPath → clipAndInstall` pipeline.
  * Returns spline control points in graphviz-internal (y-up) coordinates, or
  * null when the edge is not a same-rank edge. Does NOT clip or install — the
- * caller (routeOneEdge) does that via clipAndInstall, mirroring how SR3 wires
- * the regular faithful path.
+ * caller (routeOneEdge) does that via clipAndInstall (as the regular path).
  *
  * @see lib/dotgen/dotsplines.c:make_flat_edge (cnt=1, non-adjacent spline)
  */
-export function routeFlatEdgeFaithful(g: Graph, e: Edge): Point[] | null {
+export function routeFlatEdgeFaithful(g: Graph, e: Edge, et: number): Point[] | null {
   const tn = e.tail;
   const r = tn.info.rank;
   if (g.info.rank === undefined || r === undefined || e.head.info.rank !== r) return null;
@@ -588,11 +590,9 @@ export function routeFlatEdgeFaithful(g: Graph, e: Edge): Point[] | null {
   const hend = makeFlatEndBox({ ctx, P, e, n: e.head, side, ranksep, isBegin: false });
   const stepx = (g.info.nodesep ?? 18) / 2;
   const stepy = flatVspace(g, tn, !bottom) / 2;
-  const tlast = tend.boxes[tend.boxn - 1];
-  const hlast = hend.boxes[hend.boxn - 1];
-  const mid = bottom
-    ? bottomBoxes(tlast, hlast, stepx, stepy, stepy)
-    : topBoxes(tlast, hlast, stepx, stepy, stepy);
+  const [tlast, hlast] = [tend.boxes[tend.boxn - 1], hend.boxes[hend.boxn - 1]];
+  const mid = (bottom ? bottomBoxes : topBoxes)(tlast, hlast, stepx, stepy, stepy);
   assembleFlatPath(P, tend, hend, mid);
-  return routeSplines(P);
+  // @see lib/dotgen/dotsplines.c:1603-1607
+  return et === EDGETYPE_SPLINE ? routeSplines(P) : routePolylines(P);
 }

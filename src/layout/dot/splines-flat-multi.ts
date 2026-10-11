@@ -22,10 +22,12 @@ import type { Edge } from '../../model/edge.js';
 import type { Node } from '../../model/node.js';
 import type { Port, Box } from '../../model/geom.js';
 import type { Path, PathendT } from '../../common/types.js';
-import { routeSplines } from '../../common/splines-routespl.js';
+import { routeSplines, routePolylines } from '../../common/splines-routespl.js';
 import { clipAndInstall } from '../../common/splines-clip.js';
 import { graphRanksep } from './position-aux.js';
 import { buildDotSinfo } from './self-loop.js';
+import { EDGETYPE_LINE, EDGETYPE_SPLINE } from './splines.js';
+import { makeSimpleFlat } from './splines-flat-labeled.js';
 import {
   isFlatAdjacent, makeFlatEndBox, topBoxes, bottomBoxes, flatSide, flatVspace,
   freshFlatPath, assembleFlatPath, flatBboxCtx,
@@ -41,6 +43,8 @@ interface GroupRouteCtx {
   tlast: Box;
   hlast: Box;
   bottom: boolean;
+  /** Edge type: SPLINE routes with routesplines, anything else routepolylines. */
+  et: number;
   stepx: number;
   stepy: number;
   /** Geometric left end node of the channel (lower order). routeSplines yields
@@ -132,7 +136,8 @@ function routeGroupEdge(e: Edge, i: number, c: GroupRouteCtx): boolean {
     ? bottomBoxes(c.tlast, c.hlast, endStepX, endStepY, c.stepy)
     : topBoxes(c.tlast, c.hlast, endStepX, endStepY, c.stepy);
   assembleFlatPath(c.P, copyPathEnd(c.tend), copyPathEnd(c.hend), mid);
-  const pts = routeSplines(c.P);
+  // @see lib/dotgen/dotsplines.c:1603-1607 (et == EDGETYPE_SPLINE ? routesplines : routepolylines)
+  const pts = c.et === EDGETYPE_SPLINE ? routeSplines(c.P) : routePolylines(c.P);
   if (pts === null || pts.length === 0) return false;
   // routeSplines returns points left→right (tend = leftNode). Reverse for an edge
   // whose tail is the right node so the points run tail→head; pass ignoreSwap so
@@ -149,12 +154,20 @@ function routeGroupEdge(e: Edge, i: number, c: GroupRouteCtx): boolean {
  * makeFlatEnd tail+head; for i in 0..cnt-1 route edge i nested by (i+1)*step.
  * Installs spl on every edges[i]; returns true iff all installed. cnt=1 reduces
  * to routeFlatEdgeFaithful (AD-1). `edges` must be group-ordered (collect...).
+ * `et == EDGETYPE_LINE` short-circuits to makeSimpleFlat (C 1535-1537); the
+ * corridor router is routesplines only for EDGETYPE_SPLINE, else routepolylines.
  * @see lib/dotgen/dotsplines.c:make_flat_edge, make_flat_bottom_edges
  */
-export function routeFlatEdgeGroupFaithful(g: Graph, edges: Edge[], cnt: number): boolean {
+export function routeFlatEdgeGroupFaithful(
+  g: Graph, edges: Edge[], cnt: number, et: number,
+): boolean {
   const lead = edges[0];
   if (g.info.rank === undefined || lead.tail.info.rank === undefined
     || lead.head.info.rank !== lead.tail.info.rank) return false;
+  if (et === EDGETYPE_LINE) {
+    makeSimpleFlat(edges, et);
+    return true;
+  }
   // C makefwdedge: build the channel left→right by node order, else the middle
   // box inverts for a right-to-left (tail right of head) flat edge.
   const tailIsLeft = (lead.tail.info.order ?? 0) <= (lead.head.info.order ?? 0);
@@ -179,7 +192,7 @@ export function routeFlatEdgeGroupFaithful(g: Graph, edges: Edge[], cnt: number)
   const stepy = flatVspace(g, leftNode, !bottom) / (cnt + 1);
   const rc: GroupRouteCtx = {
     P, tend, hend, tlast: tend.boxes[tend.boxn - 1], hlast: hend.boxes[hend.boxn - 1],
-    bottom, stepx, stepy, leftNode,
+    bottom, et, stepx, stepy, leftNode,
   };
   for (let i = 0; i < cnt; i++) {
     if (!routeGroupEdge(edges[i], i, rc)) return false;

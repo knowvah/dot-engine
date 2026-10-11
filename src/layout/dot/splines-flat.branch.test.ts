@@ -30,6 +30,7 @@ import type { Box } from '../../model/geom.js';
 import { NORMAL, VIRTUAL } from './fastgr.js';
 import { EDGE_LABEL } from './rank.js';
 import { TOP, BOTTOM } from '../../common/splines-constants.js';
+import { EDGETYPE_SPLINE } from './splines.js';
 import {
   isFlatAdjacent, flatVspace, makeFlatEdge, cloneGraph,
   topBoxes, bottomBoxes, flatSide, assembleFlatPath, freshFlatPath,
@@ -428,7 +429,7 @@ describe('routeFlatEdgeFaithful', () => {
     const a = makeNode(g, 0, 0);
     const b = makeNode(g, 1, 0);
     const e = makeEdge(a, b, g);
-    expect(routeFlatEdgeFaithful(g, e)).toBeNull();
+    expect(routeFlatEdgeFaithful(g, e, EDGETYPE_SPLINE)).toBeNull();
   });
 
   it('returns null when the tail has no rank assigned', () => {
@@ -438,7 +439,7 @@ describe('routeFlatEdgeFaithful', () => {
     const b = makeNode(g, 1, 0);
     const e = makeEdge(a, b, g);
     g.info.rank = [makeRankEntry([b])];
-    expect(routeFlatEdgeFaithful(g, e)).toBeNull();
+    expect(routeFlatEdgeFaithful(g, e, EDGETYPE_SPLINE)).toBeNull();
   });
 
   it('returns null when the head is on a different rank', () => {
@@ -449,7 +450,7 @@ describe('routeFlatEdgeFaithful', () => {
     g.info.rank = [makeRankEntry([a]), makeRankEntry([b])];
     g.info.minrank = 0;
     g.info.maxrank = 1;
-    expect(routeFlatEdgeFaithful(g, e)).toBeNull();
+    expect(routeFlatEdgeFaithful(g, e, EDGETYPE_SPLINE)).toBeNull();
   });
 
   it('a BOTTOM-side port takes the bottom-routing branch without throwing', () => {
@@ -463,7 +464,7 @@ describe('routeFlatEdgeFaithful', () => {
     const e = makeEdge(a, b, g);
     e.info.tail_port = { ...makePort(), side: BOTTOM };
     e.info.head_port = { ...makePort(), side: 0 };
-    expect(() => routeFlatEdgeFaithful(g, e)).not.toThrow();
+    expect(() => routeFlatEdgeFaithful(g, e, EDGETYPE_SPLINE)).not.toThrow();
   });
 });
 

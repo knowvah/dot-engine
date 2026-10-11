@@ -23,6 +23,7 @@ import { parse } from '../../parser/index.js';
 import { GvcContext } from '../../gvc/context.js';
 import { createMeasurer } from '../../common/textmeasure-factory.js';
 import { DOT_LAYOUT_ENGINE } from './index.js';
+import { EDGETYPE_SPLINE, EDGETYPE_LINE, EDGETYPE_PLINE } from './splines.js';
 import { createSvgRenderer } from '../../render/svg.js';
 import { render } from '../../gvc/device.js';
 import {
@@ -52,10 +53,20 @@ const ORACLE_BOT2 = [
   'M42.02,-2.69C45.78,1.08 49.76,0.53 54,-2.69 71.9,-16.3 50.87,-38.87 70,-50.69 91.93,-64.24 106.07,-64.24 128,-50.69 146.9,-39.01 124.67,-16.59 142,-2.69 142.91,-1.96 143.81,-1.35 144.71,-0.87',
   'M42.02,-2.69C45.78,1.08 49.76,0.53 54,-2.69 67.22,-12.74 58.04,-23.19 64,-38.69 68.28,-49.82 65.86,-56.42 76,-62.69 93.39,-73.44 104.61,-73.44 122,-62.69 132.14,-56.42 130.01,-49.93 134,-38.69 139.48,-23.24 129.21,-12.94 142,-2.69 142.91,-1.96 143.81,-1.35 144.71,-0.87',
 ];
+const ORACLE_TOP2_PLINE = [
+  'M42.02,-34.02C42.02,-34.02 69,-48 69,-48 69,-48 129,-48 129,-48 129,-48 138.26,-43.2 145.94,-39.22',
+  'M42.02,-34.02C42.02,-34.02 75,-60 75,-60 75,-60 123,-60 123,-60 123,-60 137.2,-48.81 146.97,-41.12',
+];
+const ORACLE_TOP2_LINE = [
+  'M42.02,-33.02C76.59,-16.63 111.17,-15.16 145.74,-28.6',
+  'M42.02,-33.02C76.59,-49.4 111.17,-50.87 145.74,-37.43',
+];
 const ORACLE_TOP1 = ['M42.02,-34.02C75.03,-67.03 113.59,-69.61 147.48,-41.76'];
 
 /** Lay out the graph, reset the port-bearing flats, route the group, render. */
-function renderGroupSplines(src: string, encTitle: string): string[] {
+function renderGroupSplines(
+  src: string, encTitle: string, et: number = EDGETYPE_SPLINE,
+): string[] {
   const g = parse(src);
   const ctx = new GvcContext(createMeasurer());
   ctx.register(DOT_LAYOUT_ENGINE);
@@ -66,7 +77,7 @@ function renderGroupSplines(src: string, encTitle: string): string[] {
     && (e.info.tail_port.defined || e.info.head_port.defined));
   flats.forEach((e: Edge) => { e.info.spl = undefined; });
   const group = collectNonAdjacentFlatGroup(flats[0], g);
-  expect(routeFlatEdgeGroupFaithful(g, group, group.length)).toBe(true);
+  expect(routeFlatEdgeGroupFaithful(g, group, group.length, et)).toBe(true);
   return edgePaths(render(ctx, g, 'svg'), encTitle);
 }
 
@@ -97,5 +108,16 @@ describe('routeFlatEdgeGroupFaithful — cnt>=2 non-adjacent flats (conformant w
 
   it('cnt=1 reduces to the single-route spline (AD-1, conformant)', () => {
     expect(renderGroupSplines(SRC_TOP1, TITLE_TOP)).toEqual(ORACLE_TOP1);
+  });
+
+  // Native (15.x) `splines=polyline|line` with two identical-port flats:
+  // et != SPLINE routes the corridor with routepolylines; et == LINE fans the
+  // group with makeSimpleFlat. @see dotsplines.c:make_flat_edge 1535-1537, 1603-1607
+  it('et=PLINE top cnt=2: routepolylines, conformant with the oracle', () => {
+    expect(renderGroupSplines(SRC_TOP2, TITLE_TOP, EDGETYPE_PLINE)).toEqual(ORACLE_TOP2_PLINE);
+  });
+
+  it('et=LINE cnt=2: makeSimpleFlat fan, conformant with the oracle', () => {
+    expect(renderGroupSplines(SRC_TOP2, TITLE_TOP, EDGETYPE_LINE)).toEqual(ORACLE_TOP2_LINE);
   });
 });
