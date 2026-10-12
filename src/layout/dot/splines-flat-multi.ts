@@ -8,8 +8,8 @@
  * flat edge between a same-rank node pair into ONE call and NEST their splines:
  * `stepx = Multisep/(cnt+1)`, `stepy = vspace/(cnt+1)`; ONE shared makeFlatEnd
  * tail+head; then edge `i` is offset by `(i+1)*step` on the two END boxes while
- * the MIDDLE box keeps plain `stepy`. cnt=1 reduces to routeFlatEdgeFaithful
- * (`Multisep/2 = nodesep/2`, `(0+1)*step = step`) — identical (AD-1).
+ * the MIDDLE box keeps plain `stepy`. cnt=1 is the single-edge case
+ * of C make_flat_edge (`Multisep/2 = nodesep/2`, `(0+1)*step = step`) (AD-1).
  *
  * The port routes each non-adjacent flat independently at `nodesep/2`, so cnt>=2
  * edges come out identical/overlapping; this module restores the nesting.
@@ -152,8 +152,8 @@ function routeGroupEdge(e: Edge, i: number, c: GroupRouteCtx): boolean {
 /**
  * Faithful make_flat_edge / make_flat_bottom_edges cnt-loop: ONE shared
  * makeFlatEnd tail+head; for i in 0..cnt-1 route edge i nested by (i+1)*step.
- * Installs spl on every edges[i]; returns true iff all installed. cnt=1 reduces
- * to routeFlatEdgeFaithful (AD-1). `edges` must be group-ordered (collect...).
+ * Installs spl on every edges[i]; returns true iff all installed. cnt=1 is the
+ * single-edge case of C make_flat_edge (AD-1). `edges` must be group-ordered (collect...).
  * `et == EDGETYPE_LINE` short-circuits to makeSimpleFlat (C 1535-1537); the
  * corridor router is routesplines only for EDGETYPE_SPLINE, else routepolylines.
  * @see lib/dotgen/dotsplines.c:make_flat_edge, make_flat_bottom_edges

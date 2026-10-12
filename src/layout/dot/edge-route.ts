@@ -377,7 +377,7 @@ function routeFaithfulSidePort(e: GraphEdge, g: Graph): boolean {
   // Non-adjacent flats: C groups identical-port siblings into ONE make_flat_edge
   // call and nests their splines (cnt-loop). Collect the group and route once;
   // the group router clip-installs every sibling, so the main loop skips them.
-  // cnt=1 reduces to the former single routeFlatEdgeFaithful path (AD-1).
+  // cnt=1 is the single-edge case of C make_flat_edge's cnt loop (AD-1).
   // @see lib/dotgen/dotsplines.c:make_flat_edge, make_flat_bottom_edges
   if (sameRank) {
     const group = collectNonAdjacentFlatGroup(e, g);
