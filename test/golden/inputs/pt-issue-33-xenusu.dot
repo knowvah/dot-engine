@@ -1,0 +1,12 @@
+digraph unix {
+nodesep=0.486111;
+ranksep=0.833333;
+remincross=true;
+searchsize=500;
+sh0006 [shape=rect,label="",width=0.663715,height=0.611111,color="#000006"];
+sh0007 [shape=rect,label="",width=0.663715,height=0.611111,color="#000007"];
+sh0006->sh0007[arrowtail=none,arrowhead=none,minlen=1,color="#000008",label=<<TABLE BGCOLOR="#000009" FIXEDSIZE="TRUE" WIDTH="83" HEIGHT="14"><TR><TD></TD></TR></TABLE>>];
+sh0006->sh0007[arrowtail=none,arrowhead=none,minlen=1,color="#00000C",label=<<TABLE BGCOLOR="#00000D" FIXEDSIZE="TRUE" WIDTH="106" HEIGHT="14"><TR><TD></TD></TR></TABLE>>];
+sh0006->sh0007[arrowtail=none,arrowhead=none,minlen=1,color="#000010",label=<<TABLE BGCOLOR="#000011" FIXEDSIZE="TRUE" WIDTH="69" HEIGHT="14"><TR><TD></TD></TR></TABLE>>];
+
+}

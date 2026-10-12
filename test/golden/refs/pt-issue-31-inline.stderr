@@ -1,0 +1,5 @@
+lib/pathplan//Users/scottseely/git/graphviz/lib/pathplan/shortest.c:333: triangulation failed
+lib/pathplan//Users/scottseely/git/graphviz/lib/pathplan/shortest.c:193: destination point not in any triangle
+Error: in routesplines, Pshortestpath failed
+Error: lost a b edge
+Error: lost a b edge

@@ -1,0 +1,5 @@
+digraph g {
+a [height=1.416667];
+a -> b [sametail=t];
+a -> b [sametail=t];
+}
