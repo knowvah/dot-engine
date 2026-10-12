@@ -221,11 +221,14 @@ test('known-failing goldens all exist in the manifest', () => {
   expect(unknown).toEqual([]);
 });
 
+// A ptIssue id is `NN` or `NN-<case>` (one id per `ptIssueTest` case); the
+// leading issue number must name an existing `pt-issue-NN.test.ts`.
 test('known-failing ptIssue ids all match a pt-issue test file', () => {
   const files = new Set(readdirSync(__dirname));
-  const unknown = loadKnownFailing().ptIssue.filter(
-    (id) => !files.has(`pt-issue-${id}.test.ts`),
-  );
+  const unknown = loadKnownFailing().ptIssue.filter((id) => {
+    const issue = /^(\d+)(?:-|$)/.exec(id)?.[1];
+    return issue === undefined || !files.has(`pt-issue-${issue}.test.ts`);
+  });
   expect(unknown).toEqual([]);
 });
 
