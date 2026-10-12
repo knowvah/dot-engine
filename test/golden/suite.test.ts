@@ -8,13 +8,14 @@
  */
 
 import { describe, test, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { renderSvg } from '../../src/index.js';
 import { compareSvg, TOLERANCES } from './compare.js';
 import type { Diff } from './compare.js';
+import { goldenTest, loadKnownFailing } from '../helpers/known-failing.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -211,13 +212,35 @@ test('dot / ldbxtried n0->n1 corridor (lone-before-group edgecmp order)', () => 
 });
 
 // ---------------------------------------------------------------------------
+// Known-failing ratchet: every listed id must name a real test
+// ---------------------------------------------------------------------------
+
+test('known-failing goldens all exist in the manifest', () => {
+  const ids = new Set(manifest.map((e) => e.id));
+  const unknown = loadKnownFailing().goldens.filter((id) => !ids.has(id));
+  expect(unknown).toEqual([]);
+});
+
+test('known-failing ptIssue ids all match a pt-issue test file', () => {
+  const files = new Set(readdirSync(__dirname));
+  const unknown = loadKnownFailing().ptIssue.filter(
+    (id) => !files.has(`pt-issue-${id}.test.ts`),
+  );
+  expect(unknown).toEqual([]);
+});
+
+// ---------------------------------------------------------------------------
 // Golden-file comparison tests: one per manifest entry
 // ---------------------------------------------------------------------------
 
 describe('golden-file SVG comparison', () => {
   for (const entry of manifest) {
-    const run = entry.knownResidual ? test.skip : test;
-    run(`${entry.engine} / ${entry.id}${entry.knownResidual ? ' [cutover residual]' : ''}`, () => {
+    const name = `${entry.engine} / ${entry.id}${entry.knownResidual ? ' [cutover residual]' : ''}`;
+    if (entry.knownResidual) {
+      test.skip(name, () => {});
+      continue;
+    }
+    goldenTest(entry.id, name, () => {
       const dotSource = readFileSync(
         join(process.cwd(), entry.input),
         'utf8',
