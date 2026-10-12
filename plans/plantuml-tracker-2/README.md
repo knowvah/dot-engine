@@ -93,7 +93,7 @@ Commits, ≤72-char subject, no attribution). Merge-commit PR at the end (AD-5).
 | [0](batch-0/overview.md) | T0 setup, baselines, native refs | sequential | [x] |
 | [1](batch-1/overview.md) | T1 contraction map · T2 parser 27 · T3 flat `et` 28 · T4 ortho loop 29 | parallel | [x] |
 | [2](batch-2/overview.md) | T5 faithful `findMaxDev` 23/32/33/35 · T6 flat-adj 30 | parallel | [x] |
-| [3](batch-3/overview.md) | T7 `points2coeff`/`solve3` 2646 → T8 ledgers | sequential | [ ] |
+| [3](batch-3/overview.md) | T7 `points2coeff`/`solve3` 2646 → T8 ledgers | sequential | [x] |
 | [4](batch-4/overview.md) | T9 tracker annotation, final gates, PR | sequential | [ ] |
 
 ## Documents

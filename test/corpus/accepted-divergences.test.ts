@@ -60,7 +60,9 @@ describe('accepted-divergences registry', () => {
   });
 
   it('resolves the documented A-class deltas under the parity scope', () => {
-    expect(matchAccepted('2368', 'dot', 'parity', entries)?.class).toBe('A3');
+    // A3 closed (plantuml-tracker-2 T5, 44aba8a3): 2368 went conformant once
+    // findMaxDev matched C bit for bit — acceptance retired.
+    expect(matchAccepted('2368', 'dot', 'parity', entries)).toBeNull();
     // A4 oracle-bug family (verify-oracle-bug-family, 2026-07-02). 1939 is
     // deliberately ABSENT: it went conformant, so acceptance would be stale.
     // graphs-structs went conformant 2026-07-11 (fix wave: ortho adj-spill,

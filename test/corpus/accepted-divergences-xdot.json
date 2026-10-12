@@ -18,12 +18,6 @@
       "opClass": "edge:pos [numeric]",
       "delta": 0.1,
       "rationale": "Two edge pos coords differ by one unit in the last %.5g place (7518.2 vs 7518.3). SVG matches; the divergence is a %.5g last-place rounding of a value on the boundary from a sub-ULP layout FP difference. Irreducible. A8 class. (Also perf-slow: surveys as timeout; renders these 2 fp diffs when given time.)"
-    },
-    {
-      "id": "linux.i386-b29",
-      "opClass": "edge:pos (self-loop) [numeric]",
-      "delta": 0.1,
-      "rationale": "Self-loop spline pos differs by one unit in the last %.5g place (1475.2 vs 1475.3). hypot/ULP class (Apple libm), matching the 2368/hub-fanin A3 findings - the self-loop control point is computed via hypot whose last bit differs from glibc, amplified by %.5g at the boundary. Irreducible. A3/A8 class."
     }
   ]
 }
