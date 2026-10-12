@@ -1943,11 +1943,23 @@
     "status": "applicable"
   },
   {
+    "id": "2778",
+    "path": "2778.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
     "id": "2782",
     "path": "2782.dot",
     "engine": "dot",
     "status": "quarantined",
     "reason": "malformed"
+  },
+  {
+    "id": "2784",
+    "path": "2784.dot",
+    "engine": "dot",
+    "status": "applicable"
   },
   {
     "id": "2796",
@@ -1968,6 +1980,12 @@
     "status": "applicable"
   },
   {
+    "id": "2834",
+    "path": "2834.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
     "id": "2835",
     "path": "2835.dot",
     "engine": "dot",
@@ -1975,11 +1993,41 @@
     "reason": "multi-graph"
   },
   {
+    "id": "2849",
+    "path": "2849.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "2851",
+    "path": "2851.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "2852",
+    "path": "2852.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
     "id": "2854",
     "path": "2854.dot",
     "engine": "dot",
     "status": "quarantined",
     "reason": "perf"
+  },
+  {
+    "id": "2854_1",
+    "path": "2854_1.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "2855",
+    "path": "2855.dot",
+    "engine": "dot",
+    "status": "applicable"
   },
   {
     "id": "358",
@@ -2000,6 +2048,18 @@
     "status": "applicable"
   },
   {
+    "id": "698066",
+    "path": "698066.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "700813",
+    "path": "700813.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
     "id": "705",
     "path": "705.dot",
     "engine": "dot",
@@ -2008,6 +2068,12 @@
   {
     "id": "813",
     "path": "813.dot",
+    "engine": "dot",
+    "status": "applicable"
+  },
+  {
+    "id": "894589",
+    "path": "894589.dot",
     "engine": "dot",
     "status": "applicable"
   },

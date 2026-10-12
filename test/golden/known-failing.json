@@ -1,1 +1,13 @@
-{ "goldens": [], "ptIssue": [] }
+{
+  "goldens": [
+    "circo-html-label",
+    "dot-html-combined",
+    "dot-html-label",
+    "dot-html-table-styling",
+    "dot-htmltable-grad-linear",
+    "dot-htmltable-grad-radial",
+    "dot-htmltable-rounded-grad",
+    "patchwork-html-label"
+  ],
+  "ptIssue": []
+}
