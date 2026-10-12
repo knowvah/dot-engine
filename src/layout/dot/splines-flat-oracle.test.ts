@@ -5,7 +5,7 @@
  *
  * A flat (same-rank) edge carrying a side-mask port is routed through the
  * faithful `beginPath → routeSplines → endPath → clipAndInstall` pipeline
- * (`routeFlatEdgeFaithful`, splines-flat.ts), wired into `routeForwardEdge`
+ * (`routeFlatEdgeGroupFaithful`, splines-flat-multi.ts), wired into `routeForwardEdge`
  * behind the same `hasSidePort` gate SR3 uses for regular edges.
  *
  * Scope (verified vs dot 15.0.0, .probes/sr5-*.ts, 2026-06-14): C's

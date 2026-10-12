@@ -6,7 +6,7 @@
  * Direct unit tests against the pure geometry helpers (topBoxes,
  * bottomBoxes, flatSide, assembleFlatPath, freshFlatPath, flatBboxCtx,
  * cloneGraph) and the exported dispatch/guard functions (isFlatAdjacent,
- * flatVspace, makeFlatEdge, routeFlatEdgeFaithful, runAuxPipeline,
+ * flatVspace, makeFlatEdge, runAuxPipeline,
  * makeFlatAdjEdges) with hand-built minimal Graph/Node/Edge fixtures — the
  * pattern proven in splines.test.ts / flat.test.ts, kept local here to avoid
  * re-registering another file's `describe`/`it` blocks via cross-import.
@@ -30,11 +30,10 @@ import type { Box } from '../../model/geom.js';
 import { NORMAL, VIRTUAL } from './fastgr.js';
 import { EDGE_LABEL } from './rank.js';
 import { TOP, BOTTOM } from '../../common/splines-constants.js';
-import { EDGETYPE_SPLINE } from './splines.js';
 import {
   isFlatAdjacent, flatVspace, makeFlatEdge, cloneGraph,
   topBoxes, bottomBoxes, flatSide, assembleFlatPath, freshFlatPath,
-  flatBboxCtx, routeFlatEdgeFaithful, makeFlatAdjEdges,
+  flatBboxCtx, makeFlatAdjEdges,
   runAuxPipeline, runAuxSplines,
 } from './splines-flat.js';
 
@@ -416,55 +415,6 @@ describe('makeFlatEdge', () => {
   it('adjacent group dispatches to makeFlatAdjEdges', () => {
     const { g, e } = buildFlatAdjGraph();
     expect(makeFlatEdge(g, {} as never, [e], 1, 0)).toBe(0);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// routeFlatEdgeFaithful — early guards + bottom-routing attempt
-// ---------------------------------------------------------------------------
-
-describe('routeFlatEdgeFaithful', () => {
-  it('returns null when g.info.rank is undefined', () => {
-    const g = makeGraph();
-    const a = makeNode(g, 0, 0);
-    const b = makeNode(g, 1, 0);
-    const e = makeEdge(a, b, g);
-    expect(routeFlatEdgeFaithful(g, e, EDGETYPE_SPLINE)).toBeNull();
-  });
-
-  it('returns null when the tail has no rank assigned', () => {
-    const g = makeGraph();
-    const a = makeNode(g, 0, 0);
-    a.info.rank = undefined;
-    const b = makeNode(g, 1, 0);
-    const e = makeEdge(a, b, g);
-    g.info.rank = [makeRankEntry([b])];
-    expect(routeFlatEdgeFaithful(g, e, EDGETYPE_SPLINE)).toBeNull();
-  });
-
-  it('returns null when the head is on a different rank', () => {
-    const g = makeGraph();
-    const a = makeNode(g, 0, 0);
-    const b = makeNode(g, 0, 1);
-    const e = makeEdge(a, b, g);
-    g.info.rank = [makeRankEntry([a]), makeRankEntry([b])];
-    g.info.minrank = 0;
-    g.info.maxrank = 1;
-    expect(routeFlatEdgeFaithful(g, e, EDGETYPE_SPLINE)).toBeNull();
-  });
-
-  it('a BOTTOM-side port takes the bottom-routing branch without throwing', () => {
-    const g = makeGraph();
-    const a = makeNode(g, 0, 0);
-    const mid = makeNode(g, 1, 0);
-    const b = makeNode(g, 2, 0);
-    g.info.rank = [makeRankEntry([a, mid, b])];
-    g.info.minrank = 0;
-    g.info.maxrank = 0;
-    const e = makeEdge(a, b, g);
-    e.info.tail_port = { ...makePort(), side: BOTTOM };
-    e.info.head_port = { ...makePort(), side: 0 };
-    expect(() => routeFlatEdgeFaithful(g, e, EDGETYPE_SPLINE)).not.toThrow();
   });
 });
 

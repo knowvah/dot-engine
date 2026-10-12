@@ -21,11 +21,10 @@ import { dotRank } from './rank.js';
 import { dotMincross } from './mincross.js';
 import { dotPosition } from './position.js';
 import { dotSameports } from './sameport.js';
-import { dotSplines_, swapEndsP, swapEdgeSpline, EDGETYPE_SPLINE } from './splines.js';
+import { dotSplines_, swapEndsP, swapEdgeSpline } from './splines.js';
 import { makePort } from '../../model/edgeInfo.js';
 import { beginPath } from '../../common/splines-path-begin.js';
 import { endPath } from '../../common/splines-path-end.js';
-import { routeSplines, routePolylines } from '../../common/splines-routespl.js';
 import { addBox, resolvePort } from '../../common/splines-path-shared.js';
 import { TOP, BOTTOM, FLATEDGE } from '../../common/splines-constants.js';
 import {
@@ -421,12 +420,14 @@ export function makeFlatEdge(
   const isAdj = edges.some(e => (e.info.adjacent ?? 0) !== 0);
   if (isAdj) return makeFlatAdjEdges(g, edges, cnt, et);
   // C's labeled-flat dispatch lives in the live router here (AD-3): see
-  // edge-route.ts:routeForwardEdge → makeFlatLabeledEdge. Unlabeled: routeFlatEdgeFaithful.
+  // edge-route.ts:routeForwardEdge → makeFlatLabeledEdge. Unlabeled:
+  // routeFlatEdgeGroupFaithful (splines-flat-multi.ts).
   return 0;
 }
 
 // ---------------------------------------------------------------------------
-// routeFlatEdgeFaithful — faithful side-port routing for a single flat edge
+// Flat-edge routing building blocks shared by routeFlatEdgeGroupFaithful
+// (splines-flat-multi.ts) and makeFlatLabeledEdge.
 // @see lib/dotgen/dotsplines.c:make_flat_edge (non-adjacent, non-labeled,
 //      EDGETYPE_SPLINE: the top-routing branch + make_flat_bottom_edges),
 //      makeFlatEnd / makeBottomFlatEnd
@@ -567,32 +568,4 @@ export function assembleFlatPath(P: Path, tend: PathendT, hend: PathendT, mid: B
   for (let i = 0; i < tend.boxn; i++) addBox(P, tend.boxes[i]);
   for (const b of mid) addBox(P, b);
   for (let i = hend.boxn - 1; i >= 0; i--) addBox(P, hend.boxes[i]);
-}
-
-/**
- * Route a single same-rank (flat) edge carrying a side-mask port through the
- * faithful `beginPath → routeSplines → endPath → clipAndInstall` pipeline.
- * Returns spline control points in graphviz-internal (y-up) coordinates, or
- * null when the edge is not a same-rank edge. Does NOT clip or install — the
- * caller (routeOneEdge) does that via clipAndInstall (as the regular path).
- *
- * @see lib/dotgen/dotsplines.c:make_flat_edge (cnt=1, non-adjacent spline)
- */
-export function routeFlatEdgeFaithful(g: Graph, e: Edge, et: number): Point[] | null {
-  const tn = e.tail;
-  const r = tn.info.rank;
-  if (g.info.rank === undefined || r === undefined || e.head.info.rank !== r) return null;
-  const { bottom, side } = flatSide(e);
-  const ctx = flatBboxCtx(g);
-  const ranksep = graphRanksep(g);
-  const P = freshFlatPath();
-  const tend = makeFlatEndBox({ ctx, P, e, n: tn, side, ranksep, isBegin: true });
-  const hend = makeFlatEndBox({ ctx, P, e, n: e.head, side, ranksep, isBegin: false });
-  const stepx = (g.info.nodesep ?? 18) / 2;
-  const stepy = flatVspace(g, tn, !bottom) / 2;
-  const [tlast, hlast] = [tend.boxes[tend.boxn - 1], hend.boxes[hend.boxn - 1]];
-  const mid = (bottom ? bottomBoxes : topBoxes)(tlast, hlast, stepx, stepy, stepy);
-  assembleFlatPath(P, tend, hend, mid);
-  // @see lib/dotgen/dotsplines.c:1603-1607
-  return et === EDGETYPE_SPLINE ? routeSplines(P) : routePolylines(P);
 }
