@@ -57,10 +57,21 @@ Stmt
 // grammar.y: attrtype : T_graph | T_node | T_edge
 // grammar.y: graphattrdefs : attrassignment  (bare key=value at graph level)
 AttrStmt
-  = t:AttrType _ attrs:AttrListReq
-    { return { type: "attr", target: t, attrs: attrs }; }
+  = t:AttrType _ m:OptMacroName attrs:AttrListReq
+    {
+      // grammar.y:attrstmt calls nomacros() when a macro name is present;
+      // the attributes are still applied unchanged.
+      if (m) console.error("Warning: attribute macros not implemented");
+      return { type: "attr", target: t, attrs: attrs };
+    }
   / a:AttrAssignment
     { return { type: "assign", key: a.key, value: a.value }; }
+
+// grammar.y: optmacroname : atom '=' | /* empty */
+// @see grammar.y:nomacros -- agwarningf("attribute macros not implemented")
+OptMacroName
+  = Atom _ "=" _ { return true; }
+  / "" { return false; }
 
 // grammar.y: attrtype : T_graph | T_node | T_edge
 AttrType
