@@ -76,7 +76,29 @@
       "mcp__serena__insert_before_symbol",
       "mcp__serena__safe_delete_symbol",
       "mcp__serena__rename_symbol",
-      "mcp__serena__find_referencing_symbols"
+      "mcp__serena__find_referencing_symbols",
+      "Bash(rsync *:*)",
+      "Bash(otool *:*)",
+      "Bash(cmake *:*)",
+      "Bash(make *:*)",
+      "Bash(sed *:*)",
+      "Bash(cmp *:*)",
+      "Bash(~/git/graphviz-15/build/cmd/dot/dot *:*)",
+      "Bash(/opt/homebrew/bin/dot *:*)",
+      "Bash(objdump *:*)",
+      "Bash(DOT_BIN=*)",
+      "Bash(CORPUS_ROOT=*)",
+      "Bash(GRAPHVIZ_BUILD=*)",
+      "Bash(BENCH_POOL=*)",
+      "Bash(sh test/corpus/gen-headless-gvbindir.sh*)"
+    ],
+    "deny": [
+      "Bash(git push origin main:*)",
+      "Bash(git push origin HEAD:main:*)",
+      "Bash(npm publish:*)",
+      "Bash(git tag:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)"
     ]
   },
   "hooks": {
@@ -122,7 +144,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '-- COMPACTING: re-read plans/2621-path-structure/README.md + decision-journal.md from disk; verify open task commits --'"
+            "command": "echo '-- COMPACTING: re-read plans/graphviz-16.1-sync/README.md + plans/graphviz-16.1-sync/decision-journal.md from disk; verify open task commits --'"
           }
         ]
       }
