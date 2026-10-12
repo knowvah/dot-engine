@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: EPL-2.0
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -297,4 +297,76 @@ describe('attribute statement requires a bracket list (grammar.y attrlist)', () 
     expect(out.indexOf('a=1')).toBeGreaterThan(-1);
     expect(out.indexOf('b=2')).toBeGreaterThan(out.indexOf('a=1'));
   });
+});
+
+// lib/cgraph/grammar.y: optmacroname : atom '=' | /* empty */
+// attrstmt() calls nomacros() -> agwarningf("attribute macros not implemented")
+// and still applies the attributes. Native rejects a macro name with no list.
+
+describe('attribute macro name (grammar.y optmacroname)', () => {
+  const MACRO_WARNING = 'Warning: attribute macros not implemented';
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  function warningsFor(src: string): { g: ReturnType<typeof parse>; warnings: unknown[] } {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const g = parse(src);
+    return { g, warnings: spy.mock.calls.map((c) => c[0]) };
+  }
+
+  it('node a = [shape=box] applies the attributes and warns once', () => {
+    const { g, warnings } = warningsFor('digraph g { node a = [shape=box] }');
+    expect(g.nodeDefaults.get('shape')).toBe('box');
+    expect(warnings).toEqual([MACRO_WARNING]);
+  });
+
+  it('edge e = [color=red] applies the attributes and warns once', () => {
+    const { g, warnings } = warningsFor('digraph g { edge e = [color=red] }');
+    expect(g.edgeDefaults.get('color')).toBe('red');
+    expect(warnings).toEqual([MACRO_WARNING]);
+  });
+
+  it('graph g = [rankdir=LR] applies the attributes and warns once', () => {
+    const { g, warnings } = warningsFor('digraph g { graph g = [rankdir=LR] }');
+    expect(g.attrs.get('rankdir')).toBe('LR');
+    expect(warnings).toEqual([MACRO_WARNING]);
+  });
+
+  it('accepts a quoted atom as the macro name', () => {
+    const { g, warnings } = warningsFor('digraph g { node "my macro" = [shape=box] }');
+    expect(g.nodeDefaults.get('shape')).toBe('box');
+    expect(warnings).toEqual([MACRO_WARNING]);
+  });
+
+  it('accepts an HTML atom as the macro name', () => {
+    const { g, warnings } = warningsFor('digraph g { node <b> = [shape=box] }');
+    expect(g.nodeDefaults.get('shape')).toBe('box');
+    expect(warnings).toEqual([MACRO_WARNING]);
+  });
+
+  it('accepts whitespace and comments around the macro name', () => {
+    const { g, warnings } = warningsFor(
+      'digraph g { node /* c */ a /* d */ = /* e */ [shape=box] }',
+    );
+    expect(g.nodeDefaults.get('shape')).toBe('box');
+    expect(warnings).toEqual([MACRO_WARNING]);
+  });
+
+  it('does not warn when there is no macro name', () => {
+    const { warnings } = warningsFor('digraph g { node [shape=box] }');
+    expect(warnings).toEqual([]);
+  });
+
+  const NATIVE_REJECTED = [
+    'digraph g { node a = ; }', // native: syntax error near ';'
+    'digraph g { node a = }', // native: syntax error near '}'
+  ];
+  for (const src of NATIVE_REJECTED) {
+    it(`rejects ${src}`, () => {
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      expect(parseErr(src).code).toBe('SYNTAX_ERROR');
+    });
+  }
 });

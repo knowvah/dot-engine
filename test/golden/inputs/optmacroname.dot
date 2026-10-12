@@ -1,0 +1,4 @@
+digraph G {
+  node a = [shape=box];
+  x
+}
