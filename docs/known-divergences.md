@@ -37,7 +37,7 @@ below) is
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 The tooling joins it at report time: `PARITY-dot.md` splits **accepted deltas** from
 the **tracked** backlog, and the rules gate sources its allowlist from it. The
-prose sections below explain each entry (A1 and A3 are live; A2 is closed and
+prose sections below explain each entry (A1 is live; A2, A3 and A8 are closed and
 kept as history); a CI test (`accepted-divergences.test.ts`) enforces that
 every accepted graph still diverges, so this list cannot silently rot.
 
@@ -64,8 +64,8 @@ tolerance** bar instead of a byte bar.
 
 **Affected:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (the iterative,
 spring-model engines). The `dot` engine's *layout* is **not** affected by this
-iterative-model determinism; a separate, narrowly-bounded `dot` spline-routing
-floating-point delta is covered in **A3** below.
+iterative-model determinism; the former `dot` spline-routing floating-point
+deltas (A3, A8) are closed and kept below as history.
 
 > **Scope, historically an unmeasured caveat — now partially measured.** The
 > **main dot-engine SVG survey** (`test/corpus/survey.ts`) is still
@@ -99,7 +99,7 @@ reproduction is **not guaranteed cross-platform**. Topology is preserved; the
 potential divergence is in fine node coordinates.
 
 **Why accepted.** This is a hard constraint of running in JS, not a design choice
-— the same family as A3's Apple-`hypot` sensitivity. There is no way to guarantee
+— the same family as the (since closed) A3/A8 `hypot`/FMA sensitivities. There is no way to guarantee
 bit-identical transcendental/FMA results across all target runtimes, so a byte bar
 would be untestable rather than merely expensive. **Assessing A1** (as opposed to
 just caveating it) required a separate native-engine parity track — built
@@ -402,39 +402,47 @@ the corpus flows through it, so a fix aimed at one string risked regressing
 others for a sub-perceptual reward.
 :::
 
-### A3. `hypot` tie-break in spline routing (`dot`)
+### A3. `hypot` tie-break in spline routing (`dot`) — CLOSED
 
-**Affected:** `dot` graphs with a **geometrically symmetric** edge-routing
-channel — typically a short, symmetric flat-edge arc. Observed example: `2368`,
-which stays at *structural-match* (maxΔ ≈ 10.2 pt on **one** edge, `376->76`).
-The same tie-break also surfaces on a **long** (multi-rank) edge into a
-high-fan-in hub when the corridor is exactly mirror-symmetric: `graphs-b100` /
-`graphs-b104` (identical source) diverge by maxΔ 20 (exactly one rank-row) on the
-single knot of `Node23730->Node23729` — every node position and all upstream
-box/polygon/taut-path structure is byte-identical to C; only `findMaxDev`'s
-~1-ULP choice of which mirror-symmetric interior point becomes the bezier knot
-differs. The short flat-edge form also surfaces as `241_1` (structural-match,
-maxΔ ≈ 2.4 pt) — the divergent sibling of the oracle-pinned `241_0`, which C's
-noise instead keeps-first. The same tie-break produces a labeled 2-cycle
-back-edge slit-corridor split in `2413_1` (structural-match, maxΔ 67.65) and
-`2413_2` (maxΔ ≤99.55 once the T11 swapBezier-reverse fix lands — until then
-the file's reported maxΔ 1922.26 is dominated by an unrelated, separately-
-tracked defect), and a single intra-cluster labeled edge in `graphs-decorate`
-(maxΔ 43.54); in each case the two candidate split corners tie to within
-5.7e-13 (2413 family) / 3e-14 (decorate) of each other before the
-position-dependent Apple `hypot` noise picks a winner. `2371`
-(structural-match, maxΔ 16.8) shows the same fingerprint on two unrelated
-edges (`g[9263]` `r6837mid--r9687mid`, `g[23859]` `r38mid--r8699mid`): the
-port emits the exact control-point-sequence mirror of the oracle on both,
-knot y flipped by an identical Δ16.8 (top/bottom split fractions swapped).
-Its origin is qualified **MEDIUM** confidence rather than the CONFIRMED
-confidence of the other members: `2371` packs ~199 components, which
-decouples pathplan-local coordinates from page coordinates, so the tie could
-not be correlated live to `route.ts:209` across three instrumentation
-attempts; a straight-mode-segmentation or post-clip `recover_slack` origin is
-not fully excluded. Full diagnosis:
-`plans/residual-cleanup/analysis/2371-mirror.md`. Most routed edges are
-unaffected.
+**Status (2026-10-12): closed.** No corpus id is accepted under this class
+any more; the section is retained as historical documentation of the
+mechanism. The former members (`2368`, `graphs-b100`, `graphs-b104`, `241_1`,
+`2413_1`, `2413_2`, `graphs-decorate`, `2371`) are all **`conformant`** in the
+fresh sweep (`test/corpus/parity-probe.json`).
+
+**Mechanism, and what closed it.** The spline fitter (`Proutespline` ->
+`findMaxDev`, `src/pathplan/route.ts`) splits a fitted bezier at the interior
+route point of maximum deviation. On a geometrically symmetric channel the
+candidate deviations differ by ~1 ULP, so the winner is decided by last-bit
+arithmetic. The port had been attributed an irreducible gap ("Apple `hypot`
+matches no portable `hypot`") and compensated with a tolerant,
+translation-equivariant tie-break. That attribution was disproved: the tie is
+decided by C's *exact* arithmetic, which is reproducible. Commit `44aba8a3`
+(`fix(pathplan): split splines at C's max-deviation point bit for bit`) ported
+it: libm `hypot` for the distance (`route.c:448`), C's strict `>` comparison
+(`route.c:139`), and clang's `fp-contract` fusion of the bezier evaluation
+(`route.c:137-138`), the `mkspline` determinants (`route.c:181-183`), `dot`
+(459), `normv` (413), `B01` (488) and `B23` (494). The tolerant tie-break is
+gone; the `241_0` knot is pinned in C's routing frame, because C is not
+translation-equivariant on such ties. This closed `2368`, `2371`, `2413_1`,
+`2413_2`, `graphs-b100`, `graphs-b104` and `graphs-decorate`.
+
+`241_1` was not a `hypot` tie: it was closed by `bdd614d5`
+(`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
+groups every adjacent flat edge sharing a main edge into one
+`make_flat_adj_edges` call and tests for ports across the whole group, so a
+port-less sibling of a ported edge is routed through the aux graph. The port
+split the group by port presence and routed the sibling through
+`makeSimpleFlat`, whose clip lands at a different `bezier_clip` point
+(54.28 vs native 54.46).
+
+Both fixes were verified by fresh corpus sweeps with zero regressions
+(journal rows "T5 land" and "T6 land",
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Evidence before the fix (historical).** `2368` was the reference member.
+Its `376->76` arc split toward the opposite corner from C; the graph and the
+pre-fix C and port paths of that arc are kept for the record.
 
 ::: details Graph definition (`2368.dot`)
 ```dot
@@ -474,60 +482,11 @@ digraph G {
 ```
 :::
 
-**Characterization.** The spline fitter (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) splits a fitted bezier at the interior route point of
-maximum deviation. When the channel is symmetric, the two candidate split points
-are an **exact mathematical tie**, and the winner is then decided by ~1e-14
-floating-point cancellation noise in an absolute-coordinate bezier evaluation
-whose **sign depends on absolute position**.
-
-C's deviation distance is libm `hypot`, and the macOS Apple `hypot` that
-generated the oracle is a proprietary implementation that bit-matches **no**
-portable `hypot` (measured against it on the graphviz coordinate regime, bit-
-identical rates: V8 `Math.hypot` ≈ 63%, a correctly-rounded / Arm-style `hypot`
-≈ 84%, fdlibm `hypot` ≈ 90%, `sqrt(dx²+dy²)` ≈ 94%). Because of that ULP noise
-**C itself is not consistent**: it splits two *translation-congruent* arcs toward
-**opposite** corners. Within `2368` the `376->76` arc is the mirror image of the
-geometrically identical `256->436` arc:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-The entire delta, overlaid (12× zoom on the `376->76` / `to1` arc) — **green = C
-Graphviz, red = @knowvah/dot-engine**. Both are the same shallow down-arc between the
-same node boundaries; they differ by ~1–2 pt at the belly (the mid bezier
-control point), where C's tie broke toward the opposite corner:
-
-![2368 376->76 arc: green = C, red = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Everything else matches within tolerance — same bounding box (608×148), node positions,
-labels, arrowheads, and all other edges. The full renders are visually
-indistinguishable:
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![2368 rendered by C Graphviz](/img/2368-c.png) | ![2368 rendered by @knowvah/dot-engine](/img/2368-port.png) |
-
-The port uses a **translation-equivariant** tie-break (a true tie always resolves
-to the first index), so it draws *every* such arc the same way regardless of
-position — it is self-consistent, and matches C on the arcs where C's noise also
-keeps-first (e.g. `256->436`, and `241_0 5:ne->8:nw`), diverging only where C's
-noise flips the other way (`376->76`). Endpoints, arrowhead target, the other
-edges, all nodes, labels, and the bounding box match within tolerance; only the
-interior control points of the one arc move (~1–2 pt at the belly).
-
-**Why accepted.** Apple's `hypot` is no more reproducible across JS engines and
-CPUs than the FMA/`pow` of **A1** — it is the same portability constraint, just
-in the `dot` spline router. Matching C's *position-dependent* choice would mean
-adopting C's strict tie-break, which lives in a **shared primitive** every routed
-edge flows through: doing so trades the `376->76` match for *new* mismatches on
-the arcs where C lands the other way (it regresses `241_0` and a `cnt=3`
-flat-edge oracle case), a net wash that also sacrifices the port's
-translation-equivariance. So we keep the consistent (equivariant) router. This is
-a bounded, sub-perceptual `dot` delta — not an open bug. Full investigation:
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
 
 ### A4. Oracle in an acknowledged-broken state (the init_rank / pathplan family)
 
@@ -771,65 +730,42 @@ constraint as the control-hull rounding noted in
 
 ---
 
-### A8. `fp-contract`/FMA rounding vs. strict IEEE (`dot`)
+### A8. `fp-contract`/FMA rounding vs. strict IEEE (`dot`) — CLOSED
+
+**Status (2026-10-12): closed.** No corpus id is accepted under this class
+any more; the section is retained as historical documentation. Both known
+instances are **`conformant`**: `2620` (2026-07-11) and `2646` (2026-10-12).
 
 **Class.** clang arm64 compiles the oracle binary with `-ffp-contract=on`,
 fusing selected multiply-add sequences into single FMA instructions; the
-port runs on V8, which performs strict IEEE-754 rounding and cannot emit
-`fma`. On bit-identical inputs the two disagree by 1-2 ULP at whichever
-expression the compiler chose to contract. The port side is always the
-strict-IEEE-754 result; the oracle side is always the FMA-contracted
-result. This is a compiler/runtime portability constraint below C
-source-code semantics, not a logic defect in the port — irreducible without
-emulating clang's specific contraction choices in software. Two instances
-are known, at two different sites, with two different amplification
-mechanisms:
+port runs on V8, which performs strict IEEE-754 rounding. On bit-identical
+inputs the two disagree by 1-2 ULP at whichever expression the compiler
+chose to contract. Two instances were known, at two different sites, with
+two different amplification mechanisms:
 
-- **2646** — the ULP arises inside `Proutespline`'s `points2coeff`/`solve3`
-  cubic solve and directly flips a spline-fitter root count.
-- **2620** — the ULP arises in `poly_init`'s polygon vertex-extent loop
-  (node sizing) and is amplified downstream by `ortho`'s faithful per-relax
+- **2646** — the ULP arose inside `Proutespline`'s `points2coeff`/`solve3`
+  cubic solve and directly flipped a spline-fitter root count.
+- **2620** — the ULP arose in `poly_init`'s polygon vertex-extent loop
+  (node sizing) and was amplified downstream by `ortho`'s faithful per-relax
   int-truncation into an equal-cost maze-corridor tie flip.
 
-**Affected:** `2646` (structural-match, maxΔ 42.09 on 3 of 21,216 edges:
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — all
-record-port `:c->:nb_part` smode long-edge routes). Sibling of **A3**: both
-classes are irreducible floating-point-portability ties inside
-`Proutespline`, but the mechanism is distinct — a compiler `fp-contract`
-artifact, not libm `hypot`.
-
-**What differs.** On all three edges, only the final `routesplines` call (a
-straight leg into the head port) diverges. Its endpoint lies bit-exactly on
-the barrier polygon's bottom wall with its tangent parallel to that wall
-(`evs[1]=(1,-1.22e-16)`), so every `splinefits` candidate is tangent to the
-barrier at `t=1` — a near-double root of the intersection cubic.
-`points2coeff` computes that cubic through catastrophic cancellation (terms
-around ~7446 collapsing to ~0.099). The oracle (clang/arm64,
-`-ffp-contract=on`) contracts `v3 + 3*v1 - (v0 + 3*v2)` into fused
-multiply-adds, while V8 performs strict IEEE rounding — the two disagree by
-~9.1e-13 on **bit-identical inputs**, and that noise flips the sign of the
-`solve3` discriminant: C finds 1 root (866.7, inside the segment); the port
-finds 3 roots with a spurious partner root at `t=0.9999975 < 1-EPSILON2`. The
-spurious root triggers one extra `a`-halving iteration, which flips the
-final piece's tangent magnitude by a factor of 2 (in either direction across
-the 3 edges), producing the maxΔ 42.09 post-clip (26 SVG diffs).
-
-**Why accepted (irreducibility proven by a controlled experiment).** All six
-`routesplines` calls were dumped on both sides — box, polygon, `PL`, start,
-end, and `evs` are byte-identical, as is the earlier (non-final) call's
-output spline; the only divergence is inside the final call's `solve3`. A
-standalone pristine-C harness isolated the single variable: compiling with
-`-ffp-contract=off` reproduces the **port** bit-exactly on all 3 edges; the
-default (`on`) contraction reproduces the **oracle** bit-exactly on all 3
-edges. The port therefore already agrees with strict-IEEE-754 C; the
-divergence is entirely the oracle compiler's FMA contraction choice, below
-C source-code semantics — there is no source-level infidelity to fix. A
-targeted fix (hand-emulating the contraction in `points2coeff`) was tried and
-refuted: it corrects 2 of the 3 edges but not the third, whose flip
-originates inside `solve3`'s own internal contraction. A complete fix would
-require software-FMA emulation across the whole spline fitter — a hot-loop
-cost with corpus-wide rounding blast radius for a sub-pixel, 3-edge reward.
-Full diagnosis: `plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Closed: `2646` (`0e07be7b`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Three smode long-edge legs (`edge2575`, `edge3905`,
+`edge15467`) end on a barrier wall with a parallel tangent, so the
+`splinefits` intersection cubic has a near-double root. `points2coeff`
+builds that cubic through catastrophic cancellation; the oracle fuses
+`route.c:397-398` and `solvers.c:43`, so the strict-IEEE port got a different
+`solve3` root count, a spurious crossing and one extra `a`-halving (maxΔ
+42.09). The earlier conclusion that this was irreducible ("software-FMA
+emulation across the whole spline fitter", with a partial fix refuted) was
+disproved: the contraction sites are finite and enumerable. The port now
+mirrors every contraction in `points2coeff` (`route.c:397-398`),
+`splineintersectsline` (371-372, 374, 360-361, 383-384), `solve3`
+(`solvers.c:41, 43, 46`) and its inlined `solve2` (80, 85), and
+`solve3`/`solve2`/`solve1` are re-ported to C's shape. All 42,432 captured
+`Proutespline` calls of `2646` are bit-identical to the oracle (journal row
+"T7 land"). Original diagnosis (still valid for the mechanism):
+`plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Affected (historical):** `2620` (was structural-match, maxΔ 585; 423 diffs
 on 24 edge paths + 22 arrowheads). **Collapsed to conformant 2026-07-11**:
@@ -899,7 +835,7 @@ incircle predicate sits on a knife edge: the input ULP flips its sign, the
 constrained-Delaunay diagonal flips, and the corridor polygon that fails
 `Pshortestpath` in the oracle ("destination point not in any triangle" →
 plain-spline fallback) succeeds in the port (or vice versa). The resulting
-splines differ by ~0.2–0.5pt. Sibling of **A3**/**A8**: an irreducible
+splines differ by ~0.2–0.5pt. Sibling of the (now closed) **A3**/**A8**: an irreducible
 floating-point portability constraint below C source semantics — matching
 would require reproducing Apple libm's exact `sin`/`cos` rounding in JS.
 

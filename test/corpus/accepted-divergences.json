@@ -20,39 +20,6 @@
     },
     {
       "match": {
-        "id": "2368"
-      },
-      "class": "A3",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394~10pt on one flat-edge arc (376->76); bbox/nodes/labels conformant",
-      "reason": "symmetric-channel bezier-split tie broken by ~1e-14 noise; Apple macOS libm hypot is position-dependent (mirrors congruent arcs) and matches no portable hypot, so the port keeps a consistent translation-equivariant tie-break.",
-      "ref": "known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot"
-    },
-    {
-      "match": {
-        "id": "graphs-b100"
-      },
-      "class": "A3",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394 20 (one rank-row) on one hub in-edge knot (Node23730->Node23729); every node + all upstream box/poly/taut-path byte-identical to C",
-      "reason": "same symmetric-channel bezier-split tie as 2368: findMaxDev picks between two exactly mirror-symmetric interior knots whose deviations differ by ~1 ULP; Apple libm hypot is position-dependent, so the port keeps its translation-equivariant tolerant tie-break. Reverting to C's strict tie-break is a survey net-wash and regresses oracle-pinned #241_0/cnt=3 tests. See .agent-notes/hub-fanin-longedge-diagnosis.md.",
-      "ref": "known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot"
-    },
-    {
-      "match": {
-        "id": "graphs-b104"
-      },
-      "class": "A3",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394 20 (one rank-row) on one hub in-edge knot; identical source to graphs-b100, same symmetric-channel tie-break",
-      "reason": "identical dot source to graphs-b100 (diff = 0), same findMaxDev ~1-ULP hypot tie on a mirror-symmetric channel; irreducible portability constraint, same as 2368.",
-      "ref": "known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot"
-    },
-    {
-      "match": {
         "id": "1314"
       },
       "class": "A6",
@@ -128,17 +95,6 @@
     },
     {
       "match": {
-        "id": "241_1"
-      },
-      "class": "A3",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394 ~2.4pt on one flat-edge arc; bbox/nodes/labels conformant",
-      "reason": "same symmetric-channel bezier-split hypot tie as 2368/241_0: findMaxDev picks between mirror-symmetric interior knots differing by ~1 ULP; Apple libm hypot is position-dependent, so the port keeps its translation-equivariant tie-break. Adopting C's strict tie-break regresses the 241_0/cnt=3 oracle cases (net wash). Same primitive as 2368.",
-      "ref": "known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot"
-    },
-    {
-      "match": {
         "id": "graphs-honda-tokoro"
       },
       "class": "A7",
@@ -158,61 +114,6 @@
       "bound": "max\u0394 1.06pt on the n012->n011 parallel pair; every node/label/bbox conformant",
       "reason": "graphs/directed/honda-tokoro.gv is the graphs-honda-tokoro sibling (differs only by samearrowhead attrs, which do not touch this pair's routing): the n012->n011 pair's SVG geometry is BYTE-IDENTICAL to the accepted id on both the port and oracle sides, so the ground-truthed maximal_bbox round() box-wall mechanism (internal x=90 C vs 89 port) transfers verbatim. Verified 2026-07-28 by rendering both variants both sides. Full diagnosis: .agent-notes/honda-samehead-shared-port.md.",
       "ref": "known-divergences.md#a7-round-box-wall-rounding-boundary-dot"
-    },
-    {
-      "match": {
-        "id": "2413_1"
-      },
-      "class": "A3",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394 67.65 on the labeled 2-cycle back-edge label-vnode slit corridor; nodes/bbox conformant",
-      "reason": "same findMaxDev symmetric-tie family as 2368/241_1/b100/b104: the two candidate split corners of the label-vnode slit corridor tie to within 5.7e-13 of each other; Apple libm hypot (route.c:139) flips the winner per absolute coordinate (exact translates of the same corridor resolve differently in one process), so the port keeps its translation-equivariant keeps-first tie-break. Ruled out: route/box divergence (byte-identical corridors across 3 exact translates), 2-cycle double-count recurrence (nodes byte-identical), routing order (identical both sides).",
-      "ref": "known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot"
-    },
-    {
-      "match": {
-        "id": "2413_2"
-      },
-      "class": "A3",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394 \u226499.55 (two findMaxDev ties, same corridor family as 2413_1) once the T11 swapBezier-reverse fix lands; until then parity.json reports max\u0394 1922.26, dominated by that separate, already-diagnosed-and-fixed swapBezier over-allocated-reverse defect (not part of this acceptance)",
-      "reason": "same findMaxDev symmetric-tie family as 2368/241_1/2413_1: two independent label-vnode slit-corridor splits tie to within 5.7e-13; Apple libm hypot flips the winner per absolute coordinate, so the port keeps its translation-equivariant keeps-first tie-break. The much larger current max\u0394 (1922.26) is a distinct, unrelated mechanism \u2014 swapBezier's full-array reverse rotating 3 stale (0,0) slots to the front on a size-shrunk reversed back edge (same bug as T1/hub-fanin) \u2014 tracked as a fix (T11), not accepted; once merged this entry's residual is the A3 tie only.",
-      "ref": "known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot"
-    },
-    {
-      "match": {
-        "id": "graphs-decorate"
-      },
-      "class": "A3",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394 43.54 on a single intra-cluster labeled edge (Se3ffa656...->Se3ffa61c...); all 23 diffs live in that one <g>",
-      "reason": "same findMaxDev symmetric-tie family as 2368/241_1/2413_1/2413_2: interior deviations tie at 77.56953556793451 vs ...54 (~3e-14 abs, ~4e-16 rel) \u2014 exact double-noise tie. C's raw `>` comparison via Apple libm hypot keeps-second; the port's tolerant tie-break keeps-first; the mirrored split cascades to the arrowhead and decorate connector (closest-point-on-spline). Ruled out (each against live C-instrumented rebuilds): box construction/maximal_bbox/rank_box, adjust/complete regular path widening, beginPath/endPath dispatch, buildPolyPoints/flip, shortestPath funnel, evs tangents, routeSplinesInternal inputs (all byte-identical).",
-      "ref": "known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot"
-    },
-    {
-      "match": {
-        "id": "2371"
-      },
-      "class": "A3",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394 16.8 on two edges (g[9263] r6837mid--r9687mid, g[23859] r38mid--r8699mid); the port emits the exact control-point-sequence mirror of the oracle on both; all ~36,900 other elements byte-identical",
-      "reason": "joins the existing findMaxDev/hypot symmetric-tie family (A3, cf. 2368): both divergent edges emit the exact reversal of the oracle's control-point sequence \u2014 shared knot x identical, knot y flipped by an identical \u0394 16.8 on both unrelated edges (top/bottom split fractions swapped) \u2014 the same irreducible hypot-ULP tie-break as 2368. Origin confidence is qualified MEDIUM: 2371 packs ~199 components, decoupling pathplan-local coordinates from page coordinates, so the tie could not be correlated live to route.ts:209 across three instrumentation strategies; not fully excluded that the tie resolves in straight-mode segmentation or post-clip recover_slack instead of literally at that site. Full diagnosis: plans/residual-cleanup/analysis/2371-mirror.md.",
-      "ref": "known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot"
-    },
-    {
-      "match": {
-        "id": "2646"
-      },
-      "class": "A8",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394 42.09 on 3 of 21,216 edges (edge2575 g[4639], edge3905 g[7777], edge15467 g[30201]; all record-port :c->:nb_part smode long-edge routes)",
-      "reason": "final smode leg tangent to the barrier wall (endpoint on wall, tangent parallel); splinefits a-halving exit flips on solve3 disc sign, decided by clang/arm64 -ffp-contract FMA rounding (~9e-13) in points2coeff/solve3 under catastrophic cancellation; port == strict-IEEE C (verified bit-exact via -ffp-contract=off harness, all 3 edges); flips both directions; max\u0394 42.09 on 3 of 21,216 edges. Full diagnosis: plans/residual-cleanup/analysis/2646-fp-contract.md.",
-      "ref": "known-divergences.md#a8-fp-contractfma-rounding-vs-strict-ieee-dot"
     }
   ]
 }
