@@ -1,0 +1,4 @@
+digraph g { rankdir=LR;
+a [shape=rect,label="",width=1.13,height=0.5];
+b [shape=rect,label="",width=0.57,height=0.67]; c [shape=rect,label="",width=0.57,height=0.67];
+a->b[sametail=x]; a->c[sametail=x]; }

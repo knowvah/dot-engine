@@ -1,0 +1,4 @@
+digraph g { 
+a [shape=plaintext,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0"><TR><TD FIXEDSIZE="TRUE" WIDTH="81.3625" HEIGHT="36"></TD></TR></TABLE>>];
+b [shape=rect,label="",width=0.57,height=0.67]; c [shape=rect,label="",width=0.57,height=0.67];
+a->b[sametail=x]; a->c[sametail=x]; }
