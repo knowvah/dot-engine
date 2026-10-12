@@ -94,7 +94,7 @@ Commits, ≤72-char subject, no attribution). Merge-commit PR at the end (AD-5).
 | [1](batch-1/overview.md) | T1 contraction map · T2 parser 27 · T3 flat `et` 28 · T4 ortho loop 29 | parallel | [x] |
 | [2](batch-2/overview.md) | T5 faithful `findMaxDev` 23/32/33/35 · T6 flat-adj 30 | parallel | [x] |
 | [3](batch-3/overview.md) | T7 `points2coeff`/`solve3` 2646 → T8 ledgers | sequential | [x] |
-| [4](batch-4/overview.md) | T9 tracker annotation, final gates, PR | sequential | [ ] |
+| [4](batch-4/overview.md) | T9 tracker annotation, final gates, PR | sequential | [x] |
 
 ## Documents
 
@@ -121,3 +121,26 @@ Commits, ≤72-char subject, no attribution). Merge-commit PR at the end (AD-5).
 graphviz 16.1.0 sync (re-pin oracle + ADR + port the 15.0.0-82..16.1.0 diff;
 reopens 34). `route.c`/`solvers.c` are unchanged in that range, so this mission's
 pathplan work carries forward.
+
+Also found during the mission (not this mission's write-set):
+
+- Re-translate `docs/known-divergences.md` §A3/§A8 (now CLOSED) into the 23
+  `docs-site/<locale>/divergences.md` copies and refresh their `sourceHash`
+  (precedent 43f08565); they show the stale-page banner until then.
+- Regenerate `test/corpus/PARITY-dot.md` / `PARITY-XDOT.md`; they still list the
+  retired A3/A8 rows and `linux.i386-b29`.
+- `dot.pegjs` AttrStmt lacks grammar.y `optmacroname` (`node a = [...]`).
+- `routeFlatEdgeFaithful` (`src/layout/dot/splines-flat.ts`) has no production
+  caller.
+
+## Session end (2026-10-12) — COMPLETE
+
+All nine tasks landed on `fix/plantuml-tracker-issues-2`: T1 contraction map;
+T2 parser (27); T3 flat `et` (28); T4 ortho self-loop (29); T5 faithful
+`findMaxDev` (23/32/33/35); T6 flat-adjacent aux grouping (30); T7
+`points2coeff`/`solve3` contraction (2646); T8 ledgers; T9 tracker + PR.
+Every land ran gates.sh and a fresh survey with 0 regressions. Survey vs T0:
+conformant 913 → 922; A3 and A8 closed. Perf: 2646 4,035,296 → 314,524 ms.
+Stops: T4 and T5 write-set extensions, T8 test-file extension (all approved);
+the gates.sh harness fixes (e3dc7a34, ba78199a). TRACKER.md in plantuml-ts is
+edited but not committed there. 34 is version skew for the 16.1.0 sync.
