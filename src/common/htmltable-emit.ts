@@ -330,7 +330,7 @@ function emitTableRules(
  * Emit a fully positioned HTML table label.
  *
  * Draw order mirrors C emit_html_tbl:
- *   1. Open anchor   2. Table BGCOLOR   3. Cells   4. Rules   5. Border   6. Close anchor
+ *   1. Open anchor   2. Table BGCOLOR   3. Rules   4. Border   5. Cells   6. Close anchor
  *
  * @see lib/common/htmltable.c:emit_html_tbl
  */
@@ -360,11 +360,13 @@ export function emitHtmlLabel(
       emitBgFill({ bgcolor: placed.bgcolor, box: placed.box, pos, border: placed.border,
         renderer, job, gradientangle: placed.gradientangle, style: placed.style });
     }
-    for (const cell of placed.cells) emitHtmlCell(cell, pos, renderer, job);
+    // Graphviz 16.1 (f0d07786b): rules and border precede the cells so cell
+    // text is painted above table-level shapes.
     emitTableRules(placed, pos, renderer, job);
     if (placed.border > 0) {
       emitBorder({ box: placed.box, pos, border: placed.border, color: placed.color, sides: placed.sides, style: placed.style }, renderer, job);
     }
+    for (const cell of placed.cells) emitHtmlCell(cell, pos, renderer, job);
   }
   if (inAnchor) endHtmlAnchor(renderer, job);
   if (clustersLast && initHtmlAnchor(anchorData, tblBox, renderer, job)) {
