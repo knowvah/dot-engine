@@ -26,6 +26,7 @@ import { Edge } from '../../model/edge.js';
 import type { EdgeList } from '../../model/nodeInfo.js';
 import { DtBag } from '../../cdt/index.js';
 import { cround } from '../../common/arith.js';
+import { d2i } from '../../util/math.js';
 import { rank } from '../dot/ns.js';
 import { elistAppend } from '../dot/fastgr.js';
 import { nodesInSeq } from '../dot/decomp.js';
@@ -385,8 +386,13 @@ function overlaps(p: Nitem[]): boolean {
   return false;
 }
 
-/** @see lib/neatogen/constraint.c:initItem */
-function initItem(n: Node, margin: ExpandT): Nitem {
+/**
+ * Additive margins convert with d2i (clamp to INT_MIN..INT_MAX, else
+ * truncate) since graphviz 16.1 (13e5f6ce8). Exported for tests.
+ * @see lib/neatogen/constraint.c:initItem
+ * @internal
+ */
+export function initItem(n: Node, margin: ExpandT): Nitem {
   const x = cround(SCALE * (n.info.pos?.[0] ?? 0) * POINTS_PER_INCH);
   const y = cround(SCALE * (n.info.pos?.[1] ?? 0) * POINTS_PER_INCH);
   const width = n.info.width ?? 0;
@@ -394,8 +400,8 @@ function initItem(n: Node, margin: ExpandT): Nitem {
   let w2: number;
   let h2: number;
   if (margin.doAdd) {
-    w2 = Math.trunc(SCALE * (cround((width / 2.0) * POINTS_PER_INCH) + margin.x));
-    h2 = Math.trunc(SCALE * (cround((height / 2.0) * POINTS_PER_INCH) + margin.y));
+    w2 = d2i(SCALE * (cround((width / 2.0) * POINTS_PER_INCH) + margin.x));
+    h2 = d2i(SCALE * (cround((height / 2.0) * POINTS_PER_INCH) + margin.y));
   } else {
     w2 = cround(margin.x * SCALE2 * width * POINTS_PER_INCH);
     h2 = cround(margin.y * SCALE2 * height * POINTS_PER_INCH);

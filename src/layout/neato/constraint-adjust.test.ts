@@ -19,7 +19,7 @@ import { Edge } from '../../model/edge.js';
 import {
   AM_ORTHO, AM_ORTHO_YX, AM_ORTHOXY, AM_ORTHOYX,
   AM_PORTHO, AM_PORTHO_YX, AM_PORTHOXY, AM_PORTHOYX,
-  cAdjust,
+  cAdjust, initItem,
 } from './constraint-adjust.js';
 
 const PT = 72;
@@ -190,5 +190,26 @@ describe('cAdjust edge cases', () => {
     const ys = [...g.nodes.values()].map((n) => n.info.pos![1]! * PT);
     expect(ys[1]! - ys[0]!).toBeGreaterThanOrEqual(72);
     expect(ys[2]! - ys[1]!).toBeGreaterThanOrEqual(72);
+  });
+});
+
+describe('initItem margin conversion (graphviz 16.1 d2i)', () => {
+  const INT_MAX = 2147483647;
+
+  function item(w: number, h: number, mx: number, my: number) {
+    const g = build([{ name: 'a', x: 0, y: 0, w, h }], [], 'undirected');
+    return initItem(g.nodes.get('a')!, { x: mx, y: my, doAdd: true });
+  }
+
+  it('truncates in-range half-sizes toward zero', () => {
+    // POINTS(1/2) = 36: 10 * (36 + 0.37) = 363.7 -> 363; 10 * (36 - 40.05) = -40.5 -> -40.
+    expect(item(1, 1, 0.37, -40.05).bb).toEqual({ llx: -363, lly: 40, urx: 363, ury: -40 });
+  });
+
+  it('clamps half-sizes beyond INT_MAX to INT_MAX', () => {
+    // 10 * (36 + 1e10) ≈ 1e11 > 2^31 - 1.
+    expect(item(1, 1, 1e10, 3e9).bb).toEqual({
+      llx: -INT_MAX, lly: -INT_MAX, urx: INT_MAX, ury: INT_MAX,
+    });
   });
 });
