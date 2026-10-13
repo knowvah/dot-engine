@@ -12,12 +12,9 @@
  * @see lib/gvc/gvdevice.c
  */
 
-import type { Box } from '../model/geom.js';
-import { boxOverlap, POINTS_PER_INCH } from '../model/geom.js';
+import { POINTS_PER_INCH } from '../model/geom.js';
 import { lateDouble } from '../common/nodeinit.js';
-import {
-  parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin, setupPageClip,
-} from './viewport.js';
+import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin, setupPageClip } from './viewport.js';
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
@@ -53,6 +50,7 @@ import { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-l
 export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
 export { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
 import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId } from '../render/svg-id.js';
+import { nodeInBox, emitNodeComments, emitEdgeComments } from './emit-gates.js';
 
 // ---------------------------------------------------------------------------
 // AD-1 (image-api): `inlineImages` on RenderJob via module augmentation
@@ -78,43 +76,6 @@ declare module './job.js' {
 /** Label text for anchor tooltip defaults (C: obj->label). */
 function labelTextOf(lp: unknown): string | null {
   return (lp as TextlabelT | undefined)?.text ?? null;
-}
-
-/**
- * A node's own layout bounding box: coord ± (lw/rw, ht/2).
- * @see lib/common/types.h:ND_bb
- * @see lib/common/emit.c:4140-4143 init_bb_node
- */
-function nodeBBox(n: Node): Box {
-  const { coord, lw, rw, ht } = n.info;
-  return {
-    ll: { x: coord.x - lw, y: coord.y - ht / 2 },
-    ur: { x: coord.x + rw, y: coord.y + ht / 2 },
-  };
-}
-
-/**
- * node_in_box: is the node's own bbox within job's page/view clip?
- *
- * C's `job->clip` is derived from `job->bb` (= `GD_bb(g)`) expanded by
- * `job->pad` on every side (init_job_viewport's `job->bb = gvc->bb ±
- * job->pad`, feeding `job->view`/`job->focus`, which setup_page's `job->clip`
- * algebraically reduces back to for the single-page, unpaginated case this
- * port implements — Z and rotation cancel out of that derivation). This port
- * has no separate `page=` pagination model, so `job.bb` padded by `job.pad`
- * IS `job->clip` here.
- *
- * @see lib/common/emit.c:1636-1639 node_in_box
- * @see lib/common/emit.c:1808 emit_node gate
- * @see lib/common/emit.c:3356 init_job_viewport (job->bb = gvc->bb ± pad)
- * @see lib/common/emit.c:1553-1564 setup_page (job->clip from focus/view)
- */
-function nodeInBox(n: Node, job: RenderJob): boolean {
-  const clip: Box = {
-    ll: { x: job.bb.ll.x - job.pad.x, y: job.bb.ll.y - job.pad.y },
-    ur: { x: job.bb.ur.x + job.pad.x, y: job.bb.ur.y + job.pad.y },
-  };
-  return boxOverlap(nodeBBox(n), clip);
 }
 
 /**
@@ -152,6 +113,7 @@ export function renderNode(n: Node, renderer: RendererPlugin, job: RenderJob, do
   done.add(n);
   // "and is in page/view" gate. @see lib/common/emit.c:1808 node_in_box
   if (!nodeInBox(n, job)) return;
+  emitNodeComments(n, renderer, job); // before the invis shortcircuit, as C
   // Shortcircuit invisible nodes: C omits the whole node before emit_begin_node.
   // C reads late_string(n, N_style, ""), i.e. agxget — which resolves the
   // node's DECLARATION-SCOPE default, so `{ node [style=invis] p q }` hides p
@@ -203,6 +165,7 @@ function setEdgePen(e: Edge, job: RenderJob): void {
 }
 
 export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): void {
+  emitEdgeComments(e, renderer, job); // before the invis shortcircuit, as C
   // Shortcircuit invisible edges: C omits the whole edge (no group/title/path)
   // before emit_begin_edge. @see lib/common/emit.c:emit_edge (style "invis" return)
   // The "invisible" alias likewise suppresses all edge draw ops via PEN_NONE
@@ -471,9 +434,7 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   // not job->zoom. job.scale is read only by the SVG group/dims.
   const drawingSize = parseDrawingSize(g.attrs.get('size'));
   const z = initJobViewportZoom(job.bb, drawingSize, job.pad);
-  // setup_page's job->clip, from the same viewport focus/view and Z.
-  // @see lib/common/emit.c:setup_page
-  job.clip = setupPageClip(job.bb, drawingSize, job.pad, z);
+  job.clip = setupPageClip(job.bb, drawingSize, job.pad, z); // @see emit.c:setup_page
   // init_job_dpi (emit.c:3333): GD_drawing->dpi = late_double(dpi, resolution, 0)
   // (input.c:713). When >0 it becomes job->dpi; otherwise the SVG device's
   // default_dpi = 72 (gvrender_core_svg.c:814) applies. init_job_viewport then
