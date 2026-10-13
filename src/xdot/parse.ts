@@ -13,6 +13,9 @@ import type {
 } from "./types.js";
 import { XDOT_PARSE_ERROR } from "./types.js";
 
+/** ULONG_MAX on an LP64 target: strtoul saturation value. */
+const ULONG_MAX = 0xffff_ffff_ffff_ffffn;
+
 type PR<T> = { val: T; pos: number } | null;
 type OpResult = { op: XdotOp; pos: number } | "error";
 type OpMaybeResult = OpResult | null;
@@ -63,12 +66,23 @@ class XdotParser {
     return { val: parseInt(s.slice(start, i), 10), pos: i };
   }
 
+  /**
+   * strtoul(s, &endp, 10) cast to unsigned int: optional sign, a leading "-"
+   * negates modulo 2^64, magnitude overflow saturates to ULONG_MAX, and the
+   * result keeps the low 32 bits.
+   * @see lib/xdot/xdot.c:parseUInt
+   */
   static parseUInt_(s: string, pos: number): PR<number> {
     const i = XdotParser.skipWs(s, pos);
-    const start = i;
-    const end = XdotParser.consumeDigits(s, i);
+    let start = i;
+    const negative = i < s.length && s[i] === "-";
+    if (i < s.length && (s[i] === "-" || s[i] === "+")) start++;
+    const end = XdotParser.consumeDigits(s, start);
     if (end === start) return null;
-    return { val: parseInt(s.slice(start, end), 10), pos: end };
+    const mag = BigInt(s.slice(start, end));
+    const clamped = mag > ULONG_MAX ? ULONG_MAX : mag;
+    const wrapped = negative && mag <= ULONG_MAX ? BigInt.asUintN(64, -clamped) : clamped;
+    return { val: Number(BigInt.asUintN(32, wrapped)), pos: end };
   }
 
   static parseRect(s: string, pos: number): PR<XdotRect> {
@@ -163,7 +177,7 @@ class XdotParser {
     const ry0 = XdotParser.parseReal(s, rx0.pos); if (!ry0) return null;
     const rx1 = XdotParser.parseReal(s, ry0.pos); if (!rx1) return null;
     const ry1 = XdotParser.parseReal(s, rx1.pos); if (!ry1) return null;
-    const rn = XdotParser.parseInt_(s, ry1.pos); if (!rn) return null;
+    const rn = XdotParser.parseUInt_(s, ry1.pos); if (!rn) return null;
     const rs = XdotParser.parseStops(s, rn.pos, rn.val); if (!rs) return null;
     return { x0: rx0.val, y0: ry0.val, x1: rx1.val, y1: ry1.val, stops: rs.stops };
   }
@@ -175,7 +189,7 @@ class XdotParser {
     const rx1 = XdotParser.parseReal(s, rr0.pos); if (!rx1) return null;
     const ry1 = XdotParser.parseReal(s, rx1.pos); if (!ry1) return null;
     const rr1 = XdotParser.parseReal(s, ry1.pos); if (!rr1) return null;
-    const rn = XdotParser.parseInt_(s, rr1.pos); if (!rn) return null;
+    const rn = XdotParser.parseUInt_(s, rr1.pos); if (!rn) return null;
     const rs = XdotParser.parseStops(s, rn.pos, rn.val); if (!rs) return null;
     return { x0: rx0.val, y0: ry0.val, r0: rr0.val, x1: rx1.val, y1: ry1.val, r1: rr1.val, stops: rs.stops };
   }

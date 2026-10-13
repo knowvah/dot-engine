@@ -66,7 +66,7 @@ function formatG(n: number): string {
  * (svgBeginPage). ViewBox starts at (round(margin.x), round(margin.y)) --
  * (0,0) only in the common no-margin case.
  */
-export function emitSvgTag(job: RenderJob): void {
+export function emitSvgTag(job: RenderJob, svgid: string | undefined = ''): void {
   const bb = job.bb;
   // Size-fitted, UNROUNDED page-oriented view extent (init_job_pagination's
   // local `imageSize`/`pageSize`, emit.c:1198-1246): sz = bb extent plus pad,
@@ -103,7 +103,13 @@ export function emitSvgTag(job: RenderJob): void {
   job.write('     viewBox="' + String(vbLLx) + '.00 ' + String(vbLLy) + '.00 ' +
     String(vbURx) + '.00 ' + String(vbURy) + '.00"\n');
   job.write('     xmlns="http://www.w3.org/2000/svg"');
-  job.write(' xmlns:xlink="http://www.w3.org/1999/xlink">\n');
+  job.write(' xmlns:xlink="http://www.w3.org/1999/xlink"');
+  // graphviz 16.1: `svgid` graph attribute -> id on the root <svg> (gvputs_xml).
+  // @see plugin/core/gvrender_core_svg.c:svg_begin_graph
+  if (svgid !== undefined && svgid.length > 0) {
+    job.write(' id="' + escapeXmlTitle(svgid) + '"');
+  }
+  job.write('>\n');
 }
 
 /**
@@ -344,7 +350,7 @@ export function svgBeginGraph(g: Graph, job: RenderJob): void {
   }
   job.write(SVG_DOCTYPE);
   job.write(SVG_GENERATOR_COMMENT);
-  emitSvgTag(job);
+  emitSvgTag(job, g.attrs.get('svgid'));
 }
 
 /**

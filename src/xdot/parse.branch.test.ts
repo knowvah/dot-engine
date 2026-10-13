@@ -390,3 +390,37 @@ describe("parseXDotF", () => {
     expect(x!.ops[0].kind).toBe("filled_ellipse");
   });
 });
+
+// graphviz 16.1 (e1fbc3ef0, 6a7e16ed2): n_stops is parsed with parseUInt
+// (strtoul cast to unsigned int). A "-N" count wraps to 2^32-N, so the stop
+// loop runs past the supplied stops and parseReal fails -> NULL. Under the
+// intermediate/15.x int parse, "-1" meant zero stops and the parse succeeded.
+describe("gradient n_stops — strtoul semantics (16.1)", () => {
+  it("linear: negative count wraps and fails on missing stops -> null", () => {
+    expect(parseXDotColor("[0 0 1 1 -1 0 3-red]")).toBeNull();
+  });
+  it("radial: negative count wraps and fails on missing stops -> null", () => {
+    expect(parseXDotColor("(0 0 5 10 10 20 -1 0 3-red)")).toBeNull();
+  });
+  it("linear: saturated oversized count -> null", () => {
+    expect(parseXDotColor("[0 0 1 1 99999999999999999999999 0 3-red]")).toBeNull();
+  });
+  it("linear: explicit plus sign is accepted by strtoul", () => {
+    expect(parseXDotColor("[0 0 1 1 +1 0 3-red]")).toEqual({
+      type: "linear",
+      ling: { x0: 0, y0: 0, x1: 1, y1: 1, stops: [{ frac: 0, color: "red" }] },
+    });
+  });
+  it("linear: zero count yields no stops", () => {
+    expect(parseXDotColor("[0 0 1 1 0]")).toEqual({
+      type: "linear",
+      ling: { x0: 0, y0: 0, x1: 1, y1: 1, stops: [] },
+    });
+  });
+  it("radial: -0 parses as zero stops", () => {
+    expect(parseXDotColor("(0 0 5 10 10 20 -0)")).toEqual({
+      type: "radial",
+      ring: { x0: 0, y0: 0, r0: 5, x1: 10, y1: 10, r1: 20, stops: [] },
+    });
+  });
+});
