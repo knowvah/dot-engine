@@ -202,9 +202,9 @@
       "ref": "known-divergences.md#a1-drift-iterative-engines"
     },
     "42": {
-      "class": "A9",
-      "bound": "CDT cocircular incircle tie: opCount 5 vs 9 (0->3), ptCount 32 vs 26 (3->7); multispline corridor flip. fma+robust-incircle applied; residual is V8-vs-Apple-libm sin/hypot 1-ULP in the predicate input",
-      "ref": "known-divergences.md#a9-sfdp-fp-ties"
+      "class": "A1",
+      "bound": "0.06-0.65pt on all 25 nodes (3525 xdot diffs); first divergence is pow(dist, 2) in the repulsive force, Apple libm vs the port's ARM pow, 1 ULP on a near-tie (coarsest level, iteration 95). Injecting the oracle's pow values makes the embedding and the xdot bit-exact; injecting the oracle's positions gives 0 diffs (routing FMA fixed in 1e102b30)",
+      "ref": "comparisons/sfdp-42.md"
     },
     "241_0": {
       "class": "A9",
