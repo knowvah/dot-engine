@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 
 import { describe, expect, it } from 'vitest';
-import { cround, RADIANS } from './arith.js';
+import { cround, croundNarrow32, RADIANS } from './arith.js';
 
 /**
  * Oracle values below are C's libm `round()` (half away from zero), which is
@@ -59,5 +59,30 @@ describe('RADIANS (C operation order)', () => {
     expect(RADIANS(33)).not.toBe((33 * Math.PI) / 180);
     expect(RADIANS(180)).toBe(Math.PI);
     expect(RADIANS(-90)).toBe(-Math.PI / 2);
+  });
+});
+
+/**
+ * Oracle: the native arm64 16.1 build's vectorised ROUND in
+ * init_job_pagination (fcvtzs.2d to int64, then xtn/uzp1 to the low 32 bits).
+ * 2160000000000000000 is corpus 2784's page height; native prints 1255669760.
+ */
+describe('croundNarrow32', () => {
+  it('equals cround inside the int range', () => {
+    expect(croundNarrow32(421.5)).toBe(422);
+    expect(croundNarrow32(-2.5)).toBe(-3);
+    expect(croundNarrow32(2147483647)).toBe(2147483647);
+  });
+
+  it('keeps the low 32 bits of the int64 conversion', () => {
+    expect(croundNarrow32(2160000000000000000)).toBe(1255669760);
+    expect(croundNarrow32(2147483648)).toBe(-2147483648);
+    expect(croundNarrow32(4294967296 + 7)).toBe(7);
+  });
+
+  it('saturates at the int64 range and maps NaN to 0, as fcvtzs does', () => {
+    expect(croundNarrow32(1e19)).toBe(-1);
+    expect(croundNarrow32(-1e19)).toBe(0);
+    expect(croundNarrow32(Number.NaN)).toBe(0);
   });
 });

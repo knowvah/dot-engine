@@ -63,6 +63,14 @@ function ellipseRadii(svg: string): Record<string, { rx: string; ry: string }> {
   return out;
 }
 
+const SVG_SIZE_RE = /<svg width="([^"]+)" height="([^"]+)"\s+viewBox="([^"]+)"/;
+
+/** The root `<svg>` width/height and viewBox. */
+function svgHeader(svg: string): { size: string; viewBox: string } {
+  const m = SVG_SIZE_RE.exec(svg);
+  return { size: `${m?.[1] ?? ''} ${m?.[2] ?? ''}`, viewBox: m?.[3] ?? '' };
+}
+
 /** The background polygon's x coordinates (pad - bb.LL.x .. bb.UR.x + pad). */
 function backgroundXs(svg: string): string[] {
   const pts = BACKGROUND_RE.exec(svg)?.[1] ?? '';
@@ -112,6 +120,17 @@ describe('2784 — graphviz 16.1 ortho failure skips dotneato_postprocess', () =
     expect(port).toEqual(ellipseRadii(NATIVE_2784));
     expect(port['00']).toEqual({ rx: '27', ry: '0' });
     expect(port['2']).toEqual({ rx: '27', ry: '1080000000000000000' });
+  });
+
+  // job->height / pageBoundingBox.UR.y = ROUND(2.16e18): the native arm64 build
+  // converts with fcvtzs.2d (int64) and keeps the low 32 bits (xtn / uzp1),
+  // so 2160000000000000000 prints as 2160000000000000000 mod 2^32.
+  // @see lib/common/emit.c:init_job_pagination
+  it('prints the page size through the native int conversion', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const port = svgHeader(renderSvg(SRC_2784, 'dot'));
+    expect(port).toEqual(svgHeader(NATIVE_2784));
+    expect(port).toEqual({ size: '422pt 1255669760pt', viewBox: '0.00 0.00 422.00 1255669760.00' });
   });
 
   it('draws the background over the untranslated bb (x from -31 to 391)', () => {
