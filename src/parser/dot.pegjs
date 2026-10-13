@@ -227,10 +227,13 @@ Name
   = first:[A-Za-z_\x80-￿] rest:[A-Za-z_0-9\x80-￿]*
     { return first + rest.join(""); }
 
-// scan.l: NUMBER = [-]?(({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))
-// Returned as string per spec requirement.
+// scan.l: NUMBER = [-]?(({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))(\.|{LETTER})?
+// There is no exponent: `1e5` lexes as NUMBER `1e`, which chkNum splits into
+// `1` and the NAME `e5`. The optional trailing '.'/LETTER is always split off
+// by chkNum (yyless), so it is never part of the atom; its warning is emitted
+// by number-scan.ts. Returned as string per spec requirement.
 NumericLiteral
-  = s:( "-"? ( [0-9]+ ( "." [0-9]* )? / "." [0-9]+ ) ( [eE] [+-]? [0-9]+ )? )
+  = s:( "-"? ( [0-9]+ ( "." [0-9]* )? / "." [0-9]+ ) )
     { return Array.isArray(s) ? s.flat(Infinity).filter(x => x !== null && x !== undefined).join("") : String(s); }
 
 // ── Case-insensitive keywords ─────────────────────────────────────────────────

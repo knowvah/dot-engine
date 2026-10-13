@@ -13,6 +13,7 @@ import type { GraphKind } from '../model/graph.js';
 import type { Edge } from '../model/edge.js';
 import { isHtmlValue, htmlValueContent } from '../common/html-string.js';
 import { buildFromAst } from './builder.js';
+import { scanNumberAmbiguities, numberAmbiguityMessage } from './number-scan.js';
 import type { ParsedGraph } from './ast.js';
 import type { GvErrorCode, GvExpectation } from '../errors.js';
 import { DotEngineError, friendlyMessageFor, invalidArgType } from '../errors.js';
@@ -223,6 +224,18 @@ export function isPeggyError(err: unknown): err is {
  *   is too deep
  * @throws TypeError `ERR_INVALID_ARG_TYPE` if `src` is not a string
  */
+/**
+ * Emit scan.l's chkNum warnings for every badly delimited number the lexer
+ * reaches: all of them on success, those at or before a syntax error otherwise
+ * (C's lexer stops there). @see lib/cgraph/scan.l:chkNum
+ */
+function warnNumberAmbiguities(src: string, upTo: number): void {
+  for (const a of scanNumberAmbiguities(src, Stripper.strip(src))) {
+    if (a.offset > upTo) break;
+    console.error(numberAmbiguityMessage(a));
+  }
+}
+
 export function parse(src: string): Graph {
   if (typeof src !== 'string') {
     // Runtime guard for JS callers (the TS signature already forbids this):
@@ -235,6 +248,7 @@ export function parse(src: string): Graph {
   } catch (err: unknown) {
     if (isPeggyError(err)) {
       const start = err.location.start;
+      warnNumberAmbiguities(src, start.offset);
       const code: GvErrorCode =
         err.found === null ? 'SYNTAX_UNEXPECTED_EOF' : 'SYNTAX_ERROR';
       throw new ParseError(
@@ -256,6 +270,7 @@ export function parse(src: string): Graph {
     }
     throw err;
   }
+  warnNumberAmbiguities(src, src.length);
   validateEdgeOperators(src, ast.directed);
   return buildFromAst(ast);
 }
