@@ -1,0 +1,294 @@
+diff --git a/src/layout/circo/position-helpers.ts b/src/layout/circo/position-helpers.ts
+index a97673d2..1bc54dd0 100644
+--- a/src/layout/circo/position-helpers.ts
++++ b/src/layout/circo/position-helpers.ts
+@@ -12,12 +12,18 @@
+ import type { Node } from '../../model/node.js';
+ import type { Block } from './blocks.js';
+ import { isCoalesced } from './blocks.js';
++import { fma } from '../../common/fma.js';
++import { libmHypot } from '../../common/libm-hypot.js';
+ 
+-/** 2-D rotation of (x,y) by (cosR, sinR). */
++/**
++ * 2-D rotation of (x,y) by (cosR, sinR). clang contracts both lines into
++ * fmadd: X = x*cosR + (-sinR*y), Y = x*sinR + cosR*y (objdump of
++ * `_applyDelta`).
++ */
+ export function rotatePoint(
+   x: number, y: number, cosR: number, sinR: number,
+ ): [number, number] {
+-  return [x * cosR - y * sinR, x * sinR + y * cosR];
++  return [fma(x, cosR, -sinR * y), fma(x, sinR, cosR * y)];
+ }
+ 
+ /** Read psi from a node's alg field (set during Pass 4). */
+@@ -27,7 +33,7 @@ export function nodePsi(n: Node): number {
+ 
+ /** getRotation: single-node block with preset parent_pos. */
+ export function rotFromParentPos(sn: Block, theta: number): number {
+-  let r = theta + Math.PI - sn.parentPos;
++  let r = theta + (Math.PI - sn.parentPos); // C: theta += M_PI - parent_pos
+   if (r < 0) r += 2 * Math.PI;
+   return r;
+ }
+@@ -35,16 +41,19 @@ export function rotFromParentPos(sn: Block, theta: number): number {
+ /** Find the node in sn closest to origin after translation by (x,y). */
+ export function closestNode(sn: Block, x: number, y: number, skip: Node): Node {
+   let best = skip;
+-  let bestDist = Math.hypot(skip.info.pos![0]! + x, skip.info.pos![1]! + y);
++  let bestDist = libmHypot(skip.info.pos![0]! + x, skip.info.pos![1]! + y);
+   for (const dn of sn.subGraph.nodes) {
+     if (dn.orig === skip) continue;
+-    const d = Math.hypot(dn.orig.info.pos![0]! + x, dn.orig.info.pos![1]! + y);
++    const d = libmHypot(dn.orig.info.pos![0]! + x, dn.orig.info.pos![1]! + y);
+     if (d < bestDist) { bestDist = d; best = dn.orig; }
+   }
+   return best;
+ }
+ 
+-/** getRotation: COALESCED block — off-center trigonometric correction. */
++/**
++ * getRotation: COALESCED block whose neighbor lies right of -r — off-center
++ * trigonometric correction. C: `theta += M_PI / 2.0 - phi - asin(...)`.
++ */
+ export function rotCoalesced(
+   sn: Block, x: number, y: number, nbr: Node, theta: number,
+ ): number {
+@@ -52,26 +61,28 @@ export function rotCoalesced(
+   const r = sn.radius - rho;
+   const nx = nbr.info.pos![0]!;
+   const ny = nbr.info.pos![1]!;
+-  if (-r >= nx) {
+-    const phi = Math.atan2(ny, nx);
+-    return theta + Math.PI - phi - nodePsi(nbr);
+-  }
+-  const R = Math.hypot(x, y);
++  const R = libmHypot(x, y);
+   const phi = Math.atan2(ny, nx + r);
+   const l = r - rho / Math.cos(phi);
+-  return theta + Math.PI / 2 - phi - Math.asin((l / R) * Math.cos(phi));
++  return theta + ((Math.PI / 2 - phi) - Math.asin((l / R) * Math.cos(phi)));
+ }
+ 
+-/** getRotation: general multi-node non-coalesced block. */
++/**
++ * getRotation when the neighbor is not the node closest to the parent: the
++ * coalesced correction when `COALESCED(sn) && -r < n_x`, else the
++ * origin-centred rotation `theta += M_PI - phi - PSI`, wrapped past 2*M_PI.
++ * @see lib/circogen/circpos.c:getRotation
++ */
+ export function rotGeneral(
+   sn: Block, x: number, y: number, nbr: Node, theta: number,
+ ): number {
+   if (closestNode(sn, x, y, nbr) === nbr) return 0;
+-  if (isCoalesced(sn)) return rotCoalesced(sn, x, y, nbr, theta);
++  const r = sn.radius - sn.rad0;
++  if (isCoalesced(sn) && -r < nbr.info.pos![0]!) return rotCoalesced(sn, x, y, nbr, theta);
+   const phi = Math.atan2(nbr.info.pos![1]!, nbr.info.pos![0]!);
+-  let r = theta + Math.PI - phi - nodePsi(nbr);
+-  if (r > 2 * Math.PI) r -= 2 * Math.PI;
+-  return r;
++  let t = theta + ((Math.PI - phi) - nodePsi(nbr));
++  if (t > 2 * Math.PI) t -= 2 * Math.PI;
++  return t;
+ }
+ 
+ /**
+diff --git a/src/layout/circo/position.ts b/src/layout/circo/position.ts
+index 44c69f13..c4714a3e 100644
+--- a/src/layout/circo/position.ts
++++ b/src/layout/circo/position.ts
+@@ -15,6 +15,7 @@ import type { Block, SubGraph, CircState } from './blocks.js';
+ import { blkParent, setCoalesced, FLAGS_ISPARENT } from './blocks.js';
+ import { applyDelta, getRotation } from './position-helpers.js';
+ import { layoutBlock } from './blockpath.js';
++import { fma } from '../../common/fma.js';
+ 
+ export type PosState = {
+   radius: number; subtreeR: number; nodeAngle: number;
+@@ -48,10 +49,14 @@ export function getInfo(pi: PosInfo, stp: PosState, minDist: number): number {
+   return maxR;
+ }
+ 
+-/** @see lib/circogen/circpos.c:setInfo */
++/**
++ * The numerator is one clang-contracted fmadd: p0.diameter * p1.minRadius
++ * added to the rounded p1.diameter * p0.minRadius (objdump of `_doBlock`).
++ * @see lib/circogen/circpos.c:setInfo
++ */
+ export function setInfo(p0: PosInfo, p1: PosInfo, delta: number): void {
+   const t = Math.max(
+-    (p0.diameter * p1.minRadius + p1.diameter * p0.minRadius)
++    fma(p0.diameter, p1.minRadius, p1.diameter * p0.minRadius)
+       / (2 * delta * p0.minRadius * p1.minRadius), 1,
+   );
+   p0.scale = Math.max(p0.scale, t);
+@@ -63,9 +68,25 @@ export function placeChild(child: Block, ca: number, ctx: PlaceCtx): number {
+   const dx = ctx.childRadius * Math.cos(ca);
+   const dy = ctx.childRadius * Math.sin(ca);
+   applyDelta(child, dx, dy, getRotation(child, dx, dy, ca));
+-  return ctx.length === 1
+-    ? ca + ctx.incAngle + ctx.mindistAngle
+-    : ca + ctx.incAngle + ctx.mindistAngle / 2;
++  return nextChildAngle(ca, ctx.incAngle, ctx.mindistAngle, ctx.length);
++}
++
++/**
++ * The angle after placing a child. C's `childAngle += incidentAngle +
++ * mindistAngle` (or `+ mindistAngle / 2`) adds the right-hand sum last.
++ * @see lib/circogen/circpos.c:positionChildren
++ */
++export function nextChildAngle(ca: number, inc: number, mda: number, length: number): number {
++  return length === 1 ? ca + (inc + mda) : ca + (inc + mda / 2);
++}
++
++/**
++ * Circumference left over on a length-1 block's child circle: C's
++ * `2 * M_PI * childRadius - info->diameter`, contracted to one fnmsub.
++ * @see lib/circogen/circpos.c:positionChildren
++ */
++export function leftoverArc(childRadius: number, diameter: number): number {
++  return fma(2 * Math.PI, childRadius, -diameter);
+ }
+ 
+ /** Advance child angle for length===1 blocks; updates firstAngle/lastAngle. */
+@@ -81,7 +102,7 @@ export function advanceAngleL1(
+ /** Advance child angle for multi-node blocks. */
+ export function advanceAngleLN(ca: number, inc: number, mda: number, total: number, theta: number): number {
+   if (total === 1) return theta;
+-  return ca + inc + mda / 2;
++  return ca + (inc + mda / 2); // C: childAngle += incidentAngle + mindistAngle / 2
+ }
+ 
+ /** Write psi midpoint angle to node alg when conditions are met. */
+@@ -101,7 +122,7 @@ export function positionChildren(pi: PosInfo, stp: PosState, length: number, min
+   if (length === 1) {
+     cr = Math.max(cr, pi.diameter / (2 * Math.PI));
+     // C redistributes leftover circumference into min_dist.
+-    const d = 2 * Math.PI * cr - pi.diameter;
++    const d = leftoverArc(cr, pi.diameter);
+     if (d > 0) md += d / pi.childCount;
+   }
+   stp.subtreeR = Math.max(stp.subtreeR, cr + pi.maxRadius);
+diff --git a/src/layout/circo/position-arith.test.ts b/src/layout/circo/position-arith.test.ts
+new file mode 100644
+index 00000000..b5bb2647
+--- /dev/null
++++ b/src/layout/circo/position-arith.test.ts
+@@ -0,0 +1,115 @@
++// SPDX-License-Identifier: EPL-2.0
++//
++// circpos.c arithmetic as the native arm64 oracle computes it (objdump of
++// libgvplugin_neato_layout `_doBlock` / `_applyDelta`): `x += a + b` adds the
++// parenthesised right-hand side first, and clang's -ffp-contract=on fuses
++// setInfo's numerator, positionChildren's leftover arc and applyDelta's
++// rotation into fmadd/fnmsub. Each case asserts the C-order result AND that
++// the naive left-to-right / unfused form differs for the chosen values, so a
++// regression to the old order fails.
++// @see lib/circogen/circpos.c
++
++import { describe, it, expect } from 'vitest';
++import type { Node } from '../../model/node.js';
++import { fma } from '../../common/fma.js';
++import { libmHypot } from '../../common/libm-hypot.js';
++import type { Block } from './blocks.js';
++import { advanceAngleLN, nextChildAngle, setInfo, leftoverArc, type PosInfo } from './position.js';
++import { applyDelta, rotFromParentPos, rotGeneral, closestNode } from './position-helpers.js';
++
++function info(diameter: number, minRadius: number): PosInfo {
++  return { n: {} as Node, theta: 0, minRadius, maxRadius: 0, diameter, scale: 1, childCount: 1 };
++}
++
++function node(x: number, y: number, psi = 0): Node {
++  return { info: { pos: [x, y], alg: { psi } } } as unknown as Node;
++}
++
++function block(nodes: Node[], extra: Partial<Block> = {}): Block {
++  return {
++    subGraph: { nodes: nodes.map((orig) => ({ orig })) } as unknown as Block['subGraph'],
++    radius: 0, rad0: 0, circleList: nodes, children: [], parentPos: -1, flags: 0,
++    child: nodes[0] ?? null, ...extra,
++  };
++}
++
++describe('circpos.c evaluation order', () => {
++  it('childAngle += incidentAngle + mindistAngle adds the sum last', () => {
++    const [ca, inc, mda] = [0.1, 0.1, 1.1];
++    expect((ca + inc) + mda).not.toBe(ca + (inc + mda));
++    expect(nextChildAngle(ca, inc, mda, 1)).toBe(ca + (inc + mda));
++    expect(nextChildAngle(ca, inc, 2 * mda, 3)).toBe(ca + (inc + mda));
++    expect(advanceAngleLN(ca, inc, 2 * mda, 3, 0)).toBe(ca + (inc + mda));
++  });
++
++  it('getRotation parent_pos branch: theta += M_PI - parent_pos', () => {
++    const theta = 0.1;
++    const sn = block([], { parentPos: 0.7 });
++    expect((theta + Math.PI) - 0.7).not.toBe(theta + (Math.PI - 0.7));
++    expect(rotFromParentPos(sn, theta)).toBe(theta + (Math.PI - 0.7));
++  });
++
++  it('getRotation general branch: theta += M_PI - phi - PSI, wrapped past 2*M_PI', () => {
++    // neighbor (1,1) is not the closest node after translating by (-3,-1).
++    const nbr = node(1, 1, 2.9);
++    const sn = block([nbr, node(3, 1)]);
++    const theta = 0.1;
++    const phi = Math.atan2(1, 1);
++    expect(((theta + Math.PI) - phi) - 2.9).not.toBe(theta + ((Math.PI - phi) - 2.9));
++    expect(rotGeneral(sn, -3, -1, nbr, theta)).toBe(theta + ((Math.PI - phi) - 2.9));
++  });
++
++  it('getRotation coalesced block with -r >= n_x takes the wrapped general branch', () => {
++    // C: `if (COALESCED(sn) && -r < n_x) ... else { ...; if (theta > 2*M_PI) theta -= 2*M_PI; }`
++    const nbr = node(-5, 0.5, -3);
++    const sn = block([nbr, node(-1, 0)], { radius: 2, rad0: 1, flags: 1 });
++    const theta = 6.2;
++    const phi = Math.atan2(0.5, -5);
++    const raw = theta + ((Math.PI - phi) - -3);
++    expect(raw).toBeGreaterThan(2 * Math.PI);
++    expect(((theta + Math.PI) - phi) - -3).not.toBe(raw);
++    expect(rotGeneral(sn, 0, 0, nbr, theta)).toBe(raw - 2 * Math.PI);
++  });
++
++  it('closest-node search uses the C library hypot', () => {
++    // macOS hypot(0.1, 0.4) rounds to exactly h = 0.4123105625617661 (V8's
++    // Math.hypot gives one ulp less), so the other node is NOT strictly closer.
++    const h = 0.4123105625617661;
++    expect(libmHypot(0.1, 0.4)).toBe(h);
++    expect(Math.hypot(0.1, 0.4)).toBeLessThan(h);
++    const nbr = node(h, 0);
++    const sn = block([nbr, node(0.1, 0.4)]);
++    expect(closestNode(sn, 0, 0, nbr)).toBe(nbr);
++  });
++});
++
++describe('circpos.c fma contraction', () => {
++  it('setInfo numerator is fmadd(p0.diameter, p1.minRadius, p1.diameter*p0.minRadius)', () => {
++    const p0 = info(0.1, 1.1);
++    const p1 = info(0.1, 0.1);
++    const den = 2 * 0.01 * 1.1 * 0.1;
++    const t = Math.max(fma(0.1, 0.1, 0.1 * 1.1) / den, 1);
++    expect(t).not.toBe(Math.max((0.1 * 0.1 + 0.1 * 1.1) / den, 1));
++    setInfo(p0, p1, 0.01);
++    expect(p0.scale).toBe(t);
++    expect(p1.scale).toBe(p0.scale);
++  });
++
++  it('positionChildren leftover arc is fnmsub(childRadius, 2*M_PI, diameter)', () => {
++    const [cr, diameter] = [0.1, 0.2];
++    expect(fma(2 * Math.PI, cr, -diameter)).not.toBe(2 * Math.PI * cr - diameter);
++    expect(leftoverArc(cr, diameter)).toBe(fma(2 * Math.PI, cr, -diameter));
++  });
++
++  it('applyDelta rotates with fmadd: X = x*cos + (-sin*y), Y = x*sin + cos*y', () => {
++    const n = node(0.1, 0.1);
++    const rot = 0.7;
++    const [c, s] = [Math.cos(rot), Math.sin(rot)];
++    const X = fma(0.1, c, -s * 0.1);
++    const Y = fma(0.1, s, c * 0.1);
++    expect(X).not.toBe(0.1 * c - 0.1 * s);
++    expect(Y).not.toBe(0.1 * s + 0.1 * c);
++    applyDelta(block([n]), 0, 0, rot);
++    expect(n.info.pos).toEqual([X, Y]);
++  });
++});
