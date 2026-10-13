@@ -158,10 +158,14 @@ describe('makeMultiSpline — boundary port forces entry despite a clear direct 
     `;
     const svg = renderSvg(dot, 'neato');
     const ds = paths(svg);
+    // Native graphviz 16.1.0 (`dot -Kneato -Tsvg`): the three members fan
+    // above, below and through the line. The control points come from
+    // mkCtrlPts / line_intersect, whose fused multiply-adds the port now
+    // mirrors; unfused, every member collapsed onto y = -17.54.
     expect(ds).toEqual([
-      'd="M36.17,-17.54C36.17,-17.54 287.83,-17.54 287.83,-17.54"',
-      'd="M36.17,-17.54C36.17,-17.54 287.83,-17.54 287.83,-17.54"',
-      'd="M36.17,-17.54C36.17,-17.54 287.83,-17.54 287.83,-17.54"',
+      'd="M36.17,-18C36.17,-36 287.83,-36 287.83,-18"',
+      'd="M36.17,-18C36.17,0 287.83,0 287.83,-18"',
+      'd="M36.17,-18C36.17,-18 287.83,-18 287.83,-18"',
     ]);
   });
 
@@ -180,10 +184,60 @@ describe('makeMultiSpline — boundary port forces entry despite a clear direct 
     `;
     const svg = renderSvg(dot, 'neato');
     const ds = paths(svg);
+    // Native graphviz 16.1.0 (`dot -Kneato -Tsvg`): the three members fan
+    // above, below and through the line. The control points come from
+    // mkCtrlPts / line_intersect, whose fused multiply-adds the port now
+    // mirrors; unfused, every member collapsed onto y = -17.54.
     expect(ds).toEqual([
-      'd="M36.17,-17.54C36.17,-17.54 287.83,-17.54 287.83,-17.54"',
-      'd="M36.17,-17.54C36.17,-17.54 287.83,-17.54 287.83,-17.54"',
-      'd="M36.17,-17.54C36.17,-17.54 287.83,-17.54 287.83,-17.54"',
+      'd="M36.17,-18C36.17,-36 287.83,-36 287.83,-18"',
+      'd="M36.17,-18C36.17,0 287.83,0 287.83,-18"',
+      'd="M36.17,-18C36.17,-18 287.83,-18 287.83,-18"',
+    ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Control-point corridor (mkCtrlPts + line_intersect) arithmetic. The native
+// binary fuses v + 100·cos/sin, DIST's sum of squares (sqrt, not hypot),
+// v + (i·sep)·cos/sin and the first product of each dot() in libgvc's
+// line_intersect. With those contractions the n3--n4 member polygon matches
+// native bit-for-bit, so its second Pshortestpath fails exactly as native's
+// does ("destination point not in any triangle") and both members keep the
+// same drawn path; unfused, the port routed the member through a polygon
+// native never builds. Expected paths: native graphviz 16.1.0 `-Kneato -Tsvg`.
+// ---------------------------------------------------------------------------
+
+describe('mkCtrlPts — control points match the native contractions', () => {
+  test('a member corridor native cannot route stays unrouted', () => {
+    const dot = `
+      graph G {
+        layout=neato
+        splines=true
+        node [shape=ellipse width=0.5 height=0.35]
+        n0 [pos="4.0,4.5!"]
+        n1 [pos="1.5,3.0!"]
+        n2 [pos="2.0,1.5!"]
+        n3 [pos="6.0,4.5!"]
+        n4 [pos="0.0,0.0!"]
+        n5 [pos="4.0,2.0!"]
+        n2 -- n5
+        n2 -- n5
+        n3 -- n4
+        n3 -- n4
+        n4 -- n1
+        n4 -- n1
+      }
+    `;
+    const ds = paths(renderSvg(dot, 'neato')).filter((d) => d.startsWith('d="M'));
+    const n3n4 = 'd="M439.34,-328.02C400.73,-290.77 287.94,-184.51 183.06,-110.51'
+      + ' 133.54,-75.57 70.01,-42.07 39.36,-26.54"';
+    expect(ds).toEqual([
+      'd="M183.47,-135.04C210.02,-144.34 259.17,-156.66 287.52,-161.15"',
+      'd="M186.72,-125.89C215.09,-130.37 264.49,-142.75 291.07,-152.08"',
+      n3n4,
+      n3n4,
+      'd="M25.81,-35.09C42.07,-76.53 93.58,-179.6 117.39,-218.45"',
+      'd="M32.91,-32.42C56.7,-71.16 108.43,-174.68 124.66,-216.1"',
     ]);
   });
 });
