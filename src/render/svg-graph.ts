@@ -21,7 +21,7 @@ import { resolveRenderColor, colorPaint } from './color-resolve.js';
 import { svgGraphId, svgGraphClass } from './svg-id.js';
 import { parseGradientSpec } from '../common/htmltable-emit-fill.js';
 import { findStopColor, parseStyleFlags } from '../common/style-resolve.js';
-import { cround } from '../common/arith.js';
+import { croundNarrow32 } from '../common/arith.js';
 import { FontnameKind } from '../model/layoutParams.js';
 import {
   emitLinearGradient,
@@ -87,8 +87,11 @@ export function emitSvgTag(job: RenderJob, svgid: string | undefined = ''): void
   const pageX = rotated ? viewY : viewX;
   const pageY = rotated ? viewX : viewY;
   // job->width/job->height (emit.c:1249-1250, dpi=72 so *dpi/72 is a no-op).
-  const w = cround(pageX + 2 * job.margin.x);
-  const h = cround(pageY + 2 * job.margin.y);
+  // The native build vectorises these ROUNDs (fcvtzs.2d + xtn: low 32 bits of
+  // an int64), so an out-of-range page size wraps exactly as native prints it
+  // (2784: 2.16e18 -> 1255669760). @see croundNarrow32
+  const w = croundNarrow32(pageX + 2 * job.margin.x);
+  const h = croundNarrow32(pageY + 2 * job.margin.y);
   job.write('<svg width="' + String(w) + 'pt" height="' + String(h) + 'pt"\n');
   // job->pageBoundingBox (canvasBox.LL = margin+centering, canvasBox.UR = LL +
   // imageSize, then ROUND -- emit.c:1282-1293). C's rotation-branch double
@@ -96,10 +99,10 @@ export function emitSvgTag(job: RenderJob, svgid: string | undefined = ''): void
   // swap-back, emit.c:1275-1298) cancels for LL (always plain margin) but NOT
   // for UR, which ends up paired with the page-oriented (rotation-swapped)
   // view extent -- i.e. the same `pageX`/`pageY` used for width/height above.
-  const vbLLx = cround(job.margin.x);
-  const vbLLy = cround(job.margin.y);
-  const vbURx = cround(job.margin.x + pageX);
-  const vbURy = cround(job.margin.y + pageY);
+  const vbLLx = croundNarrow32(job.margin.x);
+  const vbLLy = croundNarrow32(job.margin.y);
+  const vbURx = croundNarrow32(job.margin.x + pageX);
+  const vbURy = croundNarrow32(job.margin.y + pageY);
   job.write('     viewBox="' + String(vbLLx) + '.00 ' + String(vbLLy) + '.00 ' +
     String(vbURx) + '.00 ' + String(vbURy) + '.00"\n');
   job.write('     xmlns="http://www.w3.org/2000/svg"');
