@@ -14,6 +14,12 @@ import type { Node } from '../../model/node.js';
 import type { Block, SubGraph, CircState, DerivedNode, DerivedEdge } from './blocks.js';
 import { FLAGS_ONPATH, FLAGS_ISPARENT } from './blocks.js';
 import { gvQsort } from '../../util/bsd-qsort.js';
+import { derivedOf, spanIncident, reduceEdgeCrossings } from './crossings.js';
+
+export {
+  derivedOf, closeOpenEdge, agfstedgeLists, countCrossings, insertNode, reducePass,
+  reduceEdgeCrossings, spanIncident,
+} from './crossings.js';
 
 export type SpanNode = {
   dn: DerivedNode; tparent: SpanNode | null; visited: boolean;
@@ -36,133 +42,8 @@ export function blockGraph(allEdges: DerivedEdge[], sn: Block): void {
 }
 
 // ---------------------------------------------------------------------------
-// Crossing counting helpers (each branch extracted to keep CCN low)
-// ---------------------------------------------------------------------------
-
-export function derivedOf(n: Node): DerivedNode | null {
-  return (n.info.alg as { derivedNode?: DerivedNode } | undefined)?.derivedNode ?? null;
-}
-
-export function closeOpenEdge(e: DerivedEdge, d: DerivedNode, opened: DerivedEdge[]): number {
-  let cross = 0;
-  for (const o of opened) {
-    if (o.order > e.order && o.tail !== d && o.head !== d) cross++;
-  }
-  return cross;
-}
-
-export function openEdgesAt(d: DerivedNode, edges: DerivedEdge[], opened: DerivedEdge[], order: number): void {
-  for (const e of edges) {
-    if (e.order === 0 && (e.tail === d || e.head === d)) { e.order = order; opened.push(e); }
-  }
-}
-
-/**
- * C's count_all_crossings — INCLUDING its load-bearing bug: remove_edge keys
- * the open-edge dict by the half-edge POINTER handed to it, and the closing
- * node's agfstedge always yields the OPPOSITE half from the one stored when
- * the edge was opened, so dtdelete never matches and the list only grows
- * (circogen/edgelist.c:cmpItem on Agedge_t*). Each edge's close therefore
- * counts EVERY edge opened after it (nested as well as interleaved spans),
- * minus edges incident to the closing node — an inflated count that reduce()
- * uses to accept moves. Do not "fix" this to true interleave counting: the
- * final circle order depends on it.
- * @see lib/circogen/blockpath.c:count_all_crossings
- * @see lib/circogen/edgelist.c:remove_edge
- */
-export function countCrossings(list: Node[], edges: DerivedEdge[]): number {
-  for (const e of edges) e.order = 0;
-  const opened: DerivedEdge[] = [];
-  let crossings = 0; let order = 1;
-  for (const n of list) {
-    const d = derivedOf(n);
-    if (!d) continue;
-    // Close pass: incident edges already opened at their other endpoint
-    // (edges opened AT this node still have order 0 — the open pass below
-    // runs after, so each edge closes exactly once).
-    for (const e of edges) {
-      if (e.order > 0 && (e.tail === d || e.head === d))
-        crossings += closeOpenEdge(e, d, opened);
-    }
-    openEdgesAt(d, edges, opened, order++);
-  }
-  return crossings;
-}
-
-// ---------------------------------------------------------------------------
-// Crossing reduction
-// ---------------------------------------------------------------------------
-
-export function insertNode(list: Node[], cn: Node, neighbor: Node, pos: number): void {
-  const i = list.indexOf(cn); if (i !== -1) list.splice(i, 1);
-  const ni = list.indexOf(neighbor);
-  if (ni === -1) { list.push(cn); return; }
-  list.splice(pos === 0 ? ni : ni + 1, 0, cn);
-}
-
-/**
- * One reduce pass, mirroring C's reduce (blockpath.c:439): iterate the
- * SUBGRAPH's nodes in agfstnode (root-seq) order — NOT the current list
- * order — and each node's incident edges in agfstedge order; the neighbour
- * is agtail(e) unless that is curnode. The first-improving-move order is
- * load-bearing for the final arrangement.
- */
-export function reducePass(
-  list: Node[], edges: DerivedEdge[], cnt: { v: number }, nodes: DerivedNode[],
-): void {
-  const ord = new Map<DerivedNode, number>();
-  nodes.forEach((dn, i) => ord.set(dn, i));
-  const seq = new Map<DerivedEdge, number>();
-  edges.forEach((e, i) => seq.set(e, i));
-  for (const dn of nodes) {
-    for (const e of spanIncident(dn, edges, ord, seq)) {
-      let neighbor = e.tail;
-      if (neighbor === dn) neighbor = e.head;
-      for (const pos of [0, 1] as const) {
-        const copy = [...list];
-        insertNode(list, dn.orig, neighbor.orig, pos);
-        const nc = countCrossings(list, edges);
-        if (nc < cnt.v) { cnt.v = nc; if (cnt.v === 0) return; }
-        else { list.length = 0; list.push(...copy); }
-      }
-    }
-  }
-}
-
-const CROSS_ITER = 10;
-
-/** @see lib/circogen/blockpath.c:reduce_edge_crossings */
-export function reduceEdgeCrossings(
-  list: Node[], edges: DerivedEdge[], nodes: DerivedNode[],
-): Node[] {
-  const cnt = { v: countCrossings(list, edges) };
-  for (let i = 0; i < CROSS_ITER && cnt.v > 0; i++) {
-    const prev = cnt.v; reducePass(list, edges, cnt, nodes);
-    if (prev === cnt.v) break;
-  }
-  return list;
-}
-
-// ---------------------------------------------------------------------------
 // Spanning tree
 // ---------------------------------------------------------------------------
-
-/**
- * Incident edges of dn in agfstedge order over the (possibly pruned)
- * subgraph edge set: out-edges (by head order, seq) then in-edges (by tail
- * order, seq). `ord`/`seq` maps carry the derived root's node and edge
- * creation orders. @see lib/cgraph/edge.c:agfstedge
- */
-export function spanIncident(
-  dn: DerivedNode, edges: DerivedEdge[],
-  ord: Map<DerivedNode, number>, seq: Map<DerivedEdge, number>,
-): DerivedEdge[] {
-  const out = edges.filter((e) => e.tail === dn)
-    .sort((a, b) => ((ord.get(a.head) ?? 0) - (ord.get(b.head) ?? 0)) || ((seq.get(a) ?? 0) - (seq.get(b) ?? 0)));
-  const inn = edges.filter((e) => e.head === dn)
-    .sort((a, b) => ((ord.get(a.tail) ?? 0) - (ord.get(b.tail) ?? 0)) || ((seq.get(a) ?? 0) - (seq.get(b) ?? 0)));
-  return [...out, ...inn];
-}
 
 export function dfsSpan(
   sn: SpanNode, map: Map<DerivedNode, SpanNode>, edges: DerivedEdge[],
