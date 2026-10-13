@@ -216,9 +216,12 @@ export function initSubg(sg: Graph, root: Graph): void {
  * ranking reads them. Node sizing in `dotPhaseInit` reads `sg.root.info.flip`
  * (the real root), so it is correct regardless of this ordering.
  *
+ * Returns the component's dot_splines status (non-zero = C's dotLayout(sg)
+ * failing, which makes doDot return before packing). The mincross/position
+ * statuses are not consulted on this arm.
  * @see lib/dotgen/dotinit.c:dotLayout (static)
  */
-export function dotLayoutComponent(sg: Graph, root: Graph): void {
+export function dotLayoutComponent(sg: Graph, root: Graph): number {
   // C: dotLayout(sg) begins with dot_init_subg(sg, sg), which sets
   // GD_dotroot(agroot(sg)) = sg so dot_root() returns the COMPONENT during its
   // layout (so mincross/position treat it as their root, not as a cluster).
@@ -246,7 +249,7 @@ export function dotLayoutComponent(sg: Graph, root: Graph): void {
   dotRank(sg);
   dotMincross(sg);
   dotPosition(sg);
-  dotPhasePostNoFinish(sg);
+  return dotPhasePostNoFinish(sg);
 }
 
 // ---------------------------------------------------------------------------
@@ -416,8 +419,12 @@ export function layoutAndPack(
 ): void {
   // Seed the root's drawing-info (C: graph_init before doDot set GD_rankdir2 etc).
   dotGraphInit(root);
-  // C: for each component { initSubg(sg, g); dotLayout(sg); }
-  for (const sg of comps) dotLayoutComponent(sg, root);
+  // C: for each component { initSubg(sg, g); rc = dotLayout(sg); if (rc != 0)
+  //    { free(ccs); return rc; } } — a failure skips packing, cluster carry
+  //    and the root dotneato_postprocess (dot_layout returns on doDot error).
+  for (const sg of comps) {
+    if (dotLayoutComponent(sg, root) !== 0) return;
+  }
   // C: attachPos(g) [points: unneeded]; packSubgraphs(ncc, ccs, g, &pinfo);
   //    resetCoord(g) [points: unneeded]. Cluster-inclusive bboxes so packed
   //    clusters get native spacing (the pack module's bbox is node-only).

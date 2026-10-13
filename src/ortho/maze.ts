@@ -270,8 +270,11 @@ function nodeBb(n: OrthoNode): OrthoBox {
   return { LL: { x: cx - w2, y: cy - h2 }, UR: { x: cx + w2, y: cy + h2 } };
 }
 
-/** @see lib/ortho/maze.c:mkMaze */
-export function mkMaze(g: OrthoGraph): Maze {
+/**
+ * @returns the maze, or null when partition fails (graphviz 16.1)
+ * @see lib/ortho/maze.c:mkMaze
+ */
+export function mkMaze(g: OrthoGraph): Maze | null {
   const gcells: Cell[] = g.nodes.map((n) => ({
     flags: MZ_ISNODE, nedges: 0,
     edges: new Array(6).fill(null) as (SEdge | null)[],
@@ -292,6 +295,9 @@ export function mkMaze(g: OrthoGraph): Maze {
     UR: { x: BB.UR.x + MARGIN, y: BB.UR.y + MARGIN },
   };
   const rects = partition(gcells, BB);
+  // C (16.1, 312e49714): partition failure → freeMaze(mp); return NULL.
+  // freeMaze is a no-op here (GC), so only the NULL return remains.
+  if (rects === null) return null;
   const cells: Cell[] = rects.map((bb) => ({
     flags: 0, nedges: 0,
     edges: new Array(6).fill(null) as (SEdge | null)[],

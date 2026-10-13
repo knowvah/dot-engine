@@ -34,7 +34,7 @@ describe("mkMaze — markSmallV propagation (thin horizontal node)", () => {
       box(40, 40, 70, 70),
       box(80, 40, 110, 70),
     ];
-    const mp = mkMaze(mkGraph(gcells));
+    const mp = mkMaze(mkGraph(gcells))!;
     const flaggedV = mp.cells.filter((cp) => (cp.flags & MZ_SMALLV) !== 0);
     expect(flaggedV.length).toBe(3);
     const flaggedBoxes = flaggedV.map((cp) => JSON.stringify(cp.bb)).sort();
@@ -57,7 +57,7 @@ describe("mkMaze — markSmallH propagation (thin vertical node)", () => {
       box(40, 40, 70, 70),
       box(40, 80, 70, 110),
     ];
-    const mp = mkMaze(mkGraph(gcells));
+    const mp = mkMaze(mkGraph(gcells))!;
     const flaggedH = mp.cells.filter((cp) => (cp.flags & MZ_SMALLH) !== 0);
     expect(flaggedH.length).toBe(3);
     const flaggedBoxes = flaggedH.map((cp) => JSON.stringify(cp.bb)).sort();
@@ -76,7 +76,7 @@ describe("mkMaze — createSEdges forces BIG weight for an unflagged small chann
     // reaches createSEdges with flags===0, hitting the isSmall(height) &&
     // !(flags & MZ_SMALLV) branch directly (L125) rather than via propagation.
     const gcells = [box(0, 0, 30, 30), box(0, 33, 30, 63)];
-    const mp = mkMaze(mkGraph(gcells));
+    const mp = mkMaze(mkGraph(gcells))!;
     const narrow = mp.cells.filter((cp) => cp.bb.UR.y - cp.bb.LL.y === 3);
     expect(narrow.length).toBe(3);
     for (const cp of narrow) expect(cp.flags & MZ_SMALLV).toBe(0);
@@ -95,12 +95,12 @@ describe("mkMaze — irregular (non-grid) layouts", () => {
     ["diagonal 2-node pair", [box(0, 0, 30, 30), box(60, 60, 90, 90)]],
     ["offset row (T-junction dividers)", [box(0, 0, 30, 30), box(50, 10, 80, 50), box(100, 0, 130, 30)]],
   ])("%s builds a deterministic, non-empty search graph", (_name, gcells) => {
-    const mp = mkMaze(mkGraph(gcells as OrthoBox[]));
+    const mp = mkMaze(mkGraph(gcells as OrthoBox[]))!;
     expect(mp.ngcells).toBe((gcells as OrthoBox[]).length);
     expect(mp.sg.nnodes).toBeGreaterThan(0);
     expect(mp.sg.nedges).toBeGreaterThan(0);
     // Deterministic: re-running produces the same node/edge counts.
-    const mp2 = mkMaze(mkGraph(gcells as OrthoBox[]));
+    const mp2 = mkMaze(mkGraph(gcells as OrthoBox[]))!;
     expect(mp2.sg.nnodes).toBe(mp.sg.nnodes);
     expect(mp2.sg.nedges).toBe(mp.sg.nedges);
   });

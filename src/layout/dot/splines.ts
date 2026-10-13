@@ -434,7 +434,7 @@ export function resetRW(g: Graph): void {
 }
 
 /**
- * splines=ortho dispatch — mirror dotsplines.c:251-259: resetRW, run the
+ * splines=ortho dispatch — mirror dotsplines.c:251-266: resetRW, run the
  * orthoEdges pipeline (before mark_lowclusters), then the finish semantics
  * (skip routesplinesterm — not ported in TS; set edgeLabelsDone; return 0).
  * Edge-label sub-case is T2.
@@ -443,15 +443,15 @@ export function resetRW(g: Graph): void {
 function orthoDispatch(g: Graph): number {
   resetRW(g);
   // C: if (GD_has_labels(g->root) & EDGE_LABEL) { setEdgeLabelPos(g);
-  //      orthoEdges(g,true); } else orthoEdges(g,false);
+  //      rc = orthoEdges(g,true); } else rc = orthoEdges(g,false);
   // orthoEdges itself warns + downgrades useLbls (ortho/index.ts) — C never
   // routes edges around labels (ADR-2). We only POSITION the labels here.
+  let rc: number;
   if (((g.root.info.has_labels ?? 0) & EDGE_LABEL) !== 0) {
     setEdgeLabelPos(g);
-    dispatchOrthoEdges(g, true);
-  } else {
-    dispatchOrthoEdges(g, false);
-  }
+    rc = dispatchOrthoEdges(g, true);
+  } else rc = dispatchOrthoEdges(g, false);
+  if (rc !== 0) return rc; // 16.1 8fd4b59ef: skip port labels, EdgeLabelsDone
   // C's `goto finish` lands ON the port-label placement block
   // (dotsplines.c:436-458): head/tail labels with labelangle/labeldistance
   // are placed via place_portlabel for ortho too. Skipping this left the

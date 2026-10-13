@@ -126,9 +126,13 @@ export function installOrthoResult(oe: OrthoEdge, pts: OrthoPoint[]): void {
   clipAndInstall(origEdge, origEdge.head, pts, pts.length, ORTHO_SINFO);
 }
 
-/** Run the ortho pipeline over the dot graph, installing results (no labels). */
-export function dispatchOrthoEdges(g: Graph, useLbls: boolean): void {
-  orthoEdges(buildOrthoGraph(g), useLbls, (_og, oe, pts) =>
+/**
+ * Run the ortho pipeline over the dot graph, installing results (no labels).
+ * @returns orthoEdges' status: 0 on success, non-zero when the maze could not
+ *   be built (graphviz 16.1) — dot_splines_ returns it (8fd4b59ef)
+ */
+export function dispatchOrthoEdges(g: Graph, useLbls: boolean): number {
+  return orthoEdges(buildOrthoGraph(g), useLbls, (_og, oe, pts) =>
     installOrthoResult(oe, pts),
   );
 }

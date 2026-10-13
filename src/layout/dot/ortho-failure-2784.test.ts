@@ -1,0 +1,131 @@
+// SPDX-License-Identifier: EPL-2.0
+//
+// Corpus 2784 (graphviz tests/2784.dot, Gitlab #2784): splines=ortho on a
+// layout whose rank sits at y = 1.08e18, so five node cells are zero-height
+// and Seidel trapezoidation meets an invalid trapezoid. Graphviz 16.1 turns
+// that into a failure chain (3c01aaeb4 → 3660b260e → 057e8779d → 312e49714 →
+// 178fe6d2f → 8fd4b59ef): orthoEdges returns -1, dot_splines_ returns it,
+// dotLayout/doDot fail, and dot_layout returns BEFORE dotneato_postprocess.
+// Native still renders and exits 0 — the drawing just keeps its untranslated
+// layout coordinates and has no edges.
+//
+// Expected data: __fixtures__/2784.native-16.1.svg and the stderr lines below
+// are native 16.1.0 output (`GVBINDIR=/tmp/ghl dot -Tsvg tests/2784.dot`,
+// exit status 0). 15.x instead printed 3x "add_segment: error" plus
+// "failed at node N[0]" and translated the drawing (node cx 27, 99, ...).
+//
+// @see lib/dotgen/dotinit.c:dot_layout
+// @see lib/dotgen/dotsplines.c:dot_splines_
+// @see lib/ortho/ortho.c:orthoEdges
+
+import { readFileSync } from 'node:fs';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { renderSvg, parse } from '../../index.js';
+import { createDefaultContext } from '../../gvc/default-context.js';
+
+const SRC_2784 = readFileSync(new URL('./__fixtures__/2784.dot', import.meta.url), 'utf8');
+const NATIVE_2784 = readFileSync(
+  new URL('./__fixtures__/2784.native-16.1.svg', import.meta.url), 'utf8',
+);
+
+/** Native 16.1 stderr lines emitted by the ortho failure chain, in order. */
+const ORTHO_FAILURE_LINES = [
+  'trapezoid segment construction failed',
+  'horizontal trapezoid construction failed',
+];
+
+interface NodeGeom { cx: string; cy: string; tx: string; ty: string }
+
+const NODE_RE = new RegExp(
+  '<title>([^<]*)</title>\\s*<ellipse[^>]*cx="([^"]+)" cy="([^"]+)"[^>]*/>' +
+  '\\s*<text[^>]*x="([^"]+)" y="([^"]+)"', 'g',
+);
+const BACKGROUND_RE = new RegExp('<polygon fill="white" stroke="none" points="([^"]+)"');
+const TRANSLATE_RE = new RegExp('<g id="graph0"[^>]*transform="([^"]+)"');
+
+/** Each node's ellipse centre and label anchor, keyed by `<title>`. */
+function nodeGeoms(svg: string): Record<string, NodeGeom> {
+  const out: Record<string, NodeGeom> = {};
+  for (const m of svg.matchAll(NODE_RE)) {
+    out[m[1]!] = { cx: m[2]!, cy: m[3]!, tx: m[4]!, ty: m[5]! };
+  }
+  return out;
+}
+
+/** The background polygon's x coordinates (pad - bb.LL.x .. bb.UR.x + pad). */
+function backgroundXs(svg: string): string[] {
+  const pts = BACKGROUND_RE.exec(svg)?.[1] ?? '';
+  return pts.split(' ').map((p) => p.split(',')[0]!);
+}
+
+/** The root group's transform attribute. */
+function graphTransform(svg: string): string | undefined {
+  return TRANSLATE_RE.exec(svg)?.[1];
+}
+
+/** console.error lines that came from the ortho failure chain. */
+function orthoLines(spy: { mock: { calls: unknown[][] } }): unknown[] {
+  return spy.mock.calls.map((c) => c[0])
+    .filter((l) => typeof l === 'string' && l.includes('construction failed'));
+}
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
+describe('2784 — graphviz 16.1 ortho failure skips dotneato_postprocess', () => {
+  it('prints the native stderr lines once, in order', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderSvg(SRC_2784, 'dot');
+    expect(orthoLines(err)).toEqual(ORTHO_FAILURE_LINES);
+  });
+
+  it('leaves every node at its untranslated layout position, as native does', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const port = nodeGeoms(renderSvg(SRC_2784, 'dot'));
+    const native = nodeGeoms(NATIVE_2784);
+    expect(Object.keys(native).sort()).toEqual(['0', '00', '1', '2', '6', 'e']);
+    expect(port).toEqual(native);
+    expect(port['00']).toEqual({
+      cx: '0', cy: '-1080000000000000000', tx: '0', ty: '-1080000000000000000',
+    });
+  });
+
+  it('draws the background over the untranslated bb (x from -31 to 391)', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const port = backgroundXs(renderSvg(SRC_2784, 'dot'));
+    expect(port).toEqual(backgroundXs(NATIVE_2784));
+    expect(port).toEqual(['-31', '-31', '391', '391', '-31']);
+  });
+
+  // setup_page: translation.x = -clip.LL.x = pad - bb.LL.x, so the skipped
+  // postprocess (bb.LL.x = -27) shows up as translate(31 ...), not pad-only 4.
+  it('emits the native page translate from the untranslated bb', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const port = graphTransform(renderSvg(SRC_2784, 'dot'));
+    expect(port).toBe(graphTransform(NATIVE_2784));
+    expect(port).toBe('scale(1 1) rotate(0) translate(31 2160000000000000000)');
+  });
+});
+
+describe('pack arm — a failing component stops doDot before packing', () => {
+  // C doDot: `rc = dotLayout(sg); if (rc != 0) { free(ccs); return rc; }`, so
+  // later components are never laid out and packSubgraphs / copyClusterInfo /
+  // dotneato_postprocess never run. Native 16.1 prints the same two lines on
+  // this graph and then segfaults while rendering (exit 139), so there is no
+  // native drawing to compare; these assertions pin the C control flow.
+  const PACK_FAIL = 'graph{pack=true splines=ortho a b[height=30000000000000000] a--b c}';
+
+  it('lays out the failing component untranslated and never reaches the next', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const g = parse(PACK_FAIL);
+    createDefaultContext().layout(g, 'dot');
+    expect(orthoLines(err)).toEqual(ORTHO_FAILURE_LINES);
+    expect(g.nodes.get('a')!.info.coord).toEqual({ x: 0, y: 2160000000000000000 });
+    expect(g.nodes.get('b')!.info.coord).toEqual({ x: 0, y: 1080000000000000000 });
+    const c = g.nodes.get('c')!.info;
+    expect(c.coord).toEqual({ x: 0, y: 0 });
+    expect(c.rank).toBeUndefined();
+    expect(g.info.bb).toEqual({ ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } });
+  });
+});

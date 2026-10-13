@@ -135,28 +135,38 @@ export function dotPhaseInit(g: Graph): void {
  * removeFill, sameports, splines, compound. This is C's static `dotLayout`
  * tail; the per-component pack branch runs exactly this (gvPostprocess is run
  * once on the root afterwards, not per component).
+ *
+ * Returns dot_splines' status: C's `if (r != 0) return r;` skips
+ * dot_compoundEdges, and the caller's doDot/dot_layout then skip
+ * dotneato_postprocess. Since graphviz 16.1 (8fd4b59ef) this is non-zero when
+ * splines=ortho cannot build its maze (tests/2784.dot).
  * @see lib/dotgen/dotinit.c:dotLayout (static)
  */
-export function dotPhasePostNoFinish(g: Graph): void {
+export function dotPhasePostNoFinish(g: Graph): number {
   removeFill(g);
   dotSameports(g);
-  dotSplines(g);
+  const r = dotSplines(g);
+  if (r !== 0) return r;
   // C: if (mapbool(agget(g, "compound"))) dot_compoundEdges(g);
   // agget on a pack-branch component subgraph (_cc_N) falls back to the
   // attribute default declared by the root's `compound=true`, so C's gate
   // passes per component; mirror that with a root fallback (local wins).
   // @see lib/dotgen/dotinit.c:338
   if (mapbool(g.attrs.get('compound') ?? g.root.attrs.get('compound'))) dotCompoundEdges(g);
+  return 0;
 }
 
 /**
  * Phase 4: post-position passes — the no-finish tail plus gvPostprocess to
- * rotate/translate coordinates per rankdir.
+ * rotate/translate coordinates per rankdir. A splines failure is a doDot
+ * error, so `dot_layout` returns WITHOUT dotneato_postprocess: native 16.1
+ * still renders (exit 0) from the untranslated layout coordinates.
  * @see lib/dotgen/dotinit.c:dotLayout (static)
+ * @see lib/dotgen/dotinit.c:dot_layout (`if (doDot(g) != 0) return;`)
  * @see lib/common/postproc.c:dotneato_postprocess
  */
 export function dotPhasePost(g: Graph): void {
-  dotPhasePostNoFinish(g);
+  if (dotPhasePostNoFinish(g) !== 0) return;
   gvPostprocess(g);
 }
 
