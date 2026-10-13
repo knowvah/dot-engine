@@ -77,19 +77,36 @@ function emitEdgeLabel(
   emitState?: EmitState,
 ): void {
   if (!lp?.set) return; // emit_edge_label: lbl == NULL || !lbl->set
-  const open = hs.url !== null || hs.explicit;
-  if (open) openAnchorWith(renderer, job, hs.url, hs.tooltip, hs.target, id);
-  // Head/tail labels route to EMIT_HLABEL/EMIT_TLABEL (→ _hldraw_/_tldraw_);
-  // the center label keeps its default EMIT_ELABEL. @see emit.c:emit_edge
-  const savedOverride = job.labelEmitOverride;
-  if (emitState !== undefined) job.labelEmitOverride = emitState;
-  try {
-    renderOneLabel(lp, renderer, job);
-  } finally {
-    job.labelEmitOverride = savedOverride;
-  }
-  if (spl) emitAttachment(lp, spl, renderer, job); // emit.c:2918
-  if (open) renderer.endAnchor?.(job);
+  withObjEmitState(job, emitState ?? EmitState.ELabel, () => {
+    const open = hs.url !== null || hs.explicit;
+    if (open) openAnchorWith(renderer, job, hs.url, hs.tooltip, hs.target, id);
+    // Head/tail labels route to EMIT_HLABEL/EMIT_TLABEL (→ _hldraw_/_tldraw_);
+    // the center label keeps its default EMIT_ELABEL. @see emit.c:emit_edge
+    const savedOverride = job.labelEmitOverride;
+    if (emitState !== undefined) job.labelEmitOverride = emitState;
+    try {
+      renderOneLabel(lp, renderer, job);
+    } finally {
+      job.labelEmitOverride = savedOverride;
+    }
+    if (spl) emitAttachment(lp, spl, renderer, job); // emit.c:2918
+    if (open) renderer.endAnchor?.(job);
+  });
+}
+
+/**
+ * emit_edge_label's emit-state window: C sets obj->emit_state = lkind before
+ * the anchor/label/attachment and restores the old state at the end, so the
+ * decorate attachment polyline lands in the label xbuf (_ldraw_), not _draw_.
+ * @see lib/common/emit.c:emit_edge_label (2909-2910, 2925)
+ */
+function withObjEmitState(job: RenderJob, lkind: EmitState, fn: () => void): void {
+  const obj = job.obj;
+  if (obj === null) { fn(); return; }
+  const oldEmitState = obj.emitState;
+  obj.emitState = lkind;
+  fn();
+  obj.emitState = oldEmitState;
 }
 
 /**

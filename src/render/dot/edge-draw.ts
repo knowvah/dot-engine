@@ -18,6 +18,7 @@ import type { ArrowDrawOp } from '../../common/arrows-types.js';
 import type { GVColor } from '../../common/color.js';
 import type { RenderJob } from '../../gvc/job.js';
 import { EmitState } from '../../gvc/job.js';
+import { PenType } from '../../gvc/context.js';
 import { resolveRenderColor } from '../color-resolve.js';
 import { taper, taperfun } from '../../common/taper.js';
 import { orthoRoundedRadius } from '../svg-helpers.js';
@@ -30,6 +31,9 @@ import { DotWriterBase } from './agwrite.js';
 
 /** Pen colour when a colour-list entry is empty. @see lib/common/emit.c:2485 */
 const DEFAULT_COLOR = 'black';
+
+/** gvc->defaultlinestyle as style tokens. @see lib/common/emit.c:105 */
+const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
 
 /**
  * One arrow primitive as an xdot op. Lifted out of emitArrows' loop unchanged —
@@ -64,6 +68,27 @@ export abstract class EdgeDrawBase extends DotWriterBase {
   protected penwidth: number[] = new Array(12).fill(1);
   protected abstract styleOp(job: RenderJob): string;
   protected abstract penOp(job: RenderJob): string;
+  abstract polyline(pts: Point[], job: RenderJob): void;
+
+  /**
+   * emit_attachment's draw calls (decorate=true): gvrender_set_style with the
+   * default line style sets the obj's rawstyle/pen/penwidth (setlinewidth 1),
+   * gvrender_set_pencolor sets the pen to the label fontcolor (first entry of
+   * a color list), then gvrender_polyline → xdot_polyline emits the style ops
+   * (`S 5 -solid`; setlinewidth is filtered), the pen color and `L 3`.
+   * @see lib/common/emit.c:emit_attachment (1886-1893)
+   * @see lib/gvc/gvrender.c:gvrender_set_style / gvrender_set_pencolor
+   */
+  attachmentPolyline(pts: Point[], pencolor: string, job: RenderJob): void {
+    const obj = job.obj;
+    if (obj !== null) {
+      obj.rawStyle = [...DEFAULT_LINE_STYLE];
+      obj.pen = PenType.Solid;
+      obj.penWidth = 1;
+      obj.penColor = resolveRenderColor(pencolor.split(':')[0]!);
+    }
+    this.polyline(pts, job);
+  }
 
   /**
    * The plain single-colour spline branch of beginEdge — lifted verbatim so the
