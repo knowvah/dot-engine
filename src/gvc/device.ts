@@ -15,7 +15,9 @@
 import type { Box } from '../model/geom.js';
 import { boxOverlap, POINTS_PER_INCH } from '../model/geom.js';
 import { lateDouble } from '../common/nodeinit.js';
-import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin } from './viewport.js';
+import {
+  parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin, setupPageClip,
+} from './viewport.js';
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
@@ -467,7 +469,11 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   // altering the ptf path, carry Z in job.scale instead — which is exactly what
   // C's SVG group emits (svg_begin_page prints job->scale.x/y = zoom*dpi/72),
   // not job->zoom. job.scale is read only by the SVG group/dims.
-  const z = initJobViewportZoom(job.bb, parseDrawingSize(g.attrs.get('size')), job.pad);
+  const drawingSize = parseDrawingSize(g.attrs.get('size'));
+  const z = initJobViewportZoom(job.bb, drawingSize, job.pad);
+  // setup_page's job->clip, from the same viewport focus/view and Z.
+  // @see lib/common/emit.c:setup_page
+  job.clip = setupPageClip(job.bb, drawingSize, job.pad, z);
   // init_job_dpi (emit.c:3333): GD_drawing->dpi = late_double(dpi, resolution, 0)
   // (input.c:713). When >0 it becomes job->dpi; otherwise the SVG device's
   // default_dpi = 72 (gvrender_core_svg.c:814) applies. init_job_viewport then
