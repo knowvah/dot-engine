@@ -53,7 +53,18 @@ function isMulticolor(fillcolor: string): boolean {
 // Periphery ring renderers
 // ---------------------------------------------------------------------------
 
-/** Render one ellipse periphery ring for a node. */
+/**
+ * Render one ellipse periphery ring for a node. poly_gencode hands
+ * gvrender_ellipse the two ABSOLUTE corners AF = vertex + ND_coord; it passes
+ * the renderer the centre mid_pointf(AF[0], AF[1]) and the corner AF[1], and
+ * the renderer prints rx/ry as corner - centre. Computing the radii in that
+ * order (not from the relative vertices) keeps C's rounding: at |coord| where
+ * the double spacing exceeds the radius, coord ± r rounds back to coord and the
+ * radius collapses to 0 (corpus 2784, y = 1.08e18).
+ * @see lib/common/shapes.c:poly_gencode (AF[i] = P + ND_coord, gvrender_ellipse)
+ * @see lib/gvc/gvrender.c:gvrender_ellipse (af[0] = mid_pointf, af[1] = pf[1])
+ * @see plugin/core/gvrender_core_svg.c:svg_ellipse (rx = A[1].x - A[0].x)
+ */
 export function renderEllipse(
   ring: Point[],
   coord: Point,
@@ -61,9 +72,12 @@ export function renderEllipse(
   job: RenderJob,
   filled: boolean,
 ): void {
-  const rx = Math.abs((ring[1]!.x - ring[0]!.x) / 2);
-  const ry = Math.abs((ring[1]!.y - ring[0]!.y) / 2);
-  const center = transformPoint(coord, job);
+  const af0 = { x: ring[0]!.x + coord.x, y: ring[0]!.y + coord.y };
+  const af1 = { x: ring[1]!.x + coord.x, y: ring[1]!.y + coord.y };
+  const mid = { x: (af0.x + af1.x) / 2.0, y: (af0.y + af1.y) / 2.0 };
+  const rx = af1.x - mid.x;
+  const ry = af1.y - mid.y;
+  const center = transformPoint(mid, job);
   renderer.ellipse(center, rx, ry, filled, job);
 }
 
