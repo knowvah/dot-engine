@@ -52,6 +52,17 @@ function nodeGeoms(svg: string): Record<string, NodeGeom> {
   return out;
 }
 
+const ELLIPSE_RE = new RegExp(
+  '<title>([^<]*)</title>\\s*<ellipse[^>]*rx="([^"]+)" ry="([^"]+)"', 'g',
+);
+
+/** Each node's ellipse radii, keyed by `<title>`. */
+function ellipseRadii(svg: string): Record<string, { rx: string; ry: string }> {
+  const out: Record<string, { rx: string; ry: string }> = {};
+  for (const m of svg.matchAll(ELLIPSE_RE)) out[m[1]!] = { rx: m[2]!, ry: m[3]! };
+  return out;
+}
+
 /** The background polygon's x coordinates (pad - bb.LL.x .. bb.UR.x + pad). */
 function backgroundXs(svg: string): string[] {
   const pts = BACKGROUND_RE.exec(svg)?.[1] ?? '';
@@ -89,6 +100,18 @@ describe('2784 — graphviz 16.1 ortho failure skips dotneato_postprocess', () =
     expect(port['00']).toEqual({
       cx: '0', cy: '-1080000000000000000', tx: '0', ty: '-1080000000000000000',
     });
+  });
+
+  // gvrender_ellipse passes the absolute corner and mid_pointf(corner0, corner1)
+  // centre; svg_ellipse prints ry = corner.y - centre.y. Doubles near 1.08e18
+  // are 256 apart, so coord.y ± 18 rounds back to coord.y and ry is 0 — only
+  // node 2 (ry 1.08e18) keeps its height. @see lib/gvc/gvrender.c:gvrender_ellipse
+  it('computes ellipse radii from absolute corners, as native does', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const port = ellipseRadii(renderSvg(SRC_2784, 'dot'));
+    expect(port).toEqual(ellipseRadii(NATIVE_2784));
+    expect(port['00']).toEqual({ rx: '27', ry: '0' });
+    expect(port['2']).toEqual({ rx: '27', ry: '1080000000000000000' });
   });
 
   it('draws the background over the untranslated bb (x from -31 to 391)', () => {
