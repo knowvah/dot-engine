@@ -296,13 +296,13 @@ function isInterior(i: number, len: number): boolean {
  * unchanged.
  * @see lib/dotgen/dotsplines.c:make_regular_edge (realedge resolve + VIRTUAL chain walk)
  */
-function baseSplineForGroup(g: Graph, e0: Edge): Point[] | null {
+function baseSplineForGroup(g: Graph, e0: Edge): Point[] | null | 'lost' {
   const orig = resolveOrigEdge(e0);
   const fe = isBackEdgeMember(orig) ? makeFwdEdge(orig) : orig;
   const pts = routeRegularEdgeFaithful(g, fe);
   // routesplines failure on the group base: C's make_regular_edge returns
   // before any clip_and_install — every member of the group is lost.
-  if (pts === 'lost') return null;
+  if (pts === 'lost') return 'lost';
   return pts ?? routeMultiRankEdgeFaithful(g, fe);
 }
 
@@ -386,6 +386,14 @@ export function routeParallelEdgeGroup(
     return o.info.head_port?.defined || o.info.tail_port?.defined;
   }) ?? edges[0]!;
   const base = baseSplineForGroup(g, baseEdge);
+  // A lost group base consumes every member: C's dot_splines_ calls
+  // make_regular_edge once per group and never re-routes its edges, so the
+  // routeDotEdges backstop must not re-attempt (and re-report) them.
+  // @see lib/dotgen/dotsplines.c:dot_splines_ (group loop, one call per group)
+  if (base === 'lost') {
+    for (const e of edges) resolveOrigEdge(e).info.lost = true;
+    return;
+  }
   if (base === null) return;
   if (cnt === 1) { installShiftedEdge(edges[0]!, base); return; }
   // dx = Multisep * (cnt-1) / 2 centres the fan on the base path.

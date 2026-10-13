@@ -281,6 +281,7 @@ export function routeOneEdge(e: GraphEdge, g: Graph): void {
 function routeFaithfulMultiRank(e: GraphEdge, g: Graph): boolean {
   const pts = routeMultiRankEdgeFaithful(g, e);
   if (pts === null) return false;
+  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
   return true;
 }
