@@ -11,7 +11,7 @@ import type { EngineName } from '../gvc/context.js';
 
 const NO_IMAGES = { inlineImages: false } as const;
 const WITH_IMAGES = { inlineImages: true } as const;
-const DEFAULT_FACE = 'Times,serif';
+const DEFAULT_FACE = 'Times-Roman'; // C DEFAULT_FONTNAME (const.h:67)
 const DEFAULT_SIZE = 14;
 const BOLD = { bold: true, italic: false } as const;
 

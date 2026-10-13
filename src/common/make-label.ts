@@ -19,7 +19,9 @@ import type { Graph } from '../model/graph.js';
 import { htmlEntityUTF8 } from './html-entities.js';
 
 export const DEFAULT_FONTSIZE = 14.0;
-export const DEFAULT_FONTNAME = 'Times,serif';
+/** C's default fontname (non-Windows); renderers alias it, e.g. SVG
+ * font-family="Times,serif". @see lib/common/const.h:67 */
+export const DEFAULT_FONTNAME = 'Times-Roman';
 export const DEFAULT_COLOR = 'black';
 
 // htmlEntityUTF8 moved to html-entities.ts (a leaf module) so the HTML lexer

@@ -135,10 +135,10 @@ describe('doGraphLabel — font inheritance', () => {
     expect((sg.info.label as TextlabelT).fontname).toBe('Courier');
   });
 
-  it('root label with no fontname keeps the Times,serif default', () => {
+  it('root label with no fontname keeps the Times-Roman default (C DEFAULT_FONTNAME)', () => {
     const g = makeGraph({ label: 'G' });
     doGraphLabel(g, stubMeasurer);
-    expect((g.info.label as TextlabelT).fontname).toBe('Times,serif');
+    expect((g.info.label as TextlabelT).fontname).toBe('Times-Roman');
   });
 });
 

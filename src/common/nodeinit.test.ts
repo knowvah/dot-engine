@@ -106,7 +106,7 @@ describe('commonInitNode — xlabel text and dimen', () => {
 describe('commonInitNode — xlabel font attrs', () => {
   it('uses default fontname when node has no font attr', () => {
     const { n } = nodeWithXlabel('nx');
-    expect((n.info.xlabel as TextlabelT).fontname).toBe('Times,serif');
+    expect((n.info.xlabel as TextlabelT).fontname).toBe('Times-Roman');
   });
 
   it('uses per-node fontname override', () => {
