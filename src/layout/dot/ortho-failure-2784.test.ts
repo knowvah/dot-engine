@@ -140,6 +140,20 @@ describe('2784 — graphviz 16.1 ortho failure skips dotneato_postprocess', () =
     expect(port).toEqual(['-31', '-31', '391', '391', '-31']);
   });
 
+  // emit_background boxes job->clip, which setup_page builds as focus ∓
+  // pageSize/2 from init_job_viewport's focus = (LL+UR)/2 and padded size —
+  // not bb ± pad. At y = 2.16e18 the pad is below the double spacing, so
+  // clip.LL.y = 1.08e18 - 1.08e18 = 0 where bb.LL.y - pad would be -4.
+  // @see lib/common/emit.c:setup_page, init_job_viewport
+  it('draws the background over job->clip as setup_page computes it', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const port = BACKGROUND_RE.exec(renderSvg(SRC_2784, 'dot'))?.[1];
+    expect(port).toBe(BACKGROUND_RE.exec(NATIVE_2784)?.[1]);
+    expect(port).toBe(
+      '-31,0 -31,-2160000000000000000 391,-2160000000000000000 391,0 -31,0',
+    );
+  });
+
   // setup_page: translation.x = -clip.LL.x = pad - bb.LL.x, so the skipped
   // postprocess (bb.LL.x = -27) shows up as translate(31 ...), not pad-only 4.
   it('emits the native page translate from the untranslated bb', () => {

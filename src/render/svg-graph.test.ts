@@ -19,6 +19,7 @@ import {
 } from './svg-graph.js';
 import { renderSvg } from '../index.js';
 import { createSvgRenderer } from './svg.js';
+import { setupPageClip } from '../gvc/viewport.js';
 import { Graph as GraphClass } from '../model/graph.js';
 import type { Graph } from '../model/graph.js';
 
@@ -31,10 +32,12 @@ function makeJob(): RenderJob {
   const j = new RenderJob('svg', measurer);
   j.bb = { ll: { x: 0, y: 0 }, ur: { x: 100, y: 80 } };
   j.pad = { x: SVG_PAD, y: SVG_PAD };
+  j.clip = setupPageClip(j.bb, null, j.pad, 1);
   return j;
 }
 
-const testBb: Box = { ll: { x: 0, y: 0 }, ur: { x: 100, y: 80 } };
+/** setup_page's clip for bb (0,0)-(100,80) with the 4pt SVG pad. */
+const testBb: Box = { ll: { x: -4, y: -4 }, ur: { x: 104, y: 84 } };
 
 // ---------------------------------------------------------------------------
 // resolveGraphBgcolor — pure resolver
@@ -185,6 +188,7 @@ function b68Job(rotation: number): RenderJob {
   job.rotation = rotation;
   job.bb = { ll: { x: 0, y: 0 }, ur: { x: 630, y: 204.5 } };
   job.pad = { x: SVG_PAD, y: SVG_PAD };
+  job.clip = setupPageClip(job.bb, null, job.pad, 1);
   job.renderer = createSvgRenderer();
   return job;
 }
@@ -235,6 +239,7 @@ describe('svgBeginPage — un-postprocessed bb (setup_page translation.x = pad -
     const g = new GraphClass('simple', 'directed') as unknown as Graph;
     const job = makeJob();
     job.bb = { ll: { x: -27, y: 0 }, ur: { x: 387, y: 80 } };
+    job.clip = setupPageClip(job.bb, null, job.pad, 1);
     svgBeginPage(g, job);
     expect(job.output.join('')).toContain(
       'transform="scale(1 1) rotate(0) translate(31 84)"',

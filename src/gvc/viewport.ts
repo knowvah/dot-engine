@@ -201,3 +201,32 @@ export function initJobViewportZoom(bb: Box, size: DrawingSize | null, pad: Poin
   if (drawingNeedsFit(size, szx, szy)) return Math.min(size.x / szx, size.y / szy);
   return 1.0;
 }
+
+/**
+ * job->clip for the single-page devices this port drives, evaluated in C's
+ * order: init_job_viewport pads the bb (job->bb = bb ± pad, sz = job->bb.UR -
+ * job->bb.LL, size= substituting a degenerate sz axis), takes the focus as the
+ * centre of the UNPADDED bb and view = Z * sz; init_job_pagination sets
+ * pageSize = imageSize / zoom (imageSize = view, rotated to page orientation
+ * and back); setup_page sets clip.LL = focus + pageSize * (elem - size / 2.)
+ * with pagesArrayElem 0 / pagesArraySize 1 and clip.UR = clip.LL + pageSize.
+ * Algebraically bb ± pad, but not in floating point: where the pad is below the
+ * double spacing (corpus 2784, y = 2.16e18) clip.LL.y is 0, not -pad.
+ * @see lib/common/emit.c:init_job_viewport, init_job_pagination, setup_page
+ */
+export function setupPageClip(bb: Box, size: DrawingSize | null, pad: Point, z: number): Box {
+  const jbLL = { x: bb.ll.x - pad.x, y: bb.ll.y - pad.y };
+  const jbUR = { x: bb.ur.x + pad.x, y: bb.ur.y + pad.y };
+  const sz = { x: jbUR.x - jbLL.x, y: jbUR.y - jbLL.y };
+  if (size !== null && size.x > 0.001 && size.y > 0.001) {
+    if (sz.x <= 0.001) sz.x = size.x;
+    if (sz.y <= 0.001) sz.y = size.y;
+  }
+  const focus = { x: 0.5 * (bb.ll.x + bb.ur.x), y: 0.5 * (bb.ll.y + bb.ur.y) };
+  const pageSize = { x: (z * sz.x) / z, y: (z * sz.y) / z };
+  const ll = {
+    x: focus.x + pageSize.x * (0 - 1 / 2.0),
+    y: focus.y + pageSize.y * (0 - 1 / 2.0),
+  };
+  return { ll, ur: { x: ll.x + pageSize.x, y: ll.y + pageSize.y } };
+}

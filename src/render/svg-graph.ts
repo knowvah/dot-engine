@@ -184,22 +184,23 @@ export function resolveGraphBgcolor(bgcolorAttr: string | undefined): string {
 }
 
 /**
- * Emit background polygon covering the full padded content area.
+ * Emit background polygon covering the page clip box (C gvrender_box over
+ * job->clip — bb ± pad as setup_page evaluates it, see setupPageClip).
  *
  * Omits the polygon entirely when resolvedColor is the transparent sentinel.
  * Coordinates are in the group's local frame (y-flipped via devscale.y=-1):
- *   x: [bb.ll.x - PAD, bb.ur.x + PAD]
- *   y (flipped): [-(bb.ur.y + PAD), -(bb.ll.y - PAD)]
+ *   x: [clip.ll.x, clip.ur.x]
+ *   y (flipped): [-clip.ur.y, -clip.ll.y]
  *
  * @see plugin/core/gvrender_core_svg.c:svg_begin_page
  * @see lib/common/emit.c:emit_background:1476
  */
-export function emitGraphBackground(bb: Box, resolvedColor: string, job: RenderJob): void {
+export function emitGraphBackground(clip: Box, resolvedColor: string, job: RenderJob): void {
   if (resolvedColor === BGCOLOR_TRANSPARENT) return;
-  const left   = bb.ll.x - job.pad.x;
-  const right  = bb.ur.x + job.pad.x;
-  const top    = -(bb.ur.y + job.pad.y);
-  const bottom = -(bb.ll.y - job.pad.y);
+  const left   = clip.ll.x;
+  const right  = clip.ur.x;
+  const top    = -clip.ur.y;
+  const bottom = -clip.ll.y;
   const corners: [number, number][] = [
     [left, bottom], [left, top], [right, top], [right, bottom], [left, bottom],
   ];
@@ -218,11 +219,11 @@ export function emitGraphBackground(bb: Box, resolvedColor: string, job: RenderJ
  * Passed to getGradientPoints inside emitLinearGradient.
  * @see lib/common/emit.c:emit_background:1517 (gvrender_box with clip)
  */
-function bgGradientPts(bb: Box, pad: Point): Point[] {
-  const left   = bb.ll.x - pad.x;
-  const right  = bb.ur.x + pad.x;
-  const bottom = bb.ll.y - pad.y;
-  const top    = bb.ur.y + pad.y;
+function bgGradientPts(clip: Box): Point[] {
+  const left   = clip.ll.x;
+  const right  = clip.ur.x;
+  const bottom = clip.ll.y;
+  const top    = clip.ur.y;
   return [
     { x: left,  y: bottom },
     { x: left,  y: top    },
@@ -236,11 +237,11 @@ function bgGradientPts(bb: Box, pad: Point): Point[] {
  * Coords identical to emitGraphBackground; only fill changes.
  * @see plugin/core/gvrender_core_svg.c:svg_polygon:686
  */
-function writeGradientPolygon(bb: Box, id: string, job: RenderJob): void {
-  const left   = bb.ll.x - job.pad.x;
-  const right  = bb.ur.x + job.pad.x;
-  const top    = -(bb.ur.y + job.pad.y);
-  const bottom = -(bb.ll.y - job.pad.y);
+function writeGradientPolygon(clip: Box, id: string, job: RenderJob): void {
+  const left   = clip.ll.x;
+  const right  = clip.ur.x;
+  const top    = -clip.ur.y;
+  const bottom = -clip.ll.y;
   const corners: [number, number][] = [
     [left, bottom], [left, top], [right, top], [right, bottom], [left, bottom],
   ];
@@ -265,7 +266,7 @@ function writeGradientPolygon(bb: Box, id: string, job: RenderJob): void {
  * @see plugin/core/gvrender_core_svg.c:svg_gradstyle:572
  * @see plugin/core/gvrender_core_svg.c:svg_rgradstyle:608
  */
-function emitGradientBackground(bb: Box, spec: BgGradientSpec, job: RenderJob): void {
+function emitGradientBackground(clip: Box, spec: BgGradientSpec, job: RenderJob): void {
   const obj = createObjState(ObjType.RootGraph);
   obj.id = 'graph0';
   obj.fillColor = resolveRenderColor(spec.fillColor);
@@ -280,10 +281,10 @@ function emitGradientBackground(bb: Box, spec: BgGradientSpec, job: RenderJob): 
     emitRadialGradient(job, gid);
   } else {
     gid = gradientId('graph0', 'l', job.linearGradId++);
-    emitLinearGradient(job, bgGradientPts(bb, job.pad), gid);
+    emitLinearGradient(job, bgGradientPts(clip), gid);
   }
   job.popObj();
-  writeGradientPolygon(bb, gid, job);
+  writeGradientPolygon(clip, gid, job);
 }
 
 /**
@@ -305,17 +306,17 @@ function resolveBgGradientSpec(g: Graph, bgcolorAttr: string): BgGradientSpec | 
  * Separated to keep svgBeginGraph under the 30-line body limit.
  * @see lib/common/emit.c:emit_background:1476
  */
-function emitBgcolorBackground(g: Graph, bb: Box, bgcolorAttr: string | undefined, job: RenderJob): void {
+function emitBgcolorBackground(g: Graph, clip: Box, bgcolorAttr: string | undefined, job: RenderJob): void {
   if (!bgcolorAttr || bgcolorAttr.length === 0 || bgcolorAttr === 'transparent') {
-    emitGraphBackground(bb, resolveGraphBgcolor(bgcolorAttr), job);
+    emitGraphBackground(clip, resolveGraphBgcolor(bgcolorAttr), job);
     return;
   }
   const spec = resolveBgGradientSpec(g, bgcolorAttr);
   if (spec !== null) {
-    emitGradientBackground(bb, spec, job);
+    emitGradientBackground(clip, spec, job);
     return;
   }
-  emitGraphBackground(bb, resolveGraphBgcolor(bgcolorAttr), job);
+  emitGraphBackground(clip, resolveGraphBgcolor(bgcolorAttr), job);
 }
 
 /**
@@ -362,17 +363,16 @@ export function svgBeginGraph(g: Graph, job: RenderJob): void {
  * @see plugin/core/gvrender_core_svg.c:svg_begin_page
  */
 export function svgBeginPage(g: Graph, job: RenderJob): void {
-  const bb = job.bb;
-  // Portrait: translation.x = -clip.LL.x with clip = bb ± pad (the port's
-  // single-page reduction of setup_page's focus/pageSize clip, as nodeInBox
-  // and mapTransform use), i.e. pad - bb.ll.x. gvPostprocess normally zeroes
-  // bb.ll, but a dot layout failure skips it (graphviz 16.1, corpus 2784).
+  const clip = job.clip;
+  // Portrait: translation.x = -clip.LL.x, with job->clip as setup_page builds
+  // it (setupPageClip: focus ∓ pageSize/2, i.e. bb ± pad up to rounding).
+  // gvPostprocess normally zeroes bb.ll, but a dot layout failure skips it
+  // (graphviz 16.1, corpus 2784: translate(31 ...)).
   // Landscape (ADR-3): setup_page's rotation branch (SVG = GVRENDER_Y_GOES_DOWN)
-  // gives translation.x = -(focus.x + pageSize.x/2) = -(bb.ur.x + PAD) in the
-  // zeroed-bb frame; translation.y is unchanged (focus.y + pageSize.y/2 =
-  // bb.ur.y + PAD). pageSize = imageSize/zoom is Z-independent (outer scale
-  // carries Z), so the formula holds for any size= fit. Pinned to b68 native
-  // translate(-634 208.5). @see emit.c:setup_page; gvrender_core_svg.c:svg_begin_page
+  // gives translation.x = -clip.UR.x; translation.y = -clip.UR.y in both
+  // branches (printed negated). pageSize = imageSize/zoom is Z-independent
+  // (outer scale carries Z). Pinned to b68 native translate(-634 208.5).
+  // @see emit.c:setup_page; gvrender_core_svg.c:svg_begin_page
   //
   // margin (F6): setup_page adds `canvasBox.LL / job->zoom` on top of the
   // pad-only formula above -- canvasBox.LL is the FINAL (post swap-cancel)
@@ -386,9 +386,9 @@ export function svgBeginPage(g: Graph, job: RenderJob): void {
   // @see lib/common/emit.c:1566-1582 setup_page (CAUTION comment there)
   const z = job.scale.x;
   const tx = job.rotation !== 0
-    ? -(bb.ur.x + job.pad.x) - job.margin.x / z
-    : -(bb.ll.x - job.pad.x) + job.margin.x / z;
-  const ty = bb.ur.y + job.pad.y + job.margin.y / z;
+    ? -clip.ur.x - job.margin.x / z
+    : -clip.ll.x + job.margin.x / z;
+  const ty = clip.ur.y + job.margin.y / z;
   emitGraphGroupOpen(
     job.idLayerPrefix() + svgGraphId(g, job),
     svgGraphClass(g),
@@ -405,7 +405,7 @@ export function svgBeginPage(g: Graph, job: RenderJob): void {
  * @see lib/common/emit.c:emit_page (emit_background after begin_page)
  */
 export function svgPageBackground(g: Graph, job: RenderJob): void {
-  emitBgcolorBackground(g, job.bb, g.attrs.get('bgcolor'), job);
+  emitBgcolorBackground(g, job.clip, g.attrs.get('bgcolor'), job);
 }
 
 /** Close the graph `<g>` group. @see svg_end_page */
