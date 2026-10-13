@@ -16,7 +16,7 @@ import type { Box, Point } from '../model/geom.js';
 import type { RenderJob } from '../gvc/job.js';
 import { createObjState, ObjType } from '../gvc/job.js';
 import { FillType } from '../gvc/context.js';
-import { escapeXml, escapeXmlTitle } from './svg-helpers.js';
+import { escapeXml, escapeXmlTitle, svgComment } from './svg-helpers.js';
 import { resolveRenderColor, colorPaint } from './color-resolve.js';
 import { svgGraphId, svgGraphClass } from './svg-id.js';
 import { parseGradientSpec } from '../common/htmltable-emit-fill.js';
@@ -354,7 +354,25 @@ export function svgBeginGraph(g: Graph, job: RenderJob): void {
   }
   job.write(SVG_DOCTYPE);
   job.write(SVG_GENERATOR_COMMENT);
+  // emit_graph: the root `comment` attribute, between svg_begin_job and
+  // emit_begin_graph. @see lib/common/emit.c:emit_graph
+  const comment = g.attrs.get('comment');
+  if (comment !== undefined && comment.length > 0) svgComment(comment, job);
+  emitTitlePagesComment(g, job);
   emitSvgTag(job, g.attrs.get('svgid'));
+}
+
+/**
+ * svg_begin_graph's header comment: ` Title: <name>` for a user-named graph,
+ * then the page count (always 1 — the port emits a single page).
+ * @see plugin/core/gvrender_core_svg.c:svg_begin_graph
+ */
+function emitTitlePagesComment(g: Graph, job: RenderJob): void {
+  job.write('<!--');
+  if (g.name.length > 0 && g.name[0] !== '%') {
+    job.write(' Title: ' + escapeXmlTitle(g.name));
+  }
+  job.write(' Pages: 1 -->\n');
 }
 
 /**

@@ -421,8 +421,8 @@ export function svgPolyline(pts: Point[], job: RenderJob): void {
   job.write('"/>\n');
 }
 
-export function svgComment(text: string, job: RenderJob): void {
-  job.write('<!-- ' + escapeXml(text) + ' -->\n');
+export function svgComment(text: string, job: RenderJob): void { // svg_comment: gvputs_xml
+  job.write('<!-- ' + escapeXmlTitle(text) + ' -->\n');
 }
 
 // ---------------------------------------------------------------------------
