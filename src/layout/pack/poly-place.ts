@@ -19,6 +19,7 @@ import type { Edge } from '../../model/edge.js';
 import type { PackInfo } from './types.js';
 import { PackMode } from './types.js';
 import { cround } from '../../common/arith.js';
+import { d2i } from '../../util/math.js';
 import { gvQsort } from '../../util/bsd-qsort.js';
 
 /** Max. avg. polyomino size. @see lib/pack/pack.c:C */
@@ -78,7 +79,10 @@ export function computeStep(bbs: Box[], margin: number): number {
     c -= W * H;
   }
   const r = Math.sqrt(b * b - 4 * a * c);
-  const root = Math.trunc((-b + r) / (2 * a));
+  // C `root = (int)l1`: the native arm64 build converts with `fcvtzs w`, which
+  // saturates at INT_MAX (objdump of libgvc `_computeStep`). Only graphs with
+  // extreme coordinates reach it (1314: l1 = 7.4e10 → step 2147483647).
+  const root = d2i((-b + r) / (2 * a));
   return root === 0 ? 1 : root;
 }
 
@@ -289,7 +293,10 @@ function fits(x: number, y: number, info: GInfo, ctx: PlaceCtx): boolean {
   }
   const bb = ctx.bbs[info.index]!;
   const LL = { x: cround(bb.ll.x), y: cround(bb.ll.y) };
-  ctx.places[info.index] = { x: ctx.step * x - LL.x, y: ctx.step * y - LL.y };
+  // C `step * x` is int * int: a 32-bit `mul w` that wraps before the result
+  // is widened to double (objdump of libgvc `_fits`). Matters only once
+  // computeStep has saturated at INT_MAX.
+  ctx.places[info.index] = { x: Math.imul(ctx.step, x) - LL.x, y: Math.imul(ctx.step, y) - LL.y };
   for (const c of info.cells) ctx.ps.add(c.x + x, c.y + y);
   return true;
 }
