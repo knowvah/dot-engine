@@ -85,7 +85,45 @@ export function powerLawGraph(A: SpMatrix): boolean {
 }
 
 /**
+ * Width of the vectorised main loop clang emits for pcp_rotate's
+ * covariance accumulation once LTO inlines it (dim == 2 constant).
+ * @see lib/sfdpgen/spring_electrical.c:pcp_rotate (16.1, 630465f82)
+ */
+const PCP_COVARIANCE_LANES = 4;
+
+/**
+ * The covariance accumulation `y[dim*k+l] += x[i*dim+k]*x[i*dim+l]`, with
+ * the native 16.1 build's FMA contraction. 630465f82 made pcp_rotate
+ * static, so LTO inlines it into multilevel_spring_electrical_embedding
+ * and vectorises this loop 4 points at a time: the main loop multiplies
+ * and adds separately (fmul.2d + fadd.2d, two roundings) and only the
+ * scalar tail over the last n % 4 points is fused (fmla.2d/fmadd).
+ * Accumulation order is the C order in both parts. (The 15.x out-of-line
+ * pcp_rotate fused every point.)
+ * @see lib/sfdpgen/spring_electrical.c:pcp_rotate
+ */
+function pcpCovariance(n: number, dim: number, x: number[], y: number[]): void {
+  const nUnfused = n - (n % PCP_COVARIANCE_LANES);
+  for (let i = 0; i < n; i++) {
+    for (let k = 0; k < dim; k++) {
+      for (let l = 0; l < dim; l++) {
+        const a = x[i * dim + k]!;
+        const b = x[i * dim + l]!;
+        const acc = y[dim * k + l]!;
+        y[dim * k + l] = i < nUnfused ? acc + a * b : fma(a, b, acc);
+      }
+    }
+  }
+}
+
+/**
  * Principal-component rotation about the centroid.
+ *
+ * FMA contraction mirrors the native 16.1 build (objdump of the inlined
+ * body): the covariance loop per pcpCovariance; the eigenvector radicand
+ * fuses its y0*y0, -2*y0*y3 and y3*y3 terms (4*y1*y1 is rounded first);
+ * `1 + axis0*axis0` is fused; each rotated coordinate fuses its first
+ * product (x0 = fma(x, a0, y*a1), x1 = fma(-x, a1, y*a0)).
  * @see lib/sfdpgen/spring_electrical.c:pcp_rotate
  */
 export function pcpRotate(n: number, dim: number, x: number[]): void {
@@ -98,26 +136,20 @@ export function pcpRotate(n: number, dim: number, x: number[]): void {
   for (let i = 0; i < n; i++) {
     for (let k = 0; k < dim; k++) x[dim * i + k]! -= center[k]!;
   }
-  for (let i = 0; i < n; i++) {
-    for (let k = 0; k < dim; k++) {
-      for (let l = 0; l < dim; l++) {
-        y[dim * k + l] = fma(x[i * dim + k]!, x[i * dim + l]!, y[dim * k + l]!);
-      }
-    }
-  }
+  pcpCovariance(n, dim, x, y);
   const axis = [0, 1];
   if (y[1] !== 0) {
-    axis[0] = -(-y[0]! + y[3]! -
-      Math.sqrt(y[0]! * y[0]! + 4 * y[1]! * y[1]! - 2 * y[0]! * y[3]! + y[3]! * y[3]!))
-      / (2 * y[1]!);
+    const radicand = fma(y[3]!, y[3]!,
+      fma(-2 * y[0]!, y[3]!, fma(y[0]!, y[0]!, 4 * y[1]! * y[1]!)));
+    axis[0] = -(-y[0]! + y[3]! - Math.sqrt(radicand)) / (2 * y[1]!);
     axis[1] = 1;
   }
-  const dist = Math.sqrt(1 + axis[0]! * axis[0]!);
+  const dist = Math.sqrt(fma(axis[0]!, axis[0]!, 1));
   axis[0] = axis[0]! / dist;
   axis[1] = axis[1]! / dist;
   for (let i = 0; i < n; i++) {
-    const x0 = x[dim * i]! * axis[0]! + x[dim * i + 1]! * axis[1]!;
-    const x1 = -x[dim * i]! * axis[1]! + x[dim * i + 1]! * axis[0]!;
+    const x0 = fma(x[dim * i]!, axis[0]!, x[dim * i + 1]! * axis[1]!);
+    const x1 = fma(-x[dim * i]!, axis[1]!, x[dim * i + 1]! * axis[0]!);
     x[dim * i] = x0;
     x[dim * i + 1] = x1;
   }
