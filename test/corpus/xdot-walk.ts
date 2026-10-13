@@ -15,6 +15,9 @@
 //
 //   • --survey: render every item, record a verdict, and write xdot-parity.json
 //     (consumed by xdot-dashboard.ts, T4). Never halts on a divergence.
+//     Resumable (json-walk.ts / engine-walk.ts model): per-item rows are
+//     appended to xdot-parity.jsonl as they complete, and a re-run reuses the
+//     recorded rows instead of re-rendering, so an interrupted survey resumes.
 //
 // Reuses survey.ts's spawn + oracle-cache model (AD-4): every port render is a
 // group-killed subprocess with a wall-clock budget; the native oracle SVGs are
@@ -23,7 +26,9 @@
 
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import {
+  appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync,
+} from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -36,6 +41,7 @@ const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
 const RENDER_ONE = join(REPO, 'test/corpus/render-one-xdot.ts');
 const PARITY = new URL('./parity.json', import.meta.url);
 const XDOT_PARITY = new URL('./xdot-parity.json', import.meta.url);
+const XDOT_PARITY_JSONL = fileURLToPath(new URL('./xdot-parity.jsonl', import.meta.url));
 const ACCEPTED = new URL('./accepted-divergences-xdot.json', import.meta.url);
 
 /** Oracle-cache identity: same scheme as survey.ts, namespaced for xdot. */
@@ -347,14 +353,43 @@ async function runDefault(items: Item[], tsx: { cmd: string; pre: string[] }, ac
   process.exit(0);
 }
 
-/** Survey: render all, write xdot-parity.json (never halts). */
+/** Read a resume JSONL: id -> last recorded row (partial trailing lines skipped). */
+export function loadResumed(jsonlPath: string): Map<string, XdotWalkResult> {
+  const resumed = new Map<string, XdotWalkResult>();
+  if (!existsSync(jsonlPath)) return resumed;
+  for (const ln of readFileSync(jsonlPath, 'utf8').split('\n')) {
+    if (!ln) continue;
+    try {
+      const row = JSON.parse(ln) as XdotWalkResult;
+      resumed.set(row.id, row);
+    } catch { /* partial line */ }
+  }
+  return resumed;
+}
+
+/**
+ * Survey: render all, write xdot-parity.json (never halts).
+ *
+ * Resumable (json-walk.ts model): rows are appended to XDOT_PARITY_JSONL as
+ * they complete; a re-run reuses already-recorded rows for their ids instead
+ * of re-rendering.
+ */
 async function runSurvey(items: Item[], tsx: { cmd: string; pre: string[] }, accepted: Set<string>): Promise<void> {
+  const resumed = loadResumed(XDOT_PARITY_JSONL);
+  if (!existsSync(XDOT_PARITY_JSONL)) writeFileSync(XDOT_PARITY_JSONL, '');
   const results: XdotWalkResult[] = new Array(items.length);
   let next = 0;
   let done = 0;
   const worker = async (): Promise<void> => {
     for (let i = next++; i < items.length; i = next++) {
-      results[i] = (await walkOne(items[i], tsx, accepted)).result;
+      const prior = resumed.get(items[i].id);
+      if (prior) {
+        results[i] = prior;
+      } else {
+        const row = (await walkOne(items[i], tsx, accepted)).result;
+        appendFileSync(XDOT_PARITY_JSONL, JSON.stringify(row) + '\n');
+        results[i] = row;
+      }
       if (++done % 50 === 0) process.stderr.write(`  ${done}/${items.length}\n`);
     }
   };
