@@ -390,3 +390,29 @@ describe('margin= graph attribute — F6 regression (native dot 15.1.0 oracle)',
     expect(svg).toContain('translate(-130 148)');
   });
 });
+
+// Pinned to native graphviz 16.1.0: `-Tsvg` of `digraph { svgid=...; a }`
+// appends ` id="..."` (gvputs_xml) after xmlns:xlink, before the closing `>`.
+// @see plugin/core/gvrender_core_svg.c:svg_begin_graph (f25f2048b)
+describe('svgBeginGraph — svgid attribute (graphviz 16.1)', () => {
+  const svgTag = (svg: string): string => /<svg[^>]*>/.exec(svg)?.[0] ?? '';
+
+  it('writes id="x" on the root svg element', () => {
+    const tag = svgTag(renderSvg('digraph { svgid="x"; a }', 'dot'));
+    expect(tag.endsWith('xmlns:xlink="http://www.w3.org/1999/xlink" id="x">')).toBe(true);
+  });
+
+  it('XML-escapes the value like gvputs_xml', () => {
+    const tag = svgTag(renderSvg('digraph { svgid="a&b\\"<c"; a }', 'dot'));
+    expect(tag.endsWith(' id="a&amp;b&quot;&lt;c">')).toBe(true);
+  });
+
+  it('omits the attribute when svgid is empty', () => {
+    const tag = svgTag(renderSvg('digraph { svgid=""; a }', 'dot'));
+    expect(tag).not.toContain(' id=');
+  });
+
+  it('omits the attribute when svgid is unset', () => {
+    expect(svgTag(renderSvg('digraph { a }', 'dot'))).not.toContain(' id=');
+  });
+});
