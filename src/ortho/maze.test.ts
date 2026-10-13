@@ -423,7 +423,7 @@ describe("ortho mkMaze — oracle-pinned vs native C", () => {
       const c = parseDump(fx.dump);
 
       it("matches ncells / ngcells / nnodes / nedges", () => {
-        const mp = mkMaze(mkGraph(fx.gcells));
+        const mp = mkMaze(mkGraph(fx.gcells))!;
         expect(mp.ngcells).toBe(c.ngcells);
         expect(mp.ncells).toBe(c.ncells);
         expect(mp.sg.nnodes).toBe(c.nnodes);
@@ -431,7 +431,7 @@ describe("ortho mkMaze — oracle-pinned vs native C", () => {
       });
 
       it("matches the cell bb set (free cells + gcells)", () => {
-        const mp = mkMaze(mkGraph(fx.gcells));
+        const mp = mkMaze(mkGraph(fx.gcells))!;
         const known = new Set<string>([
           ...mp.cells.map((cp) => bbKey(cp)),
           ...mp.gcells.map((cp) => bbKey(cp)),
@@ -447,7 +447,7 @@ describe("ortho mkMaze — oracle-pinned vs native C", () => {
       });
 
       it("matches the snode set (isVert + cell linkage)", () => {
-        const mp = mkMaze(mkGraph(fx.gcells));
+        const mp = mkMaze(mkGraph(fx.gcells))!;
         const ts = tsNodeKeys(mp.sg.nodes, mp.sg.nnodes);
         expect(new Set(ts).size).toBe(ts.length);
         expect(new Set(c.nodeKeys).size).toBe(c.nodeKeys.length);
@@ -455,7 +455,7 @@ describe("ortho mkMaze — oracle-pinned vs native C", () => {
       });
 
       it("matches the sedge set (endpoints + weight)", () => {
-        const mp = mkMaze(mkGraph(fx.gcells));
+        const mp = mkMaze(mkGraph(fx.gcells))!;
         const ts = tsNodeKeys(mp.sg.nodes, mp.sg.nnodes);
         const tsEdges = (mp.sg.edges.slice(0, mp.sg.nedges) as SEdge[])
           .map((e) => edgeKey(ts[e.v1]!, ts[e.v2]!, e.weight))
@@ -467,8 +467,8 @@ describe("ortho mkMaze — oracle-pinned vs native C", () => {
       });
 
       it("is deterministic run-to-run", () => {
-        const a = mkMaze(mkGraph(fx.gcells));
-        const b = mkMaze(mkGraph(fx.gcells));
+        const a = mkMaze(mkGraph(fx.gcells))!;
+        const b = mkMaze(mkGraph(fx.gcells))!;
         expect(tsNodeKeys(a.sg.nodes, a.sg.nnodes).sort())
           .toEqual(tsNodeKeys(b.sg.nodes, b.sg.nnodes).sort());
       });

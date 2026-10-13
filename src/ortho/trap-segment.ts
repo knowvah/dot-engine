@@ -198,6 +198,7 @@ export function swapSegEndpoints(s: SegmentT): void {
 
 /**
  * Insert one segment into the trapezoidation.
+ * @returns 0 on success, -1 when threading met an invalid trapezoid (16.1)
  * @see lib/ortho/trapezoid.c:add_segment
  */
 export function addSegment(
@@ -205,7 +206,7 @@ export function addSegment(
   seg: SegmentT[],
   tr: TrapT[],
   qs: QNode[],
-): void {
+): number {
   const s = { ...seg[segnum] };
   let isSwapped = false;
   if (greaterThanOrEq(s.v1, s.v0) && !equalTo(s.v1, s.v0)) {
@@ -214,31 +215,49 @@ export function addSegment(
     isSwapped = true;
   }
 
-  let tfirst: number;
-  if (!inserted(segnum, seg, isSwapped ? LASTPT : FIRSTPT)) {
-    tfirst = insertV0(s, seg, tr, qs, segnum);
-  } else {
-    tfirst = locateEndpoint(s.v0, s.v1, s.root0, seg, qs);
-  }
-
-  let tlast: number;
-  let tribot = false;
-  if (!inserted(segnum, seg, isSwapped ? FIRSTPT : LASTPT)) {
-    tlast = insertV1(s, seg, tr, qs, segnum);
-  } else {
-    tlast = locateEndpoint(s.v1, s.v0, s.root1, seg, qs);
-    tribot = true;
-  }
-
-  threadSegment(s, seg, tr, qs, segnum, tfirst, tlast, tribot, isSwapped);
+  const ctx: ThreadCtx = { s, seg, tr, qs, segnum, tribot: false, isSwapped };
+  const tfirst = firstTrap(ctx);
+  const tlast = lastTrap(ctx);
+  if (threadSegment(ctx, tfirst, tlast) !== 0) return -1;
   seg[segnum].isInserted = true;
+  return 0;
 }
 
-function threadSegment(
-  s: SegmentT, seg: SegmentT[], tr: TrapT[], qs: QNode[],
-  segnum: number, tfirst: number, tlast: number,
-  tribot: boolean, isSwapped: boolean,
-): void {
+/** add_segment locals the threading loop reads (one C stack frame). */
+interface ThreadCtx {
+  s: SegmentT; seg: SegmentT[]; tr: TrapT[]; qs: QNode[];
+  segnum: number; tribot: boolean; isSwapped: boolean;
+}
+
+/** add_segment: insert v0 in the tree, or locate it if already present. */
+function firstTrap(c: ThreadCtx): number {
+  if (!inserted(c.segnum, c.seg, c.isSwapped ? LASTPT : FIRSTPT)) {
+    return insertV0(c.s, c.seg, c.tr, c.qs, c.segnum);
+  }
+  return locateEndpoint(c.s.v0, c.s.v1, c.s.root0, c.seg, c.qs);
+}
+
+/**
+ * add_segment: insert v1 in the tree, or (v1 already present) get the
+ * lowermost intersecting trapezoid and mark the bottom as a triangle.
+ */
+function lastTrap(c: ThreadCtx): number {
+  if (!inserted(c.segnum, c.seg, c.isSwapped ? FIRSTPT : LASTPT)) {
+    return insertV1(c.s, c.seg, c.tr, c.qs, c.segnum);
+  }
+  c.tribot = true;
+  return locateEndpoint(c.s.v1, c.s.v0, c.s.root1, c.seg, c.qs);
+}
+
+/**
+ * Split every trapezoid s crosses, top to bottom, then merge both sides.
+ * Returns -1 (after C's stderr line) when a crossed trapezoid has no valid
+ * lower neighbour — graphviz 16.1 (3c01aaeb4) returns from add_segment there;
+ * 15.x printed "add_segment: error" and broke out of the loop.
+ * @see lib/ortho/trapezoid.c:add_segment (threading loop)
+ */
+function threadSegment(c: ThreadCtx, tfirst: number, tlast: number): number {
+  const { s, seg, tr, qs, segnum, tribot, isSwapped } = c;
   let tfirstr = INVALID_TRAP;
   let tlastr = INVALID_TRAP;
   let t = tfirst;
@@ -258,12 +277,17 @@ function threadSegment(
     if (equalTo(tr[t].lo, tr[tlast].lo)) tlastr = tn;
 
     const tSav = t; const tnSav = tn;
+    if (!isValidTrap(tr[t].d0) && !isValidTrap(tr[t].d1)) { // error
+      console.error("trapezoid segment construction failed");
+      return -1;
+    }
     t = advanceT(s, seg, tr, t, tn, tlast, segnum, isSwapped, tribot);
     tr[tSav].rseg = segnum; tr[tnSav].lseg = segnum;
   }
 
   mergeTrapezoids(segnum, tfirst, tlast, S_LEFT, tr, qs);
   mergeTrapezoids(segnum, tfirstr, tlastr, S_RIGHT, tr, qs);
+  return 0;
 }
 
 function advanceT(
@@ -271,9 +295,8 @@ function advanceT(
   t: number, tn: number, tlast: number,
   segnum: number, isSwapped: boolean, tribot: boolean,
 ): number {
-  if (!isValidTrap(tr[t].d0) && !isValidTrap(tr[t].d1)) {
-    return INVALID_TRAP; // error
-  } else if (isValidTrap(tr[t].d0) && !isValidTrap(tr[t].d1)) {
+  // The "neither below is valid" error case returns from threadSegment first.
+  if (isValidTrap(tr[t].d0) && !isValidTrap(tr[t].d1)) {
     handleD0Only(s, seg, tr, t, tn, tlast, segnum, isSwapped, tribot);
     return tr[t].d0;
   } else if (!isValidTrap(tr[t].d0) && isValidTrap(tr[t].d1)) {

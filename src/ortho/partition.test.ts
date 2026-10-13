@@ -187,14 +187,14 @@ describe("ortho partition — oracle-pinned vs native C", () => {
       });
 
       it("produces the C rectangle set", () => {
-        const got = partition(fx.cells, fx.bb);
+        const got = partition(fx.cells, fx.bb)!;
         expect(got).toHaveLength(fx.rects.length);
         expect(boxKeys(got)).toEqual(boxKeys(fx.rects));
       });
 
       it("is deterministic run-to-run", () => {
-        const a = partition(fx.cells, fx.bb);
-        const b = partition(fx.cells, fx.bb);
+        const a = partition(fx.cells, fx.bb)!;
+        const b = partition(fx.cells, fx.bb)!;
         expect(boxKeys(a)).toEqual(boxKeys(b));
       });
     });

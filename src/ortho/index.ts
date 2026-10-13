@@ -9,7 +9,7 @@
 
 import type {
   OrthoGraph, OrthoEdge, OrthoNode, OrthoPoint,
-  Route,
+  Route, Maze, SGraph,
 } from "./types.js";
 import type { ClipAndInstallFn } from "./types.js";
 import { mkMaze, freeMaze } from "./maze.js";
@@ -67,7 +67,7 @@ function edgeCmp(a: EdgePair, b: EdgePair): number {
 function buildSpline(
   e: OrthoEdge,
   rte: Route,
-  mp: ReturnType<typeof mkMaze>,
+  mp: Maze,
 ): OrthoPoint[] {
   const pts: OrthoPoint[] = [];
   if (rte.segs.length === 0) return pts;
@@ -118,17 +118,31 @@ function buildSpline(
 
 // ─── orthoEdges ───────────────────────────────────────────────────────────────
 
+/** Ensure the two dummy search nodes (sn, dn) exist past the maze's nodes. */
+function ensureDummyNodes(sg: SGraph, gstart: number): void {
+  while (sg.nodes.length < gstart + 2) {
+    sg.nodes.push({
+      nVal: 0, nIdx: 0, nDad: null, nEdge: null,
+      nAdj: 0, saveNAdj: 0, cells: [null, null],
+      adjEdgeList: [], index: sg.nodes.length, isVert: false, x: 0, y: 0,
+    });
+  }
+}
+
 /**
  * For edges without position information, construct an orthogonal routing.
  * If useLbls is true, issues a warning and sets useLbls=false.
  *
+ * @returns 0 on success; -1 when mkMaze fails (graphviz 16.1, 178fe6d2f). A
+ *   shortPath or assignTracks failure still returns 0, as in C (`goto
+ *   orthofinish` falls through to `return 0`).
  * @see lib/ortho/ortho.c:orthoEdges
  */
 export function orthoEdges(
   g: OrthoGraph,
   useLbls: boolean,
   clipAndInstall?: ClipAndInstallFn,
-): void {
+): number {
   if (useLbls) {
     console.warn(
       "Orthogonal edges do not currently handle edge labels. Try using xlabels.\n",
@@ -138,6 +152,7 @@ export function orthoEdges(
   void useLbls; // suppress lint on intentional reassign
 
   const mp = mkMaze(g);
+  if (mp === null) return -1; // C frees ps (Concentrate) and es first
   const sg = mp.sg;
 
   // collect and sort edges by length. C ortho.c sorts via qsort(edgecmp), which
@@ -153,14 +168,7 @@ export function orthoEdges(
   const sn = sg.nodes[gstart];
   const dn = sg.nodes[gstart + 1];
 
-  // ensure the two dummy nodes exist
-  while (sg.nodes.length < gstart + 2) {
-    sg.nodes.push({
-      nVal: 0, nIdx: 0, nDad: null, nEdge: null,
-      nAdj: 0, saveNAdj: 0, cells: [null, null],
-      adjEdgeList: [], index: sg.nodes.length, isVert: false, x: 0, y: 0,
-    });
-  }
+  ensureDummyNodes(sg, gstart);
 
   for (let i = 0; i < nEdges; i++) {
     const e = es[i].e;
@@ -177,7 +185,7 @@ export function orthoEdges(
     if (shortPath(pq, sg, dn, sn) !== 0) {
       pqFree(pq);
       freeMaze(mp);
-      return;
+      return 0;
     }
 
     routeList[i] = convertSPtoRoute(sg, sn, dn);
@@ -190,7 +198,7 @@ export function orthoEdges(
   assignSegs(routeList, mp);
   if (assignTracks(mp) !== 0) {
     freeMaze(mp);
-    return;
+    return 0;
   }
 
   if (clipAndInstall) {
@@ -203,4 +211,5 @@ export function orthoEdges(
   }
 
   freeMaze(mp);
+  return 0;
 }

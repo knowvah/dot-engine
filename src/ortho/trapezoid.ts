@@ -31,29 +31,20 @@ export function constructTrapezoids(
   permute: number[],
 ): TrapT[] {
   const qs: QNode[] = [];
-  const tr: TrapT[] = [];
-  // index 0 is a sentinel (invalid trap)
-  tr.push({
-    lseg: 0, rseg: 0,
-    hi: { x: 0, y: 0 }, lo: { x: 0, y: 0 },
-    u0: 0, u1: 0, d0: 0, d1: 0,
-    sink: 0, usave: 0, uside: 0, isValid: false,
-  });
+  const tr: TrapT[] = [sentinelTrap()];
 
   let segi = 0;
   const root = initQueryStructure(permute[segi++], seg, tr, qs);
+  seedRoots(nseg, seg, root);
 
-  for (let i = 1; i <= nseg; i++) {
-    seg[i].root0 = root;
-    seg[i].root1 = root;
-  }
-
+  // C (16.1, 3660b260e): an add_segment failure LIST_FREEs the trapezoid list
+  // and jumps to `done`, so the caller receives an EMPTY list.
   const logstar = mathLogstarN(nseg);
   for (let h = 1; h <= logstar; h++) {
     const lo = mathN(nseg, h - 1) + 1;
     const hi = mathN(nseg, h);
     for (let i = lo; i <= hi; i++) {
-      addSegment(permute[segi++], seg, tr, qs);
+      if (addSegment(permute[segi++], seg, tr, qs) !== 0) return [];
     }
     for (let i = 1; i <= nseg; i++) {
       findNewRoots(i, seg, tr, qs);
@@ -62,10 +53,28 @@ export function constructTrapezoids(
 
   const remaining = mathN(nseg, logstar) + 1;
   for (let i = remaining; i <= nseg; i++) {
-    addSegment(permute[segi++], seg, tr, qs);
+    if (addSegment(permute[segi++], seg, tr, qs) !== 0) return [];
   }
 
   return tr;
+}
+
+/** Index 0 of the trapezoid list is a sentinel (invalid trap). */
+function sentinelTrap(): TrapT {
+  return {
+    lseg: 0, rseg: 0,
+    hi: { x: 0, y: 0 }, lo: { x: 0, y: 0 },
+    u0: 0, u1: 0, d0: 0, d1: 0,
+    sink: 0, usave: 0, uside: 0, isValid: false,
+  };
+}
+
+/** construct_trapezoids: every segment starts at the initial query root. */
+function seedRoots(nseg: number, seg: SegmentT[], root: number): void {
+  for (let i = 1; i <= nseg; i++) {
+    seg[i].root0 = root;
+    seg[i].root1 = root;
+  }
 }
 
 // ─── init_query_structure ─────────────────────────────────────────────────────

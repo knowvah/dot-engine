@@ -258,9 +258,16 @@ class PartitionHelper {
 
 /**
  * Partition free space around cells into rectangular tiles.
+ *
+ * Returns null on failure (graphviz 16.1): an empty horizontal (057e8779d) or
+ * vertical (67bacf48e) trapezoid list — construct_trapezoids' failure signal —
+ * prints C's stderr line and returns NULL. C hands the result back through
+ * `LIST_DETACH(&rs, &ret, nrects)`, whose base pointer is NULL when no
+ * rectangle was appended, so an empty rectangle set is ALSO NULL to the caller
+ * (mkMaze's `rects == NULL` check), silently.
  * @see lib/ortho/partition.c:partition
  */
-export function partition(cells: Cell[], bb: OrthoBox): OrthoBox[] {
+export function partition(cells: Cell[], bb: OrthoBox): OrthoBox[] | null {
   const h = PartitionHelper;
   const nsegs = 4 * (cells.length + 1);
 
@@ -271,11 +278,19 @@ export function partition(cells: Cell[], bb: OrthoBox): OrthoBox[] {
   const hSeg = h.genSegments(cells, bb, false);
   const hPerm = h.generateRandomOrdering(nsegs);
   const hTr = constructTrapezoids(nsegs, hSeg, hPerm);
+  if (hTr.length === 0) {
+    console.error("horizontal trapezoid construction failed");
+    return null;
+  }
   const hDecomp = h.monotonateTrapezoids(hTr, hSeg, false);
 
   const vSeg = h.genSegments(cells, bb, true);
   const vPerm = h.generateRandomOrdering(nsegs);
   const vTr = constructTrapezoids(nsegs, vSeg, vPerm);
+  if (vTr.length === 0) {
+    console.error("vertical trapezoid construction failed");
+    return null;
+  }
   const vDecomp = h.monotonateTrapezoids(vTr, vSeg, true);
 
   const result: OrthoBox[] = [];
@@ -285,7 +300,7 @@ export function partition(cells: Cell[], bb: OrthoBox): OrthoBox[] {
       if (isect) result.push(isect);
     }
   }
-  return result;
+  return result.length === 0 ? null : result;
 }
 
 /**

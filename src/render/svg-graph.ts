@@ -360,7 +360,10 @@ export function svgBeginGraph(g: Graph, job: RenderJob): void {
  */
 export function svgBeginPage(g: Graph, job: RenderJob): void {
   const bb = job.bb;
-  // gvPostprocess zeroes bb.ll before render; tx is simply the padding.
+  // Portrait: translation.x = -clip.LL.x with clip = bb ± pad (the port's
+  // single-page reduction of setup_page's focus/pageSize clip, as nodeInBox
+  // and mapTransform use), i.e. pad - bb.ll.x. gvPostprocess normally zeroes
+  // bb.ll, but a dot layout failure skips it (graphviz 16.1, corpus 2784).
   // Landscape (ADR-3): setup_page's rotation branch (SVG = GVRENDER_Y_GOES_DOWN)
   // gives translation.x = -(focus.x + pageSize.x/2) = -(bb.ur.x + PAD) in the
   // zeroed-bb frame; translation.y is unchanged (focus.y + pageSize.y/2 =
@@ -381,7 +384,7 @@ export function svgBeginPage(g: Graph, job: RenderJob): void {
   const z = job.scale.x;
   const tx = job.rotation !== 0
     ? -(bb.ur.x + job.pad.x) - job.margin.x / z
-    : job.pad.x + job.margin.x / z;
+    : -(bb.ll.x - job.pad.x) + job.margin.x / z;
   const ty = bb.ur.y + job.pad.y + job.margin.y / z;
   emitGraphGroupOpen(
     job.idLayerPrefix() + svgGraphId(g, job),

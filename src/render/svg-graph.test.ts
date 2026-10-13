@@ -227,6 +227,21 @@ describe('svgBeginPage — landscape group transform (b68 canary)', () => {
   });
 });
 
+describe('svgBeginPage — un-postprocessed bb (setup_page translation.x = pad - bb.LL.x)', () => {
+  // A dot layout failure skips gvPostprocess (graphviz 16.1, corpus 2784), so
+  // bb.LL is not zeroed; native 16.1 then emits translate(31 ...) for
+  // bb.LL.x = -27 with the default 4pt pad.
+  it('portrait: translate x is pad minus bb.LL.x', () => {
+    const g = new GraphClass('simple', 'directed') as unknown as Graph;
+    const job = makeJob();
+    job.bb = { ll: { x: -27, y: 0 }, ur: { x: 387, y: 80 } };
+    svgBeginPage(g, job);
+    expect(job.output.join('')).toContain(
+      'transform="scale(1 1) rotate(0) translate(31 84)"',
+    );
+  });
+});
+
 describe('renderSvg — landscape wiring (parseLandscape -> job.rotation -> emit)', () => {
   it('rotate=90 emits rotate(-90); portrait emits rotate(0)', () => {
     const land = renderSvg('digraph { rotate=90; a -> b }', 'dot');
