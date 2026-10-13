@@ -264,9 +264,9 @@ export function graphInit(g: Graph, useRankdir: boolean): void {
   // allocated unconditionally; see parseRatioDrawing's note (it would change
   // dot output by activating the unported ratio modes).
 
-  // SKIPPED — `postaction` reparse (input.c:611-617): needs agmemconcat plus
-  // parser re-entry to splice a second graph into g. Neither exists in the
-  // port, and no corpus input sets `postaction`.
+  // `postaction` reparse: removed upstream in 16.1.0 (41e482146 reverted the
+  // feature and dropped agmemconcat), so graph_init no longer reads it. The
+  // port never implemented it; nothing to mirror.
 
   // SKIPPED — fontpath / DOTFONTPATH setenv (input.c:619-629): browser-
   // impossible (no environment, no GDFONTPATH).
