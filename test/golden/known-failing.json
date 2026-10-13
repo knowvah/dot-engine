@@ -1,8 +1,4 @@
 {
   "goldens": [],
-  "ptIssue": [
-    "31-inline-warnings",
-    "31-rubebe-warnings",
-    "31-zuduxu-warnings"
-  ]
+  "ptIssue": []
 }

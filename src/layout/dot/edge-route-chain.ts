@@ -233,11 +233,13 @@ function routeChainSegmented(
  * Route a forward edge spanning ≥2 ranks via its virtual-node chain through the
  * faithful pipeline (REGULAREDGE side boxes steer the port, routeSplines over
  * the chain; adjustregularpath inter-rank widening finally fires). Returns
- * control points in graphviz-internal y-up, or null when the edge is not a
- * multi-rank chain.
+ * control points in graphviz-internal y-up, null when the edge is not a
+ * multi-rank chain, or 'lost' when the chain walk was attempted and failed
+ * (completeregularpath / routesplines failure): C's make_regular_edge returns
+ * with no spline and the edge is never routed again.
  * @see lib/dotgen/dotsplines.c:make_regular_edge (hackflag forward path)
  */
-export function routeMultiRankEdgeFaithful(g: Graph, e: GraphEdge): Point[] | null {
+export function routeMultiRankEdgeFaithful(g: Graph, e: GraphEdge): Point[] | null | 'lost' {
   const r = e.tail.info.rank;
   const rh = e.head.info.rank;
   if (g.info.rank === undefined || r === undefined || rh === undefined || rh <= r + 1) return null;
@@ -260,7 +262,7 @@ export function routeMultiRankEdgeFaithful(g: Graph, e: GraphEdge): Point[] | nu
   // record port resolves toward the adjacent-rank vnode, not the far real
   // endpoint). @see lib/dotgen/dotsplines.c:make_regular_edge (tn/hn walk),
   // lib/dotgen/fastgr.c:new_virtual_edge (port copies)
-  return routeChainSegmented(g, segs[0], segs[segs.length - 1], segs);
+  return routeChainSegmented(g, segs[0], segs[segs.length - 1], segs) ?? 'lost';
 }
 
 /**
@@ -414,7 +416,11 @@ export function routeBackEdge(e: GraphEdge, _tailBox: NodeBox, _headBox: NodeBox
   // bezier_clip keeps the load-bearing forward direction (1644).
   // @see lib/dotgen/dotsplines.c:make_regular_edge (segfirst/tn/hn walk)
   const fwd = routeChainSegmented(g, segs[0], segs[segs.length - 1], segs);
-  if (fwd === null) return;
+  // Chain routing failed: C's make_regular_edge returns with no spline and
+  // dot_splines_ never revisits the edge — mark it consumed so the backstop
+  // sweep does not re-route (and re-report) it.
+  // @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0 return)
+  if (fwd === null) { e.info.lost = true; return; }
   clipAndInstall(fwdEdge, fwdEdge.head, fwd, fwd.length, buildDotSinfo());
   if (swapEndsP(e)) swapEdgeSpline(e);
 }
