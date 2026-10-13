@@ -77,6 +77,27 @@ describe('countCrossings', () => {
     const list = [a.orig, stray, b.orig];
     expect(countCrossings(list, edges)).toBe(0);
   });
+
+  it('a node listed twice closes its own open edges (remove_edge matches)', () => {
+    // C quirk: place_residual_nodes can leave a node on the list twice. At the
+    // second visit agfstedge yields the SAME half-edge add_edge stored at the
+    // first, so remove_edge's dtdelete matches and a–b leaves the open list;
+    // x–y then closes with nothing open after it. Native 16.1 (2371) relies on
+    // this: counting a–b as still open gives 1.
+    // @see lib/circogen/blockpath.c:count_all_crossings, edgelist.c:remove_edge
+    const x = mkD('dup-x'), a = mkD('dup-a'), b = mkD('dup-b'), y = mkD('dup-y');
+    const edges = [mkE(x, y), mkE(a, b)];
+    const list = [x.orig, a.orig, b.orig, a.orig, y.orig];
+    expect(countCrossings(list, edges)).toBe(0);
+  });
+
+  it('counts each later-opened edge once per close of an earlier edge', () => {
+    // x–y spans a–b: a–b (opened after x–y) stays open (opposite halves never
+    // match), so closing x–y at y counts it.
+    const x = mkD('span-x'), a = mkD('span-a'), b = mkD('span-b'), y = mkD('span-y');
+    const edges = [mkE(x, y), mkE(a, b)];
+    expect(countCrossings([x.orig, a.orig, b.orig, y.orig], edges)).toBe(1);
+  });
 });
 
 // ---------------------------------------------------------------------------
