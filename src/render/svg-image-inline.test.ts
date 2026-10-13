@@ -44,10 +44,11 @@ const BASELINE_SVG =
   '<polygon fill="white" stroke="none" points="-4,4 -4,-40 58,-40 58,4 -4,4"/>\n' +
   '<g id="node1" class="node">\n' +
   '<title>A</title>\n' +
+  // Table border before the cells: graphviz 16.1 f0d07786b (emit_html_tbl).
+  '<polygon fill="none" stroke="black" points="9,-6 9,-30 45,-30 45,-6 9,-6"/>\n' +
   '<polygon fill="none" stroke="black" points="12,-9 12,-27 42,-27 42,-9 12,-9"/>\n' +
   '<image xlink:href="logo.png" width="24px" height="12px" ' +
   'preserveAspectRatio="xMinYMin meet" x="15" y="-24"/>\n' +
-  '<polygon fill="none" stroke="black" points="9,-6 9,-30 45,-30 45,-6 9,-6"/>\n' +
   '</g>\n' +
   '</g>\n' +
   '</svg>\n';
