@@ -19,6 +19,7 @@ import type { Edge } from '../../model/edge.js';
 import type { Point } from '../../model/geom.js';
 import type { SplineInfo, PolygonT, TextlabelT } from '../../common/types.js';
 import { polygonOutlineRing } from '../../common/poly-sizing.js';
+import { fma, fms } from '../../common/fma.js';
 import { ShapeKind } from '../../common/types.js';
 import type { ExpandT } from './sep-factor.js';
 import { esepFactor } from './sep-factor.js';
@@ -127,12 +128,11 @@ class ObstacleHelper {
 
 /** Slope of the ellipse tangent at p. @see neatosplines.c:ellipse_tangent_slope */
 function ellipseTangentSlope(a: number, b: number, p: Point): number {
-  const signY = p.y >= 0 ? 1 : -1;
-  return (-signY * (b * p.x)) / (a * Math.sqrt(a * a - p.x * p.x));
+  const signY = p.y >= 0 ? 1 : -1; // radicand: the binary fuses a*a (fmla)
+  return (-signY * (b * p.x)) / (a * Math.sqrt(fma(a, a, -(p.x * p.x))));
 }
 
-/** Corner i of an nsides-gon circumscribed about the ellipse (a, b).
- * @see neatosplines.c:circumscribed_polygon_corner_about_ellipse */
+/** Corner i of an nsides-gon about ellipse (a, b). @see neatosplines.c:circumscribed_polygon_corner_about_ellipse */
 function circumscribedCorner(a: number, b: number, i: number, nsides: number): Point {
   const angle0 = (2 * Math.PI * (i - 0.5)) / nsides;
   const angle1 = (2 * Math.PI * (i + 0.5)) / nsides;
@@ -140,9 +140,9 @@ function circumscribedCorner(a: number, b: number, i: number, nsides: number): P
   const p1 = { x: a * Math.cos(angle1), y: b * Math.sin(angle1) };
   const m0 = ellipseTangentSlope(a, b, p0);
   const m1 = ellipseTangentSlope(a, b, p1);
-  // line_intersection of the two tangents.
-  const x = (m0 * p0.x - p0.y - m1 * p1.x + p1.y) / (m0 - m1);
-  const y = p0.y + m0 * (x - p0.x);
+  // line_intersection, contracted as the binary: fnmsub, fmls, +; y = fmadd.
+  const x = (fms(p1.x, m1, fma(m0, p0.x, -p0.y)) + p1.y) / (m0 - m1);
+  const y = fma(m0, x - p0.x, p0.y);
   return { x, y };
 }
 

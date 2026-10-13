@@ -17,6 +17,7 @@ import type { Graph } from '../../model/graph.js';
 import type { Point } from '../../pathplan/types.js';
 import type { SplineInfo } from '../../common/types.js';
 import { wind } from '../../pathplan/visibility.js';
+import { fma } from '../../common/fma.js';
 import { shortestPath } from '../../pathplan/shortest.js';
 import { routeSpline, makePolyline } from '../../pathplan/index.js';
 import type { Edge as PEdge } from '../../pathplan/types.js';
@@ -85,10 +86,12 @@ function raySegIntersect(v: Point, w: Point, a: Point, b: Point): Point | null {
   const mv = { x: w.x - v.x, y: w.y - v.y };
   const lv = { x: b.x - a.x, y: b.y - a.y };
   const ln = { x: -lv.y, y: lv.x }; // perp
-  const lc = -(ln.x * a.x + ln.y * a.y);
-  const dt = ln.x * mv.x + ln.y * mv.y;
+  // libgvc's line_intersect fuses the first product of each dot():
+  // fmsub(lv.y, p.x, lv.x·p.y). The final a - s·mv is NOT fused.
+  const lc = -fma(ln.x, a.x, ln.y * a.y);
+  const dt = fma(ln.x, mv.x, ln.y * mv.y);
   if (Math.abs(dt) < SMALL) return null;
-  const s = (ln.x * v.x + ln.y * v.y + lc) / dt;
+  const s = (fma(ln.x, v.x, ln.y * v.y) + lc) / dt;
   return { x: v.x - s * mv.x, y: v.y - s * mv.y };
 }
 
@@ -115,6 +118,19 @@ function ctrlPtIdx(v: Point, ps: Point[]): number {
 
 const SEP = 15;
 
+/** v + 100·(cos, sin), fused like the binary's fmadd. @see multispline.c:mkCtrlPts */
+function bisectorTarget(v: Point, cosTheta: number, sinTheta: number): Point {
+  return { x: fma(cosTheta, 100, v.x), y: fma(sinTheta, 100, v.y) };
+}
+
+/** DIST(p, q) = sqrt(DIST2), the sum of squares fused (fmadd(dx, dx, dy·dy)) —
+ * not hypot. @see lib/common/geom.h:DIST */
+function distFused(p: Point, q: Point): number {
+  const dx = p.x - q.x;
+  const dy = p.y - q.y;
+  return Math.sqrt(fma(dx, dx, dy * dy));
+}
+
 /**
  * mult points on the bisector ray at corridor vertex v, spaced ≤ SEP,
  * ordered by side (s = index after which vertices are on the far side).
@@ -129,31 +145,32 @@ function mkCtrlPts(
   const theta = bisect(prev, v, nxt);
   let sinTheta = Math.sin(theta);
   let cosTheta = Math.cos(theta);
-  let w = { x: v.x + 100 * cosTheta, y: v.y + 100 * sinTheta };
+  // The binary fuses v + 100·cos/sin and v + (i·sep)·cos/sin (fmadd/fmla).
+  let w = bisectorTarget(v, cosTheta, sinTheta);
   if (idx > s) {
     if (wind(prev, v, w) !== 1) {
       sinTheta *= -1;
       cosTheta *= -1;
-      w = { x: v.x + 100 * cosTheta, y: v.y + 100 * sinTheta };
+      w = bisectorTarget(v, cosTheta, sinTheta);
     }
   } else if (wind(prev, v, w) !== -1) {
     sinTheta *= -1;
     cosTheta *= -1;
-    w = { x: v.x + 100 * cosTheta, y: v.y + 100 * sinTheta };
+    w = bisectorTarget(v, cosTheta, sinTheta);
   }
   const q = triPoint(trip, idx, v, w);
   if (q === null) return null;
 
-  const d = Math.hypot(q.x - v.x, q.y - v.y);
+  const d = distFused(q, v);
   const sep = d >= mult * SEP ? SEP : d / mult;
   const ps = new Array<Point>(mult);
   if (idx < s) {
     for (let i = 0; i < mult; i++) {
-      ps[i] = { x: v.x + i * sep * cosTheta, y: v.y + i * sep * sinTheta };
+      ps[i] = { x: fma(i * sep, cosTheta, v.x), y: fma(i * sep, sinTheta, v.y) };
     }
   } else {
     for (let i = 0; i < mult; i++) {
-      ps[mult - i - 1] = { x: v.x + i * sep * cosTheta, y: v.y + i * sep * sinTheta };
+      ps[mult - i - 1] = { x: fma(i * sep, cosTheta, v.x), y: fma(i * sep, sinTheta, v.y) };
     }
   }
   return ps;
