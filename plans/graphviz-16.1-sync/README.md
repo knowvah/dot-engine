@@ -84,10 +84,10 @@ attribution). Merge-commit PR at the end.
 
 | Batch | Tasks | Mode | Done |
 |---|---|---|---|
-| [0](batch-0/overview.md) | T0 oracle re-pin · T1 ratchet harness · T2 re-baseline | sequential | [ ] |
-| [1](batch-1/overview.md) | T3 triage · T4 tracker suite · T5 optmacroname · T6 dead flat router | parallel | [ ] |
-| [2](batch-2/overview.md) | T7 HTML · T8 dotgen+ortho · T9 renderers · T10 force engines · T11 shared | parallel dev, serial land | [ ] |
-| [3](batch-3/overview.md) | T12 residual ratchet → T13 registries + docs | sequential | [ ] |
+| [0](batch-0/overview.md) | T0 oracle re-pin · T1 ratchet harness · T2 re-baseline | sequential | [x] |
+| [1](batch-1/overview.md) | T3 triage · T4 tracker suite · T5 optmacroname · T6 dead flat router | parallel | [x] |
+| [2](batch-2/overview.md) | T7 HTML · T8 dotgen+ortho · T9 renderers · T10 force engines · T11 shared | parallel dev, serial land | [x] |
+| [3](batch-3/overview.md) | T12 residual ratchet → T13 registries + docs | sequential | [x] |
 | [4](batch-4/overview.md) | T14 dashboards · T15 translations → T16 tracker + PR | T14‖T15, then T16 | [ ] |
 
 ## Documents
