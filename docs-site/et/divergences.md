@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -41,8 +41,11 @@ Masinloetav tõeallikas selle kohta, millised graafid on *aktsepteeritud* (allol
 Tööriistad ühendavad selle aruande koostamisel: `PARITY-dot.md` eraldab **aktsepteeritud deltad**
 **jälgitavast** mahajäämusest ning reeglite värav võtab sellest oma lubatud loendi. Allolevad
 proosajaotised selgitavad iga kirjet (A1 on elus; A2, A3 ja A8 on suletud ja
-säilitatud ajaloona; A10 on pordi vea aktsepteerimine, mida ükski register ei suuda väljendada); CI-test (`accepted-divergences.test.ts`) tagab, et
-iga aktsepteeritud graaf ikka erineb, nii et see loend ei saa vaikselt vananeda.
+säilitatud ajaloona; A10 on elus pordi vea aktsepteerimisena mootoripõhistes
+registrites). Kaks CI-testi hoiavad seda loendit vaikselt vananemast:
+`accepted-divergences.test.ts` tagab, et iga aktsepteeritud graaf ikka erineb, ja
+`registry-staleness.test.ts` kukub läbi, kui mootoripõhise registri kirje ei vasta
+enam oma sisseviidud läbimise reale.
 
 ---
 
@@ -1095,8 +1098,11 @@ süstijaga kinnitas, et ka see süstib 0 jäägini, ja selle aktsepteerimine eem
 
 ### A10. V8 `Map` suuruspiirang polüomino pakkimisel (`2784`, viis pakkimispõhist mootorit) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Mõjutatud:** `2784` mootoritel `circo`, `twopi`, `neato`, `fdp` ja `sfdp`, igas
-väljundivormingus. Mootoril `dot` on see `conformant`.
+**Mõjutatud:** `2784` mootoritel `circo`, `twopi`, `neato`, `fdp` ja `sfdp`. Port
+viskab vea kõigi viie mootori xdot- ja imagemap-läbimistel ning `circo` `json`
+läbimisel. `twopi`, `neato`, `fdp` ja `sfdp` `json` läbimistel ning kõigi viie `plain`
+läbimistel ei jõua natiivne oraakel ise läbimise ajaeelarve piires lõpuni, seega on
+need read oraakli vead. Mootoritel `dot`, `osage` ja `patchwork` on see edukas.
 
 **Mis juhtub.** `lib/pack/pack.c` salvestab komponendi hõivatud lahtrid `PointSet`-i.
 Failis `2784` (üks 3e16 pt kõrgune sõlm, `splines="ortho"`) vajab ustav täisarvuline
@@ -1107,8 +1113,12 @@ jooksul, kasutades 67.3 GB resident-mälu (101 GB tipp). Pordi `PointSet` on Jav
 **Miks aktsepteeritud.** Koodist allpool asuv käitusaja piirang, mitte loogikalünk;
 põhjuseks on `97fcccd8` ustav aritmeetika (enne seda arvutas port väikese, vale
 paigutuse ega jõudnud kunagi piirini). Aktsepteeritud tulemus on visatud viga, mitte
-`diverged` otsus, ja mootoripõhised registrid aktsepteerivad ainult `diverged` ridu, seega
-registrikirjet ei ole: pühkimised jätkavad `2784` loetlemist oma pordi vigade all.
+`diverged` otsus, seega deklareerivad kirjed failides `accepted-divergences-engines.json`,
+`accepted-divergences-json.json` ja `accepted-divergences-map.json`
+`verdict: "port-error"` koos `errIncludes: "Map maximum size exceeded"`: need
+aktsepteerivad pordi viga ainult siis, kui see kannab seda teadet. Teistsugune tõrge
+`2784` puhul ilmneks aktsepteerimata veana ja `registry-staleness.test.ts` märgiks
+kirje aegunuks.
 Tõendid: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

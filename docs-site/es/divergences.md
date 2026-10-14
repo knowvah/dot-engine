@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,10 +42,11 @@ de arriba) es
 Las herramientas lo combinan en el momento de generar el informe: `PARITY-dot.md` separa los
 **deltas aceptados** del *backlog* con seguimiento, y la puerta de reglas obtiene de él su
 lista de permitidos. Las secciones en prosa de abajo explican cada entrada (A1 está
-vigente; A2, A3 y A8 están cerradas y se conservan como historia; A10 es la
-aceptación de un error del port que ningún registro puede expresar); una prueba de CI
-(`accepted-divergences.test.ts`) exige que todo grafo aceptado siga divergiendo, de modo que
-esta lista no pueda pudrirse en silencio.
+vigente; A2, A3 y A8 están cerradas y se conservan como historia; A10 está vigente
+como aceptación de un error del port en los registros por motor). Dos pruebas de CI
+impiden que esta lista se pudra en silencio: `accepted-divergences.test.ts` exige que
+todo grafo aceptado siga divergiendo, y `registry-staleness.test.ts` falla cuando una
+entrada de un registro por motor ya no coincide con su fila de recorrido confirmada.
 
 ---
 
@@ -1118,8 +1119,12 @@ nota `2095 reclassified` de arriba).
 
 ### A10. Límite de tamaño de `Map` de V8 en el empaquetado de poliominós (`2784`, cinco motores basados en empaquetado) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Afectados:** `2784` en `circo`, `twopi`, `neato`, `fdp` y `sfdp`, en todos los formatos
-de salida. En `dot` es `conformant`.
+**Afectados:** `2784` en `circo`, `twopi`, `neato`, `fdp` y `sfdp`. El port lanza un
+error en los recorridos xdot e imagemap de los cinco motores y en el recorrido `json`
+de `circo`. En los recorridos `json` de `twopi`, `neato`, `fdp` y `sfdp`, y en los
+recorridos `plain` de los cinco, el propio oráculo nativo no termina dentro del
+presupuesto de tiempo del recorrido, así que esas filas son errores del oráculo. En
+`dot`, `osage` y `patchwork` pasa.
 
 **Qué ocurre.** `lib/pack/pack.c` registra en un `PointSet` las celdas que ocupa un
 componente. Para `2784` (un único nodo de 3e16 pt de alto, `splines="ortho"`) la
@@ -1131,9 +1136,12 @@ port es un `Map` de JavaScript, que V8 limita a 2^24 entradas, así que lanza
 **Por qué se acepta.** Un límite del entorno de ejecución por debajo del código, no una
 laguna lógica; la causa es la aritmética fiel de `97fcccd8` (antes el port calculaba un
 diseño pequeño y erróneo y nunca llegaba al límite). El resultado aceptado es un error
-lanzado en lugar de un veredicto `diverged`, y los registros por motor solo aceptan
-filas `diverged`, así que no existe entrada de registro: los recorridos siguen listando
-`2784` entre sus fallos de port. Evidencia:
+lanzado en lugar de un veredicto `diverged`, así que las entradas de
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` y
+`accepted-divergences-map.json` declaran `verdict: "port-error"` con
+`errIncludes: "Map maximum size exceeded"`: solo aceptan un error del port cuando lleva
+ese mensaje. Un fallo distinto en `2784` aparecería como un fallo no aceptado, y
+`registry-staleness.test.ts` marcaría la entrada como obsoleta. Evidencia:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,10 +42,11 @@ nižšie), je
 Nástroje ho pripájajú v čase generovania reportu: `PARITY-dot.md` oddeľuje **akceptované
 odchýlky** od **sledovaného** nevybavenia a brána pravidiel z neho preberá svoj
 zoznam povolených. Prózové oddiely nižšie vysvetľujú každý záznam (A1 je živý;
-A2, A3 a A8 sú uzavreté a ponechané ako história; A10 je akceptácia chyby portu, ktorú
-žiadny register nevie vyjadriť); test v CI (`accepted-divergences.test.ts`) zaisťuje, že
-každý akceptovaný graf sa stále líši, takže tento zoznam nemôže nepozorovane
-zastarať.
+A2, A3 a A8 sú uzavreté a ponechané ako história; A10 je živý ako akceptácia chyby portu
+v registroch jednotlivých modulov). Dva testy v CI bránia tomu, aby tento zoznam nepozorovane
+zastaral: `accepted-divergences.test.ts` zaisťuje, že každý akceptovaný graf sa stále líši,
+a `registry-staleness.test.ts` zlyhá, keď záznam v registri niektorého modulu už
+nezodpovedá svojmu commitnutému riadku prechodu.
 
 ---
 
@@ -1104,8 +1105,12 @@ poznámku o preklasifikovaní `2095` vyššie).
 
 ### A10. Limit veľkosti `Map` vo V8 pri balení polyomín (`2784`, päť modulov založených na balení) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Dotknuté:** `2784` pri `circo`, `twopi`, `neato`, `fdp` a `sfdp`, v každom
-výstupnom formáte. Pri `dot` je `conformant`.
+**Dotknuté:** `2784` pri `circo`, `twopi`, `neato`, `fdp` a `sfdp`. Port vyhodí chybu
+pri prechodoch xdot a imagemap všetkých piatich modulov a pri prechode `json`
+pre `circo`. Pri prechodoch `json` pre `twopi`, `neato`, `fdp` a `sfdp` a pri
+prechodoch `plain` všetkých piatich samotné natívne orákulum neskončí v rámci časového
+rozpočtu prechodu, takže tieto riadky sú chyby orákula. Pri `dot`, `osage` a
+`patchwork` prechádza.
 
 **Čo sa deje.** `lib/pack/pack.c` zaznamenáva bunky, ktoré komponent zaberá, do
 `PointSet`. Pre `2784` (jediný uzol vysoký 3e16 pt, `splines="ortho"`) verná
@@ -1117,9 +1122,12 @@ v porte je `Map` z JavaScriptu, ktorú V8 obmedzuje na 2^24 záznamov, takže vy
 **Prečo akceptované.** Limit runtime pod úrovňou kódu, nie logická medzera; príčinou je
 verná aritmetika z `97fcccd8` (pred ňou port vypočítal malé,
 nesprávne rozloženie a limit nikdy nedosiahol). Akceptovaným výsledkom je vyhodená
-chyba, nie verdikt `diverged`, a registre jednotlivých modulov
-akceptujú iba riadky `diverged`, takže záznam v registri neexistuje: prechody naďalej uvádzajú
-`2784` medzi svojimi chybami portu. Dôkaz:
+chyba, nie verdikt `diverged`, takže záznamy v
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` a
+`accepted-divergences-map.json` deklarujú `verdict: "port-error"` s
+`errIncludes: "Map maximum size exceeded"`: akceptujú chybu portu, iba ak
+nesie túto správu. Iné zlyhanie pri `2784` by sa prejavilo ako neakceptovaná chyba
+a `registry-staleness.test.ts` by záznam označil za zastaraný. Dôkaz:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

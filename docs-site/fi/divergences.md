@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -44,10 +44,12 @@ alla), on
 Työkalut yhdistävät sen raportointihetkellä: `PARITY-dot.md` erottaa
 **hyväksytyt erot** **seuratusta** työjonosta, ja sääntöportti ottaa sallittujen
 luettelonsa siitä. Alla olevat proosaosiot selittävät jokaisen merkinnän (A1 on
-voimassa; A2, A3 ja A8 on suljettu ja säilytetty historiana; A10 on porttauksen
-virheen hyväksyntä, jota mikään rekisteri ei voi ilmaista); CI-testi
-(`accepted-divergences.test.ts`) valvoo, että jokainen hyväksytty graafi yhä
-poikkeaa, joten tämä luettelo ei voi huomaamatta rapistua.
+voimassa; A2, A3 ja A8 on suljettu ja säilytetty historiana; A10 on voimassa
+porttausvirheen hyväksyntänä moottorikohtaisissa rekistereissä). Kaksi CI-testiä
+estää tätä luetteloa rapistumasta huomaamatta: `accepted-divergences.test.ts`
+valvoo, että jokainen hyväksytty graafi yhä poikkeaa, ja
+`registry-staleness.test.ts` epäonnistuu, kun moottorikohtaisen rekisterin
+merkintä ei enää vastaa commitoidun läpikäynnin riviään.
 
 ---
 
@@ -1120,8 +1122,12 @@ yllä oleva `2095`:n uudelleenluokitusta koskeva huomautus).
 
 ### A10. V8:n `Map`-kokoraja polyomino-pakkauksessa (`2784`, viisi pakkaukseen perustuvaa moottoria) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Koskee:** `2784` moottoreilla `circo`, `twopi`, `neato`, `fdp` ja `sfdp`, kaikissa
-tulostusmuodoissa. Moottorilla `dot` se on `conformant`.
+**Koskee:** `2784` moottoreilla `circo`, `twopi`, `neato`, `fdp` ja `sfdp`.
+Porttaus heittää virheen kaikkien viiden moottorin xdot- ja imagemap-läpikäynneissä
+sekä `circo`n `json`-läpikäynnissä. Moottorien `twopi`, `neato`, `fdp` ja `sfdp`
+`json`-läpikäynneissä sekä kaikkien viiden `plain`-läpikäynneissä natiivi oraakkeli
+itse ei valmistu läpikäynnin aikabudjetin puitteissa, joten nuo rivit ovat
+oraakkelivirheitä. Moottoreilla `dot`, `osage` ja `patchwork` se läpäisee.
 
 **Mitä tapahtuu.** `lib/pack/pack.c` tallentaa komponentin varaamat solut
 `PointSet`iin. Tiedostossa `2784` (yksi 3e16 pt korkea solmu, `splines="ortho"`)
@@ -1133,9 +1139,13 @@ alkioon, joten se heittää `Map maximum size exceeded`.
 **Miksi hyväksytty.** Koodin alapuolinen ajoympäristön rajoite, ei looginen aukko;
 syynä on `97fcccd8`:n uskollinen aritmetiikka (ennen sitä porttaus laski pienen,
 väärän asettelun eikä koskaan saavuttanut rajaa). Hyväksytty lopputulos on heitetty
-virhe `diverged`-tuomion sijaan, ja moottorikohtaiset rekisterit hyväksyvät vain
-`diverged`-rivejä, joten rekisterimerkintää ei ole: läpikäynnit listaavat `2784`:n
-edelleen porttausvirheidensä alla. Todiste:
+virhe `diverged`-tuomion sijaan, joten tiedostojen
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` ja
+`accepted-divergences-map.json` merkinnät ilmoittavat `verdict: "port-error"`
+ehdolla `errIncludes: "Map maximum size exceeded"`: ne hyväksyvät porttausvirheen
+vain, kun se sisältää tämän viestin. Muunlainen virhe `2784`:llä näkyisi
+hyväksymättömänä virheenä, ja `registry-staleness.test.ts` merkitsisi merkinnän
+vanhentuneeksi. Todiste:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

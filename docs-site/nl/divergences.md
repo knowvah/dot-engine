@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,9 +42,10 @@ hieronder) is
 De tooling voegt die samen bij het genereren van het rapport: `PARITY-dot.md` scheidt
 **geaccepteerde afwijkingen** van de **gevolgde** backlog, en de regels-gate haalt zijn
 toelatingslijst eruit. De proza-secties hieronder lichten elke vermelding toe (A1 is actueel; A2, A3 en A8 zijn gesloten en
-bewaard als geschiedenis; A10 is een acceptatie van een port-fout die geen enkel register kan uitdrukken); een CI-test
-(`accepted-divergences.test.ts`) dwingt af dat elke geaccepteerde graaf nog steeds
-afwijkt, zodat deze lijst niet ongemerkt kan verouderen.
+bewaard als geschiedenis; A10 is actueel als acceptatie van een port-fout in de registers per engine). Twee
+CI-tests voorkomen dat deze lijst ongemerkt veroudert: `accepted-divergences.test.ts` dwingt af dat elke
+geaccepteerde graaf nog steeds afwijkt, en `registry-staleness.test.ts` faalt wanneer een vermelding in een
+register per engine niet meer overeenkomt met haar vastgelegde sweep-rij.
 
 ---
 
@@ -1107,8 +1108,12 @@ notitie `2095 geherclassificeerd` hierboven).
 
 ### A10. V8 `Map`-groottelimiet bij polyomino-pakking (`2784`, vijf op pakking gebaseerde engines) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Getroffen:** `2784` op `circo`, `twopi`, `neato`, `fdp` en `sfdp`, in elk
-uitvoerformaat. Op `dot` is het `conformant`.
+**Getroffen:** `2784` op `circo`, `twopi`, `neato`, `fdp` en `sfdp`. De port
+gooit een fout in de xdot- en imagemap-sweeps van alle vijf engines en in de `json`-sweep
+voor `circo`. In de `json`-sweeps voor `twopi`, `neato`, `fdp` en `sfdp`, en in de
+`plain`-sweeps van alle vijf, wordt het native orakel zelf niet binnen het tijdsbudget
+van de sweep klaar, dus die rijen zijn orakelfouten. Op `dot`, `osage` en
+`patchwork` slaagt het.
 
 **Wat er gebeurt.** `lib/pack/pack.c` legt de cellen die een component inneemt vast in
 een `PointSet`. Voor `2784` (een enkele knoop van 3e16 pt hoog, `splines="ortho"`) heeft de
@@ -1120,9 +1125,12 @@ is een JavaScript-`Map`, die door V8 op 2^24 items is begrensd, dus hij gooit
 **Waarom geaccepteerd.** Een runtime-limiet onder de code, geen logische leemte; de oorzaak is
 de getrouwe rekenkunde van `97fcccd8` (daarvoor berekende de port een kleine,
 onjuiste lay-out en bereikte de limiet nooit). De geaccepteerde uitkomst is een gegooide
-fout in plaats van een `diverged`-oordeel, en de registers per engine
-accepteren alleen `diverged`-rijen, dus er bestaat geen registervermelding: de sweeps blijven
-`2784` onder hun port-fouten vermelden. Bewijs:
+fout in plaats van een `diverged`-oordeel, dus de vermeldingen in
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` en
+`accepted-divergences-map.json` declareren `verdict: "port-error"` met
+`errIncludes: "Map maximum size exceeded"`: ze accepteren een port-fout alleen als
+die deze melding bevat. Een andere mislukking op `2784` zou opduiken als een niet-geaccepteerde
+fout, en `registry-staleness.test.ts` zou de vermelding als verouderd markeren. Bewijs:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -41,9 +41,11 @@ C のソースが仕様であり、一覧にない差異は、受け入れられ
 です。ツールはレポート作成時にこれを結合します。`PARITY-dot.md` は**受け入れ済みの差分**を
 **追跡中**のバックログから分離し、ルールゲートはその許可リストをここから取得します。
 以下の本文の各節は各エントリーを説明しています（A1 は現役、A2・A3・A8 はクローズ済みで
-履歴として残されており、A10 はどのレジストリでも表現できないポートエラーの受け入れです）。CI テスト (`accepted-divergences.test.ts`) が、
-受け入れ済みのすべてのグラフが依然として差異を示すことを強制するため、
-この一覧が気づかないうちに陳腐化することはありません。
+履歴として残されており、A10 はエンジンごとのレジストリにおけるポートエラーの受け入れとして現役です）。
+2 つの CI テストが、この一覧が気づかないうちに陳腐化するのを防ぎます。
+`accepted-divergences.test.ts` は受け入れ済みのすべてのグラフが依然として差異を示すことを強制し、
+`registry-staleness.test.ts` はエンジンごとのレジストリのエントリーが、コミットされたスイープの
+行と一致しなくなったときに失敗します。
 
 ---
 
@@ -1037,8 +1039,11 @@ conformant であり、14 点対 8 点の回廊の反転は同順位ではなく
 
 ### A10. ポリオミノパッキングにおける V8 の `Map` サイズ上限（`2784`、パックベースの 5 エンジン） {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**影響を受けるもの：** `circo`、`twopi`、`neato`、`fdp`、`sfdp` での `2784`（すべての出力形式）。
-`dot` では `conformant` です。
+**影響を受けるもの：** `circo`、`twopi`、`neato`、`fdp`、`sfdp` での `2784`。ポートは、
+5 つのエンジンすべての xdot と imagemap のスイープ、および `circo` の `json` スイープでエラーを
+投げます。`twopi`、`neato`、`fdp`、`sfdp` の `json` スイープと、5 つすべての `plain` スイープでは、
+ネイティブオラクル自体がスイープの制限時間内に完了しないため、それらの行はオラクルエラーです。
+`dot`、`osage`、`patchwork` では合格します。
 
 **何が起きるか。** `lib/pack/pack.c` は、コンポーネントが占めるセルを `PointSet` に記録します。
 `2784`（高さ 3e16 pt の単一ノード、`splines="ortho"`）では、忠実な整数の `step`/配置の演算に
@@ -1048,9 +1053,12 @@ conformant であり、14 点対 8 点の回廊の反転は同順位ではなく
 
 **受け入れる理由。** コードより下の層のランタイム制限であり、ロジックの欠落ではありません。
 原因は `97fcccd8` の忠実な演算です（それ以前は、ポートは小さく誤ったレイアウトを計算しており、
-上限に到達しませんでした）。受け入れられる結果は `diverged` 判定ではなくスローされたエラーであり、
-エンジンごとのレジストリは `diverged` の行のみを受け入れるため、レジストリのエントリーは
-存在しません。スイープは引き続き `2784` をポートエラーの障害の下に列挙します。証拠：
+上限に到達しませんでした）。受け入れられる結果は `diverged` 判定ではなくスローされたエラーであるため、
+`accepted-divergences-engines.json`、`accepted-divergences-json.json`、
+`accepted-divergences-map.json` のエントリーは `verdict: "port-error"` と
+`errIncludes: "Map maximum size exceeded"` を宣言します。つまり、そのメッセージを伴う場合にのみ
+ポートエラーを受け入れます。`2784` で別の失敗が起きれば、受け入れられていない障害として表面化し、
+`registry-staleness.test.ts` がそのエントリーを古くなったものとして検出します。証拠：
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md)。
 
 ---

@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,8 +42,10 @@ C 소스가 곧 명세이며, 목록에 없는 차이는 수용된 동작이 아
 도구가 보고서를 만들 때 이 파일을 결합합니다. `PARITY-dot.md`는 **수용된 차이**와
 **추적 중인** 백로그를 나누고, 규칙 게이트는 허용 목록을 여기서 가져옵니다.
 아래 본문 섹션이 각 항목을 설명합니다(A1은 현재 유효하며, A2·A3·A8은 종결되어
-이력으로 남겨 두었고, A10은 어떤 레지스트리로도 표현할 수 없는 포팅 오류 수용입니다). CI 테스트(`accepted-divergences.test.ts`)가 수용된
-모든 그래프가 여전히 어긋나는지 검사하므로, 이 목록은 모르는 사이에 낡을 수 없습니다.
+이력으로 남겨 두었고, A10은 엔진별 레지스트리의 포팅 오류 수용으로서 현재 유효합니다). 두 CI 테스트가
+이 목록이 모르는 사이에 낡지 않도록 지킵니다. `accepted-divergences.test.ts`는 수용된 모든 그래프가
+여전히 어긋나는지 검사하고, `registry-staleness.test.ts`는 엔진별 레지스트리의 항목이 커밋된 조사 행과
+더 이상 일치하지 않으면 실패합니다.
 
 ---
 
@@ -961,8 +963,10 @@ pathplan 멀티스플라인 통로에 있으며 — circo/sfdp `241_0`과 같은
 
 ### A10. 폴리오미노 패킹에서의 V8 `Map` 크기 한계(`2784`, 패킹 기반 다섯 엔진) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**영향받는 대상:** `circo`, `twopi`, `neato`, `fdp`, `sfdp`에서의 `2784`, 모든 출력 형식.
-`dot`에서는 `conformant`입니다.
+**영향받는 대상:** `circo`, `twopi`, `neato`, `fdp`, `sfdp`에서의 `2784`. 포팅은 다섯 엔진 모두의
+xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니다. `twopi`, `neato`, `fdp`, `sfdp`의
+`json` 조사와 다섯 엔진 모두의 `plain` 조사에서는 네이티브 오라클 자체가 조사의 시간 예산 안에 끝나지
+않으므로 해당 행은 오라클 오류입니다. `dot`, `osage`, `patchwork`에서는 통과합니다.
 
 **무슨 일이 일어나는가.** `lib/pack/pack.c`는 컴포넌트가 차지하는 셀을 `PointSet`에 기록합니다.
 `2784`(높이 3e16 pt의 단일 노드, `splines="ortho"`)에서는 충실한 정수 `step`/배치 산술에
@@ -972,9 +976,11 @@ pathplan 멀티스플라인 통로에 있으며 — circo/sfdp `241_0`과 같은
 
 **수용하는 이유.** 코드 아래에 있는 런타임 한계이며 논리 결함이 아닙니다. 원인은 `97fcccd8`의
 충실한 산술입니다(그 이전에는 포팅이 작고 틀린 레이아웃을 계산해 한계에 도달하지 않았습니다).
-수용되는 결과는 `diverged` 판정이 아니라 던져진 오류이며, 엔진별 레지스트리는 `diverged` 행만
-수용하므로 레지스트리 항목이 없습니다. 조사는 계속해서 `2784`를 포팅 오류 결함 아래에
-나열합니다. 증거: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+수용되는 결과는 `diverged` 판정이 아니라 던져진 오류이므로, `accepted-divergences-engines.json`,
+`accepted-divergences-json.json`, `accepted-divergences-map.json`의 항목은 `verdict: "port-error"`와
+`errIncludes: "Map maximum size exceeded"`를 선언합니다. 즉, 그 메시지를 담은 경우에만 포팅 오류를
+수용합니다. `2784`에서 다른 실패가 일어나면 수용되지 않은 결함으로 드러나고,
+`registry-staleness.test.ts`가 그 항목을 낡은 것으로 표시합니다. 증거: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

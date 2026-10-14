@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,10 +42,11 @@ níže), je
 Nástroje jej připojují při tvorbě reportu: `PARITY-dot.md` odděluje **akceptované
 odchylky** od **sledovaného** backlogu a brána pravidel z něj čerpá svůj seznam
 povolených. Textové sekce níže vysvětlují každý záznam (A1 je živá; A2, A3 a A8 jsou
-uzavřeny a ponechány jako historie; A10 je akceptace chyby portace, kterou žádný
-registr nedokáže vyjádřit); test v CI (`accepted-divergences.test.ts`)
-vynucuje, že každý akceptovaný graf se stále liší, takže tento seznam nemůže
-nepozorovaně zetlít.
+uzavřeny a ponechány jako historie; A10 je živá jako akceptace chyby portace
+v registrech jednotlivých modulů). Dva testy v CI brání tomu, aby tento seznam
+nepozorovaně zetlel: `accepted-divergences.test.ts` vynucuje, že každý akceptovaný
+graf se stále liší, a `registry-staleness.test.ts` selže, když záznam v registru
+některého modulu přestane odpovídat svému zapsanému řádku průchodu.
 
 ---
 
@@ -1102,8 +1103,11 @@ poznámka `2095 reclassified` výše).
 
 ### A10. Limit velikosti `Map` ve V8 při balení polyomin (`2784`, pět modulů založených na balení) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Dotčeno:** `2784` na `circo`, `twopi`, `neato`, `fdp` a `sfdp`, ve všech
-výstupních formátech. Na `dot` je `conformant`.
+**Dotčeno:** `2784` na `circo`, `twopi`, `neato`, `fdp` a `sfdp`. Portace vyhazuje
+chybu v průchodech xdot a imagemap všech pěti modulů a v průchodu `json` pro
+`circo`. V průchodech `json` pro `twopi`, `neato`, `fdp` a `sfdp` a v průchodech
+`plain` všech pěti samo nativní orákulum nedoběhne v časovém limitu průchodu, takže
+tyto řádky jsou chyby orákula. Na `dot`, `osage` a `patchwork` projde.
 
 **Co se děje.** `lib/pack/pack.c` zaznamenává buňky, které komponenta zabírá, do
 `PointSet`. U `2784` (jediný uzel vysoký 3e16 pt, `splines="ortho"`) věrná
@@ -1115,9 +1119,12 @@ v portaci je JavaScriptový `Map`, který V8 omezuje na 2^24 položek, takže vy
 **Proč akceptováno.** Běhové omezení pod úrovní kódu, nikoli logická mezera;
 příčinou je věrná aritmetika `97fcccd8` (před ní portace vypočetla malé, chybné
 rozvržení a limitu nikdy nedosáhla). Akceptovaným výsledkem je vyhozená chyba,
-nikoli verdikt `diverged`, a registry jednotlivých modulů akceptují pouze řádky
-`diverged`, takže záznam v registru neexistuje: průchody dál uvádějí `2784` pod
-svými chybami portace. Důkaz:
+nikoli verdikt `diverged`, proto záznamy v `accepted-divergences-engines.json`,
+`accepted-divergences-json.json` a `accepted-divergences-map.json` deklarují
+`verdict: "port-error"` s `errIncludes: "Map maximum size exceeded"`: chybu portace
+akceptují jen tehdy, nese-li tuto zprávu. Jiné selhání u `2784` by se projevilo
+jako neakceptovaná chyba a `registry-staleness.test.ts` by záznam označil za
+zastaralý. Důkaz:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

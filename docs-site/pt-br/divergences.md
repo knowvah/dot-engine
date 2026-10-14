@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -43,8 +43,10 @@ abaixo) é
 As ferramentas o cruzam no momento do relatório: o `PARITY-dot.md` separa os **deltas aceitos**
 do backlog **rastreado**, e o portão de regras obtém sua lista de permissões a partir dele. As
 seções em prosa abaixo explicam cada entrada (A1 está ativa; A2, A3 e A8 estão encerradas e
-mantidas como histórico; A10 é uma aceitação de erro do port que nenhum registro consegue expressar); um teste de CI (`accepted-divergences.test.ts`) garante que
-todo grafo aceito ainda diverge, de modo que esta lista não pode apodrecer em silêncio.
+mantidas como histórico; A10 está ativa como aceitação de erro do port nos registros por mecanismo). Dois
+testes de CI impedem que esta lista apodreça em silêncio: `accepted-divergences.test.ts` garante que todo grafo
+aceito ainda diverge, e `registry-staleness.test.ts` falha quando uma entrada de um registro por mecanismo
+deixa de corresponder à sua linha de varredura registrada.
 
 ---
 
@@ -1102,8 +1104,12 @@ nota `2095 reclassificado` acima).
 
 ### A10. Limite de tamanho do `Map` do V8 no empacotamento de poliominós (`2784`, cinco mecanismos baseados em empacotamento) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Afetados:** `2784` em `circo`, `twopi`, `neato`, `fdp` e `sfdp`, em todos os
-formatos de saída. No `dot` ele é `conformant`.
+**Afetados:** `2784` em `circo`, `twopi`, `neato`, `fdp` e `sfdp`. O port
+lança erro nas varreduras xdot e imagemap dos cinco mecanismos e na varredura `json`
+do `circo`. Nas varreduras `json` de `twopi`, `neato`, `fdp` e `sfdp`, e nas
+varreduras `plain` dos cinco, o próprio oráculo nativo não termina dentro do tempo
+reservado à varredura, então essas linhas são erros do oráculo. No `dot`, no `osage` e
+no `patchwork` ele passa.
 
 **O que acontece.** `lib/pack/pack.c` registra as células que um componente ocupa em
 um `PointSet`. Para `2784` (um único nó com 3e16 pt de altura, `splines="ortho"`), a
@@ -1115,9 +1121,12 @@ aritmética inteira fiel de `step`/posicionamento precisa de 2.011.656.764 célu
 **Por que aceito.** Um limite de runtime abaixo do código, não uma lacuna de lógica; a causa é
 a aritmética fiel de `97fcccd8` (antes dela o port calculava um layout pequeno e
 errado e nunca chegava ao limite). O resultado aceito é um erro lançado
-em vez de um veredito `diverged`, e os registros por mecanismo
-só aceitam linhas `diverged`, então não existe entrada de registro: as varreduras continuam
-listando `2784` entre suas falhas de erro do port. Evidência:
+em vez de um veredito `diverged`, então as entradas em
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` e
+`accepted-divergences-map.json` declaram `verdict: "port-error"` com
+`errIncludes: "Map maximum size exceeded"`: elas aceitam um erro do port apenas quando
+ele traz essa mensagem. Uma falha diferente em `2784` apareceria como uma falha não
+aceita, e o `registry-staleness.test.ts` marcaria a entrada como obsoleta. Evidência:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

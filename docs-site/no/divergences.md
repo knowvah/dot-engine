@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,8 +42,10 @@ nedenfor) er
 Verktøyene kobler den inn ved rapporteringstidspunktet: `PARITY-dot.md` skiller **godkjente deltaer** fra
 den **sporede** restansen, og regelporten henter sin tillatelsesliste derfra. Prosaseksjonene
 nedenfor forklarer hver oppføring (A1 er aktiv; A2, A3 og A8 er lukket og
-beholdt som historikk; A10 er en godkjenning av en portfeil som ingen register kan uttrykke); en CI-test (`accepted-divergences.test.ts`) sørger for at
-hver godkjent graf fortsatt avviker, slik at denne listen ikke stille kan råtne.
+beholdt som historikk; A10 er aktiv som en godkjenning av en portfeil i registrene per motor). To CI-tester
+hindrer at denne listen stille råtner: `accepted-divergences.test.ts` sørger for at hver godkjent graf
+fortsatt avviker, og `registry-staleness.test.ts` feiler når en oppføring i et register per motor ikke
+lenger samsvarer med sin innsjekkede kjøringsrad.
 
 ---
 
@@ -1103,8 +1105,12 @@ merknaden om `2095` omklassifisert ovenfor).
 
 ### A10. V8 `Map`-størrelsesgrense i polyomino-pakking (`2784`, fem pakkebaserte motorer) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Berørt:** `2784` på `circo`, `twopi`, `neato`, `fdp` og `sfdp`, i alle
-utdataformater. På `dot` er den `conformant`.
+**Berørt:** `2784` på `circo`, `twopi`, `neato`, `fdp` og `sfdp`. Porten
+kaster feil i xdot- og imagemap-kjøringene for alle fem motorene og i `json`-kjøringen
+for `circo`. I `json`-kjøringene for `twopi`, `neato`, `fdp` og `sfdp`, og i
+`plain`-kjøringene for alle fem, blir det innebygde orakelet selv ikke ferdig innenfor
+kjøringens tidsbudsjett, så disse radene er orakelfeil. På `dot`, `osage` og
+`patchwork` består den.
 
 **Hva som skjer.** `lib/pack/pack.c` registrerer cellene en komponent opptar i
 et `PointSet`. For `2784` (én enkelt node på 3e16 pt i høyden, `splines="ortho"`) trenger den
@@ -1116,9 +1122,12 @@ er et JavaScript-`Map`, som V8 begrenser til 2^24 oppføringer, så den kaster
 **Hvorfor godkjent.** En kjøretidsgrense under koden, ikke et logisk gap; årsaken er
 den trofaste aritmetikken fra `97fcccd8` (før den beregnet porten en liten,
 feil layout og nådde aldri grensen). Det godkjente utfallet er en kastet
-feil i stedet for en `diverged`-dom, og registrene per motor
-godkjenner bare `diverged`-rader, så det finnes ingen registeroppføring: kjøringene fortsetter å
-oppføre `2784` blant portfeilene sine. Bevis:
+feil i stedet for en `diverged`-dom, så oppføringene i
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` og
+`accepted-divergences-map.json` deklarerer `verdict: "port-error"` med
+`errIncludes: "Map maximum size exceeded"`: de godkjenner en portfeil bare når
+den bærer den meldingen. En annen feil på `2784` ville dukket opp som en ikke-godkjent
+feil, og `registry-staleness.test.ts` ville flagget oppføringen som utdatert. Bevis:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
