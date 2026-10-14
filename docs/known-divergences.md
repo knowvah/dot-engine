@@ -38,8 +38,11 @@ below) is
 The tooling joins it at report time: `PARITY-dot.md` splits **accepted deltas** from
 the **tracked** backlog, and the rules gate sources its allowlist from it. The
 prose sections below explain each entry (A1 is live; A2, A3 and A8 are closed and
-kept as history; A10 is a port-error acceptance that no registry can express); a CI test (`accepted-divergences.test.ts`) enforces that
-every accepted graph still diverges, so this list cannot silently rot.
+kept as history; A10 is live as a port-error acceptance in the per-engine
+registries). Two CI tests keep this list from silently rotting:
+`accepted-divergences.test.ts` enforces that every accepted graph still diverges,
+and `registry-staleness.test.ts` fails when an entry in a per-engine registry no
+longer matches its committed walk row.
 
 ---
 
@@ -1108,8 +1111,12 @@ injector confirmed it also injects to 0, and its accept was removed (see the
 
 ### A10. V8 `Map` size limit in polyomino packing (`2784`, five pack-based engines)
 
-**Affected:** `2784` on `circo`, `twopi`, `neato`, `fdp` and `sfdp`, in every
-output format. On `dot` it is `conformant`.
+**Affected:** `2784` on `circo`, `twopi`, `neato`, `fdp` and `sfdp`. The port
+throws on the xdot and imagemap walks of all five engines and on the `json` walk
+for `circo`. On the `json` walks for `twopi`, `neato`, `fdp` and `sfdp`, and on the
+`plain` walks of all five, the native oracle itself does not finish within the
+walk's time budget, so those rows are oracle errors. On `dot`, `osage` and
+`patchwork` it passes.
 
 **What happens.** `lib/pack/pack.c` records the cells a component occupies in
 a `PointSet`. For `2784` (a single node 3e16 pt tall, `splines="ortho"`) the
@@ -1121,9 +1128,13 @@ faithful integer `step`/placement arithmetic needs 2,011,656,764 cells; native
 **Why accepted.** A runtime limit below the code, not a logic gap; the cause is
 the faithful arithmetic of `97fcccd8` (before it the port computed a small,
 wrong layout and never reached the limit). The accepted outcome is a thrown
-error rather than a `diverged` verdict, and the per-engine registries only
-accept `diverged` rows, so no registry entry exists: the walks keep listing
-`2784` under their port-error faults. Evidence:
+error rather than a `diverged` verdict, so the entries in
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` and
+`accepted-divergences-map.json` declare `verdict: "port-error"` with
+`errIncludes: "Map maximum size exceeded"`: they accept a port error only when
+it carries that message. A different failure on `2784` would surface as an
+unaccepted fault, and `registry-staleness.test.ts` would flag the entry as
+stale. Evidence:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
