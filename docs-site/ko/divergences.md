@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -458,8 +458,8 @@ maxΔ 0.39. 15.x 오라클에서는 503이었으며, 이 감소의 원인은 이
 에지를 포함해 오라클의 복구 출력을 정확히 재현합니다). 이들의 수용 항목은 퇴출되었습니다. **`2796`과 `2471`이 graphviz 16.1에서 이들과
 합류했습니다**(새 조사에서 둘 다 `conformant`이며 수용 항목은 퇴출): 포팅과 16.1 오라클이
 잃어버린 에지를 포함해 `init_rank` 복구 출력에 대해 이제 일치합니다. 원인은 이분 탐색으로
-규명하지 않았습니다(후보는 16.1 dotgen 포팅 `48981bf0`과 잃어버린 에지 소비 수정
-`54bd3b9b`). 아래 `init_rank` 설명은 클래스의 메커니즘으로 남겨 두며, 두 id는 패리티
+규명하지 않았습니다(후보는 16.1 dotgen 포팅 `3cfbf55c`과 잃어버린 에지 소비 수정
+`5b6b9bfc`). 아래 `init_rank` 설명은 클래스의 메커니즘으로 남겨 두며, 두 id는 패리티
 조사로 conformant로 고정되어 있습니다.
 
 `1581`과 `2825`는 크래시 복구 사례였습니다(fix-element-count-bucket 미션).
@@ -601,7 +601,7 @@ SVG에는 원시 바이트가 들어 있으며, 선언된 인코딩과 달리 **
 **영향받는 대상:** sfdp `2556`(NaN 레이아웃. 엔진 트랙 항목 참고). `1314` — 터무니없는 폰트 크기(`fontsize="991836031967s8"`)가
 그림을 약 2.75e11 pt로 부풀리는, 퍼저에서 만들어진 입력으로, graphviz 16.1에서
 **conformant**이며 수용은 퇴출되었습니다. 포팅이 이제 네이티브 `ROUND` 변환과 같은 방식으로
-페이지 크기를 좁히고(`fe20f303`) `setup_page` 순서로 페이지 클립을 구성합니다(`eea9d21c`).
+페이지 크기를 좁히고(`47f3165d`) `setup_page` 순서로 페이지 클립을 구성합니다(`da6c4a53`).
 아래 메커니즘 단락은 원래의 차이를 설명합니다.
 
 **무슨 일이 일어나는가.** C는 `job->width` / `job->height`를 **`unsigned int`**로
@@ -759,12 +759,12 @@ point not in any triangle') `makeMultiSpline`은 병합된 모든 2-사이클에
 제약이며, 맞추려면 Apple libm의 정확한 `sin`/`cos` 반올림을 JS에서 재현해야 합니다.
 
 **16.1 재기준선.** 멀티스플라인 통로 지오메트리에 clang의 FMA 융합(타원 모서리 피개방수,
-`mkCtrlPts`, `DIST` = sqrt(fmadd), `line_intersect` 내적)이 빠져 있었고, `b77b2703`(`fix(neato):
+`mkCtrlPts`, `DIST` = sqrt(fmadd), `line_intersect` 내적)이 빠져 있었고, `f66ac638`(`fix(neato):
 mirror fma contraction in multispline routing geometry`)이 이를 반영했습니다. 이 클래스가 아래의
 동원 동점으로 귀속했던 twopi와 neato의 `241_0`은 **conformant**가 되었고(수용 퇴출), sfdp `42`에는
 동점이 전혀 없었음이 밝혀졌습니다(A1 드리프트입니다. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)
 참고). circo, fdp, sfdp의 `241_0`은 여전히 어긋나며 잔여분은 그대로이거나 줄었습니다. 이들을 아래
-동점으로 귀속한 것은 `b77b2703`보다 앞서며, 그 수정이 twopi/neato에서 같은 귀속이 틀렸음을 보여
+동점으로 귀속한 것은 `f66ac638`보다 앞서며, 그 수정이 twopi/neato에서 같은 귀속이 틀렸음을 보여
 준 뒤로 **위치 주입으로 다시 검증하지 않았습니다**.
 
 **영향받는 대상:** `241_0`(에지 `1->2`의 통로 뒤바뀜으로 circo Δ≈0.2, fdp와 sfdp의 `241_0`은
@@ -891,7 +891,7 @@ C의 노드 크기와 포팅의 노드 크기를 각각 주면 조사에서 이�
 
 2026-07-11에 엔진 트랙 사례 두 건이 더 근본 원인 규명 후 수용되었습니다(전체 근본 원인
 분석: `.agent-notes/circo-edge-tail-rca.md`). twopi `241_0`(그리기 연산 차이 6건, 당시에는 위 circo 항목과 같은 CDT 동원 내접원 동점으로
-귀속됨, **graphviz 16.1에서 퇴출** — `b77b2703` 이후 conformant이므로 14점 대 8점 통로 뒤바뀜은
+귀속됨, **graphviz 16.1에서 퇴출** — `f66ac638` 이후 conformant이므로 14점 대 8점 통로 뒤바뀜은
 동점이 아니라 반영되지 않은 FMA 융합이었음)과 circo `windows-tree`(팬 에지 하나에서
 그리기 연산 차이 10건 — circo의 배치 삼각함수가 `node2.y`를 정확히 대칭인 값 18.0 부근에서
 `node8.y`보다 단 1 ULP 위에 놓으며, `closestSide`의 dyna 머리 포트 선택이 바로 그 정확한
@@ -904,9 +904,9 @@ C의 노드 크기와 포팅의 노드 크기를 각각 주면 조사에서 이�
 CDT 동원 내접원 동점을 드러냅니다(따라서 차이는 반복형 드리프트 — A1-drift 클래스 참고 —
 가 아니라 이산 판정식의 동점입니다).
 
-- `241_0` — CDT 동원 내접원 동점으로 귀속(멀티스플라인 통로, `b77b2703` 이후 재검증하지 않음,
+- `241_0` — CDT 동원 내접원 동점으로 귀속(멀티스플라인 통로, `f66ac638` 이후 재검증하지 않음,
   위의 16.1 재기준선 참고). 잔여분은 **세그먼트 개수 뒤바뀜**입니다. 에지 1->2에서 그리기 연산
-  차이 7건, `ptCount 8 vs 20`(`b77b2703` 이전에는 차이 20건) — 네이티브 빌드가 더 짧은 일반
+  차이 7건, `ptCount 8 vs 20`(`f66ac638` 이전에는 차이 20건) — 네이티브 빌드가 더 짧은 일반
   경로로 되돌아가는 곳에서 통로는 N점 스플라인으로 성공합니다(또는 그 반대). 위의 circo
   `241_0` 항목과 같습니다. 포팅은 이미 내접원/`ccw` 판정식에서
   arm64 `fmadd` 융합을 에뮬레이션하고(`src/pathplan/triang.ts`, `src/common/fma.ts`)
@@ -916,7 +916,7 @@ CDT 동원 내접원 동점을 드러냅니다(따라서 차이는 반복형 드
 > **sfdp `42`를 A9 → A1-drift로 재분류(graphviz 16.1 동기화).** 이전에는 여기에 CDT/libm
 > 내접원 동점으로 나열되어 있었습니다. 미션은 다른 사실을 확인했습니다
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). 과거의 통로 뒤바뀜은 멀티스플라인 통로
-> 지오메트리에서 포팅 쪽의 FMA 포팅 오류였고 `b77b2703`(`fix(neato): mirror fma contraction in
+> 지오메트리에서 포팅 쪽의 FMA 포팅 오류였고 `f66ac638`(`fix(neato): mirror fma contraction in
 > multispline routing geometry`)으로 고쳐졌으며, 네이티브 위치를 주입하면 포팅은 이제 네이티브
 > xdot를 정확히 재현합니다. 남은 잔여분(노드 오프셋 0.06-0.65 pt)은 가장 거친 수준에서 Apple
 > libm `pow(dist, 2)`와 포팅의 ARM `pow` 사이의 1-ULP 불일치에서 시작되어 더 세밀한 수준에서
@@ -947,7 +947,7 @@ CDT 동원 내접원 동점을 드러냅니다(따라서 차이는 반복형 드
 이전 위치를 주입하면 잔여분은 한 에지(`0->1#0`, maxΔ 3.39pt)에 국한된 숫자
 `unfilled_bezier` 차이 11건입니다. 노드 위치가 동일하게 주입되었으므로 차이는 하류의
 pathplan 멀티스플라인 통로에 있으며 — circo/sfdp `241_0`과 같은 libm 1-ULP 내접원
-동점입니다(위의 정확한 유리수 내접원 185/185, 11건의 차이는 `b77b2703`으로 바뀌지 않음 — 주입으로
+동점입니다(위의 정확한 유리수 내접원 185/185, 11건의 차이는 `f66ac638`으로 바뀌지 않음 — 주입으로
 재검증하지 않음). 수단은 이미 적용되어 있으며
 (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198` `Math.hypot`), 동점은 환원
 불가능한 것으로 봅니다. `accepted-divergences-engines.json`의 `fdp.241_0`으로 수용됩니다. 반면 fdp의
@@ -970,7 +970,7 @@ pathplan 멀티스플라인 통로에 있으며 — circo/sfdp `241_0`과 같은
 482초에 완료합니다. 포팅의 `PointSet`은 JavaScript `Map`이며 V8은 이를 2^24개 항목으로
 제한하므로 `Map maximum size exceeded`를 던집니다.
 
-**수용하는 이유.** 코드 아래에 있는 런타임 한계이며 논리 결함이 아닙니다. 원인은 `910be2a2`의
+**수용하는 이유.** 코드 아래에 있는 런타임 한계이며 논리 결함이 아닙니다. 원인은 `97fcccd8`의
 충실한 산술입니다(그 이전에는 포팅이 작고 틀린 레이아웃을 계산해 한계에 도달하지 않았습니다).
 수용되는 결과는 `diverged` 판정이 아니라 던져진 오류이며, 엔진별 레지스트리는 `diverged` 행만
 수용하므로 레지스트리 항목이 없습니다. 조사는 계속해서 `2784`를 포팅 오류 결함 아래에

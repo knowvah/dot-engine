@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -555,8 +555,8 @@ identici archi persi); le loro voci di accettazione sono ritirate. **`2796` e `2
 loro con graphviz 16.1** (entrambi `conformant` nel rilevamento ex novo, voci di
 accettazione ritirate): il porting e l'oracolo 16.1 ora concordano sull'output di
 recupero di `init_rank`, compresi gli archi persi. La causa non è stata isolata con
-una bisezione (il porting dotgen 16.1 `48981bf0` e la correzione del consumo degli
-archi persi `54bd3b9b` sono i candidati); la descrizione di `init_rank` qui sotto è
+una bisezione (il porting dotgen 16.1 `3cfbf55c` e la correzione del consumo degli
+archi persi `5b6b9bfc` sono i candidati); la descrizione di `init_rank` qui sotto è
 conservata come meccanismo della classe, e i due id sono fissati come conformi dal
 rilevamento di parità.
 
@@ -727,8 +727,8 @@ la correzione di decorate (T6).
 motore). `1314` — un input derivato da un fuzzer (`fontsize="991836031967s8"`)
 la cui dimensione di font assurda gonfia il disegno a ~2.75e11 pt — è **conformant** con graphviz 16.1 e la sua
 accettazione è ritirata: il porting ora restringe la dimensione della pagina come fa
-la conversione `ROUND` nativa (`fe20f303`) e costruisce il ritaglio della pagina
-nell'ordine di `setup_page` (`eea9d21c`). I paragrafi sul meccanismo qui sotto
+la conversione `ROUND` nativa (`47f3165d`) e costruisce il ritaglio della pagina
+nell'ordine di `setup_page` (`da6c4a53`). I paragrafi sul meccanismo qui sotto
 descrivono la differenza originale.
 
 **Che cosa succede.** C memorizza `job->width` / `job->height` come **`unsigned
@@ -932,14 +932,14 @@ arrotondamento di `sin`/`cos` di libm di Apple.
 
 **Nuova baseline 16.1.** Alla geometria del corridoio multispline mancava la
 contrazione FMA di clang (radicando dello spigolo dell'ellisse, `mkCtrlPts`, `DIST`
-= sqrt(fmadd), il prodotto scalare di `line_intersect`); `b77b2703` (`fix(neato):
+= sqrt(fmadd), il prodotto scalare di `line_intersect`); `f66ac638` (`fix(neato):
 mirror fma contraction in multispline routing geometry`) l'ha rispecchiata.
 `241_0` di twopi e di neato — che questa classe aveva attribuito al pareggio
 cocircolare qui sotto — sono diventati **conformant** (accettazioni ritirate), e
 `42` di sfdp si è rivelato privo di qualsiasi pareggio (è deriva A1, vedi
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` di circo, fdp e sfdp divergono
 ancora, con residui invariati o ridotti; la loro attribuzione al pareggio qui sotto
-precede `b77b2703` e **non è stata riverificata per iniezione di posizioni** da
+precede `f66ac638` e **non è stata riverificata per iniezione di posizioni** da
 quando quella correzione ha mostrato errata la stessa attribuzione per twopi/neato.
 
 **Interessati:** `241_0` (circo Δ≈0.2 tramite l'inversione del corridoio sull'arco
@@ -1110,7 +1110,7 @@ Altre due istanze sulle tracce dei motori sono state ricondotte alla causa radic
 accettate il 2026-07-11 (analisi completa della causa radice:
 `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 differenze di draw-op, attribuite allora allo stesso pareggio
 cocircolare dell'incircle di CDT della voce circo qui sopra; **ritirata con
-graphviz 16.1** — è conformant da `b77b2703`, quindi l'inversione del corridoio da
+graphviz 16.1** — è conformant da `f66ac638`, quindi l'inversione del corridoio da
 14 punti contro 8 punti era la contrazione FMA non rispecchiata, non un pareggio) e
 circo
 `windows-tree` (10 differenze di draw-op su un arco del ventaglio — la
@@ -1127,9 +1127,9 @@ divergenza NON è deriva iterativa — vedi la classe A1-drift — ma un pareggi
 discreto di predicato):
 
 - `241_0` — attribuito al pareggio cocircolare dell'incircle di CDT (il corridoio
-  multispline; non riverificato dopo `b77b2703`, vedi la nuova baseline 16.1 qui
+  multispline; non riverificato dopo `f66ac638`, vedi la nuova baseline 16.1 qui
   sopra). Il residuo è un'**inversione del numero di segmenti**: 7 differenze di
-  draw-op sull'arco 1->2, `ptCount 8 vs 20` (20 differenze prima di `b77b2703`) — il
+  draw-op sull'arco 1->2, `ptCount 8 vs 20` (20 differenze prima di `f66ac638`) — il
   corridoio riesce con una spline a N punti dove la build nativa ripiega su un
   instradamento semplice più corto (o viceversa), come nella voce circo `241_0` qui
   sopra. Il porting emula già la contrazione `fmadd` di arm64 nel predicato
@@ -1141,7 +1141,7 @@ discreto di predicato):
 > 16.1).** Era elencato qui come pareggio dell'incircle CDT/libm. La missione ha
 > trovato altro ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): l'ex inversione del
 > corridoio era un errore di porting FMA lato porting nella geometria del corridoio
-> multispline, corretto da `b77b2703` (`fix(neato): mirror fma contraction in
+> multispline, corretto da `f66ac638` (`fix(neato): mirror fma contraction in
 > multispline routing geometry`); con le posizioni native iniettate il porting ora
 > riproduce esattamente l'xdot nativo. Il residuo rimasto (scostamenti dei nodi di
 > 0.06-0.65 pt) è deriva iterativa innescata da una discordanza di 1 ULP tra
@@ -1180,7 +1180,7 @@ residuo è di 11 differenze numeriche di `unfilled_bezier` confinate a un solo a
 iniezione, la divergenza è a valle nel corridoio multispline di pathplan — lo stesso
 pareggio dell'incircle dovuto a 1 ULP di libm di circo/sfdp `241_0`
 (incircle in razionali esatti 185/185 qui sopra; 11 differenze invariate da
-`b77b2703` — non riverificato per iniezione). Le leve sono già applicate
+`f66ac638` — non riverificato per iniezione). Le leve sono già applicate
 (`fmadd` di `src/pathplan/triang.ts`, `Math.hypot` di `src/pathplan/route.ts:198`);
 il pareggio è considerato irriducibile. Accettato tramite `accepted-divergences-engines.json`
 `fdp.241_0`. `2095` di fdp, al contrario, è **A1-drift, non A9**: iniettare il
@@ -1207,7 +1207,7 @@ Il `PointSet` del porting è una `Map` JavaScript, che V8 limita a 2^24 voci, qu
 lancia `Map maximum size exceeded`.
 
 **Perché è accettato.** Un limite di runtime al di sotto del codice, non una lacuna
-logica; la causa è l'aritmetica fedele di `910be2a2` (prima di essa il porting
+logica; la causa è l'aritmetica fedele di `97fcccd8` (prima di essa il porting
 calcolava un layout piccolo e sbagliato e non raggiungeva mai il limite). L'esito
 accettato è un errore lanciato anziché un verdetto `diverged`, e i registri per
 motore accettano solo righe `diverged`, quindi non esiste alcuna voce nel registro: i

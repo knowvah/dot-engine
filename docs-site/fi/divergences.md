@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -527,7 +527,7 @@ niiden hyväksyntämerkinnät on poistettu. **`2796` ja `2471` liittyivät niihi
 16.1:ssä** (molemmat `conformant` tuoreessa ajossa, hyväksyntämerkinnät poistettu):
 porttaus ja 16.1-oraakkeli ovat nyt yhtä mieltä `init_rank`-palautuksen tulosteesta,
 mukaan lukien kadonneet kaaret. Syytä ei eristetty bisektiolla (ehdokkaita ovat 16.1:n
-dotgen-porttaus `48981bf0` ja kadonneiden kaarten kulutuksen korjaus `54bd3b9b`);
+dotgen-porttaus `3cfbf55c` ja kadonneiden kaarten kulutuksen korjaus `5b6b9bfc`);
 alla oleva `init_rank`-kuvaus säilytetään luokan mekanismina, ja nämä kaksi tunnistetta
 on lukittu yhdenmukaisiksi pariteettiajolla.
 
@@ -687,8 +687,8 @@ Kaikki muu tunnisteessa 1367 on yhdenmukaista: elementtimäärät (23 polyline /
 fuzzerilla johdettu syöte (`fontsize="991836031967s8"`), jonka järjetön fonttikoko
 paisuttaa piirroksen noin 2.75e11 pt:n kokoiseksi — on **conformant** graphviz
 16.1:ssä ja sen hyväksyntä on poistettu: porttaus kaventaa nyt sivukoon samoin kuin
-natiivi `ROUND`-muunnos (`fe20f303`) ja rakentaa sivuleikkeen `setup_page`-järjestyksessä
-(`eea9d21c`). Alla olevat mekanismikappaleet kuvaavat alkuperäisen eron.
+natiivi `ROUND`-muunnos (`47f3165d`) ja rakentaa sivuleikkeen `setup_page`-järjestyksessä
+(`da6c4a53`). Alla olevat mekanismikappaleet kuvaavat alkuperäisen eron.
 
 **Mitä tapahtuu.** C tallentaa `job->width` / `job->height` **`unsigned int`**-tyyppisinä
 (`gvcjob.h:327-328`). Valtavan pistekoon `ROUND(...)` (`emit.c:1249-1250`)
@@ -874,13 +874,13 @@ vaatisi Apple libm:n täsmällisen `sin`/`cos`-pyöristyksen toistamista JS:ssä
 
 **16.1:n uusi perustaso.** Multispline-käytävän geometriasta puuttui clangin FMA-yhdistäminen
 (ellipsin kulman radikandi, `mkCtrlPts`, `DIST` = sqrt(fmadd), `line_intersect`in
-pistetulo); `b77b2703` (`fix(neato): mirror fma contraction in multispline routing
+pistetulo); `f66ac638` (`fix(neato): mirror fma contraction in multispline routing
 geometry`) peilasi sen. twopi:n ja neaton `241_0` — jotka tämä luokka oli selittänyt
 alla olevalla samalle ympyrälle osuvalla tasapelillä — muuttuivat **yhdenmukaisiksi**
 (hyväksynnät poistettu), ja sfdp:n `42`:lla ei osoittautunutkaan olevan tasapeliä
 lainkaan (se on A1-drift, katso [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 circon, fdp:n ja sfdp:n `241_0` poikkeavat yhä, niiden jäännökset ovat ennallaan tai
-pienentyneet; niiden selitys alla olevalla tasapelillä edeltää `b77b2703`a eikä sitä
+pienentyneet; niiden selitys alla olevalla tasapelillä edeltää `f66ac638`a eikä sitä
 ole **varmennettu uudelleen sijaintiinjektiolla** sen jälkeen, vaikka sama korjaus
 osoitti selityksen vääräksi twopi:lle/neatolle.
 
@@ -1040,7 +1040,7 @@ Kaksi muuta moottoriraidan tapausta juurisyyanalysoitiin ja hyväksyttiin 2026-0
 (täysi juurisyyanalyysi: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 piirto-operaatio-
 eroa, jotka selitettiin silloin samalla CDT:n samalle ympyrälle osuvalla
 incircle-tasapelillä kuin yllä oleva circo-merkintä; **poistettu käytöstä graphviz
-16.1:ssä** — se on `b77b2703`:sta lähtien conformant, joten 14 pisteen vs. 8 pisteen
+16.1:ssä** — se on `f66ac638`:sta lähtien conformant, joten 14 pisteen vs. 8 pisteen
 käytäväkäännös oli peilaamaton FMA-yhdistäminen, ei tasapeli) ja circo
 `windows-tree` (10 piirto-operaatioeroa yhdellä viuhkakaarella — circon sijoitustrigonometria
 asettaa `node2.y`:n yhden ULP:n verran arvon `node8.y` yläpuolelle täsmälleen symmetrisen
@@ -1055,9 +1055,9 @@ täsmälliset natiivit reititystä edeltävät sijainnit injektoidaan (joten ero
 iteratiivista ajelehtimista — katso A1-drift-luokka — vaan diskreetti predikaattitasapeli):
 
 - `241_0` — selitetty CDT:n samalle ympyrälle osuvalla incircle-tasapelillä
-  (multispline-käytävä; ei varmennettu uudelleen `b77b2703`:n jälkeen, katso 16.1:n uusi
+  (multispline-käytävä; ei varmennettu uudelleen `f66ac638`:n jälkeen, katso 16.1:n uusi
   perustaso yllä). Jäännös on **segmenttimäärän käännös**: 7 piirto-operaatioeroa
-  kaarella 1->2, `ptCount 8 vs 20` (20 eroa ennen `b77b2703`a) — käytävä onnistuu
+  kaarella 1->2, `ptCount 8 vs 20` (20 eroa ennen `f66ac638`a) — käytävä onnistuu
   N pisteen splinellä, kun natiivi käännös palaa lyhyempään tavalliseen reittiin (tai
   päinvastoin), kuten yllä olevassa circo `241_0` -merkinnässä. Porttaus emuloi jo arm64:n
   `fmadd`-yhdistämistä incircle-/`ccw`-predikaatissa (`src/pathplan/triang.ts`,
@@ -1069,7 +1069,7 @@ iteratiivista ajelehtimista — katso A1-drift-luokka — vaan diskreetti predik
 > Se oli lueteltu täällä CDT-/libm-incircle-tasapelinä. Missio löysi muuta
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): entinen käytäväkäännös oli
 > porttauspuolen FMA-virheporttaus multispline-käytävän geometriassa, korjattu
-> `b77b2703`:lla (`fix(neato): mirror fma contraction in multispline routing
+> `f66ac638`:lla (`fix(neato): mirror fma contraction in multispline routing
 > geometry`); natiivien sijaintien injektoinnilla porttaus toistaa nyt natiivin xdotin
 > täsmälleen. Jäljelle jäävä jäännös (solmusiirtymät 0.06-0.65 pt) on iteratiivista
 > ajelehtimista, jonka sai alkunsa yhdestä 1 ULP:n erimielisyydestä Apple libm:n
@@ -1105,7 +1105,7 @@ oraakkelin täsmälliset reititystä edeltävät sijainnit injektoidaan, jäänn
 solmusijainnit ovat injektoidusti identtiset, ero on alavirrassa
 pathplanin multispline-käytävässä — sama libm-1-ULP-incircle-tasapeli kuin
 circo/sfdp `241_0` (täsmällinen rationaali-incircle 185/185 yllä; 11 eroa ennallaan
-`b77b2703`n jälkeen — ei varmennettu uudelleen injektiolla). Vivut on
+`f66ac638`n jälkeen — ei varmennettu uudelleen injektiolla). Vivut on
 jo otettu käyttöön (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); tasapeliä pidetään palautumattomana. Hyväksytty tiedoston `accepted-divergences-engines.json`
 `fdp.241_0` kautta. fdp:n `2095` sitä vastoin on **A1-drift, ei A9**: yksittäisen
@@ -1131,7 +1131,7 @@ huippu). Porttauksen `PointSet` on JavaScript-`Map`, jonka V8 rajaa 2^24
 alkioon, joten se heittää `Map maximum size exceeded`.
 
 **Miksi hyväksytty.** Koodin alapuolinen ajoympäristön rajoite, ei looginen aukko;
-syynä on `910be2a2`:n uskollinen aritmetiikka (ennen sitä porttaus laski pienen,
+syynä on `97fcccd8`:n uskollinen aritmetiikka (ennen sitä porttaus laski pienen,
 väärän asettelun eikä koskaan saavuttanut rajaa). Hyväksytty lopputulos on heitetty
 virhe `diverged`-tuomion sijaan, ja moottorikohtaiset rekisterit hyväksyvät vain
 `diverged`-rivejä, joten rekisterimerkintää ei ole: läpikäynnit listaavat `2784`:n

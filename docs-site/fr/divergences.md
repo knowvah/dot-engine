@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -578,8 +578,8 @@ d’acceptation sont retirées. **`2796` et `2471` les ont rejoints avec
 graphviz 16.1** (tous deux `conformant` dans le balayage à neuf, entrées
 d’acceptation retirées) : le portage et l’oracle 16.1 s’accordent désormais sur la
 sortie de récupération de `init_rank`, y compris les arêtes perdues. La cause n’a
-pas été isolée par bissection (le portage dotgen 16.1 `48981bf0` et le correctif
-de consommation des arêtes perdues `54bd3b9b` sont les candidats) ; la
+pas été isolée par bissection (le portage dotgen 16.1 `3cfbf55c` et le correctif
+de consommation des arêtes perdues `5b6b9bfc` sont les candidats) ; la
 description de `init_rank` ci-dessous est conservée comme mécanisme de la
 classe, et les deux identifiants sont épinglés comme conformes par le balayage de
 parité.
@@ -755,8 +755,8 @@ coordonnées concordent après le correctif decorate (T6).
 moteur). `1314` — une entrée issue de fuzzing (`fontsize="991836031967s8"`)
 dont la taille de police absurde fait gonfler le dessin à environ 2.75e11 pt — est **conforme** avec graphviz 16.1 et son
 acceptation est retirée : le portage réduit désormais la taille de page comme le
-fait la conversion `ROUND` native (`fe20f303`) et construit le cadrage de page
-dans l’ordre de `setup_page` (`eea9d21c`). Les paragraphes de mécanisme
+fait la conversion `ROUND` native (`47f3165d`) et construit le cadrage de page
+dans l’ordre de `setup_page` (`da6c4a53`). Les paragraphes de mécanisme
 ci-dessous décrivent la différence d’origine.
 
 **Ce qui se passe.** C stocke `job->width` / `job->height` en **`unsigned int`**
@@ -970,14 +970,14 @@ exigerait de reproduire en JS l’arrondi exact des `sin`/`cos` de libm d’Appl
 
 **Réévaluation 16.1.** La géométrie du couloir multispline manquait la
 contraction FMA de clang (radicande du coin d’ellipse, `mkCtrlPts`, `DIST` =
-sqrt(fmadd), le produit scalaire de `line_intersect`) ; `b77b2703` (`fix(neato):
+sqrt(fmadd), le produit scalaire de `line_intersect`) ; `f66ac638` (`fix(neato):
 mirror fma contraction in multispline routing geometry`) l’a reflétée. `241_0`
 de twopi et de neato — que cette classe avait attribués à l’égalité
 cocirculaire ci-dessous — sont devenus **conformes** (acceptations retirées), et
 `42` de sfdp s’est révélé ne comporter aucune égalité (c’est de la dérive A1,
 voir [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` de circo, fdp et sfdp
 diverge encore, avec des résidus inchangés ou réduits ; leur attribution à
-l’égalité ci-dessous est antérieure à `b77b2703` et n’a **pas été revérifiée par
+l’égalité ci-dessous est antérieure à `f66ac638` et n’a **pas été revérifiée par
 injection de positions** depuis que ce correctif a montré cette même attribution
 erronée pour twopi/neato.
 
@@ -1154,7 +1154,7 @@ racine et ont été acceptées le 2026-07-11 (analyse complète :
 `.agent-notes/circo-edge-tail-rca.md`) : twopi `241_0` (6 différences
 d’opérations de dessin, attribuées alors à la même égalité d’incercle
 cocirculaire du CDT que l’entrée circo ci-dessus ; **retirée avec graphviz 16.1**
-— elle est conforme depuis `b77b2703`, la bascule de couloir de 14 points contre
+— elle est conforme depuis `f66ac638`, la bascule de couloir de 14 points contre
 8 points était donc la contraction FMA non reflétée, et non une égalité) et circo
 `windows-tree` (10 différences d’opérations de dessin sur une
 arête d’éventail — la trigonométrie de placement de circo place `node2.y` un
@@ -1171,10 +1171,10 @@ sont injectées (la divergence n’est donc PAS une dérive itérative — voir 
 classe A1-drift — mais une égalité de prédicat discrète) :
 
 - `241_0` — attribuée à l’égalité d’incercle cocirculaire du CDT (le couloir
-  multispline ; non revérifiée après `b77b2703`, voir la réévaluation 16.1
+  multispline ; non revérifiée après `f66ac638`, voir la réévaluation 16.1
   ci-dessus). Le résidu est une **bascule du nombre de segments** : 7 différences
   d’opérations de dessin sur l’arête 1->2, `ptCount 8 vs 20` (20 différences
-  avant `b77b2703`) — le couloir réussit avec une spline de N points là où le
+  avant `f66ac638`) — le couloir réussit avec une spline de N points là où le
   build natif retombe sur un tracé simple plus court (ou inversement), comme
   dans l’entrée circo `241_0` ci-dessus. Le portage émule déjà la contraction `fmadd`
   d’arm64 dans le prédicat d’incercle/`ccw` (`src/pathplan/triang.ts`,
@@ -1186,7 +1186,7 @@ classe A1-drift — mais une égalité de prédicat discrète) :
 > était répertorié ici comme une égalité d’incercle CDT/libm. La mission a
 > constaté autre chose ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)) : l’ancienne
 > bascule de couloir était un mauvais portage FMA côté portage dans la géométrie
-> du couloir multispline, corrigé par `b77b2703` (`fix(neato): mirror fma
+> du couloir multispline, corrigé par `f66ac638` (`fix(neato): mirror fma
 > contraction in multispline routing geometry`) ; avec les positions natives
 > injectées, le portage reproduit désormais exactement le xdot natif. Le résidu
 > restant (décalages de nœuds de 0.06-0.65 pt) est de la dérive itérative,
@@ -1227,7 +1227,7 @@ arête (`0->1#0`, maxΔ 3.39pt). Les positions des nœuds étant injectées à
 l’identique, la divergence est en aval, dans le couloir multispline de pathplan
 — la même égalité d’incercle à 1 ULP de libm que pour circo/sfdp `241_0`
 (incercle en rationnels exacts 185/185 ci-dessus ; 11 différences inchangées par
-`b77b2703` — non revérifié par injection). Les leviers sont déjà
+`f66ac638` — non revérifié par injection). Les leviers sont déjà
 appliqués (`src/pathplan/triang.ts` fmadd, `Math.hypot` à
 `src/pathplan/route.ts:198`) ; l’égalité est traitée comme irréductible. Accepté via
 `accepted-divergences-engines.json` `fdp.241_0`. En revanche, le `2095` de fdp
@@ -1255,7 +1255,7 @@ JavaScript, que V8 plafonne à 2^24 entrées ; il lève donc
 `Map maximum size exceeded`.
 
 **Pourquoi c’est accepté.** Une limite d’exécution située sous le code, et non
-une lacune logique ; la cause est l’arithmétique fidèle de `910be2a2` (avant
+une lacune logique ; la cause est l’arithmétique fidèle de `97fcccd8` (avant
 elle, le portage calculait une petite disposition erronée et n’atteignait jamais
 la limite). Le résultat accepté est une erreur levée plutôt qu’un verdict
 `diverged`, et les registres par moteur n’acceptent que les lignes `diverged` :

@@ -512,7 +512,7 @@ edges); their acceptance entries are retired. **`2796` and `2471` joined them
 at graphviz 16.1** (both `conformant` in the fresh sweep, acceptance entries
 retired): the port and the 16.1 oracle now agree on the `init_rank` recovery
 output including the lost edges. The cause was not isolated by a bisect (the
-16.1 dotgen port `48981bf0` and the lost-edge consumption fix `54bd3b9b` are
+16.1 dotgen port `3cfbf55c` and the lost-edge consumption fix `5b6b9bfc` are
 the candidates); the `init_rank` description below is kept as the mechanism of
 the class, and the two ids are pinned as conformant by the parity sweep.
 
@@ -674,8 +674,8 @@ comparison page (side-by-side render + evidence record).
 — a fuzzer-derived input (`fontsize="991836031967s8"`) whose absurd font size
 balloons the drawing to ~2.75e11 pt — is **conformant** at graphviz 16.1 and
 its acceptance is retired: the port now narrows the page size the way the
-native `ROUND` conversion does (`fe20f303`) and builds the page clip in
-`setup_page` order (`eea9d21c`). The mechanism paragraphs below
+native `ROUND` conversion does (`47f3165d`) and builds the page clip in
+`setup_page` order (`da6c4a53`). The mechanism paragraphs below
 describe the original difference.
 
 **What happens.** C stores `job->width` / `job->height` as **`unsigned int`**
@@ -863,13 +863,13 @@ would require reproducing Apple libm's exact `sin`/`cos` rounding in JS.
 
 **16.1 re-baseline.** The multispline corridor geometry was missing clang's FMA
 contraction (ellipse-corner radicand, `mkCtrlPts`, `DIST` = sqrt(fmadd), the
-`line_intersect` dot); `b77b2703` (`fix(neato): mirror fma contraction in
+`line_intersect` dot); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) mirrored it. twopi and neato `241_0` — which
 this class had attributed to the cocircular tie below — went **conformant**
 (acceptances retired), and sfdp `42` turned out to have no tie at all (it is A1
 drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
 and sfdp `241_0` still diverge with their residuals unchanged or reduced; their
-attribution to the tie below predates `b77b2703` and has **not been re-verified
+attribution to the tie below predates `f66ac638` and has **not been re-verified
 by position injection** since that fix showed the same attribution wrong for
 twopi/neato.
 
@@ -1029,7 +1029,7 @@ Two further engine-track instances were root-caused and accepted 2026-07-11
 (full RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 draw-op
 diffs, attributed then to the same CDT cocircular incircle tie as the circo
 entry above; **retired at graphviz 16.1** — it is conformant since
-`b77b2703`, so the 14-pt-vs-8-pt corridor flip was the unmirrored FMA
+`f66ac638`, so the 14-pt-vs-8-pt corridor flip was the unmirrored FMA
 contraction, not a tie) and circo
 `windows-tree` (10 draw-op diffs on one fan edge — circo's placement trig
 lands `node2.y` a single ULP above `node8.y` around the exactly-symmetric
@@ -1044,9 +1044,9 @@ exact native pre-routing positions are injected (so the divergence is NOT
 iterative drift — see the A1-drift class — but a discrete predicate tie):
 
 - `241_0` — attributed to the CDT cocircular incircle tie (the multispline
-  corridor; not re-verified after `b77b2703`, see the 16.1 re-baseline above).
+  corridor; not re-verified after `f66ac638`, see the 16.1 re-baseline above).
   The residual is a **segment-count flip**: 7 draw-op diffs on edge 1->2,
-  `ptCount 8 vs 20` (20 diffs before `b77b2703`) — the corridor succeeds with
+  `ptCount 8 vs 20` (20 diffs before `f66ac638`) — the corridor succeeds with
   an N-pt spline where the native build falls back to a shorter plain route
   (or vice versa), as in the circo `241_0` entry above. The port already emulates the arm64
   `fmadd` contraction in the incircle/`ccw` predicate (`src/pathplan/triang.ts`,
@@ -1058,7 +1058,7 @@ iterative drift — see the A1-drift class — but a discrete predicate tie):
 > here as a CDT/libm incircle tie. The mission found otherwise
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): the former corridor
 > flip was a port-side FMA mis-port in the multispline corridor geometry,
-> fixed by `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> fixed by `f66ac638` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`); with native positions injected the port now reproduces
 > native's xdot exactly. The remaining residual (node offsets 0.06-0.65 pt) is
 > iterative drift seeded by one 1-ULP disagreement in Apple-libm
@@ -1093,7 +1093,7 @@ oracle's exact pre-routing positions injected, the residual is 11 numeric
 the node positions are injected-identical, the divergence is downstream in the
 pathplan multispline corridor — the same libm-1-ULP incircle tie as
 circo/sfdp `241_0` (exact-rational incircle 185/185 above; 11 diffs unchanged by
-`b77b2703` — not re-verified by injection). The levers are
+`f66ac638` — not re-verified by injection). The levers are
 already applied (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); the tie is treated as irreducible. Accepted via `accepted-divergences-engines.json`
 `fdp.241_0`. fdp's `2095`, by contrast, is **A1-drift, not A9**: injecting the
@@ -1119,7 +1119,7 @@ faithful integer `step`/placement arithmetic needs 2,011,656,764 cells; native
 `Map maximum size exceeded`.
 
 **Why accepted.** A runtime limit below the code, not a logic gap; the cause is
-the faithful arithmetic of `910be2a2` (before it the port computed a small,
+the faithful arithmetic of `97fcccd8` (before it the port computed a small,
 wrong layout and never reached the limit). The accepted outcome is a thrown
 error rather than a `diverged` verdict, and the per-engine registries only
 accept `diverged` rows, so no registry entry exists: the walks keep listing

@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -515,8 +515,8 @@ samþykktarfærslur þeirra eru dregnar til baka. **`2796` og `2471` bættust í
 með graphviz 16.1** (bæði `conformant` í nýju yfirferðinni, samþykktarfærslur
 dregnar til baka): yfirfærslan og 16.1-véfréttin eru nú sammála um úttak
 `init_rank`-endurheimtar, þar með talda töpuðu leggi. Orsökin var ekki einangruð
-með helmingunarleit (16.1-dotgen-yfirfærslan `48981bf0` og lagfæringin á notkun
-töpuðu leggjanna `54bd3b9b` eru tilgátur); lýsingin á `init_rank` hér á eftir er
+með helmingunarleit (16.1-dotgen-yfirfærslan `3cfbf55c` og lagfæringin á notkun
+töpuðu leggjanna `5b6b9bfc` eru tilgátur); lýsingin á `init_rank` hér á eftir er
 varðveitt sem verkun flokksins og auðkennin tvö eru fest sem conformant með
 jöfnuðaryfirferðinni.
 
@@ -677,8 +677,8 @@ Samanburðarsíða fyrir [`1367`](https://github.com/knowvah/dot-engine/blob/mai
 `1314` — inntak sem er unnið úr fuzzer (`fontsize="991836031967s8"`)
 þar sem fáránleg leturstærð blæs teikninguna upp í ~2.75e11 pt — er **conformant** í graphviz 16.1 og samþykki
 þess er dregið til baka: yfirfærslan þrengir nú síðustærðina eins og innbyggða
-`ROUND`-umbreytingin gerir (`fe20f303`) og smíðar síðuklippinguna í röð
-`setup_page` (`eea9d21c`). Málsgreinarnar um verkun hér á eftir lýsa upprunalega
+`ROUND`-umbreytingin gerir (`47f3165d`) og smíðar síðuklippinguna í röð
+`setup_page` (`da6c4a53`). Málsgreinarnar um verkun hér á eftir lýsa upprunalega
 muninum.
 
 **Hvað gerist.** C geymir `job->width` / `job->height` sem **`unsigned int`**
@@ -861,13 +861,13 @@ krefðist þess að endurskapa nákvæma `sin`/`cos`-námundun Apple libm í JS.
 
 **Endurmat á 16.1.** Í rúmfræði fjölsplínugangsins vantaði FMA-sameiningu clang
 (rótarstofn sporöskjuhorns, `mkCtrlPts`, `DIST` = sqrt(fmadd), depilmargfeldið í
-`line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in multispline
+`line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in multispline
 routing geometry`) speglaði hana. `241_0` í twopi og neato — sem þessi flokkur
 hafði eignað jafnteflinu á einum hring hér á eftir — urðu **conformant**
 (samþykki dregin til baka), og í ljós kom að sfdp `42` er alls ekki með neitt
 jafntefli (það er A1-rek, sjá [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` í
 circo, fdp og sfdp víkur enn, með afgöngum sem eru óbreyttir eða minni; eignun
-þeirra á jafnteflinu hér á eftir er eldri en `b77b2703` og hefur **ekki verið
+þeirra á jafnteflinu hér á eftir er eldri en `f66ac638` og hefur **ekki verið
 staðfest á ný með innsprautun staða** síðan sú lagfæring sýndi að sama eignun var
 röng fyrir twopi/neato.
 
@@ -1028,7 +1028,7 @@ Tvö vélaferilstilvik til viðbótar voru rótargreind og samþykkt 2026-07-11
 (full rótargreining: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 mismunir í
 teikniaðgerðum, eignaðir þá sama CDT-innhringsjafntefli á einum hring og
 circo-færslan hér að ofan; **dregið til baka í graphviz 16.1** — hún er conformant
-frá `b77b2703`, svo gangaflipp með 14 punktum á móti 8 punktum var óspegluð
+frá `f66ac638`, svo gangaflipp með 14 punktum á móti 8 punktum var óspegluð
 FMA-sameining, ekki jafntefli) og circo
 `windows-tree` (10 mismunir í teikniaðgerðum á einum blævængarlegg — staðsetningarhornaföll circo
 lenda `node2.y` einum ULP ofan við `node8.y` í kringum nákvæmlega samhverfa
@@ -1042,9 +1042,9 @@ nákvæmum innbyggðum stöðum fyrir leiðingu er sprautað inn (svo fráviksor
 ítrekandi rek — sjá A1-drift-flokkinn — heldur stakrænt jafntefli í forsendu):
 
 - `241_0` — eignað CDT-innhringsjafntefli á einum hring (fjölsplínugangurinn; ekki
-  staðfest á ný eftir `b77b2703`, sjá endurmatið á 16.1 hér að ofan). Afgangurinn
+  staðfest á ný eftir `f66ac638`, sjá endurmatið á 16.1 hér að ofan). Afgangurinn
   er **flipp á fjölda hluta**: 7 mismunir í teikniaðgerðum á legg 1->2, `ptCount 8
-  vs 20` (20 mismunir fyrir `b77b2703`) — gangurinn tekst með N punkta splínu þar
+  vs 20` (20 mismunir fyrir `f66ac638`) — gangurinn tekst með N punkta splínu þar
   sem innbyggða smíðin hverfur aftur í styttri einfalda leið (eða öfugt), eins og í
   circo-færslunni `241_0` hér að ofan. Yfirfærslan hermir þegar eftir arm64-
   `fmadd`-sameiningunni í innhrings-/`ccw`-forsendunni (`src/pathplan/triang.ts`,
@@ -1055,7 +1055,7 @@ nákvæmum innbyggðum stöðum fyrir leiðingu er sprautað inn (svo fráviksor
 > **sfdp `42` endurflokkað úr A9 í A1-drift (graphviz 16.1 samstilling).** Það var
 > skráð hér sem CDT-/libm-innhringsjafntefli. Verkefnið komst að öðru
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): fyrra gangaflipp var FMA-villa í
-> yfirfærslunni í rúmfræði fjölsplínugangsins, lagfærð með `b77b2703` (`fix(neato):
+> yfirfærslunni í rúmfræði fjölsplínugangsins, lagfærð með `f66ac638` (`fix(neato):
 > mirror fma contraction in multispline routing geometry`); með innbyggðum stöðum
 > innsprautuðum endurskapar yfirfærslan nú xdot innbyggðu útgáfunnar nákvæmlega.
 > Afgangurinn (hnútafrávik 0.06-0.65 pt) er ítrekandi rek sem hófst með einu 1 ULP
@@ -1091,7 +1091,7 @@ nákvæmum stöðum véfréttarinnar fyrir leiðingu innsprautuðum er afganguri
 hnútastöður eru innsprautaðar-eins er fráviksorsökin niðurstreymis í
 fjölsplínugangi pathplan — sama libm-1-ULP-innhringsjafntefli og í
 circo/sfdp `241_0` (nákvæm hlutfallstölu-innhringur 185/185 hér að ofan; 11 mismunir
-óbreyttir af `b77b2703` — ekki staðfest á ný með innsprautun). Tökin eru
+óbreyttir af `f66ac638` — ekki staðfest á ný með innsprautun). Tökin eru
 þegar beitt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); jafnteflið er talið óhjákvæmilegt. Samþykkt með `accepted-divergences-engines.json`
 `fdp.241_0`. `2095` í fdp er hins vegar **A1-drift, ekki A9**: að innsprauta
@@ -1117,7 +1117,7 @@ JavaScript-`Map`, sem V8 takmarkar við 2^24 færslur, svo það kastar `Map max
 size exceeded`.
 
 **Hvers vegna samþykkt.** Takmörkun á keyrsluumhverfi fyrir neðan kóðann, ekki
-rökgat; orsökin er trúr reikningur `910be2a2` (fyrir hann reiknaði yfirfærslan
+rökgat; orsökin er trúr reikningur `97fcccd8` (fyrir hann reiknaði yfirfærslan
 litla, ranga uppsetningu og náði aldrei mörkunum). Samþykkta niðurstaðan er kastað
 villa fremur en `diverged`-dómur, og skrár hverrar vélar samþykkja aðeins
 `diverged`-raðir, svo engin skráarfærsla er til: yfirferðirnar halda áfram að telja

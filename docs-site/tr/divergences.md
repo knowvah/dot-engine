@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -512,8 +512,8 @@ düzeltmeleri girdikten sonra uyumluya çöktü — port artık kâhinin kurtarm
 emekli edildi. **`2796` ve `2471` graphviz 16.1'de onlara katıldı** (ikisi de taze
 taramada `conformant`, kabul kayıtları emekli edildi): port ve 16.1 kâhini artık
 `init_rank` kurtarma çıktısında, kaybolan kenarlar dahil, anlaşıyor. Neden ikili
-arama ile ayrıştırılmadı (adaylar 16.1 dotgen portu `48981bf0` ve kaybolan kenar
-tüketimi düzeltmesi `54bd3b9b`'dir); aşağıdaki `init_rank` açıklaması sınıfın
+arama ile ayrıştırılmadı (adaylar 16.1 dotgen portu `3cfbf55c` ve kaybolan kenar
+tüketimi düzeltmesi `5b6b9bfc`'dir); aşağıdaki `init_rank` açıklaması sınıfın
 mekanizması olarak saklanır ve iki kimlik parite taramasıyla uyumlu olarak sabitlenmiştir.
 
 `1581` ve `2825`, kilitlenme kurtarma durumlarıydı (fix-element-count-bucket
@@ -668,8 +668,8 @@ karşılaştırma sayfası (yan yana işleme + kanıt kaydı).
 — saçma yazı tipi boyutu (`fontsize="991836031967s8"`) çizimi ~2.75e11 pt'ye
 şişiren fuzzer kaynaklı bir girdi — graphviz 16.1'de **conformant**'tır ve kabulü
 emekli edilmiştir: port artık sayfa boyutunu yerel `ROUND` dönüşümünün yaptığı gibi
-daraltır (`fe20f303`) ve sayfa kırpmasını `setup_page` sırasıyla kurar
-(`eea9d21c`). Aşağıdaki mekanizma paragrafları özgün farkı anlatır.
+daraltır (`47f3165d`) ve sayfa kırpmasını `setup_page` sırasıyla kurar
+(`da6c4a53`). Aşağıdaki mekanizma paragrafları özgün farkı anlatır.
 
 **Ne olur.** C, `job->width` / `job->height` değerlerini **`unsigned int`** olarak
 saklar (`gvcjob.h:327-328`). Devasa punto boyutunun `ROUND(...)` işlemi
@@ -850,13 +850,13 @@ yuvarlamasını yeniden üretmeyi gerektirirdi.
 
 **16.1 yeniden tabanlaması.** Çoklu spline koridor geometrisinde clang'ın FMA
 birleştirmesi eksikti (elips köşesi radikandı, `mkCtrlPts`, `DIST` = sqrt(fmadd),
-`line_intersect` iç çarpımı); `b77b2703` (`fix(neato): mirror fma contraction in
+`line_intersect` iç çarpımı); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) onu yansıttı. Bu sınıfın aşağıdaki eşdairesel
 beraberliğe atfettiği twopi ve neato `241_0` **conformant**'a döndü (kabuller
 emekli edildi) ve sfdp `42`'nin hiç beraberliği olmadığı ortaya çıktı (A1
 sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
 ve sfdp `241_0` hâlâ ayrışır; artıkları değişmemiş ya da azalmıştır; aşağıdaki
-beraberliğe atıfları `b77b2703`'ten öncedir ve aynı atfın twopi/neato için yanlış
+beraberliğe atıfları `f66ac638`'ten öncedir ve aynı atfın twopi/neato için yanlış
 olduğunu gösteren o düzeltmeden beri **konum enjeksiyonuyla yeniden doğrulanmamıştır**.
 
 **Etkilenenler:** `241_0` (circo Δ≈0.2, `1->2` kenarındaki koridor çevrilmesiyle;
@@ -1006,7 +1006,7 @@ nedensel zinciri kapatır.
 Motor hattında iki ek örnek daha 2026-07-11'de kök nedenine indirildi ve kabul edildi
 (tam kök neden analizi: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 çizim
 işlemi farkı, o zaman yukarıdaki circo kaydıyla aynı CDT eşdairesel iç çember
-beraberliğine atfedilmişti; **graphviz 16.1'de emekli edildi** — `b77b2703`'ten beri
+beraberliğine atfedilmişti; **graphviz 16.1'de emekli edildi** — `f66ac638`'ten beri
 conformant'tır, yani 14 noktalı ile 8 noktalı koridor çevrilmesi yansıtılmamış FMA
 birleştirmesiydi, bir beraberlik değildi) ve circo `windows-tree` (tek bir
 yelpaze kenarında 10 çizim işlemi farkı — circo'nun yerleştirme trigonometrisi,
@@ -1022,9 +1022,9 @@ ayrışma yinelemeli sürüklenme DEĞİL — bkz. A1-drift sınıfı — kesikl
 beraberliğidir):
 
 - `241_0` — CDT eşdairesel iç çember beraberliğine atfedilir (çoklu spline
-  koridoru; `b77b2703`'ten sonra yeniden doğrulanmadı, yukarıdaki 16.1 yeniden
+  koridoru; `f66ac638`'ten sonra yeniden doğrulanmadı, yukarıdaki 16.1 yeniden
   tabanlamasına bakın). Artık bir **segment sayısı çevrilmesidir**: 1->2 kenarında
-  7 çizim işlemi farkı, `ptCount 8 vs 20` (`b77b2703`'ten önce 20 fark) — koridor,
+  7 çizim işlemi farkı, `ptCount 8 vs 20` (`f66ac638`'ten önce 20 fark) — koridor,
   yerel derlemenin daha kısa düz bir yola geri döndüğü yerde N noktalı bir spline ile
   başarılı olur (veya tersi); yukarıdaki circo `241_0` kaydındaki gibi. Port, iç çember/`ccw` yükleminde arm64
   `fmadd` birleştirmesine zaten öykünür (`src/pathplan/triang.ts`,
@@ -1036,7 +1036,7 @@ beraberliğidir):
 > bir CDT/libm iç çember beraberliği olarak listelenmişti. Görev farklı bir şey
 > buldu ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): eski koridor
 > çevrilmesi, çoklu spline koridor geometrisinde port tarafında bir FMA hatalı
-> taşımasıydı ve `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> taşımasıydı ve `f66ac638` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`) ile düzeltildi; yerel konumlar enjekte edildiğinde port artık
 > yerel xdot'u tam olarak yeniden üretir. Kalan artık (düğüm kaymaları 0.06-0.65 pt),
 > en kaba düzeyde Apple libm `pow(dist, 2)` ile portun ARM `pow`'u arasındaki tek bir
@@ -1070,7 +1070,7 @@ yönlendirme öncesi konumları enjekte edildiğinde artık, tek bir kenara
 (`0->1#0`, maxΔ 3.39pt) sınırlı 11 sayısal `unfilled_bezier` farkıdır. Düğüm
 konumları enjeksiyonla özdeş olduğundan ayrışma aşağı akışta, pathplan çoklu spline
 koridorundadır — circo/sfdp `241_0` ile aynı libm-1-ULP iç çember beraberliği
-(yukarıdaki tam rasyonel iç çember 185/185; 11 fark `b77b2703` ile değişmedi —
+(yukarıdaki tam rasyonel iç çember 185/185; 11 fark `f66ac638` ile değişmedi —
 enjeksiyonla yeniden doğrulanmadı). Kaldıraçlar zaten uygulandı
 (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198` `Math.hypot`);
 beraberlik indirgenemez sayılır. `accepted-divergences-engines.json` `fdp.241_0` aracılığıyla
@@ -1097,7 +1097,7 @@ sadık tamsayı `step`/yerleştirme aritmetiği 2.011.656.764 hücre gerektirir;
 `Map maximum size exceeded` fırlatır.
 
 **Neden kabul edildi.** Kodun altında bir çalışma zamanı sınırı, mantık boşluğu
-değil; neden `910be2a2`'nin sadık aritmetiğidir (ondan önce port küçük, yanlış bir
+değil; neden `97fcccd8`'nin sadık aritmetiğidir (ondan önce port küçük, yanlış bir
 yerleşim hesaplıyor ve sınıra hiç ulaşmıyordu). Kabul edilen sonuç bir `diverged`
 hükmü değil, fırlatılan bir hatadır ve motor başına kayıtlar yalnızca `diverged`
 satırlarını kabul eder; bu yüzden kayıt girdisi yoktur: taramalar `2784`'ü port

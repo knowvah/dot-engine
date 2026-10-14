@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -516,7 +516,7 @@ accept-poster er pensioneret. **`2796` og `2471` sluttede sig til dem ved
 graphviz 16.1** (begge `conformant` i den friske kørsel, accept-poster
 pensioneret): porten og 16.1-oraklet er nu enige om `init_rank`-genoprettelsens
 output, inklusive de tabte kanter. Årsagen blev ikke isoleret med en bisekt (16.1-
-dotgen-porten `48981bf0` og rettelsen af forbruget af tabte kanter `54bd3b9b` er
+dotgen-porten `3cfbf55c` og rettelsen af forbruget af tabte kanter `5b6b9bfc` er
 kandidaterne); beskrivelsen af `init_rank` nedenfor bevares som klassens
 mekanisme, og de to id'er er fastholdt som conformant af paritetskørslen.
 
@@ -678,8 +678,8 @@ sammenligningsside (rendering side om side + evidensoptegnelse).
 fuzzer-afledt input (`fontsize="991836031967s8"`), hvis absurde skriftstørrelse
 puster tegningen op til ~2.75e11 pt — er **conformant** ved graphviz 16.1, og dens
 accept er pensioneret: porten indsnævrer nu sidestørrelsen på samme måde som den
-native `ROUND`-konvertering (`fe20f303`) og opbygger sideklippet i
-`setup_page`-rækkefølge (`eea9d21c`). Mekanismeafsnittene nedenfor
+native `ROUND`-konvertering (`47f3165d`) og opbygger sideklippet i
+`setup_page`-rækkefølge (`da6c4a53`). Mekanismeafsnittene nedenfor
 beskriver den oprindelige forskel.
 
 **Hvad der sker.** C gemmer `job->width` / `job->height` som **`unsigned int`**
@@ -867,14 +867,14 @@ ville kræve at gengive Apple libm's nøjagtige `sin`/`cos`-afrunding i JS.
 
 **16.1-genberegning af udgangspunktet.** Multispline-korridorens geometri manglede
 clangs FMA-kontraktion (radikanden til ellipsehjørnet, `mkCtrlPts`, `DIST` =
-sqrt(fmadd), prikproduktet i `line_intersect`); `b77b2703` (`fix(neato): mirror
+sqrt(fmadd), prikproduktet i `line_intersect`); `f66ac638` (`fix(neato): mirror
 fma contraction in multispline routing geometry`) spejlede den. twopi og neato
 `241_0` — som denne klasse havde tilskrevet den cocirkulære uafgjort nedenfor —
 blev **conformant** (accepter pensioneret), og sfdp `42` viste sig slet ikke at
 have nogen uafgjort (den er A1-drift, se
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp og sfdp `241_0`
 afviger stadig med uændrede eller reducerede rester; deres tilskrivning til den
-uafgjort nedenfor går forud for `b77b2703` og er **ikke blevet genverificeret
+uafgjort nedenfor går forud for `f66ac638` og er **ikke blevet genverificeret
 ved positionsinjektion** siden, selv om den samme rettelse viste, at
 tilskrivningen var forkert for twopi/neato.
 
@@ -1032,7 +1032,7 @@ To yderligere tilfælde på motorsporene blev årsagsanalyseret og accepteret 20
 (fuld RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 draw-op-
 forskelle, dengang tilskrevet den samme cocirkulære CDT-incircle-uafgjort som
 circo-posten ovenfor; **pensioneret ved graphviz 16.1** — den er conformant siden
-`b77b2703`, så korridorvippet mellem 14 og 8 punkter var den uspejlede
+`f66ac638`, så korridorvippet mellem 14 og 8 punkter var den uspejlede
 FMA-kontraktion og ikke en uafgjort) og circo
 `windows-tree` (10 draw-op-forskelle på én viftekant — circos placeringstrigonometri
 lander `node2.y` præcis én ULP over `node8.y` omkring den præcist symmetriske
@@ -1047,9 +1047,9 @@ eksakte native positioner før føring injiceres (så afvigelsen er IKKE
 iterativ drift — se A1-drift-klassen — men en diskret prædikatuafgjort):
 
 - `241_0` — tilskrevet den cocirkulære CDT-incircle-uafgjort (multispline-
-  korridoren; ikke genverificeret efter `b77b2703`, se 16.1-genberegningen
+  korridoren; ikke genverificeret efter `f66ac638`, se 16.1-genberegningen
   ovenfor). Resten er et **vip i segmentantal**: 7 draw-op-forskelle på kant 1->2,
-  `ptCount 8 vs 20` (20 forskelle før `b77b2703`) — korridoren lykkes med en
+  `ptCount 8 vs 20` (20 forskelle før `f66ac638`) — korridoren lykkes med en
   N-punkts spline, hvor det native build falder tilbage på en kortere almindelig
   rute (eller omvendt), som i posten for circo `241_0` ovenfor. Porten emulerer allerede arm64-
   `fmadd`-kontraktionen i prædikatet incircle/`ccw` (`src/pathplan/triang.ts`,
@@ -1061,7 +1061,7 @@ iterativ drift — se A1-drift-klassen — men en diskret prædikatuafgjort):
 > blev anført her som en CDT/libm-incircle-uafgjort. Missionen fandt noget andet
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): det tidligere
 > korridorvip var en port-side FMA-fejlportering i multispline-korridorens
-> geometri, rettet af `b77b2703` (`fix(neato): mirror fma contraction in
+> geometri, rettet af `f66ac638` (`fix(neato): mirror fma contraction in
 > multispline routing geometry`); med native positioner injiceret reproducerer
 > porten nu nativets xdot nøjagtigt. Den resterende rest (knudeforskydninger
 > 0.06-0.65 pt) er iterativ drift, sat i gang af én 1-ULP-uenighed mellem Apple
@@ -1097,7 +1097,7 @@ oraklets nøjagtige positioner før føring injiceret er resten 11 numeriske
 knudepositionerne er injiceret-identiske, ligger afvigelsen nedstrøms i
 pathplans multispline-korridor — den samme libm-1-ULP-incircle-uafgjort som
 circo/sfdp `241_0` (eksakt rationel incircle 185/185 ovenfor; 11 forskelle uændret af
-`b77b2703` — ikke genverificeret ved injektion). Håndtagene er
+`f66ac638` — ikke genverificeret ved injektion). Håndtagene er
 allerede anvendt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); uafgjorten behandles som uløselig. Accepteret via `accepted-divergences-engines.json`
 `fdp.241_0`. fdp's `2095` er derimod **A1-drift, ikke A9**: at injicere den
@@ -1123,7 +1123,7 @@ native 16.1.0 gennemfører på 482 s med 67.3 GB resident (101 GB spids). Porten
 `Map maximum size exceeded`.
 
 **Hvorfor accepteret.** En kørselsmiljøbegrænsning under koden, ikke et
-logikhul; årsagen er den trofaste aritmetik i `910be2a2` (før den beregnede
+logikhul; årsagen er den trofaste aritmetik i `97fcccd8` (før den beregnede
 porten et lille, forkert layout og nåede aldrig grænsen). Det accepterede udfald
 er en kastet fejl frem for en `diverged`-dom, og registrene pr. motor accepterer
 kun `diverged`-rækker, så der findes ingen registerpost: kørslerne bliver ved med

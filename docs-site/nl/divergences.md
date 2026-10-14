@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -514,7 +514,7 @@ acceptatievermeldingen zijn ingetrokken. **`2796` en `2471` voegden zich daar
 bij graphviz 16.1 bij** (beide `conformant` in de verse sweep, acceptatievermeldingen
 ingetrokken): de port en het 16.1-orakel komen nu overeen over de herstel-uitvoer van `init_rank`
 inclusief de verloren kanten. De oorzaak is niet met een bisect geïsoleerd (de
-16.1-dotgen-port `48981bf0` en de correctie voor het verbruik van verloren kanten `54bd3b9b` zijn
+16.1-dotgen-port `3cfbf55c` en de correctie voor het verbruik van verloren kanten `5b6b9bfc` zijn
 de kandidaten); de beschrijving van `init_rank` hieronder blijft bewaard als het mechanisme van
 de klasse, en de twee id's zijn door de pariteitssweep als conformant vastgepind.
 
@@ -675,8 +675,8 @@ vergelijkingspagina (render naast elkaar + bewijsrecord).
 — een van een fuzzer afgeleide invoer (`fontsize="991836031967s8"`) waarvan de absurde
 lettergrootte de tekening opblaast tot ~2.75e11 pt — is bij graphviz 16.1 **conformant** en
 de acceptatie ervan is ingetrokken: de port vernauwt de paginagrootte nu zoals de
-native `ROUND`-conversie dat doet (`fe20f303`) en bouwt de paginaclip in de
-volgorde van `setup_page` (`eea9d21c`). De mechanismealinea's hieronder
+native `ROUND`-conversie dat doet (`47f3165d`) en bouwt de paginaclip in de
+volgorde van `setup_page` (`da6c4a53`). De mechanismealinea's hieronder
 beschrijven het oorspronkelijke verschil.
 
 **Wat er gebeurt.** C slaat `job->width` / `job->height` op als **`unsigned int`**
@@ -864,13 +864,13 @@ zou vereisen dat de exacte `sin`/`cos`-afronding van Apple-libm in JS wordt gere
 
 **Herijking op 16.1.** De corridorgeometrie van de multispline miste de FMA-samenvoeging van clang
 (radicand van de ellipshoek, `mkCtrlPts`, `DIST` = sqrt(fmadd), het
-`line_intersect`-inproduct); `b77b2703` (`fix(neato): mirror fma contraction in
+`line_intersect`-inproduct); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) heeft die gespiegeld. twopi- en neato-`241_0` — die door
 deze klasse aan de cocirculaire gelijkstand hieronder waren toegeschreven — werden **conformant**
 (acceptaties ingetrokken), en sfdp `42` bleek helemaal geen gelijkstand te hebben (het is A1-
 drift, zie [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo-, fdp-
 en sfdp-`241_0` wijken nog af met onveranderde of kleinere restverschillen; hun
-toeschrijving aan de gelijkstand hieronder dateert van vóór `b77b2703` en is sindsdien **niet opnieuw geverifieerd
+toeschrijving aan de gelijkstand hieronder dateert van vóór `f66ac638` en is sindsdien **niet opnieuw geverifieerd
 door positie-injectie**, terwijl diezelfde toeschrijving voor
 twopi/neato onjuist bleek.
 
@@ -1028,7 +1028,7 @@ Twee verdere gevallen op enginespoor-niveau werden op 2026-07-11 tot de grondoor
 (volledige RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 tekenbewerkings-
 verschillen, destijds toegeschreven aan dezelfde cocirculaire CDT-incircle-gelijkstand als bij de circo-
 vermelding hierboven; **ingetrokken bij graphviz 16.1** — het is conformant sinds
-`b77b2703`, dus de corridoromslag 14-punts-vs-8-punts was de niet-gespiegelde FMA-
+`f66ac638`, dus de corridoromslag 14-punts-vs-8-punts was de niet-gespiegelde FMA-
 samenvoeging, geen gelijkstand) en circo
 `windows-tree` (10 tekenbewerkingsverschillen op één waaierkant — de plaatsingstrigonometrie van circo
 legt `node2.y` een enkele ULP boven `node8.y` rond de exact symmetrische
@@ -1043,9 +1043,9 @@ exacte native pre-routeringsposities worden geïnjecteerd (de afwijking is dus N
 iteratieve drift — zie de A1-drift-klasse — maar een discrete predicaatgelijkstand):
 
 - `241_0` — toegeschreven aan de cocirculaire CDT-incircle-gelijkstand (de multispline-
-  corridor; niet opnieuw geverifieerd na `b77b2703`, zie de herijking op 16.1 hierboven).
+  corridor; niet opnieuw geverifieerd na `f66ac638`, zie de herijking op 16.1 hierboven).
   Het restverschil is een **omslag van het aantal segmenten**: 7 tekenbewerkingsverschillen op kant 1->2,
-  `ptCount 8 vs 20` (20 verschillen vóór `b77b2703`) — de corridor slaagt met
+  `ptCount 8 vs 20` (20 verschillen vóór `f66ac638`) — de corridor slaagt met
   een spline van N punten terwijl de native build terugvalt op een kortere gewone route
   (of omgekeerd), zoals bij de circo-vermelding `241_0` hierboven. De port emuleert de arm64-
   `fmadd`-samenvoeging in het incircle-/`ccw`-predicaat al (`src/pathplan/triang.ts`,
@@ -1057,7 +1057,7 @@ iteratieve drift — zie de A1-drift-klasse — maar een discrete predicaatgelij
 > hier vermeld als een CDT-/libm-incircle-gelijkstand. De missie vond iets anders
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): de voormalige corridoromslag
 > was een port-zijdige FMA-misport in de corridorgeometrie van de multispline,
-> gecorrigeerd door `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> gecorrigeerd door `f66ac638` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`); met geïnjecteerde native posities reproduceert de port nu
 > de xdot van native exact. Het resterende verschil (knoopverschuivingen 0.06-0.65 pt) is
 > iteratieve drift, gezaaid door één 1-ULP-verschil tussen Apple-libm-
@@ -1092,7 +1092,7 @@ exacte pre-routeringsposities van het orakel geïnjecteerd is het restverschil 1
 de knoopposities geïnjecteerd-identiek zijn, zit de afwijking stroomafwaarts in de
 pathplan-multispline-corridor — dezelfde libm-1-ULP-incircle-gelijkstand als bij
 circo/sfdp `241_0` (exact-rationale incircle 185/185 hierboven; 11 verschillen onveranderd door
-`b77b2703` — niet opnieuw geverifieerd door injectie). De hefbomen zijn
+`f66ac638` — niet opnieuw geverifieerd door injectie). De hefbomen zijn
 al toegepast (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); de gelijkstand wordt als onherleidbaar beschouwd. Geaccepteerd via `accepted-divergences-engines.json`
 `fdp.241_0`. `2095` van fdp daarentegen is **A1-drift, geen A9**: het injecteren van de
@@ -1118,7 +1118,7 @@ is een JavaScript-`Map`, die door V8 op 2^24 items is begrensd, dus hij gooit
 `Map maximum size exceeded`.
 
 **Waarom geaccepteerd.** Een runtime-limiet onder de code, geen logische leemte; de oorzaak is
-de getrouwe rekenkunde van `910be2a2` (daarvoor berekende de port een kleine,
+de getrouwe rekenkunde van `97fcccd8` (daarvoor berekende de port een kleine,
 onjuiste lay-out en bereikte de limiet nooit). De geaccepteerde uitkomst is een gegooide
 fout in plaats van een `diverged`-oordeel, en de registers per engine
 accepteren alleen `diverged`-rijen, dus er bestaat geen registervermelding: de sweeps blijven

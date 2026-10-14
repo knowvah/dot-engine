@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -508,7 +508,7 @@ entradas de aceitação foram aposentadas. **`2796` e `2471` juntaram-se a eles
 no graphviz 16.1** (ambos `conformant` na varredura nova, entradas de aceitação
 aposentadas): o port e o oráculo 16.1 agora concordam na saída de recuperação de `init_rank`,
 inclusive nas arestas perdidas. A causa não foi isolada por bisseção (o port do dotgen 16.1
-`48981bf0` e a correção do consumo de arestas perdidas `54bd3b9b` são
+`3cfbf55c` e a correção do consumo de arestas perdidas `5b6b9bfc` são
 os candidatos); a descrição de `init_rank` abaixo é mantida como o mecanismo da
 classe, e os dois ids são fixados como conformantes pela varredura de paridade.
 
@@ -671,8 +671,8 @@ página de comparação do
 — uma entrada derivada de fuzzer (`fontsize="991836031967s8"`) cujo tamanho de fonte absurdo
 infla o desenho para ~2.75e11 pt — é **conformante** no graphviz 16.1 e
 sua aceitação foi aposentada: o port agora estreita o tamanho da página como a
-conversão `ROUND` nativa faz (`fe20f303`) e monta o recorte da página na
-ordem de `setup_page` (`eea9d21c`). Os parágrafos de mecanismo abaixo
+conversão `ROUND` nativa faz (`47f3165d`) e monta o recorte da página na
+ordem de `setup_page` (`da6c4a53`). Os parágrafos de mecanismo abaixo
 descrevem a diferença original.
 
 **O que acontece.** O C armazena `job->width` / `job->height` como **`unsigned int`**
@@ -860,13 +860,13 @@ exigiria reproduzir em JS o arredondamento exato de `sin`/`cos` da libm da Apple
 
 **Nova linha de base no 16.1.** A geometria do corredor multispline não tinha a contração FMA do clang
 (radicando do canto da elipse, `mkCtrlPts`, `DIST` = sqrt(fmadd), o produto escalar de
-`line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+`line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) a espelhou. `241_0` do twopi e do neato — que esta classe
 atribuía ao empate cocircular abaixo — passaram a **conformantes**
 (aceitações aposentadas), e o `42` do sfdp mostrou não ter empate algum (é deriva
 A1, veja [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` do circo, do fdp
 e do sfdp ainda diverge, com resíduos inalterados ou reduzidos; a atribuição
-ao empate abaixo é anterior a `b77b2703` e **não foi reverificada
+ao empate abaixo é anterior a `f66ac638` e **não foi reverificada
 por injeção de posição** desde que essa correção mostrou que a mesma atribuição estava errada para
 twopi/neato.
 
@@ -1024,7 +1024,7 @@ Duas outras instâncias de trilha de mecanismo tiveram a causa raiz identificada
 (análise de causa raiz completa: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 diferenças
 de operações de desenho, atribuídas então ao mesmo empate de incírculo cocircular da CDT da
 entrada do circo acima; **aposentado no graphviz 16.1** — é conformante desde
-`b77b2703`, portanto a inversão de corredor 14 pt vs. 8 pt era a contração FMA
+`f66ac638`, portanto a inversão de corredor 14 pt vs. 8 pt era a contração FMA
 não espelhada, não um empate) e circo
 `windows-tree` (10 diferenças de operações de desenho em uma aresta de leque — a trigonometria de posicionamento do circo
 coloca `node2.y` um único ULP acima de `node8.y` em torno do valor exatamente simétrico 18.0, e a seleção de porta de cabeça dinâmica do `closestSide`
@@ -1039,9 +1039,9 @@ posições pré-roteamento nativas exatas são injetadas (portanto a divergênci
 deriva iterativa — veja a classe A1-drift — mas um empate de predicado discreto):
 
 - `241_0` — atribuído ao empate de incírculo cocircular da CDT (o corredor
-  multispline; não reverificado após `b77b2703`, veja a nova linha de base no 16.1 acima).
+  multispline; não reverificado após `f66ac638`, veja a nova linha de base no 16.1 acima).
   O resíduo é uma **inversão de contagem de segmentos**: 7 diferenças de operações de desenho na aresta 1->2,
-  `ptCount 8 vs 20` (20 diferenças antes de `b77b2703`) — o corredor tem sucesso com
+  `ptCount 8 vs 20` (20 diferenças antes de `f66ac638`) — o corredor tem sucesso com
   uma spline de N pts onde o build nativo recorre a uma rota simples mais curta
   (ou vice-versa), como na entrada de `241_0` do circo acima. O port já emula a contração `fmadd` do arm64
   no predicado incircle/`ccw` (`src/pathplan/triang.ts`,
@@ -1053,7 +1053,7 @@ deriva iterativa — veja a classe A1-drift — mas um empate de predicado discr
 > aqui como um empate de incírculo da CDT/libm. A missão descobriu outra coisa
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): a antiga inversão de corredor
 > era um erro de port de FMA no lado do port, na geometria do corredor multispline,
-> corrigido por `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> corrigido por `f66ac638` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`); com posições nativas injetadas, o port agora reproduz
 > o xdot nativo exatamente. O resíduo restante (deslocamentos de nós de 0.06-0.65 pt) é
 > deriva iterativa, semeada por uma discordância de 1 ULP entre o `pow(dist, 2)` da libm da Apple
@@ -1087,7 +1087,7 @@ posições pré-roteamento exatas do oráculo injetadas, o resíduo são 11 dife
 as posições dos nós são idênticas após a injeção, a divergência está a jusante, no
 corredor multispline do pathplan — o mesmo empate de incírculo por 1 ULP da libm que o `241_0` do
 circo/sfdp (incírculo racional exato 185/185 acima; 11 diferenças inalteradas por
-`b77b2703` — não reverificado por injeção). As alavancas já
+`f66ac638` — não reverificado por injeção). As alavancas já
 foram aplicadas (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); o empate é tratado como irredutível. Aceito via `accepted-divergences-engines.json`
 `fdp.241_0`. O `2095` do fdp, por outro lado, é **A1-drift, não A9**: injetar o
@@ -1113,7 +1113,7 @@ aritmética inteira fiel de `step`/posicionamento precisa de 2.011.656.764 célu
 `Map maximum size exceeded`.
 
 **Por que aceito.** Um limite de runtime abaixo do código, não uma lacuna de lógica; a causa é
-a aritmética fiel de `910be2a2` (antes dela o port calculava um layout pequeno e
+a aritmética fiel de `97fcccd8` (antes dela o port calculava um layout pequeno e
 errado e nunca chegava ao limite). O resultado aceito é um erro lançado
 em vez de um veredito `diverged`, e os registros por mecanismo
 só aceitam linhas `diverged`, então não existe entrada de registro: as varreduras continuam

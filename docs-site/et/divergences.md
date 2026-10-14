@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -506,7 +506,7 @@ nende aktsepteerimiskirjed on pensionile saadetud. **`2796` ja `2471` liitusid n
 graphviz 16.1-ga** (mõlemad `conformant` värskes pühkimises, aktsepteerimiskirjed
 pensionile saadetud): port ja 16.1 oraakel nõustuvad nüüd `init_rank` taastamisväljundis,
 sealhulgas kaotatud servades. Põhjust ei isoleeritud bisektsiooniga (kandidaadid on 16.1
-dotgen'i port `48981bf0` ja kaotatud servade tarbimise parandus `54bd3b9b`);
+dotgen'i port `3cfbf55c` ja kaotatud servade tarbimise parandus `5b6b9bfc`);
 allolev `init_rank` kirjeldus on säilitatud klassi mehhanismina ja need kaks id-d on
 pariteedipühkimisega fikseeritud vastavatena.
 
@@ -665,8 +665,8 @@ võrdlusleht (kõrvuti renderdus + tõenduskirje).
 fuzzerist tuletatud sisend (`fontsize="991836031967s8"`), mille absurdne fondisuurus
 paisutab joonise ~2.75e11 pt-ni — on graphviz 16.1-s **conformant** ja selle
 aktsepteerimine on pensionile saadetud: port kitsendab nüüd lehe suuruse samamoodi nagu
-natiivne `ROUND` teisendus (`fe20f303`) ja ehitab lehe kärpe `setup_page` järjekorras
-(`eea9d21c`). Allolevad mehhanismilõigud kirjeldavad algset erinevust.
+natiivne `ROUND` teisendus (`47f3165d`) ja ehitab lehe kärpe `setup_page` järjekorras
+(`da6c4a53`). Allolevad mehhanismilõigud kirjeldavad algset erinevust.
 
 **Mis juhtub.** C salvestab `job->width` / `job->height` kui **`unsigned int`**
 (`gvcjob.h:327-328`). Hiiglasliku punktisuuruse `ROUND(...)` (`emit.c:1249-1250`)
@@ -851,13 +851,13 @@ nõuaks Apple libm-i täpse `sin`/`cos` ümardamise reprodutseerimist JS-is.
 
 **16.1 uus lähtejoon.** Multispline koridori geomeetriast puudus clangi FMA kontraktsioon
 (ellipsi nurga radikand, `mkCtrlPts`, `DIST` = sqrt(fmadd), `line_intersect` skalaarkorrutis);
-`b77b2703` (`fix(neato): mirror fma contraction in multispline routing geometry`)
+`f66ac638` (`fix(neato): mirror fma contraction in multispline routing geometry`)
 peegeldas selle. twopi ja neato `241_0` — mille see klass oli omistanud allolevale
 kaasringsele viigile — said **conformant** (aktsepteerimised pensionile saadetud) ja
 sfdp `42` osutus viigita (see on A1 triiv, vt
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp ja sfdp `241_0`
 lahknevad endiselt muutumatute või vähenenud jääkidega; nende omistus allolevale viigile
-on varasem kui `b77b2703` ja seda **ei ole pärast seda parandust positsioonide
+on varasem kui `f66ac638` ja seda **ei ole pärast seda parandust positsioonide
 süstimisega uuesti kontrollitud**, kuigi sama parandus näitas, et omistus oli twopi/neato
 puhul vale.
 
@@ -1015,7 +1015,7 @@ sulgedes põhjusliku ahela.
 Veel kaks mootoriraja eksemplari said algpõhjuseni jälitatud ja aktsepteeritud 2026-07-11
 (täielik RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 joonistusoperatsiooni
 erinevust, mis omistati siis samale CDT kaasringsele incircle viigile nagu ülaltoodud
-circo kirje; **pensionile saadetud graphviz 16.1-s** — see on `b77b2703` järgi conformant,
+circo kirje; **pensionile saadetud graphviz 16.1-s** — see on `f66ac638` järgi conformant,
 seega 14-punktise vs 8-punktise koridori ümberlülitus oli peegeldamata FMA
 kontraktsioon, mitte viik) ja circo
 `windows-tree` (10 joonistusoperatsiooni erinevust ühel lehvikuserval — circo paigutustrigonomeetria
@@ -1031,9 +1031,9 @@ täpsed natiivsed marsruutimiseelsed positsioonid on süstitud (seega lahknevus 
 iteratiivne triiv — vt A1-drift klassi — vaid diskreetne predikaadiviik):
 
 - `241_0` — omistatud CDT kaasringsele incircle viigile (multispline koridor; pärast
-  `b77b2703` uuesti kontrollimata, vt 16.1 uut lähtejoont ülal). Jääk on **lõikude arvu
+  `f66ac638` uuesti kontrollimata, vt 16.1 uut lähtejoont ülal). Jääk on **lõikude arvu
   ümberlülitus**: 7 joonistusoperatsiooni erinevust serval 1->2, `ptCount 8 vs 20`
-  (20 erinevust enne `b77b2703`) — koridor õnnestub N-punktise splainiga, kus natiivne
+  (20 erinevust enne `f66ac638`) — koridor õnnestub N-punktise splainiga, kus natiivne
   ehitus langeb tagasi lühemale lihtsale marsruudile (või vastupidi), nagu ülaltoodud
   circo `241_0` kirjes.
   Port emuleerib juba arm64
@@ -1046,7 +1046,7 @@ iteratiivne triiv — vt A1-drift klassi — vaid diskreetne predikaadiviik):
 > Seda loetleti siin kui CDT/libm incircle viiku. Missioon leidis muud
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): endine koridori
 > ümberlülitus oli pordipoolne FMA valesti portimine multispline koridori geomeetrias,
-> parandatud `b77b2703`-ga (`fix(neato): mirror fma contraction in multispline routing
+> parandatud `f66ac638`-ga (`fix(neato): mirror fma contraction in multispline routing
 > geometry`); natiivsete positsioonide süstimisel reprodutseerib port nüüd natiivse xdot'i
 > täpselt. Allesjääv jääk (sõlmede nihked 0.06-0.65 pt) on iteratiivne triiv, mille
 > põhjustas üks 1-ULP lahknevus Apple libm `pow(dist, 2)` ja pordi ARM `pow` vahel
@@ -1079,7 +1079,7 @@ oraakli täpsed marsruutimiseelsed positsioonid on süstitud, on jääk 11 arvul
 `unfilled_bezier` erinevust, mis piirduvad ühe servaga (`0->1#0`, maxΔ 3.39pt). Kuna
 sõlmepositsioonid on süstituna identsed, on lahknevus allavoolu
 pathplani multispline koridoris — sama libm-1-ULP incircle viik mis
-circo/sfdp `241_0` puhul (täpne ratsionaalne incircle 185/185 ülal; 11 erinevust `b77b2703` poolt
+circo/sfdp `241_0` puhul (täpne ratsionaalne incircle 185/185 ülal; 11 erinevust `f66ac638` poolt
 muutmata — süstimisega uuesti kontrollimata). Hoovad on
 juba rakendatud (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); viiku käsitletakse taandamatuna. Aktsepteeritud failiga `accepted-divergences-engines.json`
@@ -1105,7 +1105,7 @@ jooksul, kasutades 67.3 GB resident-mälu (101 GB tipp). Pordi `PointSet` on Jav
 `Map`, mille V8 piirab 2^24 kirjega, seega viskab see `Map maximum size exceeded`.
 
 **Miks aktsepteeritud.** Koodist allpool asuv käitusaja piirang, mitte loogikalünk;
-põhjuseks on `910be2a2` ustav aritmeetika (enne seda arvutas port väikese, vale
+põhjuseks on `97fcccd8` ustav aritmeetika (enne seda arvutas port väikese, vale
 paigutuse ega jõudnud kunagi piirini). Aktsepteeritud tulemus on visatud viga, mitte
 `diverged` otsus, ja mootoripõhised registrid aktsepteerivad ainult `diverged` ridu, seega
 registrikirjet ei ole: pühkimised jätkavad `2784` loetlemist oma pordi vigade all.

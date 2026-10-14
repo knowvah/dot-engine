@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -509,8 +509,8 @@ orákula, včetně identických ztracených hran); jejich akceptační záznamy 
 vyřazeny. **`2796` a `2471` se k nim připojily s graphviz 16.1** (oba `conformant`
 v čerstvém průchodu, akceptační záznamy vyřazeny): portace a orákulum 16.1 se nyní
 shodují na výstupu obnovy `init_rank` včetně ztracených hran. Příčina nebyla
-izolována bisekcí (kandidáty jsou port dotgenu 16.1 `48981bf0` a oprava spotřeby
-ztracených hran `54bd3b9b`); popis `init_rank` níže je ponechán jako mechanismus
+izolována bisekcí (kandidáty jsou port dotgenu 16.1 `3cfbf55c` a oprava spotřeby
+ztracených hran `5b6b9bfc`); popis `init_rank` níže je ponechán jako mechanismus
 třídy a obě id jsou průchodem parity zafixována jako conformant.
 
 `1581` a `2825` byly případy obnovy po pádu (mise fix-element-count-bucket):
@@ -670,8 +670,8 @@ stránka srovnání [`1367`](https://github.com/knowvah/dot-engine/blob/main/pla
 odvozený fuzzerem (`fontsize="991836031967s8"`), jehož absurdní velikost písma
 nafoukne výkres na ~2.75e11 pt — je s graphviz 16.1 **conformant** a jeho
 akceptace je vyřazena: portace nyní zužuje velikost stránky tak, jako nativní
-převod `ROUND` (`fe20f303`), a ořez stránky sestavuje v pořadí `setup_page`
-(`eea9d21c`). Odstavce o mechanismu níže popisují původní rozdíl.
+převod `ROUND` (`47f3165d`), a ořez stránky sestavuje v pořadí `setup_page`
+(`da6c4a53`). Odstavce o mechanismu níže popisují původní rozdíl.
 
 **Co se děje.** C ukládá `job->width` / `job->height` jako **`unsigned int`**
 (`gvcjob.h:327-328`). Výraz `ROUND(...)` z obrovské velikosti v bodech (`emit.c:1249-1250`)
@@ -858,13 +858,13 @@ by vyžadovala reprodukovat v JS přesné zaokrouhlování `sin`/`cos` z Apple l
 
 **Nové základní měření 16.1.** V geometrii koridoru multispline chyběla kontrakce
 FMA z clangu (radikand rohu elipsy, `mkCtrlPts`, `DIST` = sqrt(fmadd), skalární
-součin v `line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+součin v `line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) ji zrcadlil. twopi a neato `241_0` — které tato
 třída připisovala remíze kocirkulárních bodů níže — se staly **conformant**
 (akceptace vyřazeny) a u sfdp `42` se ukázalo, že žádnou remízu nemá (je to drift
 A1, viz [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp a sfdp
 `241_0` se stále rozcházejí, jejich zbytky jsou nezměněné nebo zmenšené; jejich
-připsání remíze níže předchází `b77b2703` a od této opravy **nebylo znovu
+připsání remíze níže předchází `f66ac638` a od této opravy **nebylo znovu
 ověřeno vstřikováním pozic**, ačkoli tatáž oprava ukázala, že připsání bylo u
 twopi/neato chybné.
 
@@ -1022,7 +1022,7 @@ reprodukuje 10 posunutých uzlů z průchodu s bajt po bajtu shodnými delty v x
 Dva další případy na stopách modulů byly vystopovány do příčiny a akceptovány 2026-07-11
 (úplná analýza příčiny: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 rozdílů
 kreslicích operací, tehdy připsaných téže remíze incircle kocirkulárních bodů v CDT
-jako záznam circo výše; **vyřazeno s graphviz 16.1** — od `b77b2703` je conformant,
+jako záznam circo výše; **vyřazeno s graphviz 16.1** — od `f66ac638` je conformant,
 takže překlopení koridoru 14 bodů vs. 8 bodů bylo nezrcadlenou kontrakcí FMA,
 nikoli remízou) a circo
 `windows-tree` (10 rozdílů kreslicích operací na jedné vějířové hraně — goniometrie umisťování v circo
@@ -1038,9 +1038,9 @@ se vstříknou přesné nativní pozice před vedením hran (takže odchylka NEN
 iterativní drift — viz třída A1-drift — ale diskrétní remíza predikátu):
 
 - `241_0` — připsáno remíze incircle kocirkulárních bodů v CDT (koridor
-  multispline; po `b77b2703` není znovu ověřeno, viz nové základní měření 16.1
+  multispline; po `f66ac638` není znovu ověřeno, viz nové základní měření 16.1
   výše). Zbytkem je **překlopení počtu segmentů**: 7 rozdílů kreslicích operací na
-  hraně 1->2, `ptCount 8 vs 20` (20 rozdílů před `b77b2703`) — koridor uspěje se
+  hraně 1->2, `ptCount 8 vs 20` (20 rozdílů před `f66ac638`) — koridor uspěje se
   splinem o N bodech, kde nativní sestavení spadne na kratší prosté vedení (nebo
   naopak), jako v záznamu circo `241_0` výše. Portace již emuluje kontrakci arm64
   `fmadd` v predikátu incircle/`ccw` (`src/pathplan/triang.ts`,
@@ -1052,7 +1052,7 @@ iterativní drift — viz třída A1-drift — ale diskrétní remíza predikát
 > Bylo zde uvedeno jako remíza incircle v CDT/libm. Mise zjistila něco jiného
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): dřívější překlopení
 > koridoru bylo chybou portace FMA v geometrii koridoru multispline, opravenou
-> `b77b2703` (`fix(neato): mirror fma contraction in multispline routing
+> `f66ac638` (`fix(neato): mirror fma contraction in multispline routing
 > geometry`); s vstříknutými nativními pozicemi nyní portace reprodukuje nativní
 > xdot přesně. Zbývající zbytek (posuny uzlů 0.06-0.65 pt) je iterativní drift
 > vyvolaný jedním nesouhlasem o 1 ULP mezi `pow(dist, 2)` z Apple libm a `pow` ARM
@@ -1087,7 +1087,7 @@ rozdílů `unfilled_bezier` omezených na jednu hranu (`0->1#0`, maxΔ 3.39pt). 
 pozice uzlů jsou vstříknuty identické, odchylka vzniká dále po proudu v
 koridoru multispline v pathplan — tatáž remíza incircle s libm o 1 ULP jako u
 circo/sfdp `241_0` (incircle v přesných racionálních číslech 185/185 výše; 11 rozdílů
-nezměněno `b77b2703` — není znovu ověřeno vstřikováním). Páky
+nezměněno `f66ac638` — není znovu ověřeno vstřikováním). Páky
 jsou již uplatněny (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); remíza je považována za neredukovatelnou. Akceptováno přes `accepted-divergences-engines.json`
 `fdp.241_0`. `2095` u fdp je naproti tomu **A1-drift, nikoli A9**: vstříknutí
@@ -1113,7 +1113,7 @@ v portaci je JavaScriptový `Map`, který V8 omezuje na 2^24 položek, takže vy
 `Map maximum size exceeded`.
 
 **Proč akceptováno.** Běhové omezení pod úrovní kódu, nikoli logická mezera;
-příčinou je věrná aritmetika `910be2a2` (před ní portace vypočetla malé, chybné
+příčinou je věrná aritmetika `97fcccd8` (před ní portace vypočetla malé, chybné
 rozvržení a limitu nikdy nedosáhla). Akceptovaným výsledkem je vyhozená chyba,
 nikoli verdikt `diverged`, a registry jednotlivých modulů akceptují pouze řádky
 `diverged`, takže záznam v registru neexistuje: průchody dál uvádějí `2784` pod
