@@ -90,7 +90,11 @@
       "Bash(CORPUS_ROOT=*)",
       "Bash(GRAPHVIZ_BUILD=*)",
       "Bash(BENCH_POOL=*)",
-      "Bash(sh test/corpus/gen-headless-gvbindir.sh*)"
+      "Bash(sh test/corpus/gen-headless-gvbindir.sh*)",
+      "Bash(bash test/golden/gates.sh*)",
+      "Bash(GVBINDIR=* npx tsx test/corpus/*)",
+      "Bash(GVBINDIR=* ~/git/graphviz/build/cmd/dot/dot *)",
+      "Bash(ln -s*)"
     ],
     "deny": [
       "Bash(git push origin main:*)",
