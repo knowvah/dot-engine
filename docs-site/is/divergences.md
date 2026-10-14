@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -41,8 +41,9 @@ hér á eftir) er
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 Verkfærin tengja hana saman við skýrslugerð: `PARITY-dot.md` aðgreinir **samþykkt frávik** frá
 **rakta** vinnulistanum, og reglnahliðið sækir leyfislista sinn í hana. Textakaflarnir hér á eftir
-útskýra hverja færslu (A1 og A3 eru virk; A2 er lokað og
-varðveitt sem saga); CI-prófun (`accepted-divergences.test.ts`) tryggir að
+útskýra hverja færslu (A1 er virk; A2, A3 og A8 eru lokuð og
+varðveitt sem saga; A10 er samþykki á villu í yfirfærslu sem engin skrá getur
+lýst); CI-prófun (`accepted-divergences.test.ts`) tryggir að
 hvert samþykkt graf víki enn, svo þessi listi geti ekki úrelst án þess að nokkur taki eftir.
 
 ---
@@ -69,8 +70,8 @@ Graf sem frávik hefur áhrif á eru sannreynd gegn **byggingar- og vikmarkavið
 
 **Fyrir áhrifum:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (ítrekandi
 gormalíkansvélarnar). *Uppsetning* `dot`-vélarinnar verður **ekki** fyrir áhrifum af þessari
-ákveðni ítrekandi líkana; sérstakt, þröngt afmarkað kommutölufrávik í leggjaleiðingu `dot` með splínum
-er fjallað um í **A3** hér á eftir.
+ákveðni ítrekandi líkana; fyrri kommutölufrávik í leggjaleiðingu `dot` með splínum
+(A3, A8) eru lokuð og varðveitt hér á eftir sem saga.
 
 > **Umfang, sögulega óunnin fyrirvari — nú að hluta mældur.** **Aðal-SVG-könnunin fyrir dot-vélina**
 > (`test/corpus/survey.ts`) er enn
@@ -104,7 +105,7 @@ endurgerð er **ekki tryggð milli kerfa**. Grannfræðin varðveitist; möguleg
 frávik liggur í fínum hnútahnitum.
 
 **Hvers vegna samþykkt.** Þetta er hörð takmörkun þess að keyra í JS, ekki hönnunarval
-— sömu ættar og næmi A3 fyrir Apple-`hypot`. Engin leið er að tryggja
+— sömu ættar og (síðar lokuð) næmi A3/A8 fyrir `hypot`/FMA. Engin leið er að tryggja
 bitaeins torræð föll/FMA-niðurstöður yfir öll markkeyrsluumhverfi, svo bætaviðmið
 væri óprófanlegt fremur en aðeins dýrt. **Mat á A1** (öfugt við að
 setja bara fyrirvara) krafðist sérstaks jöfnuðarferils með innbyggðri vél — smíðaður
@@ -113,12 +114,12 @@ inntak undir sinni eigin vél í stað `dot`. Hreinskilið þak þeirrar vinnu e
 að **þrengja** A1 í „ekkert virkt frávik á viðmiðunarkerfinu“, aldrei að
 útrýma fyrirvaranum um mismunandi kerfi; niðurstöðurnar hingað til (hér á eftir) standast það
 þak: `circo`/`twopi`/`osage` hafa hver um sig afhjúpað og rótargreint nokkur
-raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 90.8/77.5/68.0%
-innan 0.5pt frá innbyggðu á 910 atriða heildinni, sem þýðir að yfirfærða
+raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 90.3/96.5/68.1%
+innan 0.5pt frá innbyggðu á 929 atriða heildinni (graphviz 16.1.0), sem þýðir að yfirfærða
 reikningsaðferðin (`fma.ts`, `arm-pow.ts`, samstilltur slembitölugjafi) heldur fyrir flest graf —
-og hvert eitt afgangsfráviksauðkenni er rakið sérstaklega með innsprautun (rek lausnara
-á móti galla í yfirfærslu) í stað þess að vera skilið eftir sem óflokkað rek; sjá
-einkenni ítrekandi véla hér á eftir.
+og hvert eitt afgangsfráviksauðkenni á 910 atriða listanum er rakið sérstaklega með innsprautun (rek lausnara
+á móti galla í yfirfærslu) í stað þess að vera skilið eftir sem óflokkað rek; 19 viðbætur við listann hafa
+enn ekki verið raktar. Sjá einkenni ítrekandi véla hér á eftir.
 
 **Samþykki ferils vélar: twopi-örvafjölskyldan.** <a id="a1-twopi-arrows-family"></a>
 Fyrirvarinn hér að ofan lýsir SVG-könnun dot-vélarinnar, þar sem A1 á við um engin
@@ -184,27 +185,36 @@ fyrir þessar þrjár og `parity-report.ts` birtir þær í sérstökum kafla
 „Iterative engines (±0.5 characterization)“ í
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 sem er beinlínis **ekki** sambærilegur við ±0.01 ákvarðandi árangurshlutföll annars staðar
-í þessu skjali. Núverandi talningar (910 atriða heild; árangurshlutfall sleppir
+í þessu skjali. Núverandi talningar gegn graphviz 16.1.0 (929 atriða heild; árangurshlutfall sleppir
 inntaki sem C-véfréttin getur ekki teiknað, samkvæmt [Samræmi](./conformance.md)):
 
-| vél | könnuð | innan ±0.5pt | ósamræmd (öll rakin, samþykkt) | villa í yfirfærslu / tímamörk | villa í véfrétt |
+| vél | könnuð | innan ±0.5pt | ósamræmd | villa í yfirfærslu / tímamörk | villa í véfrétt |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(Línurnar fyrir `neato` og `sfdp` eru úr yfirferðum sem voru undirbúnar áður en
+`graphs-decorate`, `1314`, `2784` og `2371` voru keyrð í gegn í síðasta sinn; þær
+geta hreyfst vegna þessara auðkenna. Árangurshlutfall `fdp` hækkaði frá 77.5%
+vegna þess að fyrri innsetta yfirferðin var á undan stöðu yfirfærslunnar í fyrra
+verkefni.)
 
 (Fyrsta yfirferðin, 2026-07-11 við 762 atriði, mældi 263/311/260 innan
 ±0.5pt — stökkið í núverandi hlutföll kom frá lagfæringum fyrir einstök auðkenni sem hafa lent síðan,
 einkum óyfirfærðri meðhöndlun `user_pos`/`P_SET` í neato, sameiningu
 vélarræsingar og lagfæringunni á `setEdgeType` (fjölvi á móti falli).)
 
-Ólíkt fyrstu yfirferð er hver fráviksröð nú rakin sérstaklega:
+Ólíkt fyrstu yfirferð var hver fráviksröð á 910 atriða listanum rakin sérstaklega (19 auðkennin sem eru
+ný á 929 atriða listanum hafa enn ekki verið raktar; þau eru talin upp í skilum
+T13 sem nýlega sýnileg):
 innsprautunarverkfærið (`test/corpus/attribute-divergence.ts`) matar yfirfærsluna á
 `ND_pos` véfréttarinnar fyrir leiðingu og ber saman á ný, og
 hvert núverandi fráviksauðkenni er annaðhvort `drift-exonerated` (leiðing og úttak
 yfirfærslunnar endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt)
 eða eitt af fáeinum sérstaklega samþykktum afgöngum fyrir einstök auðkenni (CDT-incircle-jafntefli `241_0`
-á öllum þremur vélunum, neato `2239`, sfdp `42`/`2556`).
+á öllum þremur vélunum, neato `2239`, sfdp `2556`; sfdp `42` er A1-rek, sjá
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 Flokkssamþykktin hér á eftir festir í sessi hópinn sem er sýknaður; lifandi talningar í
 mælaborðum hverrar vélar
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -405,39 +415,46 @@ safninu fer í gegnum hann, svo lagfæring sem beindist að einum streng gat val
 öðrum fyrir ósýnilegan ávinning.
 :::
 
-### A3. Jafnteflisúrlausn með `hypot` í splínuleiðingu (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. Jafnteflisúrlausn með `hypot` í splínuleiðingu (`dot`) — LOKAÐ {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Fyrir áhrifum:** `dot`-graf með **rúmfræðilega samhverfa** leggjaleiðingarrás —
-jafnan stuttan, samhverfan boga á láréttum legg. Dæmi sem sést hefur: `2368`,
-sem helst á *structural-match* (maxΔ ≈ 10.2 pt á **einum** legg, `376->76`).
-Sama jafnteflisúrlausn kemur einnig fram á **löngum** legg (yfir mörg þrep) inn í
-miðstöð með mikla innkomu þegar gangurinn er nákvæmlega spegilsamhverfur: `graphs-b100` /
-`graphs-b104` (sami frumkóði) víkja um maxΔ 20 (nákvæmlega ein þreparöð) á
-einum hnút `Node23730->Node23729` — hver hnútastaða og öll uppstreymis
-kassa-/marghyrnings-/strekktra-slóða-bygging er bæta-eins og hjá C; aðeins val `findMaxDev`, með
-~1 ULP, á því hvaða spegilsamhverfi innri punktur verður Bézier-hnútur
-er ólíkt. Stutta láréttu leggjaformið birtist einnig sem `241_1` (structural-match,
-maxΔ ≈ 2.4 pt) — frávikandi systkini `241_0` sem er fest við véfréttina, þar sem suð C
-heldur í staðinn fyrsta. Sama jafnteflisúrlausn veldur klofningi í rifugangi baklegs
-með merkimiða í tveggja-hringjum í `2413_1` (structural-match, maxΔ 67.65) og
-`2413_2` (maxΔ ≤99.55 þegar swapBezier-reverse-lagfæring T11 lendir — þangað til
-er tilkynnt maxΔ 1922.26 skrárinnar ráðið af óskyldum, sérstaklega
-rekjanlegum galla), og á einum legg með merkimiða innan klasa í `graphs-decorate`
-(maxΔ 43.54); í hverju tilviki eru tvö frambjóðandi klofningshorn jöfn upp á
-5.7e-13 (2413-fjölskyldan) / 3e-14 (decorate) áður en
-staðsetningarháð suð Apple-`hypot` velur sigurvegara. `2371`
-(structural-match, maxΔ 16.8) sýnir sama fingrafar á tveimur óskyldum
-leggjum (`g[9263]` `r6837mid--r9687mid`, `g[23859]` `r38mid--r8699mid`): yfirfærslan
-gefur nákvæma speglun véfréttarinnar á stýripunktaröðinni í báðum,
-y hnútsins snúið um sama Δ16.8 (efri/neðri klofningshlutföll víxluð).
-Uppruni þess er flokkaður með **MIÐLUNGS** vissu fremur en STAÐFESTU
-vissunni hjá öðrum meðlimum: `2371` pakkar ~199 hlutum, sem
-aftengir pathplan-staðbundin hnit frá síðuhnitum, þannig að jafnteflið
-var ekki hægt að tengja lifandi við `route.ts:209` í þremur
-tækjavæðingartilraunum; uppruni í bein-ham-hlutun eða í `recover_slack` eftir klippingu
-er ekki útilokaður að fullu. Full greining:
-`plans/residual-cleanup/analysis/2371-mirror.md`. Flestir leiðaðir leggir
-verða ekki fyrir áhrifum.
+**Staða (2026-10-12): lokað.** Ekkert auðkenni í safninu er lengur samþykkt undir
+þessum flokki; kaflinn er varðveittur sem söguleg skjölun á verkuninni. Fyrri
+meðlimir (`2368`, `graphs-b100`, `graphs-b104`, `241_1`, `2413_1`, `2413_2`,
+`graphs-decorate`, `2371`) eru allir **`conformant`** í nýju yfirferðinni
+(`test/corpus/parity-probe.json`).
+
+**Verkunin og það sem lokaði henni.** Splínuaðlagarinn (`Proutespline` ->
+`findMaxDev`, `src/pathplan/route.ts`) klýfur aðlagaðan Bézier við innri
+leiðarpunktinn með mesta frávikið. Á rúmfræðilega samhverfri rás eru frávik
+frambjóðendanna ólík um ~1 ULP, svo sigurvegarinn ræðst af reikningi í síðasta
+bita. Yfirfærslunni hafði verið eignuð óhjákvæmileg gjá („Apple `hypot` passar við
+ekkert flytjanlegt `hypot`“) og hún bætt upp með umburðarlyndri, færslujafnstæðri
+jafnteflisúrlausn. Þeirri eignun var hrakin: jafnteflið ræðst af *nákvæmum*
+reikningi C, sem er endurskapanlegur. Commit-ið `cdf597bc` (`fix(pathplan): split
+splines at C's max-deviation point bit for bit`) yfirfærði hann: libm-`hypot` fyrir
+fjarlægðina (`route.c:448`), stranga `>`-samanburðinn í C (`route.c:139`) og
+`fp-contract`-sameiningu clang á Bézier-útreikningnum (`route.c:137-138`),
+ákvörðunum í `mkspline` (`route.c:181-183`), `dot` (459), `normv` (413), `B01` (488)
+og `B23` (494). Umburðarlynda jafnteflisúrlausnin er farin; hnúturinn í `241_0` er
+festur í leiðingaramma C, því C er ekki færslujafnstæð við slík jafntefli. Þetta
+lokaði `2368`, `2371`, `2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` og
+`graphs-decorate`.
+
+`241_1` var ekki `hypot`-jafntefli: það var lokað með `87347711` (`fix(dot): match
+port-less edge endpoints in flat-adjacent aux layout`). C flokkar alla aðliggjandi
+lárétta leggi sem deila aðalleggi í eitt kall á `make_flat_adj_edges` og prófar
+hafnir yfir allan hópinn, svo systkini án hafnar við legg með höfn er leitt í
+gegnum hjálparrafið. Yfirfærslan skipti hópnum eftir því hvort hafnir væru til
+staðar og leiddi systkinið í gegnum `makeSimpleFlat`, þar sem klippingin lendir á
+öðrum `bezier_clip`-punkti (54.28 á móti 54.46 í innbyggðu).
+
+Báðar lagfæringarnar voru staðfestar með nýjum yfirferðum yfir safnið án afturfara
+(færslur í dagbók „T5 land“ og „T6 land“,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Sönnunargögn fyrir lagfæringu (söguleg).** `2368` var viðmiðunarmeðlimurinn.
+Bogi hans `376->76` klofnaði í átt að andstæðu horni miðað við C; grafið og C- og
+yfirfærsluferlar þess boga fyrir lagfæringu eru varðveitt til skráningar.
 
 ::: details Graf-skilgreining (`2368.dot`)
 ```dot
@@ -477,71 +494,31 @@ digraph G {
 ```
 :::
 
-**Einkenni.** Splínuaðlagarinn (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) klýfur aðlagaðan Bézier við innri leiðarpunktinn með
-mesta frávikið. Þegar rásin er samhverf eru frambjóðandi klofningspunktarnir tveir
-**nákvæmt stærðfræðilegt jafntefli**, og sigurvegarinn ræðst þá af um það bil 1e-14
-kommutölu-útstrikunarsuði í Bézier-mati á alhnitum
-þar sem **formerkið ræðst af alhnitastöðu**.
-
-Frávikafjarlægð C er libm-`hypot`, og macOS-Apple-`hypot` sem
-bjó til véfréttina er séreignarútfærsla sem er bita-eins við **ekkert**
-færanlegt `hypot` (mælt gegn henni á hnitasviði graphviz, hlutfall bitaeins:
-V8 `Math.hypot` ≈ 63%, rétt-námundað / Arm-líkt `hypot`
-≈ 84%, fdlibm `hypot` ≈ 90%, `sqrt(dx²+dy²)` ≈ 94%). Vegna þessa ULP-suðs
-**er C sjálft ekki samkvæmt sér**: það klýfur tvo *færsluþýða* boga í átt að
-**gagnstæðum** hornum. Innan `2368` er bogi `376->76` spegilmynd
-rúmfræðilega eins boga `256->436`:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-Allur munurinn, lagður yfir (12× aðdráttur á boga `376->76` / `to1`) — **grænt = C-útgáfa
-Graphviz, rautt = @knowvah/dot-engine**. Báðir eru sami grunni niðurbogi milli
-sömu hnútamarka; þeir eru ólíkir um ~1–2 pt í kviðnum (miðjustýripunktur
-Bézier), þar sem jafntefli C féll í átt að gagnstæða horninu:
-
-![2368 376->76-bogi: grænt = C, rautt = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Allt annað passar innan vikmarka — sami umlykjandi kassi (608×148), hnútastöður,
-merkimiðar, örvaroddar og allir aðrir leggir. Heildarteikningarnar eru sjónrænt
-óaðgreinanlegar:
-
-| C-útgáfa Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![2368 teiknað af C-útgáfu Graphviz](/img/2368-c.png) | ![2368 teiknað af @knowvah/dot-engine](/img/2368-port.png) |
-
-Yfirfærslan notar **færslujafnstæða** jafnteflisúrlausn (raunverulegt jafntefli leysist alltaf
-á fyrsta vísi), svo hún teiknar *alla* slíka boga eins án tillits til
-stöðu — hún er samkvæm sér og passar við C á bogum þar sem suð C heldur einnig
-fyrsta (t.d. `256->436`, og `241_0 5:ne->8:nw`), og víkur aðeins þar sem suð C
-flippar hinn veginn (`376->76`). Endapunktar, markpunktur örvarodds, hinir
-leggirnir, allir hnútar, merkimiðar og umlykjandi kassi passa innan vikmarka; aðeins
-innri stýripunktar eins boga færast (~1–2 pt í kviðnum).
-
-**Hvers vegna samþykkt.** `hypot` Apple er ekki endurtakanlegra milli JS-véla og
-örgjörva en FMA/`pow` í **A1** — þetta er sama flytjanleikahömlunin, aðeins
-í `dot`-splínuleiðaranum. Að passa *staðsetningarháð* val C myndi þýða að
-taka upp strangt jafnteflisúrlausn C, sem býr í **sameiginlegum grunnþætti** sem hver leiddur
-leggur fer í gegnum: með því er passanum á `376->76` skipt út fyrir *nýjan* ósamræmi á
-bogum þar sem C lendir hinum megin (það veldur afturför í `241_0` og í véfréttartilviki
-með `cnt=3` á láréttum legg), núll á móti núlli sem fórnar að auki
-færslujafnstæðu yfirfærslunnar. Því höldum við samkvæma (jafnstæða) leiðaranum. Þetta er
-afmarkað, ósýnilegt `dot`-frávik — ekki opinn galli. Full rannsókn:
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
 
 ### A4. Véfrétt í viðurkenndu biluðu ástandi (init_rank-/pathplan-fjölskyldan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Fyrir áhrifum:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). Meðlimir
+**Fyrir áhrifum (graphviz 16.1 yfirferð):** `1435` (structural-match, maxΔ 0.39 á
+einum stýripunkti splínu; var 503 gegn 15.x véfréttinni — lækkunin var ekki rakin
+með helmingunarleit) og `1581` (diverged: fjöldi barna á efsta stigi 39 á móti 22,
+maxΔ 0). Meðlimir
 fjölskyldunnar `1939` og `2825` eru **conformant** og bera enga færslu, og `2470`
 og `graphs-structs` bættust í þann hóp 2026-07-11 (bæði urðu samræmd
 eftir að lagfæringarnar á ortho-aðliggjandi yfirfalli/chancmpid, fmadd `polylineMidpoint` og
 námundun jafnteflis að jöfnu (half-even) lentu — yfirfærslan endurskapar nú
 úttak véfréttarinnar við endurheimt upp á punkt, þar með taldir sömu töpuðu leggir);
-samþykktarfærslur þeirra eru dregnar til baka.
+samþykktarfærslur þeirra eru dregnar til baka. **`2796` og `2471` bættust í hópinn
+með graphviz 16.1** (bæði `conformant` í nýju yfirferðinni, samþykktarfærslur
+dregnar til baka): yfirfærslan og 16.1-véfréttin eru nú sammála um úttak
+`init_rank`-endurheimtar, þar með talda töpuðu leggi. Orsökin var ekki einangruð
+með helmingunarleit (16.1-dotgen-yfirfærslan `48981bf0` og lagfæringin á notkun
+töpuðu leggjanna `54bd3b9b` eru tilgátur); lýsingin á `init_rank` hér á eftir er
+varðveitt sem verkun flokksins og auðkennin tvö eru fest sem conformant með
+jöfnuðaryfirferðinni.
 
 `1581` og `2825` voru hrunendurheimtartilvik (verkefnið fix-element-count-bucket):
 fuzzer-/úrkynjað inntak þar sem prófanir upprunans fullyrða **aðeins**
@@ -696,8 +673,13 @@ Samanburðarsíða fyrir [`1367`](https://github.com/knowvah/dot-engine/blob/mai
 
 ### A6. Yfirflæði `unsigned int` á striga við úrkynjað inntak {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Fyrir áhrifum:** `1314` — inntak sem er unnið úr fuzzer (`fontsize="991836031967s8"`)
-þar sem fáránleg leturstærð blæs teikninguna upp í ~2.75e11 pt.
+**Fyrir áhrifum:** sfdp `2556` (NaN-uppsetning; sjá færsluna fyrir vélarferilinn).
+`1314` — inntak sem er unnið úr fuzzer (`fontsize="991836031967s8"`)
+þar sem fáránleg leturstærð blæs teikninguna upp í ~2.75e11 pt — er **conformant** í graphviz 16.1 og samþykki
+þess er dregið til baka: yfirfærslan þrengir nú síðustærðina eins og innbyggða
+`ROUND`-umbreytingin gerir (`fe20f303`) og smíðar síðuklippinguna í röð
+`setup_page` (`eea9d21c`). Málsgreinarnar um verkun hér á eftir lýsa upprunalega
+muninum.
 
 **Hvað gerist.** C geymir `job->width` / `job->height` sem **`unsigned int`**
 (`gvcjob.h:327-328`). `ROUND(...)` á hinni risastóru punktastærð (`emit.c:1249-1250`)
@@ -773,64 +755,39 @@ og námundunarsuðið á stýriskel sem er nefnt í
 
 ---
 
-### A8. `fp-contract`/FMA-námundun á móti ströngu IEEE (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. `fp-contract`/FMA-námundun á móti ströngu IEEE (`dot`) — LOKAÐ {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**Staða (2026-10-12): lokað.** Ekkert auðkenni í safninu er lengur samþykkt undir
+þessum flokki; kaflinn er varðveittur sem söguleg skjölun. Bæði þekktu tilvikin eru
+**`conformant`**: `2620` (2026-07-11) og `2646` (2026-10-12).
 
 **Flokkur.** clang arm64 þýðir véfréttarkeyrsluskrána með `-ffp-contract=on`,
 sem sameinar valdar margföldunar-og-samlagningarrunur í einstakar FMA-skipanir; yfirfærslan
-keyrir á V8, sem framkvæmir stranga IEEE-754-námundun og getur ekki gefið út
-`fma`. Á bitaeins inntaki eru þau ósammála um 1–2 ULP í hverri
-segð sem þýðandinn valdi að sameina. Yfirfærsluhliðin er alltaf
-strangt IEEE-754-niðurstaða; véfréttarhliðin er alltaf FMA-sameinuð
-niðurstaða. Þetta er flytjanleikahömlun þýðanda/keyrsluumhverfis fyrir neðan merkingu
-C-frumkóða, ekki rökgalli í yfirfærslunni — óhjákvæmileg án þess að
-herma eftir sértækum sameiningarvalum clang í hugbúnaði. Tvö tilvik
-eru þekkt, á tveimur ólíkum stöðum, með tveimur ólíkum mögnunarverkunum:
+keyrir á V8, sem framkvæmir stranga IEEE-754-námundun. Á bitaeins inntaki eru þau ósammála um 1–2 ULP í hverri
+segð sem þýðandinn valdi að sameina. Tvö tilvik voru þekkt, á tveimur ólíkum stöðum, með tveimur ólíkum mögnunarverkunum:
 
-- **2646** — ULP verður til inni í þriðjastigsleysingu `Proutespline`, `points2coeff`/`solve3`,
-  og flippar beint fjölda róta hjá splínuaðlagaranum.
-- **2620** — ULP verður til í lykkju `poly_init` sem finnur hornpunktaútbreiðslu marghyrnings
-  (stærðarákvörðun hnúta) og er magnað ofar í ferlinu af trúrri heiltölustyttingu `ortho` í hverju losunarskrefi
+- **2646** — ULP varð til inni í þriðjastigsleysingu `Proutespline`, `points2coeff`/`solve3`,
+  og flippaði beint fjölda róta hjá splínuaðlagaranum.
+- **2620** — ULP varð til í lykkju `poly_init` sem finnur hornpunktaútbreiðslu marghyrnings
+  (stærðarákvörðun hnúta) og var magnað ofar í ferlinu af trúrri heiltölustyttingu `ortho` í hverju losunarskrefi
   yfir í flipp á jafndýru jafntefli í völundarhúsagangi.
 
-**Fyrir áhrifum:** `2646` (structural-match, maxΔ 42.09 á 3 af 21.216 leggjum:
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — allt
-langar leggjaleiðir með `:c->:nb_part` smode og record-höfnum). Systkini **A3**: báðir
-flokkar eru óhjákvæmileg flytjanleikajafntefli í kommutölum innan
-`Proutespline`, en verkunin er önnur — gripur frá `fp-contract` í þýðanda,
-ekki libm-`hypot`.
-
-**Hvað er ólíkt.** Á öllum þremur leggjum víkur aðeins síðasta kallið á `routesplines` (bein
-leggur inn í höfuðhöfnina). Endapunktur þess liggur bita-nákvæmlega á
-neðri vegg hindrunarmarghyrningsins með snertil samsíða þeim vegg
-(`evs[1]=(1,-1.22e-16)`), svo hver `splinefits`-frambjóðandi snertir
-hindrunina við `t=1` — nærri tvöföld rót skurðþriðjastigsmargliðunnar.
-`points2coeff` reiknar þá margliðu í gegnum stórfellda útstrikun
-(liðir um ~7446 falla saman í ~0.099). Véfréttin (clang/arm64,
-`-ffp-contract=on`) sameinar `v3 + 3*v1 - (v0 + 3*v2)` í samrunnar
-margfaldanir-og-samlagningar, meðan V8 framkvæmir stranga IEEE-námundun — þau eru ósammála um
-~9.1e-13 á **bitaeins inntaki**, og sú suð flippar formerki
-aðgreinis `solve3`: C finnur 1 rót (866.7, innan bútsins); yfirfærslan
-finnur 3 rætur með falskri hjárót við `t=0.9999975 < 1-EPSILON2`. Falska
-rótin kallar fram eina aukaítrun með `a`-helmingun, sem flippar
-snertilstærð síðasta hluta um stuðulinn 2 (í hvora áttina sem er á
-leggjunum 3), sem gefur maxΔ 42.09 eftir klippingu (26 SVG-mismunir).
-
-**Hvers vegna samþykkt (óhjákvæmileiki sannaður með stýrðri tilraun).** Öll sex
-köll á `routesplines` voru sótt á báðum hliðum — kassi, marghyrningur, `PL`, upphaf,
-endir og `evs` eru bæta-eins, sem og úttaksspalín fyrra (ekki síðasta) kallsins; eini
-munurinn er inni í `solve3` í síðasta kallinu. Sjálfstætt tilraunaforrit í hreinu C
-einangraði einu breytuna: þýðing með `-ffp-contract=off` endurskapar
-**yfirfærsluna** bita-nákvæmlega á öllum 3 leggjum; sjálfgefin (`on`) sameining endurskapar
-**véfréttina** bita-nákvæmlega á öllum 3
-leggjum. Yfirfærslan er því þegar sammála ströngu IEEE-754-C; munurinn
-er alfarið val véfréttarþýðandans á FMA-sameiningu, fyrir neðan
-merkingu C-frumkóða — enginn trúnaðarbrestur á frumkóðastigi til að laga. Markviss
-lagfæring (að herma handvirkt eftir sameiningunni í `points2coeff`) var reynd og
-hrakin: hún leiðréttir 2 af 3 leggjum en ekki þann þriðja, sem flippið á
-á upptök sín í eigin innri sameiningu `solve3`. Fullkomin lagfæring
-krefðist hugbúnaðar-FMA-hermunar í öllum splínuaðlagaranum — kostnaður í heitri lykkju
-með námundunaráhrifasvið um allt safnið fyrir ávinning upp á undirdíla og 3 leggi.
-Full greining: `plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Lokað: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Þrír langir leggjaleggir í smode (`edge2575`, `edge3905`,
+`edge15467`) enda á hindrunarvegg með samsíða snertli, svo skurðarþriðjastigsfallið
+í `splinefits` hefur næstum tvöfalda rót. `points2coeff` smíðar það með hörmulegri
+útstrikun; véfréttin sameinar `route.c:397-398` og `solvers.c:43`, svo yfirfærslan
+með ströngu IEEE fékk annan rótafjölda í `solve3`, falska skurðun og eina auka
+helmingun á `a` (maxΔ 42.09). Fyrri niðurstaðan um að þetta væri óhjákvæmilegt
+(„hugbúnaðar-FMA-hermun í öllum splínuaðlagaranum“, með hraktri hlutalagfæringu)
+var afsönnuð: sameiningarstaðirnir eru endanlegir og hægt að telja þá upp.
+Yfirfærslan speglar nú hverja sameiningu í `points2coeff` (`route.c:397-398`),
+`splineintersectsline` (371-372, 374, 360-361, 383-384), `solve3` (`solvers.c:41,
+43, 46`) og innfelldu `solve2` þess (80, 85), og `solve3`/`solve2`/`solve1` hafa
+verið yfirfærð upp á nýtt í mynd C. Öll 42.432 föngnu köll á `Proutespline` fyrir
+`2646` eru bita-eins og hjá véfréttinni (dagbókarfærsla „T7 land“). Upprunaleg
+greining (gildir enn um verkunina):
+`plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Fyrir áhrifum (söguleg):** `2620` (var structural-match, maxΔ 585; 423 mismunir
 á 24 leggjaferlum + 22 örvaroddum). **Féll saman í conformant 2026-07-11**:
@@ -898,12 +855,25 @@ innhringsforsendan situr á hnífsegg: inntaks-ULP flippar formerki hennar,
 hornalína þvingaðrar Delaunay-þríhyrningunar flippar, og gangamarghyrningurinn sem mistekst í
 `Pshortestpath` í véfréttinni („destination point not in any triangle“ →
 varaleið með einfaldri splínu) tekst í yfirfærslunni (eða öfugt). Splínurnar sem
-koma út eru ólíkar um ~0.2–0.5pt. Systkini **A3**/**A8**: óhjákvæmileg
+koma út eru ólíkar um ~0.2–0.5pt. Systkini (nú lokuðu) **A3**/**A8**: óhjákvæmileg
 flytjanleikahömlun í kommutölum fyrir neðan merkingu frumkóða — að passa
 krefðist þess að endurskapa nákvæma `sin`/`cos`-námundun Apple libm í JS.
 
-**Fyrir áhrifum:** `241_0` (circo Δ≈0.2 / striga-Δ twopi ≈9 vegna gangaflipps
-á legg `5:ne->8:nw`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Endurmat á 16.1.** Í rúmfræði fjölsplínugangsins vantaði FMA-sameiningu clang
+(rótarstofn sporöskjuhorns, `mkCtrlPts`, `DIST` = sqrt(fmadd), depilmargfeldið í
+`line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in multispline
+routing geometry`) speglaði hana. `241_0` í twopi og neato — sem þessi flokkur
+hafði eignað jafnteflinu á einum hring hér á eftir — urðu **conformant**
+(samþykki dregin til baka), og í ljós kom að sfdp `42` er alls ekki með neitt
+jafntefli (það er A1-rek, sjá [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` í
+circo, fdp og sfdp víkur enn, með afgöngum sem eru óbreyttir eða minni; eignun
+þeirra á jafnteflinu hér á eftir er eldri en `b77b2703` og hefur **ekki verið
+staðfest á ný með innsprautun staða** síðan sú lagfæring sýndi að sama eignun var
+röng fyrir twopi/neato.
+
+**Fyrir áhrifum:** `241_0` (circo Δ≈0.2 vegna gangaflipps á legg `1->2`; `241_0` í
+fdp og sfdp á vélaferlunum hér á eftir); `2343`, `2239`, `share-b29`, `windows-b29`
+(twopi,
 1–2 mismunir á stöðu leggjamerkimiða hvert — libm-1-ULP verður til í
 einingahornpunktahornaföllum `poly_init` (`hypot`/`atan2`/`sin`), setur reiknaða
 hæð eins hnúts einum ULP fram yfir lágmarksstærðartakmarkið sem véfréttin lendir á
@@ -1056,32 +1026,42 @@ sem lokar orsakakeðjunni.
 
 Tvö vélaferilstilvik til viðbótar voru rótargreind og samþykkt 2026-07-11
 (full rótargreining: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 mismunir í
-teikniaðgerðum — systkini circo-færslunnar hér að ofan: sama CDT-innhringsjafntefli á einum hring,
-flippað af libm `sin`/`cos` með 1 ULP, lætur
-fjölsplínugang yfirfærslunnar takast með 14 punkta splínu þar sem innbyggða smíðin
-hverfur aftur í einfalda 8 punkta leiðingu; punktamunur < 0.07pt) og circo
+teikniaðgerðum, eignaðir þá sama CDT-innhringsjafntefli á einum hring og
+circo-færslan hér að ofan; **dregið til baka í graphviz 16.1** — hún er conformant
+frá `b77b2703`, svo gangaflipp með 14 punktum á móti 8 punktum var óspegluð
+FMA-sameining, ekki jafntefli) og circo
 `windows-tree` (10 mismunir í teikniaðgerðum á einum blævængarlegg — staðsetningarhornaföll circo
 lenda `node2.y` einum ULP ofan við `node8.y` í kringum nákvæmlega samhverfa
 gildið 18.0, og val dyna-höfuðhafnar í `closestSide` flippar TOP/BOTTOM við
 það nákvæma jafntefli; hnútastöður og kassar eru að öðru leyti bita-eins og hjá
 véfréttinni).
 
-**xdot-vélaferill sfdp — FP-jafntefli á leggjum (`42`, `241_0`).** <a id="a9-sfdp-fp-ties"></a> xdot-vélaferill sfdp (`parity-sfdp.json`,
+**xdot-vélaferill sfdp — FP-jafntefli á legg (`241_0`).** <a id="a9-sfdp-fp-ties"></a> xdot-vélaferill sfdp (`parity-sfdp.json`,
 innbyggt `dot -Ksfdp -Txdot`, ±0.5) afhjúpar CDT-innhringsjafntefli á einum hring um leið og
 nákvæmum innbyggðum stöðum fyrir leiðingu er sprautað inn (svo fráviksorsökin er EKKI
 ítrekandi rek — sjá A1-drift-flokkinn — heldur stakrænt jafntefli í forsendu):
 
-- `42` og `241_0` — CDT-innhringsjafntefli á einum hring (fjölsplínugangurinn).
-  Með innsprautuðum stöðum er afgangurinn **flipp á fjölda hluta**: `42`
-  `opCount 5 vs 9` (leggur 0->3) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (leggur 3->2) — hornalína þvingaðrar Delaunay-þríhyrningunar í yfirfærslunni flippar á móti
-  véfréttinni, svo fjölsplínugangurinn tekst með N punkta splínu þar sem
-  innbyggða smíðin hverfur aftur í styttri einfalda leið (eða öfugt), nákvæmlega eins og
-  twopi/circo-færslan `241_0` hér að ofan. Yfirfærslan hermir þegar eftir arm64-
+- `241_0` — eignað CDT-innhringsjafntefli á einum hring (fjölsplínugangurinn; ekki
+  staðfest á ný eftir `b77b2703`, sjá endurmatið á 16.1 hér að ofan). Afgangurinn
+  er **flipp á fjölda hluta**: 7 mismunir í teikniaðgerðum á legg 1->2, `ptCount 8
+  vs 20` (20 mismunir fyrir `b77b2703`) — gangurinn tekst með N punkta splínu þar
+  sem innbyggða smíðin hverfur aftur í styttri einfalda leið (eða öfugt), eins og í
+  circo-færslunni `241_0` hér að ofan. Yfirfærslan hermir þegar eftir arm64-
   `fmadd`-sameiningunni í innhrings-/`ccw`-forsendunni (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) og notar öfluga Delaunay-innhringsprófun; afgangurinn er
   1 ULP í `sin`/`hypot` (V8 á móti Apple libm) í inntaki forsendunnar sem enginn flytjanlegur
   kóði endurskapar.
+
+> **sfdp `42` endurflokkað úr A9 í A1-drift (graphviz 16.1 samstilling).** Það var
+> skráð hér sem CDT-/libm-innhringsjafntefli. Verkefnið komst að öðru
+> ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): fyrra gangaflipp var FMA-villa í
+> yfirfærslunni í rúmfræði fjölsplínugangsins, lagfærð með `b77b2703` (`fix(neato):
+> mirror fma contraction in multispline routing geometry`); með innbyggðum stöðum
+> innsprautuðum endurskapar yfirfærslan nú xdot innbyggðu útgáfunnar nákvæmlega.
+> Afgangurinn (hnútafrávik 0.06-0.65 pt) er ítrekandi rek sem hófst með einu 1 ULP
+> ósamkomulagi milli `pow(dist, 2)` í Apple libm og ARM-`pow` yfirfærslunnar á
+> grófasta stiginu og magnaðist upp á fínni stigum — A1 (sjá
+> [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095` endurflokkað úr A9 í A1-drift (2026-07-22).** Það var áður skráð
 > hér sem „hypot-systkinið“ (rek undir 0.7pt á leggjum hnúts með tómt heiti
@@ -1099,8 +1079,10 @@ nákvæmum innbyggðum stöðum fyrir leiðingu er sprautað inn (svo fráviksor
 frávikainntaki fyrir lárétta leggi kemur fram 1 ULP ósamkomulag í 2 af 6 (Δ 7.1e-15 og
 5.7e-14) — klofningsþröskuldshnífseggin sem flippar fjölda undirskiptinga.
 Óhjákvæmilegt: ekkert flytjanlegt hypot endurskapar Apple libm (fordæmi
-`arm-pow.ts` fyrir sömu mörk). Samþykkt á vélaferlisstigi með
-`accepted-divergences-engines.json` (`sfdp.42`, `sfdp.241_0`).
+`arm-pow.ts` fyrir sömu mörk). `sfdp.241_0` er samþykkt á vélaferlisstigi með
+`accepted-divergences-engines.json`. `sfdp.42` er **ekki** hluti af þessum flokki:
+skráarfærsla þess er A1 (`comparisons/sfdp-42.md`), og könnunin hér að ofan skýrði
+það ekki.
 
 **fdp**-xdot-vélaferillinn (`parity-fdp.json`, innbyggt `dot -Kfdp -Txdot`,
 ±0.5) afhjúpar SAMA CDT-jafntefli á einum hring á sama grafi, `241_0`: með
@@ -1108,9 +1090,10 @@ nákvæmum stöðum véfréttarinnar fyrir leiðingu innsprautuðum er afganguri
 `unfilled_bezier`-mismunir bundnir við einn legg (`0->1#0`, maxΔ 3.39pt). Þar sem
 hnútastöður eru innsprautaðar-eins er fráviksorsökin niðurstreymis í
 fjölsplínugangi pathplan — sama libm-1-ULP-innhringsjafntefli og í
-twopi/circo/sfdp `241_0` (nákvæm hlutfallstölu-innhringur 185/185 hér að ofan). Tökin eru
+circo/sfdp `241_0` (nákvæm hlutfallstölu-innhringur 185/185 hér að ofan; 11 mismunir
+óbreyttir af `b77b2703` — ekki staðfest á ný með innsprautun). Tökin eru
 þegar beitt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); jafnteflið er óhjákvæmilegt. Samþykkt með `accepted-divergences-engines.json`
+`Math.hypot`); jafnteflið er talið óhjákvæmilegt. Samþykkt með `accepted-divergences-engines.json`
 `fdp.241_0`. `2095` í fdp er hins vegar **A1-drift, ekki A9**: að innsprauta
 eina hnútinn með tómt heiti (eftir að rekjuinnsprautarinn var lagaður til að passa við
 hnúta með heitið `""`) fellir afganginn niður í núll — fyrri „A9-halinn“ var
@@ -1118,6 +1101,28 @@ hnúta með heitið `""`) fellir afganginn niður í núll — fyrri „A9-halin
 sama blindsvæðið — ný endurgerð rekju fyrir sfdp (2026-07-22) með lagaða
 innsprautaranum staðfesti að það innsprautast einnig í 0, og samþykki þess var fjarlægt (sjá
 athugasemdina um `2095` endurflokkað hér að ofan).
+
+---
+
+### A10. Stærðarmörk V8 `Map` í pökkun marghyrningasamsetninga (`2784`, fimm vélar sem byggja á pökkun) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Fyrir áhrifum:** `2784` á `circo`, `twopi`, `neato`, `fdp` og `sfdp`, í öllum
+úttakssniðum. Á `dot` er það `conformant`.
+
+**Hvað gerist.** `lib/pack/pack.c` skráir reitina sem hluti tekur upp í `PointSet`.
+Fyrir `2784` (einn hnútur sem er 3e16 pt hár, `splines="ortho"`) þarf trúr
+heiltölureikningur `step`/staðsetningar 2.011.656.764 reiti; innbyggða 16.1.0 lýkur
+á 482 s með 67.3 GB í minni (101 GB hámark). `PointSet` yfirfærslunnar er
+JavaScript-`Map`, sem V8 takmarkar við 2^24 færslur, svo það kastar `Map maximum
+size exceeded`.
+
+**Hvers vegna samþykkt.** Takmörkun á keyrsluumhverfi fyrir neðan kóðann, ekki
+rökgat; orsökin er trúr reikningur `910be2a2` (fyrir hann reiknaði yfirfærslan
+litla, ranga uppsetningu og náði aldrei mörkunum). Samþykkta niðurstaðan er kastað
+villa fremur en `diverged`-dómur, og skrár hverrar vélar samþykkja aðeins
+`diverged`-raðir, svo engin skráarfærsla er til: yfirferðirnar halda áfram að telja
+`2784` upp meðal villna í yfirfærslu. Sönnunargögn:
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

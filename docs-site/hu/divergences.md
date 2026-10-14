@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -41,8 +41,9 @@ Annak **géppel olvasható** forrása, hogy mely gráfok *elfogadottak* (az alá
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 Az eszközök jelentéskészítéskor összekapcsolják vele a többit: a `PARITY-dot.md` szétválasztja az **elfogadott eltéréseket**
 a **nyomon követett** hátraléktól, a szabálykapu pedig ebből veszi az engedélyezőlistáját. Az
-alábbi prózai szakaszok minden bejegyzést megmagyaráznak (az A1 és az A3 élő; az A2 lezárt, és
-történetként maradt meg); egy CI-teszt (`accepted-divergences.test.ts`) érvényesíti, hogy
+alábbi prózai szakaszok minden bejegyzést megmagyaráznak (az A1 élő; az A2, az A3 és az A8 lezárt, és
+történetként maradt meg; az A10 egy portolási hiba elfogadása, amelyet egyetlen
+nyilvántartás sem tud kifejezni); egy CI-teszt (`accepted-divergences.test.ts`) érvényesíti, hogy
 minden elfogadott gráf továbbra is eltér, így ez a lista nem rohadhat el észrevétlenül.
 
 ---
@@ -68,8 +69,8 @@ tűréses** mércével ellenőrizzük.
 
 **Érintett:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (az iteratív,
 rugómodell-alapú motorok). A `dot` motor *elrendezését* **nem** érinti ez az
-iteratív modell-determinizmus; egy különálló, szűken korlátos `dot` spline-vezetési
-lebegőpontos eltérést az alábbi **A3** tárgyal.
+iteratív modell-determinizmus; a korábbi `dot` spline-vezetési
+lebegőpontos eltérések (A3, A8) lezártak, és alább történetként maradtak meg.
 
 > **Hatókör, történetileg meg nem mért fenntartás — mára részben megmérve.** A
 > **fő dot-motoros SVG-felmérés** (`test/corpus/survey.ts`) továbbra is
@@ -103,7 +104,7 @@ reprodukció **platformok között nem garantált**. A topológia megmarad; az
 esetleges eltérés a csúcsok finom koordinátáiban van.
 
 **Miért elfogadott.** Ez a JS-ben futás kemény korlátja, nem tervezési döntés
-— ugyanabba a családba tartozik, mint az A3 Apple-`hypot` érzékenysége. Nincs mód arra, hogy
+— ugyanabba a családba tartozik, mint az A3/A8 (azóta lezárt) `hypot`/FMA érzékenysége. Nincs mód arra, hogy
 minden célzott futtatókörnyezetben garantáljuk a bitre azonos transzcendens/FMA eredményeket, így a bájtmérce
 nem csupán drága, hanem tesztelhetetlen lenne. Az **A1 felmérése** (szemben a puszta
 fenntartással) külön natív motoros paritássávot igényelt — ezt
@@ -112,12 +113,12 @@ minden bemenetet a saját motorjával mér fel a `dot` helyett. A munka őszinte
 hogy az A1-et „nincs aktív eltérés a referenciaplatformon” szintre **szűkítsük**, és a
 platformok közötti fenntartást soha ne szüntessük meg; az eddigi eredmények (alább) tartják ezt a
 plafont: a `circo`/`twopi`/`osage` mindegyike felszínre hozott és gyökérokig elemzett néhány
-valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 910 elemes univerzumon 90.8/77.5/68.0%-ban
+valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 929 elemes univerzumon (graphviz 16.1.0) 90.3/96.5/68.1%-ban
 van 0.5 pt-on belül a natívtól, vagyis a portolt
 aritmetika (`fma.ts`, `arm-pow.ts`, összehangolt PRNG) a legtöbb gráfnál tartja magát — és
-minden megmaradt eltérő azonosító egyenként injektálással van tulajdonítva (megoldó-
-sodródás vs. portolási hiba), nem pedig osztályozatlan sodródásként hagyva; lásd az
-alábbi iteratív motorok jellemzését.
+a 910 elemes névsor minden eltérő azonosítója egyenként injektálással van tulajdonítva (megoldó-
+sodródás vs. portolási hiba), nem pedig osztályozatlan sodródásként hagyva; a 19 névsor-kiegészítés még nincs
+tulajdonítva. Lásd az alábbi iteratív motorok jellemzését.
 
 **Motorsáv-elfogadás: a twopi nyílcsalád.** <a id="a1-twopi-arrows-family"></a>
 A fenti idézetblokk a dot-motoros SVG-felmérést írja le, ahol az A1 nulla
@@ -182,27 +183,36 @@ még **nincs** azonosítónként osztályozva — az `engine-walk.ts` ezekhez a 
 „Iteratív motorok (±0.5 jellemzés)” szakaszban jeleníti meg őket a
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) fájlban,
 kifejezetten **nem** összevethetően a dokumentum többi részében szereplő ±0.01-es determinisztikus
-átmenési arányokkal. Jelenlegi számok (910 elemes univerzum; az átmenési arány kihagyja
+átmenési arányokkal. Jelenlegi számok a graphviz 16.1.0 ellen (929 elemes univerzum; az átmenési arány kihagyja
 azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, a [Megfelelőség](./conformance.md) szerint):
 
-| motor | felmért | ±0.5 pt-on belül | nem megfelelő (mind tulajdonítva, elfogadva) | portolási hiba / időtúllépés | orákulumhiba |
+| motor | felmért | ±0.5 pt-on belül | nem megfelelő | portolási hiba / időtúllépés | orákulumhiba |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(A `neato` és az `sfdp` sorai a `graphs-decorate`, `1314`, `2784` és `2371`
+végső újrafuttatása előtt előkészített végigfuttatásokból származnak; ezen
+azonosítók miatt elmozdulhatnak. Az `fdp` átmenési aránya azért nőtt a korábbi
+77.5%-ról, mert a korábbi rögzített végigfuttatás az előző küldetés portolási
+állapota előtt készült.)
 
 (Az első végigfuttatás, 2026-07-11-én 762 elemnél, 263/311/260 elemet mért
 ±0.5 pt-on belül — a mostani arányokra ugrást azóta beérkezett azonosítónkénti
 javítások hozták, főként a neato portolatlan `user_pos`/`P_SET` kezelése, a motorinicializálás
 összevonása és a `setEdgeType` makró-vs-függvény javítás.)
 
-Az első végigfuttatással ellentétben most minden eltérő sor egyenként tulajdonítva van:
+Az első végigfuttatással ellentétben a 910 elemes névsor minden eltérő sora egyenként tulajdonítva volt (a 929 elemes
+névsor 19 új azonosítója még nincs tulajdonítva; a T13 átadásban újonnan
+láthatóként szerepelnek):
 az injektáló eszköz (`test/corpus/attribute-divergence.ts`) a natív
 orákulum útvonalvezetés előtti `ND_pos` értékét a portolt változatba táplálja, és újra összehasonlít, és
 minden jelenlegi eltérő azonosító vagy `drift-exonerated` (a portolt változat útvonalvezetése
 és kibocsátása pontosan reprodukálja az orákulumot, amint a megoldósodródást eltávolítjuk),
 vagy a külön elfogadott, azonosítónkénti maradékok egyike (az `241_0`
-CDT-incircle döntetlene mindhárom motoron, a neato `2239`, az sfdp `42`/`2556`).
+CDT-incircle döntetlene mindhárom motoron, a neato `2239`, az sfdp `2556`; az sfdp `42` A1-sodródás, lásd
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 Az alábbi osztályelfogadás a felmentett halmazt formalizálja; az élő számok a
 motoronkénti irányítópultokon találhatók
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -403,37 +413,47 @@ címkéje átmegy rajta, így egy egyetlen karakterláncot célzó javítás má
 érzékelési küszöb alatti nyereségért.
 :::
 
-### A3. `hypot` döntetlenfeloldás a spline-vezetésben (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. `hypot` döntetlenfeloldás a spline-vezetésben (`dot`) — LEZÁRVA {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Érintett:** a **geometriailag szimmetrikus** élvezetési csatornával rendelkező `dot` gráfok —
-jellemzően egy rövid, szimmetrikus lapos élív. Megfigyelt példa: a `2368`,
-amely *structural-match* marad (maxΔ ≈ 10.2 pt **egy** élen, `376->76`).
-Ugyanez a döntetlenfeloldás egy nagy befutású csomópontba tartó **hosszú** (több rangot átívelő) élen is felbukkan,
-ha a folyosó pontosan tükörszimmetrikus: a `graphs-b100` /
-`graphs-b104` (azonos forrás) maxΔ 20-szal (pontosan egy rangsor) tér el a
-`Node23730->Node23729` egyetlen csomópontján — minden csúcspozíció és minden felsőbb szintű
-doboz/sokszög/feszes útvonal szerkezet bájtra azonos a C-vel; csak a `findMaxDev`
-~1 ULP-nyi választása különbözik abban, hogy a tükörszimmetrikus belső pontok közül melyik lesz a bezier-csomó.
-A rövid lapos él formája `241_1`-ként is felbukkan (structural-match,
-maxΔ ≈ 2.4 pt) — az orákulumhoz rögzített `241_0` eltérő testvére, amelyet a C
-zaja ehelyett az első megtartásával old fel. Ugyanez a döntetlenfeloldás okozza a címkézett 2-ciklusú
-visszaél résfolyosó-hasadását a `2413_1` (structural-match, maxΔ 67.65) és a
-`2413_2` (maxΔ ≤99.55, ha a T11 swapBezier-reverse javítás beérkezik — addig
-a fájl jelentett maxΔ 1922.26 értékét egy független, külön
-nyomon követett hiba uralja) esetében, valamint egyetlen klaszteren belüli címkézett élt a `graphs-decorate`
-gráfban (maxΔ 43.54); mindegyik esetben a két jelölt hasadási sarok
-5.7e-13 (2413 család) / 3e-14 (decorate) belül döntetlen egymással, mielőtt a
-pozíciófüggő Apple `hypot` zaj győztest választ. A `2371`
-(structural-match, maxΔ 16.8) ugyanezt az ujjlenyomatot mutatja két független
-élen (`g[9263]` `r6837mid--r9687mid`, `g[23859]` `r38mid--r8699mid`): a portolt változat
-mindkettőn az orákulum pontos vezérlőpont-sorozat szerinti tükörképét bocsátja ki,
-a csomó y-ja azonos Δ16.8-cal megfordítva (a felső/alsó hasadási arányok felcserélődtek).
-Eredetét **KÖZEPES** bizonyossággal minősítjük, nem a többi tag
-IGAZOLT bizonyosságával: a `2371` ~199 komponenst csomagol, ami szétválasztja a pathplan-helyi koordinátákat az
-oldalkoordinátáktól, így a döntetlent három műszerezési kísérlet során sem
-sikerült élőben a `route.ts:209` sorral összefüggésbe hozni; egy egyenes módú szegmentálás vagy utólagos vágás utáni
-`recover_slack` eredet nincs teljesen kizárva. Teljes diagnózis:
-`plans/residual-cleanup/analysis/2371-mirror.md`. A legtöbb vezetett élt ez nem érinti.
+**Állapot (2026-10-12): lezárva.** Egyetlen korpuszazonosító sem elfogadott
+többé ebben az osztályban; a szakasz a mechanizmus történeti dokumentációjaként
+maradt meg. A korábbi tagok (`2368`, `graphs-b100`, `graphs-b104`, `241_1`,
+`2413_1`, `2413_2`, `graphs-decorate`, `2371`) a friss végigfuttatásban mind
+**`conformant`** állapotúak (`test/corpus/parity-probe.json`).
+
+**A mechanizmus, és ami lezárta.** A spline-illesztő (`Proutespline` ->
+`findMaxDev`, `src/pathplan/route.ts`) az illesztett beziert a maximális
+eltérésű belső útvonalpontnál hasítja. Geometriailag szimmetrikus csatornán a
+jelölt eltérések ~1 ULP-vel különböznek, így a győztest az utolsó bit aritmetikája
+dönti el. A portolt változatnak redukálhatatlan hézagot tulajdonítottak („az
+Apple `hypot` semmilyen hordozható `hypot`-tal sem egyezik”), és tűrő,
+eltolás-ekvivariáns döntetlenfeloldással kompenzálták. Ezt a tulajdonítást
+megcáfolták: a döntetlent a C *pontos* aritmetikája dönti el, amely
+reprodukálható. A `cdf597bc` commit (`fix(pathplan): split splines at C's
+max-deviation point bit for bit`) portolta: a libm `hypot` a távolsághoz
+(`route.c:448`), a C szigorú `>` összehasonlítása (`route.c:139`), valamint a
+bezier-kiértékelés (`route.c:137-138`), a `mkspline` determinánsai
+(`route.c:181-183`), a `dot` (459), a `normv` (413), a `B01` (488) és a `B23`
+(494) clang-féle `fp-contract` összevonása. A tűrő döntetlenfeloldás megszűnt; a
+`241_0` csomópont a C útvonalvezetési keretében van rögzítve, mert a C az ilyen
+döntetlenek esetén nem eltolás-ekvivariáns. Ez zárta le a `2368`, `2371`,
+`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` és `graphs-decorate` eseteket.
+
+Az `241_1` nem `hypot` döntetlen volt: a `87347711` zárta le (`fix(dot): match
+port-less edge endpoints in flat-adjacent aux layout`). A C minden, főélen osztozó
+szomszédos lapos élt egyetlen `make_flat_adj_edges` hívásba csoportosít, és a
+portok meglétét az egész csoporton teszteli, így egy portos él port nélküli
+testvérét a segédgráfon át vezeti. A portolt változat a csoportot a portok
+megléte szerint osztotta ketté, és a testvért a `makeSimpleFlat`-en át vezette,
+amelynek vágása a `bezier_clip` más pontjára esik (54.28 vs natív 54.46).
+
+Mindkét javítást friss korpusz-végigfuttatások ellenőrizték nulla regresszióval
+(a „T5 land” és „T6 land” naplósorok,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Bizonyíték a javítás előtt (történeti).** A `2368` volt a referenciatag. A
+`376->76` ívét a C-hez képest az ellentétes sarok felé hasította; a gráfot,
+valamint az ív javítás előtti C- és portolt útvonalát megőriztük emlékeztetőül.
 
 ::: details Gráfdefiníció (`2368.dot`)
 ```dot
@@ -473,71 +493,31 @@ digraph G {
 ```
 :::
 
-**Jellemzés.** A spline-illesztő (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) az illesztett beziert a maximális eltérésű belső
-útvonalpontnál hasítja. Ha a csatorna szimmetrikus, a két jelölt hasadási pont
-**pontos matematikai döntetlen**, a győztest pedig egy abszolút koordinátás bezier-kiértékelés ~1e-14-es
-lebegőpontos kioltási zaja dönti el,
-amelynek **előjele az abszolút pozíciótól függ**.
-
-A C eltérési távolsága a libm `hypot`, és az orákulumot előállító macOS-es Apple `hypot` egy
-szabadalmaztatott implementáció, amely **semmilyen** hordozható `hypot`-tal sem egyezik bitre (a graphviz koordinátatartományán
-ellene mérve, bitre azonos
-arányok: a V8 `Math.hypot` ≈ 63%, egy helyesen kerekített / Arm-stílusú `hypot`
-≈ 84%, az fdlibm `hypot` ≈ 90%, a `sqrt(dx²+dy²)` ≈ 94%). Ennek az ULP-zajnak köszönhetően
-**maga a C sem következetes**: két *eltolással egybevágó* ívet
-**ellentétes** sarkok felé hasít. A `2368`-on belül a `376->76` ív a
-geometriailag azonos `256->436` ív tükörképe:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-A teljes eltérés egymásra vetítve (12× nagyítás a `376->76` / `to1` ívre) — **zöld = C
-Graphviz, piros = @knowvah/dot-engine**. Mindkettő ugyanaz a sekély lefelé ív ugyanazon
-csúcshatárok között; a hasuknál (a középső bezier-
-vezérlőpontnál) ~1–2 pt-tal térnek el, ahol a C döntetlene az ellentétes sarok felé dőlt:
-
-![A 2368 376->76 íve: zöld = C, piros = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Minden más a tűrésen belül egyezik — azonos befoglaló doboz (608×148), csúcspozíciók,
-címkék, nyílhegyek és az összes többi él. A teljes renderelések szemmel
-megkülönböztethetetlenek:
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![A C Graphviz által renderelt 2368](/img/2368-c.png) | ![A @knowvah/dot-engine által renderelt 2368](/img/2368-port.png) |
-
-A portolt változat **eltolásekvivariáns** döntetlenfeloldást használ (a valódi döntetlen mindig
-az első indexre oldódik fel), így *minden* ilyen ívet ugyanúgy rajzol meg, a
-pozíciótól függetlenül — önkonzisztens, és ott egyezik a C-vel, ahol a C zaja is
-az elsőt tartja meg (pl. `256->436`, és `241_0 5:ne->8:nw`), csak ott tér el, ahol a C
-zaja a másik irányba billen (`376->76`). A végpontok, a nyílhegy célja, a többi
-él, az összes csúcs, a címkék és a befoglaló doboz a tűrésen belül egyezik; csak az egy ív
-belső vezérlőpontjai mozdulnak el (~1–2 pt a hasnál).
-
-**Miért elfogadott.** Az Apple `hypot` nem reprodukálhatóbb JS-motorok és
-CPU-k között, mint az **A1** FMA/`pow` műveletei — ugyanaz a hordozhatósági korlát, csak
-a `dot` spline-útvonalvezetőjében. A C *pozíciófüggő* választásának követése a C
-szigorú döntetlenfeloldásának átvételét jelentené, ami egy **közös primitívben** él, amelyen minden vezetett
-él átmegy: ez a `376->76` egyezést *új* eltérésekre cserélné azokon az
-íveken, ahol a C a másik irányba esik (regresszálná a `241_0`-t és egy `cnt=3`
-lapos élű orákulum-esetet), ami nulla összegű, és még a portolt változat
-eltolásekvivarianciáját is feláldozza. Ezért megtartjuk a következetes (ekvivariáns) útvonalvezetőt. Ez
-egy korlátos, érzékelési küszöb alatti `dot` eltérés — nem nyitott hiba. Teljes vizsgálat:
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
 
 ### A4. Elismerten hibás állapotú orákulum (az init_rank / pathplan család) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Érintett:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). A család
+**Érintett (graphviz 16.1 végigfuttatás):** `1435` (structural-match, maxΔ 0.39
+egyetlen spline-kontrollponton; a 15.x orákulummal szemben 503 volt — a csökkenést
+nem bisecteltük) és `1581` (diverged: felső szintű gyermekek száma 39 vs 22,
+maxΔ 0). A család
 `1939` és `2825` tagja **conformant**, és nincs bejegyzése, a `2470`
 és a `graphs-structs` pedig 2026-07-11-én csatlakozott hozzájuk (mindkettő conformant lett,
 miután megérkeztek az ortho szomszédsági-túlcsordulás/chancmpid, az fmadd `polylineMidpoint` és a
 páros felé kerekítő döntetlen-kerekítés javításai — a portolt változat most pontosan reprodukálja az orákulum
 helyreállítási kimenetét, beleértve az azonos elveszett éleket is); az
-elfogadási bejegyzéseik kivonásra kerültek.
+elfogadási bejegyzéseik kivonásra kerültek. **A `2796` és a `2471` a graphviz
+16.1-nél csatlakozott hozzájuk** (mindkettő `conformant` a friss
+végigfuttatásban, az elfogadási bejegyzések kivonva): a portolt változat és a 16.1
+orákulum most egyezik az `init_rank` helyreállítási kimeneten, beleértve az
+elveszett éleket is. Az okot nem izolálta bisect (a jelöltek a 16.1 dotgen
+portolás `48981bf0` és az elveszett élek felhasználásának javítása `54bd3b9b`);
+az alábbi `init_rank` leírás az osztály mechanizmusaként megmarad, a két
+azonosítót pedig conformantként rögzíti a paritás-végigfuttatás.
 
 Az `1581` és a `2825` összeomlás-helyreállítási esetek voltak (fix-element-count-bucket
 küldetés): fuzzer-/elfajult bemenetek, ahol az upstream tesztek **csak azt**
@@ -691,8 +671,12 @@ az [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-co
 
 ### A6. `unsigned int` vászon-túlcsordulás elfajult bemeneten {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Érintett:** `1314` — egy fuzzerből származó bemenet (`fontsize="991836031967s8"`),
-amelynek abszurd betűmérete a rajzot ~2.75e11 pt-ra fújja fel.
+**Érintett:** az sfdp `2556` (NaN elrendezés; lásd a motorsáv-bejegyzést). Az `1314` — egy fuzzerből származó bemenet (`fontsize="991836031967s8"`),
+amelynek abszurd betűmérete a rajzot ~2.75e11 pt-ra fújja fel — a graphviz 16.1-nél **conformant**, és az
+elfogadása kivonásra került: a portolt változat most úgy szűkíti az oldalméretet,
+ahogyan a natív `ROUND` konverzió teszi (`fe20f303`), és az oldalvágást a
+`setup_page` sorrendjében építi fel (`eea9d21c`). Az alábbi mechanizmus-bekezdések
+az eredeti különbséget írják le.
 
 **Mi történik.** A C a `job->width` / `job->height` értékeket **`unsigned int`** típusként tárolja
 (`gvcjob.h:327-328`). A hatalmas pontméret `ROUND(...)` értéke (`emit.c:1249-1250`)
@@ -767,65 +751,43 @@ regressziós kockázat 1 képpontért 2 élen — ugyanaz a közös primitív ko
 
 ---
 
-### A8. `fp-contract`/FMA kerekítés vs. szigorú IEEE (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. `fp-contract`/FMA kerekítés vs. szigorú IEEE (`dot`) — LEZÁRVA {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**Állapot (2026-10-12): lezárva.** Egyetlen korpuszazonosító sem elfogadott
+többé ebben az osztályban; a szakasz történeti dokumentációként maradt meg.
+Mindkét ismert eset **`conformant`**: a `2620` (2026-07-11) és a `2646`
+(2026-10-12).
 
 **Osztály.** A clang arm64 az orákulum binárisát `-ffp-contract=on` kapcsolóval fordítja,
 kiválasztott szorzás-összeadás sorozatokat egyetlen FMA utasításba olvasztva; a
-portolt változat V8-on fut, amely szigorú IEEE-754 kerekítést végez, és nem tud
-`fma`-t kibocsátani. Bitre azonos bemeneteken a kettő 1–2 ULP-vel eltér abban a
-kifejezésben, amelyet a fordító összevonásra választott. A portolt oldal mindig a
-szigorú IEEE-754 eredmény; az orákulum oldala mindig az FMA-val összevont
-eredmény. Ez a C forráskód szemantikája alatti fordítói/futtatókörnyezeti hordozhatósági korlát,
-nem pedig a portolt változat logikai hibája — redukálhatatlan, hacsak nem emuláljuk szoftveresen a clang
-konkrét összevonási döntéseit. Két eset ismert,
+portolt változat V8-on fut, amely szigorú IEEE-754 kerekítést végez. Bitre azonos bemeneteken a kettő 1–2 ULP-vel eltér abban a
+kifejezésben, amelyet a fordító összevonásra választott. Két eset volt ismert,
 két különböző helyen, két különböző felerősítő
 mechanizmussal:
 
 - **2646** — az ULP a `Proutespline` `points2coeff`/`solve3`
-  köbös megoldásán belül keletkezik, és közvetlenül átbillenti a spline-illesztő gyökszámát.
+  köbös megoldásán belül keletkezett, és közvetlenül átbillentette a spline-illesztő gyökszámát.
 - **2620** — az ULP a `poly_init` sokszög-csúcskiterjedési ciklusában (csúcsméretezés)
-  keletkezik, és lejjebb az `ortho` hű, relaxációnkénti
-  egészre csonkítása erősíti fel egyenlő költségű labirintusfolyosó-döntetlen átbillenéssé.
+  keletkezett, és lejjebb az `ortho` hű, relaxációnkénti
+  egészre csonkítása erősítette fel egyenlő költségű labirintusfolyosó-döntetlen átbillenéssé.
 
-**Érintett:** `2646` (structural-match, maxΔ 42.09 a 21 216 élből 3-on:
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — mind
-rekordport `:c->:nb_part` smode hosszú-él útvonalak). Az **A3** testvére: mindkét
-osztály redukálhatatlan lebegőpontos hordozhatósági döntetlen a
-`Proutespline`-on belül, de a mechanizmus különböző — fordítói `fp-contract`
-műtermék, nem a libm `hypot`.
-
-**Mi tér el.** Mindhárom élen csak az utolsó `routesplines` hívás (egy
-egyenes szakasz a fejportba) tér el. A végpontja bitre pontosan a
-korlátsokszög alsó falán fekszik, az érintője párhuzamos ezzel a fallal
-(`evs[1]=(1,-1.22e-16)`), így minden `splinefits` jelölt érinti a
-korlátot `t=1`-nél — a metszés-köbös közel kettős gyöke.
-A `points2coeff` ezt a köbös polinomot katasztrofális kioltáson át számítja (a ~7446 körüli tagok
-~0.099-re omlanak). Az orákulum (clang/arm64,
-`-ffp-contract=on`) a `v3 + 3*v1 - (v0 + 3*v2)` kifejezést fused
-multiply-add műveletekbe vonja össze, míg a V8 szigorú IEEE kerekítést végez — a kettő
-~9.1e-13-mal tér el **bitre azonos bemeneteken**, és ez a zaj megfordítja a
-`solve3` diszkriminánsának előjelét: a C 1 gyököt talál (866.7, a szakaszon belül); a portolt változat
-3 gyököt talál, egy hamis társgyökkel `t=0.9999975 < 1-EPSILON2` értéknél. A
-hamis gyök egy további `a`-felezési iterációt vált ki, ami az
-utolsó darab érintőjének nagyságát 2-es tényezővel billenti (a 3 élen mindkét
-irányban), így jön létre a maxΔ 42.09 a vágás után (26 SVG-eltérés).
-
-**Miért elfogadott (a redukálhatatlanságot egy kontrollált kísérlet bizonyítja).** Mind a hat
-`routesplines` hívást kiírtuk mindkét oldalon — a doboz, a sokszög, a `PL`, a start,
-a vég és az `evs` bájtra azonos, ahogy a korábbi (nem utolsó) hívás
-kimeneti splinéja is; az egyetlen eltérés az utolsó hívás `solve3` függvényében van. Egy
-önálló, érintetlen C kísérleti keret elkülönítette az egyetlen változót: a
-`-ffp-contract=off` kapcsolóval fordítás mindhárom élen bitre pontosan reprodukálja a **portolt változatot**; az
-alapértelmezett (`on`) összevonás mindhárom élen bitre pontosan reprodukálja az **orákulumot**. A portolt
-változat tehát már egyezik a szigorú IEEE-754 C-vel; az
-eltérés teljes egészében az orákulum fordítójának FMA-összevonási választása, a
-C forráskód szemantikája alatt — nincs javítandó forrásszintű hűtlenség. Egy
-célzott javítást (az összevonás kézi emulálása a `points2coeff`-ben) kipróbáltunk, és
-megcáfolódott: a 3 élből 2-t kijavít, a harmadikat nem, amelynek átbillenése
-a `solve3` saját belső összevonásában ered. Egy teljes javításhoz
-szoftveres FMA-emuláció kellene az egész spline-illesztőben — forró ciklusbeli
-költség, korpuszszintű kerekítési hatókörrel egy képpont alatti, 3 élnyi nyereségért.
-Teljes diagnózis: `plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Lezárva: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Három smode hosszú-él szakasz (`edge2575`, `edge3905`,
+`edge15467`) párhuzamos érintővel végződik egy akadályfalon, így a `splinefits`
+metszési köbösének majdnem kettős gyöke van. A `points2coeff` ezt a köböst
+katasztrofális kioltáson át építi fel; az orákulum összevonja a `route.c:397-398`
+és a `solvers.c:43` sorokat, ezért a szigorú IEEE-t használó portolt változat más
+`solve3` gyökszámot, egy hamis metszést és egy extra `a`-felezést kapott (maxΔ
+42.09). A korábbi következtetés, hogy ez redukálhatatlan („szoftveres
+FMA-emuláció az egész spline-illesztőben”, megcáfolt részleges javítással),
+megdőlt: az összevonási helyek végesek és felsorolhatók. A portolt változat most
+minden összevonást tükröz a `points2coeff`-ben (`route.c:397-398`), a
+`splineintersectsline`-ban (371-372, 374, 360-361, 383-384), a `solve3`-ban
+(`solvers.c:41, 43, 46`) és annak beágyazott `solve2`-jében (80, 85), a
+`solve3`/`solve2`/`solve1` pedig a C alakjára van újraportolva. A `2646` mind a
+42 432 rögzített `Proutespline` hívása bitre azonos az orákulummal (naplósor: „T7
+land”). Eredeti diagnózis (a mechanizmusra továbbra is érvényes):
+`plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Érintett (történeti):** `2620` (korábban structural-match, maxΔ 585; 423 eltérés
 24 élútvonalon + 22 nyílhegyen). **2026-07-11-én conformant lett**:
@@ -895,12 +857,26 @@ csúcsok egy rangon/gyűrűn) az útvonalvezető négyszögeit valós aritmetik�
 a korlátozott Delaunay-átló átbillen, és az a folyosósokszög, amely az
 orákulumban elbukik a `Pshortestpath` lépésen („destination point not in any triangle” →
 sima spline tartalék), a portolt változatban sikerül (vagy fordítva). Az eredő
-splinek ~0.2–0.5 pt-tal térnek el. Az **A3**/**A8** testvére: egy redukálhatatlan
+splinek ~0.2–0.5 pt-tal térnek el. Az (immár lezárt) **A3**/**A8** testvére: egy redukálhatatlan
 lebegőpontos hordozhatósági korlát a C forrásszemantika alatt — az egyeztetés
 az Apple libm pontos `sin`/`cos` kerekítésének JS-beli reprodukálását igényelné.
 
-**Érintett:** `241_0` (circo Δ≈0.2 / twopi vászon Δ≈9 az `5:ne->8:nw` élen
-a folyosó átbillenésén át); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**16.1 újraalapozás.** A multispline folyosógeometriából hiányzott a clang
+FMA-összevonása (az ellipszissarok gyökjel alatti kifejezése, `mkCtrlPts`, `DIST`
+= sqrt(fmadd), a `line_intersect` skaláris szorzata); a `b77b2703` (`fix(neato):
+mirror fma contraction in multispline routing geometry`) tükrözte. A twopi és a
+neato `241_0` — amelyeket ez az osztály az alábbi körön fekvő döntetlennek
+tulajdonított — **conformant** lett (az elfogadások kivonva), az sfdp `42`-ről
+pedig kiderült, hogy egyáltalán nincs döntetlen (A1-sodródás, lásd
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). A circo, az fdp és az sfdp `241_0` még
+mindig eltér, a maradékaik változatlanok vagy csökkentek; az alábbi döntetlenre
+tulajdonításuk megelőzi a `b77b2703`-at, és azóta **nem ellenőriztük újra
+pozíciók injektálásával**, hogy ez a javítás ugyanezt a tulajdonítást tévesnek
+mutatta a twopi/neato esetén.
+
+**Érintett:** `241_0` (circo Δ≈0.2 az `1->2` élen a folyosó átbillenésén át; az
+fdp és az sfdp `241_0`-ja az alábbi motorsávokon); `2343`, `2239`, `share-b29`,
+`windows-b29` (twopi,
 mindegyik 1–2 élcímke-pozíció eltérés — a libm 1 ULP a
 `poly_init` egységcsúcs-trigonometriájában (`hypot`/`atan2`/`sin`) keletkezik, egy csúcs
 számított magasságát egy ULP-vel a minimális méretkorlát fölé teszi, amelyre az orákulum
@@ -1051,34 +1027,45 @@ méreteket adjuk, az a felmérés 10 elmozdult csúcsát reprodukálja bájtra e
 lezárva az ok-okozati láncot.
 
 Két további motorsáv-esetet gyökérokig elemeztünk és elfogadtunk 2026-07-11-én
-(teljes gyökérokelemzés: `.agent-notes/circo-edge-tail-rca.md`): a twopi `241_0` (6 rajzolásiművelet-
-eltérés — a fenti circo bejegyzés testvére: ugyanaz a CDT körön fekvő
-incircle döntetlen, a libm `sin`/`cos` 1 ULP-jétől átbillentve, amitől a portolt változat
-multispline folyosója egy 14 pontos splinenal sikerül, ahol a natív build
-sima 8 pontos vezetésre esik vissza; pontkülönbségek < 0.07 pt) és a circo
+(teljes gyökérokelemzés: `.agent-notes/circo-edge-tail-rca.md`): a twopi `241_0` (6 rajzolásiművelet-eltérés, amelyet akkor ugyanannak a CDT körön
+fekvő incircle döntetlennek tulajdonítottak, mint a fenti circo bejegyzést;
+**kivonva a graphviz 16.1-nél** — a `b77b2703` óta conformant, így a 14 pontos és
+8 pontos folyosó-átbillenés a le nem tükrözött FMA-összevonás volt, nem döntetlen)
+és a circo
 `windows-tree` (10 rajzolásiművelet-eltérés egy legyezőélen — a circo elhelyezési trigonometriája
 a `node2.y` értéket egyetlen ULP-vel a `node8.y` fölé teszi a pontosan szimmetrikus
 18.0 érték körül, és a `closestSide` dyna fejport-választása átbillenti a TOP/BOTTOM
 értéket ezen a pontos döntetlenen; a csúcspozíciók és dobozok egyébként bitre azonosak az
 orákuluméval).
 
-**sfdp motorsáv — él-lebegőpontos döntetlenek (`42`, `241_0`).**
+**sfdp motorsáv — él-lebegőpontos döntetlen (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Az sfdp xdot motorsáv (`parity-sfdp.json`,
 natív `dot -Ksfdp -Txdot`, ±0.5) felszínre hozza a CDT körön fekvő incircle döntetlent, amint
 pontos natív útvonalvezetés előtti pozíciókat injektálunk (így az eltérés NEM
 iteratív sodródás — lásd az A1-drift osztályt — hanem diszkrét predikátum-döntetlen):
 
-- `42` és `241_0` — CDT körön fekvő incircle döntetlen (a multispline folyosó).
-  Injektált pozíciókkal a maradék **szakaszszám-átbillenés**: `42`
-  `opCount 5 vs 9` (0->3 él) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (3->2 él) — a portolt változat korlátozott Delaunay-átlója az
-  orákulumhoz képest átbillen, így a multispline folyosó N pontos splinenal sikerül, ahol a
-  natív build rövidebb sima útvonalra esik vissza (vagy fordítva), pontosan úgy, mint
-  a fenti twopi/circo `241_0` bejegyzés. A portolt változat már emulálja az arm64
+- `241_0` — a CDT körön fekvő incircle döntetlennek tulajdonítva (a multispline
+  folyosó; a `b77b2703` után nem ellenőriztük újra, lásd a fenti 16.1
+  újraalapozást). A maradék **szakaszszám-átbillenés**: 7 rajzolásiművelet-eltérés
+  az 1->2 élen, `ptCount 8 vs 20` (20 eltérés a `b77b2703` előtt) — a folyosó N
+  pontos splinenal sikerül, ahol a natív build rövidebb sima útvonalra esik vissza
+  (vagy fordítva), mint a fenti circo `241_0` bejegyzésben. A portolt változat már emulálja az arm64
   `fmadd` összevonást az incircle/`ccw` predikátumban (`src/pathplan/triang.ts`,
   `src/common/fma.ts`), és robusztus incircle Delaunay-t használ; a maradék a
   predikátum bemenetében levő V8-vs-Apple-libm `sin`/`hypot` 1 ULP, amelyet semmilyen hordozható
   kód nem reprodukál.
+
+> **Az sfdp `42` átsorolva A9 → A1-drift (graphviz 16.1 szinkron).** Korábban itt
+> CDT/libm incircle döntetlenként szerepelt. A küldetés mást talált
+> ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): az egykori folyosó-átbillenés
+> portolási oldali FMA-félreportolás volt a multispline folyosógeometriában,
+> amelyet a `b77b2703` javított (`fix(neato): mirror fma contraction in
+> multispline routing geometry`); injektált natív pozíciókkal a portolt változat
+> most pontosan reprodukálja a natív xdot-ot. A megmaradt maradék (0.06-0.65 pt
+> csúcseltolódás) iteratív sodródás, amelyet a legdurvább szinten az Apple-libm
+> `pow(dist, 2)` és a portolt ARM `pow` közötti egyetlen 1 ULP-s eltérés indít el,
+> és a finomabb szintek felerősítenek — A1 (lásd
+> [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **A `2095` átsorolva A9 → A1-drift (2026-07-22).** Korábban itt
 > „a hypot testvér” néven szerepelt (egy üres nevű csúcs `""->"4"` éleinek 0.7 pt alatti sodródása).
@@ -1095,8 +1082,10 @@ iteratív sodródás — lásd az A1-drift osztályt — hanem diszkrét predik�
 lapos él-eltérési bemeneteken 1 ULP-s eltérést látunk 6-ból 2-nél (Δ 7.1e-15 és
 5.7e-14) — a felosztási küszöb élen táncoló pontja, amely átbillenti a felosztásszámot.
 Redukálhatatlan: nincs olyan hordozható hypot, amely reprodukálná az Apple libm-et (az `arm-pow.ts`
-precedens ugyanarra a határra). A motorsáv szintjén elfogadva az
-`accepted-divergences-engines.json` útján (`sfdp.42`, `sfdp.241_0`).
+precedens ugyanarra a határra). Az `sfdp.241_0` a motorsáv szintjén van elfogadva az
+`accepted-divergences-engines.json` útján. Az `sfdp.42` **nem** ennek az
+osztálynak a része: a nyilvántartásbeli bejegyzése A1 (`comparisons/sfdp-42.md`),
+és a fenti próba nem magyarázta meg.
 
 Az **fdp** xdot motorsáv (`parity-fdp.json`, natív `dot -Kfdp -Txdot`,
 ±0.5) UGYANEZT a CDT körön fekvő döntetlent hozza felszínre ugyanazon a gráfon, a `241_0`-n: az
@@ -1104,9 +1093,10 @@ orákulum pontos útvonalvezetés előtti pozícióinak injektálásával a mara
 `unfilled_bezier` eltérés, egyetlen élre korlátozva (`0->1#0`, maxΔ 3.39 pt). Mivel
 a csúcspozíciók injektáltan azonosak, az eltérés lejjebb, a
 pathplan multispline folyosóban van — ugyanaz a libm 1 ULP-s incircle döntetlen, mint a
-twopi/circo/sfdp `241_0` esetén (pontos racionális incircle 185/185, fent). A kapcsolók
+circo/sfdp `241_0` esetén (pontos racionális incircle 185/185, fent; 11 eltérés a
+`b77b2703` után változatlan — injektálással nem ellenőrizve). A kapcsolók
 már alkalmazva vannak (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); a döntetlen redukálhatatlan. Elfogadva az `accepted-divergences-engines.json`
+`Math.hypot`); a döntetlent redukálhatatlannak tekintjük. Elfogadva az `accepted-divergences-engines.json`
 `fdp.241_0` bejegyzésén át. Az fdp `2095`-je ezzel szemben **A1-drift, nem A9**: az
 egyetlen üres nevű csúcs injektálása (miután a tulajdonító injektort kijavítottuk az
 `""` nevű csúcsok illesztésére) a maradékát nullára omlasztja — a korábbi „A9 farok” az
@@ -1114,6 +1104,28 @@ injektálatlan üres csúcs volt, amely maga után húzta a rákapcsolódó éle
 ugyanez a vakfolt volt — egy friss sfdp-tulajdonítási újragenerálás (2026-07-22) a javított
 injektorral megerősítette, hogy az is 0-ra injektálódik, és az elfogadását eltávolítottuk (lásd a
 fenti `2095 reclassified` megjegyzést).
+
+---
+
+### A10. V8 `Map` méretkorlát a poliominó-pakolásban (`2784`, öt pakoláson alapuló motor) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Érintett:** a `2784` a `circo`, `twopi`, `neato`, `fdp` és `sfdp` motoron,
+minden kimeneti formátumban. A `dot` motoron `conformant`.
+
+**Mi történik.** A `lib/pack/pack.c` egy `PointSet`-ben jegyzi fel az összetevő
+által elfoglalt cellákat. A `2784` esetén (egyetlen 3e16 pt magas csúcs,
+`splines="ortho"`) a hű egész `step`/elhelyezési aritmetika 2 011 656 764 cellát
+igényel; a natív 16.1.0 482 s alatt fut le 67.3 GB rezidens memóriával (101 GB
+csúcs). A portolt változat `PointSet`-je egy JavaScript `Map`, amelyet a V8 2^24
+bejegyzésben korlátoz, ezért `Map maximum size exceeded` hibát dob.
+
+**Miért elfogadott.** A kód alatti futásidejű korlát, nem logikai hiány; az ok a
+`910be2a2` hű aritmetikája (előtte a portolt változat kis, hibás elrendezést
+számolt, és sosem érte el a korlátot). Az elfogadott kimenet egy eldobott hiba,
+nem `diverged` ítélet, a motoronkénti nyilvántartások pedig csak `diverged`
+sorokat fogadnak el, ezért nincs nyilvántartási bejegyzés: a végigfuttatások
+továbbra is a portolási hiba hibái között listázzák a `2784`-et. Bizonyíték:
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 
