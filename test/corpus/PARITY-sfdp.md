@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 910 (generated 2026-07-31T00:23:37.832Z)
-- **pass:** 619 (68.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 5 · **accepted (A1-drift class):** 285
-- **port-error:** 0 · **timeout:** 1 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
+- **Surveyed:** 928 (generated 2026-10-14T08:11:23.895Z)
+- **pass:** 633 (68.2%) · **diverged (tracked):** 11 · **accepted (documented, won't-fix):** 5 · **accepted (A1-drift class):** 278
+- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
 
 ## Accepted deltas (5) — documented, not chased
 
@@ -27,9 +27,9 @@ table below.
 |---|---:|---|---|---|
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | 17606 | A1 | up to 7.6kpt (whole-layout basin) | plans/decision-journal.md 2026-07-24 T5: sfdp chaos regime, same family as fdp 1879 |
 | [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | 100 | A1 | 0.7-1.3pt on 6 nodes | plans/decision-journal.md 2026-07-24 T5: sfdp spring drift regime |
+| [`42`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/42.dot) | 168 | A1 | 0.06-0.65pt on all 25 nodes (168 draw-op diffs in the sfdp walk, 3525 under compare-xdot); first divergence is pow(dist, 2) in the repulsive force, Apple libm vs the port's ARM pow, 1 ULP on a near-tie (coarsest level, iteration 95). Injecting the oracle's pow values makes the embedding and the xdot bit-exact; injecting the oracle's positions gives 0 diffs (routing FMA fixed in b77b2703) | comparisons/sfdp-42.md |
 | [`2556`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2556.dot) | 54 | A6 | degenerate NaN layout: repulsiveforce=100 drives the spring-electrical solver to NaN in BOTH engines (the native oracle emits all-nan positions). Residual 54 diffs are NaN-garbage serialization only - C rounds NaN-&gt;int (bb -4.295e9 vs port 0) and suppresses NaN-spline edge draws (port emits them). No real layout exists on either side. The armPow throw + bezierClip NaN-hang that previously blocked rendering are fixed (C-faithful, NaN-only). | known-divergences.md#a6b-degenerate-nan-layout |
-| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 20 | A9 | flat-edge ptCount 14 vs 8 (3-&gt;2); same CDT/hypot tie as twopi/circo 241_0 (corridor succeeds N-pt vs plain fallback); findMaxDev hypot ULP | known-divergences.md#a9-sfdp-fp-ties |
-| [`42`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/42.dot) | 200 | A9 | CDT cocircular incircle tie: opCount 5 vs 9 (0-&gt;3), ptCount 32 vs 26 (3-&gt;7); multispline corridor flip. fma+robust-incircle applied; residual is V8-vs-Apple-libm sin/hypot 1-ULP in the predicate input | known-divergences.md#a9-sfdp-fp-ties |
+| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 7 | A9 | 7 draw-op diffs on edge 1-&gt;2 (unfilled_bezier[ptCount] 8 vs 20; was 20 diffs before the multispline FMA fix b77b2703). Attributed to the same CDT/hypot corridor tie as circo/fdp 241_0, but NOT re-diagnosed after b77b2703 showed that attribution wrong for twopi/neato 241_0 (port-side FMA mis-port) - re-verify by position injection. Row from the provisional sfdp walk | known-divergences.md#a9-sfdp-fp-ties |
 
 ## Accepted class: A1-drift — computed, not enumerated
 
@@ -41,16 +41,28 @@ outright leaves the class silently on the next report regen.
 
 - **A1-drift**: **287** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (0)
+## Diverged (11)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | 16326502 | 3198828 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[4]: 1010.48 vs 1018.28` |
+| [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | 2975897 | 1979265 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1041.59 vs 1054.3` |
+| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | 1705517 | 433020 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 4725.6 vs 4692.6` |
+| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | 782464 | 156568 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2076.68 vs 2041.16` |
+| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 782464 | 156568 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2076.68 vs 2041.16` |
+| [`2796`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2796.dot) | 8959 | 5900 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 585.95 vs 591.73` |
+| [`698066`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/698066.dot) | 12438 | 2684 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1874.31 vs 1875.47` |
+| [`2413_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_2.dot) | 9721 | 2655 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2826.47 vs 2821.46` |
+| [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 728 | `edge:n262->n264#0 _draw_ edge:n262->n264#0/_draw_/op[1].unfilled_bezier[0]: 8878.39 vs 8876.21` |
+| [`700813`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/700813.dot) | 351 | 210 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 398.63 vs 394.76` |
+| [`241_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_1.dot) | 1464 | 8 | `edge:7->9#0 _draw_ edge:7->9#0/_draw_/op[1].unfilled_bezier[ptCount]: 14 vs 8` |
 
 ## Errors and timeouts (1)
 
 | id | status | message |
 |---|---|---|
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | timeout | ran 3600016ms, exceeded 3600000ms budget |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | port-error | Map maximum size exceeded |
 
 **oracle errors:** 7 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (619) are omitted for brevity — the full roster is in
+_Passing ids (633) are omitted for brevity — the full roster is in
 `parity-sfdp.json`._

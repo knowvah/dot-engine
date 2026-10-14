@@ -12,11 +12,11 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 910 (generated 2026-07-30T22:39:57.191Z)
-- **pass:** 703 (77.5%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 4 · **accepted (A1-drift class):** 200
-- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 3 (excluded from pass %)
+- **Surveyed:** 928 (generated 2026-10-13T21:15:23.722Z)
+- **pass:** 893 (96.6%) · **diverged (tracked):** 4 · **accepted (documented, won't-fix):** 2 · **accepted (A1-drift class):** 23
+- **port-error:** 2 · **timeout:** 0 (scored as failures) · **oracle-error:** 4 (excluded from pass %)
 
-## Accepted deltas (4) — documented, not chased
+## Accepted deltas (2) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -25,10 +25,8 @@ table below.
 
 | id | #diffs | class | bound | ref |
 |---|---:|---|---|---|
-| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | 19496 | A1 | up to 64kpt (whole-layout basin) | plans/decision-journal.md 2026-07-24 T4b: fdp chaos class, perturbation-proven on family |
-| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 11103 | A1 | up to 5.4kpt, 30/30 nodes | plans/decision-journal.md 2026-07-24 T4b: chaos proven — node width +0.001in moves port-own layout max 3390pt |
-| [`graphs-badvoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/badvoro.gv) | 33264 | A1 | median 1433pt (whole-layout basin) | plans/decision-journal.md 2026-07-24 T4b: chaos proven — ONE edge len +0.0001 moves port-own layout median 322pt |
-| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 446 | A9 | 11 numeric draw-op diffs confined to edge 0-&gt;1#0's unfilled_bezier (maxΔ 3.39pt), under injected-identical node positions ⇒ pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. | known-divergences.md#a9-sfdp-fp-ties |
+| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 11888 | A1 | up to 5.4kpt, 30/30 nodes | plans/decision-journal.md 2026-07-24 T4b: chaos proven — node width +0.001in moves port-own layout max 3390pt |
+| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 11 | A9 | 11 numeric draw-op diffs confined to edge 0-&gt;1#0's unfilled_bezier (maxΔ 3.39pt), under injected-identical node positions ⇒ pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. Unchanged (11 diffs) after b77b2703, which cleared twopi/neato 241_0 (a port-side FMA mis-port, not a tie); tie attribution not re-verified by injection. | known-divergences.md#a9-sfdp-fp-ties |
 
 ## Accepted class: A1-drift — computed, not enumerated
 
@@ -40,18 +38,26 @@ outright leaves the class silently on the next report regen.
 
 - **A1-drift**: **203** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (0)
+## Diverged (4)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | 1705517 | 325657 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 22087098.15 vs 22087098.88` |
+| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | 782464 | 156698 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2446.34 vs 2522.54` |
+| [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 37731 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 461091.31 vs 342057.2` |
+| [`2796`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2796.dot) | 8959 | 7032 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1276.86 vs 1202.51` |
 
-## Errors and timeouts (3)
+## Errors and timeouts (6)
 
 | id | status | message |
 |---|---|---|
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot |
+| [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot |
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle-error | spawnSync dot ETIMEDOUT |
+| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | port-error | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | port-error | Map maximum size exceeded |
 
 **oracle errors:** 13 native-crash (documented, excluded) / 3 timeout-flake (excluded this run, note to retry)
-_Passing ids (703) are omitted for brevity — the full roster is in
+_Passing ids (893) are omitted for brevity — the full roster is in
 `parity-fdp.json`._

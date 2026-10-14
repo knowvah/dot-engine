@@ -11,25 +11,25 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 
 ## Summary
 
-- **Oracle:** dot 15.1.0 · **corpus:** [graphviz `tests/`](https://gitlab.com/graphviz/graphviz/-/tree/main/tests) (local clone `~/git/graphviz/tests`)
-- **Surveyed (applicable):** 939
-- **conformant\*:** 910 (98.2%) · structural-match: 15 → 925/927 structurally equal (99.8%)
-- **Accepted deltas (documented, won't-fix):** 17 · **Tracked gaps (unaccepted, will-fix):** 0 → of 17 non-conformant graphs
-- **errored:** 0 · **timeout:** 0 · **oracle-error:** 12 (excluded from pass %)
+- **Oracle:** dot 16.1.0 · **corpus:** [graphviz `tests/`](https://gitlab.com/graphviz/graphviz/-/tree/main/tests) (local clone `~/git/graphviz/tests`)
+- **Surveyed (applicable):** 950
+- **conformant\*:** 929 (99.3%) · structural-match: 3 → 932/936 structurally equal (99.6%)
+- **Accepted deltas (documented, won't-fix):** 5 · **Tracked gaps (unaccepted, will-fix):** 1 → of 6 non-conformant graphs
+- **errored:** 1 · **timeout:** 0 · **oracle-error:** 14 (excluded from pass %)
 - **Quarantined (not surveyed, from corpus-manifest.json):** oracle-crash 3, not-a-layout-test 2, malformed 6, engine-deferred 6, multi-graph 3, perf 1
 
 \* **conformant** is a *deterministic-tolerance* verdict, not literal byte equality: numeric coordinates/paths agree within ±0.01 and all non-numeric content (tags, colors, text) is exactly equal (`compareSvg(…, 'deterministic')`). Full definition: [docs/conformance.md](../../docs/conformance.md).
 
 Accepted deltas are deliberate, root-caused, won't-fix differences (`test/corpus/accepted-divergences.json` → [Known divergences](../../docs/known-divergences.md)). Everything else non-conformant is a tracked gap we intend to close.
 
-## conformant (910)
+## conformant (929)
 
 Port SVG is *conformant* with the oracle: numeric coordinates/paths agree within the `deterministic` tolerance (±0.01) and all non-numeric content is exactly equal — not literal byte equality. See [docs/conformance.md](../../docs/conformance.md).
 
-_Conformant ids (910) are omitted for brevity — the full roster is in
+_Conformant ids (929) are omitted for brevity — the full roster is in
 [parity.json](parity.json)._
 
-## Accepted deltas (17) — documented, not chased
+## Accepted deltas (5) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant (a
 portability constraint, sub-perceptual and bounded). Source of truth:
@@ -39,23 +39,11 @@ the diverged table and the backlog below.
 
 | id | verdict | maxΔ | class | bound | ref |
 |---|---|---:|---|---|---|
-| [`2368`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2368.dot) | structural-match | 10.22 | A3 | maxΔ~10pt on one flat-edge arc (376-&gt;76); bbox/nodes/labels conformant | known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot |
-| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | structural-match | 16.80 | A3 | maxΔ 16.8 on two edges (g[9263] r6837mid--r9687mid, g[23859] r38mid--r8699mid); the port emits the exact control-point-sequence mirror of the oracle on both; all ~36,900 other elements byte-identical | known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot |
-| [`241_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_1.dot) | structural-match | 2.36 | A3 | maxΔ ~2.4pt on one flat-edge arc; bbox/nodes/labels conformant | known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot |
-| [`2413_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_1.dot) | structural-match | 67.65 | A3 | maxΔ 67.65 on the labeled 2-cycle back-edge label-vnode slit corridor; nodes/bbox conformant | known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot |
-| [`2413_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_2.dot) | structural-match | 99.55 | A3 | maxΔ ≤99.55 (two findMaxDev ties, same corridor family as 2413_1) once the T11 swapBezier-reverse fix lands; until then parity.json reports maxΔ 1922.26, dominated by that separate, already-diagnosed-and-fixed swapBezier over-allocated-reverse defect (not part of this acceptance) | known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot |
-| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | structural-match | 20.00 | A3 | maxΔ 20 (one rank-row) on one hub in-edge knot (Node23730-&gt;Node23729); every node + all upstream box/poly/taut-path byte-identical to C | known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot |
-| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | structural-match | 20.00 | A3 | maxΔ 20 (one rank-row) on one hub in-edge knot; identical source to graphs-b100, same symmetric-channel tie-break | known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot |
-| [`graphs-decorate`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/decorate.gv) | structural-match | 43.54 | A3 | maxΔ 43.54 on a single intra-cluster labeled edge (Se3ffa656...-&gt;Se3ffa61c...); all 23 diffs live in that one &lt;g&gt; | known-divergences.md#a3-hypot-tie-break-in-spline-routing-dot |
 | [`1435`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1435.dot) | structural-match | 0.39 | A4 | maxΔ 503 on pathplan-fallback spline debris; 11/11 edges on both sides; nodes/clusters conformant | known-divergences.md#a4-oracle-in-an-acknowledged-broken-state-the-init_rank--pathplan-family |
 | [`1581`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1581.dot) | diverged | 0.00 | A4 | maxDelta 465; top-level childCount 39 vs 22 (oracle recovery discards content) | known-divergences.md#a4-oracle-in-an-acknowledged-broken-state-the-init_rank--pathplan-family |
-| [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | structural-match | 6906.60 | A4 | whole-layout numeric (maxΔ ~9063); element tree identical incl. the same 6 lost edges | known-divergences.md#a4-oracle-in-an-acknowledged-broken-state-the-init_rank--pathplan-family |
-| [`2796`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2796.dot) | structural-match | 11.11 | A4 | maxΔ 49 numeric only; identical element tree (both sides lose edge 3-&gt;16) | known-divergences.md#a4-oracle-in-an-acknowledged-broken-state-the-init_rank--pathplan-family |
 | [`1367`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1367.dot) | diverged | 0.00 | A5 | maxDelta 0; exactly one structural diff (one &lt;title&gt; byte: raw 0x80 vs UTF-8 U+0080); all element counts and coordinates conformant | known-divergences.md#a5-invalid-input-bytes-encoding-representation |
-| [`1314`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1314.dot) | structural-match | 1683625618000.00 | A6 | only the top-level svg width/height differ; every node ellipse/coord, translate, polygon, and font-size is byte-identical | known-divergences.md#a6-unsigned-int-canvas-overflow-on-degenerate-input |
 | [`graphs-honda-tokoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/honda-tokoro.gv) | structural-match | 1.06 | A7 | maxΔ ~1pt on one edge (n012-&gt;n011); every node/label/bbox conformant | known-divergences.md#a7-round-box-wall-rounding-boundary-dot |
 | [`tree-graphs-directed-honda-tokoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/honda-tokoro.gv) | structural-match | 1.06 | A7 | maxΔ 1.06pt on the n012-&gt;n011 parallel pair; every node/label/bbox conformant | known-divergences.md#a7-round-box-wall-rounding-boundary-dot |
-| [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | structural-match | 42.09 | A8 | maxΔ 42.09 on 3 of 21,216 edges (edge2575 g[4639], edge3905 g[7777], edge15467 g[30201]; all record-port :c-&gt;:nb_part smode long-edge routes) | known-divergences.md#a8-fp-contractfma-rounding-vs-strict-ieee-dot |
 
 ## Tracked structural-match (0)
 
@@ -72,22 +60,24 @@ for driving groups to conformance. Mechanism-family attribution: see
 | id | maxΔ | kind | worst-diff path |
 |---|---:|---|---|
 
-## Tracked diverged (0) — worst-first
+## Tracked diverged (1) — worst-first
 
 | id | maxDelta | firstDiffPath |
 |---|---:|---|
+| [`894589`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/894589.dot) | 0.00 | `svg/g[1]/g[206]/polygon[2]/@stroke` |
 
-## errored (0)
+## errored (1)
 
 | id | path | message |
 |---|---|---|
+| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | `2475_1.dot` | &lt;--- Last few GCs ---&gt; |
 
 ## timeout (0)
 
 | id | path | message |
 |---|---|---|
 
-## oracle-error (12) — excluded from port scoring
+## oracle-error (14) — excluded from port scoring
 
 The native oracle did not emit a complete SVG (usually a hard syntax error
 it rejects entirely); there is no reference to compare against.
@@ -95,22 +85,34 @@ it rejects entirely); there is no reference to compare against.
 | id | path | message |
 |---|---|---|
 | [`1411`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1411.dot) | `1411.dot` | Error: https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1411.dot: syntax error in line 17 near '\\' |
-| [`1472`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1472.dot) | `1472.dot` | oracle not well-formed XML: 102068B |
+| [`1472`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1472.dot) | `1472.dot` | oracle not well-formed XML: 102050B |
 | [`1783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1783.dot) | `1783.dot` | Error: overflow when calculating virtual weight of edge |
 | [`1864`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1864.dot) | `1864.dot` | Warning: Warning: no hard-coded metrics for 'monospace'.  Falling back to 'Times' metrics |
 | [`2064`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2064.dot) | `2064.dot` | oracle exit null |
-| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | `2475_1.dot` | oracle exit null |
 | [`2593`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2593.dot) | `2593.dot` | oracle exit null |
 | [`2723`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2723.dot) | `2723.dot` | oracle exit null |
+| [`2778`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2778.dot) | `2778.dot` | oracle exit null |
+| [`2834`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2834.dot) | `2834.dot` | oracle exit null |
+| [`2854_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2854_1.dot) | `2854_1.dot` | oracle exit null |
+| [`2855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2855.dot) | `2855.dot` | oracle exit null |
 | [`imagepath_test-base`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/imagepath_test/base.gv) | `imagepath_test/base.gv` | Error: https://gitlab.com/graphviz/graphviz/-/blob/main/tests/imagepath_test/base.gv: syntax error in line 8 near ']' |
 | [`share-b545`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b545.gv) | `share/b545.gv` | Error: https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b545.gv: syntax error in line 1 near '3.583' |
 | [`tree-share-examples-4elt`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/4elt.gv) | `../share/examples/4elt.gv` | oracle exit null |
-| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | `../share/examples/world.gv` | oracle exit null |
 
 ## Divergence backlog (next missions)
 
 Named buckets over **tracked** (unaccepted) divergences, largest first. Each is
 a candidate oracle-pinned fix mission.
 
+### tracked diverged — by firstDiffPath shape
 
+| bucket | count | examples | hypothesis |
+|---|---:|---|---|
+| `color-stroke` | 1 | `894589` | fill/stroke value differs — color resolution or default styling |
+
+### errored — by thrown message
+
+| bucket | count | examples | hypothesis |
+|---|---:|---|---|
+| `last-few-gcs` | 1 | `2475_1` | port threw — see message; group for a focused fix |
 

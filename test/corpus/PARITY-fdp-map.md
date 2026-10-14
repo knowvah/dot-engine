@@ -11,45 +11,37 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 905
-- **pass:** 883 (98.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 18
-- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 4
+- **Surveyed:** 928
+- **pass:** 915 (99.1%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 4
+- **port-error / timeout (scored as failures):** 2 · **oracle-error (excluded from pass %):** 5
 
-## Diverged (0)
+## Diverged (2)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 782464 | 5838 | `area[0].coords[0]` |
+| [`windows-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b29.gv) | 149114 | 4 | `area[44].coords[0]` |
 
-## Accepted (18) — documented, not chased
+## Accepted (4) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
-| [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | 138 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`1447_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447_1.dot) | 661 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | 2148 | `area[0].coords[0]` | A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive — port self-perturbation experiments (2620: node width +0.001in -&gt; median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -&gt; median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail. |
-| [`graphs-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b102.gv) | 1201 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | 3766 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
-| [`graphs-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b106.gv) | 206 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`graphs-b143`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b143.gv) | 280 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`graphs-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b29.gv) | 436 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`graphs-b85`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b85.gv) | 4 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`graphs-root`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/root.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
-| [`graphs-xx`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/xx.gv) | 1204 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`linux.i386-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b102.gv) | 1193 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 5044 | `area[0].coords[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-fdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | 201 | `area[16].coords[2]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
 | [`linux.x86-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_circo.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`linux.x86-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_twopi.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
 | [`nshare-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_circo.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`nshare-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_twopi.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
-| [`share-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b102.gv) | 1198 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`windows-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b102.gv) | 1186 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 
-## Errors and timeouts (4)
+## Errors and timeouts (7)
 
 | id | message |
 |---|---|
-| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
+| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | Warning: Warning: no hard-coded metrics for 'sans'.  Falling back to 'Times' metrics |
+| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle exit null |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle exit null |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (883) are omitted for brevity — the full roster is in
+_Passing ids (915) are omitted for brevity — the full roster is in
 `map-parity-fdp.json`._

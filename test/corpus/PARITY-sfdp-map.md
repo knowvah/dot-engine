@@ -11,13 +11,17 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 910
-- **pass:** 880 (96.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 29
-- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 1
+- **Surveyed:** 928
+- **pass:** 894 (96.4%) · **diverged (tracked):** 3 · **accepted (documented, won't-fix):** 29
+- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 1
 
-## Diverged (0)
+## Diverged (3)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | 782464 | 5834 | `area[0].coords[0]` |
+| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 782464 | 5834 | `area[0].coords[0]` |
+| [`2413_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_2.dot) | 9721 | 87 | `area[0].coords[0]` |
 
 ## Accepted (29) — documented, not chased
 
@@ -53,11 +57,12 @@ _(none)_
 | [`windows-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b106.gv) | 207 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`windows-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b29.gv) | 418 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 
-## Errors and timeouts (1)
+## Errors and timeouts (2)
 
 | id | message |
 |---|---|
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
+| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
 
-_Passing ids (880) are omitted for brevity — the full roster is in
+_Passing ids (894) are omitted for brevity — the full roster is in
 `map-parity-sfdp.json`._

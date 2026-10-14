@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 905
-- **pass:** 904 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
-- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 1
+- **Surveyed:** 928
+- **pass:** 925 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
+- **port-error / timeout (scored as failures):** 2 · **oracle-error (excluded from pass %):** 1
 
 ## Diverged (0)
 
@@ -23,11 +23,13 @@ _(none)_
 
 _(none)_
 
-## Errors and timeouts (1)
+## Errors and timeouts (3)
 
 | id | message |
 |---|---|
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
+| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) |  |
 
-_Passing ids (904) are omitted for brevity — the full roster is in
+_Passing ids (925) are omitted for brevity — the full roster is in
 `map-parity-twopi.json`._

@@ -11,19 +11,19 @@ canonicalized — see `test/golden/compare-xdot.ts`). Regenerate:
 
 ## Summary
 
-- **Oracle:** dot 15.1.0 · **corpus:** `~/git/graphviz/tests`
-- **Walked (conformant SVG set):** 905
-- **xdot-conformant:** 905 (100.0%)
+- **Oracle:** dot 16.1.0 · **corpus:** `~/git/graphviz/tests`
+- **Walked (conformant SVG set):** 929
+- **xdot-conformant:** 926 (100.0%)
 - **diverged (tracked, will-fix):** 0 · **accepted (documented, won't-fix):** 0
-- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 0 (excluded from pass %)
+- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 3 (excluded from pass %)
 
-## xdot-conformant (905)
+## xdot-conformant (926)
 
 Port xdot is *conformant* with the oracle: every draw-op stream matches
 op-for-op with numeric payloads within ±0.01 and canonicalized
 colors/fonts/text equal.
 
-_Conformant ids (905) are omitted for brevity — the full roster is in
+_Conformant ids (926) are omitted for brevity — the full roster is in
 [xdot-parity.json](xdot-parity.json)._
 
 ## Tracked diverged (0) — worst-first
@@ -41,12 +41,7 @@ Irreducible C quirks (font-metric ULP, platform libm) recorded in
 `test/corpus/accepted-divergences-xdot.json`. Each is referenced in the
 mission decision journal with its mechanism.
 
-| id | opClass | delta | rationale |
-|---|---|---:|---|
-| `2108` | cluster:bb / edge:pos [numeric] | 10 | fp-contract at a %.5g 5-sig-fig rounding boundary. The SVG cluster polygons match native EXACTLY (e.g. cluster_SITE_47 = 8,-774611 8,-838185 in both), and the root SVG height is identical (870643). The xdot bb/pos are %.5g-formatted; a sub-ULP layout FP difference tips a value that lands exactly on a 5-sig-fig boundary (838185) to round 838190 (native) vs 838180 (port). Not layout, not emission logic - irreducible float rounding. A8 class. |
-| `2475_2` | cluster:bb [numeric] | 10 | Same %.5g-boundary fp-contract as 2108. SVG cluster polygons match native exactly; only the %.5g-truncated xdot bb attribute differs at the 5-sig-fig rounding boundary. Irreducible. A8 class. |
-| `2095_1` | edge:pos [numeric] | 0.1 | Two edge pos coords differ by one unit in the last %.5g place (7518.2 vs 7518.3). SVG matches; the divergence is a %.5g last-place rounding of a value on the boundary from a sub-ULP layout FP difference. Irreducible. A8 class. (Also perf-slow: surveys as timeout; renders these 2 fp diffs when given time.) |
-| `linux.i386-b29` | edge:pos (self-loop) [numeric] | 0.1 | Self-loop spline pos differs by one unit in the last %.5g place (1475.2 vs 1475.3). hypot/ULP class (Apple libm), matching the 2368/hub-fanin A3 findings - the self-loop control point is computed via hypot whose last bit differs from glibc, amplified by %.5g at the boundary. Irreducible. A3/A8 class. |
+_(none)_
 
 ## port-error (0)
 
@@ -58,8 +53,11 @@ mission decision journal with its mechanism.
 | id | path | message |
 |---|---|---|
 
-## oracle-error (0) — excluded from pass %
+## oracle-error (3) — excluded from pass %
 
 | id | path | message |
 |---|---|---|
+| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | `1652.dot` | oracle exit null |
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | `2621.dot` | oracle exit null |
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | `../share/examples/world.gv` | oracle exit null |
 

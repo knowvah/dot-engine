@@ -922,7 +922,7 @@
 {"id":"graphs-b100","size":782464,"status":"diverged","oracleMs":454,"portMs":7004,"nDiffs":156568,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2076.68 vs 2041.16"}
 {"id":"graphs-b104","size":782464,"status":"diverged","oracleMs":425,"portMs":6645,"nDiffs":156568,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2076.68 vs 2041.16"}
 {"id":"2471","size":1174310,"status":"diverged","oracleMs":111,"portMs":1524,"nDiffs":728,"firstDiff":"edge:n262->n264#0 _draw_ edge:n262->n264#0/_draw_/op[1].unfilled_bezier[0]: 8878.39 vs 8876.21"}
-{"id":"2371","size":1705517,"status":"timeout","oracleMs":1613290,"portMs":3600029,"err":"ran 3600029ms, exceeded 3600000ms budget"}
 {"id":"2646","size":2975897,"status":"diverged","oracleMs":5494,"portMs":88201,"nDiffs":1979265,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1041.59 vs 1054.3"}
 {"id":"2108","size":3136769,"status":"diverged","oracleMs":234125,"portMs":1650083,"nDiffs":1044748,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[4]: 68286.99 vs 68384.99"}
 {"id":"tree-share-examples-world","size":16326502,"status":"diverged","oracleMs":52607,"portMs":2607261,"nDiffs":3198828,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[4]: 1010.48 vs 1018.28"}
+{"id":"2371","size":1705517,"status":"diverged","oracleMs":1613290,"portMs":10304330,"nDiffs":433020,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 4725.6 vs 4692.6"}

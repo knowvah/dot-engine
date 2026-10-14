@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-10-14T01:04:27.968Z",
+  "generatedAt": "2026-10-14T08:16:02.575Z",
   "generatedWith": "test/corpus/xdot-walk.ts --survey",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 929,
   "counts": {
-    "conformant": 923,
+    "conformant": 926,
     "diverged": 0,
     "accepted": 0,
     "port-error": 0,
     "oracle-error": 3,
-    "timeout": 3
+    "timeout": 0
   },
   "results": [
     {
@@ -5375,8 +5375,7 @@
       "id": "2343",
       "path": "2343.dot",
       "size": 59368,
-      "verdict": "timeout",
-      "errMsg": ""
+      "verdict": "conformant"
     },
     {
       "id": "graphs-b143",
@@ -5430,8 +5429,7 @@
       "id": "2095_1",
       "path": "2095_1.dot",
       "size": 105083,
-      "verdict": "timeout",
-      "errMsg": ""
+      "verdict": "conformant"
     },
     {
       "id": "graphs-root",
@@ -5583,8 +5581,7 @@
       "id": "2108",
       "path": "2108.dot",
       "size": 3136769,
-      "verdict": "timeout",
-      "errMsg": ""
+      "verdict": "conformant"
     },
     {
       "id": "tree-share-examples-world",

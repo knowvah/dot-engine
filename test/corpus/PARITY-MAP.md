@@ -14,17 +14,17 @@ EXACTLY, coords compared exact-after-round — both sides are already
 
 ## Summary
 
-- **Oracle:** dot 15.1.0 · **corpus:** `~/git/graphviz/tests`
-- **Walked (conformant SVG set):** 905
-- **map-conformant (overall, worst-of-both-formats):** 905 (100.0%)
-- **cmapx-conformant:** 905 (100.0%) · **imap-conformant:** 905 (100.0%)
+- **Oracle:** dot 16.1.0 · **corpus:** `~/git/graphviz/tests`
+- **Walked (conformant SVG set):** 929
+- **map-conformant (overall, worst-of-both-formats):** 926 (100.0%)
+- **cmapx-conformant:** 926 (100.0%) · **imap-conformant:** 926 (100.0%)
 - **diverged (tracked, will-fix, either format):** 0 · **accepted (documented, won't-fix):** 0
-- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 0 (excluded from pass %)
-- **href-bearing ids in the surveyed set:** 36 — the substantive
+- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 3 (excluded from pass %)
+- **href-bearing ids in the surveyed set:** 40 — the substantive
   coverage (ids whose ORACLE output actually emits ≥1 real href, not an
   empty or tooltip-only map); see the dedicated table below.
 
-## href-bearing ids (36) — the substantive coverage
+## href-bearing ids (40) — the substantive coverage
 
 Every id in the surveyed (conformant-SVG) set whose oracle cmapx/imap
 output contains a real `href` — i.e. actually exercises anchor emission,
@@ -39,10 +39,14 @@ reader does not have to cross-reference `map-parity.json`.
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | `1879.dot` | conformant | conformant | conformant |
 | [`2258`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2258.dot) | `2258.dot` | conformant | conformant | conformant |
 | [`2295`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2295.dot) | `2295.dot` | conformant | conformant | conformant |
+| [`2413_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_1.dot) | `2413_1.dot` | conformant | conformant | conformant |
+| [`2413_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_2.dot) | `2413_2.dot` | conformant | conformant | conformant |
 | [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | `2619_1.dot` | conformant | conformant | conformant |
 | [`2619_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot) | `2619_2.dot` | conformant | conformant | conformant |
+| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | `graphs/b100.gv` | conformant | conformant | conformant |
 | [`graphs-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b102.gv) | `graphs/b102.gv` | conformant | conformant | conformant |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | `graphs/b103.gv` | conformant | conformant | conformant |
+| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | `graphs/b104.gv` | conformant | conformant | conformant |
 | [`graphs-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b106.gv) | `graphs/b106.gv` | conformant | conformant | conformant |
 | [`graphs-b143`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b143.gv) | `graphs/b143.gv` | conformant | conformant | conformant |
 | [`graphs-b155`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b155.gv) | `graphs/b155.gv` | conformant | conformant | conformant |
@@ -70,13 +74,13 @@ reader does not have to cross-reference `map-parity.json`.
 | [`windows-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b106.gv) | `windows/b106.gv` | conformant | conformant | conformant |
 | [`windows-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b29.gv) | `windows/b29.gv` | conformant | conformant | conformant |
 
-## map-conformant (905)
+## map-conformant (926)
 
 Port output is *conformant* with the oracle in BOTH cmapx and imap: every
 area/line matches exactly (shape/href/title/alt/target) with coords equal
 after rounding.
 
-_Conformant ids (905) are omitted for brevity — the full roster is in
+_Conformant ids (926) are omitted for brevity — the full roster is in
 [map-parity.json](map-parity.json)._
 
 ## Tracked diverged (0 format-rows) — worst-first
@@ -102,24 +106,10 @@ Each is referenced in the mission decision journal with its mechanism.
 | `linux.x86-root_circo` | area[0].coords[0] | 3 | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `nshare-root_twopi` | area[0].coords[0] | 2 | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `linux.x86-root_twopi` | area[0].coords[0] | 3 | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `graphs-b85` | area[0].coords[0] | 8 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `1447` | area[0].coords[0] | 381 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `graphs-b106` | area[0].coords[0] | 930 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `graphs-b29` | area[0].coords[0] | 2475 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `graphs-b143` | area[0].coords[0] | 2390 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `1447_1` | area[0].coords[0] | 1023 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `graphs-b102` | area[0].coords[0] | 1527 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `linux.i386-b102` | area[0].coords[0] | 676 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `graphs-xx` | area[0].coords[0] | 1935 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `share-b102` | area[0].coords[0] | 579 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `windows-b102` | area[0].coords[0] | 554 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `1879` | area[0].coords[0] | 12675 | A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive — port self-perturbation experiments (2620: node width +0.001in -&gt; median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -&gt; median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail. |
 | `nshare-root_circo` | area[0].coords[0] | 48414506 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `linux.x86-root_circo` | area[0].coords[0] | 47792182 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `linux.x86-root_twopi` | area[0].coords[0] | 406 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
-| `nshare-root_twopi` | area[0].coords[0] | 423 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
 | `graphs-b103` | area[0].coords[0] | 3546 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
-| `graphs-root` | area[0].coords[0] | 612 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
 | `nshare-html2_dot` | area[0].coords[0] | 8 | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `linux.x86-html2_dot` | area[0].coords[0] | 8 | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `graphs-url` | area[0].coords[1] | 4 | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
@@ -158,8 +148,11 @@ Each is referenced in the mission decision journal with its mechanism.
 | id | path | message |
 |---|---|---|
 
-## oracle-error (0) — excluded from pass %
+## oracle-error (3) — excluded from pass %
 
 | id | path | message |
 |---|---|---|
+| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | `1652.dot` | oracle exit null |
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | `2621.dot` | oracle exit null |
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | `../share/examples/world.gv` | oracle exit null |
 
