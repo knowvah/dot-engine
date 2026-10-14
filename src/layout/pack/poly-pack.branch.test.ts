@@ -41,7 +41,9 @@ describe('computeStep', () => {
     expect(computeStep(2, bbs, 0)).toBeGreaterThan(0);
   });
 
-  it('returns 1 when the discriminant is negative (d < 0)', () => {
+  it('returns 1 when the discriminant is negative (d < 0 → NaN → fcvtzs 0)', () => {
+    // C's assert(d >= 0) is compiled out of the Release oracle: sqrt(d) is NaN,
+    // `(int)l1` (fcvtzs) converts NaN to 0, and `root == 0` makes it 1.
     // For any real (positive-area) box, W,H >= 0 so c = -(W*H) <= 0 and
     // b = -(W+H) <= 0, which keeps d = b^2 - 4ac >= 0 whenever a > 0 (ng >= 1).
     // A large negative margin can flip the SIGN of one dimension (W or H)
@@ -126,11 +128,9 @@ describe('polyRects', () => {
   });
 
   it('ng=0 with no boxes returns an empty placement array (computeStep still returns 1)', () => {
-    // Note: computeStep's two early-return paths both fall back to 1, so
-    // polyRects's `step <= 0` guard is unreachable through this module's
-    // own computeStep — left as itemized residue (not a behavior bug: the
-    // guard is defensive against a step of 0/negative that computeStep is
-    // structurally incapable of producing).
+    // ng=0: a = -1, l1 = -0 → root 0 → 1. polyRects's `step <= 0` guard
+    // (C pack.c:polyRects) needs l1 <= -1, i.e. a box made negative-width by
+    // a negative margin; C's margin is unsigned, so callers cannot reach it.
     const places = polyRects(0, [], pinfo());
     expect(places).toEqual([]);
   });

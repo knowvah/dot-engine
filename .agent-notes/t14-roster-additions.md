@@ -42,3 +42,18 @@
   `__sincos_stret`, `pow`, `hypot`, log args+results as `%a`).
 - **Impact**: reusable for any last-bit question without rebuilding graphviz.
 - **Confidence**: High
+
+## Observation: polyRects int arithmetic ported; perim wrap left unmodelled
+- **Context**: closing the "second polyomino copy" item above
+  (branch `fix/poly-pack-int-arith`).
+- **Finding**: `poly-pack.ts` now matches the native `_computeStep`
+  (`fcvtzs w`: saturate, NaN → 0), GRID (`fcvtps w`: saturate) and `_fits`
+  (`mul w`: wrap). Repro: tests/1314.dot with `packmode="graph"` under osage
+  (osage defaults to array packing; only `packmode=graph` reaches polyRects).
+  Not modelled in either pack copy: genBox's `perim = W + H` is an `add w`
+  (wraps), and `poly-place.ts`'s `grid` does not saturate. Both need a box
+  wider than ~4.6e18 pt at step INT_MAX, which makes genBox enumerate >2^31
+  cells per axis — infeasible natively too.
+- **Impact**: do not chase the perim/grid residue without a feasible repro.
+- **Confidence**: High (objdump of libgvc `_genBox`/`_placeGraph`/`_fits`;
+  native `-v3` trace).
