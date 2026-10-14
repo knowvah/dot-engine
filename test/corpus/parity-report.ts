@@ -29,7 +29,13 @@ import type { CorpusEntry } from './enumerate.js';
 import type { PlainVerdict, PlainWalkResult, PlainParityReport, PlainFormatResult } from './plain-walk.js';
 // format-parity-matrix (END)
 import { loadAccepted, matchAccepted } from './accepted.js';
-import { classAcceptedIds, type FormatAcceptedClassEntry, type FormatAcceptedRegistry } from './accepted-class.js';
+import {
+  acceptsOutcome,
+  classAcceptedIds,
+  type FaultAcceptance,
+  type FormatAcceptedClassEntry,
+  type FormatAcceptedRegistry,
+} from './accepted-class.js';
 import { loadExclusions } from './engine-exclusions.js';
 import { testIdLink, scrubLocalPaths } from './corpus-links.js';
 // map-conformance (BEGIN): dot (imagemap) track types — see MAP block below.
@@ -98,8 +104,10 @@ interface MapParityReport {
 // map-conformance (END)
 
 /** One accepted/known divergence for a per-engine xdot track (id-keyed — no
- * glob/engineIn selector, unlike the dot-track registry in accepted.ts). */
-interface EngineAcceptedEntry {
+ * glob/engineIn selector, unlike the dot-track registry in accepted.ts). An
+ * entry may declare a port-error/timeout verdict (FaultAcceptance) to accept
+ * a fault row instead of a diverged one (registry-faults-staleness AD-1). */
+interface EngineAcceptedEntry extends FaultAcceptance {
   class: string;
   bound?: string;
   ref: string;
@@ -191,8 +199,20 @@ function splitAcceptedMap(
   return { perId, classes };
 }
 
-/** Every diverged id accepted either by a per-id entry or by class membership
- * (union — an id can't be double-counted even if it somehow appears in both). */
+/** True iff `r`'s per-id registry entry (if any) accepts the row's raw
+ * outcome — a diverged row by default, a port-error/timeout row when the
+ * entry declares that verdict (accepted-class.ts acceptsOutcome). */
+function perIdAccepts(r: EngineWalkRow, perId: Record<string, EngineAcceptedEntry>): boolean {
+  const e = perId[r.id];
+  return e !== undefined && acceptsOutcome(e, { outcome: r.status, errs: r.err ? [r.err] : [] });
+}
+
+const isFaultStatus = (s: EngineWalkRow['status']): boolean => s === 'port-error' || s === 'timeout';
+
+/** Every id accepted either by a per-id entry or by class membership
+ * (union — an id can't be double-counted even if it somehow appears in both).
+ * Class membership accepts diverged rows only; a per-id entry accepts the
+ * outcome it declares. */
 function computeAcceptedIds(
   report: EngineParityReport,
   perId: Record<string, EngineAcceptedEntry>,
@@ -201,8 +221,7 @@ function computeAcceptedIds(
   const classExonerated = new Set(classes.flatMap((c) => [...c.exonerated]));
   const ids = new Set<string>();
   for (const r of report.results) {
-    if (r.status !== 'diverged') continue;
-    if (perId[r.id] || classExonerated.has(r.id)) ids.add(r.id);
+    if (perIdAccepts(r, perId) || (r.status === 'diverged' && classExonerated.has(r.id))) ids.add(r.id);
   }
   return ids;
 }
@@ -402,14 +421,20 @@ function engineRow(
     report.counts,
   );
   const { perId, classes } = splitAcceptedMap(rawAcceptedMap);
-  const accepted = computeAcceptedIds(report, perId, classes).size;
+  const acceptedIds = computeAcceptedIds(report, perId, classes);
+  const accepted = acceptedIds.size;
+  // Accepted fault rows come out of portFaults, accepted divergences out of
+  // diverged, so the row still sums to `surveyed`.
+  const acceptedFaults = new Set(
+    report.results.filter((r) => isFaultStatus(r.status) && acceptedIds.has(r.id)).map((r) => r.id),
+  ).size;
   return {
     track: `[${engine} (xdot)](./PARITY-${engine}.md)`,
     surveyed: report.total,
     pass: c.pass,
-    diverged: c.diverged - accepted,
+    diverged: c.diverged - (accepted - acceptedFaults),
     accepted,
-    portFaults: c['port-error'] + c.timeout,
+    portFaults: c['port-error'] + c.timeout - acceptedFaults,
     oracleErrors: c['oracle-error'],
   };
 }
@@ -487,8 +512,10 @@ function engineAcceptedTable(
   if (rows.length === 0) return '_(none in this corpus)_\n';
   const sorted = [...rows].sort((a, b) => a.e.class.localeCompare(b.e.class) || a.r.id.localeCompare(b.r.id));
   const body = sorted.map(
+    // An accepted fault row has no diff count; its bound is the error text.
     ({ r, e }) =>
-      `| ${testIdLink(r.id, pathById.get(r.id))} | ${r.nDiffs ?? 0} | ${e.class} | ${escText(e.bound)} | ${escText(e.ref)} |`,
+      `| ${testIdLink(r.id, pathById.get(r.id))} | ${r.status === 'diverged' ? (r.nDiffs ?? 0) : ''} | ` +
+      `${e.class} | ${escText(e.bound ?? e.errIncludes)} | ${escText(e.ref)} |`,
   );
   return ['| id | #diffs | class | bound | ref |', '|---|---:|---|---|---|', ...body, ''].join('\n');
 }
@@ -549,17 +576,23 @@ function engineMarkdown(
   const acceptedRows: Array<{ r: EngineWalkRow; e: EngineAcceptedEntry }> = [];
   const diverged: EngineWalkRow[] = [];
   for (const r of allDiverged) {
-    const e = acceptedMap[r.id];
-    if (e) acceptedRows.push({ r, e });
+    if (perIdAccepts(r, acceptedMap)) acceptedRows.push({ r, e: acceptedMap[r.id]! });
     else if (!classExonerated.has(r.id)) diverged.push(r);
   }
   const classAcceptedCount = allDiverged.filter(
-    (r) => !acceptedMap[r.id] && classExonerated.has(r.id),
+    (r) => !perIdAccepts(r, acceptedMap) && classExonerated.has(r.id),
   ).length;
 
-  const faults = report.results
-    .filter((r) => r.status === 'oracle-error' || r.status === 'port-error' || r.status === 'timeout')
-    .sort((a, b) => a.status.localeCompare(b.status) || a.id.localeCompare(b.id));
+  // A fault row its entry accepts (AD-3) moves to the accepted table and out
+  // of the summary's port-error/timeout counts, as engineRow counts it.
+  const faults: EngineWalkRow[] = [];
+  for (const r of report.results) {
+    if (r.status !== 'oracle-error' && !isFaultStatus(r.status)) continue;
+    if (perIdAccepts(r, acceptedMap)) acceptedRows.push({ r, e: acceptedMap[r.id]! });
+    else faults.push(r);
+  }
+  faults.sort((a, b) => a.status.localeCompare(b.status) || a.id.localeCompare(b.id));
+  const acceptedStatus = (s: EngineWalkRow['status']): number => acceptedRows.filter(({ r }) => r.status === s).length;
 
   // T3's oracle-error classifier hook (D6, batch-1/T3-oracle-error-classifier.md
   // #Interface contracts) — reads oracle-errors-<engine>.json when present,
@@ -608,7 +641,8 @@ function engineMarkdown(
     `- **pass:** ${c.pass} (${pct(c.pass, report.total - c['oracle-error'])}) · **diverged (tracked):** ${diverged.length} · ` +
       `**accepted (documented, won't-fix):** ${acceptedRows.length}` +
       (classes.length ? ` · **accepted (A1-drift class):** ${classAcceptedCount}` : ''),
-    `- **port-error:** ${c['port-error']} · **timeout:** ${c.timeout} (scored as failures) · ` +
+    `- **port-error:** ${c['port-error'] - acceptedStatus('port-error')} · ` +
+      `**timeout:** ${c.timeout - acceptedStatus('timeout')} (scored as failures) · ` +
       `**oracle-error:** ${c['oracle-error']} (excluded from pass %)`,
     '',
     `## Accepted deltas (${acceptedRows.length}) — documented, not chased`,
