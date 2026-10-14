@@ -1,5 +1,5 @@
 {
-  "comment": "Accepted-divergence registry for the per-ENGINE xdot tracks (circo/twopi/osage/patchwork/neato/fdp/sfdp \u2014 parity-<engine>.json, written by test/corpus/engine-walk.ts). Mirrors test/corpus/accepted-divergences.json's role for the dot SVG track, but keyed simply as engine -> id -> entry (no glob/engineIn selectors needed yet: every entry here is a specific corpus id already root-caused for that one engine). Joined at report-time by test/corpus/parity-report.ts into PARITY-<engine>.md (accepted deltas pulled out of the Diverged table, counted separately in Summary) and into the cross-engine PARITY.md track row. An accepted entry is a deliberate, documented, won't-fix difference; everything non-conformant NOT listed here is an unaccepted tracked gap. Adding/removing an entry must be paired with prose in docs/known-divergences.md. Two shapes share this registry (see plans/iterative-parity-campaign/decisions.md#D2): per-id { class: string, bound?, ref } (hand-root-caused, one row per id, as above), and CLASS { class: true, attributionFile, ref } (neato/fdp/sfdp A1-drift below) \u2014 class membership is COMPUTED at report time from attribution-<engine>.json's drift-exonerated verdicts, never hand-enumerated; an id that starts passing outright leaves the class silently on the next report regen.",
+  "comment": "Accepted-divergence registry for the per-ENGINE xdot tracks (circo/twopi/osage/patchwork/neato/fdp/sfdp \u2014 parity-<engine>.json, written by test/corpus/engine-walk.ts). Mirrors test/corpus/accepted-divergences.json's role for the dot SVG track, but keyed simply as engine -> id -> entry (no glob/engineIn selectors needed yet: every entry here is a specific corpus id already root-caused for that one engine). Joined at report-time by test/corpus/parity-report.ts into PARITY-<engine>.md (accepted deltas pulled out of the Diverged table, counted separately in Summary) and into the cross-engine PARITY.md track row. An accepted entry is a deliberate, documented, won't-fix difference; everything non-conformant NOT listed here is an unaccepted tracked gap. Adding/removing an entry must be paired with prose in docs/known-divergences.md. Two shapes share this registry (see plans/iterative-parity-campaign/decisions.md#D2): per-id { class: string, bound?, ref } (hand-root-caused, one row per id, as above), and CLASS { class: true, attributionFile, ref } (neato/fdp/sfdp A1-drift below) \u2014 class membership is COMPUTED at report time from attribution-<engine>.json's drift-exonerated verdicts, never hand-enumerated; an id that starts passing outright leaves the class silently on the next report regen. A per-id entry may also accept a FAULT row: { verdict: 'port-error' | 'timeout', errIncludes } (errIncludes required for port-error, a case-sensitive substring of the row's err) accepts a matching port-error/timeout row instead of a diverged one (plans/registry-faults-staleness/decisions.md AD-1); test/corpus/registry-staleness.test.ts fails when a per-id entry no longer matches its committed walk row.",
   "twopi": {
     "tree-graphs-directed-oldarrows": {
       "class": "A1",
@@ -75,6 +75,13 @@
       "class": "A9",
       "bound": "6 draw-op diffs, ALL edge-label placement on 2 of ~50 labelled edges: lcrow->lcrowlcrow lp/_ldraw_ text by (+22.77 x, -12.00 y) and onormal->onormalonormal by (-12.00 y). Each delta is exactly ONE xlabel candidate step - 22.77 = half the 45.54pt label width, 12.00 = 1.2 x fontsize 10 line height (cf. 2470 16.8 at fontsize 14). Label WIDTH field identical (45.54) on both sides and zero node/spline/bbox diffs in 54KB of xdot, so layout is unchanged and only the candidate choice flips. Knife edge DEMONSTRATED 2026-07-30: nudging the point-node width by 0.0001in (0.0072pt) flips the port OWN placement onto the oracle candidate (695.22,360.51 vs oracle 695.21,360.51), so the placement algorithm agrees and only the boundary side differs.",
       "ref": "known-divergences.md#a9-engine-track-twopi-circo"
+    },
+    "2784": {
+      "class": "A10",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "bound": "port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries",
+      "ref": "known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines"
     }
   },
   "circo": {
@@ -97,6 +104,13 @@
       "class": "A1",
       "bound": "<= 66.12pt (3 rigid block rotations)",
       "ref": "plans/decision-journal.md 2026-07-24 T3: getRotation closest-node exact-tie knife edge; injection A/B proved irreducible (2197 diffs -> 0)"
+    },
+    "2784": {
+      "class": "A10",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "bound": "port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries",
+      "ref": "known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines"
     }
   },
   "osage": {
@@ -156,6 +170,13 @@
       "class": "A1",
       "bound": "0.81pt on 4 x-coords of one sub-point stub spline; nodes 0.13-0.18pt",
       "ref": "plans/decision-journal.md 2026-07-24 T5: in-bar drift amplified by degenerate near-zero-length spline clip"
+    },
+    "2784": {
+      "class": "A10",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "bound": "port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries",
+      "ref": "known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines"
     }
   },
   "fdp": {
@@ -173,6 +194,13 @@
       "class": "A1",
       "bound": "up to 5.4kpt, 30/30 nodes",
       "ref": "plans/decision-journal.md 2026-07-24 T4b: chaos proven \u2014 node width +0.001in moves port-own layout max 3390pt"
+    },
+    "2784": {
+      "class": "A10",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "bound": "port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries",
+      "ref": "known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines"
     }
   },
   "sfdp": {
@@ -205,6 +233,13 @@
       "class": "A1",
       "bound": "up to 7.6kpt (whole-layout basin)",
       "ref": "plans/decision-journal.md 2026-07-24 T5: sfdp chaos regime, same family as fdp 1879"
+    },
+    "2784": {
+      "class": "A10",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "bound": "port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries",
+      "ref": "known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines"
     }
   }
 }

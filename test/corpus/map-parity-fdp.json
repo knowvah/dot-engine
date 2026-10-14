@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-14T04:18:24.876Z",
+  "generatedAt": "2026-10-14T16:50:03.769Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "fdp",
   "oracleVersion": "dot 16.1.0",
@@ -8,8 +8,8 @@
   "counts": {
     "conformant": 915,
     "diverged": 2,
-    "accepted": 4,
-    "port-error": 2,
+    "accepted": 5,
+    "port-error": 1,
     "oracle-error": 5,
     "timeout": 0
   },
@@ -12017,21 +12017,6 @@
       "hasHref": true
     },
     {
-      "id": "2784",
-      "path": "2784.dot",
-      "size": 78,
-      "verdict": "port-error",
-      "cmapx": {
-        "verdict": "port-error",
-        "errMsg": "Map maximum size exceeded"
-      },
-      "imap": {
-        "verdict": "port-error",
-        "errMsg": "Map maximum size exceeded"
-      },
-      "hasHref": false
-    },
-    {
       "id": "2108",
       "path": "2108.dot",
       "size": 3136769,
@@ -12129,6 +12114,21 @@
       },
       "imap": {
         "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2784",
+      "path": "2784.dot",
+      "size": 78,
+      "verdict": "accepted",
+      "cmapx": {
+        "verdict": "accepted",
+        "errMsg": "Map maximum size exceeded"
+      },
+      "imap": {
+        "verdict": "accepted",
+        "errMsg": "Map maximum size exceeded"
       },
       "hasHref": false
     }

@@ -13,10 +13,10 @@ test/corpus/parity-report.ts`.
 ## Summary
 
 - **Surveyed:** 928 (generated 2026-10-13T21:15:23.722Z)
-- **pass:** 893 (96.6%) · **diverged (tracked):** 4 · **accepted (documented, won't-fix):** 2 · **accepted (A1-drift class):** 23
-- **port-error:** 2 · **timeout:** 0 (scored as failures) · **oracle-error:** 4 (excluded from pass %)
+- **pass:** 893 (96.6%) · **diverged (tracked):** 4 · **accepted (documented, won't-fix):** 3 · **accepted (A1-drift class):** 23
+- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 4 (excluded from pass %)
 
-## Accepted deltas (2) — documented, not chased
+## Accepted deltas (3) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -26,6 +26,7 @@ table below.
 | id | #diffs | class | bound | ref |
 |---|---:|---|---|---|
 | [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 11888 | A1 | up to 5.4kpt, 30/30 nodes | plans/decision-journal.md 2026-07-24 T4b: chaos proven — node width +0.001in moves port-own layout max 3390pt |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) |  | A10 | port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries | known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines |
 | [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 11 | A9 | 11 numeric draw-op diffs confined to edge 0-&gt;1#0's unfilled_bezier (maxΔ 3.39pt), under injected-identical node positions ⇒ pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. Unchanged (11 diffs) after f66ac638, which cleared twopi/neato 241_0 (a port-side FMA mis-port, not a tie); tie attribution not re-verified by injection. | known-divergences.md#a9-sfdp-fp-ties |
 
 ## Accepted class: A1-drift — computed, not enumerated
@@ -47,7 +48,7 @@ outright leaves the class silently on the next report regen.
 | [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 37731 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 461091.31 vs 342057.2` |
 | [`2796`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2796.dot) | 8959 | 7032 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1276.86 vs 1202.51` |
 
-## Errors and timeouts (6)
+## Errors and timeouts (5)
 
 | id | status | message |
 |---|---|---|
@@ -56,7 +57,6 @@ outright leaves the class silently on the next report regen.
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | port-error | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
-| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | port-error | Map maximum size exceeded |
 
 **oracle errors:** 13 native-crash (documented, excluded) / 3 timeout-flake (excluded this run, note to retry)
 _Passing ids (893) are omitted for brevity — the full roster is in

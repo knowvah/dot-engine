@@ -12,23 +12,24 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 928
-- **pass:** 925 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
-- **port-error / timeout (scored as failures):** 2 · **oracle-error (excluded from pass %):** 1
+- **pass:** 925 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
+- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 1
 
 ## Diverged (0)
 
 _(none)_
 
-## Accepted (0) — documented, not chased
+## Accepted (1) — documented, not chased
 
-_(none)_
+| id | #diffs | firstDiff | reason |
+|---|---:|---|---|
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | 0 | `` | A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md. |
 
-## Errors and timeouts (3)
+## Errors and timeouts (2)
 
 | id | message |
 |---|---|
 | [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
-| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) |  |
 
 _Passing ids (925) are omitted for brevity — the full roster is in

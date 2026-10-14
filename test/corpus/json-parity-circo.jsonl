@@ -915,7 +915,6 @@
 {"id":"2343","path":"2343.dot","size":59368,"verdict":"conformant"}
 {"id":"2475_2","path":"2475_2.dot","size":641284,"verdict":"accepted","diffCount":989,"firstDiff":"edge:590_174423->590_174412#0/_draw_/op[1].b[0]","maxDelta":300,"maxDeltaPath":"node:590_174471/pos[0]"}
 {"id":"2095_1","path":"2095_1.dot","size":105083,"verdict":"accepted","diffCount":2197,"firstDiff":"edge:1083->1084#0/_draw_/op[1].b[0]","maxDelta":66.11999999999898,"maxDeltaPath":"edge:1128->1127#0/_hdraw_/op[3].P[5]"}
-{"id":"2784","path":"2784.dot","size":78,"verdict":"port-error","errMsg":"Map maximum size exceeded"}
 {"id":"2646","path":"2646.dot","size":2975897,"verdict":"conformant"}
 {"id":"1652","path":"1652.dot","size":240391,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"graphs-b103","path":"graphs/b103.gv","size":377525,"verdict":"oracle-error","errMsg":"oracle exit null"}
@@ -926,3 +925,4 @@
 {"id":"2371","path":"2371.dot","size":1705517,"verdict":"conformant"}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"diverged","diffCount":50223,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":0.58984375,"maxDeltaPath":"edge:30777->112326#0/_draw_/op[1].b[2]"}
+{"id":"2784","path":"2784.dot","size":78,"verdict":"accepted","errMsg":"Map maximum size exceeded"}

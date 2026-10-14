@@ -918,7 +918,6 @@
 {"id":"graphs-badvoro","path":"graphs/badvoro.gv","size":33949,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2471","path":"2471.dot","size":1174310,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2621","path":"2621.dot","size":721934,"verdict":"accepted","cmapx":{"verdict":"accepted","diffCount":5044,"firstDiff":"area[0].coords[0]","maxDelta":45503,"maxDeltaPath":"area[1094].coords[0]"},"imap":{"verdict":"accepted","diffCount":3828,"firstDiff":"imap/line[1].coords[0]","maxDelta":45503,"maxDeltaPath":"imap/line[834].coords[0]"},"hasHref":true}
-{"id":"2784","path":"2784.dot","size":78,"verdict":"port-error","cmapx":{"verdict":"port-error","errMsg":"Map maximum size exceeded"},"imap":{"verdict":"port-error","errMsg":"Map maximum size exceeded"},"hasHref":false}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2371","path":"2371.dot","size":1705517,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"oracle exit null"},"imap":{"verdict":"oracle-error","errMsg":"oracle exit null"},"hasHref":false}
 {"id":"graphs-b100","path":"graphs/b100.gv","size":782464,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
@@ -926,3 +925,4 @@
 {"id":"graphs-b104","path":"graphs/b104.gv","size":782464,"verdict":"diverged","cmapx":{"verdict":"diverged","diffCount":5838,"firstDiff":"area[0].coords[0]","maxDelta":6432,"maxDeltaPath":"area[1034].coords[0]"},"imap":{"verdict":"conformant"},"hasHref":true}
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"oracle exit null"},"imap":{"verdict":"oracle-error","errMsg":"oracle exit null"},"hasHref":false}
 {"id":"1652","path":"1652.dot","size":240391,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
+{"id":"2784","path":"2784.dot","size":78,"verdict":"accepted","cmapx":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"imap":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"hasHref":false}
