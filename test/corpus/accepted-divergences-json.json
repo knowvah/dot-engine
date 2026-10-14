@@ -615,13 +615,6 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "1879",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 70136.48000000001,
-      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail."
-    },
-    {
       "id": "nshare-root_circo",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
