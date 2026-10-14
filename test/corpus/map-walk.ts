@@ -49,7 +49,13 @@ import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareCmapx, compareImap, type MapDiff } from '../golden/compare-map.js';
-import { classAcceptedIds } from './accepted-class.js';
+import {
+  acceptsOutcome,
+  classAcceptedIds,
+  declaredVerdict,
+  type FaultAcceptance,
+  type FormatAcceptedRegistry,
+} from './accepted-class.js';
 import { excludedFor } from './engine-exclusions.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
 import { CMAPX_SENTINEL, IMAP_SENTINEL } from './render-one-map.js';
@@ -288,7 +294,7 @@ async function portMap(
   tsx: { cmd: string; pre: string[] },
   budgetMs: number,
   engine: EngineName,
-): Promise<{ cmapx?: string; imap?: string; verdict?: MapVerdict; errMsg?: string }> {
+): Promise<{ cmapx?: string; imap?: string; verdict?: 'timeout' | 'port-error'; errMsg?: string }> {
   const args = [...tsx.pre, RENDER_ONE, absInput, String(engine)];
   const r = await spawnCapture(tsx.cmd, args, process.env, budgetMs);
   if (r.timedOut) return { verdict: 'timeout' };
@@ -364,7 +370,7 @@ function detectHasHref(oracleCmapx: string, oracleImap: string): boolean {
 async function walkOne(
   item: Item,
   tsx: { cmd: string; pre: string[] },
-  accepted: Set<string>,
+  accepted: Accepted,
   engine: EngineName,
 ): Promise<{
   result: MapWalkResult;
@@ -393,14 +399,20 @@ async function walkOne(
   const budgetMs = Math.max(TIMEOUT_FLOOR_MS, Math.ceil(TIMEOUT_MULT * oracleMs));
   const port = await portMap(absInput, tsx, budgetMs, engine);
   if (port.cmapx === undefined || port.imap === undefined) {
-    const errResult: MapFormatResult = { verdict: port.verdict!, errMsg: scrubHome(port.errMsg ?? '') };
+    const errMsg = scrubHome(port.errMsg ?? '');
+    // One render failed both formats; AD-7 matches each format's message.
+    const fault = accepted.faults.get(item.id);
+    const verdict = fault && acceptsOutcome(fault, { outcome: port.verdict!, errs: [errMsg, errMsg] })
+      ? 'accepted'
+      : port.verdict!;
+    const errResult: MapFormatResult = { verdict, errMsg };
     return {
-      result: { ...meta, verdict: port.verdict!, cmapx: errResult, imap: errResult, hasHref },
+      result: { ...meta, verdict, cmapx: errResult, imap: errResult, hasHref },
       cmapxDiffs: [],
       imapDiffs: [],
     };
   }
-  const isAccepted = accepted.has(item.id);
+  const isAccepted = accepted.diverged.has(item.id);
   const { result: cmapxResult, diffs: cmapxDiffs } = judgeFormat('cmapx', port.cmapx, oCmapx.text, isAccepted, engine);
   const { result: imapResult, diffs: imapDiffs } = judgeFormat('imap', port.imap, oImap.text, isAccepted, engine);
   return {
@@ -441,22 +453,35 @@ function conformantItems(): Item[] {
   return LIMIT > 0 ? items.slice(0, LIMIT) : items;
 }
 
-function loadAccepted(engine: EngineName): Set<string> {
+/**
+ * Registry acceptance for one engine, split by declared verdict
+ * (registry-faults-staleness AD-1/AD-3): `diverged` holds class members plus
+ * per-id entries with no `verdict` (they accept a diverged comparison);
+ * `faults` holds per-id entries declaring a port-error/timeout verdict, which
+ * accept only a port failure that acceptsOutcome matches.
+ */
+interface Accepted {
+  diverged: Set<string>;
+  faults: Map<string, FaultAcceptance>;
+}
+
+function loadAccepted(engine: EngineName): Accepted {
   // Class members first: computed from the attribution harness, so the A1-drift
   // roster cannot go stale as the corpus grows (@see accepted-class.ts).
-  const accepted = classAcceptedIds(ACCEPTED, engine);
+  const diverged = classAcceptedIds(ACCEPTED, engine);
+  const faults = new Map<string, FaultAcceptance>();
   try {
-    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as {
-      divergences?: Array<{ id: string; engine?: string }>;
-    };
+    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as FormatAcceptedRegistry;
     // Entries may be engine-scoped; an engine-less entry applies everywhere.
     for (const d of raw.divergences ?? []) {
-      if (d.engine === undefined || d.engine === engine) accepted.add(d.id);
+      if (d.engine !== undefined && d.engine !== engine) continue;
+      if (declaredVerdict(d) === 'diverged') diverged.add(d.id);
+      else faults.set(d.id, d);
     }
   } catch {
     // A missing/unreadable registry accepts only whatever the class resolved.
   }
-  return accepted;
+  return { diverged, faults };
 }
 
 async function oracleVersion(): Promise<string> {
@@ -494,7 +519,7 @@ function printDivergence(format: MapFormat, result: MapWalkResult, diffs: MapDif
 
 /** Stop-on-first-divergence (dot only): sequential, halt at the first real
  * divergence in either format. */
-async function runDefault(items: Item[], tsx: { cmd: string; pre: string[] }, accepted: Set<string>): Promise<void> {
+async function runDefault(items: Item[], tsx: { cmd: string; pre: string[] }, accepted: Accepted): Promise<void> {
   let passed = 0;
   for (const item of items) {
     const { result, cmapxDiffs, imapDiffs } = await walkOne(item, tsx, accepted, 'dot');
@@ -518,7 +543,7 @@ async function runDefault(items: Item[], tsx: { cmd: string; pre: string[] }, ac
 }
 
 /** Survey (dot only): render all, write map-parity.json (never halts). */
-async function runSurvey(items: Item[], tsx: { cmd: string; pre: string[] }, accepted: Set<string>): Promise<void> {
+async function runSurvey(items: Item[], tsx: { cmd: string; pre: string[] }, accepted: Accepted): Promise<void> {
   const results: MapWalkResult[] = new Array(items.length);
   let next = 0;
   let done = 0;
@@ -582,7 +607,7 @@ async function runEngineWalk(
   outJsonlArg: string | undefined,
   items: Item[],
   tsx: { cmd: string; pre: string[] },
-  accepted: Set<string>,
+  accepted: Accepted,
 ): Promise<void> {
   const outJsonl = outJsonlArg ?? defaultJsonlPath(engine);
   const doneIds = new Set<string>();
@@ -662,7 +687,7 @@ async function main(): Promise<void> {
     process.stderr.write(
       `map engine-walk: ${items.length} conformant items, size-sorted small→large\n` +
         `oracle ${DOT_BIN} (GVBINDIR=${GVBINDIR}, engine=${engine})\ncache ${cacheDir(engine)}\n` +
-        `accepted divergences: ${accepted.size}\n` +
+        `accepted divergences: ${accepted.diverged.size} · accepted faults: ${accepted.faults.size}\n` +
         `idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
     );
     await runEngineWalk(engine, outJsonlArg, items, tsx, accepted);
@@ -675,7 +700,7 @@ async function main(): Promise<void> {
   process.stderr.write(
     `map ${survey ? 'survey' : 'walk (stop-on-first)'}: ${items.length} conformant items, ` +
       `size-sorted small→large\noracle ${DOT_BIN} (GVBINDIR=${GVBINDIR})\ncache ${cacheDir('dot')}\n` +
-      `accepted divergences: ${accepted.size}\n` +
+      `accepted divergences: ${accepted.diverged.size} · accepted faults: ${accepted.faults.size}\n` +
         `idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
   );
   if (survey) await runSurvey(items, tsx, accepted);

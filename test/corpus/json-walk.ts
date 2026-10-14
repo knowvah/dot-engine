@@ -60,7 +60,13 @@ import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareJson, type JsonDiff } from '../golden/compare-json.js';
-import { classAcceptedIds } from './accepted-class.js';
+import {
+  acceptsOutcome,
+  classAcceptedIds,
+  declaredVerdict,
+  type FaultAcceptance,
+  type FormatAcceptedRegistry,
+} from './accepted-class.js';
 import { excludedFor } from './engine-exclusions.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
 
@@ -263,7 +269,7 @@ async function portJson(
   tsx: { cmd: string; pre: string[] },
   budgetMs: number,
   engine: string,
-): Promise<{ json?: string; verdict?: JsonVerdict; errMsg?: string }> {
+): Promise<{ json?: string; verdict?: 'timeout' | 'port-error'; errMsg?: string }> {
   const args = [...tsx.pre, RENDER_ONE, absInput, engine];
   const r = await spawnCapture(tsx.cmd, args, process.env, budgetMs);
   if (r.timedOut) return { verdict: 'timeout' };
@@ -306,7 +312,7 @@ interface Item { id: string; path: string; size: number; }
 async function walkOne(
   item: Item,
   tsx: { cmd: string; pre: string[] },
-  accepted: Set<string>,
+  accepted: Accepted,
   engine: string,
 ): Promise<{ result: JsonWalkResult; diffs: JsonDiff[]; oracle?: string; port?: string }> {
   const absInput = join(ROOT, item.path);
@@ -318,14 +324,17 @@ async function walkOne(
   const budgetMs = Math.max(TIMEOUT_FLOOR_MS, Math.ceil(TIMEOUT_MULT * (oracle.ms ?? 0)));
   const port = await portJson(absInput, tsx, budgetMs, engine);
   if (port.json === undefined) {
-    return { result: { ...meta, verdict: port.verdict!, errMsg: scrubHome(port.errMsg ?? '') }, diffs: [] };
+    const errMsg = scrubHome(port.errMsg ?? '');
+    const fault = accepted.faults.get(item.id);
+    const verdict = fault && acceptsOutcome(fault, { outcome: port.verdict!, errs: [errMsg] }) ? 'accepted' : port.verdict!;
+    return { result: { ...meta, verdict, errMsg }, diffs: [] };
   }
   // Engine-dependent bar mirroring engine-walk.ts: deterministic engines at
   // 0.01, iterative (neato/fdp/sfdp) at their documented 0.5pt drift bar.
   const tolerance = ['neato', 'fdp', 'sfdp'].includes(engine) ? 0.5 : 0.01;
   const { pass, diffs } = compareJson(port.json, oracle.json, tolerance);
   if (pass) return { result: { ...meta, verdict: 'conformant' }, diffs: [] };
-  const verdict: JsonVerdict = accepted.has(item.id) ? 'accepted' : 'diverged';
+  const verdict: JsonVerdict = accepted.diverged.has(item.id) ? 'accepted' : 'diverged';
   return {
     result: { ...meta, verdict, ...summarize(diffs) },
     diffs,
@@ -355,23 +364,36 @@ function conformantItems(): Item[] {
   return LIMIT > 0 ? items.slice(0, LIMIT) : items;
 }
 
-function loadAccepted(): Set<string> {
+/**
+ * Registry acceptance for one engine, split by declared verdict
+ * (registry-faults-staleness AD-1/AD-3): `diverged` holds class members plus
+ * per-id entries with no `verdict` (they accept a diverged comparison);
+ * `faults` holds per-id entries declaring a port-error/timeout verdict, which
+ * accept only a port failure that acceptsOutcome matches.
+ */
+interface Accepted {
+  diverged: Set<string>;
+  faults: Map<string, FaultAcceptance>;
+}
+
+function loadAccepted(): Accepted {
   // Class members first: computed from the attribution harness, so the A1-drift
   // roster cannot go stale as the corpus grows (@see accepted-class.ts).
-  const accepted = classAcceptedIds(ACCEPTED, ENGINE);
+  const diverged = classAcceptedIds(ACCEPTED, ENGINE);
+  const faults = new Map<string, FaultAcceptance>();
   try {
-    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as {
-      divergences?: Array<{ id: string; engine?: string }>;
-    };
+    const raw = JSON.parse(readFileSync(ACCEPTED, 'utf8')) as FormatAcceptedRegistry;
     // Entries may be engine-scoped; an entry without `engine` applies to every
     // engine (legacy dot-era rows). Only matching-engine entries accept here.
     for (const d of raw.divergences ?? []) {
-      if (d.engine === undefined || d.engine === ENGINE) accepted.add(d.id);
+      if (d.engine !== undefined && d.engine !== ENGINE) continue;
+      if (declaredVerdict(d) === 'diverged') diverged.add(d.id);
+      else faults.set(d.id, d);
     }
   } catch {
     // A missing/unreadable registry accepts only whatever the class resolved.
   }
-  return accepted;
+  return { diverged, faults };
 }
 
 /** Read a resume JSONL: id -> last recorded row (partial trailing lines skipped). */
@@ -425,7 +447,7 @@ function printDivergence(result: JsonWalkResult, diffs: JsonDiff[]): void {
 async function runDefault(
   items: Item[],
   tsx: { cmd: string; pre: string[] },
-  accepted: Set<string>,
+  accepted: Accepted,
   engine: string,
 ): Promise<void> {
   let passed = 0;
@@ -461,7 +483,7 @@ async function runDefault(
 async function runSurvey(
   items: Item[],
   tsx: { cmd: string; pre: string[] },
-  accepted: Set<string>,
+  accepted: Accepted,
   engine: string,
 ): Promise<void> {
   const resumed = loadResumed(JSON_PARITY_JSONL);
@@ -522,7 +544,7 @@ async function main(): Promise<void> {
   process.stderr.write(
     `json[${ENGINE}] ${SURVEY ? 'survey' : 'walk (stop-on-first)'}: ${items.length} conformant items, ` +
       `size-sorted small→large\noracle ${DOT_BIN} -K ${ENGINE} (GVBINDIR=${GVBINDIR})\ncache ${CACHE}\n` +
-      `accepted divergences: ${accepted.size}\n` +
+      `accepted divergences: ${accepted.diverged.size} · accepted faults: ${accepted.faults.size}\n` +
       `idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
   );
   if (SURVEY) await runSurvey(items, tsx, accepted, ENGINE);
