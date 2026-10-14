@@ -67,8 +67,10 @@ describe('accepted-divergences registry', () => {
     // deliberately ABSENT: it went conformant, so acceptance would be stale.
     // graphs-structs went conformant 2026-07-11 (fix wave: ortho adj-spill,
     // fmadd polylineMidpoint, half-even tie rounding) — acceptance retired.
-    for (const id of ['2796', '2471', '1435']) {
-      expect(matchAccepted(id, 'dot', 'parity', entries)?.class, `${id} parity`).toBe('A4');
+    // 2796 and 2471 went conformant at graphviz 16.1 (T13): acceptances retired.
+    expect(matchAccepted('1435', 'dot', 'parity', entries)?.class, '1435 parity').toBe('A4');
+    for (const id of ['2796', '2471', '1314']) {
+      expect(matchAccepted(id, 'dot', 'parity', entries), `${id} retired`).toBeNull();
     }
     expect(matchAccepted('1939', 'dot', 'parity', entries)).toBeNull();
     // A2 closed 2026-07-01 (fix/nan-a2-retire): the NaN family is conformant

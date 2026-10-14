@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-07-28T16:47:16.443Z",
+  "generatedAt": "2026-10-14T02:18:57.691Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "twopi",
-  "oracleVersion": "dot 15.1.0",
+  "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 905,
+  "total": 928,
   "counts": {
-    "conformant": 887,
-    "diverged": 0,
-    "accepted": 17,
+    "conformant": 908,
+    "diverged": 2,
+    "accepted": 16,
     "port-error": 0,
-    "oracle-error": 1,
+    "oracle-error": 2,
     "timeout": 0
   },
   "results": [
@@ -60,6 +60,12 @@
       "id": "negative-dpi",
       "path": "negative-dpi.dot",
       "size": 33,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2849",
+      "path": "2849.dot",
+      "size": 34,
       "verdict": "conformant"
     },
     {
@@ -162,6 +168,12 @@
       "id": "2502",
       "path": "2502.dot",
       "size": 50,
+      "verdict": "conformant"
+    },
+    {
+      "id": "1314",
+      "path": "1314.dot",
+      "size": 51,
       "verdict": "conformant"
     },
     {
@@ -343,6 +355,13 @@
       "path": "2559.dot",
       "size": 78,
       "verdict": "conformant"
+    },
+    {
+      "id": "2784",
+      "path": "2784.dot",
+      "size": 78,
+      "verdict": "oracle-error",
+      "errMsg": "Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz/tests/2784.dot splits into two tokens"
     },
     {
       "id": "graphs-clustlabel",
@@ -771,6 +790,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "tree-doc-dotguide-curve",
+      "path": "../doc/dotguide/curve.dot",
+      "size": 106,
+      "verdict": "conformant"
+    },
+    {
       "id": "tree-doc-dotguide-invdot",
       "path": "../doc/dotguide/invdot.dot",
       "size": 106,
@@ -785,6 +810,12 @@
     {
       "id": "tree-doc-dotguide-diamondarrow",
       "path": "../doc/dotguide/diamondarrow.dot",
+      "size": 107,
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-icurve",
+      "path": "../doc/dotguide/icurve.dot",
       "size": 107,
       "verdict": "conformant"
     },
@@ -1573,6 +1604,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "tree-doc-infosrc-fixed",
+      "path": "../doc/infosrc/fixed.gv",
+      "size": 230,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-labelclust-nbl",
       "path": "graphs/labelclust-nbl.gv",
       "size": 231,
@@ -1783,6 +1820,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2851",
+      "path": "2851.dot",
+      "size": 263,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-labelroot-fdl",
       "path": "graphs/labelroot-fdl.gv",
       "size": 263,
@@ -1933,6 +1976,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2852",
+      "path": "2852.dot",
+      "size": 287,
+      "verdict": "conformant"
+    },
+    {
       "id": "tree-doc-dotguide-recordex",
       "path": "../doc/dotguide/recordex.dot",
       "size": 287,
@@ -2068,6 +2117,12 @@
       "id": "tree-doc-neato-inet",
       "path": "../doc/neato/inet.dot",
       "size": 349,
+      "verdict": "conformant"
+    },
+    {
+      "id": "700813",
+      "path": "700813.dot",
+      "size": 351,
       "verdict": "conformant"
     },
     {
@@ -2398,11 +2453,7 @@
       "id": "241_0",
       "path": "241_0.dot",
       "size": 578,
-      "verdict": "accepted",
-      "diffCount": 6,
-      "firstDiff": "edge:1->6#0/_draw_/op[1].b[ptCount]",
-      "maxDelta": 0.06999999999999318,
-      "maxDeltaPath": "edge:1->6#0/_hdraw_/op[3].P[1]"
+      "verdict": "conformant"
     },
     {
       "id": "share-labelclust-ndd",
@@ -3461,6 +3512,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2368",
+      "path": "2368.dot",
+      "size": 960,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-world",
       "path": "graphs/world.gv",
       "size": 980,
@@ -3500,6 +3557,12 @@
       "id": "2521_1",
       "path": "2521_1.dot",
       "size": 1062,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2413_1",
+      "path": "2413_1.dot",
+      "size": 1076,
       "verdict": "conformant"
     },
     {
@@ -3750,6 +3813,12 @@
       "id": "graphs-Palatino",
       "path": "graphs/Palatino.gv",
       "size": 1462,
+      "verdict": "conformant"
+    },
+    {
+      "id": "241_1",
+      "path": "241_1.dot",
+      "size": 1464,
       "verdict": "conformant"
     },
     {
@@ -4047,9 +4116,9 @@
       "path": "graphs/arrowsize.gv",
       "size": 2039,
       "verdict": "accepted",
-      "diffCount": 23,
-      "firstDiff": "edge:i->Z#0/_draw_/op[1].b[0]",
-      "maxDelta": 121.10000000000002,
+      "diffCount": 72,
+      "firstDiff": "edge:Z->I#0/_draw_/op[1].b[0]",
+      "maxDelta": 60.55000000000001,
       "maxDeltaPath": "edge:i->Z#0/_draw_/op[1].b[2]"
     },
     {
@@ -4555,6 +4624,16 @@
       "verdict": "conformant"
     },
     {
+      "id": "tree-graphs-directed-arrows",
+      "path": "../graphs/directed/arrows.gv",
+      "size": 4766,
+      "verdict": "diverged",
+      "diffCount": 6,
+      "firstDiff": "edge:lcrow->lcrowlcrow#0/_ldraw_/op[2].T[0]",
+      "maxDelta": 22.769999999999982,
+      "maxDeltaPath": "edge:lcrow->lcrowlcrow#0/_ldraw_/op[2].T[0]"
+    },
+    {
       "id": "linux.x86-shapes_dot",
       "path": "linux.x86/shapes_dot.gv",
       "size": 4861,
@@ -4709,10 +4788,10 @@
       "path": "share/newarrows.gv",
       "size": 6364,
       "verdict": "accepted",
-      "diffCount": 22,
-      "firstDiff": "edge:i->Z#0/_draw_/op[1].b[0]",
-      "maxDelta": 131.27,
-      "maxDeltaPath": "edge:i->Z#0/_draw_/op[1].b[8]"
+      "diffCount": 20,
+      "firstDiff": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
+      "maxDelta": 45.14000000000004,
+      "maxDeltaPath": "edge:i->Z#0/_tldraw_/op[2].T[0]"
     },
     {
       "id": "windows-newarrows",
@@ -4803,10 +4882,10 @@
       "path": "nshare/arrows_dot.gv",
       "size": 7235,
       "verdict": "accepted",
-      "diffCount": 40,
-      "firstDiff": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
-      "maxDelta": 42.50999999999999,
-      "maxDeltaPath": "edge:Z->I#0/_hldraw_/op[2].T[0]"
+      "diffCount": 29,
+      "firstDiff": "edge:i->Z#0/_draw_/op[1].b[0]",
+      "maxDelta": 131.27,
+      "maxDeltaPath": "edge:i->Z#0/_draw_/op[1].b[8]"
     },
     {
       "id": "graphs-awilliams",
@@ -4866,6 +4945,12 @@
       "id": "windows-fig6",
       "path": "windows/fig6.gv",
       "size": 7553,
+      "verdict": "conformant"
+    },
+    {
+      "id": "graphs-decorate",
+      "path": "graphs/decorate.gv",
+      "size": 7561,
       "verdict": "conformant"
     },
     {
@@ -4941,6 +5026,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2796",
+      "path": "2796.dot",
+      "size": 8959,
+      "verdict": "conformant"
+    },
+    {
       "id": "linux.x86-dotsplines_dot1",
       "path": "linux.x86/dotsplines_dot1.gv",
       "size": 9206,
@@ -4968,6 +5059,12 @@
       "id": "nshare-weight_dot",
       "path": "nshare/weight_dot.gv",
       "size": 9391,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2413_2",
+      "path": "2413_2.dot",
+      "size": 9721,
       "verdict": "conformant"
     },
     {
@@ -5124,6 +5221,12 @@
       "id": "linux.x86-neatosplines_neato1",
       "path": "linux.x86/neatosplines_neato1.gv",
       "size": 12061,
+      "verdict": "conformant"
+    },
+    {
+      "id": "698066",
+      "path": "698066.dot",
+      "size": 12438,
       "verdict": "conformant"
     },
     {
@@ -5487,6 +5590,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2621",
+      "path": "2621.dot",
+      "size": 721934,
+      "verdict": "conformant"
+    },
+    {
       "id": "2470",
       "path": "2470.dot",
       "size": 734358,
@@ -5497,16 +5606,50 @@
       "maxDeltaPath": "edge:n13->n12#0/lp[0]"
     },
     {
-      "id": "2222",
-      "path": "2222.dot",
-      "size": 2384469,
+      "id": "graphs-b100",
+      "path": "graphs/b100.gv",
+      "size": 782464,
+      "verdict": "conformant"
+    },
+    {
+      "id": "graphs-b104",
+      "path": "graphs/b104.gv",
+      "size": 782464,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2471",
+      "path": "2471.dot",
+      "size": 1174310,
+      "verdict": "diverged",
+      "diffCount": 10,
+      "firstDiff": "edge:n89->n100#0/_ldraw_/op[2].T[0]",
+      "maxDelta": 61.5,
+      "maxDeltaPath": "edge:n91->n90#0/lp[0]"
+    },
+    {
+      "id": "2371",
+      "path": "2371.dot",
+      "size": 1705517,
       "verdict": "oracle-error",
       "errMsg": "oracle exit null"
+    },
+    {
+      "id": "2646",
+      "path": "2646.dot",
+      "size": 2975897,
+      "verdict": "conformant"
     },
     {
       "id": "2108",
       "path": "2108.dot",
       "size": 3136769,
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-share-examples-world",
+      "path": "../share/examples/world.gv",
+      "size": 16326502,
       "verdict": "conformant"
     }
   ]

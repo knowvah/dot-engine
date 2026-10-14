@@ -38,7 +38,7 @@ below) is
 The tooling joins it at report time: `PARITY-dot.md` splits **accepted deltas** from
 the **tracked** backlog, and the rules gate sources its allowlist from it. The
 prose sections below explain each entry (A1 is live; A2, A3 and A8 are closed and
-kept as history); a CI test (`accepted-divergences.test.ts`) enforces that
+kept as history; A10 is a port-error acceptance that no registry can express); a CI test (`accepted-divergences.test.ts`) enforces that
 every accepted graph still diverges, so this list cannot silently rot.
 
 ---
@@ -108,11 +108,12 @@ input under its own engine instead of `dot`. The honest ceiling on that work is
 to **narrow** A1 to "no active divergence on the reference platform," never to
 eliminate the cross-platform caveat; the results so far (below) hold to that
 ceiling: `circo`/`twopi`/`osage` have each surfaced and root-caused a handful of
-genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 90.8/77.5/68.0%
-within 0.5pt of native over the 910-item universe, meaning the ported
-arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most graphs — and
-every remaining diverged id is individually attributed by injection (solver
-drift vs. port defect) rather than left as untriaged drift; see the
+genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 90.3/96.5/68.1%
+within 0.5pt of native over the 929-item universe (graphviz 16.1.0), meaning
+the ported arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most
+graphs — and every diverged id of the 910-item roster is individually
+attributed by injection (solver drift vs. port defect) rather than left as
+untriaged drift; the 19 roster additions are not yet attributed. See the
 iterative-engine characterization below.
 
 **Engine-track acceptance: twopi arrows family.** <a id="a1-twopi-arrows-family"></a>
@@ -178,27 +179,36 @@ field for these three and `parity-report.ts` renders them in a separate
 "Iterative engines (±0.5 characterization)" section of
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explicitly **not** comparable to the ±0.01 deterministic pass rates elsewhere
-in this document. Current counts (910-item universe; pass % leaves out
-inputs the C oracle cannot render, per [Conformance](./conformance.md)):
+in this document. Current counts against graphviz 16.1.0 (929-item
+universe; pass % leaves out inputs the C oracle cannot render, per
+[Conformance](./conformance.md)):
 
-| engine | surveyed | within ±0.5pt | non-conformant (all attributed, accepted) | port error / timeout | oracle error |
+| engine | surveyed | within ±0.5pt | non-conformant | port error / timeout | oracle error |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(The `neato` and `sfdp` rows are from walks staged before the final re-walk of
+`graphs-decorate`, `1314`, `2784` and `2371`; they may move by those ids.
+The `fdp` pass rate rose from 77.5% because the earlier committed walk
+predated the port state of the previous mission.)
 
 (The first sweep, 2026-07-11 at 762 items, measured 263/311/260 within
 ±0.5pt — the jump to the current rates came from per-id fixes landed since,
 chiefly neato's unported `user_pos`/`P_SET` handling, the engine-init
 consolidation, and the `setEdgeType` macro-vs-function fix.)
 
-Unlike at first sweep, every diverged row is now individually attributed:
+Unlike at first sweep, every diverged row of the 910-item roster was
+individually attributed (the 19 ids new to the 929-item roster are not yet
+attributed; they are listed in the T13 hand-back as newly visible):
 the injection harness (`test/corpus/attribute-divergence.ts`) feeds the
 native oracle's pre-routing `ND_pos` into the port and re-compares, and
 every current diverged id is either `drift-exonerated` (the port's routing
 and emission reproduce the oracle exactly once the solver drift is removed)
 or one of the handful of separately accepted per-id residuals (`241_0`'s
-CDT incircle tie on all three engines, neato `2239`, sfdp `42`/`2556`).
+CDT incircle tie on all three engines, neato `2239`, sfdp `2556`; sfdp `42`
+is A1 drift, see [`comparisons/sfdp-42.md`](../comparisons/sfdp-42.md)).
 The class acceptance below formalizes the exonerated set; live counts in
 the per-engine dashboards
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -417,7 +427,7 @@ candidate deviations differ by ~1 ULP, so the winner is decided by last-bit
 arithmetic. The port had been attributed an irreducible gap ("Apple `hypot`
 matches no portable `hypot`") and compensated with a tolerant,
 translation-equivariant tie-break. That attribution was disproved: the tie is
-decided by C's *exact* arithmetic, which is reproducible. Commit `44aba8a3`
+decided by C's *exact* arithmetic, which is reproducible. Commit `cdf597bc`
 (`fix(pathplan): split splines at C's max-deviation point bit for bit`) ported
 it: libm `hypot` for the distance (`route.c:448`), C's strict `>` comparison
 (`route.c:139`), and clang's `fp-contract` fusion of the bezier evaluation
@@ -427,7 +437,7 @@ gone; the `241_0` knot is pinned in C's routing frame, because C is not
 translation-equivariant on such ties. This closed `2368`, `2371`, `2413_1`,
 `2413_2`, `graphs-b100`, `graphs-b104` and `graphs-decorate`.
 
-`241_1` was not a `hypot` tie: it was closed by `bdd614d5`
+`241_1` was not a `hypot` tie: it was closed by `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
 groups every adjacent flat edge sharing a main edge into one
 `make_flat_adj_edges` call and tests for ports across the whole group, so a
@@ -490,14 +500,21 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 ### A4. Oracle in an acknowledged-broken state (the init_rank / pathplan family)
 
-**Affected:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). Family
-members `1939` and `2825` are **conformant** and carry no entry, and `2470`
-and `graphs-structs` joined them 2026-07-11 (both collapsed to conformant
-after the ortho adjacency-spill/chancmpid, fmadd `polylineMidpoint`, and
-half-even tie-rounding fixes landed — the port now reproduces the oracle's
-recovery output exactly, including the identical lost edges); their
-acceptance entries are retired.
+**Affected (graphviz 16.1 sweep):** `1435` (structural-match, maxΔ 0.39 on
+one spline control point; was 503 against the 15.x oracle — the drop was not
+bisected) and `1581` (diverged: top-level child count 39 vs 22, maxΔ 0).
+Family members `1939` and `2825` are **conformant** and carry no entry, and
+`2470` and `graphs-structs` joined them 2026-07-11 (both collapsed to
+conformant after the ortho adjacency-spill/chancmpid, fmadd
+`polylineMidpoint`, and half-even tie-rounding fixes landed — the port now
+reproduces the oracle's recovery output exactly, including the identical lost
+edges); their acceptance entries are retired. **`2796` and `2471` joined them
+at graphviz 16.1** (both `conformant` in the fresh sweep, acceptance entries
+retired): the port and the 16.1 oracle now agree on the `init_rank` recovery
+output including the lost edges. The cause was not isolated by a bisect (the
+16.1 dotgen port `48981bf0` and the lost-edge consumption fix `54bd3b9b` are
+the candidates); the `init_rank` description below is kept as the mechanism of
+the class, and the two ids are pinned as conformant by the parity sweep.
 
 `1581` and `2825` were crash-recovery cases (fix-element-count-bucket
 mission): fuzzer/degenerate inputs where the upstream tests assert **only**
@@ -653,8 +670,13 @@ comparison page (side-by-side render + evidence record).
 
 ### A6. `unsigned int` canvas overflow on degenerate input
 
-**Affected:** `1314` — a fuzzer-derived input (`fontsize="991836031967s8"`)
-whose absurd font size balloons the drawing to ~2.75e11 pt.
+**Affected:** sfdp `2556` (a NaN layout; see the engine-track entry). `1314`
+— a fuzzer-derived input (`fontsize="991836031967s8"`) whose absurd font size
+balloons the drawing to ~2.75e11 pt — is **conformant** at graphviz 16.1 and
+its acceptance is retired: the port now narrows the page size the way the
+native `ROUND` conversion does (`fe20f303`) and builds the page clip in
+`setup_page` order (`eea9d21c`). The mechanism paragraphs below
+describe the original difference.
 
 **What happens.** C stores `job->width` / `job->height` as **`unsigned int`**
 (`gvcjob.h:327-328`). The `ROUND(...)` of the huge point size (`emit.c:1249-1250`)
@@ -749,7 +771,7 @@ two different amplification mechanisms:
   (node sizing) and was amplified downstream by `ortho`'s faithful per-relax
   int-truncation into an equal-cost maze-corridor tie flip.
 
-**Closed: `2646` (`0e07be7b`, `fix(pathplan): mirror clang fma contraction in
+**Closed: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
 spline intersection`).** Three smode long-edge legs (`edge2575`, `edge3905`,
 `edge15467`) end on a barrier wall with a parallel tangent, so the
 `splinefits` intersection cubic has a near-double root. `points2coeff`
@@ -839,8 +861,20 @@ splines differ by ~0.2–0.5pt. Sibling of the (now closed) **A3**/**A8**: an ir
 floating-point portability constraint below C source semantics — matching
 would require reproducing Apple libm's exact `sin`/`cos` rounding in JS.
 
-**Affected:** `241_0` (circo Δ≈0.2 / twopi canvas Δ≈9 via the corridor flip
-on edge `5:ne->8:nw`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**16.1 re-baseline.** The multispline corridor geometry was missing clang's FMA
+contraction (ellipse-corner radicand, `mkCtrlPts`, `DIST` = sqrt(fmadd), the
+`line_intersect` dot); `b77b2703` (`fix(neato): mirror fma contraction in
+multispline routing geometry`) mirrored it. twopi and neato `241_0` — which
+this class had attributed to the cocircular tie below — went **conformant**
+(acceptances retired), and sfdp `42` turned out to have no tie at all (it is A1
+drift, see [`comparisons/sfdp-42.md`](../comparisons/sfdp-42.md)). circo, fdp
+and sfdp `241_0` still diverge with their residuals unchanged or reduced; their
+attribution to the tie below predates `b77b2703` and has **not been re-verified
+by position injection** since that fix showed the same attribution wrong for
+twopi/neato.
+
+**Affected:** `241_0` (circo Δ≈0.2 via the corridor flip on edge `1->2`; fdp
+and sfdp `241_0` on the engine tracks below); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 edge-label position diffs each — the libm 1-ULP arises in
 `poly_init`'s unit-vertex trig (`hypot`/`atan2`/`sin`), puts one node's
 computed height a ULP past the min-size clamp the oracle lands on
@@ -993,33 +1027,43 @@ closing the causal chain.
 
 Two further engine-track instances were root-caused and accepted 2026-07-11
 (full RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 draw-op
-diffs — the sibling of the circo entry above: the same CDT cocircular
-incircle tie, flipped by libm `sin`/`cos` 1-ULP, makes the port's
-multispline corridor succeed with a 14-pt spline where the native build
-falls back to plain 8-pt routing; point deltas < 0.07pt) and circo
+diffs, attributed then to the same CDT cocircular incircle tie as the circo
+entry above; **retired at graphviz 16.1** — it is conformant since
+`b77b2703`, so the 14-pt-vs-8-pt corridor flip was the unmirrored FMA
+contraction, not a tie) and circo
 `windows-tree` (10 draw-op diffs on one fan edge — circo's placement trig
 lands `node2.y` a single ULP above `node8.y` around the exactly-symmetric
 value 18.0, and `closestSide`'s dyna head-port selection flips TOP/BOTTOM at
 that exact tie; node positions and boxes are otherwise bit-identical to the
 oracle).
 
-**sfdp engine track — edge FP-ties (`42`, `241_0`).**
+**sfdp engine track — edge FP-tie (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> The sfdp xdot engine track (`parity-sfdp.json`,
 native `dot -Ksfdp -Txdot`, ±0.5) surfaces the CDT cocircular incircle tie once
 exact native pre-routing positions are injected (so the divergence is NOT
 iterative drift — see the A1-drift class — but a discrete predicate tie):
 
-- `42` and `241_0` — CDT cocircular incircle tie (the multispline corridor).
-  With injected positions the residual is a **segment-count flip**: `42`
-  `opCount 5 vs 9` (edge 0->3) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (edge 3->2) — the port's constrained-Delaunay diagonal flips vs the
-  oracle, so the multispline corridor succeeds with an N-pt spline where the
-  native build falls back to a shorter plain route (or vice versa), exactly as
-  the twopi/circo `241_0` entry above. The port already emulates the arm64
+- `241_0` — attributed to the CDT cocircular incircle tie (the multispline
+  corridor; not re-verified after `b77b2703`, see the 16.1 re-baseline above).
+  The residual is a **segment-count flip**: 7 draw-op diffs on edge 1->2,
+  `ptCount 8 vs 20` (20 diffs before `b77b2703`) — the corridor succeeds with
+  an N-pt spline where the native build falls back to a shorter plain route
+  (or vice versa), as in the circo `241_0` entry above. The port already emulates the arm64
   `fmadd` contraction in the incircle/`ccw` predicate (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) and uses robust-incircle Delaunay; the residual is the
   V8-vs-Apple-libm `sin`/`hypot` 1-ULP in the predicate input that no portable
   code reproduces.
+
+> **sfdp `42` reclassified A9 → A1 drift (graphviz 16.1 sync).** It was listed
+> here as a CDT/libm incircle tie. The mission found otherwise
+> ([`comparisons/sfdp-42.md`](../comparisons/sfdp-42.md)): the former corridor
+> flip was a port-side FMA mis-port in the multispline corridor geometry,
+> fixed by `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> routing geometry`); with native positions injected the port now reproduces
+> native's xdot exactly. The remaining residual (node offsets 0.06-0.65 pt) is
+> iterative drift seeded by one 1-ULP disagreement in Apple-libm
+> `pow(dist, 2)` vs the port's ARM `pow` at the coarsest level, amplified by
+> the finer levels — A1 (see [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095` reclassified A9 → A1-drift (2026-07-22).** It was previously listed
 > here as "the hypot sibling" (sub-0.7pt drift on the edges of an empty-named
@@ -1037,8 +1081,10 @@ system C `hypot` and comparing to Node `Math.hypot` on representative
 flat-edge deviation inputs shows a 1-ULP disagreement on 2 of 6 (Δ 7.1e-15 and
 5.7e-14) — the split-threshold knife-edge that flips the subdivision count.
 Irreducible: no portable hypot reproduces Apple libm (the `arm-pow.ts`
-precedent for the same boundary). Accepted at the engine-track level via
-`accepted-divergences-engines.json` (`sfdp.42`, `sfdp.241_0`).
+precedent for the same boundary). `sfdp.241_0` is accepted at the engine-track
+level via `accepted-divergences-engines.json`. `sfdp.42` is **not** part of this
+class: its registry entry is A1 (`comparisons/sfdp-42.md`), and the probe above
+did not explain it.
 
 The **fdp** xdot engine track (`parity-fdp.json`, native `dot -Kfdp -Txdot`,
 ±0.5) surfaces the SAME CDT cocircular tie on the same graph, `241_0`: with the
@@ -1046,9 +1092,10 @@ oracle's exact pre-routing positions injected, the residual is 11 numeric
 `unfilled_bezier` diffs confined to one edge (`0->1#0`, maxΔ 3.39pt). Because
 the node positions are injected-identical, the divergence is downstream in the
 pathplan multispline corridor — the same libm-1-ULP incircle tie as
-twopi/circo/sfdp `241_0` (exact-rational incircle 185/185 above). The levers are
+circo/sfdp `241_0` (exact-rational incircle 185/185 above; 11 diffs unchanged by
+`b77b2703` — not re-verified by injection). The levers are
 already applied (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); the tie is irreducible. Accepted via `accepted-divergences-engines.json`
+`Math.hypot`); the tie is treated as irreducible. Accepted via `accepted-divergences-engines.json`
 `fdp.241_0`. fdp's `2095`, by contrast, is **A1-drift, not A9**: injecting the
 single empty-named node (after the attribution injector was fixed to match
 `""`-named nodes) collapses its residual to zero — the earlier "A9 tail" was the
@@ -1056,6 +1103,28 @@ un-injected empty node dragging its incident edges. The sfdp `2095` accept was
 the same blindspot — a fresh sfdp attribution regen (2026-07-22) with the fixed
 injector confirmed it also injects to 0, and its accept was removed (see the
 `2095 reclassified` note above).
+
+---
+
+### A10. V8 `Map` size limit in polyomino packing (`2784`, five pack-based engines)
+
+**Affected:** `2784` on `circo`, `twopi`, `neato`, `fdp` and `sfdp`, in every
+output format. On `dot` it is `conformant`.
+
+**What happens.** `lib/pack/pack.c` records the cells a component occupies in
+a `PointSet`. For `2784` (a single node 3e16 pt tall, `splines="ortho"`) the
+faithful integer `step`/placement arithmetic needs 2,011,656,764 cells; native
+16.1.0 completes in 482 s using 67.3 GB resident (101 GB peak). The port's
+`PointSet` is a JavaScript `Map`, which V8 caps at 2^24 entries, so it throws
+`Map maximum size exceeded`.
+
+**Why accepted.** A runtime limit below the code, not a logic gap; the cause is
+the faithful arithmetic of `910be2a2` (before it the port computed a small,
+wrong layout and never reached the limit). The accepted outcome is a thrown
+error rather than a `diverged` verdict, and the per-engine registries only
+accept `diverged` rows, so no registry entry exists: the walks keep listing
+`2784` under their port-error faults. Evidence:
+[`comparisons/2784-pack-cells.md`](../comparisons/2784-pack-cells.md).
 
 ---
 
