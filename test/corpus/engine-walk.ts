@@ -19,7 +19,7 @@
 // can be imported by engine-walk.test.ts without kicking off a corpus walk.
 
 import { readFileSync, statSync, appendFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-import { execFileSync, spawn } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { homedir, tmpdir } from 'node:os';
@@ -91,6 +91,8 @@ export interface EngineParityReport {
   engine: string;
   /** comparison tolerance in points (0.01 deterministic, 0.5 iterative) */
   tolerance?: number;
+  /** `dot -V` of the oracle (e.g. "dot 16.1.0"); absent in older summaries. */
+  oracleVersion?: string;
   total: number;
   counts: Record<EngineWalkStatus, number>;
   results: EngineWalkRow[];
@@ -310,6 +312,14 @@ function oracleXdot(path: string, id: string, engine: string, cacheDir: string):
 // Sweep
 // ---------------------------------------------------------------------------
 
+/** `dot -V` as a short version string ("dot 16.1.0"), same probe and format
+ * as survey.ts / xdot-walk.ts so every walk summary names its oracle alike. */
+function oracleVersion(): string {
+  const r = spawnSync(DOT_BIN, ['-V'], { env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: 5000 });
+  const m = /version (\d+\.\d+\.\d+)/.exec(`${r.stderr ?? ''}${r.stdout ?? ''}`);
+  return m ? `dot ${m[1]}` : 'dot (unknown)';
+}
+
 async function main(): Promise<void> {
   const engine = process.argv[2];
   if (!engine) {
@@ -464,6 +474,7 @@ async function main(): Promise<void> {
     generatedWith: 'test/corpus/engine-walk.ts',
     engine,
     tolerance: TOLERANCE,
+    oracleVersion: oracleVersion(),
     total: results.length,
     counts,
     results,

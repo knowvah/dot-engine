@@ -17,6 +17,8 @@ failed, so there is no reference to compare against; out of scope.
 **pass %** = pass / (surveyed − oracle error). **accepted** = documented
 won't-fix deltas (0 for engines without an acceptance list).
 
+**Oracle:** dot 16.1.0 (all 34 tracks)
+
 ## Tracks
 
 | track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | pass % |

@@ -13,6 +13,7 @@ test/corpus/parity-report.ts`.
 ## Summary
 
 - **Surveyed:** 929 (generated 2026-10-14T04:10:39.689Z)
+- **Oracle:** dot 16.1.0
 - **pass:** 929 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
 

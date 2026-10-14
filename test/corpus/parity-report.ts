@@ -79,24 +79,32 @@ const ACCEPTED_MAP_ENGINES = new URL('./accepted-divergences-map.json', import.m
 // format-parity-matrix (END)
 
 interface SvgParityReport {
+  /** `dot -V` of the oracle the walk measured against (absent in older summaries). */
+  oracleVersion?: string;
   total: number;
   counts: Record<Verdict, number>;
   results: SurveyResult[];
 }
 
 interface XdotParityReport {
+  /** `dot -V` of the oracle the walk measured against (absent in older summaries). */
+  oracleVersion?: string;
   total: number;
   counts: Record<XdotVerdict, number>;
   results: XdotWalkResult[];
 }
 
 interface JsonParityReport {
+  /** `dot -V` of the oracle the walk measured against (absent in older summaries). */
+  oracleVersion?: string;
   total: number;
   counts: Record<JsonVerdict, number>;
   results: JsonWalkResult[];
 }
 // map-conformance (BEGIN): dot (imagemap) track report shape.
 interface MapParityReport {
+  /** `dot -V` of the oracle the walk measured against (absent in older summaries). */
+  oracleVersion?: string;
   total: number;
   counts: Record<MapVerdict, number>;
   results: MapWalkResult[];
@@ -246,6 +254,9 @@ interface TrackRow {
   portFaults: number;
   /** The C oracle failed — out of scope, excluded from the pass-% denominator. */
   oracleErrors: number;
+  /** Graphviz build the walk measured against (`dot -V`); undefined when the
+   * walk summary predates recording it. */
+  oracle?: string;
 }
 
 /** Escape a markdown table cell (pipes + newlines). */
@@ -257,6 +268,9 @@ function cell(s: string | undefined): string {
 function escText(s: string | undefined): string {
   return cell(s).replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
+
+/** Oracle wording for a walk summary written before walkers recorded `dot -V`. */
+const NOT_RECORDED = 'not recorded';
 
 function pct(n: number, d: number): string {
   return d === 0 ? '0%' : `${((100 * n) / d).toFixed(1)}%`;
@@ -290,6 +304,7 @@ function dotSvgRow(report: SvgParityReport, manifest: CorpusEntry[]): TrackRow {
   }
   return {
     track: '[dot (SVG)](./PARITY-dot.md)',
+    oracle: report.oracleVersion,
     surveyed: report.total,
     pass: c.conformant,
     diverged: c.diverged + c['structural-match'] - accepted,
@@ -306,6 +321,7 @@ function dotXdotRow(report: XdotParityReport): TrackRow {
   );
   return {
     track: '[dot (xdot)](./PARITY-XDOT.md)',
+    oracle: report.oracleVersion,
     surveyed: report.total,
     pass: c.conformant,
     diverged: c.diverged,
@@ -322,6 +338,7 @@ function dotJsonRow(report: JsonParityReport): TrackRow {
   );
   return {
     track: '[dot (json)](./PARITY-JSON.md)',
+    oracle: report.oracleVersion,
     surveyed: report.total,
     pass: c.conformant,
     diverged: c.diverged,
@@ -341,6 +358,7 @@ function dotMapRow(report: MapParityReport): TrackRow {
   );
   return {
     track: '[dot (imagemap)](./PARITY-MAP.md)',
+    oracle: report.oracleVersion,
     surveyed: report.total,
     pass: c.conformant,
     diverged: c.diverged,
@@ -367,6 +385,7 @@ function plainRow(engine: string, report: PlainParityReport): TrackRow {
   );
   return {
     track: `[${engine} (plain)](./PARITY-${engine}-plain.md)`,
+    oracle: report.oracleVersion,
     surveyed: report.total,
     pass: c.pass,
     diverged: c.diverged,
@@ -384,6 +403,7 @@ function jsonEngineRow(engine: string, report: JsonParityReport): TrackRow {
   );
   return {
     track: `[${engine} (json)](./PARITY-${engine}-json.md)`,
+    oracle: report.oracleVersion,
     surveyed: report.total,
     pass: c.conformant,
     diverged: c.diverged,
@@ -401,6 +421,7 @@ function mapEngineRow(engine: string, report: MapParityReport): TrackRow {
   );
   return {
     track: `[${engine} (imagemap)](./PARITY-${engine}-map.md)`,
+    oracle: report.oracleVersion,
     surveyed: report.total,
     pass: c.conformant,
     diverged: c.diverged,
@@ -430,6 +451,7 @@ function engineRow(
   ).size;
   return {
     track: `[${engine} (xdot)](./PARITY-${engine}.md)`,
+    oracle: report.oracleVersion,
     surveyed: report.total,
     pass: c.pass,
     diverged: c.diverged - (accepted - acceptedFaults),
@@ -638,6 +660,7 @@ function engineMarkdown(
     '## Summary',
     '',
     `- **Surveyed:** ${report.total} (generated ${report.generatedAt})`,
+    `- **Oracle:** ${report.oracleVersion ?? NOT_RECORDED}`,
     `- **pass:** ${c.pass} (${pct(c.pass, report.total - c['oracle-error'])}) · **diverged (tracked):** ${diverged.length} · ` +
       `**accepted (documented, won't-fix):** ${acceptedRows.length}` +
       (classes.length ? ` · **accepted (A1-drift class):** ${classAcceptedCount}` : ''),
@@ -900,6 +923,7 @@ function formatDetailMarkdown(
     '## Summary',
     '',
     `- **Surveyed:** ${total}`,
+    `- **Oracle:** ${row.oracle ?? NOT_RECORDED}`,
     `- **pass:** ${row.pass} (${pct(row.pass, scoredOf(row))}) · **diverged (tracked):** ${diverged.length} · ` +
       `**accepted (documented, won't-fix):** ${acceptedRows.length}`,
     `- **port-error / timeout (scored as failures):** ${row.portFaults} · ` +
@@ -1016,6 +1040,26 @@ function missingTrackNote(label: string, missing: string[], cmd: string): string
 }
 
 /** Build the cross-engine PARITY.md summary page. */
+/** One-line oracle statement for PARITY.md: the single build every track was
+ * measured against, or each build with its track count when they differ (a
+ * mixed set means some walk was not re-run after an oracle re-pin). */
+function oracleSummary(rows: TrackRow[]): string {
+  const counts = new Map<string, number>();
+  for (const r of rows) {
+    const v = r.oracle ?? NOT_RECORDED;
+    counts.set(v, (counts.get(v) ?? 0) + 1);
+  }
+  const tracks = (n: number): string => `${n} track${n === 1 ? '' : 's'}`;
+  if (counts.size === 1) {
+    const [[v, n]] = [...counts];
+    return `${v} (all ${tracks(n)})`;
+  }
+  return [...counts]
+    .sort(([va, na], [vb, nb]) => Number(va === NOT_RECORDED) - Number(vb === NOT_RECORDED) || nb - na || va.localeCompare(vb))
+    .map(([v, n]) => `${v} (${tracks(n)})`)
+    .join(', ');
+}
+
 function buildSummary(
   rows: TrackRow[],
   missingEngines: string[],
@@ -1071,6 +1115,8 @@ function buildSummary(
     'failed, so there is no reference to compare against; out of scope.',
     '**pass %** = pass / (surveyed − oracle error). **accepted** = documented',
     'won\'t-fix deltas (0 for engines without an acceptance list).',
+    '',
+    `**Oracle:** ${oracleSummary([...rows, ...iterativeRows])}`,
     '',
     '## Tracks',
     '',
@@ -1322,6 +1368,8 @@ export {
   classAcceptanceSection,
   engineRow,
   engineMarkdown,
+  formatDetailMarkdown,
+  oracleSummary,
 };
 export type {
   EngineAcceptedEntry,
