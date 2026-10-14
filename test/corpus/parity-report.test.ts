@@ -230,3 +230,62 @@ describe('engineRow + engineMarkdown integration (class exoneration removes ids 
     expect(md).not.toContain('A1-drift');
   });
 });
+
+// registry-faults-staleness T3 (AD-3): a per-id entry declaring
+// verdict 'port-error' + errIncludes accepts a matching port-error row at
+// report time; the row leaves the fault table instead of the diverged table.
+describe('engineRow + engineMarkdown fault acceptance (A10)', () => {
+  const MAP_MAX = 'Map maximum size exceeded';
+  const faultRow = (id: string, status: 'port-error' | 'timeout', err?: string): EngineWalkRow => ({
+    ...walkRow(id, status),
+    ...(err === undefined ? {} : { err }),
+  });
+  const report = fakeReport([
+    faultRow('2784', 'port-error', MAP_MAX),
+    faultRow('other-fault', 'port-error', 'splines=compound: not supported yet'),
+    faultRow('slow', 'timeout'),
+    walkRow('still-tracked', 'diverged'),
+    walkRow('a-pass', 'pass'),
+  ]);
+  const acceptedMap: Record<string, EngineAcceptedRegistryEntry> = {
+    '2784': { class: 'A10', verdict: 'port-error', errIncludes: MAP_MAX, ref: 'known-divergences.md#a10' },
+    // Same declaration, but this row's error does not carry errIncludes.
+    'other-fault': { class: 'A10', verdict: 'port-error', errIncludes: MAP_MAX, ref: 'x' },
+    // No verdict: a diverged-only entry never accepts a fault row.
+    slow: { class: 'A9', bound: 'b', ref: 'x' },
+  };
+
+  it('computeAcceptedIds accepts only the matching port-error row', () => {
+    const { perId, classes } = splitAcceptedMap(acceptedMap);
+    expect(computeAcceptedIds(report, perId, classes)).toEqual(new Set(['2784']));
+  });
+
+  it('engineRow moves the accepted fault from portFaults to accepted', () => {
+    const row = engineRow('circo', report, acceptedMap);
+    expect(row.accepted).toBe(1);
+    expect(row.portFaults).toBe(2); // other-fault, slow
+    expect(row.diverged).toBe(1); // still-tracked
+    expect(row.pass + row.diverged + row.accepted + row.portFaults + row.oracleErrors).toBe(row.surveyed);
+  });
+
+  it('a diverged row is not accepted by a port-error entry', () => {
+    const r = fakeReport([walkRow('2784', 'diverged')]);
+    const row = engineRow('circo', r, { '2784': acceptedMap['2784']! });
+    expect(row.accepted).toBe(0);
+    expect(row.diverged).toBe(1);
+  });
+
+  it('engineMarkdown lists the accepted fault in the accepted table, not the fault table', () => {
+    const md = engineMarkdown('circo', report, acceptedMap);
+    const [head, rest] = md.split('## Diverged');
+    const faults = rest!.split('## Errors and timeouts')[1]!;
+    expect(head).toContain(`| \`2784\` |  | A10 | ${MAP_MAX} | known-divergences.md#a10 |`);
+    expect(head).toContain('## Accepted deltas (1)');
+    expect(faults).not.toContain('`2784`');
+    expect(faults).toContain('`other-fault`');
+    expect(faults).toContain('`slow`');
+    expect(md).toContain('## Errors and timeouts (2)');
+    expect(md).toContain('**port-error:** 1 · **timeout:** 1');
+    expect(md).toContain("**accepted (documented, won't-fix):** 1");
+  });
+});

@@ -20,8 +20,9 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
+import { validateFaultFields, type FaultAcceptance } from './accepted-class.js';
 
-interface EngineAcceptedEntry {
+interface EngineAcceptedEntry extends FaultAcceptance {
   class: string;
   bound?: string;
   ref: string;
@@ -70,6 +71,7 @@ describe('accepted-divergences-engines registry', () => {
           expect(typeof e.class, `class on ${engine}/${id}`).toBe('string');
           expect(e.ref, `ref on ${engine}/${id}`).toBeTruthy();
           expect(manifestIds.has(id), `unknown corpus id ${engine}/${id}`).toBe(true);
+          expect(validateFaultFields(e), `fault fields on ${engine}/${id}`).toBeNull();
         }
       });
 
