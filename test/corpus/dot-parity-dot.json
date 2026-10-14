@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-10-14T00:28:10.009Z",
+  "generatedAt": "2026-10-14T08:14:13.693Z",
   "generatedWith": "test/corpus/dot-walk.ts",
   "engine": "dot",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 929,
   "counts": {
-    "pass": 923,
+    "pass": 926,
     "diverged": 0,
     "accepted": 0,
     "oracleError": 3,
     "portError": 0,
-    "timeout": 3
+    "timeout": 0
   },
   "results": [
     {
@@ -10135,18 +10135,6 @@
       }
     },
     {
-      "id": "2095_1",
-      "path": "2095_1.dot",
-      "size": 105083,
-      "verdict": "timeout",
-      "formats": {
-        "dot": {
-          "verdict": "timeout",
-          "errMsg": ""
-        }
-      }
-    },
-    {
       "id": "2222",
       "path": "2222.dot",
       "size": 2384469,
@@ -10170,18 +10158,6 @@
       }
     },
     {
-      "id": "2343",
-      "path": "2343.dot",
-      "size": 59368,
-      "verdict": "timeout",
-      "formats": {
-        "dot": {
-          "verdict": "timeout",
-          "errMsg": ""
-        }
-      }
-    },
-    {
       "id": "2621",
       "path": "2621.dot",
       "size": 721934,
@@ -10190,18 +10166,6 @@
         "dot": {
           "verdict": "oracleError",
           "errMsg": "oracle exit null"
-        }
-      }
-    },
-    {
-      "id": "2108",
-      "path": "2108.dot",
-      "size": 3136769,
-      "verdict": "timeout",
-      "formats": {
-        "dot": {
-          "verdict": "timeout",
-          "errMsg": ""
         }
       }
     },
@@ -10232,6 +10196,39 @@
       "id": "2646",
       "path": "2646.dot",
       "size": 2975897,
+      "verdict": "pass",
+      "formats": {
+        "dot": {
+          "verdict": "pass"
+        }
+      }
+    },
+    {
+      "id": "2108",
+      "path": "2108.dot",
+      "size": 3136769,
+      "verdict": "pass",
+      "formats": {
+        "dot": {
+          "verdict": "pass"
+        }
+      }
+    },
+    {
+      "id": "2095_1",
+      "path": "2095_1.dot",
+      "size": 105083,
+      "verdict": "pass",
+      "formats": {
+        "dot": {
+          "verdict": "pass"
+        }
+      }
+    },
+    {
+      "id": "2343",
+      "path": "2343.dot",
+      "size": 59368,
       "verdict": "pass",
       "formats": {
         "dot": {

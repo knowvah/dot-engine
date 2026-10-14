@@ -12,8 +12,8 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 905 (generated 2026-07-27T21:34:14.801Z)
-- **pass:** 897 (99.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 8
+- **Surveyed:** 929 (generated 2026-10-14T04:10:31.083Z)
+- **pass:** 920 (99.0%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 8
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
 
 ## Accepted deltas (8) — documented, not chased
@@ -26,7 +26,7 @@ table below.
 | id | #diffs | class | bound | ref |
 |---|---:|---|---|---|
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | 4 | A9 | 2 draw-op diffs; two edges each flip one edge-label anchor with BIT-IDENTICAL spline + arrowhead. Op_1091-&gt;Op_1092 label x-anchor 2266.75 vs 2332.07 (symmetric about the identical spline midpoint 2299.4, ±32.66 = half the 65.32 label width); Op_2105-&gt;Op_2106 label y-anchor 247.54 vs 230.74 (above/below flip on a horizontal edge, x-anchor identical). placeLabels tie on 1-ULP-drifted surroundings, same class as b29. 2 diffs in a 240 KB graph; oracle renders completely (not a timeout). Full RCA: .agent-notes/osage-small-tail-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
-| [`1855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1855.dot) | 110 | A9 | 110 xdot draw-op diffs = 3 obstacle-routed edges (6-&gt;1 B10, 16-&gt;1 B7, 30-&gt;1 B10) routed on the mirror side of the node row; X bit-exact, Y mirrored (6-&gt;1 429.120 vs 385.608). Node centers already bit-exact. Mechanism: octagon obstacle vertices (circumscribed_polygon_corner_about_ellipse) differ 3-4 ULP from C because clang -ffp-contract=on fuses the a*b+-c chains in ellipse_tangent_slope/line_intersection while V8 rounds each op; C's fused rounding collapses a gutter column of corner-x to one bit-exact double (exact collinearity), the port's splits it into two, flipping the visibility clear() tangency test so the gutter is no longer blocked -&gt; ~20 extra visibility edges -&gt; Dijkstra resolves the up/down homotopy tie to the mirror side. cos/sin injection is a no-op; C-obstacle injection A/B -&gt; 0 diffs. Full RCA: .agent-notes/osage-spline-family-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
+| [`1855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1855.dot) | 62 | A9 | 110 xdot draw-op diffs = 3 obstacle-routed edges (6-&gt;1 B10, 16-&gt;1 B7, 30-&gt;1 B10) routed on the mirror side of the node row; X bit-exact, Y mirrored (6-&gt;1 429.120 vs 385.608). Node centers already bit-exact. Mechanism: octagon obstacle vertices (circumscribed_polygon_corner_about_ellipse) differ 3-4 ULP from C because clang -ffp-contract=on fuses the a*b+-c chains in ellipse_tangent_slope/line_intersection while V8 rounds each op; C's fused rounding collapses a gutter column of corner-x to one bit-exact double (exact collinearity), the port's splits it into two, flipping the visibility clear() tangency test so the gutter is no longer blocked -&gt; ~20 extra visibility edges -&gt; Dijkstra resolves the up/down homotopy tie to the mirror side. cos/sin injection is a no-op; C-obstacle injection A/B -&gt; 0 diffs. Full RCA: .agent-notes/osage-spline-family-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
 | [`graphs-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/polypoly.gv) | 24 | A9 | Rigid pack-cell swap of the 9000-series distorted-quad components (whole-node ±(182,338)/±2909 translations; &lt;=24 draw-op diffs per id, no shape/routing error). Mechanism: bare transcendental cos(pi+theta) — V8 Math.cos is correctly rounded while Apple libm's cos carries a 1-ULP argument-dependent error, so \|cos(pi+theta)\| != \|cos(theta)\| only under libm; the 1-ULP size delta feeds pack GRID ceil, tips a perimeter tie, and qsort swaps two components' cells. No deterministic rewrite reproduces a non-correctly-rounded libm transcendental. osage only. Full RCA: .agent-notes/patchwork-tail-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
 | [`linux.i386-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b29.gv) | 3 | A9 | 2 draw-op diffs; edge Node14663-&gt;Node14649 label _ldraw_ text x-anchor 878.28 (port) vs 841.06 (oracle) on both label lines. Edge spline (B 4 1040.15 72 ... 679.18 72) and arrowhead _tdraw_ are BIT-IDENTICAL; only the label anchor differs, placed symmetrically about the bit-identical spline midpoint ~859.67 (±18.6 = half the label width). Same placeLabels knife-edge accepted for twopi/graphs-b29: a 1-ULP drift in the surrounding objects tips a label-side tie. share-b29 is the mirror (841.06 vs 878.28). 2 diffs in a 136 KB graph, every other label bit-matches. Full RCA: .agent-notes/osage-small-tail-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
 | [`share-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b29.gv) | 3 | A9 | 2 draw-op diffs; mirror of linux.i386-b29 (label anchor 841.06 vs 878.28) — same placeLabels knife-edge tie; edge spline + arrowhead bit-identical, all other labels match. | known-divergences.md#a9-engine-track-twopi-circo |
@@ -34,14 +34,16 @@ table below.
 | [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 112 | A9 | Rigid pack-cell re-order of the 9000-series distorted quads (112 draw-op diffs; 10 of 76 nodes move, the rest bit-identical; 9002/9006 swap cells with -(2739,176)/+(2449,176) translations, 8 neighbours shift in x only; no shape/routing error). Mechanism: the SAME node-9004 cos(pi+theta) 1-ULP as graphs-polypoly (C bb.x 57.754149262393340791 vs port 57.754149262393326580 - byte-identical to the patchwork-tail RCA values). Propagation on this larger input is osage arrayRects acmpf, which sorts by the RAW width+height sum: under Apple libm 9004's key is strictly 1 ULP above its rotated siblings 9000/9002/9006 and sorts first; under V8's correctly-rounded cos the four keys tie exactly and unstable qsort orders the group differently -&gt; different row-major 9x9 cells -&gt; the 9002/9006 swap plus a column-width fmax cascade. Reproduced exactly by feeding the port's own arrayRects the C sizes vs the port sizes (10 place diffs, dx byte-matching the sweep). Irreducible per the A9 controlled experiment (bare transcendental, bit-identical argument). osage only; same input passes the other engines. | known-divergences.md#a9-engine-track-twopi-circo |
 | [`windows-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/polypoly.gv) | 12 | A9 | Rigid pack-cell swap of the 9000-series distorted-quad components (whole-node ±(182,338)/±2909 translations; &lt;=24 draw-op diffs per id, no shape/routing error). Mechanism: bare transcendental cos(pi+theta) — V8 Math.cos is correctly rounded while Apple libm's cos carries a 1-ULP argument-dependent error, so \|cos(pi+theta)\| != \|cos(theta)\| only under libm; the 1-ULP size delta feeds pack GRID ceil, tips a perimeter tie, and qsort swaps two components' cells. No deterministic rewrite reproduces a non-correctly-rounded libm transcendental. osage only. Full RCA: .agent-notes/patchwork-tail-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | 1705517 | 76 | `edge:r1885st->r1885ed#0 _ldraw_ edge:r1885st->r1885ed#0/_ldraw_/op[2].text[1]: 188 vs 171.2` |
 
 ## Errors and timeouts (0)
 
 _(none)_
 
 **oracle errors:** 5 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (897) are omitted for brevity — the full roster is in
+_Passing ids (920) are omitted for brevity — the full roster is in
 `parity-osage.json`._

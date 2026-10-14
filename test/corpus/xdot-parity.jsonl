@@ -919,11 +919,11 @@
 {"id":"graphs-b100","path":"graphs/b100.gv","size":782464,"verdict":"conformant"}
 {"id":"graphs-b104","path":"graphs/b104.gv","size":782464,"verdict":"conformant"}
 {"id":"2222","path":"2222.dot","size":2384469,"verdict":"conformant"}
-{"id":"2095_1","path":"2095_1.dot","size":105083,"verdict":"timeout","errMsg":""}
 {"id":"1652","path":"1652.dot","size":240391,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"2621","path":"2621.dot","size":721934,"verdict":"oracle-error","errMsg":"oracle exit null"}
-{"id":"2343","path":"2343.dot","size":59368,"verdict":"timeout","errMsg":""}
-{"id":"2108","path":"2108.dot","size":3136769,"verdict":"timeout","errMsg":""}
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"2371","path":"2371.dot","size":1705517,"verdict":"conformant"}
 {"id":"2646","path":"2646.dot","size":2975897,"verdict":"conformant"}
+{"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant"}
+{"id":"2095_1","path":"2095_1.dot","size":105083,"verdict":"conformant"}
+{"id":"2343","path":"2343.dot","size":59368,"verdict":"conformant"}

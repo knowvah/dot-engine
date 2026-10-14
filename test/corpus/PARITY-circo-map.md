@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 905
-- **pass:** 900 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
-- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 5
+- **Surveyed:** 928
+- **pass:** 920 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
+- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 7
 
 ## Diverged (0)
 
@@ -23,15 +23,18 @@ _(none)_
 
 _(none)_
 
-## Errors and timeouts (5)
+## Errors and timeouts (8)
 
 | id | message |
 |---|---|
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | oracle exit null |
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | oracle exit null |
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | oracle exit null |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
+| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | oracle exit null |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle exit null |
+| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle exit null |
 
-_Passing ids (900) are omitted for brevity — the full roster is in
+_Passing ids (920) are omitted for brevity — the full roster is in
 `map-parity-circo.json`._

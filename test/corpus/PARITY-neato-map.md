@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 910
-- **pass:** 902 (99.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 7
-- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 1
+- **Surveyed:** 928
+- **pass:** 917 (99.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 7
+- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 3
 
 ## Diverged (0)
 
@@ -31,11 +31,14 @@ _(none)_
 | [`nshare-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_twopi.gv) | 8 | `area[0].coords[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`share-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b102.gv) | 13 | `area[47].coords[0]` | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 
-## Errors and timeouts (1)
+## Errors and timeouts (4)
 
 | id | message |
 |---|---|
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
+| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle exit null |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (902) are omitted for brevity — the full roster is in
+_Passing ids (917) are omitted for brevity — the full roster is in
 `map-parity-neato.json`._

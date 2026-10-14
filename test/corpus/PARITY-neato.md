@@ -12,11 +12,11 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 910 (generated 2026-07-30T21:26:35.545Z)
-- **pass:** 826 (90.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 3 · **accepted (A1-drift class):** 80
-- **port-error:** 0 · **timeout:** 1 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
+- **Surveyed:** 928 (generated 2026-10-14T05:19:36.193Z)
+- **pass:** 840 (90.6%) · **diverged (tracked):** 5 · **accepted (documented, won't-fix):** 2 · **accepted (A1-drift class):** 79
+- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 1 (excluded from pass %)
 
-## Accepted deltas (3) — documented, not chased
+## Accepted deltas (2) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -27,7 +27,6 @@ table below.
 |---|---:|---|---|---|
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 1862 | A1 | 1862 draw-op diffs (was 3838 before the pinned-node fixed-packing protocol was ported). 7-component disconnected layout with a pinned `legend` (pos=0,0!); every node box is bit-identical to the oracle (0 size diffs) — the divergence is component PLACEMENT. With C's node positions injected the port's polyomino cell counts match C exactly (81,66,42,57,25,21,6,6,6,6), so the packer is byte-faithful; the residual is float32 stress-majorization drift in edge splines amplified through the discrete greedy packer (a few drifted cells flip a later component's slot). Not auto-verified by attribution: injection is per-component pre-pack, so on a multi-component graph it re-packs (double-transform) rather than reproducing C. | known-divergences.md#a1-drift-iterative-engines |
 | [`2619_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot) | 8 | A1 | 0.81pt on 4 x-coords of one sub-point stub spline; nodes 0.13-0.18pt | plans/decision-journal.md 2026-07-24 T5: in-bar drift amplified by degenerate near-zero-length spline clip |
-| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 13 | A9 | 13 draw-op diffs confined to edges 1-&gt;6 and 2-&gt;3; edge 1-&gt;6 routed as a 14-pt multispline corridor (port) vs the native plain per-member fallback (8-pt) (unfilled_bezier[ptCount]: 8 vs 14), the rest its consequent arrowhead points (&lt;=5.8pt). Same graph, edge and ptCount signature as the accepted twopi/circo 241_0: CDT cocircular incircle tie flipped by libm sin/cos 1-ULP (V8 vs Apple libm) — the port's multispline routing is faithful; the tie is irreducible. | known-divergences.md#a9-engine-track-twopi-circo |
 
 ## Accepted class: A1-drift — computed, not enumerated
 
@@ -39,16 +38,23 @@ outright leaves the class silently on the next report regen.
 
 - **A1-drift**: **81** members — full per-id evidence in [`attribution-neato.json`](./attribution-neato.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (0)
+## Diverged (5)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | 1705517 | 405690 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 7178.6 vs 7171.6` |
+| [`2852`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2852.dot) | 287 | 41 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 443.34 vs 442.8` |
+| [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | 2975897 | 28 | `edge:n0x7fd5db70e7c0->n0x7fd5db70e880#0 _draw_ edge:n0x7fd5db70e7c0->n0x7fd5db70e880#0/_draw_/op[1].unfilled_bezier[5]: 1404.58 vs 1403.91` |
+| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | 782464 | 4 | `edge:Node23113->Node23121#0 _hdraw_ edge:Node23113->Node23121#0/_hdraw_/op[3].filled_polygon[0]: 510.97 vs 512.07` |
+| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 782464 | 4 | `edge:Node23113->Node23121#0 _hdraw_ edge:Node23113->Node23121#0/_hdraw_/op[3].filled_polygon[0]: 510.97 vs 512.07` |
 
-## Errors and timeouts (1)
+## Errors and timeouts (2)
 
 | id | status | message |
 |---|---|---|
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | timeout | ran 3600082ms, exceeded 3600000ms budget |
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle-error | Command failed: dot -K neato -Txdot git/graphviz/share/examples/world.gv |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | port-error | Map maximum size exceeded |
 
 **oracle errors:** 7 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (826) are omitted for brevity — the full roster is in
+_Passing ids (840) are omitted for brevity — the full roster is in
 `parity-neato.json`._

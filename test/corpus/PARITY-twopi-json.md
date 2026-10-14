@@ -11,41 +11,44 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 905
-- **pass:** 887 (98.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 17
-- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 1
+- **Surveyed:** 928
+- **pass:** 908 (98.1%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 16
+- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 2
 
-## Diverged (0)
+## Diverged (2)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 10 | `edge:n89->n100#0/_ldraw_/op[2].T[0]` |
+| [`tree-graphs-directed-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/arrows.gv) | 4766 | 6 | `edge:lcrow->lcrowlcrow#0/_ldraw_/op[2].T[0]` |
 
-## Accepted (17) — documented, not chased
+## Accepted (16) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
 | [`1855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1855.dot) | 842 | `edge:10->1#0/_draw_/op[1].b[0]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 2 | `edge:srtpdec1_0x5641244e6b50_rtcp_src_0x7f06a000ebd0->_proxypad10_0x5641244e58c0#0/_ldraw_/op[2].T[1]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 6 | `edge:1->6#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2470`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2470.dot) | 596 | `edge:n13->n12#0/_ldraw_/op[2].T[0]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrows.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`graphs-arrowsize`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrowsize.gv) | 23 | `edge:i->Z#0/_draw_/op[1].b[0]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`graphs-arrowsize`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrowsize.gv) | 72 | `edge:Z->I#0/_draw_/op[1].b[0]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b29.gv) | 2 | `edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/newarrows.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`linux.i386-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b29.gv) | 2 | `edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`linux.x86-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/arrows_dot.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`macosx-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/macosx/arrows_dot.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`nshare-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/arrows_dot.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`nshare-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/arrows_dot.gv) | 29 | `edge:i->Z#0/_draw_/op[1].b[0]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 1 | `node:a/label` | Input is Latin-1 with NO `charset` declaration, so the bytes are invalid UTF-8. Native dot's -Tjson then emits a MIXED-ENCODING document: attribute values (e.g. node `label`) are echoed as RAW Latin-1 bytes (0xe1 0xe2 ... unconverted), while the DRAWN label text (_ldraw_ T op, via make_label) is UTF-8 (0xc3 0xa1 ...). No single decode reads both halves correctly: Latin-1 recovers the attribute but mojibakes the text, UTF-8 does the reverse (and the attribute bytes are not valid UTF-8). The port decodes the input once (utils.c latin1ToUTF8 fallback) and is internally consistent valid UTF-8 on BOTH surfaces, so it cannot reproduce the oracle's split encoding. A4 class: the oracle output is an encoding bug; the port declines to emit invalid/mixed-encoding JSON. The DECLARED charset=latin1 case (graphs-Latin1/b60) IS handled via the stoj double-encode fix; only the UNDECLARED-charset case is irreducible. |
-| [`share-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/newarrows.gv) | 22 | `edge:i->Z#0/_draw_/op[1].b[0]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`share-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/newarrows.gv) | 20 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (A1 arrows family, injection A/B 40-&gt;0 diffs; engine registry + decision journal); json re-emits the same layout. Journal 2026-07-28. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
 | [`windows-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/newarrows.gv) | 20 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (1)
+## Errors and timeouts (2)
 
 | id | message |
 |---|---|
-| [`2222`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2222.dot) | oracle exit null |
+| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Warning: syntax ambiguity - badly delimited number '00s' in line 1 of https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot splits into two tokens |
 
-_Passing ids (887) are omitted for brevity — the full roster is in
+_Passing ids (908) are omitted for brevity — the full roster is in
 `json-parity-twopi.json`._
