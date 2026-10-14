@@ -33,6 +33,9 @@ interface AcceptedEntry {
   opClass?: string;
   delta?: number;
   rationale?: string;
+  /** Fault acceptance (accepted-class.ts FaultAcceptance): no delta. */
+  verdict?: string;
+  errIncludes?: string;
 }
 
 interface Bucket {
@@ -201,7 +204,8 @@ function msgTable(results: MapWalkResult[]): string {
 function acceptedTable(entries: AcceptedEntry[]): string {
   if (entries.length === 0) return '_(none)_\n';
   const rows = entries.map(
-    (e) => `| ${testIdLink(e.id)} | ${escText(e.opClass)} | ${e.delta ?? ''} | ${escText(e.rationale)} |`,
+    // An accepted fault has no delta; its error text stands in for it.
+    (e) => `| ${testIdLink(e.id)} | ${escText(e.opClass)} | ${e.delta ?? escText(e.errIncludes)} | ${escText(e.rationale)} |`,
   );
   return ['| id | opClass | delta | rationale |', '|---|---|---:|---|', ...rows, ''].join('\n');
 }
