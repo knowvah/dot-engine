@@ -6,4 +6,4 @@ the mission happens here, and it must be cache hits (STOP 5).
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T5](T5-a10-restage.md) | Add A10 entries; re-walk six 2784 json/map rows; regenerate dashboards | typescript-pro (or orchestrator) | registries ×3, `json-parity-circo.*`, `map-parity-{circo,twopi,neato,fdp,sfdp}.*`, affected `PARITY*.md` | T2, T3, T4 | [ ] |
+| [T5](T5-a10-restage.md) | Add A10 entries; re-walk six 2784 json/map rows; regenerate dashboards | typescript-pro (or orchestrator) | registries ×3, `json-parity-circo.*`, `map-parity-{circo,twopi,neato,fdp,sfdp}.*`, affected `PARITY*.md` | T2, T3, T4 | [x] |

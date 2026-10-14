@@ -2,7 +2,7 @@
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| T8 | Final gates, journals, handoff update, PR | orchestrator | `plans/registry-faults-staleness/{README,decision-journal}.md`, `plans/decision-journal.md`, `plans/post-16.1-followups/README.md` | T7a–c | [ ] |
+| T8 | Final gates, journals, handoff update, PR | orchestrator | `plans/registry-faults-staleness/{README,decision-journal}.md`, `plans/decision-journal.md`, `plans/post-16.1-followups/README.md` | T7a–c | [x] |
 
 ## Steps
 
