@@ -88,7 +88,7 @@ attribution). Merge-commit PR at the end.
 | [1](batch-1/overview.md) | T3 triage · T4 tracker suite · T5 optmacroname · T6 dead flat router | parallel | [x] |
 | [2](batch-2/overview.md) | T7 HTML · T8 dotgen+ortho · T9 renderers · T10 force engines · T11 shared | parallel dev, serial land | [x] |
 | [3](batch-3/overview.md) | T12 residual ratchet → T13 registries + docs | sequential | [x] |
-| [4](batch-4/overview.md) | T14 dashboards · T15 translations → T16 tracker + PR | T14‖T15, then T16 | [ ] |
+| [4](batch-4/overview.md) | T14 dashboards · T15 translations → T16 tracker + PR | T14‖T15, then T16 | [x] |
 
 ## Documents
 
@@ -116,3 +116,38 @@ attribution). Merge-commit PR at the end.
 
 Publish/version bump of `@knowvah/dot-engine` with the 16.1 behaviour changes;
 plantuml-ts `.tgz` bump and re-measure of the fixtures named in TRACKER.md.
+
+## Session-end summary (2026-10-14)
+
+**Tasks:** 17 of 17 planned (T0–T16) completed; one extra unit of work
+(roster-addition fixes `560668e4`/`47da7dfd`/`910be2a2`, landed under T14
+with its own survey and perf A/B).
+
+**Outcome:** oracle re-pinned to graphviz 16.1.0 (native build ≡ headless
+homebrew 16.1.0 on the tracker repros; 15.x build kept at `~/git/graphviz-15`).
+519 upstream commits triaged (17 port / 279 refactor / 223 outside); every
+port row ported or confirmed no-change. Survey conformant 904 → **929/950**
+on the 16.1 baseline, 0 regressions; ratchet peaked at 51 and is **empty**;
+all 7 engine walks and 26 format walks at or above their 16.1 starting
+counts on the same ids (roster 910 → 929); perf 0.86× / 0.75× of baseline.
+
+**Decisions:** ~95 journal rows; flagged for review —
+- 2784 on circo/twopi/neato/fdp/sfdp now throws `Map maximum size exceeded`
+  (faithful pack int arithmetic needs 2.0e9 cells; V8 Map caps at 2^24) —
+  accepted as A10, prose-only because no registry can accept port-errors.
+- AD-6 held in its conditional form: native 16.1 ortho failure exits 0 with
+  an untranslated, edge-less SVG, and the port mirrors that (no throw).
+- Consumer-visible changes: HTML table border/rules now precede cells;
+  `svgid`; ortho-failure output; parser accepts `node a = [...]` macro names
+  with C's warning; scan.l numbers (`width=1e1` is now a syntax error, as
+  natively); default fontname `Times-Roman`; SVG node/edge comments emitted.
+- Not landed: circo positioning FMA/association patch (would flip 1855 via
+  libm sin/cos amplification) — `followups/circpos-fma-assoc.patch`.
+
+**Follow-ups:** publish/version bump and plantuml-ts `.tgz` bump; registry
+schema for port-error/timeout acceptances; staleness tests for the
+engine/json/plain/xdot/map registries; regenerate `attribution-*.json` for
+16.1; oracle version line in `parity-report.ts` pages; `poly-pack.ts`
+second polyomino copy keeps double arithmetic; 2371 twopi/sfdp port ≈ 7×
+native (perf); HTML lexer error paths (unknown entity, mismatched tag) and
+`table size too small for content` warning are pre-existing gaps.
