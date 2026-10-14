@@ -26,7 +26,7 @@
 - **Confidence**: High
 
 ## Observation: a second polyomino copy keeps double arithmetic
-- **Context**: porting the pack int semantics (`910be2a2`).
+- **Context**: porting the pack int semantics (`97fcccd8`).
 - **Finding**: `src/layout/pack/poly-pack.ts` (`putRects` path) has its own
   `computeStep` (`Math.floor`, `d<0` guard) and `fits` (double multiply) —
   the same C functions with the same int-arithmetic gap.

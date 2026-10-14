@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -510,7 +510,7 @@ akceptačné záznamy sú vyradené. **`2796` a `2471` sa k nim pridali
 vo verzii graphviz 16.1** (oba `conformant` v novom prechode, akceptačné záznamy
 vyradené): port a orákulum 16.1 sa teraz zhodujú vo výstupe obnovy `init_rank`
 vrátane stratených hrán. Príčina nebola izolovaná bisekciou (kandidátmi sú
-portácia dotgen 16.1 `48981bf0` a oprava spotreby stratených hrán `54bd3b9b`);
+portácia dotgen 16.1 `3cfbf55c` a oprava spotreby stratených hrán `5b6b9bfc`);
 opis `init_rank` nižšie sa ponecháva ako mechanizmus triedy a obe id sú prechodom
 parity pripnuté ako conformant.
 
@@ -673,8 +673,8 @@ stránka porovnania
 — vstup odvodený z fuzzera (`fontsize="991836031967s8"`), ktorého absurdná veľkosť
 písma nafúkne výkres na ~2.75e11 pt — je vo verzii graphviz 16.1 **conformant** a jeho
 akceptácia je vyradená: port teraz zužuje veľkosť stránky tak, ako to robí
-natívna konverzia `ROUND` (`fe20f303`), a zostavuje orezanie stránky v poradí
-`setup_page` (`eea9d21c`). Odseky o mechanizme nižšie
+natívna konverzia `ROUND` (`47f3165d`), a zostavuje orezanie stránky v poradí
+`setup_page` (`da6c4a53`). Odseky o mechanizme nižšie
 opisujú pôvodný rozdiel.
 
 **Čo sa deje.** C ukladá `job->width` / `job->height` ako **`unsigned int`**
@@ -861,13 +861,13 @@ by si vyžadovala reprodukovať v JS presné zaokrúhľovanie `sin`/`cos` z libm
 
 **Nová základňa 16.1.** Geometrii koridoru multisplinu chýbalo zlučovanie FMA z clangu
 (radikand rohu elipsy, `mkCtrlPts`, `DIST` = sqrt(fmadd), skalárny súčin
-v `line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+v `line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) ho zrkadlil. `241_0` pri twopi a neato — ktorý táto
 trieda pripisovala kokruhovej remíze nižšie — sa stal **conformant**
 (akceptácie vyradené) a sfdp `42` sa ukázal bez akejkoľvek remízy (je to
 drift A1, pozri [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` pri circo, fdp
 a sfdp sa stále líši s nezmenenými alebo zníženými zvyškami; ich
-pripísanie remíze nižšie predchádza `b77b2703` a od tej opravy, ktorá ukázala,
+pripísanie remíze nižšie predchádza `f66ac638` a od tej opravy, ktorá ukázala,
 že rovnaké pripísanie bolo pri twopi/neato nesprávne, **nebolo znovu overené
 vstreknutím polôh**.
 
@@ -1026,7 +1026,7 @@ Dva ďalšie prípady na úrovni stopy modulu boli rozobrané po koreňovú prí
 (úplná RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 rozdielov
 kresliacich operácií, vtedy pripísaných tej istej kokruhovej remíze incircle v CDT ako
 záznam circo vyššie; **vyradené vo verzii graphviz 16.1** — je conformant od
-`b77b2703`, takže preklopenie koridoru 14 oproti 8 bodom bolo nezrkadlené zlúčenie
+`f66ac638`, takže preklopenie koridoru 14 oproti 8 bodom bolo nezrkadlené zlúčenie
 FMA, nie remíza) a circo
 `windows-tree` (10 rozdielov kresliacich operácií na jednej hrane vejára — trigonometria umiestnenia v circo
 dopadne `node2.y` o jediné ULP nad `node8.y` okolo presne symetrickej
@@ -1041,9 +1041,9 @@ vstreknú presné natívne polohy pred vedením hrán (takže odchýlka NIE je
 iteratívny drift — pozri triedu A1-drift — ale diskrétna remíza predikátu):
 
 - `241_0` — pripísaná kokruhovej remíze incircle v CDT (koridor multisplinu;
-  po `b77b2703` znovu neoverené, pozri novú základňu 16.1 vyššie).
+  po `f66ac638` znovu neoverené, pozri novú základňu 16.1 vyššie).
   Zvyškom je **preklopenie počtu segmentov**: 7 rozdielov kresliacich operácií na hrane 1->2,
-  `ptCount 8 vs 20` (20 rozdielov pred `b77b2703`) — koridor uspeje s N-bodovým
+  `ptCount 8 vs 20` (20 rozdielov pred `f66ac638`) — koridor uspeje s N-bodovým
   splinom, kde natívny build sa vráti k kratšiemu obyčajnému vedeniu
   (alebo naopak), ako v zázname `241_0` pri circo vyššie. Port už emuluje kontrakciu arm64
   `fmadd` v predikáte incircle/`ccw` (`src/pathplan/triang.ts`,
@@ -1055,7 +1055,7 @@ iteratívny drift — pozri triedu A1-drift — ale diskrétna remíza predikát
 > ako remíza incircle v CDT/libm. Misia zistila inak
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): niekdajšie preklopenie
 > koridoru bola chybná portácia FMA na strane portu v geometrii koridoru multisplinu,
-> opravená v `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> opravená v `f66ac638` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`); po vstreknutí natívnych polôh port teraz reprodukuje
 > natívny xdot presne. Zostávajúci zvyšok (posuny uzlov 0.06-0.65 pt) je
 > iteratívny drift naočkovaný jedným nesúladom 1 ULP v `pow(dist, 2)` z libm od Apple
@@ -1089,7 +1089,7 @@ rozdielov `unfilled_bezier` obmedzených na jednu hranu (`0->1#0`, maxΔ 3.39pt)
 polohy uzlov sú po injekcii identické, odchýlka je nižšie v
 koridore multisplinu v pathplan — rovnaká remíza incircle s libm 1-ULP ako pri
 circo/sfdp `241_0` (incircle v presných racionálnych číslach 185/185 vyššie; 11 rozdielov nezmenených
-`b77b2703` — nie je znovu overené vstreknutím). Páky sú
+`f66ac638` — nie je znovu overené vstreknutím). Páky sú
 už uplatnené (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); remíza sa považuje za neredukovateľnú. Akceptované cez `accepted-divergences-engines.json`
 `fdp.241_0`. `2095` pri fdp je naopak **A1-drift, nie A9**: vstreknutie
@@ -1115,7 +1115,7 @@ v porte je `Map` z JavaScriptu, ktorú V8 obmedzuje na 2^24 záznamov, takže vy
 `Map maximum size exceeded`.
 
 **Prečo akceptované.** Limit runtime pod úrovňou kódu, nie logická medzera; príčinou je
-verná aritmetika z `910be2a2` (pred ňou port vypočítal malé,
+verná aritmetika z `97fcccd8` (pred ňou port vypočítal malé,
 nesprávne rozloženie a limit nikdy nedosiahol). Akceptovaným výsledkom je vyhodená
 chyba, nie verdikt `diverged`, a registre jednotlivých modulov
 akceptujú iba riadky `diverged`, takže záznam v registri neexistuje: prechody naďalej uvádzajú

@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -508,7 +508,7 @@ de acceptare sunt retrase. **`2796` și `2471` li s-au alăturat
 la graphviz 16.1** (ambele `conformant` în parcurgerea nouă, intrările de acceptare
 retrase): portarea și oracolul 16.1 sunt acum de acord asupra ieșirii de recuperare `init_rank`,
 inclusiv asupra muchiilor pierdute. Cauza nu a fost izolată prin bisecție (portarea dotgen 16.1
-`48981bf0` și remedierea consumului muchiilor pierdute `54bd3b9b` sunt
+`3cfbf55c` și remedierea consumului muchiilor pierdute `5b6b9bfc` sunt
 candidatele); descrierea `init_rank` de mai jos este păstrată ca mecanism al
 clasei, iar cele două id-uri sunt fixate ca fiind conforme de parcurgerea de paritate.
 
@@ -668,8 +668,8 @@ Pagina de comparare [`1367`](https://github.com/knowvah/dot-engine/blob/main/pla
 — o intrare derivată dintr-un fuzzer (`fontsize="991836031967s8"`) a cărei dimensiune absurdă
 a fontului umflă desenul la ~2.75e11 pt — este **conformă** la graphviz 16.1, iar
 acceptarea ei este retrasă: portarea îngustează acum dimensiunea paginii așa cum o face
-conversia nativă `ROUND` (`fe20f303`) și construiește decuparea paginii în
-ordinea din `setup_page` (`eea9d21c`). Paragrafele despre mecanism de mai jos
+conversia nativă `ROUND` (`47f3165d`) și construiește decuparea paginii în
+ordinea din `setup_page` (`da6c4a53`). Paragrafele despre mecanism de mai jos
 descriu diferența inițială.
 
 **Ce se întâmplă.** C stochează `job->width` / `job->height` ca **`unsigned int`**
@@ -857,13 +857,13 @@ ar cere reproducerea în JS a rotunjirii exacte `sin`/`cos` din libm Apple.
 
 **Re-baselining la 16.1.** Geometria coridorului multispline nu avea contracția FMA a lui clang
 (radicandul colțului elipsei, `mkCtrlPts`, `DIST` = sqrt(fmadd), produsul scalar din
-`line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+`line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) a oglindit-o. `241_0` din twopi și neato — pe care această clasă
 le atribuise egalității cocirculare de mai jos — au devenit **conforme**
 (acceptări retrase), iar sfdp `42` s-a dovedit că nu are nicio egalitate (este derivă
 A1, vedeți [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` din circo, fdp
 și sfdp încă divergă, cu reziduuri neschimbate sau reduse; atribuirea lor
-egalității de mai jos este anterioară lui `b77b2703` și **nu a fost reverificată
+egalității de mai jos este anterioară lui `f66ac638` și **nu a fost reverificată
 prin injecție de poziție** de când acea remediere a arătat că aceeași atribuire era greșită pentru
 twopi/neato.
 
@@ -1020,7 +1020,7 @@ Alte două instanțe pe fluxuri de motor au fost elucidate până la cauza răd�
 (analiza completă a cauzei rădăcină: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 diferențe de operații de desenare,
 atribuite atunci aceleiași egalități cocirculare incircle din CDT ca la intrarea
 circo de mai sus; **retras la graphviz 16.1** — este conform de la
-`b77b2703`, deci inversarea coridorului de 14 puncte față de 8 puncte era contracția FMA
+`f66ac638`, deci inversarea coridorului de 14 puncte față de 8 puncte era contracția FMA
 neoglindită, nu o egalitate) și circo
 `windows-tree` (10 diferențe de operații de desenare pe o muchie de evantai — trigonometria de plasare din circo
 aduce `node2.y` cu un singur ULP deasupra lui `node8.y` în jurul valorii exact simetrice 18.0, iar selecția portului de cap dyna din `closestSide` inversează TOP/BOTTOM la
@@ -1034,9 +1034,9 @@ pozițiile native exacte dinaintea rutării sunt injectate (deci divergența NU 
 derivă iterativă — vedeți clasa A1-drift — ci o egalitate discretă de predicat):
 
 - `241_0` — atribuit egalității cocirculare incircle din CDT (coridorul multispline;
-  nereverificat după `b77b2703`, vedeți re-baselining-ul la 16.1 de mai sus).
+  nereverificat după `f66ac638`, vedeți re-baselining-ul la 16.1 de mai sus).
   Reziduul este o **inversare a numărului de segmente**: 7 diferențe de operații de desenare pe muchia 1->2,
-  `ptCount 8 vs 20` (20 de diferențe înainte de `b77b2703`) — coridorul reușește cu
+  `ptCount 8 vs 20` (20 de diferențe înainte de `f66ac638`) — coridorul reușește cu
   un spline de N puncte acolo unde build-ul nativ revine la o rută simplă mai scurtă
   (sau invers), ca la intrarea circo `241_0` de mai sus. Portarea emulează deja contracția arm64
   `fmadd` în predicatul incircle/`ccw` (`src/pathplan/triang.ts`,
@@ -1048,7 +1048,7 @@ derivă iterativă — vedeți clasa A1-drift — ci o egalitate discretă de pr
 > aici ca o egalitate incircle din CDT/libm. Misiunea a constatat altceva
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): fosta inversare de coridor
 > era o portare greșită a FMA din partea portării, în geometria coridorului multispline,
-> remediată de `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> remediată de `f66ac638` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`); cu pozițiile native injectate, portarea reproduce acum
 > xdot-ul nativ exact. Reziduul rămas (deplasări de noduri de 0.06-0.65 pt) este
 > derivă iterativă, semănată de o singură nepotrivire de 1 ULP între `pow(dist, 2)` din libm Apple
@@ -1082,7 +1082,7 @@ pozițiile exacte dinaintea rutării ale oracolului injectate, reziduul este de 
 pozițiile nodurilor sunt injectate identic, divergența este în aval, în
 coridorul multispline din pathplan — aceeași egalitate incircle cu 1 ULP libm ca la
 circo/sfdp `241_0` (incircle în numere raționale exacte 185/185 de mai sus; 11 diferențe neschimbate de
-`b77b2703` — nereverificat prin injecție). Pârghiile
+`f66ac638` — nereverificat prin injecție). Pârghiile
 sunt deja aplicate (`src/pathplan/triang.ts` fmadd, `Math.hypot` în `src/pathplan/route.ts:198`);
 egalitatea este tratată ca ireductibilă. Acceptat prin `accepted-divergences-engines.json`
 `fdp.241_0`. În schimb, `2095` din fdp este **A1-drift, nu A9**: injectarea
@@ -1108,7 +1108,7 @@ este un `Map` JavaScript, pe care V8 îl limitează la 2^24 intrări, așa că a
 `Map maximum size exceeded`.
 
 **De ce este acceptată.** O limită de runtime aflată sub cod, nu o lacună de logică; cauza este
-aritmetica fidelă din `910be2a2` (înainte de ea, portarea calcula o aranjare mică și
+aritmetica fidelă din `97fcccd8` (înainte de ea, portarea calcula o aranjare mică și
 greșită și nu atingea niciodată limita). Rezultatul acceptat este o eroare aruncată,
 nu un verdict `diverged`, iar registrele pe motor
 acceptă doar rânduri `diverged`, deci nu există nicio intrare în registru: parcurgerile continuă să

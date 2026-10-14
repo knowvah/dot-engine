@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -512,7 +512,7 @@ godkjenningsoppføringer er pensjonert. **`2796` og `2471` sluttet seg til dem
 ved graphviz 16.1** (begge `conformant` i den ferske kjøringen, godkjenningsoppføringene
 pensjonert): porten og 16.1-orakelet er nå enige om gjenopprettingsutdataene fra `init_rank`,
 inkludert de tapte kantene. Årsaken ble ikke isolert med bisekt (16.1-dotgen-porten
-`48981bf0` og rettelsen for forbruk av tapte kanter `54bd3b9b` er
+`3cfbf55c` og rettelsen for forbruk av tapte kanter `5b6b9bfc` er
 kandidatene); beskrivelsen av `init_rank` nedenfor beholdes som klassens
 mekanisme, og de to id-ene er festet som samsvarende av paritetskjøringen.
 
@@ -671,8 +671,8 @@ Sammenligningssiden for [`1367`](https://github.com/knowvah/dot-engine/blob/main
 — en fuzzer-utledet inndata (`fontsize="991836031967s8"`) hvis absurde skriftstørrelse
 blåser opp tegningen til ~2.75e11 pt — er **samsvarende** ved graphviz 16.1 og
 godkjenningen er pensjonert: porten innsnevrer nå sidestørrelsen slik den innebygde
-`ROUND`-konverteringen gjør (`fe20f303`) og bygger sideklippet i rekkefølgen
-til `setup_page` (`eea9d21c`). Mekanismeavsnittene nedenfor
+`ROUND`-konverteringen gjør (`47f3165d`) og bygger sideklippet i rekkefølgen
+til `setup_page` (`da6c4a53`). Mekanismeavsnittene nedenfor
 beskriver den opprinnelige forskjellen.
 
 **Hva som skjer.** C lagrer `job->width` / `job->height` som **`unsigned int`**
@@ -860,13 +860,13 @@ ville kreve å gjenskape Apples libm-avrunding av `sin`/`cos` nøyaktig i JS.
 
 **Re-baselining på 16.1.** Multispline-korridorgeometrien manglet clangs FMA-
 kontraksjon (radikanden for ellipsehjørnet, `mkCtrlPts`, `DIST` = sqrt(fmadd),
-prikkproduktet i `line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+prikkproduktet i `line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) speilet den. twopi- og neato-`241_0` — som denne klassen
 hadde tilskrevet den kosirkulære likheten nedenfor — ble **samsvarende**
 (godkjenninger pensjonert), og sfdp `42` viste seg å ikke ha noen likhet i det hele tatt (det er A1-
 drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo-, fdp-
 og sfdp-`241_0` avviker fortsatt med uendrede eller reduserte rester; tilskrivningen
-av dem til likheten nedenfor er eldre enn `b77b2703` og er **ikke verifisert på nytt
+av dem til likheten nedenfor er eldre enn `f66ac638` og er **ikke verifisert på nytt
 ved posisjonsinjeksjon** siden den rettelsen viste at den samme tilskrivningen var feil for
 twopi/neato.
 
@@ -1025,7 +1025,7 @@ To ytterligere tilfeller på motorsporet ble rotårsaksanalysert og godkjent 202
 (full RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 forskjeller i tegneoperasjoner,
 den gang tilskrevet den samme kosirkulære CDT-incircle-likheten som circo-
 oppføringen ovenfor; **pensjonert ved graphviz 16.1** — den er samsvarende siden
-`b77b2703`, så korridorvendingen 14 punkter mot 8 punkter var den ikke-speilede FMA-
+`f66ac638`, så korridorvendingen 14 punkter mot 8 punkter var den ikke-speilede FMA-
 kontraksjonen, ikke en likhet) og circo
 `windows-tree` (10 forskjeller i tegneoperasjoner på én viftekant — circos plasserings-trig
 lander `node2.y` én enkelt ULP over `node8.y` rundt den nøyaktig symmetriske
@@ -1040,9 +1040,9 @@ eksakte innebygde posisjoner før ruting injiseres (så avviket er IKKE
 iterativ drift — se A1-driftklassen — men en diskret predikatlikhet):
 
 - `241_0` — tilskrevet den kosirkulære CDT-incircle-likheten (multispline-
-  korridoren; ikke verifisert på nytt etter `b77b2703`, se re-baseliningen på 16.1 ovenfor).
+  korridoren; ikke verifisert på nytt etter `f66ac638`, se re-baseliningen på 16.1 ovenfor).
   Resten er en **vending i segmentantall**: 7 forskjeller i tegneoperasjoner på kant 1->2,
-  `ptCount 8 vs 20` (20 forskjeller før `b77b2703`) — korridoren lykkes med
+  `ptCount 8 vs 20` (20 forskjeller før `f66ac638`) — korridoren lykkes med
   en spline på N punkter der det innebygde bygget faller tilbake på en kortere vanlig rute
   (eller omvendt), som i circo-oppføringen `241_0` ovenfor. Porten emulerer allerede arm64-
   `fmadd`-kontraksjonen i incircle-/`ccw`-predikatet (`src/pathplan/triang.ts`,
@@ -1054,7 +1054,7 @@ iterativ drift — se A1-driftklassen — men en diskret predikatlikhet):
 > her som en CDT-/libm-incircle-likhet. Oppdraget fant noe annet
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): den tidligere korridorvendingen
 > var en FMA-feilportering på portsiden i multispline-korridorgeometrien,
-> rettet av `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> rettet av `f66ac638` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`); med innebygde posisjoner injisert gjenskaper porten nå
 > innebygd xdot nøyaktig. Resten (nodeforskyvninger på 0.06-0.65 pt) er
 > iterativ drift, sådd av én 1-ULP-uenighet mellom Apple-libms
@@ -1088,7 +1088,7 @@ orakelets eksakte posisjoner før ruting injisert er resten 11 numeriske
 nodeposisjonene er injisert-identiske, ligger avviket nedstrøms i
 pathplan-multispline-korridoren — den samme libm-1-ULP-incircle-likheten som
 for circo/sfdp `241_0` (eksakt-rasjonal incircle 185/185 ovenfor; 11 forskjeller uendret av
-`b77b2703` — ikke verifisert på nytt ved injeksjon). Spakene er
+`f66ac638` — ikke verifisert på nytt ved injeksjon). Spakene er
 allerede brukt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); likheten anses som ureduserbar. Godkjent via `accepted-divergences-engines.json`
 `fdp.241_0`. fdps `2095` er derimot **A1-drift, ikke A9**: å injisere den
@@ -1114,7 +1114,7 @@ er et JavaScript-`Map`, som V8 begrenser til 2^24 oppføringer, så den kaster
 `Map maximum size exceeded`.
 
 **Hvorfor godkjent.** En kjøretidsgrense under koden, ikke et logisk gap; årsaken er
-den trofaste aritmetikken fra `910be2a2` (før den beregnet porten en liten,
+den trofaste aritmetikken fra `97fcccd8` (før den beregnet porten en liten,
 feil layout og nådde aldri grensen). Det godkjente utfallet er en kastet
 feil i stedet for en `diverged`-dom, og registrene per motor
 godkjenner bare `diverged`-rader, så det finnes ingen registeroppføring: kjøringene fortsetter å

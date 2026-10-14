@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -515,7 +515,7 @@ elfogadási bejegyzéseik kivonásra kerültek. **A `2796` és a `2471` a graphv
 végigfuttatásban, az elfogadási bejegyzések kivonva): a portolt változat és a 16.1
 orákulum most egyezik az `init_rank` helyreállítási kimeneten, beleértve az
 elveszett éleket is. Az okot nem izolálta bisect (a jelöltek a 16.1 dotgen
-portolás `48981bf0` és az elveszett élek felhasználásának javítása `54bd3b9b`);
+portolás `3cfbf55c` és az elveszett élek felhasználásának javítása `5b6b9bfc`);
 az alábbi `init_rank` leírás az osztály mechanizmusaként megmarad, a két
 azonosítót pedig conformantként rögzíti a paritás-végigfuttatás.
 
@@ -674,8 +674,8 @@ az [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-co
 **Érintett:** az sfdp `2556` (NaN elrendezés; lásd a motorsáv-bejegyzést). Az `1314` — egy fuzzerből származó bemenet (`fontsize="991836031967s8"`),
 amelynek abszurd betűmérete a rajzot ~2.75e11 pt-ra fújja fel — a graphviz 16.1-nél **conformant**, és az
 elfogadása kivonásra került: a portolt változat most úgy szűkíti az oldalméretet,
-ahogyan a natív `ROUND` konverzió teszi (`fe20f303`), és az oldalvágást a
-`setup_page` sorrendjében építi fel (`eea9d21c`). Az alábbi mechanizmus-bekezdések
+ahogyan a natív `ROUND` konverzió teszi (`47f3165d`), és az oldalvágást a
+`setup_page` sorrendjében építi fel (`da6c4a53`). Az alábbi mechanizmus-bekezdések
 az eredeti különbséget írják le.
 
 **Mi történik.** A C a `job->width` / `job->height` értékeket **`unsigned int`** típusként tárolja
@@ -863,14 +863,14 @@ az Apple libm pontos `sin`/`cos` kerekítésének JS-beli reprodukálását igé
 
 **16.1 újraalapozás.** A multispline folyosógeometriából hiányzott a clang
 FMA-összevonása (az ellipszissarok gyökjel alatti kifejezése, `mkCtrlPts`, `DIST`
-= sqrt(fmadd), a `line_intersect` skaláris szorzata); a `b77b2703` (`fix(neato):
+= sqrt(fmadd), a `line_intersect` skaláris szorzata); a `f66ac638` (`fix(neato):
 mirror fma contraction in multispline routing geometry`) tükrözte. A twopi és a
 neato `241_0` — amelyeket ez az osztály az alábbi körön fekvő döntetlennek
 tulajdonított — **conformant** lett (az elfogadások kivonva), az sfdp `42`-ről
 pedig kiderült, hogy egyáltalán nincs döntetlen (A1-sodródás, lásd
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). A circo, az fdp és az sfdp `241_0` még
 mindig eltér, a maradékaik változatlanok vagy csökkentek; az alábbi döntetlenre
-tulajdonításuk megelőzi a `b77b2703`-at, és azóta **nem ellenőriztük újra
+tulajdonításuk megelőzi a `f66ac638`-at, és azóta **nem ellenőriztük újra
 pozíciók injektálásával**, hogy ez a javítás ugyanezt a tulajdonítást tévesnek
 mutatta a twopi/neato esetén.
 
@@ -1029,7 +1029,7 @@ lezárva az ok-okozati láncot.
 Két további motorsáv-esetet gyökérokig elemeztünk és elfogadtunk 2026-07-11-én
 (teljes gyökérokelemzés: `.agent-notes/circo-edge-tail-rca.md`): a twopi `241_0` (6 rajzolásiművelet-eltérés, amelyet akkor ugyanannak a CDT körön
 fekvő incircle döntetlennek tulajdonítottak, mint a fenti circo bejegyzést;
-**kivonva a graphviz 16.1-nél** — a `b77b2703` óta conformant, így a 14 pontos és
+**kivonva a graphviz 16.1-nél** — a `f66ac638` óta conformant, így a 14 pontos és
 8 pontos folyosó-átbillenés a le nem tükrözött FMA-összevonás volt, nem döntetlen)
 és a circo
 `windows-tree` (10 rajzolásiművelet-eltérés egy legyezőélen — a circo elhelyezési trigonometriája
@@ -1045,9 +1045,9 @@ pontos natív útvonalvezetés előtti pozíciókat injektálunk (így az eltér
 iteratív sodródás — lásd az A1-drift osztályt — hanem diszkrét predikátum-döntetlen):
 
 - `241_0` — a CDT körön fekvő incircle döntetlennek tulajdonítva (a multispline
-  folyosó; a `b77b2703` után nem ellenőriztük újra, lásd a fenti 16.1
+  folyosó; a `f66ac638` után nem ellenőriztük újra, lásd a fenti 16.1
   újraalapozást). A maradék **szakaszszám-átbillenés**: 7 rajzolásiművelet-eltérés
-  az 1->2 élen, `ptCount 8 vs 20` (20 eltérés a `b77b2703` előtt) — a folyosó N
+  az 1->2 élen, `ptCount 8 vs 20` (20 eltérés a `f66ac638` előtt) — a folyosó N
   pontos splinenal sikerül, ahol a natív build rövidebb sima útvonalra esik vissza
   (vagy fordítva), mint a fenti circo `241_0` bejegyzésben. A portolt változat már emulálja az arm64
   `fmadd` összevonást az incircle/`ccw` predikátumban (`src/pathplan/triang.ts`,
@@ -1059,7 +1059,7 @@ iteratív sodródás — lásd az A1-drift osztályt — hanem diszkrét predik�
 > CDT/libm incircle döntetlenként szerepelt. A küldetés mást talált
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): az egykori folyosó-átbillenés
 > portolási oldali FMA-félreportolás volt a multispline folyosógeometriában,
-> amelyet a `b77b2703` javított (`fix(neato): mirror fma contraction in
+> amelyet a `f66ac638` javított (`fix(neato): mirror fma contraction in
 > multispline routing geometry`); injektált natív pozíciókkal a portolt változat
 > most pontosan reprodukálja a natív xdot-ot. A megmaradt maradék (0.06-0.65 pt
 > csúcseltolódás) iteratív sodródás, amelyet a legdurvább szinten az Apple-libm
@@ -1094,7 +1094,7 @@ orákulum pontos útvonalvezetés előtti pozícióinak injektálásával a mara
 a csúcspozíciók injektáltan azonosak, az eltérés lejjebb, a
 pathplan multispline folyosóban van — ugyanaz a libm 1 ULP-s incircle döntetlen, mint a
 circo/sfdp `241_0` esetén (pontos racionális incircle 185/185, fent; 11 eltérés a
-`b77b2703` után változatlan — injektálással nem ellenőrizve). A kapcsolók
+`f66ac638` után változatlan — injektálással nem ellenőrizve). A kapcsolók
 már alkalmazva vannak (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); a döntetlent redukálhatatlannak tekintjük. Elfogadva az `accepted-divergences-engines.json`
 `fdp.241_0` bejegyzésén át. Az fdp `2095`-je ezzel szemben **A1-drift, nem A9**: az
@@ -1120,7 +1120,7 @@ csúcs). A portolt változat `PointSet`-je egy JavaScript `Map`, amelyet a V8 2^
 bejegyzésben korlátoz, ezért `Map maximum size exceeded` hibát dob.
 
 **Miért elfogadott.** A kód alatti futásidejű korlát, nem logikai hiány; az ok a
-`910be2a2` hű aritmetikája (előtte a portolt változat kis, hibás elrendezést
+`97fcccd8` hű aritmetikája (előtte a portolt változat kis, hibás elrendezést
 számolt, és sosem érte el a korlátot). Az elfogadott kimenet egy eldobott hiba,
 nem `diverged` ítélet, a motoronkénti nyilvántartások pedig csak `diverged`
 sorokat fogadnak el, ezért nincs nyilvántartási bejegyzés: a végigfuttatások

@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -508,7 +508,7 @@ wpisy akceptacji zostały wycofane. **`2796` i `2471` dołączyły do nich
 w graphviz 16.1** (oba `conformant` w świeżym przebiegu, wpisy akceptacji
 wycofane): port i wyrocznia 16.1 zgadzają się teraz co do wyniku odzyskiwania `init_rank`,
 włącznie z utraconymi krawędziami. Przyczyny nie wyizolowano bisekcją (kandydaci to
-port dotgen 16.1 `48981bf0` i poprawka zużycia utraconych krawędzi `54bd3b9b`);
+port dotgen 16.1 `3cfbf55c` i poprawka zużycia utraconych krawędzi `5b6b9bfc`);
 opis `init_rank` poniżej zachowano jako mechanizm klasy,
 a oba id są przypięte jako conformant przez przebieg parytetu.
 
@@ -649,8 +649,8 @@ Strona porównania
 — wejście pochodzące z fuzzera (`fontsize="991836031967s8"`), którego absurdalny rozmiar
 czcionki rozdyma rysunek do ~2.75e11 pt — jest w graphviz 16.1 **conformant**,
 a jego akceptacja została wycofana: port zawęża teraz rozmiar strony tak, jak robi to
-natywna konwersja `ROUND` (`fe20f303`), i buduje obcięcie strony w kolejności
-`setup_page` (`eea9d21c`). Akapity o mechanizmie poniżej
+natywna konwersja `ROUND` (`47f3165d`), i buduje obcięcie strony w kolejności
+`setup_page` (`da6c4a53`). Akapity o mechanizmie poniżej
 opisują pierwotną różnicę.
 
 **Co się dzieje.** C przechowuje `job->width` / `job->height` jako **`unsigned int`**
@@ -838,13 +838,13 @@ wymagałoby odtworzenia w JS dokładnego zaokrąglania `sin`/`cos` z libm Apple.
 
 **Ponowne wyznaczenie bazy dla 16.1.** W geometrii korytarza multisplajnu brakowało kontrakcji FMA clanga
 (radykand narożnika elipsy, `mkCtrlPts`, `DIST` = sqrt(fmadd), iloczyn skalarny w
-`line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+`line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) ją odzwierciedliło. twopi i neato `241_0` — które ta klasa
 przypisywała remisowi współokręgowości poniżej — stały się **conformant**
 (akceptacje wycofane), a sfdp `42` okazał się nie mieć żadnego remisu (to dryf A1,
 zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
 i sfdp `241_0` nadal się rozjeżdżają, z residuami niezmienionymi lub zmniejszonymi; ich
-przypisanie do remisu poniżej pochodzi sprzed `b77b2703` i **nie zostało ponownie zweryfikowane
+przypisanie do remisu poniżej pochodzi sprzed `f66ac638` i **nie zostało ponownie zweryfikowane
 przez wstrzyknięcie pozycji** od czasu, gdy ta poprawka wykazała, że to samo przypisanie było błędne dla
 twopi/neato.
 
@@ -1003,7 +1003,7 @@ Dwa kolejne przypadki ścieżek silników zostały rozłożone na przyczyny źr�
 (pełna analiza przyczyn: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 różnic
 operacji rysowania, przypisanych wówczas temu samemu remisowi incircle współokręgowości w CDT co we wpisie
 circo powyżej; **wycofane w graphviz 16.1** — jest conformant od
-`b77b2703`, więc przerzut korytarza 14-punktowy vs 8-punktowy był nieodzwierciedloną
+`f66ac638`, więc przerzut korytarza 14-punktowy vs 8-punktowy był nieodzwierciedloną
 kontrakcją FMA, a nie remisem) oraz circo
 `windows-tree` (10 różnic operacji rysowania na jednej krawędzi wachlarza — trygonometria rozmieszczenia w circo
 lokuje `node2.y` o pojedynczy ULP powyżej `node8.y` wokół dokładnie symetrycznej
@@ -1018,9 +1018,9 @@ wstrzyknięciu dokładnych natywnych pozycji sprzed prowadzenia (więc rozbieżn
 dryfem iteracyjnym — zob. klasa A1-drift — lecz dyskretnym remisem predykatu):
 
 - `241_0` — przypisany remisowi incircle współokręgowości w CDT (korytarz multisplajnu;
-  nie zweryfikowano ponownie po `b77b2703`, zob. ponowne wyznaczenie bazy dla 16.1 powyżej).
+  nie zweryfikowano ponownie po `f66ac638`, zob. ponowne wyznaczenie bazy dla 16.1 powyżej).
   Residuum to **przerzut liczby segmentów**: 7 różnic operacji rysowania na krawędzi 1->2,
-  `ptCount 8 vs 20` (20 różnic przed `b77b2703`) — korytarz udaje się ze splajnem
+  `ptCount 8 vs 20` (20 różnic przed `f66ac638`) — korytarz udaje się ze splajnem
   N-punktowym, gdzie kompilacja natywna wraca do krótszej zwykłej trasy
   (lub odwrotnie), jak we wpisie circo `241_0` powyżej. Port już emuluje kontrakcję arm64
   `fmadd` w predykacie incircle/`ccw` (`src/pathplan/triang.ts`,
@@ -1032,7 +1032,7 @@ dryfem iteracyjnym — zob. klasa A1-drift — lecz dyskretnym remisem predykatu
 > tutaj jako remis incircle w CDT/libm. Misja ustaliła co innego
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): dawny przerzut korytarza
 > był błędnym przeportowaniem FMA po stronie portu w geometrii korytarza multisplajnu,
-> naprawionym przez `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> naprawionym przez `f66ac638` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`); po wstrzyknięciu natywnych pozycji port odtwarza teraz
 > natywny xdot dokładnie. Pozostałe residuum (przesunięcia węzłów 0.06-0.65 pt) to
 > dryf iteracyjny zapoczątkowany jedną rozbieżnością 1 ULP między `pow(dist, 2)` z libm Apple
@@ -1066,7 +1066,7 @@ różnic `unfilled_bezier` ograniczonych do jednej krawędzi (`0->1#0`, maxΔ 3.
 pozycje węzłów są wstrzykiwane identycznie, rozbieżność leży w dole łańcucha, w
 korytarzu multisplajnu pathplan — ten sam remis incircle z libm o 1 ULP co
 circo/sfdp `241_0` (dokładny wymierny incircle 185/185 powyżej; 11 różnic niezmienionych przez
-`b77b2703` — nie zweryfikowano ponownie przez wstrzyknięcie). Dźwignie są
+`f66ac638` — nie zweryfikowano ponownie przez wstrzyknięcie). Dźwignie są
 już zastosowane (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); remis uznajemy za nieredukowalny. Zaakceptowane przez `accepted-divergences-engines.json`
 `fdp.241_0`. `2095` w fdp jest natomiast **A1-drift, a nie A9**: wstrzyknięcie
@@ -1092,7 +1092,7 @@ to `Map` z JavaScriptu, którą V8 ogranicza do 2^24 wpisów, więc rzuca
 `Map maximum size exceeded`.
 
 **Dlaczego zaakceptowane.** Limit środowiska uruchomieniowego poniżej kodu, a nie luka w logice; przyczyną jest
-wierna arytmetyka z `910be2a2` (wcześniej port obliczał mały,
+wierna arytmetyka z `97fcccd8` (wcześniej port obliczał mały,
 błędny układ i nigdy nie osiągał limitu). Zaakceptowanym wynikiem jest rzucony
 błąd, a nie werdykt `diverged`, a rejestry poszczególnych silników
 akceptują tylko wiersze `diverged`, więc wpis rejestru nie istnieje: przebiegi nadal

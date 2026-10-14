@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -513,8 +513,8 @@ godkännandeposter är avvecklade. **`2796` och `2471` anslöt sig till dem
 vid graphviz 16.1** (båda `conformant` i den nya genomgången, godkännandeposterna
 avvecklade): porteringen och 16.1-oraklet är nu överens om återhämtningsutdata för
 `init_rank`, inklusive de förlorade kanterna. Orsaken isolerades inte med bisektion
-(16.1-porteringen av dotgen `48981bf0` och rättningen av konsumtionen av förlorade
-kanter `54bd3b9b` är kandidaterna); beskrivningen av `init_rank` nedan bevaras som
+(16.1-porteringen av dotgen `3cfbf55c` och rättningen av konsumtionen av förlorade
+kanter `5b6b9bfc` är kandidaterna); beskrivningen av `init_rank` nedan bevaras som
 klassens mekanism, och de två id:na är fastlåsta som conformant av paritetsgenomgången.
 
 `1581` och `2825` var återhämtningsfall efter krasch (uppdraget fix-element-count-bucket):
@@ -673,8 +673,8 @@ Jämförelsesidan för [`1367`](https://github.com/knowvah/dot-engine/blob/main/
 — en fuzzer-härledd indata (`fontsize="991836031967s8"`) vars absurda
 typsnittsstorlek blåser upp teckningen till ~2.75e11 pt — är **conformant** vid
 graphviz 16.1 och dess godkännande är avvecklat: porteringen avkortar nu sidstorleken på
-samma sätt som den inbyggda `ROUND`-konverteringen (`fe20f303`) och bygger sidklippet i
-ordningen från `setup_page` (`eea9d21c`). Mekanismstyckena nedan beskriver den
+samma sätt som den inbyggda `ROUND`-konverteringen (`47f3165d`) och bygger sidklippet i
+ordningen från `setup_page` (`da6c4a53`). Mekanismstyckena nedan beskriver den
 ursprungliga skillnaden.
 
 **Vad som händer.** C lagrar `job->width` / `job->height` som **`unsigned int`**
@@ -861,13 +861,13 @@ skulle kräva att återge Apples libm:s exakta avrundning av `sin`/`cos` i JS.
 
 **16.1-omläggning av utgångsläget.** Geometrin i multisplinekorridoren saknade clangs
 FMA-kontraktion (radikanden för ellipshörnet, `mkCtrlPts`, `DIST` = sqrt(fmadd),
-punktprodukten i `line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+punktprodukten i `line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) speglade den. twopi- och neato-`241_0` — som den här
 klassen hade tillskrivit det kocirkulära oavgjorda läget nedan — blev **conformant**
 (godkännandena avvecklade), och sfdp `42` visade sig inte ha något oavgjort läge alls
 (det är A1-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo-, fdp-
 och sfdp-`241_0` avviker fortfarande med oförändrade eller minskade residualer; deras
-tillskrivning till det oavgjorda läget nedan föregår `b77b2703` och har **inte återverifierats
+tillskrivning till det oavgjorda läget nedan föregår `f66ac638` och har **inte återverifierats
 genom positionsinjektion** sedan den rättningen visade att samma tillskrivning var fel för
 twopi/neato.
 
@@ -1026,7 +1026,7 @@ Ytterligare två fall på motorspåret orsaksanalyserades och godkändes 2026-07
 (fullständig orsaksanalys: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 skillnader i ritoperationer,
 då tillskrivna samma CDT-kocirkulära incircle-oavgjorda läge som circo-posten ovan;
 **avvecklad vid graphviz 16.1** — den är conformant sedan
-`b77b2703`, så vändningen av korridoren mellan 14 och 8 punkter var den ospeglade
+`f66ac638`, så vändningen av korridoren mellan 14 och 8 punkter var den ospeglade
 FMA-kontraktionen, inte ett oavgjort läge) och circo
 `windows-tree` (10 skillnader i ritoperationer på en solfjäderkant — circos placeringstrigonometri
 lägger `node2.y` en enda ULP ovanför `node8.y` kring det exakt symmetriska
@@ -1041,9 +1041,9 @@ exakta inbyggda positioner före dragningen injiceras (så avvikelsen är INTE
 iterativ drift — se klassen A1-drift — utan ett diskret oavgjort predikat):
 
 - `241_0` — tillskriven CDT:s kocirkulära incircle-oavgjorda läge (multisplinekorridoren;
-  inte återverifierad efter `b77b2703`, se 16.1-omläggningen ovan).
+  inte återverifierad efter `f66ac638`, se 16.1-omläggningen ovan).
   Residualen är en **vändning av segmentantal**: 7 skillnader i ritoperationer på kant 1->2,
-  `ptCount 8 vs 20` (20 skillnader före `b77b2703`) — multisplinekorridoren lyckas med en
+  `ptCount 8 vs 20` (20 skillnader före `f66ac638`) — multisplinekorridoren lyckas med en
   spline på N punkter där den inbyggda faller tillbaka på en kortare vanlig väg
   (eller tvärtom), som i circo-posten för `241_0` ovan. Porteringen emulerar redan arm64-
   kontraktionen `fmadd` i predikaten incircle/`ccw` (`src/pathplan/triang.ts`,
@@ -1055,7 +1055,7 @@ iterativ drift — se klassen A1-drift — utan ett diskret oavgjort predikat):
 > här som ett CDT/libm-incircle-oavgjort läge. Uppdraget fann något annat
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): den tidigare
 > korridorvändningen var en FMA-felportering på portsidan i multisplinekorridorens geometri,
-> rättad av `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> rättad av `f66ac638` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`); med inbyggda positioner injicerade återger porteringen nu
 > den inbyggda xdot exakt. Den återstående residualen (nodförskjutningar 0.06-0.65 pt) är
 > iterativ drift som seedas av en oenighet på 1 ULP i Apples libm-
@@ -1090,7 +1090,7 @@ skillnader i `unfilled_bezier`, begränsade till en kant (`0->1#0`, maxΔ 3.39pt
 nodpositionerna är injicerat identiska ligger avvikelsen längre ned i
 pathplans multisplinekorridor — samma oavgjorda incircle-läge med 1 ULP i libm som i
 circo/sfdp `241_0` (exakt rationell incircle 185/185 ovan; 11 skillnader oförändrade av
-`b77b2703` — inte återverifierat genom injektion). Spakarna är
+`f66ac638` — inte återverifierat genom injektion). Spakarna är
 redan tillämpade (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); det oavgjorda läget behandlas som oreducerbart. Godkänd via `accepted-divergences-engines.json`
 `fdp.241_0`. fdp:s `2095` är däremot **A1-drift, inte A9**: att injicera den
@@ -1116,7 +1116,7 @@ trogna heltalsaritmetiken för `step`/placering 2 011 656 764 celler; inbyggd
 `Map maximum size exceeded`.
 
 **Varför godkänd.** En körmiljögräns under koden, inte ett logiskt glapp; orsaken är
-den trogna aritmetiken i `910be2a2` (före den räknade porteringen fram en liten,
+den trogna aritmetiken i `97fcccd8` (före den räknade porteringen fram en liten,
 felaktig layout och nådde aldrig gränsen). Det godkända utfallet är ett kastat
 fel snarare än ett utlåtande `diverged`, och registren per motor godkänner bara
 rader med `diverged`, så ingen registerpost finns: genomgångarna fortsätter att lista

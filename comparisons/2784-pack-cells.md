@@ -9,7 +9,7 @@ layout engines (`circo`, `twopi`, `neato`, `fdp`, `sfdp`; every output format)
 the port throws `Map maximum size exceeded` on `~/git/graphviz/tests/2784.dot`
 where native 16.1.0 completes. On `dot` the graph is `conformant`. The cause is
 a platform limit below the code: the faithful port of `lib/pack/pack.c`
-(`910be2a2`) needs a set of 2,011,656,764 cells; a V8 `Map` holds at most 2^24
+(`97fcccd8`) needs a set of 2,011,656,764 cells; a V8 `Map` holds at most 2^24
 (16,777,216) entries.
 
 The accepted outcome is a **thrown error, not a verdict**. The per-engine
@@ -51,10 +51,10 @@ from the input). Native stores them in a `Dt_t` set (`addPS`): 67 GB resident.
 
 The port mirrors the structure (`src/layout/pack/poly-place.ts`:
 `PointSet` over a `Map<string, Point>`). V8 throws a `RangeError` once a `Map`
-passes 2^24 entries, long before 2.0e9. Before `910be2a2` the port's `step`
+passes 2^24 entries, long before 2.0e9. Before `97fcccd8` the port's `step`
 and placement used double arithmetic where C uses `int` (saturating
 `computeStep`, 32-bit `fits`), which made it compute a small, wrong layout for
-this graph without ever approaching the limit. `910be2a2` fixed the arithmetic
+this graph without ever approaching the limit. `97fcccd8` fixed the arithmetic
 (it also made `1314` conformant on the same five engines) and thereby exposed
 the real size of the set. The decision to keep the faithful arithmetic and
 accept the throw was taken in the T14 fixes row of the mission journal.

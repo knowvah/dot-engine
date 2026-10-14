@@ -120,7 +120,7 @@ plantuml-ts `.tgz` bump and re-measure of the fixtures named in TRACKER.md.
 ## Session-end summary (2026-10-14)
 
 **Tasks:** 17 of 17 planned (T0–T16) completed; one extra unit of work
-(roster-addition fixes `560668e4`/`47da7dfd`/`910be2a2`, landed under T14
+(roster-addition fixes `804180e5`/`59db67ad`/`97fcccd8`, landed under T14
 with its own survey and perf A/B).
 
 **Outcome:** oracle re-pinned to graphviz 16.1.0 (native build ≡ headless

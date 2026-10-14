@@ -1,5 +1,5 @@
 ---
-sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
+sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -557,8 +557,8 @@ entfernt. **`2796` und `2471` sind ihnen mit graphviz 16.1 gefolgt** (beide
 `conformant` im frischen Durchlauf, Akzeptanzeinträge entfernt): Die Portierung und das
 16.1-Orakel stimmen jetzt in der `init_rank`-Wiederherstellungsausgabe einschließlich
 der verlorenen Kanten überein. Die Ursache wurde nicht per Bisect isoliert (Kandidaten
-sind der dotgen-Port von 16.1 `48981bf0` und die Korrektur des Verbrauchs verlorener
-Kanten `54bd3b9b`); die `init_rank`-Beschreibung unten bleibt als Mechanismus der
+sind der dotgen-Port von 16.1 `3cfbf55c` und die Korrektur des Verbrauchs verlorener
+Kanten `5b6b9bfc`); die `init_rank`-Beschreibung unten bleibt als Mechanismus der
 Klasse erhalten, und die beiden IDs sind durch den Paritäts-Durchlauf als conformant
 festgeschrieben.
 
@@ -721,8 +721,8 @@ Vergleichsseite zu [`1367`](https://github.com/knowvah/dot-engine/blob/main/plan
 eine aus einem Fuzzer stammende Eingabe (`fontsize="991836031967s8"`), deren absurde
 Schriftgröße die Zeichnung auf ~2.75e11 pt aufbläht — ist mit graphviz 16.1
 **conformant**, und ihre Akzeptanz ist entfernt: Die Portierung verengt die Seitengröße
-jetzt wie die native `ROUND`-Konvertierung (`fe20f303`) und baut den Seiten-Clip in der
-Reihenfolge von `setup_page` auf (`eea9d21c`). Die Mechanismus-Absätze unten
+jetzt wie die native `ROUND`-Konvertierung (`47f3165d`) und baut den Seiten-Clip in der
+Reihenfolge von `setup_page` auf (`da6c4a53`). Die Mechanismus-Absätze unten
 beschreiben den ursprünglichen Unterschied.
 
 **Was geschieht.** C speichert `job->width` / `job->height` als **`unsigned int`**
@@ -919,14 +919,14 @@ würde erfordern, die exakte `sin`/`cos`-Rundung der Apple-libm in JS zu reprodu
 
 **16.1-Neubasierung.** In der Geometrie des Multispline-Korridors fehlte die
 FMA-Kontraktion von clang (Radikand der Ellipsenecke, `mkCtrlPts`, `DIST` =
-sqrt(fmadd), das Skalarprodukt in `line_intersect`); `b77b2703` (`fix(neato): mirror fma
+sqrt(fmadd), das Skalarprodukt in `line_intersect`); `f66ac638` (`fix(neato): mirror fma
 contraction in multispline routing geometry`) hat sie nachgebildet. twopi- und neato-`241_0`
 — die diese Klasse dem kozirkularen Gleichstand unten zugeschrieben hatte — wurden
 **conformant** (Akzeptanzen entfernt), und sfdp `42` hatte sich als völlig ohne
 Gleichstand erwiesen (es ist A1-Drift, siehe
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo-, fdp- und sfdp-`241_0`
 weichen weiterhin ab, ihre Reste sind unverändert oder verringert; ihre Zuschreibung zum
-Gleichstand unten ist älter als `b77b2703` und wurde seither **nicht per
+Gleichstand unten ist älter als `f66ac638` und wurde seither **nicht per
 Positions-Injection neu verifiziert**, obwohl dieselbe Korrektur gezeigt hat, dass die
 Zuschreibung für twopi/neato falsch war.
 
@@ -1089,7 +1089,7 @@ Zwei weitere Instanzen auf Engine-Track-Ebene wurden am 2026-07-11 in ihrer Ursa
 geklärt und akzeptiert (vollständige Ursachenanalyse: `.agent-notes/circo-edge-tail-rca.md`):
 twopi `241_0` (6 Draw-Op-Unterschiede, damals demselben kozirkularen CDT-Incircle-Gleichstand
 zugeschrieben wie der circo-Eintrag oben; **mit graphviz 16.1 zurückgezogen** — es ist seit
-`b77b2703` conformant, das Kippen des Korridors zwischen 14 und 8 Punkten war also die
+`f66ac638` conformant, das Kippen des Korridors zwischen 14 und 8 Punkten war also die
 nicht nachgebildete FMA-Kontraktion, kein Gleichstand) und circo `windows-tree` (10
 Draw-Op-Unterschiede an einer Fächerkante — die
 Platzierungstrigonometrie von circo setzt `node2.y` genau ein ULP über `node8.y` um den
@@ -1104,9 +1104,9 @@ exakte native Positionen vor dem Routing injiziert werden (die Abweichung ist al
 iterative Drift — siehe die Klasse A1-drift — sondern ein diskreter Prädikat-Gleichstand):
 
 - `241_0` — dem kozirkularen CDT-Incircle-Gleichstand zugeschrieben (der
-  Multispline-Korridor; nach `b77b2703` nicht neu verifiziert, siehe die 16.1-Neubasierung
+  Multispline-Korridor; nach `f66ac638` nicht neu verifiziert, siehe die 16.1-Neubasierung
   oben). Der Rest ist ein **Kippen der Segmentzahl**: 7 Draw-Op-Unterschiede an Kante
-  1->2, `ptCount 8 vs 20` (20 Unterschiede vor `b77b2703`) — der Korridor gelingt mit
+  1->2, `ptCount 8 vs 20` (20 Unterschiede vor `f66ac638`) — der Korridor gelingt mit
   einem N-Punkte-Spline, wo das native Build auf eine kürzere einfache Route
   zurückfällt (oder umgekehrt), wie im Eintrag zu circo `241_0` oben. Die Portierung bildet die arm64-`fmadd`-Kontraktion
   im Incircle-/`ccw`-Prädikat bereits nach (`src/pathplan/triang.ts`,
@@ -1118,7 +1118,7 @@ iterative Drift — siehe die Klasse A1-drift — sondern ein diskreter Prädika
 > als CDT-/libm-Incircle-Gleichstand geführt. Die Mission fand etwas anderes
 > ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): Das frühere Kippen des
 > Korridors war ein portierungsseitiger FMA-Fehler in der Geometrie des
-> Multispline-Korridors, behoben durch `b77b2703` (`fix(neato): mirror fma contraction in
+> Multispline-Korridors, behoben durch `f66ac638` (`fix(neato): mirror fma contraction in
 > multispline routing geometry`); mit injizierten nativen Positionen reproduziert die
 > Portierung jetzt das native xdot exakt. Der verbleibende Rest (Knotenversätze
 > 0.06-0.65 pt) ist iterative Drift, ausgelöst durch eine 1-ULP-Abweichung zwischen
@@ -1156,7 +1156,7 @@ exakten Positionen des Orakels vor dem Routing besteht der Rest aus 11 numerisch
 Knotenpositionen injiziert identisch sind, liegt die Abweichung nachgelagert im
 Multispline-Korridor von pathplan — derselbe libm-1-ULP-Incircle-Gleichstand wie bei
 circo/sfdp `241_0` (Incircle in exakten rationalen Zahlen 185/185 oben; 11 Unterschiede durch
-`b77b2703` unverändert — nicht per Injection neu verifiziert). Die Hebel
+`f66ac638` unverändert — nicht per Injection neu verifiziert). Die Hebel
 sind bereits angewandt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
 `Math.hypot`); der Gleichstand wird als nicht reduzierbar behandelt. Akzeptiert über
 `accepted-divergences-engines.json` `fdp.241_0`. `2095` von fdp ist dagegen **A1-drift,
@@ -1183,7 +1183,7 @@ Zellen; das native 16.1.0 benötigt 482 s und belegt 67.3 GB resident (101 GB Sp
 sodass sie `Map maximum size exceeded` wirft.
 
 **Warum akzeptiert.** Eine Laufzeitgrenze unterhalb des Codes, keine Logiklücke; die
-Ursache ist die originalgetreue Arithmetik von `910be2a2` (davor berechnete die
+Ursache ist die originalgetreue Arithmetik von `97fcccd8` (davor berechnete die
 Portierung ein kleines, falsches Layout und erreichte das Limit nie). Das akzeptierte
 Ergebnis ist ein geworfener Fehler statt eines `diverged`-Urteils, und die Register je
 Engine akzeptieren nur `diverged`-Zeilen, sodass kein Registereintrag existiert: Die

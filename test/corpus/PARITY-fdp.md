@@ -26,7 +26,7 @@ table below.
 | id | #diffs | class | bound | ref |
 |---|---:|---|---|---|
 | [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 11888 | A1 | up to 5.4kpt, 30/30 nodes | plans/decision-journal.md 2026-07-24 T4b: chaos proven — node width +0.001in moves port-own layout max 3390pt |
-| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 11 | A9 | 11 numeric draw-op diffs confined to edge 0-&gt;1#0's unfilled_bezier (maxΔ 3.39pt), under injected-identical node positions ⇒ pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. Unchanged (11 diffs) after b77b2703, which cleared twopi/neato 241_0 (a port-side FMA mis-port, not a tie); tie attribution not re-verified by injection. | known-divergences.md#a9-sfdp-fp-ties |
+| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 11 | A9 | 11 numeric draw-op diffs confined to edge 0-&gt;1#0's unfilled_bezier (maxΔ 3.39pt), under injected-identical node positions ⇒ pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. Unchanged (11 diffs) after f66ac638, which cleared twopi/neato 241_0 (a port-side FMA mis-port, not a tie); tie attribution not re-verified by injection. | known-divergences.md#a9-sfdp-fp-ties |
 
 ## Accepted class: A1-drift — computed, not enumerated
 

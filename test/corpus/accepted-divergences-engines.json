@@ -80,7 +80,7 @@
   "circo": {
     "241_0": {
       "class": "A9",
-      "bound": "41 draw-op diffs; Delta~0.2pt on edge 1->2's routed bezier (unfilled_bezier[1]: 221.92 vs 222.12); residual after b77b2703 (unchanged 41 diffs) - tie attribution not re-verified by injection",
+      "bound": "41 draw-op diffs; Delta~0.2pt on edge 1->2's routed bezier (unfilled_bezier[1]: 221.92 vs 222.12); residual after f66ac638 (unchanged 41 diffs) - tie attribution not re-verified by injection",
       "ref": "known-divergences.md#a9-engine-track-twopi-circo"
     },
     "windows-tree": {
@@ -166,7 +166,7 @@
     },
     "241_0": {
       "class": "A9",
-      "bound": "11 numeric draw-op diffs confined to edge 0->1#0's unfilled_bezier (max\u0394 3.39pt), under injected-identical node positions \u21d2 pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. Unchanged (11 diffs) after b77b2703, which cleared twopi/neato 241_0 (a port-side FMA mis-port, not a tie); tie attribution not re-verified by injection.",
+      "bound": "11 numeric draw-op diffs confined to edge 0->1#0's unfilled_bezier (max\u0394 3.39pt), under injected-identical node positions \u21d2 pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. Unchanged (11 diffs) after f66ac638, which cleared twopi/neato 241_0 (a port-side FMA mis-port, not a tie); tie attribution not re-verified by injection.",
       "ref": "known-divergences.md#a9-sfdp-fp-ties"
     },
     "1879": {
@@ -188,12 +188,12 @@
     },
     "42": {
       "class": "A1",
-      "bound": "0.06-0.65pt on all 25 nodes (168 draw-op diffs in the sfdp walk, 3525 under compare-xdot); first divergence is pow(dist, 2) in the repulsive force, Apple libm vs the port's ARM pow, 1 ULP on a near-tie (coarsest level, iteration 95). Injecting the oracle's pow values makes the embedding and the xdot bit-exact; injecting the oracle's positions gives 0 diffs (routing FMA fixed in b77b2703)",
+      "bound": "0.06-0.65pt on all 25 nodes (168 draw-op diffs in the sfdp walk, 3525 under compare-xdot); first divergence is pow(dist, 2) in the repulsive force, Apple libm vs the port's ARM pow, 1 ULP on a near-tie (coarsest level, iteration 95). Injecting the oracle's pow values makes the embedding and the xdot bit-exact; injecting the oracle's positions gives 0 diffs (routing FMA fixed in f66ac638)",
       "ref": "comparisons/sfdp-42.md"
     },
     "241_0": {
       "class": "A9",
-      "bound": "7 draw-op diffs on edge 1->2 (unfilled_bezier[ptCount] 8 vs 20; was 20 diffs before the multispline FMA fix b77b2703). Attributed to the same CDT/hypot corridor tie as circo/fdp 241_0, but NOT re-diagnosed after b77b2703 showed that attribution wrong for twopi/neato 241_0 (port-side FMA mis-port) - re-verify by position injection. Row from the provisional sfdp walk",
+      "bound": "7 draw-op diffs on edge 1->2 (unfilled_bezier[ptCount] 8 vs 20; was 20 diffs before the multispline FMA fix f66ac638). Attributed to the same CDT/hypot corridor tie as circo/fdp 241_0, but NOT re-diagnosed after f66ac638 showed that attribution wrong for twopi/neato 241_0 (port-side FMA mis-port) - re-verify by position injection. Row from the provisional sfdp walk",
       "ref": "known-divergences.md#a9-sfdp-fp-ties"
     },
     "2556": {
