@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,9 +42,11 @@ Annak **géppel olvasható** forrása, hogy mely gráfok *elfogadottak* (az alá
 Az eszközök jelentéskészítéskor összekapcsolják vele a többit: a `PARITY-dot.md` szétválasztja az **elfogadott eltéréseket**
 a **nyomon követett** hátraléktól, a szabálykapu pedig ebből veszi az engedélyezőlistáját. Az
 alábbi prózai szakaszok minden bejegyzést megmagyaráznak (az A1 élő; az A2, az A3 és az A8 lezárt, és
-történetként maradt meg; az A10 egy portolási hiba elfogadása, amelyet egyetlen
-nyilvántartás sem tud kifejezni); egy CI-teszt (`accepted-divergences.test.ts`) érvényesíti, hogy
-minden elfogadott gráf továbbra is eltér, így ez a lista nem rohadhat el észrevétlenül.
+történetként maradt meg; az A10 élő, portolási hiba elfogadásaként a motoronkénti
+nyilvántartásokban). Két CI-teszt akadályozza meg, hogy ez a lista észrevétlenül elrohadjon:
+az `accepted-divergences.test.ts` érvényesíti, hogy minden elfogadott gráf továbbra is eltér,
+a `registry-staleness.test.ts` pedig elbukik, ha egy motoronkénti nyilvántartás bejegyzése
+már nem egyezik a rögzített végigfuttatási sorával.
 
 ---
 
@@ -1109,8 +1111,12 @@ fenti `2095 reclassified` megjegyzést).
 
 ### A10. V8 `Map` méretkorlát a poliominó-pakolásban (`2784`, öt pakoláson alapuló motor) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Érintett:** a `2784` a `circo`, `twopi`, `neato`, `fdp` és `sfdp` motoron,
-minden kimeneti formátumban. A `dot` motoron `conformant`.
+**Érintett:** a `2784` a `circo`, `twopi`, `neato`, `fdp` és `sfdp` motoron. A
+portolt változat hibát dob mind az öt motor xdot és imagemap végigfuttatásán, valamint
+a `circo` `json` végigfuttatásán. A `twopi`, `neato`, `fdp` és `sfdp` `json`
+végigfuttatásain, valamint mind az öt `plain` végigfuttatásán maga a natív orákulum
+sem fut le a végigfuttatás időkeretén belül, így ezek a sorok orákulumhibák. A `dot`,
+`osage` és `patchwork` motoron átmegy.
 
 **Mi történik.** A `lib/pack/pack.c` egy `PointSet`-ben jegyzi fel az összetevő
 által elfoglalt cellákat. A `2784` esetén (egyetlen 3e16 pt magas csúcs,
@@ -1122,9 +1128,12 @@ bejegyzésben korlátoz, ezért `Map maximum size exceeded` hibát dob.
 **Miért elfogadott.** A kód alatti futásidejű korlát, nem logikai hiány; az ok a
 `97fcccd8` hű aritmetikája (előtte a portolt változat kis, hibás elrendezést
 számolt, és sosem érte el a korlátot). Az elfogadott kimenet egy eldobott hiba,
-nem `diverged` ítélet, a motoronkénti nyilvántartások pedig csak `diverged`
-sorokat fogadnak el, ezért nincs nyilvántartási bejegyzés: a végigfuttatások
-továbbra is a portolási hiba hibái között listázzák a `2784`-et. Bizonyíték:
+nem `diverged` ítélet, ezért az `accepted-divergences-engines.json`,
+`accepted-divergences-json.json` és `accepted-divergences-map.json` bejegyzései
+`verdict: "port-error"` értéket deklarálnak `errIncludes: "Map maximum size exceeded"`
+feltétellel: csak akkor fogadnak el portolási hibát, ha az ezt az üzenetet hordozza.
+Egy másféle hiba a `2784` esetén el nem fogadott hibaként jelenne meg, és a
+`registry-staleness.test.ts` elavultként jelölné meg a bejegyzést. Bizonyíték:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

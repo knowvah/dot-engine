@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,8 +42,11 @@ de mai jos) este
 Instrumentele o îmbină în momentul generării raportului: `PARITY-dot.md` separă **diferențele
 acceptate** de restanța **urmărită**, iar poarta de reguli își ia lista de permisiuni din ea.
 Secțiunile în proză de mai jos explică fiecare intrare (A1 este activă; A2, A3 și A8 sunt închise
-și păstrate ca istorie; A10 este o acceptare a unei erori de portare pe care niciun registru nu o poate exprima); un test CI (`accepted-divergences.test.ts`) impune ca
-fiecare graf acceptat să mai divergă încă, astfel încât această listă să nu putrezească pe tăcute.
+și păstrate ca istorie; A10 este activă ca acceptare a unei erori de portare în registrele pe
+motor). Două teste CI împiedică această listă să putrezească pe tăcute:
+`accepted-divergences.test.ts` impune ca fiecare graf acceptat să mai divergă încă,
+iar `registry-staleness.test.ts` eșuează atunci când o intrare dintr-un registru pe motor nu
+mai corespunde rândului său de parcurgere înregistrat.
 
 ---
 
@@ -1097,8 +1100,12 @@ a confirmat că și aceasta se injectează la 0, iar acceptarea ei a fost elimin
 
 ### A10. Limita de dimensiune a `Map` din V8 la împachetarea poliominourilor (`2784`, cinci motoare bazate pe împachetare) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Afectate:** `2784` pe `circo`, `twopi`, `neato`, `fdp` și `sfdp`, în fiecare
-format de ieșire. Pe `dot` este `conformant`.
+**Afectate:** `2784` pe `circo`, `twopi`, `neato`, `fdp` și `sfdp`. Portarea aruncă o eroare
+în parcurgerile xdot și imagemap ale tuturor celor cinci motoare și în parcurgerea `json`
+pentru `circo`. În parcurgerile `json` pentru `twopi`, `neato`, `fdp` și `sfdp`, precum și în
+parcurgerile `plain` ale tuturor celor cinci, oracolul nativ însuși nu se termină în bugetul de
+timp al parcurgerii, așa că acele rânduri sunt erori de oracol. Pe `dot`, `osage` și
+`patchwork` trece.
 
 **Ce se întâmplă.** `lib/pack/pack.c` înregistrează celulele ocupate de o componentă într-un
 `PointSet`. Pentru `2784` (un singur nod înalt de 3e16 pt, `splines="ortho"`), aritmetica
@@ -1110,9 +1117,12 @@ este un `Map` JavaScript, pe care V8 îl limitează la 2^24 intrări, așa că a
 **De ce este acceptată.** O limită de runtime aflată sub cod, nu o lacună de logică; cauza este
 aritmetica fidelă din `97fcccd8` (înainte de ea, portarea calcula o aranjare mică și
 greșită și nu atingea niciodată limita). Rezultatul acceptat este o eroare aruncată,
-nu un verdict `diverged`, iar registrele pe motor
-acceptă doar rânduri `diverged`, deci nu există nicio intrare în registru: parcurgerile continuă să
-listeze `2784` printre erorile lor de portare. Dovezi:
+nu un verdict `diverged`, așa că intrările din
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` și
+`accepted-divergences-map.json` declară `verdict: "port-error"` cu
+`errIncludes: "Map maximum size exceeded"`: ele acceptă o eroare de portare doar atunci când
+aceasta poartă acest mesaj. Un alt eșec pe `2784` ar apărea ca o eroare neacceptată,
+iar `registry-staleness.test.ts` ar semnala intrarea ca perimată. Dovezi:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

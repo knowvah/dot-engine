@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -43,10 +43,11 @@ okunabilir** yetkili kaynağı
 dosyasıdır. Araçlar bunu rapor zamanında birleştirir: `PARITY-dot.md`, **kabul edilen
 farkları** **takip edilen** birikimden ayırır ve kural kapısı izin listesini
 buradan alır. Aşağıdaki düzyazı bölümleri her kaydı açıklar (A1 geçerlidir;
-A2, A3 ve A8 kapatılmıştır ve geçmiş olarak saklanır; A10, hiçbir kaydın ifade
-edemeyeceği bir port hatası kabulüdür); bir CI testi
-(`accepted-divergences.test.ts`) kabul edilen her grafın hâlâ farklılaştığını
-doğrular; böylece bu liste fark edilmeden çürümez.
+A2, A3 ve A8 kapatılmıştır ve geçmiş olarak saklanır; A10, motor başına kayıtlarda
+bir port hatası kabulü olarak geçerlidir). İki CI testi bu listenin fark edilmeden
+çürümesini önler: `accepted-divergences.test.ts` kabul edilen her grafın hâlâ
+farklılaştığını doğrular, `registry-staleness.test.ts` ise motor başına bir kayıttaki
+bir girdi işlenmiş tarama satırıyla artık eşleşmediğinde başarısız olur.
 
 ---
 
@@ -1086,8 +1087,12 @@ onun da 0'a enjekte edildiğini doğruladı ve kabulü kaldırıldı (yukarıdak
 
 ### A10. Poliomino paketlemede V8 `Map` boyut sınırı (`2784`, paketleme tabanlı beş motor) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Etkilenenler:** `2784`, `circo`, `twopi`, `neato`, `fdp` ve `sfdp` üzerinde, her
-çıktı biçiminde. `dot` üzerinde `conformant`'tır.
+**Etkilenenler:** `2784`, `circo`, `twopi`, `neato`, `fdp` ve `sfdp` üzerinde. Port,
+beş motorun tümünün xdot ve imagemap taramalarında ve `circo` için `json` taramasında
+hata fırlatır. `twopi`, `neato`, `fdp` ve `sfdp` için `json` taramalarında ve beşinin
+de `plain` taramalarında yerel kâhinin kendisi taramanın zaman bütçesi içinde
+tamamlanmaz; bu yüzden o satırlar kâhin hatasıdır. `dot`, `osage` ve `patchwork`
+üzerinde geçer.
 
 **Ne olur.** `lib/pack/pack.c`, bir bileşenin kapladığı hücreleri bir `PointSet`
 içinde tutar. `2784` için (3e16 pt yüksekliğinde tek bir düğüm, `splines="ortho"`)
@@ -1099,9 +1104,13 @@ sadık tamsayı `step`/yerleştirme aritmetiği 2.011.656.764 hücre gerektirir;
 **Neden kabul edildi.** Kodun altında bir çalışma zamanı sınırı, mantık boşluğu
 değil; neden `97fcccd8`'nin sadık aritmetiğidir (ondan önce port küçük, yanlış bir
 yerleşim hesaplıyor ve sınıra hiç ulaşmıyordu). Kabul edilen sonuç bir `diverged`
-hükmü değil, fırlatılan bir hatadır ve motor başına kayıtlar yalnızca `diverged`
-satırlarını kabul eder; bu yüzden kayıt girdisi yoktur: taramalar `2784`'ü port
-hataları altında listelemeyi sürdürür. Kanıt:
+hükmü değil, fırlatılan bir hatadır; bu yüzden
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` ve
+`accepted-divergences-map.json` içindeki girdiler
+`errIncludes: "Map maximum size exceeded"` ile birlikte `verdict: "port-error"`
+bildirir: bir port hatasını yalnızca bu mesajı taşıdığında kabul ederler. `2784`
+üzerinde farklı bir başarısızlık, kabul edilmemiş bir hata olarak ortaya çıkar ve
+`registry-staleness.test.ts` girdiyi bayat olarak işaretler. Kanıt:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

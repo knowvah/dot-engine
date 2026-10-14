@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,9 +42,11 @@ nedan) är
 Verktygen sammanfogar den vid rapporttillfället: `PARITY-dot.md` skiljer **godkända
 avvikelser** från den **spårade** restlistan, och regelspärren hämtar sin tillåtelselista
 därifrån. Prosaavsnitten nedan förklarar varje post (A1 är aktiv; A2, A3 och A8 är stängda
-och bevarade som historik; A10 är ett godkännande av ett portfel som inget
-register kan uttrycka); ett CI-test (`accepted-divergences.test.ts`) säkerställer att
-varje godkänd graf fortfarande avviker, så att den här listan inte kan ruttna i tysthet.
+och bevarade som historik; A10 är aktiv som ett godkännande av ett portfel i registren
+per motor). Två CI-tester hindrar den här listan från att ruttna i tysthet:
+`accepted-divergences.test.ts` säkerställer att varje godkänd graf fortfarande avviker,
+och `registry-staleness.test.ts` misslyckas när en post i ett register per motor inte
+längre stämmer med sin incheckade genomgångsrad.
 
 ---
 
@@ -1105,8 +1107,12 @@ notisen `2095 omklassificerad` ovan).
 
 ### A10. V8:s `Map`-storleksgräns vid polyominopackning (`2784`, fem pack-baserade motorer) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Berörda:** `2784` på `circo`, `twopi`, `neato`, `fdp` och `sfdp`, i varje
-utdataformat. På `dot` är den `conformant`.
+**Berörda:** `2784` på `circo`, `twopi`, `neato`, `fdp` och `sfdp`. Porteringen
+kastar fel i xdot- och imagemap-genomgångarna för alla fem motorerna och i `json`-genomgången
+för `circo`. I `json`-genomgångarna för `twopi`, `neato`, `fdp` och `sfdp`, och i
+`plain`-genomgångarna för alla fem, blir det inbyggda oraklet självt inte klart inom
+genomgångens tidsbudget, så de raderna är orakelfel. På `dot`, `osage` och
+`patchwork` går den igenom.
 
 **Vad som händer.** `lib/pack/pack.c` registrerar de celler som en komponent upptar i
 en `PointSet`. För `2784` (en enda nod som är 3e16 pt hög, `splines="ortho"`) kräver den
@@ -1118,9 +1124,12 @@ trogna heltalsaritmetiken för `step`/placering 2 011 656 764 celler; inbyggd
 **Varför godkänd.** En körmiljögräns under koden, inte ett logiskt glapp; orsaken är
 den trogna aritmetiken i `97fcccd8` (före den räknade porteringen fram en liten,
 felaktig layout och nådde aldrig gränsen). Det godkända utfallet är ett kastat
-fel snarare än ett utlåtande `diverged`, och registren per motor godkänner bara
-rader med `diverged`, så ingen registerpost finns: genomgångarna fortsätter att lista
-`2784` bland sina portfel. Belägg:
+fel snarare än ett utlåtande `diverged`, så posterna i
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` och
+`accepted-divergences-map.json` deklarerar `verdict: "port-error"` med
+`errIncludes: "Map maximum size exceeded"`: de godkänner ett portfel endast när
+det bär det meddelandet. Ett annat fel på `2784` skulle dyka upp som ett ej godkänt fel,
+och `registry-staleness.test.ts` skulle flagga posten som inaktuell. Belägg:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

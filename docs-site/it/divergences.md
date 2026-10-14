@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -44,10 +44,11 @@ Gli strumenti lo uniscono ai dati al momento della generazione dei report:
 `PARITY-dot.md` separa gli **scarti accettati** dal backlog **monitorato**, e il
 controllo delle regole ne ricava la propria lista di eccezioni. Le sezioni in
 prosa qui sotto spiegano ogni voce (A1 è attiva; A2, A3 e A8 sono chiuse e
-conservate come storico; A10 è l'accettazione di un errore del porting che
-nessun registro può esprimere); un test di CI (`accepted-divergences.test.ts`) verifica
-che ogni grafo accettato diverga ancora, così questo elenco non può marcire in
-silenzio.
+conservate come storico; A10 è attiva come accettazione di un errore del porting
+nei registri per motore). Due test di CI impediscono a questo elenco di marcire in
+silenzio: `accepted-divergences.test.ts` verifica che ogni grafo accettato diverga
+ancora, e `registry-staleness.test.ts` fallisce quando una voce di un registro per
+motore non corrisponde più alla sua riga del rilevamento registrata nel repository.
 
 ---
 
@@ -1196,8 +1197,12 @@ la nota `2095 riclassificato` qui sopra).
 
 ### A10. Limite di dimensione di `Map` in V8 nel packing dei poliomini (`2784`, cinque motori basati su pack) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Interessato:** `2784` su `circo`, `twopi`, `neato`, `fdp` e `sfdp`, in ogni
-formato di output. Su `dot` è `conformant`.
+**Interessato:** `2784` su `circo`, `twopi`, `neato`, `fdp` e `sfdp`. Il porting
+lancia un errore nei rilevamenti xdot e imagemap di tutti e cinque i motori e nel
+rilevamento `json` per `circo`. Nei rilevamenti `json` per `twopi`, `neato`, `fdp` e
+`sfdp`, e nei rilevamenti `plain` di tutti e cinque, l'oracolo nativo stesso non
+termina entro il tempo concesso al rilevamento, quindi quelle righe sono errori
+dell'oracolo. Su `dot`, `osage` e `patchwork` passa.
 
 **Che cosa succede.** `lib/pack/pack.c` registra in un `PointSet` le celle occupate
 da una componente. Per `2784` (un singolo nodo alto 3e16 pt, `splines="ortho"`)
@@ -1209,9 +1214,13 @@ lancia `Map maximum size exceeded`.
 **Perché è accettato.** Un limite di runtime al di sotto del codice, non una lacuna
 logica; la causa è l'aritmetica fedele di `97fcccd8` (prima di essa il porting
 calcolava un layout piccolo e sbagliato e non raggiungeva mai il limite). L'esito
-accettato è un errore lanciato anziché un verdetto `diverged`, e i registri per
-motore accettano solo righe `diverged`, quindi non esiste alcuna voce nel registro: i
-rilevamenti continuano a elencare `2784` tra i loro errori del porting. Evidenza:
+accettato è un errore lanciato anziché un verdetto `diverged`, quindi le voci in
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` e
+`accepted-divergences-map.json` dichiarano `verdict: "port-error"` con
+`errIncludes: "Map maximum size exceeded"`: accettano un errore del porting solo
+quando riporta quel messaggio. Un fallimento diverso su `2784` emergerebbe come
+errore non accettato, e `registry-staleness.test.ts` segnalerebbe la voce come
+obsoleta. Evidenza:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

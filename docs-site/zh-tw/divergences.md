@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -36,8 +36,9 @@ sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json)。
 工具會在產生報告時將它合併進來：`PARITY-dot.md` 將**已接受的差異**與**持續追蹤的**待辦項目分開，
 規則閘門的允許清單也由它而來。下方的文字段落說明每一個條目（A1 為現行；
-A2、A3 與 A8 已結案，作為歷史保留；A10 是任何登錄檔都無法表達的移植版錯誤接受項）；一項 CI 測試（`accepted-divergences.test.ts`）確保
-每一張已接受的圖仍然存在差異，因此這份清單不會悄悄腐化。
+A2、A3 與 A8 已結案，作為歷史保留；A10 作為各引擎登錄檔中的移植版錯誤接受項，仍為現行）。
+兩項 CI 測試防止這份清單悄悄腐化：`accepted-divergences.test.ts` 確保每一張已接受的圖仍然存在差異，
+而 `registry-staleness.test.ts` 會在某個引擎登錄檔中的條目不再與其已提交的掃描列相符時失敗。
 
 ---
 
@@ -925,11 +926,11 @@ pathplan 多重樣條通道——與 circo／sfdp `241_0` 相同的 libm 1 ULP �
 
 ### A10. 多米諾塊打包中的 V8 `Map` 大小上限（`2784`，五個以打包為基礎的引擎） {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**受影響：** `circo`、`twopi`、`neato`、`fdp` 與 `sfdp` 上的 `2784`，所有輸出格式皆然。在 `dot` 上它是 `conformant`。
+**受影響：** `circo`、`twopi`、`neato`、`fdp` 與 `sfdp` 上的 `2784`。移植版在全部五個引擎的 xdot 與 imagemap 掃描中，以及 `circo` 的 `json` 掃描中擲出錯誤。在 `twopi`、`neato`、`fdp` 與 `sfdp` 的 `json` 掃描中，以及全部五個引擎的 `plain` 掃描中，原生參照程式本身無法在掃描的時間預算內完成，所以這些列是參照程式錯誤。在 `dot`、`osage` 與 `patchwork` 上它會通過。
 
 **發生了什麼。** `lib/pack/pack.c` 將一個元件佔用的儲存格記錄在一個 `PointSet` 中。對於 `2784`（一個高 3e16 pt 的單一節點，`splines="ortho"`），忠實的整數 `step`／擺放算術需要 2,011,656,764 個儲存格；原生 16.1.0 以 482 秒完成，常駐記憶體 67.3 GB（峰值 101 GB）。移植版的 `PointSet` 是一個 JavaScript `Map`，V8 將它限制在 2^24 個項目，所以它擲出 `Map maximum size exceeded`。
 
-**為何接受。** 這是低於程式碼的執行階段上限，而不是邏輯缺口；原因是 `97fcccd8` 的忠實算術（在它之前，移植版算出的是一個很小的錯誤版面，從未觸及該上限）。接受的結果是擲出錯誤而不是 `diverged` 判定，而各引擎的登錄檔只接受 `diverged` 列，所以不存在登錄條目：各次掃描持續把 `2784` 列在其移植版錯誤故障之下。證據：[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md)。
+**為何接受。** 這是低於程式碼的執行階段上限，而不是邏輯缺口；原因是 `97fcccd8` 的忠實算術（在它之前，移植版算出的是一個很小的錯誤版面，從未觸及該上限）。接受的結果是擲出錯誤而不是 `diverged` 判定，所以 `accepted-divergences-engines.json`、`accepted-divergences-json.json` 與 `accepted-divergences-map.json` 中的條目宣告 `verdict: "port-error"` 並搭配 `errIncludes: "Map maximum size exceeded"`：只有當移植版錯誤帶有該訊息時，它們才接受它。`2784` 上的其他失敗會以未接受的故障呈現，而 `registry-staleness.test.ts` 會將該條目標記為過時。證據：[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md)。
 
 ---
 

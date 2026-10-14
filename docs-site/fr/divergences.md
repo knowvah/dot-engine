@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -47,10 +47,11 @@ L’outillage la joint au moment de produire les rapports : `PARITY-dot.md`
 sépare les **écarts acceptés** du retard **suivi**, et la porte de contrôle des
 règles en tire sa liste d’autorisations. Les sections en prose ci-dessous
 expliquent chaque entrée (A1 est active ; A2, A3 et A8 sont closes et conservées à
-titre d’historique ; A10 est une acceptation d’erreur du portage qu’aucun
-registre ne peut exprimer) ; un test d’intégration continue
-(`accepted-divergences.test.ts`) vérifie que chaque graphe accepté diverge
-toujours, de sorte que cette liste ne peut pas se périmer en silence.
+titre d’historique ; A10 est active en tant qu’acceptation d’erreur du portage
+dans les registres par moteur). Deux tests d’intégration continue empêchent cette
+liste de se périmer en silence : `accepted-divergences.test.ts` vérifie que chaque
+graphe accepté diverge toujours, et `registry-staleness.test.ts` échoue lorsqu’une
+entrée d’un registre par moteur ne correspond plus à sa ligne de balayage validée.
 
 ---
 
@@ -1243,8 +1244,12 @@ sfdp (2026-07-22) avec l’injecteur corrigé a confirmé qu’il s’injecte lu
 
 ### A10. Limite de taille de `Map` de V8 dans l’empaquetage de polyominos (`2784`, cinq moteurs à empaquetage) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Concerné :** `2784` sur `circo`, `twopi`, `neato`, `fdp` et `sfdp`, dans tous
-les formats de sortie. Sur `dot`, il est `conformant`.
+**Concerné :** `2784` sur `circo`, `twopi`, `neato`, `fdp` et `sfdp`. Le portage
+lève une erreur sur les balayages xdot et imagemap des cinq moteurs et sur le
+balayage `json` de `circo`. Sur les balayages `json` de `twopi`, `neato`, `fdp` et
+`sfdp`, ainsi que sur les balayages `plain` des cinq, l’oracle natif lui-même ne
+termine pas dans le budget de temps du balayage ; ces lignes sont donc des erreurs
+de l’oracle. Sur `dot`, `osage` et `patchwork`, il réussit.
 
 **Ce qui se passe.** `lib/pack/pack.c` consigne les cellules qu’occupe une
 composante dans un `PointSet`. Pour `2784` (un unique nœud de 3e16 pt de haut,
@@ -1258,9 +1263,12 @@ JavaScript, que V8 plafonne à 2^24 entrées ; il lève donc
 une lacune logique ; la cause est l’arithmétique fidèle de `97fcccd8` (avant
 elle, le portage calculait une petite disposition erronée et n’atteignait jamais
 la limite). Le résultat accepté est une erreur levée plutôt qu’un verdict
-`diverged`, et les registres par moteur n’acceptent que les lignes `diverged` :
-aucune entrée de registre n’existe donc, et les balayages continuent de
-répertorier `2784` parmi leurs fautes d’erreur du portage. Preuves :
+`diverged` ; les entrées de `accepted-divergences-engines.json`,
+`accepted-divergences-json.json` et `accepted-divergences-map.json` déclarent donc
+`verdict: "port-error"` avec `errIncludes: "Map maximum size exceeded"` : elles
+n’acceptent une erreur du portage que si elle porte ce message. Un autre échec sur
+`2784` apparaîtrait comme une faute non acceptée, et
+`registry-staleness.test.ts` signalerait l’entrée comme périmée. Preuves :
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

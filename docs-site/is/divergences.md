@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,9 +42,11 @@ hér á eftir) er
 Verkfærin tengja hana saman við skýrslugerð: `PARITY-dot.md` aðgreinir **samþykkt frávik** frá
 **rakta** vinnulistanum, og reglnahliðið sækir leyfislista sinn í hana. Textakaflarnir hér á eftir
 útskýra hverja færslu (A1 er virk; A2, A3 og A8 eru lokuð og
-varðveitt sem saga; A10 er samþykki á villu í yfirfærslu sem engin skrá getur
-lýst); CI-prófun (`accepted-divergences.test.ts`) tryggir að
-hvert samþykkt graf víki enn, svo þessi listi geti ekki úrelst án þess að nokkur taki eftir.
+varðveitt sem saga; A10 er virk sem samþykki á villu í yfirfærslu í skrám hverrar
+vélar). Tvær CI-prófanir koma í veg fyrir að þessi listi úreldist án þess að nokkur
+taki eftir: `accepted-divergences.test.ts` tryggir að hvert samþykkt graf víki enn,
+og `registry-staleness.test.ts` fellur þegar færsla í skrá vélar passar ekki lengur
+við innsettu yfirferðarlínuna sína.
 
 ---
 
@@ -1106,8 +1108,12 @@ athugasemdina um `2095` endurflokkað hér að ofan).
 
 ### A10. Stærðarmörk V8 `Map` í pökkun marghyrningasamsetninga (`2784`, fimm vélar sem byggja á pökkun) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Fyrir áhrifum:** `2784` á `circo`, `twopi`, `neato`, `fdp` og `sfdp`, í öllum
-úttakssniðum. Á `dot` er það `conformant`.
+**Fyrir áhrifum:** `2784` á `circo`, `twopi`, `neato`, `fdp` og `sfdp`. Yfirfærslan
+kastar villu í xdot- og imagemap-yfirferðum allra fimm vélanna og í `json`-yfirferðinni
+fyrir `circo`. Í `json`-yfirferðunum fyrir `twopi`, `neato`, `fdp` og `sfdp`, og í
+`plain`-yfirferðum allra fimm, lýkur innbyggða véfréttin sjálf ekki innan tímaramma
+yfirferðarinnar, svo þær línur eru villur í véfrétt. Á `dot`, `osage` og
+`patchwork` stenst það.
 
 **Hvað gerist.** `lib/pack/pack.c` skráir reitina sem hluti tekur upp í `PointSet`.
 Fyrir `2784` (einn hnútur sem er 3e16 pt hár, `splines="ortho"`) þarf trúr
@@ -1119,9 +1125,12 @@ size exceeded`.
 **Hvers vegna samþykkt.** Takmörkun á keyrsluumhverfi fyrir neðan kóðann, ekki
 rökgat; orsökin er trúr reikningur `97fcccd8` (fyrir hann reiknaði yfirfærslan
 litla, ranga uppsetningu og náði aldrei mörkunum). Samþykkta niðurstaðan er kastað
-villa fremur en `diverged`-dómur, og skrár hverrar vélar samþykkja aðeins
-`diverged`-raðir, svo engin skráarfærsla er til: yfirferðirnar halda áfram að telja
-`2784` upp meðal villna í yfirfærslu. Sönnunargögn:
+villa fremur en `diverged`-dómur, svo færslurnar í
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` og
+`accepted-divergences-map.json` tilgreina `verdict: "port-error"` með
+`errIncludes: "Map maximum size exceeded"`: þær samþykkja villu í yfirfærslu aðeins
+þegar hún ber þessi skilaboð. Önnur bilun á `2784` kæmi fram sem ósamþykkt bilun,
+og `registry-staleness.test.ts` myndi merkja færsluna sem úrelta. Sönnunargögn:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

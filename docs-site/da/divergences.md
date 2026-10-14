@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,10 +42,11 @@ nedenfor), er
 Værktøjerne forbinder den ved rapporttidspunktet: `PARITY-dot.md` adskiller **accepterede
 afvigelser** fra den **sporede** efterslæbskø, og regel-gaten henter sin
 tilladelsesliste derfra. Prosaafsnittene nedenfor forklarer hver post (A1 er aktiv;
-A2, A3 og A8 er lukkede og bevaret som historik; A10 er en accept af en portfejl,
-som intet register kan udtrykke); en CI-test
-(`accepted-divergences.test.ts`) sikrer, at hver accepteret graf
-stadig afviger, så denne liste ikke stille rådner op.
+A2, A3 og A8 er lukkede og bevaret som historik; A10 er aktiv som en accept af en
+portfejl i registrene pr. motor). To CI-tests forhindrer, at denne liste stille
+rådner op: `accepted-divergences.test.ts` sikrer, at hver accepteret graf stadig
+afviger, og `registry-staleness.test.ts` fejler, når en post i et register pr.
+motor ikke længere stemmer overens med sin committede kørselsrække.
 
 ---
 
@@ -1112,8 +1113,12 @@ noten `2095 reclassified` ovenfor).
 
 ### A10. V8 `Map`-størrelsesgrænse i polyomino-pakning (`2784`, fem pakningsbaserede motorer) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Berørt:** `2784` på `circo`, `twopi`, `neato`, `fdp` og `sfdp`, i alle
-outputformater. På `dot` er den `conformant`.
+**Berørt:** `2784` på `circo`, `twopi`, `neato`, `fdp` og `sfdp`. Porten kaster
+fejl i xdot- og imagemap-kørslerne for alle fem motorer og i `json`-kørslen for
+`circo`. I `json`-kørslerne for `twopi`, `neato`, `fdp` og `sfdp` og i
+`plain`-kørslerne for alle fem bliver det native orakel ikke selv færdigt inden for
+kørslens tidsbudget, så de rækker er orakelfejl. På `dot`, `osage` og `patchwork`
+består den.
 
 **Hvad der sker.** `lib/pack/pack.c` registrerer de celler, en komponent optager,
 i et `PointSet`. For `2784` (en enkelt knude, 3e16 pt høj, `splines="ortho"`)
@@ -1125,9 +1130,12 @@ native 16.1.0 gennemfører på 482 s med 67.3 GB resident (101 GB spids). Porten
 **Hvorfor accepteret.** En kørselsmiljøbegrænsning under koden, ikke et
 logikhul; årsagen er den trofaste aritmetik i `97fcccd8` (før den beregnede
 porten et lille, forkert layout og nåede aldrig grænsen). Det accepterede udfald
-er en kastet fejl frem for en `diverged`-dom, og registrene pr. motor accepterer
-kun `diverged`-rækker, så der findes ingen registerpost: kørslerne bliver ved med
-at opføre `2784` under deres portfejl. Evidens:
+er en kastet fejl frem for en `diverged`-dom, så posterne i
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` og
+`accepted-divergences-map.json` erklærer `verdict: "port-error"` med
+`errIncludes: "Map maximum size exceeded"`: de accepterer kun en portfejl, når den
+bærer den meddelelse. En anden fejl på `2784` ville dukke op som en ikke-accepteret
+fejl, og `registry-staleness.test.ts` ville markere posten som forældet. Evidens:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

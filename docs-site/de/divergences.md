@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -45,10 +45,12 @@ Die **maschinenlesbare** maßgebliche Quelle dafür, welche Graphen *akzeptiert*
 Die Werkzeuge verknüpfen sie zur Berichtszeit: `PARITY-dot.md` trennt **akzeptierte
 Abweichungen** vom **nachverfolgten** Rückstand, und das Regel-Gate bezieht seine
 Allowlist daraus. Die folgenden Prosa-Abschnitte erklären jeden Eintrag (A1 ist
-aktiv; A2, A3 und A8 sind geschlossen und als Historie aufbewahrt; A10 ist eine
-Akzeptanz eines Portierungsfehlers, die kein Register ausdrücken kann); ein CI-Test
-(`accepted-divergences.test.ts`) stellt sicher, dass jeder akzeptierte Graph
-weiterhin abweicht, damit diese Liste nicht unbemerkt veraltet.
+aktiv; A2, A3 und A8 sind geschlossen und als Historie aufbewahrt; A10 ist als
+Akzeptanz eines Portierungsfehlers in den Registern je Engine aktiv). Zwei CI-Tests
+verhindern, dass diese Liste unbemerkt veraltet: `accepted-divergences.test.ts`
+stellt sicher, dass jeder akzeptierte Graph weiterhin abweicht, und
+`registry-staleness.test.ts` schlägt fehl, wenn ein Eintrag in einem Register je
+Engine nicht mehr zu seiner eingecheckten Zeile des Durchlaufs passt.
 
 ---
 
@@ -1172,8 +1174,12 @@ wurde entfernt (siehe den Hinweis `2095 reclassified` oben).
 
 ### A10. Größenlimit der V8-`Map` beim Polyomino-Packing (`2784`, fünf Pack-basierte Engines) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Betroffen:** `2784` auf `circo`, `twopi`, `neato`, `fdp` und `sfdp`, in jedem
-Ausgabeformat. Auf `dot` ist es `conformant`.
+**Betroffen:** `2784` auf `circo`, `twopi`, `neato`, `fdp` und `sfdp`. Die
+Portierung wirft in den xdot- und Imagemap-Durchläufen aller fünf Engines sowie im
+`json`-Durchlauf für `circo`. In den `json`-Durchläufen für `twopi`, `neato`, `fdp`
+und `sfdp` sowie in den `plain`-Durchläufen aller fünf wird das native Orakel selbst
+nicht innerhalb des Zeitbudgets des Durchlaufs fertig, daher sind diese Zeilen
+Orakelfehler. Auf `dot`, `osage` und `patchwork` besteht es.
 
 **Was geschieht.** `lib/pack/pack.c` hält die von einer Komponente belegten Zellen in
 einem `PointSet` fest. Für `2784` (ein einzelner Knoten, 3e16 pt hoch, `splines="ortho"`)
@@ -1185,9 +1191,13 @@ sodass sie `Map maximum size exceeded` wirft.
 **Warum akzeptiert.** Eine Laufzeitgrenze unterhalb des Codes, keine Logiklücke; die
 Ursache ist die originalgetreue Arithmetik von `97fcccd8` (davor berechnete die
 Portierung ein kleines, falsches Layout und erreichte das Limit nie). Das akzeptierte
-Ergebnis ist ein geworfener Fehler statt eines `diverged`-Urteils, und die Register je
-Engine akzeptieren nur `diverged`-Zeilen, sodass kein Registereintrag existiert: Die
-Durchläufe führen `2784` weiterhin unter ihren Portierungsfehlern. Belege:
+Ergebnis ist ein geworfener Fehler statt eines `diverged`-Urteils, daher deklarieren
+die Einträge in `accepted-divergences-engines.json`,
+`accepted-divergences-json.json` und `accepted-divergences-map.json`
+`verdict: "port-error"` mit `errIncludes: "Map maximum size exceeded"`: Sie
+akzeptieren einen Portierungsfehler nur, wenn er diese Meldung trägt. Ein anderer
+Fehlschlag bei `2784` würde als nicht akzeptierter Fehler auftauchen, und
+`registry-staleness.test.ts` würde den Eintrag als veraltet melden. Belege:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---

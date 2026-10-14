@@ -1,5 +1,5 @@
 ---
-sourceHash: d4192db40bb45515f4ed4190420acec6a50ce6704e8bd447df33d35e3ffe0730
+sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,8 +42,10 @@ poniżej), jest
 Narzędzia łączą go przy generowaniu raportu: `PARITY-dot.md` oddziela **zaakceptowane różnice** od
 **śledzonego** zaległego zbioru, a bramka reguł pobiera z niego swoją listę dozwolonych. Poniższe
 sekcje prozy objaśniają każdy wpis (A1 jest aktywne; A2, A3 i A8 są zamknięte i
-zachowane jako historia; A10 to akceptacja błędu portu, której nie wyrazi żaden rejestr); test CI (`accepted-divergences.test.ts`) wymusza, aby
-każdy zaakceptowany graf nadal się rozjeżdżał, więc ta lista nie może po cichu zgnić.
+zachowane jako historia; A10 jest aktywne jako akceptacja błędu portu w rejestrach poszczególnych silników).
+Dwa testy CI chronią tę listę przed cichym gniciem: `accepted-divergences.test.ts` wymusza, aby każdy
+zaakceptowany graf nadal się rozjeżdżał, a `registry-staleness.test.ts` kończy się niepowodzeniem, gdy wpis
+w rejestrze silnika przestaje odpowiadać swojemu zatwierdzonemu wierszowi przebiegu.
 
 ---
 
@@ -1081,8 +1083,12 @@ notę `2095 reclassified` powyżej).
 
 ### A10. Limit rozmiaru `Map` w V8 przy pakowaniu poliomin (`2784`, pięć silników opartych na pakowaniu) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Dotyczy:** `2784` w `circo`, `twopi`, `neato`, `fdp` i `sfdp`, w każdym
-formacie wyjściowym. W `dot` jest `conformant`.
+**Dotyczy:** `2784` w `circo`, `twopi`, `neato`, `fdp` i `sfdp`. Port
+rzuca błąd w przebiegach xdot i imagemap wszystkich pięciu silników oraz w przebiegu `json`
+dla `circo`. W przebiegach `json` dla `twopi`, `neato`, `fdp` i `sfdp` oraz w
+przebiegach `plain` wszystkich pięciu sama natywna wyrocznia nie kończy pracy w budżecie
+czasu przebiegu, więc te wiersze są błędami wyroczni. W `dot`, `osage` i `patchwork`
+przechodzi.
 
 **Co się dzieje.** `lib/pack/pack.c` zapisuje komórki zajmowane przez komponent w
 `PointSet`. Dla `2784` (pojedynczy węzeł o wysokości 3e16 pt, `splines="ortho"`) wierna
@@ -1094,9 +1100,12 @@ to `Map` z JavaScriptu, którą V8 ogranicza do 2^24 wpisów, więc rzuca
 **Dlaczego zaakceptowane.** Limit środowiska uruchomieniowego poniżej kodu, a nie luka w logice; przyczyną jest
 wierna arytmetyka z `97fcccd8` (wcześniej port obliczał mały,
 błędny układ i nigdy nie osiągał limitu). Zaakceptowanym wynikiem jest rzucony
-błąd, a nie werdykt `diverged`, a rejestry poszczególnych silników
-akceptują tylko wiersze `diverged`, więc wpis rejestru nie istnieje: przebiegi nadal
-wymieniają `2784` wśród swoich błędów portu. Dowody:
+błąd, a nie werdykt `diverged`, więc wpisy w
+`accepted-divergences-engines.json`, `accepted-divergences-json.json` i
+`accepted-divergences-map.json` deklarują `verdict: "port-error"` z
+`errIncludes: "Map maximum size exceeded"`: akceptują błąd portu tylko wtedy, gdy
+niesie on ten komunikat. Inna awaria na `2784` ujawniłaby się jako niezaakceptowany
+błąd, a `registry-staleness.test.ts` oznaczyłby wpis jako nieaktualny. Dowody:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
