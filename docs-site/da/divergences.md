@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -41,8 +41,9 @@ nedenfor), er
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 Værktøjerne forbinder den ved rapporttidspunktet: `PARITY-dot.md` adskiller **accepterede
 afvigelser** fra den **sporede** efterslæbskø, og regel-gaten henter sin
-tilladelsesliste derfra. Prosaafsnittene nedenfor forklarer hver post (A1 og A3
-er aktive; A2 er lukket og bevaret som historik); en CI-test
+tilladelsesliste derfra. Prosaafsnittene nedenfor forklarer hver post (A1 er aktiv;
+A2, A3 og A8 er lukkede og bevaret som historik; A10 er en accept af en portfejl,
+som intet register kan udtrykke); en CI-test
 (`accepted-divergences.test.ts`) sikrer, at hver accepteret graf
 stadig afviger, så denne liste ikke stille rådner op.
 
@@ -69,8 +70,8 @@ tolerancebaseret** krav i stedet for et bytekrav.
 
 **Berørt:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (de iterative
 fjedermodelmotorer). `dot`-motorens *layout* er **ikke** berørt af denne
-iterative models determinisme; en separat, snævert afgrænset kommatalsafvigelse i
-`dot`'s spline-føring er behandlet under **A3** nedenfor.
+iterative models determinisme; de tidligere kommatalsafvigelser i `dot`'s
+spline-føring (A3, A8) er lukkede og bevaret nedenfor som historik.
 
 > **Omfang, historisk et ikke-målt forbehold — nu delvist målt.** Den
 > **primære SVG-undersøgelse af dot-motoren** (`test/corpus/survey.ts`) er stadig
@@ -104,7 +105,7 @@ gengivelse er **ikke garanteret på tværs af platforme**. Topologien bevares; d
 potentielle afvigelse ligger i de fine knudekoordinater.
 
 **Hvorfor accepteret.** Dette er en hård begrænsning ved at køre i JS, ikke et designvalg
-— samme familie som A3's Apple-`hypot`-følsomhed. Der er ingen måde at garantere
+— samme familie som de (siden lukkede) `hypot`/FMA-følsomheder i A3/A8. Der er ingen måde at garantere
 bit-identiske transcendente/FMA-resultater på tværs af alle målkørselsmiljøer, så et bytekrav
 ville være utestbart og ikke blot dyrt. At **vurdere A1** (frem for blot
 at tage forbehold) krævede et separat native-motor-paritetsspor — bygget
@@ -113,12 +114,13 @@ input under sin egen motor i stedet for `dot`. Det ærlige loft for dette arbejd
 at **indsnævre** A1 til „ingen aktiv afvigelse på referenceplatformen“ og aldrig at
 fjerne forbeholdet om tværplatform; resultaterne indtil videre (nedenfor) holder sig under
 det loft: `circo`/`twopi`/`osage` har hver afdækket og årsagsanalyseret en håndfuld
-ægte A1/A9-tilfælde, og `neato`/`fdp`/`sfdp` ligger nu på 90.8/77.5/68.0%
-inden for 0.5pt af native over de 910 elementer, hvilket betyder, at den porterede
-aritmetik (`fma.ts`, `arm-pow.ts`, matchet PRNG) holder for de fleste grafer —
-og hvert resterende afvigende id er individuelt tilskrevet ved injektion (solver-
-drift mod portfejl) i stedet for at blive efterladt som uanalyseret drift; se
-karakteriseringen af de iterative motorer nedenfor.
+ægte A1/A9-tilfælde, og `neato`/`fdp`/`sfdp` ligger nu på 90.3/96.5/68.1%
+inden for 0.5pt af native over de 929 elementer (graphviz 16.1.0), hvilket betyder,
+at den porterede aritmetik (`fma.ts`, `arm-pow.ts`, matchet PRNG) holder for de
+fleste grafer — og hvert afvigende id på listen over 910 elementer er individuelt
+tilskrevet ved injektion (solver-drift mod portfejl) i stedet for at blive
+efterladt som uanalyseret drift; de 19 tilføjelser til listen er endnu ikke
+tilskrevet. Se karakteriseringen af de iterative motorer nedenfor.
 
 **Accept på motorsporet: twopi-pilefamilien.** <a id="a1-twopi-arrows-family"></a>
 Blokcitatet ovenfor beskriver dot-motorens SVG-undersøgelse, hvor A1 matcher nul
@@ -183,27 +185,38 @@ for disse tre, og `parity-report.ts` viser dem i et separat afsnit,
 „Iterative engines (±0.5 characterization)“, i
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 udtrykkeligt **ikke** sammenligneligt med de deterministiske beståprocenter på ±0.01 andre steder
-i dette dokument. Aktuelle tal (910 elementer; beståprocenten udelader
-inputs, som C-oraklet ikke kan rendere, jf. [Overensstemmelse](./conformance.md)):
+i dette dokument. Aktuelle tal mod graphviz 16.1.0 (929 elementer; beståprocenten
+udelader inputs, som C-oraklet ikke kan rendere, jf.
+[Overensstemmelse](./conformance.md)):
 
-| motor | undersøgt | inden for ±0.5pt | ikke-conformant (alle tilskrevet, accepteret) | porteringsfejl / timeout | orakelfejl |
+| motor | undersøgt | inden for ±0.5pt | ikke-conformant | porteringsfejl / timeout | orakelfejl |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(Rækkerne for `neato` og `sfdp` stammer fra kørsler, der blev stagede før den
+endelige gen-kørsel af `graphs-decorate`, `1314`, `2784` og `2371`; de kan
+flytte sig med disse id'er. Beståprocenten for `fdp` steg fra 77.5%, fordi den
+tidligere committede kørsel gik forud for portens tilstand fra den forrige
+mission.)
 
 (Den første kørsel, 2026-07-11 ved 762 elementer, målte 263/311/260 inden for
 ±0.5pt — springet til de nuværende rater kom fra rettelser pr. id, som er landet siden,
 især neatos uportede `user_pos`/`P_SET`-håndtering, konsolideringen af motorinit
 og rettelsen af `setEdgeType` makro-mod-funktion.)
 
-I modsætning til ved første kørsel er hver afvigende række nu individuelt tilskrevet:
+I modsætning til ved første kørsel blev hver afvigende række på listen over 910
+elementer individuelt tilskrevet (de 19 id'er, der er nye på listen over 929
+elementer, er endnu ikke tilskrevet; de er opført i T13-afleveringen som nyligt
+synlige):
 injektionsværktøjet (`test/corpus/attribute-divergence.ts`) fodrer det
 native orakels `ND_pos` før føring ind i porten og sammenligner igen, og
 hvert nuværende afvigende id er enten `drift-exonerated` (portens føring
 og emission reproducerer oraklet nøjagtigt, når solver-driften er fjernet)
 eller et af de få separat accepterede rester pr. id (`241_0`'s
-CDT-incircle-uafgjort på alle tre motorer, neato `2239`, sfdp `42`/`2556`).
+CDT-incircle-uafgjort på alle tre motorer, neato `2239`, sfdp `2556`; sfdp `42`
+er A1-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 Klasseaccepten nedenfor formaliserer den frikendte mængde; aktuelle tal i
 dashboards pr. motor
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -403,39 +416,48 @@ korpusset går gennem den, så en rettelse rettet mod én streng risikerede at g
 for andre for en umærkelig gevinst.
 :::
 
-### A3. `hypot`-uafgjort i splineføring (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. `hypot`-uafgjort i splineføring (`dot`) — LUKKET {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Berørt:** `dot`-grafer med en **geometrisk symmetrisk** kantføringskanal
-— typisk en kort, symmetrisk bue for en flad kant. Observeret eksempel: `2368`,
-som forbliver på *structural-match* (maxΔ ≈ 10.2 pt på **én** kant, `376->76`).
-Den samme uafgjort-afgørelse optræder også på en **lang** kant (over flere rang) ind i
-en hub med høj indgående grad, når korridoren er præcis spejlsymmetrisk: `graphs-b100` /
-`graphs-b104` (identisk kilde) afviger med maxΔ 20 (præcis én rangrække) på
-det enkelte knæk i `Node23730->Node23729` — hver knudeposition og al opstrøms
-boks-/polygon-/stramt-stistruktur er byte-identisk med C; kun `findMaxDev`'s
-valg på ~1 ULP af, hvilket spejlsymmetrisk indre punkt der bliver bezier-knæk,
-adskiller sig. Den korte form for flad kant optræder også som `241_1` (structural-match,
-maxΔ ≈ 2.4 pt) — den afvigende søster til den orakelfastlåste `241_0`, som C's
-støj i stedet beholder først-valget for. Den samme uafgjort-afgørelse giver en opdeling i en labelet 2-cyklus-
-bagkant i slidskorridoren i `2413_1` (structural-match, maxΔ 67.65) og
-`2413_2` (maxΔ ≤99.55, når T11 swapBezier-reverse-rettelsen lander — indtil da
-domineres filens rapporterede maxΔ 1922.26 af en urelateret, separat
-sporet fejl), og en enkelt labelet kant inden for en klynge i `graphs-decorate`
-(maxΔ 43.54); i hvert tilfælde ligger de to kandidater til opdelingshjørne inden for
-5.7e-13 (2413-familien) / 3e-14 (decorate) af hinanden, før den
-positionsafhængige Apple-`hypot`-støj udpeger en vinder. `2371`
-(structural-match, maxΔ 16.8) viser det samme fingeraftryk på to urelaterede
-kanter (`g[9263]` `r6837mid--r9687mid`, `g[23859]` `r38mid--r8699mid`): porten
-udsender det nøjagtige kontrolpunktsekvens-spejl af oraklet på begge,
-knæk-y vendt med et identisk Δ16.8 (øvre/nedre opdelingsbrøker byttet om).
-Dens oprindelse er kvalificeret med **MEDIUM** konfidens frem for den
-BEKRÆFTEDE konfidens for de andre medlemmer: `2371` pakker ~199 komponenter, hvilket
-afkobler pathplan-lokale koordinater fra sidekoordinater, så uafgjorten
-ikke kunne korreleres live til `route.ts:209` over tre instrumenteringsforsøg;
-en oprindelse i straight-mode-segmentering eller post-clip `recover_slack` er
-ikke fuldt udelukket. Fuld diagnose:
-`plans/residual-cleanup/analysis/2371-mirror.md`. De fleste førte kanter er
-upåvirkede.
+**Status (2026-10-12): lukket.** Intet korpus-id accepteres længere under denne
+klasse; afsnittet bevares som historisk dokumentation af mekanismen. De tidligere
+medlemmer (`2368`, `graphs-b100`, `graphs-b104`, `241_1`, `2413_1`, `2413_2`,
+`graphs-decorate`, `2371`) er alle **`conformant`** i den friske kørsel
+(`test/corpus/parity-probe.json`).
+
+**Mekanisme, og hvad der lukkede den.** Splinetilpasseren (`Proutespline` ->
+`findMaxDev`, `src/pathplan/route.ts`) deler en tilpasset bezier ved det indre
+rutepunkt med størst afvigelse. På en geometrisk symmetrisk kanal adskiller
+kandidaternes afvigelser sig med ~1 ULP, så vinderen afgøres af aritmetik i
+sidste bit. Porten var blevet tilskrevet et uløseligt hul („Apple `hypot`
+matcher ingen portabel `hypot`“) og kompenserede med en tolerant,
+translationsekvivariant uafgjort-regel. Den tilskrivning blev modbevist:
+uafgjorten afgøres af C's *eksakte* aritmetik, som kan reproduceres. Commit
+`cdf597bc` (`fix(pathplan): split splines at C's max-deviation point bit for bit`)
+portede den: libm `hypot` til afstanden (`route.c:448`), C's strenge `>`-sammenligning
+(`route.c:139`) og clangs `fp-contract`-fusion af bezier-evalueringen
+(`route.c:137-138`), `mkspline`-determinanterne (`route.c:181-183`), `dot`
+(459), `normv` (413), `B01` (488) og `B23` (494). Den tolerante
+uafgjort-regel er væk; splinens knudepunkt for `241_0` er fastlåst i C's
+føringsramme, fordi C ikke er translationsekvivariant ved sådanne uafgjorte.
+Det lukkede `2368`, `2371`, `2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` og
+`graphs-decorate`.
+
+`241_1` var ikke en `hypot`-uafgjort: den blev lukket af `87347711`
+(`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
+grupperer alle tilstødende flade kanter, der deler en hovedkant, i ét kald til
+`make_flat_adj_edges` og tester for porte på tværs af hele gruppen, så en
+søskendekant uden port til en kant med port føres gennem hjælpegrafen. Porten
+delte gruppen efter tilstedeværelsen af porte og førte søskendekanten gennem
+`makeSimpleFlat`, hvis klip lander i et andet `bezier_clip`-punkt (54.28 mod
+native 54.46).
+
+Begge rettelser blev verificeret med friske korpuskørsler uden regressioner
+(journalrækkerne „T5 land“ og „T6 land“,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Evidens før rettelsen (historisk).** `2368` var referencemedlemmet. Dens
+`376->76`-bue deltes mod det modsatte hjørne i forhold til C; grafen og de
+tidligere C- og portstier for den bue bevares til optegnelsen.
 
 ::: details Grafdefinition (`2368.dot`)
 ```dot
@@ -475,71 +497,28 @@ digraph G {
 ```
 :::
 
-**Karakterisering.** Splinetilpasseren (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) deler en tilpasset bezier ved det indre rutepunkt med
-maksimal afvigelse. Når kanalen er symmetrisk, er de to kandidater til opdelingspunkt
-en **eksakt matematisk uafgjort**, og vinderen afgøres derefter af ~1e-14
-kommatalsudslettelsesstøj i en bezier-evaluering i absolutte koordinater,
-hvis **fortegn afhænger af den absolutte position**.
-
-C's afvigelsesafstand er libm `hypot`, og den macOS-Apple-`hypot`, der
-genererede oraklet, er en proprietær implementering, der bit-matcher **ingen**
-portabel `hypot` (målt mod den i graphviz' koordinatregime, bit-
-identiske rater: V8 `Math.hypot` ≈ 63%, en korrekt afrundet / Arm-agtig `hypot`
-≈ 84%, fdlibm `hypot` ≈ 90%, `sqrt(dx²+dy²)` ≈ 94%). På grund af den ULP-støj
-**er C selv ikke konsistent**: den deler to *translationskongruente* buer mod
-**modsatte** hjørner. Inden for `2368` er `376->76`-buen spejlbilledet af den
-geometrisk identiske `256->436`-bue:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-Hele deltaet, lagt oven på hinanden (12× zoom på buen `376->76` / `to1`) — **grøn = C
-Graphviz, rød = @knowvah/dot-engine**. Begge er den samme lave nedadgående bue mellem de
-samme knudegrænser; de afviger med ~1–2 pt ved bugen (det midterste bezier-
-kontrolpunkt), hvor C's uafgjort faldt ud mod det modsatte hjørne:
-
-![2368 376->76-bue: grøn = C, rød = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Alt andet matcher inden for tolerancen — samme afgrænsningsboks (608×148), knudepositioner,
-labels, pilespidser og alle andre kanter. De fulde renderinger er visuelt
-umulige at skelne:
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![2368 renderet af C Graphviz](/img/2368-c.png) | ![2368 renderet af @knowvah/dot-engine](/img/2368-port.png) |
-
-Porten bruger en **translationsekvivariant** uafgjort-afgørelse (en ægte uafgjort løses altid
-til det første indeks), så den tegner *hver* sådan bue på samme måde uanset
-position — den er selvkonsistent og matcher C på de buer, hvor C's støj også
-beholder først-valget (fx `256->436` og `241_0 5:ne->8:nw`), og afviger kun, hvor C's
-støj vipper den anden vej (`376->76`). Endepunkter, pilespidsmål, de andre
-kanter, alle knuder, labels og afgrænsningsboksen matcher inden for tolerancen; kun de
-indre kontrolpunkter på den ene bue flytter sig (~1–2 pt ved bugen).
-
-**Hvorfor accepteret.** Apples `hypot` er ikke mere reproducerbar på tværs af JS-motorer og
-CPU'er end FMA/`pow` i **A1** — det er den samme portabilitetsbegrænsning, blot
-i `dot`'s splinefører. At matche C's *positionsafhængige* valg ville betyde at
-overtage C's strenge uafgjort-afgørelse, som ligger i en **delt primitiv**, som hver ført
-kant går igennem: at gøre det bytter `376->76`-matchet for *nye* uoverensstemmelser på
-de buer, hvor C lander den anden vej (det giver regression for `241_0` og et `cnt=3`-
-orakeltilfælde med flad kant), et nulsumsspil, der også ofrer portens
-translationsekvivarians. Derfor beholder vi den konsistente (ekvivariante) fører. Det er
-en afgrænset, umærkelig `dot`-afvigelse — ikke en åben fejl. Fuld undersøgelse:
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
-
 ### A4. Orakel i en anerkendt defekt tilstand (familien init_rank / pathplan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Berørt:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). Familiens
+**Berørt (graphviz 16.1-kørsel):** `1435` (structural-match, maxΔ 0.39 på ét
+spline-kontrolpunkt; var 503 mod 15.x-oraklet — faldet blev ikke bisekteret) og
+`1581` (diverged: antal børn på øverste niveau 39 mod 22, maxΔ 0). Familiens
 medlemmer `1939` og `2825` er **conformante** og har ingen post, og `2470`
 og `graphs-structs` sluttede sig til dem 2026-07-11 (begge kollapsede til conformant,
 efter at rettelserne af ortho-adjacency-spill/chancmpid, fmadd `polylineMidpoint`
 og half-even-tiebreak-afrunding landede — porten reproducerer nu oraklets
 genoprettelsesoutput nøjagtigt, inklusive de identiske tabte kanter); deres
-accept-poster er pensioneret.
+accept-poster er pensioneret. **`2796` og `2471` sluttede sig til dem ved
+graphviz 16.1** (begge `conformant` i den friske kørsel, accept-poster
+pensioneret): porten og 16.1-oraklet er nu enige om `init_rank`-genoprettelsens
+output, inklusive de tabte kanter. Årsagen blev ikke isoleret med en bisekt (16.1-
+dotgen-porten `48981bf0` og rettelsen af forbruget af tabte kanter `54bd3b9b` er
+kandidaterne); beskrivelsen af `init_rank` nedenfor bevares som klassens
+mekanisme, og de to id'er er fastholdt som conformant af paritetskørslen.
 
 `1581` og `2825` var nedbrudsgenoprettelsestilfælde (fix-element-count-bucket-
 missionen): fuzzer-/degenererede inputs, hvor de opstrøms tests **kun** hævder,
@@ -695,8 +674,13 @@ sammenligningsside (rendering side om side + evidensoptegnelse).
 
 ### A6. Overløb af lærredet i `unsigned int` ved degenereret input {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Berørt:** `1314` — et fuzzer-afledt input (`fontsize="991836031967s8"`),
-hvis absurde skriftstørrelse puster tegningen op til ~2.75e11 pt.
+**Berørt:** sfdp `2556` (et NaN-layout; se motorsporets post). `1314` — et
+fuzzer-afledt input (`fontsize="991836031967s8"`), hvis absurde skriftstørrelse
+puster tegningen op til ~2.75e11 pt — er **conformant** ved graphviz 16.1, og dens
+accept er pensioneret: porten indsnævrer nu sidestørrelsen på samme måde som den
+native `ROUND`-konvertering (`fe20f303`) og opbygger sideklippet i
+`setup_page`-rækkefølge (`eea9d21c`). Mekanismeafsnittene nedenfor
+beskriver den oprindelige forskel.
 
 **Hvad der sker.** C gemmer `job->width` / `job->height` som **`unsigned int`**
 (`gvcjob.h:327-328`). `ROUND(...)` af den enorme punktstørrelse (`emit.c:1249-1250`)
@@ -772,64 +756,42 @@ som afrundingen af kontrolskroget, der er nævnt i
 
 ---
 
-### A8. `fp-contract`/FMA-afrunding mod streng IEEE (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. `fp-contract`/FMA-afrunding mod streng IEEE (`dot`) — LUKKET {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**Status (2026-10-12): lukket.** Intet korpus-id accepteres længere under denne
+klasse; afsnittet bevares som historisk dokumentation. Begge kendte tilfælde er
+**`conformant`**: `2620` (2026-07-11) og `2646` (2026-10-12).
 
 **Klasse.** clang arm64 kompilerer orakelbinæren med `-ffp-contract=on`,
 hvilket smelter udvalgte multiplicer-addér-sekvenser sammen til enkelte FMA-instruktioner;
-porten kører på V8, som udfører streng IEEE-754-afrunding og ikke kan udsende
-`fma`. På bit-identiske inputs er de to uenige med 1-2 ULP i det udtryk,
-som kompileren valgte at kontrahere. Portsiden er altid det
-strengt-IEEE-754-resultat; oraklesiden er altid det FMA-kontraherede
-resultat. Det er en portabilitetsbegrænsning i kompiler/kørselsmiljø under C-
-kildekodens semantik, ikke en logikfejl i porten — uløselig uden at
-emulere clangs specifikke kontraktionsvalg i software. To tilfælde
-kendes, på to forskellige steder, med to forskellige forstærkningsmekanismer:
+porten kører på V8, som udfører streng IEEE-754-afrunding. På bit-identiske
+inputs er de to uenige med 1-2 ULP i det udtryk, som kompileren valgte at
+kontrahere. To tilfælde var kendt, på to forskellige steder, med to forskellige
+forstærkningsmekanismer:
 
-- **2646** — ULP'en opstår inde i `Proutespline`'s kubiske løsning
-  med `points2coeff`/`solve3` og vipper direkte et rodantal i splinetilpasseren.
-- **2620** — ULP'en opstår i `poly_init`'s løkke for polygonhjørneudstrækning
-  (knudedimensionering) og forstærkes nedstrøms af `ortho`'s trofaste heltalsafkortning
+- **2646** — ULP'en opstod inde i `Proutespline`'s kubiske løsning
+  med `points2coeff`/`solve3` og vippede direkte et rodantal i splinetilpasseren.
+- **2620** — ULP'en opstod i `poly_init`'s løkke for polygonhjørneudstrækning
+  (knudedimensionering) og blev forstærket nedstrøms af `ortho`'s trofaste heltalsafkortning
   pr. relax til en uafgjort-vipning mellem lige dyre labyrintkorridorer.
 
-**Berørt:** `2646` (structural-match, maxΔ 42.09 på 3 af 21.216 kanter:
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — alle
-record-port-`:c->:nb_part`-lange smode-kantføringer). Søster til **A3**: begge
-klasser er uløselige kommatalsportabilitets-uafgjorte inde i
-`Proutespline`, men mekanismen er forskellig — en kompiler-`fp-contract`-
-artefakt, ikke libm `hypot`.
-
-**Hvad der afviger.** På alle tre kanter afviger kun det sidste `routesplines`-kald (et
-lige ben ind i hovedporten). Dets endepunkt ligger bit-nøjagtigt på
-barrierepolygonens bundvæg med sin tangent parallel med den væg
-(`evs[1]=(1,-1.22e-16)`), så hver `splinefits`-kandidat er tangent til
-barrieren ved `t=1` — en næsten dobbelt rod i skæringskubikken.
-`points2coeff` beregner den kubik gennem katastrofal udslettelse (led
-omkring ~7446, der kollapser til ~0.099). Oraklet (clang/arm64,
-`-ffp-contract=on`) kontraherer `v3 + 3*v1 - (v0 + 3*v2)` til fused
-multiply-adds, mens V8 udfører streng IEEE-afrunding — de to er uenige med
-~9.1e-13 på **bit-identiske inputs**, og den støj vipper fortegnet på
-`solve3`'s diskriminant: C finder 1 rod (866.7, inden for segmentet); porten
-finder 3 rødder med en falsk partnerrod ved `t=0.9999975 < 1-EPSILON2`. Den
-falske rod udløser én ekstra `a`-halveringsiteration, som vender
-det sidste stykkes tangentstørrelse med en faktor 2 (i begge retninger over
-de 3 kanter), hvilket giver maxΔ 42.09 efter clip (26 SVG-forskelle).
-
-**Hvorfor accepteret (uløseligheden bevist ved et kontrolleret eksperiment).** Alle seks
-`routesplines`-kald blev dumpet på begge sider — boks, polygon, `PL`, start,
-slut og `evs` er byte-identiske, ligesom det tidligere (ikke-sidste) kalds
-outputspline; den eneste afvigelse er inde i det sidste kalds `solve3`. En
-selvstændig harness i uberørt C isolerede den ene variabel: kompilering med
-`-ffp-contract=off` reproducerer **porten** bit-nøjagtigt på alle 3 kanter; den
-standard (`on`) kontraktion reproducerer **oraklet** bit-nøjagtigt på alle 3
-kanter. Porten stemmer derfor allerede med streng-IEEE-754-C; afvigelsen
-er helt og holdent orakelkompilerens valg af FMA-kontraktion, under C-
-kildekodens semantik — der er ingen troskabsfejl på kildeniveau at rette. En
-målrettet rettelse (håndemulering af kontraktionen i `points2coeff`) blev prøvet og
-afkræftet: den retter 2 af de 3 kanter, men ikke den tredje, hvis vip
-stammer fra `solve3`'s egen interne kontraktion. En fuldstændig rettelse ville
-kræve software-FMA-emulering gennem hele splinetilpasseren — en pris i den varme løkke
-med afrundingssprængradius på tværs af korpusset for en gevinst under en pixel på 3 kanter.
-Fuld diagnose: `plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Lukket: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Tre smode-lange kantled (`edge2575`, `edge3905`,
+`edge15467`) ender på en barrierevæg med parallel tangent, så
+`splinefits`-skæringskubikken har en næsten dobbelt rod. `points2coeff`
+opbygger den kubik gennem katastrofal udslettelse; oraklet fusionerer
+`route.c:397-398` og `solvers.c:43`, så den strengt-IEEE-baserede port fik et
+andet rodantal i `solve3`, et falsk skæringspunkt og én ekstra `a`-halvering
+(maxΔ 42.09). Den tidligere konklusion om, at dette var uløseligt
+(„software-FMA-emulering gennem hele splinetilpasseren“, med en afkræftet delvis
+rettelse), blev modbevist: kontraktionsstederne er endelige og kan opregnes.
+Porten spejler nu hver kontraktion i `points2coeff` (`route.c:397-398`),
+`splineintersectsline` (371-372, 374, 360-361, 383-384), `solve3`
+(`solvers.c:41, 43, 46`) og dens inlinede `solve2` (80, 85), og
+`solve3`/`solve2`/`solve1` er portet om til C's form. Alle 42.432 indfangede
+`Proutespline`-kald for `2646` er bit-identiske med oraklet (journalrækken
+„T7 land“). Oprindelig diagnose (stadig gyldig for mekanismen):
+`plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Berørt (historisk):** `2620` (var structural-match, maxΔ 585; 423 forskelle
 på 24 kantstier + 22 pilespidser). **Kollapsede til conformant 2026-07-11**:
@@ -899,12 +861,25 @@ incircle-prædikat sidder på en knivsæg: input-ULP'en vipper dets fortegn,
 den begrænsede Delaunay-diagonal vipper, og den korridorpolygon, der fejler
 `Pshortestpath` i oraklet („destination point not in any triangle“ →
 reserveløsning med almindelig spline), lykkes i porten (eller omvendt). De resulterende
-splines afviger med ~0.2–0.5pt. Søster til **A3**/**A8**: en uløselig
+splines afviger med ~0.2–0.5pt. Søster til de (nu lukkede) **A3**/**A8**: en uløselig
 kommatalsportabilitetsbegrænsning under C-kildesemantik — at matche
 ville kræve at gengive Apple libm's nøjagtige `sin`/`cos`-afrunding i JS.
 
-**Berørt:** `241_0` (circo Δ≈0.2 / twopi-lærred Δ≈9 via korridorvippet
-på kanten `5:ne->8:nw`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**16.1-genberegning af udgangspunktet.** Multispline-korridorens geometri manglede
+clangs FMA-kontraktion (radikanden til ellipsehjørnet, `mkCtrlPts`, `DIST` =
+sqrt(fmadd), prikproduktet i `line_intersect`); `b77b2703` (`fix(neato): mirror
+fma contraction in multispline routing geometry`) spejlede den. twopi og neato
+`241_0` — som denne klasse havde tilskrevet den cocirkulære uafgjort nedenfor —
+blev **conformant** (accepter pensioneret), og sfdp `42` viste sig slet ikke at
+have nogen uafgjort (den er A1-drift, se
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp og sfdp `241_0`
+afviger stadig med uændrede eller reducerede rester; deres tilskrivning til den
+uafgjort nedenfor går forud for `b77b2703` og er **ikke blevet genverificeret
+ved positionsinjektion** siden, selv om den samme rettelse viste, at
+tilskrivningen var forkert for twopi/neato.
+
+**Berørt:** `241_0` (circo Δ≈0.2 via korridorvippet på kanten `1->2`; fdp og sfdp
+`241_0` på motorsporene nedenfor); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 afvigelser i label-position pr. stk. — libm-1-ULP'en opstår i
 `poly_init`'s trigonometri for enhedshjørner (`hypot`/`atan2`/`sin`), lægger én knudes
 beregnede højde en ULP forbi minimumsstørrelsesbegrænsningen, som oraklet lander på
@@ -1055,33 +1030,44 @@ og lukker dermed den kausale kæde.
 
 To yderligere tilfælde på motorsporene blev årsagsanalyseret og accepteret 2026-07-11
 (fuld RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 draw-op-
-forskelle — søsteren til circo-posten ovenfor: den samme cocirkulære CDT-
-incircle-uafgjort, vippet af libm `sin`/`cos` på 1 ULP, får portens
-multispline-korridor til at lykkes med en spline på 14 punkter, hvor det native build
-falder tilbage på almindelig føring med 8 punkter; punktdeltaer < 0.07pt) og circo
+forskelle, dengang tilskrevet den samme cocirkulære CDT-incircle-uafgjort som
+circo-posten ovenfor; **pensioneret ved graphviz 16.1** — den er conformant siden
+`b77b2703`, så korridorvippet mellem 14 og 8 punkter var den uspejlede
+FMA-kontraktion og ikke en uafgjort) og circo
 `windows-tree` (10 draw-op-forskelle på én viftekant — circos placeringstrigonometri
 lander `node2.y` præcis én ULP over `node8.y` omkring den præcist symmetriske
 værdi 18.0, og `closestSide`'s valg af dyna-hovedport vipper TOP/BOTTOM ved
 den præcise uafgjort; knudepositioner og bokse er ellers bit-identiske med
 oraklet).
 
-**sfdp-motorsporet — FP-uafgjorte på kanter (`42`, `241_0`).**
+**sfdp-motorsporet — FP-uafgjort på kant (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Sfdp's xdot-motorspor (`parity-sfdp.json`,
 native `dot -Ksfdp -Txdot`, ±0.5) afdækker den cocirkulære CDT-incircle-uafgjort, når
 eksakte native positioner før føring injiceres (så afvigelsen er IKKE
 iterativ drift — se A1-drift-klassen — men en diskret prædikatuafgjort):
 
-- `42` og `241_0` — cocirkulær CDT-incircle-uafgjort (multispline-korridoren).
-  Med injicerede positioner er resten et **vip i segmentantal**: `42`
-  `opCount 5 vs 9` (kant 0->3) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (kant 3->2) — portens begrænsede Delaunay-diagonal vipper i forhold til
-  oraklet, så multispline-korridoren lykkes med en N-punkts spline, hvor det
-  native build falder tilbage på en kortere almindelig rute (eller omvendt), præcis som
-  posten for twopi/circo `241_0` ovenfor. Porten emulerer allerede arm64-
+- `241_0` — tilskrevet den cocirkulære CDT-incircle-uafgjort (multispline-
+  korridoren; ikke genverificeret efter `b77b2703`, se 16.1-genberegningen
+  ovenfor). Resten er et **vip i segmentantal**: 7 draw-op-forskelle på kant 1->2,
+  `ptCount 8 vs 20` (20 forskelle før `b77b2703`) — korridoren lykkes med en
+  N-punkts spline, hvor det native build falder tilbage på en kortere almindelig
+  rute (eller omvendt), som i posten for circo `241_0` ovenfor. Porten emulerer allerede arm64-
   `fmadd`-kontraktionen i prædikatet incircle/`ccw` (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) og bruger robust-incircle-Delaunay; resten er
   1-ULP-forskellen mellem V8 og Apple libm i `sin`/`hypot` i prædikatinputtet, som ingen portabel
   kode reproducerer.
+
+> **sfdp `42` omklassificeret A9 → A1-drift (graphviz 16.1-synkronisering).** Den
+> blev anført her som en CDT/libm-incircle-uafgjort. Missionen fandt noget andet
+> ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): det tidligere
+> korridorvip var en port-side FMA-fejlportering i multispline-korridorens
+> geometri, rettet af `b77b2703` (`fix(neato): mirror fma contraction in
+> multispline routing geometry`); med native positioner injiceret reproducerer
+> porten nu nativets xdot nøjagtigt. Den resterende rest (knudeforskydninger
+> 0.06-0.65 pt) er iterativ drift, sat i gang af én 1-ULP-uenighed mellem Apple
+> libm's `pow(dist, 2)` og portens ARM-`pow` på det groveste niveau og forstærket
+> af de finere niveauer — A1 (se
+> [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095` omklassificeret A9 → A1-drift (2026-07-22).** Det blev tidligere anført
 > her som „hypot-søsteren“ (drift under 0.7pt på kanterne af en knude med tomt navn
@@ -1099,8 +1085,10 @@ systemets C-`hypot` og sammenligne med Nodes `Math.hypot` på repræsentative
 afvigelsesinputs for flade kanter viser en uenighed på 1 ULP på 2 af 6 (Δ 7.1e-15 og
 5.7e-14) — knivsæggen ved opdelingstærsklen, der vipper antallet af underinddelinger.
 Uløselig: ingen portabel hypot reproducerer Apple libm (præcedensen med `arm-pow.ts`
-for den samme grænse). Accepteret på motorsporniveau via
-`accepted-divergences-engines.json` (`sfdp.42`, `sfdp.241_0`).
+for den samme grænse). `sfdp.241_0` accepteres på motorsporniveau via
+`accepted-divergences-engines.json`. `sfdp.42` er **ikke** en del af denne klasse:
+dens registerpost er A1 (`comparisons/sfdp-42.md`), og sonden ovenfor forklarede
+den ikke.
 
 **fdp**-xdot-motorsporet (`parity-fdp.json`, native `dot -Kfdp -Txdot`,
 ±0.5) afdækker den SAMME cocirkulære CDT-uafgjort på den samme graf, `241_0`: med
@@ -1108,9 +1096,10 @@ oraklets nøjagtige positioner før føring injiceret er resten 11 numeriske
 `unfilled_bezier`-forskelle begrænset til én kant (`0->1#0`, maxΔ 3.39pt). Fordi
 knudepositionerne er injiceret-identiske, ligger afvigelsen nedstrøms i
 pathplans multispline-korridor — den samme libm-1-ULP-incircle-uafgjort som
-twopi/circo/sfdp `241_0` (eksakt rationel incircle 185/185 ovenfor). Håndtagene er
+circo/sfdp `241_0` (eksakt rationel incircle 185/185 ovenfor; 11 forskelle uændret af
+`b77b2703` — ikke genverificeret ved injektion). Håndtagene er
 allerede anvendt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); uafgjorten er uløselig. Accepteret via `accepted-divergences-engines.json`
+`Math.hypot`); uafgjorten behandles som uløselig. Accepteret via `accepted-divergences-engines.json`
 `fdp.241_0`. fdp's `2095` er derimod **A1-drift, ikke A9**: at injicere den
 ene knude med tomt navn (efter at attributionsinjektoren blev rettet til at matche
 knuder med navnet `""`) kollapser dens rest til nul — den tidligere „A9-hale“ var
@@ -1118,6 +1107,28 @@ den uinjicerede tomme knude, der trak sine tilstødende kanter med. Sfdp's `2095
 den samme blinde vinkel — en frisk regenerering af sfdp-attributionen (2026-07-22) med den rettede
 injektor bekræftede, at den også injicerer til 0, og dens accept blev fjernet (se
 noten `2095 reclassified` ovenfor).
+
+---
+
+### A10. V8 `Map`-størrelsesgrænse i polyomino-pakning (`2784`, fem pakningsbaserede motorer) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Berørt:** `2784` på `circo`, `twopi`, `neato`, `fdp` og `sfdp`, i alle
+outputformater. På `dot` er den `conformant`.
+
+**Hvad der sker.** `lib/pack/pack.c` registrerer de celler, en komponent optager,
+i et `PointSet`. For `2784` (en enkelt knude, 3e16 pt høj, `splines="ortho"`)
+kræver den trofaste heltalsaritmetik for `step`/placering 2.011.656.764 celler;
+native 16.1.0 gennemfører på 482 s med 67.3 GB resident (101 GB spids). Portens
+`PointSet` er et JavaScript-`Map`, som V8 begrænser til 2^24 poster, så det kaster
+`Map maximum size exceeded`.
+
+**Hvorfor accepteret.** En kørselsmiljøbegrænsning under koden, ikke et
+logikhul; årsagen er den trofaste aritmetik i `910be2a2` (før den beregnede
+porten et lille, forkert layout og nåede aldrig grænsen). Det accepterede udfald
+er en kastet fejl frem for en `diverged`-dom, og registrene pr. motor accepterer
+kun `diverged`-rækker, så der findes ingen registerpost: kørslerne bliver ved med
+at opføre `2784` under deres portfejl. Evidens:
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

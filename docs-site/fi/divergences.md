@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -43,8 +43,9 @@ alla), on
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 Työkalut yhdistävät sen raportointihetkellä: `PARITY-dot.md` erottaa
 **hyväksytyt erot** **seuratusta** työjonosta, ja sääntöportti ottaa sallittujen
-luettelonsa siitä. Alla olevat proosaosiot selittävät jokaisen merkinnän (A1 ja
-A3 ovat voimassa; A2 on suljettu ja säilytetty historiana); CI-testi
+luettelonsa siitä. Alla olevat proosaosiot selittävät jokaisen merkinnän (A1 on
+voimassa; A2, A3 ja A8 on suljettu ja säilytetty historiana; A10 on porttauksen
+virheen hyväksyntä, jota mikään rekisteri ei voi ilmaista); CI-testi
 (`accepted-divergences.test.ts`) valvoo, että jokainen hyväksytty graafi yhä
 poikkeaa, joten tämä luettelo ei voi huomaamatta rapistua.
 
@@ -73,8 +74,8 @@ toleranssi**-vaatimuksella tavuvaatimuksen sijaan.
 **Koskee:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (iteratiiviset,
 jousimallia käyttävät moottorit). `dot`-moottorin *asettelua* tämä
 iteratiivisten mallien determinismi **ei** koske; erillinen, kapeasti rajattu
-`dot`in splinereititykseen liittyvä liukulukuero on käsitelty alla kohdassa
-**A3**.
+`dot`in entiset splinereititykseen liittyvät liukuluku-erot (A3, A8) on suljettu ja
+säilytetty alla historiana.
 
 > **Soveltamisala, historiallisesti mittaamaton varaus — nyt osittain mitattu.**
 > **Pää-dot-moottorin SVG-kartoitus** (`test/corpus/survey.ts`) on yhä
@@ -113,7 +114,7 @@ taattu alustojen välillä**. Topologia säilyy; mahdollinen poikkeama on
 solmujen hienoissa koordinaateissa.
 
 **Miksi hyväksytty.** Tämä on JS:ssä ajamisen kova rajoite, ei suunnitteluvalinta
-— samaa perhettä kuin A3:n Apple-`hypot`-herkkyys. Ei ole keinoa taata
+— samaa perhettä kuin (sittemmin suljetut) A3:n/A8:n `hypot`-/FMA-herkkyydet. Ei ole keinoa taata
 bittitarkasti identtisiä transsendentti-/FMA-tuloksia kaikissa kohdeajoympäristöissä,
 joten tavuvaatimus olisi testaamaton eikä pelkästään kallis. **A1:n arviointi**
 (pelkän varauksen esittämisen sijaan) vaati erillisen natiivimoottoripariteettiraidan —
@@ -123,12 +124,13 @@ katto tälle työlle on **kaventaa** A1 muotoon ”ei aktiivista poikkeamaa
 vertailualustalla”, ei koskaan poistaa alustojen välistä varausta; tähänastiset
 tulokset (alla) pysyvät tuossa katossa: `circo`/`twopi`/`osage` ovat kukin
 tuoneet esiin ja juurisyyanalysoineet kourallisen aitoja A1/A9-tapauksia, ja
-`neato`/`fdp`/`sfdp` ovat nyt 90.8/77.5/68.0 %:ssa 0.5 pt:n sisällä natiivista
-910 kohteen joukossa, mikä tarkoittaa, että porttattu aritmetiikka
+`neato`/`fdp`/`sfdp` ovat nyt 90.3/96.5/68.1 %:ssa 0.5 pt:n sisällä natiivista
+929 kohteen joukossa (graphviz 16.1.0), mikä tarkoittaa, että porttattu aritmetiikka
 (`fma.ts`, `arm-pow.ts`, vastaava PRNG) pitää useimmilla graafeilla — ja
-jokainen jäljellä oleva poikkeava tunniste on yksitellen selitetty injektiolla
+jokainen 910 kohteen luettelon poikkeava tunniste on yksitellen selitetty injektiolla
 (ratkaisijan ajelehtiminen vs. porttauksen vika) eikä jätetty luokittelemattomaksi
-ajelehtimiseksi; katso iteratiivisten moottorien luonnehdinta alla.
+ajelehtimiseksi; luettelon 19 lisäystä ei ole vielä selitetty. Katso iteratiivisten
+moottorien luonnehdinta alla.
 
 **Moottoriraidan hyväksyntä: twopi-nuolten perhe.** <a id="a1-twopi-arrows-family"></a>
 Yllä oleva lainauslohko kuvaa dot-moottorin SVG-kartoitusta, jossa A1 vastaa nollaa
@@ -197,27 +199,36 @@ kentän `tolerance: 0.5`, ja `parity-report.ts` renderöi ne erilliseen
 ”Iteratiiviset moottorit (±0.5 luonnehdinta)” -osioon tiedostossa
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 nimenomaisesti **ei** vertailukelpoisina muualla tässä dokumentissa esiintyviin
-±0.01:n deterministisiin läpäisyprosentteihin. Nykyiset lukumäärät (910 kohteen joukko; läpäisyprosentti jättää pois
-syötteet, joita C-oraakkeli ei pysty renderöimään, kohdan [Yhdenmukaisuus](./conformance.md) mukaisesti):
+±0.01:n deterministisiin läpäisyprosentteihin. Nykyiset lukumäärät graphviz 16.1.0:aa
+vasten (929 kohteen joukko; läpäisyprosentti jättää pois syötteet, joita C-oraakkeli ei
+pysty renderöimään, kohdan [Yhdenmukaisuus](./conformance.md) mukaisesti):
 
-| moottori | kartoitettu | ±0.5 pt:n sisällä | ei-yhdenmukainen (kaikki selitetty, hyväksytty) | porttausvirhe / aikakatkaisu | oraakkelivirhe |
+| moottori | kartoitettu | ±0.5 pt:n sisällä | ei-yhdenmukainen | porttausvirhe / aikakatkaisu | oraakkelivirhe |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(Rivit `neato` ja `sfdp` ovat läpikäynneistä, jotka valmisteltiin ennen
+`graphs-decorate`n, `1314`n, `2784`n ja `2371`n lopullista uudelleenläpikäyntiä; ne
+voivat muuttua näiden tunnisteiden verran. `fdp`:n läpäisyprosentti nousi 77.5 %:sta,
+koska aiempi commitoitu läpikäynti edelsi edellisen mission porttaustilaa.)
 
 (Ensimmäinen ajo, 2026-07-11 762 kohteella, mittasi 263/311/260 ±0.5 pt:n
 sisällä — hyppy nykyisiin lukemiin tuli sittemmin toteutetuista
 syykohtaisista korjauksista, pääasiassa neaton porttaamattoman `user_pos`/`P_SET`-käsittelyn,
 moottorin alustuksen yhdistämisen ja `setEdgeType`-makro-vs-funktio-korjauksen ansiosta.)
 
-Toisin kuin ensimmäisellä ajolla, jokainen poikkeava rivi on nyt yksitellen selitetty:
+Toisin kuin ensimmäisellä ajolla, 910 kohteen luettelon jokainen poikkeava rivi
+selitettiin yksitellen (929 kohteen luettelon 19 uutta tunnistetta ei ole vielä
+selitetty; ne on lueteltu T13-luovutuksessa uusina näkyvinä):
 injektiotyökalu (`test/corpus/attribute-divergence.ts`) syöttää
 natiivin oraakkelin reititystä edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja
 jokainen nykyinen poikkeava tunniste on joko `drift-exonerated` (porttauksen reititys
 ja emissio toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan)
 tai yksi kourallisesta erikseen hyväksyttyjä syykohtaisia jäännöksiä (`241_0`:n
-CDT:n incircle-tasapeli kaikilla kolmella moottorilla, neaton `2239`, sfdp:n `42`/`2556`).
+CDT:n incircle-tasapeli kaikilla kolmella moottorilla, neaton `2239`, sfdp:n `2556`;
+sfdp:n `42` on A1-drift, katso [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 Alla oleva luokkahyväksyntä vahvistaa vapautetun joukon; ajantasaiset luvut
 moottorikohtaisilla kojelaudoilla
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -417,39 +428,47 @@ nimiö kulkee sen läpi, joten yhteen merkkijonoon tähdätty korjaus riskeerasi
 muille havaintokynnyksen alapuolisen hyödyn vuoksi.
 :::
 
-### A3. `hypot`-tasapelin ratkaisu splinereitityksessä (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. `hypot`-tasapelin ratkaisu splinereitityksessä (`dot`) — SULJETTU {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Koskee:** `dot`-graafeja, joilla on **geometrisesti symmetrinen** kaarireititysväylä
-— tyypillisesti lyhyt, symmetrinen litteän kaaren kaari. Havaittu esimerkki: `2368`,
-joka pysyy tilassa *structural-match* (maxΔ ≈ 10.2 pt **yhdellä** kaarella, `376->76`).
-Sama tasapelin ratkaisu ilmenee myös **pitkällä** (usean rankin) kaarella suureen
-sisääntuloasteen keskittimeen, kun käytävä on täsmälleen peilisymmetrinen: `graphs-b100` /
-`graphs-b104` (identtinen lähde) poikkeavat maxΔ 20 (täsmälleen yksi rankrivi)
-`Node23730->Node23729`:n yksittäisessä solmukohdassa — jokainen solmusijainti ja kaikki
-ylävirran laatikko-/polygoni-/taut-path-rakenne on tavu tavulta identtinen C:n kanssa; vain `findMaxDev`in
-~1 ULP:n valinta siitä, mikä peilisymmetrinen sisäpiste
-tulee bezierin solmuksi, eroaa. Lyhyt litteän kaaren muoto ilmenee myös tunnisteena `241_1` (structural-match,
-maxΔ ≈ 2.4 pt) — oraakkeliin kiinnitetyn `241_0`:n poikkeava sisar, jonka C:n
-kohina sen sijaan ratkaisee ensimmäisen hyväksi. Sama tasapelin ratkaisu tuottaa nimetyn
-2-syklin takakaaren rakokäytävän jaon tunnisteessa `2413_1` (structural-match, maxΔ 67.65) ja
-`2413_2` (maxΔ ≤99.55, kun T11 swapBezier-reverse-korjaus laskeutuu — siihen asti
-tiedoston raportoitu maxΔ 1922.26 määräytyy aivan toisen, erikseen
-seuratun vian mukaan), sekä yhden klusterinsisäisen nimetyn kaaren tunnisteessa `graphs-decorate`
-(maxΔ 43.54); kummassakin tapauksessa kaksi ehdokasjakokulmaa ovat tasan
-5.7e-13 (2413-perhe) / 3e-14 (decorate) sisällä toisistaan ennen kuin
-sijaintiriippuvainen Apple-`hypot`-kohina valitsee voittajan. `2371`
-(structural-match, maxΔ 16.8) näyttää saman sormenjäljen kahdella toisiinsa liittymättömällä
-kaarella (`g[9263]` `r6837mid--r9687mid`, `g[23859]` `r38mid--r8699mid`):
-porttaus emittoi oraakkelin täsmällisen ohjauspistejonon peilikuvan kummallakin,
-solmun y käännettynä identtisellä Δ16.8:lla (ylä-/alajakoosuudet vaihtuneet).
-Sen alkuperä luokitellaan **KOHTALAISEKSI** luottamukseksi eikä muiden jäsenten
-VAHVISTETUKSI luottamukseksi: `2371` pakkaa ~199 komponenttia, mikä irrottaa
-pathplan-paikalliset koordinaatit sivukoordinaateista, joten tasapeliä ei
-voitu korreloida suorana `route.ts:209`:ään kolmella instrumentointiyrityksellä;
-suoran tilan segmentointi tai leikkauksen jälkeinen `recover_slack`-alkuperä ei ole
-täysin poissuljettu. Täysi diagnoosi:
-`plans/residual-cleanup/analysis/2371-mirror.md`. Useimmat reititetyt kaaret
-eivät ole vaikutuksen alaisia.
+**Tila (2026-10-12): suljettu.** Tämän luokan alla ei enää hyväksytä yhtään
+korpuksen tunnistetta; osio säilytetään mekanismin historiallisena dokumentaationa.
+Entiset jäsenet (`2368`, `graphs-b100`, `graphs-b104`, `241_1`, `2413_1`, `2413_2`,
+`graphs-decorate`, `2371`) ovat kaikki **`conformant`** tuoreessa ajossa
+(`test/corpus/parity-probe.json`).
+
+**Mekanismi ja mikä sen sulki.** Splinesovitin (`Proutespline` -> `findMaxDev`,
+`src/pathplan/route.ts`) jakaa sovitetun bezierin reitin sisäpisteessä, jossa
+poikkeama on suurin. Geometrisesti symmetrisellä väylällä ehdokkaiden poikkeamat
+eroavat ~1 ULP:n verran, joten voittajan ratkaisee viimeisen bitin aritmetiikka.
+Porttaukselle oli selitetty palautumaton aukko (”Applen `hypot` ei vastaa mitään
+siirrettävää `hypot`ia”), ja sitä kompensoitiin sietävällä, siirtoekvariantilla
+tasapelin ratkaisulla. Tämä selitys kumottiin: tasapelin ratkaisee C:n *täsmällinen*
+aritmetiikka, joka on toistettavissa. Commit `cdf597bc`
+(`fix(pathplan): split splines at C's max-deviation point bit for bit`) porttasi sen:
+libm-`hypot` etäisyydelle (`route.c:448`), C:n tiukka `>`-vertailu (`route.c:139`) ja
+clangin `fp-contract`-yhdistäminen bezier-arvioinnissa (`route.c:137-138`),
+`mkspline`-determinantit (`route.c:181-183`), `dot` (459), `normv` (413), `B01` (488)
+ja `B23` (494). Sietävä tasapelin ratkaisu on poistettu; `241_0`:n splinen solmupiste
+on lukittu C:n reititysruudukkoon, koska C ei ole siirtoekvariantti tällaisilla
+tasapeleillä. Tämä sulki `2368`:n, `2371`:n, `2413_1`:n, `2413_2`:n, `graphs-b100`:n,
+`graphs-b104`:n ja `graphs-decorate`:n.
+
+`241_1` ei ollut `hypot`-tasapeli: sen sulki `87347711`
+(`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C ryhmittelee
+kaikki päärunkokaarta jakavat vierekkäiset litteät kaaret yhteen
+`make_flat_adj_edges`-kutsuun ja testaa portit koko ryhmästä, joten porttia
+vailla oleva sisarkaari porttia käyttävälle kaarelle reititetään apugraafin kautta.
+Porttaus jakoi ryhmän porttien olemassaolon mukaan ja reitti sisarkaaren
+`makeSimpleFlat`in kautta, jonka leikkaus osuu eri `bezier_clip`-pisteeseen (54.28 vs.
+natiivi 54.46).
+
+Molemmat korjaukset varmennettiin tuoreilla korpusajoilla ilman regressioita
+(päiväkirjan rivit ”T5 land” ja ”T6 land”,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Todiste ennen korjausta (historiallinen).** `2368` oli vertailujäsen. Sen
+`376->76`-kaari jakautui C:hen nähden vastakkaiseen kulmaan; graafi sekä kyseisen
+kaaren korjausta edeltävät C- ja porttauspolut säilytetään tietueeksi.
 
 ::: details Graafin määritelmä (`2368.dot`)
 ```dot
@@ -489,71 +508,28 @@ digraph G {
 ```
 :::
 
-**Luonnehdinta.** Splinesovitin (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) jakaa sovitetun bezierin reitin sisäpisteessä, jossa
-poikkeama on suurin. Kun väylä on symmetrinen, kaksi ehdokasjakopistettä
-ovat **täsmällinen matemaattinen tasapeli**, ja voittaja ratkeaa ~1e-14:n
-liukulukukatoamiskohinasta absoluuttikoordinaattisessa bezier-evaluoinnissa,
-jonka **etumerkki riippuu absoluuttisesta sijainnista**.
-
-C:n poikkeamaetäisyys on libm-`hypot`, ja oraakkelin generoinut macOS:n Apple-`hypot`
-on suljettu toteutus, joka ei bittitäsmää **yhtään** siirrettävää `hypot`ia
-(mitattu sitä vastaan graphvizin koordinaattialueella, bittitäsmäysasteet:
-V8 `Math.hypot` ≈ 63 %, oikein pyöristävä / Arm-tyylinen `hypot`
-≈ 84 %, fdlibm `hypot` ≈ 90 %, `sqrt(dx²+dy²)` ≈ 94 %). Tuon ULP-kohinan vuoksi
-**C itsekään ei ole johdonmukainen**: se jakaa kaksi *siirtoyhteneväistä* kaarta
-**vastakkaisiin** kulmiin. Tunnisteessa `2368` kaari `376->76` on
-geometrisesti identtisen kaaren `256->436` peilikuva:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-Koko ero päällekkäin (12× zoomaus kaarella `376->76` / `to1`) — **vihreä = C
-Graphviz, punainen = @knowvah/dot-engine**. Molemmat ovat sama matala alaspäin kaareva
-kaari samojen solmureunojen välillä; ne eroavat ~1–2 pt vatsakohdassa (bezierin keskimmäinen
-ohjauspiste), jossa C:n tasapeli ratkesi vastakkaiseen kulmaan:
-
-![2368 376->76 -kaari: vihreä = C, punainen = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Kaikki muu täsmää toleranssin sisällä — sama rajaava laatikko (608×148), solmusijainnit,
-nimiöt, nuolenkärjet ja kaikki muut kaaret. Täydet renderöinnit ovat visuaalisesti
-erottamattomat:
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![2368 C Graphvizin renderöimänä](/img/2368-c.png) | ![2368 @knowvah/dot-enginen renderöimänä](/img/2368-port.png) |
-
-Porttaus käyttää **siirtoekvivarianttia** tasapelin ratkaisua (todellinen tasapeli ratkeaa aina
-ensimmäiseen indeksiin), joten se piirtää *jokaisen* tällaisen kaaren samalla tavalla sijainnista
-riippumatta — se on itsensä kanssa johdonmukainen ja täsmää C:hen kaarilla, joilla C:n kohinakin
-valitsee ensimmäisen (esim. `256->436` ja `241_0 5:ne->8:nw`), poiketen vain siellä, missä C:n
-kohina kääntyy toisin päin (`376->76`). Päätepisteet, nuolenkärjen kohde, muut
-kaaret, kaikki solmut, nimiöt ja rajaava laatikko täsmäävät toleranssin sisällä; vain
-yhden kaaren sisäiset ohjauspisteet liikkuvat (~1–2 pt vatsakohdassa).
-
-**Miksi hyväksytty.** Applen `hypot` ei ole sen toistettavampi JS-moottorien ja
-suorittimien välillä kuin **A1**:n FMA/`pow` — kyseessä on sama siirrettävyysrajoite, vain
-`dot`in splinereitittimessä. C:n *sijaintiriippuvaisen* valinnan täsmäyttäminen tarkoittaisi
-C:n tiukan tasapelinratkaisun omaksumista, joka asuu **jaetussa primitiivissä**, jonka läpi jokainen reititetty
-kaari kulkee: se vaihtaisi `376->76`:n täsmäyksen *uusiin* epätäsmäyksiin
-kaarilla, joilla C päätyy toisin päin (se regressoi `241_0`:n ja `cnt=3`
--litteänkaaren oraakkelitapauksen), nollasummapeliin, joka lisäksi uhraa porttauksen
-siirtoekvarianssin. Siksi pidämme johdonmukaisen (ekvivariantin) reitittimen. Tämä on
-rajattu, havaintokynnyksen alapuolinen `dot`-ero — ei avoin vika. Täysi tutkimus:
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
-
 ### A4. Oraakkeli tunnustetusti rikkinäisessä tilassa (init_rank / pathplan -perhe) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Koskee:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). Perheen
+**Koskee (graphviz 16.1 -ajo):** `1435` (structural-match, maxΔ 0.39 yhdellä
+splinen ohjauspisteellä; oli 503 15.x-oraakkelia vasten — pudotusta ei bisektoitu) ja
+`1581` (diverged: ylimmän tason lasten määrä 39 vs. 22, maxΔ 0). Perheen
 jäsenet `1939` ja `2825` ovat **yhdenmukaisia** eikä niillä ole merkintää, ja `2470`
 sekä `graphs-structs` liittyivät niihin 2026-07-11 (molemmat muuttuivat yhdenmukaisiksi
 ortho-vierekkäisyysvuodon/chancmpidin, fmadd-`polylineMidpoint`in ja
 puolipariton tasapelipyöristyksen korjausten laskeuduttua — porttaus toistaa nyt
 oraakkelin palautustulosteen täsmälleen, mukaan lukien identtiset kadonneet kaaret);
-niiden hyväksyntämerkinnät on poistettu.
+niiden hyväksyntämerkinnät on poistettu. **`2796` ja `2471` liittyivät niihin graphviz
+16.1:ssä** (molemmat `conformant` tuoreessa ajossa, hyväksyntämerkinnät poistettu):
+porttaus ja 16.1-oraakkeli ovat nyt yhtä mieltä `init_rank`-palautuksen tulosteesta,
+mukaan lukien kadonneet kaaret. Syytä ei eristetty bisektiolla (ehdokkaita ovat 16.1:n
+dotgen-porttaus `48981bf0` ja kadonneiden kaarten kulutuksen korjaus `54bd3b9b`);
+alla oleva `init_rank`-kuvaus säilytetään luokan mekanismina, ja nämä kaksi tunnistetta
+on lukittu yhdenmukaisiksi pariteettiajolla.
 
 `1581` ja `2825` olivat kaatumisen palautumistapauksia (fix-element-count-bucket
 mission): fuzzer-/rappeutuneita syötteitä, joissa upstreamin testit varmistavat **vain**,
@@ -707,8 +683,12 @@ Kaikki muu tunnisteessa 1367 on yhdenmukaista: elementtimäärät (23 polyline /
 
 ### A6. `unsigned int` -piirtoalueen ylivuoto rappeutuneella syötteellä {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Koskee:** `1314` — fuzzerilla johdettu syöte (`fontsize="991836031967s8"`),
-jonka järjetön fonttikoko paisuttaa piirroksen noin 2.75e11 pt:n kokoiseksi.
+**Koskee:** sfdp `2556` (NaN-asettelu; katso moottoriraidan merkintä). `1314` —
+fuzzerilla johdettu syöte (`fontsize="991836031967s8"`), jonka järjetön fonttikoko
+paisuttaa piirroksen noin 2.75e11 pt:n kokoiseksi — on **conformant** graphviz
+16.1:ssä ja sen hyväksyntä on poistettu: porttaus kaventaa nyt sivukoon samoin kuin
+natiivi `ROUND`-muunnos (`fe20f303`) ja rakentaa sivuleikkeen `setup_page`-järjestyksessä
+(`eea9d21c`). Alla olevat mekanismikappaleet kuvaavat alkuperäisen eron.
 
 **Mitä tapahtuu.** C tallentaa `job->width` / `job->height` **`unsigned int`**-tyyppisinä
 (`gvcjob.h:327-328`). Valtavan pistekoon `ROUND(...)` (`emit.c:1249-1250`)
@@ -783,63 +763,42 @@ kohdassa `bbox-class-control-hull-vs-curve` mainittu ohjausverhon pyöristys. T�
 
 ---
 
-### A8. `fp-contract`/FMA-pyöristys vs. tiukka IEEE (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. `fp-contract`/FMA-pyöristys vs. tiukka IEEE (`dot`) — SULJETTU {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**Tila (2026-10-12): suljettu.** Tämän luokan alla ei enää hyväksytä yhtään
+korpuksen tunnistetta; osio säilytetään historiallisena dokumentaationa. Molemmat
+tunnetut tapaukset ovat **`conformant`**: `2620` (2026-07-11) ja `2646` (2026-10-12).
 
 **Luokka.** clang arm64 kääntää oraakkelibinäärin asetuksella `-ffp-contract=on`,
 yhdistäen valitut kerto-yhteenlaskujonot yksittäisiksi FMA-käskyiksi;
-porttaus ajetaan V8:lla, joka suorittaa tiukan IEEE-754-pyöristyksen eikä voi emittoida
-`fma`a. Bitti bitiltä identtisillä syötteillä nämä ovat 1–2 ULP eri mieltä
-siinä lausekkeessa, jonka kääntäjä päätti yhdistää. Porttauksen puoli on aina
-tiukka IEEE-754-tulos; oraakkelin puoli on aina FMA-yhdistetty
-tulos. Tämä on C-lähdekoodin semantiikan alapuolinen kääntäjän/ajoympäristön siirrettävyysrajoite,
-ei looginen vika porttauksessa — palautumaton ilman
-clangin erityisten yhdistämisvalintojen emulointia ohjelmistona. Kaksi tapausta
-tunnetaan, kahdessa eri kohdassa, kahdella eri vahvistusmekanismilla:
+porttaus ajetaan V8:lla, joka suorittaa tiukan IEEE-754-pyöristyksen. Bitti bitiltä
+identtisillä syötteillä nämä ovat 1–2 ULP eri mieltä siinä lausekkeessa, jonka
+kääntäjä päätti yhdistää. Kaksi tapausta tunnettiin, kahdessa eri kohdassa, kahdella
+eri vahvistusmekanismilla:
 
-- **2646** — ULP syntyy `Proutespline`n `points2coeff`/`solve3`
-  -kuutioratkaisussa ja kääntää suoraan splinesovittimen juurimäärän.
-- **2620** — ULP syntyy `poly_init`in polygonin kärkiulottuvuussilmukassa
+- **2646** — ULP syntyi `Proutespline`n `points2coeff`/`solve3`
+  -kuutioratkaisussa ja käänsi suoraan splinesovittimen juurimäärän.
+- **2620** — ULP syntyi `poly_init`in polygonin kärkiulottuvuussilmukassa
   (solmun mitoitus), ja `ortho`n uskollinen relax-kohtainen
-  int-typistys vahvistaa sen alavirrassa yhtä kalliiksi labyrinttikäytävän tasapelin käännöksi.
+  int-typistys vahvisti sen alavirrassa yhtä kalliiksi labyrinttikäytävän tasapelin käännöksi.
 
-**Koskee:** `2646` (structural-match, maxΔ 42.09 kolmella 21 216 kaaresta:
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — kaikki
-record-port `:c->:nb_part` smode-pitkän kaaren reittejä). **A3**:n sisar: molemmat
-luokat ovat palautumattomia liukulukusiirrettävyystasapelejä `Proutespline`n
-sisällä, mutta mekanismi on eri — kääntäjän `fp-contract`-artefakti, ei libm `hypot`.
-
-**Mikä eroaa.** Kaikilla kolmella kaarella vain viimeinen `routesplines`-kutsu
-(suora osuus pääportille) poikkeaa. Sen päätepiste on bittitarkasti
-estepolygonin alaseinällä ja sen tangentti on yhdensuuntainen seinän kanssa
-(`evs[1]=(1,-1.22e-16)`), joten jokainen `splinefits`-ehdokas on tangentti
-esteelle kohdassa `t=1` — leikkauskuution lähes kaksoisjuuri.
-`points2coeff` laskee tuon kuution katastrofaalisen kumoutumisen kautta (termit
-noin ~7446 romahtavat arvoon ~0.099). Oraakkeli (clang/arm64,
-`-ffp-contract=on`) yhdistää `v3 + 3*v1 - (v0 + 3*v2)`:n yhdistetyiksi
-kerto-yhteenlaskuiksi, kun taas V8 suorittaa tiukan IEEE-pyöristyksen — nämä ovat
-~9.1e-13:n verran eri mieltä **bitti bitiltä identtisillä syötteillä**, ja tuo kohina kääntää
-`solve3`:n diskriminantin etumerkin: C löytää 1 juuren (866.7, segmentin sisällä); porttaus
-löytää 3 juurta ja epäaidon kumppanijuuren kohdassa `t=0.9999975 < 1-EPSILON2`. Epäaito
-juuri laukaisee yhden ylimääräisen `a`-puolituskierroksen, joka kääntää
-viimeisen palan tangenttisuuruuden kertoimella 2 (kumpaankin suuntaan
-kolmella kaarella), tuottaen maxΔ 42.09 leikkauksen jälkeen (26 SVG-eroa).
-
-**Miksi hyväksytty (palautumattomuus todistettu kontrolloidulla kokeella).** Kaikki kuusi
-`routesplines`-kutsua tallennettiin molemmilla puolilla — laatikko, polygoni, `PL`, alku,
-loppu ja `evs` ovat tavu tavulta identtiset, samoin aiemman (ei-viimeisen) kutsun
-tulosspliini; ainoa ero on viimeisen kutsun `solve3`:n sisällä. Erillinen
-puhdas-C-työkalu eristi yksittäisen muuttujan: käännös asetuksella
-`-ffp-contract=off` toistaa **porttauksen** bittitarkasti kaikilla 3 kaarella; oletus
-(`on`) -yhdistäminen toistaa **oraakkelin** bittitarkasti kaikilla 3
-kaarella. Porttaus on siis jo samaa mieltä tiukan IEEE-754-C:n kanssa; ero
-johtuu kokonaan oraakkelikääntäjän FMA-yhdistämisvalinnasta, C-lähdekoodin
-semantiikan alapuolella — lähdetasolla ei ole korjattavaa epäuskollisuutta.
-Kohdennettua korjausta (yhdistämisen käsin emulointi `points2coeff`issa) kokeiltiin ja
-se kumottiin: se korjaa 2 kolmesta kaaresta mutta ei kolmatta, jonka kääntyminen
-on peräisin `solve3`:n omasta sisäisestä yhdistämisestä. Täydellinen korjaus
-vaatisi ohjelmisto-FMA-emulointia koko splinesovittimessa — kuuma silmukkahinta
-ja koko korpuksen pyöristysvaikutusala alipikselin, 3 kaaren hyödyn vuoksi.
-Täysi diagnoosi: `plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Suljettu: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Kolme smode-pitkän kaaren osuutta (`edge2575`, `edge3905`,
+`edge15467`) päättyy esteseinälle yhdensuuntaisella tangentilla, joten
+`splinefits`in leikkauskuutiolla on lähes kaksoisjuuri. `points2coeff` rakentaa
+tuon kuution katastrofaalisen kumoutumisen kautta; oraakkeli yhdistää
+`route.c:397-398` ja `solvers.c:43`, joten tiukka IEEE-porttaus sai eri
+`solve3`-juurimäärän, valheellisen leikkauksen ja yhden ylimääräisen `a`:n
+puolituksen (maxΔ 42.09). Aiempi päätelmä, että tämä oli palautumaton
+(”ohjelmisto-FMA-emulointi koko splinesovittimessa”, osittainen korjaus kumottuna),
+kumottiin: yhdistämiskohdat ovat äärellisiä ja luettelointikelpoisia. Porttaus
+peilaa nyt jokaisen yhdistämisen kohdissa `points2coeff` (`route.c:397-398`),
+`splineintersectsline` (371-372, 374, 360-361, 383-384), `solve3`
+(`solvers.c:41, 43, 46`) ja sen inline-`solve2` (80, 85), ja
+`solve3`/`solve2`/`solve1` on porttattu uudelleen C:n muotoon. Kaikki 42 432
+tallennettua `Proutespline`-kutsua tiedostossa `2646` ovat bitti bitiltä identtisiä
+oraakkelin kanssa (päiväkirjan rivi ”T7 land”). Alkuperäinen diagnoosi (mekanismin
+osalta yhä voimassa): `plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Koskee (historiallinen):** `2620` (oli structural-match, maxΔ 585; 423 eroa
 24 kaaripolulla + 22 nuolenkärjessä). **Muuttui yhdenmukaiseksi 2026-07-11**:
@@ -909,12 +868,24 @@ joten täsmällinen incircle-predikaatti on veitsenterällä: syötteen ULP kä�
 rajoitetun Delaunay-lävistäjän kääntyminen, ja käytäväpolygoni, joka epäonnistuu
 `Pshortestpath`issa oraakkelissa (”destination point not in any triangle” →
 tavallisen splinin varareitti), onnistuu porttauksessa (tai päinvastoin). Tuloksena olevat
-splinit eroavat ~0.2–0.5 pt. **A3**:n/**A8**:n sisar: palautumaton
+splinit eroavat ~0.2–0.5 pt. (Nyt suljettujen) **A3**:n/**A8**:n sisar: palautumaton
 liukulukusiirrettävyysrajoite C:n lähdesemantiikan alapuolella — täsmäys
 vaatisi Apple libm:n täsmällisen `sin`/`cos`-pyöristyksen toistamista JS:ssä.
 
-**Koskee:** `241_0` (circo Δ≈0.2 / twopi-piirtoalue Δ≈9 käytäväkäännöksen kautta
-kaarella `5:ne->8:nw`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**16.1:n uusi perustaso.** Multispline-käytävän geometriasta puuttui clangin FMA-yhdistäminen
+(ellipsin kulman radikandi, `mkCtrlPts`, `DIST` = sqrt(fmadd), `line_intersect`in
+pistetulo); `b77b2703` (`fix(neato): mirror fma contraction in multispline routing
+geometry`) peilasi sen. twopi:n ja neaton `241_0` — jotka tämä luokka oli selittänyt
+alla olevalla samalle ympyrälle osuvalla tasapelillä — muuttuivat **yhdenmukaisiksi**
+(hyväksynnät poistettu), ja sfdp:n `42`:lla ei osoittautunutkaan olevan tasapeliä
+lainkaan (se on A1-drift, katso [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+circon, fdp:n ja sfdp:n `241_0` poikkeavat yhä, niiden jäännökset ovat ennallaan tai
+pienentyneet; niiden selitys alla olevalla tasapelillä edeltää `b77b2703`a eikä sitä
+ole **varmennettu uudelleen sijaintiinjektiolla** sen jälkeen, vaikka sama korjaus
+osoitti selityksen vääräksi twopi:lle/neatolle.
+
+**Koskee:** `241_0` (circo Δ≈0.2 käytäväkäännöksen kautta kaarella `1->2`; fdp:n ja sfdp:n
+`241_0` alla olevilla moottoriraidoilla); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 kaarinimiön sijaintieroa kukin — libm:n 1 ULP syntyy
 `poly_init`in yksikkökärkitrigonometriassa (`hypot`/`atan2`/`sin`), asettaa yhden solmun
 lasketun korkeuden ULP:n verran minimikokorajan yli, jolle oraakkeli osuu
@@ -1067,33 +1038,44 @@ sulkien kausaaliketjun.
 
 Kaksi muuta moottoriraidan tapausta juurisyyanalysoitiin ja hyväksyttiin 2026-07-11
 (täysi juurisyyanalyysi: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 piirto-operaatio-
-eroa — yllä olevan circo-merkinnän sisar: sama CDT:n samalla ympyrällä oleva
-incircle-tasapeli, libm `sin`/`cos`in 1 ULP:n kääntämänä, saa porttauksen
-multispline-käytävän onnistumaan 14 pisteen splinellä, kun natiivi käännös
-palaa tavalliseen 8 pisteen reititykseen; pisteerot < 0.07 pt) ja circo
+eroa, jotka selitettiin silloin samalla CDT:n samalle ympyrälle osuvalla
+incircle-tasapelillä kuin yllä oleva circo-merkintä; **poistettu käytöstä graphviz
+16.1:ssä** — se on `b77b2703`:sta lähtien conformant, joten 14 pisteen vs. 8 pisteen
+käytäväkäännös oli peilaamaton FMA-yhdistäminen, ei tasapeli) ja circo
 `windows-tree` (10 piirto-operaatioeroa yhdellä viuhkakaarella — circon sijoitustrigonometria
 asettaa `node2.y`:n yhden ULP:n verran arvon `node8.y` yläpuolelle täsmälleen symmetrisen
 arvon 18.0 ympärillä, ja `closestSide`n dyna-pääportin valinta kääntää TOP/BOTTOM
 tuossa täsmällisessä tasapelissä; solmusijainnit ja laatikot ovat muutoin bitti bitiltä identtiset
 oraakkelin kanssa).
 
-**sfdp-moottoriraita — kaarten FP-tasapelit (`42`, `241_0`).**
+**sfdp-moottoriraita — kaaren FP-tasapeli (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp-xdot-moottoriraita (`parity-sfdp.json`,
 natiivi `dot -Ksfdp -Txdot`, ±0.5) tuo esiin CDT:n samalla ympyrällä olevan incircle-tasapelin, kun
 täsmälliset natiivit reititystä edeltävät sijainnit injektoidaan (joten ero EI ole
 iteratiivista ajelehtimista — katso A1-drift-luokka — vaan diskreetti predikaattitasapeli):
 
-- `42` ja `241_0` — CDT:n samalla ympyrällä oleva incircle-tasapeli (multispline-käytävä).
-  Injektoiduilla sijainneilla jäännös on **segmenttimäärän käännös**: `42`
-  `opCount 5 vs 9` (kaari 0->3) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (kaari 3->2) — porttauksen rajoitetun Delaunay-lävistäjän käännös oraakkeliin nähden,
-  joten multispline-käytävä onnistuu N pisteen splinellä, kun natiivi
-  käännös palaa lyhyempään tavalliseen reittiin (tai päinvastoin), täsmälleen kuten
-  yllä oleva twopi/circo `241_0` -merkintä. Porttaus emuloi jo arm64:n
+- `241_0` — selitetty CDT:n samalle ympyrälle osuvalla incircle-tasapelillä
+  (multispline-käytävä; ei varmennettu uudelleen `b77b2703`:n jälkeen, katso 16.1:n uusi
+  perustaso yllä). Jäännös on **segmenttimäärän käännös**: 7 piirto-operaatioeroa
+  kaarella 1->2, `ptCount 8 vs 20` (20 eroa ennen `b77b2703`a) — käytävä onnistuu
+  N pisteen splinellä, kun natiivi käännös palaa lyhyempään tavalliseen reittiin (tai
+  päinvastoin), kuten yllä olevassa circo `241_0` -merkinnässä. Porttaus emuloi jo arm64:n
   `fmadd`-yhdistämistä incircle-/`ccw`-predikaatissa (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) ja käyttää robustia incircle-Delaunayta; jäännös on
   predikaatin syötteessä oleva V8-vs-Apple-libm `sin`/`hypot` 1 ULP, jota mikään siirrettävä
   koodi ei toista.
+
+> **sfdp:n `42` luokiteltiin uudelleen A9 → A1-drift (graphviz 16.1 -synkronointi).**
+> Se oli lueteltu täällä CDT-/libm-incircle-tasapelinä. Missio löysi muuta
+> ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): entinen käytäväkäännös oli
+> porttauspuolen FMA-virheporttaus multispline-käytävän geometriassa, korjattu
+> `b77b2703`:lla (`fix(neato): mirror fma contraction in multispline routing
+> geometry`); natiivien sijaintien injektoinnilla porttaus toistaa nyt natiivin xdotin
+> täsmälleen. Jäljelle jäävä jäännös (solmusiirtymät 0.06-0.65 pt) on iteratiivista
+> ajelehtimista, jonka sai alkunsa yhdestä 1 ULP:n erimielisyydestä Apple libm:n
+> `pow(dist, 2)`:n ja porttauksen ARM-`pow`:n välillä karkeimmalla tasolla,
+> vahvistuneena hienommilla tasoilla — A1 (katso
+> [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095` luokiteltiin uudelleen A9 → A1-drift (2026-07-22).** Se oli aiemmin lueteltu
 > täällä ”hypot-sisarena” (alle 0.7 pt:n ajelehtiminen tyhjännimisen
@@ -1111,8 +1093,10 @@ kääntäminen ja vertailu Noden `Math.hypot`iin edustavilla litteän kaaren poi
 eron 2:ssa 6:sta (Δ 7.1e-15 ja
 5.7e-14) — jakokynnyksen veitsenterä, joka kääntää alajaon määrän.
 Palautumaton: mikään siirrettävä hypot ei toista Apple libm:ää (`arm-pow.ts`
--ennakkotapaus samalle rajalle). Hyväksytty moottoriraidan tasolla tiedoston
-`accepted-divergences-engines.json` kautta (`sfdp.42`, `sfdp.241_0`).
+-ennakkotapaus samalle rajalle). `sfdp.241_0` hyväksytään moottoriraidan tasolla
+tiedoston `accepted-divergences-engines.json` kautta. `sfdp.42` **ei** kuulu tähän
+luokkaan: sen rekisterimerkintä on A1 (`comparisons/sfdp-42.md`), eikä yllä oleva
+luotain selittänyt sitä.
 
 **fdp**-xdot-moottoriraita (`parity-fdp.json`, natiivi `dot -Kfdp -Txdot`,
 ±0.5) tuo esiin SAMAN CDT:n samalla ympyrällä olevan tasapelin samalla graafilla, `241_0`: kun
@@ -1120,9 +1104,10 @@ oraakkelin täsmälliset reititystä edeltävät sijainnit injektoidaan, jäänn
 `unfilled_bezier`-eroa yhdellä kaarella (`0->1#0`, maxΔ 3.39 pt). Koska
 solmusijainnit ovat injektoidusti identtiset, ero on alavirrassa
 pathplanin multispline-käytävässä — sama libm-1-ULP-incircle-tasapeli kuin
-twopi/circo/sfdp `241_0` (täsmällinen rationaali-incircle 185/185 yllä). Vivut on
+circo/sfdp `241_0` (täsmällinen rationaali-incircle 185/185 yllä; 11 eroa ennallaan
+`b77b2703`n jälkeen — ei varmennettu uudelleen injektiolla). Vivut on
 jo otettu käyttöön (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); tasapeli on palautumaton. Hyväksytty tiedoston `accepted-divergences-engines.json`
+`Math.hypot`); tasapeliä pidetään palautumattomana. Hyväksytty tiedoston `accepted-divergences-engines.json`
 `fdp.241_0` kautta. fdp:n `2095` sitä vastoin on **A1-drift, ei A9**: yksittäisen
 tyhjännimisen solmun injektointi (kun attribuutioinjektori oli korjattu täsmäämään
 `""`-nimisiin solmuihin) romahduttaa sen jäännöksen nollaan — aiempi ”A9-häntä” oli
@@ -1130,6 +1115,28 @@ injektoimaton tyhjä solmu, joka veti mukanaan siihen liittyviä kaaria. Sfdp:n 
 oli sama sokea piste — tuore sfdp-attribuution uudelleengenerointi (2026-07-22) korjatulla
 injektorilla vahvisti, että sekin injektoituu 0:aan, ja sen hyväksyntä poistettiin (katso
 yllä oleva `2095`:n uudelleenluokitusta koskeva huomautus).
+
+---
+
+### A10. V8:n `Map`-kokoraja polyomino-pakkauksessa (`2784`, viisi pakkaukseen perustuvaa moottoria) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Koskee:** `2784` moottoreilla `circo`, `twopi`, `neato`, `fdp` ja `sfdp`, kaikissa
+tulostusmuodoissa. Moottorilla `dot` se on `conformant`.
+
+**Mitä tapahtuu.** `lib/pack/pack.c` tallentaa komponentin varaamat solut
+`PointSet`iin. Tiedostossa `2784` (yksi 3e16 pt korkea solmu, `splines="ortho"`)
+uskollinen kokonaislukuaritmetiikka `step`/sijoittelulle vaatii 2 011 656 764 solua;
+natiivi 16.1.0 valmistuu 482 sekunnissa käyttäen 67.3 GB resident-muistia (101 GB
+huippu). Porttauksen `PointSet` on JavaScript-`Map`, jonka V8 rajaa 2^24
+alkioon, joten se heittää `Map maximum size exceeded`.
+
+**Miksi hyväksytty.** Koodin alapuolinen ajoympäristön rajoite, ei looginen aukko;
+syynä on `910be2a2`:n uskollinen aritmetiikka (ennen sitä porttaus laski pienen,
+väärän asettelun eikä koskaan saavuttanut rajaa). Hyväksytty lopputulos on heitetty
+virhe `diverged`-tuomion sijaan, ja moottorikohtaiset rekisterit hyväksyvät vain
+`diverged`-rivejä, joten rekisterimerkintää ei ole: läpikäynnit listaavat `2784`:n
+edelleen porttausvirheidensä alla. Todiste:
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

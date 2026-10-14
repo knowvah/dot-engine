@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -41,8 +41,8 @@ poniżej), jest
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 Narzędzia łączą go przy generowaniu raportu: `PARITY-dot.md` oddziela **zaakceptowane różnice** od
 **śledzonego** zaległego zbioru, a bramka reguł pobiera z niego swoją listę dozwolonych. Poniższe
-sekcje prozy objaśniają każdy wpis (A1 i A3 są aktywne; A2 jest zamknięte i
-zachowane jako historia); test CI (`accepted-divergences.test.ts`) wymusza, aby
+sekcje prozy objaśniają każdy wpis (A1 jest aktywne; A2, A3 i A8 są zamknięte i
+zachowane jako historia; A10 to akceptacja błędu portu, której nie wyrazi żaden rejestr); test CI (`accepted-divergences.test.ts`) wymusza, aby
 każdy zaakceptowany graf nadal się rozjeżdżał, więc ta lista nie może po cichu zgnić.
 
 ---
@@ -67,8 +67,8 @@ tolerancyjnej**, a nie bajtowej.
 
 **Dotyczy:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (silniki
 iteracyjne, oparte na modelu sprężyn). *Układ* silnika `dot` **nie** jest dotknięty tym
-determinizmem modeli iteracyjnych; osobna, wąsko ograniczona różnica
-zmiennoprzecinkowa w prowadzeniu splajnów `dot` jest opisana w **A3** poniżej.
+determinizmem modeli iteracyjnych; dawne różnice
+zmiennoprzecinkowe w prowadzeniu splajnów `dot` (A3, A8) są zamknięte i zachowane poniżej jako historia.
 
 > **Zakres — historycznie niezmierzone zastrzeżenie, obecnie częściowo zmierzone.**
 > **Główny przegląd SVG silnika dot** (`test/corpus/survey.ts`) nadal jest
@@ -102,7 +102,7 @@ natywną wyrocznią przy dopasowanym PRNG i `fma` — ale dokładne, identyczne 
 rozbieżność dotyczy drobnych współrzędnych węzłów.
 
 **Dlaczego zaakceptowane.** To twarde ograniczenie działania w JS, a nie wybór projektowy
-— z tej samej rodziny co wrażliwość A3 na `hypot` z Apple. Nie da się zagwarantować
+— z tej samej rodziny co (od tego czasu zamknięte) wrażliwości A3/A8 na `hypot`/FMA. Nie da się zagwarantować
 identycznych co do bitu wyników funkcji przestępnych/FMA we wszystkich docelowych środowiskach,
 więc poprzeczka bajtowa byłaby niemożliwa do przetestowania, a nie tylko droga. **Ocena A1** (w odróżnieniu od
 samego zastrzeżenia) wymagała osobnej ścieżki parytetu natywnych silników — zbudowanej
@@ -111,12 +111,12 @@ wejście pod jego własnym silnikiem zamiast `dot`. Uczciwy pułap tej pracy to
 **zawężenie** A1 do „braku aktywnej rozbieżności na platformie referencyjnej”, nigdy
 wyeliminowanie zastrzeżenia o różnicach między platformami; dotychczasowe wyniki (poniżej) mieszczą się w tym
 pułapie: `circo`/`twopi`/`osage` ujawniły i rozłożyły na przyczyny źródłowe garstkę
-prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 90.8/77.5/68.0%
-w granicach 0.5pt od natywnego na zbiorze 910 pozycji, co oznacza, że przeportowana
+prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 90.3/96.5/68.1%
+w granicach 0.5pt od natywnego na zbiorze 929 pozycji (graphviz 16.1.0), co oznacza, że przeportowana
 arytmetyka (`fma.ts`, `arm-pow.ts`, dopasowany PRNG) działa dla większości grafów —
-a każdy pozostały rozbieżny id jest indywidualnie przypisany przez wstrzyknięcie (dryf
-solvera vs. defekt portu), zamiast zostać nieprzeanalizowanym dryfem; zob.
-charakteryzację silników iteracyjnych poniżej.
+a każdy rozbieżny id z listy 910 pozycji jest indywidualnie przypisany przez wstrzyknięcie (dryf
+solvera vs. defekt portu), zamiast zostać nieprzeanalizowanym dryfem; 19 pozycji dodanych do listy
+jest jeszcze nieprzypisanych. Zob. charakteryzację silników iteracyjnych poniżej.
 
 **Akceptacja ścieżki silnika: rodzina strzałek twopi.** <a id="a1-twopi-arrows-family"></a>
 Powyższy cytat opisuje przegląd SVG silnika dot, w którym A1 dopasowuje zero
@@ -180,27 +180,35 @@ a `parity-report.ts` renderuje je w osobnej sekcji
 „Iterative engines (±0.5 characterization)” w
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 wyraźnie **nieporównywalnej** ze wskaźnikami zaliczeń deterministycznych ±0.01 w innych miejscach
-tego dokumentu. Aktualne liczby (zbiór 910 pozycji; wskaźnik zaliczeń pomija
+tego dokumentu. Aktualne liczby względem graphviz 16.1.0 (zbiór 929 pozycji; wskaźnik zaliczeń pomija
 wejścia, których wyrocznia w C nie potrafi wyrenderować, zgodnie z [Zgodnością](./conformance.md)):
 
-| silnik | zbadano | w granicach ±0.5pt | niezgodne (wszystkie przypisane, zaakceptowane) | błąd portu / timeout | błąd wyroczni |
+| silnik | zbadano | w granicach ±0.5pt | niezgodne | błąd portu / timeout | błąd wyroczni |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(Wiersze `neato` i `sfdp` pochodzą z przebiegów przygotowanych przed ostatnim ponownym przebiegiem
+`graphs-decorate`, `1314`, `2784` i `2371`; mogą się zmienić o te id.
+Wskaźnik zaliczeń `fdp` wzrósł z 77.5%, ponieważ wcześniejszy zatwierdzony przebieg
+przedstawiał stan portu sprzed poprzedniej misji.)
 
 (Pierwszy przebieg, 2026-07-11 przy 762 pozycjach, zmierzył 263/311/260 w granicach
 ±0.5pt — skok do obecnych wskaźników wziął się z poprawek dla poszczególnych id wprowadzonych od tego czasu,
 głównie nieprzeportowanej obsługi `user_pos`/`P_SET` w neato, konsolidacji
 inicjalizacji silników i poprawki `setEdgeType` makro-vs-funkcja.)
 
-W odróżnieniu od pierwszego przebiegu każdy rozbieżny wiersz jest teraz indywidualnie przypisany:
+W odróżnieniu od pierwszego przebiegu każdy rozbieżny wiersz z listy 910 pozycji został indywidualnie
+przypisany (19 id nowych na liście 929 pozycji nie jest jeszcze przypisanych;
+są wymienione w przekazaniu T13 jako nowo widoczne):
 narzędzie wstrzykiwania (`test/corpus/attribute-divergence.ts`) podaje
 przedroutingowy `ND_pos` natywnej wyroczni do portu i porównuje ponownie, a
 każdy obecny rozbieżny id jest albo `drift-exonerated` (prowadzenie i emisja w porcie
 odtwarzają wyrocznię dokładnie po usunięciu dryfu solvera),
 albo jednym z kilku osobno zaakceptowanych residuów dla poszczególnych id (remis incircle w CDT dla `241_0`
-na wszystkich trzech silnikach, neato `2239`, sfdp `42`/`2556`).
+na wszystkich trzech silnikach, neato `2239`, sfdp `2556`; sfdp `42`
+to dryf A1, zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 Akceptacja klasy poniżej formalizuje zbiór oczyszczony z zarzutów; bieżące liczby w
 panelach poszczególnych silników
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -400,39 +408,47 @@ korpusie przez niego przepływa, więc poprawka wymierzona w jeden ciąg groził
 innych za niezauważalną nagrodę.
 :::
 
-### A3. Rozstrzyganie remisu `hypot` w prowadzeniu splajnów (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. Rozstrzyganie remisu `hypot` w prowadzeniu splajnów (`dot`) — ZAMKNIĘTE {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Dotyczy:** grafów `dot` z **geometrycznie symetrycznym** kanałem prowadzenia krawędzi —
-zazwyczaj krótkim, symetrycznym łukiem krawędzi płaskiej. Zaobserwowany przykład: `2368`,
-który pozostaje na *structural-match* (maxΔ ≈ 10.2 pt na **jednej** krawędzi, `376->76`).
-To samo rozstrzyganie remisu pojawia się też na **długiej** (wielorangowej) krawędzi do
-koncentratora o dużym stopniu wejściowym, gdy korytarz jest dokładnie symetryczny lustrzanie: `graphs-b100` /
-`graphs-b104` (identyczne źródło) rozjeżdżają się o maxΔ 20 (dokładnie jeden wiersz rangi) na
-pojedynczym węźle splajnu `Node23730->Node23729` — pozycje wszystkich węzłów i cała struktura
-pudełek/wielokątów/napiętej ścieżki wyżej w łańcuchu jest identyczna co do bajta z C; różni się tylko
-wybór `findMaxDev` o ~1 ULP, który z lustrzanie symetrycznych punktów wewnętrznych staje się węzłem béziera.
-Forma krótkiej krawędzi płaskiej pojawia się też jako `241_1` (structural-match,
-maxΔ ≈ 2.4 pt) — rozbieżny sibling przypiętego do wyroczni `241_0`, który szum C
-zamiast tego zatrzymuje na pierwszym. To samo rozstrzyganie remisu powoduje rozszczepienie korytarza szczelinowego
-krawędzi powrotnej etykietowanego 2-cyklu w `2413_1` (structural-match, maxΔ 67.65) i
-`2413_2` (maxΔ ≤99.55 po wylądowaniu poprawki T11 swapBezier-reverse — do tego czasu
-zgłaszane maxΔ 1922.26 dla pliku jest zdominowane przez niezwiązany, osobno
-śledzony defekt), oraz pojedynczą etykietowaną krawędź wewnątrz klastra w `graphs-decorate`
-(maxΔ 43.54); w każdym przypadku dwa kandydackie narożniki podziału remisują się z dokładnością do
-5.7e-13 (rodzina 2413) / 3e-14 (decorate), zanim zależny od pozycji szum `hypot` z Apple
-wybierze zwycięzcę. `2371`
-(structural-match, maxΔ 16.8) pokazuje ten sam odcisk palca na dwóch niezwiązanych
-krawędziach (`g[9263]` `r6837mid--r9687mid`, `g[23859]` `r38mid--r8699mid`): port
-emituje dokładne lustro sekwencji punktów kontrolnych wyroczni na obu,
-y węzła splajnu odwrócone o identyczną Δ16.8 (górne/dolne ułamki podziału zamienione).
-Jego pochodzenie jest oceniane z pewnością **MEDIUM**, a nie
-POTWIERDZONĄ jak u pozostałych członków: `2371` pakuje ~199 komponentów, co
-rozprzęga lokalne współrzędne pathplan od współrzędnych strony, więc remisu nie dało się
-skorelować na żywo z `route.ts:209` w trzech próbach instrumentacji; pochodzenie
-w segmentacji trybu prostego lub w `recover_slack` po przycięciu nie jest
-w pełni wykluczone. Pełna diagnoza:
-`plans/residual-cleanup/analysis/2371-mirror.md`. Większość prowadzonych krawędzi
-nie jest dotknięta.
+**Status (2026-10-12): zamknięte.** Żaden id korpusu nie jest już akceptowany w tej
+klasie; sekcja pozostaje jako historyczna dokumentacja mechanizmu. Dawni
+członkowie (`2368`, `graphs-b100`, `graphs-b104`, `241_1`,
+`2413_1`, `2413_2`, `graphs-decorate`, `2371`) są w świeżym przebiegu wszyscy
+**`conformant`** (`test/corpus/parity-probe.json`).
+
+**Mechanizm i to, co go zamknęło.** Dopasowywacz splajnów (`Proutespline` ->
+`findMaxDev`, `src/pathplan/route.ts`) dzieli dopasowaną krzywą Béziera w wewnętrznym
+punkcie trasy o maksymalnym odchyleniu. W geometrycznie symetrycznym kanale
+odchylenia kandydatów różnią się o ~1 ULP, więc zwycięzcę rozstrzyga
+arytmetyka na ostatnim bicie. Portowi przypisano nieredukowalną lukę („`hypot` Apple
+nie pasuje do żadnego przenośnego `hypot`”) i kompensowano ją tolerancyjnym,
+ekwiwariantnym względem translacji rozstrzyganiem remisów. To przypisanie obalono: remis
+rozstrzyga *dokładna* arytmetyka C, która jest odtwarzalna. Commit `cdf597bc`
+(`fix(pathplan): split splines at C's max-deviation point bit for bit`) ją
+przeportował: `hypot` z libm dla odległości (`route.c:448`), ścisłe porównanie `>` z C
+(`route.c:139`) oraz fuzję `fp-contract` clanga w obliczaniu krzywej Béziera
+(`route.c:137-138`), wyznaczniki `mkspline` (`route.c:181-183`), `dot`
+(459), `normv` (413), `B01` (488) i `B23` (494). Tolerancyjne rozstrzyganie remisów
+zniknęło; węzeł `241_0` jest przypięty w układzie prowadzenia C, ponieważ C nie jest
+ekwiwariantne względem translacji przy takich remisach. To zamknęło `2368`, `2371`, `2413_1`,
+`2413_2`, `graphs-b100`, `graphs-b104` i `graphs-decorate`.
+
+`241_1` nie było remisem `hypot`: zamknęło je `87347711`
+(`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
+grupuje każdą sąsiadującą krawędź płaską dzielącą krawędź główną w jedno wywołanie
+`make_flat_adj_edges` i sprawdza porty w całej grupie, więc rodzeństwo
+bez portu krawędzi z portem jest prowadzone przez graf pomocniczy. Port
+dzielił grupę według obecności portu i prowadził rodzeństwo przez
+`makeSimpleFlat`, którego obcięcie ląduje w innym punkcie `bezier_clip`
+(54.28 vs natywne 54.46).
+
+Obie poprawki zweryfikowano świeżymi przebiegami korpusu bez regresji
+(wiersze dziennika „T5 land” i „T6 land”,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Dowody sprzed poprawki (historycznie).** `2368` był członkiem referencyjnym.
+Jego łuk `376->76` dzielił się ku przeciwległemu narożnikowi niż w C; graf oraz
+ścieżki C i portu tego łuku sprzed poprawki zachowano dla porządku.
 
 ::: details Definicja grafu (`2368.dot`)
 ```dot
@@ -472,70 +488,29 @@ digraph G {
 ```
 :::
 
-**Charakteryzacja.** Dopasowywacz splajnów (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) dzieli dopasowany bézier w wewnętrznym punkcie trasy o
-maksymalnym odchyleniu. Gdy kanał jest symetryczny, dwa kandydackie punkty podziału
-tworzą **dokładny matematyczny remis**, a zwycięzcę rozstrzyga wtedy szum anulowania
-zmiennoprzecinkowego rzędu ~1e-14 w ewaluacji béziera we współrzędnych bezwzględnych,
-którego **znak zależy od pozycji bezwzględnej**.
-
-Odległością odchylenia w C jest `hypot` z libm, a `hypot` z macOS Apple, który
-wygenerował wyrocznię, to własnościowa implementacja, która nie zgadza się bitowo z **żadnym**
-przenośnym `hypot` (zmierzone względem niej w reżimie współrzędnych graphviz, wskaźniki
-identyczności bitowej: V8 `Math.hypot` ≈ 63%, `hypot` poprawnie zaokrąglany / w stylu Arm
-≈ 84%, `hypot` z fdlibm ≈ 90%, `sqrt(dx²+dy²)` ≈ 94%). Z powodu tego szumu ULP
-**sam C nie jest spójny**: dzieli dwa *przesunięte translacyjnie, kongruentne* łuki ku
-**przeciwnym** narożnikom. W `2368` łuk `376->76` jest lustrzanym odbiciem
-geometrycznie identycznego łuku `256->436`:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-Cała różnica, nałożona (powiększenie 12× na łuku `376->76` / `to1`) — **zielony = C
-Graphviz, czerwony = @knowvah/dot-engine**. Oba to ten sam płytki łuk w dół między
-tymi samymi granicami węzłów; różnią się o ~1–2 pt w brzuchu (środkowy punkt
-kontrolny béziera), gdzie remis w C rozstrzygnął się ku przeciwnemu narożnikowi:
-
-![Łuk 2368 376->76: zielony = C, czerwony = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Wszystko inne zgadza się w granicach tolerancji — ta sama ramka ograniczająca (608×148), pozycje węzłów,
-etykiety, groty i wszystkie inne krawędzie. Pełne rendery są wizualnie
-nie do odróżnienia:
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![2368 wyrenderowany przez C Graphviz](/img/2368-c.png) | ![2368 wyrenderowany przez @knowvah/dot-engine](/img/2368-port.png) |
-
-Port używa rozstrzygania remisu **równoważnego względem translacji** (prawdziwy remis zawsze rozstrzyga się
-na pierwszy indeks), więc rysuje *każdy* taki łuk tak samo niezależnie od
-pozycji — jest wewnętrznie spójny i zgadza się z C na łukach, na których szum C również
-zostawia pierwszy (np. `256->436` i `241_0 5:ne->8:nw`), rozjeżdżając się tylko tam, gdzie szum C
-przechyla w drugą stronę (`376->76`). Końce, cel grotu, pozostałe
-krawędzie, wszystkie węzły, etykiety i ramka ograniczająca zgadzają się w granicach tolerancji; przesuwają się tylko
-wewnętrzne punkty kontrolne jednego łuku (~1–2 pt w brzuchu).
-
-**Dlaczego zaakceptowane.** `hypot` z Apple nie jest bardziej powtarzalny między silnikami JS i
-procesorami niż FMA/`pow` z **A1** — to to samo ograniczenie przenośności, tylko
-w routerze splajnów `dot`. Dopasowanie *zależnego od pozycji* wyboru C oznaczałoby
-przyjęcie ścisłego rozstrzygania remisu z C, które żyje we **wspólnym prymitywie**, przez który przepływa każda prowadzona
-krawędź: kosztem zgodności `376->76` pojawiłyby się *nowe* niezgodności na
-łukach, gdzie C ląduje w drugą stronę (regresuje `241_0` i przypadek wyroczni płaskiej krawędzi `cnt=3`),
-bilans zerowy, który poświęca też równoważność translacyjną portu. Zachowujemy więc spójny (równoważny) router. To
-ograniczona, niezauważalna różnica `dot` — nie otwarty błąd. Pełne badanie:
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
 
 ### A4. Wyrocznia w uznanym za zepsuty stanie (rodzina init_rank / pathplan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Dotyczy:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). Członkowie
-rodziny `1939` i `2825` są **conformant** i nie mają wpisu, a `2470`
-i `graphs-structs` dołączyły do nich 2026-07-11 (oba zapadły się do conformant
-po wylądowaniu poprawek ortho adjacency-spill/chancmpid, fmadd `polylineMidpoint` oraz
-zaokrąglania remisów half-even — port odtwarza teraz wynik odzyskiwania wyroczni
+**Dotyczy (przebieg graphviz 16.1):** `1435` (structural-match, maxΔ 0.39 na
+jednym punkcie kontrolnym splajnu; było 503 względem wyroczni 15.x — spadek nie został
+zbisekcjonowany) i `1581` (diverged: liczba dzieci najwyższego poziomu 39 vs 22, maxΔ 0).
+Członkowie rodziny `1939` i `2825` są **conformant** i nie mają wpisu, a
+`2470` i `graphs-structs` dołączyły do nich 2026-07-11 (oba zapadły się do
+conformant po wylądowaniu poprawek ortho adjacency-spill/chancmpid, fmadd
+`polylineMidpoint` oraz zaokrąglania remisów half-even — port odtwarza teraz wynik odzyskiwania wyroczni
 dokładnie, włącznie z identycznymi utraconymi krawędziami); ich
-wpisy akceptacji zostały wycofane.
+wpisy akceptacji zostały wycofane. **`2796` i `2471` dołączyły do nich
+w graphviz 16.1** (oba `conformant` w świeżym przebiegu, wpisy akceptacji
+wycofane): port i wyrocznia 16.1 zgadzają się teraz co do wyniku odzyskiwania `init_rank`,
+włącznie z utraconymi krawędziami. Przyczyny nie wyizolowano bisekcją (kandydaci to
+port dotgen 16.1 `48981bf0` i poprawka zużycia utraconych krawędzi `54bd3b9b`);
+opis `init_rank` poniżej zachowano jako mechanizm klasy,
+a oba id są przypięte jako conformant przez przebieg parytetu.
 
 `1581` i `2825` były przypadkami odzyskiwania po awarii (misja fix-element-count-bucket):
 wejścia z fuzzera/zdegenerowane, dla których testy upstream sprawdzają **wyłącznie**,
@@ -670,8 +645,13 @@ Strona porównania
 
 ### A6. Przepełnienie płótna `unsigned int` na zdegenerowanym wejściu {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Dotyczy:** `1314` — wejście pochodzące z fuzzera (`fontsize="991836031967s8"`),
-którego absurdalny rozmiar czcionki rozdyma rysunek do ~2.75e11 pt.
+**Dotyczy:** sfdp `2556` (układ NaN; zob. wpis ścieżki silnika). `1314`
+— wejście pochodzące z fuzzera (`fontsize="991836031967s8"`), którego absurdalny rozmiar
+czcionki rozdyma rysunek do ~2.75e11 pt — jest w graphviz 16.1 **conformant**,
+a jego akceptacja została wycofana: port zawęża teraz rozmiar strony tak, jak robi to
+natywna konwersja `ROUND` (`fe20f303`), i buduje obcięcie strony w kolejności
+`setup_page` (`eea9d21c`). Akapity o mechanizmie poniżej
+opisują pierwotną różnicę.
 
 **Co się dzieje.** C przechowuje `job->width` / `job->height` jako **`unsigned int`**
 (`gvcjob.h:327-328`). `ROUND(...)` ogromnego rozmiaru w punktach (`emit.c:1249-1250`)
@@ -747,63 +727,42 @@ co zaokrąglanie otoczki kontrolnej odnotowane w
 
 ---
 
-### A8. Zaokrąglanie `fp-contract`/FMA vs. ścisłe IEEE (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. Zaokrąglanie `fp-contract`/FMA vs. ścisłe IEEE (`dot`) — ZAMKNIĘTE {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**Status (2026-10-12): zamknięte.** Żaden id korpusu nie jest już akceptowany w tej
+klasie; sekcja pozostaje jako historyczna dokumentacja. Oba znane
+przypadki są **`conformant`**: `2620` (2026-07-11) i `2646` (2026-10-12).
 
 **Klasa.** clang arm64 kompiluje binarkę wyroczni z `-ffp-contract=on`,
-łącząc wybrane sekwencje mnożenia z dodawaniem w pojedyncze instrukcje FMA; port
-działa na V8, które wykonuje ścisłe zaokrąglanie IEEE-754 i nie potrafi emitować
-`fma`. Na identycznych bitowo danych wejściowych oba różnią się o 1-2 ULP w tym
-wyrażeniu, które kompilator zdecydował się skontraktować. Strona portu to zawsze
-wynik ścisłego IEEE-754; strona wyroczni to zawsze wynik skontraktowany do FMA. To
-ograniczenie przenośności kompilatora/środowiska uruchomieniowego poniżej semantyki kodu
-źródłowego C, a nie defekt logiki w porcie — nie do zredukowania bez
-programowej emulacji konkretnych wyborów kontrakcji clang. Znane są dwa przypadki,
-w dwóch różnych miejscach, z dwoma różnymi mechanizmami wzmocnienia:
+łącząc wybrane sekwencje mnożenie-dodawanie w pojedyncze instrukcje FMA; port
+działa na V8, które stosuje ścisłe zaokrąglanie IEEE-754. Przy identycznych co do bitu
+wejściach oba wyniki różnią się o 1-2 ULP w tym wyrażeniu, które
+kompilator zdecydował się skontraktować. Znane były dwa przypadki, w dwóch różnych miejscach, z
+dwoma różnymi mechanizmami wzmocnienia:
 
-- **2646** — ULP powstaje wewnątrz rozwiązania sześciennego `points2coeff`/`solve3`
-  w `Proutespline` i bezpośrednio przerzuca liczbę pierwiastków dopasowywacza splajnów.
-- **2620** — ULP powstaje w pętli zakresu wierzchołków wielokąta w `poly_init`
-  (rozmiar węzła) i jest wzmacniany dalej przez wierną obcinającą do liczby całkowitej
-  relaksację `ortho` w przerzucenie remisu korytarza labiryntu o równym koszcie.
+- **2646** — ULP powstawał wewnątrz rozwiązania sześciennego `points2coeff`/`solve3`
+  w `Proutespline` i bezpośrednio przerzucał liczbę pierwiastków dopasowywacza splajnów.
+- **2620** — ULP powstawał w pętli zasięgu wierzchołków wielokąta w `poly_init`
+  (rozmiar węzła) i był wzmacniany w dół łańcucha przez wierną obcinającą do całkowitych
+  arytmetykę `ortho` przy każdym relax, aż do przerzutu remisu korytarza labiryntu o równym koszcie.
 
-**Dotyczy:** `2646` (structural-match, maxΔ 42.09 na 3 z 21 216 krawędzi:
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — wszystkie to
-długie trasy krawędzi smode z portem rekordu `:c->:nb_part`). Sibling **A3**: obie
-klasy to nieredukowalne remisy przenośności zmiennoprzecinkowej wewnątrz
-`Proutespline`, ale mechanizm jest odrębny — artefakt `fp-contract`
-kompilatora, a nie `hypot` z libm.
-
-**Co się różni.** Na wszystkich trzech krawędziach rozjeżdża się tylko ostatnie wywołanie `routesplines` (prosty
-odcinek do portu głowy). Jego koniec leży bitowo dokładnie na dolnej ścianie wielokąta bariery, a styczna jest równoległa do tej ściany
-(`evs[1]=(1,-1.22e-16)`), więc każdy kandydat `splinefits` jest styczny do
-bariery w `t=1` — niemal podwójny pierwiastek sześcianu przecięcia.
-`points2coeff` liczy ten sześcian przez katastrofalne skracanie (wyrazy
-rzędu ~7446 zapadają się do ~0.099). Wyrocznia (clang/arm64,
-`-ffp-contract=on`) kontraktuje `v3 + 3*v1 - (v0 + 3*v2)` do połączonych
-mnożeń z dodawaniem, podczas gdy V8 wykonuje ścisłe zaokrąglanie IEEE — oba różnią się o
-~9.1e-13 na **identycznych bitowo wejściach**, a ten szum przerzuca znak
-wyróżnika `solve3`: C znajduje 1 pierwiastek (866.7, wewnątrz odcinka); port
-znajduje 3 pierwiastki z fałszywym partnerem w `t=0.9999975 < 1-EPSILON2`. Fałszywy
-pierwiastek wywołuje jedną dodatkową iterację połowienia `a`, co przerzuca
-wielkość stycznej ostatniego fragmentu o czynnik 2 (w którąkolwiek stronę na
-3 krawędziach), dając maxΔ 42.09 po przycięciu (26 różnic SVG).
-
-**Dlaczego zaakceptowane (nieredukowalność udowodniona kontrolowanym eksperymentem).** Wszystkie sześć
-wywołań `routesplines` zrzucono po obu stronach — box, wielokąt, `PL`, start,
-koniec i `evs` są identyczne co do bajta, tak jak wynikowy splajn wcześniejszego (nieostatniego) wywołania;
-jedyna rozbieżność jest wewnątrz `solve3` ostatniego wywołania. Samodzielne
-narzędzie w czystym C wyodrębniło jedyną zmienną: kompilacja z
-`-ffp-contract=off` odtwarza **port** bitowo dokładnie na wszystkich 3 krawędziach; domyślna
-(`on`) kontrakcja odtwarza **wyrocznię** bitowo dokładnie na wszystkich 3
-krawędziach. Port zgadza się więc już ze ścisłym IEEE-754 C; rozbieżność
-to w całości wybór kontrakcji FMA przez kompilator wyroczni, poniżej semantyki
-kodu źródłowego C — nie ma niewierności na poziomie źródła do naprawienia. Celowana
-poprawka (ręczna emulacja kontrakcji w `points2coeff`) została wypróbowana i
-obalona: poprawia 2 z 3 krawędzi, ale nie trzecią, której przerzut
-powstaje wewnątrz własnej kontrakcji w `solve3`. Pełna poprawka
-wymagałaby programowej emulacji FMA w całym dopasowywaczu splajnów — koszt w gorącej pętli
-z zasięgiem zaokrągleń w całym korpusie dla podpikselowego zysku na 3 krawędziach.
-Pełna diagnoza: `plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Zamknięte: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Trzy odcinki długich krawędzi smode (`edge2575`, `edge3905`,
+`edge15467`) kończą się na ścianie bariery z równoległą styczną, więc
+sześcian przecięcia w `splinefits` ma prawie podwójny pierwiastek. `points2coeff`
+buduje ten sześcian przez katastrofalne skracanie; wyrocznia łączy
+`route.c:397-398` i `solvers.c:43`, więc port ze ścisłym IEEE uzyskiwał inną
+liczbę pierwiastków w `solve3`, fałszywe przecięcie i jedno dodatkowe połowienie `a` (maxΔ
+42.09). Wcześniejszy wniosek, że jest to nieredukowalne („emulacja FMA w oprogramowaniu
+w całym dopasowywaczu splajnów”, z obaloną poprawką częściową), został
+obalony: miejsca kontrakcji są skończone i da się je wyliczyć. Port
+odzwierciedla teraz każdą kontrakcję w `points2coeff` (`route.c:397-398`),
+`splineintersectsline` (371-372, 374, 360-361, 383-384), `solve3`
+(`solvers.c:41, 43, 46`) i jego wbudowanym `solve2` (80, 85), a
+`solve3`/`solve2`/`solve1` zostały ponownie przeportowane do kształtu z C. Wszystkie 42 432 przechwycone
+wywołania `Proutespline` dla `2646` są bitowo identyczne z wyrocznią (wiersz dziennika
+„T7 land”). Pierwotna diagnoza (nadal ważna dla mechanizmu):
+`plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Dotyczy (historycznie):** `2620` (był structural-match, maxΔ 585; 423 różnice
 na 24 ścieżkach krawędzi + 22 grotach). **Zapadł się do conformant 2026-07-11**:
@@ -873,12 +832,24 @@ predykat incircle leży na ostrzu noża: ULP na wejściu przerzuca jego znak,
 przekątna ograniczonej triangulacji Delaunaya się przerzuca, a wielokąt korytarza, który nie przechodzi
 `Pshortestpath` w wyroczni („destination point not in any triangle” →
 awaryjny zwykły splajn), w porcie się udaje (lub odwrotnie). Powstałe
-splajny różnią się o ~0.2–0.5pt. Sibling **A3**/**A8**: nieredukowalne
+splajny różnią się o ~0.2–0.5pt. Sibling (zamkniętych już) **A3**/**A8**: nieredukowalne
 ograniczenie przenośności zmiennoprzecinkowej poniżej semantyki źródła C — dopasowanie
 wymagałoby odtworzenia w JS dokładnego zaokrąglania `sin`/`cos` z libm Apple.
 
-**Dotyczy:** `241_0` (circo Δ≈0.2 / twopi Δ płótna≈9 przez przerzut korytarza
-na krawędzi `5:ne->8:nw`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Ponowne wyznaczenie bazy dla 16.1.** W geometrii korytarza multisplajnu brakowało kontrakcji FMA clanga
+(radykand narożnika elipsy, `mkCtrlPts`, `DIST` = sqrt(fmadd), iloczyn skalarny w
+`line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+multispline routing geometry`) ją odzwierciedliło. twopi i neato `241_0` — które ta klasa
+przypisywała remisowi współokręgowości poniżej — stały się **conformant**
+(akceptacje wycofane), a sfdp `42` okazał się nie mieć żadnego remisu (to dryf A1,
+zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
+i sfdp `241_0` nadal się rozjeżdżają, z residuami niezmienionymi lub zmniejszonymi; ich
+przypisanie do remisu poniżej pochodzi sprzed `b77b2703` i **nie zostało ponownie zweryfikowane
+przez wstrzyknięcie pozycji** od czasu, gdy ta poprawka wykazała, że to samo przypisanie było błędne dla
+twopi/neato.
+
+**Dotyczy:** `241_0` (circo Δ≈0.2 przez przerzut korytarza na krawędzi `1->2`; fdp
+i sfdp `241_0` na ścieżkach silników poniżej); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 po 1–2 różnice pozycji etykiet krawędzi — ULP libm 1 powstaje w
 trygonometrii wierzchołków jednostkowych w `poly_init` (`hypot`/`atan2`/`sin`), przesuwa obliczoną
 wysokość jednego węzła o ULP poza ograniczenie minimalnego rozmiaru, na którym wyrocznia ląduje
@@ -1030,33 +1001,43 @@ domykając łańcuch przyczynowy.
 
 Dwa kolejne przypadki ścieżek silników zostały rozłożone na przyczyny źródłowe i zaakceptowane 2026-07-11
 (pełna analiza przyczyn: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 różnic
-operacji rysowania — sibling wpisu circo powyżej: ten sam remis incircle współokręgowości w CDT,
-przerzucony przez 1 ULP w libm `sin`/`cos`, sprawia, że multispline w porcie
-przechodzi korytarzem ze splajnem 14-punktowym, gdy kompilacja natywna
-wraca do zwykłego 8-punktowego prowadzenia; różnice punktów < 0.07pt) oraz circo
+operacji rysowania, przypisanych wówczas temu samemu remisowi incircle współokręgowości w CDT co we wpisie
+circo powyżej; **wycofane w graphviz 16.1** — jest conformant od
+`b77b2703`, więc przerzut korytarza 14-punktowy vs 8-punktowy był nieodzwierciedloną
+kontrakcją FMA, a nie remisem) oraz circo
 `windows-tree` (10 różnic operacji rysowania na jednej krawędzi wachlarza — trygonometria rozmieszczenia w circo
 lokuje `node2.y` o pojedynczy ULP powyżej `node8.y` wokół dokładnie symetrycznej
 wartości 18.0, a wybór portu głowy dyna w `closestSide` przerzuca TOP/BOTTOM na
 tym dokładnym remisie; pozycje węzłów i pudełka są poza tym bitowo identyczne z
 wyrocznią).
 
-**Ścieżka silnika sfdp — remisy FP krawędzi (`42`, `241_0`).**
+**Ścieżka silnika sfdp — remis FP krawędzi (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Ścieżka silnika xdot sfdp (`parity-sfdp.json`,
 natywny `dot -Ksfdp -Txdot`, ±0.5) ujawnia remis incircle współokręgowości w CDT po
 wstrzyknięciu dokładnych natywnych pozycji sprzed prowadzenia (więc rozbieżność NIE jest
 dryfem iteracyjnym — zob. klasa A1-drift — lecz dyskretnym remisem predykatu):
 
-- `42` i `241_0` — remis incircle współokręgowości w CDT (korytarz multisplajnu).
-  Przy wstrzykniętych pozycjach residuum to **przerzut liczby segmentów**: `42`
-  `opCount 5 vs 9` (krawędź 0->3) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (krawędź 3->2) — przekątna ograniczonej triangulacji Delaunaya w porcie przerzuca się względem
-  wyroczni, więc korytarz multisplajnu udaje się ze splajnem N-punktowym, gdzie
-  kompilacja natywna wraca do krótszej zwykłej trasy (lub odwrotnie), dokładnie jak we
-  wpisie twopi/circo `241_0` powyżej. Port już emuluje kontrakcję arm64
+- `241_0` — przypisany remisowi incircle współokręgowości w CDT (korytarz multisplajnu;
+  nie zweryfikowano ponownie po `b77b2703`, zob. ponowne wyznaczenie bazy dla 16.1 powyżej).
+  Residuum to **przerzut liczby segmentów**: 7 różnic operacji rysowania na krawędzi 1->2,
+  `ptCount 8 vs 20` (20 różnic przed `b77b2703`) — korytarz udaje się ze splajnem
+  N-punktowym, gdzie kompilacja natywna wraca do krótszej zwykłej trasy
+  (lub odwrotnie), jak we wpisie circo `241_0` powyżej. Port już emuluje kontrakcję arm64
   `fmadd` w predykacie incircle/`ccw` (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) i używa odpornej triangulacji Delaunaya z incircle; residuum to
   1 ULP w `sin`/`hypot` V8-vs-libm Apple w wejściu predykatu, którego żaden przenośny
   kod nie odtwarza.
+
+> **sfdp `42` przeklasyfikowany z A9 na dryf A1 (synchronizacja z graphviz 16.1).** Był wymieniony
+> tutaj jako remis incircle w CDT/libm. Misja ustaliła co innego
+> ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): dawny przerzut korytarza
+> był błędnym przeportowaniem FMA po stronie portu w geometrii korytarza multisplajnu,
+> naprawionym przez `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> routing geometry`); po wstrzyknięciu natywnych pozycji port odtwarza teraz
+> natywny xdot dokładnie. Pozostałe residuum (przesunięcia węzłów 0.06-0.65 pt) to
+> dryf iteracyjny zapoczątkowany jedną rozbieżnością 1 ULP między `pow(dist, 2)` z libm Apple
+> a `pow` ARM w porcie na najgrubszym poziomie, wzmacniany
+> przez drobniejsze poziomy — A1 (zob. [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095` przeklasyfikowany z A9 na A1-drift (2026-07-22).** Wcześniej był wymieniony
 > tu jako „sibling hypot” (dryf poniżej 0.7pt na krawędziach węzła o pustej nazwie
@@ -1074,8 +1055,9 @@ systemowego `hypot` z C i porównanie z `Math.hypot` z Node na reprezentatywnych
 wejściach odchylenia krawędzi płaskiej pokazuje rozbieżność 1 ULP w 2 z 6 (Δ 7.1e-15 i
 5.7e-14) — ostrze noża progu podziału, które przerzuca liczbę podziałów.
 Nieredukowalne: żaden przenośny hypot nie odtwarza libm Apple (precedens `arm-pow.ts`
-dla tej samej granicy). Zaakceptowane na poziomie ścieżki silnika przez
-`accepted-divergences-engines.json` (`sfdp.42`, `sfdp.241_0`).
+dla tej samej granicy). `sfdp.241_0` jest zaakceptowany na poziomie ścieżki silnika przez `accepted-divergences-engines.json`.
+`sfdp.42` **nie** należy do tej klasy: jego wpis w rejestrze to A1 (`comparisons/sfdp-42.md`),
+a powyższa sonda go nie wyjaśniła.
 
 Ścieżka silnika xdot **fdp** (`parity-fdp.json`, natywny `dot -Kfdp -Txdot`,
 ±0.5) ujawnia TEN SAM remis współokręgowości w CDT na tym samym grafie, `241_0`: po
@@ -1083,9 +1065,10 @@ wstrzyknięciu dokładnych pozycji sprzed prowadzenia z wyroczni residuum to 11 
 różnic `unfilled_bezier` ograniczonych do jednej krawędzi (`0->1#0`, maxΔ 3.39pt). Ponieważ
 pozycje węzłów są wstrzykiwane identycznie, rozbieżność leży w dole łańcucha, w
 korytarzu multisplajnu pathplan — ten sam remis incircle z libm o 1 ULP co
-twopi/circo/sfdp `241_0` (dokładny wymierny incircle 185/185 powyżej). Dźwignie są
+circo/sfdp `241_0` (dokładny wymierny incircle 185/185 powyżej; 11 różnic niezmienionych przez
+`b77b2703` — nie zweryfikowano ponownie przez wstrzyknięcie). Dźwignie są
 już zastosowane (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); remis jest nieredukowalny. Zaakceptowane przez `accepted-divergences-engines.json`
+`Math.hypot`); remis uznajemy za nieredukowalny. Zaakceptowane przez `accepted-divergences-engines.json`
 `fdp.241_0`. `2095` w fdp jest natomiast **A1-drift, a nie A9**: wstrzyknięcie
 pojedynczego węzła o pustej nazwie (po poprawieniu wstrzykiwacza przypisania tak, by dopasowywał
 węzły o nazwie `""`) sprowadza jego residuum do zera — wcześniejszy „ogon A9” to
@@ -1093,6 +1076,28 @@ niewstrzyknięty pusty węzeł ciągnący za sobą incydentne krawędzie. Akcept
 tę samą ślepą plamę — świeża regeneracja przypisania sfdp (2026-07-22) z poprawionym
 wstrzykiwaczem potwierdziła, że też wstrzykuje się do 0, a jej akceptacja została usunięta (zob.
 notę `2095 reclassified` powyżej).
+
+---
+
+### A10. Limit rozmiaru `Map` w V8 przy pakowaniu poliomin (`2784`, pięć silników opartych na pakowaniu) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Dotyczy:** `2784` w `circo`, `twopi`, `neato`, `fdp` i `sfdp`, w każdym
+formacie wyjściowym. W `dot` jest `conformant`.
+
+**Co się dzieje.** `lib/pack/pack.c` zapisuje komórki zajmowane przez komponent w
+`PointSet`. Dla `2784` (pojedynczy węzeł o wysokości 3e16 pt, `splines="ortho"`) wierna
+arytmetyka całkowita `step`/rozmieszczenia wymaga 2 011 656 764 komórek; natywne
+16.1.0 kończy w 482 s, zajmując 67,3 GB rezydentnie (szczyt 101 GB). `PointSet` portu
+to `Map` z JavaScriptu, którą V8 ogranicza do 2^24 wpisów, więc rzuca
+`Map maximum size exceeded`.
+
+**Dlaczego zaakceptowane.** Limit środowiska uruchomieniowego poniżej kodu, a nie luka w logice; przyczyną jest
+wierna arytmetyka z `910be2a2` (wcześniej port obliczał mały,
+błędny układ i nigdy nie osiągał limitu). Zaakceptowanym wynikiem jest rzucony
+błąd, a nie werdykt `diverged`, a rejestry poszczególnych silników
+akceptują tylko wiersze `diverged`, więc wpis rejestru nie istnieje: przebiegi nadal
+wymieniają `2784` wśród swoich błędów portu. Dowody:
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

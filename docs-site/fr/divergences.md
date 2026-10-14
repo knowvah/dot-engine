@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -46,8 +46,9 @@ La source de vérité **lisible par machine** qui indique quels graphes sont
 L’outillage la joint au moment de produire les rapports : `PARITY-dot.md`
 sépare les **écarts acceptés** du retard **suivi**, et la porte de contrôle des
 règles en tire sa liste d’autorisations. Les sections en prose ci-dessous
-expliquent chaque entrée (A1 et A3 sont actives ; A2 est close et conservée à
-titre d’historique) ; un test d’intégration continue
+expliquent chaque entrée (A1 est active ; A2, A3 et A8 sont closes et conservées à
+titre d’historique ; A10 est une acceptation d’erreur du portage qu’aucun
+registre ne peut exprimer) ; un test d’intégration continue
 (`accepted-divergences.test.ts`) vérifie que chaque graphe accepté diverge
 toujours, de sorte que cette liste ne peut pas se périmer en silence.
 
@@ -76,9 +77,8 @@ critère d’égalité d’octets.
 
 **Concernés :** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (les moteurs
 itératifs, à modèle de ressorts). La *disposition* du moteur `dot` n’est **pas**
-touchée par ce déterminisme du modèle itératif ; un écart distinct, étroitement
-borné, en virgule flottante dans le routage des splines de `dot` est traité en
-**A3** ci-dessous.
+touchée par ce déterminisme du modèle itératif ; les anciens écarts en virgule flottante du routage des splines de `dot`
+(A3, A8) sont clos et conservés ci-dessous à titre d’historique.
 
 > **Périmètre : longtemps une réserve non mesurée, désormais en partie
 > mesurée.** Le **relevé SVG principal du moteur dot** (`test/corpus/survey.ts`)
@@ -119,8 +119,8 @@ préservée ; la divergence potentielle se situe dans les coordonnées fines des
 nœuds.
 
 **Pourquoi c’est accepté.** C’est une contrainte dure de l’exécution en JS, et
-non un choix de conception — de la même famille que la sensibilité de A3 au
-`hypot` d’Apple. Il n’existe aucun moyen de garantir des résultats
+non un choix de conception — de la même famille que les sensibilités `hypot`/FMA de
+A3/A8 (closes depuis). Il n’existe aucun moyen de garantir des résultats
 transcendants/FMA identiques au bit près sur tous les environnements cibles ;
 un critère d’égalité d’octets serait donc infaisable à tester plutôt que
 simplement coûteux. **Évaluer A1** (par opposition à simplement l’assortir
@@ -132,12 +132,12 @@ divergence active sur la plateforme de référence », jamais d’éliminer la r
 inter-plateformes ; les résultats obtenus jusqu’ici (ci-dessous) respectent ce
 plafond : `circo`/`twopi`/`osage` ont chacun fait apparaître et expliqué par
 leur cause racine une poignée d’instances authentiques de A1/A9, et
-`neato`/`fdp`/`sfdp` se situent désormais à 90.8/77.5/68.0 % à moins de 0.5pt du
-natif sur l’univers de 910 éléments, ce qui signifie que l’arithmétique
+`neato`/`fdp`/`sfdp` se situent désormais à 90.3/96.5/68.1 % à moins de 0.5pt du
+natif sur l’univers de 929 éléments (graphviz 16.1.0), ce qui signifie que l’arithmétique
 portée (`fma.ts`, `arm-pow.ts`, PRNG concordant) tient pour la plupart des
-graphes — et chaque identifiant encore divergent est attribué individuellement
+graphes — et chaque identifiant divergent de la liste de 910 éléments est attribué individuellement
 par injection (dérive du solveur ou défaut du portage) au lieu d’être laissé en
-dérive non triée ; voir la caractérisation des moteurs itératifs ci-dessous.
+dérive non triée ; les 19 ajouts à cette liste ne sont pas encore attribués. Voir la caractérisation des moteurs itératifs ci-dessous.
 
 **Acceptation au niveau de la piste d’un moteur : famille des flèches de twopi.** <a id="a1-twopi-arrows-family"></a>
 Le bloc de citation ci-dessus décrit le relevé SVG du moteur dot, où A1 ne
@@ -215,15 +215,21 @@ Contrairement aux pistes de moteur `circo`/`twopi`/`osage` ci-dessus,
 (±0.5 characterization) », de
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explicitement **non comparable** aux taux de réussite déterministes à ±0.01
-donnés ailleurs dans ce document. Compteurs actuels (univers de 910 éléments ;
+donnés ailleurs dans ce document. Compteurs actuels face à graphviz 16.1.0 (univers de 929 éléments ;
 le pourcentage de réussite laisse de côté les entrées que l’oracle C ne peut pas
 rendre, conformément à [Conformité](./conformance.md)) :
 
-| moteur | relevées | à ±0.5pt | non conformes (toutes attribuées, acceptées) | erreur du portage / délai dépassé | erreur de l’oracle |
+| moteur | relevées | à ±0.5pt | non conformes | erreur du portage / délai dépassé | erreur de l’oracle |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(Les lignes `neato` et `sfdp` proviennent de balayages préparés avant le dernier
+nouveau passage de `graphs-decorate`, `1314`, `2784` et `2371` ; elles peuvent
+bouger du fait de ces identifiants. Le taux de réussite de `fdp` a augmenté
+depuis 77.5 % parce que le balayage validé précédent datait de l’état du
+portage de la mission précédente.)
 
 (Le premier balayage, le 2026-07-11 à 762 éléments, mesurait 263/311/260 à
 ±0.5pt — le bond vers les taux actuels vient de correctifs par identifiant
@@ -231,15 +237,18 @@ intégrés depuis, principalement la gestion non portée de `user_pos`/`P_SET` d
 neato, la consolidation de l’initialisation des moteurs et la correction
 macro-contre-fonction de `setEdgeType`.)
 
-Contrairement au premier balayage, chaque ligne divergente est désormais
-attribuée individuellement : le banc d’injection
+Contrairement au premier balayage, chaque ligne divergente de la liste de 910 éléments a été
+attribuée individuellement (les 19 identifiants nouveaux de la liste de 929
+éléments ne sont pas encore attribués ; ils figurent dans le retour de T13 comme
+nouvellement visibles) : le banc d’injection
 (`test/corpus/attribute-divergence.ts`) fournit au portage le `ND_pos`
 pré-routage de l’oracle natif et recompare, et chaque identifiant divergent
 actuel est soit `drift-exonerated` (le routage et l’émission du portage
 reproduisent exactement l’oracle dès que la dérive du solveur est supprimée),
 soit l’un des quelques résidus par identifiant acceptés séparément (l’égalité
-d’incercle CDT de `241_0` sur les trois moteurs, `2239` pour neato, `42`/`2556`
-pour sfdp). L’acceptation de classe ci-dessous formalise l’ensemble disculpé ;
+d’incercle CDT de `241_0` sur les trois moteurs, `2239` pour neato, `2556` pour sfdp ; `42` de sfdp
+relève de la dérive A1, voir
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). L’acceptation de classe ci-dessous formalise l’ensemble disculpé ;
 compteurs à jour dans les tableaux de bord par moteur
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
@@ -464,44 +473,50 @@ correctif visant une chaîne risquait d’en faire régresser d’autres pour un
 infra-perceptible.
 :::
 
-### A3. Départage par `hypot` dans le routage des splines (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. Départage par `hypot` dans le routage des splines (`dot`) — CLOS {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Concernés :** les graphes `dot` dont le canal de routage d’arêtes est
-**géométriquement symétrique** — typiquement un court arc d’arête à plat
-symétrique. Exemple observé : `2368`, qui reste à *structural-match* (maxΔ ≈
-10.2 pt sur **une** arête, `376->76`). Le même départage apparaît aussi sur une
-arête **longue** (multi-rangs) vers un moyeu à fort degré entrant lorsque le
-couloir est exactement symétrique en miroir : `graphs-b100` / `graphs-b104`
-(source identique) divergent de maxΔ 20 (exactement une ligne de rang) sur
-l’unique nœud de jonction de `Node23730->Node23729` — chaque position de nœud et
-toute la structure amont des boîtes/polygones/chemin tendu sont identiques à
-l’octet à C ; seul diffère le choix, à environ 1 ULP près de `findMaxDev`, du
-point intérieur symétrique en miroir qui devient le nœud de jonction de la
-courbe de Bézier. La forme à arête plate courte apparaît aussi sous la forme de
-`241_1` (structural-match, maxΔ ≈ 2.4 pt) — le jumeau divergent de `241_0`,
-épinglé sur l’oracle, que le bruit de C conserve au contraire au premier
-candidat. Le même départage produit une scission du couloir en fente d’une
-arête de retour d’un 2-cycle étiqueté dans `2413_1` (structural-match, maxΔ
-67.65) et `2413_2` (maxΔ ≤99.55 une fois le correctif swapBezier-reverse de T11
-intégré — d’ici là, le maxΔ de 1922.26 rapporté pour le fichier est dominé par
-un défaut sans rapport, suivi séparément), ainsi qu’une unique arête étiquetée
-intra-cluster dans `graphs-decorate` (maxΔ 43.54) ; dans chaque cas, les deux
-coins candidats de scission sont à égalité à 5.7e-13 près (famille 2413) /
-3e-14 près (decorate) avant que le bruit du `hypot` d’Apple, dépendant de la
-position, ne désigne un gagnant. `2371` (structural-match, maxΔ 16.8) présente
-la même signature sur deux arêtes sans rapport (`g[9263]`
-`r6837mid--r9687mid`, `g[23859]` `r38mid--r8699mid`) : le portage émet sur les
-deux le miroir exact de la séquence de points de contrôle de l’oracle, avec le y
-du nœud de jonction inversé d’un Δ16.8 identique (fractions de scission
-haut/bas échangées). Son origine est qualifiée de confiance **MOYENNE** plutôt
-que de la confiance CONFIRMÉE des autres membres : `2371` regroupe ~199
-composantes, ce qui découple les coordonnées locales de pathplan des
-coordonnées de page, si bien que l’égalité n’a pu être corrélée en direct à
-`route.ts:209` au cours de trois tentatives d’instrumentation ; une origine par
-segmentation en mode droit ou par `recover_slack` après découpage n’est pas
-totalement exclue. Diagnostic complet :
-`plans/residual-cleanup/analysis/2371-mirror.md`. La plupart des arêtes routées
-ne sont pas touchées.
+**Statut (2026-10-12) : clos.** Plus aucun identifiant du corpus n’est accepté
+sous cette classe ; la section est conservée comme documentation historique du
+mécanisme. Les anciens membres (`2368`, `graphs-b100`, `graphs-b104`, `241_1`,
+`2413_1`, `2413_2`, `graphs-decorate`, `2371`) sont tous **`conformant`** dans le
+balayage à neuf (`test/corpus/parity-probe.json`).
+
+**Mécanisme, et ce qui l’a clos.** L’ajusteur de splines (`Proutespline` ->
+`findMaxDev`, `src/pathplan/route.ts`) scinde une courbe de Bézier ajustée au
+point de route intérieur de déviation maximale. Sur un canal géométriquement
+symétrique, les déviations candidates diffèrent d’environ 1 ULP, de sorte que le
+gagnant est décidé par l’arithmétique du dernier bit. On avait attribué au
+portage un écart irréductible (« le `hypot` d’Apple ne concorde avec aucun
+`hypot` portable ») et on l’avait compensé par un départage tolérant,
+équivariant par translation. Cette attribution a été infirmée : l’égalité est
+décidée par l’arithmétique *exacte* de C, laquelle est reproductible. Le commit
+`cdf597bc` (`fix(pathplan): split splines at C's max-deviation point bit for
+bit`) l’a portée : le `hypot` de libm pour la distance (`route.c:448`), la
+comparaison stricte `>` de C (`route.c:139`) et la fusion `fp-contract` de clang
+pour l’évaluation de Bézier (`route.c:137-138`), les déterminants de `mkspline`
+(`route.c:181-183`), `dot` (459), `normv` (413), `B01` (488) et `B23` (494). Le
+départage tolérant a disparu ; le nœud de jonction de `241_0` est épinglé dans le repère de
+routage de C, car C n’est pas équivariant par translation sur de telles
+égalités. Cela a clos `2368`, `2371`, `2413_1`, `2413_2`, `graphs-b100`,
+`graphs-b104` et `graphs-decorate`.
+
+`241_1` n’était pas une égalité de `hypot` : il a été clos par `87347711`
+(`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
+regroupe toutes les arêtes à plat adjacentes partageant une arête principale en
+un seul appel à `make_flat_adj_edges` et teste la présence de ports sur tout le
+groupe ; une arête sans port, sœur d’une arête à port, est donc routée via le
+graphe auxiliaire. Le portage scindait le groupe selon la présence de ports et
+routait la sœur par `makeSimpleFlat`, dont le découpage tombe sur un autre point
+de `bezier_clip` (54.28 contre 54.46 en natif).
+
+Les deux correctifs ont été vérifiés par des balayages de corpus à neuf sans
+aucune régression (lignes du journal « T5 land » et « T6 land »,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Preuves avant le correctif (historique).** `2368` était le membre de
+référence. Son arc `376->76` était scindé vers le coin opposé à celui de C ; le
+graphe et les tracés C et portage de cet arc d’avant le correctif sont conservés
+pour mémoire.
 
 ::: details Définition du graphe (`2368.dot`)
 ```dot
@@ -541,79 +556,33 @@ digraph G {
 ```
 :::
 
-**Caractérisation.** L’ajusteur de splines (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) scinde une courbe de Bézier ajustée au point de route
-intérieur de déviation maximale. Lorsque le canal est symétrique, les deux
-points de scission candidats sont **exactement à égalité mathématiquement**, et
-le gagnant est alors décidé par un bruit d’annulation en virgule flottante
-d’environ 1e-14 dans une évaluation de Bézier en coordonnées absolues dont le
-**signe dépend de la position absolue**.
-
-La distance de déviation de C est le `hypot` de libm, et le `hypot` d’Apple sous
-macOS qui a généré l’oracle est une implémentation propriétaire qui ne
-concorde au bit près avec **aucun** `hypot` portable (mesuré face à lui dans le
-régime de coordonnées de graphviz, taux d’identité au bit : `Math.hypot` de V8
-≈ 63 %, un `hypot` à arrondi correct / de style Arm ≈ 84 %, le `hypot` de
-fdlibm ≈ 90 %, `sqrt(dx²+dy²)` ≈ 94 %). À cause de ce bruit d’ULP, **C
-lui-même n’est pas cohérent** : il scinde deux arcs *congruents par
-translation* vers des coins **opposés**. Dans `2368`, l’arc `376->76` est
-l’image en miroir de l’arc géométriquement identique `256->436` :
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-L’écart complet, superposé (zoom ×12 sur l’arc `376->76` / `to1`) — **vert = C
-Graphviz, rouge = @knowvah/dot-engine**. Les deux sont le même arc descendant
-peu profond entre les mêmes bords de nœuds ; ils diffèrent d’environ 1–2 pt au
-ventre (le point de contrôle médian de la courbe de Bézier), là où
-l’égalité de C a basculé vers le coin opposé :
-
-![Arc 2368 376->76 : vert = C, rouge = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Tout le reste concorde dans la tolérance — même boîte englobante (608×148),
-positions des nœuds, étiquettes, pointes de flèche et toutes les autres arêtes.
-Les rendus complets sont visuellement indiscernables :
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![2368 rendu par C Graphviz](/img/2368-c.png) | ![2368 rendu par @knowvah/dot-engine](/img/2368-port.png) |
-
-Le portage utilise un départage **équivariant par translation** (une véritable
-égalité se résout toujours au premier indice), de sorte qu’il dessine *chacun*
-de ces arcs de la même façon quelle que soit la position — il est cohérent avec
-lui-même, et concorde avec C sur les arcs où le bruit de C conserve aussi le
-premier candidat (par exemple `256->436`, et `241_0 5:ne->8:nw`), ne divergeant
-que là où le bruit de C bascule dans l’autre sens (`376->76`). Les extrémités,
-la cible de la pointe de flèche, les autres arêtes, tous les nœuds, les
-étiquettes et la boîte englobante concordent dans la tolérance ; seuls les
-points de contrôle intérieurs de l’arc concerné bougent (~1–2 pt au ventre).
-
-**Pourquoi c’est accepté.** Le `hypot` d’Apple n’est pas plus reproductible
-d’un moteur JS et d’un processeur à l’autre que le FMA/`pow` de **A1** — c’est
-la même contrainte de portabilité, simplement dans le routeur de splines de
-`dot`. Reproduire le choix de C, *dépendant de la position*, reviendrait à
-adopter le départage strict de C, qui vit dans une **primitive partagée** que
-traverse chaque arête routée : ce faisant, on échange la concordance de
-`376->76` contre de *nouveaux* écarts sur les arcs où C tombe de l’autre côté
-(cela fait régresser `241_0` et un cas d’oracle à arête plate avec `cnt=3`), un
-bilan nul qui sacrifie en plus l’équivariance par translation du portage. Nous
-conservons donc le routeur cohérent (équivariant). C’est un écart de `dot` borné
-et infra-perceptible — pas un bogue ouvert. Enquête complète :
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
 
 ### A4. Oracle dans un état reconnu comme défaillant (la famille init_rank / pathplan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Concernés :** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465).
+**Concernés (balayage graphviz 16.1) :** `1435` (structural-match, maxΔ 0.39 sur
+un point de contrôle de spline ; il valait 503 face à l’oracle 15.x — la baisse
+n’a pas été isolée par bissection) et `1581` (diverged : nombre d’enfants de
+premier niveau 39 contre 22, maxΔ 0).
 Les membres de la famille `1939` et `2825` sont **conformes** et ne portent
 aucune entrée, et `2470` et `graphs-structs` les ont rejoints le 2026-07-11
 (tous deux sont devenus conformes après l’intégration des correctifs ortho
 adjacency-spill/chancmpid, fmadd `polylineMidpoint` et arrondi half-even des
 égalités — le portage reproduit désormais exactement la sortie de récupération
 de l’oracle, y compris les arêtes perdues identiques) ; leurs entrées
-d’acceptation sont retirées.
+d’acceptation sont retirées. **`2796` et `2471` les ont rejoints avec
+graphviz 16.1** (tous deux `conformant` dans le balayage à neuf, entrées
+d’acceptation retirées) : le portage et l’oracle 16.1 s’accordent désormais sur la
+sortie de récupération de `init_rank`, y compris les arêtes perdues. La cause n’a
+pas été isolée par bissection (le portage dotgen 16.1 `48981bf0` et le correctif
+de consommation des arêtes perdues `54bd3b9b` sont les candidats) ; la
+description de `init_rank` ci-dessous est conservée comme mécanisme de la
+classe, et les deux identifiants sont épinglés comme conformes par le balayage de
+parité.
 
 `1581` et `2825` étaient des cas de récupération après plantage (mission
 fix-element-count-bucket) : des entrées issues de fuzzing/dégénérées pour
@@ -782,8 +751,13 @@ coordonnées concordent après le correctif decorate (T6).
 
 ### A6. Dépassement de capacité de `unsigned int` du canevas sur une entrée dégénérée {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Concerné :** `1314` — une entrée issue de fuzzing (`fontsize="991836031967s8"`)
-dont la taille de police absurde fait gonfler le dessin à environ 2.75e11 pt.
+**Concernés :** sfdp `2556` (une disposition NaN ; voir l’entrée de la piste du
+moteur). `1314` — une entrée issue de fuzzing (`fontsize="991836031967s8"`)
+dont la taille de police absurde fait gonfler le dessin à environ 2.75e11 pt — est **conforme** avec graphviz 16.1 et son
+acceptation est retirée : le portage réduit désormais la taille de page comme le
+fait la conversion `ROUND` native (`fe20f303`) et construit le cadrage de page
+dans l’ordre de `setup_page` (`eea9d21c`). Les paragraphes de mécanisme
+ci-dessous décrivent la différence d’origine.
 
 **Ce qui se passe.** C stocke `job->width` / `job->height` en **`unsigned int`**
 (`gvcjob.h:327-328`). Le `ROUND(...)` de cette énorme taille en points
@@ -871,72 +845,47 @@ l’arrondi de l’enveloppe de contrôle noté dans
 
 ---
 
-### A8. Arrondi `fp-contract`/FMA contre IEEE strict (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. Arrondi `fp-contract`/FMA contre IEEE strict (`dot`) — CLOS {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**Statut (2026-10-12) : clos.** Plus aucun identifiant du corpus n’est accepté
+sous cette classe ; la section est conservée comme documentation historique. Les
+deux instances connues sont **`conformant`** : `2620` (2026-07-11) et `2646`
+(2026-10-12).
 
 **Classe.** clang arm64 compile le binaire de l’oracle avec
 `-ffp-contract=on`, fusionnant certaines séquences multiplication-addition en
 instructions FMA uniques ; le portage s’exécute sur V8, qui applique l’arrondi
-IEEE-754 strict et ne peut pas émettre de `fma`. Sur des entrées identiques au
+IEEE-754 strict. Sur des entrées identiques au
 bit près, les deux divergent de 1 à 2 ULP à l’endroit où le compilateur a choisi
-de contracter l’expression. Le côté portage est toujours le résultat IEEE-754
-strict ; le côté oracle est toujours le résultat contracté en FMA. C’est une
-contrainte de portabilité compilateur/environnement d’exécution située sous la
-sémantique du code source C, et non un défaut logique du portage — irréductible
-sans émuler en logiciel les choix précis de contraction de clang. Deux
-instances sont connues, à deux endroits différents, avec deux mécanismes
+de contracter l’expression. Deux instances étaient connues, à deux endroits différents, avec deux mécanismes
 d’amplification différents :
 
-- **2646** — l’ULP naît dans la résolution cubique `points2coeff`/`solve3` de
-  `Proutespline` et fait basculer directement le nombre de racines de l’ajusteur
+- **2646** — l’ULP naissait dans la résolution cubique `points2coeff`/`solve3` de
+  `Proutespline` et faisait basculer directement le nombre de racines de l’ajusteur
   de splines.
-- **2620** — l’ULP naît dans la boucle d’étendue des sommets de polygone de
-  `poly_init` (dimensionnement des nœuds) et est amplifié en aval par la
+- **2620** — l’ULP naissait dans la boucle d’étendue des sommets de polygone de
+  `poly_init` (dimensionnement des nœuds) et était amplifié en aval par la
   troncature entière fidèle de `ortho` à chaque relaxation, jusqu’à faire
   basculer une égalité de coût entre corridors du labyrinthe.
 
-**Concerné :** `2646` (structural-match, maxΔ 42.09 sur 3 des 21 216 arêtes :
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — toutes des
-routes longues en mode smode de ports de record `:c->:nb_part`). Cousin de
-**A3** : les deux classes sont des égalités irréductibles de portabilité en
-virgule flottante à l’intérieur de `Proutespline`, mais le mécanisme est
-distinct — un artefact `fp-contract` du compilateur, et non le `hypot` de libm.
-
-**Ce qui diffère.** Sur les trois arêtes, seul le dernier appel à
-`routesplines` (un tronçon droit vers le port de tête) diverge. Son extrémité se
-trouve exactement, au bit près, sur la paroi inférieure du polygone barrière,
-avec sa tangente parallèle à cette paroi (`evs[1]=(1,-1.22e-16)`), si bien que
-chaque candidat de `splinefits` est tangent à la barrière en `t=1` — une quasi
-racine double de la cubique d’intersection. `points2coeff` calcule cette
-cubique avec une annulation catastrophique (des termes d’environ ~7446 qui
-s’effondrent à ~0.099). L’oracle (clang/arm64, `-ffp-contract=on`) contracte
-`v3 + 3*v1 - (v0 + 3*v2)` en multiplications-additions fusionnées, tandis que V8
-applique un arrondi IEEE strict — les deux divergent d’environ 9.1e-13 sur des
-**entrées identiques au bit près**, et ce bruit inverse le signe du
-discriminant de `solve3` : C trouve 1 racine (866.7, à l’intérieur du segment) ;
-le portage en trouve 3, avec une racine partenaire parasite à
-`t=0.9999975 < 1-EPSILON2`. La racine parasite déclenche une itération de
-division par deux de `a` supplémentaire, ce qui change d’un facteur 2 (dans un
-sens ou dans l’autre selon les 3 arêtes) la magnitude de la tangente du dernier
-morceau, produisant le maxΔ 42.09 après découpage (26 différences SVG).
-
-**Pourquoi c’est accepté (irréductibilité prouvée par une expérience
-contrôlée).** Les six appels à `routesplines` ont été exportés des deux côtés —
-boîte, polygone, `PL`, départ, arrivée et `evs` sont identiques à l’octet, tout
-comme la spline de sortie de l’appel précédent (non final) ; la seule divergence
-se situe dans le `solve3` du dernier appel. Un banc autonome en C pur a isolé la
-variable unique : compiler avec `-ffp-contract=off` reproduit le **portage** au
-bit près sur les 3 arêtes ; la contraction par défaut (`on`) reproduit
-l’**oracle** au bit près sur les 3 arêtes. Le portage s’accorde donc déjà avec
-le C en IEEE-754 strict ; la divergence est entièrement le choix de contraction
-FMA du compilateur de l’oracle, sous la sémantique du code source C — il n’y a
-aucune infidélité au niveau du source à corriger. Un correctif ciblé (émuler à
-la main la contraction dans `points2coeff`) a été essayé et réfuté : il corrige
-2 des 3 arêtes mais pas la troisième, dont la bascule naît dans la propre
-contraction interne de `solve3`. Un correctif complet exigerait une émulation
-logicielle du FMA dans tout l’ajusteur de splines — un coût en boucle critique
-avec un rayon d’impact d’arrondi sur tout le corpus pour un gain infra-pixel
-sur 3 arêtes. Diagnostic complet :
-`plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Clos : `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Trois tronçons longs en mode smode (`edge2575`,
+`edge3905`, `edge15467`) se terminent sur une paroi de barrière avec une
+tangente parallèle, de sorte que la cubique d’intersection de `splinefits` a une
+quasi racine double. `points2coeff` construit cette cubique par annulation
+catastrophique ; l’oracle fusionne `route.c:397-398` et `solvers.c:43`, si bien
+que le portage en IEEE strict obtenait un nombre de racines de `solve3`
+différent, un croisement parasite et une division par deux de `a` supplémentaire
+(maxΔ 42.09). La conclusion antérieure selon laquelle c’était irréductible
+(« émulation logicielle du FMA dans tout l’ajusteur de splines », avec un
+correctif partiel réfuté) a été infirmée : les sites de contraction sont finis et
+énumérables. Le portage reflète désormais chaque contraction dans `points2coeff`
+(`route.c:397-398`), `splineintersectsline` (371-372, 374, 360-361, 383-384),
+`solve3` (`solvers.c:41, 43, 46`) et son `solve2` inliné (80, 85), et
+`solve3`/`solve2`/`solve1` sont re-portés à la forme de C. Les 42 432 appels
+capturés à `Proutespline` de `2646` sont identiques au bit près à l’oracle
+(ligne du journal « T7 land »). Diagnostic d’origine (toujours valable pour le
+mécanisme) : `plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Concerné (historique) :** `2620` (était structural-match, maxΔ 585 ; 423
 différences sur 24 chemins d’arêtes + 22 pointes de flèche). **Devenu conforme
@@ -1015,12 +964,26 @@ entrée inverse son signe, la diagonale de la triangulation de Delaunay
 contrainte bascule, et le polygone de couloir qui fait échouer `Pshortestpath`
 dans l’oracle (« destination point not in any triangle » → repli en spline
 simple) réussit dans le portage (ou inversement). Les splines obtenues diffèrent
-d’environ 0.2–0.5pt. Cousin de **A3**/**A8** : une contrainte irréductible de
+d’environ 0.2–0.5pt. Cousin des **A3**/**A8** (désormais closes) : une contrainte irréductible de
 portabilité en virgule flottante située sous la sémantique du source C — égaler
 exigerait de reproduire en JS l’arrondi exact des `sin`/`cos` de libm d’Apple.
 
-**Concernés :** `241_0` (circo Δ≈0.2 / canevas twopi Δ≈9 via la bascule de
-couloir sur l’arête `5:ne->8:nw`) ; `2343`, `2239`, `share-b29`, `windows-b29`
+**Réévaluation 16.1.** La géométrie du couloir multispline manquait la
+contraction FMA de clang (radicande du coin d’ellipse, `mkCtrlPts`, `DIST` =
+sqrt(fmadd), le produit scalaire de `line_intersect`) ; `b77b2703` (`fix(neato):
+mirror fma contraction in multispline routing geometry`) l’a reflétée. `241_0`
+de twopi et de neato — que cette classe avait attribués à l’égalité
+cocirculaire ci-dessous — sont devenus **conformes** (acceptations retirées), et
+`42` de sfdp s’est révélé ne comporter aucune égalité (c’est de la dérive A1,
+voir [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` de circo, fdp et sfdp
+diverge encore, avec des résidus inchangés ou réduits ; leur attribution à
+l’égalité ci-dessous est antérieure à `b77b2703` et n’a **pas été revérifiée par
+injection de positions** depuis que ce correctif a montré cette même attribution
+erronée pour twopi/neato.
+
+**Concernés :** `241_0` (circo Δ≈0.2 via la bascule de couloir sur l’arête
+`1->2` ; `241_0` de fdp et de sfdp sur les pistes de moteur ci-dessous) ; `2343`,
+`2239`, `share-b29`, `windows-b29`
 (twopi, 1 à 2 différences de position d’étiquette d’arête chacun — l’ULP de
 libm naît dans la trigonométrie des sommets unitaires de `poly_init`
 (`hypot`/`atan2`/`sin`), place la hauteur calculée d’un nœud un ULP au-delà du
@@ -1189,36 +1152,47 @@ balayage avec des écarts en x concordant à l’octet, bouclant la chaîne caus
 Deux autres instances de piste de moteur ont fait l’objet d’une analyse de cause
 racine et ont été acceptées le 2026-07-11 (analyse complète :
 `.agent-notes/circo-edge-tail-rca.md`) : twopi `241_0` (6 différences
-d’opérations de dessin — le cousin de l’entrée circo ci-dessus : la même égalité
-d’incercle cocirculaire du CDT, inversée par 1 ULP des `sin`/`cos` de libm, fait
-réussir le couloir multispline du portage avec une spline de 14 points là où le
-build natif retombe sur un routage simple de 8 points ; écarts de points
-< 0.07pt) et circo `windows-tree` (10 différences d’opérations de dessin sur une
+d’opérations de dessin, attribuées alors à la même égalité d’incercle
+cocirculaire du CDT que l’entrée circo ci-dessus ; **retirée avec graphviz 16.1**
+— elle est conforme depuis `b77b2703`, la bascule de couloir de 14 points contre
+8 points était donc la contraction FMA non reflétée, et non une égalité) et circo
+`windows-tree` (10 différences d’opérations de dessin sur une
 arête d’éventail — la trigonométrie de placement de circo place `node2.y` un
 simple ULP au-dessus de `node8.y` autour de la valeur exactement symétrique
 18.0, et la sélection du port de tête dyna de `closestSide` bascule TOP/BOTTOM à
 cette égalité exacte ; les positions et boîtes des nœuds sont par ailleurs
 identiques au bit près à l’oracle).
 
-**Piste du moteur sfdp — égalités FP sur les arêtes (`42`, `241_0`).**
+**Piste du moteur sfdp — égalité FP sur les arêtes (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> La piste xdot du moteur sfdp (`parity-sfdp.json`,
 `dot -Ksfdp -Txdot` natif, ±0.5) fait apparaître l’égalité d’incercle
 cocirculaire du CDT dès lors que les positions natives exactes d’avant routage
 sont injectées (la divergence n’est donc PAS une dérive itérative — voir la
 classe A1-drift — mais une égalité de prédicat discrète) :
 
-- `42` et `241_0` — égalité d’incercle cocirculaire du CDT (le couloir
-  multispline). Avec les positions injectées, le résidu est une **bascule du
-  nombre de segments** : `42` `opCount 5 vs 9` (arête 0->3) / `ptCount 32 vs 26`
-  (3->7) ; `241_0` `ptCount 14 vs 8` (arête 3->2) — la diagonale de Delaunay
-  contrainte du portage bascule par rapport à l’oracle, si bien que le couloir
-  multispline réussit avec une spline de N points là où le build natif retombe
-  sur un tracé simple plus court (ou inversement), exactement comme l’entrée
-  twopi/circo `241_0` ci-dessus. Le portage émule déjà la contraction `fmadd`
+- `241_0` — attribuée à l’égalité d’incercle cocirculaire du CDT (le couloir
+  multispline ; non revérifiée après `b77b2703`, voir la réévaluation 16.1
+  ci-dessus). Le résidu est une **bascule du nombre de segments** : 7 différences
+  d’opérations de dessin sur l’arête 1->2, `ptCount 8 vs 20` (20 différences
+  avant `b77b2703`) — le couloir réussit avec une spline de N points là où le
+  build natif retombe sur un tracé simple plus court (ou inversement), comme
+  dans l’entrée circo `241_0` ci-dessus. Le portage émule déjà la contraction `fmadd`
   d’arm64 dans le prédicat d’incercle/`ccw` (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) et utilise un Delaunay à incercle robuste ; le résidu est
   le 1 ULP entre `sin`/`hypot` de V8 et de libm d’Apple dans l’entrée du
   prédicat, qu’aucun code portable ne reproduit.
+
+> **`42` de sfdp reclassé de A9 à A1-drift (synchronisation graphviz 16.1).** Il
+> était répertorié ici comme une égalité d’incercle CDT/libm. La mission a
+> constaté autre chose ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)) : l’ancienne
+> bascule de couloir était un mauvais portage FMA côté portage dans la géométrie
+> du couloir multispline, corrigé par `b77b2703` (`fix(neato): mirror fma
+> contraction in multispline routing geometry`) ; avec les positions natives
+> injectées, le portage reproduit désormais exactement le xdot natif. Le résidu
+> restant (décalages de nœuds de 0.06-0.65 pt) est de la dérive itérative,
+> amorcée par un désaccord de 1 ULP entre le `pow(dist, 2)` de libm d’Apple et le
+> `pow` ARM du portage au niveau le plus grossier, amplifié par les niveaux plus
+> fins — A1 (voir [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095` reclassé de A9 à A1-drift (2026-07-22).** Il était auparavant
 > répertorié ici comme « le cousin hypot » (dérive inférieure à 0.7pt sur les
@@ -1240,8 +1214,10 @@ représentatives de déviation d’arête à plat montre un désaccord de 1 ULP 
 cas sur 6 (Δ 7.1e-15 et 5.7e-14) — le fil du rasoir du seuil de scission qui
 fait basculer le nombre de subdivisions. Irréductible : aucun `hypot` portable ne
 reproduit celui de libm d’Apple (le précédent d’`arm-pow.ts` pour la même
-frontière). Accepté au niveau de la piste du moteur via
-`accepted-divergences-engines.json` (`sfdp.42`, `sfdp.241_0`).
+frontière). `sfdp.241_0` est accepté au niveau de la piste du moteur via
+`accepted-divergences-engines.json`. `sfdp.42` ne relève **pas** de cette classe :
+son entrée de registre est A1 (`comparisons/sfdp-42.md`), et la sonde ci-dessus
+ne l’a pas expliqué.
 
 La piste xdot du moteur **fdp** (`parity-fdp.json`, `dot -Kfdp -Txdot` natif,
 ±0.5) fait apparaître LA MÊME égalité cocirculaire du CDT sur le même graphe,
@@ -1249,10 +1225,11 @@ La piste xdot du moteur **fdp** (`parity-fdp.json`, `dot -Kfdp -Txdot` natif,
 résidu est de 11 différences numériques d’`unfilled_bezier` limitées à une seule
 arête (`0->1#0`, maxΔ 3.39pt). Les positions des nœuds étant injectées à
 l’identique, la divergence est en aval, dans le couloir multispline de pathplan
-— la même égalité d’incercle à 1 ULP de libm que pour twopi/circo/sfdp `241_0`
-(incercle en rationnels exacts 185/185 ci-dessus). Les leviers sont déjà
+— la même égalité d’incercle à 1 ULP de libm que pour circo/sfdp `241_0`
+(incercle en rationnels exacts 185/185 ci-dessus ; 11 différences inchangées par
+`b77b2703` — non revérifié par injection). Les leviers sont déjà
 appliqués (`src/pathplan/triang.ts` fmadd, `Math.hypot` à
-`src/pathplan/route.ts:198`) ; l’égalité est irréductible. Accepté via
+`src/pathplan/route.ts:198`) ; l’égalité est traitée comme irréductible. Accepté via
 `accepted-divergences-engines.json` `fdp.241_0`. En revanche, le `2095` de fdp
 relève de **A1-drift, et non de A9** : injecter l’unique nœud au nom vide (après
 correction de l’injecteur d’attribution pour qu’il accepte les nœuds nommés
@@ -1261,6 +1238,30 @@ non injecté qui entraînait ses arêtes incidentes. L’acceptation de `2095` p
 sfdp relevait du même angle mort — une nouvelle régénération de l’attribution
 sfdp (2026-07-22) avec l’injecteur corrigé a confirmé qu’il s’injecte lui aussi à
 0, et son acceptation a été retirée (voir la note `2095 reclassé` ci-dessus).
+
+---
+
+### A10. Limite de taille de `Map` de V8 dans l’empaquetage de polyominos (`2784`, cinq moteurs à empaquetage) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Concerné :** `2784` sur `circo`, `twopi`, `neato`, `fdp` et `sfdp`, dans tous
+les formats de sortie. Sur `dot`, il est `conformant`.
+
+**Ce qui se passe.** `lib/pack/pack.c` consigne les cellules qu’occupe une
+composante dans un `PointSet`. Pour `2784` (un unique nœud de 3e16 pt de haut,
+`splines="ortho"`), l’arithmétique entière fidèle de `step`/placement exige
+2 011 656 764 cellules ; la version native 16.1.0 se termine en 482 s avec
+67.3 Go résidents (101 Go au pic). Le `PointSet` du portage est un `Map`
+JavaScript, que V8 plafonne à 2^24 entrées ; il lève donc
+`Map maximum size exceeded`.
+
+**Pourquoi c’est accepté.** Une limite d’exécution située sous le code, et non
+une lacune logique ; la cause est l’arithmétique fidèle de `910be2a2` (avant
+elle, le portage calculait une petite disposition erronée et n’atteignait jamais
+la limite). Le résultat accepté est une erreur levée plutôt qu’un verdict
+`diverged`, et les registres par moteur n’acceptent que les lignes `diverged` :
+aucune entrée de registre n’existe donc, et les balayages continuent de
+répertorier `2784` parmi leurs fautes d’erreur du portage. Preuves :
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -44,8 +44,9 @@ Die **maschinenlesbare** maßgebliche Quelle dafür, welche Graphen *akzeptiert*
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 Die Werkzeuge verknüpfen sie zur Berichtszeit: `PARITY-dot.md` trennt **akzeptierte
 Abweichungen** vom **nachverfolgten** Rückstand, und das Regel-Gate bezieht seine
-Allowlist daraus. Die folgenden Prosa-Abschnitte erklären jeden Eintrag (A1 und A3
-sind aktiv; A2 ist geschlossen und als Historie aufbewahrt); ein CI-Test
+Allowlist daraus. Die folgenden Prosa-Abschnitte erklären jeden Eintrag (A1 ist
+aktiv; A2, A3 und A8 sind geschlossen und als Historie aufbewahrt; A10 ist eine
+Akzeptanz eines Portierungsfehlers, die kein Register ausdrücken kann); ein CI-Test
 (`accepted-divergences.test.ts`) stellt sicher, dass jeder akzeptierte Graph
 weiterhin abweicht, damit diese Liste nicht unbemerkt veraltet.
 
@@ -75,8 +76,8 @@ Byte-Latte validiert.
 
 **Betroffen:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (die iterativen,
 Federmodell-Engines). Das *Layout* der `dot`-Engine ist von diesem Determinismus
-iterativer Modelle **nicht** betroffen; eine separate, eng begrenzte
-Gleitkomma-Abweichung des `dot`-Spline-Routings wird unten in **A3** behandelt.
+iterativer Modelle **nicht** betroffen; die früheren Gleitkomma-Abweichungen des
+`dot`-Spline-Routings (A3, A8) sind geschlossen und werden unten als Historie aufbewahrt.
 
 > **Geltungsbereich, historisch eine unvermessene Einschränkung — jetzt teilweise
 > vermessen.** Der **Haupt-SVG-Survey der dot-Engine** (`test/corpus/survey.ts`) ist
@@ -114,8 +115,8 @@ nativen Orakel überein —, aber eine exakte, koordinatengleiche Reproduktion i
 mögliche Abweichung liegt in den feinen Knotenkoordinaten.
 
 **Warum akzeptiert.** Das ist eine harte Randbedingung der Ausführung in JS, keine
-Designentscheidung — aus derselben Familie wie die Apple-`hypot`-Empfindlichkeit
-von A3. Es gibt keine Möglichkeit, bitidentische Ergebnisse bei transzendenten
+Designentscheidung — aus derselben Familie wie die (inzwischen geschlossenen)
+`hypot`-/FMA-Empfindlichkeiten von A3/A8. Es gibt keine Möglichkeit, bitidentische Ergebnisse bei transzendenten
 Funktionen/FMA über alle Ziel-Laufzeiten hinweg zu garantieren; eine Byte-Latte
 wäre daher nicht nur teuer, sondern untestbar. Um A1 zu **bewerten** (statt nur
 mit einem Vorbehalt zu versehen), war ein eigener Paritäts-Track mit nativer
@@ -126,11 +127,12 @@ der Referenzplattform“ **einzugrenzen**, niemals den plattformübergreifenden
 Vorbehalt zu beseitigen; die bisherigen Ergebnisse (unten) halten diese Grenze
 ein: `circo`/`twopi`/`osage` haben jeweils eine Handvoll echter A1/A9-Fälle zutage
 gefördert und ihre Ursachen geklärt, und `neato`/`fdp`/`sfdp` liegen jetzt bei
-90.8/77.5/68.0 % innerhalb von 0.5pt gegenüber dem nativen Binary über das
-910-Item-Universum — die portierte Arithmetik (`fma.ts`, `arm-pow.ts`, passender
-PRNG) trägt also für die meisten Graphen —, und jede verbleibende abweichende ID
-wird einzeln per Injection zugeordnet (Solver-Drift vs. Portierungsfehler),
-statt als nicht triagierte Drift zu verbleiben; siehe die Charakterisierung der
+90.3/96.5/68.1 % innerhalb von 0.5pt gegenüber dem nativen Binary über das
+929-Item-Universum (graphviz 16.1.0) — die portierte Arithmetik (`fma.ts`,
+`arm-pow.ts`, passender PRNG) trägt also für die meisten Graphen —, und jede
+abweichende ID der 910-Item-Roster wird einzeln per Injection zugeordnet
+(Solver-Drift vs. Portierungsfehler), statt als nicht triagierte Drift zu verbleiben;
+die 19 Roster-Ergänzungen sind noch nicht zugeordnet. Siehe die Charakterisierung der
 iterativen Engines unten.
 
 **Engine-Track-Akzeptanz: twopi-Pfeilfamilie.** <a id="a1-twopi-arrows-family"></a>
@@ -206,14 +208,20 @@ eigenen Abschnitt „Iterative engines (±0.5 characterization)“ von
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 dar, ausdrücklich **nicht** vergleichbar mit den deterministischen
 ±0.01-Bestehensquoten an anderer Stelle in diesem Dokument. Aktuelle Zählwerte
-(910-Item-Universum; die Bestehensquote lässt Eingaben aus, die das C-Orakel nicht
-rendern kann, siehe [Konformität](./conformance.md)):
+gegenüber graphviz 16.1.0 (929-Item-Universum; die Bestehensquote lässt Eingaben aus,
+die das C-Orakel nicht rendern kann, siehe [Konformität](./conformance.md)):
 
-| Engine | untersucht | innerhalb ±0.5pt | nicht konform (alle zugeordnet, akzeptiert) | Portierungsfehler / Timeout | Orakelfehler |
+| Engine | untersucht | innerhalb ±0.5pt | nicht konform | Portierungsfehler / Timeout | Orakelfehler |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(Die Zeilen für `neato` und `sfdp` stammen aus Durchläufen, die vor dem abschließenden
+erneuten Durchlauf von `graphs-decorate`, `1314`, `2784` und `2371` bereitgestellt
+wurden; sie können sich um diese IDs verschieben. Die Bestehensquote von `fdp` stieg
+gegenüber 77.5 %, weil der frühere eingecheckte Durchlauf dem Portierungsstand der
+vorherigen Mission vorausging.)
 
 (Der erste Durchlauf am 2026-07-11 mit 762 Items maß 263/311/260 innerhalb von
 ±0.5pt — der Sprung auf die aktuellen Quoten kam von seither eingespielten
@@ -221,14 +229,17 @@ Korrekturen je ID, vor allem von der nicht portierten `user_pos`/`P_SET`-Behandl
 in neato, der Konsolidierung der Engine-Initialisierung und der
 `setEdgeType`-Korrektur Makro vs. Funktion.)
 
-Anders als beim ersten Durchlauf ist inzwischen jede abweichende Zeile einzeln
-zugeordnet: Das Injection-Harness (`test/corpus/attribute-divergence.ts`) gibt das
+Anders als beim ersten Durchlauf war jede abweichende Zeile der 910-Item-Roster einzeln
+zugeordnet (die 19 IDs, die in der 929-Item-Roster neu sind, sind noch nicht zugeordnet;
+sie sind in der T13-Übergabe als neu sichtbar aufgeführt): Das Injection-Harness
+(`test/corpus/attribute-divergence.ts`) gibt das
 `ND_pos` des nativen Orakels vor dem Routing in die Portierung und vergleicht neu,
 und jede aktuelle abweichende ID ist entweder `drift-exonerated` (Routing und
 Ausgabe der Portierung reproduzieren das Orakel exakt, sobald die Solver-Drift
 entfernt ist) oder eines der wenigen gesondert akzeptierten Einzel-Restfälle
 (der CDT-Incircle-Gleichstand von `241_0` bei allen drei Engines, neato `2239`,
-sfdp `42`/`2556`). Die Klassen-Akzeptanz unten formalisiert die entlastete Menge;
+sfdp `2556`; sfdp `42` ist A1-Drift, siehe
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). Die Klassen-Akzeptanz unten formalisiert die entlastete Menge;
 aktuelle Zählwerte in den Dashboards je Engine
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
@@ -442,42 +453,50 @@ Zeichenkette zielende Korrektur das Risiko barg, andere für einen nicht
 wahrnehmbaren Gewinn zu verschlechtern.
 :::
 
-### A3. `hypot`-Gleichstandsauflösung im Spline-Routing (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. `hypot`-Gleichstandsauflösung im Spline-Routing (`dot`) — GESCHLOSSEN {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Betroffen:** `dot`-Graphen mit einem **geometrisch symmetrischen**
-Kantenrouting-Kanal — typischerweise ein kurzer, symmetrischer Bogen einer flachen
-Kante. Beobachtetes Beispiel: `2368`, das bei *structural-match* bleibt (maxΔ ≈ 10.2 pt
-an **einer** Kante, `376->76`). Dieselbe Gleichstandsauflösung tritt auch bei einer
-**langen** (mehrrangigen) Kante in einen Hub mit hohem Eingangsgrad auf, wenn der
-Korridor exakt spiegelsymmetrisch ist: `graphs-b100` / `graphs-b104` (identische
-Quelle) weichen um maxΔ 20 (genau eine Rangzeile) am einzigen Knoten von
-`Node23730->Node23729` ab — jede Knotenposition und die gesamte vorgelagerte
-Box-/Polygon-/Taut-Path-Struktur ist byte-identisch zu C; nur die ca.-1-ULP-Wahl von
-`findMaxDev`, welcher spiegelsymmetrische innere Punkt zum Bezier-Knoten wird,
-unterscheidet sich. Die Form mit kurzer flacher Kante tritt auch als `241_1` auf
-(structural-match, maxΔ ≈ 2.4 pt) — das abweichende Geschwister des am Orakel
-festgemachten `241_0`, bei dem C-Rauschen stattdessen den ersten behält. Dieselbe
-Gleichstandsauflösung erzeugt bei einer beschrifteten 2-Zyklus-Rückkante eine
-Spaltung des Schlitzkorridors in `2413_1` (structural-match, maxΔ 67.65) und
-`2413_2` (maxΔ ≤99.55, sobald die T11-swapBezier-reverse-Korrektur eingespielt ist —
-bis dahin wird der gemeldete maxΔ 1922.26 der Datei von einem unabhängigen, separat
-nachverfolgten Fehler dominiert) sowie bei einer einzelnen beschrifteten Kante innerhalb
-eines Clusters in `graphs-decorate` (maxΔ 43.54); in jedem Fall liegen die beiden
-Kandidaten für die Spaltungsecken innerhalb von 5.7e-13 (Familie 2413) / 3e-14
-(decorate) beieinander, bevor das positionsabhängige Rauschen des Apple-`hypot` einen
-Sieger bestimmt. `2371` (structural-match, maxΔ 16.8) zeigt denselben Fingerabdruck an
-zwei unabhängigen Kanten (`g[9263]` `r6837mid--r9687mid`, `g[23859]`
-`r38mid--r8699mid`): Die Portierung gibt bei beiden die exakte Spiegelung der
-Kontrollpunktfolge des Orakels aus, mit um dasselbe Δ16.8 gekipptem Knoten-y
-(obere/untere Spaltungsanteile vertauscht). Seine Herkunft wird mit
-Konfidenz **MEDIUM** angegeben statt mit der Konfidenz CONFIRMED der übrigen
-Mitglieder: `2371` packt ~199 Komponenten, was die pathplan-lokalen Koordinaten von den
-Seitenkoordinaten entkoppelt, sodass der Gleichstand in drei Instrumentierungsversuchen
-nicht live mit `route.ts:209` korreliert werden konnte; ein Ursprung in der
-Straight-Mode-Segmentierung oder im `recover_slack` nach dem Clipping ist nicht
-vollständig ausgeschlossen. Vollständige Diagnose:
-`plans/residual-cleanup/analysis/2371-mirror.md`. Die meisten gerouteten Kanten sind
-nicht betroffen.
+**Status (2026-10-12): geschlossen.** Unter dieser Klasse wird keine Korpus-ID mehr
+akzeptiert; der Abschnitt bleibt als historische Dokumentation des Mechanismus
+erhalten. Die früheren Mitglieder (`2368`, `graphs-b100`, `graphs-b104`, `241_1`,
+`2413_1`, `2413_2`, `graphs-decorate`, `2371`) sind im frischen Durchlauf alle
+**`conformant`** (`test/corpus/parity-probe.json`).
+
+**Mechanismus und was ihn geschlossen hat.** Der Spline-Fitter (`Proutespline` ->
+`findMaxDev`, `src/pathplan/route.ts`) teilt einen angepassten Bezier am inneren
+Routenpunkt mit maximaler Abweichung. In einem geometrisch symmetrischen Kanal
+unterscheiden sich die Abweichungen der Kandidaten um ~1 ULP, sodass die Arithmetik
+des letzten Bits den Gewinner bestimmt. Der Portierung war eine nicht reduzierbare
+Lücke zugeschrieben worden („Apple-`hypot` stimmt mit keinem portablen `hypot`
+überein“), und sie wurde mit einer toleranten, translationsäquivarianten
+Gleichstandsauflösung kompensiert. Diese Zuschreibung wurde widerlegt: Der Gleichstand
+wird von der *exakten* Arithmetik von C entschieden, die reproduzierbar ist. Commit
+`cdf597bc` (`fix(pathplan): split splines at C's max-deviation point bit for bit`) hat
+sie portiert: libm-`hypot` für die Distanz (`route.c:448`), den strikten
+`>`-Vergleich von C (`route.c:139`) und die `fp-contract`-Fusion von clang bei der
+Bezier-Auswertung (`route.c:137-138`), die `mkspline`-Determinanten
+(`route.c:181-183`), `dot` (459), `normv` (413), `B01` (488) und `B23` (494). Die
+tolerante Gleichstandsauflösung ist entfernt; der Spline-Knoten von `241_0` ist im
+Routing-Rahmen von C festgelegt, weil C bei solchen Gleichständen nicht
+translationsäquivariant ist. Das hat `2368`, `2371`, `2413_1`, `2413_2`,
+`graphs-b100`, `graphs-b104` und `graphs-decorate` geschlossen.
+
+`241_1` war kein `hypot`-Gleichstand: Es wurde durch `87347711`
+(`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`) geschlossen. C
+fasst alle benachbarten flachen Kanten, die eine Hauptkante teilen, in einem Aufruf von
+`make_flat_adj_edges` zusammen und prüft Ports über die gesamte Gruppe, sodass eine
+portlose Schwesterkante einer Kante mit Port über den Hilfsgraphen geroutet wird. Die
+Portierung teilte die Gruppe nach Vorhandensein von Ports und routete die Schwesterkante
+über `makeSimpleFlat`, dessen Clipping an einem anderen `bezier_clip`-Punkt landet
+(54.28 vs. nativ 54.46).
+
+Beide Korrekturen wurden mit frischen Korpus-Durchläufen ohne Regressionen verifiziert
+(Journalzeilen „T5 land“ und „T6 land“,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Belege vor der Korrektur (historisch).** `2368` war das Referenzmitglied. Sein Bogen
+`376->76` wurde zur gegenüberliegenden Ecke hin geteilt als in C; der Graph und die
+Pfade von C und Portierung vor der Korrektur für diesen Bogen werden zur Dokumentation
+aufbewahrt.
 
 ::: details Graphdefinition (`2368.dot`)
 ```dot
@@ -517,76 +536,31 @@ digraph G {
 ```
 :::
 
-**Charakterisierung.** Der Spline-Fitter (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) teilt einen angepassten Bezier am inneren Routenpunkt mit
-maximaler Abweichung. Ist der Kanal symmetrisch, sind die beiden Kandidaten für den
-Teilungspunkt ein **exakter mathematischer Gleichstand**, und den Sieger bestimmt dann
-ca. 1e-14 großes Auslöschungsrauschen im Gleitkomma einer Bezier-Auswertung in
-absoluten Koordinaten, dessen **Vorzeichen von der absoluten Position abhängt**.
-
-Die Abweichungsdistanz in C ist das libm-`hypot`, und das macOS-Apple-`hypot`, das das
-Orakel erzeugt hat, ist eine proprietäre Implementierung, die mit **keinem** portablen
-`hypot` bitgenau übereinstimmt (gemessen dagegen im Koordinatenbereich von Graphviz,
-bitidentische Quoten: V8-`Math.hypot` ≈ 63 %, ein korrekt gerundetes / Arm-artiges
-`hypot` ≈ 84 %, fdlibm-`hypot` ≈ 90 %, `sqrt(dx²+dy²)` ≈ 94 %). Wegen dieses
-ULP-Rauschens ist **C selbst nicht konsistent**: Es teilt zwei
-*translationskongruente* Bögen zu **entgegengesetzten** Ecken hin. In `2368` ist der
-Bogen `376->76` das Spiegelbild des geometrisch identischen Bogens `256->436`:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-Die gesamte Abweichung, überlagert (12-fache Vergrößerung auf den Bogen `376->76` /
-`to1`) — **grün = C Graphviz, rot = @knowvah/dot-engine**. Beide sind derselbe flache
-Abwärtsbogen zwischen denselben Knotenrändern; sie unterscheiden sich um ca. 1–2 pt am
-Bauch (der mittlere Bezier-Kontrollpunkt), wo der Gleichstand bei C zur
-entgegengesetzten Ecke hin entschieden wurde:
-
-![2368, Bogen 376->76: grün = C, rot = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Alles andere stimmt innerhalb der Toleranz überein — gleiche Bounding Box (608×148),
-Knotenpositionen, Labels, Pfeilspitzen und alle anderen Kanten. Die vollständigen
-Renderings sind optisch nicht unterscheidbar:
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![2368, gerendert von C Graphviz](/img/2368-c.png) | ![2368, gerendert von @knowvah/dot-engine](/img/2368-port.png) |
-
-Die Portierung verwendet eine **translationsäquivariante** Gleichstandsauflösung (ein
-echter Gleichstand wird immer zum ersten Index aufgelöst), zeichnet also *jeden*
-solchen Bogen unabhängig von der Position gleich — sie ist in sich konsistent und
-stimmt mit C bei den Bögen überein, bei denen das Rauschen von C ebenfalls den ersten
-behält (z. B. `256->436` und `241_0 5:ne->8:nw`), und weicht nur dort ab, wo das
-Rauschen von C in die andere Richtung kippt (`376->76`). Endpunkte, Pfeilspitzenziel,
-die übrigen Kanten, alle Knoten, Labels und die Bounding Box stimmen innerhalb der
-Toleranz überein; nur die inneren Kontrollpunkte des einen Bogens verschieben sich
-(~1–2 pt am Bauch).
-
-**Warum akzeptiert.** Das `hypot` von Apple ist über JS-Engines und CPUs hinweg nicht
-reproduzierbarer als FMA/`pow` in **A1** — es ist dieselbe Portabilitätsbeschränkung,
-nur im `dot`-Spline-Router. Die *positionsabhängige* Wahl von C nachzubilden hieße, die
-strikte Gleichstandsauflösung von C zu übernehmen, die in einem **gemeinsam genutzten
-Baustein** liegt, durch den jede geroutete Kante läuft: Das würde die Übereinstimmung
-bei `376->76` gegen *neue* Abweichungen bei den Bögen eintauschen, bei denen C in die
-andere Richtung landet (es verschlechtert `241_0` und einen Orakelfall mit flacher
-Kante und `cnt=3`), ein Nullsummenspiel, das zudem die Translationsäquivarianz der
-Portierung opfert. Wir behalten daher den konsistenten (äquivarianten) Router. Dies
-ist eine begrenzte, nicht wahrnehmbare `dot`-Abweichung — kein offener Fehler.
-Vollständige Untersuchung: `.agent-notes/2368-residual-flat-label-ranksep.md`.
-
 ### A4. Orakel in einem anerkannt defekten Zustand (die Familie init_rank / pathplan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Betroffen:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465).
+**Betroffen (graphviz-16.1-Durchlauf):** `1435` (structural-match, maxΔ 0.39 an einem
+Spline-Kontrollpunkt; war 503 gegenüber dem 15.x-Orakel — der Rückgang wurde nicht
+per Bisect untersucht) und `1581` (diverged: Kinderzahl auf oberster Ebene 39 vs. 22,
+maxΔ 0).
 Die Familienmitglieder `1939` und `2825` sind **conformant** und haben keinen Eintrag,
 und `2470` und `graphs-structs` sind ihnen am 2026-07-11 gefolgt (beide sind zu
 conformant kollabiert, nachdem die Korrekturen für ortho-Adjazenz-Überlauf/chancmpid,
 fmadd-`polylineMidpoint` und Half-even-Gleichstandsrundung eingespielt waren — die
 Portierung reproduziert die Wiederherstellungsausgabe des Orakels jetzt exakt,
 einschließlich der identischen verlorenen Kanten); ihre Akzeptanzeinträge sind
-entfernt.
+entfernt. **`2796` und `2471` sind ihnen mit graphviz 16.1 gefolgt** (beide
+`conformant` im frischen Durchlauf, Akzeptanzeinträge entfernt): Die Portierung und das
+16.1-Orakel stimmen jetzt in der `init_rank`-Wiederherstellungsausgabe einschließlich
+der verlorenen Kanten überein. Die Ursache wurde nicht per Bisect isoliert (Kandidaten
+sind der dotgen-Port von 16.1 `48981bf0` und die Korrektur des Verbrauchs verlorener
+Kanten `54bd3b9b`); die `init_rank`-Beschreibung unten bleibt als Mechanismus der
+Klasse erhalten, und die beiden IDs sind durch den Paritäts-Durchlauf als conformant
+festgeschrieben.
 
 `1581` und `2825` waren Absturz-Wiederherstellungsfälle (Mission
 fix-element-count-bucket): Fuzzer-/Degenerationseingaben, bei denen die
@@ -743,9 +717,13 @@ Vergleichsseite zu [`1367`](https://github.com/knowvah/dot-engine/blob/main/plan
 
 ### A6. Überlauf der Zeichenfläche bei `unsigned int` bei degenerierter Eingabe {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Betroffen:** `1314` — eine aus einem Fuzzer stammende Eingabe
-(`fontsize="991836031967s8"`), deren absurde Schriftgröße die Zeichnung auf
-~2.75e11 pt aufbläht.
+**Betroffen:** sfdp `2556` (ein NaN-Layout; siehe den Engine-Track-Eintrag). `1314` —
+eine aus einem Fuzzer stammende Eingabe (`fontsize="991836031967s8"`), deren absurde
+Schriftgröße die Zeichnung auf ~2.75e11 pt aufbläht — ist mit graphviz 16.1
+**conformant**, und ihre Akzeptanz ist entfernt: Die Portierung verengt die Seitengröße
+jetzt wie die native `ROUND`-Konvertierung (`fe20f303`) und baut den Seiten-Clip in der
+Reihenfolge von `setup_page` auf (`eea9d21c`). Die Mechanismus-Absätze unten
+beschreiben den ursprünglichen Unterschied.
 
 **Was geschieht.** C speichert `job->width` / `job->height` als **`unsigned int`**
 (`gvcjob.h:327-328`). Das `ROUND(...)` der riesigen Punktgröße (`emit.c:1249-1250`)
@@ -827,68 +805,42 @@ die unter `bbox-class-control-hull-vs-curve` vermerkt ist. Vollständige Diagnos
 
 ---
 
-### A8. `fp-contract`/FMA-Rundung vs. strikte IEEE (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. `fp-contract`/FMA-Rundung vs. strikte IEEE (`dot`) — GESCHLOSSEN {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**Status (2026-10-12): geschlossen.** Unter dieser Klasse wird keine Korpus-ID mehr
+akzeptiert; der Abschnitt bleibt als historische Dokumentation erhalten. Beide bekannten
+Instanzen sind **`conformant`**: `2620` (2026-07-11) und `2646` (2026-10-12).
 
 **Klasse.** clang arm64 kompiliert das Orakel-Binary mit `-ffp-contract=on` und fusioniert
 ausgewählte Multiply-Add-Folgen zu einzelnen FMA-Instruktionen; die Portierung läuft auf
-V8, das strikte IEEE-754-Rundung durchführt und kein `fma` ausgeben kann. Bei
-bitidentischen Eingaben weichen beide bei dem Ausdruck, den der Compiler kontrahiert hat,
-um 1–2 ULP voneinander ab. Die Seite der Portierung ist stets das Ergebnis nach strikter
-IEEE-754-Rundung; die Orakelseite stets das FMA-kontrahierte Ergebnis. Das ist eine
-Portabilitätsbeschränkung von Compiler/Laufzeit unterhalb der Semantik des
-C-Quelltexts, kein Logikfehler der Portierung — nicht reduzierbar, ohne die
-spezifischen Kontraktionsentscheidungen von clang in Software nachzubilden. Bekannt
-sind zwei Fälle, an zwei verschiedenen Stellen, mit zwei verschiedenen
+V8, das strikte IEEE-754-Rundung durchführt. Bei bitidentischen Eingaben weichen beide
+bei dem Ausdruck, den der Compiler kontrahiert hat, um 1–2 ULP voneinander ab. Bekannt
+waren zwei Fälle, an zwei verschiedenen Stellen, mit zwei verschiedenen
 Verstärkungsmechanismen:
 
-- **2646** — das ULP entsteht in der Kubik-Lösung `points2coeff`/`solve3` von
-  `Proutespline` und kippt direkt die Wurzelzahl des Spline-Fitters.
-- **2620** — das ULP entsteht in der Eckpunkt-Ausdehnungsschleife von `poly_init`
-  (Knotengrößenbestimmung) und wird nachgelagert von der originalgetreuen
+- **2646** — das ULP entstand in der Kubik-Lösung `points2coeff`/`solve3` von
+  `Proutespline` und kippte direkt die Wurzelzahl des Spline-Fitters.
+- **2620** — das ULP entstand in der Eckpunkt-Ausdehnungsschleife von `poly_init`
+  (Knotengrößenbestimmung) und wurde nachgelagert von der originalgetreuen
   Ganzzahl-Abschneidung pro Relaxation in `ortho` zu einem kostengleichen Kippen eines
   Gleichstands im Labyrinth-Korridor verstärkt.
 
-**Betroffen:** `2646` (structural-match, maxΔ 42.09 an 3 von 21.216 Kanten: `edge2575`
-`g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — alle
-Record-Port-`:c->:nb_part`-smode-Langkantenrouten). Geschwister von **A3**: Beide
-Klassen sind nicht reduzierbare Gleichstände der Gleitkomma-Portabilität innerhalb von
-`Proutespline`, aber der Mechanismus ist ein anderer — ein `fp-contract`-Artefakt des
-Compilers, nicht libm-`hypot`.
-
-**Was abweicht.** Bei allen drei Kanten weicht nur der letzte `routesplines`-Aufruf
-(ein gerades Teilstück in den Head-Port) ab. Sein Endpunkt liegt bitgenau auf der
-Unterwand des Barrierepolygons mit zu dieser Wand paralleler Tangente
-(`evs[1]=(1,-1.22e-16)`), sodass jeder `splinefits`-Kandidat bei `t=1` tangential zur
-Barriere ist — eine nahezu doppelte Wurzel der Schnittkubik. `points2coeff` berechnet
-diese Kubik über katastrophale Auslöschung (Terme um ~7446, die auf ~0.099
-zusammenfallen). Das Orakel (clang/arm64, `-ffp-contract=on`) kontrahiert
-`v3 + 3*v1 - (v0 + 3*v2)` zu Fused-Multiply-Adds, während V8 strikt IEEE rundet — beide
-weichen bei **bitidentischen Eingaben** um ~9.1e-13 voneinander ab, und dieses Rauschen
-kippt das Vorzeichen der Diskriminante von `solve3`: C findet 1 Wurzel (866.7, innerhalb
-des Segments); die Portierung findet 3 Wurzeln mit einer überzähligen Partnerwurzel bei
-`t=0.9999975 < 1-EPSILON2`. Die überzählige Wurzel löst eine zusätzliche
-`a`-Halbierungsiteration aus, die die Tangentenlänge des letzten Stücks um den Faktor 2
-kippt (bei den 3 Kanten in jeweils beliebiger Richtung), was nach dem Clipping das maxΔ
-42.09 ergibt (26 SVG-Unterschiede).
-
-**Warum akzeptiert (Nicht-Reduzierbarkeit durch ein kontrolliertes Experiment
-bewiesen).** Alle sechs `routesplines`-Aufrufe wurden auf beiden Seiten ausgegeben —
-Box, Polygon, `PL`, Start, Ende und `evs` sind byte-identisch, ebenso die Ausgabe-Spline
-des früheren (nicht letzten) Aufrufs; die einzige Abweichung liegt innerhalb von
-`solve3` des letzten Aufrufs. Ein eigenständiges Harness mit unverändertem C hat die
-einzelne Variable isoliert: Kompilieren mit `-ffp-contract=off` reproduziert die
-**Portierung** bei allen 3 Kanten bitgenau; die Standardkontraktion (`on`) reproduziert
-das **Orakel** bei allen 3 Kanten bitgenau. Die Portierung stimmt also bereits mit C
-unter strikter IEEE-754-Rundung überein; die Abweichung ist vollständig die
-FMA-Kontraktionsentscheidung des Orakel-Compilers, unterhalb der Semantik des
-C-Quelltexts — es gibt keine Untreue auf Quelltextebene, die zu beheben wäre. Eine
-gezielte Korrektur (die Kontraktion in `points2coeff` von Hand nachzubilden) wurde
-versucht und widerlegt: Sie korrigiert 2 der 3 Kanten, aber nicht die dritte, deren
-Kippen aus der eigenen internen Kontraktion von `solve3` stammt. Eine vollständige
-Korrektur würde Software-FMA-Emulation im gesamten Spline-Fitter erfordern — Kosten in
-einer Hot Loop mit korpusweitem Rundungs-Auswirkungsbereich für einen Gewinn im
-Subpixelbereich bei 3 Kanten. Vollständige Diagnose:
-`plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Geschlossen: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Drei smode-Langkanten-Abschnitte (`edge2575`, `edge3905`,
+`edge15467`) enden an einer Barrierenwand mit paralleler Tangente, sodass die
+`splinefits`-Schnittkubik eine fast doppelte Wurzel hat. `points2coeff` baut diese
+Kubik über katastrophale Auslöschung auf; das Orakel fusioniert `route.c:397-398` und
+`solvers.c:43`, sodass die Portierung mit strikter IEEE-Rundung eine andere
+`solve3`-Wurzelzahl, eine unechte Kreuzung und eine zusätzliche `a`-Halbierung erhielt
+(maxΔ 42.09). Der frühere Schluss, dies sei nicht reduzierbar („Software-FMA-Emulation
+im gesamten Spline-Fitter“, mit einer widerlegten Teilkorrektur), wurde widerlegt: Die
+Kontraktionsstellen sind endlich und aufzählbar. Die Portierung bildet jetzt jede
+Kontraktion in `points2coeff` (`route.c:397-398`), `splineintersectsline` (371-372,
+374, 360-361, 383-384), `solve3` (`solvers.c:41, 43, 46`) und dem darin inlinierten
+`solve2` (80, 85) nach, und `solve3`/`solve2`/`solve1` sind in die Form von C neu
+portiert. Alle 42.432 aufgezeichneten `Proutespline`-Aufrufe von `2646` sind bitidentisch
+mit dem Orakel (Journalzeile „T7 land“). Ursprüngliche Diagnose (für den Mechanismus
+weiterhin gültig): `plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Betroffen (historisch):** `2620` (war structural-match, maxΔ 585; 423 Unterschiede an
 24 Kantenpfaden + 22 Pfeilspitzen). **Am 2026-07-11 zu conformant kollabiert:** Die
@@ -961,12 +913,25 @@ Schneide sitzt: Das Eingabe-ULP kippt sein Vorzeichen, die Diagonale der Constra
 Delaunay kippt, und das Korridorpolygon, das im Orakel an `Pshortestpath` scheitert
 („destination point not in any triangle“ → Fallback auf einfachen Spline), gelingt in
 der Portierung (oder umgekehrt). Die resultierenden Splines unterscheiden sich um
-~0.2–0.5pt. Geschwister von **A3**/**A8**: eine nicht reduzierbare
+~0.2–0.5pt. Geschwister der (inzwischen geschlossenen) **A3**/**A8**: eine nicht reduzierbare
 Gleitkomma-Portabilitätsbeschränkung unterhalb der C-Quelltextsemantik — ein Treffen
 würde erfordern, die exakte `sin`/`cos`-Rundung der Apple-libm in JS zu reproduzieren.
 
-**Betroffen:** `241_0` (circo Δ≈0.2 / twopi-Zeichenfläche Δ≈9 durch das Kippen des
-Korridors an der Kante `5:ne->8:nw`); `2343`, `2239`, `share-b29`, `windows-b29`
+**16.1-Neubasierung.** In der Geometrie des Multispline-Korridors fehlte die
+FMA-Kontraktion von clang (Radikand der Ellipsenecke, `mkCtrlPts`, `DIST` =
+sqrt(fmadd), das Skalarprodukt in `line_intersect`); `b77b2703` (`fix(neato): mirror fma
+contraction in multispline routing geometry`) hat sie nachgebildet. twopi- und neato-`241_0`
+— die diese Klasse dem kozirkularen Gleichstand unten zugeschrieben hatte — wurden
+**conformant** (Akzeptanzen entfernt), und sfdp `42` hatte sich als völlig ohne
+Gleichstand erwiesen (es ist A1-Drift, siehe
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo-, fdp- und sfdp-`241_0`
+weichen weiterhin ab, ihre Reste sind unverändert oder verringert; ihre Zuschreibung zum
+Gleichstand unten ist älter als `b77b2703` und wurde seither **nicht per
+Positions-Injection neu verifiziert**, obwohl dieselbe Korrektur gezeigt hat, dass die
+Zuschreibung für twopi/neato falsch war.
+
+**Betroffen:** `241_0` (circo Δ≈0.2 durch das Kippen des Korridors an der Kante `1->2`;
+fdp- und sfdp-`241_0` auf den Engine-Tracks unten); `2343`, `2239`, `share-b29`, `windows-b29`
 (twopi, je 1–2 Unterschiede bei Kanten-Label-Positionen — das libm-1-ULP entsteht in
 der Einheitseckpunkt-Trigonometrie von `poly_init` (`hypot`/`atan2`/`sin`), setzt die
 berechnete Höhe eines Knotens ein ULP jenseits der Mindestgrößen-Klammer, auf der das
@@ -1122,33 +1087,44 @@ byteweise übereinstimmenden x-Deltas und schließt die Kausalkette.
 
 Zwei weitere Instanzen auf Engine-Track-Ebene wurden am 2026-07-11 in ihrer Ursache
 geklärt und akzeptiert (vollständige Ursachenanalyse: `.agent-notes/circo-edge-tail-rca.md`):
-twopi `241_0` (6 Draw-Op-Unterschiede — das Geschwister des circo-Eintrags oben:
-derselbe kozirkulare CDT-Incircle-Gleichstand, durch libm-`sin`/`cos` um 1 ULP gekippt,
-lässt den Multispline-Korridor der Portierung mit einem 14-Punkte-Spline gelingen, wo
-das native Build auf einfaches Routing mit 8 Punkten zurückfällt; Punktabweichungen
-< 0.07pt) und circo `windows-tree` (10 Draw-Op-Unterschiede an einer Fächerkante — die
+twopi `241_0` (6 Draw-Op-Unterschiede, damals demselben kozirkularen CDT-Incircle-Gleichstand
+zugeschrieben wie der circo-Eintrag oben; **mit graphviz 16.1 zurückgezogen** — es ist seit
+`b77b2703` conformant, das Kippen des Korridors zwischen 14 und 8 Punkten war also die
+nicht nachgebildete FMA-Kontraktion, kein Gleichstand) und circo `windows-tree` (10
+Draw-Op-Unterschiede an einer Fächerkante — die
 Platzierungstrigonometrie von circo setzt `node2.y` genau ein ULP über `node8.y` um den
 exakt symmetrischen Wert 18.0, und die dyna-Head-Port-Wahl von `closestSide` kippt bei
 diesem exakten Gleichstand zwischen TOP/BOTTOM; Knotenpositionen und Boxen sind sonst
 bitidentisch mit dem Orakel).
 
-**sfdp-Engine-Track — Kanten-FP-Gleichstände (`42`, `241_0`).**
+**sfdp-Engine-Track — Kanten-FP-Gleichstand (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Der xdot-Engine-Track von sfdp (`parity-sfdp.json`, nativ
 `dot -Ksfdp -Txdot`, ±0.5) bringt den kozirkularen CDT-Incircle-Gleichstand zutage, sobald
 exakte native Positionen vor dem Routing injiziert werden (die Abweichung ist also NICHT
 iterative Drift — siehe die Klasse A1-drift — sondern ein diskreter Prädikat-Gleichstand):
 
-- `42` und `241_0` — kozirkularer CDT-Incircle-Gleichstand (der Multispline-Korridor).
-  Mit injizierten Positionen ist der Rest ein **Kippen der Segmentzahl**: `42`
-  `opCount 5 vs 9` (Kante 0->3) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (Kante 3->2) — die Constrained-Delaunay-Diagonale der Portierung kippt gegenüber
-  dem Orakel, sodass der Multispline-Korridor mit einem N-Punkte-Spline gelingt, wo das
-  native Build auf eine kürzere einfache Route zurückfällt (oder umgekehrt), genau wie im
-  Eintrag zu twopi/circo `241_0` oben. Die Portierung bildet die arm64-`fmadd`-Kontraktion
+- `241_0` — dem kozirkularen CDT-Incircle-Gleichstand zugeschrieben (der
+  Multispline-Korridor; nach `b77b2703` nicht neu verifiziert, siehe die 16.1-Neubasierung
+  oben). Der Rest ist ein **Kippen der Segmentzahl**: 7 Draw-Op-Unterschiede an Kante
+  1->2, `ptCount 8 vs 20` (20 Unterschiede vor `b77b2703`) — der Korridor gelingt mit
+  einem N-Punkte-Spline, wo das native Build auf eine kürzere einfache Route
+  zurückfällt (oder umgekehrt), wie im Eintrag zu circo `241_0` oben. Die Portierung bildet die arm64-`fmadd`-Kontraktion
   im Incircle-/`ccw`-Prädikat bereits nach (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) und verwendet eine robuste Incircle-Delaunay; der Rest ist das
   1-ULP von V8 vs. Apple-libm bei `sin`/`hypot` in der Prädikat-Eingabe, das kein
   portabler Code reproduziert.
+
+> **sfdp `42` von A9 auf A1-drift umklassifiziert (graphviz-16.1-Sync).** Es war hier
+> als CDT-/libm-Incircle-Gleichstand geführt. Die Mission fand etwas anderes
+> ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): Das frühere Kippen des
+> Korridors war ein portierungsseitiger FMA-Fehler in der Geometrie des
+> Multispline-Korridors, behoben durch `b77b2703` (`fix(neato): mirror fma contraction in
+> multispline routing geometry`); mit injizierten nativen Positionen reproduziert die
+> Portierung jetzt das native xdot exakt. Der verbleibende Rest (Knotenversätze
+> 0.06-0.65 pt) ist iterative Drift, ausgelöst durch eine 1-ULP-Abweichung zwischen
+> `pow(dist, 2)` der Apple-libm und dem ARM-`pow` der Portierung auf der gröbsten Ebene,
+> verstärkt durch die feineren Ebenen — A1 (siehe
+> [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095` von A9 auf A1-drift umklassifiziert (2026-07-22).** Sie war zuvor hier als
 > „das hypot-Geschwister“ geführt (Drift unter 0.7pt an den Kanten eines Knotens mit
@@ -1168,8 +1144,10 @@ iterative Drift — siehe die Klasse A1-drift — sondern ein diskreter Prädika
 repräsentativen Abweichungseingaben flacher Kanten zeigt eine 1-ULP-Abweichung bei 2 von 6
 (Δ 7.1e-15 und 5.7e-14) — die Messerschneide der Teilungsschwelle, die die
 Unterteilungszahl kippt. Nicht reduzierbar: Kein portables hypot reproduziert die
-Apple-libm (der Präzedenzfall `arm-pow.ts` für dieselbe Grenze). Auf Engine-Track-Ebene
-akzeptiert über `accepted-divergences-engines.json` (`sfdp.42`, `sfdp.241_0`).
+Apple-libm (der Präzedenzfall `arm-pow.ts` für dieselbe Grenze). `sfdp.241_0` ist auf
+Engine-Track-Ebene über `accepted-divergences-engines.json` akzeptiert. `sfdp.42` gehört
+**nicht** zu dieser Klasse: Sein Registereintrag ist A1 (`comparisons/sfdp-42.md`), und die
+Sonde oben hat ihn nicht erklärt.
 
 Der xdot-Engine-Track von **fdp** (`parity-fdp.json`, nativ `dot -Kfdp -Txdot`, ±0.5) bringt
 DENSELBEN kozirkularen CDT-Gleichstand am selben Graphen `241_0` zutage: Mit injizierten
@@ -1177,9 +1155,10 @@ exakten Positionen des Orakels vor dem Routing besteht der Rest aus 11 numerisch
 `unfilled_bezier`-Unterschieden, beschränkt auf eine Kante (`0->1#0`, maxΔ 3.39pt). Da die
 Knotenpositionen injiziert identisch sind, liegt die Abweichung nachgelagert im
 Multispline-Korridor von pathplan — derselbe libm-1-ULP-Incircle-Gleichstand wie bei
-twopi/circo/sfdp `241_0` (Incircle in exakten rationalen Zahlen 185/185 oben). Die Hebel
+circo/sfdp `241_0` (Incircle in exakten rationalen Zahlen 185/185 oben; 11 Unterschiede durch
+`b77b2703` unverändert — nicht per Injection neu verifiziert). Die Hebel
 sind bereits angewandt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); der Gleichstand ist nicht reduzierbar. Akzeptiert über
+`Math.hypot`); der Gleichstand wird als nicht reduzierbar behandelt. Akzeptiert über
 `accepted-divergences-engines.json` `fdp.241_0`. `2095` von fdp ist dagegen **A1-drift,
 nicht A9**: Die Injektion des einen Knotens mit leerem Namen (nachdem der
 Attributions-Injektor so korrigiert wurde, dass er Knoten mit dem Namen `""` trifft)
@@ -1188,6 +1167,28 @@ leere Knoten, der seine inzidenten Kanten mitzog. Das Accept von sfdp `2095` war
 blinde Fleck — eine frische Neuerzeugung der sfdp-Attribution (2026-07-22) mit dem
 korrigierten Injektor bestätigte, dass es sich ebenfalls auf 0 injiziert, und sein Accept
 wurde entfernt (siehe den Hinweis `2095 reclassified` oben).
+
+---
+
+### A10. Größenlimit der V8-`Map` beim Polyomino-Packing (`2784`, fünf Pack-basierte Engines) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Betroffen:** `2784` auf `circo`, `twopi`, `neato`, `fdp` und `sfdp`, in jedem
+Ausgabeformat. Auf `dot` ist es `conformant`.
+
+**Was geschieht.** `lib/pack/pack.c` hält die von einer Komponente belegten Zellen in
+einem `PointSet` fest. Für `2784` (ein einzelner Knoten, 3e16 pt hoch, `splines="ortho"`)
+benötigt die originalgetreue Ganzzahl-Arithmetik für `step`/Platzierung 2.011.656.764
+Zellen; das native 16.1.0 benötigt 482 s und belegt 67.3 GB resident (101 GB Spitze). Das
+`PointSet` der Portierung ist eine JavaScript-`Map`, die V8 auf 2^24 Einträge begrenzt,
+sodass sie `Map maximum size exceeded` wirft.
+
+**Warum akzeptiert.** Eine Laufzeitgrenze unterhalb des Codes, keine Logiklücke; die
+Ursache ist die originalgetreue Arithmetik von `910be2a2` (davor berechnete die
+Portierung ein kleines, falsches Layout und erreichte das Limit nie). Das akzeptierte
+Ergebnis ist ein geworfener Fehler statt eines `diverged`-Urteils, und die Register je
+Engine akzeptieren nur `diverged`-Zeilen, sodass kein Registereintrag existiert: Die
+Durchläufe führen `2784` weiterhin unter ihren Portierungsfehlern. Belege:
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

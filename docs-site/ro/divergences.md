@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -41,8 +41,8 @@ de mai jos) este
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 Instrumentele o îmbină în momentul generării raportului: `PARITY-dot.md` separă **diferențele
 acceptate** de restanța **urmărită**, iar poarta de reguli își ia lista de permisiuni din ea.
-Secțiunile în proză de mai jos explică fiecare intrare (A1 și A3 sunt active; A2 este închisă
-și păstrată ca istorie); un test CI (`accepted-divergences.test.ts`) impune ca
+Secțiunile în proză de mai jos explică fiecare intrare (A1 este activă; A2, A3 și A8 sunt închise
+și păstrate ca istorie; A10 este o acceptare a unei erori de portare pe care niciun registru nu o poate exprima); un test CI (`accepted-divergences.test.ts`) impune ca
 fiecare graf acceptat să mai divergă încă, astfel încât această listă să nu putrezească pe tăcute.
 
 ---
@@ -67,8 +67,8 @@ de toleranță**, în loc de unul pe octeți.
 
 **Afectate:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (motoarele iterative,
 cu model de tip arc). *Aranjarea* motorului `dot` **nu** este afectată de acest
-determinism al modelelor iterative; o diferență separată, strict delimitată, de virgulă
-mobilă în rutarea spline-urilor din `dot` este tratată la **A3** mai jos.
+determinism al modelelor iterative; fostele diferențe de virgulă mobilă
+în rutarea spline-urilor din `dot` (A3, A8) sunt închise și păstrate mai jos ca istorie.
 
 > **Domeniu, istoric o rezervă nemăsurată — acum parțial măsurată.** **Sondajul SVG
 > principal al motorului dot** (`test/corpus/survey.ts`) este în continuare
@@ -102,7 +102,7 @@ identice, **nu este garantată între platforme**. Topologia este păstrată; di
 potențială se află în coordonatele fine ale nodurilor.
 
 **De ce este acceptată.** Aceasta este o constrângere dură a rulării în JS, nu o alegere de
-design — din aceeași familie cu sensibilitatea la `hypot` a Apple de la A3. Nu există nicio
+design — din aceeași familie cu sensibilitățile `hypot`/FMA de la A3/A8 (între timp închise). Nu există nicio
 cale de a garanta rezultate transcendente/FMA identice bit cu bit pe toate mediile de
 execuție țintă, deci un prag pe octeți ar fi netestabil, nu doar costisitor. **Evaluarea lui A1**
 (spre deosebire de simpla lui menționare ca rezervă) a cerut un flux separat de paritate cu motorul nativ
@@ -111,12 +111,12 @@ fiecare intrare cu propriul motor, în loc de `dot`. Plafonul onest al acestei a
 **restrângerea** lui A1 la „nicio divergență activă pe platforma de referință”, niciodată
 eliminarea rezervei privind platformele multiple; rezultatele de până acum (mai jos) respectă acest
 plafon: `circo`/`twopi`/`osage` au scos la iveală și au elucidat până la cauza rădăcină
-câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 90.8/77.5/68.0%
-în limita a 0.5pt față de nativ pe universul de 910 elemente, ceea ce înseamnă că aritmetica
+câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 90.3/96.5/68.1%
+în limita a 0.5pt față de nativ pe universul de 929 de elemente (graphviz 16.1.0), ceea ce înseamnă că aritmetica
 portată (`fma.ts`, `arm-pow.ts`, PRNG potrivit) se menține pentru majoritatea grafurilor — iar
-fiecare id divergent rămas este atribuit individual prin injecție (derivă a solverului față de
-defect al portării), nu lăsat ca derivă netriată; vedeți mai jos caracterizarea
-motoarelor iterative.
+fiecare id divergent din lista de 910 elemente este atribuit individual prin injecție (derivă a solverului față de
+defect al portării), nu lăsat ca derivă netriată; cele 19 adăugiri la listă
+nu sunt încă atribuite. Vedeți mai jos caracterizarea motoarelor iterative.
 
 **Acceptarea pe flux de motor: familia de săgeți twopi.** <a id="a1-twopi-arrows-family"></a>
 Citatul de mai sus descrie sondajul SVG al motorului dot, în care A1 nu se potrivește cu niciun
@@ -180,27 +180,35 @@ pentru aceste trei, iar `parity-report.ts` le afișează într-o secțiune separ
 „Iterative engines (±0.5 characterization)”, din
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 în mod explicit **necomparabilă** cu ratele de reușită deterministe de ±0.01 din restul
-acestui document. Numerele curente (univers de 910 elemente; procentul de reușită exclude
+acestui document. Numerele curente față de graphviz 16.1.0 (univers de 929 de elemente; procentul de reușită exclude
 intrările pe care oracolul C nu le poate randa, conform [Conformitate](./conformance.md)):
 
-| motor | sondate | în limita ±0.5pt | neconforme (toate atribuite, acceptate) | eroare portare / timeout | eroare oracol |
+| motor | sondate | în limita ±0.5pt | neconforme | eroare portare / timeout | eroare oracol |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(Rândurile `neato` și `sfdp` provin din parcurgeri pregătite înainte de ultima reparcurgere a lui
+`graphs-decorate`, `1314`, `2784` și `2371`; se pot modifica din cauza acestor id-uri.
+Rata de reușită a lui `fdp` a crescut de la 77.5% pentru că parcurgerea anterioară înregistrată
+era anterioară stării portării din misiunea precedentă.)
 
 (Prima trecere, 2026-07-11, la 762 de elemente, a măsurat 263/311/260 în limita
 ±0.5pt — saltul la ratele actuale a venit din remedieri pe id integrate de atunci,
 în principal gestionarea neportată `user_pos`/`P_SET` din neato, consolidarea
 inițializării motoarelor și remedierea `setEdgeType` între macro și funcție.)
 
-Spre deosebire de prima trecere, fiecare rând divergent este acum atribuit individual:
+Spre deosebire de prima trecere, fiecare rând divergent din lista de 910 elemente a fost atribuit
+individual (cele 19 id-uri noi din lista de 929 de elemente nu sunt încă atribuite;
+sunt enumerate în predarea T13 ca nou vizibile):
 instrumentul de injecție (`test/corpus/attribute-divergence.ts`) alimentează portarea cu
 `ND_pos` dinaintea rutării din oracolul nativ și compară din nou, iar
 fiecare id divergent curent este fie `drift-exonerated` (rutarea și emiterea portării
 reproduc exact oracolul odată ce deriva solverului este eliminată),
 fie unul dintre puținele reziduuri acceptate separat pe id (egalitatea la testul incircle din CDT pentru `241_0`
-pe toate cele trei motoare, neato `2239`, sfdp `42`/`2556`).
+pe toate cele trei motoare, neato `2239`, sfdp `2556`; sfdp `42`
+este derivă A1, vedeți [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 Acceptarea pe clasă de mai jos formalizează mulțimea exonerată; numerătorile live se află în
 panourile pe motor
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -400,39 +408,47 @@ corpus trece prin el, deci o remediere vizând un singur șir risca regresii în
 altele pentru un câștig sub pragul perceptibil.
 :::
 
-### A3. Departajarea `hypot` în rutarea spline-urilor (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. Departajarea `hypot` în rutarea spline-urilor (`dot`) — ÎNCHISĂ {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Afectate:** grafurile `dot` cu un canal de rutare a muchiilor **simetric geometric** —
-de regulă un arc plat scurt și simetric. Exemplu observat: `2368`,
-care rămâne la *structural-match* (maxΔ ≈ 10.2 pt pe **o singură** muchie, `376->76`).
-Aceeași departajare apare și pe o muchie **lungă** (pe mai multe ranguri) către un
-hub cu intrare mare când coridorul este exact simetric în oglindă: `graphs-b100` /
-`graphs-b104` (sursă identică) divergă cu maxΔ 20 (exact un rând de rang) pe
-singurul nod al muchiei `Node23730->Node23729` — fiecare poziție de nod și toată structura de
-casetă/poligon/traseu întins din amonte este identică octet cu octet cu C; doar alegerea de ~1 ULP a lui `findMaxDev`
-privind care punct interior simetric în oglindă devine nodul bezier
-diferă. Forma cu muchie plată scurtă apare și ca `241_1` (structural-match,
-maxΔ ≈ 2.4 pt) — fratele divergent al lui `241_0`, ancorat în oracol, pe care zgomotul din C
-îl păstrează, în schimb, pe primul. Aceeași departajare produce o împărțire a culoarului-fantă
-pentru muchia de întoarcere a unui ciclu de lungime 2 cu etichetă în `2413_1` (structural-match, maxΔ 67.65) și
-`2413_2` (maxΔ ≤99.55 după ce intră remedierea T11 swapBezier-reverse — până atunci
-maxΔ 1922.26 raportat pentru fișier este dominat de un defect fără legătură, urmărit separat),
-precum și o singură muchie cu etichetă din interiorul unui cluster în `graphs-decorate`
-(maxΔ 43.54); în fiecare caz cele două colțuri candidate de împărțire sunt egale în limita
-a 5.7e-13 (familia 2413) / 3e-14 (decorate) înainte ca zgomotul `hypot` Apple dependent de
-poziție să aleagă un câștigător. `2371`
-(structural-match, maxΔ 16.8) arată aceeași amprentă pe două muchii fără legătură
-(`g[9263]` `r6837mid--r9687mid`, `g[23859]` `r38mid--r8699mid`): portarea
-emite imaginea exactă în oglindă, ca secvență de puncte de control, a oracolului pe ambele,
-cu y-ul nodului răsturnat cu același Δ16.8 (fracțiile de împărțire sus/jos schimbate între ele).
-Originea sa este calificată cu încredere **MEDIE**, nu cu încrederea CONFIRMATĂ
-a celorlalți membri: `2371` împachetează ~199 de componente, ceea ce decuplează
-coordonatele locale pathplan de coordonatele paginii, astfel că egalitatea nu a putut
-fi corelată live cu `route.ts:209` în trei încercări de instrumentare; o origine în
-segmentarea în mod drept sau în `recover_slack` de după tăiere nu este
-complet exclusă. Diagnostic complet:
-`plans/residual-cleanup/analysis/2371-mirror.md`. Majoritatea muchiilor rutate nu
-sunt afectate.
+**Stare (2026-10-12): închisă.** Nicio id din corpus nu mai este acceptată în
+această clasă; secțiunea este păstrată ca documentație istorică a mecanismului. Foștii
+membri (`2368`, `graphs-b100`, `graphs-b104`, `241_1`,
+`2413_1`, `2413_2`, `graphs-decorate`, `2371`) sunt toți **`conformant`** în
+parcurgerea nouă (`test/corpus/parity-probe.json`).
+
+**Mecanismul și ce l-a închis.** Potrivitorul de spline-uri (`Proutespline` ->
+`findMaxDev`, `src/pathplan/route.ts`) împarte un Bézier potrivit în punctul
+interior al traseului cu deviația maximă. Pe un canal geometric simetric,
+deviațiile candidate diferă cu ~1 ULP, deci câștigătorul este decis de aritmetica
+ultimului bit. Portării i se atribuise o lacună ireductibilă („`hypot` din Apple
+nu coincide cu niciun `hypot` portabil”) și o compensa cu o departajare tolerantă,
+echivariantă la translație. Această atribuire a fost infirmată: egalitatea este
+decisă de aritmetica *exactă* din C, care este reproductibilă. Commit-ul `cdf597bc`
+(`fix(pathplan): split splines at C's max-deviation point bit for bit`) a portat-o:
+`hypot` din libm pentru distanță (`route.c:448`), comparația strictă `>` din C
+(`route.c:139`) și fuziunea `fp-contract` a lui clang la evaluarea Bézier
+(`route.c:137-138`), determinanții `mkspline` (`route.c:181-183`), `dot`
+(459), `normv` (413), `B01` (488) și `B23` (494). Departajarea tolerantă a
+dispărut; nodul lui `241_0` este fixat în cadrul de rutare al lui C, deoarece C nu este
+echivariant la translație pe astfel de egalități. Aceasta a închis `2368`, `2371`, `2413_1`,
+`2413_2`, `graphs-b100`, `graphs-b104` și `graphs-decorate`.
+
+`241_1` nu era o egalitate `hypot`: a fost închis de `87347711`
+(`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
+grupează fiecare muchie plată adiacentă care împarte o muchie principală într-un singur apel
+`make_flat_adj_edges` și testează porturile pe întregul grup, deci un frate
+fără port al unei muchii cu port este rutat prin graful auxiliar. Portarea
+împărțea grupul după prezența portului și ruta fratele prin
+`makeSimpleFlat`, a cărui decupare ajunge într-un alt punct `bezier_clip`
+(54.28 față de 54.46 nativ).
+
+Ambele remedieri au fost verificate prin parcurgeri noi ale corpusului, fără regresii
+(rândurile din jurnal „T5 land” și „T6 land”,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Dovezi dinaintea remedierii (istoric).** `2368` era membrul de referință.
+Arcul său `376->76` se împărțea spre colțul opus față de C; graful și
+traseele acestui arc din C și din portare dinaintea remedierii sunt păstrate pentru evidență.
 
 ::: details Definiția grafului (`2368.dot`)
 ```dot
@@ -472,71 +488,29 @@ digraph G {
 ```
 :::
 
-**Caracterizare.** Potrivitorul de spline-uri (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) împarte un bezier potrivit în punctul interior al rutei cu
-deviația maximă. Când canalul este simetric, cele două puncte candidate de împărțire
-sunt o **egalitate matematică exactă**, iar câștigătorul este decis de zgomotul de
-anulare în virgulă mobilă de ~1e-14 dintr-o evaluare bezier în coordonate absolute,
-al cărui **semn depinde de poziția absolută**.
-
-Distanța de deviație din C este `hypot` din libm, iar `hypot`-ul Apple de pe macOS care a
-generat oracolul este o implementare proprietară care nu se potrivește bit cu bit cu **niciun**
-`hypot` portabil (măsurat față de ea pe regimul de coordonate graphviz, rate
-identice bit cu bit: V8 `Math.hypot` ≈ 63%, un `hypot` corect rotunjit / în stil Arm
-≈ 84%, `hypot` fdlibm ≈ 90%, `sqrt(dx²+dy²)` ≈ 94%). Din cauza acestui zgomot ULP,
-**C însuși nu este consecvent**: împarte două arce *congruente prin translație* spre colțuri
-**opuse**. În `2368`, arcul `376->76` este imaginea în oglindă a arcului `256->436`,
-identic geometric:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-Întreaga diferență, suprapusă (mărire 12× pe arcul `376->76` / `to1`) — **verde = C
-Graphviz, roșu = @knowvah/dot-engine**. Ambele sunt același arc jos, puțin adânc, între
-aceleași limite de noduri; diferă cu ~1–2 pt la burtă (punctul de control bezier
-din mijloc), unde departajarea din C a căzut spre colțul opus:
-
-![2368 376->76 arc: green = C, red = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Tot restul se potrivește în limita toleranței — aceeași casetă de încadrare (608×148), poziții de noduri,
-etichete, vârfuri de săgeată și toate celelalte muchii. Randările complete sunt vizual
-indistinguibile:
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![2368 rendered by C Graphviz](/img/2368-c.png) | ![2368 rendered by @knowvah/dot-engine](/img/2368-port.png) |
-
-Portarea folosește o departajare **echivariantă la translație** (o egalitate adevărată se rezolvă
-întotdeauna la primul index), deci desenează *fiecare* astfel de arc la fel, indiferent de
-poziție — este auto-consecventă și se potrivește cu C pe arcele unde zgomotul din C
-păstrează tot primul (de ex. `256->436` și `241_0 5:ne->8:nw`), divergând doar acolo unde zgomotul din C
-înclină în cealaltă parte (`376->76`). Capetele, ținta vârfului de săgeată, celelalte
-muchii, toate nodurile, etichetele și caseta de încadrare se potrivesc în limita toleranței; doar
-punctele de control interioare ale unui singur arc se mișcă (~1–2 pt la burtă).
-
-**De ce este acceptată.** `hypot`-ul Apple nu este mai reproductibil între motoarele JS și
-CPU-uri decât FMA/`pow` de la **A1** — este aceeași constrângere de portabilitate, doar
-în rutatorul de spline-uri din `dot`. Potrivirea alegerii din C, *dependentă de poziție*, ar însemna
-adoptarea departajării stricte din C, care se află într-o **primitivă comună** prin care trece fiecare muchie
-rutată: aceasta ar schimba potrivirea `376->76` pentru *noi* nepotriviri pe
-arcele unde C cade în cealaltă parte (ar regresa `241_0` și un caz de oracol cu
-muchie plată `cnt=3`), un echilibru net nul, care sacrifică și
-echivarianța la translație a portării. Așadar păstrăm rutatorul consecvent (echivariant). Aceasta este
-o diferență `dot` mărginită, sub pragul perceptibil — nu un defect deschis. Investigația completă:
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
 
 ### A4. Oracol într-o stare recunoscută ca defectă (familia init_rank / pathplan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Afectate:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). Membrii
-familiei `1939` și `2825` sunt **conformi** și nu au nicio intrare, iar `2470`
-și `graphs-structs` li s-au alăturat pe 2026-07-11 (ambele au colapsat la conforme
-după ce au intrat remedierile ortho adjacency-spill/chancmpid, fmadd `polylineMidpoint` și
-rotunjirea la egalitate către par — portarea reproduce acum exact ieșirea de recuperare a oracolului,
+**Afectate (parcurgerea graphviz 16.1):** `1435` (structural-match, maxΔ 0.39 pe
+un punct de control al unui spline; era 503 față de oracolul 15.x — scăderea nu a fost
+izolată prin bisecție) și `1581` (diverged: numărul de copii de la nivelul superior 39 față de 22, maxΔ 0).
+Membrii familiei `1939` și `2825` sunt **conformi** și nu au nicio intrare, iar
+`2470` și `graphs-structs` li s-au alăturat pe 2026-07-11 (ambele au colapsat la conforme
+după ce au intrat remedierile ortho adjacency-spill/chancmpid, fmadd
+`polylineMidpoint` și rotunjirea la egalitate către par — portarea reproduce acum exact ieșirea de recuperare a oracolului,
 inclusiv aceleași muchii pierdute); intrările lor
-de acceptare sunt retrase.
+de acceptare sunt retrase. **`2796` și `2471` li s-au alăturat
+la graphviz 16.1** (ambele `conformant` în parcurgerea nouă, intrările de acceptare
+retrase): portarea și oracolul 16.1 sunt acum de acord asupra ieșirii de recuperare `init_rank`,
+inclusiv asupra muchiilor pierdute. Cauza nu a fost izolată prin bisecție (portarea dotgen 16.1
+`48981bf0` și remedierea consumului muchiilor pierdute `54bd3b9b` sunt
+candidatele); descrierea `init_rank` de mai jos este păstrată ca mecanism al
+clasei, iar cele două id-uri sunt fixate ca fiind conforme de parcurgerea de paritate.
 
 `1581` și `2825` au fost cazuri de recuperare după prăbușire (misiunea fix-element-count-bucket):
 intrări de tip fuzzer/degenerate pentru care testele upstream afirmă **doar**
@@ -690,8 +664,13 @@ Pagina de comparare [`1367`](https://github.com/knowvah/dot-engine/blob/main/pla
 
 ### A6. Depășirea pânzei `unsigned int` pe intrare degenerată {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Afectate:** `1314` — o intrare derivată dintr-un fuzzer (`fontsize="991836031967s8"`)
-a cărei dimensiune absurdă a fontului umflă desenul la ~2.75e11 pt.
+**Afectate:** sfdp `2556` (o aranjare NaN; vedeți intrarea fluxului de motor). `1314`
+— o intrare derivată dintr-un fuzzer (`fontsize="991836031967s8"`) a cărei dimensiune absurdă
+a fontului umflă desenul la ~2.75e11 pt — este **conformă** la graphviz 16.1, iar
+acceptarea ei este retrasă: portarea îngustează acum dimensiunea paginii așa cum o face
+conversia nativă `ROUND` (`fe20f303`) și construiește decuparea paginii în
+ordinea din `setup_page` (`eea9d21c`). Paragrafele despre mecanism de mai jos
+descriu diferența inițială.
 
 **Ce se întâmplă.** C stochează `job->width` / `job->height` ca **`unsigned int`**
 (`gvcjob.h:327-328`). `ROUND(...)` aplicat dimensiunii uriașe în puncte (`emit.c:1249-1250`)
@@ -767,64 +746,42 @@ ca la rotunjirea învelișului convex al punctelor de control menționată în
 
 ---
 
-### A8. Rotunjirea `fp-contract`/FMA față de IEEE strict (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. Rotunjirea `fp-contract`/FMA față de IEEE strict (`dot`) — ÎNCHISĂ {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
 
-**Clasă.** clang arm64 compilează binarul oracolului cu `-ffp-contract=on`,
-fuzionând anumite secvențe de înmulțire-adunare în instrucțiuni FMA unice;
-portarea rulează pe V8, care efectuează rotunjire strictă IEEE-754 și nu poate emite
-`fma`. Pe intrări identice bit cu bit, cele două diferă cu 1-2 ULP în orice
-expresie pe care compilatorul a ales să o contracteze. Partea portării este întotdeauna
-rezultatul IEEE-754 strict; partea oracolului este întotdeauna rezultatul
-contractat prin FMA. Aceasta este o constrângere de portabilitate compilator/mediu de execuție, aflată sub
-semantica codului sursă C, nu un defect de logică al portării — ireductibilă fără
-emularea în software a alegerilor specifice de contracție ale lui clang. Se cunosc două instanțe,
-în două locuri diferite, cu două mecanisme de amplificare diferite:
+**Stare (2026-10-12): închisă.** Nicio id din corpus nu mai este acceptată în această
+clasă; secțiunea este păstrată ca documentație istorică. Ambele instanțe
+cunoscute sunt **`conformant`**: `2620` (2026-07-11) și `2646` (2026-10-12).
 
-- **2646** — ULP-ul apare în interiorul rezolvării cubice `points2coeff`/`solve3` din
-  `Proutespline` și inversează direct numărul de rădăcini ale potrivitorului de spline-uri.
-- **2620** — ULP-ul apare în bucla de extindere a vârfurilor poligonului din `poly_init`
-  (dimensionarea nodurilor) și este amplificat în aval de trunchierea fidelă la întreg, la fiecare relaxare,
-  din `ortho`, într-o inversare a unei egalități de cost egal între coridoare ale labirintului.
+**Clasa.** clang arm64 compilează binarul oracol cu `-ffp-contract=on`,
+fuzionând secvențe selectate de înmulțire-adunare în instrucțiuni FMA unice; portarea
+rulează pe V8, care aplică rotunjirea IEEE-754 strictă. Pe intrări
+identice bit cu bit, cele două diferă cu 1-2 ULP la oricare expresie pe care
+compilatorul a ales s-o contracteze. Se cunoșteau două instanțe, în două locuri diferite, cu
+două mecanisme de amplificare diferite:
 
-**Afectate:** `2646` (structural-match, maxΔ 42.09 pe 3 din 21.216 de muchii:
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — toate
-trasee lungi smode de tip port de înregistrare `:c->:nb_part`). Frate al lui **A3**: ambele
-clase sunt egalități ireductibile de portabilitate în virgulă mobilă în interiorul lui
-`Proutespline`, dar mecanismul este distinct — un artefact de compilator `fp-contract`,
-nu `hypot` din libm.
+- **2646** — ULP-ul apărea în rezolvarea cubică `points2coeff`/`solve3` din
+  `Proutespline` și inversa direct numărul de rădăcini al potrivitorului de spline-uri.
+- **2620** — ULP-ul apărea în bucla de extindere a vârfurilor poligonului din `poly_init`
+  (dimensionarea nodurilor) și era amplificat în aval de trunchierea fidelă la întreg, la fiecare relaxare, din `ortho`
+  până la o inversare a unei egalități de coridor de labirint cu cost egal.
 
-**Ce diferă.** Pe toate cele trei muchii, doar apelul final `routesplines` (un
-segment drept în portul de cap) diverge. Capătul său se află exact bit cu bit pe
-peretele inferior al poligonului-barieră, cu tangenta paralelă cu acel perete
-(`evs[1]=(1,-1.22e-16)`), deci fiecare candidat `splinefits` este tangent la
-barieră la `t=1` — o rădăcină aproape dublă a cubicei de intersecție.
-`points2coeff` calculează acea cubică printr-o anulare catastrofală (termeni
-în jur de ~7446 prăbușindu-se la ~0.099). Oracolul (clang/arm64,
-`-ffp-contract=on`) contractă `v3 + 3*v1 - (v0 + 3*v2)` în înmulțiri-adunări
-fuzionate, în timp ce V8 efectuează rotunjire strictă IEEE — cele două diferă cu
-~9.1e-13 pe **intrări identice bit cu bit**, iar acel zgomot inversează semnul
-discriminantului `solve3`: C găsește 1 rădăcină (866.7, în interiorul segmentului); portarea
-găsește 3 rădăcini, cu o rădăcină-partener falsă la `t=0.9999975 < 1-EPSILON2`. Rădăcina
-falsă declanșează o iterație suplimentară de înjumătățire `a`, ceea ce inversează
-magnitudinea tangentei piesei finale cu un factor de 2 (în ambele direcții pe
-cele 3 muchii), producând maxΔ 42.09 după tăiere (26 de diferențe SVG).
-
-**De ce este acceptată (ireductibilitate dovedită printr-un experiment controlat).** Toate cele șase
-apeluri `routesplines` au fost extrase pe ambele părți — caseta, poligonul, `PL`, începutul,
-sfârșitul și `evs` sunt identice octet cu octet, la fel ca spline-ul de ieșire al apelului anterior
-(nefinal); singura divergență se află în `solve3` din apelul final. Un
-harness C pur, de sine stătător, a izolat singura variabilă: compilarea cu
-`-ffp-contract=off` reproduce **portarea** exact bit cu bit pe toate cele 3 muchii;
-contracția implicită (`on`) reproduce **oracolul** exact bit cu bit pe toate cele 3
-muchii. Portarea este deci deja de acord cu C în IEEE-754 strict; divergența
-este în întregime alegerea de contracție FMA a compilatorului oracolului, sub
-semantica codului sursă C — nu există nicio infidelitate la nivel de sursă de remediat. O
-remediere țintită (emularea de mână a contracției în `points2coeff`) a fost încercată și
-infirmată: corectează 2 din cele 3 muchii, dar nu pe a treia, a cărei inversare
-își are originea în contracția internă a lui `solve3`. O remediere completă ar
-cere emulare FMA în software în tot potrivitorul de spline-uri — un cost în bucla critică,
-cu o rază de impact de rotunjire la nivelul întregului corpus, pentru un câștig sub-pixel pe 3 muchii.
-Diagnostic complet: `plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Închisă: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Trei tronsoane lungi de muchii smode (`edge2575`, `edge3905`,
+`edge15467`) se termină pe un perete de barieră cu tangentă paralelă, astfel încât
+cubica de intersecție din `splinefits` are o rădăcină aproape dublă. `points2coeff`
+construiește acea cubică prin anulare catastrofală; oracolul fuzionează
+`route.c:397-398` și `solvers.c:43`, deci portarea cu IEEE strict obținea un alt număr de
+rădăcini în `solve3`, o intersecție falsă și o înjumătățire suplimentară a lui `a` (maxΔ
+42.09). Concluzia anterioară că acest lucru era ireductibil („emulare FMA în software
+în tot potrivitorul de spline-uri”, cu o remediere parțială infirmată) a fost
+infirmată: locurile de contracție sunt finite și enumerabile. Portarea
+oglindește acum fiecare contracție din `points2coeff` (`route.c:397-398`),
+`splineintersectsline` (371-372, 374, 360-361, 383-384), `solve3`
+(`solvers.c:41, 43, 46`) și `solve2`-ul său inclus (80, 85), iar
+`solve3`/`solve2`/`solve1` au fost portate din nou la forma din C. Toate cele 42.432 de apeluri capturate
+`Proutespline` ale lui `2646` sunt identice bit cu bit cu oracolul (rândul din jurnal
+„T7 land”). Diagnoza inițială (încă valabilă pentru mecanism):
+`plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Afectate (istoric):** `2620` (a fost structural-match, maxΔ 585; 423 de diferențe
 pe 24 de trasee de muchii + 22 de vârfuri de săgeată). **A colapsat la conformă pe 2026-07-11**:
@@ -894,12 +851,24 @@ incircle se află pe muchie de cuțit: ULP-ul de intrare îi inversează semnul,
 diagonala Delaunay constrânsă se inversează, iar poligonul de coridor care eșuează la
 `Pshortestpath` în oracol („destination point not in any triangle” →
 revenire la spline simplu) reușește în portare (sau invers). Spline-urile rezultate
-diferă cu ~0.2–0.5pt. Frate al lui **A3**/**A8**: o constrângere ireductibilă de
+diferă cu ~0.2–0.5pt. Frate al lui **A3**/**A8** (acum închise): o constrângere ireductibilă de
 portabilitate în virgulă mobilă, aflată sub semantica sursei C — potrivirea
 ar cere reproducerea în JS a rotunjirii exacte `sin`/`cos` din libm Apple.
 
-**Afectate:** `241_0` (circo Δ≈0.2 / twopi pânză Δ≈9 prin inversarea coridorului
-pe muchia `5:ne->8:nw`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Re-baselining la 16.1.** Geometria coridorului multispline nu avea contracția FMA a lui clang
+(radicandul colțului elipsei, `mkCtrlPts`, `DIST` = sqrt(fmadd), produsul scalar din
+`line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+multispline routing geometry`) a oglindit-o. `241_0` din twopi și neato — pe care această clasă
+le atribuise egalității cocirculare de mai jos — au devenit **conforme**
+(acceptări retrase), iar sfdp `42` s-a dovedit că nu are nicio egalitate (este derivă
+A1, vedeți [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` din circo, fdp
+și sfdp încă divergă, cu reziduuri neschimbate sau reduse; atribuirea lor
+egalității de mai jos este anterioară lui `b77b2703` și **nu a fost reverificată
+prin injecție de poziție** de când acea remediere a arătat că aceeași atribuire era greșită pentru
+twopi/neato.
+
+**Afectate:** `241_0` (circo Δ≈0.2 prin inversarea coridorului pe muchia `1->2`; fdp
+și sfdp `241_0` pe fluxurile de motor de mai jos); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 câte 1–2 diferențe de poziție a etichetelor de muchie — ULP-ul libm de 1 apare în
 trigonometria vârfurilor unitare din `poly_init` (`hypot`/`atan2`/`sin`), aduce înălțimea
 calculată a unui nod cu un ULP dincolo de limitarea la dimensiunea minimă pe care oracolul
@@ -1048,32 +1017,43 @@ reproduce cele 10 noduri mutate ale sondajului cu delte x care se potrivesc octe
 închizând lanțul cauzal.
 
 Alte două instanțe pe fluxuri de motor au fost elucidate până la cauza rădăcină și acceptate pe 2026-07-11
-(analiza completă a cauzei rădăcină: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 diferențe de operații de desenare
-— fratele intrării circo de mai sus: aceeași egalitate cocirculară incircle din CDT,
-inversată de 1 ULP la `sin`/`cos` din libm, face ca coridorul multispline al portării să reușească cu un spline de 14 puncte, acolo unde build-ul nativ
-revine la rutarea simplă de 8 puncte; deltele punctelor < 0.07pt) și circo
+(analiza completă a cauzei rădăcină: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 diferențe de operații de desenare,
+atribuite atunci aceleiași egalități cocirculare incircle din CDT ca la intrarea
+circo de mai sus; **retras la graphviz 16.1** — este conform de la
+`b77b2703`, deci inversarea coridorului de 14 puncte față de 8 puncte era contracția FMA
+neoglindită, nu o egalitate) și circo
 `windows-tree` (10 diferențe de operații de desenare pe o muchie de evantai — trigonometria de plasare din circo
 aduce `node2.y` cu un singur ULP deasupra lui `node8.y` în jurul valorii exact simetrice 18.0, iar selecția portului de cap dyna din `closestSide` inversează TOP/BOTTOM la
 acea egalitate exactă; pozițiile și casetele nodurilor sunt în rest identice bit cu bit cu
 oracolul).
 
-**Fluxul de motor sfdp — egalități FP la muchii (`42`, `241_0`).**
+**Fluxul de motor sfdp — egalitate FP la o muchie (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Fluxul xdot de motor sfdp (`parity-sfdp.json`,
 `dot -Ksfdp -Txdot` nativ, ±0.5) scoate la iveală egalitatea cocirculară incircle din CDT odată ce
 pozițiile native exacte dinaintea rutării sunt injectate (deci divergența NU este
 derivă iterativă — vedeți clasa A1-drift — ci o egalitate discretă de predicat):
 
-- `42` și `241_0` — egalitate cocirculară incircle din CDT (coridorul multispline).
-  Cu pozițiile injectate, reziduul este o **inversare a numărului de segmente**: `42`
-  `opCount 5 vs 9` (muchia 0->3) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (muchia 3->2) — diagonala Delaunay constrânsă a portării se inversează față de
-  oracol, astfel că coridorul multispline reușește cu un spline de N puncte acolo unde
-  build-ul nativ revine la o rută simplă mai scurtă (sau invers), exact ca la
-  intrarea twopi/circo `241_0` de mai sus. Portarea emulează deja contracția arm64
+- `241_0` — atribuit egalității cocirculare incircle din CDT (coridorul multispline;
+  nereverificat după `b77b2703`, vedeți re-baselining-ul la 16.1 de mai sus).
+  Reziduul este o **inversare a numărului de segmente**: 7 diferențe de operații de desenare pe muchia 1->2,
+  `ptCount 8 vs 20` (20 de diferențe înainte de `b77b2703`) — coridorul reușește cu
+  un spline de N puncte acolo unde build-ul nativ revine la o rută simplă mai scurtă
+  (sau invers), ca la intrarea circo `241_0` de mai sus. Portarea emulează deja contracția arm64
   `fmadd` în predicatul incircle/`ccw` (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) și folosește Delaunay cu incircle robust; reziduul este
   ULP-ul de 1 al `sin`/`hypot` din V8 față de libm Apple în intrarea predicatului, pe care niciun
   cod portabil nu îl reproduce.
+
+> **sfdp `42` reclasificat A9 → derivă A1 (sincronizarea cu graphviz 16.1).** Era listat
+> aici ca o egalitate incircle din CDT/libm. Misiunea a constatat altceva
+> ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): fosta inversare de coridor
+> era o portare greșită a FMA din partea portării, în geometria coridorului multispline,
+> remediată de `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> routing geometry`); cu pozițiile native injectate, portarea reproduce acum
+> xdot-ul nativ exact. Reziduul rămas (deplasări de noduri de 0.06-0.65 pt) este
+> derivă iterativă, semănată de o singură nepotrivire de 1 ULP între `pow(dist, 2)` din libm Apple
+> și `pow` ARM din portare la cel mai grosier nivel, amplificată
+> de nivelurile mai fine — A1 (vedeți [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095` reclasificat A9 → A1-drift (2026-07-22).** Anterior era listat
 > aici ca „fratele hypot” (derivă sub 0.7pt pe muchiile unui nod cu nume gol
@@ -1091,8 +1071,9 @@ derivă iterativă — vedeți clasa A1-drift — ci o egalitate discretă de pr
 de deviație a muchiilor plate arată un dezacord de 1 ULP la 2 din 6 (Δ 7.1e-15 și
 5.7e-14) — muchia de cuțit a pragului de împărțire care inversează numărul de subdiviziuni.
 Ireductibil: niciun hypot portabil nu reproduce libm Apple (precedentul `arm-pow.ts`
-pentru aceeași limită). Acceptat la nivelul fluxului de motor prin
-`accepted-divergences-engines.json` (`sfdp.42`, `sfdp.241_0`).
+pentru aceeași limită). `sfdp.241_0` este acceptat la nivelul fluxului de motor prin `accepted-divergences-engines.json`.
+`sfdp.42` **nu** face parte din această clasă: intrarea sa din registru este A1 (`comparisons/sfdp-42.md`), iar
+sonda de mai sus nu a explicat-o.
 
 Fluxul xdot de motor **fdp** (`parity-fdp.json`, `dot -Kfdp -Txdot` nativ,
 ±0.5) scoate la iveală ACEEAȘI egalitate cocirculară CDT pe același graf, `241_0`: cu
@@ -1100,9 +1081,10 @@ pozițiile exacte dinaintea rutării ale oracolului injectate, reziduul este de 
 `unfilled_bezier`, limitate la o singură muchie (`0->1#0`, maxΔ 3.39pt). Deoarece
 pozițiile nodurilor sunt injectate identic, divergența este în aval, în
 coridorul multispline din pathplan — aceeași egalitate incircle cu 1 ULP libm ca la
-twopi/circo/sfdp `241_0` (incircle în numere raționale exacte 185/185 de mai sus). Pârghiile
+circo/sfdp `241_0` (incircle în numere raționale exacte 185/185 de mai sus; 11 diferențe neschimbate de
+`b77b2703` — nereverificat prin injecție). Pârghiile
 sunt deja aplicate (`src/pathplan/triang.ts` fmadd, `Math.hypot` în `src/pathplan/route.ts:198`);
-egalitatea este ireductibilă. Acceptat prin `accepted-divergences-engines.json`
+egalitatea este tratată ca ireductibilă. Acceptat prin `accepted-divergences-engines.json`
 `fdp.241_0`. În schimb, `2095` din fdp este **A1-drift, nu A9**: injectarea
 singurului nod cu nume gol (după ce injectorul de atribuire a fost remediat pentru a potrivi
 nodurile cu numele `""`) reduce rezidul la zero — „coada A9” de dinainte era
@@ -1110,6 +1092,28 @@ nodul gol neinjectat care își trăgea după el muchiile incidente. Acceptarea 
 același punct orb — o regenerare nouă a atribuirii sfdp (2026-07-22) cu injectorul remediat
 a confirmat că și aceasta se injectează la 0, iar acceptarea ei a fost eliminată (vedeți nota
 `2095 reclassified` de mai sus).
+
+---
+
+### A10. Limita de dimensiune a `Map` din V8 la împachetarea poliominourilor (`2784`, cinci motoare bazate pe împachetare) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Afectate:** `2784` pe `circo`, `twopi`, `neato`, `fdp` și `sfdp`, în fiecare
+format de ieșire. Pe `dot` este `conformant`.
+
+**Ce se întâmplă.** `lib/pack/pack.c` înregistrează celulele ocupate de o componentă într-un
+`PointSet`. Pentru `2784` (un singur nod înalt de 3e16 pt, `splines="ortho"`), aritmetica
+întreagă fidelă pentru `step`/plasare are nevoie de 2.011.656.764 de celule; nativul
+16.1.0 se termină în 482 s, folosind 67,3 GB rezidenți (vârf de 101 GB). `PointSet`-ul portării
+este un `Map` JavaScript, pe care V8 îl limitează la 2^24 intrări, așa că aruncă
+`Map maximum size exceeded`.
+
+**De ce este acceptată.** O limită de runtime aflată sub cod, nu o lacună de logică; cauza este
+aritmetica fidelă din `910be2a2` (înainte de ea, portarea calcula o aranjare mică și
+greșită și nu atingea niciodată limita). Rezultatul acceptat este o eroare aruncată,
+nu un verdict `diverged`, iar registrele pe motor
+acceptă doar rânduri `diverged`, deci nu există nicio intrare în registru: parcurgerile continuă să
+listeze `2784` printre erorile lor de portare. Dovezi:
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -42,8 +42,9 @@ okunabilir** yetkili kaynağı
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json)
 dosyasıdır. Araçlar bunu rapor zamanında birleştirir: `PARITY-dot.md`, **kabul edilen
 farkları** **takip edilen** birikimden ayırır ve kural kapısı izin listesini
-buradan alır. Aşağıdaki düzyazı bölümleri her kaydı açıklar (A1 ve A3 geçerlidir;
-A2 kapatılmıştır ve geçmiş olarak saklanır); bir CI testi
+buradan alır. Aşağıdaki düzyazı bölümleri her kaydı açıklar (A1 geçerlidir;
+A2, A3 ve A8 kapatılmıştır ve geçmiş olarak saklanır; A10, hiçbir kaydın ifade
+edemeyeceği bir port hatası kabulüdür); bir CI testi
 (`accepted-divergences.test.ts`) kabul edilen her grafın hâlâ farklılaştığını
 doğrular; böylece bu liste fark edilmeden çürümez.
 
@@ -69,8 +70,8 @@ nitelendiririz. Kabul edilen bir farktan etkilenen graflar, bayt çıtası yerin
 
 **Etkilenenler:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (yinelemeli,
 yay modelli motorlar). `dot` motorunun *yerleşimi* bu yinelemeli model
-belirlenimciliğinden **etkilenmez**; `dot` spline yönlendirmesindeki ayrı ve dar
-sınırlı bir kayan nokta farkı aşağıdaki **A3** bölümünde ele alınır.
+belirlenimciliğinden **etkilenmez**; `dot` spline yönlendirmesindeki eski kayan nokta
+farkları (A3, A8) kapatılmıştır ve aşağıda geçmiş olarak saklanır.
 
 > **Kapsam; tarihsel olarak ölçülmemiş bir uyarıydı — şimdi kısmen ölçülüyor.**
 > **Ana dot motoru SVG taraması** (`test/corpus/survey.ts`) hâlâ
@@ -105,7 +106,7 @@ yerel kâhine karşı ~6 anlamlı basamağa sabitlenir — ancak tam ve özdeş 
 düğüm koordinatlarındadır.
 
 **Neden kabul edildi.** Bu, bir tasarım tercihi değil, JS'de çalışmanın katı bir
-kısıtıdır — A3'ün Apple-`hypot` duyarlılığıyla aynı aile. Tüm hedef çalışma
+kısıtıdır — A3/A8'in (o zamandan beri kapatılmış) `hypot`/FMA duyarlılıklarıyla aynı aile. Tüm hedef çalışma
 zamanlarında bit düzeyinde özdeş aşkın fonksiyon/FMA sonuçlarını garanti etmenin
 bir yolu yoktur; bu yüzden bir bayt çıtası yalnızca pahalı değil, sınanamaz olurdu.
 **A1'i değerlendirmek** (yalnızca uyarıyla geçiştirmek yerine) ayrı bir yerel motor
@@ -115,11 +116,12 @@ Bu çalışmanın dürüst tavanı, A1'i “başvuru platformunda etkin fark yok
 **daraltmaktır**; platformlar arası uyarıyı asla ortadan kaldırmak değil; şimdiye
 kadarki sonuçlar (aşağıda) bu tavana uyar: `circo`/`twopi`/`osage` her biri bir
 avuç gerçek A1/A9 örneği ortaya çıkarıp kök nedenine indirdi; `neato`/`fdp`/`sfdp`
-ise 910 öğelik evrende yerel çıktının 0.5pt içinde sırasıyla %90,8/%77,5/%68,0
-düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`, eşleştirilmiş PRNG)
-graflarının çoğu için geçerli — ve kalan her farklılaşan kimlik, triyajsız bir
-sürüklenme olarak bırakılmak yerine enjeksiyonla (çözücü sürüklenmesi ile port
-kusuru) tek tek nedene bağlanmıştır; aşağıdaki yinelemeli motor nitelendirmesine
+ise 929 öğelik evrende (graphviz 16.1.0) yerel çıktının 0.5pt içinde sırasıyla
+%90,3/%96,5/%68,1 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
+eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 910 öğelik listenin her
+farklılaşan kimliği, triyajsız bir sürüklenme olarak bırakılmak yerine enjeksiyonla
+(çözücü sürüklenmesi ile port kusuru) tek tek nedene bağlanmıştır; listeye eklenen
+19 öğe henüz nedene bağlanmamıştır. Aşağıdaki yinelemeli motor nitelendirmesine
 bakın.
 
 **Motor hattı kabulü: twopi oklar ailesi.** <a id="a1-twopi-arrows-family"></a>
@@ -185,27 +187,35 @@ henüz kimlik başına triyaj edilmemiştir — `engine-walk.ts` bu üçü için
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 içinde ayrı bir “Iterative engines (±0.5 characterization)” bölümünde işler;
 bu bölüm bu belgedeki başka yerlerde geçen ±0.01 belirlenimci geçme oranlarıyla
-açıkça **karşılaştırılamaz**. Güncel sayılar (910 öğelik evren; geçme yüzdesi, C
+açıkça **karşılaştırılamaz**. graphviz 16.1.0'a karşı güncel sayılar (929 öğelik evren; geçme yüzdesi, C
 kâhininin işleyemediği girdileri dışarıda bırakır, bkz. [Uygunluk](./conformance.md)):
 
-| motor | taranan | ±0.5pt içinde | uyumlu olmayan (hepsi nedene bağlı, kabul edilmiş) | port hatası / zaman aşımı | kâhin hatası |
+| motor | taranan | ±0.5pt içinde | uyumlu olmayan | port hatası / zaman aşımı | kâhin hatası |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (%90,8) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (%77,5) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (%68,0) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (%90,3) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (%96,5) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (%68,1) | 293 | 2 | 0 |
+
+(`neato` ve `sfdp` satırları, `graphs-decorate`, `1314`, `2784` ve `2371` kimliklerinin
+son yeniden taramasından önce hazırlanan taramalardandır; bu kimlikler kadar
+değişebilirler. `fdp` geçme oranı %77,5'ten yükseldi, çünkü daha önceki işlenmiş
+tarama bir önceki görevin port durumundan önceye aitti.)
 
 (2026-07-11'de 762 öğede yapılan ilk tarama ±0.5pt içinde 263/311/260 ölçmüştü —
 güncel oranlara sıçrama, o tarihten beri girilen kimlik başına düzeltmelerden
 geldi; başlıcaları neato'nun taşınmamış `user_pos`/`P_SET` işlenişi, motor
 başlatma birleştirmesi ve `setEdgeType` makro-işlev düzeltmesidir.)
 
-İlk taramanın aksine, ayrışan her satır artık tek tek nedene bağlanmıştır:
+İlk taramanın aksine, 910 öğelik listenin ayrışan her satırı tek tek nedene bağlanmıştı
+(929 öğelik listeye yeni giren 19 kimlik henüz nedene bağlanmamıştır; T13 devir
+teslimində yeni görünür olanlar olarak listelenmiştir):
 enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin
 yönlendirme öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel
 her ayrışan kimlik ya `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca
 portun yönlendirmesi ve üretimi kâhini tam olarak yeniden üretir) ya da ayrıca
 kabul edilmiş birkaç kimlik başına artıktan biridir (`241_0`'ın üç motorun
-hepsindeki CDT iç çember beraberliği, neato `2239`, sfdp `42`/`2556`). Aşağıdaki
+hepsindeki CDT iç çember beraberliği, neato `2239`, sfdp `2556`; sfdp `42`
+A1 sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). Aşağıdaki
 sınıf kabulü, aklanan kümeyi resmileştirir; güncel sayılar motor başına panolarda
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
@@ -404,38 +414,46 @@ geçer; bu yüzden tek bir dizgeyi hedefleyen bir düzeltme, algılanamaz bir ka
 için başkalarını gerileme riskine sokardı.
 :::
 
-### A3. Spline yönlendirmesinde `hypot` beraberlik çözümü (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. Spline yönlendirmesinde `hypot` beraberlik çözümü (`dot`) — KAPATILDI {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Etkilenenler:** **geometrik olarak simetrik** bir kenar yönlendirme kanalına sahip
-`dot` grafları — tipik olarak kısa, simetrik bir düz kenar yayı. Gözlenen örnek:
-`2368`; *structural-match* düzeyinde kalır (maxΔ ≈ 10.2 pt, **tek** kenarda,
-`376->76`). Aynı beraberlik çözümü, koridor tam ayna simetrik olduğunda yüksek giriş
-dereceli bir merkeze giden **uzun** (çok sıralı) bir kenarda da ortaya çıkar:
-`graphs-b100` / `graphs-b104` (özdeş kaynak), `Node23730->Node23729`'un tek
-düğüm noktasında maxΔ 20 (tam olarak bir sıra satırı) ile ayrışır — her düğüm konumu
-ve tüm yukarı akış kutu/çokgen/gergin yol yapısı C ile bayt bayt özdeştir; yalnızca
-`findMaxDev`'in hangi ayna simetrik iç noktanın bezier düğümü olacağına dair ~1 ULP'lik
-seçimi farklıdır. Kısa düz kenar biçimi `241_1` olarak da ortaya çıkar
-(structural-match, maxΔ ≈ 2.4 pt) — C'nin gürültüsünün bunun yerine ilkini
-tuttuğu, kâhine sabitlenmiş `241_0`'ın ayrışan kardeşi. Aynı beraberlik çözümü
-`2413_1`'de (structural-match, maxΔ 67.65) ve `2413_2`'de (T11 swapBezier-reverse
-düzeltmesi geldikten sonra maxΔ ≤99.55 — o zamana kadar dosyanın bildirilen maxΔ
-1922.26 değeri, ilgisiz ve ayrıca izlenen bir kusurun egemenliğindedir) etiketli bir
-2-döngü geri kenar yarık-koridor bölünmesi ve `graphs-decorate`'te (maxΔ 43.54) tek
-bir küme içi etiketli kenar üretir; her durumda iki aday bölme köşesi, konuma bağlı
-Apple `hypot` gürültüsü bir kazanan seçmeden önce birbirine 5.7e-13 (2413 ailesi) /
-3e-14 (decorate) içinde beraberdir. `2371` (structural-match, maxΔ 16.8) aynı parmak
-izini ilgisiz iki kenarda (`g[9263]` `r6837mid--r9687mid`, `g[23859]`
-`r38mid--r8699mid`) gösterir: port her ikisinde de kâhinin tam kontrol noktası
-dizisi aynasını yayar, düğüm y'si özdeş bir Δ16.8 ile çevrilmiştir (üst/alt bölme
-kesirleri yer değiştirmiş). Kökeni, diğer üyelerin DOĞRULANMIŞ güveninden ziyade
-**ORTA** güven olarak nitelendirilir: `2371` ~199 bileşen paketler; bu,
-pathplan-yerel koordinatları sayfa koordinatlarından ayırır; bu yüzden beraberlik
-üç enstrümantasyon denemesinde `route.ts:209` ile canlı olarak ilişkilendirilemedi;
-düz kip segmentasyonu ya da kırpma sonrası `recover_slack` kökeni tümüyle
-dışlanmış değildir. Tam teşhis:
-`plans/residual-cleanup/analysis/2371-mirror.md`. Yönlendirilen kenarların çoğu
-etkilenmez.
+**Durum (2026-10-12): kapatıldı.** Artık bu sınıf altında kabul edilen hiçbir derlem
+kimliği yoktur; bölüm, mekanizmanın tarihsel belgesi olarak saklanır. Eski üyelerin
+(`2368`, `graphs-b100`, `graphs-b104`, `241_1`, `2413_1`, `2413_2`,
+`graphs-decorate`, `2371`) tümü yeni taramada **`conformant`**'tır
+(`test/corpus/parity-probe.json`).
+
+**Mekanizma ve onu kapatan şey.** Spline uydurucu (`Proutespline` -> `findMaxDev`,
+`src/pathplan/route.ts`), uydurulmuş bir bezier'i en büyük sapmaya sahip iç rota
+noktasında böler. Geometrik olarak simetrik bir kanalda aday sapmalar ~1 ULP
+farklıdır; bu yüzden kazananı aritmetiğin son biti belirler. Porta indirgenemez bir
+boşluk atfedilmişti (“Apple `hypot`'u hiçbir taşınabilir `hypot` ile eşleşmez”) ve
+öteleme-eşdeğişkenli, toleranslı bir beraberlik çözümüyle telafi edilmişti. Bu atıf
+çürütüldü: beraberliği C'nin *tam* aritmetiği belirler ve bu yeniden üretilebilir.
+`cdf597bc` commit'i
+(`fix(pathplan): split splines at C's max-deviation point bit for bit`) onu taşıdı:
+uzaklık için libm `hypot` (`route.c:448`), C'nin katı `>` karşılaştırması
+(`route.c:139`) ve clang'ın bezier değerlendirmesinin `fp-contract` birleştirmesi
+(`route.c:137-138`), `mkspline` determinantları (`route.c:181-183`), `dot`
+(459), `normv` (413), `B01` (488) ve `B23` (494). Toleranslı beraberlik çözümü
+kalktı; `241_0` düğümü C'nin yönlendirme çerçevesinde sabitlenmiştir, çünkü C
+bu tür beraberliklerde öteleme-eşdeğişkenli değildir. Bu, `2368`, `2371`, `2413_1`,
+`2413_2`, `graphs-b100`, `graphs-b104` ve `graphs-decorate`'i kapattı.
+
+`241_1` bir `hypot` beraberliği değildi: `87347711` ile kapatıldı
+(`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C,
+bir ana kenarı paylaşan her bitişik düz kenarı tek bir `make_flat_adj_edges`
+çağrısında gruplar ve portları tüm grup boyunca sınar; bu yüzden portlu bir
+kenarın portsuz kardeşi yardımcı graf üzerinden yönlendirilir. Port grubu port
+varlığına göre ayırdı ve kardeşi `makeSimpleFlat` üzerinden yönlendirdi; onun
+kırpması farklı bir `bezier_clip` noktasına düşer (54.28, yerel 54.46'ya karşı).
+
+Her iki düzeltme de gerilemesiz taze derlem taramalarıyla doğrulandı
+(günlük satırları “T5 land” ve “T6 land”,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Düzeltmeden önceki kanıt (tarihsel).** `2368` referans üyeydi.
+`376->76` yayı, C'ye göre karşı köşeye bölünüyordu; bu yayın grafı ile düzeltme
+öncesi C ve port yolları kayıt için saklanır.
 
 ::: details Graf tanımı (`2368.dot`)
 ```dot
@@ -475,73 +493,28 @@ digraph G {
 ```
 :::
 
-**Nitelendirme.** Spline uydurucu (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`), uydurulmuş bir bezier'i azami sapmanın olduğu iç yol
-noktasında böler. Kanal simetrik olduğunda iki aday bölme noktası **tam bir
-matematiksel beraberliktir** ve kazananı, mutlak koordinatlı bir bezier
-değerlendirmesindeki ~1e-14 mertebesinde kayan nokta iptal gürültüsü belirler;
-bunun **işareti mutlak konuma bağlıdır**.
-
-C'nin sapma uzaklığı libm `hypot`'tur ve kâhini üreten macOS Apple `hypot`'u,
-**hiçbir** taşınabilir `hypot` ile bit düzeyinde eşleşmeyen tescilli bir
-uygulamadır (graphviz koordinat rejiminde ona karşı ölçüldü, bit düzeyinde özdeş
-oranlar: V8 `Math.hypot` ≈ %63, doğru yuvarlanmış / Arm tarzı bir `hypot` ≈ %84,
-fdlibm `hypot` ≈ %90, `sqrt(dx²+dy²)` ≈ %94). Bu ULP gürültüsü yüzünden
-**C'nin kendisi tutarlı değildir**: öteleme açısından eş iki yayı **zıt** köşelere
-doğru böler. `2368` içinde `376->76` yayı, geometrik olarak özdeş `256->436`
-yayının ayna görüntüsüdür:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-Farkın tamamı bindirilmiş olarak (`376->76` / `to1` yayında 12× yakınlaştırma) —
-**yeşil = C Graphviz, kırmızı = @knowvah/dot-engine**. İkisi de aynı düğüm
-sınırları arasındaki aynı sığ aşağı yaydır; C'nin beraberliğinin zıt köşeye doğru
-koptuğu karın bölgesinde (orta bezier kontrol noktası) ~1–2 pt kadar ayrışırlar:
-
-![2368 376->76 yayı: yeşil = C, kırmızı = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Geri kalan her şey tolerans dahilinde eşleşir — aynı sınırlayıcı kutu (608×148),
-düğüm konumları, etiketler, ok uçları ve diğer tüm kenarlar. Tam işlemeler görsel
-olarak ayırt edilemez:
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![C Graphviz ile işlenmiş 2368](/img/2368-c.png) | ![@knowvah/dot-engine ile işlenmiş 2368](/img/2368-port.png) |
-
-Port, **ötelemeye göre eşdeğişken** bir beraberlik çözümü kullanır (gerçek bir
-beraberlik her zaman ilk dizine çözülür); bu yüzden böyle *her* yayı konumdan
-bağımsız olarak aynı şekilde çizer — kendi içinde tutarlıdır ve C'nin gürültüsünün
-de ilkini tuttuğu yaylarda C ile eşleşir (örn. `256->436` ve `241_0 5:ne->8:nw`);
-yalnızca C'nin gürültüsünün öbür yöne döndüğü yerde (`376->76`) ayrışır. Uç
-noktalar, ok ucu hedefi, diğer kenarlar, tüm düğümler, etiketler ve sınırlayıcı kutu
-tolerans dahilinde eşleşir; yalnızca tek yayın iç kontrol noktaları kayar (karın
-bölgesinde ~1–2 pt).
-
-**Neden kabul edildi.** Apple'ın `hypot`'u, JS motorları ve CPU'lar arasında
-**A1**'in FMA/`pow`'undan daha yeniden üretilebilir değildir — aynı taşınabilirlik
-kısıtıdır, yalnızca `dot` spline yönlendiricisinde. C'nin *konuma bağlı* seçimini
-eşleştirmek, C'nin katı beraberlik çözümünü benimsemek anlamına gelirdi; bu da her
-yönlendirilen kenarın geçtiği **ortak bir ilkel yapıdadır**: bunu yapmak `376->76`
-eşleşmesini, C'nin öbür yöne düştüğü yaylarda *yeni* uyuşmazlıklarla takas eder
-(`241_0`'ı ve bir `cnt=3` düz kenar kâhin durumunu geriletir); bu net bir
-sıfırdır ve ayrıca portun ötelemeye göre eşdeğişkenliğinden vazgeçmek demektir. Bu
-yüzden tutarlı (eşdeğişken) yönlendiriciyi koruyoruz. Bu, sınırlı, algılanamaz
-düzeyde bir `dot` farkıdır — açık bir hata değildir. Tam inceleme:
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
 
 ### A4. Kâhin kabul edilmiş bozuk bir durumda (init_rank / pathplan ailesi) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Etkilenenler:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). Aile
+**Etkilenenler (graphviz 16.1 taraması):** `1435` (structural-match, bir spline
+kontrol noktasında maxΔ 0.39; 15.x kâhinine karşı 503'tü — düşüş ikili aramayla
+bulunmadı) ve `1581` (diverged: üst düzey çocuk sayısı 39'a karşı 22, maxΔ 0). Aile
 üyeleri `1939` ve `2825` **uyumludur** ve kaydı yoktur; `2470` ve
 `graphs-structs` 2026-07-11'de onlara katıldı (ikisi de ortho komşuluk
 taşması/chancmpid, fmadd `polylineMidpoint` ve yarı-çift beraberlik yuvarlama
 düzeltmeleri girdikten sonra uyumluya çöktü — port artık kâhinin kurtarma çıktısını,
 özdeş kaybolan kenarlar dahil, tam olarak yeniden üretiyor); kabul kayıtları
-emekli edildi.
+emekli edildi. **`2796` ve `2471` graphviz 16.1'de onlara katıldı** (ikisi de taze
+taramada `conformant`, kabul kayıtları emekli edildi): port ve 16.1 kâhini artık
+`init_rank` kurtarma çıktısında, kaybolan kenarlar dahil, anlaşıyor. Neden ikili
+arama ile ayrıştırılmadı (adaylar 16.1 dotgen portu `48981bf0` ve kaybolan kenar
+tüketimi düzeltmesi `54bd3b9b`'dir); aşağıdaki `init_rank` açıklaması sınıfın
+mekanizması olarak saklanır ve iki kimlik parite taramasıyla uyumlu olarak sabitlenmiştir.
 
 `1581` ve `2825`, kilitlenme kurtarma durumlarıydı (fix-element-count-bucket
 görevi): yukarı akış testlerinin **yalnızca** dot'un çökmediğini doğruladığı
@@ -691,8 +664,12 @@ karşılaştırma sayfası (yan yana işleme + kanıt kaydı).
 
 ### A6. Yozlaşmış girdide `unsigned int` tuval taşması {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Etkilenenler:** `1314` — saçma yazı tipi boyutu (`fontsize="991836031967s8"`)
-çizimi ~2.75e11 pt'ye şişiren fuzzer kaynaklı bir girdi.
+**Etkilenenler:** sfdp `2556` (bir NaN yerleşimi; motor hattı kaydına bakın). `1314`
+— saçma yazı tipi boyutu (`fontsize="991836031967s8"`) çizimi ~2.75e11 pt'ye
+şişiren fuzzer kaynaklı bir girdi — graphviz 16.1'de **conformant**'tır ve kabulü
+emekli edilmiştir: port artık sayfa boyutunu yerel `ROUND` dönüşümünün yaptığı gibi
+daraltır (`fe20f303`) ve sayfa kırpmasını `setup_page` sırasıyla kurar
+(`eea9d21c`). Aşağıdaki mekanizma paragrafları özgün farkı anlatır.
 
 **Ne olur.** C, `job->width` / `job->height` değerlerini **`unsigned int`** olarak
 saklar (`gvcjob.h:327-328`). Devasa punto boyutunun `ROUND(...)` işlemi
@@ -767,60 +744,39 @@ teşhis: `.agent-notes/honda-samehead-shared-port.md`.
 
 ---
 
-### A8. `fp-contract`/FMA yuvarlaması ile katı IEEE (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. `fp-contract`/FMA yuvarlaması ile katı IEEE (`dot`) — KAPATILDI {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**Durum (2026-10-12): kapatıldı.** Artık bu sınıf altında kabul edilen hiçbir derlem
+kimliği yoktur; bölüm tarihsel belge olarak saklanır. Bilinen her iki örnek de
+**`conformant`**'tır: `2620` (2026-07-11) ve `2646` (2026-10-12).
 
 **Sınıf.** clang arm64, kâhin ikilisini `-ffp-contract=on` ile derler ve seçili
 çarp-topla dizilerini tek FMA komutlarında birleştirir; port ise katı IEEE-754
-yuvarlaması yapan ve `fma` yayamayan V8 üzerinde çalışır. Bit düzeyinde özdeş
+yuvarlaması yapan V8 üzerinde çalışır. Bit düzeyinde özdeş
 girdilerde ikisi, derleyicinin birleştirmeyi seçtiği ifadede 1-2 ULP farklılaşır.
-Port tarafı her zaman katı IEEE-754 sonucudur; kâhin tarafı her zaman FMA ile
-birleştirilmiş sonuçtur. Bu, C kaynak kodu anlambiliminin altındaki bir
-derleyici/çalışma zamanı taşınabilirlik kısıtıdır, portta bir mantık kusuru değil —
-clang'ın belirli birleştirme seçimlerini yazılımda öykünmeden indirgenemez. Biri
-iki farklı yerde, iki farklı yükseltme mekanizmasıyla olmak üzere iki örnek bilinir:
+İki örnek biliniyordu: iki farklı yerde, iki farklı yükseltme mekanizmasıyla:
 
 - **2646** — ULP, `Proutespline`'ın `points2coeff`/`solve3` kübik çözümünün içinde
-  doğar ve bir spline uydurucu kök sayısını doğrudan çevirir.
+  doğdu ve bir spline uydurucu kök sayısını doğrudan çevirdi.
 - **2620** — ULP, `poly_init`'in çokgen köşe kapsamı döngüsünde (düğüm boyutlandırma)
-  doğar ve `ortho`'nun sadık, relax başına tamsayı kırpmasıyla aşağı akışta
-  eşit maliyetli bir labirent koridoru beraberliği çevrilmesine yükseltilir.
+  doğdu ve `ortho`'nun sadık, relax başına tamsayı kırpmasıyla aşağı akışta
+  eşit maliyetli bir labirent koridoru beraberliği çevrilmesine yükseltildi.
 
-**Etkilenenler:** `2646` (structural-match, 21.216 kenardan 3'ünde maxΔ 42.09:
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — hepsi kayıt-portu
-`:c->:nb_part` smode uzun kenar yönlendirmeleri). **A3**'ün kardeşi: iki sınıf da
-`Proutespline` içindeki indirgenemez kayan nokta taşınabilirliği beraberlikleridir,
-ancak mekanizma farklıdır — libm `hypot` değil, bir derleyici `fp-contract`
-artefaktı.
-
-**Ne farklı.** Üç kenarın hepsinde yalnızca son `routesplines` çağrısı (baş portuna
-düz bir bacak) ayrışır. Uç noktası, bariyer çokgeninin alt duvarı üzerinde bit
-düzeyinde tam oturur ve teğeti o duvara paraleldir (`evs[1]=(1,-1.22e-16)`); bu
-yüzden her `splinefits` adayı `t=1`'de bariyere teğettir — kesişim kübiğinin
-yaklaşık çift kökü. `points2coeff` bu kübiği yıkıcı bir iptalle hesaplar (~7446
-civarındaki terimler ~0.099'a çöker). Kâhin (clang/arm64, `-ffp-contract=on`)
-`v3 + 3*v1 - (v0 + 3*v2)` ifadesini birleşik çarp-toplalara dönüştürür; V8 ise katı
-IEEE yuvarlaması yapar — ikisi **bit düzeyinde özdeş girdilerde** ~9.1e-13 farklılaşır
-ve bu gürültü `solve3` diskriminantının işaretini çevirir: C 1 kök bulur (866.7,
-segmentin içinde); port, `t=0.9999975 < 1-EPSILON2` konumunda sahte bir eş kökle 3
-kök bulur. Sahte kök fazladan bir `a`-yarılama yinelemesini tetikler; bu da son
-parçanın teğet büyüklüğünü 2 çarpanıyla çevirir (3 kenarda her iki yönde), kırpma
-sonrası maxΔ 42.09'u (26 SVG farkı) üretir.
-
-**Neden kabul edildi (indirgenemezlik kontrollü bir deneyle kanıtlandı).** Altı
-`routesplines` çağrısının hepsi her iki tarafta dökümlendi — kutu, çokgen, `PL`,
-başlangıç, bitiş ve `evs` bayt bayt özdeştir; önceki (son olmayan) çağrının çıktı
-spline'ı da öyle; tek ayrım son çağrının `solve3`'ü içindedir. Bağımsız bir saf-C
-düzeneği tek değişkeni yalıttı: `-ffp-contract=off` ile derlemek **portu** 3
-kenarın hepsinde bit düzeyinde yeniden üretir; varsayılan (`on`) birleştirme
-**kâhini** 3 kenarın hepsinde bit düzeyinde yeniden üretir. Dolayısıyla port, katı
-IEEE-754 C ile zaten uyuşur; fark tamamen kâhin derleyicisinin FMA birleştirme
-seçimidir, C kaynak kodu anlambiliminin altındadır — düzeltilecek kaynak düzeyinde
-bir sadakatsizlik yoktur. Hedefli bir düzeltme (`points2coeff` içinde birleştirmeyi
-elle öykünmek) denendi ve çürütüldü: 3 kenardan 2'sini düzeltir ama üçüncüsünü
-düzeltmez; onun çevrilmesi `solve3`'ün kendi iç birleştirmesinden kaynaklanır.
-Eksiksiz bir düzeltme, tüm spline uydurucu boyunca yazılım-FMA öykünmesi gerektirirdi
-— piksel altı, 3 kenarlık bir getiri için sıcak döngü maliyeti ve derlem genelinde
-yuvarlama etki alanı. Tam teşhis: `plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Kapatıldı: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Üç smode uzun kenar bacağı (`edge2575`, `edge3905`,
+`edge15467`) paralel teğetli bir bariyer duvarında biter; bu yüzden
+`splinefits` kesişim kübiğinin neredeyse çift kökü vardır. `points2coeff` bu kübiği
+yıkıcı sadeleşme yoluyla kurar; kâhin `route.c:397-398` ve `solvers.c:43`'ü
+birleştirir, dolayısıyla katı IEEE'li port farklı bir `solve3` kök sayısı, sahte bir
+kesişim ve fazladan bir `a` yarılaması elde etti (maxΔ 42.09). Bunun indirgenemez
+olduğu yönündeki önceki sonuç (“tüm spline uydurucuda yazılımsal FMA öykünmesi”,
+kısmi düzeltme çürütülmüştü) çürütüldü: birleştirme noktaları sonlu ve sayılabilirdir.
+Port artık `points2coeff` (`route.c:397-398`), `splineintersectsline` (371-372, 374,
+360-361, 383-384), `solve3` (`solvers.c:41, 43, 46`) ve satır içi `solve2`'sindeki
+(80, 85) her birleştirmeyi yansıtır; `solve3`/`solve2`/`solve1` C'nin biçimine yeniden
+taşındı. `2646`'nın yakalanan 42.432 `Proutespline` çağrısının tümü kâhinle bit
+düzeyinde özdeştir (günlük satırı “T7 land”). Özgün teşhis (mekanizma için hâlâ geçerli):
+`plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Etkilenenler (tarihsel):** `2620` (eskiden structural-match, maxΔ 585; 24 kenar
 yolunda ve 22 ok ucunda 423 fark). **2026-07-11'de uyumluya çöktü**: sadık `sgraph`
@@ -888,12 +844,23 @@ tam iç çember yüklemi bir bıçak sırtında durur: girdi ULP'si işaretini �
 kısıtlı-Delaunay köşegeni çevrilir ve kâhinde `Pshortestpath`'te başarısız olan
 koridor çokgeni (“destination point not in any triangle” → düz spline geri dönüşü)
 portta başarılı olur (veya tersi). Ortaya çıkan spline'lar ~0.2–0.5pt farklıdır.
-**A3**/**A8**'in kardeşi: C kaynak anlambiliminin altında indirgenemez bir kayan nokta
+(artık kapatılmış) **A3**/**A8**'in kardeşi: C kaynak anlambiliminin altında indirgenemez bir kayan nokta
 taşınabilirliği kısıtı — eşleştirmek, JS'de Apple libm'in tam `sin`/`cos`
 yuvarlamasını yeniden üretmeyi gerektirirdi.
 
-**Etkilenenler:** `241_0` (`5:ne->8:nw` kenarındaki koridor çevrilmesiyle circo
-Δ≈0.2 / twopi tuval Δ≈9); `2343`, `2239`, `share-b29`, `windows-b29` (twopi, her
+**16.1 yeniden tabanlaması.** Çoklu spline koridor geometrisinde clang'ın FMA
+birleştirmesi eksikti (elips köşesi radikandı, `mkCtrlPts`, `DIST` = sqrt(fmadd),
+`line_intersect` iç çarpımı); `b77b2703` (`fix(neato): mirror fma contraction in
+multispline routing geometry`) onu yansıttı. Bu sınıfın aşağıdaki eşdairesel
+beraberliğe atfettiği twopi ve neato `241_0` **conformant**'a döndü (kabuller
+emekli edildi) ve sfdp `42`'nin hiç beraberliği olmadığı ortaya çıktı (A1
+sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
+ve sfdp `241_0` hâlâ ayrışır; artıkları değişmemiş ya da azalmıştır; aşağıdaki
+beraberliğe atıfları `b77b2703`'ten öncedir ve aynı atfın twopi/neato için yanlış
+olduğunu gösteren o düzeltmeden beri **konum enjeksiyonuyla yeniden doğrulanmamıştır**.
+
+**Etkilenenler:** `241_0` (circo Δ≈0.2, `1->2` kenarındaki koridor çevrilmesiyle;
+aşağıdaki motor hatlarında fdp ve sfdp `241_0`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi, her
 birinde 1–2 kenar etiketi konum farkı — libm 1-ULP'si `poly_init`'in birim köşe
 trigonometrisinde (`hypot`/`atan2`/`sin`) doğar, bir düğümün hesaplanan yüksekliğini
 kâhinin tam oturduğu asgari boyut kıskacının bir ULP ötesine koyar ve xlabel R-ağacı
@@ -1038,33 +1005,43 @@ nedensel zinciri kapatır.
 
 Motor hattında iki ek örnek daha 2026-07-11'de kök nedenine indirildi ve kabul edildi
 (tam kök neden analizi: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 çizim
-işlemi farkı — yukarıdaki circo kaydının kardeşi: libm `sin`/`cos` 1-ULP'si ile
-çevrilen aynı CDT eşdairesel iç çember beraberliği, yerel derleme düz 8 noktalı
-yönlendirmeye geri dönerken portun çoklu spline koridorunun 14 noktalı bir spline ile
-başarılı olmasını sağlar; nokta farkları < 0.07pt) ve circo `windows-tree` (tek bir
+işlemi farkı, o zaman yukarıdaki circo kaydıyla aynı CDT eşdairesel iç çember
+beraberliğine atfedilmişti; **graphviz 16.1'de emekli edildi** — `b77b2703`'ten beri
+conformant'tır, yani 14 noktalı ile 8 noktalı koridor çevrilmesi yansıtılmamış FMA
+birleştirmesiydi, bir beraberlik değildi) ve circo `windows-tree` (tek bir
 yelpaze kenarında 10 çizim işlemi farkı — circo'nun yerleştirme trigonometrisi,
 tam simetrik 18.0 değeri etrafında `node2.y`'yi `node8.y`'nin bir ULP üstüne koyar ve
 `closestSide`'ın dyna baş portu seçimi tam o beraberlikte TOP/BOTTOM'u çevirir; düğüm
 konumları ve kutular aksi halde kâhinle bit düzeyinde özdeştir).
 
-**sfdp motor hattı — kenar FP beraberlikleri (`42`, `241_0`).**
+**sfdp motor hattı — kenar FP beraberliği (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp xdot motor hattı (`parity-sfdp.json`,
 yerel `dot -Ksfdp -Txdot`, ±0.5), tam yerel yönlendirme öncesi konumlar
 enjekte edildiğinde CDT eşdairesel iç çember beraberliğini ortaya çıkarır (yani
 ayrışma yinelemeli sürüklenme DEĞİL — bkz. A1-drift sınıfı — kesikli bir yüklem
 beraberliğidir):
 
-- `42` ve `241_0` — CDT eşdairesel iç çember beraberliği (çoklu spline koridoru).
-  Enjekte edilmiş konumlarla artık bir **segment sayısı çevrilmesidir**: `42`
-  `opCount 5 vs 9` (kenar 0->3) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (kenar 3->2) — portun kısıtlı-Delaunay köşegeni kâhine göre çevrilir; bu
-  yüzden çoklu spline koridoru, yerel derlemenin daha kısa düz bir yola geri
-  döndüğü yerde N noktalı bir spline ile başarılı olur (veya tersi); yukarıdaki
-  twopi/circo `241_0` kaydıyla tıpatıp aynı. Port, iç çember/`ccw` yükleminde arm64
+- `241_0` — CDT eşdairesel iç çember beraberliğine atfedilir (çoklu spline
+  koridoru; `b77b2703`'ten sonra yeniden doğrulanmadı, yukarıdaki 16.1 yeniden
+  tabanlamasına bakın). Artık bir **segment sayısı çevrilmesidir**: 1->2 kenarında
+  7 çizim işlemi farkı, `ptCount 8 vs 20` (`b77b2703`'ten önce 20 fark) — koridor,
+  yerel derlemenin daha kısa düz bir yola geri döndüğü yerde N noktalı bir spline ile
+  başarılı olur (veya tersi); yukarıdaki circo `241_0` kaydındaki gibi. Port, iç çember/`ccw` yükleminde arm64
   `fmadd` birleştirmesine zaten öykünür (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) ve sağlam iç çemberli Delaunay kullanır; artık, hiçbir
   taşınabilir kodun yeniden üretemediği yüklem girdisindeki V8-ile-Apple-libm
   `sin`/`hypot` 1-ULP'sidir.
+
+> **sfdp `42`, A9'dan A1-drift'e yeniden sınıflandırıldı (graphviz 16.1 senkronu).** Burada
+> bir CDT/libm iç çember beraberliği olarak listelenmişti. Görev farklı bir şey
+> buldu ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): eski koridor
+> çevrilmesi, çoklu spline koridor geometrisinde port tarafında bir FMA hatalı
+> taşımasıydı ve `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> routing geometry`) ile düzeltildi; yerel konumlar enjekte edildiğinde port artık
+> yerel xdot'u tam olarak yeniden üretir. Kalan artık (düğüm kaymaları 0.06-0.65 pt),
+> en kaba düzeyde Apple libm `pow(dist, 2)` ile portun ARM `pow`'u arasındaki tek bir
+> 1-ULP uyuşmazlığının tohumladığı ve daha ince düzeylerin büyüttüğü yinelemeli
+> sürüklenmedir — A1 (bkz. [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095`, A9'dan A1-drift'e yeniden sınıflandırıldı (2026-07-22).** Daha önce
 > burada “hypot kardeşi” olarak listelenmişti (boş adlı bir düğüm `""->"4"`'ün
@@ -1082,19 +1059,21 @@ beraberliğidir):
 derleyip temsili düz kenar sapma girdilerinde Node `Math.hypot` ile karşılaştırmak, 6
 girdiden 2'sinde 1-ULP uyuşmazlık gösterir (Δ 7.1e-15 ve 5.7e-14) — alt bölüm
 sayısını çeviren bölme eşiği bıçak sırtı. İndirgenemez: hiçbir taşınabilir hypot
-Apple libm'i yeniden üretmez (aynı sınır için `arm-pow.ts` emsali). Motor hattı
-düzeyinde `accepted-divergences-engines.json` aracılığıyla kabul edilir
-(`sfdp.42`, `sfdp.241_0`).
+Apple libm'i yeniden üretmez (aynı sınır için `arm-pow.ts` emsali). `sfdp.241_0`, motor hattı
+düzeyinde `accepted-divergences-engines.json` aracılığıyla kabul edilir.
+`sfdp.42` bu sınıfın parçası **değildir**: kayıt girdisi A1'dir
+(`comparisons/sfdp-42.md`) ve yukarıdaki sonda onu açıklamadı.
 
 **fdp** xdot motor hattı (`parity-fdp.json`, yerel `dot -Kfdp -Txdot`, ±0.5) AYNI CDT
 eşdairesel beraberliğini aynı grafta, `241_0`'da ortaya çıkarır: kâhinin tam
 yönlendirme öncesi konumları enjekte edildiğinde artık, tek bir kenara
 (`0->1#0`, maxΔ 3.39pt) sınırlı 11 sayısal `unfilled_bezier` farkıdır. Düğüm
 konumları enjeksiyonla özdeş olduğundan ayrışma aşağı akışta, pathplan çoklu spline
-koridorundadır — twopi/circo/sfdp `241_0` ile aynı libm-1-ULP iç çember beraberliği
-(yukarıdaki tam rasyonel iç çember 185/185). Kaldıraçlar zaten uygulandı
+koridorundadır — circo/sfdp `241_0` ile aynı libm-1-ULP iç çember beraberliği
+(yukarıdaki tam rasyonel iç çember 185/185; 11 fark `b77b2703` ile değişmedi —
+enjeksiyonla yeniden doğrulanmadı). Kaldıraçlar zaten uygulandı
 (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198` `Math.hypot`);
-beraberlik indirgenemez. `accepted-divergences-engines.json` `fdp.241_0` aracılığıyla
+beraberlik indirgenemez sayılır. `accepted-divergences-engines.json` `fdp.241_0` aracılığıyla
 kabul edilir. fdp'nin `2095`'i ise **A9 değil, A1-drift'tir**: tek boş adlı düğümü
 enjekte etmek (nedenlendirme enjektörü `""` adlı düğümlerle eşleşecek şekilde
 düzeltildikten sonra) artığını sıfıra indirir — önceki “A9 kuyruğu”, bağlı kenarlarını
@@ -1102,6 +1081,28 @@ sürükleyen, enjekte edilmemiş boş düğümdü. sfdp `2095` kabulü aynı kö
 düzeltilmiş enjektörle yapılan yeni bir sfdp nedenlendirme yenilemesi (2026-07-22)
 onun da 0'a enjekte edildiğini doğruladı ve kabulü kaldırıldı (yukarıdaki
 `2095 reclassified` notuna bakın).
+
+---
+
+### A10. Poliomino paketlemede V8 `Map` boyut sınırı (`2784`, paketleme tabanlı beş motor) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Etkilenenler:** `2784`, `circo`, `twopi`, `neato`, `fdp` ve `sfdp` üzerinde, her
+çıktı biçiminde. `dot` üzerinde `conformant`'tır.
+
+**Ne olur.** `lib/pack/pack.c`, bir bileşenin kapladığı hücreleri bir `PointSet`
+içinde tutar. `2784` için (3e16 pt yüksekliğinde tek bir düğüm, `splines="ortho"`)
+sadık tamsayı `step`/yerleştirme aritmetiği 2.011.656.764 hücre gerektirir; yerel
+16.1.0 bunu 67.3 GB rezident bellekle (101 GB tepe) 482 sn'de tamamlar. Portun
+`PointSet`'i bir JavaScript `Map`'idir ve V8 onu 2^24 girdiyle sınırlar; bu yüzden
+`Map maximum size exceeded` fırlatır.
+
+**Neden kabul edildi.** Kodun altında bir çalışma zamanı sınırı, mantık boşluğu
+değil; neden `910be2a2`'nin sadık aritmetiğidir (ondan önce port küçük, yanlış bir
+yerleşim hesaplıyor ve sınıra hiç ulaşmıyordu). Kabul edilen sonuç bir `diverged`
+hükmü değil, fırlatılan bir hatadır ve motor başına kayıtlar yalnızca `diverged`
+satırlarını kabul eder; bu yüzden kayıt girdisi yoktur: taramalar `2784`'ü port
+hataları altında listelemeyi sürdürür. Kanıt:
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

@@ -208,7 +208,7 @@ every current diverged id is either `drift-exonerated` (the port's routing
 and emission reproduce the oracle exactly once the solver drift is removed)
 or one of the handful of separately accepted per-id residuals (`241_0`'s
 CDT incircle tie on all three engines, neato `2239`, sfdp `2556`; sfdp `42`
-is A1 drift, see [`comparisons/sfdp-42.md`](../comparisons/sfdp-42.md)).
+is A1 drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 The class acceptance below formalizes the exonerated set; live counts in
 the per-engine dashboards
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -867,7 +867,7 @@ contraction (ellipse-corner radicand, `mkCtrlPts`, `DIST` = sqrt(fmadd), the
 multispline routing geometry`) mirrored it. twopi and neato `241_0` — which
 this class had attributed to the cocircular tie below — went **conformant**
 (acceptances retired), and sfdp `42` turned out to have no tie at all (it is A1
-drift, see [`comparisons/sfdp-42.md`](../comparisons/sfdp-42.md)). circo, fdp
+drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
 and sfdp `241_0` still diverge with their residuals unchanged or reduced; their
 attribution to the tie below predates `b77b2703` and has **not been re-verified
 by position injection** since that fix showed the same attribution wrong for
@@ -1056,7 +1056,7 @@ iterative drift — see the A1-drift class — but a discrete predicate tie):
 
 > **sfdp `42` reclassified A9 → A1 drift (graphviz 16.1 sync).** It was listed
 > here as a CDT/libm incircle tie. The mission found otherwise
-> ([`comparisons/sfdp-42.md`](../comparisons/sfdp-42.md)): the former corridor
+> ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): the former corridor
 > flip was a port-side FMA mis-port in the multispline corridor geometry,
 > fixed by `b77b2703` (`fix(neato): mirror fma contraction in multispline
 > routing geometry`); with native positions injected the port now reproduces
@@ -1124,7 +1124,7 @@ wrong layout and never reached the limit). The accepted outcome is a thrown
 error rather than a `diverged` verdict, and the per-engine registries only
 accept `diverged` rows, so no registry entry exists: the walks keep listing
 `2784` under their port-error faults. Evidence:
-[`comparisons/2784-pack-cells.md`](../comparisons/2784-pack-cells.md).
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

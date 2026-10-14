@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -41,8 +41,9 @@ nižšie), je
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json).
 Nástroje ho pripájajú v čase generovania reportu: `PARITY-dot.md` oddeľuje **akceptované
 odchýlky** od **sledovaného** nevybavenia a brána pravidiel z neho preberá svoj
-zoznam povolených. Prózové oddiely nižšie vysvetľujú každý záznam (A1 a A3 sú živé;
-A2 je uzavretý a ponechaný ako história); test v CI (`accepted-divergences.test.ts`) zaisťuje, že
+zoznam povolených. Prózové oddiely nižšie vysvetľujú každý záznam (A1 je živý;
+A2, A3 a A8 sú uzavreté a ponechané ako história; A10 je akceptácia chyby portu, ktorú
+žiadny register nevie vyjadriť); test v CI (`accepted-divergences.test.ts`) zaisťuje, že
 každý akceptovaný graf sa stále líši, takže tento zoznam nemôže nepozorovane
 zastarať.
 
@@ -68,8 +69,8 @@ tolerančnej** laťke namiesto laťky na úrovni bajtov.
 
 **Dotknuté:** `neato`, `fdp`, `sfdp`, `circo`, `twopi`, `osage` (iteratívne
 moduly založené na pružinovom modeli). *Rozloženie* modulu `dot` týmto
-determinizmom iteratívneho modelu **nie je** dotknuté; samostatná, úzko ohraničená odchýlka
-pohyblivej desatinnej čiarky pri vedení splinov v `dot` je popísaná nižšie v **A3**.
+determinizmom iteratívneho modelu **nie je** dotknuté; niekdajšie odchýlky pohyblivej
+desatinnej čiarky pri vedení splinov v `dot` (A3, A8) sú uzavreté a ponechané nižšie ako história.
 
 > **Rozsah, historicky nezmeraná výhrada — teraz čiastočne zmeraná.**
 > **Hlavný prieskum SVG pre modul dot** (`test/corpus/survey.ts`) je stále
@@ -103,7 +104,7 @@ natívnemu orákulu so zhodným PRNG a `fma` — ale presná reprodukcia identic
 odchýlka je v jemných súradniciach uzlov.
 
 **Prečo akceptované.** Toto je tvrdé obmedzenie behu v JS, nie dizajnové rozhodnutie
-— z tej istej rodiny ako citlivosť A3 na `hypot` od Apple. Neexistuje spôsob, ako zaručiť
+— z tej istej rodiny ako (odvtedy uzavreté) citlivosti A3/A8 na `hypot`/FMA. Neexistuje spôsob, ako zaručiť
 bitovo identické výsledky transcendentných funkcií/FMA vo všetkých cieľových runtimoch, takže laťka
 na úrovni bajtov by bola skôr netestovateľná než len drahá. **Posúdenie A1** (na rozdiel od
 pouhého upozornenia naň) si vyžiadalo samostatnú stopu parity natívnych modulov — vytvorenú
@@ -112,12 +113,12 @@ vstup pod jeho vlastným modulom namiesto `dot`. Úprimným stropom tejto práce
 **zúžiť** A1 na „žiadna aktívna odchýlka na referenčnej platforme“, nikdy neodstrániť
 medziplatformovú výhradu; doterajšie výsledky (nižšie) tento
 strop spĺňajú: `circo`/`twopi`/`osage` odhalili a vyriešili po koreňovú príčinu niekoľko
-skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 90.8/77.5/68.0 %
-v rámci 0.5pt od natívneho na univerze 910 položiek, čo znamená, že portovaná
-aritmetika (`fma.ts`, `arm-pow.ts`, zhodný PRNG) pre väčšinu grafov drží —
-a každé zostávajúce odchýlené id je individuálne priradené injekciou (drift solvera
-vs. chyba portu), a nie ponechané ako netriedený drift; pozri
-charakterizáciu iteratívnych modulov nižšie.
+skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 90.3/96.5/68.1 %
+v rámci 0.5pt od natívneho na univerze 929 položiek (graphviz 16.1.0), čo znamená, že
+portovaná aritmetika (`fma.ts`, `arm-pow.ts`, zhodný PRNG) pre väčšinu grafov drží —
+a každé odchýlené id zo zoznamu 910 položiek je individuálne priradené injekciou (drift
+solvera vs. chyba portu), a nie ponechané ako netriedený drift; 19 pridaných položiek
+zoznamu zatiaľ nie je priradených. Pozri charakterizáciu iteratívnych modulov nižšie.
 
 **Akceptácia na úrovni stopy modulu: rodina šípok twopi.** <a id="a1-twopi-arrows-family"></a>
 Citovaný blok vyššie opisuje prieskum SVG pre modul dot, kde sa A1 zhoduje s nulou
@@ -182,27 +183,35 @@ zatiaľ **nie sú** triedené po jednotlivých id — `engine-walk.ts` zaznamen�
 sekcii „Iterative engines (±0.5 characterization)“ súboru
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 výslovne **nie je porovnateľná** s deterministickou mierou úspešnosti ±0.01 inde
-v tomto dokumente. Aktuálne počty (univerzum 910 položiek; percento úspešnosti vynecháva
+v tomto dokumente. Aktuálne počty voči graphviz 16.1.0 (univerzum 929 položiek; percento úspešnosti vynecháva
 vstupy, ktoré orákulum v C nedokáže vykresliť, podľa [Zhody](./conformance.md)):
 
-| modul | preskúmané | v rámci ±0.5pt | nezhodné (všetky priradené, akceptované) | chyba portu / timeout | chyba orákula |
+| modul | preskúmané | v rámci ±0.5pt | nezhodné | chyba portu / timeout | chyba orákula |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+(Riadky `neato` a `sfdp` pochádzajú z prechodov pripravených pred konečným opakovaným
+prechodom `graphs-decorate`, `1314`, `2784` a `2371`; o tieto id sa môžu posunúť.
+Miera úspešnosti `fdp` vzrástla zo 77.5 %, pretože skorší commitnutý prechod
+predchádzal stavu portu z predchádzajúcej misie.)
 
 (Prvý prieskum, 2026-07-11 pri 762 položkách, nameral 263/311/260 v rámci
 ±0.5pt — skok na súčasné miery spôsobili opravy po jednotlivých id pristáté odvtedy,
 najmä neportované spracovanie `user_pos`/`P_SET` v neato, konsolidácia
 inicializácie modulov a oprava `setEdgeType` makro-vs-funkcia.)
 
-Na rozdiel od prvého prieskumu je teraz každý odchýlený riadok individuálne priradený:
+Na rozdiel od prvého prieskumu bol každý odchýlený riadok zoznamu 910 položiek
+individuálne priradený (19 id nových v zozname 929 položiek zatiaľ nie je priradených;
+sú uvedené ako novo viditeľné v odovzdaní T13):
 injekčný nástroj (`test/corpus/attribute-divergence.ts`) vkladá
 `ND_pos` z natívneho orákula pred vedením hrán do portu a znovu porovnáva
 a každé súčasné odchýlené id je buď `drift-exonerated` (vedenie
 a emisia portu reprodukujú orákulum presne, keď sa drift solvera odstráni),
 alebo jedným z hŕstky samostatne akceptovaných zvyškov po jednotlivých id (`241_0` —
-väzba incircle v CDT na všetkých troch moduloch, neato `2239`, sfdp `42`/`2556`).
+väzba incircle v CDT na všetkých troch moduloch, neato `2239`, sfdp `2556`; sfdp `42`
+je drift A1, pozri [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 Akceptácia triedy nižšie formalizuje množinu očistených; živé počty v
 dashboardoch jednotlivých modulov
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -402,39 +411,46 @@ v korpuse ňou prechádza, takže oprava zameraná na jeden reťazec riskovala r
 iných kvôli nepostrehnuteľnému prínosu.
 :::
 
-### A3. Rozhodovanie remízy pri `hypot` vo vedení splinov (`dot`) {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. Rozhodovanie remízy pri `hypot` vo vedení splinov (`dot`) — UZAVRETÉ {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**Dotknuté:** grafy `dot` s **geometricky symetrickým** kanálom pre vedenie hrán
-— typicky krátky, symetrický oblúk ploché hrany. Pozorovaný príklad: `2368`,
-ktorý zostáva na *structural-match* (maxΔ ≈ 10.2 pt na **jednej** hrane, `376->76`).
-Rovnaké rozhodovanie remízy sa objavuje aj na **dlhej** (viacradovej) hrane do
-uzla-hubu s vysokým vstupným stupňom, keď je koridor presne zrkadlovo symetrický: `graphs-b100` /
-`graphs-b104` (identický zdroj) sa líšia o maxΔ 20 (presne jeden riadok radu) na
-jedinom uzle `Node23730->Node23729` — každá poloha uzla a celá predchádzajúca
-štruktúra boxov/polygónov/napnutej cesty je bajt po bajte identická s C; líši sa iba
-~1-ULP voľba `findMaxDev`, ktorý zrkadlovo symetrický vnútorný bod sa stane uzlom beziéra.
-Krátka forma ploché hrany sa objavuje aj ako `241_1` (structural-match,
-maxΔ ≈ 2.4 pt) — odchýlený súrodenec orákulom pripnutého `241_0`, pri ktorom šum C
-naopak ponecháva prvý. Rovnaké rozhodovanie remízy vytvára rozdelenie koridoru štrbiny
-spätnej hrany označeného 2-cyklu v `2413_1` (structural-match, maxΔ 67.65) a
-`2413_2` (maxΔ ≤99.55, keď pristane oprava T11 swapBezier-reverse — dovtedy
-je nahlásené maxΔ 1922.26 súboru dominované nesúvisiacou, samostatne
-sledovanou chybou), a jednu označenú hranu vnútri klastra v `graphs-decorate`
-(maxΔ 43.54); v každom prípade sa dva kandidátne rohy rozdelenia rovnajú v rámci
-5.7e-13 (rodina 2413) / 3e-14 (decorate), kým šum `hypot` od Apple závislý od
-polohy nevyberie víťaza. `2371`
-(structural-match, maxΔ 16.8) vykazuje rovnaký odtlačok na dvoch nesúvisiacich
-hranách (`g[9263]` `r6837mid--r9687mid`, `g[23859]` `r38mid--r8699mid`): port
-vydáva presné zrkadlo postupnosti riadiacich bodov orákula na oboch,
-y uzla je preklopené o identické Δ16.8 (horný/dolný zlomok rozdelenia vymenené).
-Jeho pôvod je kvalifikovaný ako istota **MEDIUM**, a nie ako POTVRDENÁ
-istota ostatných členov: `2371` balí ~199 komponentov, čo
-oddeľuje lokálne súradnice pathplan od súradníc stránky, takže remíza
-sa nedala pri troch pokusoch o inštrumentáciu živo skorelovať s `route.ts:209`;
-pôvod v segmentácii priameho režimu alebo v `recover_slack` po orezaní
-nie je úplne vylúčený. Úplná diagnostika:
-`plans/residual-cleanup/analysis/2371-mirror.md`. Väčšina vedených hrán
-nie je dotknutá.
+**Stav (2026-10-12): uzavreté.** Žiadne id korpusu už nie je akceptované pod touto
+triedou; oddiel je ponechaný ako historická dokumentácia mechanizmu. Niekdajší
+členovia (`2368`, `graphs-b100`, `graphs-b104`, `241_1`, `2413_1`, `2413_2`,
+`graphs-decorate`, `2371`) sú všetci **`conformant`** v novom prechode
+(`test/corpus/parity-probe.json`).
+
+**Mechanizmus a čo ho uzavrelo.** Fitter splinov (`Proutespline` -> `findMaxDev`,
+`src/pathplan/route.ts`) rozdelí preloženú bézierovu krivku vo vnútornom bode
+trasy s maximálnou odchýlkou. V geometricky symetrickom kanáli sa odchýlky kandidátov
+líšia o ~1 ULP, takže víťaza určí posledný bit aritmetiky. Portu bola pripísaná
+neredukovateľná medzera („`hypot` od Apple sa nezhoduje so žiadnym prenosným
+`hypot`“) a kompenzoval ju tolerantným rozhodovaním remízy ekvivariantným voči
+posunu. Toto pripísanie bolo vyvrátené: remízu určuje *presná* aritmetika C, ktorú
+možno reprodukovať. Commit `cdf597bc`
+(`fix(pathplan): split splines at C's max-deviation point bit for bit`) ju portoval:
+`hypot` z libm pre vzdialenosť (`route.c:448`), striktné porovnanie `>` z C
+(`route.c:139`) a zlučovanie `fp-contract` v clangu pri vyhodnotení bézierovej krivky
+(`route.c:137-138`), determinanty `mkspline` (`route.c:181-183`), `dot`
+(459), `normv` (413), `B01` (488) a `B23` (494). Tolerantné rozhodovanie remízy
+je preč; uzol `241_0` je pripnutý v smerovacom rámci C, pretože C nie je
+ekvivariantné voči posunu pri takýchto remízach. Tým sa uzavreli `2368`, `2371`,
+`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` a `graphs-decorate`.
+
+`241_1` nebola remíza `hypot`: uzavrel ju `87347711`
+(`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
+zoskupí každú susednú plochú hranu zdieľajúcu hlavnú hranu do jedného volania
+`make_flat_adj_edges` a skúša porty v celej skupine, takže súrodenec bez portu
+hrany s portom sa vedie cez pomocný graf. Port rozdelil skupinu podľa prítomnosti
+portu a súrodenca viedol cez `makeSimpleFlat`, ktorého orezanie dopadne do iného
+bodu `bezier_clip` (54.28 oproti natívnemu 54.46).
+
+Obe opravy boli overené novými prechodmi korpusu bez regresií
+(riadky žurnálu „T5 land“ a „T6 land“,
+`plans/plantuml-tracker-2/decision-journal.md`).
+
+**Dôkaz pred opravou (historický).** `2368` bol referenčným členom.
+Jeho oblúk `376->76` sa rozdelil k opačnému rohu než v C; graf a
+cesty tohto oblúka z C a z portu spred opravy sú ponechané pre záznam.
 
 ::: details Definícia grafu (`2368.dot`)
 ```dot
@@ -474,71 +490,29 @@ digraph G {
 ```
 :::
 
-**Charakterizácia.** Fitter splinov (`Proutespline` → `findMaxDev`,
-`src/pathplan/route.ts`) rozdelí fitovaný beziér vo vnútornom bode trasy
-s maximálnou odchýlkou. Keď je kanál symetrický, dva kandidátne body rozdelenia
-sú **presná matematická remíza** a víťaza potom určí šum
-zrušenia pohyblivej desatinnej čiarky ~1e-14 pri vyhodnotení beziéra v absolútnych súradniciach,
-ktorého **znamienko závisí od absolútnej polohy**.
-
-Vzdialenosť odchýlky v C je libm `hypot` a `hypot` z macOS od Apple, ktorý
-vygeneroval orákulum, je proprietárna implementácia, ktorá sa bitovo nezhoduje s **žiadnym**
-prenosným `hypot` (merané voči nej v režime súradníc graphviz, miery
-bitovej zhody: V8 `Math.hypot` ≈ 63 %, správne zaokrúhlený `hypot` v štýle Arm
-≈ 84 %, fdlibm `hypot` ≈ 90 %, `sqrt(dx²+dy²)` ≈ 94 %). Kvôli tomuto šumu ULP
-**C samo nie je konzistentné**: dva *translačne zhodné* oblúky rozdelí smerom k
-**opačným** rohom. V rámci `2368` je oblúk `376->76` zrkadlovým obrazom
-geometricky identického oblúka `256->436`:
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-Celý rozdiel, prekrytý (12× zväčšenie na oblúk `376->76` / `to1`) — **zelená = C
-Graphviz, červená = @knowvah/dot-engine**. Obe sú ten istý plytký oblúk smerom nadol medzi
-rovnakými hranicami uzlov; líšia sa o ~1–2 pt v brušku (stredný riadiaci bod
-beziéra), kde remíza v C padla smerom k opačnému rohu:
-
-![Oblúk 2368 376->76: zelená = C, červená = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-Všetko ostatné sa zhoduje v rámci tolerancie — rovnaký ohraničujúci rámec (608×148), polohy uzlov,
-popisky, šípky a všetky ostatné hrany. Úplné vykreslenia sú vizuálne
-nerozoznateľné:
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![2368 vykreslený cez C Graphviz](/img/2368-c.png) | ![2368 vykreslený cez @knowvah/dot-engine](/img/2368-port.png) |
-
-Port používa **translačne ekvivariantné** rozhodovanie remízy (skutočná remíza sa vždy rozhodne
-v prospech prvého indexu), takže kreslí *každý* takýto oblúk rovnako bez ohľadu na
-polohu — je samo so sebou konzistentný a zhoduje sa s C na oblúkoch, kde šum C tiež
-ponecháva prvý (napr. `256->436` a `241_0 5:ne->8:nw`), a líši sa iba tam, kde šum C
-preklopí na druhú stranu (`376->76`). Koncové body, cieľ šípky, ostatné
-hrany, všetky uzly, popisky a ohraničujúci rámec sa zhodujú v rámci tolerancie; hýbu sa iba
-vnútorné riadiace body jedného oblúka (~1–2 pt v brušku).
-
-**Prečo akceptované.** `hypot` od Apple nie je o nič reprodukovateľnejší medzi enginmi JS a
-procesormi ako FMA/`pow` z **A1** — je to rovnaké obmedzenie prenosnosti, len
-v smerovači splinov `dot`. Zhoda s *polohovo závislou* voľbou C by znamenala
-prevziať striktné rozhodovanie remízy z C, ktoré žije v **zdieľanej primitíve**, ktorou prechádza každá
-vedená hrana: výmenou za zhodu `376->76` by sme získali *nové* nezhody na
-oblúkoch, kde C dopadne inak (regresuje `241_0` a orákulový prípad
-ploché hrany `cnt=3`), čisto nulový zisk, ktorý navyše obetuje translačnú
-ekvivariantnosť portu. Preto ponechávame konzistentný (ekvivariantný) smerovač. Je to
-ohraničená, nepostrehnuteľná odchýlka `dot` — nie otvorená chyba. Úplné vyšetrovanie:
-`.agent-notes/2368-residual-flat-label-ranksep.md`.
 
 ### A4. Orákulum v uznanom pokazenom stave (rodina init_rank / pathplan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**Dotknuté:** `2796` (structural-match, maxΔ 49), `2471` (structural-match,
-maxΔ ~9063), `1435` (structural-match, maxΔ 503), `1581` (diverged, maxΔ 465). Členovia
+**Dotknuté (prechod graphviz 16.1):** `1435` (structural-match, maxΔ 0.39 na
+jednom riadiacom bode splinu; oproti orákulu 15.x to bolo 503 — pokles nebol
+bisekovaný) a `1581` (diverged: počet potomkov najvyššej úrovne 39 oproti 22, maxΔ 0). Členovia
 rodiny `1939` a `2825` sú **conformant** a nemajú záznam, a `2470`
 a `graphs-structs` sa k nim pridali 2026-07-11 (obe sa zrútili na conformant
 po pristátí opráv ortho adjacency-spill/chancmpid, fmadd `polylineMidpoint` a
 half-even zaokrúhľovania remíz — port teraz reprodukuje výstup obnovy orákula
 presne, vrátane identických stratených hrán); ich
-akceptačné záznamy sú vyradené.
+akceptačné záznamy sú vyradené. **`2796` a `2471` sa k nim pridali
+vo verzii graphviz 16.1** (oba `conformant` v novom prechode, akceptačné záznamy
+vyradené): port a orákulum 16.1 sa teraz zhodujú vo výstupe obnovy `init_rank`
+vrátane stratených hrán. Príčina nebola izolovaná bisekciou (kandidátmi sú
+portácia dotgen 16.1 `48981bf0` a oprava spotreby stratených hrán `54bd3b9b`);
+opis `init_rank` nižšie sa ponecháva ako mechanizmus triedy a obe id sú prechodom
+parity pripnuté ako conformant.
 
 `1581` a `2825` boli prípady obnovy po páde (misia fix-element-count-bucket):
 vstupy z fuzzera/degenerované vstupy, kde upstreamové testy tvrdia **iba**,
@@ -695,8 +669,13 @@ stránka porovnania
 
 ### A6. Pretečenie plátna typu `unsigned int` pri degenerovanom vstupe {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**Dotknuté:** `1314` — vstup odvodený z fuzzera (`fontsize="991836031967s8"`),
-ktorého absurdná veľkosť písma nafúkne výkres na ~2.75e11 pt.
+**Dotknuté:** sfdp `2556` (rozloženie NaN; pozri záznam stopy modulu). `1314`
+— vstup odvodený z fuzzera (`fontsize="991836031967s8"`), ktorého absurdná veľkosť
+písma nafúkne výkres na ~2.75e11 pt — je vo verzii graphviz 16.1 **conformant** a jeho
+akceptácia je vyradená: port teraz zužuje veľkosť stránky tak, ako to robí
+natívna konverzia `ROUND` (`fe20f303`), a zostavuje orezanie stránky v poradí
+`setup_page` (`eea9d21c`). Odseky o mechanizme nižšie
+opisujú pôvodný rozdiel.
 
 **Čo sa deje.** C ukladá `job->width` / `job->height` ako **`unsigned int`**
 (`gvcjob.h:327-328`). `ROUND(...)` obrovskej veľkosti v bodoch (`emit.c:1249-1250`)
@@ -772,65 +751,41 @@ ako pri zaokrúhľovaní obalu riadiacich bodov uvedenom v
 
 ---
 
-### A8. Zaokrúhľovanie `fp-contract`/FMA vs. striktné IEEE (`dot`) {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. Zaokrúhľovanie `fp-contract`/FMA vs. striktné IEEE (`dot`) — UZAVRETÉ {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**Stav (2026-10-12): uzavreté.** Žiadne id korpusu už nie je akceptované pod touto
+triedou; oddiel je ponechaný ako historická dokumentácia. Oba známe prípady sú
+**`conformant`**: `2620` (2026-07-11) a `2646` (2026-10-12).
 
 **Trieda.** clang na arm64 kompiluje binárku orákula s `-ffp-contract=on`,
 čím spája vybrané postupnosti násobenia a sčítania do jednotlivých inštrukcií FMA; port
-beží na V8, ktorý vykonáva striktné zaokrúhľovanie IEEE-754 a nevie vydať
-`fma`. Pri bitovo identických vstupoch sa obe líšia o 1-2 ULP v každom
-výraze, ktorý sa kompilátor rozhodol zlúčiť. Strana portu je vždy výsledok
-striktného IEEE-754; strana orákula je vždy výsledok zlúčený do FMA.
-Je to obmedzenie prenosnosti kompilátora/runtime pod úrovňou sémantiky
-zdrojového kódu C, nie logická chyba v porte — neredukovateľné bez
-softvérovej emulácie konkrétnych rozhodnutí clangu o zlučovaní. Sú známe dva prípady,
-na dvoch rôznych miestach, s dvoma rôznymi zosilňovacími
-mechanizmami:
+beží na V8, ktorý vykonáva striktné zaokrúhľovanie IEEE-754. Pri bitovo
+identických vstupoch sa obe líšia o 1-2 ULP v každom výraze, ktorý sa kompilátor
+rozhodol zlúčiť. Známe boli dva prípady, na dvoch rôznych miestach, s dvoma
+rôznymi zosilňovacími mechanizmami:
 
-- **2646** — ULP vzniká vnútri kubického riešenia `points2coeff`/`solve3`
-  v `Proutespline` a priamo preklopí počet koreňov fittera splinov.
-- **2620** — ULP vzniká v slučke rozsahu vrcholov polygónu v `poly_init`
-  (určovanie veľkosti uzlov) a nadväzne ho zosilňuje verné celočíselné orezávanie po každom relax
+- **2646** — ULP vznikol vnútri kubického riešenia `points2coeff`/`solve3`
+  v `Proutespline` a priamo preklopil počet koreňov fittera splinov.
+- **2620** — ULP vznikol v slučke rozsahu vrcholov polygónu v `poly_init`
+  (určovanie veľkosti uzlov) a nadväzne ho zosilnilo verné celočíselné orezávanie po každom relax
   v `ortho` na preklopenie remízy rovnako nákladných koridorov bludiska.
 
-**Dotknuté:** `2646` (structural-match, maxΔ 42.09 na 3 z 21 216 hrán:
-`edge2575` `g[4639]`, `edge3905` `g[7777]`, `edge15467` `g[30201]` — všetko
-dlhé trasy hrán `:c->:nb_part` s portmi záznamu v režime smode). Súrodenec **A3**: obe
-triedy sú neredukovateľné remízy prenosnosti pohyblivej desatinnej čiarky vnútri
-`Proutespline`, ale mechanizmus je odlišný — artefakt `fp-contract`
-kompilátora, nie libm `hypot`.
-
-**V čom sa líši.** Pri všetkých troch hranách sa odchyľuje iba posledné volanie `routesplines` (priamy
-úsek do portu hlavy). Jeho koncový bod leží bitovo presne na dolnej stene
-polygónu bariéry s dotyčnicou rovnobežnou s touto stenou
-(`evs[1]=(1,-1.22e-16)`), takže každý kandidát `splinefits` je dotyčnicou k
-bariére v `t=1` — takmer dvojnásobný koreň kubiky priesečníka.
-`points2coeff` túto kubiku počíta katastrofálnym krátením (členy
-okolo ~7446 sa zrútia na ~0.099). Orákulum (clang/arm64,
-`-ffp-contract=on`) zlučuje `v3 + 3*v1 - (v0 + 3*v2)` do fused
-multiply-add, kým V8 zaokrúhľuje striktne podľa IEEE — obe sa líšia o
-~9.1e-13 pri **bitovo identických vstupoch** a tento šum preklopí znamienko
-diskriminantu `solve3`: C nájde 1 koreň (866.7, vnútri úsečky); port
-nájde 3 korene s falošným partnerským koreňom pri `t=0.9999975 < 1-EPSILON2`. Falošný
-koreň spustí jednu ďalšiu iteráciu polovičenia `a`, čo preklopí
-veľkosť dotyčnice posledného kusu o faktor 2 (v oboch smeroch naprieč
-3 hranami), a po orezaní vzniká maxΔ 42.09 (26 rozdielov v SVG).
-
-**Prečo akceptované (neredukovateľnosť preukázaná kontrolovaným pokusom).** Všetkých šesť
-volaní `routesplines` bolo vypísaných na oboch stranách — box, polygón, `PL`, začiatok,
-koniec a `evs` sú bajt po bajte identické, rovnako ako výstupný spline skoršieho (nie posledného)
-volania; jediná odchýlka je vnútri `solve3` posledného volania. Samostatný
-nástroj s čistým C izoloval jedinú premennú: kompilácia s
-`-ffp-contract=off` reprodukuje **port** bitovo presne na všetkých 3 hranách; predvolené
-(`on`) zlučovanie reprodukuje **orákulum** bitovo presne na všetkých 3
-hranách. Port sa teda už zhoduje s C podľa striktného IEEE-754; odchýlka
-je celá vo voľbe zlučovania FMA kompilátorom orákula, pod úrovňou sémantiky
-zdrojového kódu C — niet žiadnej nevernosti na úrovni zdroja, ktorú by bolo treba opraviť.
-Cielená oprava (ručná emulácia zlučovania v `points2coeff`) bola vyskúšaná a
-vyvrátená: opraví 2 z 3 hrán, ale nie tretiu, ktorej preklopenie
-pochádza z vlastného interného zlučovania v `solve3`. Úplná oprava by
-vyžadovala softvérovú emuláciu FMA v celom fitteri splinov — cena v horúcej slučke
-s dosahom zaokrúhľovania naprieč celým korpusom za podpixelový zisk na 3 hranách.
-Úplná diagnostika: `plans/residual-cleanup/analysis/2646-fp-contract.md`.
+**Uzavreté: `2646` (`0cc05181`, `fix(pathplan): mirror clang fma contraction in
+spline intersection`).** Tri dlhé úseky hrán v režime smode (`edge2575`, `edge3905`,
+`edge15467`) končia na stene bariéry s rovnobežnou dotyčnicou, takže
+priesečníková kubika v `splinefits` má takmer dvojnásobný koreň. `points2coeff`
+tú kubiku zostavuje cez katastrofické krátenie; orákulum zlučuje
+`route.c:397-398` a `solvers.c:43`, takže port so striktným IEEE dostal iný počet
+koreňov v `solve3`, falošné pretnutie a jedno zbytočné polovičenie `a` (maxΔ
+42.09). Skorší záver, že išlo o neredukovateľný jav („softvérová emulácia FMA
+v celom fitteri splinov“, s vyvrátenou čiastočnou opravou), bol vyvrátený: miesta zlučovania
+sú konečné a vymenovateľné. Port teraz zrkadlí každé zlúčenie v
+`points2coeff` (`route.c:397-398`), `splineintersectsline` (371-372, 374,
+360-361, 383-384), `solve3` (`solvers.c:41, 43, 46`) a jeho inlinovanom `solve2`
+(80, 85) a `solve3`/`solve2`/`solve1` sú znovu portované do tvaru C. Všetkých 42 432
+zachytených volaní `Proutespline` pre `2646` je bitovo identických s orákulom (riadok
+žurnálu „T7 land“). Pôvodná diagnóza (stále platná pre mechanizmus):
+`plans/residual-cleanup/analysis/2646-fp-contract.md`.
 
 **Dotknuté (historické):** `2620` (bolo structural-match, maxΔ 585; 423 rozdielov
 na 24 cestách hrán + 22 šípkach). **Zrútilo sa na conformant 2026-07-11**:
@@ -900,12 +855,24 @@ predikát incircle sedí na ostrí noža: vstupné ULP preklopí jeho znamienko,
 uhlopriečka ohraničenej Delaunayovej triangulácie sa preklopí a polygón koridoru, ktorý v orákule zlyhá
 v `Pshortestpath` („destination point not in any triangle“ →
 záloha na obyčajný spline), v porte uspeje (alebo naopak). Výsledné
-spliny sa líšia o ~0.2–0.5pt. Súrodenec **A3**/**A8**: neredukovateľné
+spliny sa líšia o ~0.2–0.5pt. Súrodenec (teraz uzavretých) **A3**/**A8**: neredukovateľné
 obmedzenie prenosnosti pohyblivej desatinnej čiarky pod úrovňou sémantiky zdroja C — zhoda
 by si vyžadovala reprodukovať v JS presné zaokrúhľovanie `sin`/`cos` z libm od Apple.
 
-**Dotknuté:** `241_0` (circo Δ≈0.2 / plátno twopi Δ≈9 cez preklopenie koridoru
-na hrane `5:ne->8:nw`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Nová základňa 16.1.** Geometrii koridoru multisplinu chýbalo zlučovanie FMA z clangu
+(radikand rohu elipsy, `mkCtrlPts`, `DIST` = sqrt(fmadd), skalárny súčin
+v `line_intersect`); `b77b2703` (`fix(neato): mirror fma contraction in
+multispline routing geometry`) ho zrkadlil. `241_0` pri twopi a neato — ktorý táto
+trieda pripisovala kokruhovej remíze nižšie — sa stal **conformant**
+(akceptácie vyradené) a sfdp `42` sa ukázal bez akejkoľvek remízy (je to
+drift A1, pozri [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` pri circo, fdp
+a sfdp sa stále líši s nezmenenými alebo zníženými zvyškami; ich
+pripísanie remíze nižšie predchádza `b77b2703` a od tej opravy, ktorá ukázala,
+že rovnaké pripísanie bolo pri twopi/neato nesprávne, **nebolo znovu overené
+vstreknutím polôh**.
+
+**Dotknuté:** `241_0` (circo Δ≈0.2 cez preklopenie koridoru na hrane `1->2`; `241_0`
+pri fdp a sfdp na stopách modulov nižšie); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 po 1–2 rozdieloch polohy popiskov hrán — libm 1-ULP vzniká
 v trigonometrii jednotkových vrcholov v `poly_init` (`hypot`/`atan2`/`sin`), posunie vypočítanú
 výšku jedného uzla o ULP za hranicu minimálnej veľkosti, na ktorej orákulum
@@ -1057,33 +1024,43 @@ reprodukuje 10 posunutých uzlov z prieskumu s bajt po bajte zhodnými rozdielmi
 
 Dva ďalšie prípady na úrovni stopy modulu boli rozobrané po koreňovú príčinu a akceptované 2026-07-11
 (úplná RCA: `.agent-notes/circo-edge-tail-rca.md`): twopi `241_0` (6 rozdielov
-kresliacich operácií — súrodenec záznamu circo vyššie: tá istá kokruhová
-remíza incircle v CDT, preklopená 1-ULP `sin`/`cos` z libm, spôsobí, že multispline
-koridor v porte uspeje s 14-bodovým splinom, kým natívny build
-sa vráti k obyčajnému 8-bodovému vedeniu; rozdiely bodov < 0.07pt) a circo
+kresliacich operácií, vtedy pripísaných tej istej kokruhovej remíze incircle v CDT ako
+záznam circo vyššie; **vyradené vo verzii graphviz 16.1** — je conformant od
+`b77b2703`, takže preklopenie koridoru 14 oproti 8 bodom bolo nezrkadlené zlúčenie
+FMA, nie remíza) a circo
 `windows-tree` (10 rozdielov kresliacich operácií na jednej hrane vejára — trigonometria umiestnenia v circo
 dopadne `node2.y` o jediné ULP nad `node8.y` okolo presne symetrickej
 hodnoty 18.0 a výber portu hlavy dyna v `closestSide` preklopí TOP/BOTTOM pri
 tejto presnej remíze; polohy uzlov a boxy sú inak bitovo identické s
 orákulom).
 
-**Stopa modulu sfdp — remízy FP pri hranách (`42`, `241_0`).**
+**Stopa modulu sfdp — remíza FP pri hrane (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Stopa xdot modulu sfdp (`parity-sfdp.json`,
 natívne `dot -Ksfdp -Txdot`, ±0.5) odhaľuje kokruhovú remízu incircle v CDT, keď sa
 vstreknú presné natívne polohy pred vedením hrán (takže odchýlka NIE je
 iteratívny drift — pozri triedu A1-drift — ale diskrétna remíza predikátu):
 
-- `42` a `241_0` — kokruhová remíza incircle v CDT (koridor multisplinu).
-  So vstreknutými polohami je zvyškom **preklopenie počtu segmentov**: `42`
-  `opCount 5 vs 9` (hrana 0->3) / `ptCount 32 vs 26` (3->7); `241_0` `ptCount 14
-  vs 8` (hrana 3->2) — uhlopriečka ohraničenej Delaunayovej triangulácie v porte sa preklopí oproti
-  orákulu, takže koridor multisplinu uspeje s N-bodovým splinom, kde natívny
-  build sa vráti k kratšiemu obyčajnému vedeniu (alebo naopak), presne ako
-  záznam twopi/circo `241_0` vyššie. Port už emuluje kontrakciu arm64
+- `241_0` — pripísaná kokruhovej remíze incircle v CDT (koridor multisplinu;
+  po `b77b2703` znovu neoverené, pozri novú základňu 16.1 vyššie).
+  Zvyškom je **preklopenie počtu segmentov**: 7 rozdielov kresliacich operácií na hrane 1->2,
+  `ptCount 8 vs 20` (20 rozdielov pred `b77b2703`) — koridor uspeje s N-bodovým
+  splinom, kde natívny build sa vráti k kratšiemu obyčajnému vedeniu
+  (alebo naopak), ako v zázname `241_0` pri circo vyššie. Port už emuluje kontrakciu arm64
   `fmadd` v predikáte incircle/`ccw` (`src/pathplan/triang.ts`,
   `src/common/fma.ts`) a používa Delaunay s robustným incircle; zvyškom je
   1-ULP `sin`/`hypot` medzi V8 a libm od Apple vo vstupe predikátu, ktorý žiadny prenosný
   kód nereprodukuje.
+
+> **sfdp `42` preklasifikované A9 → drift A1 (synchronizácia graphviz 16.1).** Bolo tu uvedené
+> ako remíza incircle v CDT/libm. Misia zistila inak
+> ([`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)): niekdajšie preklopenie
+> koridoru bola chybná portácia FMA na strane portu v geometrii koridoru multisplinu,
+> opravená v `b77b2703` (`fix(neato): mirror fma contraction in multispline
+> routing geometry`); po vstreknutí natívnych polôh port teraz reprodukuje
+> natívny xdot presne. Zostávajúci zvyšok (posuny uzlov 0.06-0.65 pt) je
+> iteratívny drift naočkovaný jedným nesúladom 1 ULP v `pow(dist, 2)` z libm od Apple
+> oproti `pow` pre ARM v porte na najhrubšej úrovni, zosilnený
+> jemnejšími úrovňami — A1 (pozri [A1](#a1-floating-point-determinism-force-directed-engines)).
 
 > **`2095` preklasifikované A9 → A1-drift (2026-07-22).** Predtým bolo tu uvedené
 > ako „súrodenec hypot“ (drift pod 0.7pt na hranách uzla s prázdnym názvom
@@ -1101,8 +1078,9 @@ systémového `hypot` z C a porovnanie s `Math.hypot` z Node na reprezentatívny
 vstupoch odchýlky plochých hrán ukazuje nesúlad 1 ULP v 2 zo 6 (Δ 7.1e-15 a
 5.7e-14) — ostrie noža prahu rozdelenia, ktoré preklopí počet delení.
 Neredukovateľné: žiadny prenosný hypot nereprodukuje libm od Apple (precedens `arm-pow.ts`
-pre tú istú hranicu). Akceptované na úrovni stopy modulu cez
-`accepted-divergences-engines.json` (`sfdp.42`, `sfdp.241_0`).
+pre tú istú hranicu). `sfdp.241_0` je akceptované na úrovni stopy modulu
+cez `accepted-divergences-engines.json`. `sfdp.42` do tejto triedy **nepatrí**:
+jeho záznam v registri je A1 (`comparisons/sfdp-42.md`) a vyššie uvedená sonda ho nevysvetlila.
 
 Stopa xdot modulu **fdp** (`parity-fdp.json`, natívne `dot -Kfdp -Txdot`,
 ±0.5) odhaľuje TÚ ISTÚ kokruhovú remízu CDT na rovnakom grafe, `241_0`: keď sa vstreknú
@@ -1110,9 +1088,10 @@ presné polohy orákula pred vedením hrán, zvyškom je 11 číselných
 rozdielov `unfilled_bezier` obmedzených na jednu hranu (`0->1#0`, maxΔ 3.39pt). Keďže
 polohy uzlov sú po injekcii identické, odchýlka je nižšie v
 koridore multisplinu v pathplan — rovnaká remíza incircle s libm 1-ULP ako pri
-twopi/circo/sfdp `241_0` (incircle v presných racionálnych číslach 185/185 vyššie). Páky sú
+circo/sfdp `241_0` (incircle v presných racionálnych číslach 185/185 vyššie; 11 rozdielov nezmenených
+`b77b2703` — nie je znovu overené vstreknutím). Páky sú
 už uplatnené (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); remíza je neredukovateľná. Akceptované cez `accepted-divergences-engines.json`
+`Math.hypot`); remíza sa považuje za neredukovateľnú. Akceptované cez `accepted-divergences-engines.json`
 `fdp.241_0`. `2095` pri fdp je naopak **A1-drift, nie A9**: vstreknutie
 jediného uzla s prázdnym názvom (po oprave atribučného injektora, aby zodpovedal uzlom
 s názvom `""`) zredukuje jeho zvyšok na nulu — skorší „chvost A9“ bol
@@ -1120,6 +1099,28 @@ nevstreknutý prázdny uzol, ktorý ťahal incidentné hrany. Akceptácia sfdp `
 tou istou slepou škvrnou — nová regenerácia atribúcie sfdp (2026-07-22) s opraveným
 injektorom potvrdila, že aj ono injekciou dosiahne 0, a jeho akceptácia bola odstránená (pozri
 poznámku o preklasifikovaní `2095` vyššie).
+
+---
+
+### A10. Limit veľkosti `Map` vo V8 pri balení polyomín (`2784`, päť modulov založených na balení) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**Dotknuté:** `2784` pri `circo`, `twopi`, `neato`, `fdp` a `sfdp`, v každom
+výstupnom formáte. Pri `dot` je `conformant`.
+
+**Čo sa deje.** `lib/pack/pack.c` zaznamenáva bunky, ktoré komponent zaberá, do
+`PointSet`. Pre `2784` (jediný uzol vysoký 3e16 pt, `splines="ortho"`) verná
+celočíselná aritmetika `step`/umiestnenia potrebuje 2 011 656 764 buniek; natívny
+build 16.1.0 skončí za 482 s s 67.3 GB rezidentnej pamäte (101 GB v špičke). `PointSet`
+v porte je `Map` z JavaScriptu, ktorú V8 obmedzuje na 2^24 záznamov, takže vyhodí
+`Map maximum size exceeded`.
+
+**Prečo akceptované.** Limit runtime pod úrovňou kódu, nie logická medzera; príčinou je
+verná aritmetika z `910be2a2` (pred ňou port vypočítal malé,
+nesprávne rozloženie a limit nikdy nedosiahol). Akceptovaným výsledkom je vyhodená
+chyba, nie verdikt `diverged`, a registre jednotlivých modulov
+akceptujú iba riadky `diverged`, takže záznam v registri neexistuje: prechody naďalej uvádzajú
+`2784` medzi svojimi chybami portu. Dôkaz:
+[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
 ---
 

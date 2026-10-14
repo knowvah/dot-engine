@@ -1,5 +1,5 @@
 ---
-sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
+sourceHash: 954ab32305b28b85d81c6c5649596fc88a1d6dd2b2319af8cab87ff26234c6a0
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -35,8 +35,8 @@ sourceHash: 292491e2ebc9280dc60b10bc0e3f5bd75e3bf355f8e732d90f86b8fa35a07f40
 哪些圖屬於*已接受*（下方第 1 類）的**機器可讀**權威來源是
 [`test/corpus/accepted-divergences.json`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/accepted-divergences.json)。
 工具會在產生報告時將它合併進來：`PARITY-dot.md` 將**已接受的差異**與**持續追蹤的**待辦項目分開，
-規則閘門的允許清單也由它而來。下方的文字段落說明每一個條目（A1 與 A3 為現行；
-A2 已結案，作為歷史保留）；一項 CI 測試（`accepted-divergences.test.ts`）確保
+規則閘門的允許清單也由它而來。下方的文字段落說明每一個條目（A1 為現行；
+A2、A3 與 A8 已結案，作為歷史保留；A10 是任何登錄檔都無法表達的移植版錯誤接受項）；一項 CI 測試（`accepted-divergences.test.ts`）確保
 每一張已接受的圖仍然存在差異，因此這份清單不會悄悄腐化。
 
 ---
@@ -57,8 +57,8 @@ A2 已結案，作為歷史保留）；一項 CI 測試（`accepted-divergences.
 ### A1. 浮點數決定性（力導向引擎） {#a1-floating-point-determinism-force-directed-engines}
 
 **受影響：** `neato`、`fdp`、`sfdp`、`circo`、`twopi`、`osage`（迭代式的彈簧模型引擎）。
-`dot` 引擎的*版面配置***不受**這種迭代模型決定性的影響；另一項範圍狹窄的
-`dot` 樣條繞線浮點差異，則在下方的 **A3** 中說明。
+`dot` 引擎的*版面配置***不受**這種迭代模型決定性的影響；`dot` 樣條繞線先前的
+浮點差異（A3、A8）已結案，並在下方作為歷史保留。
 
 > **範圍，歷史上是一項未量測的但書——現在已部分量測。**
 > **主要的 dot 引擎 SVG 調查**（`test/corpus/survey.ts`）仍然**只涵蓋 dot**：
@@ -88,18 +88,18 @@ A2 已結案，作為歷史保留）；一項 CI 測試（`accepted-divergences.
 拓撲會被保留；可能的差異在於細微的節點座標。
 
 **為何接受。** 這是在 JS 中執行的硬性限制，而不是設計上的選擇
-——與 A3 的 Apple `hypot` 敏感性屬同一族。無法保證在所有目標執行環境中
+——與 A3／A8（其後已結案）的 `hypot`／FMA 敏感性屬同一族。無法保證在所有目標執行環境中
 超越函數／FMA 的結果位元相同，因此逐位元組的標準不只是昂貴，而是無法測試。
 要**評估 A1**（而不只是附註但書），需要一條獨立的原生引擎對齊軌道——
 於 2026-07-11 建成，即 `test/corpus/engine-walk.ts` + `parity-report.ts`，
 以每個輸入自己的引擎而非 `dot` 進行調查。這項工作誠實的上限，是把 A1
 **縮小**為「在參考平台上沒有現行差異」，而絕不是消除跨平台的但書；
 目前的結果（見下）都守住了這個上限：`circo`／`twopi`／`osage` 各自揭露並找出了
-少數真正的 A1／A9 案例的根本原因，而 `neato`／`fdp`／`sfdp` 如今在 910 項的範圍內，
-與原生版相差 0.5pt 以內的比例分別為 90.8／77.5／68.0%，
+少數真正的 A1／A9 案例的根本原因，而 `neato`／`fdp`／`sfdp` 如今在 929 項的範圍（graphviz 16.1.0）內，
+與原生版相差 0.5pt 以內的比例分別為 90.3／96.5／68.1%，
 意味著移植的算術（`fma.ts`、`arm-pow.ts`、相符的 PRNG）對大多數圖成立——
-而且每個其餘的差異 id 都是透過注入個別歸因（求解器漂移 vs. 移植缺陷），
-而不是留作未分級處理的漂移；請見下方迭代式引擎的特徵描述。
+而且 910 項名單中每個差異 id 都是透過注入個別歸因（求解器漂移 vs. 移植缺陷），
+而不是留作未分級處理的漂移；名單新增的 19 項尚未歸因。請見下方迭代式引擎的特徵描述。
 
 **引擎軌道接受：twopi 箭頭家族。** <a id="a1-twopi-arrows-family"></a>
 上方的引言區塊描述的是 dot 引擎的 SVG 調查，其中 A1 符合零張圖；
@@ -154,26 +154,29 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 欄位，而 `parity-report.ts` 將它們呈現於
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 中獨立的「Iterative engines (±0.5 characterization)」章節，
-明確**不可**與本文件其他地方 ±0.01 決定性的通過率相比較。目前的計數
-（910 項範圍；通過率排除 C 參照程式無法轉譯的輸入，依據[一致性](./conformance.md)）：
+明確**不可**與本文件其他地方 ±0.01 決定性的通過率相比較。針對 graphviz 16.1.0 的目前計數
+（929 項範圍；通過率排除 C 參照程式無法轉譯的輸入，依據[一致性](./conformance.md)）：
 
-| 引擎 | 調查數 | ±0.5pt 內 | 不一致（皆已歸因、已接受） | 移植版錯誤／逾時 | 參照程式錯誤 |
+| 引擎 | 調查數 | ±0.5pt 內 | 不一致 | 移植版錯誤／逾時 | 參照程式錯誤 |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 910 | 826 (90.8%) | 83 | 1 | 0 |
-| `fdp`   | 910 | 703 (77.5%) | 204 | 0 | 3 |
-| `sfdp`  | 910 | 619 (68.0%) | 290 | 1 | 0 |
+| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+
+（`neato` 與 `sfdp` 兩列來自在 `graphs-decorate`、`1314`、`2784` 與 `2371` 最終重新掃描之前暫存的掃描；它們可能因這些 id 而變動。`fdp` 的通過率自 77.5% 上升，是因為先前提交的那次掃描早於上一個任務的移植狀態。）
 
 （2026-07-11 在 762 項時進行的第一次掃描，量得 ±0.5pt 內的數量為 263/311/260
 ——躍升到目前的比率，來自此後落地的逐 id 修正，
 主要是 neato 未移植的 `user_pos`／`P_SET` 處理、引擎初始化的整併，
 以及 `setEdgeType` 巨集與函式的修正。）
 
-與第一次掃描時不同，現在每一列差異都已個別歸因：
+與第一次掃描時不同，910 項名單中每一列差異都已個別歸因（929 項名單新增的 19 個 id
+尚未歸因；它們在 T13 交接中被列為新出現的項目）：
 注入工具（`test/corpus/attribute-divergence.ts`）將原生參照程式繞線前的
 `ND_pos` 餵給移植版並重新比對，而目前每個差異 id 若不是
 `drift-exonerated`（一旦移除求解器漂移，移植版的繞線與輸出就能精確重現參照程式），
 就是少數幾個另行接受的逐 id 殘留項之一（`241_0` 在三個引擎上的 CDT 內切圓平手，
-neato 的 `2239`，sfdp 的 `42`／`2556`）。
+neato 的 `2239`，sfdp 的 `2556`；sfdp 的 `42` 是 A1 漂移，見 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）。
 下方的類別接受將被免責的集合正式化；即時計數見各引擎儀表板
 （[`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
@@ -346,33 +349,17 @@ x 網路單純形路徑是忠實的——每一項約束輸入都與 C 相符（
 所以針對某一個字串的修正，會為了低於可察覺程度的回報而冒著讓其他字串迴歸的風險。
 :::
 
-### A3. 樣條繞線中的 `hypot` 平手判定（`dot`） {#a3-hypot-tie-break-in-spline-routing-dot}
+### A3. 樣條繞線中的 `hypot` 平手判定（`dot`）— 已結案 {#a3-hypot-tie-break-in-spline-routing-dot}
 
-**受影響：** 邊繞線通道**幾何上對稱**的 `dot` 圖——通常是短而對稱的同層邊弧線。
-觀察到的範例：`2368`，維持在 *structural-match*（**一條**邊 `376->76` 上 maxΔ ≈ 10.2 pt）。
-同一個平手判定，也會出現在進入高扇入樞紐的**長**（跨多層級）邊上，
-只要通道恰好鏡像對稱：`graphs-b100`／`graphs-b104`（來源相同）在
-`Node23730->Node23729` 的單一結點上相差 maxΔ 20（恰好一個層級列）——
-每個節點位置以及所有上游的方框／多邊形／拉緊路徑結構都與 C 位元組相同；
-只有 `findMaxDev` 在「哪個鏡像對稱的內部點成為貝茲結點」上約 1 ULP 的選擇不同。
-短同層邊的形式也出現在 `241_1`（structural-match，maxΔ ≈ 2.4 pt）——
-它是以參照程式固定的 `241_0` 的相異同類項，而 C 的雜訊讓 `241_0` 改為保留先到者。
-同一個平手判定，在 `2413_1`（structural-match，maxΔ 67.65）與
-`2413_2`（一旦 T11 swapBezier-reverse 修正落地，maxΔ ≤99.55——在那之前，
-該檔案回報的 maxΔ 1922.26 主要來自一個無關、另行追蹤的缺陷）造成帶標籤 2-環
-回邊的狹縫通道分割，並在 `graphs-decorate` 造成單一叢集內帶標籤邊
-（maxΔ 43.54）；在每個案例中，兩個候選分割角點在位置相依的 Apple `hypot` 雜訊選出勝者之前，
-彼此都平手到 5.7e-13（2413 家族）／3e-14（decorate）之內。`2371`
-（structural-match，maxΔ 16.8）在兩條無關的邊
-（`g[9263]` `r6837mid--r9687mid`、`g[23859]` `r38mid--r8699mid`）上呈現相同的特徵：
-移植版在兩者上都輸出與參照程式控制點序列完全鏡像的結果，
-結點 y 以相同的 Δ16.8 翻轉（上／下分割比例互換）。
-其來源的可信度標示為 **MEDIUM**，而不像其他成員那樣是 CONFIRMED：
-`2371` 打包了約 199 個元件，使 pathplan 區域座標與頁面座標脫鉤，
-因此在三次插樁嘗試中，都無法將該平手即時對應到 `route.ts:209`；
-不能完全排除直線模式分段，或裁剪後 `recover_slack` 才是來源。
-完整診斷：`plans/residual-cleanup/analysis/2371-mirror.md`。
-大多數被繞線的邊都不受影響。
+**狀態（2026-10-12）：已結案。** 不再有語料庫 id 被歸入此類別而被接受；本節作為該機制的歷史文件保留。先前的成員（`2368`、`graphs-b100`、`graphs-b104`、`241_1`、`2413_1`、`2413_2`、`graphs-decorate`、`2371`）在最新掃描（`test/corpus/parity-probe.json`）中全部為 **`conformant`**。
+
+**機制，以及是什麼讓它結案。** 樣條擬合器（`Proutespline` -> `findMaxDev`，`src/pathplan/route.ts`）在偏差最大的內部路徑點處拆分擬合出的貝茲曲線。在幾何對稱的通道上，候選偏差相差約 1 ULP，所以勝者由算術的最後一位元決定。先前移植版被歸因於一個無法消除的差距（「Apple `hypot` 與任何可攜的 `hypot` 都不相符」），並以一個容忍的、平移等變的平手判定來補償。這項歸因已被推翻：平手由 C 的*精確*算術決定，而這是可重現的。提交 `cdf597bc`（`fix(pathplan): split splines at C's max-deviation point bit for bit`）移植了它：距離使用 libm 的 `hypot`（`route.c:448`）、C 嚴格的 `>` 比較（`route.c:139`），以及 clang 對貝茲求值（`route.c:137-138`）、`mkspline` 行列式（`route.c:181-183`）、`dot`（459）、`normv`（413）、`B01`（488）與 `B23`（494）的 `fp-contract` 融合。容忍的平手判定已移除；`241_0` 的結點被固定在 C 的繞線座標系中，因為 C 在這類平手上並不具備平移等變性。這讓 `2368`、`2371`、`2413_1`、`2413_2`、`graphs-b100`、`graphs-b104` 與 `graphs-decorate` 結案。
+
+`241_1` 並不是 `hypot` 平手：它由 `87347711`（`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`）結案。C 將共用同一條主邊的所有相鄰同層邊歸入一次 `make_flat_adj_edges` 呼叫，並在整組範圍內檢查連接埠，所以帶連接埠邊的無連接埠同級邊會經由輔助圖繞線。移植版依有無連接埠把該組拆開，並讓同級邊經由 `makeSimpleFlat` 繞線，其裁切落在不同的 `bezier_clip` 點（54.28，而原生為 54.46）。
+
+兩項修正都經過全新的語料庫掃描驗證，且零回歸（日誌列「T5 land」與「T6 land」，`plans/plantuml-tracker-2/decision-journal.md`）。
+
+**修正之前的證據（歷史）。** `2368` 是參考成員。它的 `376->76` 弧朝與 C 相反的角落拆分；該圖以及該弧修正前 C 與移植版的路徑保留作紀錄。
 
 ::: details 圖定義（`2368.dot`）
 ```dot
@@ -412,61 +399,21 @@ digraph G {
 ```
 :::
 
-**特徵描述。** 樣條擬合器（`Proutespline` → `findMaxDev`，
-`src/pathplan/route.ts`）會在偏差最大的內部路徑點處，分割擬合出的貝茲曲線。
-當通道對稱時，兩個候選分割點是**精確的數學平手**，勝負便取決於
-絕對座標貝茲求值中約 1e-14 的浮點數抵銷雜訊，其**符號取決於絕對位置**。
-
-C 的偏差距離是 libm 的 `hypot`，而產生參照輸出的 macOS Apple `hypot` 是專有實作，
-與**任何**可攜的 `hypot` 都不是位元相符（針對 graphviz 座標範圍與之比較所得的位元
-相同率：V8 `Math.hypot` ≈ 63%、正確捨入／Arm 風格的 `hypot`
-≈ 84%、fdlibm `hypot` ≈ 90%、`sqrt(dx²+dy²)` ≈ 94%）。由於這種 ULP 雜訊，
-**C 本身並不一致**：它會把兩段*平移全等*的弧線分割向**相反**的角點。
-在 `2368` 內，`376->76` 弧線是幾何上完全相同的 `256->436` 弧線的鏡像：
-
 ```
 C    376->76 : M273.31,-4.56 C268.33,-3.14 263.11,-1.9  258.11,-1.15 250.49,0     242.34,-0.98 234.83,-2.8
 port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.59 241.88,-2.21 238.85,-2.94
 ```
 
-整體差異的疊圖（`376->76`／`to1` 弧線放大 12 倍）——**綠色 = C
-Graphviz，紅色 = @knowvah/dot-engine**。兩者是同樣位於相同節點邊界之間的淺向下弧；
-它們在弧腹（貝茲中間控制點）處相差約 1–2 pt，那裡 C 的平手判定偏向了相反的角點：
-
-![2368 376->76 弧線：綠色 = C，紅色 = @knowvah/dot-engine](/img/2368-376to76-overlay.png)
-
-其餘一切都在容許誤差內相符——相同的外框（608×148）、節點位置、
-標籤、箭頭，以及所有其他邊。完整的轉譯圖在視覺上無法區分：
-
-| C Graphviz | @knowvah/dot-engine |
-|---|---|
-| ![由 C Graphviz 轉譯的 2368](/img/2368-c.png) | ![由 @knowvah/dot-engine 轉譯的 2368](/img/2368-port.png) |
-
-移植版使用**平移等變**的平手判定（真正的平手一律解析為第一個索引），
-因此不論位置如何，它都以相同方式繪製*每一條*這類弧線——它是自我一致的，
-並在 C 的雜訊同樣保留先到者的弧線上與 C 相符（例如 `256->436`，以及 `241_0 5:ne->8:nw`），
-只在 C 的雜訊翻向另一邊之處出現差異（`376->76`）。端點、箭頭目標、其他邊、
-所有節點、標籤與外框，都在容許誤差內相符；只有那一條弧線的內部控制點會移動
-（弧腹處約 1–2 pt）。
-
-**為何接受。** Apple 的 `hypot` 在不同 JS 引擎與 CPU 之間，
-並不比 **A1** 的 FMA／`pow` 更可重現——這是同一種可攜性限制，只是出現在 `dot` 的樣條路由器中。
-要比對 C 的*位置相依*選擇，就得採用 C 嚴格的平手判定，而它位於每一條被繞線的邊都會流經的
-**共用基礎元件**中：這麼做是用 `376->76` 的相符，去換 C 落在另一邊的弧線上*新的*不符
-（它會讓 `241_0` 與一個 `cnt=3` 的同層邊參照案例發生迴歸），淨效果持平，
-還會犧牲移植版的平移等變性。所以我們保留一致（等變）的路由器。
-這是一項有界、低於可察覺程度的 `dot` 差異——不是未解決的錯誤。完整調查：
-`.agent-notes/2368-residual-flat-label-ranksep.md`。
 
 ### A4. 參照程式處於已知損壞狀態（init_rank／pathplan 家族） {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
 
-**受影響：** `2796`（structural-match，maxΔ 49）、`2471`（structural-match，
-maxΔ ~9063）、`1435`（structural-match，maxΔ 503）、`1581`（diverged，maxΔ 465）。
+**受影響（graphviz 16.1 掃描）：** `1435`（structural-match，一個樣條控制點上的 maxΔ 0.39；
+對 15.x 參照程式時為 503——該下降未經二分定位）與 `1581`（diverged：頂層子元素數為 39 對 22，maxΔ 0）。
 家族成員 `1939` 與 `2825` 為**一致**，不帶任何條目；`2470`
 與 `graphs-structs` 於 2026-07-11 加入它們的行列（兩者在 ortho 相鄰溢出／chancmpid、
 fmadd `polylineMidpoint`，以及 half-even 平手捨入的修正落地後，都變成一致——
 移植版現在能精確重現參照程式的復原輸出，包括相同的遺失邊）；它們的
-接受條目已退場。
+接受條目已退場。**`2796` 與 `2471` 在 graphviz 16.1 加入了它們的行列**（兩者在最新掃描中均為 `conformant`，接受條目已退場）：移植版與 16.1 參照程式現在對 `init_rank` 復原輸出（包括遺失的邊）一致。原因未經二分定位（候選是 16.1 的 dotgen 移植 `48981bf0` 與遺失邊消耗修正 `54bd3b9b`）；下方對 `init_rank` 的描述作為該類別的機制保留，而這兩個 id 由對齊度掃描固定為 conformant。
 
 `1581` 與 `2825` 是當機復原案例（fix-element-count-bucket
 任務）：fuzzer／退化輸入，上游測試**只**斷言 dot 不會當機
@@ -605,8 +552,8 @@ latin1 後備反映了 C 自己「視為 Latin-1」的復原語意
 
 ### A6. 退化輸入時的 `unsigned int` 畫布溢位 {#a6-unsigned-int-canvas-overflow-on-degenerate-input}
 
-**受影響：** `1314`——一個由 fuzzer 衍生的輸入（`fontsize="991836031967s8"`），
-其荒謬的字型大小使繪圖膨脹到約 2.75e11 pt。
+**受影響：** sfdp 的 `2556`（一個 NaN 版面；見引擎軌道條目）。`1314`——一個由 fuzzer 衍生的輸入（`fontsize="991836031967s8"`），
+其荒謬的字型大小使繪圖膨脹到約 2.75e11 pt——在 graphviz 16.1 為 **conformant**，其接受已退場：移植版現在像原生 `ROUND` 轉換那樣縮窄頁面尺寸（`fe20f303`），並依 `setup_page` 的順序建立頁面裁切（`eea9d21c`）。下方的機制段落描述的是最初的差異。
 
 **發生什麼事。** C 將 `job->width`／`job->height` 儲存為 **`unsigned int`**
 （`gvcjob.h:327-328`）。巨大點數大小的 `ROUND(...)`（`emit.c:1249-1250`）
@@ -678,63 +625,22 @@ x=90，而在移植版中是 x=89。共用連接埠的建構（`buildSharedPort`
 
 ---
 
-### A8. `fp-contract`／FMA 捨入與嚴格 IEEE 的差異（`dot`） {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+### A8. `fp-contract`／FMA 捨入與嚴格 IEEE 的差異（`dot`）— 已結案 {#a8-fp-contract-fma-rounding-vs-strict-ieee-dot}
+
+**狀態（2026-10-12）：已結案。** 不再有語料庫 id 被歸入此類別而被接受；本節作為歷史文件保留。兩個已知案例均為 **`conformant`**：`2620`（2026-07-11）與 `2646`（2026-10-12）。
 
 **類別。** clang arm64 以 `-ffp-contract=on` 編譯參照程式二進位檔，
 將選定的乘加序列融合成單一 FMA 指令；
-移植版執行於 V8，後者執行嚴格的 IEEE-754 捨入，且無法發出
-`fma`。在位元相同的輸入上，兩者會在編譯器選擇收縮的任何運算式上相差 1-2 ULP。
-移植版這一側永遠是嚴格 IEEE-754 的結果；參照程式這一側永遠是 FMA 收縮後的
-結果。這是低於 C
-原始碼語意的編譯器／執行環境可攜性限制，而不是移植版中的邏輯缺陷——
-除非在軟體中模擬 clang 特定的收縮選擇，否則無法消除。已知有兩個案例，
-位於兩個不同的位置，具有兩種不同的放大機制：
+移植版執行於執行嚴格 IEEE-754 捨入的 V8。在位元相同的輸入上，兩者會在編譯器選擇收縮的任何運算式上相差 1-2 ULP。
+已知有兩個案例，位於兩個不同的位置，具有兩種不同的放大機制：
 
 - **2646**——ULP 出現在 `Proutespline` 的 `points2coeff`／`solve3`
-  三次方程求解內，直接翻轉樣條擬合器的根數。
+  三次方程求解內，直接翻轉了樣條擬合器的根數。
 - **2620**——ULP 出現在 `poly_init` 的多邊形頂點範圍迴圈
   （節點尺寸計算）中，並被下游 `ortho` 忠實的逐次鬆弛
   整數截斷，放大為等成本迷宮通道的平手翻轉。
 
-**受影響：** `2646`（structural-match，在 21,216 條邊中的 3 條上 maxΔ 42.09：
-`edge2575` `g[4639]`、`edge3905` `g[7777]`、`edge15467` `g[30201]`——全都是
-record 連接埠 `:c->:nb_part` smode 長邊繞線）。**A3** 的同類：兩者
-都是 `Proutespline` 內無法消除的浮點數可攜性平手，
-但機制不同——是編譯器的 `fp-contract`
-假象，而不是 libm 的 `hypot`。
-
-**差異之處。** 在這三條邊上，只有最後一次 `routesplines` 呼叫
-（朝向頭端連接埠的直線段）出現差異。它的端點位元精確地落在
-障礙多邊形的底牆上，且其切線與該牆平行
-（`evs[1]=(1,-1.22e-16)`），所以每個 `splinefits` 候選在 `t=1` 處都與障礙相切——
-這是交點三次方程的近重根。
-`points2coeff` 透過災難性抵銷計算該三次方程（約 ~7446 的項
-塌縮為 ~0.099）。參照程式（clang/arm64，
-`-ffp-contract=on`）將 `v3 + 3*v1 - (v0 + 3*v2)` 收縮為融合
-乘加，而 V8 執行嚴格的 IEEE 捨入——兩者在**位元相同的輸入**上相差
-約 9.1e-13，而這個雜訊翻轉了
-`solve3` 判別式的符號：C 找到 1 個根（866.7，在線段內）；移植版
-找到 3 個根，並有一個虛假的搭檔根位於 `t=0.9999975 < 1-EPSILON2`。
-該虛假的根觸發了額外一次 `a` 減半迭代，使
-最後一段的切線大小翻轉為 2 倍（在這三條邊上方向不一定相同），
-於是裁剪後產生 maxΔ 42.09（26 項 SVG 差異）。
-
-**為何接受（無法消除性已由對照實驗證明）。** 兩側的全部六次
-`routesplines` 呼叫都被傾印出來——方框、多邊形、`PL`、起點、
-終點與 `evs` 位元組相同，較早（非最後一次）呼叫的
-輸出樣條也相同；唯一的差異在最後一次呼叫的 `solve3` 之內。一個
-獨立的原版 C 測試工具隔離出單一變數：以
-`-ffp-contract=off` 編譯，會在所有 3 條邊上位元精確地重現**移植版**；
-預設（`on`）的收縮，則在所有 3 條邊上位元精確地重現**參照程式**。
-因此移植版本來就與嚴格 IEEE-754 的 C 一致；
-差異完全來自參照程式編譯器的 FMA 收縮選擇，位於
-C 原始碼語意之下——沒有任何原始碼層級的不忠實需要修正。
-針對性的修正（在 `points2coeff` 中以手工模擬收縮）已被嘗試並被推翻：
-它能修正 3 條邊中的 2 條，但無法修正第三條，
-後者的翻轉源自 `solve3` 自身內部的收縮。完整的修正
-需要在整個樣條擬合器中進行軟體 FMA 模擬——這是熱迴圈的成本，
-並帶來整個語料庫範圍的捨入影響，換來的只是次像素、3 條邊的回報。
-完整診斷：`plans/residual-cleanup/analysis/2646-fp-contract.md`。
+**已結案：`2646`（`0cc05181`，`fix(pathplan): mirror clang fma contraction in spline intersection`）。** 三條 smode 長邊的線段（`edge2575`、`edge3905`、`edge15467`）終止於切線平行的障礙壁，所以 `splinefits` 的求交三次方程有一個近似二重根。`points2coeff` 透過災難性抵消來建構該三次方程；參照程式融合了 `route.c:397-398` 與 `solvers.c:43`，所以嚴格 IEEE 的移植版得到了不同的 `solve3` 根數、一個虛假的交點與一次額外的 `a` 減半（maxΔ 42.09）。先前認為此問題無法消除的結論（「在整個樣條擬合器中做軟體 FMA 模擬」，且部分修正被證偽）已被推翻：收縮位置是有限且可列舉的。移植版現在鏡射了 `points2coeff`（`route.c:397-398`）、`splineintersectsline`（371-372、374、360-361、383-384）、`solve3`（`solvers.c:41, 43, 46`）及其內嵌的 `solve2`（80、85）中的每一處收縮，並且 `solve3`／`solve2`／`solve1` 已依 C 的形態重新移植。`2646` 擷取到的全部 42,432 次 `Proutespline` 呼叫都與參照程式位元相同（日誌列「T7 land」）。原始診斷（對機制仍然有效）：`plans/residual-cleanup/analysis/2646-fp-contract.md`。
 
 **受影響（歷史）：** `2620`（曾為 structural-match，maxΔ 585；24 條邊路徑與 22 個箭頭上共
 423 項差異）。**於 2026-07-11 轉為一致**：
@@ -802,11 +708,12 @@ ISON。`shortest.c:pointintri` 隨後會拒絕多邊形頂點端點
 受限 Delaunay 對角線隨之翻轉，而在參照程式中使 `Pshortestpath` 失敗的通道多邊形
 （「destination point not in any triangle」→
 退回一般樣條）在移植版中成功了（或反之）。最終的
-樣條相差約 0.2–0.5pt。**A3**／**A8** 的同類：這是低於 C 原始碼語意的
+樣條相差約 0.2–0.5pt。（現已結案的）**A3**／**A8** 的同類：這是低於 C 原始碼語意的
 無法消除的浮點數可攜性限制——要比對，就需要在 JS 中重現 Apple libm 精確的 `sin`/`cos` 捨入。
 
-**受影響：** `241_0`（circo Δ≈0.2／twopi 畫布 Δ≈9，經由
-邊 `5:ne->8:nw` 上的通道翻轉）；`2343`、`2239`、`share-b29`、`windows-b29`（twopi，
+**16.1 重新基線。** 多重樣條通道的幾何缺少 clang 的 FMA 收縮（橢圓角點的被開方數、`mkCtrlPts`、`DIST` = sqrt(fmadd)、`line_intersect` 的內積）；`b77b2703`（`fix(neato): mirror fma contraction in multispline routing geometry`）鏡射了它。twopi 與 neato 的 `241_0`——該類別曾將它們歸因於下方的共圓平手——變為 **conformant**（接受已退場），而 sfdp 的 `42` 被證明根本沒有平手（它是 A1 漂移，見 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）。circo、fdp 與 sfdp 的 `241_0` 仍然存在差異，殘留不變或有所減少；它們歸因於下方平手的結論早於 `b77b2703`，並且自該修正顯示同樣的歸因對 twopi／neato 是錯誤的以來，**尚未透過位置注入重新驗證**。
+
+**受影響：** `241_0`（circo Δ≈0.2，經由邊 `1->2` 上的通道翻轉；下方各引擎軌道上的 fdp 與 sfdp `241_0`）；`2343`、`2239`、`share-b29`、`windows-b29`（twopi，
 各有 1–2 項邊標籤位置差異——libm 的 1 ULP 出現在
 `poly_init` 的單位頂點三角函數（`hypot`/`atan2`/`sin`），使某個節點
 計算出的高度比參照程式恰好落點的最小尺寸箝制值高出一個 ULP，
@@ -952,33 +859,31 @@ qsort 以不同方式排序——不同的列優先格子、`9002`/`9006`
 
 另有兩個引擎軌道案例在 2026-07-11 找出根本原因並被接受
 （完整 RCA：`.agent-notes/circo-edge-tail-rca.md`）：twopi `241_0`（6 項繪製操作
-差異——上方 circo 條目的同類：同一個 CDT 共圓
-內切圓平手，被 libm `sin`/`cos` 的 1 ULP 翻轉，使移植版的
-多重樣條通道以 14 點樣條成功，而原生版本
-退回一般的 8 點繞線；點位差異 < 0.07pt）以及 circo
+差異，當時歸因於與上方 circo 條目相同的 CDT 共圓
+內切圓平手；**已在 graphviz 16.1 退場**——自 `b77b2703` 起它已是 conformant，
+所以 14 點與 8 點通道的翻轉是未鏡射的 FMA 收縮，而不是平手）以及 circo
 `windows-tree`（一條扇形邊上 10 項繪製操作差異——circo 的擺放三角函數
 使 `node2.y` 比 `node8.y` 高出恰好一個 ULP，圍繞精確對稱的
 值 18.0，而 `closestSide` 的動態頭端連接埠選擇在
 該精確平手處翻轉 TOP/BOTTOM；節點位置與方框在其他方面
 與參照程式位元相同）。
 
-**sfdp 引擎軌道——邊浮點平手（`42`、`241_0`）。**
+**sfdp 引擎軌道——邊浮點平手（`241_0`）。**
 <a id="a9-sfdp-fp-ties"></a> sfdp 的 xdot 引擎軌道（`parity-sfdp.json`，
 原生 `dot -Ksfdp -Txdot`，±0.5）在注入精確的原生繞線前位置之後，
 揭露了 CDT 共圓內切圓平手（所以差異並非
 迭代漂移——見 A1-drift 類別——而是離散的判定平手）：
 
-- `42` 與 `241_0`——CDT 共圓內切圓平手（多重樣條通道）。
-  注入位置後，殘留的是**段數翻轉**：`42`
-  `opCount 5 vs 9`（邊 0->3）／`ptCount 32 vs 26`（3->7）；`241_0` `ptCount 14
-  vs 8`（邊 3->2）——移植版的受限 Delaunay 對角線與
-  參照程式不同，使多重樣條通道以 N 點樣條成功，而原生
-  版本退回較短的一般路徑（或反之），與上方
-  twopi／circo 的 `241_0` 條目完全相同。移植版已在內切圓／`ccw` 判定中模擬了 arm64
+- `241_0`——歸因於 CDT 共圓內切圓平手（多重樣條通道；`b77b2703` 之後未重新驗證，見上方的 16.1 重新基線）。
+  殘留的是**段數翻轉**：邊 1->2 上有 7 項繪製操作差異，`ptCount 8 vs 20`
+  （`b77b2703` 之前為 20 項差異）——通道以 N 點樣條成功，而原生版本退回較短的一般路徑（或反之），
+  與上方 circo 的 `241_0` 條目相同。移植版已在內切圓／`ccw` 判定中模擬了 arm64
   的 `fmadd` 收縮（`src/pathplan/triang.ts`、
   `src/common/fma.ts`），並使用穩健的內切圓 Delaunay；殘留的是
   判定輸入中 V8 與 Apple libm 的 `sin`/`hypot` 相差 1 ULP，任何可攜
   程式碼都無法重現。
+
+> **sfdp `42` 由 A9 重新分類為 A1-drift（graphviz 16.1 同步）。** 它先前被列在這裡，作為 CDT／libm 內切圓平手。該任務發現並非如此（[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）：先前的通道翻轉是多重樣條通道幾何中移植版這一側的 FMA 錯誤移植，已由 `b77b2703`（`fix(neato): mirror fma contraction in multispline routing geometry`）修正；注入原生位置後，移植版現在精確重現原生的 xdot。其餘的殘留（節點偏移 0.06-0.65 pt）是迭代漂移，其種子是最粗層級上 Apple libm 的 `pow(dist, 2)` 與移植版的 ARM `pow` 之間的一處 1 ULP 不一致，並被更細的層級放大——A1（見 [A1](#a1-floating-point-determinism-force-directed-engines)）。
 
 > **`2095` 由 A9 重新分類為 A1-drift（2026-07-22）。** 它先前被列在
 > 這裡，作為「hypot 的同類」（名稱為空的
@@ -996,18 +901,18 @@ qsort 以不同方式排序——不同的列優先格子、`9002`/`9006`
 同層邊偏差輸入上比較，6 個中有 2 個出現 1 ULP 的差異（Δ 7.1e-15 與
 5.7e-14）——這是翻轉細分次數的分割門檻刀口。
 無法消除：沒有任何可攜的 hypot 能重現 Apple libm（同一邊界上
-`arm-pow.ts` 的先例）。透過
-`accepted-divergences-engines.json`（`sfdp.42`、`sfdp.241_0`）在引擎軌道層級被接受。
+`arm-pow.ts` 的先例）。`sfdp.241_0` 透過
+`accepted-divergences-engines.json` 在引擎軌道層級被接受。`sfdp.42` **不**屬於此類別：它的登錄條目是 A1（`comparisons/sfdp-42.md`），而上方的探測並未解釋它。
 
 **fdp** 的 xdot 引擎軌道（`parity-fdp.json`，原生 `dot -Kfdp -Txdot`，
 ±0.5）在同一張圖 `241_0` 上揭露了相同的 CDT 共圓平手：
 注入參照程式精確的繞線前位置後，殘留的是 11 項數值
 `unfilled_bezier` 差異，侷限於一條邊（`0->1#0`，maxΔ 3.39pt）。由於
 節點位置經注入後完全相同，差異位於下游的
-pathplan 多重樣條通道——與 twopi／circo／sfdp `241_0` 相同的 libm 1 ULP 內切圓平手
-（上方的精確有理數內切圓 185/185）。這些槓桿
+pathplan 多重樣條通道——與 circo／sfdp `241_0` 相同的 libm 1 ULP 內切圓平手
+（上方的精確有理數內切圓 185/185；11 項差異不受 `b77b2703` 影響——未經注入重新驗證）。這些槓桿
 都已套用（`src/pathplan/triang.ts` fmadd、`src/pathplan/route.ts:198`
-`Math.hypot`）；該平手無法消除。透過 `accepted-divergences-engines.json`
+`Math.hypot`）；該平手被視為無法消除。透過 `accepted-divergences-engines.json`
 `fdp.241_0` 被接受。相對地，fdp 的 `2095` 是 **A1-drift，而非 A9**：注入
 那個名稱為空的單一節點（在歸因注入器修正為可比對
 `""` 名稱的節點之後），其殘留塌縮為零——先前的「A9 尾巴」是
@@ -1015,6 +920,16 @@ pathplan 多重樣條通道——與 twopi／circo／sfdp `241_0` 相同的 libm
 同樣的盲點——使用修正後的注入器重新產生 sfdp 歸因（2026-07-22），
 證實它同樣注入後為 0，其接受條目已移除（見上方
 `2095 reclassified` 的說明）。
+
+---
+
+### A10. 多米諾塊打包中的 V8 `Map` 大小上限（`2784`，五個以打包為基礎的引擎） {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
+
+**受影響：** `circo`、`twopi`、`neato`、`fdp` 與 `sfdp` 上的 `2784`，所有輸出格式皆然。在 `dot` 上它是 `conformant`。
+
+**發生了什麼。** `lib/pack/pack.c` 將一個元件佔用的儲存格記錄在一個 `PointSet` 中。對於 `2784`（一個高 3e16 pt 的單一節點，`splines="ortho"`），忠實的整數 `step`／擺放算術需要 2,011,656,764 個儲存格；原生 16.1.0 以 482 秒完成，常駐記憶體 67.3 GB（峰值 101 GB）。移植版的 `PointSet` 是一個 JavaScript `Map`，V8 將它限制在 2^24 個項目，所以它擲出 `Map maximum size exceeded`。
+
+**為何接受。** 這是低於程式碼的執行階段上限，而不是邏輯缺口；原因是 `910be2a2` 的忠實算術（在它之前，移植版算出的是一個很小的錯誤版面，從未觸及該上限）。接受的結果是擲出錯誤而不是 `diverged` 判定，而各引擎的登錄檔只接受 `diverged` 列，所以不存在登錄條目：各次掃描持續把 `2784` 列在其移植版錯誤故障之下。證據：[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md)。
 
 ---
 
