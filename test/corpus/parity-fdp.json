@@ -3,6 +3,7 @@
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "fdp",
   "tolerance": 0.5,
+  "oracleVersion": "dot 16.1.0",
   "total": 928,
   "counts": {
     "pass": 893,

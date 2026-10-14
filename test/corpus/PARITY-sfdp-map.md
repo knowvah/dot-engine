@@ -12,6 +12,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 928
+- **Oracle:** dot 16.1.0
 - **pass:** 894 (96.4%) · **diverged (tracked):** 3 · **accepted (documented, won't-fix):** 30
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 1
 

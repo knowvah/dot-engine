@@ -3,6 +3,7 @@
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "patchwork",
   "tolerance": 0.01,
+  "oracleVersion": "dot 16.1.0",
   "total": 929,
   "counts": {
     "pass": 929,

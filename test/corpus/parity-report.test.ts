@@ -22,6 +22,8 @@ import {
   classAcceptanceSection,
   engineRow,
   engineMarkdown,
+  formatDetailMarkdown,
+  oracleSummary,
   type EngineAcceptedRegistryEntry,
   type AttributionReport,
 } from './parity-report.js';
@@ -287,5 +289,43 @@ describe('engineRow + engineMarkdown fault acceptance (A10)', () => {
     expect(md).toContain('## Errors and timeouts (2)');
     expect(md).toContain('**port-error:** 1 · **timeout:** 1');
     expect(md).toContain("**accepted (documented, won't-fix):** 1");
+  });
+});
+
+// Every generated page states which graphviz build the walk measured against
+// (post-16.1 follow-up 4); a summary written before the walker recorded the
+// version says so instead of guessing.
+describe('oracle version on generated pages', () => {
+  const report = fakeReport([walkRow('a-pass', 'pass')]);
+
+  it('engineRow carries the walk summary\'s oracleVersion', () => {
+    expect(engineRow('circo', { ...report, oracleVersion: 'dot 16.1.0' }, {}).oracle).toBe('dot 16.1.0');
+    expect(engineRow('circo', report, {}).oracle).toBeUndefined();
+  });
+
+  it('engineMarkdown states the oracle, or that it was not recorded', () => {
+    expect(engineMarkdown('circo', { ...report, oracleVersion: 'dot 16.1.0' }, {})).toContain(
+      '- **Oracle:** dot 16.1.0\n',
+    );
+    expect(engineMarkdown('circo', report, {})).toContain('- **Oracle:** not recorded\n');
+  });
+
+  it('formatDetailMarkdown states the oracle from its track row', () => {
+    const row = {
+      track: 't', surveyed: 1, pass: 1, diverged: 0, accepted: 0, portFaults: 0, oracleErrors: 0,
+      oracle: 'dot 16.1.0',
+    };
+    const md = formatDetailMarkdown('json', 'circo', 'json-parity-circo.json', 1, row, [], new Map());
+    expect(md).toContain('- **Oracle:** dot 16.1.0\n');
+  });
+
+  it('oracleSummary names one version for uniform tracks and counts a mix', () => {
+    const r = (oracle?: string) => ({
+      track: 't', surveyed: 1, pass: 1, diverged: 0, accepted: 0, portFaults: 0, oracleErrors: 0, oracle,
+    });
+    expect(oracleSummary([r('dot 16.1.0'), r('dot 16.1.0')])).toBe('dot 16.1.0 (all 2 tracks)');
+    expect(oracleSummary([r('dot 16.1.0'), r('dot 15.0.0'), r('dot 16.1.0'), r()])).toBe(
+      'dot 16.1.0 (2 tracks), dot 15.0.0 (1 track), not recorded (1 track)',
+    );
   });
 });
