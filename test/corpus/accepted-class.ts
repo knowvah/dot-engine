@@ -38,11 +38,62 @@ export interface FormatAcceptedClassEntry {
   ref: string;
 }
 
+/** Verdict a registry entry declares; absent `verdict` field ⇒ 'diverged'. */
+export type DeclaredVerdict = 'diverged' | 'port-error' | 'timeout';
+
+/**
+ * Optional fault-acceptance fields on a per-id registry entry
+ * (registry-faults-staleness AD-1): an entry may accept a `port-error` or
+ * `timeout` walk row instead of a `diverged` one.
+ */
+export interface FaultAcceptance {
+  verdict?: 'port-error' | 'timeout';
+  /** Required for verdict 'port-error' (case-sensitive substring, AD-7). */
+  errIncludes?: string;
+}
+
+/** A walk row's raw outcome, normalized across walkers. */
+export interface RawOutcome {
+  outcome: 'pass' | 'diverged' | 'accepted' | 'port-error' | 'timeout' | 'oracle-error';
+  /** Every error text on the row (map: one per format); [] when none. */
+  errs: string[];
+}
+
 /** Registry file shape shared by the json/map format registries. */
 export interface FormatAcceptedRegistry {
   comment?: string;
   classes?: FormatAcceptedClassEntry[];
-  divergences?: Array<{ id: string; engine?: string }>;
+  divergences?: Array<{ id: string; engine?: string } & FaultAcceptance>;
+}
+
+export function declaredVerdict(e: FaultAcceptance): DeclaredVerdict {
+  return e.verdict ?? 'diverged';
+}
+
+/**
+ * True iff `e` accepts a row with this RAW (pre-acceptance) outcome. A
+ * port-error entry needs every error text on the row to contain
+ * `errIncludes` — for map that is both formats' messages (AD-7).
+ */
+export function acceptsOutcome(e: FaultAcceptance, o: RawOutcome): boolean {
+  const verdict = declaredVerdict(e);
+  if (o.outcome !== verdict) return false;
+  if (verdict !== 'port-error') return true;
+  const needle = e.errIncludes;
+  if (!needle || o.errs.length === 0) return false;
+  return o.errs.every((err) => err.includes(needle));
+}
+
+/** null when `e`'s fault fields are well-formed, else a one-line reason. */
+export function validateFaultFields(e: FaultAcceptance): string | null {
+  const verdict: unknown = e.verdict;
+  if (verdict !== undefined && verdict !== 'port-error' && verdict !== 'timeout') {
+    return `unknown verdict ${JSON.stringify(verdict)} (expected "port-error" or "timeout")`;
+  }
+  if (verdict === 'port-error') {
+    return e.errIncludes ? null : 'verdict "port-error" requires a non-empty errIncludes';
+  }
+  return e.errIncludes === undefined ? null : 'errIncludes is only allowed with verdict "port-error"';
 }
 
 interface AttributionRow {

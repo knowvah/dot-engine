@@ -16,7 +16,15 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { describe, it, expect } from 'vitest';
-import { classAcceptedIds, type FormatAcceptedRegistry } from './accepted-class.js';
+import {
+  acceptsOutcome,
+  classAcceptedIds,
+  declaredVerdict,
+  validateFaultFields,
+  type FaultAcceptance,
+  type FormatAcceptedRegistry,
+  type RawOutcome,
+} from './accepted-class.js';
 
 function readJson<T>(rel: string): T {
   return JSON.parse(readFileSync(fileURLToPath(new URL(rel, import.meta.url)), 'utf8')) as T;
@@ -138,5 +146,62 @@ describe('format registry class acceptance', () => {
       });
       expect(classAcceptedIds(url, 'fdp')).toEqual(new Set(['ok']));
     });
+  });
+});
+
+// Fault acceptance (registry-faults-staleness AD-1/AD-7): a per-id entry may
+// accept a port-error or timeout row instead of a diverged one.
+describe('fault acceptance', () => {
+  const MAP_MAX = 'Map maximum size exceeded';
+  const portError: FaultAcceptance = { verdict: 'port-error', errIncludes: MAP_MAX };
+  const row = (outcome: RawOutcome['outcome'], errs: string[] = []): RawOutcome => ({ outcome, errs });
+
+  it('reads an absent verdict as diverged', () => {
+    expect(declaredVerdict({})).toBe('diverged');
+    expect(declaredVerdict(portError)).toBe('port-error');
+    expect(declaredVerdict({ verdict: 'timeout' })).toBe('timeout');
+  });
+
+  it('a diverged entry accepts only a diverged row', () => {
+    expect(acceptsOutcome({}, row('diverged'))).toBe(true);
+    expect(acceptsOutcome({}, row('port-error', [MAP_MAX]))).toBe(false);
+    expect(acceptsOutcome({}, row('timeout'))).toBe(false);
+  });
+
+  it('a port-error entry accepts a port-error row whose every error matches', () => {
+    expect(acceptsOutcome(portError, row('port-error', [MAP_MAX]))).toBe(true);
+    expect(acceptsOutcome(portError, row('port-error', [`RangeError: ${MAP_MAX}`, MAP_MAX]))).toBe(true);
+  });
+
+  it('a port-error entry rejects a missing, partial or case-different match', () => {
+    expect(acceptsOutcome(portError, row('port-error', []))).toBe(false);
+    expect(acceptsOutcome(portError, row('port-error', [MAP_MAX, 'other failure']))).toBe(false);
+    expect(acceptsOutcome(portError, row('port-error', [MAP_MAX.toLowerCase()]))).toBe(false);
+    expect(acceptsOutcome(portError, row('diverged', [MAP_MAX]))).toBe(false);
+    expect(acceptsOutcome({ verdict: 'port-error' }, row('port-error', [MAP_MAX]))).toBe(false);
+  });
+
+  it('a timeout entry accepts only a timeout row', () => {
+    expect(acceptsOutcome({ verdict: 'timeout' }, row('timeout'))).toBe(true);
+    expect(acceptsOutcome({ verdict: 'timeout' }, row('diverged'))).toBe(false);
+  });
+
+  it('no entry accepts a pass, accepted or oracle-error row', () => {
+    for (const e of [{}, portError, { verdict: 'timeout' } as FaultAcceptance]) {
+      for (const o of ['pass', 'accepted', 'oracle-error'] as const) {
+        expect(acceptsOutcome(e, row(o, [MAP_MAX])), `${JSON.stringify(e)} vs ${o}`).toBe(false);
+      }
+    }
+  });
+
+  it('validates the AD-1 field rules', () => {
+    expect(validateFaultFields({})).toBeNull();
+    expect(validateFaultFields(portError)).toBeNull();
+    expect(validateFaultFields({ verdict: 'timeout' })).toBeNull();
+    expect(validateFaultFields({ verdict: 'port-error' })).toMatch(/errIncludes/);
+    expect(validateFaultFields({ verdict: 'port-error', errIncludes: '' })).toMatch(/errIncludes/);
+    expect(validateFaultFields({ verdict: 'timeout', errIncludes: 'x' })).toMatch(/errIncludes/);
+    expect(validateFaultFields({ errIncludes: 'x' })).toMatch(/errIncludes/);
+    expect(validateFaultFields({ verdict: 'crashed' } as unknown as FaultAcceptance)).toMatch(/verdict/);
   });
 });
