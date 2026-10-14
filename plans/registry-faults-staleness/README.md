@@ -79,12 +79,12 @@ the repo rebase-merges — do not merge).
 
 | Batch | Tasks | Mode | Done |
 |---|---|---|---|
-| [1](batch-1/overview.md) | T1 fault-acceptance helper | single | [ ] |
-| [2](batch-2/overview.md) | T2 staleness + retirements · T3 engine join · T4 json/map walkers | parallel | [ ] |
-| [3](batch-3/overview.md) | T5 A10 entries + re-walk + dashboards | single | [ ] |
-| [4](batch-4/overview.md) | T6 English docs | single | [ ] |
-| [5](batch-5/overview.md) | T7a/b/c locale re-translations (one commit) | parallel | [ ] |
-| [6](batch-6/overview.md) | T8 close-out + PR | single | [ ] |
+| [1](batch-1/overview.md) | T1 fault-acceptance helper | single | [x] |
+| [2](batch-2/overview.md) | T2 staleness + retirements · T3 engine join · T4 json/map walkers | parallel | [x] |
+| [3](batch-3/overview.md) | T5 A10 entries + re-walk + dashboards | single | [x] |
+| [4](batch-4/overview.md) | T6 English docs | single | [x] |
+| [5](batch-5/overview.md) | T7a/b/c locale re-translations (one commit) | parallel | [x] |
+| [6](batch-6/overview.md) | T8 close-out + PR | single | [x] |
 
 ## Documents
 
@@ -105,3 +105,18 @@ the repo rebase-merges — do not merge).
   / ruled out in the journal row.
 - Planning provenance: `plans/post-16.1-followups/README.md` items 1–2;
   `plans/graphviz-16.1-sync/decision-journal.md` rows T13 ph.2 / T13 land.
+
+## Session-end summary (2026-10-14)
+
+- **Tasks:** 8/8 planned completed (T1–T6, T7a–c in one commit, T8); no STOP
+  condition hit.
+- **Decisions journaled:** 9 rows; flagged for review: T5 omits `delta` on the
+  json/map A10 entries (spec said `"—"`), T6 wording "does not finish within
+  the walk's time budget" (MEDIUM confidence on the exact kill cause), T7 used
+  `general-purpose` agents instead of `technical-writer`.
+- **Retirements:** fdp `1879` (engines/json/map), dot-format `1435`.
+- **Gates (final tree):** typecheck 0; `vitest test/corpus test/docs` 2778/2778;
+  golden 5/5; `docs-i18n-status` stale pages 0 ×23; `git diff main -- src`
+  empty.
+- **Follow-up:** json/map detail pages render accepted fault rows with
+  `#diffs 0` and an empty firstDiff (cosmetic).
