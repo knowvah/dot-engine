@@ -17,6 +17,7 @@ import type { PackInfo } from './types.js';
 import { spiralSearch } from './spiral-search.js';
 import { gvQsort } from '../../util/bsd-qsort.js';
 import { cround } from '../../common/arith.js';
+import { d2i } from '../../util/math.js';
 
 /** Max average polyomino size constant. @see lib/pack/pack.c:C */
 const C = 100;
@@ -73,18 +74,27 @@ export function computeStep(ng: number, bbs: Box[], margin: number): number {
     c -= W * H;
   }
   const d = b * b - 4.0 * a * c;
-  if (d < 0) return 1;
-  const root = Math.floor((-b + Math.sqrt(d)) / (2 * a));
-  return root <= 0 ? 1 : root;
+  // C `assert(d >= 0)` is compiled out of the Release oracle, so a negative d
+  // gives r = NaN. `root = (int)l1` is `fcvtzs w` in the native arm64 build
+  // (objdump of libgvc `_computeStep`): NaN converts to 0, and out-of-range
+  // values saturate at INT_MAX/INT_MIN (1314: l1 = 7.4e10 → step INT_MAX).
+  const r = Math.sqrt(d);
+  const l1 = (-b + r) / (2 * a);
+  let root = Number.isNaN(l1) ? 0 : d2i(l1);
+  if (root === 0) root = 1;
+  return root;
 }
 
 /**
  * Number of grid cells required to cover length x at cell size s.
  *
+ * C `(int)ceil(x / s)` is `fcvtps w` in the native arm64 build (objdump of
+ * libgvc `_genBox`, `_placeGraph`), which saturates at INT_MAX.
+ *
  * @see lib/pack/pack.c:GRID
  */
 export function gridCells(x: number, s: number): number {
-  return Math.ceil(x / s);
+  return d2i(Math.ceil(x / s));
 }
 
 /**
@@ -188,9 +198,12 @@ export function fits(x: number, y: number, info: GInfo, ctx: PlaceCtx): Point | 
   // twopi/sfdp), so a `.5` LL is ordinary and Math.round would translate the
   // whole placed component by 1pt.
   // @see lib/pack/pack.c:435-438 (fits: `const pointf LL = {.x = round(...)}`)
+  // C `step * x` is int * int: a 32-bit `mul w` that wraps before the result
+  // is widened to double (objdump of libgvc `_fits`). Matters only once
+  // computeStep has saturated at INT_MAX.
   const place: Point = {
-    x: ctx.step * x - cround(bb.ll.x),
-    y: ctx.step * y - cround(bb.ll.y),
+    x: Math.imul(ctx.step, x) - cround(bb.ll.x),
+    y: Math.imul(ctx.step, y) - cround(bb.ll.y),
   };
   markCells(info.cells, x, y, ctx.ps);
   return place;
