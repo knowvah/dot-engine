@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-07-27T19:55:07.195Z",
+  "generatedAt": "2026-10-14T01:04:27.968Z",
   "generatedWith": "test/corpus/xdot-walk.ts --survey",
-  "oracleVersion": "dot 15.1.0",
+  "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 905,
+  "total": 929,
   "counts": {
-    "conformant": 905,
+    "conformant": 923,
     "diverged": 0,
     "accepted": 0,
     "port-error": 0,
-    "oracle-error": 0,
-    "timeout": 0
+    "oracle-error": 3,
+    "timeout": 3
   },
   "results": [
     {
@@ -59,6 +59,12 @@
       "id": "negative-dpi",
       "path": "negative-dpi.dot",
       "size": 33,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2849",
+      "path": "2849.dot",
+      "size": 34,
       "verdict": "conformant"
     },
     {
@@ -161,6 +167,12 @@
       "id": "2502",
       "path": "2502.dot",
       "size": 50,
+      "verdict": "conformant"
+    },
+    {
+      "id": "1314",
+      "path": "1314.dot",
+      "size": 51,
       "verdict": "conformant"
     },
     {
@@ -340,6 +352,12 @@
     {
       "id": "2559",
       "path": "2559.dot",
+      "size": 78,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2784",
+      "path": "2784.dot",
       "size": 78,
       "verdict": "conformant"
     },
@@ -770,6 +788,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "tree-doc-dotguide-curve",
+      "path": "../doc/dotguide/curve.dot",
+      "size": 106,
+      "verdict": "conformant"
+    },
+    {
       "id": "tree-doc-dotguide-invdot",
       "path": "../doc/dotguide/invdot.dot",
       "size": 106,
@@ -784,6 +808,12 @@
     {
       "id": "tree-doc-dotguide-diamondarrow",
       "path": "../doc/dotguide/diamondarrow.dot",
+      "size": 107,
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-doc-dotguide-icurve",
+      "path": "../doc/dotguide/icurve.dot",
       "size": 107,
       "verdict": "conformant"
     },
@@ -1568,6 +1598,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "tree-doc-infosrc-fixed",
+      "path": "../doc/infosrc/fixed.gv",
+      "size": 230,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-labelclust-nbl",
       "path": "graphs/labelclust-nbl.gv",
       "size": 231,
@@ -1778,6 +1814,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2851",
+      "path": "2851.dot",
+      "size": 263,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-labelroot-fdl",
       "path": "graphs/labelroot-fdl.gv",
       "size": 263,
@@ -1928,6 +1970,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2852",
+      "path": "2852.dot",
+      "size": 287,
+      "verdict": "conformant"
+    },
+    {
       "id": "tree-doc-dotguide-recordex",
       "path": "../doc/dotguide/recordex.dot",
       "size": 287,
@@ -2063,6 +2111,12 @@
       "id": "tree-doc-neato-inet",
       "path": "../doc/neato/inet.dot",
       "size": 349,
+      "verdict": "conformant"
+    },
+    {
+      "id": "700813",
+      "path": "700813.dot",
+      "size": 351,
       "verdict": "conformant"
     },
     {
@@ -3452,6 +3506,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2368",
+      "path": "2368.dot",
+      "size": 960,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-world",
       "path": "graphs/world.gv",
       "size": 980,
@@ -3491,6 +3551,12 @@
       "id": "2521_1",
       "path": "2521_1.dot",
       "size": 1062,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2413_1",
+      "path": "2413_1.dot",
+      "size": 1076,
       "verdict": "conformant"
     },
     {
@@ -3737,6 +3803,12 @@
       "id": "graphs-Palatino",
       "path": "graphs/Palatino.gv",
       "size": 1462,
+      "verdict": "conformant"
+    },
+    {
+      "id": "241_1",
+      "path": "241_1.dot",
+      "size": 1464,
       "verdict": "conformant"
     },
     {
@@ -4526,6 +4598,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "tree-graphs-directed-arrows",
+      "path": "../graphs/directed/arrows.gv",
+      "size": 4766,
+      "verdict": "conformant"
+    },
+    {
       "id": "linux.x86-shapes_dot",
       "path": "linux.x86/shapes_dot.gv",
       "size": 4861,
@@ -4820,6 +4898,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "graphs-decorate",
+      "path": "graphs/decorate.gv",
+      "size": 7561,
+      "verdict": "conformant"
+    },
+    {
       "id": "2619_2",
       "path": "2619_2.dot",
       "size": 7596,
@@ -4892,6 +4976,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2796",
+      "path": "2796.dot",
+      "size": 8959,
+      "verdict": "conformant"
+    },
+    {
       "id": "linux.x86-dotsplines_dot1",
       "path": "linux.x86/dotsplines_dot1.gv",
       "size": 9206,
@@ -4919,6 +5009,12 @@
       "id": "nshare-weight_dot",
       "path": "nshare/weight_dot.gv",
       "size": 9391,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2413_2",
+      "path": "2413_2.dot",
+      "size": 9721,
       "verdict": "conformant"
     },
     {
@@ -5075,6 +5171,12 @@
       "id": "linux.x86-neatosplines_neato1",
       "path": "linux.x86/neatosplines_neato1.gv",
       "size": 12061,
+      "verdict": "conformant"
+    },
+    {
+      "id": "698066",
+      "path": "698066.dot",
+      "size": 12438,
       "verdict": "conformant"
     },
     {
@@ -5273,7 +5375,8 @@
       "id": "2343",
       "path": "2343.dot",
       "size": 59368,
-      "verdict": "conformant"
+      "verdict": "timeout",
+      "errMsg": ""
     },
     {
       "id": "graphs-b143",
@@ -5327,7 +5430,8 @@
       "id": "2095_1",
       "path": "2095_1.dot",
       "size": 105083,
-      "verdict": "conformant"
+      "verdict": "timeout",
+      "errMsg": ""
     },
     {
       "id": "graphs-root",
@@ -5381,7 +5485,8 @@
       "id": "1652",
       "path": "1652.dot",
       "size": 240391,
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "oracle exit null"
     },
     {
       "id": "1879",
@@ -5426,9 +5531,40 @@
       "verdict": "conformant"
     },
     {
+      "id": "2621",
+      "path": "2621.dot",
+      "size": 721934,
+      "verdict": "oracle-error",
+      "errMsg": "oracle exit null"
+    },
+    {
       "id": "2470",
       "path": "2470.dot",
       "size": 734358,
+      "verdict": "conformant"
+    },
+    {
+      "id": "graphs-b100",
+      "path": "graphs/b100.gv",
+      "size": 782464,
+      "verdict": "conformant"
+    },
+    {
+      "id": "graphs-b104",
+      "path": "graphs/b104.gv",
+      "size": 782464,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2471",
+      "path": "2471.dot",
+      "size": 1174310,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2371",
+      "path": "2371.dot",
+      "size": 1705517,
       "verdict": "conformant"
     },
     {
@@ -5438,10 +5574,24 @@
       "verdict": "conformant"
     },
     {
+      "id": "2646",
+      "path": "2646.dot",
+      "size": 2975897,
+      "verdict": "conformant"
+    },
+    {
       "id": "2108",
       "path": "2108.dot",
       "size": 3136769,
-      "verdict": "conformant"
+      "verdict": "timeout",
+      "errMsg": ""
+    },
+    {
+      "id": "tree-share-examples-world",
+      "path": "../share/examples/world.gv",
+      "size": 16326502,
+      "verdict": "oracle-error",
+      "errMsg": "oracle exit null"
     }
   ]
 }

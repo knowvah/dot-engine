@@ -20,39 +20,6 @@
     },
     {
       "match": {
-        "id": "1314"
-      },
-      "class": "A6",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "only the top-level svg width/height differ; every node ellipse/coord, translate, polygon, and font-size is byte-identical",
-      "reason": "fuzzer input (fontsize=\"991836031967s8\") balloons the drawing to ~2.75e11pt. C's job->width/height are unsigned int (gvcjob.h:327-328): the ROUND result (emit.c:1249-1250) wraps mod 2^32 and the SVG emits it via signed %d (gvrender_core_svg.c:258-259), so C prints height=\"-425618343\". The port keeps the mathematically-consistent unwrapped value; replicating C's 32-bit overflow is not a layout behavior worth porting. Degenerate input; revisit if upstream fixes the overflow.",
-      "ref": "known-divergences.md#a6-unsigned-int-canvas-overflow-on-degenerate-input"
-    },
-    {
-      "match": {
-        "id": "2796"
-      },
-      "class": "A4",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "max\u0394 49 numeric only; identical element tree (both sides lose edge 3->16)",
-      "reason": "oracle lays out from an acknowledged-broken init_rank recovery state (aux-graph cycle; upstream xfail #2796, draft MR !4849, cf. #2471). The verify-oracle-bug-family mission fixed the port's stale-cluster-window defect (rec_reset_vlists, flat.c:333) making the x-aux inputs line-identical to C; the port now follows C through the recovery (same lost edge 3->16, 212/212). Residual numeric deltas are recovery-state NS behavior, deliberately not chased. Re-measure when upstream fixes #2796.",
-      "ref": "known-divergences.md#a4-oracle-in-an-acknowledged-broken-state-the-init_rank--pathplan-family"
-    },
-    {
-      "match": {
-        "id": "2471"
-      },
-      "class": "A4",
-      "scope": "parity",
-      "verdict": "structural-match",
-      "bound": "whole-layout numeric (max\u0394 ~9063); element tree identical incl. the same 6 lost edges",
-      "reason": "oracle in the same acknowledged-broken init_rank recovery family (upstream xfail #2471, worst instance). Ranking + x-aux constraint inputs verified line-identical (253 rank2 calls) after the family fixes; both sides lose the identical 6 edges via C's triangulation debris. Residual numeric deltas are NS behavior from the infeasible/cyclic recovery state \u2014 not chased. Re-measure when upstream fixes #2471.",
-      "ref": "known-divergences.md#a4-oracle-in-an-acknowledged-broken-state-the-init_rank--pathplan-family"
-    },
-    {
-      "match": {
         "id": "1435"
       },
       "class": "A4",

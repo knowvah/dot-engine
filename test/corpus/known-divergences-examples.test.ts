@@ -40,6 +40,9 @@ const DOC_CLAIMS_CONFORMANT = [
   '2470',
   // A8 ortho instance 2620 collapsed 2026-07-11 (faithful sgraph adjacency-spill + chancmpid)
   '2620',
+  // A3 (hypot tie) and A8 (Proutespline FMA) members, closed: conformant at
+  // graphviz 16.1 in the fresh sweep (T13).
+  '2368', '241_1', '2413_1', '2413_2', 'graphs-decorate', '2371', '2646',
 ];
 
 // Graphs the doc cites as CURRENT accepted divergences (A2/A3 examples). If one
@@ -47,21 +50,8 @@ const DOC_CLAIMS_CONFORMANT = [
 // its registry entry). These are also guarded by accepted-divergences.test.ts;
 // duplicated here to bind the PROSE claim, not just the registry.
 const DOC_CLAIMS_DIVERGENT = [
-  '2368',
-  // A3 hypot-tie sibling of the oracle-pinned 241_0 (retired 2026-07-04)
-  '241_1',
-  // A7 round()/box-wall rounding boundary in maximal_bbox (retired 2026-07-04)
+  // A7 round()/box-wall rounding boundary in maximal_bbox
   'graphs-honda-tokoro',
-  // A3 hypot-tie family extension: label-vnode slit corridor (retired 2026-07-05)
-  '2413_1',
-  // A3 hypot-tie family extension: same corridor, 2 ties (retired 2026-07-05)
-  '2413_2',
-  // A3 hypot-tie family extension: intra-cluster labeled edge (retired 2026-07-05)
-  'graphs-decorate',
-  // A3 hypot-tie family extension: control-point mirror across 2 edges (retired 2026-07-05)
-  '2371',
-  // A8 new class: fp-contract/FMA knife-edge tangency in Proutespline (retired 2026-07-05)
-  '2646',
 ];
 
 describe('known-divergences.md prose ↔ parity verdicts', () => {

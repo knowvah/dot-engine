@@ -16,7 +16,7 @@ The earlier registry wording (an A9 "CDT cocircular incircle tie" from a
 `sin`/`hypot` 1-ULP) does not describe this graph: with the oracle's own node
 positions injected, the routing residual was a port-side mis-port (unmirrored
 clang FMA contraction in the multispline corridor geometry), fixed in
-`1e102b30 fix(neato): mirror fma contraction in multispline routing geometry`.
+`b77b2703 fix(neato): mirror fma contraction in multispline routing geometry`.
 Since that commit, injected positions reproduce native's xdot exactly.
 
 ## Repro
@@ -86,7 +86,7 @@ boundary `src/common/arm-pow.ts` already documents.
    41112 `(dist → pow)` pairs the native trace recorded (82224 lookups,
    0 misses). Result: all 67153 trace rows bit-identical, including the
    positions after `pcp_rotate`, and `compare-xdot` reports 0 diffs against
-   native (after `1e102b30`; before it, the 2 diffs left were edge `4->11`'s
+   native (after `b77b2703`; before it, the 2 diffs left were edge `4->11`'s
    corridor, which is what led to that fix).
 5. **Routing isolation.** Native's own positions injected through the
    attribution hook (`GVTS_POS_DUMP` → `GVTS_POS_INJECT`) also give 0 diffs,

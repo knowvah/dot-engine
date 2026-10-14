@@ -71,83 +71,6 @@
       "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
     },
     {
-      "id": "graphs-b85",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 8,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "1447",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 381,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b106",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 930,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b29",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 2475,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b143",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 2390,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "1447_1",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 1023,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b102",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 1527,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.i386-b102",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 676,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-xx",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 1935,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "share-b102",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 579,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-b102",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 554,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
       "id": "1879",
       "engine": "fdp",
       "opClass": "area[0].coords[0]",
@@ -169,31 +92,10 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
     },
     {
-      "id": "linux.x86-root_twopi",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 406,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified \u2014 port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the >=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless."
-    },
-    {
-      "id": "nshare-root_twopi",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 423,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified \u2014 port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the >=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless."
-    },
-    {
       "id": "graphs-b103",
       "engine": "fdp",
       "opClass": "area[0].coords[0]",
       "delta": 3546,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified \u2014 port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the >=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless."
-    },
-    {
-      "id": "graphs-root",
-      "engine": "fdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 612,
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified \u2014 port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the >=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless."
     },
     {

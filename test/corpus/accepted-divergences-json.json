@@ -62,13 +62,6 @@
       "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "241_0",
-      "engine": "neato",
-      "opClass": "edge:1->6#0/_draw_/op[1].b[ptCount]",
-      "delta": 5.740000000000009,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-jcctree",
       "engine": "neato",
       "opClass": "edge:DEF2->ID2#0/_draw_/op[1].b[1]",
@@ -129,13 +122,6 @@
       "engine": "neato",
       "opClass": "edge:node62->node63#0/_draw_/op[1].b[7]",
       "delta": 0.6000000000001364,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2242",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 45.410000000000025,
       "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -531,115 +517,10 @@
       "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-clustlabel",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 128.03,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-radius",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 12,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2225",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 11.619999999999997,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b80a",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 7.439999999999998,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-center",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 4.689999999999998,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-longflat",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[0]",
-      "delta": 4.689999999999998,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1909",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 11.619999999999997,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-bad",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 12.160000000000004,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2643",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 5.1299999999999955,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1514",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 56.20999999999998,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "705",
-      "engine": "fdp",
-      "opClass": "edge:aa->ab#0/_draw_/op[1].b[0]",
-      "delta": 65.46,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b491",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 4.570000000000007,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-user_shapes",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 8.78000000000003,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2615",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 12.860000000000014,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-fdp",
       "engine": "fdp",
       "opClass": "cluster:clusterA/nodes[members]",
       "delta": 7.900000000000034,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-clust1",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 3.8899999999999864,
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -650,283 +531,10 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-nestedclust",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 28,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-layers",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 12.01000000000002,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-layer2",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 12.01000000000002,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-layer",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 12.01000000000002,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-structs",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 6.420000000000016,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2521",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 11.77000000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-mike",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1009.54,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2184",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 5.5400000000000205,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-KW91",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 125.64000000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2556",
-      "engine": "fdp",
-      "opClass": "edge:1->12#0/_draw_/op[1].b[ptCount]",
-      "delta": 277.09000000000003,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1856",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 104.07,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-russian",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1.6699999999999875,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-ER",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 29.370000000000005,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "241_0",
       "engine": "fdp",
       "opClass": "edge:1->6#0/_draw_/op[1].b[ptCount]",
       "delta": 23.75,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b85",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 7.719999999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-ports",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 35.31999999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1658",
-      "engine": "fdp",
-      "opClass": "edge:0->GND#0/_draw_/op[1].b[ptCount]",
-      "delta": 154,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-html",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 9.730000000000018,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-jcctree",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 69.21999999999997,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-Heawood",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 32.50999999999996,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-rowe",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 715.3000000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-abstract",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 338.58,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-fig6",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 925.98,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-Symbol",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 180.75,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-alf",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 306.92,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-record",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 306.92,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-world",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 273.6700000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-style",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 337.23,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-shells",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 585.1100000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-clust1",
-      "engine": "fdp",
-      "opClass": "edge:b0->b1#0/_draw_/op[1].b[4]",
-      "delta": 1,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-clust1",
-      "engine": "fdp",
-      "opClass": "edge:b0->b1#0/_draw_/op[1].b[4]",
-      "delta": 1,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-grammar",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 708.74,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1855",
-      "engine": "fdp",
-      "opClass": "edge:11->1#0/_draw_/op[1].b[ptCount]",
-      "delta": 742.35,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-dpd",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 157.74999999999997,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b56",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 37.44,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-overlap",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 157.74999999999997,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-unix",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 467.8499999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-lsunix2",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 467.8499999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-lsunix1",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 467.8499999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-lsunix3",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 467.8799999999999,
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -937,150 +545,10 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-trapeziumlr",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 862.8000000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-triedds",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 23.78000000000003,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-size",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1315.3400000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-unix2",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1315.3400000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-unix2k",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1315.3400000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-ngk10_4",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 577.9,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-weight",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1497.214,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-viewfile",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 162.28000000000003,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-arrows",
-      "engine": "fdp",
-      "opClass": "edge:Z->B#0/_draw_/op[1].b[ptCount]",
-      "delta": 521.72,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-arrowsize",
-      "engine": "fdp",
-      "opClass": "edge:Z->B#0/_draw_/op[1].b[ptCount]",
-      "delta": 521.72,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-st_circle",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[0]",
-      "delta": 71.71000000000004,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.x86-ordering_dot",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 24,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-st_box",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 41.610000000000014,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "macosx-ordering_dot",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 24,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-newarrows",
-      "engine": "fdp",
-      "opClass": "edge:Z->B#0/_draw_/op[1].b[ptCount]",
-      "delta": 521.72,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-ordering_dot",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 24,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "2242",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 525,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sr_box",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 93.75999999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sr_circle",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 147.55,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sl_circle",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 147.55,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sl_box",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 93.75999999999999,
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -1091,122 +559,10 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "1453",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1075.58,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-pgram",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1500.0900000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-Helvetica",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 720.25,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-biglabel",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 34.19999999999982,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2082",
-      "engine": "fdp",
-      "opClass": "edge:cfabeae2444d467eaf50711080f396f2->2fbd65667241455bb04da4ffb465db70#0/_draw_/op[1].b[ptCount]",
-      "delta": 250.95,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b71",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1382.5,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-NaN",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 2478.9700000000003,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2734",
-      "engine": "fdp",
-      "opClass": "edge:node1->node3#0/_draw_/op[1].b[1]",
-      "delta": 0.7100000000000009,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-st_box_dbl",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 41.610000000000014,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-st_circle_dbl",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[0]",
-      "delta": 71.71000000000004,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sr_box_dbl",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 93.75999999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sl_circle_dbl",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 147.55,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sr_circle_dbl",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 147.55,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sl_box_dbl",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 93.75999999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "56",
       "engine": "fdp",
       "opClass": "edge:kinect2_bridge_launch->ramcip_some_other_ros_node#0/_draw_/op[1].b[ptCount]",
       "delta": 445.8599999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1898",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 144.20999999999998,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2669",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1494.3700000000001,
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -1217,115 +573,10 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-cairo",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 508.19,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-proc3d",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 60.81000000000006,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-crazy",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1176.466,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-jsort",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 868.7200000000001,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-unix",
-      "engine": "fdp",
-      "opClass": "edge:6th Edition->Mini Unix#0/pos[8]",
-      "delta": 1,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2193",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 4906.43,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1447",
-      "engine": "fdp",
-      "opClass": "edge:0x00400b06->0x00400b1e#0/_draw_/op[1].b[ptCount]",
-      "delta": 266.73999999999995,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b57",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1909.42,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-b15",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 593.09,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-dotsplines_dot",
-      "engine": "fdp",
-      "opClass": "edge:4.1 BSD->4.2 BSD#0/_draw_/op[1].b[4]",
-      "delta": 9.409999999999854,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-big",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 174.32999999999993,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-dotsplines_dot1",
-      "engine": "fdp",
-      "opClass": "edge:4.1 BSD->4.2 BSD#0/_draw_/op[1].b[4]",
-      "delta": 9.409999999999854,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-awilliams",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1154.15,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b36",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 241.5,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b94",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 5.92999999999995,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-proc3d",
-      "engine": "fdp",
-      "opClass": "cluster:cluster_0/bb[1]",
-      "delta": 1,
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -1336,31 +587,10 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-b124",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 511.83000000000015,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "share-ldbxtried",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 165,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-ldbxtried",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 170,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-NaN",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 49.220000000001164,
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -1371,52 +601,10 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "2095",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 5132.37,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b69",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 2788.1099999999997,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b106",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[1]",
-      "delta": 1430.24,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1447_1",
-      "engine": "fdp",
-      "opClass": "edge:ASCIInumbers->string_encoding#0/_draw_/op[1].b[ptCount]",
-      "delta": 2223.15,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b143",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 2411.9,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-mode",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 836.09,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b29",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1855.79,
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -1427,67 +615,11 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "1718",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1129.1499999999999,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b102",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1089.8,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.i386-b102",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 506.56,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-xx",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 2282.16,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b81",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[0]",
-      "delta": 32882.09,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-b102",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 434.71000000000004,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-b102",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 415.53,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "1879",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 70136.48000000001,
       "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail."
-    },
-    {
-      "id": "2343",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 2166.354,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
       "id": "nshare-root_circo",
@@ -1525,39 +657,11 @@
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-root",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 5027.2300000000005,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.x86-root_twopi",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1157.5000000000002,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-root_twopi",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1390.23,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-b103",
       "engine": "fdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 2659.61,
       "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-badvoro",
-      "engine": "fdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 4266.280000000001,
-      "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail."
     },
     {
       "id": "2108",
@@ -1574,13 +678,6 @@
       "rationale": "A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive \u2014 port self-perturbation experiments (2620: node width +0.001in -> median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -> median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail. (2108/1652: layout additionally exceeds the xdot-track port time budget; perf class, see 2621.)"
     },
     {
-      "id": "graphs-radius",
-      "engine": "sfdp",
-      "opClass": "edge:x->y#0/_draw_/op[1].b[2]",
-      "delta": 33.110000000000014,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "1585_1",
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
@@ -1592,13 +689,6 @@
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 153.92000000000002,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2168",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 160.71,
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -1774,41 +864,6 @@
       "engine": "sfdp",
       "opClass": "edge:C->Z#0/pos[1]",
       "delta": 1.3400000000000034,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-radius_dot",
-      "engine": "sfdp",
-      "opClass": "edge:x->y#0/_draw_/op[1].b[2]",
-      "delta": 33.110000000000014,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.x86-radius_dot",
-      "engine": "sfdp",
-      "opClass": "edge:x->y#0/_draw_/op[1].b[2]",
-      "delta": 33.110000000000014,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "macosx-radius_dot",
-      "engine": "sfdp",
-      "opClass": "edge:x->y#0/_draw_/op[1].b[2]",
-      "delta": 33.110000000000014,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.i386-radius_dot",
-      "engine": "sfdp",
-      "opClass": "edge:x->y#0/_draw_/op[1].b[2]",
-      "delta": 33.110000000000014,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-radius_dot",
-      "engine": "sfdp",
-      "opClass": "edge:x->y#0/_draw_/op[1].b[2]",
-      "delta": 33.110000000000014,
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -3231,13 +2286,6 @@
       "opClass": "edge:1083->1084#0/_draw_/op[1].b[0]",
       "delta": 66.11999999999898,
       "rationale": "A1 irreducible (proven by injection A/B 2026-07-24): circo getRotation's closest-node selection (circpos.c:79-91) is an exact-tie knife edge for this graph's three copies of a symmetric 5-node block \u2014 the cut vertex and its mirror node are equidistant from the rotated origin in real arithmetic. V8's trig chain yields an exact FP tie (both 1.9333108975227196) so strict < keeps the neighbor (rot=0); Apple libm gives the neighbor +1 ULP so the mirror wins (rot 0.15/0.09/0.03 rad), rigidly rotating 3 blocks / 55 nodes by up to 5.2deg / 66pt. Injecting libm's ~2-ULP y asymmetry into just the 3 cut vertices makes the port match the oracle EXACTLY (2197 diffs -> 0 at 0.01): every port stage downstream is exonerated. Same class as the twopi 1855 radial mirror."
-    },
-    {
-      "id": "241_0",
-      "engine": "twopi",
-      "opClass": "edge:1->6#0/_draw_/op[1].b[ptCount]",
-      "delta": 0.06999999999999318,
-      "rationale": "layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
       "id": "1855",
