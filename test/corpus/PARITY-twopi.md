@@ -13,10 +13,10 @@ test/corpus/parity-report.ts`.
 ## Summary
 
 - **Surveyed:** 928 (generated 2026-10-14T04:09:29.997Z)
-- **pass:** 911 (98.2%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 15
-- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
+- **pass:** 911 (98.2%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 16
+- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
 
-## Accepted deltas (15) — documented, not chased
+## Accepted deltas (16) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -35,6 +35,7 @@ table below.
 | [`share-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/newarrows.gv) | 20 | A1 | 12 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (newarrows variant of graphs-newarrows) | known-divergences.md#a1-twopi-arrows-family |
 | [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 40 | A1 | 40 draw-op diffs confined to the mirrored radial edge pair Z-&gt;I / i-&gt;Z, which swap straight (8-coord) vs routed (14-coord) splines; node positions and every other edge conformant. Injection A/B 2026-07-28: oracle pre-routing ND_pos injected into the port -&gt; 0 diffs, routing/emission exonerated (attribution-twopi.json). Refined flip site: with i-Z-I collinear on a ring diameter, pathplan directVis's intersect() treats the segment as blocked when a third node's axis vertex x falls strictly inside the ULP-wide (tail.x, head.x) interval (wind's 1e-4 tolerance makes 270pt-distant vertices 'collinear', and inBetween then tests ONLY the x projection) - so the straight/curved choice per side hinges on the last-ULP ordering of three nominally equal x coordinates out of PRISM's solve. Verified by replicating directVis offline on both sides' dumped obstacle sets: each reproduces its own side's decision exactly. | known-divergences.md#a1-twopi-arrows-family |
 | [`windows-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/newarrows.gv) | 20 | A1 | 12 draw-op diffs, all on edge Z-&gt;I; unfilled_bezier[ptCount]: 8 vs 14 (newarrows variant of graphs-newarrows) | known-divergences.md#a1-twopi-arrows-family |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) |  | A10 | port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries | known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 183.86 vs 173.06 | known-divergences.md#a9-engine-track-twopi-circo |
 | [`2470`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2470.dot) | 596 | A9 | 298 draw-op diffs, ALL edge-label _ldraw_ text positions (HTML &lt;td align=left&gt;LOOKBACK labels); every diff = one xlabel candidate step (+label width x, -16.8 line-height y). Splines/nodes/bboxes bit-identical to oracle (0 _draw_/pos/bb diffs even @1e-7). Mechanism: ~140 near-coincident HTML edge-label anchors are placed by the neato-family xlabel placer (postproc.c:addXLabels -&gt; label/xlabels.c). Patient-zero seq=8: node ND_coord.y differs 1.3e-13 (~2 ULP, twopi radial libm sin/cos vs V8 Math) while ND_height/sz.y/2 are bit-identical; floor(coord.y - sz.y/2) straddles exactly 0, flipping objplpmks rect y-low -1&lt;-&gt;0 -&gt; Hilbert key -&gt; R-tree insertion order -&gt; node grouping (C root 19 branches vs port 22) -&gt; RTreeSearch pruning -&gt; xlabel candidate flip. xladjust/AGSEQ order/CombineRect(min-min quirk)/PickBranch u64/int32 Hilbert key all faithful. No deterministic rewrite reproduces the libm coordinate. Same class as twopi/1855 and the b29 placeLabels-tie A9 family. Full RCA: .agent-notes/twopi-2470-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
 | [`graphs-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b29.gv) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 368.1 vs 356.1 (same knife-edge previously accepted for share-b29/windows-b29; variants swapped when polylineMidpoint gained the faithful fmadd contraction - anchor now bit-identical to C, flip is a placeLabels tie on 1-ULP-drifted surrounding objects) | known-divergences.md#a9-engine-track-twopi-circo |
@@ -47,11 +48,9 @@ table below.
 |---|---:|---:|---|
 | [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 10 | `edge:n89->n100#0 _ldraw_ edge:n89->n100#0/_ldraw_/op[2].text[0]: 8953 vs 9014.43` |
 
-## Errors and timeouts (1)
+## Errors and timeouts (0)
 
-| id | status | message |
-|---|---|---|
-| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | port-error | Map maximum size exceeded |
+_(none)_
 
 **oracle errors:** 8 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
 _Passing ids (911) are omitted for brevity — the full roster is in

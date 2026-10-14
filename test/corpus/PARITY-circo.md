@@ -13,10 +13,10 @@ test/corpus/parity-report.ts`.
 ## Summary
 
 - **Surveyed:** 928 (generated 2026-10-14T01:54:16.520Z)
-- **pass:** 917 (99.3%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 4
-- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 5 (excluded from pass %)
+- **pass:** 917 (99.3%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 5
+- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 5 (excluded from pass %)
 
-## Accepted deltas (4) — documented, not chased
+## Accepted deltas (5) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -26,6 +26,7 @@ table below.
 | id | #diffs | class | bound | ref |
 |---|---:|---|---|---|
 | [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) | 2197 | A1 | &lt;= 66.12pt (3 rigid block rotations) | plans/decision-journal.md 2026-07-24 T3: getRotation closest-node exact-tie knife edge; injection A/B proved irreducible (2197 diffs -&gt; 0) |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) |  | A10 | port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries | known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines |
 | [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 41 | A9 | 41 draw-op diffs; Delta~0.2pt on edge 1-&gt;2's routed bezier (unfilled_bezier[1]: 221.92 vs 222.12); residual after f66ac638 (unchanged 41 diffs) - tie attribution not re-verified by injection | known-divergences.md#a9-engine-track-twopi-circo |
 | [`2475_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_2.dot) | 989 | A9 | 989 draw-op diffs confined to one 28-node 590_ component (18 nodes move, max 296.7pt; 10744/10762 nodes bit-identical). Mechanism: circo getRotation-&gt;closestNode (circpos.c:73-92) cocircular hypot tie — at the bit-identical placement offset the two candidate distances round 2 ULP apart between V8 Math.hypot and Apple libm, flipping the strict &lt; and rotating/reflecting the sub-block ~20deg. Block tree, circle order, and all centerAngles bit-identical; CR-hypot policy previously refuted. Repro: .agent-notes/circo-2475-590-repro.dot; RCA: .agent-notes/circo-b81-2475-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
 | [`windows-tree`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/tree.gv) | 10 | A9 | 10 draw-op diffs on one fan edge (node2-&gt;node8): circo trig places node2.y a single ULP above node8.y around the symmetric value 18.0 (18.0000000000000320 vs 18.0), flipping closestSide's dyna head-port TOP/BOTTOM at the exact tie; node boxes and all other edges bit-identical. | known-divergences.md#a9-engine-track-twopi-circo |
@@ -36,7 +37,7 @@ table below.
 |---|---:|---:|---|
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | 16326502 | 50223 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1089842535367 vs 1089842535366.99` |
 
-## Errors and timeouts (6)
+## Errors and timeouts (5)
 
 | id | status | message |
 |---|---|---|
@@ -45,7 +46,6 @@ table below.
 | [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | oracle-error | Command failed: dot -K circo -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot |
 | [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | port-error | Map maximum size exceeded |
 
 **oracle errors:** 10 native-crash (documented, excluded) / 5 timeout-flake (excluded this run, note to retry)
 _Passing ids (917) are omitted for brevity — the full roster is in

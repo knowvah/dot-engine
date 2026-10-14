@@ -915,7 +915,6 @@
 {"id":"2470","path":"2470.dot","size":734358,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2343","path":"2343.dot","size":59368,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2095_1","path":"2095_1.dot","size":105083,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
-{"id":"2784","path":"2784.dot","size":78,"verdict":"port-error","cmapx":{"verdict":"port-error","errMsg":"Map maximum size exceeded"},"imap":{"verdict":"port-error","errMsg":"Map maximum size exceeded"},"hasHref":false}
 {"id":"2646","path":"2646.dot","size":2975897,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2471","path":"2471.dot","size":1174310,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"1652","path":"1652.dot","size":240391,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"oracle exit null"},"imap":{"verdict":"oracle-error","errMsg":"oracle exit null"},"hasHref":false}
@@ -926,3 +925,4 @@
 {"id":"2371","path":"2371.dot","size":1705517,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
+{"id":"2784","path":"2784.dot","size":78,"verdict":"accepted","cmapx":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"imap":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"hasHref":false}

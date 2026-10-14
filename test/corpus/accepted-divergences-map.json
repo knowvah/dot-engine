@@ -1,5 +1,5 @@
 {
-  "comment": "Irreducible imagemap (cmapx/imap) divergences (mission: map-conformance, AD-7 twin of accepted-divergences-xdot.json). Each entry: {id, opClass, delta, rationale}. The walker treats listed ids as non-blocking ('accepted') for BOTH formats and continues. Every entry MUST be referenced in the decision journal with its mechanism. Empty at initial survey time \u2014 this is the first triage pass; fixes and any resulting acceptances are a follow-up mission. Class acceptance (added 2026-07-29): the A1-drift roster for the iterative engines is COMPUTED from attribution-<engine>.json's drift-exonerated verdicts via `classes` + test/corpus/accepted-class.ts, mirroring what parity-report.ts already does for the xdot tracks \u2014 a hand-enumerated roster of a growing set went stale on the 2026-07-27 corpus expansion. Per-id `divergences` rows still apply and are unioned with the class.",
+  "comment": "Irreducible imagemap (cmapx/imap) divergences (mission: map-conformance, AD-7 twin of accepted-divergences-xdot.json). Each entry: {id, opClass, delta, rationale}. The walker treats listed ids as non-blocking ('accepted') for BOTH formats and continues. Every entry MUST be referenced in the decision journal with its mechanism. Empty at initial survey time \u2014 this is the first triage pass; fixes and any resulting acceptances are a follow-up mission. Class acceptance (added 2026-07-29): the A1-drift roster for the iterative engines is COMPUTED from attribution-<engine>.json's drift-exonerated verdicts via `classes` + test/corpus/accepted-class.ts, mirroring what parity-report.ts already does for the xdot tracks \u2014 a hand-enumerated roster of a growing set went stale on the 2026-07-27 corpus expansion. Per-id `divergences` rows still apply and are unioned with the class. Fault acceptance (added 2026-10-14): an entry with { verdict: 'port-error' | 'timeout', errIncludes } accepts a matching port failure instead of a divergence (the row becomes 'accepted' with its errMsg kept; plans/registry-faults-staleness/decisions.md AD-1).",
   "classes": [
     {
       "class": true,
@@ -279,6 +279,46 @@
       "opClass": "area[0].coords[0]",
       "delta": 92,
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
+    },
+    {
+      "id": "2784",
+      "engine": "circo",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "opClass": "port-error",
+      "rationale": "A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md."
+    },
+    {
+      "id": "2784",
+      "engine": "twopi",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "opClass": "port-error",
+      "rationale": "A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md."
+    },
+    {
+      "id": "2784",
+      "engine": "neato",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "opClass": "port-error",
+      "rationale": "A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md."
+    },
+    {
+      "id": "2784",
+      "engine": "fdp",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "opClass": "port-error",
+      "rationale": "A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md."
+    },
+    {
+      "id": "2784",
+      "engine": "sfdp",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "opClass": "port-error",
+      "rationale": "A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md."
     }
   ]
 }

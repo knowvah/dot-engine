@@ -1,5 +1,5 @@
 {
-  "comment": "Irreducible json divergences (mission: json-conformance). Each entry: {id, opClass, delta, rationale}. The walker treats listed ids as non-blocking ('accepted') and continues. Every entry MUST be referenced in the decision journal with its mechanism. Class acceptance (added 2026-07-29): the A1-drift roster for the iterative engines is COMPUTED from attribution-<engine>.json's drift-exonerated verdicts via `classes` + test/corpus/accepted-class.ts, mirroring what parity-report.ts already does for the xdot tracks \u2014 a hand-enumerated roster of a growing set went stale on the 2026-07-27 corpus expansion. Per-id `divergences` rows still apply and are unioned with the class.",
+  "comment": "Irreducible json divergences (mission: json-conformance). Each entry: {id, opClass, delta, rationale}. The walker treats listed ids as non-blocking ('accepted') and continues. Every entry MUST be referenced in the decision journal with its mechanism. Class acceptance (added 2026-07-29): the A1-drift roster for the iterative engines is COMPUTED from attribution-<engine>.json's drift-exonerated verdicts via `classes` + test/corpus/accepted-class.ts, mirroring what parity-report.ts already does for the xdot tracks \u2014 a hand-enumerated roster of a growing set went stale on the 2026-07-27 corpus expansion. Per-id `divergences` rows still apply and are unioned with the class. Fault acceptance (added 2026-10-14): an entry with { verdict: 'port-error' | 'timeout', errIncludes } accepts a matching port failure instead of a divergence (the row becomes 'accepted' with its errMsg kept; plans/registry-faults-staleness/decisions.md AD-1).",
   "classes": [
     {
       "class": true,
@@ -2454,6 +2454,14 @@
       "opClass": "edge:Op_1091->Op_1092#0/_ldraw_/op[2].T[0]",
       "delta": 65.40000000000009,
       "rationale": "layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
+    },
+    {
+      "id": "2784",
+      "engine": "circo",
+      "verdict": "port-error",
+      "errIncludes": "Map maximum size exceeded",
+      "opClass": "port-error",
+      "rationale": "A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md."
     }
   ]
 }

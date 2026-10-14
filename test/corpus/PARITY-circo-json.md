@@ -12,8 +12,8 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 ## Summary
 
 - **Surveyed:** 928
-- **pass:** 912 (99.1%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 6
-- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 8
+- **pass:** 912 (99.1%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 7
+- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 8
 
 ## Diverged (1)
 
@@ -21,18 +21,19 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 |---|---:|---:|---|
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | 16326502 | 50223 | `[graph]/_draw_/op[2].P[3]` |
 
-## Accepted (6) — documented, not chased
+## Accepted (7) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
 | [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) | 2197 | `edge:1083->1084#0/_draw_/op[1].b[0]` | A1 irreducible (proven by injection A/B 2026-07-24): circo getRotation's closest-node selection (circpos.c:79-91) is an exact-tie knife edge for this graph's three copies of a symmetric 5-node block — the cut vertex and its mirror node are equidistant from the rotated origin in real arithmetic. V8's trig chain yields an exact FP tie (both 1.9333108975227196) so strict &lt; keeps the neighbor (rot=0); Apple libm gives the neighbor +1 ULP so the mirror wins (rot 0.15/0.09/0.03 rad), rigidly rotating 3 blocks / 55 nodes by up to 5.2deg / 66pt. Injecting libm's ~2-ULP y asymmetry into just the 3 cut vertices makes the port match the oracle EXACTLY (2197 diffs -&gt; 0 at 0.01): every port stage downstream is exonerated. Same class as the twopi 1855 radial mirror. |
 | [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 41 | `edge:1->2#0/_draw_/op[1].b[1]` | layout drift inherited from the circo xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2475_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_2.dot) | 989 | `edge:590_174423->590_174412#0/_draw_/op[1].b[0]` | layout drift inherited from the circo xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | 0 | `` | A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md. |
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 1 | `node:a/label` | Input is Latin-1 with NO `charset` declaration, so the bytes are invalid UTF-8. Native dot's -Tjson then emits a MIXED-ENCODING document: attribute values (e.g. node `label`) are echoed as RAW Latin-1 bytes (0xe1 0xe2 ... unconverted), while the DRAWN label text (_ldraw_ T op, via make_label) is UTF-8 (0xc3 0xa1 ...). No single decode reads both halves correctly: Latin-1 recovers the attribute but mojibakes the text, UTF-8 does the reverse (and the attribute bytes are not valid UTF-8). The port decodes the input once (utils.c latin1ToUTF8 fallback) and is internally consistent valid UTF-8 on BOTH surfaces, so it cannot reproduce the oracle's split encoding. A4 class: the oracle output is an encoding bug; the port declines to emit invalid/mixed-encoding JSON. The DECLARED charset=latin1 case (graphs-Latin1/b60) IS handled via the stoj double-encode fix; only the UNDECLARED-charset case is irreducible. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
 | [`windows-tree`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/tree.gv) | 10 | `edge:node2->node8#0/_draw_/op[1].b[5]` | layout drift inherited from the circo xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (9)
+## Errors and timeouts (8)
 
 | id | message |
 |---|---|
@@ -41,7 +42,6 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | oracle exit null |
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | oracle exit null |
 | [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | oracle exit null |
-| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
 | [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | oracle exit null |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle exit null |
 | [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle exit null |
