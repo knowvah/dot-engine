@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,12 +114,11 @@ sisendit selle enda mootoriga `dot`-i asemel. Selle töö aus lagi on
 A1 **kitsendamine** tasemele „aktiivset erinevust pole võrdlusplatvormil“, mitte kunagi
 platvormideülese reservatsiooni kõrvaldamine; senised tulemused (allpool) jäävad sellesse
 lakke: `circo`/`twopi`/`osage` on igaüks toonud päevavalgele ja algpõhjuseni
-jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 90.3/96.5/68.1%
+jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 90.5/96.5/68.1%
 natiivsest 0.5pt piires 929-kirjelise universumi ulatuses (graphviz 16.1.0), mis tähendab, et portitud
 aritmeetika (`fma.ts`, `arm-pow.ts`, sobitatud PRNG) peab enamiku graafide puhul vastu —
-ning iga 910-kirjelise nimekirja lahknev id on eraldi omistatud süstimise teel (lahendaja
-triiv vs pordi viga), mitte jäetud sorteerimata triiviks; 19 nimekirja lisandit
-ei ole veel omistatud. Vt iteratiivsete mootorite iseloomustust allpool.
+ning iga 929-kirjelise universumi lahknev id on eraldi omistatud süstimise teel (lahendaja
+triiv vs pordi viga), mitte jäetud sorteerimata triiviks. Vt iteratiivsete mootorite iseloomustust allpool.
 
 **Mootoriraja aktsepteerimine: twopi nooltepere.** <a id="a1-twopi-arrows-family"></a>
 Ülaltoodud tsitaat kirjeldab dot-mootori SVG-uuringut, kus A1 sobib nulli
@@ -189,13 +188,11 @@ läbimise % jätab välja sisendid, mida C-oraakel ei suuda renderdada, vt
 
 | mootor | uuritud | ±0.5pt piires | mittevastav | pordi viga / ajalõpp | oraakli viga |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Ridade `neato` ja `sfdp` andmed pärinevad läbimistest, mis lavastati enne
-`graphs-decorate`, `1314`, `2784` ja `2371` lõplikku uuesti läbimist; need võivad nende
-id-de võrra muutuda. `fdp` läbimismäär tõusis 77.5%-st, sest varasem sisseviidud läbimine
+(`fdp` läbimismäär tõusis 77.5%-st, sest varasem sisseviidud läbimine
 eelnes eelmise missiooni pordi seisule.)
 
 (Esimene pühkimine, 2026-07-11 762 kirjega, mõõtis 263/311/260 piires
@@ -203,16 +200,19 @@ eelnes eelmise missiooni pordi seisule.)
 peamiselt neato portimata `user_pos`/`P_SET` käsitlusest, mootori init-i
 konsolideerimisest ja `setEdgeType` makro-vs-funktsiooni parandusest.)
 
-Erinevalt esimesest pühkimisest oli 910-kirjelise nimekirja iga lahknev rida eraldi
-omistatud (929-kirjelises nimekirjas uued 19 id-d ei ole veel omistatud; need on T13
-üleandmises loetletud äsja nähtavatena):
-süstimiskoormus (`test/corpus/attribute-divergence.ts`) söödab natiivse
-oraakli marsruutimiseelse `ND_pos` porti ja võrdleb uuesti, ning
-iga praegune lahknev id on kas `drift-exonerated` (pordi marsruutimine
-ja väljastus reprodutseerivad oraakli täpselt, kui lahendaja triiv on eemaldatud)
-või üks käputäiest eraldi aktsepteeritud id-põhistest jääkidest (`241_0`
-CDT incircle'i viik kõigil kolmel mootoril, neato `2239`, sfdp `2556`; sfdp `42`
-on A1 triiv, vt [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Erinevalt esimesest pühkimisest on 929-kirjelise universumi iga lahknev rida
+eraldi omistatud graphviz 16.1.0 vastu: süstimiskoormus
+(`test/corpus/attribute-divergence.ts`) söödab natiivse oraakli marsruutimiseelse
+`ND_pos` porti ja võrdleb uuesti, ning iga praegune lahknev id on
+`drift-exonerated` (pordi marsruutimine ja väljastus reprodutseerivad oraakli
+täpselt, kui lahendaja triiv on eemaldatud), välja arvatud viis. Kolm on eraldi
+aktsepteeritud id-põhised jäägid: `241_0` CDT incircle'i viik fdp-l ja sfdp-l ning
+sfdp `2556` NaN-paigutus. Kaks ei ole aktsepteeritud ega algpõhjuseni jälitatud:
+fdp `2471` ja sfdp `2371` säilitavad pärast süstimist erinevad servasiltide
+asukohad (`lp`), st xlabel-paigutaja valib teise kandidaadi. Natiivne fdp paigutus
+`2471` puhul varieerub ka jooksust jooksuni, mistõttu selle rida registreerib ühe
+jooksu. (sfdp `42` on A1 triiv, vt
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Allolev klassiaktsepteerimine vormistab süüst vabastatud hulga; jooksvad arvud
 mootoripõhistel töölaudadel
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

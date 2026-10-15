@@ -1,23 +1,8 @@
 {
-  "generatedAt": "2026-07-28T16:45:00.120Z",
-  "oracleSha1": "8fdd1294b3726c2a19fe384ca48f44a2954d1944",
+  "generatedAt": "2026-10-14T20:30:45.071Z",
+  "oracleSha1": "0e0164de26a43dc43340f44915b32d7f7616c4a1",
   "tolerance": 0.01,
   "results": [
-    {
-      "id": "241_0",
-      "verdict": "not-cleared",
-      "baseDiffs": 6,
-      "injectedDiffs": 6,
-      "bucket": {
-        "shape": "edge/_draw_/structural",
-        "kind": "count",
-        "signature": "edge/_draw_/structural+edge/_hdraw_/numeric+edge/pos/structural",
-        "uniformDelta": [
-          0,
-          0.07
-        ]
-      }
-    },
     {
       "id": "1855",
       "verdict": "drift-exonerated",
@@ -54,7 +39,7 @@
     {
       "id": "graphs-arrowsize",
       "verdict": "drift-exonerated",
-      "baseDiffs": 72,
+      "baseDiffs": 23,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",
@@ -69,6 +54,17 @@
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 6,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_ldraw_/unknown",
         "kind": "position",
         "signature": "none"
       }
@@ -165,6 +161,17 @@
       "id": "2470",
       "verdict": "drift-exonerated",
       "baseDiffs": 596,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_ldraw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2471",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 10,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_ldraw_/unknown",

@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -115,12 +115,12 @@ jeho vlastním modulem místo pod `dot`. Poctivým stropem této práce je A1
 **zúžit** na „žádná aktivní odchylka na referenční platformě“, nikdy neodstranit
 meziplatformní výhradu; dosavadní výsledky (níže) tento strop respektují:
 `circo`/`twopi`/`osage` každý odhalily a zpětně vystopovaly hrstku skutečných
-případů A1/A9 a `neato`/`fdp`/`sfdp` nyní stojí na 90.3/96.5/68.1 % v rozmezí 0.5pt
+případů A1/A9 a `neato`/`fdp`/`sfdp` nyní stojí na 90.5/96.5/68.1 % v rozmezí 0.5pt
 od nativního výstupu v univerzu 929 položek (graphviz 16.1.0), což znamená, že
 portovaná aritmetika (`fma.ts`, `arm-pow.ts`, sladěný PRNG) u většiny grafů drží — a
-každé rozcházející se id ze soupisu 910 položek je individuálně připsáno
+každé rozcházející se id z univerza 929 položek je individuálně připsáno
 vstřikováním (drift řešiče vs. vada portace), místo aby zůstalo netříděným
-driftem; 19 přírůstků soupisu zatím není připsáno. Viz charakterizace
+driftem. Viz charakterizace
 iterativních modulů níže.
 
 **Akceptace stopy modulu: rodina šipek twopi.** <a id="a1-twopi-arrows-family"></a>
@@ -192,13 +192,11 @@ procento úspěšnosti vynechává vstupy, které C orákulum nedokáže vykresl
 
 | modul | prozkoumáno | v rámci ±0.5pt | neshodné | chyba portace / timeout | chyba orákula |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Řádky `neato` a `sfdp` pocházejí z průchodů připravených před závěrečným
-opakovaným průchodem `graphs-decorate`, `1314`, `2784` a `2371`; o tato id se
-mohou změnit. Míra úspěšnosti `fdp` vzrostla ze 77.5 %, protože dřívější
+(Míra úspěšnosti `fdp` vzrostla ze 77.5 %, protože dřívější
 zapsaný průchod předcházel stavu portace z předchozí mise.)
 
 (První průchod, 2026-07-11 při 762 položkách, naměřil 263/311/260 v rámci
@@ -206,16 +204,19 @@ zapsaný průchod předcházel stavu portace z předchozí mise.)
 zejména neportované zpracování `user_pos`/`P_SET` v neato, konsolidace
 inicializace modulů a oprava makro-vs-funkce u `setEdgeType`.)
 
-Na rozdíl od prvního průchodu byl každý rozcházející se řádek soupisu 910 položek
-individuálně připsán (19 id nových v soupisu 929 položek zatím není připsáno;
-jsou uvedena v předání T13 jako nově viditelná):
-vstřikovací harness (`test/corpus/attribute-divergence.ts`) vkládá
-`ND_pos` nativního orákula před vedením hran do portace a znovu porovnává, a každé
-aktuální rozcházející se id je buď `drift-exonerated` (vedení a emise portace přesně
-reprodukují orákulum, jakmile se drift řešiče odstraní), nebo jedním z hrstky
-samostatně akceptovaných zbytků po jednotlivých id (`241_0` — remíza incircle v CDT
-na všech třech modulech, neato `2239`, sfdp `2556`; sfdp `42` je drift A1, viz
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Na rozdíl od prvního průchodu je každý rozcházející se řádek univerza 929 položek
+individuálně připsán vůči graphviz 16.1.0: vstřikovací harness
+(`test/corpus/attribute-divergence.ts`) vkládá `ND_pos` nativního orákula před
+vedením hran do portace a znovu porovnává, a každé aktuální rozcházející se id je
+`drift-exonerated` (vedení a emise portace přesně reprodukují orákulum, jakmile se
+drift řešiče odstraní), kromě pěti. Tři jsou samostatně akceptované zbytky po
+jednotlivých id: remíza incircle v CDT u `241_0` na fdp a sfdp a layout s NaN u
+sfdp `2556`. Dva nejsou akceptované a dosud nemají vystopovanou příčinu: fdp
+`2471` a sfdp `2371` si po vstřiknutí ponechávají odlišné pozice popisků hran
+(`lp`), tj. umísťovač xlabel vybírá jiného kandidáta. Nativní layout fdp u `2471`
+se navíc od běhu k běhu liší, takže jeho řádek zaznamenává jeden běh. (sfdp `42`
+je drift A1, viz
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptace třídy níže formalizuje vyviněnou množinu; aktuální počty v přehledech
 jednotlivých modulů
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

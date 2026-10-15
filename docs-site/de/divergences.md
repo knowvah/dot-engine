@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -129,12 +129,11 @@ der Referenzplattform“ **einzugrenzen**, niemals den plattformübergreifenden
 Vorbehalt zu beseitigen; die bisherigen Ergebnisse (unten) halten diese Grenze
 ein: `circo`/`twopi`/`osage` haben jeweils eine Handvoll echter A1/A9-Fälle zutage
 gefördert und ihre Ursachen geklärt, und `neato`/`fdp`/`sfdp` liegen jetzt bei
-90.3/96.5/68.1 % innerhalb von 0.5pt gegenüber dem nativen Binary über das
+90.5/96.5/68.1 % innerhalb von 0.5pt gegenüber dem nativen Binary über das
 929-Item-Universum (graphviz 16.1.0) — die portierte Arithmetik (`fma.ts`,
 `arm-pow.ts`, passender PRNG) trägt also für die meisten Graphen —, und jede
-abweichende ID der 910-Item-Roster wird einzeln per Injection zugeordnet
-(Solver-Drift vs. Portierungsfehler), statt als nicht triagierte Drift zu verbleiben;
-die 19 Roster-Ergänzungen sind noch nicht zugeordnet. Siehe die Charakterisierung der
+abweichende ID des 929-Item-Universums wird einzeln per Injection zugeordnet
+(Solver-Drift vs. Portierungsfehler), statt als nicht triagierte Drift zu verbleiben. Siehe die Charakterisierung der
 iterativen Engines unten.
 
 **Engine-Track-Akzeptanz: twopi-Pfeilfamilie.** <a id="a1-twopi-arrows-family"></a>
@@ -215,13 +214,11 @@ die das C-Orakel nicht rendern kann, siehe [Konformität](./conformance.md)):
 
 | Engine | untersucht | innerhalb ±0.5pt | nicht konform | Portierungsfehler / Timeout | Orakelfehler |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Die Zeilen für `neato` und `sfdp` stammen aus Durchläufen, die vor dem abschließenden
-erneuten Durchlauf von `graphs-decorate`, `1314`, `2784` und `2371` bereitgestellt
-wurden; sie können sich um diese IDs verschieben. Die Bestehensquote von `fdp` stieg
+(Die Bestehensquote von `fdp` stieg
 gegenüber 77.5 %, weil der frühere eingecheckte Durchlauf dem Portierungsstand der
 vorherigen Mission vorausging.)
 
@@ -231,17 +228,21 @@ Korrekturen je ID, vor allem von der nicht portierten `user_pos`/`P_SET`-Behandl
 in neato, der Konsolidierung der Engine-Initialisierung und der
 `setEdgeType`-Korrektur Makro vs. Funktion.)
 
-Anders als beim ersten Durchlauf war jede abweichende Zeile der 910-Item-Roster einzeln
-zugeordnet (die 19 IDs, die in der 929-Item-Roster neu sind, sind noch nicht zugeordnet;
-sie sind in der T13-Übergabe als neu sichtbar aufgeführt): Das Injection-Harness
-(`test/corpus/attribute-divergence.ts`) gibt das
-`ND_pos` des nativen Orakels vor dem Routing in die Portierung und vergleicht neu,
-und jede aktuelle abweichende ID ist entweder `drift-exonerated` (Routing und
-Ausgabe der Portierung reproduzieren das Orakel exakt, sobald die Solver-Drift
-entfernt ist) oder eines der wenigen gesondert akzeptierten Einzel-Restfälle
-(der CDT-Incircle-Gleichstand von `241_0` bei allen drei Engines, neato `2239`,
-sfdp `2556`; sfdp `42` ist A1-Drift, siehe
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). Die Klassen-Akzeptanz unten formalisiert die entlastete Menge;
+Anders als beim ersten Durchlauf ist jede abweichende Zeile des
+929-Item-Universums gegen graphviz 16.1.0 einzeln zugeordnet: Das
+Injection-Harness (`test/corpus/attribute-divergence.ts`) gibt das `ND_pos` des
+nativen Orakels vor dem Routing in die Portierung und vergleicht neu, und jede
+aktuelle abweichende ID ist `drift-exonerated` (Routing und Ausgabe der Portierung
+reproduzieren das Orakel exakt, sobald die Solver-Drift entfernt ist), außer fünf.
+Drei sind gesondert akzeptierte Einzel-Restfälle: der CDT-Incircle-Gleichstand von
+`241_0` bei fdp und sfdp sowie das NaN-Layout von sfdp `2556`. Zwei sind weder
+akzeptiert noch bis zur Ursache geklärt: fdp `2471` und sfdp `2371` behalten nach
+der Injection abweichende Kantenlabel-Positionen (`lp`), d. h. der
+xlabel-Platzierer wählt einen anderen Kandidaten. Das native fdp-Layout von `2471`
+variiert zudem von Lauf zu Lauf, daher hält seine Zeile einen Lauf fest. (sfdp
+`42` ist A1-Drift, siehe
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
+Die Klassen-Akzeptanz unten formalisiert die entlastete Menge;
 aktuelle Zählwerte in den Dashboards je Engine
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),

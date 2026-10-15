@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -126,12 +126,12 @@ katto tälle työlle on **kaventaa** A1 muotoon ”ei aktiivista poikkeamaa
 vertailualustalla”, ei koskaan poistaa alustojen välistä varausta; tähänastiset
 tulokset (alla) pysyvät tuossa katossa: `circo`/`twopi`/`osage` ovat kukin
 tuoneet esiin ja juurisyyanalysoineet kourallisen aitoja A1/A9-tapauksia, ja
-`neato`/`fdp`/`sfdp` ovat nyt 90.3/96.5/68.1 %:ssa 0.5 pt:n sisällä natiivista
+`neato`/`fdp`/`sfdp` ovat nyt 90.5/96.5/68.1 %:ssa 0.5 pt:n sisällä natiivista
 929 kohteen joukossa (graphviz 16.1.0), mikä tarkoittaa, että porttattu aritmetiikka
 (`fma.ts`, `arm-pow.ts`, vastaava PRNG) pitää useimmilla graafeilla — ja
-jokainen 910 kohteen luettelon poikkeava tunniste on yksitellen selitetty injektiolla
+jokainen 929 kohteen joukon poikkeava tunniste on yksitellen selitetty injektiolla
 (ratkaisijan ajelehtiminen vs. porttauksen vika) eikä jätetty luokittelemattomaksi
-ajelehtimiseksi; luettelon 19 lisäystä ei ole vielä selitetty. Katso iteratiivisten
+ajelehtimiseksi. Katso iteratiivisten
 moottorien luonnehdinta alla.
 
 **Moottoriraidan hyväksyntä: twopi-nuolten perhe.** <a id="a1-twopi-arrows-family"></a>
@@ -207,13 +207,11 @@ pysty renderöimään, kohdan [Yhdenmukaisuus](./conformance.md) mukaisesti):
 
 | moottori | kartoitettu | ±0.5 pt:n sisällä | ei-yhdenmukainen | porttausvirhe / aikakatkaisu | oraakkelivirhe |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Rivit `neato` ja `sfdp` ovat läpikäynneistä, jotka valmisteltiin ennen
-`graphs-decorate`n, `1314`n, `2784`n ja `2371`n lopullista uudelleenläpikäyntiä; ne
-voivat muuttua näiden tunnisteiden verran. `fdp`:n läpäisyprosentti nousi 77.5 %:sta,
+(`fdp`:n läpäisyprosentti nousi 77.5 %:sta,
 koska aiempi commitoitu läpikäynti edelsi edellisen mission porttaustilaa.)
 
 (Ensimmäinen ajo, 2026-07-11 762 kohteella, mittasi 263/311/260 ±0.5 pt:n
@@ -221,16 +219,20 @@ sisällä — hyppy nykyisiin lukemiin tuli sittemmin toteutetuista
 syykohtaisista korjauksista, pääasiassa neaton porttaamattoman `user_pos`/`P_SET`-käsittelyn,
 moottorin alustuksen yhdistämisen ja `setEdgeType`-makro-vs-funktio-korjauksen ansiosta.)
 
-Toisin kuin ensimmäisellä ajolla, 910 kohteen luettelon jokainen poikkeava rivi
-selitettiin yksitellen (929 kohteen luettelon 19 uutta tunnistetta ei ole vielä
-selitetty; ne on lueteltu T13-luovutuksessa uusina näkyvinä):
-injektiotyökalu (`test/corpus/attribute-divergence.ts`) syöttää
-natiivin oraakkelin reititystä edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja
-jokainen nykyinen poikkeava tunniste on joko `drift-exonerated` (porttauksen reititys
-ja emissio toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan)
-tai yksi kourallisesta erikseen hyväksyttyjä syykohtaisia jäännöksiä (`241_0`:n
-CDT:n incircle-tasapeli kaikilla kolmella moottorilla, neaton `2239`, sfdp:n `2556`;
-sfdp:n `42` on A1-drift, katso [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Toisin kuin ensimmäisellä ajolla, 929 kohteen joukon jokainen poikkeava rivi on
+selitetty yksitellen graphviz 16.1.0:aa vasten: injektiotyökalu
+(`test/corpus/attribute-divergence.ts`) syöttää natiivin oraakkelin reititystä
+edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja jokainen nykyinen
+poikkeava tunniste on `drift-exonerated` (porttauksen reititys ja emissio
+toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) viittä
+lukuun ottamatta. Kolme on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
+`241_0`:n CDT:n incircle-tasapeli fdp:llä ja sfdp:llä sekä sfdp:n `2556`:n
+NaN-asettelu. Kahta ei ole hyväksytty eikä niiden juurisyytä ole vielä selvitetty:
+fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`) poikkeavat
+injektion jälkeen, eli xlabel-sijoittaja valitsee eri ehdokkaan. Natiivi
+fdp-asettelu `2471`:llä vaihtelee myös ajosta toiseen, joten sen rivi kirjaa yhden
+ajon. (sfdp:n `42` on A1-drift, katso
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Alla oleva luokkahyväksyntä vahvistaa vapautetun joukon; ajantasaiset luvut
 moottorikohtaisilla kojelaudoilla
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

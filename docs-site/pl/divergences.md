@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -113,12 +113,11 @@ wejście pod jego własnym silnikiem zamiast `dot`. Uczciwy pułap tej pracy to
 **zawężenie** A1 do „braku aktywnej rozbieżności na platformie referencyjnej”, nigdy
 wyeliminowanie zastrzeżenia o różnicach między platformami; dotychczasowe wyniki (poniżej) mieszczą się w tym
 pułapie: `circo`/`twopi`/`osage` ujawniły i rozłożyły na przyczyny źródłowe garstkę
-prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 90.3/96.5/68.1%
+prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 90.5/96.5/68.1%
 w granicach 0.5pt od natywnego na zbiorze 929 pozycji (graphviz 16.1.0), co oznacza, że przeportowana
 arytmetyka (`fma.ts`, `arm-pow.ts`, dopasowany PRNG) działa dla większości grafów —
-a każdy rozbieżny id z listy 910 pozycji jest indywidualnie przypisany przez wstrzyknięcie (dryf
-solvera vs. defekt portu), zamiast zostać nieprzeanalizowanym dryfem; 19 pozycji dodanych do listy
-jest jeszcze nieprzypisanych. Zob. charakteryzację silników iteracyjnych poniżej.
+a każdy rozbieżny id ze zbioru 929 pozycji jest indywidualnie przypisany przez wstrzyknięcie (dryf
+solvera vs. defekt portu), zamiast zostać nieprzeanalizowanym dryfem. Zob. charakteryzację silników iteracyjnych poniżej.
 
 **Akceptacja ścieżki silnika: rodzina strzałek twopi.** <a id="a1-twopi-arrows-family"></a>
 Powyższy cytat opisuje przegląd SVG silnika dot, w którym A1 dopasowuje zero
@@ -187,13 +186,11 @@ wejścia, których wyrocznia w C nie potrafi wyrenderować, zgodnie z [Zgodnośc
 
 | silnik | zbadano | w granicach ±0.5pt | niezgodne | błąd portu / timeout | błąd wyroczni |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Wiersze `neato` i `sfdp` pochodzą z przebiegów przygotowanych przed ostatnim ponownym przebiegiem
-`graphs-decorate`, `1314`, `2784` i `2371`; mogą się zmienić o te id.
-Wskaźnik zaliczeń `fdp` wzrósł z 77.5%, ponieważ wcześniejszy zatwierdzony przebieg
+(Wskaźnik zaliczeń `fdp` wzrósł z 77.5%, ponieważ wcześniejszy zatwierdzony przebieg
 przedstawiał stan portu sprzed poprzedniej misji.)
 
 (Pierwszy przebieg, 2026-07-11 przy 762 pozycjach, zmierzył 263/311/260 w granicach
@@ -201,16 +198,18 @@ przedstawiał stan portu sprzed poprzedniej misji.)
 głównie nieprzeportowanej obsługi `user_pos`/`P_SET` w neato, konsolidacji
 inicjalizacji silników i poprawki `setEdgeType` makro-vs-funkcja.)
 
-W odróżnieniu od pierwszego przebiegu każdy rozbieżny wiersz z listy 910 pozycji został indywidualnie
-przypisany (19 id nowych na liście 929 pozycji nie jest jeszcze przypisanych;
-są wymienione w przekazaniu T13 jako nowo widoczne):
-narzędzie wstrzykiwania (`test/corpus/attribute-divergence.ts`) podaje
-przedroutingowy `ND_pos` natywnej wyroczni do portu i porównuje ponownie, a
-każdy obecny rozbieżny id jest albo `drift-exonerated` (prowadzenie i emisja w porcie
-odtwarzają wyrocznię dokładnie po usunięciu dryfu solvera),
-albo jednym z kilku osobno zaakceptowanych residuów dla poszczególnych id (remis incircle w CDT dla `241_0`
-na wszystkich trzech silnikach, neato `2239`, sfdp `2556`; sfdp `42`
-to dryf A1, zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+W odróżnieniu od pierwszego przebiegu każdy rozbieżny wiersz ze zbioru 929 pozycji został
+indywidualnie przypisany względem graphviz 16.1.0: narzędzie wstrzykiwania
+(`test/corpus/attribute-divergence.ts`) podaje przedroutingowy `ND_pos` natywnej wyroczni
+do portu i porównuje ponownie, a każdy obecny rozbieżny id jest `drift-exonerated`
+(prowadzenie i emisja w porcie odtwarzają wyrocznię dokładnie po usunięciu dryfu solvera)
+z wyjątkiem pięciu. Trzy to osobno zaakceptowane residua dla poszczególnych id: remis
+incircle w CDT dla `241_0` na fdp i sfdp oraz układ NaN w sfdp `2556`. Dwa nie są
+zaakceptowane i nie mają jeszcze ustalonej przyczyny źródłowej: fdp `2471` i sfdp `2371`
+zachowują pozycje etykiet krawędzi (`lp`), które po wstrzyknięciu się różnią, tzn. moduł
+rozmieszczający xlabel wybiera innego kandydata. Natywny układ fdp dla `2471` zmienia się
+też z przebiegu na przebieg, więc jego wiersz rejestruje jeden przebieg. (sfdp `42`
+to dryf A1, zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptacja klasy poniżej formalizuje zbiór oczyszczony z zarzutów; bieżące liczby w
 panelach poszczególnych silników
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

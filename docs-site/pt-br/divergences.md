@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,12 +114,11 @@ entrada sob o seu próprio mecanismo em vez de `dot`. O teto honesto desse traba
 **estreitar** A1 para “nenhuma divergência ativa na plataforma de referência”, nunca
 eliminar a ressalva entre plataformas; os resultados até agora (abaixo) respeitam esse
 teto: `circo`/`twopi`/`osage` fizeram emergir e tiveram a causa raiz identificada em um punhado
-de instâncias genuínas de A1/A9, e `neato`/`fdp`/`sfdp` agora estão em 90.3/96.5/68.1%
+de instâncias genuínas de A1/A9, e `neato`/`fdp`/`sfdp` agora estão em 90.5/96.5/68.1%
 dentro de 0.5pt do nativo no universo de 929 itens (graphviz 16.1.0), o que significa que a aritmética
 portada (`fma.ts`, `arm-pow.ts`, PRNG equivalente) se sustenta na maioria dos grafos —
-e todo id divergente do roster de 910 itens é atribuído individualmente por injeção (deriva do solver
-vs. defeito do port) em vez de ser deixado como deriva sem triagem; os 19 acréscimos ao roster
-ainda não foram atribuídos. Veja a caracterização dos mecanismos iterativos abaixo.
+e todo id divergente do universo de 929 itens é atribuído individualmente por injeção (deriva do solver
+vs. defeito do port) em vez de ser deixado como deriva sem triagem. Veja a caracterização dos mecanismos iterativos abaixo.
 
 **Aceitação na trilha de mecanismo: família de setas do twopi.** <a id="a1-twopi-arrows-family"></a>
 O bloco de citação acima descreve a pesquisa SVG do mecanismo dot, na qual A1 corresponde a zero
@@ -188,13 +187,11 @@ entradas que o oráculo C não consegue renderizar, conforme [Conformidade](./co
 
 | mecanismo | examinados | dentro de ±0.5pt | não conformantes | erro do port / timeout | erro do oráculo |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(As linhas de `neato` e `sfdp` vêm de varreduras preparadas antes da última nova passagem de
-`graphs-decorate`, `1314`, `2784` e `2371`; podem mudar por causa desses ids.
-A taxa de aprovação do `fdp` subiu de 77.5% porque a varredura anterior registrada
+(A taxa de aprovação do `fdp` subiu de 77.5% porque a varredura anterior registrada
 era anterior ao estado do port da missão anterior.)
 
 (A primeira varredura, em 2026-07-11 com 762 itens, mediu 263/311/260 dentro de
@@ -202,16 +199,18 @@ era anterior ao estado do port da missão anterior.)
 principalmente o tratamento não portado de `user_pos`/`P_SET` do neato, a consolidação da
 inicialização de mecanismos e a correção de macro vs. função em `setEdgeType`.)
 
-Diferentemente da primeira varredura, toda linha divergente do roster de 910 itens foi atribuída
-individualmente (os 19 ids novos no roster de 929 itens ainda não foram atribuídos;
-estão listados na entrega T13 como recém-visíveis):
-o harness de injeção (`test/corpus/attribute-divergence.ts`) alimenta o
-`ND_pos` pré-roteamento do oráculo nativo no port e compara de novo, e
-todo id divergente atual é `drift-exonerated` (o roteamento e a emissão do port
-reproduzem exatamente o oráculo assim que a deriva do solver é removida)
-ou um dos poucos resíduos por id aceitos separadamente (o empate de incírculo do CDT de `241_0`
-nos três mecanismos, `2239` do neato, `2556` do sfdp; o `42` do sfdp
-é deriva A1, veja [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Diferentemente da primeira varredura, toda linha divergente do universo de 929 itens é
+atribuída individualmente em relação ao graphviz 16.1.0: o harness de injeção
+(`test/corpus/attribute-divergence.ts`) alimenta o `ND_pos` pré-roteamento do oráculo
+nativo no port e compara de novo, e todo id divergente atual é `drift-exonerated` (o
+roteamento e a emissão do port reproduzem exatamente o oráculo assim que a deriva do
+solver é removida), exceto cinco. Três são resíduos por id aceitos separadamente: o empate
+de incírculo do CDT de `241_0` no fdp e no sfdp, e o layout NaN do `2556` do sfdp. Dois
+não são aceitos e ainda não tiveram a causa raiz identificada: `2471` do fdp e `2371` do
+sfdp mantêm posições de rótulos de aresta (`lp`) que diferem após a injeção, isto é, o
+posicionador de xlabel escolhe outro candidato. O layout nativo do fdp para `2471`
+também varia de execução para execução, então sua linha registra uma execução. (O `42`
+do sfdp é deriva A1, veja [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 A aceitação de classe abaixo formaliza o conjunto exonerado; contagens atuais nos
 painéis de cada mecanismo
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

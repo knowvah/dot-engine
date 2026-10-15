@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -116,12 +116,11 @@ inntak undir sinni eigin vél í stað `dot`. Hreinskilið þak þeirrar vinnu e
 að **þrengja** A1 í „ekkert virkt frávik á viðmiðunarkerfinu“, aldrei að
 útrýma fyrirvaranum um mismunandi kerfi; niðurstöðurnar hingað til (hér á eftir) standast það
 þak: `circo`/`twopi`/`osage` hafa hver um sig afhjúpað og rótargreint nokkur
-raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 90.3/96.5/68.1%
+raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 90.5/96.5/68.1%
 innan 0.5pt frá innbyggðu á 929 atriða heildinni (graphviz 16.1.0), sem þýðir að yfirfærða
 reikningsaðferðin (`fma.ts`, `arm-pow.ts`, samstilltur slembitölugjafi) heldur fyrir flest graf —
-og hvert eitt afgangsfráviksauðkenni á 910 atriða listanum er rakið sérstaklega með innsprautun (rek lausnara
-á móti galla í yfirfærslu) í stað þess að vera skilið eftir sem óflokkað rek; 19 viðbætur við listann hafa
-enn ekki verið raktar. Sjá einkenni ítrekandi véla hér á eftir.
+og hvert eitt afgangsfráviksauðkenni á 929 atriða heildinni er rakið sérstaklega með innsprautun (rek lausnara
+á móti galla í yfirfærslu) í stað þess að vera skilið eftir sem óflokkað rek. Sjá einkenni ítrekandi véla hér á eftir.
 
 **Samþykki ferils vélar: twopi-örvafjölskyldan.** <a id="a1-twopi-arrows-family"></a>
 Fyrirvarinn hér að ofan lýsir SVG-könnun dot-vélarinnar, þar sem A1 á við um engin
@@ -192,13 +191,11 @@ inntaki sem C-véfréttin getur ekki teiknað, samkvæmt [Samræmi](./conformanc
 
 | vél | könnuð | innan ±0.5pt | ósamræmd | villa í yfirfærslu / tímamörk | villa í véfrétt |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Línurnar fyrir `neato` og `sfdp` eru úr yfirferðum sem voru undirbúnar áður en
-`graphs-decorate`, `1314`, `2784` og `2371` voru keyrð í gegn í síðasta sinn; þær
-geta hreyfst vegna þessara auðkenna. Árangurshlutfall `fdp` hækkaði frá 77.5%
+(Árangurshlutfall `fdp` hækkaði frá 77.5%
 vegna þess að fyrri innsetta yfirferðin var á undan stöðu yfirfærslunnar í fyrra
 verkefni.)
 
@@ -207,16 +204,18 @@ verkefni.)
 einkum óyfirfærðri meðhöndlun `user_pos`/`P_SET` í neato, sameiningu
 vélarræsingar og lagfæringunni á `setEdgeType` (fjölvi á móti falli).)
 
-Ólíkt fyrstu yfirferð var hver fráviksröð á 910 atriða listanum rakin sérstaklega (19 auðkennin sem eru
-ný á 929 atriða listanum hafa enn ekki verið raktar; þau eru talin upp í skilum
-T13 sem nýlega sýnileg):
-innsprautunarverkfærið (`test/corpus/attribute-divergence.ts`) matar yfirfærsluna á
-`ND_pos` véfréttarinnar fyrir leiðingu og ber saman á ný, og
-hvert núverandi fráviksauðkenni er annaðhvort `drift-exonerated` (leiðing og úttak
-yfirfærslunnar endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt)
-eða eitt af fáeinum sérstaklega samþykktum afgöngum fyrir einstök auðkenni (CDT-incircle-jafntefli `241_0`
-á öllum þremur vélunum, neato `2239`, sfdp `2556`; sfdp `42` er A1-rek, sjá
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Ólíkt fyrstu yfirferð er hver fráviksröð á 929 atriða heildinni rakin sérstaklega
+gagnvart graphviz 16.1.0: innsprautunarverkfærið (`test/corpus/attribute-divergence.ts`)
+matar yfirfærsluna á `ND_pos` véfréttarinnar fyrir leiðingu og ber saman á ný, og
+hvert núverandi fráviksauðkenni er `drift-exonerated` (leiðing og úttak yfirfærslunnar
+endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt) nema fimm.
+Þrjú eru sérstaklega samþykktir afgangar fyrir einstök auðkenni: CDT-incircle-jafntefli
+`241_0` á fdp og sfdp, og NaN-útlit sfdp `2556`. Tvö eru hvorki samþykkt né enn
+rótargreind: fdp `2471` og sfdp `2371` halda staðsetningum jaðarmerkimiða (`lp`) sem
+eru ólíkar eftir innsprautun, þ.e. xlabel-staðsetjarinn velur annan frambjóðanda.
+Innbyggða fdp-útlitið fyrir `2471` er einnig breytilegt milli keyrslna, svo röð þess
+skráir eina keyrslu. (sfdp `42` er A1-rek, sjá
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Flokkssamþykktin hér á eftir festir í sessi hópinn sem er sýknaður; lifandi talningar í
 mælaborðum hverrar vélar
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

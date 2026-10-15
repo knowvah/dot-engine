@@ -14,7 +14,7 @@ test/corpus/parity-report.ts`.
 
 - **Surveyed:** 928 (generated 2026-10-14T08:11:23.895Z)
 - **Oracle:** dot 16.1.0
-- **pass:** 633 (68.2%) · **diverged (tracked):** 11 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 278
+- **pass:** 633 (68.2%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 288
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
 
 ## Accepted deltas (6) — documented, not chased
@@ -41,23 +41,13 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **287** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **291** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (11)
+## Diverged (1)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | 16326502 | 3198828 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[4]: 1010.48 vs 1018.28` |
-| [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | 2975897 | 1979265 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1041.59 vs 1054.3` |
 | [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | 1705517 | 433020 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 4725.6 vs 4692.6` |
-| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | 782464 | 156568 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2076.68 vs 2041.16` |
-| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 782464 | 156568 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2076.68 vs 2041.16` |
-| [`2796`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2796.dot) | 8959 | 5900 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 585.95 vs 591.73` |
-| [`698066`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/698066.dot) | 12438 | 2684 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1874.31 vs 1875.47` |
-| [`2413_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_2.dot) | 9721 | 2655 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2826.47 vs 2821.46` |
-| [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 728 | `edge:n262->n264#0 _draw_ edge:n262->n264#0/_draw_/op[1].unfilled_bezier[0]: 8878.39 vs 8876.21` |
-| [`700813`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/700813.dot) | 351 | 210 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 398.63 vs 394.76` |
-| [`241_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_1.dot) | 1464 | 8 | `edge:7->9#0 _draw_ edge:7->9#0/_draw_/op[1].unfilled_bezier[ptCount]: 14 vs 8` |
 
 ## Errors and timeouts (0)
 

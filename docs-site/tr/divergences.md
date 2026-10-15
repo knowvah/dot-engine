@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -118,11 +118,10 @@ Bu çalışmanın dürüst tavanı, A1'i “başvuru platformunda etkin fark yok
 kadarki sonuçlar (aşağıda) bu tavana uyar: `circo`/`twopi`/`osage` her biri bir
 avuç gerçek A1/A9 örneği ortaya çıkarıp kök nedenine indirdi; `neato`/`fdp`/`sfdp`
 ise 929 öğelik evrende (graphviz 16.1.0) yerel çıktının 0.5pt içinde sırasıyla
-%90,3/%96,5/%68,1 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
-eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 910 öğelik listenin her
+%90,5/%96,5/%68,1 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
+eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 929 öğelik evrenin her
 farklılaşan kimliği, triyajsız bir sürüklenme olarak bırakılmak yerine enjeksiyonla
-(çözücü sürüklenmesi ile port kusuru) tek tek nedene bağlanmıştır; listeye eklenen
-19 öğe henüz nedene bağlanmamıştır. Aşağıdaki yinelemeli motor nitelendirmesine
+(çözücü sürüklenmesi ile port kusuru) tek tek nedene bağlanmıştır. Aşağıdaki yinelemeli motor nitelendirmesine
 bakın.
 
 **Motor hattı kabulü: twopi oklar ailesi.** <a id="a1-twopi-arrows-family"></a>
@@ -193,13 +192,11 @@ kâhininin işleyemediği girdileri dışarıda bırakır, bkz. [Uygunluk](./con
 
 | motor | taranan | ±0.5pt içinde | uyumlu olmayan | port hatası / zaman aşımı | kâhin hatası |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (%90,3) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (%90,5) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (%96,5) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (%68,1) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (%68,1) | 294 | 1 | 0 |
 
-(`neato` ve `sfdp` satırları, `graphs-decorate`, `1314`, `2784` ve `2371` kimliklerinin
-son yeniden taramasından önce hazırlanan taramalardandır; bu kimlikler kadar
-değişebilirler. `fdp` geçme oranı %77,5'ten yükseldi, çünkü daha önceki işlenmiş
+(`fdp` geçme oranı %77,5'ten yükseldi, çünkü daha önceki işlenmiş
 tarama bir önceki görevin port durumundan önceye aitti.)
 
 (2026-07-11'de 762 öğede yapılan ilk tarama ±0.5pt içinde 263/311/260 ölçmüştü —
@@ -207,16 +204,17 @@ güncel oranlara sıçrama, o tarihten beri girilen kimlik başına düzeltmeler
 geldi; başlıcaları neato'nun taşınmamış `user_pos`/`P_SET` işlenişi, motor
 başlatma birleştirmesi ve `setEdgeType` makro-işlev düzeltmesidir.)
 
-İlk taramanın aksine, 910 öğelik listenin ayrışan her satırı tek tek nedene bağlanmıştı
-(929 öğelik listeye yeni giren 19 kimlik henüz nedene bağlanmamıştır; T13 devir
-teslimində yeni görünür olanlar olarak listelenmiştir):
-enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin
-yönlendirme öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel
-her ayrışan kimlik ya `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca
-portun yönlendirmesi ve üretimi kâhini tam olarak yeniden üretir) ya da ayrıca
-kabul edilmiş birkaç kimlik başına artıktan biridir (`241_0`'ın üç motorun
-hepsindeki CDT iç çember beraberliği, neato `2239`, sfdp `2556`; sfdp `42`
-A1 sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). Aşağıdaki
+İlk taramanın aksine, 929 öğelik evrenin ayrışan her satırı graphviz 16.1.0'a karşı tek tek nedene
+bağlanmıştır: enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin yönlendirme
+öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, beş
+istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
+üretimi kâhini tam olarak yeniden üretir). Üçü ayrıca kabul edilmiş kimlik başına artıklardır:
+`241_0`'ın fdp ve sfdp'deki CDT iç çember beraberliği ile sfdp `2556`'nın NaN yerleşimi. İkisi kabul
+edilmemiştir ve henüz kök nedene indirilmemiştir: fdp `2471` ve sfdp `2371`, enjeksiyondan sonra
+farklı kalan kenar etiketi konumlarını (`lp`) korur, yani xlabel yerleştirici farklı bir aday seçer.
+`2471`'in yerel fdp yerleşimi ayrıca koşudan koşuya değişir; bu yüzden satırı tek bir koşuyu
+kaydeder. (sfdp `42` A1 sürüklenmesidir, bkz.
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).) Aşağıdaki
 sınıf kabulü, aklanan kümeyi resmileştirir; güncel sayılar motor başına panolarda
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),

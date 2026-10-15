@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -133,12 +133,12 @@ divergence active sur la plateforme de référence », jamais d’éliminer la r
 inter-plateformes ; les résultats obtenus jusqu’ici (ci-dessous) respectent ce
 plafond : `circo`/`twopi`/`osage` ont chacun fait apparaître et expliqué par
 leur cause racine une poignée d’instances authentiques de A1/A9, et
-`neato`/`fdp`/`sfdp` se situent désormais à 90.3/96.5/68.1 % à moins de 0.5pt du
+`neato`/`fdp`/`sfdp` se situent désormais à 90.5/96.5/68.1 % à moins de 0.5pt du
 natif sur l’univers de 929 éléments (graphviz 16.1.0), ce qui signifie que l’arithmétique
 portée (`fma.ts`, `arm-pow.ts`, PRNG concordant) tient pour la plupart des
-graphes — et chaque identifiant divergent de la liste de 910 éléments est attribué individuellement
+graphes — et chaque identifiant divergent de la univers de 929 éléments est attribué individuellement
 par injection (dérive du solveur ou défaut du portage) au lieu d’être laissé en
-dérive non triée ; les 19 ajouts à cette liste ne sont pas encore attribués. Voir la caractérisation des moteurs itératifs ci-dessous.
+dérive non triée. Voir la caractérisation des moteurs itératifs ci-dessous.
 
 **Acceptation au niveau de la piste d’un moteur : famille des flèches de twopi.** <a id="a1-twopi-arrows-family"></a>
 Le bloc de citation ci-dessus décrit le relevé SVG du moteur dot, où A1 ne
@@ -222,13 +222,11 @@ rendre, conformément à [Conformité](./conformance.md)) :
 
 | moteur | relevées | à ±0.5pt | non conformes | erreur du portage / délai dépassé | erreur de l’oracle |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Les lignes `neato` et `sfdp` proviennent de balayages préparés avant le dernier
-nouveau passage de `graphs-decorate`, `1314`, `2784` et `2371` ; elles peuvent
-bouger du fait de ces identifiants. Le taux de réussite de `fdp` a augmenté
+(Le taux de réussite de `fdp` a augmenté
 depuis 77.5 % parce que le balayage validé précédent datait de l’état du
 portage de la mission précédente.)
 
@@ -238,18 +236,21 @@ intégrés depuis, principalement la gestion non portée de `user_pos`/`P_SET` d
 neato, la consolidation de l’initialisation des moteurs et la correction
 macro-contre-fonction de `setEdgeType`.)
 
-Contrairement au premier balayage, chaque ligne divergente de la liste de 910 éléments a été
-attribuée individuellement (les 19 identifiants nouveaux de la liste de 929
-éléments ne sont pas encore attribués ; ils figurent dans le retour de T13 comme
-nouvellement visibles) : le banc d’injection
-(`test/corpus/attribute-divergence.ts`) fournit au portage le `ND_pos`
-pré-routage de l’oracle natif et recompare, et chaque identifiant divergent
-actuel est soit `drift-exonerated` (le routage et l’émission du portage
-reproduisent exactement l’oracle dès que la dérive du solveur est supprimée),
-soit l’un des quelques résidus par identifiant acceptés séparément (l’égalité
-d’incercle CDT de `241_0` sur les trois moteurs, `2239` pour neato, `2556` pour sfdp ; `42` de sfdp
-relève de la dérive A1, voir
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). L’acceptation de classe ci-dessous formalise l’ensemble disculpé ;
+Contrairement au premier balayage, chaque ligne divergente de l’univers de 929
+éléments est attribuée individuellement par rapport à graphviz 16.1.0 : le banc
+d’injection (`test/corpus/attribute-divergence.ts`) fournit au portage le `ND_pos`
+pré-routage de l’oracle natif et recompare, et chaque identifiant divergent actuel
+est `drift-exonerated` (le routage et l’émission du portage reproduisent
+exactement l’oracle dès que la dérive du solveur est supprimée), sauf cinq. Trois
+sont des résidus par identifiant acceptés séparément : l’égalité d’incercle CDT de
+`241_0` sur fdp et sfdp, et la disposition NaN de `2556` pour sfdp. Deux ne sont
+ni acceptés ni expliqués par leur cause racine : `2471` pour fdp et `2371` pour
+sfdp conservent des positions d’étiquettes d’arête (`lp`) qui diffèrent après
+injection, c’est-à-dire que le placeur de xlabels choisit un autre candidat. La
+disposition fdp native de `2471` varie aussi d’une exécution à l’autre ; sa ligne
+n’enregistre donc qu’une exécution. (`42` de sfdp relève de la dérive A1, voir
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
+L’acceptation de classe ci-dessous formalise l’ensemble disculpé ;
 compteurs à jour dans les tableaux de bord par moteur
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),

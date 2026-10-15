@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,12 +114,11 @@ inndata under sin egen motor i stedet for `dot`. Det ærlige taket for dette arb
 å **innsnevre** A1 til «ingen aktivt avvik på referanseplattformen», aldri å
 fjerne forbeholdet om tvers av plattformer; resultatene så langt (nedenfor) holder seg til
 det taket: `circo`/`twopi`/`osage` har hver avdekket og rotårsaksanalysert en håndfull
-ekte A1/A9-tilfeller, og `neato`/`fdp`/`sfdp` ligger nå på 90.3/96.5/68.1 %
+ekte A1/A9-tilfeller, og `neato`/`fdp`/`sfdp` ligger nå på 90.5/96.5/68.1 %
 innenfor 0.5pt av innebygd over universet på 929 elementer (graphviz 16.1.0), noe som betyr at den portede
 aritmetikken (`fma.ts`, `arm-pow.ts`, samsvarende PRNG) holder for de fleste grafer — og
-hver avvikende id i rosteret på 910 elementer er individuelt tilskrevet ved injeksjon (løserdrift
-mot portfeil) i stedet for å bli stående som uanalysert drift; de 19 tilleggene i rosteret
-er ennå ikke tilskrevet. Se karakteriseringen av iterative motorer nedenfor.
+hver avvikende id i universet på 929 elementer er individuelt tilskrevet ved injeksjon (løserdrift
+mot portfeil) i stedet for å bli stående som uanalysert drift. Se karakteriseringen av iterative motorer nedenfor.
 
 **Godkjenning på motorsporet: twopi-pilfamilien.** <a id="a1-twopi-arrows-family"></a>
 Blokksitatet ovenfor beskriver SVG-undersøkelsen for dot-motoren, der A1 treffer null
@@ -189,13 +188,11 @@ inndata C-orakelet ikke kan rendere, jf. [Samsvar](./conformance.md)):
 
 | motor | undersøkt | innenfor ±0.5pt | ikke samsvarende | portfeil / tidsavbrudd | orakelfeil |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3 %) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5 %) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5 %) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1 %) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1 %) | 294 | 1 | 0 |
 
-(Radene for `neato` og `sfdp` stammer fra kjøringer som ble klargjort før den siste omkjøringen av
-`graphs-decorate`, `1314`, `2784` og `2371`; de kan flytte seg på disse id-ene.
-Beståttprosenten for `fdp` økte fra 77.5 % fordi den tidligere innsjekkede kjøringen
+(Beståttprosenten for `fdp` økte fra 77.5 % fordi den tidligere innsjekkede kjøringen
 var eldre enn portstatusen fra det forrige oppdraget.)
 
 (Den første kjøringen, 2026-07-11 med 762 elementer, målte 263/311/260 innenfor
@@ -203,16 +200,17 @@ var eldre enn portstatusen fra det forrige oppdraget.)
 først og fremst neatos uportede håndtering av `user_pos`/`P_SET`, konsolideringen av motorinitialisering,
 og rettelsen av `setEdgeType` (makro mot funksjon).)
 
-I motsetning til ved første kjøring ble hver avvikende rad i rosteret på 910 elementer individuelt
-tilskrevet (de 19 id-ene som er nye i rosteret på 929 elementer er ennå ikke tilskrevet;
-de er oppført i T13-overleveringen som nylig synlige):
-injeksjonsverktøyet (`test/corpus/attribute-divergence.ts`) mater det
-innebygde orakelets `ND_pos` før ruting inn i porten og sammenligner på nytt, og
-hver gjeldende avvikende id er enten `drift-exonerated` (portens ruting
-og emisjon reproduserer orakelet nøyaktig så snart løserdriften er fjernet)
-eller ett av en håndfull separat godkjente rester per id (`241_0`s
-CDT-incircle-likhet på alle tre motorene, neato `2239`, sfdp `2556`; sfdp `42`
-er A1-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+I motsetning til ved første kjøring ble hver avvikende rad i universet på 929 elementer
+individuelt tilskrevet mot graphviz 16.1.0: injeksjonsverktøyet
+(`test/corpus/attribute-divergence.ts`) mater det innebygde orakelets `ND_pos` før ruting
+inn i porten og sammenligner på nytt, og hver gjeldende avvikende id er `drift-exonerated`
+(portens ruting og emisjon reproduserer orakelet nøyaktig så snart løserdriften er
+fjernet), bortsett fra fem. Tre er separat godkjente rester per id: `241_0`s
+CDT-incircle-likhet på fdp og sfdp, og sfdp `2556`s NaN-layout. To er ikke godkjent og
+ennå ikke rotårsaksanalysert: fdp `2471` og sfdp `2371` beholder kantetikettposisjoner
+(`lp`) som avviker etter injeksjon, det vil si at xlabel-plasseringen velger en annen
+kandidat. Den innebygde fdp-layouten for `2471` varierer dessuten fra kjøring til
+kjøring, så raden registrerer én kjøring. (sfdp `42` er A1-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Klassegodkjenningen nedenfor formaliserer den frikjente mengden; levende tall i
 dashbordene per motor
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

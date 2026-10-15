@@ -59,9 +59,9 @@ bar above.
 
 | track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | pass % |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| [neato (xdot)](./PARITY-neato.md) | 928 | 840 | 5 | 82 | 0 | 1 | 90.6% |
-| [fdp (xdot)](./PARITY-fdp.md) | 928 | 893 | 4 | 26 | 1 | 4 | 96.6% |
-| [sfdp (xdot)](./PARITY-sfdp.md) | 928 | 633 | 11 | 284 | 0 | 0 | 68.2% |
+| [neato (xdot)](./PARITY-neato.md) | 928 | 840 | 0 | 87 | 0 | 1 | 90.6% |
+| [fdp (xdot)](./PARITY-fdp.md) | 928 | 893 | 1 | 29 | 1 | 4 | 96.6% |
+| [sfdp (xdot)](./PARITY-sfdp.md) | 928 | 633 | 1 | 294 | 0 | 0 | 68.2% |
 | [neato (plain)](./PARITY-neato-plain.md) | 928 | 916 | 0 | 8 | 0 | 4 | 99.1% |
 | [fdp (plain)](./PARITY-fdp-plain.md) | 928 | 912 | 0 | 8 | 1 | 7 | 99.0% |
 | [sfdp (plain)](./PARITY-sfdp-plain.md) | 928 | 918 | 0 | 8 | 0 | 2 | 99.1% |
