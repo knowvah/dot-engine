@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -118,11 +118,11 @@ doorlicht in plaats van onder `dot`. Het eerlijke plafond van dat werk is A1 te
 kanttekening over platforms heen weg te nemen; de resultaten tot nu toe (hieronder)
 blijven binnen dat plafond: `circo`/`twopi`/`osage` hebben elk een handvol echte
 A1/A9-gevallen blootgelegd en tot de grondoorzaak herleid, en `neato`/`fdp`/`sfdp` zitten
-nu op 90.3/96.5/68.1% binnen 0.5pt van native over het universum van 929 items (graphviz 16.1.0), wat
+nu op 90.5/96.5/68.1% binnen 0.5pt van native over het universum van 929 items (graphviz 16.1.0), wat
 betekent dat de geporteerde rekenkunde (`fma.ts`, `arm-pow.ts`, overeenkomende PRNG) voor
-de meeste grafen standhoudt — en elk afwijkend id van de roster van 910 items wordt afzonderlijk door
+de meeste grafen standhoudt — en elk afwijkend id van het universum van 929 items wordt afzonderlijk door
 injectie toegeschreven (solverdrift vs. portdefect) in plaats van als niet-geanalyseerde
-drift te worden achtergelaten; de 19 toevoegingen aan de roster zijn nog niet toegeschreven. Zie de karakterisering van de iteratieve engines hieronder.
+drift te worden achtergelaten. Zie de karakterisering van de iteratieve engines hieronder.
 
 **Engine-spoor-acceptatie: twopi-pijlenfamilie.** <a id="a1-twopi-arrows-family"></a>
 De bovenstaande blockquote beschrijft de SVG-survey van de dot-engine, waar A1 nul
@@ -192,13 +192,11 @@ invoer weg die het C-orakel niet kan renderen, volgens [Conformiteit](./conforma
 
 | engine | surveyed | binnen ±0.5pt | niet-conform | port-fout / timeout | orakelfout |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(De rijen `neato` en `sfdp` komen uit sweeps die zijn klaargezet vóór de laatste herhaling van
-`graphs-decorate`, `1314`, `2784` en `2371`; ze kunnen door die id's nog verschuiven.
-Het slagingspercentage van `fdp` steeg van 77.5% omdat de eerdere vastgelegde sweep
+(Het slagingspercentage van `fdp` steeg van 77.5% omdat de eerdere vastgelegde sweep
 voorafging aan de portstatus van de vorige missie.)
 
 (De eerste sweep, 2026-07-11 bij 762 items, mat 263/311/260 binnen
@@ -207,16 +205,18 @@ correcties per id, voornamelijk de niet-geporteerde `user_pos`/`P_SET`-afhandeli
 neato, de consolidatie van de engine-initialisatie en de correctie van `setEdgeType`
 als macro vs. functie.)
 
-Anders dan bij de eerste sweep is elke afwijkende rij van de roster van 910 items afzonderlijk
-toegeschreven (de 19 id's die nieuw zijn in de roster van 929 items zijn nog niet toegeschreven;
-ze staan in de T13-overdracht als nieuw zichtbaar):
-het injectietestharnas (`test/corpus/attribute-divergence.ts`) voert de pre-routerings-`ND_pos`
-van het native orakel in de port in en vergelijkt opnieuw, en
-elk huidig afwijkend id is ofwel `drift-exonerated` (routering en uitvoer van de port
-reproduceren het orakel exact zodra de solverdrift is weggenomen)
-ofwel een van de handvol afzonderlijk geaccepteerde restgevallen per id (de CDT-incircle-
-gelijkstand van `241_0` op alle drie de engines, neato `2239`, sfdp `2556`; sfdp `42`
-is A1-drift, zie [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Anders dan bij de eerste sweep is elke afwijkende rij van het universum van 929 items
+afzonderlijk toegeschreven ten opzichte van graphviz 16.1.0: het injectietestharnas
+(`test/corpus/attribute-divergence.ts`) voert de pre-routerings-`ND_pos` van het native
+orakel in de port in en vergelijkt opnieuw, en elk huidig afwijkend id is
+`drift-exonerated` (routering en uitvoer van de port reproduceren het orakel exact zodra
+de solverdrift is weggenomen), op vijf na. Drie zijn afzonderlijk geaccepteerde
+restgevallen per id: de CDT-incircle-gelijkstand van `241_0` op fdp en sfdp, en de
+NaN-lay-out van sfdp `2556`. Twee zijn niet geaccepteerd en nog niet tot de grondoorzaak
+herleid: fdp `2471` en sfdp `2371` houden na injectie afwijkende posities van edge-labels
+(`lp`), dat wil zeggen dat de xlabel-plaatser een andere kandidaat kiest. De native
+fdp-lay-out van `2471` varieert bovendien van run tot run, dus zijn rij legt één run vast.
+(sfdp `42` is A1-drift, zie [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 De klasse-acceptatie hieronder formaliseert de vrijgesproken verzameling; actuele aantallen
 in de dashboards per engine
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

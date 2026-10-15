@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,12 +114,11 @@ vstup pod jeho vlastným modulom namiesto `dot`. Úprimným stropom tejto práce
 **zúžiť** A1 na „žiadna aktívna odchýlka na referenčnej platforme“, nikdy neodstrániť
 medziplatformovú výhradu; doterajšie výsledky (nižšie) tento
 strop spĺňajú: `circo`/`twopi`/`osage` odhalili a vyriešili po koreňovú príčinu niekoľko
-skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 90.3/96.5/68.1 %
+skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 90.5/96.5/68.1 %
 v rámci 0.5pt od natívneho na univerze 929 položiek (graphviz 16.1.0), čo znamená, že
 portovaná aritmetika (`fma.ts`, `arm-pow.ts`, zhodný PRNG) pre väčšinu grafov drží —
-a každé odchýlené id zo zoznamu 910 položiek je individuálne priradené injekciou (drift
-solvera vs. chyba portu), a nie ponechané ako netriedený drift; 19 pridaných položiek
-zoznamu zatiaľ nie je priradených. Pozri charakterizáciu iteratívnych modulov nižšie.
+a každé odchýlené id z univerza 929 položiek je individuálne priradené injekciou (drift
+solvera vs. chyba portu), a nie ponechané ako netriedený drift. Pozri charakterizáciu iteratívnych modulov nižšie.
 
 **Akceptácia na úrovni stopy modulu: rodina šípok twopi.** <a id="a1-twopi-arrows-family"></a>
 Citovaný blok vyššie opisuje prieskum SVG pre modul dot, kde sa A1 zhoduje s nulou
@@ -189,13 +188,11 @@ vstupy, ktoré orákulum v C nedokáže vykresliť, podľa [Zhody](./conformance
 
 | modul | preskúmané | v rámci ±0.5pt | nezhodné | chyba portu / timeout | chyba orákula |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Riadky `neato` a `sfdp` pochádzajú z prechodov pripravených pred konečným opakovaným
-prechodom `graphs-decorate`, `1314`, `2784` a `2371`; o tieto id sa môžu posunúť.
-Miera úspešnosti `fdp` vzrástla zo 77.5 %, pretože skorší commitnutý prechod
+(Miera úspešnosti `fdp` vzrástla zo 77.5 %, pretože skorší commitnutý prechod
 predchádzal stavu portu z predchádzajúcej misie.)
 
 (Prvý prieskum, 2026-07-11 pri 762 položkách, nameral 263/311/260 v rámci
@@ -203,16 +200,17 @@ predchádzal stavu portu z predchádzajúcej misie.)
 najmä neportované spracovanie `user_pos`/`P_SET` v neato, konsolidácia
 inicializácie modulov a oprava `setEdgeType` makro-vs-funkcia.)
 
-Na rozdiel od prvého prieskumu bol každý odchýlený riadok zoznamu 910 položiek
-individuálne priradený (19 id nových v zozname 929 položiek zatiaľ nie je priradených;
-sú uvedené ako novo viditeľné v odovzdaní T13):
-injekčný nástroj (`test/corpus/attribute-divergence.ts`) vkladá
-`ND_pos` z natívneho orákula pred vedením hrán do portu a znovu porovnáva
-a každé súčasné odchýlené id je buď `drift-exonerated` (vedenie
-a emisia portu reprodukujú orákulum presne, keď sa drift solvera odstráni),
-alebo jedným z hŕstky samostatne akceptovaných zvyškov po jednotlivých id (`241_0` —
-väzba incircle v CDT na všetkých troch moduloch, neato `2239`, sfdp `2556`; sfdp `42`
-je drift A1, pozri [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Na rozdiel od prvého prieskumu je každý odchýlený riadok univerza 929 položiek individuálne
+priradený voči graphviz 16.1.0: injekčný nástroj (`test/corpus/attribute-divergence.ts`) vkladá
+`ND_pos` z natívneho orákula pred vedením hrán do portu a znovu porovnáva, a každé súčasné odchýlené
+id je `drift-exonerated` (vedenie a emisia portu reprodukujú orákulum presne, keď sa drift solvera
+odstráni), okrem piatich. Tri sú samostatne akceptované zvyšky po jednotlivých id: väzba incircle v
+CDT pri `241_0` na fdp a sfdp a NaN rozloženie sfdp `2556`. Dva nie sú akceptované a zatiaľ nemajú
+zistenú koreňovú príčinu: fdp `2471` a sfdp `2371` si po injekcii zachovávajú odlišné pozície
+popisiek hrán (`lp`), t. j. umiestňovač xlabel vyberie iného kandidáta. Natívne rozloženie fdp pre
+`2471` sa tiež líši od behu k behu, takže jeho riadok zaznamenáva jeden beh. (sfdp `42` je drift A1,
+pozri
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptácia triedy nižšie formalizuje množinu očistených; živé počty v
 dashboardoch jednotlivých modulov
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

@@ -111,13 +111,12 @@ input under its own engine instead of `dot`. The honest ceiling on that work is
 to **narrow** A1 to "no active divergence on the reference platform," never to
 eliminate the cross-platform caveat; the results so far (below) hold to that
 ceiling: `circo`/`twopi`/`osage` have each surfaced and root-caused a handful of
-genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 90.3/96.5/68.1%
+genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 90.5/96.5/68.1%
 within 0.5pt of native over the 929-item universe (graphviz 16.1.0), meaning
 the ported arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most
-graphs — and every diverged id of the 910-item roster is individually
+graphs — and every diverged id of the 929-item universe is individually
 attributed by injection (solver drift vs. port defect) rather than left as
-untriaged drift; the 19 roster additions are not yet attributed. See the
-iterative-engine characterization below.
+untriaged drift. See the iterative-engine characterization below.
 
 **Engine-track acceptance: twopi arrows family.** <a id="a1-twopi-arrows-family"></a>
 The blockquote above describes the dot-engine SVG survey, where A1 matches zero
@@ -188,13 +187,11 @@ universe; pass % leaves out inputs the C oracle cannot render, per
 
 | engine | surveyed | within ±0.5pt | non-conformant | port error / timeout | oracle error |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(The `neato` and `sfdp` rows are from walks staged before the final re-walk of
-`graphs-decorate`, `1314`, `2784` and `2371`; they may move by those ids.
-The `fdp` pass rate rose from 77.5% because the earlier committed walk
+(The `fdp` pass rate rose from 77.5% because the earlier committed walk
 predated the port state of the previous mission.)
 
 (The first sweep, 2026-07-11 at 762 items, measured 263/311/260 within
@@ -202,16 +199,19 @@ predated the port state of the previous mission.)
 chiefly neato's unported `user_pos`/`P_SET` handling, the engine-init
 consolidation, and the `setEdgeType` macro-vs-function fix.)
 
-Unlike at first sweep, every diverged row of the 910-item roster was
-individually attributed (the 19 ids new to the 929-item roster are not yet
-attributed; they are listed in the T13 hand-back as newly visible):
-the injection harness (`test/corpus/attribute-divergence.ts`) feeds the
-native oracle's pre-routing `ND_pos` into the port and re-compares, and
-every current diverged id is either `drift-exonerated` (the port's routing
-and emission reproduce the oracle exactly once the solver drift is removed)
-or one of the handful of separately accepted per-id residuals (`241_0`'s
-CDT incircle tie on all three engines, neato `2239`, sfdp `2556`; sfdp `42`
-is A1 drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Unlike at first sweep, every diverged row of the 929-item universe is
+individually attributed against graphviz 16.1.0: the injection harness
+(`test/corpus/attribute-divergence.ts`) feeds the native oracle's
+pre-routing `ND_pos` into the port and re-compares, and every current
+diverged id is `drift-exonerated` (the port's routing and emission
+reproduce the oracle exactly once the solver drift is removed) except five.
+Three are separately accepted per-id residuals: `241_0`'s CDT incircle tie
+on fdp and sfdp, and sfdp `2556`'s NaN layout. Two are not accepted and not
+yet root-caused: fdp `2471` and sfdp `2371` keep edge-label positions
+(`lp`) that differ after injection, i.e. the xlabel placer picks a
+different candidate. The native fdp layout of `2471` also varies from run
+to run, so its row records one run. (sfdp `42`
+is A1 drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 The class acceptance below formalizes the exonerated set; live counts in
 the per-engine dashboards
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

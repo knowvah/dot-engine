@@ -8,6 +8,8 @@
  * @see lib/common/const.h
  */
 
+import type { ArrowDrawOp } from '../common/arrows-types.js';
+
 // ---------------------------------------------------------------------------
 // Points
 // ---------------------------------------------------------------------------
@@ -56,6 +58,14 @@ export type Bezier = {
   sp: Point;
   /** @see lib/common/types.h: pointf ep */
   ep: Point;
+  /**
+   * TS-only: the arrow drawn at `sp` (paired with `sflag`). C regenerates it
+   * per bezier at render time (emit.c arrow_gen); the port computes it at clip
+   * time, so it is stored per bezier for splines with several flagged beziers.
+   */
+  sArrowOps?: ArrowDrawOp[];
+  /** TS-only: the arrow drawn at `ep` (paired with `eflag`); see `sArrowOps`. */
+  eArrowOps?: ArrowDrawOp[];
 };
 
 /**

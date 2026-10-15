@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -115,12 +115,11 @@ minden bemenetet a saját motorjával mér fel a `dot` helyett. A munka őszinte
 hogy az A1-et „nincs aktív eltérés a referenciaplatformon” szintre **szűkítsük**, és a
 platformok közötti fenntartást soha ne szüntessük meg; az eddigi eredmények (alább) tartják ezt a
 plafont: a `circo`/`twopi`/`osage` mindegyike felszínre hozott és gyökérokig elemzett néhány
-valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 929 elemes univerzumon (graphviz 16.1.0) 90.3/96.5/68.1%-ban
+valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 929 elemes univerzumon (graphviz 16.1.0) 90.5/96.5/68.1%-ban
 van 0.5 pt-on belül a natívtól, vagyis a portolt
 aritmetika (`fma.ts`, `arm-pow.ts`, összehangolt PRNG) a legtöbb gráfnál tartja magát — és
-a 910 elemes névsor minden eltérő azonosítója egyenként injektálással van tulajdonítva (megoldó-
-sodródás vs. portolási hiba), nem pedig osztályozatlan sodródásként hagyva; a 19 névsor-kiegészítés még nincs
-tulajdonítva. Lásd az alábbi iteratív motorok jellemzését.
+a 929 elemes univerzum minden eltérő azonosítója egyenként injektálással van tulajdonítva (megoldó-
+sodródás vs. portolási hiba), nem pedig osztályozatlan sodródásként hagyva. Lásd az alábbi iteratív motorok jellemzését.
 
 **Motorsáv-elfogadás: a twopi nyílcsalád.** <a id="a1-twopi-arrows-family"></a>
 A fenti idézetblokk a dot-motoros SVG-felmérést írja le, ahol az A1 nulla
@@ -190,13 +189,11 @@ azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, a [Megfelelős
 
 | motor | felmért | ±0.5 pt-on belül | nem megfelelő | portolási hiba / időtúllépés | orákulumhiba |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(A `neato` és az `sfdp` sorai a `graphs-decorate`, `1314`, `2784` és `2371`
-végső újrafuttatása előtt előkészített végigfuttatásokból származnak; ezen
-azonosítók miatt elmozdulhatnak. Az `fdp` átmenési aránya azért nőtt a korábbi
+(Az `fdp` átmenési aránya azért nőtt a korábbi
 77.5%-ról, mert a korábbi rögzített végigfuttatás az előző küldetés portolási
 állapota előtt készült.)
 
@@ -205,16 +202,20 @@ azonosítók miatt elmozdulhatnak. Az `fdp` átmenési aránya azért nőtt a ko
 javítások hozták, főként a neato portolatlan `user_pos`/`P_SET` kezelése, a motorinicializálás
 összevonása és a `setEdgeType` makró-vs-függvény javítás.)
 
-Az első végigfuttatással ellentétben a 910 elemes névsor minden eltérő sora egyenként tulajdonítva volt (a 929 elemes
-névsor 19 új azonosítója még nincs tulajdonítva; a T13 átadásban újonnan
-láthatóként szerepelnek):
-az injektáló eszköz (`test/corpus/attribute-divergence.ts`) a natív
-orákulum útvonalvezetés előtti `ND_pos` értékét a portolt változatba táplálja, és újra összehasonlít, és
-minden jelenlegi eltérő azonosító vagy `drift-exonerated` (a portolt változat útvonalvezetése
-és kibocsátása pontosan reprodukálja az orákulumot, amint a megoldósodródást eltávolítjuk),
-vagy a külön elfogadott, azonosítónkénti maradékok egyike (az `241_0`
-CDT-incircle döntetlene mindhárom motoron, a neato `2239`, az sfdp `2556`; az sfdp `42` A1-sodródás, lásd
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Az első végigfuttatással ellentétben a 929 elemes univerzum minden eltérő sora
+egyenként tulajdonítva van a graphviz 16.1.0 ellenében: az injektáló eszköz
+(`test/corpus/attribute-divergence.ts`) a natív orákulum útvonalvezetés előtti
+`ND_pos` értékét a portolt változatba táplálja, és újra összehasonlít, és minden
+jelenlegi eltérő azonosító `drift-exonerated` (a portolt változat útvonalvezetése
+és kibocsátása pontosan reprodukálja az orákulumot, amint a megoldósodródást
+eltávolítjuk), öt kivételével. Három külön elfogadott, azonosítónkénti maradék: a
+`241_0` CDT-incircle döntetlene az fdp és sfdp motoron, valamint az sfdp `2556`
+NaN elrendezése. Kettő nincs elfogadva, és gyökéroka sincs még feltárva: az fdp
+`2471` és az sfdp `2371` élfeliratainak pozíciói (`lp`) injektálás után is
+eltérnek, vagyis az xlabel-elhelyező másik jelöltet választ. A `2471` natív fdp
+elrendezése futásról futásra is változik, ezért a sora egy futást rögzít. (Az sfdp
+`42` A1-sodródás, lásd
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Az alábbi osztályelfogadás a felmentett halmazt formalizálja; az élő számok a
 motoronkénti irányítópultokon találhatók
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

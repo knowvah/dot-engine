@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -126,12 +126,12 @@ quel lavoro è **restringere** A1 a «nessuna divergenza attiva sulla piattaform
 riferimento», mai eliminare l'avvertenza tra piattaforme; i risultati finora
 (sotto) rispettano quel tetto: `circo`/`twopi`/`osage` hanno ciascuno fatto
 emergere e ricondotto alla causa radice una manciata di vere istanze A1/A9, e
-`neato`/`fdp`/`sfdp` si attestano ora al 90.3/96.5/68.1% entro 0.5pt dal nativo
+`neato`/`fdp`/`sfdp` si attestano ora al 90.5/96.5/68.1% entro 0.5pt dal nativo
 sull'universo di 929 elementi (graphviz 16.1.0), il che significa che l'aritmetica portata
 (`fma.ts`, `arm-pow.ts`, PRNG corrispondente) regge per la maggior parte dei
-grafi — e ogni id divergente dell'elenco di 910 elementi è attribuito singolarmente tramite iniezione
+grafi — e ogni id divergente dell'universo di 929 elementi è attribuito singolarmente tramite iniezione
 (deriva del solver vs. difetto del porting) invece di essere lasciato come deriva
-non analizzata; i 19 elementi aggiunti all'elenco non sono ancora attribuiti.
+non analizzata.
 Vedi la caratterizzazione dei motori iterativi più sotto.
 
 **Accettazione per traccia del motore: famiglia delle frecce di twopi.** <a id="a1-twopi-arrows-family"></a>
@@ -213,13 +213,11 @@ riesce a renderizzare, secondo la [Conformità](./conformance.md)):
 
 | motore | rilevati | entro ±0.5pt | non conformi | errore del porting / timeout | errore dell'oracolo |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Le righe di `neato` e `sfdp` provengono da rilevamenti preparati prima dell'ultima
-ripetizione di `graphs-decorate`, `1314`, `2784` e `2371`; potrebbero variare per
-quegli id. La percentuale di superamento di `fdp` è salita dal 77.5% perché il
+(La percentuale di superamento di `fdp` è salita dal 77.5% perché il
 rilevamento precedente, registrato nel repository, precedeva lo stato del porting
 della missione precedente.)
 
@@ -229,16 +227,19 @@ arrivate da allora, soprattutto la gestione di `user_pos`/`P_SET` di neato non
 ancora portata, il consolidamento dell'inizializzazione dei motori e la
 correzione macro-vs-funzione di `setEdgeType`.)
 
-A differenza del primo rilevamento, ogni riga divergente dell'elenco di 910 elementi è stata
-attribuita singolarmente (i 19 id nuovi dell'elenco di 929 elementi non sono
-ancora attribuiti; sono elencati nel resoconto di T13 come visibili da poco): il banco di iniezione (`test/corpus/attribute-divergence.ts`)
-fornisce al porting l'`ND_pos` pre-instradamento dell'oracolo nativo e ripete il
-confronto, e ogni id divergente attuale è o `drift-exonerated` (instradamento ed
-emissione del porting riproducono esattamente l'oracolo una volta rimossa la
-deriva del solver) oppure uno dei pochi residui per singolo id accettati a parte
-(il pareggio di incircle CDT di `241_0` su tutti e tre i motori, neato `2239`,
-sfdp `2556`; sfdp `42` è deriva A1, vedi
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). L'accettazione di classe qui sotto formalizza l'insieme degli id scagionati; conteggi aggiornati nei dashboard per motore
+A differenza del primo rilevamento, ogni riga divergente dell'universo di 929 elementi
+è attribuita singolarmente rispetto a graphviz 16.1.0: il banco di iniezione
+(`test/corpus/attribute-divergence.ts`) fornisce al porting l'`ND_pos` pre-instradamento
+dell'oracolo nativo e ripete il confronto, e ogni id divergente attuale è
+`drift-exonerated` (instradamento ed emissione del porting riproducono esattamente
+l'oracolo una volta rimossa la deriva del solver) tranne cinque. Tre sono residui per
+singolo id accettati a parte: il pareggio di incircle CDT di `241_0` su fdp e sfdp e il
+layout NaN di sfdp `2556`. Due non sono accettati e non ancora ricondotti alla causa
+radice: fdp `2471` e sfdp `2371` mantengono posizioni delle etichette degli archi (`lp`)
+che differiscono dopo l'iniezione, cioè il posizionatore di xlabel sceglie un candidato
+diverso. Anche il layout fdp nativo di `2471` varia da un'esecuzione all'altra, quindi la
+sua riga registra una sola esecuzione. (sfdp `42` è deriva A1, vedi
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).) L'accettazione di classe qui sotto formalizza l'insieme degli id scagionati; conteggi aggiornati nei dashboard per motore
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).

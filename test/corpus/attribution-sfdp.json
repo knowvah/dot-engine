@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-30T16:54:10.292Z",
-  "oracleSha1": "8fdd1294b3726c2a19fe384ca48f44a2954d1944",
+  "generatedAt": "2026-10-15T01:09:10.196Z",
+  "oracleSha1": "0e0164de26a43dc43340f44915b32d7f7616c4a1",
   "tolerance": 0.5,
   "results": [
     {
@@ -21,28 +21,6 @@
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2168",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 57,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "graphs-radius",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 8,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
         "kind": "position",
         "signature": "none"
       }
@@ -81,6 +59,17 @@
       }
     },
     {
+      "id": "tree-doc-neato-G4_lenwt",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 88,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-rowcolsep",
       "verdict": "drift-exonerated",
       "baseDiffs": 138,
@@ -95,6 +84,28 @@
       "id": "1644",
       "verdict": "drift-exonerated",
       "baseDiffs": 63,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-dotguide-constraint",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 90,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-infosrc-constraint",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 90,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -147,6 +158,17 @@
       }
     },
     {
+      "id": "tree-doc-neato-G4_pinned",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 88,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "2342",
       "verdict": "drift-exonerated",
       "baseDiffs": 153,
@@ -164,6 +186,28 @@
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-clust3",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 4,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 120,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
         "kind": "position",
         "signature": "none"
       }
@@ -191,9 +235,42 @@
       }
     },
     {
+      "id": "tree-graphs-directed-clust5",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 79,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-p2",
       "verdict": "drift-exonerated",
       "baseDiffs": 192,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-tclpkg-tcldot-examples-data-demo",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 89,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-dotguide-compound",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 69,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -290,7 +367,51 @@
       }
     },
     {
+      "id": "tree-graphs-directed-nhg",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 176,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-neato-inet",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 63,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "700813",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 210,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-mike",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 76,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/pos/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-mike",
       "verdict": "drift-exonerated",
       "baseDiffs": 76,
       "injectedDiffs": 0,
@@ -312,7 +433,7 @@
       }
     },
     {
-      "id": "graphs-clusters",
+      "id": "tree-doc-dotguide-clust1",
       "verdict": "drift-exonerated",
       "baseDiffs": 112,
       "injectedDiffs": 0,
@@ -323,9 +444,9 @@
       }
     },
     {
-      "id": "linux.i386-radius_dot",
+      "id": "tree-graphs-directed-clust4",
       "verdict": "drift-exonerated",
-      "baseDiffs": 8,
+      "baseDiffs": 112,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",
@@ -334,42 +455,9 @@
       }
     },
     {
-      "id": "linux.x86-radius_dot",
+      "id": "graphs-clusters",
       "verdict": "drift-exonerated",
-      "baseDiffs": 8,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "macosx-radius_dot",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 8,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "nshare-radius_dot",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 8,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "windows-radius_dot",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 8,
+      "baseDiffs": 112,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",
@@ -391,12 +479,23 @@
     {
       "id": "241_0",
       "verdict": "not-cleared",
-      "baseDiffs": 20,
-      "injectedDiffs": 21,
+      "baseDiffs": 7,
+      "injectedDiffs": 5,
       "bucket": {
         "shape": "edge/_draw_/structural",
         "kind": "count",
-        "signature": "edge/_draw_/numeric+edge/_draw_/structural+edge/_hdraw_/numeric+edge/pos/numeric+edge/pos/structural"
+        "signature": "edge/_draw_/structural+edge/_hdraw_/numeric+edge/pos/structural"
+      }
+    },
+    {
+      "id": "tree-doc-dotguide-fsm",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 423,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
       }
     },
     {
@@ -447,6 +546,28 @@
       "id": "graphs-fsm",
       "verdict": "drift-exonerated",
       "baseDiffs": 423,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-fsm",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 423,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-neato-fancy",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 295,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -532,7 +653,51 @@
       }
     },
     {
+      "id": "tree-doc-dotguide-hashtable",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 352,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-hashtable",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 352,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-ER",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 131,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-undirected-ER",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 131,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-neato-ER",
       "verdict": "drift-exonerated",
       "baseDiffs": 131,
       "injectedDiffs": 0,
@@ -576,7 +741,29 @@
       }
     },
     {
+      "id": "tree-graphs-directed-rowe",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1602,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-train11",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 390,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-train11",
       "verdict": "drift-exonerated",
       "baseDiffs": 390,
       "injectedDiffs": 0,
@@ -598,6 +785,17 @@
       }
     },
     {
+      "id": "tree-graphs-undirected-Heawood",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 202,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-fig6",
       "verdict": "drift-exonerated",
       "baseDiffs": 1850,
@@ -609,7 +807,29 @@
       }
     },
     {
+      "id": "tree-graphs-directed-fig6",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1850,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-Petersen",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 188,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-undirected-Petersen",
       "verdict": "drift-exonerated",
       "baseDiffs": 188,
       "injectedDiffs": 0,
@@ -686,7 +906,29 @@
       }
     },
     {
+      "id": "tree-graphs-directed-alf",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 429,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-world",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1938,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-world",
       "verdict": "drift-exonerated",
       "baseDiffs": 1938,
       "injectedDiffs": 0,
@@ -807,9 +1049,31 @@
       }
     },
     {
+      "id": "tree-graphs-directed-grammar",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1416,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "1855",
       "verdict": "drift-exonerated",
       "baseDiffs": 663,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-switch",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2402,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -840,6 +1104,28 @@
       }
     },
     {
+      "id": "tree-graphs-directed-biological",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 46,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-dotguide-clust2",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 926,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-b56",
       "verdict": "drift-exonerated",
       "baseDiffs": 173,
@@ -852,6 +1138,17 @@
     },
     {
       "id": "graphs-unix",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1191,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-unix",
       "verdict": "drift-exonerated",
       "baseDiffs": 1191,
       "injectedDiffs": 0,
@@ -879,6 +1176,17 @@
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "241_1",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 8,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
         "kind": "position",
         "signature": "none"
       }
@@ -983,12 +1291,34 @@
       }
     },
     {
+      "id": "tree-graphs-directed-unix2",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 677,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/BSD->2/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-weight",
       "verdict": "drift-exonerated",
       "baseDiffs": 677,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/BSD->2/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-undirected-ngk10_4",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1896,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
         "kind": "position",
         "signature": "none"
       }
@@ -1038,6 +1368,17 @@
       }
     },
     {
+      "id": "tree-graphs-directed-viewfile",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 336,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "share-Petersen",
       "verdict": "drift-exonerated",
       "baseDiffs": 188,
@@ -1052,6 +1393,17 @@
       "id": "windows-Petersen",
       "verdict": "drift-exonerated",
       "baseDiffs": 188,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-contrib-dirgraph-named",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 452,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -1093,6 +1445,17 @@
       }
     },
     {
+      "id": "tree-graphs-directed-oldarrows",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1136,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "windows-pm2way",
       "verdict": "drift-exonerated",
       "baseDiffs": 256,
@@ -1105,6 +1468,17 @@
     },
     {
       "id": "graphs-pm2way",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 246,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-pm2way",
       "verdict": "drift-exonerated",
       "baseDiffs": 246,
       "injectedDiffs": 0,
@@ -1258,7 +1632,29 @@
       }
     },
     {
+      "id": "tree-graphs-directed-pgram",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 3070,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-NaN",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 3532,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-NaN",
       "verdict": "drift-exonerated",
       "baseDiffs": 3532,
       "injectedDiffs": 0,
@@ -1478,9 +1874,31 @@
       }
     },
     {
+      "id": "tree-contrib-dirgraph-apache",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 606,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "nshare-record_dot",
       "verdict": "drift-exonerated",
       "baseDiffs": 685,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2221,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -1544,6 +1962,17 @@
       }
     },
     {
+      "id": "tree-graphs-directed-ldbxtried",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 25,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "share-shells",
       "verdict": "drift-exonerated",
       "baseDiffs": 478,
@@ -1558,6 +1987,17 @@
       "id": "graphs-crazy",
       "verdict": "drift-exonerated",
       "baseDiffs": 1657,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-crazy",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1656,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -1588,7 +2028,29 @@
       }
     },
     {
+      "id": "tree-graphs-directed-proc3d",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1735,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "graphs-jsort",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2359,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-jsort",
       "verdict": "drift-exonerated",
       "baseDiffs": 2359,
       "injectedDiffs": 0,
@@ -1654,6 +2116,17 @@
       }
     },
     {
+      "id": "2619_1",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 100,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "linux.x86-arrows_dot",
       "verdict": "drift-exonerated",
       "baseDiffs": 1136,
@@ -1688,6 +2161,17 @@
     },
     {
       "id": "graphs-awilliams",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 3258,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-graphs-directed-awilliams",
       "verdict": "drift-exonerated",
       "baseDiffs": 3258,
       "injectedDiffs": 0,
@@ -1786,6 +2270,17 @@
       }
     },
     {
+      "id": "tree-contrib-dirgraph-bsdkernel",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2242,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "share-world",
       "verdict": "drift-exonerated",
       "baseDiffs": 1938,
@@ -1822,6 +2317,39 @@
       "id": "graphs-b15",
       "verdict": "drift-exonerated",
       "baseDiffs": 5419,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2796",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 5900,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2413_2",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2655,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-contrib-java-dot-uml",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1295,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -1929,6 +2457,17 @@
       }
     },
     {
+      "id": "tree-doc-infosrc-plugins",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 3818,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "share-ldbxtried",
       "verdict": "drift-exonerated",
       "baseDiffs": 912,
@@ -1974,13 +2513,13 @@
     },
     {
       "id": "42",
-      "verdict": "not-cleared",
-      "baseDiffs": 200,
-      "injectedDiffs": 75,
+      "verdict": "drift-exonerated",
+      "baseDiffs": 168,
+      "injectedDiffs": 0,
       "bucket": {
-        "shape": "edge/_hdraw_/structural",
-        "kind": "count",
-        "signature": "edge/_draw_/numeric+edge/_draw_/structural+edge/_hdraw_/numeric+edge/_hdraw_/structural+edge/pos/numeric+edge/pos/structural"
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
       }
     },
     {
@@ -1998,6 +2537,17 @@
       "id": "nshare-neatosplines_neato1",
       "verdict": "drift-exonerated",
       "baseDiffs": 1270,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "698066",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 2684,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -2094,6 +2644,17 @@
       }
     },
     {
+      "id": "tree-doc-dotguide-smlred",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 5794,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "windows-jsort",
       "verdict": "drift-exonerated",
       "baseDiffs": 2359,
@@ -2108,6 +2669,17 @@
       "id": "1447_1",
       "verdict": "drift-exonerated",
       "baseDiffs": 9974,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-doc-neato-jho",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 5516,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -2152,6 +2724,17 @@
       "id": "graphs-b51",
       "verdict": "drift-exonerated",
       "baseDiffs": 3453,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-contrib-dirgraph-linux",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 5092,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -2207,6 +2790,17 @@
       "id": "windows-b51",
       "verdict": "drift-exonerated",
       "baseDiffs": 1328,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-contrib-dirgraph-bsdarch",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 7578,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",
@@ -2459,7 +3053,18 @@
     {
       "id": "1652",
       "verdict": "drift-exonerated",
-      "baseDiffs": 114198,
+      "baseDiffs": 114202,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "1879",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 17606,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -2534,644 +3139,6 @@
       }
     },
     {
-      "id": "2470",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 20258,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-neato-G4_lenwt",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 88,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-dotguide-constraint",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 90,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-infosrc-constraint",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 90,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-neato-G4_pinned",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 88,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-clust3",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 4,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-clust5",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 79,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-tclpkg-tcldot-examples-data-demo",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 89,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-dotguide-compound",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 69,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-nhg",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 176,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-neato-inet",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 63,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-mike",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 76,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/pos/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-dotguide-clust1",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 112,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-clust4",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 112,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-dotguide-fsm",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 423,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-fsm",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 423,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-neato-fancy",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 295,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-dotguide-hashtable",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 352,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-hashtable",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 352,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-undirected-ER",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 131,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-neato-ER",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 131,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-rowe",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1602,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-train11",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 390,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-undirected-Heawood",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 202,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-fig6",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1850,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-undirected-Petersen",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 188,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-alf",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 429,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-world",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1938,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-grammar",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1416,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-switch",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 2402,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-biological",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 46,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-dotguide-clust2",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 926,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-unix",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1191,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-unix2",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 677,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/BSD->2/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-undirected-ngk10_4",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1896,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-viewfile",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 336,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-contrib-dirgraph-named",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 452,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-oldarrows",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1136,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-pm2way",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 246,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-pgram",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 3070,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-NaN",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 3532,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-contrib-dirgraph-apache",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 606,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-ldbxtried",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 25,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-crazy",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1656,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-proc3d",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1735,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-jsort",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 2359,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-awilliams",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 3258,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-contrib-dirgraph-bsdkernel",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 2242,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-contrib-java-dot-uml",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1295,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-infosrc-plugins",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 3818,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-dotguide-smlred",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 5794,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-neato-jho",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 5516,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-contrib-dirgraph-linux",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 5092,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-contrib-dirgraph-bsdarch",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 7578,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2619_1",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 100,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "1879",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 17606,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-infosrc-fixed",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 120,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-arrows",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 2221,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
       "id": "2621",
       "verdict": "drift-exonerated",
       "baseDiffs": 78938,
@@ -3183,9 +3150,86 @@
       }
     },
     {
+      "id": "2470",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 20258,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "graphs-b100",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 156568,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "graphs-b104",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 156568,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2471",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 728,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2371",
+      "verdict": "not-cleared",
+      "baseDiffs": 433020,
+      "injectedDiffs": 318,
+      "bucket": {
+        "shape": "edge/_ldraw_/numeric",
+        "kind": "position",
+        "signature": "edge/_ldraw_/numeric+edge/lp/numeric"
+      }
+    },
+    {
+      "id": "2646",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 1979265,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "2108",
       "verdict": "drift-exonerated",
       "baseDiffs": 1044748,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "tree-share-examples-world",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 3198828,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",

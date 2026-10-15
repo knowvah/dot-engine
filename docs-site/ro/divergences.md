@@ -1,5 +1,5 @@
 ---
-sourceHash: fcb264407468ca68f048ee55962688dc4ae0d998563e30776ecd4b2a95d4eba8
+sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,12 +114,11 @@ fiecare intrare cu propriul motor, în loc de `dot`. Plafonul onest al acestei a
 **restrângerea** lui A1 la „nicio divergență activă pe platforma de referință”, niciodată
 eliminarea rezervei privind platformele multiple; rezultatele de până acum (mai jos) respectă acest
 plafon: `circo`/`twopi`/`osage` au scos la iveală și au elucidat până la cauza rădăcină
-câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 90.3/96.5/68.1%
+câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 90.5/96.5/68.1%
 în limita a 0.5pt față de nativ pe universul de 929 de elemente (graphviz 16.1.0), ceea ce înseamnă că aritmetica
 portată (`fma.ts`, `arm-pow.ts`, PRNG potrivit) se menține pentru majoritatea grafurilor — iar
-fiecare id divergent din lista de 910 elemente este atribuit individual prin injecție (derivă a solverului față de
-defect al portării), nu lăsat ca derivă netriată; cele 19 adăugiri la listă
-nu sunt încă atribuite. Vedeți mai jos caracterizarea motoarelor iterative.
+fiecare id divergent din universul de 929 de elemente este atribuit individual prin injecție (derivă a solverului față de
+defect al portării), nu lăsat ca derivă netriată. Vedeți mai jos caracterizarea motoarelor iterative.
 
 **Acceptarea pe flux de motor: familia de săgeți twopi.** <a id="a1-twopi-arrows-family"></a>
 Citatul de mai sus descrie sondajul SVG al motorului dot, în care A1 nu se potrivește cu niciun
@@ -188,13 +187,11 @@ intrările pe care oracolul C nu le poate randa, conform [Conformitate](./confor
 
 | motor | sondate | în limita ±0.5pt | neconforme | eroare portare / timeout | eroare oracol |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 838 (90.3%) | 88 | 1 | 1 |
+| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
 | `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 293 | 2 | 0 |
+| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
 
-(Rândurile `neato` și `sfdp` provin din parcurgeri pregătite înainte de ultima reparcurgere a lui
-`graphs-decorate`, `1314`, `2784` și `2371`; se pot modifica din cauza acestor id-uri.
-Rata de reușită a lui `fdp` a crescut de la 77.5% pentru că parcurgerea anterioară înregistrată
+(Rata de reușită a lui `fdp` a crescut de la 77.5% pentru că parcurgerea anterioară înregistrată
 era anterioară stării portării din misiunea precedentă.)
 
 (Prima trecere, 2026-07-11, la 762 de elemente, a măsurat 263/311/260 în limita
@@ -202,16 +199,18 @@ era anterioară stării portării din misiunea precedentă.)
 în principal gestionarea neportată `user_pos`/`P_SET` din neato, consolidarea
 inițializării motoarelor și remedierea `setEdgeType` între macro și funcție.)
 
-Spre deosebire de prima trecere, fiecare rând divergent din lista de 910 elemente a fost atribuit
-individual (cele 19 id-uri noi din lista de 929 de elemente nu sunt încă atribuite;
-sunt enumerate în predarea T13 ca nou vizibile):
-instrumentul de injecție (`test/corpus/attribute-divergence.ts`) alimentează portarea cu
-`ND_pos` dinaintea rutării din oracolul nativ și compară din nou, iar
-fiecare id divergent curent este fie `drift-exonerated` (rutarea și emiterea portării
-reproduc exact oracolul odată ce deriva solverului este eliminată),
-fie unul dintre puținele reziduuri acceptate separat pe id (egalitatea la testul incircle din CDT pentru `241_0`
-pe toate cele trei motoare, neato `2239`, sfdp `2556`; sfdp `42`
-este derivă A1, vedeți [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
+Spre deosebire de prima trecere, fiecare rând divergent din universul de 929 de elemente este
+atribuit individual față de graphviz 16.1.0: instrumentul de injecție
+(`test/corpus/attribute-divergence.ts`) alimentează portarea cu `ND_pos` dinaintea rutării din
+oracolul nativ și compară din nou, iar fiecare id divergent curent este `drift-exonerated` (rutarea
+și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția
+a cinci. Trei sunt reziduuri acceptate separat pe id: egalitatea la testul incircle din CDT pentru
+`241_0` pe fdp și sfdp și aspectul NaN al lui sfdp `2556`. Două nu sunt acceptate și nu au fost încă
+duse până la cauza rădăcină: fdp `2471` și sfdp `2371` păstrează poziții ale etichetelor de muchie
+(`lp`) care diferă după injecție, adică plasatorul de xlabel alege un candidat diferit. Aspectul fdp
+nativ al lui `2471` variază, de asemenea, de la o rulare la alta, deci rândul său înregistrează o
+singură rulare. (sfdp `42` este derivă A1, vedeți
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Acceptarea pe clasă de mai jos formalizează mulțimea exonerată; numerătorile live se află în
 panourile pe motor
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

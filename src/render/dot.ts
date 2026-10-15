@@ -32,6 +32,7 @@ import { PenType, FillType } from '../gvc/context.js';
 import type { RenderJob } from '../gvc/job.js';
 import { EmitState } from '../gvc/job.js';
 import { renderEdgeLabels } from '../gvc/edge-labels.js';
+import { endArrowOps } from '../common/bezier-arrows.js';
 export * from './dot/xdot-ops.js';
 export * from './dot/attrs.js';
 import {
@@ -226,6 +227,11 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
       headArrowColor = c.headColor;
     } else {
       this.emitPlainSpline(e, spl.list, edraw, job);
+      // The plain branch draws an arrow per flagged bezier (emit.c:2669-2675);
+      // the multicolor/tapered branches above draw one per end.
+      for (const ops of endArrowOps(e, 'tail')) this.emitArrows(this.bufs[EmitState.TDraw]!, ops, job, EmitState.TDraw);
+      for (const ops of endArrowOps(e, 'head')) this.emitArrows(this.bufs[EmitState.HDraw]!, ops, job, EmitState.HDraw);
+      return;
     }
     // Arrows: y-up ops already computed for the shared render path. C sets the
     // default line style ("solid") + penwidth before each arrow primitive.

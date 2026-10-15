@@ -14,7 +14,7 @@ test/corpus/parity-report.ts`.
 
 - **Surveyed:** 928 (generated 2026-10-13T21:15:23.722Z)
 - **Oracle:** dot 16.1.0
-- **pass:** 893 (96.6%) · **diverged (tracked):** 4 · **accepted (documented, won't-fix):** 3 · **accepted (A1-drift class):** 23
+- **pass:** 893 (96.6%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 3 · **accepted (A1-drift class):** 26
 - **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 4 (excluded from pass %)
 
 ## Accepted deltas (3) — documented, not chased
@@ -38,16 +38,13 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **203** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **27** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (4)
+## Diverged (1)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | 1705517 | 325657 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 22087098.15 vs 22087098.88` |
-| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | 782464 | 156698 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 2446.34 vs 2522.54` |
 | [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 37731 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 461091.31 vs 342057.2` |
-| [`2796`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2796.dot) | 8959 | 7032 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1276.86 vs 1202.51` |
 
 ## Errors and timeouts (5)
 

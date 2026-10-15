@@ -313,6 +313,10 @@ export function shiftEdgePoints(e: Edge, dx: number, dy: number): void {
     ops?.map((op) => mapArrowOpPoints(op, (p) => ({ x: p.x + dx, y: p.y + dy })));
   e.info.headArrowOps = shiftOps(e.info.headArrowOps);
   e.info.tailArrowOps = shiftOps(e.info.tailArrowOps);
+  for (const bz of spl.list) {
+    if (bz.sArrowOps) bz.sArrowOps = shiftOps(bz.sArrowOps);
+    if (bz.eArrowOps) bz.eArrowOps = shiftOps(bz.eArrowOps);
+  }
 }
 
 export function shiftOneGraph(g: Graph, dx: number, dy: number): void {

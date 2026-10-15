@@ -258,20 +258,20 @@ class SplineClipHelper {
       if (sflag || eflag) {
         SplineClipHelper.arrowOrthoClip(
           orig, ps, bounds.start, bounds.end, newspl, sflag, eflag);
-        if (sflag) SplineClipHelper.stashArrow(orig, newspl.sp, ps[bounds.start]!, true, startEnd);
-        if (eflag) SplineClipHelper.stashArrow(orig, newspl.ep, ps[bounds.end + 3]!, false, endEnd);
+        if (sflag) SplineClipHelper.stashArrow(orig, newspl, newspl.sp, ps[bounds.start]!, true, startEnd);
+        if (eflag) SplineClipHelper.stashArrow(orig, newspl, newspl.ep, ps[bounds.end + 3]!, false, endEnd);
       }
       return;
     }
     if (sflag) {
       bounds.start = SplineClipHelper.arrowStartClip(
         orig, ps, bounds.start, bounds.end, newspl, sflag, startEnd);
-      SplineClipHelper.stashArrow(orig, newspl.sp, ps[bounds.start]!, true, startEnd);
+      SplineClipHelper.stashArrow(orig, newspl, newspl.sp, ps[bounds.start]!, true, startEnd);
     }
     if (eflag) {
       bounds.end = SplineClipHelper.arrowEndClip(
         orig, ps, bounds.start, bounds.end, newspl, eflag, endEnd);
-      SplineClipHelper.stashArrow(orig, newspl.ep, ps[bounds.end + 3]!, false, endEnd);
+      SplineClipHelper.stashArrow(orig, newspl, newspl.ep, ps[bounds.end + 3]!, false, endEnd);
     }
   }
 
@@ -336,15 +336,19 @@ class SplineClipHelper {
     }
   }
 
-  /** Record an arrow polygon on the edge for svgArrowPolygons. */
+  /**
+   * Record an arrow on the edge end and on the bezier being installed. The
+   * edge slot holds the latest arrow; the bezier keeps its own, since C draws
+   * one per flagged bezier (see common/bezier-arrows.ts).
+   */
   static stashArrow(
-    e: Edge, tip: Point, base: Point, isTail: boolean, attrEnd?: 'head' | 'tail',
+    e: Edge, bz: Bezier, tip: Point, base: Point, isTail: boolean, attrEnd?: 'head' | 'tail',
   ): void {
     const dir = { x: base.x - tip.x, y: base.y - tip.y };
     const end = attrEnd ?? (isTail ? 'tail' : 'head');
     const ops = arrowDrawOpsForEnd(e, end, tip, dir, SplineClipHelper.renderPenwidth(e));
-    if (isTail) e.info.tailArrowOps = ops;
-    else e.info.headArrowOps = ops;
+    if (isTail) { e.info.tailArrowOps = ops; bz.sArrowOps = ops; }
+    else { e.info.headArrowOps = ops; bz.eArrowOps = ops; }
   }
 
   static clipSide(n: Node, box: Box | null, ps: Point[], pn: number, tail: boolean): number {
