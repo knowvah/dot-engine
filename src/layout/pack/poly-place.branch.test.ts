@@ -20,7 +20,7 @@ import { computeStep, polyGraphs } from './poly-place.js';
 import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
 import { Edge } from '../../model/edge.js';
-import type { Box, Point } from '../../model/geom.js';
+import type { Box } from '../../model/geom.js';
 import { type PackInfo, PackMode } from './types.js';
 
 function box(llx: number, lly: number, urx: number, ury: number): Box {
@@ -212,6 +212,23 @@ describe('polyGraphs — ring search (fits(0,0) collision) and ring shape', () =
     );
     expect(places).not.toBeNull();
     expect(places![0]).not.toEqual(places![1]);
+  });
+
+  // 14 equal boxes fill ring 0 and spill across rings 1-3, so every leg of
+  // both ring shapes places at least one graph. Values pinned from the
+  // generator implementation the leg walk replaced (same visit order).
+  it.each([
+    [30, 10, [[-31, -27], [6, 6], [0, -16], [16, -5], [17, 17], [-14, 17], [-25, 6],
+      [0, -27], [28, 28], [-3, 28], [31, -31], [31, -20], [-31, -16], [-15, -5]]],
+    [10, 30, [[-27, 31], [6, -6], [-16, 0], [-5, 16], [17, -17], [17, 14], [6, 25],
+      [-27, 0], [28, -28], [28, 3], [-31, -31], [-20, -31], [-16, 31], [-5, -15]]],
+  ])('walks the rings in pack.c order for a %ix%i box', (w, h, expected) => {
+    const gs = Array.from({ length: 14 }, (_, i) => makeGraph(`g${i}`));
+    const bb = box(0, 0, w, h);
+    const places = polyGraphs(
+      gs, makeGraph(), pinfo({ mode: PackMode.Graph }), gs.map(() => bb),
+    );
+    expect(places!.map((p) => [p.x, p.y])).toEqual(expected);
   });
 });
 
