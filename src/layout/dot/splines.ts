@@ -290,6 +290,10 @@ export function swapBezier(b: Bezier): void {
   }
   const sf = b.sflag; b.sflag = b.eflag; b.eflag = sf;
   const sp = b.sp; b.sp = b.ep; b.ep = sp;
+  // TS-only per-bezier arrow ops stay paired with their flag.
+  if (b.sArrowOps !== undefined || b.eArrowOps !== undefined) {
+    const so = b.sArrowOps; b.sArrowOps = b.eArrowOps; b.eArrowOps = so;
+  }
 }
 
 /** Reverse the list of beziers in a spline and swap each bezier. */

@@ -16,7 +16,7 @@
  */
 
 import type { Graph } from '../model/graph.js';
-import type { Point, Box } from '../model/geom.js';
+import type { Point, Box, Bezier } from '../model/geom.js';
 import { ccwrotatepf } from '../model/geom.js';
 import type { ArrowDrawOp } from './arrows-types.js';
 import { mapArrowOpPoints } from './arrows-shapes-util.js';
@@ -39,9 +39,12 @@ const IGNORED_EDGE = 6;
 let Rankdir = 0;
 let Offset: Point = { x: 0, y: 0 };
 
+/** The bezier fields map_edge reads/writes. */
+type MappedBezier = Pick<Bezier, 'list' | 'sflag' | 'eflag' | 'sp' | 'ep' | 'sArrowOps' | 'eArrowOps'>;
+
 /** The edge-info shape map_edge reads/writes (spline, labels, arrow ops). */
 interface EdgeArrowInfo {
-  spl?: { list: Array<{ list: Point[]; sflag: number; eflag: number; sp: Point; ep: Point }> };
+  spl?: { list: MappedBezier[] };
   label?: unknown;
   xlabel?: unknown;
   head_label?: unknown;
@@ -116,17 +119,6 @@ function mapArrowOps(ops: ArrowDrawOp[] | undefined): ArrowDrawOp[] | undefined 
   });
 }
 
-/** The edge-info shape map_edge reads/writes (spline, labels, arrow ops). */
-interface EdgeArrowInfo {
-  spl?: { list: Array<{ list: Point[]; sflag: number; eflag: number; sp: Point; ep: Point }> };
-  label?: unknown;
-  xlabel?: unknown;
-  head_label?: unknown;
-  tail_label?: unknown;
-  headArrowOps?: ArrowDrawOp[];
-  tailArrowOps?: ArrowDrawOp[];
-}
-
 /**
  * Map spline control points, label positions, and pre-computed arrow draw-ops
  * for one edge. The C port regenerates arrowheads at render time from the
@@ -145,6 +137,10 @@ function mapEdge(e: { info: EdgeArrowInfo }): void {
   // Rotate pre-computed arrowhead draw-ops (TS-only: C computes at render time).
   e.info.headArrowOps = mapArrowOps(e.info.headArrowOps);
   e.info.tailArrowOps = mapArrowOps(e.info.tailArrowOps);
+  for (const bz of spl.list) {
+    if (bz.sArrowOps) bz.sArrowOps = mapArrowOps(bz.sArrowOps);
+    if (bz.eArrowOps) bz.eArrowOps = mapArrowOps(bz.eArrowOps);
+  }
 }
 
 // ---------------------------------------------------------------------------

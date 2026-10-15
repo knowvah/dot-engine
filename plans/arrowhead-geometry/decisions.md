@@ -66,6 +66,24 @@ remains the broad report.
 by per-id verdict deltas, not aggregate counts) is the measured outcome.
 **Consequences:** Deterministic, oracle-grounded success criterion.
 
+## ADR-1 amendment (2026-10-14): arrow ops per bezier
+
+**Context:** ADR-1 stores one op list per edge end, but C draws an arrow per
+bezier whose s/eflag is set (`emit_edge_graphics`' per-bezier `arrow_gen`).
+The two only differ when two beziers carry the same flag: neato's multispline
+fallback (`neatosplines.c:683-701`) appends a second flagged bezier when
+`makeMultiSpline` fails partway (fdp 2471 `n138 -> n40`). The port dropped
+the first arrow because `stashArrow` overwrote the edge slot.
+**Decision:** each `Bezier` also carries the ops computed when it was
+installed (`sArrowOps` / `eArrowOps`, TS-only). The edge slots stay the
+source whenever at most one bezier carries a flag, since dot's swap,
+flat-edge and compound passes rewrite only those. With two or more,
+`common/bezier-arrows.ts` hands both emitters one list per bezier. Postproc,
+pack and `swapBezier` carry the per-bezier ops with the spline.
+**Consequences:** output changes only for an end flagged on two or more
+beziers. No cached oracle output (8 engines) has one, so no committed walk
+verdict moves.
+
 ## Rollback classification
 
 **Reversible.** Every task is a localized code change + golden; `git revert` per
