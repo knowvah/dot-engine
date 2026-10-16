@@ -21,7 +21,7 @@ import { performance } from 'node:perf_hooks';
 
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
 const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/gvplugins';
+const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
 const MANIFEST = new URL('./corpus-manifest.json', import.meta.url);
 const OUT = new URL('./native-timings.json', import.meta.url);
 const CAP_MS = Number(process.env.CAPTURE_CAP_MS ?? 300_000);

@@ -37,7 +37,7 @@ import { performance } from 'node:perf_hooks';
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
 const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/gvplugins';
+const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
 const BUNDLE = join(REPO, 'dist/index.js');
 const WORKER = join(REPO, 'test/corpus/bench-worker.mjs');
 const MANIFEST = new URL('./corpus-manifest.json', import.meta.url);

@@ -38,10 +38,10 @@ function scrubHome(s: string): string {
   return home ? s.split(home).join('~') : s;
 }
 const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/gvplugins';
+const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
 // Oracle-cache identity. The cache stores native `dot` SVGs keyed by input id;
 // a bare shared dir silently cross-contaminated different oracles (the headless
-// /tmp/ghl rules survey vs the pango /tmp/gvplugins baseline read each other's
+// /tmp/ghl rules survey vs a pango plugin-dir baseline read each other's
 // cached SVGs — same id, same dir) and went stale when `dot` was rebuilt (only
 // missing entries are (re)written). Namespace the default cache by a signature
 // of (binary, GVBINDIR, binary mtime) so oracles never collide and a rebuild
