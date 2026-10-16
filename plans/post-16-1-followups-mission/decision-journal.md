@@ -1,0 +1,10 @@
+# Decision journal: post-16.1 follow-ups mission
+
+Append-only. Only the orchestrator writes here. Cite task IDs, not SHAs (AD-1).
+
+| Date | Task | Decision / finding | Evidence | Commit |
+|---|---|---|---|---|
+| 2026-10-16 | setup | Branch `chore/post-16-1-followups` off `main` 2983eea8. Oracle `dot -V` = 16.1.0. `/tmp/ghl` holds core + dot_layout only, so every non-dot native run uses the full plugin dir `…/dfc80e32-…/scratchpad/ghl16-all` (the engine walks' cache path, `.agent-notes/perf-2371-pointset.md`); a copy is kept in this session's scratchpad as `ghl16-all` | `ls /tmp/ghl`; `dot -V` | — |
+| 2026-10-16 | T0 | Speed baseline deferred to T14: `uptime` load 12.5 at start (> 8). Port and native captures started on the frozen bundle `$BASE/bundle-main.js` (a copy of `dist/index.js` built at 2983eea8), port pool 5 / 120 s cap, native pool 3 / 60 s cap | `uptime` 14:11 | — |
+| 2026-10-16 | T1 | Done directly by the orchestrator, not a sonnet agent: a 4-line change plus one test (< 30 min). Test first (red 4/4, then green 4/4). Also reworded the `survey.ts:44` cache comment so no corpus script mentions the retired dir. Gates: typecheck 0, `npm test` 423 files / 10087 tests pass, goldens 5/5, corpus+docs 20 files / 2786 tests pass | `test/corpus/gvbindir-defaults.test.ts` | T1 |
+| 2026-10-16 | T2 | README header: `main` 2983eea8, merge commits only, items 1–6 done, latest npm 2.6.2 (`npm view`; the old "2.4.0 published" line was stale). Neato 2371 drift closed as item 12 (`attribution-neato.jsonl`: `drift-exonerated`, 405690 → 0 injected). Item 13 added and marked done by T1. `.claude/settings.autonomous.json` is tracked (not gitignored), so a plain `git add` suffices | `git check-ignore` empty | T2 |
