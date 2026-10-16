@@ -18,122 +18,129 @@ Regenerate: `npm run build:js && node test/corpus/bench.mjs && npm run bench:was
   heavy graphs (native > 2s) are timed serially by default — measured cross-talk
   inflates a concurrent big render's single sample materially (≈66% on 2620). Set
   `BENCH_HEAVY_POOL>1` for a faster, noisier scan.
-- **Native:** `dot -Tsvg` best-of-3 (min).
-- **Budget:** target ≤3× native. Per-render cap **4800000ms**
+- **Native:** `dot -Tsvg` best-of-3 (min), graphviz 16.1.0,
+  captured 2026-10-15 (`native-timings.json`).
+- **Budget:** target ≤3× native. Per-render cap **12982770ms**
   (SIGKILL → `over-cap`, i.e. a true synchronous hang).
 - **Caveat:** light graphs are timed under up-to-6-way load; for a
   precise single number re-run `BENCH_POOL=1 BENCH_IDS=<id> node test/corpus/bench.mjs`.
 
 ## Summary
 
-- **Rated inputs:** 928 · **within ≤3× native:** 902 (97.2%)
-- **ok (≤3×):** 902 · **slow (>3×):** 26 · **over-cap (hang):** 2 · **errored:** 0 · **oracle-error:** 9
-- **ratio (port/native):** p50 0.02× · p90 0.70× · max 7.54×
+- **Rated inputs:** 936 · **within ≤3× native:** 904 (96.6%)
+- **ok (≤3×):** 904 · **slow (>3×):** 32 · **over-cap (hang):** 1 · **errored:** 0 · **oracle-error:** 13
+- **ratio (port/native):** p50 0.15× · p90 1.52× · max 5.16×
 
 ## Ratio distribution
 
 | band | count |
 |---|---:|
-| ≤1× (port ≥ native, warm) | 851 |
-| 1–2× | 31 |
-| 2–3× | 20 |
+| ≤1× (port ≥ native, warm) | 777 |
+| 1–2× | 92 |
+| 2–3× | 35 |
 | 3–4× | 17 |
-| 4–6× | 8 |
-| 6–10× | 1 |
+| 4–6× | 15 |
+| 6–10× | 0 |
 | >10× | 0 |
-| over-cap (≥4800000ms, possible hang) | 2 |
+| over-cap (≥12982770ms, possible hang) | 1 |
 
 ## Over budget — slower than 3× native (worst first)
 
 | id | native ms | port ms (warm) | ratio |
 |---|---:|---:|---:|
-| `2108` | 12849 | 96837 | 7.54× |
-| `2471` | 3269 | 19162 | 5.86× |
-| `graphs-b103` | 1210 | 6676 | 5.52× |
-| `graphs-b100` | 8646 | 47617 | 5.51× |
-| `2095` | 261 | 1216 | 4.66× |
-| `2621` | 256000 | 1131355 | 4.42× |
-| `linux.x86-root_circo` | 245 | 1044 | 4.26× |
-| `tree-contrib-dirgraph-bsdarch` | 12 | 50 | 4.19× |
-| `graphs-b104` | 8635 | 34857 | 4.04× |
-| `nshare-root_circo` | 247 | 988 | 4× |
-| `graphs-root` | 214 | 839 | 3.92× |
-| `share-b29` | 578 | 2269 | 3.92× |
-| `linux.x86-root_twopi` | 248 | 947 | 3.82× |
-| `nshare-root_twopi` | 247 | 934 | 3.78× |
-| `tree-contrib-dirgraph-linux` | 8 | 30 | 3.75× |
-| `2620` | 371 | 1382 | 3.73× |
-| `2743` | 201 | 748 | 3.72× |
-| `graphs-badvoro` | 320 | 1183 | 3.7× |
-| `2095_1` | 22309 | 82302 | 3.69× |
-| `linux.i386-b29` | 582 | 2039 | 3.5× |
-| `tree-doc-neato-jho` | 11 | 38 | 3.45× |
-| `tree-graphs-undirected-ngk10_4` | 15 | 51 | 3.43× |
-| `graphs-b29` | 585 | 1989 | 3.4× |
-| `1652` | 270306 | 894623 | 3.31× |
-| `windows-b29` | 597 | 1939 | 3.25× |
-| `tree-doc-dotguide-smlred` | 21 | 65 | 3.11× |
+| `2095` | 232 | 1197 | 5.16× |
+| `graphs-root` | 157 | 794 | 5.06× |
+| `graphs-b100` | 8917 | 43849 | 4.92× |
+| `nshare-root_circo` | 183 | 900 | 4.92× |
+| `nshare-root_twopi` | 185 | 907 | 4.9× |
+| `linux.x86-root_circo` | 187 | 897 | 4.8× |
+| `2108` | 16218 | 77454 | 4.78× |
+| `linux.x86-root_twopi` | 186 | 888 | 4.78× |
+| `2743` | 157 | 746 | 4.75× |
+| `linux.i386-b29` | 538 | 2294 | 4.26× |
+| `2620` | 313 | 1310 | 4.18× |
+| `graphs-b103` | 1208 | 5003 | 4.14× |
+| `graphs-b104` | 8892 | 36788 | 4.14× |
+| `graphs-badvoro` | 271 | 1099 | 4.06× |
+| `2470` | 115 | 463 | 4.03× |
+| `linux.i386-b102` | 74 | 282 | 3.81× |
+| `tree-share-examples-world` | 2596554 | 9852386 | 3.79× |
+| `windows-b102` | 70 | 265 | 3.78× |
+| `graphs-xx` | 69 | 257 | 3.73× |
+| `graphs-b102` | 70 | 256 | 3.66× |
+| `graphs-b29` | 522 | 1862 | 3.57× |
+| `graphs-b143` | 98 | 349 | 3.56× |
+| `42` | 23 | 81 | 3.53× |
+| `windows-b29` | 514 | 1802 | 3.51× |
+| `share-b102` | 74 | 258 | 3.49× |
+| `share-b106` | 82 | 276 | 3.37× |
+| `share-b29` | 553 | 1859 | 3.36× |
+| `windows-b106` | 79 | 266 | 3.36× |
+| `linux.i386-b106` | 81 | 269 | 3.32× |
+| `graphs-b106` | 84 | 275 | 3.28× |
+| `share-b124` | 37 | 119 | 3.22× |
+| `windows-b124` | 39 | 118 | 3.02× |
 
 ## Over-cap / possible hang
 
 | id | native ms | cap ms | native×budget | status |
 |---|---:|---:|---:|---|
-| `tree-share-examples-world` | 1572090 | 4800000 | 4716270 | exceeds budget (likely hang/runaway) |
-| `2475_1` | 1103343 | 4800000 | 3310029 | exceeds budget (likely hang/runaway) |
+| `2475_1` | 1415906 | 12982770 | 4247718 | exceeds budget (likely hang/runaway) |
 
 Raise `BENCH_CAP_MS` and re-run these ids to resolve an inconclusive status.
 
 ## dot-engine vs WASM (@hpcc-js/wasm-graphviz)
 
 A **different axis** from the table above: this compares the pure-TS port against
-the WASM build a browser would otherwise ship (@hpcc-js/wasm-graphviz@1.28.0) — both warm,
+the WASM build a browser would otherwise ship (@hpcc-js/wasm-graphviz@1.29.2, graphviz 16.1.0) — both warm,
 in-process, best-of-3 (min). A report, not a gate: WASM is
 compiled C, so the port is expected to be a small constant factor slower; the
 port's wins are bundle size and no wasm fetch+instantiate, not raw layout compute.
 Source: [`wasm-perf.json`](./wasm-perf.json). Regenerate: `npm run bench:wasm`.
 
-- **Compared:** 765 inputs · **ratio (dot-engine / wasm):** p50 3.63× · p90 4.53× · max 7.60× · mean 3.58×
-- **Excluded:** 12 heavy (native > 2000ms) · 4 large-source (> 1 MB) · 4 port-error · 7 wasm-error · 0 missing
+- **Compared:** 916 inputs · **ratio (dot-engine / wasm):** p50 3.60× · p90 4.45× · max 6.55× · mean 3.54×
+- **Excluded:** 15 heavy (native > 2000ms) · 4 large-source (> 1 MB) · 9 no native timing · 0 port-error · 6 wasm-error · 0 missing
 
 ### Ratio distribution (dot-engine / wasm)
 
 | band | count |
 |---|---:|
 | dot-engine faster (<1×) | 1 |
-| 1–2× | 31 |
-| 2–4× | 509 |
-| 4–6× | 214 |
-| 6–10× | 10 |
+| 1–2× | 44 |
+| 2–4× | 616 |
+| 4–6× | 252 |
+| 6–10× | 3 |
 | >10× | 0 |
 
 ### Slowest for the port vs WASM (worst first)
 
 | id | dot-engine ms | wasm ms | ratio |
 |---|---:|---:|---:|
-| `graphs-Heawood` | 6.113 | 0.804 | 7.604× |
-| `2609` | 1.312 | 0.178 | 7.375× |
-| `share-Heawood` | 5.358 | 0.762 | 7.033× |
-| `macosx-ordering_dot` | 2.586 | 0.384 | 6.729× |
-| `graphs-rd_rules` | 3.613 | 0.553 | 6.53× |
-| `graphs-grdfillcolor` | 5.742 | 0.899 | 6.385× |
-| `macosx-nestedclust_dot` | 1.332 | 0.211 | 6.324× |
-| `share-train11` | 5.148 | 0.826 | 6.232× |
-| `macosx-ordering_dot1` | 2.413 | 0.388 | 6.222× |
-| `graphs-sq_rules` | 3.112 | 0.517 | 6.02× |
-| `graphs-pslib` | 5.571 | 0.929 | 5.998× |
-| `graphs-ER` | 2.501 | 0.421 | 5.94× |
-| `graphs-b786` | 2.078 | 0.36 | 5.775× |
-| `share-ER` | 2.709 | 0.47 | 5.763× |
-| `graphs-grdshapes` | 6.117 | 1.079 | 5.667× |
-| `graphs-grdlinear` | 5.721 | 1.018 | 5.62× |
-| `share-trapeziumlr` | 8.139 | 1.462 | 5.566× |
-| `121` | 2.463 | 0.444 | 5.544× |
-| `share-labelclust-nbl` | 0.982 | 0.179 | 5.48× |
-| `1408` | 1.092 | 0.2 | 5.455× |
+| `graphs-Heawood` | 4.602 | 0.703 | 6.548× |
+| `macosx-ordering_dot` | 2.49 | 0.407 | 6.115× |
+| `graphs-rd_rules` | 3.514 | 0.575 | 6.111× |
+| `2521` | 1.532 | 0.26 | 5.9× |
+| `1939` | 1.321 | 0.225 | 5.868× |
+| `graphs-grdfillcolor` | 5.374 | 0.935 | 5.745× |
+| `share-ER` | 2.794 | 0.49 | 5.699× |
+| `macosx-edgeclip_dot` | 0.981 | 0.174 | 5.643× |
+| `macosx-ordering_dot1` | 2.282 | 0.41 | 5.564× |
+| `share-Heawood` | 4.823 | 0.872 | 5.534× |
+| `1332` | 30.594 | 5.575 | 5.487× |
+| `share-train11` | 4.612 | 0.844 | 5.463× |
+| `2521_1` | 2.258 | 0.419 | 5.39× |
+| `1408` | 1.022 | 0.19 | 5.388× |
+| `2615` | 0.991 | 0.186 | 5.321× |
+| `windows-labelclust-ftd` | 0.887 | 0.167 | 5.298× |
+| `graphs-viewfile` | 4.88 | 0.922 | 5.295× |
+| `macosx-rowcolsep_dot` | 0.817 | 0.155 | 5.269× |
+| `macosx-rowcolsep_dot1` | 0.837 | 0.159 | 5.262× |
+| `graphs-labelroot-ftd` | 0.739 | 0.141 | 5.252× |
 
 ### Excluded / not compared
 
-- **Heavy (native > 2000ms):** 12 inputs — warm best-of-N over multi-second layouts is impractical here; their vs-native behavior is in the main table above.
-- **Large source (> 1 MB):** `1864` (14.1 MB), `2064` (4.9 MB), `2475_1` (9.3 MB), `2593` (13.2 MB) — multi-MB disassembly/CFG dumps (~10k+ nodes) that are impractical for a warm best-of-N. These are hard for Graphviz **generally**, not port-specific: spot-checked, `2064` fails to render in native `dot` (>120s), the WASM build (>60s in `layout()`), and the port (>30s) alike; `1864` OOMs **both** the port (>1 GB) and the WASM build ("out of memory") while native times out. The port does **not** leak (with GC its per-render heap is flat ~17 MB) — this is a scale ceiling shared with upstream, not a defect.
+- **Heavy (native > 2000ms):** 15 inputs — warm best-of-N over multi-second layouts is impractical here; their vs-native behavior is in the main table above.
+- **Large source (> 1 MB):** `tree-share-examples-4elt` (1.3 MB), `1864` (14.1 MB), `2064` (4.9 MB), `2593` (13.2 MB) — multi-MB disassembly/CFG dumps (~10k+ nodes) that are impractical for a warm best-of-N. These are hard for Graphviz **generally**, not port-specific: spot-checked, `2064` fails to render in native `dot` (>120s), the WASM build (>60s in `layout()`), and the port (>30s) alike; `1864` OOMs **both** the port (>1 GB) and the WASM build ("out of memory") while native times out. The port does **not** leak (with GC its per-render heap is flat ~17 MB) — this is a scale ceiling shared with upstream, not a defect.
+- **No native timing:** `1411`, `1783`, `2723`, `2778`, `2834`, `2854_1`, `2855`, `imagepath_test-base`, `share-b545` — native `dot` errored or ran past the capture cap, so there is no baseline to screen them as heavy. The WASM build is the same C and stalls on the same inputs.
 - Per-side error ids are listed in `wasm-perf.json`.
 

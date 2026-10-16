@@ -1,6 +1,7 @@
 {
   "generated": "test/corpus/wasm-bench.mjs — do not edit by hand",
-  "wasmPackage": "@hpcc-js/wasm-graphviz@1.28.0",
+  "wasmPackage": "@hpcc-js/wasm-graphviz@1.29.2",
+  "wasmGraphviz": "16.1.0",
   "method": {
     "warmup": 1,
     "trials": 3,
@@ -9,202 +10,219 @@
     "node": "v26.3.1"
   },
   "counts": {
-    "applicable": 788,
-    "compared": 765,
-    "excludedHeavy": 12,
+    "applicable": 950,
+    "compared": 916,
+    "excludedHeavy": 15,
     "excludedLarge": 4,
-    "dotEngineErrored": 4,
-    "wasmErrored": 7,
+    "excludedNoNative": 9,
+    "dotEngineErrored": 0,
+    "wasmErrored": 6,
     "missingFiles": 0
   },
   "ratio": {
-    "p50": 3.626,
-    "p90": 4.527,
-    "p99": 6.232,
-    "max": 7.604,
-    "mean": 3.5822405228758165
+    "p50": 3.604,
+    "p90": 4.454,
+    "p99": 5.534,
+    "max": 6.548,
+    "mean": 3.5439301310043665
   },
   "bands": {
     "dot-engine faster (<1×)": 1,
-    "1–2×": 31,
-    "2–4×": 509,
-    "4–6×": 214,
-    "6–10×": 10,
+    "1–2×": 44,
+    "2–4×": 616,
+    "4–6×": 252,
+    "6–10×": 3,
     ">10×": 0
   },
   "worst20": [
     {
       "id": "graphs-Heawood",
-      "de": 6.113,
-      "wa": 0.804,
-      "ratio": 7.604
-    },
-    {
-      "id": "2609",
-      "de": 1.312,
-      "wa": 0.178,
-      "ratio": 7.375
-    },
-    {
-      "id": "share-Heawood",
-      "de": 5.358,
-      "wa": 0.762,
-      "ratio": 7.033
+      "de": 4.602,
+      "wa": 0.703,
+      "ratio": 6.548
     },
     {
       "id": "macosx-ordering_dot",
-      "de": 2.586,
-      "wa": 0.384,
-      "ratio": 6.729
+      "de": 2.49,
+      "wa": 0.407,
+      "ratio": 6.115
     },
     {
       "id": "graphs-rd_rules",
-      "de": 3.613,
-      "wa": 0.553,
-      "ratio": 6.53
+      "de": 3.514,
+      "wa": 0.575,
+      "ratio": 6.111
+    },
+    {
+      "id": "2521",
+      "de": 1.532,
+      "wa": 0.26,
+      "ratio": 5.9
+    },
+    {
+      "id": "1939",
+      "de": 1.321,
+      "wa": 0.225,
+      "ratio": 5.868
     },
     {
       "id": "graphs-grdfillcolor",
-      "de": 5.742,
-      "wa": 0.899,
-      "ratio": 6.385
-    },
-    {
-      "id": "macosx-nestedclust_dot",
-      "de": 1.332,
-      "wa": 0.211,
-      "ratio": 6.324
-    },
-    {
-      "id": "share-train11",
-      "de": 5.148,
-      "wa": 0.826,
-      "ratio": 6.232
-    },
-    {
-      "id": "macosx-ordering_dot1",
-      "de": 2.413,
-      "wa": 0.388,
-      "ratio": 6.222
-    },
-    {
-      "id": "graphs-sq_rules",
-      "de": 3.112,
-      "wa": 0.517,
-      "ratio": 6.02
-    },
-    {
-      "id": "graphs-pslib",
-      "de": 5.571,
-      "wa": 0.929,
-      "ratio": 5.998
-    },
-    {
-      "id": "graphs-ER",
-      "de": 2.501,
-      "wa": 0.421,
-      "ratio": 5.94
-    },
-    {
-      "id": "graphs-b786",
-      "de": 2.078,
-      "wa": 0.36,
-      "ratio": 5.775
+      "de": 5.374,
+      "wa": 0.935,
+      "ratio": 5.745
     },
     {
       "id": "share-ER",
-      "de": 2.709,
-      "wa": 0.47,
-      "ratio": 5.763
+      "de": 2.794,
+      "wa": 0.49,
+      "ratio": 5.699
     },
     {
-      "id": "graphs-grdshapes",
-      "de": 6.117,
-      "wa": 1.079,
-      "ratio": 5.667
+      "id": "macosx-edgeclip_dot",
+      "de": 0.981,
+      "wa": 0.174,
+      "ratio": 5.643
     },
     {
-      "id": "graphs-grdlinear",
-      "de": 5.721,
-      "wa": 1.018,
-      "ratio": 5.62
+      "id": "macosx-ordering_dot1",
+      "de": 2.282,
+      "wa": 0.41,
+      "ratio": 5.564
     },
     {
-      "id": "share-trapeziumlr",
-      "de": 8.139,
-      "wa": 1.462,
-      "ratio": 5.566
+      "id": "share-Heawood",
+      "de": 4.823,
+      "wa": 0.872,
+      "ratio": 5.534
     },
     {
-      "id": "121",
-      "de": 2.463,
-      "wa": 0.444,
-      "ratio": 5.544
+      "id": "1332",
+      "de": 30.594,
+      "wa": 5.575,
+      "ratio": 5.487
     },
     {
-      "id": "share-labelclust-nbl",
-      "de": 0.982,
-      "wa": 0.179,
-      "ratio": 5.48
+      "id": "share-train11",
+      "de": 4.612,
+      "wa": 0.844,
+      "ratio": 5.463
+    },
+    {
+      "id": "2521_1",
+      "de": 2.258,
+      "wa": 0.419,
+      "ratio": 5.39
     },
     {
       "id": "1408",
-      "de": 1.092,
-      "wa": 0.2,
-      "ratio": 5.455
+      "de": 1.022,
+      "wa": 0.19,
+      "ratio": 5.388
+    },
+    {
+      "id": "2615",
+      "de": 0.991,
+      "wa": 0.186,
+      "ratio": 5.321
+    },
+    {
+      "id": "windows-labelclust-ftd",
+      "de": 0.887,
+      "wa": 0.167,
+      "ratio": 5.298
+    },
+    {
+      "id": "graphs-viewfile",
+      "de": 4.88,
+      "wa": 0.922,
+      "ratio": 5.295
+    },
+    {
+      "id": "macosx-rowcolsep_dot",
+      "de": 0.817,
+      "wa": 0.155,
+      "ratio": 5.269
+    },
+    {
+      "id": "macosx-rowcolsep_dot1",
+      "de": 0.837,
+      "wa": 0.159,
+      "ratio": 5.262
+    },
+    {
+      "id": "graphs-labelroot-ftd",
+      "de": 0.739,
+      "wa": 0.141,
+      "ratio": 5.252
     }
   ],
   "excludedHeavy": [
     {
+      "id": "tree-share-examples-world",
+      "nativeMs": 2596554
+    },
+    {
       "id": "1652",
-      "nativeMs": 270306
+      "nativeMs": 405459
     },
     {
       "id": "1718",
-      "nativeMs": 11492
+      "nativeMs": 19046
     },
     {
       "id": "2095_1",
-      "nativeMs": 22309
+      "nativeMs": 56617
     },
     {
       "id": "2108",
-      "nativeMs": 12849
+      "nativeMs": 16218
     },
     {
       "id": "2222",
-      "nativeMs": 6799
+      "nativeMs": 7800
     },
     {
       "id": "2343",
-      "nativeMs": 44304
+      "nativeMs": 71833
     },
     {
       "id": "2371",
-      "nativeMs": 73639
+      "nativeMs": 104027
     },
     {
       "id": "2471",
-      "nativeMs": 3269
+      "nativeMs": 8613
+    },
+    {
+      "id": "2475_1",
+      "nativeMs": 1415906
     },
     {
       "id": "2475_2",
-      "nativeMs": 4197
+      "nativeMs": 5641
+    },
+    {
+      "id": "2621",
+      "nativeMs": 539941
     },
     {
       "id": "2646",
-      "nativeMs": 97463
+      "nativeMs": 118028
     },
     {
       "id": "graphs-b100",
-      "nativeMs": 8646
+      "nativeMs": 8917
     },
     {
       "id": "graphs-b104",
-      "nativeMs": 8635
+      "nativeMs": 8892
     }
   ],
   "excludedLarge": [
+    {
+      "id": "tree-share-examples-4elt",
+      "srcBytes": 1312555
+    },
     {
       "id": "1864",
       "srcBytes": 14815923
@@ -214,4653 +232,5545 @@
       "srcBytes": 5169492
     },
     {
-      "id": "2475_1",
-      "srcBytes": 9735186
-    },
-    {
       "id": "2593",
       "srcBytes": 13875192
     }
   ],
-  "dotEngineErrors": [
-    {
-      "id": "1411",
-      "msg": "Expected \"#\", \"+\", \"-\", \".\", \"/*\", \"//\", \":\", \";\", \"<\", \"=\", \"[\", \"\\\"\", \"{\", \"}\", [ \\t\\r\\n], [0-9], [A-Za-z_\\x80-\\u{FFFF}], [Ee], [Gg], [Nn], [Ss], or edge oper"
-    },
-    {
-      "id": "2723",
-      "msg": "Cannot read properties of undefined (reading 'v')"
-    },
-    {
-      "id": "imagepath_test-base",
-      "msg": "Expected \"#\", \"/*\", \"//\", \"=\", [ \\t\\r\\n], or [A-Za-z_0-9\\x80-\\u{FFFF}] but \"]\" found."
-    },
-    {
-      "id": "share-b545",
-      "msg": "Expected \"#\", \"/*\", \"//\", \"{\", or [ \\t\\r\\n] but \"3\" found."
-    }
+  "excludedNoNative": [
+    "1411",
+    "1783",
+    "2723",
+    "2778",
+    "2834",
+    "2854_1",
+    "2855",
+    "imagepath_test-base",
+    "share-b545"
   ],
+  "dotEngineErrors": [],
   "wasmErrors": [
     {
-      "id": "1411",
-      "msg": "syntax error in line 17 near '\\'\n"
-    },
-    {
-      "id": "1783",
-      "msg": "overflow when calculating virtual weight of edge\n"
-    },
-    {
-      "id": "2723",
-      "msg": "memory access out of bounds"
-    },
-    {
-      "id": "imagepath_test-base",
-      "msg": "syntax error in line 8 near ']'\n"
-    },
-    {
-      "id": "linux.x86-rankdir_dot",
+      "id": "tree-graphs-directed-alf",
       "msg": "table index is out of bounds"
     },
     {
-      "id": "share-b545",
-      "msg": "syntax error in line 1 near '3.583'\n"
+      "id": "tree-graphs-directed-crazy",
+      "msg": "function signature mismatch"
+    },
+    {
+      "id": "tree-graphs-undirected-ER",
+      "msg": "table index is out of bounds"
+    },
+    {
+      "id": "linux.x86-record_dot",
+      "msg": "table index is out of bounds"
+    },
+    {
+      "id": "nshare-record_dot",
+      "msg": "table index is out of bounds"
     },
     {
       "id": "windows-alf",
-      "msg": "table index is out of bounds"
+      "msg": "function signature mismatch"
     }
   ],
   "missingFiles": [],
   "rows": [
     {
       "id": "2285",
-      "de": 0.049,
-      "wa": 0.059,
-      "ratio": 0.83
+      "de": 0.045,
+      "wa": 0.058,
+      "ratio": 0.769
     },
     {
-      "id": "2592",
-      "de": 1.347,
-      "wa": 1.211,
-      "ratio": 1.112
-    },
-    {
-      "id": "reference-test_reference-001.001",
-      "de": 0.093,
-      "wa": 0.074,
-      "ratio": 1.255
-    },
-    {
-      "id": "165",
-      "de": 0.093,
-      "wa": 0.073,
-      "ratio": 1.281
-    },
-    {
-      "id": "165_3",
-      "de": 0.1,
-      "wa": 0.076,
-      "ratio": 1.311
+      "id": "graphs-b85",
+      "de": 0.513,
+      "wa": 0.397,
+      "ratio": 1.293
     },
     {
       "id": "usershape",
-      "de": 0.113,
-      "wa": 0.083,
-      "ratio": 1.363
-    },
-    {
-      "id": "regression_tests-shapes-reference-circle",
-      "de": 0.095,
-      "wa": 0.07,
-      "ratio": 1.365
-    },
-    {
-      "id": "graphs-trivial",
-      "de": 0.101,
-      "wa": 0.071,
-      "ratio": 1.416
-    },
-    {
-      "id": "regression_tests-shapes-reference-Mcircle",
-      "de": 0.111,
-      "wa": 0.076,
-      "ratio": 1.457
-    },
-    {
-      "id": "regression_tests-shapes-reference-box",
-      "de": 0.1,
-      "wa": 0.069,
-      "ratio": 1.458
-    },
-    {
-      "id": "nshare-trivial_dot",
-      "de": 0.12,
-      "wa": 0.08,
-      "ratio": 1.502
-    },
-    {
-      "id": "graphs-ps_user_shapes",
-      "de": 0.099,
-      "wa": 0.065,
-      "ratio": 1.542
-    },
-    {
-      "id": "linux.i386-trivial_dot",
-      "de": 0.125,
-      "wa": 0.08,
-      "ratio": 1.55
+      "de": 0.123,
+      "wa": 0.084,
+      "ratio": 1.452
     },
     {
       "id": "2460",
-      "de": 0.113,
-      "wa": 0.072,
-      "ratio": 1.566
-    },
-    {
-      "id": "1314",
-      "de": 0.185,
-      "wa": 0.117,
-      "ratio": 1.587
-    },
-    {
-      "id": "regression_tests-shapes-reference-cds",
-      "de": 0.111,
-      "wa": 0.069,
-      "ratio": 1.609
-    },
-    {
-      "id": "graphs-b60",
-      "de": 0.127,
-      "wa": 0.079,
-      "ratio": 1.615
-    },
-    {
-      "id": "2636_2",
-      "de": 0.119,
-      "wa": 0.073,
-      "ratio": 1.638
-    },
-    {
-      "id": "windows-trivial_dot",
-      "de": 0.121,
-      "wa": 0.074,
-      "ratio": 1.642
+      "de": 0.11,
+      "wa": 0.071,
+      "ratio": 1.555
     },
     {
       "id": "linux.x86-trivial_dot",
-      "de": 0.126,
-      "wa": 0.075,
-      "ratio": 1.678
+      "de": 0.115,
+      "wa": 0.073,
+      "ratio": 1.578
     },
     {
-      "id": "regression_tests-shapes-reference-Msquare",
-      "de": 0.122,
-      "wa": 0.072,
-      "ratio": 1.687
+      "id": "165_3",
+      "de": 0.125,
+      "wa": 0.078,
+      "ratio": 1.6
     },
     {
-      "id": "windows-Latin1",
-      "de": 0.143,
+      "id": "graphs-trivial",
+      "de": 0.11,
+      "wa": 0.068,
+      "ratio": 1.609
+    },
+    {
+      "id": "tree-graphs-directed-Latin1",
+      "de": 0.134,
       "wa": 0.083,
-      "ratio": 1.712
+      "ratio": 1.612
     },
     {
-      "id": "2636",
-      "de": 0.14,
+      "id": "tree-doc-dotguide-parallelogram",
+      "de": 0.12,
+      "wa": 0.074,
+      "ratio": 1.633
+    },
+    {
+      "id": "165",
+      "de": 0.119,
+      "wa": 0.072,
+      "ratio": 1.639
+    },
+    {
+      "id": "tree-doc-dotguide-triangle",
+      "de": 0.131,
       "wa": 0.08,
-      "ratio": 1.749
+      "ratio": 1.643
+    },
+    {
+      "id": "tree-doc-dotguide-invtrapezium",
+      "de": 0.124,
+      "wa": 0.074,
+      "ratio": 1.669
+    },
+    {
+      "id": "tree-doc-dotguide-invtriangle",
+      "de": 0.136,
+      "wa": 0.08,
+      "ratio": 1.704
+    },
+    {
+      "id": "windows-trivial_dot",
+      "de": 0.134,
+      "wa": 0.078,
+      "ratio": 1.713
+    },
+    {
+      "id": "tree-doc-dotguide-circle",
+      "de": 0.125,
+      "wa": 0.073,
+      "ratio": 1.716
+    },
+    {
+      "id": "2636_2",
+      "de": 0.128,
+      "wa": 0.075,
+      "ratio": 1.719
+    },
+    {
+      "id": "tree-doc-dotguide-invhouse",
+      "de": 0.135,
+      "wa": 0.078,
+      "ratio": 1.727
+    },
+    {
+      "id": "tree-doc-dotguide-diamond",
+      "de": 0.139,
+      "wa": 0.08,
+      "ratio": 1.728
+    },
+    {
+      "id": "tree-doc-dotguide-ellipse",
+      "de": 0.122,
+      "wa": 0.07,
+      "ratio": 1.746
+    },
+    {
+      "id": "regression_tests-shapes-reference-box",
+      "de": 0.127,
+      "wa": 0.072,
+      "ratio": 1.77
     },
     {
       "id": "2636_1",
-      "de": 0.138,
-      "wa": 0.077,
-      "ratio": 1.802
+      "de": 0.134,
+      "wa": 0.076,
+      "ratio": 1.772
     },
     {
-      "id": "regression_tests-shapes-reference-box3d",
-      "de": 0.13,
-      "wa": 0.072,
-      "ratio": 1.821
+      "id": "tree-doc-dotguide-box",
+      "de": 0.134,
+      "wa": 0.075,
+      "ratio": 1.787
+    },
+    {
+      "id": "regression_tests-shapes-reference-circle",
+      "de": 0.126,
+      "wa": 0.07,
+      "ratio": 1.788
+    },
+    {
+      "id": "graphs-b60",
+      "de": 0.149,
+      "wa": 0.083,
+      "ratio": 1.794
     },
     {
       "id": "regression_tests-shapes-reference-point",
-      "de": 0.134,
+      "de": 0.129,
       "wa": 0.071,
-      "ratio": 1.878
+      "ratio": 1.803
     },
     {
-      "id": "regression_tests-shapes-reference-Mdiamond",
+      "id": "tree-doc-dotguide-octagon",
+      "de": 0.133,
+      "wa": 0.074,
+      "ratio": 1.805
+    },
+    {
+      "id": "reference-test_reference-001.001",
+      "de": 0.137,
+      "wa": 0.076,
+      "ratio": 1.805
+    },
+    {
+      "id": "tree-doc-dotguide-none",
       "de": 0.138,
-      "wa": 0.073,
-      "ratio": 1.881
+      "wa": 0.075,
+      "ratio": 1.835
+    },
+    {
+      "id": "tree-doc-dotguide-house",
+      "de": 0.136,
+      "wa": 0.074,
+      "ratio": 1.846
+    },
+    {
+      "id": "2636",
+      "de": 0.152,
+      "wa": 0.082,
+      "ratio": 1.859
     },
     {
       "id": "graphs-b123",
-      "de": 0.162,
-      "wa": 0.085,
-      "ratio": 1.904
-    },
-    {
-      "id": "graphs-b62",
-      "de": 0.168,
-      "wa": 0.085,
-      "ratio": 1.972
-    },
-    {
-      "id": "2295",
-      "de": 0.167,
-      "wa": 0.084,
-      "ratio": 1.982
-    },
-    {
-      "id": "graphs-Latin1",
-      "de": 0.158,
-      "wa": 0.08,
-      "ratio": 1.984
-    },
-    {
-      "id": "macosx-trivial_dot",
-      "de": 0.151,
-      "wa": 0.076,
-      "ratio": 1.989
-    },
-    {
-      "id": "1865",
-      "de": 0.167,
+      "de": 0.155,
       "wa": 0.083,
-      "ratio": 2.001
+      "ratio": 1.865
     },
     {
-      "id": "regression_tests-shapes-reference-plain",
-      "de": 0.144,
-      "wa": 0.071,
-      "ratio": 2.03
+      "id": "windows-Latin1",
+      "de": 0.145,
+      "wa": 0.078,
+      "ratio": 1.865
     },
     {
       "id": "regression_tests-shapes-reference-none",
-      "de": 0.139,
-      "wa": 0.068,
-      "ratio": 2.051
+      "de": 0.145,
+      "wa": 0.078,
+      "ratio": 1.868
+    },
+    {
+      "id": "tree-doc-dotguide-doublecircle",
+      "de": 0.156,
+      "wa": 0.083,
+      "ratio": 1.884
+    },
+    {
+      "id": "tree-doc-dotguide-hexagon",
+      "de": 0.145,
+      "wa": 0.077,
+      "ratio": 1.888
+    },
+    {
+      "id": "tree-doc-dotguide-trapezium",
+      "de": 0.137,
+      "wa": 0.072,
+      "ratio": 1.89
+    },
+    {
+      "id": "2295",
+      "de": 0.16,
+      "wa": 0.084,
+      "ratio": 1.915
+    },
+    {
+      "id": "tree-doc-dotguide-point",
+      "de": 0.145,
+      "wa": 0.076,
+      "ratio": 1.92
+    },
+    {
+      "id": "regression_tests-shapes-reference-Mcircle",
+      "de": 0.145,
+      "wa": 0.074,
+      "ratio": 1.952
+    },
+    {
+      "id": "1425",
+      "de": 0.209,
+      "wa": 0.107,
+      "ratio": 1.957
     },
     {
       "id": "regression_tests-shapes-reference-plaintext",
-      "de": 0.137,
+      "de": 0.132,
       "wa": 0.067,
-      "ratio": 2.052
-    },
-    {
-      "id": "regression_tests-shapes-reference-cylinder",
-      "de": 0.159,
-      "wa": 0.077,
-      "ratio": 2.058
-    },
-    {
-      "id": "2619",
-      "de": 0.196,
-      "wa": 0.095,
-      "ratio": 2.06
+      "ratio": 1.959
     },
     {
       "id": "share-Latin1",
-      "de": 0.167,
-      "wa": 0.081,
-      "ratio": 2.062
+      "de": 0.168,
+      "wa": 0.085,
+      "ratio": 1.963
     },
     {
-      "id": "2727",
-      "de": 0.182,
-      "wa": 0.088,
-      "ratio": 2.066
+      "id": "graphs-ps_user_shapes",
+      "de": 0.135,
+      "wa": 0.069,
+      "ratio": 1.967
     },
     {
-      "id": "regression_tests-shapes-reference-assembly",
-      "de": 0.151,
+      "id": "regression_tests-shapes-reference-cds",
+      "de": 0.145,
       "wa": 0.073,
-      "ratio": 2.079
+      "ratio": 1.977
     },
     {
-      "id": "165_2",
-      "de": 0.208,
-      "wa": 0.1,
-      "ratio": 2.084
+      "id": "regression_tests-shapes-reference-plain",
+      "de": 0.132,
+      "wa": 0.067,
+      "ratio": 1.977
     },
     {
-      "id": "graphs-val_val",
-      "de": 0.244,
-      "wa": 0.117,
-      "ratio": 2.092
+      "id": "tree-doc-dotguide-Mcircle",
+      "de": 0.17,
+      "wa": 0.084,
+      "ratio": 2.021
     },
     {
-      "id": "regression_tests-shapes-reference-invtriangle",
-      "de": 0.15,
-      "wa": 0.072,
-      "ratio": 2.092
-    },
-    {
-      "id": "regression_tests-shapes-reference-invtrapezium",
-      "de": 0.16,
-      "wa": 0.075,
-      "ratio": 2.132
+      "id": "graphs-Latin1",
+      "de": 0.175,
+      "wa": 0.086,
+      "ratio": 2.027
     },
     {
       "id": "regression_tests-shapes-reference-triangle",
       "de": 0.147,
-      "wa": 0.069,
-      "ratio": 2.139
+      "wa": 0.072,
+      "ratio": 2.027
     },
     {
-      "id": "graphs-b3",
-      "de": 0.225,
-      "wa": 0.105,
-      "ratio": 2.148
+      "id": "regression_tests-shapes-reference-trapezium",
+      "de": 0.147,
+      "wa": 0.072,
+      "ratio": 2.035
+    },
+    {
+      "id": "regression_tests-shapes-reference-oval",
+      "de": 0.141,
+      "wa": 0.069,
+      "ratio": 2.045
+    },
+    {
+      "id": "regression_tests-shapes-reference-Msquare",
+      "de": 0.15,
+      "wa": 0.073,
+      "ratio": 2.051
+    },
+    {
+      "id": "linux.i386-trivial_dot",
+      "de": 0.162,
+      "wa": 0.078,
+      "ratio": 2.069
     },
     {
       "id": "regression_tests-shapes-reference-septagon",
       "de": 0.161,
-      "wa": 0.075,
-      "ratio": 2.149
-    },
-    {
-      "id": "regression_tests-shapes-reference-square",
-      "de": 0.15,
-      "wa": 0.07,
-      "ratio": 2.152
-    },
-    {
-      "id": "regression_tests-shapes-reference-component",
-      "de": 0.158,
-      "wa": 0.073,
-      "ratio": 2.158
+      "wa": 0.077,
+      "ratio": 2.08
     },
     {
       "id": "regression_tests-shapes-reference-parallelogram",
-      "de": 0.151,
+      "de": 0.147,
       "wa": 0.07,
-      "ratio": 2.163
+      "ratio": 2.087
     },
     {
-      "id": "regression_tests-shapes-reference-pentagon",
-      "de": 0.158,
-      "wa": 0.073,
-      "ratio": 2.174
-    },
-    {
-      "id": "graphs-val_inv",
-      "de": 0.263,
-      "wa": 0.121,
-      "ratio": 2.183
-    },
-    {
-      "id": "graphs-b33",
-      "de": 0.186,
-      "wa": 0.084,
-      "ratio": 2.216
-    },
-    {
-      "id": "graphs-b545",
-      "de": 0.205,
-      "wa": 0.092,
-      "ratio": 2.222
-    },
-    {
-      "id": "regression_tests-shapes-reference-oval",
-      "de": 0.15,
-      "wa": 0.067,
-      "ratio": 2.23
-    },
-    {
-      "id": "regression_tests-shapes-reference-trapezium",
-      "de": 0.154,
-      "wa": 0.069,
-      "ratio": 2.232
-    },
-    {
-      "id": "2699",
-      "de": 0.215,
-      "wa": 0.096,
-      "ratio": 2.24
-    },
-    {
-      "id": "regression_tests-shapes-reference-rectangle",
-      "de": 0.151,
-      "wa": 0.067,
-      "ratio": 2.241
-    },
-    {
-      "id": "regression_tests-shapes-reference-invhouse",
-      "de": 0.159,
-      "wa": 0.071,
-      "ratio": 2.243
-    },
-    {
-      "id": "graphs-val_nul",
-      "de": 0.258,
-      "wa": 0.115,
-      "ratio": 2.244
-    },
-    {
-      "id": "regression_tests-shapes-reference-hexagon",
-      "de": 0.165,
-      "wa": 0.074,
-      "ratio": 2.244
-    },
-    {
-      "id": "graphs-b22",
-      "de": 0.234,
-      "wa": 0.103,
-      "ratio": 2.263
-    },
-    {
-      "id": "1581",
-      "de": 0.625,
-      "wa": 0.276,
-      "ratio": 2.269
-    },
-    {
-      "id": "regression_tests-shapes-reference-star",
-      "de": 0.169,
-      "wa": 0.074,
-      "ratio": 2.277
-    },
-    {
-      "id": "graphs-b155",
-      "de": 0.246,
-      "wa": 0.108,
-      "ratio": 2.282
-    },
-    {
-      "id": "regression_tests-shapes-reference-octagon",
-      "de": 0.168,
-      "wa": 0.074,
-      "ratio": 2.283
-    },
-    {
-      "id": "1221",
-      "de": 0.322,
-      "wa": 0.141,
-      "ratio": 2.292
-    },
-    {
-      "id": "graphs-nul_nul",
-      "de": 0.311,
-      "wa": 0.135,
-      "ratio": 2.302
-    },
-    {
-      "id": "2436",
-      "de": 0.23,
-      "wa": 0.099,
-      "ratio": 2.312
+      "id": "1314",
+      "de": 0.161,
+      "wa": 0.077,
+      "ratio": 2.088
     },
     {
       "id": "regression_tests-shapes-reference-underline",
-      "de": 0.168,
-      "wa": 0.073,
-      "ratio": 2.318
+      "de": 0.152,
+      "wa": 0.072,
+      "ratio": 2.1
     },
     {
-      "id": "regression_tests-shapes-reference-polygon",
-      "de": 0.16,
-      "wa": 0.068,
-      "ratio": 2.339
+      "id": "regression_tests-shapes-reference-octagon",
+      "de": 0.161,
+      "wa": 0.076,
+      "ratio": 2.109
     },
     {
-      "id": "graphs-ZapfChancery",
-      "de": 0.256,
-      "wa": 0.109,
-      "ratio": 2.342
+      "id": "macosx-trivial_dot",
+      "de": 0.159,
+      "wa": 0.075,
+      "ratio": 2.126
+    },
+    {
+      "id": "regression_tests-shapes-reference-rectangle",
+      "de": 0.147,
+      "wa": 0.069,
+      "ratio": 2.131
+    },
+    {
+      "id": "nshare-trivial_dot",
+      "de": 0.162,
+      "wa": 0.075,
+      "ratio": 2.153
+    },
+    {
+      "id": "regression_tests-shapes-reference-hexagon",
+      "de": 0.163,
+      "wa": 0.075,
+      "ratio": 2.155
     },
     {
       "id": "regression_tests-shapes-reference-rect",
-      "de": 0.16,
-      "wa": 0.068,
-      "ratio": 2.363
+      "de": 0.148,
+      "wa": 0.069,
+      "ratio": 2.155
+    },
+    {
+      "id": "regression_tests-shapes-reference-invtriangle",
+      "de": 0.15,
+      "wa": 0.069,
+      "ratio": 2.157
+    },
+    {
+      "id": "regression_tests-shapes-reference-invtrapezium",
+      "de": 0.151,
+      "wa": 0.07,
+      "ratio": 2.16
+    },
+    {
+      "id": "regression_tests-shapes-reference-tab",
+      "de": 0.162,
+      "wa": 0.075,
+      "ratio": 2.163
+    },
+    {
+      "id": "regression_tests-shapes-reference-Mdiamond",
+      "de": 0.162,
+      "wa": 0.074,
+      "ratio": 2.181
+    },
+    {
+      "id": "regression_tests-shapes-reference-pentagon",
+      "de": 0.154,
+      "wa": 0.07,
+      "ratio": 2.203
+    },
+    {
+      "id": "graphs-b62",
+      "de": 0.211,
+      "wa": 0.095,
+      "ratio": 2.206
+    },
+    {
+      "id": "2436",
+      "de": 0.207,
+      "wa": 0.093,
+      "ratio": 2.216
+    },
+    {
+      "id": "regression_tests-shapes-reference-invhouse",
+      "de": 0.156,
+      "wa": 0.07,
+      "ratio": 2.228
+    },
+    {
+      "id": "tree-doc-dotguide-doubleoctagon",
+      "de": 0.189,
+      "wa": 0.084,
+      "ratio": 2.235
+    },
+    {
+      "id": "2619",
+      "de": 0.201,
+      "wa": 0.089,
+      "ratio": 2.246
+    },
+    {
+      "id": "regression_tests-shapes-reference-box3d",
+      "de": 0.18,
+      "wa": 0.08,
+      "ratio": 2.248
+    },
+    {
+      "id": "regression_tests-shapes-reference-square",
+      "de": 0.162,
+      "wa": 0.072,
+      "ratio": 2.248
+    },
+    {
+      "id": "graphs-b76",
+      "de": 0.198,
+      "wa": 0.087,
+      "ratio": 2.273
+    },
+    {
+      "id": "graphs-val_nul",
+      "de": 0.28,
+      "wa": 0.122,
+      "ratio": 2.298
+    },
+    {
+      "id": "2727",
+      "de": 0.195,
+      "wa": 0.084,
+      "ratio": 2.309
+    },
+    {
+      "id": "tree-doc-dotguide-plaintext",
+      "de": 0.18,
+      "wa": 0.077,
+      "ratio": 2.328
+    },
+    {
+      "id": "regression_tests-shapes-reference-star",
+      "de": 0.184,
+      "wa": 0.079,
+      "ratio": 2.329
+    },
+    {
+      "id": "regression_tests-shapes-reference-ellipse",
+      "de": 0.162,
+      "wa": 0.069,
+      "ratio": 2.333
+    },
+    {
+      "id": "tree-tclpkg-gv-hello",
+      "de": 0.217,
+      "wa": 0.093,
+      "ratio": 2.341
     },
     {
       "id": "regression_tests-shapes-reference-doublecircle",
       "de": 0.176,
-      "wa": 0.074,
-      "ratio": 2.371
+      "wa": 0.075,
+      "ratio": 2.344
+    },
+    {
+      "id": "graphs-b79",
+      "de": 0.266,
+      "wa": 0.114,
+      "ratio": 2.346
+    },
+    {
+      "id": "regression_tests-shapes-reference-house",
+      "de": 0.168,
+      "wa": 0.071,
+      "ratio": 2.347
+    },
+    {
+      "id": "tree-doc-infosrc-nohead",
+      "de": 0.203,
+      "wa": 0.086,
+      "ratio": 2.361
     },
     {
       "id": "2257",
-      "de": 0.205,
+      "de": 0.202,
       "wa": 0.086,
-      "ratio": 2.375
+      "ratio": 2.364
     },
     {
-      "id": "regression_tests-shapes-reference-ellipse",
-      "de": 0.164,
-      "wa": 0.069,
-      "ratio": 2.375
+      "id": "regression_tests-shapes-reference-rarrow",
+      "de": 0.166,
+      "wa": 0.07,
+      "ratio": 2.369
+    },
+    {
+      "id": "graphs-ZapfChancery",
+      "de": 0.249,
+      "wa": 0.105,
+      "ratio": 2.376
+    },
+    {
+      "id": "regression_tests-shapes-reference-polygon",
+      "de": 0.187,
+      "wa": 0.079,
+      "ratio": 2.376
+    },
+    {
+      "id": "graphs-val_inv",
+      "de": 0.293,
+      "wa": 0.123,
+      "ratio": 2.382
+    },
+    {
+      "id": "tree-doc-infosrc-forward",
+      "de": 0.218,
+      "wa": 0.091,
+      "ratio": 2.389
+    },
+    {
+      "id": "regression_tests-shapes-reference-doubleoctagon",
+      "de": 0.193,
+      "wa": 0.081,
+      "ratio": 2.391
+    },
+    {
+      "id": "tree-doc-dotguide-polygon",
+      "de": 0.185,
+      "wa": 0.077,
+      "ratio": 2.395
+    },
+    {
+      "id": "regression_tests-shapes-reference-tripleoctagon",
+      "de": 0.193,
+      "wa": 0.08,
+      "ratio": 2.397
+    },
+    {
+      "id": "graphs-b545",
+      "de": 0.22,
+      "wa": 0.091,
+      "ratio": 2.405
     },
     {
       "id": "graphs-b135",
-      "de": 0.226,
+      "de": 0.228,
       "wa": 0.095,
-      "ratio": 2.379
+      "ratio": 2.409
+    },
+    {
+      "id": "1453",
+      "de": 18.439,
+      "wa": 7.639,
+      "ratio": 2.414
+    },
+    {
+      "id": "graphs-ZapfDingbats",
+      "de": 0.241,
+      "wa": 0.1,
+      "ratio": 2.414
+    },
+    {
+      "id": "1865",
+      "de": 0.195,
+      "wa": 0.08,
+      "ratio": 2.422
+    },
+    {
+      "id": "regression_tests-shapes-reference-rpromoter",
+      "de": 0.18,
+      "wa": 0.074,
+      "ratio": 2.422
+    },
+    {
+      "id": "graphs-b491",
+      "de": 0.375,
+      "wa": 0.152,
+      "ratio": 2.457
+    },
+    {
+      "id": "regression_tests-shapes-reference-component",
+      "de": 0.191,
+      "wa": 0.078,
+      "ratio": 2.457
+    },
+    {
+      "id": "2784",
+      "de": 0.402,
+      "wa": 0.163,
+      "ratio": 2.465
+    },
+    {
+      "id": "regression_tests-shapes-reference-utr",
+      "de": 0.18,
+      "wa": 0.073,
+      "ratio": 2.466
+    },
+    {
+      "id": "tree-doc-dotguide-normal",
+      "de": 0.217,
+      "wa": 0.088,
+      "ratio": 2.472
+    },
+    {
+      "id": "regression_tests-shapes-reference-signature",
+      "de": 0.187,
+      "wa": 0.076,
+      "ratio": 2.472
+    },
+    {
+      "id": "tree-doc-dotguide-odot",
+      "de": 0.211,
+      "wa": 0.085,
+      "ratio": 2.479
+    },
+    {
+      "id": "2352",
+      "de": 0.224,
+      "wa": 0.09,
+      "ratio": 2.479
+    },
+    {
+      "id": "graphs-inv_val",
+      "de": 0.282,
+      "wa": 0.113,
+      "ratio": 2.494
+    },
+    {
+      "id": "regression_tests-shapes-reference-diamond",
+      "de": 0.193,
+      "wa": 0.077,
+      "ratio": 2.494
+    },
+    {
+      "id": "tree-doc-dotguide-Msquare",
+      "de": 0.188,
+      "wa": 0.075,
+      "ratio": 2.501
     },
     {
       "id": "2352_2",
       "de": 0.22,
-      "wa": 0.092,
-      "ratio": 2.394
+      "wa": 0.088,
+      "ratio": 2.504
     },
     {
-      "id": "2437",
-      "de": 0.339,
-      "wa": 0.141,
-      "ratio": 2.401
-    },
-    {
-      "id": "regression_tests-shapes-reference-tab",
-      "de": 0.175,
-      "wa": 0.072,
-      "ratio": 2.44
-    },
-    {
-      "id": "graphs-nul_val",
-      "de": 0.295,
-      "wa": 0.12,
-      "ratio": 2.456
-    },
-    {
-      "id": "2721",
-      "de": 0.193,
-      "wa": 0.079,
-      "ratio": 2.457
-    },
-    {
-      "id": "graphs-inv_inv",
-      "de": 0.315,
-      "wa": 0.128,
-      "ratio": 2.461
-    },
-    {
-      "id": "regression_tests-shapes-reference-rarrow",
-      "de": 0.172,
-      "wa": 0.069,
-      "ratio": 2.478
-    },
-    {
-      "id": "1585_0",
-      "de": 0.29,
-      "wa": 0.117,
-      "ratio": 2.492
-    },
-    {
-      "id": "regression_tests-shapes-reference-tripleoctagon",
-      "de": 0.191,
-      "wa": 0.077,
-      "ratio": 2.493
-    },
-    {
-      "id": "share-b29",
-      "de": 1446.766,
-      "wa": 580.439,
-      "ratio": 2.493
-    },
-    {
-      "id": "regression_tests-shapes-reference-note",
-      "de": 0.174,
-      "wa": 0.07,
-      "ratio": 2.495
-    },
-    {
-      "id": "graphs-nul_inv",
-      "de": 0.337,
-      "wa": 0.134,
-      "ratio": 2.51
-    },
-    {
-      "id": "graphs-a",
-      "de": 0.227,
-      "wa": 0.09,
-      "ratio": 2.511
-    },
-    {
-      "id": "1453",
-      "de": 19.036,
-      "wa": 7.522,
-      "ratio": 2.531
-    },
-    {
-      "id": "graphs-ZapfDingbats",
-      "de": 0.259,
-      "wa": 0.102,
-      "ratio": 2.535
-    },
-    {
-      "id": "graphs-ps",
+      "id": "tree-doc-infosrc-mrecord",
       "de": 0.226,
+      "wa": 0.09,
+      "ratio": 2.505
+    },
+    {
+      "id": "1622_0",
+      "de": 0.325,
+      "wa": 0.129,
+      "ratio": 2.517
+    },
+    {
+      "id": "2352_1",
+      "de": 0.224,
       "wa": 0.089,
-      "ratio": 2.536
+      "ratio": 2.521
     },
     {
-      "id": "regression_tests-shapes-reference-larrow",
-      "de": 0.175,
-      "wa": 0.069,
-      "ratio": 2.538
+      "id": "tree-doc-dotguide-no_arrow",
+      "de": 0.246,
+      "wa": 0.098,
+      "ratio": 2.522
     },
     {
-      "id": "regression_tests-shapes-reference-primersite",
-      "de": 0.176,
-      "wa": 0.069,
-      "ratio": 2.542
+      "id": "regression_tests-shapes-reference-assembly",
+      "de": 0.186,
+      "wa": 0.074,
+      "ratio": 2.524
     },
     {
-      "id": "graphs-inv_val",
-      "de": 0.296,
-      "wa": 0.116,
-      "ratio": 2.545
-    },
-    {
-      "id": "linux.i386-b29",
-      "de": 1475.189,
-      "wa": 579.063,
-      "ratio": 2.548
+      "id": "graphs-b22",
+      "de": 0.269,
+      "wa": 0.106,
+      "ratio": 2.535
     },
     {
       "id": "regression_tests-shapes-reference-terminator",
       "de": 0.191,
-      "wa": 0.075,
-      "ratio": 2.558
+      "wa": 0.076,
+      "ratio": 2.536
     },
     {
-      "id": "regression_tests-shapes-reference-lpromoter",
-      "de": 0.179,
-      "wa": 0.07,
-      "ratio": 2.565
+      "id": "regression_tests-shapes-reference-note",
+      "de": 0.192,
+      "wa": 0.076,
+      "ratio": 2.539
     },
     {
-      "id": "regression_tests-shapes-reference-rpromoter",
-      "de": 0.184,
-      "wa": 0.072,
-      "ratio": 2.572
+      "id": "tree-doc-dotguide-dot",
+      "de": 0.228,
+      "wa": 0.089,
+      "ratio": 2.547
     },
     {
-      "id": "2352",
-      "de": 0.234,
-      "wa": 0.091,
-      "ratio": 2.578
+      "id": "tree-doc-infosrc-back",
+      "de": 0.246,
+      "wa": 0.097,
+      "ratio": 2.548
     },
     {
       "id": "regression_tests-shapes-reference-folder",
-      "de": 0.179,
-      "wa": 0.07,
-      "ratio": 2.578
-    },
-    {
-      "id": "windows-b29",
-      "de": 1408.391,
-      "wa": 546.037,
-      "ratio": 2.579
-    },
-    {
-      "id": "graphs-inv_nul",
-      "de": 0.297,
-      "wa": 0.115,
-      "ratio": 2.586
-    },
-    {
-      "id": "1444",
-      "de": 0.33,
-      "wa": 0.127,
-      "ratio": 2.596
-    },
-    {
-      "id": "144_ortho",
-      "de": 0.517,
-      "wa": 0.199,
-      "ratio": 2.601
-    },
-    {
-      "id": "2502",
-      "de": 0.231,
-      "wa": 0.089,
-      "ratio": 2.605
-    },
-    {
-      "id": "2352_1",
-      "de": 0.232,
-      "wa": 0.089,
-      "ratio": 2.606
-    },
-    {
-      "id": "regression_tests-shapes-reference-house",
-      "de": 0.185,
-      "wa": 0.071,
-      "ratio": 2.61
-    },
-    {
-      "id": "1658",
-      "de": 3.831,
-      "wa": 1.464,
-      "ratio": 2.617
+      "de": 0.184,
+      "wa": 0.072,
+      "ratio": 2.551
     },
     {
       "id": "graphs-b29",
-      "de": 1380.207,
-      "wa": 527.086,
-      "ratio": 2.619
+      "de": 1494.802,
+      "wa": 585.18,
+      "ratio": 2.554
     },
     {
-      "id": "2168_2",
-      "de": 0.285,
-      "wa": 0.108,
-      "ratio": 2.64
+      "id": "165_2",
+      "de": 0.264,
+      "wa": 0.103,
+      "ratio": 2.556
     },
     {
-      "id": "regression_tests-shapes-reference-signature",
-      "de": 0.192,
-      "wa": 0.073,
-      "ratio": 2.648
+      "id": "graphs-inv_nul",
+      "de": 0.291,
+      "wa": 0.114,
+      "ratio": 2.561
     },
     {
-      "id": "2614",
-      "de": 0.256,
-      "wa": 0.096,
-      "ratio": 2.651
+      "id": "graphs-b155",
+      "de": 0.274,
+      "wa": 0.107,
+      "ratio": 2.563
     },
     {
-      "id": "2325",
-      "de": 0.215,
-      "wa": 0.081,
-      "ratio": 2.666
-    },
-    {
-      "id": "1622_3",
-      "de": 0.256,
-      "wa": 0.096,
-      "ratio": 2.669
-    },
-    {
-      "id": "1514",
-      "de": 0.546,
-      "wa": 0.205,
-      "ratio": 2.67
-    },
-    {
-      "id": "2258",
-      "de": 0.344,
-      "wa": 0.129,
-      "ratio": 2.674
-    },
-    {
-      "id": "1702",
-      "de": 0.317,
-      "wa": 0.118,
-      "ratio": 2.679
-    },
-    {
-      "id": "graphs-sb_circle",
-      "de": 0.351,
-      "wa": 0.131,
-      "ratio": 2.681
-    },
-    {
-      "id": "graphs-b76",
-      "de": 0.212,
+      "id": "tree-doc-dotguide-Mdiamond",
+      "de": 0.204,
       "wa": 0.079,
-      "ratio": 2.693
+      "ratio": 2.565
     },
     {
-      "id": "regression_tests-shapes-reference-utr",
-      "de": 0.197,
-      "wa": 0.073,
-      "ratio": 2.694
+      "id": "2699",
+      "de": 0.226,
+      "wa": 0.088,
+      "ratio": 2.566
+    },
+    {
+      "id": "linux.i386-b29",
+      "de": 1597.737,
+      "wa": 622.572,
+      "ratio": 2.566
+    },
+    {
+      "id": "share-a3",
+      "de": 0.289,
+      "wa": 0.111,
+      "ratio": 2.589
+    },
+    {
+      "id": "regression_tests-shapes-reference-lpromoter",
+      "de": 0.182,
+      "wa": 0.07,
+      "ratio": 2.595
+    },
+    {
+      "id": "tree-doc-dotguide-crow",
+      "de": 0.262,
+      "wa": 0.101,
+      "ratio": 2.596
+    },
+    {
+      "id": "tree-doc-dotguide-curve",
+      "de": 0.25,
+      "wa": 0.096,
+      "ratio": 2.601
+    },
+    {
+      "id": "tree-doc-dotguide-boxarrow",
+      "de": 0.24,
+      "wa": 0.092,
+      "ratio": 2.603
     },
     {
       "id": "graphs-b146",
       "de": 0.223,
-      "wa": 0.083,
-      "ratio": 2.695
-    },
-    {
-      "id": "1879-2",
-      "de": 0.36,
-      "wa": 0.132,
-      "ratio": 2.727
-    },
-    {
-      "id": "167",
-      "de": 0.39,
-      "wa": 0.143,
-      "ratio": 2.732
+      "wa": 0.086,
+      "ratio": 2.604
     },
     {
       "id": "813",
-      "de": 0.206,
+      "de": 0.205,
+      "wa": 0.079,
+      "ratio": 2.606
+    },
+    {
+      "id": "graphs-nul_nul",
+      "de": 0.31,
+      "wa": 0.119,
+      "ratio": 2.606
+    },
+    {
+      "id": "regression_tests-shapes-reference-primersite",
+      "de": 0.197,
       "wa": 0.075,
-      "ratio": 2.736
+      "ratio": 2.614
     },
     {
-      "id": "1444-2",
-      "de": 0.368,
-      "wa": 0.134,
-      "ratio": 2.751
+      "id": "2721",
+      "de": 0.24,
+      "wa": 0.091,
+      "ratio": 2.621
     },
     {
-      "id": "share-jsort",
-      "de": 10.289,
-      "wa": 3.736,
-      "ratio": 2.754
+      "id": "graphs-nul_val",
+      "de": 0.308,
+      "wa": 0.117,
+      "ratio": 2.63
     },
     {
-      "id": "162",
-      "de": 0.454,
-      "wa": 0.164,
-      "ratio": 2.763
+      "id": "regression_tests-shapes-reference-larrow",
+      "de": 0.186,
+      "wa": 0.07,
+      "ratio": 2.64
     },
     {
-      "id": "2564",
-      "de": 0.243,
-      "wa": 0.088,
-      "ratio": 2.766
+      "id": "share-b29",
+      "de": 1625.514,
+      "wa": 615.626,
+      "ratio": 2.64
     },
     {
-      "id": "share-a1",
-      "de": 0.281,
+      "id": "2325",
+      "de": 0.206,
+      "wa": 0.078,
+      "ratio": 2.642
+    },
+    {
+      "id": "regression_tests-shapes-reference-proteinstab",
+      "de": 0.196,
+      "wa": 0.074,
+      "ratio": 2.642
+    },
+    {
+      "id": "2490",
+      "de": 0.271,
+      "wa": 0.103,
+      "ratio": 2.644
+    },
+    {
+      "id": "tree-doc-infosrc-both",
+      "de": 0.235,
+      "wa": 0.089,
+      "ratio": 2.648
+    },
+    {
+      "id": "tree-doc-dotguide-record",
+      "de": 0.219,
+      "wa": 0.083,
+      "ratio": 2.652
+    },
+    {
+      "id": "tree-doc-dotguide-invodot",
+      "de": 0.244,
+      "wa": 0.092,
+      "ratio": 2.656
+    },
+    {
+      "id": "tree-doc-dotguide-diamondarrow",
+      "de": 0.246,
+      "wa": 0.092,
+      "ratio": 2.661
+    },
+    {
+      "id": "graphs-inv_inv",
+      "de": 0.331,
+      "wa": 0.124,
+      "ratio": 2.673
+    },
+    {
+      "id": "regression_tests-shapes-reference-rnastab",
+      "de": 0.215,
+      "wa": 0.08,
+      "ratio": 2.684
+    },
+    {
+      "id": "regression_tests-shapes-reference-threepoverhang",
+      "de": 0.201,
+      "wa": 0.075,
+      "ratio": 2.688
+    },
+    {
+      "id": "windows-b29",
+      "de": 1589.646,
+      "wa": 591.143,
+      "ratio": 2.689
+    },
+    {
+      "id": "tree-doc-dotguide-tripleoctagon",
+      "de": 0.218,
+      "wa": 0.081,
+      "ratio": 2.691
+    },
+    {
+      "id": "tree-doc-dotguide-oinvdot",
+      "de": 0.233,
+      "wa": 0.087,
+      "ratio": 2.692
+    },
+    {
+      "id": "regression_tests-shapes-reference-restrictionsite",
+      "de": 0.196,
+      "wa": 0.073,
+      "ratio": 2.697
+    },
+    {
+      "id": "1622_3",
+      "de": 0.276,
       "wa": 0.102,
-      "ratio": 2.766
+      "ratio": 2.706
+    },
+    {
+      "id": "1581",
+      "de": 0.788,
+      "wa": 0.29,
+      "ratio": 2.715
+    },
+    {
+      "id": "2437",
+      "de": 0.355,
+      "wa": 0.13,
+      "ratio": 2.725
     },
     {
       "id": "regression_tests-shapes-reference-promoter",
       "de": 0.199,
-      "wa": 0.071,
-      "ratio": 2.782
+      "wa": 0.073,
+      "ratio": 2.731
     },
     {
-      "id": "regression_tests-shapes-reference-proteinstab",
-      "de": 0.198,
-      "wa": 0.071,
-      "ratio": 2.782
-    },
-    {
-      "id": "1622_0",
+      "id": "graphs-nul_inv",
       "de": 0.339,
-      "wa": 0.122,
-      "ratio": 2.783
+      "wa": 0.124,
+      "ratio": 2.733
     },
     {
-      "id": "2643",
-      "de": 0.405,
-      "wa": 0.146,
-      "ratio": 2.783
+      "id": "tree-doc-infosrc-tee",
+      "de": 0.338,
+      "wa": 0.123,
+      "ratio": 2.736
     },
     {
-      "id": "share-record2",
-      "de": 0.352,
-      "wa": 0.126,
-      "ratio": 2.784
+      "id": "graphs-b33",
+      "de": 0.228,
+      "wa": 0.083,
+      "ratio": 2.749
     },
     {
-      "id": "2082",
-      "de": 1.815,
-      "wa": 0.651,
-      "ratio": 2.787
+      "id": "2614",
+      "de": 0.245,
+      "wa": 0.089,
+      "ratio": 2.751
     },
     {
-      "id": "358",
-      "de": 0.434,
-      "wa": 0.156,
-      "ratio": 2.787
+      "id": "tree-doc-dotguide-inv",
+      "de": 0.243,
+      "wa": 0.088,
+      "ratio": 2.764
     },
     {
-      "id": "graphs-russian",
-      "de": 0.694,
-      "wa": 0.249,
-      "ratio": 2.787
-    },
-    {
-      "id": "regression_tests-shapes-reference-threepoverhang",
-      "de": 0.198,
-      "wa": 0.071,
-      "ratio": 2.787
-    },
-    {
-      "id": "graphs-b124",
-      "de": 101.365,
-      "wa": 36.337,
+      "id": "windows-ctext",
+      "de": 0.774,
+      "wa": 0.277,
       "ratio": 2.79
     },
     {
-      "id": "1644",
-      "de": 0.393,
-      "wa": 0.14,
+      "id": "share-record2",
+      "de": 0.379,
+      "wa": 0.135,
+      "ratio": 2.8
+    },
+    {
+      "id": "share-labelclust-ftl",
+      "de": 0.522,
+      "wa": 0.186,
       "ratio": 2.801
-    },
-    {
-      "id": "2497",
-      "de": 0.415,
-      "wa": 0.148,
-      "ratio": 2.806
-    },
-    {
-      "id": "regression_tests-shapes-reference-restrictionsite",
-      "de": 0.203,
-      "wa": 0.072,
-      "ratio": 2.82
-    },
-    {
-      "id": "regression_tests-shapes-reference-fivepoverhang",
-      "de": 0.206,
-      "wa": 0.073,
-      "ratio": 2.831
-    },
-    {
-      "id": "share-b106",
-      "de": 242.224,
-      "wa": 85.471,
-      "ratio": 2.834
-    },
-    {
-      "id": "share-a3",
-      "de": 0.273,
-      "wa": 0.096,
-      "ratio": 2.851
-    },
-    {
-      "id": "windows-labelclust-fbr",
-      "de": 0.472,
-      "wa": 0.165,
-      "ratio": 2.861
-    },
-    {
-      "id": "windows-jsort",
-      "de": 10.826,
-      "wa": 3.768,
-      "ratio": 2.873
-    },
-    {
-      "id": "share-a2",
-      "de": 0.274,
-      "wa": 0.095,
-      "ratio": 2.881
-    },
-    {
-      "id": "graphs-cairo",
-      "de": 60.946,
-      "wa": 21.111,
-      "ratio": 2.887
-    },
-    {
-      "id": "regression_tests-shapes-reference-doubleoctagon",
-      "de": 0.219,
-      "wa": 0.075,
-      "ratio": 2.896
-    },
-    {
-      "id": "graphs-b106",
-      "de": 240.673,
-      "wa": 83.083,
-      "ratio": 2.897
-    },
-    {
-      "id": "linux.i386-b106",
-      "de": 240.479,
-      "wa": 82.741,
-      "ratio": 2.906
-    },
-    {
-      "id": "share-labelclust-fbl",
-      "de": 0.495,
-      "wa": 0.17,
-      "ratio": 2.909
-    },
-    {
-      "id": "linux.x86-radius_dot",
-      "de": 0.495,
-      "wa": 0.17,
-      "ratio": 2.915
-    },
-    {
-      "id": "graphs-b57",
-      "de": 7.542,
-      "wa": 2.583,
-      "ratio": 2.92
-    },
-    {
-      "id": "windows-b106",
-      "de": 241.105,
-      "wa": 82.564,
-      "ratio": 2.92
-    },
-    {
-      "id": "windows-record2",
-      "de": 0.389,
-      "wa": 0.133,
-      "ratio": 2.921
-    },
-    {
-      "id": "share-labelclust-ftd",
-      "de": 0.459,
-      "wa": 0.157,
-      "ratio": 2.924
-    },
-    {
-      "id": "2168_1",
-      "de": 0.315,
-      "wa": 0.108,
-      "ratio": 2.926
-    },
-    {
-      "id": "graphs-b491",
-      "de": 0.359,
-      "wa": 0.122,
-      "ratio": 2.936
     },
     {
       "id": "graphs-user_shapes",
       "de": 0.331,
-      "wa": 0.113,
-      "ratio": 2.938
+      "wa": 0.117,
+      "ratio": 2.817
     },
     {
-      "id": "regression_tests-shapes-reference-rnastab",
-      "de": 0.221,
-      "wa": 0.075,
-      "ratio": 2.945
-    },
-    {
-      "id": "2825",
-      "de": 0.533,
-      "wa": 0.181,
-      "ratio": 2.951
-    },
-    {
-      "id": "graphs-center",
-      "de": 0.302,
-      "wa": 0.102,
-      "ratio": 2.957
-    },
-    {
-      "id": "negative-dpi",
-      "de": 0.257,
-      "wa": 0.087,
-      "ratio": 2.963
-    },
-    {
-      "id": "regression_tests-shapes-reference-insulator",
-      "de": 0.215,
+      "id": "regression_tests-shapes-reference-fivepoverhang",
+      "de": 0.204,
       "wa": 0.072,
-      "ratio": 2.969
+      "ratio": 2.819
     },
     {
-      "id": "graphs-b143",
-      "de": 312.416,
-      "wa": 105.164,
-      "ratio": 2.971
+      "id": "2258",
+      "de": 0.346,
+      "wa": 0.123,
+      "ratio": 2.821
     },
     {
-      "id": "share-flatedge",
-      "de": 0.674,
-      "wa": 0.226,
-      "ratio": 2.981
-    },
-    {
-      "id": "windows-fsm",
-      "de": 1.672,
-      "wa": 0.561,
-      "ratio": 2.981
-    },
-    {
-      "id": "windows-labelclust-fbd",
-      "de": 0.478,
-      "wa": 0.16,
-      "ratio": 2.982
-    },
-    {
-      "id": "share-labelclust-fdr",
-      "de": 0.467,
-      "wa": 0.156,
-      "ratio": 2.988
-    },
-    {
-      "id": "2516",
-      "de": 0.401,
-      "wa": 0.134,
-      "ratio": 2.991
-    },
-    {
-      "id": "windows-labelclust-fdd",
-      "de": 0.468,
-      "wa": 0.156,
-      "ratio": 2.994
-    },
-    {
-      "id": "1425",
-      "de": 0.337,
-      "wa": 0.112,
-      "ratio": 2.996
-    },
-    {
-      "id": "1585_1",
-      "de": 0.393,
-      "wa": 0.131,
-      "ratio": 2.997
-    },
-    {
-      "id": "graphs-b79",
-      "de": 0.26,
-      "wa": 0.087,
-      "ratio": 2.999
-    },
-    {
-      "id": "share-fsm",
-      "de": 1.709,
-      "wa": 0.57,
-      "ratio": 3.001
-    },
-    {
-      "id": "share-labelclust-fdd",
-      "de": 0.466,
-      "wa": 0.154,
-      "ratio": 3.023
-    },
-    {
-      "id": "2168",
-      "de": 0.358,
-      "wa": 0.118,
-      "ratio": 3.026
-    },
-    {
-      "id": "nshare-record_dot",
-      "de": 2.205,
-      "wa": 0.729,
-      "ratio": 3.026
-    },
-    {
-      "id": "2168_4",
-      "de": 0.349,
-      "wa": 0.115,
-      "ratio": 3.037
-    },
-    {
-      "id": "regression_tests-shapes-reference-diamond",
-      "de": 0.231,
-      "wa": 0.076,
-      "ratio": 3.043
-    },
-    {
-      "id": "1622_1",
-      "de": 0.339,
-      "wa": 0.111,
-      "ratio": 3.044
-    },
-    {
-      "id": "share-labelclust-fdl",
-      "de": 0.469,
-      "wa": 0.154,
-      "ratio": 3.044
-    },
-    {
-      "id": "2225",
-      "de": 0.333,
-      "wa": 0.109,
-      "ratio": 3.045
-    },
-    {
-      "id": "share-hashtable",
-      "de": 1.007,
-      "wa": 0.331,
-      "ratio": 3.047
-    },
-    {
-      "id": "2620",
-      "de": 880.436,
-      "wa": 288.818,
-      "ratio": 3.048
-    },
-    {
-      "id": "graphs-dpd",
-      "de": 18.554,
-      "wa": 6.088,
-      "ratio": 3.048
-    },
-    {
-      "id": "windows-labelclust-fbc",
-      "de": 0.529,
-      "wa": 0.173,
-      "ratio": 3.049
-    },
-    {
-      "id": "2490",
-      "de": 0.304,
-      "wa": 0.1,
-      "ratio": 3.055
-    },
-    {
-      "id": "share-labelclust-fdc",
-      "de": 0.474,
-      "wa": 0.155,
-      "ratio": 3.057
-    },
-    {
-      "id": "1856",
-      "de": 0.826,
-      "wa": 0.27,
-      "ratio": 3.059
-    },
-    {
-      "id": "1447_1",
-      "de": 88.53,
-      "wa": 28.877,
-      "ratio": 3.066
-    },
-    {
-      "id": "share-labelclust-ftl",
-      "de": 0.505,
-      "wa": 0.165,
-      "ratio": 3.066
-    },
-    {
-      "id": "windows-labelclust-fdc",
-      "de": 0.473,
-      "wa": 0.154,
-      "ratio": 3.073
-    },
-    {
-      "id": "windows-ctext",
-      "de": 0.71,
-      "wa": 0.231,
-      "ratio": 3.075
-    },
-    {
-      "id": "2413_2",
-      "de": 34.31,
-      "wa": 11.127,
-      "ratio": 3.083
-    },
-    {
-      "id": "nshare-weight_dot",
-      "de": 5.663,
-      "wa": 1.833,
-      "ratio": 3.09
-    },
-    {
-      "id": "windows-b124",
-      "de": 108.462,
-      "wa": 35.075,
-      "ratio": 3.092
-    },
-    {
-      "id": "regression_tests-shapes-reference-proteasesite",
-      "de": 0.238,
-      "wa": 0.077,
-      "ratio": 3.097
-    },
-    {
-      "id": "linux.x86-overlap_neato",
-      "de": 17.896,
-      "wa": 5.767,
-      "ratio": 3.103
-    },
-    {
-      "id": "2559",
-      "de": 0.419,
-      "wa": 0.135,
-      "ratio": 3.107
-    },
-    {
-      "id": "graphs-fsm",
-      "de": 1.513,
-      "wa": 0.486,
-      "ratio": 3.112
-    },
-    {
-      "id": "share-b124",
-      "de": 109.202,
-      "wa": 35.066,
-      "ratio": 3.114
-    },
-    {
-      "id": "windows-longflat",
-      "de": 0.403,
-      "wa": 0.129,
-      "ratio": 3.118
-    },
-    {
-      "id": "share-labelclust-fbd",
-      "de": 0.489,
-      "wa": 0.157,
-      "ratio": 3.119
-    },
-    {
-      "id": "share-labelclust-ftc",
-      "de": 0.482,
-      "wa": 0.154,
-      "ratio": 3.12
-    },
-    {
-      "id": "1879",
-      "de": 123.002,
-      "wa": 39.292,
-      "ratio": 3.13
-    },
-    {
-      "id": "windows-labelclust-fbl",
-      "de": 0.528,
-      "wa": 0.169,
-      "ratio": 3.131
-    },
-    {
-      "id": "graphs-sb_circle_dbl",
-      "de": 0.467,
-      "wa": 0.149,
-      "ratio": 3.134
-    },
-    {
-      "id": "144_no_ortho",
-      "de": 0.688,
-      "wa": 0.22,
-      "ratio": 3.135
-    },
-    {
-      "id": "share-labelclust-fbr",
-      "de": 0.491,
-      "wa": 0.156,
-      "ratio": 3.147
-    },
-    {
-      "id": "windows-hashtable",
-      "de": 0.979,
-      "wa": 0.311,
-      "ratio": 3.149
-    },
-    {
-      "id": "graphs-train11",
-      "de": 2.7,
-      "wa": 0.857,
-      "ratio": 3.15
-    },
-    {
-      "id": "graphs-b53",
-      "de": 3.578,
-      "wa": 1.135,
-      "ratio": 3.153
-    },
-    {
-      "id": "2796",
-      "de": 101.62,
-      "wa": 32.178,
-      "ratio": 3.158
-    },
-    {
-      "id": "graphs-b73",
-      "de": 0.267,
-      "wa": 0.085,
-      "ratio": 3.158
-    },
-    {
-      "id": "graphs-unix2k",
-      "de": 5.025,
-      "wa": 1.59,
-      "ratio": 3.16
-    },
-    {
-      "id": "macosx-edgeclip_dot",
-      "de": 0.535,
-      "wa": 0.169,
-      "ratio": 3.165
-    },
-    {
-      "id": "nshare-radius_dot",
-      "de": 0.51,
-      "wa": 0.161,
-      "ratio": 3.168
-    },
-    {
-      "id": "linux.x86-edgeclip_dot",
-      "de": 0.471,
-      "wa": 0.149,
-      "ratio": 3.17
-    },
-    {
-      "id": "linux.x86-neatosplines_neato",
-      "de": 18.882,
-      "wa": 5.951,
-      "ratio": 3.173
-    },
-    {
-      "id": "linux.x86-overlap_neato1",
-      "de": 18.037,
-      "wa": 5.67,
-      "ratio": 3.181
-    },
-    {
-      "id": "2457_2",
-      "de": 0.422,
-      "wa": 0.132,
-      "ratio": 3.184
-    },
-    {
-      "id": "share-labelclust-ftr",
-      "de": 0.497,
-      "wa": 0.156,
-      "ratio": 3.184
-    },
-    {
-      "id": "graphs-b56",
-      "de": 1.254,
-      "wa": 0.394,
-      "ratio": 3.185
-    },
-    {
-      "id": "graphs-url",
-      "de": 1.13,
-      "wa": 0.355,
-      "ratio": 3.187
-    },
-    {
-      "id": "share-labelclust-nbc",
-      "de": 0.507,
-      "wa": 0.159,
-      "ratio": 3.187
-    },
-    {
-      "id": "windows-dfa",
-      "de": 2.208,
-      "wa": 0.693,
-      "ratio": 3.187
-    },
-    {
-      "id": "graphs-flatedge",
-      "de": 0.598,
-      "wa": 0.188,
-      "ratio": 3.188
-    },
-    {
-      "id": "graphs-ngk10_4",
-      "de": 43.826,
-      "wa": 13.73,
-      "ratio": 3.192
-    },
-    {
-      "id": "share-jcctree",
-      "de": 1.682,
-      "wa": 0.527,
-      "ratio": 3.193
-    },
-    {
-      "id": "graphs-b51",
-      "de": 18.689,
-      "wa": 5.849,
-      "ratio": 3.195
-    },
-    {
-      "id": "linux.i386-hashtable",
-      "de": 1.025,
-      "wa": 0.32,
-      "ratio": 3.203
-    },
-    {
-      "id": "2619_2",
-      "de": 2.256,
-      "wa": 0.704,
-      "ratio": 3.204
-    },
-    {
-      "id": "windows-ngk10_4",
-      "de": 46.103,
-      "wa": 14.369,
-      "ratio": 3.209
-    },
-    {
-      "id": "share-pm2way",
-      "de": 1.156,
-      "wa": 0.36,
-      "ratio": 3.216
-    },
-    {
-      "id": "nshare-rowcolsep_dot1",
-      "de": 0.483,
-      "wa": 0.15,
-      "ratio": 3.218
-    },
-    {
-      "id": "share-b51",
-      "de": 19.89,
-      "wa": 6.179,
-      "ratio": 3.219
-    },
-    {
-      "id": "1767",
-      "de": 1.058,
-      "wa": 0.328,
-      "ratio": 3.223
-    },
-    {
-      "id": "graphs-badvoro",
-      "de": 867.495,
-      "wa": 268.942,
-      "ratio": 3.226
-    },
-    {
-      "id": "linux.x86-flatedge_dot",
-      "de": 0.705,
-      "wa": 0.218,
-      "ratio": 3.228
-    },
-    {
-      "id": "graphs-states",
-      "de": 0.734,
-      "wa": 0.227,
-      "ratio": 3.229
-    },
-    {
-      "id": "nshare-rankdir_dot1",
-      "de": 6.927,
-      "wa": 2.142,
-      "ratio": 3.235
-    },
-    {
-      "id": "graphs-rootlabel",
-      "de": 0.516,
-      "wa": 0.159,
-      "ratio": 3.237
+      "id": "2849",
+      "de": 0.256,
+      "wa": 0.091,
+      "ratio": 2.824
     },
     {
       "id": "graphs-b73a",
-      "de": 0.271,
-      "wa": 0.084,
-      "ratio": 3.238
+      "de": 0.243,
+      "wa": 0.086,
+      "ratio": 2.832
     },
     {
-      "id": "share-longflat",
-      "de": 0.422,
-      "wa": 0.13,
-      "ratio": 3.24
-    },
-    {
-      "id": "windows-b51",
-      "de": 19.945,
-      "wa": 6.148,
-      "ratio": 3.244
-    },
-    {
-      "id": "windows-crazy",
-      "de": 6.921,
-      "wa": 2.129,
-      "ratio": 3.25
-    },
-    {
-      "id": "graphs-edgeclip",
-      "de": 0.419,
-      "wa": 0.129,
-      "ratio": 3.253
-    },
-    {
-      "id": "nshare-shapes_dot",
-      "de": 2.928,
-      "wa": 0.897,
-      "ratio": 3.265
-    },
-    {
-      "id": "2613",
-      "de": 0.494,
-      "wa": 0.151,
-      "ratio": 3.266
-    },
-    {
-      "id": "linux.x86-rankdir_dot2",
-      "de": 6.765,
-      "wa": 2.071,
-      "ratio": 3.266
-    },
-    {
-      "id": "windows-nhg",
-      "de": 0.814,
-      "wa": 0.248,
-      "ratio": 3.275
-    },
-    {
-      "id": "graphs-decorate",
-      "de": 6.81,
-      "wa": 2.075,
-      "ratio": 3.282
-    },
-    {
-      "id": "share-ctext",
-      "de": 0.759,
-      "wa": 0.231,
-      "ratio": 3.283
-    },
-    {
-      "id": "2361",
-      "de": 3.462,
-      "wa": 1.054,
-      "ratio": 3.284
-    },
-    {
-      "id": "56",
-      "de": 3.49,
-      "wa": 1.062,
-      "ratio": 3.287
-    },
-    {
-      "id": "share-labelclust-nbd",
-      "de": 0.51,
-      "wa": 0.155,
-      "ratio": 3.287
+      "id": "share-a2",
+      "de": 0.28,
+      "wa": 0.099,
+      "ratio": 2.834
     },
     {
       "id": "2458",
-      "de": 0.46,
-      "wa": 0.14,
-      "ratio": 3.292
-    },
-    {
-      "id": "regression_tests-shapes-reference-ribosite",
-      "de": 0.249,
-      "wa": 0.076,
-      "ratio": 3.295
-    },
-    {
-      "id": "graphs-pm2way",
-      "de": 1.079,
-      "wa": 0.327,
-      "ratio": 3.298
-    },
-    {
-      "id": "nshare-rowcolsep_dot",
-      "de": 0.522,
-      "wa": 0.158,
-      "ratio": 3.303
-    },
-    {
-      "id": "linux.i386-crazy",
-      "de": 6.802,
-      "wa": 2.059,
-      "ratio": 3.304
-    },
-    {
-      "id": "linux.x86-dotsplines_dot",
-      "de": 5.398,
-      "wa": 1.627,
-      "ratio": 3.318
-    },
-    {
-      "id": "windows-pm2way",
-      "de": 1.163,
-      "wa": 0.35,
-      "ratio": 3.318
-    },
-    {
-      "id": "graphs-grdangles",
-      "de": 1.01,
-      "wa": 0.304,
-      "ratio": 3.319
-    },
-    {
-      "id": "1624",
-      "de": 0.6,
-      "wa": 0.181,
-      "ratio": 3.32
-    },
-    {
-      "id": "1308",
-      "de": 0.631,
-      "wa": 0.19,
-      "ratio": 3.323
-    },
-    {
-      "id": "share-ngk10_4",
-      "de": 46.688,
-      "wa": 14.043,
-      "ratio": 3.325
-    },
-    {
-      "id": "windows-b491",
-      "de": 0.514,
-      "wa": 0.155,
-      "ratio": 3.325
-    },
-    {
-      "id": "graphs-pmpipe",
-      "de": 1.874,
-      "wa": 0.563,
-      "ratio": 3.327
-    },
-    {
-      "id": "nshare-overlap_neato1",
-      "de": 19.389,
-      "wa": 5.824,
-      "ratio": 3.329
-    },
-    {
-      "id": "share-b94",
-      "de": 7.106,
-      "wa": 2.133,
-      "ratio": 3.332
-    },
-    {
-      "id": "2470",
-      "de": 409.351,
-      "wa": 122.765,
-      "ratio": 3.334
-    },
-    {
-      "id": "2563",
-      "de": 0.476,
-      "wa": 0.143,
-      "ratio": 3.336
-    },
-    {
-      "id": "2457_1",
-      "de": 0.422,
-      "wa": 0.127,
-      "ratio": 3.337
-    },
-    {
-      "id": "2168_5",
-      "de": 0.431,
-      "wa": 0.129,
-      "ratio": 3.338
-    },
-    {
-      "id": "graphs-overlap",
-      "de": 21.103,
-      "wa": 6.313,
-      "ratio": 3.343
-    },
-    {
-      "id": "linux.i386-dfa",
-      "de": 2.227,
-      "wa": 0.666,
-      "ratio": 3.344
-    },
-    {
-      "id": "graphs-p3",
-      "de": 1.21,
-      "wa": 0.361,
-      "ratio": 3.352
-    },
-    {
-      "id": "graphs-sb_box",
-      "de": 0.442,
-      "wa": 0.132,
-      "ratio": 3.353
-    },
-    {
-      "id": "graphs-b993",
-      "de": 0.393,
-      "wa": 0.117,
-      "ratio": 3.356
-    },
-    {
-      "id": "2168_3",
-      "de": 0.448,
-      "wa": 0.134,
-      "ratio": 3.357
-    },
-    {
-      "id": "graphs-size",
-      "de": 5.275,
-      "wa": 1.571,
-      "ratio": 3.358
-    },
-    {
-      "id": "linux.x86-pack_neato2",
-      "de": 2.273,
-      "wa": 0.676,
-      "ratio": 3.359
-    },
-    {
-      "id": "windows-clust",
-      "de": 1.148,
-      "wa": 0.341,
-      "ratio": 3.369
-    },
-    {
-      "id": "nshare-rankdir_dot2",
-      "de": 6.913,
-      "wa": 2.05,
-      "ratio": 3.372
-    },
-    {
-      "id": "share-labelclust-fbc",
-      "de": 0.549,
-      "wa": 0.163,
-      "ratio": 3.379
-    },
-    {
-      "id": "nshare-rankdir_dot",
-      "de": 6.932,
-      "wa": 2.051,
-      "ratio": 3.38
-    },
-    {
-      "id": "windows-viewfile",
-      "de": 3.712,
-      "wa": 1.098,
-      "ratio": 3.38
-    },
-    {
-      "id": "2801",
-      "de": 0.692,
-      "wa": 0.204,
-      "ratio": 3.387
-    },
-    {
-      "id": "2368_1",
-      "de": 0.653,
-      "wa": 0.193,
-      "ratio": 3.39
-    },
-    {
-      "id": "1724",
-      "de": 0.546,
-      "wa": 0.161,
-      "ratio": 3.392
-    },
-    {
-      "id": "linux.x86-record_dot",
-      "de": 2.199,
-      "wa": 0.648,
-      "ratio": 3.396
-    },
-    {
-      "id": "share-dfa",
-      "de": 2.324,
-      "wa": 0.684,
-      "ratio": 3.4
-    },
-    {
-      "id": "graphs-dir",
-      "de": 0.491,
-      "wa": 0.144,
-      "ratio": 3.407
-    },
-    {
-      "id": "windows-jcctree",
-      "de": 1.676,
-      "wa": 0.491,
-      "ratio": 3.41
-    },
-    {
-      "id": "share-nhg",
-      "de": 0.821,
-      "wa": 0.24,
-      "ratio": 3.413
-    },
-    {
-      "id": "share-pmpipe",
-      "de": 1.966,
-      "wa": 0.576,
-      "ratio": 3.416
-    },
-    {
-      "id": "graphs-st_circle_dbl",
-      "de": 3.565,
-      "wa": 1.042,
-      "ratio": 3.421
-    },
-    {
-      "id": "graphs-try",
-      "de": 1.054,
-      "wa": 0.308,
-      "ratio": 3.424
-    },
-    {
-      "id": "graphs-color",
-      "de": 0.61,
-      "wa": 0.178,
-      "ratio": 3.425
-    },
-    {
-      "id": "1909",
-      "de": 0.376,
-      "wa": 0.11,
-      "ratio": 3.432
-    },
-    {
-      "id": "graphs-big",
-      "de": 3.279,
-      "wa": 0.956,
-      "ratio": 3.432
-    },
-    {
-      "id": "graphs-b58",
-      "de": 0.673,
-      "wa": 0.196,
-      "ratio": 3.435
-    },
-    {
-      "id": "linux.i386-b102",
-      "de": 251.604,
-      "wa": 73.221,
-      "ratio": 3.436
-    },
-    {
-      "id": "1435",
-      "de": 2.266,
-      "wa": 0.659,
-      "ratio": 3.439
-    },
-    {
-      "id": "share-polypoly",
-      "de": 6.981,
-      "wa": 2.024,
-      "ratio": 3.449
-    },
-    {
-      "id": "2619_1",
-      "de": 2.358,
-      "wa": 0.683,
-      "ratio": 3.451
-    },
-    {
-      "id": "share-clust",
-      "de": 1.078,
-      "wa": 0.312,
-      "ratio": 3.453
-    },
-    {
-      "id": "share-crazy",
-      "de": 7.208,
-      "wa": 2.087,
-      "ratio": 3.454
-    },
-    {
-      "id": "graphs-b69",
-      "de": 19.822,
-      "wa": 5.738,
-      "ratio": 3.455
-    },
-    {
-      "id": "graphs-fig6",
-      "de": 8.938,
-      "wa": 2.587,
-      "ratio": 3.455
-    },
-    {
-      "id": "graphs-viewfile",
-      "de": 3.128,
-      "wa": 0.905,
-      "ratio": 3.455
-    },
-    {
-      "id": "graphs-bad",
-      "de": 0.443,
-      "wa": 0.128,
-      "ratio": 3.456
-    },
-    {
-      "id": "share-b491",
-      "de": 0.504,
-      "wa": 0.146,
-      "ratio": 3.456
-    },
-    {
-      "id": "linux.x86-pack_neato1",
-      "de": 2.371,
-      "wa": 0.686,
-      "ratio": 3.457
-    },
-    {
-      "id": "graphs-p",
-      "de": 1.183,
-      "wa": 0.342,
-      "ratio": 3.458
-    },
-    {
-      "id": "graphs-unix",
-      "de": 4.8,
-      "wa": 1.386,
-      "ratio": 3.462
-    },
-    {
-      "id": "linux.x86-ports_dot",
-      "de": 2.505,
-      "wa": 0.723,
-      "ratio": 3.464
-    },
-    {
-      "id": "2193",
-      "de": 10.357,
-      "wa": 2.987,
-      "ratio": 3.467
-    },
-    {
-      "id": "graphs-b34",
-      "de": 0.853,
-      "wa": 0.246,
-      "ratio": 3.469
-    },
-    {
-      "id": "graphs-sr_circle_dbl",
-      "de": 3.766,
-      "wa": 1.084,
-      "ratio": 3.474
-    },
-    {
-      "id": "nshare-overlap_neato",
-      "de": 21.897,
-      "wa": 6.301,
-      "ratio": 3.475
-    },
-    {
-      "id": "nshare-pack_neato2",
-      "de": 2.379,
-      "wa": 0.684,
-      "ratio": 3.475
-    },
-    {
-      "id": "graphs-p4",
-      "de": 1.736,
-      "wa": 0.499,
-      "ratio": 3.476
-    },
-    {
-      "id": "share-proc3d",
-      "de": 6.404,
-      "wa": 1.839,
-      "ratio": 3.483
-    },
-    {
-      "id": "1425_1",
-      "de": 0.686,
-      "wa": 0.197,
-      "ratio": 3.487
-    },
-    {
-      "id": "linux.i386-radius_dot",
-      "de": 0.577,
-      "wa": 0.166,
-      "ratio": 3.487
-    },
-    {
-      "id": "linux.x86-dotsplines_dot1",
-      "de": 6.017,
-      "wa": 1.725,
-      "ratio": 3.489
-    },
-    {
-      "id": "graphs-longflat",
-      "de": 0.384,
-      "wa": 0.11,
-      "ratio": 3.49
-    },
-    {
-      "id": "graphs-process",
-      "de": 1.17,
-      "wa": 0.335,
-      "ratio": 3.493
-    },
-    {
-      "id": "linux.x86-nestedclust_dot",
-      "de": 0.753,
-      "wa": 0.215,
-      "ratio": 3.494
-    },
-    {
-      "id": "1367",
-      "de": 6.285,
-      "wa": 1.796,
-      "ratio": 3.499
-    },
-    {
-      "id": "share-process",
-      "de": 1.356,
-      "wa": 0.387,
-      "ratio": 3.501
-    },
-    {
-      "id": "graphs-unix2",
-      "de": 5.458,
-      "wa": 1.559,
-      "ratio": 3.502
-    },
-    {
-      "id": "1436",
-      "de": 4.599,
-      "wa": 1.313,
-      "ratio": 3.503
-    },
-    {
-      "id": "regression_tests-shapes-reference-noverhang",
-      "de": 0.263,
-      "wa": 0.075,
-      "ratio": 3.504
-    },
-    {
-      "id": "2413_1",
-      "de": 0.928,
-      "wa": 0.265,
-      "ratio": 3.505
-    },
-    {
-      "id": "42",
-      "de": 70.506,
-      "wa": 20.079,
-      "ratio": 3.511
-    },
-    {
-      "id": "graphs-Times",
-      "de": 1.04,
-      "wa": 0.296,
-      "ratio": 3.516
-    },
-    {
-      "id": "windows-ER",
-      "de": 1.719,
-      "wa": 0.489,
-      "ratio": 3.518
-    },
-    {
-      "id": "linux.x86-neatosplines_neato1",
-      "de": 17.661,
-      "wa": 5.013,
-      "ratio": 3.523
-    },
-    {
-      "id": "graphs-clustlabel",
-      "de": 0.464,
-      "wa": 0.132,
-      "ratio": 3.526
-    },
-    {
-      "id": "graphs-rowe",
-      "de": 12.702,
-      "wa": 3.603,
-      "ratio": 3.526
-    },
-    {
-      "id": "graphs-Bookman",
-      "de": 0.952,
-      "wa": 0.27,
-      "ratio": 3.529
-    },
-    {
-      "id": "graphs-sr_circle",
-      "de": 2.737,
-      "wa": 0.774,
-      "ratio": 3.533
-    },
-    {
-      "id": "2683",
-      "de": 0.615,
-      "wa": 0.174,
-      "ratio": 3.534
-    },
-    {
-      "id": "graphs-sl_circle",
-      "de": 2.719,
-      "wa": 0.769,
-      "ratio": 3.534
-    },
-    {
-      "id": "2391",
-      "de": 0.44,
-      "wa": 0.124,
-      "ratio": 3.541
-    },
-    {
-      "id": "graphs-b85",
-      "de": 0.479,
-      "wa": 0.135,
-      "ratio": 3.541
-    },
-    {
-      "id": "graphs-b80a",
-      "de": 0.349,
-      "wa": 0.099,
-      "ratio": 3.543
-    },
-    {
-      "id": "graphs-b68",
-      "de": 1.015,
-      "wa": 0.286,
-      "ratio": 3.548
-    },
-    {
-      "id": "linux.x86-rankdir_dot1",
-      "de": 7.672,
-      "wa": 2.158,
-      "ratio": 3.555
-    },
-    {
-      "id": "share-b102",
-      "de": 260.475,
-      "wa": 73.249,
-      "ratio": 3.556
-    },
-    {
-      "id": "graphs-rowcolsep",
-      "de": 0.466,
-      "wa": 0.131,
-      "ratio": 3.558
-    },
-    {
-      "id": "graphs-biglabel",
-      "de": 1.514,
-      "wa": 0.425,
-      "ratio": 3.564
-    },
-    {
-      "id": "windows-structs",
-      "de": 0.557,
-      "wa": 0.156,
-      "ratio": 3.564
-    },
-    {
-      "id": "2556",
-      "de": 2.402,
-      "wa": 0.674,
-      "ratio": 3.566
-    },
-    {
-      "id": "share-clust4",
-      "de": 1.555,
-      "wa": 0.436,
-      "ratio": 3.566
-    },
-    {
-      "id": "graphs-structs",
-      "de": 0.49,
-      "wa": 0.137,
-      "ratio": 3.571
-    },
-    {
-      "id": "nshare-neatosplines_neato",
-      "de": 22.729,
-      "wa": 6.343,
-      "ratio": 3.583
-    },
-    {
-      "id": "2572",
-      "de": 0.47,
-      "wa": 0.131,
-      "ratio": 3.584
-    },
-    {
-      "id": "windows-b102",
-      "de": 258.11,
-      "wa": 71.946,
-      "ratio": 3.588
-    },
-    {
-      "id": "graphs-AvantGarde",
-      "de": 1.04,
-      "wa": 0.29,
-      "ratio": 3.592
-    },
-    {
-      "id": "windows-trapeziumlr",
-      "de": 5.311,
-      "wa": 1.478,
-      "ratio": 3.593
-    },
-    {
-      "id": "graphs-b7",
-      "de": 0.56,
-      "wa": 0.156,
-      "ratio": 3.597
-    },
-    {
-      "id": "graphs-shapes",
-      "de": 2.827,
-      "wa": 0.786,
-      "ratio": 3.597
-    },
-    {
-      "id": "linux.x86-html2_dot",
-      "de": 1.172,
-      "wa": 0.326,
-      "ratio": 3.598
-    },
-    {
-      "id": "1447",
-      "de": 12.288,
-      "wa": 3.414,
-      "ratio": 3.599
-    },
-    {
-      "id": "graphs-st_circle",
-      "de": 2.617,
-      "wa": 0.727,
-      "ratio": 3.599
-    },
-    {
-      "id": "windows-try",
-      "de": 1.258,
-      "wa": 0.349,
-      "ratio": 3.603
-    },
-    {
-      "id": "graphs-b102",
-      "de": 247.435,
-      "wa": 68.635,
-      "ratio": 3.605
-    },
-    {
-      "id": "graphs-b117",
-      "de": 0.746,
-      "wa": 0.207,
-      "ratio": 3.605
-    },
-    {
-      "id": "nshare-pack_neato1",
-      "de": 2.526,
-      "wa": 0.7,
-      "ratio": 3.606
-    },
-    {
-      "id": "graphs-Palatino",
-      "de": 0.964,
-      "wa": 0.267,
-      "ratio": 3.613
-    },
-    {
-      "id": "graphs-xx",
-      "de": 243.582,
-      "wa": 67.393,
-      "ratio": 3.614
-    },
-    {
-      "id": "graphs-d",
-      "de": 0.795,
-      "wa": 0.219,
-      "ratio": 3.625
-    },
-    {
-      "id": "windows-states",
-      "de": 0.928,
-      "wa": 0.256,
-      "ratio": 3.626
-    },
-    {
-      "id": "graphs-jsort",
-      "de": 14.469,
-      "wa": 3.989,
-      "ratio": 3.628
-    },
-    {
-      "id": "2406",
-      "de": 0.437,
-      "wa": 0.12,
-      "ratio": 3.629
-    },
-    {
-      "id": "graphs-b103",
-      "de": 4471.398,
-      "wa": 1231.681,
-      "ratio": 3.63
-    },
-    {
-      "id": "1855",
-      "de": 2.428,
-      "wa": 0.668,
-      "ratio": 3.636
-    },
-    {
-      "id": "graphs-b81",
-      "de": 53.002,
-      "wa": 14.569,
-      "ratio": 3.638
-    },
-    {
-      "id": "nshare-nestedclust_dot",
-      "de": 0.807,
-      "wa": 0.222,
-      "ratio": 3.639
-    },
-    {
-      "id": "windows-fig6",
-      "de": 10.272,
-      "wa": 2.822,
-      "ratio": 3.64
-    },
-    {
-      "id": "graphs-dfa",
-      "de": 2.057,
-      "wa": 0.565,
-      "ratio": 3.641
-    },
-    {
-      "id": "linux.x86-weight_dot",
-      "de": 6.67,
-      "wa": 1.831,
-      "ratio": 3.643
-    },
-    {
-      "id": "macosx-compound_dot",
-      "de": 1.234,
-      "wa": 0.338,
-      "ratio": 3.648
-    },
-    {
-      "id": "share-records",
-      "de": 0.995,
-      "wa": 0.273,
-      "ratio": 3.65
-    },
-    {
-      "id": "share-clust5",
-      "de": 1.527,
-      "wa": 0.418,
-      "ratio": 3.653
-    },
-    {
-      "id": "share-shells",
-      "de": 4.752,
-      "wa": 1.301,
-      "ratio": 3.653
-    },
-    {
-      "id": "2391_1",
-      "de": 0.5,
-      "wa": 0.137,
-      "ratio": 3.656
-    },
-    {
-      "id": "graphs-p2",
-      "de": 1.238,
-      "wa": 0.339,
-      "ratio": 3.656
-    },
-    {
-      "id": "graphs-ctext",
-      "de": 0.781,
-      "wa": 0.213,
-      "ratio": 3.663
-    },
-    {
-      "id": "graphs-nhg",
-      "de": 0.833,
-      "wa": 0.227,
-      "ratio": 3.668
-    },
-    {
-      "id": "windows-unix",
-      "de": 5.687,
-      "wa": 1.55,
-      "ratio": 3.67
-    },
-    {
-      "id": "linux.x86-pack_neato",
-      "de": 1.815,
-      "wa": 0.494,
-      "ratio": 3.674
-    },
-    {
-      "id": "graphs-crazy",
-      "de": 7.147,
-      "wa": 1.944,
-      "ratio": 3.677
-    },
-    {
-      "id": "graphs-dd",
-      "de": 0.956,
-      "wa": 0.26,
-      "ratio": 3.681
-    },
-    {
-      "id": "graphs-NewCenturySchlbk",
-      "de": 0.988,
-      "wa": 0.268,
-      "ratio": 3.685
-    },
-    {
-      "id": "nshare-neatosplines_neato1",
-      "de": 21.492,
-      "wa": 5.821,
-      "ratio": 3.692
-    },
-    {
-      "id": "nshare-html_dot",
-      "de": 0.774,
-      "wa": 0.209,
-      "ratio": 3.699
-    },
-    {
-      "id": "windows-tree",
-      "de": 1.207,
-      "wa": 0.326,
-      "ratio": 3.701
-    },
-    {
-      "id": "windows-world",
-      "de": 10.294,
-      "wa": 2.778,
-      "ratio": 3.706
-    },
-    {
-      "id": "windows-labelroot-ntr",
-      "de": 0.605,
-      "wa": 0.163,
-      "ratio": 3.707
-    },
-    {
-      "id": "2239",
-      "de": 29.269,
-      "wa": 7.879,
-      "ratio": 3.715
-    },
-    {
-      "id": "windows-pgram",
-      "de": 8.781,
-      "wa": 2.36,
-      "ratio": 3.72
-    },
-    {
-      "id": "share-grammar",
-      "de": 4.152,
-      "wa": 1.115,
-      "ratio": 3.722
-    },
-    {
-      "id": "graphs-proc3d",
-      "de": 6.047,
-      "wa": 1.624,
-      "ratio": 3.723
-    },
-    {
-      "id": "share-fig6",
-      "de": 10.671,
-      "wa": 2.865,
-      "ratio": 3.725
-    },
-    {
-      "id": "graphs-record2",
-      "de": 0.63,
-      "wa": 0.169,
-      "ratio": 3.727
-    },
-    {
-      "id": "windows-clust5",
-      "de": 1.507,
-      "wa": 0.404,
-      "ratio": 3.729
-    },
-    {
-      "id": "windows-b94",
-      "de": 8.412,
-      "wa": 2.254,
-      "ratio": 3.732
-    },
-    {
-      "id": "share-clust1",
-      "de": 1.194,
-      "wa": 0.319,
-      "ratio": 3.74
-    },
-    {
-      "id": "share-labelroot-ndr",
-      "de": 0.596,
-      "wa": 0.159,
-      "ratio": 3.744
-    },
-    {
-      "id": "regression_tests-shapes-reference-egg",
-      "de": 0.455,
-      "wa": 0.121,
-      "ratio": 3.746
-    },
-    {
-      "id": "graphs-labelroot-fdr",
-      "de": 0.504,
-      "wa": 0.134,
-      "ratio": 3.75
-    },
-    {
-      "id": "1949",
-      "de": 4.704,
-      "wa": 1.254,
-      "ratio": 3.752
-    },
-    {
-      "id": "windows-KW91",
-      "de": 1.588,
-      "wa": 0.423,
-      "ratio": 3.752
-    },
-    {
-      "id": "2342",
-      "de": 0.561,
-      "wa": 0.15,
-      "ratio": 3.753
-    },
-    {
-      "id": "graphs-b145",
-      "de": 0.49,
-      "wa": 0.131,
-      "ratio": 3.754
-    },
-    {
-      "id": "share-rowe",
-      "de": 14.331,
-      "wa": 3.813,
-      "ratio": 3.758
-    },
-    {
-      "id": "graphs-xlabels",
-      "de": 1.019,
-      "wa": 0.271,
-      "ratio": 3.762
-    },
-    {
-      "id": "windows-labelroot-ndd",
-      "de": 0.61,
-      "wa": 0.162,
-      "ratio": 3.763
-    },
-    {
-      "id": "graphs-b15",
-      "de": 29.539,
-      "wa": 7.847,
-      "ratio": 3.764
-    },
-    {
-      "id": "graphs-labelroot-fdl",
-      "de": 0.508,
-      "wa": 0.135,
-      "ratio": 3.77
-    },
-    {
-      "id": "share-labelroot-ntl",
-      "de": 0.592,
-      "wa": 0.157,
-      "ratio": 3.771
-    },
-    {
-      "id": "graphs-triedds",
-      "de": 2.693,
-      "wa": 0.713,
-      "ratio": 3.775
-    },
-    {
-      "id": "graphs-labelclust-ftl",
-      "de": 0.542,
-      "wa": 0.143,
-      "ratio": 3.779
-    },
-    {
-      "id": "graphs-pack",
-      "de": 1.561,
-      "wa": 0.413,
-      "ratio": 3.782
-    },
-    {
-      "id": "graphs-labelroot-fdd",
-      "de": 0.511,
-      "wa": 0.135,
-      "ratio": 3.783
-    },
-    {
-      "id": "linux.i386-b36",
-      "de": 6.995,
-      "wa": 1.846,
-      "ratio": 3.79
-    },
-    {
-      "id": "windows-Petersen",
-      "de": 2.045,
-      "wa": 0.539,
-      "ratio": 3.793
-    },
-    {
-      "id": "windows-grammar",
-      "de": 4.466,
-      "wa": 1.177,
-      "ratio": 3.793
-    },
-    {
-      "id": "graphs-shells",
-      "de": 4.121,
-      "wa": 1.085,
-      "ratio": 3.799
-    },
-    {
-      "id": "linux.x86-ordering_dot1",
-      "de": 1.437,
-      "wa": 0.378,
-      "ratio": 3.799
-    },
-    {
-      "id": "nshare-flatedge_dot",
-      "de": 0.86,
-      "wa": 0.226,
-      "ratio": 3.803
-    },
-    {
-      "id": "windows-abstract",
-      "de": 10.867,
-      "wa": 2.856,
-      "ratio": 3.805
-    },
-    {
-      "id": "nshare-ports_dot",
-      "de": 2.748,
-      "wa": 0.722,
-      "ratio": 3.806
-    },
-    {
-      "id": "windows-unix2",
-      "de": 6.908,
-      "wa": 1.814,
-      "ratio": 3.809
-    },
-    {
-      "id": "925",
       "de": 0.425,
-      "wa": 0.111,
-      "ratio": 3.818
+      "wa": 0.15,
+      "ratio": 2.837
     },
     {
-      "id": "windows-unix2k",
-      "de": 6.704,
-      "wa": 1.755,
-      "ratio": 3.82
+      "id": "graphs-b73",
+      "de": 0.241,
+      "wa": 0.085,
+      "ratio": 2.842
     },
     {
-      "id": "linux.x86-ordering_dot",
-      "de": 1.404,
-      "wa": 0.367,
-      "ratio": 3.821
+      "id": "windows-labelclust-fdc",
+      "de": 0.51,
+      "wa": 0.178,
+      "ratio": 2.86
     },
     {
-      "id": "graphs-clover",
-      "de": 0.723,
-      "wa": 0.189,
-      "ratio": 3.822
+      "id": "tree-doc-dotguide-invdot",
+      "de": 0.257,
+      "wa": 0.09,
+      "ratio": 2.866
     },
     {
-      "id": "1472",
-      "de": 21.17,
-      "wa": 5.536,
-      "ratio": 3.824
-    },
-    {
-      "id": "share-world",
-      "de": 10.965,
-      "wa": 2.864,
-      "ratio": 3.828
-    },
-    {
-      "id": "graphs-weight",
-      "de": 6.263,
-      "wa": 1.635,
-      "ratio": 3.83
-    },
-    {
-      "id": "graphs-labelclust-fbl",
-      "de": 0.562,
-      "wa": 0.147,
-      "ratio": 3.831
-    },
-    {
-      "id": "graphs-grdradial_node",
-      "de": 0.612,
-      "wa": 0.16,
-      "ratio": 3.835
-    },
-    {
-      "id": "graphs-labelclust-fdl",
-      "de": 0.532,
-      "wa": 0.139,
-      "ratio": 3.835
-    },
-    {
-      "id": "windows-labelroot-ftr",
-      "de": 0.675,
-      "wa": 0.176,
-      "ratio": 3.836
-    },
-    {
-      "id": "241_0",
-      "de": 2.204,
-      "wa": 0.574,
-      "ratio": 3.838
-    },
-    {
-      "id": "graphs-style",
-      "de": 2.147,
-      "wa": 0.559,
-      "ratio": 3.84
-    },
-    {
-      "id": "share-labelroot-ndc",
-      "de": 0.598,
-      "wa": 0.156,
-      "ratio": 3.842
-    },
-    {
-      "id": "2682",
-      "de": 0.573,
-      "wa": 0.149,
-      "ratio": 3.844
-    },
-    {
-      "id": "graphs-nojustify",
-      "de": 0.634,
-      "wa": 0.165,
-      "ratio": 3.848
-    },
-    {
-      "id": "graphs-ordering",
-      "de": 1.238,
-      "wa": 0.322,
-      "ratio": 3.849
-    },
-    {
-      "id": "graphs-labelclust-ftr",
-      "de": 0.535,
-      "wa": 0.139,
-      "ratio": 3.85
-    },
-    {
-      "id": "windows-clust1",
-      "de": 1.269,
-      "wa": 0.329,
-      "ratio": 3.851
-    },
-    {
-      "id": "graphs-labelclust-fbd",
-      "de": 0.534,
-      "wa": 0.139,
-      "ratio": 3.852
-    },
-    {
-      "id": "windows-triedds",
-      "de": 2.967,
-      "wa": 0.77,
-      "ratio": 3.853
-    },
-    {
-      "id": "windows-labelroot-fbr",
-      "de": 0.626,
-      "wa": 0.162,
-      "ratio": 3.854
-    },
-    {
-      "id": "windows-labelroot-ntl",
-      "de": 0.603,
-      "wa": 0.156,
-      "ratio": 3.859
-    },
-    {
-      "id": "windows-train11",
-      "de": 3.153,
-      "wa": 0.816,
-      "ratio": 3.864
-    },
-    {
-      "id": "graphs-labelclust-fbr",
-      "de": 0.554,
-      "wa": 0.143,
-      "ratio": 3.866
-    },
-    {
-      "id": "nshare-pack_neato",
-      "de": 1.965,
-      "wa": 0.508,
-      "ratio": 3.866
-    },
-    {
-      "id": "graphs-sr_box_dbl",
-      "de": 4.189,
-      "wa": 1.083,
-      "ratio": 3.868
-    },
-    {
-      "id": "share-labelroot-nbr",
-      "de": 0.62,
-      "wa": 0.16,
-      "ratio": 3.87
-    },
-    {
-      "id": "windows-clust2",
-      "de": 1.223,
-      "wa": 0.316,
-      "ratio": 3.87
-    },
-    {
-      "id": "windows-clust4",
-      "de": 1.704,
-      "wa": 0.44,
-      "ratio": 3.87
-    },
-    {
-      "id": "share-clust2",
-      "de": 1.109,
-      "wa": 0.286,
-      "ratio": 3.872
-    },
-    {
-      "id": "windows-labelroot-nbr",
-      "de": 0.622,
-      "wa": 0.161,
-      "ratio": 3.872
-    },
-    {
-      "id": "nshare-ordering_dot1",
-      "de": 1.513,
-      "wa": 0.391,
-      "ratio": 3.873
-    },
-    {
-      "id": "graphs-labelclust-fdc",
-      "de": 0.537,
-      "wa": 0.139,
-      "ratio": 3.877
-    },
-    {
-      "id": "graphs-labelclust-nbl",
-      "de": 0.515,
-      "wa": 0.133,
-      "ratio": 3.88
-    },
-    {
-      "id": "graphs-labelroot-fbr",
-      "de": 0.541,
-      "wa": 0.14,
-      "ratio": 3.88
-    },
-    {
-      "id": "nshare-edgeclip_dot",
-      "de": 0.613,
-      "wa": 0.158,
-      "ratio": 3.88
-    },
-    {
-      "id": "graphs-nestedclust",
-      "de": 0.721,
-      "wa": 0.186,
-      "ratio": 3.883
-    },
-    {
-      "id": "share-viewfile",
-      "de": 4.092,
-      "wa": 1.053,
-      "ratio": 3.885
-    },
-    {
-      "id": "graphs-grdcolors",
-      "de": 1.831,
-      "wa": 0.47,
-      "ratio": 3.892
-    },
-    {
-      "id": "graphs-b94",
-      "de": 8.3,
-      "wa": 2.131,
-      "ratio": 3.895
-    },
-    {
-      "id": "linux.x86-rowcolsep_dot1",
-      "de": 0.657,
-      "wa": 0.169,
-      "ratio": 3.895
-    },
-    {
-      "id": "graphs-sl_circle_dbl",
-      "de": 4.21,
-      "wa": 1.081,
-      "ratio": 3.896
-    },
-    {
-      "id": "windows-labelroot-ndl",
-      "de": 0.609,
-      "wa": 0.156,
-      "ratio": 3.898
-    },
-    {
-      "id": "windows-radius_dot",
-      "de": 0.611,
-      "wa": 0.157,
-      "ratio": 3.901
-    },
-    {
-      "id": "graphs-labelclust-nbc",
-      "de": 0.523,
-      "wa": 0.134,
-      "ratio": 3.902
-    },
-    {
-      "id": "graphs-labelclust-ntr",
-      "de": 0.54,
-      "wa": 0.138,
-      "ratio": 3.902
-    },
-    {
-      "id": "graphs-labelclust-fdd",
-      "de": 0.527,
-      "wa": 0.135,
-      "ratio": 3.904
-    },
-    {
-      "id": "macosx-arrows_dot",
-      "de": 4.055,
-      "wa": 1.038,
-      "ratio": 3.908
-    },
-    {
-      "id": "share-labelroot-ntr",
-      "de": 0.597,
-      "wa": 0.153,
-      "ratio": 3.909
-    },
-    {
-      "id": "graphs-b",
-      "de": 0.815,
-      "wa": 0.209,
-      "ratio": 3.91
-    },
-    {
-      "id": "share-labelroot-ntc",
-      "de": 0.598,
-      "wa": 0.153,
-      "ratio": 3.91
-    },
-    {
-      "id": "share-labelroot-nbc",
-      "de": 0.616,
-      "wa": 0.157,
-      "ratio": 3.912
-    },
-    {
-      "id": "graphs-mode",
-      "de": 36.751,
-      "wa": 9.392,
-      "ratio": 3.913
-    },
-    {
-      "id": "windows-labelroot-fbl",
-      "de": 0.622,
-      "wa": 0.159,
-      "ratio": 3.914
-    },
-    {
-      "id": "share-labelroot-ftr",
-      "de": 0.633,
-      "wa": 0.162,
-      "ratio": 3.915
-    },
-    {
-      "id": "2734",
-      "de": 2.645,
-      "wa": 0.675,
-      "ratio": 3.916
-    },
-    {
-      "id": "nshare-html2_dot",
-      "de": 1.306,
-      "wa": 0.333,
-      "ratio": 3.917
-    },
-    {
-      "id": "linux.x86-arrows_dot",
-      "de": 4.068,
-      "wa": 1.038,
-      "ratio": 3.918
-    },
-    {
-      "id": "graphs-labelclust-ntc",
-      "de": 0.515,
-      "wa": 0.131,
-      "ratio": 3.921
-    },
-    {
-      "id": "graphs-sr_box",
-      "de": 3.073,
-      "wa": 0.784,
-      "ratio": 3.922
-    },
-    {
-      "id": "graphs-labelclust-ntd",
-      "de": 0.52,
-      "wa": 0.133,
-      "ratio": 3.925
-    },
-    {
-      "id": "graphs-ports",
-      "de": 2.444,
-      "wa": 0.623,
-      "ratio": 3.925
-    },
-    {
-      "id": "share-labelroot-ntd",
-      "de": 0.605,
-      "wa": 0.154,
-      "ratio": 3.927
-    },
-    {
-      "id": "share-alf",
-      "de": 2.538,
-      "wa": 0.644,
-      "ratio": 3.939
-    },
-    {
-      "id": "2368",
-      "de": 1.979,
-      "wa": 0.502,
-      "ratio": 3.942
-    },
-    {
-      "id": "share-labelroot-nbl",
-      "de": 0.611,
-      "wa": 0.155,
-      "ratio": 3.942
-    },
-    {
-      "id": "windows-labelroot-ndr",
-      "de": 0.624,
-      "wa": 0.158,
-      "ratio": 3.943
-    },
-    {
-      "id": "share-clust3",
-      "de": 1.237,
-      "wa": 0.313,
-      "ratio": 3.95
-    },
-    {
-      "id": "graphs-labelclust-nbr",
-      "de": 0.523,
-      "wa": 0.132,
-      "ratio": 3.951
-    },
-    {
-      "id": "graphs-fdp",
-      "de": 0.771,
-      "wa": 0.195,
-      "ratio": 3.952
-    },
-    {
-      "id": "share-pgram",
-      "de": 8.396,
-      "wa": 2.125,
-      "ratio": 3.952
-    },
-    {
-      "id": "graphs-layer",
-      "de": 0.734,
-      "wa": 0.185,
-      "ratio": 3.958
-    },
-    {
-      "id": "windows-labelroot-fdc",
-      "de": 0.628,
-      "wa": 0.159,
-      "ratio": 3.959
-    },
-    {
-      "id": "windows-labelroot-ntc",
-      "de": 0.623,
-      "wa": 0.157,
-      "ratio": 3.959
-    },
-    {
-      "id": "share-b786",
-      "de": 1.67,
-      "wa": 0.421,
-      "ratio": 3.966
-    },
-    {
-      "id": "windows-labelroot-nbl",
-      "de": 0.623,
-      "wa": 0.157,
-      "ratio": 3.967
-    },
-    {
-      "id": "windows-labelroot-nbc",
-      "de": 0.638,
-      "wa": 0.161,
-      "ratio": 3.969
-    },
-    {
-      "id": "nshare-ordering_dot",
-      "de": 1.556,
-      "wa": 0.392,
-      "ratio": 3.97
-    },
-    {
-      "id": "share-labelroot-ndd",
-      "de": 0.593,
-      "wa": 0.149,
-      "ratio": 3.97
-    },
-    {
-      "id": "graphs-layers",
-      "de": 0.75,
-      "wa": 0.189,
-      "ratio": 3.972
-    },
-    {
-      "id": "graphs-newarrows",
-      "de": 3.485,
-      "wa": 0.877,
-      "ratio": 3.975
-    },
-    {
-      "id": "graphs-labelclust-nbd",
-      "de": 0.521,
-      "wa": 0.131,
-      "ratio": 3.979
-    },
-    {
-      "id": "share-labelroot-ndl",
-      "de": 0.608,
-      "wa": 0.153,
-      "ratio": 3.979
-    },
-    {
-      "id": "graphs-compound",
-      "de": 1.156,
-      "wa": 0.29,
-      "ratio": 3.984
-    },
-    {
-      "id": "graphs-awilliams",
-      "de": 10.611,
-      "wa": 2.66,
-      "ratio": 3.989
-    },
-    {
-      "id": "share-labelroot-ftl",
-      "de": 0.63,
-      "wa": 0.158,
-      "ratio": 3.992
-    },
-    {
-      "id": "graphs-trapeziumlr",
-      "de": 4.805,
-      "wa": 1.203,
-      "ratio": 3.994
-    },
-    {
-      "id": "share-labelroot-nbd",
-      "de": 0.614,
-      "wa": 0.154,
-      "ratio": 3.994
-    },
-    {
-      "id": "share-b36",
-      "de": 7.596,
-      "wa": 1.901,
-      "ratio": 3.996
-    },
-    {
-      "id": "graphs-clust1",
-      "de": 1.137,
-      "wa": 0.284,
-      "ratio": 3.997
-    },
-    {
-      "id": "graphs-labelroot-fbl",
-      "de": 0.535,
-      "wa": 0.134,
-      "ratio": 3.997
-    },
-    {
-      "id": "graphs-tree",
-      "de": 1.157,
-      "wa": 0.289,
-      "ratio": 3.997
-    },
-    {
-      "id": "windows-labelroot-ndc",
-      "de": 0.613,
-      "wa": 0.153,
-      "ratio": 3.997
-    },
-    {
-      "id": "graphs-st_box",
-      "de": 3.026,
-      "wa": 0.757,
-      "ratio": 3.998
-    },
-    {
-      "id": "2476",
-      "de": 6.426,
-      "wa": 1.607,
-      "ratio": 3.999
-    },
-    {
-      "id": "windows-clust3",
-      "de": 1.316,
-      "wa": 0.329,
-      "ratio": 4
-    },
-    {
-      "id": "windows-labelroot-fdd",
-      "de": 0.627,
-      "wa": 0.157,
-      "ratio": 4.002
-    },
-    {
-      "id": "2484",
-      "de": 0.53,
-      "wa": 0.132,
-      "ratio": 4.006
-    },
-    {
-      "id": "graphs-labelroot-fbc",
-      "de": 0.54,
-      "wa": 0.135,
-      "ratio": 4.009
-    },
-    {
-      "id": "windows-labelroot-ftd",
-      "de": 0.679,
-      "wa": 0.169,
-      "ratio": 4.01
-    },
-    {
-      "id": "windows-labelroot-ntd",
-      "de": 0.614,
-      "wa": 0.153,
-      "ratio": 4.012
-    },
-    {
-      "id": "graphs-world",
-      "de": 10.306,
-      "wa": 2.565,
-      "ratio": 4.018
-    },
-    {
-      "id": "windows-labelclust-nbd",
-      "de": 0.704,
-      "wa": 0.175,
-      "ratio": 4.028
-    },
-    {
-      "id": "linux.x86-compound_dot",
-      "de": 1.254,
-      "wa": 0.311,
-      "ratio": 4.03
-    },
-    {
-      "id": "2717",
-      "de": 0.801,
-      "wa": 0.199,
-      "ratio": 4.033
-    },
-    {
-      "id": "graphs-clust5",
-      "de": 1.47,
-      "wa": 0.364,
-      "ratio": 4.043
-    },
-    {
-      "id": "graphs-abstract",
-      "de": 10.449,
-      "wa": 2.581,
-      "ratio": 4.048
-    },
-    {
-      "id": "graphs-labelroot-fbd",
-      "de": 0.536,
-      "wa": 0.132,
-      "ratio": 4.048
-    },
-    {
-      "id": "graphs-b80",
-      "de": 0.457,
-      "wa": 0.113,
-      "ratio": 4.049
-    },
-    {
-      "id": "graphs-colorscheme",
-      "de": 0.596,
-      "wa": 0.147,
-      "ratio": 4.05
-    },
-    {
-      "id": "graphs-grammar",
-      "de": 4.037,
-      "wa": 0.997,
-      "ratio": 4.05
-    },
-    {
-      "id": "windows-labelroot-fdr",
-      "de": 0.639,
-      "wa": 0.158,
-      "ratio": 4.053
-    },
-    {
-      "id": "graphs-sl_box",
-      "de": 3.202,
-      "wa": 0.79,
-      "ratio": 4.055
-    },
-    {
-      "id": "windows-labelroot-fbd",
-      "de": 0.623,
-      "wa": 0.153,
-      "ratio": 4.058
-    },
-    {
-      "id": "windows-rowe",
-      "de": 15.414,
-      "wa": 3.798,
-      "ratio": 4.058
-    },
-    {
-      "id": "windows-NaN",
-      "de": 17.045,
-      "wa": 4.2,
-      "ratio": 4.059
-    },
-    {
-      "id": "graphs-st_box_dbl",
-      "de": 4.295,
-      "wa": 1.056,
-      "ratio": 4.069
-    },
-    {
-      "id": "windows-labelroot-fbc",
-      "de": 0.647,
-      "wa": 0.159,
-      "ratio": 4.074
-    },
-    {
-      "id": "windows-process",
-      "de": 1.597,
-      "wa": 0.392,
-      "ratio": 4.077
-    },
-    {
-      "id": "share-labelroot-fbr",
-      "de": 0.641,
-      "wa": 0.157,
-      "ratio": 4.088
-    },
-    {
-      "id": "241_1",
-      "de": 2.629,
-      "wa": 0.643,
-      "ratio": 4.089
-    },
-    {
-      "id": "linux.x86-html_dot",
-      "de": 0.811,
-      "wa": 0.198,
-      "ratio": 4.09
-    },
-    {
-      "id": "graphs-labelroot-fdc",
-      "de": 0.546,
-      "wa": 0.133,
-      "ratio": 4.092
-    },
-    {
-      "id": "share-newarrows",
-      "de": 3.837,
-      "wa": 0.937,
-      "ratio": 4.096
-    },
-    {
-      "id": "windows-labelroot-fdl",
-      "de": 0.635,
-      "wa": 0.155,
-      "ratio": 4.097
-    },
-    {
-      "id": "graphs-labelclust-fdr",
-      "de": 0.56,
-      "wa": 0.137,
-      "ratio": 4.103
-    },
-    {
-      "id": "graphs-sb_box_dbl",
-      "de": 0.639,
-      "wa": 0.156,
-      "ratio": 4.104
-    },
-    {
-      "id": "graphs-labelclust-ndc",
-      "de": 0.532,
-      "wa": 0.13,
-      "ratio": 4.106
-    },
-    {
-      "id": "graphs-polypoly",
-      "de": 8.38,
-      "wa": 2.04,
-      "ratio": 4.108
-    },
-    {
-      "id": "share-labelroot-fdd",
-      "de": 0.662,
-      "wa": 0.161,
-      "ratio": 4.113
-    },
-    {
-      "id": "2669",
-      "de": 21.303,
-      "wa": 5.176,
-      "ratio": 4.116
-    },
-    {
-      "id": "share-labelroot-fdc",
-      "de": 0.635,
-      "wa": 0.154,
-      "ratio": 4.117
-    },
-    {
-      "id": "graphs-sides",
-      "de": 0.574,
-      "wa": 0.139,
-      "ratio": 4.119
-    },
-    {
-      "id": "graphs-labelclust-ftd",
-      "de": 0.588,
-      "wa": 0.143,
-      "ratio": 4.121
-    },
-    {
-      "id": "windows-labelroot-nbd",
-      "de": 0.648,
-      "wa": 0.157,
-      "ratio": 4.133
-    },
-    {
-      "id": "graphs-labelclust-ndl",
-      "de": 0.536,
-      "wa": 0.13,
-      "ratio": 4.136
-    },
-    {
-      "id": "windows-labelclust-ntd",
-      "de": 0.675,
-      "wa": 0.163,
-      "ratio": 4.136
-    },
-    {
-      "id": "graphs-labelclust-ftc",
-      "de": 0.601,
-      "wa": 0.145,
-      "ratio": 4.14
-    },
-    {
-      "id": "graphs-labelclust-ntl",
-      "de": 0.541,
-      "wa": 0.13,
-      "ratio": 4.143
-    },
-    {
-      "id": "graphs-grdlinear_node",
-      "de": 0.694,
-      "wa": 0.167,
-      "ratio": 4.145
-    },
-    {
-      "id": "graphs-Symbol",
-      "de": 1.48,
-      "wa": 0.357,
-      "ratio": 4.146
-    },
-    {
-      "id": "windows-records",
-      "de": 1.157,
-      "wa": 0.279,
-      "ratio": 4.15
-    },
-    {
-      "id": "windows-labelroot-ftl",
-      "de": 0.668,
-      "wa": 0.16,
-      "ratio": 4.164
-    },
-    {
-      "id": "2639",
-      "de": 1.23,
-      "wa": 0.295,
-      "ratio": 4.166
+      "id": "tree-doc-dotguide-vee",
+      "de": 0.265,
+      "wa": 0.092,
+      "ratio": 2.872
     },
     {
       "id": "1622_2",
-      "de": 1.035,
-      "wa": 0.248,
-      "ratio": 4.167
+      "de": 0.72,
+      "wa": 0.25,
+      "ratio": 2.881
     },
     {
-      "id": "share-labelroot-ftc",
-      "de": 0.659,
-      "wa": 0.158,
-      "ratio": 4.171
-    },
-    {
-      "id": "share-labelroot-ftd",
-      "de": 0.628,
-      "wa": 0.151,
-      "ratio": 4.173
-    },
-    {
-      "id": "graphs-sl_box_dbl",
-      "de": 4.591,
-      "wa": 1.099,
-      "ratio": 4.176
-    },
-    {
-      "id": "share-tree",
-      "de": 1.34,
-      "wa": 0.321,
-      "ratio": 4.176
-    },
-    {
-      "id": "macosx-radius_dot",
-      "de": 0.651,
-      "wa": 0.156,
-      "ratio": 4.177
-    },
-    {
-      "id": "258",
-      "de": 0.785,
-      "wa": 0.188,
-      "ratio": 4.18
-    },
-    {
-      "id": "graphs-html",
-      "de": 0.825,
-      "wa": 0.197,
-      "ratio": 4.18
-    },
-    {
-      "id": "windows-proc3d",
-      "de": 7.616,
-      "wa": 1.822,
-      "ratio": 4.18
-    },
-    {
-      "id": "graphs-in",
-      "de": 0.477,
-      "wa": 0.114,
-      "ratio": 4.184
-    },
-    {
-      "id": "windows-labelclust-ftl",
-      "de": 0.761,
-      "wa": 0.182,
-      "ratio": 4.187
-    },
-    {
-      "id": "705",
-      "de": 0.646,
-      "wa": 0.154,
-      "ratio": 4.189
-    },
-    {
-      "id": "graphs-labelclust-fbc",
-      "de": 0.631,
-      "wa": 0.15,
-      "ratio": 4.193
-    },
-    {
-      "id": "windows-labelclust-ntl",
-      "de": 0.659,
-      "wa": 0.157,
-      "ratio": 4.201
-    },
-    {
-      "id": "graphs-layer2",
-      "de": 0.77,
-      "wa": 0.183,
-      "ratio": 4.204
-    },
-    {
-      "id": "windows-labelroot-ftc",
-      "de": 0.702,
-      "wa": 0.167,
-      "ratio": 4.207
-    },
-    {
-      "id": "share-unix2k",
-      "de": 7.455,
-      "wa": 1.767,
-      "ratio": 4.22
-    },
-    {
-      "id": "graphs-arrowsize",
-      "de": 4.038,
-      "wa": 0.956,
-      "ratio": 4.222
-    },
-    {
-      "id": "windows-Heawood",
-      "de": 3.336,
-      "wa": 0.79,
-      "ratio": 4.222
-    },
-    {
-      "id": "linux.x86-root_twopi",
-      "de": 804.107,
-      "wa": 190.412,
-      "ratio": 4.223
-    },
-    {
-      "id": "graphs-lsunix3",
-      "de": 5.909,
-      "wa": 1.398,
-      "ratio": 4.226
-    },
-    {
-      "id": "share-labelroot-fdr",
-      "de": 0.658,
-      "wa": 0.156,
-      "ratio": 4.228
-    },
-    {
-      "id": "graphs-pgram",
-      "de": 7.734,
-      "wa": 1.829,
-      "ratio": 4.229
-    },
-    {
-      "id": "2159",
-      "de": 0.662,
-      "wa": 0.156,
-      "ratio": 4.232
-    },
-    {
-      "id": "nshare-root_twopi",
-      "de": 807.23,
-      "wa": 190.613,
-      "ratio": 4.235
-    },
-    {
-      "id": "2242",
-      "de": 3.124,
-      "wa": 0.737,
-      "ratio": 4.236
-    },
-    {
-      "id": "graphs-lsunix2",
-      "de": 5.853,
-      "wa": 1.38,
-      "ratio": 4.241
-    },
-    {
-      "id": "share-Petersen",
-      "de": 2.189,
-      "wa": 0.515,
-      "ratio": 4.248
-    },
-    {
-      "id": "windows-labelclust-nbl",
-      "de": 0.69,
-      "wa": 0.162,
-      "ratio": 4.25
-    },
-    {
-      "id": "graphs-labelroot-ndr",
-      "de": 0.591,
-      "wa": 0.139,
-      "ratio": 4.26
-    },
-    {
-      "id": "graphs-b77",
-      "de": 0.545,
-      "wa": 0.128,
-      "ratio": 4.265
-    },
-    {
-      "id": "graphs-labelclust-ndr",
-      "de": 0.55,
+      "id": "tree-graphs-directed-record2",
+      "de": 0.371,
       "wa": 0.129,
-      "ratio": 4.268
+      "ratio": 2.883
     },
     {
-      "id": "share-labelroot-fbc",
-      "de": 0.704,
-      "wa": 0.165,
-      "ratio": 4.28
+      "id": "graphs-center",
+      "de": 0.321,
+      "wa": 0.111,
+      "ratio": 2.904
     },
     {
-      "id": "share-labelroot-fbl",
-      "de": 0.669,
-      "wa": 0.156,
-      "ratio": 4.282
+      "id": "linux.x86-flatedge_dot",
+      "de": 0.734,
+      "wa": 0.251,
+      "ratio": 2.922
     },
     {
-      "id": "graphs-clust",
-      "de": 1.132,
-      "wa": 0.264,
-      "ratio": 4.296
+      "id": "1658",
+      "de": 4.184,
+      "wa": 1.43,
+      "ratio": 2.926
     },
     {
-      "id": "share-mike",
-      "de": 4.553,
-      "wa": 1.06,
-      "ratio": 4.296
+      "id": "windows-b51",
+      "de": 18.466,
+      "wa": 6.292,
+      "ratio": 2.935
     },
     {
-      "id": "1328",
-      "de": 0.77,
-      "wa": 0.179,
-      "ratio": 4.297
+      "id": "graphs-a",
+      "de": 0.248,
+      "wa": 0.084,
+      "ratio": 2.938
     },
     {
-      "id": "graphs-colors",
-      "de": 0.717,
+      "id": "graphs-russian",
+      "de": 0.738,
+      "wa": 0.251,
+      "ratio": 2.938
+    },
+    {
+      "id": "regression_tests-shapes-reference-insulator",
+      "de": 0.214,
+      "wa": 0.073,
+      "ratio": 2.947
+    },
+    {
+      "id": "graphs-cairo",
+      "de": 67.283,
+      "wa": 22.821,
+      "ratio": 2.948
+    },
+    {
+      "id": "graphs-b124",
+      "de": 107.712,
+      "wa": 36.418,
+      "ratio": 2.958
+    },
+    {
+      "id": "windows-jsort",
+      "de": 11.148,
+      "wa": 3.758,
+      "ratio": 2.966
+    },
+    {
+      "id": "share-a1",
+      "de": 0.302,
+      "wa": 0.102,
+      "ratio": 2.975
+    },
+    {
+      "id": "2168_2",
+      "de": 0.322,
+      "wa": 0.108,
+      "ratio": 2.976
+    },
+    {
+      "id": "share-b51",
+      "de": 18.702,
+      "wa": 6.281,
+      "ratio": 2.978
+    },
+    {
+      "id": "share-labelclust-fdr",
+      "de": 0.497,
       "wa": 0.167,
-      "ratio": 4.297
+      "ratio": 2.979
     },
     {
-      "id": "windows-b36",
-      "de": 8.038,
-      "wa": 1.871,
-      "ratio": 4.297
+      "id": "2620",
+      "de": 880.522,
+      "wa": 294.745,
+      "ratio": 2.987
     },
     {
-      "id": "graphs-honda-tokoro",
-      "de": 5.046,
-      "wa": 1.173,
-      "ratio": 4.303
+      "id": "linux.i386-b106",
+      "de": 268.758,
+      "wa": 89.946,
+      "ratio": 2.988
     },
     {
-      "id": "graphs-clust4",
-      "de": 1.723,
-      "wa": 0.4,
-      "ratio": 4.304
+      "id": "144_ortho",
+      "de": 0.572,
+      "wa": 0.191,
+      "ratio": 3.004
     },
     {
-      "id": "nshare-root_circo",
-      "de": 835.125,
-      "wa": 194.004,
-      "ratio": 4.305
+      "id": "windows-hashtable",
+      "de": 0.986,
+      "wa": 0.328,
+      "ratio": 3.008
     },
     {
-      "id": "linux.x86-root_circo",
-      "de": 817.807,
-      "wa": 189.912,
-      "ratio": 4.306
+      "id": "graphs-b106",
+      "de": 258.981,
+      "wa": 85.88,
+      "ratio": 3.016
     },
     {
-      "id": "windows-newarrows",
-      "de": 4.007,
-      "wa": 0.929,
-      "ratio": 4.311
+      "id": "graphs-grdangles",
+      "de": 0.953,
+      "wa": 0.316,
+      "ratio": 3.017
     },
     {
-      "id": "graphs-labelroot-nbl",
-      "de": 0.599,
-      "wa": 0.139,
-      "ratio": 4.314
+      "id": "graphs-b56",
+      "de": 1.358,
+      "wa": 0.449,
+      "ratio": 3.023
     },
     {
-      "id": "windows-labelclust-nbc",
-      "de": 0.697,
-      "wa": 0.161,
-      "ratio": 4.321
+      "id": "graphs-b143",
+      "de": 334.424,
+      "wa": 110.482,
+      "ratio": 3.027
     },
     {
-      "id": "windows-labelclust-ntc",
-      "de": 0.697,
-      "wa": 0.161,
-      "ratio": 4.322
+      "id": "windows-labelclust-fbl",
+      "de": 0.497,
+      "wa": 0.164,
+      "ratio": 3.027
     },
     {
-      "id": "2615",
-      "de": 0.832,
-      "wa": 0.192,
-      "ratio": 4.327
+      "id": "share-b106",
+      "de": 263.679,
+      "wa": 87.055,
+      "ratio": 3.029
     },
     {
-      "id": "graphs-alf",
-      "de": 2.357,
-      "wa": 0.544,
-      "ratio": 4.329
+      "id": "698066",
+      "de": 18.694,
+      "wa": 6.169,
+      "ratio": 3.03
     },
     {
-      "id": "graphs-labelroot-ndc",
-      "de": 0.594,
+      "id": "negative-dpi",
+      "de": 0.265,
+      "wa": 0.087,
+      "ratio": 3.033
+    },
+    {
+      "id": "graphs-sb_circle",
+      "de": 0.402,
+      "wa": 0.132,
+      "ratio": 3.039
+    },
+    {
+      "id": "tree-doc-dotguide-icurve",
+      "de": 0.29,
+      "wa": 0.095,
+      "ratio": 3.04
+    },
+    {
+      "id": "1444",
+      "de": 0.384,
+      "wa": 0.126,
+      "ratio": 3.041
+    },
+    {
+      "id": "162",
+      "de": 0.527,
+      "wa": 0.173,
+      "ratio": 3.041
+    },
+    {
+      "id": "1644",
+      "de": 0.478,
+      "wa": 0.157,
+      "ratio": 3.041
+    },
+    {
+      "id": "share-labelclust-ftd",
+      "de": 0.527,
+      "wa": 0.173,
+      "ratio": 3.051
+    },
+    {
+      "id": "windows-labelclust-fbd",
+      "de": 0.488,
+      "wa": 0.16,
+      "ratio": 3.052
+    },
+    {
+      "id": "linux.x86-weight_dot",
+      "de": 6.023,
+      "wa": 1.971,
+      "ratio": 3.056
+    },
+    {
+      "id": "tree-doc-infosrc-fixed",
+      "de": 0.527,
+      "wa": 0.172,
+      "ratio": 3.061
+    },
+    {
+      "id": "windows-b106",
+      "de": 268.566,
+      "wa": 87.659,
+      "ratio": 3.064
+    },
+    {
+      "id": "share-labelclust-fdl",
+      "de": 0.501,
+      "wa": 0.163,
+      "ratio": 3.073
+    },
+    {
+      "id": "share-jsort",
+      "de": 11.561,
+      "wa": 3.759,
+      "ratio": 3.075
+    },
+    {
+      "id": "graphs-url",
+      "de": 1.161,
+      "wa": 0.377,
+      "ratio": 3.083
+    },
+    {
+      "id": "share-b491",
+      "de": 0.449,
+      "wa": 0.145,
+      "ratio": 3.088
+    },
+    {
+      "id": "tree-graphs-directed-longflat",
+      "de": 0.374,
+      "wa": 0.121,
+      "ratio": 3.09
+    },
+    {
+      "id": "graphs-biglabel",
+      "de": 1.483,
+      "wa": 0.48,
+      "ratio": 3.091
+    },
+    {
+      "id": "2564",
+      "de": 0.252,
+      "wa": 0.081,
+      "ratio": 3.1
+    },
+    {
+      "id": "358",
+      "de": 0.503,
+      "wa": 0.162,
+      "ratio": 3.101
+    },
+    {
+      "id": "2168_1",
+      "de": 0.332,
+      "wa": 0.107,
+      "ratio": 3.102
+    },
+    {
+      "id": "graphs-color",
+      "de": 0.442,
+      "wa": 0.142,
+      "ratio": 3.104
+    },
+    {
+      "id": "share-longflat",
+      "de": 0.427,
       "wa": 0.137,
-      "ratio": 4.329
+      "ratio": 3.112
     },
     {
-      "id": "windows-shells",
-      "de": 5.626,
-      "wa": 1.299,
-      "ratio": 4.33
+      "id": "tree-doc-dotguide-Mrecord",
+      "de": 0.301,
+      "wa": 0.097,
+      "ratio": 3.114
     },
     {
-      "id": "graphs-arrows",
-      "de": 3.929,
-      "wa": 0.907,
-      "ratio": 4.331
+      "id": "linux.x86-pack_neato1",
+      "de": 2.247,
+      "wa": 0.721,
+      "ratio": 3.115
     },
     {
-      "id": "linux.x86-rowcolsep_dot",
-      "de": 0.687,
-      "wa": 0.158,
-      "ratio": 4.335
+      "id": "nshare-pack_neato1",
+      "de": 2.382,
+      "wa": 0.765,
+      "ratio": 3.115
     },
     {
-      "id": "graphs-viewport",
-      "de": 42.835,
-      "wa": 9.874,
-      "ratio": 4.338
+      "id": "share-labelclust-fdd",
+      "de": 0.504,
+      "wa": 0.162,
+      "ratio": 3.123
     },
     {
-      "id": "share-unix2",
-      "de": 7.734,
-      "wa": 1.783,
-      "ratio": 4.339
+      "id": "1444-2",
+      "de": 0.374,
+      "wa": 0.12,
+      "ratio": 3.129
     },
     {
-      "id": "share-labelroot-fdl",
-      "de": 0.678,
-      "wa": 0.156,
-      "ratio": 4.347
+      "id": "graphs-unix2",
+      "de": 5.177,
+      "wa": 1.652,
+      "ratio": 3.134
     },
     {
-      "id": "1213-1",
-      "de": 4.591,
-      "wa": 1.056,
-      "ratio": 4.348
+      "id": "windows-labelclust-fbc",
+      "de": 0.511,
+      "wa": 0.163,
+      "ratio": 3.142
     },
     {
-      "id": "windows-labelclust-ntr",
-      "de": 0.679,
-      "wa": 0.156,
-      "ratio": 4.358
+      "id": "share-labelclust-ftr",
+      "de": 0.547,
+      "wa": 0.174,
+      "ratio": 3.143
     },
     {
-      "id": "share-structs",
-      "de": 0.69,
-      "wa": 0.158,
-      "ratio": 4.359
+      "id": "graphs-train11",
+      "de": 2.674,
+      "wa": 0.85,
+      "ratio": 3.146
     },
     {
-      "id": "graphs-clusters",
-      "de": 1.661,
-      "wa": 0.381,
-      "ratio": 4.363
+      "id": "2168_4",
+      "de": 0.36,
+      "wa": 0.114,
+      "ratio": 3.152
     },
     {
-      "id": "windows-polypoly",
-      "de": 8.838,
-      "wa": 2.022,
-      "ratio": 4.372
+      "id": "graphs-clustlabel",
+      "de": 0.386,
+      "wa": 0.122,
+      "ratio": 3.156
     },
     {
-      "id": "graphs-labelclust-ndd",
-      "de": 0.562,
-      "wa": 0.128,
-      "ratio": 4.375
+      "id": "share-labelclust-fbr",
+      "de": 0.534,
+      "wa": 0.169,
+      "ratio": 3.162
     },
     {
-      "id": "graphs-KW91",
-      "de": 1.645,
-      "wa": 0.376,
-      "ratio": 4.378
-    },
-    {
-      "id": "graphs-japanese",
-      "de": 1.067,
-      "wa": 0.244,
-      "ratio": 4.378
-    },
-    {
-      "id": "2743",
-      "de": 773.449,
-      "wa": 176.497,
-      "ratio": 4.382
-    },
-    {
-      "id": "windows-labelclust-ndl",
-      "de": 0.685,
-      "wa": 0.156,
-      "ratio": 4.394
-    },
-    {
-      "id": "graphs-b36",
-      "de": 7.45,
-      "wa": 1.695,
-      "ratio": 4.395
-    },
-    {
-      "id": "graphs-labelroot-ntd",
-      "de": 0.596,
-      "wa": 0.136,
-      "ratio": 4.396
-    },
-    {
-      "id": "graphs-labelroot-nbr",
-      "de": 0.632,
-      "wa": 0.144,
-      "ratio": 4.398
-    },
-    {
-      "id": "graphs-grdradial_angle",
-      "de": 4.796,
-      "wa": 1.09,
-      "ratio": 4.4
-    },
-    {
-      "id": "windows-mike",
-      "de": 4.862,
-      "wa": 1.105,
-      "ratio": 4.4
-    },
-    {
-      "id": "share-labelroot-fbd",
-      "de": 0.662,
-      "wa": 0.15,
-      "ratio": 4.404
-    },
-    {
-      "id": "windows-labelclust-ndr",
-      "de": 0.674,
-      "wa": 0.153,
-      "ratio": 4.412
-    },
-    {
-      "id": "share-NaN",
-      "de": 18.842,
-      "wa": 4.265,
-      "ratio": 4.417
-    },
-    {
-      "id": "2087",
-      "de": 0.835,
-      "wa": 0.189,
-      "ratio": 4.419
-    },
-    {
-      "id": "nshare-compound_dot",
-      "de": 1.464,
-      "wa": 0.331,
-      "ratio": 4.419
-    },
-    {
-      "id": "share-abstract",
-      "de": 11.958,
-      "wa": 2.704,
-      "ratio": 4.422
-    },
-    {
-      "id": "2184",
-      "de": 1.325,
-      "wa": 0.299,
-      "ratio": 4.429
-    },
-    {
-      "id": "1323_1",
-      "de": 2.131,
-      "wa": 0.481,
-      "ratio": 4.43
-    },
-    {
-      "id": "share-labelclust-ntr",
-      "de": 0.672,
-      "wa": 0.151,
-      "ratio": 4.439
-    },
-    {
-      "id": "graphs-Petersen",
-      "de": 2.153,
-      "wa": 0.485,
-      "ratio": 4.44
-    },
-    {
-      "id": "windows-labelclust-ndd",
-      "de": 0.672,
-      "wa": 0.151,
-      "ratio": 4.44
-    },
-    {
-      "id": "nshare-dotsplines_dot1",
-      "de": 7.718,
-      "wa": 1.736,
-      "ratio": 4.446
-    },
-    {
-      "id": "share-labelclust-ndr",
-      "de": 0.687,
-      "wa": 0.155,
-      "ratio": 4.448
-    },
-    {
-      "id": "graphs-labelroot-nbc",
-      "de": 0.597,
+      "id": "windows-record2",
+      "de": 0.419,
       "wa": 0.133,
-      "ratio": 4.473
+      "ratio": 3.164
     },
     {
-      "id": "share-ldbxtried",
-      "de": 12.555,
-      "wa": 2.806,
-      "ratio": 4.474
+      "id": "graphs-flatedge",
+      "de": 0.594,
+      "wa": 0.187,
+      "ratio": 3.171
     },
     {
       "id": "linux.i386-ER",
-      "de": 2.03,
-      "wa": 0.453,
-      "ratio": 4.481
+      "de": 1.536,
+      "wa": 0.484,
+      "ratio": 3.174
     },
     {
-      "id": "graphs-mike",
-      "de": 4.16,
-      "wa": 0.927,
-      "ratio": 4.489
+      "id": "windows-fsm",
+      "de": 1.887,
+      "wa": 0.594,
+      "ratio": 3.178
     },
     {
-      "id": "windows-labelclust-nbr",
-      "de": 0.703,
-      "wa": 0.156,
-      "ratio": 4.492
-    },
-    {
-      "id": "2521",
-      "de": 1.231,
-      "wa": 0.274,
-      "ratio": 4.496
-    },
-    {
-      "id": "graphs-Helvetica",
-      "de": 2.351,
-      "wa": 0.522,
-      "ratio": 4.499
-    },
-    {
-      "id": "graphs-labelroot-ntl",
-      "de": 0.6,
+      "id": "windows-longflat",
+      "de": 0.422,
       "wa": 0.133,
-      "ratio": 4.499
+      "ratio": 3.178
     },
     {
-      "id": "share-labelclust-ntl",
-      "de": 0.705,
+      "id": "graphs-b57",
+      "de": 8.384,
+      "wa": 2.634,
+      "ratio": 3.184
+    },
+    {
+      "id": "tree-doc-dotguide-constraint",
+      "de": 0.434,
+      "wa": 0.136,
+      "ratio": 3.185
+    },
+    {
+      "id": "1447_1",
+      "de": 90.653,
+      "wa": 28.451,
+      "ratio": 3.186
+    },
+    {
+      "id": "regression_tests-shapes-reference-proteasesite",
+      "de": 0.239,
+      "wa": 0.075,
+      "ratio": 3.186
+    },
+    {
+      "id": "graphs-dpd",
+      "de": 19.995,
+      "wa": 6.275,
+      "ratio": 3.187
+    },
+    {
+      "id": "graphs-sb_circle_dbl",
+      "de": 0.5,
       "wa": 0.157,
-      "ratio": 4.501
+      "ratio": 3.189
     },
     {
-      "id": "graphs-clust2",
-      "de": 1.079,
-      "wa": 0.24,
-      "ratio": 4.502
+      "id": "windows-jcctree",
+      "de": 1.744,
+      "wa": 0.547,
+      "ratio": 3.189
     },
     {
-      "id": "1896",
-      "de": 1.123,
-      "wa": 0.249,
-      "ratio": 4.504
+      "id": "1879-2",
+      "de": 0.391,
+      "wa": 0.122,
+      "ratio": 3.195
     },
     {
-      "id": "share-labelclust-ntd",
+      "id": "nshare-radius_dot",
+      "de": 0.518,
+      "wa": 0.162,
+      "ratio": 3.195
+    },
+    {
+      "id": "share-ctext",
+      "de": 0.82,
+      "wa": 0.257,
+      "ratio": 3.195
+    },
+    {
+      "id": "windows-labelclust-fbr",
+      "de": 0.527,
+      "wa": 0.165,
+      "ratio": 3.198
+    },
+    {
+      "id": "share-labelclust-fbl",
+      "de": 0.542,
+      "wa": 0.169,
+      "ratio": 3.2
+    },
+    {
+      "id": "tree-graphs-directed-arrows",
+      "de": 11.408,
+      "wa": 3.559,
+      "ratio": 3.205
+    },
+    {
+      "id": "share-labelclust-nbc",
+      "de": 0.53,
+      "wa": 0.165,
+      "ratio": 3.208
+    },
+    {
+      "id": "graphs-big",
+      "de": 3.247,
+      "wa": 1.011,
+      "ratio": 3.212
+    },
+    {
+      "id": "tree-tclpkg-tcldot-examples-data-demo",
+      "de": 0.489,
+      "wa": 0.152,
+      "ratio": 3.213
+    },
+    {
+      "id": "graphs-d",
+      "de": 0.71,
+      "wa": 0.221,
+      "ratio": 3.213
+    },
+    {
+      "id": "2643",
+      "de": 0.481,
+      "wa": 0.15,
+      "ratio": 3.214
+    },
+    {
+      "id": "tree-contrib-dirgraph-named",
+      "de": 1.686,
+      "wa": 0.524,
+      "ratio": 3.217
+    },
+    {
+      "id": "graphs-b80a",
+      "de": 0.34,
+      "wa": 0.105,
+      "ratio": 3.222
+    },
+    {
+      "id": "graphs-unix2k",
+      "de": 5.225,
+      "wa": 1.62,
+      "ratio": 3.224
+    },
+    {
+      "id": "1622_1",
+      "de": 0.336,
+      "wa": 0.104,
+      "ratio": 3.227
+    },
+    {
+      "id": "graphs-b81",
+      "de": 52.494,
+      "wa": 16.253,
+      "ratio": 3.23
+    },
+    {
+      "id": "tree-graphs-directed-russian",
+      "de": 0.891,
+      "wa": 0.275,
+      "ratio": 3.233
+    },
+    {
+      "id": "graphs-ngk10_4",
+      "de": 45.991,
+      "wa": 14.227,
+      "ratio": 3.233
+    },
+    {
+      "id": "2743",
+      "de": 584.693,
+      "wa": 180.71,
+      "ratio": 3.236
+    },
+    {
+      "id": "2825",
+      "de": 0.621,
+      "wa": 0.192,
+      "ratio": 3.238
+    },
+    {
+      "id": "graphs-pmpipe",
+      "de": 1.961,
+      "wa": 0.606,
+      "ratio": 3.239
+    },
+    {
+      "id": "graphs-fsm",
+      "de": 1.592,
+      "wa": 0.49,
+      "ratio": 3.252
+    },
+    {
+      "id": "linux.x86-rankdir_dot1",
+      "de": 7.091,
+      "wa": 2.179,
+      "ratio": 3.254
+    },
+    {
+      "id": "graphs-b51",
+      "de": 20.152,
+      "wa": 6.19,
+      "ratio": 3.255
+    },
+    {
+      "id": "graphs-unix",
+      "de": 4.645,
+      "wa": 1.426,
+      "ratio": 3.257
+    },
+    {
+      "id": "share-ngk10_4",
+      "de": 48.444,
+      "wa": 14.868,
+      "ratio": 3.258
+    },
+    {
+      "id": "linux.x86-overlap_neato",
+      "de": 19.383,
+      "wa": 5.947,
+      "ratio": 3.259
+    },
+    {
+      "id": "share-b124",
+      "de": 115.702,
+      "wa": 35.506,
+      "ratio": 3.259
+    },
+    {
+      "id": "2457_1",
+      "de": 0.437,
+      "wa": 0.134,
+      "ratio": 3.266
+    },
+    {
+      "id": "nshare-rankdir_dot1",
+      "de": 7.368,
+      "wa": 2.256,
+      "ratio": 3.266
+    },
+    {
+      "id": "regression_tests-shapes-reference-noverhang",
+      "de": 0.252,
+      "wa": 0.077,
+      "ratio": 3.266
+    },
+    {
+      "id": "linux.i386-hashtable",
+      "de": 1.16,
+      "wa": 0.355,
+      "ratio": 3.267
+    },
+    {
+      "id": "share-hashtable",
+      "de": 1.092,
+      "wa": 0.334,
+      "ratio": 3.268
+    },
+    {
+      "id": "graphs-sb_box_dbl",
+      "de": 0.516,
+      "wa": 0.158,
+      "ratio": 3.269
+    },
+    {
+      "id": "graphs-val_val",
+      "de": 0.425,
+      "wa": 0.13,
+      "ratio": 3.27
+    },
+    {
+      "id": "linux.x86-rowcolsep_dot",
+      "de": 0.542,
+      "wa": 0.165,
+      "ratio": 3.277
+    },
+    {
+      "id": "windows-clust5",
+      "de": 1.493,
+      "wa": 0.455,
+      "ratio": 3.277
+    },
+    {
+      "id": "tree-graphs-undirected-ngk10_4",
+      "de": 44.91,
+      "wa": 13.695,
+      "ratio": 3.279
+    },
+    {
+      "id": "tree-doc-dotguide-graph1",
+      "de": 0.875,
+      "wa": 0.266,
+      "ratio": 3.286
+    },
+    {
+      "id": "graphs-st_circle_dbl",
+      "de": 3.578,
+      "wa": 1.086,
+      "ratio": 3.295
+    },
+    {
+      "id": "share-labelclust-ftc",
+      "de": 0.54,
+      "wa": 0.164,
+      "ratio": 3.299
+    },
+    {
+      "id": "2413_2",
+      "de": 35.484,
+      "wa": 10.748,
+      "ratio": 3.301
+    },
+    {
+      "id": "share-fsm",
+      "de": 1.958,
+      "wa": 0.593,
+      "ratio": 3.303
+    },
+    {
+      "id": "1425_1",
+      "de": 0.618,
+      "wa": 0.187,
+      "ratio": 3.307
+    },
+    {
+      "id": "graphs-edgeclip",
+      "de": 0.444,
+      "wa": 0.134,
+      "ratio": 3.307
+    },
+    {
+      "id": "graphs-sb_box",
+      "de": 0.408,
+      "wa": 0.123,
+      "ratio": 3.308
+    },
+    {
+      "id": "share-proc3d",
+      "de": 6.498,
+      "wa": 1.963,
+      "ratio": 3.31
+    },
+    {
+      "id": "tree-doc-neato-G4_orig",
+      "de": 0.5,
+      "wa": 0.151,
+      "ratio": 3.314
+    },
+    {
+      "id": "2592",
+      "de": 1.512,
+      "wa": 0.456,
+      "ratio": 3.315
+    },
+    {
+      "id": "graphs-b80",
+      "de": 0.409,
+      "wa": 0.123,
+      "ratio": 3.317
+    },
+    {
+      "id": "windows-labelroot-nbr",
+      "de": 0.634,
+      "wa": 0.191,
+      "ratio": 3.317
+    },
+    {
+      "id": "graphs-ps",
+      "de": 0.346,
+      "wa": 0.104,
+      "ratio": 3.324
+    },
+    {
+      "id": "graphs-try",
+      "de": 1.046,
+      "wa": 0.315,
+      "ratio": 3.324
+    },
+    {
+      "id": "graphs-bad",
+      "de": 0.481,
+      "wa": 0.145,
+      "ratio": 3.325
+    },
+    {
+      "id": "windows-ngk10_4",
+      "de": 49.233,
+      "wa": 14.809,
+      "ratio": 3.325
+    },
+    {
+      "id": "2796",
+      "de": 110.752,
+      "wa": 33.302,
+      "ratio": 3.326
+    },
+    {
+      "id": "2619_2",
+      "de": 2.339,
+      "wa": 0.702,
+      "ratio": 3.332
+    },
+    {
+      "id": "share-flatedge",
+      "de": 0.804,
+      "wa": 0.241,
+      "ratio": 3.334
+    },
+    {
+      "id": "graphs-polypoly",
+      "de": 7.621,
+      "wa": 2.285,
+      "ratio": 3.335
+    },
+    {
+      "id": "windows-radius_dot",
+      "de": 0.637,
+      "wa": 0.191,
+      "ratio": 3.336
+    },
+    {
+      "id": "graphs-b53",
+      "de": 3.919,
+      "wa": 1.174,
+      "ratio": 3.337
+    },
+    {
+      "id": "regression_tests-shapes-reference-ribosite",
+      "de": 0.248,
+      "wa": 0.074,
+      "ratio": 3.339
+    },
+    {
+      "id": "1221",
+      "de": 0.3,
+      "wa": 0.09,
+      "ratio": 3.345
+    },
+    {
+      "id": "graphs-record2",
+      "de": 0.437,
+      "wa": 0.13,
+      "ratio": 3.348
+    },
+    {
+      "id": "graphs-dir",
+      "de": 0.479,
+      "wa": 0.143,
+      "ratio": 3.352
+    },
+    {
+      "id": "linux.x86-shapes_dot",
+      "de": 3.231,
+      "wa": 0.963,
+      "ratio": 3.355
+    },
+    {
+      "id": "56",
+      "de": 3.619,
+      "wa": 1.078,
+      "ratio": 3.357
+    },
+    {
+      "id": "graphs-sr_circle",
+      "de": 2.725,
+      "wa": 0.812,
+      "ratio": 3.357
+    },
+    {
+      "id": "1724",
+      "de": 0.537,
+      "wa": 0.16,
+      "ratio": 3.358
+    },
+    {
+      "id": "144_no_ortho",
+      "de": 0.52,
+      "wa": 0.155,
+      "ratio": 3.362
+    },
+    {
+      "id": "linux.x86-rankdir_dot",
+      "de": 7.205,
+      "wa": 2.142,
+      "ratio": 3.364
+    },
+    {
+      "id": "share-labelclust-nbd",
+      "de": 0.531,
+      "wa": 0.158,
+      "ratio": 3.366
+    },
+    {
+      "id": "graphs-labelclust-fdc",
+      "de": 0.526,
+      "wa": 0.156,
+      "ratio": 3.368
+    },
+    {
+      "id": "2457_2",
+      "de": 0.441,
+      "wa": 0.131,
+      "ratio": 3.369
+    },
+    {
+      "id": "share-labelclust-fbd",
+      "de": 0.528,
+      "wa": 0.157,
+      "ratio": 3.372
+    },
+    {
+      "id": "share-pm2way",
+      "de": 1.224,
+      "wa": 0.362,
+      "ratio": 3.378
+    },
+    {
+      "id": "tree-doc-dotguide-smlred",
+      "de": 70.681,
+      "wa": 20.921,
+      "ratio": 3.379
+    },
+    {
+      "id": "linux.x86-neatosplines_neato",
+      "de": 20.677,
+      "wa": 6.117,
+      "ratio": 3.38
+    },
+    {
+      "id": "windows-b124",
+      "de": 117.771,
+      "wa": 34.839,
+      "ratio": 3.38
+    },
+    {
+      "id": "share-labelclust-fdc",
+      "de": 0.551,
+      "wa": 0.163,
+      "ratio": 3.381
+    },
+    {
+      "id": "2168_5",
+      "de": 0.385,
+      "wa": 0.114,
+      "ratio": 3.382
+    },
+    {
+      "id": "2470",
+      "de": 408.174,
+      "wa": 120.701,
+      "ratio": 3.382
+    },
+    {
+      "id": "linux.x86-overlap_neato1",
+      "de": 20.52,
+      "wa": 6.063,
+      "ratio": 3.385
+    },
+    {
+      "id": "macosx-arrows_dot",
+      "de": 3.748,
+      "wa": 1.107,
+      "ratio": 3.385
+    },
+    {
+      "id": "tree-graphs-undirected-Petersen",
+      "de": 1.67,
+      "wa": 0.493,
+      "ratio": 3.387
+    },
+    {
+      "id": "2391",
+      "de": 0.414,
+      "wa": 0.122,
+      "ratio": 3.39
+    },
+    {
+      "id": "graphs-b103",
+      "de": 4361.366,
+      "wa": 1285.607,
+      "ratio": 3.392
+    },
+    {
+      "id": "2193",
+      "de": 10.445,
+      "wa": 3.078,
+      "ratio": 3.393
+    },
+    {
+      "id": "graphs-decorate",
+      "de": 7.394,
+      "wa": 2.177,
+      "ratio": 3.396
+    },
+    {
+      "id": "tree-graphs-directed-jsort",
+      "de": 11.725,
+      "wa": 3.451,
+      "ratio": 3.398
+    },
+    {
+      "id": "tree-graphs-directed-KW91",
+      "de": 1.287,
+      "wa": 0.378,
+      "ratio": 3.403
+    },
+    {
+      "id": "graphs-dfa",
+      "de": 2.084,
+      "wa": 0.612,
+      "ratio": 3.407
+    },
+    {
+      "id": "graphs-overlap",
+      "de": 21.616,
+      "wa": 6.344,
+      "ratio": 3.407
+    },
+    {
+      "id": "graphs-p",
+      "de": 1.249,
+      "wa": 0.366,
+      "ratio": 3.409
+    },
+    {
+      "id": "graphs-st_circle",
+      "de": 2.67,
+      "wa": 0.782,
+      "ratio": 3.412
+    },
+    {
+      "id": "1879",
+      "de": 132.188,
+      "wa": 38.725,
+      "ratio": 3.414
+    },
+    {
+      "id": "2682",
+      "de": 0.522,
+      "wa": 0.153,
+      "ratio": 3.423
+    },
+    {
+      "id": "2225",
+      "de": 0.354,
+      "wa": 0.103,
+      "ratio": 3.425
+    },
+    {
+      "id": "linux.x86-dotsplines_dot1",
+      "de": 5.988,
+      "wa": 1.748,
+      "ratio": 3.425
+    },
+    {
+      "id": "167",
+      "de": 0.456,
+      "wa": 0.133,
+      "ratio": 3.426
+    },
+    {
+      "id": "graphs-b117",
+      "de": 0.731,
+      "wa": 0.213,
+      "ratio": 3.427
+    },
+    {
+      "id": "linux.x86-neatosplines_neato1",
+      "de": 18.052,
+      "wa": 5.267,
+      "ratio": 3.427
+    },
+    {
+      "id": "nshare-overlap_neato1",
+      "de": 20.613,
+      "wa": 6.012,
+      "ratio": 3.428
+    },
+    {
+      "id": "tree-graphs-directed-clust1",
+      "de": 1.053,
+      "wa": 0.307,
+      "ratio": 3.433
+    },
+    {
+      "id": "2613",
+      "de": 0.405,
+      "wa": 0.118,
+      "ratio": 3.437
+    },
+    {
+      "id": "linux.x86-radius_dot",
+      "de": 0.54,
+      "wa": 0.157,
+      "ratio": 3.438
+    },
+    {
+      "id": "1447",
+      "de": 11.524,
+      "wa": 3.351,
+      "ratio": 3.439
+    },
+    {
+      "id": "windows-ER",
+      "de": 1.679,
+      "wa": 0.488,
+      "ratio": 3.442
+    },
+    {
+      "id": "share-pmpipe",
+      "de": 2.133,
+      "wa": 0.619,
+      "ratio": 3.444
+    },
+    {
+      "id": "windows-clust",
+      "de": 1.124,
+      "wa": 0.326,
+      "ratio": 3.444
+    },
+    {
+      "id": "graphs-process",
+      "de": 1.184,
+      "wa": 0.344,
+      "ratio": 3.446
+    },
+    {
+      "id": "linux.i386-crazy",
+      "de": 7.743,
+      "wa": 2.246,
+      "ratio": 3.447
+    },
+    {
+      "id": "tree-doc-infosrc-fill",
+      "de": 0.373,
+      "wa": 0.108,
+      "ratio": 3.45
+    },
+    {
+      "id": "nshare-pack_neato2",
+      "de": 2.455,
+      "wa": 0.711,
+      "ratio": 3.453
+    },
+    {
+      "id": "linux.x86-edgeclip_dot",
+      "de": 0.497,
+      "wa": 0.144,
+      "ratio": 3.457
+    },
+    {
+      "id": "tree-graphs-directed-states",
+      "de": 0.924,
+      "wa": 0.267,
+      "ratio": 3.461
+    },
+    {
+      "id": "linux.x86-pack_neato",
+      "de": 1.792,
+      "wa": 0.518,
+      "ratio": 3.461
+    },
+    {
+      "id": "graphs-b68",
+      "de": 1.084,
+      "wa": 0.313,
+      "ratio": 3.462
+    },
+    {
+      "id": "nshare-rankdir_dot",
+      "de": 7.243,
+      "wa": 2.092,
+      "ratio": 3.462
+    },
+    {
+      "id": "windows-labelroot-fbr",
+      "de": 0.654,
+      "wa": 0.189,
+      "ratio": 3.462
+    },
+    {
+      "id": "graphs-p4",
+      "de": 1.694,
+      "wa": 0.489,
+      "ratio": 3.465
+    },
+    {
+      "id": "share-b102",
+      "de": 273.76,
+      "wa": 79.007,
+      "ratio": 3.465
+    },
+    {
+      "id": "windows-crazy",
+      "de": 7.273,
+      "wa": 2.099,
+      "ratio": 3.465
+    },
+    {
+      "id": "graphs-b3",
+      "de": 0.386,
+      "wa": 0.111,
+      "ratio": 3.467
+    },
+    {
+      "id": "graphs-trapeziumlr",
+      "de": 4.587,
+      "wa": 1.323,
+      "ratio": 3.468
+    },
+    {
+      "id": "linux.x86-rankdir_dot2",
+      "de": 7.403,
+      "wa": 2.131,
+      "ratio": 3.474
+    },
+    {
+      "id": "windows-clust4",
+      "de": 1.595,
+      "wa": 0.459,
+      "ratio": 3.475
+    },
+    {
+      "id": "2168",
+      "de": 0.416,
+      "wa": 0.12,
+      "ratio": 3.476
+    },
+    {
+      "id": "graphs-labelroot-fbd",
+      "de": 0.504,
+      "wa": 0.145,
+      "ratio": 3.478
+    },
+    {
+      "id": "share-crazy",
+      "de": 7.459,
+      "wa": 2.143,
+      "ratio": 3.48
+    },
+    {
+      "id": "2391_1",
+      "de": 0.464,
+      "wa": 0.133,
+      "ratio": 3.482
+    },
+    {
+      "id": "share-nhg",
+      "de": 0.876,
+      "wa": 0.251,
+      "ratio": 3.483
+    },
+    {
+      "id": "share-labelclust-fbc",
+      "de": 0.583,
+      "wa": 0.167,
+      "ratio": 3.485
+    },
+    {
+      "id": "graphs-states",
+      "de": 0.787,
+      "wa": 0.226,
+      "ratio": 3.486
+    },
+    {
+      "id": "linux.i386-b102",
+      "de": 267.294,
+      "wa": 76.657,
+      "ratio": 3.487
+    },
+    {
+      "id": "linux.x86-ports_dot",
+      "de": 2.596,
+      "wa": 0.744,
+      "ratio": 3.491
+    },
+    {
+      "id": "graphs-clust1",
+      "de": 1.136,
+      "wa": 0.325,
+      "ratio": 3.492
+    },
+    {
+      "id": "tree-doc-infosrc-constraint",
+      "de": 0.389,
+      "wa": 0.111,
+      "ratio": 3.496
+    },
+    {
+      "id": "graphs-rootlabel",
+      "de": 0.512,
+      "wa": 0.146,
+      "ratio": 3.496
+    },
+    {
+      "id": "windows-structs",
+      "de": 0.626,
+      "wa": 0.179,
+      "ratio": 3.496
+    },
+    {
+      "id": "tree-doc-dotguide-egg",
+      "de": 0.432,
+      "wa": 0.124,
+      "ratio": 3.497
+    },
+    {
+      "id": "graphs-size",
+      "de": 5.665,
+      "wa": 1.62,
+      "ratio": 3.498
+    },
+    {
+      "id": "graphs-ctext",
       "de": 0.695,
-      "wa": 0.154,
-      "ratio": 4.506
+      "wa": 0.198,
+      "ratio": 3.501
     },
     {
-      "id": "1990",
-      "de": 2.276,
-      "wa": 0.504,
-      "ratio": 4.517
+      "id": "linux.x86-dotsplines_dot",
+      "de": 5.816,
+      "wa": 1.661,
+      "ratio": 3.501
+    },
+    {
+      "id": "windows-dfa",
+      "de": 2.429,
+      "wa": 0.694,
+      "ratio": 3.502
+    },
+    {
+      "id": "tree-graphs-undirected-process",
+      "de": 1.209,
+      "wa": 0.345,
+      "ratio": 3.504
+    },
+    {
+      "id": "tree-doc-neato-G4_lenwt",
+      "de": 0.551,
+      "wa": 0.157,
+      "ratio": 3.508
+    },
+    {
+      "id": "graphs-ordering",
+      "de": 1.236,
+      "wa": 0.352,
+      "ratio": 3.512
+    },
+    {
+      "id": "2342",
+      "de": 0.527,
+      "wa": 0.15,
+      "ratio": 3.513
+    },
+    {
+      "id": "tree-doc-neato-G4_pinned",
+      "de": 0.52,
+      "wa": 0.148,
+      "ratio": 3.516
+    },
+    {
+      "id": "tree-contrib-prune-test",
+      "de": 0.601,
+      "wa": 0.171,
+      "ratio": 3.517
+    },
+    {
+      "id": "graphs-rowe",
+      "de": 12.966,
+      "wa": 3.687,
+      "ratio": 3.517
+    },
+    {
+      "id": "windows-labelclust-fdd",
+      "de": 0.551,
+      "wa": 0.157,
+      "ratio": 3.517
+    },
+    {
+      "id": "2361",
+      "de": 3.744,
+      "wa": 1.064,
+      "ratio": 3.518
+    },
+    {
+      "id": "macosx-compound_dot",
+      "de": 1.197,
+      "wa": 0.34,
+      "ratio": 3.519
+    },
+    {
+      "id": "share-labelroot-nbd",
+      "de": 0.613,
+      "wa": 0.174,
+      "ratio": 3.522
+    },
+    {
+      "id": "windows-clust1",
+      "de": 1.21,
+      "wa": 0.343,
+      "ratio": 3.523
+    },
+    {
+      "id": "1702",
+      "de": 0.377,
+      "wa": 0.107,
+      "ratio": 3.524
+    },
+    {
+      "id": "regression_tests-shapes-reference-cylinder",
+      "de": 0.303,
+      "wa": 0.086,
+      "ratio": 3.526
+    },
+    {
+      "id": "linux.x86-html2_dot",
+      "de": 1.268,
+      "wa": 0.36,
+      "ratio": 3.527
+    },
+    {
+      "id": "share-polypoly",
+      "de": 7.215,
+      "wa": 2.042,
+      "ratio": 3.533
+    },
+    {
+      "id": "tree-contrib-java-dot-uml",
+      "de": 6.804,
+      "wa": 1.925,
+      "ratio": 3.534
+    },
+    {
+      "id": "tree-doc-dotguide-graph2",
+      "de": 1.452,
+      "wa": 0.411,
+      "ratio": 3.534
+    },
+    {
+      "id": "tree-graphs-directed-clust5",
+      "de": 1.31,
+      "wa": 0.371,
+      "ratio": 3.534
+    },
+    {
+      "id": "share-dfa",
+      "de": 2.546,
+      "wa": 0.72,
+      "ratio": 3.535
+    },
+    {
+      "id": "tree-graphs-directed-pm2way",
+      "de": 1.272,
+      "wa": 0.36,
+      "ratio": 3.536
+    },
+    {
+      "id": "windows-pm2way",
+      "de": 1.233,
+      "wa": 0.349,
+      "ratio": 3.536
+    },
+    {
+      "id": "linux.x86-pack_neato2",
+      "de": 2.504,
+      "wa": 0.708,
+      "ratio": 3.537
+    },
+    {
+      "id": "graphs-Times",
+      "de": 0.91,
+      "wa": 0.257,
+      "ratio": 3.539
+    },
+    {
+      "id": "nshare-edgeclip_dot",
+      "de": 0.67,
+      "wa": 0.189,
+      "ratio": 3.539
+    },
+    {
+      "id": "windows-unix",
+      "de": 6.248,
+      "wa": 1.765,
+      "ratio": 3.541
+    },
+    {
+      "id": "graphs-labelclust-fbl",
+      "de": 0.539,
+      "wa": 0.152,
+      "ratio": 3.544
+    },
+    {
+      "id": "graphs-Palatino",
+      "de": 0.961,
+      "wa": 0.271,
+      "ratio": 3.545
+    },
+    {
+      "id": "graphs-proc3d",
+      "de": 5.945,
+      "wa": 1.677,
+      "ratio": 3.546
+    },
+    {
+      "id": "graphs-tree",
+      "de": 1.063,
+      "wa": 0.3,
+      "ratio": 3.546
+    },
+    {
+      "id": "linux.i386-dfa",
+      "de": 2.531,
+      "wa": 0.714,
+      "ratio": 3.547
+    },
+    {
+      "id": "windows-b36",
+      "de": 6.941,
+      "wa": 1.955,
+      "ratio": 3.549
+    },
+    {
+      "id": "tree-doc-neato-jho",
+      "de": 34.762,
+      "wa": 9.778,
+      "ratio": 3.555
+    },
+    {
+      "id": "graphs-fig6",
+      "de": 9.457,
+      "wa": 2.66,
+      "ratio": 3.555
+    },
+    {
+      "id": "graphs-grdradial_node",
+      "de": 0.556,
+      "wa": 0.156,
+      "ratio": 3.555
+    },
+    {
+      "id": "graphs-p2",
+      "de": 1.151,
+      "wa": 0.324,
+      "ratio": 3.557
+    },
+    {
+      "id": "graphs-weight",
+      "de": 5.992,
+      "wa": 1.685,
+      "ratio": 3.557
+    },
+    {
+      "id": "tree-graphs-directed-clust2",
+      "de": 1.024,
+      "wa": 0.287,
+      "ratio": 3.566
+    },
+    {
+      "id": "2406",
+      "de": 0.426,
+      "wa": 0.12,
+      "ratio": 3.566
+    },
+    {
+      "id": "graphs-b993",
+      "de": 0.441,
+      "wa": 0.124,
+      "ratio": 3.566
+    },
+    {
+      "id": "nshare-overlap_neato",
+      "de": 23.179,
+      "wa": 6.496,
+      "ratio": 3.568
+    },
+    {
+      "id": "2683",
+      "de": 0.626,
+      "wa": 0.175,
+      "ratio": 3.571
+    },
+    {
+      "id": "graphs-badvoro",
+      "de": 1052.726,
+      "wa": 294.76,
+      "ratio": 3.571
+    },
+    {
+      "id": "894589",
+      "de": 37.65,
+      "wa": 10.537,
+      "ratio": 3.573
+    },
+    {
+      "id": "graphs-p3",
+      "de": 1.295,
+      "wa": 0.363,
+      "ratio": 3.573
+    },
+    {
+      "id": "2168_3",
+      "de": 0.442,
+      "wa": 0.124,
+      "ratio": 3.574
+    },
+    {
+      "id": "graphs-b145",
+      "de": 0.51,
+      "wa": 0.143,
+      "ratio": 3.574
+    },
+    {
+      "id": "graphs-triedds",
+      "de": 2.584,
+      "wa": 0.723,
+      "ratio": 3.575
+    },
+    {
+      "id": "tree-graphs-directed-psfonttest",
+      "de": 2.749,
+      "wa": 0.768,
+      "ratio": 3.579
+    },
+    {
+      "id": "tree-graphs-directed-sdh",
+      "de": 20.074,
+      "wa": 5.598,
+      "ratio": 3.586
+    },
+    {
+      "id": "linux.x86-rowcolsep_dot1",
+      "de": 0.543,
+      "wa": 0.151,
+      "ratio": 3.586
+    },
+    {
+      "id": "graphs-xx",
+      "de": 259.874,
+      "wa": 72.409,
+      "ratio": 3.589
+    },
+    {
+      "id": "tree-graphs-directed-clust3",
+      "de": 1.094,
+      "wa": 0.305,
+      "ratio": 3.59
+    },
+    {
+      "id": "1856",
+      "de": 0.942,
+      "wa": 0.262,
+      "ratio": 3.595
+    },
+    {
+      "id": "graphs-colorscheme",
+      "de": 0.499,
+      "wa": 0.139,
+      "ratio": 3.596
+    },
+    {
+      "id": "graphs-clover",
+      "de": 0.709,
+      "wa": 0.197,
+      "ratio": 3.597
+    },
+    {
+      "id": "nshare-rankdir_dot2",
+      "de": 7.504,
+      "wa": 2.085,
+      "ratio": 3.598
+    },
+    {
+      "id": "windows-KW91",
+      "de": 1.523,
+      "wa": 0.423,
+      "ratio": 3.599
+    },
+    {
+      "id": "graphs-shells",
+      "de": 4.166,
+      "wa": 1.157,
+      "ratio": 3.6
+    },
+    {
+      "id": "share-rowe",
+      "de": 14.161,
+      "wa": 3.933,
+      "ratio": 3.6
+    },
+    {
+      "id": "tree-doc-dotguide-html",
+      "de": 0.535,
+      "wa": 0.148,
+      "ratio": 3.604
+    },
+    {
+      "id": "tree-graphs-directed-biological",
+      "de": 2.139,
+      "wa": 0.593,
+      "ratio": 3.609
+    },
+    {
+      "id": "windows-b102",
+      "de": 269.339,
+      "wa": 74.558,
+      "ratio": 3.612
+    },
+    {
+      "id": "2413_1",
+      "de": 0.888,
+      "wa": 0.245,
+      "ratio": 3.618
+    },
+    {
+      "id": "regression_tests-shapes-reference-egg",
+      "de": 0.444,
+      "wa": 0.123,
+      "ratio": 3.623
+    },
+    {
+      "id": "2502",
+      "de": 0.327,
+      "wa": 0.09,
+      "ratio": 3.626
+    },
+    {
+      "id": "2368_1",
+      "de": 0.67,
+      "wa": 0.185,
+      "ratio": 3.627
+    },
+    {
+      "id": "graphs-pack",
+      "de": 1.511,
+      "wa": 0.417,
+      "ratio": 3.627
+    },
+    {
+      "id": "share-jcctree",
+      "de": 1.901,
+      "wa": 0.524,
+      "ratio": 3.627
+    },
+    {
+      "id": "tree-graphs-directed-clust",
+      "de": 1.041,
+      "wa": 0.287,
+      "ratio": 3.629
+    },
+    {
+      "id": "graphs-jsort",
+      "de": 12.989,
+      "wa": 3.577,
+      "ratio": 3.631
+    },
+    {
+      "id": "windows-states",
+      "de": 1.106,
+      "wa": 0.305,
+      "ratio": 3.632
+    },
+    {
+      "id": "graphs-pm2way",
+      "de": 1.198,
+      "wa": 0.33,
+      "ratio": 3.635
+    },
+    {
+      "id": "tree-graphs-directed-awilliams",
+      "de": 9.493,
+      "wa": 2.611,
+      "ratio": 3.636
+    },
+    {
+      "id": "graphs-labelroot-fbr",
+      "de": 0.512,
+      "wa": 0.141,
+      "ratio": 3.636
+    },
+    {
+      "id": "graphs-grdlinear_node",
+      "de": 0.628,
+      "wa": 0.172,
+      "ratio": 3.648
+    },
+    {
+      "id": "share-shells",
+      "de": 4.812,
+      "wa": 1.319,
+      "ratio": 3.648
+    },
+    {
+      "id": "graphs-b102",
+      "de": 257.194,
+      "wa": 70.413,
+      "ratio": 3.653
+    },
+    {
+      "id": "windows-fig6",
+      "de": 10.675,
+      "wa": 2.922,
+      "ratio": 3.654
+    },
+    {
+      "id": "windows-b491",
+      "de": 0.543,
+      "wa": 0.148,
+      "ratio": 3.657
+    },
+    {
+      "id": "graphs-sl_circle_dbl",
+      "de": 4.044,
+      "wa": 1.106,
+      "ratio": 3.658
+    },
+    {
+      "id": "tree-doc-neato-fancy",
+      "de": 2.887,
+      "wa": 0.789,
+      "ratio": 3.659
+    },
+    {
+      "id": "tree-graphs-directed-unix2",
+      "de": 5.628,
+      "wa": 1.536,
+      "ratio": 3.663
+    },
+    {
+      "id": "tree-tclpkg-tcldot-examples-data-poly",
+      "de": 0.554,
+      "wa": 0.151,
+      "ratio": 3.664
     },
     {
       "id": "graphs-html2",
-      "de": 1.421,
-      "wa": 0.314,
-      "ratio": 4.524
+      "de": 1.254,
+      "wa": 0.342,
+      "ratio": 3.665
     },
     {
-      "id": "graphs-NaN",
-      "de": 16.526,
-      "wa": 3.65,
-      "ratio": 4.527
+      "id": "graphs-crazy",
+      "de": 7.095,
+      "wa": 1.935,
+      "ratio": 3.666
     },
     {
-      "id": "windows-labelclust-ftc",
-      "de": 0.763,
-      "wa": 0.168,
-      "ratio": 4.528
+      "id": "graphs-nhg",
+      "de": 0.779,
+      "wa": 0.212,
+      "ratio": 3.667
     },
     {
-      "id": "windows-labelclust-ftr",
-      "de": 0.708,
-      "wa": 0.156,
-      "ratio": 4.529
+      "id": "windows-labelroot-ndl",
+      "de": 0.635,
+      "wa": 0.173,
+      "ratio": 3.669
     },
     {
-      "id": "graphs-labelroot-ndl",
-      "de": 0.603,
-      "wa": 0.133,
-      "ratio": 4.535
+      "id": "windows-triedds",
+      "de": 3.163,
+      "wa": 0.862,
+      "ratio": 3.669
     },
     {
-      "id": "share-labelclust-ntc",
-      "de": 0.691,
+      "id": "windows-train11",
+      "de": 3.321,
+      "wa": 0.904,
+      "ratio": 3.672
+    },
+    {
+      "id": "2516",
+      "de": 0.469,
+      "wa": 0.127,
+      "ratio": 3.678
+    },
+    {
+      "id": "share-records",
+      "de": 1.082,
+      "wa": 0.294,
+      "ratio": 3.679
+    },
+    {
+      "id": "1514",
+      "de": 0.697,
+      "wa": 0.189,
+      "ratio": 3.683
+    },
+    {
+      "id": "nshare-html_dot",
+      "de": 0.771,
+      "wa": 0.209,
+      "ratio": 3.684
+    },
+    {
+      "id": "share-labelroot-ftr",
+      "de": 0.655,
+      "wa": 0.178,
+      "ratio": 3.69
+    },
+    {
+      "id": "share-grammar",
+      "de": 4.715,
+      "wa": 1.277,
+      "ratio": 3.693
+    },
+    {
+      "id": "share-labelroot-ndl",
+      "de": 0.626,
+      "wa": 0.17,
+      "ratio": 3.695
+    },
+    {
+      "id": "1328",
+      "de": 0.563,
       "wa": 0.152,
-      "ratio": 4.541
+      "ratio": 3.696
+    },
+    {
+      "id": "graphs-labelclust-fdr",
+      "de": 0.5,
+      "wa": 0.135,
+      "ratio": 3.696
+    },
+    {
+      "id": "linux.x86-nestedclust_dot",
+      "de": 0.833,
+      "wa": 0.225,
+      "ratio": 3.697
+    },
+    {
+      "id": "tree-graphs-undirected-Heawood",
+      "de": 2.687,
+      "wa": 0.727,
+      "ratio": 3.698
+    },
+    {
+      "id": "graphs-nojustify",
+      "de": 0.625,
+      "wa": 0.169,
+      "ratio": 3.703
+    },
+    {
+      "id": "graphs-labelroot-fdd",
+      "de": 0.516,
+      "wa": 0.139,
+      "ratio": 3.705
+    },
+    {
+      "id": "graphs-b58",
+      "de": 0.802,
+      "wa": 0.216,
+      "ratio": 3.707
+    },
+    {
+      "id": "tree-doc-neato-inet",
+      "de": 3.752,
+      "wa": 1.011,
+      "ratio": 3.711
+    },
+    {
+      "id": "1213-1",
+      "de": 2.246,
+      "wa": 0.605,
+      "ratio": 3.711
+    },
+    {
+      "id": "share-labelroot-ntl",
+      "de": 0.604,
+      "wa": 0.163,
+      "ratio": 3.711
+    },
+    {
+      "id": "graphs-b15",
+      "de": 30.458,
+      "wa": 8.192,
+      "ratio": 3.718
+    },
+    {
+      "id": "graphs-sr_box",
+      "de": 3.074,
+      "wa": 0.827,
+      "ratio": 3.718
+    },
+    {
+      "id": "nshare-flatedge_dot",
+      "de": 0.87,
+      "wa": 0.234,
+      "ratio": 3.719
+    },
+    {
+      "id": "2476",
+      "de": 5.945,
+      "wa": 1.598,
+      "ratio": 3.721
+    },
+    {
+      "id": "share-clust",
+      "de": 1.376,
+      "wa": 0.369,
+      "ratio": 3.725
+    },
+    {
+      "id": "graphs-labelroot-fbc",
+      "de": 0.532,
+      "wa": 0.143,
+      "ratio": 3.727
+    },
+    {
+      "id": "graphs-labelclust-ftr",
+      "de": 0.511,
+      "wa": 0.137,
+      "ratio": 3.729
+    },
+    {
+      "id": "graphs-sr_circle_dbl",
+      "de": 4.085,
+      "wa": 1.095,
+      "ratio": 3.729
+    },
+    {
+      "id": "graphs-world",
+      "de": 9.9,
+      "wa": 2.654,
+      "ratio": 3.73
+    },
+    {
+      "id": "2239",
+      "de": 29.806,
+      "wa": 7.988,
+      "ratio": 3.731
+    },
+    {
+      "id": "241_0",
+      "de": 2.062,
+      "wa": 0.552,
+      "ratio": 3.732
+    },
+    {
+      "id": "linux.i386-radius_dot",
+      "de": 0.629,
+      "wa": 0.169,
+      "ratio": 3.732
+    },
+    {
+      "id": "graphs-NewCenturySchlbk",
+      "de": 1.013,
+      "wa": 0.271,
+      "ratio": 3.733
+    },
+    {
+      "id": "graphs-labelclust-fbd",
+      "de": 0.509,
+      "wa": 0.136,
+      "ratio": 3.733
+    },
+    {
+      "id": "windows-b94",
+      "de": 8.62,
+      "wa": 2.308,
+      "ratio": 3.735
+    },
+    {
+      "id": "graphs-sl_circle",
+      "de": 2.955,
+      "wa": 0.791,
+      "ratio": 3.736
+    },
+    {
+      "id": "nshare-neatosplines_neato",
+      "de": 24.546,
+      "wa": 6.568,
+      "ratio": 3.737
+    },
+    {
+      "id": "nshare-weight_dot",
+      "de": 7.202,
+      "wa": 1.926,
+      "ratio": 3.74
+    },
+    {
+      "id": "graphs-labelclust-ndc",
+      "de": 0.53,
+      "wa": 0.142,
+      "ratio": 3.743
+    },
+    {
+      "id": "share-clust4",
+      "de": 1.862,
+      "wa": 0.497,
+      "ratio": 3.747
+    },
+    {
+      "id": "tree-doc-dotguide-tee",
+      "de": 0.353,
+      "wa": 0.094,
+      "ratio": 3.748
+    },
+    {
+      "id": "graphs-labelclust-ndr",
+      "de": 0.521,
+      "wa": 0.139,
+      "ratio": 3.748
+    },
+    {
+      "id": "share-b36",
+      "de": 6.887,
+      "wa": 1.837,
+      "ratio": 3.749
+    },
+    {
+      "id": "windows-process",
+      "de": 1.635,
+      "wa": 0.436,
+      "ratio": 3.751
+    },
+    {
+      "id": "graphs-alf",
+      "de": 2.176,
+      "wa": 0.579,
+      "ratio": 3.76
+    },
+    {
+      "id": "windows-unix2",
+      "de": 7.448,
+      "wa": 1.98,
+      "ratio": 3.761
+    },
+    {
+      "id": "tree-graphs-directed-abstract",
+      "de": 9.399,
+      "wa": 2.498,
+      "ratio": 3.763
+    },
+    {
+      "id": "1624",
+      "de": 0.71,
+      "wa": 0.189,
+      "ratio": 3.764
+    },
+    {
+      "id": "windows-labelroot-ftc",
+      "de": 0.656,
+      "wa": 0.174,
+      "ratio": 3.764
+    },
+    {
+      "id": "windows-world",
+      "de": 10.945,
+      "wa": 2.907,
+      "ratio": 3.765
+    },
+    {
+      "id": "linux.x86-ordering_dot",
+      "de": 1.474,
+      "wa": 0.391,
+      "ratio": 3.766
+    },
+    {
+      "id": "tree-doc-neato-ER",
+      "de": 1.53,
+      "wa": 0.406,
+      "ratio": 3.768
+    },
+    {
+      "id": "1896",
+      "de": 0.922,
+      "wa": 0.245,
+      "ratio": 3.768
+    },
+    {
+      "id": "windows-labelroot-ntd",
+      "de": 0.618,
+      "wa": 0.164,
+      "ratio": 3.768
+    },
+    {
+      "id": "graphs-labelroot-fbl",
+      "de": 0.529,
+      "wa": 0.14,
+      "ratio": 3.769
+    },
+    {
+      "id": "windows-newarrows",
+      "de": 3.896,
+      "wa": 1.033,
+      "ratio": 3.772
+    },
+    {
+      "id": "tree-doc-infosrc-colorlist",
+      "de": 0.45,
+      "wa": 0.119,
+      "ratio": 3.773
+    },
+    {
+      "id": "graphs-b77",
+      "de": 0.546,
+      "wa": 0.145,
+      "ratio": 3.775
+    },
+    {
+      "id": "graphs-fdp",
+      "de": 0.773,
+      "wa": 0.205,
+      "ratio": 3.776
+    },
+    {
+      "id": "1435",
+      "de": 2.432,
+      "wa": 0.643,
+      "ratio": 3.783
+    },
+    {
+      "id": "2851",
+      "de": 0.957,
+      "wa": 0.253,
+      "ratio": 3.783
+    },
+    {
+      "id": "tree-graphs-directed-switch",
+      "de": 7.647,
+      "wa": 2.021,
+      "ratio": 3.784
+    },
+    {
+      "id": "windows-clust2",
+      "de": 1.198,
+      "wa": 0.316,
+      "ratio": 3.788
+    },
+    {
+      "id": "tree-graphs-directed-pmpipe",
+      "de": 2.155,
+      "wa": 0.569,
+      "ratio": 3.789
+    },
+    {
+      "id": "graphs-labelclust-ftl",
+      "de": 0.505,
+      "wa": 0.133,
+      "ratio": 3.79
+    },
+    {
+      "id": "share-labelroot-nbr",
+      "de": 0.646,
+      "wa": 0.17,
+      "ratio": 3.79
+    },
+    {
+      "id": "1902",
+      "de": 0.832,
+      "wa": 0.22,
+      "ratio": 3.791
+    },
+    {
+      "id": "nshare-ordering_dot",
+      "de": 1.585,
+      "wa": 0.417,
+      "ratio": 3.796
+    },
+    {
+      "id": "1585_0",
+      "de": 0.464,
+      "wa": 0.122,
+      "ratio": 3.797
+    },
+    {
+      "id": "1949",
+      "de": 4.843,
+      "wa": 1.274,
+      "ratio": 3.801
+    },
+    {
+      "id": "windows-rowe",
+      "de": 15.481,
+      "wa": 4.073,
+      "ratio": 3.801
+    },
+    {
+      "id": "graphs-dd",
+      "de": 0.936,
+      "wa": 0.246,
+      "ratio": 3.803
+    },
+    {
+      "id": "705",
+      "de": 0.615,
+      "wa": 0.162,
+      "ratio": 3.805
+    },
+    {
+      "id": "share-b786",
+      "de": 1.714,
+      "wa": 0.45,
+      "ratio": 3.805
+    },
+    {
+      "id": "graphs-shapes",
+      "de": 3.128,
+      "wa": 0.822,
+      "ratio": 3.806
+    },
+    {
+      "id": "graphs-mode",
+      "de": 37.232,
+      "wa": 9.78,
+      "ratio": 3.807
+    },
+    {
+      "id": "share-labelroot-ntr",
+      "de": 0.605,
+      "wa": 0.159,
+      "ratio": 3.807
+    },
+    {
+      "id": "tree-doc-dotguide-asde91",
+      "de": 18.244,
+      "wa": 4.787,
+      "ratio": 3.811
+    },
+    {
+      "id": "2368",
+      "de": 1.929,
+      "wa": 0.506,
+      "ratio": 3.812
+    },
+    {
+      "id": "linux.x86-ordering_dot1",
+      "de": 1.472,
+      "wa": 0.386,
+      "ratio": 3.814
+    },
+    {
+      "id": "windows-abstract",
+      "de": 11.324,
+      "wa": 2.968,
+      "ratio": 3.815
+    },
+    {
+      "id": "windows-Petersen",
+      "de": 2.061,
+      "wa": 0.54,
+      "ratio": 3.816
+    },
+    {
+      "id": "1767",
+      "de": 1.316,
+      "wa": 0.345,
+      "ratio": 3.818
+    },
+    {
+      "id": "tree-graphs-directed-arr_none",
+      "de": 1.903,
+      "wa": 0.498,
+      "ratio": 3.823
+    },
+    {
+      "id": "nshare-pack_neato",
+      "de": 2.028,
+      "wa": 0.53,
+      "ratio": 3.823
+    },
+    {
+      "id": "graphs-clust4",
+      "de": 1.581,
+      "wa": 0.413,
+      "ratio": 3.828
+    },
+    {
+      "id": "share-fig6",
+      "de": 11.193,
+      "wa": 2.922,
+      "ratio": 3.83
+    },
+    {
+      "id": "tree-graphs-directed-nhg",
+      "de": 0.878,
+      "wa": 0.229,
+      "ratio": 3.832
+    },
+    {
+      "id": "graphs-st_box",
+      "de": 2.945,
+      "wa": 0.768,
+      "ratio": 3.832
+    },
+    {
+      "id": "925",
+      "de": 0.436,
+      "wa": 0.114,
+      "ratio": 3.833
+    },
+    {
+      "id": "tree-doc-neato-typeshar",
+      "de": 7.534,
+      "wa": 1.964,
+      "ratio": 3.836
+    },
+    {
+      "id": "graphs-labelclust-ntr",
+      "de": 0.523,
+      "wa": 0.136,
+      "ratio": 3.843
+    },
+    {
+      "id": "graphs-labelclust-ntc",
+      "de": 0.508,
+      "wa": 0.132,
+      "ratio": 3.846
+    },
+    {
+      "id": "windows-records",
+      "de": 1.089,
+      "wa": 0.283,
+      "ratio": 3.848
+    },
+    {
+      "id": "tree-graphs-directed-NaN",
+      "de": 14.071,
+      "wa": 3.655,
+      "ratio": 3.85
+    },
+    {
+      "id": "graphs-labelclust-nbr",
+      "de": 0.52,
+      "wa": 0.135,
+      "ratio": 3.853
+    },
+    {
+      "id": "graphs-Bookman",
+      "de": 1.102,
+      "wa": 0.286,
+      "ratio": 3.855
+    },
+    {
+      "id": "graphs-labelroot-nbl",
+      "de": 0.597,
+      "wa": 0.155,
+      "ratio": 3.861
+    },
+    {
+      "id": "graphs-clust",
+      "de": 1.11,
+      "wa": 0.287,
+      "ratio": 3.862
+    },
+    {
+      "id": "graphs-labelclust-ftc",
+      "de": 0.537,
+      "wa": 0.139,
+      "ratio": 3.863
+    },
+    {
+      "id": "graphs-labelclust-ntd",
+      "de": 0.499,
+      "wa": 0.129,
+      "ratio": 3.864
+    },
+    {
+      "id": "tree-contrib-dirgraph-linux",
+      "de": 20.28,
+      "wa": 5.246,
+      "ratio": 3.866
+    },
+    {
+      "id": "nshare-neatosplines_neato1",
+      "de": 21.295,
+      "wa": 5.504,
+      "ratio": 3.869
+    },
+    {
+      "id": "graphs-labelclust-ntl",
+      "de": 0.521,
+      "wa": 0.135,
+      "ratio": 3.87
+    },
+    {
+      "id": "share-alf",
+      "de": 2.541,
+      "wa": 0.655,
+      "ratio": 3.877
+    },
+    {
+      "id": "2619_1",
+      "de": 2.547,
+      "wa": 0.657,
+      "ratio": 3.879
+    },
+    {
+      "id": "2082",
+      "de": 1.925,
+      "wa": 0.496,
+      "ratio": 3.88
     },
     {
       "id": "windows-labelclust-ndc",
       "de": 0.694,
-      "wa": 0.153,
-      "ratio": 4.546
+      "wa": 0.179,
+      "ratio": 3.88
     },
     {
-      "id": "linux.x86-shapes_dot",
-      "de": 4.093,
-      "wa": 0.899,
-      "ratio": 4.553
+      "id": "graphs-newarrows",
+      "de": 3.434,
+      "wa": 0.885,
+      "ratio": 3.882
+    },
+    {
+      "id": "tree-graphs-directed-fsm",
+      "de": 1.969,
+      "wa": 0.507,
+      "ratio": 3.886
+    },
+    {
+      "id": "graphs-b34",
+      "de": 1.022,
+      "wa": 0.263,
+      "ratio": 3.888
+    },
+    {
+      "id": "graphs-labelclust-nbc",
+      "de": 0.526,
+      "wa": 0.135,
+      "ratio": 3.889
+    },
+    {
+      "id": "windows-grammar",
+      "de": 4.502,
+      "wa": 1.157,
+      "ratio": 3.89
+    },
+    {
+      "id": "windows-labelroot-ntl",
+      "de": 0.644,
+      "wa": 0.166,
+      "ratio": 3.89
+    },
+    {
+      "id": "windows-pgram",
+      "de": 8.896,
+      "wa": 2.287,
+      "ratio": 3.89
+    },
+    {
+      "id": "graphs-labelclust-fbr",
+      "de": 0.525,
+      "wa": 0.135,
+      "ratio": 3.892
+    },
+    {
+      "id": "graphs-labelclust-fdd",
+      "de": 0.515,
+      "wa": 0.132,
+      "ratio": 3.893
+    },
+    {
+      "id": "share-labelroot-fdr",
+      "de": 0.651,
+      "wa": 0.167,
+      "ratio": 3.893
+    },
+    {
+      "id": "share-labelroot-ntc",
+      "de": 0.638,
+      "wa": 0.163,
+      "ratio": 3.9
+    },
+    {
+      "id": "windows-labelroot-nbl",
+      "de": 0.627,
+      "wa": 0.161,
+      "ratio": 3.904
+    },
+    {
+      "id": "windows-unix2k",
+      "de": 7.045,
+      "wa": 1.804,
+      "ratio": 3.905
+    },
+    {
+      "id": "windows-viewfile",
+      "de": 4.091,
+      "wa": 1.048,
+      "ratio": 3.905
+    },
+    {
+      "id": "2184",
+      "de": 1.152,
+      "wa": 0.295,
+      "ratio": 3.911
+    },
+    {
+      "id": "share-process",
+      "de": 1.619,
+      "wa": 0.414,
+      "ratio": 3.913
+    },
+    {
+      "id": "nshare-ports_dot",
+      "de": 2.869,
+      "wa": 0.733,
+      "ratio": 3.914
+    },
+    {
+      "id": "graphs-labelroot-fdc",
+      "de": 0.541,
+      "wa": 0.138,
+      "ratio": 3.915
+    },
+    {
+      "id": "tree-graphs-directed-mike",
+      "de": 3.738,
+      "wa": 0.954,
+      "ratio": 3.916
+    },
+    {
+      "id": "windows-NaN",
+      "de": 16.929,
+      "wa": 4.323,
+      "ratio": 3.916
+    },
+    {
+      "id": "graphs-b94",
+      "de": 9.954,
+      "wa": 2.541,
+      "ratio": 3.917
+    },
+    {
+      "id": "graphs-sides",
+      "de": 0.586,
+      "wa": 0.15,
+      "ratio": 3.918
+    },
+    {
+      "id": "graphs-b",
+      "de": 0.858,
+      "wa": 0.219,
+      "ratio": 3.921
+    },
+    {
+      "id": "2852",
+      "de": 2.168,
+      "wa": 0.553,
+      "ratio": 3.923
+    },
+    {
+      "id": "graphs-labelclust-nbl",
+      "de": 0.527,
+      "wa": 0.134,
+      "ratio": 3.923
+    },
+    {
+      "id": "graphs-layer2",
+      "de": 0.775,
+      "wa": 0.197,
+      "ratio": 3.924
+    },
+    {
+      "id": "macosx-radius_dot",
+      "de": 0.693,
+      "wa": 0.177,
+      "ratio": 3.927
+    },
+    {
+      "id": "windows-labelroot-fbd",
+      "de": 0.696,
+      "wa": 0.177,
+      "ratio": 3.928
+    },
+    {
+      "id": "graphs-labelclust-nbd",
+      "de": 0.522,
+      "wa": 0.133,
+      "ratio": 3.929
+    },
+    {
+      "id": "share-labelroot-ndc",
+      "de": 0.654,
+      "wa": 0.166,
+      "ratio": 3.931
+    },
+    {
+      "id": "share-tree",
+      "de": 1.311,
+      "wa": 0.333,
+      "ratio": 3.932
+    },
+    {
+      "id": "2563",
+      "de": 0.477,
+      "wa": 0.121,
+      "ratio": 3.933
+    },
+    {
+      "id": "share-labelroot-ndr",
+      "de": 0.631,
+      "wa": 0.16,
+      "ratio": 3.935
+    },
+    {
+      "id": "graphs-lsunix3",
+      "de": 5.726,
+      "wa": 1.455,
+      "ratio": 3.936
+    },
+    {
+      "id": "1436",
+      "de": 5.042,
+      "wa": 1.28,
+      "ratio": 3.94
+    },
+    {
+      "id": "graphs-sr_box_dbl",
+      "de": 4.332,
+      "wa": 1.1,
+      "ratio": 3.94
+    },
+    {
+      "id": "windows-proc3d",
+      "de": 7.459,
+      "wa": 1.893,
+      "ratio": 3.94
+    },
+    {
+      "id": "graphs-structs",
+      "de": 0.556,
+      "wa": 0.141,
+      "ratio": 3.942
+    },
+    {
+      "id": "windows-labelclust-ntr",
+      "de": 0.655,
+      "wa": 0.166,
+      "ratio": 3.943
+    },
+    {
+      "id": "share-labelroot-nbl",
+      "de": 0.646,
+      "wa": 0.164,
+      "ratio": 3.944
+    },
+    {
+      "id": "700813",
+      "de": 0.691,
+      "wa": 0.175,
+      "ratio": 3.945
+    },
+    {
+      "id": "42",
+      "de": 80.304,
+      "wa": 20.35,
+      "ratio": 3.946
+    },
+    {
+      "id": "1367",
+      "de": 7.229,
+      "wa": 1.831,
+      "ratio": 3.948
+    },
+    {
+      "id": "graphs-st_box_dbl",
+      "de": 4.171,
+      "wa": 1.057,
+      "ratio": 3.948
+    },
+    {
+      "id": "share-labelroot-ftl",
+      "de": 0.663,
+      "wa": 0.168,
+      "ratio": 3.949
+    },
+    {
+      "id": "2159",
+      "de": 0.627,
+      "wa": 0.159,
+      "ratio": 3.951
+    },
+    {
+      "id": "tree-graphs-directed-jcctree",
+      "de": 1.765,
+      "wa": 0.446,
+      "ratio": 3.955
+    },
+    {
+      "id": "graphs-clusters",
+      "de": 1.588,
+      "wa": 0.401,
+      "ratio": 3.955
+    },
+    {
+      "id": "windows-labelroot-ndr",
+      "de": 0.663,
+      "wa": 0.168,
+      "ratio": 3.955
+    },
+    {
+      "id": "121",
+      "de": 0.777,
+      "wa": 0.196,
+      "ratio": 3.959
+    },
+    {
+      "id": "2559",
+      "de": 0.497,
+      "wa": 0.126,
+      "ratio": 3.959
+    },
+    {
+      "id": "graphs-japanese",
+      "de": 0.965,
+      "wa": 0.243,
+      "ratio": 3.964
+    },
+    {
+      "id": "graphs-nestedclust",
+      "de": 0.751,
+      "wa": 0.19,
+      "ratio": 3.964
+    },
+    {
+      "id": "graphs-viewport",
+      "de": 41.011,
+      "wa": 10.342,
+      "ratio": 3.965
+    },
+    {
+      "id": "windows-shells",
+      "de": 5.648,
+      "wa": 1.423,
+      "ratio": 3.968
+    },
+    {
+      "id": "graphs-labelclust-ftd",
+      "de": 0.53,
+      "wa": 0.134,
+      "ratio": 3.973
+    },
+    {
+      "id": "windows-labelroot-fdl",
+      "de": 0.618,
+      "wa": 0.156,
+      "ratio": 3.973
+    },
+    {
+      "id": "share-labelroot-ntd",
+      "de": 0.622,
+      "wa": 0.157,
+      "ratio": 3.975
+    },
+    {
+      "id": "tree-contrib-dirgraph-bsdkernel",
+      "de": 11.317,
+      "wa": 2.846,
+      "ratio": 3.977
+    },
+    {
+      "id": "graphs-longflat",
+      "de": 0.418,
+      "wa": 0.105,
+      "ratio": 3.979
+    },
+    {
+      "id": "share-viewfile",
+      "de": 4.277,
+      "wa": 1.074,
+      "ratio": 3.981
+    },
+    {
+      "id": "241_1",
+      "de": 2.412,
+      "wa": 0.606,
+      "ratio": 3.982
+    },
+    {
+      "id": "1909",
+      "de": 0.424,
+      "wa": 0.106,
+      "ratio": 3.986
+    },
+    {
+      "id": "tree-graphs-directed-world",
+      "de": 10.117,
+      "wa": 2.534,
+      "ratio": 3.993
+    },
+    {
+      "id": "graphs-labelclust-fdl",
+      "de": 0.546,
+      "wa": 0.137,
+      "ratio": 3.997
+    },
+    {
+      "id": "linux.x86-compound_dot",
+      "de": 1.255,
+      "wa": 0.314,
+      "ratio": 3.997
+    },
+    {
+      "id": "2242",
+      "de": 2.874,
+      "wa": 0.719,
+      "ratio": 3.998
+    },
+    {
+      "id": "tree-graphs-directed-viewfile",
+      "de": 3.549,
+      "wa": 0.887,
+      "ratio": 3.999
+    },
+    {
+      "id": "tree-graphs-directed-oldarrows",
+      "de": 3.645,
+      "wa": 0.911,
+      "ratio": 4
+    },
+    {
+      "id": "tree-doc-neato-process",
+      "de": 1.447,
+      "wa": 0.362,
+      "ratio": 4.001
+    },
+    {
+      "id": "share-labelroot-nbc",
+      "de": 0.652,
+      "wa": 0.163,
+      "ratio": 4.002
+    },
+    {
+      "id": "tree-graphs-directed-records",
+      "de": 1.015,
+      "wa": 0.253,
+      "ratio": 4.006
+    },
+    {
+      "id": "1585_1",
+      "de": 0.563,
+      "wa": 0.14,
+      "ratio": 4.008
+    },
+    {
+      "id": "windows-labelroot-ndc",
+      "de": 0.637,
+      "wa": 0.159,
+      "ratio": 4.01
+    },
+    {
+      "id": "windows-labelroot-ftd",
+      "de": 0.659,
+      "wa": 0.164,
+      "ratio": 4.011
+    },
+    {
+      "id": "2801",
+      "de": 0.86,
+      "wa": 0.214,
+      "ratio": 4.012
+    },
+    {
+      "id": "tree-doc-dotguide-hashtable",
+      "de": 1.267,
+      "wa": 0.316,
+      "ratio": 4.013
+    },
+    {
+      "id": "graphs-layers",
+      "de": 0.74,
+      "wa": 0.184,
+      "ratio": 4.017
+    },
+    {
+      "id": "windows-labelroot-fdr",
+      "de": 0.67,
+      "wa": 0.167,
+      "ratio": 4.018
+    },
+    {
+      "id": "tree-graphs-directed-honda-tokoro",
+      "de": 4.654,
+      "wa": 1.157,
+      "ratio": 4.02
+    },
+    {
+      "id": "graphs-lsunix2",
+      "de": 5.885,
+      "wa": 1.464,
+      "ratio": 4.021
+    },
+    {
+      "id": "share-world",
+      "de": 11.711,
+      "wa": 2.912,
+      "ratio": 4.021
+    },
+    {
+      "id": "windows-labelroot-fdc",
+      "de": 0.687,
+      "wa": 0.171,
+      "ratio": 4.024
     },
     {
       "id": "graphs-clust3",
-      "de": 1.213,
-      "wa": 0.265,
-      "ratio": 4.575
+      "de": 1.13,
+      "wa": 0.281,
+      "ratio": 4.028
     },
     {
-      "id": "windows-ldbxtried",
-      "de": 12.764,
-      "wa": 2.789,
-      "ratio": 4.577
+      "id": "windows-labelroot-ndd",
+      "de": 0.644,
+      "wa": 0.16,
+      "ratio": 4.028
     },
     {
-      "id": "windows-labelclust-ftd",
-      "de": 0.76,
+      "id": "graphs-labelclust-ndl",
+      "de": 0.526,
+      "wa": 0.131,
+      "ratio": 4.03
+    },
+    {
+      "id": "graphs-Helvetica",
+      "de": 2.072,
+      "wa": 0.514,
+      "ratio": 4.031
+    },
+    {
+      "id": "windows-labelroot-ftl",
+      "de": 0.654,
+      "wa": 0.162,
+      "ratio": 4.032
+    },
+    {
+      "id": "tree-graphs-directed-ctext",
+      "de": 0.838,
+      "wa": 0.208,
+      "ratio": 4.034
+    },
+    {
+      "id": "share-labelroot-fdc",
+      "de": 0.681,
+      "wa": 0.169,
+      "ratio": 4.035
+    },
+    {
+      "id": "graphs-layer",
+      "de": 0.772,
+      "wa": 0.191,
+      "ratio": 4.037
+    },
+    {
+      "id": "nshare-html2_dot",
+      "de": 1.45,
+      "wa": 0.359,
+      "ratio": 4.04
+    },
+    {
+      "id": "tree-graphs-directed-try",
+      "de": 1.319,
+      "wa": 0.326,
+      "ratio": 4.041
+    },
+    {
+      "id": "1990",
+      "de": 2.162,
+      "wa": 0.535,
+      "ratio": 4.041
+    },
+    {
+      "id": "graphs-awilliams",
+      "de": 10.506,
+      "wa": 2.599,
+      "ratio": 4.042
+    },
+    {
+      "id": "graphs-b69",
+      "de": 25.59,
+      "wa": 6.33,
+      "ratio": 4.043
+    },
+    {
+      "id": "share-clust2",
+      "de": 1.37,
+      "wa": 0.339,
+      "ratio": 4.046
+    },
+    {
+      "id": "windows-labelroot-nbc",
+      "de": 0.658,
+      "wa": 0.163,
+      "ratio": 4.046
+    },
+    {
+      "id": "graphs-sl_box_dbl",
+      "de": 4.448,
+      "wa": 1.099,
+      "ratio": 4.047
+    },
+    {
+      "id": "1880",
+      "de": 5.14,
+      "wa": 1.27,
+      "ratio": 4.048
+    },
+    {
+      "id": "linux.x86-html_dot",
+      "de": 0.877,
+      "wa": 0.217,
+      "ratio": 4.048
+    },
+    {
+      "id": "2572",
+      "de": 0.513,
+      "wa": 0.127,
+      "ratio": 4.052
+    },
+    {
+      "id": "windows-labelclust-nbd",
+      "de": 0.684,
+      "wa": 0.169,
+      "ratio": 4.052
+    },
+    {
+      "id": "share-labelroot-fdl",
+      "de": 0.67,
+      "wa": 0.165,
+      "ratio": 4.053
+    },
+    {
+      "id": "graphs-Symbol",
+      "de": 1.489,
+      "wa": 0.367,
+      "ratio": 4.054
+    },
+    {
+      "id": "windows-tree",
+      "de": 1.404,
+      "wa": 0.346,
+      "ratio": 4.061
+    },
+    {
+      "id": "2484",
+      "de": 0.518,
+      "wa": 0.127,
+      "ratio": 4.065
+    },
+    {
+      "id": "tree-graphs-directed-proc3d",
+      "de": 6.49,
+      "wa": 1.596,
+      "ratio": 4.067
+    },
+    {
+      "id": "share-abstract",
+      "de": 11.698,
+      "wa": 2.876,
+      "ratio": 4.067
+    },
+    {
+      "id": "share-newarrows",
+      "de": 3.857,
+      "wa": 0.948,
+      "ratio": 4.067
+    },
+    {
+      "id": "graphs-grammar",
+      "de": 4.153,
+      "wa": 1.021,
+      "ratio": 4.069
+    },
+    {
+      "id": "windows-labelroot-fdd",
+      "de": 0.651,
+      "wa": 0.16,
+      "ratio": 4.071
+    },
+    {
+      "id": "share-labelroot-fbr",
+      "de": 0.699,
+      "wa": 0.172,
+      "ratio": 4.075
+    },
+    {
+      "id": "nshare-ordering_dot1",
+      "de": 1.664,
+      "wa": 0.408,
+      "ratio": 4.078
+    },
+    {
+      "id": "graphs-honda-tokoro",
+      "de": 5.055,
+      "wa": 1.239,
+      "ratio": 4.081
+    },
+    {
+      "id": "graphs-clust5",
+      "de": 1.498,
+      "wa": 0.367,
+      "ratio": 4.085
+    },
+    {
+      "id": "share-labelroot-ndd",
+      "de": 0.662,
+      "wa": 0.162,
+      "ratio": 4.088
+    },
+    {
+      "id": "tree-graphs-directed-rowe",
+      "de": 14.893,
+      "wa": 3.641,
+      "ratio": 4.09
+    },
+    {
+      "id": "windows-labelclust-ntc",
+      "de": 0.707,
+      "wa": 0.173,
+      "ratio": 4.09
+    },
+    {
+      "id": "graphs-html",
+      "de": 0.826,
+      "wa": 0.202,
+      "ratio": 4.091
+    },
+    {
+      "id": "graphs-rowcolsep",
+      "de": 0.65,
+      "wa": 0.159,
+      "ratio": 4.093
+    },
+    {
+      "id": "graphs-sl_box",
+      "de": 3.374,
+      "wa": 0.824,
+      "ratio": 4.093
+    },
+    {
+      "id": "share-pgram",
+      "de": 8.823,
+      "wa": 2.151,
+      "ratio": 4.101
+    },
+    {
+      "id": "windows-labelroot-nbd",
+      "de": 0.662,
+      "wa": 0.161,
+      "ratio": 4.101
+    },
+    {
+      "id": "linux.x86-arrows_dot",
+      "de": 4.304,
+      "wa": 1.049,
+      "ratio": 4.103
+    },
+    {
+      "id": "windows-labelclust-nbr",
+      "de": 0.68,
       "wa": 0.166,
-      "ratio": 4.586
+      "ratio": 4.104
     },
     {
       "id": "1898",
-      "de": 8.053,
-      "wa": 1.753,
-      "ratio": 4.594
+      "de": 6.551,
+      "wa": 1.596,
+      "ratio": 4.105
     },
     {
-      "id": "1925",
-      "de": 0.626,
-      "wa": 0.136,
-      "ratio": 4.597
+      "id": "tree-doc-infosrc-round",
+      "de": 0.578,
+      "wa": 0.141,
+      "ratio": 4.106
     },
     {
-      "id": "graphs-labelroot-nbd",
-      "de": 0.605,
-      "wa": 0.131,
-      "ratio": 4.617
+      "id": "tree-contrib-sdlshapes-sdlshapes",
+      "de": 4.372,
+      "wa": 1.064,
+      "ratio": 4.111
     },
     {
-      "id": "share-labelclust-ndc",
-      "de": 0.724,
-      "wa": 0.156,
-      "ratio": 4.636
+      "id": "tree-doc-dotguide-fsm",
+      "de": 1.995,
+      "wa": 0.485,
+      "ratio": 4.113
     },
     {
-      "id": "graphs-labelroot-ndd",
-      "de": 0.649,
-      "wa": 0.14,
-      "ratio": 4.642
+      "id": "share-labelclust-ntr",
+      "de": 0.732,
+      "wa": 0.178,
+      "ratio": 4.117
     },
     {
-      "id": "graphs-lsunix1",
-      "de": 6.531,
-      "wa": 1.4,
-      "ratio": 4.665
-    },
-    {
-      "id": "graphs-grdcluster",
-      "de": 1.043,
-      "wa": 0.223,
-      "ratio": 4.675
+      "id": "tree-graphs-directed-clust4",
+      "de": 1.7,
+      "wa": 0.412,
+      "ratio": 4.122
     },
     {
       "id": "graphs-record",
-      "de": 2.606,
-      "wa": 0.558,
-      "ratio": 4.675
+      "de": 2.358,
+      "wa": 0.571,
+      "ratio": 4.128
     },
     {
-      "id": "share-labelclust-ndl",
-      "de": 0.733,
-      "wa": 0.157,
-      "ratio": 4.677
+      "id": "windows-try",
+      "de": 1.498,
+      "wa": 0.363,
+      "ratio": 4.128
     },
     {
-      "id": "1902",
-      "de": 1.106,
-      "wa": 0.236,
-      "ratio": 4.678
+      "id": "graphs-jcctree",
+      "de": 1.875,
+      "wa": 0.454,
+      "ratio": 4.13
     },
     {
-      "id": "graphs-root",
-      "de": 707.992,
-      "wa": 150.517,
-      "ratio": 4.704
-    },
-    {
-      "id": "share-try",
-      "de": 1.558,
-      "wa": 0.331,
-      "ratio": 4.705
-    },
-    {
-      "id": "share-labelclust-ndd",
-      "de": 0.718,
-      "wa": 0.152,
-      "ratio": 4.712
-    },
-    {
-      "id": "2521_1",
-      "de": 1.774,
-      "wa": 0.375,
-      "ratio": 4.726
-    },
-    {
-      "id": "graphs-labelroot-ntc",
-      "de": 0.639,
-      "wa": 0.134,
-      "ratio": 4.75
-    },
-    {
-      "id": "graphs-labelroot-ntr",
-      "de": 0.63,
-      "wa": 0.133,
-      "ratio": 4.75
-    },
-    {
-      "id": "graphs-labelroot-ftr",
+      "id": "nshare-rowcolsep_dot1",
       "de": 0.668,
-      "wa": 0.14,
-      "ratio": 4.773
+      "wa": 0.162,
+      "ratio": 4.13
+    },
+    {
+      "id": "tree-graphs-directed-ldbxtried",
+      "de": 10.946,
+      "wa": 2.65,
+      "ratio": 4.131
+    },
+    {
+      "id": "graphs-mike",
+      "de": 4.033,
+      "wa": 0.976,
+      "ratio": 4.134
+    },
+    {
+      "id": "graphs-arrowsize",
+      "de": 3.68,
+      "wa": 0.89,
+      "ratio": 4.136
+    },
+    {
+      "id": "share-clust5",
+      "de": 1.777,
+      "wa": 0.429,
+      "ratio": 4.139
+    },
+    {
+      "id": "windows-labelroot-ntr",
+      "de": 0.654,
+      "wa": 0.158,
+      "ratio": 4.143
+    },
+    {
+      "id": "windows-labelroot-ntc",
+      "de": 0.681,
+      "wa": 0.164,
+      "ratio": 4.146
+    },
+    {
+      "id": "share-mike",
+      "de": 4.577,
+      "wa": 1.103,
+      "ratio": 4.151
+    },
+    {
+      "id": "windows-labelroot-ftr",
+      "de": 0.656,
+      "wa": 0.158,
+      "ratio": 4.152
     },
     {
       "id": "graphs-radius",
       "de": 0.688,
-      "wa": 0.144,
-      "ratio": 4.791
+      "wa": 0.166,
+      "ratio": 4.157
     },
     {
-      "id": "graphs-hashtable",
-      "de": 1.474,
-      "wa": 0.305,
-      "ratio": 4.833
+      "id": "graphs-labelclust-ndd",
+      "de": 0.554,
+      "wa": 0.133,
+      "ratio": 4.158
     },
     {
-      "id": "graphs-jcctree",
-      "de": 2.121,
-      "wa": 0.439,
-      "ratio": 4.837
-    },
-    {
-      "id": "1332",
-      "de": 29.634,
-      "wa": 6.119,
-      "ratio": 4.843
-    },
-    {
-      "id": "nshare-arrows_dot",
-      "de": 5.25,
-      "wa": 1.071,
-      "ratio": 4.904
-    },
-    {
-      "id": "graphs-labelroot-ftl",
-      "de": 0.698,
-      "wa": 0.142,
-      "ratio": 4.912
-    },
-    {
-      "id": "2183",
-      "de": 6.74,
-      "wa": 1.363,
-      "ratio": 4.944
-    },
-    {
-      "id": "graphs-labelroot-ftc",
-      "de": 0.78,
-      "wa": 0.158,
-      "ratio": 4.951
-    },
-    {
-      "id": "macosx-rowcolsep_dot",
-      "de": 0.788,
-      "wa": 0.159,
-      "ratio": 4.963
-    },
-    {
-      "id": "2095",
-      "de": 1143.432,
-      "wa": 229.342,
-      "ratio": 4.986
-    },
-    {
-      "id": "graphs-labelroot-ftd",
-      "de": 0.746,
-      "wa": 0.149,
-      "ratio": 4.996
-    },
-    {
-      "id": "graphs-grdradial",
-      "de": 5.041,
-      "wa": 1.006,
-      "ratio": 5.013
-    },
-    {
-      "id": "windows-pmpipe",
-      "de": 2.908,
-      "wa": 0.577,
-      "ratio": 5.039
-    },
-    {
-      "id": "nshare-dotsplines_dot",
-      "de": 8.3,
-      "wa": 1.643,
-      "ratio": 5.052
-    },
-    {
-      "id": "graphs-b71",
-      "de": 10.446,
-      "wa": 2.056,
-      "ratio": 5.08
-    },
-    {
-      "id": "1213-2",
-      "de": 3.998,
-      "wa": 0.785,
-      "ratio": 5.092
-    },
-    {
-      "id": "windows-labelclust-fdr",
-      "de": 0.84,
-      "wa": 0.164,
-      "ratio": 5.106
-    },
-    {
-      "id": "1939",
-      "de": 1.188,
-      "wa": 0.232,
-      "ratio": 5.122
-    },
-    {
-      "id": "share-KW91",
-      "de": 2.139,
-      "wa": 0.414,
-      "ratio": 5.162
-    },
-    {
-      "id": "graphs-ldbxtried",
-      "de": 13.701,
-      "wa": 2.65,
-      "ratio": 5.171
-    },
-    {
-      "id": "share-unix",
-      "de": 8.04,
-      "wa": 1.549,
-      "ratio": 5.19
-    },
-    {
-      "id": "graphs-records",
-      "de": 1.737,
-      "wa": 0.334,
-      "ratio": 5.203
-    },
-    {
-      "id": "share-states",
-      "de": 1.46,
-      "wa": 0.279,
-      "ratio": 5.227
-    },
-    {
-      "id": "share-labelclust-nbr",
-      "de": 0.825,
-      "wa": 0.157,
-      "ratio": 5.253
-    },
-    {
-      "id": "share-triedds",
-      "de": 4.031,
-      "wa": 0.764,
-      "ratio": 5.273
-    },
-    {
-      "id": "1880",
-      "de": 7.092,
-      "wa": 1.339,
-      "ratio": 5.296
-    },
-    {
-      "id": "macosx-rowcolsep_dot1",
-      "de": 0.785,
-      "wa": 0.148,
-      "ratio": 5.298
-    },
-    {
-      "id": "graphs-grdlinear_angle",
-      "de": 5.418,
-      "wa": 1.017,
-      "ratio": 5.327
-    },
-    {
-      "id": "windows-labelclust-fdl",
-      "de": 0.949,
-      "wa": 0.176,
-      "ratio": 5.395
-    },
-    {
-      "id": "1323",
-      "de": 4.053,
-      "wa": 0.746,
-      "ratio": 5.433
-    },
-    {
-      "id": "1408",
-      "de": 1.092,
-      "wa": 0.2,
-      "ratio": 5.455
-    },
-    {
-      "id": "share-labelclust-nbl",
-      "de": 0.982,
-      "wa": 0.179,
-      "ratio": 5.48
-    },
-    {
-      "id": "121",
-      "de": 2.463,
-      "wa": 0.444,
-      "ratio": 5.544
-    },
-    {
-      "id": "share-trapeziumlr",
-      "de": 8.139,
-      "wa": 1.462,
-      "ratio": 5.566
-    },
-    {
-      "id": "graphs-grdlinear",
-      "de": 5.721,
-      "wa": 1.018,
-      "ratio": 5.62
-    },
-    {
-      "id": "graphs-grdshapes",
-      "de": 6.117,
-      "wa": 1.079,
-      "ratio": 5.667
-    },
-    {
-      "id": "share-ER",
-      "de": 2.709,
-      "wa": 0.47,
-      "ratio": 5.763
-    },
-    {
-      "id": "graphs-b786",
-      "de": 2.078,
-      "wa": 0.36,
-      "ratio": 5.775
-    },
-    {
-      "id": "graphs-ER",
-      "de": 2.501,
-      "wa": 0.421,
-      "ratio": 5.94
-    },
-    {
-      "id": "graphs-pslib",
-      "de": 5.571,
-      "wa": 0.929,
-      "ratio": 5.998
-    },
-    {
-      "id": "graphs-sq_rules",
-      "de": 3.112,
-      "wa": 0.517,
-      "ratio": 6.02
-    },
-    {
-      "id": "macosx-ordering_dot1",
-      "de": 2.413,
-      "wa": 0.388,
-      "ratio": 6.222
-    },
-    {
-      "id": "share-train11",
-      "de": 5.148,
-      "wa": 0.826,
-      "ratio": 6.232
+      "id": "share-ldbxtried",
+      "de": 11.931,
+      "wa": 2.868,
+      "ratio": 4.159
     },
     {
       "id": "macosx-nestedclust_dot",
-      "de": 1.332,
-      "wa": 0.211,
-      "ratio": 6.324
+      "de": 1.181,
+      "wa": 0.284,
+      "ratio": 4.161
     },
     {
-      "id": "graphs-grdfillcolor",
-      "de": 5.742,
-      "wa": 0.899,
-      "ratio": 6.385
+      "id": "graphs-labelclust-fbc",
+      "de": 0.586,
+      "wa": 0.141,
+      "ratio": 4.166
     },
     {
-      "id": "graphs-rd_rules",
-      "de": 3.613,
-      "wa": 0.553,
-      "ratio": 6.53
+      "id": "graphs-clust2",
+      "de": 1.104,
+      "wa": 0.265,
+      "ratio": 4.168
     },
     {
-      "id": "macosx-ordering_dot",
-      "de": 2.586,
-      "wa": 0.384,
-      "ratio": 6.729
+      "id": "windows-labelclust-ftr",
+      "de": 0.697,
+      "wa": 0.167,
+      "ratio": 4.179
     },
     {
-      "id": "share-Heawood",
-      "de": 5.358,
-      "wa": 0.762,
-      "ratio": 7.033
+      "id": "graphs-xlabels",
+      "de": 1.018,
+      "wa": 0.243,
+      "ratio": 4.18
+    },
+    {
+      "id": "linux.x86-root_circo",
+      "de": 862.566,
+      "wa": 206.285,
+      "ratio": 4.181
+    },
+    {
+      "id": "graphs-abstract",
+      "de": 10.813,
+      "wa": 2.585,
+      "ratio": 4.182
+    },
+    {
+      "id": "graphs-ports",
+      "de": 2.731,
+      "wa": 0.652,
+      "ratio": 4.186
+    },
+    {
+      "id": "graphs-compound",
+      "de": 1.175,
+      "wa": 0.281,
+      "ratio": 4.187
+    },
+    {
+      "id": "share-labelroot-fbl",
+      "de": 0.722,
+      "wa": 0.172,
+      "ratio": 4.192
+    },
+    {
+      "id": "windows-labelclust-ndr",
+      "de": 0.705,
+      "wa": 0.168,
+      "ratio": 4.193
+    },
+    {
+      "id": "linux.x86-root_twopi",
+      "de": 839.618,
+      "wa": 200.012,
+      "ratio": 4.198
+    },
+    {
+      "id": "windows-trapeziumlr",
+      "de": 6.171,
+      "wa": 1.469,
+      "ratio": 4.2
+    },
+    {
+      "id": "tree-graphs-directed-train11",
+      "de": 3.074,
+      "wa": 0.731,
+      "ratio": 4.204
+    },
+    {
+      "id": "tree-doc-dotguide-clust2",
+      "de": 6.653,
+      "wa": 1.582,
+      "ratio": 4.205
+    },
+    {
+      "id": "tree-graphs-directed-polypoly",
+      "de": 7.014,
+      "wa": 1.667,
+      "ratio": 4.208
+    },
+    {
+      "id": "share-labelclust-ntd",
+      "de": 0.75,
+      "wa": 0.178,
+      "ratio": 4.208
+    },
+    {
+      "id": "graphs-colors",
+      "de": 0.669,
+      "wa": 0.159,
+      "ratio": 4.211
+    },
+    {
+      "id": "share-unix2k",
+      "de": 7.431,
+      "wa": 1.764,
+      "ratio": 4.212
+    },
+    {
+      "id": "nshare-root_twopi",
+      "de": 837.203,
+      "wa": 198.551,
+      "ratio": 4.217
+    },
+    {
+      "id": "share-labelroot-fdd",
+      "de": 0.723,
+      "wa": 0.171,
+      "ratio": 4.223
+    },
+    {
+      "id": "nshare-nestedclust_dot",
+      "de": 0.969,
+      "wa": 0.229,
+      "ratio": 4.224
+    },
+    {
+      "id": "windows-polypoly",
+      "de": 9.043,
+      "wa": 2.14,
+      "ratio": 4.227
+    },
+    {
+      "id": "nshare-rowcolsep_dot",
+      "de": 0.678,
+      "wa": 0.16,
+      "ratio": 4.236
+    },
+    {
+      "id": "graphs-hashtable",
+      "de": 1.3,
+      "wa": 0.307,
+      "ratio": 4.237
+    },
+    {
+      "id": "graphs-arrows",
+      "de": 4.09,
+      "wa": 0.964,
+      "ratio": 4.241
+    },
+    {
+      "id": "tree-doc-dotguide-recordex",
+      "de": 0.655,
+      "wa": 0.154,
+      "ratio": 4.247
+    },
+    {
+      "id": "windows-clust3",
+      "de": 1.385,
+      "wa": 0.326,
+      "ratio": 4.253
+    },
+    {
+      "id": "2717",
+      "de": 0.753,
+      "wa": 0.177,
+      "ratio": 4.254
+    },
+    {
+      "id": "nshare-root_circo",
+      "de": 857.833,
+      "wa": 201.566,
+      "ratio": 4.256
+    },
+    {
+      "id": "1472",
+      "de": 23.81,
+      "wa": 5.591,
+      "ratio": 4.259
+    },
+    {
+      "id": "share-b94",
+      "de": 9.925,
+      "wa": 2.33,
+      "ratio": 4.26
+    },
+    {
+      "id": "share-clust3",
+      "de": 1.415,
+      "wa": 0.332,
+      "ratio": 4.26
+    },
+    {
+      "id": "graphs-records",
+      "de": 1.17,
+      "wa": 0.275,
+      "ratio": 4.262
+    },
+    {
+      "id": "windows-nhg",
+      "de": 1.112,
+      "wa": 0.261,
+      "ratio": 4.263
+    },
+    {
+      "id": "graphs-pgram",
+      "de": 7.762,
+      "wa": 1.82,
+      "ratio": 4.264
+    },
+    {
+      "id": "graphs-b71",
+      "de": 9.083,
+      "wa": 2.129,
+      "ratio": 4.267
+    },
+    {
+      "id": "windows-labelroot-fbc",
+      "de": 0.661,
+      "wa": 0.155,
+      "ratio": 4.267
+    },
+    {
+      "id": "1308",
+      "de": 0.491,
+      "wa": 0.115,
+      "ratio": 4.279
+    },
+    {
+      "id": "2669",
+      "de": 22.916,
+      "wa": 5.353,
+      "ratio": 4.281
+    },
+    {
+      "id": "graphs-labelroot-nbc",
+      "de": 0.696,
+      "wa": 0.163,
+      "ratio": 4.281
+    },
+    {
+      "id": "share-labelclust-ntc",
+      "de": 0.741,
+      "wa": 0.173,
+      "ratio": 4.282
+    },
+    {
+      "id": "windows-Heawood",
+      "de": 3.274,
+      "wa": 0.765,
+      "ratio": 4.282
+    },
+    {
+      "id": "nshare-dotsplines_dot1",
+      "de": 7.965,
+      "wa": 1.859,
+      "ratio": 4.284
+    },
+    {
+      "id": "tree-doc-dotguide-poly",
+      "de": 0.706,
+      "wa": 0.165,
+      "ratio": 4.286
+    },
+    {
+      "id": "tree-graphs-directed-japanese",
+      "de": 1.071,
+      "wa": 0.25,
+      "ratio": 4.286
+    },
+    {
+      "id": "graphs-labelroot-ntd",
+      "de": 0.576,
+      "wa": 0.134,
+      "ratio": 4.29
+    },
+    {
+      "id": "share-labelroot-ftd",
+      "de": 0.732,
+      "wa": 0.171,
+      "ratio": 4.292
+    },
+    {
+      "id": "graphs-labelroot-ndc",
+      "de": 0.596,
+      "wa": 0.139,
+      "ratio": 4.3
+    },
+    {
+      "id": "share-labelroot-ftc",
+      "de": 0.696,
+      "wa": 0.162,
+      "ratio": 4.302
+    },
+    {
+      "id": "tree-graphs-directed-tree",
+      "de": 1.344,
+      "wa": 0.312,
+      "ratio": 4.304
+    },
+    {
+      "id": "tree-contrib-dirgraph-bsdarch",
+      "de": 36.711,
+      "wa": 8.523,
+      "ratio": 4.308
+    },
+    {
+      "id": "windows-labelclust-ntd",
+      "de": 0.702,
+      "wa": 0.163,
+      "ratio": 4.31
+    },
+    {
+      "id": "tree-doc-dotguide-tree",
+      "de": 1.263,
+      "wa": 0.293,
+      "ratio": 4.314
+    },
+    {
+      "id": "share-labelclust-ndr",
+      "de": 0.731,
+      "wa": 0.169,
+      "ratio": 4.315
+    },
+    {
+      "id": "2497",
+      "de": 0.624,
+      "wa": 0.145,
+      "ratio": 4.316
+    },
+    {
+      "id": "tree-doc-dotguide-compound",
+      "de": 1.651,
+      "wa": 0.382,
+      "ratio": 4.319
+    },
+    {
+      "id": "share-structs",
+      "de": 0.709,
+      "wa": 0.164,
+      "ratio": 4.334
+    },
+    {
+      "id": "graphs-labelroot-ndr",
+      "de": 0.573,
+      "wa": 0.132,
+      "ratio": 4.336
+    },
+    {
+      "id": "graphs-style",
+      "de": 2.153,
+      "wa": 0.496,
+      "ratio": 4.344
+    },
+    {
+      "id": "windows-labelclust-nbc",
+      "de": 0.719,
+      "wa": 0.165,
+      "ratio": 4.346
+    },
+    {
+      "id": "share-clust1",
+      "de": 1.474,
+      "wa": 0.339,
+      "ratio": 4.348
+    },
+    {
+      "id": "2639",
+      "de": 1.244,
+      "wa": 0.286,
+      "ratio": 4.35
+    },
+    {
+      "id": "tree-graphs-directed-shells",
+      "de": 4.706,
+      "wa": 1.081,
+      "ratio": 4.352
+    },
+    {
+      "id": "windows-ldbxtried",
+      "de": 13.026,
+      "wa": 2.989,
+      "ratio": 4.358
+    },
+    {
+      "id": "tree-graphs-directed-hashtable",
+      "de": 1.305,
+      "wa": 0.298,
+      "ratio": 4.377
+    },
+    {
+      "id": "graphs-NaN",
+      "de": 16.388,
+      "wa": 3.742,
+      "ratio": 4.379
+    },
+    {
+      "id": "windows-labelclust-ftl",
+      "de": 0.706,
+      "wa": 0.161,
+      "ratio": 4.379
     },
     {
       "id": "2609",
-      "de": 1.312,
-      "wa": 0.178,
-      "ratio": 7.375
+      "de": 0.719,
+      "wa": 0.164,
+      "ratio": 4.38
+    },
+    {
+      "id": "graphs-labelroot-ntr",
+      "de": 0.586,
+      "wa": 0.134,
+      "ratio": 4.383
+    },
+    {
+      "id": "share-labelroot-fbc",
+      "de": 0.735,
+      "wa": 0.167,
+      "ratio": 4.39
+    },
+    {
+      "id": "tree-doc-infosrc-sdlshapes",
+      "de": 3.079,
+      "wa": 0.701,
+      "ratio": 4.394
+    },
+    {
+      "id": "graphs-labelroot-ndl",
+      "de": 0.589,
+      "wa": 0.134,
+      "ratio": 4.394
+    },
+    {
+      "id": "graphs-labelroot-nbr",
+      "de": 0.64,
+      "wa": 0.146,
+      "ratio": 4.399
+    },
+    {
+      "id": "graphs-labelroot-ndd",
+      "de": 0.599,
+      "wa": 0.136,
+      "ratio": 4.401
+    },
+    {
+      "id": "tree-graphs-directed-trapeziumlr",
+      "de": 5.205,
+      "wa": 1.18,
+      "ratio": 4.412
+    },
+    {
+      "id": "graphs-labelroot-ntc",
+      "de": 0.578,
+      "wa": 0.131,
+      "ratio": 4.424
+    },
+    {
+      "id": "windows-mike",
+      "de": 4.92,
+      "wa": 1.111,
+      "ratio": 4.426
+    },
+    {
+      "id": "share-labelclust-ndl",
+      "de": 0.777,
+      "wa": 0.176,
+      "ratio": 4.429
+    },
+    {
+      "id": "graphs-in",
+      "de": 0.562,
+      "wa": 0.127,
+      "ratio": 4.441
+    },
+    {
+      "id": "windows-labelclust-ndd",
+      "de": 0.722,
+      "wa": 0.163,
+      "ratio": 4.441
+    },
+    {
+      "id": "share-labelroot-fbd",
+      "de": 0.715,
+      "wa": 0.161,
+      "ratio": 4.444
+    },
+    {
+      "id": "share-NaN",
+      "de": 19.808,
+      "wa": 4.451,
+      "ratio": 4.45
+    },
+    {
+      "id": "2734",
+      "de": 3.081,
+      "wa": 0.692,
+      "ratio": 4.454
+    },
+    {
+      "id": "windows-labelclust-ndl",
+      "de": 0.693,
+      "wa": 0.156,
+      "ratio": 4.454
+    },
+    {
+      "id": "graphs-grdcluster",
+      "de": 1.002,
+      "wa": 0.225,
+      "ratio": 4.456
+    },
+    {
+      "id": "1855",
+      "de": 2.812,
+      "wa": 0.63,
+      "ratio": 4.465
+    },
+    {
+      "id": "nshare-shapes_dot",
+      "de": 4.134,
+      "wa": 0.926,
+      "ratio": 4.465
+    },
+    {
+      "id": "share-labelclust-nbr",
+      "de": 0.839,
+      "wa": 0.188,
+      "ratio": 4.473
+    },
+    {
+      "id": "share-unix2",
+      "de": 8.07,
+      "wa": 1.802,
+      "ratio": 4.478
+    },
+    {
+      "id": "share-try",
+      "de": 1.536,
+      "wa": 0.342,
+      "ratio": 4.493
+    },
+    {
+      "id": "graphs-b786",
+      "de": 1.797,
+      "wa": 0.4,
+      "ratio": 4.494
+    },
+    {
+      "id": "graphs-AvantGarde",
+      "de": 1.236,
+      "wa": 0.275,
+      "ratio": 4.497
+    },
+    {
+      "id": "windows-labelroot-fbl",
+      "de": 0.764,
+      "wa": 0.17,
+      "ratio": 4.498
+    },
+    {
+      "id": "tree-graphs-directed-unix",
+      "de": 5.971,
+      "wa": 1.327,
+      "ratio": 4.5
+    },
+    {
+      "id": "share-KW91",
+      "de": 2.05,
+      "wa": 0.456,
+      "ratio": 4.5
+    },
+    {
+      "id": "graphs-b7",
+      "de": 0.767,
+      "wa": 0.17,
+      "ratio": 4.503
+    },
+    {
+      "id": "graphs-lsunix1",
+      "de": 6.376,
+      "wa": 1.416,
+      "ratio": 4.504
+    },
+    {
+      "id": "linux.i386-b36",
+      "de": 8.252,
+      "wa": 1.832,
+      "ratio": 4.504
+    },
+    {
+      "id": "windows-labelclust-ftc",
+      "de": 0.719,
+      "wa": 0.16,
+      "ratio": 4.507
+    },
+    {
+      "id": "tree-graphs-directed-fig6",
+      "de": 12.019,
+      "wa": 2.666,
+      "ratio": 4.508
+    },
+    {
+      "id": "tree-graphs-directed-triedds",
+      "de": 3.215,
+      "wa": 0.713,
+      "ratio": 4.512
+    },
+    {
+      "id": "windows-labelclust-ntl",
+      "de": 0.744,
+      "wa": 0.165,
+      "ratio": 4.514
+    },
+    {
+      "id": "tree-doc-infosrc-plugins",
+      "de": 22.356,
+      "wa": 4.949,
+      "ratio": 4.518
+    },
+    {
+      "id": "share-labelclust-ntl",
+      "de": 0.764,
+      "wa": 0.169,
+      "ratio": 4.52
+    },
+    {
+      "id": "windows-pmpipe",
+      "de": 2.662,
+      "wa": 0.588,
+      "ratio": 4.527
+    },
+    {
+      "id": "graphs-labelroot-ntl",
+      "de": 0.622,
+      "wa": 0.136,
+      "ratio": 4.577
+    },
+    {
+      "id": "tree-graphs-directed-pgram",
+      "de": 8.246,
+      "wa": 1.798,
+      "ratio": 4.586
+    },
+    {
+      "id": "1323_1",
+      "de": 1.652,
+      "wa": 0.36,
+      "ratio": 4.588
+    },
+    {
+      "id": "windows-labelclust-nbl",
+      "de": 0.785,
+      "wa": 0.171,
+      "ratio": 4.596
+    },
+    {
+      "id": "graphs-grdshapes",
+      "de": 4.862,
+      "wa": 1.055,
+      "ratio": 4.607
+    },
+    {
+      "id": "graphs-KW91",
+      "de": 1.665,
+      "wa": 0.361,
+      "ratio": 4.61
+    },
+    {
+      "id": "graphs-labelroot-fdl",
+      "de": 0.739,
+      "wa": 0.16,
+      "ratio": 4.613
+    },
+    {
+      "id": "graphs-Petersen",
+      "de": 2.248,
+      "wa": 0.486,
+      "ratio": 4.627
+    },
+    {
+      "id": "nshare-compound_dot",
+      "de": 1.594,
+      "wa": 0.344,
+      "ratio": 4.632
+    },
+    {
+      "id": "share-unix",
+      "de": 7.343,
+      "wa": 1.58,
+      "ratio": 4.646
+    },
+    {
+      "id": "graphs-labelroot-ftc",
+      "de": 0.661,
+      "wa": 0.142,
+      "ratio": 4.651
+    },
+    {
+      "id": "windows-labelclust-fdl",
+      "de": 0.867,
+      "wa": 0.186,
+      "ratio": 4.653
+    },
+    {
+      "id": "tree-contrib-dirgraph-apache",
+      "de": 7.657,
+      "wa": 1.644,
+      "ratio": 4.657
+    },
+    {
+      "id": "tree-graphs-directed-dfa",
+      "de": 2.671,
+      "wa": 0.573,
+      "ratio": 4.662
+    },
+    {
+      "id": "share-labelclust-ndc",
+      "de": 0.791,
+      "wa": 0.17,
+      "ratio": 4.665
+    },
+    {
+      "id": "2183",
+      "de": 6.577,
+      "wa": 1.405,
+      "ratio": 4.682
+    },
+    {
+      "id": "graphs-labelroot-fdr",
+      "de": 0.663,
+      "wa": 0.141,
+      "ratio": 4.713
+    },
+    {
+      "id": "nshare-dotsplines_dot",
+      "de": 7.985,
+      "wa": 1.693,
+      "ratio": 4.717
+    },
+    {
+      "id": "graphs-labelroot-ftr",
+      "de": 0.643,
+      "wa": 0.136,
+      "ratio": 4.741
+    },
+    {
+      "id": "graphs-labelroot-ftl",
+      "de": 0.648,
+      "wa": 0.136,
+      "ratio": 4.764
+    },
+    {
+      "id": "share-labelclust-ndd",
+      "de": 0.762,
+      "wa": 0.16,
+      "ratio": 4.77
+    },
+    {
+      "id": "graphs-labelroot-nbd",
+      "de": 0.664,
+      "wa": 0.139,
+      "ratio": 4.782
+    },
+    {
+      "id": "2095",
+      "de": 1122.187,
+      "wa": 234.31,
+      "ratio": 4.789
+    },
+    {
+      "id": "graphs-grdlinear_angle",
+      "de": 4.911,
+      "wa": 1.022,
+      "ratio": 4.807
+    },
+    {
+      "id": "share-labelclust-nbl",
+      "de": 0.938,
+      "wa": 0.193,
+      "ratio": 4.849
+    },
+    {
+      "id": "graphs-grdradial_angle",
+      "de": 4.768,
+      "wa": 0.982,
+      "ratio": 4.853
+    },
+    {
+      "id": "graphs-root",
+      "de": 769.649,
+      "wa": 158.233,
+      "ratio": 4.864
+    },
+    {
+      "id": "graphs-b36",
+      "de": 8.268,
+      "wa": 1.694,
+      "ratio": 4.881
+    },
+    {
+      "id": "1323",
+      "de": 2.937,
+      "wa": 0.601,
+      "ratio": 4.89
+    },
+    {
+      "id": "graphs-ldbxtried",
+      "de": 12.945,
+      "wa": 2.641,
+      "ratio": 4.902
+    },
+    {
+      "id": "share-states",
+      "de": 1.32,
+      "wa": 0.268,
+      "ratio": 4.921
+    },
+    {
+      "id": "windows-labelclust-fdr",
+      "de": 0.776,
+      "wa": 0.158,
+      "ratio": 4.921
+    },
+    {
+      "id": "graphs-sq_rules",
+      "de": 2.79,
+      "wa": 0.567,
+      "ratio": 4.925
+    },
+    {
+      "id": "nshare-arrows_dot",
+      "de": 5.497,
+      "wa": 1.109,
+      "ratio": 4.956
+    },
+    {
+      "id": "graphs-grdcolors",
+      "de": 2.501,
+      "wa": 0.504,
+      "ratio": 4.961
+    },
+    {
+      "id": "share-Petersen",
+      "de": 2.65,
+      "wa": 0.533,
+      "ratio": 4.972
+    },
+    {
+      "id": "share-trapeziumlr",
+      "de": 7.235,
+      "wa": 1.453,
+      "ratio": 4.979
+    },
+    {
+      "id": "2087",
+      "de": 0.907,
+      "wa": 0.182,
+      "ratio": 4.985
+    },
+    {
+      "id": "share-triedds",
+      "de": 4.06,
+      "wa": 0.811,
+      "ratio": 5.005
+    },
+    {
+      "id": "1925",
+      "de": 0.695,
+      "wa": 0.139,
+      "ratio": 5.01
+    },
+    {
+      "id": "1213-2",
+      "de": 3.08,
+      "wa": 0.613,
+      "ratio": 5.026
+    },
+    {
+      "id": "graphs-ER",
+      "de": 2.04,
+      "wa": 0.404,
+      "ratio": 5.048
+    },
+    {
+      "id": "258",
+      "de": 0.829,
+      "wa": 0.164,
+      "ratio": 5.053
+    },
+    {
+      "id": "tree-graphs-directed-grammar",
+      "de": 4.928,
+      "wa": 0.973,
+      "ratio": 5.063
+    },
+    {
+      "id": "tree-graphs-directed-table",
+      "de": 1.462,
+      "wa": 0.286,
+      "ratio": 5.121
+    },
+    {
+      "id": "graphs-pslib",
+      "de": 4.88,
+      "wa": 0.952,
+      "ratio": 5.125
+    },
+    {
+      "id": "2556",
+      "de": 3.182,
+      "wa": 0.618,
+      "ratio": 5.148
+    },
+    {
+      "id": "graphs-grdlinear",
+      "de": 4.928,
+      "wa": 0.954,
+      "ratio": 5.167
+    },
+    {
+      "id": "tree-doc-dotguide-clust1",
+      "de": 2.111,
+      "wa": 0.405,
+      "ratio": 5.212
+    },
+    {
+      "id": "graphs-grdradial",
+      "de": 4.891,
+      "wa": 0.933,
+      "ratio": 5.242
+    },
+    {
+      "id": "graphs-labelroot-ftd",
+      "de": 0.739,
+      "wa": 0.141,
+      "ratio": 5.252
+    },
+    {
+      "id": "macosx-rowcolsep_dot1",
+      "de": 0.837,
+      "wa": 0.159,
+      "ratio": 5.262
+    },
+    {
+      "id": "macosx-rowcolsep_dot",
+      "de": 0.817,
+      "wa": 0.155,
+      "ratio": 5.269
+    },
+    {
+      "id": "graphs-viewfile",
+      "de": 4.88,
+      "wa": 0.922,
+      "ratio": 5.295
+    },
+    {
+      "id": "windows-labelclust-ftd",
+      "de": 0.887,
+      "wa": 0.167,
+      "ratio": 5.298
+    },
+    {
+      "id": "2615",
+      "de": 0.991,
+      "wa": 0.186,
+      "ratio": 5.321
+    },
+    {
+      "id": "1408",
+      "de": 1.022,
+      "wa": 0.19,
+      "ratio": 5.388
+    },
+    {
+      "id": "2521_1",
+      "de": 2.258,
+      "wa": 0.419,
+      "ratio": 5.39
+    },
+    {
+      "id": "share-train11",
+      "de": 4.612,
+      "wa": 0.844,
+      "ratio": 5.463
+    },
+    {
+      "id": "1332",
+      "de": 30.594,
+      "wa": 5.575,
+      "ratio": 5.487
+    },
+    {
+      "id": "share-Heawood",
+      "de": 4.823,
+      "wa": 0.872,
+      "ratio": 5.534
+    },
+    {
+      "id": "macosx-ordering_dot1",
+      "de": 2.282,
+      "wa": 0.41,
+      "ratio": 5.564
+    },
+    {
+      "id": "macosx-edgeclip_dot",
+      "de": 0.981,
+      "wa": 0.174,
+      "ratio": 5.643
+    },
+    {
+      "id": "share-ER",
+      "de": 2.794,
+      "wa": 0.49,
+      "ratio": 5.699
+    },
+    {
+      "id": "graphs-grdfillcolor",
+      "de": 5.374,
+      "wa": 0.935,
+      "ratio": 5.745
+    },
+    {
+      "id": "1939",
+      "de": 1.321,
+      "wa": 0.225,
+      "ratio": 5.868
+    },
+    {
+      "id": "2521",
+      "de": 1.532,
+      "wa": 0.26,
+      "ratio": 5.9
+    },
+    {
+      "id": "graphs-rd_rules",
+      "de": 3.514,
+      "wa": 0.575,
+      "ratio": 6.111
+    },
+    {
+      "id": "macosx-ordering_dot",
+      "de": 2.49,
+      "wa": 0.407,
+      "ratio": 6.115
     },
     {
       "id": "graphs-Heawood",
-      "de": 6.113,
-      "wa": 0.804,
-      "ratio": 7.604
+      "de": 4.602,
+      "wa": 0.703,
+      "ratio": 6.548
     }
   ]
 }
