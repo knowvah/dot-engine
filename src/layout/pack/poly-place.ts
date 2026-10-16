@@ -21,6 +21,7 @@ import { PackMode } from './types.js';
 import { cround } from '../../common/arith.js';
 import { d2i } from '../../util/math.js';
 import { gvQsort } from '../../util/bsd-qsort.js';
+import { PointSet } from '../../common/pointset.js';
 
 /** Max. avg. polyomino size. @see lib/pack/pack.c:C */
 const C_AVG = 100;
@@ -38,23 +39,6 @@ function cval(v: number, s: number): number {
 /** Map a point to its containing cell. @see lib/pack/pack.c:CELL */
 function cell(p: Point, s: number): Point {
   return { x: cval(p.x, s), y: cval(p.y, s) };
-}
-
-/** Integer point set. @see lib/common/pointset.c */
-class PointSet {
-  private readonly m = new Map<string, Point>();
-  add(x: number, y: number): void {
-    this.m.set(`${x},${y}`, { x, y });
-  }
-  has(p: Point): boolean {
-    return this.m.has(`${p.x},${p.y}`);
-  }
-  points(): Point[] {
-    return [...this.m.values()];
-  }
-  get size(): number {
-    return this.m.size;
-  }
 }
 
 /** Polyomino info for one graph. @see lib/pack/pack.c:ginfo */
@@ -96,7 +80,7 @@ interface LineState {
 function lineXDominant(st: LineState, ps: PointSet): void {
   let d = st.ay - (st.ax >> 1);
   for (;;) {
-    ps.add(st.x, st.y);
+    ps.addPS(st.x, st.y);
     if (st.x === st.x2) return;
     if (d >= 0) { st.y += st.sy; d -= st.ax; }
     st.x += st.sx;
@@ -108,7 +92,7 @@ function lineXDominant(st: LineState, ps: PointSet): void {
 function lineYDominant(st: LineState, ps: PointSet): void {
   let d = st.ax - (st.ay >> 1);
   for (;;) {
-    ps.add(st.x, st.y);
+    ps.addPS(st.x, st.y);
     if (st.y === st.y2) return;
     if (d >= 0) { st.x += st.sx; d -= st.ay; }
     st.y += st.sy;
@@ -136,7 +120,7 @@ function fillLine(p: Point, q: Point, ps: PointSet): void {
 /** Mark all cells in the inclusive cell-rect [LL, UR]. */
 function fillRect(LL: Point, UR: Point, ps: PointSet): void {
   for (let x = LL.x; x <= UR.x; x++) {
-    for (let y = LL.y; y <= UR.y; y++) ps.add(x, y);
+    for (let y = LL.y; y <= UR.y; y++) ps.addPS(x, y);
   }
 }
 
@@ -208,7 +192,7 @@ function genBox(bb0: Box, ssize: number, margin: number, center: Point): GInfo {
   const UR = roundedCell({ x: center.x + bbW + margin, y: center.y + bbH + margin }, ssize);
   fillRect(LL, UR, ps);
   return {
-    cells: ps.points(),
+    cells: ps.pointsOf(),
     perim: grid(bb0.ur.x - bb0.ll.x + 2 * margin, ssize)
       + grid(bb0.ur.y - bb0.ll.y + 2 * margin, ssize),
     index: 0,
@@ -266,7 +250,7 @@ function genPoly(
   };
   for (const n of g.nodes.values()) coverNode(n, ctx);
   return {
-    cells: ps.points(),
+    cells: ps.pointsOf(),
     perim: grid(bb.ur.x - bb.ll.x + 2 * pinfo.margin, ssize)
       + grid(bb.ur.y - bb.ll.y + 2 * pinfo.margin, ssize),
     index: 0,
@@ -289,7 +273,7 @@ interface PlaceCtx {
 
 function fits(x: number, y: number, info: GInfo, ctx: PlaceCtx): boolean {
   for (const c of info.cells) {
-    if (ctx.ps.has({ x: c.x + x, y: c.y + y })) return false;
+    if (ctx.ps.isInPS(c.x + x, c.y + y)) return false;
   }
   const bb = ctx.bbs[info.index]!;
   const LL = { x: cround(bb.ll.x), y: cround(bb.ll.y) };
@@ -297,30 +281,44 @@ function fits(x: number, y: number, info: GInfo, ctx: PlaceCtx): boolean {
   // is widened to double (objdump of libgvc `_fits`). Matters only once
   // computeStep has saturated at INT_MAX.
   ctx.places[info.index] = { x: Math.imul(ctx.step, x) - LL.x, y: Math.imul(ctx.step, y) - LL.y };
-  for (const c of info.cells) ctx.ps.add(c.x + x, c.y + y);
+  for (const c of info.cells) ctx.ps.addPS(c.x + x, c.y + y);
   return true;
 }
 
-/** Ring candidates for wide graphs (W >= H). @see pack.c:placeGraph */
-function* ringWide(bnd: number): Generator<[number, number]> {
-  let x = 0;
-  let y = -bnd;
-  for (; x < bnd; x++) yield [x, y];
-  for (; y < bnd; y++) yield [x, y];
-  for (; x > -bnd; x--) yield [x, y];
-  for (; y > -bnd; y--) yield [x, y];
-  for (; x < 0; x++) yield [x, y];
+/** Ring cursor, shared by the legs of one ring as C shares its x and y. */
+interface Cursor {
+  x: number;
+  y: number;
 }
 
-/** Ring candidates for tall graphs (W < H). @see pack.c:placeGraph */
-function* ringTall(bnd: number): Generator<[number, number]> {
-  let y = 0;
-  let x = -bnd;
-  for (; y > -bnd; y--) yield [x, y];
-  for (; x < bnd; x++) yield [x, y];
-  for (; y < bnd; y++) yield [x, y];
-  for (; x > -bnd; x--) yield [x, y];
-  for (; y > 0; y--) yield [x, y];
+/**
+ * One straight leg of a ring: step (dx, dy) from the cursor until the moving
+ * coordinate reaches `end`, trying each cell. Every leg starts on the
+ * `end` side's integer lattice with a unit step, so `!== end` stops where C's
+ * `<`/`>` bound does.
+ * @see pack.c:placeGraph (one of the five loops per ring)
+ */
+function leg(c: Cursor, dx: number, dy: number, end: number, info: GInfo, ctx: PlaceCtx): boolean {
+  for (; (dx !== 0 ? c.x : c.y) !== end; c.x += dx, c.y += dy) {
+    if (fits(c.x, c.y, info, ctx)) return true;
+  }
+  return false;
+}
+
+/** Ring `bnd` for wide graphs (W >= H). @see pack.c:placeGraph */
+function ringWide(bnd: number, info: GInfo, ctx: PlaceCtx): boolean {
+  const c = { x: 0, y: -bnd };
+  return leg(c, 1, 0, bnd, info, ctx) || leg(c, 0, 1, bnd, info, ctx)
+    || leg(c, -1, 0, -bnd, info, ctx) || leg(c, 0, -1, -bnd, info, ctx)
+    || leg(c, 1, 0, 0, info, ctx);
+}
+
+/** Ring `bnd` for tall graphs (W < H). @see pack.c:placeGraph */
+function ringTall(bnd: number, info: GInfo, ctx: PlaceCtx): boolean {
+  const c = { x: -bnd, y: 0 };
+  return leg(c, 0, -1, -bnd, info, ctx) || leg(c, 1, 0, bnd, info, ctx)
+    || leg(c, 0, 1, bnd, info, ctx) || leg(c, -1, 0, -bnd, info, ctx)
+    || leg(c, 0, -1, 0, info, ctx);
 }
 
 /**
@@ -331,7 +329,7 @@ function* ringTall(bnd: number): Generator<[number, number]> {
  */
 function placeFixed(info: GInfo, ctx: PlaceCtx, center: Point): void {
   ctx.places[info.index] = { x: -center.x, y: -center.y };
-  for (const c of info.cells) ctx.ps.add(c.x, c.y);
+  for (const c of info.cells) ctx.ps.addPS(c.x, c.y);
 }
 
 /**
@@ -349,10 +347,7 @@ function placeGraph(i: number, info: GInfo, ctx: PlaceCtx): void {
   if (fits(0, 0, info, ctx)) return;
   const wide = Math.ceil(bb.ur.x - bb.ll.x) >= Math.ceil(bb.ur.y - bb.ll.y);
   for (let bnd = 1; ; bnd++) {
-    const ring = wide ? ringWide(bnd) : ringTall(bnd);
-    for (const [x, y] of ring) {
-      if (fits(x, y, info, ctx)) return;
-    }
+    if (wide ? ringWide(bnd, info, ctx) : ringTall(bnd, info, ctx)) return;
   }
 }
 

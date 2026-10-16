@@ -15,10 +15,13 @@ import { readFileSync, writeFileSync } from 'node:fs';
 
 const PERF = new URL('./perf.json', import.meta.url);
 const WASM = new URL('./wasm-perf.json', import.meta.url);
+const NATIVE = new URL('./native-timings.json', import.meta.url);
 const OUT = new URL('./PERF.md', import.meta.url);
 const SLOW_TABLE_CAP = 60;
 
 const report = JSON.parse(readFileSync(PERF, 'utf8'));
+/** Which native build the canonical times came from (capture-native.mjs). */
+const native = JSON.parse(readFileSync(NATIVE, 'utf8'));
 
 /** Optional WASM head-to-head data (test/corpus/wasm-bench.mjs). Absent → the
  *  dot-engine-vs-WASM section is simply omitted from PERF.md. */
@@ -107,18 +110,20 @@ function wasmSection() {
     .map((w) => `| \`${w.id}\` | ${w.de} | ${w.wa} | ${w.ratio}× |`).join('\n');
   const large = (wasm.excludedLarge ?? [])
     .map((x) => `\`${x.id}\` (${(x.srcBytes / 1048576).toFixed(1)} MB)`).join(', ') || '—';
+  const noNative = (wasm.excludedNoNative ?? []).map((id) => `\`${id}\``).join(', ') || '—';
+  const pkg = wasm.wasmGraphviz ? `${wasm.wasmPackage}, graphviz ${wasm.wasmGraphviz}` : wasm.wasmPackage;
   return `
 ## dot-engine vs WASM (@hpcc-js/wasm-graphviz)
 
 A **different axis** from the table above: this compares the pure-TS port against
-the WASM build a browser would otherwise ship (${wasm.wasmPackage}) — both warm,
+the WASM build a browser would otherwise ship (${pkg}) — both warm,
 in-process, best-of-${wasm.method.trials} (min). A report, not a gate: WASM is
 compiled C, so the port is expected to be a small constant factor slower; the
 port's wins are bundle size and no wasm fetch+instantiate, not raw layout compute.
 Source: [\`wasm-perf.json\`](./wasm-perf.json). Regenerate: \`npm run bench:wasm\`.
 
 - **Compared:** ${c.compared} inputs · **ratio (dot-engine / wasm):** p50 ${f(r.p50)}× · p90 ${f(r.p90)}× · max ${f(r.max)}× · mean ${f(r.mean)}×
-- **Excluded:** ${c.excludedHeavy} heavy (native > ${wasm.method.heavyExcludedAboveNativeMs}ms) · ${c.excludedLarge} large-source (> ${(wasm.method.largeSrcBytes / 1048576).toFixed(0)} MB) · ${c.dotEngineErrored} port-error · ${c.wasmErrored} wasm-error · ${c.missingFiles} missing
+- **Excluded:** ${c.excludedHeavy} heavy (native > ${wasm.method.heavyExcludedAboveNativeMs}ms) · ${c.excludedLarge} large-source (> ${(wasm.method.largeSrcBytes / 1048576).toFixed(0)} MB) · ${c.excludedNoNative ?? 0} no native timing · ${c.dotEngineErrored} port-error · ${c.wasmErrored} wasm-error · ${c.missingFiles} missing
 
 ### Ratio distribution (dot-engine / wasm)
 
@@ -136,6 +141,7 @@ ${worst}
 
 - **Heavy (native > ${wasm.method.heavyExcludedAboveNativeMs}ms):** ${c.excludedHeavy} inputs — warm best-of-N over multi-second layouts is impractical here; their vs-native behavior is in the main table above.
 - **Large source (> ${(wasm.method.largeSrcBytes / 1048576).toFixed(0)} MB):** ${large} — multi-MB disassembly/CFG dumps (~10k+ nodes) that are impractical for a warm best-of-N. These are hard for Graphviz **generally**, not port-specific: spot-checked, \`2064\` fails to render in native \`dot\` (>120s), the WASM build (>60s in \`layout()\`), and the port (>30s) alike; \`1864\` OOMs **both** the port (>1 GB) and the WASM build ("out of memory") while native times out. The port does **not** leak (with GC its per-render heap is flat ~17 MB) — this is a scale ceiling shared with upstream, not a defect.
+- **No native timing:** ${noNative} — native \`dot\` errored or ran past the capture cap, so there is no baseline to screen them as heavy. The WASM build is the same C and stalls on the same inputs.
 - Per-side error ids are listed in \`wasm-perf.json\`.
 `;
 }
@@ -160,7 +166,8 @@ Regenerate: \`npm run build:js && node test/corpus/bench.mjs && npm run bench:wa
   heavy graphs (native > 2s) are timed serially by default — measured cross-talk
   inflates a concurrent big render's single sample materially (≈66% on 2620). Set
   \`BENCH_HEAVY_POOL>1\` for a faster, noisier scan.
-- **Native:** \`dot -Tsvg\` best-of-3 (min).
+- **Native:** \`dot -Tsvg\` best-of-3 (min), graphviz ${native.dotVersion},
+  captured ${native.capturedAt.slice(0, 10)} (\`native-timings.json\`).
 - **Budget:** target ≤${report.budgetMult}× native. Per-render cap **${report.capMs}ms**
   (SIGKILL → \`over-cap\`, i.e. a true synchronous hang).
 - **Caveat:** light graphs are timed under up-to-${report.pool}-way load; for a

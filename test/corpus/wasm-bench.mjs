@@ -21,6 +21,11 @@
 //   - Heavy inputs (native > HEAVY_MS) are excluded and listed — a warm best-of-N
 //     over multi-second layouts is impractical here; their vs-native behavior is
 //     already in PERF.md's main table.
+//   - Inputs with no native timing (absent from native-timings.json: native
+//     `dot` errored or ran past the capture cap) are excluded and listed. With
+//     no baseline they can't be screened as heavy, and the WASM build is the
+//     same C — the 16.1 roster's upstream crash/hang repros (2778, 2834, 2854_1,
+//     2855) stall it just as they stall native. Not silently dropped.
 //   - Very large inputs (DOT source > LARGE_SRC_BYTES, default 1 MB) are excluded
 //     and listed. These are a handful of multi-MB disassembly/CFG dumps (1864,
 //     2064, 2475_1, 2593, ~10k+ nodes) that are impractical for a warm best-of-N.
@@ -64,6 +69,8 @@ const OUT = new URL('./wasm-perf.json', import.meta.url);
 
 const { renderSvg } = await import(join(REPO, 'dist/index.js'));
 const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
+// The package's `exports` map hides package.json, so read it off disk.
+const WASM_PKG = JSON.parse(readFileSync(join(REPO, 'node_modules/@hpcc-js/wasm-graphviz/package.json'), 'utf8'));
 const graphviz = await Graphviz.load();
 
 const manifest = JSON.parse(readFileSync(new URL('./corpus-manifest.json', import.meta.url), 'utf8'));
@@ -80,7 +87,7 @@ const bestOf = (fn) => {
 };
 
 const applicable = manifest.filter((e) => e.status === 'applicable');
-const excludedHeavy = [], excludedLarge = [], deErr = [], waErr = [], missing = [], rows = [];
+const excludedHeavy = [], excludedLarge = [], excludedNoNative = [], deErr = [], waErr = [], missing = [], rows = [];
 
 let done = 0;
 for (const e of applicable) {
@@ -89,6 +96,7 @@ for (const e of applicable) {
   if (!existsSync(file)) { missing.push(e.id); continue; }
   const srcBytes = statSync(file).size;
   if (srcBytes > LARGE_SRC_BYTES) { excludedLarge.push({ id: e.id, srcBytes }); continue; }
+  if (!(e.id in native)) { excludedNoNative.push(e.id); continue; }
   const src = readFileSync(file, 'utf8');
   const engine = e.engine ?? 'dot';
 
@@ -116,23 +124,25 @@ const mean = ratios.length ? ratios.reduce((a, b) => a + b, 0) / ratios.length :
 
 const result = {
   generated: 'test/corpus/wasm-bench.mjs — do not edit by hand',
-  wasmPackage: '@hpcc-js/wasm-graphviz@1.28.0',
+  wasmPackage: `${WASM_PKG.name}@${WASM_PKG.version}`,
+  wasmGraphviz: graphviz.version(),
   method: { warmup: WARMUP, trials: TRIALS, heavyExcludedAboveNativeMs: HEAVY_MS, largeSrcBytes: LARGE_SRC_BYTES, node: process.version },
   counts: {
     applicable: applicable.length, compared: rows.length,
     excludedHeavy: excludedHeavy.length, excludedLarge: excludedLarge.length,
+    excludedNoNative: excludedNoNative.length,
     dotEngineErrored: deErr.length, wasmErrored: waErr.length, missingFiles: missing.length,
   },
   ratio: { p50: pct(0.5), p90: pct(0.9), p99: pct(0.99), max: ratios.at(-1) ?? null, mean },
   bands,
   worst20: rows.slice(-20).reverse(),
-  excludedHeavy, excludedLarge, dotEngineErrors: deErr, wasmErrors: waErr, missingFiles: missing,
+  excludedHeavy, excludedLarge, excludedNoNative, dotEngineErrors: deErr, wasmErrors: waErr, missingFiles: missing,
   rows,
 };
 writeFileSync(OUT, JSON.stringify(result, null, 2) + '\n');
 
 process.stderr.write('\n=== dot-engine vs WASM (@hpcc-js/wasm-graphviz), warm, in-process ===\n');
-process.stderr.write(`compared ${rows.length} (excluded ${excludedHeavy.length} heavy, ${excludedLarge.length} large-src, ${deErr.length} de-err, ${waErr.length} wa-err, ${missing.length} missing)\n`);
+process.stderr.write(`compared ${rows.length} (excluded ${excludedHeavy.length} heavy, ${excludedLarge.length} large-src, ${excludedNoNative.length} no-native, ${deErr.length} de-err, ${waErr.length} wa-err, ${missing.length} missing)\n`);
 process.stderr.write(`ratio de/wa  p50 ${result.ratio.p50}×  p90 ${result.ratio.p90}×  max ${result.ratio.max}×  mean ${mean?.toFixed(2)}×\n`);
 process.stderr.write(`bands ${JSON.stringify(bands)}\n`);
 process.stderr.write(`wrote ${fileURLToPath(OUT)}\n`);
