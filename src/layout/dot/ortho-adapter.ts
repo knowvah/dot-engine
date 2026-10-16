@@ -16,6 +16,7 @@ import type { Edge } from '../../model/edge.js';
 import { buildOutEdgeIndex } from '../../model/node.js';
 import { dotRoot } from './mincross-utils.js';
 import { nodesInSeq } from './decomp.js';
+import { PointSet } from '../../common/pointset.js';
 import { clipAndInstall } from '../../common/splines-clip.js';
 import { buildDotSinfo } from './self-loop.js';
 import { orthoEdges } from '../../ortho/index.js';
@@ -50,10 +51,26 @@ function buildNodes(nodeArr: Node[]): OrthoNodeArr {
 }
 
 /**
+ * Concentrate dedup: true when the unordered (tail, head) pair is already in
+ * `ps`; otherwise records it. C normalises AGSEQ(tail)/AGSEQ(head) to
+ * (min, max) and makes one isInPS/addPS pair on it.
+ * @see lib/ortho/ortho.c:1221-1229 (orthoEdges Concentrate PS)
+ */
+function isConcentrateDup(ps: PointSet, e: Edge): boolean {
+  const ti = e.tail.id;
+  const hi = e.head.id;
+  const lo = ti <= hi ? ti : hi;
+  const up = ti <= hi ? hi : ti;
+  if (ps.isInPS(lo, up)) return true;
+  ps.addPS(lo, up);
+  return false;
+}
+
+/**
  * Gather edges to route, mirroring C's ortho gather loop exactly:
  * iterate nodes in agfstnode (creation/seq) order, then each node's out-edges
  * in agfstout order. When `concentrate` is set, dedup by the UNORDERED node
- * pair via a point-set — the first edge between a pair (in either direction)
+ * pair via a `PointSet` — the first edge between a pair (in either direction)
  * is routed; any later edge sharing that pair (the reverse of a 2-cycle, or a
  * parallel multi-edge) is skipped. This is ortho's own concentrate mechanism,
  * distinct from class2's `edge_type == IGNORED` marking, and the keep-first
@@ -70,19 +87,13 @@ function buildEdges(
   const nodeIndex = new Map<Node, number>();
   nodeArr.forEach((n, i) => nodeIndex.set(n, i));
   const outIndex = buildOutEdgeIndex(g);
-  const seen = new Set<string>();
+  const ps = concentrate ? new PointSet() : null;
   const result: TaggedOrthoEdge[] = [];
   for (const n of nodeArr) {
     const oes = outIndex.get(n);
     if (oes === undefined) continue;
     for (const e of oes) {
-      if (concentrate) {
-        const ti = e.tail.id;
-        const hi = e.head.id;
-        const key = ti <= hi ? `${ti},${hi}` : `${hi},${ti}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-      }
+      if (ps !== null && isConcentrateDup(ps, e)) continue;
       result.push({
         tail: orthoNodes[nodeIndex.get(e.tail)!],
         head: orthoNodes[nodeIndex.get(e.head)!],
