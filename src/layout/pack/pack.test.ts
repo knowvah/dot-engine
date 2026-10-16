@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 
 import { describe, it, expect } from 'vitest';
+import { PointSet } from '../../common/pointset.js';
 import type { Box, Point } from '../../model/geom.js';
 import {
   computeStep,
@@ -13,9 +14,6 @@ import {
   tryCenter,
   placeGraph,
   polyRects,
-  psKey,
-  inPS,
-  insertPS,
   cmpByGPerimeter,
 } from './poly-pack.js';
 import {
@@ -120,26 +118,16 @@ describe('PS2INCH', () => {
 // poly-pack.ts — primitive helpers
 // ---------------------------------------------------------------------------
 
-describe('psKey', () => {
-  it('encodes integer coords', () => {
-    expect(psKey(3, -2)).toBe('3,-2');
-  });
-
-  it('rounds non-integer inputs', () => {
-    expect(psKey(3.4, 1.6)).toBe('3,2');
-  });
-});
-
-describe('inPS / insertPS', () => {
+describe('PointSet membership via addPS / inPS', () => {
   it('reports absent before insert', () => {
-    const ps = new Set<string>();
-    expect(inPS(ps, { x: 1, y: 2 })).toBe(false);
+    const ps = new PointSet();
+    expect(ps.inPS({ x: 1, y: 2 })).toBe(false);
   });
 
   it('reports present after insert', () => {
-    const ps = new Set<string>();
-    insertPS(ps, { x: 1, y: 2 });
-    expect(inPS(ps, { x: 1, y: 2 })).toBe(true);
+    const ps = new PointSet();
+    ps.addPS(1, 2);
+    expect(ps.inPS({ x: 1, y: 2 })).toBe(true);
   });
 });
 
@@ -206,20 +194,20 @@ describe('genBox', () => {
 
 describe('hasCollision / markCells', () => {
   it('no collision on empty set', () => {
-    const ps = new Set<string>();
+    const ps = new PointSet();
     const cells = [{ x: 0, y: 0 }, { x: 1, y: 0 }];
     expect(hasCollision(cells, 0, 0, ps)).toBe(false);
   });
 
   it('detects collision after markCells', () => {
-    const ps = new Set<string>();
+    const ps = new PointSet();
     const cells = [{ x: 0, y: 0 }];
     markCells(cells, 0, 0, ps);
     expect(hasCollision(cells, 0, 0, ps)).toBe(true);
   });
 
   it('no collision with non-zero offset after marking', () => {
-    const ps = new Set<string>();
+    const ps = new PointSet();
     const cells = [{ x: 0, y: 0 }];
     markCells(cells, 0, 0, ps);
     expect(hasCollision(cells, 1, 0, ps)).toBe(false);
@@ -230,7 +218,7 @@ describe('fits', () => {
   it('returns a Point on empty grid', () => {
     const bb = box(0, 0, 10, 10);
     const info = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     const p = fits(0, 0, info, ctx);
     expect(p).not.toBeNull();
   });
@@ -238,7 +226,7 @@ describe('fits', () => {
   it('returns null when cells collide', () => {
     const bb = box(0, 0, 10, 10);
     const info = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     // Pre-mark the same cells
     markCells(info.cells, 0, 0, ctx.ps);
     const p = fits(0, 0, info, ctx);
@@ -313,7 +301,7 @@ describe('tryCenter', () => {
   it('places first graph roughly at origin', () => {
     const bb = box(0, 0, 20, 20);
     const info = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     const p = tryCenter(info, ctx, 0);
     expect(p).not.toBeNull();
   });
@@ -323,7 +311,7 @@ describe('placeGraph', () => {
   it('places graph i=0 via tryCenter', () => {
     const bb = box(0, 0, 20, 20);
     const info = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     const p = placeGraph(0, info, ctx, 0);
     expect(Number.isFinite(p.x)).toBe(true);
     expect(Number.isFinite(p.y)).toBe(true);
@@ -332,7 +320,7 @@ describe('placeGraph', () => {
   it('places graph i>0 via spiral when origin is blocked', () => {
     const bb = box(0, 0, 10, 10);
     const info = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     // Block origin so spiral must find another position
     markCells(info.cells, 0, 0, ctx.ps);
     const info2 = genBox({ bb, ssize: 5, margin: 0, idx: 0 });

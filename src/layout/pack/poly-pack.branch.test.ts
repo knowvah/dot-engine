@@ -14,6 +14,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { PointSet } from '../../common/pointset.js';
 import type { Box } from '../../model/geom.js';
 import {
   computeStep, genBox, fits, tryCenter, placeGraph, polyRects,
@@ -68,21 +69,21 @@ describe('genBox', () => {
 describe('fits / markCells', () => {
   it('returns null when info.index has no matching bbs entry', () => {
     const info: GInfo = { perim: 4, cells: [{ x: 0, y: 0 }], index: 5 };
-    const ctx: PlaceCtx = { ps: new Set(), step: 1, bbs: [box(0, 0, 1, 1)] };
+    const ctx: PlaceCtx = { ps: new PointSet(), step: 1, bbs: [box(0, 0, 1, 1)] };
     expect(fits(0, 0, info, ctx)).toBeNull();
   });
 
   it('markCells skips a hole in the cells array', () => {
-    const ps = new Set<string>();
+    const ps = new PointSet();
     markCells([{ x: 0, y: 0 }, undefined as unknown as { x: number; y: number }], 1, 1, ps);
-    expect(ps.size).toBe(1);
+    expect(ps.sizeOf()).toBe(1);
   });
 });
 
 describe('tryCenter', () => {
   it('returns null when info.index has no matching bbs entry', () => {
     const info: GInfo = { perim: 4, cells: [{ x: 0, y: 0 }], index: 5 };
-    const ctx: PlaceCtx = { ps: new Set(), step: 1, bbs: [box(0, 0, 1, 1)] };
+    const ctx: PlaceCtx = { ps: new PointSet(), step: 1, bbs: [box(0, 0, 1, 1)] };
     expect(tryCenter(info, ctx, 0)).toBeNull();
   });
 });
@@ -90,13 +91,13 @@ describe('tryCenter', () => {
 describe('placeGraph', () => {
   it('falls back to fits(0,0) when the i===0 centered attempt collides', () => {
     const info: GInfo = { perim: 4, cells: [{ x: 0, y: 0 }], index: 0 };
-    const ctx: PlaceCtx = { ps: new Set(), step: 10, bbs: [box(0, 0, 2, 2)] };
+    const ctx: PlaceCtx = { ps: new PointSet(), step: 10, bbs: [box(0, 0, 2, 2)] };
     // Pre-occupy the exact cell tryCenter would land on: W=H=gridCells(2,10)=1,
     // so tryCenter tries fits(-floor(1/2), -floor(1/2)) = fits(0,0) — mark
     // that cell occupied first so the centered attempt collides and control
     // falls through to the explicit fits(0,0) retry (also colliding here),
     // then into the spiral search.
-    ctx.ps.add('0,0');
+    ctx.ps.addPS(0, 0);
     const p = placeGraph(0, info, ctx, 0);
     expect(p).not.toBeNull();
     expect(p).not.toEqual({ x: 0, y: 0 });
@@ -104,14 +105,14 @@ describe('placeGraph', () => {
 
   it('the second graph (i!==0) succeeds immediately at fits(0,0) when free', () => {
     const info: GInfo = { perim: 4, cells: [{ x: 5, y: 5 }], index: 1 };
-    const ctx: PlaceCtx = { ps: new Set(), step: 10, bbs: [box(0, 0, 2, 2), box(0, 0, 2, 2)] };
+    const ctx: PlaceCtx = { ps: new PointSet(), step: 10, bbs: [box(0, 0, 2, 2), box(0, 0, 2, 2)] };
     const p = placeGraph(1, info, ctx, 0);
     expect(p).toEqual({ x: 0, y: 0 });
   });
 
   it('a tall bbox (H > W) drives the tall spiral-search branch', () => {
     const info: GInfo = { perim: 4, cells: [{ x: 0, y: 0 }], index: 0 };
-    const ctx: PlaceCtx = { ps: new Set(['0,0', '-0,-0']), step: 10, bbs: [box(0, 0, 2, 20)] };
+    const ctx: PlaceCtx = { ps: new PointSet(), step: 10, bbs: [box(0, 0, 2, 20)] };
     const p = placeGraph(0, info, ctx, 0);
     expect(p).not.toBeNull();
   });

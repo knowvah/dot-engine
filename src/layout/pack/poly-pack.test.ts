@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 
 import { describe, it, expect } from 'vitest';
+import { PointSet } from '../../common/pointset.js';
 import type { Box, Point } from '../../model/geom.js';
 import {
   computeStep,
@@ -13,9 +14,6 @@ import {
   tryCenter,
   placeGraph,
   polyRects,
-  psKey,
-  inPS,
-  insertPS,
   cmpByGPerimeter,
 } from './poly-pack.js';
 import { cround } from '../../common/arith.js';
@@ -84,26 +82,31 @@ describe('PS2INCH', () => {
 // psKey / inPS / insertPS
 // ---------------------------------------------------------------------------
 
-describe('psKey', () => {
-  it('encodes integer coords', () => {
-    expect(psKey(3, -2)).toBe('3,-2');
+describe('hasCollision compares exact doubles', () => {
+  it('a fractional cell does not collide with the rounded integer cell', () => {
+    const ps = new PointSet();
+    markCells([{ x: 3.4, y: 1.6 }], 0, 0, ps);
+    expect(hasCollision([{ x: 3, y: 2 }], 0, 0, ps)).toBe(false);
+    expect(hasCollision([{ x: 3.4, y: 1.6 }], 0, 0, ps)).toBe(true);
   });
 
-  it('rounds non-integer inputs', () => {
-    expect(psKey(3.4, 1.6)).toBe('3,2');
+  it('-0 and 0 are the same cell', () => {
+    const ps = new PointSet();
+    markCells([{ x: -0, y: -0 }], 0, 0, ps);
+    expect(hasCollision([{ x: 0, y: 0 }], 0, 0, ps)).toBe(true);
   });
 });
 
-describe('inPS / insertPS', () => {
+describe('PointSet membership via addPS / inPS', () => {
   it('reports absent before insert', () => {
-    const ps = new Set<string>();
-    expect(inPS(ps, { x: 1, y: 2 })).toBe(false);
+    const ps = new PointSet();
+    expect(ps.inPS({ x: 1, y: 2 })).toBe(false);
   });
 
   it('reports present after insert', () => {
-    const ps = new Set<string>();
-    insertPS(ps, { x: 1, y: 2 });
-    expect(inPS(ps, { x: 1, y: 2 })).toBe(true);
+    const ps = new PointSet();
+    ps.addPS(1, 2);
+    expect(ps.inPS({ x: 1, y: 2 })).toBe(true);
   });
 });
 
@@ -191,18 +194,18 @@ describe('genBox', () => {
 
 describe('hasCollision / markCells', () => {
   it('no collision on empty set', () => {
-    const ps = new Set<string>();
+    const ps = new PointSet();
     expect(hasCollision([{ x: 0, y: 0 }, { x: 1, y: 0 }], 0, 0, ps)).toBe(false);
   });
 
   it('detects collision after markCells', () => {
-    const ps = new Set<string>();
+    const ps = new PointSet();
     markCells([{ x: 0, y: 0 }], 0, 0, ps);
     expect(hasCollision([{ x: 0, y: 0 }], 0, 0, ps)).toBe(true);
   });
 
   it('no collision with offset after marking origin', () => {
-    const ps = new Set<string>();
+    const ps = new PointSet();
     markCells([{ x: 0, y: 0 }], 0, 0, ps);
     expect(hasCollision([{ x: 0, y: 0 }], 1, 0, ps)).toBe(false);
   });
@@ -216,14 +219,14 @@ describe('fits', () => {
   it('returns a Point on an empty grid', () => {
     const bb = box(0, 0, 10, 10);
     const info = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     expect(fits(0, 0, info, ctx)).not.toBeNull();
   });
 
   it('returns null when cells are already occupied', () => {
     const bb = box(0, 0, 10, 10);
     const info = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     markCells(info.cells, 0, 0, ctx.ps);
     expect(fits(0, 0, info, ctx)).toBeNull();
   });
@@ -250,7 +253,7 @@ describe('tryCenter', () => {
   it('places first graph roughly at origin', () => {
     const bb = box(0, 0, 20, 20);
     const info = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     expect(tryCenter(info, ctx, 0)).not.toBeNull();
   });
 });
@@ -259,7 +262,7 @@ describe('placeGraph', () => {
   it('places graph i=0 at a finite location', () => {
     const bb = box(0, 0, 20, 20);
     const info = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     const p = placeGraph(0, info, ctx, 0);
     expect(Number.isFinite(p.x)).toBe(true);
     expect(Number.isFinite(p.y)).toBe(true);
@@ -267,7 +270,7 @@ describe('placeGraph', () => {
 
   it('places graph i>0 via spiral when origin is blocked', () => {
     const bb = box(0, 0, 10, 10);
-    const ctx = { ps: new Set<string>(), step: 5, bbs: [bb] };
+    const ctx = { ps: new PointSet(), step: 5, bbs: [bb] };
     const info1 = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
     markCells(info1.cells, 0, 0, ctx.ps);
     const info2 = genBox({ bb, ssize: 5, margin: 0, idx: 0 });
@@ -305,5 +308,29 @@ describe('polyRects', () => {
     const places = polyRects(2, bbs, defaultPackInfo({ margin: 2 }));
     expect(places).not.toBeNull();
     assertNoOverlap(applyPlaces(bbs, places!));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// placement pin (recorded on the string-keyed Set implementation; must hold
+// unchanged on the shared PointSet)
+// ---------------------------------------------------------------------------
+
+describe('polyRects placement sequence', () => {
+  it('places a mixed set of boxes at the recorded translations', () => {
+    const bbs = [
+      box(-30, -20, 30.5, 20),
+      box(-12.5, -9, 12.5, 9),
+      box(-50, -4, 50, 4),
+      box(0, 0, 20, 60),
+      box(-7, -7, 7, 7),
+      box(-25.5, -15.5, 25.5, 15.5),
+      box(-30, -20, 30, 20),
+      box(-3, -3, 3, 3),
+    ];
+    expect(polyRects(bbs.length, bbs, defaultPackInfo({ margin: 8 }))).toEqual([
+      { x: 95, y: -45 }, { x: 23, y: -41 }, { x: -10, y: -6 }, { x: -25, y: 25 },
+      { x: -53, y: 67 }, { x: -39, y: -49 }, { x: 50, y: 40 }, { x: -52, y: 33 },
+    ]);
   });
 });

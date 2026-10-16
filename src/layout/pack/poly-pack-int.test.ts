@@ -10,6 +10,7 @@
 // packmode="graph", which sends osage's top-level pack through polyRects.
 // @see lib/pack/pack.c:computeStep / GRID / fits / polyRects
 
+import { PointSet } from '../../common/pointset.js';
 import { describe, it, expect } from 'vitest';
 import { parse } from '../../index.js';
 import { render } from '../../render/public.js';
@@ -42,7 +43,7 @@ describe('polyRects int arithmetic at extreme coordinates', () => {
   it('fits wraps step * x in 32 bits (native: cc at (129,-129) → (2147483519,-2147483519))', () => {
     const info: GInfo = { perim: 2, cells: [{ x: 0, y: 0 }], index: 0 };
     const ctx: PlaceCtx = {
-      ps: new Set(),
+      ps: new PointSet(),
       step: INT_MAX,
       bbs: [{ ll: { x: 0, y: 0 }, ur: { x: 54, y: 36 } }],
     };
