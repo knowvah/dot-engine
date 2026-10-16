@@ -250,9 +250,22 @@ class ShortestHelper {
     ShortestHelper.connectAll(tris);
     const ftrii = ShortestHelper.findTri(tris, eps[0]);
     const ltrii = ShortestHelper.findTri(tris, eps[1]);
-    if (ftrii === NO_TRI || ltrii === NO_TRI) return null;
+    // C finds the first triangle, fails if none, and only then looks for the
+    // last one (shortest.c:178-204), so the two messages are exclusive.
+    if (ftrii === NO_TRI) {
+      console.warn('source point not in any triangle');
+      return null;
+    }
+    if (ltrii === NO_TRI) {
+      console.warn('destination point not in any triangle');
+      return null;
+    }
     if (ftrii === ltrii) return [eps[0], eps[1]];
-    if (!ShortestHelper.markPath(tris, ftrii, ltrii)) return [eps[0], eps[1]];
+    if (!ShortestHelper.markPath(tris, ftrii, ltrii)) {
+      console.warn('cannot find triangle path');
+      // C: a straight line is better than failing
+      return [eps[0], eps[1]];
+    }
     const epnls: [PNL, PNL] = [{ pp: eps[0], link: null }, { pp: eps[1], link: null }];
     const dq = ShortestHelper.initDeque(pnlps.length);
     ShortestHelper.add2dq(dq, DQ_FRONT, epnls[0]);
