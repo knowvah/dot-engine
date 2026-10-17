@@ -26,7 +26,7 @@ won't-fix deltas (0 for engines without an acceptance list).
 | [dot (SVG)](./PARITY-dot.md) | 950 | 929 | 1 | 5 | 1 | 14 | 99.3% |
 | [dot (xdot)](./PARITY-XDOT.md) | 929 | 926 | 0 | 0 | 0 | 3 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 929 | 924 | 0 | 2 | 0 | 3 | 99.8% |
-| [circo (xdot)](./PARITY-circo.md) | 928 | 917 | 1 | 5 | 0 | 5 | 99.3% |
+| [circo (xdot)](./PARITY-circo.md) | 928 | 918 | 1 | 4 | 0 | 5 | 99.5% |
 | [twopi (xdot)](./PARITY-twopi.md) | 928 | 911 | 1 | 16 | 0 | 0 | 98.2% |
 | [osage (xdot)](./PARITY-osage.md) | 929 | 920 | 1 | 8 | 0 | 0 | 99.0% |
 | [patchwork (xdot)](./PARITY-patchwork.md) | 929 | 929 | 0 | 0 | 0 | 0 | 100.0% |
@@ -61,7 +61,7 @@ bar above.
 |---|---:|---:|---:|---:|---:|---:|---:|
 | [neato (xdot)](./PARITY-neato.md) | 928 | 840 | 0 | 87 | 0 | 1 | 90.6% |
 | [fdp (xdot)](./PARITY-fdp.md) | 928 | 893 | 1 | 29 | 1 | 4 | 96.6% |
-| [sfdp (xdot)](./PARITY-sfdp.md) | 928 | 633 | 1 | 294 | 0 | 0 | 68.2% |
+| [sfdp (xdot)](./PARITY-sfdp.md) | 928 | 633 | 0 | 295 | 0 | 0 | 68.2% |
 | [neato (plain)](./PARITY-neato-plain.md) | 928 | 916 | 0 | 8 | 0 | 4 | 99.1% |
 | [fdp (plain)](./PARITY-fdp-plain.md) | 928 | 912 | 0 | 8 | 1 | 7 | 99.0% |
 | [sfdp (plain)](./PARITY-sfdp-plain.md) | 928 | 918 | 0 | 8 | 0 | 2 | 99.1% |

@@ -8,7 +8,7 @@ T8–T10 run in parallel worktrees; T11 runs after them.
 | [T8](T8-poly-pack-pointset.md) | `poly-pack.ts` on `PointSet`, exact doubles | typescript-pro | `src/layout/pack/poly-pack.ts` + tests | T0 | [x] |
 | [T9](T9-htmltable-pointset.md) | HTML cell-occupancy set on `PointSet` | typescript-pro | `src/common/htmltable.ts` + test | T0, T7 | [ ] |
 | [T10](T10-ortho-pointset.md) | ortho `seen` set on `PointSet` | typescript-pro | `src/layout/dot/ortho-adapter.ts` + test | T0 | [x] |
-| [T11](T11-pointmap-and-speed.md) | Assess neato `PointMap`; measure speed before/after | orchestrator | journal (+ `init.ts` only if observable) | T8, T9, T10 | [ ] |
+| [T11](T11-pointmap-and-speed.md) | Assess neato `PointMap`; measure speed before/after | orchestrator | journal (+ `init.ts` only if observable) | T8, T9, T10 | [x] |
 
 **Interface (all tasks):** `src/common/pointset.ts` `PointSet`: `addPS(x, y)`,
 `inPS({x, y})`, `isInPS(x, y)`, `sizeOf()`, `pointsOf()`. It is already ported and tested;

@@ -85,11 +85,11 @@ user has re-signed every commit (AD-1).
 
 | Batch | Tasks | Mode | Done |
 |---|---|---|---|
-| [1](batch-1/overview.md) | T0 baselines · T1 `GVBINDIR` defaults · T2 follow-ups README + brief · T3 architecture docs | T0 first; T1–T3 parallel | [ ] |
-| [2](batch-2/overview.md) | T4 pathplan warnings · T5 multispline warnings · T6 HTML lexer errors · T7 HTML size warnings | parallel worktrees | [ ] |
-| [3](batch-3/overview.md) | T8 poly-pack · T9 htmltable · T10 ortho on `PointSet` · T11 `PointMap` + speed | T8–T10 parallel, then T11 | [ ] |
-| [4](batch-4/overview.md) | T12 circo FMA / 1855 → T13 label-placement flips | sequential | [ ] |
-| [5](batch-5/overview.md) | T14 final verification, then the re-sign stop | sequential | [ ] |
+| [1](batch-1/overview.md) | T0 baselines · T1 `GVBINDIR` defaults · T2 follow-ups README + brief · T3 architecture docs | T0 first; T1–T3 parallel | [x] |
+| [2](batch-2/overview.md) | T4 pathplan warnings · T5 multispline warnings · T6 HTML lexer errors · T7 HTML size warnings | parallel worktrees | [~] T4, T5 done; T6, T7 held |
+| [3](batch-3/overview.md) | T8 poly-pack · T9 htmltable · T10 ortho on `PointSet` · T11 `PointMap` + speed | T8–T10 parallel, then T11 | [~] T8, T10, T11 done; T9 held |
+| [4](batch-4/overview.md) | T12 circo FMA / 1855 → T13 label-placement flips | sequential | [x] (2471 fix held) |
+| [5](batch-5/overview.md) | T14 final verification, then the re-sign stop | sequential | [x] |
 
 ## Documents
 
@@ -107,3 +107,48 @@ user has re-signed every commit (AD-1).
 - Each task's tests come first (TDD).
 - Parallel tasks develop in separate git worktrees. The orchestrator lands them one at
   a time: cherry-pick, run the gates, write the journal row, commit.
+
+## Session summary (2026-10-17)
+
+**Stopped at:** stop condition 10 (T14 done), with four items held under stop
+condition 1. Nothing is pushed; every commit is unsigned and local (AD-1).
+
+**Tasks:** 15 planned (T0–T14). 11 complete: T0, T1, T2, T3, T4, T5, T8, T10, T11,
+T12, T14. T13 is complete for sfdp 2371; its fdp 2471 fix is held. T6, T7 and T9 are
+held. Commits: T1, T2, T3, T4, T5, T8, T10, T12, T13, T14. T0 and T11 have journal
+rows only.
+
+**Held (stop condition 1: each needs a file outside its write-set), user decision:**
+- T7 (correct vs native 85/85): `test/golden/pt-issue-29.test.ts:49` allow-list.
+- T6: diagnostics printing needs `htmltable-pos.ts` `makeHtmlLabel` + caller, and
+  C's `in label of <kind> <name>`.
+- T9: depends on T7 (`htmltable.ts`).
+- fdp 2471 (T13): fma de Casteljau / DIST2 in `src/common/spline-midpoint.ts`.
+Worktree branches holding the work: `worktree-agent-a89e93b8d3ada4dfc` (T7),
+`worktree-agent-a2b7c3d8093d4afed` (T6).
+
+**Decisions flagged for review:**
+- T12 landed the whole patch per AD-4; its hypot hunk alone would also have kept
+  1855 passing, and the fma/association hunks are what flip it.
+- T8 accepted a mechanical edit to `src/layout/pack/pack.test.ts` (outside the
+  glob, inside the task text).
+- T12's and T13's dashboard regenerations were deferred to T14, which regenerated
+  `PARITY.md` and `PARITY-sfdp.md`.
+- The fresh neato/fdp/sfdp walk moves are all oracle-side (the port's SVG is
+  byte-identical to T0), so the committed walk JSONLs are kept as they are.
+
+**Quality gates (mission head):** typecheck 0; `npm test` 426 files / 10111 tests;
+goldens 5/5; corpus+docs 2786. Survey `GATE PASS`, 0 regressions, counts identical to
+`parity.json`. Walks: 0 regressions on osage, neato, fdp, sfdp, circo (circo: 1855
+newly accepted under AD-4; sfdp's two moves are native nondeterminism). Item-11
+speed: osage p50 1.000 / p90 1.083, dot HTML/ortho p50 1.000 / p90 1.058, no id
+> 1.10× after interleaved re-timing.
+
+**Incidents:** `/tmp/ghl/config8` was deleted overnight (not by this session),
+which made the first T14 survey vacuous; it was regenerated with `dot -c` and the
+survey re-run.
+
+**Follow-ups:** items 14–18 in `plans/post-16.1-followups/README.md`.
+
+**Re-sign (next step for the user):**
+`git -C ~/git/knowvah/dot-engine rebase --exec 'git commit --amend --no-edit -S' main`

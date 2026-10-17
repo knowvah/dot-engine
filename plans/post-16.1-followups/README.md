@@ -60,24 +60,24 @@ Each is independent; one branch + PR per item.
 6. **[DONE — PR #92 merged, 2026-10-16]** **Perf: 2371 on twopi/sfdp ≈ 7× native** (twopi port 8,094,866 ms vs native
    1,130,977 ms, measured under contention). Profile before changing anything,
    and keep the algorithms faithful (no C-behaviour changes).
-7. **Unlanded circo positioning FMA/association patch**:
+7. **[DONE — mission T12, 2026-10-16]** **Unlanded circo positioning FMA/association patch**:
    `plans/graphviz-16.1-sync/followups/circpos-fma-assoc.patch` (+
    `position-arith.test.ts.saved`). It matches C's contraction but flips 1855
    via libm sin/cos amplification. Diagnose 1855 before landing.
-8. **HTML lexer gaps (pre-existing).** Error paths for an unknown entity and
+8. **[HELD — mission T6/T7, awaiting the user's write-set decision]** **HTML lexer gaps (pre-existing).** Error paths for an unknown entity and
    for a mismatched tag, and the missing native warning
    `table size too small for content` (printed for nearly every
    empty-FIXEDSIZE table; journal row T4 2026-10-12).
-9. **Edge-label candidate flips after injection: fdp `2471`, sfdp `2371`.**
+9. **[PART — sfdp 2371 DONE in mission T13; fdp 2471 root-caused, fix HELD]** **Edge-label candidate flips after injection: fdp `2471`, sfdp `2371`.**
    With oracle positions injected, one or more edges keep an `lp.y` one label
    line off (xlabel placer picked another candidate). fdp 2471's native
    layout is non-deterministic run to run, so reproduce several runs
    (`.agent-notes/attribution-16-1.md`). Dump the placer's inputs (node and
    label boxes, R-tree load) on both sides before hypothesizing.
-10. **Port `genroute`/pathplan emit none of C's routing warnings**
+10. **[DONE — mission T4/T5, 2026-10-16]** **Port `genroute`/pathplan emit none of C's routing warnings**
     (`Could not create control points for multiple spline`,
     `shortest.c ... not in any triangle`). stderr-only gap.
-11. **Use the shared `PointSet` (`src/common/pointset.ts`) wherever the oracle
+11. **[PART — T8 poly-pack and T10 ortho DONE, T11 `PointMap` equivalent (no change); T9 htmltable HELD behind T7]** **Use the shared `PointSet` (`src/common/pointset.ts`) wherever the oracle
     uses `lib/common/pointset.c`.** Item 6 ported `PointSet` (numeric keys:
     no per-lookup string build or parse, less memory) and moved
     `polyGraphs` (`pack.c:858`, `src/layout/pack/poly-place.ts`) onto it. Remaining C
@@ -116,6 +116,35 @@ Each is independent; one branch + PR per item.
     (deleted; its plugin set added ~55 ms per native render and inflated the
     August `PERF.md` baseline, `.agent-notes/perf-2371-pointset.md`). Default
     them to the oracle dir `/tmp/ghl`, with a fitness test. Mission task T1.
+
+### Outcomes of the post-16.1 follow-ups mission (2026-10-16/17)
+
+Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
+
+- **Held for a user decision** (each needs a file outside its task's write-set):
+  - T7: `test/golden/pt-issue-29.test.ts:49` allow-list (native prints
+    `Warning: table size too small for content` 4x there).
+  - T6: printing the lexer diagnostics needs `makeHtmlLabel`
+    (`src/common/htmltable-pos.ts`) and its caller, plus C's
+    `in label of <kind> <name>` line (`labels.c:make_label`), which the port never
+    prints.
+  - T9: waits on T7.
+  - fdp 2471: port C's fused de Casteljau `Bezier` and fma DIST2 in
+    `src/common/spline-midpoint.ts` (`dotneato_closest`, `polylineMidpoint`); a
+    gated version took flips from 6/20 native runs to 0.
+- **New follow-ups found by the mission:**
+  14. dot routes a failed edge twice (`splines-groups.ts:121` then
+      `edge-route.ts:512`), so routing-failure stderr lines print 2x native
+      (2470, 2796, 2471).
+  15. `src/layout/neato/splines.ts:598` keeps a string-keyed copy of
+      `ortho.c:1221-1229`'s concentrate dedup (item 11's last site).
+  16. 2516: the yacc `htmlerror` (`non-space string used before <TABLE>`) is
+      thrown at `htmltable-parse.ts:535` and never printed.
+  17. sfdp 2168_3: the multispline router builds a different corridor polygon
+      than native for one edge (native `Pshortestpath` fails on the port's
+      polygons too); dump native's tripoly next.
+  18. `makeGraphDataC` lacks C's `haveWt` (`eweights += ED_factor`) and `haveDir`
+      branches (`neatoinit.c:798`); reachability unchecked.
 
 ## Local leftovers (not committed, safe to delete)
 
