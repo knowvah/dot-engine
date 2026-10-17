@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -180,6 +180,18 @@ port con las posiciones exactas de `circleLayout` de C reproduce el oráculo nod
 (3e-14), y restaurar solo las 5 posiciones de hoja que divergen en un ULP devuelve todo el
 diseño al espejo del port. Análisis de causa raíz completo:
 `.agent-notes/twopi-radial-drift-rca.md` (diario de decisiones 2026-07-11).
+
+La misma estrella diverge en la pista de `circo` (aceptado el 2026-10-16, 599
+diferencias de operaciones de dibujo, como máximo 0.71pt). El port reproduce la
+contracción FMA y el orden de evaluación de clang en `circpos.c`, de modo que 31
+de las 32 posiciones que entran en PRISM son exactas al bit. La última difiere
+en 1 ULP, porque V8 y la libm de Apple redondean `cos`/`sin` de forma distinta
+en tres ángulos de hijos en `positionChildren`. La triangulación de Delaunay de
+PRISM invierte entonces una diagonal casi cocircular en el eje de simetría.
+Inyección A/B: con los valores nativos de `cos`/`sin`, el port coincide con el
+oráculo. Con los valores de V8, la compilación nativa produce el layout del
+oráculo en 22 de 30 ejecuciones y el del port en las otras 8, porque GTS ordena
+sus aristas por dirección de asignación.
 
 **Caracterización de los motores iterativos: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 A diferencia de las pistas de motor `circo`/`twopi`/`osage` de arriba, `neato`/`fdp`/`sfdp`
@@ -933,18 +945,22 @@ filed»). Aceptado a nivel de pista de motor mediante
 `PARITY-twopi.md`/`PARITY-circo.md` por `parity-report.ts`: la misma combinación
 que `accepted.ts` hace para el `PARITY-dot.md` de la pista dot.
 
-**circo `2475_2`: empate de `hypot` cocircular en closestNode.** En un componente de 28 nodos
-de este grafo de 10762 nodos, el `getRotation` de circo
-(`circpos.c:73-92`) elige el nodo del bloque más cercano al origen del diseño mediante
-`hypot` para decidir la rotación del subbloque. Dos nodos cocirculares son
-prácticamente equidistantes; el `Math.hypot` correctamente redondeado de V8 y el `hypot` de la libm de Apple
-redondean esa distancia con 2 ULP de diferencia, lo que invierte el `<` estricto,
-selecciona otro nodo y rota/refleja el subbloque ~20° (se mueven 18 nodos,
-máx. 296.7pt; los otros 10744 nodos son idénticos al bit, igual que el
-árbol de bloques, el orden circular y cada `centerAngle`). La política de hypot correctamente redondeado
-ya se había refutado para esta clase (2026-07-10). Reproducción independiente:
-`.agent-notes/circo-2475-590-repro.dot`; análisis de causa raíz completo:
-`.agent-notes/circo-b81-2475-rca.md` (aceptado el 2026-07-11).
+**circo `2475_2` y `2095_1`: empate de `hypot` cocircular en closestNode
+(corregido).** En un componente de 28 nodos de este grafo de 10762 nodos, el
+`getRotation` de circo (`circpos.c:73-92`) elige el nodo del bloque más cercano
+al origen del diseño mediante `hypot` para decidir la rotación del subbloque.
+Dos nodos cocirculares son prácticamente equidistantes; el `Math.hypot`
+correctamente redondeado de V8 y el `hypot` de la libm de Apple redondean esa
+distancia con 2 ULP de diferencia, lo que invierte el `<` estricto, selecciona
+otro nodo y rota/refleja el subbloque ~20° (se mueven 18 nodos, máx. 296.7pt;
+los otros 10744 nodos son idénticos al bit, igual que el árbol de bloques, el
+orden circular y cada `centerAngle`). `2095_1` caía en el mismo empate (2197
+diferencias de operaciones de dibujo, tres rotaciones rígidas de bloques). Ambos
+estuvieron aceptados hasta el 2026-10-16, cuando la búsqueda del nodo más
+cercano pasó a usar el modelo exacto al bit del `hypot` de Apple en el port
+(`src/common/libm-hypot.ts`); ahora ambos son conformes. Reproducción
+independiente: `.agent-notes/circo-2475-590-repro.dot`; análisis de causa raíz
+completo: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470`: ULP de coordenada radial amplificado por el R-tree de xlabel.**
 2470 es un grafo de 140 aristas cuyas etiquetas de arista HTML `<table>` se agrupan en

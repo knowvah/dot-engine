@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -179,6 +179,17 @@ reproduceert het orakel knoop voor knoop (3e-14), en alleen de 5 ULP-afwijkende
 bladposities terugzetten laat de hele lay-out terugslaan naar de spiegel van de port.
 Volledige RCA: `.agent-notes/twopi-radial-drift-rca.md` (beslissingsjournaal
 2026-07-11).
+
+Dezelfde ster wijkt ook af op het `circo`-spoor (geaccepteerd 2026-10-16, 599
+draw-op-verschillen, hooguit 0.71pt). De port volgt clangs FMA-contractie en
+evaluatievolgorde in `circpos.c`, zodat 31 van de 32 posities die PRISM ingaan
+bit-exact zijn. De laatste wijkt 1 ULP af, omdat V8 en Apples libm `cos`/`sin`
+bij drie kindhoeken in `positionChildren` verschillend afronden. De
+Delaunay-triangulatie van PRISM klapt daarna één bijna cocirculaire diagonaal op
+de spiegelas om. Injectie-A/B: met de native `cos`/`sin`-waarden komt de port
+overeen met het orakel. Met de waarden van V8 levert de native build in 22 van
+30 runs de layout van het orakel en in de overige 8 die van de port, omdat GTS
+zijn kanten op allocatieadres ordent.
 
 **Karakterisering van de iteratieve engines: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Anders dan de enginesporen `circo`/`twopi`/`osage` hierboven zijn `neato`/`fdp`/`sfdp`
@@ -923,18 +934,21 @@ filed”). Geaccepteerd op enginespoor-niveau via
 `PARITY-twopi.md`/`PARITY-circo.md` — dezelfde samenvoeging die
 `accepted.ts` uitvoert voor het dot-spoor `PARITY-dot.md`.
 
-**circo `2475_2` — cocirculaire closestNode-hypot-gelijkstand.** In één component van 28 knopen
-van deze graaf met 10762 knopen kiest de `getRotation` van circo
-(`circpos.c:73-92`) via `hypot` de blokknoop die het dichtst bij de lay-outoorsprong ligt,
-om de rotatie van het deelblok te bepalen. Twee cocirculaire knopen liggen
-vrijwel even ver; de correct afgeronde `Math.hypot` van V8 en de `hypot` van Apple-libm
-ronden die afstand 2 ULP uiteen af, wat de strikte `<` laat omslaan,
-een andere knoop kiest en het deelblok ~20° roteert/spiegelt (18 knopen
-verplaatsen, max 296.7pt; de andere 10744 knopen zijn bit-identiek, evenals de
-bloktree, cirkelvolgorde en elke `centerAngle`). Het CR-hypot-beleid werd
-voor deze klasse al weerlegd (2026-07-10). Zelfstandige reproductie:
-`.agent-notes/circo-2475-590-repro.dot`; volledige RCA:
-`.agent-notes/circo-b81-2475-rca.md` (geaccepteerd 2026-07-11).
+**circo `2475_2` en `2095_1` — cocirculaire closestNode-hypot-gelijkstand
+(opgelost).** In één component van 28 knopen van deze graaf met 10762 knopen
+kiest de `getRotation` van circo (`circpos.c:73-92`) via `hypot` de blokknoop
+die het dichtst bij de lay-outoorsprong ligt, om de rotatie van het deelblok te
+bepalen. Twee cocirculaire knopen liggen vrijwel even ver; de correct afgeronde
+`Math.hypot` van V8 en de `hypot` van Apple-libm ronden die afstand 2 ULP uiteen
+af, wat de strikte `<` laat omslaan, een andere knoop kiest en het deelblok ~20°
+roteert/spiegelt (18 knopen verplaatsen, max 296.7pt; de andere 10744 knopen
+zijn bit-identiek, evenals de bloktree, cirkelvolgorde en elke `centerAngle`).
+`2095_1` liep tegen dezelfde gelijkstand aan (2197 draw-op-verschillen, drie
+starre blokrotaties). Beide waren geaccepteerd tot 2026-10-16, toen het zoeken
+naar de dichtstbijzijnde knoop overstapte op het bit-exacte model van Apples
+`hypot` in de port (`src/common/libm-hypot.ts`); beide zijn nu conform.
+Zelfstandige reproductie: `.agent-notes/circo-2475-590-repro.dot`; volledige
+RCA: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP in radiale coördinaat versterkt door de xlabel-R-tree.**
 2470 is een graaf met 140 kanten waarvan de HTML-`<table>`-kantlabels clusteren

@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-10-14T01:54:16.520Z",
+  "generatedAt": "2026-10-17T00:27:05.099Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "circo",
   "tolerance": 0.01,
   "oracleVersion": "dot 16.1.0",
   "total": 928,
   "counts": {
-    "pass": 917,
-    "diverged": 5,
+    "pass": 918,
+    "diverged": 4,
     "oracle-error": 5,
     "port-error": 1,
     "timeout": 0
@@ -17,2801 +17,2945 @@
       "id": "2285",
       "size": 11,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 786
+      "oracleMs": 91,
+      "portMs": 1343
     },
     {
       "id": "graphs-trivial",
       "size": 16,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 531
+      "oracleMs": 19,
+      "portMs": 891
     },
     {
       "id": "2257",
       "size": 18,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 527
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 1034
     },
     {
       "id": "tree-tclpkg-gv-hello",
       "size": 25,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 562
+      "oracleMs": 20,
+      "oracleWallMs": 22,
+      "portMs": 934
     },
     {
       "id": "1909",
       "size": 29,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 564
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 826
     },
     {
       "id": "graphs-ps_user_shapes",
       "size": 29,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 555
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 922
     },
     {
       "id": "tree-doc-infosrc-forward",
       "size": 30,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 546
+      "oracleMs": 21,
+      "portMs": 929
     },
     {
       "id": "negative-dpi",
       "size": 33,
       "status": "pass",
+      "oracleMs": 15,
+      "oracleWallMs": 16,
+      "portMs": 857
+    },
+    {
+      "id": "2849",
+      "size": 34,
+      "status": "pass",
       "oracleMs": 10,
-      "portMs": 563
+      "portMs": 941
     },
     {
       "id": "2699",
       "size": 35,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 558
+      "oracleMs": 15,
+      "portMs": 917
     },
     {
       "id": "1724",
       "size": 36,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 566
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 984
     },
     {
       "id": "usershape",
       "size": 38,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 565
+      "oracleMs": 20,
+      "portMs": 941
     },
     {
       "id": "2614",
       "size": 39,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 583
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 951
     },
     {
       "id": "813",
       "size": 39,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 586
+      "oracleMs": 21,
+      "portMs": 960
     },
     {
       "id": "tree-doc-infosrc-back",
       "size": 40,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 578
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 957
     },
     {
       "id": "tree-doc-infosrc-both",
       "size": 40,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 592
+      "oracleMs": 16,
+      "portMs": 852
     },
     {
       "id": "tree-doc-infosrc-nohead",
       "size": 40,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 582
+      "oracleMs": 19,
+      "portMs": 989
     },
     {
       "id": "graphs-center",
       "size": 42,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 567
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 939
     },
     {
       "id": "2225",
       "size": 43,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 554
+      "oracleMs": 29,
+      "portMs": 918
     },
     {
       "id": "2636",
       "size": 43,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 554
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1020
     },
     {
       "id": "1585_0",
       "size": 44,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 577
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 927
     },
     {
       "id": "2636_1",
       "size": 45,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 605
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 921
     },
     {
       "id": "2636_2",
       "size": 45,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 582
+      "oracleMs": 19,
+      "portMs": 959
     },
     {
       "id": "1702",
       "size": 49,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 615
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1003
     },
     {
       "id": "graphs-a",
       "size": 49,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 577
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1090
     },
     {
       "id": "2502",
       "size": 50,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 548
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 996
+    },
+    {
+      "id": "1314",
+      "size": 51,
+      "status": "pass",
+      "oracleMs": 24,
+      "portMs": 1159
     },
     {
       "id": "2457_1",
       "size": 51,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 577
+      "oracleMs": 16,
+      "portMs": 1074
     },
     {
       "id": "2457_2",
       "size": 51,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 580
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1006
     },
     {
       "id": "2458",
       "size": 52,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 570
+      "oracleMs": 18,
+      "portMs": 1047
     },
     {
       "id": "graphs-b77",
       "size": 53,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 529
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 996
     },
     {
       "id": "tree-doc-dotguide-none",
       "size": 54,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 553
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 1116
     },
     {
       "id": "graphs-in",
       "size": 55,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 584
+      "oracleMs": 22,
+      "portMs": 1084
     },
     {
       "id": "graphs-ps",
       "size": 55,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 581
+      "oracleMs": 18,
+      "portMs": 1046
     },
     {
       "id": "tree-contrib-prune-test",
       "size": 56,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 582
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1029
     },
     {
       "id": "graphs-b123",
       "size": 59,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 668
+      "oracleMs": 20,
+      "portMs": 1086
     },
     {
       "id": "2391",
       "size": 61,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 609
+      "oracleMs": 23,
+      "portMs": 1067
     },
     {
       "id": "tree-doc-dotguide-plaintext",
       "size": 64,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 577
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1074
     },
     {
       "id": "2743",
       "size": 66,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 554
+      "oracleMs": 20,
+      "portMs": 1062
     },
     {
       "id": "graphs-bad",
       "size": 68,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 582
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1050
     },
     {
       "id": "graphs-b76",
       "size": 69,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 571
+      "oracleMs": 17,
+      "portMs": 1104
     },
     {
       "id": "graphs-clover",
       "size": 69,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 520
+      "oracleMs": 20,
+      "portMs": 1073
     },
     {
       "id": "2168",
       "size": 70,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 576
+      "oracleMs": 24,
+      "portMs": 1072
     },
     {
       "id": "2490",
       "size": 70,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 565
+      "oracleMs": 19,
+      "portMs": 1062
     },
     {
       "id": "tree-doc-dotguide-box",
       "size": 70,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 582
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1081
     },
     {
       "id": "tree-doc-dotguide-egg",
       "size": 70,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 578
+      "oracleMs": 20,
+      "portMs": 1081
     },
     {
       "id": "2682",
       "size": 71,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 562
+      "oracleMs": 20,
+      "portMs": 1180
     },
     {
       "id": "graphs-b80a",
       "size": 71,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 545
+      "oracleMs": 17,
+      "portMs": 1221
     },
     {
       "id": "1925",
       "size": 72,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 571
+      "oracleMs": 20,
+      "portMs": 1097
     },
     {
       "id": "graphs-b135",
       "size": 74,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 591
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1205
     },
     {
       "id": "graphs-radius",
       "size": 74,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 561
+      "oracleMs": 19,
+      "portMs": 1054
     },
     {
       "id": "tree-doc-dotguide-diamond",
       "size": 74,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 560
+      "oracleMs": 22,
+      "portMs": 1255
     },
     {
       "id": "tree-doc-dotguide-house",
       "size": 74,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 555
+      "oracleMs": 12,
+      "oracleWallMs": 13,
+      "portMs": 1063
     },
     {
       "id": "167",
       "size": 75,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 547
+      "oracleMs": 22,
+      "portMs": 1093
     },
     {
       "id": "tree-doc-dotguide-circle",
       "size": 76,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 578
+      "oracleMs": 22,
+      "portMs": 994
     },
     {
       "id": "tree-doc-neato-G4_orig",
       "size": 76,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 582
+      "oracleMs": 20,
+      "portMs": 1071
     },
     {
       "id": "2559",
       "size": 78,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 592
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 1081
+    },
+    {
+      "id": "2784",
+      "size": 78,
+      "status": "port-error",
+      "oracleMs": 259988,
+      "portMs": 9271,
+      "err": "Map maximum size exceeded"
     },
     {
       "id": "graphs-clustlabel",
       "size": 78,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 577
+      "oracleMs": 21,
+      "portMs": 1051
     },
     {
       "id": "tree-doc-dotguide-Mcircle",
       "size": 78,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 608
+      "oracleMs": 19,
+      "portMs": 1139
     },
     {
       "id": "tree-doc-dotguide-Msquare",
       "size": 78,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 531
+      "oracleMs": 23,
+      "portMs": 973
     },
     {
       "id": "tree-doc-dotguide-ellipse",
       "size": 78,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 569
+      "oracleMs": 24,
+      "portMs": 1095
     },
     {
       "id": "tree-doc-dotguide-hexagon",
       "size": 78,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 570
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 1065
     },
     {
       "id": "tree-doc-dotguide-octagon",
       "size": 78,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 602
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1051
     },
     {
       "id": "1865",
       "size": 79,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 575
+      "oracleMs": 15,
+      "oracleWallMs": 16,
+      "portMs": 1087
     },
     {
       "id": "2619",
       "size": 79,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 585
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 1035
     },
     {
       "id": "tree-doc-dotguide-Mdiamond",
       "size": 80,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 556
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 1107
     },
     {
       "id": "tree-doc-dotguide-invhouse",
       "size": 80,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 542
+      "oracleMs": 23,
+      "portMs": 1053
     },
     {
       "id": "tree-doc-dotguide-record",
       "size": 80,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 569
+      "oracleMs": 20,
+      "portMs": 1023
     },
     {
       "id": "tree-doc-dotguide-triangle",
       "size": 80,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 581
+      "oracleMs": 18,
+      "portMs": 1083
     },
     {
       "id": "165",
       "size": 81,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 596
+      "oracleMs": 20,
+      "portMs": 1009
     },
     {
       "id": "graphs-b80",
       "size": 81,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 581
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 1030
     },
     {
       "id": "1328",
       "size": 82,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 577
+      "oracleMs": 20,
+      "portMs": 1143
     },
     {
       "id": "1585_1",
       "size": 82,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 621
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 1063
     },
     {
       "id": "2391_1",
       "size": 82,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 577
+      "oracleMs": 15,
+      "portMs": 1055
     },
     {
       "id": "2564",
       "size": 82,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 576
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 1057
     },
     {
       "id": "2572",
       "size": 82,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 552
+      "oracleMs": 20,
+      "portMs": 1005
     },
     {
       "id": "2721",
       "size": 82,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 547
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 1040
     },
     {
       "id": "graphs-b79",
       "size": 82,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 550
+      "oracleMs": 18,
+      "portMs": 1131
     },
     {
       "id": "tree-doc-dotguide-Mrecord",
       "size": 82,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 576
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 927
     },
     {
       "id": "tree-doc-dotguide-trapezium",
       "size": 82,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 556
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 1492
     },
     {
       "id": "2406",
       "size": 83,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 607
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1029
     },
     {
       "id": "tree-doc-neato-G4_lenwt",
       "size": 83,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 581
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 888
     },
     {
       "id": "165_3",
       "size": 84,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 564
+      "oracleMs": 22,
+      "portMs": 1106
     },
     {
       "id": "graphs-longflat",
       "size": 86,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 547
+      "oracleMs": 19,
+      "portMs": 975
     },
     {
       "id": "graphs-rowcolsep",
       "size": 86,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 562
+      "oracleMs": 19,
+      "portMs": 912
     },
     {
       "id": "tree-doc-dotguide-invtriangle",
       "size": 86,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 591
+      "oracleMs": 14,
+      "portMs": 1008
     },
     {
       "id": "tree-graphs-directed-longflat",
       "size": 86,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 566
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1031
     },
     {
       "id": "1444",
       "size": 87,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 589
+      "oracleMs": 20,
+      "portMs": 1185
     },
     {
       "id": "1444-2",
       "size": 87,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 554
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 951
     },
     {
       "id": "2168_4",
       "size": 87,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 554
+      "oracleMs": 18,
+      "portMs": 1123
     },
     {
       "id": "165_2",
       "size": 88,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 574
+      "oracleMs": 18,
+      "portMs": 1006
     },
     {
       "id": "tree-doc-dotguide-doublecircle",
       "size": 88,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 542
+      "oracleMs": 13,
+      "portMs": 1261
     },
     {
       "id": "tree-doc-dotguide-invtrapezium",
       "size": 88,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 590
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 979
     },
     {
       "id": "tree-doc-dotguide-doubleoctagon",
       "size": 90,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 565
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 994
     },
     {
       "id": "tree-doc-dotguide-parallelogram",
       "size": 90,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 575
+      "oracleMs": 20,
+      "portMs": 979
     },
     {
       "id": "tree-doc-dotguide-tripleoctagon",
       "size": 90,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 548
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1189
     },
     {
       "id": "2643",
       "size": 91,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 556
+      "oracleMs": 29,
+      "portMs": 1257
     },
     {
       "id": "1644",
       "size": 92,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 575
+      "oracleMs": 53,
+      "portMs": 1224
     },
     {
       "id": "tree-doc-infosrc-mrecord",
       "size": 92,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 563
+      "oracleMs": 18,
+      "portMs": 1037
     },
     {
       "id": "2460",
       "size": 93,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 583
+      "oracleMs": 50,
+      "portMs": 1107
     },
     {
       "id": "tree-doc-dotguide-constraint",
       "size": 93,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 564
+      "oracleMs": 62,
+      "portMs": 913
     },
     {
       "id": "tree-doc-infosrc-constraint",
       "size": 93,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 555
+      "oracleMs": 23,
+      "portMs": 950
     },
     {
       "id": "tree-doc-dotguide-point",
       "size": 95,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 544
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 881
     },
     {
       "id": "tree-doc-dotguide-polygon",
       "size": 96,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 596
+      "oracleMs": 31,
+      "portMs": 942
     },
     {
       "id": "2516",
       "size": 97,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 565
+      "oracleMs": 21,
+      "portMs": 865
     },
     {
       "id": "2437",
       "size": 98,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 569
+      "oracleMs": 20,
+      "portMs": 946
     },
     {
       "id": "graphs-Latin1",
       "size": 99,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 564
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 931
     },
     {
       "id": "tree-doc-infosrc-colorlist",
       "size": 99,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 579
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 924
     },
     {
       "id": "tree-graphs-directed-Latin1",
       "size": 99,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 563
+      "oracleMs": 22,
+      "portMs": 859
     },
     {
       "id": "2352",
       "size": 100,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 560
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 867
     },
     {
       "id": "2352_1",
       "size": 102,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 558
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 905
     },
     {
       "id": "2352_2",
       "size": 102,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 553
+      "oracleMs": 20,
+      "portMs": 1043
     },
     {
       "id": "tree-doc-dotguide-crow",
       "size": 102,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 654
+      "oracleMs": 22,
+      "portMs": 775
     },
     {
       "id": "tree-doc-dotguide-boxarrow",
       "size": 103,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 545
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 883
     },
     {
       "id": "tree-doc-dotguide-dot",
       "size": 103,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 569
+      "oracleMs": 20,
+      "portMs": 885
     },
     {
       "id": "tree-doc-dotguide-inv",
       "size": 103,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 596
+      "oracleMs": 25,
+      "portMs": 942
     },
     {
       "id": "tree-doc-dotguide-tee",
       "size": 103,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 578
+      "oracleMs": 36,
+      "portMs": 974
     },
     {
       "id": "tree-doc-dotguide-vee",
       "size": 103,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 528
+      "oracleMs": 17,
+      "portMs": 956
     },
     {
       "id": "1308",
       "size": 104,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 587
+      "oracleMs": 20,
+      "portMs": 811
     },
     {
       "id": "graphs-b545",
       "size": 104,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 568
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 905
     },
     {
       "id": "tree-doc-dotguide-no_arrow",
       "size": 104,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 537
+      "oracleMs": 30,
+      "portMs": 863
     },
     {
       "id": "tree-doc-dotguide-odot",
       "size": 104,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 564
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 1001
     },
     {
       "id": "graphs-b146",
       "size": 105,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 517
+      "oracleMs": 23,
+      "portMs": 948
     },
     {
       "id": "linux.i386-trivial_dot",
       "size": 105,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 527
+      "oracleMs": 21,
+      "portMs": 831
     },
     {
       "id": "linux.x86-trivial_dot",
       "size": 105,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 539
+      "oracleMs": 20,
+      "portMs": 867
     },
     {
       "id": "macosx-trivial_dot",
       "size": 105,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 541
+      "oracleMs": 23,
+      "portMs": 831
     },
     {
       "id": "nshare-trivial_dot",
       "size": 105,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 545
+      "oracleMs": 20,
+      "portMs": 851
     },
     {
       "id": "windows-trivial_dot",
       "size": 105,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 543
+      "oracleMs": 22,
+      "portMs": 862
     },
     {
       "id": "tree-doc-dotguide-curve",
       "size": 106,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 555
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 908
     },
     {
       "id": "tree-doc-dotguide-invdot",
       "size": 106,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 547
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 876
     },
     {
       "id": "tree-doc-dotguide-normal",
       "size": 106,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 558
+      "oracleMs": 15,
+      "portMs": 923
     },
     {
       "id": "tree-doc-dotguide-diamondarrow",
       "size": 107,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 543
+      "oracleMs": 18,
+      "portMs": 935
     },
     {
       "id": "tree-doc-dotguide-icurve",
       "size": 107,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 533
+      "oracleMs": 20,
+      "portMs": 984
     },
     {
       "id": "tree-doc-dotguide-invodot",
       "size": 107,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 555
+      "oracleMs": 30,
+      "portMs": 904
     },
     {
       "id": "tree-doc-dotguide-oinvdot",
       "size": 107,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 554
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 969
     },
     {
       "id": "graphs-b60",
       "size": 112,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 587
+      "oracleMs": 23,
+      "portMs": 831
     },
     {
       "id": "graphs-b491",
       "size": 113,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 598
+      "oracleMs": 16,
+      "portMs": 891
     },
     {
       "id": "graphs-dir",
       "size": 113,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 581
+      "oracleMs": 20,
+      "portMs": 885
     },
     {
       "id": "2087",
       "size": 118,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 556
+      "oracleMs": 19,
+      "portMs": 879
     },
     {
       "id": "graphs-b993",
       "size": 118,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 627
+      "oracleMs": 22,
+      "portMs": 875
     },
     {
       "id": "1902",
       "size": 119,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 559
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 863
     },
     {
       "id": "regression_tests-shapes-reference-plain",
       "size": 121,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 539
+      "oracleMs": 20,
+      "portMs": 845
     },
     {
       "id": "graphs-b62",
       "size": 123,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 561
+      "oracleMs": 21,
+      "portMs": 935
     },
     {
       "id": "graphs-b73",
       "size": 124,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 522
+      "oracleMs": 13,
+      "portMs": 932
     },
     {
       "id": "reference-test_reference-001.001",
       "size": 126,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 535
+      "oracleMs": 28,
+      "portMs": 1065
     },
     {
       "id": "regression_tests-shapes-reference-box",
       "size": 128,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 559
+      "oracleMs": 29,
+      "portMs": 876
     },
     {
       "id": "regression_tests-shapes-reference-cds",
       "size": 128,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 550
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 886
     },
     {
       "id": "regression_tests-shapes-reference-tab",
       "size": 128,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 545
+      "oracleMs": 23,
+      "portMs": 969
     },
     {
       "id": "regression_tests-shapes-reference-utr",
       "size": 128,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 550
+      "oracleMs": 21,
+      "portMs": 927
     },
     {
       "id": "162",
       "size": 129,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 554
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 850
     },
     {
       "id": "graphs-edgeclip",
       "size": 129,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 542
+      "oracleMs": 15,
+      "oracleWallMs": 16,
+      "portMs": 845
     },
     {
       "id": "regression_tests-shapes-reference-none",
       "size": 129,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 621
+      "oracleMs": 22,
+      "portMs": 869
     },
     {
       "id": "regression_tests-shapes-reference-note",
       "size": 129,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 557
+      "oracleMs": 19,
+      "portMs": 832
     },
     {
       "id": "regression_tests-shapes-reference-oval",
       "size": 129,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 558
+      "oracleMs": 19,
+      "portMs": 950
     },
     {
       "id": "regression_tests-shapes-reference-rect",
       "size": 129,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 518
+      "oracleMs": 23,
+      "portMs": 1280
     },
     {
       "id": "regression_tests-shapes-reference-box3d",
       "size": 130,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 544
+      "oracleMs": 19,
+      "portMs": 1061
     },
     {
       "id": "regression_tests-shapes-reference-circle",
       "size": 130,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 546
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 867
     },
     {
       "id": "regression_tests-shapes-reference-house",
       "size": 130,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 542
+      "oracleMs": 20,
+      "portMs": 806
     },
     {
       "id": "regression_tests-shapes-reference-square",
       "size": 130,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 562
+      "oracleMs": 21,
+      "portMs": 870
     },
     {
       "id": "graphs-pack",
       "size": 131,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 556
+      "oracleMs": 17,
+      "portMs": 793
     },
     {
       "id": "regression_tests-shapes-reference-Mcircle",
       "size": 131,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 529
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 859
     },
     {
       "id": "regression_tests-shapes-reference-Msquare",
       "size": 131,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 511
+      "oracleMs": 21,
+      "portMs": 838
     },
     {
       "id": "regression_tests-shapes-reference-folder",
       "size": 131,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 597
+      "oracleMs": 22,
+      "portMs": 816
     },
     {
       "id": "regression_tests-shapes-reference-larrow",
       "size": 131,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 503
+      "oracleMs": 26,
+      "portMs": 836
     },
     {
       "id": "regression_tests-shapes-reference-rarrow",
       "size": 131,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 555
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 833
     },
     {
       "id": "tree-doc-neato-G4_pinned",
       "size": 131,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 534
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 826
     },
     {
       "id": "regression_tests-shapes-reference-diamond",
       "size": 132,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 527
+      "oracleMs": 21,
+      "portMs": 947
     },
     {
       "id": "regression_tests-shapes-reference-ellipse",
       "size": 132,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 508
+      "oracleMs": 20,
+      "portMs": 861
     },
     {
       "id": "regression_tests-shapes-reference-hexagon",
       "size": 132,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 534
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 885
     },
     {
       "id": "regression_tests-shapes-reference-octagon",
       "size": 132,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 545
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 899
     },
     {
       "id": "regression_tests-shapes-reference-polygon",
       "size": 132,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 549
+      "oracleMs": 19,
+      "portMs": 924
     },
     {
       "id": "regression_tests-shapes-reference-rnastab",
       "size": 132,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 532
+      "oracleMs": 19,
+      "portMs": 788
     },
     {
       "id": "graphs-b33",
       "size": 133,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 531
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 843
     },
     {
       "id": "graphs-user_shapes",
       "size": 133,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 536
+      "oracleMs": 19,
+      "portMs": 937
     },
     {
       "id": "regression_tests-shapes-reference-Mdiamond",
       "size": 133,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 501
+      "oracleMs": 21,
+      "portMs": 849
     },
     {
       "id": "regression_tests-shapes-reference-assembly",
       "size": 133,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 556
+      "oracleMs": 21,
+      "portMs": 846
     },
     {
       "id": "regression_tests-shapes-reference-cylinder",
       "size": 133,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 554
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 823
     },
     {
       "id": "regression_tests-shapes-reference-invhouse",
       "size": 133,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 559
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 884
     },
     {
       "id": "regression_tests-shapes-reference-pentagon",
       "size": 133,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 538
+      "oracleMs": 22,
+      "portMs": 875
     },
     {
       "id": "regression_tests-shapes-reference-promoter",
       "size": 133,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 561
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 801
     },
     {
       "id": "regression_tests-shapes-reference-ribosite",
       "size": 133,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 536
+      "oracleMs": 20,
+      "portMs": 969
     },
     {
       "id": "regression_tests-shapes-reference-septagon",
       "size": 133,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 516
+      "oracleMs": 15,
+      "oracleWallMs": 16,
+      "portMs": 962
     },
     {
       "id": "regression_tests-shapes-reference-triangle",
       "size": 133,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 523
+      "oracleMs": 27,
+      "portMs": 813
     },
     {
       "id": "graphs-b73a",
       "size": 134,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 526
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 817
     },
     {
       "id": "regression_tests-shapes-reference-component",
       "size": 134,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 529
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 902
     },
     {
       "id": "regression_tests-shapes-reference-insulator",
       "size": 134,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 529
+      "oracleMs": 24,
+      "portMs": 923
     },
     {
       "id": "regression_tests-shapes-reference-lpromoter",
       "size": 134,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 535
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 1195
     },
     {
       "id": "regression_tests-shapes-reference-noverhang",
       "size": 134,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 557
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 858
     },
     {
       "id": "regression_tests-shapes-reference-plaintext",
       "size": 134,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 549
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 932
     },
     {
       "id": "regression_tests-shapes-reference-rectangle",
       "size": 134,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 557
+      "oracleMs": 20,
+      "portMs": 875
     },
     {
       "id": "regression_tests-shapes-reference-rpromoter",
       "size": 134,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 544
+      "oracleMs": 26,
+      "portMs": 977
     },
     {
       "id": "regression_tests-shapes-reference-signature",
       "size": 134,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 531
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 1061
     },
     {
       "id": "regression_tests-shapes-reference-trapezium",
       "size": 134,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 568
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 895
     },
     {
       "id": "regression_tests-shapes-reference-underline",
       "size": 134,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 531
+      "oracleMs": 23,
+      "portMs": 909
     },
     {
       "id": "regression_tests-shapes-reference-point",
       "size": 135,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 549
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 986
     },
     {
       "id": "regression_tests-shapes-reference-primersite",
       "size": 135,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 592
+      "oracleMs": 37,
+      "portMs": 903
     },
     {
       "id": "regression_tests-shapes-reference-terminator",
       "size": 135,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 516
+      "oracleMs": 20,
+      "portMs": 843
     },
     {
       "id": "regression_tests-shapes-reference-invtriangle",
       "size": 136,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 567
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 845
     },
     {
       "id": "regression_tests-shapes-reference-proteinstab",
       "size": 136,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 537
+      "oracleMs": 16,
+      "portMs": 809
     },
     {
       "id": "regression_tests-shapes-reference-invtrapezium",
       "size": 137,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 576
+      "oracleMs": 15,
+      "portMs": 822
     },
     {
       "id": "regression_tests-shapes-reference-proteasesite",
       "size": 137,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 556
+      "oracleMs": 18,
+      "portMs": 800
     },
     {
       "id": "regression_tests-shapes-reference-fivepoverhang",
       "size": 138,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 507
+      "oracleMs": 15,
+      "portMs": 808
     },
     {
       "id": "1425",
       "size": 139,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 535
+      "oracleMs": 22,
+      "portMs": 780
     },
     {
       "id": "regression_tests-shapes-reference-egg",
       "size": 139,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 532
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 823
     },
     {
       "id": "regression_tests-shapes-reference-threepoverhang",
       "size": 139,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 536
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 777
     },
     {
       "id": "regression_tests-shapes-reference-restrictionsite",
       "size": 140,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 520
+      "oracleMs": 12,
+      "oracleWallMs": 13,
+      "portMs": 851
     },
     {
       "id": "regression_tests-shapes-reference-star",
       "size": 141,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 562
+      "oracleMs": 20,
+      "portMs": 840
     },
     {
       "id": "regression_tests-shapes-reference-doublecircle",
       "size": 144,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 523
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 831
     },
     {
       "id": "regression_tests-shapes-reference-doubleoctagon",
       "size": 145,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 562
+      "oracleMs": 19,
+      "portMs": 773
     },
     {
       "id": "regression_tests-shapes-reference-tripleoctagon",
       "size": 145,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 552
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 888
     },
     {
       "id": "2342",
       "size": 146,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 549
+      "oracleMs": 25,
+      "portMs": 969
     },
     {
       "id": "graphs-clust1",
       "size": 146,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 579
+      "oracleMs": 16,
+      "portMs": 1015
     },
     {
       "id": "graphs-clust2",
       "size": 146,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 553
+      "oracleMs": 20,
+      "portMs": 841
     },
     {
       "id": "graphs-clust3",
       "size": 146,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 546
+      "oracleMs": 14,
+      "portMs": 910
     },
     {
       "id": "tree-graphs-directed-clust1",
       "size": 146,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 552
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 842
     },
     {
       "id": "tree-graphs-directed-clust2",
       "size": 146,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 563
+      "oracleMs": 20,
+      "portMs": 836
     },
     {
       "id": "tree-graphs-directed-clust3",
       "size": 146,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 572
+      "oracleMs": 15,
+      "portMs": 811
     },
     {
       "id": "tree-doc-infosrc-fill",
       "size": 147,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 537
+      "oracleMs": 19,
+      "portMs": 776
     },
     {
       "id": "1221",
       "size": 149,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 523
+      "oracleMs": 20,
+      "portMs": 821
     },
     {
       "id": "regression_tests-shapes-reference-parallelogram",
       "size": 149,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 523
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 739
     },
     {
       "id": "705",
       "size": 155,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 528
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 815
     },
     {
       "id": "graphs-record2",
       "size": 155,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 556
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 798
     },
     {
       "id": "share-Latin1",
       "size": 155,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 549
+      "oracleMs": 19,
+      "portMs": 1574
     },
     {
       "id": "tree-graphs-directed-record2",
       "size": 155,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 553
+      "oracleMs": 16,
+      "portMs": 1539
     },
     {
       "id": "windows-Latin1",
       "size": 155,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 551
+      "oracleMs": 14,
+      "portMs": 1170
     },
     {
       "id": "graphs-ordering",
       "size": 161,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 599
+      "oracleMs": 20,
+      "portMs": 1278
     },
     {
       "id": "graphs-try",
       "size": 163,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 569
+      "oracleMs": 17,
+      "portMs": 1252
     },
     {
       "id": "tree-graphs-directed-try",
       "size": 163,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 532
+      "oracleMs": 13,
+      "portMs": 1193
     },
     {
       "id": "graphs-d",
       "size": 165,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 564
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 926
     },
     {
       "id": "1514",
       "size": 168,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 563
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 792
     },
     {
       "id": "2436",
       "size": 168,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 535
+      "oracleMs": 25,
+      "portMs": 779
     },
     {
       "id": "2639",
       "size": 170,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 528
+      "oracleMs": 20,
+      "portMs": 808
     },
     {
       "id": "2615",
       "size": 173,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 552
+      "oracleMs": 13,
+      "portMs": 798
     },
     {
       "id": "2484",
       "size": 182,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 553
+      "oracleMs": 23,
+      "portMs": 835
     },
     {
       "id": "graphs-fdp",
       "size": 183,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 539
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 819
     },
     {
       "id": "graphs-labelclust-ndd",
       "size": 186,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 572
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 800
     },
     {
       "id": "tree-doc-dotguide-graph1",
       "size": 186,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 533
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 733
     },
     {
       "id": "graphs-b58",
       "size": 194,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 541
+      "oracleMs": 28,
+      "portMs": 753
     },
     {
       "id": "graphs-labelclust-fdd",
       "size": 202,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 535
+      "oracleMs": 14,
+      "portMs": 720
     },
     {
       "id": "graphs-labelclust-ntd",
       "size": 206,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 563
+      "oracleMs": 16,
+      "portMs": 765
     },
     {
       "id": "graphs-nestedclust",
       "size": 207,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 548
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 753
     },
     {
       "id": "graphs-labelclust-ndl",
       "size": 208,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 562
+      "oracleMs": 27,
+      "portMs": 787
     },
     {
       "id": "graphs-labelclust-nbd",
       "size": 209,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 557
+      "oracleMs": 15,
+      "oracleWallMs": 16,
+      "portMs": 809
     },
     {
       "id": "graphs-labelclust-ndr",
       "size": 209,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 541
+      "oracleMs": 13,
+      "portMs": 771
     },
     {
       "id": "tree-doc-infosrc-round",
       "size": 209,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 566
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 844
     },
     {
       "id": "graphs-labelclust-ndc",
       "size": 210,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 583
+      "oracleMs": 19,
+      "portMs": 752
     },
     {
       "id": "2563",
       "size": 213,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 539
+      "oracleMs": 20,
+      "portMs": 761
     },
     {
       "id": "258",
       "size": 218,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 561
+      "oracleMs": 18,
+      "portMs": 786
     },
     {
       "id": "1879-2",
       "size": 221,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 525
+      "oracleMs": 20,
+      "portMs": 784
     },
     {
       "id": "2295",
       "size": 221,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 539
+      "oracleMs": 16,
+      "portMs": 714
     },
     {
       "id": "graphs-b7",
       "size": 222,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 580
+      "oracleMs": 22,
+      "portMs": 707
     },
     {
       "id": "graphs-labelclust-ftd",
       "size": 222,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 569
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 730
     },
     {
       "id": "2683",
       "size": 223,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 549
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 693
     },
     {
       "id": "graphs-labelclust-fdl",
       "size": 224,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 560
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 727
     },
     {
       "id": "graphs-labelclust-fbd",
       "size": 225,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 585
+      "oracleMs": 19,
+      "portMs": 741
     },
     {
       "id": "graphs-labelclust-fdr",
       "size": 225,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 555
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 783
     },
     {
       "id": "graphs-labelclust-fdc",
       "size": 226,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 518
+      "oracleMs": 12,
+      "portMs": 698
     },
     {
       "id": "graphs-labelroot-ndd",
       "size": 227,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 549
+      "oracleMs": 21,
+      "portMs": 762
     },
     {
       "id": "graphs-rootlabel",
       "size": 227,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 531
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 784
     },
     {
       "id": "tree-doc-dotguide-poly",
       "size": 227,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 571
+      "oracleMs": 17,
+      "portMs": 795
     },
     {
       "id": "graphs-labelclust-ntl",
       "size": 228,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 522
+      "oracleMs": 19,
+      "portMs": 735
     },
     {
       "id": "graphs-labelclust-ntr",
       "size": 229,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 536
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 806
     },
     {
       "id": "graphs-labelclust-ntc",
       "size": 230,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 538
+      "oracleMs": 17,
+      "portMs": 785
     },
     {
       "id": "tree-doc-infosrc-fixed",
       "size": 230,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 600
+      "portMs": 819
     },
     {
       "id": "graphs-labelclust-nbl",
       "size": 231,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 536
+      "portMs": 778
     },
     {
       "id": "graphs-labelclust-nbr",
       "size": 232,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 526
+      "portMs": 686
     },
     {
       "id": "graphs-labelclust-nbc",
       "size": 233,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 562
+      "portMs": 677
     },
     {
       "id": "graphs-process",
       "size": 234,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 537
+      "portMs": 768
     },
     {
       "id": "tree-graphs-undirected-process",
       "size": 234,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 544
+      "portMs": 842
     },
     {
       "id": "144_no_ortho",
       "size": 237,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 570
+      "portMs": 795
     },
     {
       "id": "2609",
       "size": 238,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 587
+      "portMs": 806
     },
     {
       "id": "graphs-clust5",
       "size": 238,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 548
+      "portMs": 732
     },
     {
       "id": "tree-graphs-directed-clust5",
       "size": 238,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 510
+      "portMs": 734
     },
     {
       "id": "graphs-sb_box",
       "size": 241,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 579
+      "portMs": 748
     },
     {
       "id": "graphs-labelroot-fdd",
       "size": 243,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 564
+      "portMs": 735
     },
     {
       "id": "graphs-labelclust-ftl",
       "size": 244,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 523
+      "portMs": 764
     },
     {
       "id": "graphs-sb_circle",
       "size": 244,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 575
+      "portMs": 710
     },
     {
       "id": "graphs-labelclust-ftr",
       "size": 245,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 732
     },
     {
       "id": "graphs-labelroot-ntd",
       "size": 245,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 574
+      "portMs": 726
     },
     {
       "id": "graphs-labelclust-ftc",
       "size": 246,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 567
+      "portMs": 795
     },
     {
       "id": "graphs-labelclust-fbl",
       "size": 247,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 556
+      "portMs": 783
     },
     {
       "id": "graphs-labelroot-ndl",
       "size": 247,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 553
+      "portMs": 783
     },
     {
       "id": "graphs-labelclust-fbr",
       "size": 248,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 574
+      "portMs": 965
     },
     {
       "id": "graphs-labelroot-nbd",
       "size": 248,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 550
+      "portMs": 803
     },
     {
       "id": "graphs-labelroot-ndr",
       "size": 248,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 546
+      "portMs": 856
     },
     {
       "id": "graphs-p3",
       "size": 248,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 574
+      "portMs": 784
     },
     {
       "id": "121",
       "size": 249,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 593
+      "portMs": 730
     },
     {
       "id": "graphs-labelclust-fbc",
       "size": 249,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 580
+      "portMs": 721
     },
     {
       "id": "graphs-labelroot-ndc",
       "size": 249,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 516
+      "portMs": 757
     },
     {
       "id": "tree-graphs-directed-clust",
       "size": 255,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 552
+      "portMs": 705
     },
     {
       "id": "925",
       "size": 256,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 552
+      "portMs": 710
     },
     {
       "id": "graphs-b145",
       "size": 256,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 557
+      "portMs": 711
     },
     {
       "id": "graphs-clust",
       "size": 256,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 547
+      "portMs": 743
     },
     {
       "id": "graphs-p2",
       "size": 256,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 538
+      "portMs": 757
     },
     {
       "id": "144_ortho",
       "size": 257,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 563
+      "portMs": 1035
     },
     {
       "id": "graphs-layers",
       "size": 258,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 553
+      "portMs": 1082
     },
     {
       "id": "graphs-p",
       "size": 259,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 581
+      "portMs": 872
     },
     {
       "id": "graphs-layer",
       "size": 260,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 564
+      "portMs": 680
     },
     {
       "id": "graphs-labelroot-ftd",
       "size": 261,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 557
+      "portMs": 740
+    },
+    {
+      "id": "2851",
+      "size": 263,
+      "status": "pass",
+      "oracleMs": 11,
+      "portMs": 749
     },
     {
       "id": "graphs-labelroot-fdl",
       "size": 263,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 551
+      "portMs": 763
     },
     {
       "id": "graphs-labelroot-fbd",
       "size": 264,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 567
+      "portMs": 700
     },
     {
       "id": "graphs-labelroot-fdr",
       "size": 264,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 543
+      "portMs": 714
     },
     {
       "id": "1622_3",
       "size": 265,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 554
+      "portMs": 748
     },
     {
       "id": "graphs-labelroot-fdc",
       "size": 265,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 567
+      "portMs": 771
     },
     {
       "id": "graphs-labelroot-ntl",
       "size": 265,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 732
     },
     {
       "id": "1624",
       "size": 266,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 550
+      "portMs": 693
     },
     {
       "id": "graphs-labelroot-ntr",
       "size": 266,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 555
+      "portMs": 703
     },
     {
       "id": "share-a1",
       "size": 266,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 580
+      "portMs": 724
     },
     {
       "id": "share-a2",
       "size": 266,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 559
+      "portMs": 756
     },
     {
       "id": "share-a3",
       "size": 266,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 559
+      "portMs": 763
     },
     {
       "id": "graphs-labelroot-ntc",
       "size": 267,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 549
+      "portMs": 792
     },
     {
       "id": "graphs-labelroot-nbl",
       "size": 268,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 541
+      "portMs": 744
     },
     {
       "id": "graphs-labelroot-nbr",
       "size": 269,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 548
+      "portMs": 738
     },
     {
       "id": "graphs-color",
       "size": 270,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 772
     },
     {
       "id": "graphs-labelroot-nbc",
       "size": 270,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 566
+      "portMs": 733
     },
     {
       "id": "graphs-layer2",
       "size": 274,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 562
+      "portMs": 789
     },
     {
       "id": "tree-doc-neato-process",
       "size": 274,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 527
+      "portMs": 745
     },
     {
       "id": "graphs-labelroot-ftl",
       "size": 281,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 586
+      "portMs": 743
     },
     {
       "id": "graphs-labelroot-ftr",
       "size": 282,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 561
+      "portMs": 727
     },
     {
       "id": "graphs-labelroot-ftc",
       "size": 283,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 557
+      "portMs": 706
     },
     {
       "id": "graphs-labelroot-fbl",
       "size": 284,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 558
+      "portMs": 676
     },
     {
       "id": "graphs-labelroot-fbr",
       "size": 285,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 529
+      "portMs": 756
     },
     {
       "id": "graphs-compound",
       "size": 286,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 576
+      "portMs": 752
     },
     {
       "id": "graphs-labelroot-fbc",
       "size": 286,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 937
+    },
+    {
+      "id": "2852",
+      "size": 287,
+      "status": "pass",
+      "oracleMs": 10,
+      "portMs": 772
     },
     {
       "id": "tree-doc-dotguide-recordex",
       "size": 287,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 563
+      "portMs": 864
     },
     {
       "id": "graphs-colorscheme",
       "size": 290,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 558
+      "portMs": 740
     },
     {
       "id": "tree-tclpkg-tcldot-examples-data-demo",
       "size": 295,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 547
+      "portMs": 707
     },
     {
       "id": "graphs-nojustify",
       "size": 298,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 561
+      "portMs": 726
     },
     {
       "id": "tree-doc-dotguide-compound",
       "size": 303,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 572
+      "portMs": 703
     },
     {
       "id": "tree-tclpkg-tcldot-examples-data-poly",
       "size": 305,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 522
+      "portMs": 794
     },
     {
       "id": "2727",
       "size": 306,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 534
+      "portMs": 770
     },
     {
       "id": "1939",
       "size": 307,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 561
+      "portMs": 715
     },
     {
       "id": "graphs-structs",
       "size": 308,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 572
+      "portMs": 730
     },
     {
       "id": "graphs-p4",
       "size": 309,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 609
+      "portMs": 845
     },
     {
       "id": "1622_1",
       "size": 311,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 572
+      "portMs": 772
     },
     {
       "id": "2825",
       "size": 312,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 592
+      "portMs": 756
     },
     {
       "id": "2521",
       "size": 320,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 731
     },
     {
       "id": "2168_3",
       "size": 322,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 568
+      "portMs": 715
     },
     {
       "id": "2717",
       "size": 325,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 746
     },
     {
       "id": "1767",
       "size": 326,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 591
+      "portMs": 740
     },
     {
       "id": "graphs-flatedge",
       "size": 330,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 561
+      "portMs": 695
     },
     {
       "id": "graphs-b",
       "size": 338,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 585
+      "portMs": 686
     },
     {
       "id": "graphs-b117",
       "size": 338,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 553
+      "portMs": 717
     },
     {
       "id": "graphs-nhg",
       "size": 339,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 559
+      "portMs": 705
     },
     {
       "id": "tree-graphs-directed-nhg",
       "size": 339,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 561
+      "portMs": 756
     },
     {
       "id": "2168_2",
       "size": 349,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 580
+      "portMs": 722
     },
     {
       "id": "tree-doc-neato-inet",
       "size": 349,
       "status": "pass",
       "oracleMs": 12,
-      "portMs": 589
+      "portMs": 742
+    },
+    {
+      "id": "700813",
+      "size": 351,
+      "status": "pass",
+      "oracleMs": 10,
+      "portMs": 674
     },
     {
       "id": "graphs-ZapfDingbats",
       "size": 360,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 747
     },
     {
       "id": "graphs-colors",
       "size": 376,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 568
+      "portMs": 735
     },
     {
       "id": "graphs-mike",
       "size": 381,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 566
+      "oracleMs": 22,
+      "portMs": 758
     },
     {
       "id": "tree-graphs-directed-mike",
       "size": 381,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 541
+      "oracleMs": 19,
+      "portMs": 770
     },
     {
       "id": "graphs-ZapfChancery",
       "size": 386,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 562
+      "portMs": 756
     },
     {
       "id": "2184",
       "size": 393,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 565
+      "portMs": 736
     },
     {
       "id": "graphs-sb_box_dbl",
       "size": 397,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 575
+      "portMs": 756
     },
     {
       "id": "graphs-sb_circle_dbl",
       "size": 400,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 539
+      "portMs": 721
     },
     {
       "id": "graphs-clust4",
       "size": 401,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 597
+      "portMs": 676
     },
     {
       "id": "tree-doc-dotguide-clust1",
       "size": 401,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 563
+      "portMs": 782
     },
     {
       "id": "tree-graphs-directed-clust4",
       "size": 401,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 590
+      "portMs": 722
     },
     {
       "id": "graphs-clusters",
       "size": 402,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 541
+      "portMs": 750
     },
     {
       "id": "graphs-xlabels",
       "size": 404,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 558
+      "portMs": 799
     },
     {
       "id": "2368_1",
       "size": 405,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 543
+      "portMs": 697
     },
     {
       "id": "share-longflat",
       "size": 405,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 565
+      "portMs": 820
     },
     {
       "id": "windows-longflat",
       "size": 409,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 571
+      "portMs": 740
     },
     {
       "id": "2613",
       "size": 411,
       "status": "pass",
       "oracleMs": 11,
-      "portMs": 580
+      "portMs": 793
     },
     {
       "id": "graphs-KW91",
       "size": 416,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 566
+      "portMs": 779
     },
     {
       "id": "tree-graphs-directed-KW91",
       "size": 416,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 545
+      "portMs": 720
     },
     {
       "id": "graphs-records",
       "size": 417,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 549
+      "portMs": 751
     },
     {
       "id": "tree-graphs-directed-records",
       "size": 417,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 563
+      "portMs": 683
     },
     {
       "id": "linux.i386-radius_dot",
       "size": 418,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 582
+      "portMs": 687
     },
     {
       "id": "linux.x86-radius_dot",
       "size": 418,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 570
+      "portMs": 666
     },
     {
       "id": "macosx-radius_dot",
       "size": 418,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 741
     },
     {
       "id": "nshare-radius_dot",
       "size": 418,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 544
+      "portMs": 768
     },
     {
       "id": "windows-radius_dot",
       "size": 418,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 565
+      "portMs": 710
     },
     {
       "id": "share-record2",
       "size": 421,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 551
+      "portMs": 712
     },
     {
       "id": "windows-record2",
       "size": 421,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 559
+      "portMs": 717
     },
     {
       "id": "tree-doc-dotguide-html",
       "size": 422,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 553
+      "portMs": 809
     },
     {
       "id": "graphs-ctext",
       "size": 425,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 561
+      "portMs": 769
     },
     {
       "id": "tree-graphs-directed-ctext",
       "size": 425,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 568
+      "portMs": 733
     },
     {
       "id": "358",
       "size": 429,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 526
+      "portMs": 720
     },
     {
       "id": "tree-doc-dotguide-graph2",
       "size": 434,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 551
+      "portMs": 749
     },
     {
       "id": "2258",
       "size": 460,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 532
+      "portMs": 786
     },
     {
       "id": "2556",
       "size": 469,
       "status": "pass",
       "oracleMs": 14,
-      "portMs": 562
+      "portMs": 753
     },
     {
       "id": "1213-1",
       "size": 481,
       "status": "pass",
       "oracleMs": 11,
-      "portMs": 584
+      "portMs": 743
     },
     {
       "id": "share-b491",
       "size": 486,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 561
+      "portMs": 761
     },
     {
       "id": "windows-b491",
       "size": 486,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 570
+      "portMs": 716
     },
     {
       "id": "graphs-b22",
       "size": 488,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 715
     },
     {
       "id": "1622_0",
       "size": 489,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 563
+      "portMs": 805
     },
     {
       "id": "graphs-states",
       "size": 492,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 541
+      "portMs": 887
     },
     {
       "id": "tree-graphs-directed-states",
       "size": 492,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 551
+      "portMs": 836
     },
     {
       "id": "graphs-grdcluster",
       "size": 497,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 573
+      "portMs": 685
     },
     {
       "id": "tree-doc-infosrc-tee",
       "size": 506,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 559
+      "portMs": 706
     },
     {
       "id": "graphs-grdradial_node",
       "size": 519,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 534
+      "portMs": 664
     },
     {
       "id": "graphs-russian",
       "size": 520,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 546
+      "portMs": 734
     },
     {
       "id": "tree-graphs-directed-russian",
       "size": 520,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 552
+      "portMs": 745
     },
     {
       "id": "graphs-grdlinear_node",
       "size": 523,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 567
+      "portMs": 724
     },
     {
       "id": "1213-2",
       "size": 530,
       "status": "pass",
       "oracleMs": 11,
-      "portMs": 601
+      "portMs": 682
     },
     {
       "id": "2159",
       "size": 538,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 584
+      "portMs": 696
     },
     {
       "id": "graphs-b155",
       "size": 542,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 524
+      "portMs": 727
     },
     {
       "id": "1408",
       "size": 544,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 546
+      "portMs": 663
     },
     {
       "id": "1425_1",
       "size": 544,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 540
+      "portMs": 667
     },
     {
       "id": "graphs-nul_nul",
       "size": 576,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 557
+      "portMs": 705
     },
     {
       "id": "241_0",
       "size": 578,
       "status": "diverged",
       "oracleMs": 11,
-      "portMs": 566,
+      "portMs": 761,
       "nDiffs": 41,
       "firstDiff": "edge:1->2#0 _draw_ edge:1->2#0/_draw_/op[1].unfilled_bezier[1]: 221.92 vs 222.12"
     },
@@ -2820,1834 +2964,1918 @@
       "size": 586,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 542
+      "portMs": 760
     },
     {
       "id": "windows-labelclust-ndd",
       "size": 586,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 540
+      "portMs": 796
     },
     {
       "id": "graphs-inv_nul",
       "size": 588,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 609
+      "portMs": 681
     },
     {
       "id": "graphs-tree",
       "size": 588,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 542
+      "portMs": 719
     },
     {
       "id": "tree-doc-dotguide-tree",
       "size": 588,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 537
+      "portMs": 707
     },
     {
       "id": "tree-graphs-directed-tree",
       "size": 588,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 586
+      "portMs": 703
     },
     {
       "id": "tree-graphs-directed-arr_none",
       "size": 591,
       "status": "pass",
       "oracleMs": 16,
-      "portMs": 656
+      "portMs": 677
     },
     {
       "id": "tree-doc-dotguide-fsm",
       "size": 592,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 562
+      "portMs": 726
     },
     {
       "id": "graphs-b68",
       "size": 595,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 582
+      "portMs": 745
     },
     {
       "id": "share-labelclust-fdd",
       "size": 595,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 564
+      "portMs": 774
     },
     {
       "id": "windows-labelclust-fdd",
       "size": 595,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 622
+      "portMs": 721
     },
     {
       "id": "linux.x86-edgeclip_dot",
       "size": 599,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 553
+      "portMs": 713
     },
     {
       "id": "macosx-edgeclip_dot",
       "size": 599,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 530
+      "portMs": 706
     },
     {
       "id": "nshare-edgeclip_dot",
       "size": 599,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 538
+      "portMs": 726
     },
     {
       "id": "share-labelclust-ntd",
       "size": 603,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 568
+      "portMs": 743
     },
     {
       "id": "windows-labelclust-ntd",
       "size": 603,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 541
+      "portMs": 764
     },
     {
       "id": "graphs-fsm",
       "size": 605,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 710
     },
     {
       "id": "share-labelclust-ndl",
       "size": 605,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 534
+      "portMs": 669
     },
     {
       "id": "tree-graphs-directed-fsm",
       "size": 605,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 566
+      "portMs": 692
     },
     {
       "id": "windows-labelclust-ndl",
       "size": 605,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 540
+      "portMs": 719
     },
     {
       "id": "share-labelclust-ndr",
       "size": 606,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 569
+      "portMs": 697
     },
     {
       "id": "windows-labelclust-ndr",
       "size": 606,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 568
+      "oracleMs": 17,
+      "portMs": 759
     },
     {
       "id": "share-labelclust-ndc",
       "size": 607,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 545
+      "oracleMs": 19,
+      "portMs": 663
     },
     {
       "id": "windows-labelclust-ndc",
       "size": 607,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 583
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 710
     },
     {
       "id": "1990",
       "size": 610,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 574
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 691
     },
     {
       "id": "share-labelclust-nbd",
       "size": 611,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 539
+      "oracleMs": 17,
+      "portMs": 700
     },
     {
       "id": "windows-labelclust-nbd",
       "size": 611,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 574
+      "oracleMs": 20,
+      "portMs": 715
     },
     {
       "id": "share-labelclust-ftd",
       "size": 612,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 575
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 705
     },
     {
       "id": "windows-labelclust-ftd",
       "size": 612,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 585
+      "oracleMs": 19,
+      "portMs": 722
     },
     {
       "id": "share-labelclust-fdl",
       "size": 614,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 581
+      "oracleMs": 20,
+      "portMs": 732
     },
     {
       "id": "windows-labelclust-fdl",
       "size": 614,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 575
+      "oracleMs": 17,
+      "portMs": 682
     },
     {
       "id": "share-labelclust-fbd",
       "size": 615,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 548
+      "oracleMs": 18,
+      "portMs": 688
     },
     {
       "id": "windows-labelclust-fbd",
       "size": 615,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 559
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 692
     },
     {
       "id": "share-labelclust-fdc",
       "size": 616,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 557
+      "oracleMs": 22,
+      "portMs": 702
     },
     {
       "id": "share-labelclust-fdr",
       "size": 616,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 586
+      "oracleMs": 15,
+      "portMs": 720
     },
     {
       "id": "windows-labelclust-fdc",
       "size": 616,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 537
+      "oracleMs": 18,
+      "portMs": 671
     },
     {
       "id": "windows-labelclust-fdr",
       "size": 616,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 564
+      "oracleMs": 18,
+      "portMs": 706
     },
     {
       "id": "tree-doc-neato-fancy",
       "size": 617,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 598
+      "oracleMs": 22,
+      "portMs": 704
     },
     {
       "id": "graphs-inv_inv",
       "size": 618,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 585
+      "oracleMs": 15,
+      "portMs": 742
     },
     {
       "id": "linux.x86-rowcolsep_dot1",
       "size": 619,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 562
+      "oracleMs": 16,
+      "portMs": 685
     },
     {
       "id": "macosx-rowcolsep_dot1",
       "size": 619,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 542
+      "oracleMs": 17,
+      "portMs": 697
     },
     {
       "id": "nshare-rowcolsep_dot1",
       "size": 619,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 555
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 729
     },
     {
       "id": "share-labelroot-ntd",
       "size": 619,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 512
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 693
     },
     {
       "id": "windows-labelroot-ntd",
       "size": 619,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 542
+      "oracleMs": 15,
+      "portMs": 715
     },
     {
       "id": "graphs-nul_inv",
       "size": 620,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 527
+      "oracleMs": 14,
+      "portMs": 693
     },
     {
       "id": "1856",
       "size": 621,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 530
+      "oracleMs": 21,
+      "portMs": 709
     },
     {
       "id": "2325",
       "size": 621,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 522
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 692
     },
     {
       "id": "linux.x86-rowcolsep_dot",
       "size": 622,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 539
+      "oracleMs": 18,
+      "portMs": 698
     },
     {
       "id": "macosx-rowcolsep_dot",
       "size": 622,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 526
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 730
     },
     {
       "id": "nshare-rowcolsep_dot",
       "size": 622,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 549
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 674
     },
     {
       "id": "share-labelclust-ntl",
       "size": 622,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 512
+      "oracleMs": 15,
+      "portMs": 710
     },
     {
       "id": "windows-labelclust-ntl",
       "size": 622,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 513
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 703
     },
     {
       "id": "share-labelclust-ntr",
       "size": 623,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 524
+      "oracleMs": 17,
+      "portMs": 672
     },
     {
       "id": "windows-labelclust-ntr",
       "size": 623,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 554
+      "oracleMs": 15,
+      "portMs": 729
     },
     {
       "id": "share-labelclust-ntc",
       "size": 624,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 527
+      "oracleMs": 17,
+      "portMs": 718
     },
     {
       "id": "windows-labelclust-ntc",
       "size": 624,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 519
+      "oracleMs": 17,
+      "portMs": 666
     },
     {
       "id": "share-labelroot-nbd",
       "size": 625,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 555
+      "oracleMs": 18,
+      "portMs": 695
     },
     {
       "id": "windows-labelroot-nbd",
       "size": 625,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 548
+      "oracleMs": 21,
+      "portMs": 694
     },
     {
       "id": "share-labelroot-ftd",
       "size": 627,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 560
+      "oracleMs": 22,
+      "portMs": 708
     },
     {
       "id": "windows-labelroot-ftd",
       "size": 627,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 531
+      "oracleMs": 17,
+      "portMs": 711
     },
     {
       "id": "share-labelroot-ndd",
       "size": 628,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 537
+      "oracleMs": 12,
+      "portMs": 744
     },
     {
       "id": "windows-labelroot-ndd",
       "size": 628,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 544
+      "oracleMs": 17,
+      "portMs": 719
     },
     {
       "id": "graphs-hashtable",
       "size": 629,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 557
+      "oracleMs": 20,
+      "portMs": 683
     },
     {
       "id": "share-labelroot-fbd",
       "size": 629,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 524
+      "oracleMs": 17,
+      "portMs": 712
     },
     {
       "id": "tree-doc-dotguide-hashtable",
       "size": 629,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 535
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 688
     },
     {
       "id": "tree-graphs-directed-hashtable",
       "size": 629,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 548
+      "oracleMs": 17,
+      "portMs": 684
     },
     {
       "id": "windows-labelroot-fbd",
       "size": 629,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 528
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 741
     },
     {
       "id": "graphs-val_nul",
       "size": 630,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 537
+      "oracleMs": 13,
+      "portMs": 770
     },
     {
       "id": "share-labelclust-nbl",
       "size": 630,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 542
+      "oracleMs": 17,
+      "portMs": 672
     },
     {
       "id": "windows-labelclust-nbl",
       "size": 630,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 560
+      "oracleMs": 17,
+      "portMs": 693
     },
     {
       "id": "share-labelclust-ftl",
       "size": 631,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 551
+      "oracleMs": 17,
+      "portMs": 694
     },
     {
       "id": "share-labelclust-nbr",
       "size": 631,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 542
+      "oracleMs": 23,
+      "portMs": 738
     },
     {
       "id": "windows-labelclust-ftl",
       "size": 631,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 523
+      "oracleMs": 17,
+      "portMs": 662
     },
     {
       "id": "windows-labelclust-nbr",
       "size": 631,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 574
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 679
     },
     {
       "id": "share-labelclust-nbc",
       "size": 632,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 554
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 717
     },
     {
       "id": "share-labelroot-fdd",
       "size": 632,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 533
+      "portMs": 674
     },
     {
       "id": "windows-labelclust-nbc",
       "size": 632,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 546
+      "portMs": 718
     },
     {
       "id": "windows-labelroot-fdd",
       "size": 632,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 551
+      "portMs": 681
     },
     {
       "id": "share-labelclust-ftc",
       "size": 633,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 558
+      "portMs": 672
     },
     {
       "id": "share-labelclust-ftr",
       "size": 633,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 549
+      "portMs": 715
     },
     {
       "id": "windows-labelclust-ftc",
       "size": 633,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 561
+      "portMs": 661
     },
     {
       "id": "windows-labelclust-ftr",
       "size": 633,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 565
+      "portMs": 678
     },
     {
       "id": "share-labelclust-fbl",
       "size": 634,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 537
+      "portMs": 691
     },
     {
       "id": "windows-labelclust-fbl",
       "size": 634,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 535
+      "portMs": 744
     },
     {
       "id": "share-labelroot-ntl",
       "size": 635,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 554
+      "portMs": 646
     },
     {
       "id": "windows-labelroot-ntl",
       "size": 635,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 553
+      "portMs": 719
     },
     {
       "id": "graphs-inv_val",
       "size": 636,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 534
+      "portMs": 712
     },
     {
       "id": "share-labelclust-fbc",
       "size": 636,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 530
+      "portMs": 713
     },
     {
       "id": "share-labelclust-fbr",
       "size": 636,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 530
+      "portMs": 687
     },
     {
       "id": "windows-labelclust-fbc",
       "size": 636,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 539
+      "portMs": 698
     },
     {
       "id": "windows-labelclust-fbr",
       "size": 636,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 551
+      "portMs": 708
     },
     {
       "id": "share-labelroot-ntc",
       "size": 637,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 506
+      "portMs": 680
     },
     {
       "id": "share-labelroot-ntr",
       "size": 637,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 532
+      "portMs": 686
     },
     {
       "id": "windows-labelroot-ntc",
       "size": 637,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 532
+      "portMs": 667
     },
     {
       "id": "windows-labelroot-ntr",
       "size": 637,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 533
+      "portMs": 670
     },
     {
       "id": "share-labelroot-nbl",
       "size": 641,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 571
+      "portMs": 699
     },
     {
       "id": "windows-labelroot-nbl",
       "size": 641,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 556
+      "portMs": 669
     },
     {
       "id": "share-labelroot-ftl",
       "size": 643,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 535
+      "portMs": 724
     },
     {
       "id": "share-labelroot-nbc",
       "size": 643,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 550
+      "portMs": 706
     },
     {
       "id": "share-labelroot-nbr",
       "size": 643,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 552
+      "portMs": 679
     },
     {
       "id": "windows-labelroot-ftl",
       "size": 643,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 538
+      "portMs": 725
     },
     {
       "id": "windows-labelroot-nbc",
       "size": 643,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 516
+      "portMs": 688
     },
     {
       "id": "windows-labelroot-nbr",
       "size": 643,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 507
+      "portMs": 660
     },
     {
       "id": "share-labelroot-ndl",
       "size": 644,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 561
+      "portMs": 705
     },
     {
       "id": "windows-labelroot-ndl",
       "size": 644,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 522
+      "portMs": 700
     },
     {
       "id": "share-labelroot-fbl",
       "size": 645,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 540
+      "portMs": 679
     },
     {
       "id": "share-labelroot-ftc",
       "size": 645,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 535
+      "portMs": 697
     },
     {
       "id": "windows-labelroot-fbl",
       "size": 645,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 505
+      "portMs": 689
     },
     {
       "id": "windows-labelroot-ftc",
       "size": 645,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 528
+      "portMs": 652
     },
     {
       "id": "share-labelroot-ndc",
       "size": 646,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 562
+      "portMs": 672
     },
     {
       "id": "share-labelroot-ndr",
       "size": 646,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 520
+      "portMs": 731
     },
     {
       "id": "windows-labelroot-ndc",
       "size": 646,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 562
+      "portMs": 803
     },
     {
       "id": "windows-labelroot-ndr",
       "size": 646,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 539
+      "portMs": 751
     },
     {
       "id": "share-labelroot-fbc",
       "size": 647,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 553
+      "portMs": 730
     },
     {
       "id": "share-labelroot-ftr",
       "size": 647,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 550
+      "portMs": 758
     },
     {
       "id": "windows-labelroot-fbc",
       "size": 647,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 523
+      "portMs": 749
     },
     {
       "id": "windows-labelroot-ftr",
       "size": 647,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 560
+      "portMs": 724
     },
     {
       "id": "share-labelroot-fdl",
       "size": 648,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 567
+      "portMs": 714
     },
     {
       "id": "windows-labelroot-fdl",
       "size": 648,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 506
+      "portMs": 670
     },
     {
       "id": "share-labelroot-fbr",
       "size": 649,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 527
+      "portMs": 738
     },
     {
       "id": "windows-labelroot-fbr",
       "size": 649,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 526
+      "portMs": 677
     },
     {
       "id": "graphs-ER",
       "size": 650,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 529
+      "portMs": 649
     },
     {
       "id": "share-labelroot-fdc",
       "size": 650,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 544
+      "portMs": 653
     },
     {
       "id": "tree-graphs-undirected-ER",
       "size": 650,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 523
+      "portMs": 704
     },
     {
       "id": "windows-labelroot-fdc",
       "size": 650,
       "status": "pass",
       "oracleMs": 9,
-      "portMs": 530
+      "portMs": 725
     },
     {
       "id": "2801",
       "size": 651,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 547
+      "portMs": 741
     },
     {
       "id": "share-labelroot-fdr",
       "size": 652,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 536
+      "portMs": 701
     },
     {
       "id": "windows-labelroot-fdr",
       "size": 652,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 579
+      "portMs": 712
     },
     {
       "id": "graphs-nul_val",
       "size": 659,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 546
+      "portMs": 655
     },
     {
       "id": "graphs-val_inv",
       "size": 660,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 526
+      "portMs": 694
     },
     {
       "id": "tree-doc-neato-ER",
       "size": 665,
       "status": "pass",
       "oracleMs": 10,
-      "portMs": 565
+      "portMs": 700
     },
     {
       "id": "graphs-b786",
       "size": 667,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 545
+      "oracleMs": 18,
+      "portMs": 680
     },
     {
       "id": "graphs-b85",
       "size": 668,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 506
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 695
     },
     {
       "id": "graphs-ports",
       "size": 677,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 542
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 699
     },
     {
       "id": "graphs-val_val",
       "size": 678,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 530
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 720
     },
     {
       "id": "graphs-sides",
       "size": 680,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 545
+      "oracleMs": 15,
+      "portMs": 751
     },
     {
       "id": "share-structs",
       "size": 710,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 541
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 665
     },
     {
       "id": "1658",
       "size": 711,
       "status": "pass",
-      "oracleMs": 15,
-      "portMs": 562
+      "oracleMs": 22,
+      "portMs": 770
     },
     {
       "id": "windows-structs",
       "size": 728,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 519
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 702
     },
     {
       "id": "2168_1",
       "size": 729,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 520
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 674
     },
     {
       "id": "graphs-html",
       "size": 738,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 549
+      "oracleMs": 14,
+      "portMs": 696
     },
     {
       "id": "graphs-b3",
       "size": 754,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 516
+      "oracleMs": 17,
+      "portMs": 683
     },
     {
       "id": "2497",
       "size": 763,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 533
+      "oracleMs": 12,
+      "portMs": 676
     },
     {
       "id": "graphs-rowe",
       "size": 765,
       "status": "pass",
-      "oracleMs": 41,
-      "portMs": 558
+      "oracleMs": 56,
+      "portMs": 765
     },
     {
       "id": "tree-graphs-directed-rowe",
       "size": 765,
       "status": "pass",
-      "oracleMs": 41,
-      "portMs": 572
+      "oracleMs": 56,
+      "portMs": 763
     },
     {
       "id": "graphs-abstract",
       "size": 770,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 546
+      "oracleMs": 54,
+      "portMs": 723
     },
     {
       "id": "tree-graphs-directed-abstract",
       "size": 770,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 550
+      "oracleMs": 57,
+      "portMs": 759
     },
     {
       "id": "2168_5",
       "size": 777,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 532
+      "oracleMs": 16,
+      "portMs": 708
     },
     {
       "id": "graphs-train11",
       "size": 777,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 569
+      "oracleMs": 20,
+      "portMs": 707
     },
     {
       "id": "tree-graphs-directed-train11",
       "size": 777,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 522
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 680
     },
     {
       "id": "graphs-jcctree",
       "size": 778,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 539
+      "oracleMs": 17,
+      "portMs": 700
     },
     {
       "id": "tree-graphs-directed-jcctree",
       "size": 778,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 565
+      "oracleMs": 20,
+      "portMs": 745
     },
     {
       "id": "graphs-japanese",
       "size": 789,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 536
+      "oracleMs": 20,
+      "portMs": 736
     },
     {
       "id": "tree-graphs-directed-japanese",
       "size": 789,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 561
+      "oracleMs": 18,
+      "portMs": 816
     },
     {
       "id": "graphs-Heawood",
       "size": 790,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 556
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 740
     },
     {
       "id": "tree-graphs-undirected-Heawood",
       "size": 790,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 571
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 754
     },
     {
       "id": "graphs-b34",
       "size": 814,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 540
+      "oracleMs": 18,
+      "portMs": 706
     },
     {
       "id": "graphs-fig6",
       "size": 835,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 574
+      "oracleMs": 55,
+      "portMs": 757
     },
     {
       "id": "tree-graphs-directed-fig6",
       "size": 835,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 603
+      "oracleMs": 53,
+      "portMs": 782
     },
     {
       "id": "graphs-shapes",
       "size": 840,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 549
+      "oracleMs": 16,
+      "portMs": 691
     },
     {
       "id": "share-states",
       "size": 858,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 552
+      "oracleMs": 14,
+      "portMs": 690
     },
     {
       "id": "windows-states",
       "size": 878,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 512
+      "oracleMs": 15,
+      "oracleWallMs": 16,
+      "portMs": 668
     },
     {
       "id": "graphs-Petersen",
       "size": 904,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 527
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 670
     },
     {
       "id": "tree-graphs-undirected-Petersen",
       "size": 904,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 526
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 669
     },
     {
       "id": "linux.x86-nestedclust_dot",
       "size": 907,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 513
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 684
     },
     {
       "id": "macosx-nestedclust_dot",
       "size": 907,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 520
+      "oracleMs": 17,
+      "portMs": 682
     },
     {
       "id": "nshare-nestedclust_dot",
       "size": 907,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 516
+      "oracleMs": 17,
+      "portMs": 714
     },
     {
       "id": "share-flatedge",
       "size": 918,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 548
+      "oracleMs": 17,
+      "portMs": 691
     },
     {
       "id": "graphs-Symbol",
       "size": 924,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 532
+      "oracleMs": 18,
+      "portMs": 697
     },
     {
       "id": "windows-nhg",
       "size": 926,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 544
+      "oracleMs": 17,
+      "portMs": 797
     },
     {
       "id": "share-nhg",
       "size": 938,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 532
+      "oracleMs": 21,
+      "portMs": 740
     },
     {
       "id": "graphs-alf",
       "size": 958,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 569
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 790
     },
     {
       "id": "graphs-record",
       "size": 958,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 571
+      "oracleMs": 17,
+      "portMs": 681
     },
     {
       "id": "tree-graphs-directed-alf",
       "size": 958,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 565
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 738
     },
     {
       "id": "graphs-dfa",
       "size": 959,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 537
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 706
     },
     {
       "id": "tree-graphs-directed-dfa",
       "size": 959,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 531
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 654
+    },
+    {
+      "id": "2368",
+      "size": 960,
+      "status": "pass",
+      "oracleMs": 11,
+      "portMs": 751
     },
     {
       "id": "graphs-world",
       "size": 980,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 553
+      "oracleMs": 51,
+      "portMs": 796
     },
     {
       "id": "tree-graphs-directed-world",
       "size": 980,
       "status": "pass",
-      "oracleMs": 42,
-      "portMs": 597
+      "oracleMs": 49,
+      "portMs": 765
     },
     {
       "id": "graphs-style",
       "size": 983,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 533
+      "oracleMs": 18,
+      "portMs": 719
     },
     {
       "id": "graphs-dd",
       "size": 1053,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 516
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 697
     },
     {
       "id": "linux.x86-html_dot",
       "size": 1057,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 542
+      "oracleMs": 17,
+      "portMs": 731
     },
     {
       "id": "nshare-html_dot",
       "size": 1058,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 522
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 666
     },
     {
       "id": "2521_1",
       "size": 1062,
       "status": "pass",
+      "oracleMs": 19,
+      "portMs": 736
+    },
+    {
+      "id": "2413_1",
+      "size": 1076,
+      "status": "pass",
       "oracleMs": 10,
-      "portMs": 548
+      "portMs": 671
     },
     {
       "id": "graphs-grdangles",
       "size": 1076,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 601
+      "oracleMs": 20,
+      "portMs": 687
     },
     {
       "id": "graphs-shells",
       "size": 1102,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 569
+      "oracleMs": 20,
+      "portMs": 702
     },
     {
       "id": "tree-graphs-directed-shells",
       "size": 1102,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 559
+      "oracleMs": 21,
+      "portMs": 745
     },
     {
       "id": "tree-graphs-directed-table",
       "size": 1127,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 525
+      "oracleMs": 22,
+      "portMs": 724
     },
     {
       "id": "share-try",
       "size": 1141,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 520
+      "oracleMs": 22,
+      "portMs": 690
     },
     {
       "id": "windows-try",
       "size": 1142,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 566
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 720
     },
     {
       "id": "share-ctext",
       "size": 1171,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 579
+      "oracleMs": 17,
+      "portMs": 686
     },
     {
       "id": "windows-ctext",
       "size": 1171,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 591
+      "oracleMs": 18,
+      "portMs": 705
     },
     {
       "id": "linux.x86-flatedge_dot",
       "size": 1177,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 572
+      "oracleMs": 13,
+      "portMs": 693
     },
     {
       "id": "nshare-flatedge_dot",
       "size": 1182,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 556
+      "oracleMs": 12,
+      "oracleWallMs": 13,
+      "portMs": 690
     },
     {
       "id": "share-clust3",
       "size": 1195,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 510
+      "oracleMs": 20,
+      "portMs": 663
     },
     {
       "id": "windows-clust3",
       "size": 1195,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 546
+      "oracleMs": 17,
+      "portMs": 698
     },
     {
       "id": "share-clust2",
       "size": 1200,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 527
+      "oracleMs": 20,
+      "portMs": 723
     },
     {
       "id": "windows-clust2",
       "size": 1200,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 566
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 686
     },
     {
       "id": "graphs-grdshapes",
       "size": 1204,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 536
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 716
     },
     {
       "id": "share-clust",
       "size": 1218,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 547
+      "oracleMs": 17,
+      "portMs": 621
     },
     {
       "id": "windows-clust",
       "size": 1218,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 550
+      "oracleMs": 16,
+      "portMs": 725
     },
     {
       "id": "share-clust1",
       "size": 1239,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 535
+      "oracleMs": 17,
+      "portMs": 738
     },
     {
       "id": "graphs-url",
       "size": 1242,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 569
+      "oracleMs": 14,
+      "portMs": 684
     },
     {
       "id": "1896",
       "size": 1261,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 527
+      "oracleMs": 17,
+      "portMs": 771
     },
     {
       "id": "windows-clust1",
       "size": 1261,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 525
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 739
     },
     {
       "id": "graphs-grammar",
       "size": 1302,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 544
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 699
     },
     {
       "id": "tree-graphs-directed-grammar",
       "size": 1302,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 544
+      "oracleMs": 17,
+      "portMs": 756
     },
     {
       "id": "1855",
       "size": 1335,
-      "status": "pass",
-      "oracleMs": 25,
-      "portMs": 646
+      "status": "diverged",
+      "oracleMs": 34,
+      "portMs": 843,
+      "nDiffs": 599,
+      "firstDiff": "edge:10->1#0 _draw_ edge:10->1#0/_draw_/op[1].unfilled_bezier[3]: 78.9 vs 78.89"
     },
     {
       "id": "tree-graphs-directed-switch",
       "size": 1344,
       "status": "pass",
-      "oracleMs": 33,
-      "portMs": 566
+      "oracleMs": 41,
+      "portMs": 732
     },
     {
       "id": "graphs-dpd",
       "size": 1357,
       "status": "pass",
-      "oracleMs": 105,
-      "portMs": 599
+      "oracleMs": 127,
+      "portMs": 861
     },
     {
       "id": "graphs-overlap",
       "size": 1357,
       "status": "pass",
-      "oracleMs": 104,
-      "portMs": 597
+      "oracleMs": 127,
+      "portMs": 802
     },
     {
       "id": "tree-graphs-directed-biological",
       "size": 1360,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 565
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 716
     },
     {
       "id": "share-records",
       "size": 1398,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 521
+      "oracleMs": 20,
+      "portMs": 696
     },
     {
       "id": "tree-doc-dotguide-clust2",
       "size": 1407,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 535
+      "oracleMs": 15,
+      "portMs": 716
     },
     {
       "id": "graphs-html2",
       "size": 1414,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 564
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 732
     },
     {
       "id": "windows-records",
       "size": 1416,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 543
+      "oracleMs": 18,
+      "portMs": 718
     },
     {
       "id": "2361",
       "size": 1419,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 544
+      "oracleMs": 20,
+      "portMs": 691
     },
     {
       "id": "graphs-b56",
       "size": 1421,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 541
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 767
     },
     {
       "id": "graphs-unix",
       "size": 1433,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 563
+      "oracleMs": 20,
+      "portMs": 1114
     },
     {
       "id": "tree-graphs-directed-unix",
       "size": 1433,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 574
+      "oracleMs": 23,
+      "portMs": 768
     },
     {
       "id": "graphs-Times",
       "size": 1437,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 498
+      "oracleMs": 19,
+      "portMs": 746
     },
     {
       "id": "graphs-Bookman",
       "size": 1454,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 514
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 726
     },
     {
       "id": "graphs-lsunix1",
       "size": 1456,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 525
+      "oracleMs": 21,
+      "portMs": 766
     },
     {
       "id": "graphs-lsunix2",
       "size": 1456,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 517
+      "oracleMs": 22,
+      "portMs": 699
     },
     {
       "id": "graphs-Palatino",
       "size": 1462,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 509
+      "oracleMs": 17,
+      "portMs": 673
+    },
+    {
+      "id": "241_1",
+      "size": 1464,
+      "status": "pass",
+      "oracleMs": 12,
+      "portMs": 728
     },
     {
       "id": "graphs-lsunix3",
       "size": 1465,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 511
+      "oracleMs": 22,
+      "portMs": 704
     },
     {
       "id": "graphs-AvantGarde",
       "size": 1484,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 507
+      "oracleMs": 15,
+      "oracleWallMs": 16,
+      "portMs": 656
     },
     {
       "id": "graphs-trapeziumlr",
       "size": 1484,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 509
+      "oracleMs": 14,
+      "portMs": 795
     },
     {
       "id": "tree-graphs-directed-trapeziumlr",
       "size": 1484,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 542
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 711
     },
     {
       "id": "linux.x86-compound_dot",
       "size": 1496,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 502
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 677
     },
     {
       "id": "macosx-compound_dot",
       "size": 1496,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 496
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 704
     },
     {
       "id": "nshare-compound_dot",
       "size": 1496,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 509
+      "oracleMs": 17,
+      "portMs": 690
     },
     {
       "id": "windows-process",
       "size": 1511,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 485
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 748
     },
     {
       "id": "share-process",
       "size": 1512,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 495
+      "oracleMs": 17,
+      "portMs": 703
     },
     {
       "id": "graphs-NewCenturySchlbk",
       "size": 1526,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 515
+      "oracleMs": 11,
+      "oracleWallMs": 12,
+      "portMs": 671
     },
     {
       "id": "1323_1",
       "size": 1588,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 502
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 731
     },
     {
       "id": "2183",
       "size": 1601,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 535
+      "oracleMs": 19,
+      "portMs": 756
     },
     {
       "id": "graphs-triedds",
       "size": 1610,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 516
+      "oracleMs": 20,
+      "portMs": 690
     },
     {
       "id": "tree-graphs-directed-triedds",
       "size": 1610,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 522
+      "oracleMs": 12,
+      "oracleWallMs": 13,
+      "portMs": 660
     },
     {
       "id": "windows-clust5",
       "size": 1695,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 510
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 722
     },
     {
       "id": "share-clust5",
       "size": 1698,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 502
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 737
     },
     {
       "id": "graphs-grdcolors",
       "size": 1704,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 544
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 718
     },
     {
       "id": "graphs-size",
       "size": 1706,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 530
+      "oracleMs": 22,
+      "portMs": 756
     },
     {
       "id": "share-clust4",
       "size": 1709,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 522
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 673
     },
     {
       "id": "windows-clust4",
       "size": 1709,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 502
+      "oracleMs": 12,
+      "portMs": 735
     },
     {
       "id": "graphs-ngk10_4",
       "size": 1718,
       "status": "pass",
-      "oracleMs": 142,
-      "portMs": 562
+      "oracleMs": 159,
+      "portMs": 807
     },
     {
       "id": "graphs-unix2",
       "size": 1719,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 524
+      "oracleMs": 22,
+      "portMs": 718
     },
     {
       "id": "graphs-unix2k",
       "size": 1719,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 544
+      "oracleMs": 21,
+      "portMs": 738
     },
     {
       "id": "tree-graphs-directed-unix2",
       "size": 1719,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 525
+      "oracleMs": 21,
+      "portMs": 697
     },
     {
       "id": "graphs-weight",
       "size": 1720,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 530
+      "oracleMs": 22,
+      "portMs": 694
     },
     {
       "id": "tree-graphs-undirected-ngk10_4",
       "size": 1754,
       "status": "pass",
-      "oracleMs": 155,
-      "portMs": 600
+      "oracleMs": 172,
+      "portMs": 830
     },
     {
       "id": "linux.i386-hashtable",
       "size": 1756,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 519
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 713
     },
     {
       "id": "share-hashtable",
       "size": 1756,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 514
+      "oracleMs": 17,
+      "portMs": 690
     },
     {
       "id": "windows-hashtable",
       "size": 1756,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 532
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 722
     },
     {
       "id": "graphs-viewfile",
       "size": 1767,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 519
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 708
     },
     {
       "id": "tree-graphs-directed-viewfile",
       "size": 1767,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 520
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 713
     },
     {
       "id": "share-Petersen",
       "size": 1768,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 517
+      "oracleMs": 18,
+      "portMs": 730
     },
     {
       "id": "windows-Petersen",
       "size": 1768,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 517
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 699
     },
     {
       "id": "tree-contrib-dirgraph-named",
       "size": 1804,
       "status": "pass",
-      "oracleMs": 9,
-      "portMs": 547
+      "oracleMs": 17,
+      "portMs": 717
     },
     {
       "id": "share-KW91",
       "size": 1824,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 544
+      "oracleMs": 18,
+      "portMs": 725
     },
     {
       "id": "windows-KW91",
       "size": 1824,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 535
+      "oracleMs": 13,
+      "portMs": 728
     },
     {
       "id": "share-tree",
       "size": 1825,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 548
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 731
     },
     {
       "id": "windows-tree",
       "size": 1825,
       "status": "diverged",
-      "oracleMs": 10,
-      "portMs": 528,
+      "oracleMs": 14,
+      "portMs": 729,
       "nDiffs": 10,
       "firstDiff": "edge:node2->node8#0 _draw_ edge:node2->node8#0/_draw_/op[1].unfilled_bezier[5]: 20.77 vs 5.03"
     },
@@ -4655,1661 +4883,1742 @@
       "id": "linux.x86-html2_dot",
       "size": 1945,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 509
+      "oracleMs": 15,
+      "portMs": 715
     },
     {
       "id": "nshare-html2_dot",
       "size": 1946,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 532
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 698
     },
     {
       "id": "share-pm2way",
       "size": 1974,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 531
+      "oracleMs": 17,
+      "portMs": 713
     },
     {
       "id": "graphs-sq_rules",
       "size": 1979,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 573
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 682
     },
     {
       "id": "tree-graphs-directed-oldarrows",
       "size": 1998,
       "status": "pass",
-      "oracleMs": 30,
-      "portMs": 662
+      "oracleMs": 39,
+      "portMs": 791
     },
     {
       "id": "windows-pm2way",
       "size": 1998,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 547
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 706
     },
     {
       "id": "graphs-pm2way",
       "size": 2020,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 566
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 701
     },
     {
       "id": "tree-graphs-directed-pm2way",
       "size": 2020,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 538
+      "oracleMs": 18,
+      "portMs": 785
     },
     {
       "id": "graphs-arrows",
       "size": 2029,
       "status": "pass",
-      "oracleMs": 29,
-      "portMs": 652
+      "oracleMs": 45,
+      "portMs": 813
     },
     {
       "id": "graphs-arrowsize",
       "size": 2039,
       "status": "pass",
-      "oracleMs": 29,
-      "portMs": 664
+      "oracleMs": 38,
+      "portMs": 845
     },
     {
       "id": "linux.x86-ordering_dot1",
       "size": 2042,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 528
+      "oracleMs": 19,
+      "portMs": 748
     },
     {
       "id": "macosx-ordering_dot1",
       "size": 2042,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 521
+      "oracleMs": 15,
+      "oracleWallMs": 16,
+      "portMs": 730
     },
     {
       "id": "nshare-ordering_dot1",
       "size": 2042,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 528
+      "oracleMs": 17,
+      "portMs": 801
     },
     {
       "id": "graphs-rd_rules",
       "size": 2043,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 556
+      "oracleMs": 14,
+      "portMs": 702
     },
     {
       "id": "graphs-newarrows",
       "size": 2045,
       "status": "pass",
-      "oracleMs": 30,
-      "portMs": 655
+      "oracleMs": 39,
+      "portMs": 1114
     },
     {
       "id": "windows-ER",
       "size": 2051,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 581
+      "oracleMs": 15,
+      "portMs": 964
     },
     {
       "id": "graphs-st_box",
       "size": 2068,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 559
+      "oracleMs": 20,
+      "portMs": 834
     },
     {
       "id": "graphs-st_circle",
       "size": 2071,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 556
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 796
     },
     {
       "id": "linux.i386-ER",
       "size": 2072,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 550
+      "oracleMs": 17,
+      "portMs": 758
     },
     {
       "id": "share-ER",
       "size": 2072,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 529
+      "oracleMs": 16,
+      "portMs": 797
     },
     {
       "id": "linux.x86-ordering_dot",
       "size": 2097,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 552
+      "oracleMs": 19,
+      "portMs": 699
     },
     {
       "id": "macosx-ordering_dot",
       "size": 2097,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 546
+      "oracleMs": 22,
+      "portMs": 683
     },
     {
       "id": "nshare-ordering_dot",
       "size": 2097,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 551
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 701
     },
     {
       "id": "windows-fsm",
       "size": 2124,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 549
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 723
     },
     {
       "id": "2242",
       "size": 2125,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 565
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 729
     },
     {
       "id": "share-fsm",
       "size": 2142,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 538
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 726
     },
     {
       "id": "graphs-sr_box",
       "size": 2149,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 562
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 673
     },
     {
       "id": "graphs-sr_circle",
       "size": 2152,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 551
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 713
     },
     {
       "id": "graphs-sl_box",
       "size": 2156,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 545
+      "oracleMs": 18,
+      "portMs": 703
     },
     {
       "id": "graphs-sl_circle",
       "size": 2159,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 518
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 695
     },
     {
       "id": "1323",
       "size": 2164,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 526
+      "oracleMs": 17,
+      "portMs": 715
     },
     {
       "id": "share-b786",
       "size": 2198,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 527
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 705
     },
     {
       "id": "graphs-b53",
       "size": 2287,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 537
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 648
     },
     {
       "id": "share-Heawood",
       "size": 2340,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 526
+      "oracleMs": 18,
+      "portMs": 702
     },
     {
       "id": "windows-Heawood",
       "size": 2340,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 541
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 678
     },
     {
       "id": "1453",
       "size": 2446,
       "status": "pass",
-      "oracleMs": 18,
-      "portMs": 569
+      "oracleMs": 25,
+      "portMs": 759
     },
     {
       "id": "1436",
       "size": 2599,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 541
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 740
     },
     {
       "id": "share-jcctree",
       "size": 2612,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 596
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 638
     },
     {
       "id": "windows-jcctree",
       "size": 2612,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 562
+      "oracleMs": 15,
+      "oracleWallMs": 16,
+      "portMs": 721
     },
     {
       "id": "graphs-pgram",
       "size": 2614,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 581
+      "oracleMs": 15,
+      "portMs": 777
     },
     {
       "id": "tree-graphs-directed-pgram",
       "size": 2614,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 561
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 748
     },
     {
       "id": "tree-graphs-directed-psfonttest",
       "size": 2634,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 559
+      "oracleMs": 18,
+      "portMs": 676
     },
     {
       "id": "linux.i386-dfa",
       "size": 2651,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 547
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 739
     },
     {
       "id": "share-dfa",
       "size": 2651,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 559
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 676
     },
     {
       "id": "graphs-NaN",
       "size": 2672,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 582
+      "oracleMs": 19,
+      "portMs": 688
     },
     {
       "id": "tree-graphs-directed-NaN",
       "size": 2672,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 581
+      "oracleMs": 23,
+      "portMs": 723
     },
     {
       "id": "windows-dfa",
       "size": 2714,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 534
+      "oracleMs": 21,
+      "portMs": 717
     },
     {
       "id": "graphs-b71",
       "size": 2748,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 539
+      "oracleMs": 21,
+      "portMs": 713
     },
     {
       "id": "linux.x86-pack_neato",
       "size": 2867,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 547
+      "oracleMs": 18,
+      "portMs": 679
     },
     {
       "id": "nshare-pack_neato",
       "size": 2870,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 606
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 656
     },
     {
       "id": "linux.x86-pack_neato1",
       "size": 2881,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 528
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 720
     },
     {
       "id": "nshare-pack_neato1",
       "size": 2884,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 535
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 725
     },
     {
       "id": "linux.x86-pack_neato2",
       "size": 2890,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 527
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 722
     },
     {
       "id": "nshare-pack_neato2",
       "size": 2894,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 529
+      "oracleMs": 18,
+      "portMs": 665
     },
     {
       "id": "graphs-Helvetica",
       "size": 2966,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 540
+      "oracleMs": 14,
+      "portMs": 792
     },
     {
       "id": "2592",
       "size": 3001,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 555
+      "oracleMs": 27,
+      "portMs": 686
     },
     {
       "id": "2082",
       "size": 3033,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 541
+      "oracleMs": 21,
+      "portMs": 724
     },
     {
       "id": "share-train11",
       "size": 3220,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 558
+      "oracleMs": 15,
+      "portMs": 731
     },
     {
       "id": "graphs-biglabel",
       "size": 3246,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 525
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 693
     },
     {
       "id": "windows-train11",
       "size": 3257,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 532
+      "oracleMs": 12,
+      "oracleWallMs": 13,
+      "portMs": 716
     },
     {
       "id": "2734",
       "size": 3272,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 560
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 737
     },
     {
       "id": "1622_2",
       "size": 3299,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 516
+      "oracleMs": 17,
+      "portMs": 670
     },
     {
       "id": "share-pmpipe",
       "size": 3346,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 541
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 717
     },
     {
       "id": "windows-pmpipe",
       "size": 3346,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 549
+      "oracleMs": 25,
+      "portMs": 700
     },
     {
       "id": "tree-doc-dotguide-asde91",
       "size": 3383,
       "status": "pass",
-      "oracleMs": 16,
-      "portMs": 572
+      "oracleMs": 28,
+      "portMs": 765
     },
     {
       "id": "1880",
       "size": 3451,
       "status": "oracle-error",
-      "oracleMs": 18,
+      "oracleMs": 12,
+      "oracleWallMs": 13,
       "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/1880.dot"
     },
     {
       "id": "linux.x86-ports_dot",
       "size": 3470,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 569
+      "oracleMs": 13,
+      "portMs": 739
     },
     {
       "id": "nshare-ports_dot",
       "size": 3493,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 543
+      "oracleMs": 15,
+      "portMs": 733
     },
     {
       "id": "graphs-pmpipe",
       "size": 3499,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 551
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 711
     },
     {
       "id": "tree-graphs-directed-pmpipe",
       "size": 3499,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 518
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 671
     },
     {
       "id": "tree-doc-infosrc-sdlshapes",
       "size": 3557,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 547
+      "oracleMs": 21,
+      "portMs": 727
     },
     {
       "id": "windows-alf",
       "size": 3605,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 536
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 703
     },
     {
       "id": "share-alf",
       "size": 3629,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 524
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 728
     },
     {
       "id": "graphs-st_box_dbl",
       "size": 3640,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 529
+      "oracleMs": 19,
+      "portMs": 745
     },
     {
       "id": "graphs-st_circle_dbl",
       "size": 3643,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 546
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 709
     },
     {
       "id": "2476",
       "size": 3653,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 525
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 756
     },
     {
       "id": "graphs-sr_box_dbl",
       "size": 3777,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 547
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 670
     },
     {
       "id": "graphs-sr_circle_dbl",
       "size": 3780,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 568
+      "oracleMs": 20,
+      "portMs": 725
     },
     {
       "id": "graphs-sl_box_dbl",
       "size": 3792,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 535
+      "oracleMs": 19,
+      "portMs": 714
     },
     {
       "id": "graphs-sl_circle_dbl",
       "size": 3795,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 562
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 688
     },
     {
       "id": "2669",
       "size": 3835,
       "status": "pass",
-      "oracleMs": 22,
-      "portMs": 576
+      "oracleMs": 31,
+      "portMs": 792
     },
     {
       "id": "share-triedds",
       "size": 3852,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 531
+      "oracleMs": 16,
+      "portMs": 713
     },
     {
       "id": "windows-triedds",
       "size": 3948,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 543
+      "oracleMs": 14,
+      "oracleWallMs": 15,
+      "portMs": 741
     },
     {
       "id": "graphs-grdlinear",
       "size": 4071,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 547
+      "oracleMs": 13,
+      "oracleWallMs": 14,
+      "portMs": 725
     },
     {
       "id": "graphs-grdfillcolor",
       "size": 4075,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 518
+      "oracleMs": 18,
+      "portMs": 750
     },
     {
       "id": "share-mike",
       "size": 4090,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 526
+      "oracleMs": 19,
+      "portMs": 728
     },
     {
       "id": "windows-mike",
       "size": 4090,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 528
+      "oracleMs": 20,
+      "portMs": 721
     },
     {
       "id": "56",
       "size": 4247,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 551
+      "oracleMs": 17,
+      "portMs": 676
     },
     {
       "id": "linux.x86-record_dot",
       "size": 4541,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 528
+      "oracleMs": 18,
+      "portMs": 703
     },
     {
       "id": "tree-contrib-dirgraph-apache",
       "size": 4584,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 548
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 739
     },
     {
       "id": "tree-doc-neato-typeshar",
       "size": 4584,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 544
+      "oracleMs": 19,
+      "portMs": 727
     },
     {
       "id": "nshare-record_dot",
       "size": 4632,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 537
+      "oracleMs": 18,
+      "portMs": 704
     },
     {
       "id": "nshare-shapes_dot",
       "size": 4692,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 546
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 727
     },
     {
       "id": "tree-graphs-directed-arrows",
       "size": 4766,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 574
+      "oracleMs": 21,
+      "portMs": 784
     },
     {
       "id": "linux.x86-shapes_dot",
       "size": 4861,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 542
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 703
     },
     {
       "id": "2095",
       "size": 4865,
       "status": "pass",
-      "oracleMs": 344,
-      "portMs": 902
+      "oracleMs": 397,
+      "portMs": 1028
     },
     {
       "id": "share-viewfile",
       "size": 4916,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 530
+      "oracleMs": 19,
+      "portMs": 702
     },
     {
       "id": "windows-viewfile",
       "size": 4916,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 566
+      "oracleMs": 24,
+      "portMs": 755
     },
     {
       "id": "1898",
       "size": 5067,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 549
+      "oracleMs": 19,
+      "portMs": 719
     },
     {
       "id": "graphs-ldbxtried",
       "size": 5155,
       "status": "pass",
-      "oracleMs": 17,
-      "portMs": 549
+      "oracleMs": 22,
+      "portMs": 751
     },
     {
       "id": "tree-graphs-directed-ldbxtried",
       "size": 5155,
       "status": "pass",
-      "oracleMs": 17,
-      "portMs": 554
+      "oracleMs": 24,
+      "portMs": 702
     },
     {
       "id": "tree-graphs-directed-polypoly",
       "size": 5155,
       "status": "pass",
-      "oracleMs": 36,
-      "portMs": 693
+      "oracleMs": 49,
+      "portMs": 739
     },
     {
       "id": "graphs-grdradial",
       "size": 5370,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 531
+      "oracleMs": 18,
+      "portMs": 702
     },
     {
       "id": "tree-graphs-directed-sdh",
       "size": 5428,
       "status": "pass",
-      "oracleMs": 365,
-      "portMs": 736
+      "oracleMs": 427,
+      "portMs": 967
     },
     {
       "id": "share-shells",
       "size": 5493,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 533
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 731
     },
     {
       "id": "graphs-crazy",
       "size": 5556,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 524
+      "oracleMs": 34,
+      "portMs": 715
     },
     {
       "id": "tree-graphs-directed-crazy",
       "size": 5572,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 539
+      "oracleMs": 20,
+      "portMs": 710
     },
     {
       "id": "windows-shells",
       "size": 5589,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 568
+      "oracleMs": 21,
+      "portMs": 721
     },
     {
       "id": "windows-grammar",
       "size": 5612,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 520
+      "oracleMs": 19,
+      "portMs": 712
     },
     {
       "id": "share-grammar",
       "size": 5613,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 528
+      "oracleMs": 19,
+      "portMs": 736
     },
     {
       "id": "1949",
       "size": 5632,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 566
+      "oracleMs": 18,
+      "portMs": 774
     },
     {
       "id": "graphs-grdlinear_angle",
       "size": 5758,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 519
+      "oracleMs": 18,
+      "portMs": 685
     },
     {
       "id": "graphs-cairo",
       "size": 5866,
       "status": "pass",
-      "oracleMs": 52,
-      "portMs": 552
+      "oracleMs": 57,
+      "portMs": 778
     },
     {
       "id": "graphs-pslib",
       "size": 5899,
       "status": "pass",
-      "oracleMs": 17,
-      "portMs": 592
+      "oracleMs": 26,
+      "portMs": 727
     },
     {
       "id": "tree-contrib-sdlshapes-sdlshapes",
       "size": 5900,
       "status": "pass",
-      "oracleMs": 17,
-      "portMs": 571
+      "oracleMs": 26,
+      "portMs": 703
     },
     {
       "id": "graphs-proc3d",
       "size": 6121,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 515
+      "oracleMs": 19,
+      "portMs": 710
     },
     {
       "id": "tree-graphs-directed-proc3d",
       "size": 6121,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 519
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 728
     },
     {
       "id": "graphs-jsort",
       "size": 6189,
       "status": "pass",
-      "oracleMs": 32,
-      "portMs": 590
+      "oracleMs": 44,
+      "portMs": 749
     },
     {
       "id": "tree-graphs-directed-jsort",
       "size": 6189,
       "status": "pass",
-      "oracleMs": 32,
-      "portMs": 566
+      "oracleMs": 55,
+      "portMs": 779
     },
     {
       "id": "share-newarrows",
       "size": 6364,
       "status": "pass",
-      "oracleMs": 31,
-      "portMs": 635
+      "oracleMs": 39,
+      "portMs": 803
     },
     {
       "id": "windows-newarrows",
       "size": 6364,
       "status": "pass",
-      "oracleMs": 30,
-      "portMs": 626
+      "oracleMs": 38,
+      "portMs": 816
     },
     {
       "id": "2193",
       "size": 6399,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 545
+      "oracleMs": 24,
+      "portMs": 755
     },
     {
       "id": "share-unix",
       "size": 6603,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 536
+      "oracleMs": 19,
+      "portMs": 788
     },
     {
       "id": "windows-unix",
       "size": 6603,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 554
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 767
     },
     {
       "id": "graphs-polypoly",
       "size": 6617,
       "status": "pass",
-      "oracleMs": 53,
-      "portMs": 787
+      "oracleMs": 71,
+      "portMs": 768
     },
     {
       "id": "1447",
       "size": 6707,
       "status": "oracle-error",
-      "oracleMs": 29,
+      "oracleMs": 35,
       "err": "Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo -Txdot /Users/scottseely/git/graphviz/tests/1447.dot"
     },
     {
       "id": "2619_1",
       "size": 6721,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 534
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 709
     },
     {
       "id": "graphs-grdradial_angle",
       "size": 6918,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 563
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 671
     },
     {
       "id": "windows-trapeziumlr",
       "size": 7229,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 527
+      "oracleMs": 15,
+      "portMs": 715
     },
     {
       "id": "share-trapeziumlr",
       "size": 7233,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 513
+      "oracleMs": 22,
+      "portMs": 702
     },
     {
       "id": "linux.x86-arrows_dot",
       "size": 7235,
       "status": "pass",
-      "oracleMs": 29,
-      "portMs": 671
+      "oracleMs": 39,
+      "portMs": 822
     },
     {
       "id": "macosx-arrows_dot",
       "size": 7235,
       "status": "pass",
-      "oracleMs": 30,
-      "portMs": 665
+      "oracleMs": 42,
+      "portMs": 872
     },
     {
       "id": "nshare-arrows_dot",
       "size": 7235,
       "status": "pass",
-      "oracleMs": 30,
-      "portMs": 667
+      "oracleMs": 43,
+      "portMs": 867
     },
     {
       "id": "graphs-awilliams",
       "size": 7305,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 549
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 683
     },
     {
       "id": "tree-graphs-directed-awilliams",
       "size": 7305,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 547
+      "oracleMs": 21,
+      "portMs": 713
     },
     {
       "id": "share-unix2",
       "size": 7421,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 546
+      "oracleMs": 21,
+      "portMs": 782
     },
     {
       "id": "share-unix2k",
       "size": 7421,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 524
+      "oracleMs": 85,
+      "portMs": 1241
     },
     {
       "id": "windows-unix2",
       "size": 7421,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 564
+      "oracleMs": 16,
+      "oracleWallMs": 17,
+      "portMs": 792
     },
     {
       "id": "windows-unix2k",
       "size": 7421,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 530
+      "oracleMs": 18,
+      "portMs": 781
     },
     {
       "id": "share-rowe",
       "size": 7448,
       "status": "pass",
-      "oracleMs": 41,
-      "portMs": 541
+      "oracleMs": 51,
+      "portMs": 784
     },
     {
       "id": "windows-rowe",
       "size": 7506,
       "status": "pass",
-      "oracleMs": 41,
-      "portMs": 531
+      "oracleMs": 56,
+      "portMs": 768
     },
     {
       "id": "share-fig6",
       "size": 7553,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 578
+      "oracleMs": 61,
+      "portMs": 690
     },
     {
       "id": "windows-fig6",
       "size": 7553,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 550
+      "oracleMs": 48,
+      "portMs": 740
+    },
+    {
+      "id": "graphs-decorate",
+      "size": 7561,
+      "status": "pass",
+      "oracleMs": 11,
+      "portMs": 746
     },
     {
       "id": "2619_2",
       "size": 7596,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 503
+      "oracleMs": 23,
+      "portMs": 746
     },
     {
       "id": "share-abstract",
       "size": 7614,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 575
+      "oracleMs": 52,
+      "portMs": 734
     },
     {
       "id": "windows-abstract",
       "size": 7664,
       "status": "pass",
-      "oracleMs": 42,
-      "portMs": 548
+      "oracleMs": 53,
+      "portMs": 793
     },
     {
       "id": "tree-contrib-dirgraph-bsdkernel",
       "size": 7803,
       "status": "pass",
-      "oracleMs": 13,
-      "portMs": 518
+      "oracleMs": 21,
+      "portMs": 792
     },
     {
       "id": "share-world",
       "size": 8062,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 542
+      "oracleMs": 58,
+      "portMs": 793
     },
     {
       "id": "windows-world",
       "size": 8172,
       "status": "pass",
-      "oracleMs": 43,
-      "portMs": 568
+      "oracleMs": 56,
+      "portMs": 755
     },
     {
       "id": "graphs-b57",
       "size": 8472,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 527
+      "oracleMs": 20,
+      "portMs": 752
     },
     {
       "id": "linux.x86-dotsplines_dot",
       "size": 8741,
       "status": "pass",
-      "oracleMs": 15,
-      "portMs": 535
+      "oracleMs": 27,
+      "portMs": 709
     },
     {
       "id": "graphs-b15",
       "size": 8774,
       "status": "pass",
-      "oracleMs": 48,
-      "portMs": 554
+      "oracleMs": 59,
+      "portMs": 753
     },
     {
       "id": "nshare-dotsplines_dot",
       "size": 8836,
       "status": "pass",
-      "oracleMs": 15,
-      "portMs": 546
+      "oracleMs": 23,
+      "portMs": 723
     },
     {
       "id": "share-polypoly",
       "size": 8872,
       "status": "pass",
-      "oracleMs": 35,
-      "portMs": 662
+      "oracleMs": 43,
+      "portMs": 751
     },
     {
       "id": "windows-polypoly",
       "size": 8872,
       "status": "pass",
-      "oracleMs": 35,
-      "portMs": 702
+      "oracleMs": 40,
+      "portMs": 814
+    },
+    {
+      "id": "2796",
+      "size": 8959,
+      "status": "pass",
+      "oracleMs": 833,
+      "portMs": 1141
     },
     {
       "id": "linux.x86-dotsplines_dot1",
       "size": 9206,
       "status": "pass",
-      "oracleMs": 56,
-      "portMs": 817
+      "oracleMs": 69,
+      "portMs": 999
     },
     {
       "id": "graphs-big",
       "size": 9231,
       "status": "pass",
-      "oracleMs": 10,
-      "portMs": 550
+      "oracleMs": 18,
+      "portMs": 704
     },
     {
       "id": "linux.x86-weight_dot",
       "size": 9278,
       "status": "pass",
-      "oracleMs": 15,
-      "portMs": 538
+      "oracleMs": 24,
+      "portMs": 761
     },
     {
       "id": "nshare-dotsplines_dot1",
       "size": 9332,
       "status": "pass",
-      "oracleMs": 56,
-      "portMs": 789
+      "oracleMs": 73,
+      "portMs": 994
     },
     {
       "id": "nshare-weight_dot",
       "size": 9391,
       "status": "pass",
-      "oracleMs": 15,
-      "portMs": 555
+      "oracleMs": 25,
+      "portMs": 740
+    },
+    {
+      "id": "2413_2",
+      "size": 9721,
+      "status": "pass",
+      "oracleMs": 13,
+      "portMs": 744
     },
     {
       "id": "share-b94",
       "size": 9831,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 547
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 730
     },
     {
       "id": "tree-contrib-java-dot-uml",
       "size": 10213,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 533
+      "oracleMs": 20,
+      "portMs": 755
     },
     {
       "id": "graphs-b124",
       "size": 10284,
       "status": "pass",
-      "oracleMs": 373,
-      "portMs": 718
+      "oracleMs": 471,
+      "portMs": 983
     },
     {
       "id": "graphs-b36",
       "size": 10388,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 562
+      "oracleMs": 20,
+      "portMs": 758
     },
     {
       "id": "share-proc3d",
       "size": 10429,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 539
+      "oracleMs": 17,
+      "portMs": 691
     },
     {
       "id": "linux.i386-crazy",
       "size": 10433,
       "status": "pass",
-      "oracleMs": 15,
-      "portMs": 570
+      "oracleMs": 17,
+      "oracleWallMs": 18,
+      "portMs": 732
     },
     {
       "id": "share-crazy",
       "size": 10433,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 549
+      "oracleMs": 22,
+      "portMs": 715
     },
     {
       "id": "windows-crazy",
       "size": 10433,
       "status": "pass",
-      "oracleMs": 14,
-      "portMs": 538
+      "oracleMs": 22,
+      "portMs": 824
     },
     {
       "id": "windows-proc3d",
       "size": 10446,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 533
+      "oracleMs": 21,
+      "portMs": 774
     },
     {
       "id": "graphs-b94",
       "size": 10503,
       "status": "pass",
-      "oracleMs": 11,
-      "portMs": 536
+      "oracleMs": 21,
+      "portMs": 773
     },
     {
       "id": "nshare-overlap_neato1",
       "size": 10511,
       "status": "pass",
-      "oracleMs": 150,
-      "portMs": 587
+      "oracleMs": 174,
+      "portMs": 803
     },
     {
       "id": "linux.x86-overlap_neato1",
       "size": 10554,
       "status": "pass",
-      "oracleMs": 149,
-      "portMs": 564
+      "oracleMs": 178,
+      "portMs": 847
     },
     {
       "id": "linux.x86-overlap_neato",
       "size": 10562,
       "status": "pass",
-      "oracleMs": 153,
-      "portMs": 595
+      "oracleMs": 181,
+      "portMs": 901
     },
     {
       "id": "nshare-overlap_neato",
       "size": 10566,
       "status": "pass",
-      "oracleMs": 108,
-      "portMs": 571
+      "oracleMs": 138,
+      "portMs": 849
     },
     {
       "id": "share-pgram",
       "size": 10942,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 551
+      "oracleMs": 20,
+      "portMs": 741
     },
     {
       "id": "windows-pgram",
       "size": 11001,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 555
+      "oracleMs": 22,
+      "portMs": 729
     },
     {
       "id": "tree-doc-infosrc-plugins",
       "size": 11343,
       "status": "pass",
-      "oracleMs": 70,
-      "portMs": 580
+      "oracleMs": 85,
+      "portMs": 833
     },
     {
       "id": "share-ldbxtried",
       "size": 11505,
       "status": "pass",
-      "oracleMs": 19,
-      "portMs": 537
+      "oracleMs": 23,
+      "portMs": 742
     },
     {
       "id": "linux.x86-neatosplines_neato",
       "size": 11690,
       "status": "pass",
-      "oracleMs": 185,
-      "portMs": 769
+      "oracleMs": 210,
+      "portMs": 1077
     },
     {
       "id": "nshare-neatosplines_neato",
       "size": 11700,
       "status": "pass",
-      "oracleMs": 142,
-      "portMs": 780
+      "oracleMs": 177,
+      "portMs": 1024
     },
     {
       "id": "windows-ldbxtried",
       "size": 11805,
       "status": "pass",
-      "oracleMs": 19,
-      "portMs": 518
+      "oracleMs": 27,
+      "portMs": 746
     },
     {
       "id": "share-ngk10_4",
       "size": 11842,
       "status": "pass",
-      "oracleMs": 144,
-      "portMs": 588
+      "oracleMs": 164,
+      "portMs": 782
     },
     {
       "id": "42",
       "size": 11978,
       "status": "pass",
-      "oracleMs": 120,
-      "portMs": 707
+      "oracleMs": 135,
+      "portMs": 888
     },
     {
       "id": "windows-ngk10_4",
       "size": 12029,
       "status": "pass",
-      "oracleMs": 142,
-      "portMs": 578
+      "oracleMs": 178,
+      "portMs": 864
     },
     {
       "id": "nshare-neatosplines_neato1",
       "size": 12051,
       "status": "pass",
-      "oracleMs": 139,
-      "portMs": 762
+      "oracleMs": 190,
+      "portMs": 1180
     },
     {
       "id": "linux.x86-neatosplines_neato1",
       "size": 12061,
       "status": "pass",
-      "oracleMs": 183,
-      "portMs": 771
+      "oracleMs": 237,
+      "portMs": 1066
+    },
+    {
+      "id": "698066",
+      "size": 12438,
+      "status": "pass",
+      "oracleMs": 23,
+      "portMs": 809
     },
     {
       "id": "linux.x86-rankdir_dot1",
       "size": 12673,
       "status": "pass",
-      "oracleMs": 16,
-      "portMs": 550
+      "oracleMs": 24,
+      "portMs": 799
     },
     {
       "id": "nshare-rankdir_dot1",
       "size": 12675,
       "status": "pass",
-      "oracleMs": 16,
-      "portMs": 531
+      "oracleMs": 23,
+      "portMs": 731
     },
     {
       "id": "linux.x86-rankdir_dot",
       "size": 12792,
       "status": "pass",
-      "oracleMs": 16,
-      "portMs": 550
+      "oracleMs": 22,
+      "portMs": 741
     },
     {
       "id": "nshare-rankdir_dot2",
       "size": 12795,
       "status": "pass",
-      "oracleMs": 16,
-      "portMs": 545
+      "oracleMs": 22,
+      "portMs": 717
     },
     {
       "id": "nshare-rankdir_dot",
       "size": 12803,
       "status": "pass",
-      "oracleMs": 16,
-      "portMs": 559
+      "oracleMs": 23,
+      "portMs": 753
     },
     {
       "id": "linux.x86-rankdir_dot2",
       "size": 12815,
       "status": "pass",
-      "oracleMs": 15,
-      "portMs": 551
+      "oracleMs": 23,
+      "portMs": 740
     },
     {
       "id": "1332",
       "size": 13890,
       "status": "pass",
-      "oracleMs": 20,
-      "portMs": 572
+      "oracleMs": 31,
+      "portMs": 838
     },
     {
       "id": "share-jsort",
       "size": 14030,
       "status": "pass",
-      "oracleMs": 33,
-      "portMs": 566
+      "oracleMs": 49,
+      "portMs": 723
     },
     {
       "id": "tree-doc-dotguide-smlred",
       "size": 14247,
       "status": "pass",
-      "oracleMs": 1666,
-      "portMs": 1250
+      "oracleMs": 1930,
+      "portMs": 1484
     },
     {
       "id": "windows-jsort",
       "size": 14425,
       "status": "pass",
-      "oracleMs": 32,
-      "portMs": 548
+      "oracleMs": 41,
+      "portMs": 779
     },
     {
       "id": "windows-b94",
       "size": 14509,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 554
+      "oracleMs": 21,
+      "portMs": 741
     },
     {
       "id": "1447_1",
       "size": 14827,
       "status": "pass",
-      "oracleMs": 2795,
-      "portMs": 1856
+      "oracleMs": 3364,
+      "portMs": 2131
     },
     {
       "id": "tree-doc-neato-jho",
       "size": 14828,
       "status": "pass",
-      "oracleMs": 22,
-      "portMs": 573
+      "oracleMs": 30,
+      "portMs": 795
     },
     {
       "id": "graphs-mode",
       "size": 14907,
       "status": "pass",
-      "oracleMs": 22,
-      "portMs": 564
+      "oracleMs": 32,
+      "portMs": 846
     },
     {
       "id": "windows-b36",
       "size": 15050,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 560
+      "oracleMs": 18,
+      "oracleWallMs": 19,
+      "portMs": 726
     },
     {
       "id": "linux.i386-b36",
       "size": 15051,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 543
+      "oracleMs": 19,
+      "oracleWallMs": 20,
+      "portMs": 760
     },
     {
       "id": "share-b36",
       "size": 15051,
       "status": "pass",
-      "oracleMs": 12,
-      "portMs": 550
+      "oracleMs": 20,
+      "portMs": 711
     },
     {
       "id": "share-NaN",
       "size": 16328,
       "status": "pass",
-      "oracleMs": 15,
-      "portMs": 542
+      "oracleMs": 22,
+      "portMs": 743
     },
     {
       "id": "windows-NaN",
       "size": 17050,
       "status": "pass",
-      "oracleMs": 15,
-      "portMs": 539
+      "oracleMs": 22,
+      "portMs": 718
     },
     {
       "id": "graphs-b51",
       "size": 19886,
       "status": "pass",
-      "oracleMs": 23,
-      "portMs": 553
+      "oracleMs": 31,
+      "portMs": 755
     },
     {
       "id": "tree-contrib-dirgraph-linux",
       "size": 21860,
       "status": "pass",
       "oracleMs": 16,
-      "portMs": 579
+      "portMs": 729
     },
     {
       "id": "1718",
       "size": 22038,
       "status": "pass",
       "oracleMs": 73608,
-      "portMs": 24719
+      "portMs": 23622
     },
     {
       "id": "windows-b124",
       "size": 28038,
       "status": "pass",
       "oracleMs": 384,
-      "portMs": 739
+      "portMs": 1180
     },
     {
       "id": "share-b124",
       "size": 28041,
       "status": "pass",
       "oracleMs": 375,
-      "portMs": 703
+      "portMs": 972
     },
     {
       "id": "share-b51",
       "size": 29420,
       "status": "pass",
-      "oracleMs": 31,
-      "portMs": 588
+      "oracleMs": 49,
+      "portMs": 807
     },
     {
       "id": "windows-b51",
       "size": 29685,
       "status": "pass",
-      "oracleMs": 30,
-      "portMs": 586
+      "oracleMs": 42,
+      "portMs": 769
     },
     {
       "id": "tree-contrib-dirgraph-bsdarch",
       "size": 30782,
       "status": "pass",
-      "oracleMs": 20,
-      "portMs": 570
+      "oracleMs": 26,
+      "portMs": 776
     },
     {
       "id": "graphs-b69",
       "size": 33033,
       "status": "pass",
-      "oracleMs": 103,
-      "portMs": 597
+      "oracleMs": 122,
+      "portMs": 828
     },
     {
       "id": "graphs-badvoro",
       "size": 33949,
       "status": "pass",
-      "oracleMs": 43109,
-      "portMs": 13767
+      "oracleMs": 49920,
+      "portMs": 13148
     },
     {
       "id": "graphs-viewport",
       "size": 37292,
       "status": "pass",
-      "oracleMs": 23,
-      "portMs": 619
+      "oracleMs": 29,
+      "portMs": 819
     },
     {
       "id": "2239",
       "size": 48090,
       "status": "pass",
-      "oracleMs": 16,
-      "portMs": 634
+      "oracleMs": 20,
+      "portMs": 742
     },
     {
       "id": "graphs-b106",
       "size": 48933,
       "status": "pass",
       "oracleMs": 1262,
-      "portMs": 1020
+      "portMs": 1429
     },
     {
       "id": "2343",
       "size": 59368,
       "status": "pass",
-      "oracleMs": 77002,
-      "portMs": 37771
+      "oracleMs": 100686,
+      "portMs": 28494
     },
     {
       "id": "graphs-b143",
       "size": 62055,
       "status": "pass",
-      "oracleMs": 6066,
-      "portMs": 2352
+      "oracleMs": 7673,
+      "portMs": 3492
     },
     {
       "id": "graphs-b29",
       "size": 62931,
       "status": "pass",
-      "oracleMs": 6511,
-      "portMs": 2294
+      "oracleMs": 8356,
+      "portMs": 3471
     },
     {
       "id": "2620",
       "size": 64908,
       "status": "pass",
-      "oracleMs": 303,
-      "portMs": 769
+      "oracleMs": 380,
+      "portMs": 1200
     },
     {
       "id": "linux.i386-b106",
       "size": 92005,
       "status": "pass",
       "oracleMs": 1312,
-      "portMs": 1021
+      "portMs": 1598
     },
     {
       "id": "share-b106",
       "size": 92301,
       "status": "pass",
       "oracleMs": 1294,
-      "portMs": 982
+      "portMs": 1602
     },
     {
       "id": "windows-b106",
       "size": 95634,
       "status": "pass",
       "oracleMs": 1293,
-      "portMs": 1019
+      "portMs": 1677
     },
     {
       "id": "graphs-b102",
       "size": 102329,
       "status": "pass",
-      "oracleMs": 12487,
-      "portMs": 4845
+      "oracleMs": 15171,
+      "portMs": 5634
     },
     {
       "id": "graphs-xx",
       "size": 102329,
       "status": "pass",
-      "oracleMs": 12491,
-      "portMs": 4862
+      "oracleMs": 15323,
+      "portMs": 6063
     },
     {
       "id": "2095_1",
       "size": 105083,
-      "status": "diverged",
-      "oracleMs": 81811,
-      "portMs": 48071,
-      "nDiffs": 2197,
-      "firstDiff": "edge:1083->1084#0 _draw_ edge:1083->1084#0/_draw_/op[1].unfilled_bezier[0]: 76784.4 vs 76768.63"
+      "status": "pass",
+      "oracleMs": 102563,
+      "portMs": 30678
     },
     {
       "id": "graphs-root",
       "size": 128221,
       "status": "pass",
-      "oracleMs": 249,
-      "portMs": 1233
+      "oracleMs": 296,
+      "portMs": 1562
     },
     {
       "id": "linux.i386-b29",
       "size": 136753,
       "status": "pass",
       "oracleMs": 6516,
-      "portMs": 2238
+      "portMs": 3281
     },
     {
       "id": "share-b29",
       "size": 137802,
       "status": "pass",
       "oracleMs": 6546,
-      "portMs": 2254
+      "portMs": 3252
     },
     {
       "id": "windows-b29",
       "size": 149114,
       "status": "pass",
       "oracleMs": 6658,
-      "portMs": 2277
+      "portMs": 3343
     },
     {
       "id": "linux.i386-b102",
       "size": 161479,
       "status": "pass",
-      "oracleMs": 12439,
-      "portMs": 4824
+      "oracleMs": 14818,
+      "portMs": 5380
     },
     {
       "id": "share-b102",
       "size": 161479,
       "status": "pass",
-      "oracleMs": 12512,
-      "portMs": 4834
+      "oracleMs": 14910,
+      "portMs": 5453
     },
     {
       "id": "windows-b102",
       "size": 184125,
       "status": "pass",
       "oracleMs": 12453,
-      "portMs": 4884
+      "portMs": 5483
     },
     {
       "id": "graphs-b81",
       "size": 191024,
       "status": "pass",
       "oracleMs": 28,
-      "portMs": 612
+      "portMs": 980
     },
     {
       "id": "1652",
       "size": 240391,
       "status": "oracle-error",
-      "oracleMs": 3600003,
+      "oracleMs": 3600004,
       "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     },
     {
@@ -6317,159 +6626,76 @@
       "size": 287816,
       "status": "pass",
       "oracleMs": 255,
-      "portMs": 1899
+      "portMs": 1516
     },
     {
       "id": "linux.x86-root_twopi",
       "size": 287907,
       "status": "pass",
       "oracleMs": 273,
-      "portMs": 1360
+      "portMs": 1610
     },
     {
       "id": "nshare-root_twopi",
       "size": 287916,
       "status": "pass",
       "oracleMs": 324,
-      "portMs": 1486
+      "portMs": 1839
     },
     {
       "id": "nshare-root_circo",
       "size": 313126,
       "status": "pass",
       "oracleMs": 286,
-      "portMs": 1474
+      "portMs": 1886
     },
     {
       "id": "linux.x86-root_circo",
       "size": 313168,
       "status": "pass",
       "oracleMs": 273,
-      "portMs": 1385
+      "portMs": 1717
     },
     {
       "id": "graphs-b103",
       "size": 377525,
       "status": "pass",
       "oracleMs": 2815523,
-      "portMs": 780384
+      "portMs": 560689
     },
     {
       "id": "2475_2",
       "size": 641284,
-      "status": "diverged",
+      "status": "pass",
       "oracleMs": 678,
-      "portMs": 8140,
-      "nDiffs": 989,
-      "firstDiff": "edge:590_174423->590_174412#0 _draw_ edge:590_174423->590_174412#0/_draw_/op[1].unfilled_bezier[0]: 160109.37 vs 160068.09"
+      "portMs": 8352
     },
     {
       "id": "2621",
       "size": 721934,
       "status": "pass",
       "oracleMs": 2094724,
-      "portMs": 1109713
+      "portMs": 425745
     },
     {
       "id": "2470",
       "size": 734358,
       "status": "pass",
       "oracleMs": 5011,
-      "portMs": 2161
-    },
-    {
-      "id": "2108",
-      "size": 3136769,
-      "status": "pass",
-      "oracleMs": 292356,
-      "portMs": 977201
-    },
-    {
-      "id": "2849",
-      "size": 34,
-      "status": "pass",
-      "oracleMs": 10,
-      "portMs": 479
-    },
-    {
-      "id": "2851",
-      "size": 263,
-      "status": "pass",
-      "oracleMs": 11,
-      "oracleWallMs": 12,
-      "portMs": 471
-    },
-    {
-      "id": "2852",
-      "size": 287,
-      "status": "pass",
-      "oracleMs": 10,
-      "portMs": 430
-    },
-    {
-      "id": "700813",
-      "size": 351,
-      "status": "pass",
-      "oracleMs": 10,
-      "portMs": 437
-    },
-    {
-      "id": "2368",
-      "size": 960,
-      "status": "pass",
-      "oracleMs": 11,
-      "oracleWallMs": 12,
-      "portMs": 435
-    },
-    {
-      "id": "2413_1",
-      "size": 1076,
-      "status": "pass",
-      "oracleMs": 10,
-      "portMs": 427
-    },
-    {
-      "id": "241_1",
-      "size": 1464,
-      "status": "pass",
-      "oracleMs": 12,
-      "oracleWallMs": 13,
-      "portMs": 446
-    },
-    {
-      "id": "2796",
-      "size": 8959,
-      "status": "pass",
-      "oracleMs": 833,
-      "portMs": 719
-    },
-    {
-      "id": "2413_2",
-      "size": 9721,
-      "status": "pass",
-      "oracleMs": 13,
-      "oracleWallMs": 14,
-      "portMs": 457
-    },
-    {
-      "id": "698066",
-      "size": 12438,
-      "status": "pass",
-      "oracleMs": 23,
-      "portMs": 477
+      "portMs": 3094
     },
     {
       "id": "graphs-b100",
       "size": 782464,
       "status": "oracle-error",
-      "oracleMs": 3600003,
+      "oracleMs": 3600004,
       "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     },
     {
       "id": "graphs-b104",
       "size": 782464,
       "status": "oracle-error",
-      "oracleMs": 3600003,
+      "oracleMs": 3600002,
       "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
     },
     {
@@ -6477,52 +6703,37 @@
       "size": 1174310,
       "status": "pass",
       "oracleMs": 153310,
-      "portMs": 32509
-    },
-    {
-      "id": "2646",
-      "size": 2975897,
-      "status": "pass",
-      "oracleMs": 1445,
-      "portMs": 18543
-    },
-    {
-      "id": "tree-share-examples-world",
-      "size": 16326502,
-      "status": "diverged",
-      "oracleMs": 5702,
-      "portMs": 664623,
-      "nDiffs": 50223,
-      "firstDiff": "[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 1089842535367 vs 1089842535366.99"
-    },
-    {
-      "id": "1314",
-      "size": 51,
-      "status": "pass",
-      "oracleMs": 24,
-      "portMs": 948
-    },
-    {
-      "id": "2784",
-      "size": 78,
-      "status": "port-error",
-      "oracleMs": 259988,
-      "portMs": 12803,
-      "err": "Map maximum size exceeded"
-    },
-    {
-      "id": "graphs-decorate",
-      "size": 7561,
-      "status": "pass",
-      "oracleMs": 11,
-      "portMs": 550
+      "portMs": 34141
     },
     {
       "id": "2371",
       "size": 1705517,
       "status": "pass",
       "oracleMs": 121505,
-      "portMs": 162226
+      "portMs": 77294
+    },
+    {
+      "id": "2646",
+      "size": 2975897,
+      "status": "pass",
+      "oracleMs": 1445,
+      "portMs": 18936
+    },
+    {
+      "id": "2108",
+      "size": 3136769,
+      "status": "pass",
+      "oracleMs": 292356,
+      "portMs": 244718
+    },
+    {
+      "id": "tree-share-examples-world",
+      "size": 16326502,
+      "status": "diverged",
+      "oracleMs": 5702,
+      "portMs": 675010,
+      "nDiffs": 533,
+      "firstDiff": "edge:100476->100486#0 _draw_ edge:100476->100486#0/_draw_/op[1].unfilled_bezier[1]: 926234675433.21 vs 926234675433.2"
     }
   ]
 }

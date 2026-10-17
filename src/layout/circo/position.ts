@@ -15,6 +15,7 @@ import type { Block, SubGraph, CircState } from './blocks.js';
 import { blkParent, setCoalesced, FLAGS_ISPARENT } from './blocks.js';
 import { applyDelta, getRotation } from './position-helpers.js';
 import { layoutBlock } from './blockpath.js';
+import { fma } from '../../common/fma.js';
 
 export type PosState = {
   radius: number; subtreeR: number; nodeAngle: number;
@@ -48,10 +49,14 @@ export function getInfo(pi: PosInfo, stp: PosState, minDist: number): number {
   return maxR;
 }
 
-/** @see lib/circogen/circpos.c:setInfo */
+/**
+ * The numerator is one clang-contracted fmadd: p0.diameter * p1.minRadius
+ * added to the rounded p1.diameter * p0.minRadius (objdump of `_doBlock`).
+ * @see lib/circogen/circpos.c:setInfo
+ */
 export function setInfo(p0: PosInfo, p1: PosInfo, delta: number): void {
   const t = Math.max(
-    (p0.diameter * p1.minRadius + p1.diameter * p0.minRadius)
+    fma(p0.diameter, p1.minRadius, p1.diameter * p0.minRadius)
       / (2 * delta * p0.minRadius * p1.minRadius), 1,
   );
   p0.scale = Math.max(p0.scale, t);
@@ -63,9 +68,25 @@ export function placeChild(child: Block, ca: number, ctx: PlaceCtx): number {
   const dx = ctx.childRadius * Math.cos(ca);
   const dy = ctx.childRadius * Math.sin(ca);
   applyDelta(child, dx, dy, getRotation(child, dx, dy, ca));
-  return ctx.length === 1
-    ? ca + ctx.incAngle + ctx.mindistAngle
-    : ca + ctx.incAngle + ctx.mindistAngle / 2;
+  return nextChildAngle(ca, ctx.incAngle, ctx.mindistAngle, ctx.length);
+}
+
+/**
+ * The angle after placing a child. C's `childAngle += incidentAngle +
+ * mindistAngle` (or `+ mindistAngle / 2`) adds the right-hand sum last.
+ * @see lib/circogen/circpos.c:positionChildren
+ */
+export function nextChildAngle(ca: number, inc: number, mda: number, length: number): number {
+  return length === 1 ? ca + (inc + mda) : ca + (inc + mda / 2);
+}
+
+/**
+ * Circumference left over on a length-1 block's child circle: C's
+ * `2 * M_PI * childRadius - info->diameter`, contracted to one fnmsub.
+ * @see lib/circogen/circpos.c:positionChildren
+ */
+export function leftoverArc(childRadius: number, diameter: number): number {
+  return fma(2 * Math.PI, childRadius, -diameter);
 }
 
 /** Advance child angle for length===1 blocks; updates firstAngle/lastAngle. */
@@ -81,7 +102,7 @@ export function advanceAngleL1(
 /** Advance child angle for multi-node blocks. */
 export function advanceAngleLN(ca: number, inc: number, mda: number, total: number, theta: number): number {
   if (total === 1) return theta;
-  return ca + inc + mda / 2;
+  return ca + (inc + mda / 2); // C: childAngle += incidentAngle + mindistAngle / 2
 }
 
 /** Write psi midpoint angle to node alg when conditions are met. */
@@ -101,7 +122,7 @@ export function positionChildren(pi: PosInfo, stp: PosState, length: number, min
   if (length === 1) {
     cr = Math.max(cr, pi.diameter / (2 * Math.PI));
     // C redistributes leftover circumference into min_dist.
-    const d = 2 * Math.PI * cr - pi.diameter;
+    const d = leftoverArc(cr, pi.diameter);
     if (d > 0) md += d / pi.childCount;
   }
   stp.subtreeR = Math.max(stp.subtreeR, cr + pi.maxRadius);

@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -178,6 +178,17 @@ hnút fyrir hnút (3e-14), og að endurheimta aðeins 5
 laufstöður sem víkja um ULP flippar allri uppsetningunni aftur í speglun
 yfirfærslunnar. Full rótargreining: `.agent-notes/twopi-radial-drift-rca.md` (ákvörðunardagbók
 2026-07-11).
+
+Sama stjarnan víkur einnig frá á `circo`-brautinni (samþykkt 2026-10-16, 599
+frávik í teikniaðgerðum, mest 0.71pt). Yfirfærslan líkir eftir FMA-samdrætti og
+matsröð clang í `circpos.c`, svo 31 af þeim 32 stöðum sem fara inn í PRISM eru
+bitanákvæmar. Sú síðasta munar 1 ULP, því V8 og libm frá Apple námunda
+`cos`/`sin` á ólíkan hátt við þrjú barnahorn í `positionChildren`.
+Delaunay-þríhyrningun PRISM snýr þá einni nánast samhringa hornalínu á
+speglunarásnum. Innsprautun A/B: með innbyggðu `cos`/`sin`-gildunum passar
+yfirfærslan við véfréttina. Með gildum V8 gefur innbyggða smíðin uppsetningu
+véfréttarinnar í 22 af 30 keyrslum og uppsetningu yfirfærslunnar í hinum 8, því
+GTS raðar leggjum sínum eftir úthlutunarvistfangi.
 
 **Einkenni ítrekandi véla: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Ólíkt vélaferlunum `circo`/`twopi`/`osage` hér að ofan eru `neato`/`fdp`/`sfdp`
@@ -921,18 +932,20 @@ filed“). Samþykkt á vélaferlisstigi með
 `PARITY-twopi.md`/`PARITY-circo.md` með `parity-report.ts` — sama tenging
 og `accepted.ts` framkvæmir fyrir `PARITY-dot.md` á dot-ferlinum.
 
-**circo `2475_2` — jafntefli í `hypot` fyrir næsta hnút á einum hring.** Í einum 28 hnúta
-hluta þessa 10762 hnúta grafs velur `getRotation` í circo
-(`circpos.c:73-92`) blokkarhnútinn sem er næstur uppruna uppsetningarinnar með
-`hypot` til að ákvarða snúning undirblokkarinnar. Tveir hnútar á einum hring eru
-í reynd jafnlangt frá; rétt-námundað `Math.hypot` í V8 og `hypot` í Apple
-libm námunda þá fjarlægð 2 ULP í sundur, sem flippar stranga `<`,
-velur annan hnút, og snýr/speglar undirblokkina um ~20° (18 hnútar
-færast, mest 296.7pt; hinir 10744 hnútarnir eru bita-eins, sem og
-blokkartréð, hringröðin og hvert `centerAngle`). Stefnan með CR-hypot var
-þegar hrakin fyrir þennan flokk (2026-07-10). Sjálfstæð endurgerð:
-`.agent-notes/circo-2475-590-repro.dot`; full rótargreining:
-`.agent-notes/circo-b81-2475-rca.md` (samþykkt 2026-07-11).
+**circo `2475_2` og `2095_1` — jafntefli í `hypot` fyrir næsta hnút á einum
+hring (lagað).** Í einum 28 hnúta hluta þessa 10762 hnúta grafs velur
+`getRotation` í circo (`circpos.c:73-92`) blokkarhnútinn sem er næstur uppruna
+uppsetningarinnar með `hypot` til að ákvarða snúning undirblokkarinnar. Tveir
+hnútar á einum hring eru í reynd jafnlangt frá; rétt-námundað `Math.hypot` í V8
+og `hypot` í Apple libm námunda þá fjarlægð 2 ULP í sundur, sem flippar stranga
+`<`, velur annan hnút, og snýr/speglar undirblokkina um ~20° (18 hnútar færast,
+mest 296.7pt; hinir 10744 hnútarnir eru bita-eins, sem og blokkartréð,
+hringröðin og hvert `centerAngle`). `2095_1` lenti í sama jafntefli (2197 frávik
+í teikniaðgerðum, þrír stífir blokkarsnúningar). Báðir voru samþykktir fram til
+2026-10-16, þegar leitin að næsta hnút skipti yfir í bitanákvæmt líkan
+yfirfærslunnar af `hypot` frá Apple (`src/common/libm-hypot.ts`); báðir eru nú
+samræmdir. Sjálfstæð endurgerð: `.agent-notes/circo-2475-590-repro.dot`; full
+rótargreining: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP í geislahnitum magnaður af R-tré xlabel.**
 2470 er graf með 140 leggjum þar sem HTML-`<table>`-leggjamerkimiðar þyrpast á

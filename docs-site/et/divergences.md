@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -174,6 +174,17 @@ C täpsete `circleLayout` positsioonide söötmine pordi PRISM-i reprodutseerib 
 sõlm sõlme haaval (3e-14), ja ainult 5 ULP-lahknevast lehepositsioonist taastamine
 lülitab kogu paigutuse tagasi pordi peegli juurde. Täielik RCA: `.agent-notes/twopi-radial-drift-rca.md` (otsustuspäevik
 2026-07-11).
+
+Sama täht lahkneb ka `circo` rajal (aktsepteeritud 2026-10-16, 599
+joonistusoperatsiooni erinevust, kuni 0.71pt). Port järgib clangi FMA
+kontraktsiooni ja hindamisjärjekorda failis `circpos.c`, seega on 31 PRISM-i
+sisenevast 32 positsioonist bititäpsed. Viimane erineb 1 ULP võrra, sest V8 ja
+Apple'i libm ümardavad `cos`/`sin` väärtusi kolmel lapsnurgal funktsioonis
+`positionChildren` erinevalt. PRISM-i Delaunay triangulatsioon pöörab seejärel
+peegeltelje ühe peaaegu kaasringse diagonaali ümber. Injektsiooni A/B:
+natiivsete `cos`/`sin` väärtustega vastab port oraaklile. V8 väärtustega annab
+natiivne build oraakli paigutuse 22 käivitusel 30-st ja pordi paigutuse
+ülejäänud 8-l, sest GTS järjestab oma servad eraldusaadressi järgi.
 
 **Iteratiivsete mootorite iseloomustus: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Erinevalt ülaltoodud `circo`/`twopi`/`osage` mootoriradadest ei ole `neato`/`fdp`/`sfdp`
@@ -912,18 +923,21 @@ filed“). Aktsepteeritud mootoriraja tasemel failiga
 faili `PARITY-twopi.md`/`PARITY-circo.md` — sama ühendus, mida `accepted.ts` teeb
 dot-raja `PARITY-dot.md` jaoks.
 
-**circo `2475_2` — kaasringne closestNode hypot viik.** Ühes selle 10762-sõlmelise
-graafi 28-sõlmelises komponendis valib circo `getRotation`
-(`circpos.c:73-92`) paigutuse alguspunktile lähima ploki sõlme
+**circo `2475_2` ja `2095_1` — kaasringne closestNode hypot viik (parandatud).**
+Ühes selle 10762-sõlmelise graafi 28-sõlmelises komponendis valib circo
+`getRotation` (`circpos.c:73-92`) paigutuse alguspunktile lähima ploki sõlme
 `hypot` abil, et otsustada alamploki pööre. Kaks kaasringset sõlme on
 efektiivselt võrdsel kaugusel; V8 korrektselt ümardatud `Math.hypot` ja Apple
-libm-i `hypot` ümardavad selle kauguse 2 ULP võrra erinevalt, mis lülitab ümber range `<`,
-valib teise sõlme ja pöörab/peegeldab alamploki ~20° (18 sõlme
+libm-i `hypot` ümardavad selle kauguse 2 ULP võrra erinevalt, mis lülitab ümber
+range `<`, valib teise sõlme ja pöörab/peegeldab alamploki ~20° (18 sõlme
 liigub, max 296.7pt; ülejäänud 10744 sõlme on bitiliselt identsed, nagu ka
-plokipuu, ringi järjestus ja iga `centerAngle`). CR-hypot poliitika lükati
-selle klassi jaoks juba ümber (2026-07-10). Eraldiseisev reprodutseerimine:
+plokipuu, ringi järjestus ja iga `centerAngle`). `2095_1` tabas sama viigi (2197
+joonistusoperatsiooni erinevust, kolm jäika plokipööret). Mõlemad olid
+aktsepteeritud kuni 2026-10-16, mil lähima sõlme otsing läks üle pordi
+bititäpsele Apple'i `hypot` mudelile (`src/common/libm-hypot.ts`); nüüd vastavad
+mõlemad nõuetele. Eraldiseisev reprodutseerimine:
 `.agent-notes/circo-2475-590-repro.dot`; täielik RCA:
-`.agent-notes/circo-b81-2475-rca.md` (aktsepteeritud 2026-07-11).
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — radiaalkoordinaadi ULP, mida võimendab xlabel R-puu.**
 2470 on 140-servaline graaf, mille HTML `<table>` serva sildid klastrisse

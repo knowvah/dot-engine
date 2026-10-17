@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -174,6 +174,17 @@ ambele direcții: alimentarea PRISM-ului portării cu pozițiile exacte `circleL
 reproduce oracolul nod cu nod (3e-14), iar restaurarea doar a celor 5 poziții de frunze
 divergente la ULP răstoarnă întreaga aranjare înapoi la oglinda portării. Analiza completă a cauzei rădăcină: `.agent-notes/twopi-radial-drift-rca.md` (jurnalul de decizii
 2026-07-11).
+
+Aceeași stea diverge și pe pista `circo` (acceptat 2026-10-16, 599 diferențe de
+operații de desenare, cel mult 0.71pt). Portul reproduce contracția FMA și
+ordinea de evaluare a clang din `circpos.c`, astfel încât 31 din cele 32 de
+poziții care intră în PRISM sunt exacte la nivel de bit. Ultima diferă cu 1 ULP,
+deoarece V8 și libm de la Apple rotunjesc `cos`/`sin` diferit la trei unghiuri
+de copii în `positionChildren`. Triangularea Delaunay a PRISM inversează apoi o
+diagonală aproape cocirculară pe axa de simetrie. Injecție A/B: cu valorile
+native `cos`/`sin`, portul se potrivește cu oracolul. Cu valorile V8, build-ul
+nativ produce aranjarea oracolului în 22 din 30 de rulări și pe cea a portului
+în celelalte 8, deoarece GTS își ordonează muchiile după adresa de alocare.
 
 **Caracterizarea motoarelor iterative: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Spre deosebire de fluxurile de motor `circo`/`twopi`/`osage` de mai sus, `neato`/`fdp`/`sfdp`
@@ -916,18 +927,22 @@ filed”). Acceptate la nivelul fluxului de motor prin
 `PARITY-twopi.md`/`PARITY-circo.md` de `parity-report.ts` — aceeași îmbinare pe care
 o execută `accepted.ts` pentru `PARITY-dot.md` al fluxului dot.
 
-**circo `2475_2` — egalitate hypot cocirculară la closestNode.** Într-o componentă
-de 28 de noduri a acestui graf de 10762 de noduri, `getRotation` din circo
-(`circpos.c:73-92`) alege nodul blocului cel mai apropiat de originea aranjării prin
-`hypot`, pentru a decide rotația sub-blocului. Două noduri cocirculare sunt
-practic echidistante; `Math.hypot` din V8, corect rotunjit, și `hypot` din libm Apple
-rotunjesc acea distanță la 2 ULP unul de celălalt, ceea ce inversează `<` strict,
-selectează alt nod și rotește/reflectă sub-blocul cu ~20° (18 noduri
-se mută, maxim 296.7pt; celelalte 10744 de noduri sunt identice bit cu bit, la fel ca
-arborele de blocuri, ordinea cercului și fiecare `centerAngle`). Politica CR-hypot a fost
-deja infirmată pentru această clasă (2026-07-10). Reproducere de sine stătătoare:
-`.agent-notes/circo-2475-590-repro.dot`; analiza completă a cauzei rădăcină:
-`.agent-notes/circo-b81-2475-rca.md` (acceptat 2026-07-11).
+**circo `2475_2` și `2095_1` — egalitate hypot cocirculară la closestNode
+(corectat).** Într-o componentă de 28 de noduri a acestui graf de 10762 de
+noduri, `getRotation` din circo (`circpos.c:73-92`) alege nodul blocului cel mai
+apropiat de originea aranjării prin `hypot`, pentru a decide rotația
+sub-blocului. Două noduri cocirculare sunt practic echidistante; `Math.hypot`
+din V8, corect rotunjit, și `hypot` din libm Apple rotunjesc acea distanță la 2
+ULP unul de celălalt, ceea ce inversează `<` strict, selectează alt nod și
+rotește/reflectă sub-blocul cu ~20° (18 noduri se mută, maxim 296.7pt; celelalte
+10744 de noduri sunt identice bit cu bit, la fel ca arborele de blocuri, ordinea
+cercului și fiecare `centerAngle`). `2095_1` lovea aceeași egalitate (2197
+diferențe de operații de desenare, trei rotații rigide de blocuri). Ambele au
+fost acceptate până la 2026-10-16, când căutarea nodului cel mai apropiat a
+trecut la modelul exact la nivel de bit al `hypot` de la Apple din port
+(`src/common/libm-hypot.ts`); acum ambele sunt conforme. Reproducere de sine
+stătătoare: `.agent-notes/circo-2475-590-repro.dot`; analiza completă a cauzei
+rădăcină: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP la coordonata radială amplificat de R-tree-ul xlabel.**
 2470 este un graf cu 140 de muchii ale cărui etichete de muchie HTML `<table>` se grupează

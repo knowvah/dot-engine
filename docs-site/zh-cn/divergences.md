@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -71,6 +71,8 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 `oldarrows` 的根因分析（2026-07-28）精确定位了该族点数症状的翻转位置。它的 `i`–`Z`–`I` 扇形共线于一条环的直径上，而 pathplan `directVis` 的 `intersect()` 在障碍物顶点“位于”线段上时会阻断视线——此时 `wind()` 的 1e-4 共线容差使得即使一个距线段 270pt 的节点也被算作共线，而 `inBetween()`（假定共线）随后退化为只测试 **x 投影**：当且仅当顶点的 x 严格落在两个端点 x 坐标之间只有 1 ULP 宽的区间内时，该顶点才阻断视线。因此，镜像对称的两条径向边中哪一条会弯曲，取决于 PRISM 求解结果中三个名义上相等的 x 值在最后一个 ULP 上的排序——C 弯曲的是 `Z->I`（节点 `i` 的轴向顶点落在其区间内），移植版弯曲的是 `i->Z`（节点 `I` 的顶点落在其自己的区间内）。在各方导出的障碍物集合上离线复现 `directVis`，能够精确重现各方的决定，并且把参照程序的路由前 `ND_pos` 注入移植版后得到 0 处差异（`attribution-twopi.json`）——路由和输出都是逐字节忠实的。
 
 `1855` 是同一 PRISM 路由前浮点机制的径向/星形**镜像**变体（2026-07-11 接受）：它的 31 个叶节点恰好共圆，所以星形布局是反射对称的，PRISM 的重叠消除处于一个对称不稳定的平衡点上；`circleLayout` 的 `setAbsolutePos` 中 5 个叶节点角度上 V8 与 libm 的 `cos`/`sin` 相差 1 ULP，选中了相反的镜像吸引盆，整个径向布局最终成为参照程序布局精确的 x 轴镜像（节点最大位移 6.04pt，包围盒保持不变）。注入 A/B 证明了两个方向：把 C 精确的 `circleLayout` 位置送入移植版的 PRISM，会逐个节点复现参照程序（3e-14），而只恢复那 5 个存在 ULP 差异的叶节点位置，就会让整个布局翻回移植版的镜像。完整的根因分析：`.agent-notes/twopi-radial-drift-rca.md`（决策日志 2026-07-11）。
+
+同一个星形图在 `circo` 轨道上也有偏差（2026-10-16 接受，599 处绘制操作差异，最大 0.71pt）。移植版复现了 clang 在 `circpos.c` 中的 FMA 收缩和求值顺序，因此进入 PRISM 的 32 个位置中有 31 个逐位精确。最后一个相差 1 ULP，因为 V8 与 Apple libm 在 `positionChildren` 的三个子块角度上对 `cos`/`sin` 的舍入不同。随后 PRISM 的 Delaunay 三角剖分在镜像轴上翻转了一条近乎共圆的对角线。注入 A/B：给定原生的 `cos`/`sin` 值时，移植版与参照程序一致。给定 V8 的值时，原生构建在 30 次运行中有 22 次产生参照程序的布局，其余 8 次产生移植版的布局，因为 GTS 按分配地址排列其边。
 
 **迭代式引擎特征描述：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
 与上面的 `circo`/`twopi`/`osage` 引擎轨道不同，`neato`/`fdp`/`sfdp` 尚**未**逐 id 分诊——`engine-walk.ts` 为这三个引擎记录了 `tolerance: 0.5` 字段，`parity-report.ts` 将它们渲染在
@@ -374,10 +376,10 @@ filed” 条目）。该差异在引擎轨道层面通过
 `test/corpus/accepted-divergences-engines.json` 被接受，并由 `parity-report.ts` 并入
 `PARITY-twopi.md`/`PARITY-circo.md`——与 `accepted.ts` 为 dot 轨道的 `PARITY-dot.md` 所做的合并相同。
 
-**circo `2475_2` — 共圆 closestNode 的 hypot 平局。** 在这个 10762 个节点的图中的一个 28 节点组件里，circo 的 `getRotation`
-（`circpos.c:73-92`）通过 `hypot` 选出离布局原点最近的块节点，以决定子块的旋转。两个共圆的节点实际上是等距的；V8 正确舍入的 `Math.hypot` 与 Apple libm 的 `hypot` 对该距离的舍入相差 2 ULP，这翻转了严格的 `<`，选中了另一个节点，并使子块旋转/反射约 20°（18 个节点移动，最大 296.7pt；其余 10744 个节点逐位相同，块树、圆周顺序和每个 `centerAngle` 也是如此）。正确舍入 hypot 的策略对这一类别已被证伪（2026-07-10）。独立复现：
+**circo `2475_2` 与 `2095_1` — 共圆 closestNode 的 hypot 平局（已修复）。** 在这个 10762 个节点的图中的一个 28 节点组件里，circo 的 `getRotation`
+（`circpos.c:73-92`）通过 `hypot` 选出离布局原点最近的块节点，以决定子块的旋转。两个共圆的节点实际上是等距的；V8 正确舍入的 `Math.hypot` 与 Apple libm 的 `hypot` 对该距离的舍入相差 2 ULP，这翻转了严格的 `<`，选中了另一个节点，并使子块旋转/反射约 20°（18 个节点移动，最大 296.7pt；其余 10744 个节点逐位相同，块树、圆周顺序和每个 `centerAngle` 也是如此）。`2095_1` 也落在同一个平局上（2197 处绘制操作差异，三次刚性块旋转）。两者一直被接受到 2026-10-16；那天最近节点搜索改用移植版中 Apple `hypot` 的逐位精确模型（`src/common/libm-hypot.ts`），现在两者都符合。独立复现：
 `.agent-notes/circo-2475-590-repro.dot`；完整根因分析：
-`.agent-notes/circo-b81-2475-rca.md`（2026-07-11 接受）。
+`.agent-notes/circo-b81-2475-rca.md`。
 
 **twopi `2470` — 被 xlabel R 树放大的径向坐标 ULP。**
 2470 是一个有 140 条边的图，其 HTML `<table>` 边标签聚集在几乎重合的径向锚点上。在 neato 家族中，边标签由贪心的 xlabel 放置器（`label/xlabels.c`）作为外部标签放置，它通过按 Hilbert 顺序排列的 R 树选出重叠最少的候选角点。移植版的样条和节点坐标在输出精度下与参照程序匹配（即使在 1e-7 下，样条/节点/包围盒差异也为零），但有一个节点的径向 `ND_coord.y` 相差约 2 ULP（Apple libm `sin`/`cos` 对 V8 `Math`）——远低于一致性标准，却恰好跨过 `objplpmks` 中 `floor(pos.y − sz.y/2)` 在 0 处的边界，使该对象的 R 树矩形翻转一个单位。Hilbert 顺序/树分组的变化使 `RTreeSearch` 剪掉了不同的分支，于是约 140 个标签各自吸附到相邻的候选角点（每处差异都是一个固定的（+宽度，−行高）步长）。放置器、对象顺序、矩形舍入、`CombineRect`（它忠实地镜像了 C 的 min-min 怪癖）以及 int32 Hilbert 键，都已分别验证是忠实的；差异来自上游的径向三角函数 ULP，与 twopi `1855` 出于同样的原因而不可约。2026-07-11 接受；完整根因分析：

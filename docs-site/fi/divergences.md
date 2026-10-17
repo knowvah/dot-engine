@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -193,6 +193,18 @@ syöttäminen porttauksen PRISMiin toistaa oraakkelin solmu solmulta (3e-14), ja
 vain 5 ULP-poikkeavan lehtisijainnin palauttaminen kääntää koko asettelun takaisin
 porttauksen peiliin. Täysi juurisyyanalyysi: `.agent-notes/twopi-radial-drift-rca.md` (päätöspäiväkirja
 2026-07-11).
+
+Sama tähti poikkeaa myös `circo`-raidalla (hyväksytty 2026-10-16, 599
+piirto-operaatioeroa, enintään 0.71pt). Portti jäljittelee clangin
+FMA-kontraktiota ja evaluointijärjestystä tiedostossa `circpos.c`, joten 31
+PRISMiin menevästä 32 sijainnista on bittitarkkoja. Viimeinen poikkeaa 1 ULP:n
+verran, koska V8 ja Applen libm pyöristävät `cos`/`sin`-arvot eri tavoin
+kolmessa lapsikulmassa funktiossa `positionChildren`. PRISMin
+Delaunay-kolmiointi kääntää sitten yhden lähes samalla ympyrällä olevan
+lävistäjän peiliakselilla. Injektion A/B: natiiveilla `cos`/`sin`-arvoilla
+portti vastaa oraakkelia. V8:n arvoilla natiivi build tuottaa oraakkelin
+asettelun 22 ajossa 30:stä ja portin asettelun lopuissa 8:ssa, koska GTS
+järjestää särmänsä varausosoitteen mukaan.
 
 **Iteratiivisten moottorien luonnehdinta: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Toisin kuin edellä olevat `circo`/`twopi`/`osage`-moottoriraidat, `neato`/`fdp`/`sfdp`
@@ -936,18 +948,22 @@ filed”). Hyväksytty moottoriraidan tasolla tiedoston
 `PARITY-twopi.md`:hen/`PARITY-circo.md`:hen `parity-report.ts`llä — sama yhdistäminen,
 jonka `accepted.ts` tekee dot-raidan `PARITY-dot.md`:lle.
 
-**circo `2475_2` — samalla ympyrällä olevan closestNode-hypotin tasapeli.** Yhdessä
-tämän 10762 solmun graafin 28 solmun komponentissa circon `getRotation`
-(`circpos.c:73-92`) valitsee lähimpänä asettelun origoa olevan lohkosolmun
-`hypot`in avulla päättääkseen alilohkon kierron. Kaksi samalla ympyrällä olevaa solmua ovat
-käytännössä yhtä kaukana; V8:n oikein pyöristävä `Math.hypot` ja Apple
-libm:n `hypot` pyöristävät tuon etäisyyden 2 ULP:n päähän toisistaan, mikä kääntää tiukan `<`:n,
-valitsee eri solmun ja kiertää/peilaa alilohkon ~20° (18 solmua
-liikkuu, enintään 296.7 pt; muut 10744 solmua ovat bitti bitiltä identtisiä, samoin
-lohkopuu, ympyräjärjestys ja jokainen `centerAngle`). CR-hypot-politiikka oli
-jo kumottu tälle luokalle (2026-07-10). Itsenäinen toisto:
-`.agent-notes/circo-2475-590-repro.dot`; täysi juurisyyanalyysi:
-`.agent-notes/circo-b81-2475-rca.md` (hyväksytty 2026-07-11).
+**circo `2475_2` ja `2095_1` — samalla ympyrällä olevan closestNode-hypotin
+tasapeli (korjattu).** Yhdessä tämän 10762 solmun graafin 28 solmun
+komponentissa circon `getRotation` (`circpos.c:73-92`) valitsee lähimpänä
+asettelun origoa olevan lohkosolmun `hypot`in avulla päättääkseen alilohkon
+kierron. Kaksi samalla ympyrällä olevaa solmua ovat käytännössä yhtä kaukana;
+V8:n oikein pyöristävä `Math.hypot` ja Apple libm:n `hypot` pyöristävät tuon
+etäisyyden 2 ULP:n päähän toisistaan, mikä kääntää tiukan `<`:n, valitsee eri
+solmun ja kiertää/peilaa alilohkon ~20° (18 solmua liikkuu, enintään 296.7 pt;
+muut 10744 solmua ovat bitti bitiltä identtisiä, samoin lohkopuu,
+ympyräjärjestys ja jokainen `centerAngle`). `2095_1` osui samaan tasapeliin
+(2197 piirto-operaatioeroa, kolme jäykkää lohkokiertoa). Molemmat olivat
+hyväksyttyjä 2026-10-16 asti, jolloin lähimmän solmun haku siirtyi käyttämään
+portin bittitarkkaa mallia Applen `hypot`-funktiosta
+(`src/common/libm-hypot.ts`); nyt molemmat ovat yhdenmukaisia. Itsenäinen
+toisto: `.agent-notes/circo-2475-590-repro.dot`; täysi juurisyyanalyysi:
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — xlabel-R-puun vahvistama säteittäiskoordinaatin ULP.**
 2470 on 140 kaaren graafi, jonka HTML-`<table>`-kaarinimiöt kasautuvat

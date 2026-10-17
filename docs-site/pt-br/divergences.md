@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -174,6 +174,17 @@ as duas direções: alimentar o PRISM do port com as posições exatas do `circl
 posições de folhas divergentes em 1 ULP inverte todo o layout de volta para o espelho
 do port. Análise de causa raiz completa: `.agent-notes/twopi-radial-drift-rca.md` (diário de decisões
 2026-07-11).
+
+A mesma estrela diverge na trilha `circo` (aceito em 2026-10-16, 599 diferenças
+de operações de desenho, no máximo 0.71pt). O port reproduz a contração FMA e a
+ordem de avaliação do clang em `circpos.c`, de modo que 31 das 32 posições que
+entram no PRISM são exatas bit a bit. A última difere em 1 ULP, porque o V8 e a
+libm da Apple arredondam `cos`/`sin` de forma diferente em três ângulos de
+filhos em `positionChildren`. A triangulação de Delaunay do PRISM então inverte
+uma diagonal quase cocircular no eixo de simetria. Injeção A/B: com os valores
+nativos de `cos`/`sin`, o port coincide com o oráculo. Com os valores do V8, o
+build nativo produz o layout do oráculo em 22 de 30 execuções e o do port nas
+outras 8, porque o GTS ordena suas arestas pelo endereço de alocação.
 
 **Caracterização dos mecanismos iterativos: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Diferentemente das trilhas de mecanismo `circo`/`twopi`/`osage` acima, `neato`/`fdp`/`sfdp`
@@ -918,18 +929,21 @@ filed”). Aceito no nível da trilha de mecanismo via
 `PARITY-twopi.md`/`PARITY-circo.md` pelo `parity-report.ts` — o mesmo cruzamento que o
 `accepted.ts` faz para o `PARITY-dot.md` da trilha dot.
 
-**circo `2475_2` — empate de hypot do closestNode cocircular.** Em um componente de 28 nós
-deste grafo de 10762 nós, o `getRotation` do circo
-(`circpos.c:73-92`) escolhe o nó de bloco mais próximo da origem do layout via
-`hypot` para decidir a rotação do sub-bloco. Dois nós cocirculares são
-efetivamente equidistantes; o `Math.hypot` corretamente arredondado do V8 e o `hypot` da libm
-da Apple arredondam essa distância com 2 ULP de diferença, o que inverte o `<` estrito,
-seleciona um nó diferente e gira/reflete o sub-bloco em ~20° (18 nós
-se movem, máx. 296.7pt; os outros 10744 nós são idênticos bit a bit, assim como
-a árvore de blocos, a ordem do círculo e todo `centerAngle`). A política de CR-hypot já
-havia sido refutada para esta classe (2026-07-10). Reprodução autônoma:
-`.agent-notes/circo-2475-590-repro.dot`; análise de causa raiz completa:
-`.agent-notes/circo-b81-2475-rca.md` (aceito em 2026-07-11).
+**circo `2475_2` e `2095_1` — empate de hypot do closestNode cocircular
+(corrigido).** Em um componente de 28 nós deste grafo de 10762 nós, o
+`getRotation` do circo (`circpos.c:73-92`) escolhe o nó de bloco mais próximo da
+origem do layout via `hypot` para decidir a rotação do sub-bloco. Dois nós
+cocirculares são efetivamente equidistantes; o `Math.hypot` corretamente
+arredondado do V8 e o `hypot` da libm da Apple arredondam essa distância com 2
+ULP de diferença, o que inverte o `<` estrito, seleciona um nó diferente e
+gira/reflete o sub-bloco em ~20° (18 nós se movem, máx. 296.7pt; os outros 10744
+nós são idênticos bit a bit, assim como a árvore de blocos, a ordem do círculo e
+todo `centerAngle`). `2095_1` caía no mesmo empate (2197 diferenças de operações
+de desenho, três rotações rígidas de blocos). Ambos ficaram aceitos até
+2026-10-16, quando a busca do nó mais próximo passou a usar o modelo exato bit a
+bit do `hypot` da Apple no port (`src/common/libm-hypot.ts`); agora ambos estão
+conformes. Reprodução autônoma: `.agent-notes/circo-2475-590-repro.dot`; análise
+de causa raiz completa: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP de coordenada radial amplificado pela R-tree de xlabels.**
 O 2470 é um grafo de 140 arestas cujos rótulos de aresta HTML `<table>` se agrupam em

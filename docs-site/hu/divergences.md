@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -176,6 +176,18 @@ PRISM-jébe táplálása csúcsról csúcsra reprodukálja az orákulumot (3e-14
 ULP-eltérő levélpozíció visszaállítása az egész elrendezést visszabillenti a portolt változat
 tükörállapotába. Teljes gyökérokelemzés: `.agent-notes/twopi-radial-drift-rca.md` (döntési napló,
 2026-07-11).
+
+Ugyanez a csillag a `circo` sávon is eltér (elfogadva 2026-10-16, 599
+rajzművelet-eltérés, legfeljebb 0.71 pt). A portolt változat követi a clang
+FMA-összevonását és kiértékelési sorrendjét a `circpos.c` fájlban, így a
+PRISM-be belépő 32 pozícióból 31 bitre pontos. Az utolsó 1 ULP-vel tér el, mert
+a V8 és az Apple libm a `cos`/`sin` értékét három gyermekszögnél eltérően
+kerekíti a `positionChildren` függvényben. A PRISM Delaunay-háromszögelése
+ezután a tükörtengelyen átfordít egy majdnem körön fekvő átlót. Injektálásos
+A/B: a natív `cos`/`sin` értékekkel a portolt változat egyezik az orákulummal. A
+V8 értékeivel a natív build 30 futásból 22-ben az orákulum elrendezését adja, a
+maradék 8-ban a portolt változatét, mert a GTS az éleit foglalási cím szerint
+rendezi.
 
 **Az iteratív motorok jellemzése: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 A fenti `circo`/`twopi`/`osage` motorsávokkal ellentétben a `neato`/`fdp`/`sfdp`
@@ -926,18 +938,22 @@ filed” bejegyzés). A motorsáv szintjén elfogadva a
 `PARITY-twopi.md`/`PARITY-circo.md` fájlokba kapcsol — ugyanazt az összekapcsolást végzi az
 `accepted.ts` a dot-sáv `PARITY-dot.md` fájljához.
 
-**circo `2475_2` — körön fekvő closestNode hypot-döntetlen.** Ennek a 10 762 csúcsú gráfnak egyik
-28 csúcsú komponensében a circo `getRotation` függvénye
-(`circpos.c:73-92`) a `hypot` segítségével azt a blokkcsúcsot választja, amely a
-legközelebb van az elrendezés origójához, hogy eldöntse az alblokk elforgatását. Két körön fekvő csúcs
-gyakorlatilag egyenlő távolságra van; a V8 helyesen kerekített `Math.hypot` függvénye és az Apple
-libm `hypot` függvénye ezt a távolságot 2 ULP-re egymástól kerekíti, ami átbillenti a szigorú `<` összehasonlítást,
-más csúcsot választ, és az alblokkot ~20°-kal elforgatja/tükrözi (18 csúcs
-mozdul, max. 296.7 pt; a másik 10 744 csúcs bitre azonos, akárcsak a
-blokkfa, a körsorrend és minden `centerAngle`). A CR-hypot szabályt
-erre az osztályra már megcáfoltuk (2026-07-10). Önálló reprodukció:
-`.agent-notes/circo-2475-590-repro.dot`; teljes gyökérokelemzés:
-`.agent-notes/circo-b81-2475-rca.md` (elfogadva 2026-07-11).
+**circo `2475_2` és `2095_1` — körön fekvő closestNode hypot-döntetlen
+(javítva).** Ennek a 10 762 csúcsú gráfnak egyik 28 csúcsú komponensében a circo
+`getRotation` függvénye (`circpos.c:73-92`) a `hypot` segítségével azt a
+blokkcsúcsot választja, amely a legközelebb van az elrendezés origójához, hogy
+eldöntse az alblokk elforgatását. Két körön fekvő csúcs gyakorlatilag egyenlő
+távolságra van; a V8 helyesen kerekített `Math.hypot` függvénye és az Apple libm
+`hypot` függvénye ezt a távolságot 2 ULP-re egymástól kerekíti, ami átbillenti a
+szigorú `<` összehasonlítást, más csúcsot választ, és az alblokkot ~20°-kal
+elforgatja/tükrözi (18 csúcs mozdul, max. 296.7 pt; a másik 10 744 csúcs bitre
+azonos, akárcsak a blokkfa, a körsorrend és minden `centerAngle`). A `2095_1`
+ugyanebbe a döntetlenbe futott (2197 rajzművelet-eltérés, három merev
+blokkforgatás). Mindkettő elfogadott volt 2026-10-16-ig, amikor a legközelebbi
+csúcs keresése átállt az Apple `hypot` függvényének a portolt változatban lévő,
+bitre pontos modelljére (`src/common/libm-hypot.ts`); most mindkettő megfelel.
+Önálló reprodukció: `.agent-notes/circo-2475-590-repro.dot`; teljes
+gyökérokelemzés: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — az xlabel R-fa által felerősített sugárkoordináta-ULP.**
 A 2470 egy 140 élű gráf, amelynek HTML `<table>` élcímkéi

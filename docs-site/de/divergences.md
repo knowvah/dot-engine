@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -200,6 +200,18 @@ das Orakel Knoten für Knoten (3e-14), und die Wiederherstellung nur der 5
 ULP-abweichenden Blattpositionen kippt das gesamte Layout zurück in die Spiegelung
 der Portierung. Vollständige Ursachenanalyse: `.agent-notes/twopi-radial-drift-rca.md`
 (Entscheidungsjournal 2026-07-11).
+
+Derselbe Stern weicht auch auf dem `circo`-Track ab (akzeptiert am 2026-10-16,
+599 Draw-Op-Unterschiede, höchstens 0.71pt). Die Portierung bildet die
+FMA-Kontraktion und Auswertungsreihenfolge von clang in `circpos.c` nach, sodass
+31 der 32 Positionen, die in PRISM eingehen, bitexakt sind. Die letzte weicht um
+1 ULP ab, weil V8 und die Apple-libm `cos`/`sin` an drei Kindwinkeln in
+`positionChildren` unterschiedlich runden. Die Delaunay-Triangulierung von PRISM
+kippt dann eine nahezu kozirkulare Diagonale auf der Spiegelachse.
+Injection-A/B: Mit den nativen `cos`/`sin`-Werten stimmt die Portierung mit dem
+Orakel überein. Mit den Werten von V8 liefert der native Build in 22 von 30
+Läufen das Layout des Orakels und in den übrigen 8 das der Portierung, weil GTS
+seine Kanten nach Allokationsadresse ordnet.
 
 **Charakterisierung der iterativen Engines: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Anders als die oben beschriebenen Engine-Tracks für `circo`/`twopi`/`osage` sind
@@ -982,18 +994,22 @@ filed“). Auf Engine-Track-Ebene akzeptiert über
 `PARITY-twopi.md`/`PARITY-circo.md` einbindet — dieselbe Verknüpfung, die `accepted.ts`
 für das `PARITY-dot.md` des dot-Tracks vornimmt.
 
-**circo `2475_2` — kozirkularer Gleichstand bei `hypot` in closestNode.** In einer
-Komponente mit 28 Knoten dieses Graphen mit 10762 Knoten wählt das `getRotation` von circo
-(`circpos.c:73-92`) per `hypot` den dem Layoutursprung nächsten Blockknoten, um die
-Rotation des Unterblocks zu bestimmen. Zwei kozirkulare Knoten sind praktisch
-gleich weit entfernt; das korrekt gerundete `Math.hypot` von V8 und das `hypot` der Apple-libm
-runden diese Distanz um 2 ULP unterschiedlich, was das strikte `<` kippt, einen anderen
-Knoten auswählt und den Unterblock um ~20° dreht/spiegelt (18 Knoten bewegen sich, max.
-296.7pt; die übrigen 10744 Knoten sind bitidentisch, ebenso der Blockbaum, die
-Kreisreihenfolge und jedes `centerAngle`). Die CR-hypot-Richtlinie wurde für diese
-Klasse bereits widerlegt (2026-07-10). Eigenständige Reproduktion:
-`.agent-notes/circo-2475-590-repro.dot`; vollständige Ursachenanalyse:
-`.agent-notes/circo-b81-2475-rca.md` (akzeptiert 2026-07-11).
+**circo `2475_2` und `2095_1` — kozirkularer Gleichstand bei `hypot` in
+closestNode (behoben).** In einer Komponente mit 28 Knoten dieses Graphen mit
+10762 Knoten wählt das `getRotation` von circo (`circpos.c:73-92`) per `hypot`
+den dem Layoutursprung nächsten Blockknoten, um die Rotation des Unterblocks zu
+bestimmen. Zwei kozirkulare Knoten sind praktisch gleich weit entfernt; das
+korrekt gerundete `Math.hypot` von V8 und das `hypot` der Apple-libm runden
+diese Distanz um 2 ULP unterschiedlich, was das strikte `<` kippt, einen anderen
+Knoten auswählt und den Unterblock um ~20° dreht/spiegelt (18 Knoten bewegen
+sich, max. 296.7pt; die übrigen 10744 Knoten sind bitidentisch, ebenso der
+Blockbaum, die Kreisreihenfolge und jedes `centerAngle`). `2095_1` traf
+denselben Gleichstand (2197 Draw-Op-Unterschiede, drei starre Blockrotationen).
+Beide waren bis 2026-10-16 akzeptiert; seitdem verwendet die Suche nach dem
+nächsten Knoten das bitexakte Modell von Apples `hypot` in der Portierung
+(`src/common/libm-hypot.ts`), und beide sind konform. Eigenständige
+Reproduktion: `.agent-notes/circo-2475-590-repro.dot`; vollständige
+Ursachenanalyse: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP bei Radialkoordinaten, verstärkt durch den xlabel-R-Baum.**
 2470 ist ein Graph mit 140 Kanten, dessen HTML-`<table>`-Kanten-Labels sich an fast

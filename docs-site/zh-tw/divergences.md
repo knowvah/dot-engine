@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -148,6 +148,8 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 把 C 精確的 `circleLayout` 位置餵給移植版的 PRISM，會逐節點重現參照程式（3e-14），
 而只還原那 5 個存在 ULP 差異的葉節點位置，就會讓整個版面配置翻回移植版的鏡像。
 完整 RCA：`.agent-notes/twopi-radial-drift-rca.md`（決策日誌 2026-07-11）。
+
+同一個星形圖在 `circo` 軌道上也有偏差（2026-10-16 接受，599 處繪製操作差異，最大 0.71pt）。移植版重現了 clang 在 `circpos.c` 中的 FMA 收縮與求值順序，因此進入 PRISM 的 32 個位置中有 31 個位元精確。最後一個相差 1 ULP，因為 V8 與 Apple libm 在 `positionChildren` 的三個子區塊角度上對 `cos`／`sin` 的捨入不同。接著 PRISM 的 Delaunay 三角剖分在鏡像軸上翻轉了一條近乎共圓的對角線。注入 A/B：給定原生的 `cos`／`sin` 值時，移植版與參照程式一致。給定 V8 的值時，原生建置在 30 次執行中有 22 次產生參照程式的版面配置，其餘 8 次產生移植版的版面配置，因為 GTS 依配置位址排列其邊。
 
 **迭代式引擎的特徵描述：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
 與上方的 `circo`／`twopi`／`osage` 引擎軌道不同，`neato`／`fdp`／`sfdp`
@@ -759,7 +761,7 @@ filed」條目）。透過
 `PARITY-twopi.md`／`PARITY-circo.md`——這與 `accepted.ts`
 對 dot 軌道的 `PARITY-dot.md` 所做的合併相同。
 
-**circo `2475_2`——共圓 closestNode 的 hypot 平手。** 在這張 10762 個節點的圖中，
+**circo `2475_2` 與 `2095_1`——共圓 closestNode 的 hypot 平手（已修正）。** 在這張 10762 個節點的圖中，
 某個 28 個節點的元件裡，circo 的 `getRotation`
 （`circpos.c:73-92`）透過 `hypot` 挑選離版面配置原點最近的區塊節點，
 以決定子區塊的旋轉。兩個共圓的節點
@@ -767,10 +769,9 @@ filed」條目）。透過
 libm 的 `hypot` 對該距離的捨入相差 2 ULP，這翻轉了嚴格的 `<`，
 選到不同的節點，並使子區塊旋轉／反射約 20°（18 個節點
 移動，最大 296.7pt；其他 10744 個節點位元相同，區塊樹、
-圓周順序與每個 `centerAngle` 也是）。CR-hypot 策略
-已在此類別被推翻（2026-07-10）。獨立重現：
+圓周順序與每個 `centerAngle` 也是）。`2095_1` 也落在同一個平手上（2197 處繪製操作差異，三次剛性區塊旋轉）。兩者一直被接受到 2026-10-16；那天最近節點搜尋改用移植版中 Apple `hypot` 的位元精確模型（`src/common/libm-hypot.ts`），現在兩者都符合。獨立重現：
 `.agent-notes/circo-2475-590-repro.dot`；完整 RCA：
-`.agent-notes/circo-b81-2475-rca.md`（2026-07-11 接受）。
+`.agent-notes/circo-b81-2475-rca.md`。
 
 **twopi `2470`——被 xlabel R-tree 放大的放射座標 ULP。**
 2470 是一張 140 條邊的圖，其 HTML `<table>` 邊標籤聚集在

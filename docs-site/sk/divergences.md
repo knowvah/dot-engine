@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -175,6 +175,17 @@ reprodukuje orákulum uzol po uzle (3e-14) a obnovenie iba 5
 listových pozícií s rozdielom ULP preklopí celé rozloženie späť do zrkadla
 portu. Úplná RCA: `.agent-notes/twopi-radial-drift-rca.md` (žurnál rozhodnutí
 2026-07-11).
+
+Tá istá hviezda sa rozchádza aj na stope `circo` (akceptované 2026-10-16, 599
+rozdielov v kresliacich operáciách, najviac 0.71pt). Port napodobňuje FMA
+kontrakciu a poradie vyhodnocovania clangu v `circpos.c`, takže 31 z 32 pozícií
+vstupujúcich do PRISM je bitovo presných. Posledná sa líši o 1 ULP, pretože V8 a
+Apple libm zaokrúhľujú `cos`/`sin` odlišne pri troch uhloch potomkov v
+`positionChildren`. Delaunayova triangulácia PRISM potom preklopí jednu takmer
+kokruhovú uhlopriečku na osi zrkadlenia. Injekcia A/B: s natívnymi hodnotami
+`cos`/`sin` port zodpovedá orákulu. S hodnotami z V8 dáva natívny build
+rozloženie orákula v 22 z 30 behov a rozloženie portu vo zvyšných 8, pretože GTS
+radí svoje hrany podľa adries alokácie.
 
 **Charakterizácia iteratívnych modulov: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Na rozdiel od stôp modulov `circo`/`twopi`/`osage` vyššie, `neato`/`fdp`/`sfdp`
@@ -917,18 +928,20 @@ filed“). Akceptované na úrovni stopy modulu cez
 `PARITY-twopi.md`/`PARITY-circo.md` nástrojom `parity-report.ts` — rovnaké pripojenie,
 aké vykonáva `accepted.ts` pre stopu dot v `PARITY-dot.md`.
 
-**circo `2475_2` — remíza hypot pri kokruhovom closestNode.** V jednom komponente s 28 uzlami
-tohto grafu s 10762 uzlami vyberá `getRotation` v circo
-(`circpos.c:73-92`) uzol bloku najbližší k počiatku rozloženia cez
-`hypot`, aby určil rotáciu podbloku. Dva kokruhové uzly sú
-prakticky rovnako vzdialené; správne zaokrúhlený `Math.hypot` vo V8 a `hypot`
-z libm od Apple zaokrúhlia túto vzdialenosť o 2 ULP odlišne, čo preklopí striktné `<`,
-vyberie iný uzol a otočí/zrkadlí podblok o ~20° (18 uzlov
-sa posunie, max. 296.7pt; ostatných 10744 uzlov je bitovo identických, rovnako ako
-strom blokov, poradie kruhu a každý `centerAngle`). Politika CR-hypot bola
-pre túto triedu už vyvrátená (2026-07-10). Samostatná reprodukcia:
-`.agent-notes/circo-2475-590-repro.dot`; úplná RCA:
-`.agent-notes/circo-b81-2475-rca.md` (akceptované 2026-07-11).
+**circo `2475_2` a `2095_1` — remíza hypot pri kokruhovom closestNode
+(opravené).** V jednom komponente s 28 uzlami tohto grafu s 10762 uzlami vyberá
+`getRotation` v circo (`circpos.c:73-92`) uzol bloku najbližší k počiatku
+rozloženia cez `hypot`, aby určil rotáciu podbloku. Dva kokruhové uzly sú
+prakticky rovnako vzdialené; správne zaokrúhlený `Math.hypot` vo V8 a `hypot` z
+libm od Apple zaokrúhlia túto vzdialenosť o 2 ULP odlišne, čo preklopí striktné
+`<`, vyberie iný uzol a otočí/zrkadlí podblok o ~20° (18 uzlov sa posunie, max.
+296.7pt; ostatných 10744 uzlov je bitovo identických, rovnako ako strom blokov,
+poradie kruhu a každý `centerAngle`). `2095_1` narážal na tú istú remízu (2197
+rozdielov v kresliacich operáciách, tri rigidné rotácie blokov). Oba boli
+akceptované do 2026-10-16, keď hľadanie najbližšieho uzla prešlo na bitovo
+presný model `hypot` z Apple libm v porte (`src/common/libm-hypot.ts`); teraz
+oba vyhovujú. Samostatná reprodukcia: `.agent-notes/circo-2475-590-repro.dot`;
+úplná RCA: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP radiálnej súradnice zosilnený R-stromom xlabelov.**
 2470 je graf so 140 hranami, ktorého popisky hrán v HTML `<table>` sa zhlukujú na

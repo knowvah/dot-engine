@@ -174,6 +174,17 @@ ULP-divergent leaf positions flips the entire layout back to the port's
 mirror. Full RCA: `.agent-notes/twopi-radial-drift-rca.md` (decision journal
 2026-07-11).
 
+The same star diverges on the `circo` track (accepted 2026-10-16, 599
+draw-op diffs, at most 0.71pt). The port mirrors clang's FMA contraction and
+evaluation order in `circpos.c`, so 31 of the 32 positions entering PRISM are
+bit-exact. The last one is off by 1 ULP, because V8 and Apple libm round
+`cos`/`sin` differently at three child angles in `positionChildren`. PRISM's
+Delaunay triangulation then flips one nearly cocircular diagonal on the mirror
+axis. Injection A/B: given the native `cos`/`sin` values, the port matches the
+oracle. Given V8's values, the native build produces the oracle's layout in 22
+of 30 runs and the port's layout in the other 8, because GTS orders its edges
+by allocation address.
+
 **Iterative-engine characterization: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Unlike the `circo`/`twopi`/`osage` engine tracks above, `neato`/`fdp`/`sfdp`
 are **not** yet triaged per-id — `engine-walk.ts` records a `tolerance: 0.5`
@@ -924,7 +935,7 @@ filed" entry). Accepted at the engine-track level via
 `PARITY-twopi.md`/`PARITY-circo.md` by `parity-report.ts` — the same join
 `accepted.ts` performs for the dot-track `PARITY-dot.md`.
 
-**circo `2475_2` — cocircular closestNode hypot tie.** In one 28-node
+**circo `2475_2` and `2095_1` — closestNode hypot tie (fixed).** In one 28-node
 component of this 10762-node graph, circo's `getRotation`
 (`circpos.c:73-92`) picks the block node closest to the layout origin via
 `hypot` to decide the sub-block's rotation. Two cocircular nodes are
@@ -932,10 +943,12 @@ effectively equidistant; V8's correctly-rounded `Math.hypot` and Apple
 libm's `hypot` round that distance 2 ULP apart, which flips the strict `<`,
 selects a different node, and rotates/reflects the sub-block ~20° (18 nodes
 move, max 296.7pt; the other 10744 nodes are bit-identical, as are the
-block tree, circle order, and every `centerAngle`). The CR-hypot policy was
-already refuted for this class (2026-07-10). Standalone repro:
-`.agent-notes/circo-2475-590-repro.dot`; full RCA:
-`.agent-notes/circo-b81-2475-rca.md` (accepted 2026-07-11).
+block tree, circle order, and every `centerAngle`). `2095_1` hit the same
+tie (2197 draw-op diffs, three rigid block rotations). Both were accepted
+until 2026-10-16, when the closest-node search switched to the port's
+bit-exact model of Apple's `hypot` (`src/common/libm-hypot.ts`); both now
+conform. Standalone repro: `.agent-notes/circo-2475-590-repro.dot`; full RCA:
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — radial-coordinate ULP amplified by the xlabel R-tree.**
 2470 is a 140-edge graph whose HTML `<table>` edge labels cluster on

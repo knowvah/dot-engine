@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -198,6 +198,18 @@ l'oracolo nodo per nodo (3e-14), e ripristinare solo le 5 posizioni di foglia
 divergenti di un ULP riporta l'intero layout allo specchio del porting. Analisi
 completa della causa radice: `.agent-notes/twopi-radial-drift-rca.md` (diario
 delle decisioni 2026-07-11).
+
+La stessa stella diverge sulla traccia `circo` (accettato il 2026-10-16, 599
+differenze nelle operazioni di disegno, al massimo 0.71pt). Il port rispecchia
+la contrazione FMA e l'ordine di valutazione di clang in `circpos.c`, quindi 31
+delle 32 posizioni che entrano in PRISM sono esatte al bit. L'ultima differisce
+di 1 ULP, perché V8 e la libm di Apple arrotondano `cos`/`sin` in modo diverso
+in tre angoli dei figli in `positionChildren`. La triangolazione di Delaunay di
+PRISM inverte quindi una diagonale quasi cocircolare sull'asse di simmetria.
+Iniezione A/B: con i valori nativi di `cos`/`sin` il port corrisponde
+all'oracolo. Con i valori di V8 la build nativa produce il layout dell'oracolo
+in 22 esecuzioni su 30 e quello del port nelle altre 8, perché GTS ordina i suoi
+spigoli per indirizzo di allocazione.
 
 **Caratterizzazione dei motori iterativi: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 A differenza delle tracce dei motori `circo`/`twopi`/`osage` qui sopra,
@@ -996,19 +1008,22 @@ traccia del motore tramite `test/corpus/accepted-divergences-engines.json`, unit
 in `PARITY-twopi.md`/`PARITY-circo.md` da `parity-report.ts` — la stessa unione che
 `accepted.ts` esegue per il `PARITY-dot.md` della traccia dot.
 
-**circo `2475_2` — pareggio di hypot per closestNode cocircolare.** In una
-componente di 28 nodi di questo grafo da 10762 nodi, il `getRotation` di circo
-(`circpos.c:73-92`) sceglie il nodo del blocco più vicino all'origine del layout
-tramite `hypot` per decidere la rotazione del sotto-blocco. Due nodi cocircolari
-sono di fatto equidistanti; l'`Math.hypot` di V8, correttamente arrotondato, e
-l'`hypot` di libm di Apple arrotondano quella distanza a 2 ULP di distanza, il che
-inverte il `<` stretto, seleziona un nodo diverso e ruota/riflette il sotto-blocco
-di ~20° (18 nodi si spostano, max 296.7pt; gli altri 10744 nodi sono identici al
-bit, come l'albero dei blocchi, l'ordine sul cerchio e ogni `centerAngle`). La
-politica dell'hypot correttamente arrotondato era già stata confutata per questa
-classe (2026-07-10). Riproduzione autonoma: `.agent-notes/circo-2475-590-repro.dot`;
-analisi completa della causa radice: `.agent-notes/circo-b81-2475-rca.md`
-(accettato il 2026-07-11).
+**circo `2475_2` e `2095_1` — pareggio di hypot per closestNode cocircolare
+(corretto).** In una componente di 28 nodi di questo grafo da 10762 nodi, il
+`getRotation` di circo (`circpos.c:73-92`) sceglie il nodo del blocco più vicino
+all'origine del layout tramite `hypot` per decidere la rotazione del
+sotto-blocco. Due nodi cocircolari sono di fatto equidistanti; l'`Math.hypot` di
+V8, correttamente arrotondato, e l'`hypot` di libm di Apple arrotondano quella
+distanza a 2 ULP di distanza, il che inverte il `<` stretto, seleziona un nodo
+diverso e ruota/riflette il sotto-blocco di ~20° (18 nodi si spostano, max
+296.7pt; gli altri 10744 nodi sono identici al bit, come l'albero dei blocchi,
+l'ordine sul cerchio e ogni `centerAngle`). `2095_1` incappava nello stesso
+pareggio (2197 differenze nelle operazioni di disegno, tre rotazioni rigide di
+blocchi). Entrambi erano accettati fino al 2026-10-16, quando la ricerca del
+nodo più vicino è passata al modello esatto al bit dell'`hypot` di Apple nel
+port (`src/common/libm-hypot.ts`); ora entrambi sono conformi. Riproduzione
+autonoma: `.agent-notes/circo-2475-590-repro.dot`; analisi completa della causa
+radice: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP nella coordinata radiale amplificato dall'R-tree delle xlabel.**
 2470 è un grafo di 140 archi le cui etichette d'arco HTML `<table>` si

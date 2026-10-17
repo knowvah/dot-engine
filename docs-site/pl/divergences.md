@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -173,6 +173,17 @@ odtwarza wyrocznię węzeł po węźle (3e-14), a przywrócenie tylko 5
 pozycji liści różniących się o ULP przerzuca cały układ z powrotem na lustro
 portu. Pełna analiza przyczyn: `.agent-notes/twopi-radial-drift-rca.md` (dziennik decyzji
 2026-07-11).
+
+Ta sama gwiazda rozbiega się na ścieżce `circo` (zaakceptowane 2026-10-16, 599
+różnic operacji rysowania, najwyżej 0.71pt). Port odwzorowuje kontrakcję FMA i
+kolejność obliczeń clanga w `circpos.c`, więc 31 z 32 pozycji wchodzących do
+PRISM jest bitowo dokładnych. Ostatnia różni się o 1 ULP, ponieważ V8 i libm
+Apple zaokrąglają `cos`/`sin` inaczej w trzech kątach dzieci w
+`positionChildren`. Triangulacja Delaunaya w PRISM odwraca wtedy jedną prawie
+współokręgową przekątną na osi symetrii. Iniekcja A/B: z natywnymi wartościami
+`cos`/`sin` port zgadza się z wyrocznią. Z wartościami V8 natywny build daje
+układ wyroczni w 22 z 30 uruchomień, a układ portu w pozostałych 8, ponieważ GTS
+porządkuje swoje krawędzie według adresów alokacji.
 
 **Charakteryzacja silników iteracyjnych: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 W przeciwieństwie do ścieżek silników `circo`/`twopi`/`osage` powyżej, `neato`/`fdp`/`sfdp`
@@ -896,18 +907,21 @@ filed”). Zaakceptowane na poziomie ścieżki silnika przez
 `PARITY-twopi.md`/`PARITY-circo.md` przez `parity-report.ts` — to samo złączenie, które
 `accepted.ts` wykonuje dla `PARITY-dot.md` ścieżki dot.
 
-**circo `2475_2` — remis hypot dla współokręgowego closestNode.** W jednym
-28-węzłowym komponencie tego grafu o 10762 węzłach `getRotation` w circo
-(`circpos.c:73-92`) wybiera węzeł bloku najbliższy początkowi układu przez
-`hypot`, aby ustalić obrót podbloku. Dwa współokręgowe węzły są
-praktycznie równoodległe; poprawnie zaokrąglany `Math.hypot` z V8 i `hypot` z libm
-Apple zaokrąglają tę odległość o 2 ULP inaczej, co przerzuca ścisłe `<`,
-wybiera inny węzeł i obraca/odbija podblok o ~20° (18 węzłów
-się przesuwa, maks. 296.7pt; pozostałe 10744 węzły są identyczne bitowo, tak samo jak
-drzewo bloków, kolejność okręgu i każdy `centerAngle`). Polityka CR-hypot
-była już obalona dla tej klasy (2026-07-10). Samodzielna reprodukcja:
+**circo `2475_2` i `2095_1` — remis hypot dla współokręgowego closestNode
+(naprawione).** W jednym 28-węzłowym komponencie tego grafu o 10762 węzłach
+`getRotation` w circo (`circpos.c:73-92`) wybiera węzeł bloku najbliższy
+początkowi układu przez `hypot`, aby ustalić obrót podbloku. Dwa współokręgowe
+węzły są praktycznie równoodległe; poprawnie zaokrąglany `Math.hypot` z V8 i
+`hypot` z libm Apple zaokrąglają tę odległość o 2 ULP inaczej, co przerzuca
+ścisłe `<`, wybiera inny węzeł i obraca/odbija podblok o ~20° (18 węzłów się
+przesuwa, maks. 296.7pt; pozostałe 10744 węzły są identyczne bitowo, tak samo
+jak drzewo bloków, kolejność okręgu i każdy `centerAngle`). `2095_1` trafiał na
+ten sam remis (2197 różnic operacji rysowania, trzy sztywne obroty bloków). Oba
+były zaakceptowane do 2026-10-16, kiedy wyszukiwanie najbliższego węzła przeszło
+na bitowo dokładny model `hypot` z Apple w porcie (`src/common/libm-hypot.ts`);
+teraz oba są zgodne. Samodzielna reprodukcja:
 `.agent-notes/circo-2475-590-repro.dot`; pełna analiza przyczyn:
-`.agent-notes/circo-b81-2475-rca.md` (zaakceptowane 2026-07-11).
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP współrzędnej radialnej wzmocniony przez R-drzewo xlabel.**
 2470 to graf ze 140 krawędziami, którego etykiety krawędzi z HTML `<table>` skupiają się

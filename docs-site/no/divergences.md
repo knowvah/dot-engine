@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -175,6 +175,17 @@ reproduserer orakelet node for node (3e-14), og å gjenopprette bare de 5
 ULP-avvikende bladposisjonene snur hele layouten tilbake til portens
 speil. Full RCA: `.agent-notes/twopi-radial-drift-rca.md` (beslutningsjournal
 2026-07-11).
+
+Den samme stjernen avviker også på `circo`-sporet (godkjent 2026-10-16, 599
+draw-op-forskjeller, høyst 0.71pt). Porten etterligner clangs FMA-kontraksjon og
+evalueringsrekkefølge i `circpos.c`, så 31 av de 32 posisjonene som går inn i
+PRISM, er bit-eksakte. Den siste avviker med 1 ULP fordi V8 og Apple libm runder
+av `cos`/`sin` ulikt ved tre barnevinkler i `positionChildren`. PRISMs
+Delaunay-triangulering snur deretter én nesten kosirkulær diagonal på
+speilaksen. Injeksjons-A/B: med de native `cos`/`sin`-verdiene samsvarer porten
+med orakelet. Med V8s verdier gir den native builden orakelets layout i 22 av 30
+kjøringer og portens layout i de øvrige 8, fordi GTS ordner kantene sine etter
+allokeringsadresse.
 
 **Karakterisering av iterative motorer: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 I motsetning til motorsporene `circo`/`twopi`/`osage` ovenfor er `neato`/`fdp`/`sfdp`
@@ -918,18 +929,20 @@ filed»). Godkjent på motorsporsnivå via
 `PARITY-twopi.md`/`PARITY-circo.md` av `parity-report.ts` — den samme koblingen
 `accepted.ts` utfører for dot-sporet `PARITY-dot.md`.
 
-**circo `2475_2` — kosirkulær closestNode-hypot-likhet.** I én komponent med 28 noder i
-denne grafen på 10762 noder velger circos `getRotation`
-(`circpos.c:73-92`) blokknoden nærmest layoutens origo via
-`hypot` for å avgjøre underblokkens rotasjon. To kosirkulære noder er
-i praksis like langt unna; V8s korrekt avrundede `Math.hypot` og Apples
-libm-`hypot` runder den avstanden 2 ULP fra hverandre, noe som snur det strenge `<`,
-velger en annen node og roterer/speiler underblokken ~20° (18 noder
-flyttes, maks. 296.7pt; de andre 10744 nodene er bit-identiske, det samme er
-blokktreet, sirkelrekkefølgen og hver `centerAngle`). CR-hypot-policyen var
-allerede tilbakevist for denne klassen (2026-07-10). Frittstående repro:
-`.agent-notes/circo-2475-590-repro.dot`; full RCA:
-`.agent-notes/circo-b81-2475-rca.md` (godkjent 2026-07-11).
+**circo `2475_2` og `2095_1` — kosirkulær closestNode-hypot-likhet (rettet).** I
+én komponent med 28 noder i denne grafen på 10762 noder velger circos
+`getRotation` (`circpos.c:73-92`) blokknoden nærmest layoutens origo via `hypot`
+for å avgjøre underblokkens rotasjon. To kosirkulære noder er i praksis like
+langt unna; V8s korrekt avrundede `Math.hypot` og Apples libm-`hypot` runder den
+avstanden 2 ULP fra hverandre, noe som snur det strenge `<`, velger en annen
+node og roterer/speiler underblokken ~20° (18 noder flyttes, maks. 296.7pt; de
+andre 10744 nodene er bit-identiske, det samme er blokktreet, sirkelrekkefølgen
+og hver `centerAngle`). `2095_1` traff den samme likheten (2197
+draw-op-forskjeller, tre stive blokkrotasjoner). Begge var godkjent fram til
+2026-10-16, da søket etter nærmeste node gikk over til portens bit-eksakte
+modell av Apples `hypot` (`src/common/libm-hypot.ts`); begge er nå konforme.
+Frittstående repro: `.agent-notes/circo-2475-590-repro.dot`; full RCA:
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — radialkoordinat-ULP forsterket av R-treet for xlabel.**
 2470 er en graf med 140 kanter der HTML-`<table>`-kantetiketter klynger seg

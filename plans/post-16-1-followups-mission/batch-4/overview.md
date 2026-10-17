@@ -7,7 +7,7 @@ the spec.
 
 | ID | Description | Agent | Writes | Depends on | Done |
 |---|---|---|---|---|---|
-| [T12](T12-circo-fma-1855.md) | circo FMA patch; diagnose 1855 | debugger (opus) | circo position files + test; circo walk; registry/docs if accepted | batch 3 | [ ] |
+| [T12](T12-circo-fma-1855.md) | circo FMA patch; diagnose 1855 | debugger (opus) | circo position files + test; circo walk; registry/docs if accepted | batch 3 | [x] |
 | [T13](T13-xlabel-flips.md) | label-placement flips, fdp 2471 / sfdp 2371 | debugger (opus) | `xlabels-place.ts`, `src/label/*`; attribution; registry/docs | T12 | [ ] |
 
 A parked task still gets a commit if its write-up adds a file, such as a test that pins

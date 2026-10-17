@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -179,6 +179,17 @@ kanıtladı: C'nin tam `circleLayout` konumlarını portun PRISM'ine beslemek k�
 düğüm düğüm yeniden üretir (3e-14); yalnızca ULP açısından ayrışan 5 yaprak
 konumunu geri yüklemek tüm yerleşimi portun aynasına geri çevirir. Tam kök neden
 analizi: `.agent-notes/twopi-radial-drift-rca.md` (karar günlüğü 2026-07-11).
+
+Aynı yıldız `circo` izinde de sapar (2026-10-16'da kabul edildi, 599 çizim
+işlemi farkı, en fazla 0.71pt). Port, `circpos.c` içinde clang'ın FMA
+daraltmasını ve değerlendirme sırasını izler; bu yüzden PRISM'e giren 32 konumun
+31'i bit düzeyinde birebirdir. Sonuncusu 1 ULP farklıdır, çünkü V8 ve Apple libm
+`positionChildren` içindeki üç çocuk açısında `cos`/`sin` değerlerini farklı
+yuvarlar. Ardından PRISM'in Delaunay üçgenlemesi ayna ekseni üzerindeki
+neredeyse eşdairesel bir köşegeni çevirir. Enjeksiyon A/B: yerel `cos`/`sin`
+değerleri verildiğinde port kâhinle eşleşir. V8'in değerleri verildiğinde yerel
+derleme 30 çalıştırmanın 22'sinde kâhinin yerleşimini, kalan 8'inde portun
+yerleşimini üretir, çünkü GTS kenarlarını ayırma adresine göre sıralar.
 
 **Yinelemeli motor nitelendirmesi: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Yukarıdaki `circo`/`twopi`/`osage` motor hatlarının aksine, `neato`/`fdp`/`sfdp`
@@ -903,17 +914,21 @@ outline-ring obstacle; 56/osage bb clobber; A9 filed” kaydı). Motor hattı d�
 `parity-report.ts` bunu `PARITY-twopi.md`/`PARITY-circo.md` ile birleştirir —
 `accepted.ts`'in dot hattı `PARITY-dot.md` için yaptığı birleştirmenin aynısı.
 
-**circo `2475_2` — eşdairesel closestNode hypot beraberliği.** Bu 10762 düğümlü grafın
-28 düğümlü bir bileşeninde circo'nun `getRotation`'ı (`circpos.c:73-92`), alt bloğun
-dönüşünü belirlemek için `hypot` ile yerleşim başlangıcına en yakın blok düğümünü
-seçer. İki eşdairesel düğüm fiilen eşit uzaklıktadır; V8'in doğru yuvarlanmış
-`Math.hypot`'u ve Apple libm'in `hypot`'u bu uzaklığı 2 ULP farkla yuvarlar; bu da
-katı `<` işaretini çevirir, farklı bir düğüm seçer ve alt bloğu ~20° döndürür/yansıtır
-(18 düğüm kayar, azami 296.7pt; diğer 10744 düğüm, blok ağacı, daire sırası ve her
-`centerAngle` bit düzeyinde özdeştir). CR-hypot politikası bu sınıf için zaten
-çürütülmüştü (2026-07-10). Bağımsız yeniden üretim:
+**circo `2475_2` ve `2095_1` — eşdairesel closestNode hypot beraberliği
+(düzeltildi).** Bu 10762 düğümlü grafın 28 düğümlü bir bileşeninde circo'nun
+`getRotation`'ı (`circpos.c:73-92`), alt bloğun dönüşünü belirlemek için `hypot`
+ile yerleşim başlangıcına en yakın blok düğümünü seçer. İki eşdairesel düğüm
+fiilen eşit uzaklıktadır; V8'in doğru yuvarlanmış `Math.hypot`'u ve Apple
+libm'in `hypot`'u bu uzaklığı 2 ULP farkla yuvarlar; bu da katı `<` işaretini
+çevirir, farklı bir düğüm seçer ve alt bloğu ~20° döndürür/yansıtır (18 düğüm
+kayar, azami 296.7pt; diğer 10744 düğüm, blok ağacı, daire sırası ve her
+`centerAngle` bit düzeyinde özdeştir). `2095_1` aynı beraberliğe takılıyordu
+(2197 çizim işlemi farkı, üç rijit blok dönmesi). İkisi de 2026-10-16'ya kadar
+kabul edilmişti; o tarihte en yakın düğüm araması, porttaki Apple `hypot`
+işlevinin bit düzeyinde birebir modeline (`src/common/libm-hypot.ts`) geçti ve
+artık ikisi de uyumlu. Bağımsız yeniden üretim:
 `.agent-notes/circo-2475-590-repro.dot`; tam kök neden analizi:
-`.agent-notes/circo-b81-2475-rca.md` (2026-07-11'de kabul edildi).
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — xlabel R-ağacı tarafından yükseltilen radyal koordinat ULP'si.**
 2470, HTML `<table>` kenar etiketleri neredeyse çakışık radyal çapalarda toplanan
