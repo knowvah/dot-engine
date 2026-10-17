@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -236,14 +236,16 @@ selitetty yksitellen graphviz 16.1.0:aa vasten: injektiotyökalu
 (`test/corpus/attribute-divergence.ts`) syöttää natiivin oraakkelin reititystä
 edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja jokainen nykyinen
 poikkeava tunniste on `drift-exonerated` (porttauksen reititys ja emissio
-toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) viittä
-lukuun ottamatta. Kolme on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
+toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) neljää lukuun ottamatta. Kolme on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
 `241_0`:n CDT:n incircle-tasapeli fdp:llä ja sfdp:llä sekä sfdp:n `2556`:n
-NaN-asettelu. Kahta ei ole hyväksytty eikä niiden juurisyytä ole vielä selvitetty:
-fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`) poikkeavat
-injektion jälkeen, eli xlabel-sijoittaja valitsee eri ehdokkaan. Natiivi
-fdp-asettelu `2471`:llä vaihtelee myös ajosta toiseen, joten sen rivi kirjaa yhden
-ajon. (sfdp:n `42` on A1-drift, katso
+NaN-asettelu. Yhtä ei ole hyväksytty: joissakin natiiveissa ajoissa fdp:n `2471` kaarten
+nimiöiden sijainnit (`lp`) poikkeavat injektion jälkeen, eli xlabel-sijoittaja valitsee
+eri ehdokkaan. Porttauksen `dotneato_closest` ei vielä pyöristä kuten clangin yhdistetty
+de Casteljau -laskenta, joten kaarten nimiöiden ankkurit eroavat 1–2 ULP:tä, mikä voi
+kallistaa sijoittajan tiukan sisältymistestin. Natiivi fdp-asettelu `2471`:llä vaihtelee
+myös ajosta toiseen, joten sen rivi kirjaa yhden ajon. sfdp:n `2371`:llä oli sama oire
+eri syystä, ja se korjaantui, kun porttauksen R-puu alkoi kopioida suorakulmiot arvoina,
+kuten C tekee. (sfdp:n `42` on A1-drift, katso
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Alla oleva luokkahyväksyntä vahvistaa vapautetun joukon; ajantasaiset luvut
 moottorikohtaisilla kojelaudoilla

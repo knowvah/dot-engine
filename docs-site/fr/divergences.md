@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -254,14 +254,18 @@ Contrairement au premier balayage, chaque ligne divergente de l’univers de 929
 d’injection (`test/corpus/attribute-divergence.ts`) fournit au portage le `ND_pos`
 pré-routage de l’oracle natif et recompare, et chaque identifiant divergent actuel
 est `drift-exonerated` (le routage et l’émission du portage reproduisent
-exactement l’oracle dès que la dérive du solveur est supprimée), sauf cinq. Trois
+exactement l’oracle dès que la dérive du solveur est supprimée), sauf quatre. Trois
 sont des résidus par identifiant acceptés séparément : l’égalité d’incercle CDT de
-`241_0` sur fdp et sfdp, et la disposition NaN de `2556` pour sfdp. Deux ne sont
-ni acceptés ni expliqués par leur cause racine : `2471` pour fdp et `2371` pour
-sfdp conservent des positions d’étiquettes d’arête (`lp`) qui diffèrent après
-injection, c’est-à-dire que le placeur de xlabels choisit un autre candidat. La
-disposition fdp native de `2471` varie aussi d’une exécution à l’autre ; sa ligne
-n’enregistre donc qu’une exécution. (`42` de sfdp relève de la dérive A1, voir
+`241_0` sur fdp et sfdp, et la disposition NaN de `2556` pour sfdp. Un seul n’est pas
+accepté : dans certaines exécutions natives, `2471` pour fdp conserve des positions
+d’étiquettes d’arête (`lp`) qui diffèrent après injection, c’est-à-dire que le placeur
+de xlabels choisit un autre candidat. Le `dotneato_closest` du portage n’arrondit pas
+encore comme l’évaluation de De Casteljau fusionnée de clang ; les ancres des étiquettes
+d’arête diffèrent donc de 1 à 2 ULP, ce qui peut faire basculer le test d’inclusion
+strict du placeur. La disposition fdp native de `2471` varie aussi d’une exécution à
+l’autre ; sa ligne n’enregistre donc qu’une exécution. `2371` pour sfdp présentait le
+même symptôme pour une autre cause et s’est résolu dès que l’arbre R du portage a copié
+les rectangles par valeur, comme le fait C. (`42` de sfdp relève de la dérive A1, voir
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 L’acceptation de classe ci-dessous formalise l’ensemble disculpé ;
 compteurs à jour dans les tableaux de bord par moteur

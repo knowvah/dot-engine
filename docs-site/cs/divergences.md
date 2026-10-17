@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -219,12 +219,16 @@ individuálně připsán vůči graphviz 16.1.0: vstřikovací harness
 (`test/corpus/attribute-divergence.ts`) vkládá `ND_pos` nativního orákula před
 vedením hran do portace a znovu porovnává, a každé aktuální rozcházející se id je
 `drift-exonerated` (vedení a emise portace přesně reprodukují orákulum, jakmile se
-drift řešiče odstraní), kromě pěti. Tři jsou samostatně akceptované zbytky po
+drift řešiče odstraní), kromě čtyř. Tři jsou samostatně akceptované zbytky po
 jednotlivých id: remíza incircle v CDT u `241_0` na fdp a sfdp a layout s NaN u
-sfdp `2556`. Dva nejsou akceptované a dosud nemají vystopovanou příčinu: fdp
-`2471` a sfdp `2371` si po vstřiknutí ponechávají odlišné pozice popisků hran
-(`lp`), tj. umísťovač xlabel vybírá jiného kandidáta. Nativní layout fdp u `2471`
-se navíc od běhu k běhu liší, takže jeho řádek zaznamenává jeden běh. (sfdp `42`
+sfdp `2556`. Jeden akceptovaný není: v některých nativních bězích si fdp `2471` po
+vstřiknutí ponechává odlišné pozice popisků hran (`lp`), tj. umísťovač xlabel vybírá
+jiného kandidáta. `dotneato_closest` v portaci zatím nezaokrouhluje jako fúzované
+vyhodnocení de Casteljau v clangu, takže kotvy popisků hran se liší o 1–2 ULP, což může
+zvrátit striktní test obsažení v umísťovači. Nativní layout fdp u `2471` se navíc od
+běhu k běhu liší, takže jeho řádek zaznamenává jeden běh. sfdp `2371` měl stejný příznak
+z jiné příčiny a vyřešil se, jakmile R-strom portace začal kopírovat obdélníky hodnotou,
+jako to dělá C. (sfdp `42`
 je drift A1, viz
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptace třídy níže formalizuje vyviněnou množinu; aktuální počty v přehledech

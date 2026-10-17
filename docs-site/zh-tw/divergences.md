@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -175,11 +175,12 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 
 與第一次掃描時不同，929 項範圍中每一列差異都已針對 graphviz 16.1.0 個別歸因：
 注入工具（`test/corpus/attribute-divergence.ts`）將原生參照程式繞線前的
-`ND_pos` 餵給移植版並重新比對，而目前每個差異 id 除了五個之外，都是
+`ND_pos` 餵給移植版並重新比對，而目前每個差異 id 除了四個之外，都是
 `drift-exonerated`（一旦移除求解器漂移，移植版的繞線與輸出就能精確重現參照程式）。
 其中三個是另行接受的逐 id 殘留項：fdp 與 sfdp 上 `241_0` 的 CDT 內切圓平手，以及 sfdp `2556` 的 NaN 版面。
-另外兩個未被接受，也尚未找出根本原因：fdp `2471` 與 sfdp `2371` 在注入之後保留的邊標籤位置（`lp`）仍不相同，亦即 xlabel 放置器挑選了不同的候選。
+另外一個未被接受：在部分原生執行中，fdp `2471` 在注入之後保留的邊標籤位置（`lp`）仍不相同，亦即 xlabel 放置器挑選了不同的候選。移植版的 `dotneato_closest` 尚未依 clang 融合後的 de Casteljau 求值方式捨入，因此邊標籤錨點相差 1–2 ULP，可能使放置器的嚴格包含判斷翻轉。
 `2471` 的原生 fdp 版面每次執行也會變動，因此其列只記錄一次執行。
+sfdp `2371` 曾出現相同症狀但原因不同，在移植版的 R 樹像 C 一樣以值複製矩形之後已經消除。
 （sfdp 的 `42` 是 A1 漂移，見 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）
 下方的類別接受將被免責的集合正式化；即時計數見各引擎儀表板
 （[`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、

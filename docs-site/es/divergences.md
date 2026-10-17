@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -224,14 +224,18 @@ elementos está atribuida individualmente frente a graphviz 16.1.0: el arnés de
 inyección (`test/corpus/attribute-divergence.ts`) alimenta el `ND_pos` previo al
 enrutamiento del oráculo nativo al port y vuelve a comparar, y cada id divergente
 actual es `drift-exonerated` (el enrutamiento y la emisión del port reproducen
-exactamente el oráculo una vez eliminada la deriva del solucionador) salvo cinco.
+exactamente el oráculo una vez eliminada la deriva del solucionador) salvo cuatro.
 Tres son residuos por id aceptados por separado: el empate del incírculo de CDT de
-`241_0` en fdp y sfdp, y el layout con NaN de `2556` de sfdp. Dos no están
-aceptados ni tienen aún causa raíz: `2471` de fdp y `2371` de sfdp conservan
-posiciones de etiquetas de arista (`lp`) que difieren tras la inyección, es decir,
-el colocador de xlabels elige otro candidato. El layout nativo de fdp de `2471`
-también varía de una ejecución a otra, por lo que su fila registra una sola
-ejecución. (`42` de sfdp es deriva A1, véase
+`241_0` en fdp y sfdp, y el layout con NaN de `2556` de sfdp. Uno no está aceptado: en
+algunas ejecuciones nativas, `2471` de fdp conserva posiciones de etiquetas de arista
+(`lp`) que difieren tras la inyección, es decir, el colocador de xlabels elige otro
+candidato. El `dotneato_closest` del port aún no redondea como la evaluación de De
+Casteljau fusionada de clang, por lo que los anclajes de las etiquetas de arista
+difieren en 1–2 ULP, lo que puede inclinar la prueba estricta de inclusión del
+colocador. El layout nativo de fdp de `2471` también varía de una ejecución a otra, por
+lo que su fila registra una sola ejecución. `2371` de sfdp tenía el mismo síntoma por
+otra causa y quedó resuelto cuando el árbol R del port pasó a copiar los rectángulos por
+valor, como hace C. (`42` de sfdp es deriva A1, véase
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 La aceptación de clase de abajo formaliza el conjunto exonerado; recuentos en vivo en
 los paneles de cada motor

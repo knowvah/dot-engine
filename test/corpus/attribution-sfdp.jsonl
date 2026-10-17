@@ -289,7 +289,7 @@
 {"id":"graphs-b100","verdict":"drift-exonerated","baseDiffs":156568,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"graphs-b104","verdict":"drift-exonerated","baseDiffs":156568,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2471","verdict":"drift-exonerated","baseDiffs":728,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
-{"id":"2371","verdict":"not-cleared","baseDiffs":433020,"injectedDiffs":318,"bucket":{"shape":"edge/_ldraw_/numeric","kind":"position","signature":"edge/_ldraw_/numeric+edge/lp/numeric"}}
+{"id":"2371","verdict":"drift-exonerated","baseDiffs":433020,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2646","verdict":"drift-exonerated","baseDiffs":1979265,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2108","verdict":"drift-exonerated","baseDiffs":1044748,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-share-examples-world","verdict":"drift-exonerated","baseDiffs":3198828,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}

@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -198,13 +198,10 @@ neato の未移植だった `user_pos`/`P_SET` の処理、エンジン初期化
 最初のスイープの時点と違い、929 件の母集団の diverged のすべての行が graphviz 16.1.0 に対して
 個別に原因特定されています。注入ハーネス (`test/corpus/attribute-divergence.ts`) が、
 ネイティブオラクルのルーティング前の `ND_pos` をポートに与えて再比較します。現在の
-diverged な ID は、5 件を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
+diverged な ID は、4 件を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
 ポートのルーティングと出力がオラクルを正確に再現する）です。そのうち 3 件は個別に
 受け入れられた ID ごとの残差で、fdp と sfdp での `241_0` の CDT の内接円の同順位と、
-sfdp `2556` の NaN レイアウトです。残る 2 件は受け入れられておらず、根本原因も未特定です。
-fdp `2471` と sfdp `2371` は、注入後もエッジラベルの位置 (`lp`) が一致しません。つまり
-xlabel 配置器が別の候補を選んでいます。また `2471` のネイティブの fdp レイアウトは実行ごとに
-変わるため、その行は 1 回の実行を記録したものです。（sfdp の `42` は A1 のずれです。
+sfdp `2556` の NaN レイアウトです。残る 1 件は受け入れられていません。一部のネイティブ実行では、fdp `2471` は注入後もエッジラベルの位置 (`lp`) が一致しません。つまり xlabel 配置器が別の候補を選んでいます。ポートの `dotneato_closest` はまだ clang の融合された de Casteljau 評価と同じ丸めをしていないため、エッジラベルのアンカーが 1〜2 ULP ずれ、配置器の厳密な包含判定が反転することがあります。また `2471` のネイティブの fdp レイアウトは実行ごとに変わるため、その行は 1 回の実行を記録したものです。sfdp `2371` は別の原因で同じ症状を示していましたが、ポートの R 木が C と同様に矩形を値としてコピーするようになって解消しました。（sfdp の `42` は A1 のずれです。
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md) を参照。）後述のクラスの受け入れは、この潔白とされた集合を正式化するものです。
 最新の件数はエンジン別のダッシュボードにあります
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、

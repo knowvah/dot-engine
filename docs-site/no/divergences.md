@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -216,12 +216,16 @@ individuelt tilskrevet mot graphviz 16.1.0: injeksjonsverktøyet
 (`test/corpus/attribute-divergence.ts`) mater det innebygde orakelets `ND_pos` før ruting
 inn i porten og sammenligner på nytt, og hver gjeldende avvikende id er `drift-exonerated`
 (portens ruting og emisjon reproduserer orakelet nøyaktig så snart løserdriften er
-fjernet), bortsett fra fem. Tre er separat godkjente rester per id: `241_0`s
-CDT-incircle-likhet på fdp og sfdp, og sfdp `2556`s NaN-layout. To er ikke godkjent og
-ennå ikke rotårsaksanalysert: fdp `2471` og sfdp `2371` beholder kantetikettposisjoner
-(`lp`) som avviker etter injeksjon, det vil si at xlabel-plasseringen velger en annen
-kandidat. Den innebygde fdp-layouten for `2471` varierer dessuten fra kjøring til
-kjøring, så raden registrerer én kjøring. (sfdp `42` er A1-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
+fjernet), bortsett fra fire. Tre er separat godkjente rester per id: `241_0`s
+CDT-incircle-likhet på fdp og sfdp, og sfdp `2556`s NaN-layout. Én er ikke godkjent: i
+noen innebygde kjøringer beholder fdp `2471` kantetikettposisjoner (`lp`) som avviker
+etter injeksjon, det vil si at xlabel-plasseringen velger en annen kandidat. Portens
+`dotneato_closest` avrunder ennå ikke som clangs fusjonerte de Casteljau-evaluering, så
+kantetikettenes ankre avviker med 1–2 ULP, noe som kan vippe plasseringens strenge
+inneslutningstest. Den innebygde fdp-layouten for `2471` varierer dessuten fra kjøring
+til kjøring, så raden registrerer én kjøring. sfdp `2371` hadde samme symptom av en
+annen årsak og ble løst da portens R-tre begynte å kopiere rektangler som verdier, slik
+C gjør. (sfdp `42` er A1-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Klassegodkjenningen nedenfor formaliserer den frikjente mengden; levende tall i
 dashbordene per motor
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

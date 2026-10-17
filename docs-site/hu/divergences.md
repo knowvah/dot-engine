@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -220,12 +220,16 @@ egyenként tulajdonítva van a graphviz 16.1.0 ellenében: az injektáló eszkö
 `ND_pos` értékét a portolt változatba táplálja, és újra összehasonlít, és minden
 jelenlegi eltérő azonosító `drift-exonerated` (a portolt változat útvonalvezetése
 és kibocsátása pontosan reprodukálja az orákulumot, amint a megoldósodródást
-eltávolítjuk), öt kivételével. Három külön elfogadott, azonosítónkénti maradék: a
+eltávolítjuk), négy kivételével. Három külön elfogadott, azonosítónkénti maradék: a
 `241_0` CDT-incircle döntetlene az fdp és sfdp motoron, valamint az sfdp `2556`
-NaN elrendezése. Kettő nincs elfogadva, és gyökéroka sincs még feltárva: az fdp
-`2471` és az sfdp `2371` élfeliratainak pozíciói (`lp`) injektálás után is
-eltérnek, vagyis az xlabel-elhelyező másik jelöltet választ. A `2471` natív fdp
-elrendezése futásról futásra is változik, ezért a sora egy futást rögzít. (Az sfdp
+NaN elrendezése. Egy nincs elfogadva: egyes natív futásokban az fdp `2471`
+élfeliratainak pozíciói (`lp`) injektálás után is eltérnek, vagyis az xlabel-elhelyező
+másik jelöltet választ. A portolt `dotneato_closest` még nem úgy kerekít, mint a clang
+összevont de Casteljau-kiértékelése, így az élfeliratok horgonypontjai 1–2 ULP-vel
+eltérnek, ami átbillentheti az elhelyező szigorú tartalmazási tesztjét. A `2471` natív
+fdp elrendezése futásról futásra is változik, ezért a sora egy futást rögzít. Az sfdp
+`2371` ugyanezt a tünetet más okból mutatta, és megszűnt, amint a port R-fája érték
+szerint kezdte másolni a téglalapokat, ahogy a C is. (Az sfdp
 `42` A1-sodródás, lásd
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Az alábbi osztályelfogadás a felmentett halmazt formalizálja; az élő számok a

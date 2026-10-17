@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -215,11 +215,15 @@ Na rozdiel od prvého prieskumu je každý odchýlený riadok univerza 929 polo�
 priradený voči graphviz 16.1.0: injekčný nástroj (`test/corpus/attribute-divergence.ts`) vkladá
 `ND_pos` z natívneho orákula pred vedením hrán do portu a znovu porovnáva, a každé súčasné odchýlené
 id je `drift-exonerated` (vedenie a emisia portu reprodukujú orákulum presne, keď sa drift solvera
-odstráni), okrem piatich. Tri sú samostatne akceptované zvyšky po jednotlivých id: väzba incircle v
-CDT pri `241_0` na fdp a sfdp a NaN rozloženie sfdp `2556`. Dva nie sú akceptované a zatiaľ nemajú
-zistenú koreňovú príčinu: fdp `2471` a sfdp `2371` si po injekcii zachovávajú odlišné pozície
-popisiek hrán (`lp`), t. j. umiestňovač xlabel vyberie iného kandidáta. Natívne rozloženie fdp pre
-`2471` sa tiež líši od behu k behu, takže jeho riadok zaznamenáva jeden beh. (sfdp `42` je drift A1,
+odstráni), okrem štyroch. Tri sú samostatne akceptované zvyšky po jednotlivých id: väzba incircle v
+CDT pri `241_0` na fdp a sfdp a NaN rozloženie sfdp `2556`. Jeden akceptovaný nie je: v
+niektorých natívnych behoch si fdp `2471` po injekcii zachováva odlišné pozície popisiek
+hrán (`lp`), t. j. umiestňovač xlabel vyberie iného kandidáta. `dotneato_closest` v
+porte zatiaľ nezaokrúhľuje ako fúzované vyhodnotenie de Casteljau v clangu, takže kotvy
+popisiek hrán sa líšia o 1–2 ULP, čo môže zvrátiť striktný test obsiahnutia v
+umiestňovači. Natívne rozloženie fdp pre `2471` sa tiež líši od behu k behu, takže jeho
+riadok zaznamenáva jeden beh. sfdp `2371` mal rovnaký príznak z inej príčiny a vyriešil
+sa, keď R-strom portu začal kopírovať obdĺžniky hodnotou, ako to robí C. (sfdp `42` je drift A1,
 pozri
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptácia triedy nižšie formalizuje množinu očistených; živé počty v

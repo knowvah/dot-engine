@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -214,12 +214,16 @@ indywidualnie przypisany względem graphviz 16.1.0: narzędzie wstrzykiwania
 (`test/corpus/attribute-divergence.ts`) podaje przedroutingowy `ND_pos` natywnej wyroczni
 do portu i porównuje ponownie, a każdy obecny rozbieżny id jest `drift-exonerated`
 (prowadzenie i emisja w porcie odtwarzają wyrocznię dokładnie po usunięciu dryfu solvera)
-z wyjątkiem pięciu. Trzy to osobno zaakceptowane residua dla poszczególnych id: remis
-incircle w CDT dla `241_0` na fdp i sfdp oraz układ NaN w sfdp `2556`. Dwa nie są
-zaakceptowane i nie mają jeszcze ustalonej przyczyny źródłowej: fdp `2471` i sfdp `2371`
-zachowują pozycje etykiet krawędzi (`lp`), które po wstrzyknięciu się różnią, tzn. moduł
-rozmieszczający xlabel wybiera innego kandydata. Natywny układ fdp dla `2471` zmienia się
-też z przebiegu na przebieg, więc jego wiersz rejestruje jeden przebieg. (sfdp `42`
+z wyjątkiem czterech. Trzy to osobno zaakceptowane residua dla poszczególnych id: remis
+incircle w CDT dla `241_0` na fdp i sfdp oraz układ NaN w sfdp `2556`. Jeden nie jest
+zaakceptowany: w niektórych natywnych przebiegach fdp `2471` zachowuje pozycje etykiet
+krawędzi (`lp`), które po wstrzyknięciu się różnią, tzn. moduł rozmieszczający xlabel
+wybiera innego kandydata. `dotneato_closest` w porcie nie zaokrągla jeszcze tak jak
+połączone (fused) obliczenie de Casteljau w clangu, więc kotwice etykiet krawędzi różnią
+się o 1–2 ULP, co może przechylić ścisły test zawierania w module rozmieszczającym.
+Natywny układ fdp dla `2471` zmienia się też z przebiegu na przebieg, więc jego wiersz
+rejestruje jeden przebieg. sfdp `2371` miał ten sam objaw z innej przyczyny i ustąpił,
+gdy R-drzewo portu zaczęło kopiować prostokąty przez wartość, tak jak C. (sfdp `42`
 to dryf A1, zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptacja klasy poniżej formalizuje zbiór oczyszczony z zarzutów; bieżące liczby w
 panelach poszczególnych silników

@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -220,12 +220,16 @@ elementer individuelt tilskrevet mod graphviz 16.1.0: injektionsværktøjet
 (`test/corpus/attribute-divergence.ts`) fodrer det native orakels `ND_pos` før
 føring ind i porten og sammenligner igen, og hvert nuværende afvigende id er
 `drift-exonerated` (portens føring og emission reproducerer oraklet nøjagtigt, når
-solver-driften er fjernet) bortset fra fem. Tre er separat accepterede rester pr.
-id: `241_0`'s CDT-incircle-uafgjort på fdp og sfdp og sfdp `2556`'s NaN-layout. To
-er hverken accepterede eller årsagsanalyserede endnu: fdp `2471` og sfdp `2371`
-beholder positioner for kantetiketter (`lp`), der afviger efter injektion, dvs.
-xlabel-placeren vælger en anden kandidat. Det native fdp-layout af `2471` varierer
-desuden fra kørsel til kørsel, så dens række registrerer én kørsel. (sfdp `42` er
+solver-driften er fjernet) bortset fra fire. Tre er separat accepterede rester pr.
+id: `241_0`'s CDT-incircle-uafgjort på fdp og sfdp og sfdp `2556`'s NaN-layout. Ét er
+ikke accepteret: i nogle native kørsler beholder fdp `2471` positioner for kantetiketter
+(`lp`), der afviger efter injektion, dvs. xlabel-placeren vælger en anden kandidat.
+Portens `dotneato_closest` afrunder endnu ikke som clangs fusionerede de
+Casteljau-evaluering, så kantetiketternes ankre afviger med 1–2 ULP, hvilket kan vippe
+placerens strenge indeslutningstest. Det native fdp-layout af `2471` varierer desuden
+fra kørsel til kørsel, så dens række registrerer én kørsel. sfdp `2371` havde samme
+symptom af en anden årsag og blev løst, da portens R-træ begyndte at kopiere rektangler
+som værdier, som C gør. (sfdp `42` er
 A1-drift, se
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Klasseaccepten nedenfor formaliserer den frikendte mængde; aktuelle tal i

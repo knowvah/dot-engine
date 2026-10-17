@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -214,13 +214,17 @@ Spre deosebire de prima trecere, fiecare rând divergent din universul de 929 de
 atribuit individual față de graphviz 16.1.0: instrumentul de injecție
 (`test/corpus/attribute-divergence.ts`) alimentează portarea cu `ND_pos` dinaintea rutării din
 oracolul nativ și compară din nou, iar fiecare id divergent curent este `drift-exonerated` (rutarea
-și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția
-a cinci. Trei sunt reziduuri acceptate separat pe id: egalitatea la testul incircle din CDT pentru
-`241_0` pe fdp și sfdp și aspectul NaN al lui sfdp `2556`. Două nu sunt acceptate și nu au fost încă
-duse până la cauza rădăcină: fdp `2471` și sfdp `2371` păstrează poziții ale etichetelor de muchie
-(`lp`) care diferă după injecție, adică plasatorul de xlabel alege un candidat diferit. Aspectul fdp
-nativ al lui `2471` variază, de asemenea, de la o rulare la alta, deci rândul său înregistrează o
-singură rulare. (sfdp `42` este derivă A1, vedeți
+și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția a patru. Trei sunt reziduuri acceptate separat pe id: egalitatea la testul incircle din CDT pentru
+`241_0` pe fdp și sfdp și aspectul NaN al lui sfdp `2556`. Unul nu este acceptat: în
+unele rulări native, fdp `2471` păstrează poziții ale etichetelor de muchie (`lp`) care
+diferă după injecție, adică plasatorul de xlabel alege un candidat diferit.
+`dotneato_closest` din portare nu rotunjește încă precum evaluarea de Casteljau
+fuzionată a lui clang, deci ancorele etichetelor de muchie diferă cu 1–2 ULP, ceea ce
+poate înclina testul strict de incluziune al plasatorului. Aspectul fdp nativ al lui
+`2471` variază, de asemenea, de la o rulare la alta, deci rândul său înregistrează o
+singură rulare. sfdp `2371` avea același simptom din altă cauză și s-a rezolvat când
+arborele R al portării a început să copieze dreptunghiurile prin valoare, așa cum face
+C. (sfdp `42` este derivă A1, vedeți
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Acceptarea pe clasă de mai jos formalizează mulțimea exonerată; numerătorile live se află în
 panourile pe motor

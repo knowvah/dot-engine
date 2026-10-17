@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -217,14 +217,16 @@ başlatma birleştirmesi ve `setEdgeType` makro-işlev düzeltmesidir.)
 
 İlk taramanın aksine, 929 öğelik evrenin ayrışan her satırı graphviz 16.1.0'a karşı tek tek nedene
 bağlanmıştır: enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin yönlendirme
-öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, beş
-istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
+öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, dört istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
 üretimi kâhini tam olarak yeniden üretir). Üçü ayrıca kabul edilmiş kimlik başına artıklardır:
-`241_0`'ın fdp ve sfdp'deki CDT iç çember beraberliği ile sfdp `2556`'nın NaN yerleşimi. İkisi kabul
-edilmemiştir ve henüz kök nedene indirilmemiştir: fdp `2471` ve sfdp `2371`, enjeksiyondan sonra
-farklı kalan kenar etiketi konumlarını (`lp`) korur, yani xlabel yerleştirici farklı bir aday seçer.
-`2471`'in yerel fdp yerleşimi ayrıca koşudan koşuya değişir; bu yüzden satırı tek bir koşuyu
-kaydeder. (sfdp `42` A1 sürüklenmesidir, bkz.
+`241_0`'ın fdp ve sfdp'deki CDT iç çember beraberliği ile sfdp `2556`'nın NaN yerleşimi. Biri kabul edilmemiştir: bazı yerel koşularda fdp `2471`, enjeksiyondan sonra farklı
+kalan kenar etiketi konumlarını (`lp`) korur, yani xlabel yerleştirici farklı bir aday
+seçer. Portun `dotneato_closest` işlevi henüz clang'ın birleştirilmiş (fused) de
+Casteljau hesaplaması gibi yuvarlamaz; bu yüzden kenar etiketi çapaları 1–2 ULP
+farklılaşır ve bu, yerleştiricinin katı kapsama testini tersine çevirebilir. `2471`'in
+yerel fdp yerleşimi ayrıca koşudan koşuya değişir; bu yüzden satırı tek bir koşuyu
+kaydeder. sfdp `2371` aynı belirtiyi başka bir nedenle gösteriyordu ve portun R-ağacı,
+C'de olduğu gibi dikdörtgenleri değerle kopyalamaya başlayınca düzeldi. (sfdp `42` A1 sürüklenmesidir, bkz.
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).) Aşağıdaki
 sınıf kabulü, aklanan kümeyi resmileştirir; güncel sayılar motor başına panolarda
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

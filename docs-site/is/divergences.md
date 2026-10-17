@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -219,13 +219,17 @@ vélarræsingar og lagfæringunni á `setEdgeType` (fjölvi á móti falli).)
 gagnvart graphviz 16.1.0: innsprautunarverkfærið (`test/corpus/attribute-divergence.ts`)
 matar yfirfærsluna á `ND_pos` véfréttarinnar fyrir leiðingu og ber saman á ný, og
 hvert núverandi fráviksauðkenni er `drift-exonerated` (leiðing og úttak yfirfærslunnar
-endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt) nema fimm.
+endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt) nema fjögur.
 Þrjú eru sérstaklega samþykktir afgangar fyrir einstök auðkenni: CDT-incircle-jafntefli
-`241_0` á fdp og sfdp, og NaN-útlit sfdp `2556`. Tvö eru hvorki samþykkt né enn
-rótargreind: fdp `2471` og sfdp `2371` halda staðsetningum jaðarmerkimiða (`lp`) sem
-eru ólíkar eftir innsprautun, þ.e. xlabel-staðsetjarinn velur annan frambjóðanda.
-Innbyggða fdp-útlitið fyrir `2471` er einnig breytilegt milli keyrslna, svo röð þess
-skráir eina keyrslu. (sfdp `42` er A1-rek, sjá
+`241_0` á fdp og sfdp, og NaN-útlit sfdp `2556`. Eitt er ekki samþykkt: í sumum
+innbyggðum keyrslum heldur fdp `2471` staðsetningum jaðarmerkimiða (`lp`) sem eru ólíkar
+eftir innsprautun, þ.e. xlabel-staðsetjarinn velur annan frambjóðanda.
+`dotneato_closest` í portinu rúnar enn ekki eins og samrunninn de Casteljau-reikningur
+clang, svo akkeri jaðarmerkimiða víkja um 1–2 ULP, sem getur snúið ströngu
+innihaldsprófi staðsetjarans. Innbyggða fdp-útlitið fyrir `2471` er einnig breytilegt
+milli keyrslna, svo röð þess skráir eina keyrslu. sfdp `2371` hafði sama einkenni af
+annarri orsök og leystist þegar R-tré portsins fór að afrita rétthyrninga sem gildi,
+eins og C gerir. (sfdp `42` er A1-rek, sjá
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Flokkssamþykktin hér á eftir festir í sessi hópinn sem er sýknaður; lifandi talningar í
 mælaborðum hverrar vélar

@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -200,13 +200,10 @@ PRISM 풀이에서 나온 명목상 같은 세 x 값의 마지막 ULP 순서에 
 
 첫 조사 때와 달리 929개 항목 전체의 어긋난 행은 모두 graphviz 16.1.0 기준으로 개별
 귀속되었습니다. 주입 도구(`test/corpus/attribute-divergence.ts`)가 네이티브 오라클의
-라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 다섯 건을 제외하고
+라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 네 건을 제외하고
 `drift-exonerated`(솔버 드리프트를 제거하면 포팅의 라우팅과 출력이 오라클을 정확히
 재현함)입니다. 세 건은 별도로 수용된 id별 잔여분으로, fdp와 sfdp에서 `241_0`의 CDT
-내접원 동점과 sfdp `2556`의 NaN 레이아웃입니다. 나머지 두 건은 수용되지 않았고 아직
-근본 원인도 규명되지 않았습니다. fdp `2471`과 sfdp `2371`은 주입 후에도 엣지 레이블
-위치(`lp`)가 달라지며, 즉 xlabel 배치기가 다른 후보를 고릅니다. `2471`의 네이티브 fdp
-레이아웃도 실행마다 달라지므로 해당 행은 한 번의 실행을 기록한 것입니다. (sfdp `42`는
+내접원 동점과 sfdp `2556`의 NaN 레이아웃입니다. 나머지 한 건은 수용되지 않았습니다. 일부 네이티브 실행에서 fdp `2471`은 주입 후에도 엣지 레이블 위치(`lp`)가 달라지며, 즉 xlabel 배치기가 다른 후보를 고릅니다. 포팅의 `dotneato_closest`는 아직 clang의 융합된 de Casteljau 계산과 같은 방식으로 반올림하지 않으므로 엣지 레이블 앵커가 1~2 ULP 달라지고, 이것이 배치기의 엄격한 포함 검사를 뒤집을 수 있습니다. `2471`의 네이티브 fdp 레이아웃도 실행마다 달라지므로 해당 행은 한 번의 실행을 기록한 것입니다. sfdp `2371`은 다른 원인으로 같은 증상을 보였으며, 포팅의 R-트리가 C처럼 사각형을 값으로 복사하게 되자 해소되었습니다. (sfdp `42`는
 A1 드리프트이며 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md) 참고.) 아래 클래스 수용은 면책된 집합을 공식화하며, 최신 집계는
 엔진별 대시보드
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),

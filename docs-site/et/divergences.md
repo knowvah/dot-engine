@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -216,13 +216,16 @@ eraldi omistatud graphviz 16.1.0 vastu: süstimiskoormus
 (`test/corpus/attribute-divergence.ts`) söödab natiivse oraakli marsruutimiseelse
 `ND_pos` porti ja võrdleb uuesti, ning iga praegune lahknev id on
 `drift-exonerated` (pordi marsruutimine ja väljastus reprodutseerivad oraakli
-täpselt, kui lahendaja triiv on eemaldatud), välja arvatud viis. Kolm on eraldi
+täpselt, kui lahendaja triiv on eemaldatud), välja arvatud neli. Kolm on eraldi
 aktsepteeritud id-põhised jäägid: `241_0` CDT incircle'i viik fdp-l ja sfdp-l ning
-sfdp `2556` NaN-paigutus. Kaks ei ole aktsepteeritud ega algpõhjuseni jälitatud:
-fdp `2471` ja sfdp `2371` säilitavad pärast süstimist erinevad servasiltide
-asukohad (`lp`), st xlabel-paigutaja valib teise kandidaadi. Natiivne fdp paigutus
-`2471` puhul varieerub ka jooksust jooksuni, mistõttu selle rida registreerib ühe
-jooksu. (sfdp `42` on A1 triiv, vt
+sfdp `2556` NaN-paigutus. Üks ei ole aktsepteeritud: mõnes natiivses jooksus säilitab
+fdp `2471` pärast süstimist erinevad servasiltide asukohad (`lp`), st xlabel-paigutaja
+valib teise kandidaadi. Pordi `dotneato_closest` ei ümarda veel nagu clangi liidetud de
+Casteljau arvutus, seega erinevad servasiltide ankrud 1–2 ULP võrra, mis võib kallutada
+paigutaja ranget sisalduvustesti. Natiivne fdp paigutus `2471` puhul varieerub ka
+jooksust jooksuni, mistõttu selle rida registreerib ühe jooksu. sfdp `2371` sümptom oli
+sama, kuid põhjus teine; see lahenes, kui pordi R-puu hakkas ristkülikuid väärtusena
+kopeerima, nagu teeb C. (sfdp `42` on A1 triiv, vt
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Allolev klassiaktsepteerimine vormistab süüst vabastatud hulga; jooksvad arvud
 mootoripõhistel töölaudadel

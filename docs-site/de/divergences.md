@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -245,13 +245,17 @@ Anders als beim ersten Durchlauf ist jede abweichende Zeile des
 Injection-Harness (`test/corpus/attribute-divergence.ts`) gibt das `ND_pos` des
 nativen Orakels vor dem Routing in die Portierung und vergleicht neu, und jede
 aktuelle abweichende ID ist `drift-exonerated` (Routing und Ausgabe der Portierung
-reproduzieren das Orakel exakt, sobald die Solver-Drift entfernt ist), außer fünf.
+reproduzieren das Orakel exakt, sobald die Solver-Drift entfernt ist), außer vier.
 Drei sind gesondert akzeptierte Einzel-Restfälle: der CDT-Incircle-Gleichstand von
-`241_0` bei fdp und sfdp sowie das NaN-Layout von sfdp `2556`. Zwei sind weder
-akzeptiert noch bis zur Ursache geklärt: fdp `2471` und sfdp `2371` behalten nach
-der Injection abweichende Kantenlabel-Positionen (`lp`), d. h. der
-xlabel-Platzierer wählt einen anderen Kandidaten. Das native fdp-Layout von `2471`
-variiert zudem von Lauf zu Lauf, daher hält seine Zeile einen Lauf fest. (sfdp
+`241_0` bei fdp und sfdp sowie das NaN-Layout von sfdp `2556`. Eine ist nicht
+akzeptiert: In manchen nativen Läufen behält fdp `2471` nach der Injection abweichende
+Kantenlabel-Positionen (`lp`), d. h. der xlabel-Platzierer wählt einen anderen
+Kandidaten. `dotneato_closest` der Portierung rundet noch nicht wie die fusionierte
+De-Casteljau-Auswertung von clang, daher weichen die Anker der Kantenlabels um 1–2 ULP
+ab, was den strikten Enthaltenseinstest des Platzierers kippen kann. Das native
+fdp-Layout von `2471` variiert zudem von Lauf zu Lauf, daher hält seine Zeile einen Lauf
+fest. sfdp `2371` zeigte dasselbe Symptom aus einer anderen Ursache und ist behoben,
+seit der R-Baum der Portierung Rechtecke als Wert kopiert, wie C es tut. (sfdp
 `42` ist A1-Drift, siehe
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Die Klassen-Akzeptanz unten formalisiert die entlastete Menge;

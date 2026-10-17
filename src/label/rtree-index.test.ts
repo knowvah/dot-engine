@@ -17,6 +17,7 @@ import {
   rTreeInsert,
   rTreeSearch,
 } from './index.js';
+import { type Node } from './node.js';
 
 // ---------------------------------------------------------------------------
 // Helper
@@ -218,5 +219,71 @@ describe('Leaf shape', () => {
     const leaf: Leaf = hits[0];
     expect(leaf.rect).toBeDefined();
     expect(leaf.data).toBe(obj);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Rect_t value semantics (T13): C copies Rect_t on every assignment, so no two
+// branches ever share one rect. Expected hits below come from the native
+// graphviz 16.1 libgvc (RTreeOpen/RTreeInsert/RTreeSearch) fed the same stream.
+// ---------------------------------------------------------------------------
+
+/** Deterministic integer rect stream (LCG, BigInt to keep it exact). */
+function lcgRects(seed: number, n: number, span: number): Rect[] {
+  let s = BigInt(seed);
+  const next = (m: number): number => {
+    s = (s * 1103515245n + 12345n) % 2147483648n;
+    return Number(s % BigInt(m));
+  };
+  const out: Rect[] = [];
+  for (let i = 0; i < n; i++) {
+    const x = next(span); const y = next(span); const w = next(8); const h = next(8);
+    out.push(rect(x, y, x + w, y + h));
+  }
+  return out;
+}
+
+/** Insert the first `k` rects with data `{ id }`. */
+function loadStream(rects: Rect[], k: number): RTree {
+  const rt = rTreeOpen();
+  for (let i = 0; i < k; i++) rTreeInsert(rt, rects[i], { id: i });
+  return rt;
+}
+
+/** Every leaf rect, keyed by data id. */
+function leafRects(n: Node, out: Map<number, number[]>): Map<number, number[]> {
+  for (const b of n.branch) {
+    if (b.child === null) continue;
+    if (n.level > 0) leafRects(b.child, out);
+    else out.set((b.child as unknown as { id: number }).id, [...b.rect.boundary]);
+  }
+  return out;
+}
+
+function hitIds(rt: RTree, q: Rect): number[] {
+  return rTreeSearch(rt, rt.root!, q).map((l) => (l.data as { id: number }).id);
+}
+
+describe('rTreeInsert keeps C Rect_t value semantics', () => {
+  // 1015 is the shortest prefix of this stream on which the port once zeroed
+  // a leaf rect (leaf 3) through a shared rect object.
+  const rects = lcgRects(3, 1015, 40);
+
+  it('never changes a leaf rect after insertion (no shared rect objects)', () => {
+    const leaves = leafRects(loadStream(rects, 1015).root!, new Map());
+    expect(leaves.size).toBe(1015);
+    for (const [id, b] of leaves) expect(b).toEqual(rects[id].boundary);
+  });
+
+  it('matches native RTreeSearch after 1015 inserts', () => {
+    const rt = loadStream(rects, 1015);
+    expect(hitIds(rt, rect(4, 29, 6, 32))).toEqual([803]);
+    expect(hitIds(rt, rect(10, 10, 14, 14))).toEqual([849]);
+    expect(hitIds(rt, rect(30, 0, 34, 6))).toEqual([]);
+    expect(hitIds(rt, rect(20, 20, 21, 21))).toEqual([859, 871]);
+    expect(hitIds(rt, rect(0, 0, 1, 1))).toEqual([
+      984, 966, 870, 812, 778, 714, 694, 642, 624, 610, 608, 580, 562, 492,
+      464, 424, 384, 356, 346, 342, 258, 216, 208, 196, 182, 144, 134, 36,
+    ]);
   });
 });

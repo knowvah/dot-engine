@@ -1,5 +1,5 @@
 ---
-sourceHash: 12502aea4b3fedb4293b2b6ac781e1529adf47a608391a6163236ada61a9195d
+sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -88,7 +88,7 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 
 （第一次扫描，2026-07-11，762 项时，测得 ±0.5pt 以内的分别为 263/311/260——升至当前比率，是因为此后落地的逐 id 修复，主要是 neato 未移植的 `user_pos`/`P_SET` 处理、引擎初始化的整合，以及 `setEdgeType` 宏与函数的修复。）
 
-与第一次扫描时不同，929 项全集中每一个存在差异的行都已针对 graphviz 16.1.0 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除五个之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中三个是单独接受的逐 id 残余：fdp 和 sfdp 上 `241_0` 的 CDT 内切圆平局，以及 sfdp `2556` 的 NaN 布局。另外两个未被接受，也尚未找出根因：fdp `2471` 和 sfdp `2371` 在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。`2471` 的原生 fdp 布局每次运行也会变化，因此其行只记录一次运行。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
+与第一次扫描时不同，929 项全集中每一个存在差异的行都已针对 graphviz 16.1.0 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除四个之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中三个是单独接受的逐 id 残余：fdp 和 sfdp 上 `241_0` 的 CDT 内切圆平局，以及 sfdp `2556` 的 NaN 布局。另外一个未被接受：在部分原生运行中，fdp `2471` 在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。移植版的 `dotneato_closest` 尚未按 clang 融合后的 de Casteljau 求值方式舍入，因此边标签锚点相差 1–2 ULP，可能使放置器的严格包含判断翻转。`2471` 的原生 fdp 布局每次运行也会变化，因此其行只记录一次运行。sfdp `2371` 出现过相同症状但原因不同，在移植版的 R 树像 C 一样按值复制矩形之后已经消除。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
 （[`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)）。
