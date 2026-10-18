@@ -24,6 +24,7 @@ import type {
 } from './htmltable-types.js';
 import type { ImageSizer } from './htmltable-types.js';
 import { findImageSize } from '../gvc/usershape.js';
+import { PointSet } from './pointset.js';
 import type { TextMeasurer } from './textmeasure.js';
 
 const DEFAULT_BORDER = 1;
@@ -45,25 +46,29 @@ interface TableDimArgs {
 
 /** @see lib/common/htmltable.c:findCol */
 const findCol = (
-  used: Set<string>,
+  ps: PointSet,
   row: number,
   startCol: number,
   colspan: number,
   rowspan: number,
 ): number => {
   let col = startCol;
-  for (;;) {
-    let conflict = false;
-    for (let c = col; c < col + colspan && !conflict; c++) {
-      for (let r = row; r < row + rowspan && !conflict; r++) {
-        if (used.has(`${c},${r}`)) { conflict = true; col = c + 1; }
-      }
+  let notFound = true;
+  const end = colspan - 1;
+  while (notFound) {
+    const lastc = col + end;
+    let c: number;
+    for (c = lastc; c >= col; c--) {
+      if (ps.isInPS(c, row)) break;
     }
-    if (!conflict) break;
+    if (c >= col) col = c + 1; // conflict: try column after
+    else notFound = false;
   }
-  for (let c = col; c < col + colspan; c++)
-    for (let r = row; r < row + rowspan; r++)
-      used.add(`${c},${r}`);
+  for (let j = col; j < col + colspan; j++) {
+    for (let i = row; i < row + rowspan; i++) {
+      ps.addPS(j, i);
+    }
+  }
   return col;
 };
 
@@ -328,7 +333,7 @@ const buildLayouts = (
   env: HtmlSizeEnv,
 ): CellEntry[] => {
   const entries: CellEntry[] = [];
-  const used = new Set<string>();
+  const ps = new PointSet();
   let rowIdx = 0;
   for (const row of tbl.rows) {
     let col = 0;
@@ -337,7 +342,7 @@ const buildLayouts = (
       const colspan = c.colspan !== undefined ? c.colspan : 1;
       const rowspan = c.rowspan !== undefined ? c.rowspan : 1;
       const { w, h } = getCellSize(c, tbl, measurer, env);
-      col = findCol(used, rowIdx, col, colspan, rowspan);
+      col = findCol(ps, rowIdx, col, colspan, rowspan);
       entries.push({ cell: c, row: rowIdx, col, colspan, rowspan, w, h });
       col += colspan;
     }
