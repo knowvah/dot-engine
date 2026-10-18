@@ -273,6 +273,18 @@ export const cellBorder = (cell: HtmlCell, tbl: HtmlTable): number => {
   return DEFAULT_BORDER;
 };
 
+/** C `agwarningf` text as rendered on stderr ("Warning: " prefix, no newline). */
+const WARN_CELL_TOO_SMALL = 'Warning: cell size too small for content';
+const WARN_CELL_UNSPECIFIED = 'Warning: fixed cell size with unspecified width or height';
+const WARN_TABLE_TOO_SMALL = 'Warning: table size too small for content';
+const WARN_TABLE_UNSPECIFIED = 'Warning: fixed table size with unspecified width or height';
+
+/**
+ * C sizes each cell/table exactly once; the port's size and pos passes both
+ * run layoutHtmlTable, so the size warnings are emitted on first sight only.
+ */
+const sizeWarned = new WeakSet<object>();
+
 /** @see lib/common/htmltable.c:size_html_cell */
 const getCellSize = (
   cell: HtmlCell,
@@ -289,12 +301,20 @@ const getCellSize = (
   // C: sz = content + margin; FIXED_FLAG with both width and height set zeroes
   // sz (content size is ignored), then the box clamps UP to width/height via
   // MAX below — so a fixed cell ends up exactly width x height, NOT 0 x 0.
-  // (C also warns "cell size too small for content" / "unspecified"; non-visual.)
   // @see lib/common/htmltable.c:size_html_cell (FIXED_FLAG branch + box.UR MAX)
   let szx = cw + margin;
   let szy = ch + margin;
-  if (cell.fixedsize && cell.width && cell.height) {
-    szx = 0; szy = 0;
+  const warn = !sizeWarned.has(cell);
+  sizeWarned.add(cell);
+  if (cell.fixedsize) {
+    if (cell.width && cell.height) {
+      if (warn && (cell.width < szx || cell.height < szy) && cell.content[0]?.kind !== 'image') {
+        console.warn(WARN_CELL_TOO_SMALL);
+      }
+      szx = 0; szy = 0;
+    } else if (warn) {
+      console.warn(WARN_CELL_UNSPECIFIED);
+    }
   }
   const bw = cell.width !== undefined ? cell.width : 0;
   const bh = cell.height !== undefined ? cell.height : 0;
@@ -428,6 +448,21 @@ export const layoutHtmlTable = (
   return { entries, widths, heights, spacing, border };
 };
 
+/**
+ * FIXED_FLAG diagnostics of size_html_tbl, emitted once per table.
+ * @see lib/common/htmltable.c:size_html_tbl (:1683, :1689)
+ */
+const warnFixedTable = (tbl: HtmlTable, dims: { wd: number; ht: number }): void => {
+  if (sizeWarned.has(tbl)) return;
+  sizeWarned.add(tbl);
+  if (tbl.fixedsize !== true) return;
+  if (tbl.width && tbl.height) {
+    if (tbl.width < dims.wd || tbl.height < dims.ht) console.warn(WARN_TABLE_TOO_SMALL);
+  } else {
+    console.warn(WARN_TABLE_UNSPECIFIED);
+  }
+};
+
 /** @see lib/common/htmltable.c:size_html_tbl */
 const sizeTableInner = (
   tbl: HtmlTable,
@@ -435,13 +470,18 @@ const sizeTableInner = (
   env: HtmlSizeEnv,
 ): void => {
   const { entries, widths, heights, spacing, border } = layoutHtmlTable(tbl, measurer, env);
-  if (entries.length === 0) { tbl.dimen = { w: 0, h: 0 }; return; }
+  if (entries.length === 0) {
+    warnFixedTable(tbl, sumTableDims({ widths, heights, ncols: 0, nrows: 0, spacing, border }));
+    tbl.dimen = { w: 0, h: 0 };
+    return;
+  }
   const ncols = Math.max(...entries.map(e => e.col + e.colspan));
   const nrows = Math.max(...entries.map(e => e.row + e.rowspan));
   for (const e of entries) e.cell.dimen = { w: e.w, h: e.h };
   const { wd, ht } = sumTableDims({ widths, heights, ncols, nrows, spacing, border });
   const baseWd = tbl.width !== undefined ? tbl.width : 0;
   const baseHt = tbl.height !== undefined ? tbl.height : 0;
+  warnFixedTable(tbl, { wd, ht });
   // C zeroes only the CONTENT-derived term for a FIXEDSIZE table that has BOTH
   // width and height, so the box becomes fmax(0, width)=width / fmax(0,height)=
   // height (the explicit size). A fixed table missing a dimension warns and

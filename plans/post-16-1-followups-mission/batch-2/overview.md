@@ -8,7 +8,7 @@ Needs T0. Each task works in its own worktree; the orchestrator lands them one a
 | [T4](T4-pathplan-prerror.md) | C `prerror` messages in `Pshortestpath` | typescript-pro | `src/pathplan/shortest.ts` + test | T0 | [x] |
 | [T5](T5-multispline-warnings.md) | multispline "Could not create control points" ×5 | typescript-pro | `src/layout/neato/multispline.ts` + test | T0 | [x] |
 | [T6](T6-html-lexer-errors.md) | HTML lexer: unknown entity, mismatched tag | typescript-pro | `src/common/htmltable-lex.ts`, `htmltable-parse.ts` + tests | T0 | [ ] |
-| [T7](T7-html-size-warnings.md) | HTML: cell/table size too small warnings | typescript-pro | `src/common/htmltable.ts` (+ `htmltable-pos.ts`) + test | T0 | [ ] |
+| [T7](T7-html-size-warnings.md) | HTML: cell/table size too small warnings | typescript-pro | `src/common/htmltable.ts` (+ `htmltable-pos.ts`) + test | T0 | [x] |
 
 **Acceptance criteria shared by T4–T7** (in addition to each task's own):
 - *Given* T0's port baseline, *when* the affected engines re-render every id, *then* every
