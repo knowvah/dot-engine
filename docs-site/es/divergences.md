@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -224,18 +224,17 @@ elementos está atribuida individualmente frente a graphviz 16.1.0: el arnés de
 inyección (`test/corpus/attribute-divergence.ts`) alimenta el `ND_pos` previo al
 enrutamiento del oráculo nativo al port y vuelve a comparar, y cada id divergente
 actual es `drift-exonerated` (el enrutamiento y la emisión del port reproducen
-exactamente el oráculo una vez eliminada la deriva del solucionador) salvo cuatro.
+exactamente el oráculo una vez eliminada la deriva del solucionador) salvo tres.
 Tres son residuos por id aceptados por separado: el empate del incírculo de CDT de
-`241_0` en fdp y sfdp, y el layout con NaN de `2556` de sfdp. Uno no está aceptado: en
-algunas ejecuciones nativas, `2471` de fdp conserva posiciones de etiquetas de arista
-(`lp`) que difieren tras la inyección, es decir, el colocador de xlabels elige otro
-candidato. El `dotneato_closest` del port aún no redondea como la evaluación de De
-Casteljau fusionada de clang, por lo que los anclajes de las etiquetas de arista
-difieren en 1–2 ULP, lo que puede inclinar la prueba estricta de inclusión del
-colocador. El layout nativo de fdp de `2471` también varía de una ejecución a otra, por
-lo que su fila registra una sola ejecución. `2371` de sfdp tenía el mismo síntoma por
-otra causa y quedó resuelto cuando el árbol R del port pasó a copiar los rectángulos por
-valor, como hace C. (`42` de sfdp es deriva A1, véase
+`241_0` en fdp y sfdp, y el layout con NaN de `2556` de sfdp. `2471` de fdp y `2371` de
+sfdp conservaban posiciones de etiquetas de arista (`lp`) que diferían tras la
+inyección, es decir, el colocador de xlabels elegía otro candidato. `2471` quedó
+resuelto cuando el `dotneato_closest` del port pasó a redondear como la evaluación de De
+Casteljau fusionada y el DIST2 de clang: los anclajes de las etiquetas de arista
+diferían en 1–2 ULP, lo que inclinaba la prueba estricta de inclusión del colocador.
+`2371` quedó resuelto cuando el árbol R del port pasó a copiar los rectángulos por
+valor, como hace C. El layout nativo de fdp de `2471` varía de una ejecución a otra, por
+lo que su fila registra una sola ejecución. (`42` de sfdp es deriva A1, véase
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 La aceptación de clase de abajo formaliza el conjunto exonerado; recuentos en vivo en
 los paneles de cada motor
@@ -1067,7 +1066,7 @@ no un empate) y circo
 deja `node2.y` un único ULP por encima de `node8.y` en torno al
 valor exactamente simétrico 18.0, y la selección de puerto de cabeza dyna de `closestSide` cambia TOP/BOTTOM en
 ese empate exacto; las posiciones y cajas de nodos son por lo demás idénticas al bit a las del
-oráculo).
+oráculo; **retirado el 2026-10-18**: es conforme desde que el DIST2 del port usa la forma fusionada de clang, que resuelve ese empate exacto como C).
 
 **Pista de motor sfdp: empate de coma flotante en una arista (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> La pista xdot de motor de sfdp (`parity-sfdp.json`,

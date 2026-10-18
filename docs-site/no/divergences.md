@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -216,16 +216,15 @@ individuelt tilskrevet mot graphviz 16.1.0: injeksjonsverktøyet
 (`test/corpus/attribute-divergence.ts`) mater det innebygde orakelets `ND_pos` før ruting
 inn i porten og sammenligner på nytt, og hver gjeldende avvikende id er `drift-exonerated`
 (portens ruting og emisjon reproduserer orakelet nøyaktig så snart løserdriften er
-fjernet), bortsett fra fire. Tre er separat godkjente rester per id: `241_0`s
-CDT-incircle-likhet på fdp og sfdp, og sfdp `2556`s NaN-layout. Én er ikke godkjent: i
-noen innebygde kjøringer beholder fdp `2471` kantetikettposisjoner (`lp`) som avviker
-etter injeksjon, det vil si at xlabel-plasseringen velger en annen kandidat. Portens
-`dotneato_closest` avrunder ennå ikke som clangs fusjonerte de Casteljau-evaluering, så
-kantetikettenes ankre avviker med 1–2 ULP, noe som kan vippe plasseringens strenge
-inneslutningstest. Den innebygde fdp-layouten for `2471` varierer dessuten fra kjøring
-til kjøring, så raden registrerer én kjøring. sfdp `2371` hadde samme symptom av en
-annen årsak og ble løst da portens R-tre begynte å kopiere rektangler som verdier, slik
-C gjør. (sfdp `42` er A1-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
+fjernet), bortsett fra tre. Tre er separat godkjente rester per id: `241_0`s
+CDT-incircle-likhet på fdp og sfdp, og sfdp `2556`s NaN-layout. fdp `2471` og sfdp
+`2371` beholdt tidligere kantetikettposisjoner (`lp`) som avvek etter injeksjon, det vil
+si at xlabel-plasseringen valgte en annen kandidat. `2471` ble løst da portens
+`dotneato_closest` begynte å avrunde som clangs fusjonerte de Casteljau-evaluering og
+DIST2: kantetikettenes ankre avvek med 1–2 ULP, noe som vippet plasseringens strenge
+inneslutningstest. `2371` ble løst da portens R-tre begynte å kopiere rektangler som
+verdier, slik C gjør. Den innebygde fdp-layouten for `2471` varierer fra kjøring til
+kjøring, så raden registrerer én kjøring. (sfdp `42` er A1-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Klassegodkjenningen nedenfor formaliserer den frikjente mengden; levende tall i
 dashbordene per motor
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -1048,7 +1047,7 @@ kontraksjonen, ikke en likhet) og circo
 lander `node2.y` én enkelt ULP over `node8.y` rundt den nøyaktig symmetriske
 verdien 18.0, og `closestSide`s dyna-valg av hodeport snur TOP/BOTTOM ved
 akkurat den likheten; nodeposisjoner og bokser er ellers bit-identiske med
-orakelet).
+orakelet; **trukket tilbake 2026-10-18** — den er konform siden portens DIST2 bruker clangs fusjonerte form, som avgjør nettopp denne likheten slik C gjør).
 
 **sfdp-motorsporet — FP-likhet i en kant (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdps xdot-motorspor (`parity-sfdp.json`,

@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -219,17 +219,16 @@ vélarræsingar og lagfæringunni á `setEdgeType` (fjölvi á móti falli).)
 gagnvart graphviz 16.1.0: innsprautunarverkfærið (`test/corpus/attribute-divergence.ts`)
 matar yfirfærsluna á `ND_pos` véfréttarinnar fyrir leiðingu og ber saman á ný, og
 hvert núverandi fráviksauðkenni er `drift-exonerated` (leiðing og úttak yfirfærslunnar
-endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt) nema fjögur.
+endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt) nema þrjú.
 Þrjú eru sérstaklega samþykktir afgangar fyrir einstök auðkenni: CDT-incircle-jafntefli
-`241_0` á fdp og sfdp, og NaN-útlit sfdp `2556`. Eitt er ekki samþykkt: í sumum
-innbyggðum keyrslum heldur fdp `2471` staðsetningum jaðarmerkimiða (`lp`) sem eru ólíkar
-eftir innsprautun, þ.e. xlabel-staðsetjarinn velur annan frambjóðanda.
-`dotneato_closest` í portinu rúnar enn ekki eins og samrunninn de Casteljau-reikningur
-clang, svo akkeri jaðarmerkimiða víkja um 1–2 ULP, sem getur snúið ströngu
-innihaldsprófi staðsetjarans. Innbyggða fdp-útlitið fyrir `2471` er einnig breytilegt
-milli keyrslna, svo röð þess skráir eina keyrslu. sfdp `2371` hafði sama einkenni af
-annarri orsök og leystist þegar R-tré portsins fór að afrita rétthyrninga sem gildi,
-eins og C gerir. (sfdp `42` er A1-rek, sjá
+`241_0` á fdp og sfdp, og NaN-útlit sfdp `2556`. fdp `2471` og sfdp `2371` héldu áður
+staðsetningum jaðarmerkimiða (`lp`) sem voru ólíkar eftir innsprautun, þ.e.
+xlabel-staðsetjarinn valdi annan frambjóðanda. `2471` leystist þegar `dotneato_closest`
+í portinu fór að rúna eins og samrunninn de Casteljau-reikningur og DIST2 clang: akkeri
+jaðarmerkimiða viku um 1–2 ULP, sem sneri ströngu innihaldsprófi staðsetjarans. `2371`
+leystist þegar R-tré portsins fór að afrita rétthyrninga sem gildi, eins og C gerir.
+Innbyggða fdp-útlitið fyrir `2471` er breytilegt milli keyrslna, svo röð þess skráir
+eina keyrslu. (sfdp `42` er A1-rek, sjá
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Flokkssamþykktin hér á eftir festir í sessi hópinn sem er sýknaður; lifandi talningar í
 mælaborðum hverrar vélar
@@ -1052,7 +1051,7 @@ FMA-sameining, ekki jafntefli) og circo
 lenda `node2.y` einum ULP ofan við `node8.y` í kringum nákvæmlega samhverfa
 gildið 18.0, og val dyna-höfuðhafnar í `closestSide` flippar TOP/BOTTOM við
 það nákvæma jafntefli; hnútastöður og kassar eru að öðru leyti bita-eins og hjá
-véfréttinni).
+véfréttinni; **fellt niður 2026-10-18** — samræmist, þar sem DIST2 portsins notar samrunna mynd clang, sem sker úr þessu nákvæma jafntefli eins og C).
 
 **xdot-vélaferill sfdp — FP-jafntefli á legg (`241_0`).** <a id="a9-sfdp-fp-ties"></a> xdot-vélaferill sfdp (`parity-sfdp.json`,
 innbyggt `dot -Ksfdp -Txdot`, ±0.5) afhjúpar CDT-innhringsjafntefli á einum hring um leið og

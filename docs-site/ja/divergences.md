@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -198,10 +198,10 @@ neato の未移植だった `user_pos`/`P_SET` の処理、エンジン初期化
 最初のスイープの時点と違い、929 件の母集団の diverged のすべての行が graphviz 16.1.0 に対して
 個別に原因特定されています。注入ハーネス (`test/corpus/attribute-divergence.ts`) が、
 ネイティブオラクルのルーティング前の `ND_pos` をポートに与えて再比較します。現在の
-diverged な ID は、4 件を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
+diverged な ID は、3 件を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
 ポートのルーティングと出力がオラクルを正確に再現する）です。そのうち 3 件は個別に
 受け入れられた ID ごとの残差で、fdp と sfdp での `241_0` の CDT の内接円の同順位と、
-sfdp `2556` の NaN レイアウトです。残る 1 件は受け入れられていません。一部のネイティブ実行では、fdp `2471` は注入後もエッジラベルの位置 (`lp`) が一致しません。つまり xlabel 配置器が別の候補を選んでいます。ポートの `dotneato_closest` はまだ clang の融合された de Casteljau 評価と同じ丸めをしていないため、エッジラベルのアンカーが 1〜2 ULP ずれ、配置器の厳密な包含判定が反転することがあります。また `2471` のネイティブの fdp レイアウトは実行ごとに変わるため、その行は 1 回の実行を記録したものです。sfdp `2371` は別の原因で同じ症状を示していましたが、ポートの R 木が C と同様に矩形を値としてコピーするようになって解消しました。（sfdp の `42` は A1 のずれです。
+sfdp `2556` の NaN レイアウトです。fdp `2471` と sfdp `2371` は、以前は注入後もエッジラベルの位置 (`lp`) が一致せず、xlabel 配置器が別の候補を選んでいました。`2471` は、ポートの `dotneato_closest` が clang の融合された de Casteljau 評価および DIST2 と同じ丸めをするようになって解消しました。それまではエッジラベルのアンカーが 1〜2 ULP ずれ、配置器の厳密な包含判定が反転していました。`2371` は、ポートの R 木が C と同様に矩形を値としてコピーするようになって解消しました。`2471` のネイティブの fdp レイアウトは実行ごとに変わるため、その行は 1 回の実行を記録したものです。（sfdp の `42` は A1 のずれです。
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md) を参照。）後述のクラスの受け入れは、この潔白とされた集合を正式化するものです。
 最新の件数はエンジン別のダッシュボードにあります
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
@@ -966,7 +966,7 @@ conformant であり、14 点対 8 点の回廊の反転は同順位ではなく
 `windows-tree`（1 本のファンエッジで描画オペレーションの差分 10 件 — circo の配置の三角関数が
 `node2.y` を、ちょうど対称な値 18.0 の周りで `node8.y` より 1 ULP だけ上に着地させ、
 `closestSide` の dyna のヘッドポート選択が、その厳密な同順位で TOP/BOTTOM を反転させる。
-ノードの位置とボックスは、それ以外ではオラクルとビット単位で同一）。
+ノードの位置とボックスは、それ以外ではオラクルとビット単位で同一。**2026-10-18 に廃止** — ポートの DIST2 が clang の融合形式を取り、この厳密な同順位を C と同じく解決するようになって一致しています）。
 
 **sfdp のエンジントラック — エッジの浮動小数点の同順位（`241_0`）。**
 <a id="a9-sfdp-fp-ties"></a> sfdp の xdot エンジントラック（`parity-sfdp.json`、

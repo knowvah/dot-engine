@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -219,16 +219,15 @@ individuálně připsán vůči graphviz 16.1.0: vstřikovací harness
 (`test/corpus/attribute-divergence.ts`) vkládá `ND_pos` nativního orákula před
 vedením hran do portace a znovu porovnává, a každé aktuální rozcházející se id je
 `drift-exonerated` (vedení a emise portace přesně reprodukují orákulum, jakmile se
-drift řešiče odstraní), kromě čtyř. Tři jsou samostatně akceptované zbytky po
+drift řešiče odstraní), kromě tří. Tři jsou samostatně akceptované zbytky po
 jednotlivých id: remíza incircle v CDT u `241_0` na fdp a sfdp a layout s NaN u
-sfdp `2556`. Jeden akceptovaný není: v některých nativních bězích si fdp `2471` po
-vstřiknutí ponechává odlišné pozice popisků hran (`lp`), tj. umísťovač xlabel vybírá
-jiného kandidáta. `dotneato_closest` v portaci zatím nezaokrouhluje jako fúzované
-vyhodnocení de Casteljau v clangu, takže kotvy popisků hran se liší o 1–2 ULP, což může
-zvrátit striktní test obsažení v umísťovači. Nativní layout fdp u `2471` se navíc od
-běhu k běhu liší, takže jeho řádek zaznamenává jeden běh. sfdp `2371` měl stejný příznak
-z jiné příčiny a vyřešil se, jakmile R-strom portace začal kopírovat obdélníky hodnotou,
-jako to dělá C. (sfdp `42`
+sfdp `2556`. fdp `2471` a sfdp `2371` si dříve po vstřiknutí ponechávaly odlišné pozice
+popisků hran (`lp`), tj. umísťovač xlabel vybíral jiného kandidáta. `2471` se vyřešil,
+jakmile `dotneato_closest` v portaci začal zaokrouhlovat jako fúzované vyhodnocení de
+Casteljau a DIST2 v clangu: kotvy popisků hran se předtím lišily o 1–2 ULP, což zvrátilo
+striktní test obsažení v umísťovači. `2371` se vyřešil, jakmile R-strom portace začal
+kopírovat obdélníky hodnotou, jako to dělá C. Nativní layout fdp u `2471` se od běhu k
+běhu liší, takže jeho řádek zaznamenává jeden běh. (sfdp `42`
 je drift A1, viz
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptace třídy níže formalizuje vyviněnou množinu; aktuální počty v přehledech
@@ -1047,7 +1046,7 @@ nikoli remízou) a circo
 dosadí `node2.y` o jediný ULP nad `node8.y` kolem přesně symetrické
 hodnoty 18.0 a výběr dyna portu hlavy v `closestSide` překlopí TOP/BOTTOM na
 této přesné remíze; pozice uzlů a boxy jsou jinak bitově identické s
-orákulem).
+orákulem; **vyřazeno 2026-10-18** — shoduje se, protože DIST2 v portaci nyní používá fúzovaný tvar z clangu, který tuto přesnou remízu rozhoduje stejně jako C).
 
 **Stopa modulu sfdp — FP remíza hrany (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Xdot stopa modulu sfdp (`parity-sfdp.json`,

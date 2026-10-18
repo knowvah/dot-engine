@@ -215,17 +215,16 @@ individually attributed against graphviz 16.1.0: the injection harness
 (`test/corpus/attribute-divergence.ts`) feeds the native oracle's
 pre-routing `ND_pos` into the port and re-compares, and every current
 diverged id is `drift-exonerated` (the port's routing and emission
-reproduce the oracle exactly once the solver drift is removed) except four.
+reproduce the oracle exactly once the solver drift is removed) except three.
 Three are separately accepted per-id residuals: `241_0`'s CDT incircle tie
-on fdp and sfdp, and sfdp `2556`'s NaN layout. One is not accepted: in some
-native runs fdp `2471` keeps edge-label positions (`lp`) that differ after
-injection, i.e. the xlabel placer picks a different candidate. The port's
-`dotneato_closest` does not yet round like clang's fused de Casteljau
-evaluation, so edge-label anchors differ by 1-2 ULP, which can tip the
-placer's strict enclosure test. The native fdp layout of `2471` also varies
-from run to run, so its row records one run. sfdp `2371` had the same
-symptom from another cause and cleared once the port's R-tree copied rects
-by value, as C does. (sfdp `42`
+on fdp and sfdp, and sfdp `2556`'s NaN layout. fdp `2471` and sfdp `2371`
+used to keep edge-label positions (`lp`) that differed after injection, i.e.
+the xlabel placer picked a different candidate. `2471` cleared once the
+port's `dotneato_closest` rounded like clang's fused de Casteljau evaluation
+and DIST2: its edge-label anchors had differed by 1-2 ULP, which tipped the
+placer's strict enclosure test. `2371` cleared once the port's R-tree copied
+rects by value, as C does. The native fdp layout of `2471` varies from run
+to run, so its row records one run. (sfdp `42`
 is A1 drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 The class acceptance below formalizes the exonerated set; live counts in
 the per-engine dashboards
@@ -1055,7 +1054,8 @@ contraction, not a tie) and circo
 lands `node2.y` a single ULP above `node8.y` around the exactly-symmetric
 value 18.0, and `closestSide`'s dyna head-port selection flips TOP/BOTTOM at
 that exact tie; node positions and boxes are otherwise bit-identical to the
-oracle).
+oracle; **retired 2026-10-18** — it is conformant since the port's DIST2
+takes clang's fused form, which breaks that exact tie as C does).
 
 **sfdp engine track — edge FP-tie (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> The sfdp xdot engine track (`parity-sfdp.json`,

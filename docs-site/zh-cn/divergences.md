@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -88,7 +88,7 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 
 （第一次扫描，2026-07-11，762 项时，测得 ±0.5pt 以内的分别为 263/311/260——升至当前比率，是因为此后落地的逐 id 修复，主要是 neato 未移植的 `user_pos`/`P_SET` 处理、引擎初始化的整合，以及 `setEdgeType` 宏与函数的修复。）
 
-与第一次扫描时不同，929 项全集中每一个存在差异的行都已针对 graphviz 16.1.0 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除四个之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中三个是单独接受的逐 id 残余：fdp 和 sfdp 上 `241_0` 的 CDT 内切圆平局，以及 sfdp `2556` 的 NaN 布局。另外一个未被接受：在部分原生运行中，fdp `2471` 在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。移植版的 `dotneato_closest` 尚未按 clang 融合后的 de Casteljau 求值方式舍入，因此边标签锚点相差 1–2 ULP，可能使放置器的严格包含判断翻转。`2471` 的原生 fdp 布局每次运行也会变化，因此其行只记录一次运行。sfdp `2371` 出现过相同症状但原因不同，在移植版的 R 树像 C 一样按值复制矩形之后已经消除。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
+与第一次扫描时不同，929 项全集中每一个存在差异的行都已针对 graphviz 16.1.0 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除三个之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中三个是单独接受的逐 id 残余：fdp 和 sfdp 上 `241_0` 的 CDT 内切圆平局，以及 sfdp `2556` 的 NaN 布局。fdp `2471` 和 sfdp `2371` 此前在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。移植版的 `dotneato_closest` 改为按 clang 融合后的 de Casteljau 求值和 DIST2 方式舍入后，`2471` 已经消除：此前边标签锚点相差 1–2 ULP，使放置器的严格包含判断翻转。移植版的 R 树像 C 一样按值复制矩形之后，`2371` 已经消除。`2471` 的原生 fdp 布局每次运行都会变化，因此其行只记录一次运行。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
 （[`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)）。
@@ -401,7 +401,7 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 2026-07-28 在更大的同类 `tree-graphs-directed-polypoly`（`graphs/directed/polypoly.gv`，属于 905 项全集中的新成员；112 处绘制操作差异，仅 osage）上确认了同一机制。出现差异的运算是同一个节点 `9004` 的 `cos(π+θ)` 1 ULP 位置——C 与移植版的 `bb.x` 值与最初的根因分析逐字节吻合——但在这个 76 节点的输入上，传播经由 osage 的 `arrayRects` 进行：`acmpf` 按原始的 `width+height` 之和对打包单元排序，libm 偏高 1 ULP 的宽度使 `9004` 严格排在其旋转后的同类 `9000/9002/9006` 之前，而 V8 正确舍入的值则留下一个精确的 4 路平局，由不稳定的 qsort 以不同方式排序——得到不同的行优先单元格、`9002`/`9006` 互换，以及一个列宽 `fmax` 级联使 8 个邻居在 x 方向发生移动。把 C 的节点尺寸与移植版的节点尺寸分别喂给移植版自己的 `arrayRects`，复现了扫描中 10 个移动的节点，其 x 方向增量逐字节吻合，闭合了因果链。
 
 另有两个引擎轨道实例在 2026-07-11 找到根因并被接受（完整根因分析：`.agent-notes/circo-edge-tail-rca.md`）：twopi 的 `241_0`（6 处绘制操作差异，当时归因于与上文 circo 条目相同的 CDT 共圆内切圆平局；**已在 graphviz 16.1 退役**——自 `f66ac638` 起它已是 conformant，所以 14 点与 8 点通道的翻转是未镜像的 FMA 收缩，而不是平局）以及 circo 的
-`windows-tree`（一条扇出边上有 10 处绘制操作差异——circo 的布局三角运算使 `node2.y` 比 `node8.y` 恰好高 1 ULP，围绕精确对称的值 18.0，而 `closestSide` 的 dyna 头端口选择在这个精确的平局上翻转 TOP/BOTTOM；节点位置和箱在其他方面与参照程序逐位相同）。
+`windows-tree`（一条扇出边上有 10 处绘制操作差异——circo 的布局三角运算使 `node2.y` 比 `node8.y` 恰好高 1 ULP，围绕精确对称的值 18.0，而 `closestSide` 的 dyna 头端口选择在这个精确的平局上翻转 TOP/BOTTOM；节点位置和箱在其他方面与参照程序逐位相同；**2026-10-18 已撤销**——移植版的 DIST2 采用 clang 的融合形式后，像 C 一样判定这一精确平局，现已一致）。
 
 **sfdp 引擎轨道 — 边的浮点平局（`241_0`）。**
 <a id="a9-sfdp-fp-ties"></a> sfdp 的 xdot 引擎轨道（`parity-sfdp.json`，

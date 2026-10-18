@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -245,17 +245,16 @@ Anders als beim ersten Durchlauf ist jede abweichende Zeile des
 Injection-Harness (`test/corpus/attribute-divergence.ts`) gibt das `ND_pos` des
 nativen Orakels vor dem Routing in die Portierung und vergleicht neu, und jede
 aktuelle abweichende ID ist `drift-exonerated` (Routing und Ausgabe der Portierung
-reproduzieren das Orakel exakt, sobald die Solver-Drift entfernt ist), außer vier.
+reproduzieren das Orakel exakt, sobald die Solver-Drift entfernt ist), außer drei.
 Drei sind gesondert akzeptierte Einzel-Restfälle: der CDT-Incircle-Gleichstand von
-`241_0` bei fdp und sfdp sowie das NaN-Layout von sfdp `2556`. Eine ist nicht
-akzeptiert: In manchen nativen Läufen behält fdp `2471` nach der Injection abweichende
-Kantenlabel-Positionen (`lp`), d. h. der xlabel-Platzierer wählt einen anderen
-Kandidaten. `dotneato_closest` der Portierung rundet noch nicht wie die fusionierte
-De-Casteljau-Auswertung von clang, daher weichen die Anker der Kantenlabels um 1–2 ULP
-ab, was den strikten Enthaltenseinstest des Platzierers kippen kann. Das native
-fdp-Layout von `2471` variiert zudem von Lauf zu Lauf, daher hält seine Zeile einen Lauf
-fest. sfdp `2371` zeigte dasselbe Symptom aus einer anderen Ursache und ist behoben,
-seit der R-Baum der Portierung Rechtecke als Wert kopiert, wie C es tut. (sfdp
+`241_0` bei fdp und sfdp sowie das NaN-Layout von sfdp `2556`. fdp `2471` und sfdp
+`2371` behielten früher nach der Injection abweichende Kantenlabel-Positionen (`lp`), d.
+h. der xlabel-Platzierer wählte einen anderen Kandidaten. `2471` ist behoben, seit
+`dotneato_closest` der Portierung wie die fusionierte De-Casteljau-Auswertung und DIST2
+von clang rundet: Die Anker der Kantenlabels wichen um 1–2 ULP ab, was den strikten
+Enthaltenseinstest des Platzierers kippte. `2371` ist behoben, seit der R-Baum der
+Portierung Rechtecke als Wert kopiert, wie C es tut. Das native fdp-Layout von `2471`
+variiert von Lauf zu Lauf, daher hält seine Zeile einen Lauf fest. (sfdp
 `42` ist A1-Drift, siehe
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Die Klassen-Akzeptanz unten formalisiert die entlastete Menge;
@@ -1118,7 +1117,7 @@ Draw-Op-Unterschiede an einer Fächerkante — die
 Platzierungstrigonometrie von circo setzt `node2.y` genau ein ULP über `node8.y` um den
 exakt symmetrischen Wert 18.0, und die dyna-Head-Port-Wahl von `closestSide` kippt bei
 diesem exakten Gleichstand zwischen TOP/BOTTOM; Knotenpositionen und Boxen sind sonst
-bitidentisch mit dem Orakel).
+bitidentisch mit dem Orakel; **ausgemustert 2026-10-18** — konform, seit DIST2 der Portierung die fusionierte Form von clang verwendet, die diesen exakten Gleichstand wie C entscheidet).
 
 **sfdp-Engine-Track — Kanten-FP-Gleichstand (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Der xdot-Engine-Track von sfdp (`parity-sfdp.json`, nativ

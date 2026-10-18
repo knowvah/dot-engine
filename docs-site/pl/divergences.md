@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -214,16 +214,16 @@ indywidualnie przypisany względem graphviz 16.1.0: narzędzie wstrzykiwania
 (`test/corpus/attribute-divergence.ts`) podaje przedroutingowy `ND_pos` natywnej wyroczni
 do portu i porównuje ponownie, a każdy obecny rozbieżny id jest `drift-exonerated`
 (prowadzenie i emisja w porcie odtwarzają wyrocznię dokładnie po usunięciu dryfu solvera)
-z wyjątkiem czterech. Trzy to osobno zaakceptowane residua dla poszczególnych id: remis
-incircle w CDT dla `241_0` na fdp i sfdp oraz układ NaN w sfdp `2556`. Jeden nie jest
-zaakceptowany: w niektórych natywnych przebiegach fdp `2471` zachowuje pozycje etykiet
-krawędzi (`lp`), które po wstrzyknięciu się różnią, tzn. moduł rozmieszczający xlabel
-wybiera innego kandydata. `dotneato_closest` w porcie nie zaokrągla jeszcze tak jak
-połączone (fused) obliczenie de Casteljau w clangu, więc kotwice etykiet krawędzi różnią
-się o 1–2 ULP, co może przechylić ścisły test zawierania w module rozmieszczającym.
-Natywny układ fdp dla `2471` zmienia się też z przebiegu na przebieg, więc jego wiersz
-rejestruje jeden przebieg. sfdp `2371` miał ten sam objaw z innej przyczyny i ustąpił,
-gdy R-drzewo portu zaczęło kopiować prostokąty przez wartość, tak jak C. (sfdp `42`
+z wyjątkiem trzech. Trzy to osobno zaakceptowane residua dla poszczególnych id: remis
+incircle w CDT dla `241_0` na fdp i sfdp oraz układ NaN w sfdp `2556`. fdp `2471` i sfdp
+`2371` zachowywały wcześniej pozycje etykiet krawędzi (`lp`), które po wstrzyknięciu się
+różniły, tzn. moduł rozmieszczający xlabel wybierał innego kandydata. `2471` ustąpił,
+gdy `dotneato_closest` w porcie zaczął zaokrąglać tak jak połączone (fused) obliczenie
+de Casteljau i DIST2 w clangu: kotwice etykiet krawędzi różniły się o 1–2 ULP, co
+przechylało ścisły test zawierania w module rozmieszczającym. `2371` ustąpił, gdy
+R-drzewo portu zaczęło kopiować prostokąty przez wartość, tak jak C. Natywny układ fdp
+dla `2471` zmienia się z przebiegu na przebieg, więc jego wiersz rejestruje jeden
+przebieg. (sfdp `42`
 to dryf A1, zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptacja klasy poniżej formalizuje zbiór oczyszczony z zarzutów; bieżące liczby w
 panelach poszczególnych silników
@@ -1028,7 +1028,7 @@ kontrakcją FMA, a nie remisem) oraz circo
 lokuje `node2.y` o pojedynczy ULP powyżej `node8.y` wokół dokładnie symetrycznej
 wartości 18.0, a wybór portu głowy dyna w `closestSide` przerzuca TOP/BOTTOM na
 tym dokładnym remisie; pozycje węzłów i pudełka są poza tym bitowo identyczne z
-wyrocznią).
+wyrocznią; **wycofano 2026-10-18** — jest zgodny, odkąd DIST2 w porcie używa połączonej (fused) postaci z clanga, która rozstrzyga ten dokładny remis tak jak C).
 
 **Ścieżka silnika sfdp — remis FP krawędzi (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Ścieżka silnika xdot sfdp (`parity-sfdp.json`,

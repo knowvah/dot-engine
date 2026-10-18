@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -221,16 +221,16 @@ afzonderlijk toegeschreven ten opzichte van graphviz 16.1.0: het injectietesthar
 (`test/corpus/attribute-divergence.ts`) voert de pre-routerings-`ND_pos` van het native
 orakel in de port in en vergelijkt opnieuw, en elk huidig afwijkend id is
 `drift-exonerated` (routering en uitvoer van de port reproduceren het orakel exact zodra
-de solverdrift is weggenomen), op vier na. Drie zijn afzonderlijk geaccepteerde
+de solverdrift is weggenomen), op drie na. Drie zijn afzonderlijk geaccepteerde
 restgevallen per id: de CDT-incircle-gelijkstand van `241_0` op fdp en sfdp, en de
-NaN-lay-out van sfdp `2556`. Eén is niet geaccepteerd: in sommige native runs houdt fdp
-`2471` na injectie afwijkende posities van edge-labels (`lp`), dat wil zeggen dat de
-xlabel-plaatser een andere kandidaat kiest. De `dotneato_closest` van de port rondt nog
-niet af zoals de gefuseerde de Casteljau-evaluatie van clang, waardoor de ankers van
-edge-labels 1–2 ULP verschillen, wat de strikte omsluitingstest van de plaatser kan doen
-omslaan. De native fdp-lay-out van `2471` varieert bovendien van run tot run, dus zijn
-rij legt één run vast. sfdp `2371` had hetzelfde symptoom door een andere oorzaak en is
-opgelost sinds de R-tree van de port rechthoeken als waarde kopieert, zoals C doet.
+NaN-lay-out van sfdp `2556`. fdp `2471` en sfdp `2371` hielden na injectie eerder
+afwijkende posities van edge-labels (`lp`), dat wil zeggen dat de xlabel-plaatser een
+andere kandidaat koos. `2471` is opgelost sinds de `dotneato_closest` van de port
+afrondt zoals de gefuseerde de Casteljau-evaluatie en DIST2 van clang: de ankers van
+edge-labels verschilden 1–2 ULP, wat de strikte omsluitingstest van de plaatser deed
+omslaan. `2371` is opgelost sinds de R-tree van de port rechthoeken als waarde kopieert,
+zoals C doet. De native fdp-lay-out van `2471` varieert van run tot run, dus zijn rij
+legt één run vast.
 (sfdp `42` is A1-drift, zie [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 De klasse-acceptatie hieronder formaliseert de vrijgesproken verzameling; actuele aantallen
 in de dashboards per engine
@@ -1053,7 +1053,7 @@ samenvoeging, geen gelijkstand) en circo
 legt `node2.y` een enkele ULP boven `node8.y` rond de exact symmetrische
 waarde 18.0, en de dyna-kop-portselectie van `closestSide` slaat TOP/BOTTOM om bij
 die exacte gelijkstand; knoopposities en boxen zijn verder bit-identiek aan het
-orakel).
+orakel; **ingetrokken 2026-10-18** — conform sinds de DIST2 van de port de gefuseerde vorm van clang gebruikt, die die exacte gelijkstand beslist zoals C).
 
 **sfdp-enginespoor — FP-gelijkstand bij een kant (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Het xdot-enginespoor van sfdp (`parity-sfdp.json`,

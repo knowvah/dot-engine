@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -216,16 +216,15 @@ Till skillnad från vid första genomgången är varje avvikande rad i universum
 individuellt tillskriven mot graphviz 16.1.0: injektionsverktyget
 (`test/corpus/attribute-divergence.ts`) matar in det inbyggda oraklets `ND_pos` före dragningen i
 porteringen och jämför på nytt, och varje nuvarande avvikande id är `drift-exonerated` (porteringens
-dragning och emission återger oraklet exakt när lösardriften är borttagen) utom fyra. Tre är separat
+dragning och emission återger oraklet exakt när lösardriften är borttagen) utom tre. Tre är separat
 godkända residualer per id: `241_0`:s CDT-incircle-oavgjort på fdp och sfdp samt sfdp `2556`:s
-NaN-layout. En är inte godkänd: i vissa inbyggda körningar behåller fdp `2471`
-kantetikettpositioner (`lp`) som skiljer sig efter injektion, dvs. xlabel-placeraren
-väljer en annan kandidat. Porteringens `dotneato_closest` avrundar ännu inte som clangs
-sammanslagna de Casteljau-beräkning, så kantetiketternas ankare skiljer sig med 1–2 ULP,
-vilket kan tippa placerarens strikta inneslutningstest. Den inbyggda fdp-layouten för
-`2471` varierar dessutom från körning till körning, så dess rad registrerar en körning.
-sfdp `2371` hade samma symptom av en annan orsak och löstes när porteringens R-träd
-började kopiera rektanglar som värden, som C gör. (sfdp `42` är A1-drift, se
+NaN-layout. fdp `2471` och sfdp `2371` behöll tidigare kantetikettpositioner (`lp`) som
+skilde sig efter injektion, dvs. xlabel-placeraren valde en annan kandidat. `2471`
+löstes när porteringens `dotneato_closest` började avrunda som clangs sammanslagna de
+Casteljau-beräkning och DIST2: kantetiketternas ankare skilde sig med 1–2 ULP, vilket
+tippade placerarens strikta inneslutningstest. `2371` löstes när porteringens R-träd
+började kopiera rektanglar som värden, som C gör. Den inbyggda fdp-layouten för `2471`
+varierar från körning till körning, så dess rad registrerar en körning. (sfdp `42` är A1-drift, se
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Klassgodkännandet nedan formaliserar den frikända mängden; aktuella antal finns i
 instrumentpanelerna per motor
@@ -1050,7 +1049,7 @@ FMA-kontraktionen, inte ett oavgjort läge) och circo
 lägger `node2.y` en enda ULP ovanför `node8.y` kring det exakt symmetriska
 värdet 18.0, och `closestSide`s val av dyna-huvudport vänder TOP/BOTTOM vid
 just det oavgjorda läget; nodpositioner och rutor är i övrigt bitidentiska med
-oraklet).
+oraklet; **avförd 2026-10-18** — den är konform sedan porteringens DIST2 använder clangs sammanslagna form, som avgör just denna oavgjorda jämförelse som C).
 
 **sfdp-motorspåret — oavgjort flyttalsläge på en kant (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp:s xdot-motorspår (`parity-sfdp.json`,

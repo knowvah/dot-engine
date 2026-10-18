@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -220,16 +220,15 @@ elementer individuelt tilskrevet mod graphviz 16.1.0: injektionsværktøjet
 (`test/corpus/attribute-divergence.ts`) fodrer det native orakels `ND_pos` før
 føring ind i porten og sammenligner igen, og hvert nuværende afvigende id er
 `drift-exonerated` (portens føring og emission reproducerer oraklet nøjagtigt, når
-solver-driften er fjernet) bortset fra fire. Tre er separat accepterede rester pr.
-id: `241_0`'s CDT-incircle-uafgjort på fdp og sfdp og sfdp `2556`'s NaN-layout. Ét er
-ikke accepteret: i nogle native kørsler beholder fdp `2471` positioner for kantetiketter
-(`lp`), der afviger efter injektion, dvs. xlabel-placeren vælger en anden kandidat.
-Portens `dotneato_closest` afrunder endnu ikke som clangs fusionerede de
-Casteljau-evaluering, så kantetiketternes ankre afviger med 1–2 ULP, hvilket kan vippe
-placerens strenge indeslutningstest. Det native fdp-layout af `2471` varierer desuden
-fra kørsel til kørsel, så dens række registrerer én kørsel. sfdp `2371` havde samme
-symptom af en anden årsag og blev løst, da portens R-træ begyndte at kopiere rektangler
-som værdier, som C gør. (sfdp `42` er
+solver-driften er fjernet) bortset fra tre. Tre er separat accepterede rester pr.
+id: `241_0`'s CDT-incircle-uafgjort på fdp og sfdp og sfdp `2556`'s NaN-layout. fdp
+`2471` og sfdp `2371` beholdt tidligere positioner for kantetiketter (`lp`), der afveg
+efter injektion, dvs. xlabel-placeren valgte en anden kandidat. `2471` blev løst, da
+portens `dotneato_closest` begyndte at afrunde som clangs fusionerede de
+Casteljau-evaluering og DIST2: kantetiketternes ankre afveg før med 1–2 ULP, hvilket
+vippede placerens strenge indeslutningstest. `2371` blev løst, da portens R-træ begyndte
+at kopiere rektangler som værdier, som C gør. Det native fdp-layout af `2471` varierer
+fra kørsel til kørsel, så dens række registrerer én kørsel. (sfdp `42` er
 A1-drift, se
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Klasseaccepten nedenfor formaliserer den frikendte mængde; aktuelle tal i
@@ -1055,7 +1054,7 @@ FMA-kontraktion og ikke en uafgjort) og circo
 lander `node2.y` præcis én ULP over `node8.y` omkring den præcist symmetriske
 værdi 18.0, og `closestSide`'s valg af dyna-hovedport vipper TOP/BOTTOM ved
 den præcise uafgjort; knudepositioner og bokse er ellers bit-identiske med
-oraklet).
+oraklet; **udgået 2026-10-18** — det er konformt, siden portens DIST2 bruger clangs fusionerede form, som afgør netop denne uafgjorthed som C).
 
 **sfdp-motorsporet — FP-uafgjort på kant (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Sfdp's xdot-motorspor (`parity-sfdp.json`,

@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -254,18 +254,17 @@ Contrairement au premier balayage, chaque ligne divergente de l’univers de 929
 d’injection (`test/corpus/attribute-divergence.ts`) fournit au portage le `ND_pos`
 pré-routage de l’oracle natif et recompare, et chaque identifiant divergent actuel
 est `drift-exonerated` (le routage et l’émission du portage reproduisent
-exactement l’oracle dès que la dérive du solveur est supprimée), sauf quatre. Trois
+exactement l’oracle dès que la dérive du solveur est supprimée), sauf trois. Trois
 sont des résidus par identifiant acceptés séparément : l’égalité d’incercle CDT de
-`241_0` sur fdp et sfdp, et la disposition NaN de `2556` pour sfdp. Un seul n’est pas
-accepté : dans certaines exécutions natives, `2471` pour fdp conserve des positions
-d’étiquettes d’arête (`lp`) qui diffèrent après injection, c’est-à-dire que le placeur
-de xlabels choisit un autre candidat. Le `dotneato_closest` du portage n’arrondit pas
-encore comme l’évaluation de De Casteljau fusionnée de clang ; les ancres des étiquettes
-d’arête diffèrent donc de 1 à 2 ULP, ce qui peut faire basculer le test d’inclusion
-strict du placeur. La disposition fdp native de `2471` varie aussi d’une exécution à
-l’autre ; sa ligne n’enregistre donc qu’une exécution. `2371` pour sfdp présentait le
-même symptôme pour une autre cause et s’est résolu dès que l’arbre R du portage a copié
-les rectangles par valeur, comme le fait C. (`42` de sfdp relève de la dérive A1, voir
+`241_0` sur fdp et sfdp, et la disposition NaN de `2556` pour sfdp. `2471` pour fdp et
+`2371` pour sfdp conservaient des positions d’étiquettes d’arête (`lp`) qui différaient
+après injection, c’est-à-dire que le placeur de xlabels choisissait un autre candidat.
+`2471` s’est résolu dès que le `dotneato_closest` du portage a arrondi comme
+l’évaluation de De Casteljau fusionnée et le DIST2 de clang : les ancres des étiquettes
+d’arête différaient de 1 à 2 ULP, ce qui faisait basculer le test d’inclusion strict du
+placeur. `2371` s’est résolu dès que l’arbre R du portage a copié les rectangles par
+valeur, comme le fait C. La disposition fdp native de `2471` varie d’une exécution à
+l’autre ; sa ligne n’enregistre donc qu’une exécution. (`42` de sfdp relève de la dérive A1, voir
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 L’acceptation de classe ci-dessous formalise l’ensemble disculpé ;
 compteurs à jour dans les tableaux de bord par moteur
@@ -1184,7 +1183,7 @@ arête d’éventail — la trigonométrie de placement de circo place `node2.y`
 simple ULP au-dessus de `node8.y` autour de la valeur exactement symétrique
 18.0, et la sélection du port de tête dyna de `closestSide` bascule TOP/BOTTOM à
 cette égalité exacte ; les positions et boîtes des nœuds sont par ailleurs
-identiques au bit près à l’oracle).
+identiques au bit près à l’oracle ; **retiré le 2026-10-18** — il est conforme depuis que le DIST2 du portage prend la forme fusionnée de clang, qui tranche cette égalité exacte comme C).
 
 **Piste du moteur sfdp — égalité FP sur les arêtes (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> La piste xdot du moteur sfdp (`parity-sfdp.json`,

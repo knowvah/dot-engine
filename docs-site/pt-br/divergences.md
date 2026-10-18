@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -215,16 +215,15 @@ atribuída individualmente em relação ao graphviz 16.1.0: o harness de injeç�
 (`test/corpus/attribute-divergence.ts`) alimenta o `ND_pos` pré-roteamento do oráculo
 nativo no port e compara de novo, e todo id divergente atual é `drift-exonerated` (o
 roteamento e a emissão do port reproduzem exatamente o oráculo assim que a deriva do
-solver é removida), exceto quatro. Três são resíduos por id aceitos separadamente: o empate
-de incírculo do CDT de `241_0` no fdp e no sfdp, e o layout NaN do `2556` do sfdp. Um
-não é aceito: em algumas execuções nativas, `2471` do fdp mantém posições de rótulos de
-aresta (`lp`) que diferem após a injeção, isto é, o posicionador de xlabel escolhe outro
-candidato. O `dotneato_closest` do port ainda não arredonda como a avaliação de De
-Casteljau fundida do clang, então as âncoras dos rótulos de aresta diferem em 1–2 ULP, o
-que pode inverter o teste estrito de inclusão do posicionador. O layout nativo do fdp
-para `2471` também varia de execução para execução, então sua linha registra uma
-execução. O `2371` do sfdp tinha o mesmo sintoma por outra causa e foi resolvido quando
-a R-tree do port passou a copiar retângulos por valor, como o C faz. (O `42`
+solver é removida), exceto três. Três são resíduos por id aceitos separadamente: o empate
+de incírculo do CDT de `241_0` no fdp e no sfdp, e o layout NaN do `2556` do sfdp. `2471` do fdp e `2371` do sfdp mantinham posições de rótulos de aresta (`lp`) que
+diferiam após a injeção, isto é, o posicionador de xlabel escolhia outro candidato. O
+`2471` foi resolvido quando o `dotneato_closest` do port passou a arredondar como a
+avaliação de De Casteljau fundida e o DIST2 do clang: as âncoras dos rótulos de aresta
+diferiam em 1–2 ULP, o que invertia o teste estrito de inclusão do posicionador. O
+`2371` foi resolvido quando a R-tree do port passou a copiar retângulos por valor, como
+o C faz. O layout nativo do fdp para `2471` varia de execução para execução, então sua
+linha registra uma execução. (O `42`
 do sfdp é deriva A1, veja [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 A aceitação de classe abaixo formaliza o conjunto exonerado; contagens atuais nos
 painéis de cada mecanismo
@@ -1049,7 +1048,7 @@ não espelhada, não um empate) e circo
 coloca `node2.y` um único ULP acima de `node8.y` em torno do valor exatamente simétrico 18.0, e a seleção de porta de cabeça dinâmica do `closestSide`
 inverte TOP/BOTTOM
 nesse empate exato; as posições dos nós e as caixas são, de resto, idênticas bit a bit às do
-oráculo).
+oráculo; **retirado em 2026-10-18** — é conforme desde que o DIST2 do port usa a forma fundida do clang, que resolve esse empate exato como o C).
 
 **Trilha de mecanismo do sfdp — empate de PF em aresta (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> A trilha xdot de mecanismo do sfdp (`parity-sfdp.json`,

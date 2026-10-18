@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -244,17 +244,17 @@ A differenza del primo rilevamento, ogni riga divergente dell'universo di 929 el
 (`test/corpus/attribute-divergence.ts`) fornisce al porting l'`ND_pos` pre-instradamento
 dell'oracolo nativo e ripete il confronto, e ogni id divergente attuale è
 `drift-exonerated` (instradamento ed emissione del porting riproducono esattamente
-l'oracolo una volta rimossa la deriva del solver) tranne quattro. Tre sono residui per
+l'oracolo una volta rimossa la deriva del solver) tranne tre. Tre sono residui per
 singolo id accettati a parte: il pareggio di incircle CDT di `241_0` su fdp e sfdp e il
-layout NaN di sfdp `2556`. Uno non è accettato: in alcune esecuzioni native fdp `2471`
-mantiene posizioni delle etichette degli archi (`lp`) che differiscono dopo l'iniezione,
-cioè il posizionatore di xlabel sceglie un candidato diverso. Il `dotneato_closest` del
-port non arrotonda ancora come la valutazione di De Casteljau fusa di clang, quindi gli
-ancoraggi delle etichette degli archi differiscono di 1–2 ULP, il che può far pendere il
-test stretto di inclusione del posizionatore. Anche il layout fdp nativo di `2471` varia
-da un'esecuzione all'altra, quindi la sua riga registra una sola esecuzione. sfdp `2371`
-aveva lo stesso sintomo per un'altra causa e si è risolto quando l'R-tree del port ha
-iniziato a copiare i rettangoli per valore, come fa C. (sfdp `42` è deriva A1, vedi
+layout NaN di sfdp `2556`. fdp `2471` e sfdp `2371` mantenevano posizioni delle
+etichette degli archi (`lp`) che differivano dopo l'iniezione, cioè il posizionatore di
+xlabel sceglieva un candidato diverso. `2471` si è risolto quando il `dotneato_closest`
+del port ha iniziato ad arrotondare come la valutazione di De Casteljau fusa e il DIST2
+di clang: gli ancoraggi delle etichette degli archi differivano di 1–2 ULP, il che
+faceva pendere il test stretto di inclusione del posizionatore. `2371` si è risolto
+quando l'R-tree del port ha iniziato a copiare i rettangoli per valore, come fa C. Il
+layout fdp nativo di `2471` varia da un'esecuzione all'altra, quindi la sua riga
+registra una sola esecuzione. (sfdp `42` è deriva A1, vedi
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).) L'accettazione di classe qui sotto formalizza l'insieme degli id scagionati; conteggi aggiornati nei dashboard per motore
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
@@ -1138,7 +1138,7 @@ circo
 trigonometria di posizionamento di circo porta `node2.y` un singolo ULP sopra
 `node8.y` attorno al valore esattamente simmetrico 18.0, e la selezione della porta
 di testa dyna di `closestSide` inverte TOP/BOTTOM a quel pareggio esatto; per il
-resto posizioni e riquadri dei nodi sono identici al bit all'oracolo).
+resto posizioni e riquadri dei nodi sono identici al bit all'oracolo; **ritirato il 2026-10-18** — è conforme da quando il DIST2 del port usa la forma fusa di clang, che scioglie quel pareggio esatto come C).
 
 **Traccia xdot di sfdp — pareggio FP sugli archi (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> La traccia xdot del motore sfdp (`parity-sfdp.json`,

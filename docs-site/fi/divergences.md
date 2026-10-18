@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -236,16 +236,15 @@ selitetty yksitellen graphviz 16.1.0:aa vasten: injektiotyökalu
 (`test/corpus/attribute-divergence.ts`) syöttää natiivin oraakkelin reititystä
 edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja jokainen nykyinen
 poikkeava tunniste on `drift-exonerated` (porttauksen reititys ja emissio
-toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) neljää lukuun ottamatta. Kolme on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
+toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) kolmea lukuun ottamatta. Kolme on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
 `241_0`:n CDT:n incircle-tasapeli fdp:llä ja sfdp:llä sekä sfdp:n `2556`:n
-NaN-asettelu. Yhtä ei ole hyväksytty: joissakin natiiveissa ajoissa fdp:n `2471` kaarten
-nimiöiden sijainnit (`lp`) poikkeavat injektion jälkeen, eli xlabel-sijoittaja valitsee
-eri ehdokkaan. Porttauksen `dotneato_closest` ei vielä pyöristä kuten clangin yhdistetty
-de Casteljau -laskenta, joten kaarten nimiöiden ankkurit eroavat 1–2 ULP:tä, mikä voi
-kallistaa sijoittajan tiukan sisältymistestin. Natiivi fdp-asettelu `2471`:llä vaihtelee
-myös ajosta toiseen, joten sen rivi kirjaa yhden ajon. sfdp:n `2371`:llä oli sama oire
-eri syystä, ja se korjaantui, kun porttauksen R-puu alkoi kopioida suorakulmiot arvoina,
-kuten C tekee. (sfdp:n `42` on A1-drift, katso
+NaN-asettelu. fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`)
+poikkesivat aiemmin injektion jälkeen, eli xlabel-sijoittaja valitsi eri ehdokkaan.
+`2471` korjaantui, kun porttauksen `dotneato_closest` alkoi pyöristää kuten clangin
+yhdistetty de Casteljau -laskenta ja DIST2: kaarten nimiöiden ankkurit erosivat 1–2
+ULP:tä, mikä kallisti sijoittajan tiukan sisältymistestin. `2371` korjaantui, kun
+porttauksen R-puu alkoi kopioida suorakulmiot arvoina, kuten C tekee. Natiivi
+fdp-asettelu `2471`:llä vaihtelee ajosta toiseen, joten sen rivi kirjaa yhden ajon. (sfdp:n `42` on A1-drift, katso
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Alla oleva luokkahyväksyntä vahvistaa vapautetun joukon; ajantasaiset luvut
 moottorikohtaisilla kojelaudoilla
@@ -1068,7 +1067,7 @@ käytäväkäännös oli peilaamaton FMA-yhdistäminen, ei tasapeli) ja circo
 asettaa `node2.y`:n yhden ULP:n verran arvon `node8.y` yläpuolelle täsmälleen symmetrisen
 arvon 18.0 ympärillä, ja `closestSide`n dyna-pääportin valinta kääntää TOP/BOTTOM
 tuossa täsmällisessä tasapelissä; solmusijainnit ja laatikot ovat muutoin bitti bitiltä identtiset
-oraakkelin kanssa).
+oraakkelin kanssa; **poistettu 2026-10-18** — se on yhdenmukainen, koska porttauksen DIST2 käyttää clangin yhdistettyä muotoa, joka ratkaisee tämän tarkan tasapelin kuten C).
 
 **sfdp-moottoriraita — kaaren FP-tasapeli (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp-xdot-moottoriraita (`parity-sfdp.json`,

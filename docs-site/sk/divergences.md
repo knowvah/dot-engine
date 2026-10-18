@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -215,15 +215,15 @@ Na rozdiel od prvého prieskumu je každý odchýlený riadok univerza 929 polo�
 priradený voči graphviz 16.1.0: injekčný nástroj (`test/corpus/attribute-divergence.ts`) vkladá
 `ND_pos` z natívneho orákula pred vedením hrán do portu a znovu porovnáva, a každé súčasné odchýlené
 id je `drift-exonerated` (vedenie a emisia portu reprodukujú orákulum presne, keď sa drift solvera
-odstráni), okrem štyroch. Tri sú samostatne akceptované zvyšky po jednotlivých id: väzba incircle v
-CDT pri `241_0` na fdp a sfdp a NaN rozloženie sfdp `2556`. Jeden akceptovaný nie je: v
-niektorých natívnych behoch si fdp `2471` po injekcii zachováva odlišné pozície popisiek
-hrán (`lp`), t. j. umiestňovač xlabel vyberie iného kandidáta. `dotneato_closest` v
-porte zatiaľ nezaokrúhľuje ako fúzované vyhodnotenie de Casteljau v clangu, takže kotvy
-popisiek hrán sa líšia o 1–2 ULP, čo môže zvrátiť striktný test obsiahnutia v
-umiestňovači. Natívne rozloženie fdp pre `2471` sa tiež líši od behu k behu, takže jeho
-riadok zaznamenáva jeden beh. sfdp `2371` mal rovnaký príznak z inej príčiny a vyriešil
-sa, keď R-strom portu začal kopírovať obdĺžniky hodnotou, ako to robí C. (sfdp `42` je drift A1,
+odstráni), okrem troch. Tri sú samostatne akceptované zvyšky po jednotlivých id: väzba incircle v
+CDT pri `241_0` na fdp a sfdp a NaN rozloženie sfdp `2556`. fdp `2471` a sfdp `2371` si
+predtým po injekcii zachovávali odlišné pozície popisiek hrán (`lp`), t. j. umiestňovač
+xlabel vyberal iného kandidáta. `2471` sa vyriešil, keď `dotneato_closest` v porte začal
+zaokrúhľovať ako fúzované vyhodnotenie de Casteljau a DIST2 v clangu: kotvy popisiek
+hrán sa líšili o 1–2 ULP, čo zvrátilo striktný test obsiahnutia v umiestňovači. `2371`
+sa vyriešil, keď R-strom portu začal kopírovať obdĺžniky hodnotou, ako to robí C.
+Natívne rozloženie fdp pre `2471` sa líši od behu k behu, takže jeho riadok zaznamenáva
+jeden beh. (sfdp `42` je drift A1,
 pozri
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptácia triedy nižšie formalizuje množinu očistených; živé počty v
@@ -1048,7 +1048,7 @@ FMA, nie remíza) a circo
 dopadne `node2.y` o jediné ULP nad `node8.y` okolo presne symetrickej
 hodnoty 18.0 a výber portu hlavy dyna v `closestSide` preklopí TOP/BOTTOM pri
 tejto presnej remíze; polohy uzlov a boxy sú inak bitovo identické s
-orákulom).
+orákulom; **vyradené 2026-10-18** — zhoduje sa, odkedy DIST2 v porte používa fúzovaný tvar z clangu, ktorý túto presnú väzbu rozhodne rovnako ako C).
 
 **Stopa modulu sfdp — remíza FP pri hrane (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Stopa xdot modulu sfdp (`parity-sfdp.json`,

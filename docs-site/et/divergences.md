@@ -1,5 +1,5 @@
 ---
-sourceHash: ead4da37742ad464279ea0d994bf384c3ddfd2a92773d527cd9651c216facca5
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -216,16 +216,15 @@ eraldi omistatud graphviz 16.1.0 vastu: süstimiskoormus
 (`test/corpus/attribute-divergence.ts`) söödab natiivse oraakli marsruutimiseelse
 `ND_pos` porti ja võrdleb uuesti, ning iga praegune lahknev id on
 `drift-exonerated` (pordi marsruutimine ja väljastus reprodutseerivad oraakli
-täpselt, kui lahendaja triiv on eemaldatud), välja arvatud neli. Kolm on eraldi
+täpselt, kui lahendaja triiv on eemaldatud), välja arvatud kolm. Kolm on eraldi
 aktsepteeritud id-põhised jäägid: `241_0` CDT incircle'i viik fdp-l ja sfdp-l ning
-sfdp `2556` NaN-paigutus. Üks ei ole aktsepteeritud: mõnes natiivses jooksus säilitab
-fdp `2471` pärast süstimist erinevad servasiltide asukohad (`lp`), st xlabel-paigutaja
-valib teise kandidaadi. Pordi `dotneato_closest` ei ümarda veel nagu clangi liidetud de
-Casteljau arvutus, seega erinevad servasiltide ankrud 1–2 ULP võrra, mis võib kallutada
-paigutaja ranget sisalduvustesti. Natiivne fdp paigutus `2471` puhul varieerub ka
-jooksust jooksuni, mistõttu selle rida registreerib ühe jooksu. sfdp `2371` sümptom oli
-sama, kuid põhjus teine; see lahenes, kui pordi R-puu hakkas ristkülikuid väärtusena
-kopeerima, nagu teeb C. (sfdp `42` on A1 triiv, vt
+sfdp `2556` NaN-paigutus. fdp `2471` ja sfdp `2371` säilitasid varem pärast süstimist
+erinevad servasiltide asukohad (`lp`), st xlabel-paigutaja valis teise kandidaadi.
+`2471` lahenes, kui pordi `dotneato_closest` hakkas ümardama nagu clangi liidetud de
+Casteljau arvutus ja DIST2: servasiltide ankrud erinesid 1–2 ULP võrra, mis kallutas
+paigutaja ranget sisalduvustesti. `2371` lahenes, kui pordi R-puu hakkas ristkülikuid
+väärtusena kopeerima, nagu teeb C. Natiivne fdp paigutus `2471` puhul varieerub jooksust
+jooksuni, mistõttu selle rida registreerib ühe jooksu. (sfdp `42` on A1 triiv, vt
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Allolev klassiaktsepteerimine vormistab süüst vabastatud hulga; jooksvad arvud
 mootoripõhistel töölaudadel
@@ -1042,7 +1041,7 @@ kontraktsioon, mitte viik) ja circo
 paneb `node2.y` ühe ULP võrra `node8.y` kohale täpselt sümmeetrilise
 väärtuse 18.0 ümber, ja `closestSide`-i dyna pea-pordi valik lülitab TOP/BOTTOM
 sellel täpsel viigil ümber; sõlmepositsioonid ja kastid on muus osas bitiliselt identsed
-oraakliga).
+oraakliga; **eemaldatud 2026-10-18** — see on vastav, sest pordi DIST2 kasutab clangi liidetud kuju, mis lahendab selle täpse viigi nagu C).
 
 **sfdp mootorirada — serva FP-viik (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp xdot-mootorirada (`parity-sfdp.json`,
