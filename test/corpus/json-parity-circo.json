@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-14T16:49:09.808Z",
+  "generatedAt": "2026-10-18T13:27:38.743Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "circo",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 928,
   "counts": {
-    "conformant": 912,
+    "conformant": 914,
     "diverged": 1,
-    "accepted": 7,
+    "accepted": 5,
     "port-error": 0,
     "oracle-error": 8,
     "timeout": 0
@@ -3711,7 +3711,11 @@
       "id": "1855",
       "path": "1855.dot",
       "size": 1335,
-      "verdict": "conformant"
+      "verdict": "accepted",
+      "diffCount": 599,
+      "firstDiff": "edge:10->1#0/_draw_/op[1].b[3]",
+      "maxDelta": 0.7109999999999985,
+      "maxDeltaPath": "edge:11->1#0/pos[5]"
     },
     {
       "id": "tree-graphs-directed-switch",
@@ -4047,11 +4051,7 @@
       "id": "windows-tree",
       "path": "windows/tree.gv",
       "size": 1825,
-      "verdict": "accepted",
-      "diffCount": 10,
-      "firstDiff": "edge:node2->node8#0/_draw_/op[1].b[5]",
-      "maxDelta": 24.8,
-      "maxDeltaPath": "edge:node2->node8#0/pos[1]"
+      "verdict": "conformant"
     },
     {
       "id": "linux.x86-html2_dot",
@@ -5445,11 +5445,7 @@
       "id": "2095_1",
       "path": "2095_1.dot",
       "size": 105083,
-      "verdict": "accepted",
-      "diffCount": 2197,
-      "firstDiff": "edge:1083->1084#0/_draw_/op[1].b[0]",
-      "maxDelta": 66.11999999999898,
-      "maxDeltaPath": "edge:1128->1127#0/_hdraw_/op[3].P[5]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-root",
@@ -5547,11 +5543,7 @@
       "id": "2475_2",
       "path": "2475_2.dot",
       "size": 641284,
-      "verdict": "accepted",
-      "diffCount": 989,
-      "firstDiff": "edge:590_174423->590_174412#0/_draw_/op[1].b[0]",
-      "maxDelta": 300,
-      "maxDeltaPath": "node:590_174471/pos[0]"
+      "verdict": "conformant"
     },
     {
       "id": "2621",

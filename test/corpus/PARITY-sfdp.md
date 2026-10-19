@@ -14,7 +14,7 @@ test/corpus/parity-report.ts`.
 
 - **Surveyed:** 928 (generated 2026-10-14T08:11:23.895Z)
 - **Oracle:** dot 16.1.0
-- **pass:** 633 (68.2%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 288
+- **pass:** 633 (68.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 289
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
 
 ## Accepted deltas (6) — documented, not chased
@@ -41,13 +41,11 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **291** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **292** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | 1705517 | 433020 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 4725.6 vs 4692.6` |
+_(none)_
 
 ## Errors and timeouts (0)
 

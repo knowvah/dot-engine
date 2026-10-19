@@ -174,6 +174,17 @@ ULP-divergent leaf positions flips the entire layout back to the port's
 mirror. Full RCA: `.agent-notes/twopi-radial-drift-rca.md` (decision journal
 2026-07-11).
 
+The same star diverges on the `circo` track (accepted 2026-10-16, 599
+draw-op diffs, at most 0.71pt). The port mirrors clang's FMA contraction and
+evaluation order in `circpos.c`, so 31 of the 32 positions entering PRISM are
+bit-exact. The last one is off by 1 ULP, because V8 and Apple libm round
+`cos`/`sin` differently at three child angles in `positionChildren`. PRISM's
+Delaunay triangulation then flips one nearly cocircular diagonal on the mirror
+axis. Injection A/B: given the native `cos`/`sin` values, the port matches the
+oracle. Given V8's values, the native build produces the oracle's layout in 22
+of 30 runs and the port's layout in the other 8, because GTS orders its edges
+by allocation address.
+
 **Iterative-engine characterization: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Unlike the `circo`/`twopi`/`osage` engine tracks above, `neato`/`fdp`/`sfdp`
 are **not** yet triaged per-id — `engine-walk.ts` records a `tolerance: 0.5`
@@ -204,12 +215,15 @@ individually attributed against graphviz 16.1.0: the injection harness
 (`test/corpus/attribute-divergence.ts`) feeds the native oracle's
 pre-routing `ND_pos` into the port and re-compares, and every current
 diverged id is `drift-exonerated` (the port's routing and emission
-reproduce the oracle exactly once the solver drift is removed) except five.
+reproduce the oracle exactly once the solver drift is removed) except three.
 Three are separately accepted per-id residuals: `241_0`'s CDT incircle tie
-on fdp and sfdp, and sfdp `2556`'s NaN layout. Two are not accepted and not
-yet root-caused: fdp `2471` and sfdp `2371` keep edge-label positions
-(`lp`) that differ after injection, i.e. the xlabel placer picks a
-different candidate. The native fdp layout of `2471` also varies from run
+on fdp and sfdp, and sfdp `2556`'s NaN layout. fdp `2471` and sfdp `2371`
+used to keep edge-label positions (`lp`) that differed after injection, i.e.
+the xlabel placer picked a different candidate. `2471` cleared once the
+port's `dotneato_closest` rounded like clang's fused de Casteljau evaluation
+and DIST2: its edge-label anchors had differed by 1-2 ULP, which tipped the
+placer's strict enclosure test. `2371` cleared once the port's R-tree copied
+rects by value, as C does. The native fdp layout of `2471` varies from run
 to run, so its row records one run. (sfdp `42`
 is A1 drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 The class acceptance below formalizes the exonerated set; live counts in
@@ -924,7 +938,7 @@ filed" entry). Accepted at the engine-track level via
 `PARITY-twopi.md`/`PARITY-circo.md` by `parity-report.ts` — the same join
 `accepted.ts` performs for the dot-track `PARITY-dot.md`.
 
-**circo `2475_2` — cocircular closestNode hypot tie.** In one 28-node
+**circo `2475_2` and `2095_1` — closestNode hypot tie (fixed).** In one 28-node
 component of this 10762-node graph, circo's `getRotation`
 (`circpos.c:73-92`) picks the block node closest to the layout origin via
 `hypot` to decide the sub-block's rotation. Two cocircular nodes are
@@ -932,10 +946,12 @@ effectively equidistant; V8's correctly-rounded `Math.hypot` and Apple
 libm's `hypot` round that distance 2 ULP apart, which flips the strict `<`,
 selects a different node, and rotates/reflects the sub-block ~20° (18 nodes
 move, max 296.7pt; the other 10744 nodes are bit-identical, as are the
-block tree, circle order, and every `centerAngle`). The CR-hypot policy was
-already refuted for this class (2026-07-10). Standalone repro:
-`.agent-notes/circo-2475-590-repro.dot`; full RCA:
-`.agent-notes/circo-b81-2475-rca.md` (accepted 2026-07-11).
+block tree, circle order, and every `centerAngle`). `2095_1` hit the same
+tie (2197 draw-op diffs, three rigid block rotations). Both were accepted
+until 2026-10-16, when the closest-node search switched to the port's
+bit-exact model of Apple's `hypot` (`src/common/libm-hypot.ts`); both now
+conform. Standalone repro: `.agent-notes/circo-2475-590-repro.dot`; full RCA:
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — radial-coordinate ULP amplified by the xlabel R-tree.**
 2470 is a 140-edge graph whose HTML `<table>` edge labels cluster on
@@ -1038,7 +1054,8 @@ contraction, not a tie) and circo
 lands `node2.y` a single ULP above `node8.y` around the exactly-symmetric
 value 18.0, and `closestSide`'s dyna head-port selection flips TOP/BOTTOM at
 that exact tie; node positions and boxes are otherwise bit-identical to the
-oracle).
+oracle; **retired 2026-10-18** — it is conformant since the port's DIST2
+takes clang's fused form, which breaks that exact tie as C does).
 
 **sfdp engine track — edge FP-tie (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> The sfdp xdot engine track (`parity-sfdp.json`,

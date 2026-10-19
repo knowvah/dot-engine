@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -199,6 +199,18 @@ divergenti di un ULP riporta l'intero layout allo specchio del porting. Analisi
 completa della causa radice: `.agent-notes/twopi-radial-drift-rca.md` (diario
 delle decisioni 2026-07-11).
 
+La stessa stella diverge sulla traccia `circo` (accettato il 2026-10-16, 599
+differenze nelle operazioni di disegno, al massimo 0.71pt). Il port rispecchia
+la contrazione FMA e l'ordine di valutazione di clang in `circpos.c`, quindi 31
+delle 32 posizioni che entrano in PRISM sono esatte al bit. L'ultima differisce
+di 1 ULP, perché V8 e la libm di Apple arrotondano `cos`/`sin` in modo diverso
+in tre angoli dei figli in `positionChildren`. La triangolazione di Delaunay di
+PRISM inverte quindi una diagonale quasi cocircolare sull'asse di simmetria.
+Iniezione A/B: con i valori nativi di `cos`/`sin` il port corrisponde
+all'oracolo. Con i valori di V8 la build nativa produce il layout dell'oracolo
+in 22 esecuzioni su 30 e quello del port nelle altre 8, perché GTS ordina i suoi
+spigoli per indirizzo di allocazione.
+
 **Caratterizzazione dei motori iterativi: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 A differenza delle tracce dei motori `circo`/`twopi`/`osage` qui sopra,
 `neato`/`fdp`/`sfdp` **non** sono ancora analizzati per singolo id —
@@ -232,13 +244,17 @@ A differenza del primo rilevamento, ogni riga divergente dell'universo di 929 el
 (`test/corpus/attribute-divergence.ts`) fornisce al porting l'`ND_pos` pre-instradamento
 dell'oracolo nativo e ripete il confronto, e ogni id divergente attuale è
 `drift-exonerated` (instradamento ed emissione del porting riproducono esattamente
-l'oracolo una volta rimossa la deriva del solver) tranne cinque. Tre sono residui per
+l'oracolo una volta rimossa la deriva del solver) tranne tre. Tre sono residui per
 singolo id accettati a parte: il pareggio di incircle CDT di `241_0` su fdp e sfdp e il
-layout NaN di sfdp `2556`. Due non sono accettati e non ancora ricondotti alla causa
-radice: fdp `2471` e sfdp `2371` mantengono posizioni delle etichette degli archi (`lp`)
-che differiscono dopo l'iniezione, cioè il posizionatore di xlabel sceglie un candidato
-diverso. Anche il layout fdp nativo di `2471` varia da un'esecuzione all'altra, quindi la
-sua riga registra una sola esecuzione. (sfdp `42` è deriva A1, vedi
+layout NaN di sfdp `2556`. fdp `2471` e sfdp `2371` mantenevano posizioni delle
+etichette degli archi (`lp`) che differivano dopo l'iniezione, cioè il posizionatore di
+xlabel sceglieva un candidato diverso. `2471` si è risolto quando il `dotneato_closest`
+del port ha iniziato ad arrotondare come la valutazione di De Casteljau fusa e il DIST2
+di clang: gli ancoraggi delle etichette degli archi differivano di 1–2 ULP, il che
+faceva pendere il test stretto di inclusione del posizionatore. `2371` si è risolto
+quando l'R-tree del port ha iniziato a copiare i rettangoli per valore, come fa C. Il
+layout fdp nativo di `2471` varia da un'esecuzione all'altra, quindi la sua riga
+registra una sola esecuzione. (sfdp `42` è deriva A1, vedi
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).) L'accettazione di classe qui sotto formalizza l'insieme degli id scagionati; conteggi aggiornati nei dashboard per motore
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
@@ -996,19 +1012,22 @@ traccia del motore tramite `test/corpus/accepted-divergences-engines.json`, unit
 in `PARITY-twopi.md`/`PARITY-circo.md` da `parity-report.ts` — la stessa unione che
 `accepted.ts` esegue per il `PARITY-dot.md` della traccia dot.
 
-**circo `2475_2` — pareggio di hypot per closestNode cocircolare.** In una
-componente di 28 nodi di questo grafo da 10762 nodi, il `getRotation` di circo
-(`circpos.c:73-92`) sceglie il nodo del blocco più vicino all'origine del layout
-tramite `hypot` per decidere la rotazione del sotto-blocco. Due nodi cocircolari
-sono di fatto equidistanti; l'`Math.hypot` di V8, correttamente arrotondato, e
-l'`hypot` di libm di Apple arrotondano quella distanza a 2 ULP di distanza, il che
-inverte il `<` stretto, seleziona un nodo diverso e ruota/riflette il sotto-blocco
-di ~20° (18 nodi si spostano, max 296.7pt; gli altri 10744 nodi sono identici al
-bit, come l'albero dei blocchi, l'ordine sul cerchio e ogni `centerAngle`). La
-politica dell'hypot correttamente arrotondato era già stata confutata per questa
-classe (2026-07-10). Riproduzione autonoma: `.agent-notes/circo-2475-590-repro.dot`;
-analisi completa della causa radice: `.agent-notes/circo-b81-2475-rca.md`
-(accettato il 2026-07-11).
+**circo `2475_2` e `2095_1` — pareggio di hypot per closestNode cocircolare
+(corretto).** In una componente di 28 nodi di questo grafo da 10762 nodi, il
+`getRotation` di circo (`circpos.c:73-92`) sceglie il nodo del blocco più vicino
+all'origine del layout tramite `hypot` per decidere la rotazione del
+sotto-blocco. Due nodi cocircolari sono di fatto equidistanti; l'`Math.hypot` di
+V8, correttamente arrotondato, e l'`hypot` di libm di Apple arrotondano quella
+distanza a 2 ULP di distanza, il che inverte il `<` stretto, seleziona un nodo
+diverso e ruota/riflette il sotto-blocco di ~20° (18 nodi si spostano, max
+296.7pt; gli altri 10744 nodi sono identici al bit, come l'albero dei blocchi,
+l'ordine sul cerchio e ogni `centerAngle`). `2095_1` incappava nello stesso
+pareggio (2197 differenze nelle operazioni di disegno, tre rotazioni rigide di
+blocchi). Entrambi erano accettati fino al 2026-10-16, quando la ricerca del
+nodo più vicino è passata al modello esatto al bit dell'`hypot` di Apple nel
+port (`src/common/libm-hypot.ts`); ora entrambi sono conformi. Riproduzione
+autonoma: `.agent-notes/circo-2475-590-repro.dot`; analisi completa della causa
+radice: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP nella coordinata radiale amplificato dall'R-tree delle xlabel.**
 2470 è un grafo di 140 archi le cui etichette d'arco HTML `<table>` si
@@ -1119,7 +1138,7 @@ circo
 trigonometria di posizionamento di circo porta `node2.y` un singolo ULP sopra
 `node8.y` attorno al valore esattamente simmetrico 18.0, e la selezione della porta
 di testa dyna di `closestSide` inverte TOP/BOTTOM a quel pareggio esatto; per il
-resto posizioni e riquadri dei nodi sono identici al bit all'oracolo).
+resto posizioni e riquadri dei nodi sono identici al bit all'oracolo; **ritirato il 2026-10-18** — è conforme da quando il DIST2 del port usa la forma fusa di clang, che scioglie quel pareggio esatto come C).
 
 **Traccia xdot di sfdp — pareggio FP sugli archi (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> La traccia xdot del motore sfdp (`parity-sfdp.json`,

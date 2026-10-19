@@ -3,69 +3,66 @@
     "opus",
     "sonnet"
   ],
+  "env": {
+    "CLAUDE_CODE_RETRY_WATCHDOG": "1",
+    "CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS": "1800000"
+  },
   "permissions": {
     "allow": [
-      "Bash(npm *:*)",
-      "Bash(npx *:*)",
-      "Bash(node *:*)",
-      "Bash(git *:*)",
-      "Bash(docker *:*)",
-      "Bash(docker-compose *:*)",
-      "Bash(python3 *:*)",
-      "Bash(psql *:*)",
-      "Bash(cargo *:*)",
-      "Bash(go *:*)",
-      "Bash(dotnet *:*)",
-      "Bash(pnpm *:*)",
-      "Bash(uv run:*)",
-      "Bash(uv pip install:*)",
-      "Bash(pip install *:*)",
-      "Bash(pytest:*)",
-      "Bash(gh *:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(node --version)",
+      "Bash(node --test:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git switch:*)",
+      "Bash(git merge:*)",
+      "Bash(git restore:*)",
+      "Bash(git stash:*)",
+      "Bash(git tag:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git config --get:*)",
+      "Bash(python3 -m json.tool:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh repo view:*)",
       "Bash(shellcheck:*)",
+      "Bash(ast-grep:*)",
+      "Bash(lizard:*)",
       "Bash(rg:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
-      "Bash(mkdir *:*)",
-      "Bash(cp *:*)",
-      "Bash(mv *:*)",
-      "Bash(chmod *:*)",
-      "Bash(find *:*)",
-      "Bash(grep *:*)",
-      "Bash(wc *:*)",
-      "Bash(sort *:*)",
-      "Bash(head *:*)",
-      "Bash(tail *:*)",
-      "Bash(diff *:*)",
-      "Bash(openssl *:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(chmod +x:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(wc:*)",
+      "Bash(sort:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(diff:*)",
       "Bash(command -v:*)",
-      "Bash(curl -s https://raw.githubusercontent.com/**:*)",
       "Bash(~/.claude/hooks/quality-gate.sh:*)",
-      "Bash(GVBINDIR=*)",
-      "Bash(ATTR_ORACLE_TIMEOUT_MS=*)",
-      "Bash(ENGINE_TIMEOUT_MULT=*)",
-      "Bash(ENGINE_TIMEOUT_FLOOR_MS=*)",
-      "Bash(ENGINE_ORACLE_TIMEOUT_MS=*)",
-      "Bash(JSON_CONCURRENCY=*)",
-      "Bash(MAP_CONCURRENCY=*)",
-      "Bash(ORACLE_CACHE=*)",
-      "Bash(PARITY_OUT=*)",
-      "Bash(SURVEY_CONCURRENCY=*)",
-      "Bash(SURVEY_HEAVY_SLOTS=*)",
-      "Bash(DYLD_LIBRARY_PATH=*)",
-      "Bash(~/git/graphviz/build/cmd/dot/dot *:*)",
-      "Bash(timeout *:*)",
-      "Bash(clang *:*)",
-      "Bash(shasum *:*)",
-      "Bash(ps *:*)",
-      "Bash(pgrep *:*)",
-      "Bash(kill *:*)",
-      "Bash(time *:*)",
-      "Read(**)",
-      "Write(**)",
-      "Edit(**)",
-      "Glob(**)",
-      "Grep(**)",
+      "Read(./**)",
+      "Write(./**)",
+      "Edit(./**)",
+      "WebFetch",
       "mcp__serena__list_dir",
       "mcp__serena__find_file",
       "mcp__serena__find_symbol",
@@ -77,32 +74,44 @@
       "mcp__serena__safe_delete_symbol",
       "mcp__serena__rename_symbol",
       "mcp__serena__find_referencing_symbols",
-      "Bash(rsync *:*)",
-      "Bash(otool *:*)",
-      "Bash(cmake *:*)",
-      "Bash(make *:*)",
-      "Bash(sed *:*)",
-      "Bash(cmp *:*)",
-      "Bash(~/git/graphviz-15/build/cmd/dot/dot *:*)",
-      "Bash(/opt/homebrew/bin/dot *:*)",
-      "Bash(objdump *:*)",
-      "Bash(DOT_BIN=*)",
-      "Bash(CORPUS_ROOT=*)",
-      "Bash(GRAPHVIZ_BUILD=*)",
-      "Bash(BENCH_POOL=*)",
-      "Bash(sh test/corpus/gen-headless-gvbindir.sh*)",
-      "Bash(bash test/golden/gates.sh*)",
-      "Bash(GVBINDIR=* npx tsx test/corpus/*)",
-      "Bash(GVBINDIR=* ~/git/graphviz/build/cmd/dot/dot *)",
-      "Bash(ln -s*)"
+      "Bash(python3 scripts/*:*)",
+      "Bash(git rm:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vitest:*)",
+      "Bash(bash -n:*)",
+      "Bash(node:*)",
+      "Bash(npx tsx:*)",
+      "Bash(bash test/golden/gates.sh:*)",
+      "Bash(GVBINDIR=/tmp/ghl:*)",
+      "Bash(PARITY_OUT=:*)",
+      "Bash(BENCH_IDS=:*)",
+      "Bash(BENCH_POOL=:*)",
+      "Bash(~/git/graphviz/build/cmd/dot/dot:*)",
+      "Bash(~/git/graphviz-15/build/cmd/dot/dot:*)",
+      "Bash(git -c commit.gpgsign=false commit:*)",
+      "Bash(git worktree:*)",
+      "Bash(git cherry-pick:*)",
+      "Bash(git rev-list:*)",
+      "Bash(git apply:*)",
+      "Bash(git grep:*)",
+      "Bash(git fetch:*)",
+      "Bash(uptime)",
+      "Bash(ps:*)",
+      "Bash(sed:*)",
+      "Bash(awk:*)",
+      "Bash(python3:*)",
+      "Bash(plantuml:*)",
+      "Bash(rm -f test/corpus/parity-mission-probe.json:*)",
+      "Bash(gh pr create:*)"
     ],
     "deny": [
-      "Bash(git push origin main:*)",
-      "Bash(git push origin HEAD:main:*)",
+      "Bash(git push:*)",
+      "Bash(git push)",
+      "Bash(gh pr merge:*)",
       "Bash(npm publish:*)",
-      "Bash(git tag:*)",
-      "Bash(git push --force:*)",
-      "Bash(git push -f:*)"
+      "Bash(git rebase:*)",
+      "Bash(git commit --no-verify:*)",
+      "Bash(git reset --hard:*)"
     ]
   },
   "hooks": {
@@ -113,6 +122,15 @@
             "type": "command",
             "command": "~/.claude/hooks/session-start.sh",
             "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat ~/.claude/post-compact-context.md"
           }
         ]
       }
@@ -133,33 +151,49 @@
         ]
       }
     ],
-    "PostCompact": [
+    "InstructionsLoaded": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "cat ~/.claude/post-compact-context.md"
+            "command": "~/.claude/hooks/log-instructions-loaded.sh",
+            "async": true
           }
         ]
       }
     ],
-    "PreCompact": [
+    "PreToolUse": [
       {
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "echo '-- COMPACTING: re-read plans/graphviz-16.1-sync/README.md + plans/graphviz-16.1-sync/decision-journal.md from disk; verify open task commits --'"
+            "command": "python3 ~/.claude/hooks/guard-bash.py",
+            "onFailure": "block"
+          }
+        ]
+      },
+      {
+        "matcher": "Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/nudge-search-tool.py"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/check-complexity.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/check-frontmatter.py"
           }
         ]
       }
@@ -170,6 +204,61 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/notify-on-stop.sh",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log-hook-event.sh StopFailure",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log-hook-event.sh PermissionDenied",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log-hook-event.sh PostToolUseFailure",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log-hook-event.sh SubagentStop",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostModelSwitch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log-hook-event.sh PostModelSwitch",
             "async": true
           }
         ]

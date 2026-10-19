@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -208,6 +208,19 @@ rétablir que les 5 positions de feuilles divergentes à l’ULP rebascule toute
 disposition vers le miroir du portage. Analyse complète :
 `.agent-notes/twopi-radial-drift-rca.md` (journal de décisions 2026-07-11).
 
+La même étoile diverge sur la piste `circo` (accepté le 2026-10-16, 599
+différences d’opérations de dessin, au plus 0.71pt). Le portage reproduit la
+contraction FMA et l’ordre d’évaluation de clang dans `circpos.c`, si bien que
+31 des 32 positions qui entrent dans PRISM sont exactes au bit près. La dernière
+diffère de 1 ULP, car V8 et la libm d’Apple arrondissent `cos`/`sin`
+différemment pour trois angles d’enfants dans `positionChildren`. La
+triangulation de Delaunay de PRISM bascule alors une diagonale presque
+cocirculaire sur l’axe de symétrie. Injection A/B : avec les valeurs natives de
+`cos`/`sin`, le portage correspond à l’oracle. Avec les valeurs de V8, le build
+natif produit la disposition de l’oracle dans 22 exécutions sur 30 et celle du
+portage dans les 8 autres, car GTS ordonne ses arêtes selon l’adresse
+d’allocation.
+
 **Caractérisation des moteurs itératifs : neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Contrairement aux pistes de moteur `circo`/`twopi`/`osage` ci-dessus,
 `neato`/`fdp`/`sfdp` ne sont **pas** encore triés par identifiant —
@@ -241,14 +254,17 @@ Contrairement au premier balayage, chaque ligne divergente de l’univers de 929
 d’injection (`test/corpus/attribute-divergence.ts`) fournit au portage le `ND_pos`
 pré-routage de l’oracle natif et recompare, et chaque identifiant divergent actuel
 est `drift-exonerated` (le routage et l’émission du portage reproduisent
-exactement l’oracle dès que la dérive du solveur est supprimée), sauf cinq. Trois
+exactement l’oracle dès que la dérive du solveur est supprimée), sauf trois. Trois
 sont des résidus par identifiant acceptés séparément : l’égalité d’incercle CDT de
-`241_0` sur fdp et sfdp, et la disposition NaN de `2556` pour sfdp. Deux ne sont
-ni acceptés ni expliqués par leur cause racine : `2471` pour fdp et `2371` pour
-sfdp conservent des positions d’étiquettes d’arête (`lp`) qui diffèrent après
-injection, c’est-à-dire que le placeur de xlabels choisit un autre candidat. La
-disposition fdp native de `2471` varie aussi d’une exécution à l’autre ; sa ligne
-n’enregistre donc qu’une exécution. (`42` de sfdp relève de la dérive A1, voir
+`241_0` sur fdp et sfdp, et la disposition NaN de `2556` pour sfdp. `2471` pour fdp et
+`2371` pour sfdp conservaient des positions d’étiquettes d’arête (`lp`) qui différaient
+après injection, c’est-à-dire que le placeur de xlabels choisissait un autre candidat.
+`2471` s’est résolu dès que le `dotneato_closest` du portage a arrondi comme
+l’évaluation de De Casteljau fusionnée et le DIST2 de clang : les ancres des étiquettes
+d’arête différaient de 1 à 2 ULP, ce qui faisait basculer le test d’inclusion strict du
+placeur. `2371` s’est résolu dès que l’arbre R du portage a copié les rectangles par
+valeur, comme le fait C. La disposition fdp native de `2471` varie d’une exécution à
+l’autre ; sa ligne n’enregistre donc qu’une exécution. (`42` de sfdp relève de la dérive A1, voir
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 L’acceptation de classe ci-dessous formalise l’ensemble disculpé ;
 compteurs à jour dans les tableaux de bord par moteur
@@ -1036,19 +1052,23 @@ niveau de la piste du moteur via `test/corpus/accepted-divergences-engines.json`
 joint à `PARITY-twopi.md`/`PARITY-circo.md` par `parity-report.ts` — la même
 jointure que `accepted.ts` effectue pour `PARITY-dot.md` sur la piste dot.
 
-**circo `2475_2` — égalité de `hypot` de closestNode cocirculaire.** Dans une
-composante de 28 nœuds de ce graphe de 10762 nœuds, le `getRotation` de circo
-(`circpos.c:73-92`) choisit le nœud du bloc le plus proche de l’origine de la
-disposition via `hypot` pour décider de la rotation du sous-bloc. Deux nœuds
-cocirculaires sont effectivement équidistants ; le `Math.hypot` de V8, à arrondi
-correct, et le `hypot` de libm d’Apple arrondissent cette distance à 2 ULP d’écart,
-ce qui inverse le `<` strict, sélectionne un nœud différent et fait pivoter/réfléchir
-le sous-bloc d’environ 20° (18 nœuds bougent, maximum 296.7pt ; les 10744 autres
-nœuds sont identiques au bit près, de même que l’arbre des blocs, l’ordre du
-cercle et chaque `centerAngle`). La politique de `hypot` à arrondi correct a
-déjà été réfutée pour cette classe (2026-07-10). Reproduction autonome :
-`.agent-notes/circo-2475-590-repro.dot` ; analyse de cause racine complète :
-`.agent-notes/circo-b81-2475-rca.md` (accepté le 2026-07-11).
+**circo `2475_2` et `2095_1` — égalité de `hypot` de closestNode cocirculaire
+(corrigé).** Dans une composante de 28 nœuds de ce graphe de 10762 nœuds, le
+`getRotation` de circo (`circpos.c:73-92`) choisit le nœud du bloc le plus
+proche de l’origine de la disposition via `hypot` pour décider de la rotation du
+sous-bloc. Deux nœuds cocirculaires sont effectivement équidistants ; le
+`Math.hypot` de V8, à arrondi correct, et le `hypot` de libm d’Apple
+arrondissent cette distance à 2 ULP d’écart, ce qui inverse le `<` strict,
+sélectionne un nœud différent et fait pivoter/réfléchir le sous-bloc d’environ
+20° (18 nœuds bougent, maximum 296.7pt ; les 10744 autres nœuds sont identiques
+au bit près, de même que l’arbre des blocs, l’ordre du cercle et chaque
+`centerAngle`). `2095_1` tombait sur la même égalité (2197 différences
+d’opérations de dessin, trois rotations rigides de blocs). Les deux étaient
+acceptés jusqu’au 2026-10-16, date à laquelle la recherche du nœud le plus
+proche est passée au modèle exact au bit du `hypot` d’Apple dans le portage
+(`src/common/libm-hypot.ts`) ; les deux sont désormais conformes. Reproduction
+autonome : `.agent-notes/circo-2475-590-repro.dot` ; analyse de cause racine
+complète : `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP de coordonnée radiale amplifié par le R-tree des xlabels.**
 2470 est un graphe de 140 arêtes dont les étiquettes d’arêtes HTML `<table>`
@@ -1163,7 +1183,7 @@ arête d’éventail — la trigonométrie de placement de circo place `node2.y`
 simple ULP au-dessus de `node8.y` autour de la valeur exactement symétrique
 18.0, et la sélection du port de tête dyna de `closestSide` bascule TOP/BOTTOM à
 cette égalité exacte ; les positions et boîtes des nœuds sont par ailleurs
-identiques au bit près à l’oracle).
+identiques au bit près à l’oracle ; **retiré le 2026-10-18** — il est conforme depuis que le DIST2 du portage prend la forme fusionnée de clang, qui tranche cette égalité exacte comme C).
 
 **Piste du moteur sfdp — égalité FP sur les arêtes (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> La piste xdot du moteur sfdp (`parity-sfdp.json`,

@@ -8,37 +8,49 @@ required.
 
 | Repo | Language | Runtime | Framework | Database | Key Deps | Entry | Notes |
 |------|----------|---------|-----------|----------|----------|-------|-------|
-| dot-engine | TypeScript (ES2022, strict) | Node 26.3.1 (Volta) + browser | none (zero runtime deps) | — | esbuild, peggy, vitest, vitepress | `src/index.ts` → `renderSvg` / `render` | This project; faithful port of C Graphviz |
-| graphviz | C | native binary | none | — | autotools, libgvc | `lib/` (cgraph, dotgen, …) | Canonical C spec (gitlab upstream, tag 15.0.0) |
+| dot-engine | TypeScript 6 (ES2022, strict) | Node >= 22 (Volta 26.3.1) + browser/Worker | none (zero runtime deps) | — | esbuild, peggy, vitest, vitepress, typedoc | `src/index.ts` → `renderSvg` / `renderSvgAsync` / `render` | This project; faithful port of C Graphviz |
+| graphviz | C | native binary | none | — | CMake, libgvc | `lib/` (cgraph, dotgen, …) | Canonical C spec and conformance oracle (gitlab upstream, 16.1.0) |
 
 ## Per-repo detail
 
 ### dot-engine (this project)
 
-- **Runtime versions**: TypeScript `^5.4.0`, target ES2022, `module: NodeNext`,
-  `strict: true`. Pinned Node 26.3.1 via Volta. Designed to run in a browser
-  with **zero runtime dependencies** and no Node-only APIs.
+- **Runtime versions**: TypeScript `^6.0.0` (6.0.3 installed), target ES2022,
+  `module: NodeNext`, `strict: true`. `engines.node` is `>=22.0.0`; Volta pins
+  Node 26.3.1. Designed to run in a browser with **zero runtime dependencies**
+  and no Node-only APIs. `canvas` is an optional peer dependency that `src/`
+  never imports. `@typescript/native-preview` (tsgo) backs the
+  `typecheck:ts7` script.
 - **Languages**: TypeScript only (plus a Peggy grammar compiled to the DOT
   parser).
 - **Key components**: eight layout engines (`dot`, `neato`, `fdp`, `sfdp`,
   `twopi`, `circo`, `osage`, `patchwork`), a DOT parser, a render pipeline,
-  and a programmatic graph-builder API. 454 `.ts` files.
+  a programmatic graph-builder API, and an async layer (`src/async/`) that
+  prefetches fonts and images. 725 `.ts` files including colocated tests.
 - **Databases**: none.
-- **External services**: none. `setImageSizer` is a caller-supplied callback
-  for image intrinsic dimensions (the one I/O seam).
+- **External services**: none. The I/O seams are caller-supplied hooks:
+  `setImageSizer` (image intrinsic dimensions), `setImageResolver` (image
+  bytes for `inlineImages`), `setTextMeasurer`, and the async options
+  `imageSizer`, `imageResolver` and `fontSet` (a `FontFaceSet`-like, default
+  `document.fonts` or the Worker's `self.fonts`).
 - **Entry points**:
-  - `dot-engine` (root) → `renderSvg(dot, engine)`, `tryRenderSvg`,
-    `render(ctx, g, format)` (as `renderWithContext`), `parse`.
+  - `@knowvah/dot-engine` (root) → `renderSvg(dot, engine)`, `tryRenderSvg`,
+    `renderSvgAsync`, `renderSvgInto`, `render(ctx, g, format)` (as
+    `renderWithContext`), `parse`, plus everything in `/api` and `/render`.
   - `@knowvah/dot-engine/api` → `createGraph`, `addEdge`, `getLayout` (geometry
     snapshot).
-  - `@knowvah/dot-engine/render` → `render(g, format, opts)`, `getDrawOps`.
+  - `@knowvah/dot-engine/render` → `render(g, format, opts)`, `renderAsync`,
+    `getDrawOps`.
   - Output formats: `svg`, `json`, `dot`, `xdot`, `plain`, `imap`, `cmapx`.
 
 ### graphviz (C — canonical spec)
 
-- **Runtime versions**: C, built with autotools; local checkout at tag
-  `15.0.0` (+82 commits). This is the upstream `gitlab.com/graphviz/graphviz`,
-  not a fork.
+- **Runtime versions**: C, built natively with CMake; the oracle is the
+  `oracle/16.1.0` branch of the local checkout (tag 16.1.0 plus one
+  env-gated position-dump commit; see
+  [ADR-0001](../adr/0001-graphviz-16.1-oracle.md)). The upstream is
+  `gitlab.com/graphviz/graphviz`, not a fork. A separate 15.x build is kept
+  only as a historical reference for bisecting 16.1 behaviour changes.
 - **Languages**: primarily C, with build tooling.
 - **Key components**: `lib/cgraph` (graph model), `lib/dotgen` (dot engine),
   `lib/neatogen`, `lib/circogen`, `lib/osage`, `lib/sfdpgen`, `lib/pathplan`,

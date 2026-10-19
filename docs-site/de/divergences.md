@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -201,6 +201,18 @@ ULP-abweichenden Blattpositionen kippt das gesamte Layout zurück in die Spiegel
 der Portierung. Vollständige Ursachenanalyse: `.agent-notes/twopi-radial-drift-rca.md`
 (Entscheidungsjournal 2026-07-11).
 
+Derselbe Stern weicht auch auf dem `circo`-Track ab (akzeptiert am 2026-10-16,
+599 Draw-Op-Unterschiede, höchstens 0.71pt). Die Portierung bildet die
+FMA-Kontraktion und Auswertungsreihenfolge von clang in `circpos.c` nach, sodass
+31 der 32 Positionen, die in PRISM eingehen, bitexakt sind. Die letzte weicht um
+1 ULP ab, weil V8 und die Apple-libm `cos`/`sin` an drei Kindwinkeln in
+`positionChildren` unterschiedlich runden. Die Delaunay-Triangulierung von PRISM
+kippt dann eine nahezu kozirkulare Diagonale auf der Spiegelachse.
+Injection-A/B: Mit den nativen `cos`/`sin`-Werten stimmt die Portierung mit dem
+Orakel überein. Mit den Werten von V8 liefert der native Build in 22 von 30
+Läufen das Layout des Orakels und in den übrigen 8 das der Portierung, weil GTS
+seine Kanten nach Allokationsadresse ordnet.
+
 **Charakterisierung der iterativen Engines: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Anders als die oben beschriebenen Engine-Tracks für `circo`/`twopi`/`osage` sind
 `neato`/`fdp`/`sfdp` bislang **nicht** je ID triagiert — `engine-walk.ts` führt für
@@ -233,13 +245,16 @@ Anders als beim ersten Durchlauf ist jede abweichende Zeile des
 Injection-Harness (`test/corpus/attribute-divergence.ts`) gibt das `ND_pos` des
 nativen Orakels vor dem Routing in die Portierung und vergleicht neu, und jede
 aktuelle abweichende ID ist `drift-exonerated` (Routing und Ausgabe der Portierung
-reproduzieren das Orakel exakt, sobald die Solver-Drift entfernt ist), außer fünf.
+reproduzieren das Orakel exakt, sobald die Solver-Drift entfernt ist), außer drei.
 Drei sind gesondert akzeptierte Einzel-Restfälle: der CDT-Incircle-Gleichstand von
-`241_0` bei fdp und sfdp sowie das NaN-Layout von sfdp `2556`. Zwei sind weder
-akzeptiert noch bis zur Ursache geklärt: fdp `2471` und sfdp `2371` behalten nach
-der Injection abweichende Kantenlabel-Positionen (`lp`), d. h. der
-xlabel-Platzierer wählt einen anderen Kandidaten. Das native fdp-Layout von `2471`
-variiert zudem von Lauf zu Lauf, daher hält seine Zeile einen Lauf fest. (sfdp
+`241_0` bei fdp und sfdp sowie das NaN-Layout von sfdp `2556`. fdp `2471` und sfdp
+`2371` behielten früher nach der Injection abweichende Kantenlabel-Positionen (`lp`), d.
+h. der xlabel-Platzierer wählte einen anderen Kandidaten. `2471` ist behoben, seit
+`dotneato_closest` der Portierung wie die fusionierte De-Casteljau-Auswertung und DIST2
+von clang rundet: Die Anker der Kantenlabels wichen um 1–2 ULP ab, was den strikten
+Enthaltenseinstest des Platzierers kippte. `2371` ist behoben, seit der R-Baum der
+Portierung Rechtecke als Wert kopiert, wie C es tut. Das native fdp-Layout von `2471`
+variiert von Lauf zu Lauf, daher hält seine Zeile einen Lauf fest. (sfdp
 `42` ist A1-Drift, siehe
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Die Klassen-Akzeptanz unten formalisiert die entlastete Menge;
@@ -982,18 +997,22 @@ filed“). Auf Engine-Track-Ebene akzeptiert über
 `PARITY-twopi.md`/`PARITY-circo.md` einbindet — dieselbe Verknüpfung, die `accepted.ts`
 für das `PARITY-dot.md` des dot-Tracks vornimmt.
 
-**circo `2475_2` — kozirkularer Gleichstand bei `hypot` in closestNode.** In einer
-Komponente mit 28 Knoten dieses Graphen mit 10762 Knoten wählt das `getRotation` von circo
-(`circpos.c:73-92`) per `hypot` den dem Layoutursprung nächsten Blockknoten, um die
-Rotation des Unterblocks zu bestimmen. Zwei kozirkulare Knoten sind praktisch
-gleich weit entfernt; das korrekt gerundete `Math.hypot` von V8 und das `hypot` der Apple-libm
-runden diese Distanz um 2 ULP unterschiedlich, was das strikte `<` kippt, einen anderen
-Knoten auswählt und den Unterblock um ~20° dreht/spiegelt (18 Knoten bewegen sich, max.
-296.7pt; die übrigen 10744 Knoten sind bitidentisch, ebenso der Blockbaum, die
-Kreisreihenfolge und jedes `centerAngle`). Die CR-hypot-Richtlinie wurde für diese
-Klasse bereits widerlegt (2026-07-10). Eigenständige Reproduktion:
-`.agent-notes/circo-2475-590-repro.dot`; vollständige Ursachenanalyse:
-`.agent-notes/circo-b81-2475-rca.md` (akzeptiert 2026-07-11).
+**circo `2475_2` und `2095_1` — kozirkularer Gleichstand bei `hypot` in
+closestNode (behoben).** In einer Komponente mit 28 Knoten dieses Graphen mit
+10762 Knoten wählt das `getRotation` von circo (`circpos.c:73-92`) per `hypot`
+den dem Layoutursprung nächsten Blockknoten, um die Rotation des Unterblocks zu
+bestimmen. Zwei kozirkulare Knoten sind praktisch gleich weit entfernt; das
+korrekt gerundete `Math.hypot` von V8 und das `hypot` der Apple-libm runden
+diese Distanz um 2 ULP unterschiedlich, was das strikte `<` kippt, einen anderen
+Knoten auswählt und den Unterblock um ~20° dreht/spiegelt (18 Knoten bewegen
+sich, max. 296.7pt; die übrigen 10744 Knoten sind bitidentisch, ebenso der
+Blockbaum, die Kreisreihenfolge und jedes `centerAngle`). `2095_1` traf
+denselben Gleichstand (2197 Draw-Op-Unterschiede, drei starre Blockrotationen).
+Beide waren bis 2026-10-16 akzeptiert; seitdem verwendet die Suche nach dem
+nächsten Knoten das bitexakte Modell von Apples `hypot` in der Portierung
+(`src/common/libm-hypot.ts`), und beide sind konform. Eigenständige
+Reproduktion: `.agent-notes/circo-2475-590-repro.dot`; vollständige
+Ursachenanalyse: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP bei Radialkoordinaten, verstärkt durch den xlabel-R-Baum.**
 2470 ist ein Graph mit 140 Kanten, dessen HTML-`<table>`-Kanten-Labels sich an fast
@@ -1098,7 +1117,7 @@ Draw-Op-Unterschiede an einer Fächerkante — die
 Platzierungstrigonometrie von circo setzt `node2.y` genau ein ULP über `node8.y` um den
 exakt symmetrischen Wert 18.0, und die dyna-Head-Port-Wahl von `closestSide` kippt bei
 diesem exakten Gleichstand zwischen TOP/BOTTOM; Knotenpositionen und Boxen sind sonst
-bitidentisch mit dem Orakel).
+bitidentisch mit dem Orakel; **ausgemustert 2026-10-18** — konform, seit DIST2 der Portierung die fusionierte Form von clang verwendet, die diesen exakten Gleichstand wie C entscheidet).
 
 **sfdp-Engine-Track — Kanten-FP-Gleichstand (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Der xdot-Engine-Track von sfdp (`parity-sfdp.json`, nativ

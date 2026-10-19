@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -181,6 +181,18 @@ port con las posiciones exactas de `circleLayout` de C reproduce el oráculo nod
 diseño al espejo del port. Análisis de causa raíz completo:
 `.agent-notes/twopi-radial-drift-rca.md` (diario de decisiones 2026-07-11).
 
+La misma estrella diverge en la pista de `circo` (aceptado el 2026-10-16, 599
+diferencias de operaciones de dibujo, como máximo 0.71pt). El port reproduce la
+contracción FMA y el orden de evaluación de clang en `circpos.c`, de modo que 31
+de las 32 posiciones que entran en PRISM son exactas al bit. La última difiere
+en 1 ULP, porque V8 y la libm de Apple redondean `cos`/`sin` de forma distinta
+en tres ángulos de hijos en `positionChildren`. La triangulación de Delaunay de
+PRISM invierte entonces una diagonal casi cocircular en el eje de simetría.
+Inyección A/B: con los valores nativos de `cos`/`sin`, el port coincide con el
+oráculo. Con los valores de V8, la compilación nativa produce el layout del
+oráculo en 22 de 30 ejecuciones y el del port en las otras 8, porque GTS ordena
+sus aristas por dirección de asignación.
+
 **Caracterización de los motores iterativos: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 A diferencia de las pistas de motor `circo`/`twopi`/`osage` de arriba, `neato`/`fdp`/`sfdp`
 **todavía no** están triados por id: `engine-walk.ts` registra un campo `tolerance: 0.5`
@@ -212,14 +224,17 @@ elementos está atribuida individualmente frente a graphviz 16.1.0: el arnés de
 inyección (`test/corpus/attribute-divergence.ts`) alimenta el `ND_pos` previo al
 enrutamiento del oráculo nativo al port y vuelve a comparar, y cada id divergente
 actual es `drift-exonerated` (el enrutamiento y la emisión del port reproducen
-exactamente el oráculo una vez eliminada la deriva del solucionador) salvo cinco.
+exactamente el oráculo una vez eliminada la deriva del solucionador) salvo tres.
 Tres son residuos por id aceptados por separado: el empate del incírculo de CDT de
-`241_0` en fdp y sfdp, y el layout con NaN de `2556` de sfdp. Dos no están
-aceptados ni tienen aún causa raíz: `2471` de fdp y `2371` de sfdp conservan
-posiciones de etiquetas de arista (`lp`) que difieren tras la inyección, es decir,
-el colocador de xlabels elige otro candidato. El layout nativo de fdp de `2471`
-también varía de una ejecución a otra, por lo que su fila registra una sola
-ejecución. (`42` de sfdp es deriva A1, véase
+`241_0` en fdp y sfdp, y el layout con NaN de `2556` de sfdp. `2471` de fdp y `2371` de
+sfdp conservaban posiciones de etiquetas de arista (`lp`) que diferían tras la
+inyección, es decir, el colocador de xlabels elegía otro candidato. `2471` quedó
+resuelto cuando el `dotneato_closest` del port pasó a redondear como la evaluación de De
+Casteljau fusionada y el DIST2 de clang: los anclajes de las etiquetas de arista
+diferían en 1–2 ULP, lo que inclinaba la prueba estricta de inclusión del colocador.
+`2371` quedó resuelto cuando el árbol R del port pasó a copiar los rectángulos por
+valor, como hace C. El layout nativo de fdp de `2471` varía de una ejecución a otra, por
+lo que su fila registra una sola ejecución. (`42` de sfdp es deriva A1, véase
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 La aceptación de clase de abajo formaliza el conjunto exonerado; recuentos en vivo en
 los paneles de cada motor
@@ -933,18 +948,22 @@ filed»). Aceptado a nivel de pista de motor mediante
 `PARITY-twopi.md`/`PARITY-circo.md` por `parity-report.ts`: la misma combinación
 que `accepted.ts` hace para el `PARITY-dot.md` de la pista dot.
 
-**circo `2475_2`: empate de `hypot` cocircular en closestNode.** En un componente de 28 nodos
-de este grafo de 10762 nodos, el `getRotation` de circo
-(`circpos.c:73-92`) elige el nodo del bloque más cercano al origen del diseño mediante
-`hypot` para decidir la rotación del subbloque. Dos nodos cocirculares son
-prácticamente equidistantes; el `Math.hypot` correctamente redondeado de V8 y el `hypot` de la libm de Apple
-redondean esa distancia con 2 ULP de diferencia, lo que invierte el `<` estricto,
-selecciona otro nodo y rota/refleja el subbloque ~20° (se mueven 18 nodos,
-máx. 296.7pt; los otros 10744 nodos son idénticos al bit, igual que el
-árbol de bloques, el orden circular y cada `centerAngle`). La política de hypot correctamente redondeado
-ya se había refutado para esta clase (2026-07-10). Reproducción independiente:
-`.agent-notes/circo-2475-590-repro.dot`; análisis de causa raíz completo:
-`.agent-notes/circo-b81-2475-rca.md` (aceptado el 2026-07-11).
+**circo `2475_2` y `2095_1`: empate de `hypot` cocircular en closestNode
+(corregido).** En un componente de 28 nodos de este grafo de 10762 nodos, el
+`getRotation` de circo (`circpos.c:73-92`) elige el nodo del bloque más cercano
+al origen del diseño mediante `hypot` para decidir la rotación del subbloque.
+Dos nodos cocirculares son prácticamente equidistantes; el `Math.hypot`
+correctamente redondeado de V8 y el `hypot` de la libm de Apple redondean esa
+distancia con 2 ULP de diferencia, lo que invierte el `<` estricto, selecciona
+otro nodo y rota/refleja el subbloque ~20° (se mueven 18 nodos, máx. 296.7pt;
+los otros 10744 nodos son idénticos al bit, igual que el árbol de bloques, el
+orden circular y cada `centerAngle`). `2095_1` caía en el mismo empate (2197
+diferencias de operaciones de dibujo, tres rotaciones rígidas de bloques). Ambos
+estuvieron aceptados hasta el 2026-10-16, cuando la búsqueda del nodo más
+cercano pasó a usar el modelo exacto al bit del `hypot` de Apple en el port
+(`src/common/libm-hypot.ts`); ahora ambos son conformes. Reproducción
+independiente: `.agent-notes/circo-2475-590-repro.dot`; análisis de causa raíz
+completo: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470`: ULP de coordenada radial amplificado por el R-tree de xlabel.**
 2470 es un grafo de 140 aristas cuyas etiquetas de arista HTML `<table>` se agrupan en
@@ -1047,7 +1066,7 @@ no un empate) y circo
 deja `node2.y` un único ULP por encima de `node8.y` en torno al
 valor exactamente simétrico 18.0, y la selección de puerto de cabeza dyna de `closestSide` cambia TOP/BOTTOM en
 ese empate exacto; las posiciones y cajas de nodos son por lo demás idénticas al bit a las del
-oráculo).
+oráculo; **retirado el 2026-10-18**: es conforme desde que el DIST2 del port usa la forma fusionada de clang, que resuelve ese empate exacto como C).
 
 **Pista de motor sfdp: empate de coma flotante en una arista (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> La pista xdot de motor de sfdp (`parity-sfdp.json`,

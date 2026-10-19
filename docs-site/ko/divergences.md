@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -168,6 +168,13 @@ PRISM 풀이에서 나온 명목상 같은 세 x 값의 마지막 ULP 순서에 
 거울상으로 되돌아갑니다. 전체 근본 원인 분석: `.agent-notes/twopi-radial-drift-rca.md`
 (결정 저널 2026-07-11).
 
+같은 별 모양 그래프는 `circo` 트랙에서도 어긋납니다(2026-10-16 수용, 그리기 연산 차이 599개, 최대 0.71pt). 포팅은
+`circpos.c`에서 clang의 FMA 축약과 평가 순서를 그대로 따르므로, PRISM에 들어가는 32개 위치 중 31개가 비트 단위로
+정확합니다. 나머지 하나는 1 ULP 차이가 나는데, `positionChildren`의 세 자식 각도에서 V8과 Apple libm이
+`cos`/`sin`을 다르게 반올림하기 때문입니다. 그러면 PRISM의 Delaunay 삼각분할이 대칭축 위의 거의 동원인 대각선 하나를
+뒤집습니다. 주입 A/B: 네이티브 `cos`/`sin` 값을 주면 포팅이 오라클과 일치합니다. V8의 값을 주면 네이티브 빌드는 30회 실행
+중 22회는 오라클의 레이아웃을, 나머지 8회는 포팅의 레이아웃을 생성하는데, GTS가 간선을 할당 주소 순으로 정렬하기 때문입니다.
+
 **반복형 엔진 특성화: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 위의 `circo`/`twopi`/`osage` 엔진 트랙과 달리 `neato`/`fdp`/`sfdp`는 아직 id별
 분류를 거치지 **않았습니다** — `engine-walk.ts`는 이 셋에 `tolerance: 0.5`
@@ -193,13 +200,10 @@ PRISM 풀이에서 나온 명목상 같은 세 x 값의 마지막 ULP 순서에 
 
 첫 조사 때와 달리 929개 항목 전체의 어긋난 행은 모두 graphviz 16.1.0 기준으로 개별
 귀속되었습니다. 주입 도구(`test/corpus/attribute-divergence.ts`)가 네이티브 오라클의
-라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 다섯 건을 제외하고
+라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 세 건을 제외하고
 `drift-exonerated`(솔버 드리프트를 제거하면 포팅의 라우팅과 출력이 오라클을 정확히
 재현함)입니다. 세 건은 별도로 수용된 id별 잔여분으로, fdp와 sfdp에서 `241_0`의 CDT
-내접원 동점과 sfdp `2556`의 NaN 레이아웃입니다. 나머지 두 건은 수용되지 않았고 아직
-근본 원인도 규명되지 않았습니다. fdp `2471`과 sfdp `2371`은 주입 후에도 엣지 레이블
-위치(`lp`)가 달라지며, 즉 xlabel 배치기가 다른 후보를 고릅니다. `2471`의 네이티브 fdp
-레이아웃도 실행마다 달라지므로 해당 행은 한 번의 실행을 기록한 것입니다. (sfdp `42`는
+내접원 동점과 sfdp `2556`의 NaN 레이아웃입니다. fdp `2471`과 sfdp `2371`은 이전에는 주입 후에도 엣지 레이블 위치(`lp`)가 달라져, xlabel 배치기가 다른 후보를 골랐습니다. `2471`은 포팅의 `dotneato_closest`가 clang의 융합된 de Casteljau 계산 및 DIST2와 같은 방식으로 반올림하게 되자 해소되었습니다. 그전에는 엣지 레이블 앵커가 1~2 ULP 달라져 배치기의 엄격한 포함 검사가 뒤집혔습니다. `2371`은 포팅의 R-트리가 C처럼 사각형을 값으로 복사하게 되자 해소되었습니다. `2471`의 네이티브 fdp 레이아웃은 실행마다 달라지므로 해당 행은 한 번의 실행을 기록한 것입니다. (sfdp `42`는
 A1 드리프트이며 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md) 참고.) 아래 클래스 수용은 면책된 집합을 공식화하며, 최신 집계는
 엔진별 대시보드
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -809,16 +813,16 @@ GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9 filed' 항목). 
 `parity-report.ts`가 이를 `PARITY-twopi.md`/`PARITY-circo.md`에 결합합니다 —
 `accepted.ts`가 dot 트랙의 `PARITY-dot.md`에 대해 수행하는 것과 같은 결합입니다.
 
-**circo `2475_2` — 동원 closestNode hypot 동점.** 노드 10762개짜리 이 그래프의 28노드
-컴포넌트 하나에서, circo의 `getRotation`(`circpos.c:73-92`)은 서브 블록의 회전을
-정하기 위해 `hypot`으로 레이아웃 원점에 가장 가까운 블록 노드를 고릅니다. 동원인 두
-노드는 사실상 같은 거리이며, V8의 정확히 반올림되는 `Math.hypot`과 Apple libm의
-`hypot`은 그 거리를 2 ULP 다르게 반올림하여 엄격한 `<`을 뒤집고, 다른 노드를 선택해
-서브 블록을 약 20° 회전/반사시킵니다(노드 18개가 이동, 최대 296.7pt. 나머지 10744개
-노드는 블록 트리, 원 순서, 모든 `centerAngle`과 마찬가지로 비트 단위로 동일). CR-hypot
-정책은 이 클래스에서 이미 반증되었습니다(2026-07-10). 독립 재현:
+**circo `2475_2` 및 `2095_1` — 동원 closestNode hypot 동점 (수정됨).** 노드 10762개짜리 이
+그래프의 28노드 컴포넌트 하나에서, circo의 `getRotation`(`circpos.c:73-92`)은 서브 블록의 회전을 정하기 위해
+`hypot`으로 레이아웃 원점에 가장 가까운 블록 노드를 고릅니다. 동원인 두 노드는 사실상 같은 거리이며, V8의 정확히 반올림되는
+`Math.hypot`과 Apple libm의 `hypot`은 그 거리를 2 ULP 다르게 반올림하여 엄격한 `<`을 뒤집고, 다른 노드를
+선택해 서브 블록을 약 20° 회전/반사시킵니다(노드 18개가 이동, 최대 296.7pt. 나머지 10744개 노드는 블록 트리, 원 순서,
+모든 `centerAngle`과 마찬가지로 비트 단위로 동일). `2095_1`도 같은 동점에 걸렸습니다(그리기 연산 차이 2197개, 블록의
+강체 회전 3회). 둘 다 2026-10-16까지 수용되어 있었으나, 그날 가장 가까운 노드 탐색이 포팅의 비트 단위로 정확한 Apple
+`hypot` 모델(`src/common/libm-hypot.ts`)로 바뀌어 이제 둘 다 적합합니다. 독립 재현:
 `.agent-notes/circo-2475-590-repro.dot`, 전체 근본 원인 분석:
-`.agent-notes/circo-b81-2475-rca.md`(2026-07-11 수용).
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — xlabel R-트리가 증폭한 방사 좌표 ULP.**
 2470은 140개 에지 그래프로, HTML `<table>` 에지 레이블이 거의 일치하는 방사 앵커에
@@ -899,7 +903,7 @@ C의 노드 크기와 포팅의 노드 크기를 각각 주면 조사에서 이�
 그리기 연산 차이 10건 — circo의 배치 삼각함수가 `node2.y`를 정확히 대칭인 값 18.0 부근에서
 `node8.y`보다 단 1 ULP 위에 놓으며, `closestSide`의 dyna 머리 포트 선택이 바로 그 정확한
 동점에서 TOP/BOTTOM을 뒤집습니다. 노드 위치와 박스는 그 외에는 오라클과 비트 단위로
-동일합니다).
+동일합니다. **2026-10-18 폐기** — 포팅의 DIST2가 clang의 융합 형태를 사용해 이 정확한 동점을 C와 같이 결정하므로 일치합니다).
 
 **sfdp 엔진 트랙 — 에지 FP 동점(`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp xdot 엔진 트랙(`parity-sfdp.json`,

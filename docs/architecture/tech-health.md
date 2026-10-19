@@ -2,41 +2,50 @@
 
 # Technology Health
 
-Versions cross-checked against [endoflife.date](https://endoflife.date/nodejs),
-the Node.js release schedule, and the TypeScript release history. CVE search via
-NVD/OSV. Date of check: 2026-06-22.
+Versions come from `package.json` and the installed toolchain (`npx tsc -v`,
+`node -v`, `node_modules/*/package.json`). Node.js EOL dates come from the
+endoflife.date API (`/api/nodejs.json`). CVE status comes from
+`npm audit --omit=dev` run on the repo. Date of check: 2026-10-16.
 
 | Repo | Component | Version | EOL Date | CVEs (High+) | Action |
 |------|-----------|---------|----------|--------------|--------|
-| dot-engine | Node.js (Volta pin) | 26.3.1 | 2029-04-30 | None known at 26.3.1 | OK |
-| dot-engine | TypeScript | ^5.4.0 | n/a (tooling) | None | Update available |
-| dot-engine | esbuild | ^0.28.1 | n/a | None | OK |
-| dot-engine | vitest | ^4.1.9 | n/a | None | OK |
-| dot-engine | peggy | ^4.0.0 | n/a | None | OK |
-| graphviz (C) | Graphviz | 15.0.0 | n/a (upstream spec) | n/a | OK (reference only) |
+| dot-engine | Node.js (Volta pin) | 26.3.1 (running `node -v`: v26.3.1; `engines` >= 22) | 2029-04-30 | None found | OK |
+| dot-engine | TypeScript | ^6.0.0 (6.0.3 installed) | n/a (tooling) | None found | OK |
+| dot-engine | `@typescript/native-preview` (tsgo) | ^7.0.0-dev.20260622.1 | n/a (preview) | None found | Preview only; backs `typecheck:ts7` |
+| dot-engine | esbuild | ^0.28.1 (0.28.1) | n/a | None found | OK |
+| dot-engine | vitest | ^4.1.11 (4.1.11) | n/a | None found | OK |
+| dot-engine | peggy | ^5.0.0 (5.1.0) | n/a | None found | OK |
+| dot-engine | vitepress / typedoc | ^1.6.0 (1.6.4) / ^0.28.20 (0.28.20) | n/a | None found | OK (docs only) |
+| graphviz (C) | Graphviz | 16.1.0 | n/a (upstream spec) | n/a | OK (oracle, not shipped) |
 
 ## Notes
 
-- **Node.js 26.3.1** — Current release line (shipped 2026-05-05), transitions to
-  Active LTS 2026-10-28, EOL 2029-04-30. Fully supported; no action required.
-  It is the last line under the old release model (Node 27 starts the
-  one-major-per-year, always-LTS model).
-  ([release schedule](https://nodejs.org/en/blog/announcements/evolving-the-nodejs-release-schedule),
-  [endoflife.date](https://endoflife.date/nodejs))
-- **TypeScript `^5.4.0`** — The `^5.4.0` floor predates TypeScript 6.0 (released
-  2026-03-23, current stable 6.0.3) and the 7.0 RC (Go-native, ~10× faster).
-  No security exposure, but the project is two majors behind. Upgrading to 6.x
-  is low-risk (40–60% faster incremental builds); 7.0 will remove flags
-  deprecated in 6.0, so plan the bump deliberately.
-  ([TypeScript releases](https://github.com/microsoft/typescript/releases))
-- **esbuild / vitest / peggy** — Recent versions, no known High+ CVEs. OK.
-- **graphviz (C)** is a reference source, not a shipped dependency of
-  dot-engine, so its version health does not affect the runtime/security
-  posture of the published library. The C checkout at tag 15.0.0 simply pins
-  the spec being ported.
+- **Runtime dependencies: none.** `npm audit --omit=dev` reports 0
+  vulnerabilities (info, low, moderate, high, critical all 0). The only
+  production-side entry is the optional peer `canvas` (`>=2 <4`), which `src/`
+  never imports. Dev-dependency CVEs are not covered by this check.
+- **Node.js 26.3.1** is in the 26 release line (released 2026-05-05). The
+  endoflife.date API lists Active LTS from 2026-10-28 and EOL 2029-04-30.
+  The library itself requires only Node >= 22; Volta pins 26.3.1 for
+  development. For comparison the same source lists Node 24 EOL as
+  2028-04-30. Node 22's EOL date was not retrieved for this check.
+- **TypeScript 6.0.3** is installed and matches the `^6.0.0` range. The
+  `typecheck:ts7` script runs `tsgo` from `@typescript/native-preview`, a
+  pre-release package; it is a check, not part of the build. endoflife.date
+  has no TypeScript page, so no EOL date is stated.
+- **esbuild / vitest / peggy** are at their declared ranges. The Peggy grammar
+  is compiled by `npm run parser:regen` before build, test and typecheck.
+- **graphviz (C)** is the conformance oracle (ADR-0001), not a shipped
+  dependency, so its version does not affect the published library's runtime
+  or security posture. The 15.x build is kept for bisection only.
+- **`overrides` pin**: `package.json` overrides `@knowvah/dot-engine` to the
+  published 1.7.0 tarball for dev tooling that depends on it; this is not a
+  dependency of the library.
 
 ## Action summary
 
-- `OK`: Node 26.3.1, esbuild, vitest, peggy.
-- `Update available` (non-urgent, no CVE): TypeScript 5.4 → 6.x.
+- `OK`: Node 26.3.1, TypeScript 6.0.3, esbuild, vitest, peggy, vitepress,
+  typedoc.
+- `Preview`: `@typescript/native-preview` (tsgo), used only for
+  `typecheck:ts7`.
 - No `EOL — upgrade required` or `CVE — patch required` items found.

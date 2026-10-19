@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -176,6 +176,17 @@ listových pozícií s rozdielom ULP preklopí celé rozloženie späť do zrkad
 portu. Úplná RCA: `.agent-notes/twopi-radial-drift-rca.md` (žurnál rozhodnutí
 2026-07-11).
 
+Tá istá hviezda sa rozchádza aj na stope `circo` (akceptované 2026-10-16, 599
+rozdielov v kresliacich operáciách, najviac 0.71pt). Port napodobňuje FMA
+kontrakciu a poradie vyhodnocovania clangu v `circpos.c`, takže 31 z 32 pozícií
+vstupujúcich do PRISM je bitovo presných. Posledná sa líši o 1 ULP, pretože V8 a
+Apple libm zaokrúhľujú `cos`/`sin` odlišne pri troch uhloch potomkov v
+`positionChildren`. Delaunayova triangulácia PRISM potom preklopí jednu takmer
+kokruhovú uhlopriečku na osi zrkadlenia. Injekcia A/B: s natívnymi hodnotami
+`cos`/`sin` port zodpovedá orákulu. S hodnotami z V8 dáva natívny build
+rozloženie orákula v 22 z 30 behov a rozloženie portu vo zvyšných 8, pretože GTS
+radí svoje hrany podľa adries alokácie.
+
 **Charakterizácia iteratívnych modulov: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Na rozdiel od stôp modulov `circo`/`twopi`/`osage` vyššie, `neato`/`fdp`/`sfdp`
 zatiaľ **nie sú** triedené po jednotlivých id — `engine-walk.ts` zaznamenáva pre tieto tri pole
@@ -204,11 +215,15 @@ Na rozdiel od prvého prieskumu je každý odchýlený riadok univerza 929 polo�
 priradený voči graphviz 16.1.0: injekčný nástroj (`test/corpus/attribute-divergence.ts`) vkladá
 `ND_pos` z natívneho orákula pred vedením hrán do portu a znovu porovnáva, a každé súčasné odchýlené
 id je `drift-exonerated` (vedenie a emisia portu reprodukujú orákulum presne, keď sa drift solvera
-odstráni), okrem piatich. Tri sú samostatne akceptované zvyšky po jednotlivých id: väzba incircle v
-CDT pri `241_0` na fdp a sfdp a NaN rozloženie sfdp `2556`. Dva nie sú akceptované a zatiaľ nemajú
-zistenú koreňovú príčinu: fdp `2471` a sfdp `2371` si po injekcii zachovávajú odlišné pozície
-popisiek hrán (`lp`), t. j. umiestňovač xlabel vyberie iného kandidáta. Natívne rozloženie fdp pre
-`2471` sa tiež líši od behu k behu, takže jeho riadok zaznamenáva jeden beh. (sfdp `42` je drift A1,
+odstráni), okrem troch. Tri sú samostatne akceptované zvyšky po jednotlivých id: väzba incircle v
+CDT pri `241_0` na fdp a sfdp a NaN rozloženie sfdp `2556`. fdp `2471` a sfdp `2371` si
+predtým po injekcii zachovávali odlišné pozície popisiek hrán (`lp`), t. j. umiestňovač
+xlabel vyberal iného kandidáta. `2471` sa vyriešil, keď `dotneato_closest` v porte začal
+zaokrúhľovať ako fúzované vyhodnotenie de Casteljau a DIST2 v clangu: kotvy popisiek
+hrán sa líšili o 1–2 ULP, čo zvrátilo striktný test obsiahnutia v umiestňovači. `2371`
+sa vyriešil, keď R-strom portu začal kopírovať obdĺžniky hodnotou, ako to robí C.
+Natívne rozloženie fdp pre `2471` sa líši od behu k behu, takže jeho riadok zaznamenáva
+jeden beh. (sfdp `42` je drift A1,
 pozri
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptácia triedy nižšie formalizuje množinu očistených; živé počty v
@@ -917,18 +932,20 @@ filed“). Akceptované na úrovni stopy modulu cez
 `PARITY-twopi.md`/`PARITY-circo.md` nástrojom `parity-report.ts` — rovnaké pripojenie,
 aké vykonáva `accepted.ts` pre stopu dot v `PARITY-dot.md`.
 
-**circo `2475_2` — remíza hypot pri kokruhovom closestNode.** V jednom komponente s 28 uzlami
-tohto grafu s 10762 uzlami vyberá `getRotation` v circo
-(`circpos.c:73-92`) uzol bloku najbližší k počiatku rozloženia cez
-`hypot`, aby určil rotáciu podbloku. Dva kokruhové uzly sú
-prakticky rovnako vzdialené; správne zaokrúhlený `Math.hypot` vo V8 a `hypot`
-z libm od Apple zaokrúhlia túto vzdialenosť o 2 ULP odlišne, čo preklopí striktné `<`,
-vyberie iný uzol a otočí/zrkadlí podblok o ~20° (18 uzlov
-sa posunie, max. 296.7pt; ostatných 10744 uzlov je bitovo identických, rovnako ako
-strom blokov, poradie kruhu a každý `centerAngle`). Politika CR-hypot bola
-pre túto triedu už vyvrátená (2026-07-10). Samostatná reprodukcia:
-`.agent-notes/circo-2475-590-repro.dot`; úplná RCA:
-`.agent-notes/circo-b81-2475-rca.md` (akceptované 2026-07-11).
+**circo `2475_2` a `2095_1` — remíza hypot pri kokruhovom closestNode
+(opravené).** V jednom komponente s 28 uzlami tohto grafu s 10762 uzlami vyberá
+`getRotation` v circo (`circpos.c:73-92`) uzol bloku najbližší k počiatku
+rozloženia cez `hypot`, aby určil rotáciu podbloku. Dva kokruhové uzly sú
+prakticky rovnako vzdialené; správne zaokrúhlený `Math.hypot` vo V8 a `hypot` z
+libm od Apple zaokrúhlia túto vzdialenosť o 2 ULP odlišne, čo preklopí striktné
+`<`, vyberie iný uzol a otočí/zrkadlí podblok o ~20° (18 uzlov sa posunie, max.
+296.7pt; ostatných 10744 uzlov je bitovo identických, rovnako ako strom blokov,
+poradie kruhu a každý `centerAngle`). `2095_1` narážal na tú istú remízu (2197
+rozdielov v kresliacich operáciách, tri rigidné rotácie blokov). Oba boli
+akceptované do 2026-10-16, keď hľadanie najbližšieho uzla prešlo na bitovo
+presný model `hypot` z Apple libm v porte (`src/common/libm-hypot.ts`); teraz
+oba vyhovujú. Samostatná reprodukcia: `.agent-notes/circo-2475-590-repro.dot`;
+úplná RCA: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP radiálnej súradnice zosilnený R-stromom xlabelov.**
 2470 je graf so 140 hranami, ktorého popisky hrán v HTML `<table>` sa zhlukujú na
@@ -1031,7 +1048,7 @@ FMA, nie remíza) a circo
 dopadne `node2.y` o jediné ULP nad `node8.y` okolo presne symetrickej
 hodnoty 18.0 a výber portu hlavy dyna v `closestSide` preklopí TOP/BOTTOM pri
 tejto presnej remíze; polohy uzlov a boxy sú inak bitovo identické s
-orákulom).
+orákulom; **vyradené 2026-10-18** — zhoduje sa, odkedy DIST2 v porte používa fúzovaný tvar z clangu, ktorý túto presnú väzbu rozhodne rovnako ako C).
 
 **Stopa modulu sfdp — remíza FP pri hrane (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Stopa xdot modulu sfdp (`parity-sfdp.json`,

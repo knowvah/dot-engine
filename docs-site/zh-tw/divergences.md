@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -149,6 +149,8 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 而只還原那 5 個存在 ULP 差異的葉節點位置，就會讓整個版面配置翻回移植版的鏡像。
 完整 RCA：`.agent-notes/twopi-radial-drift-rca.md`（決策日誌 2026-07-11）。
 
+同一個星形圖在 `circo` 軌道上也有偏差（2026-10-16 接受，599 處繪製操作差異，最大 0.71pt）。移植版重現了 clang 在 `circpos.c` 中的 FMA 收縮與求值順序，因此進入 PRISM 的 32 個位置中有 31 個位元精確。最後一個相差 1 ULP，因為 V8 與 Apple libm 在 `positionChildren` 的三個子區塊角度上對 `cos`／`sin` 的捨入不同。接著 PRISM 的 Delaunay 三角剖分在鏡像軸上翻轉了一條近乎共圓的對角線。注入 A/B：給定原生的 `cos`／`sin` 值時，移植版與參照程式一致。給定 V8 的值時，原生建置在 30 次執行中有 22 次產生參照程式的版面配置，其餘 8 次產生移植版的版面配置，因為 GTS 依配置位址排列其邊。
+
 **迭代式引擎的特徵描述：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
 與上方的 `circo`／`twopi`／`osage` 引擎軌道不同，`neato`／`fdp`／`sfdp`
 **尚未**逐 id 分級處理——`engine-walk.ts` 為這三者記錄 `tolerance: 0.5`
@@ -173,11 +175,12 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 
 與第一次掃描時不同，929 項範圍中每一列差異都已針對 graphviz 16.1.0 個別歸因：
 注入工具（`test/corpus/attribute-divergence.ts`）將原生參照程式繞線前的
-`ND_pos` 餵給移植版並重新比對，而目前每個差異 id 除了五個之外，都是
+`ND_pos` 餵給移植版並重新比對，而目前每個差異 id 除了三個之外，都是
 `drift-exonerated`（一旦移除求解器漂移，移植版的繞線與輸出就能精確重現參照程式）。
 其中三個是另行接受的逐 id 殘留項：fdp 與 sfdp 上 `241_0` 的 CDT 內切圓平手，以及 sfdp `2556` 的 NaN 版面。
-另外兩個未被接受，也尚未找出根本原因：fdp `2471` 與 sfdp `2371` 在注入之後保留的邊標籤位置（`lp`）仍不相同，亦即 xlabel 放置器挑選了不同的候選。
-`2471` 的原生 fdp 版面每次執行也會變動，因此其列只記錄一次執行。
+fdp `2471` 與 sfdp `2371` 先前在注入之後保留的邊標籤位置（`lp`）仍不相同，亦即 xlabel 放置器挑選了不同的候選。移植版的 `dotneato_closest` 改為依 clang 融合後的 de Casteljau 求值與 DIST2 方式捨入後，`2471` 已經消除：先前邊標籤錨點相差 1–2 ULP，使放置器的嚴格包含判斷翻轉。
+移植版的 R 樹像 C 一樣以值複製矩形之後，`2371` 已經消除。
+`2471` 的原生 fdp 版面每次執行都會變動，因此其列只記錄一次執行。
 （sfdp 的 `42` 是 A1 漂移，見 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）
 下方的類別接受將被免責的集合正式化；即時計數見各引擎儀表板
 （[`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
@@ -759,7 +762,7 @@ filed」條目）。透過
 `PARITY-twopi.md`／`PARITY-circo.md`——這與 `accepted.ts`
 對 dot 軌道的 `PARITY-dot.md` 所做的合併相同。
 
-**circo `2475_2`——共圓 closestNode 的 hypot 平手。** 在這張 10762 個節點的圖中，
+**circo `2475_2` 與 `2095_1`——共圓 closestNode 的 hypot 平手（已修正）。** 在這張 10762 個節點的圖中，
 某個 28 個節點的元件裡，circo 的 `getRotation`
 （`circpos.c:73-92`）透過 `hypot` 挑選離版面配置原點最近的區塊節點，
 以決定子區塊的旋轉。兩個共圓的節點
@@ -767,10 +770,9 @@ filed」條目）。透過
 libm 的 `hypot` 對該距離的捨入相差 2 ULP，這翻轉了嚴格的 `<`，
 選到不同的節點，並使子區塊旋轉／反射約 20°（18 個節點
 移動，最大 296.7pt；其他 10744 個節點位元相同，區塊樹、
-圓周順序與每個 `centerAngle` 也是）。CR-hypot 策略
-已在此類別被推翻（2026-07-10）。獨立重現：
+圓周順序與每個 `centerAngle` 也是）。`2095_1` 也落在同一個平手上（2197 處繪製操作差異，三次剛性區塊旋轉）。兩者一直被接受到 2026-10-16；那天最近節點搜尋改用移植版中 Apple `hypot` 的位元精確模型（`src/common/libm-hypot.ts`），現在兩者都符合。獨立重現：
 `.agent-notes/circo-2475-590-repro.dot`；完整 RCA：
-`.agent-notes/circo-b81-2475-rca.md`（2026-07-11 接受）。
+`.agent-notes/circo-b81-2475-rca.md`。
 
 **twopi `2470`——被 xlabel R-tree 放大的放射座標 ULP。**
 2470 是一張 140 條邊的圖，其 HTML `<table>` 邊標籤聚集在
@@ -868,7 +870,7 @@ qsort 以不同方式排序——不同的列優先格子、`9002`/`9006`
 使 `node2.y` 比 `node8.y` 高出恰好一個 ULP，圍繞精確對稱的
 值 18.0，而 `closestSide` 的動態頭端連接埠選擇在
 該精確平手處翻轉 TOP/BOTTOM；節點位置與方框在其他方面
-與參照程式位元相同）。
+與參照程式位元相同；**2026-10-18 已撤銷**——移植版的 DIST2 採用 clang 的融合形式後，像 C 一樣判定這一精確平手，現已一致）。
 
 **sfdp 引擎軌道——邊浮點平手（`241_0`）。**
 <a id="a9-sfdp-fp-ties"></a> sfdp 的 xdot 引擎軌道（`parity-sfdp.json`，

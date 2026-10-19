@@ -8,63 +8,27 @@
  */
 
 import type {
-  HtmlAlign,
   HtmlCell,
   HtmlCellContent,
-  HtmlHR,
   HtmlImage,
   HtmlLabel,
   HtmlRow,
   HtmlTable,
   HtmlText,
   HtmlTextItem,
-  HtmlVAlign,
   Token,
   OpenToken,
 } from './htmltable-types.js';
+import { HtmlParseError } from './htmltable-types.js';
+import { htmlErrorAtToken, tokenizeDeferred } from './htmltable-lex.js';
 import {
-  HtmlParseError,
-  BORDER_LEFT,
-  BORDER_TOP,
-  BORDER_RIGHT,
-  BORDER_BOTTOM,
-  BORDER_MASK,
-} from './htmltable-types.js';
-import { tokenize } from './htmltable-lex.js';
-import { htmlEntityUTF8 } from './html-entities.js';
-
-/** Decode XML/HTML entities in an anchor attribute value (href/target), as C's
- *  HTML parser does. The stored value is the real character (`&amp;` → `&`), so
- *  imap emits it raw and cmapx re-escapes it. Undefined passes through. */
-function anchorAttr(v: string | undefined): string | undefined {
-  return v === undefined ? undefined : htmlEntityUTF8(v);
-}
-
-// ---------------------------------------------------------------------------
-// Attribute helpers
-// ---------------------------------------------------------------------------
-
-const parseAlign = (v: string): HtmlAlign | undefined => {
-  const u = v.toUpperCase();
-  if (u === 'LEFT') return 'left';
-  if (u === 'RIGHT') return 'right';
-  if (u === 'CENTER') return 'center';
-  return undefined;
-};
-
-const parseVAlign = (v: string): HtmlVAlign | undefined => {
-  const u = v.toUpperCase();
-  if (u === 'TOP') return 'top';
-  if (u === 'BOTTOM') return 'bottom';
-  if (u === 'MIDDLE') return 'middle';
-  return undefined;
-};
-
-const num = (s: string | undefined): number | undefined => {
-  if (s === undefined) return undefined;
-  const n = parseInt(s, 10);
-  return isNaN(n) ? undefined : n;
-};
+  buildCell,
+  buildTable,
+  num,
+  parseAlign,
+  parseColumns,
+  parseRows,
+} from './htmltable-parse-attrs.js';
 
 // ---------------------------------------------------------------------------
 // Font-stack — mirrors pushFont / popFont in htmlparse.y
@@ -115,7 +79,32 @@ const fontItemProps = (f: FontState): Partial<HtmlTextItem> => {
 interface ParseState {
   tokens: Token[];
   pos: number;
+  /** Lexical error found after the last token: C reports it when the parser asks for more. */
+  pending?: HtmlParseError;
 }
+
+/** bison's default message for an unexpected token. @see lib/common/htmlparse.y */
+const MSG_SYNTAX_ERROR = 'syntax error';
+/** @see lib/common/htmlparse.y:288 (table rule) */
+const MSG_TEXT_BEFORE_TABLE = 'Syntax error: non-space string used before <TABLE>';
+/** @see lib/common/htmlparse.y:298 (table rule) */
+const MSG_TEXT_AFTER_TABLE = 'Syntax error: non-space string used after </TABLE>';
+
+/**
+ * C's `nonSpace` on the lexer's text, which has already dropped control
+ * characters; the port's tokens still carry tab, LF and CR.
+ * @see lib/common/htmlparse.y:nonSpace
+ */
+const nonSpace = (text: string): boolean => /[^ \t\n\r]/.test(text);
+
+/**
+ * The parse failure C reports through `htmlerror` when the lexer last returned
+ * `tok`. At end of input the deferred lexical error is what C would hit next.
+ * A token without a recorded chunk yields a plain, silent HtmlParseError.
+ * @see lib/common/htmllex.c:htmlerror
+ */
+const parseError = (s: ParseState, tok: Token | undefined, message: string): HtmlParseError =>
+  (tok === undefined ? s.pending : htmlErrorAtToken(message, tok)) ?? new HtmlParseError(message);
 
 const peek = (s: ParseState): Token | undefined => s.tokens[s.pos];
 
@@ -144,14 +133,29 @@ const inlineFontState = (tag: string, _attrs: Record<string, string>): FontState
   return fs;
 };
 
+/**
+ * `br: T_br T_end_br`, likewise image, HR and VR: the open tag must be
+ * followed at once by its close (`<BR/>` yields both); anything else is a
+ * syntax error at that token.
+ * @see lib/common/htmlparse.y:br, image
+ */
+const consumeClose = (s: ParseState, tag: string): void => {
+  const nxt = peek(s);
+  if (nxt === undefined) return;
+  if (nxt.type === 'close' && nxt.tag === tag) {
+    consume(s);
+    return;
+  }
+  throw parseError(s, nxt, MSG_SYNTAX_ERROR);
+};
+
 const applyBrTag = (
   s: ParseState, t: OpenToken, fontStack: FontState[], items: HtmlTextItem[],
 ): void => {
   consume(s);
   const font = fontStack[fontStack.length - 1] ?? {};
   items.push({ br: true, brAlign: parseAlign(t.attrs['align'] ?? ''), ...fontItemProps(font) });
-  const nxt = peek(s);
-  if (nxt?.type === 'close' && nxt.tag === 'BR') consume(s);
+  consumeClose(s, 'BR');
 };
 
 const applyFontTag = (
@@ -219,13 +223,6 @@ export const parseText = (s: ParseState, fontStack: FontState[]): HtmlText => {
 // Cell content helpers — mirrors htmlparse.y cell rule
 // ---------------------------------------------------------------------------
 
-const parseHrContent = (s: ParseState): HtmlHR => {
-  consume(s);
-  const nxt = peek(s);
-  if (nxt?.type === 'close' && nxt.tag === 'HR') consume(s);
-  return { kind: 'hr' };
-};
-
 const parseImgContent = (
   s: ParseState, t: OpenToken, cellAttrs: Record<string, string>,
 ): HtmlImage => {
@@ -235,30 +232,84 @@ const parseImgContent = (
     src: cellAttrs['src'] ?? t.attrs['src'] ?? '',
     scale: t.attrs['scale'],
   };
-  const nxt = peek(s);
-  if (nxt?.type === 'close' && nxt.tag === 'IMG') consume(s);
+  consumeClose(s, 'IMG');
   return img;
 };
 
-const parseCellItem = (
-  s: ParseState, t: Token, cellAttrs: Record<string, string>, fontStack: FontState[],
+/** What a cell holds so far: C's cell has exactly one child. */
+interface CellScan {
+  kind: 'none' | 'text' | 'table' | 'image';
+  /** Non-space text before the nested table (checked when the table opens). */
+  textNonSpace: boolean;
+  /** Non-space text after the nested table (checked when the run ends). */
+  afterNonSpace: boolean;
+}
+
+/** `table: opt_space T_table ... T_end_table opt_space` inside a cell. */
+const scanCellTable = (
+  s: ParseState, t: Token, fontStack: FontState[], st: CellScan,
 ): HtmlCellContent[] => {
-  if (t.type === 'open' && t.tag === 'TABLE') return [parseTable(s, fontStack)];
-  if (t.type === 'open' && t.tag === 'IMG') return [parseImgContent(s, t, cellAttrs)];
-  if (t.type === 'open' && t.tag === 'HR') return [parseHrContent(s)];
+  if (st.kind === 'image' || st.kind === 'table') throw parseError(s, t, MSG_SYNTAX_ERROR);
+  if (st.textNonSpace) throw parseError(s, t, MSG_TEXT_BEFORE_TABLE);
+  const tbl = parseTable(s, fontStack);
+  st.kind = 'table';
+  return [tbl];
+};
+
+/** Text run (strings and inline tags) of a cell holding text so far. */
+const scanCellText = (s: ParseState, t: Token, fontStack: FontState[], st: CellScan): HtmlCellContent[] => {
+  const start = s.pos;
   const txt = parseText(s, fontStack);
+  if (s.pos === start) throw parseError(s, t, MSG_SYNTAX_ERROR);
+  if (txt.items.some((i) => i.text !== undefined && nonSpace(i.text))) st.textNonSpace = true;
+  st.kind = 'text';
   return txt.items.length > 0 ? [txt] : [];
+};
+
+/** Only the blanks of the table rule's trailing opt_space may follow a nested table. */
+const scanAfterTable = (s: ParseState, t: Token, st: CellScan): HtmlCellContent[] => {
+  if (t.type !== 'text') throw parseError(s, t, st.afterNonSpace ? MSG_TEXT_AFTER_TABLE : MSG_SYNTAX_ERROR);
+  consume(s);
+  if (nonSpace(t.value)) st.afterNonSpace = true;
+  return [];
+};
+
+/** `image` as the cell's only child. */
+const scanCellImage = (
+  s: ParseState, t: OpenToken, cellAttrs: Record<string, string>, st: CellScan,
+): HtmlCellContent[] => {
+  if (st.kind !== 'none') throw parseError(s, t, MSG_SYNTAX_ERROR);
+  st.kind = 'image';
+  return [parseImgContent(s, t, cellAttrs)];
+};
+
+/** One step of `cell: T_cell (fonttable | fonttext | image) T_end_cell`. */
+const scanCellItem = (
+  s: ParseState, t: Token, cellAttrs: Record<string, string>, fontStack: FontState[], st: CellScan,
+): HtmlCellContent[] => {
+  if (st.kind === 'table') return scanAfterTable(s, t, st);
+  if (t.type === 'open' && t.tag === 'TABLE') return scanCellTable(s, t, fontStack, st);
+  if (t.type === 'open' && t.tag === 'IMG') return scanCellImage(s, t, cellAttrs, st);
+  if (st.kind === 'image') throw parseError(s, t, MSG_SYNTAX_ERROR);
+  return scanCellText(s, t, fontStack, st);
+};
+
+/** True at the cell's own `</TD>`; any other close tag is a syntax error. */
+const endsCell = (s: ParseState, t: Token, st: CellScan): boolean => {
+  if (t.type !== 'close') return false;
+  const afterText = st.kind === 'table' && st.afterNonSpace;
+  if (t.tag === 'TD' && !afterText) return true;
+  throw parseError(s, t, afterText ? MSG_TEXT_AFTER_TABLE : MSG_SYNTAX_ERROR);
 };
 
 const parseCellContent = (
   s: ParseState, cellAttrs: Record<string, string>, fontStack: FontState[],
 ): HtmlCellContent[] => {
   const content: HtmlCellContent[] = [];
-  while (s.pos < s.tokens.length) {
-    const t = peek(s);
-    if (!t) break;
-    if (t.type === 'close' && t.tag === 'TD') break;
-    content.push(...parseCellItem(s, t, cellAttrs, fontStack));
+  const st: CellScan = { kind: 'none', textNonSpace: false, afterNonSpace: false };
+  for (let t = peek(s); t !== undefined; t = peek(s)) {
+    if (endsCell(s, t, st)) break;
+    content.push(...scanCellItem(s, t, cellAttrs, fontStack, st));
   }
   const nxt = peek(s);
   if (nxt?.type === 'close' && nxt.tag === 'TD') consume(s);
@@ -270,86 +321,6 @@ const parseCellContent = (
   return content;
 };
 
-const parseFixedSize = (a: Record<string, string>): true | undefined =>
-  a['fixedsize']?.toUpperCase() === 'TRUE' ? true : undefined;
-
-const parseTitle = (a: Record<string, string>): string | undefined =>
-  a['title'] !== undefined ? a['title'] : a['tooltip'];
-
-/**
- * Parse SIDES attribute into a bitmask matching C sidesfn().
- * Unrecognised chars are silently skipped (C issues a warning but continues).
- * C guard: if (flags != BORDER_MASK) p->flags |= flags — the full-mask case
- * is a no-op (means "all sides", the default), so we return undefined for it.
- * @see lib/common/htmllex.c:sidesfn
- */
-const parseSides = (v: string | undefined): number | undefined => {
-  if (v === undefined) return undefined;
-  let flags = 0;
-  for (const c of v.toLowerCase()) {
-    if (c === 'l') flags |= BORDER_LEFT;
-    else if (c === 't') flags |= BORDER_TOP;
-    else if (c === 'r') flags |= BORDER_RIGHT;
-    else if (c === 'b') flags |= BORDER_BOTTOM;
-  }
-  // C: if (flags != BORDER_MASK) p->flags |= flags
-  if (flags === 0 || flags === BORDER_MASK) return undefined;
-  return flags;
-};
-
-/**
- * Parse GRADIENTANGLE attribute — integer in [0, 360].
- * Out-of-range or non-integer values are ignored (C issues a warning).
- * @see lib/common/htmllex.c:gradientanglefn
- */
-const parseGradientAngle = (v: string | undefined): number | undefined => {
-  if (v === undefined) return undefined;
-  const n = parseInt(v, 10);
-  if (isNaN(n) || String(n) !== v.trim()) return undefined;
-  if (n < 0 || n > 360) return undefined;
-  return n;
-};
-
-/**
- * Parse COLUMNS attribute — only "*" is valid (sets vrule=true).
- * @see lib/common/htmllex.c:columnsfn
- */
-const parseColumns = (v: string | undefined): true | undefined =>
-  v === '*' ? true : undefined;
-
-/**
- * Parse ROWS attribute — only "*" is valid (sets hrule=true).
- * @see lib/common/htmllex.c:rowsfn
- */
-const parseRows = (v: string | undefined): true | undefined =>
-  v === '*' ? true : undefined;
-
-const buildCell = (content: HtmlCellContent[], a: Record<string, string>): HtmlCell => ({
-  kind: 'cell',
-  content,
-  port: a['port'],
-  align: parseAlign(a['align'] !== undefined ? a['align'] : ''),
-  valign: parseVAlign(a['valign'] !== undefined ? a['valign'] : ''),
-  balign: parseAlign(a['balign'] !== undefined ? a['balign'] : ''),
-  bgcolor: a['bgcolor'],
-  color: a['color'],
-  border: num(a['border']),
-  cellpadding: num(a['cellpadding']),
-  cellspacing: num(a['cellspacing']),
-  sides: parseSides(a['sides']),
-  gradientangle: parseGradientAngle(a['gradientangle']),
-  style: a['style'],
-  width: num(a['width']),
-  height: num(a['height']),
-  fixedsize: parseFixedSize(a),
-  colspan: num(a['colspan']),
-  rowspan: num(a['rowspan']),
-  href: anchorAttr(a['href']),
-  title: parseTitle(a),
-  target: anchorAttr(a['target']),
-  id: a['id'],
-});
-
 /** @see lib/common/htmlparse.y:cell rule / lib/common/htmllex.c:mkCell */
 const parseCell = (
   s: ParseState, attrs: Record<string, string>, fontStack: FontState[],
@@ -359,72 +330,98 @@ const parseCell = (
 // parseRow — parses <TR>...</TR>
 // ---------------------------------------------------------------------------
 
-const processRowToken = (
-  s: ParseState, t: Token, cells: HtmlCell[], fontStack: FontState[],
-): void => {
+/**
+ * `cells : cell | cells cell | cells VR cell`: VR marks the PRECEDING cell
+ * as vertically ruled and must sit between two cells.
+ * @see lib/common/htmlparse.y:329
+ */
+const parseRowVr = (s: ParseState, t: Token, cells: HtmlCell[]): void => {
+  const prev = cells[cells.length - 1];
+  if (prev === undefined) throw parseError(s, t, MSG_SYNTAX_ERROR);
+  consume(s);
+  consumeClose(s, 'VR');
+  prev.vruled = true;
+};
+
+interface RowScan {
+  cells: HtmlCell[];
+  /** A VR was seen: the next cell is required. */
+  needCell: boolean;
+}
+
+/** A TD, or a VR between cells. */
+const scanRowCell = (s: ParseState, t: Token, fontStack: FontState[], rs: RowScan): void => {
   if (t.type === 'open' && t.tag === 'TD') {
     consume(s);
-    cells.push(parseCell(s, t.attrs, fontStack));
-    return;
+    rs.cells.push(parseCell(s, t.attrs, fontStack));
+    rs.needCell = false;
+  } else if (t.type === 'open' && t.tag === 'VR' && !rs.needCell) {
+    parseRowVr(s, t, rs.cells);
+    rs.needCell = true;
+  } else {
+    throw parseError(s, t, MSG_SYNTAX_ERROR);
   }
-  if (t.type === 'open' && t.tag === 'VR') {
-    consume(s);
-    const nxt = peek(s);
-    if (nxt?.type === 'close' && nxt.tag === 'VR') consume(s);
-    // C grammar: "cells VR cell" — VR marks the PRECEDING cell as
-    // vertically ruled; VR without a preceding cell is a syntax error.
-    // @see lib/common/htmlparse.y:329
-    const prev = cells[cells.length - 1];
-    if (prev === undefined) throw new HtmlParseError('VR');
-    prev.vruled = true;
-    return;
+};
+
+/** One token of `row: T_row cells T_end_row`; true at the row's `</TR>`. */
+const scanRowToken = (s: ParseState, t: Token, fontStack: FontState[], rs: RowScan): boolean => {
+  if (t.type === 'text') { consume(s); return false; } // not in a cell: ignored
+  if (t.type !== 'close' || t.tag !== 'TR') {
+    scanRowCell(s, t, fontStack, rs);
+    return false;
   }
-  consume(s);
+  if (rs.cells.length === 0 || rs.needCell) throw parseError(s, t, MSG_SYNTAX_ERROR);
+  return true;
 };
 
 /** @see lib/common/htmlparse.y:row + cells rules */
 const parseRow = (s: ParseState, fontStack: FontState[]): HtmlRow => {
-  const cells: HtmlCell[] = [];
-  while (s.pos < s.tokens.length) {
-    const t = peek(s);
-    if (!t) break;
-    if (t.type === 'close' && t.tag === 'TR') break;
-    processRowToken(s, t, cells, fontStack);
+  const rs: RowScan = { cells: [], needCell: false };
+  for (let t = peek(s); t !== undefined; t = peek(s)) {
+    if (scanRowToken(s, t, fontStack, rs)) break;
   }
   const nxt = peek(s);
   if (nxt?.type === 'close' && nxt.tag === 'TR') consume(s);
-  return { cells };
+  return { cells: rs.cells };
 };
 
 // ---------------------------------------------------------------------------
 // parseTable — parses <TABLE>...</TABLE>
 // ---------------------------------------------------------------------------
 
-const buildTable = (rows: HtmlRow[], a: Record<string, string>): HtmlTable => ({
-  kind: 'table' as const,
-  rows,
-  border: num(a['border']),
-  cellborder: num(a['cellborder']),
-  cellspacing: num(a['cellspacing']),
-  cellpadding: num(a['cellpadding']),
-  bgcolor: a['bgcolor'],
-  color: a['color'],
-  style: a['style'],
-  align: parseAlign(a['align'] !== undefined ? a['align'] : ''),
-  valign: parseVAlign(a['valign'] !== undefined ? a['valign'] : ''),
-  fixedsize: parseFixedSize(a),
-  width: num(a['width']),
-  height: num(a['height']),
-  href: anchorAttr(a['href']),
-  title: parseTitle(a),
-  target: anchorAttr(a['target']),
-  id: a['id'],
-  port: a['port'],
-  sides: parseSides(a['sides']),
-  gradientangle: parseGradientAngle(a['gradientangle']),
-  vrule: parseColumns(a['columns']),
-  hrule: parseRows(a['rows']),
-});
+interface TableScan {
+  rows: HtmlRow[];
+  /** An HR was seen: the next row is required. */
+  needRow: boolean;
+  hrule: boolean;
+  vrule: boolean;
+}
+
+/** `rows : row | rows row | rows HR row`: a TR, or an HR after a row. */
+const scanTableRow = (s: ParseState, t: Token, fontStack: FontState[], ts: TableScan): void => {
+  if (t.type === 'open' && t.tag === 'TR') {
+    consume(s);
+    ts.rows.push(parseTableRow(s, fontStack, ts));
+    ts.needRow = false;
+  } else if (t.type === 'open' && t.tag === 'HR' && ts.rows.length > 0 && !ts.needRow) {
+    consumeRowHr(s, ts.rows);
+    ts.needRow = true;
+  } else {
+    throw parseError(s, t, MSG_SYNTAX_ERROR);
+  }
+};
+
+/** One token of a table body; true after the table's `</TABLE>`. */
+const scanTableToken = (s: ParseState, t: Token, fontStack: FontState[], ts: TableScan): boolean => {
+  if (t.type === 'text') { consume(s); return false; } // not in a cell: ignored
+  if (t.type !== 'close' || t.tag !== 'TABLE') {
+    scanTableRow(s, t, fontStack, ts);
+    return false;
+  }
+  if (ts.rows.length === 0 || ts.needRow) throw parseError(s, t, MSG_SYNTAX_ERROR);
+  consume(s);
+  return true;
+};
 
 /** @see lib/common/htmlparse.y:table rule / lib/common/htmllex.c:mkTbl */
 export const parseTable = (s: ParseState, fontStack: FontState[]): HtmlTable => {
@@ -432,25 +429,16 @@ export const parseTable = (s: ParseState, fontStack: FontState[]): HtmlTable => 
   if (open.type !== 'open' || open.tag !== 'TABLE') throw new HtmlParseError('TABLE');
   // C addRow: every row starts ruled when ROWS="*" (htmlparse.y addRow);
   // C setCell: every cell starts vruled when COLUMNS="*".
-  const hrule = parseRows(open.attrs['rows']) === true;
-  const vrule = parseColumns(open.attrs['columns']) === true;
-  const rows: HtmlRow[] = [];
-  while (s.pos < s.tokens.length) {
-    const t = peek(s);
-    if (!t) break;
-    if (t.type === 'close' && t.tag === 'TABLE') { consume(s); break; }
-    if (t.type === 'open' && t.tag === 'TR') {
-      consume(s);
-      rows.push(parseTableRow(s, fontStack, { hrule, vrule }));
-      continue;
-    }
-    if (t.type === 'open' && t.tag === 'HR') {
-      consumeRowHr(s, rows);
-      continue;
-    }
-    consume(s);
+  const ts: TableScan = {
+    rows: [],
+    needRow: false,
+    hrule: parseRows(open.attrs['rows']) === true,
+    vrule: parseColumns(open.attrs['columns']) === true,
+  };
+  for (let t = peek(s); t !== undefined; t = peek(s)) {
+    if (scanTableToken(s, t, fontStack, ts)) break;
   }
-  return buildTable(rows, open.attrs);
+  return buildTable(ts.rows, open.attrs);
 };
 
 /** Parse one row, applying table-level rule defaults. @see lib/common/htmlparse.y addRow/setCell */
@@ -470,11 +458,9 @@ const parseTableRow = (
  */
 const consumeRowHr = (s: ParseState, rows: HtmlRow[]): void => {
   consume(s);
-  const nxt = peek(s);
-  if (nxt?.type === 'close' && nxt.tag === 'HR') consume(s);
+  consumeClose(s, 'HR');
   const prev = rows[rows.length - 1];
-  if (prev === undefined) throw new HtmlParseError('HR');
-  prev.ruled = true;
+  if (prev !== undefined) prev.ruled = true;
 };
 
 // ---------------------------------------------------------------------------
@@ -497,12 +483,58 @@ const skipLeadingWs = (s: ParseState): void => {
   }
 };
 
+/** After the top-level `</TABLE>`: blanks, then `</HTML>`. */
+const finishTableLabel = (s: ParseState): void => {
+  let afterNonSpace = false;
+  for (let t = peek(s); t?.type === 'text'; t = peek(s)) {
+    consume(s);
+    if (nonSpace(t.value)) afterNonSpace = true;
+  }
+  const nxt = peek(s);
+  if (nxt === undefined) return;
+  if (afterNonSpace) throw parseError(s, nxt, MSG_TEXT_AFTER_TABLE);
+  if (nxt.type !== 'close' || nxt.tag !== 'HTML') throw parseError(s, nxt, MSG_SYNTAX_ERROR);
+  consume(s);
+};
+
 const parseTableLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
   skipLeadingWs(s);
   const table = parseTable(s, fontStack);
-  const nxt = peek(s);
-  if (nxt?.type === 'close' && nxt.tag === 'HTML') consume(s);
+  finishTableLabel(s);
   return { kind: 'table', table };
+};
+
+/** `html : T_html fonttext T_end_html`; a `<TABLE>` after text is the table rule's error. */
+const parseTextLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
+  const texts: HtmlText[] = [];
+  const txt = parseText(s, fontStack);
+  if (txt.items.length > 0) texts.push(txt);
+  const nxt = peek(s);
+  if (nxt === undefined) return { kind: 'text', texts };
+  if (nxt.type === 'open' && nxt.tag === 'TABLE') {
+    // C's `table` rule aborts the whole label when non-space text precedes a
+    // top-level <TABLE>. Text that is only blanks means a font-wrapped table
+    // (`fonttable`), which this parser does not model: rejected without a
+    // message rather than with a wrong one.
+    // @see lib/common/htmlparse.y:288 (table rule nonSpace check)
+    if (txt.items.some((i) => i.text !== undefined && nonSpace(i.text))) {
+      throw parseError(s, nxt, MSG_TEXT_BEFORE_TABLE);
+    }
+    throw new HtmlParseError('TABLE');
+  }
+  if (nxt.type !== 'close' || nxt.tag !== 'HTML') throw parseError(s, nxt, MSG_SYNTAX_ERROR);
+  consume(s);
+  return { kind: 'text', texts };
+};
+
+/** Parse the token stream; the deferred lexical error wins once input runs out. */
+const parseTokens = (s: ParseState): HtmlLabel => {
+  const fontStack: FontState[] = [{}];
+  const htmlOpen = consume(s);
+  if (htmlOpen.type !== 'open' || htmlOpen.tag !== 'HTML') throw new HtmlParseError('HTML');
+  const firstReal = findFirstRealToken(s.tokens, s.pos);
+  if (firstReal?.type === 'open' && firstReal.tag === 'TABLE') return parseTableLabel(s, fontStack);
+  return parseTextLabel(s, fontStack);
 };
 
 /**
@@ -512,28 +544,16 @@ const parseTableLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
  * @see lib/common/htmlparse.y:parseHTML
  */
 export const parseHtmlLabel = (src: string): HtmlLabel => {
-  const wrapped = `<HTML>${src}</HTML>`;
-  const tokens = tokenize(wrapped);
-  const s: ParseState = { tokens, pos: 0 };
-  const fontStack: FontState[] = [{}];
-  const htmlOpen = consume(s);
-  if (htmlOpen.type !== 'open' || htmlOpen.tag !== 'HTML') throw new HtmlParseError('HTML');
-  const firstReal = findFirstRealToken(tokens, s.pos);
-  if (firstReal?.type === 'open' && firstReal.tag === 'TABLE') {
-    return parseTableLabel(s, fontStack);
+  const { tokens, error } = tokenizeDeferred(`<HTML>${src}</HTML>`);
+  const s: ParseState = { tokens, pos: 0, pending: error };
+  let label: HtmlLabel;
+  try {
+    label = parseTokens(s);
+  } catch (e) {
+    // Running off the truncated stream means C's lexer would have hit the error.
+    if (error !== undefined && s.pos >= tokens.length) throw error;
+    throw e;
   }
-  const texts: HtmlText[] = [];
-  const txt = parseText(s, fontStack);
-  if (txt.items.length > 0) texts.push(txt);
-  const nxt = peek(s);
-  // C's `table` rule aborts the whole label when non-space text precedes a
-  // top-level <TABLE> ("Syntax error: non-space string used before <TABLE>").
-  // parseText stopped at the <TABLE>; reaching it here means there was leading
-  // non-space text, so reject the label rather than leniently dropping the table.
-  // @see lib/common/htmlparse.y:288 (table rule nonSpace check)
-  if (nxt?.type === 'open' && nxt.tag === 'TABLE') {
-    throw new HtmlParseError('non-space string used before <TABLE>');
-  }
-  if (nxt?.type === 'close' && nxt.tag === 'HTML') consume(s);
-  return { kind: 'text', texts };
+  if (error !== undefined) throw error;
+  return label;
 };

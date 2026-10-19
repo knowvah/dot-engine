@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -178,6 +178,17 @@ ULP-afvigende bladpositioner vipper hele layoutet tilbage til portens
 spejl. Fuld RCA: `.agent-notes/twopi-radial-drift-rca.md` (beslutningsjournal
 2026-07-11).
 
+Den samme stjerne afviger på `circo`-sporet (accepteret 2026-10-16, 599
+draw-op-forskelle, højst 0.71pt). Porten efterligner clangs FMA-kontraktion og
+evalueringsrækkefølge i `circpos.c`, så 31 af de 32 positioner, der går ind i
+PRISM, er bit-eksakte. Den sidste afviger med 1 ULP, fordi V8 og Apple libm
+afrunder `cos`/`sin` forskelligt ved tre barnevinkler i `positionChildren`.
+PRISM's Delaunay-triangulering vender derefter én næsten cocirkulær diagonal på
+spejlaksen. Injection A/B: med de native `cos`/`sin`-værdier matcher porten
+oraklet. Med V8's værdier giver den native build oraklets layout i 22 af 30
+kørsler og portens layout i de øvrige 8, fordi GTS ordner sine kanter efter
+allokeringsadresse.
+
 **Karakterisering af de iterative motorer: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 I modsætning til motorsporene `circo`/`twopi`/`osage` ovenfor er `neato`/`fdp`/`sfdp`
 **endnu ikke** triageret pr. id — `engine-walk.ts` registrerer et felt `tolerance: 0.5`
@@ -209,12 +220,15 @@ elementer individuelt tilskrevet mod graphviz 16.1.0: injektionsværktøjet
 (`test/corpus/attribute-divergence.ts`) fodrer det native orakels `ND_pos` før
 føring ind i porten og sammenligner igen, og hvert nuværende afvigende id er
 `drift-exonerated` (portens føring og emission reproducerer oraklet nøjagtigt, når
-solver-driften er fjernet) bortset fra fem. Tre er separat accepterede rester pr.
-id: `241_0`'s CDT-incircle-uafgjort på fdp og sfdp og sfdp `2556`'s NaN-layout. To
-er hverken accepterede eller årsagsanalyserede endnu: fdp `2471` og sfdp `2371`
-beholder positioner for kantetiketter (`lp`), der afviger efter injektion, dvs.
-xlabel-placeren vælger en anden kandidat. Det native fdp-layout af `2471` varierer
-desuden fra kørsel til kørsel, så dens række registrerer én kørsel. (sfdp `42` er
+solver-driften er fjernet) bortset fra tre. Tre er separat accepterede rester pr.
+id: `241_0`'s CDT-incircle-uafgjort på fdp og sfdp og sfdp `2556`'s NaN-layout. fdp
+`2471` og sfdp `2371` beholdt tidligere positioner for kantetiketter (`lp`), der afveg
+efter injektion, dvs. xlabel-placeren valgte en anden kandidat. `2471` blev løst, da
+portens `dotneato_closest` begyndte at afrunde som clangs fusionerede de
+Casteljau-evaluering og DIST2: kantetiketternes ankre afveg før med 1–2 ULP, hvilket
+vippede placerens strenge indeslutningstest. `2371` blev løst, da portens R-træ begyndte
+at kopiere rektangler som værdier, som C gør. Det native fdp-layout af `2471` varierer
+fra kørsel til kørsel, så dens række registrerer én kørsel. (sfdp `42` er
 A1-drift, se
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Klasseaccepten nedenfor formaliserer den frikendte mængde; aktuelle tal i
@@ -925,18 +939,20 @@ filed“). Accepteret på motorsporniveau via
 `PARITY-twopi.md`/`PARITY-circo.md` af `parity-report.ts` — den samme forbindelse, som
 `accepted.ts` udfører for dot-sporets `PARITY-dot.md`.
 
-**circo `2475_2` — cocirkulær `hypot`-uafgjort for closestNode.** I én komponent med 28 knuder i
-denne graf med 10762 knuder vælger circos `getRotation`
-(`circpos.c:73-92`) blokknuden, der er tættest på layoutets origo, via
-`hypot` for at afgøre underblokkens rotation. To cocirkulære knuder er
-reelt lige langt væk; V8's korrekt afrundede `Math.hypot` og Apple
-libm's `hypot` runder den afstand 2 ULP forskelligt, hvilket vipper det strenge `<`,
-vælger en anden knude og roterer/spejler underblokken ~20° (18 knuder
-flytter sig, maks. 296.7pt; de øvrige 10744 knuder er bit-identiske, ligesom
-bloktræet, cirkelrækkefølgen og hver `centerAngle`). CR-hypot-politikken var
-allerede afkræftet for denne klasse (2026-07-10). Selvstændig repro:
-`.agent-notes/circo-2475-590-repro.dot`; fuld RCA:
-`.agent-notes/circo-b81-2475-rca.md` (accepteret 2026-07-11).
+**circo `2475_2` og `2095_1` — cocirkulær `hypot`-uafgjort for closestNode
+(rettet).** I én komponent med 28 knuder i denne graf med 10762 knuder vælger
+circos `getRotation` (`circpos.c:73-92`) blokknuden, der er tættest på layoutets
+origo, via `hypot` for at afgøre underblokkens rotation. To cocirkulære knuder
+er reelt lige langt væk; V8's korrekt afrundede `Math.hypot` og Apple libm's
+`hypot` runder den afstand 2 ULP forskelligt, hvilket vipper det strenge `<`,
+vælger en anden knude og roterer/spejler underblokken ~20° (18 knuder flytter
+sig, maks. 296.7pt; de øvrige 10744 knuder er bit-identiske, ligesom bloktræet,
+cirkelrækkefølgen og hver `centerAngle`). `2095_1` ramte det samme uafgjorte
+tilfælde (2197 draw-op-forskelle, tre stive blokrotationer). Begge var
+accepteret indtil 2026-10-16, hvor søgningen efter nærmeste knude skiftede til
+portens bit-eksakte model af Apples `hypot` (`src/common/libm-hypot.ts`); begge
+er nu konforme. Selvstændig repro: `.agent-notes/circo-2475-590-repro.dot`; fuld
+RCA: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — radial-koordinat-ULP forstærket af xlabel-R-træet.**
 2470 er en graf med 140 kanter, hvis HTML-`<table>`-kantlabels klynger sig om
@@ -1038,7 +1054,7 @@ FMA-kontraktion og ikke en uafgjort) og circo
 lander `node2.y` præcis én ULP over `node8.y` omkring den præcist symmetriske
 værdi 18.0, og `closestSide`'s valg af dyna-hovedport vipper TOP/BOTTOM ved
 den præcise uafgjort; knudepositioner og bokse er ellers bit-identiske med
-oraklet).
+oraklet; **udgået 2026-10-18** — det er konformt, siden portens DIST2 bruger clangs fusionerede form, som afgør netop denne uafgjorthed som C).
 
 **sfdp-motorsporet — FP-uafgjort på kant (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Sfdp's xdot-motorspor (`parity-sfdp.json`,

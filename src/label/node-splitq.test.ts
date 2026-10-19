@@ -137,8 +137,20 @@ function testNodeCoverMulti(): void {
   expect(nodeCover(n).boundary).toEqual([0, 0, 3, 3]);
 }
 
+// C `r = n->branch[i].rect` copies the struct: re-initialising the branch
+// afterwards (InitBranch during a split) must not reach the returned cover.
+function testNodeCoverIsACopy(): void {
+  const n = rTreeNewNode();
+  n.branch[4] = makeBranchWith(makeRect(4, 29, 6, 32));
+  n.count = 1;
+  const cover = nodeCover(n);
+  initBranch(n.branch[4]);
+  expect(cover.boundary).toEqual([4, 29, 6, 32]);
+}
+
 describe('nodeCover', () => {
   it('returns zeroed rect when no branches occupied', testNodeCoverEmpty);
+  it('returns a copy, not the branch rect itself', testNodeCoverIsACopy);
   it('returns single branch rect when count=1', testNodeCoverSingle);
   it('covers all occupied branches (fmin quirk)', testNodeCoverMulti);
 });

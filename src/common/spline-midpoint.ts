@@ -14,20 +14,41 @@ import { fma } from './fma.js';
 type BezLike = { list: Point[]; sflag: number; eflag: number; sp: Point; ep: Point; size?: number };
 export type SplLike = { list: BezLike[] };
 
+/**
+ * DIST2(p, q) as the oracle compiles it. clang -ffp-contract=on turns
+ * `dx*dx + dy*dy` into `fmul t, dy, dy; fmadd d, dx, dx, t` at every libgvc
+ * site the port reaches through here: dotneato_closest's scan and bisection,
+ * edgeMidpoint's APPROXEQPT and polylineMidpoint's DIST (libgvc 16.1
+ * disassembly), and resolvePort's inlined closestSide.
+ * @see lib/common/geom.h:DIST2
+ */
 export function dist2(p: Point, q: Point): number {
   const dx = p.x - q.x; const dy = p.y - q.y;
-  return dx * dx + dy * dy;
+  return fma(dx, dx, dy * dy);
 }
 
+/** DIST: sqrt of the fused DIST2 (`fmadd` then `fsqrt`). @see lib/common/geom.h:DIST */
 function distPt(p: Point, q: Point): number { return Math.sqrt(dist2(p, q)); }
 
-function evalBez4(pts: Point[], t: number): Point {
-  const u = 1 - t;
-  const [p0, p1, p2, p3] = pts;
-  return {
-    x: u*u*u*p0.x + 3*u*u*t*p1.x + 3*u*t*t*p2.x + t*t*t*p3.x,
-    y: u*u*u*p0.y + 3*u*u*t*p1.y + 3*u*t*t*p2.y + t*t*t*p3.y,
-  };
+/**
+ * Point at t on a cubic: C's de Casteljau triangle. Each
+ * `(1.0 - t) * a + t * b` compiles to `fmul v, b, t; fmla v, a, 1-t`, i.e.
+ * fma(a, 1 - t, t * b), both in Bezier itself and where dotneato_closest
+ * inlines it (libgvc 16.1 disassembly). The Left/Right halves are not needed
+ * here, so only the apex is kept.
+ * @see lib/common/utils.c:Bezier
+ */
+function bezier(v: Point[], t: number): Point {
+  const u = 1.0 - t;
+  const x = [v[0].x, v[1].x, v[2].x, v[3].x];
+  const y = [v[0].y, v[1].y, v[2].y, v[3].y];
+  for (let i = 1; i <= 3; i++) {
+    for (let j = 0; j <= 3 - i; j++) {
+      x[j] = fma(x[j], u, t * x[j + 1]);
+      y[j] = fma(y[j], u, t * y[j + 1]);
+    }
+  }
+  return { x: x[0], y: y[0] };
 }
 
 /** @see lib/common/utils.c:dotneato_closest */
@@ -55,7 +76,7 @@ export function dotneatoClosest(spl: SplLike, pt: Point): Point {
   let pt2: Point;
   for (;;) {
     const t = (lo + hi) / 2.0;
-    pt2 = evalBez4(c, t);
+    pt2 = bezier(c, t);
     if (Math.abs(dlo2 - dhi2) < 1.0 || Math.abs(hi - lo) < 0.00001) break;
     if (dlo2 < dhi2) { hi = t; dhi2 = dist2(pt2, pt); }
     else { lo = t; dlo2 = dist2(pt2, pt); }

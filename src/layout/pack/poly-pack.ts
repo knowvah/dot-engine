@@ -17,6 +17,7 @@ import type { PackInfo } from './types.js';
 import { spiralSearch } from './spiral-search.js';
 import { gvQsort } from '../../util/bsd-qsort.js';
 import { cround } from '../../common/arith.js';
+import { PointSet } from '../../common/pointset.js';
 import { d2i } from '../../util/math.js';
 
 /** Max average polyomino size constant. @see lib/pack/pack.c:C */
@@ -27,33 +28,6 @@ export interface GInfo {
   perim: number;
   cells: Point[];
   index: number;
-}
-
-/** A set of occupied grid cells (string-keyed for O(1) lookup). */
-export type PointSet = Set<string>;
-
-/**
- * Encode a grid point as a canonical string key.
- *
- * C keys its PointSet dict on the `pointf` cell itself (exact double compare,
- * no rounding). Every cell coordinate reaching here is an exact integer grid
- * index produced by genBox's `cround(cval(...))`, so the rounding mode is
- * unobservable; `cround` is used only so no `Math.round` survives in a layout
- * coordinate path.
- * @see lib/common/pointset.h:45 (insertPS/inPS take pointf)
- */
-export function psKey(x: number, y: number): string {
-  return `${cround(x)},${cround(y)}`;
-}
-
-/** Check if a cell is in the point set. @see lib/pack/pack.c:inPS */
-export function inPS(ps: PointSet, p: Point): boolean {
-  return ps.has(psKey(p.x, p.y));
-}
-
-/** Insert a cell into the point set. @see lib/pack/pack.c:insertPS */
-export function insertPS(ps: PointSet, p: Point): void {
-  ps.add(psKey(p.x, p.y));
 }
 
 /**
@@ -167,7 +141,7 @@ export interface PlaceCtx {
 export function hasCollision(cells: Point[], dx: number, dy: number, ps: PointSet): boolean {
   for (let i = 0; i < cells.length; i++) {
     const cell = cells[i];
-    if (cell !== undefined && inPS(ps, { x: cell.x + dx, y: cell.y + dy })) return true;
+    if (cell !== undefined && ps.inPS({ x: cell.x + dx, y: cell.y + dy })) return true;
   }
   return false;
 }
@@ -175,12 +149,12 @@ export function hasCollision(cells: Point[], dx: number, dy: number, ps: PointSe
 /**
  * Mark all shifted cells as occupied in the point set.
  *
- * @see lib/pack/pack.c:fits (cell insertion loop)
+ * @see lib/pack/pack.c:fits (cell insertion loop; `addPS`)
  */
 export function markCells(cells: Point[], dx: number, dy: number, ps: PointSet): void {
   for (let i = 0; i < cells.length; i++) {
     const cell = cells[i];
-    if (cell !== undefined) insertPS(ps, { x: cell.x + dx, y: cell.y + dy });
+    if (cell !== undefined) ps.addPS(cell.x + dx, cell.y + dy);
   }
 }
 
@@ -268,7 +242,7 @@ export function polyRects(ng: number, bbs: Box[], pinfo: PackInfo): Point[] | nu
   // perimeter, so the tie order of equal-perimeter components is decided by libc
   // qsort, not insertion order. Match it. @see util/bsd-qsort.ts
   const sorted = gvQsort([...infos], cmpByGPerimeter);
-  const ctx: PlaceCtx = { ps: new Set(), step, bbs };
+  const ctx: PlaceCtx = { ps: new PointSet(), step, bbs };
   const places: Point[] = new Array<Point>(ng).fill({ x: 0, y: 0 });
   for (let i = 0; i < sorted.length; i++) {
     const info = sorted[i];

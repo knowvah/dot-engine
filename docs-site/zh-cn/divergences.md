@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -72,6 +72,8 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 
 `1855` 是同一 PRISM 路由前浮点机制的径向/星形**镜像**变体（2026-07-11 接受）：它的 31 个叶节点恰好共圆，所以星形布局是反射对称的，PRISM 的重叠消除处于一个对称不稳定的平衡点上；`circleLayout` 的 `setAbsolutePos` 中 5 个叶节点角度上 V8 与 libm 的 `cos`/`sin` 相差 1 ULP，选中了相反的镜像吸引盆，整个径向布局最终成为参照程序布局精确的 x 轴镜像（节点最大位移 6.04pt，包围盒保持不变）。注入 A/B 证明了两个方向：把 C 精确的 `circleLayout` 位置送入移植版的 PRISM，会逐个节点复现参照程序（3e-14），而只恢复那 5 个存在 ULP 差异的叶节点位置，就会让整个布局翻回移植版的镜像。完整的根因分析：`.agent-notes/twopi-radial-drift-rca.md`（决策日志 2026-07-11）。
 
+同一个星形图在 `circo` 轨道上也有偏差（2026-10-16 接受，599 处绘制操作差异，最大 0.71pt）。移植版复现了 clang 在 `circpos.c` 中的 FMA 收缩和求值顺序，因此进入 PRISM 的 32 个位置中有 31 个逐位精确。最后一个相差 1 ULP，因为 V8 与 Apple libm 在 `positionChildren` 的三个子块角度上对 `cos`/`sin` 的舍入不同。随后 PRISM 的 Delaunay 三角剖分在镜像轴上翻转了一条近乎共圆的对角线。注入 A/B：给定原生的 `cos`/`sin` 值时，移植版与参照程序一致。给定 V8 的值时，原生构建在 30 次运行中有 22 次产生参照程序的布局，其余 8 次产生移植版的布局，因为 GTS 按分配地址排列其边。
+
 **迭代式引擎特征描述：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
 与上面的 `circo`/`twopi`/`osage` 引擎轨道不同，`neato`/`fdp`/`sfdp` 尚**未**逐 id 分诊——`engine-walk.ts` 为这三个引擎记录了 `tolerance: 0.5` 字段，`parity-report.ts` 将它们渲染在
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 中单独的“Iterative engines (±0.5 characterization)”一节里，明确**不能**与本文档其他位置的 ±0.01 确定性通过率相比较。针对 graphviz 16.1.0 的当前计数（929 项全集；通过率不计入 C 参照程序无法渲染的输入，依据[一致性](./conformance.md)）：
@@ -86,7 +88,7 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 
 （第一次扫描，2026-07-11，762 项时，测得 ±0.5pt 以内的分别为 263/311/260——升至当前比率，是因为此后落地的逐 id 修复，主要是 neato 未移植的 `user_pos`/`P_SET` 处理、引擎初始化的整合，以及 `setEdgeType` 宏与函数的修复。）
 
-与第一次扫描时不同，929 项全集中每一个存在差异的行都已针对 graphviz 16.1.0 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除五个之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中三个是单独接受的逐 id 残余：fdp 和 sfdp 上 `241_0` 的 CDT 内切圆平局，以及 sfdp `2556` 的 NaN 布局。另外两个未被接受，也尚未找出根因：fdp `2471` 和 sfdp `2371` 在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。`2471` 的原生 fdp 布局每次运行也会变化，因此其行只记录一次运行。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
+与第一次扫描时不同，929 项全集中每一个存在差异的行都已针对 graphviz 16.1.0 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除三个之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中三个是单独接受的逐 id 残余：fdp 和 sfdp 上 `241_0` 的 CDT 内切圆平局，以及 sfdp `2556` 的 NaN 布局。fdp `2471` 和 sfdp `2371` 此前在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。移植版的 `dotneato_closest` 改为按 clang 融合后的 de Casteljau 求值和 DIST2 方式舍入后，`2471` 已经消除：此前边标签锚点相差 1–2 ULP，使放置器的严格包含判断翻转。移植版的 R 树像 C 一样按值复制矩形之后，`2371` 已经消除。`2471` 的原生 fdp 布局每次运行都会变化，因此其行只记录一次运行。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
 （[`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)）。
@@ -374,10 +376,10 @@ filed” 条目）。该差异在引擎轨道层面通过
 `test/corpus/accepted-divergences-engines.json` 被接受，并由 `parity-report.ts` 并入
 `PARITY-twopi.md`/`PARITY-circo.md`——与 `accepted.ts` 为 dot 轨道的 `PARITY-dot.md` 所做的合并相同。
 
-**circo `2475_2` — 共圆 closestNode 的 hypot 平局。** 在这个 10762 个节点的图中的一个 28 节点组件里，circo 的 `getRotation`
-（`circpos.c:73-92`）通过 `hypot` 选出离布局原点最近的块节点，以决定子块的旋转。两个共圆的节点实际上是等距的；V8 正确舍入的 `Math.hypot` 与 Apple libm 的 `hypot` 对该距离的舍入相差 2 ULP，这翻转了严格的 `<`，选中了另一个节点，并使子块旋转/反射约 20°（18 个节点移动，最大 296.7pt；其余 10744 个节点逐位相同，块树、圆周顺序和每个 `centerAngle` 也是如此）。正确舍入 hypot 的策略对这一类别已被证伪（2026-07-10）。独立复现：
+**circo `2475_2` 与 `2095_1` — 共圆 closestNode 的 hypot 平局（已修复）。** 在这个 10762 个节点的图中的一个 28 节点组件里，circo 的 `getRotation`
+（`circpos.c:73-92`）通过 `hypot` 选出离布局原点最近的块节点，以决定子块的旋转。两个共圆的节点实际上是等距的；V8 正确舍入的 `Math.hypot` 与 Apple libm 的 `hypot` 对该距离的舍入相差 2 ULP，这翻转了严格的 `<`，选中了另一个节点，并使子块旋转/反射约 20°（18 个节点移动，最大 296.7pt；其余 10744 个节点逐位相同，块树、圆周顺序和每个 `centerAngle` 也是如此）。`2095_1` 也落在同一个平局上（2197 处绘制操作差异，三次刚性块旋转）。两者一直被接受到 2026-10-16；那天最近节点搜索改用移植版中 Apple `hypot` 的逐位精确模型（`src/common/libm-hypot.ts`），现在两者都符合。独立复现：
 `.agent-notes/circo-2475-590-repro.dot`；完整根因分析：
-`.agent-notes/circo-b81-2475-rca.md`（2026-07-11 接受）。
+`.agent-notes/circo-b81-2475-rca.md`。
 
 **twopi `2470` — 被 xlabel R 树放大的径向坐标 ULP。**
 2470 是一个有 140 条边的图，其 HTML `<table>` 边标签聚集在几乎重合的径向锚点上。在 neato 家族中，边标签由贪心的 xlabel 放置器（`label/xlabels.c`）作为外部标签放置，它通过按 Hilbert 顺序排列的 R 树选出重叠最少的候选角点。移植版的样条和节点坐标在输出精度下与参照程序匹配（即使在 1e-7 下，样条/节点/包围盒差异也为零），但有一个节点的径向 `ND_coord.y` 相差约 2 ULP（Apple libm `sin`/`cos` 对 V8 `Math`）——远低于一致性标准，却恰好跨过 `objplpmks` 中 `floor(pos.y − sz.y/2)` 在 0 处的边界，使该对象的 R 树矩形翻转一个单位。Hilbert 顺序/树分组的变化使 `RTreeSearch` 剪掉了不同的分支，于是约 140 个标签各自吸附到相邻的候选角点（每处差异都是一个固定的（+宽度，−行高）步长）。放置器、对象顺序、矩形舍入、`CombineRect`（它忠实地镜像了 C 的 min-min 怪癖）以及 int32 Hilbert 键，都已分别验证是忠实的；差异来自上游的径向三角函数 ULP，与 twopi `1855` 出于同样的原因而不可约。2026-07-11 接受；完整根因分析：
@@ -399,7 +401,7 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 2026-07-28 在更大的同类 `tree-graphs-directed-polypoly`（`graphs/directed/polypoly.gv`，属于 905 项全集中的新成员；112 处绘制操作差异，仅 osage）上确认了同一机制。出现差异的运算是同一个节点 `9004` 的 `cos(π+θ)` 1 ULP 位置——C 与移植版的 `bb.x` 值与最初的根因分析逐字节吻合——但在这个 76 节点的输入上，传播经由 osage 的 `arrayRects` 进行：`acmpf` 按原始的 `width+height` 之和对打包单元排序，libm 偏高 1 ULP 的宽度使 `9004` 严格排在其旋转后的同类 `9000/9002/9006` 之前，而 V8 正确舍入的值则留下一个精确的 4 路平局，由不稳定的 qsort 以不同方式排序——得到不同的行优先单元格、`9002`/`9006` 互换，以及一个列宽 `fmax` 级联使 8 个邻居在 x 方向发生移动。把 C 的节点尺寸与移植版的节点尺寸分别喂给移植版自己的 `arrayRects`，复现了扫描中 10 个移动的节点，其 x 方向增量逐字节吻合，闭合了因果链。
 
 另有两个引擎轨道实例在 2026-07-11 找到根因并被接受（完整根因分析：`.agent-notes/circo-edge-tail-rca.md`）：twopi 的 `241_0`（6 处绘制操作差异，当时归因于与上文 circo 条目相同的 CDT 共圆内切圆平局；**已在 graphviz 16.1 退役**——自 `f66ac638` 起它已是 conformant，所以 14 点与 8 点通道的翻转是未镜像的 FMA 收缩，而不是平局）以及 circo 的
-`windows-tree`（一条扇出边上有 10 处绘制操作差异——circo 的布局三角运算使 `node2.y` 比 `node8.y` 恰好高 1 ULP，围绕精确对称的值 18.0，而 `closestSide` 的 dyna 头端口选择在这个精确的平局上翻转 TOP/BOTTOM；节点位置和箱在其他方面与参照程序逐位相同）。
+`windows-tree`（一条扇出边上有 10 处绘制操作差异——circo 的布局三角运算使 `node2.y` 比 `node8.y` 恰好高 1 ULP，围绕精确对称的值 18.0，而 `closestSide` 的 dyna 头端口选择在这个精确的平局上翻转 TOP/BOTTOM；节点位置和箱在其他方面与参照程序逐位相同；**2026-10-18 已撤销**——移植版的 DIST2 采用 clang 的融合形式后，像 C 一样判定这一精确平局，现已一致）。
 
 **sfdp 引擎轨道 — 边的浮点平局（`241_0`）。**
 <a id="a9-sfdp-fp-ties"></a> sfdp 的 xdot 引擎轨道（`parity-sfdp.json`，

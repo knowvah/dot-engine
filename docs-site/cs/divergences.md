@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -179,6 +179,16 @@ orákulum uzel po uzlu (3e-14) a obnovení pouze 5 pozic listů lišících se o
 překlopí celé rozvržení zpět do zrcadla portace. Úplná analýza příčiny:
 `.agent-notes/twopi-radial-drift-rca.md` (decision journal 2026-07-11).
 
+Tentýž hvězdicový graf se rozchází i na stopě `circo` (akceptováno 2026-10-16,
+599 rozdílů v kreslicích operacích, nejvýše 0.71pt). Port zrcadlí FMA kontrakci
+a pořadí vyhodnocení clangu v `circpos.c`, takže 31 z 32 pozic vstupujících do
+PRISM je bitově přesných. Poslední se liší o 1 ULP, protože V8 a Apple libm
+zaokrouhlují `cos`/`sin` odlišně ve třech úhlech potomků v `positionChildren`.
+Delaunayova triangulace PRISM pak překlopí jednu téměř kocirkulární diagonálu na
+ose zrcadlení. Injekce A/B: s nativními hodnotami `cos`/`sin` port odpovídá
+orákulu. S hodnotami z V8 dává nativní build rozložení orákula ve 22 ze 30 běhů
+a rozložení portu ve zbylých 8, protože GTS řadí své hrany podle adres alokace.
+
 **Charakterizace iterativních modulů: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Na rozdíl od stop modulů `circo`/`twopi`/`osage` výše nejsou `neato`/`fdp`/`sfdp`
 zatím tříděny po jednotlivých id — `engine-walk.ts` pro tyto tři zaznamenává pole
@@ -209,12 +219,15 @@ individuálně připsán vůči graphviz 16.1.0: vstřikovací harness
 (`test/corpus/attribute-divergence.ts`) vkládá `ND_pos` nativního orákula před
 vedením hran do portace a znovu porovnává, a každé aktuální rozcházející se id je
 `drift-exonerated` (vedení a emise portace přesně reprodukují orákulum, jakmile se
-drift řešiče odstraní), kromě pěti. Tři jsou samostatně akceptované zbytky po
+drift řešiče odstraní), kromě tří. Tři jsou samostatně akceptované zbytky po
 jednotlivých id: remíza incircle v CDT u `241_0` na fdp a sfdp a layout s NaN u
-sfdp `2556`. Dva nejsou akceptované a dosud nemají vystopovanou příčinu: fdp
-`2471` a sfdp `2371` si po vstřiknutí ponechávají odlišné pozice popisků hran
-(`lp`), tj. umísťovač xlabel vybírá jiného kandidáta. Nativní layout fdp u `2471`
-se navíc od běhu k běhu liší, takže jeho řádek zaznamenává jeden běh. (sfdp `42`
+sfdp `2556`. fdp `2471` a sfdp `2371` si dříve po vstřiknutí ponechávaly odlišné pozice
+popisků hran (`lp`), tj. umísťovač xlabel vybíral jiného kandidáta. `2471` se vyřešil,
+jakmile `dotneato_closest` v portaci začal zaokrouhlovat jako fúzované vyhodnocení de
+Casteljau a DIST2 v clangu: kotvy popisků hran se předtím lišily o 1–2 ULP, což zvrátilo
+striktní test obsažení v umísťovači. `2371` se vyřešil, jakmile R-strom portace začal
+kopírovat obdélníky hodnotou, jako to dělá C. Nativní layout fdp u `2471` se od běhu k
+běhu liší, takže jeho řádek zaznamenává jeden běh. (sfdp `42`
 je drift A1, viz
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptace třídy níže formalizuje vyviněnou množinu; aktuální počty v přehledech
@@ -917,18 +930,20 @@ filed“). Akceptováno na úrovni stopy modulu přes
 `PARITY-twopi.md`/`PARITY-circo.md` pomocí `parity-report.ts` — stejné připojení,
 jaké provádí `accepted.ts` pro `PARITY-dot.md` na stopě dot.
 
-**circo `2475_2` — remíza hypot u kocirkulárního closestNode.** V jedné
-komponentě o 28 uzlech tohoto grafu o 10762 uzlech vybírá `getRotation` v circo
-(`circpos.c:73-92`) uzel bloku nejbližší počátku rozvržení pomocí
-`hypot`, aby rozhodlo o rotaci podbloku. Dva kocirkulární uzly jsou
-prakticky stejně vzdálené; správně zaokrouhlený `Math.hypot` ve V8 a `hypot` z Apple
-libm zaokrouhlí tuto vzdálenost o 2 ULP odlišně, což překlopí striktní `<`,
-vybere jiný uzel a podblok se otočí/zrcadlí o ~20° (pohne se 18 uzlů,
-max 296.7pt; ostatních 10744 uzlů je bitově identických, stejně jako
-strom bloků, pořadí kružnic a každý `centerAngle`). Politika CR-hypot byla
-pro tuto třídu již vyvrácena (2026-07-10). Samostatná reprodukce:
-`.agent-notes/circo-2475-590-repro.dot`; úplná analýza příčiny:
-`.agent-notes/circo-b81-2475-rca.md` (akceptováno 2026-07-11).
+**circo `2475_2` a `2095_1` — remíza hypot u kocirkulárního closestNode
+(opraveno).** V jedné komponentě o 28 uzlech tohoto grafu o 10762 uzlech vybírá
+`getRotation` v circo (`circpos.c:73-92`) uzel bloku nejbližší počátku rozvržení
+pomocí `hypot`, aby rozhodlo o rotaci podbloku. Dva kocirkulární uzly jsou
+prakticky stejně vzdálené; správně zaokrouhlený `Math.hypot` ve V8 a `hypot` z
+Apple libm zaokrouhlí tuto vzdálenost o 2 ULP odlišně, což překlopí striktní
+`<`, vybere jiný uzel a podblok se otočí/zrcadlí o ~20° (pohne se 18 uzlů, max
+296.7pt; ostatních 10744 uzlů je bitově identických, stejně jako strom bloků,
+pořadí kružnic a každý `centerAngle`). `2095_1` narazil na tutéž remízu (2197
+rozdílů v kreslicích operacích, tři rigidní rotace bloků). Oba byly akceptovány
+do 2026-10-16, kdy hledání nejbližšího uzlu přešlo na bitově přesný model
+`hypot` z Apple libm v portu (`src/common/libm-hypot.ts`); oba nyní vyhovují.
+Samostatná reprodukce: `.agent-notes/circo-2475-590-repro.dot`; úplná analýza
+příčiny: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP radiální souřadnice zesílený R-stromem xlabelů.**
 2470 je graf se 140 hranami, jehož popisky hran ve formě HTML `<table>` se shlukují
@@ -1031,7 +1046,7 @@ nikoli remízou) a circo
 dosadí `node2.y` o jediný ULP nad `node8.y` kolem přesně symetrické
 hodnoty 18.0 a výběr dyna portu hlavy v `closestSide` překlopí TOP/BOTTOM na
 této přesné remíze; pozice uzlů a boxy jsou jinak bitově identické s
-orákulem).
+orákulem; **vyřazeno 2026-10-18** — shoduje se, protože DIST2 v portaci nyní používá fúzovaný tvar z clangu, který tuto přesnou remízu rozhoduje stejně jako C).
 
 **Stopa modulu sfdp — FP remíza hrany (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Xdot stopa modulu sfdp (`parity-sfdp.json`,

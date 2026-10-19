@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -180,6 +180,17 @@ bladposities terugzetten laat de hele lay-out terugslaan naar de spiegel van de 
 Volledige RCA: `.agent-notes/twopi-radial-drift-rca.md` (beslissingsjournaal
 2026-07-11).
 
+Dezelfde ster wijkt ook af op het `circo`-spoor (geaccepteerd 2026-10-16, 599
+draw-op-verschillen, hooguit 0.71pt). De port volgt clangs FMA-contractie en
+evaluatievolgorde in `circpos.c`, zodat 31 van de 32 posities die PRISM ingaan
+bit-exact zijn. De laatste wijkt 1 ULP af, omdat V8 en Apples libm `cos`/`sin`
+bij drie kindhoeken in `positionChildren` verschillend afronden. De
+Delaunay-triangulatie van PRISM klapt daarna één bijna cocirculaire diagonaal op
+de spiegelas om. Injectie-A/B: met de native `cos`/`sin`-waarden komt de port
+overeen met het orakel. Met de waarden van V8 levert de native build in 22 van
+30 runs de layout van het orakel en in de overige 8 die van de port, omdat GTS
+zijn kanten op allocatieadres ordent.
+
 **Karakterisering van de iteratieve engines: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Anders dan de enginesporen `circo`/`twopi`/`osage` hierboven zijn `neato`/`fdp`/`sfdp`
 nog **niet** per id geanalyseerd — `engine-walk.ts` legt voor deze drie een veld
@@ -210,12 +221,16 @@ afzonderlijk toegeschreven ten opzichte van graphviz 16.1.0: het injectietesthar
 (`test/corpus/attribute-divergence.ts`) voert de pre-routerings-`ND_pos` van het native
 orakel in de port in en vergelijkt opnieuw, en elk huidig afwijkend id is
 `drift-exonerated` (routering en uitvoer van de port reproduceren het orakel exact zodra
-de solverdrift is weggenomen), op vijf na. Drie zijn afzonderlijk geaccepteerde
+de solverdrift is weggenomen), op drie na. Drie zijn afzonderlijk geaccepteerde
 restgevallen per id: de CDT-incircle-gelijkstand van `241_0` op fdp en sfdp, en de
-NaN-lay-out van sfdp `2556`. Twee zijn niet geaccepteerd en nog niet tot de grondoorzaak
-herleid: fdp `2471` en sfdp `2371` houden na injectie afwijkende posities van edge-labels
-(`lp`), dat wil zeggen dat de xlabel-plaatser een andere kandidaat kiest. De native
-fdp-lay-out van `2471` varieert bovendien van run tot run, dus zijn rij legt één run vast.
+NaN-lay-out van sfdp `2556`. fdp `2471` en sfdp `2371` hielden na injectie eerder
+afwijkende posities van edge-labels (`lp`), dat wil zeggen dat de xlabel-plaatser een
+andere kandidaat koos. `2471` is opgelost sinds de `dotneato_closest` van de port
+afrondt zoals de gefuseerde de Casteljau-evaluatie en DIST2 van clang: de ankers van
+edge-labels verschilden 1–2 ULP, wat de strikte omsluitingstest van de plaatser deed
+omslaan. `2371` is opgelost sinds de R-tree van de port rechthoeken als waarde kopieert,
+zoals C doet. De native fdp-lay-out van `2471` varieert van run tot run, dus zijn rij
+legt één run vast.
 (sfdp `42` is A1-drift, zie [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 De klasse-acceptatie hieronder formaliseert de vrijgesproken verzameling; actuele aantallen
 in de dashboards per engine
@@ -923,18 +938,21 @@ filed”). Geaccepteerd op enginespoor-niveau via
 `PARITY-twopi.md`/`PARITY-circo.md` — dezelfde samenvoeging die
 `accepted.ts` uitvoert voor het dot-spoor `PARITY-dot.md`.
 
-**circo `2475_2` — cocirculaire closestNode-hypot-gelijkstand.** In één component van 28 knopen
-van deze graaf met 10762 knopen kiest de `getRotation` van circo
-(`circpos.c:73-92`) via `hypot` de blokknoop die het dichtst bij de lay-outoorsprong ligt,
-om de rotatie van het deelblok te bepalen. Twee cocirculaire knopen liggen
-vrijwel even ver; de correct afgeronde `Math.hypot` van V8 en de `hypot` van Apple-libm
-ronden die afstand 2 ULP uiteen af, wat de strikte `<` laat omslaan,
-een andere knoop kiest en het deelblok ~20° roteert/spiegelt (18 knopen
-verplaatsen, max 296.7pt; de andere 10744 knopen zijn bit-identiek, evenals de
-bloktree, cirkelvolgorde en elke `centerAngle`). Het CR-hypot-beleid werd
-voor deze klasse al weerlegd (2026-07-10). Zelfstandige reproductie:
-`.agent-notes/circo-2475-590-repro.dot`; volledige RCA:
-`.agent-notes/circo-b81-2475-rca.md` (geaccepteerd 2026-07-11).
+**circo `2475_2` en `2095_1` — cocirculaire closestNode-hypot-gelijkstand
+(opgelost).** In één component van 28 knopen van deze graaf met 10762 knopen
+kiest de `getRotation` van circo (`circpos.c:73-92`) via `hypot` de blokknoop
+die het dichtst bij de lay-outoorsprong ligt, om de rotatie van het deelblok te
+bepalen. Twee cocirculaire knopen liggen vrijwel even ver; de correct afgeronde
+`Math.hypot` van V8 en de `hypot` van Apple-libm ronden die afstand 2 ULP uiteen
+af, wat de strikte `<` laat omslaan, een andere knoop kiest en het deelblok ~20°
+roteert/spiegelt (18 knopen verplaatsen, max 296.7pt; de andere 10744 knopen
+zijn bit-identiek, evenals de bloktree, cirkelvolgorde en elke `centerAngle`).
+`2095_1` liep tegen dezelfde gelijkstand aan (2197 draw-op-verschillen, drie
+starre blokrotaties). Beide waren geaccepteerd tot 2026-10-16, toen het zoeken
+naar de dichtstbijzijnde knoop overstapte op het bit-exacte model van Apples
+`hypot` in de port (`src/common/libm-hypot.ts`); beide zijn nu conform.
+Zelfstandige reproductie: `.agent-notes/circo-2475-590-repro.dot`; volledige
+RCA: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP in radiale coördinaat versterkt door de xlabel-R-tree.**
 2470 is een graaf met 140 kanten waarvan de HTML-`<table>`-kantlabels clusteren
@@ -1035,7 +1053,7 @@ samenvoeging, geen gelijkstand) en circo
 legt `node2.y` een enkele ULP boven `node8.y` rond de exact symmetrische
 waarde 18.0, en de dyna-kop-portselectie van `closestSide` slaat TOP/BOTTOM om bij
 die exacte gelijkstand; knoopposities en boxen zijn verder bit-identiek aan het
-orakel).
+orakel; **ingetrokken 2026-10-18** — conform sinds de DIST2 van de port de gefuseerde vorm van clang gebruikt, die die exacte gelijkstand beslist zoals C).
 
 **sfdp-enginespoor — FP-gelijkstand bij een kant (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Het xdot-enginespoor van sfdp (`parity-sfdp.json`,

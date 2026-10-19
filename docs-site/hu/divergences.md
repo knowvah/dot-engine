@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -177,6 +177,18 @@ ULP-eltérő levélpozíció visszaállítása az egész elrendezést visszabill
 tükörállapotába. Teljes gyökérokelemzés: `.agent-notes/twopi-radial-drift-rca.md` (döntési napló,
 2026-07-11).
 
+Ugyanez a csillag a `circo` sávon is eltér (elfogadva 2026-10-16, 599
+rajzművelet-eltérés, legfeljebb 0.71 pt). A portolt változat követi a clang
+FMA-összevonását és kiértékelési sorrendjét a `circpos.c` fájlban, így a
+PRISM-be belépő 32 pozícióból 31 bitre pontos. Az utolsó 1 ULP-vel tér el, mert
+a V8 és az Apple libm a `cos`/`sin` értékét három gyermekszögnél eltérően
+kerekíti a `positionChildren` függvényben. A PRISM Delaunay-háromszögelése
+ezután a tükörtengelyen átfordít egy majdnem körön fekvő átlót. Injektálásos
+A/B: a natív `cos`/`sin` értékekkel a portolt változat egyezik az orákulummal. A
+V8 értékeivel a natív build 30 futásból 22-ben az orákulum elrendezését adja, a
+maradék 8-ban a portolt változatét, mert a GTS az éleit foglalási cím szerint
+rendezi.
+
 **Az iteratív motorok jellemzése: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 A fenti `circo`/`twopi`/`osage` motorsávokkal ellentétben a `neato`/`fdp`/`sfdp`
 még **nincs** azonosítónként osztályozva — az `engine-walk.ts` ezekhez a háromhoz
@@ -208,12 +220,15 @@ egyenként tulajdonítva van a graphviz 16.1.0 ellenében: az injektáló eszkö
 `ND_pos` értékét a portolt változatba táplálja, és újra összehasonlít, és minden
 jelenlegi eltérő azonosító `drift-exonerated` (a portolt változat útvonalvezetése
 és kibocsátása pontosan reprodukálja az orákulumot, amint a megoldósodródást
-eltávolítjuk), öt kivételével. Három külön elfogadott, azonosítónkénti maradék: a
+eltávolítjuk), három kivételével. Három külön elfogadott, azonosítónkénti maradék: a
 `241_0` CDT-incircle döntetlene az fdp és sfdp motoron, valamint az sfdp `2556`
-NaN elrendezése. Kettő nincs elfogadva, és gyökéroka sincs még feltárva: az fdp
-`2471` és az sfdp `2371` élfeliratainak pozíciói (`lp`) injektálás után is
-eltérnek, vagyis az xlabel-elhelyező másik jelöltet választ. A `2471` natív fdp
-elrendezése futásról futásra is változik, ezért a sora egy futást rögzít. (Az sfdp
+NaN elrendezése. Az fdp `2471` és az sfdp `2371` élfeliratainak pozíciói (`lp`) korábban
+injektálás után is eltértek, vagyis az xlabel-elhelyező másik jelöltet választott. A
+`2471` megszűnt, amint a portolt `dotneato_closest` úgy kerekít, mint a clang összevont
+de Casteljau-kiértékelése és DIST2-je: az élfeliratok horgonypontjai 1–2 ULP-vel tértek
+el, ami átbillentette az elhelyező szigorú tartalmazási tesztjét. A `2371` megszűnt,
+amint a port R-fája érték szerint másolja a téglalapokat, ahogy a C is. A `2471` natív
+fdp elrendezése futásról futásra változik, ezért a sora egy futást rögzít. (Az sfdp
 `42` A1-sodródás, lásd
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Az alábbi osztályelfogadás a felmentett halmazt formalizálja; az élő számok a
@@ -926,18 +941,22 @@ filed” bejegyzés). A motorsáv szintjén elfogadva a
 `PARITY-twopi.md`/`PARITY-circo.md` fájlokba kapcsol — ugyanazt az összekapcsolást végzi az
 `accepted.ts` a dot-sáv `PARITY-dot.md` fájljához.
 
-**circo `2475_2` — körön fekvő closestNode hypot-döntetlen.** Ennek a 10 762 csúcsú gráfnak egyik
-28 csúcsú komponensében a circo `getRotation` függvénye
-(`circpos.c:73-92`) a `hypot` segítségével azt a blokkcsúcsot választja, amely a
-legközelebb van az elrendezés origójához, hogy eldöntse az alblokk elforgatását. Két körön fekvő csúcs
-gyakorlatilag egyenlő távolságra van; a V8 helyesen kerekített `Math.hypot` függvénye és az Apple
-libm `hypot` függvénye ezt a távolságot 2 ULP-re egymástól kerekíti, ami átbillenti a szigorú `<` összehasonlítást,
-más csúcsot választ, és az alblokkot ~20°-kal elforgatja/tükrözi (18 csúcs
-mozdul, max. 296.7 pt; a másik 10 744 csúcs bitre azonos, akárcsak a
-blokkfa, a körsorrend és minden `centerAngle`). A CR-hypot szabályt
-erre az osztályra már megcáfoltuk (2026-07-10). Önálló reprodukció:
-`.agent-notes/circo-2475-590-repro.dot`; teljes gyökérokelemzés:
-`.agent-notes/circo-b81-2475-rca.md` (elfogadva 2026-07-11).
+**circo `2475_2` és `2095_1` — körön fekvő closestNode hypot-döntetlen
+(javítva).** Ennek a 10 762 csúcsú gráfnak egyik 28 csúcsú komponensében a circo
+`getRotation` függvénye (`circpos.c:73-92`) a `hypot` segítségével azt a
+blokkcsúcsot választja, amely a legközelebb van az elrendezés origójához, hogy
+eldöntse az alblokk elforgatását. Két körön fekvő csúcs gyakorlatilag egyenlő
+távolságra van; a V8 helyesen kerekített `Math.hypot` függvénye és az Apple libm
+`hypot` függvénye ezt a távolságot 2 ULP-re egymástól kerekíti, ami átbillenti a
+szigorú `<` összehasonlítást, más csúcsot választ, és az alblokkot ~20°-kal
+elforgatja/tükrözi (18 csúcs mozdul, max. 296.7 pt; a másik 10 744 csúcs bitre
+azonos, akárcsak a blokkfa, a körsorrend és minden `centerAngle`). A `2095_1`
+ugyanebbe a döntetlenbe futott (2197 rajzművelet-eltérés, három merev
+blokkforgatás). Mindkettő elfogadott volt 2026-10-16-ig, amikor a legközelebbi
+csúcs keresése átállt az Apple `hypot` függvényének a portolt változatban lévő,
+bitre pontos modelljére (`src/common/libm-hypot.ts`); most mindkettő megfelel.
+Önálló reprodukció: `.agent-notes/circo-2475-590-repro.dot`; teljes
+gyökérokelemzés: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — az xlabel R-fa által felerősített sugárkoordináta-ULP.**
 A 2470 egy 140 élű gráf, amelynek HTML `<table>` élcímkéi
@@ -1039,7 +1058,7 @@ fekvő incircle döntetlennek tulajdonítottak, mint a fenti circo bejegyzést;
 a `node2.y` értéket egyetlen ULP-vel a `node8.y` fölé teszi a pontosan szimmetrikus
 18.0 érték körül, és a `closestSide` dyna fejport-választása átbillenti a TOP/BOTTOM
 értéket ezen a pontos döntetlenen; a csúcspozíciók és dobozok egyébként bitre azonosak az
-orákuluméval).
+orákuluméval; **kivezetve 2026-10-18** — megfelel, mióta a port DIST2-je a clang összevont alakját használja, amely ezt a pontos döntetlent a C-vel azonosan dönti el).
 
 **sfdp motorsáv — él-lebegőpontos döntetlen (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Az sfdp xdot motorsáv (`parity-sfdp.json`,

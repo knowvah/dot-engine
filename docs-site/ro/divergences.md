@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -175,6 +175,17 @@ reproduce oracolul nod cu nod (3e-14), iar restaurarea doar a celor 5 poziții d
 divergente la ULP răstoarnă întreaga aranjare înapoi la oglinda portării. Analiza completă a cauzei rădăcină: `.agent-notes/twopi-radial-drift-rca.md` (jurnalul de decizii
 2026-07-11).
 
+Aceeași stea diverge și pe pista `circo` (acceptat 2026-10-16, 599 diferențe de
+operații de desenare, cel mult 0.71pt). Portul reproduce contracția FMA și
+ordinea de evaluare a clang din `circpos.c`, astfel încât 31 din cele 32 de
+poziții care intră în PRISM sunt exacte la nivel de bit. Ultima diferă cu 1 ULP,
+deoarece V8 și libm de la Apple rotunjesc `cos`/`sin` diferit la trei unghiuri
+de copii în `positionChildren`. Triangularea Delaunay a PRISM inversează apoi o
+diagonală aproape cocirculară pe axa de simetrie. Injecție A/B: cu valorile
+native `cos`/`sin`, portul se potrivește cu oracolul. Cu valorile V8, build-ul
+nativ produce aranjarea oracolului în 22 din 30 de rulări și pe cea a portului
+în celelalte 8, deoarece GTS își ordonează muchiile după adresa de alocare.
+
 **Caracterizarea motoarelor iterative: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Spre deosebire de fluxurile de motor `circo`/`twopi`/`osage` de mai sus, `neato`/`fdp`/`sfdp`
 **nu** sunt încă triate pe id — `engine-walk.ts` înregistrează un câmp `tolerance: 0.5`
@@ -203,13 +214,16 @@ Spre deosebire de prima trecere, fiecare rând divergent din universul de 929 de
 atribuit individual față de graphviz 16.1.0: instrumentul de injecție
 (`test/corpus/attribute-divergence.ts`) alimentează portarea cu `ND_pos` dinaintea rutării din
 oracolul nativ și compară din nou, iar fiecare id divergent curent este `drift-exonerated` (rutarea
-și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția
-a cinci. Trei sunt reziduuri acceptate separat pe id: egalitatea la testul incircle din CDT pentru
-`241_0` pe fdp și sfdp și aspectul NaN al lui sfdp `2556`. Două nu sunt acceptate și nu au fost încă
-duse până la cauza rădăcină: fdp `2471` și sfdp `2371` păstrează poziții ale etichetelor de muchie
-(`lp`) care diferă după injecție, adică plasatorul de xlabel alege un candidat diferit. Aspectul fdp
-nativ al lui `2471` variază, de asemenea, de la o rulare la alta, deci rândul său înregistrează o
-singură rulare. (sfdp `42` este derivă A1, vedeți
+și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția a trei. Trei sunt reziduuri acceptate separat pe id: egalitatea la testul incircle din CDT pentru
+`241_0` pe fdp și sfdp și aspectul NaN al lui sfdp `2556`. fdp `2471` și sfdp `2371`
+păstrau anterior poziții ale etichetelor de muchie (`lp`) care difereau după injecție,
+adică plasatorul de xlabel alegea un candidat diferit. `2471` s-a rezolvat când
+`dotneato_closest` din portare a început să rotunjească precum evaluarea de Casteljau
+fuzionată și DIST2 ale lui clang: ancorele etichetelor de muchie difereau cu 1–2 ULP,
+ceea ce înclina testul strict de incluziune al plasatorului. `2371` s-a rezolvat când
+arborele R al portării a început să copieze dreptunghiurile prin valoare, așa cum face
+C. Aspectul fdp nativ al lui `2471` variază de la o rulare la alta, deci rândul său
+înregistrează o singură rulare. (sfdp `42` este derivă A1, vedeți
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Acceptarea pe clasă de mai jos formalizează mulțimea exonerată; numerătorile live se află în
 panourile pe motor
@@ -916,18 +930,22 @@ filed”). Acceptate la nivelul fluxului de motor prin
 `PARITY-twopi.md`/`PARITY-circo.md` de `parity-report.ts` — aceeași îmbinare pe care
 o execută `accepted.ts` pentru `PARITY-dot.md` al fluxului dot.
 
-**circo `2475_2` — egalitate hypot cocirculară la closestNode.** Într-o componentă
-de 28 de noduri a acestui graf de 10762 de noduri, `getRotation` din circo
-(`circpos.c:73-92`) alege nodul blocului cel mai apropiat de originea aranjării prin
-`hypot`, pentru a decide rotația sub-blocului. Două noduri cocirculare sunt
-practic echidistante; `Math.hypot` din V8, corect rotunjit, și `hypot` din libm Apple
-rotunjesc acea distanță la 2 ULP unul de celălalt, ceea ce inversează `<` strict,
-selectează alt nod și rotește/reflectă sub-blocul cu ~20° (18 noduri
-se mută, maxim 296.7pt; celelalte 10744 de noduri sunt identice bit cu bit, la fel ca
-arborele de blocuri, ordinea cercului și fiecare `centerAngle`). Politica CR-hypot a fost
-deja infirmată pentru această clasă (2026-07-10). Reproducere de sine stătătoare:
-`.agent-notes/circo-2475-590-repro.dot`; analiza completă a cauzei rădăcină:
-`.agent-notes/circo-b81-2475-rca.md` (acceptat 2026-07-11).
+**circo `2475_2` și `2095_1` — egalitate hypot cocirculară la closestNode
+(corectat).** Într-o componentă de 28 de noduri a acestui graf de 10762 de
+noduri, `getRotation` din circo (`circpos.c:73-92`) alege nodul blocului cel mai
+apropiat de originea aranjării prin `hypot`, pentru a decide rotația
+sub-blocului. Două noduri cocirculare sunt practic echidistante; `Math.hypot`
+din V8, corect rotunjit, și `hypot` din libm Apple rotunjesc acea distanță la 2
+ULP unul de celălalt, ceea ce inversează `<` strict, selectează alt nod și
+rotește/reflectă sub-blocul cu ~20° (18 noduri se mută, maxim 296.7pt; celelalte
+10744 de noduri sunt identice bit cu bit, la fel ca arborele de blocuri, ordinea
+cercului și fiecare `centerAngle`). `2095_1` lovea aceeași egalitate (2197
+diferențe de operații de desenare, trei rotații rigide de blocuri). Ambele au
+fost acceptate până la 2026-10-16, când căutarea nodului cel mai apropiat a
+trecut la modelul exact la nivel de bit al `hypot` de la Apple din port
+(`src/common/libm-hypot.ts`); acum ambele sunt conforme. Reproducere de sine
+stătătoare: `.agent-notes/circo-2475-590-repro.dot`; analiza completă a cauzei
+rădăcină: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP la coordonata radială amplificat de R-tree-ul xlabel.**
 2470 este un graf cu 140 de muchii ale cărui etichete de muchie HTML `<table>` se grupează
@@ -1027,7 +1045,7 @@ neoglindită, nu o egalitate) și circo
 `windows-tree` (10 diferențe de operații de desenare pe o muchie de evantai — trigonometria de plasare din circo
 aduce `node2.y` cu un singur ULP deasupra lui `node8.y` în jurul valorii exact simetrice 18.0, iar selecția portului de cap dyna din `closestSide` inversează TOP/BOTTOM la
 acea egalitate exactă; pozițiile și casetele nodurilor sunt în rest identice bit cu bit cu
-oracolul).
+oracolul; **retras la 2026-10-18** — este conform de când DIST2 din portare folosește forma fuzionată a lui clang, care decide această egalitate exactă ca C).
 
 **Fluxul de motor sfdp — egalitate FP la o muchie (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Fluxul xdot de motor sfdp (`parity-sfdp.json`,

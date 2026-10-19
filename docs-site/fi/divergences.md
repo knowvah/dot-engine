@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -194,6 +194,18 @@ vain 5 ULP-poikkeavan lehtisijainnin palauttaminen kääntää koko asettelun ta
 porttauksen peiliin. Täysi juurisyyanalyysi: `.agent-notes/twopi-radial-drift-rca.md` (päätöspäiväkirja
 2026-07-11).
 
+Sama tähti poikkeaa myös `circo`-raidalla (hyväksytty 2026-10-16, 599
+piirto-operaatioeroa, enintään 0.71pt). Portti jäljittelee clangin
+FMA-kontraktiota ja evaluointijärjestystä tiedostossa `circpos.c`, joten 31
+PRISMiin menevästä 32 sijainnista on bittitarkkoja. Viimeinen poikkeaa 1 ULP:n
+verran, koska V8 ja Applen libm pyöristävät `cos`/`sin`-arvot eri tavoin
+kolmessa lapsikulmassa funktiossa `positionChildren`. PRISMin
+Delaunay-kolmiointi kääntää sitten yhden lähes samalla ympyrällä olevan
+lävistäjän peiliakselilla. Injektion A/B: natiiveilla `cos`/`sin`-arvoilla
+portti vastaa oraakkelia. V8:n arvoilla natiivi build tuottaa oraakkelin
+asettelun 22 ajossa 30:stä ja portin asettelun lopuissa 8:ssa, koska GTS
+järjestää särmänsä varausosoitteen mukaan.
+
 **Iteratiivisten moottorien luonnehdinta: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Toisin kuin edellä olevat `circo`/`twopi`/`osage`-moottoriraidat, `neato`/`fdp`/`sfdp`
 **ei** ole vielä luokiteltu syykohtaisesti — `engine-walk.ts` kirjaa näille kolmelle
@@ -224,14 +236,15 @@ selitetty yksitellen graphviz 16.1.0:aa vasten: injektiotyökalu
 (`test/corpus/attribute-divergence.ts`) syöttää natiivin oraakkelin reititystä
 edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja jokainen nykyinen
 poikkeava tunniste on `drift-exonerated` (porttauksen reititys ja emissio
-toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) viittä
-lukuun ottamatta. Kolme on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
+toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) kolmea lukuun ottamatta. Kolme on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
 `241_0`:n CDT:n incircle-tasapeli fdp:llä ja sfdp:llä sekä sfdp:n `2556`:n
-NaN-asettelu. Kahta ei ole hyväksytty eikä niiden juurisyytä ole vielä selvitetty:
-fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`) poikkeavat
-injektion jälkeen, eli xlabel-sijoittaja valitsee eri ehdokkaan. Natiivi
-fdp-asettelu `2471`:llä vaihtelee myös ajosta toiseen, joten sen rivi kirjaa yhden
-ajon. (sfdp:n `42` on A1-drift, katso
+NaN-asettelu. fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`)
+poikkesivat aiemmin injektion jälkeen, eli xlabel-sijoittaja valitsi eri ehdokkaan.
+`2471` korjaantui, kun porttauksen `dotneato_closest` alkoi pyöristää kuten clangin
+yhdistetty de Casteljau -laskenta ja DIST2: kaarten nimiöiden ankkurit erosivat 1–2
+ULP:tä, mikä kallisti sijoittajan tiukan sisältymistestin. `2371` korjaantui, kun
+porttauksen R-puu alkoi kopioida suorakulmiot arvoina, kuten C tekee. Natiivi
+fdp-asettelu `2471`:llä vaihtelee ajosta toiseen, joten sen rivi kirjaa yhden ajon. (sfdp:n `42` on A1-drift, katso
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Alla oleva luokkahyväksyntä vahvistaa vapautetun joukon; ajantasaiset luvut
 moottorikohtaisilla kojelaudoilla
@@ -936,18 +949,22 @@ filed”). Hyväksytty moottoriraidan tasolla tiedoston
 `PARITY-twopi.md`:hen/`PARITY-circo.md`:hen `parity-report.ts`llä — sama yhdistäminen,
 jonka `accepted.ts` tekee dot-raidan `PARITY-dot.md`:lle.
 
-**circo `2475_2` — samalla ympyrällä olevan closestNode-hypotin tasapeli.** Yhdessä
-tämän 10762 solmun graafin 28 solmun komponentissa circon `getRotation`
-(`circpos.c:73-92`) valitsee lähimpänä asettelun origoa olevan lohkosolmun
-`hypot`in avulla päättääkseen alilohkon kierron. Kaksi samalla ympyrällä olevaa solmua ovat
-käytännössä yhtä kaukana; V8:n oikein pyöristävä `Math.hypot` ja Apple
-libm:n `hypot` pyöristävät tuon etäisyyden 2 ULP:n päähän toisistaan, mikä kääntää tiukan `<`:n,
-valitsee eri solmun ja kiertää/peilaa alilohkon ~20° (18 solmua
-liikkuu, enintään 296.7 pt; muut 10744 solmua ovat bitti bitiltä identtisiä, samoin
-lohkopuu, ympyräjärjestys ja jokainen `centerAngle`). CR-hypot-politiikka oli
-jo kumottu tälle luokalle (2026-07-10). Itsenäinen toisto:
-`.agent-notes/circo-2475-590-repro.dot`; täysi juurisyyanalyysi:
-`.agent-notes/circo-b81-2475-rca.md` (hyväksytty 2026-07-11).
+**circo `2475_2` ja `2095_1` — samalla ympyrällä olevan closestNode-hypotin
+tasapeli (korjattu).** Yhdessä tämän 10762 solmun graafin 28 solmun
+komponentissa circon `getRotation` (`circpos.c:73-92`) valitsee lähimpänä
+asettelun origoa olevan lohkosolmun `hypot`in avulla päättääkseen alilohkon
+kierron. Kaksi samalla ympyrällä olevaa solmua ovat käytännössä yhtä kaukana;
+V8:n oikein pyöristävä `Math.hypot` ja Apple libm:n `hypot` pyöristävät tuon
+etäisyyden 2 ULP:n päähän toisistaan, mikä kääntää tiukan `<`:n, valitsee eri
+solmun ja kiertää/peilaa alilohkon ~20° (18 solmua liikkuu, enintään 296.7 pt;
+muut 10744 solmua ovat bitti bitiltä identtisiä, samoin lohkopuu,
+ympyräjärjestys ja jokainen `centerAngle`). `2095_1` osui samaan tasapeliin
+(2197 piirto-operaatioeroa, kolme jäykkää lohkokiertoa). Molemmat olivat
+hyväksyttyjä 2026-10-16 asti, jolloin lähimmän solmun haku siirtyi käyttämään
+portin bittitarkkaa mallia Applen `hypot`-funktiosta
+(`src/common/libm-hypot.ts`); nyt molemmat ovat yhdenmukaisia. Itsenäinen
+toisto: `.agent-notes/circo-2475-590-repro.dot`; täysi juurisyyanalyysi:
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — xlabel-R-puun vahvistama säteittäiskoordinaatin ULP.**
 2470 on 140 kaaren graafi, jonka HTML-`<table>`-kaarinimiöt kasautuvat
@@ -1050,7 +1067,7 @@ käytäväkäännös oli peilaamaton FMA-yhdistäminen, ei tasapeli) ja circo
 asettaa `node2.y`:n yhden ULP:n verran arvon `node8.y` yläpuolelle täsmälleen symmetrisen
 arvon 18.0 ympärillä, ja `closestSide`n dyna-pääportin valinta kääntää TOP/BOTTOM
 tuossa täsmällisessä tasapelissä; solmusijainnit ja laatikot ovat muutoin bitti bitiltä identtiset
-oraakkelin kanssa).
+oraakkelin kanssa; **poistettu 2026-10-18** — se on yhdenmukainen, koska porttauksen DIST2 käyttää clangin yhdistettyä muotoa, joka ratkaisee tämän tarkan tasapelin kuten C).
 
 **sfdp-moottoriraita — kaaren FP-tasapeli (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp-xdot-moottoriraita (`parity-sfdp.json`,

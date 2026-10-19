@@ -27,4 +27,4 @@
 {"id":"graphs-b100","verdict":"drift-exonerated","baseDiffs":156698,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2371","verdict":"drift-exonerated","baseDiffs":325657,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2108","verdict":"drift-exonerated","baseDiffs":1062877,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
-{"id":"2471","verdict":"not-cleared","baseDiffs":37731,"injectedDiffs":2,"bucket":{"shape":"edge/_ldraw_/numeric","kind":"position","signature":"edge/_ldraw_/numeric+edge/lp/numeric"}}
+{"id":"2471","verdict":"drift-exonerated","baseDiffs":37731,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}

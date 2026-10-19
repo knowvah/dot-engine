@@ -6,6 +6,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { parseHtmlLabel } from './htmltable-parse.js';
+import { HtmlLexError } from './htmltable-lex.js';
 import type { HtmlTable, HtmlCell } from './htmltable-types.js';
 
 /** Extract first table from a parsed label. */
@@ -220,5 +221,33 @@ describe('nested table cell child is a single table (whitespace stripped)', () =
     const cell = firstCell('<TABLE><TR><TD>hello</TD></TR></TABLE>');
     expect(cell.content.length).toBe(1);
     expect(cell.content[0]?.kind).toBe('text');
+  });
+});
+
+describe('parseHtmlLabel — expat error paths', () => {
+  it('rejects an undefined entity with the native diagnostics', () => {
+    expect.assertions(2);
+    try {
+      parseHtmlLabel('<b>&bogus;</b>');
+    } catch (e) {
+      expect(e).toBeInstanceOf(HtmlLexError);
+      expect((e as HtmlLexError).diagnostics).toEqual([
+        'Error: undefined entity in line 1 ',
+        '... <b>&bogus; ...',
+      ]);
+    }
+  });
+
+  it('rejects a mismatched tag with the native diagnostics', () => {
+    expect.assertions(2);
+    try {
+      parseHtmlLabel('<b>x</i>');
+    } catch (e) {
+      expect(e).toBeInstanceOf(HtmlLexError);
+      expect((e as HtmlLexError).diagnostics).toEqual([
+        'Error: mismatched tag in line 1 ',
+        '... x</i> ...',
+      ]);
+    }
   });
 });

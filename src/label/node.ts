@@ -176,14 +176,20 @@ function updatePickBest(best: PickBest, i: number, area: number, increase: bigin
   }
 }
 
-/** Smallest rect enclosing all occupied branch rects. @see label/node.c:NodeCover */
+/**
+ * Smallest rect enclosing all occupied branch rects.
+ * C's `r = n->branch[i].rect` copies the Rect_t; returning the branch's own
+ * object let a parent branch share it, and a later InitNode of either node
+ * (split) zeroed both, so RTreeSearch pruned a live subtree.
+ * @see label/node.c:NodeCover
+ */
 export function nodeCover(n: Node): Rect {
   let r: Rect = { boundary: [0, 0, 0, 0] };
   initRect(r);
   let flag = true;
   for (let i = 0; i < NODECARD; i++) {
     if (n.branch[i].child !== null) {
-      if (flag) { r = n.branch[i].rect; flag = false; }
+      if (flag) { r = { boundary: [...n.branch[i].rect.boundary] }; flag = false; }
       else { r = combineRect(r, n.branch[i].rect); }
     }
   }

@@ -42,11 +42,13 @@ describe('splines=ortho self-loops (plantuml-ts 29)', () => {
       const result = compareSvg(actual, ref, 'deterministic');
       expect(result.diffs).toEqual([]);
       expect(result.pass).toBe(true);
-      // The unrelated font-metrics fallback warning is expected (native prints
-      // it too); nothing else, in particular no `lost ... edge`, may be logged.
+      // The font-metrics fallback and the empty-FIXEDSIZE-table size warnings
+      // are expected (native prints both on these inputs); nothing else, in
+      // particular no `lost ... edge`, may be logged.
       const logged = warn.mock.calls
         .map((c) => String(c[0]))
-        .filter((m) => !m.startsWith('Warning: no hard-coded metrics'));
+        .filter((m) => !m.startsWith('Warning: no hard-coded metrics'))
+        .filter((m) => m !== 'Warning: table size too small for content');
       expect(logged).toEqual([]);
     });
   }

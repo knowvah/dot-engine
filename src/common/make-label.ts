@@ -12,10 +12,10 @@
 import type { TextlabelT } from './types.js';
 import type { TextMeasurer, TextSize } from './textmeasure.js';
 import type { TextSpan } from './emit-types.js';
-import { makeHtmlLabel } from './htmltable-pos.js';
+import { makeHtmlLabelRv } from './htmltable-pos.js';
 import { substObj, type GraphObj } from './subst.js';
 import { Edge } from '../model/edge.js';
-import type { Graph } from '../model/graph.js';
+import { Graph } from '../model/graph.js';
 import { htmlEntityUTF8 } from './html-entities.js';
 
 export const DEFAULT_FONTSIZE = 14.0;
@@ -46,6 +46,20 @@ function getPenColor(obj?: GraphObj): string | undefined {
 /** The root graph owning `obj` (edges resolve through their tail node). */
 function rootOf(obj: GraphObj): Graph {
   return obj instanceof Edge ? obj.tail.root : obj.root;
+}
+
+/**
+ * The `agerr(AGPREV, ...)` continuation make_label prints when
+ * make_html_label reports a problem (no `Error:`/`Warning:` prefix).
+ * @see lib/common/labels.c:make_label (148-163)
+ */
+function inLabelOf(obj: GraphObj): string {
+  if (obj instanceof Edge) {
+    const sep = obj.head.root.kind.endsWith('undirected') ? '--' : '->';
+    return `in label of edge ${obj.tail.name} ${sep} ${obj.head.name}`;
+  }
+  if (obj instanceof Graph) return `in label of graph ${obj.name}`;
+  return `in label of node ${obj.name}`;
 }
 
 /** Font attributes bundle — mirrors C fontinfo_t fields used in label init. */
@@ -191,7 +205,9 @@ export function makeAnyLabel(
     // it (htmltable.c:1911 getPenColor). @see getPenColor
     // ADR-2: a per-context sizer (when set) wins over the global one.
     const imageSizer = obj !== undefined ? rootOf(obj).info.gvc?.imageSizer : undefined;
-    return makeHtmlLabel(content, { ...font, pencolor: getPenColor(obj), imageSizer }, measurer);
+    const { label, rv } = makeHtmlLabelRv(content, { ...font, pencolor: getPenColor(obj), imageSizer }, measurer);
+    if (rv !== 0 && obj !== undefined) console.error(inLabelOf(obj));
+    return label;
   }
   // Plain path: resolve \G \N \E \T \H \L against the owning object
   // BEFORE measuring, as C does (labels.c:169, escBackslash=0; the

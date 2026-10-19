@@ -334,6 +334,18 @@ function chainOf(e: Edge): Edge[] {
 }
 
 /**
+ * agwarningf at each genroute failure site (Graphviz prefixes "Warning: ");
+ * returns genroute's failure code 1.
+ * @see multispline.c:genroute
+ */
+function warnNoControlPoints(e: Edge): number {
+  console.warn(
+    `Warning: Could not create control points for multiple spline for edge (${e.tail.name},${e.head.name})`,
+  );
+  return 1;
+}
+
+/**
  * Generate splines for e and cohorts through the corridor polygon.
  * Edges run from polygon index 0 to t. Returns 0 on success.
  * @see multispline.c:genroute
@@ -350,7 +362,7 @@ function genroute(
   const head = e.head;
 
   const pl = shortestPath({ ps: trip.ps }, eps);
-  if (pl === null) return 1;
+  if (pl === null) return warnNoControlPoints(e);
 
   if (pl.length === 2) {
     // C passes doPolyline (0/1) AS the edge type — so the polyline case
@@ -365,7 +377,7 @@ function genroute(
 
   if (mult === 1 || concentrate) {
     const spl = routeMember(trip.ps, t, pl, doPolyline);
-    if (spl === null) return 1;
+    if (spl === null) return warnNoControlPoints(e);
     finishEdge(e, spl, e.head !== head);
     return 0;
   }
@@ -374,7 +386,7 @@ function genroute(
   const cpts: Point[][] = [];
   for (let i = 0; i + 2 < pl.length; i++) {
     const cp = mkCtrlPts(t, mult + 1, pl[i]!, pl[i + 1]!, pl[i + 2]!, trip);
-    if (cp === null) return 1;
+    if (cp === null) return warnNoControlPoints(e);
     cpts.push(cp);
   }
 
@@ -390,10 +402,10 @@ function genroute(
       poly[pn - j] = cpts[j - 1]![i + 1]!;
     }
     const mmpl = shortestPath({ ps: poly }, eps);
-    if (mmpl === null) return 1;
+    if (mmpl === null) return warnNoControlPoints(cur);
 
     const spl = routeMember(poly, pl.length - 1, mmpl, doPolyline);
-    if (spl === null) return 1;
+    if (spl === null) return warnNoControlPoints(cur);
     finishEdge(cur, spl, cur.head !== head);
 
     cur = cur.info.to_virt;

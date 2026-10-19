@@ -90,20 +90,10 @@
       "bound": "41 draw-op diffs; Delta~0.2pt on edge 1->2's routed bezier (unfilled_bezier[1]: 221.92 vs 222.12); residual after f66ac638 (unchanged 41 diffs) - tie attribution not re-verified by injection",
       "ref": "known-divergences.md#a9-engine-track-twopi-circo"
     },
-    "windows-tree": {
-      "class": "A9",
-      "bound": "10 draw-op diffs on one fan edge (node2->node8): circo trig places node2.y a single ULP above node8.y around the symmetric value 18.0 (18.0000000000000320 vs 18.0), flipping closestSide's dyna head-port TOP/BOTTOM at the exact tie; node boxes and all other edges bit-identical.",
-      "ref": "known-divergences.md#a9-engine-track-twopi-circo"
-    },
-    "2475_2": {
-      "class": "A9",
-      "bound": "989 draw-op diffs confined to one 28-node 590_ component (18 nodes move, max 296.7pt; 10744/10762 nodes bit-identical). Mechanism: circo getRotation->closestNode (circpos.c:73-92) cocircular hypot tie \u2014 at the bit-identical placement offset the two candidate distances round 2 ULP apart between V8 Math.hypot and Apple libm, flipping the strict < and rotating/reflecting the sub-block ~20deg. Block tree, circle order, and all centerAngles bit-identical; CR-hypot policy previously refuted. Repro: .agent-notes/circo-2475-590-repro.dot; RCA: .agent-notes/circo-b81-2475-rca.md.",
-      "ref": "known-divergences.md#a9-engine-track-twopi-circo"
-    },
-    "2095_1": {
+    "1855": {
       "class": "A1",
-      "bound": "<= 66.12pt (3 rigid block rotations)",
-      "ref": "plans/decision-journal.md 2026-07-24 T3: getRotation closest-node exact-tie knife edge; injection A/B proved irreducible (2197 diffs -> 0)"
+      "bound": "599 xdot draw-op diffs; the 31-leaf star settles in the mirror basin of the oracle's layout (node draw ops within 0.12pt, routed splines within 0.71pt; all 599 numeric). Mechanism: with circpos.c's fma contraction and evaluation order mirrored, 31/32 pre-adjust positions are bit-exact; node 22 differs by 1 ULP because V8 and Apple libm round cos/sin differently at 3 positionChildren angles (cos 0x1.c7bd892b3aa91p+1, sin 0x1.fd5b5d123280bp+1, cos 0x1.0c152382d7364p+2). PRISM's Delaunay then flips one near-cocircular diagonal on the mirror axis (prism iteration 1: edge 15-17 vs 16-18). Injection A/B: native cos/sin fed to the port -> every pre-adjust position bit-exact, 0 diffs; V8 cos/sin fed to the native build -> the oracle's layout in 22/30 runs, the port's in 8/30 (GTS edge order depends on allocation addresses).",
+      "ref": "known-divergences.md#a1-twopi-arrows-family"
     },
     "2784": {
       "class": "A10",

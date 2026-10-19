@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -175,6 +175,17 @@ sõlm sõlme haaval (3e-14), ja ainult 5 ULP-lahknevast lehepositsioonist taasta
 lülitab kogu paigutuse tagasi pordi peegli juurde. Täielik RCA: `.agent-notes/twopi-radial-drift-rca.md` (otsustuspäevik
 2026-07-11).
 
+Sama täht lahkneb ka `circo` rajal (aktsepteeritud 2026-10-16, 599
+joonistusoperatsiooni erinevust, kuni 0.71pt). Port järgib clangi FMA
+kontraktsiooni ja hindamisjärjekorda failis `circpos.c`, seega on 31 PRISM-i
+sisenevast 32 positsioonist bititäpsed. Viimane erineb 1 ULP võrra, sest V8 ja
+Apple'i libm ümardavad `cos`/`sin` väärtusi kolmel lapsnurgal funktsioonis
+`positionChildren` erinevalt. PRISM-i Delaunay triangulatsioon pöörab seejärel
+peegeltelje ühe peaaegu kaasringse diagonaali ümber. Injektsiooni A/B:
+natiivsete `cos`/`sin` väärtustega vastab port oraaklile. V8 väärtustega annab
+natiivne build oraakli paigutuse 22 käivitusel 30-st ja pordi paigutuse
+ülejäänud 8-l, sest GTS järjestab oma servad eraldusaadressi järgi.
+
 **Iteratiivsete mootorite iseloomustus: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Erinevalt ülaltoodud `circo`/`twopi`/`osage` mootoriradadest ei ole `neato`/`fdp`/`sfdp`
 veel id-põhiselt sorteeritud — `engine-walk.ts` salvestab nendele kolmele välja `tolerance: 0.5`
@@ -205,13 +216,15 @@ eraldi omistatud graphviz 16.1.0 vastu: süstimiskoormus
 (`test/corpus/attribute-divergence.ts`) söödab natiivse oraakli marsruutimiseelse
 `ND_pos` porti ja võrdleb uuesti, ning iga praegune lahknev id on
 `drift-exonerated` (pordi marsruutimine ja väljastus reprodutseerivad oraakli
-täpselt, kui lahendaja triiv on eemaldatud), välja arvatud viis. Kolm on eraldi
+täpselt, kui lahendaja triiv on eemaldatud), välja arvatud kolm. Kolm on eraldi
 aktsepteeritud id-põhised jäägid: `241_0` CDT incircle'i viik fdp-l ja sfdp-l ning
-sfdp `2556` NaN-paigutus. Kaks ei ole aktsepteeritud ega algpõhjuseni jälitatud:
-fdp `2471` ja sfdp `2371` säilitavad pärast süstimist erinevad servasiltide
-asukohad (`lp`), st xlabel-paigutaja valib teise kandidaadi. Natiivne fdp paigutus
-`2471` puhul varieerub ka jooksust jooksuni, mistõttu selle rida registreerib ühe
-jooksu. (sfdp `42` on A1 triiv, vt
+sfdp `2556` NaN-paigutus. fdp `2471` ja sfdp `2371` säilitasid varem pärast süstimist
+erinevad servasiltide asukohad (`lp`), st xlabel-paigutaja valis teise kandidaadi.
+`2471` lahenes, kui pordi `dotneato_closest` hakkas ümardama nagu clangi liidetud de
+Casteljau arvutus ja DIST2: servasiltide ankrud erinesid 1–2 ULP võrra, mis kallutas
+paigutaja ranget sisalduvustesti. `2371` lahenes, kui pordi R-puu hakkas ristkülikuid
+väärtusena kopeerima, nagu teeb C. Natiivne fdp paigutus `2471` puhul varieerub jooksust
+jooksuni, mistõttu selle rida registreerib ühe jooksu. (sfdp `42` on A1 triiv, vt
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Allolev klassiaktsepteerimine vormistab süüst vabastatud hulga; jooksvad arvud
 mootoripõhistel töölaudadel
@@ -912,18 +925,21 @@ filed“). Aktsepteeritud mootoriraja tasemel failiga
 faili `PARITY-twopi.md`/`PARITY-circo.md` — sama ühendus, mida `accepted.ts` teeb
 dot-raja `PARITY-dot.md` jaoks.
 
-**circo `2475_2` — kaasringne closestNode hypot viik.** Ühes selle 10762-sõlmelise
-graafi 28-sõlmelises komponendis valib circo `getRotation`
-(`circpos.c:73-92`) paigutuse alguspunktile lähima ploki sõlme
+**circo `2475_2` ja `2095_1` — kaasringne closestNode hypot viik (parandatud).**
+Ühes selle 10762-sõlmelise graafi 28-sõlmelises komponendis valib circo
+`getRotation` (`circpos.c:73-92`) paigutuse alguspunktile lähima ploki sõlme
 `hypot` abil, et otsustada alamploki pööre. Kaks kaasringset sõlme on
 efektiivselt võrdsel kaugusel; V8 korrektselt ümardatud `Math.hypot` ja Apple
-libm-i `hypot` ümardavad selle kauguse 2 ULP võrra erinevalt, mis lülitab ümber range `<`,
-valib teise sõlme ja pöörab/peegeldab alamploki ~20° (18 sõlme
+libm-i `hypot` ümardavad selle kauguse 2 ULP võrra erinevalt, mis lülitab ümber
+range `<`, valib teise sõlme ja pöörab/peegeldab alamploki ~20° (18 sõlme
 liigub, max 296.7pt; ülejäänud 10744 sõlme on bitiliselt identsed, nagu ka
-plokipuu, ringi järjestus ja iga `centerAngle`). CR-hypot poliitika lükati
-selle klassi jaoks juba ümber (2026-07-10). Eraldiseisev reprodutseerimine:
+plokipuu, ringi järjestus ja iga `centerAngle`). `2095_1` tabas sama viigi (2197
+joonistusoperatsiooni erinevust, kolm jäika plokipööret). Mõlemad olid
+aktsepteeritud kuni 2026-10-16, mil lähima sõlme otsing läks üle pordi
+bititäpsele Apple'i `hypot` mudelile (`src/common/libm-hypot.ts`); nüüd vastavad
+mõlemad nõuetele. Eraldiseisev reprodutseerimine:
 `.agent-notes/circo-2475-590-repro.dot`; täielik RCA:
-`.agent-notes/circo-b81-2475-rca.md` (aktsepteeritud 2026-07-11).
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — radiaalkoordinaadi ULP, mida võimendab xlabel R-puu.**
 2470 on 140-servaline graaf, mille HTML `<table>` serva sildid klastrisse
@@ -1025,7 +1041,7 @@ kontraktsioon, mitte viik) ja circo
 paneb `node2.y` ühe ULP võrra `node8.y` kohale täpselt sümmeetrilise
 väärtuse 18.0 ümber, ja `closestSide`-i dyna pea-pordi valik lülitab TOP/BOTTOM
 sellel täpsel viigil ümber; sõlmepositsioonid ja kastid on muus osas bitiliselt identsed
-oraakliga).
+oraakliga; **eemaldatud 2026-10-18** — see on vastav, sest pordi DIST2 kasutab clangi liidetud kuju, mis lahendab selle täpse viigi nagu C).
 
 **sfdp mootorirada — serva FP-viik (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp xdot-mootorirada (`parity-sfdp.json`,

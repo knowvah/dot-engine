@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -180,6 +180,17 @@ düğüm düğüm yeniden üretir (3e-14); yalnızca ULP açısından ayrışan 
 konumunu geri yüklemek tüm yerleşimi portun aynasına geri çevirir. Tam kök neden
 analizi: `.agent-notes/twopi-radial-drift-rca.md` (karar günlüğü 2026-07-11).
 
+Aynı yıldız `circo` izinde de sapar (2026-10-16'da kabul edildi, 599 çizim
+işlemi farkı, en fazla 0.71pt). Port, `circpos.c` içinde clang'ın FMA
+daraltmasını ve değerlendirme sırasını izler; bu yüzden PRISM'e giren 32 konumun
+31'i bit düzeyinde birebirdir. Sonuncusu 1 ULP farklıdır, çünkü V8 ve Apple libm
+`positionChildren` içindeki üç çocuk açısında `cos`/`sin` değerlerini farklı
+yuvarlar. Ardından PRISM'in Delaunay üçgenlemesi ayna ekseni üzerindeki
+neredeyse eşdairesel bir köşegeni çevirir. Enjeksiyon A/B: yerel `cos`/`sin`
+değerleri verildiğinde port kâhinle eşleşir. V8'in değerleri verildiğinde yerel
+derleme 30 çalıştırmanın 22'sinde kâhinin yerleşimini, kalan 8'inde portun
+yerleşimini üretir, çünkü GTS kenarlarını ayırma adresine göre sıralar.
+
 **Yinelemeli motor nitelendirmesi: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Yukarıdaki `circo`/`twopi`/`osage` motor hatlarının aksine, `neato`/`fdp`/`sfdp`
 henüz kimlik başına triyaj edilmemiştir — `engine-walk.ts` bu üçü için
@@ -206,13 +217,15 @@ başlatma birleştirmesi ve `setEdgeType` makro-işlev düzeltmesidir.)
 
 İlk taramanın aksine, 929 öğelik evrenin ayrışan her satırı graphviz 16.1.0'a karşı tek tek nedene
 bağlanmıştır: enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin yönlendirme
-öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, beş
-istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
+öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, üç istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
 üretimi kâhini tam olarak yeniden üretir). Üçü ayrıca kabul edilmiş kimlik başına artıklardır:
-`241_0`'ın fdp ve sfdp'deki CDT iç çember beraberliği ile sfdp `2556`'nın NaN yerleşimi. İkisi kabul
-edilmemiştir ve henüz kök nedene indirilmemiştir: fdp `2471` ve sfdp `2371`, enjeksiyondan sonra
-farklı kalan kenar etiketi konumlarını (`lp`) korur, yani xlabel yerleştirici farklı bir aday seçer.
-`2471`'in yerel fdp yerleşimi ayrıca koşudan koşuya değişir; bu yüzden satırı tek bir koşuyu
+`241_0`'ın fdp ve sfdp'deki CDT iç çember beraberliği ile sfdp `2556`'nın NaN yerleşimi. fdp `2471` ve sfdp `2371` önceden enjeksiyondan sonra farklı kalan kenar etiketi
+konumlarını (`lp`) koruyordu, yani xlabel yerleştirici farklı bir aday seçiyordu.
+`2471`, portun `dotneato_closest` işlevi clang'ın birleştirilmiş (fused) de Casteljau
+hesaplaması ve DIST2'si gibi yuvarlamaya başlayınca düzeldi: kenar etiketi çapaları 1–2
+ULP farklıydı ve bu, yerleştiricinin katı kapsama testini tersine çeviriyordu. `2371`,
+portun R-ağacı C'de olduğu gibi dikdörtgenleri değerle kopyalamaya başlayınca düzeldi.
+`2471`'in yerel fdp yerleşimi koşudan koşuya değişir; bu yüzden satırı tek bir koşuyu
 kaydeder. (sfdp `42` A1 sürüklenmesidir, bkz.
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).) Aşağıdaki
 sınıf kabulü, aklanan kümeyi resmileştirir; güncel sayılar motor başına panolarda
@@ -903,17 +916,21 @@ outline-ring obstacle; 56/osage bb clobber; A9 filed” kaydı). Motor hattı d�
 `parity-report.ts` bunu `PARITY-twopi.md`/`PARITY-circo.md` ile birleştirir —
 `accepted.ts`'in dot hattı `PARITY-dot.md` için yaptığı birleştirmenin aynısı.
 
-**circo `2475_2` — eşdairesel closestNode hypot beraberliği.** Bu 10762 düğümlü grafın
-28 düğümlü bir bileşeninde circo'nun `getRotation`'ı (`circpos.c:73-92`), alt bloğun
-dönüşünü belirlemek için `hypot` ile yerleşim başlangıcına en yakın blok düğümünü
-seçer. İki eşdairesel düğüm fiilen eşit uzaklıktadır; V8'in doğru yuvarlanmış
-`Math.hypot`'u ve Apple libm'in `hypot`'u bu uzaklığı 2 ULP farkla yuvarlar; bu da
-katı `<` işaretini çevirir, farklı bir düğüm seçer ve alt bloğu ~20° döndürür/yansıtır
-(18 düğüm kayar, azami 296.7pt; diğer 10744 düğüm, blok ağacı, daire sırası ve her
-`centerAngle` bit düzeyinde özdeştir). CR-hypot politikası bu sınıf için zaten
-çürütülmüştü (2026-07-10). Bağımsız yeniden üretim:
+**circo `2475_2` ve `2095_1` — eşdairesel closestNode hypot beraberliği
+(düzeltildi).** Bu 10762 düğümlü grafın 28 düğümlü bir bileşeninde circo'nun
+`getRotation`'ı (`circpos.c:73-92`), alt bloğun dönüşünü belirlemek için `hypot`
+ile yerleşim başlangıcına en yakın blok düğümünü seçer. İki eşdairesel düğüm
+fiilen eşit uzaklıktadır; V8'in doğru yuvarlanmış `Math.hypot`'u ve Apple
+libm'in `hypot`'u bu uzaklığı 2 ULP farkla yuvarlar; bu da katı `<` işaretini
+çevirir, farklı bir düğüm seçer ve alt bloğu ~20° döndürür/yansıtır (18 düğüm
+kayar, azami 296.7pt; diğer 10744 düğüm, blok ağacı, daire sırası ve her
+`centerAngle` bit düzeyinde özdeştir). `2095_1` aynı beraberliğe takılıyordu
+(2197 çizim işlemi farkı, üç rijit blok dönmesi). İkisi de 2026-10-16'ya kadar
+kabul edilmişti; o tarihte en yakın düğüm araması, porttaki Apple `hypot`
+işlevinin bit düzeyinde birebir modeline (`src/common/libm-hypot.ts`) geçti ve
+artık ikisi de uyumlu. Bağımsız yeniden üretim:
 `.agent-notes/circo-2475-590-repro.dot`; tam kök neden analizi:
-`.agent-notes/circo-b81-2475-rca.md` (2026-07-11'de kabul edildi).
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — xlabel R-ağacı tarafından yükseltilen radyal koordinat ULP'si.**
 2470, HTML `<table>` kenar etiketleri neredeyse çakışık radyal çapalarda toplanan
@@ -1011,7 +1028,7 @@ birleştirmesiydi, bir beraberlik değildi) ve circo `windows-tree` (tek bir
 yelpaze kenarında 10 çizim işlemi farkı — circo'nun yerleştirme trigonometrisi,
 tam simetrik 18.0 değeri etrafında `node2.y`'yi `node8.y`'nin bir ULP üstüne koyar ve
 `closestSide`'ın dyna baş portu seçimi tam o beraberlikte TOP/BOTTOM'u çevirir; düğüm
-konumları ve kutular aksi halde kâhinle bit düzeyinde özdeştir).
+konumları ve kutular aksi halde kâhinle bit düzeyinde özdeştir; **2026-10-18'de kaldırıldı** — portun DIST2'si clang'ın birleştirilmiş (fused) biçimini kullandığından beri uyumludur; bu biçim bu tam eşitliği C gibi çözer).
 
 **sfdp motor hattı — kenar FP beraberliği (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp xdot motor hattı (`parity-sfdp.json`,

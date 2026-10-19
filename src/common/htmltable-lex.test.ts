@@ -4,7 +4,7 @@
  * @see lib/common/htmllex.c
  */
 import { describe, expect, it } from 'vitest';
-import { tokenize } from './htmltable-lex.js';
+import { HtmlLexError, tokenize, tokenizeDeferred } from './htmltable-lex.js';
 import type { OpenToken } from './htmltable-types.js';
 
 describe('tokenize — table attrs', () => {
@@ -172,14 +172,111 @@ describe('tokenize — entity decoding in text runs', () => {
     expect(toks).toEqual([{ type: 'text', value: 'a &<> b' }]);
   });
 
-  it('leaves an unknown entity name literal', () => {
-    const toks = tokenize('&notareal; x');
-    expect(toks).toEqual([{ type: 'text', value: '&notareal; x' }]);
+  it('leaves an entity-like run that is not an XML name literal', () => {
+    const toks = tokenize('&not a name; x');
+    expect(toks).toEqual([{ type: 'text', value: '&not a name; x' }]);
+  });
+
+  it('accepts the XML predefined apos entity', () => {
+    expect(tokenize('<HTML>a&apos;b</HTML>')[1]).toEqual({ type: 'text', value: "a'b" });
   });
 
   it('decodes text between tags without affecting tags', () => {
     const toks = tokenize('<B>&#65;&#66;</B>');
     expect(toks[0]).toEqual({ type: 'open', tag: 'B', attrs: {} });
     expect(toks[1]).toEqual({ type: 'text', value: 'AB' });
+  });
+});
+
+/** Run tokenize and return the HtmlLexError it must throw. */
+function lexFailure(src: string): HtmlLexError {
+  try {
+    tokenize(src);
+  } catch (e) {
+    if (e instanceof HtmlLexError) return e;
+    throw e;
+  }
+  throw new Error('tokenize did not throw');
+}
+
+// Expected values captured from graphviz 16.1.0 native dot stderr.
+describe('tokenize — expat error paths (htmllex.c:1095)', () => {
+  it('reports an undefined entity with line and context', () => {
+    const e = lexFailure('<HTML><b>&bogus;</b></HTML>');
+    expect(e.message).toBe('undefined entity in line 1 ');
+    expect(e.diagnostics).toEqual(['Error: undefined entity in line 1 ', '... <b>&bogus; ...']);
+  });
+
+  it('reports a mismatched tag with line and context', () => {
+    const e = lexFailure('<HTML><b>x</i></HTML>');
+    expect(e.message).toBe('mismatched tag in line 1 ');
+    expect(e.diagnostics).toEqual(['Error: mismatched tag in line 1 ', '... x</i> ...']);
+  });
+
+  it('counts the line of the entity, not of the chunk start', () => {
+    const e = lexFailure('<HTML><b>x\n\ny &bogus; z</b></HTML>');
+    expect(e.diagnostics).toEqual(['Error: undefined entity in line 3 ', '... <b>x\n\ny &bogus; z ...']);
+  });
+
+  it('counts CRLF as one line', () => {
+    const e = lexFailure('<HTML><b>x\r\ny</i></HTML>');
+    expect(e.diagnostics).toEqual(['Error: mismatched tag in line 2 ', '... x\r\ny</i> ...']);
+  });
+
+  it('compares tag names case-sensitively like expat', () => {
+    const e = lexFailure('<HTML><b>x</B></HTML>');
+    expect(e.diagnostics).toEqual(['Error: mismatched tag in line 1 ', '... x</B> ...']);
+  });
+
+  it('flags the closing wrapper when an element is left open', () => {
+    const e = lexFailure('<HTML><b>x</HTML>');
+    expect(e.diagnostics).toEqual(['Error: mismatched tag in line 1 ', '... x</HTML> ...']);
+  });
+
+  it('shows the two previous chunks when both are tags', () => {
+    const e = lexFailure('<HTML><b>x</b></i></HTML>');
+    expect(e.diagnostics).toEqual(['Error: mismatched tag in line 1 ', '... </b></i> ...']);
+  });
+
+  it('counts comment chunks as context tokens', () => {
+    const e = lexFailure('<HTML><!-- c --><i>x</b></HTML>');
+    expect(e.diagnostics).toEqual(['Error: mismatched tag in line 1 ', '... x</b> ...']);
+  });
+
+  it('shows the whole raw text chunk including the wrapper tag', () => {
+    const e = lexFailure('<HTML>a &amp; &foo; b</HTML>');
+    expect(e.diagnostics).toEqual(['Error: undefined entity in line 1 ', '... <HTML>a &amp; &foo; b ...']);
+  });
+
+  it('reports an unknown element as written, without error_context', () => {
+    const e = lexFailure('<HTML>\n<span>x</span></HTML>');
+    expect(e.message).toBe('Unknown HTML element <span> on line 2 ');
+    expect(e.diagnostics).toEqual(['Error: Unknown HTML element <span> on line 2 ']);
+    expect((e as unknown as { tag: string }).tag).toBe('SPAN');
+  });
+
+  it('reports a bad attribute at its own line', () => {
+    const e = lexFailure('<HTML><TD\n x=1></HTML>');
+    expect(e.diagnostics).toEqual(['Error: not well-formed (invalid token) in line 2 ', '... <HTML><TD\n x=1> ...']);
+  });
+
+  it('reports a duplicate attribute only when no invalid token follows', () => {
+    expect(lexFailure('<HTML><TD x="1" x="2"></HTML>').message).toBe('duplicate attribute in line 1 ');
+    expect(lexFailure('<HTML><TD x="1" x="2" y></HTML>').message).toBe('not well-formed (invalid token) in line 1 ');
+  });
+
+  it('keeps the tokens before the error when tokenizing deferred', () => {
+    const r = tokenizeDeferred('<HTML><b>x</i></HTML>');
+    expect(r.tokens.map((t) => t.type)).toEqual(['open', 'open', 'text']);
+    expect(r.error?.message).toBe('mismatched tag in line 1 ');
+  });
+
+  it('is an HtmlParseError so existing catch sites fall back', () => {
+    expect(lexFailure('<HTML>&bogus;</HTML>').name).toBe('HtmlParseError');
+  });
+
+  it('does not flag matched tags, self-closing tags or known entities', () => {
+    const toks = tokenize('<HTML><b>x<br/>&amp;&alpha;</b></HTML>');
+    expect(toks.map((t) => t.type)).toEqual(['open', 'open', 'text', 'open', 'close', 'text', 'close', 'close']);
   });
 });

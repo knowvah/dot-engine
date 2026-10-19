@@ -313,13 +313,13 @@
     },
     {
       "id": "2471",
-      "verdict": "not-cleared",
+      "verdict": "drift-exonerated",
       "baseDiffs": 37731,
-      "injectedDiffs": 2,
+      "injectedDiffs": 0,
       "bucket": {
-        "shape": "edge/_ldraw_/numeric",
+        "shape": "graph/_draw_/unknown",
         "kind": "position",
-        "signature": "edge/_ldraw_/numeric+edge/lp/numeric"
+        "signature": "none"
       }
     }
   ]

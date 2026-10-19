@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -177,6 +177,17 @@ ULP-avvikande lövpositionerna vänder hela layouten tillbaka till porteringens
 spegel. Fullständig orsaksanalys: `.agent-notes/twopi-radial-drift-rca.md` (beslutsjournal
 2026-07-11).
 
+Samma stjärna avviker på `circo`-spåret (godkänd 2026-10-16, 599
+draw-op-skillnader, högst 0.71pt). Porten efterliknar clangs FMA-kontraktion och
+evalueringsordning i `circpos.c`, så 31 av de 32 positioner som går in i PRISM
+är bitexakta. Den sista avviker med 1 ULP, eftersom V8 och Apples libm avrundar
+`cos`/`sin` olika vid tre barnvinklar i `positionChildren`. PRISMs
+Delaunay-triangulering vänder sedan en nästan kocirkulär diagonal på
+spegelaxeln. Injektions-A/B: med de nativa `cos`/`sin`-värdena stämmer porten
+med oraklet. Med V8:s värden ger den nativa builden oraklets layout i 22 av 30
+körningar och portens layout i de övriga 8, eftersom GTS ordnar sina kanter
+efter allokeringsadress.
+
 **Karakterisering av iterativa motorer: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 Till skillnad från motorspåren för `circo`/`twopi`/`osage` ovan är `neato`/`fdp`/`sfdp`
 ännu **inte** triagerade per id — `engine-walk.ts` registrerar ett fält `tolerance: 0.5`
@@ -205,12 +216,15 @@ Till skillnad från vid första genomgången är varje avvikande rad i universum
 individuellt tillskriven mot graphviz 16.1.0: injektionsverktyget
 (`test/corpus/attribute-divergence.ts`) matar in det inbyggda oraklets `ND_pos` före dragningen i
 porteringen och jämför på nytt, och varje nuvarande avvikande id är `drift-exonerated` (porteringens
-dragning och emission återger oraklet exakt när lösardriften är borttagen) utom fem. Tre är separat
+dragning och emission återger oraklet exakt när lösardriften är borttagen) utom tre. Tre är separat
 godkända residualer per id: `241_0`:s CDT-incircle-oavgjort på fdp och sfdp samt sfdp `2556`:s
-NaN-layout. Två är inte godkända och ännu inte orsaksanalyserade: fdp `2471` och sfdp `2371`
-behåller kantetikettpositioner (`lp`) som skiljer sig efter injektion, dvs. xlabel-placeraren väljer
-en annan kandidat. Den inbyggda fdp-layouten för `2471` varierar dessutom från körning till körning,
-så dess rad registrerar en körning. (sfdp `42` är A1-drift, se
+NaN-layout. fdp `2471` och sfdp `2371` behöll tidigare kantetikettpositioner (`lp`) som
+skilde sig efter injektion, dvs. xlabel-placeraren valde en annan kandidat. `2471`
+löstes när porteringens `dotneato_closest` började avrunda som clangs sammanslagna de
+Casteljau-beräkning och DIST2: kantetiketternas ankare skilde sig med 1–2 ULP, vilket
+tippade placerarens strikta inneslutningstest. `2371` löstes när porteringens R-träd
+började kopiera rektanglar som värden, som C gör. Den inbyggda fdp-layouten för `2471`
+varierar från körning till körning, så dess rad registrerar en körning. (sfdp `42` är A1-drift, se
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Klassgodkännandet nedan formaliserar den frikända mängden; aktuella antal finns i
 instrumentpanelerna per motor
@@ -919,18 +933,21 @@ filed”). Godkänd på motorspårsnivå via
 `PARITY-twopi.md`/`PARITY-circo.md` — samma sammanfogning som
 `accepted.ts` gör för dot-spårets `PARITY-dot.md`.
 
-**circo `2475_2` — kocirkulärt oavgjort läge för hypot i closestNode.** I en
-komponent med 28 noder i den här grafen på 10762 noder väljer circos `getRotation`
-(`circpos.c:73-92`) den blocknod som ligger närmast layoutens origo med
-`hypot` för att avgöra delblockets rotation. Två kocirkulära noder är
-i praktiken lika långt bort; V8:s korrekt avrundade `Math.hypot` och Apples
-libm-`hypot` avrundar det avståndet 2 ULP från varandra, vilket vänder det strikta `<`,
-väljer en annan nod och roterar/speglar delblocket ~20° (18 noder
-flyttas, max 296.7pt; de andra 10744 noderna är bitidentiska, liksom
-blockträdet, cirkelordningen och varje `centerAngle`). Policyn med korrekt avrundad hypot
-vederlades redan för den här klassen (2026-07-10). Fristående reproduktion:
+**circo `2475_2` och `2095_1` — kocirkulärt oavgjort läge för hypot i
+closestNode (åtgärdat).** I en komponent med 28 noder i den här grafen på 10762
+noder väljer circos `getRotation` (`circpos.c:73-92`) den blocknod som ligger
+närmast layoutens origo med `hypot` för att avgöra delblockets rotation. Två
+kocirkulära noder är i praktiken lika långt bort; V8:s korrekt avrundade
+`Math.hypot` och Apples libm-`hypot` avrundar det avståndet 2 ULP från varandra,
+vilket vänder det strikta `<`, väljer en annan nod och roterar/speglar
+delblocket ~20° (18 noder flyttas, max 296.7pt; de andra 10744 noderna är
+bitidentiska, liksom blockträdet, cirkelordningen och varje `centerAngle`).
+`2095_1` träffade samma oavgjorda läge (2197 draw-op-skillnader, tre stela
+blockrotationer). Båda var godkända fram till 2026-10-16, då sökningen efter
+närmaste nod gick över till portens bitexakta modell av Apples `hypot`
+(`src/common/libm-hypot.ts`); båda är nu konforma. Fristående reproduktion:
 `.agent-notes/circo-2475-590-repro.dot`; fullständig orsaksanalys:
-`.agent-notes/circo-b81-2475-rca.md` (godkänd 2026-07-11).
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP i radiella koordinater förstärkt av R-trädet för xlabel.**
 2470 är en graf med 140 kanter vars HTML-`<table>`-etiketter på kanter klustrar sig vid
@@ -1032,7 +1049,7 @@ FMA-kontraktionen, inte ett oavgjort läge) och circo
 lägger `node2.y` en enda ULP ovanför `node8.y` kring det exakt symmetriska
 värdet 18.0, och `closestSide`s val av dyna-huvudport vänder TOP/BOTTOM vid
 just det oavgjorda läget; nodpositioner och rutor är i övrigt bitidentiska med
-oraklet).
+oraklet; **avförd 2026-10-18** — den är konform sedan porteringens DIST2 använder clangs sammanslagna form, som avgör just denna oavgjorda jämförelse som C).
 
 **sfdp-motorspåret — oavgjort flyttalsläge på en kant (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> sfdp:s xdot-motorspår (`parity-sfdp.json`,

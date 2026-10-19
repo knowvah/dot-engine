@@ -1,5 +1,5 @@
 ---
-sourceHash: f94684ad3aee011d6300ef7f621867a6d96c47ff92ca7aea15eafdc4b8e89155
+sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -174,6 +174,17 @@ pozycji liści różniących się o ULP przerzuca cały układ z powrotem na lus
 portu. Pełna analiza przyczyn: `.agent-notes/twopi-radial-drift-rca.md` (dziennik decyzji
 2026-07-11).
 
+Ta sama gwiazda rozbiega się na ścieżce `circo` (zaakceptowane 2026-10-16, 599
+różnic operacji rysowania, najwyżej 0.71pt). Port odwzorowuje kontrakcję FMA i
+kolejność obliczeń clanga w `circpos.c`, więc 31 z 32 pozycji wchodzących do
+PRISM jest bitowo dokładnych. Ostatnia różni się o 1 ULP, ponieważ V8 i libm
+Apple zaokrąglają `cos`/`sin` inaczej w trzech kątach dzieci w
+`positionChildren`. Triangulacja Delaunaya w PRISM odwraca wtedy jedną prawie
+współokręgową przekątną na osi symetrii. Iniekcja A/B: z natywnymi wartościami
+`cos`/`sin` port zgadza się z wyrocznią. Z wartościami V8 natywny build daje
+układ wyroczni w 22 z 30 uruchomień, a układ portu w pozostałych 8, ponieważ GTS
+porządkuje swoje krawędzie według adresów alokacji.
+
 **Charakteryzacja silników iteracyjnych: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
 W przeciwieństwie do ścieżek silników `circo`/`twopi`/`osage` powyżej, `neato`/`fdp`/`sfdp`
 **nie** są jeszcze analizowane dla poszczególnych id — `engine-walk.ts` zapisuje dla tych trzech pole `tolerance: 0.5`,
@@ -203,12 +214,16 @@ indywidualnie przypisany względem graphviz 16.1.0: narzędzie wstrzykiwania
 (`test/corpus/attribute-divergence.ts`) podaje przedroutingowy `ND_pos` natywnej wyroczni
 do portu i porównuje ponownie, a każdy obecny rozbieżny id jest `drift-exonerated`
 (prowadzenie i emisja w porcie odtwarzają wyrocznię dokładnie po usunięciu dryfu solvera)
-z wyjątkiem pięciu. Trzy to osobno zaakceptowane residua dla poszczególnych id: remis
-incircle w CDT dla `241_0` na fdp i sfdp oraz układ NaN w sfdp `2556`. Dwa nie są
-zaakceptowane i nie mają jeszcze ustalonej przyczyny źródłowej: fdp `2471` i sfdp `2371`
-zachowują pozycje etykiet krawędzi (`lp`), które po wstrzyknięciu się różnią, tzn. moduł
-rozmieszczający xlabel wybiera innego kandydata. Natywny układ fdp dla `2471` zmienia się
-też z przebiegu na przebieg, więc jego wiersz rejestruje jeden przebieg. (sfdp `42`
+z wyjątkiem trzech. Trzy to osobno zaakceptowane residua dla poszczególnych id: remis
+incircle w CDT dla `241_0` na fdp i sfdp oraz układ NaN w sfdp `2556`. fdp `2471` i sfdp
+`2371` zachowywały wcześniej pozycje etykiet krawędzi (`lp`), które po wstrzyknięciu się
+różniły, tzn. moduł rozmieszczający xlabel wybierał innego kandydata. `2471` ustąpił,
+gdy `dotneato_closest` w porcie zaczął zaokrąglać tak jak połączone (fused) obliczenie
+de Casteljau i DIST2 w clangu: kotwice etykiet krawędzi różniły się o 1–2 ULP, co
+przechylało ścisły test zawierania w module rozmieszczającym. `2371` ustąpił, gdy
+R-drzewo portu zaczęło kopiować prostokąty przez wartość, tak jak C. Natywny układ fdp
+dla `2471` zmienia się z przebiegu na przebieg, więc jego wiersz rejestruje jeden
+przebieg. (sfdp `42`
 to dryf A1, zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
 Akceptacja klasy poniżej formalizuje zbiór oczyszczony z zarzutów; bieżące liczby w
 panelach poszczególnych silników
@@ -896,18 +911,21 @@ filed”). Zaakceptowane na poziomie ścieżki silnika przez
 `PARITY-twopi.md`/`PARITY-circo.md` przez `parity-report.ts` — to samo złączenie, które
 `accepted.ts` wykonuje dla `PARITY-dot.md` ścieżki dot.
 
-**circo `2475_2` — remis hypot dla współokręgowego closestNode.** W jednym
-28-węzłowym komponencie tego grafu o 10762 węzłach `getRotation` w circo
-(`circpos.c:73-92`) wybiera węzeł bloku najbliższy początkowi układu przez
-`hypot`, aby ustalić obrót podbloku. Dwa współokręgowe węzły są
-praktycznie równoodległe; poprawnie zaokrąglany `Math.hypot` z V8 i `hypot` z libm
-Apple zaokrąglają tę odległość o 2 ULP inaczej, co przerzuca ścisłe `<`,
-wybiera inny węzeł i obraca/odbija podblok o ~20° (18 węzłów
-się przesuwa, maks. 296.7pt; pozostałe 10744 węzły są identyczne bitowo, tak samo jak
-drzewo bloków, kolejność okręgu i każdy `centerAngle`). Polityka CR-hypot
-była już obalona dla tej klasy (2026-07-10). Samodzielna reprodukcja:
+**circo `2475_2` i `2095_1` — remis hypot dla współokręgowego closestNode
+(naprawione).** W jednym 28-węzłowym komponencie tego grafu o 10762 węzłach
+`getRotation` w circo (`circpos.c:73-92`) wybiera węzeł bloku najbliższy
+początkowi układu przez `hypot`, aby ustalić obrót podbloku. Dwa współokręgowe
+węzły są praktycznie równoodległe; poprawnie zaokrąglany `Math.hypot` z V8 i
+`hypot` z libm Apple zaokrąglają tę odległość o 2 ULP inaczej, co przerzuca
+ścisłe `<`, wybiera inny węzeł i obraca/odbija podblok o ~20° (18 węzłów się
+przesuwa, maks. 296.7pt; pozostałe 10744 węzły są identyczne bitowo, tak samo
+jak drzewo bloków, kolejność okręgu i każdy `centerAngle`). `2095_1` trafiał na
+ten sam remis (2197 różnic operacji rysowania, trzy sztywne obroty bloków). Oba
+były zaakceptowane do 2026-10-16, kiedy wyszukiwanie najbliższego węzła przeszło
+na bitowo dokładny model `hypot` z Apple w porcie (`src/common/libm-hypot.ts`);
+teraz oba są zgodne. Samodzielna reprodukcja:
 `.agent-notes/circo-2475-590-repro.dot`; pełna analiza przyczyn:
-`.agent-notes/circo-b81-2475-rca.md` (zaakceptowane 2026-07-11).
+`.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP współrzędnej radialnej wzmocniony przez R-drzewo xlabel.**
 2470 to graf ze 140 krawędziami, którego etykiety krawędzi z HTML `<table>` skupiają się
@@ -1010,7 +1028,7 @@ kontrakcją FMA, a nie remisem) oraz circo
 lokuje `node2.y` o pojedynczy ULP powyżej `node8.y` wokół dokładnie symetrycznej
 wartości 18.0, a wybór portu głowy dyna w `closestSide` przerzuca TOP/BOTTOM na
 tym dokładnym remisie; pozycje węzłów i pudełka są poza tym bitowo identyczne z
-wyrocznią).
+wyrocznią; **wycofano 2026-10-18** — jest zgodny, odkąd DIST2 w porcie używa połączonej (fused) postaci z clanga, która rozstrzyga ten dokładny remis tak jak C).
 
 **Ścieżka silnika sfdp — remis FP krawędzi (`241_0`).**
 <a id="a9-sfdp-fp-ties"></a> Ścieżka silnika xdot sfdp (`parity-sfdp.json`,

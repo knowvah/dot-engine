@@ -14,7 +14,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { parseHtmlLabel, parseTable, parseText } from './htmltable-parse.js';
-import { tokenize } from './htmltable-lex.js';
+import { HtmlLexError, tokenize } from './htmltable-lex.js';
 import { HtmlParseError } from './htmltable-types.js';
 import type { HtmlTable, HtmlCell, HtmlText } from './htmltable-types.js';
 
@@ -22,6 +22,17 @@ function firstTable(src: string): HtmlTable {
   const lbl = parseHtmlLabel(src);
   if (lbl.kind !== 'table') throw new Error('expected table label');
   return lbl.table;
+}
+
+/** The diagnostics of the HtmlLexError that parsing `src` must raise. */
+function diagnosticsOf(src: string): readonly string[] {
+  try {
+    parseHtmlLabel(src);
+  } catch (e) {
+    if (e instanceof HtmlLexError) return e.diagnostics;
+    throw e;
+  }
+  throw new Error('parseHtmlLabel did not throw');
 }
 
 function firstCell(src: string): HtmlCell {
@@ -126,10 +137,9 @@ describe('BR tag', () => {
     expect(t.items[1]).toMatchObject({ br: true, brAlign: 'left' });
     expect(t.items[2]).toEqual({ text: 'b' });
   });
-  it('bare BR (no close token) does not consume', () => {
-    const t = parseText({ tokens: tokenize('a<BR>b'), pos: 0 }, [{}]);
-    expect(t.items[1]).toMatchObject({ br: true });
-    expect(t.items[2]).toEqual({ text: 'b' });
+  it('bare BR (no close token) is a syntax error at the next token', () => {
+    // Expected values from native dot 16.1.0: f1 repro `<TD>x<BR>y</TD>`.
+    expect(diagnosticsOf('x<BR>y')).toEqual(['Error: syntax error in line 1 ', '... <BR>y ...']);
   });
   it('BR inside an active font carries the font state', () => {
     const t = parseText(
@@ -149,24 +159,46 @@ describe('IMG cell content', () => {
     const c = firstCell('<TABLE><TR><TD><IMG SRC="a.png"/></TD></TR></TABLE>');
     expect(c.content[0]).toMatchObject({ kind: 'image', src: 'a.png' });
   });
-  it('bare IMG (no close) still parses; cell SRC falls back when tag omits it', () => {
-    const c = firstCell('<TABLE><TR><TD SRC="cell.png"><IMG></TD></TR></TABLE>');
+  it('cell SRC is used when the IMG tag omits it', () => {
+    const c = firstCell('<TABLE><TR><TD SRC="cell.png"><IMG/></TD></TR></TABLE>');
     expect(c.content[0]).toMatchObject({ kind: 'image', src: 'cell.png' });
+  });
+  it('bare IMG reports the lexer error that follows it', () => {
+    expect(diagnosticsOf('<TABLE><TR><TD><IMG></TD></TR></TABLE>')).toEqual([
+      'Error: mismatched tag in line 1 ',
+      '... <IMG></TD> ...',
+    ]);
+  });
+  it('text next to an IMG is a syntax error (a cell has one child)', () => {
+    expect(diagnosticsOf('<TABLE><TR><TD><IMG SRC="n.png"/>xx</TD></TR></TABLE>')).toEqual([
+      'Error: syntax error in line 1 ',
+      '... <IMG SRC="n.png"/>xx ...',
+    ]);
   });
 });
 
 describe('HR cell content and inter-row HR', () => {
-  it('self-closing HR in a cell', () => {
-    const c = firstCell('<TABLE><TR><TD><HR/></TD></TR></TABLE>');
-    expect(c.content[0]).toEqual({ kind: 'hr' });
+  it('HR inside a cell is a syntax error', () => {
+    expect(diagnosticsOf('<TABLE><TR><TD><HR/></TD></TR></TABLE>')).toEqual([
+      'Error: syntax error in line 1 ',
+      '... <TD><HR/> ...',
+    ]);
   });
-  it('bare HR (no close) in a cell', () => {
-    const c = firstCell('<TABLE><TR><TD><HR></TD></TR></TABLE>');
-    expect(c.content[0]).toEqual({ kind: 'hr' });
-  });
-  it('bare inter-row HR (no close) marks the preceding row ruled', () => {
-    const tbl = firstTable('<TABLE><TR><TD>a</TD></TR><HR><TR><TD>b</TD></TR></TABLE>');
+  it('inter-row HR marks the preceding row ruled', () => {
+    const tbl = firstTable('<TABLE><TR><TD>a</TD></TR><HR/><TR><TD>b</TD></TR></TABLE>');
     expect(tbl.rows[0].ruled).toBe(true);
+  });
+  it('HR with no row after it is a syntax error', () => {
+    expect(diagnosticsOf('<TABLE><TR><TD>x</TD></TR><HR/></TABLE>')).toEqual([
+      'Error: syntax error in line 1 ',
+      '... <HR/></TABLE> ...',
+    ]);
+  });
+  it('bare inter-row HR is a syntax error at the next tag', () => {
+    expect(diagnosticsOf('<TABLE><TR><TD>a</TD></TR><HR><TR><TD>b</TD></TR></TABLE>')).toEqual([
+      'Error: syntax error in line 1 ',
+      '... <HR><TR> ...',
+    ]);
   });
 });
 
@@ -175,9 +207,21 @@ describe('HR cell content and inter-row HR', () => {
 // ---------------------------------------------------------------------------
 
 describe('VR between cells', () => {
-  it('bare VR (no close) marks the preceding cell vruled', () => {
-    const tbl = firstTable('<TABLE><TR><TD>a</TD><VR><TD>b</TD></TR></TABLE>');
+  it('VR marks the preceding cell vruled', () => {
+    const tbl = firstTable('<TABLE><TR><TD>a</TD><VR/><TD>b</TD></TR></TABLE>');
     expect(tbl.rows[0].cells[0].vruled).toBe(true);
+  });
+  it('VR before any cell is a syntax error', () => {
+    expect(diagnosticsOf('<TABLE><TR><VR/><TD>x</TD></TR></TABLE>')).toEqual([
+      'Error: syntax error in line 1 ',
+      '... <TR><VR/> ...',
+    ]);
+  });
+  it('VR with no cell after it is a syntax error', () => {
+    expect(diagnosticsOf('<TABLE><TR><TD>x</TD><VR/></TR></TABLE>')).toEqual([
+      'Error: syntax error in line 1 ',
+      '... <VR/></TR> ...',
+    ]);
   });
 });
 
@@ -213,9 +257,11 @@ describe('TH cells', () => {
   // it): the outer parseRow's own `close TR` check (normalized from the
   // inner TH's close tag) ends the row early, discarding the "x" text and
   // the real </TR> as unrecognised trailing tokens — one row, zero cells.
-  it('terminates on a <TH> nested inside <TR> instead of looping forever', () => {
-    const tbl = firstTable('<TABLE><TR><TH>x</TH></TR></TABLE>');
-    expect(tbl.rows).toEqual([{ cells: [] }]);
+  it('a <TH> nested inside <TR> is a syntax error, not an endless loop', () => {
+    expect(diagnosticsOf('<TABLE><TR><TH>x</TH></TR></TABLE>')).toEqual([
+      'Error: syntax error in line 1 ',
+      '... <TR><TH> ...',
+    ]);
   }, 2000);
 });
 
@@ -256,7 +302,7 @@ describe('malformed streams without closing tags', () => {
   });
 
   it('a row with no closing TR token still returns the parsed cells', () => {
-    const tbl = firstTable('<TABLE><TR><TD>x</TD>');
+    const tbl = parseTable({ tokens: tokenize('<TABLE><TR><TD>x</TD>'), pos: 0 }, [{}]);
     expect(tbl.rows[0].cells).toHaveLength(1);
   });
 
