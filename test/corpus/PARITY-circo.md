@@ -12,12 +12,12 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 928 (generated 2026-10-17T00:27:05.099Z)
+- **Surveyed:** 928 (generated 2026-10-19T00:36:08.330Z)
 - **Oracle:** dot 16.1.0
-- **pass:** 918 (99.5%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 4
+- **pass:** 919 (99.6%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 3
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 5 (excluded from pass %)
 
-## Accepted deltas (4) — documented, not chased
+## Accepted deltas (3) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -29,7 +29,6 @@ table below.
 | [`1855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1855.dot) | 599 | A1 | 599 xdot draw-op diffs; the 31-leaf star settles in the mirror basin of the oracle's layout (node draw ops within 0.12pt, routed splines within 0.71pt; all 599 numeric). Mechanism: with circpos.c's fma contraction and evaluation order mirrored, 31/32 pre-adjust positions are bit-exact; node 22 differs by 1 ULP because V8 and Apple libm round cos/sin differently at 3 positionChildren angles (cos 0x1.c7bd892b3aa91p+1, sin 0x1.fd5b5d123280bp+1, cos 0x1.0c152382d7364p+2). PRISM's Delaunay then flips one near-cocircular diagonal on the mirror axis (prism iteration 1: edge 15-17 vs 16-18). Injection A/B: native cos/sin fed to the port -&gt; every pre-adjust position bit-exact, 0 diffs; V8 cos/sin fed to the native build -&gt; the oracle's layout in 22/30 runs, the port's in 8/30 (GTS edge order depends on allocation addresses). | known-divergences.md#a1-twopi-arrows-family |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) |  | A10 | port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries | known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines |
 | [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 41 | A9 | 41 draw-op diffs; Delta~0.2pt on edge 1-&gt;2's routed bezier (unfilled_bezier[1]: 221.92 vs 222.12); residual after f66ac638 (unchanged 41 diffs) - tie attribution not re-verified by injection | known-divergences.md#a9-engine-track-twopi-circo |
-| [`windows-tree`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/tree.gv) | 10 | A9 | 10 draw-op diffs on one fan edge (node2-&gt;node8): circo trig places node2.y a single ULP above node8.y around the symmetric value 18.0 (18.0000000000000320 vs 18.0), flipping closestSide's dyna head-port TOP/BOTTOM at the exact tie; node boxes and all other edges bit-identical. | known-divergences.md#a9-engine-track-twopi-circo |
 
 ## Diverged (1)
 
@@ -48,5 +47,5 @@ table below.
 | [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle-error | spawnSync dot ETIMEDOUT |
 
 **oracle errors:** 10 native-crash (documented, excluded) / 5 timeout-flake (excluded this run, note to retry)
-_Passing ids (918) are omitted for brevity — the full roster is in
+_Passing ids (919) are omitted for brevity — the full roster is in
 `parity-circo.json`._

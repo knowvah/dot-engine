@@ -64,11 +64,11 @@ Each is independent; one branch + PR per item.
    `plans/graphviz-16.1-sync/followups/circpos-fma-assoc.patch` (+
    `position-arith.test.ts.saved`). It matches C's contraction but flips 1855
    via libm sin/cos amplification. Diagnose 1855 before landing.
-8. **[HELD — mission T6/T7, awaiting the user's write-set decision]** **HTML lexer gaps (pre-existing).** Error paths for an unknown entity and
+8. **[DONE — mission T6/T7, 2026-10-18]** **HTML lexer gaps (pre-existing).** Error paths for an unknown entity and
    for a mismatched tag, and the missing native warning
    `table size too small for content` (printed for nearly every
    empty-FIXEDSIZE table; journal row T4 2026-10-12).
-9. **[PART — sfdp 2371 DONE in mission T13; fdp 2471 root-caused, fix HELD]** **Edge-label candidate flips after injection: fdp `2471`, sfdp `2371`.**
+9. **[DONE — mission T13, 2026-10-18 (2371: R-tree cover copy; 2471: fused Bezier/DIST2)]** **Edge-label candidate flips after injection: fdp `2471`, sfdp `2371`.**
    With oracle positions injected, one or more edges keep an `lp.y` one label
    line off (xlabel placer picked another candidate). fdp 2471's native
    layout is non-deterministic run to run, so reproduce several runs
@@ -77,7 +77,7 @@ Each is independent; one branch + PR per item.
 10. **[DONE — mission T4/T5, 2026-10-16]** **Port `genroute`/pathplan emit none of C's routing warnings**
     (`Could not create control points for multiple spline`,
     `shortest.c ... not in any triangle`). stderr-only gap.
-11. **[PART — T8 poly-pack and T10 ortho DONE, T11 `PointMap` equivalent (no change); T9 htmltable HELD behind T7]** **Use the shared `PointSet` (`src/common/pointset.ts`) wherever the oracle
+11. **[DONE — mission T8/T9/T10; T11 `PointMap` equivalent (no change); neato ortho site left as follow-up 15]** **Use the shared `PointSet` (`src/common/pointset.ts`) wherever the oracle
     uses `lib/common/pointset.c`.** Item 6 ported `PointSet` (numeric keys:
     no per-lookup string build or parse, less memory) and moved
     `polyGraphs` (`pack.c:858`, `src/layout/pack/poly-place.ts`) onto it. Remaining C
@@ -121,17 +121,10 @@ Each is independent; one branch + PR per item.
 
 Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
 
-- **Held for a user decision** (each needs a file outside its task's write-set):
-  - T7: `test/golden/pt-issue-29.test.ts:49` allow-list (native prints
-    `Warning: table size too small for content` 4x there).
-  - T6: printing the lexer diagnostics needs `makeHtmlLabel`
-    (`src/common/htmltable-pos.ts`) and its caller, plus C's
-    `in label of <kind> <name>` line (`labels.c:make_label`), which the port never
-    prints.
-  - T9: waits on T7.
-  - fdp 2471: port C's fused de Casteljau `Bezier` and fma DIST2 in
-    `src/common/spline-midpoint.ts` (`dotneato_closest`, `polylineMidpoint`); a
-    gated version took flips from 6/20 native runs to 0.
+- **The held items landed** after the user approved the write-set extensions
+  (2026-10-18): T7 (with the `pt-issue-29` allow-list), T9, T6 (with the
+  `make_label` `in label of` print path and the HTML grammar's strictness), and the
+  fdp 2471 fix in `src/common/spline-midpoint.ts`.
 - **New follow-ups found by the mission:**
   14. dot routes a failed edge twice (`splines-groups.ts:121` then
       `edge-route.ts:512`), so routing-failure stderr lines print 2x native
@@ -145,6 +138,18 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       polygons too); dump native's tripoly next.
   18. `makeGraphDataC` lacks C's `haveWt` (`eweights += ED_factor`) and `haveDir`
       branches (`neatoinit.c:798`); reachability unchecked.
+  19. HTML labels: `<font><table>` (fonttable) is unported (such labels fail and print
+      a bare `in label of` that native does not); lexer attribute warnings
+      (`Illegal attribute … - ignored`, ALIGN values, `Unclosed comment`) and the
+      unterminated-quote case are unported.
+  20. Seven other `Bezier` ports (`gvc/anchor.ts`, `layout/dot/edge-route-clip.ts`,
+      `compound-geom.ts`, `splines-label.ts`, `compound-clip.ts`, `common/taper.ts`)
+      do not mirror clang's fused de Casteljau.
+  21. json circo `tree-share-examples-world` still records 50223 diffs from before
+      T12 (the engine track is now 533); re-walk it.
+  22. The overnight `/tmp` clean removes `config8` from plugin dirs and empties the
+      oracle caches, after which native fdp/sfdp re-render and drift run to run;
+      walk deltas on those engines then reflect the oracle, not the port.
 
 ## Local leftovers (not committed, safe to delete)
 
