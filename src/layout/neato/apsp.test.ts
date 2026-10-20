@@ -120,6 +120,57 @@ export function testBfsDisconnected(): void {
   expect(dist[3]).toBe(11);
 }
 
+/**
+ * The vtx_data native neato builds for mode=ipsep on
+ * `a--b [len=2]; a--b; b--c; c--d [len=3]; d--e; e--f; f--a; a--d`
+ * (lldb dump at stress_majorization_cola entry).
+ */
+export function ipsepLenGraph(): VtxData[] {
+  return makeWeightedGraph([
+    [[1, 2], [3, 1], [5, 1]],
+    [[2, 1], [0, 2]],
+    [[3, 3], [1, 1]],
+    [[4, 1], [0, 1], [2, 3]],
+    [[5, 1], [3, 1]],
+    [[0, 1], [4, 1]],
+  ]);
+}
+
+export function testBfsBumpsByEwgts(): void {
+  // C bfs.c:41-43: first visit wins (queue order), bump = (DistType)ewgts[i].
+  // From b: c=1, a=2, then d via c = 1+3 = 4 although b-a-d = 3.
+  const dist = new Int32Array(6);
+  bfs(1, ipsepLenGraph(), 6, dist);
+  expect(Array.from(dist)).toEqual([2, 0, 1, 4, 5, 3]);
+}
+
+export function testBfsTruncatesFloatEwgts(): void {
+  // ewgts is float*: 2.99999999999 rounds to 3.0f, 2.9 truncates to 2.
+  const graph = makeWeightedGraph([[[1, 2.99999999999], [2, 2.9]], [[0, 1]], [[0, 1]]]);
+  const dist = new Int32Array(3);
+  bfs(0, graph, 3, dist);
+  expect(Array.from(dist)).toEqual([0, 3, 2]);
+}
+
+export function testBfsNoEwgtsBumpsOne(): void {
+  // graph[0].ewgts == NULL (the port's empty array): every hop is 1.
+  const graph: VtxData[] = [
+    { nedges: 2, edges: [0, 1], ewgts: [] },
+    { nedges: 3, edges: [1, 0, 2], ewgts: [] },
+    { nedges: 2, edges: [2, 1], ewgts: [] },
+  ];
+  const dist = new Int32Array(3);
+  bfs(0, graph, 3, dist);
+  expect(Array.from(dist)).toEqual([0, 1, 2]);
+}
+
+export function testApspPackedIpsepNative(): void {
+  // Native compute_apsp_packed return value for ipsepLenGraph (lldb dump).
+  expect(Array.from(computeApspPacked(ipsepLenGraph(), 6))).toEqual([
+    0, 2, 3, 1, 2, 1, 0, 1, 4, 5, 3, 0, 3, 4, 5, 0, 1, 2, 0, 1, 0,
+  ]);
+}
+
 // ---------------------------------------------------------------------------
 // computeApspPacked test bodies
 // ---------------------------------------------------------------------------
@@ -193,11 +244,15 @@ describe('bfs', () => {
   it('BFS_UNREACHABLE constant equals INT_MAX', () => {
     expect(BFS_UNREACHABLE).toBe(2147483647);
   });
+  it('bumps by the int-truncated ewgts in BFS order', testBfsBumpsByEwgts);
+  it('truncates float ewgts toward zero', testBfsTruncatesFloatEwgts);
+  it('bumps by 1 when graph[0] has no ewgts', testBfsNoEwgtsBumpsOne);
 });
 
 describe('computeApspPacked', () => {
   it('returns Float32Array of length n*(n+1)/2', testApspPackedLength);
   it('diagonal entries are zero', testApspPackedDiagonalZero);
+  it('matches native compute_apsp_packed on an ipsep len graph', testApspPackedIpsepNative);
 });
 
 describe('computeWeightedApspPacked', () => {

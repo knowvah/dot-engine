@@ -382,7 +382,7 @@ describe('makeGraphDataC', () => {
     g.nodes.set('A', a);
     g.edges.push(new Edge(a, a, 'AA'));
     const nodeList = assignNodeIds(g);
-    const vtx = makeGraphDataC(g, nodeList, false);
+    const vtx = makeGraphDataC(g, nodeList, false, false);
     expect(vtx[0]).toEqual({ nedges: 1, edges: [0], ewgts: [] });
   });
 
@@ -394,7 +394,7 @@ describe('makeGraphDataC', () => {
     const e2 = new Edge(a, b, 'AB2'); e2.attrs.set('len', '5');
     g.edges.push(e1, e2);
     const nodeList = assignNodeIds(g);
-    const vtx = makeGraphDataC(g, nodeList, true);
+    const vtx = makeGraphDataC(g, nodeList, true, false);
     expect(vtx[0]!.edges).toEqual([0, 1]); // one merged neighbour entry
     expect(vtx[0]!.ewgts).toEqual([0, 5]); // max(2,5)
   });
@@ -405,7 +405,7 @@ describe('makeGraphDataC', () => {
     g.nodes.set('A', a); g.nodes.set('B', b);
     g.edges.push(new Edge(a, b, 'AB1'), new Edge(a, b, 'AB2'));
     const nodeList = assignNodeIds(g);
-    const vtx = makeGraphDataC(g, nodeList, false);
+    const vtx = makeGraphDataC(g, nodeList, false, false);
     expect(vtx[0]!.edges).toEqual([0, 1]);
     expect(vtx[0]!.ewgts).toEqual([]);
   });

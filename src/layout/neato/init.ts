@@ -321,21 +321,20 @@ export function mapModelToStress(model: number): number {
 // solveModel helpers
 // ---------------------------------------------------------------------------
 
-/**
- * Run stress majorization on the graph and write results back to node positions.
- *
- * @see lib/neatogen/neatoinit.c:majorization
- */
+/** Run stress majorization and write positions back. @see lib/neatogen/neatoinit.c:majorization */
 export function runMajorization(g: Graph, mode: number, model: number): void {
   void model; // only MODEL_SHORTPATH distances are exercised by the suite
   const nodeList = assignNodeIds(g);
   const n = nodeList.length;
   const haveLen = graphHasLen(g);
-  const vtx = makeGraphDataC(g, nodeList, haveLen);
+  const vtx = makeGraphDataC(g, nodeList, haveLen, mode === MODE_HIER || mode === MODE_IPSEP);
   checkStart(g); // C: srand48(seed) immediately before initLayout draws
   const maxi = lateDouble(g.attrs.get('maxiter'), DFLT_ITERATIONS, 0);
   const epsilon = lateDouble(g.attrs.get('epsilon'), 1e-4, 0); // DFLT_TOLERANCE
-  const Dij = haveLen ? computeWeightedApspPacked(vtx, n) : computeApspPacked(vtx, n);
+  // C ipsep (stress_majorization_cola, constrained_majorization_ipsep.c:150) always uses
+  // compute_apsp_packed; kD_mkernel uses the weighted APSP iff graph->ewgts (stress.c:855).
+  const weighted = haveLen && mode !== MODE_IPSEP;
+  const Dij = weighted ? computeWeightedApspPacked(vtx, n) : computeApspPacked(vtx, n);
   const dCoords = [new Float64Array(n), new Float64Array(n)];
   stressMajorizationKDMkernel(Dij, n, dCoords, nodeList, {
     dim: DFLT_DIM, opts: OPT_EXP_FLAG, maxi, epsilon,
@@ -354,17 +353,18 @@ export function graphHasLen(g: Graph): boolean {
 }
 
 /**
- * Build the vtx_data adjacency in C's makeGraphData shape: per node,
- * out-edges then in-edges (agfstedge order), self entry at index 0,
- * duplicate neighbours merged (len keeps the max). ewgts are edge
- * lens (default 1.0) when any len attr exists, else absent so the
- * APSP uses BFS hop counts.
+ * C makeGraphData's vtx_data: per node out-edges then in-edges (agfstedge order), self at
+ * index 0, duplicate neighbours merged (len keeps the max). ewgts: lens (default 1.0) if any
+ * len attr, else 1.0 under haveDir (hier/ipsep), else absent (C NULL). eweights (haveWt)
+ * and edists are not built: nothing on a supported path reads them.
  * @see lib/neatogen/neatoinit.c:makeGraphData
  * @see lib/neatogen/stuff.c:setEdgeLen
  */
-export function makeGraphDataC(g: Graph, nodeList: Node[], haveLen: boolean): VtxData[] {
+export function makeGraphDataC(
+  g: Graph, nodeList: Node[], haveLen: boolean, haveDir: boolean,
+): VtxData[] {
   const vtx: VtxData[] = nodeList.map((_, i) => ({
-    nedges: 1, edges: [i], ewgts: haveLen ? [0] : [],
+    nedges: 1, edges: [i], ewgts: haveLen || haveDir ? [0] : [],
   }));
   for (const np of nodeList) {
     const i = np.info.id!;
@@ -382,7 +382,7 @@ export function makeGraphDataC(g: Graph, nodeList: Node[], haveLen: boolean): Vt
       }
       seen.set(vid, entry.nedges);
       entry.edges.push(vid);
-      if (haveLen) entry.ewgts.push(dist);
+      if (haveLen || haveDir) entry.ewgts.push(dist); // C neatoinit.c:827: haveDir 1.0
       entry.nedges++;
     }
   }
