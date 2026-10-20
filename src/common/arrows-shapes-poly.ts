@@ -10,6 +10,7 @@
 
 import type { Point } from '../model/geom.js';
 import { ccwrotatepf, cwrotatepf } from '../model/geom.js';
+import { bezier } from './bezier.js';
 import type { GenResult } from './arrows-shapes-util.js';
 import {
   vsub, vadd, miterShape, negUnit, backwardDelta, axialProjection,
@@ -194,17 +195,15 @@ export function arrowLengthTee(lenfact: number, arrowsize: number, penwidth: num
 // @see lib/common/arrows.c:arrow_type_curve (:1031)
 // ===========================================================================
 
-const lerp = (a: Point, b: Point): Point => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
-
-/** Split a cubic at t=0.5 (de Casteljau); return the left or right half. */
+/**
+ * Split a cubic at t=0.5 (C's Bezier(AF, 0.5, NULL, AF) / (AF, 0.5, AF, NULL));
+ * return the left or right half.
+ * @see lib/common/arrows.c:arrow_type_curve
+ */
 function cubicHalf(c: Point[], rightHalf: boolean): Point[] {
-  const A = lerp(c[0], c[1]);
-  const B = lerp(c[1], c[2]);
-  const C = lerp(c[2], c[3]);
-  const D = lerp(A, B);
-  const E = lerp(B, C);
-  const M = lerp(D, E);
-  return rightHalf ? [M, E, C, c[3]] : [c[0], A, D, M];
+  const half: Point[] = [];
+  bezier(c, 0.5, rightHalf ? null : half, rightHalf ? half : null);
+  return half;
 }
 
 /** Build the four Bézier control points for the curve arms. */

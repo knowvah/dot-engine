@@ -17,6 +17,7 @@ import { IGNORED } from './rank.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { nodesInSeq } from './decomp.js';
 import { RADIANS } from '../../common/arith.js';
+import { bezier } from '../../common/bezier.js';
 
 // ---------------------------------------------------------------------------
 // TextLabel interface (minimal — full type deferred to Batch 5b)
@@ -126,33 +127,6 @@ export const PORT_LABEL_DISTANCE = 10;
 export const PORT_LABEL_ANGLE = -25;
 
 // ---------------------------------------------------------------------------
-// cubicBezierAt — de Casteljau at parameter t (Bezier() in utils.c)
-// @see lib/common/utils.c:175-203
-// ---------------------------------------------------------------------------
-
-/**
- * Evaluate a cubic Bezier curve at parameter t using the de Casteljau
- * triangle computation.  Requires pts[0..3].  No Left/Right subdivision
- * output needed here, so they are omitted.
- *
- * @see lib/common/utils.c:Bezier
- */
-function cubicBezierAt(pts: readonly { x: number; y: number }[], t: number): { x: number; y: number } {
-  // Triangle computation (degree = 3)
-  const p0 = pts[0], p1 = pts[1], p2 = pts[2], p3 = pts[3];
-  const mt = 1.0 - t;
-  // Level 1
-  const q0 = { x: mt * p0.x + t * p1.x, y: mt * p0.y + t * p1.y };
-  const q1 = { x: mt * p1.x + t * p2.x, y: mt * p1.y + t * p2.y };
-  const q2 = { x: mt * p2.x + t * p3.x, y: mt * p2.y + t * p3.y };
-  // Level 2
-  const r0 = { x: mt * q0.x + t * q1.x, y: mt * q0.y + t * q1.y };
-  const r1 = { x: mt * q1.x + t * q2.x, y: mt * q1.y + t * q2.y };
-  // Level 3
-  return { x: mt * r0.x + t * r1.x, y: mt * r0.y + t * r1.y };
-}
-
-// ---------------------------------------------------------------------------
 // Bezier endpoint extraction helpers
 // @see lib/common/splines.c:place_portlabel:1331-1351
 // ---------------------------------------------------------------------------
@@ -171,7 +145,7 @@ function tailEndpoints(bez: BezierSeg): { pe: { x: number; y: number }; pf: { x:
     return { pe: bez.sp, pf: bez.list[0] };
   }
   const pe = bez.list[0];
-  const pf = cubicBezierAt(bez.list, 0.1);
+  const pf = bezier(bez.list, 0.1, null, null);
   return { pe, pf };
 }
 
@@ -192,7 +166,7 @@ function headEndpoints(bez: BezierSeg): { pe: { x: number; y: number }; pf: { x:
   }
   const pe = bez.list[bez.size - 1];
   const last4 = bez.list.slice(bez.size - 4, bez.size);
-  const pf = cubicBezierAt(last4, 0.9);
+  const pf = bezier(last4, 0.9, null, null);
   return { pe, pf };
 }
 

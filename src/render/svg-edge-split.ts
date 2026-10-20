@@ -19,6 +19,7 @@
 import type { Edge } from '../model/edge.js';
 import type { RenderJob } from '../gvc/job.js';
 import type { Point, Bezier } from '../model/geom.js';
+import { bezier } from '../common/bezier.js';
 import { parseSegs } from '../common/multicolor.js';
 import { transformPoint } from '../gvc/device.js';
 import { emitBezierPath, emitDash, emitPenWidth } from './svg-helpers.js';
@@ -43,21 +44,12 @@ function approxLen(list: Point[], off: number): number {
 
 /**
  * de Casteljau split of a single cubic (control points v[0..3]) at parameter t,
- * returning the left and right 4-point sub-curves. Ports C's Bezier().
+ * returning the left and right 4-point sub-curves. Ports C's Bezier() via the shared fused bezier().
  */
 function splitCubic(v: Point[], t: number): { left: Point[]; right: Point[] } {
-  const u = 1 - t;
-  const row = [v[0]!, v[1]!, v[2]!, v[3]!];
-  const left: Point[] = [row[0]!];
-  const right: Point[] = new Array<Point>(4);
-  right[3] = row[3]!;
-  for (let i = 1; i <= 3; i++) {
-    for (let j = 0; j <= 3 - i; j++) {
-      row[j] = { x: u * row[j]!.x + t * row[j + 1]!.x, y: u * row[j]!.y + t * row[j + 1]!.y };
-    }
-    left.push(row[0]!);
-    right[3 - i] = row[3 - i]!;
-  }
+  const left: Point[] = [];
+  const right: Point[] = [];
+  bezier(v, t, left, right);
   return { left, right };
 }
 
