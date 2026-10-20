@@ -154,6 +154,8 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   22. The overnight `/tmp` clean removes `config8` from plugin dirs and empties the
       oracle caches, after which native fdp/sfdp re-render and drift run to run;
       walk deltas on those engines then reflect the oracle, not the port.
+  23. DOT syntax errors print Peggy's message, not `aagerror`'s; see
+      `plans/post-16-1-followups-2/README.md`.
 
 ## Local leftovers (not committed, safe to delete)
 

@@ -102,7 +102,22 @@
       "Bash(python3:*)",
       "Bash(plantuml:*)",
       "Bash(rm -f test/corpus/parity-mission-probe.json:*)",
-      "Bash(gh pr create:*)"
+      "Bash(gh pr create:*)",
+      "Bash(cc:*)",
+      "Bash(clang:*)",
+      "Bash(cmake:*)",
+      "Bash(make:*)",
+      "Bash(ninja:*)",
+      "Bash(otool:*)",
+      "Bash(objdump:*)",
+      "Bash(llvm-objdump:*)",
+      "Bash(du:*)",
+      "Bash(pgrep:*)",
+      "Bash(rsync:*)",
+      "Bash(XDG_CACHE_HOME=:*)",
+      "Bash(ORACLE_CACHE=:*)",
+      "Bash(ENGINE_ORACLE_CACHE=:*)",
+      "Bash(GVBINDIR=:*)"
     ],
     "deny": [
       "Bash(git push:*)",
