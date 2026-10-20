@@ -45,12 +45,13 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { comparePlain, type PlainDiff } from '../golden/compare-plain.js';
 import type { EngineName } from '../../src/gvc/context.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
+import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
 import { excludedFor } from './engine-exclusions.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
@@ -84,7 +85,7 @@ function oracleSig(engine: EngineName): string {
 
 function cacheDir(engine: EngineName): string {
   if (process.env.PLAIN_ORACLE_CACHE) return process.env.PLAIN_ORACLE_CACHE;
-  return join(tmpdir(), 'dot-corpus-plain-oracle', String(engine), oracleSig(engine));
+  return oracleCacheRoot('plain-oracle', join(String(engine), oracleSig(engine)));
 }
 
 const TIMEOUT_MULT = Number(process.env.PLAIN_TIMEOUT_MULT ?? 3);
@@ -480,6 +481,7 @@ async function main(): Promise<void> {
     process.exit(2);
   }
   const engine = engineArg as EngineName;
+  preflightOrExit(DOT_BIN, GVBINDIR, [engine]);
   const outJsonlArg = positional[1];
   const accepted = loadAccepted();
   const tsx = resolveTsx();

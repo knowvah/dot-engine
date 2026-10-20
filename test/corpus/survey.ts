@@ -16,12 +16,13 @@
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareSvg, type Diff } from '../golden/compare.js';
 import { normalizeSvg } from '../golden/normalize.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
+import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
 import type { CorpusEntry } from './enumerate.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
@@ -51,7 +52,7 @@ const ORACLE_SIG = (() => {
   try { mt = String(statSync(DOT_BIN).mtimeMs); } catch { /* binary checked later */ }
   return createHash('sha1').update(`${DOT_BIN}\0${GVBINDIR}\0${mt}`).digest('hex').slice(0, 12);
 })();
-const CACHE = process.env.ORACLE_CACHE ?? join(tmpdir(), 'dot-corpus-oracle', ORACLE_SIG);
+const CACHE = process.env.ORACLE_CACHE ?? oracleCacheRoot('oracle', ORACLE_SIG);
 // A render is a `timeout` only if it does not error and runs past its budget
 // (`renderBudgetMs`). The flat-20s budget mis-flagged graphs that are merely
 // slow-but-valid (e.g. 2108 ~70s, native ~12s); only a true runaway past 3x the
@@ -577,6 +578,7 @@ async function main(): Promise<void> {
     process.stderr.write(`harness fault: oracle binary not found at ${DOT_BIN}\n`);
     process.exit(2);
   }
+  preflightOrExit(DOT_BIN, GVBINDIR, ['dot']);
   const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8')) as CorpusEntry[];
   let applicable = manifest.filter((e) => e.status === 'applicable');
   const limit = Number(process.env.SURVEY_LIMIT ?? 0);

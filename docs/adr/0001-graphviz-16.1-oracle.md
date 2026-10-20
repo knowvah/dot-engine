@@ -72,6 +72,23 @@ Behaviour changes ported from 16.1.0:
   machine.
 - Ortho-failure graphs now render without edges instead of routing them.
 
+## Oracle caches and preflight
+
+Oracle caches live under `$XDG_CACHE_HOME/dot-engine/oracle/<kind>/<sig>`
+(`$XDG_CACHE_HOME` defaults to `~/.cache`); `<kind>` is the old directory name
+minus its `dot-corpus-` prefix, and `<sig>` is unchanged. They used to live in
+`$TMPDIR`: an overnight `/tmp` clean deleted `/tmp/ghl/config8` and the caches
+together, native `dot` then printed `Format: "svg" not recognized`, and a
+survey recorded 946/950 `oracle-error` rows. Each script's own env override
+(`ORACLE_CACHE`, `ENGINE_ORACLE_CACHE`, `JSON_ORACLE_CACHE`, ...) still wins.
+
+Every oracle script runs `oraclePreflight` (`test/corpus/oracle-env.ts`)
+before its first render. It requires `<dot> -V` to report 16.1.0 and
+`digraph{a->b}` to render with `-K<engine> -Tsvg` under the script's
+`GVBINDIR`: exit 0, no `not recognized` / `no layout engine support` on
+stderr, `<svg` on stdout. Otherwise the script exits 2 before any render.
+Recovery for a missing `config8`: `GVBINDIR=<dir> <dot> -c` regenerates it.
+
 ## Rollback
 
 Point `DOT_BIN` / `GVBINDIR` at the 15.x build (`~/git/graphviz-15`,

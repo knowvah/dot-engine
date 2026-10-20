@@ -45,11 +45,12 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareDot, type DotDiff } from '../golden/compare-dot.js';
 import type { EngineName } from '../../src/gvc/context.js';
+import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -82,7 +83,7 @@ function oracleSig(engine: EngineName): string {
 
 function cacheDir(engine: EngineName): string {
   if (process.env.DOT_ORACLE_CACHE) return process.env.DOT_ORACLE_CACHE;
-  return join(tmpdir(), 'dot-corpus-agwrite-oracle', String(engine), oracleSig(engine));
+  return oracleCacheRoot('agwrite-oracle', join(String(engine), oracleSig(engine)));
 }
 
 const TIMEOUT_MULT = Number(process.env.DOT_TIMEOUT_MULT ?? 3);
@@ -486,6 +487,7 @@ async function main(): Promise<void> {
     return;
   }
   const engine = engineArg as EngineName;
+  preflightOrExit(DOT_BIN, GVBINDIR, [engine]);
   const outJsonlArg = positional[1];
   const accepted = loadAccepted();
   const tsx = resolveTsx();

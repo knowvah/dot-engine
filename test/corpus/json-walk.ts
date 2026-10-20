@@ -56,7 +56,7 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareJson, type JsonDiff } from '../golden/compare-json.js';
@@ -69,6 +69,7 @@ import {
 } from './accepted-class.js';
 import { excludedFor } from './engine-exclusions.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
+import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -107,7 +108,7 @@ const ORACLE_SIG = (() => {
   try { mt = String(statSync(DOT_BIN).mtimeMs); } catch { /* checked in main */ }
   return createHash('sha1').update(`${DOT_BIN}\0${GVBINDIR}\0json\0${ENGINE}\0${mt}`).digest('hex').slice(0, 12);
 })();
-const CACHE = process.env.JSON_ORACLE_CACHE ?? join(tmpdir(), 'dot-corpus-json-oracle', ENGINE, ORACLE_SIG);
+const CACHE = process.env.JSON_ORACLE_CACHE ?? oracleCacheRoot('json-oracle', join(ENGINE, ORACLE_SIG));
 
 const TIMEOUT_MULT = Number(process.env.JSON_TIMEOUT_MULT ?? 3);
 // One hour, not 3 minutes: `timeout` must mean *runaway*, not *slow*. A tight
@@ -536,6 +537,7 @@ async function main(): Promise<void> {
     process.stderr.write(`harness fault: oracle binary not found at ${DOT_BIN}\n`);
     process.exit(2);
   }
+  preflightOrExit(DOT_BIN, GVBINDIR, [ENGINE]);
   const excluded = excludedFor(EXCLUSIONS, ENGINE);
   const items = conformantItems().filter((it) => !excluded.has(it.id));
   const accepted = loadAccepted();

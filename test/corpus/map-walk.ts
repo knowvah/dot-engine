@@ -45,7 +45,7 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareCmapx, compareImap, type MapDiff } from '../golden/compare-map.js';
@@ -58,6 +58,7 @@ import {
 } from './accepted-class.js';
 import { excludedFor } from './engine-exclusions.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
+import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
 import { CMAPX_SENTINEL, IMAP_SENTINEL } from './render-one-map.js';
 import type { EngineName } from '../../src/gvc/context.js';
 
@@ -86,8 +87,8 @@ function oracleSig(engine: EngineName): string {
  * `dot` case (matches the pre-AD-3 env var's scope). */
 function cacheDir(engine: EngineName): string {
   if (engine === 'dot' && process.env.MAP_ORACLE_CACHE) return process.env.MAP_ORACLE_CACHE;
-  const base = engine === 'dot' ? 'dot-corpus-map-oracle' : `dot-corpus-map-oracle-${engine}`;
-  return join(tmpdir(), base, oracleSig(engine));
+  const kind = engine === 'dot' ? 'map-oracle' : `map-oracle-${engine}`;
+  return oracleCacheRoot(kind, oracleSig(engine));
 }
 
 const TIMEOUT_MULT = Number(process.env.MAP_TIMEOUT_MULT ?? 3);
@@ -674,6 +675,7 @@ async function main(): Promise<void> {
   }
   const argv = process.argv.slice(2);
   const positional = argv.filter((a) => !a.startsWith('--'));
+  preflightOrExit(DOT_BIN, GVBINDIR, [positional[0] ?? 'dot']);
   const accepted = loadAccepted((positional[0] as EngineName | undefined) ?? 'dot');
   const tsx = resolveTsx();
   const awake = preventIdleSleep();
