@@ -20,6 +20,9 @@ import type {
   OpenToken,
 } from './htmltable-types.js';
 import { HtmlParseError } from './htmltable-types.js';
+import { StderrLines } from './htmltable-attr-warn.js';
+import type { ParseState } from './htmltable-parse-state.js';
+import { consume, emitWarnings, peek } from './htmltable-parse-state.js';
 import { htmlErrorAtToken, tokenizeDeferred } from './htmltable-lex.js';
 import type { FontState } from './htmltable-parse-font.js';
 import {
@@ -33,17 +36,6 @@ import {
   parseColumns,
   parseRows,
 } from './htmltable-parse-attrs.js';
-
-// ---------------------------------------------------------------------------
-// Parser state
-// ---------------------------------------------------------------------------
-
-interface ParseState {
-  tokens: Token[];
-  pos: number;
-  /** Lexical error found after the last token: C reports it when the parser asks for more. */
-  pending?: HtmlParseError;
-}
 
 /** bison's default message for an unexpected token. @see lib/common/htmlparse.y */
 const MSG_SYNTAX_ERROR = 'syntax error';
@@ -65,15 +57,10 @@ const nonSpace = (text: string): boolean => /[^ \t\n\r]/.test(text);
  * A token without a recorded chunk yields a plain, silent HtmlParseError.
  * @see lib/common/htmllex.c:htmlerror
  */
-const parseError = (s: ParseState, tok: Token | undefined, message: string): HtmlParseError =>
-  (tok === undefined ? s.pending : htmlErrorAtToken(message, tok)) ?? new HtmlParseError(message);
-
-const peek = (s: ParseState): Token | undefined => s.tokens[s.pos];
-
-const consume = (s: ParseState): Token => {
-  const t = s.tokens[s.pos];
-  s.pos++;
-  return t;
+const parseError = (s: ParseState, tok: Token | undefined, message: string): HtmlParseError => {
+  // The lexer already ran for the token the error is reported at.
+  if (tok !== undefined) emitWarnings(s, tok);
+  return (tok === undefined ? s.pending : htmlErrorAtToken(message, tok)) ?? new HtmlParseError(message);
 };
 
 // ---------------------------------------------------------------------------
@@ -567,23 +554,45 @@ const parseTokens = (s: ParseState): HtmlLabel => {
   return parseTextLabel(s, fontStack);
 };
 
+/** A parsed label and `ctx->warn`, which `make_html_label` ORs into its rv. */
+export interface ParsedHtmlLabel {
+  label: HtmlLabel;
+  warn: boolean;
+}
+
 /**
- * Parse an HTML-like label string.
- * Input is the content between the outer `<` `>` delimiters (already stripped).
+ * Parse an HTML-like label string, printing the lexer's warnings (one
+ * `writeLine` per stderr line, `console.warn` by default) as the parser reaches
+ * their tokens. Input is the content between the outer `<` `>` delimiters
+ * (already stripped).
  *
  * @see lib/common/htmlparse.y:parseHTML
  */
-export const parseHtmlLabel = (src: string): HtmlLabel => {
+export const parseHtmlLabelRv = (
+  src: string,
+  writeLine: (line: string) => void = (line) => console.warn(line),
+): ParsedHtmlLabel => {
   const { tokens, error } = tokenizeDeferred(`<HTML>${src}</HTML>`);
-  const s: ParseState = { tokens, pos: 0, pending: error };
-  let label: HtmlLabel;
+  const s: ParseState = {
+    tokens, pos: 0, pending: error, stderr: new StderrLines(writeLine), emitted: new WeakSet(), warn: false,
+  };
   try {
-    label = parseTokens(s);
+    const label = parseTokens(s);
+    if (error !== undefined) throw error;
+    return { label, warn: s.warn === true };
   } catch (e) {
     // Running off the truncated stream means C's lexer would have hit the error.
     if (error !== undefined && s.pos >= tokens.length) throw error;
     throw e;
+  } finally {
+    s.stderr?.flush();
   }
-  if (error !== undefined) throw error;
-  return label;
 };
+
+/**
+ * {@link parseHtmlLabelRv} without printing: callers that only inspect the
+ * label (the async font/image collection pass) must not repeat the warnings
+ * the sync pass prints.
+ */
+export const parseHtmlLabel = (src: string): HtmlLabel =>
+  parseHtmlLabelRv(src, () => undefined).label;

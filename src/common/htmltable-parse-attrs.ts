@@ -66,7 +66,7 @@ export const parseTitle = (a: Record<string, string>): string | undefined =>
 
 /**
  * Parse SIDES attribute into a bitmask matching C sidesfn().
- * Unrecognised chars are silently skipped (C issues a warning but continues).
+ * Unrecognised chars are skipped (the lexer has already warned, as C does).
  * C guard: if (flags != BORDER_MASK) p->flags |= flags — the full-mask case
  * is a no-op (means "all sides", the default), so we return undefined for it.
  * @see lib/common/htmllex.c:sidesfn
@@ -86,31 +86,27 @@ export const parseSides = (v: string | undefined): number | undefined => {
 };
 
 /**
- * Parse GRADIENTANGLE attribute — integer in [0, 360].
- * Out-of-range or non-integer values are ignored (C issues a warning).
+ * Parse GRADIENTANGLE attribute — `strtol` prefix, as `num`. The lexer has
+ * already dropped values outside [0, 360] (doInt).
  * @see lib/common/htmllex.c:gradientanglefn
  */
-export const parseGradientAngle = (v: string | undefined): number | undefined => {
-  if (v === undefined) return undefined;
-  const n = parseInt(v, 10);
-  if (isNaN(n) || String(n) !== v.trim()) return undefined;
-  if (n < 0 || n > 360) return undefined;
-  return n;
-};
+export const parseGradientAngle = (v: string | undefined): number | undefined => num(v);
 
 /**
- * Parse COLUMNS attribute — only "*" is valid (sets vrule=true).
+ * Parse COLUMNS attribute — a value starting with "*" sets vrule=true
+ * (C tests `*v != '*'`; anything else was already ignored by the lexer).
  * @see lib/common/htmllex.c:columnsfn
  */
 export const parseColumns = (v: string | undefined): true | undefined =>
-  v === '*' ? true : undefined;
+  v?.startsWith('*') === true ? true : undefined;
 
 /**
- * Parse ROWS attribute — only "*" is valid (sets hrule=true).
+ * Parse ROWS attribute — a value starting with "*" sets hrule=true
+ * (C tests `*v != '*'`; anything else was already ignored by the lexer).
  * @see lib/common/htmllex.c:rowsfn
  */
 export const parseRows = (v: string | undefined): true | undefined =>
-  v === '*' ? true : undefined;
+  v?.startsWith('*') === true ? true : undefined;
 
 export const buildCell = (content: HtmlCellContent[], a: Record<string, string>): HtmlCell => ({
   kind: 'cell',

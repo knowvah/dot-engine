@@ -20,7 +20,7 @@ import type { TextlabelT } from './types.js';
 import type { TextMeasurer } from './textmeasure.js';
 import type { HtmlCell, HtmlImage, HtmlLabel, HtmlTable, HtmlText, ImageSizer } from './htmltable-types.js';
 import {
-  layoutHtmlTable, cellPad, cellBorder, sizeHtmlLabel, parseHtmlLabel, inheritTablePenColor, withTableFont,
+  layoutHtmlTable, cellPad, cellBorder, sizeHtmlLabel, parseHtmlLabelRv, inheritTablePenColor, withTableFont,
 } from './htmltable.js';
 import { makeLabel } from './make-label.js';
 import { HtmlLexError } from './htmltable-lex.js';
@@ -543,9 +543,9 @@ export function makeHtmlLabelRv(
   measurer: TextMeasurer,
 ): HtmlLabelResult {
   const { fontname, fontsize, fontcolor, imageSizer, pencolor } = finfo;
-  let lbl: HtmlLabel;
+  let lbl: HtmlLabel, lexWarn: boolean; // lexWarn: htmllex.c's ctx->warn, rv bit 1
   try {
-    lbl = parseHtmlLabel(content);
+    ({ label: lbl, warn: lexWarn } = parseHtmlLabelRv(content));
   } catch (e) {
     // C aborts the HTML parse on a syntax error (YYABORT): parseHTML returns
     // rv 3 (ctx->error) with no label, and make_html_label returns it with
@@ -558,7 +558,7 @@ export function makeHtmlLabelRv(
   // which then flows table->cell->nested-table.
   // @see lib/common/htmltable.c:1911 (getPenColor), :1406/:1556 (inheritance)
   if (lbl.kind === 'table') inheritTablePenColor(lbl.table, pencolor);
-  const rv = sizeHtmlLabel(lbl, measurer, {
+  const rv = Number(lexWarn) | sizeHtmlLabel(lbl, measurer, {
     fontsize, fontname, imageSizer,
   });
   const placed = posHtmlLabel(lbl, { fontname, fontsize, fontcolor }, measurer);

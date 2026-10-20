@@ -159,9 +159,10 @@ describe('IMG cell content', () => {
     const c = firstCell('<TABLE><TR><TD><IMG SRC="a.png"/></TD></TR></TABLE>');
     expect(c.content[0]).toMatchObject({ kind: 'image', src: 'a.png' });
   });
-  it('cell SRC is used when the IMG tag omits it', () => {
+  it('a SRC on the cell is an illegal TD attribute, so the IMG stays without one', () => {
+    // cell_items has no "src" (htmllex.c:461): doAttrs warns and ignores it.
     const c = firstCell('<TABLE><TR><TD SRC="cell.png"><IMG/></TD></TR></TABLE>');
-    expect(c.content[0]).toMatchObject({ kind: 'image', src: 'cell.png' });
+    expect(c.content[0]).toMatchObject({ kind: 'image', src: '' });
   });
   it('bare IMG reports the lexer error that follows it', () => {
     expect(diagnosticsOf('<TABLE><TR><TD><IMG></TD></TR></TABLE>')).toEqual([

@@ -257,6 +257,15 @@ export interface OpenToken {
   type: 'open';
   tag: string;
   attrs: Record<string, string>;
+  /**
+   * What the C lexer wrote to stderr while building this token, as the exact
+   * text including any trailing newline (a message without one runs into the
+   * next write). The parser prints it when it consumes the token.
+   * @see lib/common/htmllex.c:doAttrs
+   */
+  warnings?: string[];
+  /** Some handler set `ctx->warn`: the label's `rv` becomes 1. */
+  warn?: true;
 }
 
 /** @see lib/common/htmllex.c:endElement */

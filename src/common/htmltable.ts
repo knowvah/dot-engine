@@ -15,7 +15,7 @@ export type {
   HtmlCellContent, HtmlCell, HtmlRow, HtmlTable, HtmlTableFont, HtmlLabel,
   ImageSizer,
 } from './htmltable-types.js';
-export { parseHtmlLabel } from './htmltable-parse.js';
+export { parseHtmlLabel, parseHtmlLabelRv } from './htmltable-parse.js';
 export type { TextMeasurer } from './textmeasure.js';
 
 import type {

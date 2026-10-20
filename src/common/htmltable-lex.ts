@@ -12,12 +12,12 @@
  */
 
 import { HtmlParseError } from './htmltable-types.js';
-import type { Token } from './htmltable-types.js';
+import type { OpenToken, Token } from './htmltable-types.js';
 import { HTML_ENTITIES, htmlEntityUTF8 } from './html-entities.js';
+import { checkAttrs } from './htmltable-attr-warn.js';
+import type { AttrEntry } from './htmltable-attr-warn.js';
 
 export type { Token } from './htmltable-types.js';
-
-type Attrs = { [k: string]: string };
 
 const KNOWN_TAGS = new Set([
   'TABLE', 'TR', 'TD', 'TH', 'FONT', 'BR', 'IMG',
@@ -40,17 +40,19 @@ const isWs = (c: string | undefined): boolean =>
  * phantom attributes). Bare or unquoted attributes are not well-formed
  * XML — expat rejects the document and the label falls back to plain
  * text; throwing here reproduces that.
+ * Names keep their source case (doAttrs prints them as written) and pairs
+ * keep document order.
  * @see lib/common/htmllex.c (XML_Parse "not well-formed" error path)
  */
-function parseAttrs(raw: string) {
-  const out: Attrs = {};
+function parseAttrPairs(raw: string): AttrEntry[] {
+  const out: AttrEntry[] = [];
   let i = 0;
   while (i < raw.length) {
     while (isWs(raw[i])) i++;
     if (i >= raw.length) break;
     const m = /^[\w-]+/.exec(raw.slice(i));
     if (m === null) throw new HtmlParseError(raw.slice(i, i + 10));
-    const name = m[0].toLowerCase();
+    const name = m[0];
     i += m[0].length;
     while (isWs(raw[i])) i++;
     if (raw[i] !== '=') throw new HtmlParseError(name);
@@ -60,7 +62,7 @@ function parseAttrs(raw: string) {
     if (q !== '"' && q !== "'") throw new HtmlParseError(name);
     const end = raw.indexOf(q, i + 1);
     if (end < 0) throw new HtmlParseError(name);
-    out[name] = raw.slice(i + 1, end);
+    out.push([name, raw.slice(i + 1, end)]);
     i = end + 1;
   }
   return out;
@@ -127,17 +129,26 @@ function scanTag(src: string, start: number, tokens: Token[]) {
   return next;
 }
 
+/**
+ * The open token for `tag` and its raw attribute text: `doAttrs` runs the
+ * attributes through the element's table, and the stderr it would write rides
+ * on the token for the parser to print.
+ * @see lib/common/htmllex.c:doAttrs
+ */
+function openToken(tag: string, raw: string): OpenToken {
+  const { attrs, warnings, warn } = checkAttrs(tag, parseAttrPairs(raw));
+  const tok: OpenToken = { type: 'open', tag, attrs };
+  if (warnings.length > 0) tok.warnings = warnings;
+  if (warn) tok.warn = true;
+  return tok;
+}
+
 /** Parse open tag — placed last so Lizard length-to-EOF stays within 30. */
 function parseOpenToken(inner: string) {
   const sp = inner.search(/\s/);
-  if (sp === -1) {
-    const tag = inner.toUpperCase();
-    checkTag(tag);
-    return { type: 'open' as const, tag: normalizeTag(tag), attrs: parseAttrs('') };
-  }
-  const tag = inner.slice(0, sp).toUpperCase();
+  const tag = (sp === -1 ? inner : inner.slice(0, sp)).toUpperCase();
   checkTag(tag);
-  return { type: 'open' as const, tag: normalizeTag(tag), attrs: parseAttrs(inner.slice(sp + 1)) };
+  return openToken(normalizeTag(tag), sp === -1 ? '' : inner.slice(sp + 1));
 }
 
 /**
