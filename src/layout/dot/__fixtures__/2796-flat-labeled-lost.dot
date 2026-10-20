@@ -1,0 +1,161 @@
+// Reduced (ddmin) from graphviz tests/2796.dot: one labeled flat edge whose
+// routesplines fails. Native 16.1.0 reports the failure once.
+digraph "troublesome" {
+  rankdir=LR
+  I -> 36
+  subgraph cluster_0 {
+  }
+  subgraph cluster_6 {
+  57
+  12
+  }
+  subgraph cluster_10 {
+  26
+  }
+  subgraph cluster_14 {
+  }
+  subgraph cluster_17 {
+  }
+  subgraph cluster_18 {
+  }
+  subgraph cluster_21 {
+  55
+  }
+  subgraph cluster_23 {
+  }
+  subgraph cluster_24 {
+  }
+  subgraph cluster_33 {
+  39
+  4
+  1
+  }
+  subgraph cluster_35 {
+  }
+  subgraph cluster_37 {
+  }
+  subgraph cluster_38 {
+  }
+  subgraph cluster_39 {
+  }
+  subgraph cluster_40 {
+  46
+  }
+  subgraph cluster_41 {
+  }
+  subgraph cluster_42 {
+  }
+  1 -> 48 [label="p1"]
+  2 -> 48 [label="!p0 & !p1"]
+  3 -> 26 [label="p0 & p2"]
+  4 -> 1 [label="p0 & p1 & p2"]
+  4 -> 48 [label="!p1"]
+  12 -> 57 [label="p0 & p1"]
+  13 -> 28 [label="p0 & p1 & p2"]
+  15 -> 16 [label="!p0 & p1 & p2"]
+  16 -> 26 [label="p0 & p2"]
+  17 -> 3 [label="!p0 & !p2"]
+  17 -> 21 [label="p0 & !p2"]
+  20 -> 48 [label="!p0 & p1"]
+  20 -> 50 [label="p0 & !p1"]
+  21 -> 3 [label="!p0 & p1 & !p2"]
+  21 -> 12 [label="p0 & p1 & p2"]
+  21 -> 48 [label="!p0 & !p1"]
+  21 -> 57 [label="p0 & !p1"]
+  22 -> 48 [label="!p0"]
+  22 -> 52 [label="p0 & p2"]
+  23 -> 14 [label="p0 & p1 & p2"]
+  23 -> 21 [label="p0 & p1 & !p2"]
+  23 -> 30 [label="p0 & !p1 & !p2"]
+  23 -> 48 [label="(!p0 & !p1) | (!p0 & p2)"]
+  23 -> 52 [label="p0 & !p1 & p2"]
+  24 -> 3 [label="!p0 & p1 & !p2"]
+  24 -> 15 [label="p0 & p1 & !p2"]
+  24 -> 52 [label="p0 & !p1 & p2"]
+  25 -> 18 [label="!p0 & p1 & !p2"]
+  25 -> 34 [label="!p0 & p1 & p2"]
+  26 -> 48 [label="p1"]
+  27 -> 48 [label="!p0 & !p2"]
+  27 -> 57 [label="p0 & !p2"]
+  28 -> 29 [label="p0 & !p1 & !p2"]
+  28 -> 48 [label="!p0 | p1"]
+  29 -> 48 [label="!p0 | !p1"]
+  30 -> 48 [label="!p0"]
+  32 -> 30 [label="p0 & !p1 & !p2"]
+  32 -> 48 [label="!p0"]
+  32 -> 52 [label="p0 & p2"]
+  32 -> 55 [label="p0 & p1 & !p2"]
+  33 -> 48 [label="!p0"]
+  33 -> 52 [label="p0 & p2"]
+  33 -> 55 [label="p0 & !p2"]
+  34 -> 0 [label="p0 & !p2"]
+  34 -> 2 [label="p0 & p2"]
+  34 -> 48 [label="!p0"]
+  35 -> 9 [label="p0 & !p1 & !p2"]
+  35 -> 14 [label="p0 & !p1 & p2"]
+  35 -> 55 [label="p0 & p1 & !p2"]
+  36 -> 5 [label="!p0 & !p1 & !p2"]
+  36 -> 6 [label="p0 & !p1 & p2"]
+  36 -> 17 [label="p0 & !p1 & !p2"]
+  36 -> 37 [label="p1 & !p2"]
+  36 -> 38 [label="p1 & p2"]
+  36 -> 44 [label="!p0 & !p1 & p2"]
+  37 -> 10 [label="!p0 & !p1 & !p2"]
+  37 -> 23 [label="p0 & !p1 & !p2"]
+  38 -> 24 [label="p0 & !p1 & !p2"]
+  38 -> 35 [label="p0 & !p1 & p2"]
+  38 -> 37 [label="!p0 & p1 & !p2"]
+  38 -> 39 [label="p0 & p1 & p2"]
+  38 -> 44 [label="!p0 & !p1 & p2"]
+  38 -> 53 [label="p0 & p1 & !p2"]
+  39 -> 5 [label="!p0 & !p1 & !p2"]
+  39 -> 24 [label="p0 & !p1 & !p2"]
+  39 -> 35 [label="p0 & !p1 & p2"]
+  39 -> 43 [label="p0 & p1 & p2"]
+  39 -> 44 [label="!p0 & !p1 & p2"]
+  39 -> 48 [label="!p0 & p1"]
+  39 -> 54 [label="p0 & p1 & !p2"]
+  40 -> 10 [label="!p0 & !p1 & !p2"]
+  41 -> 5 [label="!p0 & !p1 & !p2"]
+  42 -> 5 [label="!p0 & !p1 & !p2"]
+  42 -> 44 [label="!p0 & !p1 & p2"]
+  42 -> 48 [label="p1"]
+  42 -> 51 [label="p0 & !p1 & p2"]
+  43 -> 32 [label="p0 & !p1 & !p2"]
+  43 -> 33 [label="p0 & !p1 & p2"]
+  43 -> 48 [label="!p0"]
+  43 -> 54 [label="p0 & p1 & !p2"]
+  44 -> 19 [label="p0 & p2"]
+  44 -> 20 [label="p0 & !p2"]
+  44 -> 48 [label="!p0"]
+  45 -> 28 [label="p0 & p2"]
+  45 -> 29 [label="p0 & !p2"]
+  45 -> 48 [label="!p0"]
+  46 -> 3 [label="!p0 & p1 & !p2"]
+  46 -> 48 [label="!p1 | (!p0 & p2)"]
+  46 -> 51 [label="p0 & p1 & p2"]
+  46 -> 56 [label="p0 & p1 & !p2"]
+  47 -> 3 [label="!p0 & p1 & !p2"]
+  47 -> 48 [label="!p1"]
+  47 -> 51 [label="p0 & p1 & p2"]
+  47 -> 56 [label="p0 & p1 & !p2"]
+  49 -> 40 [label="!p0 & p1 & !p2"]
+  49 -> 41 [label="!p0 & p1 & p2"]
+  49 -> 42 [label="p0 & p1 & p2"]
+  49 -> 48 [label="!p1"]
+  51 -> 4 [label="p0 & !p1 & !p2"]
+  51 -> 48 [label="p1 | (!p0 & p2)"]
+  52 -> 48 [label="!p0"]
+  52 -> 57 [label="p0 & p1"]
+  53 -> 22 [label="p0 & !p1 & !p2"]
+  53 -> 33 [label="p0 & !p1 & p2"]
+  53 -> 39 [label="p0 & p1 & p2"]
+  53 -> 40 [label="!p0 & p1 & !p2"]
+  53 -> 41 [label="!p0 & p1 & p2"]
+  53 -> 48 [label="!p0 & !p1"]
+  54 -> 22 [label="p0 & !p1 & !p2"]
+  54 -> 48 [label="!p0"]
+  55 -> 48 [label="!p0"]
+  55 -> 57 [label="p0 & !p1"]
+  56 -> 3 [label="!p0 & p1 & !p2"]
+}
