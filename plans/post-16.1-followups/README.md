@@ -1,23 +1,24 @@
 # Post-16.1 follow-ups — resume handoff
 
 Written 2026-10-14 at the end of the graphviz 16.1 sync session; header updated
-2026-10-16. When the user says "resume", start here.
+2026-10-19. When the user says "resume", start here.
 
-The open items (7–11, 13) are being closed by the mission brief
+Items 1–13 are done. Items 7–13 were closed by the mission brief
 [`plans/post-16-1-followups-mission/`](../post-16-1-followups-mission/README.md)
-(branch `chore/post-16-1-followups`). Its decision journal records each item's
-outcome.
+(merged via PR #94, merge commit `f54d12c6`); its decision journal records each
+item's outcome. The open work is items 14–22 under "New follow-ups found by the
+mission" below: one branch + PR per item, each journaled in
+`plans/decision-journal.md`.
 
 ## State at handoff
 
-- `main` = `2983eea8`. PRs #86–#92 are merged (items 1–6 below are done).
+- `main` = `f54d12c6`. PRs #86–#94 are merged (items 1–13 below are done).
   PR #86 (graphviz 16.1 sync) and PR #87 (SHA remap) were the 16.1 sync.
-  **@knowvah/dot-engine 2.6.2 is the latest on npm** (2026-10-16); every merge
-  to `main` publishes a release.
+  Every merge to `main` publishes a release to npm.
 - **plantuml-ts owns its side.** Its `.tgz` bump and the TRACKER.md updates for
   issues 31/34 (still marked "NOT YET PUBLISHED" there) are handled from the
   plantuml-ts repo. Do not edit plantuml-ts from here.
-- Autonomous mode is ON while the mission above runs (`.claude/mission-active`).
+- Autonomous mode is OFF; no mission brief is active.
 - The repo allows **merge commits only** (since #92; rebase and squash are off)
   and auto-deletes head branches, so branch SHAs survive the merge. Never push
   `main`; open a PR.
@@ -126,7 +127,10 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   `make_label` `in label of` print path and the HTML grammar's strictness), and the
   fdp 2471 fix in `src/common/spline-midpoint.ts`.
 - **New follow-ups found by the mission:**
-  14. dot routes a failed edge twice (`splines-groups.ts:121` then
+  14. **Done** (`fix/dot-failed-edge-double-route`): the routing was doubled
+      by `makeFlatLabeledEdge`'s degenerate (pn == 0) branch, which returned
+      "handled" without marking the edge lost; see `plans/decision-journal.md`.
+      Original note: dot routes a failed edge twice (`splines-groups.ts:121` then
       `edge-route.ts:512`), so routing-failure stderr lines print 2x native
       (2470, 2796, 2471).
   15. `src/layout/neato/splines.ts:598` keeps a string-keyed copy of

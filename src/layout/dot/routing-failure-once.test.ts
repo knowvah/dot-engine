@@ -6,15 +6,19 @@
  * failing group/chain reports `in routesplines, Pshortestpath failed` once. The
  * port's post-loop routeDotEdges backstop must skip edges whose routing already
  * failed — a parallel group whose shared base was lost, a multi-rank forward
- * chain, and a multi-rank back chain (makefwdedge view).
+ * chain, a multi-rank back chain (makefwdedge view), and a labeled flat edge
+ * whose make_flat_labeled_edge route is degenerate (pn == 0).
  *
  * Expected counts and lost-edge sets are native graphviz 16.1.0 stderr
  * (`dot -Tsvg`, GVBINDIR=/tmp/ghl) for the same inputs.
  *
  * @see lib/dotgen/dotsplines.c:dot_splines_ (one make_regular_edge per group)
  * @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0 return)
+ * @see lib/dotgen/dotsplines.c:make_flat_labeled_edge (pn == 0 return)
  */
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderSvg } from '../../index.js';
 
@@ -46,6 +50,15 @@ const CASES: Case[] = [
     dot: 'digraph g {\na [height=1.416667];\na -> m -> b;\nb -> a [samehead=t];\nm -> a [samehead=t];\n}\n',
     failures: 2,
     lost: ['a m', 'b a', 'm a'],
+  },
+  {
+    name: 'lost labeled flat edge (make_flat_labeled_edge pn == 0)',
+    dot: readFileSync(
+      join(process.cwd(), 'src/layout/dot/__fixtures__/2796-flat-labeled-lost.dot'),
+      'utf8',
+    ),
+    failures: 1,
+    lost: ['39 43'],
   },
 ];
 

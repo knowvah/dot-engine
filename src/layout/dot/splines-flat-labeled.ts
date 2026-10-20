@@ -149,7 +149,9 @@ export function makeFlatLabeledEdge(g: Graph, e: Edge): boolean {
   // Degenerate route (routesplines pn=0): label set, no spline installed — C's
   // make_flat_labeled_edge returns the same way; emit's edge_in_box then decides
   // whether the (untranslated) label overlaps the clip. Still HANDLED → true.
-  if (ps === null || ps.length === 0) return true;
+  // C's dot_splines_ visits the edge once, so mark it lost: the routeDotEdges
+  // backstop must not route (and report the failure) a second time.
+  if (ps === null || ps.length === 0) { e.info.lost = true; return true; }
   if (!tailIsLeft) ps.reverse();
   clipAndInstall(e, e.head, ps, ps.length, { ...buildDotSinfo(), ignoreSwap: true });
   return true;
