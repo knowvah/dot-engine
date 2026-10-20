@@ -14,6 +14,7 @@ import type { Edge } from '../model/edge.js';
 import { isHtmlValue, htmlValueContent } from '../common/html-string.js';
 import { buildFromAst } from './builder.js';
 import { scanNumberAmbiguities, numberAmbiguityMessage } from './number-scan.js';
+import { syntaxErrorMessage } from './scan-token.js';
 import type { ParsedGraph } from './ast.js';
 import type { GvErrorCode, GvExpectation } from '../errors.js';
 import { DotEngineError, friendlyMessageFor, invalidArgType } from '../errors.js';
@@ -249,6 +250,7 @@ export function parse(src: string): Graph {
     if (isPeggyError(err)) {
       const start = err.location.start;
       warnNumberAmbiguities(src, start.offset);
+      console.error(syntaxErrorMessage(src, start.offset));
       const code: GvErrorCode =
         err.found === null ? 'SYNTAX_UNEXPECTED_EOF' : 'SYNTAX_ERROR';
       throw new ParseError(
@@ -270,8 +272,18 @@ export function parse(src: string): Graph {
     }
     throw err;
   }
+  try {
+    validateEdgeOperators(src, ast.directed);
+  } catch (err: unknown) {
+    // C's lexer hands the wrong operator to bison as '-': a syntax error there.
+    const offset = err instanceof ParseError ? err.location.offset : undefined;
+    if (offset !== undefined) {
+      warnNumberAmbiguities(src, offset);
+      console.error(syntaxErrorMessage(src, offset));
+    }
+    throw err;
+  }
   warnNumberAmbiguities(src, src.length);
-  validateEdgeOperators(src, ast.directed);
   return buildFromAst(ast);
 }
 
