@@ -14,6 +14,7 @@ import type { Path } from './types.js';
 import { shortestPath, routeSpline, makePolyline } from '../pathplan/index.js';
 import type { Poly } from '../pathplan/types.js';
 import { INIT_DELTA, LOOP_TRIES, ROUTESPL_FUDGE } from './splines-constants.js';
+import { fma } from './fma.js';
 
 // ---------------------------------------------------------------------------
 // Stage-dump hook (diagnosis only; null in production — same pattern as
@@ -193,21 +194,28 @@ export function checkPath(boxn: number, boxes: Box[], pp: Path): boolean {
 // limitBoxes helpers
 // ---------------------------------------------------------------------------
 
-/** Evaluate de Casteljau subdivision to get a point on a cubic Bezier. */
+/** C's inlined de Casteljau: `sp[k].x += t * (sp[k+1].x - sp[k].x)`, which clang
+ * contracts to fma(t, b - a, a) (oracle `_limitBoxes`: fsub + fmadd, x12). Not
+ * utils.c:Bezier's form, so it does not use the shared bezier().
+ * @see lib/common/routespl.c:limitBoxes (lines 251-262)
+ */
 function deCasteljauPoint(
   p0: Point, p1: Point, p2: Point, p3: Point, t: number,
 ): Point {
-  const ax = p0.x + t * (p1.x - p0.x);
-  const ay = p0.y + t * (p1.y - p0.y);
-  const bx = p1.x + t * (p2.x - p1.x);
-  const by = p1.y + t * (p2.y - p1.y);
-  const cx = p2.x + t * (p3.x - p2.x);
-  const cy = p2.y + t * (p3.y - p2.y);
-  const dx = ax + t * (bx - ax);
-  const dy = ay + t * (by - ay);
-  const ex = bx + t * (cx - bx);
-  const ey = by + t * (cy - by);
-  return { x: dx + t * (ex - dx), y: dy + t * (ey - dy) };
+  let s0x = p0.x, s0y = p0.y, s1x = p1.x, s1y = p1.y, s2x = p2.x, s2y = p2.y;
+  s0x = fma(t, s1x - s0x, s0x);
+  s0y = fma(t, s1y - s0y, s0y);
+  s1x = fma(t, s2x - s1x, s1x);
+  s1y = fma(t, s2y - s1y, s1y);
+  s2x = fma(t, p3.x - s2x, s2x);
+  s2y = fma(t, p3.y - s2y, s2y);
+  s0x = fma(t, s1x - s0x, s0x);
+  s0y = fma(t, s1y - s0y, s0y);
+  s1x = fma(t, s2x - s1x, s1x);
+  s1y = fma(t, s2y - s1y, s1y);
+  s0x = fma(t, s1x - s0x, s0x);
+  s0y = fma(t, s1y - s0y, s0y);
+  return { x: s0x, y: s0y };
 }
 
 /** Update box x-extents for a sample point if it lies in the y-band. */
@@ -253,7 +261,7 @@ export function limitBoxes(
   pn: number,
   delta: number,
 ): void {
-  const numDiv = Math.round(delta * boxn);
+  const numDiv = delta * boxn; // C: const double num_div (routespl.c:242)
   for (let splinepi = 0; splinepi + 3 < pn; splinepi += 3) {
     sampleBezierSegment(boxes, boxn, pps, splinepi, numDiv);
   }
