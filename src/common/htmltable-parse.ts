@@ -22,7 +22,7 @@ import type {
 import { HtmlParseError } from './htmltable-types.js';
 import { StderrLines } from './htmltable-attr-warn.js';
 import type { ParseState } from './htmltable-parse-state.js';
-import { consume, emitWarnings, peek } from './htmltable-parse-state.js';
+import { consume, emitEof, emitWarnings, peek } from './htmltable-parse-state.js';
 import { htmlErrorAtToken, tokenizeDeferred } from './htmltable-lex.js';
 import type { FontState } from './htmltable-parse-font.js';
 import {
@@ -60,6 +60,7 @@ const nonSpace = (text: string): boolean => /[^ \t\n\r]/.test(text);
 const parseError = (s: ParseState, tok: Token | undefined, message: string): HtmlParseError => {
   // The lexer already ran for the token the error is reported at.
   if (tok !== undefined) emitWarnings(s, tok);
+  else emitEof(s);
   return (tok === undefined ? s.pending : htmlErrorAtToken(message, tok)) ?? new HtmlParseError(message);
 };
 
@@ -522,7 +523,7 @@ const parseTableLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
   return { kind: 'table', table };
 };
 
-/** `html : T_html fonttext T_end_html`; a `<TABLE>` after text is the table rule's error. */
+/** `html : T_html fonttext T_end_html` (a textitem is required); a `<TABLE>` after text is the table rule's error. */
 const parseTextLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
   const texts: HtmlText[] = [];
   const start = s.pos;
@@ -537,7 +538,7 @@ const parseTextLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
     rejectTableAfterTag(s, start);
     throw parseError(s, nxt, MSG_TEXT_BEFORE_TABLE);
   }
-  if (nxt.type !== 'close' || nxt.tag !== 'HTML') throw parseError(s, nxt, MSG_SYNTAX_ERROR);
+  if (nxt.type !== 'close' || nxt.tag !== 'HTML' || s.pos === start) throw parseError(s, nxt, MSG_SYNTAX_ERROR);
   consume(s);
   return { kind: 'text', texts };
 };
@@ -572,9 +573,9 @@ export const parseHtmlLabelRv = (
   src: string,
   writeLine: (line: string) => void = (line) => console.warn(line),
 ): ParsedHtmlLabel => {
-  const { tokens, error } = tokenizeDeferred(`<HTML>${src}</HTML>`);
+  const { tokens, error, eof } = tokenizeDeferred(`<HTML>${src}</HTML>`, { start: 6, end: 6 + src.length });
   const s: ParseState = {
-    tokens, pos: 0, pending: error, stderr: new StderrLines(writeLine), emitted: new WeakSet(), warn: false,
+    tokens, pos: 0, pending: error, stderr: new StderrLines(writeLine), emitted: new WeakSet(), warn: false, eof,
   };
   try {
     const label = parseTokens(s);
@@ -582,7 +583,7 @@ export const parseHtmlLabelRv = (
     return { label, warn: s.warn === true };
   } catch (e) {
     // Running off the truncated stream means C's lexer would have hit the error.
-    if (error !== undefined && s.pos >= tokens.length) throw error;
+    if (error !== undefined && s.pos >= tokens.length) { emitEof(s); throw error; }
     throw e;
   } finally {
     s.stderr?.flush();

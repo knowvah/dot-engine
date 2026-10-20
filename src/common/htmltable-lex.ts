@@ -12,10 +12,14 @@
  */
 
 import { HtmlParseError } from './htmltable-types.js';
-import type { OpenToken, Token } from './htmltable-types.js';
-import { HTML_ENTITIES, htmlEntityUTF8 } from './html-entities.js';
+import type { LexerOutput, OpenToken, TextToken, Token } from './htmltable-types.js';
+import { htmlEntityUTF8 } from './html-entities.js';
 import { checkAttrs } from './htmltable-attr-warn.js';
 import type { AttrEntry } from './htmltable-attr-warn.js';
+import { ExpatFeed, fedBytes, findUndefinedEntity, parseTagChunk } from './htmltable-lex-expat.js';
+import type { ExpatResult, ExpatToken } from './htmltable-lex-expat.js';
+import { findNext } from './htmltable-lex-units.js';
+import type { Unit } from './htmltable-lex-units.js';
 
 export type { Token } from './htmltable-types.js';
 
@@ -95,38 +99,29 @@ function cleanText(raw: string) {
   return raw.replace(/[\x00-\x1f\x7f]/g, (c) => isKeep(c) ? c : '');
 }
 
-/** Scan text run up to next tag; push non-empty token; return new index. */
-function scanText(src: string, start: number, tokens: Token[]) {
-  let j = start;
-  while (j < src.length && src[j] !== '<') j++;
+/** The text token of a text run, if anything is left after cleaning. */
+function textTokens(raw: string): Token[] {
   // Decode XML/HTML entities in the text run. C's HTML lexer resolves entities
   // via expat during tokenization (htmllex.c), so both sizing and emit see the
   // decoded UTF-8 text. Skipping this measured the raw "&#91;el..." (9-10 chars)
   // instead of "[el..." (6 chars), inflating edge-label vnodes and shifting
   // layout (corpus 1949: +18.7px). Plain-string labels already decode via the
   // make_label path, so only HTML-delimited labels diverged.
-  const clean = htmlEntityUTF8(cleanText(src.slice(start, j)));
-  if (clean.length > 0) tokens.push({ type: 'text', value: clean });
-  return j;
+  const clean = htmlEntityUTF8(cleanText(raw));
+  return clean.length > 0 ? [{ type: 'text', value: clean }] : [];
 }
 
-/** Scan one tag; push token; return index after closing bracket. */
-function scanTag(src: string, start: number, tokens: Token[]) {
-  let j = start + 1;
-  while (j < src.length && src[j] !== '>') j++;
-  const inner = src.slice(start + 1, j).trim();
-  const next = j + 1;
-  if (inner.startsWith('!--')) return next;
-  if (inner.startsWith('/')) { tokens.push(parseCloseToken(inner)); return next; }
+/** The tokens of one complete `<..>` tag. */
+function tagTokens(text: string): Token[] {
+  const inner = text.slice(1, -1).trim();
+  if (inner.startsWith('/')) return [parseCloseToken(inner)];
   // Self-closing <X/>: expat reports startElement then endElement.
   // @see lib/common/htmllex.c (XML_SetElementHandler callbacks)
   if (inner.endsWith('/')) {
     const open = parseOpenToken(inner.slice(0, -1).trim());
-    tokens.push(open, { type: 'close', tag: open.tag });
-    return next;
+    return [open, { type: 'close', tag: open.tag }];
   }
-  tokens.push(parseOpenToken(inner));
-  return next;
+  return [parseOpenToken(inner)];
 }
 
 /**
@@ -152,20 +147,16 @@ function parseOpenToken(inner: string) {
 }
 
 /**
- * expat `XML_ErrorString` texts for the two errors the port detects. Taken
- * from native dot's stderr (graphviz 16.1.0): expat's xmlparse.c is not
- * vendored with the graphviz sources.
+ * expat `XML_ErrorString` texts for the errors the port detects. Taken from
+ * native dot's stderr (graphviz 16.1.0): expat's xmlparse.c is not vendored
+ * with the graphviz sources.
  * @see lib/common/htmllex.c:htmllex (XML_ErrorString at the XML_Parse failure)
  */
 const XML_ERROR_UNDEFINED_ENTITY = 'undefined entity';
 const XML_ERROR_TAG_MISMATCH = 'mismatched tag';
-const XML_ERROR_INVALID_TOKEN = 'not well-formed (invalid token)';
 const XML_ERROR_DUPLICATE_ATTRIBUTE = 'duplicate attribute';
-
-/** Entities expat knows without a DTD; `scanEntity` leaves them as written. */
-const XML_PREDEFINED_ENTITIES = new Set(['lt', 'gt', 'amp', 'quot', 'apos']);
-
-const XML_NAME = /^[A-Za-z_:][\w.:-]*$/;
+/** yacc's message when the token stream ends inside an unfinished construct. */
+const SYNTAX_ERROR = 'syntax error';
 
 /**
  * A label failure C reports on stderr before dropping the HTML label
@@ -247,171 +238,230 @@ export function htmlErrorAtToken(message: string, tok: Token | undefined): HtmlL
   return htmlErrorInLine(message, chunkLine(info), info.context);
 }
 
-/** Extent of the next chunk: `<..>` or the characters up to the next `<`. */
-function chunkEnd(src: string, i: number): number {
-  const j = src[i] === '<' ? src.indexOf('>', i + 1) : src.indexOf('<', i);
-  if (j < 0) return src.length;
-  return src[i] === '<' ? j + 1 : j;
-}
-
-/** Offset of the first `&name;` that scanEntity leaves for expat to reject. */
-function findUndefinedEntity(text: string): number {
-  for (let t = text.indexOf('&'); t >= 0; t = text.indexOf('&', t + 1)) {
-    if (text[t + 1] === '#') continue;
-    const semi = text.indexOf(';', t + 1);
-    if (semi < 0) continue;
-    const key = text.slice(t + 1, semi);
-    if (XML_NAME.test(key) && !Object.hasOwn(HTML_ENTITIES, key) && !XML_PREDEFINED_ENTITIES.has(key)) {
-      return t;
-    }
-  }
-  return -1;
-}
-
-interface TagChunk {
-  close: boolean;
-  selfClose: boolean;
-  name: string;
-}
-
-/** Element name of a complete `<..>` chunk; undefined for comments etc. */
-function parseTagChunk(chunk: string): TagChunk | undefined {
-  if (!chunk.endsWith('>')) return undefined;
-  const body = chunk.slice(1, -1);
-  if (body.startsWith('!')) return undefined;
-  const close = body.startsWith('/');
-  const name = /^[^\s/>]*/.exec(close ? body.slice(1) : body)?.[0] ?? '';
-  return { close, selfClose: !close && body.endsWith('/'), name };
-}
-
-interface AttrError {
-  message: string;
-  offset: number;
-}
-
-const ATTR_NAME = /^[A-Za-z_:][\w.:-]*/;
-const isSpace = (c: string | undefined): boolean => c !== undefined && /\s/.test(c);
-
-const invalidToken = (offset: number): AttrError => ({ message: XML_ERROR_INVALID_TOKEN, offset });
-
-function skipSpace(chunk: string, i: number): number {
-  let j = i;
-  while (isSpace(chunk[j])) j++;
-  return j;
-}
-
-interface AttrPair {
-  name: string;
-  next: number;
+/** Where an expat token sits in the label and the units C had lexed when it ran. */
+interface TokenSite {
+  src: string;
+  tok: ExpatToken;
+  st: ChunkState;
 }
 
 /**
- * The `name = "value"` pair at `i`, or the error expat raises there;
- * undefined for an unterminated quote, which is not modelled.
- */
-function readAttrPair(chunk: string, i: number): AttrPair | AttrError | undefined {
-  const name = ATTR_NAME.exec(chunk.slice(i))?.[0];
-  if (name === undefined) return invalidToken(i);
-  let j = skipSpace(chunk, i + name.length);
-  if (chunk[j] !== '=') return invalidToken(j);
-  j = skipSpace(chunk, j + 1);
-  const q = chunk[j];
-  if (q !== '"' && q !== "'") return invalidToken(j);
-  const end = chunk.indexOf(q, j + 1);
-  return end < 0 ? undefined : { name, next: end + 1 };
-}
-
-/**
- * Walk the `name="value"` pairs of an open tag as expat does and return the
- * first well-formedness error with its offset in the chunk. A duplicate is
- * only reported when no invalid token follows it, as expat checks duplicates
- * after tokenizing the whole tag.
- */
-function findAttrError(chunk: string, from: number): AttrError | undefined {
-  const seen = new Set<string>();
-  let dup: AttrError | undefined;
-  let i = skipSpace(chunk, from);
-  while (chunk[i] !== '>' && !(chunk[i] === '/' && chunk[i + 1] === '>')) {
-    const pair = readAttrPair(chunk, i);
-    if (pair === undefined) return undefined;
-    if ('message' in pair) return pair;
-    if (seen.has(pair.name) && dup === undefined) dup = { message: XML_ERROR_DUPLICATE_ATTRIBUTE, offset: i };
-    seen.add(pair.name);
-    i = skipSpace(chunk, pair.next);
-  }
-  return dup;
-}
-
-/**
- * Raise the error C hits for this tag chunk: expat's mismatched tag first
- * (it is detected before the end handler runs), then `lexerror`'s unknown
- * element.
+ * Raise the error C hits for this tag: expat's duplicate attribute and
+ * mismatched tag first (detected before the end handler runs), then
+ * `lexerror`'s unknown element.
  * @see lib/common/htmllex.c:lexerror
  */
-function checkTagChunk(src: string, start: number, st: ChunkState): void {
-  const tag = parseTagChunk(st.curr);
+function checkTagToken(site: TokenSite): void {
+  const { src, tok, st } = site;
+  const tag = parseTagChunk(src.slice(tok.start, tok.end));
   if (tag === undefined) return;
+  const context = st.prev + st.curr;
   if (tag.close) {
     if (st.stack.length > 0 && st.stack.pop() !== tag.name) {
-      throw htmlErrorInLine(XML_ERROR_TAG_MISMATCH, lineAt(src, start), st.prev + st.curr);
+      throw htmlErrorInLine(XML_ERROR_TAG_MISMATCH, lineAt(src, tok.start), context);
     }
   } else {
-    const bad = findAttrError(st.curr, 1 + tag.name.length);
-    if (bad !== undefined) {
-      throw htmlErrorInLine(bad.message, lineAt(src, start + bad.offset), st.prev + st.curr);
-    }
+    if (tok.dup !== undefined) throw htmlErrorInLine(XML_ERROR_DUPLICATE_ATTRIBUTE, lineAt(src, tok.dup), context);
     if (!tag.selfClose) st.stack.push(tag.name);
   }
   if (KNOWN_TAGS.has(tag.name.toUpperCase())) return;
-  const text = `Unknown HTML element <${tag.name}> on line ${lineAt(src, start)} `;
+  const text = `Unknown HTML element <${tag.name}> on line ${lineAt(src, tok.start)} `;
   throw new HtmlLexError(tag.name.toUpperCase(), text, [`Error: ${text}`]);
 }
 
-/** Raise the expat or lexer error C would hit while parsing this chunk. */
-function checkChunk(src: string, start: number, st: ChunkState): void {
-  if (st.curr.startsWith('<')) {
-    checkTagChunk(src, start, st);
+/** The tokens one expat event gives the parser, after the errors C would hit. */
+function eventTokens(site: TokenSite): Token[] {
+  const { src, tok, st } = site;
+  const text = src.slice(tok.start, tok.end);
+  if (tok.kind === 'comment' || tok.kind === 'pi') return [];
+  if (tok.kind === 'tag') {
+    checkTagToken(site);
+    return tagTokens(text);
+  }
+  const off = findUndefinedEntity(text);
+  if (off >= 0) {
+    throw htmlErrorInLine(XML_ERROR_UNDEFINED_ENTITY, lineAt(src, tok.start + off), st.prev + st.curr);
+  }
+  return textTokens(text);
+}
+
+/** What the lexer wrote since it last returned a token. */
+interface Carry {
+  warnings: string[];
+  warn: boolean;
+}
+
+/** A label's lexing so far (the state `htmllex` keeps between calls). */
+interface LexRun {
+  src: string;
+  tokens: Token[];
+  st: ChunkState;
+  expat: ExpatFeed;
+  carry: Carry;
+}
+
+/** Move what `carry` holds onto `first`, the token the parser is about to get. */
+function attachCarry(carry: Carry, first: Token): void {
+  if (carry.warnings.length > 0) first.warnings = [...carry.warnings, ...(first.warnings ?? [])];
+  if (carry.warn) first.warn = true;
+  carry.warnings = [];
+  carry.warn = false;
+}
+
+/** Fold the output of a token the parser will never see into `carry`. */
+function absorb(carry: Carry, lost: Token[]): void {
+  for (const t of lost) {
+    carry.warnings.push(...(t.warnings ?? []));
+    if (t.warn === true) carry.warn = true;
+  }
+}
+
+/** One event's tokens and where it came from. */
+interface EventGroup {
+  tokens: Token[];
+  tok: ExpatToken;
+}
+
+/** The events of a call that gave the parser something, in order; the first error aborts. */
+function eventGroups(run: LexRun, res: ExpatResult): EventGroup[] {
+  const groups: EventGroup[] = [];
+  for (const tok of res.tokens) {
+    const tokens = eventTokens({ src: run.src, tok, st: run.st });
+    if (tokens.length > 0) groups.push({ tokens, tok });
+  }
+  if (res.invalid !== undefined) {
+    const { message, offset } = res.invalid;
+    throw htmlErrorInLine(message, lineAt(run.src, offset), run.st.prev + run.st.curr);
+  }
+  return groups;
+}
+
+/**
+ * Hand the tokens of the event that won to the parser, joining a run of
+ * strings into one.
+ * @see lib/common/htmlparse.y:string
+ */
+function deliver(run: LexRun, last: EventGroup): void {
+  const first = last.tokens[0]!;
+  attachCarry(run.carry, first);
+  const info: ChunkInfo = { src: run.src, pos: last.tok.start, end: last.tok.end, context: run.st.prev + run.st.curr };
+  const prev = run.tokens.at(-1);
+  if (prev?.type === 'text' && first.type === 'text') {
+    appendString(prev, first);
+    chunkInfo.set(prev, { ...info, pos: chunkInfo.get(prev)?.pos ?? info.pos });
     return;
   }
-  const off = findUndefinedEntity(st.curr);
-  if (off >= 0) {
-    throw htmlErrorInLine(XML_ERROR_UNDEFINED_ENTITY, lineAt(src, start + off), st.prev + st.curr);
+  for (const t of last.tokens) chunkInfo.set(t, info);
+  run.tokens.push(...last.tokens);
+}
+
+/**
+ * Run the events of one `XML_Parse` call. Each handler assigns `ctx->tok`, so
+ * only the last event's tokens reach the parser; what the others wrote still
+ * went to stderr. Then the call's error, if any.
+ * @see lib/common/htmllex.c:htmllex
+ */
+function runEvents(run: LexRun, res: ExpatResult): void {
+  const groups = eventGroups(run, res);
+  const last = groups.pop();
+  for (const g of groups) absorb(run.carry, g.tokens);
+  if (last !== undefined) deliver(run, last);
+}
+
+/**
+ * `string : string T_string`. A run of T_string tokens (a comment between two
+ * strings yields no token) is one string: the characters accumulate in the
+ * shared buffer until the parser reduces them.
+ * @see lib/common/htmlparse.y:string
+ */
+function appendString(into: TextToken, more: TextToken): void {
+  into.value += more.value;
+  if (more.warnings !== undefined) into.warnings = [...(into.warnings ?? []), ...more.warnings];
+  if (more.warn === true) into.warn = true;
+}
+
+/** The label string as C holds it: `start` and `end` bound the part `findNext` scans. */
+export interface LabelRange {
+  start: number;
+  end: number;
+}
+
+interface LexUnit extends Unit {
+  start: number;
+}
+
+/**
+ * C's units: `<HTML>` first, the label cut by `findNext`, then `</HTML>`. A
+ * source without the wrapper has empty ends.
+ * @see lib/common/htmllex.c:htmllex
+ */
+function* lexUnits(src: string, label: LabelRange): Generator<LexUnit> {
+  if (label.start > 0) yield { start: 0, end: label.start, warnings: [], warn: false };
+  const text = src.slice(label.start, label.end);
+  for (let at = 0; at < text.length;) {
+    const u = findNext(text, at);
+    yield { start: label.start + at, end: label.start + u.end, warnings: u.warnings, warn: u.warn };
+    at = u.end;
   }
+  if (label.end < src.length) yield { start: label.end, end: src.length, warnings: [], warn: false };
+}
+
+/**
+ * The syntax error yacc reports when the stream ends while expat still holds
+ * an unfinished token (the held bytes swallowed the closing `</HTML>`).
+ * @see lib/common/htmllex.c:htmlerror
+ */
+function unfinishedError(run: LexRun, held: number): HtmlParseError {
+  return htmlErrorInLine(SYNTAX_ERROR, lineAt(run.src, held), run.st.prev + run.st.curr);
 }
 
 /** Tokens produced before the first lexical error, plus that error. */
 export interface TokenizeResult {
   tokens: Token[];
   error?: HtmlParseError;
+  /** Output of the lexer after its last token: printed when the parser asks for more. */
+  eof?: LexerOutput;
 }
+
+const eofOutput = (carry: Carry): LexerOutput | undefined => {
+  if (carry.warnings.length === 0 && !carry.warn) return undefined;
+  return carry.warn ? { warnings: carry.warnings, warn: true } : { warnings: carry.warnings };
+};
 
 /**
  * Tokenize until the first lexical error and return both. C interleaves
  * lexing with the yacc parse, so a syntax error in the tokens before the
  * failing chunk is reported in preference to the lexical error; callers that
  * parse the partial stream get that precedence.
+ * @see lib/common/htmllex.c:htmllex
  * @see lib/common/htmllex.c:findNext
  */
-export function tokenizeDeferred(src: string): TokenizeResult {
-  const tokens: Token[] = [];
-  const st: ChunkState = { stack: [], prev: '', curr: '' };
-  let i = 0;
+export function tokenizeDeferred(src: string, label: LabelRange = { start: 0, end: src.length }): TokenizeResult {
+  const run: LexRun = {
+    src, tokens: [], st: { stack: [], prev: '', curr: '' }, expat: new ExpatFeed(src),
+    carry: { warnings: [], warn: false },
+  };
+  let error: HtmlParseError | undefined;
   try {
-    while (i < src.length) {
-      const first = tokens.length;
-      const start = i;
-      st.prev = st.curr;
-      st.curr = src.slice(i, chunkEnd(src, i));
-      checkChunk(src, i, st);
-      i = src[i] === '<' ? scanTag(src, i, tokens) : scanText(src, i, tokens);
-      const info: ChunkInfo = { src, pos: start, end: i, context: st.prev + st.curr };
-      for (let k = first; k < tokens.length; k++) chunkInfo.set(tokens[k]!, info);
+    for (const u of lexUnits(src, label)) {
+      run.st.prev = run.st.curr;
+      run.st.curr = src.slice(u.start, u.end);
+      run.carry.warnings.push(...u.warnings);
+      if (u.warn) run.carry.warn = true;
+      const nbytes = fedBytes(run.st.curr, !run.st.curr.startsWith('<'));
+      runEvents(run, run.expat.feed(u.start, u.end, nbytes));
     }
+    const held = run.expat.held;
+    if (held !== undefined) error = unfinishedError(run, held);
   } catch (e) {
-    if (e instanceof HtmlParseError) return { tokens, error: e };
-    throw e;
+    if (!(e instanceof HtmlParseError)) throw e;
+    error = e;
   }
-  return { tokens };
+  const result: TokenizeResult = { tokens: run.tokens };
+  if (error !== undefined) result.error = error;
+  const eof = eofOutput(run.carry);
+  if (eof !== undefined) result.eof = eof;
+  return result;
 }
 
 /** @see lib/common/htmllex.c:findNext */

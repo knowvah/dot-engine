@@ -252,15 +252,17 @@ export type HtmlLabel =
 // the lex file's function boundaries when it encounters `|` union syntax.
 // ---------------------------------------------------------------------------
 
-/** @see lib/common/htmllex.c:startElement */
-export interface OpenToken {
-  type: 'open';
-  tag: string;
-  attrs: Record<string, string>;
+/**
+ * What the C lexer wrote to stderr while producing a token, and the `ctx->warn`
+ * it set. Any token can carry it: a unit that yields no token (a comment) or
+ * an event lost to a later one in the same `XML_Parse` call still wrote.
+ * @see lib/common/htmllex.c:htmllex
+ */
+export interface LexerOutput {
   /**
-   * What the C lexer wrote to stderr while building this token, as the exact
-   * text including any trailing newline (a message without one runs into the
-   * next write). The parser prints it when it consumes the token.
+   * Exact text per write, including any trailing newline (a message without
+   * one runs into the next write). The parser prints it when it consumes the
+   * token.
    * @see lib/common/htmllex.c:doAttrs
    */
   warnings?: string[];
@@ -268,14 +270,21 @@ export interface OpenToken {
   warn?: true;
 }
 
+/** @see lib/common/htmllex.c:startElement */
+export interface OpenToken extends LexerOutput {
+  type: 'open';
+  tag: string;
+  attrs: Record<string, string>;
+}
+
 /** @see lib/common/htmllex.c:endElement */
-export interface CloseToken {
+export interface CloseToken extends LexerOutput {
   type: 'close';
   tag: string;
 }
 
 /** @see lib/common/htmllex.c:characterData */
-export interface TextToken {
+export interface TextToken extends LexerOutput {
   type: 'text';
   value: string;
 }

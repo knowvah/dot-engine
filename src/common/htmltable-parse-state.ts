@@ -9,7 +9,7 @@
  * @see lib/common/htmllex.c:clearHTMLlexer
  */
 
-import type { HtmlParseError, Token } from './htmltable-types.js';
+import type { HtmlParseError, LexerOutput, Token } from './htmltable-types.js';
 import type { StderrLines } from './htmltable-attr-warn.js';
 
 export interface ParseState {
@@ -23,6 +23,8 @@ export interface ParseState {
   emitted?: WeakSet<Token>;
   /** `ctx->warn`: a reached token's warning made the label's rv 1. */
   warn?: boolean;
+  /** What the lexer wrote after its last token, printed when the parser asks for more. */
+  eof?: LexerOutput;
 }
 
 export const peek = (s: ParseState): Token | undefined => s.tokens[s.pos];
@@ -32,10 +34,25 @@ export const peek = (s: ParseState): Token | undefined => s.tokens[s.pos];
  * into the label's rv.
  */
 export const emitWarnings = (s: ParseState, tok: Token): void => {
-  if (tok.type !== 'open' || s.stderr === undefined || s.emitted?.has(tok) === true) return;
+  if (s.stderr === undefined || s.emitted?.has(tok) === true) return;
   s.emitted?.add(tok);
-  for (const text of tok.warnings ?? []) s.stderr.write(text);
-  if (tok.warn === true) s.warn = true;
+  emitOutput(s, tok);
+};
+
+const emitOutput = (s: ParseState, out: LexerOutput): void => {
+  for (const text of out.warnings ?? []) s.stderr?.write(text);
+  if (out.warn === true) s.warn = true;
+};
+
+/**
+ * The parser ran off the last token: C lexes the rest now, so what it wrote
+ * after that token (warnings of units that produced none) prints once.
+ */
+export const emitEof = (s: ParseState): void => {
+  if (s.stderr === undefined || s.eof === undefined) return;
+  const out = s.eof;
+  delete s.eof;
+  emitOutput(s, out);
 };
 
 /** Take the token at the cursor; its warnings print now. */
