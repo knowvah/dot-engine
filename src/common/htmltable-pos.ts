@@ -20,7 +20,7 @@ import type { TextlabelT } from './types.js';
 import type { TextMeasurer } from './textmeasure.js';
 import type { HtmlCell, HtmlImage, HtmlLabel, HtmlTable, HtmlText, ImageSizer } from './htmltable-types.js';
 import {
-  layoutHtmlTable, cellPad, cellBorder, sizeHtmlLabel, parseHtmlLabel, inheritTablePenColor,
+  layoutHtmlTable, cellPad, cellBorder, sizeHtmlLabel, parseHtmlLabel, inheritTablePenColor, withTableFont,
 } from './htmltable.js';
 import { makeLabel } from './make-label.js';
 import { HtmlLexError } from './htmltable-lex.js';
@@ -292,8 +292,8 @@ function alignImageBox(cbox: Box, cell: HtmlCell, iw: number, ih: number): void 
   }
 }
 
-/** Position a nested <TABLE> child inside the cell's inset content box.
- * @see lib/common/htmltable.c:pos_html_cell (HTML_TBL branch) */
+/** Position a nested <TABLE> child inside the cell's inset content box; its font push
+ * plays emit_html_tbl's role. @see htmltable.c:pos_html_cell (HTML_TBL branch), emit_html_tbl */
 function placeCellNested(ctx: CellPlaceCtx): PlacedHtml | undefined {
   const { cell, tbl, box, finfo, measurer, sidesMask } = ctx;
   const nested = cell.content.find((c): c is HtmlTable => c.kind === 'table');
@@ -303,7 +303,7 @@ function placeCellNested(ctx: CellPlaceCtx): PlacedHtml | undefined {
     ll: { x: box.ll.x + inset, y: box.ll.y + inset },
     ur: { x: box.ur.x - inset, y: box.ur.y - inset },
   };
-  return posHtmlTable(nested, finfo, measurer, cbox, sidesMask);
+  return withTableFont(finfo, nested.font, 'emit', () => posHtmlTable(nested, finfo, measurer, cbox, sidesMask));
 }
 
 /** Position one cell's text inside its box, copying decoration metadata. @see pos_html_cell */
@@ -516,7 +516,8 @@ export function posHtmlLabel(
   finfo: HtmlFontInfo,
   measurer: TextMeasurer,
 ): PlacedHtml {
-  if (label.kind === 'table') return posHtmlTable(label.table, finfo, measurer);
+  const env = { ...finfo }; // copied: the emit-side savef leak must not outlive the label
+  if (label.kind === 'table') return withTableFont(env, label.table.font, 'emit', () => posHtmlTable(label.table, env, measurer));
   return posTextLabel(label, finfo, measurer);
 }
 

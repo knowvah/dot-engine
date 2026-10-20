@@ -12,7 +12,7 @@ export { HtmlParseError } from './htmltable-types.js';
 export type {
   HtmlAlign, HtmlVAlign,
   HtmlHR, HtmlImage, HtmlTextItem, HtmlText,
-  HtmlCellContent, HtmlCell, HtmlRow, HtmlTable, HtmlLabel,
+  HtmlCellContent, HtmlCell, HtmlRow, HtmlTable, HtmlTableFont, HtmlLabel,
   ImageSizer,
 } from './htmltable-types.js';
 export { parseHtmlLabel } from './htmltable-parse.js';
@@ -26,6 +26,9 @@ import type { ImageSizer } from './htmltable-types.js';
 import { findImageSize } from '../gvc/usershape.js';
 import { PointSet } from './pointset.js';
 import type { TextMeasurer } from './textmeasure.js';
+import { withTableFont } from './htmltable-fontinfo.js';
+
+export { withTableFont } from './htmltable-fontinfo.js';
 
 const DEFAULT_BORDER = 1;
 const DEFAULT_CELLPADDING = 2;
@@ -84,7 +87,7 @@ export interface HtmlSizeEnv {
   imageSizer?: ImageSizer;
 }
 
-const DEFAULT_SIZE_ENV: HtmlSizeEnv = { fontsize: DEFAULT_FONTSIZE, fontname: '' };
+const defaultSizeEnv = (): HtmlSizeEnv => ({ fontsize: DEFAULT_FONTSIZE, fontname: '' });
 
 /** One measured text line (a C "span"). @see size_html_txt */
 interface SizedLine {
@@ -196,7 +199,7 @@ export const htmlTextIsSimple = (texts: HtmlText[], env: HtmlSizeEnv): boolean =
 const sizeTextContent = (
   texts: HtmlText[],
   measurer: TextMeasurer,
-  env: HtmlSizeEnv = DEFAULT_SIZE_ENV,
+  env: HtmlSizeEnv = defaultSizeEnv(),
 ): { w: number; h: number } => {
   const lines = splitSizedLines(texts, measurer, env);
   const simple = htmlTextIsSimple(texts, env);
@@ -481,7 +484,7 @@ export interface HtmlTableLayout {
 export const layoutHtmlTable = (
   tbl: HtmlTable,
   measurer: TextMeasurer,
-  env: HtmlSizeEnv = DEFAULT_SIZE_ENV,
+  env: HtmlSizeEnv = defaultSizeEnv(),
 ): HtmlTableLayout => {
   const spacing = getSpacing(tbl);
   const border = getBorder(tbl);
@@ -515,7 +518,7 @@ const warnFixedTable = (tbl: HtmlTable, dims: { wd: number; ht: number }): numbe
 };
 
 /** @see lib/common/htmltable.c:size_html_tbl */
-const sizeTableInner = (
+const sizeTableBody = (
   tbl: HtmlTable,
   measurer: TextMeasurer,
   env: HtmlSizeEnv,
@@ -546,6 +549,10 @@ const sizeTableInner = (
   return rv | fixed;
 };
 
+/** @see lib/common/htmltable.c:size_html_tbl (pushFontInfo ... popFontInfo around the body) */
+const sizeTableInner = (tbl: HtmlTable, measurer: TextMeasurer, env: HtmlSizeEnv): number =>
+  withTableFont(env, tbl.font, 'size', () => sizeTableBody(tbl, measurer, env));
+
 /**
  * Compute and write `dimen` onto all cells and the label.
  *
@@ -559,7 +566,7 @@ const sizeTableInner = (
 export const sizeHtmlLabel = (
   label: HtmlLabel,
   measurer: TextMeasurer,
-  env: HtmlSizeEnv = DEFAULT_SIZE_ENV,
+  env: HtmlSizeEnv = defaultSizeEnv(),
 ): number => {
   if (label.kind === 'table') {
     const rv = sizeTableInner(label.table, measurer, env);

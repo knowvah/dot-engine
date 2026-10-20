@@ -176,10 +176,24 @@ export interface HtmlRow {
   ruled?: boolean;
 }
 
+/**
+ * The font a `fonttable` wrapper (or an enclosing one) gives a table: the
+ * name, color and size `pushFontInfo` swaps into the environment.
+ * @see lib/common/htmltable.h:htmltbl_t.font
+ * @see lib/common/htmltable.c:pushFontInfo
+ */
+export interface HtmlTableFont {
+  fontColor?: string;
+  fontFace?: string;
+  fontSize?: number;
+}
+
 /** @see lib/common/htmltable.h:htmltbl_t */
 export interface HtmlTable {
   kind: 'table';
   rows: HtmlRow[];
+  /** Set only inside a `fonttable` wrapper. @see lib/common/htmlparse.y:294 */
+  font?: HtmlTableFont;
   border?: number;
   cellborder?: number;
   cellspacing?: number;
