@@ -32,6 +32,8 @@ import {
 import { makeSelfEdge } from '../../common/splines.js';
 import { newSpline, clipAndInstall } from '../../common/splines-clip.js';
 import { orthoEdges } from '../../ortho/index.js';
+import { PointSet } from '../../common/pointset.js';
+import { isConcentrateDup } from '../dot/ortho-adapter.js';
 import type { OrthoGraph, OrthoEdge, OrthoPoint } from '../../ortho/index.js';
 import {
   EDGETYPE_NONE, EDGETYPE_LINE, EDGETYPE_ORTHO,
@@ -595,17 +597,11 @@ class OrthoHelper {
     // pair is routed (ortho.c:1223-1233). Self-loops are NOT filtered — the
     // maze routes them via addLoop.
     const concentrate = g.root.info.concentrate ?? false;
-    const seen = new Set<string>();
+    const ps = concentrate ? new PointSet() : null;
     const edges: TaggedOrthoEdge[] = [];
     for (const n of nodesInSeq(g)) {
       for (const e of n.outEdges(g)) {
-        if (concentrate) {
-          const ti = e.tail.id;
-          const hi = e.head.id;
-          const key = ti <= hi ? `${ti}|${hi}` : `${hi}|${ti}`;
-          if (seen.has(key)) continue;
-          seen.add(key);
-        }
+        if (ps && isConcentrateDup(ps, e)) continue;
         // C attachOrthoEdges endpoints: p1 = ND_coord(tail) + ED_tail_port.p,
         // q1 = ND_coord(head) + ED_head_port.p (ortho.c:1075-1076). Plumb the
         // port offset so compass/record ports (tailport=s, headport=n, …) exit
