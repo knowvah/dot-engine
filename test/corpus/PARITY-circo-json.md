@@ -20,7 +20,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | 16326502 | 50223 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | 16326502 | 533 | `edge:100476->100486#0/_draw_/op[1].b[1]` |
 
 ## Accepted (5) — documented, not chased
 
