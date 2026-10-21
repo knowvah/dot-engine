@@ -6,9 +6,9 @@ Written 2026-10-14 at the end of the graphviz 16.1 sync session; header updated
 Items 1–13 are done. Items 7–13 were closed by the mission brief
 [`plans/post-16-1-followups-mission/`](../post-16-1-followups-mission/README.md)
 (merged via PR #94, merge commit `f54d12c6`); its decision journal records each
-item's outcome. The open work is items 14–22 under "New follow-ups found by the
-mission" below: one branch + PR per item, each journaled in
-`plans/decision-journal.md`.
+item's outcome. Items 14–23 are closed (14 by PR #95; 15–23 by
+`plans/post-16-1-followups-2/`). The open work is items 24–31 under "New follow-ups
+found by part 2" below, each journaled in `plans/decision-journal.md`.
 
 ## State at handoff
 
@@ -133,29 +133,75 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       Original note: dot routes a failed edge twice (`splines-groups.ts:121` then
       `edge-route.ts:512`), so routing-failure stderr lines print 2x native
       (2470, 2796, 2471).
-  15. `src/layout/neato/splines.ts:598` keeps a string-keyed copy of
+  Items 15–23 were closed by the mission brief
+  [`plans/post-16-1-followups-2/`](../post-16-1-followups-2/README.md) on branch
+  `chore/post-16-1-followups-2` (task IDs in brackets; evidence in that brief's
+  `decision-journal.md`).
+
+  15. **[DONE — T4]** `src/layout/neato/splines.ts:598` keeps a string-keyed copy of
       `ortho.c:1221-1229`'s concentrate dedup (item 11's last site).
-  16. 2516: the yacc `htmlerror` (`non-space string used before <TABLE>`) is
+  16. **[DONE — T2, test only: the port already printed native's lines]** 2516: the
+      yacc `htmlerror` (`non-space string used before <TABLE>`) is
       thrown at `htmltable-parse.ts:535` and never printed.
-  17. sfdp 2168_3: the multispline router builds a different corridor polygon
-      than native for one edge (native `Pshortestpath` fails on the port's
-      polygons too); dump native's tripoly next.
-  18. `makeGraphDataC` lacks C's `haveWt` (`eweights += ED_factor`) and `haveDir`
+  17. **[PARKED — T13, irreducible: macOS libm `sin` 1 ulp off V8's at
+      `shapes.c:2329`; journal row T13]** sfdp 2168_3: the multispline router builds
+      a different corridor polygon than native for one edge (native `Pshortestpath`
+      fails on the port's polygons too); dump native's tripoly next.
+  18. **[DONE — T5: haveDir fixed (bfs on int ewgts); haveWt has no reader in `lib/`]**
+      `makeGraphDataC` lacks C's `haveWt` (`eweights += ED_factor`) and `haveDir`
       branches (`neatoinit.c:798`); reachability unchecked.
-  19. HTML labels: `<font><table>` (fonttable) is unported (such labels fail and print
-      a bare `in label of` that native does not); lexer attribute warnings
+  19. **[DONE — T7 fonttable, T8 attribute/value warnings, T9 comment/early-close/
+      quote errors]** HTML labels: `<font><table>` (fonttable) is unported (such labels
+      fail and print a bare `in label of` that native does not); lexer attribute warnings
       (`Illegal attribute … - ignored`, ALIGN values, `Unclosed comment`) and the
       unterminated-quote case are unported.
-  20. Seven other `Bezier` ports (`gvc/anchor.ts`, `layout/dot/edge-route-clip.ts`,
+  20. **[DONE — T10 inventory, T11 shared fused `bezier()`, T12 limitBoxes]** Seven
+      other `Bezier` ports (`gvc/anchor.ts`, `layout/dot/edge-route-clip.ts`,
       `compound-geom.ts`, `splines-label.ts`, `compound-clip.ts`, `common/taper.ts`)
       do not mirror clang's fused de Casteljau.
-  21. json circo `tree-share-examples-world` still records 50223 diffs from before
-      T12 (the engine track is now 533); re-walk it.
-  22. The overnight `/tmp` clean removes `config8` from plugin dirs and empties the
+  21. **[DONE — T3: 50223 → 533]** json circo `tree-share-examples-world` still
+      records 50223 diffs from before T12 (the engine track is now 533); re-walk it.
+  22. **[DONE — T1: oracle preflight + caches under `~/.cache/dot-engine/oracle`]**
+      The overnight `/tmp` clean removes `config8` from plugin dirs and empties the
       oracle caches, after which native fdp/sfdp re-render and drift run to run;
       walk deltas on those engines then reflect the oracle, not the port.
-  23. DOT syntax errors print Peggy's message, not `aagerror`'s; see
+  23. **[DONE — T6]** DOT syntax errors print Peggy's message, not `aagerror`'s; see
       `plans/post-16-1-followups-2/README.md`.
+- **New follow-ups found by part 2** (journal rows cite the task):
+  24. Cache oracle **failures** (timeouts, errors) as well as SVGs, keyed by
+      `ORACLE_VERSION` (`test/corpus/oracle-env.ts`), and render them again only on a
+      new graphviz release (> 16.1). Today the survey's 9 native timeouts (4elt, 1864,
+      2064, 2593, 2723, 2778, 2834, 2854_1, 2855) re-run to the 7,789,662 ms cap on
+      every survey (~2 h); the walks' oracle caches have the same gap. (User
+      direction, T14.)
+  25. ipsep `MaxIter` default `100·n` (`neatoinit.c:1286-1287`) is unported; no
+      observable input found (T5).
+  26. The Peggy grammar rejects inputs native accepts: trailing junk, several graphs
+      in one file, comment-only sources (T6).
+  27. HTML grammar gaps: native rejects empty `<b></b>`, `<font></font>`, `<b/>` at the
+      close tag (`... <b></b> ...` context); CDATA sections, `ctx->inCell` text
+      suppression, `ctx->xb` accumulation across dropped events and `characterData`
+      dropping chars < 0x20 are unported (T7, T9).
+  28. htmllex warning bytes: doInt's three messages lack `\n` natively and run into
+      the next stderr write; SIDES with non-ASCII prints raw bytes; `ALIGN="TEXT"` in
+      TD has no `HtmlAlign` value; expat attribute-value normalisation is not modelled
+      in warning text; dead `cellAttrs['src']` fallback in `parseImgContent` (T8).
+  29. Fused non-Bezier expressions the port computes plain: `ptToLine2`
+      (`anchor.ts`, `splines-geom.ts`), `arrow_type_curve` control points,
+      `svg-edge-split.ts:approxLen` (`DIST`), `edge-route-clip.ts:arrowEndClip`
+      (differs from arrows.c beyond fusion), `multispline-router.ts:addTriEdge`
+      (`DIST`); `cdt-surface.ts` orders face vertices differently from GTS (T10, T12,
+      T13).
+  30. sfdp 2168_3 (item 17) needs a bit-exact model of Apple's `sin` to go further
+      (T13).
+  31. 1864 exhausts a 1.5 GB worker heap in the port, on the T0 bundle as well as
+      T11's (pre-existing; seen in the T11 capture harness).
+  32. Record T11's fail→pass rows (osage 1652, 2371, linux.i386-b29, share-b29; twopi
+      graphs-b29, linux.i386-b29; also their json/plain rows) in the committed walk
+      JSONLs, and retire the matching A9 entries in
+      `accepted-divergences-{engines,json,plain}.json` and `docs/known-divergences.md`
+      (+ locales, `sourceHash`). Re-walk on a quiet machine so the load timeouts
+      (twopi/sfdp 2371, neato 2646, world, twopi 2108) are not recorded.
 
 ## Local leftovers (not committed, safe to delete)
 
@@ -166,5 +212,4 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
 - Old agent worktrees under `.claude/worktrees/` (t2-parser, t3-flat-et,
   t4-ortho-loop, t5-findmaxdev, t6-flat-adj, t7-solve3): from earlier
   missions, not this one. Check that each is merged before removing it.
-- This file is untracked. Commit it via PR only if the user wants it kept in
-  `plans/`.
+- This file is committed (since the part-2 brief's `docs(mission)` commit).
