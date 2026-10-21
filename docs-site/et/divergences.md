@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1282,6 +1282,19 @@ Need on tahtlikud ulatuse piirid, mitte vead. Teek sihib **SVG-d**
   väljastatakse sõna-sõnalt, nagu C-s; brauserid ignoreerivad neid ja renderdavad tavalise
   kaaluga, ning mõõtja mõõdab sobitamiseks tavalist kaalu. Node'i väljundit
   see ei mõjuta (see ei kasuta kunagi lõuendimõõtjat).
+- **Mitme graafiga sisend ja tühja sisendi `NULL`.** `parse` ja `renderSvg` loevad ühe
+  DOT-stringi nii, nagu cgraphi `agmemread`. Pärast esimese graafi sulgevat looksulgu
+  kutsub `endgraph` (`lib/cgraph/grammar.y`) välja `aglexeof` (`lib/cgraph/scan.l`), mis
+  lükkab faili lõpu märgi tagasi, nii et pärast seda sulgu ei lekseerita enam midagi:
+  lõputekst, lõpetamata stringid või kommentaarid ja täiendavad graafid jäetakse vea või
+  hoiatuseta tähelepanuta. CLI `dot` aga kutsub uuesti `agread` ja renderdab faili iga
+  graafi, nii et kahe graafiga fail annab seal kaks SVG dokumenti ja siin ühe (pordi
+  renderdus ühtib CLI esimese dokumendiga mitme graafiga korpusefailidel `1845`, `2835`
+  ja `graphs-multi`, mis jäävad karantiini). Mitme graafi renderdamiseks jagage allikas
+  ja kutsuge `renderSvg` iga graafi jaoks üks kord. Tühja või ainult kommentaaridest
+  koosneva sisendi korral tagastab `agmemread` `NULL` ja CLI ei trüki midagi; `parse`
+  tagastab selle asemel tühja suunamata graafi ja `renderSvg` renderdab selle, sest API
+  tagastab ühe kutse kohta ühe `Graph` ja ühe SVG.
 - **Ainult natiivsed mehhanismid**, mis on asendatud brauseriturvaliste vastetega: dünaamiline
   pluginate laadimine (`dlopen`) on asendatud staatilise mootori/renderdaja registreerimisega;
   failisüsteemi lugemised (fondid, pildid, konfiguratsioon) on asendatud kutsuja antud

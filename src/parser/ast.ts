@@ -61,4 +61,6 @@ export interface ParsedGraph {
   readonly directed: boolean;
   readonly id: string | null;
   readonly stmts: ParsedStmt[];
+  /** Offset just past the closing brace; the parser ignores input after it. */
+  readonly end: number;
 }

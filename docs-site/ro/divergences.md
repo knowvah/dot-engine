@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1290,6 +1290,21 @@ Acestea sunt limite deliberate ale domeniului, nu defecte. Biblioteca vizează *
   sunt emise ad litteram, ca în C; browserele le ignoră și randează greutatea
   normală, iar măsurătorul măsoară greutatea normală pentru a se potrivi. Ieșirea Node
   nu este afectată (nu folosește niciodată măsurătorul pe canvas).
+- **Intrarea cu mai multe grafuri și `NULL` pentru intrarea goală.** `parse` și
+  `renderSvg` citesc un singur șir DOT așa cum o face `agmemread` din cgraph. După
+  acolada de închidere a primului graf, `endgraph` (`lib/cgraph/grammar.y`) apelează
+  `aglexeof` (`lib/cgraph/scan.l`), care readuce un token de sfârșit de fișier, astfel
+  încât nimic după acea acoladă nu mai este analizat lexical: textul rămas, șirurile sau
+  comentariile neterminate și grafurile suplimentare sunt ignorate fără eroare sau
+  avertisment. CLI-ul `dot` apelează în schimb din nou `agread` și randează fiecare graf
+  dintr-un fișier, deci un fișier cu două grafuri produce acolo două documente SVG și
+  aici unul (randarea portării se potrivește cu primul document al CLI pe fișierele de
+  corpus cu mai multe grafuri `1845`, `2835` și `graphs-multi`, care rămân în
+  carantină). Pentru a randa mai multe grafuri, împărțiți sursa și apelați `renderSvg` o
+  dată pentru fiecare graf. Pentru intrare goală sau doar cu comentarii, `agmemread`
+  returnează `NULL`, iar CLI-ul nu afișează nimic; `parse` returnează în schimb un graf
+  neorientat gol, iar `renderSvg` îl randează, deoarece API-ul returnează un `Graph` și
+  un SVG per apel.
 - **Mecanisme exclusiv native** înlocuite cu echivalente sigure pentru browser: încărcarea dinamică
   a pluginurilor (`dlopen`) este înlocuită de înregistrarea statică a motoarelor/randatoarelor;
   citirile din sistemul de fișiere (fonturi, imagini, configurare) sunt înlocuite de

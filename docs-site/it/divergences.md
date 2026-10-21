@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1399,6 +1399,20 @@ Sono confini di ambito deliberati, non bug. La libreria ha come bersaglio **SVG*
   browser li ignorano e renderizzano il peso normale, e il misuratore misura il peso
   normale per coincidere. L'output di Node non è interessato (non usa mai il
   misuratore su canvas).
+- **Input con più grafi e il `NULL` dell'input vuoto.** `parse` e `renderSvg` leggono
+  una stringa DOT come fa `agmemread` di cgraph. Dopo la graffa di chiusura del primo
+  grafo, `endgraph` (`lib/cgraph/grammar.y`) chiama `aglexeof` (`lib/cgraph/scan.l`),
+  che rimette indietro un token di fine file, per cui dopo quella graffa non viene più
+  analizzato nulla: il testo finale, le stringhe o i commenti non terminati e gli
+  ulteriori grafi sono ignorati senza errore né avviso. La CLI `dot` invece richiama
+  `agread` e rende ogni grafo di un file, per cui un file con due grafi dà lì due
+  documenti SVG e qui uno solo (il rendering del porting coincide con il primo documento
+  della CLI sui file del corpus con più grafi `1845`, `2835` e `graphs-multi`, che
+  restano in quarantena). Per rendere più grafi, dividere la sorgente e chiamare
+  `renderSvg` una volta per grafo. Per un input vuoto o con soli commenti, `agmemread`
+  restituisce `NULL` e la CLI non stampa nulla; `parse` restituisce invece un grafo non
+  orientato vuoto e `renderSvg` lo rende, perché l'API restituisce un `Graph` e un SVG
+  per chiamata.
 - **Meccaniche solo native** sostituite da equivalenti sicuri per il browser: il
   caricamento dinamico dei plugin (`dlopen`) è sostituito dalla registrazione statica
   di motori/renderer; le letture dal filesystem (font, immagini, configurazione) sono

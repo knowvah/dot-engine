@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1292,6 +1292,20 @@ Estes são limites de escopo deliberados, não bugs. A biblioteca visa **SVG**
   são emitidos literalmente, como no C; os navegadores os ignoram e renderizam peso
   normal, e o medidor mede o peso normal para corresponder. A saída no Node
   não é afetada (ele nunca usa o medidor de canvas).
+- **Entrada com vários grafos e o `NULL` da entrada vazia.** `parse` e `renderSvg` leem
+  uma string DOT como o `agmemread` do cgraph faz. Depois da chave de fechamento do
+  primeiro grafo, `endgraph` (`lib/cgraph/grammar.y`) chama `aglexeof`
+  (`lib/cgraph/scan.l`), que devolve um token de fim de arquivo, de modo que nada depois
+  dessa chave é analisado lexicamente: texto restante, strings ou comentários não
+  terminados e grafos adicionais são ignorados sem erro nem aviso. A CLI `dot`, em vez
+  disso, chama `agread` de novo e renderiza todos os grafos de um arquivo, então um
+  arquivo com dois grafos gera lá dois documentos SVG e aqui um só (a renderização do
+  port coincide com o primeiro documento da CLI nos arquivos do corpus com vários grafos
+  `1845`, `2835` e `graphs-multi`, que continuam em quarentena). Para renderizar vários
+  grafos, divida a fonte e chame `renderSvg` uma vez por grafo. Para entrada vazia ou só
+  com comentários, `agmemread` retorna `NULL` e a CLI não imprime nada; `parse` retorna
+  em vez disso um grafo não direcionado vazio e `renderSvg` o renderiza, porque a API
+  retorna um `Graph` e um SVG por chamada.
 - **Mecânicas exclusivas do nativo** substituídas por equivalentes seguros para o navegador: o carregamento dinâmico de
   plugins (`dlopen`) é substituído pelo registro estático de mecanismos/renderizadores;
   leituras do sistema de arquivos (fontes, imagens, configuração) são substituídas por

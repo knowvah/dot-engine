@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1077,6 +1077,15 @@ pathplan 多重樣條通道——與 circo／sfdp `241_0` 相同的 libm 1 ULP �
   與 C 一樣原樣輸出；瀏覽器會忽略它們並以一般
   字重轉譯，而量測器也以一般字重量測以求一致。Node 的輸出
   不受影響（它從不使用 canvas 量測器）。
+- **多圖輸入與空輸入的 `NULL`。** `parse` 與 `renderSvg` 讀取單一 DOT 字串的方式與 cgraph 的 `agmemread` 相同。
+  在第一個圖的右大括號之後，`endgraph`（`lib/cgraph/grammar.y`）呼叫 `aglexeof`（`lib/cgraph/scan.l`），
+  後者會回推一個檔案結尾記號，因此該大括號之後的任何內容都不會被詞法分析：
+  尾隨文字、未終止的字串或註解以及後續的圖都會被忽略，既不報錯也不警告。
+  `dot` CLI 則會再次呼叫 `agread` 並轉譯檔案中的每個圖，所以含兩個圖的檔案在那裡得到兩份 SVG 文件，在這裡只得到一份
+  （在多圖語料檔 `1845`、`2835` 與 `graphs-multi` 上，移植版的轉譯結果與 CLI 的第一份文件一致，這些檔案仍處於隔離狀態）。
+  要轉譯多個圖，請拆分原始碼，對每個圖各呼叫一次 `renderSvg`。
+  對於空輸入或僅含註解的輸入，`agmemread` 傳回 `NULL`，CLI 不輸出任何內容；
+  `parse` 則改為傳回一個空的無向圖，`renderSvg` 會轉譯它，因為 API 每次呼叫傳回一個 `Graph` 與一個 SVG。
 - **僅限原生的機制**以瀏覽器安全的等價物取代：動態
   外掛載入（`dlopen`）以靜態的引擎／轉譯器註冊取代；
   檔案系統讀取（字型、圖片、設定）以呼叫端提供的

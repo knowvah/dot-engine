@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1301,6 +1301,21 @@ Ezek szándékos hatókörhatárok, nem hibák. A könyvtár az **SVG**-t céloz
   szó szerint bocsátjuk ki, mint a C; a böngészők figyelmen kívül hagyják őket, és normál
   súlyt renderelnek, a mérő pedig az egyezés érdekében normál súlyt mér. A Node-kimenetet
   ez nem érinti (sosem használja a canvas-mérőt).
+- **Többgráfos bemenet és az üres bemenet `NULL` értéke.** A `parse` és a `renderSvg`
+  egyetlen DOT-sztringet olvas be úgy, ahogy a cgraph `agmemread` függvénye. Az első
+  gráf záró kapcsos zárójele után az `endgraph` (`lib/cgraph/grammar.y`) meghívja az
+  `aglexeof` függvényt (`lib/cgraph/scan.l`), amely egy fájlvége tokent tol vissza, így
+  a zárójel után semmit sem elemez lexikálisan: a záró szöveg, a lezáratlan sztringek
+  vagy megjegyzések és a további gráfok hiba vagy figyelmeztetés nélkül figyelmen kívül
+  maradnak. A `dot` CLI ezzel szemben újra meghívja az `agread` függvényt, és a fájl
+  minden gráfját rendereli, így egy kétgráfos fájl ott két SVG-dokumentumot ad, itt
+  egyet (a port renderelése egyezik a CLI első dokumentumával a többgráfos
+  korpuszfájlokon: `1845`, `2835` és `graphs-multi`, amelyek karanténban maradnak). Több
+  gráf rendereléséhez bontsa fel a forrást, és gráfonként egyszer hívja a `renderSvg`
+  függvényt. Üres vagy csak megjegyzést tartalmazó bemenetnél az `agmemread` `NULL`
+  értéket ad, és a CLI nem ír ki semmit; a `parse` ehelyett üres irányítatlan gráfot ad
+  vissza, a `renderSvg` pedig renderel, mert az API hívásonként egy `Graph`-ot és egy
+  SVG-t ad vissza.
 - **Natív-csak mechanizmusok** böngészőbiztos megfelelőkkel helyettesítve: a dinamikus
   bővítménybetöltést (`dlopen`) statikus motor-/renderelő-regisztráció váltja fel;
   a fájlrendszer-olvasásokat (betűtípusok, képek, konfiguráció) a hívó által megadott

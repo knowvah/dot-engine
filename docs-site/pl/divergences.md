@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1271,6 +1271,20 @@ To są celowe granice zakresu, a nie błędy. Biblioteka celuje w **SVG**
   są emitowane dosłownie, tak jak w C; przeglądarki je ignorują i renderują normalną
   wagę, a miernik mierzy normalną wagę, aby się zgadzało. Wyjście Node
   nie jest dotknięte (nigdy nie używa miernika canvas).
+- **Wejście z wieloma grafami i `NULL` dla pustego wejścia.** `parse` i `renderSvg`
+  czytają jeden łańcuch DOT tak, jak robi to `agmemread` z cgraph. Po klamrze
+  zamykającej pierwszy graf `endgraph` (`lib/cgraph/grammar.y`) wywołuje `aglexeof`
+  (`lib/cgraph/scan.l`), który cofa token końca pliku, więc nic po tej klamrze nie jest
+  analizowane leksykalnie: tekst końcowy, niezakończone łańcuchy lub komentarze oraz
+  kolejne grafy są ignorowane bez błędu i ostrzeżenia. CLI `dot` natomiast wywołuje
+  `agread` ponownie i renderuje każdy graf w pliku, więc plik z dwoma grafami daje tam
+  dwa dokumenty SVG, a tutaj jeden (render portu zgadza się z pierwszym dokumentem CLI
+  na plikach korpusu z wieloma grafami `1845`, `2835` i `graphs-multi`, które pozostają
+  w kwarantannie). Aby wyrenderować kilka grafów, podziel źródło i wywołaj `renderSvg`
+  raz na graf. Dla pustego wejścia lub wejścia z samymi komentarzami `agmemread` zwraca
+  `NULL`, a CLI nic nie wypisuje; `parse` zamiast tego zwraca pusty graf nieskierowany,
+  a `renderSvg` go renderuje, ponieważ API zwraca jeden `Graph` i jeden SVG na
+  wywołanie.
 - **Mechanika tylko natywna** zastąpiona odpowiednikami bezpiecznymi dla przeglądarki: dynamiczne
   ładowanie wtyczek (`dlopen`) zastąpione statyczną rejestracją silników/rendererów;
   odczyty systemu plików (czcionki, obrazy, konfiguracja) zastąpione wywołaniami zwrotnymi dostarczanymi przez wywołującego

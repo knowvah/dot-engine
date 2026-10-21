@@ -36,3 +36,9 @@ native's output even though the file ends in a valid `</svg>` — NEL is treated
 as a line break by some tools and not others. Use `grep -a` / byte inspection
 (`tail -c`) to confirm "did native actually produce a complete SVG", not a
 line-oriented grep, on files `file(1)` flags as having NEL terminators.
+
+## Observation: three of the five now parse (2026-10-21, follow-up 26)
+- **Context**: The parser now stops after the first graph's closing brace, as agmemread does (grammar.y:endgraph -> scan.l:aglexeof).
+- **Finding**: 1308_1, 1474 and 1489 were rejected only for text after the graph. They now parse and render, and diverge from native, whose yacc error recovery shapes their graphs. 1494 and 1676 still throw at the mid-graph recovery points described above.
+- **Impact**: All five stay quarantined as `malformed`; the 2026-06 decision stands.
+- **Confidence**: High (parse() outcome diffed main vs branch on all 971 manifest inputs).

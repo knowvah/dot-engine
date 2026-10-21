@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1288,6 +1288,19 @@ Jde o záměrné hranice rozsahu, nikoli o chyby. Knihovna cílí na **SVG**
   se vydávají doslova jako v C; prohlížeče je ignorují a vykreslí normální
   váhu a měřič měří normální váhu, aby odpovídal. Výstup v Node
   tím dotčen není (canvasový měřič nikdy nepoužívá).
+- **Vstup s více grafy a `NULL` pro prázdný vstup.** `parse` a `renderSvg` čtou jeden
+  řetězec DOT tak, jak to dělá `agmemread` z cgraph. Po uzavírací závorce prvního grafu
+  `endgraph` (`lib/cgraph/grammar.y`) volá `aglexeof` (`lib/cgraph/scan.l`), který vrátí
+  zpět token konce souboru, takže se za touto závorkou už nic nelexuje: koncový text,
+  neukončené řetězce či komentáře a další grafy se ignorují bez chyby i varování. CLI
+  `dot` naproti tomu volá `agread` znovu a vykreslí každý graf v souboru, takže soubor
+  se dvěma grafy zde dá dva dokumenty SVG a tady jeden (vykreslení portace odpovídá
+  prvnímu dokumentu CLI u korpusových souborů s více grafy `1845`, `2835` a
+  `graphs-multi`, které zůstávají v karanténě). Chcete-li vykreslit více grafů, rozdělte
+  zdroj a zavolejte `renderSvg` jednou pro každý graf. Pro prázdný vstup nebo vstup jen
+  s komentáři vrací `agmemread` hodnotu `NULL` a CLI nevypíše nic; `parse` místo toho
+  vrací prázdný neorientovaný graf a `renderSvg` jej vykreslí, protože API vrací jeden
+  `Graph` a jedno SVG na volání.
 - **Mechanismy pouze nativní** nahrazené ekvivalenty bezpečnými pro prohlížeč: dynamické
   načítání pluginů (`dlopen`) je nahrazeno statickou registrací modulů/rendererů;
   čtení souborového systému (písma, obrázky, konfigurace) je nahrazeno funkcemi zpětného volání

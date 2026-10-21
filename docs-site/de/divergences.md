@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1373,6 +1373,21 @@ Das sind bewusste Abgrenzungen des Umfangs, keine Fehler. Die Bibliothek zielt a
   ausgegeben; Browser ignorieren sie und rendern normale Stärke, und der Measurer
   vermisst normale Stärke, damit es passt. Die Node-Ausgabe ist nicht betroffen (sie
   verwendet den Canvas-Measurer nie).
+- **Eingabe mit mehreren Graphen und das `NULL` bei leerer Eingabe.** `parse` und
+  `renderSvg` lesen einen DOT-String so, wie es `agmemread` von cgraph tut. Nach der
+  schließenden Klammer des ersten Graphen ruft `endgraph` (`lib/cgraph/grammar.y`)
+  `aglexeof` (`lib/cgraph/scan.l`) auf, das ein Dateiende-Token zurückschiebt, sodass
+  nach dieser Klammer nichts mehr gelext wird: nachfolgender Text, unterminierte Strings
+  oder Kommentare und weitere Graphen werden ohne Fehler oder Warnung ignoriert. Die
+  `dot`-CLI ruft stattdessen erneut `agread` auf und rendert jeden Graphen einer Datei,
+  sodass eine Datei mit zwei Graphen dort zwei SVG-Dokumente ergibt und hier eines (das
+  Rendering der Portierung stimmt bei den Korpusdateien mit mehreren Graphen `1845`,
+  `2835` und `graphs-multi`, die in Quarantäne bleiben, mit dem ersten Dokument der CLI
+  überein). Um mehrere Graphen zu rendern, teilen Sie die Quelle auf und rufen
+  `renderSvg` einmal pro Graph auf. Bei leerer oder nur aus Kommentaren bestehender
+  Eingabe gibt `agmemread` `NULL` zurück, und die CLI gibt nichts aus; `parse` liefert
+  stattdessen einen leeren ungerichteten Graphen, und `renderSvg` rendert ihn, weil die
+  API pro Aufruf einen `Graph` und ein SVG zurückgibt.
 - **Nur-native Mechanismen**, ersetzt durch browsersichere Entsprechungen: Das dynamische
   Laden von Plugins (`dlopen`) wird durch statische Registrierung von Engines/Renderern
   ersetzt; Dateisystemzugriffe (Schriften, Bilder, Konfiguration) werden durch vom

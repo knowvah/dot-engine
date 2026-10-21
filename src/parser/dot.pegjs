@@ -10,19 +10,29 @@
 
 // ── Top-level rule ───────────────────────────────────────────────────────────
 // grammar.y: graph : hdr body | error | /* empty */
+// `end` is the offset just past the graph's closing brace: the last input the
+// C scanner lexes (see GraphEof). The empty graph lexes everything.
 
 Graph
-  = _ s:OptStrict _ t:GraphType _ id:OptGraphName _ "{" _ stmts:StmtList _ "}" _
+  = _ s:OptStrict _ t:GraphType _ id:OptGraphName _ "{" _ stmts:StmtList _ "}" end:GraphEof
     {
       return {
         type: "graph",
         strict: s,
         directed: t,
         id: id,
-        stmts: stmts
+        stmts: stmts,
+        end: end
       };
     }
-  / _ "" { return { type: "graph", strict: false, directed: false, id: null, stmts: [] }; }
+  / _ "" { return { type: "graph", strict: false, directed: false, id: null, stmts: [], end: text().length }; }
+
+// grammar.y: graph : hdr body {freestack(); endgraph();} — endgraph calls
+// scan.l:aglexeof, which unputs GRAPH_EOF_TOKEN ('@'), so the next token is
+// EOF and nothing after the closing brace is ever lexed: agmemread reads one
+// graph and ignores the rest, junk or a second graph alike.
+GraphEof
+  = .* { return offset(); }
 
 // grammar.y: hdr : optstrict graphtype optgraphname
 // grammar.y: optstrict : T_strict | /* empty */

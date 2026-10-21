@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -498,6 +498,15 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 - **`gvpr`**（图处理脚本语言）——不在范围内。
 - **C++ 便利封装**（`cgraph++`、`gvc++`）——优先移植 C API；如果需要，符合 TypeScript 习惯的便利层将是一个单独的包。
 - **浏览器文本测量中的 `fontnames=svg|ps`。** 在浏览器中，canvas 测量器根据 PostScript 别名的 `fontnames=native` 字体族列表构建其字体（`Times-Roman` → `Times, serif`），这与 SVG 输出器默认渲染所用的字体相同。`TextMeasurer` 不携带图上下文，所以设置了 `fontnames=svg` 或 `fontnames=ps` 的图会按原生列表测量，而 SVG 则写出 svg/ps 的字体族名称。CSS 未定义的别名字重（`book`、`demi`、`light`、`medium`、`roman`）与 C 一样原样输出；浏览器忽略它们并以正常字重渲染，测量器则按正常字重测量以与之匹配。Node 的输出不受影响（它从不使用 canvas 测量器）。
+- **多图输入与空输入的 `NULL`。** `parse` 和 `renderSvg` 读取单个 DOT 字符串的方式与 cgraph 的 `agmemread` 相同。
+  在第一个图的右花括号之后，`endgraph`（`lib/cgraph/grammar.y`）调用 `aglexeof`（`lib/cgraph/scan.l`），
+  后者会回推一个文件结束记号，因此该花括号之后的任何内容都不会被词法分析：
+  尾随文本、未终止的字符串或注释以及后续的图都会被忽略，既不报错也不警告。
+  `dot` CLI 则会再次调用 `agread` 并渲染文件中的每个图，所以含两个图的文件在那里得到两个 SVG 文档，在这里只得到一个
+  （在多图语料文件 `1845`、`2835` 和 `graphs-multi` 上，移植版的渲染结果与 CLI 的第一个文档一致，这些文件仍处于隔离状态）。
+  要渲染多个图，请拆分源文本，对每个图各调用一次 `renderSvg`。
+  对于空输入或仅含注释的输入，`agmemread` 返回 `NULL`，CLI 不输出任何内容；
+  `parse` 则改为返回一个空的无向图，`renderSvg` 会渲染它，因为 API 每次调用返回一个 `Graph` 和一个 SVG。
 - **仅限原生的机制**，由适合浏览器的等价机制取代：动态插件加载（`dlopen`）由静态的引擎/渲染器注册取代；文件系统读取（字体、图像、配置）由调用方提供的回调取代（例如 `setImageSizer`）。行为得以保持；机制有所不同。
 
 ---
