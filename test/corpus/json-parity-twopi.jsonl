@@ -891,7 +891,7 @@
 {"id":"graphs-b106","path":"graphs/b106.gv","size":48933,"verdict":"conformant"}
 {"id":"graphs-b143","path":"graphs/b143.gv","size":62055,"verdict":"conformant"}
 {"id":"graphs-badvoro","path":"graphs/badvoro.gv","size":33949,"verdict":"conformant"}
-{"id":"graphs-b29","path":"graphs/b29.gv","size":62931,"verdict":"accepted","diffCount":2,"firstDiff":"edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]","maxDelta":12,"maxDeltaPath":"edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]"}
+{"id":"graphs-b29","path":"graphs/b29.gv","size":62931,"verdict":"conformant"}
 {"id":"linux.i386-b106","path":"linux.i386/b106.gv","size":92005,"verdict":"conformant"}
 {"id":"2620","path":"2620.dot","size":64908,"verdict":"conformant"}
 {"id":"share-b106","path":"share/b106.gv","size":92301,"verdict":"conformant"}
@@ -899,7 +899,7 @@
 {"id":"windows-b106","path":"windows/b106.gv","size":95634,"verdict":"conformant"}
 {"id":"graphs-b102","path":"graphs/b102.gv","size":102329,"verdict":"conformant"}
 {"id":"graphs-xx","path":"graphs/xx.gv","size":102329,"verdict":"conformant"}
-{"id":"linux.i386-b29","path":"linux.i386/b29.gv","size":136753,"verdict":"accepted","diffCount":2,"firstDiff":"edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]","maxDelta":12,"maxDeltaPath":"edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]"}
+{"id":"linux.i386-b29","path":"linux.i386/b29.gv","size":136753,"verdict":"conformant"}
 {"id":"share-b29","path":"share/b29.gv","size":137802,"verdict":"conformant"}
 {"id":"windows-b29","path":"windows/b29.gv","size":149114,"verdict":"conformant"}
 {"id":"linux.i386-b102","path":"linux.i386/b102.gv","size":161479,"verdict":"conformant"}

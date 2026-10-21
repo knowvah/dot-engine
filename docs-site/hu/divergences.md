@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -997,29 +997,33 @@ az egyébként érintetlen portolt változatba injektálása **nulla** eltérő
 láncot; a C libm `cos`/`sin` értékeinek önálló injektálása hatástalan. Elfogadva
 2026-07-11; teljes gyökérokelemzés: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29 család (twopi).** A négy b29 változat egyetlen élen táncoló döntetlenen osztozik: az
-`EqmtTyp` élcímke (`Node14732->Node14731`) egy pontos placeLabels
-oldalválasztási döntetlenen ül, amelynek kimenetele a környező objektumok 1 ULP-s twopi
-elrendezés-sodródásától függ. A `polylineMidpoint` hű fmadd összevonásával
-(states-család javítása, 2026-07-11) a portolt változat címkehorgonya
-bitre azonos az orákuluméval, a döntetlen mégis ellentétesen oldódik fel
-a négy változat közül kettőn (`graphs-b29`, `linux.i386-b29`), míg a másik
-kettő (`share-b29`, `windows-b29`) most megfelel — és a `2343` elfogadott A9
-címkeeltérése teljesen eltűnt. Korlát: 1 rajzolási művelet, Δ12 pt címke-y. Redukálhatatlan,
-a felsőbb szintű sodródás megszüntetése nélkül. Teljes gyökérokelemzés:
-`.agent-notes/twopi-states-rca.md`.
+**b29 család (twopi, javítva).** A négy b29 változat egyetlen élen táncoló döntetlenen
+osztozott: az `EqmtTyp` élcímke (`Node14732->Node14731`) egy pontos placeLabels
+oldalválasztási döntetlenen ült, amelynek kimenetele a környező objektumok 1 ULP-s twopi
+elrendezés-sodródásától függött. A `polylineMidpoint` hű fmadd összevonásával
+(states-család javítása, 2026-07-11) a portolt változat címkehorgonya bitre azonossá
+vált az orákuluméval, a döntetlen mégis ellentétesen oldódott fel a négy változat közül
+kettőn (`graphs-b29`, `linux.i386-b29`), míg a másik kettő (`share-b29`, `windows-b29`)
+megfelelt — és a `2343` elfogadott A9 címkeeltérése teljesen eltűnt. Korlát: 1 rajzolási
+művelet, Δ12 pt címke-y. 2026-10-20-án a portban minden Bézier-kiértékelés egyetlen
+összevont `bezier()`-n keresztül kezdett futni, ahogy a clang összevonja a graphviz
+`Bezier` függvényét (`e37e72f0`). Ez megszüntette a felsőbb szintű sodródást: a
+`graphs-b29` és a `linux.i386-b29` is megfelel, elfogadásaik pedig visszavonásra
+kerültek. Teljes gyökérokelemzés: `.agent-notes/twopi-states-rca.md`.
 
-Ugyanez a placeLabels élen táncoló döntetlen az **osage** sávon is felbukkan (elfogadva
+Ugyanez a placeLabels élen táncoló döntetlen az **osage** sávon is felbukkant (elfogadva
 2026-07-11, teljes gyökérokelemzés: `.agent-notes/osage-small-tail-rca.md`):
 `linux.i386-b29` és `share-b29` (mindegyik 2 rajzolásiművelet-eltérés — egy élcímke
-x-horgonya 878.28-ra esik 841.06 helyett, szimmetrikusan elhelyezve a
-bitre azonos 859.67 spline-középpont körül, azaz ±a címke szélességének fele; a két
-változat tükrözi egymást) és `1652` (2 rajzolásiművelet-eltérés — két élen egy-egy
-címkehorgony billen át azonos középpont körül, az egyik x-ben, a másik y-ban,
-bitre azonos splinekkal és nyílhegyekkel; az orákulum teljesen renderel,
-így ez nem az ismert natív időtúllépéses ingadozás). Minden esetben az él
-geometriája bitre pontos, és csak a címke oldalválasztási döntetlene oldódik fel
-ellentétesen az 1 ULP-vel sodródott környezetben.
+x-horgonya 878.28-ra esik 841.06 helyett, szimmetrikusan elhelyezve a bitre azonos
+859.67 spline-középpont körül, azaz ±a címke szélességének fele; a két változat tükrözi
+egymást) és `1652` (2 rajzolásiművelet-eltérés — két élen egy-egy címkehorgony billen át
+azonos középpont körül, az egyik x-ben, a másik y-ban, bitre azonos splinekkal és
+nyílhegyekkel; az orákulum teljesen renderel, így ez nem az ismert natív időtúllépéses
+ingadozás). Minden esetben az él geometriája bitre pontos volt, és csak a címke
+oldalválasztási döntetlene oldódott fel ellentétesen az 1 ULP-vel sodródott
+környezetben. A 2026-10-20-i összevont `bezier()` (`e37e72f0`) ezt a sodródást is
+megszüntette: mind a három megfelel, akárcsak az el nem fogadott osage `2371`,
+elfogadásaik pedig visszavonásra kerültek.
 
 Az osage sáv hordozza a `polypoly` hármast (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; elfogadva 2026-07-11, teljes gyökérokelemzés:

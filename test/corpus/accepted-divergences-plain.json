@@ -352,17 +352,7 @@
       "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-b29",
-      "engine": "twopi",
-      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-newarrows",
-      "engine": "twopi",
-      "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.i386-b29",
       "engine": "twopi",
       "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
     },
@@ -392,11 +382,6 @@
       "reason": "layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "1652",
-      "engine": "osage",
-      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "1855",
       "engine": "osage",
       "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
@@ -410,16 +395,6 @@
       "id": "tree-graphs-directed-polypoly",
       "engine": "osage",
       "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (A9, same node-9004 cos(pi+theta) 1-ULP as graphs-polypoly, propagated via arrayRects acmpf raw width+height tie; engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-28."
-    },
-    {
-      "id": "linux.i386-b29",
-      "engine": "osage",
-      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-b29",
-      "engine": "osage",
-      "reason": "layout geometry inherited from the osage xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24."
     },
     {
       "id": "share-polypoly",

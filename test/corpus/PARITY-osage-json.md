@@ -13,27 +13,22 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 - **Surveyed:** 929
 - **Oracle:** dot 16.1.0
-- **pass:** 915 (98.5%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 13
+- **pass:** 919 (98.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 10
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 0
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | 1705517 | 76 | `edge:r1885st->r1885ed#0/_ldraw_/op[2].T[1]` |
+_(none)_
 
-## Accepted (13) — documented, not chased
+## Accepted (10) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
 | [`1221`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1221.dot) | 1 | `[parse]/oracle` | oracle bug (A4): native -Kosage -Tjson emits bare inf/nan tokens (invalid JSON) for degenerate cluster draw coordinates; the document is unparseable so no comparison is possible. Port emits finite, valid JSON. Journal 2026-07-24. |
 | [`1332`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1332.dot) | 1 | `[parse]/oracle` | oracle bug (A4): native -Kosage -Tjson emits bare inf/nan tokens (invalid JSON) for degenerate cluster draw coordinates; the document is unparseable so no comparison is possible. Port emits finite, valid JSON. Journal 2026-07-24. |
-| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | 4 | `edge:Op_1091->Op_1092#0/_ldraw_/op[2].T[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`1855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1855.dot) | 62 | `edge:16->1#0/_draw_/op[1].b[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2721`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2721.dot) | 1 | `[parse]/oracle` | oracle bug (A4): native -Kosage -Tjson emits bare inf/nan tokens (invalid JSON) for degenerate cluster draw coordinates; the document is unparseable so no comparison is possible. Port emits finite, valid JSON. Journal 2026-07-24. |
 | [`graphs-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/polypoly.gv) | 24 | `node:9000/_draw_/op[1].p[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`linux.i386-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b29.gv) | 3 | `edge:Node14663->Node14649#0/_ldraw_/op[2].T[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`share-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b29.gv) | 3 | `edge:Node14663->Node14649#0/_ldraw_/op[2].T[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 1 | `node:a/label` | Input is Latin-1 with NO `charset` declaration, so the bytes are invalid UTF-8. Native dot's -Tjson then emits a MIXED-ENCODING document: attribute values (e.g. node `label`) are echoed as RAW Latin-1 bytes (0xe1 0xe2 ... unconverted), while the DRAWN label text (_ldraw_ T op, via make_label) is UTF-8 (0xc3 0xa1 ...). No single decode reads both halves correctly: Latin-1 recovers the attribute but mojibakes the text, UTF-8 does the reverse (and the attribute bytes are not valid UTF-8). The port decodes the input once (utils.c latin1ToUTF8 fallback) and is internally consistent valid UTF-8 on BOTH surfaces, so it cannot reproduce the oracle's split encoding. A4 class: the oracle output is an encoding bug; the port declines to emit invalid/mixed-encoding JSON. The DECLARED charset=latin1 case (graphs-Latin1/b60) IS handled via the stoj double-encode fix; only the UNDECLARED-charset case is irreducible. |
 | [`share-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/polypoly.gv) | 12 | `node:9002/_draw_/op[1].p[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`tree-graphs-directed-polypoly`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/polypoly.gv) | 112 | `edge:9000->8000#0/_draw_/op[1].b[0]` | layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (A9, same node-9004 cos(pi+theta) 1-ULP as graphs-polypoly, propagated via arrayRects acmpf raw width+height tie; engine registry + decision journal); json re-emits the same layout. Journal 2026-07-28. |
@@ -44,5 +39,5 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 _(none)_
 
-_Passing ids (915) are omitted for brevity — the full roster is in
+_Passing ids (919) are omitted for brevity — the full roster is in
 `json-parity-osage.json`._

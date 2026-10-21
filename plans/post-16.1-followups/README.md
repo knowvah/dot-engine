@@ -8,7 +8,8 @@ Items 1–13 are done. Items 7–13 were closed by the mission brief
 (merged via PR #94, merge commit `f54d12c6`); its decision journal records each
 item's outcome. Items 14–23 are closed (14 by PR #95; 15–23 by
 `plans/post-16-1-followups-2/`). Items 24 and 33 are closed by
-`feature/cache-oracle-failures`. The open work is items 25–32 under "New follow-ups
+`feature/cache-oracle-failures` (PR #97), item 32 by `chore/record-t11-walk-passes`.
+The open work is items 25–31 under "New follow-ups
 found by part 2" below, each journaled in `plans/decision-journal.md`.
 
 ## State at handoff
@@ -198,7 +199,8 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       (T13).
   31. 1864 exhausts a 1.5 GB worker heap in the port, on the T0 bundle as well as
       T11's (pre-existing; seen in the T11 capture harness).
-  32. Record T11's fail→pass rows (osage 1652, 2371, linux.i386-b29, share-b29; twopi
+  32. **[DONE — `chore/record-t11-walk-passes`: 18 rows pass, 15 A9 entries
+      retired]** Record T11's fail→pass rows (osage 1652, 2371, linux.i386-b29, share-b29; twopi
       graphs-b29, linux.i386-b29; also their json/plain rows) in the committed walk
       JSONLs, and retire the matching A9 entries in
       `accepted-divergences-{engines,json,plain}.json` and `docs/known-divergences.md`

@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-10-14T04:10:31.083Z",
+  "generatedAt": "2026-10-21T14:43:53.299Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "osage",
   "tolerance": 0.01,
   "oracleVersion": "dot 16.1.0",
   "total": 929,
   "counts": {
-    "pass": 920,
-    "diverged": 9,
+    "pass": 924,
+    "diverged": 5,
     "oracle-error": 0,
     "port-error": 0,
     "timeout": 0
@@ -6263,20 +6263,16 @@
     {
       "id": "linux.i386-b29",
       "size": 136753,
-      "status": "diverged",
-      "oracleMs": 24,
-      "portMs": 579,
-      "nDiffs": 3,
-      "firstDiff": "edge:Node14663->Node14649#0 _ldraw_ edge:Node14663->Node14649#0/_ldraw_/op[2].text[0]: 878.28 vs 841.06"
+      "status": "pass",
+      "oracleMs": 32,
+      "portMs": 788
     },
     {
       "id": "share-b29",
       "size": 137802,
-      "status": "diverged",
-      "oracleMs": 24,
-      "portMs": 574,
-      "nDiffs": 3,
-      "firstDiff": "edge:Node14663->Node14649#0 _ldraw_ edge:Node14663->Node14649#0/_ldraw_/op[2].text[0]: 841.06 vs 878.28"
+      "status": "pass",
+      "oracleMs": 31,
+      "portMs": 621
     },
     {
       "id": "windows-b29",
@@ -6316,11 +6312,9 @@
     {
       "id": "1652",
       "size": 240391,
-      "status": "diverged",
-      "oracleMs": 176,
-      "portMs": 1803,
-      "nDiffs": 4,
-      "firstDiff": "edge:Op_1091->Op_1092#0 _ldraw_ edge:Op_1091->Op_1092#0/_ldraw_/op[2].text[0]: 2266.75 vs 2332.07"
+      "status": "pass",
+      "oracleMs": 211,
+      "portMs": 1837
     },
     {
       "id": "1879",
@@ -6530,11 +6524,9 @@
     {
       "id": "2371",
       "size": 1705517,
-      "status": "diverged",
-      "oracleMs": 9313,
-      "portMs": 55569,
-      "nDiffs": 76,
-      "firstDiff": "edge:r1885st->r1885ed#0 _ldraw_ edge:r1885st->r1885ed#0/_ldraw_/op[2].text[1]: 188 vs 171.2"
+      "status": "pass",
+      "oracleMs": 18131,
+      "portMs": 48780
     }
   ]
 }

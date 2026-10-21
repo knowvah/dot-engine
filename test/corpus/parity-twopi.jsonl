@@ -880,7 +880,7 @@
 {"id":"graphs-b106","size":48933,"status":"pass","oracleMs":20,"portMs":581}
 {"id":"2343","size":59368,"status":"pass","oracleMs":40,"portMs":952}
 {"id":"graphs-b143","size":62055,"status":"pass","oracleMs":23,"portMs":620}
-{"id":"graphs-b29","size":62931,"status":"diverged","oracleMs":24,"portMs":630,"nDiffs":2,"firstDiff":"edge:Node14732->Node14731#0 _ldraw_ edge:Node14732->Node14731#0/_ldraw_/op[2].text[1]: 368.1 vs 356.1"}
+{"id":"graphs-b29","size":62931,"status":"pass","oracleMs":35,"portMs":924}
 {"id":"2620","size":64908,"status":"pass","oracleMs":21,"portMs":601}
 {"id":"linux.i386-b106","size":92005,"status":"pass","oracleMs":20,"portMs":589}
 {"id":"share-b106","size":92301,"status":"pass","oracleMs":20,"portMs":579}
@@ -889,7 +889,7 @@
 {"id":"graphs-xx","size":102329,"status":"pass","oracleMs":27,"portMs":649}
 {"id":"2095_1","size":105083,"status":"pass","oracleMs":82,"portMs":1254}
 {"id":"graphs-root","size":128221,"status":"pass","oracleMs":57,"portMs":1017}
-{"id":"linux.i386-b29","size":136753,"status":"diverged","oracleMs":25,"portMs":633,"nDiffs":2,"firstDiff":"edge:Node14732->Node14731#0 _ldraw_ edge:Node14732->Node14731#0/_ldraw_/op[2].text[1]: 368.1 vs 356.1"}
+{"id":"linux.i386-b29","size":136753,"status":"pass","oracleMs":144,"portMs":839}
 {"id":"share-b29","size":137802,"status":"pass","oracleMs":26,"portMs":610}
 {"id":"windows-b29","size":149114,"status":"pass","oracleMs":27,"portMs":629}
 {"id":"linux.i386-b102","size":161479,"status":"pass","oracleMs":26,"portMs":655}

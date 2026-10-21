@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -985,29 +985,32 @@ nedotčené portace dává **nula** rozcházejících se hran, čímž se zcela 
 nemá žádný účinek. Akceptováno
 2026-07-11; úplná analýza příčiny: `.agent-notes/osage-spline-family-rca.md`.
 
-**Rodina b29 (twopi).** Čtyři varianty b29 sdílejí jedno ostří nože: popisek hrany
-`EqmtTyp` (`Node14732->Node14731`) sedí na přesné remíze při volbě strany v
-placeLabels, jejíž výsledek závisí na driftu rozvržení twopi o 1 ULP v
-okolních objektech. S věrnou kontrakcí fmadd v
-`polylineMidpoint` (oprava rodiny states, 2026-07-11) je kotva popisku portace
-bitově identická s kotvou orákula, a přesto se remíza stále rozhoduje opačně u
-dvou ze čtyř variant (`graphs-b29`, `linux.i386-b29`), zatímco zbylé
-dvě (`share-b29`, `windows-b29`) se nyní shodují — a akceptovaný rozdíl popisku A9 u `2343`
-zmizel úplně. Mez: 1 kreslicí operace, Δ12pt y popisku. Neredukovatelné
-bez odstranění upstreamového driftu. Úplná analýza příčiny:
+**Rodina b29 (twopi, opraveno).** Čtyři varianty b29 sdílely jedno ostří nože: popisek
+hrany `EqmtTyp` (`Node14732->Node14731`) seděl na přesné remíze při volbě strany v
+placeLabels, jejíž výsledek závisel na driftu rozvržení twopi o 1 ULP v okolních
+objektech. S věrnou kontrakcí fmadd v `polylineMidpoint` (oprava rodiny states,
+2026-07-11) se kotva popisku portace stala bitově identickou s kotvou orákula, a přesto
+se remíza stále rozhodovala opačně u dvou ze čtyř variant (`graphs-b29`,
+`linux.i386-b29`), zatímco zbylé dvě (`share-b29`, `windows-b29`) se shodovaly — a
+akceptovaný rozdíl popisku A9 u `2343` zmizel úplně. Mez: 1 kreslicí operace, Δ12pt y
+popisku. Dne 2026-10-20 začalo každé vyhodnocení Bézierovy křivky v portaci procházet
+jediným sloučeným `bezier()`, protože clang kontrahuje `Bezier` z graphvizu
+(`e37e72f0`). Tím byl upstreamový drift odstraněn: `graphs-b29` a `linux.i386-b29` se
+nyní shodují také a jejich akceptace jsou zrušeny. Úplná analýza příčiny:
 `.agent-notes/twopi-states-rca.md`.
 
-Totéž ostří nože v placeLabels se projevuje na stopě **osage** (akceptováno
+Totéž ostří nože v placeLabels se projevovalo na stopě **osage** (akceptováno
 2026-07-11, úplná analýza příčiny: `.agent-notes/osage-small-tail-rca.md`):
 `linux.i386-b29` a `share-b29` (vždy 2 rozdíly kreslicích operací — x-ová kotva jednoho
-popisku hrany dopadne na 878.28 místo 841.06, umístěná symetricky kolem
-bitově identického středu splinu 859.67, tj. ±polovina šířky popisku; obě
-varianty se zrcadlí navzájem) a `1652` (2 rozdíly kreslicích operací — dvě hrany vždy
-překlopí kotvu jednoho popisku kolem identického středu, jedna v x a jedna v y,
-s bitově identickými splines a hroty šipek; orákulum vykresluje zcela,
-takže nejde o známý nestabilní timeout nativního sestavení). V každém případě
-je geometrie hran bitově přesná a pouze remíza při volbě strany popisku se rozhoduje
-opačně na okolí driftujícím o 1 ULP.
+popisku hrany dopadne na 878.28 místo 841.06, umístěná symetricky kolem bitově
+identického středu splinu 859.67, tj. ±polovina šířky popisku; obě varianty se zrcadlí
+navzájem) a `1652` (2 rozdíly kreslicích operací — dvě hrany vždy překlopí kotvu jednoho
+popisku kolem identického středu, jedna v x a jedna v y, s bitově identickými splines a
+hroty šipek; orákulum vykresluje zcela, takže nejde o známý nestabilní timeout nativního
+sestavení). V každém případě byla geometrie hran bitově přesná a pouze remíza při volbě
+strany popisku se rozhodovala opačně na okolí driftujícím o 1 ULP. Sloučené `bezier()` z
+2026-10-20 (`e37e72f0`) odstranilo i tento drift: všechny tři se nyní shodují, stejně
+jako neakceptovaný osage `2371`, a jejich akceptace jsou zrušeny.
 
 Stopa osage nese trojici `polypoly` (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; akceptováno 2026-07-11, úplná analýza příčiny v

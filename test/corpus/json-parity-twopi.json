@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-14T02:18:57.691Z",
+  "generatedAt": "2026-10-21T14:43:55.389Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "twopi",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 928,
   "counts": {
-    "conformant": 908,
+    "conformant": 910,
     "diverged": 2,
-    "accepted": 16,
+    "accepted": 14,
     "port-error": 0,
     "oracle-error": 2,
     "timeout": 0
@@ -5441,11 +5441,7 @@
       "id": "graphs-b29",
       "path": "graphs/b29.gv",
       "size": 62931,
-      "verdict": "accepted",
-      "diffCount": 2,
-      "firstDiff": "edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]",
-      "maxDelta": 12,
-      "maxDeltaPath": "edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]"
+      "verdict": "conformant"
     },
     {
       "id": "2620",
@@ -5499,11 +5495,7 @@
       "id": "linux.i386-b29",
       "path": "linux.i386/b29.gv",
       "size": 136753,
-      "verdict": "accepted",
-      "diffCount": 2,
-      "firstDiff": "edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]",
-      "maxDelta": 12,
-      "maxDeltaPath": "edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]"
+      "verdict": "conformant"
     },
     {
       "id": "share-b29",

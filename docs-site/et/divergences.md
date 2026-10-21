@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -981,28 +981,31 @@ legaalse paigutuse, nähtavuse, Dijkstra ja splaini ahela täielikult süüst; a
 süstimine on tühitoiming. Aktsepteeritud
 2026-07-11; täielik RCA: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29 pere (twopi).** Neli b29 varianti jagavad ühte noaterva: serva silt
-`EqmtTyp` (`Node14732->Node14731`) asub täpsel placeLabels
-külje valiku viigil, mille tulemus sõltub ümbritsevate objektide 1-ULP twopi paigutustriivist.
-`polylineMidpoint`-i ustava fmadd kontraktsiooniga (states-pere parandus, 2026-07-11) on pordi sildiankur
-bitiliselt identne oraakli omaga, kuid viik laheneb ikka vastupidiselt
-neljast variandist kahel (`graphs-b29`, `linux.i386-b29`), samas kui
-teised kaks (`share-b29`, `windows-b29`) nüüd vastavad — ja `2343` aktsepteeritud A9
-sildierinevus kadus täielikult. Piir: 1 joonistusoperatsioon, Δ12pt sildi y. Taandamatu
-ilma ülesvoolu triivi kõrvaldamata. Täielik RCA:
-`.agent-notes/twopi-states-rca.md`.
+**b29 pere (twopi, parandatud).** Neli b29 varianti jagasid ühte noaterva: serva silt
+`EqmtTyp` (`Node14732->Node14731`) asus täpsel placeLabels külje valiku viigil, mille
+tulemus sõltus ümbritsevate objektide 1-ULP twopi paigutustriivist. `polylineMidpoint`-i
+ustava fmadd kontraktsiooniga (states-pere parandus, 2026-07-11) sai pordi sildiankur
+bitiliselt identseks oraakli omaga, kuid viik lahenes ikka vastupidiselt neljast
+variandist kahel (`graphs-b29`, `linux.i386-b29`), samas kui teised kaks (`share-b29`,
+`windows-b29`) vastasid — ja `2343` aktsepteeritud A9 sildierinevus kadus täielikult.
+Piir: 1 joonistusoperatsioon, Δ12pt sildi y. 2026-10-20 hakkas iga Bézieri kõvera
+arvutus pordis käima läbi ühe liidetud `bezier()` kaudu, nagu clang kontraheerib
+graphvizi `Bezier` (`e37e72f0`). See kõrvaldas ülesvoolu triivi: `graphs-b29` ja
+`linux.i386-b29` vastavad nüüd samuti ning nende aktsepteerimised on kehtetuks tehtud.
+Täielik RCA: `.agent-notes/twopi-states-rca.md`.
 
-Sama placeLabels noaterv ilmneb **osage** rajal (aktsepteeritud
-2026-07-11, täielik RCA: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` ja `share-b29` (2 joonistusoperatsiooni erinevust mõlemal — ühe serva sildi
-x-ankur maandub 878.28 vs 841.06, paigutatud sümmeetriliselt bitiliselt identse
-splaini keskpunkti 859.67 ümber, st ±pool sildi laiust; need kaks
-varianti peegeldavad teineteist) ja `1652` (2 joonistusoperatsiooni erinevust — kaks serva
-lülitavad ümber igaüks ühe sildiankru identse keskpunkti ümber, üks x-is ja üks y-is,
-bitiliselt identsete splainide ja nooleotstega; oraakel renderdab täielikult,
-seega ei ole see teadaolev natiivse ajalõpu lipp). Igal juhul on serva
-geomeetria bit-täpne ja ainult sildi külje valiku viik laheneb
-vastupidiselt 1-ULP triivinud ümbruses.
+Sama placeLabels noaterv ilmnes **osage** rajal (aktsepteeritud 2026-07-11, täielik RCA:
+`.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` ja `share-b29` (2
+joonistusoperatsiooni erinevust mõlemal — ühe serva sildi x-ankur maandub 878.28 vs
+841.06, paigutatud sümmeetriliselt bitiliselt identse splaini keskpunkti 859.67 ümber,
+st ±pool sildi laiust; need kaks varianti peegeldavad teineteist) ja `1652` (2
+joonistusoperatsiooni erinevust — kaks serva lülitavad ümber igaüks ühe sildiankru
+identse keskpunkti ümber, üks x-is ja üks y-is, bitiliselt identsete splainide ja
+nooleotstega; oraakel renderdab täielikult, seega ei ole see teadaolev natiivse ajalõpu
+lipp). Igal juhul oli serva geomeetria bit-täpne ja ainult sildi külje valiku viik
+lahenes vastupidiselt 1-ULP triivinud ümbruses. 2026-10-20 liidetud `bezier()`
+(`e37e72f0`) kõrvaldas ka selle triivi: kõik kolm vastavad nüüd, nagu ka aktsepteerimata
+osage `2371`, ning nende aktsepteerimised on kehtetuks tehtud.
 
 Osage rada kannab `polypoly` kolmikut (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; aktsepteeritud 2026-07-11, täielik RCA failis

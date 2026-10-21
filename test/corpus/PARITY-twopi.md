@@ -12,12 +12,12 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 928 (generated 2026-10-14T04:09:29.997Z)
+- **Surveyed:** 928 (generated 2026-10-21T14:43:54.829Z)
 - **Oracle:** dot 16.1.0
-- **pass:** 911 (98.2%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 16
+- **pass:** 913 (98.4%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 14
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
 
-## Accepted deltas (16) — documented, not chased
+## Accepted deltas (14) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -39,8 +39,6 @@ table below.
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) |  | A10 | port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries | known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines |
 | [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 183.86 vs 173.06 | known-divergences.md#a9-engine-track-twopi-circo |
 | [`2470`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2470.dot) | 596 | A9 | 298 draw-op diffs, ALL edge-label _ldraw_ text positions (HTML &lt;td align=left&gt;LOOKBACK labels); every diff = one xlabel candidate step (+label width x, -16.8 line-height y). Splines/nodes/bboxes bit-identical to oracle (0 _draw_/pos/bb diffs even @1e-7). Mechanism: ~140 near-coincident HTML edge-label anchors are placed by the neato-family xlabel placer (postproc.c:addXLabels -&gt; label/xlabels.c). Patient-zero seq=8: node ND_coord.y differs 1.3e-13 (~2 ULP, twopi radial libm sin/cos vs V8 Math) while ND_height/sz.y/2 are bit-identical; floor(coord.y - sz.y/2) straddles exactly 0, flipping objplpmks rect y-low -1&lt;-&gt;0 -&gt; Hilbert key -&gt; R-tree insertion order -&gt; node grouping (C root 19 branches vs port 22) -&gt; RTreeSearch pruning -&gt; xlabel candidate flip. xladjust/AGSEQ order/CombineRect(min-min quirk)/PickBranch u64/int32 Hilbert key all faithful. No deterministic rewrite reproduces the libm coordinate. Same class as twopi/1855 and the b29 placeLabels-tie A9 family. Full RCA: .agent-notes/twopi-2470-rca.md. | known-divergences.md#a9-engine-track-twopi-circo |
-| [`graphs-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b29.gv) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 368.1 vs 356.1 (same knife-edge previously accepted for share-b29/windows-b29; variants swapped when polylineMidpoint gained the faithful fmadd contraction - anchor now bit-identical to C, flip is a placeLabels tie on 1-ULP-drifted surrounding objects) | known-divergences.md#a9-engine-track-twopi-circo |
-| [`linux.i386-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b29.gv) | 2 | A9 | 1 draw-op diff; edge label _ldraw_ text[1]: 368.1 vs 356.1 (identical mechanism to graphs-b29) | known-divergences.md#a9-engine-track-twopi-circo |
 | [`tree-graphs-directed-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/arrows.gv) | 6 | A9 | 6 draw-op diffs, ALL edge-label placement on 2 of ~50 labelled edges: lcrow-&gt;lcrowlcrow lp/_ldraw_ text by (+22.77 x, -12.00 y) and onormal-&gt;onormalonormal by (-12.00 y). Each delta is exactly ONE xlabel candidate step - 22.77 = half the 45.54pt label width, 12.00 = 1.2 x fontsize 10 line height (cf. 2470 16.8 at fontsize 14). Label WIDTH field identical (45.54) on both sides and zero node/spline/bbox diffs in 54KB of xdot, so layout is unchanged and only the candidate choice flips. Knife edge DEMONSTRATED 2026-07-30: nudging the point-node width by 0.0001in (0.0072pt) flips the port OWN placement onto the oracle candidate (695.22,360.51 vs oracle 695.21,360.51), so the placement algorithm agrees and only the boundary side differs. | known-divergences.md#a9-engine-track-twopi-circo |
 
 ## Diverged (1)
@@ -54,5 +52,5 @@ table below.
 _(none)_
 
 **oracle errors:** 8 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (911) are omitted for brevity — the full roster is in
+_Passing ids (913) are omitted for brevity — the full roster is in
 `parity-twopi.json`._

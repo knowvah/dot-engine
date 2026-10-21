@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-10-14T04:09:29.997Z",
+  "generatedAt": "2026-10-21T14:43:54.829Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "twopi",
   "tolerance": 0.01,
   "oracleVersion": "dot 16.1.0",
   "total": 928,
   "counts": {
-    "pass": 911,
-    "diverged": 16,
+    "pass": 913,
+    "diverged": 14,
     "oracle-error": 0,
     "port-error": 1,
     "timeout": 0
@@ -6214,11 +6214,9 @@
     {
       "id": "graphs-b29",
       "size": 62931,
-      "status": "diverged",
-      "oracleMs": 24,
-      "portMs": 630,
-      "nDiffs": 2,
-      "firstDiff": "edge:Node14732->Node14731#0 _ldraw_ edge:Node14732->Node14731#0/_ldraw_/op[2].text[1]: 368.1 vs 356.1"
+      "status": "pass",
+      "oracleMs": 35,
+      "portMs": 924
     },
     {
       "id": "2620",
@@ -6279,11 +6277,9 @@
     {
       "id": "linux.i386-b29",
       "size": 136753,
-      "status": "diverged",
-      "oracleMs": 25,
-      "portMs": 633,
-      "nDiffs": 2,
-      "firstDiff": "edge:Node14732->Node14731#0 _ldraw_ edge:Node14732->Node14731#0/_ldraw_/op[2].text[1]: 368.1 vs 356.1"
+      "status": "pass",
+      "oracleMs": 144,
+      "portMs": 839
     },
     {
       "id": "share-b29",

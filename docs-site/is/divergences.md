@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -990,29 +990,32 @@ leggi, sem sýknar löglegu-skipanina, sýnileikann, Dijkstra og splínukeðjuna
 alfarið; að sprauta eingöngu `cos`/`sin` úr libm hjá C gerir ekkert. Samþykkt
 2026-07-11; full rótargreining: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29-fjölskyldan (twopi).** Afbrigðin fjögur af b29 deila einni hnífsegg:
-leggjamerkimiðinn `EqmtTyp` (`Node14732->Node14731`) situr á nákvæmu jafntefli í hliðarvali
-placeLabels sem niðurstaðan ræðst af 1-ULP reki twopi-uppsetningar í
-nálægum hlutum. Með trúrri fmadd-sameiningu í
-`polylineMidpoint` (lagfæring states-fjölskyldunnar, 2026-07-11) er merkimiðafesting yfirfærslunnar
-bita-eins og véfréttarinnar, en jafnteflið leysist samt öfugt í
-tveimur af fjórum afbrigðum (`graphs-b29`, `linux.i386-b29`) meðan hin
-tvö (`share-b29`, `windows-b29`) samræmast nú — og samþykkti A9-
-merkimiðamunur `2343` hreinsaðist alveg. Mörk: 1 teikniaðgerð, Δ12pt á y merkimiða. Óhjákvæmilegt
-án þess að útrýma reki ofar í ferlinu. Full rótargreining:
+**b29-fjölskyldan (twopi, lagfært).** Afbrigðin fjögur af b29 deildu einni hnífsegg:
+leggjamerkimiðinn `EqmtTyp` (`Node14732->Node14731`) sat á nákvæmu jafntefli í
+hliðarvali placeLabels sem niðurstaðan réðst af 1-ULP reki twopi-uppsetningar í nálægum
+hlutum. Með trúrri fmadd-sameiningu í `polylineMidpoint` (lagfæring
+states-fjölskyldunnar, 2026-07-11) varð merkimiðafesting yfirfærslunnar bita-eins og
+véfréttarinnar, en jafnteflið leystist samt öfugt í tveimur af fjórum afbrigðum
+(`graphs-b29`, `linux.i386-b29`) meðan hin tvö (`share-b29`, `windows-b29`) samræmdust —
+og samþykkti A9- merkimiðamunur `2343` hreinsaðist alveg. Mörk: 1 teikniaðgerð, Δ12pt á
+y merkimiða. Þann 2026-10-20 fór hvert Bézier-mat yfirfærslunnar að ganga í gegnum eitt
+sameinað `bezier()`, líkt og clang sameinar `Bezier` í graphviz (`e37e72f0`). Það
+útrýmdi rekinu ofar í ferlinu: `graphs-b29` og `linux.i386-b29` samræmast nú líka og
+samþykktir þeirra eru felldar úr gildi. Full rótargreining:
 `.agent-notes/twopi-states-rca.md`.
 
-Sama hnífseggin í placeLabels kemur fram á **osage**-ferlinum (samþykkt
-2026-07-11, full rótargreining: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` og `share-b29` (2 mismunir í teikniaðgerðum hvort — x-festing eins leggjamerkimiða
-lendir á 878.28 á móti 841.06, sett samhverft um
-bita-eins miðpunkt splínunnar 859.67, þ.e. ±hálf breidd merkimiðans; afbrigðin tvö
-spegla hvort annað) og `1652` (2 mismunir í teikniaðgerðum — tveir leggir flippa hvor
-einni merkimiðafestingu um eins miðpunkt, einn í x og einn í y,
-með bita-eins splínum og örvaoddum; véfréttin teiknar fullkomlega,
-svo þetta er ekki þekkta tímamarkaflökt innbyggðu útgáfunnar). Í öllum tilvikum
-er rúmfræði leggja bita-nákvæm og aðeins hliðarvalsjafntefli merkimiðans leysist
-öfugt í nágrenni sem hefur rekið um 1 ULP.
+Sama hnífseggin í placeLabels kom fram á **osage**-ferlinum (samþykkt 2026-07-11, full
+rótargreining: `.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` og `share-b29`
+(2 mismunir í teikniaðgerðum hvort — x-festing eins leggjamerkimiða lendir á 878.28 á
+móti 841.06, sett samhverft um bita-eins miðpunkt splínunnar 859.67, þ.e. ±hálf breidd
+merkimiðans; afbrigðin tvö spegla hvort annað) og `1652` (2 mismunir í teikniaðgerðum —
+tveir leggir flippa hvor einni merkimiðafestingu um eins miðpunkt, einn í x og einn í y,
+með bita-eins splínum og örvaoddum; véfréttin teiknar fullkomlega, svo þetta er ekki
+þekkta tímamarkaflökt innbyggðu útgáfunnar). Í öllum tilvikum var rúmfræði leggja
+bita-nákvæm og aðeins hliðarvalsjafntefli merkimiðans leystist öfugt í nágrenni sem
+hefur rekið um 1 ULP. Sameinaða `bezier()` frá 2026-10-20 (`e37e72f0`) útrýmdi þessu
+reki líka: öll þrjú samræmast nú, eins og ósamþykkta osage-`2371`, og samþykktir þeirra
+eru felldar úr gildi.
 
 Osage-ferillinn ber þrenndina `polypoly` (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; samþykkt 2026-07-11, full rótargreining í

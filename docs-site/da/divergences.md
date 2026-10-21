@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -993,29 +993,31 @@ kanter, hvilket frikender kæden af lovlig arrangering, synlighed, Dijkstra og s
 fuldstændigt; at injicere C's libm `cos`/`sin` alene er en no-op. Accepteret
 2026-07-11; fuld RCA: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29-familien (twopi).** De fire b29-varianter deler én knivsæg:
-`EqmtTyp`-kantlabelen (`Node14732->Node14731`) sidder på en eksakt uafgjort ved
-placeLabels' valg af side, hvis udfald afhænger af 1-ULP-drift i twopi-layoutet i de
-omgivende objekter. Med den trofaste fmadd-kontraktion i
-`polylineMidpoint` (rettelsen for states-familien, 2026-07-11) er portens labelanker
-bit-identisk med oraklets, men uafgjorten løses alligevel modsat på
-to af de fire varianter (`graphs-b29`, `linux.i386-b29`), mens de to andre
-(`share-b29`, `windows-b29`) nu er conformante — og `2343`'s accepterede A9-
-labelforskel forsvandt helt. Grænse: 1 draw-op, Δ12pt label-y. Uløselig
-uden at fjerne den opstrøms drift. Fuld RCA:
-`.agent-notes/twopi-states-rca.md`.
+**b29-familien (twopi, rettet).** De fire b29-varianter delte én knivsæg:
+`EqmtTyp`-kantlabelen (`Node14732->Node14731`) sad på en eksakt uafgjort ved
+placeLabels' valg af side, hvis udfald afhang af 1-ULP-drift i twopi-layoutet i de
+omgivende objekter. Med den trofaste fmadd-kontraktion i `polylineMidpoint` (rettelsen
+for states-familien, 2026-07-11) blev portens labelanker bit-identisk med oraklets, men
+uafgjorten blev alligevel løst modsat på to af de fire varianter (`graphs-b29`,
+`linux.i386-b29`), mens de to andre (`share-b29`, `windows-b29`) var conformante — og
+`2343`'s accepterede A9- labelforskel forsvandt helt. Grænse: 1 draw-op, Δ12pt label-y.
+Den 2026-10-20 begyndte hver Bézier-evaluering i porten at gå gennem én sammensmeltet
+`bezier()`, da clang kontraherer graphvizs `Bezier` (`e37e72f0`). Det fjernede den
+opstrøms drift: `graphs-b29` og `linux.i386-b29` er nu også conformante, og deres
+accepter er trukket tilbage. Fuld RCA: `.agent-notes/twopi-states-rca.md`.
 
-Den samme knivsæg i placeLabels optræder på **osage**-sporet (accepteret
-2026-07-11, fuld RCA: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` og `share-b29` (2 draw-op-forskelle hver — én kantlabels
-x-anker lander på 878.28 mod 841.06, placeret symmetrisk om det
-bit-identiske splinemidtpunkt 859.67, dvs. ±halvdelen af labelbredden; de to
-varianter spejler hinanden) og `1652` (2 draw-op-forskelle — to kanter vipper hver
-et labelanker om et identisk midtpunkt, én i x og én i y,
-med bit-identiske splines og pilespidser; oraklet renderer fuldstændigt,
-så dette er ikke den kendte native timeout-flake). I alle tilfælde er kantgeometrien
-bit-nøjagtig, og kun uafgjorten i valg af labelside løses
-modsat i omgivelser med 1-ULP-drift.
+Den samme knivsæg i placeLabels optrådte på **osage**-sporet (accepteret 2026-07-11,
+fuld RCA: `.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` og `share-b29` (2
+draw-op-forskelle hver — én kantlabels x-anker lander på 878.28 mod 841.06, placeret
+symmetrisk om det bit-identiske splinemidtpunkt 859.67, dvs. ±halvdelen af labelbredden;
+de to varianter spejler hinanden) og `1652` (2 draw-op-forskelle — to kanter vipper hver
+et labelanker om et identisk midtpunkt, én i x og én i y, med bit-identiske splines og
+pilespidser; oraklet renderer fuldstændigt, så dette er ikke den kendte native
+timeout-flake). I alle tilfælde var kantgeometrien bit-nøjagtig, og kun uafgjorten i
+valg af labelside blev løst modsat i omgivelser med 1-ULP-drift. Den sammensmeltede
+`bezier()` fra 2026-10-20 (`e37e72f0`) fjernede også den drift: alle tre er nu
+conformante, ligesom den uaccepterede osage-`2371`, og deres accepter er trukket
+tilbage.
 
 Osage-sporet har `polypoly`-tripletten (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; accepteret 2026-07-11, fuld RCA i

@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -987,29 +987,34 @@ exonerando por completo a cadeia de arranjo legal, visibilidade, Dijkstra e spli
 não tem efeito. Aceito
 em 2026-07-11; análise de causa raiz completa: `.agent-notes/osage-spline-family-rca.md`.
 
-**Família b29 (twopi).** As quatro variantes b29 compartilham um mesmo fio de navalha: o
-rótulo de aresta `EqmtTyp` (`Node14732->Node14731`) fica em um empate exato de seleção de lado do placeLabels
-cujo resultado depende de deriva de 1 ULP do layout do twopi nos
-objetos ao redor. Com a contração fmadd fiel em
-`polylineMidpoint` (correção da família states, 2026-07-11), a âncora do rótulo do port
-é idêntica bit a bit à do oráculo, e ainda assim o empate continua resolvendo de modo oposto em
-duas das quatro variantes (`graphs-b29`, `linux.i386-b29`), enquanto as outras
-duas (`share-b29`, `windows-b29`) agora conformam — e a diferença de rótulo A9 aceita do `2343`
-foi totalmente eliminada. Limite: 1 operação de desenho, Δ12pt em y do rótulo. Irredutível
-sem eliminar a deriva a montante. Análise de causa raiz completa:
-`.agent-notes/twopi-states-rca.md`.
+**Família b29 (twopi, corrigida).** As quatro variantes b29 compartilhavam um mesmo fio
+de navalha: o rótulo de aresta `EqmtTyp` (`Node14732->Node14731`) ficava em um empate
+exato de seleção de lado do placeLabels cujo resultado dependia de deriva de 1 ULP do
+layout do twopi nos objetos ao redor. Com a contração fmadd fiel em `polylineMidpoint`
+(correção da família states, 2026-07-11), a âncora do rótulo do port passou a ser
+idêntica bit a bit à do oráculo, e ainda assim o empate continuava resolvendo de modo
+oposto em duas das quatro variantes (`graphs-b29`, `linux.i386-b29`), enquanto as outras
+duas (`share-b29`, `windows-b29`) conformavam — e a diferença de rótulo A9 aceita do
+`2343` foi totalmente eliminada. Limite: 1 operação de desenho, Δ12pt em y do rótulo. Em
+2026-10-20, toda avaliação de Bézier no port passou a usar um único `bezier()` fundido,
+assim como o clang contrai o `Bezier` do graphviz (`e37e72f0`). Isso eliminou a deriva a
+montante: `graphs-b29` e `linux.i386-b29` agora também conformam, e suas aceitações
+foram retiradas. Análise de causa raiz completa: `.agent-notes/twopi-states-rca.md`.
 
-O mesmo fio de navalha do placeLabels aparece na trilha do **osage** (aceito
-em 2026-07-11, análise de causa raiz completa: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` e `share-b29` (2 diferenças de operações de desenho cada — a âncora x de um rótulo de aresta
-cai em 878.28 contra 841.06, posicionada simetricamente em torno do ponto médio de spline
-idêntico bit a bit, 859.67, isto é, ±metade da largura do rótulo; as duas
-variantes espelham uma à outra) e `1652` (2 diferenças de operações de desenho — duas arestas, cada uma
-inverte uma âncora de rótulo em torno de um ponto médio idêntico, uma em x e uma em y,
-com splines e pontas de seta idênticas bit a bit; o oráculo renderiza por completo,
-portanto não se trata do instável timeout nativo já conhecido). Em todos os casos a geometria
-da aresta é exata bit a bit e apenas o empate de seleção de lado do rótulo resolve
-de modo oposto em entornos com deriva de 1 ULP.
+O mesmo fio de navalha do placeLabels aparecia na trilha do **osage** (aceito em
+2026-07-11, análise de causa raiz completa: `.agent-notes/osage-small-tail-rca.md`):
+`linux.i386-b29` e `share-b29` (2 diferenças de operações de desenho cada — a âncora x
+de um rótulo de aresta cai em 878.28 contra 841.06, posicionada simetricamente em torno
+do ponto médio de spline idêntico bit a bit, 859.67, isto é, ±metade da largura do
+rótulo; as duas variantes espelham uma à outra) e `1652` (2 diferenças de operações de
+desenho — duas arestas, cada uma inverte uma âncora de rótulo em torno de um ponto médio
+idêntico, uma em x e uma em y, com splines e pontas de seta idênticas bit a bit; o
+oráculo renderiza por completo, portanto não se trata do instável timeout nativo já
+conhecido). Em todos os casos a geometria da aresta era exata bit a bit e apenas o
+empate de seleção de lado do rótulo resolvia de modo oposto em entornos com deriva de 1
+ULP. O `bezier()` fundido de 2026-10-20 (`e37e72f0`) eliminou essa deriva também: os
+três agora conformam, assim como o `2371` do osage não aceito, e suas aceitações foram
+retiradas.
 
 A trilha do osage traz o trio `polypoly` (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; aceito em 2026-07-11, análise de causa raiz completa em

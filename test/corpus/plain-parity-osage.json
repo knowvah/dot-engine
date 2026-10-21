@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-14T00:56:25.934Z",
+  "generatedAt": "2026-10-21T14:43:54.292Z",
   "generatedWith": "test/corpus/plain-walk.ts",
   "engine": "osage",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 929,
   "counts": {
-    "pass": 912,
-    "diverged": 1,
-    "accepted": 16,
+    "pass": 916,
+    "diverged": 0,
+    "accepted": 13,
     "oracleError": 0,
     "portError": 0,
     "timeout": 0
@@ -12832,21 +12832,13 @@
       "id": "linux.i386-b29",
       "path": "linux.i386/b29.gv",
       "size": 136753,
-      "verdict": "accepted",
+      "verdict": "pass",
       "formats": {
         "plain": {
-          "verdict": "accepted",
-          "diffCount": 1,
-          "firstDiffs": [
-            "[edge] Node14663->Node14649#0/lx: port=12.198 native=11.681"
-          ]
+          "verdict": "pass"
         },
         "plain-ext": {
-          "verdict": "accepted",
-          "diffCount": 1,
-          "firstDiffs": [
-            "[edge] Node14663->Node14649#0/lx: port=12.198 native=11.681"
-          ]
+          "verdict": "pass"
         }
       }
     },
@@ -12882,21 +12874,13 @@
       "id": "share-b29",
       "path": "share/b29.gv",
       "size": 137802,
-      "verdict": "accepted",
+      "verdict": "pass",
       "formats": {
         "plain": {
-          "verdict": "accepted",
-          "diffCount": 1,
-          "firstDiffs": [
-            "[edge] Node14663->Node14649#0/lx: port=11.681 native=12.198"
-          ]
+          "verdict": "pass"
         },
         "plain-ext": {
-          "verdict": "accepted",
-          "diffCount": 1,
-          "firstDiffs": [
-            "[edge] Node14663->Node14649#0/lx: port=11.681 native=12.198"
-          ]
+          "verdict": "pass"
         }
       }
     },
@@ -13044,23 +13028,13 @@
       "id": "1652",
       "path": "1652.dot",
       "size": 240391,
-      "verdict": "accepted",
+      "verdict": "pass",
       "formats": {
         "plain": {
-          "verdict": "accepted",
-          "diffCount": 2,
-          "firstDiffs": [
-            "[edge] Op_1091->Op_1092#0/lx: port=31.483 native=32.39",
-            "[edge] Op_2105->Op_2106#0/ly: port=3.4964 native=3.263"
-          ]
+          "verdict": "pass"
         },
         "plain-ext": {
-          "verdict": "accepted",
-          "diffCount": 2,
-          "firstDiffs": [
-            "[edge] Op_1091->Op_1092#0/lx: port=31.483 native=32.39",
-            "[edge] Op_2105->Op_2106#0/ly: port=3.4964 native=3.263"
-          ]
+          "verdict": "pass"
         }
       }
     },
@@ -13208,29 +13182,13 @@
       "id": "2371",
       "path": "2371.dot",
       "size": 1705517,
-      "verdict": "diverged",
+      "verdict": "pass",
       "formats": {
         "plain": {
-          "verdict": "diverged",
-          "diffCount": 38,
-          "firstDiffs": [
-            "[edge] r1885st->r1885ed#0/ly: port=2.6694 native=2.4361",
-            "[edge] r197mid->r1824mid#0/lx: port=14.591 native=14.688",
-            "[edge] r197mid->r1824mid#0/ly: port=0.22778 native=0.46111",
-            "[edge] r2818mid->r6805mid#0/lx: port=7.7161 native=7.6188",
-            "[edge] r2818mid->r6805mid#0/ly: port=10.353 native=10.586"
-          ]
+          "verdict": "pass"
         },
         "plain-ext": {
-          "verdict": "diverged",
-          "diffCount": 38,
-          "firstDiffs": [
-            "[edge] r1885st->r1885ed#0/ly: port=2.6694 native=2.4361",
-            "[edge] r197mid->r1824mid#0/lx: port=14.591 native=14.688",
-            "[edge] r197mid->r1824mid#0/ly: port=0.22778 native=0.46111",
-            "[edge] r2818mid->r6805mid#0/lx: port=7.7161 native=7.6188",
-            "[edge] r2818mid->r6805mid#0/ly: port=10.353 native=10.586"
-          ]
+          "verdict": "pass"
         }
       }
     },
