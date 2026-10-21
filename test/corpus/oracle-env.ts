@@ -8,8 +8,9 @@
 // corpus of "oracle-error" verdicts. @see docs/adr/0001-graphviz-16.1-oracle.md
 
 import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 
 /** The oracle version every sweep is pinned to (ADR-0001). */
 export const ORACLE_VERSION = '16.1.0';
@@ -30,6 +31,92 @@ export function oracleCacheRoot(
   const xdg = env['XDG_CACHE_HOME'];
   const base = xdg !== undefined && xdg !== '' ? xdg : join(home, '.cache');
   return join(base, 'dot-engine', 'oracle', kind, sig);
+}
+
+/** One native render: output format and engine as passed to `dot`, corpus id. */
+export interface OracleFailureKey {
+  readonly engine: string;
+  readonly format: string;
+  readonly id: string;
+}
+
+/** How a failed native render ended. `signal` is the child's terminating signal. */
+export interface OracleRun {
+  readonly timedOut: boolean;
+  readonly signal: string | null;
+  readonly stderr: string;
+}
+
+/** A recorded native failure: the message and ms the caller reported, whether
+ * it was the harness's own timeout, and the cap it ran under. */
+export interface OracleFailure {
+  readonly err: string;
+  readonly ms: number;
+  readonly timedOut: boolean;
+  readonly capMs: number;
+}
+
+/** Signals that come from outside the harness (OOM killer, Ctrl-C, hangup):
+ * they say nothing about the input, so such a failure is not recorded. */
+const EXTERNAL_KILL_SIGNALS: ReadonlySet<string> = new Set(['SIGKILL', 'SIGTERM', 'SIGINT', 'SIGHUP']);
+
+/** Where a native failure is recorded. Keyed by ORACLE_VERSION, not by the
+ * binary's path, mtime or GVBINDIR as the output caches are: a rebuild of the
+ * same release fails the same way, and only a new graphviz release re-renders
+ * it. Before this, every survey re-ran its 9 native timeouts to the cap (~2 h).
+ * Delete `<cache>/dot-engine/oracle/failures` to force a re-render. */
+export function oracleFailureFile(
+  key: OracleFailureKey,
+  env: Readonly<Record<string, string | undefined>> = process.env,
+  home: string = homedir(),
+): string {
+  const dir = oracleCacheRoot('failures', join(ORACLE_VERSION, key.engine, key.format), env, home);
+  return join(dir, `${key.id}.json`);
+}
+
+/** True when a failure says something about the input and can be reused: a
+ * timeout (re-checked against the cap on read), an error exit or a native
+ * crash. A harness fault (plugin config gone mid-sweep) or a kill from outside
+ * the harness is not reused. */
+export function isStickyOracleFailure(run: OracleRun): boolean {
+  if (FAILURE_STDERR_RE.test(run.stderr)) return false;
+  if (run.timedOut) return true;
+  return run.signal === null || !EXTERNAL_KILL_SIGNALS.has(run.signal);
+}
+
+/** The recorded failure for `key`, or null when there is none, it is
+ * unreadable, or it is a timeout under a smaller cap than `capMs` (a longer
+ * cap might let the render finish). */
+export function readOracleFailure(
+  key: OracleFailureKey,
+  capMs: number,
+  env: Readonly<Record<string, string | undefined>> = process.env,
+  home: string = homedir(),
+): OracleFailure | null {
+  let rec: OracleFailure;
+  try {
+    rec = JSON.parse(readFileSync(oracleFailureFile(key, env, home), 'utf8')) as OracleFailure;
+  } catch {
+    return null; // absent, or truncated by a killed writer
+  }
+  if (rec.timedOut && capMs > rec.capMs) return null;
+  return rec;
+}
+
+/** Record a failed native render for reuse, unless it is not sticky
+ * (`isStickyOracleFailure`). */
+export function recordOracleFailure(
+  key: OracleFailureKey,
+  run: OracleRun,
+  failure: { readonly err: string; readonly ms: number; readonly capMs: number },
+  env: Readonly<Record<string, string | undefined>> = process.env,
+  home: string = homedir(),
+): void {
+  if (!isStickyOracleFailure(run)) return;
+  const file = oracleFailureFile(key, env, home);
+  mkdirSync(dirname(file), { recursive: true });
+  const rec: OracleFailure = { ...failure, timedOut: run.timedOut };
+  writeFileSync(file, JSON.stringify(rec) + '\n');
 }
 
 /** Fail fast (throw) unless `dotBin` reports 16.1.0 and renders a trivial graph

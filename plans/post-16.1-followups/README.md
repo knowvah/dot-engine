@@ -7,7 +7,8 @@ Items 1–13 are done. Items 7–13 were closed by the mission brief
 [`plans/post-16-1-followups-mission/`](../post-16-1-followups-mission/README.md)
 (merged via PR #94, merge commit `f54d12c6`); its decision journal records each
 item's outcome. Items 14–23 are closed (14 by PR #95; 15–23 by
-`plans/post-16-1-followups-2/`). The open work is items 24–31 under "New follow-ups
+`plans/post-16-1-followups-2/`). Items 24 and 33 are closed by
+`feature/cache-oracle-failures`. The open work is items 25–32 under "New follow-ups
 found by part 2" below, each journaled in `plans/decision-journal.md`.
 
 ## State at handoff
@@ -168,7 +169,8 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   23. **[DONE — T6]** DOT syntax errors print Peggy's message, not `aagerror`'s; see
       `plans/post-16-1-followups-2/README.md`.
 - **New follow-ups found by part 2** (journal rows cite the task):
-  24. Cache oracle **failures** (timeouts, errors) as well as SVGs, keyed by
+  24. **[DONE — `feature/cache-oracle-failures`: `recordOracleFailure` in
+      `oracle-env.ts`, wired into survey + six walks]** Cache oracle **failures** (timeouts, errors) as well as SVGs, keyed by
       `ORACLE_VERSION` (`test/corpus/oracle-env.ts`), and render them again only on a
       new graphviz release (> 16.1). Today the survey's 9 native timeouts (4elt, 1864,
       2064, 2593, 2723, 2778, 2834, 2854_1, 2855) re-run to the 7,789,662 ms cap on
@@ -202,6 +204,15 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `accepted-divergences-{engines,json,plain}.json` and `docs/known-divergences.md`
       (+ locales, `sourceHash`). Re-walk on a quiet machine so the load timeouts
       (twopi/sfdp 2371, neato 2646, world, twopi 2108) are not recorded.
+  33. **[DONE — `feature/cache-oracle-failures`]** Land part 2's speed-gate result, which was measured after PR #96 merged: a
+      T14 journal row in `plans/post-16-1-followups-2/decision-journal.md`, and
+      the README session summary's "not measured" bullet changed to PASS. The
+      edits are uncommitted in the main checkout; if they are lost, the numbers
+      are: 2026-10-21, load < 7.5, two alternating T0/head pairs over T0's 20
+      dot + 20 neato ids (best of 3 warm runs). Per-engine median of head/T0:
+      dot 1.0435 and 0.9794, neato 1.0037 and 0.9908. Against
+      `timings-before.json`: dot 0.9587, neato 0.9961. T0 vs T0 noise: dot
+      1.0062, neato 1.0196. The head bundle is byte-identical to T12's.
 
 ## Local leftovers (not committed, safe to delete)
 

@@ -50,7 +50,9 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareDot, type DotDiff } from '../golden/compare-dot.js';
 import type { EngineName } from '../../src/gvc/context.js';
-import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
+import {
+  oracleCacheRoot, preflightOrExit, readOracleFailure, recordOracleFailure,
+} from './oracle-env.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -136,7 +138,9 @@ export interface DotParityReport {
   results: DotWalkResult[];
 }
 
-interface SpawnResult { stdout: string; stderr: string; code: number | null; timedOut: boolean; }
+interface SpawnResult {
+  stdout: string; stderr: string; code: number | null; signal: NodeJS.Signals | null; timedOut: boolean;
+}
 
 // ---------------------------------------------------------------------------
 // Spawn helpers (mirrors engine-walk.ts/json-walk.ts/map-walk.ts)
@@ -193,10 +197,10 @@ function decodeSpawn(
     child.stdout.on('data', (d: Buffer) => stdoutChunks.push(d));
     child.stderr.on('data', (d) => (stderr += d));
     child.on('error', (e) => (stderr += e.message));
-    child.on('close', (code) => {
+    child.on('close', (code, signal) => {
       clearTimeout(timer);
       const stdout = decodeDotBytes(Buffer.concat(stdoutChunks));
-      resolve({ stdout, stderr, code, timedOut });
+      resolve({ stdout, stderr, code, signal, timedOut });
     });
   });
 }
@@ -263,6 +267,9 @@ async function oracleFormat(
     const ms = Number(readFileSync(msFile, 'utf8'));
     if (cached.length > 0 && Number.isFinite(ms)) return { text: cached, ms };
   }
+  const failureKey = { engine: String(engine), format, id };
+  const failed = readOracleFailure(failureKey, ORACLE_TIMEOUT_MS);
+  if (failed !== null) return { err: failed.err };
   const env = { ...process.env, GVBINDIR };
   const args = ['-K', String(engine), `-T${format}`, absInput];
   const t = Date.now();
@@ -273,7 +280,9 @@ async function oracleFormat(
   // warnings (missing image file) while still emitting a complete graph. The
   // plain format ends with a `stop` line; agwrite ends with the closing brace.
   if (r.timedOut || lines[lines.length - 1] !== '}') {
-    return { err: firstLine(r.stderr) || `oracle exit ${r.code}` };
+    const err = firstLine(r.stderr) || `oracle exit ${r.code}`;
+    recordOracleFailure(failureKey, r, { err, ms, capMs: ORACLE_TIMEOUT_MS });
+    return { err };
   }
   mkdirSync(cache, { recursive: true });
   writeFileSync(cacheFile, r.stdout);
