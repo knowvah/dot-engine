@@ -22,7 +22,9 @@ import { fileURLToPath } from 'node:url';
 import { compareSvg, type Diff } from '../golden/compare.js';
 import { normalizeSvg } from '../golden/normalize.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
-import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
+import {
+  oracleCacheRoot, preflightOrExit, readOracleFailure, recordOracleFailure,
+} from './oracle-env.js';
 import type { CorpusEntry } from './enumerate.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
@@ -268,6 +270,7 @@ interface SpawnResult {
   stdout: string;
   stderr: string;
   code: number | null;
+  signal: NodeJS.Signals | null;
   timedOut: boolean;
 }
 
@@ -301,14 +304,14 @@ function spawnCapture(
     child.stdout.on('data', (d: Buffer) => stdoutChunks.push(d));
     child.stderr.on('data', (d) => (stderr += d));
     child.on('error', (e) => (stderr += e.message));
-    child.on('close', (code) => {
+    child.on('close', (code, signal) => {
       clearTimeout(timer);
       // Decode the whole stream as UTF-8 (non-fatal): valid multi-byte chars
       // decode correctly regardless of chunk boundaries; an isolated invalid
       // byte becomes U+FFFD rather than corrupting the rest (a whole-output
       // latin1 fallback would mojibake every valid c3xx into A-tilde+x).
       const stdout = Buffer.concat(stdoutChunks).toString('utf8');
-      resolve({ stdout, stderr, code, timedOut });
+      resolve({ stdout, stderr, code, signal, timedOut });
     });
   });
 }
@@ -357,6 +360,9 @@ async function oracleSvg(absInput: string, id: string): Promise<{ svg?: string; 
     const ms = Number(readFileSync(msFile, 'utf8'));
     if (cached.length > 0 && Number.isFinite(ms)) return { svg: cached, ms };
   }
+  const failureKey = { engine: 'dot', format: 'svg', id };
+  const failed = readOracleFailure(failureKey, ORACLE_TIMEOUT_MS);
+  if (failed !== null) return { err: failed.err };
   const env = { ...process.env, GVBINDIR };
   const readClock = startClock();
   const r = await spawnCapture(DOT_BIN, ['-Tsvg', absInput], env, ORACLE_TIMEOUT_MS);
@@ -366,7 +372,9 @@ async function oracleSvg(absInput: string, id: string): Promise<{ svg?: string; 
   // therefore not a validity signal — completeness (a closing </svg>) is. Only
   // a timeout or a truncated/empty render is a genuine oracle-error.
   if (r.timedOut || !r.stdout.includes('</svg>')) {
-    return { err: firstLine(r.stderr) || `oracle exit ${r.code}` };
+    const err = firstLine(r.stderr) || `oracle exit ${r.code}`;
+    recordOracleFailure(failureKey, r, { err, ms, capMs: ORACLE_TIMEOUT_MS });
+    return { err };
   }
   writeFileSync(cacheFile, r.stdout);
   writeFileSync(msFile, String(ms));

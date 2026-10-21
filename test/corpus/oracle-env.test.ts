@@ -2,11 +2,19 @@
 // Unit tests for oracle-env.ts. The oracle is a fake shell script, so no real
 // graphviz is needed. Node-only dev/test infra.
 
-import { chmodSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
-import { oracleCacheRoot, oraclePreflight } from './oracle-env.js';
+import {
+  ORACLE_VERSION,
+  isStickyOracleFailure,
+  oracleCacheRoot,
+  oracleFailureFile,
+  oraclePreflight,
+  readOracleFailure,
+  recordOracleFailure,
+} from './oracle-env.js';
 
 const scratch = mkdtempSync(join(tmpdir(), 'oracle-env-test-'));
 afterAll(() => rmSync(scratch, { recursive: true, force: true }));
@@ -80,5 +88,96 @@ describe('oraclePreflight', () => {
 
   it('throws when the binary cannot be spawned', () => {
     expect(() => oraclePreflight(join(scratch, 'absent'), GVBINDIR, 'dot')).toThrow(/absent/);
+  });
+});
+
+const KEY = { engine: 'neato', format: 'xdot', id: '2593' };
+const CAP_MS = 300_000;
+const TIMEOUT_RUN = { timedOut: true, signal: 'SIGKILL', stderr: '' };
+const ERROR_RUN = { timedOut: false, signal: null, stderr: 'Error: syntax error in line 3\n' };
+const TIMEOUT_FAILURE = { err: 'oracle exit null', ms: 300_012, capMs: CAP_MS };
+const ERROR_FAILURE = { err: 'Error: syntax error in line 3', ms: 41, capMs: CAP_MS };
+
+/** A fresh XDG_CACHE_HOME per test, so no test reads another's records. */
+function freshEnv(): { XDG_CACHE_HOME: string } {
+  const dir = join(scratch, `xdg-${counter++}`);
+  mkdirSync(dir);
+  return { XDG_CACHE_HOME: dir };
+}
+
+describe('oracleFailureFile', () => {
+  it('keys by ORACLE_VERSION, engine, format and id only (no binary path, mtime or GVBINDIR)', () => {
+    expect(oracleFailureFile(KEY, { XDG_CACHE_HOME: '/x' }, '/h')).toBe(
+      `/x/dot-engine/oracle/failures/${ORACLE_VERSION}/neato/xdot/2593.json`,
+    );
+  });
+});
+
+describe('isStickyOracleFailure', () => {
+  it('keeps a timeout (it is re-checked against the cap on read)', () => {
+    expect(isStickyOracleFailure(TIMEOUT_RUN)).toBe(true);
+  });
+
+  it('keeps a deterministic error exit or a native crash', () => {
+    expect(isStickyOracleFailure(ERROR_RUN)).toBe(true);
+    expect(isStickyOracleFailure({ timedOut: false, signal: 'SIGSEGV', stderr: '' })).toBe(true);
+    expect(isStickyOracleFailure({ timedOut: false, signal: 'SIGABRT', stderr: '' })).toBe(true);
+  });
+
+  it('drops a kill from outside the harness (OOM killer, Ctrl-C, hangup)', () => {
+    for (const signal of ['SIGKILL', 'SIGTERM', 'SIGINT', 'SIGHUP']) {
+      expect(isStickyOracleFailure({ timedOut: false, signal, stderr: '' })).toBe(false);
+    }
+  });
+
+  it('drops a harness fault (plugin config deleted mid-sweep), even on a timeout', () => {
+    expect(isStickyOracleFailure({ ...ERROR_RUN, stderr: 'Format: "svg" not recognized.' })).toBe(false);
+    expect(isStickyOracleFailure({ ...TIMEOUT_RUN, stderr: 'Warning: no layout engine support for "neato"' }))
+      .toBe(false);
+  });
+});
+
+describe('recordOracleFailure / readOracleFailure', () => {
+  it('reads nothing before a record exists', () => {
+    expect(readOracleFailure(KEY, CAP_MS, freshEnv())).toBeNull();
+  });
+
+  it('round-trips an error with its message and ms, whatever the current cap', () => {
+    const env = freshEnv();
+    recordOracleFailure(KEY, ERROR_RUN, ERROR_FAILURE, env);
+    const want = { ...ERROR_FAILURE, timedOut: false };
+    expect(readOracleFailure(KEY, CAP_MS, env)).toEqual(want);
+    expect(readOracleFailure(KEY, 10 * CAP_MS, env)).toEqual(want);
+  });
+
+  it('reuses a timeout only while the current cap is no larger than the one it ran under', () => {
+    const env = freshEnv();
+    recordOracleFailure(KEY, TIMEOUT_RUN, TIMEOUT_FAILURE, env);
+    const want = { ...TIMEOUT_FAILURE, timedOut: true };
+    expect(readOracleFailure(KEY, CAP_MS, env)).toEqual(want);
+    expect(readOracleFailure(KEY, CAP_MS - 1, env)).toEqual(want);
+    expect(readOracleFailure(KEY, CAP_MS + 1, env)).toBeNull();
+  });
+
+  it('writes nothing for a failure that is not sticky', () => {
+    const env = freshEnv();
+    recordOracleFailure(KEY, { timedOut: false, signal: 'SIGKILL', stderr: '' }, ERROR_FAILURE, env);
+    expect(existsSync(oracleFailureFile(KEY, env))).toBe(false);
+    expect(readOracleFailure(KEY, CAP_MS, env)).toBeNull();
+  });
+
+  it('keeps engines, formats and ids apart', () => {
+    const env = freshEnv();
+    recordOracleFailure(KEY, ERROR_RUN, ERROR_FAILURE, env);
+    expect(readOracleFailure({ ...KEY, engine: 'fdp' }, CAP_MS, env)).toBeNull();
+    expect(readOracleFailure({ ...KEY, format: 'json' }, CAP_MS, env)).toBeNull();
+    expect(readOracleFailure({ ...KEY, id: '2594' }, CAP_MS, env)).toBeNull();
+  });
+
+  it('treats an unreadable (truncated) record as a miss', () => {
+    const env = freshEnv();
+    recordOracleFailure(KEY, ERROR_RUN, ERROR_FAILURE, env);
+    writeFileSync(oracleFailureFile(KEY, env), '{"err":"Err');
+    expect(readOracleFailure(KEY, CAP_MS, env)).toBeNull();
   });
 });

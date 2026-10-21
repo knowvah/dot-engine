@@ -26,7 +26,9 @@ import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
 import { preventIdleSleep, startClock, sleepInflated } from './keep-awake.js';
-import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
+import {
+  oracleCacheRoot, preflightOrExit, readOracleFailure, recordOracleFailure,
+} from './oracle-env.js';
 import { excludedFor } from './engine-exclusions.js';
 
 /** Per-item outcome of the walk (one JSONL line each). */
@@ -266,8 +268,10 @@ function oracleCacheDir(engine: string): string {
  *
  * Only COMPLETE output is cached (a closing `}`): completeness, not exit status,
  * is the validity signal, because native `dot` exits nonzero on recoverable
- * warnings while still emitting a whole document. Errors and timeouts are
- * deliberately NOT cached — a cap-induced failure must not become sticky.
+ * warnings while still emitting a whole document. Errors and timeouts go to
+ * the failure cache (`recordOracleFailure`), keyed by the graphviz release; a
+ * timeout there is reused only under a cap no larger than the one it ran
+ * under, so a cap-induced failure does not outlive a longer cap.
  *
  * `ms` is the ORIGINAL measured render time, returned unchanged on a cache hit,
  * so a row's `oracleMs` always states what the oracle actually costs rather than
@@ -282,6 +286,9 @@ function oracleXdot(path: string, id: string, engine: string, cacheDir: string):
     const ms = Number(readFileSync(msFile, 'utf8'));
     if (cached.trimEnd().endsWith('}') && Number.isFinite(ms)) return { xdot: cached, ms };
   }
+  const failureKey = { engine, format: 'xdot', id };
+  const failed = readOracleFailure(failureKey, CONFIG.oracleMs);
+  if (failed !== null) return { ms: failed.ms, err: failed.err };
   const read = startClock();
   let out = '';
   try {
@@ -295,14 +302,25 @@ function oracleXdot(path: string, id: string, engine: string, cacheDir: string):
       out = so; // complete despite nonzero exit
     } else {
       const t = read();
-      return { ms: t.activeMs, wallMs: sleepInflated(t.activeMs, t.wallMs),
-               err: String((err as Error).message).split('\n')[0]!.slice(0, 160) };
+      const msg = String((err as Error).message).split('\n')[0]!.slice(0, 160);
+      const e = err as { code?: unknown; signal?: unknown; stderr?: unknown };
+      recordOracleFailure(failureKey, {
+        timedOut: e.code === 'ETIMEDOUT',
+        signal: typeof e.signal === 'string' ? e.signal : null,
+        stderr: typeof e.stderr === 'string' ? e.stderr : '',
+      }, { err: msg, ms: t.activeMs, capMs: CONFIG.oracleMs });
+      return { ms: t.activeMs, wallMs: sleepInflated(t.activeMs, t.wallMs), err: msg };
     }
   }
   const t = read();
   const ms = t.activeMs;
   const wallMs = sleepInflated(t.activeMs, t.wallMs);
-  if (!out.trimEnd().endsWith('}')) return { ms, wallMs, err: 'incomplete oracle output' };
+  if (!out.trimEnd().endsWith('}')) {
+    const msg = 'incomplete oracle output';
+    recordOracleFailure(failureKey, { timedOut: false, signal: null, stderr: '' },
+      { err: msg, ms, capMs: CONFIG.oracleMs });
+    return { ms, wallMs, err: msg };
+  }
   mkdirSync(cacheDir, { recursive: true });
   writeFileSync(cacheFile, out);
   writeFileSync(msFile, String(ms));

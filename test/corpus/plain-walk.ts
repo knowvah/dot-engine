@@ -51,7 +51,9 @@ import { fileURLToPath } from 'node:url';
 import { comparePlain, type PlainDiff } from '../golden/compare-plain.js';
 import type { EngineName } from '../../src/gvc/context.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
-import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
+import {
+  oracleCacheRoot, preflightOrExit, readOracleFailure, recordOracleFailure,
+} from './oracle-env.js';
 import { excludedFor } from './engine-exclusions.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
@@ -154,7 +156,9 @@ export interface PlainParityReport {
   results: PlainWalkResult[];
 }
 
-interface SpawnResult { stdout: string; stderr: string; code: number | null; timedOut: boolean; }
+interface SpawnResult {
+  stdout: string; stderr: string; code: number | null; signal: NodeJS.Signals | null; timedOut: boolean;
+}
 
 // ---------------------------------------------------------------------------
 // Spawn helpers (mirrors engine-walk.ts/json-walk.ts/map-walk.ts)
@@ -182,10 +186,10 @@ function spawnCapture(
     child.stdout.on('data', (d: Buffer) => stdoutChunks.push(d));
     child.stderr.on('data', (d) => (stderr += d));
     child.on('error', (e) => (stderr += e.message));
-    child.on('close', (code) => {
+    child.on('close', (code, signal) => {
       clearTimeout(timer);
       const stdout = Buffer.concat(stdoutChunks).toString('utf8');
-      resolve({ stdout, stderr, code, timedOut });
+      resolve({ stdout, stderr, code, signal, timedOut });
     });
   });
 }
@@ -252,6 +256,9 @@ async function oracleFormat(
     const ms = Number(readFileSync(msFile, 'utf8'));
     if (cached.length > 0 && Number.isFinite(ms)) return { text: cached, ms };
   }
+  const failureKey = { engine: String(engine), format, id };
+  const failed = readOracleFailure(failureKey, ORACLE_TIMEOUT_MS);
+  if (failed !== null) return { err: failed.err };
   const env = { ...process.env, GVBINDIR };
   const args = ['-K', String(engine), `-T${format}`, absInput];
   const readClock = startClock();
@@ -259,7 +266,9 @@ async function oracleFormat(
   const ms = readClock().activeMs;
   const lines = r.stdout.trimEnd().split('\n');
   if (r.timedOut || lines[lines.length - 1] !== 'stop') {
-    return { err: firstLine(r.stderr) || `oracle exit ${r.code}` };
+    const err = firstLine(r.stderr) || `oracle exit ${r.code}`;
+    recordOracleFailure(failureKey, r, { err, ms, capMs: ORACLE_TIMEOUT_MS });
+    return { err };
   }
   mkdirSync(cache, { recursive: true });
   writeFileSync(cacheFile, r.stdout);

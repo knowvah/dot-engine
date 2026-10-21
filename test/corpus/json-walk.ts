@@ -69,7 +69,9 @@ import {
 } from './accepted-class.js';
 import { excludedFor } from './engine-exclusions.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
-import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
+import {
+  oracleCacheRoot, preflightOrExit, readOracleFailure, recordOracleFailure,
+} from './oracle-env.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -156,7 +158,9 @@ export interface JsonWalkResult {
   errMsg?: string;
 }
 
-interface SpawnResult { stdout: string; stderr: string; code: number | null; timedOut: boolean; }
+interface SpawnResult {
+  stdout: string; stderr: string; code: number | null; signal: NodeJS.Signals | null; timedOut: boolean;
+}
 
 // ---------------------------------------------------------------------------
 // Spawn helpers (mirrors xdot-walk.ts spawnCapture/killGroup/resolveTsx)
@@ -184,14 +188,14 @@ function spawnCapture(
     child.stdout.on('data', (d: Buffer) => stdoutChunks.push(d));
     child.stderr.on('data', (d) => (stderr += d));
     child.on('error', (e) => (stderr += e.message));
-    child.on('close', (code) => {
+    child.on('close', (code, signal) => {
       clearTimeout(timer);
       // Decode the whole stream as UTF-8 (non-fatal): valid multi-byte chars
       // decode correctly regardless of chunk boundaries; an isolated invalid
       // byte becomes U+FFFD rather than corrupting the rest (a whole-output
       // latin1 fallback would mojibake every valid c3xx into A-tilde+x).
       const stdout = Buffer.concat(stdoutChunks).toString('utf8');
-      resolve({ stdout, stderr, code, timedOut });
+      resolve({ stdout, stderr, code, signal, timedOut });
     });
   });
 }
@@ -248,6 +252,9 @@ async function oracleJson(
     const ms = Number(readFileSync(msFile, 'utf8'));
     if (cached.length > 0 && Number.isFinite(ms)) return { json: cached, ms };
   }
+  const failureKey = { engine, format: 'json', id };
+  const failed = readOracleFailure(failureKey, ORACLE_TIMEOUT_MS);
+  if (failed !== null) return { err: failed.err };
   const env = { ...process.env, GVBINDIR };
   const readClock = startClock();
   const r = await spawnCapture(DOT_BIN, ['-K', engine, '-Tjson', absInput], env, ORACLE_TIMEOUT_MS);
@@ -256,7 +263,9 @@ async function oracleJson(
   // COMPLETE json document. Completeness (a closing `}`) is the validity
   // signal, not the exit code — mirrors xdot-walk.ts's `}` check.
   if (r.timedOut || !r.stdout.trimEnd().endsWith('}')) {
-    return { err: firstLine(r.stderr) || `oracle exit ${r.code}` };
+    const err = firstLine(r.stderr) || `oracle exit ${r.code}`;
+    recordOracleFailure(failureKey, r, { err, ms, capMs: ORACLE_TIMEOUT_MS });
+    return { err };
   }
   mkdirSync(CACHE, { recursive: true });
   writeFileSync(cacheFile, r.stdout);
