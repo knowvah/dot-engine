@@ -103,6 +103,23 @@ describe('yacc syntax errors (htmlerror)', () => {
     ]);
   });
 
+  it('prints 2516\'s three lines and leaves the label empty', () => {
+    const dot = 'digraph G {\n  aneggtable [shape=egg, label=<yada yada <table><tr><td>item</td></tr></table>>];\n}\n';
+    const lines: string[] = [];
+    const sink = (...a: unknown[]): void => { lines.push(a.map(String).join(' ')); };
+    vi.spyOn(console, 'error').mockImplementation(sink);
+    vi.spyOn(console, 'warn').mockImplementation(sink);
+    const svg = renderSvg(dot, 'dot');
+    expect(lines).toEqual([
+      'Error: Syntax error: non-space string used before <TABLE> in line 1 ',
+      '... yada yada <table> ...',
+      'in label of node aneggtable',
+    ]);
+    const node = /<g id="node1" class="node">[\s\S]*?<\/g>/.exec(svg)?.[0] ?? '';
+    expect(node).toContain('<title>aneggtable</title>');
+    expect(node).not.toContain('<text');
+  });
+
   it('rejects non-space text after </TABLE> with the line of the next token', () => {
     expect(stderrOf('digraph{a[label=<<table><tr><td>x</td></tr></table>\ntail\n>]}')).toEqual([
       'Error: Syntax error: non-space string used after </TABLE> in line 3 ',

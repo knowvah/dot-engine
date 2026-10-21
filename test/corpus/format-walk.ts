@@ -30,6 +30,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { preflightOrExit } from './oracle-env.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -150,6 +151,7 @@ async function walkItem(
 
 async function main(): Promise<void> {
   const { format, engines, limit, full } = parseArgs();
+  preflightOrExit(DOT_BIN, GVBINDIR, engines);
   const paths = loadPaths();
   process.stderr.write(
     `format-walk ${format.toUpperCase()} — ${full ? 'FULL' : `sample=${limit}`} — engines: ${engines.join(', ')}\n`,

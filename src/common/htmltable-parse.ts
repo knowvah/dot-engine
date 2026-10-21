@@ -20,7 +20,14 @@ import type {
   OpenToken,
 } from './htmltable-types.js';
 import { HtmlParseError } from './htmltable-types.js';
+import { StderrLines } from './htmltable-attr-warn.js';
+import type { ParseState } from './htmltable-parse-state.js';
+import { consume, emitEof, emitWarnings, peek } from './htmltable-parse-state.js';
 import { htmlErrorAtToken, tokenizeDeferred } from './htmltable-lex.js';
+import type { FontState } from './htmltable-parse-font.js';
+import {
+  fontItemProps, inlineFontState, isInlineTag, mergeFontState, tableFont, wrapperFont,
+} from './htmltable-parse-font.js';
 import {
   buildCell,
   buildTable,
@@ -29,59 +36,6 @@ import {
   parseColumns,
   parseRows,
 } from './htmltable-parse-attrs.js';
-
-// ---------------------------------------------------------------------------
-// Font-stack — mirrors pushFont / popFont in htmlparse.y
-// ---------------------------------------------------------------------------
-
-interface FontState {
-  bold?: boolean;
-  italic?: boolean;
-  underline?: boolean;
-  overline?: boolean;
-  strikethrough?: boolean;
-  subscript?: boolean;
-  superscript?: boolean;
-  fontColor?: string;
-  fontFace?: string;
-  fontSize?: number;
-}
-
-const definedOf = (s: FontState): Partial<FontState> =>
-  Object.fromEntries(
-    Object.entries(s).filter(([, v]) => v !== undefined),
-  ) as Partial<FontState>;
-
-const mergeFontState = (parent: FontState, child: FontState): FontState =>
-  ({ ...parent, ...definedOf(child) }) as FontState;
-
-const BOOL_FONT_KEYS = [
-  'bold', 'italic', 'underline', 'overline',
-  'strikethrough', 'subscript', 'superscript',
-] as const;
-type BoolFontKey = typeof BOOL_FONT_KEYS[number];
-
-const fontItemProps = (f: FontState): Partial<HtmlTextItem> => {
-  const out: Partial<HtmlTextItem> = {};
-  for (const k of BOOL_FONT_KEYS) {
-    if (f[k]) out[k as BoolFontKey] = true;
-  }
-  if (f.fontColor) out.fontColor = f.fontColor;
-  if (f.fontFace) out.fontFace = f.fontFace;
-  if (f.fontSize !== undefined) out.fontSize = f.fontSize;
-  return out;
-};
-
-// ---------------------------------------------------------------------------
-// Parser state
-// ---------------------------------------------------------------------------
-
-interface ParseState {
-  tokens: Token[];
-  pos: number;
-  /** Lexical error found after the last token: C reports it when the parser asks for more. */
-  pending?: HtmlParseError;
-}
 
 /** bison's default message for an unexpected token. @see lib/common/htmlparse.y */
 const MSG_SYNTAX_ERROR = 'syntax error';
@@ -103,35 +57,16 @@ const nonSpace = (text: string): boolean => /[^ \t\n\r]/.test(text);
  * A token without a recorded chunk yields a plain, silent HtmlParseError.
  * @see lib/common/htmllex.c:htmlerror
  */
-const parseError = (s: ParseState, tok: Token | undefined, message: string): HtmlParseError =>
-  (tok === undefined ? s.pending : htmlErrorAtToken(message, tok)) ?? new HtmlParseError(message);
-
-const peek = (s: ParseState): Token | undefined => s.tokens[s.pos];
-
-const consume = (s: ParseState): Token => {
-  const t = s.tokens[s.pos];
-  s.pos++;
-  return t;
+const parseError = (s: ParseState, tok: Token | undefined, message: string): HtmlParseError => {
+  // The lexer already ran for the token the error is reported at.
+  if (tok !== undefined) emitWarnings(s, tok);
+  else emitEof(s);
+  return (tok === undefined ? s.pending : htmlErrorAtToken(message, tok)) ?? new HtmlParseError(message);
 };
 
 // ---------------------------------------------------------------------------
 // Inline-tag helpers — mirrors htmlparse.y fonttext / inline rules
 // ---------------------------------------------------------------------------
-
-const isInlineTag = (tag: string): boolean =>
-  ['B', 'I', 'U', 'O', 'S', 'SUB', 'SUP'].includes(tag);
-
-const inlineFontState = (tag: string, _attrs: Record<string, string>): FontState => {
-  const fs: FontState = {};
-  if (tag === 'B') fs.bold = true;
-  if (tag === 'I') fs.italic = true;
-  if (tag === 'U') fs.underline = true;
-  if (tag === 'O') fs.overline = true;
-  if (tag === 'S') fs.strikethrough = true;
-  if (tag === 'SUB') fs.subscript = true;
-  if (tag === 'SUP') fs.superscript = true;
-  return fs;
-};
 
 /**
  * `br: T_br T_end_br`, likewise image, HR and VR: the open tag must be
@@ -220,6 +155,70 @@ export const parseText = (s: ParseState, fontStack: FontState[]): HtmlText => {
 };
 
 // ---------------------------------------------------------------------------
+// fonttable — a <TABLE> wrapped in one font-like tag
+// ---------------------------------------------------------------------------
+
+/** Tags of `fonttable : font table n_font | italic ... | bold ...`. @see lib/common/htmlparse.y:307 */
+const FONTTABLE_TAGS: readonly string[] = ['FONT', 'B', 'I', 'U', 'O'];
+
+/**
+ * The wrapper tag when the tokens at the cursor open a `fonttable`: one of
+ * FONTTABLE_TAGS, then only strings (the table rule's opt_space), then TABLE.
+ */
+const fontTableWrapper = (s: ParseState): OpenToken | undefined => {
+  const open = peek(s);
+  if (open?.type !== 'open' || !FONTTABLE_TAGS.includes(open.tag)) return undefined;
+  let i = s.pos + 1;
+  while (s.tokens[i]?.type === 'text') i++;
+  const next = s.tokens[i];
+  return next?.type === 'open' && next.tag === 'TABLE' ? open : undefined;
+};
+
+/** Consume strings; true when any is non-space (the table rule's nonSpace check). */
+const skipStrings = (s: ParseState): boolean => {
+  let found = false;
+  for (let t = peek(s); t?.type === 'text'; t = peek(s)) {
+    consume(s);
+    if (nonSpace(t.value)) found = true;
+  }
+  return found;
+};
+
+/**
+ * `font table n_font` (and the I/U/O/B forms): the wrapper's font sits on the
+ * fontstack while the table parses, then pops at the closing tag.
+ * @see lib/common/htmlparse.y:fonttable
+ */
+const parseFontTable = (s: ParseState, open: OpenToken, fontStack: FontState[]): HtmlTable => {
+  consume(s);
+  fontStack.push(wrapperFont(open, fontStack));
+  const textBefore = skipStrings(s);
+  const tblTok = peek(s);
+  if (textBefore && tblTok !== undefined) throw parseError(s, tblTok, MSG_TEXT_BEFORE_TABLE);
+  const table = parseTable(s, fontStack);
+  const textAfter = skipStrings(s);
+  const close = peek(s);
+  if (close !== undefined && textAfter) throw parseError(s, close, MSG_TEXT_AFTER_TABLE);
+  if (close?.type !== 'close' || close.tag !== open.tag) throw parseError(s, close, MSG_SYNTAX_ERROR);
+  consume(s);
+  fontStack.pop();
+  return table;
+};
+
+/**
+ * A <TABLE> that follows a consumed tag can only be a syntax error: the table
+ * rule's opt_space admits strings alone.
+ * @see lib/common/htmlparse.y:287
+ */
+const rejectTableAfterTag = (s: ParseState, start: number): void => {
+  const nxt = peek(s);
+  if (nxt?.type !== 'open' || nxt.tag !== 'TABLE') return;
+  if (s.tokens.slice(start, s.pos).some((t) => t.type !== 'text')) {
+    throw parseError(s, nxt, MSG_SYNTAX_ERROR);
+  }
+};
+
+// ---------------------------------------------------------------------------
 // Cell content helpers — mirrors htmlparse.y cell rule
 // ---------------------------------------------------------------------------
 
@@ -238,7 +237,7 @@ const parseImgContent = (
 
 /** What a cell holds so far: C's cell has exactly one child. */
 interface CellScan {
-  kind: 'none' | 'text' | 'table' | 'image';
+  kind: 'none' | 'text' | 'table' | 'fonttable' | 'image';
   /** Non-space text before the nested table (checked when the table opens). */
   textNonSpace: boolean;
   /** Non-space text after the nested table (checked when the run ends). */
@@ -261,6 +260,7 @@ const scanCellText = (s: ParseState, t: Token, fontStack: FontState[], st: CellS
   const start = s.pos;
   const txt = parseText(s, fontStack);
   if (s.pos === start) throw parseError(s, t, MSG_SYNTAX_ERROR);
+  rejectTableAfterTag(s, start);
   if (txt.items.some((i) => i.text !== undefined && nonSpace(i.text))) st.textNonSpace = true;
   st.kind = 'text';
   return txt.items.length > 0 ? [txt] : [];
@@ -287,7 +287,13 @@ const scanCellImage = (
 const scanCellItem = (
   s: ParseState, t: Token, cellAttrs: Record<string, string>, fontStack: FontState[], st: CellScan,
 ): HtmlCellContent[] => {
+  if (st.kind === 'fonttable') throw parseError(s, t, MSG_SYNTAX_ERROR);
   if (st.kind === 'table') return scanAfterTable(s, t, st);
+  const wrapper = st.kind === 'none' ? fontTableWrapper(s) : undefined;
+  if (wrapper !== undefined) {
+    st.kind = 'fonttable';
+    return [parseFontTable(s, wrapper, fontStack)];
+  }
   if (t.type === 'open' && t.tag === 'TABLE') return scanCellTable(s, t, fontStack, st);
   if (t.type === 'open' && t.tag === 'IMG') return scanCellImage(s, t, cellAttrs, st);
   if (st.kind === 'image') throw parseError(s, t, MSG_SYNTAX_ERROR);
@@ -438,7 +444,10 @@ export const parseTable = (s: ParseState, fontStack: FontState[]): HtmlTable => 
   for (let t = peek(s); t !== undefined; t = peek(s)) {
     if (scanTableToken(s, t, fontStack, ts)) break;
   }
-  return buildTable(ts.rows, open.attrs);
+  const table = buildTable(ts.rows, open.attrs);
+  const font = tableFont(fontStack);
+  if (font !== undefined) table.font = font;
+  return table;
 };
 
 /** Parse one row, applying table-level rule defaults. @see lib/common/htmlparse.y addRow/setCell */
@@ -497,6 +506,16 @@ const finishTableLabel = (s: ParseState): void => {
   consume(s);
 };
 
+/** `html : T_html fonttable T_end_html` with a font-like wrapper. */
+const parseFontTableLabel = (s: ParseState, open: OpenToken, fontStack: FontState[]): HtmlLabel => {
+  const table = parseFontTable(s, open, fontStack);
+  const nxt = peek(s);
+  if (nxt === undefined) return { kind: 'table', table };
+  if (nxt.type !== 'close' || nxt.tag !== 'HTML') throw parseError(s, nxt, MSG_SYNTAX_ERROR);
+  consume(s);
+  return { kind: 'table', table };
+};
+
 const parseTableLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
   skipLeadingWs(s);
   const table = parseTable(s, fontStack);
@@ -504,25 +523,22 @@ const parseTableLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
   return { kind: 'table', table };
 };
 
-/** `html : T_html fonttext T_end_html`; a `<TABLE>` after text is the table rule's error. */
+/** `html : T_html fonttext T_end_html` (a textitem is required); a `<TABLE>` after text is the table rule's error. */
 const parseTextLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
   const texts: HtmlText[] = [];
+  const start = s.pos;
   const txt = parseText(s, fontStack);
   if (txt.items.length > 0) texts.push(txt);
   const nxt = peek(s);
   if (nxt === undefined) return { kind: 'text', texts };
   if (nxt.type === 'open' && nxt.tag === 'TABLE') {
     // C's `table` rule aborts the whole label when non-space text precedes a
-    // top-level <TABLE>. Text that is only blanks means a font-wrapped table
-    // (`fonttable`), which this parser does not model: rejected without a
-    // message rather than with a wrong one.
+    // top-level <TABLE>; after any tag it is a plain syntax error.
     // @see lib/common/htmlparse.y:288 (table rule nonSpace check)
-    if (txt.items.some((i) => i.text !== undefined && nonSpace(i.text))) {
-      throw parseError(s, nxt, MSG_TEXT_BEFORE_TABLE);
-    }
-    throw new HtmlParseError('TABLE');
+    rejectTableAfterTag(s, start);
+    throw parseError(s, nxt, MSG_TEXT_BEFORE_TABLE);
   }
-  if (nxt.type !== 'close' || nxt.tag !== 'HTML') throw parseError(s, nxt, MSG_SYNTAX_ERROR);
+  if (nxt.type !== 'close' || nxt.tag !== 'HTML' || s.pos === start) throw parseError(s, nxt, MSG_SYNTAX_ERROR);
   consume(s);
   return { kind: 'text', texts };
 };
@@ -532,28 +548,52 @@ const parseTokens = (s: ParseState): HtmlLabel => {
   const fontStack: FontState[] = [{}];
   const htmlOpen = consume(s);
   if (htmlOpen.type !== 'open' || htmlOpen.tag !== 'HTML') throw new HtmlParseError('HTML');
+  const wrapper = fontTableWrapper(s);
+  if (wrapper !== undefined) return parseFontTableLabel(s, wrapper, fontStack);
   const firstReal = findFirstRealToken(s.tokens, s.pos);
   if (firstReal?.type === 'open' && firstReal.tag === 'TABLE') return parseTableLabel(s, fontStack);
   return parseTextLabel(s, fontStack);
 };
 
+/** A parsed label and `ctx->warn`, which `make_html_label` ORs into its rv. */
+export interface ParsedHtmlLabel {
+  label: HtmlLabel;
+  warn: boolean;
+}
+
 /**
- * Parse an HTML-like label string.
- * Input is the content between the outer `<` `>` delimiters (already stripped).
+ * Parse an HTML-like label string, printing the lexer's warnings (one
+ * `writeLine` per stderr line, `console.warn` by default) as the parser reaches
+ * their tokens. Input is the content between the outer `<` `>` delimiters
+ * (already stripped).
  *
  * @see lib/common/htmlparse.y:parseHTML
  */
-export const parseHtmlLabel = (src: string): HtmlLabel => {
-  const { tokens, error } = tokenizeDeferred(`<HTML>${src}</HTML>`);
-  const s: ParseState = { tokens, pos: 0, pending: error };
-  let label: HtmlLabel;
+export const parseHtmlLabelRv = (
+  src: string,
+  writeLine: (line: string) => void = (line) => console.warn(line),
+): ParsedHtmlLabel => {
+  const { tokens, error, eof } = tokenizeDeferred(`<HTML>${src}</HTML>`, { start: 6, end: 6 + src.length });
+  const s: ParseState = {
+    tokens, pos: 0, pending: error, stderr: new StderrLines(writeLine), emitted: new WeakSet(), warn: false, eof,
+  };
   try {
-    label = parseTokens(s);
+    const label = parseTokens(s);
+    if (error !== undefined) throw error;
+    return { label, warn: s.warn === true };
   } catch (e) {
     // Running off the truncated stream means C's lexer would have hit the error.
-    if (error !== undefined && s.pos >= tokens.length) throw error;
+    if (error !== undefined && s.pos >= tokens.length) { emitEof(s); throw error; }
     throw e;
+  } finally {
+    s.stderr?.flush();
   }
-  if (error !== undefined) throw error;
-  return label;
 };
+
+/**
+ * {@link parseHtmlLabelRv} without printing: callers that only inspect the
+ * label (the async font/image collection pass) must not repeat the warnings
+ * the sync pass prints.
+ */
+export const parseHtmlLabel = (src: string): HtmlLabel =>
+  parseHtmlLabelRv(src, () => undefined).label;

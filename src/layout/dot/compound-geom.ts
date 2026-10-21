@@ -10,6 +10,7 @@
 
 import type { Point, Box } from '../../model/geom.js';
 import { cround } from '../../common/arith.js';
+import { bezier } from '../../common/bezier.js';
 
 // ---------------------------------------------------------------------------
 // Primitive helpers
@@ -49,24 +50,10 @@ export function midPointf(a: Point, b: Point): Point {
 // Bezier subdivision
 // ---------------------------------------------------------------------------
 
-/** One triangle row for De Casteljau; avoids nested array allocation. */
-type CasteljauRow = [Point, Point, Point, Point];
-
-/** Compute one row of the De Casteljau triangle at parameter t. */
-export function casteljauStep(prev: CasteljauRow, t: number): CasteljauRow {
-  const u = 1 - t;
-  return [
-    { x: u * prev[0].x + t * prev[1].x, y: u * prev[0].y + t * prev[1].y },
-    { x: u * prev[1].x + t * prev[2].x, y: u * prev[1].y + t * prev[2].y },
-    { x: u * prev[2].x + t * prev[3].x, y: u * prev[2].y + t * prev[3].y },
-    { x: 0, y: 0 }, // unused slot; keeps tuple type uniform
-  ];
-}
-
 /**
  * De Casteljau subdivision of a cubic Bezier at parameter t.
- * Returns left-half or right-half control points.
- * Matches C Bezier() triangle computation.
+ * Returns left-half or right-half control points through the shared fused
+ * bezier().
  *
  * @see lib/common/utils.c:Bezier
  */
@@ -75,13 +62,9 @@ export function subdivideBezier(
   t: number,
   side: 'left' | 'right',
 ): Point[] {
-  const r0: CasteljauRow = [{ ...v[0] }, { ...v[1] }, { ...v[2] }, { ...v[3] }];
-  const r1 = casteljauStep(r0, t);
-  const r2 = casteljauStep(r1, t);
-  const r3 = casteljauStep(r2, t);
-  return side === 'left'
-    ? [r0[0], r1[0], r2[0], r3[0]]
-    : [r3[0], r2[1], r1[2], r0[3]];
+  const half: Point[] = [];
+  bezier([...v], t, side === 'left' ? half : null, side === 'right' ? half : null);
+  return half;
 }
 
 // ---------------------------------------------------------------------------

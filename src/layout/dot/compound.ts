@@ -19,7 +19,7 @@ import { dist } from '../../common/arrows-geometry.js';
 
 // Re-export geometry helpers so existing callers (tests) import from one place.
 export {
-  fcmp, inBoxf, midPointf, casteljauStep, subdivideBezier,
+  fcmp, inBoxf, midPointf, subdivideBezier,
   countVertCross, countHorzCross, tryUpdateIntersect,
   splineIntersectf,
   tryLeftSide, tryRightSide, tryBottomSide, tryTopSide, boxIntersectf,

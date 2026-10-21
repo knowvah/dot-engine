@@ -22,10 +22,11 @@ import { readFileSync, statSync, appendFileSync, writeFileSync, existsSync, mkdi
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
-import { homedir, tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
 import { preventIdleSleep, startClock, sleepInflated } from './keep-awake.js';
+import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
 import { excludedFor } from './engine-exclusions.js';
 
 /** Per-item outcome of the walk (one JSONL line each). */
@@ -253,7 +254,7 @@ const ORACLE_SIG = oracleCacheSig(DOT_BIN, GVBINDIR, (() => {
 /** Per-engine cache dir: the same id renders differently per engine, so the
  *  engine must be part of the key (survey.ts is dot-only and omits it). */
 function oracleCacheDir(engine: string): string {
-  return process.env['ENGINE_ORACLE_CACHE'] ?? join(tmpdir(), 'dot-corpus-xdot-oracle', engine, ORACLE_SIG);
+  return process.env['ENGINE_ORACLE_CACHE'] ?? oracleCacheRoot('xdot-oracle', join(engine, ORACLE_SIG));
 }
 
 /**
@@ -326,6 +327,7 @@ async function main(): Promise<void> {
     console.error('usage: npx tsx test/corpus/engine-walk.ts <engine> [outJsonlPath]');
     process.exit(2);
   }
+  preflightOrExit(DOT_BIN, GVBINDIR, [engine]);
   const TOLERANCE = ITERATIVE_ENGINES.has(engine) ? 0.5 : 0.01;
   const OUT = process.argv[3] ?? fileURLToPath(new URL(`./parity-${engine}.jsonl`, import.meta.url));
   const SUMMARY = fileURLToPath(new URL(`./parity-${engine}.json`, import.meta.url));

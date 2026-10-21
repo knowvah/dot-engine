@@ -16,7 +16,7 @@
 import { describe, it, expect } from 'vitest';
 import type { Box } from '../../model/geom.js';
 import {
-  fcmp, inBoxf, midPointf, casteljauStep, subdivideBezier,
+  fcmp, inBoxf, midPointf, subdivideBezier,
   countVertCross, countHorzCross, endpointInRange, endpointNearLine,
   countCrossings, findAxisCrossing, tryUpdateIntersect, boxLineSpecs,
   splineIntersectf, tryLeftSide, tryRightSide, tryBottomSide, tryTopSide,
@@ -55,18 +55,6 @@ describe('inBoxf', () => {
 describe('midPointf', () => {
   it('averages both coordinates', () => {
     expect(midPointf({ x: 0, y: 0 }, { x: 4, y: 6 })).toEqual({ x: 2, y: 3 });
-  });
-});
-
-describe('casteljauStep', () => {
-  it('computes one De Casteljau triangle row at t=0.5', () => {
-    const prev: [{ x: number; y: number }, { x: number; y: number },
-      { x: number; y: number }, { x: number; y: number }] =
-      [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 1 }, { x: 3, y: 1 }];
-    const row = casteljauStep(prev, 0.5);
-    expect(row[0]).toEqual({ x: 0.5, y: 0 });
-    expect(row[1]).toEqual({ x: 1.5, y: 0.5 });
-    expect(row[2]).toEqual({ x: 2.5, y: 1 });
   });
 });
 

@@ -9,6 +9,7 @@
 // @see lib/common/taper.c:taper
 
 import type { Point, Bezier } from '../model/geom.js';
+import { bezier } from './bezier.js';
 
 /** Sample points per Bézier segment. @see taper.c:BEZIERSUBDIVISION */
 const BEZIER_SUBDIVISION = 20;
@@ -65,19 +66,6 @@ function l2dist(p0: Point, p1: Point): number {
   return Math.hypot(p0.x - p1.x, p0.y - p1.y);
 }
 
-/** Evaluate a cubic Bézier at t via de Casteljau. @see lib/common/utils.c:Bezier */
-function bezierPoint(v: readonly Point[], t: number): Point {
-  const vx = [v[0]!.x, v[1]!.x, v[2]!.x, v[3]!.x];
-  const vy = [v[0]!.y, v[1]!.y, v[2]!.y, v[3]!.y];
-  for (let i = 1; i <= 3; i++) {
-    for (let j = 0; j <= 3 - i; j++) {
-      vx[j] = (1.0 - t) * vx[j]! + t * vx[j + 1]!;
-      vy[j] = (1.0 - t) * vy[j]! + t * vy[j + 1]!;
-    }
-  }
-  return { x: vx[0]!, y: vy[0]! };
-}
-
 interface PathPoint {
   x: number;
   y: number;
@@ -107,7 +95,7 @@ function pathtolines(bez: Bezier): PathPoint[] {
     for (let j = 1; j <= 3; j++) V[j] = A[i + j]!;
     let p0 = V[0]!;
     for (let step = 1; step <= BEZIER_SUBDIVISION; step++) {
-      const p1 = bezierPoint(V, step / BEZIER_SUBDIVISION);
+      const p1 = bezier(V, step / BEZIER_SUBDIVISION, null, null);
       linelen += l2dist(p0, p1);
       push(p1, linelen);
       p0 = p1;

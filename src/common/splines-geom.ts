@@ -9,6 +9,7 @@
  */
 
 import type { Point, Box } from '../model/geom.js';
+import { bezier as evalBezier } from './bezier.js';
 
 // ---------------------------------------------------------------------------
 // Approximate equality
@@ -29,33 +30,12 @@ export function approxEqPt(p: Point, q: Point, tol: number): boolean {
 // ---------------------------------------------------------------------------
 
 /**
- * Evaluates cubic Bezier sp[] at parameter t.
- * When left !== null, fills left[0..3] with the left subdivision.
- * When right !== null, fills right[0..3] with the right subdivision.
- * Returns the point on the curve.
+ * Evaluates cubic Bezier sp[] at parameter t (left/right fill as in C): the
+ * shared fused bezier(), re-exported under the name this module's callers use.
  *
- * @see lib/common/geomprocs.h:Bezier
+ * @see lib/common/utils.c:Bezier
  */
-export function evalBezier(
-  sp: Point[],
-  t: number,
-  left: Point[] | null,
-  right: Point[] | null,
-): Point {
-  const ab: Point = { x: sp[0].x + t * (sp[1].x - sp[0].x), y: sp[0].y + t * (sp[1].y - sp[0].y) };
-  const bc: Point = { x: sp[1].x + t * (sp[2].x - sp[1].x), y: sp[1].y + t * (sp[2].y - sp[1].y) };
-  const cd: Point = { x: sp[2].x + t * (sp[3].x - sp[2].x), y: sp[2].y + t * (sp[3].y - sp[2].y) };
-  const abbc: Point = { x: ab.x + t * (bc.x - ab.x), y: ab.y + t * (bc.y - ab.y) };
-  const bccd: Point = { x: bc.x + t * (cd.x - bc.x), y: bc.y + t * (cd.y - bc.y) };
-  const pt: Point = { x: abbc.x + t * (bccd.x - abbc.x), y: abbc.y + t * (bccd.y - abbc.y) };
-  if (left !== null) {
-    left[0] = sp[0]; left[1] = ab; left[2] = abbc; left[3] = pt;
-  }
-  if (right !== null) {
-    right[0] = pt; right[1] = bccd; right[2] = cd; right[3] = sp[3];
-  }
-  return pt;
-}
+export { evalBezier };
 
 // ---------------------------------------------------------------------------
 // Bounding box update

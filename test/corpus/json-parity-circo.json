@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T13:27:38.743Z",
+  "generatedAt": "2026-10-20T15:01:34.352Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "circo",
   "oracleVersion": "dot 16.1.0",
@@ -5602,10 +5602,10 @@
       "path": "../share/examples/world.gv",
       "size": 16326502,
       "verdict": "diverged",
-      "diffCount": 50223,
-      "firstDiff": "[graph]/_draw_/op[2].P[3]",
-      "maxDelta": 0.58984375,
-      "maxDeltaPath": "edge:30777->112326#0/_draw_/op[1].b[2]"
+      "diffCount": 533,
+      "firstDiff": "edge:100476->100486#0/_draw_/op[1].b[1]",
+      "maxDelta": 0.41015625,
+      "maxDeltaPath": "edge:3413->3407#0/_draw_/op[1].b[2]"
     }
   ]
 }

@@ -29,10 +29,11 @@ import { createHash } from 'node:crypto';
 import {
   appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync,
 } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareXdot, type XdotDiff } from '../golden/compare-xdot.js';
+import { oracleCacheRoot, preflightOrExit } from './oracle-env.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
@@ -50,7 +51,7 @@ const ORACLE_SIG = (() => {
   try { mt = String(statSync(DOT_BIN).mtimeMs); } catch { /* checked in main */ }
   return createHash('sha1').update(`${DOT_BIN}\0${GVBINDIR}\0xdot\0${mt}`).digest('hex').slice(0, 12);
 })();
-const CACHE = process.env.XDOT_ORACLE_CACHE ?? join(tmpdir(), 'dot-corpus-xdot-oracle', ORACLE_SIG);
+const CACHE = process.env.XDOT_ORACLE_CACHE ?? oracleCacheRoot('xdot-oracle', ORACLE_SIG);
 
 const TIMEOUT_MULT = Number(process.env.XDOT_TIMEOUT_MULT ?? 3);
 const TIMEOUT_FLOOR_MS = Number(process.env.XDOT_TIMEOUT_FLOOR_MS ?? 180_000);
@@ -422,6 +423,7 @@ async function main(): Promise<void> {
     process.stderr.write(`harness fault: oracle binary not found at ${DOT_BIN}\n`);
     process.exit(2);
   }
+  preflightOrExit(DOT_BIN, GVBINDIR, ['dot']);
   const survey = process.argv.includes('--survey');
   const items = conformantItems();
   const accepted = loadAccepted();

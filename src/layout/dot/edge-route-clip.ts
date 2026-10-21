@@ -11,6 +11,7 @@
 import type { Point } from '../../model/geom.js';
 import { parseArrow, resolveArrowType } from '../../common/arrows.js';
 import { arrowLength } from '../../common/arrows-shapes.js';
+import { bezier } from '../../common/bezier.js';
 
 // ---------------------------------------------------------------------------
 // De Casteljau subdivision
@@ -18,42 +19,18 @@ import { arrowLength } from '../../common/arrows-shapes.js';
 // ---------------------------------------------------------------------------
 
 /**
- * Build the De Casteljau triangle for a cubic Bezier at parameter t.
- * v[i][j] = (1-t)*v[i-1][j] + t*v[i-1][j+1].
- * @see lib/common/utils.c:Bezier (triangle computation section)
- */
-function deCasteljauTriangle(sp: Point[], t: number): Point[][] {
-  const u = 1 - t;
-  const v: Point[][] = [
-    [sp[0], sp[1], sp[2], sp[3]],
-    [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }],
-    [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }],
-    [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }],
-  ];
-  for (let i = 1; i <= 3; i++) {
-    for (let j = 0; j <= 3 - i; j++) {
-      v[i][j] = {
-        x: u * v[i - 1][j].x + t * v[i - 1][j + 1].x,
-        y: u * v[i - 1][j].y + t * v[i - 1][j + 1].y,
-      };
-    }
-  }
-  return v;
-}
-
-/**
  * De Casteljau subdivision of a cubic Bezier at parameter t.
- * Returns [left4, right4, midpoint].
+ * Returns [left4, right4, midpoint], computed by the shared fused bezier().
  * @see lib/common/utils.c:Bezier
  */
 export function bezierSubdivide(
   sp: Point[],
   t: number,
 ): [Point[], Point[], Point] {
-  const v = deCasteljauTriangle(sp, t);
-  const left: Point[] = [v[0][0], v[1][0], v[2][0], v[3][0]];
-  const right: Point[] = [v[3][0], v[2][1], v[1][2], v[0][3]];
-  return [left, right, v[3][0]];
+  const left: Point[] = [];
+  const right: Point[] = [];
+  const mid = bezier(sp, t, left, right);
+  return [left, right, mid];
 }
 
 // ---------------------------------------------------------------------------

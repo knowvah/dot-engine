@@ -176,10 +176,24 @@ export interface HtmlRow {
   ruled?: boolean;
 }
 
+/**
+ * The font a `fonttable` wrapper (or an enclosing one) gives a table: the
+ * name, color and size `pushFontInfo` swaps into the environment.
+ * @see lib/common/htmltable.h:htmltbl_t.font
+ * @see lib/common/htmltable.c:pushFontInfo
+ */
+export interface HtmlTableFont {
+  fontColor?: string;
+  fontFace?: string;
+  fontSize?: number;
+}
+
 /** @see lib/common/htmltable.h:htmltbl_t */
 export interface HtmlTable {
   kind: 'table';
   rows: HtmlRow[];
+  /** Set only inside a `fonttable` wrapper. @see lib/common/htmlparse.y:294 */
+  font?: HtmlTableFont;
   border?: number;
   cellborder?: number;
   cellspacing?: number;
@@ -238,21 +252,39 @@ export type HtmlLabel =
 // the lex file's function boundaries when it encounters `|` union syntax.
 // ---------------------------------------------------------------------------
 
+/**
+ * What the C lexer wrote to stderr while producing a token, and the `ctx->warn`
+ * it set. Any token can carry it: a unit that yields no token (a comment) or
+ * an event lost to a later one in the same `XML_Parse` call still wrote.
+ * @see lib/common/htmllex.c:htmllex
+ */
+export interface LexerOutput {
+  /**
+   * Exact text per write, including any trailing newline (a message without
+   * one runs into the next write). The parser prints it when it consumes the
+   * token.
+   * @see lib/common/htmllex.c:doAttrs
+   */
+  warnings?: string[];
+  /** Some handler set `ctx->warn`: the label's `rv` becomes 1. */
+  warn?: true;
+}
+
 /** @see lib/common/htmllex.c:startElement */
-export interface OpenToken {
+export interface OpenToken extends LexerOutput {
   type: 'open';
   tag: string;
   attrs: Record<string, string>;
 }
 
 /** @see lib/common/htmllex.c:endElement */
-export interface CloseToken {
+export interface CloseToken extends LexerOutput {
   type: 'close';
   tag: string;
 }
 
 /** @see lib/common/htmllex.c:characterData */
-export interface TextToken {
+export interface TextToken extends LexerOutput {
   type: 'text';
   value: string;
 }

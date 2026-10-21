@@ -149,3 +149,35 @@ describe('checkPath keeps C\'s stale box count (1332 lost-edge corridor)', () =>
     expect(pl).toBeNull();
   });
 });
+
+import { limitBoxes } from './splines-routespl.js';
+
+describe('limitBoxes samples with clang\'s fused lerp', () => {
+  // Expected extents: C limitBoxes (routespl.c:238-274) compiled by clang -O2,
+  // whose 12 `sp.x += t * (b - a)` updates contract to fma(t, b - a, a) as in
+  // the oracle's `_limitBoxes` (fsub + fmadd). Unfused arithmetic differs on
+  // segment-0 band-0 UR.x (…605) and band-2 LL.x (…788).
+  const pps = [
+    { x: 12.345678901234567, y: 3.14159265358979 }, { x: 47.1234567891011, y: 41.4213562373095 },
+    { x: 88.80000000000001, y: 77.7777777777777 }, { x: 101.10101010101, y: 123.456789012345 },
+    { x: 133.3333333333333, y: 151.0101010101 }, { x: 97.5310864197531, y: 188.8888888888889 },
+    { x: 141.42135623730951, y: 222.22222222222223 },
+  ];
+  const expected: Record<number, [number, number][]> = {
+    10: [[12.345678901234567, 60.181183538896597], [62.686029592106181, 96.565715375843268],
+      [97.852873926704774, 116.74527589268035], [116.81335992846255, 141.42135623730951]],
+    20: [[12.345678901234567, 60.181183538896597], [61.438236923799288, 97.221576619397609],
+      [97.852873926704774, 116.77918234453955], [116.81335992846255, 141.42135623730951]],
+    40: [[12.345678901234567, 60.810841252832752], [61.438236923799288, 97.221576619397609],
+      [97.540322333171758, 116.79612904644311], [116.81335992846255, 141.42135623730951]],
+  };
+  for (const delta of [10, 20, 40]) {
+    it(`matches native extents at delta ${delta}`, () => {
+      const boxes: Box[] = Array.from({ length: 4 }, (_, i) => ({
+        ll: { x: 2147483647, y: i * 56 }, ur: { x: -2147483648, y: i * 56 + 56 },
+      }));
+      limitBoxes(boxes, 4, pps, 7, delta);
+      expect(boxes.map((b) => [b.ll.x, b.ur.x])).toEqual(expected[delta]);
+    });
+  }
+});

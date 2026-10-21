@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: EPL-2.0
 /**
  * Dot-local adapter between the dot `Graph` model and the `orthoEdges`
- * pipeline (`src/ortho`). Mirrors neato's private `OrthoHelper`
- * (`neato/splines.ts:247`) rather than extracting a shared helper, so the
- * working neato path is untouched (ADR-1) — this matches C, where dotgen and
- * neatogen each have their own call site into `ortho.c:orthoEdges`.
+ * pipeline (`src/ortho`). Mirrors neato's `OrthoHelper` (`neato/splines.ts`);
+ * the two share only the concentrate dedup (`isConcentrateDup`), as C has one
+ * gather loop while dotgen and neatogen each have their own call site into
+ * `ortho.c:orthoEdges`.
  *
  * @see lib/dotgen/dotsplines.c:dot_splines_ (EDGETYPE_ORTHO branch)
  * @see src/layout/neato/splines.ts:OrthoHelper
@@ -56,7 +56,7 @@ function buildNodes(nodeArr: Node[]): OrthoNodeArr {
  * (min, max) and makes one isInPS/addPS pair on it.
  * @see lib/ortho/ortho.c:1221-1229 (orthoEdges Concentrate PS)
  */
-function isConcentrateDup(ps: PointSet, e: Edge): boolean {
+export function isConcentrateDup(ps: PointSet, e: Edge): boolean {
   const ti = e.tail.id;
   const hi = e.head.id;
   const lo = ti <= hi ? ti : hi;

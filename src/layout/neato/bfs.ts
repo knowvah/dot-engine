@@ -33,7 +33,13 @@ export function bfsFixDisconnected(
   }
 }
 
-/** Process one BFS vertex: enqueue unvisited neighbours. @internal */
+/**
+ * Process one BFS vertex: enqueue unvisited neighbours. The bump is 1 when
+ * graph[0] has no ewgts (C NULL, the port's empty array), else the float
+ * ewgts truncated to DistType (int).
+ * @see lib/neatogen/bfs.c:bfs (bfs.c:41-43)
+ * @internal
+ */
 export function bfsVisitNeighbors(
   vertex: number,
   graph: VtxData[],
@@ -42,10 +48,12 @@ export function bfsVisitNeighbors(
 ): number {
   const vd = graph[vertex];
   const d = dist[vertex];
+  const unit = graph[0].ewgts.length === 0;
   for (let i = 1; i < vd.nedges; i++) {
     const nb = vd.edges[i];
     if (dist[nb] < 0) {
-      dist[nb] = d + 1;
+      // C ewgts is float*: round to float32, then (DistType) truncates
+      dist[nb] = d + (unit ? 1 : Math.trunc(Math.fround(vd.ewgts[i])));
       queue.push(nb);
     }
   }
@@ -57,8 +65,9 @@ export function bfsVisitNeighbors(
 // ---------------------------------------------------------------------------
 
 /**
- * Single-source BFS (unweighted) from `src`.
- * Populates `dist` with hop-distances; unreachable nodes get `BFS_UNREACHABLE`.
+ * Single-source BFS from `src`: first visit wins, each hop bumps by 1 or by
+ * the int-truncated ewgts (see bfsVisitNeighbors). Unreached nodes get
+ * `closestDist + 10`.
  *
  * @see lib/neatogen/bfs.c:bfs
  */

@@ -20,6 +20,7 @@ import type { GraphObj } from '../common/subst.js';
 import { substObjAnchor, interpretCRNL } from '../common/subst.js';
 import { parseStyleFlags } from '../common/style-resolve.js';
 import { nodeAttr } from '../common/poly-init.js';
+import { bezier } from '../common/bezier.js';
 import type { RendererPlugin } from './context.js';
 import { MapShape, type ObjState, type RenderJob } from './job.js';
 
@@ -447,20 +448,10 @@ function checkControlPoints(cp: Point[]): boolean {
 /** de Casteljau split of a cubic at t=0.5, returning left & right control sets.
  * @see lib/common/utils.c:Bezier */
 function bezierHalf(v: Point[]): { left: Point[]; right: Point[] } {
-  const t = 0.5;
-  const vt: Point[][] = [v.slice(0, 4)];
-  for (let i = 1; i <= 3; i++) {
-    vt[i] = [];
-    for (let j = 0; j <= 3 - i; j++) {
-      const a = vt[i - 1]![j]!;
-      const b = vt[i - 1]![j + 1]!;
-      vt[i]![j] = { x: (1 - t) * a.x + t * b.x, y: (1 - t) * a.y + t * b.y };
-    }
-  }
-  return {
-    left: [vt[0]![0]!, vt[1]![0]!, vt[2]![0]!, vt[3]![0]!],
-    right: [vt[3]![0]!, vt[2]![1]!, vt[1]![2]!, vt[0]![3]!],
-  };
+  const left: Point[] = [];
+  const right: Point[] = [];
+  bezier(v, 0.5, left, right);
+  return { left, right };
 }
 
 /** approx_bezier: flatten a cubic to a polyline. @see lib/common/emit.c */
