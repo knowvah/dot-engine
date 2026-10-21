@@ -993,19 +993,21 @@ edges, exonerating the legal-arrangement, visibility, Dijkstra, and spline
 chain entirely; injecting C's libm `cos`/`sin` alone is a no-op. Accepted
 2026-07-11; full RCA: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29 family (twopi).** The four b29 variants share one knife-edge: the
-`EqmtTyp` edge label (`Node14732->Node14731`) sits on an exact placeLabels
-side-selection tie whose outcome depends on 1-ULP twopi layout drift in the
+**b29 family (twopi, fixed).** The four b29 variants shared one knife-edge:
+the `EqmtTyp` edge label (`Node14732->Node14731`) sat on an exact placeLabels
+side-selection tie whose outcome depended on 1-ULP twopi layout drift in the
 surrounding objects. With the faithful fmadd contraction in
 `polylineMidpoint` (states-family fix, 2026-07-11) the port's label anchor
-is bit-identical to the oracle's, yet the tie still resolves oppositely on
+became bit-identical to the oracle's, yet the tie still resolved oppositely on
 two of the four variants (`graphs-b29`, `linux.i386-b29`) while the other
-two (`share-b29`, `windows-b29`) now conform — and `2343`'s accepted A9
-label diff cleared entirely. Bound: 1 draw-op, Δ12pt label y. Irreducible
-without eliminating the upstream drift. Full RCA:
-`.agent-notes/twopi-states-rca.md`.
+two (`share-b29`, `windows-b29`) conformed — and `2343`'s accepted A9
+label diff cleared entirely. Bound: 1 draw-op, Δ12pt label y. On 2026-10-20
+every Bezier evaluation in the port began going through one fused `bezier()`,
+as clang contracts graphviz's `Bezier` (`e37e72f0`). That removed the
+upstream drift: `graphs-b29` and `linux.i386-b29` now conform too, and their
+acceptances are retired. Full RCA: `.agent-notes/twopi-states-rca.md`.
 
-The same placeLabels knife-edge surfaces on the **osage** track (accepted
+The same placeLabels knife-edge surfaced on the **osage** track (accepted
 2026-07-11, full RCA: `.agent-notes/osage-small-tail-rca.md`):
 `linux.i386-b29` and `share-b29` (2 draw-op diffs each — one edge label's
 x-anchor lands at 878.28 vs 841.06, placed symmetrically about the
@@ -1014,8 +1016,10 @@ variants mirror each other) and `1652` (2 draw-op diffs — two edges each
 flip one label anchor about an identical midpoint, one in x and one in y,
 with bit-identical splines and arrowheads; the oracle renders completely,
 so this is not the known native-timeout flake). In every case the edge
-geometry is bit-exact and only the label side-selection tie resolves
-oppositely on 1-ULP-drifted surroundings.
+geometry was bit-exact and only the label side-selection tie resolved
+oppositely on 1-ULP-drifted surroundings. The fused `bezier()` of 2026-10-20
+(`e37e72f0`) removed that drift as well: all three now conform, as does the
+unaccepted osage `2371`, and their acceptances are retired.
 
 The osage track carries the `polypoly` triple (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; accepted 2026-07-11, full RCA in

@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -987,29 +987,32 @@ hrán, čím sa úplne očisťuje reťaz legálneho usporiadania, viditeľnosti,
 samotné vstreknutie `cos`/`sin` z libm v C nič nezmení. Akceptované
 2026-07-11; úplná RCA: `.agent-notes/osage-spline-family-rca.md`.
 
-**Rodina b29 (twopi).** Štyri varianty b29 zdieľajú jedno ostrie noža:
-popisok hrany `EqmtTyp` (`Node14732->Node14731`) sedí na presnej remíze pri výbere strany
-v placeLabels, ktorej výsledok závisí od driftu rozloženia twopi o 1 ULP
-v okolitých objektoch. S vernou kontrakciou fmadd v
-`polylineMidpoint` (oprava rodiny states, 2026-07-11) je kotva popisku
-v porte bitovo identická s kotvou orákula, a napriek tomu sa remíza stále rozhoduje opačne
-pri dvoch zo štyroch variantov (`graphs-b29`, `linux.i386-b29`), kým ďalšie
-dva (`share-b29`, `windows-b29`) sa teraz zhodujú — a akceptovaný rozdiel popisku A9 pre `2343`
-úplne zmizol. Hranica: 1 kresliaca operácia, Δ12pt y popisku. Neredukovateľné
-bez odstránenia upstreamového driftu. Úplná RCA:
+**Rodina b29 (twopi, opravené).** Štyri varianty b29 zdieľali jedno ostrie noža: popisok
+hrany `EqmtTyp` (`Node14732->Node14731`) sedel na presnej remíze pri výbere strany v
+placeLabels, ktorej výsledok závisel od driftu rozloženia twopi o 1 ULP v okolitých
+objektoch. S vernou kontrakciou fmadd v `polylineMidpoint` (oprava rodiny states,
+2026-07-11) sa kotva popisku v porte stala bitovo identickou s kotvou orákula, a napriek
+tomu sa remíza stále rozhodovala opačne pri dvoch zo štyroch variantov (`graphs-b29`,
+`linux.i386-b29`), kým ďalšie dva (`share-b29`, `windows-b29`) sa zhodovali — a
+akceptovaný rozdiel popisku A9 pre `2343` úplne zmizol. Hranica: 1 kresliaca operácia,
+Δ12pt y popisku. Dňa 2026-10-20 sa každé vyhodnotenie Béziera v porte začalo vykonávať
+cez jedno zlúčené `bezier()`, tak ako clang kontrahuje `Bezier` z graphvizu
+(`e37e72f0`). Tým sa odstránil upstreamový drift: `graphs-b29` a `linux.i386-b29` sa
+teraz tiež zhodujú a ich akceptácie sú zrušené. Úplná RCA:
 `.agent-notes/twopi-states-rca.md`.
 
-To isté ostrie noža v placeLabels sa objavuje aj na stope **osage** (akceptované
-2026-07-11, úplná RCA: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` a `share-b29` (po 2 rozdieloch kresliacich operácií — kotva x
-jedného popisku hrany dopadne na 878.28 oproti 841.06, umiestnená symetricky okolo
-bitovo identického stredu splinu 859.67, t. j. ±polovica šírky popisku; obe
-varianty sa navzájom zrkadlia) a `1652` (2 rozdiely kresliacich operácií — dve hrany
-každá preklopí kotvu jedného popisku okolo identického stredu, jedna v x a jedna v y,
-s bitovo identickými splinmi a šípkami; orákulum sa vykreslí kompletne,
-takže nejde o známu nespoľahlivosť natívneho timeoutu). V každom prípade
-je geometria hrán bitovo presná a opačne sa rozhoduje iba remíza pri výbere strany popisku
-v okolí posunutom o 1 ULP.
+To isté ostrie noža v placeLabels sa objavovalo aj na stope **osage** (akceptované
+2026-07-11, úplná RCA: `.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` a
+`share-b29` (po 2 rozdieloch kresliacich operácií — kotva x jedného popisku hrany
+dopadne na 878.28 oproti 841.06, umiestnená symetricky okolo bitovo identického stredu
+splinu 859.67, t. j. ±polovica šírky popisku; obe varianty sa navzájom zrkadlia) a
+`1652` (2 rozdiely kresliacich operácií — dve hrany každá preklopí kotvu jedného popisku
+okolo identického stredu, jedna v x a jedna v y, s bitovo identickými splinmi a šípkami;
+orákulum sa vykreslí kompletne, takže nejde o známu nespoľahlivosť natívneho timeoutu).
+V každom prípade bola geometria hrán bitovo presná a opačne sa rozhodovala iba remíza
+pri výbere strany popisku v okolí posunutom o 1 ULP. Zlúčené `bezier()` z 2026-10-20
+(`e37e72f0`) odstránilo aj tento drift: všetky tri sa teraz zhodujú, rovnako ako
+neakceptovaný osage `2371`, a ich akceptácie sú zrušené.
 
 Stopa osage nesie trojicu `polypoly` (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; akceptované 2026-07-11, úplná RCA v

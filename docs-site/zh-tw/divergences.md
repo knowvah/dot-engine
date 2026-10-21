@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -812,18 +812,20 @@ twopi `1855` 相同。2026-07-11 接受；完整 RCA：
 鏈的責任；單獨注入 C 的 libm `cos`/`sin` 則沒有任何作用。2026-07-11
 接受；完整 RCA：`.agent-notes/osage-spline-family-rca.md`。
 
-**b29 家族（twopi）。** 四個 b29 變體共享同一個刀口：
-`EqmtTyp` 邊標籤（`Node14732->Node14731`）處於 placeLabels
-邊選擇的精確平手上，其結果取決於周圍物件 1 ULP 的 twopi 版面配置漂移。
+**b29 家族（twopi，已修正）。** 四個 b29 變體曾共享同一個刀口：
+`EqmtTyp` 邊標籤（`Node14732->Node14731`）曾處於 placeLabels
+邊選擇的精確平手上，其結果曾取決於周圍物件 1 ULP 的 twopi 版面配置漂移。
 在 `polylineMidpoint` 中採用忠實的 fmadd 收縮之後（states 家族修正，2026-07-11），移植版的標籤錨點
-與參照程式位元相同，但平手在四個變體中的
+變得與參照程式位元相同，但平手在四個變體中的
 兩個（`graphs-b29`、`linux.i386-b29`）上仍朝相反方向解析，而另外
-兩個（`share-b29`、`windows-b29`）現已一致——`2343` 已接受的 A9
-標籤差異也完全消失。界限：1 項繪製操作，標籤 y 相差 Δ12pt。除非消除上游的漂移，
-否則無法消除。完整 RCA：
+兩個（`share-b29`、`windows-b29`）當時已一致——`2343` 已接受的 A9
+標籤差異也完全消失。界限：1 項繪製操作，標籤 y 相差 Δ12pt。2026-10-20 起，移植版中的每一次 Bezier 求值
+都改為經由同一個融合的 `bezier()`，因為 clang 會收縮
+graphviz 的 `Bezier`（`e37e72f0`）。這消除了上游的漂移：
+`graphs-b29` 與 `linux.i386-b29` 現在也已一致，它們的接受已撤銷。完整 RCA：
 `.agent-notes/twopi-states-rca.md`。
 
-同樣的 placeLabels 刀口也出現在 **osage** 軌道上（2026-07-11
+同樣的 placeLabels 刀口也曾出現在 **osage** 軌道上（2026-07-11
 接受，完整 RCA：`.agent-notes/osage-small-tail-rca.md`）：
 `linux.i386-b29` 與 `share-b29`（各 2 項繪製操作差異——一個邊標籤的
 x 錨點落在 878.28 而非 841.06，對稱地放置於
@@ -831,8 +833,11 @@ x 錨點落在 878.28 而非 841.06，對稱地放置於
 變體互為鏡像）以及 `1652`（2 項繪製操作差異——兩條邊各
 圍繞相同的中點翻轉一個標籤錨點，一個在 x，一個在 y，
 樣條與箭頭位元相同；參照程式完整轉譯，
-因此這不是已知的原生逾時偶發問題）。在每個案例中，邊的幾何都是位元精確的，
+因此這不是已知的原生逾時偶發問題）。在每個案例中，邊的幾何當時都是位元精確的，
 只有標籤的邊選擇平手在 1 ULP 漂移的周圍環境下朝相反方向解析。
+2026-10-20 的融合 `bezier()`（`e37e72f0`）同樣消除了這個漂移：
+這三者現在都已一致，未被接受的 osage `2371` 也是如此，
+它們的接受已撤銷。
 
 osage 軌道帶有 `polypoly` 三件組（`graphs-polypoly`、
 `share-polypoly`、`windows-polypoly`；2026-07-11 接受，完整 RCA 見

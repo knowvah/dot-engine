@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1072,31 +1072,35 @@ legale, visibilità, Dijkstra e spline; iniettare da sole le `cos`/`sin` di libm
 non cambia nulla. Accettato il 2026-07-11; analisi completa della causa radice:
 `.agent-notes/osage-spline-family-rca.md`.
 
-**Famiglia b29 (twopi).** Le quattro varianti b29 condividono un unico filo di
-rasoio: l'etichetta d'arco `EqmtTyp` (`Node14732->Node14731`) si trova su un
-pareggio esatto nella selezione del lato di placeLabels il cui esito dipende dalla
-deriva di 1 ULP del layout twopi negli oggetti circostanti. Con la fedele
-contrazione fmadd in `polylineMidpoint` (correzione della famiglia states,
-2026-07-11) l'ancoraggio dell'etichetta del porting è identico al bit a quello
-dell'oracolo, eppure il pareggio si risolve ancora in modo opposto su due delle
-quattro varianti (`graphs-b29`, `linux.i386-b29`) mentre le altre due
-(`share-b29`, `windows-b29`) ora sono conformi — e la differenza di etichetta
-accettata di `2343` in A9 è scomparsa del tutto. Limite: 1 draw-op, Δ12pt sulla y
-dell'etichetta. Irriducibile senza eliminare la deriva a monte. Analisi completa
-della causa radice: `.agent-notes/twopi-states-rca.md`.
+**Famiglia b29 (twopi, corretta).** Le quattro varianti b29 condividevano un unico filo
+di rasoio: l'etichetta d'arco `EqmtTyp` (`Node14732->Node14731`) si trovava su un
+pareggio esatto nella selezione del lato di placeLabels il cui esito dipendeva dalla
+deriva di 1 ULP del layout twopi negli oggetti circostanti. Con la fedele contrazione
+fmadd in `polylineMidpoint` (correzione della famiglia states, 2026-07-11) l'ancoraggio
+dell'etichetta del porting è diventato identico al bit a quello dell'oracolo, eppure il
+pareggio si risolveva ancora in modo opposto su due delle quattro varianti
+(`graphs-b29`, `linux.i386-b29`) mentre le altre due (`share-b29`, `windows-b29`) erano
+conformi — e la differenza di etichetta accettata di `2343` in A9 è scomparsa del tutto.
+Limite: 1 draw-op, Δ12pt sulla y dell'etichetta. Il 2026-10-20 ogni valutazione di
+Bézier nel porting ha iniziato a passare per un unico `bezier()` fuso, come clang
+contrae il `Bezier` di graphviz (`e37e72f0`). Ciò ha eliminato la deriva a monte: ora
+anche `graphs-b29` e `linux.i386-b29` sono conformi, e le loro accettazioni sono
+ritirate. Analisi completa della causa radice: `.agent-notes/twopi-states-rca.md`.
 
-Lo stesso filo di rasoio di placeLabels emerge sulla traccia **osage** (accettato
-il 2026-07-11, analisi completa della causa radice:
-`.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` e `share-b29` (2
-differenze di draw-op ciascuno — l'ancoraggio x di un'etichetta d'arco cade a 878.28
-contro 841.06, collocato simmetricamente rispetto al punto medio della spline
-identico al bit 859.67, cioè ±metà larghezza dell'etichetta; le due varianti sono
-speculari tra loro) e `1652` (2 differenze di draw-op — due archi invertono ciascuno
-un ancoraggio di etichetta attorno a un punto medio identico, uno in x e uno in y,
-con spline e punte di freccia identiche al bit; l'oracolo renderizza completamente,
-quindi non è il noto timeout instabile del nativo). In ogni caso la geometria degli
-archi è esatta al bit e solo il pareggio nella selezione del lato dell'etichetta si
-risolve in modo opposto su un contorno con deriva di 1 ULP.
+Lo stesso filo di rasoio di placeLabels emergeva sulla traccia **osage** (accettato il
+2026-07-11, analisi completa della causa radice:
+`.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` e `share-b29` (2 differenze di
+draw-op ciascuno — l'ancoraggio x di un'etichetta d'arco cade a 878.28 contro 841.06,
+collocato simmetricamente rispetto al punto medio della spline identico al bit 859.67,
+cioè ±metà larghezza dell'etichetta; le due varianti sono speculari tra loro) e `1652`
+(2 differenze di draw-op — due archi invertono ciascuno un ancoraggio di etichetta
+attorno a un punto medio identico, uno in x e uno in y, con spline e punte di freccia
+identiche al bit; l'oracolo renderizza completamente, quindi non è il noto timeout
+instabile del nativo). In ogni caso la geometria degli archi era esatta al bit e solo il
+pareggio nella selezione del lato dell'etichetta si risolveva in modo opposto su un
+contorno con deriva di 1 ULP. Il `bezier()` fuso del 2026-10-20 (`e37e72f0`) ha
+eliminato anche quella deriva: ora tutti e tre sono conformi, così come `2371` di osage
+non accettato, e le loro accettazioni sono ritirate.
 
 La traccia osage ospita la tripletta `polypoly` (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; accettata il 2026-07-11, analisi completa

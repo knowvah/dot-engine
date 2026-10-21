@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1115,32 +1115,37 @@ de splines ; injecter seulement les `cos`/`sin` de libm de C est sans effet.
 Accepté le 2026-07-11 ; analyse de cause racine complète :
 `.agent-notes/osage-spline-family-rca.md`.
 
-**Famille b29 (twopi).** Les quatre variantes b29 partagent un même fil du
-rasoir : l’étiquette d’arête `EqmtTyp` (`Node14732->Node14731`) se trouve sur une
-égalité exacte de sélection de côté de placeLabels, dont l’issue dépend d’une
-dérive de disposition twopi de 1 ULP dans les objets environnants. Avec la
-contraction fmadd fidèle dans `polylineMidpoint` (correctif de la famille states,
-2026-07-11), l’ancre d’étiquette du portage est identique au bit près à celle de
-l’oracle, et pourtant l’égalité se résout encore à l’opposé sur deux des quatre
-variantes (`graphs-b29`, `linux.i386-b29`) tandis que les deux autres
-(`share-b29`, `windows-b29`) sont désormais conformes — et la différence
-d’étiquette A9 acceptée de `2343` a entièrement disparu. Borne : 1 opération de
-dessin, Δ12pt sur le y de l’étiquette. Irréductible sans éliminer la dérive en
-amont. Analyse de cause racine complète : `.agent-notes/twopi-states-rca.md`.
+**Famille b29 (twopi, corrigée).** Les quatre variantes b29 partageaient un même fil du
+rasoir : l’étiquette d’arête `EqmtTyp` (`Node14732->Node14731`) se trouvait sur une
+égalité exacte de sélection de côté de placeLabels, dont l’issue dépendait d’une dérive
+de disposition twopi de 1 ULP dans les objets environnants. Avec la contraction fmadd
+fidèle dans `polylineMidpoint` (correctif de la famille states, 2026-07-11), l’ancre
+d’étiquette du portage est devenue identique au bit près à celle de l’oracle, et
+pourtant l’égalité se résolvait encore à l’opposé sur deux des quatre variantes
+(`graphs-b29`, `linux.i386-b29`) tandis que les deux autres (`share-b29`, `windows-b29`)
+étaient conformes — et la différence d’étiquette A9 acceptée de `2343` a entièrement
+disparu. Borne : 1 opération de dessin, Δ12pt sur le y de l’étiquette. Le 2026-10-20,
+chaque évaluation de Bézier du portage est passée par un seul `bezier()` fusionné, comme
+clang contracte le `Bezier` de graphviz (`e37e72f0`). Cela a supprimé la dérive
+en amont : `graphs-b29` et `linux.i386-b29` sont désormais conformes eux aussi, et leurs
+acceptations sont retirées. Analyse de cause racine complète :
+`.agent-notes/twopi-states-rca.md`.
 
-Le même fil du rasoir de placeLabels apparaît sur la piste **osage** (accepté le
-2026-07-11, analyse de cause racine complète :
-`.agent-notes/osage-small-tail-rca.md`) : `linux.i386-b29` et `share-b29` (2
-différences d’opérations de dessin chacun — l’ancre en x d’une étiquette d’arête
-tombe à 878.28 contre 841.06, placée symétriquement autour du milieu de spline,
-identique au bit près, 859.67, c’est-à-dire ±la demi-largeur de l’étiquette ; les
-deux variantes sont le miroir l’une de l’autre) et `1652` (2 différences
-d’opérations de dessin — deux arêtes font chacune basculer une ancre d’étiquette
-autour d’un milieu identique, l’une en x et l’autre en y, avec des splines et des
-pointes de flèche identiques au bit près ; l’oracle rend complètement, ce n’est
-donc pas l’instabilité connue de délai dépassé du natif). Dans chaque cas, la
-géométrie des arêtes est exacte au bit près et seule l’égalité de sélection du
-côté de l’étiquette se résout à l’opposé sur un environnement dérivé de 1 ULP.
+Le même fil du rasoir de placeLabels apparaissait sur la piste **osage** (accepté le
+2026-07-11, analyse de cause racine complète : `.agent-notes/osage-small-tail-rca.md`) :
+`linux.i386-b29` et `share-b29` (2 différences d’opérations de dessin chacun — l’ancre
+en x d’une étiquette d’arête tombe à 878.28 contre 841.06, placée symétriquement autour
+du milieu de spline, identique au bit près, 859.67, c’est-à-dire ±la demi-largeur de
+l’étiquette ; les deux variantes sont le miroir l’une de l’autre) et `1652` (2
+différences d’opérations de dessin — deux arêtes font chacune basculer une ancre
+d’étiquette autour d’un milieu identique, l’une en x et l’autre en y, avec des splines
+et des pointes de flèche identiques au bit près ; l’oracle rend complètement, ce n’est
+donc pas l’instabilité connue de délai dépassé du natif). Dans chaque cas, la géométrie
+des arêtes était exacte au bit près et seule l’égalité de sélection du côté de
+l’étiquette se résolvait à l’opposé sur un environnement dérivé de 1 ULP. Le `bezier()`
+fusionné du 2026-10-20 (`e37e72f0`) a supprimé cette dérive aussi : les trois sont
+désormais conformes, de même que `2371` d’osage, non accepté, et leurs acceptations sont
+retirées.
 
 La piste osage porte le triplet `polypoly` (`graphs-polypoly`, `share-polypoly`,
 `windows-polypoly` ; accepté le 2026-07-11, analyse de cause racine complète dans

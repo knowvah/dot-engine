@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -967,29 +967,33 @@ krawędzi, całkowicie oczyszczając z zarzutów łańcuch układu legalnego, wi
 wstrzyknięcie samych `cos`/`sin` z libm C nic nie zmienia. Zaakceptowane
 2026-07-11; pełna analiza przyczyn: `.agent-notes/osage-spline-family-rca.md`.
 
-**Rodzina b29 (twopi).** Cztery warianty b29 dzielą jedno ostrze noża: etykieta krawędzi
-`EqmtTyp` (`Node14732->Node14731`) leży na dokładnym remisie wyboru strony w placeLabels,
-którego wynik zależy od dryfu układu twopi o 1 ULP w otaczających
-obiektach. Przy wiernej kontrakcji fmadd w
-`polylineMidpoint` (poprawka rodziny states, 2026-07-11) kotwica etykiety w porcie
-jest bitowo identyczna z kotwicą wyroczni, a mimo to remis wciąż rozstrzyga się odwrotnie na
-dwóch z czterech wariantów (`graphs-b29`, `linux.i386-b29`), podczas gdy pozostałe
-dwa (`share-b29`, `windows-b29`) są teraz zgodne — a zaakceptowana różnica etykiety A9 dla `2343`
-zniknęła całkowicie. Granica: 1 operacja rysowania, Δ12pt w y etykiety. Nieredukowalne
-bez wyeliminowania dryfu z wcześniejszych etapów. Pełna analiza przyczyn:
-`.agent-notes/twopi-states-rca.md`.
+**Rodzina b29 (twopi, naprawione).** Cztery warianty b29 dzieliły jedno ostrze noża:
+etykieta krawędzi `EqmtTyp` (`Node14732->Node14731`) leżała na dokładnym remisie wyboru
+strony w placeLabels, którego wynik zależał od dryfu układu twopi o 1 ULP w otaczających
+obiektach. Przy wiernej kontrakcji fmadd w `polylineMidpoint` (poprawka rodziny states,
+2026-07-11) kotwica etykiety w porcie stała się bitowo identyczna z kotwicą wyroczni, a
+mimo to remis wciąż rozstrzygał się odwrotnie na dwóch z czterech wariantów
+(`graphs-b29`, `linux.i386-b29`), podczas gdy pozostałe dwa (`share-b29`, `windows-b29`)
+były zgodne — a zaakceptowana różnica etykiety A9 dla `2343` zniknęła całkowicie.
+Granica: 1 operacja rysowania, Δ12pt w y etykiety. Dnia 2026-10-20 każde obliczenie
+krzywej Béziera w porcie zaczęło przechodzić przez jedną scaloną funkcję `bezier()`, tak
+jak clang kontraktuje `Bezier` z graphviz (`e37e72f0`). To usunęło dryf z wcześniejszych
+etapów: `graphs-b29` i `linux.i386-b29` również są teraz zgodne, a ich akceptacje
+zostały wycofane. Pełna analiza przyczyn: `.agent-notes/twopi-states-rca.md`.
 
-To samo ostrze noża placeLabels pojawia się na ścieżce **osage** (zaakceptowane
+To samo ostrze noża placeLabels pojawiało się na ścieżce **osage** (zaakceptowane
 2026-07-11, pełna analiza przyczyn: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` i `share-b29` (po 2 różnice operacji rysowania — kotwica x jednej etykiety krawędzi
-ląduje na 878.28 vs 841.06, umieszczona symetrycznie względem
-bitowo identycznego środka splajnu 859.67, tj. ±połowa szerokości etykiety; oba
-warianty są swoimi lustrami) oraz `1652` (2 różnice operacji rysowania — dwie krawędzie, z których każda
-przerzuca kotwicę jednej etykiety wokół identycznego środka, jedna w x, druga w y,
-przy bitowo identycznych splajnach i grotach; wyrocznia renderuje całość,
-więc to nie jest znany niestabilny timeout natywny). W każdym przypadku geometria krawędzi
-jest bitowo dokładna, a tylko remis wyboru strony etykiety rozstrzyga się
-odwrotnie w otoczeniu zdryfowanym o 1 ULP.
+`linux.i386-b29` i `share-b29` (po 2 różnice operacji rysowania — kotwica x jednej
+etykiety krawędzi ląduje na 878.28 vs 841.06, umieszczona symetrycznie względem bitowo
+identycznego środka splajnu 859.67, tj. ±połowa szerokości etykiety; oba warianty są
+swoimi lustrami) oraz `1652` (2 różnice operacji rysowania — dwie krawędzie, z których
+każda przerzuca kotwicę jednej etykiety wokół identycznego środka, jedna w x, druga w y,
+przy bitowo identycznych splajnach i grotach; wyrocznia renderuje całość, więc to nie
+jest znany niestabilny timeout natywny). W każdym przypadku geometria krawędzi była
+bitowo dokładna, a tylko remis wyboru strony etykiety rozstrzygał się odwrotnie w
+otoczeniu zdryfowanym o 1 ULP. Scalona funkcja `bezier()` z 2026-10-20 (`e37e72f0`)
+usunęła także ten dryf: wszystkie trzy są teraz zgodne, podobnie jak niezaakceptowany
+osage `2371`, a ich akceptacje zostały wycofane.
 
 Ścieżka osage niesie trójkę `polypoly` (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; zaakceptowane 2026-07-11, pełna analiza przyczyn w

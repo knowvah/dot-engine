@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-14T00:37:34.946Z",
+  "generatedAt": "2026-10-21T14:43:55.807Z",
   "generatedWith": "test/corpus/plain-walk.ts",
   "engine": "twopi",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 928,
   "counts": {
-    "pass": 901,
+    "pass": 903,
     "diverged": 2,
-    "accepted": 22,
+    "accepted": 20,
     "oracleError": 2,
     "portError": 0,
     "timeout": 1
@@ -12761,21 +12761,13 @@
       "id": "graphs-b29",
       "path": "graphs/b29.gv",
       "size": 62931,
-      "verdict": "accepted",
+      "verdict": "pass",
       "formats": {
         "plain": {
-          "verdict": "accepted",
-          "diffCount": 1,
-          "firstDiffs": [
-            "[edge] Node14732->Node14731#0/ly: port=5.1542 native=4.9876"
-          ]
+          "verdict": "pass"
         },
         "plain-ext": {
-          "verdict": "accepted",
-          "diffCount": 1,
-          "firstDiffs": [
-            "[edge] Node14732->Node14731#0/ly: port=5.1542 native=4.9876"
-          ]
+          "verdict": "pass"
         }
       }
     },
@@ -12909,21 +12901,13 @@
       "id": "linux.i386-b29",
       "path": "linux.i386/b29.gv",
       "size": 136753,
-      "verdict": "accepted",
+      "verdict": "pass",
       "formats": {
         "plain": {
-          "verdict": "accepted",
-          "diffCount": 1,
-          "firstDiffs": [
-            "[edge] Node14732->Node14731#0/ly: port=5.1542 native=4.9876"
-          ]
+          "verdict": "pass"
         },
         "plain-ext": {
-          "verdict": "accepted",
-          "diffCount": 1,
-          "firstDiffs": [
-            "[edge] Node14732->Node14731#0/ly: port=5.1542 native=4.9876"
-          ]
+          "verdict": "pass"
         }
       }
     },

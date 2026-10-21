@@ -2337,20 +2337,6 @@
       "rationale": "layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "graphs-b29",
-      "engine": "twopi",
-      "opClass": "edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]",
-      "delta": 12,
-      "rationale": "layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.i386-b29",
-      "engine": "twopi",
-      "opClass": "edge:Node14732->Node14731#0/_ldraw_/op[2].T[1]",
-      "delta": 12,
-      "rationale": "layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "2470",
       "engine": "twopi",
       "opClass": "edge:n13->n12#0/_ldraw_/op[2].T[0]",
@@ -2412,27 +2398,6 @@
       "opClass": "[parse]/oracle",
       "delta": 0,
       "rationale": "oracle bug (A4): native -Kosage -Tjson emits bare inf/nan tokens (invalid JSON) for degenerate cluster draw coordinates; the document is unparseable so no comparison is possible. Port emits finite, valid JSON. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.i386-b29",
-      "engine": "osage",
-      "opClass": "edge:Node14663->Node14649#0/_ldraw_/op[2].T[0]",
-      "delta": 37.22000000000003,
-      "rationale": "layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-b29",
-      "engine": "osage",
-      "opClass": "edge:Node14663->Node14649#0/_ldraw_/op[2].T[0]",
-      "delta": 37.22000000000003,
-      "rationale": "layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1652",
-      "engine": "osage",
-      "opClass": "edge:Op_1091->Op_1092#0/_ldraw_/op[2].T[0]",
-      "delta": 65.40000000000009,
-      "rationale": "layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
       "id": "2784",

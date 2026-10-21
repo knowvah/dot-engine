@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -969,28 +969,32 @@ deney: C'nin tam engel koordinatlarını başka türlü dokunulmamış porta enj
 zincirini tümüyle aklar; yalnızca C'nin libm `cos`/`sin`'ini enjekte etmek etkisizdir.
 2026-07-11'de kabul edildi; tam kök neden analizi: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29 ailesi (twopi).** Dört b29 varyantı tek bir bıçak sırtını paylaşır:
-`EqmtTyp` kenar etiketi (`Node14732->Node14731`), sonucu çevredeki nesnelerdeki 1-ULP
-twopi yerleşim sürüklenmesine bağlı olan tam bir placeLabels taraf seçimi beraberliği
-üzerinde durur. `polylineMidpoint` içindeki sadık fmadd birleştirmesiyle (states-ailesi
-düzeltmesi, 2026-07-11) portun etiket çapası kâhininkiyle bit düzeyinde özdeştir;
-yine de beraberlik dört varyantın ikisinde (`graphs-b29`, `linux.i386-b29`) zıt yönde
-çözülürken diğer ikisi (`share-b29`, `windows-b29`) artık uyumludur — ve `2343`'ün
-kabul edilmiş A9 etiket farkı tümüyle silindi. Sınır: 1 çizim işlemi, Δ12pt etiket y.
-Yukarı akıştaki sürüklenme ortadan kaldırılmadan indirgenemez. Tam kök neden analizi:
-`.agent-notes/twopi-states-rca.md`.
+**b29 ailesi (twopi, düzeltildi).** Dört b29 varyantı tek bir bıçak sırtını
+paylaşıyordu: `EqmtTyp` kenar etiketi (`Node14732->Node14731`), sonucu çevredeki
+nesnelerdeki 1-ULP twopi yerleşim sürüklenmesine bağlı olan tam bir placeLabels taraf
+seçimi beraberliği üzerinde duruyordu. `polylineMidpoint` içindeki sadık fmadd
+birleştirmesiyle (states-ailesi düzeltmesi, 2026-07-11) portun etiket çapası
+kâhininkiyle bit düzeyinde özdeş hale geldi; yine de beraberlik dört varyantın ikisinde
+(`graphs-b29`, `linux.i386-b29`) zıt yönde çözülmeye devam ederken diğer ikisi
+(`share-b29`, `windows-b29`) uyumluydu — ve `2343`'ün kabul edilmiş A9 etiket farkı
+tümüyle silindi. Sınır: 1 çizim işlemi, Δ12pt etiket y. 2026-10-20'de portta her Bezier
+değerlendirmesi, clang'ın graphviz'in `Bezier` fonksiyonunu birleştirmesi gibi, tek bir
+birleştirilmiş `bezier()` üzerinden geçmeye başladı (`e37e72f0`). Bu, yukarı akıştaki
+sürüklenmeyi ortadan kaldırdı: `graphs-b29` ve `linux.i386-b29` da artık uyumludur ve
+kabulleri kaldırıldı. Tam kök neden analizi: `.agent-notes/twopi-states-rca.md`.
 
-Aynı placeLabels bıçak sırtı **osage** hattında da ortaya çıkar (2026-07-11'de kabul
-edildi, tam kök neden analizi: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` ve `share-b29` (her birinde 2 çizim işlemi farkı — bir kenar
-etiketinin x çapası 841.06 yerine 878.28'e oturur; bit düzeyinde özdeş spline orta
-noktası 859.67 etrafında simetrik yerleştirilmiştir, yani ±etiket genişliğinin yarısı;
-iki varyant birbirinin aynasıdır) ve `1652` (2 çizim işlemi farkı — iki kenar,
-özdeş bir orta nokta etrafında birer etiket çapasını çevirir, biri x'te biri y'de;
-spline'lar ve ok uçları bit düzeyinde özdeştir; kâhin eksiksiz işler, yani bu bilinen
-yerel zaman aşımı kararsızlığı değildir). Her durumda kenar geometrisi bit düzeyinde
-tamdır ve yalnızca etiket tarafı seçimi beraberliği, 1-ULP sürüklenmiş çevrede zıt
-yönde çözülür.
+Aynı placeLabels bıçak sırtı **osage** hattında da ortaya çıktı (2026-07-11'de kabul
+edildi, tam kök neden analizi: `.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29`
+ve `share-b29` (her birinde 2 çizim işlemi farkı — bir kenar etiketinin x çapası 841.06
+yerine 878.28'e oturur; bit düzeyinde özdeş spline orta noktası 859.67 etrafında
+simetrik yerleştirilmiştir, yani ±etiket genişliğinin yarısı; iki varyant birbirinin
+aynasıdır) ve `1652` (2 çizim işlemi farkı — iki kenar, özdeş bir orta nokta etrafında
+birer etiket çapasını çevirir, biri x'te biri y'de; spline'lar ve ok uçları bit
+düzeyinde özdeştir; kâhin eksiksiz işler, yani bu bilinen yerel zaman aşımı kararsızlığı
+değildir). Her durumda kenar geometrisi bit düzeyinde tamdı ve yalnızca etiket tarafı
+seçimi beraberliği, 1-ULP sürüklenmiş çevrede zıt yönde çözülüyordu. 2026-10-20'deki
+birleştirilmiş `bezier()` (`e37e72f0`) bu sürüklenmeyi de ortadan kaldırdı: üçü de artık
+uyumludur, kabul edilmemiş osage `2371` de öyle, ve kabulleri kaldırıldı.
 
 Osage hattı `polypoly` üçlüsünü taşır (`graphs-polypoly`, `share-polypoly`,
 `windows-polypoly`; 2026-07-11'de kabul edildi, tam kök neden analizi

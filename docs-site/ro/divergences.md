@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -986,28 +986,34 @@ portarea altfel neatinsă dă **zero** muchii divergente, exonerând complet lan
 aranjării legale, al vizibilității, al Dijkstra și al spline-urilor; injectarea doar a `cos`/`sin` libm din C nu are niciun efect. Acceptat
 2026-07-11; analiza completă a cauzei rădăcină: `.agent-notes/osage-spline-family-rca.md`.
 
-**Familia b29 (twopi).** Cele patru variante b29 împart o singură muchie de cuțit:
-eticheta de muchie `EqmtTyp` (`Node14732->Node14731`) se află pe o egalitate exactă la selecția laturii în placeLabels,
-al cărei rezultat depinde de deriva de 1 ULP a aranjării twopi în
-obiectele din jur. Cu contracția fmadd fidelă din
-`polylineMidpoint` (remedierea familiei states, 2026-07-11), ancora etichetei portării
-este identică bit cu bit cu cea a oracolului, dar egalitatea se rezolvă totuși invers pe
-două dintre cele patru variante (`graphs-b29`, `linux.i386-b29`), în timp ce celelalte
-două (`share-b29`, `windows-b29`) sunt acum conforme — iar diferența de etichetă A9 acceptată pentru `2343` a dispărut complet. Limită: 1 operație de desenare, Δ12pt la y-ul etichetei. Ireductibilă
-fără eliminarea derivei din amonte. Analiza completă a cauzei rădăcină:
-`.agent-notes/twopi-states-rca.md`.
+**Familia b29 (twopi, remediată).** Cele patru variante b29 împărțeau o singură muchie
+de cuțit: eticheta de muchie `EqmtTyp` (`Node14732->Node14731`) se afla pe o egalitate
+exactă la selecția laturii în placeLabels, al cărei rezultat depindea de deriva de 1 ULP
+a aranjării twopi în obiectele din jur. Cu contracția fmadd fidelă din
+`polylineMidpoint` (remedierea familiei states, 2026-07-11), ancora etichetei portării a
+devenit identică bit cu bit cu cea a oracolului, dar egalitatea se rezolva totuși invers
+pe două dintre cele patru variante (`graphs-b29`, `linux.i386-b29`), în timp ce
+celelalte două (`share-b29`, `windows-b29`) erau conforme — iar diferența de etichetă A9
+acceptată pentru `2343` a dispărut complet. Limită: 1 operație de desenare, Δ12pt la
+y-ul etichetei. La 2026-10-20, fiecare evaluare Bézier din portare a început să treacă
+printr-un singur `bezier()` fuzionat, așa cum clang contractă `Bezier` din graphviz
+(`e37e72f0`). Aceasta a eliminat deriva din amonte: `graphs-b29` și `linux.i386-b29`
+sunt acum conforme și ele, iar acceptările lor sunt retrase. Analiza completă a cauzei
+rădăcină: `.agent-notes/twopi-states-rca.md`.
 
-Aceeași muchie de cuțit din placeLabels apare pe fluxul **osage** (acceptat
-2026-07-11, analiza completă a cauzei rădăcină: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` și `share-b29` (câte 2 diferențe de operații de desenare — ancora x a unei etichete de muchie
-ajunge la 878.28 față de 841.06, plasată simetric față de
-mijlocul spline-ului identic bit cu bit 859.67, adică ±jumătate din lățimea etichetei; cele două
-variante se oglindesc una pe alta) și `1652` (2 diferențe de operații de desenare — două muchii inversează
-fiecare câte o ancoră de etichetă în jurul unui mijloc identic, una pe x și una pe y,
-cu spline-uri și vârfuri de săgeată identice bit cu bit; oracolul randează complet,
-deci nu este instabilitatea cunoscută de timeout nativ). În fiecare caz
-geometria muchiilor este exactă bit cu bit și doar egalitatea de selecție a laturii etichetei se rezolvă
-invers, pe un mediu derivat cu 1 ULP.
+Aceeași muchie de cuțit din placeLabels apărea pe fluxul **osage** (acceptat 2026-07-11,
+analiza completă a cauzei rădăcină: `.agent-notes/osage-small-tail-rca.md`):
+`linux.i386-b29` și `share-b29` (câte 2 diferențe de operații de desenare — ancora x a
+unei etichete de muchie ajunge la 878.28 față de 841.06, plasată simetric față de
+mijlocul spline-ului identic bit cu bit 859.67, adică ±jumătate din lățimea etichetei;
+cele două variante se oglindesc una pe alta) și `1652` (2 diferențe de operații de
+desenare — două muchii inversează fiecare câte o ancoră de etichetă în jurul unui mijloc
+identic, una pe x și una pe y, cu spline-uri și vârfuri de săgeată identice bit cu bit;
+oracolul randează complet, deci nu este instabilitatea cunoscută de timeout nativ). În
+fiecare caz geometria muchiilor era exactă bit cu bit și doar egalitatea de selecție a
+laturii etichetei se rezolva invers, pe un mediu derivat cu 1 ULP. `bezier()` fuzionat
+din 2026-10-20 (`e37e72f0`) a eliminat și această derivă: toate trei sunt acum conforme,
+la fel ca `2371` din osage, neacceptat, iar acceptările lor sunt retrase.
 
 Fluxul osage poartă tripletul `polypoly` (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; acceptat 2026-07-11, analiza completă a cauzei rădăcină în

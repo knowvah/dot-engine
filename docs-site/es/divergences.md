@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1005,29 +1005,35 @@ exonerando por completo la cadena de disposición legal, visibilidad, Dijkstra y
 inyectar solo el `cos`/`sin` de libm de C no tiene efecto. Aceptado el
 2026-07-11; análisis de causa raíz completo: `.agent-notes/osage-spline-family-rca.md`.
 
-**Familia b29 (twopi).** Las cuatro variantes b29 comparten un único filo de navaja: la
-etiqueta de arista `EqmtTyp` (`Node14732->Node14731`) cae en un empate exacto de selección de lado
-de placeLabels cuyo resultado depende de la deriva de 1 ULP del diseño de twopi en los
-objetos circundantes. Con la contracción fmadd fiel en
-`polylineMidpoint` (corrección de la familia states, 2026-07-11), el anclaje de etiqueta del port
-es idéntico al bit al del oráculo, pero el empate aún se resuelve al revés en
-dos de las cuatro variantes (`graphs-b29`, `linux.i386-b29`) mientras que las otras
-dos (`share-b29`, `windows-b29`) ya son conformes, y la diferencia de etiqueta A9 aceptada de
-`2343` desapareció por completo. Cota: 1 operación de dibujo, Δ12pt en la y de la etiqueta. Irreducible
-sin eliminar la deriva aguas arriba. Análisis de causa raíz completo:
-`.agent-notes/twopi-states-rca.md`.
+**Familia b29 (twopi, corregida).** Las cuatro variantes b29 compartían un único filo de
+navaja: la etiqueta de arista `EqmtTyp` (`Node14732->Node14731`) caía en un empate
+exacto de selección de lado de placeLabels cuyo resultado dependía de la deriva de 1 ULP
+del diseño de twopi en los objetos circundantes. Con la contracción fmadd fiel en
+`polylineMidpoint` (corrección de la familia states, 2026-07-11), el anclaje de etiqueta
+del port pasó a ser idéntico al bit al del oráculo, pero el empate aún se resolvía al
+revés en dos de las cuatro variantes (`graphs-b29`, `linux.i386-b29`) mientras que las
+otras dos (`share-b29`, `windows-b29`) ya eran conformes, y la diferencia de etiqueta A9
+aceptada de `2343` desapareció por completo. Cota: 1 operación de dibujo, Δ12pt en la y
+de la etiqueta. El 2026-10-20 toda evaluación de Bézier en el port pasó a realizarse
+mediante un único `bezier()` fusionado, igual que clang contrae el `Bezier` de graphviz
+(`e37e72f0`). Eso eliminó la deriva aguas arriba: `graphs-b29` y `linux.i386-b29` ahora
+también son conformes y sus aceptaciones quedan retiradas. Análisis de causa raíz
+completo: `.agent-notes/twopi-states-rca.md`.
 
-El mismo filo de navaja de placeLabels aflora en la pista de **osage** (aceptado
-el 2026-07-11, análisis de causa raíz completo: `.agent-notes/osage-small-tail-rca.md`):
+El mismo filo de navaja de placeLabels afloró en la pista de **osage** (aceptado el
+2026-07-11, análisis de causa raíz completo: `.agent-notes/osage-small-tail-rca.md`):
 `linux.i386-b29` y `share-b29` (2 diferencias de operaciones de dibujo cada uno: el
-anclaje x de una etiqueta de arista cae en 878.28 frente a 841.06, colocada simétricamente respecto al
-punto medio de la spline, idéntico al bit, 859.67, es decir, ±la mitad del ancho de la etiqueta; las dos
-variantes son espejo una de otra) y `1652` (2 diferencias de operaciones de dibujo: dos aristas invierten cada una
-un anclaje de etiqueta respecto a un punto medio idéntico, una en x y otra en y,
-con splines y puntas de flecha idénticas al bit; el oráculo renderiza por completo,
-así que esto no es la conocida intermitencia de timeout nativo). En todos los casos la geometría de las aristas
-es exacta al bit y solo el empate de selección de lado de la etiqueta se resuelve
-al revés con el entorno desplazado 1 ULP.
+anclaje x de una etiqueta de arista cae en 878.28 frente a 841.06, colocada
+simétricamente respecto al punto medio de la spline, idéntico al bit, 859.67, es decir,
+±la mitad del ancho de la etiqueta; las dos variantes son espejo una de otra) y `1652`
+(2 diferencias de operaciones de dibujo: dos aristas invierten cada una un anclaje de
+etiqueta respecto a un punto medio idéntico, una en x y otra en y, con splines y puntas
+de flecha idénticas al bit; el oráculo renderiza por completo, así que esto no es la
+conocida intermitencia de timeout nativo). En todos los casos la geometría de las
+aristas era exacta al bit y solo el empate de selección de lado de la etiqueta se
+resolvía al revés con el entorno desplazado 1 ULP. El `bezier()` fusionado del
+2026-10-20 (`e37e72f0`) eliminó también esa deriva: los tres ahora son conformes, al
+igual que el `2371` de osage no aceptado, y sus aceptaciones quedan retiradas.
 
 La pista de osage lleva el triple `polypoly` (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; aceptado el 2026-07-11, análisis de causa raíz completo en

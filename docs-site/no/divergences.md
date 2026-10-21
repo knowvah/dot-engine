@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -986,29 +986,32 @@ kanter, noe som frikjenner kjeden med lovlig arrangement, synlighet, Dijkstra og
 helt; å injisere Cs libm-`cos`/`sin` alene er uten virkning. Godkjent
 2026-07-11; full RCA: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29-familien (twopi).** De fire b29-variantene deler én knivsegg:
-`EqmtTyp`-kantetiketten (`Node14732->Node14731`) ligger på en eksakt likhet i placeLabels-sidevalg
-hvis utfall avhenger av 1-ULP-drift i twopi-layouten i de
-omkringliggende objektene. Med den trofaste fmadd-kontraksjonen i
-`polylineMidpoint` (states-familierettelse, 2026-07-11) er portens etikettanker
-bit-identisk med orakelets, men likheten løses likevel motsatt på
-to av de fire variantene (`graphs-b29`, `linux.i386-b29`), mens de to andre
-(`share-b29`, `windows-b29`) nå samsvarer — og `2343`s godkjente A9-
-etikettforskjell forsvant helt. Grense: 1 tegneoperasjon, Δ12pt etikett-y. Ureduserbar
-uten å eliminere oppstrøms drift. Full RCA:
+**b29-familien (twopi, rettet).** De fire b29-variantene delte én knivsegg:
+`EqmtTyp`-kantetiketten (`Node14732->Node14731`) lå på en eksakt likhet i
+placeLabels-sidevalg hvis utfall avhang av 1-ULP-drift i twopi-layouten i de
+omkringliggende objektene. Med den trofaste fmadd-kontraksjonen i `polylineMidpoint`
+(states-familierettelse, 2026-07-11) ble portens etikettanker bit-identisk med
+orakelets, men likheten ble likevel løst motsatt på to av de fire variantene
+(`graphs-b29`, `linux.i386-b29`), mens de to andre (`share-b29`, `windows-b29`)
+samsvarte — og `2343`s godkjente A9- etikettforskjell forsvant helt. Grense: 1
+tegneoperasjon, Δ12pt etikett-y. Den 2026-10-20 begynte hver Bézier-evaluering i porten
+å gå gjennom én sammenslått `bezier()`, ettersom clang kontraherer graphvizs `Bezier`
+(`e37e72f0`). Det fjernet oppstrøms drift: `graphs-b29` og `linux.i386-b29` samsvarer nå
+også, og godkjenningene deres er trukket tilbake. Full RCA:
 `.agent-notes/twopi-states-rca.md`.
 
-Den samme placeLabels-kniveggen dukker opp på **osage**-sporet (godkjent
-2026-07-11, full RCA: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` og `share-b29` (2 forskjeller i tegneoperasjoner hver — én kantetiketts
-x-anker lander på 878.28 mot 841.06, plassert symmetrisk om det
-bit-identiske splinemidtpunktet 859.67, dvs. ±halve etikettbredden; de to
-variantene speiler hverandre) og `1652` (2 forskjeller i tegneoperasjoner — to kanter hver
-snur ett etikettanker om et identisk midtpunkt, ett i x og ett i y,
-med bit-identiske spliner og pilspisser; orakelet rendrer fullstendig,
-så dette er ikke den kjente tilfeldige feilen med tidsavbrudd i det innebygde). I hvert tilfelle
-er kantgeometrien bit-eksakt, og bare likheten i valg av etikettside løses
-motsatt i omgivelser med 1-ULP-drift.
+Den samme placeLabels-kniveggen dukket opp på **osage**-sporet (godkjent 2026-07-11,
+full RCA: `.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` og `share-b29` (2
+forskjeller i tegneoperasjoner hver — én kantetiketts x-anker lander på 878.28 mot
+841.06, plassert symmetrisk om det bit-identiske splinemidtpunktet 859.67, dvs. ±halve
+etikettbredden; de to variantene speiler hverandre) og `1652` (2 forskjeller i
+tegneoperasjoner — to kanter hver snur ett etikettanker om et identisk midtpunkt, ett i
+x og ett i y, med bit-identiske spliner og pilspisser; orakelet rendrer fullstendig, så
+dette er ikke den kjente tilfeldige feilen med tidsavbrudd i det innebygde). I hvert
+tilfelle var kantgeometrien bit-eksakt, og bare likheten i valg av etikettside ble løst
+motsatt i omgivelser med 1-ULP-drift. Den sammenslåtte `bezier()` fra 2026-10-20
+(`e37e72f0`) fjernet også den driften: alle tre samsvarer nå, det samme gjør den ikke
+godkjente osage-`2371`, og godkjenningene deres er trukket tilbake.
 
 Osage-sporet har `polypoly`-trioen (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; godkjent 2026-07-11, full RCA i

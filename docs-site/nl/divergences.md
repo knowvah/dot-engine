@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -993,28 +993,32 @@ kanten op, wat de keten van legale schikking, zichtbaarheid, Dijkstra en spline
 volledig vrijspreekt; alleen de libm-`cos`/`sin` van C injecteren is een no-op. Geaccepteerd
 2026-07-11; volledige RCA: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29-familie (twopi).** De vier b29-varianten delen één mesrand: het
-kantlabel `EqmtTyp` (`Node14732->Node14731`) zit op een exacte gelijkstand bij de zijkeuze van placeLabels
-waarvan de uitkomst afhangt van 1-ULP-drift van de twopi-lay-out in de
-omringende objecten. Met de getrouwe fmadd-samenvoeging in
-`polylineMidpoint` (correctie voor de states-familie, 2026-07-11) is het labelanker van de port
-bit-identiek aan dat van het orakel, maar de gelijkstand wordt bij
-twee van de vier varianten (`graphs-b29`, `linux.i386-b29`) nog steeds tegengesteld opgelost terwijl de andere
-twee (`share-b29`, `windows-b29`) nu conform zijn — en het geaccepteerde A9-
-labelverschil van `2343` verdween volledig. Grens: 1 tekenbewerking, Δ12pt label-y. Onherleidbaar
-zonder de upstream-drift weg te nemen. Volledige RCA:
-`.agent-notes/twopi-states-rca.md`.
+**b29-familie (twopi, opgelost).** De vier b29-varianten deelden één mesrand: het
+kantlabel `EqmtTyp` (`Node14732->Node14731`) zat op een exacte gelijkstand bij de
+zijkeuze van placeLabels waarvan de uitkomst afhing van 1-ULP-drift van de twopi-lay-out
+in de omringende objecten. Met de getrouwe fmadd-samenvoeging in `polylineMidpoint`
+(correctie voor de states-familie, 2026-07-11) werd het labelanker van de port
+bit-identiek aan dat van het orakel, maar de gelijkstand werd bij twee van de vier
+varianten (`graphs-b29`, `linux.i386-b29`) nog steeds tegengesteld opgelost terwijl de
+andere twee (`share-b29`, `windows-b29`) conform waren — en het geaccepteerde A9-
+labelverschil van `2343` verdween volledig. Grens: 1 tekenbewerking, Δ12pt label-y. Op
+2026-10-20 ging elke Bézier-evaluatie in de port via één samengevoegde `bezier()`, net
+zoals clang `Bezier` van graphviz contraheert (`e37e72f0`). Dat nam de upstream-drift
+weg: `graphs-b29` en `linux.i386-b29` zijn nu ook conform en hun acceptaties zijn
+ingetrokken. Volledige RCA: `.agent-notes/twopi-states-rca.md`.
 
-Dezelfde mesrand van placeLabels komt naar boven op het **osage**-spoor (geaccepteerd
-2026-07-11, volledige RCA: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` en `share-b29` (elk 2 tekenbewerkingsverschillen — het x-anker van één kantlabel
-landt op 878.28 tegenover 841.06, symmetrisch geplaatst rond het
-bit-identieke splinemidden 859.67, d.w.z. ±de halve labelbreedte; de twee
-varianten spiegelen elkaar) en `1652` (2 tekenbewerkingsverschillen — twee kanten slaan elk
-één labelanker om rond een identiek midden, één in x en één in y,
-met bit-identieke splines en pijlpunten; het orakel rendert volledig,
-dus dit is niet de bekende native-timeout-flake). In elk geval is de kantgeometrie bit-exact en wordt alleen de
-gelijkstand bij de zijkeuze van het label tegengesteld opgelost bij een omgeving met 1 ULP drift.
+Dezelfde mesrand van placeLabels kwam naar boven op het **osage**-spoor (geaccepteerd
+2026-07-11, volledige RCA: `.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` en
+`share-b29` (elk 2 tekenbewerkingsverschillen — het x-anker van één kantlabel landt op
+878.28 tegenover 841.06, symmetrisch geplaatst rond het bit-identieke splinemidden
+859.67, d.w.z. ±de halve labelbreedte; de twee varianten spiegelen elkaar) en `1652` (2
+tekenbewerkingsverschillen — twee kanten slaan elk één labelanker om rond een identiek
+midden, één in x en één in y, met bit-identieke splines en pijlpunten; het orakel
+rendert volledig, dus dit is niet de bekende native-timeout-flake). In elk geval was de
+kantgeometrie bit-exact en werd alleen de gelijkstand bij de zijkeuze van het label
+tegengesteld opgelost bij een omgeving met 1 ULP drift. De samengevoegde `bezier()` van
+2026-10-20 (`e37e72f0`) nam ook die drift weg: alle drie zijn nu conform, net als het
+niet-geaccepteerde osage-`2371`, en hun acceptaties zijn ingetrokken.
 
 Het osage-spoor draagt het `polypoly`-drietal (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; geaccepteerd 2026-07-11, volledige RCA in

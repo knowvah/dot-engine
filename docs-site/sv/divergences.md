@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -988,29 +988,32 @@ kanter, vilket frikänner kedjan med laglig arrangering, sikt, Dijkstra och spli
 helt; att injicera enbart C:s libm-`cos`/`sin` gör ingenting. Godkänd
 2026-07-11; fullständig orsaksanalys: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29-familjen (twopi).** De fyra b29-varianterna delar en knivsegg: etiketten
-`EqmtTyp` på en kant (`Node14732->Node14731`) ligger på ett exakt oavgjort läge i sidval i placeLabels,
-vars utfall beror på layoutdrift på 1 ULP i twopi i de
-omgivande objekten. Med den trogna fmadd-kontraktionen i
-`polylineMidpoint` (rättning för states-familjen, 2026-07-11) är porteringens etikettankare
-bitidentiskt med oraklets, men det oavgjorda läget avgörs ändå åt motsatt håll på
-två av de fyra varianterna (`graphs-b29`, `linux.i386-b29`) medan de andra
-två (`share-b29`, `windows-b29`) nu konformerar — och `2343`s godkända A9-
-etikettskillnad försvann helt. Gräns: 1 ritoperation, Δ12pt i etikettens y. Oreducerbar
-utan att eliminera driften uppströms. Fullständig orsaksanalys:
-`.agent-notes/twopi-states-rca.md`.
+**b29-familjen (twopi, åtgärdad).** De fyra b29-varianterna delade en knivsegg:
+etiketten `EqmtTyp` på en kant (`Node14732->Node14731`) låg på ett exakt oavgjort läge i
+sidval i placeLabels, vars utfall berodde på layoutdrift på 1 ULP i twopi i de omgivande
+objekten. Med den trogna fmadd-kontraktionen i `polylineMidpoint` (rättning för
+states-familjen, 2026-07-11) blev porteringens etikettankare bitidentiskt med oraklets,
+men det oavgjorda läget avgjordes ändå åt motsatt håll på två av de fyra varianterna
+(`graphs-b29`, `linux.i386-b29`) medan de andra två (`share-b29`, `windows-b29`)
+konformerade — och `2343`s godkända A9- etikettskillnad försvann helt. Gräns: 1
+ritoperation, Δ12pt i etikettens y. Den 2026-10-20 började varje Bézier-evaluering i
+porteringen gå via en enda sammanslagen `bezier()`, eftersom clang kontraherar graphvizs
+`Bezier` (`e37e72f0`). Det eliminerade driften uppströms: `graphs-b29` och
+`linux.i386-b29` konformerar nu också, och deras godkännanden är återkallade.
+Fullständig orsaksanalys: `.agent-notes/twopi-states-rca.md`.
 
-Samma knivsegg i placeLabels dyker upp på **osage**-spåret (godkänd
-2026-07-11, fullständig orsaksanalys: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` och `share-b29` (2 skillnader i ritoperationer vardera — en kantetiketts
-x-ankare hamnar på 878.28 mot 841.06, placerat symmetriskt kring den
-bitidentiska splinemittpunkten 859.67, dvs. ±halva etikettens bredd; de två
-varianterna speglar varandra) och `1652` (2 skillnader i ritoperationer — två kanter vänder
-vardera ett etikettankare kring en identisk mittpunkt, en i x och en i y,
-med bitidentiska splines och pilspetsar; oraklet renderar fullständigt,
-så detta är inte det kända timeout-flaket hos den inbyggda). I varje fall är kantgeometrin
-bitexakt och bara det oavgjorda läget i etikettens sidval avgörs
-åt motsatt håll på omgivningar med 1 ULP drift.
+Samma knivsegg i placeLabels dök upp på **osage**-spåret (godkänd 2026-07-11,
+fullständig orsaksanalys: `.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` och
+`share-b29` (2 skillnader i ritoperationer vardera — en kantetiketts x-ankare hamnar på
+878.28 mot 841.06, placerat symmetriskt kring den bitidentiska splinemittpunkten 859.67,
+dvs. ±halva etikettens bredd; de två varianterna speglar varandra) och `1652` (2
+skillnader i ritoperationer — två kanter vänder vardera ett etikettankare kring en
+identisk mittpunkt, en i x och en i y, med bitidentiska splines och pilspetsar; oraklet
+renderar fullständigt, så detta är inte det kända timeout-flaket hos den inbyggda). I
+varje fall var kantgeometrin bitexakt och bara det oavgjorda läget i etikettens sidval
+avgjordes åt motsatt håll på omgivningar med 1 ULP drift. Den sammanslagna `bezier()`
+från 2026-10-20 (`e37e72f0`) eliminerade även den driften: alla tre konformerar nu,
+liksom det ogodkända osage-`2371`, och deras godkännanden är återkallade.
 
 Osage-spåret har tripletten `polypoly` (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; godkänd 2026-07-11, fullständig orsaksanalys i

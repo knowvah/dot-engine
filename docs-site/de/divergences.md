@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1055,19 +1055,22 @@ Legal-Arrangement, Sichtbarkeit, Dijkstra und Spline vollständig; die Injektion
 von `cos`/`sin` aus der libm von C bewirkt nichts. Akzeptiert 2026-07-11; vollständige
 Ursachenanalyse: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29-Familie (twopi).** Die vier b29-Varianten teilen eine Messerschneide: Das
-Kanten-Label `EqmtTyp` (`Node14732->Node14731`) sitzt auf einem exakten Gleichstand der
-Seitenwahl von placeLabels, dessen Ergebnis von einer 1-ULP-Drift des twopi-Layouts der
-umgebenden Objekte abhängt. Mit der originalgetreuen fmadd-Kontraktion in
-`polylineMidpoint` (Korrektur der states-Familie, 2026-07-11) ist der Label-Anker der
-Portierung bitidentisch mit dem des Orakels, und doch wird der Gleichstand bei zwei der
+**b29-Familie (twopi, behoben).** Die vier b29-Varianten teilten eine Messerschneide:
+Das Kanten-Label `EqmtTyp` (`Node14732->Node14731`) saß auf einem exakten Gleichstand
+der Seitenwahl von placeLabels, dessen Ergebnis von einer 1-ULP-Drift des twopi-Layouts
+der umgebenden Objekte abhing. Mit der originalgetreuen fmadd-Kontraktion in
+`polylineMidpoint` (Korrektur der states-Familie, 2026-07-11) wurde der Label-Anker der
+Portierung bitidentisch mit dem des Orakels, und doch wurde der Gleichstand bei zwei der
 vier Varianten (`graphs-b29`, `linux.i386-b29`) weiterhin entgegengesetzt aufgelöst,
-während die anderen beiden (`share-b29`, `windows-b29`) jetzt konform sind — und die
-akzeptierte A9-Label-Abweichung von `2343` ist vollständig verschwunden. Schranke:
-1 Draw-Op, Δ12pt beim Label-y. Nicht reduzierbar, ohne die vorgelagerte Drift zu
-beseitigen. Vollständige Ursachenanalyse: `.agent-notes/twopi-states-rca.md`.
+während die anderen beiden (`share-b29`, `windows-b29`) konform waren — und die
+akzeptierte A9-Label-Abweichung von `2343` ist vollständig verschwunden. Schranke: 1
+Draw-Op, Δ12pt beim Label-y. Am 2026-10-20 wurde jede Bezier-Auswertung in der
+Portierung auf ein einziges verschmolzenes `bezier()` umgestellt, da clang das `Bezier`
+von graphviz kontrahiert (`e37e72f0`). Das beseitigte die vorgelagerte Drift:
+`graphs-b29` und `linux.i386-b29` sind nun ebenfalls konform, und ihre Akzeptanzen sind
+aufgehoben. Vollständige Ursachenanalyse: `.agent-notes/twopi-states-rca.md`.
 
-Dieselbe Messerschneide von placeLabels tritt im **osage**-Track auf (akzeptiert
+Dieselbe Messerschneide von placeLabels trat im **osage**-Track auf (akzeptiert
 2026-07-11, vollständige Ursachenanalyse: `.agent-notes/osage-small-tail-rca.md`):
 `linux.i386-b29` und `share-b29` (je 2 Draw-Op-Unterschiede — der x-Anker eines
 Kanten-Labels landet bei 878.28 statt 841.06, symmetrisch um den bitidentischen
@@ -1075,9 +1078,11 @@ Spline-Mittelpunkt 859.67 platziert, also ±die halbe Label-Breite; die beiden V
 spiegeln einander) und `1652` (2 Draw-Op-Unterschiede — zwei Kanten kippen je einen
 Label-Anker um einen identischen Mittelpunkt, eine in x und eine in y, bei
 bitidentischen Splines und Pfeilspitzen; das Orakel rendert vollständig, es handelt sich
-also nicht um den bekannten Flake des nativen Timeouts). In jedem Fall ist die
-Kantengeometrie bitgenau, und nur der Gleichstand der Label-Seitenwahl wird bei um 1 ULP
-abgedrifteter Umgebung entgegengesetzt aufgelöst.
+also nicht um den bekannten Flake des nativen Timeouts). In jedem Fall war die
+Kantengeometrie bitgenau, und nur der Gleichstand der Label-Seitenwahl wurde bei um 1
+ULP abgedrifteter Umgebung entgegengesetzt aufgelöst. Das verschmolzene `bezier()` vom
+2026-10-20 (`e37e72f0`) beseitigte auch diese Drift: Alle drei sind nun konform, ebenso
+das nicht akzeptierte osage-`2371`, und ihre Akzeptanzen sind aufgehoben.
 
 Der osage-Track führt das `polypoly`-Tripel (`graphs-polypoly`, `share-polypoly`,
 `windows-polypoly`; akzeptiert 2026-07-11, vollständige Ursachenanalyse in

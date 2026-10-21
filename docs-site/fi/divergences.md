@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1006,29 +1006,33 @@ kaarta, vapauttaen laillisen järjestelyn, näkyvyyden, Dijkstran ja splinen
 ketjun kokonaan epäilystä; pelkän C:n libm `cos`/`sin`in injektointi ei vaikuta mihinkään. Hyväksytty
 2026-07-11; täysi juurisyyanalyysi: `.agent-notes/osage-spline-family-rca.md`.
 
-**b29-perhe (twopi).** Neljällä b29-variantilla on yksi yhteinen veitsenterä:
-`EqmtTyp`-kaarinimiö (`Node14732->Node14731`) on täsmällisessä placeLabels-
-puolenvalinnan tasapelissä, jonka lopputulos riippuu ympäröivien objektien 1 ULP:n
-twopi-asetteluajelehtimisesta. Uskollisella fmadd-yhdistämisellä
-`polylineMidpoint`issa (states-perheen korjaus, 2026-07-11) porttauksen nimiöankkuri
-on bitti bitiltä identtinen oraakkelin kanssa, mutta tasapeli ratkeaa silti vastakkain
-kahdella neljästä variantista (`graphs-b29`, `linux.i386-b29`), kun taas
-kaksi muuta (`share-b29`, `windows-b29`) ovat nyt yhdenmukaisia — ja `2343`:n hyväksytty A9-
-nimiöero poistui kokonaan. Raja: 1 piirto-operaatio, Δ12 pt nimiön y. Palautumaton
-ilman ylävirran ajelehtimisen poistamista. Täysi juurisyyanalyysi:
-`.agent-notes/twopi-states-rca.md`.
+**b29-perhe (twopi, korjattu).** Neljällä b29-variantilla oli yksi yhteinen veitsenterä:
+`EqmtTyp`-kaarinimiö (`Node14732->Node14731`) oli täsmällisessä placeLabels-
+puolenvalinnan tasapelissä, jonka lopputulos riippui ympäröivien objektien 1 ULP:n
+twopi-asetteluajelehtimisesta. Uskollisella fmadd-yhdistämisellä `polylineMidpoint`issa
+(states-perheen korjaus, 2026-07-11) porttauksen nimiöankkurista tuli bitti bitiltä
+identtinen oraakkelin kanssa, mutta tasapeli ratkesi silti vastakkain kahdella neljästä
+variantista (`graphs-b29`, `linux.i386-b29`), kun taas kaksi muuta (`share-b29`,
+`windows-b29`) olivat yhdenmukaisia — ja `2343`:n hyväksytty A9- nimiöero poistui
+kokonaan. Raja: 1 piirto-operaatio, Δ12 pt nimiön y. 2026-10-20 jokainen
+Bezier-evaluointi portissa alkoi kulkea yhden yhdistetyn `bezier()`-funktion kautta,
+kuten clang yhdistää graphvizin `Bezier`-funktion (`e37e72f0`). Se poisti ylävirran
+ajelehtimisen: `graphs-b29` ja `linux.i386-b29` ovat nyt myös yhdenmukaisia, ja niiden
+hyväksynnät on kumottu. Täysi juurisyyanalyysi: `.agent-notes/twopi-states-rca.md`.
 
-Sama placeLabels-veitsenterä ilmenee **osage**-raidalla (hyväksytty
-2026-07-11, täysi juurisyyanalyysi: `.agent-notes/osage-small-tail-rca.md`):
-`linux.i386-b29` ja `share-b29` (2 piirto-operaatioeroa kummassakin — yhden kaarinimiön
-x-ankkuri päätyy arvoon 878.28 vs. 841.06, sijoitettuna symmetrisesti bitti bitiltä
-identtisen splinen keskipisteen 859.67 ympärille, eli ±puolet nimiön leveydestä; nämä kaksi
-varianttia peilaavat toisiaan) ja `1652` (2 piirto-operaatioeroa — kaksi kaarta kumpikin
-kääntää yhden nimiöankkurin identtisen keskipisteen ympäri, toisen x:ssä ja toisen y:ssä,
-bitti bitiltä identtisillä splineillä ja nuolenkärjillä; oraakkeli renderöi kokonaan,
-joten tämä ei ole tunnettu natiivin aikakatkaisun epävakaus). Kaikissa tapauksissa kaaren
-geometria on bittitarkka ja vain nimiön puolenvalinnan tasapeli ratkeaa
-vastakkain 1 ULP:n ajelehtineessa ympäristössä.
+Sama placeLabels-veitsenterä ilmeni **osage**-raidalla (hyväksytty 2026-07-11, täysi
+juurisyyanalyysi: `.agent-notes/osage-small-tail-rca.md`): `linux.i386-b29` ja
+`share-b29` (2 piirto-operaatioeroa kummassakin — yhden kaarinimiön x-ankkuri päätyy
+arvoon 878.28 vs. 841.06, sijoitettuna symmetrisesti bitti bitiltä identtisen splinen
+keskipisteen 859.67 ympärille, eli ±puolet nimiön leveydestä; nämä kaksi varianttia
+peilaavat toisiaan) ja `1652` (2 piirto-operaatioeroa — kaksi kaarta kumpikin kääntää
+yhden nimiöankkurin identtisen keskipisteen ympäri, toisen x:ssä ja toisen y:ssä, bitti
+bitiltä identtisillä splineillä ja nuolenkärjillä; oraakkeli renderöi kokonaan, joten
+tämä ei ole tunnettu natiivin aikakatkaisun epävakaus). Kaikissa tapauksissa kaaren
+geometria oli bittitarkka ja vain nimiön puolenvalinnan tasapeli ratkesi vastakkain 1
+ULP:n ajelehtineessa ympäristössä. Yhdistetty `bezier()` 2026-10-20 (`e37e72f0`) poisti
+myös tuon ajelehtimisen: kaikki kolme ovat nyt yhdenmukaisia, samoin hyväksymätön osagen
+`2371`, ja niiden hyväksynnät on kumottu.
 
 Osage-raidalla on `polypoly`-kolmikko (`graphs-polypoly`,
 `share-polypoly`, `windows-polypoly`; hyväksytty 2026-07-11, täysi juurisyyanalyysi

@@ -1,5 +1,5 @@
 ---
-sourceHash: c7d7e4e8bf64fcbb9b8a751efc9ff76189606d5602ef53b5908d723d8de0640f
+sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -388,11 +388,11 @@ filed” 条目）。该差异在引擎轨道层面通过
 **osage `1855` — 障碍顶点的 fp-contract 扩散。** 有别于上文 twopi 的 `1855` 径向镜像条目：在 osage 下，节点中心与参照程序逐位精确，而 110 处绘制操作差异是三条经障碍路由的边被放在了节点行的镜像一侧（X 逐位精确，Y 镜像）。来自
 `circumscribed_polygon_corner_about_ellipse`（`neatosplines.c:301`）的八边形障碍顶点与 C 相差 3–4 ULP，因为 clang 的 `-ffp-contract=on` 把 `ellipse_tangent_slope`/`line_intersection` 中的 `a·b±c` 链融合成单次舍入的 FMA，而 V8 对每个运算都分别舍入：C 的融合舍入把一列沟槽角点 x 值收拢为一个逐位相同的双精度数（精确共线），移植版则把它拆成两个相差 1 ULP 的值。这翻转了可见性 `clear()` 的相切测试——沟槽不再被阻挡——增加了约 20 条可见性边，Dijkstra 于是把上/下同伦平局解决到了镜像一侧。受控实验：把 C 精确的障碍坐标注入其余部分保持不变的移植版，得到**零**条存在差异的边，从而完全排除了合法排布、可见性、Dijkstra 和样条这条链路的嫌疑；单独注入 C 的 libm `cos`/`sin` 则没有任何效果。2026-07-11 接受；完整根因分析：`.agent-notes/osage-spline-family-rca.md`。
 
-**b29 族（twopi）。** 四个 b29 变体共用一个刀刃：`EqmtTyp` 边标签（`Node14732->Node14731`）处于一个精确的 placeLabels 边选择平局上，其结果取决于周围对象中 twopi 布局的 1 ULP 漂移。借助 `polylineMidpoint` 中忠实的 fmadd 收缩（states 族修复，2026-07-11），移植版的标签锚点与参照程序逐位相同，然而该平局在四个变体中的两个（`graphs-b29`、`linux.i386-b29`）上仍然得到相反的结果，而另外两个（`share-b29`、`windows-b29`）现在已一致——并且 `2343` 被接受的 A9 标签差异已完全消除。界限：1 处绘制操作，标签 y 方向 Δ12pt。除非消除上游漂移，否则不可约。完整根因分析：
+**b29 族（twopi，已修复）。** 四个 b29 变体曾共用一个刀刃：`EqmtTyp` 边标签（`Node14732->Node14731`）曾处于一个精确的 placeLabels 边选择平局上，其结果曾取决于周围对象中 twopi 布局的 1 ULP 漂移。借助 `polylineMidpoint` 中忠实的 fmadd 收缩（states 族修复，2026-07-11），移植版的标签锚点变得与参照程序逐位相同，然而该平局在四个变体中的两个（`graphs-b29`、`linux.i386-b29`）上仍然得到相反的结果，而另外两个（`share-b29`、`windows-b29`）当时已一致——并且 `2343` 被接受的 A9 标签差异已完全消除。界限：1 处绘制操作，标签 y 方向 Δ12pt。2026-10-20 起，移植版中的每一次 Bezier 求值都改为经由同一个融合的 `bezier()`，因为 clang 会收缩 graphviz 的 `Bezier`（`e37e72f0`）。这消除了上游漂移：`graphs-b29` 和 `linux.i386-b29` 现在也已一致，它们的接受已撤销。完整根因分析：
 `.agent-notes/twopi-states-rca.md`。
 
-同样的 placeLabels 刀刃也出现在 **osage** 轨道上（2026-07-11 接受，完整根因分析：`.agent-notes/osage-small-tail-rca.md`）：
-`linux.i386-b29` 和 `share-b29`（各有 2 处绘制操作差异——一个边标签的 x 锚点落在 878.28 而不是 841.06，围绕逐位相同的样条中点 859.67 对称放置，即 ±标签宽度的一半；这两个变体互为镜像）以及 `1652`（2 处绘制操作差异——两条边各自围绕相同的中点翻转一个标签锚点，一个在 x 方向，一个在 y 方向，样条和箭头逐位相同；参照程序渲染完整，所以这不是已知的原生超时抖动）。在每种情形中，边的几何都是逐位精确的，只有标签边选择的平局在 1 ULP 漂移的周围环境下得到了相反的结果。
+同样的 placeLabels 刀刃也曾出现在 **osage** 轨道上（2026-07-11 接受，完整根因分析：`.agent-notes/osage-small-tail-rca.md`）：
+`linux.i386-b29` 和 `share-b29`（各有 2 处绘制操作差异——一个边标签的 x 锚点落在 878.28 而不是 841.06，围绕逐位相同的样条中点 859.67 对称放置，即 ±标签宽度的一半；这两个变体互为镜像）以及 `1652`（2 处绘制操作差异——两条边各自围绕相同的中点翻转一个标签锚点，一个在 x 方向，一个在 y 方向，样条和箭头逐位相同；参照程序渲染完整，所以这不是已知的原生超时抖动）。在每种情形中，边的几何当时都是逐位精确的，只有标签边选择的平局在 1 ULP 漂移的周围环境下得到了相反的结果。2026-10-20 的融合 `bezier()`（`e37e72f0`）同样消除了这一漂移：这三者现在都已一致，未被接受的 osage `2371` 也是如此，它们的接受已撤销。
 
 osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`、`windows-polypoly`；2026-07-11 接受，完整根因分析见
 `.agent-notes/patchwork-tail-rca.md`）：唯一出现差异的运算，是在一个扭曲四边形朝向 180 的顶点处裸露的超越函数 `cos(π+θ)`——V8 的 `Math.cos` 是正确舍入的，而 Apple libm 的 `cos` 带有与参数相关的 ±1 ULP 误差（所以只有在 libm 下 `|cos(π+θ)| ≠
