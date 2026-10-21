@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1457,6 +1457,21 @@ cible le **SVG** (ainsi que les formats texte intermédiaires `json` / `xdot` /
   dans C ; les navigateurs les ignorent et rendent la graisse normale, et le
   mesureur mesure la graisse normale pour concorder. La sortie sous Node n’est
   pas touchée (elle n’utilise jamais le mesureur canvas).
+- **Entrée à plusieurs graphes et `NULL` de l’entrée vide.** `parse` et `renderSvg`
+  lisent une chaîne DOT comme le fait `agmemread` de cgraph. Après l’accolade fermante
+  du premier graphe, `endgraph` (`lib/cgraph/grammar.y`) appelle `aglexeof`
+  (`lib/cgraph/scan.l`), qui repousse un jeton de fin de fichier, si bien que rien après
+  cette accolade n’est analysé lexicalement ; le texte final, les chaînes ou
+  commentaires non terminés et les graphes suivants sont ignorés sans erreur ni
+  avertissement. La CLI `dot` rappelle au contraire `agread` et rend chaque graphe d’un
+  fichier, de sorte qu’un fichier à deux graphes donne là-bas deux documents SVG et ici
+  un seul (le rendu du portage correspond au premier document de la CLI sur les fichiers
+  du corpus à plusieurs graphes `1845`, `2835` et `graphs-multi`, qui restent en
+  quarantaine). Pour rendre plusieurs graphes, découpez la source et appelez `renderSvg`
+  une fois par graphe. Pour une entrée vide ou ne contenant que des commentaires,
+  `agmemread` renvoie `NULL` et la CLI n’affiche rien ; `parse` renvoie à la place un
+  graphe non orienté vide et `renderSvg` le rend, parce que l’API renvoie un `Graph` et
+  un SVG par appel.
 - **Mécanismes propres au natif** remplacés par des équivalents sûrs pour le
   navigateur : le chargement dynamique de greffons (`dlopen`) est remplacé par
   l’enregistrement statique des moteurs/moteurs de rendu ; les lectures du

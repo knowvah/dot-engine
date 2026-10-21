@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1292,6 +1292,20 @@ Det här är medvetna omfångsgränser, inte buggar. Biblioteket riktar sig mot 
   emitteras ordagrant, som i C; webbläsare ignorerar dem och renderar normal
   vikt, och mätaren mäter normal vikt för att matcha. Utdata i Node
   påverkas inte (den använder aldrig canvas-mätaren).
+- **Indata med flera grafer och `NULL` för tom indata.** `parse` och `renderSvg` läser
+  en DOT-sträng på samma sätt som cgraphs `agmemread`. Efter den första grafens
+  avslutande klammer anropar `endgraph` (`lib/cgraph/grammar.y`) `aglexeof`
+  (`lib/cgraph/scan.l`), som skjuter tillbaka en filslutstoken, så att inget efter den
+  klammern lexas: efterföljande text, oavslutade strängar eller kommentarer och
+  ytterligare grafer ignoreras utan fel eller varning. `dot`-CLI:t anropar i stället
+  `agread` igen och renderar varje graf i en fil, så en fil med två grafer ger där två
+  SVG-dokument och här ett (porteringens rendering matchar CLI:ts första dokument på
+  korpusfilerna med flera grafer `1845`, `2835` och `graphs-multi`, som förblir i
+  karantän). För att rendera flera grafer delar man upp källan och anropar `renderSvg`
+  en gång per graf. För tom indata eller indata med bara kommentarer returnerar
+  `agmemread` `NULL`, och CLI:t skriver inte ut något; `parse` returnerar i stället en
+  tom oriktad graf och `renderSvg` renderar den, eftersom API:t returnerar en `Graph`
+  och en SVG per anrop.
 - **Enbart inbyggda mekanismer** ersatta av webbläsarsäkra motsvarigheter: dynamisk
   inläsning av insticksmoduler (`dlopen`) ersätts av statisk registrering av motorer/renderare;
   filsystemsläsningar (typsnitt, bilder, konfiguration) ersätts av återanrop som anroparen tillhandahåller

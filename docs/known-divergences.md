@@ -1300,6 +1300,20 @@ These are deliberate scope boundaries, not bugs. The library targets **SVG**
   are emitted verbatim, as in C; browsers ignore them and render normal
   weight, and the measurer measures normal weight to match. Node output is
   unaffected (it never uses the canvas measurer).
+- **Multi-graph input and the empty-input `NULL`.** `parse` and `renderSvg`
+  read one DOT string the way cgraph's `agmemread` does. After the first
+  graph's closing brace, `endgraph` (`lib/cgraph/grammar.y`) calls `aglexeof`
+  (`lib/cgraph/scan.l`), which pushes an end-of-file token back, so nothing
+  after that brace is lexed: trailing text, unterminated strings or comments,
+  and further graphs are ignored without an error or a warning. The `dot` CLI
+  instead calls `agread` again and renders every graph in a file, so a
+  two-graph file gives two SVG documents there and one here (the port's
+  render matches the CLI's first document on the multi-graph corpus files
+  `1845`, `2835` and `graphs-multi`, which stay quarantined). To render
+  several graphs, split the source and call `renderSvg` once per graph. For
+  empty or comment-only input `agmemread` returns `NULL` and the CLI prints
+  nothing; `parse` returns an empty undirected graph instead and `renderSvg`
+  renders it, because the API returns one `Graph` and one SVG per call.
 - **Native-only mechanics** replaced by browser-safe equivalents: dynamic
   plugin loading (`dlopen`) is replaced by static engine/renderer registration;
   filesystem reads (fonts, images, config) are replaced by caller-supplied

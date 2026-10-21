@@ -272,8 +272,11 @@ export function parse(src: string): Graph {
     }
     throw err;
   }
+  // Only the graph's own text was lexed; what follows its closing brace is
+  // never read (grammar.y:endgraph -> scan.l:aglexeof).
+  const lexed = src.slice(0, ast.end);
   try {
-    validateEdgeOperators(src, ast.directed);
+    validateEdgeOperators(lexed, ast.directed);
   } catch (err: unknown) {
     // C's lexer hands the wrong operator to bison as '-': a syntax error there.
     const offset = err instanceof ParseError ? err.location.offset : undefined;
@@ -283,7 +286,7 @@ export function parse(src: string): Graph {
     }
     throw err;
   }
-  warnNumberAmbiguities(src, src.length);
+  warnNumberAmbiguities(lexed, lexed.length);
   return buildFromAst(ast);
 }
 

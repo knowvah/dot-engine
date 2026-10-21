@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1294,6 +1294,20 @@ er ólík innbyggðu Graphviz. Fundið af verkefninu `v2-silent-gaps`
   eru gefnar út orðrétt, eins og í C; vafrar hunsa þær og teikna venjulega
   þyngd, og mælirinn mælir venjulega þyngd til að passa. Node-úttak
   verður ekki fyrir áhrifum (það notar aldrei canvas-mælinn).
+- **Inntak með mörgum netum og `NULL` við tómt inntak.** `parse` og `renderSvg` lesa
+  einn DOT-streng eins og `agmemread` í cgraph. Eftir lokasviga fyrsta netsins kallar
+  `endgraph` (`lib/cgraph/grammar.y`) á `aglexeof` (`lib/cgraph/scan.l`), sem ýtir
+  skráarlokamerki til baka, þannig að ekkert eftir þann sviga er orðgreint: textaleifar,
+  óendaðir strengir eða athugasemdir og fleiri net eru hunsuð án villu eða viðvörunar.
+  `dot` skipanalínuviðmótið kallar hins vegar aftur á `agread` og teiknar hvert net í
+  skrá, þannig að skrá með tveimur netum gefur þar tvö SVG-skjöl en hér eitt (teiknun
+  yfirfærslunnar passar við fyrsta skjal skipanalínuviðmótsins í gagnasafnsskrám með
+  mörgum netum, `1845`, `2835` og `graphs-multi`, sem eru áfram í sóttkví). Til að
+  teikna mörg net skal skipta upprunanum og kalla á `renderSvg` einu sinni fyrir hvert
+  net. Fyrir tómt inntak eða inntak með eingöngu athugasemdum skilar `agmemread` `NULL`
+  og skipanalínuviðmótið prentar ekkert; `parse` skilar þess í stað tómu óstefnugerðu
+  neti og `renderSvg` teiknar það, því forritaskilin skila einu `Graph` og einu SVG í
+  hverju kalli.
 - **Vélrænt eingöngu innbyggt** skipt út fyrir vafraörugg jafngildi: kvikt
   íbótahlaðning (`dlopen`) er skipt út fyrir kyrrstæða skráningu véla/teiknara;
   skráakerfislestri (letur, myndir, stillingar) er skipt út fyrir

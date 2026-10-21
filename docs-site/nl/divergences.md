@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1297,6 +1297,21 @@ Dit zijn bewuste scope-afbakeningen, geen bugs. De bibliotheek richt zich op **S
   worden letterlijk uitgegeven, zoals in C; browsers negeren ze en renderen het normale
   gewicht, en de meter meet het normale gewicht om daarbij aan te sluiten. Node-uitvoer wordt
   niet beïnvloed (die gebruikt de canvas-meter nooit).
+- **Invoer met meerdere grafen en de `NULL` bij lege invoer.** `parse` en `renderSvg`
+  lezen één DOT-string zoals `agmemread` van cgraph dat doet. Na de sluitaccolade van de
+  eerste graaf roept `endgraph` (`lib/cgraph/grammar.y`) `aglexeof`
+  (`lib/cgraph/scan.l`) aan, dat een einde-bestandstoken terugduwt, zodat na die
+  accolade niets meer wordt gelext: afsluitende tekst, onafgesloten strings of
+  commentaar en verdere grafen worden zonder fout of waarschuwing genegeerd. De
+  `dot`-CLI roept in plaats daarvan opnieuw `agread` aan en rendert elke graaf in een
+  bestand, zodat een bestand met twee grafen daar twee SVG-documenten oplevert en hier
+  één (de render van de port komt overeen met het eerste document van de CLI op de
+  corpusbestanden met meerdere grafen `1845`, `2835` en `graphs-multi`, die in
+  quarantaine blijven). Splits de bron en roep `renderSvg` één keer per graaf aan om
+  meerdere grafen te renderen. Bij lege invoer of invoer met alleen commentaar geeft
+  `agmemread` `NULL` terug en print de CLI niets; `parse` geeft in plaats daarvan een
+  lege ongerichte graaf terug en `renderSvg` rendert die, omdat de API per aanroep één
+  `Graph` en één SVG teruggeeft.
 - **Native-only mechanismen** vervangen door browserveilige equivalenten: dynamisch
   laden van plug-ins (`dlopen`) is vervangen door statische registratie van engines/renderers;
   bestandsleesacties (lettertypen, afbeeldingen, configuratie) zijn vervangen door door de aanroeper geleverde

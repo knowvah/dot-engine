@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1312,6 +1312,21 @@ Nämä ovat tarkoituksellisia soveltamisalan rajoja, ei vikoja. Kirjasto kohdist
   emittoidaan sellaisinaan kuten C:ssä; selaimet ohittavat ne ja renderöivät normaalipainon,
   ja mittaaja mittaa normaalipainon vastaavasti. Noden tuloste
   ei ole vaikutuksen alainen (se ei koskaan käytä canvas-mittaajaa).
+- **Usean kaavion syöte ja tyhjän syötteen `NULL`.** `parse` ja `renderSvg` lukevat
+  yhden DOT-merkkijonon samalla tavalla kuin cgraphin `agmemread`. Ensimmäisen kaavion
+  lopettavan aaltosulun jälkeen `endgraph` (`lib/cgraph/grammar.y`) kutsuu
+  `aglexeof`-funktiota (`lib/cgraph/scan.l`), joka työntää tiedoston loppu -tokenin
+  takaisin, joten sen sulun jälkeen mitään ei lekseroida: perässä oleva teksti,
+  päättämättömät merkkijonot tai kommentit ja lisäkaaviot ohitetaan ilman virhettä tai
+  varoitusta. `dot`-komentorivi sen sijaan kutsuu `agread`-funktiota uudelleen ja
+  renderöi tiedoston jokaisen kaavion, joten kahden kaavion tiedosto tuottaa siellä
+  kaksi SVG-dokumenttia ja täällä yhden (porttauksen renderöinti vastaa komentorivin
+  ensimmäistä dokumenttia usean kaavion korpustiedostoissa `1845`, `2835` ja
+  `graphs-multi`, jotka pysyvät karanteenissa). Useiden kaavioiden renderöimiseksi jaa
+  lähde ja kutsu `renderSvg` kerran kaaviota kohden. Tyhjälle tai pelkkiä kommentteja
+  sisältävälle syötteelle `agmemread` palauttaa `NULL` ja komentorivi ei tulosta mitään;
+  `parse` palauttaa sen sijaan tyhjän suuntaamattoman kaavion ja `renderSvg` renderöi
+  sen, koska rajapinta palauttaa yhden `Graph`-olion ja yhden SVG:n kutsua kohden.
 - **Vain natiivit mekanismit**, jotka on korvattu selaimen kanssa turvallisilla vastineilla: dynaaminen
   liitännäisten lataus (`dlopen`) korvataan staattisella moottori-/renderöijärekisteröinnillä;
   tiedostojärjestelmälukemat (fontit, kuvat, konfiguraatio) korvataan kutsujan toimittamilla

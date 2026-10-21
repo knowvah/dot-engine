@@ -8,8 +8,8 @@ Items 1–13 are done. Items 7–13 were closed by the mission brief
 (merged via PR #94, merge commit `f54d12c6`); its decision journal records each
 item's outcome. Items 14–23 are closed (14 by PR #95; 15–23 by
 `plans/post-16-1-followups-2/`). Items 24 and 33 are closed by
-`feature/cache-oracle-failures` (PR #97), item 32 by `chore/record-t11-walk-passes`.
-The open work is items 25–31 under "New follow-ups
+`feature/cache-oracle-failures` (PR #97), item 32 by `chore/record-t11-walk-passes` (PR #98), item 26 by
+`fix/parser-native-acceptance`. The open work is items 25 and 27–31 under "New follow-ups
 found by part 2" below, each journaled in `plans/decision-journal.md`.
 
 ## State at handoff
@@ -179,7 +179,8 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       direction, T14.)
   25. ipsep `MaxIter` default `100·n` (`neatoinit.c:1286-1287`) is unported; no
       observable input found (T5).
-  26. The Peggy grammar rejects inputs native accepts: trailing junk, several graphs
+  26. **[DONE — `fix/parser-native-acceptance`: agmemread's one-graph read;
+      empty input kept as an empty graph (user), documented as a non-goal]** The Peggy grammar rejects inputs native accepts: trailing junk, several graphs
       in one file, comment-only sources (T6).
   27. HTML grammar gaps: native rejects empty `<b></b>`, `<font></font>`, `<b/>` at the
       close tag (`... <b></b> ...` context); CDATA sections, `ctx->inCell` text

@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1271,6 +1271,20 @@ Bunlar hata değil, bilinçli kapsam sınırlarıdır. Kitaplık **SVG**'yi hede
   `medium`, `roman`) C'deki gibi olduğu gibi yayılır; tarayıcılar onları yok sayar ve
   normal ağırlığı işler, ölçücü de eşleşmek için normal ağırlığı ölçer. Node çıktısı
   etkilenmez (canvas ölçücüyü hiç kullanmaz).
+- **Çok graflı girdi ve boş girdinin `NULL` değeri.** `parse` ve `renderSvg`, tek bir
+  DOT dizgesini cgraph'ın `agmemread` işlevinin yaptığı gibi okur. İlk grafın kapanış
+  süslü parantezinden sonra `endgraph` (`lib/cgraph/grammar.y`), bir dosya sonu
+  belirteci geri iten `aglexeof` işlevini (`lib/cgraph/scan.l`) çağırır; böylece o
+  parantezden sonra hiçbir şey sözcüksel çözümlenmez: sondaki metin, sonlandırılmamış
+  dizgeler veya yorumlar ve ek graflar hata ya da uyarı verilmeden yok sayılır. `dot`
+  CLI ise bunun yerine `agread` işlevini yeniden çağırır ve bir dosyadaki her grafı
+  işler; bu yüzden iki graflı bir dosya orada iki SVG belgesi, burada ise bir belge
+  verir (portun çıktısı, çok graflı derlem dosyaları `1845`, `2835` ve `graphs-multi`
+  üzerinde CLI'ın ilk belgesiyle eşleşir; bu dosyalar karantinada kalır). Birden çok
+  grafı işlemek için kaynağı bölün ve graf başına bir kez `renderSvg` çağırın. Boş veya
+  yalnızca yorumdan oluşan girdide `agmemread` `NULL` döndürür ve CLI hiçbir şey
+  yazdırmaz; `parse` bunun yerine boş bir yönsüz graf döndürür ve `renderSvg` onu işler,
+  çünkü API her çağrıda bir `Graph` ve bir SVG döndürür.
 - **Tarayıcı güvenli eşdeğerlerle değiştirilen yerel mekanikler**: dinamik eklenti
   yükleme (`dlopen`) statik motor/işleyici kaydıyla değiştirilir; dosya sistemi
   okumaları (yazı tipleri, görseller, yapılandırma) çağıran tarafından sağlanan

@@ -1,5 +1,5 @@
 ---
-sourceHash: 3408d2c8a3b8e46828c83f9fbcac057e46dd6280a4c30078e971c16307a6e069
+sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1312,6 +1312,20 @@ Son límites de alcance deliberados, no errores. La biblioteca apunta a **SVG**
   se emiten literalmente, como en C; los navegadores los ignoran y renderizan en
   peso normal, y el medidor mide en peso normal para coincidir. La salida de Node
   no se ve afectada (nunca usa el medidor de canvas).
+- **Entrada con varios grafos y el `NULL` de la entrada vacía.** `parse` y `renderSvg`
+  leen una cadena DOT como lo hace `agmemread` de cgraph. Tras la llave de cierre del
+  primer grafo, `endgraph` (`lib/cgraph/grammar.y`) llama a `aglexeof`
+  (`lib/cgraph/scan.l`), que devuelve un token de fin de archivo, de modo que nada
+  después de esa llave se analiza léxicamente: el texto final, las cadenas o comentarios
+  sin terminar y los grafos adicionales se ignoran sin error ni advertencia. En cambio,
+  la CLI de `dot` vuelve a llamar a `agread` y renderiza todos los grafos de un archivo,
+  de modo que un archivo con dos grafos da allí dos documentos SVG y aquí uno (el
+  renderizado del port coincide con el primer documento de la CLI en los archivos del
+  corpus con varios grafos `1845`, `2835` y `graphs-multi`, que siguen en cuarentena).
+  Para renderizar varios grafos, divida el origen y llame a `renderSvg` una vez por
+  grafo. Para una entrada vacía o solo con comentarios, `agmemread` devuelve `NULL` y la
+  CLI no imprime nada; `parse` devuelve en su lugar un grafo no dirigido vacío y
+  `renderSvg` lo renderiza, porque la API devuelve un `Graph` y un SVG por llamada.
 - **Mecanismos solo nativos** sustituidos por equivalentes seguros para el navegador: la carga dinámica de
   complementos (`dlopen`) se sustituye por el registro estático de motores/renderizadores;
   las lecturas del sistema de archivos (fuentes, imágenes, configuración) se sustituyen por
