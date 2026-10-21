@@ -147,17 +147,19 @@ describe('doInt', () => {
   it('prints the messages without a newline, so they join', () => {
     const inner = '<table border="abc" cellpadding="300" cellspacing="-200" cellborder="200" width="70000" '
       + 'height="-1"><tr><td gradientangle="400" colspan="0" rowspan="0">x</td></tr></table>';
-    expect(parsed(inner).lines).toEqual([
-      'Warning: Improper BORDER value abc - ignored'
-      + 'Warning: CELLPADDING value 300 > 255 - too large - ignored'
-      + 'Warning: CELLSPACING value -200 < -128 - too small - ignored'
-      + 'Warning: CELLBORDER value 200 > 127 - too large - ignored'
-      + 'Warning: WIDTH value 70000 > 65535 - too large - ignored'
-      + 'Warning: HEIGHT value -1 < 0 - too small - ignored'
-      + 'Warning: GRADIENTANGLE value 400 > 360 - too large - ignored'
-      + 'Warning: COLSPAN value cannot be 0 - ignored',
-      'Warning: ROWSPAN value cannot be 0 - ignored',
-    ]);
+    // htmllex.c:185-191 doInt's agwarningf formats end without "\n", so native
+    // runs these messages together with no separator: join on '', not ' '.
+    const joined = [
+      'Warning: Improper BORDER value abc - ignored',
+      'Warning: CELLPADDING value 300 > 255 - too large - ignored',
+      'Warning: CELLSPACING value -200 < -128 - too small - ignored',
+      'Warning: CELLBORDER value 200 > 127 - too large - ignored',
+      'Warning: WIDTH value 70000 > 65535 - too large - ignored',
+      'Warning: HEIGHT value -1 < 0 - too small - ignored',
+      'Warning: GRADIENTANGLE value 400 > 360 - too large - ignored',
+      'Warning: COLSPAN value cannot be 0 - ignored',
+    ].join('');
+    expect(parsed(inner).lines).toEqual([joined, 'Warning: ROWSPAN value cannot be 0 - ignored']);
   });
 
   it('flushes a trailing unterminated message as its own line', () => {
