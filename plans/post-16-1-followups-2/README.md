@@ -142,13 +142,10 @@ moves below tolerance. The stderr changes are T6's and T8's lines, each at nativ
 - Engine and format walks: no port-side pass→worse. Every moved row is T11's, native
   drift (twopi arrows family, sfdp neatosplines/42), or a load timeout that was re-run
   (see journal).
-- **Speed gate (T11/T12) not measured:** load stayed between 10 and 190 all day (other
-  projects' JVMs), never below 8. Run it before merging:
-  `FIXED=1 node tools/speed.mjs <bundle> followups2-baseline/timings-before.ids.json <out>`
-  on the T0 and head bundles, then `node tools/ratio.mjs <t0.json> <head.json>`,
-  in the session scratchpad
-  `/private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/e113f7ce-da95-4c60-a717-a43d4aa94767/scratchpad`
-  (not committed; T0's timings are there too). Pass is p50 ≤ 1.05×.
+- **Speed gate (T11/T12) PASS**, measured 2026-10-21 at load < 7.5, in two
+  alternating T0/head pairs over T0's 20 dot + 20 neato ids. Per-engine
+  median of head/T0: dot 1.04 and 0.98, neato 1.00 and 0.99. A T0-vs-T0 run
+  shows noise of up to 1.02 (see journal).
 
 **Decisions flagged for review.**
 - AD-4's premise was wrong: native prints `Error: <stdin>: ...`. The decision (no prefix)
