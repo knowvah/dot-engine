@@ -18,6 +18,7 @@ import type { EngineName } from '../gvc/context.js';
 import { createDefaultContext } from '../gvc/default-context.js';
 import { checkRenderArgs } from '../render/public.js';
 import { render as deviceRender } from '../gvc/device.js';
+import { resetRenderState } from '../common/render-state.js';
 import type { ImageSizer } from '../common/htmltable-types.js';
 import type { ImageResolver } from '../gvc/image-resolver.js';
 import type { OutputFormat, RenderOptions } from '../render/public.js';
@@ -148,6 +149,11 @@ export async function renderAsync(
   const engine: EngineName = opts?.engine ?? 'dot';
   try {
     const { fontIssues, sizes, bytes } = await prefetchAll(g, opts);
+    // AD-4: reset after the last await, so the synchronous layout + render
+    // below starts from C's initial process state even when other renders ran
+    // while the prefetch was pending. renderSvgAsync and renderSvgInto reach
+    // this through renderAsync.
+    resetRenderState();
     // Created after fonts settle so the measurer sees the loaded faces.
     const ctx = createDefaultContext();
     if (opts?.imageSizer !== undefined) {

@@ -3,6 +3,7 @@
 import type { Node } from '../../model/node.js';
 import type { Graph } from '../../model/graph.js';
 import type { EdgeList } from '../../model/nodeInfo.js';
+import { registerRenderState } from '../../common/render-state.js';
 
 // ---------------------------------------------------------------------------
 // AGSEQ-order node iteration (agfstnode/agnxtnode mirror)
@@ -135,7 +136,9 @@ export function decompSearch(g: Graph, start: Node, cmark: number): void {
 }
 
 // Cmark as const-object property avoids module-level let that confuses Lizard.
+/** @see lib/dotgen/decomp.c:Cmark (C static, 0 at process start) */
 const _dc = { cmark: 0 };
+registerRenderState(() => { _dc.cmark = 0; });
 
 // ONE private function immediately before decompose — the acyclic.ts pattern.
 function resolveNode(n: Node, pass: 0 | 1): Node | undefined {

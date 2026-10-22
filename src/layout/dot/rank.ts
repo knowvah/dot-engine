@@ -12,6 +12,7 @@ import { rank } from './ns.js';
 import { dot2Rank } from './rank-dot2.js';
 import { class1 } from './classify.js';
 import { pruneForeignClusterNodes } from './cluster.js';
+import { registerRenderState } from '../../common/render-state.js';
 
 // ---------------------------------------------------------------------------
 // Constants  @see lib/common/const.h
@@ -54,6 +55,7 @@ export const IGNORED = 6;
 /** Global cluster layout type. @see lib/common/globals.h:CL_type */
 export let clType = LOCAL;
 export function setClType(t: number): void { clType = t; }
+registerRenderState(() => { clType = LOCAL; });
 
 // ---------------------------------------------------------------------------
 // Utility helpers

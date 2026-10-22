@@ -26,6 +26,7 @@ import {
   BORDER_BOTTOM,
   BORDER_MASK,
 } from './htmltable-types.js';
+import { registerRenderState } from './render-state.js';
 
 // ---------------------------------------------------------------------------
 // Gradient spec parser
@@ -136,6 +137,7 @@ export function htmlFillPenWidth(): number {
 export function resetHtmlFillPenWidth(): void {
   htmlFillPen = 1.0;
 }
+registerRenderState(resetHtmlFillPenWidth);
 
 /** Map an HTML STYLE to the C pen type: dashed wins over dotted. @see lib/common/htmltable.c:doBorder */
 function penTypeOf(style: string | undefined): PenType {

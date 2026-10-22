@@ -13,6 +13,7 @@
 import { RenderError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
 import { srand48 } from '../../common/random.js';
+import { registerRenderState } from '../../common/render-state.js';
 import { mapbool, isACluster } from '../dot/rank.js';
 import { getPack } from '../pack/index.js';
 import {
@@ -41,11 +42,12 @@ const WARN_POS_IGNORED = 'node positions are ignored unless start=random';
 const WARN_SELF_IGNORED = 'start=0 not supported with mode=self - ignored';
 
 /**
- * Roots already warned about start=self under KK/SGD. C warns once per process
- * (stuff.c:330 static atomic_flag); one render is one C process here, so the
- * flag is per root graph rather than module state (multi-diagram safety).
+ * C's `static atomic_flag once` for the start=self warning under KK/SGD: once
+ * per process, so once per render here (AD-4 resets it at render entry).
+ * @see lib/neatogen/stuff.c:330
  */
-const selfWarned = new WeakSet<object>();
+const selfOnce = { warned: false };
+registerRenderState(() => { selfOnce.warned = false; });
 /** Roots already warned about the KK circuit fallback (one warning per graph). */
 const circuitWarned = new WeakSet<object>();
 
@@ -161,8 +163,8 @@ function checkStartAttr(g: Graph, mode: number): void {
   // @see lib/neatogen/neatoinit.c:1095, lib/neatogen/stress.c:884 (smart_ini)
   if (mode === MODE_MAJOR || mode === MODE_IPSEP) unsupported('start', value ?? '', 'smart initialisation');
   // @see lib/neatogen/stuff.c:330 (KK and SGD warn once and ignore it)
-  if ((mode === MODE_KK || mode === MODE_SGD) && !selfWarned.has(g.root)) {
-    selfWarned.add(g.root);
+  if ((mode === MODE_KK || mode === MODE_SGD) && !selfOnce.warned) {
+    selfOnce.warned = true;
     console.warn(WARN_SELF_IGNORED);
   }
 }

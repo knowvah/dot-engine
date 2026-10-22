@@ -7,6 +7,7 @@
 
 import { isExactlyEqual } from '../util/math.js';
 import { COLOR_LIB } from './colorData.js';
+import { registerRenderState } from './render-state.js';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -37,6 +38,7 @@ interface HsvaTuple { H: number; S: number; V: number; A: number }
 // ---------------------------------------------------------------------------
 
 let colorScheme: string = '';
+registerRenderState(() => { colorScheme = ''; });
 
 /** @see lib/common/colxlate.c:setColorScheme */
 export function setColorScheme(scheme: string): void {

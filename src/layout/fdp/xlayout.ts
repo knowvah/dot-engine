@@ -36,6 +36,7 @@ import { libmHypot } from '../../common/libm-hypot.js';
 import { fma, fms } from '../../common/fma.js';
 import { normalizeG } from './normalize.js';
 import { simpleScale } from '../neato/simple-scale.js';
+import { registerRenderState } from '../../common/render-state.js';
 
 /** @see lib/fdpgen/xlayout.c:DFLT_overlap */
 const DFLT_OVERLAP = '9:prism';
@@ -47,8 +48,8 @@ const PS2INCH = (x: number): number => x / 72;
 // xParams / X_marg — static state (C statics, persist across calls)
 // ---------------------------------------------------------------------------
 
-/** @see lib/fdpgen/xlayout.c:xParams */
-const xParams: XParams = {
+/** C's static initializer of xParams. @see lib/fdpgen/xlayout.c:xParams */
+const XPARAMS_INIT: Readonly<XParams> = {
   numIters: 60,
   T0: 0.0,
   K: 0.3,
@@ -56,8 +57,15 @@ const xParams: XParams = {
   loopcnt: 0,
 };
 
+/** @see lib/fdpgen/xlayout.c:xParams */
+const xParams: XParams = { ...XPARAMS_INIT };
+
 /** @see lib/fdpgen/xlayout.c:X_marg */
 let xMarg: ExpandT = { x: 0, y: 0, doAdd: false };
+registerRenderState(() => {
+  Object.assign(xParams, XPARAMS_INIT);
+  xMarg = { x: 0, y: 0, doAdd: false };
+});
 
 /** Overlap/non-overlap repulsion strengths for one try. */
 interface RepStrength {
