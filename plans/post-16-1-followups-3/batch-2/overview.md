@@ -6,7 +6,7 @@ and T11 (batch 4). Survey for this batch only if byte-identity shows output chan
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T1](T1-render-state.md) | Item 42 + AD-4: find carried state, reset per render | debugger → typescript-pro | `src/common/render-state.ts` (new), statics owners, render entry points | T0 | [ ] |
-| [T2](T2-maxiter.md) | Item 25: `MaxIter` per layout mode | typescript-pro | `src/layout/neato/init.ts` | T0 | [ ] |
-| [T3](T3-html-invalid-token.md) | Item 40: expat invalid-token errors in HTML text | typescript-pro | `src/common/htmltable-lex-expat.ts`, `htmltable-lex.ts` | T0 | [ ] |
-| [T4](T4-close-2168-3.md) | Item 30: document 2168_3 as irreducible | technical-writer | `docs/known-divergences.md`, `docs-site/*/divergences.md` | T0 | [ ] |
+| [T1](T1-render-state.md) | Item 42 + AD-4: find carried state, reset per render | debugger → typescript-pro | `src/common/render-state.ts` (new), statics owners, render entry points | T0 | [x] |
+| [T2](T2-maxiter.md) | Item 25: `MaxIter` per layout mode | typescript-pro | `src/layout/neato/init.ts` | T0 | [x] |
+| [T3](T3-html-invalid-token.md) | Item 40: expat invalid-token errors in HTML text | typescript-pro | `src/common/htmltable-lex-expat.ts`, `htmltable-lex.ts` | T0 | [x] |
+| [T4](T4-close-2168-3.md) | Item 30: document 2168_3 as irreducible | technical-writer | `docs/known-divergences.md`, `docs-site/*/divergences.md` | T0 | [x] |

@@ -180,7 +180,8 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       2064, 2593, 2723, 2778, 2834, 2854_1, 2855) re-run to the 7,789,662 ms cap on
       every survey (~2 h); the walks' oracle caches have the same gap. (User
       direction, T14.)
-  25. ipsep `MaxIter` default `100·n` (`neatoinit.c:1286-1287`) is unported; no
+  25. **[DONE — part 3 T2: `neatoMaxIter` ports `neatoinit.c:1280-1287`; no corpus
+      input reaches it]** ipsep `MaxIter` default `100·n` (`neatoinit.c:1286-1287`) is unported; no
       observable input found (T5).
   26. **[DONE — `fix/parser-native-acceptance`: agmemread's one-graph read;
       empty input kept as an empty graph (user), documented as a non-goal]** The Peggy grammar rejects inputs native accepts: trailing junk, several graphs
@@ -199,7 +200,8 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       (differs from arrows.c beyond fusion), `multispline-router.ts:addTriEdge`
       (`DIST`); `cdt-surface.ts` orders face vertices differently from GTS (T10, T12,
       T13).
-  30. sfdp 2168_3 (item 17) needs a bit-exact model of Apple's `sin` to go further
+  30. **[CLOSED — part 3 T4: documented irreducible in A9 + 23 locales (AD-9)]**
+      sfdp 2168_3 (item 17) needs a bit-exact model of Apple's `sin` to go further
       (T13).
   31. 1864 exhausts a 1.5 GB worker heap in the port, on the T0 bundle as well as
       T11's (pre-existing; seen in the T11 capture harness).
@@ -261,7 +263,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       this path; widths follow the text.
 - **New follow-ups found by item 39** (journal row 2026-10-22, item 39;
   both reproduce on `main`):
-  40. HTML text with a malformed reference is an expat `not well-formed
+  40. **[DONE — part 3 T3: expat content-tokenizer reference scan + partial hold]** HTML text with a malformed reference is an expat `not well-formed
       (invalid token)` error natively; the port accepts it and writes the
       text. A bare `&` (`<p&q>`, `<p & q>`: scanEntity finds no `;` and
       leaves it), `&#;`, `&#x;`, `&#X41;` (expat takes only a lower-case
@@ -275,7 +277,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `width == -1` variant falls back to 0. The port never prints either.
       Both are once per process (`static bool`), which a library needs a
       decision on. stderr only.
-  42. Output depends on render history in a long-lived process. Item 39's
+  42. **[DONE — part 3 T1: emit_once font-warning set carried over; AD-4 per-render reset]** Output depends on render history in a long-lived process. Item 39's
       byte diff (17 corpus files with `&`, 8 engines x 5 formats, both
       bundles, resident worker pools) ran twice. Of the 590 jobs that finish
       within 120 s, run 1 found 8 differing (2470 dot plain, neato svg/cmapx,
@@ -288,6 +290,42 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       fdp rendered before and after neato/fdp/sfdp of clust4, crazy and unix
       in one process is unchanged. Next: replay one worker's actual job order
       to find the state that carries over.
+- **New follow-ups found by part 3** (`plans/post-16-1-followups-3/`):
+  43. neato `mode=hier` throws `hierarchical stress majorization is not supported
+      yet` (`assertSupported`, `src/layout/neato/init.ts`) where native lays out
+      (`digraph{mode=hier;a->b->c->d->e->f;a->d;b->e;c->f}`: native 6 nodes, port
+      throws). Corpus 1554 (`mode="hier"`) is quarantined `engine-deferred` for
+      it; not in `docs/known-divergences.md` (part 3 T2).
+  44. A raw control character in HTML label text (`label=<a\001b>`) is an expat
+      invalid token natively (`Error: not well-formed (invalid token) in line 1` /
+      `... <HTML>a\001b ...` / `in label of node a`, label dropped); the port keeps
+      the text (`ab`) and prints nothing. `&#1;` already matches. expat
+      `contentTok` BT_NONXML is unmodelled in `htmltable-lex-expat.ts` (part 3 T3).
+  45. `test/architecture/module-globals.fitness.test.ts` allowlist reasons are
+      stale after part 3 T1: the listed statics now reset through
+      `resetRenderState` (`src/common/render-state.ts`), and `clType` is set in
+      `graph-init.ts:330`. Reasons only; the allowlist itself still holds.
+  46. Rendering the same parsed `Graph` object twice suppresses the HTML
+      "cell size too small" and "No or improper image" warnings on the second
+      render: per-graph-object state survives `freeLayout` (not a module
+      static, so AD-4's reset does not reach it). Native re-parses per run.
+  47. The low-level pipeline `GvcContext.layout` + `renderWithContext` has no
+      per-render reset (AD-4 covers `renderSvg`, `render`, `getDrawOps`,
+      `renderAsync`); a caller driving it directly carries C process state
+      between graphs. Needs a documented contract or an entry-point reset
+      (part 3 T1).
+  48. `src/common/splines-clip.ts` `SplineClipHelper.arrowEndClip`/`arrowStartClip`
+      (used by the non-dot engines and the main dot routing path) computes DIST with
+      `Math.hypot`, also in `sphereCtx`; native is `sqrt(fma(dx,dx,dy*dy))`
+      (`_arrowEndClip`). Its `bezierClip` should be checked against `_bezier_clip`
+      (part 3 T7).
+  49. `src/layout/dot/compound.ts` `arrowEndClipIdx`/`arrowStartClipIdx` test
+      `dist < elen` with unfused `Math.hypot`, and `edge-route-routing.ts`
+      `clipToNodes` lacks `arrows.c:291-293`'s `endp -= 3` back-up (part 3 T7).
+  50. `edge-route-clip.ts` `tailArrowEndClip` ports `arrowStartClip` forward in
+      tip-local coordinates with `Math.hypot`; C reverses to
+      `sp[0]=ps[start+3] … sp[3]=tip` with `left_inside=false` on absolute
+      coordinates. Equal in exact arithmetic, not bit-equal (part 3 T7).
 
 ## Local leftovers (not committed, safe to delete)
 
