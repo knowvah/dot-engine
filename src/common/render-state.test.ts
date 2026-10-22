@@ -93,6 +93,9 @@ describe('render-state registry', () => {
   });
 });
 
+/** Each test below re-imports all of src/ (vi.resetModules); slow under load. */
+const MODULE_RELOAD_TIMEOUT_MS = 60_000;
+
 describe('render output is independent of earlier renders (AD-4)', () => {
   it('A, B, A in one process: both A renders equal A in a fresh process', async () => {
     const fresh = capture(await freshRenderSvg(), GRAPH_A, 'neato');
@@ -103,7 +106,7 @@ describe('render output is independent of earlier renders (AD-4)', () => {
     expect(fresh).toContain(MENLO_WARNING);
     expect(first).toBe(fresh);
     expect(again).toBe(fresh);
-  });
+  }, MODULE_RELOAD_TIMEOUT_MS);
 
   // Item 42's pooled diff, reduced: graphs-Symbol rendered with dot and then
   // neato in one worker lost the neato render's emit_once fallback warning
@@ -118,5 +121,5 @@ describe('render output is independent of earlier renders (AD-4)', () => {
       "Warning: no hard-coded metrics for 'Symbol'.  Falling back to 'Times' metrics",
     );
     expect(after).toBe(fresh);
-  });
+  }, MODULE_RELOAD_TIMEOUT_MS);
 });
