@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1151,6 +1151,8 @@ injektoimaton tyhjä solmu, joka veti mukanaan siihen liittyviä kaaria. Sfdp:n 
 oli sama sokea piste — tuore sfdp-attribuution uudelleengenerointi (2026-07-22) korjatulla
 injektorilla vahvisti, että sekin injektoituu 0:aan, ja sen hyväksyntä poistettiin (katso
 yllä oleva `2095`:n uudelleenluokitusta koskeva huomautus).
+
+**sfdp `2168_3` — Apple-libm:n `sin` 1 ULP tiedostossa `poly_init` (suljettu, ei palautettavissa).** **Koskee:** sfdp `2168_3` (vain stderr: portti tulostaa yhden ylimääräisen `Pshortestpath`-varoituksen; xdot-moottoriradan läpikäynti läpäistään, koska molemmat puolet palaavat suoriin viivoihin). **Mikä eroaa:** `shapes.c:2329` laskee `temp = GAP / sin(gamma)` (portti `src/common/poly-sizing.ts:379`); kun gamma = 1.0092081171617377, macOS-libm palauttaa 0.8464104077694533, V8 oikein pyöristetyn arvon 0.8464104077694532 (1 ULP). Ero etenee multispline-reitittimeen (`neatosplines.c:428,444` → `multispline.c:598`) reitittimen pisteenä 10/18, y 28.391789367446776 vs. …78; samaympyräinen puolisuunnikas (pisteet 9, 10, 15, 16) kolmioidaan silloin toisella Delaunay-lävistäjällä, jolloin kaaren 1 käytäväpolygoni eroaa ja `Pshortestpath` epäonnistuu portin polygonilla. **Miksi hyväksytty:** kontrolloitu koe, jossa syötetään vain tämä `sin`-arvo, tekee stderristä, kolmioista, polygoneista ja xdotista natiivin kaltaisia (pelkkä `atan2` ei); sfdp-sijainnit ovat bitintarkasti samat, ja incircle-predikaatti, pathplan, `makeObstacle`-hypot sekä ääriviivarenkaan laskentajärjestys on suljettu pois. Vastaavuus vaatisi Applen `sin`:n bittitarkan mallin, jonka lähdekoodi ei ole julkinen; mikään siirrettävä koodi ei voi toistaa sitä (sama raja kuin `arm-pow.ts`-ennakkotapauksessa). **Todiste:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), rivi 2026-10-20 T13.
 
 ---
 

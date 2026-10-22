@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1205,6 +1205,8 @@ leere Knoten, der seine inzidenten Kanten mitzog. Das Accept von sfdp `2095` war
 blinde Fleck — eine frische Neuerzeugung der sfdp-Attribution (2026-07-22) mit dem
 korrigierten Injektor bestätigte, dass es sich ebenfalls auf 0 injiziert, und sein Accept
 wurde entfernt (siehe den Hinweis `2095 reclassified` oben).
+
+**sfdp `2168_3` — Apple-libm-`sin` 1 ULP in `poly_init` (abgeschlossen, nicht reduzierbar).** **Betroffen:** sfdp `2168_3` (nur stderr: der Port gibt eine zusätzliche `Pshortestpath`-Warnung aus; der xdot-Engine-Track-Lauf besteht, weil beide Seiten auf gerade Linien zurückfallen). **Was abweicht:** `shapes.c:2329` berechnet `temp = GAP / sin(gamma)` (Port `src/common/poly-sizing.ts:379`); für gamma = 1.0092081171617377 liefert macOS-libm 0.8464104077694533, V8 den korrekt gerundeten Wert 0.8464104077694532 (1 ULP). Die Differenz erreicht den Multispline-Router (`neatosplines.c:428,444` → `multispline.c:598`) als Router-Punkt 10/18, y 28.391789367446776 gegenüber …78; das kozirkulare Trapez (Punkte 9, 10, 15, 16) wird dann mit einer anderen Delaunay-Diagonale trianguliert, sodass das Korridorpolygon von Kante 1 abweicht und `Pshortestpath` auf dem Polygon des Ports fehlschlägt. **Warum akzeptiert:** Ein kontrolliertes Experiment, das nur diesen `sin`-Wert einspeist, macht stderr, Dreiecke, Polygone und xdot identisch zum Original (`atan2` allein nicht); die sfdp-Positionen sind bitgleich, und das Incircle-Prädikat, pathplan, das `makeObstacle`-hypot und die Reihenfolge der Outline-Ring-Arithmetik wurden ausgeschlossen. Eine Übereinstimmung erfordert ein bitgenaues Modell von Apples `sin`, dessen Quelltext nicht öffentlich ist; kein portabler Code kann es reproduzieren (dieselbe Grenze wie beim Präzedenzfall `arm-pow.ts`). **Nachweis:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), Zeile 2026-10-20 T13.
 
 ---
 

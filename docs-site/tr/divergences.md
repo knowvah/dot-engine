@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1111,6 +1111,8 @@ sürükleyen, enjekte edilmemiş boş düğümdü. sfdp `2095` kabulü aynı kö
 düzeltilmiş enjektörle yapılan yeni bir sfdp nedenlendirme yenilemesi (2026-07-22)
 onun da 0'a enjekte edildiğini doğruladı ve kabulü kaldırıldı (yukarıdaki
 `2095 reclassified` notuna bakın).
+
+**sfdp `2168_3` — `poly_init` içinde Apple libm `sin` 1 ULP farkı (kapatıldı, indirgenemez).** **Etkilenen:** sfdp `2168_3` (yalnızca stderr: port bir fazladan `Pshortestpath` uyarısı verir; xdot motor hattı taraması geçer, çünkü iki taraf da düz çizgilere döner). **Ne farklı:** `shapes.c:2329` `temp = GAP / sin(gamma)` hesaplar (port `src/common/poly-sizing.ts:379`); gamma = 1.0092081171617377 için macOS libm 0.8464104077694533, V8 doğru yuvarlanmış 0.8464104077694532 değerini döndürür (1 ULP). Fark, multispline yönlendiricisine (`neatosplines.c:428,444` → `multispline.c:598`) yönlendirici noktası 10/18, y 28.391789367446776 ile …78 olarak ulaşır; eşçemberli yamuk (9, 10, 15, 16. noktalar) bu kez farklı bir Delaunay köşegeniyle üçgenlenir, böylece kenar 1'in koridor çokgeni farklılaşır ve `Pshortestpath` portun çokgeninde başarısız olur. **Neden kabul edildi:** yalnızca bu `sin` değerini enjekte eden kontrollü bir deney stderr'i, üçgenleri, çokgenleri ve xdot'u yerelle özdeş yapar (tek başına `atan2` yapmaz); sfdp konumları bit düzeyinde eşittir ve incircle yüklemi, pathplan, `makeObstacle` hypot'u ve ana hat halkası aritmetik sırası elenmiştir. Eşleşme, kaynağı herkese açık olmayan Apple `sin`'in bit-tam bir modelini gerektirir; hiçbir taşınabilir kod bunu yeniden üretemez (`arm-pow.ts` emsaliyle aynı sınır). **Kanıt:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), 2026-10-20 T13 satırı.
 
 ---
 

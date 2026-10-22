@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1136,6 +1136,8 @@ niet-geïnjecteerde lege knoop die zijn aangrenzende kanten meesleepte. De sfdp-
 dezelfde blinde vlek — een verse regeneratie van de sfdp-attributie (2026-07-22) met de gecorrigeerde
 injector bevestigde dat ook die tot 0 injecteert, en de acceptatie ervan is verwijderd (zie de
 notitie `2095 geherclassificeerd` hierboven).
+
+**sfdp `2168_3` — Apple-libm-`sin` 1 ULP in `poly_init` (gesloten, onherleidbaar).** **Betrokken:** sfdp `2168_3` (alleen stderr: de port geeft één extra `Pshortestpath`-waarschuwing; de xdot-enginespoorrun slaagt, omdat beide kanten terugvallen op rechte lijnen). **Wat verschilt:** `shapes.c:2329` berekent `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); voor gamma = 1.0092081171617377 geeft macOS-libm 0.8464104077694533, V8 de correct afgeronde waarde 0.8464104077694532 (1 ULP). Het verschil bereikt de multispline-router (`neatosplines.c:428,444` → `multispline.c:598`) als routerpunt 10/18, y 28.391789367446776 tegenover …78; het cocirculaire trapezium (punten 9, 10, 15, 16) wordt dan met een andere Delaunay-diagonaal getrianguleerd, waardoor het corridorpolygoon van kant 1 verschilt en `Pshortestpath` faalt op het polygoon van de port. **Waarom geaccepteerd:** een gecontroleerd experiment dat alleen die `sin`-waarde injecteert maakt stderr, driehoeken, polygonen en xdot identiek aan native (`atan2` alleen niet); de sfdp-posities zijn bitgelijk, en het incircle-predicaat, pathplan, de hypot in `makeObstacle` en de rekenvolgorde van de outline-ring zijn uitgesloten. Overeenkomen vereist een bitexact model van Apples `sin`, waarvan de broncode niet openbaar is; geen enkele draagbare code kan het reproduceren (dezelfde grens als het precedent `arm-pow.ts`). **Bewijs:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), rij 2026-10-20 T13.
 
 ---
 

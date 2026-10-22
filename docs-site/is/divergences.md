@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1131,6 +1131,8 @@ hnúta með heitið `""`) fellir afganginn niður í núll — fyrri „A9-halin
 sama blindsvæðið — ný endurgerð rekju fyrir sfdp (2026-07-22) með lagaða
 innsprautaranum staðfesti að það innsprautast einnig í 0, og samþykki þess var fjarlægt (sjá
 athugasemdina um `2095` endurflokkað hér að ofan).
+
+**sfdp `2168_3` — Apple-libm `sin` 1 ULP í `poly_init` (lokað, óafturkræft).** **Áhrif:** sfdp `2168_3` (aðeins stderr: portið skrifar eina auka `Pshortestpath`-viðvörun; yfirferð xdot-vélaferils stenst, þar sem báðar hliðar falla aftur á beinar línur). **Hvað er ólíkt:** `shapes.c:2329` reiknar `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); fyrir gamma = 1.0092081171617377 skilar macOS-libm 0.8464104077694533, V8 rétt námunduðu gildi 0.8464104077694532 (1 ULP). Munurinn berst til multispline-beinisins (`neatosplines.c:428,444` → `multispline.c:598`) sem beinispunktur 10/18, y 28.391789367446776 á móti …78; samhringlaga trapisan (punktar 9, 10, 15, 16) er þá þríhyrningaskipt með öðrum Delaunay-hornalínu, svo gangapólýgon brúnar 1 er ólíkt og `Pshortestpath` mistekst á pólýgoni portsins. **Hvers vegna samþykkt:** stýrð tilraun sem sprautar aðeins inn þessu `sin`-gildi gerir stderr, þríhyrninga, pólýgon og xdot eins og upprunalega (`atan2` eitt og sér gerir það ekki); sfdp-staðsetningar eru bitajafnar og incircle-umsögnin, pathplan, `makeObstacle`-hypot og reikniröð útlínuhringsins voru útilokuð. Til að ná samræmi þarf bitnákvæmt líkan af `sin` hjá Apple, sem frumkóði er ekki opinber; enginn færanlegur kóði getur endurgert það (sömu mörk og fordæmið `arm-pow.ts`). **Sönnunargögn:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), lína 2026-10-20 T13.
 
 ---
 

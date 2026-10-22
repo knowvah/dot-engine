@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1276,6 +1276,8 @@ non injecté qui entraînait ses arêtes incidentes. L’acceptation de `2095` p
 sfdp relevait du même angle mort — une nouvelle régénération de l’attribution
 sfdp (2026-07-22) avec l’injecteur corrigé a confirmé qu’il s’injecte lui aussi à
 0, et son acceptation a été retirée (voir la note `2095 reclassé` ci-dessus).
+
+**sfdp `2168_3` — `sin` d'Apple libm à 1 ULP dans `poly_init` (clos, irréductible).** **Concerné :** sfdp `2168_3` (stderr uniquement : le portage émet un avertissement `Pshortestpath` supplémentaire ; le parcours de la piste xdot passe, car les deux côtés retombent sur des lignes droites). **Ce qui diffère :** `shapes.c:2329` calcule `temp = GAP / sin(gamma)` (portage `src/common/poly-sizing.ts:379`) ; pour gamma = 1.0092081171617377, la libm de macOS renvoie 0.8464104077694533, V8 la valeur correctement arrondie 0.8464104077694532 (1 ULP). L'écart atteint le routeur multispline (`neatosplines.c:428,444` → `multispline.c:598`) comme point de routeur 10/18, y 28.391789367446776 contre …78 ; le trapèze cocirculaire (points 9, 10, 15, 16) est alors triangulé avec une autre diagonale de Delaunay, de sorte que le polygone de couloir de l'arête 1 diffère et que `Pshortestpath` échoue sur le polygone du portage. **Pourquoi accepté :** une expérience contrôlée n'injectant que cette valeur de `sin` rend stderr, triangles, polygones et xdot identiques au natif (`atan2` seul ne suffit pas) ; les positions sfdp sont identiques au bit près, et le prédicat incircle, pathplan, le hypot de `makeObstacle` et l'ordre arithmétique de l'anneau de contour ont été écartés. Y correspondre exige un modèle exact au bit du `sin` d'Apple, dont le source n'est pas public ; aucun code portable ne peut le reproduire (même frontière que le précédent `arm-pow.ts`). **Preuve :** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), ligne 2026-10-20 T13.
 
 ---
 

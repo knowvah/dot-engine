@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -427,6 +427,8 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 ±0.5）在同一个图 `241_0` 上暴露出*相同*的 CDT 共圆平局：注入参照程序精确的路由前位置后，残余是 11 处数值型 `unfilled_bezier` 差异，局限于一条边（`0->1#0`，maxΔ 3.39pt）。由于节点位置经注入后完全相同，差异出现在下游的 pathplan 多重样条通道中——与 circo/sfdp 的 `241_0` 是同一个 libm 1 ULP 内切圆平局（上文精确有理数内切圆 185/185；11 处差异不受 `f66ac638` 影响——未经注入重新验证）。能用的手段已经都用上了（`src/pathplan/triang.ts` 的 fmadd，`src/pathplan/route.ts:198` 的
 `Math.hypot`）；该平局被视为不可约。通过 `accepted-divergences-engines.json` 的
 `fdp.241_0` 被接受。相比之下，fdp 的 `2095` 是 **A1-drift，而不是 A9**：注入那个唯一的空名称节点（在归因注入器被修复为匹配 `""` 名称的节点之后），其残余归零——此前的“A9 尾部”是未被注入的空节点牵连了它的关联边。sfdp 的 `2095` 接受记录是同一个盲区——使用修复后的注入器对 sfdp 重新生成归因（2026-07-22），确认它同样注入后为 0，其接受记录已被移除（见上面的 `2095 reclassified` 说明）。
+
+**sfdp `2168_3` — `poly_init` 中 Apple libm `sin` 的 1 ULP 差异（已关闭，不可约）。** **受影响：** sfdp `2168_3`（仅 stderr：移植版多输出一条 `Pshortestpath` 警告；xdot 引擎轨道遍历通过，因为双方都回退为直线）。 **差异：** `shapes.c:2329` 计算 `temp = GAP / sin(gamma)`（移植版 `src/common/poly-sizing.ts:379`）；当 gamma = 1.0092081171617377 时，macOS libm 返回 0.8464104077694533，V8 返回正确舍入的 0.8464104077694532（1 ULP）。该差异以路由器点 10/18、y 28.391789367446776 对 …78 的形式进入 multispline 路由器（`neatosplines.c:428,444` → `multispline.c:598`），共圆梯形（点 9、10、15、16）随后以另一条 Delaunay 对角线三角化，使边 1 的走廊多边形不同，`Pshortestpath` 在移植版的多边形上失败。 **接受理由：** 仅注入该 `sin` 值的对照实验使 stderr、三角形、多边形和 xdot 与原生一致（仅 `atan2` 不行）；sfdp 位置逐位相等，incircle 谓词、pathplan、`makeObstacle` 的 hypot 和轮廓环运算顺序均已排除。要匹配需要 Apple `sin` 的逐位精确模型，其源码未公开，可移植代码无法复现（与 `arm-pow.ts` 先例同一边界）。 **证据：** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md)，2026-10-20 T13 行。
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1127,6 +1127,8 @@ nevstříknutý prázdný uzel, který táhl své incidentní hrany. Akceptace s
 tatáž slepá skvrna — nová regenerace atribuce sfdp (2026-07-22) s opraveným
 injektorem potvrdila, že se také vstříkne na 0, a její akceptace byla odstraněna (viz
 poznámka `2095 reclassified` výše).
+
+**sfdp `2168_3` — `sin` z Apple libm o 1 ULP v `poly_init` (uzavřeno, neredukovatelné).** **Dotčeno:** sfdp `2168_3` (pouze stderr: port vypíše jedno navíc varování `Pshortestpath`; průchod xdot stopy projde, protože obě strany přejdou na přímé čáry). **V čem se liší:** `shapes.c:2329` počítá `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); pro gamma = 1.0092081171617377 vrací libm v macOS 0.8464104077694533, V8 správně zaokrouhlenou hodnotu 0.8464104077694532 (1 ULP). Rozdíl se dostane do multispline routeru (`neatosplines.c:428,444` → `multispline.c:598`) jako bod routeru 10/18, y 28.391789367446776 vs …78; kocirkulární lichoběžník (body 9, 10, 15, 16) se pak trianguluje jinou Delaunayho úhlopříčkou, takže polygon koridoru hrany 1 se liší a `Pshortestpath` selže na polygonu portu. **Proč přijato:** kontrolovaný experiment vstřikující pouze tuto hodnotu `sin` učiní stderr, trojúhelníky, polygony a xdot shodné s nativním (samotný `atan2` ne); pozice sfdp jsou bitově shodné a predikát incircle, pathplan, hypot v `makeObstacle` i pořadí aritmetiky obrysového prstence byly vyloučeny. Shoda by vyžadovala bitově přesný model `sin` od Applu, jehož zdroj není veřejný; žádný přenosný kód ho nereprodukuje (stejná hranice jako precedent `arm-pow.ts`). **Důkaz:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), řádek 2026-10-20 T13.
 
 ---
 

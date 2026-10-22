@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1151,6 +1151,8 @@ nodo vacío sin inyectar arrastrando sus aristas incidentes. La aceptación de `
 el mismo punto ciego: una nueva regeneración de la atribución de sfdp (2026-07-22) con el
 inyector corregido confirmó que también se inyecta a 0, y su aceptación se eliminó (véase la
 nota `2095 reclassified` de arriba).
+
+**sfdp `2168_3` — `sin` de libm de Apple a 1 ULP en `poly_init` (cerrado, irreducible).** **Afectado:** sfdp `2168_3` (solo stderr: el port emite una advertencia `Pshortestpath` adicional; el recorrido de la pista xdot pasa, porque ambos lados recurren a líneas rectas). **Qué difiere:** `shapes.c:2329` calcula `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); para gamma = 1.0092081171617377, la libm de macOS devuelve 0.8464104077694533 y V8 el valor correctamente redondeado 0.8464104077694532 (1 ULP). La diferencia llega al enrutador multispline (`neatosplines.c:428,444` → `multispline.c:598`) como punto 10/18 del enrutador, y 28.391789367446776 frente a …78; el trapecio cocircular (puntos 9, 10, 15, 16) se triangula entonces con otra diagonal de Delaunay, de modo que el polígono de corredor de la arista 1 difiere y `Pshortestpath` falla en el polígono del port. **Por qué se acepta:** un experimento controlado que inyecta solo ese valor de `sin` deja stderr, triángulos, polígonos y xdot idénticos al nativo (`atan2` solo no basta); las posiciones de sfdp son idénticas bit a bit, y se descartaron el predicado incircle, pathplan, el hypot de `makeObstacle` y el orden aritmético del anillo de contorno. Igualarlo exige un modelo exacto al bit del `sin` de Apple, cuyo código fuente no es público; ningún código portable puede reproducirlo (misma frontera que el precedente `arm-pow.ts`). **Evidencia:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), fila 2026-10-20 T13.
 
 ---
 

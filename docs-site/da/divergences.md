@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1135,6 +1135,8 @@ den uinjicerede tomme knude, der trak sine tilstødende kanter med. Sfdp's `2095
 den samme blinde vinkel — en frisk regenerering af sfdp-attributionen (2026-07-22) med den rettede
 injektor bekræftede, at den også injicerer til 0, og dens accept blev fjernet (se
 noten `2095 reclassified` ovenfor).
+
+**sfdp `2168_3` — Apple-libm-`sin` 1 ULP i `poly_init` (lukket, irreducibelt).** **Berørt:** sfdp `2168_3` (kun stderr: porten udskriver en ekstra `Pshortestpath`-advarsel; xdot-motorsporets gennemløb består, fordi begge sider falder tilbage til rette linjer). **Hvad der afviger:** `shapes.c:2329` beregner `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); for gamma = 1.0092081171617377 giver macOS-libm 0.8464104077694533, V8 den korrekt afrundede værdi 0.8464104077694532 (1 ULP). Forskellen når multispline-routeren (`neatosplines.c:428,444` → `multispline.c:598`) som routerpunkt 10/18, y 28.391789367446776 mod …78; det kocirkulære trapez (punkterne 9, 10, 15, 16) trianguleres derefter med en anden Delaunay-diagonal, så kant 1's korridorpolygon afviger, og `Pshortestpath` fejler på portens polygon. **Hvorfor accepteret:** et kontrolleret eksperiment, der kun injicerer den `sin`-værdi, gør stderr, trekanter, polygoner og xdot identiske med nativ (`atan2` alene gør det ikke); sfdp-positionerne er bitidentiske, og incircle-prædikatet, pathplan, `makeObstacle`-hypot og aritmetikrækkefølgen i konturringen er udelukket. At matche det kræver en bitnøjagtig model af Apples `sin`, hvis kildekode ikke er offentlig; ingen portabel kode kan gengive det (samme grænse som præcedensen `arm-pow.ts`). **Dokumentation:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), rækken 2026-10-20 T13.
 
 ---
 

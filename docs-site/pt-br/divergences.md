@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1130,6 +1130,8 @@ nó vazio não injetado arrastando suas arestas incidentes. A aceitação do `20
 o mesmo ponto cego — uma nova regeneração da atribuição do sfdp (2026-07-22) com o injetor
 corrigido confirmou que ele também é injetado com 0, e sua aceitação foi removida (veja a
 nota `2095 reclassificado` acima).
+
+**sfdp `2168_3` — `sin` da libm da Apple com 1 ULP em `poly_init` (encerrado, irredutível).** **Afetado:** sfdp `2168_3` (somente stderr: o port emite um aviso `Pshortestpath` a mais; a execução da trilha xdot passa, pois ambos os lados recorrem a linhas retas). **O que difere:** `shapes.c:2329` calcula `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); para gamma = 1.0092081171617377, a libm do macOS retorna 0.8464104077694533 e o V8 o valor corretamente arredondado 0.8464104077694532 (1 ULP). A diferença chega ao roteador multispline (`neatosplines.c:428,444` → `multispline.c:598`) como ponto 10/18 do roteador, y 28.391789367446776 contra …78; o trapézio cocircular (pontos 9, 10, 15, 16) é então triangulado com outra diagonal de Delaunay, de modo que o polígono de corredor da aresta 1 difere e `Pshortestpath` falha no polígono do port. **Por que aceito:** um experimento controlado que injeta apenas esse valor de `sin` torna stderr, triângulos, polígonos e xdot idênticos ao nativo (`atan2` sozinho não); as posições do sfdp são idênticas bit a bit, e foram descartados o predicado incircle, o pathplan, o hypot de `makeObstacle` e a ordem aritmética do anel de contorno. Igualá-lo exige um modelo exato em bits do `sin` da Apple, cujo código-fonte não é público; nenhum código portátil consegue reproduzi-lo (mesma fronteira do precedente `arm-pow.ts`). **Evidência:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), linha 2026-10-20 T13.
 
 ---
 

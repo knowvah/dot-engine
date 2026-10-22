@@ -1146,6 +1146,8 @@ the same blindspot — a fresh sfdp attribution regen (2026-07-22) with the fixe
 injector confirmed it also injects to 0, and its accept was removed (see the
 `2095 reclassified` note above).
 
+**sfdp `2168_3` — Apple-libm `sin` 1 ULP in `poly_init` (closed, irreducible).** **Affected:** sfdp `2168_3` (stderr only: the port prints one extra `Pshortestpath` warning; the xdot engine-track walk passes, because both sides fall back to straight lines). **What differs:** `shapes.c:2329` computes `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); for gamma = 1.0092081171617377 macOS libm returns 0.8464104077694533, V8 the correctly rounded 0.8464104077694532 (1 ULP). The difference reaches the multispline router (`neatosplines.c:428,444` → `multispline.c:598`) as router point 10/18, y 28.391789367446776 vs …78; the cocircular trapezoid (points 9, 10, 15, 16) then triangulates with a different Delaunay diagonal, so edge 1's corridor polygon differs and `Pshortestpath` fails on the port's polygon. **Why accepted:** a controlled experiment injecting only that `sin` value makes stderr, triangles, polygons and xdot native-identical (`atan2` alone does not); sfdp positions are bit-equal, and the incircle predicate, pathplan, `makeObstacle` hypot and outline-ring arithmetic order were ruled out. Matching it needs a bit-exact model of Apple's `sin`, whose source is not public, so no portable code can reproduce it (same boundary as the `arm-pow.ts` precedent). **Evidence:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), 2026-10-20 T13 row.
+
 ---
 
 ### A10. V8 `Map` size limit in polyomino packing (`2784`, five pack-based engines)

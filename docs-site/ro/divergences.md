@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1129,6 +1129,8 @@ nodul gol neinjectat care își trăgea după el muchiile incidente. Acceptarea 
 același punct orb — o regenerare nouă a atribuirii sfdp (2026-07-22) cu injectorul remediat
 a confirmat că și aceasta se injectează la 0, iar acceptarea ei a fost eliminată (vedeți nota
 `2095 reclassified` de mai sus).
+
+**sfdp `2168_3` — `sin` din libm Apple cu 1 ULP în `poly_init` (închis, ireductibil).** **Afectat:** sfdp `2168_3` (doar stderr: portul emite un avertisment `Pshortestpath` în plus; parcursul pistei xdot trece, deoarece ambele părți revin la linii drepte). **Ce diferă:** `shapes.c:2329` calculează `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); pentru gamma = 1.0092081171617377, libm din macOS returnează 0.8464104077694533, V8 valoarea rotunjită corect 0.8464104077694532 (1 ULP). Diferența ajunge în routerul multispline (`neatosplines.c:428,444` → `multispline.c:598`) ca punct 10/18 al routerului, y 28.391789367446776 față de …78; trapezul cocircular (punctele 9, 10, 15, 16) este apoi triangulat cu altă diagonală Delaunay, astfel încât poligonul coridorului muchiei 1 diferă, iar `Pshortestpath` eșuează pe poligonul portului. **De ce este acceptat:** un experiment controlat care injectează doar acea valoare `sin` face stderr, triunghiurile, poligoanele și xdot identice cu cele native (`atan2` singur nu); pozițiile sfdp sunt identice bit cu bit, iar predicatul incircle, pathplan, hypot din `makeObstacle` și ordinea aritmetică a inelului de contur au fost excluse. Potrivirea cere un model exact la nivel de bit al `sin` din Apple, al cărui cod sursă nu este public; niciun cod portabil nu îl poate reproduce (aceeași limită ca precedentul `arm-pow.ts`). **Dovadă:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), rândul 2026-10-20 T13.
 
 ---
 

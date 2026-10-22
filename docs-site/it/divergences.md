@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1226,6 +1226,8 @@ l'accettazione di `2095` di sfdp era lo stesso punto cieco — una nuova
 rigenerazione dell'attribuzione sfdp (2026-07-22) con l'iniettore corretto ha
 confermato che si inietta anch'essa a 0, e la sua accettazione è stata rimossa (vedi
 la nota `2095 riclassificato` qui sopra).
+
+**sfdp `2168_3` — `sin` della libm Apple a 1 ULP in `poly_init` (chiuso, irriducibile).** **Interessato:** sfdp `2168_3` (solo stderr: il port emette un avviso `Pshortestpath` in più; il percorso della traccia xdot passa, perché entrambi i lati ripiegano su linee rette). **Cosa differisce:** `shapes.c:2329` calcola `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); per gamma = 1.0092081171617377 la libm di macOS restituisce 0.8464104077694533, V8 il valore correttamente arrotondato 0.8464104077694532 (1 ULP). La differenza raggiunge il router multispline (`neatosplines.c:428,444` → `multispline.c:598`) come punto 10/18 del router, y 28.391789367446776 contro …78; il trapezio cocircolare (punti 9, 10, 15, 16) viene quindi triangolato con un'altra diagonale di Delaunay, così il poligono del corridoio dell'arco 1 differisce e `Pshortestpath` fallisce sul poligono del port. **Perché accettato:** un esperimento controllato che inietta solo quel valore di `sin` rende stderr, triangoli, poligoni e xdot identici al nativo (`atan2` da solo no); le posizioni sfdp sono identiche al bit, e sono stati esclusi il predicato incircle, pathplan, l'hypot di `makeObstacle` e l'ordine aritmetico dell'anello di contorno. Eguagliarlo richiede un modello bit-esatto del `sin` di Apple, il cui sorgente non è pubblico; nessun codice portabile può riprodurlo (stesso confine del precedente `arm-pow.ts`). **Evidenza:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), riga 2026-10-20 T13.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1047,6 +1047,8 @@ conformant であり、14 点対 8 点の回廊の反転は同順位ではなく
 同じ盲点でした — 修正したインジェクターでの sfdp の原因特定の再生成（2026-07-22）は、
 それも 0 に注入されることを確認し、その受け入れは削除されました（上の
 `2095 reclassified` の注記を参照）。
+
+**sfdp `2168_3` — `poly_init` における Apple libm `sin` の 1 ULP 差（クローズ、還元不能）。** **影響:** sfdp `2168_3`（stderr のみ。ポートは `Pshortestpath` 警告を 1 件余分に出力する。両側とも直線にフォールバックするため xdot エンジントラックのウォークは通過する）。 **相違点:** `shapes.c:2329` は `temp = GAP / sin(gamma)` を計算する（ポート側 `src/common/poly-sizing.ts:379`）。gamma = 1.0092081171617377 のとき macOS の libm は 0.8464104077694533、V8 は正しく丸められた 0.8464104077694532 を返す（1 ULP）。この差は multispline ルーターに（`neatosplines.c:428,444` → `multispline.c:598`）ルーター点 10/18、y 28.391789367446776 対 …78 として到達し、共円の台形（点 9、10、15、16）が別の Delaunay 対角線で三角形分割されるため、エッジ 1 のコリドー多角形が異なり、ポート側の多角形で `Pshortestpath` が失敗する。 **受容理由:** この `sin` 値だけを注入する対照実験で stderr・三角形・多角形・xdot がネイティブと一致する（`atan2` だけでは一致しない）。sfdp の位置はビット一致で、incircle 述語、pathplan、`makeObstacle` の hypot、輪郭リングの演算順序は除外済み。一致させるには Apple の `sin` のビット正確なモデルが必要だが、そのソースは非公開であり、移植可能なコードでは再現できない（`arm-pow.ts` の先例と同じ境界）。 **根拠:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md)、2026-10-20 T13 の行。
 
 ---
 

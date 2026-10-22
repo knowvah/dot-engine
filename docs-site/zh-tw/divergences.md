@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -936,6 +936,8 @@ pathplan 多重樣條通道——與 circo／sfdp `241_0` 相同的 libm 1 ULP �
 同樣的盲點——使用修正後的注入器重新產生 sfdp 歸因（2026-07-22），
 證實它同樣注入後為 0，其接受條目已移除（見上方
 `2095 reclassified` 的說明）。
+
+**sfdp `2168_3` — `poly_init` 中 Apple libm `sin` 的 1 ULP 差異（已關閉，不可約）。** **受影響：** sfdp `2168_3`（僅 stderr：移植版多輸出一則 `Pshortestpath` 警告；xdot 引擎軌道走訪通過，因為雙方都退回直線）。 **差異：** `shapes.c:2329` 計算 `temp = GAP / sin(gamma)`（移植版 `src/common/poly-sizing.ts:379`）；當 gamma = 1.0092081171617377 時，macOS libm 回傳 0.8464104077694533，V8 回傳正確捨入的 0.8464104077694532（1 ULP）。該差異以路由器點 10/18、y 28.391789367446776 對 …78 的形式進入 multispline 路由器（`neatosplines.c:428,444` → `multispline.c:598`），共圓梯形（點 9、10、15、16）隨後以另一條 Delaunay 對角線三角化，使邊 1 的走廊多邊形不同，`Pshortestpath` 在移植版的多邊形上失敗。 **接受理由：** 僅注入該 `sin` 值的對照實驗使 stderr、三角形、多邊形與 xdot 和原生一致（僅 `atan2` 不行）；sfdp 位置逐位元相等，incircle 謂詞、pathplan、`makeObstacle` 的 hypot 與輪廓環運算順序均已排除。要符合需要 Apple `sin` 的逐位元精確模型，其原始碼未公開，可移植程式碼無法重現（與 `arm-pow.ts` 先例同一邊界）。 **證據：** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md)，2026-10-20 T13 列。
 
 ---
 

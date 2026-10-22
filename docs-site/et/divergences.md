@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1122,6 +1122,8 @@ süstimata tühi sõlm, mis lohistas oma külgnevaid servi. sfdp `2095` aktsepte
 sama pimeala — värske sfdp omistamise taasgenereerimine (2026-07-22) parandatud
 süstijaga kinnitas, et ka see süstib 0 jäägini, ja selle aktsepteerimine eemaldati (vt
 ülaltoodud märkust `2095 reclassified`).
+
+**sfdp `2168_3` — Apple'i libm-i `sin` 1 ULP failis `poly_init` (suletud, taandamatu).** **Mõjutatud:** sfdp `2168_3` (ainult stderr: port väljastab ühe lisa-`Pshortestpath`-hoiatuse; xdot-mootoririba läbimäng läbib, sest mõlemad pooled taanduvad sirgjoontele). **Mis erineb:** `shapes.c:2329` arvutab `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); gamma = 1.0092081171617377 korral annab macOS-i libm 0.8464104077694533, V8 korrektselt ümardatud väärtuse 0.8464104077694532 (1 ULP). Erinevus jõuab multispline-ruuterisse (`neatosplines.c:428,444` → `multispline.c:598`) ruuteripunktina 10/18, y 28.391789367446776 vs …78; ringjoonel asuv trapets (punktid 9, 10, 15, 16) trianguleeritakse siis teise Delaunay diagonaaliga, mistõttu serva 1 koridoripolügoon erineb ja `Pshortestpath` ebaõnnestub pordi polügoonil. **Miks aktsepteeritud:** kontrollitud katse, mis süstib ainult selle `sin`-väärtuse, muudab stderri, kolmnurgad, polügoonid ja xdoti natiivsega identseks (ainult `atan2` ei muuda); sfdp positsioonid on bitikaupa võrdsed ning incircle-predikaat, pathplan, `makeObstacle` hypot ja kontuuriringi aritmeetika järjekord on välistatud. Ühtimine nõuaks Apple'i `sin`-i bititäpset mudelit, mille lähtekood pole avalik; ükski portatiivne kood ei saa seda taastoota (sama piir kui pretsedendil `arm-pow.ts`). **Tõend:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), rida 2026-10-20 T13.
 
 ---
 

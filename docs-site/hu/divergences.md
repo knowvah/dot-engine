@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1141,6 +1141,8 @@ injektálatlan üres csúcs volt, amely maga után húzta a rákapcsolódó éle
 ugyanez a vakfolt volt — egy friss sfdp-tulajdonítási újragenerálás (2026-07-22) a javított
 injektorral megerősítette, hogy az is 0-ra injektálódik, és az elfogadását eltávolítottuk (lásd a
 fenti `2095 reclassified` megjegyzést).
+
+**sfdp `2168_3` — az Apple libm `sin` 1 ULP eltérése a `poly_init`-ben (lezárva, visszavezethetetlen).** **Érintett:** sfdp `2168_3` (csak stderr: a port egy extra `Pshortestpath` figyelmeztetést ír ki; az xdot motorsáv bejárása sikeres, mert mindkét oldal egyenes vonalra esik vissza). **Mi tér el:** a `shapes.c:2329` a `temp = GAP / sin(gamma)` kifejezést számolja (port `src/common/poly-sizing.ts:379`); gamma = 1.0092081171617377 esetén a macOS libm 0.8464104077694533-at ad, a V8 a helyesen kerekített 0.8464104077694532-t (1 ULP). Az eltérés a multispline útválasztóba (`neatosplines.c:428,444` → `multispline.c:598`) az útválasztó 10/18. pontjaként jut el, y 28.391789367446776 vs …78; a körön fekvő trapézt (9, 10, 15, 16. pont) ekkor más Delaunay-átlóval háromszögeli, így az 1. él folyosópoligonja eltér, és a `Pshortestpath` a port poligonján meghiúsul. **Miért elfogadott:** egy kontrollált kísérlet, amely csak ezt a `sin`-értéket injektálja, a stderrt, a háromszögeket, a poligonokat és az xdot-ot a natívval azonossá teszi (az `atan2` önmagában nem); az sfdp pozíciók bitazonosak, az incircle predikátum, a pathplan, a `makeObstacle` hypot és a körvonalgyűrű aritmetikai sorrendje kizárva. Az egyezéshez az Apple `sin` bitpontos modellje kellene, amelynek forrása nem nyilvános; hordozható kód nem tudja reprodukálni (ugyanaz a határ, mint az `arm-pow.ts` precedensnél). **Bizonyíték:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), 2026-10-20 T13 sor.
 
 ---
 

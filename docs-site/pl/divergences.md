@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1110,6 +1110,8 @@ niewstrzyknięty pusty węzeł ciągnący za sobą incydentne krawędzie. Akcept
 tę samą ślepą plamę — świeża regeneracja przypisania sfdp (2026-07-22) z poprawionym
 wstrzykiwaczem potwierdziła, że też wstrzykuje się do 0, a jej akceptacja została usunięta (zob.
 notę `2095 reclassified` powyżej).
+
+**sfdp `2168_3` — `sin` z libm Apple o 1 ULP w `poly_init` (zamknięte, nieredukowalne).** **Dotyczy:** sfdp `2168_3` (tylko stderr: port wypisuje jedno dodatkowe ostrzeżenie `Pshortestpath`; przebieg ścieżki xdot przechodzi, ponieważ obie strony wracają do prostych linii). **Co się różni:** `shapes.c:2329` liczy `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); dla gamma = 1.0092081171617377 libm z macOS zwraca 0.8464104077694533, V8 poprawnie zaokrągloną wartość 0.8464104077694532 (1 ULP). Różnica trafia do routera multispline (`neatosplines.c:428,444` → `multispline.c:598`) jako punkt routera 10/18, y 28.391789367446776 wobec …78; trapez współokręgowy (punkty 9, 10, 15, 16) jest wtedy triangulowany inną przekątną Delaunaya, więc wielokąt korytarza krawędzi 1 się różni, a `Pshortestpath` zawodzi na wielokącie portu. **Dlaczego zaakceptowane:** kontrolowany eksperyment wstrzykujący tylko tę wartość `sin` czyni stderr, trójkąty, wielokąty i xdot identycznymi z natywnymi (sam `atan2` nie); pozycje sfdp są bitowo równe, a predykat incircle, pathplan, hypot w `makeObstacle` i kolejność arytmetyki pierścienia konturu wykluczono. Dopasowanie wymaga bitowo dokładnego modelu `sin` Apple, którego kod źródłowy nie jest publiczny; żaden przenośny kod go nie odtworzy (ta sama granica co precedens `arm-pow.ts`). **Dowód:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), wiersz 2026-10-20 T13.
 
 ---
 

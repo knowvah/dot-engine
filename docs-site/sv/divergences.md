@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1130,6 +1130,8 @@ den oinjicerade noden med tomt namn som drog med sig sina anslutna kanter. Godk�
 för sfdp `2095` hade samma blinda fläck — en ny omgenerering av sfdp-attribueringen (2026-07-22) med den rättade
 injektorn bekräftade att även den injiceras till 0, och dess godkännande togs bort (se
 notisen `2095 omklassificerad` ovan).
+
+**sfdp `2168_3` — Apple-libm-`sin` 1 ULP i `poly_init` (stängt, oreducerbart).** **Berörda:** sfdp `2168_3` (endast stderr: porten skriver ut en extra `Pshortestpath`-varning; xdot-motorspårets genomgång passerar, eftersom båda sidor faller tillbaka på raka linjer). **Vad som skiljer sig:** `shapes.c:2329` beräknar `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); för gamma = 1.0092081171617377 ger macOS-libm 0.8464104077694533, V8 det korrekt avrundade värdet 0.8464104077694532 (1 ULP). Skillnaden når multispline-routern (`neatosplines.c:428,444` → `multispline.c:598`) som routerpunkt 10/18, y 28.391789367446776 mot …78; den kocirkulära trapetsen (punkterna 9, 10, 15, 16) trianguleras då med en annan Delaunay-diagonal, så kantens 1 korridorpolygon skiljer sig och `Pshortestpath` misslyckas på portens polygon. **Varför accepterat:** ett kontrollerat experiment som endast injicerar det `sin`-värdet gör stderr, trianglar, polygoner och xdot identiska med nativ (`atan2` ensamt gör det inte); sfdp-positionerna är bitidentiska, och incircle-predikatet, pathplan, `makeObstacle`-hypot och aritmetikordningen i konturringen har uteslutits. Att matcha det kräver en bitexakt modell av Apples `sin`, vars källkod inte är offentlig; ingen portabel kod kan reproducera det (samma gräns som prejudikatet `arm-pow.ts`). **Belägg:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), raden 2026-10-20 T13.
 
 ---
 

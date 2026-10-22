@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1127,6 +1127,8 @@ den ikke-injiserte tomme noden som dro med seg sine tilstøtende kanter. Godkjen
 den samme blindsonen — en ny regenerering av sfdp-tilskrivingen (2026-07-22) med den rettede
 injektoren bekreftet at den også injiserer til 0, og godkjenningen ble fjernet (se
 merknaden om `2095` omklassifisert ovenfor).
+
+**sfdp `2168_3` — Apple-libm-`sin` 1 ULP i `poly_init` (lukket, ikke reduserbart).** **Berørt:** sfdp `2168_3` (kun stderr: porten skriver ut en ekstra `Pshortestpath`-advarsel; gjennomkjøringen av xdot-motorsporet består, fordi begge sider faller tilbake til rette linjer). **Hva som avviker:** `shapes.c:2329` beregner `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); for gamma = 1.0092081171617377 gir macOS-libm 0.8464104077694533, V8 den korrekt avrundede verdien 0.8464104077694532 (1 ULP). Forskjellen når multispline-ruteren (`neatosplines.c:428,444` → `multispline.c:598`) som ruterpunkt 10/18, y 28.391789367446776 mot …78; det kosirkulære trapeset (punktene 9, 10, 15, 16) trianguleres da med en annen Delaunay-diagonal, slik at kantens 1 korridorpolygon avviker og `Pshortestpath` feiler på portens polygon. **Hvorfor akseptert:** et kontrollert eksperiment som bare injiserer den `sin`-verdien gjør stderr, trekanter, polygoner og xdot identiske med nativ (`atan2` alene gjør det ikke); sfdp-posisjonene er bitidentiske, og incircle-predikatet, pathplan, `makeObstacle`-hypot og aritmetikkrekkefølgen i konturringen er utelukket. Å matche det krever en bitnøyaktig modell av Apples `sin`, hvis kildekode ikke er offentlig; ingen portabel kode kan gjengi det (samme grense som presedensen `arm-pow.ts`). **Dokumentasjon:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), raden 2026-10-20 T13.
 
 ---
 

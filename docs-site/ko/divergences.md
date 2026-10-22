@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -971,6 +971,8 @@ pathplan 멀티스플라인 통로에 있으며 — circo/sfdp `241_0`과 같은
 주입되지 않은 빈 노드가 그에 닿은 에지를 끌고 가던 것이었습니다. sfdp `2095` 수용도 같은 맹점이었습니다 —
 고쳐진 주입기로 새로 생성한 sfdp 귀속 재생성(2026-07-22)이 역시 0으로 주입됨을 확인하여
 수용이 제거되었습니다(위의 `2095 reclassified` 메모 참고).
+
+**sfdp `2168_3` — `poly_init`의 Apple libm `sin` 1 ULP 차이(종결, 환원 불가).** **영향:** sfdp `2168_3`(stderr만: 포트가 `Pshortestpath` 경고를 하나 더 출력한다. 양쪽 모두 직선으로 폴백하므로 xdot 엔진 트랙 워크는 통과한다). **차이점:** `shapes.c:2329`는 `temp = GAP / sin(gamma)`를 계산한다(포트 `src/common/poly-sizing.ts:379`). gamma = 1.0092081171617377일 때 macOS libm은 0.8464104077694533, V8은 올바르게 반올림된 0.8464104077694532를 반환한다(1 ULP). 이 차이는 multispline 라우터(`neatosplines.c:428,444` → `multispline.c:598`)에 라우터 점 10/18, y 28.391789367446776 대 …78로 도달하고, 공원(cocircular) 사다리꼴(점 9, 10, 15, 16)이 다른 Delaunay 대각선으로 삼각분할되어 간선 1의 코리도 다각형이 달라지며 포트의 다각형에서 `Pshortestpath`가 실패한다. **수용 이유:** 해당 `sin` 값만 주입하는 통제 실험에서 stderr, 삼각형, 다각형, xdot이 네이티브와 동일해진다(`atan2`만으로는 그렇지 않다). sfdp 위치는 비트 단위로 같고, incircle 술어, pathplan, `makeObstacle`의 hypot, 윤곽 링 연산 순서는 배제되었다. 일치시키려면 소스가 공개되지 않은 Apple `sin`의 비트 단위 정확한 모델이 필요하며, 이식 가능한 코드로는 재현할 수 없다(`arm-pow.ts` 선례와 같은 경계). **근거:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), 2026-10-20 T13 행.
 
 ---
 
