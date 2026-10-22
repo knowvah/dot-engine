@@ -203,7 +203,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   30. **[CLOSED — part 3 T4: documented irreducible in A9 + 23 locales (AD-9)]**
       sfdp 2168_3 (item 17) needs a bit-exact model of Apple's `sin` to go further
       (T13).
-  31. 1864 exhausts a 1.5 GB worker heap in the port, on the T0 bundle as well as
+  31. **[PARKED — part 3 T13: C's class2 needs ≈6.6 GB (native 6.35 GiB RSS measured); port-only overhead is follow-up 68]** 1864 exhausts a 1.5 GB worker heap in the port, on the T0 bundle as well as
       T11's (pre-existing; seen in the T11 capture harness).
   32. **[DONE — `chore/record-t11-walk-passes`: 18 rows pass, 15 A9 entries
       retired]** Record T11's fail→pass rows (osage 1652, 2371, linux.i386-b29, share-b29; twopi
@@ -378,6 +378,13 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `htmltable.ts` `splitSizedLines`/`htmlTextIsSimple`; placement:
       `htmltable-pos-runs.ts` `buildLineRuns`/`runsAreSimple`); share one builder
       so they cannot diverge again (refactor, output unchanged) (part 3 T12).
+  68. Dot virtual nodes/edges cost 2,490 B per pair in the port vs ≈1,056 B in C
+      (`class2` chains): each allocates an empty `attrs` Map (~372 B/pair, C virtual
+      nodes have no attribute record), separate `Port`/point objects (~250 B; C embeds
+      them in `Agedgeinfo_t`) and ~15 boxed numbers. Lazy `attrs` on virtual
+      Node/Edge would save ~15% of class2 bytes for every dot render with long edges;
+      needs corpus byte-identity (part 3 T13; does not rescue 1864, which needs
+      ≥ 6.6 GB even at C's sizes).
 
 ## Local leftovers (not committed, safe to delete)
 
