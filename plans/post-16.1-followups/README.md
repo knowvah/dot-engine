@@ -13,6 +13,7 @@ item's outcome. Items 14–23 are closed (14 by PR #95; 15–23 by
 item 28 by `fix/html-label-warn-parity`, item 39 by `fix/html-entity-port`.
 The open work is items 25, 29–31, 35–37 and 40–42 under "New follow-ups
 found by part 2" below, each journaled in `plans/decision-journal.md`.
+Being closed by `plans/post-16-1-followups-3/`.
 
 ## State at handoff
 
