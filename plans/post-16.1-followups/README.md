@@ -276,11 +276,13 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       decision on. stderr only.
   42. Output depends on render history in a long-lived process. Item 39's
       byte diff (17 corpus files with `&`, 8 engines x 5 formats, both
-      bundles, resident worker pools, no timeouts hit) found 8 of 680 outputs
-      differing: 2470 dot plain, neato svg/cmapx, fdp svg; Symbol neato xdot,
-      fdp svg/json, sfdp json. All 8 are byte-identical main vs branch when
-      each runs in its own process, so the branch is not the cause; the pools
-      only ran jobs in a different order. 2470 neato cmapx differs in stderr
+      bundles, resident worker pools) ran twice. Of the 590 jobs that finish
+      within 120 s, run 1 found 8 differing (2470 dot plain, neato svg/cmapx,
+      fdp svg; Symbol neato xdot, fdp svg/json, sfdp json), run 2 found 5
+      (2470 neato svg, fdp cmapx; Symbol neato svg, fdp cmapx, sfdp json).
+      All 13 are byte-identical main vs branch when each runs in its own
+      process, so the branch is not the cause; the pools only ran jobs in a
+      different order. 2470 neato cmapx differs in stderr
       (one bundle prints a warning the other does not). Ruled out: Symbol
       fdp rendered before and after neato/fdp/sfdp of clust4, crazy and unix
       in one process is unchanged. Next: replay one worker's actual job order
