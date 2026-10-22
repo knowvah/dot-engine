@@ -77,3 +77,19 @@ describe('edge label sub-anchors', () => {
     expect(svg).not.toContain('a_edge1&#45;label');
   });
 });
+
+// preprocessTooltip decodes HTML entities (htmlEntityUTF8) before svg's raw
+// escape re-encodes every '&' -- so `&#38;` reaches the SVG as `&amp;`.
+// Expected strings from native 16.1.0 `dot -Tsvg`.
+describe('tooltip entity decoding (preprocessTooltip)', () => {
+  it('decodes graph, cluster, node and edge tooltips, then raw-escapes', () => {
+    const svg = renderSvg(`digraph { tooltip="g&#38;h"; URL="g.html";
+      subgraph cluster_x { tooltip="k&alpha;l"; URL="c.html"; c }
+      a [tooltip="c&#38;d"]; a -> b [tooltip="e&lt;f"];
+      b -> c [labeltooltip="m&amp;amp;n" label=L]; }`, 'dot');
+    const titles = [...svg.matchAll(/xlink:title="([^"]*)"/g)].map((m) => m[1]);
+    expect(titles).toEqual([
+      'g&amp;h', 'kαl', 'c&amp;d', 'e&lt;f', 'm&amp;amp;n',
+    ]);
+  });
+});

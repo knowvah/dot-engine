@@ -219,7 +219,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `timings-before.json`: dot 0.9587, neato 0.9961. T0 vs T0 noise: dot
       1.0062, neato 1.0196. The head bundle is byte-identical to T12's.
 - **New follow-ups found by item 27** (journal row 2026-10-21, item 27):
-  34. SVG text-span escaping: `svg_textspan` escapes with `raw = 1`
+  34. **[DONE — `fix/svg-raw-escaping`]** SVG text-span escaping: `svg_textspan` escapes with `raw = 1`
       (`plugin/core/gvrender_core_svg.c`), so every `&` in a span becomes
       `&amp;`. The port keeps entity-looking sequences, so text that decodes to
       `&amp;`, `&#38;` or `&foo;` diverges: plain `label="x&amp;amp;y"` and
@@ -247,6 +247,16 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   38. `STYLE="rounded,dashed"` on an HTML table or cell: native draws a rounded,
       dashed `<path>`, the port a dashed square `<polygon>`; `rounded` alone
       matches.
+- **New follow-up found by item 34** (journal row 2026-10-22, item 34;
+  reproduces on `main`):
+  39. Label entity decoding: the port's `htmlEntityUTF8`
+      (`src/common/html-entities.ts`) is a regex, not a port of `htmlEntity`
+      (`lib/common/utils.c`). `&#X41;` (upper-case X) stays literal (native
+      `A`); `&#;` natively consumes `#;` and keeps the `&` (n = 0 with a `;`
+      still advances `str`), so `"p&#;q"` renders `p&q`. C's digit caps (7
+      decimal, 6 hex) and its byte encoding of `v >= 0x7F` are unmodelled.
+      Plain labels and, since item 34, tooltips (`preprocessTooltip`) take
+      this path; widths follow the text.
 
 ## Local leftovers (not committed, safe to delete)
 

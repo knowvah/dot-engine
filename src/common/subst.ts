@@ -14,6 +14,7 @@ import { Node } from '../model/node.js';
 import { Edge } from '../model/edge.js';
 import { Graph } from '../model/graph.js';
 import type { TextlabelT } from './types.js';
+import { htmlEntityUTF8 } from './html-entities.js';
 
 export type GraphObj = Node | Edge | Graph;
 
@@ -123,4 +124,15 @@ export function interpretCRNL(str: string): string {
     }
   }
   return out;
+}
+
+/**
+ * Tooltip preprocessing: decode HTML entities to UTF-8, then interpret
+ * \n \l \r. C picks latin1ToUTF8 or htmlEntityUTF8 by GD_charset; both decode
+ * entities via htmlEntity, and the port's Latin-1 bytes are already decoded
+ * at input, so one branch serves both (as in make_label).
+ * @see lib/common/emit.c:preprocessTooltip
+ */
+export function preprocessTooltip(s: string): string {
+  return interpretCRNL(htmlEntityUTF8(s));
 }

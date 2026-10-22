@@ -17,7 +17,7 @@ import type { Node } from '../model/node.js';
 import type { Point, Box, Spline, Bezier } from '../model/geom.js';
 import type { TextlabelT, PolygonT } from '../common/types.js';
 import type { GraphObj } from '../common/subst.js';
-import { substObjAnchor, interpretCRNL } from '../common/subst.js';
+import { substObjAnchor, preprocessTooltip } from '../common/subst.js';
 import { parseStyleFlags } from '../common/style-resolve.js';
 import { nodeAttr } from '../common/poly-init.js';
 import { bezier } from '../common/bezier.js';
@@ -36,12 +36,13 @@ function subst(s: string, obj: GraphObj): string {
 }
 
 /**
- * preprocessTooltip + strdup_and_subst_obj: interpret \n\l\r escapes, then
- * object substitution — matching the node tooltip path (poly-gencode.ts).
+ * preprocessTooltip + strdup_and_subst_obj: decode entities and interpret
+ * \n\l\r escapes, then object substitution — matching the node tooltip path
+ * (poly-gencode.ts).
  * @see lib/common/emit.c:preprocessTooltip
  */
 function tip(s: string, obj: GraphObj): string {
-  return substObjAnchor(interpretCRNL(s), obj);
+  return substObjAnchor(preprocessTooltip(s), obj);
 }
 
 /** Label text of a textlabel, or null. @see device.ts:labelTextOf */
@@ -71,7 +72,7 @@ function pickEdge(e: Edge, keys: string[]): Picked {
   return pickFirst(e.attrs, keys, (s) => subst(s, e));
 }
 
-/** pickFirst with tooltip preprocessing (interpretCRNL + subst). */
+/** pickFirst with tooltip preprocessing (preprocessTooltip + subst). */
 function pickEdgeTip(e: Edge, keys: string[]): Picked {
   return pickFirst(e.attrs, keys, (s) => tip(s, e));
 }
