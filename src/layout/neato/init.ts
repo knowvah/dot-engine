@@ -50,6 +50,7 @@ export const MODE_HIER = 2;
 export const MODE_IPSEP = 3;
 /** Stochastic gradient descent. @see lib/neatogen/neatoprocs.h */
 export const MODE_SGD = 4;
+/** `MaxIter` under MODE_SGD. @see neatoinit.c:1285 */ const SGD_ITERATIONS = 30;
 
 // ---------------------------------------------------------------------------
 // Model constants — @see lib/neatogen/defs.h
@@ -321,6 +322,13 @@ export function mapModelToStress(model: number): number {
 // solveModel helpers
 // ---------------------------------------------------------------------------
 
+/** `MaxIter` per mode; `maxiter` goes through C `atoi` (no digits -> 0). @see neatoinit.c:1280-1287 */
+export function neatoMaxIter(maxiter: string | undefined, mode: number, n: number): number {
+  if (maxiter !== undefined) return parseInt(maxiter, 10) || 0;
+  if (mode === MODE_MAJOR) return DFLT_ITERATIONS;
+  return mode === MODE_SGD ? SGD_ITERATIONS : 100 * n;
+}
+
 /** Run stress majorization and write positions back. @see lib/neatogen/neatoinit.c:majorization */
 export function runMajorization(g: Graph, mode: number, model: number): void {
   void model; // only MODEL_SHORTPATH distances are exercised by the suite
@@ -329,7 +337,7 @@ export function runMajorization(g: Graph, mode: number, model: number): void {
   const haveLen = graphHasLen(g);
   const vtx = makeGraphDataC(g, nodeList, haveLen, mode === MODE_HIER || mode === MODE_IPSEP);
   checkStart(g); // C: srand48(seed) immediately before initLayout draws
-  const maxi = lateDouble(g.attrs.get('maxiter'), DFLT_ITERATIONS, 0);
+  const maxi = neatoMaxIter(g.attrs.get('maxiter'), mode, n);
   const epsilon = lateDouble(g.attrs.get('epsilon'), 1e-4, 0); // DFLT_TOLERANCE
   // C ipsep (stress_majorization_cola, constrained_majorization_ipsep.c:150) always uses
   // compute_apsp_packed; kD_mkernel uses the weighted APSP iff graph->ewgts (stress.c:855).
@@ -389,11 +397,7 @@ export function makeGraphDataC(
   return vtx;
 }
 
-/**
- * Dispatch to the appropriate layout solver for the given mode.
- *
- * @see lib/neatogen/neatoinit.c:neatoLayout
- */
+/** Dispatch to the layout solver for the mode. @see lib/neatogen/neatoinit.c:neatoLayout */
 export function solveModel(g: Graph, mode: number, model: number): void {
   if (g.nodes.size < 2) return;
   assertSupported(g, mode, model);
@@ -411,11 +415,7 @@ export function solveModel(g: Graph, mode: number, model: number): void {
 // neatoTranslate helpers
 // ---------------------------------------------------------------------------
 
-/**
- * Find minimum X and Y across all node positions.
- *
- * @see lib/neatogen/neatoinit.c (translate logic)
- */
+/** Minimum X and Y across all node positions. @see lib/neatogen/neatoinit.c (translate logic) */
 export function findMinPos(g: Graph): { minX: number; minY: number } {
   let minX = Infinity;
   let minY = Infinity;
