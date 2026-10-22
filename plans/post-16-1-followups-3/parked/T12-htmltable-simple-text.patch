@@ -1,0 +1,83 @@
+--- a/src/common/htmltable.ts
++++ b/src/common/htmltable.ts
+@@ -169,25 +169,24 @@
+   i.subscript === true || i.superscript === true;
+ 
+ /**
+- * C's "simple" test: one item per line, no font flags, uniform
+- * resolved face and size across all lines.
++ * C's "simple" test over the line list (C spans): one item per line, no font
++ * flags, uniform resolved face and size across all lines. It reads each
++ * line's first item, so the "" item appendFLineList gives an empty <BR/> line
++ * counts with its font: `k<U><BR/><BR/></U>` is not simple.
+  * @see lib/common/htmltable.c:size_html_txt (lines 946-986)
+  */
+-export const htmlTextIsSimple = (texts: HtmlText[], env: HtmlSizeEnv): boolean => {
++const htmlTextIsSimple = (lines: SizedLine[], env: HtmlSizeEnv): boolean => {
+   let prevFs = -1;
+   let prevFace: string | null = null;
+-  let count = 0;
+-  for (const txt of texts) {
+-    for (const item of txt.items) {
+-      if (item.br) { count = 0; continue; }
+-      if (item.text === undefined) continue;
+-      if (++count > 1 || itemHasFlags(item)) return false;
+-      const { fs, face } = itemFont(item, env);
+-      if (prevFs < 0) prevFs = fs;
+-      else if (fs !== prevFs) return false;
+-      if (prevFace === null) prevFace = face;
+-      else if (face !== prevFace) return false;
+-    }
++  for (const ln of lines) {
++    // splitSizedLines never yields an itemless line (C: nitems >= 1).
++    const item = ln.items[0]!;
++    if (ln.items.length > 1 || itemHasFlags(item)) return false;
++    const { fs, face } = itemFont(item, env);
++    if (prevFs < 0) prevFs = fs;
++    else if (fs !== prevFs) return false;
++    if (prevFace === null) prevFace = face;
++    else if (face !== prevFace) return false;
+   }
+   return true;
+ };
+@@ -203,7 +202,7 @@
+   env: HtmlSizeEnv = defaultSizeEnv(),
+ ): { w: number; h: number } => {
+   const lines = splitSizedLines(texts, measurer, env);
+-  const simple = htmlTextIsSimple(texts, env);
++  const simple = htmlTextIsSimple(lines, env);
+   let w = 0;
+   let h = 0;
+   for (const ln of lines) {
+--- a/src/common/htmltable.test.ts
++++ b/src/common/htmltable.test.ts
+@@ -125,3 +125,29 @@
+     expect(cellBorder(cell(), tbl())).toBe(1);
+   });
+ });
++
++describe('sizeHtmlLabel — empty <BR/> line inside a font-style element', () => {
++  // Metric height 1.2×fs ≠ raw fs, so the simple (mxysize) and non-simple
++  // (mxfsize) line models give different block heights.
++  const tallMeasurer: TextMeasurer = {
++    measure: (text, _f, fs) => ({ w: text.length * fs * 0.5, h: fs * 1.2 }),
++  };
++  const height = (src: string): number | undefined => {
++    const label = parseHtmlLabel(src);
++    sizeHtmlLabel(label, tallMeasurer);
++    return label.dimen?.h;
++  };
++
++  // C appendFLineList gives the second line one "" item in the <U>/<B> font,
++  // whose flags make size_html_txt non-simple: lsize = mxfsize (14 + 14).
++  // @see lib/common/htmlparse.y:appendFLineList, htmltable.c:size_html_txt
++  it.each(['k<u><br/><br/></u>', 'k<b><br/><br/></b>', 'k<font point-size="20"><br/><br/></font>'])(
++    '%s sizes as a non-simple block', (src) => {
++      const expected = src.includes('20') ? 14 + 20 : 14 + 14;
++      expect(height(src)).toBe(expected);
++    });
++
++  it('k<br/><br/> stays simple: lsize = metric height (16.8 + 16.8)', () => {
++    expect(height('k<br/><br/>')).toBeCloseTo(33.6, 10);
++  });
++});

@@ -194,7 +194,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       the next stderr write; SIDES with non-ASCII prints raw bytes; `ALIGN="TEXT"` in
       TD has no `HtmlAlign` value; expat attribute-value normalisation is not modelled
       in warning text; dead `cellAttrs['src']` fallback in `parseImgContent` (T8).
-  29. Fused non-Bezier expressions the port computes plain: `ptToLine2`
+  29. **[DONE — part 3 T6-T9: 29a-d fused per disassembly; CDT face order per GTS]** Fused non-Bezier expressions the port computes plain: `ptToLine2`
       (`anchor.ts`, `splines-geom.ts`), `arrow_type_curve` control points,
       `svg-edge-split.ts:approxLen` (`DIST`), `edge-route-clip.ts:arrowEndClip`
       (differs from arrows.c beyond fusion), `multispline-router.ts:addTriEdge`
@@ -232,17 +232,17 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       too. A node `tooltip="c&#38;d"` already diverged; since item 28 decodes
       HTML attribute values as expat does, an HTML `title="a&amp;amp;b"`
       (decoded `a&amp;b`) now does as well.
-  35. `<BR/>` lines inside a font-style element: `<k<u><br/><br/></u>>` places
+  35. **[PARKED — part 3 T12: diagnosed; fix in `src/common/htmltable.ts` (outside the write-set), tested patch at `plans/post-16-1-followups-3/parked/`]** `<BR/>` lines inside a font-style element: `<k<u><br/><br/></u>>` places
       the lines differently from native (y off by 6.76 pt); `k<br/><br/>`
       without the `<u>` matches. Pre-existing on `main`.
 - **New follow-ups found by item 28** (journal row 2026-10-22, item 28; all
   three reproduce on `main`):
-  36. agerr's default writer (`lib/cgraph/agerror.c:default_usererrf`) prints
+  36. **[DONE — part 3 T5]** agerr's default writer (`lib/cgraph/agerror.c:default_usererrf`) prints
       each control character that is not white space as `\ooo`. The port
       prints messages as they are, so a raw `\x01` in an HTML label's error
       context shows as the byte, not `\001`. Any warning or error the port
       prints that contains such a character differs the same way.
-  37. `Warning: %s is not a known color.` (`lib/gvc/gvrender.c:206`, after
+  37. **[DONE — part 3 T10]** `Warning: %s is not a known color.` (`lib/gvc/gvrender.c:206`, after
       `colorxlate` returns `COLOR_UNKNOWN`) is never printed by the port, for
       plain attributes (`a[color=foo]`) as for HTML `COLOR`/`BGCOLOR`. stderr
       only; the SVG matches. Found by item 28's attribute fuzz (most of its
@@ -270,7 +270,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `x`), `&#65q` and `&#xG;`. `textRefError`
       (`src/common/htmltable-lex-expat.ts`) checks only undefined entities
       and disallowed character numbers.
-  41. `estimate_character_width_canonical` (`lib/common/textspan_lut.c:806`)
+  41. **[DONE — part 3 T11]** `estimate_character_width_canonical` (`lib/common/textspan_lut.c:806`)
       warns `Warning: no value for width of non-ASCII character %u. Falling
       back to width of space character` (agwarningf adds its own `Warning: `
       prefix) for the first byte >= 128 it measures, and the ASCII
@@ -349,6 +349,35 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       number-ambiguity and macro warnings) because tests spy on it; all agerr
       warnings should use `console.warn` (part 3 T5).
   56. The lexer's syntax errors lack native's `<stdin>: ` file prefix (part 3 T5).
+  57. `parseSegs`' `Warning: Total size > 1 in "<spec>" color spec in edge a -> b`
+      is never printed by the port (part 3 T10).
+  58. Native prints `gvrender_set_style: unsupported style rounded - ignoring` for an
+      ortho `style=rounded` edge; the port does not (part 3 T10).
+  59. Native prints `layers not supported in <fmt> output` for xdot, cmapx and plain;
+      the port does not (part 3 T10).
+  60. A missing `image=` file: native prints `No such file or directory while opening
+      x.png` and `No or improper image="…" for node "a"`; for HTML `<IMG>` native also
+      prints a `Warning: No such file…` line before the Error the port prints
+      (part 3 T10).
+  61. Native's font fallback line is `Warning: Warning: no hard-coded metrics …`
+      (doubled prefix); the port prints one `Warning: ` (part 3 T5/T10).
+  62. Cluster `style=striped` is not drawn; T10 added only its colour warnings
+      (part 3 T10).
+  63. Under a colorscheme, the `transparent` pen of `peripheries=0` filled nodes and of
+      clusters is not reported as an unknown color for non-svg renderers; only the
+      root-background case is (part 3 T10).
+  64. `parseGradientSpec` (HTML) trims and splits at the first `:` where C's
+      `findStopColor` uses `parseSegs`; names with spaces or `;fraction` in HTML
+      `BGCOLOR` may differ (part 3 T10).
+  65. Fuzz `classify.mjs` files native's duplicate-`baseline-shift` outputs (nested
+      `<sup>`/`<sub>`, invalid XML) under class 35 or svg-other; give them their own
+      class (part 3 T12).
+  66. `probe.mjs` compares only text content and ellipse `cx`; it should also compare
+      text x/y and ellipse rx/ry (it reported item 35 as SAME) (part 3 T12).
+  67. HTML line splitting and the simple test exist twice (sizing:
+      `htmltable.ts` `splitSizedLines`/`htmlTextIsSimple`; placement:
+      `htmltable-pos-runs.ts` `buildLineRuns`/`runsAreSimple`); share one builder
+      so they cannot diverge again (refactor, output unchanged) (part 3 T12).
 
 ## Local leftovers (not committed, safe to delete)
 

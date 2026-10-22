@@ -105,7 +105,7 @@ the branch at the end (AD-1).
 | [1](batch-1/overview.md) | T0 baselines and shared tooling | orchestrator | [x] |
 | [2](batch-2/overview.md) | T1 per-render state (42) · T2 MaxIter (25) · T3 HTML invalid token (40) · T4 close 2168_3 (30) | parallel worktrees | [x] |
 | [3](batch-3/overview.md) | T5 agerr writer (36) · T6–T9 FMA sites (29a–d) | parallel worktrees | [x] |
-| [4](batch-4/overview.md) | T10 unknown color (37) · T11 width warnings (41) · T12 `<BR/>` in font style (35) | parallel worktrees | [ ] |
+| [4](batch-4/overview.md) | T10 unknown color (37) · T11 width warnings (41) · T12 `<BR/>` in font style (35) | parallel worktrees | [x] (T12 parked) |
 | [5](batch-5/overview.md) | T13 1864 OOM (31) | single, open write-set | [ ] |
 | [6](batch-6/overview.md) | T14 final verification, close-out, re-sign stop | orchestrator | [ ] |
 
