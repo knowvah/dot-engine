@@ -22,7 +22,7 @@ import { FillType } from '../gvc/context.js';
 import { emitHtmlLabel } from './htmltable-emit.js';
 import { transformPoint } from '../gvc/device.js';
 import { nodeAttr } from './poly-init.js';
-import { substObjAnchor, interpretCRNL } from './subst.js';
+import { substObjAnchor, preprocessTooltip } from './subst.js';
 import type { ResolvedFill, PolyStyleFlags } from './style-resolve.js';
 import {
   parseStyleFlags,
@@ -245,7 +245,7 @@ function anchorAttr(n: Node, key: string): string | undefined {
 
 /** Resolve tooltip string: explicit attr, or fall back to label text. */
 function resolveTooltip(n: Node, tooltip: string | undefined): string {
-  if (tooltip !== undefined) return substObjAnchor(interpretCRNL(tooltip), n);
+  if (tooltip !== undefined) return substObjAnchor(preprocessTooltip(tooltip), n);
   const label = n.info.label as TextlabelT | undefined;
   return label?.text ?? '';
 }
