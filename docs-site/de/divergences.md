@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -726,6 +726,15 @@ Randbedingung unterhalb des Codes — der Darstellungsschicht —, kein portable
 Verhalten, dessen Portierung wir abgelehnt hätten. Alles andere in 1367 ist
 konform: Elementzahlen (23 Polylinien / 103 Texte / 44 Polygone / 24 Pfade) und alle
 Koordinaten stimmen nach der Korrektur für decorate (T6) überein.
+
+**Dasselbe gilt für HTML-`SIDES`-Warnungen.** `sidesfn` (`lib/common/htmllex.c`)
+warnt einmal für jedes Byte des Werts, das nicht `l`, `t`, `r` oder `b` ist. Es gibt
+das Byte mit `%c` und seinen vorzeichenbehafteten `char`-Wert mit `%d` aus. Bei
+einem Nicht-ASCII-Buchstaben (`é` ist `0xC3 0xA9`) schreibt die native Version zwei
+einzelne Bytes, sodass ihr stderr ebenfalls kein gültiges UTF-8 ist. Die Portierung
+gibt dieselben zwei Warnungen mit denselben Zahlen aus (`-61`, `-87`). Da ihre
+Warnungen JS-Strings sind, zeigt sie jedes Byte als das Zeichen mit diesem
+Latin-1-Codepoint (`Ã`, `©`).
 
 **Beleg.**
 Vergleichsseite zu [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

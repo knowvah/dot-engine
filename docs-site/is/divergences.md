@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -679,6 +679,14 @@ framsetningarlagið — ekki flytjanleg hegðun sem við neituðum að yfirfæra
 Allt annað í 1367 er samræmt: fjöldi frumefna (23 polyline /
 103 text / 44 polygon / 24 path) og öll hnit passa eftir
 lagfæringuna á decorate (T6).
+
+**Það sama gildir um HTML-`SIDES`-viðvaranir.** `sidesfn` (`lib/common/htmllex.c`)
+varar einu sinni við hverju bæti gildisins sem er ekki `l`, `t`, `r` eða `b`. Það
+prentar bætið með `%c` og undirritað `char`-gildi þess með `%d`. Fyrir staf sem er
+ekki ASCII (`é` er `0xC3 0xA9`) skrifar upprunalega útgáfan tvö stök bæti, svo
+stderr hennar er heldur ekki gilt UTF-8. Yfirfærslan prentar sömu tvær viðvaranirnar
+með sömu tölum (`-61`, `-87`). Þar sem viðvaranir hennar eru JS-strengir sýnir hún
+hvert bæti sem stafinn með þann Latin-1 kóðapunkt (`Ã`, `©`).
 
 **Gögn.**
 Samanburðarsíða fyrir [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -680,6 +680,15 @@ nem egy hordozható viselkedés, amelynek portolását elutasítottuk.
 Az 1367-ben minden más megfelelő: az elemszámok (23 polyline /
 103 text / 44 polygon / 24 path) és az összes koordináta egyezik a
 decorate (T6) javítás után.
+
+**Ugyanez vonatkozik a HTML `SIDES` figyelmeztetésekre.** A `sidesfn`
+(`lib/common/htmllex.c`) az érték minden olyan bájtjára egyszer figyelmeztet, amely
+nem `l`, `t`, `r` vagy `b`. A bájtot `%c`-vel, az előjeles `char` értékét `%d`-vel
+írja ki. Nem ASCII betű esetén (`é` = `0xC3 0xA9`) a natív változat két különálló
+bájtot ír, így a stderr-je sem érvényes UTF-8. A port ugyanazt a két figyelmeztetést
+írja ki ugyanazokkal a számokkal (`-61`, `-87`). Mivel a figyelmeztetései
+JS-sztringek, minden bájtot az adott Latin-1 kódpontú karakterként jelenít meg (`Ã`,
+`©`).
 
 **Bizonyíték.**
 az [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

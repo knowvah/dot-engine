@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -293,6 +293,8 @@ job->clip)` 为每个节点设置门槛（emit.c:1806-1809），而在这条中�
 **有何不同。** 输入文件在一个节点名称内含有一个裸露的 UTF-8 尾字节（`0x80`）。C 把裸露的 0x80–0xBF 尾字节视为“代表其自身的有效字符”（`lib/common/utils.c:1200-1207`，无警告），并且节点名称的 `<title>` 文本完全绕过字符集转换（`agnameof` 的字节直接流向 `gvputs_xml`）。因此参照程序的 SVG 包含原始字节，尽管声明了编码，它**并不是有效的 UTF-8**。移植版用 latin1 回退解码无效 UTF-8 的输入（`0x80 → U+0080`），并输出格式良好的 UTF-8（`\xc2\x80`）。
 
 **为何接受。** 移植版的 I/O 边界是 JS 字符串（浏览器库）。原始的无效字节无法通过 `renderSvg` 的字符串返回值往返；要逐字节匹配 C，就意味着为每一位使用者破坏输出编码。latin1 回退与 C 自己的“按 Latin-1 处理”恢复语义一致（`utils.c:1249`）。这是代码之下的约束——表示层——而不是我们拒绝移植的某种可移植行为。1367 中的其他一切都是一致的：元素数量（23 个 polyline / 103 个 text / 44 个 polygon / 24 个 path）以及所有坐标，在 decorate（T6）修复之后都匹配。
+
+**同样的情况也适用于 HTML 的 `SIDES` 警告。** `sidesfn`（`lib/common/htmllex.c`）对取值中每个不是 `l`、`t`、`r` 或 `b` 的字节各警告一次。它用 `%c` 打印该字节，用 `%d` 打印其有符号 `char` 值。对于非 ASCII 字母（`é` 是 `0xC3 0xA9`），原生版本写出两个孤立的字节，因此它的 stderr 也不是有效的 UTF-8。移植版以相同的数值（`-61`、`-87`）打印相同的两条警告。因为它的警告是 JS 字符串，所以把每个字节显示为具有该 Latin-1 码点的字符（`Ã`、`©`）。
 
 **证据。**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

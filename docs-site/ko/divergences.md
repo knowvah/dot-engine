@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -596,6 +596,12 @@ SVG에는 원시 바이트가 들어 있으며, 선언된 인코딩과 달리 **
 것이 아니라, 코드 아래의 표현 계층에 있는 제약입니다. 1367의 나머지는 모두 conformant입니다.
 장식(T6) 수정 뒤에는 요소 개수(polyline 23 / text 103 / polygon 44 / path 24)와 모든
 좌표가 일치합니다.
+
+**HTML `SIDES` 경고에도 같은 내용이 적용됩니다.** `sidesfn`(`lib/common/htmllex.c`)은 값에서 `l`,
+`t`, `r`, `b`가 아닌 바이트마다 한 번씩 경고합니다. 바이트는 `%c`로, 부호 있는 `char` 값은 `%d`로 출력합니다.
+ASCII가 아닌 글자(`é`는 `0xC3 0xA9`)의 경우 네이티브는 홀로 놓인 바이트 두 개를 쓰므로 그 stderr도 유효한 UTF-8이
+아닙니다. 포팅은 같은 숫자(`-61`, `-87`)로 같은 경고 두 개를 출력합니다. 포팅의 경고는 JS 문자열이므로 각 바이트를 해당
+Latin-1 코드 포인트의 문자(`Ã`, `©`)로 표시합니다.
 
 **증거.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

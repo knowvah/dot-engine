@@ -11,6 +11,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { renderSvg } from '../index.js';
 import { parseHtmlLabelRv } from './htmltable-parse.js';
 import { HtmlLexError } from './htmltable-lex.js';
+import { StderrLines } from './htmltable-attr-warn.js';
 import { eatComment, findNext } from './htmltable-lex-units.js';
 import { fedBytes } from './htmltable-lex-expat.js';
 
@@ -29,12 +30,15 @@ interface Outcome {
 /** parseHtmlLabelRv on a label string verbatim: what it printed and how it ended. */
 function lex(label: string): Outcome {
   const printed: string[] = [];
+  const stderr = new StderrLines((line) => printed.push(line));
   try {
-    const { warn } = parseHtmlLabelRv(label, (line) => printed.push(line));
+    const { warn } = parseHtmlLabelRv(label, stderr);
     return { printed, error: undefined, warn };
   } catch (e) {
     if (!(e instanceof HtmlLexError)) throw e;
     return { printed, error: e.diagnostics, warn: undefined };
+  } finally {
+    stderr.flush();
   }
 }
 

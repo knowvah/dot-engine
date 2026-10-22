@@ -219,13 +219,11 @@ const rejectTableAfterTag = (s: ParseState, start: number): void => {
 // Cell content helpers — mirrors htmlparse.y cell rule
 // ---------------------------------------------------------------------------
 
-const parseImgContent = (
-  s: ParseState, t: OpenToken, cellAttrs: Record<string, string>,
-): HtmlImage => {
+const parseImgContent = (s: ParseState, t: OpenToken): HtmlImage => {
   consume(s);
   const img: HtmlImage = {
     kind: 'image',
-    src: cellAttrs['src'] ?? t.attrs['src'] ?? '',
+    src: t.attrs['src'] ?? '',
     scale: t.attrs['scale'],
   };
   consumeClose(s, 'IMG');
@@ -272,17 +270,15 @@ const scanAfterTable = (s: ParseState, t: Token, st: CellScan): HtmlCellContent[
 };
 
 /** `image` as the cell's only child. */
-const scanCellImage = (
-  s: ParseState, t: OpenToken, cellAttrs: Record<string, string>, st: CellScan,
-): HtmlCellContent[] => {
+const scanCellImage = (s: ParseState, t: OpenToken, st: CellScan): HtmlCellContent[] => {
   if (st.kind !== 'none') throw parseError(s, t, MSG_SYNTAX_ERROR);
   st.kind = 'image';
-  return [parseImgContent(s, t, cellAttrs)];
+  return [parseImgContent(s, t)];
 };
 
 /** One step of `cell: T_cell (fonttable | fonttext | image) T_end_cell`. */
 const scanCellItem = (
-  s: ParseState, t: Token, cellAttrs: Record<string, string>, fontStack: FontState[], st: CellScan,
+  s: ParseState, t: Token, fontStack: FontState[], st: CellScan,
 ): HtmlCellContent[] => {
   if (st.kind === 'fonttable') throw parseError(s, t, MSG_SYNTAX_ERROR);
   if (st.kind === 'table') return scanAfterTable(s, t, st);
@@ -292,7 +288,7 @@ const scanCellItem = (
     return [parseFontTable(s, wrapper, fontStack)];
   }
   if (t.type === 'open' && t.tag === 'TABLE') return scanCellTable(s, t, fontStack, st);
-  if (t.type === 'open' && t.tag === 'IMG') return scanCellImage(s, t, cellAttrs, st);
+  if (t.type === 'open' && t.tag === 'IMG') return scanCellImage(s, t, st);
   if (st.kind === 'image') throw parseError(s, t, MSG_SYNTAX_ERROR);
   return scanCellText(s, t, fontStack, st);
 };
@@ -305,14 +301,12 @@ const endsCell = (s: ParseState, t: Token, st: CellScan): boolean => {
   throw parseError(s, t, afterText ? MSG_TEXT_AFTER_TABLE : MSG_SYNTAX_ERROR);
 };
 
-const parseCellContent = (
-  s: ParseState, cellAttrs: Record<string, string>, fontStack: FontState[],
-): HtmlCellContent[] => {
+const parseCellContent = (s: ParseState, fontStack: FontState[]): HtmlCellContent[] => {
   const content: HtmlCellContent[] = [];
   const st: CellScan = { kind: 'none', textNonSpace: false, afterNonSpace: false };
   for (let t = peek(s); t !== undefined; t = peek(s)) {
     if (endsCell(s, t, st)) break;
-    content.push(...scanCellItem(s, t, cellAttrs, fontStack, st));
+    content.push(...scanCellItem(s, t, fontStack, st));
   }
   const nxt = peek(s);
   if (nxt?.type === 'close' && nxt.tag === 'TD') consume(s);
@@ -327,7 +321,7 @@ const parseCellContent = (
 /** @see lib/common/htmlparse.y:cell rule / lib/common/htmllex.c:mkCell */
 const parseCell = (
   s: ParseState, attrs: Record<string, string>, fontStack: FontState[],
-): HtmlCell => buildCell(parseCellContent(s, attrs, fontStack), attrs);
+): HtmlCell => buildCell(parseCellContent(s, fontStack), attrs);
 
 // ---------------------------------------------------------------------------
 // parseRow — parses <TR>...</TR>
@@ -560,21 +554,16 @@ export interface ParsedHtmlLabel {
 }
 
 /**
- * Parse an HTML-like label string, printing the lexer's warnings (one
- * `writeLine` per stderr line, `console.warn` by default) as the parser reaches
- * their tokens. Input is the content between the outer `<` `>` delimiters
- * (already stripped).
+ * Parse an HTML-like label string, writing the lexer's warnings to `stderr` as
+ * the parser reaches their tokens. The caller owns `stderr` and flushes it: a
+ * warning without a newline continues into the caller's next write. Input is
+ * the content between the outer `<` `>` delimiters (already stripped).
  *
  * @see lib/common/htmlparse.y:parseHTML
  */
-export const parseHtmlLabelRv = (
-  src: string,
-  writeLine: (line: string) => void = (line) => console.warn(line),
-): ParsedHtmlLabel => {
+export const parseHtmlLabelRv = (src: string, stderr: StderrLines): ParsedHtmlLabel => {
   const { tokens, error, eof } = tokenizeDeferred(`<HTML>${src}</HTML>`, { start: 6, end: 6 + src.length });
-  const s: ParseState = {
-    tokens, pos: 0, pending: error, stderr: new StderrLines(writeLine), emitted: new WeakSet(), warn: false, eof,
-  };
+  const s: ParseState = { tokens, pos: 0, pending: error, stderr, emitted: new WeakSet(), warn: false, eof };
   try {
     const label = parseTokens(s);
     if (error !== undefined) throw error;
@@ -583,8 +572,6 @@ export const parseHtmlLabelRv = (
     // Running off the truncated stream means C's lexer would have hit the error.
     if (error !== undefined && s.pos >= tokens.length) { emitEof(s); throw error; }
     throw e;
-  } finally {
-    s.stderr?.flush();
   }
 };
 
@@ -594,4 +581,4 @@ export const parseHtmlLabelRv = (
  * the sync pass prints.
  */
 export const parseHtmlLabel = (src: string): HtmlLabel =>
-  parseHtmlLabelRv(src, () => undefined).label;
+  parseHtmlLabelRv(src, new StderrLines(() => undefined)).label;

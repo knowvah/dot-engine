@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -732,6 +732,14 @@ rappresentazione — non un comportamento portabile che abbiamo rifiutato di
 portare. Tutto il resto in 1367 è conforme: i conteggi degli elementi (23
 polyline / 103 text / 44 polygon / 24 path) e tutte le coordinate coincidono dopo
 la correzione di decorate (T6).
+
+**Lo stesso vale per gli avvisi HTML `SIDES`.** `sidesfn` (`lib/common/htmllex.c`)
+avvisa una volta per ogni byte del valore che non è `l`, `t`, `r` o `b`. Stampa il
+byte con `%c` e il suo valore `char` con segno con `%d`. Per una lettera non ASCII
+(`é` è `0xC3 0xA9`), la versione nativa scrive due byte isolati, quindi anche il suo
+stderr non è UTF-8 valido. Il porting stampa gli stessi due avvisi con gli stessi
+numeri (`-61`, `-87`). Poiché i suoi avvisi sono stringhe JS, mostra ogni byte come
+il carattere con quel punto di codice Latin-1 (`Ã`, `©`).
 
 **Prove.** Pagina di confronto di
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

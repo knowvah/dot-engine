@@ -15,6 +15,9 @@
  */
 
 import { HTML_ENTITIES } from './html-entities.js';
+import {
+  attValueError, charRefNumber, scanAttValue, XML_ERROR_BAD_CHAR_REF, XML_ERROR_UNDEFINED_ENTITY, type AttValueError,
+} from './htmltable-lex-attvalue.js';
 
 /** expat `XML_ErrorString(XML_ERROR_INVALID_TOKEN)`. */
 export const XML_ERROR_INVALID_TOKEN = 'not well-formed (invalid token)';
@@ -31,8 +34,8 @@ export interface ExpatToken {
   end: number;
   /** A `cdata` token's character data, as expat reports it (no entity decoding). */
   data?: string;
-  /** Offset of the second occurrence of an attribute name in a start tag. */
-  dup?: number;
+  /** A start tag's first storeAtts error: a duplicate name or a bad value. */
+  attError?: AttValueError & { offset: number };
 }
 
 /** The first well-formedness error of a parse call. */
@@ -47,13 +50,18 @@ export interface ExpatResult {
   invalid?: ExpatInvalid;
 }
 
+/** expat `XML_ErrorString(XML_ERROR_DUPLICATE_ATTRIBUTE)`. */
+const XML_ERROR_DUPLICATE_ATTRIBUTE = 'duplicate attribute';
+
+type AttError = AttValueError & { offset: number };
+
 type Scan =
-  | { kind: 'complete'; end: number; dup?: number }
+  | { kind: 'complete'; end: number; attError?: AttError }
   | { kind: 'partial' }
   | { kind: 'invalid'; offset: number };
 
-const COMPLETE_END = (end: number, dup?: number): Scan =>
-  dup === undefined ? { kind: 'complete', end } : { kind: 'complete', end, dup };
+const COMPLETE_END = (end: number, attError?: AttError): Scan =>
+  attError === undefined ? { kind: 'complete', end } : { kind: 'complete', end, attError };
 const PARTIAL: Scan = { kind: 'partial' };
 const INVALID = (offset: number): Scan => ({ kind: 'invalid', offset });
 
@@ -94,21 +102,22 @@ export function fedBytes(unit: string, isText: boolean): number {
 interface Pair {
   name: string;
   next: number;
+  /** The value between its quotes. */
+  value: { start: number; end: number };
 }
 
-/** The quoted value opening at `j`: the index after it and any white space, or how scanning stops. */
+/** The quoted value opening at `j`: its closing quote, or how scanning stops. */
 function scanValue(text: string, j: number): number | Scan {
   const q = text[j];
   if (q !== '"' && q !== "'") return INVALID(j);
-  const close = text.indexOf(q, j + 1);
-  if (close < 0) {
-    const lt = text.indexOf('<', j + 1);
-    return lt >= 0 ? INVALID(lt) : PARTIAL;
-  }
+  const v = scanAttValue(text, j);
+  if ('partial' in v) return PARTIAL;
+  if ('invalid' in v) return INVALID(v.invalid);
+  const close = v.close;
   const next = skipSpace(text, close + 1);
   // Attributes are separated by white space.
   if (next === close + 1 && !'>/'.includes(text[next] ?? '>')) return INVALID(next);
-  return next;
+  return close;
 }
 
 /** The `name = "value"` pair at `i`, or how expat's tokenizer stops there. */
@@ -120,8 +129,9 @@ function scanPair(text: string, i: number): Pair | Scan {
   if (text[eq] !== '=') return INVALID(eq);
   const j = skipSpace(text, eq + 1);
   if (j >= text.length) return PARTIAL;
-  const next = scanValue(text, j);
-  return typeof next === 'number' ? { name, next } : next;
+  const close = scanValue(text, j);
+  if (typeof close !== 'number') return close;
+  return { name, next: skipSpace(text, close + 1), value: { start: j + 1, end: close } };
 }
 
 /** `>` or `/>` at `i` ends the tag; end of data leaves it partial; otherwise more attributes. */
@@ -134,19 +144,30 @@ function tagEdge(text: string, i: number): Scan | undefined {
   return text[i + 1] === '>' ? COMPLETE_END(i + 2) : undefined;
 }
 
-/** The pairs of a start tag from `from`; a duplicate only counts once the tag tokenizes whole. */
-function scanAttributes(text: string, from: number): Scan {
+/**
+ * storeAtts on one attribute: a repeated name, else its value's error. Its
+ * undefined-entity error leaves the event pointer at the tag (`p`).
+ * @see expat lib/xmlparse.c:storeAtts
+ */
+function storeAttError(text: string, p: number, at: number, pair: Pair, seen: Set<string>): AttError | undefined {
+  if (seen.has(pair.name)) return { message: XML_ERROR_DUPLICATE_ATTRIBUTE, offset: at };
+  seen.add(pair.name);
+  const err = attValueError(text.slice(pair.value.start, pair.value.end), pair.value.start);
+  return err === undefined ? undefined : { message: err.message, offset: err.offset ?? p };
+}
+
+/** The pairs of the start tag at `p` from `from`; storeAtts' errors only count once the tag tokenizes whole. */
+function scanAttributes(text: string, p: number, from: number): Scan {
   const seen = new Set<string>();
-  let dup: number | undefined;
+  let attError: AttError | undefined;
   let i = skipSpace(text, from);
   for (;;) {
     const edge = tagEdge(text, i);
-    if (edge?.kind === 'complete') return COMPLETE_END(edge.end, dup);
+    if (edge?.kind === 'complete') return COMPLETE_END(edge.end, attError);
     if (edge !== undefined) return edge;
     const pair = scanPair(text, i);
     if ('kind' in pair) return pair;
-    if (seen.has(pair.name)) dup ??= i;
-    seen.add(pair.name);
+    attError ??= storeAttError(text, p, i, pair, seen);
     i = pair.next;
   }
 }
@@ -165,7 +186,7 @@ function scanStartTag(text: string, p: number): Scan {
   const c = text[name.next];
   if (c === undefined) return PARTIAL;
   if (!isSpace(c) && c !== '>' && c !== '/') return INVALID(name.next);
-  return scanAttributes(text, name.next);
+  return scanAttributes(text, p, name.next);
 }
 
 /** An end tag at `p`: a name, optional white space, `>`. */
@@ -281,7 +302,7 @@ function scanContent(text: string, base: number, inCdata: boolean, dataOf: Cdata
     if (scan.kind === 'invalid') return { tokens, consumed: p, invalid: base + scan.offset, inCdata: false };
     if (scan.kind === 'partial') return { tokens, consumed: p, inCdata: false };
     const tok: ExpatToken = { kind, start: base + p, end: base + scan.end };
-    if (scan.dup !== undefined) tok.dup = base + scan.dup;
+    if (scan.attError !== undefined) tok.attError = { ...scan.attError, offset: base + scan.attError.offset };
     tokens.push(tok);
     p = scan.end;
   }
@@ -389,18 +410,29 @@ const XML_PREDEFINED_ENTITIES = new Set(['lt', 'gt', 'amp', 'quot', 'apos']);
 
 const ENTITY_NAME = /^[A-Za-z_:][\w.:-]*$/;
 
-/** Offset of the first `&name;` that scanEntity leaves for expat to reject. */
-export function findUndefinedEntity(text: string): number {
+const CHAR_REF = /^&#(?:x[0-9A-Fa-f]+|[0-9]+);/;
+
+/**
+ * The first reference of character data that expat rejects, at its offset: a
+ * `&name;` scanEntity leaves alone (neither an HTML entity nor predefined), or
+ * a character reference XML does not allow.
+ * @see expat lib/xmlparse.c:doContent (XML_TOK_ENTITY_REF, XML_TOK_CHAR_REF)
+ */
+export function textRefError(text: string): { message: string; offset: number } | undefined {
   for (let t = text.indexOf('&'); t >= 0; t = text.indexOf('&', t + 1)) {
-    if (text[t + 1] === '#') continue;
+    if (text[t + 1] === '#') {
+      const ref = CHAR_REF.exec(text.slice(t))?.[0];
+      if (ref !== undefined && charRefNumber(ref) < 0) return { message: XML_ERROR_BAD_CHAR_REF, offset: t };
+      continue;
+    }
     const semi = text.indexOf(';', t + 1);
     if (semi < 0) continue;
     const key = text.slice(t + 1, semi);
     if (ENTITY_NAME.test(key) && !Object.hasOwn(HTML_ENTITIES, key) && !XML_PREDEFINED_ENTITIES.has(key)) {
-      return t;
+      return { message: XML_ERROR_UNDEFINED_ENTITY, offset: t };
     }
   }
-  return -1;
+  return undefined;
 }
 
 export interface TagChunk {

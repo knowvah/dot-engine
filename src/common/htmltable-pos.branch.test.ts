@@ -17,7 +17,8 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import type { TextMeasurer } from './textmeasure.js';
-import { posHtmlTable, posHtmlLabel, placeCell, makeHtmlLabel } from './htmltable-pos.js';
+import { posHtmlTable, posHtmlLabel, placeCell } from './htmltable-pos.js';
+import { makeHtmlLabel } from './htmltable-label.js';
 import type { PlacedHtml } from './htmltable-pos.js';
 import { parseHtmlLabel, sizeHtmlLabel } from './htmltable.js';
 import type { HtmlTable, HtmlCell } from './htmltable-types.js';

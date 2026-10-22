@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -691,6 +691,15 @@ esityskerros — ei siirrettävä käyttäytyminen, jonka porttaamisesta olisimm
 Kaikki muu tunnisteessa 1367 on yhdenmukaista: elementtimäärät (23 polyline /
 103 text / 44 polygon / 24 path) ja kaikki koordinaatit täsmäävät decorate (T6)
 -korjauksen jälkeen.
+
+**Sama koskee HTML:n `SIDES`-varoituksia.** `sidesfn` (`lib/common/htmllex.c`)
+varoittaa kerran jokaisesta arvon tavusta, joka ei ole `l`, `t`, `r` tai `b`. Se
+tulostaa tavun `%c`:llä ja sen etumerkillisen `char`-arvon `%d`:llä. ASCII-merkistön
+ulkopuolisen kirjaimen (`é` on `0xC3 0xA9`) kohdalla natiivi kirjoittaa kaksi
+yksinäistä tavua, joten sen stderr ei myöskään ole kelvollista UTF-8:aa. Portti
+tulostaa samat kaksi varoitusta samoilla luvuilla (`-61`, `-87`). Koska sen
+varoitukset ovat JS-merkkijonoja, se näyttää jokaisen tavun merkkinä, jonka
+Latin-1-koodipiste se on (`Ã`, `©`).
 
 **Näyttö.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

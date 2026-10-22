@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -673,6 +673,14 @@ vrstvou reprezentácie — nie prenosné správanie, ktoré sme odmietli portova
 Všetko ostatné v 1367 je conformant: počty elementov (23 polyline /
 103 text / 44 polygon / 24 path) a všetky súradnice sa zhodujú po oprave
 decorate (T6).
+
+**To isté platí pre varovania HTML `SIDES`.** `sidesfn` (`lib/common/htmllex.c`)
+varuje raz pre každý bajt hodnoty, ktorý nie je `l`, `t`, `r` ani `b`. Bajt vypíše
+cez `%c` a jeho znamienkovú hodnotu `char` cez `%d`. Pri písmene mimo ASCII (`é` je
+`0xC3 0xA9`) natívna verzia zapíše dva osamotené bajty, takže ani jej stderr nie je
+platné UTF-8. Port vypíše tie isté dve varovania s rovnakými číslami (`-61`, `-87`).
+Keďže jeho varovania sú reťazce JS, zobrazí každý bajt ako znak s týmto kódovým
+bodom Latin-1 (`Ã`, `©`).
 
 **Dôkazy.**
 stránka porovnania

@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -760,6 +760,15 @@ code — la couche de représentation — et non un comportement portable que no
 aurions refusé de porter. Tout le reste de 1367 est conforme : nombres
 d’éléments (23 polyline / 103 text / 44 polygon / 24 path) et toutes les
 coordonnées concordent après le correctif decorate (T6).
+
+**Il en va de même pour les avertissements HTML `SIDES`.** `sidesfn`
+(`lib/common/htmllex.c`) avertit une fois pour chaque octet de la valeur qui n’est
+pas `l`, `t`, `r` ou `b`. Elle affiche l’octet avec `%c` et sa valeur `char` signée
+avec `%d`. Pour une lettre non ASCII (`é` vaut `0xC3 0xA9`), la version native écrit
+deux octets isolés, si bien que son stderr n’est pas non plus de l’UTF-8 valide. Le
+portage affiche les deux mêmes avertissements avec les mêmes nombres (`-61`, `-87`).
+Comme ses avertissements sont des chaînes JS, il montre chaque octet comme le
+caractère ayant ce point de code Latin-1 (`Ã`, `©`).
 
 **Preuves.** Page de comparaison de
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

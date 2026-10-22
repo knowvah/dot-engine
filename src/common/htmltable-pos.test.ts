@@ -15,8 +15,8 @@ import {
   buildLineRuns,
   placeRunItems,
   posHtmlLabel,
-  makeHtmlLabel,
 } from './htmltable-pos.js';
+import { makeHtmlLabel } from './htmltable-label.js';
 import type { PlacedHtml } from './htmltable-pos.js';
 import { parseHtmlLabel, sizeHtmlLabel } from './htmltable.js';
 import { portToTbl } from './htmltable-port.js';
