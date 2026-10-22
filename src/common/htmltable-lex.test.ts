@@ -148,11 +148,8 @@ describe('TH normalizes to TR', () => {
     expect(tokenize('</TH>')).toEqual([{ type: 'close', tag: 'TR' }]);
   });
 
-  it('self-closing <TH/> lexes as an open+close TR pair', () => {
-    expect(tokenize('<TH/>')).toEqual([
-      { type: 'open', tag: 'TR', attrs: {} },
-      { type: 'close', tag: 'TR' },
-    ]);
+  it('self-closing <TH/> lexes as the TR close alone (endElement overwrites ctx->tok)', () => {
+    expect(tokenize('<TH/>')).toEqual([{ type: 'close', tag: 'TR' }]);
   });
 });
 

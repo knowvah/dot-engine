@@ -275,6 +275,8 @@ export interface OpenToken extends LexerOutput {
   type: 'open';
   tag: string;
   attrs: Record<string, string>;
+  /** On a TABLE: `ctx->xb` text no token carried, read by the table rule's nonSpace. */
+  heldText?: string;
 }
 
 /** @see lib/common/htmllex.c:endElement */

@@ -44,12 +44,11 @@ const MSG_TEXT_BEFORE_TABLE = 'Syntax error: non-space string used before <TABLE
 /** @see lib/common/htmlparse.y:298 (table rule) */
 const MSG_TEXT_AFTER_TABLE = 'Syntax error: non-space string used after </TABLE>';
 
-/**
- * C's `nonSpace` on the lexer's text, which has already dropped control
- * characters; the port's tokens still carry tab, LF and CR.
- * @see lib/common/htmlparse.y:nonSpace
- */
-const nonSpace = (text: string): boolean => /[^ \t\n\r]/.test(text);
+/** Any character other than a space (the lexer already dropped control characters). @see lib/common/htmlparse.y:nonSpace */
+const nonSpace = (text: string): boolean => /[^ ]/.test(text);
+
+/** Text in `ctx->xb` that no token carried, which the table rule's nonSpace also reads. */
+const heldNonSpace = (tbl: Token | undefined): boolean => tbl?.type === 'open' && nonSpace(tbl.heldText ?? '');
 
 /**
  * The parse failure C reports through `htmlerror` when the lexer last returned
@@ -93,42 +92,40 @@ const applyBrTag = (
   consumeClose(s, 'BR');
 };
 
-const applyFontTag = (
-  s: ParseState, t: OpenToken, fontStack: FontState[], items: HtmlTextItem[],
-): void => {
-  consume(s);
-  const font = fontStack[fontStack.length - 1] ?? {};
-  fontStack.push(mergeFontState(font, {
-    fontColor: t.attrs['color'],
-    fontFace: t.attrs['face'],
-    fontSize: num(t.attrs['point-size']),
-  }));
+/**
+ * `font text n_font` and the other font-style rules: `text` is one or more
+ * text items, and the matching close tag must follow it. Anything else, an
+ * empty element included, is a syntax error at the token found instead.
+ * @see lib/common/htmlparse.y:textitem
+ */
+const parseStyledText = (s: ParseState, tag: string, fontStack: FontState[], items: HtmlTextItem[]): void => {
   const inner = parseText(s, fontStack);
   fontStack.pop();
-  items.push(...inner.items);
   const nxt = peek(s);
-  if (nxt?.type === 'close' && nxt.tag === 'FONT') consume(s);
+  if (inner.items.length === 0 || nxt?.type !== 'close' || nxt.tag !== tag) {
+    throw parseError(s, nxt, MSG_SYNTAX_ERROR);
+  }
+  items.push(...inner.items);
+  consume(s);
 };
 
-const applyInlineTag = (
+/** `font text n_font` / `bold text n_bold` / ...: push the tag's font, parse its text, pop. */
+const applyStyleTag = (
   s: ParseState, t: OpenToken, fontStack: FontState[], items: HtmlTextItem[],
 ): void => {
   consume(s);
-  const font = fontStack[fontStack.length - 1] ?? {};
-  fontStack.push(mergeFontState(font, inlineFontState(t.tag, t.attrs)));
-  const inner = parseText(s, fontStack);
-  fontStack.pop();
-  items.push(...inner.items);
-  const nxt = peek(s);
-  if (nxt?.type === 'close' && nxt.tag === t.tag) consume(s);
+  const own = t.tag === 'FONT'
+    ? { fontColor: t.attrs['color'], fontFace: t.attrs['face'], fontSize: num(t.attrs['point-size']) }
+    : inlineFontState(t.tag, t.attrs);
+  fontStack.push(mergeFontState(fontStack[fontStack.length - 1] ?? {}, own));
+  parseStyledText(s, t.tag, fontStack, items);
 };
 
 const applyOpenTag = (
   s: ParseState, t: OpenToken, fontStack: FontState[], items: HtmlTextItem[],
 ): boolean => {
   if (t.tag === 'BR') { applyBrTag(s, t, fontStack, items); return true; }
-  if (t.tag === 'FONT') { applyFontTag(s, t, fontStack, items); return true; }
-  if (isInlineTag(t.tag)) { applyInlineTag(s, t, fontStack, items); return true; }
+  if (t.tag === 'FONT' || isInlineTag(t.tag)) { applyStyleTag(s, t, fontStack, items); return true; }
   return false;
 };
 
@@ -194,7 +191,7 @@ const parseFontTable = (s: ParseState, open: OpenToken, fontStack: FontState[]):
   fontStack.push(wrapperFont(open, fontStack));
   const textBefore = skipStrings(s);
   const tblTok = peek(s);
-  if (textBefore && tblTok !== undefined) throw parseError(s, tblTok, MSG_TEXT_BEFORE_TABLE);
+  if ((textBefore || heldNonSpace(tblTok)) && tblTok !== undefined) throw parseError(s, tblTok, MSG_TEXT_BEFORE_TABLE);
   const table = parseTable(s, fontStack);
   const textAfter = skipStrings(s);
   const close = peek(s);
@@ -249,7 +246,7 @@ const scanCellTable = (
   s: ParseState, t: Token, fontStack: FontState[], st: CellScan,
 ): HtmlCellContent[] => {
   if (st.kind === 'image' || st.kind === 'table') throw parseError(s, t, MSG_SYNTAX_ERROR);
-  if (st.textNonSpace) throw parseError(s, t, MSG_TEXT_BEFORE_TABLE);
+  if (st.textNonSpace || heldNonSpace(t)) throw parseError(s, t, MSG_TEXT_BEFORE_TABLE);
   const tbl = parseTable(s, fontStack);
   st.kind = 'table';
   return [tbl];
@@ -479,7 +476,7 @@ const consumeRowHr = (s: ParseState, rows: HtmlRow[]): void => {
 const findFirstRealToken = (tokens: Token[], start: number): Token | undefined => {
   for (let i = start; i < tokens.length; i++) {
     const tk = tokens[i];
-    if (tk.type !== 'text' || tk.value.trim() !== '') return tk;
+    if (tk.type !== 'text' || nonSpace(tk.value)) return tk;
   }
   return undefined;
 };
@@ -487,7 +484,7 @@ const findFirstRealToken = (tokens: Token[], start: number): Token | undefined =
 const skipLeadingWs = (s: ParseState): void => {
   while (true) {
     const nxt = peek(s);
-    if (!nxt || nxt.type !== 'text' || nxt.value.trim() !== '') break;
+    if (!nxt || nxt.type !== 'text' || nonSpace(nxt.value)) break;
     consume(s);
   }
 };
@@ -518,6 +515,7 @@ const parseFontTableLabel = (s: ParseState, open: OpenToken, fontStack: FontStat
 
 const parseTableLabel = (s: ParseState, fontStack: FontState[]): HtmlLabel => {
   skipLeadingWs(s);
+  if (heldNonSpace(peek(s))) throw parseError(s, peek(s), MSG_TEXT_BEFORE_TABLE);
   const table = parseTable(s, fontStack);
   finishTableLabel(s);
   return { kind: 'table', table };
