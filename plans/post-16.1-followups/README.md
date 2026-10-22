@@ -326,6 +326,29 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       tip-local coordinates with `Math.hypot`; C reverses to
       `sp[0]=ps[start+3] … sp[3]=tip` with `left_inside=false` on absolute
       coordinates. Equal in exact arithmetic, not bit-equal (part 3 T7).
+  51. `cdt-surface.ts`'s enclosing triangle uses `SQRT3 = 1.73205080756887729` and
+      `Math.hypot`; GTS uses `#define SQRT3 1.73205080757` (`triangle.c`) and
+      `sqrt(dx*dx+dy*dy)`. Latent difference in the enclosing vertices; output
+      effect unchecked (part 3 T9).
+  52. Port CDT face numbering and `neigh` order follow creation order; native
+      follows GHashTable (address) order, which is nondeterministic. This can
+      change tgraph edge order and shortest-path tie-breaks in multispline
+      routing (part 3 T9).
+  53. 241_0 sfdp: the layout drifts from native (node 3 y 0.41621 vs 0.4162), and
+      with native positions injected edge 3→4 is a 7-point spline in the port vs
+      4 in native; the port also reports an extra routing failure on (1,2).
+      Pre-existing, independent of the CDT face order (part 3 T9).
+  54. About 17 agerr-family sites print without the prefix `out` adds natively:
+      `bad edge len`, `Max. iterations`, `Illegal value … mode`,
+      `Unrecognized overlap value`, `Orthogonal edges …` (no `Warning: `), and
+      `lost <t> <h> edge`, `in routesplines, Pshortestpath failed` (no
+      `Error: `). T5 routes them through `agerrLineOn` with the text unchanged
+      (part 3 T5).
+  55. Console channel is mixed: six agerr warnings go to `console.error`
+      (`cluster.ts`, `conc.ts:295`, `graph-init.ts`, `poly-init.ts`, the parser's
+      number-ambiguity and macro warnings) because tests spy on it; all agerr
+      warnings should use `console.warn` (part 3 T5).
+  56. The lexer's syntax errors lack native's `<stdin>: ` file prefix (part 3 T5).
 
 ## Local leftovers (not committed, safe to delete)
 
