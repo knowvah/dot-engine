@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -687,6 +687,8 @@ versie twee losse bytes, dus ook de stderr daarvan is geen geldige UTF-8. De por
 print dezelfde twee waarschuwingen met dezelfde getallen (`-61`, `-87`). Omdat de
 waarschuwingen JS-strings zijn, toont hij elke byte als het teken met dat
 Latin-1-codepoint (`Ã`, `©`).
+
+**Hetzelfde geldt voor sommige numerieke tekenverwijzingen in labels.** `htmlEntityUTF8` (`lib/common/utils.c`) schrijft de waarde van een verwijzing zelf als één tot drie bytes. Voor `&#127;`, `&#2047;`, een surrogaat (`&#55296;` tot `&#57343;`) en elke waarde boven `0xFFFF` (`&#128512;` geeft `FF 98 80`) zijn die bytes geen geldige UTF-8, en de native versie schrijft ze ongewijzigd. De port schrijft het teken dat de verwijzing aanduidt. De tekstbreedte wordt per byte geschat, dus ook de breedte van het label kan afwijken. HTML-labels worden niet geraakt: expat decodeert hun verwijzingen naar geldige UTF-8.
 
 **Bewijs.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

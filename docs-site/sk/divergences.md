@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -681,6 +681,8 @@ cez `%c` a jeho znamienkovú hodnotu `char` cez `%d`. Pri písmene mimo ASCII (`
 platné UTF-8. Port vypíše tie isté dve varovania s rovnakými číslami (`-61`, `-87`).
 Keďže jeho varovania sú reťazce JS, zobrazí každý bajt ako znak s týmto kódovým
 bodom Latin-1 (`Ã`, `©`).
+
+**To isté platí pre niektoré číselné odkazy na znaky v popisoch.** `htmlEntityUTF8` (`lib/common/utils.c`) zapisuje hodnotu odkazu sám ako jeden až tri bajty. Pre `&#127;`, `&#2047;`, náhradný znak (`&#55296;` až `&#57343;`) a každú hodnotu nad `0xFFFF` (`&#128512;` dáva `FF 98 80`) tieto bajty nie sú platné UTF-8 a natívna verzia ich zapíše tak, ako sú. Port zapíše znak, ktorý odkaz pomenúva. Šírka textu sa odhaduje po bajtoch, takže sa môže líšiť aj šírka popisu. Popisov HTML sa to netýka: expat ich odkazy dekóduje na platné UTF-8.
 
 **Dôkazy.**
 stránka porovnania

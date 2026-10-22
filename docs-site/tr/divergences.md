@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -675,6 +675,8 @@ olmayan bir harf için (`é`, `0xC3 0xA9`'dur) yerel sürüm iki tek başına ba
 dolayısıyla onun stderr çıktısı da geçerli UTF-8 değildir. Port aynı iki uyarıyı
 aynı sayılarla yazdırır (`-61`, `-87`). Uyarıları JS dizgeleri olduğundan, her baytı
 o Latin-1 kod noktasına sahip karakter olarak gösterir (`Ã`, `©`).
+
+**Aynı durum etiketlerdeki bazı sayısal karakter başvuruları için de geçerlidir.** `htmlEntityUTF8` (`lib/common/utils.c`), bir başvurunun değerini kendisi bir ila üç bayt olarak yazar. `&#127;`, `&#2047;`, bir vekil (`&#55296;` ile `&#57343;` arası) ve `0xFFFF` üzerindeki her değer için (`&#128512;` `FF 98 80` verir) bu baytlar geçerli UTF-8 değildir ve yerel sürüm bunları olduğu gibi yazar. Port, başvurunun adlandırdığı karakteri yazar. Metin genişliği bayt başına tahmin edildiğinden etiketin genişliği de farklı olabilir. HTML etiketleri etkilenmez: expat başvurularını geçerli UTF-8'e çözer.
 
 **Kanıt.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

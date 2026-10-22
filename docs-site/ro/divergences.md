@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -680,6 +680,8 @@ doi octeți izolați, deci nici stderr-ul ei nu este UTF-8 valid. Portarea afiș
 aceleași două avertismente cu aceleași numere (`-61`, `-87`). Fiindcă avertismentele
 ei sunt șiruri JS, arată fiecare octet ca fiind caracterul cu acel punct de cod
 Latin-1 (`Ã`, `©`).
+
+**Același lucru este valabil pentru unele referințe numerice de caracter din etichete.** `htmlEntityUTF8` (`lib/common/utils.c`) scrie singur valoarea unei referințe pe unu până la trei octeți. Pentru `&#127;`, `&#2047;`, un surogat (`&#55296;` până la `&#57343;`) și orice valoare peste `0xFFFF` (`&#128512;` dă `FF 98 80`), acești octeți nu sunt UTF-8 valid, iar versiunea nativă îi scrie așa cum sunt. Portul scrie caracterul pe care îl numește referința. Lățimea textului este estimată pe octet, astfel că și lățimea etichetei poate diferi. Etichetele HTML nu sunt afectate: expat le decodează referințele în UTF-8 valid.
 
 **Dovadă.**
 Pagina de comparare [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

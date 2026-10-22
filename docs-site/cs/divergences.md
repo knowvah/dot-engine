@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -680,6 +680,8 @@ je `0xC3 0xA9`) nativní verze zapíše dva osamocené bajty, takže ani její s
 platné UTF-8. Portace vypíše stejná dvě varování se stejnými čísly (`-61`, `-87`).
 Protože její varování jsou řetězce JS, zobrazí každý bajt jako znak s odpovídajícím
 kódovým bodem Latin-1 (`Ã`, `©`).
+
+**Totéž platí pro některé číselné odkazy na znaky v popiscích.** `htmlEntityUTF8` (`lib/common/utils.c`) zapisuje hodnotu odkazu sám jako jeden až tři bajty. Pro `&#127;`, `&#2047;`, náhradní znak (`&#55296;` až `&#57343;`) a každou hodnotu nad `0xFFFF` (`&#128512;` dává `FF 98 80`) tyto bajty nejsou platné UTF-8 a nativní verze je zapíše tak, jak jsou. Port zapíše znak, který odkaz pojmenovává. Šířka textu se odhaduje po bajtech, takže se může lišit i šířka popisku. Popisky HTML se to netýká: expat jejich odkazy dekóduje na platné UTF-8.
 
 **Důkazy.**
 stránka srovnání [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

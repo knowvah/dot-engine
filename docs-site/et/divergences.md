@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -676,6 +676,8 @@ puhul (`é` on `0xC3 0xA9`) kirjutab natiivne versioon kaks üksikut baiti, mist
 ka selle stderr ei ole kehtiv UTF-8. Port trükib samad kaks hoiatust samade arvudega
 (`-61`, `-87`). Kuna selle hoiatused on JS-i stringid, kuvab see iga baidi
 tähemärgina, mille Latin-1 koodipunkt see on (`Ã`, `©`).
+
+**Sama kehtib mõne numbrilise märgiviite kohta siltides.** `htmlEntityUTF8` (`lib/common/utils.c`) kirjutab viite väärtuse ise ühe kuni kolme baidina. Viidete `&#127;`, `&#2047;`, asendusmärgi (`&#55296;` kuni `&#57343;`) ja iga `0xFFFF`-st suurema väärtuse korral (`&#128512;` annab `FF 98 80`) ei ole need baidid kehtiv UTF-8 ning natiivne versioon kirjutab need muutmata. Port kirjutab märgi, mida viide nimetab. Teksti laiust hinnatakse baidi kaupa, seega võib erineda ka sildi laius. HTML-silte see ei puuduta: expat dekodeerib nende viited kehtivaks UTF-8-ks.
 
 **Tõendid.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

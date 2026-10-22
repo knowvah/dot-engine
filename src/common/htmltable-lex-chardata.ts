@@ -12,7 +12,8 @@
  * @see lib/common/htmllex.c:characterData
  */
 
-import { htmlEntityUTF8 } from './html-entities.js';
+import { HTML_ENTITIES } from './html-entities.js';
+import { charRefNumber } from './htmltable-lex-attvalue.js';
 import type { TagChunk } from './htmltable-lex-expat.js';
 import type { Token } from './htmltable-types.js';
 
@@ -77,15 +78,48 @@ function cleanText(decoded: string) {
   return decoded.replace(/[\x00-\x1f]/g, '');
 }
 
+/** expat's predefined entities: no DTD declares others. */
+const XML_PREDEFINED: Readonly<Record<string, string>> = { lt: '<', gt: '>', amp: '&', quot: '"', apos: "'" };
+
+/** Shortest and longest name scanEntity looks up. @see lib/common/utils.c:scanEntity */
+const SCAN_ENTITY_MIN = 2;
+const SCAN_ENTITY_MAX = 8;
+
+const TEXT_REF = /&(#x[0-9A-Fa-f]+|#[0-9]+|[^&;]+);/g;
+
+/** One reference of a text run, as scanEntity then expat leave it. */
+function textRefValue(ref: string, body: string): string {
+  if (body[0] === '#') {
+    const v = charRefNumber(ref);
+    return v < 0 ? ref : String.fromCodePoint(v);
+  }
+  const n = body.length;
+  if (n >= SCAN_ENTITY_MIN && n <= SCAN_ENTITY_MAX && Object.hasOwn(HTML_ENTITIES, body)) {
+    return String.fromCodePoint(HTML_ENTITIES[body]!);
+  }
+  return Object.hasOwn(XML_PREDEFINED, body) ? XML_PREDEFINED[body]! : ref;
+}
+
+/**
+ * The characters expat hands characterData for a text run: scanEntity first
+ * rewrites each entities.h name to `&#N;` (its `&` only when no `#` follows),
+ * then expat decodes character references, of any length, and its five
+ * predefined entities. Runs expat rejects never get here (textRefError).
+ * @see lib/common/htmllex.c:findNext
+ * @see lib/common/utils.c:scanEntity
+ */
+export function decodeTextRefs(raw: string): string {
+  return raw.indexOf('&') < 0 ? raw : raw.replace(TEXT_REF, textRefValue);
+}
+
 /** The text token of a text run, if anything is left after cleaning. */
 export function textTokens(raw: string): Token[] {
-  // Decode XML/HTML entities in the text run. C's HTML lexer resolves entities
-  // via expat during tokenization (htmllex.c), so both sizing and emit see the
-  // decoded UTF-8 text. Skipping this measured the raw "&#91;el..." (9-10 chars)
-  // instead of "[el..." (6 chars), inflating edge-label vnodes and shifting
-  // layout (corpus 1949: +18.7px). Plain-string labels already decode via the
-  // make_label path, so only HTML-delimited labels diverged.
-  return charDataTokens(htmlEntityUTF8(raw));
+  // C's HTML lexer resolves entities via scanEntity and expat during
+  // tokenization (htmllex.c), so both sizing and emit see the decoded text.
+  // Skipping this measured the raw "&#91;el..." (9-10 chars) instead of
+  // "[el..." (6 chars), inflating edge-label vnodes and shifting layout
+  // (corpus 1949: +18.7px).
+  return charDataTokens(decodeTextRefs(raw));
 }
 
 /** characterData on what expat decoded: a T_string when any character survives. */

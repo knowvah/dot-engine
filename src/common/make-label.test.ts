@@ -162,8 +162,8 @@ describe('makeAnyLabel — font attrs', () => {
 // ---------------------------------------------------------------------------
 
 describe('htmlEntityUTF8', () => {
-  it('decodes the five basic XML entities', () => {
-    expect(htmlEntityUTF8('&lt;&gt;&amp;&quot;&apos;')).toBe('<>&"\'');
+  it('decodes the entities.h basic entities; apos is not one', () => {
+    expect(htmlEntityUTF8('&lt;&gt;&amp;&quot;&apos;')).toBe('<>&"&apos;');
   });
 
   it('decodes decimal and hex numeric entities', () => {

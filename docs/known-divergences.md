@@ -688,6 +688,15 @@ same two warnings with the same numbers (`-61`, `-87`). Because its warnings
 are JS strings, it shows each byte as the character with that Latin-1 code
 point (`Ã`, `©`).
 
+**The same applies to some numeric character references in labels.**
+`htmlEntityUTF8` (`lib/common/utils.c`) writes a reference's value as one to
+three bytes itself. For `&#127;`, `&#2047;`, a surrogate (`&#55296;` to
+`&#57343;`) and any value above `0xFFFF` (`&#128512;` gives `FF 98 80`),
+those bytes are not valid UTF-8, and native writes them as they are. The
+port writes the character the reference names. Text width is estimated per
+byte, so the label's width can differ as well. HTML labels are not affected:
+expat decodes their references to valid UTF-8.
+
 **Evidence.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)
 comparison page (side-by-side render + evidence record).

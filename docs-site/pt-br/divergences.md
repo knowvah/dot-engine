@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -680,6 +680,8 @@ Para uma letra não ASCII (`é` é `0xC3 0xA9`), a versão nativa escreve dois b
 soltos, então seu stderr também não é UTF-8 válido. O port imprime os mesmos dois
 avisos com os mesmos números (`-61`, `-87`). Como seus avisos são strings JS, ele
 mostra cada byte como o caractere com esse ponto de código Latin-1 (`Ã`, `©`).
+
+**O mesmo vale para algumas referências numéricas de caractere em rótulos.** `htmlEntityUTF8` (`lib/common/utils.c`) escreve ele mesmo o valor de uma referência como um a três bytes. Para `&#127;`, `&#2047;`, um substituto (`&#55296;` a `&#57343;`) e qualquer valor acima de `0xFFFF` (`&#128512;` gera `FF 98 80`), esses bytes não são UTF-8 válido, e a versão nativa os escreve como estão. O port escreve o caractere que a referência nomeia. A largura do texto é estimada por byte, então a largura do rótulo também pode diferir. Rótulos HTML não são afetados: o expat decodifica suas referências para UTF-8 válido.
 
 **Evidência.**
 página de comparação do

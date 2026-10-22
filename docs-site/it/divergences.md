@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -740,6 +740,8 @@ byte con `%c` e il suo valore `char` con segno con `%d`. Per una lettera non ASC
 stderr non è UTF-8 valido. Il porting stampa gli stessi due avvisi con gli stessi
 numeri (`-61`, `-87`). Poiché i suoi avvisi sono stringhe JS, mostra ogni byte come
 il carattere con quel punto di codice Latin-1 (`Ã`, `©`).
+
+**Lo stesso vale per alcuni riferimenti numerici a carattere nelle etichette.** `htmlEntityUTF8` (`lib/common/utils.c`) scrive da sé il valore di un riferimento su uno-tre byte. Per `&#127;`, `&#2047;`, un surrogato (da `&#55296;` a `&#57343;`) e qualsiasi valore oltre `0xFFFF` (`&#128512;` dà `FF 98 80`), quei byte non sono UTF-8 valido e la versione nativa li scrive così come sono. Il port scrive il carattere indicato dal riferimento. La larghezza del testo è stimata per byte, quindi anche la larghezza dell'etichetta può differire. Le etichette HTML non sono interessate: expat decodifica i loro riferimenti in UTF-8 valido.
 
 **Prove.** Pagina di confronto di
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)
