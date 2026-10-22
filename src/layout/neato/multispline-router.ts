@@ -19,6 +19,7 @@
 import type { Point, Poly } from '../../pathplan/types.js';
 import { wind } from '../../pathplan/visibility.js';
 import { mkSurface } from './cdt-surface.js';
+import { dist2 } from '../../common/spline-midpoint.js';
 import { InternalError } from '../../errors.js';
 
 /** index pair. @see multispline.c:ipair */
@@ -87,9 +88,8 @@ function sharedEdge(faces: number[], p3: number, q3: number): Ipair {
 
 /** @see multispline.c:addTriEdge */
 export function addTriEdge(g: Tgraph, t: number, h: number, seg: Ipair): void {
-  const dist = Math.hypot(
-    g.nodes[t]!.ctr.x - g.nodes[h]!.ctr.x,
-    g.nodes[t]!.ctr.y - g.nodes[h]!.ctr.y);
+  /* DIST = sqrt(fused DIST2): libgvplugin_neato_layout _addTriEdge fmul/fmadd/fsqrt */
+  const dist = Math.sqrt(dist2(g.nodes[t]!.ctr, g.nodes[h]!.ctr));
   const idx = g.edges.length;
   g.edges.push({ t, h, seg, dist });
   g.nodes[t]!.edges.push(idx);
