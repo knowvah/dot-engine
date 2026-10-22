@@ -24,6 +24,7 @@ import {
   DEFAULT_COLOR,
 } from './make-label.js';
 import { computeVertices } from './poly-vertices.js';
+import { agwarningf } from './agerr.js';
 
 // Default half-dimensions in points (72 dpi, 0.75 in wide, 0.5 in tall)
 const DEFAULT_LW = 27;
@@ -117,7 +118,7 @@ export function polyInit(n: Node, g: Graph, measurer: TextMeasurer): void {
   // C warns when the custom shape's image cannot be sized (headless: always).
   // @see lib/common/shapes.c:2027-2033
   if (shapefile !== undefined && shapefile !== '' && shapeName !== 'epsf') {
-    console.error(`Warning: No or improper shapefile="${shapefile}" for node "${n.name}"`);
+    agwarningf(`No or improper shapefile="${shapefile}" for node "${n.name}"`, 'error');
   }
   if ((n.info.shape as ShapeDesc).kind === ShapeKind.SH_RECORD) {
     if (n.info.shape_info === undefined) recordNodeInit(n, g, measurer);

@@ -18,6 +18,7 @@ import { syntaxErrorMessage } from './scan-token.js';
 import type { ParsedGraph } from './ast.js';
 import type { GvErrorCode, GvExpectation } from '../errors.js';
 import { DotEngineError, friendlyMessageFor, invalidArgType } from '../errors.js';
+import { agerrFinished } from '../common/agerr.js';
 
 // ── ParseError ────────────────────────────────────────────────────────────────
 
@@ -233,7 +234,7 @@ export function isPeggyError(err: unknown): err is {
 function warnNumberAmbiguities(src: string, upTo: number): void {
   for (const a of scanNumberAmbiguities(src, Stripper.strip(src))) {
     if (a.offset > upTo) break;
-    console.error(numberAmbiguityMessage(a));
+    agerrFinished(numberAmbiguityMessage(a), 'error');
   }
 }
 
@@ -250,7 +251,7 @@ export function parse(src: string): Graph {
     if (isPeggyError(err)) {
       const start = err.location.start;
       warnNumberAmbiguities(src, start.offset);
-      console.error(syntaxErrorMessage(src, start.offset));
+      agerrFinished(syntaxErrorMessage(src, start.offset));
       const code: GvErrorCode =
         err.found === null ? 'SYNTAX_UNEXPECTED_EOF' : 'SYNTAX_ERROR';
       throw new ParseError(
@@ -282,7 +283,7 @@ export function parse(src: string): Graph {
     const offset = err instanceof ParseError ? err.location.offset : undefined;
     if (offset !== undefined) {
       warnNumberAmbiguities(src, offset);
-      console.error(syntaxErrorMessage(src, offset));
+      agerrFinished(syntaxErrorMessage(src, offset));
     }
     throw err;
   }

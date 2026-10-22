@@ -27,6 +27,7 @@ import {
 } from '../layout/dot/init.js';
 import { addXLabels } from './xlabels-place.js';
 import { registerRenderState } from './render-state.js';
+import { agerrLineOn } from './agerr.js';
 
 /** Concentrated multi-edge duplicate — never drawn. @see lib/common/const.h:IGNORED */
 const IGNORED_EDGE = 6;
@@ -228,7 +229,7 @@ function translateDrawing(g: Graph): void {
       // @see lib/common/postproc.c:map_edge ("lost %s %s edge")
       if (e.info.spl === undefined) {
         if (!(g.info.concentrate ?? false) && (e.info.edge_type ?? 0) !== IGNORED_EDGE) {
-          console.warn(`lost ${e.tail.name} ${e.head.name} edge`);
+          agerrLineOn('warn', `lost ${e.tail.name} ${e.head.name} edge`);
         }
         continue;
       }

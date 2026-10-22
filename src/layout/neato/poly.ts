@@ -19,6 +19,7 @@ import type { Node } from '../../model/node.js';
 import type { Box, Point } from '../../model/geom.js';
 import { ShapeKind } from '../../common/types.js';
 import type { PolygonT } from '../../common/types.js';
+import { agerrorf } from '../../common/agerr.js';
 
 /** @see lib/neatogen/poly.c:BOX */
 export const POLY_BOX = 1;
@@ -258,7 +259,7 @@ export function makeAddPoly(n: Node, xmargin: number, ymargin: number): Poly | n
     case ShapeKind.SH_POINT:
       return finishPoly(genRound(n, xmargin, ymargin), POLY_CIRCLE);
     default:
-      console.error(`Error: makeAddPoly: unknown shape type ${shapeName(n)}\n`);
+      agerrorf(`makeAddPoly: unknown shape type ${shapeName(n)}\n`);
       return null;
   }
 }
@@ -296,7 +297,7 @@ function baseShape(n: Node): { verts: Point[]; kind: number } | null {
     case ShapeKind.SH_POINT:
       return { verts: genRound(n, 0, 0), kind: POLY_CIRCLE };
     default:
-      console.error(`Error: makePoly: unknown shape type ${shapeName(n)}\n`);
+      agerrorf(`makePoly: unknown shape type ${shapeName(n)}\n`);
       return null;
   }
 }

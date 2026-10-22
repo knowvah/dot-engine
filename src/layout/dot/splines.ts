@@ -26,6 +26,7 @@ import { dispatchOrthoEdges } from './ortho-adapter.js';
 import { routeEdgeGroups } from './splines-groups.js';
 import { placePortLabels, placeRegularEdgeLabels, setEdgeLabelPos } from './splines-label.js';
 import { nodesInSeq } from './decomp.js';
+import { agerrLineOn } from '../../common/agerr.js';
 
 // ---------------------------------------------------------------------------
 // Edge-type flag constants
@@ -473,7 +474,7 @@ function orthoDispatch(g: Graph): number {
 function curvedTop(g: Graph): void {
   resetRW(g);
   if (((g.root.info.has_labels ?? 0) & EDGE_LABEL) !== 0) {
-    console.warn('edge labels with splines=curved not supported in dot - use xlabels\n');
+    agerrLineOn('warn', 'edge labels with splines=curved not supported in dot - use xlabels\n');
   }
 }
 

@@ -20,6 +20,7 @@ import { dotScanRanks } from './rank.js';
 import { dotRoot, rankGet } from './mincross-utils.js';
 import { nodesInSeq } from './decomp.js';
 import { graphMinrank, graphMaxrank } from './position-aux.js';
+import { agerr, agerrorf, agwarningf } from '../../common/agerr.js';
 
 const UP = 0;
 const DOWN = 1;
@@ -263,13 +264,13 @@ export function fillRankVlist(g: Graph, r: number, root: Graph): number {
   const rankArr = g.info.rank!;
   const lead = g.info.rankleader![r];
   if (lead === undefined || lead === null) {
-    console.error(`Error: rebuild_vlists: lead is null for rank ${r}`);
+    agerrorf(`rebuild_vlists: lead is null for rank ${r}`);
     return -1;
   }
   const rootRank = root.info.rank![r];
   if (rootRank.v[lead.info.order ?? 0] !== lead) {
-    console.error(
-      `Error: rebuild_vlists: rank lead ${lead.name} not in order ` +
+    agerrorf(
+      `rebuild_vlists: rank lead ${lead.name} not in order ` +
       `${lead.info.order ?? 0} of rank ${r}`,
     );
     return -1;
@@ -292,7 +293,7 @@ export function fillRankVlist(g: Graph, r: number, root: Graph): number {
   rankArr[r].v = rootRank.v;
   rankArr[r].vStart = lead.info.order ?? 0;
   const maxi = computeMaxi(g, r);
-  if (maxi === -1) console.error(`Warning: degenerate concentrated rank ${g.name},${r}`);
+  if (maxi === -1) agwarningf(`degenerate concentrated rank ${g.name},${r}`, 'error');
   rankArr[r].n = maxi + 1;
   return 0;
 }
@@ -425,7 +426,7 @@ export function dotConcentrate(g: Graph): number {
   const clust = g.info.clust ?? [];
   for (let c = 0; c < nCluster; c++) {
     if (rebuildVlists(clust[c]) !== 0) {
-      console.error('concentrate=true may not work correctly.');
+      agerr('prev', 'concentrate=true may not work correctly.');
       return -1;
     }
   }

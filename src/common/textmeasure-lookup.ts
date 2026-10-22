@@ -9,6 +9,7 @@ import {
   type FontFamilyData,
 } from "./textmeasure-lut-data.js";
 import { registerRenderState } from "./render-state.js";
+import { agwarningf } from './agerr.js';
 
 /** Times is always present; used as the fallback family. */
 export const TIMES_FALLBACK: FontFamilyData = ALL_FONT_METRICS[0]!;
@@ -47,8 +48,8 @@ export function getFamilyMetrics(fontName: string): FontFamilyData {
   }
   if (!warnedFontNames.has(fontName)) {
     warnedFontNames.add(fontName);
-    console.warn(
-      `Warning: no hard-coded metrics for '${fontName}'.  ` +
+    agwarningf(
+      `no hard-coded metrics for '${fontName}'.  ` +
         `Falling back to 'Times' metrics`,
     );
   }

@@ -20,6 +20,7 @@ import {
   MODE_KK, MODE_MAJOR, MODE_HIER, MODE_IPSEP, MODE_SGD,
   MODEL_CIRCUIT, MODEL_SUBSET,
 } from './init.js';
+import { agerrLineOn } from '../../common/agerr.js';
 
 /** @see lib/neatogen/neato.h:INIT_SELF */
 export const INIT_SELF = 0;
@@ -98,7 +99,7 @@ export function checkStart(
 ): number {
   const { init, seed } = parseStart(g.root.attrs.get('start'), dflt);
   if (init !== INIT_RANDOM && [...g.nodes.values()].some((n) => n.attrs.has('pos'))) {
-    console.warn(WARN_POS_IGNORED);
+    agerrLineOn('warn', WARN_POS_IGNORED);
   }
   if (init === INIT_REGULAR) initRegular(g, nG);
   srand48(seed);
@@ -143,7 +144,7 @@ export function neatoMode(g: Graph): number {
   if (str === undefined || str === '') return MODE_MAJOR;
   const mode = modeByName().get(str);
   if (mode !== undefined) return mode;
-  console.warn(`Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
+  agerrLineOn('warn', `Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
   return MODE_MAJOR;
 }
 
@@ -165,7 +166,7 @@ function checkStartAttr(g: Graph, mode: number): void {
   // @see lib/neatogen/stuff.c:330 (KK and SGD warn once and ignore it)
   if ((mode === MODE_KK || mode === MODE_SGD) && !selfOnce.warned) {
     selfOnce.warned = true;
-    console.warn(WARN_SELF_IGNORED);
+    agerrLineOn('warn', WARN_SELF_IGNORED);
   }
 }
 
@@ -191,7 +192,8 @@ function kkCircuitFallsBack(g: Graph): boolean {
 function warnCircuitDisconnected(g: Graph): void {
   if (circuitWarned.has(g.root)) return;
   circuitWarned.add(g.root);
-  console.warn(
+  agerrLineOn(
+    'warn',
     `graph ${g.root.name} is disconnected. Hence, the circuit model\n`
     + 'is undefined. Reverting to the shortest path model.\n'
     + 'Alternatively, consider running neato using -Gpack=true or decomposing\n'
