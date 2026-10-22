@@ -9,7 +9,8 @@ Items 1–13 are done. Items 7–13 were closed by the mission brief
 item's outcome. Items 14–23 are closed (14 by PR #95; 15–23 by
 `plans/post-16-1-followups-2/`). Items 24 and 33 are closed by
 `feature/cache-oracle-failures` (PR #97), item 32 by `chore/record-t11-walk-passes` (PR #98), item 26 by
-`fix/parser-native-acceptance`. The open work is items 25 and 27–31 under "New follow-ups
+`fix/parser-native-acceptance` (PR #99), item 27 by `fix/html-label-parse-parity`.
+The open work is items 25, 28–31, 34 and 35 under "New follow-ups
 found by part 2" below, each journaled in `plans/decision-journal.md`.
 
 ## State at handoff
@@ -182,7 +183,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   26. **[DONE — `fix/parser-native-acceptance`: agmemread's one-graph read;
       empty input kept as an empty graph (user), documented as a non-goal]** The Peggy grammar rejects inputs native accepts: trailing junk, several graphs
       in one file, comment-only sources (T6).
-  27. HTML grammar gaps: native rejects empty `<b></b>`, `<font></font>`, `<b/>` at the
+  27. **[DONE — `fix/html-label-parse-parity`]** HTML grammar gaps: native rejects empty `<b></b>`, `<font></font>`, `<b/>` at the
       close tag (`... <b></b> ...` context); CDATA sections, `ctx->inCell` text
       suppression, `ctx->xb` accumulation across dropped events and `characterData`
       dropping chars < 0x20 are unported (T7, T9).
@@ -216,6 +217,15 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       dot 1.0435 and 0.9794, neato 1.0037 and 0.9908. Against
       `timings-before.json`: dot 0.9587, neato 0.9961. T0 vs T0 noise: dot
       1.0062, neato 1.0196. The head bundle is byte-identical to T12's.
+- **New follow-ups found by item 27** (journal row 2026-10-21, item 27):
+  34. SVG text-span escaping: `svg_textspan` escapes with `raw = 1`
+      (`plugin/core/gvrender_core_svg.c`), so every `&` in a span becomes
+      `&amp;`. The port keeps entity-looking sequences, so text that decodes to
+      `&amp;`, `&#38;` or `&foo;` diverges: plain `label="x&amp;amp;y"` and
+      `"x&foo;y"`, and HTML `<x&amp;amp;y>` (all on `main` before item 27).
+  35. `<BR/>` lines inside a font-style element: `<k<u><br/><br/></u>>` places
+      the lines differently from native (y off by 6.76 pt); `k<br/><br/>`
+      without the `<u>` matches. Pre-existing on `main`.
 
 ## Local leftovers (not committed, safe to delete)
 

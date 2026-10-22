@@ -13,10 +13,11 @@
 
 import { HtmlParseError } from './htmltable-types.js';
 import type { LexerOutput, OpenToken, TextToken, Token } from './htmltable-types.js';
-import { htmlEntityUTF8 } from './html-entities.js';
 import { checkAttrs } from './htmltable-attr-warn.js';
 import type { AttrEntry } from './htmltable-attr-warn.js';
-import { ExpatFeed, fedBytes, findUndefinedEntity, parseTagChunk } from './htmltable-lex-expat.js';
+import { ExpatFeed, findUndefinedEntity, parseTagChunk } from './htmltable-lex-expat.js';
+import { charDataTokens, initialCharData, keepLostText, releaseXb, tagInCell, textTokens } from './htmltable-lex-chardata.js';
+import type { CharDataState } from './htmltable-lex-chardata.js';
 import type { ExpatResult, ExpatToken } from './htmltable-lex-expat.js';
 import { findNext } from './htmltable-lex-units.js';
 import type { Unit } from './htmltable-lex-units.js';
@@ -93,33 +94,25 @@ function parseCloseToken(inner: string) {
   return { type: 'close' as const, tag: normalizeTag(tag) };
 }
 
-/** @see lib/common/htmllex.c:characterData */
-function cleanText(raw: string) {
-  const isKeep = (c: string) => c === ' ' || c === '\t' || c === '\n' || c === '\r';
-  return raw.replace(/[\x00-\x1f\x7f]/g, (c) => isKeep(c) ? c : '');
-}
-
-/** The text token of a text run, if anything is left after cleaning. */
-function textTokens(raw: string): Token[] {
-  // Decode XML/HTML entities in the text run. C's HTML lexer resolves entities
-  // via expat during tokenization (htmllex.c), so both sizing and emit see the
-  // decoded UTF-8 text. Skipping this measured the raw "&#91;el..." (9-10 chars)
-  // instead of "[el..." (6 chars), inflating edge-label vnodes and shifting
-  // layout (corpus 1949: +18.7px). Plain-string labels already decode via the
-  // make_label path, so only HTML-delimited labels diverged.
-  const clean = htmlEntityUTF8(cleanText(raw));
-  return clean.length > 0 ? [{ type: 'text', value: clean }] : [];
-}
+/** Elements whose `<X/>` endElement folds into one token. @see lib/common/htmllex.c:endElement */
+const EMPTY_ELEMENTS: ReadonlySet<string> = new Set(['BR', 'HR', 'VR', 'IMG']);
 
 /** The tokens of one complete `<..>` tag. */
 function tagTokens(text: string): Token[] {
   const inner = text.slice(1, -1).trim();
   if (inner.startsWith('/')) return [parseCloseToken(inner)];
-  // Self-closing <X/>: expat reports startElement then endElement.
-  // @see lib/common/htmllex.c (XML_SetElementHandler callbacks)
+  // Self-closing <X/>: expat reports startElement then endElement in one call,
+  // and endElement's `ctx->tok` overwrites startElement's. Only BR, HR, VR and
+  // IMG turn the pair into one token (T_BR etc.); any other element reaches the
+  // parser as its close tag alone, with what startElement printed.
+  // @see lib/common/htmllex.c:endElement
   if (inner.endsWith('/')) {
     const open = parseOpenToken(inner.slice(0, -1).trim());
-    return [open, { type: 'close', tag: open.tag }];
+    if (EMPTY_ELEMENTS.has(open.tag)) return [open, { type: 'close', tag: open.tag }];
+    const close: Token = { type: 'close', tag: open.tag };
+    if (open.warnings !== undefined) close.warnings = open.warnings;
+    if (open.warn === true) close.warn = true;
+    return [close];
   }
   return [parseOpenToken(inner)];
 }
@@ -274,6 +267,8 @@ function eventTokens(site: TokenSite): Token[] {
   const { src, tok, st } = site;
   const text = src.slice(tok.start, tok.end);
   if (tok.kind === 'comment' || tok.kind === 'pi') return [];
+  // CDATA content is character data as is: no markup, no entity decoding.
+  if (tok.kind === 'cdata') return charDataTokens(tok.data ?? '');
   if (tok.kind === 'tag') {
     checkTagToken(site);
     return tagTokens(text);
@@ -298,6 +293,8 @@ interface LexRun {
   st: ChunkState;
   expat: ExpatFeed;
   carry: Carry;
+  /** `ctx->inCell` and `ctx->xb`. */
+  cd: CharDataState;
 }
 
 /** Move what `carry` holds onto `first`, the token the parser is about to get. */
@@ -326,7 +323,13 @@ interface EventGroup {
 function eventGroups(run: LexRun, res: ExpatResult): EventGroup[] {
   const groups: EventGroup[] = [];
   for (const tok of res.tokens) {
-    const tokens = eventTokens({ src: run.src, tok, st: run.st });
+    let tokens = eventTokens({ src: run.src, tok, st: run.st });
+    if (tok.kind === 'tag') {
+      const tag = parseTagChunk(run.src.slice(tok.start, tok.end));
+      if (tag !== undefined) tagInCell(run.cd, tag);
+    } else if (!run.cd.inCell) {
+      tokens = []; // characterData appends only inside a cell
+    }
     if (tokens.length > 0) groups.push({ tokens, tok });
   }
   if (res.invalid !== undefined) {
@@ -343,6 +346,7 @@ function eventGroups(run: LexRun, res: ExpatResult): EventGroup[] {
  */
 function deliver(run: LexRun, last: EventGroup): void {
   const first = last.tokens[0]!;
+  releaseXb(run.cd, first);
   attachCarry(run.carry, first);
   const info: ChunkInfo = { src: run.src, pos: last.tok.start, end: last.tok.end, context: run.st.prev + run.st.curr };
   const prev = run.tokens.at(-1);
@@ -364,7 +368,10 @@ function deliver(run: LexRun, last: EventGroup): void {
 function runEvents(run: LexRun, res: ExpatResult): void {
   const groups = eventGroups(run, res);
   const last = groups.pop();
-  for (const g of groups) absorb(run.carry, g.tokens);
+  for (const g of groups) {
+    absorb(run.carry, g.tokens);
+    keepLostText(run.cd, g.tokens);
+  }
   if (last !== undefined) deliver(run, last);
 }
 
@@ -439,7 +446,7 @@ const eofOutput = (carry: Carry): LexerOutput | undefined => {
 export function tokenizeDeferred(src: string, label: LabelRange = { start: 0, end: src.length }): TokenizeResult {
   const run: LexRun = {
     src, tokens: [], st: { stack: [], prev: '', curr: '' }, expat: new ExpatFeed(src),
-    carry: { warnings: [], warn: false },
+    carry: { warnings: [], warn: false }, cd: initialCharData(),
   };
   let error: HtmlParseError | undefined;
   try {
@@ -448,8 +455,7 @@ export function tokenizeDeferred(src: string, label: LabelRange = { start: 0, en
       run.st.curr = src.slice(u.start, u.end);
       run.carry.warnings.push(...u.warnings);
       if (u.warn) run.carry.warn = true;
-      const nbytes = fedBytes(run.st.curr, !run.st.curr.startsWith('<'));
-      runEvents(run, run.expat.feed(u.start, u.end, nbytes));
+      runEvents(run, run.expat.feed(u.start, u.end, !run.st.curr.startsWith('<')));
     }
     const held = run.expat.held;
     if (held !== undefined) error = unfinishedError(run, held);

@@ -26,9 +26,11 @@ const INIT_BUFFER_SIZE = 1024;
 
 /** One complete expat token of the content: its extent in the label source. */
 export interface ExpatToken {
-  kind: 'text' | 'tag' | 'comment' | 'pi';
+  kind: 'text' | 'tag' | 'comment' | 'pi' | 'cdata';
   start: number;
   end: number;
+  /** A `cdata` token's character data, as expat reports it (no entity decoding). */
+  data?: string;
   /** Offset of the second occurrence of an attribute name in a start tag. */
   dup?: number;
 }
@@ -69,18 +71,24 @@ function skipSpace(text: string, i: number): number {
 const byteLength = (s: string): number => new TextEncoder().encode(s).length;
 
 /**
- * The number of bytes C passes to `XML_Parse` for a text unit: the buffer
- * `findNext` filled (named entities rewritten as `&#N;`, see `scanEntity`)
- * with a trailing `]` escaped (`protect_rsqb`). Other units go as written.
+ * What C passes to `XML_Parse` for (a piece of) a text unit: the buffer
+ * `findNext` filled (named entities rewritten as `&#N;`, see `scanEntity`),
+ * with a `]` that ends the unit escaped (`protect_rsqb`). Outside a CDATA
+ * section expat decodes both back to the characters written; inside one they
+ * stay as rewritten.
+ * @see lib/common/htmllex.c:findNext
  * @see lib/common/htmllex.c:protect_rsqb
  */
-export function fedBytes(unit: string, isText: boolean): number {
-  if (!isText) return byteLength(unit);
-  let text = unit.replace(/&([^;&<]*);/g, (m, name: string) => {
+function fedText(piece: string, endsUnit: boolean): string {
+  const text = piece.replace(/&([^;&<]*);/g, (m, name: string) => {
     return name.length >= 2 && Object.hasOwn(HTML_ENTITIES, name) ? `&#${HTML_ENTITIES[name]};` : m;
   });
-  if (text.endsWith(']')) text = `${text.slice(0, -1)}&#93;`;
-  return byteLength(text);
+  return endsUnit && text.endsWith(']') ? `${text.slice(0, -1)}&#93;` : text;
+}
+
+/** The number of bytes C passes to `XML_Parse` for a unit; other than text units go as written. */
+export function fedBytes(unit: string, isText: boolean): number {
+  return byteLength(isText ? fedText(unit, true) : unit);
 }
 
 interface Pair {
@@ -219,29 +227,65 @@ interface ContentScan {
   /** Offset where the unconsumed (partial) token starts. */
   consumed: number;
   invalid?: number;
+  /** Whether the scan ended inside a CDATA section. */
+  inCdata: boolean;
 }
 
+const CDATA_OPEN = '<![CDATA[';
+const CDATA_CLOSE = ']]>';
+
+/**
+ * Character data of a CDATA section from `p` up to its `]]>` (or the end of
+ * what was fed): one `cdata` token, then the index after the section, or -1
+ * while it is still open. Markup and `&` are data here. The fed bytes never
+ * end in a `]` (text units go through protect_rsqb, other units end in `>`),
+ * so expat holds no partial `]]>` back.
+ * @see expat xmltok_impl.c:PREFIX(cdataSectionTok)
+ */
+function scanCdata(text: string, p: number, base: number, dataOf: CdataText, tokens: ExpatToken[]): number {
+  const close = text.indexOf(CDATA_CLOSE, p);
+  const end = close < 0 ? text.length : close;
+  if (end > p) tokens.push({ kind: 'cdata', start: base + p, end: base + end, data: dataOf(base + p, base + end) });
+  return close < 0 ? -1 : close + CDATA_CLOSE.length;
+}
+
+/** Character data at `p` up to the next `<`: one `text` token, then the index it ends at. */
+function scanText(text: string, p: number, base: number, tokens: ExpatToken[]): number {
+  const e = text.indexOf('<', p);
+  const end = e < 0 ? text.length : e;
+  tokens.push({ kind: 'text', start: base + p, end: base + end });
+  return end;
+}
+
+/** The fed text of the label source between two offsets. */
+type CdataText = (start: number, end: number) => string;
+
 /** Tokenize `text` (a label slice at `base`) as far as expat can: tokens, then partial or invalid. */
-function scanContent(text: string, base: number): ContentScan {
+function scanContent(text: string, base: number, inCdata: boolean, dataOf: CdataText): ContentScan {
   const tokens: ExpatToken[] = [];
   let p = 0;
+  let inSection = inCdata;
   while (p < text.length) {
+    if (inSection || text.startsWith(CDATA_OPEN, p)) {
+      const after = scanCdata(text, inSection ? p : p + CDATA_OPEN.length, base, dataOf, tokens);
+      if (after < 0) return { tokens, consumed: text.length, inCdata: true };
+      inSection = false;
+      p = after;
+      continue;
+    }
     if (text[p] !== '<') {
-      const e = text.indexOf('<', p);
-      const end = e < 0 ? text.length : e;
-      tokens.push({ kind: 'text', start: base + p, end: base + end });
-      p = end;
+      p = scanText(text, p, base, tokens);
       continue;
     }
     const { scan, kind } = scanMarkup(text, p);
-    if (scan.kind === 'invalid') return { tokens, consumed: p, invalid: base + scan.offset };
-    if (scan.kind === 'partial') return { tokens, consumed: p };
+    if (scan.kind === 'invalid') return { tokens, consumed: p, invalid: base + scan.offset, inCdata: false };
+    if (scan.kind === 'partial') return { tokens, consumed: p, inCdata: false };
     const tok: ExpatToken = { kind, start: base + p, end: base + scan.end };
     if (scan.dup !== undefined) tok.dup = base + scan.dup;
     tokens.push(tok);
     p = scan.end;
   }
-  return { tokens, consumed: p };
+  return { tokens, consumed: p, inCdata: inSection };
 }
 
 /**
@@ -297,6 +341,9 @@ export class ExpatFeed {
   private readonly buffer = new InputBuffer();
   private heldStart = 0;
   private fedEnd = 0;
+  private inCdata = false;
+  /** Source ranges of the text units fed so far: their bytes went through findNext's rewrite. */
+  private readonly textUnits: Array<readonly [number, number]> = [];
 
   constructor(private readonly src: string) {}
 
@@ -305,19 +352,35 @@ export class ExpatFeed {
     return this.heldStart < this.fedEnd ? this.heldStart : undefined;
   }
 
-  /** One `XML_Parse(parser, src[start, end), nbytes, 0)`. */
-  feed(start: number, end: number, nbytes: number): ExpatResult {
-    this.buffer.append(nbytes);
+  /** One `XML_Parse(parser, src[start, end), nbytes, 0)`; `isText` for a text unit. */
+  feed(start: number, end: number, isText: boolean): ExpatResult {
+    if (isText) this.textUnits.push([start, end]);
+    this.buffer.append(fedBytes(this.src.slice(start, end), isText));
     this.fedEnd = end;
     if (!this.buffer.enough) return { tokens: [] };
     const text = this.src.slice(this.heldStart, end);
-    const scan = scanContent(text, this.heldStart);
+    const scan = scanContent(text, this.heldStart, this.inCdata, (a, b) => this.fedBetween(a, b));
     if (scan.invalid !== undefined) {
       return { tokens: scan.tokens, invalid: { message: XML_ERROR_INVALID_TOKEN, offset: scan.invalid } };
     }
+    this.inCdata = scan.inCdata;
     this.heldStart += scan.consumed;
     this.buffer.consumedTo(byteLength(this.src.slice(this.heldStart, end)), scan.consumed > 0);
     return { tokens: scan.tokens };
+  }
+
+  /** What expat read for source offsets [start, end): text-unit pieces as findNext rewrote them. */
+  private fedBetween(start: number, end: number): string {
+    let out = '';
+    let p = start;
+    for (const [us, ue] of this.textUnits) {
+      if (ue <= p || us >= end) continue;
+      if (us > p) out += this.src.slice(p, us);
+      const e = Math.min(ue, end);
+      out += fedText(this.src.slice(Math.max(us, p), e), e === ue);
+      p = e;
+    }
+    return out + this.src.slice(p, end);
   }
 }
 

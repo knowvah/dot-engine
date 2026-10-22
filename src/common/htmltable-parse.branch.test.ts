@@ -101,10 +101,9 @@ describe('inline font tags', () => {
     const t = parseText({ tokens: tokenize('<SUP>hi</SUP>'), pos: 0 }, [{}]);
     expect(t.items[0]).toMatchObject({ text: 'hi', superscript: true });
   });
-  it('inline tag without a matching close tag: no close-token consumption', () => {
-    // No </B> — applyInlineTag's `nxt?.type === 'close'` branch is false.
-    const t = parseText({ tokens: tokenize('<B>hi'), pos: 0 }, [{}]);
-    expect(t.items[0]).toMatchObject({ text: 'hi', bold: true });
+  it('inline tag without a matching close tag is a syntax error', () => {
+    // `bold text n_bold`: the text must be followed by </B>. @see htmlparse.y:textitem
+    expect(() => parseText({ tokens: tokenize('<B>hi'), pos: 0 }, [{}])).toThrow('syntax error');
   });
 });
 
@@ -118,9 +117,9 @@ describe('FONT tag', () => {
     // Popped back to the empty root font: no face/color/size on "after".
     expect(t.items[1]).toEqual({ text: 'after' });
   });
-  it('FONT without a matching close tag: no close-token consumption', () => {
-    const t = parseText({ tokens: tokenize('<FONT COLOR="blue">hi'), pos: 0 }, [{}]);
-    expect(t.items[0]).toMatchObject({ text: 'hi', fontColor: 'blue' });
+  it('FONT without a matching close tag is a syntax error', () => {
+    // `font text n_font`. @see htmlparse.y:textitem
+    expect(() => parseText({ tokens: tokenize('<FONT COLOR="blue">hi'), pos: 0 }, [{}])).toThrow('syntax error');
   });
   it('nested FONT merges onto the active (non-empty) parent font', () => {
     const t = parseText(
