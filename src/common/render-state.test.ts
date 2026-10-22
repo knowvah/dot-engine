@@ -118,7 +118,9 @@ describe('render output is independent of earlier renders (AD-4)', () => {
     capture(renderSvg, src, 'dot');
     const after = capture(renderSvg, src, 'neato');
     expect(after.split('\n--stderr--\n')[1]).toBe(
-      "Warning: no hard-coded metrics for 'Symbol'.  Falling back to 'Times' metrics",
+      "Warning: no hard-coded metrics for 'Symbol'.  Falling back to 'Times' metrics\n" +
+        'Warning: Warning: no value for width of non-ASCII character 226. ' +
+        'Falling back to width of space character',
     );
     expect(after).toBe(fresh);
   }, MODULE_RELOAD_TIMEOUT_MS);

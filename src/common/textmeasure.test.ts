@@ -13,6 +13,7 @@ import {
 } from "./textmeasure.js";
 import { ALL_FONT_METRICS } from "./textmeasure-lut-data.js";
 import { normalizeFontName } from "./textmeasure-lookup.js";
+import { resetRenderState } from "./render-state.js";
 
 // ── AC1: LUT_FAMILY_COUNT === 11 and all families resolve ────────────────────
 
@@ -397,5 +398,48 @@ describe("Courier width LUT includes { | } ~ (regression: 1447)", () => {
       const w = estimate_text_width_1pt("Courier", ch, false, false);
       expect(w).toBeCloseTo(1229 / 2048, 12);
     }
+  });
+});
+
+// ── estimate_character_width_canonical fallback warnings (once per render) ───
+
+describe("character width fallback warnings", () => {
+  const NON_ASCII_LINE =
+    "Warning: Warning: no value for width of non-ASCII character 194. " +
+    "Falling back to width of space character";
+  const ASCII_LINE =
+    "Warning: Warning: no value for width of ASCII character 1. " +
+    "Falling back to 0";
+
+  beforeEach(() => {
+    resetRenderState();
+    vi.restoreAllMocks();
+  });
+
+  it("warns once with the first byte (194 for U+00B2) across both paths", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    freetypeHintedWidth("Times-Roman", "p²q²", 14);
+    estimate_text_width_1pt("Times-Roman", "é", false, false);
+    expect(warnSpy.mock.calls).toEqual([[NON_ASCII_LINE]]);
+  });
+
+  it("warns once per render for an ASCII byte with width -1", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    estimate_text_width_1pt("Times-Roman", "\u0001\u0001", false, false);
+    expect(warnSpy.mock.calls).toEqual([[ASCII_LINE]]);
+  });
+
+  it("warns again after the render state is reset", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    freetypeHintedWidth("Times-Roman", "²", 14);
+    resetRenderState();
+    freetypeHintedWidth("Times-Roman", "²", 14);
+    expect(warnSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not warn for plain ASCII text", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    freetypeHintedWidth("Times-Roman", "plain", 14);
+    expect(warnSpy).not.toHaveBeenCalled();
   });
 });

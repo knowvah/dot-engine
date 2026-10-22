@@ -10,6 +10,8 @@
 import { type FontFamilyData } from "./textmeasure-lut-data.js";
 import { getFamilyMetrics, normalizeFontName } from "./textmeasure-lookup.js";
 import { canvasFont } from "./css-font.js";
+import { agwarningf } from "./agerr.js";
+import { registerRenderState } from "./render-state.js";
 
 /** Number of hard-coded font families in the LUT. */
 export const LUT_FAMILY_COUNT = 11;
@@ -72,12 +74,53 @@ function getVariantWidths(
 // ── Character width lookup ────────────────────────────────────────────────────
 
 const SPACE_CHAR_CODE = 32;
+const FIRST_NON_ASCII = 128;
+
+/**
+ * C's two `static bool warning_already_reported` flags, one per warning.
+ * Once per render (AD-4), as one native process renders one graph.
+ * @see lib/common/textspan_lut.c:estimate_character_width_canonical
+ */
+const warned = new Set<string>();
+const NON_ASCII_FLAG = "non-ascii";
+const ASCII_FLAG = "ascii";
+
+registerRenderState(() => warned.clear());
+
+/**
+ * The C format strings already begin with `Warning: `, and agwarningf adds its
+ * own prefix, so native prints `Warning: Warning: ...`. The trailing newline
+ * of the C format is the line terminator `console.warn` supplies.
+ */
+function warnNonAscii(character: number): void {
+  if (warned.has(NON_ASCII_FLAG)) return;
+  warned.add(NON_ASCII_FLAG);
+  agwarningf(
+    `Warning: no value for width of non-ASCII character ${character}. Falling back to width of space character`,
+  );
+}
+
+function warnAscii(character: number): void {
+  if (warned.has(ASCII_FLAG)) return;
+  warned.add(ASCII_FLAG);
+  agwarningf(
+    `Warning: no value for width of ASCII character ${character}. Falling back to 0`,
+  );
+}
 
 /** @see lib/common/textspan_lut.c:estimate_character_width_canonical */
 function charWidthUnits(widths: readonly number[], charCode: number): number {
-  const code = charCode >= 128 ? SPACE_CHAR_CODE : charCode;
+  let code = charCode;
+  if (code >= FIRST_NON_ASCII) {
+    warnNonAscii(code);
+    code = SPACE_CHAR_CODE;
+  }
   const w = widths[code] ?? -1;
-  return w < 0 ? 0 : w;
+  if (w < 0) {
+    warnAscii(code);
+    return 0;
+  }
+  return w;
 }
 
 /**
