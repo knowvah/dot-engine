@@ -40,6 +40,9 @@ export class HtmlParseError extends DotEngineError {
 /** @see lib/common/htmltable.h HALIGN_* flags */
 export type HtmlAlign = 'left' | 'center' | 'right';
 
+/** A cell's ALIGN: TEXT (HALIGN_TEXT) leaves the text block the cell's width. @see lib/common/htmllex.c:cell_halignfn */
+export type HtmlCellAlign = HtmlAlign | 'text';
+
 /** @see lib/common/htmltable.h VALIGN_* flags */
 export type HtmlVAlign = 'top' | 'middle' | 'bottom';
 
@@ -132,7 +135,7 @@ export interface HtmlCell {
    */
   vruled?: boolean;
   port?: string;
-  align?: HtmlAlign;
+  align?: HtmlCellAlign;
   valign?: HtmlVAlign;
   balign?: HtmlAlign;
   bgcolor?: string;

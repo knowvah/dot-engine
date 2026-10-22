@@ -7,7 +7,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { renderSvg } from '../index.js';
 import { parseHtmlLabelRv } from './htmltable-parse.js';
-import { checkAttrs } from './htmltable-attr-warn.js';
+import { checkAttrs, StderrLines } from './htmltable-attr-warn.js';
 import { tokenize } from './htmltable-lex.js';
 import type { HtmlLabel, HtmlTable } from './htmltable-types.js';
 
@@ -27,7 +27,9 @@ const IN_LABEL = 'in label of node a';
 /** Lines `parseHtmlLabelRv` hands its writer, and the warn flag. */
 function parsed(src: string): { lines: string[]; warn: boolean; label: HtmlLabel } {
   const lines: string[] = [];
-  const r = parseHtmlLabelRv(src, (l) => lines.push(l));
+  const stderr = new StderrLines((l) => lines.push(l));
+  const r = parseHtmlLabelRv(src, stderr);
+  stderr.flush();
   return { lines, warn: r.warn, label: r.label };
 }
 
@@ -167,9 +169,42 @@ describe('doInt', () => {
       .toEqual(['Warning: Improper BORDER value abc - ignored']);
   });
 
-  it('prints in label of after it', () => {
-    expect(stderrOf(label('<table border="abc"><tr><td>x</td></tr></table>')))
-      .toEqual(['Warning: Improper BORDER value abc - ignored', IN_LABEL]);
+  // The message has no newline, so the next stderr write continues the line:
+  // make_label's `in label of` (agerr AGPREV), a sizing warning, or the parse
+  // error. Native dot 16.1.0's stderr, byte for byte.
+  it('runs into in label of, once per label', () => {
+    expect(stderrOf('digraph{a[label=<<table border="abc"><tr><td>x</td></tr></table>>];'
+      + 'b[label=<<font point-size="x">y</font>>]}')).toEqual([
+      `Warning: Improper BORDER value abc - ignored${IN_LABEL}`,
+      'Warning: Improper POINT-SIZE value x - ignoredin label of node b',
+    ]);
+  });
+
+  it('runs into the next warning of the same label', () => {
+    expect(stderrOf(label('<table width="x" border="300"><tr><td bogus="1">a</td></tr></table>'))).toEqual([
+      'Warning: Improper WIDTH value x - ignoredWarning: BORDER value 300 > 255 - too large - ignored'
+        + 'Warning: Illegal attribute bogus in <TD> - ignored',
+      IN_LABEL,
+    ]);
+  });
+
+  it('runs into a sizing warning', () => {
+    expect(stderrOf(label('<table width="x" fixedsize="true" height="1"><tr><td>aaaa</td></tr></table>'))).toEqual([
+      'Warning: Improper WIDTH value x - ignoredWarning: fixed table size with unspecified width or height',
+      IN_LABEL,
+    ]);
+    expect(stderrOf(label('<table><tr><td width="x" fixedsize="true">aaaa</td></tr></table>'))).toEqual([
+      'Warning: Improper WIDTH value x - ignoredWarning: fixed cell size with unspecified width or height',
+      IN_LABEL,
+    ]);
+  });
+
+  it('runs into a syntax error', () => {
+    expect(stderrOf(label('<table width="x"><tr><td><b></b></td></tr></table>'))).toEqual([
+      'Warning: Improper WIDTH value x - ignoredError: syntax error in line 1 ',
+      '... <b></b> ...',
+      IN_LABEL,
+    ]);
   });
 });
 
@@ -243,7 +278,7 @@ describe('warnings on tokens', () => {
 describe('print timing', () => {
   it('prints nothing for a token after a syntax error', () => {
     const lines: string[] = [];
-    expect(() => parseHtmlLabelRv('<table><tr></tr><tr><td bogus="1">x</td></tr></table>', (l) => lines.push(l)))
+    expect(() => parseHtmlLabelRv('<table><tr></tr><tr><td bogus="1">x</td></tr></table>', new StderrLines((l) => lines.push(l))))
       .toThrow('syntax error');
     expect(lines).toEqual([]);
     expect(stderrOf(label('<table><tr></tr><tr><td bogus="1">x</td></tr></table>'))).toEqual([
@@ -264,8 +299,7 @@ describe('print timing', () => {
 
   it('prints the warnings before a lexical error', () => {
     expect(stderrOf(label('<table border="abc"><tr><td>x</td></tr><bogus></table>'))).toEqual([
-      'Warning: Improper BORDER value abc - ignored',
-      'Error: Unknown HTML element <bogus> on line 1 ',
+      'Warning: Improper BORDER value abc - ignoredError: Unknown HTML element <bogus> on line 1 ',
       IN_LABEL,
     ]);
   });

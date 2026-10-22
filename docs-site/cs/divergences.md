@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -672,6 +672,14 @@ vrstva reprezentace —, nikoli přenositelné chování, které bychom odmítli
 Vše ostatní v 1367 je shodné: počty elementů (23 polyline /
 103 text / 44 polygon / 24 path) a všechny souřadnice se shodují po
 opravě decorate (T6).
+
+**Totéž platí pro varování HTML `SIDES`.** `sidesfn` (`lib/common/htmllex.c`) varuje
+jednou za každý bajt hodnoty, který není `l`, `t`, `r` ani `b`. Bajt vypíše pomocí
+`%c` a jeho znaménkovou hodnotu `char` pomocí `%d`. U jiného než ASCII písmene (`é`
+je `0xC3 0xA9`) nativní verze zapíše dva osamocené bajty, takže ani její stderr není
+platné UTF-8. Portace vypíše stejná dvě varování se stejnými čísly (`-61`, `-87`).
+Protože její varování jsou řetězce JS, zobrazí každý bajt jako znak s odpovídajícím
+kódovým bodem Latin-1 (`Ã`, `©`).
 
 **Důkazy.**
 stránka srovnání [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

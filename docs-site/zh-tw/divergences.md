@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -548,6 +548,11 @@ latin1 後備反映了 C 自己「視為 Latin-1」的復原語意
 而不是我們拒絕移植的可攜行為。
 1367 中的其他一切都是一致的：元素數量（23 個 polyline／
 103 個 text／44 個 polygon／24 個 path），且所有座標在 decorate（T6）修正後都相符。
+
+**同樣的情況也適用於 HTML 的 `SIDES` 警告。** `sidesfn`（`lib/common/htmllex.c`）對值中每個不是 `l`、`t`、`r` 或 `b` 的位元組各警告一次。
+它以 `%c` 列印該位元組，以 `%d` 列印其有號 `char` 值。對於非 ASCII 字母（`é` 是 `0xC3 0xA9`），
+原生版本寫出兩個孤立的位元組，因此它的 stderr 也不是有效的 UTF-8。移植版以相同的數值（`-61`、`-87`）
+列印相同的兩則警告。因為它的警告是 JS 字串，所以把每個位元組顯示為具有該 Latin-1 碼位的字元（`Ã`、`©`）。
 
 **證據。**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

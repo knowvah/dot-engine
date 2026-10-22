@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -624,6 +624,13 @@ latin1 フォールバックは、C 自身の「Latin-1 として扱う」回復
 移植を見送った移植可能な挙動ではありません。1367 のそれ以外はすべて適合しています。
 要素数（polyline 23 / text 103 / polygon 44 / path 24）とすべての座標は、
 decorate (T6) の修正後に一致します。
+
+**同じことが HTML の `SIDES` 警告にも当てはまります。** `sidesfn`（`lib/common/htmllex.c`）は、値のうち `l`、`t`、`r`、`b` のいずれでもない
+バイトごとに 1 回ずつ警告します。バイトは `%c` で、符号付きの `char` 値は `%d` で出力します。
+ASCII 以外の文字（`é` は `0xC3 0xA9`）では、ネイティブは単独のバイトを 2 つ書き出すため、
+その stderr も有効な UTF-8 ではありません。ポートは同じ数値（`-61`、`-87`）で同じ 2 つの警告を
+出力します。ポートの警告は JS の文字列なので、各バイトを、その Latin-1 コードポイントを持つ
+文字（`Ã`、`©`）として表示します。
 
 **証拠。**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

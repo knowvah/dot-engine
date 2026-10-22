@@ -20,13 +20,13 @@ export type { TextMeasurer } from './textmeasure.js';
 
 import type {
   HtmlCell, HtmlCellContent, HtmlImage, HtmlLabel, HtmlTable, HtmlText,
-  HtmlTextItem,
+  HtmlTextItem, ImageSizer,
 } from './htmltable-types.js';
-import type { ImageSizer } from './htmltable-types.js';
 import { findImageSize } from '../gvc/usershape.js';
 import { PointSet } from './pointset.js';
 import type { TextMeasurer } from './textmeasure.js';
 import { withTableFont } from './htmltable-fontinfo.js';
+import { agerrLine, type StderrLines } from './htmltable-attr-warn.js';
 
 export { withTableFont } from './htmltable-fontinfo.js';
 
@@ -85,6 +85,7 @@ export interface HtmlSizeEnv {
   fontsize: number;
   fontname: string;
   imageSizer?: ImageSizer;
+  stderr?: StderrLines; // the label's stderr; none: straight to the console
 }
 
 const defaultSizeEnv = (): HtmlSizeEnv => ({ fontsize: DEFAULT_FONTSIZE, fontname: '' });
@@ -230,21 +231,20 @@ const sizeTextContent = (
 /** Images whose sizing failed: size_html_img's rv = 1 on every later call. */
 const missingImages = new WeakSet<HtmlImage>();
 
-const sizeHtmlImg = (img: HtmlImage, imageSizer?: ImageSizer): number => {
+const sizeHtmlImg = (img: HtmlImage, { imageSizer, stderr }: HtmlSizeEnv): number => {
   // C sizes each image once (processTbl); the port's size and pos passes
   // share layoutHtmlTable, so guard against re-sizing (and re-warning). The
   // returned rv still follows C on every call.
   if (img.width !== undefined && img.height !== undefined) return missingImages.has(img) ? 1 : 0;
   const sz = imageSizer !== undefined ? imageSizer(img.src) : findImageSize(img.src);
   if (sz !== null) {
-    img.width = sz.w;
-    img.height = sz.h;
+    img.width = sz.w; img.height = sz.h;
     return 0;
   }
   // Missing-image: zero size + warning.
   // C: agerrorf("No or improper image file=\"%s\"\n", img->src) — agerr
   // prefixes "Error: " on stderr.
-  console.error(`Error: No or improper image file="${img.src}"`);
+  agerrLine(stderr, `Error: No or improper image file="${img.src}"`);
   img.width = 0;
   img.height = 0;
   missingImages.add(img);
@@ -262,7 +262,7 @@ const sizeContentItem = (
     return { ...(item.dimen !== undefined ? item.dimen : { w: 0, h: 0 }), rv };
   }
   if (item.kind === 'image') {
-    const rv = sizeHtmlImg(item, env.imageSizer);
+    const rv = sizeHtmlImg(item, env);
     return { w: item.width ?? 0, h: item.height ?? 0, rv };
   }
   return { w: 0, h: 0, rv: 0 };
@@ -327,15 +327,15 @@ const sizeWarned = new WeakSet<object>();
  * @see lib/common/htmltable.c:1141 (size_html_cell FIXED_FLAG)
  */
 const fixedCellCheck = (
-  cell: HtmlCell, sz: { w: number; h: number }, warn: boolean,
+  cell: HtmlCell, sz: { w: number; h: number }, warn: boolean, out: StderrLines | undefined,
 ): { rv: number; zero: boolean } => {
   if (!cell.fixedsize) return { rv: 0, zero: false };
   if (cell.width && cell.height) {
     const small = (cell.width < sz.w || cell.height < sz.h) && cell.content[0]?.kind !== 'image';
-    if (small && warn) console.warn(WARN_CELL_TOO_SMALL);
+    if (small && warn) agerrLine(out, WARN_CELL_TOO_SMALL);
     return { rv: small ? 1 : 0, zero: true };
   }
-  if (warn) console.warn(WARN_CELL_UNSPECIFIED);
+  if (warn) agerrLine(out, WARN_CELL_UNSPECIFIED);
   return { rv: 1, zero: false };
 };
 
@@ -360,7 +360,7 @@ const getCellSize = (
   let szy = ch + margin;
   const warn = !sizeWarned.has(cell);
   sizeWarned.add(cell);
-  const fixed = fixedCellCheck(cell, { w: szx, h: szy }, warn);
+  const fixed = fixedCellCheck(cell, { w: szx, h: szy }, warn, env.stderr);
   rv |= fixed.rv;
   if (fixed.zero) { szx = 0; szy = 0; }
   const bw = cell.width !== undefined ? cell.width : 0;
@@ -504,16 +504,16 @@ export const layoutHtmlTable = (
  * table, the returned `rv = 1` follows C on every call.
  * @see lib/common/htmltable.c:size_html_tbl (:1683, :1689)
  */
-const warnFixedTable = (tbl: HtmlTable, dims: { wd: number; ht: number }): number => {
+const warnFixedTable = (tbl: HtmlTable, dims: { wd: number; ht: number }, out: StderrLines | undefined): number => {
   const warn = !sizeWarned.has(tbl);
   sizeWarned.add(tbl);
   if (tbl.fixedsize !== true) return 0;
   if (tbl.width && tbl.height) {
     if (tbl.width >= dims.wd && tbl.height >= dims.ht) return 0;
-    if (warn) console.warn(WARN_TABLE_TOO_SMALL);
+    if (warn) agerrLine(out, WARN_TABLE_TOO_SMALL);
     return 1;
   }
-  if (warn) console.warn(WARN_TABLE_UNSPECIFIED);
+  if (warn) agerrLine(out, WARN_TABLE_UNSPECIFIED);
   return 1;
 };
 
@@ -525,7 +525,7 @@ const sizeTableBody = (
 ): number => {
   const { entries, widths, heights, spacing, border, rv } = layoutHtmlTable(tbl, measurer, env);
   if (entries.length === 0) {
-    const fixed = warnFixedTable(tbl, sumTableDims({ widths, heights, ncols: 0, nrows: 0, spacing, border }));
+    const fixed = warnFixedTable(tbl, sumTableDims({ widths, heights, ncols: 0, nrows: 0, spacing, border }), env.stderr);
     tbl.dimen = { w: 0, h: 0 };
     return rv | fixed;
   }
@@ -535,7 +535,7 @@ const sizeTableBody = (
   const { wd, ht } = sumTableDims({ widths, heights, ncols, nrows, spacing, border });
   const baseWd = tbl.width !== undefined ? tbl.width : 0;
   const baseHt = tbl.height !== undefined ? tbl.height : 0;
-  const fixed = warnFixedTable(tbl, { wd, ht });
+  const fixed = warnFixedTable(tbl, { wd, ht }, env.stderr);
   // C zeroes only the CONTENT-derived term for a FIXEDSIZE table that has BOTH
   // width and height, so the box becomes fmax(0, width)=width / fmax(0,height)=
   // height (the explicit size). A fixed table missing a dimension warns and

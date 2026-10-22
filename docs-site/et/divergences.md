@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -668,6 +668,14 @@ esituskiht — mitte portatiivne käitumine, mille portimisest keeldusime.
 Kõik muu failis 1367 on vastav: elementide arvud (23 polyline /
 103 text / 44 polygon / 24 path) ja kõik koordinaadid ühtivad pärast
 decorate (T6) parandust.
+
+**Sama kehtib HTML-i `SIDES` hoiatuste kohta.** `sidesfn` (`lib/common/htmllex.c`)
+hoiatab üks kord iga väärtuse baidi kohta, mis ei ole `l`, `t`, `r` ega `b`. See
+trükib baidi `%c` abil ja selle märgiga `char`-väärtuse `%d` abil. Mitte-ASCII tähe
+puhul (`é` on `0xC3 0xA9`) kirjutab natiivne versioon kaks üksikut baiti, mistõttu
+ka selle stderr ei ole kehtiv UTF-8. Port trükib samad kaks hoiatust samade arvudega
+(`-61`, `-87`). Kuna selle hoiatused on JS-i stringid, kuvab see iga baidi
+tähemärgina, mille Latin-1 koodipunkt see on (`Ã`, `©`).
 
 **Tõendid.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

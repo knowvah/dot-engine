@@ -12,7 +12,8 @@
 import type { TextlabelT } from './types.js';
 import type { TextMeasurer, TextSize } from './textmeasure.js';
 import type { TextSpan } from './emit-types.js';
-import { makeHtmlLabelRv } from './htmltable-pos.js';
+import { makeHtmlLabelTo } from './htmltable-label.js';
+import { labelStderr } from './htmltable-attr-warn.js';
 import { substObj, type GraphObj } from './subst.js';
 import { Edge } from '../model/edge.js';
 import { Graph } from '../model/graph.js';
@@ -205,8 +206,12 @@ export function makeAnyLabel(
     // it (htmltable.c:1911 getPenColor). @see getPenColor
     // ADR-2: a per-context sizer (when set) wins over the global one.
     const imageSizer = obj !== undefined ? rootOf(obj).info.gvc?.imageSizer : undefined;
-    const { label, rv } = makeHtmlLabelRv(content, { ...font, pencolor: getPenColor(obj), imageSizer }, measurer);
-    if (rv !== 0 && obj !== undefined) console.error(inLabelOf(obj));
+    // One stderr for the label: doInt's unterminated warning runs into the
+    // next write, `in label of ...` included (agerr AGPREV).
+    const stderr = labelStderr();
+    const { label, rv } = makeHtmlLabelTo(content, { ...font, pencolor: getPenColor(obj), imageSizer }, measurer, stderr);
+    if (rv !== 0 && obj !== undefined) stderr.write(`${inLabelOf(obj)}\n`);
+    stderr.flush();
     return label;
   }
   // Plain path: resolve \G \N \E \T \H \L against the owning object

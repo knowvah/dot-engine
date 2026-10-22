@@ -15,11 +15,12 @@ import { HtmlParseError } from './htmltable-types.js';
 import type { LexerOutput, OpenToken, TextToken, Token } from './htmltable-types.js';
 import { checkAttrs } from './htmltable-attr-warn.js';
 import type { AttrEntry } from './htmltable-attr-warn.js';
-import { ExpatFeed, findUndefinedEntity, parseTagChunk } from './htmltable-lex-expat.js';
+import { ExpatFeed, parseTagChunk, textRefError } from './htmltable-lex-expat.js';
 import { charDataTokens, initialCharData, keepLostText, releaseXb, tagInCell, textTokens } from './htmltable-lex-chardata.js';
 import type { CharDataState } from './htmltable-lex-chardata.js';
 import type { ExpatResult, ExpatToken } from './htmltable-lex-expat.js';
 import { findNext } from './htmltable-lex-units.js';
+import { decodeAttValue } from './htmltable-lex-attvalue.js';
 import type { Unit } from './htmltable-lex-units.js';
 
 export type { Token } from './htmltable-types.js';
@@ -42,7 +43,8 @@ const isWs = (c: string | undefined): boolean =>
 /**
  * Parse key="value" attribute pairs. Values are consumed, never
  * re-scanned (the old scanner re-matched words inside quoted values as
- * phantom attributes). Bare or unquoted attributes are not well-formed
+ * phantom attributes), and decoded as expat hands them to startElement
+ * (`decodeAttValue`; storeAtts' errors were raised before this runs). Bare or unquoted attributes are not well-formed
  * XML — expat rejects the document and the label falls back to plain
  * text; throwing here reproduces that.
  * Names keep their source case (doAttrs prints them as written) and pairs
@@ -67,7 +69,7 @@ function parseAttrPairs(raw: string): AttrEntry[] {
     if (q !== '"' && q !== "'") throw new HtmlParseError(name);
     const end = raw.indexOf(q, i + 1);
     if (end < 0) throw new HtmlParseError(name);
-    out.push([name, raw.slice(i + 1, end)]);
+    out.push([name, decodeAttValue(raw.slice(i + 1, end))]);
     i = end + 1;
   }
   return out;
@@ -145,9 +147,7 @@ function parseOpenToken(inner: string) {
  * with the graphviz sources.
  * @see lib/common/htmllex.c:htmllex (XML_ErrorString at the XML_Parse failure)
  */
-const XML_ERROR_UNDEFINED_ENTITY = 'undefined entity';
 const XML_ERROR_TAG_MISMATCH = 'mismatched tag';
-const XML_ERROR_DUPLICATE_ATTRIBUTE = 'duplicate attribute';
 /** yacc's message when the token stream ends inside an unfinished construct. */
 const SYNTAX_ERROR = 'syntax error';
 
@@ -254,7 +254,8 @@ function checkTagToken(site: TokenSite): void {
       throw htmlErrorInLine(XML_ERROR_TAG_MISMATCH, lineAt(src, tok.start), context);
     }
   } else {
-    if (tok.dup !== undefined) throw htmlErrorInLine(XML_ERROR_DUPLICATE_ATTRIBUTE, lineAt(src, tok.dup), context);
+    const err = tok.attError;
+    if (err !== undefined) throw htmlErrorInLine(err.message, lineAt(src, err.offset), context);
     if (!tag.selfClose) st.stack.push(tag.name);
   }
   if (KNOWN_TAGS.has(tag.name.toUpperCase())) return;
@@ -273,10 +274,8 @@ function eventTokens(site: TokenSite): Token[] {
     checkTagToken(site);
     return tagTokens(text);
   }
-  const off = findUndefinedEntity(text);
-  if (off >= 0) {
-    throw htmlErrorInLine(XML_ERROR_UNDEFINED_ENTITY, lineAt(src, tok.start + off), st.prev + st.curr);
-  }
+  const err = textRefError(text);
+  if (err !== undefined) throw htmlErrorInLine(err.message, lineAt(src, tok.start + err.offset), st.prev + st.curr);
   return textTokens(text);
 }
 

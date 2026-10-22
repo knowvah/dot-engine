@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -651,6 +651,15 @@ w warstwie reprezentacji — a nie przenośne zachowanie, którego odmówiliśmy
 Wszystko inne w 1367 jest conformant: liczby elementów (23 polyline /
 103 text / 44 polygon / 24 path) i wszystkie współrzędne zgadzają się po poprawce
 decorate (T6).
+
+**To samo dotyczy ostrzeżeń HTML `SIDES`.** `sidesfn` (`lib/common/htmllex.c`)
+ostrzega raz dla każdego bajtu wartości, który nie jest `l`, `t`, `r` ani `b`.
+Wypisuje bajt za pomocą `%c`, a jego wartość `char` ze znakiem za pomocą `%d`. Dla
+litery spoza ASCII (`é` to `0xC3 0xA9`) wersja natywna zapisuje dwa osamotnione
+bajty, więc jej stderr również nie jest poprawnym UTF-8. Port wypisuje te same dwa
+ostrzeżenia z tymi samymi liczbami (`-61`, `-87`). Ponieważ jego ostrzeżenia są
+łańcuchami JS, pokazuje każdy bajt jako znak o tym punkcie kodowym Latin-1 (`Ã`,
+`©`).
 
 **Dowody.**
 Strona porównania

@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -671,6 +671,15 @@ reprezentare — nu un comportament portabil pe care am refuzat să-l portăm.
 Tot restul din 1367 este conform: numărul de elemente (23 polyline /
 103 text / 44 polygon / 24 path) și toate coordonatele se potrivesc după
 remedierea decorate (T6).
+
+**Același lucru se aplică avertismentelor HTML `SIDES`.** `sidesfn`
+(`lib/common/htmllex.c`) avertizează o dată pentru fiecare octet al valorii care nu
+este `l`, `t`, `r` sau `b`. Afișează octetul cu `%c` și valoarea sa `char` cu semn
+cu `%d`. Pentru o literă non-ASCII (`é` este `0xC3 0xA9`), versiunea nativă scrie
+doi octeți izolați, deci nici stderr-ul ei nu este UTF-8 valid. Portarea afișează
+aceleași două avertismente cu aceleași numere (`-61`, `-87`). Fiindcă avertismentele
+ei sunt șiruri JS, arată fiecare octet ca fiind caracterul cu acel punct de cod
+Latin-1 (`Ã`, `©`).
 
 **Dovadă.**
 Pagina de comparare [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

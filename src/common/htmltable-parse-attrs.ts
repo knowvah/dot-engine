@@ -11,6 +11,7 @@
 import type {
   HtmlAlign,
   HtmlCell,
+  HtmlCellAlign,
   HtmlCellContent,
   HtmlRow,
   HtmlTable,
@@ -23,14 +24,6 @@ import {
   BORDER_BOTTOM,
   BORDER_MASK,
 } from './htmltable-types.js';
-import { htmlEntityUTF8 } from './html-entities.js';
-
-/** Decode XML/HTML entities in an anchor attribute value (href/target), as C's
- *  HTML parser does. The stored value is the real character (`&amp;` → `&`), so
- *  imap emits it raw and cmapx re-escapes it. Undefined passes through. */
-function anchorAttr(v: string | undefined): string | undefined {
-  return v === undefined ? undefined : htmlEntityUTF8(v);
-}
 
 // ---------------------------------------------------------------------------
 // Attribute helpers
@@ -43,6 +36,10 @@ export const parseAlign = (v: string): HtmlAlign | undefined => {
   if (u === 'CENTER') return 'center';
   return undefined;
 };
+
+/** @see lib/common/htmllex.c:cell_halignfn */
+export const parseCellAlign = (v: string): HtmlCellAlign | undefined =>
+  v.toUpperCase() === 'TEXT' ? 'text' : parseAlign(v);
 
 export const parseVAlign = (v: string): HtmlVAlign | undefined => {
   const u = v.toUpperCase();
@@ -112,7 +109,7 @@ export const buildCell = (content: HtmlCellContent[], a: Record<string, string>)
   kind: 'cell',
   content,
   port: a['port'],
-  align: parseAlign(a['align'] !== undefined ? a['align'] : ''),
+  align: parseCellAlign(a['align'] !== undefined ? a['align'] : ''),
   valign: parseVAlign(a['valign'] !== undefined ? a['valign'] : ''),
   balign: parseAlign(a['balign'] !== undefined ? a['balign'] : ''),
   bgcolor: a['bgcolor'],
@@ -128,9 +125,9 @@ export const buildCell = (content: HtmlCellContent[], a: Record<string, string>)
   fixedsize: parseFixedSize(a),
   colspan: num(a['colspan']),
   rowspan: num(a['rowspan']),
-  href: anchorAttr(a['href']),
+  href: a['href'],
   title: parseTitle(a),
-  target: anchorAttr(a['target']),
+  target: a['target'],
   id: a['id'],
 });
 
@@ -149,9 +146,9 @@ export const buildTable = (rows: HtmlRow[], a: Record<string, string>): HtmlTabl
   fixedsize: parseFixedSize(a),
   width: num(a['width']),
   height: num(a['height']),
-  href: anchorAttr(a['href']),
+  href: a['href'],
   title: parseTitle(a),
-  target: anchorAttr(a['target']),
+  target: a['target'],
   id: a['id'],
   port: a['port'],
   sides: parseSides(a['sides']),

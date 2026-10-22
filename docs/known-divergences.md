@@ -679,6 +679,15 @@ Everything else in 1367 is conformant: element counts (23 polyline /
 103 text / 44 polygon / 24 path) and all coordinates match after the
 decorate (T6) fix.
 
+**The same applies to HTML `SIDES` warnings.** `sidesfn`
+(`lib/common/htmllex.c`) warns once for each byte of the value that is not
+`l`, `t`, `r` or `b`. It prints the byte with `%c` and its signed `char`
+value with `%d`. For a non-ASCII letter (`é` is `0xC3 0xA9`), native writes
+two lone bytes, so its stderr is not valid UTF-8 either. The port prints the
+same two warnings with the same numbers (`-61`, `-87`). Because its warnings
+are JS strings, it shows each byte as the character with that Latin-1 code
+point (`Ã`, `©`).
+
 **Evidence.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)
 comparison page (side-by-side render + evidence record).

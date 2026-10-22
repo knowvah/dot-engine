@@ -16,14 +16,11 @@
  */
 
 import type { Box } from '../model/geom.js';
-import type { TextlabelT } from './types.js';
 import type { TextMeasurer } from './textmeasure.js';
-import type { HtmlCell, HtmlImage, HtmlLabel, HtmlTable, HtmlText, ImageSizer } from './htmltable-types.js';
+import type { HtmlCell, HtmlImage, HtmlLabel, HtmlTable, HtmlText } from './htmltable-types.js';
 import {
-  layoutHtmlTable, cellPad, cellBorder, sizeHtmlLabel, parseHtmlLabelRv, inheritTablePenColor, withTableFont,
+  layoutHtmlTable, cellPad, cellBorder, withTableFont,
 } from './htmltable.js';
-import { makeLabel } from './make-label.js';
-import { HtmlLexError } from './htmltable-lex.js';
 import { TOP, BOTTOM, LEFT, RIGHT } from './splines-constants.js';
 import type { PlacedLine, HtmlFontInfo } from './htmltable-pos-runs.js';
 import {
@@ -171,15 +168,14 @@ export interface PlacedHtml {
  * of pos_html_cell: LEFT flushes the box right edge in (`ur.x -= delx`), RIGHT
  * flushes the left edge in, default splits (center); VALIGN BOTTOM/TOP flush,
  * default centers on BOTH axes. Parallels the existing `alignImageBox`, but
- * text default-centers vertically where an image does not.
- * (`parseAlign` never yields HALIGN_TEXT, so the cell box always shrinks here —
- * exactly what C does for every non-TEXT cell.)
+ * text default-centers vertically where an image does not. ALIGN="TEXT" keeps
+ * the box's width: lines then align across the whole cell.
  * @see lib/common/htmltable.c:pos_html_cell (text branch, :1487-1526)
  */
 export function alignContentBox(box: Box, cell: HtmlCell, w: number, h: number): Box {
   const out: Box = { ll: { ...box.ll }, ur: { ...box.ur } };
   const delx = out.ur.x - out.ll.x - w;
-  if (delx > 0) {
+  if (delx > 0 && cell.align !== 'text') {
     if (cell.align === 'left') out.ur.x -= delx;
     else if (cell.align === 'right') out.ll.x += delx;
     else { out.ll.x += delx / 2; out.ur.x -= delx / 2; }
@@ -519,83 +515,4 @@ export function posHtmlLabel(
   const env = { ...finfo }; // copied: the emit-side savef leak must not outlive the label
   if (label.kind === 'table') return withTableFont(env, label.table.font, 'emit', () => posHtmlTable(label.table, env, measurer));
   return posTextLabel(label, finfo, measurer);
-}
-
-/** parseHTML's rv for a label that failed to parse (`ctx->error`). */
-const HTML_PARSE_FATAL = 3;
-
-/** A built HTML label plus make_html_label's "problem" return value. */
-export interface HtmlLabelResult {
-  label: TextlabelT;
-  rv: number;
-}
-
-/**
- * make_html_label: parse, size and position an HTML-like label. Returns C's
- * rv too (nonzero: the caller appends `in label of ...`, labels.c:make_label).
- * Parse diagnostics print here, once per label, as parseHTML does. The
- * optional `imageSizer` resolves `<IMG SRC>`; absent means C's missing image.
- * @see lib/common/htmltable.c:make_html_label
- */
-export function makeHtmlLabelRv(
-  content: string,
-  finfo: HtmlFontInfo & { imageSizer?: ImageSizer; pencolor?: string },
-  measurer: TextMeasurer,
-): HtmlLabelResult {
-  const { fontname, fontsize, fontcolor, imageSizer, pencolor } = finfo;
-  let lbl: HtmlLabel, lexWarn: boolean; // lexWarn: htmllex.c's ctx->warn, rv bit 1
-  try {
-    ({ label: lbl, warn: lexWarn } = parseHtmlLabelRv(content));
-  } catch (e) {
-    // C aborts the HTML parse on a syntax error (YYABORT): parseHTML returns
-    // rv 3 (ctx->error) with no label, and make_html_label returns it with
-    // lp->html cleared and no spans, so the label renders empty.
-    // @see lib/common/htmltable.c:1880 (rv == 3), htmlparse.y (YYABORT)
-    if (e instanceof HtmlLexError) for (const line of e.diagnostics) console.error(line);
-    return { label: makeLabel('', fontname, fontsize, fontcolor, measurer), rv: HTML_PARSE_FATAL };
-  }
-  // A top-level table with no explicit COLOR inherits the object's pen color,
-  // which then flows table->cell->nested-table.
-  // @see lib/common/htmltable.c:1911 (getPenColor), :1406/:1556 (inheritance)
-  if (lbl.kind === 'table') inheritTablePenColor(lbl.table, pencolor);
-  const rv = Number(lexWarn) | sizeHtmlLabel(lbl, measurer, {
-    fontsize, fontname, imageSizer,
-  });
-  const placed = posHtmlLabel(lbl, { fontname, fontsize, fontcolor }, measurer);
-  const dim = lbl.dimen ?? { w: 0, h: 0 };
-  // C replaces table-label text: "this may be used for the title and
-  // alt fields in image maps" — anchors inherit it as default tooltip.
-  // @see lib/common/htmltable.c:make_html_label (line 1935)
-  const text = lbl.kind === 'table' ? '<TABLE>' : content;
-  return { label: htmlTextLabel(text, { fontname, fontsize, fontcolor }, placed, dim), rv };
-}
-
-/** {@link makeHtmlLabelRv} without the problem flag. */
-export function makeHtmlLabel(
-  content: string,
-  finfo: HtmlFontInfo & { imageSizer?: ImageSizer; pencolor?: string },
-  measurer: TextMeasurer,
-): TextlabelT {
-  return makeHtmlLabelRv(content, finfo, measurer).label;
-}
-
-/** Build the TextlabelT wrapper around a positioned HTML label. */
-function htmlTextLabel(
-  text: string,
-  finfo: HtmlFontInfo,
-  placed: PlacedHtml,
-  dim: { w: number; h: number },
-): TextlabelT {
-  return {
-    text,
-    fontname: finfo.fontname, fontcolor: finfo.fontcolor, charset: 0,
-    fontsize: finfo.fontsize,
-    dimen: { x: dim.w, y: dim.h },
-    space: { x: dim.w, y: dim.h },
-    pos: { x: 0, y: 0 },
-    u: { kind: 'html', html: placed },
-    valign: 'c'.charCodeAt(0),
-    set: false,
-    html: true,
-  };
 }

@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -667,6 +667,14 @@ anlamını yansıtır (`utils.c:1249`). Bu, kodun altındaki bir kısıttır —
 katmanı — port etmeyi reddettiğimiz taşınabilir bir davranış değil. 1367'deki
 geri kalan her şey uyumludur: öğe sayıları (23 polyline / 103 text / 44 polygon /
 24 path) ve tüm koordinatlar decorate (T6) düzeltmesinden sonra eşleşir.
+
+**Aynısı HTML `SIDES` uyarıları için de geçerlidir.** `sidesfn`
+(`lib/common/htmllex.c`), değerin `l`, `t`, `r` veya `b` olmayan her baytı için bir
+kez uyarır. Baytı `%c` ile, işaretli `char` değerini ise `%d` ile yazdırır. ASCII
+olmayan bir harf için (`é`, `0xC3 0xA9`'dur) yerel sürüm iki tek başına bayt yazar,
+dolayısıyla onun stderr çıktısı da geçerli UTF-8 değildir. Port aynı iki uyarıyı
+aynı sayılarla yazdırır (`-61`, `-87`). Uyarıları JS dizgeleri olduğundan, her baytı
+o Latin-1 kod noktasına sahip karakter olarak gösterir (`Ã`, `©`).
 
 **Kanıt.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

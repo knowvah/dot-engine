@@ -1,5 +1,5 @@
 ---
-sourceHash: 3c866aae4423b2ef7a11e3ec6a3c07eb58438365a5a4e7fe9adc563a21a83768
+sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -672,6 +672,14 @@ representação —, não um comportamento portátil que nos recusamos a portar.
 Todo o resto do 1367 é conformante: contagens de elementos (23 polyline /
 103 text / 44 polygon / 24 path) e todas as coordenadas correspondem após a
 correção de decorate (T6).
+
+**O mesmo vale para os avisos de `SIDES` em HTML.** `sidesfn`
+(`lib/common/htmllex.c`) avisa uma vez para cada byte do valor que não seja `l`,
+`t`, `r` nem `b`. Ela imprime o byte com `%c` e seu valor `char` com sinal com `%d`.
+Para uma letra não ASCII (`é` é `0xC3 0xA9`), a versão nativa escreve dois bytes
+soltos, então seu stderr também não é UTF-8 válido. O port imprime os mesmos dois
+avisos com os mesmos números (`-61`, `-87`). Como seus avisos são strings JS, ele
+mostra cada byte como o caractere com esse ponto de código Latin-1 (`Ã`, `©`).
 
 **Evidência.**
 página de comparação do

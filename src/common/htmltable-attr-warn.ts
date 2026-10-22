@@ -11,7 +11,7 @@
  * @see lib/common/htmllex.c:doAttrs
  */
 
-/** An attribute as written: name in source case, value verbatim. */
+/** An attribute as startElement gets it: name in source case, value decoded by expat. */
 export type AttrEntry = readonly [name: string, value: string];
 
 export interface CheckedAttrs {
@@ -247,9 +247,9 @@ export function checkAttrs(tag: string, pairs: readonly AttrEntry[]): CheckedAtt
 // ---------------------------------------------------------------------------
 
 /**
- * C's stderr as lines: text is appended, each completed line goes to
- * `writeLine`, and a message without a trailing newline stays pending so the
- * next write continues it. `flush` emits a pending partial line.
+ * C's stderr as messages: a write ending in a newline goes to `writeLine`
+ * (newline dropped, embedded newlines kept), while a message without one stays
+ * pending so the next write continues it. `flush` emits a pending message.
  */
 export class StderrLines {
   private pending = '';
@@ -257,9 +257,11 @@ export class StderrLines {
   constructor(private readonly writeLine: (line: string) => void) {}
 
   write(text: string): void {
-    const parts = (this.pending + text).split('\n');
-    this.pending = parts.pop() ?? '';
-    for (const line of parts) this.writeLine(line);
+    this.pending += text;
+    if (!this.pending.endsWith('\n')) return;
+    const line = this.pending.slice(0, -1);
+    this.pending = '';
+    this.writeLine(line);
   }
 
   flush(): void {
@@ -268,3 +270,18 @@ export class StderrLines {
     this.pending = '';
   }
 }
+
+/** A finished stderr line on the console channel the port uses for it. */
+export const consoleLine = (line: string): void => {
+  if (line.startsWith('Warning')) console.warn(line);
+  else console.error(line);
+};
+
+/** One label's stderr: what make_html_label and make_label print, in order. */
+export const labelStderr = (): StderrLines => new StderrLines(consoleLine);
+
+/** agerr of one newline-terminated message: to `out`, or the console when there is none. */
+export const agerrLine = (out: StderrLines | undefined, msg: string): void => {
+  if (out === undefined) consoleLine(msg);
+  else out.write(`${msg}\n`);
+};

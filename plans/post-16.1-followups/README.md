@@ -9,8 +9,9 @@ Items 1–13 are done. Items 7–13 were closed by the mission brief
 item's outcome. Items 14–23 are closed (14 by PR #95; 15–23 by
 `plans/post-16-1-followups-2/`). Items 24 and 33 are closed by
 `feature/cache-oracle-failures` (PR #97), item 32 by `chore/record-t11-walk-passes` (PR #98), item 26 by
-`fix/parser-native-acceptance` (PR #99), item 27 by `fix/html-label-parse-parity`.
-The open work is items 25, 28–31, 34 and 35 under "New follow-ups
+`fix/parser-native-acceptance` (PR #99), item 27 by `fix/html-label-parse-parity` (PR #100),
+item 28 by `fix/html-label-warn-parity`.
+The open work is items 25, 29–31 and 34–38 under "New follow-ups
 found by part 2" below, each journaled in `plans/decision-journal.md`.
 
 ## State at handoff
@@ -187,7 +188,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       close tag (`... <b></b> ...` context); CDATA sections, `ctx->inCell` text
       suppression, `ctx->xb` accumulation across dropped events and `characterData`
       dropping chars < 0x20 are unported (T7, T9).
-  28. htmllex warning bytes: doInt's three messages lack `\n` natively and run into
+  28. **[DONE — `fix/html-label-warn-parity`]** htmllex warning bytes: doInt's three messages lack `\n` natively and run into
       the next stderr write; SIDES with non-ASCII prints raw bytes; `ALIGN="TEXT"` in
       TD has no `HtmlAlign` value; expat attribute-value normalisation is not modelled
       in warning text; dead `cellAttrs['src']` fallback in `parseImgContent` (T8).
@@ -223,9 +224,29 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `&amp;`. The port keeps entity-looking sequences, so text that decodes to
       `&amp;`, `&#38;` or `&foo;` diverges: plain `label="x&amp;amp;y"` and
       `"x&foo;y"`, and HTML `<x&amp;amp;y>` (all on `main` before item 27).
+      Item 28 adds a case: `xlink:title` also uses `raw = 1`
+      (`svg_begin_anchor`), and the port's `escapeXmlText` keeps entities there
+      too. A node `tooltip="c&#38;d"` already diverged; since item 28 decodes
+      HTML attribute values as expat does, an HTML `title="a&amp;amp;b"`
+      (decoded `a&amp;b`) now does as well.
   35. `<BR/>` lines inside a font-style element: `<k<u><br/><br/></u>>` places
       the lines differently from native (y off by 6.76 pt); `k<br/><br/>`
       without the `<u>` matches. Pre-existing on `main`.
+- **New follow-ups found by item 28** (journal row 2026-10-22, item 28; all
+  three reproduce on `main`):
+  36. agerr's default writer (`lib/cgraph/agerror.c:default_usererrf`) prints
+      each control character that is not white space as `\ooo`. The port
+      prints messages as they are, so a raw `\x01` in an HTML label's error
+      context shows as the byte, not `\001`. Any warning or error the port
+      prints that contains such a character differs the same way.
+  37. `Warning: %s is not a known color.` (`lib/gvc/gvrender.c:206`, after
+      `colorxlate` returns `COLOR_UNKNOWN`) is never printed by the port, for
+      plain attributes (`a[color=foo]`) as for HTML `COLOR`/`BGCOLOR`. stderr
+      only; the SVG matches. Found by item 28's attribute fuzz (most of its
+      stderr-only mismatches).
+  38. `STYLE="rounded,dashed"` on an HTML table or cell: native draws a rounded,
+      dashed `<path>`, the port a dashed square `<polygon>`; `rounded` alone
+      matches.
 
 ## Local leftovers (not committed, safe to delete)
 
