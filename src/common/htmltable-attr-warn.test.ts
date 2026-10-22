@@ -181,11 +181,15 @@ describe('doInt', () => {
   });
 
   it('runs into the next warning of the same label', () => {
-    expect(stderrOf(label('<table width="x" border="300"><tr><td bogus="1">a</td></tr></table>'))).toEqual([
-      'Warning: Improper WIDTH value x - ignoredWarning: BORDER value 300 > 255 - too large - ignored'
-        + 'Warning: Illegal attribute bogus in <TD> - ignored',
-      IN_LABEL,
-    ]);
+    // No separator: the two doInt messages end without a newline, so native
+    // writes the next warning straight after them on the same line.
+    const joined = [
+      'Warning: Improper WIDTH value x - ignored',
+      'Warning: BORDER value 300 > 255 - too large - ignored',
+      'Warning: Illegal attribute bogus in <TD> - ignored',
+    ].join('');
+    expect(stderrOf(label('<table width="x" border="300"><tr><td bogus="1">a</td></tr></table>')))
+      .toEqual([joined, IN_LABEL]);
   });
 
   it('runs into a sizing warning', () => {
