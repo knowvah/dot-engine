@@ -35,7 +35,7 @@ import {
   htmlFillPenWidth, resetHtmlFillPenWidth, type HtmlPaint,
 } from './htmltable-emit-fill.js';
 import { emitRoundedBezier } from './poly-shapes.js';
-import { parseStyleFlags } from './style-resolve.js';
+import { htmlStyle } from './htmltable-style.js';
 import { emitHtmlRules, initHtmlAnchor, endHtmlAnchor, htmlObjImgscale } from './htmltable-emit-rules.js';
 
 export type { PlacedHtml, PlacedCell, PlacedLine, PlacedImage };
@@ -125,7 +125,7 @@ function bgFillPaint(ctx: BgFillCtx): HtmlPaint {
   if (spec === null) return { fill: ctx.bgcolor, penWidth };
   return {
     fill: spec[0], stop: spec[1], gradientAngle: ctx.gradientangle ?? 0,
-    radial: ctx.style !== undefined && ctx.style.includes('radial'), penWidth,
+    radial: htmlStyle(ctx.style).radial, penWidth,
   };
 }
 
@@ -139,7 +139,7 @@ function bgFillPaint(ctx: BgFillCtx): HtmlPaint {
 function emitBgFill(ctx: BgFillCtx): void {
   const { box, pos, border, renderer, job } = ctx;
   withHtmlPaint(bgFillPaint(ctx), job, () => {
-    if (parseStyleFlags(ctx.style).rounded) {
+    if (htmlStyle(ctx.style).rounded) {
       emitRoundedBezier(mkPts(box, border, pos), { x: 0, y: 0 }, true, { renderer, job });
       return;
     }
@@ -258,23 +258,6 @@ export function emitHtmlImg(
  *
  * @see lib/common/htmltable.c:emit_html_cell
  */
-/**
- * True when an HTML element's STYLE declares it invisible.
- *
- * HTML STYLE is lexed by its OWN parser, not the node/edge one: tokens are
- * split on space or comma, compared case-insensitively, and BOTH "INVIS" and
- * "INVISIBLE" set the flag. (The node/edge parser splits on comma only and
- * matches exact-case, so it cannot be reused here.)
- * @see lib/common/htmllex.c:168 (DELIM " ,", strview_case_str_eq)
- */
-function htmlStyleInvisible(style: string | undefined): boolean {
-  if (style === undefined) return false;
-  return style.split(/[ ,]+/).some((tok) => {
-    const t = tok.toUpperCase();
-    return t === 'INVIS' || t === 'INVISIBLE';
-  });
-}
-
 export function emitHtmlCell(
   cell: PlacedCell,
   pos: Point,
@@ -287,7 +270,7 @@ export function emitHtmlCell(
   );
   // An invisible cell emits no fill, no border and no content — only the
   // anchor, which C opens before the gate. @see htmltable.c:emit_html_cell:643
-  if (htmlStyleInvisible(cell.style)) {
+  if (htmlStyle(cell.style).invisible) {
     if (inAnchor) endHtmlAnchor(renderer, job);
     return;
   }
@@ -354,7 +337,7 @@ export function emitHtmlLabel(
   const inAnchor = clustersLast ? false : initHtmlAnchor(anchorData, tblBox, renderer, job);
   // An invisible TABLE suppresses its fill, ALL its cells, and its rules and
   // border — the whole block C guards at emit_html_tbl:542.
-  const tblInvisible = htmlStyleInvisible(placed.style);
+  const tblInvisible = htmlStyle(placed.style).invisible;
   if (!tblInvisible) {
     if (placed.bgcolor !== undefined) {
       emitBgFill({ bgcolor: placed.bgcolor, box: placed.box, pos, border: placed.border,

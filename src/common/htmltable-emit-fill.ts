@@ -18,7 +18,7 @@ import { FillType, PenType } from '../gvc/context.js';
 import { transformPoint } from '../gvc/device.js';
 import { resolveRenderColor } from '../render/color-resolve.js';
 import { emitRoundedBezier } from './poly-shapes.js';
-import { parseStyleFlags } from './style-resolve.js';
+import { htmlStyle } from './htmltable-style.js';
 import {
   BORDER_LEFT,
   BORDER_TOP,
@@ -94,7 +94,7 @@ export interface HtmlPaint {
   pen?: string;
   /** Pen width; default 1.0 (omitted from SVG at 1.0). */
   penWidth?: number;
-  /** Style string; "dashed"/"dotted" map to the pen type. */
+  /** HTML STYLE string; its dashed/dotted flags map to the pen type. */
   penStyle?: string;
   /**
    * Second/stop color of a gradient fill. Presence switches the fill from
@@ -137,10 +137,11 @@ export function resetHtmlFillPenWidth(): void {
   htmlFillPen = 1.0;
 }
 
-/** Map a style string to the C pen type. @see lib/common/htmltable.c:doBorder */
+/** Map an HTML STYLE to the C pen type: dashed wins over dotted. @see lib/common/htmltable.c:doBorder */
 function penTypeOf(style: string | undefined): PenType {
-  if (style !== undefined && style.includes('dashed')) return PenType.Dashed;
-  if (style !== undefined && style.includes('dotted')) return PenType.Dotted;
+  const st = htmlStyle(style);
+  if (st.dashed) return PenType.Dashed;
+  if (st.dotted) return PenType.Dotted;
   return PenType.Solid;
 }
 
@@ -277,7 +278,7 @@ export function doBorder(
   // value persists and leaks into the next bgcolor fill's stroke-width.
   htmlFillPen = border;
   withHtmlPaint({ pen: color, penWidth: border, penStyle: style }, job, () => {
-    if (parseStyleFlags(style).rounded) {
+    if (htmlStyle(style).rounded) {
       // C: round_corners(job, mkPts(AF,b,border), 4, {rounded}, 0) — unfilled
       // rounded border path; emitRoundedBezier transforms the AF ring itself.
       emitRoundedBezier(mkPts(box, border, pos), { x: 0, y: 0 }, false, { renderer, job });
