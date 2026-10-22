@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -295,6 +295,8 @@ job->clip)` 为每个节点设置门槛（emit.c:1806-1809），而在这条中�
 **为何接受。** 移植版的 I/O 边界是 JS 字符串（浏览器库）。原始的无效字节无法通过 `renderSvg` 的字符串返回值往返；要逐字节匹配 C，就意味着为每一位使用者破坏输出编码。latin1 回退与 C 自己的“按 Latin-1 处理”恢复语义一致（`utils.c:1249`）。这是代码之下的约束——表示层——而不是我们拒绝移植的某种可移植行为。1367 中的其他一切都是一致的：元素数量（23 个 polyline / 103 个 text / 44 个 polygon / 24 个 path）以及所有坐标，在 decorate（T6）修复之后都匹配。
 
 **同样的情况也适用于 HTML 的 `SIDES` 警告。** `sidesfn`（`lib/common/htmllex.c`）对取值中每个不是 `l`、`t`、`r` 或 `b` 的字节各警告一次。它用 `%c` 打印该字节，用 `%d` 打印其有符号 `char` 值。对于非 ASCII 字母（`é` 是 `0xC3 0xA9`），原生版本写出两个孤立的字节，因此它的 stderr 也不是有效的 UTF-8。移植版以相同的数值（`-61`、`-87`）打印相同的两条警告。因为它的警告是 JS 字符串，所以把每个字节显示为具有该 Latin-1 码点的字符（`Ã`、`©`）。
+
+**标签中的部分数字字符引用同样如此。** `htmlEntityUTF8`（`lib/common/utils.c`）自行将引用的值写成一到三个字节。对于 `&#127;`、`&#2047;`、代理码位（`&#55296;` 至 `&#57343;`）以及任何大于 `0xFFFF` 的值（`&#128512;` 得到 `FF 98 80`），这些字节不是有效的 UTF-8，原生版本按原样写出。移植版写出引用所指的字符。文本宽度按字节估算，因此标签宽度也可能不同。HTML 标签不受影响：expat 会将其引用解码为有效的 UTF-8。
 
 **证据。**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

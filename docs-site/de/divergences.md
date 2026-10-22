@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -735,6 +735,8 @@ einzelne Bytes, sodass ihr stderr ebenfalls kein gültiges UTF-8 ist. Die Portie
 gibt dieselben zwei Warnungen mit denselben Zahlen aus (`-61`, `-87`). Da ihre
 Warnungen JS-Strings sind, zeigt sie jedes Byte als das Zeichen mit diesem
 Latin-1-Codepoint (`Ã`, `©`).
+
+**Dasselbe gilt für manche numerischen Zeichenreferenzen in Labels.** `htmlEntityUTF8` (`lib/common/utils.c`) schreibt den Wert einer Referenz selbst als ein bis drei Bytes. Für `&#127;`, `&#2047;`, ein Surrogat (`&#55296;` bis `&#57343;`) und jeden Wert über `0xFFFF` (`&#128512;` ergibt `FF 98 80`) sind diese Bytes kein gültiges UTF-8, und die native Version schreibt sie unverändert. Die Portierung schreibt das Zeichen, das die Referenz bezeichnet. Die Textbreite wird pro Byte geschätzt, daher kann auch die Breite des Labels abweichen. HTML-Labels sind nicht betroffen: expat dekodiert ihre Referenzen zu gültigem UTF-8.
 
 **Beleg.**
 Vergleichsseite zu [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

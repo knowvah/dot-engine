@@ -10,8 +10,8 @@ item's outcome. Items 14–23 are closed (14 by PR #95; 15–23 by
 `plans/post-16-1-followups-2/`). Items 24 and 33 are closed by
 `feature/cache-oracle-failures` (PR #97), item 32 by `chore/record-t11-walk-passes` (PR #98), item 26 by
 `fix/parser-native-acceptance` (PR #99), item 27 by `fix/html-label-parse-parity` (PR #100),
-item 28 by `fix/html-label-warn-parity`.
-The open work is items 25, 29–31 and 34–38 under "New follow-ups
+item 28 by `fix/html-label-warn-parity`, item 39 by `fix/html-entity-port`.
+The open work is items 25, 29–31, 35–37 and 40–42 under "New follow-ups
 found by part 2" below, each journaled in `plans/decision-journal.md`.
 
 ## State at handoff
@@ -249,7 +249,8 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       matches.
 - **New follow-up found by item 34** (journal row 2026-10-22, item 34;
   reproduces on `main`):
-  39. Label entity decoding: the port's `htmlEntityUTF8`
+  39. **[DONE — `fix/html-entity-port`; invalid-UTF-8 encodings documented
+      under A5]** Label entity decoding: the port's `htmlEntityUTF8`
       (`src/common/html-entities.ts`) is a regex, not a port of `htmlEntity`
       (`lib/common/utils.c`). `&#X41;` (upper-case X) stays literal (native
       `A`); `&#;` natively consumes `#;` and keeps the `&` (n = 0 with a `;`
@@ -257,6 +258,35 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       decimal, 6 hex) and its byte encoding of `v >= 0x7F` are unmodelled.
       Plain labels and, since item 34, tooltips (`preprocessTooltip`) take
       this path; widths follow the text.
+- **New follow-ups found by item 39** (journal row 2026-10-22, item 39;
+  both reproduce on `main`):
+  40. HTML text with a malformed reference is an expat `not well-formed
+      (invalid token)` error natively; the port accepts it and writes the
+      text. A bare `&` (`<p&q>`, `<p & q>`: scanEntity finds no `;` and
+      leaves it), `&#;`, `&#x;`, `&#X41;` (expat takes only a lower-case
+      `x`), `&#65q` and `&#xG;`. `textRefError`
+      (`src/common/htmltable-lex-expat.ts`) checks only undefined entities
+      and disallowed character numbers.
+  41. `estimate_character_width_canonical` (`lib/common/textspan_lut.c:806`)
+      warns `Warning: no value for width of non-ASCII character %u. Falling
+      back to width of space character` (agwarningf adds its own `Warning: `
+      prefix) for the first byte >= 128 it measures, and the ASCII
+      `width == -1` variant falls back to 0. The port never prints either.
+      Both are once per process (`static bool`), which a library needs a
+      decision on. stderr only.
+  42. Output depends on render history in a long-lived process. Item 39's
+      byte diff (17 corpus files with `&`, 8 engines x 5 formats, both
+      bundles, resident worker pools) ran twice. Of the 590 jobs that finish
+      within 120 s, run 1 found 8 differing (2470 dot plain, neato svg/cmapx,
+      fdp svg; Symbol neato xdot, fdp svg/json, sfdp json), run 2 found 5
+      (2470 neato svg, fdp cmapx; Symbol neato svg, fdp cmapx, sfdp json).
+      All 13 are byte-identical main vs branch when each runs in its own
+      process, so the branch is not the cause; the pools only ran jobs in a
+      different order. 2470 neato cmapx differs in stderr
+      (one bundle prints a warning the other does not). Ruled out: Symbol
+      fdp rendered before and after neato/fdp/sfdp of clust4, crazy and unix
+      in one process is unchanged. Next: replay one worker's actual job order
+      to find the state that carries over.
 
 ## Local leftovers (not committed, safe to delete)
 

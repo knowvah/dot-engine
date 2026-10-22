@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -700,6 +700,8 @@ yksinäistä tavua, joten sen stderr ei myöskään ole kelvollista UTF-8:aa. Po
 tulostaa samat kaksi varoitusta samoilla luvuilla (`-61`, `-87`). Koska sen
 varoitukset ovat JS-merkkijonoja, se näyttää jokaisen tavun merkkinä, jonka
 Latin-1-koodipiste se on (`Ã`, `©`).
+
+**Sama koskee joitakin numeerisia merkkiviittauksia nimiöissä.** `htmlEntityUTF8` (`lib/common/utils.c`) kirjoittaa viittauksen arvon itse yhtenä–kolmena tavuna. Viittauksille `&#127;`, `&#2047;`, sijaismerkille (`&#55296;`–`&#57343;`) ja jokaiselle arvolle yli `0xFFFF` (`&#128512;` antaa `FF 98 80`) nämä tavut eivät ole kelvollista UTF-8:aa, ja natiiviversio kirjoittaa ne sellaisinaan. Portti kirjoittaa merkin, jonka viittaus nimeää. Tekstin leveys arvioidaan tavu kerrallaan, joten myös nimiön leveys voi poiketa. HTML-nimiöihin tämä ei vaikuta: expat purkaa niiden viittaukset kelvolliseksi UTF-8:ksi.
 
 **Näyttö.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

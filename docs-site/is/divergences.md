@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -687,6 +687,8 @@ ekki ASCII (`é` er `0xC3 0xA9`) skrifar upprunalega útgáfan tvö stök bæti,
 stderr hennar er heldur ekki gilt UTF-8. Yfirfærslan prentar sömu tvær viðvaranirnar
 með sömu tölum (`-61`, `-87`). Þar sem viðvaranir hennar eru JS-strengir sýnir hún
 hvert bæti sem stafinn með þann Latin-1 kóðapunkt (`Ã`, `©`).
+
+**Sama gildir um sumar tölulegar stafatilvísanir í merkjum.** `htmlEntityUTF8` (`lib/common/utils.c`) skrifar sjálft gildi tilvísunar sem eitt til þrjú bæti. Fyrir `&#127;`, `&#2047;`, staðgengil (`&#55296;` til `&#57343;`) og hvert gildi yfir `0xFFFF` (`&#128512;` gefur `FF 98 80`) eru þessi bæti ekki gilt UTF-8 og upprunalega útgáfan skrifar þau óbreytt. Portið skrifar stafinn sem tilvísunin nefnir. Breidd texta er metin fyrir hvert bæti, svo breidd merkisins getur líka verið önnur. HTML-merki verða ekki fyrir áhrifum: expat afkóðar tilvísanir þeirra í gilt UTF-8.
 
 **Gögn.**
 Samanburðarsíða fyrir [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

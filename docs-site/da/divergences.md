@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -687,6 +687,8 @@ ikke-ASCII-bogstav (`é` er `0xC3 0xA9`) skriver den native version to enlige by
 så dens stderr heller ikke er gyldig UTF-8. Porten udskriver de samme to advarsler
 med de samme tal (`-61`, `-87`). Fordi dens advarsler er JS-strenge, viser den hver
 byte som tegnet med det Latin-1-kodepunkt (`Ã`, `©`).
+
+**Det samme gælder visse numeriske tegnreferencer i etiketter.** `htmlEntityUTF8` (`lib/common/utils.c`) skriver selv en references værdi som én til tre bytes. For `&#127;`, `&#2047;`, et surrogat (`&#55296;` til `&#57343;`) og enhver værdi over `0xFFFF` (`&#128512;` giver `FF 98 80`) er disse bytes ikke gyldig UTF-8, og den native version skriver dem, som de er. Porteringen skriver det tegn, referencen angiver. Tekstbredden estimeres pr. byte, så etikettens bredde kan også afvige. HTML-etiketter berøres ikke: expat afkoder deres referencer til gyldig UTF-8.
 
 **Evidens.**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

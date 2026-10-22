@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -698,6 +698,8 @@ sueltos, por lo que su stderr tampoco es UTF-8 válido. El port imprime las mism
 dos advertencias con los mismos números (`-61`, `-87`). Como sus advertencias son
 cadenas de JS, muestra cada byte como el carácter con ese punto de código Latin-1
 (`Ã`, `©`).
+
+**Lo mismo se aplica a algunas referencias numéricas de carácter en etiquetas.** `htmlEntityUTF8` (`lib/common/utils.c`) escribe por sí mismo el valor de una referencia como uno a tres bytes. Para `&#127;`, `&#2047;`, un sustituto (`&#55296;` a `&#57343;`) y cualquier valor por encima de `0xFFFF` (`&#128512;` da `FF 98 80`), esos bytes no son UTF-8 válido, y la versión nativa los escribe tal cual. El port escribe el carácter que nombra la referencia. El ancho del texto se estima por byte, así que el ancho de la etiqueta también puede diferir. Las etiquetas HTML no se ven afectadas: expat decodifica sus referencias a UTF-8 válido.
 
 **Evidencia.**
 Página de comparación de

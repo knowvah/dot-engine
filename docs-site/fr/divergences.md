@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -769,6 +769,8 @@ deux octets isolés, si bien que son stderr n’est pas non plus de l’UTF-8 va
 portage affiche les deux mêmes avertissements avec les mêmes nombres (`-61`, `-87`).
 Comme ses avertissements sont des chaînes JS, il montre chaque octet comme le
 caractère ayant ce point de code Latin-1 (`Ã`, `©`).
+
+**Il en va de même pour certaines références numériques de caractère dans les libellés.** `htmlEntityUTF8` (`lib/common/utils.c`) écrit lui-même la valeur d'une référence sur un à trois octets. Pour `&#127;`, `&#2047;`, un substitut (`&#55296;` à `&#57343;`) et toute valeur supérieure à `0xFFFF` (`&#128512;` donne `FF 98 80`), ces octets ne sont pas de l'UTF-8 valide, et la version native les écrit tels quels. Le portage écrit le caractère que désigne la référence. La largeur du texte est estimée octet par octet, donc la largeur du libellé peut aussi différer. Les libellés HTML ne sont pas concernés : expat décode leurs références en UTF-8 valide.
 
 **Preuves.** Page de comparaison de
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

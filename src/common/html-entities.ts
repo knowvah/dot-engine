@@ -260,40 +260,92 @@ export const HTML_ENTITIES: Readonly<Record<string, number>> = {
   "zwnj": 8204,
 };
 
-/** The five basic XML/HTML entities → code point. */
-const BASIC_ENTITIES: Readonly<Record<string, number>> = {
-  amp: 0x26, lt: 0x3c, gt: 0x3e, quot: 0x22, apos: 0x27,
-};
-
-/** Decode a numeric entity body (`#123`, `#x1F`) to its code point, or null. */
-function numericEntityValue(body: string): number | null {
-  const hex = body[1] === 'x' || body[1] === 'X';
-  const v = hex ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
-  return Number.isFinite(v) && v > 0 && v <= 0x10ffff ? v : null;
-}
-
 /**
- * Decode one entity body (`amp`, `alpha`, `#123`, `#x1F`) to its code point, or
- * null for an unknown name. Named entities cover the five basic XML entities
- * plus the full HTML 4 table (Symbol etc.). @see lib/common/utils.c:htmlEntity
+ * Longest name htmlEntity looks up: its scan for the `;` stops after this
+ * many characters.
+ * @see lib/common/entities.h:ENTITY_NAME_LENGTH_MAX
  */
-function entityValue(body: string): number | null {
-  if (body[0] === '#') return numericEntityValue(body);
-  return BASIC_ENTITIES[body] ?? HTML_ENTITIES[body] ?? null;
+const ENTITY_NAME_LENGTH_MAX = 8;
+
+/** htmlEntity's result: the value (0 for none) and where scanning resumes. */
+interface EntityScan {
+  value: number;
+  next: number;
 }
 
 /**
- * Decode XML/numeric (&#NNN; / &#xHH;) and HTML 4 named (`&alpha;`) entities to
- * their characters, leaving unknown names literal — C's make_label UTF-8 branch.
- * Latin-1 inputs are decoded at the byte->string boundary by the caller (the
- * survey's render-one), so this UTF-8 branch covers them too.
- * @see lib/common/utils.c:htmlEntityUTF8 / htmlEntity
+ * The `#` branch of htmlEntity, `at` on the `#`. It reads up to six decimal
+ * or five hex digits (`x` or `X`); the `;` must come within the first eight
+ * characters, else nothing is consumed. A `;` right after the digits, even
+ * none, is consumed with value `n`, so `&#;` keeps its `&` and loses `#;`.
+ * @see lib/common/utils.c:htmlEntity
+ */
+function numericEntity(s: string, at: number): EntityScan {
+  const hex = s[at + 1] === 'x' || s[at + 1] === 'X';
+  const digit = hex ? /^[0-9A-Fa-f]$/ : /^[0-9]$/;
+  let n = 0;
+  let i = hex ? 2 : 1;
+  for (; i < 8; i++) {
+    const c = s[at + i] ?? '';
+    if (!digit.test(c)) break;
+    n = n * (hex ? 16 : 10) + parseInt(c, 16);
+  }
+  if (i < 8 && s[at + i] === ';') return { value: n, next: at + i + 1 };
+  return { value: 0, next: at };
+}
+
+/**
+ * The name branch of htmlEntity, `at` on the first name character: a `;`
+ * within ENTITY_NAME_LENGTH_MAX characters ends a name looked up in
+ * entities.h (case-sensitive; no `apos`).
+ * @see lib/common/utils.c:htmlEntity
+ */
+function namedEntity(s: string, at: number): EntityScan {
+  for (let i = 0; i < ENTITY_NAME_LENGTH_MAX; i++) {
+    const c = s[at + i];
+    if (c === undefined || c === '\0') break;
+    if (c === ';') {
+      const key = s.slice(at, at + i);
+      if (Object.hasOwn(HTML_ENTITIES, key)) return { value: HTML_ENTITIES[key]!, next: at + i + 1 };
+      break;
+    }
+  }
+  return { value: 0, next: at };
+}
+
+/**
+ * Check for an HTML entity at `at`, the character after an `&`.
+ * @see lib/common/utils.c:htmlEntity
+ */
+function htmlEntity(s: string, at: number): EntityScan {
+  return s[at] === '#' ? numericEntity(s, at) : namedEntity(s, at);
+}
+
+/**
+ * Substitute entities like `&#123;` and `&amp;` with their characters: C's
+ * make_label UTF-8 branch. An `&` whose entity has no value stays (scanning
+ * resumes where htmlEntity left it). Latin-1 inputs are decoded at the
+ * byte->string boundary by the caller (the survey's render-one), so this
+ * covers them too, as does latin1ToUTF8's identical entity handling.
+ *
+ * C appends a value's bytes itself: below 0x7F one byte, below 0x7FF two,
+ * else three, truncated to `char`. For every value whose bytes are valid
+ * UTF-8 that is the character itself. 0x7F, 0x7FF, surrogates and values
+ * above 0xFFFF come out as invalid UTF-8, which a JS string cannot hold; the
+ * port keeps the character there (documented divergence).
+ * @see lib/common/utils.c:htmlEntityUTF8
+ * @see lib/common/utils.c:latin1ToUTF8
  * @see lib/common/labels.c:make_label (CHAR_LATIN1 vs default)
  */
 export function htmlEntityUTF8(s: string): string {
-  if (s.indexOf('&') < 0) return s;
-  return s.replace(/&(#x[0-9a-fA-F]+|#[0-9]+|[A-Za-z]+);/g, (m, body: string) => {
-    const v = entityValue(body);
-    return v === null ? m : String.fromCodePoint(v);
-  });
+  let amp = s.indexOf('&');
+  if (amp < 0) return s;
+  let out = '';
+  let from = 0;
+  for (; amp >= 0; amp = s.indexOf('&', from)) {
+    const e = htmlEntity(s, amp + 1);
+    out += s.slice(from, amp) + (e.value ? String.fromCodePoint(e.value) : '&');
+    from = e.next;
+  }
+  return out + s.slice(from);
 }

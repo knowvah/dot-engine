@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -689,6 +689,8 @@ bájtot ír, így a stderr-je sem érvényes UTF-8. A port ugyanazt a két figye
 írja ki ugyanazokkal a számokkal (`-61`, `-87`). Mivel a figyelmeztetései
 JS-sztringek, minden bájtot az adott Latin-1 kódpontú karakterként jelenít meg (`Ã`,
 `©`).
+
+**Ugyanez érvényes egyes numerikus karakterhivatkozásokra a címkékben.** A `htmlEntityUTF8` (`lib/common/utils.c`) maga írja ki a hivatkozás értékét egy–három bájtként. A `&#127;`, a `&#2047;`, egy helyettesítő (`&#55296;`–`&#57343;`) és minden `0xFFFF` feletti érték esetén (`&#128512;` eredménye `FF 98 80`) ezek a bájtok nem érvényes UTF-8-at alkotnak, és a natív változat változatlanul kiírja őket. A port a hivatkozás által megnevezett karaktert írja ki. A szöveg szélességét bájtonként becsli, így a címke szélessége is eltérhet. A HTML-címkéket ez nem érinti: az expat érvényes UTF-8-ra dekódolja a hivatkozásaikat.
 
 **Bizonyíték.**
 az [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

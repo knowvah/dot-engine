@@ -1,5 +1,5 @@
 ---
-sourceHash: 45ca4586f109e8b8b6da505f448adf54c7cff4b5069294435c76b69c7318f73c
+sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -553,6 +553,8 @@ latin1 後備反映了 C 自己「視為 Latin-1」的復原語意
 它以 `%c` 列印該位元組，以 `%d` 列印其有號 `char` 值。對於非 ASCII 字母（`é` 是 `0xC3 0xA9`），
 原生版本寫出兩個孤立的位元組，因此它的 stderr 也不是有效的 UTF-8。移植版以相同的數值（`-61`、`-87`）
 列印相同的兩則警告。因為它的警告是 JS 字串，所以把每個位元組顯示為具有該 Latin-1 碼位的字元（`Ã`、`©`）。
+
+**標籤中的部分數字字元參照同樣如此。** `htmlEntityUTF8`（`lib/common/utils.c`）自行將參照的值寫成一到三個位元組。對於 `&#127;`、`&#2047;`、代理碼位（`&#55296;` 至 `&#57343;`）以及任何大於 `0xFFFF` 的值（`&#128512;` 得到 `FF 98 80`），這些位元組不是有效的 UTF-8，原生版本按原樣寫出。移植版寫出參照所指的字元。文字寬度按位元組估算，因此標籤寬度也可能不同。HTML 標籤不受影響：expat 會將其參照解碼為有效的 UTF-8。
 
 **證據。**
 [`1367`](https://github.com/knowvah/dot-engine/blob/main/plans/fix-element-count-bucket/comparisons/1367.md)

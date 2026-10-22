@@ -178,6 +178,19 @@ describe('tokenize — entity decoding in text runs', () => {
     expect(tokenize('<HTML>a&apos;b</HTML>')[1]).toEqual({ type: 'text', value: "a'b" });
   });
 
+  // scanEntity rewrites any entities.h name of 2-8 characters, digits
+  // included; expat decodes character references of any length. Native:
+  // `<p&sup2;&frac12;q>` -> `p²½q`, `<p&thetasym;q>` -> `pϑq`.
+  // @see lib/common/utils.c:scanEntity
+  it('decodes HTML names with digits and up to eight characters', () => {
+    expect(tokenize('p&sup2;&frac12;q')).toEqual([{ type: 'text', value: 'p²½q' }]);
+    expect(tokenize('p&thetasym;q')).toEqual([{ type: 'text', value: 'pϑq' }]);
+  });
+
+  it('decodes long and astral character references as expat does', () => {
+    expect(tokenize('p&#0000065;&#x1F600;q')).toEqual([{ type: 'text', value: 'pA😀q' }]);
+  });
+
   it('decodes text between tags without affecting tags', () => {
     const toks = tokenize('<B>&#65;&#66;</B>');
     expect(toks[0]).toEqual({ type: 'open', tag: 'B', attrs: {} });
