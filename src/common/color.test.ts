@@ -75,6 +75,18 @@ describe('colorxlate — named and hex', () => {
     if (color.type !== 'rgba') throw new Error('expected rgba');
     expect(color.a).toBeCloseTo(0x80 / 255, 5);
   });
+  it('odd-length hex runs convert as sscanf %2x does (#12345 = 12 34 05)', () => {
+    expect(colorxlate('#12345', color, T_RGBA)).toBe(ColorxlateResult.ColorOk);
+    if (color.type !== 'rgba') throw new Error('expected rgba');
+    expect(color.r).toBeCloseTo(0x12 / 255, 8); expect(color.g).toBeCloseTo(0x34 / 255, 8);
+    expect(color.b).toBeCloseTo(0x05 / 255, 8); expect(color.a).toBeCloseTo(1, 8);
+  });
+  it('#1234567 takes the 4th group as alpha; #1234 (length 5) is unknown', () => {
+    expect(colorxlate('#1234567', color, T_RGBA)).toBe(ColorxlateResult.ColorOk);
+    if (color.type !== 'rgba') throw new Error('expected rgba');
+    expect(color.a).toBeCloseTo(7 / 255, 8);
+    expect(colorxlate('#1234', color, T_RGBA)).toBe(ColorxlateResult.ColorUnknown);
+  });
   it('leading whitespace is stripped', () => {
     expect(colorxlate('  red', color, T_RGBA)).toBe(ColorxlateResult.ColorOk);
     if (color.type !== 'rgba') throw new Error('expected rgba');

@@ -33,7 +33,8 @@ import {
   styleTokens,
 } from './style-resolve.js';
 import { stripedBox, wedgedEllipse } from '../render/svg-multicolor.js';
-import { resolveRenderColor } from '../render/color-resolve.js';
+import { resolveRenderColor, reportColorNames } from '../render/color-resolve.js';
+import { htmlLabelColors } from './htmltable-emit-fill.js';
 import { svgNodeId } from '../render/svg-id.js';
 import { drawRoundCorners, mcircleHack, underlineDraw } from './poly-shapes.js';
 
@@ -191,6 +192,8 @@ export function renderLabel(
   job: RenderJob,
 ): void {
   if (label.u.kind !== 'txt' || label.u.nspans < 1) return;
+  // gvrender_set_pencolor(job, lp->fontcolor), once, before the spans.
+  reportColorNames([label.fontcolor]);
   label.pos = coord;
   label.set = true;
   // First-span baseline per valign (labelloc). @see lib/common/labels.c:240-251
@@ -227,6 +230,7 @@ function renderNodeLabel(
     // Route the HTML label's box/fill/text ops into the node LABEL emit-state
     // (→ _ldraw_ for xdot), not the node DRAW state. SVG ignores emit_state.
     const html = label.u.html as PlacedHtml;
+    reportColorNames(htmlLabelColors(html));
     withLabelEmitState(job, () => emitHtmlLabel(html, coord, renderer, job));
   } else {
     renderLabel(label, coord, renderer, job);
@@ -367,8 +371,16 @@ export function applyNodeStyle(obj: ObjState, n: Node, job: RenderJob): boolean 
   // the whole node emission (emit_begin_node..emit_end_node), which covers both
   // this color block and the label textspans. Both callers of this function are
   // codefns, so they already run inside that window. @see gvc/device.ts
+  const penwidth = nodeAttr(n, n.root, 'penwidth');
+  // record_gencode resolves the pen (penColor) before the fill; poly_gencode
+  // and point_gencode resolve the fill first. Only the order in which an
+  // unknown colour is reported differs. @see shapes.c:3890-3892 vs 2985-3004
+  if ((n.info.shape as ShapeDesc | undefined)?.kind === ShapeKind.SH_RECORD) {
+    applyPenState(obj, styleAttr, colorAttr, penwidth);
+    return applyFillState(obj, n, job);
+  }
   const filled = applyFillState(obj, n, job);
-  applyPenState(obj, styleAttr, colorAttr, nodeAttr(n, n.root, 'penwidth'));
+  applyPenState(obj, styleAttr, colorAttr, penwidth);
   return filled;
 }
 

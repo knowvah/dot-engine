@@ -10,6 +10,7 @@
 
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
+import type { Edge } from '../model/edge.js';
 import type { RendererPlugin } from './context.js';
 import type { RenderJob } from './job.js';
 import type { TextlabelT } from '../common/types.js';
@@ -17,6 +18,8 @@ import type { TextSpan } from '../common/emit-types.js';
 import type { PlacedHtml } from '../common/htmltable-pos.js';
 import { gvrenderTextspan, withLabelEmitState } from './textspan-emit.js';
 import { emitHtmlLabel } from '../common/htmltable-emit.js';
+import { reportColorNames } from '../render/color-resolve.js';
+import { htmlLabelColors } from '../common/htmltable-emit-fill.js';
 
 /** valign codes stored on textlabel_t. @see lib/common/types.h:textlabel_t.valign */
 const VALIGN_TOP = 't'.charCodeAt(0);
@@ -36,6 +39,29 @@ function labelSpanX(lp: TextlabelT, just: 'l' | 'n' | 'r'): number {
   if (just === 'l') return lp.pos.x - lp.space.x / 2.0;
   if (just === 'r') return lp.pos.x + lp.space.x / 2.0;
   return lp.pos.x;
+}
+
+/**
+ * The names emit_label hands to gvrender_resolve_color: an HTML label's walk,
+ * or a plain label's fontcolor (set once, before the spans, when there is a
+ * span).
+ * @see lib/common/labels.c:emit_label
+ */
+export function labelColorNames(lp: TextlabelT): string[] {
+  if (lp.html) return lp.u.kind === 'html' ? htmlLabelColors(lp.u.html as PlacedHtml) : [];
+  return lp.u.kind === 'txt' && lp.u.nspans >= 1 ? [lp.fontcolor] : [];
+}
+
+/**
+ * Report the unknown colours of an edge's four labels in emit_end_edge order
+ * (label, xlabel, head, tail), each only when placed.
+ * @see lib/common/emit.c:emit_edge_label
+ */
+export function reportEdgeLabelColors(e: Edge): void {
+  const labels = [e.info.label, e.info.xlabel, e.info.head_label, e.info.tail_label];
+  for (const lp of labels as Array<TextlabelT | undefined>) {
+    if (lp?.set) reportColorNames(labelColorNames(lp));
+  }
 }
 
 /**
@@ -59,6 +85,7 @@ export function renderOneLabel(
   // default pos. Callers mirroring the existence-only sites pass false.
   if (!lp) return;
   if (requireSet && !lp.set) return;
+  reportColorNames(labelColorNames(lp));
   // HTML branch: @see lib/common/labels.c:emit_label (226-230)
   // C routes to emit_html_label(job, lp->u.html, lp) using lp->pos as anchor.
   if (lp.html) {
