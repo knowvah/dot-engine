@@ -244,7 +244,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       plain attributes (`a[color=foo]`) as for HTML `COLOR`/`BGCOLOR`. stderr
       only; the SVG matches. Found by item 28's attribute fuzz (most of its
       stderr-only mismatches).
-  38. `STYLE="rounded,dashed"` on an HTML table or cell: native draws a rounded,
+  38. **[DONE — `fix/html-rounded-dashed`]** `STYLE="rounded,dashed"` on an HTML table or cell: native draws a rounded,
       dashed `<path>`, the port a dashed square `<polygon>`; `rounded` alone
       matches.
 - **New follow-up found by item 34** (journal row 2026-10-22, item 34;
