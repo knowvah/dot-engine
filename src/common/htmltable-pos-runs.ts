@@ -48,7 +48,10 @@ export interface HtmlFontInfo {
   fontcolor: string;
 }
 
-interface LineRun {
+/** The label font defaults the line builder needs (sizing env or placement finfo). */
+export type LabelFont = Pick<HtmlFontInfo, 'fontname' | 'fontsize'>;
+
+export interface LineRun {
   items: HtmlTextItem[];
   width: number;
   /** Max raw font size over items (C mxfsize). */
@@ -84,7 +87,7 @@ export function itemFontFlags(item: HtmlTextItem): number {
 }
 
 /** Resolved face/size for an item, defaulting to the inherited finfo. */
-function itemFace(item: HtmlTextItem, finfo: HtmlFontInfo): { fs: number; face: string } {
+function itemFace(item: HtmlTextItem, finfo: LabelFont): { fs: number; face: string } {
   return {
     fs: item.fontSize !== undefined ? item.fontSize : finfo.fontsize,
     face: item.fontFace !== undefined ? item.fontFace : finfo.fontname,
@@ -95,7 +98,7 @@ function itemFace(item: HtmlTextItem, finfo: HtmlFontInfo): { fs: number; face: 
 interface ItemMetric { w: number; h: number; fs: number; yoffsetCenterline?: number; yoffsetLayout?: number; }
 
 /** Measure one text item; null when the item carries no text. */
-function measureItem(item: HtmlTextItem, finfo: HtmlFontInfo, measurer: TextMeasurer): ItemMetric | null {
+function measureItem(item: HtmlTextItem, finfo: LabelFont, measurer: TextMeasurer): ItemMetric | null {
   if (item.text === undefined) return null;
   const { fs, face } = itemFace(item, finfo);
   const flags = itemFontFlags(item);
@@ -142,11 +145,13 @@ function accumulateItem(cur: LineRun, item: HtmlTextItem, m: ItemMetric): void {
  *   in the current font (consecutive BRs = a real blank line with height);
  * - at end of text a line is added ONLY if items remain — a trailing BR does
  *   NOT create a phantom empty line (this over-sized e.g. html2's node c).
+ * The single builder: size_html_txt (sizing) and emit_htextspans (placement)
+ * both read these runs, as C reads one htextspan_t list.
  * @see lib/common/htmlparse.y:appendFLineList / mkText
  */
 export function buildLineRuns(
   texts: HtmlText[],
-  finfo: HtmlFontInfo,
+  finfo: LabelFont,
   measurer: TextMeasurer,
 ): LineRun[] {
   const runs: LineRun[] = [];
@@ -181,7 +186,7 @@ export function buildLineRuns(
  */
 function runSimpleKey(
   run: LineRun,
-  finfo: HtmlFontInfo,
+  finfo: LabelFont,
 ): { fs: number; face: string } | null | undefined {
   if (run.items.length > 1) return null;
   const item = run.items[0];
@@ -195,7 +200,7 @@ function runSimpleKey(
  * uniform resolved face/size across lines.
  * @see lib/common/htmltable.c:size_html_txt (lines 946-986)
  */
-export function runsAreSimple(runs: LineRun[], finfo: HtmlFontInfo): boolean {
+export function runsAreSimple(runs: LineRun[], finfo: LabelFont): boolean {
   let prevFs = -1;
   let prevFace: string | null = null;
   for (const run of runs) {

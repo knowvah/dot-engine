@@ -151,3 +151,26 @@ describe('sizeHtmlLabel — empty <BR/> line inside a font-style element', () =>
     expect(height('k<br/><br/>')).toBeCloseTo(33.6, 10);
   });
 });
+
+// One line builder feeds sizing and placement (T27): the simple-text rule is
+// tested per built line, so a font style around <BR/> makes the block non-simple.
+// @see lib/common/htmltable.c:size_html_txt
+describe('sizeHtmlLabel — text blocks size from the shared line builder', () => {
+  const tallMeasurer: TextMeasurer = {
+    measure: (text, _font, fontSize) => ({ w: text.length * fontSize, h: fontSize * 1.5 }),
+  };
+  const heightOf = (src: string): number => {
+    const label = parseHtmlLabel(src);
+    sizeHtmlLabel(label, tallMeasurer, { fontsize: 14, fontname: 'Times' });
+    return label.dimen!.h;
+  };
+  it('plain uniform lines are simple: each line uses the metric height', () => {
+    expect(heightOf('a<BR/>b')).toBe(42);
+  });
+  it('a font-flagged item makes the block non-simple: raw font size per line', () => {
+    expect(heightOf('a<BR/><B>b</B>')).toBe(28);
+  });
+  it('an empty <BR/> line inside a font style is a line in that font', () => {
+    expect(heightOf('k<U><BR/><BR/></U>')).toBe(28);
+  });
+});

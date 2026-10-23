@@ -20,12 +20,13 @@ export type { TextMeasurer } from './textmeasure.js';
 
 import type {
   HtmlCell, HtmlCellContent, HtmlImage, HtmlLabel, HtmlTable, HtmlText,
-  HtmlTextItem, ImageSizer,
+  ImageSizer,
 } from './htmltable-types.js';
 import { findImageSize, imageIsSupplied, imageOpenWarning } from '../gvc/usershape.js';
 import { registerRenderState } from './render-state.js';
 import { PointSet } from './pointset.js';
 import type { TextMeasurer } from './textmeasure.js';
+import { buildLineRuns, runsAreSimple } from './htmltable-pos-runs.js';
 import { withTableFont } from './htmltable-fontinfo.js';
 import { agerrLine, type StderrLines } from './htmltable-attr-warn.js';
 
@@ -91,107 +92,6 @@ export interface HtmlSizeEnv {
 
 const defaultSizeEnv = (): HtmlSizeEnv => ({ fontsize: DEFAULT_FONTSIZE, fontname: '' });
 
-/** One measured text line (a C "span"). @see size_html_txt */
-interface SizedLine {
-  items: HtmlTextItem[];
-  width: number;
-  /** Max metric line height over items (C mxysize). */
-  mxysize: number;
-  /** Max raw font size over items (C mxfsize). */
-  mxfsize: number;
-}
-
-const itemFont = (item: HtmlTextItem, env: HtmlSizeEnv): { fs: number; face: string } => ({
-  fs: item.fontSize !== undefined ? item.fontSize : env.fontsize,
-  face: item.fontFace !== undefined ? item.fontFace : env.fontname,
-});
-
-const measureItem = (
-  item: HtmlTextItem,
-  measurer: TextMeasurer,
-  env: HtmlSizeEnv,
-): { w: number; h: number } => {
-  const { fs, face } = itemFont(item, env);
-  // Variant widths per run flags. @see lib/common/htmltable.c:size_html_txt
-  const flags = (item.bold === true || item.italic === true)
-    ? { bold: item.bold === true, italic: item.italic === true }
-    : undefined;
-  return measurer.measure(item.text ?? '', face, fs, flags);
-};
-
-/**
- * Split items into measured lines at <BR/>, mirroring C's parser exactly
- * (htmlparse.y appendFLineList/mkText): a BR with no accumulated items yields
- * a line with one empty-string item in the current font (consecutive BRs = a
- * real blank line with height); at end of text a line is added ONLY if items
- * remain — a trailing BR does NOT create a phantom empty line. Must stay in
- * lockstep with buildLineRuns (htmltable-pos-runs.ts), the placement twin.
- * @see lib/common/htmlparse.y:appendFLineList / mkText
- * @see lib/common/htmltable.c:size_html_txt
- */
-const splitSizedLines = (
-  texts: HtmlText[],
-  measurer: TextMeasurer,
-  env: HtmlSizeEnv,
-): SizedLine[] => {
-  const lines: SizedLine[] = [];
-  let cur: SizedLine = { items: [], width: 0, mxysize: 0, mxfsize: 0 };
-  const accumulate = (item: HtmlTextItem): void => {
-    const sz = measureItem(item, measurer, env);
-    cur.items.push(item);
-    cur.width += sz.w;
-    cur.mxysize = Math.max(cur.mxysize, sz.h);
-    cur.mxfsize = Math.max(cur.mxfsize, itemFont(item, env).fs);
-  };
-  const flush = (br?: HtmlTextItem): void => {
-    if (cur.items.length === 0 && br !== undefined) {
-      // C: empty fitemList on a BR → one ""-item span in the current font.
-      const { br: _b, brAlign: _a, ...fontProps } = br;
-      accumulate({ text: '', ...fontProps });
-    }
-    lines.push(cur);
-    cur = { items: [], width: 0, mxysize: 0, mxfsize: 0 };
-  };
-  for (const txt of texts) {
-    for (const item of txt.items) {
-      if (item.br) { flush(item); continue; }
-      if (item.text === undefined) continue;
-      accumulate(item);
-    }
-    if (cur.items.length > 0) flush(); // C mkText: only when items remain
-  }
-  return lines;
-};
-
-/** Does an item carry any font flag (C textfont_t.flags)? */
-const itemHasFlags = (i: HtmlTextItem): boolean =>
-  i.bold === true || i.italic === true || i.underline === true ||
-  i.strikethrough === true || i.overline === true ||
-  i.subscript === true || i.superscript === true;
-
-/**
- * C's "simple" test over the line list (C spans): one item per line, no font
- * flags, uniform resolved face and size across all lines. It reads each
- * line's first item, so the "" item appendFLineList gives an empty <BR/> line
- * counts with its font: `k<U><BR/><BR/></U>` is not simple.
- * @see lib/common/htmltable.c:size_html_txt (lines 946-986)
- */
-const htmlTextIsSimple = (lines: SizedLine[], env: HtmlSizeEnv): boolean => {
-  let prevFs = -1;
-  let prevFace: string | null = null;
-  for (const ln of lines) {
-    // splitSizedLines never yields an itemless line (C: nitems >= 1).
-    const item = ln.items[0]!;
-    if (ln.items.length > 1 || itemHasFlags(item)) return false;
-    const { fs, face } = itemFont(item, env);
-    if (prevFs < 0) prevFs = fs;
-    else if (fs !== prevFs) return false;
-    if (prevFace === null) prevFace = face;
-    else if (face !== prevFace) return false;
-  }
-  return true;
-};
-
 /**
  * Size a text block. C: per line lsize = mxysize when simple, else the
  * raw max font size (mxfsize); a single-line block always uses mxysize.
@@ -202,16 +102,17 @@ const sizeTextContent = (
   measurer: TextMeasurer,
   env: HtmlSizeEnv = defaultSizeEnv(),
 ): { w: number; h: number } => {
-  const lines = splitSizedLines(texts, measurer, env);
-  const simple = htmlTextIsSimple(lines, env);
+  // The one line builder, shared with placement (htmltable-pos-runs.ts).
+  const lines = buildLineRuns(texts, env, measurer);
+  const simple = runsAreSimple(lines, env);
   let w = 0;
   let h = 0;
   for (const ln of lines) {
     w = Math.max(w, ln.width);
-    const lsize = simple ? ln.mxysize : ln.mxfsize;
+    const lsize = simple ? ln.height : ln.fontSize;
     h += ln.items.length > 0 ? lsize : DEFAULT_FONTSIZE;
   }
-  if (lines.length === 1) h = lines[0]!.items.length > 0 ? lines[0]!.mxysize : DEFAULT_FONTSIZE;
+  if (lines.length === 1) h = lines[0]!.items.length > 0 ? lines[0]!.height : DEFAULT_FONTSIZE;
   return { w, h };
 };
 
