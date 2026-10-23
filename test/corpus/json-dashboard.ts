@@ -181,12 +181,12 @@ function acceptedTable(entries: AcceptedEntry[]): string {
 function buildMarkdown(report: JsonParityReport, accepted: AcceptedEntry[]): string {
   const byVerdict = (v: JsonVerdict): JsonWalkResult[] => report.results.filter((r) => r.verdict === v);
   const c: Record<JsonVerdict, number> = Object.assign(
-    { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0 },
+    { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0, 'oracle-nondeterministic': 0 },
     report.counts,
   );
   // oracle-error inputs are out of scope (the C oracle failed), so they leave the
   // pass-% denominator; port errors and timeouts stay in it as failures.
-  const scored = report.total - c['oracle-error'];
+  const scored = report.total - c['oracle-error'] - c['oracle-nondeterministic'];
   const conformantIds = byVerdict('conformant').map((r) => r.id);
   const diverged = byVerdict('diverged');
   const acceptedResults = byVerdict('accepted');
@@ -214,7 +214,8 @@ function buildMarkdown(report: JsonParityReport, accepted: AcceptedEntry[]): str
     `- **diverged (tracked, will-fix):** ${c.diverged} · ` +
       `**accepted (documented, won't-fix):** ${c.accepted}`,
     `- **port-error:** ${c['port-error']} · **timeout:** ${c.timeout} · ` +
-      `**oracle-error:** ${c['oracle-error']} (excluded from pass %)`,
+      `**oracle-error:** ${c['oracle-error']} (excluded from pass %) · ` +
+      `**oracle-nondeterministic:** ${c['oracle-nondeterministic']} (excluded from pass %, not a regression)`,
     '',
     `## json-conformant (${conformantIds.length})`,
     '',

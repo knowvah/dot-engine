@@ -254,6 +254,9 @@ interface TrackRow {
   portFaults: number;
   /** The C oracle failed — out of scope, excluded from the pass-% denominator. */
   oracleErrors: number;
+  /** Native output varies run to run (AD-13) — neither pass nor failure; excluded
+   * from the pass-% denominator. Absent for tracks whose walk has no such status. */
+  oracleNondeterministic?: number;
   /** Graphviz build the walk measured against (`dot -V`); undefined when the
    * walk summary predates recording it. */
   oracle?: string;
@@ -282,7 +285,7 @@ function pct(n: number, d: number): string {
  * timeout is the port's failure and stays in.
  */
 function scoredOf(r: TrackRow): number {
-  return r.surveyed - r.oracleErrors;
+  return r.surveyed - r.oracleErrors - (r.oracleNondeterministic ?? 0);
 }
 
 /**
@@ -333,7 +336,7 @@ function dotXdotRow(report: XdotParityReport): TrackRow {
 
 function dotJsonRow(report: JsonParityReport): TrackRow {
   const c: Record<JsonVerdict, number> = Object.assign(
-    { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0 },
+    { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0, 'oracle-nondeterministic': 0 },
     report.counts,
   );
   return {
@@ -345,6 +348,7 @@ function dotJsonRow(report: JsonParityReport): TrackRow {
     accepted: c.accepted,
     portFaults: c['port-error'] + c.timeout,
     oracleErrors: c['oracle-error'],
+    oracleNondeterministic: c['oracle-nondeterministic'],
   };
 }
 
@@ -398,7 +402,7 @@ function plainRow(engine: string, report: PlainParityReport): TrackRow {
 /** Per-engine json track row (AD-3 — dot's own json track is dotJsonRow above). */
 function jsonEngineRow(engine: string, report: JsonParityReport): TrackRow {
   const c: Record<JsonVerdict, number> = Object.assign(
-    { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0 },
+    { conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0, 'oracle-nondeterministic': 0 },
     report.counts,
   );
   return {
@@ -410,6 +414,7 @@ function jsonEngineRow(engine: string, report: JsonParityReport): TrackRow {
     accepted: c.accepted,
     portFaults: c['port-error'] + c.timeout,
     oracleErrors: c['oracle-error'],
+    oracleNondeterministic: c['oracle-nondeterministic'],
   };
 }
 
@@ -438,7 +443,7 @@ function engineRow(
   rawAcceptedMap: Record<string, EngineAcceptedRegistryEntry>,
 ): TrackRow {
   const c = Object.assign(
-    { pass: 0, diverged: 0, 'oracle-error': 0, 'port-error': 0, timeout: 0 },
+    { pass: 0, diverged: 0, 'oracle-error': 0, 'port-error': 0, timeout: 0, 'oracle-nondeterministic': 0 },
     report.counts,
   );
   const { perId, classes } = splitAcceptedMap(rawAcceptedMap);
@@ -458,6 +463,7 @@ function engineRow(
     accepted,
     portFaults: c['port-error'] + c.timeout - acceptedFaults,
     oracleErrors: c['oracle-error'],
+    oracleNondeterministic: c['oracle-nondeterministic'],
   };
 }
 
@@ -465,11 +471,11 @@ function trackTable(rows: TrackRow[]): string {
   const body = rows.map(
     (r) =>
       `| ${r.track} | ${r.surveyed} | ${r.pass} | ${r.diverged} | ${r.accepted} | ` +
-      `${r.portFaults} | ${r.oracleErrors} | ${pct(r.pass, scoredOf(r))} |`,
+      `${r.portFaults} | ${r.oracleErrors} | ${r.oracleNondeterministic ?? 0} | ${pct(r.pass, scoredOf(r))} |`,
   );
   return [
-    '| track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | pass % |',
-    '|---|---:|---:|---:|---:|---:|---:|---:|',
+    '| track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | oracle nondeterministic | pass % |',
+    '|---|---:|---:|---:|---:|---:|---:|---:|---:|',
     ...body,
     '',
   ].join('\n');
@@ -582,7 +588,7 @@ function engineMarkdown(
   pathById: Map<string, string> = new Map(),
 ): string {
   const c = Object.assign(
-    { pass: 0, diverged: 0, 'oracle-error': 0, 'port-error': 0, timeout: 0 },
+    { pass: 0, diverged: 0, 'oracle-error': 0, 'port-error': 0, timeout: 0, 'oracle-nondeterministic': 0 },
     report.counts,
   );
   const { perId: acceptedMap, classes } = splitAcceptedMap(rawAcceptedMap);
@@ -661,12 +667,14 @@ function engineMarkdown(
     '',
     `- **Surveyed:** ${report.total} (generated ${report.generatedAt})`,
     `- **Oracle:** ${report.oracleVersion ?? NOT_RECORDED}`,
-    `- **pass:** ${c.pass} (${pct(c.pass, report.total - c['oracle-error'])}) · **diverged (tracked):** ${diverged.length} · ` +
+    `- **pass:** ${c.pass} (${pct(c.pass, report.total - c['oracle-error'] - c['oracle-nondeterministic'])}) · **diverged (tracked):** ${diverged.length} · ` +
       `**accepted (documented, won't-fix):** ${acceptedRows.length}` +
       (classes.length ? ` · **accepted (A1-drift class):** ${classAcceptedCount}` : ''),
     `- **port-error:** ${c['port-error'] - acceptedStatus('port-error')} · ` +
       `**timeout:** ${c.timeout - acceptedStatus('timeout')} (scored as failures) · ` +
-      `**oracle-error:** ${c['oracle-error']} (excluded from pass %)`,
+      `**oracle-error:** ${c['oracle-error']} (excluded from pass %) · ` +
+      `**oracle-nondeterministic:** ${c['oracle-nondeterministic']} (native output varies run to run; ` +
+      `excluded from pass %, not a regression)`,
     '',
     `## Accepted deltas (${acceptedRows.length}) — documented, not chased`,
     '',
@@ -946,9 +954,12 @@ function formatDetailMarkdown(
 // format-parity-matrix (END)
 
 /** Normalized per-id status in one output format. */
-type FmtStatus = 'conformant' | 'accepted' | 'diverged' | 'error';
+type FmtStatus = 'conformant' | 'accepted' | 'diverged' | 'error' | 'oracle-nondeterministic';
 const FMT_RANK: Record<FmtStatus, number> = {
   conformant: 0, accepted: 1, diverged: 2, error: 3,
+  // Not a rank: the oracle cannot judge this format (AD-13). `tallyFormats` counts
+  // it apart; it ranks with conformant so it never reads as a failure.
+  'oracle-nondeterministic': 0,
 };
 
 /** Map an xdot/json walk verdict to a {@link FmtStatus}. */
@@ -956,7 +967,25 @@ function normDotVerdict(v: XdotVerdict | JsonVerdict): FmtStatus {
   if (v === 'conformant') return 'conformant';
   if (v === 'accepted') return 'accepted';
   if (v === 'diverged') return 'diverged';
+  if (v === 'oracle-nondeterministic') return 'oracle-nondeterministic';
   return 'error';
+}
+
+/** Cross-format tally of per-id status triples. An id with an
+ * oracle-nondeterministic format and no real failure (diverged/error) is
+ * counted apart: neither clean nor failing (AD-13). */
+function tallyFormats(triples: readonly (readonly FmtStatus[])[]): {
+  allClean: number; acceptedOnly: number; notClean: number; nondeterministic: number;
+} {
+  const t = { allClean: 0, acceptedOnly: 0, notClean: 0, nondeterministic: 0 };
+  for (const statuses of triples) {
+    const w = Math.max(...statuses.map((x) => FMT_RANK[x]));
+    if (w >= 2) t.notClean++;
+    else if (statuses.includes('oracle-nondeterministic')) t.nondeterministic++;
+    else if (w === 1) t.acceptedOnly++;
+    else t.allClean++;
+  }
+  return t;
 }
 
 /**
@@ -989,16 +1018,12 @@ function dotFormatsSection(
   const worstOf = (id: string): number => Math.max(
     FMT_RANK[svgMap.get(id)!], FMT_RANK[xdotMap.get(id)!], FMT_RANK[jsonMap.get(id)!],
   );
-  let allClean = 0, acceptedOnly = 0, notClean = 0;
-  for (const id of ids) {
-    const w = worstOf(id);
-    if (w === 0) allClean++;
-    else if (w === 1) acceptedOnly++;
-    else notClean++;
-  }
+  const { allClean, acceptedOnly, notClean, nondeterministic } = tallyFormats(
+    ids.map((id) => [svgMap.get(id)!, xdotMap.get(id)!, jsonMap.get(id)!]),
+  );
   const n = ids.length;
   const detailRows = ids
-    .filter((id) => worstOf(id) > 0)
+    .filter((id) => worstOf(id) > 0 || [svgMap, xdotMap, jsonMap].some((m) => m.get(id) === 'oracle-nondeterministic'))
     .sort((a, b) => worstOf(b) - worstOf(a) || a.localeCompare(b))
     .map((id) => `| \`${id}\` | ${svgMap.get(id)} | ${xdotMap.get(id)} | ${jsonMap.get(id)} |`);
   const detail = detailRows.length === 0
@@ -1024,6 +1049,7 @@ function dotFormatsSection(
     `| conformant in all three | ${allClean} | ${pct(allClean, n)} |`,
     `| accepted (won't-fix) in ≥1, diverged in none | ${acceptedOnly} | ${pct(acceptedOnly, n)} |`,
     `| diverged / errored in ≥1 | ${notClean} | ${pct(notClean, n)} |`,
+    `| oracle nondeterministic in ≥1, diverged in none (not scored) | ${nondeterministic} | ${pct(nondeterministic, n)} |`,
     '',
     ...detail,
   ].join('\n');
@@ -1368,6 +1394,8 @@ export {
   classAcceptanceSection,
   engineRow,
   engineMarkdown,
+  normDotVerdict,
+  tallyFormats,
   formatDetailMarkdown,
   oracleSummary,
 };

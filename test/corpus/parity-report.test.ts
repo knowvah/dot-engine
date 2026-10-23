@@ -23,6 +23,8 @@ import {
   engineRow,
   engineMarkdown,
   formatDetailMarkdown,
+  normDotVerdict,
+  tallyFormats,
   oracleSummary,
   type EngineAcceptedRegistryEntry,
   type AttributionReport,
@@ -106,6 +108,7 @@ function fakeReport(rows: EngineWalkRow[]): EngineParityReport {
       'oracle-error': rows.filter((r) => r.status === 'oracle-error').length,
       'port-error': rows.filter((r) => r.status === 'port-error').length,
       timeout: rows.filter((r) => r.status === 'timeout').length,
+      'oracle-nondeterministic': rows.filter((r) => r.status === 'oracle-nondeterministic').length,
     },
     results: rows,
   };
@@ -327,5 +330,46 @@ describe('oracle version on generated pages', () => {
     expect(oracleSummary([r('dot 16.1.0'), r('dot 15.0.0'), r('dot 16.1.0'), r()])).toBe(
       'dot 16.1.0 (2 tracks), dot 15.0.0 (1 track), not recorded (1 track)',
     );
+  });
+});
+
+// AD-13: an oracle-nondeterministic row is neither pass nor diverged nor a
+// fault; reports count it separately and drop it from the pass-% denominator.
+describe('oracle-nondeterministic rows (AD-13)', () => {
+  const report = fakeReport([
+    walkRow('a-pass', 'pass'),
+    walkRow('a-div', 'diverged'),
+    walkRow('flaky-oracle', 'oracle-nondeterministic'),
+  ]);
+
+  it('engineRow counts it separately from pass, diverged and faults', () => {
+    const row = engineRow('fdp', report, {});
+    expect(row.pass).toBe(1);
+    expect(row.diverged).toBe(1);
+    expect(row.portFaults).toBe(0);
+    expect(row.oracleNondeterministic).toBe(1);
+  });
+
+  it('engineMarkdown reports the count and omits the row from the Diverged table', () => {
+    const md = engineMarkdown('fdp', report, {});
+    expect(md).toContain('**oracle-nondeterministic:** 1');
+    expect(md).toContain('**pass:** 1 (50.0%)');
+    expect(md.split('## Diverged')[1]).not.toContain('flaky-oracle');
+  });
+});
+
+describe('cross-format section and oracle-nondeterministic (AD-13)', () => {
+  it('normDotVerdict keeps the status distinct from error', () => {
+    expect(normDotVerdict('oracle-nondeterministic')).toBe('oracle-nondeterministic');
+    expect(normDotVerdict('port-error')).toBe('error');
+  });
+
+  it('tallyFormats counts a nondeterministic id apart, not as clean or failing', () => {
+    expect(tallyFormats([
+      ['conformant', 'conformant', 'conformant'],
+      ['conformant', 'accepted', 'conformant'],
+      ['conformant', 'conformant', 'oracle-nondeterministic'],
+      ['diverged', 'conformant', 'oracle-nondeterministic'],
+    ])).toEqual({ allClean: 1, acceptedOnly: 1, notClean: 1, nondeterministic: 1 });
   });
 });
