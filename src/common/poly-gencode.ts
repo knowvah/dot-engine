@@ -398,7 +398,8 @@ export function applyNodeStyle(obj: ObjState, n: Node, job: RenderJob): boolean 
  */
 function prepareDrawPoly(poly: PolygonT, filled: boolean, obj: ObjState): PolygonT {
   if (poly.peripheries !== 0 || !filled) return poly;
-  obj.penColor = { type: 'string', s: 'transparent' };
+  // gvrender_set_pencolor resolves (and may report) the name like any other.
+  obj.penColor = resolveRenderColor('transparent');
   return { ...poly, peripheries: 1 };
 }
 

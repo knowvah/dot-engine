@@ -164,21 +164,24 @@ function stripedClusterColors(sg: Graph): string[] {
 export function renderStripedClusterBox(
   sg: Graph, renderer: RendererPlugin, job: RenderJob,
 ): void {
-  const { ll, ur } = sg.info.bb!;
-  const af = [
-    { x: ll.x, y: ll.y }, { x: ur.x, y: ll.y }, { x: ur.x, y: ur.y }, { x: ll.x, y: ur.y },
-  ].map((p) => transformPoint(p, job));
-  // stripedBox passes filled=1 (never GRADIENT) to gvrender_polygon; the port's
-  // renderers read the gradient from obj.fill, so show them a solid fill.
-  const obj = job.obj;
-  const savedFill = obj?.fill;
-  if (obj !== null && savedFill !== undefined) obj.fill = FillType.Solid;
-  stripedBox(job, af, stripedFillSpec(sg), false, renderer, () => `in cluster ${sg.name}`);
-  if (obj !== null && savedFill !== undefined) obj.fill = savedFill;
-  const rawPts = [
-    { x: ll.x, y: ll.y }, { x: ll.x, y: ur.y }, { x: ur.x, y: ur.y }, { x: ur.x, y: ll.y },
-  ];
-  renderer.polygon(rawPts.map((p) => transformPoint(p, job)), false, job);
+  // stripedBox runs inside emit_clusters' setColorScheme window (3800/3943).
+  withColorScheme(clusterAttr(sg, 'colorscheme'), () => {
+    const { ll, ur } = sg.info.bb!;
+    const af = [
+      { x: ll.x, y: ll.y }, { x: ur.x, y: ll.y }, { x: ur.x, y: ur.y }, { x: ll.x, y: ur.y },
+    ].map((p) => transformPoint(p, job));
+    // stripedBox passes filled=1 (never GRADIENT) to gvrender_polygon; the port's
+    // renderers read the gradient from obj.fill, so show them a solid fill.
+    const obj = job.obj;
+    const savedFill = obj?.fill;
+    if (obj !== null && savedFill !== undefined) obj.fill = FillType.Solid;
+    stripedBox(job, af, stripedFillSpec(sg), false, renderer, () => `in cluster ${sg.name}`);
+    if (obj !== null && savedFill !== undefined) obj.fill = savedFill;
+    const rawPts = [
+      { x: ll.x, y: ll.y }, { x: ll.x, y: ur.y }, { x: ur.x, y: ur.y }, { x: ur.x, y: ll.y },
+    ];
+    renderer.polygon(rawPts.map((p) => transformPoint(p, job)), false, job);
+  });
 }
 
 /** The fill half of {@link applyClusterObjState}; true when the box is filled. */
