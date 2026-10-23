@@ -118,7 +118,7 @@ export function polyInit(n: Node, g: Graph, measurer: TextMeasurer): void {
   // C warns when the custom shape's image cannot be sized (headless: always).
   // @see lib/common/shapes.c:2027-2033
   if (shapefile !== undefined && shapefile !== '' && shapeName !== 'epsf') {
-    agwarningf(`No or improper shapefile="${shapefile}" for node "${n.name}"`, 'error');
+    agwarningf(`No or improper shapefile="${shapefile}" for node "${n.name}"`);
   }
   if ((n.info.shape as ShapeDesc).kind === ShapeKind.SH_RECORD) {
     if (n.info.shape_info === undefined) recordNodeInit(n, g, measurer);

@@ -797,7 +797,7 @@ describe('fillRankVlist', () => {
     // the loop actually runs and reaches the "not in g.nodes -> break" path.
     g.info.rank = [mkRankEntry([lead])];
     g.info.rankleader = [lead];
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     expect(fillRankVlist(g, 0, root)).toBe(0);
     expect(spy).toHaveBeenCalledWith('Warning: degenerate concentrated rank cluster,0');
     expect(g.info.rank[0].n).toBe(0);

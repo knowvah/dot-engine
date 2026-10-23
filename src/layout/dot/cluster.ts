@@ -298,7 +298,7 @@ export function markClusterNode(clust: Graph, n: Node, g: Graph): void {
   if ((n.info.ranktype ?? 0) !== 0) {
     // C warns with the ENCLOSING graph's name, not the cluster's.
     // @see lib/dotgen/cluster.c:317-320
-    agwarningf(`${n.name} was already in a rankset, deleted from cluster ${g.name}`, 'error');
+    agwarningf(`${n.name} was already in a rankset, deleted from cluster ${g.name}`);
     agDeleteFromCluster(clust, n);
     return;
   }

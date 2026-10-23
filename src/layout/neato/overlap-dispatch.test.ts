@@ -138,7 +138,7 @@ describe('default branch', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const ret = removeOverlapWith(twoNodes(), { mode: 99, print: 'mystery', value: 0 });
     expect(ret).toBe(0);
-    expect(warn).toHaveBeenCalledExactlyOnceWith('Unhandled adjust option mystery');
+    expect(warn).toHaveBeenCalledExactlyOnceWith('Warning: Unhandled adjust option mystery');
   });
 
   it('returns 0 without warning for fewer than two nodes', () => {

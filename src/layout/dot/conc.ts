@@ -293,7 +293,7 @@ export function fillRankVlist(g: Graph, r: number, root: Graph): number {
   rankArr[r].v = rootRank.v;
   rankArr[r].vStart = lead.info.order ?? 0;
   const maxi = computeMaxi(g, r);
-  if (maxi === -1) agwarningf(`degenerate concentrated rank ${g.name},${r}`, 'error');
+  if (maxi === -1) agwarningf(`degenerate concentrated rank ${g.name},${r}`);
   rankArr[r].n = maxi + 1;
   return 0;
 }

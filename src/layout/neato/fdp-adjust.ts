@@ -26,7 +26,7 @@ import { vpscAdjust } from './vpsc-adjust.js';
 import { sepFactor } from './sep-factor.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { RenderError } from '../../errors.js';
-import { agerrLineOn } from '../../common/agerr.js';
+import { agwarningf } from '../../common/agerr.js';
 
 /** @see lib/neatogen/adjust.c:DFLT_MARGIN (points) */
 const DFLT_MARGIN = 4;
@@ -162,7 +162,7 @@ export function warnUnrecognizedOverlap(flag: string | undefined): void {
   const s = flag.toLowerCase();
   if (s.startsWith('prism') || NAMED_MODES.has(s)) return;
   if (mapBoolDflt(flag, false) === mapBoolDflt(flag, true)) return;
-  agerrLineOn('warn', `Unrecognized overlap value "${flag}" - using false`);
+  agwarningf(`Unrecognized overlap value "${flag}" - using false`);
 }
 
 /**
@@ -204,7 +204,7 @@ function adjustLate(g: Graph, am: AdjustData): number {
     case AM_IPSEP: return 0;
     case AM_VPSC: return vpscAdjust(g);
     default:
-      agerrLineOn('warn', `Unhandled adjust option ${am.print}`);
+      agwarningf(`Unhandled adjust option ${am.print}`);
       return 0;
   }
 }

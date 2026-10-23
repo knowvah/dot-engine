@@ -13,14 +13,14 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { parse, render } from '../../index.js';
 
 type Engine = 'neato' | 'twopi' | 'circo' | 'sfdp' | 'fdp';
-const MSG = 'Unrecognized overlap value "bogus" - using false';
+const MSG = 'Warning: Unrecognized overlap value "bogus" - using false';
 
 afterEach(() => { vi.restoreAllMocks(); });
 
 function warnings(engine: Engine, body: string, overlap = 'bogus'): string[] {
   const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
   render(parse(`graph g { overlap=${overlap}; ${body} }`), 'plain', { engine });
-  return warn.mock.calls.map((c) => String(c[0])).filter((m) => m.startsWith('Unrecognized overlap'));
+  return warn.mock.calls.map((c) => String(c[0])).filter((m) => m.startsWith('Warning: Unrecognized overlap'));
 }
 
 describe('Unrecognized overlap value warning (native counts)', () => {
@@ -35,7 +35,7 @@ describe('Unrecognized overlap value warning (native counts)', () => {
   });
 
   it('keeps the original spelling in the message', () => {
-    expect(warnings('neato', 'a--b', 'Maybe')).toEqual(['Unrecognized overlap value "Maybe" - using false']);
+    expect(warnings('neato', 'a--b', 'Maybe')).toEqual(['Warning: Unrecognized overlap value "Maybe" - using false']);
   });
 
   it.each(['false', 'true', 'no', 'yes', '0', '2', 'prism', 'prism500', 'scale', 'VPSC', 'ortho_yx'])(

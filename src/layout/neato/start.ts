@@ -20,7 +20,7 @@ import {
   MODE_KK, MODE_MAJOR, MODE_HIER, MODE_IPSEP, MODE_SGD,
   MODEL_CIRCUIT, MODEL_SUBSET,
 } from './init.js';
-import { agerrLineOn } from '../../common/agerr.js';
+import { agerrLineOn, agwarningf } from '../../common/agerr.js';
 
 /** @see lib/neatogen/neato.h:INIT_SELF */
 export const INIT_SELF = 0;
@@ -144,7 +144,7 @@ export function neatoMode(g: Graph): number {
   if (str === undefined || str === '') return MODE_MAJOR;
   const mode = modeByName().get(str);
   if (mode !== undefined) return mode;
-  agerrLineOn('warn', `Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
+  agwarningf(`Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
   return MODE_MAJOR;
 }
 

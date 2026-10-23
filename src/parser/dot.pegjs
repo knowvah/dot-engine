@@ -75,7 +75,7 @@ AttrStmt
     {
       // grammar.y:attrstmt calls nomacros() when a macro name is present;
       // the attributes are still applied unchanged.
-      if (m) agwarningf("attribute macros not implemented", "error");
+      if (m) agwarningf("attribute macros not implemented");
       return { type: "attr", target: t, attrs: attrs };
     }
   / a:AttrAssignment

@@ -102,21 +102,21 @@ describe('KK warnings (C text)', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     plain('graph g { mode=KK; a--b[len=-1]; b--c[len=x]; c--a[len=0] }');
     const text = warn.mock.calls.map((c) => String(c[0]));
-    expect(text).toContain('bad edge len "-1" in g - setting to 1.00');
-    expect(text).toContain('bad edge len "x" in g - setting to 1.00');
-    expect(text).toContain('bad edge len "0" in g - setting to 1.00');
+    expect(text).toContain('Warning: bad edge len "-1" in g - setting to 1.00');
+    expect(text).toContain('Warning: bad edge len "x" in g - setting to 1.00');
+    expect(text).toContain('Warning: bad edge len "0" in g - setting to 1.00');
   });
 
   it('warns when MaxIter is reached', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     plain('graph g { mode=KK; maxiter=5; a--b--c--d--a; c--e }');
-    expect(warn.mock.calls.map((c) => String(c[0]))).toContain('Max. iterations (5) reached on graph g');
+    expect(warn.mock.calls.map((c) => String(c[0]))).toContain('Warning: Max. iterations (5) reached on graph g');
   });
 
   it('does not warn when the descent converges', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     plain('graph g { mode=KK; a--b--c--d--e--a; a--c; c--f; f--g; }');
-    expect(warn.mock.calls.map((c) => String(c[0])).filter((s) => s.startsWith('Max.'))).toEqual([]);
+    expect(warn.mock.calls.map((c) => String(c[0])).filter((s) => s.startsWith('Warning: Max.'))).toEqual([]);
   });
 
   it('start=self and the subset model keep their start.ts behaviour', () => {

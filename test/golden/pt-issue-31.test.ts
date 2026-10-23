@@ -5,7 +5,7 @@
  * (`Pshortestpath failed`, edge "lost"). Native `dot -Tsvg` prints the errors
  * to stderr, still writes the SVG and exits 1. The port has no exit status; it
  * must produce the same SVG, lose the same edges and report the same routing
- * failures through its `console.warn` channel (`agerrorf` in C).
+ * failures through its `console.error` channel (`agerrorf` in C).
  * `refs/pt-issue-31-<label>.stderr` is the captured native stderr.
  *
  * @see lib/common/routespl.c:routesplines (Pshortestpath failure)
@@ -57,7 +57,7 @@ describe('plantuml-ts issue 31: routing failures', () => {
   });
 
   function render(id: string): { svg: string; port: Diagnostics } {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const warn = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const svg = renderSvg(read(`inputs/${id}.dot`), 'dot');
     const port = classify(warn.mock.calls.map((c) => String(c[0])));
     return { svg, port };

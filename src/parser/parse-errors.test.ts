@@ -17,10 +17,12 @@ const HSTR_NOTE = " scanning a HTML string (missing '>'? bad nesting? longer tha
 const COMMENT_NOTE = " scanning a /*...*/ comment (missing '*/? longer than 16384?)";
 
 function errorLines(src: string): unknown[] {
-  const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  const lines: unknown[] = [];
+  vi.spyOn(console, 'warn').mockImplementation((m) => void lines.push(m));
+  const spy = vi.spyOn(console, 'error').mockImplementation((m) => void lines.push(m));
   try {
     expect(() => parse(src)).toThrow(ParseError);
-    return spy.mock.calls.map((c) => c[0]);
+    return lines;
   } finally {
     spy.mockRestore();
   }

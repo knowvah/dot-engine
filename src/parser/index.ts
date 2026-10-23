@@ -234,7 +234,7 @@ export function isPeggyError(err: unknown): err is {
 function warnNumberAmbiguities(src: string, upTo: number): void {
   for (const a of scanNumberAmbiguities(src, Stripper.strip(src))) {
     if (a.offset > upTo) break;
-    agerrFinished(numberAmbiguityMessage(a), 'error');
+    agerrFinished(numberAmbiguityMessage(a));
   }
 }
 

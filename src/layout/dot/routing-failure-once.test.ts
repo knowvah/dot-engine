@@ -23,7 +23,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderSvg } from '../../index.js';
 
 const ROUTING_FAILURE = 'in routesplines, Pshortestpath failed';
-const LOST_EDGE = /^lost (.+) edge$/;
+const LOST_EDGE = /^Error: lost (.+) edge$/;
 
 interface Case {
   name: string;
@@ -69,7 +69,7 @@ describe('dot_splines_: a failed edge is routed (and reported) once', () => {
 
   for (const c of CASES) {
     it(c.name, () => {
-      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const warn = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       renderSvg(c.dot, 'dot');
       const lines = warn.mock.calls.map((call) => String(call[0]));
       const failures = lines.filter((l) => l.endsWith(ROUTING_FAILURE)).length;

@@ -27,7 +27,7 @@ import { MODEL_MDS } from './init.js';
 import { solve } from './kk-solve.js';
 import { lenattr } from './edge-len.js';
 import { newPathState, shortestPath, mdsModel, type Neighbour } from './kk-paths.js';
-import { agerrLineOn } from '../../common/agerr.js';
+import { agwarningf } from '../../common/agerr.js';
 
 /** `Ndim`: layout dimension (this port lays out in 2-D only). */
 const NDIM = 2;
@@ -290,7 +290,7 @@ function moveNode(st: KkState, m: number): void {
 function solveModel(g: Graph, st: KkState): void {
   for (let m = chooseNode(st); m >= 0; m = chooseNode(st)) moveNode(st, m);
   if (st.move === st.maxIter) {
-    agerrLineOn('warn', `Max. iterations (${st.maxIter}) reached on graph ${g.name}`);
+    agwarningf(`Max. iterations (${st.maxIter}) reached on graph ${g.name}`);
   }
 }
 
