@@ -14,7 +14,7 @@ import {
   normalizeVec, negateVec, offsetPoint, clipToNodeBox,
 } from './edge-route-geom.js';
 import type { NodeBox } from './edge-route-geom.js';
-import { bezierClipNode, makeBoxInsideFn, makeEllipseInsideFn, arrowEndClip, DEFAULT_NODEPENWIDTH } from './edge-route-clip.js';
+import { bezierClipNode, makeBoxInsideFn, makeEllipseInsideFn, arrowEndClip, distFused, DEFAULT_NODEPENWIDTH } from './edge-route-clip.js';
 import { computeSpline } from './edge-route-poly.js';
 import {
   makeTailBox, makeHeadBox, makeRankBox, makeMaximalBbox,
@@ -154,9 +154,17 @@ export function clipToNodes(
   const step2 = clip.head
     ? bezierClipNode(step1, headBox.center.x, headBox.center.y, nodeInsideFn(headBox), false)
     : step1;
-  const arrowTip = step2[3] as Point;
+  // arrows.c:arrowEndClip(e, ps, startp, endp, ...) with startp = endp = 0 for this
+  // single-segment spline: spl->ep = ps[endp + 3]; the back-up fires only when
+  // endp > startp && DIST(ps[endp], ps[endp + 3]) < elen.
+  const startp = 0;
+  let endp = 0;
+  const arrowTip = step2[endp + 3] as Point;
   const elen = normalArrowLen(penwidth);
-  const clipped = arrowEndClip(step2, arrowTip, elen);
+  if (endp > startp && distFused(step2[endp] as Point, step2[endp + 3] as Point) < elen) {
+    endp -= 3;
+  }
+  const clipped = arrowEndClip(step2.slice(endp, endp + 4), arrowTip, elen);
   const arrowDir = normalizeVec({
     x: (clipped[3] as Point).x - arrowTip.x,
     y: (clipped[3] as Point).y - arrowTip.y,
