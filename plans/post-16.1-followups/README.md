@@ -298,20 +298,20 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       (`digraph{mode=hier;a->b->c->d->e->f;a->d;b->e;c->f}`: native 6 nodes, port
       throws). Corpus 1554 (`mode="hier"`) is quarantined `engine-deferred` for
       it; not in `docs/known-divergences.md` (part 3 T2).
-  44. A raw control character in HTML label text (`label=<a\001b>`) is an expat
+  44. **[DONE — part 4 T4: expat BT_NONXML in content]** A raw control character in HTML label text (`label=<a\001b>`) is an expat
       invalid token natively (`Error: not well-formed (invalid token) in line 1` /
       `... <HTML>a\001b ...` / `in label of node a`, label dropped); the port keeps
       the text (`ab`) and prints nothing. `&#1;` already matches. expat
       `contentTok` BT_NONXML is unmodelled in `htmltable-lex-expat.ts` (part 3 T3).
-  45. `test/architecture/module-globals.fitness.test.ts` allowlist reasons are
+  45. **[DONE — part 4 T2: reasons restated]** `test/architecture/module-globals.fitness.test.ts` allowlist reasons are
       stale after part 3 T1: the listed statics now reset through
       `resetRenderState` (`src/common/render-state.ts`), and `clType` is set in
       `graph-init.ts:330`. Reasons only; the allowlist itself still holds.
-  46. Rendering the same parsed `Graph` object twice suppresses the HTML
+  46. **[DONE — part 4 T7: dedupe sets reset per render (AD-7); label persistence split out as 72]** Rendering the same parsed `Graph` object twice suppresses the HTML
       "cell size too small" and "No or improper image" warnings on the second
       render: per-graph-object state survives `freeLayout` (not a module
       static, so AD-4's reset does not reach it). Native re-parses per run.
-  47. The low-level pipeline `GvcContext.layout` + `renderWithContext` has no
+  47. **[DONE — part 4 T8: GvcContext.layout resets render state (AD-8)]** The low-level pipeline `GvcContext.layout` + `renderWithContext` has no
       per-render reset (AD-4 covers `renderSvg`, `render`, `getDrawOps`,
       `renderAsync`); a caller driving it directly carries C process state
       between graphs. Needs a documented contract or an entry-point reset
@@ -332,7 +332,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `Math.hypot`; GTS uses `#define SQRT3 1.73205080757` (`triangle.c`) and
       `sqrt(dx*dx+dy*dy)`. Latent difference in the enclosing vertices; output
       effect unchecked (part 3 T9).
-  52. Port CDT face numbering and `neigh` order follow creation order; native
+  52. **[DONE — part 4 T9: documented irreducible, known-divergences A11]** Port CDT face numbering and `neigh` order follow creation order; native
       follows GHashTable (address) order, which is nondeterministic. This can
       change tgraph edge order and shortest-path tie-breaks in multispline
       routing (part 3 T9).
@@ -340,18 +340,18 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       with native positions injected edge 3→4 is a 7-point spline in the port vs
       4 in native; the port also reports an extra routing failure on (1,2).
       Pre-existing, independent of the CDT face order (part 3 T9).
-  54. About 17 agerr-family sites print without the prefix `out` adds natively:
+  54. **[DONE — part 4 T5: agwarningf/agerrorf prefixes]** About 17 agerr-family sites print without the prefix `out` adds natively:
       `bad edge len`, `Max. iterations`, `Illegal value … mode`,
       `Unrecognized overlap value`, `Orthogonal edges …` (no `Warning: `), and
       `lost <t> <h> edge`, `in routesplines, Pshortestpath failed` (no
       `Error: `). T5 routes them through `agerrLineOn` with the text unchanged
       (part 3 T5).
-  55. Console channel is mixed: six agerr warnings go to `console.error`
+  55. **[DONE — part 4 T5: agerr warnings on console.warn]** Console channel is mixed: six agerr warnings go to `console.error`
       (`cluster.ts`, `conc.ts:295`, `graph-init.ts`, `poly-init.ts`, the parser's
       number-ambiguity and macro warnings) because tests spy on it; all agerr
       warnings should use `console.warn` (part 3 T5).
-  56. The lexer's syntax errors lack native's `<stdin>: ` file prefix (part 3 T5).
-  57. `parseSegs`' `Warning: Total size > 1 in "<spec>" color spec in edge a -> b`
+  56. **[DONE — part 4 T9: documented, known-divergences A12 (AD-10)]** The lexer's syntax errors lack native's `<stdin>: ` file prefix (part 3 T5).
+  57. **[DONE — part 4 T6: parseSegs warning + caller context]** `parseSegs`' `Warning: Total size > 1 in "<spec>" color spec in edge a -> b`
       is never printed by the port (part 3 T10).
   58. Native prints `gvrender_set_style: unsupported style rounded - ignoring` for an
       ortho `style=rounded` edge; the port does not (part 3 T10).
@@ -371,10 +371,10 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   64. `parseGradientSpec` (HTML) trims and splits at the first `:` where C's
       `findStopColor` uses `parseSegs`; names with spaces or `;fraction` in HTML
       `BGCOLOR` may differ (part 3 T10).
-  65. Fuzz `classify.mjs` files native's duplicate-`baseline-shift` outputs (nested
+  65. **[DONE — part 4 T1: dup-baseline-shift class]** Fuzz `classify.mjs` files native's duplicate-`baseline-shift` outputs (nested
       `<sup>`/`<sub>`, invalid XML) under class 35 or svg-other; give them their own
       class (part 3 T12).
-  66. `probe.mjs` compares only text content and ellipse `cx`; it should also compare
+  66. **[DONE — part 4 T1: probe compares text x/y and ellipse rx/ry]** `probe.mjs` compares only text content and ellipse `cx`; it should also compare
       text x/y and ellipse rx/ry (it reported item 35 as SAME) (part 3 T12).
   67. HTML line splitting and the simple test exist twice (sizing:
       `htmltable.ts` `splitSizedLines`/`htmlTextIsSimple`; placement:
@@ -387,7 +387,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       Node/Edge would save ~15% of class2 bytes for every dot render with long edges;
       needs corpus byte-identity (part 3 T13; does not rescue 1864, which needs
       ≥ 6.6 GB even at C's sizes).
-  69. Native 16.1.0 is nondeterministic on some fdp/sfdp/neato corpus ids (graphs-fdp,
+  69. **[DONE — part 4 T3: oracle-nondeterministic walk status (AD-13)]** Native 16.1.0 is nondeterministic on some fdp/sfdp/neato corpus ids (graphs-fdp,
       linux.x86-neatosplines_neato sfdp, ngk10_4 neato, directed-table fdp: 2-3
       distinct xdots in 5-6 runs; linux.i386-b102 fdp differs between sessions), so
       their walk verdicts flip with no port change. The walks should mark such ids
@@ -401,6 +401,30 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       changes moved output without a re-walk (twopi graphs-arrowsize: 23 diffs
       committed, 72 on today's head and on part 3's base). A full re-walk of all
       engines would refresh `nDiffs`/`firstDiff` (part 3 T14).
+
+- **New follow-ups found by part 4** (`plans/post-16-1-followups-4/`):
+  72. Node/edge/graph labels survive `freeLayout`: `poly-init.ts` `buildNodeLabel`
+      returns early when `n.info.label` is set, so laying out the same `Graph` twice
+      never re-sizes its labels (no HTML size/image warnings on the second render; a
+      changed measurer is ignored). C frees them in `dot_cleanup_node`
+      (`dotgen/dotinit.c:110`, `common/utils.c:1517-1531`) and rebuilds them in
+      `common_init_node` (`utils.c:441`) each layout (part 4 T7).
+  73. Default neato (stress/major) never calls `setEdgeLen`: C's `scan_graph_mode`
+      does for every mode (`neatogen/stuff.c:245-261`), so `len=x` prints
+      `Warning: bad edge len "x" in %1 - setting to 1.00` natively and nothing in the
+      port, which reads `len` via `makeGraphDataC` `lateDouble` (`init.ts`). Check
+      whether `lenattr`'s fallback also changes major-mode distances (part 4 T5).
+  74. Anonymous graphs: native `agnameof` returns `%<id>` (`cgraph/id.c:163`,
+      LOCALNAMEPREFIX), so neato messages print `graph %1`; the port prints an empty
+      name (part 4 T5).
+  75. A filled node with `fillcolor="red;0.6:blue;0.6"` prints natively
+      `Warning: Total size > 1 in "…" color spec Warning: red;0.6 is not a known
+      color.` as one line (`findStopColor`, no AGPREV, agerr partial line); the port
+      prints only the first half on its own line and never the unknown-colour half
+      (part 4 T6).
+  76. `htmltable-lex-attvalue.ts` `NON_XML` rejects C0 controls in attribute values
+      but not U+FFFE/U+FFFF or lone surrogates, which expat rejects in content (T4
+      ported those for content); probe native attribute values first (part 4 T4).
 
 ## Local leftovers (not committed, safe to delete)
 

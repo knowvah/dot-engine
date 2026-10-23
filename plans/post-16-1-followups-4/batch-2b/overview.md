@@ -8,8 +8,8 @@ survey runs only if bytediff shows output changes. Consumers: T5 → T23, T26 (`
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T4](T4-expat-nonxml.md) | Item 44: raw control char in HTML text is an invalid token | typescript-pro | `src/common/htmltable-lex-expat.ts` | T0 | [ ] |
-| [T5](T5-agerr-prefix-channel.md) | Items 54, 55: agerr prefixes and console channel | typescript-pro | 7 prefix sites, 6 channel sites, spying tests | T0 | [ ] |
-| [T6](T6-parsesegs-warning.md) | Item 57: `Total size > 1` color-spec warning | typescript-pro | `src/common/multicolor.ts`, its callers (incl. `gvc/device-cluster.ts`) | T0 | [ ] |
-| [T7](T7-html-warning-state.md) | Item 46: HTML warnings once per render | typescript-pro | `src/common/htmltable.ts` | T0 | [ ] |
-| [T8](T8-layout-reset.md) | Item 47: `GvcContext.layout` resets render state | typescript-pro | `src/gvc/context.ts` | T0 | [ ] |
+| [T4](T4-expat-nonxml.md) | Item 44: raw control char in HTML text is an invalid token | typescript-pro | `src/common/htmltable-lex-expat.ts` | T0 | [x] |
+| [T5](T5-agerr-prefix-channel.md) | Items 54, 55: agerr prefixes and console channel | typescript-pro | 7 prefix sites, 6 channel sites, spying tests | T0 | [x] |
+| [T6](T6-parsesegs-warning.md) | Item 57: `Total size > 1` color-spec warning | typescript-pro | `src/common/multicolor.ts`, its callers (incl. `gvc/device-cluster.ts`) | T0 | [x] |
+| [T7](T7-html-warning-state.md) | Item 46: HTML warnings once per render | typescript-pro | `src/common/htmltable.ts` | T0 | [x] |
+| [T8](T8-layout-reset.md) | Item 47: `GvcContext.layout` resets render state | typescript-pro | `src/gvc/context.ts` | T0 | [x] |

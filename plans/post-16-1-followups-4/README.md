@@ -112,9 +112,9 @@ of them land.
 
 | Batch | Tasks | Mode | Done |
 |---|---|---|---|
-| [1](batch-1/overview.md) | T0 baselines, tooling import, native references | orchestrator | [ ] |
-| [2a](batch-2a/overview.md) | T1 tools 65/66 · T2 fitness reasons 45 · T3 walk nondeterminism 69 · T9 docs 52/56 | parallel worktrees | [ ] |
-| [2b](batch-2b/overview.md) | T4 expat BT_NONXML 44 · T5 agerr prefix + channel 54/55 · T6 parseSegs warning 57 · T7 HTML warning state 46 · T8 layout reset 47 | parallel worktrees | [ ] |
+| [1](batch-1/overview.md) | T0 baselines, tooling import, native references | orchestrator | [x] |
+| [2a](batch-2a/overview.md) | T1 tools 65/66 · T2 fitness reasons 45 · T3 walk nondeterminism 69 · T9 docs 52/56 | parallel worktrees | [x] |
+| [2b](batch-2b/overview.md) | T4 expat BT_NONXML 44 · T5 agerr prefix + channel 54/55 · T6 parseSegs warning 57 · T7 HTML warning state 46 · T8 layout reset 47 | parallel worktrees | [x] |
 | [3a](batch-3a/overview.md) | T10 splines-clip 48 · T11 compound/clipToNodes 49 · T12 tailArrowEndClip 50 · T13 CDT SQRT3 51 · T14 striped clusters 62 | parallel worktrees | [ ] |
 | [3b](batch-3b/overview.md) | T15 compute_hierarchy · T16 quad_prog_solve · T17 IMDS_given_dim (43) · T21 lazy virtual attrs 68 | parallel worktrees | [ ] |
 | [3c](batch-3c/overview.md) | T18 unsupported style 58 · T19 layers warning 59 · T20 doubled font prefix 61 | parallel worktrees | [ ] |

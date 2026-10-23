@@ -7,4 +7,4 @@ T15–T17/T22, the native reference outputs for every diagnostics task, and
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T0](T0-baselines.md) | Branch, brief commit, oracle preflight, tools into `test/tools/`, base bundle, disassembly, native refs, timings, bytes/pair | orchestrator | brief commit; `test/tools/**` (verbatim copies); scratchpad | — | [ ] |
+| [T0](T0-baselines.md) | Branch, brief commit, oracle preflight, tools into `test/tools/`, base bundle, disassembly, native refs, timings, bytes/pair | orchestrator | brief commit; `test/tools/**` (verbatim copies); scratchpad | — | [x] |
