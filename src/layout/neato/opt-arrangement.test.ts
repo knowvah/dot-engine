@@ -2,7 +2,8 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { HIER_GRAPHS, toVtx } from '../../../test/helpers/hier-graphs.js';
 import { csrand } from '../../common/crand.js';
-import { computeYCoords, conjugateGradient, constructB } from './opt-arrangement.js';
+import { conjugateGradient } from './conjgrad.js';
+import { computeYCoords, constructB } from './opt-arrangement.js';
 
 const NAMES = ['probe', 'c1554', 'rdag'] as const;
 
