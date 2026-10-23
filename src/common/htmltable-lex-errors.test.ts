@@ -379,3 +379,29 @@ describe('text references expat rejects as an invalid token', () => {
     expect(lex(label).error).toBeUndefined();
   });
 });
+
+describe('characters expat tokenizes as BT_NONXML in character data', () => {
+  // [label, line, context]: native dot 16.1.0's stderr for each (agerr escapes the controls when printing)
+  const BAD: ReadonlyArray<readonly [string, number, string]> = [
+    ['a\x01b', 1, '<HTML>a\x01b'],
+    ['ab\x1fcd', 1, '<HTML>ab\x1fcd'],
+    ['a\x08b', 1, '<HTML>a\x08b'],
+    ['l1\nl2\x08l3', 2, '<HTML>l1\nl2\x08l3'],
+    ['<table><tr><td>a\x0bb</td></tr></table>', 1, '<td>a\x0bb'],
+    ['a￾b', 1, '<HTML>a￾b'],
+  ];
+
+  it.each(BAD)('%j fails at line %i', (label, line, context) => {
+    expect(lex(label).error).toEqual([`Error: ${INVALID_TOKEN} in line ${line} `, `... ${context} ...`]);
+  });
+
+  it('renders the node with an empty label, as native', () => {
+    const { lines, svg } = stderrOf(nodeLabel('a\x01b'));
+    expect(lines).toEqual([`Error: ${INVALID_TOKEN} in line 1 `, '... <HTML>a\\001b ...', 'in label of node a']);
+    expect(texts(svg)).not.toContain('ab');
+  });
+
+  it.each(['a\tb', 'a\nb', 'a\rb', 'a\x7fb', 'aéb'])('accepts %j', (label) => {
+    expect(lex(label).error).toBeUndefined();
+  });
+});

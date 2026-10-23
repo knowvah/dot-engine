@@ -271,14 +271,31 @@ function scanCdata(text: string, p: number, base: number, dataOf: CdataText, tok
 }
 
 /**
+ * A character expat's tokenizer rejects in character data (BT_NONXML in the
+ * UTF-8 table): controls other than tab, LF and CR, U+FFFE and U+FFFF, and a
+ * lone surrogate (the UTF-8 form of one is invalid). DEL is BT_OTHER, valid.
+ * @see expat lib/asciitab.h
+ * @see expat lib/xmltok_impl.c:PREFIX(contentTok) (BT_NONXML)
+ */
+const CONTENT_NON_XML = /[\x00-\x08\x0b\x0c\x0e-\x1f\ufffe\uffff]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/;
+
+/**
  * Character data at `p` up to the next `<`: one `text` token, then the index it
  * ends at. A reference cut off by the end of the data is not part of the token
- * (`held`): expat waits for the characters that settle it.
- * @see expat lib/xmltok_impl.c:PREFIX(contentTok) (XML_TOK_PARTIAL)
+ * (`held`): expat waits for the characters that settle it. A BT_NONXML character
+ * ends the data token; the next call finds it an invalid token (`invalid`).
+ * @see expat lib/xmltok_impl.c:PREFIX(contentTok) (XML_TOK_PARTIAL, BT_NONXML)
  */
-function scanText(text: string, p: number, base: number, tokens: ExpatToken[]): { at: number; held: boolean } {
+function scanText(
+  text: string, p: number, base: number, tokens: ExpatToken[],
+): { at: number; held: boolean; invalid?: number } {
   const e = text.indexOf('<', p);
   const slice = text.slice(p, e < 0 ? text.length : e);
+  const bad = CONTENT_NON_XML.exec(slice)?.index;
+  if (bad !== undefined) {
+    if (bad > 0) tokens.push({ kind: 'text', start: base + p, end: base + p + bad });
+    return { at: p + bad, held: false, invalid: p + bad };
+  }
   const from = e < 0 ? heldRefStart(slice) : undefined;
   const end = from === undefined ? p + slice.length : p + from;
   if (end > p) tokens.push({ kind: 'text', start: base + p, end: base + end });
@@ -303,6 +320,7 @@ function scanContent(text: string, base: number, inCdata: boolean, dataOf: Cdata
     }
     if (text[p] !== '<') {
       const scanned = scanText(text, p, base, tokens);
+      if (scanned.invalid !== undefined) return { tokens, consumed: scanned.at, invalid: base + scanned.invalid, inCdata: false };
       if (scanned.held) return { tokens, consumed: scanned.at, inCdata: false };
       p = scanned.at;
       continue;
