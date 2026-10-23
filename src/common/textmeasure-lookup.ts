@@ -49,7 +49,7 @@ export function getFamilyMetrics(fontName: string): FontFamilyData {
   if (!warnedFontNames.has(fontName)) {
     warnedFontNames.add(fontName);
     agwarningf(
-      `no hard-coded metrics for '${fontName}'.  ` +
+      `Warning: no hard-coded metrics for '${fontName}'.  ` +
         `Falling back to 'Times' metrics`,
     );
   }

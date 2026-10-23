@@ -47,7 +47,7 @@ describe('splines=ortho self-loops (plantuml-ts 29)', () => {
       // particular no `lost ... edge`, may be logged.
       const logged = warn.mock.calls
         .map((c) => String(c[0]))
-        .filter((m) => !m.startsWith('Warning: no hard-coded metrics'))
+        .filter((m) => !m.includes('no hard-coded metrics'))
         .filter((m) => m !== 'Warning: table size too small for content');
       expect(logged).toEqual([]);
     });

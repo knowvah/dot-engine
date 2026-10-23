@@ -29,7 +29,7 @@ describe('DEFAULT_FONTNAME', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     renderSvg(SRC, 'dot');
     const fallback = warn.mock.calls.map((c) => String(c[0]))
-      .filter((m) => m.startsWith('Warning: no hard-coded metrics'));
+      .filter((m) => m.includes('no hard-coded metrics'));
     expect(fallback).toEqual([]);
   });
 
