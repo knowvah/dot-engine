@@ -232,7 +232,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       too. A node `tooltip="c&#38;d"` already diverged; since item 28 decodes
       HTML attribute values as expat does, an HTML `title="a&amp;amp;b"`
       (decoded `a&amp;b`) now does as well.
-  35. **[PARKED — part 3 T12: diagnosed; fix in `src/common/htmltable.ts` (outside the write-set), tested patch at `plans/post-16-1-followups-3/parked/`]** `<BR/>` lines inside a font-style element: `<k<u><br/><br/></u>>` places
+  35. **[DONE — part 3 T12: parked patch from `plans/post-16-1-followups-3/parked/` applied after the mission on the user's decision]** `<BR/>` lines inside a font-style element: `<k<u><br/><br/></u>>` places
       the lines differently from native (y off by 6.76 pt); `k<br/><br/>`
       without the `<u>` matches. Pre-existing on `main`.
 - **New follow-ups found by item 28** (journal row 2026-10-22, item 28; all

@@ -169,25 +169,24 @@ const itemHasFlags = (i: HtmlTextItem): boolean =>
   i.subscript === true || i.superscript === true;
 
 /**
- * C's "simple" test: one item per line, no font flags, uniform
- * resolved face and size across all lines.
+ * C's "simple" test over the line list (C spans): one item per line, no font
+ * flags, uniform resolved face and size across all lines. It reads each
+ * line's first item, so the "" item appendFLineList gives an empty <BR/> line
+ * counts with its font: `k<U><BR/><BR/></U>` is not simple.
  * @see lib/common/htmltable.c:size_html_txt (lines 946-986)
  */
-export const htmlTextIsSimple = (texts: HtmlText[], env: HtmlSizeEnv): boolean => {
+const htmlTextIsSimple = (lines: SizedLine[], env: HtmlSizeEnv): boolean => {
   let prevFs = -1;
   let prevFace: string | null = null;
-  let count = 0;
-  for (const txt of texts) {
-    for (const item of txt.items) {
-      if (item.br) { count = 0; continue; }
-      if (item.text === undefined) continue;
-      if (++count > 1 || itemHasFlags(item)) return false;
-      const { fs, face } = itemFont(item, env);
-      if (prevFs < 0) prevFs = fs;
-      else if (fs !== prevFs) return false;
-      if (prevFace === null) prevFace = face;
-      else if (face !== prevFace) return false;
-    }
+  for (const ln of lines) {
+    // splitSizedLines never yields an itemless line (C: nitems >= 1).
+    const item = ln.items[0]!;
+    if (ln.items.length > 1 || itemHasFlags(item)) return false;
+    const { fs, face } = itemFont(item, env);
+    if (prevFs < 0) prevFs = fs;
+    else if (fs !== prevFs) return false;
+    if (prevFace === null) prevFace = face;
+    else if (face !== prevFace) return false;
   }
   return true;
 };
@@ -203,7 +202,7 @@ const sizeTextContent = (
   env: HtmlSizeEnv = defaultSizeEnv(),
 ): { w: number; h: number } => {
   const lines = splitSizedLines(texts, measurer, env);
-  const simple = htmlTextIsSimple(texts, env);
+  const simple = htmlTextIsSimple(lines, env);
   let w = 0;
   let h = 0;
   for (const ln of lines) {
