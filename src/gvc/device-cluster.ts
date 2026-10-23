@@ -6,6 +6,9 @@
 
 import type { Graph } from '../model/graph.js';
 import type { ObjState } from './job.js';
+import type { RendererPlugin } from './context.js';
+import { transformPoint } from './device-transform.js';
+import { stripedBox } from '../render/svg-multicolor.js';
 import { RenderJob } from './job.js';
 import { FillType } from './context.js';
 import type { ResolvedFill, ClusterAttrs } from '../common/style-resolve.js';
@@ -112,24 +115,66 @@ export function applyClusterObjState(sg: Graph, job: RenderJob): boolean {
 }
 
 /**
+ * True when emit_clusters takes the striped branch: `style=striped` and not
+ * `rounded` (the rounded branch is tested first).
+ * @see lib/common/emit.c:3877-3892 emit_clusters (rounded / striped / plain)
+ */
+export function isStripedCluster(sg: Graph): boolean {
+  const flags = parseStyleFlags(clusterStyle(sg));
+  return flags.striped && !flags.rounded;
+}
+
+/**
+ * The fillcolor string emit_clusters hands to stripedBox.
+ * @see lib/common/emit.c:3820-3850 emit_clusters (fillcolor selection)
+ */
+function stripedFillSpec(sg: Graph): string {
+  const flags = parseStyleFlags(clusterStyle(sg));
+  const color = clusterAttr(sg, 'color') ?? '';
+  let fill = clusterAttr(sg, 'fillcolor') || color;
+  const bg = clusterAttr(sg, 'bgcolor') ?? '';
+  if ((!flags.filled || fill === '') && bg !== '') fill = bg;
+  return fill === '' ? 'lightgrey' : fill;
+}
+
+/**
  * The colours stripedBox sets for a `style=striped` cluster (not rounded): each
  * segment of the fill spec with a positive width, after the pen.
  * @see lib/common/emit.c:3896-3906 emit_clusters (striped branch)
  * @see lib/common/emit.c:595 stripedBox
  */
 function stripedClusterColors(sg: Graph): string[] {
-  const flags = parseStyleFlags(clusterStyle(sg));
-  if (!flags.striped || flags.rounded) return [];
-  const color = clusterAttr(sg, 'color') ?? '';
-  let fill = clusterAttr(sg, 'fillcolor') || color;
-  const bg = clusterAttr(sg, 'bgcolor') ?? '';
-  if ((!flags.filled || fill === '') && bg !== '') fill = bg;
-  const { segs, error } = parseSegs(
-    fill === '' ? 'lightgrey' : fill,
-    () => `in cluster ${sg.name}`,
-  );
+  if (!isStripedCluster(sg)) return [];
+  const { segs, error } = parseSegs(stripedFillSpec(sg), () => `in cluster ${sg.name}`);
   if (error === 1 || error === 2) return [];
   return segs.flatMap((seg) => (seg.color !== null && seg.t > 0 ? [seg.color] : []));
+}
+
+/**
+ * Draw a `style=striped` cluster box: stripedBox over the bb corners, then the
+ * unfilled bb outline (pen already "transparent" for `peripheries=0`). The
+ * once-per-render Total-size warning is claimed by stripedClusterColors when
+ * the pen state is applied, so the parse here does not print twice.
+ * @see lib/common/emit.c:3892-3906 emit_clusters (striped branch)
+ */
+export function renderStripedClusterBox(
+  sg: Graph, renderer: RendererPlugin, job: RenderJob,
+): void {
+  const { ll, ur } = sg.info.bb!;
+  const af = [
+    { x: ll.x, y: ll.y }, { x: ur.x, y: ll.y }, { x: ur.x, y: ur.y }, { x: ll.x, y: ur.y },
+  ].map((p) => transformPoint(p, job));
+  // stripedBox passes filled=1 (never GRADIENT) to gvrender_polygon; the port's
+  // renderers read the gradient from obj.fill, so show them a solid fill.
+  const obj = job.obj;
+  const savedFill = obj?.fill;
+  if (obj !== null && savedFill !== undefined) obj.fill = FillType.Solid;
+  stripedBox(job, af, stripedFillSpec(sg), false, renderer, () => `in cluster ${sg.name}`);
+  if (obj !== null && savedFill !== undefined) obj.fill = savedFill;
+  const rawPts = [
+    { x: ll.x, y: ll.y }, { x: ll.x, y: ur.y }, { x: ur.x, y: ur.y }, { x: ur.x, y: ll.y },
+  ];
+  renderer.polygon(rawPts.map((p) => transformPoint(p, job)), false, job);
 }
 
 /** The fill half of {@link applyClusterObjState}; true when the box is filled. */

@@ -47,7 +47,7 @@ import {
   setRendererKnownColors,
 } from '../render/color-resolve.js';
 import { emitRoundedBezier } from '../common/poly-shapes.js';
-import { applyClusterObjState, clusterStyle, clusterPeripheries } from './device-cluster.js';
+import { applyClusterObjState, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
 import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
 export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
@@ -230,6 +230,10 @@ function renderClusterBox(
   sg: Graph, filled: boolean, renderer: RendererPlugin, job: RenderJob,
 ): void {
   const { ll, ur } = sg.info.bb!;
+  if (isStripedCluster(sg)) {
+    renderStripedClusterBox(sg, renderer, job);
+    return;
+  }
   if (parseStyleFlags(clusterStyle(sg)).rounded) {
     const af = [{ x: ll.x, y: ll.y }, { x: ur.x, y: ll.y }, { x: ur.x, y: ur.y }, { x: ll.x, y: ur.y }];
     emitRoundedBezier(af, { x: 0, y: 0 }, filled, { renderer, job });
@@ -280,7 +284,7 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): 
     // style=invis sets PEN_NONE and gvrender_polygon skips the whole box
     // (fill included); the group/title still emit.
     // @see lib/common/emit.c:3907-3917, lib/gvc/gvrender.c:543
-    if ((clusterPeripheries(sg) !== 0 || filled) && job.obj?.pen !== PenType.None) {
+    if ((clusterPeripheries(sg) !== 0 || filled || isStripedCluster(sg)) && job.obj?.pen !== PenType.None) {
       renderClusterBox(sg, filled, renderer, job);
     }
     renderClusterLabel(sg, renderer, job);
