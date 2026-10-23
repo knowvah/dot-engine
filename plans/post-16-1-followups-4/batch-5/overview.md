@@ -6,5 +6,5 @@ neato walk (T26) + walks of every engine for T27's HTML ids.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T26](T26-hier-wiring.md) | Item 43e: wire `mode=hier` into neato | typescript-pro | `src/layout/neato/{start,init}.ts`, their tests | T5, T22 | [ ] |
-| [T27](T27-html-line-builder.md) | Item 67: one HTML line builder for sizing and placement | typescript-pro | `src/common/htmltable.ts`, `htmltable-pos-runs.ts` | T7, T23 | [ ] |
+| [T26](T26-hier-wiring.md) | Item 43e: wire `mode=hier` into neato | typescript-pro | `src/layout/neato/{start,init}.ts`, their tests | T5, T22 | [x] |
+| [T27](T27-html-line-builder.md) | Item 67: one HTML line builder for sizing and placement | typescript-pro | `src/common/htmltable.ts`, `htmltable-pos-runs.ts` | T7, T23 | [x] |

@@ -5,4 +5,4 @@ in the hand-back). Runs after batch 5 so its walk compares against the final lay
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T28](T28-241-0-sfdp.md) | Item 53: diagnose and fix or park | debugger (opus) | open | T26 | [ ] |
+| [T28](T28-241-0-sfdp.md) | Item 53: diagnose and fix or park | debugger (opus) | open | T26 | [x] |

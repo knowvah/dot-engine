@@ -100,3 +100,28 @@ fine"). A task that needs to contradict one stops (stop condition 4). Part 3's A
   address order, nondeterministic; no code). 53 gets an AD-3 diagnosis. T29 runs one fresh
   walk per engine (7, after T3 and every output change) and commits the refreshed
   `parity-<engine>.jsonl` (71), then reruns `attribute-divergence.ts fdp` (70).
+
+## AD-6 amendment (2026-10-23, user: "Widen AD-6")
+- **Context:** T17 found `IMDS_given_dim` needs C helpers outside the six files.
+- **Decision:** port them faithfully into the TS files that already port their C file:
+  `kkutils.ts` (`compute_apsp`, static `compute_apsp_dijkstra`/`compute_apsp_simple`),
+  `dijkstra.ts` (`ngdijkstra` + its int heap), `conjgrad.ts` (`conjugate_gradient_f`),
+  `matrix-ops.ts` (the double vector helpers `smart_ini_x.c` calls). Owned by T17;
+  `kkutils.ts` additions land after T15. Stop 12 still applies to anything further.
+
+## T18 scope amendment (2026-10-23, user: "Shared port")
+- **Decision:** one new `gvrenderSetStyle` port file (C's token loop + warning), called
+  from the edge, node, cluster and HTML-fill style paths. T18 restarts after T14 lands.
+
+## AD-6 amendment 2 (2026-10-23, user: "Port mdsModel")
+- **Decision:** T26 ports `stress.c:mdsModel` (distinct from `neatoinit.c:mds_model`,
+  already in `kk-paths.ts`) into `stress.ts`, so corpus 1554 (`model=mds; mode=hier`) can
+  meet AD-6's bar. `sparse_stress_subspace_majorization_kD` (smart-init fallback when no
+  hierarchy) stays loud.
+
+## T22b (2026-10-23, user: "Fix now as a task")
+- **Decision:** new task T22b, before T26: port `dijkstra_f` (`lib/neatogen/dijkstra.c`)
+  faithfully into `src/layout/neato/dijkstra.ts` (indexed heap with `increaseKey_f`,
+  `FLT_MAX` for unreachable), fixing the stale-duplicate heap bug in the float Dijkstra
+  that production weighted neato uses. Output may change toward native: gated by
+  bytediff + neato/fdp/sfdp walks of the affected ids.

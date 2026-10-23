@@ -8,8 +8,8 @@ land.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T10](T10-splines-clip.md) | Item 48: `SplineClipHelper` DIST, `sphereCtx`, `bezierClip` | typescript-pro | `src/common/splines-clip.ts` | T0 | [ ] |
-| [T11](T11-compound-clip.md) | Item 49: compound dist, `clipToNodes` `endp -= 3` | typescript-pro | `src/layout/dot/compound.ts`, `edge-route-routing.ts` | T0 | [ ] |
-| [T12](T12-tail-arrow-clip.md) | Item 50: `tailArrowEndClip` as C's reversed form | typescript-pro | `src/layout/dot/edge-route-clip.ts` | T0 | [ ] |
-| [T13](T13-cdt-sqrt3.md) | Item 51: GTS enclosing-triangle constants | typescript-pro | `src/layout/neato/cdt-surface.ts` | T0 | [ ] |
-| [T14](T14-striped-clusters.md) | Item 62: draw cluster `style=striped` | typescript-pro | `src/gvc/device-cluster.ts`, `src/render/svg-cluster.ts`, xdot cluster path | T6 | [ ] |
+| [T10](T10-splines-clip.md) | Item 48: `SplineClipHelper` DIST, `sphereCtx`, `bezierClip` | typescript-pro | `src/common/splines-clip.ts` | T0 | [x] |
+| [T11](T11-compound-clip.md) | Item 49: compound dist, `clipToNodes` `endp -= 3` | typescript-pro | `src/layout/dot/compound.ts`, `edge-route-routing.ts` | T0 | [x] |
+| [T12](T12-tail-arrow-clip.md) | Item 50: `tailArrowEndClip` as C's reversed form | typescript-pro | `src/layout/dot/edge-route-clip.ts` | T0 | [x] |
+| [T13](T13-cdt-sqrt3.md) | Item 51: GTS enclosing-triangle constants | typescript-pro | `src/layout/neato/cdt-surface.ts` | T0 | [x] |
+| [T14](T14-striped-clusters.md) | Item 62: draw cluster `style=striped` | typescript-pro | `src/gvc/device-cluster.ts`, `src/render/svg-cluster.ts`, xdot cluster path | T6 | [x] |
