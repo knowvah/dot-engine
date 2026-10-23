@@ -1,5 +1,5 @@
 ---
-sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -214,8 +214,10 @@ Spre deosebire de prima trecere, fiecare rând divergent din universul de 929 de
 atribuit individual față de graphviz 16.1.0: instrumentul de injecție
 (`test/corpus/attribute-divergence.ts`) alimentează portarea cu `ND_pos` dinaintea rutării din
 oracolul nativ și compară din nou, iar fiecare id divergent curent este `drift-exonerated` (rutarea
-și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția a trei. Trei sunt reziduuri acceptate separat pe id: egalitatea la testul incircle din CDT pentru
-`241_0` pe fdp și sfdp și aspectul NaN al lui sfdp `2556`. fdp `2471` și sfdp `2371`
+și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția a două. Două sunt reziduuri acceptate separat pe id: reziduul CDT al lui sfdp `241_0`
+și aspectul NaN al lui sfdp `2556`. fdp `241_0` trece de la `fix(T9): start
+swapped cdt faces at the new diagonal as gts does` (vedeți paragraful despre fdp
+de la A9). fdp `2471` și sfdp `2371`
 păstrau anterior poziții ale etichetelor de muchie (`lp`) care difereau după injecție,
 adică plasatorul de xlabel alegea un candidat diferit. `2471` s-a rezolvat când
 `dotneato_closest` din portare a început să rotunjească precum evaluarea de Casteljau
@@ -888,14 +890,16 @@ ar cere reproducerea în JS a rotunjirii exacte `sin`/`cos` din libm Apple.
 multispline routing geometry`) a oglindit-o. `241_0` din twopi și neato — pe care această clasă
 le atribuise egalității cocirculare de mai jos — au devenit **conforme**
 (acceptări retrase), iar sfdp `42` s-a dovedit că nu are nicio egalitate (este derivă
-A1, vedeți [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` din circo, fdp
+A1, vedeți [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` din fdp
+a devenit **conform** mai târziu, după o a doua remediere de partea portării în triangulare
+(ordinea vârfurilor fețelor după o interschimbare de muchie; vedeți paragraful despre fdp de mai jos). `241_0` din circo
 și sfdp încă divergă, cu reziduuri neschimbate sau reduse; atribuirea lor
 egalității de mai jos este anterioară lui `f66ac638` și **nu a fost reverificată
 prin injecție de poziție** de când acea remediere a arătat că aceeași atribuire era greșită pentru
 twopi/neato.
 
-**Afectate:** `241_0` (circo Δ≈0.2 prin inversarea coridorului pe muchia `1->2`; fdp
-și sfdp `241_0` pe fluxurile de motor de mai jos); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Afectate:** `241_0` (circo Δ≈0.2 prin inversarea coridorului pe muchia `1->2`; sfdp
+`241_0` pe fluxul de motor de mai jos); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 câte 1–2 diferențe de poziție a etichetelor de muchie — ULP-ul libm de 1 apare în
 trigonometria vârfurilor unitare din `poly_init` (`hypot`/`atan2`/`sin`), aduce înălțimea
 calculată a unui nod cu un ULP dincolo de limitarea la dimensiunea minimă pe care oracolul
@@ -1113,16 +1117,19 @@ pentru aceeași limită). `sfdp.241_0` este acceptat la nivelul fluxului de moto
 sonda de mai sus nu a explicat-o.
 
 Fluxul xdot de motor **fdp** (`parity-fdp.json`, `dot -Kfdp -Txdot` nativ,
-±0.5) scoate la iveală ACEEAȘI egalitate cocirculară CDT pe același graf, `241_0`: cu
-pozițiile exacte dinaintea rutării ale oracolului injectate, reziduul este de 11 diferențe numerice
-`unfilled_bezier`, limitate la o singură muchie (`0->1#0`, maxΔ 3.39pt). Deoarece
-pozițiile nodurilor sunt injectate identic, divergența este în aval, în
-coridorul multispline din pathplan — aceeași egalitate incircle cu 1 ULP libm ca la
-circo/sfdp `241_0` (incircle în numere raționale exacte 185/185 de mai sus; 11 diferențe neschimbate de
-`f66ac638` — nereverificat prin injecție). Pârghiile
-sunt deja aplicate (`src/pathplan/triang.ts` fmadd, `Math.hypot` în `src/pathplan/route.ts:198`);
-egalitatea este tratată ca ireductibilă. Acceptat prin `accepted-divergences-engines.json`
-`fdp.241_0`. În schimb, `2095` din fdp este **A1-drift, nu A9**: injectarea
+±0.5) arăta același graf, `241_0`, ca fiind din această clasă: cu pozițiile
+exacte dinaintea rutării ale oracolului injectate, rămâneau 11 diferențe numerice
+`unfilled_bezier` pe o singură muchie (`0->1#0`, maxΔ 3.39pt), atribuite
+egalității incircle cocirculare. Această atribuire a fost greșită. `fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) a găsit o portare
+greșită de partea portării: `swap_if_in_circle` din GTS își construiește cele două fețe noi ca
+`gts_face_new(en, e5, e2)` și `gts_face_new(en, e3, e4)` (`cdt.c:509-511`),
+iar `gts_triangle_vertices` citește o față din ordinea muchiilor ei, deci nativul le listează
+ca (v3, v4, v2) și (v4, v3, v1); portarea le stoca pe ambele rotite cu o poziție,
+iar `triCenter` din routerul multispline aduna vârfurile în această ordine. Cu
+ordinea corectată, fdp `241_0` se potrivește cu nativul pe fiecare flux (xdot trece, json
+conform, plain și stderr egale), iar intrările sale din `accepted-divergences-engines.json`
+și `accepted-divergences-json.json` sunt retrase. În schimb, `2095` din fdp este **A1-drift, nu A9**: injectarea
 singurului nod cu nume gol (după ce injectorul de atribuire a fost remediat pentru a potrivi
 nodurile cu numele `""`) reduce rezidul la zero — „coada A9” de dinainte era
 nodul gol neinjectat care își trăgea după el muchiile incidente. Acceptarea sfdp `2095` a avut

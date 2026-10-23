@@ -1,5 +1,5 @@
 ---
-sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -236,9 +236,9 @@ selitetty yksitellen graphviz 16.1.0:aa vasten: injektiotyökalu
 (`test/corpus/attribute-divergence.ts`) syöttää natiivin oraakkelin reititystä
 edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja jokainen nykyinen
 poikkeava tunniste on `drift-exonerated` (porttauksen reititys ja emissio
-toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) kolmea lukuun ottamatta. Kolme on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
-`241_0`:n CDT:n incircle-tasapeli fdp:llä ja sfdp:llä sekä sfdp:n `2556`:n
-NaN-asettelu. fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`)
+toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) kahta lukuun ottamatta. Kaksi on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
+sfdp:n `241_0`:n CDT-jäännös sekä sfdp:n `2556`:n NaN-asettelu. fdp:n `241_0` läpäisee
+testin korjauksesta `fix(T9): start swapped cdt faces at the new diagonal as gts does` lähtien (katso fdp-kappale kohdassa A9). fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`)
 poikkesivat aiemmin injektion jälkeen, eli xlabel-sijoittaja valitsi eri ehdokkaan.
 `2471` korjaantui, kun porttauksen `dotneato_closest` alkoi pyöristää kuten clangin
 yhdistetty de Casteljau -laskenta ja DIST2: kaarten nimiöiden ankkurit erosivat 1–2
@@ -907,13 +907,13 @@ geometry`) peilasi sen. twopi:n ja neaton `241_0` — jotka tämä luokka oli se
 alla olevalla samalle ympyrälle osuvalla tasapelillä — muuttuivat **yhdenmukaisiksi**
 (hyväksynnät poistettu), ja sfdp:n `42`:lla ei osoittautunutkaan olevan tasapeliä
 lainkaan (se on A1-drift, katso [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
-circon, fdp:n ja sfdp:n `241_0` poikkeavat yhä, niiden jäännökset ovat ennallaan tai
+fdp:n `241_0` muuttui myöhemmin **yhdenmukaiseksi** kolmioinnin toisen porttauspuolen korjauksen jälkeen (tahkon kärkien järjestys kaarenvaihdon jälkeen; katso fdp-kappale alla). circon ja sfdp:n `241_0` poikkeavat yhä, niiden jäännökset ovat ennallaan tai
 pienentyneet; niiden selitys alla olevalla tasapelillä edeltää `f66ac638`a eikä sitä
 ole **varmennettu uudelleen sijaintiinjektiolla** sen jälkeen, vaikka sama korjaus
 osoitti selityksen vääräksi twopi:lle/neatolle.
 
-**Koskee:** `241_0` (circo Δ≈0.2 käytäväkäännöksen kautta kaarella `1->2`; fdp:n ja sfdp:n
-`241_0` alla olevilla moottoriraidoilla); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Koskee:** `241_0` (circo Δ≈0.2 käytäväkäännöksen kautta kaarella `1->2`; sfdp:n
+`241_0` alla olevalla moottoriraidalla); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 kaarinimiön sijaintieroa kukin — libm:n 1 ULP syntyy
 `poly_init`in yksikkökärkitrigonometriassa (`hypot`/`atan2`/`sin`), asettaa yhden solmun
 lasketun korkeuden ULP:n verran minimikokorajan yli, jolle oraakkeli osuu
@@ -1135,16 +1135,20 @@ luokkaan: sen rekisterimerkintä on A1 (`comparisons/sfdp-42.md`), eikä yllä o
 luotain selittänyt sitä.
 
 **fdp**-xdot-moottoriraita (`parity-fdp.json`, natiivi `dot -Kfdp -Txdot`,
-±0.5) tuo esiin SAMAN CDT:n samalla ympyrällä olevan tasapelin samalla graafilla, `241_0`: kun
-oraakkelin täsmälliset reititystä edeltävät sijainnit injektoidaan, jäännös on 11 numeerista
-`unfilled_bezier`-eroa yhdellä kaarella (`0->1#0`, maxΔ 3.39 pt). Koska
-solmusijainnit ovat injektoidusti identtiset, ero on alavirrassa
-pathplanin multispline-käytävässä — sama libm-1-ULP-incircle-tasapeli kuin
-circo/sfdp `241_0` (täsmällinen rationaali-incircle 185/185 yllä; 11 eroa ennallaan
-`f66ac638`n jälkeen — ei varmennettu uudelleen injektiolla). Vivut on
-jo otettu käyttöön (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); tasapeliä pidetään palautumattomana. Hyväksytty tiedoston `accepted-divergences-engines.json`
-`fdp.241_0` kautta. fdp:n `2095` sitä vastoin on **A1-drift, ei A9**: yksittäisen
+±0.5) näytti aiemmin saman graafin, `241_0`, tähän luokkaan kuuluvana: kun
+oraakkelin täsmälliset reititystä edeltävät sijainnit injektoitiin, yhdelle
+kaarelle (`0->1#0`, maxΔ 3.39 pt) jäi 11 numeerista `unfilled_bezier`-eroa, ja ne
+selitettiin samalle ympyrälle osuvalla incircle-tasapelillä. Tämä selitys oli
+väärä. `fix(T9): start swapped cdt faces at the new diagonal as gts does` (2026-10-22) löysi porttauspuolen
+virheen: GTS:n `swap_if_in_circle` rakentaa kaksi uutta tahkoaan muodossa
+`gts_face_new(en, e5, e2)` ja `gts_face_new(en, e3, e4)` (`cdt.c:509-511`), ja
+`gts_triangle_vertices` lukee tahkon sen kaarijärjestyksestä, joten natiivi
+luettelee ne muodossa (v3, v4, v2) ja (v4, v3, v1); porttaus tallensi molemmat
+yhden paikan verran kierrettyinä, ja multispline-reitittimen `triCenter` summasi
+kärjet tässä järjestyksessä. Kun järjestys on korjattu, fdp:n `241_0` täsmää
+natiiviin kaikilla raidoilla (xdot läpäisee, json yhdenmukainen, plain ja stderr
+yhtä), ja sen merkinnät tiedostoissa `accepted-divergences-engines.json` ja
+`accepted-divergences-json.json` on poistettu. fdp:n `2095` sitä vastoin on **A1-drift, ei A9**: yksittäisen
 tyhjännimisen solmun injektointi (kun attribuutioinjektori oli korjattu täsmäämään
 `""`-nimisiin solmuihin) romahduttaa sen jäännöksen nollaan — aiempi ”A9-häntä” oli
 injektoimaton tyhjä solmu, joka veti mukanaan siihen liittyviä kaaria. Sfdp:n `2095`-hyväksyntä

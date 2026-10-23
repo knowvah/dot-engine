@@ -1,5 +1,5 @@
 ---
-sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -254,9 +254,10 @@ Contrairement au premier balayage, chaque ligne divergente de l’univers de 929
 d’injection (`test/corpus/attribute-divergence.ts`) fournit au portage le `ND_pos`
 pré-routage de l’oracle natif et recompare, et chaque identifiant divergent actuel
 est `drift-exonerated` (le routage et l’émission du portage reproduisent
-exactement l’oracle dès que la dérive du solveur est supprimée), sauf trois. Trois
-sont des résidus par identifiant acceptés séparément : l’égalité d’incercle CDT de
-`241_0` sur fdp et sfdp, et la disposition NaN de `2556` pour sfdp. `2471` pour fdp et
+exactement l’oracle dès que la dérive du solveur est supprimée), sauf deux. Deux
+sont des résidus par identifiant acceptés séparément : le résidu CDT de `241_0` sur
+sfdp et la disposition NaN de `2556` pour sfdp. `241_0` pour fdp passe depuis
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (voir le paragraphe fdp sous A9). `2471` pour fdp et
 `2371` pour sfdp conservaient des positions d’étiquettes d’arête (`lp`) qui différaient
 après injection, c’est-à-dire que le placeur de xlabels choisissait un autre candidat.
 `2471` s’est résolu dès que le `dotneato_closest` du portage a arrondi comme
@@ -1004,14 +1005,14 @@ mirror fma contraction in multispline routing geometry`) l’a reflétée. `241_
 de twopi et de neato — que cette classe avait attribués à l’égalité
 cocirculaire ci-dessous — sont devenus **conformes** (acceptations retirées), et
 `42` de sfdp s’est révélé ne comporter aucune égalité (c’est de la dérive A1,
-voir [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` de circo, fdp et sfdp
-diverge encore, avec des résidus inchangés ou réduits ; leur attribution à
+voir [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` de fdp est devenu **conforme** plus tard, après une seconde correction côté portage de la triangulation (ordre des sommets des faces après un échange d’arête ; voir le paragraphe fdp ci-dessous). `241_0` de circo et sfdp
+divergent encore, avec des résidus inchangés ou réduits ; leur attribution à
 l’égalité ci-dessous est antérieure à `f66ac638` et n’a **pas été revérifiée par
 injection de positions** depuis que ce correctif a montré cette même attribution
 erronée pour twopi/neato.
 
 **Concernés :** `241_0` (circo Δ≈0.2 via la bascule de couloir sur l’arête
-`1->2` ; `241_0` de fdp et de sfdp sur les pistes de moteur ci-dessous) ; `2343`,
+`1->2` ; `241_0` de sfdp sur la piste de moteur ci-dessous) ; `2343`,
 `2239`, `share-b29`, `windows-b29`
 (twopi, 1 à 2 différences de position d’étiquette d’arête chacun — l’ULP de
 libm naît dans la trigonométrie des sommets unitaires de `poly_init`
@@ -1258,17 +1259,20 @@ son entrée de registre est A1 (`comparisons/sfdp-42.md`), et la sonde ci-dessus
 ne l’a pas expliqué.
 
 La piste xdot du moteur **fdp** (`parity-fdp.json`, `dot -Kfdp -Txdot` natif,
-±0.5) fait apparaître LA MÊME égalité cocirculaire du CDT sur le même graphe,
-`241_0` : avec les positions exactes d’avant routage de l’oracle injectées, le
-résidu est de 11 différences numériques d’`unfilled_bezier` limitées à une seule
-arête (`0->1#0`, maxΔ 3.39pt). Les positions des nœuds étant injectées à
-l’identique, la divergence est en aval, dans le couloir multispline de pathplan
-— la même égalité d’incercle à 1 ULP de libm que pour circo/sfdp `241_0`
-(incercle en rationnels exacts 185/185 ci-dessus ; 11 différences inchangées par
-`f66ac638` — non revérifié par injection). Les leviers sont déjà
-appliqués (`src/pathplan/triang.ts` fmadd, `Math.hypot` à
-`src/pathplan/route.ts:198`) ; l’égalité est traitée comme irréductible. Accepté via
-`accepted-divergences-engines.json` `fdp.241_0`. En revanche, le `2095` de fdp
+±0.5) montrait auparavant le même graphe, `241_0`, comme relevant de cette classe :
+avec les positions exactes d’avant routage de l’oracle injectées, il restait 11
+différences numériques d’`unfilled_bezier` sur une seule arête (`0->1#0`, maxΔ
+3.39pt), attribuées à l’égalité d’incercle cocirculaire. Cette attribution était
+erronée. `fix(T9): start swapped cdt faces at the new diagonal as gts does` (2026-10-22) a trouvé
+une erreur de portage : `swap_if_in_circle` de GTS construit ses deux nouvelles faces
+comme `gts_face_new(en, e5, e2)` et `gts_face_new(en, e3, e4)` (`cdt.c:509-511`),
+et `gts_triangle_vertices` lit une face selon l’ordre de ses arêtes, si bien que le
+natif les énumère comme (v3, v4, v2) et (v4, v3, v1) ; le portage stockait les deux
+décalées d’un cran, et `triCenter` du routeur multispline sommait les sommets dans
+cet ordre. Une fois l’ordre corrigé, `241_0` de fdp concorde avec le natif sur
+toutes les pistes (xdot réussi, json conforme, plain et stderr identiques), et ses
+entrées de `accepted-divergences-engines.json` et de
+`accepted-divergences-json.json` sont retirées. En revanche, le `2095` de fdp
 relève de **A1-drift, et non de A9** : injecter l’unique nœud au nom vide (après
 correction de l’injecteur d’attribution pour qu’il accepte les nœuds nommés
 `""`) ramène son résidu à zéro — la « queue A9 » précédente était le nœud vide

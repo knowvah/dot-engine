@@ -403,7 +403,6 @@
 {"id":"1408","size":544,"status":"pass","oracleMs":13,"portMs":440}
 {"id":"1425_1","size":544,"status":"pass","oracleMs":13,"portMs":439}
 {"id":"graphs-nul_nul","size":576,"status":"pass","oracleMs":13,"portMs":452}
-{"id":"241_0","size":578,"status":"diverged","oracleMs":15,"portMs":465,"nDiffs":11,"firstDiff":"edge:0->1#0 _draw_ edge:0->1#0/_draw_/op[1].unfilled_bezier[4]: 64.49 vs 61.1"}
 {"id":"share-labelclust-ndd","size":586,"status":"pass","oracleMs":12,"portMs":438}
 {"id":"windows-labelclust-ndd","size":586,"status":"pass","oracleMs":13,"portMs":443}
 {"id":"graphs-inv_nul","size":588,"status":"pass","oracleMs":13,"portMs":428}
@@ -926,3 +925,4 @@
 {"id":"2646","size":2975897,"status":"oracle-error","oracleMs":3600003,"err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
 {"id":"2108","size":3136769,"status":"diverged","oracleMs":46904,"portMs":167451,"nDiffs":1062877,"firstDiff":"[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 59697.51 vs 60491.08"}
 {"id":"tree-share-examples-world","size":16326502,"status":"oracle-error","oracleMs":3600005,"err":"spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"}
+{"id":"241_0","size":578,"status":"pass","oracleMs":23,"portMs":1221}

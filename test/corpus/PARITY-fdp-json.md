@@ -13,7 +13,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 - **Surveyed:** 928
 - **Oracle:** dot 16.1.0
-- **pass:** 889 (96.5%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 29
+- **pass:** 890 (96.6%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 28
 - **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 7
 
 ## Diverged (2)
@@ -23,7 +23,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 35660 | `edge:n0->n3#0/_draw_/op[1].b[ptCount]` |
 | [`2796`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2796.dot) | 8959 | 7064 | `[graph]/_draw_/op[2].P[3]` |
 
-## Accepted (29) — documented, not chased
+## Accepted (28) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
@@ -32,7 +32,6 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | 1062866 | `[graph]/_draw_/op[2].P[3]` | A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive — port self-perturbation experiments (2620: node width +0.001in -&gt; median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -&gt; median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail. (2108/1652: layout additionally exceeds the xdot-track port time budget; perf class, see 2621.) |
 | [`2183`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2183.dot) | 1087 | `edge:c->m#0/_draw_/op[2].b[ptCount]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2242`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2242.dot) | 754 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 11 | `edge:0->1#0/_draw_/op[1].b[4]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2470`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2470.dot) | 20266 | `edge:n135->n101#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2475_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_2.dot) | 322220 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 11397 | `edge:advisor->auditlog_logmessage#0/_draw_/op[1].b[ptCount]` | A1 iterative-solver drift (class) — membership computed from `attribution-fdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
@@ -70,5 +69,5 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Warning: syntax ambiguity - badly delimited number '00s' in line 1 of https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot splits into two tokens |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (889) are omitted for brevity — the full roster is in
+_Passing ids (890) are omitted for brevity — the full roster is in
 `json-parity-fdp.json`._

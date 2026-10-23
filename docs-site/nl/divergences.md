@@ -1,5 +1,5 @@
 ---
-sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -221,9 +221,11 @@ afzonderlijk toegeschreven ten opzichte van graphviz 16.1.0: het injectietesthar
 (`test/corpus/attribute-divergence.ts`) voert de pre-routerings-`ND_pos` van het native
 orakel in de port in en vergelijkt opnieuw, en elk huidig afwijkend id is
 `drift-exonerated` (routering en uitvoer van de port reproduceren het orakel exact zodra
-de solverdrift is weggenomen), op drie na. Drie zijn afzonderlijk geaccepteerde
-restgevallen per id: de CDT-incircle-gelijkstand van `241_0` op fdp en sfdp, en de
-NaN-lay-out van sfdp `2556`. fdp `2471` en sfdp `2371` hielden na injectie eerder
+de solverdrift is weggenomen), op twee na. Twee zijn afzonderlijk geaccepteerde
+restgevallen per id: het CDT-restverschil van sfdp `241_0`, en de
+NaN-lay-out van sfdp `2556`. fdp `241_0` slaagt sinds
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (zie de fdp-alinea
+onder A9). fdp `2471` en sfdp `2371` hielden na injectie eerder
 afwijkende posities van edge-labels (`lp`), dat wil zeggen dat de xlabel-plaatser een
 andere kandidaat koos. `2471` is opgelost sinds de `dotneato_closest` van de port
 afrondt zoals de gefuseerde de Casteljau-evaluatie en DIST2 van clang: de ankers van
@@ -895,14 +897,16 @@ zou vereisen dat de exacte `sin`/`cos`-afronding van Apple-libm in JS wordt gere
 multispline routing geometry`) heeft die gespiegeld. twopi- en neato-`241_0` — die door
 deze klasse aan de cocirculaire gelijkstand hieronder waren toegeschreven — werden **conformant**
 (acceptaties ingetrokken), en sfdp `42` bleek helemaal geen gelijkstand te hebben (het is A1-
-drift, zie [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo-, fdp-
-en sfdp-`241_0` wijken nog af met onveranderde of kleinere restverschillen; hun
+drift, zie [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp-`241_0` werd later
+**conformant**, na een tweede port-zijdige fix aan de triangulatie (volgorde van de
+hoekpunten van vlakken na een kantwissel; zie de fdp-alinea hieronder). circo- en
+sfdp-`241_0` wijken nog af met onveranderde of kleinere restverschillen; hun
 toeschrijving aan de gelijkstand hieronder dateert van vóór `f66ac638` en is sindsdien **niet opnieuw geverifieerd
 door positie-injectie**, terwijl diezelfde toeschrijving voor
 twopi/neato onjuist bleek.
 
-**Getroffen:** `241_0` (circo Δ≈0.2 via de corridoromslag op kant `1->2`; fdp
-en sfdp `241_0` op de enginesporen hieronder); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Getroffen:** `241_0` (circo Δ≈0.2 via de corridoromslag op kant `1->2`; sfdp
+`241_0` op het enginespoor hieronder); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 elk 1–2 verschillen in de positie van kantlabels — de libm-1-ULP ontstaat in
 de eenheidshoekpunt-trigonometrie van `poly_init` (`hypot`/`atan2`/`sin`), zet de
 berekende hoogte van één knoop een ULP voorbij de minimumgrootte-begrenzing waar het orakel
@@ -1120,16 +1124,20 @@ klasse: zijn registervermelding is A1 (`comparisons/sfdp-42.md`), en de sonde hi
 verklaarde die niet.
 
 Het **fdp**-xdot-enginespoor (`parity-fdp.json`, native `dot -Kfdp -Txdot`,
-±0.5) legt DEZELFDE cocirculaire CDT-gelijkstand bloot op dezelfde graaf, `241_0`: met de
-exacte pre-routeringsposities van het orakel geïnjecteerd is het restverschil 11 numerieke
-`unfilled_bezier`-verschillen, beperkt tot één kant (`0->1#0`, maxΔ 3.39pt). Omdat
-de knoopposities geïnjecteerd-identiek zijn, zit de afwijking stroomafwaarts in de
-pathplan-multispline-corridor — dezelfde libm-1-ULP-incircle-gelijkstand als bij
-circo/sfdp `241_0` (exact-rationale incircle 185/185 hierboven; 11 verschillen onveranderd door
-`f66ac638` — niet opnieuw geverifieerd door injectie). De hefbomen zijn
-al toegepast (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); de gelijkstand wordt als onherleidbaar beschouwd. Geaccepteerd via `accepted-divergences-engines.json`
-`fdp.241_0`. `2095` van fdp daarentegen is **A1-drift, geen A9**: het injecteren van de
+±0.5) toonde dezelfde graaf, `241_0`, als deze klasse: met de exacte
+pre-routeringsposities van het orakel geïnjecteerd bleven 11 numerieke
+`unfilled_bezier`-verschillen over op één kant (`0->1#0`, maxΔ 3.39pt), en die werden
+toegeschreven aan de cocirculaire incircle-gelijkstand. Die toeschrijving was onjuist.
+`fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) vond een fout in de port:
+GTS `swap_if_in_circle` bouwt zijn twee nieuwe vlakken als `gts_face_new(en, e5, e2)` en
+`gts_face_new(en, e3, e4)` (`cdt.c:509-511`), en `gts_triangle_vertices` leest een vlak uit
+de volgorde van zijn kanten, dus native somt het ze op als (v3, v4, v2) en (v4, v3, v1);
+de port sloeg beide één positie geroteerd op, en `triCenter` van de multispline-router
+sommeerde de hoekpunten in die volgorde. Met de volgorde hersteld komt fdp `241_0` op elk
+spoor overeen met native (xdot pass, json conformant, plain en stderr gelijk), en de
+vermeldingen in `accepted-divergences-engines.json` en `accepted-divergences-json.json`
+zijn ingetrokken. `2095` van fdp daarentegen is **A1-drift, geen A9**: het injecteren van de
 enkele knoop met lege naam (nadat de attributie-injector was gecorrigeerd om knopen met naam
 `""` te herkennen) laat zijn restverschil tot nul instorten — de eerdere „A9-staart” was de
 niet-geïnjecteerde lege knoop die zijn aangrenzende kanten meesleepte. De sfdp-`2095`-acceptatie was

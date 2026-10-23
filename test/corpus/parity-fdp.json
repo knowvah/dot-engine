@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-10-13T21:15:23.722Z",
+  "generatedAt": "2026-10-23T01:43:52.673Z",
   "generatedWith": "test/corpus/engine-walk.ts",
   "engine": "fdp",
   "tolerance": 0.5,
   "oracleVersion": "dot 16.1.0",
   "total": 928,
   "counts": {
-    "pass": 893,
-    "diverged": 29,
+    "pass": 894,
+    "diverged": 28,
     "oracle-error": 4,
     "port-error": 2,
     "timeout": 0
@@ -2851,15 +2851,6 @@
       "status": "pass",
       "oracleMs": 13,
       "portMs": 452
-    },
-    {
-      "id": "241_0",
-      "size": 578,
-      "status": "diverged",
-      "oracleMs": 15,
-      "portMs": 465,
-      "nDiffs": 11,
-      "firstDiff": "edge:0->1#0 _draw_ edge:0->1#0/_draw_/op[1].unfilled_bezier[4]: 64.49 vs 61.1"
     },
     {
       "id": "share-labelclust-ndd",
@@ -6573,6 +6564,13 @@
       "status": "oracle-error",
       "oracleMs": 3600005,
       "err": "spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT"
+    },
+    {
+      "id": "241_0",
+      "size": 578,
+      "status": "pass",
+      "oracleMs": 23,
+      "portMs": 1221
     }
   ]
 }

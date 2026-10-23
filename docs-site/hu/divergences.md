@@ -1,5 +1,5 @@
 ---
-sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -220,9 +220,9 @@ egyenként tulajdonítva van a graphviz 16.1.0 ellenében: az injektáló eszkö
 `ND_pos` értékét a portolt változatba táplálja, és újra összehasonlít, és minden
 jelenlegi eltérő azonosító `drift-exonerated` (a portolt változat útvonalvezetése
 és kibocsátása pontosan reprodukálja az orákulumot, amint a megoldósodródást
-eltávolítjuk), három kivételével. Három külön elfogadott, azonosítónkénti maradék: a
-`241_0` CDT-incircle döntetlene az fdp és sfdp motoron, valamint az sfdp `2556`
-NaN elrendezése. Az fdp `2471` és az sfdp `2371` élfeliratainak pozíciói (`lp`) korábban
+eltávolítjuk), kettő kivételével. Kettő külön elfogadott, azonosítónkénti maradék: az sfdp `241_0`
+CDT-maradéka, valamint az sfdp `2556` NaN elrendezése. Az fdp `241_0` átmegy a(z)
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` óta (lásd az fdp bekezdést az A9 alatt). Az fdp `2471` és az sfdp `2371` élfeliratainak pozíciói (`lp`) korábban
 injektálás után is eltértek, vagyis az xlabel-elhelyező másik jelöltet választott. A
 `2471` megszűnt, amint a portolt `dotneato_closest` úgy kerekít, mint a clang összevont
 de Casteljau-kiértékelése és DIST2-je: az élfeliratok horgonypontjai 1–2 ULP-vel tértek
@@ -897,14 +897,14 @@ mirror fma contraction in multispline routing geometry`) tükrözte. A twopi és
 neato `241_0` — amelyeket ez az osztály az alábbi körön fekvő döntetlennek
 tulajdonított — **conformant** lett (az elfogadások kivonva), az sfdp `42`-ről
 pedig kiderült, hogy egyáltalán nincs döntetlen (A1-sodródás, lásd
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). A circo, az fdp és az sfdp `241_0` még
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). Az fdp `241_0` később **conformant** lett, a triangulációnak egy második, portoldali javítása után (a lapcsúcsok sorrendje élcsere után; lásd lent az fdp bekezdést). A circo és az sfdp `241_0` még
 mindig eltér, a maradékaik változatlanok vagy csökkentek; az alábbi döntetlenre
 tulajdonításuk megelőzi a `f66ac638`-at, és azóta **nem ellenőriztük újra
 pozíciók injektálásával**, hogy ez a javítás ugyanezt a tulajdonítást tévesnek
 mutatta a twopi/neato esetén.
 
 **Érintett:** `241_0` (circo Δ≈0.2 az `1->2` élen a folyosó átbillenésén át; az
-fdp és az sfdp `241_0`-ja az alábbi motorsávokon); `2343`, `2239`, `share-b29`,
+sfdp `241_0`-ja az alábbi motorsávon); `2343`, `2239`, `share-b29`,
 `windows-b29` (twopi,
 mindegyik 1–2 élcímke-pozíció eltérés — a libm 1 ULP a
 `poly_init` egységcsúcs-trigonometriájában (`hypot`/`atan2`/`sin`) keletkezik, egy csúcs
@@ -1125,16 +1125,20 @@ osztálynak a része: a nyilvántartásbeli bejegyzése A1 (`comparisons/sfdp-42
 és a fenti próba nem magyarázta meg.
 
 Az **fdp** xdot motorsáv (`parity-fdp.json`, natív `dot -Kfdp -Txdot`,
-±0.5) UGYANEZT a CDT körön fekvő döntetlent hozza felszínre ugyanazon a gráfon, a `241_0`-n: az
-orákulum pontos útvonalvezetés előtti pozícióinak injektálásával a maradék 11 numerikus
-`unfilled_bezier` eltérés, egyetlen élre korlátozva (`0->1#0`, maxΔ 3.39 pt). Mivel
-a csúcspozíciók injektáltan azonosak, az eltérés lejjebb, a
-pathplan multispline folyosóban van — ugyanaz a libm 1 ULP-s incircle döntetlen, mint a
-circo/sfdp `241_0` esetén (pontos racionális incircle 185/185, fent; 11 eltérés a
-`f66ac638` után változatlan — injektálással nem ellenőrizve). A kapcsolók
-már alkalmazva vannak (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); a döntetlent redukálhatatlannak tekintjük. Elfogadva az `accepted-divergences-engines.json`
-`fdp.241_0` bejegyzésén át. Az fdp `2095`-je ezzel szemben **A1-drift, nem A9**: az
+±0.5) korábban ugyanezt a gráfot, a `241_0`-t mutatta ebbe az osztályba tartozóként:
+az orákulum pontos útvonalvezetés előtti pozícióinak injektálásával 11 numerikus
+`unfilled_bezier` eltérés maradt egyetlen élen (`0->1#0`, maxΔ 3.39 pt), és ezeket
+a körön fekvő incircle döntetlennek tulajdonították. Ez a tulajdonítás téves volt.
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (2026-10-22) portolási
+hibát talált: a GTS `swap_if_in_circle` a két új lapját `gts_face_new(en, e5, e2)`
+és `gts_face_new(en, e3, e4)` formában építi fel (`cdt.c:509-511`), a
+`gts_triangle_vertices` pedig az élsorrendjükből olvassa ki a lapot, így a natív
+őket (v3, v4, v2) és (v4, v3, v1) alakban sorolja fel; a portolt változat mindkettőt
+eggyel elforgatva tárolta, és a multispline útválasztó `triCenter` függvénye ebben a
+sorrendben összegezte a csúcsokat. A sorrend javításával az fdp `241_0` minden
+sávon egyezik a natívval (xdot sikeres, json conformant, plain és stderr azonos), és
+az `accepted-divergences-engines.json` és `accepted-divergences-json.json` fájlbeli
+bejegyzései kivonásra kerültek. Az fdp `2095`-je ezzel szemben **A1-drift, nem A9**: az
 egyetlen üres nevű csúcs injektálása (miután a tulajdonító injektort kijavítottuk az
 `""` nevű csúcsok illesztésére) a maradékát nullára omlasztja — a korábbi „A9 farok” az
 injektálatlan üres csúcs volt, amely maga után húzta a rákapcsolódó éleket. Az sfdp `2095` elfogadása

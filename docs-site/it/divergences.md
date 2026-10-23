@@ -1,5 +1,5 @@
 ---
-sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -244,9 +244,11 @@ A differenza del primo rilevamento, ogni riga divergente dell'universo di 929 el
 (`test/corpus/attribute-divergence.ts`) fornisce al porting l'`ND_pos` pre-instradamento
 dell'oracolo nativo e ripete il confronto, e ogni id divergente attuale è
 `drift-exonerated` (instradamento ed emissione del porting riproducono esattamente
-l'oracolo una volta rimossa la deriva del solver) tranne tre. Tre sono residui per
-singolo id accettati a parte: il pareggio di incircle CDT di `241_0` su fdp e sfdp e il
-layout NaN di sfdp `2556`. fdp `2471` e sfdp `2371` mantenevano posizioni delle
+l'oracolo una volta rimossa la deriva del solver) tranne due. Due sono residui per
+singolo id accettati a parte: il residuo CDT di `241_0` su sfdp e il
+layout NaN di sfdp `2556`. `241_0` di fdp passa da
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (vedi il paragrafo su
+fdp sotto A9). fdp `2471` e sfdp `2371` mantenevano posizioni delle
 etichette degli archi (`lp`) che differivano dopo l'iniezione, cioè il posizionatore di
 xlabel sceglieva un candidato diverso. `2471` si è risolto quando il `dotneato_closest`
 del port ha iniziato ad arrotondare come la valutazione di De Casteljau fusa e il DIST2
@@ -965,13 +967,16 @@ mirror fma contraction in multispline routing geometry`) l'ha rispecchiata.
 `241_0` di twopi e di neato — che questa classe aveva attribuito al pareggio
 cocircolare qui sotto — sono diventati **conformant** (accettazioni ritirate), e
 `42` di sfdp si è rivelato privo di qualsiasi pareggio (è deriva A1, vedi
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` di circo, fdp e sfdp divergono
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` di fdp è diventato
+**conformant** in seguito, dopo una seconda correzione lato porting alla triangolazione
+(ordine dei vertici delle facce dopo uno scambio di arco; vedi il paragrafo su fdp qui
+sotto). `241_0` di circo e sfdp divergono
 ancora, con residui invariati o ridotti; la loro attribuzione al pareggio qui sotto
 precede `f66ac638` e **non è stata riverificata per iniezione di posizioni** da
 quando quella correzione ha mostrato errata la stessa attribuzione per twopi/neato.
 
 **Interessati:** `241_0` (circo Δ≈0.2 tramite l'inversione del corridoio sull'arco
-`1->2`; `241_0` di fdp e sfdp sulle tracce dei motori più sotto); `2343`, `2239`,
+`1->2`; `241_0` di sfdp sulla traccia del motore più sotto); `2343`, `2239`,
 `share-b29`, `windows-b29`
 (twopi, 1–2 differenze di posizione di etichette d'arco ciascuno — l'ULP di libm
 nasce nella trigonometria dei vertici unitari di `poly_init`
@@ -1208,17 +1213,19 @@ sua voce nel registro è A1 (`comparisons/sfdp-42.md`), e la sonda qui sopra non
 l'ha spiegato.
 
 La traccia xdot del motore **fdp** (`parity-fdp.json`, `dot -Kfdp -Txdot` nativo,
-±0.5) fa emergere lo STESSO pareggio cocircolare di CDT sullo stesso grafo,
-`241_0`: con le esatte posizioni pre-instradamento dell'oracolo iniettate, il
-residuo è di 11 differenze numeriche di `unfilled_bezier` confinate a un solo arco
-(`0->1#0`, maxΔ 3.39pt). Poiché le posizioni dei nodi sono identiche per
-iniezione, la divergenza è a valle nel corridoio multispline di pathplan — lo stesso
-pareggio dell'incircle dovuto a 1 ULP di libm di circo/sfdp `241_0`
-(incircle in razionali esatti 185/185 qui sopra; 11 differenze invariate da
-`f66ac638` — non riverificato per iniezione). Le leve sono già applicate
-(`fmadd` di `src/pathplan/triang.ts`, `Math.hypot` di `src/pathplan/route.ts:198`);
-il pareggio è considerato irriducibile. Accettato tramite `accepted-divergences-engines.json`
-`fdp.241_0`. `2095` di fdp, al contrario, è **A1-drift, non A9**: iniettare il
+±0.5) mostrava lo stesso grafo, `241_0`, come appartenente a questa classe: con le esatte
+posizioni pre-instradamento dell'oracolo iniettate, restavano 11 differenze numeriche di
+`unfilled_bezier` su un solo arco (`0->1#0`, maxΔ 3.39pt), attribuite al pareggio
+cocircolare dell'incircle. Quell'attribuzione era errata.
+`fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) ha trovato un errore di porting: `swap_if_in_circle` di GTS
+costruisce le sue due nuove facce come `gts_face_new(en, e5, e2)` e
+`gts_face_new(en, e3, e4)` (`cdt.c:509-511`), e `gts_triangle_vertices` legge una faccia
+dall'ordine dei suoi archi, quindi il nativo le elenca come (v3, v4, v2) e (v4, v3, v1);
+il porting memorizzava entrambe ruotate di uno, e `triCenter` del router multispline
+sommava i vertici in quell'ordine. Con l'ordine corretto, `241_0` di fdp coincide con il
+nativo su ogni traccia (xdot pass, json conformant, plain e stderr uguali), e le sue voci in
+`accepted-divergences-engines.json` e `accepted-divergences-json.json` sono ritirate. `2095` di fdp, al contrario, è **A1-drift, non A9**: iniettare il
 singolo nodo dal nome vuoto (dopo che l'iniettore di attribuzione è stato corretto
 per accettare i nodi con nome `""`) porta a zero il suo residuo — la precedente «coda
 A9» era il nodo vuoto non iniettato che trascinava i suoi archi incidenti. Anche

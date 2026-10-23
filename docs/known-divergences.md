@@ -215,9 +215,11 @@ individually attributed against graphviz 16.1.0: the injection harness
 (`test/corpus/attribute-divergence.ts`) feeds the native oracle's
 pre-routing `ND_pos` into the port and re-compares, and every current
 diverged id is `drift-exonerated` (the port's routing and emission
-reproduce the oracle exactly once the solver drift is removed) except three.
-Three are separately accepted per-id residuals: `241_0`'s CDT incircle tie
-on fdp and sfdp, and sfdp `2556`'s NaN layout. fdp `2471` and sfdp `2371`
+reproduce the oracle exactly once the solver drift is removed) except two.
+Two are separately accepted per-id residuals: sfdp `241_0`'s CDT residual
+and sfdp `2556`'s NaN layout. fdp `241_0` passes since `fix(T9): start
+swapped cdt faces at the new diagonal as gts does` (see the fdp paragraph
+under A9). fdp `2471` and sfdp `2371`
 used to keep edge-label positions (`lp`) that differed after injection, i.e.
 the xlabel placer picked a different candidate. `2471` cleared once the
 port's `dotneato_closest` rounded like clang's fused de Casteljau evaluation
@@ -902,14 +904,16 @@ contraction (ellipse-corner radicand, `mkCtrlPts`, `DIST` = sqrt(fmadd), the
 multispline routing geometry`) mirrored it. twopi and neato `241_0` — which
 this class had attributed to the cocircular tie below — went **conformant**
 (acceptances retired), and sfdp `42` turned out to have no tie at all (it is A1
-drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
+drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0`
+went **conformant** later, after a second port-side fix to the triangulation
+(face vertex order after an edge swap; see the fdp paragraph below). circo
 and sfdp `241_0` still diverge with their residuals unchanged or reduced; their
 attribution to the tie below predates `f66ac638` and has **not been re-verified
 by position injection** since that fix showed the same attribution wrong for
 twopi/neato.
 
-**Affected:** `241_0` (circo Δ≈0.2 via the corridor flip on edge `1->2`; fdp
-and sfdp `241_0` on the engine tracks below); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Affected:** `241_0` (circo Δ≈0.2 via the corridor flip on edge `1->2`; sfdp
+`241_0` on the engine track below); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 edge-label position diffs each — the libm 1-ULP arises in
 `poly_init`'s unit-vertex trig (`hypot`/`atan2`/`sin`), puts one node's
 computed height a ULP past the min-size clamp the oracle lands on
@@ -1129,16 +1133,19 @@ class: its registry entry is A1 (`comparisons/sfdp-42.md`), and the probe above
 did not explain it.
 
 The **fdp** xdot engine track (`parity-fdp.json`, native `dot -Kfdp -Txdot`,
-±0.5) surfaces the SAME CDT cocircular tie on the same graph, `241_0`: with the
-oracle's exact pre-routing positions injected, the residual is 11 numeric
-`unfilled_bezier` diffs confined to one edge (`0->1#0`, maxΔ 3.39pt). Because
-the node positions are injected-identical, the divergence is downstream in the
-pathplan multispline corridor — the same libm-1-ULP incircle tie as
-circo/sfdp `241_0` (exact-rational incircle 185/185 above; 11 diffs unchanged by
-`f66ac638` — not re-verified by injection). The levers are
-already applied (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); the tie is treated as irreducible. Accepted via `accepted-divergences-engines.json`
-`fdp.241_0`. fdp's `2095`, by contrast, is **A1-drift, not A9**: injecting the
+±0.5) used to show the same graph, `241_0`, as this class: with the oracle's
+exact pre-routing positions injected, 11 numeric `unfilled_bezier` diffs
+remained on one edge (`0->1#0`, maxΔ 3.39pt), and they were attributed to the
+cocircular incircle tie. That attribution was wrong. `fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) found a port-side
+mis-port: GTS `swap_if_in_circle` builds its two new faces as
+`gts_face_new(en, e5, e2)` and `gts_face_new(en, e3, e4)` (`cdt.c:509-511`),
+and `gts_triangle_vertices` reads a face from its edge order, so native lists
+them as (v3, v4, v2) and (v4, v3, v1); the port stored both rotated by one, and
+the multispline router's `triCenter` summed the vertices in that order. With
+the order fixed, fdp `241_0` matches native on every track (xdot pass, json
+conformant, plain and stderr equal), and its `accepted-divergences-engines.json`
+and `accepted-divergences-json.json` entries are retired. fdp's `2095`, by contrast, is **A1-drift, not A9**: injecting the
 single empty-named node (after the attribution injector was fixed to match
 `""`-named nodes) collapses its residual to zero — the earlier "A9 tail" was the
 un-injected empty node dragging its incident edges. The sfdp `2095` accept was

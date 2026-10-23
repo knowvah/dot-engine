@@ -1,5 +1,5 @@
 ---
-sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -200,10 +200,11 @@ PRISM 풀이에서 나온 명목상 같은 세 x 값의 마지막 ULP 순서에 
 
 첫 조사 때와 달리 929개 항목 전체의 어긋난 행은 모두 graphviz 16.1.0 기준으로 개별
 귀속되었습니다. 주입 도구(`test/corpus/attribute-divergence.ts`)가 네이티브 오라클의
-라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 세 건을 제외하고
+라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 두 건을 제외하고
 `drift-exonerated`(솔버 드리프트를 제거하면 포팅의 라우팅과 출력이 오라클을 정확히
-재현함)입니다. 세 건은 별도로 수용된 id별 잔여분으로, fdp와 sfdp에서 `241_0`의 CDT
-내접원 동점과 sfdp `2556`의 NaN 레이아웃입니다. fdp `2471`과 sfdp `2371`은 이전에는 주입 후에도 엣지 레이블 위치(`lp`)가 달라져, xlabel 배치기가 다른 후보를 골랐습니다. `2471`은 포팅의 `dotneato_closest`가 clang의 융합된 de Casteljau 계산 및 DIST2와 같은 방식으로 반올림하게 되자 해소되었습니다. 그전에는 엣지 레이블 앵커가 1~2 ULP 달라져 배치기의 엄격한 포함 검사가 뒤집혔습니다. `2371`은 포팅의 R-트리가 C처럼 사각형을 값으로 복사하게 되자 해소되었습니다. `2471`의 네이티브 fdp 레이아웃은 실행마다 달라지므로 해당 행은 한 번의 실행을 기록한 것입니다. (sfdp `42`는
+재현함)입니다. 두 건은 별도로 수용된 id별 잔여분으로, sfdp `241_0`의 CDT
+잔여분과 sfdp `2556`의 NaN 레이아웃입니다. fdp `241_0`은
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` 이후 통과합니다(A9의 fdp 문단 참고). fdp `2471`과 sfdp `2371`은 이전에는 주입 후에도 엣지 레이블 위치(`lp`)가 달라져, xlabel 배치기가 다른 후보를 골랐습니다. `2471`은 포팅의 `dotneato_closest`가 clang의 융합된 de Casteljau 계산 및 DIST2와 같은 방식으로 반올림하게 되자 해소되었습니다. 그전에는 엣지 레이블 앵커가 1~2 ULP 달라져 배치기의 엄격한 포함 검사가 뒤집혔습니다. `2371`은 포팅의 R-트리가 C처럼 사각형을 값으로 복사하게 되자 해소되었습니다. `2471`의 네이티브 fdp 레이아웃은 실행마다 달라지므로 해당 행은 한 번의 실행을 기록한 것입니다. (sfdp `42`는
 A1 드리프트이며 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md) 참고.) 아래 클래스 수용은 면책된 집합을 공식화하며, 최신 집계는
 엔진별 대시보드
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -778,11 +779,11 @@ point not in any triangle') `makeMultiSpline`은 병합된 모든 2-사이클에
 mirror fma contraction in multispline routing geometry`)이 이를 반영했습니다. 이 클래스가 아래의
 동원 동점으로 귀속했던 twopi와 neato의 `241_0`은 **conformant**가 되었고(수용 퇴출), sfdp `42`에는
 동점이 전혀 없었음이 밝혀졌습니다(A1 드리프트입니다. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)
-참고). circo, fdp, sfdp의 `241_0`은 여전히 어긋나며 잔여분은 그대로이거나 줄었습니다. 이들을 아래
+참고). fdp의 `241_0`은 이후 삼각분할에 대한 포팅 측의 두 번째 수정(에지 교환 뒤 면의 꼭짓점 순서; 아래 fdp 문단 참고)으로 **conformant**가 되었습니다. circo와 sfdp의 `241_0`은 여전히 어긋나며 잔여분은 그대로이거나 줄었습니다. 이들을 아래
 동점으로 귀속한 것은 `f66ac638`보다 앞서며, 그 수정이 twopi/neato에서 같은 귀속이 틀렸음을 보여
 준 뒤로 **위치 주입으로 다시 검증하지 않았습니다**.
 
-**영향받는 대상:** `241_0`(에지 `1->2`의 통로 뒤바뀜으로 circo Δ≈0.2, fdp와 sfdp의 `241_0`은
+**영향받는 대상:** `241_0`(에지 `1->2`의 통로 뒤바뀜으로 circo Δ≈0.2, sfdp의 `241_0`은
 아래 엔진 트랙), `2343`, `2239`, `share-b29`, `windows-b29`(twopi, 각각 에지 레이블 위치 차이 1–2건 —
 libm 1-ULP는 `poly_init`의 단위 꼭짓점 삼각함수(`hypot`/`atan2`/`sin`)에서 생겨 한 노드의
 계산된 높이를 오라클이 정확히 걸리는 최소 크기 클램프보다 1 ULP 넘기고, xlabel R-트리
@@ -958,14 +959,17 @@ CDT 동원 내접원 동점을 드러냅니다(따라서 차이는 반복형 드
 못했습니다.
 
 **fdp** xdot 엔진 트랙(`parity-fdp.json`, 네이티브 `dot -Kfdp -Txdot`,
-±0.5)도 같은 그래프 `241_0`에서 같은 CDT 동원 동점을 드러냅니다. 오라클의 정확한 라우팅
-이전 위치를 주입하면 잔여분은 한 에지(`0->1#0`, maxΔ 3.39pt)에 국한된 숫자
-`unfilled_bezier` 차이 11건입니다. 노드 위치가 동일하게 주입되었으므로 차이는 하류의
-pathplan 멀티스플라인 통로에 있으며 — circo/sfdp `241_0`과 같은 libm 1-ULP 내접원
-동점입니다(위의 정확한 유리수 내접원 185/185, 11건의 차이는 `f66ac638`으로 바뀌지 않음 — 주입으로
-재검증하지 않음). 수단은 이미 적용되어 있으며
-(`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198` `Math.hypot`), 동점은 환원
-불가능한 것으로 봅니다. `accepted-divergences-engines.json`의 `fdp.241_0`으로 수용됩니다. 반면 fdp의
+±0.5)은 이전에는 같은 그래프 `241_0`을 이 클래스로 보여 주었습니다. 오라클의 정확한 라우팅
+이전 위치를 주입해도 한 에지(`0->1#0`, maxΔ 3.39pt)에 숫자
+`unfilled_bezier` 차이 11건이 남았고, 이는 동원 내접원 동점으로 귀속되었습니다.
+그 귀속은 틀렸습니다. `fix(T9): start swapped cdt faces at the new diagonal as gts does`
+(2026-10-22)가 포팅 측의 잘못된 이식을 찾았습니다. GTS의 `swap_if_in_circle`은 두 새 면을
+`gts_face_new(en, e5, e2)`와 `gts_face_new(en, e3, e4)`로 만들고(`cdt.c:509-511`),
+`gts_triangle_vertices`는 면을 그 에지 순서에서 읽으므로 네이티브는 이를
+(v3, v4, v2)와 (v4, v3, v1)로 나열합니다. 포팅은 둘 다 한 칸씩 회전해 저장했고,
+멀티스플라인 라우터의 `triCenter`는 그 순서로 꼭짓점을 합산했습니다. 순서를 고치자
+fdp `241_0`은 모든 트랙에서 네이티브와 일치하며(xdot 통과, json conformant, plain과 stderr 동일),
+`accepted-divergences-engines.json`과 `accepted-divergences-json.json`의 항목은 퇴출되었습니다. 반면 fdp의
 `2095`는 **A9가 아니라 A1-drift**입니다. 이름이 빈 단일 노드를 주입하면(귀속 주입기가
 `""`라는 이름의 노드와 일치하도록 고쳐진 뒤) 잔여분이 0으로 수렴합니다 — 앞서의 'A9 꼬리'는
 주입되지 않은 빈 노드가 그에 닿은 에지를 끌고 가던 것이었습니다. sfdp `2095` 수용도 같은 맹점이었습니다 —

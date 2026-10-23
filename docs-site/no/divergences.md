@@ -1,5 +1,5 @@
 ---
-sourceHash: 58354e2ad08e555fa78d07ea6370c3c7acf1d7bab0e45cee834fd661deab44c2
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -216,8 +216,10 @@ individuelt tilskrevet mot graphviz 16.1.0: injeksjonsverktøyet
 (`test/corpus/attribute-divergence.ts`) mater det innebygde orakelets `ND_pos` før ruting
 inn i porten og sammenligner på nytt, og hver gjeldende avvikende id er `drift-exonerated`
 (portens ruting og emisjon reproduserer orakelet nøyaktig så snart løserdriften er
-fjernet), bortsett fra tre. Tre er separat godkjente rester per id: `241_0`s
-CDT-incircle-likhet på fdp og sfdp, og sfdp `2556`s NaN-layout. fdp `2471` og sfdp
+fjernet), bortsett fra to. To er separat godkjente rester per id: sfdp `241_0`s
+CDT-rest, og sfdp `2556`s NaN-layout. fdp `241_0` består siden
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (se fdp-avsnittet
+under A9). fdp `2471` og sfdp
 `2371` beholdt tidligere kantetikettposisjoner (`lp`) som avvek etter injeksjon, det vil
 si at xlabel-plasseringen valgte en annen kandidat. `2471` ble løst da portens
 `dotneato_closest` begynte å avrunde som clangs fusjonerte de Casteljau-evaluering og
@@ -888,14 +890,16 @@ prikkproduktet i `line_intersect`); `f66ac638` (`fix(neato): mirror fma contract
 multispline routing geometry`) speilet den. twopi- og neato-`241_0` — som denne klassen
 hadde tilskrevet den kosirkulære likheten nedenfor — ble **samsvarende**
 (godkjenninger pensjonert), og sfdp `42` viste seg å ikke ha noen likhet i det hele tatt (det er A1-
-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo-, fdp-
-og sfdp-`241_0` avviker fortsatt med uendrede eller reduserte rester; tilskrivningen
+drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp-`241_0` ble senere
+**samsvarende**, etter en ny rettelse på portsiden i trianguleringen (rekkefølgen på
+flatenes hjørner etter et kantbytte; se fdp-avsnittet nedenfor). circo- og
+sfdp-`241_0` avviker fortsatt med uendrede eller reduserte rester; tilskrivningen
 av dem til likheten nedenfor er eldre enn `f66ac638` og er **ikke verifisert på nytt
 ved posisjonsinjeksjon** siden den rettelsen viste at den samme tilskrivningen var feil for
 twopi/neato.
 
-**Berørt:** `241_0` (circo Δ≈0.2 via korridorvendingen på kanten `1->2`; fdp
-og sfdp `241_0` på motorsporene nedenfor); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Berørt:** `241_0` (circo Δ≈0.2 via korridorvendingen på kanten `1->2`; sfdp
+`241_0` på motorsporet nedenfor); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 forskjeller i etikettposisjon hver — libm-1-ULP oppstår i
 `poly_init`s enhetstoppunkt-trig (`hypot`/`atan2`/`sin`), setter én nodes
 beregnede høyde en ULP forbi minstestørrelsesbegrensningen orakelet lander
@@ -1111,16 +1115,20 @@ for den samme grensen). `sfdp.241_0` er godkjent på motorsporsnivå via `accept
 sonden ovenfor forklarte den ikke.
 
 **fdp**-xdot-motorsporet (`parity-fdp.json`, innebygd `dot -Kfdp -Txdot`,
-±0.5) avdekker den SAMME kosirkulære CDT-likheten på den samme grafen, `241_0`: med
-orakelets eksakte posisjoner før ruting injisert er resten 11 numeriske
-`unfilled_bezier`-forskjeller begrenset til én kant (`0->1#0`, maxΔ 3.39pt). Siden
-nodeposisjonene er injisert-identiske, ligger avviket nedstrøms i
-pathplan-multispline-korridoren — den samme libm-1-ULP-incircle-likheten som
-for circo/sfdp `241_0` (eksakt-rasjonal incircle 185/185 ovenfor; 11 forskjeller uendret av
-`f66ac638` — ikke verifisert på nytt ved injeksjon). Spakene er
-allerede brukt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); likheten anses som ureduserbar. Godkjent via `accepted-divergences-engines.json`
-`fdp.241_0`. fdps `2095` er derimot **A1-drift, ikke A9**: å injisere den
+±0.5) viste tidligere den samme grafen, `241_0`, som denne klassen: med orakelets
+eksakte posisjoner før ruting injisert gjensto 11 numeriske
+`unfilled_bezier`-forskjeller på én kant (`0->1#0`, maxΔ 3.39pt), og de ble tilskrevet
+den kosirkulære incircle-likheten. Den tilskrivningen var feil.
+`fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) fant en feilportering på
+portsiden: GTS `swap_if_in_circle` bygger sine to nye flater som
+`gts_face_new(en, e5, e2)` og `gts_face_new(en, e3, e4)` (`cdt.c:509-511`), og
+`gts_triangle_vertices` leser en flate fra kantrekkefølgen, så innebygd lister den dem som
+(v3, v4, v2) og (v4, v3, v1); porten lagret begge rotert ett steg, og
+`triCenter` i multispline-ruteren summerte hjørnene i den rekkefølgen. Med rekkefølgen
+rettet samsvarer fdp `241_0` med innebygd på alle spor (xdot pass, json samsvarende,
+plain og stderr like), og oppføringene i `accepted-divergences-engines.json` og
+`accepted-divergences-json.json` er pensjonert. fdps `2095` er derimot **A1-drift, ikke A9**: å injisere den
 ene noden med tomt navn (etter at tilskrivningsinjektoren ble rettet til å matche
 noder med navnet `""`) kollapser resten til null — den tidligere «A9-halen» var
 den ikke-injiserte tomme noden som dro med seg sine tilstøtende kanter. Godkjenningen av sfdp `2095` var

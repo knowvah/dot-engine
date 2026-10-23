@@ -107,7 +107,7 @@ the branch at the end (AD-1).
 | [3](batch-3/overview.md) | T5 agerr writer (36) · T6–T9 FMA sites (29a–d) | parallel worktrees | [x] |
 | [4](batch-4/overview.md) | T10 unknown color (37) · T11 width warnings (41) · T12 `<BR/>` in font style (35) | parallel worktrees | [x] (T12 parked) |
 | [5](batch-5/overview.md) | T13 1864 OOM (31) | single, open write-set | [x] (T13 parked) |
-| [6](batch-6/overview.md) | T14 final verification, close-out, re-sign stop | orchestrator | [ ] |
+| [6](batch-6/overview.md) | T14 final verification, close-out, re-sign stop | orchestrator | [x] |
 
 ## Documents
 

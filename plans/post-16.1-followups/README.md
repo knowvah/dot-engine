@@ -385,6 +385,20 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       Node/Edge would save ~15% of class2 bytes for every dot render with long edges;
       needs corpus byte-identity (part 3 T13; does not rescue 1864, which needs
       ≥ 6.6 GB even at C's sizes).
+  69. Native 16.1.0 is nondeterministic on some fdp/sfdp/neato corpus ids (graphs-fdp,
+      linux.x86-neatosplines_neato sfdp, ngk10_4 neato, directed-table fdp: 2-3
+      distinct xdots in 5-6 runs; linux.i386-b102 fdp differs between sessions), so
+      their walk verdicts flip with no port change. The walks should mark such ids
+      (e.g. run the oracle N times and record `oracle-nondeterministic`) instead of
+      caching one draw (part 3 T14). Seen on twopi too (nshare-arrows_dot).
+  70. `test/corpus/attribution-fdp.json(l)` still lists fdp `241_0` as
+      `not-cleared`, though the id passes since part 3 T9. Rerun
+      `attribute-divergence.ts fdp` (or drop the row) so attribution covers only
+      diverged ids (part 3 T14; outside T14's write-set).
+  71. Committed walk rows for still-diverged ids are stale where pre-mission src
+      changes moved output without a re-walk (twopi graphs-arrowsize: 23 diffs
+      committed, 72 on today's head and on part 3's base). A full re-walk of all
+      engines would refresh `nDiffs`/`firstDiff` (part 3 T14).
 
 ## Local leftovers (not committed, safe to delete)
 
