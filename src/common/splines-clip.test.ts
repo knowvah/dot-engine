@@ -13,7 +13,7 @@ import { Graph } from '../model/graph.js';
 import { Node } from '../model/node.js';
 import { Edge } from '../model/edge.js';
 import { makePort } from '../model/edgeInfo.js';
-import { clipAndInstall } from './splines-clip.js';
+import { clipAndInstall, dist } from './splines-clip.js';
 import { SINFO } from '../layout/neato/splines.js';
 import { renderSvg } from '../index.js';
 
@@ -126,5 +126,34 @@ describe('clipAndInstall — bb expansion', () => {
 
     expect(g.info.bb.ur.x).toBe(100);
     expect(g.info.bb.ur.y).toBe(100);
+  });
+});
+
+// DIST(p, q) = sqrt(SQR(dx) + SQR(dy)): the oracle (libgvc 16.1 _arrowEndClip,
+// _arrowStartClip incl. the inlined sphere_ctx inside(), _arrowOrthoClip)
+// compiles it to fsub/fsub/fmul dy*dy/fmadd dx,dx/fsqrt, i.e.
+// sqrt(fma(dx, dx, dy*dy)). Vectors: clang -O2 (arm64) harness over random
+// full-precision inputs, [px, py, qx, qy, fused, hypot] as C hex floats, kept
+// only where fused differs from both Math.hypot and plain sqrt(dx*dx+dy*dy).
+const hexf = (s: string): number => {
+  const m = /^(-?)0x1\.([0-9a-f]+)p([+-]\d+)$/.exec(s)!;
+  const v = parseInt('1' + m[2], 16) * 2 ** (parseInt(m[3]!, 10) - 4 * m[2]!.length);
+  return m[1] ? -v : v;
+};
+const DIST_VECTORS: string[][] = [
+    ["0x1.860e3ee9ec1c8p+7","-0x1.4ebb9073bd772p+7","-0x1.f8113d37b0227p+6","0x1.186bd9e6b0d7cp+5","0x1.7b87b6f675fcap+8","0x1.7b87b6f675fcbp+8"],
+    ["-0x1.d60dcb6e2c1b9p+5","0x1.2e2ca8f71c594p+6","0x1.ec11eecc5823ep+5","0x1.63552a6ba6aa6p+7","0x1.3b8c9eba0fd09p+7","0x1.3b8c9eba0fd0ap+7"],
+    ["0x1.5bacd7991759bp+7","0x1.60fd079801fa1p+6","-0x1.f009cd58e0138p+4","0x1.1d8eef441b1dep+7","0x1.a7f2e97cfa499p+7","0x1.a7f2e97cfa49ap+7"],
+    ["-0x1.555af6636ab5fp+6","0x1.b91a070d32342p+6","0x1.8de279ad7bc5p+7","0x1.7d1364c5fa26fp+4","0x1.29233eb3639aap+8","0x1.29233eb3639a9p+8"],
+    ["-0x1.01e86da223d0dp+7","-0x1.0275afdd64eb6p+7","0x1.0e4c3fcd9c989p+5","-0x1.1403cb0708079p+7","0x1.45f4994b1d1bap+7","0x1.45f4994b1d1b9p+7"],
+    ["0x1.33c9310747927p+7","0x1.3b63a9d7b6c75p+6","-0x1.9ee376f93dc6ap+3","0x1.730d03572619fp+6","0x1.4edffac2a6246p+7","0x1.4edffac2a6245p+7"],
+];
+
+describe('dist matches the fused native DIST', () => {
+  it.each(DIST_VECTORS)('vector %#', (...v) => {
+    const [px, py, qx, qy, fused, hypot] = v.map(hexf) as [number, number, number, number, number, number];
+    const d = dist({ x: px, y: py }, { x: qx, y: qy });
+    expect(d).toBe(fused);
+    expect(d).not.toBe(hypot);
   });
 });

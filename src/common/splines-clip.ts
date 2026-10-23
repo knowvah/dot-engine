@@ -16,7 +16,7 @@ import type { Edge } from '../model/edge.js';
 import type { Node } from '../model/node.js';
 import { approxEqPt, bezierClip, updateBbBz, InsideContext } from './splines-geom.js';
 import { MILLIPOINT, ARR_NONE } from './splines-constants.js';
-import { arrowClipLength } from '../layout/dot/edge-route-clip.js';
+import { arrowClipLength, distFused } from '../layout/dot/edge-route-clip.js';
 import {
   arrowDrawOpsForEnd, edgeArrowName, edgeArrowsize,
 } from '../layout/dot/edge-route-arrow.js';
@@ -24,6 +24,14 @@ import { resolvePenWidth, parseStyleFlags } from './style-resolve.js';
 
 /** Normal (filled triangle) arrowhead. @see lib/common/const.h:ARR_TYPE_NORM */
 export const ARR_NORM = 1;
+
+/**
+ * DIST(p, q) as the oracle compiles it: sqrt(fma(dx, dx, dy * dy)), not
+ * Math.hypot (libgvc 16.1 `_arrowEndClip`/`_arrowStartClip`, incl. the inlined
+ * sphere_ctx inside(), and `_arrowOrthoClip`).
+ * @see lib/common/geom.h:DIST
+ */
+export const dist: (p: Point, q: Point) => number = distFused;
 
 // Internal shape accessor type for host objects that may carry a shape.
 type ShapeHost = { shape?: { fns?: { insidefn?: ((c: InsideContext, p: Point) => boolean) | null } | null } | null };
@@ -123,11 +131,6 @@ class SplineClipHelper {
     return [sflag, eflag];
   }
 
-  /** DIST(p, q). */
-  static dist(p: Point, q: Point): number {
-    return Math.hypot(p.x - q.x, p.y - q.y);
-  }
-
   /** Sphere inside-fn around `tip` with radius `r` for bezierClip. */
   static sphereCtx(tip: Point, r: number): {
     ctx: InsideContext;
@@ -135,7 +138,7 @@ class SplineClipHelper {
   } {
     return {
       ctx: { nodeCoord: { x: 0, y: 0 }, rw: 0, bp: null },
-      fn: (_c: InsideContext, p: Point) => SplineClipHelper.dist(p, tip) <= r,
+      fn: (_c: InsideContext, p: Point) => dist(p, tip) <= r,
     };
   }
 
@@ -170,7 +173,7 @@ class SplineClipHelper {
       SplineClipHelper.clipArrowsize(e), SplineClipHelper.clipPenwidth(e));
     spl.eflag = eflag;
     spl.ep = ps[endp + 3]!;
-    if (endp > startp && SplineClipHelper.dist(ps[endp]!, ps[endp + 3]!) < elen) {
+    if (endp > startp && dist(ps[endp]!, ps[endp + 3]!) < elen) {
       endp -= 3;
     }
     const sp: Point[] = [spl.ep, ps[endp + 2]!, ps[endp + 1]!, ps[endp]!];
@@ -198,7 +201,7 @@ class SplineClipHelper {
       SplineClipHelper.clipArrowsize(e), SplineClipHelper.clipPenwidth(e));
     spl.sflag = sflag;
     spl.sp = ps[startp]!;
-    if (endp > startp && SplineClipHelper.dist(ps[startp]!, ps[startp + 3]!) < slen) {
+    if (endp > startp && dist(ps[startp]!, ps[startp + 3]!) < slen) {
       startp += 3;
     }
     const sp: Point[] = [ps[startp + 3]!, ps[startp + 2]!, ps[startp + 1]!, spl.sp];
@@ -293,7 +296,7 @@ class SplineClipHelper {
     if (sflag && eflag && endp === startp) {
       // two arrows on one segment
       const p = ps[endp]!; const q = ps[endp + 3]!;
-      const d = SplineClipHelper.dist(p, q);
+      const d = dist(p, q);
       let hlen = hlen0; let tlen = tlen0;
       if (hlen + tlen >= d) { hlen = tlen = d / 3.0; }
       const s = { x: p.x, y: p.y }; const t = { x: q.x, y: q.y };
@@ -315,7 +318,7 @@ class SplineClipHelper {
     if (eflag) {
       let hlen = hlen0;
       const p = ps[endp]!; const q = ps[endp + 3]!;
-      const maxd = 0.9 * SplineClipHelper.dist(p, q);
+      const maxd = 0.9 * dist(p, q);
       if (hlen >= maxd) hlen = maxd;
       const r = { x: p.x, y: p.y };
       if (p.y === q.y) { r.y = p.y; r.x = p.x < q.x ? q.x - hlen : q.x + hlen; }
@@ -326,7 +329,7 @@ class SplineClipHelper {
     if (sflag) {
       let tlen = tlen0;
       const p = ps[startp]!; const q = ps[startp + 3]!;
-      const maxd = 0.9 * SplineClipHelper.dist(p, q);
+      const maxd = 0.9 * dist(p, q);
       if (tlen >= maxd) tlen = maxd;
       const r = { x: p.x, y: p.y };
       if (p.y === q.y) { r.y = p.y; r.x = p.x < q.x ? p.x + tlen : p.x - tlen; }
