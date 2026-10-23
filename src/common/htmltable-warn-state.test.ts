@@ -7,6 +7,7 @@ import type { TextMeasurer } from './textmeasure.js';
 import { resetRenderState } from './render-state.js';
 
 const CELL_SMALL = 'Warning: cell size too small for content';
+const OPEN_IMAGE = 'Warning: No such file or directory while opening nope.png';
 const NO_IMAGE = 'Error: No or improper image file="nope.png"';
 const measurer: TextMeasurer = {
   measure: (text, _font, fontSize) => ({ w: text.length * fontSize * 0.6, h: fontSize }),
@@ -30,7 +31,7 @@ describe('HTML warning dedupe is reset per render', () => {
     const label = parseHtmlLabel(SRC);
     resetRenderState();
     const first = sizeOnce(label);
-    expect(first.msgs).toEqual([CELL_SMALL, NO_IMAGE]);
+    expect(first.msgs).toEqual([CELL_SMALL, OPEN_IMAGE, NO_IMAGE]);
     expect(sizeOnce(label).msgs).toEqual([]);
   });
 

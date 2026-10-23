@@ -22,7 +22,7 @@ import type {
   HtmlCell, HtmlCellContent, HtmlImage, HtmlLabel, HtmlTable, HtmlText,
   HtmlTextItem, ImageSizer,
 } from './htmltable-types.js';
-import { findImageSize } from '../gvc/usershape.js';
+import { findImageSize, imageIsSupplied, imageOpenWarning } from '../gvc/usershape.js';
 import { registerRenderState } from './render-state.js';
 import { PointSet } from './pointset.js';
 import type { TextMeasurer } from './textmeasure.js';
@@ -241,7 +241,10 @@ const sizeHtmlImg = (img: HtmlImage, { imageSizer, stderr }: HtmlSizeEnv): numbe
     img.width = sz.w; img.height = sz.h;
     return 0;
   }
-  // Missing-image: zero size + warning.
+  // Missing-image: gvusershape_open's warning (unless bytes are supplied),
+  // then zero size + the Error.
+  // @see lib/gvc/gvusershape.c:gvusershape_file_access
+  if (!imageIsSupplied(img.src, imageSizer)) agerrLine(stderr, `Warning: ${imageOpenWarning(img.src)}`);
   // C: agerrorf("No or improper image file=\"%s\"\n", img->src) — agerr
   // prefixes "Error: " on stderr.
   agerrLine(stderr, `Error: No or improper image file="${img.src}"`);
