@@ -3,11 +3,11 @@
 # Speed gate: bash speed.sh <bundleA> <bundleB> <tag> <outdir>
 # Times dot + neato speed ids for both bundles (alternating, so load drifts hit both),
 # writes timings-<tag>-{A,B}.json and prints per-engine p50 of B/A ratios.
-D=$(cd "$(dirname "$0")" && pwd); A=$1; B=$2; T=$3; O=${4:?outdir}; mkdir -p "$O"
+D=$(cd "$(dirname "$0")" && pwd); cd "$D/../.." || exit 1; A=$1; B=$2; T=$3; O=${4:?outdir}; mkdir -p "$O"
 uptime
 for e in dot neato; do
-  node --stack-size=65500 "$D/timing.mjs" "$A" $e "$D/speed-$e.txt" "$O/t-$T-A-$e.json" 2>/dev/null
-  node --stack-size=65500 "$D/timing.mjs" "$B" $e "$D/speed-$e.txt" "$O/t-$T-B-$e.json" 2>/dev/null
+  node --stack-size=65500 --import tsx "$D/timing.ts" "$A" $e "$D/speed-$e.txt" "$O/t-$T-A-$e.json" 2>/dev/null
+  node --stack-size=65500 --import tsx "$D/timing.ts" "$B" $e "$D/speed-$e.txt" "$O/t-$T-B-$e.json" 2>/dev/null
 done
 uptime
 node -e '

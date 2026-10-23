@@ -2,10 +2,14 @@
 // Structured fuzz of HTML labels: native dot vs the port, stderr bytes and SVG.
 import { spawnSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
+import { normalizeStderrLines } from '../lib/stderr.js';
 // FUZZ_REPO = repo or worktree under test (default: this checkout).
 const REPO = process.env.FUZZ_REPO ?? new URL('../../..', import.meta.url).pathname.replace(/\/$/, '');
-const { renderSvg } = await import(`${REPO}/src/index.ts`);
-const { compareSvg } = await import(`${REPO}/test/golden/compare.ts`);
+const { renderSvg } = (await import(`${REPO}/src/index.ts`)) as { renderSvg(src: string, engine: string): string };
+const { compareSvg } = (await import(`${REPO}/test/golden/compare.ts`)) as {
+  compareSvg(a: string, b: string, mode: string): { pass: boolean };
+};
+const ARGV_OUT = 4;
 let seed = Number(process.argv[2] ?? 1);
 const N = Number(process.argv[3] ?? 300);
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
@@ -38,7 +42,7 @@ for (let k = 0; k < N; k++) {
   const lbl = label();
   const dot = `digraph{a[label=<${lbl}>]}`;
   const n = spawnSync(NATIVE, ['-Tsvg'], { input: dot, env: { ...process.env, GVBINDIR: process.env.GV_PLUGINS_DOT ?? '/tmp/ghl' } });
-  const nErr = n.stderr.toString('latin1').replaceAll('<stdin>: ', '').split('\n').filter((l) => l && !l.includes('hard-coded metrics'));
+  const nErr = normalizeStderrLines(n.stderr.toString('latin1')).filter((l) => !l.includes('hard-coded metrics'));
   const pLines: string[] = [];
   console.error = console.warn = (...a: unknown[]) => { pLines.push(a.map(String).join(' ')); };
   let pSvg = '';
@@ -49,7 +53,7 @@ for (let k = 0; k < N; k++) {
   let svgOk: boolean;
   try { svgOk = nSvg.includes('</svg>') && pSvg !== '' ? compareSvg(pSvg, nSvg, 'deterministic').pass : nSvg.includes('</svg>') === (pSvg !== ''); } catch (e) { svgOk = false; pErr.push(`COMPARE THREW ${(e as Error).message.slice(0, 80)}`); }
   const errOk = JSON.stringify(nErr) === JSON.stringify(pErr);
-  if (svgOk && errOk) ok++; else bad.push(JSON.stringify({ lbl, svgOk, nErr, pErr }));
+  if (svgOk && errOk) ok++; else bad.push(JSON.stringify({ lbl, svgOk, nErr, pErr, nSvg }));
 }
-writeFileSync(`${process.argv[4] ?? '/dev/stdout'}`, bad.join('\n') + '\n');
+writeFileSync(`${process.argv[ARGV_OUT] ?? '/dev/stdout'}`, bad.join('\n') + '\n');
 origErr(`seed ${process.argv[2]} n=${N} ok=${ok} bad=${bad.length}`);
