@@ -50,6 +50,7 @@ import {
 import { emitRoundedBezier } from '../common/poly-shapes.js';
 import { applyClusterObjState, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
+import { gvrenderSetStyle, edgeStyleResets } from './gvrender-set-style.js';
 import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
 export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
 export { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
@@ -166,6 +167,9 @@ function setEdgePen(e: Edge, job: RenderJob): void {
   // Raw style tokens for xdot's `S` ops (e.g. explicit style="solid"); SVG
   // reads only obj.pen, so this is xdot-only. @see gvrender_core_dot.c xdot_style
   obj.rawStyle = styleTokens(e.attrs.get('style'));
+  // emit_begin_edge: `if (styles && ED_spl(e)) gvrender_set_style(job, styles)`
+  // @see lib/common/emit.c:2726
+  if (e.info.spl !== undefined) gvrenderSetStyle(obj.rawStyle);
 }
 
 export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): void {
@@ -196,6 +200,10 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
       // emit_edge_graphics, then emit_end_edge's labels: C resolves these names
       // here whatever the renderer draws (the non-drawing ones included).
       reportEdgeColors(e);
+      // arrow_gen resets the style; C sets the edge's styles again after each
+      // flagged bezier of a multi-bezier spline. @see emit.c:2047, :2677
+      const styles = styleTokens(e.attrs.get('style'));
+      for (let i = edgeStyleResets(e, styles); i > 0; i--) gvrenderSetStyle(styles);
       reportEdgeLabelColors(e);
       renderer.endEdge(e, job);
     });

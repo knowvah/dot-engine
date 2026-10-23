@@ -28,6 +28,7 @@ import { splitSplineByColor } from '../svg-edge-split.js';
 import { buildOffsetLists, advanceTmpList } from '../../common/edge-offset.js';
 import { xdotFillColor, xdotNum, xdotPenColor, xdotPoint, xdotPoints, xdotStrOp, trimFixed3 } from './xdot-ops.js';
 import { DotWriterBase } from './agwrite.js';
+import { gvrenderSetStyle } from '../../gvc/gvrender-set-style.js';
 
 /** Pen colour when a colour-list entry is empty. @see lib/common/emit.c:2485 */
 const DEFAULT_COLOR = 'black';
@@ -81,6 +82,7 @@ export abstract class EdgeDrawBase extends DotWriterBase {
    */
   attachmentPolyline(pts: Point[], pencolor: string, job: RenderJob): void {
     const obj = job.obj;
+    gvrenderSetStyle(DEFAULT_LINE_STYLE);
     if (obj !== null) {
       obj.rawStyle = [...DEFAULT_LINE_STYLE];
       obj.pen = PenType.Solid;

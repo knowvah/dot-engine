@@ -20,6 +20,7 @@ import { resolveRenderColor } from '../render/color-resolve.js';
 import { emitRoundedBezier } from './poly-shapes.js';
 import type { PlacedHtml, PlacedCell } from './htmltable-pos.js';
 import { htmlStyle } from './htmltable-style.js';
+import { gvrenderSetStyle } from '../gvc/gvrender-set-style.js';
 import {
   BORDER_LEFT,
   BORDER_TOP,
@@ -141,6 +142,16 @@ export function resetHtmlFillPenWidth(): void {
 registerRenderState(resetHtmlFillPenWidth);
 
 /** Map an HTML STYLE to the C pen type: dashed wins over dotted. @see lib/common/htmltable.c:doBorder */
+/** gvc->defaultlinestyle. @see lib/common/emit.c:105 */
+const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
+
+/** The style list doBorder hands to gvrender_set_style for a pen type. */
+function htmlBorderStyle(pen: PenType): readonly string[] {
+  if (pen === PenType.Dashed) return ['dashed'];
+  if (pen === PenType.Dotted) return ['dotted'];
+  return DEFAULT_LINE_STYLE;
+}
+
 function penTypeOf(style: string | undefined): PenType {
   const st = htmlStyle(style);
   if (st.dashed) return PenType.Dashed;
@@ -166,6 +177,9 @@ export function withHtmlPaint(paint: HtmlPaint, job: RenderJob, drawFn: () => vo
   // so xdot emits `S 5 -solid` per border/fill. rawStyle carries it (SVG's
   // style emit treats "solid" as the default → no visible change).
   paintObj.rawStyle = paintObj.pen === PenType.Solid ? ['solid'] : [];
+  // emit_html_tbl/cell border: dashed or dotted by name, else defaultlinestyle.
+  // @see lib/common/htmltable.c:267 doBorder
+  gvrenderSetStyle(htmlBorderStyle(paintObj.pen));
   // Inherit the enclosing object's emit-state (the label state during an HTML
   // label emit) so the fill/border ops route to the same xbuf as the label
   // (_ldraw_), not the shape draw buffer. SVG ignores emit_state, so unchanged.

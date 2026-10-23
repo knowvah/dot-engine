@@ -22,6 +22,7 @@ import { FillType } from '../gvc/context.js';
 import { emitHtmlLabel } from './htmltable-emit.js';
 import { transformPoint } from '../gvc/device.js';
 import { nodeAttr } from './poly-init.js';
+import { gvrenderSetStyle, checkStyleTokens } from '../gvc/gvrender-set-style.js';
 import { substObjAnchor, preprocessTooltip } from './subst.js';
 import type { ResolvedFill, PolyStyleFlags } from './style-resolve.js';
 import {
@@ -366,6 +367,13 @@ function applyPenState(obj: ObjState, styleAttr: string | undefined,
 export function applyNodeStyle(obj: ObjState, n: Node, job: RenderJob): boolean {
   const styleAttr = nodeAttr(n, n.root, 'style');
   const colorAttr = nodeAttr(n, n.root, 'color');
+  // stylenode: gvrender_set_style(job, checkStyle list), before any colour is
+  // resolved; point_gencode passes its own fixed list instead (never unknown).
+  // @see lib/common/shapes.c:536 stylenode · :3257 point_gencode
+  if (!isPointNode(n)) {
+    const shape = n.info.shape as ShapeDesc | undefined;
+    gvrenderSetStyle(checkStyleTokens(styleTokens(styleAttr), shape?.polygon ?? null));
+  }
   // The node's `colorscheme` window is NOT opened here: C opens it once around
   // the whole node emission (emit_begin_node..emit_end_node), which covers both
   // this color block and the label textspans. Both callers of this function are

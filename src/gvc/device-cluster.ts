@@ -14,8 +14,9 @@ import { FillType } from './context.js';
 import type { ResolvedFill, ClusterAttrs } from '../common/style-resolve.js';
 import {
   parseStyleFlags, resolvePenColor, resolvePenType, resolvePenWidth,
-  resolveClusterFillEx,
+  resolveClusterFillEx, styleTokens,
 } from '../common/style-resolve.js';
+import { gvrenderSetStyle, checkClusterStyleTokens } from './gvrender-set-style.js';
 import { resolveRenderColor, withColorScheme, reportColorNames } from '../render/color-resolve.js';
 import { parseSegs } from '../common/multicolor.js';
 
@@ -103,6 +104,9 @@ export function applyClusterObjState(sg: Graph, job: RenderJob): boolean {
   const fillRes = resolveClusterFillEx(clusterAttrsOf(sg));
   if (job.obj === null) return false;
   const obj = job.obj;
+  // emit_clusters: gvrender_set_style(job, checkClusterStyle list) precedes the
+  // colour resolution. @see lib/common/emit.c:3808
+  gvrenderSetStyle(checkClusterStyleTokens(styleTokens(clusterStyle(sg))));
   // C wraps the cluster color block with setColorScheme. @see emit.c:3800/3943
   return withColorScheme(clusterAttr(sg, 'colorscheme'), () => {
     // C resolves the fill (set_fillcolor / gradient vals) before the pen,
