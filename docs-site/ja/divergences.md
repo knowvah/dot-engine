@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1080,6 +1080,22 @@ plain と stderr は一致）、`accepted-divergences-engines.json` と
 ポートエラーを受け入れます。`2784` で別の失敗が起きれば、受け入れられていない障害として表面化し、
 `registry-staleness.test.ts` がそのエントリーを古くなったものとして検出します。証拠：
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md)。
+
+### A11. 退化した入力における GTS の Delaunay 面の順序 — 縮小不能 {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**影響を受けるもの：** 入力が退化している（辺上の点、共円な格子）場合に GTS 経由で三角形分割を行うレイアウト（`lib/neatogen/delaunay.c`。16.1 のオラクルは GTS 0.7.6 をリンクする）。
+
+**何が異なるか。** ポートは Delaunay 面の番号付けと各面の隣接要素（`neigh`）の並びを生成順で行う。ネイティブの GTS は面を `GHashTable` の順に番号付けする。`closest_face` はポインタをキーとするテーブルを走査するため、面 ID と隣接順はヒープアドレスに依存し、実行ごとに変わる。面の順序から導かれるものはすべて、特定のネイティブ実行と異なる場合がある。
+
+**受け入れる理由。** 決定的な目標は存在しない。1 つの退化入力に対してネイティブバイナリを 60 回実行すると、ASLR を無効にし `MallocNanoZone=0` にしても 22 通りの異なる出力が得られた。この揺らぎはコードより下の層にあるオラクルの性質であり、ポートの欠陥ではない。面は ID ではなく頂点集合で比較すること。根拠：第 3 部の GTS に関するメモ（`.agent-notes/post-16-1-followups-3.md`、「GTS face vertex order and nondeterminism」）。
+
+### A12. 字句解析器エラーに `<stdin>: ` 接頭辞が付かない {#a12-no-stdin-prefix-on-lexer-errors}
+
+**影響を受けるもの：** 字句解析器（`aagerror`）が stderr に報告する DOT の構文エラー。
+
+**何が異なるか。** 標準入力を読むネイティブの `dot` CLI は `<stdin>: syntax error in line N …` を出力する。ポートは同じメッセージを接頭辞 `<stdin>: ` なしで出力する。
+
+**受け入れる理由。** `aagerror`（`lib/cgraph/scan.l:157`）は `InputFile` が設定されている場合にのみ `InputFile: ` を付加する。CLI は標準入力を読むときにこれを `<stdin>` に設定するが、ポートが写しているライブラリのエントリ `agmemread` は未設定のままで、接頭辞を出力しない。ポートには CLI がないため、報告すべき `InputFile` が存在しない。stderr プローブは比較時にこの接頭辞を正規化する。
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -950,6 +950,22 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
 **發生了什麼。** `lib/pack/pack.c` 將一個元件佔用的儲存格記錄在一個 `PointSet` 中。對於 `2784`（一個高 3e16 pt 的單一節點，`splines="ortho"`），忠實的整數 `step`／擺放算術需要 2,011,656,764 個儲存格；原生 16.1.0 以 482 秒完成，常駐記憶體 67.3 GB（峰值 101 GB）。移植版的 `PointSet` 是一個 JavaScript `Map`，V8 將它限制在 2^24 個項目，所以它擲出 `Map maximum size exceeded`。
 
 **為何接受。** 這是低於程式碼的執行階段上限，而不是邏輯缺口；原因是 `97fcccd8` 的忠實算術（在它之前，移植版算出的是一個很小的錯誤版面，從未觸及該上限）。接受的結果是擲出錯誤而不是 `diverged` 判定，所以 `accepted-divergences-engines.json`、`accepted-divergences-json.json` 與 `accepted-divergences-map.json` 中的條目宣告 `verdict: "port-error"` 並搭配 `errIncludes: "Map maximum size exceeded"`：只有當移植版錯誤帶有該訊息時，它們才接受它。`2784` 上的其他失敗會以未接受的故障呈現，而 `registry-staleness.test.ts` 會將該條目標記為過時。證據：[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md)。
+
+### A11. 退化輸入下 GTS 的 Delaunay 面順序 — 不可約 {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**受影響：** 輸入退化（點位於邊上、共圓網格）時經由 GTS 做三角剖分的版面配置（`lib/neatogen/delaunay.c`；16.1 的 oracle 連結 GTS 0.7.6）。
+
+**有何不同。** 移植版依建立順序為 Delaunay 面編號，並依建立順序排列每個面的鄰接面（`neigh`）。原生 GTS 依 `GHashTable` 的順序為面編號：`closest_face` 走訪以指標為鍵的雜湊表，因此面 id 與鄰接順序取決於堆積位址，且每次執行都不同。因此，凡由面順序導出的結果都可能與某次特定的原生執行不同。
+
+**為何接受。** 不存在確定性的目標。在同一個退化輸入上執行原生執行檔 60 次，即使關閉 ASLR 並設定 `MallocNanoZone=0`，仍得到 22 種不同輸出；這種波動是程式碼之下 oracle 自身的性質，而非移植缺陷。比較面時請依頂點集合，而不是依 id。證據：第 3 部分的 GTS 筆記（`.agent-notes/post-16-1-followups-3.md`，「GTS face vertex order and nondeterminism」）。
+
+### A12. 詞法分析器錯誤沒有 `<stdin>: ` 前綴 {#a12-no-stdin-prefix-on-lexer-errors}
+
+**受影響：** 詞法分析器（`aagerror`）向 stderr 回報的 DOT 語法錯誤。
+
+**有何不同。** 讀取標準輸入的原生 `dot` CLI 會輸出 `<stdin>: syntax error in line N …`；移植版輸出相同訊息，但沒有 `<stdin>: ` 前綴。
+
+**為何接受。** 僅當設定了 `InputFile` 時，`aagerror`（`lib/cgraph/scan.l:157`）才會加上 `InputFile: `。CLI 在讀取標準輸入時將其設為 `<stdin>`；移植版所對應的函式庫入口 `agmemread` 不設定它，也就不輸出前綴。移植版沒有 CLI，因此無可回報。stderr 探針在比較時會正規化該前綴。
 
 ---
 

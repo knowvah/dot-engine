@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1169,6 +1169,22 @@ villa fremur en `diverged`-dómur, svo færslurnar í
 þegar hún ber þessi skilaboð. Önnur bilun á `2784` kæmi fram sem ósamþykkt bilun,
 og `registry-staleness.test.ts` myndi merkja færsluna sem úrelta. Sönnunargögn:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Röð Delaunay-flata í GTS við úrkynjað inntak — óafturkræf {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Fyrir áhrifum:** Útlit sem þríhyrningaskipta í gegnum GTS (`lib/neatogen/delaunay.c`; 16.1-véfréttin tengir GTS 0.7.6) þegar inntakið er úrkynjað: punktar á jöðrum eða samhringlaga net.
+
+**Hvað er ólíkt.** Portið númerar Delaunay-fleti og raðar nágrönnum hvers flatar (`neigh`) eftir sköpunarröð. Upprunalega GTS númerar fleti í `GHashTable`-röð: `closest_face` fer yfir töflu með bendi sem lykil, þannig að auðkenni flata og nágrannaröð ráðast af heap-vistföngum og breytast milli keyrslna. Allt sem leitt er af flataröðinni getur því verið frábrugðið tiltekinni upprunalegri keyrslu.
+
+**Hvers vegna samþykkt.** Ekkert ákvarðandi markmið er til. 60 keyrslur upprunalega tvíundarskráarinnar á einu úrkynjuðu inntaki gáfu 22 ólík úttök, jafnvel með ASLR slökkt og `MallocNanoZone=0`; breytileikinn er eiginleiki véfréttarinnar undir kóðanum, ekki galli í portinu. Berðu fleti saman eftir hornpunktamengi, ekki auðkenni. Sönnun: GTS-athugasemdir úr hluta 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism“).
+
+### A12. Ekkert forskeytið `<stdin>: ` á lesgreinarvillum {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Fyrir áhrifum:** DOT-setningafræðivillur sem lesgreinirinn (`aagerror`) tilkynnir á stderr.
+
+**Hvað er ólíkt.** Upprunalega `dot`-skipanalínuforritið skrifar `<stdin>: syntax error in line N …` þegar það les staðalinntak; portið skrifar sömu skilaboð án forskeytisins `<stdin>: `.
+
+**Hvers vegna samþykkt.** `aagerror` (`lib/cgraph/scan.l:157`) bætir `InputFile: ` við aðeins þegar `InputFile` er stillt. Skipanalínuforritið stillir það á `<stdin>` við lestur staðalinntaks; safninngangurinn `agmemread`, sem portið speglar, skilur það eftir óstillt og skrifar ekkert forskeyti. Portið hefur ekkert skipanalínuforrit, svo ekkert er að tilkynna. stderr-könnunin normalíserar forskeytið við samanburð.
 
 ---
 

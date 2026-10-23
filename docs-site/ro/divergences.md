@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1167,6 +1167,22 @@ nu un verdict `diverged`, așa că intrările din
 aceasta poartă acest mesaj. Un alt eșec pe `2784` ar apărea ca o eroare neacceptată,
 iar `registry-staleness.test.ts` ar semnala intrarea ca perimată. Dovezi:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Ordinea fețelor Delaunay din GTS pe intrare degenerată — ireductibilă {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Afectate:** Aranjamente care triangulează prin GTS (`lib/neatogen/delaunay.c`; oracolul 16.1 leagă GTS 0.7.6) când intrarea este degenerată: puncte aflate pe muchii sau grile cociclice.
+
+**Ce diferă.** Portul numerotează fețele Delaunay și ordonează vecinii fiecărei fețe (`neigh`) după ordinea creării. GTS nativ numerotează fețele în ordinea `GHashTable`: `closest_face` parcurge un tabel indexat după pointer, deci id-urile fețelor și ordinea vecinilor depind de adresele din heap și diferă de la o rulare la alta. Tot ce derivă din ordinea fețelor poate, așadar, diferi de o anumită rulare nativă.
+
+**De ce este acceptată.** Nu există o țintă deterministă. 60 de rulări ale binarului nativ pe o singură intrare degenerată au dat 22 de ieșiri distincte, chiar cu ASLR dezactivat și `MallocNanoZone=0`; variația este o proprietate a oracolului aflată sub cod, nu un defect al portului. Comparați fețele după mulțimea de vârfuri, nu după id. Dovadă: notele GTS din partea 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism”).
+
+### A12. Fără prefixul `<stdin>: ` la erorile lexerului {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Afectate:** Erorile de sintaxă DOT raportate de lexer (`aagerror`) pe stderr.
+
+**Ce diferă.** CLI-ul nativ `dot` care citește intrarea standard afișează `<stdin>: syntax error in line N …`; portul afișează același mesaj fără prefixul `<stdin>: `.
+
+**De ce este acceptată.** `aagerror` (`lib/cgraph/scan.l:157`) adaugă `InputFile: ` doar când `InputFile` este setat. CLI-ul îl setează la `<stdin>` la citirea intrării standard; punctul de intrare de bibliotecă `agmemread`, pe care portul îl oglindește, îl lasă nesetat și nu afișează prefix. Portul nu are CLI, deci nu e nimic de raportat. Sonda stderr normalizează prefixul la comparare.
 
 ---
 

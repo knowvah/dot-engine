@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1154,6 +1154,22 @@ aktsepteerivad pordi viga ainult siis, kui see kannab seda teadet. Teistsugune t
 `2784` puhul ilmneks aktsepteerimata veana ja `registry-staleness.test.ts` märgiks
 kirje aegunuks.
 Tõendid: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. GTS-i Delaunay tahkude järjekord degenereerunud sisendil — taandamatu {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Mõjutatud:** Paigutused, mis triangulaarivad GTS-i kaudu (`lib/neatogen/delaunay.c`; 16.1 oraakel linkib GTS 0.7.6) degenereerunud sisendi korral: servadel asuvad punktid või kotsirkulaarsed ruudustikud.
+
+**Mis erineb.** Port nummerdab Delaunay tahud ja järjestab iga tahu naabrid (`neigh`) loomisjärjekorras. Natiivne GTS nummerdab tahud `GHashTable`-i järjekorras: `closest_face` itereerib viidaga indekseeritud tabelit, seega sõltuvad tahu id-d ja naabrite järjekord hunniku aadressidest ning erinevad käivituste vahel. Kõik tahkude järjekorrast tuletatu võib seetõttu konkreetsest natiivsest käivitusest erineda.
+
+**Miks aktsepteeritud.** Deterministlikku sihti ei ole. Natiivse binaari 60 käivitust ühel degenereerunud sisendil andsid 22 erinevat väljundit ka väljalülitatud ASLR-i ja `MallocNanoZone=0` korral; varieeruvus on oraakli omadus koodist allpool, mitte pordi viga. Võrrelge tahke tippude hulga, mitte id järgi. Tõendus: 3. osa GTS-i märkmed (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism“).
+
+### A12. Lekseri vigadel puudub eesliide `<stdin>: ` {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Mõjutatud:** Lekseri (`aagerror`) stderr-i teatatud DOT-i süntaksivead.
+
+**Mis erineb.** Natiivne `dot` CLI prindib standardsisendi lugemisel `<stdin>: syntax error in line N …`; port prindib sama teate ilma eesliiteta `<stdin>: `.
+
+**Miks aktsepteeritud.** `aagerror` (`lib/cgraph/scan.l:157`) lisab `InputFile: ` ainult siis, kui `InputFile` on seatud. CLI seab selle standardsisendi lugemisel väärtuseks `<stdin>`; teegi sisenemispunkt `agmemread`, mida port peegeldab, jätab selle seadmata ega prindi eesliidet. Pordil CLI-d pole, seega pole midagi teatada. stderr-i sond normaliseerib eesliite võrdlemisel.
 
 ---
 

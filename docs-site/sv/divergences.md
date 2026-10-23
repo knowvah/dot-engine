@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1167,6 +1167,22 @@ fel snarare än ett utlåtande `diverged`, så posterna i
 det bär det meddelandet. Ett annat fel på `2784` skulle dyka upp som ett ej godkänt fel,
 och `registry-staleness.test.ts` skulle flagga posten som inaktuell. Belägg:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Ordningen på GTS Delaunay-ytor vid degenererad indata — irreducibel {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Berörda:** Layouter som trianguleras via GTS (`lib/neatogen/delaunay.c`; 16.1-oraklet länkar GTS 0.7.6) vid degenererad indata: punkter på kanter eller kocirkulära rutnät.
+
+**Vad som skiljer sig.** Porten numrerar Delaunay-ytor och ordnar varje ytas grannar (`neigh`) efter skapandeordning. Nativ GTS numrerar ytor i `GHashTable`-ordning: `closest_face` itererar en tabell med pekare som nycklar, så yt-id:n och grannordning beror på heap-adresser och varierar mellan körningar. Allt som härleds ur ytordningen kan därför avvika från en given nativ körning.
+
+**Varför godkänd.** Inget deterministiskt mål finns. 60 körningar av den native binären på en degenererad indata gav 22 olika utdata, även med ASLR avstängt och `MallocNanoZone=0`; variationen är en egenskap hos oraklet under koden, inte ett fel i porten. Jämför ytor efter hörnmängd, inte id. Belägg: GTS-anteckningar från del 3 (`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. Inget `<stdin>: `-prefix på lexerfel {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Berörda:** DOT-syntaxfel som lexern (`aagerror`) rapporterar på stderr.
+
+**Vad som skiljer sig.** Den native `dot`-CLI:n som läser standardindata skriver `<stdin>: syntax error in line N …`; porten skriver samma meddelande utan prefixet `<stdin>: `.
+
+**Varför godkänd.** `aagerror` (`lib/cgraph/scan.l:157`) lägger bara till `InputFile: ` när `InputFile` är satt. CLI:n sätter den till `<stdin>` vid läsning av standardindata; biblioteksingången `agmemread`, som porten speglar, lämnar den osatt och skriver inget prefix. Porten har ingen CLI, så det finns inget att rapportera. stderr-proben normaliserar prefixet vid jämförelse.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1150,6 +1150,22 @@ bildirir: bir port hatasını yalnızca bu mesajı taşıdığında kabul ederle
 üzerinde farklı bir başarısızlık, kabul edilmemiş bir hata olarak ortaya çıkar ve
 `registry-staleness.test.ts` girdiyi bayat olarak işaretler. Kanıt:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Dejenere girdide GTS Delaunay yüz sırası — indirgenemez {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Etkilenenler:** Girdi dejenere olduğunda GTS üzerinden üçgenleme yapan yerleşimler (`lib/neatogen/delaunay.c`; 16.1 oracle'ı GTS 0.7.6'yı bağlar): kenarlar üzerindeki noktalar veya eşçevresel ızgaralar.
+
+**Ne farklı.** Port, Delaunay yüzlerini oluşturulma sırasına göre numaralandırır ve her yüzün komşularını (`neigh`) aynı sırayla dizer. Yerel GTS yüzleri `GHashTable` sırasıyla numaralandırır: `closest_face` işaretçi anahtarlı bir tabloyu dolaşır; bu yüzden yüz kimlikleri ve komşu sırası öbek adreslerine bağlıdır ve çalıştırmalar arasında değişir. Yüz sırasından türetilen her şey bu nedenle belirli bir yerel çalıştırmadan farklı olabilir.
+
+**Neden kabul edildi.** Deterministik bir hedef yoktur. Yerel ikilinin tek bir dejenere girdi üzerindeki 60 çalıştırması, ASLR kapalı ve `MallocNanoZone=0` iken bile 22 farklı çıktı verdi; değişkenlik kodun altındaki oracle'ın özelliğidir, portun kusuru değildir. Yüzleri kimliğe göre değil, köşe kümesine göre karşılaştırın. Kanıt: 3. bölümün GTS notları (`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. Sözcük çözümleyici hatalarında `<stdin>: ` öneki yok {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Etkilenenler:** Sözcük çözümleyicinin (`aagerror`) stderr'e bildirdiği DOT sözdizimi hataları.
+
+**Ne farklı.** Standart girdiyi okuyan yerel `dot` CLI'ı `<stdin>: syntax error in line N …` yazdırır; port aynı iletiyi `<stdin>: ` öneki olmadan yazdırır.
+
+**Neden kabul edildi.** `aagerror` (`lib/cgraph/scan.l:157`) `InputFile: ` önekini yalnızca `InputFile` ayarlıysa ekler. CLI, standart girdiyi okurken bunu `<stdin>` olarak ayarlar; portun yansıttığı kütüphane girişi `agmemread` ise onu ayarsız bırakır ve önek yazdırmaz. Portta CLI yoktur, dolayısıyla bildirilecek bir şey yoktur. stderr sondası karşılaştırmada öneki normalleştirir.
 
 ---
 

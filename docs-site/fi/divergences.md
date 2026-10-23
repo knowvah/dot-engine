@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1187,6 +1187,22 @@ vain, kun se sisältää tämän viestin. Muunlainen virhe `2784`:llä näkyisi
 hyväksymättömänä virheenä, ja `registry-staleness.test.ts` merkitsisi merkinnän
 vanhentuneeksi. Todiste:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. GTS:n Delaunay-pintojen järjestys rappeutuneella syötteellä — ei supistettavissa {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Koskee:** Asettelut, jotka kolmioivat GTS:n kautta (`lib/neatogen/delaunay.c`; 16.1-oraakkeli linkittää GTS 0.7.6:n), kun syöte on rappeutunut: reunoilla sijaitsevat pisteet tai kosirkulaariset ruudukot.
+
+**Mikä eroaa.** Portti numeroi Delaunay-pinnat ja järjestää kunkin pinnan naapurit (`neigh`) luontijärjestykseen. Natiivi GTS numeroi pinnat `GHashTable`-järjestyksessä: `closest_face` iteroi osoitinavaimista taulukkoa, joten pintojen tunnisteet ja naapurijärjestys riippuvat keon osoitteista ja vaihtelevat ajojen välillä. Kaikki pintajärjestyksestä johdettu voi siksi poiketa tietystä natiivista ajosta.
+
+**Miksi hyväksytty.** Determinististä kohdetta ei ole. Natiivin binäärin 60 ajoa yhdellä rappeutuneella syötteellä tuotti 22 eri tulostetta, vaikka ASLR oli pois päältä ja `MallocNanoZone=0`; vaihtelu on oraakkelin ominaisuus koodin alapuolella, ei portin vika. Vertaa pintoja kärkijoukon, ei tunnisteen mukaan. Todiste: osan 3 GTS-muistiinpanot (`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. Ei etuliitettä `<stdin>: ` lekseriviesteissä {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Koskee:** Lekserin (`aagerror`) stderriin ilmoittamat DOT-syntaksivirheet.
+
+**Mikä eroaa.** Natiivi `dot`-CLI tulostaa vakiosyötettä lukiessaan `<stdin>: syntax error in line N …`; portti tulostaa saman viestin ilman etuliitettä `<stdin>: `.
+
+**Miksi hyväksytty.** `aagerror` (`lib/cgraph/scan.l:157`) lisää `InputFile: ` vain, kun `InputFile` on asetettu. CLI asettaa sen arvoon `<stdin>` vakiosyötettä luettaessa; kirjastosisäänkäynti `agmemread`, jota portti peilaa, jättää sen asettamatta eikä tulosta etuliitettä. Portilla ei ole CLI:tä, joten raportoitavaa ei ole. stderr-luotain normalisoi etuliitteen vertailussa.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1186,6 +1186,22 @@ lanzado en lugar de un veredicto `diverged`, así que las entradas de
 ese mensaje. Un fallo distinto en `2784` aparecería como un fallo no aceptado, y
 `registry-staleness.test.ts` marcaría la entrada como obsoleta. Evidencia:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Orden de caras de Delaunay en GTS con entrada degenerada — irreducible {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Afectados:** Diseños que trianguan mediante GTS (`lib/neatogen/delaunay.c`; el oráculo 16.1 enlaza GTS 0.7.6) cuando la entrada es degenerada: puntos sobre aristas o mallas cocirculares.
+
+**Qué difiere.** El port numera las caras de Delaunay y ordena los vecinos de cada cara (`neigh`) por orden de creación. El GTS nativo numera las caras en orden de `GHashTable`: `closest_face` itera una tabla indexada por puntero, de modo que los ids de cara y el orden de vecinos dependen de direcciones del heap y cambian entre ejecuciones. Todo lo derivado del orden de caras puede, por tanto, diferir de una ejecución nativa concreta.
+
+**Por qué se acepta.** No existe un objetivo determinista. 60 ejecuciones del binario nativo sobre una entrada degenerada dieron 22 salidas distintas, incluso con ASLR desactivado y `MallocNanoZone=0`; la variación es una propiedad del oráculo por debajo del código, no un defecto del port. Compare las caras por su conjunto de vértices, no por id. Evidencia: notas de GTS de la parte 3 (`.agent-notes/post-16-1-followups-3.md`, «GTS face vertex order and nondeterminism»).
+
+### A12. Sin prefijo `<stdin>: ` en los errores del lexer {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Afectados:** Errores de sintaxis de DOT que informa el lexer (`aagerror`) por stderr.
+
+**Qué difiere.** La CLI nativa `dot`, al leer la entrada estándar, imprime `<stdin>: syntax error in line N …`; el port imprime el mismo mensaje sin el prefijo `<stdin>: `.
+
+**Por qué se acepta.** `aagerror` (`lib/cgraph/scan.l:157`) añade `InputFile: ` solo cuando `InputFile` está establecido. La CLI lo fija en `<stdin>` al leer la entrada estándar; el punto de entrada de biblioteca `agmemread`, que el port refleja, lo deja sin establecer y no imprime prefijo. El port no tiene CLI, así que no hay nada que informar. La sonda de stderr normaliza el prefijo al comparar.
 
 ---
 

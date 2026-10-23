@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1148,6 +1148,22 @@ błąd, a nie werdykt `diverged`, więc wpisy w
 niesie on ten komunikat. Inna awaria na `2784` ujawniłaby się jako niezaakceptowany
 błąd, a `registry-staleness.test.ts` oznaczyłby wpis jako nieaktualny. Dowody:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Kolejność ścian Delaunaya w GTS przy zdegenerowanych danych — nieredukowalne {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Dotyczy:** Układy triangulowane przez GTS (`lib/neatogen/delaunay.c`; wyrocznia 16.1 linkuje GTS 0.7.6) przy zdegenerowanych danych: punkty leżące na krawędziach lub kocykliczne siatki.
+
+**Czym się różni.** Port numeruje ściany Delaunaya i porządkuje sąsiadów każdej ściany (`neigh`) według kolejności utworzenia. Natywny GTS numeruje ściany w kolejności `GHashTable`: `closest_face` iteruje tablicę kluczowaną wskaźnikiem, więc identyfikatory ścian i kolejność sąsiadów zależą od adresów sterty i różnią się między uruchomieniami. Wszystko, co wynika z kolejności ścian, może więc różnić się od danego natywnego uruchomienia.
+
+**Dlaczego zaakceptowane.** Deterministyczny cel nie istnieje. 60 uruchomień natywnego pliku binarnego na jednych zdegenerowanych danych dało 22 różne wyniki, także przy wyłączonym ASLR i `MallocNanoZone=0`; zmienność jest cechą wyroczni poniżej kodu, a nie wadą portu. Ściany porównuj według zbioru wierzchołków, nie identyfikatora. Dowód: notatki o GTS z części 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism”).
+
+### A12. Brak prefiksu `<stdin>: ` w błędach leksera {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Dotyczy:** Błędy składni DOT zgłaszane przez lekser (`aagerror`) na stderr.
+
+**Czym się różni.** Natywny CLI `dot` czytający standardowe wejście wypisuje `<stdin>: syntax error in line N …`; port wypisuje ten sam komunikat bez prefiksu `<stdin>: `.
+
+**Dlaczego zaakceptowane.** `aagerror` (`lib/cgraph/scan.l:157`) dodaje `InputFile: ` tylko wtedy, gdy `InputFile` jest ustawiony. CLI ustawia go na `<stdin>` przy czytaniu standardowego wejścia; punkt wejścia biblioteki `agmemread`, który port odwzorowuje, zostawia go nieustawionego i nie wypisuje prefiksu. Port nie ma CLI, więc nie ma czego zgłaszać. Sonda stderr normalizuje prefiks przy porównaniu.
 
 ---
 

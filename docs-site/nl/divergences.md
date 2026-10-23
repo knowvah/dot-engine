@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1175,6 +1175,22 @@ fout in plaats van een `diverged`-oordeel, dus de vermeldingen in
 die deze melding bevat. Een andere mislukking op `2784` zou opduiken als een niet-geaccepteerde
 fout, en `registry-staleness.test.ts` zou de vermelding als verouderd markeren. Bewijs:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Volgorde van Delaunay-vlakken in GTS bij gedegenereerde invoer — onherleidbaar {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Getroffen:** Lay-outs die via GTS trianguleren (`lib/neatogen/delaunay.c`; het 16.1-orakel linkt GTS 0.7.6) bij gedegenereerde invoer: punten op randen of cocirculaire roosters.
+
+**Wat afwijkt.** De port nummert Delaunay-vlakken en ordent de buren van elk vlak (`neigh`) op aanmaakvolgorde. Native GTS nummert vlakken in `GHashTable`-volgorde: `closest_face` itereert een tabel met pointers als sleutel, waardoor vlak-id's en buurvolgorde afhangen van heapadressen en per run verschillen. Alles wat uit de vlakvolgorde volgt, kan daarom afwijken van een gegeven native run.
+
+**Waarom geaccepteerd.** Er bestaat geen deterministisch doel. 60 runs van het native binaire bestand op één gedegenereerde invoer gaven 22 verschillende uitvoeren, ook met ASLR uit en `MallocNanoZone=0`; de variatie is een eigenschap van het orakel onder de code, geen fout van de port. Vergelijk vlakken op hoekpuntenverzameling, niet op id. Bewijs: GTS-notities uit deel 3 (`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. Geen voorvoegsel `<stdin>: ` bij lexerfouten {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Getroffen:** DOT-syntaxisfouten die de lexer (`aagerror`) op stderr meldt.
+
+**Wat afwijkt.** De native `dot`-CLI die standaardinvoer leest, drukt `<stdin>: syntax error in line N …` af; de port drukt hetzelfde bericht af zonder het voorvoegsel `<stdin>: `.
+
+**Waarom geaccepteerd.** `aagerror` (`lib/cgraph/scan.l:157`) voegt `InputFile: ` alleen toe als `InputFile` is gezet. De CLI zet het op `<stdin>` bij het lezen van standaardinvoer; het bibliotheekingangspunt `agmemread`, dat de port spiegelt, laat het ongezet en drukt geen voorvoegsel af. De port heeft geen CLI, dus er is niets te melden. De stderr-sonde normaliseert het voorvoegsel bij vergelijking.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1170,6 +1170,22 @@ er en kastet fejl frem for en `diverged`-dom, så posterne i
 bærer den meddelelse. En anden fejl på `2784` ville dukke op som en ikke-accepteret
 fejl, og `registry-staleness.test.ts` ville markere posten som forældet. Evidens:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. GTS-Delaunay-fladerækkefølge ved degenereret input — irreducibel {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Berørt:** Layouts, der trianguleres via GTS (`lib/neatogen/delaunay.c`; 16.1-oraklet linker GTS 0.7.6) ved degenereret input: punkter på kanter eller koncirkulære gitre.
+
+**Hvad der adskiller sig.** Porten nummererer Delaunay-flader og ordner hver flades naboer (`neigh`) efter oprettelsesrækkefølge. Native GTS nummererer flader i `GHashTable`-rækkefølge: `closest_face` itererer en tabel med pointere som nøgler, så flade-id'er og naborækkefølge afhænger af heap-adresser og varierer mellem kørsler. Alt, der er afledt af fladerækkefølgen, kan derfor afvige fra en given native kørsel.
+
+**Hvorfor accepteret.** Der findes intet deterministisk mål. 60 kørsler af den native binær på ét degenereret input gav 22 forskellige output, selv med ASLR slået fra og `MallocNanoZone=0`; variationen er en egenskab ved oraklet under koden, ikke en fejl i porten. Sammenlign flader efter hjørnemængde, ikke efter id. Evidens: GTS-noter fra del 3 (`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. Intet `<stdin>: `-præfiks på lexer-fejl {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Berørt:** Syntaksfejl i DOT rapporteret af lexeren (`aagerror`) på stderr.
+
+**Hvad der adskiller sig.** Den native `dot`-CLI, der læser standard input, udskriver `<stdin>: syntax error in line N …`; porten udskriver samme meddelelse uden præfikset `<stdin>: `.
+
+**Hvorfor accepteret.** `aagerror` (`lib/cgraph/scan.l:157`) tilføjer `InputFile: ` kun når `InputFile` er sat. CLI'en sætter den til `<stdin>` ved læsning af standard input; biblioteksindgangen `agmemread`, som porten afspejler, lader den være usat og udskriver intet præfiks. Porten har ingen CLI, så der er intet at rapportere. stderr-proben normaliserer præfikset ved sammenligning.
 
 ---
 

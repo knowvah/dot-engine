@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1000,6 +1000,22 @@ xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니�
 `errIncludes: "Map maximum size exceeded"`를 선언합니다. 즉, 그 메시지를 담은 경우에만 포팅 오류를
 수용합니다. `2784`에서 다른 실패가 일어나면 수용되지 않은 결함으로 드러나고,
 `registry-staleness.test.ts`가 그 항목을 낡은 것으로 표시합니다. 증거: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. 퇴화 입력에서 GTS Delaunay 면의 순서 — 환원 불가 {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**영향받는 대상:** 입력이 퇴화된 경우(변 위의 점, 공원(共圓) 격자) GTS를 통해 삼각분할하는 레이아웃(`lib/neatogen/delaunay.c`; 16.1 오라클은 GTS 0.7.6을 링크한다).
+
+**무엇이 다른가.** 포트는 Delaunay 면의 번호와 각 면의 이웃(`neigh`) 순서를 생성 순서로 매긴다. 네이티브 GTS는 면을 `GHashTable` 순서로 번호 매긴다. `closest_face`가 포인터를 키로 하는 테이블을 순회하므로 면 ID와 이웃 순서는 힙 주소에 좌우되며 실행마다 달라진다. 따라서 면 순서에서 파생되는 모든 것은 특정 네이티브 실행과 다를 수 있다.
+
+**수용하는 이유.** 결정적인 목표는 존재하지 않는다. 퇴화된 입력 하나에 네이티브 바이너리를 60회 실행하자 ASLR을 끄고 `MallocNanoZone=0`으로 해도 22가지의 서로 다른 출력이 나왔다. 이 변동은 코드 아래에 있는 오라클의 속성이며 포트의 결함이 아니다. 면은 ID가 아니라 꼭짓점 집합으로 비교해야 한다. 근거: 3부의 GTS 메모(`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. 렉서 오류에 `<stdin>: ` 접두사가 붙지 않음 {#a12-no-stdin-prefix-on-lexer-errors}
+
+**영향받는 대상:** 렉서(`aagerror`)가 stderr로 보고하는 DOT 구문 오류.
+
+**무엇이 다른가.** 표준 입력을 읽는 네이티브 `dot` CLI는 `<stdin>: syntax error in line N …`을 출력한다. 포트는 같은 메시지를 `<stdin>: ` 접두사 없이 출력한다.
+
+**수용하는 이유.** `aagerror`(`lib/cgraph/scan.l:157`)는 `InputFile`이 설정된 경우에만 `InputFile: `을 덧붙인다. CLI는 표준 입력을 읽을 때 이를 `<stdin>`으로 설정하지만, 포트가 그대로 따르는 라이브러리 진입점 `agmemread`는 설정하지 않은 채 두므로 접두사를 출력하지 않는다. 포트에는 CLI가 없어 보고할 `InputFile`이 없다. stderr 프로브는 비교 시 이 접두사를 정규화한다.
 
 ---
 

@@ -1185,6 +1185,22 @@ unaccepted fault, and `registry-staleness.test.ts` would flag the entry as
 stale. Evidence:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
 
+### A11. GTS Delaunay face order on degenerate input — irreducible {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Affected:** Layouts that triangulate through GTS (`lib/neatogen/delaunay.c`; the 16.1 oracle links GTS 0.7.6) when the input is degenerate: points lying on edges, or cocircular grids.
+
+**What differs.** The port numbers Delaunay faces and orders each face's neighbours (`neigh`) by creation order. Native GTS numbers faces in `GHashTable` order: `closest_face` iterates a table keyed by pointer, so face ids and neighbour order depend on heap addresses and differ between runs. Anything derived from face order can therefore differ from a given native run.
+
+**Why accepted.** No deterministic target exists. 60 runs of the native binary on one degenerate input gave 22 distinct outputs, even with ASLR disabled and `MallocNanoZone=0`; the variation is a property of the oracle below the code, not a port defect. Compare faces by vertex set, not by id. Evidence: the part-3 GTS notes (`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. No `<stdin>: ` prefix on lexer errors {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Affected:** DOT syntax errors reported by the lexer (`aagerror`) on stderr.
+
+**What differs.** The native `dot` CLI reading standard input prints `<stdin>: syntax error in line N …`; the port prints the same message without the `<stdin>: ` prefix.
+
+**Why accepted.** `aagerror` (`lib/cgraph/scan.l:157`) adds `InputFile: ` only when `InputFile` is set. The CLI sets it to `<stdin>` when reading standard input; the library entry `agmemread`, which the port mirrors, leaves it unset and prints no prefix. The port has no CLI, so there is no `InputFile` to report. The stderr probe normalizes the prefix when comparing.
+
 ---
 
 ## Tracked long tail (`dot` attribute & edge-case)

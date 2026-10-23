@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1159,6 +1159,22 @@ akceptují jen tehdy, nese-li tuto zprávu. Jiné selhání u `2784` by se proje
 jako neakceptovaná chyba a `registry-staleness.test.ts` by záznam označil za
 zastaralý. Důkaz:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Pořadí stěn Delaunayovy triangulace v GTS u degenerovaného vstupu — neredukovatelné {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Dotčeno:** Rozvržení, která triangulují přes GTS (`lib/neatogen/delaunay.c`; oracle 16.1 linkuje GTS 0.7.6) při degenerovaném vstupu: body ležící na hranách nebo kocirkulární mřížky.
+
+**Co se liší.** Port čísluje stěny Delaunayovy triangulace a řadí sousedy každé stěny (`neigh`) podle pořadí vytvoření. Nativní GTS číslují stěny v pořadí `GHashTable`: `closest_face` prochází tabulku klíčovanou ukazatelem, takže id stěn a pořadí sousedů závisí na adresách haldy a mezi běhy se liší. Vše odvozené z pořadí stěn se proto může lišit od konkrétního nativního běhu.
+
+**Proč akceptováno.** Deterministický cíl neexistuje. Šedesát běhů nativního binárního souboru na jednom degenerovaném vstupu dalo 22 různých výstupů, a to i při vypnutém ASLR a `MallocNanoZone=0`; variabilita je vlastností oracle pod úrovní kódu, nikoli vadou portu. Stěny porovnávejte podle množiny vrcholů, ne podle id. Důkaz: poznámky ke GTS z části 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism“).
+
+### A12. Žádný prefix `<stdin>: ` u chyb lexeru {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Dotčeno:** Syntaktické chyby DOT hlášené lexerem (`aagerror`) na stderr.
+
+**Co se liší.** Nativní CLI `dot` čtoucí standardní vstup vypíše `<stdin>: syntax error in line N …`; port vypíše stejnou zprávu bez prefixu `<stdin>: `.
+
+**Proč akceptováno.** `aagerror` (`lib/cgraph/scan.l:157`) přidá `InputFile: ` jen tehdy, když je `InputFile` nastaven. CLI jej při čtení standardního vstupu nastaví na `<stdin>`; knihovní vstup `agmemread`, který port zrcadlí, jej nechává nenastavený a prefix nevypisuje. Port nemá CLI, takže není co hlásit. Sonda stderr prefix při porovnání normalizuje.
 
 ---
 

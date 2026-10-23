@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1242,6 +1242,22 @@ akzeptieren einen Portierungsfehler nur, wenn er diese Meldung trägt. Ein ander
 Fehlschlag bei `2784` würde als nicht akzeptierter Fehler auftauchen, und
 `registry-staleness.test.ts` würde den Eintrag als veraltet melden. Belege:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. GTS-Delaunay-Flächenreihenfolge bei degenerierter Eingabe — nicht reduzierbar {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Betroffen:** Layouts, die über GTS triangulieren (`lib/neatogen/delaunay.c`; das 16.1-Orakel linkt GTS 0.7.6), wenn die Eingabe degeneriert ist: Punkte auf Kanten oder kozirkulare Gitter.
+
+**Was abweicht.** Die Portierung nummeriert Delaunay-Flächen und ordnet die Nachbarn jeder Fläche (`neigh`) nach Erzeugungsreihenfolge. Natives GTS nummeriert Flächen in `GHashTable`-Reihenfolge: `closest_face` iteriert über eine zeigerbasierte Tabelle, daher hängen Flächen-IDs und Nachbarreihenfolge von Heap-Adressen ab und unterscheiden sich zwischen Läufen. Alles, was von der Flächenreihenfolge abgeleitet wird, kann daher von einem gegebenen nativen Lauf abweichen.
+
+**Warum akzeptiert.** Ein deterministisches Ziel existiert nicht. 60 Läufe der nativen Binärdatei auf einer degenerierten Eingabe ergaben 22 verschiedene Ausgaben, auch bei deaktiviertem ASLR und `MallocNanoZone=0`; die Streuung ist eine Eigenschaft des Orakels unterhalb des Codes, kein Fehler der Portierung. Flächen nach Eckpunktmenge vergleichen, nicht nach ID. Beleg: GTS-Notizen aus Teil 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism“).
+
+### A12. Kein Präfix `<stdin>: ` bei Lexer-Fehlern {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Betroffen:** Vom Lexer (`aagerror`) auf stderr gemeldete DOT-Syntaxfehler.
+
+**Was abweicht.** Die native `dot`-CLI gibt beim Lesen der Standardeingabe `<stdin>: syntax error in line N …` aus; die Portierung gibt dieselbe Meldung ohne das Präfix `<stdin>: ` aus.
+
+**Warum akzeptiert.** `aagerror` (`lib/cgraph/scan.l:157`) fügt `InputFile: ` nur hinzu, wenn `InputFile` gesetzt ist. Die CLI setzt es beim Lesen der Standardeingabe auf `<stdin>`; der Bibliothekseinstieg `agmemread`, den die Portierung spiegelt, lässt es ungesetzt und gibt kein Präfix aus. Die Portierung hat keine CLI, also gibt es nichts zu melden. Die stderr-Sonde normalisiert das Präfix beim Vergleich.
 
 ---
 

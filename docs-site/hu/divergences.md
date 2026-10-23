@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1176,6 +1176,22 @@ feltétellel: csak akkor fogadnak el portolási hibát, ha az ezt az üzenetet h
 Egy másféle hiba a `2784` esetén el nem fogadott hibaként jelenne meg, és a
 `registry-staleness.test.ts` elavultként jelölné meg a bejegyzést. Bizonyíték:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. A GTS Delaunay-lapjainak sorrendje elfajult bemeneten — nem csökkenthető {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Érintett:** A GTS-en keresztül háromszögelő elrendezések (`lib/neatogen/delaunay.c`; a 16.1-es orákulum a GTS 0.7.6-ot linkeli) elfajult bemenet esetén: éleken fekvő pontok vagy kocirkuláris rácsok.
+
+**Mi tér el.** A port a Delaunay-lapokat létrehozási sorrendben számozza, és minden lap szomszédait (`neigh`) is így rendezi. A natív GTS `GHashTable`-sorrendben számozza a lapokat: a `closest_face` mutatóval kulcsolt táblát jár be, így a lapazonosítók és a szomszédsági sorrend a heap-címektől függ, és futásonként változik. A lapsorrendből származtatott minden így eltérhet egy adott natív futástól.
+
+**Miért elfogadott.** Determinisztikus cél nincs. A natív bináris 60 futtatása egyetlen elfajult bemeneten 22 különböző kimenetet adott, kikapcsolt ASLR és `MallocNanoZone=0` mellett is; az ingadozás az orákulum kód alatti tulajdonsága, nem a port hibája. A lapokat csúcshalmaz, ne azonosító szerint hasonlítsa össze. Bizonyíték: a 3. rész GTS-jegyzetei (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism”).
+
+### A12. Nincs `<stdin>: ` előtag a lexer hibáin {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Érintett:** A lexer (`aagerror`) által stderr-re jelentett DOT-szintaktikai hibák.
+
+**Mi tér el.** A szabványos bemenetet olvasó natív `dot` CLI `<stdin>: syntax error in line N …` üzenetet ír; a port ugyanazt az üzenetet a `<stdin>: ` előtag nélkül írja.
+
+**Miért elfogadott.** Az `aagerror` (`lib/cgraph/scan.l:157`) csak akkor fűzi hozzá az `InputFile: ` előtagot, ha az `InputFile` be van állítva. A CLI szabványos bemenet olvasásakor `<stdin>`-re állítja; a port által tükrözött `agmemread` könyvtári belépési pont nem állítja be, és nem ír előtagot. A portnak nincs CLI-je, így nincs mit jelenteni. A stderr-szonda az összehasonlításkor normalizálja az előtagot.
 
 ---
 

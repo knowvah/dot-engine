@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -436,6 +436,22 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 **发生了什么。** `lib/pack/pack.c` 把一个组件占用的单元格记录在一个 `PointSet` 中。对于 `2784`（一个高 3e16 pt 的单节点，`splines="ortho"`），忠实的整数 `step`/放置算术需要 2,011,656,764 个单元格；原生 16.1.0 用 482 秒完成，常驻内存 67.3 GB（峰值 101 GB）。移植版的 `PointSet` 是一个 JavaScript `Map`，V8 把它限制在 2^24 个条目，所以它抛出 `Map maximum size exceeded`。
 
 **为何接受。** 这是位于代码之下的运行时限制，而不是逻辑缺口；原因是 `97fcccd8` 的忠实算术（在它之前，移植版算出的是一个很小的错误布局，从未触及该限制）。接受的结果是抛出错误而不是 `diverged` 判定，所以 `accepted-divergences-engines.json`、`accepted-divergences-json.json` 和 `accepted-divergences-map.json` 中的条目声明 `verdict: "port-error"` 并附带 `errIncludes: "Map maximum size exceeded"`：只有当移植版错误带有该消息时，它们才接受它。`2784` 上的其他失败会作为未接受的故障出现，而 `registry-staleness.test.ts` 会把该条目标记为陈旧。证据：[`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md)。
+
+### A11. 退化输入下 GTS 的 Delaunay 面顺序 — 不可约 {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**受影响：** 输入退化（点位于边上、共圆网格）时经由 GTS 做三角剖分的布局（`lib/neatogen/delaunay.c`；16.1 的 oracle 链接 GTS 0.7.6）。
+
+**有何不同。** 移植版按创建顺序为 Delaunay 面编号，并按创建顺序排列每个面的邻接面（`neigh`）。原生 GTS 按 `GHashTable` 的顺序为面编号：`closest_face` 遍历以指针为键的哈希表，因此面 id 与邻接顺序取决于堆地址，且每次运行都不同。因此，凡由面顺序导出的结果都可能与某次具体的原生运行不同。
+
+**为何接受。** 不存在确定性的目标。在同一个退化输入上运行原生二进制 60 次，即便关闭 ASLR 并设置 `MallocNanoZone=0`，仍得到 22 种不同输出；这种波动是代码之下 oracle 自身的性质，而非移植缺陷。比较面时请按顶点集合，而不是按 id。证据：第 3 部分的 GTS 笔记（`.agent-notes/post-16-1-followups-3.md`，“GTS face vertex order and nondeterminism”）。
+
+### A12. 词法分析器错误没有 `<stdin>: ` 前缀 {#a12-no-stdin-prefix-on-lexer-errors}
+
+**受影响：** 词法分析器（`aagerror`）向 stderr 报告的 DOT 语法错误。
+
+**有何不同。** 读取标准输入的原生 `dot` CLI 会输出 `<stdin>: syntax error in line N …`；移植版输出相同消息，但没有 `<stdin>: ` 前缀。
+
+**为何接受。** 仅当设置了 `InputFile` 时，`aagerror`（`lib/cgraph/scan.l:157`）才会加上 `InputFile: `。CLI 在读取标准输入时将其设为 `<stdin>`；移植版所对应的库入口 `agmemread` 不设置它，也就不输出前缀。移植版没有 CLI，因此无可报告。stderr 探针在比较时会规范化该前缀。
 
 ---
 

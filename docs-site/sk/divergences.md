@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1166,6 +1166,22 @@ chyba, nie verdikt `diverged`, takže záznamy v
 nesie túto správu. Iné zlyhanie pri `2784` by sa prejavilo ako neakceptovaná chyba
 a `registry-staleness.test.ts` by záznam označil za zastaraný. Dôkaz:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Poradie Delaunayho stien v GTS pri degenerovanom vstupe — neredukovateľné {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Dotknuté:** Rozloženia, ktoré triangulujú cez GTS (`lib/neatogen/delaunay.c`; oracle 16.1 linkuje GTS 0.7.6) pri degenerovanom vstupe: body ležiace na hranách alebo kocirkulárne mriežky.
+
+**Čím sa líši.** Port očísluje steny Delaunayho triangulácie a susedov každej steny (`neigh`) radí podľa poradia vytvorenia. Natívny GTS očísluje steny v poradí `GHashTable`: `closest_face` prechádza tabuľku kľúčovanú ukazovateľom, takže id stien a poradie susedov závisia od adries haldy a medzi behmi sa líšia. Všetko odvodené z poradia stien sa preto môže líšiť od konkrétneho natívneho behu.
+
+**Prečo akceptované.** Deterministický cieľ neexistuje. 60 behov natívneho binárneho súboru na jednom degenerovanom vstupe dalo 22 rôznych výstupov, aj pri vypnutom ASLR a `MallocNanoZone=0`; variabilita je vlastnosťou oracle pod úrovňou kódu, nie chybou portu. Steny porovnávajte podľa množiny vrcholov, nie podľa id. Dôkaz: poznámky ku GTS z časti 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism“).
+
+### A12. Žiadna predpona `<stdin>: ` pri chybách lexera {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Dotknuté:** Syntaktické chyby DOT hlásené lexerom (`aagerror`) na stderr.
+
+**Čím sa líši.** Natívne CLI `dot` čítajúce štandardný vstup vypíše `<stdin>: syntax error in line N …`; port vypíše rovnakú správu bez predpony `<stdin>: `.
+
+**Prečo akceptované.** `aagerror` (`lib/cgraph/scan.l:157`) pridá `InputFile: ` iba vtedy, keď je `InputFile` nastavený. CLI ho pri čítaní štandardného vstupu nastaví na `<stdin>`; knižničný vstup `agmemread`, ktorý port zrkadlí, ho necháva nenastavený a predponu nevypisuje. Port nemá CLI, takže nie je čo hlásiť. Sonda stderr predponu pri porovnávaní normalizuje.
 
 ---
 
