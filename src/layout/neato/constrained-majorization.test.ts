@@ -136,11 +136,32 @@ describe('distance models', () => {
   it.each([
     ['subset', MODEL_SUBSET, /subset distance model/],
     ['circuit', MODEL_CIRCUIT, /circuit distance model/],
-    ['mds', MODEL_MDS, /MDS distance model/],
   ])('%s stays loud at the C branch point', (_name, model, message) => {
     csrand(1);
     expect(() => stressMajorizationWithHierarchy(probe(), 6, zeros(2, 6), freshNodes(6), layoutOpts({ model })))
       .toThrowError(message);
+  });
+
+  /** Layout of the probe graph under `model`, after `edit` changed its rows. */
+  function layoutProbe(model: number, edit: (g: DirectedVtxData[]) => void = () => {}): number[][] {
+    csrand(1);
+    srand48(1);
+    const graph = probe();
+    edit(graph);
+    const coords = zeros(2, 6);
+    stressMajorizationWithHierarchy(graph, 6, coords, freshNodes(6), layoutOpts({ model }));
+    return coords.map((a) => [...a]);
+  }
+
+  it('mds with unit lengths equals the shortest-path model', () => {
+    expect(layoutProbe(MODEL_MDS)).toEqual(layoutProbe(MODEL_SHORTPATH));
+  });
+
+  it('mds writes the user-supplied length over the shortest path', () => {
+    // edge 0-3 gets length 2.5: the shortest-path model's BFS truncates it to the
+    // DistType 2 (bfs.c:41-43), the MDS model keeps 2.5
+    const longEdge = (g: DirectedVtxData[]): void => { g[0]!.ewgts[2] = 2.5; };
+    expect(layoutProbe(MODEL_MDS, longEdge)).not.toEqual(layoutProbe(MODEL_SHORTPATH, longEdge));
   });
 
   it('is not reached when there is nothing to iterate (maxi = 0 returns first)', () => {

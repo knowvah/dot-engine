@@ -69,8 +69,10 @@ describe('neato dispatch on mode', () => {
     expect(await plain('mode=sgd;')).not.toBe(await plain(''));
   });
 
-  it('mode=hier still fails loudly', async () => {
-    await expect(plain('mode=hier;')).rejects.toMatchObject({ code: 'UNSUPPORTED_FEATURE' });
+  it('mode=hier reaches stress_majorization_with_hierarchy (output differs from major)', async () => {
+    const hier = await plain('mode=hier;');
+    expect(hier).toMatch(/^graph 1 /);
+    expect(hier).not.toBe(await plain(''));
   });
 });
 

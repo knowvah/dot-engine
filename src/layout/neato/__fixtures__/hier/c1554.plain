@@ -1,0 +1,26 @@
+graph 1 8.3515 1.05
+node hidden 0.025 0.45 0.05 0.05 hidden invis point black lightgrey
+node "power on" 1.6893 0.45 0.81009 0.5 "power on" solid ellipse black lightgrey
+node "sign in" 3.547 0.45 0.75 0.5 "sign in" solid ellipse black lightgrey
+node "wait for\nbecoming\noffline" 0.66743 0.45 1.0114 0.79353 "wait for\nbecoming\noffline" solid ellipse black lightgrey
+node "critical\nsettings" 2.6328 0.45 0.85444 0.5814 "critical\nsettings" solid ellipse black lightgrey
+node dashboard 7.1703 0.45 0.86298 0.5 dashboard solid ellipse black lightgrey
+node settings 5.8395 0.45 0.75 0.5 settings solid ellipse black lightgrey
+edge hidden "power on" 4 0.053697 0.45 0.42937 0.45 0.51963 0.45 1.1202 0.45 solid black
+edge "power on" "sign in" 4 2.1007 0.45 2.3079 0.45 2.5196 0.45 3.0139 0.45 "critical\nsettings\nnot\nmissing" 2.4384 0.75 solid black
+edge "power on" "wait for\nbecoming\noffline" 4 1.281 0.45 1.2798 0.45 1.2786 0.45 1.2774 0.45 "critical\nsettings\nmissing" 1.3755 0.225 solid black
+edge "sign in" "sign in" 7 3.9256 0.45 4.0239 0.60278 4.2276 0.60278 4.2276 0.45 4.2276 0.34735 4.1356 0.31367 4.0455 0.34896 "incorrect\nsecrets" 4.4497 0.45 solid black
+edge "sign in" dashboard 4 3.9077 0.52203 4.538 0.57356 5.8447 0.57829 6.5992 0.53621 "correct\nsecrets" 5.1567 0.71457 solid black
+edge "wait for\nbecoming\noffline" "critical\nsettings" 4 1.1757 0.45 1.3718 0.45 1.5964 0.45 2.0473 0.45 "we are\noffline" 1.526 0.6 solid black
+edge "critical\nsettings" "sign in" 4 3.0661 0.45 3.068 0.45 3.0699 0.45 3.0718 0.45 "correct\ninput" 3.0711 0.3 solid black
+edge "critical\nsettings" "critical\nsettings" 7 3.064 0.45 3.1619 0.60278 3.3656 0.60278 3.3656 0.45 3.3656 0.34735 3.2736 0.31367 3.1836 0.34896 "incorrect\ninput" 3.5876 0.45 solid black
+edge dashboard "sign in" 4 6.7546 0.37371 6.0907 0.32509 4.7921 0.32277 4.0674 0.36673 "click\n\"Sign out\"" 5.1981 0.18543 solid black
+edge dashboard dashboard 7 6.7347 0.45 6.6369 0.60278 6.4332 0.60278 6.4332 0.45 6.4332 0.34735 6.5252 0.31367 6.6152 0.34896 "correct\ninput" 6.2598 0.45 solid black
+edge dashboard dashboard 7 7.6058 0.45 7.7036 0.60278 7.9073 0.60278 7.9073 0.45 7.9073 0.34735 7.8154 0.31367 7.7253 0.34896 "incorrect\ninput" 8.1294 0.45 solid black
+edge dashboard settings 4 6.771 0.34398 6.6378 0.33495 6.4876 0.33306 6.3473 0.33832 "click\n\"Settings\"" 6.4809 0.18548 solid black
+edge settings "sign in" 4 5.4598 0.45 4.6733 0.45 4.3676 0.45 4.085 0.45 "click\n\"Sign out\"" 4.322 0.6 solid black
+edge settings "wait for\nbecoming\noffline" 4 5.4609 0.45 2.7727 0.45 2.2751 0.45 1.3323 0.45 "complete\nwipe" 2.5129 0.3 solid black
+edge settings dashboard 4 6.1891 0.55225 6.3189 0.56321 6.4696 0.56686 6.6133 0.56322 "click\n\"Dashboard\"" 6.1624 0.71453 solid black
+edge settings settings 7 5.4609 0.45 5.3626 0.60278 5.1589 0.60278 5.1589 0.45 5.1589 0.34735 5.2509 0.31367 5.341 0.34896 "correct\ninput" 4.9854 0.45 solid black
+edge settings settings 7 6.218 0.45 6.3163 0.60278 6.52 0.60278 6.52 0.45 6.52 0.34735 6.4281 0.31367 6.3379 0.34896 "incorrect\ninput" 6.7421 0.45 solid black
+stop

@@ -433,15 +433,24 @@ describe('solveModel', () => {
     expect(b.info.pos).toBeDefined();
   });
 
-  it('throws UNSUPPORTED_FEATURE for MODE_HIER', () => {
-    const g = new Graph('g', 'undirected');
+  it('lays out MODE_HIER through stress_majorization_with_hierarchy', () => {
+    const g = new Graph('g', 'directed');
+    const a = new Node(0, 'A', g); const b = new Node(1, 'B', g); const c = new Node(2, 'C', g);
+    for (const n of [a, b, c]) g.nodes.set(n.name, n);
+    g.edges.push(new Edge(a, b, 'AB'), new Edge(b, c, 'BC'));
+    g.root.attrs.set('mode', 'hier');
+    solveModel(g, MODE_HIER, MODEL_SHORTPATH);
+    // a hierarchy puts the edge tails above their heads: strictly decreasing y
+    const ys = [a, b, c].map((n) => n.info.pos![1]!);
+    expect(ys[0]! > ys[1]! && ys[1]! > ys[2]!).toBe(true);
+  });
+
+  it('keeps the subset model loud for MODE_HIER', () => {
+    const g = new Graph('g', 'directed');
     const a = new Node(0, 'A', g); const b = new Node(1, 'B', g);
     g.nodes.set('A', a); g.nodes.set('B', b);
     g.edges.push(new Edge(a, b, 'AB'));
-    g.root.attrs.set('mode', 'hier');
-    expect(() => solveModel(g, MODE_HIER, MODEL_SHORTPATH)).toThrow(
-      expect.objectContaining({ code: 'UNSUPPORTED_FEATURE' }),
-    );
+    expect(() => solveModel(g, MODE_HIER, MODEL_SUBSET)).toThrow(/subset distance model/);
   });
 
   it('runs unconstrained MODE_IPSEP as plain majorization without warning', () => {

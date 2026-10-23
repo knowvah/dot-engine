@@ -32,7 +32,7 @@ import { imdsGivenDim } from './smart-ini-x.js';
 import {
   computeApspPacked, computeWeightedApspPacked, initLayout, stressMajorizationKDMkernel,
 } from './stress-kernel.js';
-import { OPT_SMART_INIT, TOLERANCE_CG } from './stress.js';
+import { mdsModel, OPT_SMART_INIT, TOLERANCE_CG } from './stress.js';
 
 const fr = Math.fround;
 
@@ -84,15 +84,16 @@ function unsupported(what: string): never {
 }
 
 /**
- * Distance model dispatch shared by both drivers. The subset, circuit and MDS
+ * Distance model dispatch shared by both drivers: the MDS model is ported
+ * (`mdsModel`, `null` when the graph has no lengths); the subset and circuit
  * models need C helpers that are not ported (AD-6, stop 12) and stay loud.
  * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
  * @see lib/neatogen/constrained_majorization.c:stress_majorization_with_hierarchy
  */
-function rejectUnportedModel(model: number): void {
+function modelDistances(graph: VtxData[], n: number, model: number): Float32Array | null {
   if (model === MODEL_SUBSET) unsupported('the subset distance model');
   if (model === MODEL_CIRCUIT) unsupported('the circuit distance model');
-  if (model === MODEL_MDS) unsupported('the MDS distance model');
+  return model === MODEL_MDS ? mdsModel(graph, n) : null;
 }
 
 /**
@@ -105,9 +106,9 @@ function unconstrainedMajorization(
   graph: VtxData[], n: number, dCoords: Float64Array[], nodes: Node[], o: KdOpts,
 ): number {
   if (o.maxi < 0) return 0;
-  rejectUnportedModel(o.model);
   const weighted = (graph[0]?.ewgts.length ?? 0) > 0;
-  const Dij = weighted ? computeWeightedApspPacked(graph, n) : computeApspPacked(graph, n);
+  const Dij = modelDistances(graph, n, o.model)
+    ?? (weighted ? computeWeightedApspPacked(graph, n) : computeApspPacked(graph, n));
   if ((o.opts & OPT_SMART_INIT) !== 0 && n > 1) unsupported('the smart initial layout');
   return stressMajorizationKDMkernel(Dij, n, dCoords, nodes, {
     dim: o.dim, opts: o.opts, maxi: o.maxi, epsilon: o.epsilon,
@@ -463,8 +464,7 @@ export function stressMajorizationWithHierarchy(
 
   // Compute the all-pairs-shortest-distances matrix
   if (o.maxi === 0) return 0;
-  rejectUnportedModel(o.model);
-  const Dij = computeApspPacked(graph, n);
+  const Dij = modelDistances(graph, n, o.model) ?? computeApspPacked(graph, n);
   if (!smartIni) scaleDownLayout(dCoords, n, o.dim);
   if (o.levelsGap > 0) scaleDistances(Dij, dCoords, n, o.dim);
 

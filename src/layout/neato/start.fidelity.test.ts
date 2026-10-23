@@ -73,7 +73,6 @@ describe('start=regular end to end', () => {
 
 describe('loud checks', () => {
   it.each([
-    ['mode=hier', 'mode=hier: hierarchical stress majorization is not supported yet'],
     ['start=self', 'start=self: smart initialisation is not supported yet'],
     ['start=selfish', 'start=selfish: smart initialisation is not supported yet'],
     ['model=subset', 'model=subset: the subset distance model is not supported yet'],
@@ -92,13 +91,17 @@ describe('loud checks', () => {
       .rejects.toMatchObject(UNSUPPORTED);
   });
 
-  it('mode=hier throws for each disconnected component too', async () => {
-    await expect(plain('graph { mode=hier; a--b; c--d }')).rejects.toMatchObject(UNSUPPORTED);
+  it('mode=hier lays out each disconnected component too', async () => {
+    expect(await plain('graph { mode=hier; a--b; c--d }')).toMatch(/^graph /);
+  });
+
+  it('mode=hier with start=self renders (smart init is the hier default)', async () => {
+    expect(await plain('graph { mode=hier; start=self; a--b--c }')).toMatch(/^graph /);
   });
 
   it.each([
     'mode=ipsep', 'mode=sgd; model=subset', 'mode=sgd; model=circuit',
-    'mode=hier; maxiter=-1', 'model=mds', 'start=random5', 'start=3',
+    'mode=hier; maxiter=-1', 'mode=hier', 'model=mds', 'start=random5', 'start=3',
   ])('%s renders', async (attrs) => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     expect(await plain(`graph { ${attrs}; a--b--c--d; a--c [len=2] }`)).toMatch(/^graph /);
