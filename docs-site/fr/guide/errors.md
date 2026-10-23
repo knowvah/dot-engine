@@ -1,5 +1,5 @@
 ---
-sourceHash: 545227fb3a0a91494ed7a2c299e5a9ca93a594d68d99e0596f743e7597dfbae9
+sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -134,7 +134,7 @@ valeur prise en charge.
 
 | Moteur | Attribut et valeur | Se déclenche quand | Fonctionnalité Graphviz requise |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Toujours (une fois que le graphe a 2 nœuds ou plus et que `maxiter` n’est pas négatif) | Majoration de stress hiérarchique (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Seulement quand `model` vaut `subset` ou `circuit` (une fois que le graphe a 2 nœuds ou plus et que `maxiter` n’est pas négatif) | Majoration de stress hiérarchique (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Seulement lorsque Graphviz construirait des contraintes : `diredgeconstraints` est vrai ou `hier*`, `overlap=ipsep`, ou le graphe a un cluster de premier niveau. Sans contraintes, il s’exécute comme une majoration de stress, comme dans Graphviz | Majoration contrainte (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` vaut `major` (la valeur par défaut) ou `ipsep` | Initialisation intelligente (`smart_ini`). Avec `mode=KK` ou `mode=sgd`, il journalise `start=0 not supported with mode=self - ignored` une fois par rendu, comme Graphviz |
 | neato | `model=subset` | `mode` vaut `major` ou `KK` | Le modèle de distance subset |

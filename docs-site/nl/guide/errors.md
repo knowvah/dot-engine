@@ -1,5 +1,5 @@
 ---
-sourceHash: 545227fb3a0a91494ed7a2c299e5a9ca93a594d68d99e0596f743e7597dfbae9
+sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,7 +132,7 @@ attribuut of wijzigt u het naar een ondersteunde waarde.
 
 | Engine | Attribuut en waarde | Slaat aan wanneer | Benodigde Graphviz-functie |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Altijd (nadat de graaf 2+ knopen heeft en `maxiter` niet negatief is) | Hiërarchische stressmajorisatie (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Alleen wanneer `model` `subset` of `circuit` is (nadat de graaf 2+ knopen heeft en `maxiter` niet negatief is) | Hiërarchische stressmajorisatie (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Alleen wanneer Graphviz beperkingen zou opbouwen: `diredgeconstraints` is waar of `hier*`, `overlap=ipsep`, of de graaf heeft een cluster op het hoogste niveau. Zonder beperkingen draait het als stressmajorisatie, zoals in Graphviz | Beperkte majorisatie (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` is `major` (de standaardwaarde) of `ipsep` | Slimme initialisatie (`smart_ini`). Onder `mode=KK` of `mode=sgd` logt het eenmaal per render `start=0 not supported with mode=self - ignored`, zoals Graphviz doet |
 | neato | `model=subset` | `mode` is `major` of `KK` | Het afstandsmodel subset |

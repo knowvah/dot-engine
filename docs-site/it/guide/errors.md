@@ -1,5 +1,5 @@
 ---
-sourceHash: 545227fb3a0a91494ed7a2c299e5a9ca93a594d68d99e0596f743e7597dfbae9
+sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -133,7 +133,7 @@ l'attributo o cambialo con un valore supportato.
 
 | Motore | Attributo e valore | Scatta quando | Funzionalità di Graphviz necessaria |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Sempre (dopo che il grafo ha 2+ nodi e `maxiter` non è negativo) | Stress majorization gerarchica (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Solo quando `model` è `subset` o `circuit` (dopo che il grafo ha 2+ nodi e `maxiter` non è negativo) | Stress majorization gerarchica (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Solo quando Graphviz costruirebbe vincoli: `diredgeconstraints` è vero oppure `hier*`, `overlap=ipsep`, oppure il grafo ha un cluster di primo livello. Senza vincoli viene eseguito come stress majorization, come in Graphviz | Majorization vincolata (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` è `major` (il valore predefinito) o `ipsep` | Inizializzazione intelligente (`smart_ini`). Con `mode=KK` o `mode=sgd` registra una sola volta per rendering `start=0 not supported with mode=self - ignored`, come fa Graphviz |
 | neato | `model=subset` | `mode` è `major` o `KK` | Il modello di distanza subset |

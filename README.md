@@ -150,7 +150,7 @@ with every message, is the table in
 
 | Engine | Attribute | Throws when |
 |--------|-----------|-------------|
-| neato | `mode=hier` | Always |
+| neato | `mode=hier` | `model` is `subset` or `circuit` |
 | neato | `mode=ipsep` | Only when Graphviz builds constraints (`diredgeconstraints`, `overlap=ipsep`, or a top-level cluster); otherwise unchanged |
 | neato | `start=self` | `mode` is `major` or `ipsep` |
 | neato | `model=subset` | `mode` is `major` or `KK` |

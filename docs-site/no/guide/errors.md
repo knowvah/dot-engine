@@ -1,5 +1,5 @@
 ---
-sourceHash: 545227fb3a0a91494ed7a2c299e5a9ca93a594d68d99e0596f743e7597dfbae9
+sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -130,7 +130,7 @@ For å unngå feilen fjerner du attributtet eller endrer det til en støttet ver
 
 | Motor | Attributt og verdi | Utløses når | Nødvendig Graphviz-funksjon |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Alltid (etter at grafen har 2+ noder og `maxiter` ikke er negativ) | Hierarkisk stress-majorisering (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Bare når `model` er `subset` eller `circuit` (etter at grafen har 2+ noder og `maxiter` ikke er negativ) | Hierarkisk stress-majorisering (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Bare når Graphviz ville bygd skranker: `diredgeconstraints` er sann eller `hier*`, `overlap=ipsep`, eller grafen har en klynge på toppnivå. Uten skranker kjører den som stress-majorisering, som i Graphviz | Skrankebegrenset majorisering (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` er `major` (standard) eller `ipsep` | Smart initialisering (`smart_ini`). Under `mode=KK` eller `mode=sgd` logger den `start=0 not supported with mode=self - ignored` én gang per rendering, som Graphviz gjør |
 | neato | `model=subset` | `mode` er `major` eller `KK` | Avstandsmodellen «subset» |
