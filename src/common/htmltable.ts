@@ -23,6 +23,7 @@ import type {
   HtmlTextItem, ImageSizer,
 } from './htmltable-types.js';
 import { findImageSize } from '../gvc/usershape.js';
+import { registerRenderState } from './render-state.js';
 import { PointSet } from './pointset.js';
 import type { TextMeasurer } from './textmeasure.js';
 import { withTableFont } from './htmltable-fontinfo.js';
@@ -228,13 +229,13 @@ const sizeTextContent = (
  * @see lib/common/htmltable.c:size_html_img (line 1080)
  */
 /** Images whose sizing failed: size_html_img's rv = 1 on every later call. */
-const missingImages = new WeakSet<HtmlImage>();
+const missingImages = { set: new WeakSet<HtmlImage>() };
 
 const sizeHtmlImg = (img: HtmlImage, { imageSizer, stderr }: HtmlSizeEnv): number => {
   // C sizes each image once (processTbl); the port's size and pos passes
   // share layoutHtmlTable, so guard against re-sizing (and re-warning). The
   // returned rv still follows C on every call.
-  if (img.width !== undefined && img.height !== undefined) return missingImages.has(img) ? 1 : 0;
+  if (img.width !== undefined && img.height !== undefined) return missingImages.set.has(img) ? 1 : 0;
   const sz = imageSizer !== undefined ? imageSizer(img.src) : findImageSize(img.src);
   if (sz !== null) {
     img.width = sz.w; img.height = sz.h;
@@ -246,7 +247,7 @@ const sizeHtmlImg = (img: HtmlImage, { imageSizer, stderr }: HtmlSizeEnv): numbe
   agerrLine(stderr, `Error: No or improper image file="${img.src}"`);
   img.width = 0;
   img.height = 0;
-  missingImages.add(img);
+  missingImages.set.add(img);
   return 1;
 };
 
@@ -317,7 +318,14 @@ const WARN_TABLE_UNSPECIFIED = 'Warning: fixed table size with unspecified width
  * C sizes each cell/table exactly once; the port's size and pos passes both
  * run layoutHtmlTable, so the size warnings are emitted on first sight only.
  */
-const sizeWarned = new WeakSet<object>();
+const sizeWarned = { set: new WeakSet<object>() };
+
+// Native re-parses per run, so each render starts with both sets empty (AD-7);
+// a WeakSet cannot be cleared, so the holder's field is swapped.
+registerRenderState(() => {
+  missingImages.set = new WeakSet<HtmlImage>();
+  sizeWarned.set = new WeakSet<object>();
+});
 
 /**
  * FIXED_FLAG branch of size_html_cell: C's rv (set at the warning sites; the
@@ -357,8 +365,8 @@ const getCellSize = (
   // @see lib/common/htmltable.c:size_html_cell (FIXED_FLAG branch + box.UR MAX)
   let szx = cw + margin;
   let szy = ch + margin;
-  const warn = !sizeWarned.has(cell);
-  sizeWarned.add(cell);
+  const warn = !sizeWarned.set.has(cell);
+  sizeWarned.set.add(cell);
   const fixed = fixedCellCheck(cell, { w: szx, h: szy }, warn, env.stderr);
   rv |= fixed.rv;
   if (fixed.zero) { szx = 0; szy = 0; }
@@ -504,8 +512,8 @@ export const layoutHtmlTable = (
  * @see lib/common/htmltable.c:size_html_tbl (:1683, :1689)
  */
 const warnFixedTable = (tbl: HtmlTable, dims: { wd: number; ht: number }, out: StderrLines | undefined): number => {
-  const warn = !sizeWarned.has(tbl);
-  sizeWarned.add(tbl);
+  const warn = !sizeWarned.set.has(tbl);
+  sizeWarned.set.add(tbl);
   if (tbl.fixedsize !== true) return 0;
   if (tbl.width && tbl.height) {
     if (tbl.width >= dims.wd && tbl.height >= dims.ht) return 0;
