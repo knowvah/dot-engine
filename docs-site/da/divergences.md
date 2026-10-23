@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -220,8 +220,9 @@ elementer individuelt tilskrevet mod graphviz 16.1.0: injektionsværktøjet
 (`test/corpus/attribute-divergence.ts`) fodrer det native orakels `ND_pos` før
 føring ind i porten og sammenligner igen, og hvert nuværende afvigende id er
 `drift-exonerated` (portens føring og emission reproducerer oraklet nøjagtigt, når
-solver-driften er fjernet) bortset fra tre. Tre er separat accepterede rester pr.
-id: `241_0`'s CDT-incircle-uafgjort på fdp og sfdp og sfdp `2556`'s NaN-layout. fdp
+solver-driften er fjernet) bortset fra to. To er separat accepterede rester pr.
+id: sfdp `241_0`'s CDT-rest og sfdp `2556`'s NaN-layout. fdp `241_0` består siden
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (se fdp-afsnittet under A9). fdp
 `2471` og sfdp `2371` beholdt tidligere positioner for kantetiketter (`lp`), der afveg
 efter injektion, dvs. xlabel-placeren valgte en anden kandidat. `2471` blev løst, da
 portens `dotneato_closest` begyndte at afrunde som clangs fusionerede de
@@ -896,14 +897,14 @@ fma contraction in multispline routing geometry`) spejlede den. twopi og neato
 `241_0` — som denne klasse havde tilskrevet den cocirkulære uafgjort nedenfor —
 blev **conformant** (accepter pensioneret), og sfdp `42` viste sig slet ikke at
 have nogen uafgjort (den er A1-drift, se
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp og sfdp `241_0`
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` blev senere **conformant** efter en anden rettelse af trianguleringen i porten (flademes hjørnerækkefølge efter et kantbyt; se fdp-afsnittet nedenfor). circo og sfdp `241_0`
 afviger stadig med uændrede eller reducerede rester; deres tilskrivning til den
 uafgjort nedenfor går forud for `f66ac638` og er **ikke blevet genverificeret
 ved positionsinjektion** siden, selv om den samme rettelse viste, at
 tilskrivningen var forkert for twopi/neato.
 
-**Berørt:** `241_0` (circo Δ≈0.2 via korridorvippet på kanten `1->2`; fdp og sfdp
-`241_0` på motorsporene nedenfor); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Berørt:** `241_0` (circo Δ≈0.2 via korridorvippet på kanten `1->2`; sfdp
+`241_0` på motorsporet nedenfor); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 afvigelser i label-position pr. stk. — libm-1-ULP'en opstår i
 `poly_init`'s trigonometri for enhedshjørner (`hypot`/`atan2`/`sin`), lægger én knudes
 beregnede højde en ULP forbi minimumsstørrelsesbegrænsningen, som oraklet lander på
@@ -1119,22 +1120,27 @@ dens registerpost er A1 (`comparisons/sfdp-42.md`), og sonden ovenfor forklarede
 den ikke.
 
 **fdp**-xdot-motorsporet (`parity-fdp.json`, native `dot -Kfdp -Txdot`,
-±0.5) afdækker den SAMME cocirkulære CDT-uafgjort på den samme graf, `241_0`: med
-oraklets nøjagtige positioner før føring injiceret er resten 11 numeriske
-`unfilled_bezier`-forskelle begrænset til én kant (`0->1#0`, maxΔ 3.39pt). Fordi
-knudepositionerne er injiceret-identiske, ligger afvigelsen nedstrøms i
-pathplans multispline-korridor — den samme libm-1-ULP-incircle-uafgjort som
-circo/sfdp `241_0` (eksakt rationel incircle 185/185 ovenfor; 11 forskelle uændret af
-`f66ac638` — ikke genverificeret ved injektion). Håndtagene er
-allerede anvendt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); uafgjorten behandles som uløselig. Accepteret via `accepted-divergences-engines.json`
-`fdp.241_0`. fdp's `2095` er derimod **A1-drift, ikke A9**: at injicere den
+±0.5) viste tidligere den samme graf, `241_0`, som denne klasse: med oraklets
+nøjagtige positioner før føring injiceret var der stadig 11 numeriske
+`unfilled_bezier`-forskelle på én kant (`0->1#0`, maxΔ 3.39pt), og de blev
+tilskrevet den cocirkulære incircle-uafgjort. Den tilskrivning var forkert.
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (2026-10-22) fandt en fejlportering i porten: GTS'
+`swap_if_in_circle` bygger sine to nye flader som `gts_face_new(en, e5, e2)` og
+`gts_face_new(en, e3, e4)` (`cdt.c:509-511`), og `gts_triangle_vertices` læser en
+flade ud fra dens kantrækkefølge, så native angiver dem som (v3, v4, v2) og
+(v4, v3, v1); porten gemte begge roteret ét trin, og multispline-routerens
+`triCenter` summerede hjørnerne i den rækkefølge. Med rækkefølgen rettet matcher
+fdp `241_0` native på alle spor (xdot består, json conformant, plain og stderr
+ens), og dens poster i `accepted-divergences-engines.json` og
+`accepted-divergences-json.json` er pensioneret. fdp's `2095` er derimod **A1-drift, ikke A9**: at injicere den
 ene knude med tomt navn (efter at attributionsinjektoren blev rettet til at matche
 knuder med navnet `""`) kollapser dens rest til nul — den tidligere „A9-hale“ var
 den uinjicerede tomme knude, der trak sine tilstødende kanter med. Sfdp's `2095`-accept var
 den samme blinde vinkel — en frisk regenerering af sfdp-attributionen (2026-07-22) med den rettede
 injektor bekræftede, at den også injicerer til 0, og dens accept blev fjernet (se
 noten `2095 reclassified` ovenfor).
+
+**sfdp `2168_3` — Apple-libm-`sin` 1 ULP i `poly_init` (lukket, irreducibelt).** **Berørt:** sfdp `2168_3` (kun stderr: porten udskriver en ekstra `Pshortestpath`-advarsel; xdot-motorsporets gennemløb består, fordi begge sider falder tilbage til rette linjer). **Hvad der afviger:** `shapes.c:2329` beregner `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); for gamma = 1.0092081171617377 giver macOS-libm 0.8464104077694533, V8 den korrekt afrundede værdi 0.8464104077694532 (1 ULP). Forskellen når multispline-routeren (`neatosplines.c:428,444` → `multispline.c:598`) som routerpunkt 10/18, y 28.391789367446776 mod …78; det kocirkulære trapez (punkterne 9, 10, 15, 16) trianguleres derefter med en anden Delaunay-diagonal, så kant 1's korridorpolygon afviger, og `Pshortestpath` fejler på portens polygon. **Hvorfor accepteret:** et kontrolleret eksperiment, der kun injicerer den `sin`-værdi, gør stderr, trekanter, polygoner og xdot identiske med nativ (`atan2` alene gør det ikke); sfdp-positionerne er bitidentiske, og incircle-prædikatet, pathplan, `makeObstacle`-hypot og aritmetikrækkefølgen i konturringen er udelukket. At matche det kræver en bitnøjagtig model af Apples `sin`, hvis kildekode ikke er offentlig; ingen portabel kode kan gengive det (samme grænse som præcedensen `arm-pow.ts`). **Dokumentation:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), rækken 2026-10-20 T13.
 
 ---
 

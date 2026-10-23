@@ -49,6 +49,8 @@ const ALLOWLIST: Readonly<Record<string, string>> = {
     'crand PRNG; re-seeded via csrand by sfdp before use',
   'src/common/color.ts::colorScheme':
     'set only through withColorScheme (color-resolve.ts), which save/restores in try/finally — no leak even on throw',
+  'src/common/agerr.ts::lastLevel':
+    'agerrno; reset to AGWARN by the registered render-state reset at every render entry',
   'src/common/postproc.ts::Rankdir':
     'overwritten from g.info.rankdir at postproc start before any read',
   'src/common/postproc.ts::Offset':

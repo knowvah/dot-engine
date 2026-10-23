@@ -13,6 +13,7 @@ item's outcome. Items 14–23 are closed (14 by PR #95; 15–23 by
 item 28 by `fix/html-label-warn-parity`, item 39 by `fix/html-entity-port`.
 The open work is items 25, 29–31, 35–37 and 40–42 under "New follow-ups
 found by part 2" below, each journaled in `plans/decision-journal.md`.
+Being closed by `plans/post-16-1-followups-3/`.
 
 ## State at handoff
 
@@ -179,7 +180,8 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       2064, 2593, 2723, 2778, 2834, 2854_1, 2855) re-run to the 7,789,662 ms cap on
       every survey (~2 h); the walks' oracle caches have the same gap. (User
       direction, T14.)
-  25. ipsep `MaxIter` default `100·n` (`neatoinit.c:1286-1287`) is unported; no
+  25. **[DONE — part 3 T2: `neatoMaxIter` ports `neatoinit.c:1280-1287`; no corpus
+      input reaches it]** ipsep `MaxIter` default `100·n` (`neatoinit.c:1286-1287`) is unported; no
       observable input found (T5).
   26. **[DONE — `fix/parser-native-acceptance`: agmemread's one-graph read;
       empty input kept as an empty graph (user), documented as a non-goal]** The Peggy grammar rejects inputs native accepts: trailing junk, several graphs
@@ -192,15 +194,16 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       the next stderr write; SIDES with non-ASCII prints raw bytes; `ALIGN="TEXT"` in
       TD has no `HtmlAlign` value; expat attribute-value normalisation is not modelled
       in warning text; dead `cellAttrs['src']` fallback in `parseImgContent` (T8).
-  29. Fused non-Bezier expressions the port computes plain: `ptToLine2`
+  29. **[DONE — part 3 T6-T9: 29a-d fused per disassembly; CDT face order per GTS]** Fused non-Bezier expressions the port computes plain: `ptToLine2`
       (`anchor.ts`, `splines-geom.ts`), `arrow_type_curve` control points,
       `svg-edge-split.ts:approxLen` (`DIST`), `edge-route-clip.ts:arrowEndClip`
       (differs from arrows.c beyond fusion), `multispline-router.ts:addTriEdge`
       (`DIST`); `cdt-surface.ts` orders face vertices differently from GTS (T10, T12,
       T13).
-  30. sfdp 2168_3 (item 17) needs a bit-exact model of Apple's `sin` to go further
+  30. **[CLOSED — part 3 T4: documented irreducible in A9 + 23 locales (AD-9)]**
+      sfdp 2168_3 (item 17) needs a bit-exact model of Apple's `sin` to go further
       (T13).
-  31. 1864 exhausts a 1.5 GB worker heap in the port, on the T0 bundle as well as
+  31. **[PARKED — part 3 T13: C's class2 needs ≈6.6 GB (native 6.35 GiB RSS measured); port-only overhead is follow-up 68]** 1864 exhausts a 1.5 GB worker heap in the port, on the T0 bundle as well as
       T11's (pre-existing; seen in the T11 capture harness).
   32. **[DONE — `chore/record-t11-walk-passes`: 18 rows pass, 15 A9 entries
       retired]** Record T11's fail→pass rows (osage 1652, 2371, linux.i386-b29, share-b29; twopi
@@ -229,17 +232,17 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       too. A node `tooltip="c&#38;d"` already diverged; since item 28 decodes
       HTML attribute values as expat does, an HTML `title="a&amp;amp;b"`
       (decoded `a&amp;b`) now does as well.
-  35. `<BR/>` lines inside a font-style element: `<k<u><br/><br/></u>>` places
+  35. **[DONE — part 3 T12: parked patch from `plans/post-16-1-followups-3/parked/` applied after the mission on the user's decision]** `<BR/>` lines inside a font-style element: `<k<u><br/><br/></u>>` places
       the lines differently from native (y off by 6.76 pt); `k<br/><br/>`
       without the `<u>` matches. Pre-existing on `main`.
 - **New follow-ups found by item 28** (journal row 2026-10-22, item 28; all
   three reproduce on `main`):
-  36. agerr's default writer (`lib/cgraph/agerror.c:default_usererrf`) prints
+  36. **[DONE — part 3 T5]** agerr's default writer (`lib/cgraph/agerror.c:default_usererrf`) prints
       each control character that is not white space as `\ooo`. The port
       prints messages as they are, so a raw `\x01` in an HTML label's error
       context shows as the byte, not `\001`. Any warning or error the port
       prints that contains such a character differs the same way.
-  37. `Warning: %s is not a known color.` (`lib/gvc/gvrender.c:206`, after
+  37. **[DONE — part 3 T10]** `Warning: %s is not a known color.` (`lib/gvc/gvrender.c:206`, after
       `colorxlate` returns `COLOR_UNKNOWN`) is never printed by the port, for
       plain attributes (`a[color=foo]`) as for HTML `COLOR`/`BGCOLOR`. stderr
       only; the SVG matches. Found by item 28's attribute fuzz (most of its
@@ -260,21 +263,21 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       this path; widths follow the text.
 - **New follow-ups found by item 39** (journal row 2026-10-22, item 39;
   both reproduce on `main`):
-  40. HTML text with a malformed reference is an expat `not well-formed
+  40. **[DONE — part 3 T3: expat content-tokenizer reference scan + partial hold]** HTML text with a malformed reference is an expat `not well-formed
       (invalid token)` error natively; the port accepts it and writes the
       text. A bare `&` (`<p&q>`, `<p & q>`: scanEntity finds no `;` and
       leaves it), `&#;`, `&#x;`, `&#X41;` (expat takes only a lower-case
       `x`), `&#65q` and `&#xG;`. `textRefError`
       (`src/common/htmltable-lex-expat.ts`) checks only undefined entities
       and disallowed character numbers.
-  41. `estimate_character_width_canonical` (`lib/common/textspan_lut.c:806`)
+  41. **[DONE — part 3 T11]** `estimate_character_width_canonical` (`lib/common/textspan_lut.c:806`)
       warns `Warning: no value for width of non-ASCII character %u. Falling
       back to width of space character` (agwarningf adds its own `Warning: `
       prefix) for the first byte >= 128 it measures, and the ASCII
       `width == -1` variant falls back to 0. The port never prints either.
       Both are once per process (`static bool`), which a library needs a
       decision on. stderr only.
-  42. Output depends on render history in a long-lived process. Item 39's
+  42. **[DONE — part 3 T1: emit_once font-warning set carried over; AD-4 per-render reset]** Output depends on render history in a long-lived process. Item 39's
       byte diff (17 corpus files with `&`, 8 engines x 5 formats, both
       bundles, resident worker pools) ran twice. Of the 590 jobs that finish
       within 120 s, run 1 found 8 differing (2470 dot plain, neato svg/cmapx,
@@ -287,6 +290,115 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       fdp rendered before and after neato/fdp/sfdp of clust4, crazy and unix
       in one process is unchanged. Next: replay one worker's actual job order
       to find the state that carries over.
+- **New follow-ups found by part 3** (`plans/post-16-1-followups-3/`):
+  43. neato `mode=hier` throws `hierarchical stress majorization is not supported
+      yet` (`assertSupported`, `src/layout/neato/init.ts`) where native lays out
+      (`digraph{mode=hier;a->b->c->d->e->f;a->d;b->e;c->f}`: native 6 nodes, port
+      throws). Corpus 1554 (`mode="hier"`) is quarantined `engine-deferred` for
+      it; not in `docs/known-divergences.md` (part 3 T2).
+  44. A raw control character in HTML label text (`label=<a\001b>`) is an expat
+      invalid token natively (`Error: not well-formed (invalid token) in line 1` /
+      `... <HTML>a\001b ...` / `in label of node a`, label dropped); the port keeps
+      the text (`ab`) and prints nothing. `&#1;` already matches. expat
+      `contentTok` BT_NONXML is unmodelled in `htmltable-lex-expat.ts` (part 3 T3).
+  45. `test/architecture/module-globals.fitness.test.ts` allowlist reasons are
+      stale after part 3 T1: the listed statics now reset through
+      `resetRenderState` (`src/common/render-state.ts`), and `clType` is set in
+      `graph-init.ts:330`. Reasons only; the allowlist itself still holds.
+  46. Rendering the same parsed `Graph` object twice suppresses the HTML
+      "cell size too small" and "No or improper image" warnings on the second
+      render: per-graph-object state survives `freeLayout` (not a module
+      static, so AD-4's reset does not reach it). Native re-parses per run.
+  47. The low-level pipeline `GvcContext.layout` + `renderWithContext` has no
+      per-render reset (AD-4 covers `renderSvg`, `render`, `getDrawOps`,
+      `renderAsync`); a caller driving it directly carries C process state
+      between graphs. Needs a documented contract or an entry-point reset
+      (part 3 T1).
+  48. `src/common/splines-clip.ts` `SplineClipHelper.arrowEndClip`/`arrowStartClip`
+      (used by the non-dot engines and the main dot routing path) computes DIST with
+      `Math.hypot`, also in `sphereCtx`; native is `sqrt(fma(dx,dx,dy*dy))`
+      (`_arrowEndClip`). Its `bezierClip` should be checked against `_bezier_clip`
+      (part 3 T7).
+  49. `src/layout/dot/compound.ts` `arrowEndClipIdx`/`arrowStartClipIdx` test
+      `dist < elen` with unfused `Math.hypot`, and `edge-route-routing.ts`
+      `clipToNodes` lacks `arrows.c:291-293`'s `endp -= 3` back-up (part 3 T7).
+  50. `edge-route-clip.ts` `tailArrowEndClip` ports `arrowStartClip` forward in
+      tip-local coordinates with `Math.hypot`; C reverses to
+      `sp[0]=ps[start+3] … sp[3]=tip` with `left_inside=false` on absolute
+      coordinates. Equal in exact arithmetic, not bit-equal (part 3 T7).
+  51. `cdt-surface.ts`'s enclosing triangle uses `SQRT3 = 1.73205080756887729` and
+      `Math.hypot`; GTS uses `#define SQRT3 1.73205080757` (`triangle.c`) and
+      `sqrt(dx*dx+dy*dy)`. Latent difference in the enclosing vertices; output
+      effect unchecked (part 3 T9).
+  52. Port CDT face numbering and `neigh` order follow creation order; native
+      follows GHashTable (address) order, which is nondeterministic. This can
+      change tgraph edge order and shortest-path tie-breaks in multispline
+      routing (part 3 T9).
+  53. 241_0 sfdp: the layout drifts from native (node 3 y 0.41621 vs 0.4162), and
+      with native positions injected edge 3→4 is a 7-point spline in the port vs
+      4 in native; the port also reports an extra routing failure on (1,2).
+      Pre-existing, independent of the CDT face order (part 3 T9).
+  54. About 17 agerr-family sites print without the prefix `out` adds natively:
+      `bad edge len`, `Max. iterations`, `Illegal value … mode`,
+      `Unrecognized overlap value`, `Orthogonal edges …` (no `Warning: `), and
+      `lost <t> <h> edge`, `in routesplines, Pshortestpath failed` (no
+      `Error: `). T5 routes them through `agerrLineOn` with the text unchanged
+      (part 3 T5).
+  55. Console channel is mixed: six agerr warnings go to `console.error`
+      (`cluster.ts`, `conc.ts:295`, `graph-init.ts`, `poly-init.ts`, the parser's
+      number-ambiguity and macro warnings) because tests spy on it; all agerr
+      warnings should use `console.warn` (part 3 T5).
+  56. The lexer's syntax errors lack native's `<stdin>: ` file prefix (part 3 T5).
+  57. `parseSegs`' `Warning: Total size > 1 in "<spec>" color spec in edge a -> b`
+      is never printed by the port (part 3 T10).
+  58. Native prints `gvrender_set_style: unsupported style rounded - ignoring` for an
+      ortho `style=rounded` edge; the port does not (part 3 T10).
+  59. Native prints `layers not supported in <fmt> output` for xdot, cmapx and plain;
+      the port does not (part 3 T10).
+  60. A missing `image=` file: native prints `No such file or directory while opening
+      x.png` and `No or improper image="…" for node "a"`; for HTML `<IMG>` native also
+      prints a `Warning: No such file…` line before the Error the port prints
+      (part 3 T10).
+  61. Native's font fallback line is `Warning: Warning: no hard-coded metrics …`
+      (doubled prefix); the port prints one `Warning: ` (part 3 T5/T10).
+  62. Cluster `style=striped` is not drawn; T10 added only its colour warnings
+      (part 3 T10).
+  63. Under a colorscheme, the `transparent` pen of `peripheries=0` filled nodes and of
+      clusters is not reported as an unknown color for non-svg renderers; only the
+      root-background case is (part 3 T10).
+  64. `parseGradientSpec` (HTML) trims and splits at the first `:` where C's
+      `findStopColor` uses `parseSegs`; names with spaces or `;fraction` in HTML
+      `BGCOLOR` may differ (part 3 T10).
+  65. Fuzz `classify.mjs` files native's duplicate-`baseline-shift` outputs (nested
+      `<sup>`/`<sub>`, invalid XML) under class 35 or svg-other; give them their own
+      class (part 3 T12).
+  66. `probe.mjs` compares only text content and ellipse `cx`; it should also compare
+      text x/y and ellipse rx/ry (it reported item 35 as SAME) (part 3 T12).
+  67. HTML line splitting and the simple test exist twice (sizing:
+      `htmltable.ts` `splitSizedLines`/`htmlTextIsSimple`; placement:
+      `htmltable-pos-runs.ts` `buildLineRuns`/`runsAreSimple`); share one builder
+      so they cannot diverge again (refactor, output unchanged) (part 3 T12).
+  68. Dot virtual nodes/edges cost 2,490 B per pair in the port vs ≈1,056 B in C
+      (`class2` chains): each allocates an empty `attrs` Map (~372 B/pair, C virtual
+      nodes have no attribute record), separate `Port`/point objects (~250 B; C embeds
+      them in `Agedgeinfo_t`) and ~15 boxed numbers. Lazy `attrs` on virtual
+      Node/Edge would save ~15% of class2 bytes for every dot render with long edges;
+      needs corpus byte-identity (part 3 T13; does not rescue 1864, which needs
+      ≥ 6.6 GB even at C's sizes).
+  69. Native 16.1.0 is nondeterministic on some fdp/sfdp/neato corpus ids (graphs-fdp,
+      linux.x86-neatosplines_neato sfdp, ngk10_4 neato, directed-table fdp: 2-3
+      distinct xdots in 5-6 runs; linux.i386-b102 fdp differs between sessions), so
+      their walk verdicts flip with no port change. The walks should mark such ids
+      (e.g. run the oracle N times and record `oracle-nondeterministic`) instead of
+      caching one draw (part 3 T14). Seen on twopi too (nshare-arrows_dot).
+  70. `test/corpus/attribution-fdp.json(l)` still lists fdp `241_0` as
+      `not-cleared`, though the id passes since part 3 T9. Rerun
+      `attribute-divergence.ts fdp` (or drop the row) so attribution covers only
+      diverged ids (part 3 T14; outside T14's write-set).
+  71. Committed walk rows for still-diverged ids are stale where pre-mission src
+      changes moved output without a re-walk (twopi graphs-arrowsize: 23 diffs
+      committed, 72 on today's head and on part 3's base). A full re-walk of all
+      engines would refresh `nDiffs`/`firstDiff` (part 3 T14).
 
 ## Local leftovers (not committed, safe to delete)
 

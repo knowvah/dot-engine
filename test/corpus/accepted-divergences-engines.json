@@ -145,11 +145,6 @@
       "attributionFile": "attribution-fdp.json",
       "ref": "known-divergences.md#a1-drift-iterative-engines"
     },
-    "241_0": {
-      "class": "A9",
-      "bound": "11 numeric draw-op diffs confined to edge 0->1#0's unfilled_bezier (max\u0394 3.39pt), under injected-identical node positions \u21d2 pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. Unchanged (11 diffs) after f66ac638, which cleared twopi/neato 241_0 (a port-side FMA mis-port, not a tie); tie attribution not re-verified by injection.",
-      "ref": "known-divergences.md#a9-sfdp-fp-ties"
-    },
     "2620": {
       "class": "A1",
       "bound": "up to 5.4kpt, 30/30 nodes",

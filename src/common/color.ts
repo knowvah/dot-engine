@@ -7,6 +7,7 @@
 
 import { isExactlyEqual } from '../util/math.js';
 import { COLOR_LIB } from './colorData.js';
+import { registerRenderState } from './render-state.js';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -37,6 +38,7 @@ interface HsvaTuple { H: number; S: number; V: number; A: number }
 // ---------------------------------------------------------------------------
 
 let colorScheme: string = '';
+registerRenderState(() => { colorScheme = ''; });
 
 /** @see lib/common/colxlate.c:setColorScheme */
 export function setColorScheme(scheme: string): void {
@@ -256,17 +258,43 @@ function setBlackOpaque(color: GVColor, targetType: ColorType): void {
 // Hex and HSV string parsers
 // ---------------------------------------------------------------------------
 
-/** Parse "#rrggbb", "#rrggbbaa", or "#rgb". Returns null on failure. */
+/** C isspace in the "C" locale. */
+const SSCANF_SPACE = new Set([' ', '\t', '\n', '\v', '\f', '\r']);
+
+/**
+ * `sscanf(p, "#" + "%<width>x" * max)`: the values converted before the first
+ * failure. Each `%x` skips leading white space then takes up to `width` hex
+ * digits, so a short or odd-length run still converts ("#12345" gives 0x12,
+ * 0x34, 0x5). Sign and `0x` prefixes are not modelled.
+ * @see lib/common/colxlate.c:colorxlate
+ */
+function scanHexGroups(p: string, width: number, max: number): number[] {
+  const out: number[] = [];
+  if (p.charAt(0) !== '#') return out;
+  let i = 1;
+  while (out.length < max) {
+    while (SSCANF_SPACE.has(p.charAt(i))) i++;
+    let j = i;
+    while (j < p.length && j - i < width && /[0-9a-fA-F]/.test(p.charAt(j))) j++;
+    if (j === i) break;
+    out.push(parseInt(p.slice(i, j), 16));
+    i = j;
+  }
+  return out;
+}
+
+/**
+ * Parse "#rrggbb", "#rrggbbaa" (any run of at least three two-digit groups),
+ * or the 4-character "#rgb" form, as colorxlate's sscanf calls do. Returns
+ * null on failure.
+ */
 function parseHexColor(p: string): RgbaTuple | null {
-  if (p.charAt(0) !== '#') return null;
-  const m8 = /^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/.exec(p);
-  if (m8) return { r: parseInt(m8[1], 16), g: parseInt(m8[2], 16), b: parseInt(m8[3], 16), a: parseInt(m8[4], 16) };
-  const m6 = /^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/.exec(p);
-  if (m6) return { r: parseInt(m6[1], 16), g: parseInt(m6[2], 16), b: parseInt(m6[3], 16), a: 255 };
-  const m3 = /^#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])$/.exec(p);
-  if (!m3) return null;
-  const r = parseInt(m3[1], 16); const g = parseInt(m3[2], 16); const b = parseInt(m3[3], 16);
-  return { r: r | (r << 4), g: g | (g << 4), b: b | (b << 4), a: 255 };
+  const g = scanHexGroups(p, 2, 4);
+  if (g.length >= 3) return { r: g[0]!, g: g[1]!, b: g[2]!, a: g[3] ?? 255 };
+  const short = p.length === 4 ? scanHexGroups(p, 1, 3) : [];
+  if (short.length !== 3) return null;
+  const [r, gg, b] = short as [number, number, number];
+  return { r: r | (r << 4), g: gg | (gg << 4), b: b | (b << 4), a: 255 };
 }
 
 /** Clamp a number to [0, 1]. */

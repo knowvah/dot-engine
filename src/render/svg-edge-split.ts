@@ -20,6 +20,7 @@ import type { Edge } from '../model/edge.js';
 import type { RenderJob } from '../gvc/job.js';
 import type { Point, Bezier } from '../model/geom.js';
 import { bezier } from '../common/bezier.js';
+import { dist2 } from '../common/spline-midpoint.js';
 import { parseSegs } from '../common/multicolor.js';
 import { transformPoint } from '../gvc/device.js';
 import { emitBezierPath, emitDash, emitPenWidth } from './svg-helpers.js';
@@ -31,12 +32,13 @@ const PENWIDTH_THRESHOLD = 0.005;
 /** AEQ0 tolerance for fraction comparisons. */
 const EPS = 1e-5;
 
+/** DIST: sqrt of the fused DIST2 (libgvc splitBSpline: fmla + fsqrt). @see lib/common/geom.h:DIST */
 function dist(a: Point, b: Point): number {
-  return Math.hypot(a.x - b.x, a.y - b.y);
+  return Math.sqrt(dist2(a, b));
 }
 
 /** Chord length of one cubic (control points at off..off+3). @see emit.c:1908 */
-function approxLen(list: Point[], off: number): number {
+export function approxLen(list: Point[], off: number): number {
   return dist(list[off]!, list[off + 1]!) +
     dist(list[off + 1]!, list[off + 2]!) +
     dist(list[off + 2]!, list[off + 3]!);

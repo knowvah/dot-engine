@@ -40,6 +40,7 @@ export {
   constrainingFlatEdge, countConstraining, postorder,
   flatReorderBuildTemprank, flatReorderFixEdges, flatReorderRank, flatReorder,
 } from './mincross-flat.js';
+import { registerRenderState } from '../../common/render-state.js';
 
 // allocate_ranks — @see lib/dotgen/mincross.c:allocate_ranks
 export function makeEmptyRank(): RankEntry {
@@ -99,6 +100,7 @@ export function allocateRanks(g: Graph): void {
  * distinct names rather than colliding/deduping by name).
  */
 let fillSeq = 0;
+registerRenderState(() => { fillSeq = 0; });
 
 /**
  * Create a placeholder fill node in the `_new_rank` subgraph at `rank`.

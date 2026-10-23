@@ -60,13 +60,13 @@ bar above.
 | track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | pass % |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | [neato (xdot)](./PARITY-neato.md) | 928 | 840 | 0 | 87 | 0 | 1 | 90.6% |
-| [fdp (xdot)](./PARITY-fdp.md) | 928 | 893 | 0 | 30 | 1 | 4 | 96.6% |
+| [fdp (xdot)](./PARITY-fdp.md) | 928 | 894 | 0 | 29 | 1 | 4 | 96.8% |
 | [sfdp (xdot)](./PARITY-sfdp.md) | 928 | 633 | 0 | 295 | 0 | 0 | 68.2% |
 | [neato (plain)](./PARITY-neato-plain.md) | 928 | 916 | 0 | 8 | 0 | 4 | 99.1% |
 | [fdp (plain)](./PARITY-fdp-plain.md) | 928 | 912 | 0 | 8 | 1 | 7 | 99.0% |
 | [sfdp (plain)](./PARITY-sfdp-plain.md) | 928 | 918 | 0 | 8 | 0 | 2 | 99.1% |
 | [neato (json)](./PARITY-neato-json.md) | 928 | 838 | 3 | 83 | 0 | 4 | 90.7% |
-| [fdp (json)](./PARITY-fdp-json.md) | 928 | 889 | 2 | 29 | 1 | 7 | 96.5% |
+| [fdp (json)](./PARITY-fdp-json.md) | 928 | 890 | 2 | 28 | 1 | 7 | 96.6% |
 | [sfdp (json)](./PARITY-sfdp-json.md) | 928 | 631 | 10 | 285 | 0 | 2 | 68.1% |
 | [neato (imagemap)](./PARITY-neato-map.md) | 928 | 917 | 0 | 8 | 0 | 3 | 99.1% |
 | [fdp (imagemap)](./PARITY-fdp-map.md) | 928 | 915 | 2 | 5 | 1 | 5 | 99.1% |

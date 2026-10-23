@@ -42,11 +42,14 @@ import {
   styleTokens,
 } from '../common/style-resolve.js';
 import { isPointNode } from '../common/poly-gencode.js';
-import { resolveRenderColor, withColorScheme } from '../render/color-resolve.js';
+import {
+  resolveRenderColor, withColorScheme, reportEdgeColors, reportColorNames, backgroundColors,
+  setRendererKnownColors,
+} from '../render/color-resolve.js';
 import { emitRoundedBezier } from '../common/poly-shapes.js';
 import { applyClusterObjState, clusterStyle, clusterPeripheries } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
-import { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
+import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
 export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
 export { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
 import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId } from '../render/svg-id.js';
@@ -156,7 +159,7 @@ function setEdgePen(e: Edge, job: RenderJob): void {
   const obj = job.obj;
   const flags = parseStyleFlags(e.attrs.get('style'));
   obj.penColor = withColorScheme(e.attrs.get('colorscheme'),
-    () => resolveRenderColor(resolvePenColor(e.attrs.get('color'))));
+    () => resolveRenderColor(resolvePenColor(e.attrs.get('color')), false));
   obj.pen = resolvePenType(flags);
   obj.penWidth = resolvePenWidth(flags, e.attrs.get('penwidth'));
   // Raw style tokens for xdot's `S` ops (e.g. explicit style="solid"); SVG
@@ -189,6 +192,10 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
     // @see lib/common/emit.c:emit_edge (begin/end color context)
     withColorScheme(e.attrs.get('colorscheme'), () => {
       renderer.beginEdge(e, job);
+      // emit_edge_graphics, then emit_end_edge's labels: C resolves these names
+      // here whatever the renderer draws (the non-drawing ones included).
+      reportEdgeColors(e);
+      reportEdgeLabelColors(e);
       renderer.endEdge(e, job);
     });
   } finally {
@@ -351,9 +358,13 @@ function renderPage(g: Graph, renderer: RendererPlugin, job: RenderJob, info: La
     resolveObjAnchor(g, labelTextOf(g.info.label), svgGraphId(g, job), job.obj);
   }
   const anchored = beginAnchorIf(renderer, job);
-  renderer.pageBackground?.(g, job);
-  // emit root-graph label before clusters/nodes @see lib/common/emit.c:emit_page
-  renderGraphLabel(g, renderer, job);
+  // emit_page opens the graph's colorscheme around the background and label.
+  withColorScheme(g.attrs.get('colorscheme'), () => {
+    reportColorNames(backgroundColors(g.attrs.get('bgcolor'), renderer.type === 'svg'));
+    renderer.pageBackground?.(g, job);
+    // emit root-graph label before clusters/nodes @see lib/common/emit.c:emit_page
+    renderGraphLabel(g, renderer, job);
+  });
   if (anchored) renderer.endAnchor?.(job);
   // emit_view: clusters are drawn BEFORE nodes/edges normally, but the map
   // device (EMIT_CLUSTERS_LAST) emits their <area> AFTER, so a node/edge area
@@ -459,6 +470,7 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   // @see lib/common/emit.c:3260 (gvc->rotation=90); :3390 (job->rotation)
   job.rotation = parseLandscape(g) ? 90 : 0;
   job.renderer = renderer;
+  setRendererKnownColors(renderer.type === 'svg'); // svg_knowncolors; others have none
   resetHtmlAnchorIds(); // C: fresh anchorId per dot invocation
   for (const n of g.nodes.values()) polyInit(n, g, job.measurer);
   return renderGraph(g, job, renderer);

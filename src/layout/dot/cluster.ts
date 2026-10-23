@@ -27,6 +27,7 @@ import { CLUSTER } from './rank.js';
 import { makeSlots, safeOtherEdge, makeInterclustChain } from './cluster-path.js';
 // mergeChain lives in classify.ts (circular: classify ↔ cluster — safe for function refs)
 import { mergeChain, portsEq } from './classify.js';
+import { agwarningf } from '../../common/agerr.js';
 
 export { CLUSTER_EDGE } from './cluster-path.js';
 export { mapInterclustNode } from './cluster-path.js';
@@ -297,7 +298,7 @@ export function markClusterNode(clust: Graph, n: Node, g: Graph): void {
   if ((n.info.ranktype ?? 0) !== 0) {
     // C warns with the ENCLOSING graph's name, not the cluster's.
     // @see lib/dotgen/cluster.c:317-320
-    console.error(`Warning: ${n.name} was already in a rankset, deleted from cluster ${g.name}`);
+    agwarningf(`${n.name} was already in a rankset, deleted from cluster ${g.name}`, 'error');
     agDeleteFromCluster(clust, n);
     return;
   }

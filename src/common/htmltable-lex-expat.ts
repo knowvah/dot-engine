@@ -270,12 +270,19 @@ function scanCdata(text: string, p: number, base: number, dataOf: CdataText, tok
   return close < 0 ? -1 : close + CDATA_CLOSE.length;
 }
 
-/** Character data at `p` up to the next `<`: one `text` token, then the index it ends at. */
-function scanText(text: string, p: number, base: number, tokens: ExpatToken[]): number {
+/**
+ * Character data at `p` up to the next `<`: one `text` token, then the index it
+ * ends at. A reference cut off by the end of the data is not part of the token
+ * (`held`): expat waits for the characters that settle it.
+ * @see expat lib/xmltok_impl.c:PREFIX(contentTok) (XML_TOK_PARTIAL)
+ */
+function scanText(text: string, p: number, base: number, tokens: ExpatToken[]): { at: number; held: boolean } {
   const e = text.indexOf('<', p);
-  const end = e < 0 ? text.length : e;
-  tokens.push({ kind: 'text', start: base + p, end: base + end });
-  return end;
+  const slice = text.slice(p, e < 0 ? text.length : e);
+  const from = e < 0 ? heldRefStart(slice) : undefined;
+  const end = from === undefined ? p + slice.length : p + from;
+  if (end > p) tokens.push({ kind: 'text', start: base + p, end: base + end });
+  return { at: end, held: from !== undefined };
 }
 
 /** The fed text of the label source between two offsets. */
@@ -295,7 +302,9 @@ function scanContent(text: string, base: number, inCdata: boolean, dataOf: Cdata
       continue;
     }
     if (text[p] !== '<') {
-      p = scanText(text, p, base, tokens);
+      const scanned = scanText(text, p, base, tokens);
+      if (scanned.held) return { tokens, consumed: scanned.at, inCdata: false };
+      p = scanned.at;
       continue;
     }
     const { scan, kind } = scanMarkup(text, p);
@@ -408,31 +417,77 @@ export class ExpatFeed {
 /** Entities expat knows without a DTD; `scanEntity` leaves them as written. */
 const XML_PREDEFINED_ENTITIES = new Set(['lt', 'gt', 'amp', 'quot', 'apos']);
 
-const ENTITY_NAME = /^[A-Za-z_:][\w.:-]*$/;
-
-const CHAR_REF = /^&#(?:x[0-9A-Fa-f]+|[0-9]+);/;
+/** An `&name;` that `scanEntity` rewrites: 2 to 8 characters (alphanumeric) that name an HTML entity. */
+const SCANNED_ENTITY = /^&([^;&<]*);/;
 
 /**
- * The first reference of character data that expat rejects, at its offset: a
- * `&name;` scanEntity leaves alone (neither an HTML entity nor predefined), or
- * a character reference XML does not allow.
- * @see expat lib/xmlparse.c:doContent (XML_TOK_ENTITY_REF, XML_TOK_CHAR_REF)
+ * The reference the content tokenizer reads at the `&` at `t`: the index after
+ * its `;`, or the index of the character that makes it an invalid token (the
+ * end of `text` when the reference runs out: `</HTML>` or another tag follows).
+ * Runs the attribute value scanner over the reference alone, closed by a quote,
+ * which is scanRef on the same bytes.
+ * @see expat lib/xmltok_impl.c:PREFIX(contentTok) (BT_AMP)
+ * @see expat lib/xmltok_impl.c:PREFIX(scanRef)
+ * @see expat lib/xmltok_impl.c:PREFIX(scanCharRef)
+ * @see expat lib/xmltok_impl.c:PREFIX(scanHexCharRef)
  */
-export function textRefError(text: string): { message: string; offset: number } | undefined {
-  for (let t = text.indexOf('&'); t >= 0; t = text.indexOf('&', t + 1)) {
+function contentRef(text: string, t: number): { end: number } | { invalid: number } {
+  const semi = text.indexOf(';', t);
+  const ref = text.slice(t, semi < 0 ? text.length : semi + 1);
+  const scan = scanAttValue(`"${ref}"`, 0);
+  if ('close' in scan) return { end: t + scan.close - 1 };
+  return { invalid: 'invalid' in scan ? t + scan.invalid - 1 : text.length };
+}
+
+/** A reference problem of character data: expat's error, where its event pointer is, and the `&` it began at. */
+interface RefProblem {
+  message: string;
+  offset: number;
+  from: number;
+}
+
+/**
+ * The first reference of character data that expat rejects: an invalid token
+ * (a bare `&`, `&#;`, `&#X41;`, `&#65q`, ..), a `&name;` scanEntity leaves
+ * alone (neither an HTML entity nor predefined), or a character reference XML
+ * does not allow. An invalid token at the very end of `text` is a reference
+ * expat is still waiting on.
+ * @see lib/common/utils.c:scanEntity
+ * @see expat lib/xmlparse.c:doContent (XML_TOK_INVALID, XML_TOK_ENTITY_REF, XML_TOK_CHAR_REF)
+ */
+function firstRefProblem(text: string): RefProblem | undefined {
+  let t = text.indexOf('&');
+  while (t >= 0) {
+    if (text[t + 1] !== '#') {
+      const name = SCANNED_ENTITY.exec(text.slice(t))?.[1];
+      if (name !== undefined && name.length >= 2 && Object.hasOwn(HTML_ENTITIES, name)) {
+        t = text.indexOf('&', t + name.length + 2);
+        continue;
+      }
+    }
+    const ref = contentRef(text, t);
+    if ('invalid' in ref) return { message: XML_ERROR_INVALID_TOKEN, offset: ref.invalid, from: t };
+    const key = text.slice(t + 1, ref.end - 1);
     if (text[t + 1] === '#') {
-      const ref = CHAR_REF.exec(text.slice(t))?.[0];
-      if (ref !== undefined && charRefNumber(ref) < 0) return { message: XML_ERROR_BAD_CHAR_REF, offset: t };
-      continue;
+      if (charRefNumber(`&${key};`) < 0) return { message: XML_ERROR_BAD_CHAR_REF, offset: t, from: t };
+    } else if (!XML_PREDEFINED_ENTITIES.has(key)) {
+      return { message: XML_ERROR_UNDEFINED_ENTITY, offset: t, from: t };
     }
-    const semi = text.indexOf(';', t + 1);
-    if (semi < 0) continue;
-    const key = text.slice(t + 1, semi);
-    if (ENTITY_NAME.test(key) && !Object.hasOwn(HTML_ENTITIES, key) && !XML_PREDEFINED_ENTITIES.has(key)) {
-      return { message: XML_ERROR_UNDEFINED_ENTITY, offset: t };
-    }
+    t = text.indexOf('&', ref.end);
   }
   return undefined;
+}
+
+/** The first reference of character data that expat rejects, and the offset of its event pointer. */
+export function textRefError(text: string): { message: string; offset: number } | undefined {
+  const problem = firstRefProblem(text);
+  return problem === undefined ? undefined : { message: problem.message, offset: problem.offset };
+}
+
+/** Where a reference that runs to the end of `text` begins: expat holds it until more data arrives. */
+function heldRefStart(text: string): number | undefined {
+  const problem = firstRefProblem(text);
+  return problem?.message === XML_ERROR_INVALID_TOKEN && problem.offset === text.length ? problem.from : undefined;
 }
 
 export interface TagChunk {

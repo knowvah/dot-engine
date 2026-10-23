@@ -8,6 +8,10 @@
 // Architecture decision AD-11: this file is the canonical faithfulness
 // artifact; every production cites its Bison rule or Flex token.
 
+{{
+  import { agwarningf } from "../common/agerr.js";
+}}
+
 // ── Top-level rule ───────────────────────────────────────────────────────────
 // grammar.y: graph : hdr body | error | /* empty */
 // `end` is the offset just past the graph's closing brace: the last input the
@@ -71,7 +75,7 @@ AttrStmt
     {
       // grammar.y:attrstmt calls nomacros() when a macro name is present;
       // the attributes are still applied unchanged.
-      if (m) console.error("Warning: attribute macros not implemented");
+      if (m) agwarningf("attribute macros not implemented", "error");
       return { type: "attr", target: t, attrs: attrs };
     }
   / a:AttrAssignment

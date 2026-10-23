@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -214,8 +214,10 @@ indywidualnie przypisany względem graphviz 16.1.0: narzędzie wstrzykiwania
 (`test/corpus/attribute-divergence.ts`) podaje przedroutingowy `ND_pos` natywnej wyroczni
 do portu i porównuje ponownie, a każdy obecny rozbieżny id jest `drift-exonerated`
 (prowadzenie i emisja w porcie odtwarzają wyrocznię dokładnie po usunięciu dryfu solvera)
-z wyjątkiem trzech. Trzy to osobno zaakceptowane residua dla poszczególnych id: remis
-incircle w CDT dla `241_0` na fdp i sfdp oraz układ NaN w sfdp `2556`. fdp `2471` i sfdp
+z wyjątkiem dwóch. Dwa to osobno zaakceptowane residua dla poszczególnych id: residuum
+CDT sfdp `241_0` oraz układ NaN w sfdp `2556`. fdp `241_0` przechodzi od
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (zob. akapit o fdp
+pod A9). fdp `2471` i sfdp
 `2371` zachowywały wcześniej pozycje etykiet krawędzi (`lp`), które po wstrzyknięciu się
 różniły, tzn. moduł rozmieszczający xlabel wybierał innego kandydata. `2471` ustąpił,
 gdy `dotneato_closest` w porcie zaczął zaokrąglać tak jak połączone (fused) obliczenie
@@ -869,14 +871,16 @@ wymagałoby odtworzenia w JS dokładnego zaokrąglania `sin`/`cos` z libm Apple.
 multispline routing geometry`) ją odzwierciedliło. twopi i neato `241_0` — które ta klasa
 przypisywała remisowi współokręgowości poniżej — stały się **conformant**
 (akceptacje wycofane), a sfdp `42` okazał się nie mieć żadnego remisu (to dryf A1,
-zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
+zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0`
+stał się później **conformant**, po drugiej poprawce po stronie portu w triangulacji
+(kolejność wierzchołków ściany po zamianie krawędzi; zob. akapit o fdp poniżej). circo
 i sfdp `241_0` nadal się rozjeżdżają, z residuami niezmienionymi lub zmniejszonymi; ich
 przypisanie do remisu poniżej pochodzi sprzed `f66ac638` i **nie zostało ponownie zweryfikowane
 przez wstrzyknięcie pozycji** od czasu, gdy ta poprawka wykazała, że to samo przypisanie było błędne dla
 twopi/neato.
 
-**Dotyczy:** `241_0` (circo Δ≈0.2 przez przerzut korytarza na krawędzi `1->2`; fdp
-i sfdp `241_0` na ścieżkach silników poniżej); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Dotyczy:** `241_0` (circo Δ≈0.2 przez przerzut korytarza na krawędzi `1->2`; sfdp
+`241_0` na ścieżce silnika poniżej); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 po 1–2 różnice pozycji etykiet krawędzi — ULP libm 1 powstaje w
 trygonometrii wierzchołków jednostkowych w `poly_init` (`hypot`/`atan2`/`sin`), przesuwa obliczoną
 wysokość jednego węzła o ULP poza ograniczenie minimalnego rozmiaru, na którym wyrocznia ląduje
@@ -1094,22 +1098,27 @@ dla tej samej granicy). `sfdp.241_0` jest zaakceptowany na poziomie ścieżki si
 a powyższa sonda go nie wyjaśniła.
 
 Ścieżka silnika xdot **fdp** (`parity-fdp.json`, natywny `dot -Kfdp -Txdot`,
-±0.5) ujawnia TEN SAM remis współokręgowości w CDT na tym samym grafie, `241_0`: po
-wstrzyknięciu dokładnych pozycji sprzed prowadzenia z wyroczni residuum to 11 liczbowych
-różnic `unfilled_bezier` ograniczonych do jednej krawędzi (`0->1#0`, maxΔ 3.39pt). Ponieważ
-pozycje węzłów są wstrzykiwane identycznie, rozbieżność leży w dole łańcucha, w
-korytarzu multisplajnu pathplan — ten sam remis incircle z libm o 1 ULP co
-circo/sfdp `241_0` (dokładny wymierny incircle 185/185 powyżej; 11 różnic niezmienionych przez
-`f66ac638` — nie zweryfikowano ponownie przez wstrzyknięcie). Dźwignie są
-już zastosowane (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); remis uznajemy za nieredukowalny. Zaakceptowane przez `accepted-divergences-engines.json`
-`fdp.241_0`. `2095` w fdp jest natomiast **A1-drift, a nie A9**: wstrzyknięcie
+±0.5) pokazywała ten sam graf, `241_0`, jako należący do tej klasy: po
+wstrzyknięciu dokładnych pozycji sprzed prowadzenia z wyroczni na jednej krawędzi
+(`0->1#0`, maxΔ 3.39pt) pozostawało 11 liczbowych różnic `unfilled_bezier`, które
+przypisywano remisowi współokręgowości incircle. To przypisanie było błędne.
+`fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) znalazła błąd portu: GTS
+`swap_if_in_circle` buduje swoje dwie nowe ściany jako `gts_face_new(en, e5, e2)` i
+`gts_face_new(en, e3, e4)` (`cdt.c:509-511`), a `gts_triangle_vertices` odczytuje ścianę
+z kolejności jej krawędzi, więc natywnie są one wypisywane jako (v3, v4, v2) i (v4, v3, v1);
+port zapisywał obie obrócone o jeden, a `triCenter` routera multisplajnu sumował wierzchołki
+w tej kolejności. Po poprawieniu kolejności fdp `241_0` zgadza się z natywnym na każdej
+ścieżce (xdot pass, json conformant, plain i stderr równe), a jego wpisy w
+`accepted-divergences-engines.json` i `accepted-divergences-json.json` zostały wycofane. `2095` w fdp jest natomiast **A1-drift, a nie A9**: wstrzyknięcie
 pojedynczego węzła o pustej nazwie (po poprawieniu wstrzykiwacza przypisania tak, by dopasowywał
 węzły o nazwie `""`) sprowadza jego residuum do zera — wcześniejszy „ogon A9” to
 niewstrzyknięty pusty węzeł ciągnący za sobą incydentne krawędzie. Akceptacja sfdp `2095` miała
 tę samą ślepą plamę — świeża regeneracja przypisania sfdp (2026-07-22) z poprawionym
 wstrzykiwaczem potwierdziła, że też wstrzykuje się do 0, a jej akceptacja została usunięta (zob.
 notę `2095 reclassified` powyżej).
+
+**sfdp `2168_3` — `sin` z libm Apple o 1 ULP w `poly_init` (zamknięte, nieredukowalne).** **Dotyczy:** sfdp `2168_3` (tylko stderr: port wypisuje jedno dodatkowe ostrzeżenie `Pshortestpath`; przebieg ścieżki xdot przechodzi, ponieważ obie strony wracają do prostych linii). **Co się różni:** `shapes.c:2329` liczy `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); dla gamma = 1.0092081171617377 libm z macOS zwraca 0.8464104077694533, V8 poprawnie zaokrągloną wartość 0.8464104077694532 (1 ULP). Różnica trafia do routera multispline (`neatosplines.c:428,444` → `multispline.c:598`) jako punkt routera 10/18, y 28.391789367446776 wobec …78; trapez współokręgowy (punkty 9, 10, 15, 16) jest wtedy triangulowany inną przekątną Delaunaya, więc wielokąt korytarza krawędzi 1 się różni, a `Pshortestpath` zawodzi na wielokącie portu. **Dlaczego zaakceptowane:** kontrolowany eksperyment wstrzykujący tylko tę wartość `sin` czyni stderr, trójkąty, wielokąty i xdot identycznymi z natywnymi (sam `atan2` nie); pozycje sfdp są bitowo równe, a predykat incircle, pathplan, hypot w `makeObstacle` i kolejność arytmetyki pierścienia konturu wykluczono. Dopasowanie wymaga bitowo dokładnego modelu `sin` Apple, którego kod źródłowy nie jest publiczny; żaden przenośny kod go nie odtworzy (ta sama granica co precedens `arm-pow.ts`). **Dowód:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), wiersz 2026-10-20 T13.
 
 ---
 

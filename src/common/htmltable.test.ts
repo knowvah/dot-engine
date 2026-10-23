@@ -125,3 +125,29 @@ describe('cellBorder default resolution', () => {
     expect(cellBorder(cell(), tbl())).toBe(1);
   });
 });
+
+describe('sizeHtmlLabel — empty <BR/> line inside a font-style element', () => {
+  // Metric height 1.2×fs ≠ raw fs, so the simple (mxysize) and non-simple
+  // (mxfsize) line models give different block heights.
+  const tallMeasurer: TextMeasurer = {
+    measure: (text, _f, fs) => ({ w: text.length * fs * 0.5, h: fs * 1.2 }),
+  };
+  const height = (src: string): number | undefined => {
+    const label = parseHtmlLabel(src);
+    sizeHtmlLabel(label, tallMeasurer);
+    return label.dimen?.h;
+  };
+
+  // C appendFLineList gives the second line one "" item in the <U>/<B> font,
+  // whose flags make size_html_txt non-simple: lsize = mxfsize (14 + 14).
+  // @see lib/common/htmlparse.y:appendFLineList, htmltable.c:size_html_txt
+  it.each(['k<u><br/><br/></u>', 'k<b><br/><br/></b>', 'k<font point-size="20"><br/><br/></font>'])(
+    '%s sizes as a non-simple block', (src) => {
+      const expected = src.includes('20') ? 14 + 20 : 14 + 14;
+      expect(height(src)).toBe(expected);
+    });
+
+  it('k<br/><br/> stays simple: lsize = metric height (16.8 + 16.8)', () => {
+    expect(height('k<br/><br/>')).toBeCloseTo(33.6, 10);
+  });
+});

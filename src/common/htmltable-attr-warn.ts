@@ -11,6 +11,8 @@
  * @see lib/common/htmllex.c:doAttrs
  */
 
+import { agerrFinished } from './agerr.js';
+
 /** An attribute as startElement gets it: name in source case, value decoded by expat. */
 export type AttrEntry = readonly [name: string, value: string];
 
@@ -272,10 +274,7 @@ export class StderrLines {
 }
 
 /** A finished stderr line on the console channel the port uses for it. */
-export const consoleLine = (line: string): void => {
-  if (line.startsWith('Warning')) console.warn(line);
-  else console.error(line);
-};
+export const consoleLine = (line: string): void => agerrFinished(line);
 
 /** One label's stderr: what make_html_label and make_label print, in order. */
 export const labelStderr = (): StderrLines => new StderrLines(consoleLine);

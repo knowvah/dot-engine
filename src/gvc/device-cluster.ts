@@ -13,7 +13,8 @@ import {
   parseStyleFlags, resolvePenColor, resolvePenType, resolvePenWidth,
   resolveClusterFillEx,
 } from '../common/style-resolve.js';
-import { resolveRenderColor, withColorScheme } from '../render/color-resolve.js';
+import { resolveRenderColor, withColorScheme, reportColorNames } from '../render/color-resolve.js';
+import { parseSegs } from '../common/multicolor.js';
 
 /**
  * Copy gradient fields from a linear/radial ResolvedFill onto obj.
@@ -101,14 +102,41 @@ export function applyClusterObjState(sg: Graph, job: RenderJob): boolean {
   const obj = job.obj;
   // C wraps the cluster color block with setColorScheme. @see emit.c:3800/3943
   return withColorScheme(clusterAttr(sg, 'colorscheme'), () => {
+    // C resolves the fill (set_fillcolor / gradient vals) before the pen,
+    // which is set just before gvrender_box. @see emit.c:3846-3868 vs 3907-3913
+    const filled = applyClusterFill(obj, fillRes);
     applyClusterPenState(obj, sg);
-    if (fillRes.kind === 'none') { obj.fill = FillType.None; return false; }
-    if (fillRes.kind === 'solid') {
-      obj.fill = FillType.Solid;
-      obj.fillColor = resolveRenderColor(fillRes.color);
-      return true;
-    }
-    applyClusterGradient(obj, fillRes);
-    return true;
+    reportColorNames(stripedClusterColors(sg));
+    return filled;
   });
+}
+
+/**
+ * The colours stripedBox sets for a `style=striped` cluster (not rounded): each
+ * segment of the fill spec with a positive width, after the pen.
+ * @see lib/common/emit.c:3896-3906 emit_clusters (striped branch)
+ * @see lib/common/emit.c:595 stripedBox
+ */
+function stripedClusterColors(sg: Graph): string[] {
+  const flags = parseStyleFlags(clusterStyle(sg));
+  if (!flags.striped || flags.rounded) return [];
+  const color = clusterAttr(sg, 'color') ?? '';
+  let fill = clusterAttr(sg, 'fillcolor') || color;
+  const bg = clusterAttr(sg, 'bgcolor') ?? '';
+  if ((!flags.filled || fill === '') && bg !== '') fill = bg;
+  const { segs, error } = parseSegs(fill === '' ? 'lightgrey' : fill);
+  if (error === 1 || error === 2) return [];
+  return segs.flatMap((seg) => (seg.color !== null && seg.t > 0 ? [seg.color] : []));
+}
+
+/** The fill half of {@link applyClusterObjState}; true when the box is filled. */
+function applyClusterFill(obj: ObjState, fillRes: ResolvedFill): boolean {
+  if (fillRes.kind === 'none') { obj.fill = FillType.None; return false; }
+  if (fillRes.kind === 'solid') {
+    obj.fill = FillType.Solid;
+    obj.fillColor = resolveRenderColor(fillRes.color);
+    return true;
+  }
+  applyClusterGradient(obj, fillRes);
+  return true;
 }

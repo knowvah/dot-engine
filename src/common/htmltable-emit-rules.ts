@@ -14,6 +14,7 @@ import type { RenderJob } from '../gvc/job.js';
 import type { RendererPlugin } from '../gvc/context.js';
 import type { PlacedCell, PlacedHtml } from './htmltable-pos.js';
 import { doSide, withHtmlPaint } from './htmltable-emit-fill.js';
+import { registerRenderState } from './render-state.js';
 
 // ---------------------------------------------------------------------------
 // Rule context
@@ -217,6 +218,7 @@ export function resetHtmlAnchorIds(): void {
   anchorEnv.objLabel = null;
   anchorEnv.imgscale = 'false';
 }
+registerRenderState(resetHtmlAnchorIds);
 
 /**
  * Open an anchor when the data carries href/title/target.

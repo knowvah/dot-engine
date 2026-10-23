@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -215,8 +215,10 @@ atribuída individualmente em relação ao graphviz 16.1.0: o harness de injeç�
 (`test/corpus/attribute-divergence.ts`) alimenta o `ND_pos` pré-roteamento do oráculo
 nativo no port e compara de novo, e todo id divergente atual é `drift-exonerated` (o
 roteamento e a emissão do port reproduzem exatamente o oráculo assim que a deriva do
-solver é removida), exceto três. Três são resíduos por id aceitos separadamente: o empate
-de incírculo do CDT de `241_0` no fdp e no sfdp, e o layout NaN do `2556` do sfdp. `2471` do fdp e `2371` do sfdp mantinham posições de rótulos de aresta (`lp`) que
+solver é removida), exceto dois. Dois são resíduos por id aceitos separadamente: o resíduo
+do CDT de `241_0` no sfdp, e o layout NaN do `2556` do sfdp. O `241_0` do fdp passa desde
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (veja o parágrafo do
+fdp em A9). `2471` do fdp e `2371` do sfdp mantinham posições de rótulos de aresta (`lp`) que
 diferiam após a injeção, isto é, o posicionador de xlabel escolhia outro candidato. O
 `2471` foi resolvido quando o `dotneato_closest` do port passou a arredondar como a
 avaliação de De Casteljau fundida e o DIST2 do clang: as âncoras dos rótulos de aresta
@@ -889,14 +891,16 @@ exigiria reproduzir em JS o arredondamento exato de `sin`/`cos` da libm da Apple
 multispline routing geometry`) a espelhou. `241_0` do twopi e do neato — que esta classe
 atribuía ao empate cocircular abaixo — passaram a **conformantes**
 (aceitações aposentadas), e o `42` do sfdp mostrou não ter empate algum (é deriva
-A1, veja [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` do circo, do fdp
+A1, veja [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` do fdp
+passou depois a **conformante**, após uma segunda correção no port da triangulação (ordem
+dos vértices das faces após a troca de uma aresta; veja o parágrafo do fdp abaixo). `241_0` do circo
 e do sfdp ainda diverge, com resíduos inalterados ou reduzidos; a atribuição
 ao empate abaixo é anterior a `f66ac638` e **não foi reverificada
 por injeção de posição** desde que essa correção mostrou que a mesma atribuição estava errada para
 twopi/neato.
 
-**Afetados:** `241_0` (circo Δ≈0.2 via a inversão de corredor na aresta `1->2`; fdp
-e sfdp `241_0` nas trilhas de mecanismo abaixo); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Afetados:** `241_0` (circo Δ≈0.2 via a inversão de corredor na aresta `1->2`; sfdp
+`241_0` na trilha de mecanismo abaixo); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 diferenças de posição de rótulo de aresta cada — o ULP da libm surge na
 trigonometria de vértice unitário de `poly_init` (`hypot`/`atan2`/`sin`), coloca a altura calculada
 de um nó um ULP além do piso de tamanho mínimo em que o oráculo cai
@@ -1114,22 +1118,28 @@ para a mesma fronteira). `sfdp.241_0` é aceito no nível da trilha de mecanismo
 sonda acima não a explicou.
 
 A trilha xdot de mecanismo do **fdp** (`parity-fdp.json`, `dot -Kfdp -Txdot` nativo,
-±0.5) faz emergir o MESMO empate cocircular da CDT no mesmo grafo, `241_0`: com as
-posições pré-roteamento exatas do oráculo injetadas, o resíduo são 11 diferenças numéricas de
-`unfilled_bezier` confinadas a uma aresta (`0->1#0`, maxΔ 3.39pt). Como
-as posições dos nós são idênticas após a injeção, a divergência está a jusante, no
-corredor multispline do pathplan — o mesmo empate de incírculo por 1 ULP da libm que o `241_0` do
-circo/sfdp (incírculo racional exato 185/185 acima; 11 diferenças inalteradas por
-`f66ac638` — não reverificado por injeção). As alavancas já
-foram aplicadas (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); o empate é tratado como irredutível. Aceito via `accepted-divergences-engines.json`
-`fdp.241_0`. O `2095` do fdp, por outro lado, é **A1-drift, não A9**: injetar o
+±0.5) costumava mostrar o mesmo grafo, `241_0`, como parte desta classe: com as
+posições pré-roteamento exatas do oráculo injetadas, restavam 11 diferenças numéricas de
+`unfilled_bezier` em uma aresta (`0->1#0`, maxΔ 3.39pt), atribuídas ao empate
+de incírculo cocircular. Essa atribuição estava errada.
+`fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) encontrou um erro de port: o
+`swap_if_in_circle` do GTS constrói suas duas novas faces como
+`gts_face_new(en, e5, e2)` e `gts_face_new(en, e3, e4)` (`cdt.c:509-511`), e
+`gts_triangle_vertices` lê uma face a partir da ordem de suas arestas, então o nativo as
+lista como (v3, v4, v2) e (v4, v3, v1); o port armazenava ambas rotacionadas em uma posição, e o
+`triCenter` do roteador multispline somava os vértices nessa ordem. Com a ordem
+corrigida, o `241_0` do fdp coincide com o nativo em todas as trilhas (xdot pass, json
+conformante, plain e stderr iguais), e suas entradas em `accepted-divergences-engines.json`
+e `accepted-divergences-json.json` foram aposentadas. O `2095` do fdp, por outro lado, é **A1-drift, não A9**: injetar o
 único nó de nome vazio (depois que o injetor de atribuição foi corrigido para casar
 nós de nome `""`) reduz seu resíduo a zero — a “cauda A9” anterior era o
 nó vazio não injetado arrastando suas arestas incidentes. A aceitação do `2095` do sfdp foi
 o mesmo ponto cego — uma nova regeneração da atribuição do sfdp (2026-07-22) com o injetor
 corrigido confirmou que ele também é injetado com 0, e sua aceitação foi removida (veja a
 nota `2095 reclassificado` acima).
+
+**sfdp `2168_3` — `sin` da libm da Apple com 1 ULP em `poly_init` (encerrado, irredutível).** **Afetado:** sfdp `2168_3` (somente stderr: o port emite um aviso `Pshortestpath` a mais; a execução da trilha xdot passa, pois ambos os lados recorrem a linhas retas). **O que difere:** `shapes.c:2329` calcula `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); para gamma = 1.0092081171617377, a libm do macOS retorna 0.8464104077694533 e o V8 o valor corretamente arredondado 0.8464104077694532 (1 ULP). A diferença chega ao roteador multispline (`neatosplines.c:428,444` → `multispline.c:598`) como ponto 10/18 do roteador, y 28.391789367446776 contra …78; o trapézio cocircular (pontos 9, 10, 15, 16) é então triangulado com outra diagonal de Delaunay, de modo que o polígono de corredor da aresta 1 difere e `Pshortestpath` falha no polígono do port. **Por que aceito:** um experimento controlado que injeta apenas esse valor de `sin` torna stderr, triângulos, polígonos e xdot idênticos ao nativo (`atan2` sozinho não); as posições do sfdp são idênticas bit a bit, e foram descartados o predicado incircle, o pathplan, o hypot de `makeObstacle` e a ordem aritmética do anel de contorno. Igualá-lo exige um modelo exato em bits do `sin` da Apple, cujo código-fonte não é público; nenhum código portátil consegue reproduzi-lo (mesma fronteira do precedente `arm-pow.ts`). **Evidência:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), linha 2026-10-20 T13.
 
 ---
 

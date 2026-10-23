@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -217,9 +217,11 @@ başlatma birleştirmesi ve `setEdgeType` makro-işlev düzeltmesidir.)
 
 İlk taramanın aksine, 929 öğelik evrenin ayrışan her satırı graphviz 16.1.0'a karşı tek tek nedene
 bağlanmıştır: enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin yönlendirme
-öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, üç istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
-üretimi kâhini tam olarak yeniden üretir). Üçü ayrıca kabul edilmiş kimlik başına artıklardır:
-`241_0`'ın fdp ve sfdp'deki CDT iç çember beraberliği ile sfdp `2556`'nın NaN yerleşimi. fdp `2471` ve sfdp `2371` önceden enjeksiyondan sonra farklı kalan kenar etiketi
+öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, iki istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
+üretimi kâhini tam olarak yeniden üretir). İkisi ayrıca kabul edilmiş kimlik başına artıklardır:
+sfdp `241_0`'ın CDT artığı ile sfdp `2556`'nın NaN yerleşimi. fdp `241_0`,
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` değişikliğinden beri
+geçer (bkz. A9 altındaki fdp paragrafı). fdp `2471` ve sfdp `2371` önceden enjeksiyondan sonra farklı kalan kenar etiketi
 konumlarını (`lp`) koruyordu, yani xlabel yerleştirici farklı bir aday seçiyordu.
 `2471`, portun `dotneato_closest` işlevi clang'ın birleştirilmiş (fused) de Casteljau
 hesaplaması ve DIST2'si gibi yuvarlamaya başlayınca düzeldi: kenar etiketi çapaları 1–2
@@ -876,13 +878,15 @@ birleştirmesi eksikti (elips köşesi radikandı, `mkCtrlPts`, `DIST` = sqrt(fm
 multispline routing geometry`) onu yansıttı. Bu sınıfın aşağıdaki eşdairesel
 beraberliğe atfettiği twopi ve neato `241_0` **conformant**'a döndü (kabuller
 emekli edildi) ve sfdp `42`'nin hiç beraberliği olmadığı ortaya çıktı (A1
-sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
+sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` ise
+sonradan, üçgenlemede portun ikinci bir düzeltmesinden sonra (bir kenar takasından sonra yüz
+köşe sırası; bkz. aşağıdaki fdp paragrafı) **conformant**'a döndü. circo
 ve sfdp `241_0` hâlâ ayrışır; artıkları değişmemiş ya da azalmıştır; aşağıdaki
 beraberliğe atıfları `f66ac638`'ten öncedir ve aynı atfın twopi/neato için yanlış
 olduğunu gösteren o düzeltmeden beri **konum enjeksiyonuyla yeniden doğrulanmamıştır**.
 
 **Etkilenenler:** `241_0` (circo Δ≈0.2, `1->2` kenarındaki koridor çevrilmesiyle;
-aşağıdaki motor hatlarında fdp ve sfdp `241_0`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi, her
+aşağıdaki motor hattında sfdp `241_0`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi, her
 birinde 1–2 kenar etiketi konum farkı — libm 1-ULP'si `poly_init`'in birim köşe
 trigonometrisinde (`hypot`/`atan2`/`sin`) doğar, bir düğümün hesaplanan yüksekliğini
 kâhinin tam oturduğu asgari boyut kıskacının bir ULP ötesine koyar ve xlabel R-ağacı
@@ -1094,23 +1098,28 @@ düzeyinde `accepted-divergences-engines.json` aracılığıyla kabul edilir.
 `sfdp.42` bu sınıfın parçası **değildir**: kayıt girdisi A1'dir
 (`comparisons/sfdp-42.md`) ve yukarıdaki sonda onu açıklamadı.
 
-**fdp** xdot motor hattı (`parity-fdp.json`, yerel `dot -Kfdp -Txdot`, ±0.5) AYNI CDT
-eşdairesel beraberliğini aynı grafta, `241_0`'da ortaya çıkarır: kâhinin tam
-yönlendirme öncesi konumları enjekte edildiğinde artık, tek bir kenara
-(`0->1#0`, maxΔ 3.39pt) sınırlı 11 sayısal `unfilled_bezier` farkıdır. Düğüm
-konumları enjeksiyonla özdeş olduğundan ayrışma aşağı akışta, pathplan çoklu spline
-koridorundadır — circo/sfdp `241_0` ile aynı libm-1-ULP iç çember beraberliği
-(yukarıdaki tam rasyonel iç çember 185/185; 11 fark `f66ac638` ile değişmedi —
-enjeksiyonla yeniden doğrulanmadı). Kaldıraçlar zaten uygulandı
-(`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198` `Math.hypot`);
-beraberlik indirgenemez sayılır. `accepted-divergences-engines.json` `fdp.241_0` aracılığıyla
-kabul edilir. fdp'nin `2095`'i ise **A9 değil, A1-drift'tir**: tek boş adlı düğümü
+**fdp** xdot motor hattı (`parity-fdp.json`, yerel `dot -Kfdp -Txdot`, ±0.5)
+eskiden aynı grafı, `241_0`'ı, bu sınıftan gösteriyordu: kâhinin tam
+yönlendirme öncesi konumları enjekte edildiğinde tek bir kenarda (`0->1#0`,
+maxΔ 3.39pt) 11 sayısal `unfilled_bezier` farkı kalıyordu ve bunlar eşdairesel
+iç çember beraberliğine atfediliyordu. Bu atıf yanlıştı. `fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22), port tarafında hatalı bir
+aktarım buldu: GTS `swap_if_in_circle` iki yeni yüzünü
+`gts_face_new(en, e5, e2)` ve `gts_face_new(en, e3, e4)` olarak kurar (`cdt.c:509-511`)
+ve `gts_triangle_vertices` bir yüzü kenar sırasından okur; yerel sürüm bu yüzleri
+(v3, v4, v2) ve (v4, v3, v1) olarak listeler; port ikisini de bir kaydırılmış
+saklıyordu ve çoklu spline yönlendiricisinin `triCenter`'ı köşeleri bu sırayla topluyordu.
+Sıra düzeltilince fdp `241_0` her hatta yerel sürümle eşleşir (xdot geçer, json
+conformant, plain ve stderr eşit) ve `accepted-divergences-engines.json` ile
+`accepted-divergences-json.json` içindeki kayıtları emekli edilmiştir. fdp'nin `2095`'i ise **A9 değil, A1-drift'tir**: tek boş adlı düğümü
 enjekte etmek (nedenlendirme enjektörü `""` adlı düğümlerle eşleşecek şekilde
 düzeltildikten sonra) artığını sıfıra indirir — önceki “A9 kuyruğu”, bağlı kenarlarını
 sürükleyen, enjekte edilmemiş boş düğümdü. sfdp `2095` kabulü aynı kör noktaydı —
 düzeltilmiş enjektörle yapılan yeni bir sfdp nedenlendirme yenilemesi (2026-07-22)
 onun da 0'a enjekte edildiğini doğruladı ve kabulü kaldırıldı (yukarıdaki
 `2095 reclassified` notuna bakın).
+
+**sfdp `2168_3` — `poly_init` içinde Apple libm `sin` 1 ULP farkı (kapatıldı, indirgenemez).** **Etkilenen:** sfdp `2168_3` (yalnızca stderr: port bir fazladan `Pshortestpath` uyarısı verir; xdot motor hattı taraması geçer, çünkü iki taraf da düz çizgilere döner). **Ne farklı:** `shapes.c:2329` `temp = GAP / sin(gamma)` hesaplar (port `src/common/poly-sizing.ts:379`); gamma = 1.0092081171617377 için macOS libm 0.8464104077694533, V8 doğru yuvarlanmış 0.8464104077694532 değerini döndürür (1 ULP). Fark, multispline yönlendiricisine (`neatosplines.c:428,444` → `multispline.c:598`) yönlendirici noktası 10/18, y 28.391789367446776 ile …78 olarak ulaşır; eşçemberli yamuk (9, 10, 15, 16. noktalar) bu kez farklı bir Delaunay köşegeniyle üçgenlenir, böylece kenar 1'in koridor çokgeni farklılaşır ve `Pshortestpath` portun çokgeninde başarısız olur. **Neden kabul edildi:** yalnızca bu `sin` değerini enjekte eden kontrollü bir deney stderr'i, üçgenleri, çokgenleri ve xdot'u yerelle özdeş yapar (tek başına `atan2` yapmaz); sfdp konumları bit düzeyinde eşittir ve incircle yüklemi, pathplan, `makeObstacle` hypot'u ve ana hat halkası aritmetik sırası elenmiştir. Eşleşme, kaynağı herkese açık olmayan Apple `sin`'in bit-tam bir modelini gerektirir; hiçbir taşınabilir kod bunu yeniden üretemez (`arm-pow.ts` emsaliyle aynı sınır). **Kanıt:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), 2026-10-20 T13 satırı.
 
 ---
 

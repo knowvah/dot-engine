@@ -11,6 +11,7 @@
 import type { Point } from '../model/geom.js';
 import { ccwrotatepf, cwrotatepf } from '../model/geom.js';
 import { bezier } from './bezier.js';
+import { fma } from './fma.js';
 import type { GenResult } from './arrows-shapes-util.js';
 import {
   vsub, vadd, miterShape, negUnit, backwardDelta, axialProjection,
@@ -206,14 +207,27 @@ function cubicHalf(c: Point[], rightHalf: boolean): Point[] {
   return half;
 }
 
-/** Build the four Bézier control points for the curve arms. */
+/**
+ * Build the four Bézier control points for the curve arms.
+ *
+ * The oracle (libgvc 16.1 `_arrow_type_curve`) contracts only the
+ * `p.x +/- 0.95 * v.x` term into `fmadd(v.x, +/-0.95, p.x)`; every other add
+ * is a plain fadd, and `w.x * 4.0 / 3.0` is `(w.x * 4) / 3` (fmul, fdiv).
+ * Only the x arms carry the 0.95 term, so AF[1].y / AF[2].y stay unfused.
+ * @see lib/common/arrows.c:arrow_type_curve
+ */
 function curveControlPoints(p: Point, v: Point, w: Point, flag: number): Point[] {
   const AF0: Point = { x: p.x + v.x + w.x, y: p.y + v.y + w.y };
   const AF3: Point = { x: p.x - v.x + w.x, y: p.y - v.y + w.y };
-  const s = flag & ARR_MOD_INV ? 1 : -1; // inv bulges the curve the other way
-  const AF1: Point = { x: p.x + 0.95 * v.x + w.x + s * w.x * (4.0 / 3.0), y: AF0.y + s * w.y * (4.0 / 3.0) };
-  const AF2: Point = { x: p.x - 0.95 * v.x + w.x + s * w.x * (4.0 / 3.0), y: AF3.y + s * w.y * (4.0 / 3.0) };
-  return [AF0, AF1, AF2, AF3];
+  const bulgeX = (w.x * 4.0) / 3.0;
+  const bulgeY = (w.y * 4.0) / 3.0;
+  const x1 = fma(v.x, 0.95, p.x) + w.x;
+  const x2 = fma(v.x, -0.95, p.x) + w.x;
+  if (flag & ARR_MOD_INV) { /* ----(-| */
+    return [AF0, { x: x1 + bulgeX, y: AF0.y + bulgeY }, { x: x2 + bulgeX, y: AF3.y + bulgeY }, AF3];
+  }
+  /* ----)-| */
+  return [AF0, { x: x1 - bulgeX, y: AF0.y - bulgeY }, { x: x2 - bulgeX, y: AF3.y - bulgeY }, AF3];
 }
 
 /** @see lib/common/arrows.c:arrow_type_curve */

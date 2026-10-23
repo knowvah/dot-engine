@@ -18,6 +18,7 @@ import { FillType, PenType } from '../gvc/context.js';
 import { transformPoint } from '../gvc/device.js';
 import { resolveRenderColor } from '../render/color-resolve.js';
 import { emitRoundedBezier } from './poly-shapes.js';
+import type { PlacedHtml, PlacedCell } from './htmltable-pos.js';
 import { htmlStyle } from './htmltable-style.js';
 import {
   BORDER_LEFT,
@@ -26,6 +27,7 @@ import {
   BORDER_BOTTOM,
   BORDER_MASK,
 } from './htmltable-types.js';
+import { registerRenderState } from './render-state.js';
 
 // ---------------------------------------------------------------------------
 // Gradient spec parser
@@ -136,6 +138,7 @@ export function htmlFillPenWidth(): number {
 export function resetHtmlFillPenWidth(): void {
   htmlFillPen = 1.0;
 }
+registerRenderState(resetHtmlFillPenWidth);
 
 /** Map an HTML STYLE to the C pen type: dashed wins over dotted. @see lib/common/htmltable.c:doBorder */
 function penTypeOf(style: string | undefined): PenType {
@@ -365,4 +368,49 @@ function emitSidedPolylines(
   for (const seq of seqs) {
     renderer.polyline(seq.map((i) => corners[i]!), job);
   }
+}
+
+// ---------------------------------------------------------------------------
+// htmlLabelColors — the colour names C resolves while emitting an HTML label
+// ---------------------------------------------------------------------------
+
+/** @see lib/common/const.h DEFAULT_COLOR */
+const HTML_DEFAULT_COLOR = 'black';
+
+/** setFill's names: the fill (and a gradient's stop). @see htmltable.c:setFill */
+function bgNames(bgcolor: string): string[] {
+  const spec = parseGradientSpec(bgcolor);
+  return spec === null ? [bgcolor] : [spec[0], spec[1]];
+}
+
+/** One cell in emit_html_cell order: fill, border, then the child. */
+function cellNames(cell: PlacedCell): string[] {
+  if (htmlStyle(cell.style).invisible) return [];
+  const out = cell.bgcolor !== undefined ? bgNames(cell.bgcolor) : [];
+  if (cell.border > 0) out.push(cell.color ?? HTML_DEFAULT_COLOR);
+  if (cell.nested !== undefined) out.push(...tableNames(cell.nested));
+  else for (const line of cell.lines) if (line.fontColor !== null) out.push(line.fontColor);
+  return out;
+}
+
+/** One table in emit_html_tbl order: fill, rules, border, cells. */
+function tableNames(tbl: PlacedHtml): string[] {
+  if (htmlStyle(tbl.style).invisible) return [];
+  const out = tbl.bgcolor !== undefined ? bgNames(tbl.bgcolor) : [];
+  const color = tbl.color ?? HTML_DEFAULT_COLOR;
+  if (tbl.cells.some((c) => c.vruled === true || c.hruled === true)) out.push(color);
+  if (tbl.border > 0) out.push(color);
+  for (const cell of tbl.cells) out.push(...cellNames(cell));
+  return out;
+}
+
+/**
+ * The names an HTML label hands to gvrender_resolve_color, in C's order: the
+ * root table's pen first (emit_html_label), then emit_html_tbl's walk.
+ * @see lib/common/htmltable.c:emit_html_label
+ * @see lib/common/htmltable.c:emit_html_tbl
+ * @see lib/common/htmltable.c:emit_html_cell
+ */
+export function htmlLabelColors(label: PlacedHtml): string[] {
+  return [label.color ?? HTML_DEFAULT_COLOR, ...tableNames(label)];
 }

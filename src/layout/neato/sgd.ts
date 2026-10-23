@@ -17,6 +17,7 @@ import type { RkState } from '../../util/mt19937.js';
 import { drand48 } from '../../common/random.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { checkStart, parseStart, INIT_RANDOM, INIT_REGULAR } from './start.js';
+import { agerrLineOn } from '../../common/agerr.js';
 
 // ---------------------------------------------------------------------------
 // Model constants — @see lib/neatogen/defs.h
@@ -407,13 +408,15 @@ export function buildUnfixed(g: Graph, n: number): boolean[] {
  */
 export function resolveModel(model: number): number {
   if (model === MODEL_CIRCUIT) {
-    console.warn(
+    agerrLineOn(
+      'warn',
       'circuit model not yet supported in Gmode=sgd, reverting to shortpath model',
     );
     return MODEL_SHORTPATH;
   }
   if (model === MODEL_MDS) {
-    console.warn(
+    agerrLineOn(
+      'warn',
       'mds model not yet supported in Gmode=sgd, reverting to shortpath model',
     );
     return MODEL_SHORTPATH;

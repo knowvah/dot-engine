@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -88,7 +88,7 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 
 （第一次扫描，2026-07-11，762 项时，测得 ±0.5pt 以内的分别为 263/311/260——升至当前比率，是因为此后落地的逐 id 修复，主要是 neato 未移植的 `user_pos`/`P_SET` 处理、引擎初始化的整合，以及 `setEdgeType` 宏与函数的修复。）
 
-与第一次扫描时不同，929 项全集中每一个存在差异的行都已针对 graphviz 16.1.0 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除三个之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中三个是单独接受的逐 id 残余：fdp 和 sfdp 上 `241_0` 的 CDT 内切圆平局，以及 sfdp `2556` 的 NaN 布局。fdp `2471` 和 sfdp `2371` 此前在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。移植版的 `dotneato_closest` 改为按 clang 融合后的 de Casteljau 求值和 DIST2 方式舍入后，`2471` 已经消除：此前边标签锚点相差 1–2 ULP，使放置器的严格包含判断翻转。移植版的 R 树像 C 一样按值复制矩形之后，`2371` 已经消除。`2471` 的原生 fdp 布局每次运行都会变化，因此其行只记录一次运行。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
+与第一次扫描时不同，929 项全集中每一个存在差异的行都已针对 graphviz 16.1.0 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除两个之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中两个是单独接受的逐 id 残余：sfdp `241_0` 的 CDT 残余，以及 sfdp `2556` 的 NaN 布局。自 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 起，fdp `241_0` 已通过（参见 A9 下的 fdp 段落）。fdp `2471` 和 sfdp `2371` 此前在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。移植版的 `dotneato_closest` 改为按 clang 融合后的 de Casteljau 求值和 DIST2 方式舍入后，`2471` 已经消除：此前边标签锚点相差 1–2 ULP，使放置器的严格包含判断翻转。移植版的 R 树像 C 一样按值复制矩形之后，`2371` 已经消除。`2471` 的原生 fdp 布局每次运行都会变化，因此其行只记录一次运行。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
 （[`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)）。
@@ -364,9 +364,9 @@ job->clip)` 为每个节点设置门槛（emit.c:1806-1809），而在这条中�
 
 **类别。** V8 的 `Math.sin`/`Math.cos` 与 Apple libm 的 `sin`/`cos` 并不逐位一致（已证明：在 `2π·4.5/8`，即八个椭圆障碍角度之一，存在 1 ULP 的差异）。`makeObstacle` 的外接 8 边形角点继承了该 ULP，所以三角形路由器的输入坐标与参照程序相差 ≤6e-14。对称的布局（同一层/环上大小相等的节点）使路由器的四边形在实数运算中**精确共圆**，所以精确的内切圆判定恰好处于刀刃边缘：输入的 ULP 翻转了它的符号，受约束 Delaunay 的对角线随之翻转，而在参照程序中使 `Pshortestpath` 失败的通道多边形（“destination point not in any triangle” → 回退到普通样条）在移植版中成功了（反之亦然）。得到的样条相差约 0.2–0.5pt。与（现已关闭的）**A3**/**A8** 是同类：位于 C 源代码语义之下的不可约浮点可移植性约束——要匹配，就需要在 JS 中复现 Apple libm 的 `sin`/`cos` 的精确舍入。
 
-**16.1 重新基线。** 多重样条通道的几何缺少 clang 的 FMA 收缩（椭圆角点的被开方数、`mkCtrlPts`、`DIST` = sqrt(fmadd)、`line_intersect` 的点积）；`f66ac638`（`fix(neato): mirror fma contraction in multispline routing geometry`）镜像了它。twopi 和 neato 的 `241_0`——该类别曾把它们归因于下面的共圆平局——变为 **conformant**（接受已退役），而 sfdp 的 `42` 被证明根本没有平局（它是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）。circo、fdp 和 sfdp 的 `241_0` 仍然存在差异，残余不变或有所减少；它们归因于下面平局的结论早于 `f66ac638`，并且自该修复表明同样的归因对 twopi/neato 是错误的以来，**尚未通过位置注入重新验证**。
+**16.1 重新基线。** 多重样条通道的几何缺少 clang 的 FMA 收缩（椭圆角点的被开方数、`mkCtrlPts`、`DIST` = sqrt(fmadd)、`line_intersect` 的点积）；`f66ac638`（`fix(neato): mirror fma contraction in multispline routing geometry`）镜像了它。twopi 和 neato 的 `241_0`——该类别曾把它们归因于下面的共圆平局——变为 **conformant**（接受已退役），而 sfdp 的 `42` 被证明根本没有平局（它是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）。fdp 的 `241_0` 后来也变为 **conformant**，那是移植版在三角剖分上的第二次修复（边交换之后的面顶点顺序；参见下面的 fdp 段落）。circo 和 sfdp 的 `241_0` 仍然存在差异，残余不变或有所减少；它们归因于下面平局的结论早于 `f66ac638`，并且自该修复表明同样的归因对 twopi/neato 是错误的以来，**尚未通过位置注入重新验证**。
 
-**受影响：** `241_0`（circo Δ≈0.2，源自边 `1->2` 上的通道翻转；下面各引擎轨道上的 fdp 和 sfdp `241_0`）；`2343`、`2239`、`share-b29`、`windows-b29`（twopi，每个有 1–2 处边标签位置差异——libm 的 1 ULP 出现在 `poly_init` 的单位顶点三角运算（`hypot`/`atan2`/`sin`）中，使一个节点计算出的高度比参照程序精确落在的最小尺寸钳制值多出 1 ULP，并通过 xlabel R 树加载中的 `floor()` 级联为单个标签候选的翻转。曾尝试正确舍入的 hypot 修复，并被证伪：它修好了 `2343`，却使 `2168_3` 出现回归，后者的八边形尺寸计算流经同一个调用，而参照程序在那里的值并不是正确舍入的——没有任何确定性的 hypot 策略能同时在两者上匹配参照程序）。
+**受影响：** `241_0`（circo Δ≈0.2，源自边 `1->2` 上的通道翻转；下面引擎轨道上的 sfdp `241_0`）；`2343`、`2239`、`share-b29`、`windows-b29`（twopi，每个有 1–2 处边标签位置差异——libm 的 1 ULP 出现在 `poly_init` 的单位顶点三角运算（`hypot`/`atan2`/`sin`）中，使一个节点计算出的高度比参照程序精确落在的最小尺寸钳制值多出 1 ULP，并通过 xlabel R 树加载中的 `floor()` 级联为单个标签候选的翻转。曾尝试正确舍入的 hypot 修复，并被证伪：它修好了 `2343`，却使 `2168_3` 出现回归，后者的八边形尺寸计算流经同一个调用，而参照程序在那里的值并不是正确舍入的——没有任何确定性的 hypot 策略能同时在两者上匹配参照程序）。
 `2168_1` 原本属于这个类别，但在移植版模拟了参照程序经 fp 收缩的 `ccw`（pathplan 的 `triang.ts`）之后变为一致：它的通道失败由经 FMA 的 `pointintri` 顶点端点拒绝所决定，移植版现在能逐位复现这一点，所以 CDT 对角线的 ULP 平局不再在那里出现。
 
 **为何接受（不可约性经受控实验证明）。** CDT 本身已被排除嫌疑：移植版的 `mkSurface` 是 GTS 0.7.6 增量插入的忠实移植（`cdt.c`：1→3 分裂 + 递归的 `swap_if_in_circle`，约束边预先创建且不可交换，`remove_intersected_*` + `triangulate_polygon` 的约束强制），并且一个链接**真实 GTS 库**、并以移植版逐位精确的路由器输入驱动的独立 C 测试程序，逐面复现了移植版的三角剖分（2168_1：22/22；241_0：185/185）。对两组输入集上的内切圆行列式做精确有理数求值，确认了符号翻转（移植版输入为 +1，参照程序输入为 −1）。剩下的变量——1 ULP 的三角函数差异——是通过直接比较 `Math.sin`/`sin` 的位模式隔离出来的。
@@ -423,10 +423,9 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 （`plans/sfdp-tracked-divergences/batch-2/hypot-ulp-probe.txt`）：编译系统 C 的 `hypot`，并与 Node 的 `Math.hypot` 在有代表性的平边偏差输入上比较，6 个中有 2 个存在 1 ULP 的差异（Δ 7.1e-15 和 5.7e-14）——正是翻转细分计数的拆分阈值刀刃。不可约：没有任何可移植的 hypot 能复现 Apple libm（`arm-pow.ts` 对同一边界有先例）。`sfdp.241_0` 在引擎轨道层面通过
 `accepted-divergences-engines.json` 被接受。`sfdp.42` **不**属于这个类别：它的注册表条目是 A1（`comparisons/sfdp-42.md`），而上面的探测并没有解释它。
 
-**fdp** 的 xdot 引擎轨道（`parity-fdp.json`，原生 `dot -Kfdp -Txdot`，
-±0.5）在同一个图 `241_0` 上暴露出*相同*的 CDT 共圆平局：注入参照程序精确的路由前位置后，残余是 11 处数值型 `unfilled_bezier` 差异，局限于一条边（`0->1#0`，maxΔ 3.39pt）。由于节点位置经注入后完全相同，差异出现在下游的 pathplan 多重样条通道中——与 circo/sfdp 的 `241_0` 是同一个 libm 1 ULP 内切圆平局（上文精确有理数内切圆 185/185；11 处差异不受 `f66ac638` 影响——未经注入重新验证）。能用的手段已经都用上了（`src/pathplan/triang.ts` 的 fmadd，`src/pathplan/route.ts:198` 的
-`Math.hypot`）；该平局被视为不可约。通过 `accepted-divergences-engines.json` 的
-`fdp.241_0` 被接受。相比之下，fdp 的 `2095` 是 **A1-drift，而不是 A9**：注入那个唯一的空名称节点（在归因注入器被修复为匹配 `""` 名称的节点之后），其残余归零——此前的“A9 尾部”是未被注入的空节点牵连了它的关联边。sfdp 的 `2095` 接受记录是同一个盲区——使用修复后的注入器对 sfdp 重新生成归因（2026-07-22），确认它同样注入后为 0，其接受记录已被移除（见上面的 `2095 reclassified` 说明）。
+**fdp** 的 xdot 引擎轨道（`parity-fdp.json`，原生 `dot -Kfdp -Txdot`，±0.5）此前把同一个图 `241_0` 显示为属于这一类别：注入参照程序精确的路由前位置后，一条边（`0->1#0`，maxΔ 3.39pt）上仍残留 11 处数值型 `unfilled_bezier` 差异，并被归因于共圆内切圆平局。该归因是错误的。`fix(T9): start swapped cdt faces at the new diagonal as gts does`（2026-10-22）发现了移植版一侧的误移植：GTS 的 `swap_if_in_circle` 把它的两个新面构造为 `gts_face_new(en, e5, e2)` 和 `gts_face_new(en, e3, e4)`（`cdt.c:509-511`），而 `gts_triangle_vertices` 按边的顺序读取一个面，因此原生版本将它们列为 (v3, v4, v2) 和 (v4, v3, v1)；移植版把两者都存成了旋转一位的顺序，多重样条路由器的 `triCenter` 按该顺序对顶点求和。顺序修正后，fdp `241_0` 在每条轨道上都与原生版本一致（xdot 通过，json conformant，plain 与 stderr 相同），其在 `accepted-divergences-engines.json` 和 `accepted-divergences-json.json` 中的条目已退役。相比之下，fdp 的 `2095` 是 **A1-drift，而不是 A9**：注入那个唯一的空名称节点（在归因注入器被修复为匹配 `""` 名称的节点之后），其残余归零——此前的“A9 尾部”是未被注入的空节点牵连了它的关联边。sfdp 的 `2095` 接受记录是同一个盲区——使用修复后的注入器对 sfdp 重新生成归因（2026-07-22），确认它同样注入后为 0，其接受记录已被移除（见上面的 `2095 reclassified` 说明）。
+
+**sfdp `2168_3` — `poly_init` 中 Apple libm `sin` 的 1 ULP 差异（已关闭，不可约）。** **受影响：** sfdp `2168_3`（仅 stderr：移植版多输出一条 `Pshortestpath` 警告；xdot 引擎轨道遍历通过，因为双方都回退为直线）。 **差异：** `shapes.c:2329` 计算 `temp = GAP / sin(gamma)`（移植版 `src/common/poly-sizing.ts:379`）；当 gamma = 1.0092081171617377 时，macOS libm 返回 0.8464104077694533，V8 返回正确舍入的 0.8464104077694532（1 ULP）。该差异以路由器点 10/18、y 28.391789367446776 对 …78 的形式进入 multispline 路由器（`neatosplines.c:428,444` → `multispline.c:598`），共圆梯形（点 9、10、15、16）随后以另一条 Delaunay 对角线三角化，使边 1 的走廊多边形不同，`Pshortestpath` 在移植版的多边形上失败。 **接受理由：** 仅注入该 `sin` 值的对照实验使 stderr、三角形、多边形和 xdot 与原生一致（仅 `atan2` 不行）；sfdp 位置逐位相等，incircle 谓词、pathplan、`makeObstacle` 的 hypot 和轮廓环运算顺序均已排除。要匹配需要 Apple `sin` 的逐位精确模型，其源码未公开，可移植代码无法复现（与 `arm-pow.ts` 先例同一边界）。 **证据：** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md)，2026-10-20 T13 行。
 
 ---
 

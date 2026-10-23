@@ -346,3 +346,36 @@ describe('fedBytes: the length C passes to XML_Parse', () => {
     expect(fedBytes('\u00e9', true)).toBe(2);
   });
 });
+
+describe('text references expat rejects as an invalid token', () => {
+  // [label, line, context]: native dot 16.1.0's stderr for each
+  const BAD: ReadonlyArray<readonly [string, number, string]> = [
+    ['p&q', 1, 'p&q</HTML>'],
+    ['p & q', 1, '<HTML>p & q'],
+    ['&#;', 1, '<HTML>&#;'],
+    ['&#x;', 1, '<HTML>&#x;'],
+    ['&#X41;', 1, '<HTML>&#X41;'],
+    ['&#65q', 1, '<HTML>&#65q'],
+    ['ab&#65q', 1, '<HTML>ab&#65q'],
+    ['&#xG;', 1, '<HTML>&#xG;'],
+    ['a&#x41g;', 1, '<HTML>a&#x41g;'],
+    ['a&b&amp;c', 1, '<HTML>a&b&amp;c'],
+    ['&amp', 1, '&amp</HTML>'],
+    ['x&#65', 1, 'x&#65</HTML>'],
+    ['l1\nl2 &#; l3\nl4', 2, '<HTML>l1\nl2 &#; l3\nl4'],
+    ['l1\nl2 &#65q\n\nl4', 2, '<HTML>l1\nl2 &#65q\n\nl4'],
+    ['<table>\n<tr><td>ok\nfoo & bar\nbaz</td></tr></table>', 3, '<td>ok\nfoo & bar\nbaz'],
+  ];
+
+  it.each(BAD)('%j fails at line %i', (label, line, context) => {
+    expect(lex(label).error).toEqual([`Error: ${INVALID_TOKEN} in line ${line} `, `... ${context} ...`]);
+  });
+
+  it('keeps an undefined entity ahead of a later bare &', () => {
+    expect(lex('&a;&').error?.[0]).toBe('Error: undefined entity in line 1 ');
+  });
+
+  it.each(['&amp;', '&#65;', '&#x41;', '&sup2;', '&apos;', 'a &lt; b &#38; c'])('accepts %j', (label) => {
+    expect(lex(label).error).toBeUndefined();
+  });
+});
