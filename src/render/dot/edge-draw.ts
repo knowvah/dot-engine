@@ -23,7 +23,7 @@ import { resolveRenderColor } from '../color-resolve.js';
 import { taper, taperfun } from '../../common/taper.js';
 import { orthoRoundedRadius } from '../svg-helpers.js';
 import { orthoRoundedPolylines } from '../svg-edge-ortho-radius.js';
-import { parseSegs } from '../../common/multicolor.js';
+import { edgeSegsContext, parseSegs, parseSegsSilent } from '../../common/multicolor.js';
 import { splitSplineByColor } from '../svg-edge-split.js';
 import { buildOffsetLists, advanceTmpList } from '../../common/edge-offset.js';
 import { xdotFillColor, xdotNum, xdotPenColor, xdotPoint, xdotPoints, xdotStrOp, trimFixed3 } from './xdot-ops.js';
@@ -147,11 +147,12 @@ export abstract class EdgeDrawBase extends DotWriterBase {
    */
   protected emitSplitSpline(
     bzList: (Bezier | undefined)[],
+    e: Edge,
     colorAttr: string,
     edraw: string[],
     job: RenderJob,
   ): { firstColor: string; endColor: string } {
-    const segs = parseSegs(colorAttr).segs;
+    const segs = parseSegs(colorAttr, edgeSegsContext(e)).segs;
     const firstColor = segs[0]?.color ?? DEFAULT_COLOR;
     let endColor = firstColor;
     for (const bz of bzList) {
@@ -183,7 +184,7 @@ export abstract class EdgeDrawBase extends DotWriterBase {
         ? buildOffsetLists(bz.list, (2 + numc) / 2)
         : { offlist: [] as Point[], tmplist: [] as Point[] },
     );
-    const colors = parseSegs(colorAttr).segs.map((s) => s.color ?? DEFAULT_COLOR);
+    const colors = parseSegsSilent(colorAttr).segs.map((s) => s.color ?? DEFAULT_COLOR);
     for (const color of colors) {
       const pen = xdotPenColor(resolveRenderColor(color));
       for (const sd of segData) {

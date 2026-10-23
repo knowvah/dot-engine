@@ -27,7 +27,7 @@ import { buildOffsetLists, advanceTmpList } from '../common/edge-offset.js';
 import { transformPoint } from '../gvc/device.js';
 import { emitBezierPath, emitDash, emitPenWidth } from './svg-helpers.js';
 import { resolveRenderColor, colorPaint, colorOpacity } from './color-resolve.js';
-import { parseSegs } from '../common/multicolor.js';
+import { parseSegsSilent } from '../common/multicolor.js';
 
 const PENWIDTH_NORMAL = 1.0;
 const PENWIDTH_THRESHOLD = 0.005;
@@ -114,7 +114,7 @@ export function emitParallelEdgePaths(
   // parseSegs strips any ';weight', so the semicolon syntax (which C routes
   // to split-along-length multicolor — a follow-up) at least yields valid
   // parallel colors instead of an invalid "red;0.5" stroke.
-  const colors = parseSegs(colorList).segs.map((s) => s.color ?? DEFAULT_COLOR);
+  const colors = parseSegsSilent(colorList).segs.map((s) => s.color ?? DEFAULT_COLOR);
   emitColorPasses(segData, colors, job);
   return {
     headColor: colors[0] ?? DEFAULT_COLOR,

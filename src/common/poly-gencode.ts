@@ -96,6 +96,7 @@ interface RingCtx {
   job: RenderJob;
   style: PolyStyleFlags;
   fillcolor: string;
+  nodeName: string; // agnameof(n): the `in node %s` AGPREV of a parseSegs rv > 1
   shape: number;
   diagonals: boolean;
   rounded: boolean;
@@ -114,7 +115,7 @@ function renderEllipseRing(
     const pf = ring.map(
       (v) => transformPoint({ x: v.x + coord.x, y: v.y + coord.y }, ctx.job),
     );
-    wedgedEllipse(ctx.job, pf, ctx.fillcolor, ctx.renderer);
+    wedgedEllipse(ctx.job, pf, ctx.fillcolor, ctx.renderer, () => `in node ${ctx.nodeName}`);
     renderEllipse(ring, coord, ctx.renderer, ctx.job, false); // boundary unfilled
   } else {
     renderEllipse(ring, coord, ctx.renderer, ctx.job, filled);
@@ -124,14 +125,12 @@ function renderEllipseRing(
 }
 
 /**
- * Render one polygon periphery ring, dispatching to stripedBox when
- * style.striped + j==0.
+ * Striped j===0 ring: the multicolor box plus an unfilled boundary polygon.
  * @see lib/common/shapes.c:poly_gencode :3037-3043
  */
-/** Striped j===0 ring: the multicolor box plus an unfilled boundary polygon. */
 function renderStripedRing(ring: Point[], coord: Point, ctx: RingCtx): void {
   const af = ring.map((v) => transformPoint({ x: v.x + coord.x, y: v.y + coord.y }, ctx.job));
-  stripedBox(ctx.job, af, ctx.fillcolor, true, ctx.renderer);
+  stripedBox(ctx.job, af, ctx.fillcolor, true, ctx.renderer, () => `in node ${ctx.nodeName}`);
   renderPolygon(ring, coord, ctx.renderer, ctx.job, false); // boundary unfilled
 }
 
@@ -446,6 +445,7 @@ function resolveNodeDrawCtx(job: RenderJob, n: Node): NodeDrawCtx | null {
     job,
     style: styleFlags,
     fillcolor: nodeAttr(n, n.root, 'fillcolor') ?? '',
+    nodeName: n.name,
     ...specialCornerFlags(drawPoly.option, styleFlags),
   };
   return { poly: drawPoly, coord, filled, ringCtx };
@@ -467,8 +467,7 @@ function specialCornerFlags(
 }
 
 /**
- * Render node shape (polygon/ellipse) and label.
- * Shape codefn — called from walkNodes.
+ * Render node shape (polygon/ellipse) and label; shape codefn, from walkNodes.
  * @see lib/common/shapes.c:poly_gencode
  */
 export function polyGencode(rawJob: unknown, rawNode: unknown): void {

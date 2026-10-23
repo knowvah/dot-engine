@@ -124,7 +124,10 @@ function stripedClusterColors(sg: Graph): string[] {
   let fill = clusterAttr(sg, 'fillcolor') || color;
   const bg = clusterAttr(sg, 'bgcolor') ?? '';
   if ((!flags.filled || fill === '') && bg !== '') fill = bg;
-  const { segs, error } = parseSegs(fill === '' ? 'lightgrey' : fill);
+  const { segs, error } = parseSegs(
+    fill === '' ? 'lightgrey' : fill,
+    () => `in cluster ${sg.name}`,
+  );
   if (error === 1 || error === 2) return [];
   return segs.flatMap((seg) => (seg.color !== null && seg.t > 0 ? [seg.color] : []));
 }

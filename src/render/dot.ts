@@ -215,7 +215,7 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
       // color segment, split along the spline's arc length. Takes precedence
       // over tapered / `:` parallel, matching C's `if (numsemi && numc)` order.
       // @see lib/common/emit.c:2389 multicolor
-      const c = this.emitSplitSpline(spl.list as (Bezier | undefined)[], colorAttr, edraw, job);
+      const c = this.emitSplitSpline(spl.list as (Bezier | undefined)[], e, colorAttr, edraw, job);
       tailArrowColor = c.firstColor;
       headArrowColor = c.endColor;
     } else if (edgeIsTapered(e)) {

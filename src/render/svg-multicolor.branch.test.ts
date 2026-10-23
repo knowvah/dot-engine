@@ -7,12 +7,19 @@
 // Uses the real XdotRenderer (implements RendererPlugin) as the render
 // target so bezier()/polygon() calls have a genuine sink to write into.
 
-import { describe, it, expect } from "vitest";
+import { beforeEach, describe, it, expect, vi } from "vitest";
+import { resetRenderState } from "../common/render-state.js";
 import { ellipticWedge, wedgedEllipse, stripedBox } from "./svg-multicolor.js";
 import { XdotRenderer } from "./dot.js";
 import { RenderJob, createObjState, ObjType } from "../gvc/job.js";
 import type { TextMeasurer } from "../common/textmeasure.js";
 import { Graph } from "../model/graph.js";
+
+// parseSegs prints once per process: restart the flag, keep stderr quiet.
+beforeEach(() => {
+  resetRenderState();
+  vi.spyOn(console, "error").mockImplementation(() => undefined);
+});
 
 const measurer: TextMeasurer = { measure: () => ({ w: 0, h: 0 }) };
 
