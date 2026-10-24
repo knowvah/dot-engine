@@ -121,7 +121,7 @@ of them land.
 | [4](batch-4/overview.md) | T22 constrained majorization (43) · T23 missing images 60 · T24 colorscheme transparent 63 · T25 HTML gradient parseSegs 64 | parallel worktrees | [x] |
 | [5](batch-5/overview.md) | T26 `mode=hier` wiring (43) · T27 shared HTML line builder 67 | parallel worktrees | [x] |
 | [6](batch-6/overview.md) | T28 241_0 sfdp drift (53) | single, open write-set | [x] |
-| [7](batch-7/overview.md) | T29 final verification, walk refresh (70, 71), re-sign stop | orchestrator | [ ] |
+| [7](batch-7/overview.md) | T29 final verification, walk refresh (70, 71), re-sign stop | orchestrator | [x] |
 
 ## Documents
 

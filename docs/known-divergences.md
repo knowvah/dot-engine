@@ -216,8 +216,8 @@ individually attributed against graphviz 16.1.0: the injection harness
 pre-routing `ND_pos` into the port and re-compares, and every current
 diverged id is `drift-exonerated` (the port's routing and emission
 reproduce the oracle exactly once the solver drift is removed) except two.
-Two are separately accepted per-id residuals: sfdp `241_0`'s CDT residual
-and sfdp `2556`'s NaN layout. fdp `241_0` passes since `fix(T9): start
+Two are separately accepted per-id residuals: sfdp `241_0`'s host-libm `pow`
+drift (re-diagnosed by T28) and sfdp `2556`'s NaN layout. fdp `241_0` passes since `fix(T9): start
 swapped cdt faces at the new diagonal as gts does` (see the fdp paragraph
 under A9). fdp `2471` and sfdp `2371`
 used to keep edge-label positions (`lp`) that differed after injection, i.e.
@@ -907,13 +907,13 @@ this class had attributed to the cocircular tie below — went **conformant**
 drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0`
 went **conformant** later, after a second port-side fix to the triangulation
 (face vertex order after an edge swap; see the fdp paragraph below). circo
-and sfdp `241_0` still diverge with their residuals unchanged or reduced; their
-attribution to the tie below predates `f66ac638` and has **not been re-verified
-by position injection** since that fix showed the same attribution wrong for
-twopi/neato.
+`241_0` went **conformant** with `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: V8's `Math.sin(9π/8)` is 1 ULP off the correctly
+rounded libm value, which moved one corner of every ellipse obstacle and
+flipped the corridor (acceptance retired). sfdp `241_0` was re-diagnosed by the
+same task and is now A1 (see the sfdp paragraph below).
 
-**Affected:** `241_0` (circo Δ≈0.2 via the corridor flip on edge `1->2`; sfdp
-`241_0` on the engine track below); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Affected:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 edge-label position diffs each — the libm 1-ULP arises in
 `poly_init`'s unit-vertex trig (`hypot`/`atan2`/`sin`), puts one node's
 computed height a ULP past the min-size clamp the oracle lands on
@@ -955,7 +955,8 @@ in `polylineMidpoint` — see the b29-family paragraph below) and circo `241_0` 
 draw-op diffs, Δ≈0.2pt on edge `1->2`'s routed bezier — the same
 CDT-diagonal corridor flip; decision journal, 2026-07-10 "CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed" entry). Accepted at the engine-track level via
+filed" entry; **retired 2026-10-23** — conformant since the port takes the
+host libm `cos`/`sin` for the obstacle 8-gon, see the 16.1 re-baseline above). Accepted at the engine-track level via
 `test/corpus/accepted-divergences-engines.json`, joined into
 `PARITY-twopi.md`/`PARITY-circo.md` by `parity-report.ts` — the same join
 `accepted.ts` performs for the dot-track `PARITY-dot.md`.
@@ -1083,22 +1084,21 @@ that exact tie; node positions and boxes are otherwise bit-identical to the
 oracle; **retired 2026-10-18** — it is conformant since the port's DIST2
 takes clang's fused form, which breaks that exact tie as C does).
 
-**sfdp engine track — edge FP-tie (`241_0`).**
+**sfdp engine track — `241_0` (reclassified A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> The sfdp xdot engine track (`parity-sfdp.json`,
-native `dot -Ksfdp -Txdot`, ±0.5) surfaces the CDT cocircular incircle tie once
-exact native pre-routing positions are injected (so the divergence is NOT
-iterative drift — see the A1-drift class — but a discrete predicate tie):
+native `dot -Ksfdp -Txdot`, ±0.5) listed `241_0` here as the CDT cocircular
+incircle tie. `fix(T28)` re-diagnosed it with an instrumented native sfdp:
 
-- `241_0` — attributed to the CDT cocircular incircle tie (the multispline
-  corridor; not re-verified after `f66ac638`, see the 16.1 re-baseline above).
-  The residual is a **segment-count flip**: 7 draw-op diffs on edge 1->2,
-  `ptCount 8 vs 20` (20 diffs before `f66ac638`) — the corridor succeeds with
-  an N-pt spline where the native build falls back to a shorter plain route
-  (or vice versa), as in the circo `241_0` entry above. The port already emulates the arm64
-  `fmadd` contraction in the incircle/`ccw` predicate (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) and uses robust-incircle Delaunay; the residual is the
-  V8-vs-Apple-libm `sin`/`hypot` 1-ULP in the predicate input that no portable
-  code reproduces.
+- `241_0` — 7 draw-op diffs on edge 1->2 (`ptCount 8 vs 20`). The layout
+  drifts from the first repulsive-force term where macOS libm `pow(dist, 2)`
+  returns 1 ULP below correct rounding (coarsest level, iteration 22; see the
+  host-libm `pow` entry under the layout-fidelity gaps), and adaptive cooling
+  amplifies it into knife-edge positions on which edge 1->2 routes
+  differently. Injecting native `pow` values makes every trace line and the
+  final xdot identical. The routing residual seen with injected positions was
+  partly an injection artifact and partly V8's `Math.sin(9π/8)` in the
+  obstacle 8-gon, which the port now takes from the host libm (the fix that
+  also made circo `241_0` conformant). What remains is A1 drift.
 
 > **sfdp `42` reclassified A9 → A1 drift (graphviz 16.1 sync).** It was listed
 > here as a CDT/libm incircle tie. The mission found otherwise
@@ -1127,8 +1127,8 @@ system C `hypot` and comparing to Node `Math.hypot` on representative
 flat-edge deviation inputs shows a 1-ULP disagreement on 2 of 6 (Δ 7.1e-15 and
 5.7e-14) — the split-threshold knife-edge that flips the subdivision count.
 Irreducible: no portable hypot reproduces Apple libm (the `arm-pow.ts`
-precedent for the same boundary). `sfdp.241_0` is accepted at the engine-track
-level via `accepted-divergences-engines.json`. `sfdp.42` is **not** part of this
+precedent for the same boundary). `sfdp.241_0`, once accepted under this class,
+is A1 drift since T28 (see above). `sfdp.42` is **not** part of this
 class: its registry entry is A1 (`comparisons/sfdp-42.md`), and the probe above
 did not explain it.
 

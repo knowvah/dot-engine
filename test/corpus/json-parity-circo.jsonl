@@ -402,7 +402,6 @@
 {"id":"1408","path":"1408.dot","size":544,"verdict":"conformant"}
 {"id":"1425_1","path":"1425_1.dot","size":544,"verdict":"conformant"}
 {"id":"graphs-nul_nul","path":"graphs/nul_nul.gv","size":576,"verdict":"conformant"}
-{"id":"241_0","path":"241_0.dot","size":578,"verdict":"accepted","diffCount":41,"firstDiff":"edge:1->2#0/_draw_/op[1].b[1]","maxDelta":118.24000000000001,"maxDeltaPath":"edge:1->2#0/_draw_/op[1].b[13]"}
 {"id":"share-labelclust-ndd","path":"share/labelclust-ndd.gv","size":586,"verdict":"conformant"}
 {"id":"graphs-inv_nul","path":"graphs/inv_nul.gv","size":588,"verdict":"conformant"}
 {"id":"windows-labelclust-ndd","path":"windows/labelclust-ndd.gv","size":586,"verdict":"conformant"}
@@ -926,3 +925,4 @@
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"diverged","diffCount":533,"firstDiff":"edge:100476->100486#0/_draw_/op[1].b[1]","maxDelta":0.41015625,"maxDeltaPath":"edge:3413->3407#0/_draw_/op[1].b[2]"}
 {"id":"2784","path":"2784.dot","size":78,"verdict":"accepted","errMsg":"Map maximum size exceeded"}
 {"id":"1855","path":"1855.dot","size":1335,"verdict":"accepted","diffCount":599,"firstDiff":"edge:10->1#0/_draw_/op[1].b[3]","maxDelta":0.7109999999999985,"maxDeltaPath":"edge:11->1#0/pos[5]"}
+{"id":"241_0","path":"241_0.dot","size":578,"verdict":"conformant"}

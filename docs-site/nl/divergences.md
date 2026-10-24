@@ -1,5 +1,5 @@
 ---
-sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -222,7 +222,7 @@ afzonderlijk toegeschreven ten opzichte van graphviz 16.1.0: het injectietesthar
 orakel in de port in en vergelijkt opnieuw, en elk huidig afwijkend id is
 `drift-exonerated` (routering en uitvoer van de port reproduceren het orakel exact zodra
 de solverdrift is weggenomen), op twee na. Twee zijn afzonderlijk geaccepteerde
-restgevallen per id: het CDT-restverschil van sfdp `241_0`, en de
+restgevallen per id: de host-libm-`pow`-drift van sfdp `241_0` (opnieuw gediagnosticeerd door T28), en de
 NaN-lay-out van sfdp `2556`. fdp `241_0` slaagt sinds
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` (zie de fdp-alinea
 onder A9). fdp `2471` en sfdp `2371` hielden na injectie eerder
@@ -899,14 +899,13 @@ deze klasse aan de cocirculaire gelijkstand hieronder waren toegeschreven — we
 (acceptaties ingetrokken), en sfdp `42` bleek helemaal geen gelijkstand te hebben (het is A1-
 drift, zie [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp-`241_0` werd later
 **conformant**, na een tweede port-zijdige fix aan de triangulatie (volgorde van de
-hoekpunten van vlakken na een kantwissel; zie de fdp-alinea hieronder). circo- en
-sfdp-`241_0` wijken nog af met onveranderde of kleinere restverschillen; hun
-toeschrijving aan de gelijkstand hieronder dateert van vóór `f66ac638` en is sindsdien **niet opnieuw geverifieerd
-door positie-injectie**, terwijl diezelfde toeschrijving voor
-twopi/neato onjuist bleek.
+hoekpunten van vlakken na een kantwissel; zie de fdp-alinea hieronder). circo-`241_0` werd **conformant** met `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: V8's `Math.sin(9π/8)` zit 1 ULP naast de correct afgeronde
+libm-waarde, wat één hoek van elk ellipsobstakel verschoof en de corridor liet omslaan
+(acceptatie ingetrokken). sfdp-`241_0` werd door dezelfde taak opnieuw gediagnosticeerd en
+is nu A1 (zie de sfdp-alinea hieronder).
 
-**Getroffen:** `241_0` (circo Δ≈0.2 via de corridoromslag op kant `1->2`; sfdp
-`241_0` op het enginespoor hieronder); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Getroffen:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 elk 1–2 verschillen in de positie van kantlabels — de libm-1-ULP ontstaat in
 de eenheidshoekpunt-trigonometrie van `poly_init` (`hypot`/`atan2`/`sin`), zet de
 berekende hoogte van één knoop een ULP voorbij de minimumgrootte-begrenzing waar het orakel
@@ -948,7 +947,8 @@ in `polylineMidpoint` — zie de alinea over de b29-familie hieronder) en circo 
 tekenbewerkingsverschillen, Δ≈0.2pt op de gerouteerde bezier van kant `1->2` — dezelfde
 omslag van de CDT-diagonaal in de corridor; beslissingsjournaal, 2026-07-10, vermelding „CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed”). Geaccepteerd op enginespoor-niveau via
+filed”; **ingetrokken 2026-10-23** — conformant sinds de port de host-libm-`cos`/`sin`
+neemt voor de 8-hoek van het obstakel, zie de herijking op 16.1 hierboven). Geaccepteerd op enginespoor-niveau via
 `test/corpus/accepted-divergences-engines.json`, door `parity-report.ts` samengevoegd in
 `PARITY-twopi.md`/`PARITY-circo.md` — dezelfde samenvoeging die
 `accepted.ts` uitvoert voor het dot-spoor `PARITY-dot.md`.
@@ -1074,22 +1074,22 @@ waarde 18.0, en de dyna-kop-portselectie van `closestSide` slaat TOP/BOTTOM om b
 die exacte gelijkstand; knoopposities en boxen zijn verder bit-identiek aan het
 orakel; **ingetrokken 2026-10-18** — conform sinds de DIST2 van de port de gefuseerde vorm van clang gebruikt, die die exacte gelijkstand beslist zoals C).
 
-**sfdp-enginespoor — FP-gelijkstand bij een kant (`241_0`).**
+**sfdp-enginespoor — `241_0` (geherclassificeerd A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> Het xdot-enginespoor van sfdp (`parity-sfdp.json`,
-native `dot -Ksfdp -Txdot`, ±0.5) legt de cocirculaire CDT-incircle-gelijkstand bloot zodra
-exacte native pre-routeringsposities worden geïnjecteerd (de afwijking is dus NIET
-iteratieve drift — zie de A1-drift-klasse — maar een discrete predicaatgelijkstand):
+native `dot -Ksfdp -Txdot`, ±0.5) vermeldde `241_0` hier als de cocirculaire
+CDT-incircle-gelijkstand. `fix(T28)` diagnosticeerde het opnieuw met een geïnstrumenteerde
+native sfdp:
 
-- `241_0` — toegeschreven aan de cocirculaire CDT-incircle-gelijkstand (de multispline-
-  corridor; niet opnieuw geverifieerd na `f66ac638`, zie de herijking op 16.1 hierboven).
-  Het restverschil is een **omslag van het aantal segmenten**: 7 tekenbewerkingsverschillen op kant 1->2,
-  `ptCount 8 vs 20` (20 verschillen vóór `f66ac638`) — de corridor slaagt met
-  een spline van N punten terwijl de native build terugvalt op een kortere gewone route
-  (of omgekeerd), zoals bij de circo-vermelding `241_0` hierboven. De port emuleert de arm64-
-  `fmadd`-samenvoeging in het incircle-/`ccw`-predicaat al (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) en gebruikt robuuste-incircle-Delaunay; het restverschil is de
-  1-ULP van V8 vs. Apple-libm in `sin`/`hypot` in de predicaatinvoer, die geen enkele draagbare
-  code reproduceert.
+- `241_0` — 7 tekenbewerkingsverschillen op kant 1->2 (`ptCount 8 vs 20`). De lay-out driftt
+  weg vanaf de eerste afstotende-krachtterm, waar de macOS-libm `pow(dist, 2)` 1 ULP onder
+  de correcte afronding teruggeeft (grofste niveau, iteratie 22; zie de vermelding over de
+  host-libm-`pow` onder de hiaten in de lay-outgetrouwheid), en adaptieve koeling versterkt
+  dat tot posities op het mesrandje waarop kant 1->2 anders wordt gerouteerd. Het
+  injecteren van native `pow`-waarden maakt elke tracerregel en de uiteindelijke xdot
+  identiek. Het routeringsrestverschil dat met geïnjecteerde posities zichtbaar was, was
+  deels een injectieartefact en deels V8's `Math.sin(9π/8)` in de 8-hoek van het obstakel,
+  die de port nu uit de host-libm neemt (de fix die ook circo `241_0` conformant maakte).
+  Wat overblijft is A1-drift.
 
 > **sfdp `42` geherclassificeerd van A9 → A1-drift (graphviz 16.1-sync).** Het stond
 > hier vermeld als een CDT-/libm-incircle-gelijkstand. De missie vond iets anders
@@ -1118,8 +1118,8 @@ C-`hypot` van het systeem en vergelijken met Node-`Math.hypot` op representatiev
 afwijkingsinvoer voor platte kanten toont een 1-ULP-verschil bij 2 van 6 (Δ 7.1e-15 en
 5.7e-14) — de mesrand van de splitsdrempel die het aantal onderverdelingen laat omslaan.
 Onherleidbaar: geen enkele draagbare hypot reproduceert Apple-libm (het precedent `arm-pow.ts`
-voor dezelfde grens). `sfdp.241_0` is op enginespoor-niveau geaccepteerd via
-`accepted-divergences-engines.json`. `sfdp.42` maakt **geen** deel uit van deze
+voor dezelfde grens). `sfdp.241_0`, ooit onder deze klasse geaccepteerd,
+is sinds T28 A1-drift (zie hierboven). `sfdp.42` maakt **geen** deel uit van deze
 klasse: zijn registervermelding is A1 (`comparisons/sfdp-42.md`), en de sonde hierboven
 verklaarde die niet.
 

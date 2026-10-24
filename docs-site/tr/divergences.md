@@ -1,5 +1,5 @@
 ---
-sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -219,7 +219,7 @@ başlatma birleştirmesi ve `setEdgeType` makro-işlev düzeltmesidir.)
 bağlanmıştır: enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin yönlendirme
 öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, iki istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
 üretimi kâhini tam olarak yeniden üretir). İkisi ayrıca kabul edilmiş kimlik başına artıklardır:
-sfdp `241_0`'ın CDT artığı ile sfdp `2556`'nın NaN yerleşimi. fdp `241_0`,
+sfdp `241_0`'ın ana makine libm `pow` sürüklenmesi (T28 tarafından yeniden teşhis edildi) ile sfdp `2556`'nın NaN yerleşimi. fdp `241_0`,
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` değişikliğinden beri
 geçer (bkz. A9 altındaki fdp paragrafı). fdp `2471` ve sfdp `2371` önceden enjeksiyondan sonra farklı kalan kenar etiketi
 konumlarını (`lp`) koruyordu, yani xlabel yerleştirici farklı bir aday seçiyordu.
@@ -880,13 +880,13 @@ beraberliğe atfettiği twopi ve neato `241_0` **conformant**'a döndü (kabulle
 emekli edildi) ve sfdp `42`'nin hiç beraberliği olmadığı ortaya çıktı (A1
 sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` ise
 sonradan, üçgenlemede portun ikinci bir düzeltmesinden sonra (bir kenar takasından sonra yüz
-köşe sırası; bkz. aşağıdaki fdp paragrafı) **conformant**'a döndü. circo
-ve sfdp `241_0` hâlâ ayrışır; artıkları değişmemiş ya da azalmıştır; aşağıdaki
-beraberliğe atıfları `f66ac638`'ten öncedir ve aynı atfın twopi/neato için yanlış
-olduğunu gösteren o düzeltmeden beri **konum enjeksiyonuyla yeniden doğrulanmamıştır**.
+köşe sırası; bkz. aşağıdaki fdp paragrafı) **conformant**'a döndü. circo `241_0`, `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon` ile **conformant**'a döndü: V8'in `Math.sin(9π/8)` değeri doğru
+yuvarlanmış libm değerinden 1 ULP uzaktır; bu, her elips engelinin bir köşesini kaydırıp
+koridoru çeviriyordu (kabul emekli edildi). sfdp `241_0` aynı görev tarafından yeniden
+teşhis edildi ve artık A1'dir (bkz. aşağıdaki sfdp paragrafı).
 
-**Etkilenenler:** `241_0` (circo Δ≈0.2, `1->2` kenarındaki koridor çevrilmesiyle;
-aşağıdaki motor hattında sfdp `241_0`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi, her
+**Etkilenenler:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi, her
 birinde 1–2 kenar etiketi konum farkı — libm 1-ULP'si `poly_init`'in birim köşe
 trigonometrisinde (`hypot`/`atan2`/`sin`) doğar, bir düğümün hesaplanan yüksekliğini
 kâhinin tam oturduğu asgari boyut kıskacının bir ULP ötesine koyar ve xlabel R-ağacı
@@ -925,7 +925,9 @@ ULP'si; bu girdi altında başlangıçta kabul edilen `2343`, `share-b29` ve `wi
 aşağıdaki b29 ailesi paragrafına bakın) ve circo `241_0` (41 çizim işlemi farkı,
 `1->2` kenarının yönlendirilmiş bezier'inde Δ≈0.2pt — aynı CDT köşegeni koridor
 çevrilmesi; karar günlüğü, 2026-07-10 “CDT rewritten as faithful GTS port; 2168_3
-outline-ring obstacle; 56/osage bb clobber; A9 filed” kaydı). Motor hattı düzeyinde
+outline-ring obstacle; 56/osage bb clobber; A9 filed” kaydı; **2026-10-23'te emekli edildi** — port, engelin 8 genine ana makine
+libm'inin `cos`/`sin` değerini aldığından beri conformant, bkz. yukarıdaki 16.1
+yeniden tabanlaması). Motor hattı düzeyinde
 `test/corpus/accepted-divergences-engines.json` aracılığıyla kabul edilir;
 `parity-report.ts` bunu `PARITY-twopi.md`/`PARITY-circo.md` ile birleştirir —
 `accepted.ts`'in dot hattı `PARITY-dot.md` için yaptığı birleştirmenin aynısı.
@@ -1048,23 +1050,20 @@ tam simetrik 18.0 değeri etrafında `node2.y`'yi `node8.y`'nin bir ULP üstüne
 `closestSide`'ın dyna baş portu seçimi tam o beraberlikte TOP/BOTTOM'u çevirir; düğüm
 konumları ve kutular aksi halde kâhinle bit düzeyinde özdeştir; **2026-10-18'de kaldırıldı** — portun DIST2'si clang'ın birleştirilmiş (fused) biçimini kullandığından beri uyumludur; bu biçim bu tam eşitliği C gibi çözer).
 
-**sfdp motor hattı — kenar FP beraberliği (`241_0`).**
+**sfdp motor hattı — `241_0` (A9'dan A1'e yeniden sınıflandırıldı, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> sfdp xdot motor hattı (`parity-sfdp.json`,
-yerel `dot -Ksfdp -Txdot`, ±0.5), tam yerel yönlendirme öncesi konumlar
-enjekte edildiğinde CDT eşdairesel iç çember beraberliğini ortaya çıkarır (yani
-ayrışma yinelemeli sürüklenme DEĞİL — bkz. A1-drift sınıfı — kesikli bir yüklem
-beraberliğidir):
+yerel `dot -Ksfdp -Txdot`, ±0.5), burada `241_0`'ı CDT eşdairesel iç çember beraberliği
+olarak listelemişti. `fix(T28)` bunu araçlandırılmış bir yerel sfdp ile yeniden teşhis etti:
 
-- `241_0` — CDT eşdairesel iç çember beraberliğine atfedilir (çoklu spline
-  koridoru; `f66ac638`'ten sonra yeniden doğrulanmadı, yukarıdaki 16.1 yeniden
-  tabanlamasına bakın). Artık bir **segment sayısı çevrilmesidir**: 1->2 kenarında
-  7 çizim işlemi farkı, `ptCount 8 vs 20` (`f66ac638`'ten önce 20 fark) — koridor,
-  yerel derlemenin daha kısa düz bir yola geri döndüğü yerde N noktalı bir spline ile
-  başarılı olur (veya tersi); yukarıdaki circo `241_0` kaydındaki gibi. Port, iç çember/`ccw` yükleminde arm64
-  `fmadd` birleştirmesine zaten öykünür (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) ve sağlam iç çemberli Delaunay kullanır; artık, hiçbir
-  taşınabilir kodun yeniden üretemediği yüklem girdisindeki V8-ile-Apple-libm
-  `sin`/`hypot` 1-ULP'sidir.
+- `241_0` — 1->2 kenarında 7 çizim işlemi farkı (`ptCount 8 vs 20`). Yerleşim, macOS libm'inin
+  `pow(dist, 2)` değerinin doğru yuvarlamanın 1 ULP altını döndürdüğü ilk itici kuvvet
+  teriminden itibaren sürüklenir (en kaba düzey, yineleme 22; yerleşim sadakati
+  boşlukları altındaki ana makine libm `pow` girdisine bakın) ve uyarlanır soğutma bunu,
+  1->2 kenarının farklı yönlendirildiği bıçak sırtı konumlara büyütür. Yerel `pow`
+  değerlerini enjekte etmek her iz satırını ve nihai xdot'u özdeş yapar. Enjekte edilmiş
+  konumlarla görülen yönlendirme artığı kısmen bir enjeksiyon artefaktıydı, kısmen de engelin
+  8 genindeki V8 `Math.sin(9π/8)` değeriydi; port bunu artık ana makine libm'inden alır
+  (circo `241_0`'ı da conformant yapan düzeltme). Geriye kalan A1 sürüklenmesidir.
 
 > **sfdp `42`, A9'dan A1-drift'e yeniden sınıflandırıldı (graphviz 16.1 senkronu).** Burada
 > bir CDT/libm iç çember beraberliği olarak listelenmişti. Görev farklı bir şey
@@ -1093,8 +1092,8 @@ beraberliğidir):
 derleyip temsili düz kenar sapma girdilerinde Node `Math.hypot` ile karşılaştırmak, 6
 girdiden 2'sinde 1-ULP uyuşmazlık gösterir (Δ 7.1e-15 ve 5.7e-14) — alt bölüm
 sayısını çeviren bölme eşiği bıçak sırtı. İndirgenemez: hiçbir taşınabilir hypot
-Apple libm'i yeniden üretmez (aynı sınır için `arm-pow.ts` emsali). `sfdp.241_0`, motor hattı
-düzeyinde `accepted-divergences-engines.json` aracılığıyla kabul edilir.
+Apple libm'i yeniden üretmez (aynı sınır için `arm-pow.ts` emsali). `sfdp.241_0`, bir zamanlar bu sınıf altında kabul edilmişti,
+T28'den beri A1 sürüklenmesidir (bkz. yukarısı).
 `sfdp.42` bu sınıfın parçası **değildir**: kayıt girdisi A1'dir
 (`comparisons/sfdp-42.md`) ve yukarıdaki sonda onu açıklamadı.
 

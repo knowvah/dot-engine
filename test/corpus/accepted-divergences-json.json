@@ -2246,13 +2246,6 @@
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "241_0",
-      "engine": "circo",
-      "opClass": "edge:1->2#0/_draw_/op[1].b[1]",
-      "delta": 118.24000000000001,
-      "rationale": "layout drift inherited from the circo xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "1855",
       "engine": "twopi",
       "opClass": "edge:10->1#0/_draw_/op[1].b[0]",

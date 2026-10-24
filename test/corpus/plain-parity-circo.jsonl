@@ -403,7 +403,6 @@
 {"id":"1425_1","path":"1425_1.dot","size":544,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"graphs-nul_nul","path":"graphs/nul_nul.gv","size":576,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"share-labelclust-ndd","path":"share/labelclust-ndd.gv","size":586,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
-{"id":"241_0","path":"241_0.dot","size":578,"verdict":"accepted","formats":{"plain":{"verdict":"accepted","diffCount":14,"firstDiffs":["[edge] 1->2#0/point[2].x: port=3.2757 native=3.2536","[edge] 1->2#0/point[2].y: port=2.9389 native=3.2113","[edge] 1->2#0/point[3].y: port=2.87 native=3.2973","[edge] 1->2#0/point[4].x: port=3.0064 native=2.8453","[edge] 1->2#0/point[4].y: port=2.6791 native=3.9238"]},"plain-ext":{"verdict":"accepted","diffCount":14,"firstDiffs":["[edge] 1->2#0/point[2].x: port=3.2757 native=3.2536","[edge] 1->2#0/point[2].y: port=2.9389 native=3.2113","[edge] 1->2#0/point[3].y: port=2.87 native=3.2973","[edge] 1->2#0/point[4].x: port=3.0064 native=2.8453","[edge] 1->2#0/point[4].y: port=2.6791 native=3.9238"]}}}
 {"id":"windows-labelclust-ndd","path":"windows/labelclust-ndd.gv","size":586,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"graphs-inv_nul","path":"graphs/inv_nul.gv","size":588,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"tree-doc-dotguide-tree","path":"../doc/dotguide/tree.dot","size":588,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
@@ -926,3 +925,4 @@
 {"id":"2371","path":"2371.dot","size":1705517,"verdict":"oracleError","formats":{"plain":{"verdict":"oracleError","errMsg":"oracle exit null"},"plain-ext":{"verdict":"oracleError","errMsg":"oracle exit null"}}}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"oracleError","formats":{"plain":{"verdict":"oracleError","errMsg":"oracle exit null"},"plain-ext":{"verdict":"oracleError","errMsg":"oracle exit null"}}}
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"241_0","path":"241_0.dot","size":578,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}

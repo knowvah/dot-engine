@@ -1,5 +1,5 @@
 ---
-sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -220,7 +220,7 @@ individuálně připsán vůči graphviz 16.1.0: vstřikovací harness
 vedením hran do portace a znovu porovnává, a každé aktuální rozcházející se id je
 `drift-exonerated` (vedení a emise portace přesně reprodukují orákulum, jakmile se
 drift řešiče odstraní), kromě dvou. Dva jsou samostatně akceptované zbytky po
-jednotlivých id: zbytek CDT u sfdp `241_0` a layout s NaN u sfdp `2556`. fdp `241_0`
+jednotlivých id: drift `pow` z libm hostitele u sfdp `241_0` (znovu diagnostikovaný v T28) a layout s NaN u sfdp `2556`. fdp `241_0`
 projde od `fix(T9): start swapped cdt faces at the new diagonal as gts does` (viz odstavec o fdp v A9). fdp `2471` a sfdp `2371` si dříve po vstřiknutí ponechávaly odlišné pozice
 popisků hran (`lp`), tj. umísťovač xlabel vybíral jiného kandidáta. `2471` se vyřešil,
 jakmile `dotneato_closest` v portaci začal zaokrouhlovat jako fúzované vyhodnocení de
@@ -887,14 +887,13 @@ součin v `line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) ji zrcadlil. twopi a neato `241_0` — které tato
 třída připisovala remíze kocirkulárních bodů níže — se staly **conformant**
 (akceptace vyřazeny) a u sfdp `42` se ukázalo, že žádnou remízu nemá (je to drift
-A1, viz [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` se později stal **conformant** po druhé opravě triangulace na straně portace (pořadí vrcholů stěny po výměně hrany; viz odstavec o fdp níže). circo a sfdp
-`241_0` se stále rozcházejí, jejich zbytky jsou nezměněné nebo zmenšené; jejich
-připsání remíze níže předchází `f66ac638` a od této opravy **nebylo znovu
-ověřeno vstřikováním pozic**, ačkoli tatáž oprava ukázala, že připsání bylo u
-twopi/neato chybné.
+A1, viz [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` se později stal **conformant** po druhé opravě triangulace na straně portace (pořadí vrcholů stěny po výměně hrany; viz odstavec o fdp níže). circo `241_0` se stal **conformant** s `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: `Math.sin(9π/8)` ve V8 je o 1 ULP vedle správně zaokrouhlené
+hodnoty z libm, což posunulo jeden roh každé eliptické překážky a překlopilo koridor
+(akceptace vyřazena). sfdp `241_0` byl touto samou úlohou znovu diagnostikován a nyní
+je A1 (viz odstavec o sfdp níže).
 
-**Dotčeno:** `241_0` (circo Δ≈0.2 přes překlopení koridoru na hraně `1->2`; sfdp
-`241_0` na stopě modulu níže); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Dotčeno:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 vždy 1–2 rozdíly v pozici popisků hran — 1 ULP z libm vzniká v
 goniometrii jednotkových vrcholů v `poly_init` (`hypot`/`atan2`/`sin`), posune
 vypočtenou výšku jednoho uzlu o ULP za mez minimální velikosti, na které
@@ -935,7 +934,8 @@ v `polylineMidpoint` — viz odstavec o rodině b29 níže) a circo `241_0` (41
 rozdílů kreslicích operací, Δ≈0.2pt na vedeném beziéru hrany `1->2` — totéž
 překlopení koridoru podle úhlopříčky CDT; decision journal, 2026-07-10, záznam „CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed“). Akceptováno na úrovni stopy modulu přes
+filed“; **vyřazeno 2026-10-23** — conformant, protože portace bere `cos`/`sin` z libm
+hostitele pro 8úhelník překážky, viz nové základní měření 16.1 výše). Akceptováno na úrovni stopy modulu přes
 `test/corpus/accepted-divergences-engines.json`, připojeno do
 `PARITY-twopi.md`/`PARITY-circo.md` pomocí `parity-report.ts` — stejné připojení,
 jaké provádí `accepted.ts` pro `PARITY-dot.md` na stopě dot.
@@ -1061,22 +1061,20 @@ hodnoty 18.0 a výběr dyna portu hlavy v `closestSide` překlopí TOP/BOTTOM na
 této přesné remíze; pozice uzlů a boxy jsou jinak bitově identické s
 orákulem; **vyřazeno 2026-10-18** — shoduje se, protože DIST2 v portaci nyní používá fúzovaný tvar z clangu, který tuto přesnou remízu rozhoduje stejně jako C).
 
-**Stopa modulu sfdp — FP remíza hrany (`241_0`).**
+**Stopa modulu sfdp — `241_0` (překlasifikováno A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> Xdot stopa modulu sfdp (`parity-sfdp.json`,
-nativní `dot -Ksfdp -Txdot`, ±0.5) odhaluje remízu incircle kocirkulárních bodů v CDT, jakmile
-se vstříknou přesné nativní pozice před vedením hran (takže odchylka NENÍ
-iterativní drift — viz třída A1-drift — ale diskrétní remíza predikátu):
+nativní `dot -Ksfdp -Txdot`, ±0.5) zde vedla `241_0` jako remízu incircle kocirkulárních
+bodů v CDT. `fix(T28)` jej znovu diagnostikoval pomocí instrumentovaného nativního sfdp:
 
-- `241_0` — připsáno remíze incircle kocirkulárních bodů v CDT (koridor
-  multispline; po `f66ac638` není znovu ověřeno, viz nové základní měření 16.1
-  výše). Zbytkem je **překlopení počtu segmentů**: 7 rozdílů kreslicích operací na
-  hraně 1->2, `ptCount 8 vs 20` (20 rozdílů před `f66ac638`) — koridor uspěje se
-  splinem o N bodech, kde nativní sestavení spadne na kratší prosté vedení (nebo
-  naopak), jako v záznamu circo `241_0` výše. Portace již emuluje kontrakci arm64
-  `fmadd` v predikátu incircle/`ccw` (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) a používá robustní Delaunay s incircle; zbytkem je
-  1 ULP rozdílu V8-vs-Apple-libm v `sin`/`hypot` ve vstupu predikátu, který žádný přenosný
-  kód nereprodukuje.
+- `241_0` — 7 rozdílů kreslicích operací na hraně 1->2 (`ptCount 8 vs 20`). Rozvržení
+  se odchyluje od prvního členu odpudivé síly, kde `pow(dist, 2)` z libm v macOS vrací
+  hodnotu o 1 ULP pod správným zaokrouhlením (nejhrubší úroveň, iterace 22; viz záznam o
+  `pow` z libm hostitele v části Mezery ve věrnosti rozvržení) a adaptivní chlazení to
+  zesílí do pozic na ostří nože, na nichž je hrana 1->2 vedena jinak. Vstříknutí nativních
+  hodnot `pow` činí každý řádek trasování i výsledné xdot shodnými. Zbytek ve vedení
+  pozorovaný při vstříknutých pozicích byl zčásti artefaktem vstřikování a zčásti
+  `Math.sin(9π/8)` ve V8 v 8úhelníku překážky, který portace nyní bere z libm hostitele
+  (oprava, která také učinila circo `241_0` conformant). Zbývá A1 drift.
 
 > **sfdp `42` překlasifikováno z A9 na A1-drift (synchronizace s graphviz 16.1).**
 > Bylo zde uvedeno jako remíza incircle v CDT/libm. Mise zjistila něco jiného
@@ -1105,8 +1103,8 @@ systémového `hypot` z C a porovnání s Node `Math.hypot` na reprezentativníc
 vstupech odchylky ploché hrany ukazuje nesoulad o 1 ULP u 2 ze 6 (Δ 7.1e-15 a
 5.7e-14) — ostří nože prahu rozdělení, které překlápí počet podrozdělení.
 Neredukovatelné: žádný přenosný hypot nereprodukuje Apple libm (precedent
-`arm-pow.ts` pro stejnou hranici). `sfdp.241_0` je akceptováno na úrovni stopy modulu
-přes `accepted-divergences-engines.json`. `sfdp.42` do této třídy **nepatří**: jeho
+`arm-pow.ts` pro stejnou hranici). `sfdp.241_0`, kdysi akceptováno v této třídě,
+je od T28 A1-drift (viz výše). `sfdp.42` do této třídy **nepatří**: jeho
 záznam v registru je A1 (`comparisons/sfdp-42.md`) a výše uvedená sonda jej
 nevysvětlila.
 

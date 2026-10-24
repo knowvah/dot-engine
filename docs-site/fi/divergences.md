@@ -1,5 +1,5 @@
 ---
-sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -237,7 +237,7 @@ selitetty yksitellen graphviz 16.1.0:aa vasten: injektiotyökalu
 edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja jokainen nykyinen
 poikkeava tunniste on `drift-exonerated` (porttauksen reititys ja emissio
 toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) kahta lukuun ottamatta. Kaksi on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
-sfdp:n `241_0`:n CDT-jäännös sekä sfdp:n `2556`:n NaN-asettelu. fdp:n `241_0` läpäisee
+sfdp:n `241_0`:n isäntä-libm:n `pow`-ajelehtiminen (T28 diagnosoi uudelleen) sekä sfdp:n `2556`:n NaN-asettelu. fdp:n `241_0` läpäisee
 testin korjauksesta `fix(T9): start swapped cdt faces at the new diagonal as gts does` lähtien (katso fdp-kappale kohdassa A9). fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`)
 poikkesivat aiemmin injektion jälkeen, eli xlabel-sijoittaja valitsi eri ehdokkaan.
 `2471` korjaantui, kun porttauksen `dotneato_closest` alkoi pyöristää kuten clangin
@@ -907,13 +907,13 @@ geometry`) peilasi sen. twopi:n ja neaton `241_0` — jotka tämä luokka oli se
 alla olevalla samalle ympyrälle osuvalla tasapelillä — muuttuivat **yhdenmukaisiksi**
 (hyväksynnät poistettu), ja sfdp:n `42`:lla ei osoittautunutkaan olevan tasapeliä
 lainkaan (se on A1-drift, katso [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
-fdp:n `241_0` muuttui myöhemmin **yhdenmukaiseksi** kolmioinnin toisen porttauspuolen korjauksen jälkeen (tahkon kärkien järjestys kaarenvaihdon jälkeen; katso fdp-kappale alla). circon ja sfdp:n `241_0` poikkeavat yhä, niiden jäännökset ovat ennallaan tai
-pienentyneet; niiden selitys alla olevalla tasapelillä edeltää `f66ac638`a eikä sitä
-ole **varmennettu uudelleen sijaintiinjektiolla** sen jälkeen, vaikka sama korjaus
-osoitti selityksen vääräksi twopi:lle/neatolle.
+fdp:n `241_0` muuttui myöhemmin **yhdenmukaiseksi** kolmioinnin toisen porttauspuolen korjauksen jälkeen (tahkon kärkien järjestys kaarenvaihdon jälkeen; katso fdp-kappale alla). circon `241_0` muuttui **yhdenmukaiseksi** korjauksella `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: V8:n `Math.sin(9π/8)` on 1 ULP:n päässä oikein pyöristetystä
+libm-arvosta, mikä siirsi jokaisen ellipsiesteen yhtä kulmaa ja käänsi käytävän
+(hyväksyntä poistettu). sfdp:n `241_0` diagnosoitiin uudelleen samassa tehtävässä ja se on
+nyt A1 (katso sfdp-kappale alla).
 
-**Koskee:** `241_0` (circo Δ≈0.2 käytäväkäännöksen kautta kaarella `1->2`; sfdp:n
-`241_0` alla olevalla moottoriraidalla); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Koskee:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 kaarinimiön sijaintieroa kukin — libm:n 1 ULP syntyy
 `poly_init`in yksikkökärkitrigonometriassa (`hypot`/`atan2`/`sin`), asettaa yhden solmun
 lasketun korkeuden ULP:n verran minimikokorajan yli, jolle oraakkeli osuu
@@ -955,7 +955,8 @@ tämän merkinnän alla, *korjattiin* 2026-07-11 uskollisella fmadd-yhdistämise
 piirto-operaatioeroa, Δ≈0.2 pt kaaren `1->2` reititetyssä bezierissä — sama
 CDT-lävistäjän käytäväkäännös; päätöspäiväkirja, 2026-07-10 -merkintä ”CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed”). Hyväksytty moottoriraidan tasolla tiedoston
+filed”; **poistettu 2026-10-23** — yhdenmukainen, koska porttaus ottaa esteen
+8-kulmiolle isäntä-libm:n `cos`/`sin`:in, katso 16.1:n uusi perustaso yllä). Hyväksytty moottoriraidan tasolla tiedoston
 `test/corpus/accepted-divergences-engines.json` kautta, yhdistettynä
 `PARITY-twopi.md`:hen/`PARITY-circo.md`:hen `parity-report.ts`llä — sama yhdistäminen,
 jonka `accepted.ts` tekee dot-raidan `PARITY-dot.md`:lle.
@@ -1084,22 +1085,22 @@ arvon 18.0 ympärillä, ja `closestSide`n dyna-pääportin valinta kääntää T
 tuossa täsmällisessä tasapelissä; solmusijainnit ja laatikot ovat muutoin bitti bitiltä identtiset
 oraakkelin kanssa; **poistettu 2026-10-18** — se on yhdenmukainen, koska porttauksen DIST2 käyttää clangin yhdistettyä muotoa, joka ratkaisee tämän tarkan tasapelin kuten C).
 
-**sfdp-moottoriraita — kaaren FP-tasapeli (`241_0`).**
+**sfdp-moottoriraita — `241_0` (luokiteltu uudelleen A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> sfdp-xdot-moottoriraita (`parity-sfdp.json`,
-natiivi `dot -Ksfdp -Txdot`, ±0.5) tuo esiin CDT:n samalla ympyrällä olevan incircle-tasapelin, kun
-täsmälliset natiivit reititystä edeltävät sijainnit injektoidaan (joten ero EI ole
-iteratiivista ajelehtimista — katso A1-drift-luokka — vaan diskreetti predikaattitasapeli):
+natiivi `dot -Ksfdp -Txdot`, ±0.5) luetteli täällä `241_0`:n CDT:n samalla ympyrällä
+olevana incircle-tasapelinä. `fix(T28)` diagnosoi sen uudelleen instrumentoidulla
+natiivilla sfdp:llä:
 
-- `241_0` — selitetty CDT:n samalle ympyrälle osuvalla incircle-tasapelillä
-  (multispline-käytävä; ei varmennettu uudelleen `f66ac638`:n jälkeen, katso 16.1:n uusi
-  perustaso yllä). Jäännös on **segmenttimäärän käännös**: 7 piirto-operaatioeroa
-  kaarella 1->2, `ptCount 8 vs 20` (20 eroa ennen `f66ac638`a) — käytävä onnistuu
-  N pisteen splinellä, kun natiivi käännös palaa lyhyempään tavalliseen reittiin (tai
-  päinvastoin), kuten yllä olevassa circo `241_0` -merkinnässä. Porttaus emuloi jo arm64:n
-  `fmadd`-yhdistämistä incircle-/`ccw`-predikaatissa (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) ja käyttää robustia incircle-Delaunayta; jäännös on
-  predikaatin syötteessä oleva V8-vs-Apple-libm `sin`/`hypot` 1 ULP, jota mikään siirrettävä
-  koodi ei toista.
+- `241_0` — 7 piirto-operaatioeroa kaarella 1->2 (`ptCount 8 vs 20`). Asettelu ajelehtii
+  ensimmäisestä hylkivän voiman termistä, jossa macOS-libm:n `pow(dist, 2)` palauttaa
+  1 ULP:n oikeaa pyöristystä vähemmän (karkein taso, iteraatio 22; katso isäntä-libm:n
+  `pow`-merkintä asettelun uskollisuusaukkojen alla), ja adaptiivinen jäähdytys vahvistaa
+  sen veitsenterä-sijainneiksi, joissa kaari 1->2 reititetään toisin. Natiivien
+  `pow`-arvojen injektointi tekee jokaisesta jälkirivistä ja lopullisesta xdotista
+  identtisen. Injektoiduilla sijainneilla nähty reitityksen jäännös oli osittain
+  injektion artefakti ja osittain V8:n `Math.sin(9π/8)` esteen 8-kulmiossa, jonka
+  porttaus nyt ottaa isäntä-libm:stä (korjaus, joka teki myös circon `241_0`:n
+  yhdenmukaiseksi). Jäljelle jää A1-drift.
 
 > **sfdp:n `42` luokiteltiin uudelleen A9 → A1-drift (graphviz 16.1 -synkronointi).**
 > Se oli lueteltu täällä CDT-/libm-incircle-tasapelinä. Missio löysi muuta
@@ -1129,8 +1130,8 @@ kääntäminen ja vertailu Noden `Math.hypot`iin edustavilla litteän kaaren poi
 eron 2:ssa 6:sta (Δ 7.1e-15 ja
 5.7e-14) — jakokynnyksen veitsenterä, joka kääntää alajaon määrän.
 Palautumaton: mikään siirrettävä hypot ei toista Apple libm:ää (`arm-pow.ts`
--ennakkotapaus samalle rajalle). `sfdp.241_0` hyväksytään moottoriraidan tasolla
-tiedoston `accepted-divergences-engines.json` kautta. `sfdp.42` **ei** kuulu tähän
+-ennakkotapaus samalle rajalle). `sfdp.241_0`, joka oli aikoinaan hyväksytty tässä luokassa,
+on A1-drift T28:sta lähtien (katso yllä). `sfdp.42` **ei** kuulu tähän
 luokkaan: sen rekisterimerkintä on A1 (`comparisons/sfdp-42.md`), eikä yllä oleva
 luotain selittänyt sitä.
 

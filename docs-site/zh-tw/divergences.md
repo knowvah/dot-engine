@@ -1,5 +1,5 @@
 ---
-sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -177,7 +177,7 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 注入工具（`test/corpus/attribute-divergence.ts`）將原生參照程式繞線前的
 `ND_pos` 餵給移植版並重新比對，而目前每個差異 id 除了兩個之外，都是
 `drift-exonerated`（一旦移除求解器漂移，移植版的繞線與輸出就能精確重現參照程式）。
-其中兩個是另行接受的逐 id 殘留項：sfdp `241_0` 的 CDT 殘留，以及 sfdp `2556` 的 NaN 版面。自 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 起，fdp `241_0` 已通過（見 A9 下的 fdp 段落）。
+其中兩個是另行接受的逐 id 殘留項：sfdp `241_0` 的宿主 libm `pow` 漂移（由 T28 重新診斷），以及 sfdp `2556` 的 NaN 版面。自 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 起，fdp `241_0` 已通過（見 A9 下的 fdp 段落）。
 fdp `2471` 與 sfdp `2371` 先前在注入之後保留的邊標籤位置（`lp`）仍不相同，亦即 xlabel 放置器挑選了不同的候選。移植版的 `dotneato_closest` 改為依 clang 融合後的 de Casteljau 求值與 DIST2 方式捨入後，`2471` 已經消除：先前邊標籤錨點相差 1–2 ULP，使放置器的嚴格包含判斷翻轉。
 移植版的 R 樹像 C 一樣以值複製矩形之後，`2371` 已經消除。
 `2471` 的原生 fdp 版面每次執行都會變動，因此其列只記錄一次執行。
@@ -723,9 +723,9 @@ ISON。`shortest.c:pointintri` 隨後會拒絕多邊形頂點端點
 樣條相差約 0.2–0.5pt。（現已結案的）**A3**／**A8** 的同類：這是低於 C 原始碼語意的
 無法消除的浮點數可攜性限制——要比對，就需要在 JS 中重現 Apple libm 精確的 `sin`/`cos` 捨入。
 
-**16.1 重新基線。** 多重樣條通道的幾何缺少 clang 的 FMA 收縮（橢圓角點的被開方數、`mkCtrlPts`、`DIST` = sqrt(fmadd)、`line_intersect` 的內積）；`f66ac638`（`fix(neato): mirror fma contraction in multispline routing geometry`）鏡射了它。twopi 與 neato 的 `241_0`——該類別曾將它們歸因於下方的共圓平手——變為 **conformant**（接受已退場），而 sfdp 的 `42` 被證明根本沒有平手（它是 A1 漂移，見 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）。fdp 的 `241_0` 後來也變為 **conformant**，那是移植版在三角剖分上的第二次修正（邊交換之後的面頂點順序；見下方的 fdp 段落）。circo 與 sfdp 的 `241_0` 仍然存在差異，殘留不變或有所減少；它們歸因於下方平手的結論早於 `f66ac638`，並且自該修正顯示同樣的歸因對 twopi／neato 是錯誤的以來，**尚未透過位置注入重新驗證**。
+**16.1 重新基線。** 多重樣條通道的幾何缺少 clang 的 FMA 收縮（橢圓角點的被開方數、`mkCtrlPts`、`DIST` = sqrt(fmadd)、`line_intersect` 的內積）；`f66ac638`（`fix(neato): mirror fma contraction in multispline routing geometry`）鏡射了它。twopi 與 neato 的 `241_0`——該類別曾將它們歸因於下方的共圓平手——變為 **conformant**（接受已退場），而 sfdp 的 `42` 被證明根本沒有平手（它是 A1 漂移，見 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）。fdp 的 `241_0` 後來也變為 **conformant**，那是移植版在三角剖分上的第二次修正（邊交換之後的面頂點順序；見下方的 fdp 段落）。circo 的 `241_0` 隨 `fix(T28): use host libm cos/sin for the ellipse obstacle 8-gon` 變為 **conformant**：V8 的 `Math.sin(9π/8)` 與正確捨入的 libm 值相差 1 ULP，這使每個橢圓障礙物的一個角點發生移動並翻轉了通道（接受已退場）。sfdp 的 `241_0` 由同一任務重新診斷，現在屬於 A1（見下方的 sfdp 段落）。
 
-**受影響：** `241_0`（circo Δ≈0.2，經由邊 `1->2` 上的通道翻轉；下方引擎軌道上的 sfdp `241_0`）；`2343`、`2239`、`share-b29`、`windows-b29`（twopi，
+**受影響：** `2343`、`2239`、`share-b29`、`windows-b29`（twopi，
 各有 1–2 項邊標籤位置差異——libm 的 1 ULP 出現在
 `poly_init` 的單位頂點三角函數（`hypot`/`atan2`/`sin`），使某個節點
 計算出的高度比參照程式恰好落點的最小尺寸箝制值高出一個 ULP，
@@ -764,7 +764,7 @@ R-tree 鏈串連；`2343`、`share-b29` 與 `windows-b29` 原本在此條目下�
 項繪製操作差異，邊 `1->2` 的繞線貝茲曲線上 Δ≈0.2pt——同樣是
 CDT 對角線通道翻轉；決策日誌，2026-07-10 的「CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed」條目）。透過
+filed」條目；**2026-10-23 退場**——自移植版對障礙物的八邊形採用宿主 libm 的 `cos`/`sin` 起即為 conformant，見上方的 16.1 重新基線）。透過
 `test/corpus/accepted-divergences-engines.json` 在引擎軌道層級被接受，並由 `parity-report.ts` 合併進
 `PARITY-twopi.md`／`PARITY-circo.md`——這與 `accepted.ts`
 對 dot 軌道的 `PARITY-dot.md` 所做的合併相同。
@@ -884,20 +884,12 @@ qsort 以不同方式排序——不同的列優先格子、`9002`/`9006`
 該精確平手處翻轉 TOP/BOTTOM；節點位置與方框在其他方面
 與參照程式位元相同；**2026-10-18 已撤銷**——移植版的 DIST2 採用 clang 的融合形式後，像 C 一樣判定這一精確平手，現已一致）。
 
-**sfdp 引擎軌道——邊浮點平手（`241_0`）。**
+**sfdp 引擎軌道——`241_0`（2026-10-23 從 A9 重新歸類為 A1）。**
 <a id="a9-sfdp-fp-ties"></a> sfdp 的 xdot 引擎軌道（`parity-sfdp.json`，
-原生 `dot -Ksfdp -Txdot`，±0.5）在注入精確的原生繞線前位置之後，
-揭露了 CDT 共圓內切圓平手（所以差異並非
-迭代漂移——見 A1-drift 類別——而是離散的判定平手）：
+原生 `dot -Ksfdp -Txdot`，±0.5）曾把 `241_0` 列在這裡，視為 CDT 共圓內切圓平手。
+`fix(T28)` 以加了儀器的原生 sfdp 重新診斷了它：
 
-- `241_0`——歸因於 CDT 共圓內切圓平手（多重樣條通道；`f66ac638` 之後未重新驗證，見上方的 16.1 重新基線）。
-  殘留的是**段數翻轉**：邊 1->2 上有 7 項繪製操作差異，`ptCount 8 vs 20`
-  （`f66ac638` 之前為 20 項差異）——通道以 N 點樣條成功，而原生版本退回較短的一般路徑（或反之），
-  與上方 circo 的 `241_0` 條目相同。移植版已在內切圓／`ccw` 判定中模擬了 arm64
-  的 `fmadd` 收縮（`src/pathplan/triang.ts`、
-  `src/common/fma.ts`），並使用穩健的內切圓 Delaunay；殘留的是
-  判定輸入中 V8 與 Apple libm 的 `sin`/`hypot` 相差 1 ULP，任何可攜
-  程式碼都無法重現。
+- `241_0`——邊 1->2 上有 7 項繪製操作差異（`ptCount 8 vs 20`）。版面從第一個排斥力項開始漂移，此處 macOS libm 的 `pow(dist, 2)` 回傳的值比正確捨入低 1 ULP（最粗層級，第 22 次迭代；見版面配置保真度缺口下的宿主 libm `pow` 條目），自適應冷卻將其放大為刀刃上的位置，邊 1->2 在這些位置上的繞線方式不同。注入原生的 `pow` 值後，每一行追蹤輸出以及最終的 xdot 都完全一致。注入位置後所見的繞線殘留，一部分是注入的假象，另一部分是障礙物八邊形中 V8 的 `Math.sin(9π/8)`，移植版現在改用宿主 libm 的值（這項修正也使 circo 的 `241_0` 變為 conformant）。剩下的是 A1 漂移。
 
 > **sfdp `42` 由 A9 重新分類為 A1-drift（graphviz 16.1 同步）。** 它先前被列在這裡，作為 CDT／libm 內切圓平手。該任務發現並非如此（[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）：先前的通道翻轉是多重樣條通道幾何中移植版這一側的 FMA 錯誤移植，已由 `f66ac638`（`fix(neato): mirror fma contraction in multispline routing geometry`）修正；注入原生位置後，移植版現在精確重現原生的 xdot。其餘的殘留（節點偏移 0.06-0.65 pt）是迭代漂移，其種子是最粗層級上 Apple libm 的 `pow(dist, 2)` 與移植版的 ARM `pow` 之間的一處 1 ULP 不一致，並被更細的層級放大——A1（見 [A1](#a1-floating-point-determinism-force-directed-engines)）。
 
@@ -917,8 +909,8 @@ qsort 以不同方式排序——不同的列優先格子、`9002`/`9006`
 同層邊偏差輸入上比較，6 個中有 2 個出現 1 ULP 的差異（Δ 7.1e-15 與
 5.7e-14）——這是翻轉細分次數的分割門檻刀口。
 無法消除：沒有任何可攜的 hypot 能重現 Apple libm（同一邊界上
-`arm-pow.ts` 的先例）。`sfdp.241_0` 透過
-`accepted-divergences-engines.json` 在引擎軌道層級被接受。`sfdp.42` **不**屬於此類別：它的登錄條目是 A1（`comparisons/sfdp-42.md`），而上方的探測並未解釋它。
+`arm-pow.ts` 的先例）。`sfdp.241_0` 曾在此類別下被接受，
+自 T28 起屬於 A1 漂移（見上文）。`sfdp.42` **不**屬於此類別：它的登錄條目是 A1（`comparisons/sfdp-42.md`），而上方的探測並未解釋它。
 
 **fdp** 的 xdot 引擎軌道（`parity-fdp.json`，原生 `dot -Kfdp -Txdot`，±0.5）
 先前把同一張圖 `241_0` 顯示為屬於這個類別：注入參照程式精確的繞線前位置後，

@@ -393,11 +393,11 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       their walk verdicts flip with no port change. The walks should mark such ids
       (e.g. run the oracle N times and record `oracle-nondeterministic`) instead of
       caching one draw (part 3 T14). Seen on twopi too (nshare-arrows_dot).
-  70. `test/corpus/attribution-fdp.json(l)` still lists fdp `241_0` as
+  70. **[DONE — part 4 T29: `attribute-divergence.ts fdp --fresh`, 16 diverged ids, all drift-exonerated]** `test/corpus/attribution-fdp.json(l)` still lists fdp `241_0` as
       `not-cleared`, though the id passes since part 3 T9. Rerun
       `attribute-divergence.ts fdp` (or drop the row) so attribution covers only
       diverged ids (part 3 T14; outside T14's write-set).
-  71. Committed walk rows for still-diverged ids are stale where pre-mission src
+  71. **[DONE — part 4 T29: all seven engine walks re-run on d42aafd1 and committed]** Committed walk rows for still-diverged ids are stale where pre-mission src
       changes moved output without a re-walk (twopi graphs-arrowsize: 23 diffs
       committed, 72 on today's head and on part 3's base). A full re-walk of all
       engines would refresh `nDiffs`/`firstDiff` (part 3 T14).
@@ -467,6 +467,15 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `translate_drawing` calls `map_edge` only when `State == GVSPLINES`
       (`lib/common/postproc.c`); `src/common/postproc.ts:224` assumes the state always
       holds (part 4 T29 bytediff).
+  88. Heavy-tail budgets misfire on the iterative engines. `engine-walk.ts` scales its
+      port budget by perf.json's SVG `dot` cost, so sfdp 2371 (213 s recorded, 0.75–2.9 h
+      real) times out at the 1 h floor. `attribute-divergence.ts` caps the oracle at 300 s,
+      so neato 2371/2646 (native ~1000 s) come back harness-error under `--fresh`. Scale
+      both by the engine's own recorded cost (the previous walk row's `portMs`/`oracleMs`)
+      (part 4 T29; worked around with env overrides and single-id resumes). The
+      refreshed `attribution-neato.json(l)` (84 rows, all drift-exonerated, without the
+      now-passing inet/ngk10_4 rows) was outside T29's write-set and is not committed;
+      re-run `attribute-divergence.ts neato --fresh` with the overrides and commit it.
 
 ## Local leftovers (not committed, safe to delete)
 

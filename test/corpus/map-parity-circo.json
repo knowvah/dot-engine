@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-14T16:49:26.176Z",
+  "generatedAt": "2026-10-24T03:40:43.879Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "circo",
   "oracleVersion": "dot 16.1.0",
@@ -5257,19 +5257,6 @@
       "id": "graphs-nul_nul",
       "path": "graphs/nul_nul.gv",
       "size": 576,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
-      "id": "241_0",
-      "path": "241_0.dot",
-      "size": 578,
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
@@ -12091,6 +12078,19 @@
       "imap": {
         "verdict": "accepted",
         "errMsg": "Map maximum size exceeded"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "241_0",
+      "path": "241_0.dot",
+      "size": 578,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
       },
       "hasHref": false
     }

@@ -1,5 +1,5 @@
 ---
-sourceHash: bce478c4f7f61b5dac4fc92681c15a991a1454a58006c620af11ab6454e33b5c
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -217,7 +217,7 @@ individuellt tillskriven mot graphviz 16.1.0: injektionsverktyget
 (`test/corpus/attribute-divergence.ts`) matar in det inbyggda oraklets `ND_pos` före dragningen i
 porteringen och jämför på nytt, och varje nuvarande avvikande id är `drift-exonerated` (porteringens
 dragning och emission återger oraklet exakt när lösardriften är borttagen) utom två. Två är separat
-godkända residualer per id: sfdp `241_0`:s CDT-residual samt sfdp `2556`:s
+godkända residualer per id: sfdp `241_0`:s värdens libm-`pow`-drift (omdiagnostiserad av T28) samt sfdp `2556`:s
 NaN-layout. fdp `241_0` klarar sig sedan `fix(T9): start swapped cdt faces at
 the new diagonal as gts does` (se fdp-stycket under A9). fdp `2471` och sfdp `2371` behöll tidigare kantetikettpositioner (`lp`) som
 skilde sig efter injektion, dvs. xlabel-placeraren valde en annan kandidat. `2471`
@@ -892,14 +892,13 @@ klassen hade tillskrivit det kocirkulära oavgjorda läget nedan — blev **conf
 (godkännandena avvecklade), och sfdp `42` visade sig inte ha något oavgjort läge alls
 (det är A1-drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp-`241_0`
 blev **conformant** senare, efter en andra rättning på porteringssidan i trianguleringen
-(hörnordningen för ytor efter en kantvändning; se fdp-stycket nedan). circo-
-och sfdp-`241_0` avviker fortfarande med oförändrade eller minskade residualer; deras
-tillskrivning till det oavgjorda läget nedan föregår `f66ac638` och har **inte återverifierats
-genom positionsinjektion** sedan den rättningen visade att samma tillskrivning var fel för
-twopi/neato.
+(hörnordningen för ytor efter en kantvändning; se fdp-stycket nedan). circo-`241_0` blev **conformant** med `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: V8:s `Math.sin(9π/8)` ligger 1 ULP från det korrekt avrundade
+libm-värdet, vilket flyttade ett hörn på varje ellipshinder och vände korridoren
+(godkännandet avvecklat). sfdp-`241_0` omdiagnostiserades av samma uppgift och är nu A1
+(se sfdp-stycket nedan).
 
-**Berörda:** `241_0` (circo Δ≈0.2 genom korridorvändningen på kanten `1->2`; sfdp
-`241_0` på motorspåret nedan); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Berörda:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 skillnader i etikettposition vardera — libm-ULP:n på 1 uppstår i
 `poly_init`s enhetshörnstrigonometri (`hypot`/`atan2`/`sin`), lägger en nods
 beräknade höjd en ULP förbi minimistorleksgränsen som oraklet landar på
@@ -941,7 +940,8 @@ i `polylineMidpoint` — se stycket om b29-familjen nedan) och circo `241_0` (41
 skillnader i ritoperationer, Δ≈0.2pt på bezierkurvan som dragits för kanten `1->2` — samma
 vändning av CDT-diagonalens korridor; beslutsjournal, 2026-07-10, posten ”CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed”). Godkänd på motorspårsnivå via
+filed”; **avvecklad 2026-10-23** — conformant sedan porteringen tar värdens libm-`cos`/`sin`
+för hindrets 8-hörning, se 16.1-omläggningen ovan). Godkänd på motorspårsnivå via
 `test/corpus/accepted-divergences-engines.json`, som `parity-report.ts` sammanfogar i
 `PARITY-twopi.md`/`PARITY-circo.md` — samma sammanfogning som
 `accepted.ts` gör för dot-spårets `PARITY-dot.md`.
@@ -1067,22 +1067,20 @@ värdet 18.0, och `closestSide`s val av dyna-huvudport vänder TOP/BOTTOM vid
 just det oavgjorda läget; nodpositioner och rutor är i övrigt bitidentiska med
 oraklet; **avförd 2026-10-18** — den är konform sedan porteringens DIST2 använder clangs sammanslagna form, som avgör just denna oavgjorda jämförelse som C).
 
-**sfdp-motorspåret — oavgjort flyttalsläge på en kant (`241_0`).**
+**sfdp-motorspåret — `241_0` (omklassificerad A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> sfdp:s xdot-motorspår (`parity-sfdp.json`,
-inbyggt `dot -Ksfdp -Txdot`, ±0.5) visar CDT:s kocirkulära incircle-oavgjorda läge när
-exakta inbyggda positioner före dragningen injiceras (så avvikelsen är INTE
-iterativ drift — se klassen A1-drift — utan ett diskret oavgjort predikat):
+inbyggt `dot -Ksfdp -Txdot`, ±0.5) förde här upp `241_0` som CDT:s kocirkulära
+incircle-oavgjorda läge. `fix(T28)` omdiagnostiserade det med en instrumenterad inbyggd sfdp:
 
-- `241_0` — tillskriven CDT:s kocirkulära incircle-oavgjorda läge (multisplinekorridoren;
-  inte återverifierad efter `f66ac638`, se 16.1-omläggningen ovan).
-  Residualen är en **vändning av segmentantal**: 7 skillnader i ritoperationer på kant 1->2,
-  `ptCount 8 vs 20` (20 skillnader före `f66ac638`) — multisplinekorridoren lyckas med en
-  spline på N punkter där den inbyggda faller tillbaka på en kortare vanlig väg
-  (eller tvärtom), som i circo-posten för `241_0` ovan. Porteringen emulerar redan arm64-
-  kontraktionen `fmadd` i predikaten incircle/`ccw` (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) och använder robust incircle-Delaunay; residualen är
-  skillnaden på 1 ULP mellan V8 och Apples libm i `sin`/`hypot` i predikatets indata, som ingen portabel
-  kod återger.
+- `241_0` — 7 skillnader i ritoperationer på kant 1->2 (`ptCount 8 vs 20`). Layouten driver
+  från den första repulsiva kraftermen, där macOS libm:s `pow(dist, 2)` returnerar 1 ULP
+  under korrekt avrundning (grövsta nivån, iteration 22; se posten om värdens libm-`pow`
+  under luckor i layouttrohet), och adaptiv kylning förstärker det till positioner på
+  knivseggen där kant 1->2 dras annorlunda. Injektion av inbyggda `pow`-värden gör varje
+  spårrad och den slutliga xdot identiska. Dragningsresidualen som sågs med injicerade
+  positioner var dels en injektionsartefakt och dels V8:s `Math.sin(9π/8)` i hindrets
+  8-hörning, som porteringen nu tar från värdens libm (rättningen som även gjorde
+  circo-`241_0` conformant). Det som återstår är A1-drift.
 
 > **sfdp `42` omklassificerad från A9 till A1-drift (graphviz 16.1-synk).** Den fördes upp
 > här som ett CDT/libm-incircle-oavgjort läge. Uppdraget fann något annat
@@ -1111,8 +1109,8 @@ systemets C-`hypot` och jämföra med Nodes `Math.hypot` på representativa
 avvikelseindata för platta kanter visar en oenighet på 1 ULP för 2 av 6 (Δ 7.1e-15 och
 5.7e-14) — knivseggen vid delningströskeln som vänder antalet delningar.
 Oreducerbar: ingen portabel hypot återger Apples libm (precedensfallet
-`arm-pow.ts` för samma gräns). `sfdp.241_0` är godkänd på motorspårsnivå
-via `accepted-divergences-engines.json`. `sfdp.42` ingår **inte** i den här
+`arm-pow.ts` för samma gräns). `sfdp.241_0`, en gång godkänd under den här klassen,
+är A1-drift sedan T28 (se ovan). `sfdp.42` ingår **inte** i den här
 klassen: dess registerpost är A1 (`comparisons/sfdp-42.md`), och sonden ovan
 förklarade den inte.
 

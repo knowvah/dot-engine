@@ -75,11 +75,6 @@
     }
   },
   "circo": {
-    "241_0": {
-      "class": "A9",
-      "bound": "41 draw-op diffs; Delta~0.2pt on edge 1->2's routed bezier (unfilled_bezier[1]: 221.92 vs 222.12); residual after f66ac638 (unchanged 41 diffs) - tie attribution not re-verified by injection",
-      "ref": "known-divergences.md#a9-engine-track-twopi-circo"
-    },
     "1855": {
       "class": "A1",
       "bound": "599 xdot draw-op diffs; the 31-leaf star settles in the mirror basin of the oracle's layout (node draw ops within 0.12pt, routed splines within 0.71pt; all 599 numeric). Mechanism: with circpos.c's fma contraction and evaluation order mirrored, 31/32 pre-adjust positions are bit-exact; node 22 differs by 1 ULP because V8 and Apple libm round cos/sin differently at 3 positionChildren angles (cos 0x1.c7bd892b3aa91p+1, sin 0x1.fd5b5d123280bp+1, cos 0x1.0c152382d7364p+2). PRISM's Delaunay then flips one near-cocircular diagonal on the mirror axis (prism iteration 1: edge 15-17 vs 16-18). Injection A/B: native cos/sin fed to the port -> every pre-adjust position bit-exact, 0 diffs; V8 cos/sin fed to the native build -> the oracle's layout in 22/30 runs, the port's in 8/30 (GTS edge order depends on allocation addresses).",
@@ -170,8 +165,8 @@
       "ref": "comparisons/sfdp-42.md"
     },
     "241_0": {
-      "class": "A9",
-      "bound": "7 draw-op diffs on edge 1->2 (unfilled_bezier[ptCount] 8 vs 20; was 20 diffs before the multispline FMA fix f66ac638). Attributed to the same CDT/hypot corridor tie as circo/fdp 241_0, but NOT re-diagnosed after f66ac638 showed that attribution wrong for twopi/neato 241_0 (port-side FMA mis-port) - re-verify by position injection. Row from the provisional sfdp walk",
+      "class": "A1",
+      "bound": "7 draw-op diffs on edge 1->2 (unfilled_bezier[ptCount] 8 vs 20). Re-diagnosed by T28 (d42aafd1) with an instrumented native sfdp: macOS libm pow(dist, 2) returns 1 ulp below correct rounding at dist 0x1.68ee9440310f3p+0 (spring_electrical.c:634, coarsest level, iteration 22); adaptive cooling amplifies it into knife-edge positions on which edge 1->2 routes differently. Injecting native pow values makes the trace and final xdot identical. The CDT-tie attribution was wrong.",
       "ref": "known-divergences.md#a9-sfdp-fp-ties"
     },
     "2556": {

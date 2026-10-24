@@ -13,18 +13,17 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 - **Surveyed:** 928
 - **Oracle:** dot 16.1.0
-- **pass:** 908 (99.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 9
+- **pass:** 909 (99.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 8
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 11
 
 ## Diverged (0)
 
 _(none)_
 
-## Accepted (9) — documented, not chased
+## Accepted (8) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
-| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 14 | `[edge] 1->2#0/point[2].x: port=3.2757 native=3.2536; [edge] 1->2#0/point[2].y: port=2.9389 native=3.2113; [edge] 1->2#0/point[3].y: port=2.87 native=3.2973; [edge] 1->2#0/point[4].x: port=3.0064 native=2.8453; [edge] 1->2#0/point[4].y: port=2.6791 native=3.9238` | layout geometry inherited from the circo xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-b34`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b34.gv) | 5 | `[node] 7/label: port=montañas native=" solid box black lightgrey; [node] 7/style: port=solid native=; [node] 7/shape: port=box native=; [node] 7/color: port=black native=; [node] 7/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
 | [`graphs-b56`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b56.gv) | 6 | `[node] Schluesseloel/label: port=Schluesselöl native=�; [node] Schluesseltraeger/label: port=Schlueßelträger native=x; [node] Torschluessel/label: port=Torschlüssel native=�; [node] Torwaechter/label: port=Torwächter native=�; [node] creation/label: port=<f0>genPräfix\|<f1>legennStamm\|<f2>heitnSuffix native=<f0>genPr�fix\|<f1>legennStamm\|<f2>heitnSuffix` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
 | [`graphs-b60`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b60.gv) | 5 | `[node] 0/label: port=XXXrôôôôôôôôôôôôôôleXXX native=solid; [node] 0/style: port=solid native=ellipse; [node] 0/shape: port=ellipse native=black; [node] 0/color: port=black native=lightgrey; [node] 0/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
@@ -50,5 +49,5 @@ _(none)_
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle exit null |
 | [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle exit null |
 
-_Passing ids (908) are omitted for brevity — the full roster is in
+_Passing ids (909) are omitted for brevity — the full roster is in
 `plain-parity-circo.json`._
