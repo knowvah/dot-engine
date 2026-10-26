@@ -144,6 +144,16 @@ export interface CostTables {
   portMs: Record<string, number>;
   /** id -> canonical native render ms (native-timings.json). */
   nativeMs: Record<string, number>;
+  /** id -> this engine's previous walk `portMs` (see `walkCosts`). */
+  walkPortMs?: Record<string, number>;
+}
+
+/** One engine's recorded costs from its previous walk (parity-<engine>.json). */
+export interface WalkCosts {
+  /** id -> ACTIVE ms of a port render that ran to completion. */
+  portMs: Record<string, number>;
+  /** id -> ACTIVE ms of an oracle run that ran to completion. */
+  oracleMs: Record<string, number>;
 }
 
 /**
@@ -193,6 +203,37 @@ export function loadPortTimes(path: string): Record<string, number> {
   } catch { return {}; }
 }
 
+/**
+ * The engine's own costs from its previous walk rows. perf.json records the SVG
+ * `dot` port time, which can be far below an iterative engine's: sfdp `2371`
+ * records 213s there and 0.75-2.9h in its walk, so it timed out at the floor
+ * (follow-up 88).
+ *
+ * A `timeout` row's `portMs` is the budget it consumed, and an `oracle-error`
+ * row's `oracleMs` is ~the cap when the oracle timed out. Neither is a cost:
+ * feeding either back would multiply its budget by `mult` on every re-walk.
+ */
+export function walkCosts(rows: readonly EngineWalkRow[]): WalkCosts {
+  const out: WalkCosts = { portMs: {}, oracleMs: {} };
+  for (const r of rows) {
+    if (r.status !== 'timeout' && r.portMs !== undefined && r.portMs > 0) out.portMs[r.id] = r.portMs;
+    if (r.status !== 'oracle-error' && r.oracleMs !== undefined && r.oracleMs > 0) {
+      out.oracleMs[r.id] = r.oracleMs;
+    }
+  }
+  return out;
+}
+
+/**
+ * Read `walkCosts` from a parity-<engine>.json summary. Never throws: a missing
+ * or malformed file (an engine's first walk) yields empty tables.
+ */
+export function loadWalkCosts(path: string): WalkCosts {
+  try {
+    return walkCosts((JSON.parse(readFileSync(path, 'utf8')) as { results?: EngineWalkRow[] }).results ?? []);
+  } catch { return { portMs: {}, oracleMs: {} }; }
+}
+
 /** Read a `{ timings: {id: ms} }` table (native-timings.json). Never throws. */
 export function loadNativeTimes(path: string): Record<string, number> {
   try {
@@ -202,7 +243,8 @@ export function loadNativeTimes(path: string): Record<string, number> {
 
 /**
  * Wall-clock budget for one port render:
- * `max(floor, mult x native, mult x recorded port time)`.
+ * `max(floor, mult x native, mult x recorded port time, mult x previous walk
+ * port time)`.
  *
  * The third term is the one that matters for the heavy tail, and it is why the
  * budget cannot be a single constant: `2621` renders in 1237s (measured
@@ -215,7 +257,8 @@ export function loadNativeTimes(path: string): Record<string, number> {
  * times, and an xdot render of another engine is usually cheaper. That is the
  * safe direction for a runaway bound. Note `survey.ts` needs a third signal (the
  * oracle ms cached beside each SVG) because 2621 was absent from both cost
- * files; it now has entries in both, so two terms suffice here. (This walker did
+ * files; it now has entries in both. The previous-walk term covers engines whose
+ * cost exceeds the SVG `dot` one (see `walkCosts`). (This walker did
  * gain an oracle cache — see `oracleXdot` — but deliberately does NOT feed it
  * into the budget: cached oracle time says what the ORACLE costs, and using it to
  * bound the PORT is the conflation that produced the `3x native` term being
@@ -232,6 +275,7 @@ export function renderBudgetMs(
     Math.ceil(cfg.mult * nativeMs),
     Math.ceil(cfg.mult * (costs.portMs[id] ?? 0)),
     Math.ceil(cfg.mult * (costs.nativeMs[id] ?? 0)),
+    Math.ceil(cfg.mult * (costs.walkPortMs?.[id] ?? 0)),
   );
 }
 
@@ -372,6 +416,9 @@ async function main(): Promise<void> {
   const OUT = process.argv[3] ?? fileURLToPath(new URL(`./parity-${engine}.jsonl`, import.meta.url));
   const SUMMARY = fileURLToPath(new URL(`./parity-${engine}.json`, import.meta.url));
   const CACHE = oracleCacheDir(engine);
+  // Read before the sweep: the summary is rewritten only once the walk completes,
+  // so a fresh (deleted-JSONL) walk still sees the previous walk's rows.
+  COSTS.walkPortMs = loadWalkCosts(SUMMARY).portMs;
   // Hold an idle-sleep assertion for the whole walk: sleep does not break the
   // timeout (libuv's clock pauses too) but it corrupts every wall-clock number
   // we record. @see keep-awake.ts
@@ -412,7 +459,8 @@ async function main(): Promise<void> {
       `[${engine}] port budget max(${CONFIG.floorMs}ms, ${CONFIG.mult}x native, ${CONFIG.mult}x recorded cost), ` +
       `oracle cap ${CONFIG.oracleMs}ms\n` +
       `[${engine}] cost tables: ${Object.keys(COSTS.portMs).length} port, ` +
-      `${Object.keys(COSTS.nativeMs).length} native\n` +
+      `${Object.keys(COSTS.nativeMs).length} native, ` +
+      `${Object.keys(COSTS.walkPortMs).length} previous ${engine} walk\n` +
       `[${engine}] oracle cache ${CACHE}\n` +
       `[${engine}] idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n` +
       (excluded.size > 0

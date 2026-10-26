@@ -10,7 +10,9 @@ import { describe, it, expect, afterEach, vi } from 'vitest';
 import { existsSync, writeFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { classifyBucket, dedupeRows, runExclusive } from './attribute-divergence.js';
+import {
+  attributionBudgetsFromEnv, classifyBucket, dedupeRows, runExclusive, scaledBudgetMs,
+} from './attribute-divergence.js';
 import type { XdotDiff } from '../golden/compare-xdot.js';
 
 const META = '{"_meta":true,"oracleSha1":"abc","generatedAt":"2026-07-12T00:00:00.000Z"}';
@@ -18,6 +20,37 @@ const META = '{"_meta":true,"oracleSha1":"abc","generatedAt":"2026-07-12T00:00:0
 function row(id: string, verdict: string, injectedDiffs = 0): string {
   return JSON.stringify({ id, verdict, baseDiffs: 3, injectedDiffs, bucket: { shape: 'node/pos/numeric' } });
 }
+
+describe('scaledBudgetMs (follow-up 88)', () => {
+  // A 300s oracle cap turned neato 2371/2646 (native ~1000s) into harness-error
+  // rows under --fresh. Both caps now scale by the previous walk row's cost.
+  const DEFAULTS = attributionBudgetsFromEnv({});
+
+  it('keeps the old caps as floors and a 3x multiplier by default', () => {
+    expect(DEFAULTS).toEqual({ mult: 3, oracleFloorMs: 300_000, portFloorMs: 3_600_000 });
+  });
+
+  it('honours each env override', () => {
+    expect(attributionBudgetsFromEnv({
+      ATTR_TIMEOUT_MULT: '2', ATTR_ORACLE_TIMEOUT_MS: '1000', ATTR_PORT_TIMEOUT_MS: '2000',
+    })).toEqual({ mult: 2, oracleFloorMs: 1000, portFloorMs: 2000 });
+  });
+
+  it('scales the oracle cap by the neato walk row of 2646', () => {
+    // Committed neato row: oracleMs 1102742, portMs 3268886.
+    expect(scaledBudgetMs(DEFAULTS.oracleFloorMs, DEFAULTS.mult, 1_102_742)).toBe(3_308_226);
+    expect(scaledBudgetMs(DEFAULTS.portFloorMs, DEFAULTS.mult, 3_268_886)).toBe(9_806_658);
+  });
+
+  it('falls back to the floor with no recorded cost, or a cost below it', () => {
+    expect(scaledBudgetMs(300_000, 3, undefined)).toBe(300_000);
+    expect(scaledBudgetMs(300_000, 3, 99_999)).toBe(300_000);
+  });
+
+  it('rounds up a fractional product', () => {
+    expect(scaledBudgetMs(0, 1.5, 1_001)).toBe(1_502);
+  });
+});
 
 describe('runExclusive (sweep lock)', () => {
   const LOCK = join(tmpdir(), `gvts-attr-test-${process.pid}.lock`);

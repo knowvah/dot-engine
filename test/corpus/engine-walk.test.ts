@@ -25,9 +25,12 @@ import {
   oracleCacheSig,
   loadNativeTimes,
   loadPortTimes,
+  loadWalkCosts,
   renderBudgetMs,
+  walkCosts,
   type BudgetConfig,
   type CostTables,
+  type EngineWalkRow,
 } from './engine-walk.js';
 import { preventIdleSleep, sleepInflated } from './keep-awake.js';
 
@@ -120,6 +123,57 @@ describe('oracleCacheSig', () => {
     expect(oracleCacheSig('/other/dot', '/tmp/ghl', '1234')).not.toBe(base);
     expect(oracleCacheSig('/bin/dot', '/tmp/pango', '1234')).not.toBe(base);
     expect(oracleCacheSig('/bin/dot', '/tmp/ghl', '9999')).not.toBe(base);
+  });
+});
+
+describe('previous walk costs (follow-up 88)', () => {
+  // perf.json records the SVG `dot` port time, which says nothing about an
+  // iterative engine's cost: sfdp 2371 records 213s there but renders in
+  // 0.75-2.9h, so the old budget cut it off at the one-hour floor. The engine's
+  // own previous walk row is the cost that matters.
+  const rows: EngineWalkRow[] = [
+    { id: 'done', size: 1, status: 'diverged', oracleMs: 967_218, portMs: 1_669_388 },
+    { id: 'nondet', size: 1, status: 'oracle-nondeterministic', oracleMs: 227_523, portMs: 581_862 },
+    { id: 'crashed', size: 1, status: 'port-error', oracleMs: 40, portMs: 900 },
+    // A timeout's portMs is the budget it consumed, not a cost: feeding it back
+    // would multiply the budget by `mult` on every re-walk.
+    { id: 'slow', size: 1, status: 'timeout', oracleMs: 50, portMs: 14_400_034 },
+    // An oracle-error's oracleMs is ~the cap when it timed out: same rule.
+    { id: 'capped', size: 1, status: 'oracle-error', oracleMs: 3_600_010 },
+  ];
+
+  it('keeps completed port renders and completed oracle runs only', () => {
+    expect(walkCosts(rows)).toEqual({
+      portMs: { done: 1_669_388, nondet: 581_862, crashed: 900 },
+      oracleMs: { done: 967_218, nondet: 227_523, crashed: 40, slow: 50 },
+    });
+  });
+
+  it('scales the port budget by the previous walk row (sfdp 2371)', () => {
+    // Committed sfdp row: portMs 2731188. perf.json's 213s would give the floor.
+    const costs: CostTables = {
+      portMs: { '2371': 213_000 }, nativeMs: {}, walkPortMs: { '2371': 2_731_188 },
+    };
+    expect(renderBudgetMs('2371', 0, DEFAULTS, costs)).toBe(8_193_564);
+    // Below the floor, the walk term is not the binding one.
+    expect(renderBudgetMs('x', 0, DEFAULTS, { portMs: {}, nativeMs: {}, walkPortMs: { x: 1_000 } }))
+      .toBe(3_600_000);
+  });
+
+  it('reads the walk summary, and degrades to empty tables when it is unreadable', () => {
+    const summary = join(scratch, 'parity-sfdp.json');
+    writeFileSync(summary, JSON.stringify({ results: rows }));
+    expect(loadWalkCosts(summary)).toEqual(walkCosts(rows));
+    expect(loadWalkCosts(join(scratch, 'does-not-exist.json'))).toEqual({ portMs: {}, oracleMs: {} });
+    const bad = join(scratch, 'bad-walk.json');
+    writeFileSync(bad, '{ nope');
+    expect(loadWalkCosts(bad)).toEqual({ portMs: {}, oracleMs: {} });
+  });
+
+  it('gives the committed sfdp 2371 row more than the floor', () => {
+    const repo = new URL('../../', import.meta.url).pathname;
+    const walk = loadWalkCosts(join(repo, 'test/corpus/parity-sfdp.json'));
+    expect(walk.portMs['2371']).toBeGreaterThan(DEFAULTS.floorMs / DEFAULTS.mult);
   });
 });
 

@@ -46,6 +46,7 @@ import { homedir, tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
 import type { XdotDiff } from '../golden/compare-xdot.js';
+import { walkCosts } from './engine-walk.js';
 import type { EngineWalkStatus, EngineParityReport } from './engine-walk.js';
 
 // ---------------------------------------------------------------------------
@@ -300,13 +301,11 @@ type OracleDumpResult =
   | { ok: true; xdot: string; dumpLines: string[] }
   | { ok: false; err: string };
 
-const ORACLE_TIMEOUT_MS = Number(process.env.ATTR_ORACLE_TIMEOUT_MS ?? 300_000);
-
-function runOracleWithDump(engine: string, path: string): OracleDumpResult {
+function runOracleWithDump(engine: string, path: string, timeoutMs: number): OracleDumpResult {
   const r = spawnSync(DOT_BIN, ['-K', engine, '-Txdot', path], {
     env: { ...process.env, GVBINDIR, GVTS_POS_DUMP: '1' },
     encoding: 'utf8',
-    timeout: ORACLE_TIMEOUT_MS,
+    timeout: timeoutMs,
     maxBuffer: 512 * 1024 * 1024,
   });
   if (r.error) {
@@ -351,18 +350,50 @@ function runOracleWithDump(engine: string, path: string): OracleDumpResult {
 
 interface PortResult { stdout: string; stderr: string; status: number | null; timedOut: boolean }
 
-/**
- * Port-render budget for the injected re-render. Generous by design: `timeout`
- * here does not merely mislabel a row, it produces a `harness-error` that leaves
- * the id **un-attributed**, and an un-attributed id can never earn A1-drift class
- * membership — so a tight budget silently strands graphs. This was a hard-coded
- * 90s, inherited from engine-walk.ts's old cap, and it would have stranded
- * exactly the ids that cap had already stranded once (2108 renders ~83s for the
- * dot engine, 1652 ~801s). Reserve `timeout` for a genuine runaway.
- */
-const PORT_TIMEOUT_MS = Number(process.env['ATTR_PORT_TIMEOUT_MS'] ?? 3_600_000);
+/** Resolved attribution budget knobs. */
+export interface AttributionBudgets {
+  /** Multiplier applied to the previous walk row's cost. */
+  mult: number;
+  /** Lower bound on the oracle cap. */
+  oracleFloorMs: number;
+  /** Lower bound on the injected port render's budget. */
+  portFloorMs: number;
+}
 
-async function renderPortInjected(path: string, engine: string, dumpFile: string): Promise<PortResult> {
+/**
+ * Budget knobs, overridable per run. Both caps scale by the engine's previous
+ * walk row (`walkCosts`), because a fixed cap misfires on the heavy tail: the old
+ * fixed 300s oracle cap returned neato 2371/2646 (native ~1000s) as
+ * `harness-error` under `--fresh` (follow-up 88).
+ *
+ * The port floor is generous by design: `timeout` here does not merely mislabel
+ * a row, it produces a `harness-error` that leaves the id **un-attributed**, and
+ * an un-attributed id can never earn A1-drift class membership — so a tight
+ * budget silently strands graphs. This was a hard-coded 90s, inherited from
+ * engine-walk.ts's old cap, and it would have stranded exactly the ids that cap
+ * had already stranded once (2108 renders ~83s for the dot engine, 1652 ~801s).
+ * Reserve `timeout` for a genuine runaway.
+ */
+export function attributionBudgetsFromEnv(
+  env: Record<string, string | undefined> = process.env,
+): AttributionBudgets {
+  return {
+    mult: Number(env['ATTR_TIMEOUT_MULT'] ?? 3),
+    oracleFloorMs: Number(env['ATTR_ORACLE_TIMEOUT_MS'] ?? 300_000),
+    portFloorMs: Number(env['ATTR_PORT_TIMEOUT_MS'] ?? 3_600_000),
+  };
+}
+
+/** `max(floor, mult x recorded cost)`; no recorded cost gives the floor. */
+export function scaledBudgetMs(floorMs: number, mult: number, recordedMs: number | undefined): number {
+  return Math.max(floorMs, Math.ceil(mult * (recordedMs ?? 0)));
+}
+
+const BUDGETS = attributionBudgetsFromEnv();
+
+async function renderPortInjected(
+  path: string, engine: string, dumpFile: string, budgetMs: number,
+): Promise<PortResult> {
   return new Promise<PortResult>((resolve) => {
     const child = spawn('npx', ['tsx', join(REPO, 'test/corpus/render-one-xdot.ts'), path, engine], {
       cwd: REPO,
@@ -377,7 +408,7 @@ async function renderPortInjected(path: string, engine: string, dumpFile: string
       if (child.pid !== undefined) {
         try { process.kill(-child.pid, 'SIGKILL'); } catch { /* gone */ }
       }
-    }, PORT_TIMEOUT_MS);
+    }, budgetMs);
     child.stdout.on('data', (d: Buffer) => (stdout += d));
     child.stderr.on('data', (d: Buffer) => (stderr += d));
     child.on('error', (e) => (stderr += String(e)));
@@ -457,6 +488,7 @@ async function sweep(engine: string, args: string[]): Promise<void> {
   const parityReport = JSON.parse(readFileSync(parityPath, 'utf8')) as EngineParityReport;
   const tolerance = parityReport.tolerance ?? 0.01;
   interface ParityRow { id: string; status: EngineWalkStatus; nDiffs?: number; firstDiff?: string; size: number }
+  const walk = walkCosts(parityReport.results);
   const diverged = (parityReport.results as unknown as ParityRow[])
     .filter((r) => r.status === 'diverged')
     .sort((a, b) => a.size - b.size || (a.id < b.id ? -1 : 1));
@@ -522,7 +554,8 @@ async function sweep(engine: string, args: string[]): Promise<void> {
       continue;
     }
 
-    const oracle = runOracleWithDump(engine, path);
+    const oracleBudgetMs = scaledBudgetMs(BUDGETS.oracleFloorMs, BUDGETS.mult, walk.oracleMs[row.id]);
+    const oracle = runOracleWithDump(engine, path, oracleBudgetMs);
     if (!oracle.ok) {
       rec.err = oracle.err;
       appendFileSync(OUT, JSON.stringify(rec) + '\n');
@@ -531,15 +564,16 @@ async function sweep(engine: string, args: string[]): Promise<void> {
 
     const dumpFile = join(tmpdir(), `gvts-pos-${engine}-${row.id.replace(/[^a-zA-Z0-9_-]/g, '_')}-${process.pid}.txt`);
     writeFileSync(dumpFile, oracle.dumpLines.join('\n') + '\n');
+    const portBudgetMs = scaledBudgetMs(BUDGETS.portFloorMs, BUDGETS.mult, walk.portMs[row.id]);
     let port: PortResult;
     try {
-      port = await renderPortInjected(path, engine, dumpFile);
+      port = await renderPortInjected(path, engine, dumpFile, portBudgetMs);
     } finally {
       try { unlinkSync(dumpFile); } catch { /* best-effort cleanup */ }
     }
 
     if (port.timedOut) {
-      rec.err = `port render timeout (injected), budget ${PORT_TIMEOUT_MS}ms`;
+      rec.err = `port render timeout (injected), budget ${portBudgetMs}ms`;
     } else if (port.status !== 0) {
       const m = /__RENDER_ERROR__ (.*)/.exec(port.stderr ?? '');
       rec.err = `port render error: ${(m?.[1] ?? (port.stderr ?? '')).slice(0, 200)}`;
