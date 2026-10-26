@@ -166,7 +166,7 @@
     },
     "241_0": {
       "class": "A1",
-      "bound": "7 draw-op diffs on edge 1->2 (unfilled_bezier[ptCount] 8 vs 20). Re-diagnosed by T28 (d42aafd1) with an instrumented native sfdp: macOS libm pow(dist, 2) returns 1 ulp below correct rounding at dist 0x1.68ee9440310f3p+0 (spring_electrical.c:634, coarsest level, iteration 22); adaptive cooling amplifies it into knife-edge positions on which edge 1->2 routes differently. Injecting native pow values makes the trace and final xdot identical. The CDT-tie attribution was wrong.",
+      "bound": "7 draw-op diffs on edge 1->2 (unfilled_bezier[ptCount] 8 vs 20). Re-diagnosed by T28 (23a0cfc7) with an instrumented native sfdp: macOS libm pow(dist, 2) returns 1 ulp below correct rounding at dist 0x1.68ee9440310f3p+0 (spring_electrical.c:634, coarsest level, iteration 22); adaptive cooling amplifies it into knife-edge positions on which edge 1->2 routes differently. Injecting native pow values makes the trace and final xdot identical. The CDT-tie attribution was wrong.",
       "ref": "known-divergences.md#a9-sfdp-fp-ties"
     },
     "2556": {
