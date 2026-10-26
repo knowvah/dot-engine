@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -889,7 +889,7 @@ una ruta exacta con producto de Dekker + BigInt diádico para los casos cercanos
 
 **Clase.** `Math.sin`/`Math.cos` de V8 no son idénticos al bit a `sin`/`cos` de la libm de Apple
 (demostrado: discrepancia de 1 ULP en `2π·4.5/8`, uno de los ocho ángulos de esquina del
-obstáculo elíptico). Las esquinas del octógono circunscrito de `makeObstacle`
+obstáculo elíptico). El redondeo trigonométrico de V8 también depende de la CPU y de la versión de Node: en ese ángulo, Node 22–26 en arm64 devuelven el valor desviado 1 ULP, mientras que Node 26 en x64 y Node 20 en arm64 devuelven el valor correctamente redondeado. Los recorridos y los RCA de este registro se ejecutaron junto al oráculo en su host macOS arm64. Las esquinas del octógono circunscrito de `makeObstacle`
 heredan ese ULP, de modo que las coordenadas de entrada del enrutador de triángulos difieren de
 las del oráculo en ≤6e-14. Los diseños simétricos (nodos del mismo tamaño en un rango/anillo) hacen
 que los cuadriláteros del enrutador sean **exactamente cocirculares** en aritmética real, de modo que el
@@ -908,9 +908,9 @@ fma contraction in multispline routing geometry`) la reflejó. `241_0` de twopi 
 neato —que esta clase había atribuido al empate cocircular de abajo— pasaron a
 **conformes** (aceptaciones retiradas), y `42` de sfdp resultó no tener ningún empate
 (es deriva A1, véase [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` de fdp pasó después a ser **conforme**, tras una segunda corrección de la triangulación en el port (el orden de los vértices de las caras tras un intercambio de aristas; véase el párrafo de fdp más abajo). `241_0` de circo pasó a ser **conforme** con `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: el `Math.sin(9π/8)` de V8 queda a 1 ULP del valor de libm
+ellipse obstacle 8-gon`: en arm64, el `Math.sin(9π/8)` de V8 queda a 1 ULP del valor de libm
 correctamente redondeado, lo que movía una esquina de cada obstáculo elíptico e invertía
-el corredor (aceptación retirada). `241_0` de sfdp fue rediagnosticado por la misma tarea y
+el corredor (aceptación retirada). El port ahora lee los nueve valores de esquina de una tabla de la libm del host, de modo que el resultado ya no depende del `Math.sin` del entorno de ejecución. `241_0` de sfdp fue rediagnosticado por la misma tarea y
 ahora es A1 (véase el párrafo de sfdp más abajo).
 
 **Afectados:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1099,7 +1099,7 @@ incírculo de CDT. `fix(T28)` lo rediagnosticó con un sfdp nativo instrumentado
   navaja en las que la arista 1->2 se enruta de otra forma. Inyectar los valores nativos de
   `pow` hace idénticas todas las líneas de traza y el xdot final. El residuo de
   enrutamiento visto con posiciones inyectadas era en parte un artefacto de la inyección y
-  en parte el `Math.sin(9π/8)` de V8 en el octógono del obstáculo, que el port ahora toma
+  en parte el `Math.sin(9π/8)` de V8 (1 ULP desviado en arm64) en el octógono del obstáculo, que el port ahora toma
   de la libm del host (la corrección que también hizo conforme `241_0` de circo). Lo que
   queda es deriva A1.
 

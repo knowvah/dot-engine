@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -873,7 +873,7 @@ um caminho exato com produto de Dekker + BigInt diádico para os casos próximos
 
 **Classe.** O `Math.sin`/`Math.cos` do V8 não são idênticos bit a bit ao `sin`/`cos` da libm da Apple
 (comprovado: discordância de 1 ULP em `2π·4.5/8`, um dos oito
-ângulos de canto do obstáculo elipse). Os cantos do octógono circunscrito de `makeObstacle`
+ângulos de canto do obstáculo elipse). O arredondamento trigonométrico do V8 também depende da CPU e da versão do Node: nesse ângulo, Node 22–26 em arm64 retornam o valor 1 ULP fora, enquanto Node 26 em x64 e Node 20 em arm64 retornam o valor corretamente arredondado. As varreduras e as RCAs deste registro rodaram ao lado do oráculo no host macOS arm64 dele. Os cantos do octógono circunscrito de `makeObstacle`
 herdam esse ULP, de modo que as coordenadas de entrada do roteador de triângulos diferem das
 do oráculo em ≤6e-14. Layouts simétricos (nós de mesmo tamanho em um ranque/anel) tornam
 os quadriláteros do roteador **exatamente cocirculares** em aritmética real, de modo que o
@@ -894,9 +894,9 @@ atribuía ao empate cocircular abaixo — passaram a **conformantes**
 A1, veja [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` do fdp
 passou depois a **conformante**, após uma segunda correção no port da triangulação (ordem
 dos vértices das faces após a troca de uma aresta; veja o parágrafo do fdp abaixo). `241_0` do circo passou a **conformante** com `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: o `Math.sin(9π/8)` do V8 fica 1 ULP fora do valor da libm
+ellipse obstacle 8-gon`: em arm64, o `Math.sin(9π/8)` do V8 fica 1 ULP fora do valor da libm
 corretamente arredondado, o que movia um canto de cada obstáculo elíptico e invertia o
-corredor (aceitação aposentada). `241_0` do sfdp foi rediagnosticado pela mesma tarefa e
+corredor (aceitação aposentada). O port agora lê os nove valores de canto de uma tabela da libm do host, de modo que o resultado não depende mais do `Math.sin` do runtime. `241_0` do sfdp foi rediagnosticado pela mesma tarefa e
 agora é A1 (veja o parágrafo do sfdp abaixo).
 
 **Afetados:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1082,7 +1082,7 @@ cocircular da CDT. `fix(T28)` o rediagnosticou com um sfdp nativo instrumentado:
   quais a aresta 1->2 é roteada de forma diferente. Injetar os valores nativos de `pow`
   torna idênticas todas as linhas de rastreamento e o xdot final. O resíduo de roteamento
   visto com posições injetadas era em parte um artefato da injeção e em parte o
-  `Math.sin(9π/8)` do V8 no octógono do obstáculo, que o port agora toma da libm do host (a
+  `Math.sin(9π/8)` do V8 (1 ULP fora em arm64) no octógono do obstáculo, que o port agora toma da libm do host (a
   correção que também tornou `241_0` do circo conformante). O que resta é deriva A1.
 
 > **`42` do sfdp reclassificado de A9 → deriva A1 (sincronização com o graphviz 16.1).** Ele estava listado

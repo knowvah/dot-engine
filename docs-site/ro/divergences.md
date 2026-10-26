@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -872,7 +872,7 @@ o cale exactă cu produs Dekker + BigInt diadic pentru cazurile apropiate de zer
 
 **Clasă.** `Math.sin`/`Math.cos` din V8 nu sunt identice bit cu bit cu `sin`/`cos`
 din libm Apple (dovedit: dezacord de 1 ULP la `2π·4.5/8`, unul dintre cele opt
-unghiuri de colț ale obstacolului-elipsă). Colțurile octogonului circumscris din `makeObstacle`
+unghiuri de colț ale obstacolului-elipsă). Rotunjirea trigonometrică din V8 depinde și de CPU și de versiunea Node: la acel unghi, Node 22–26 pe arm64 returnează valoarea cu 1 ULP greșită, în timp ce Node 26 pe x64 și Node 20 pe arm64 returnează valoarea rotunjită corect. Parcurgerile și RCA-urile din acest registru au rulat alături de oracol, pe gazda lui macOS arm64. Colțurile octogonului circumscris din `makeObstacle`
 moștenesc acel ULP, astfel că de coordonatele de intrare ale rutatorului cu triunghiuri diferă de
 cele ale oracolului cu ≤6e-14. Aranjările simetrice (noduri de aceeași dimensiune pe un rang/inel) fac
 patrulaterele rutatorului **exact cocirculare** în aritmetica reală, deci predicatul exact de
@@ -893,9 +893,9 @@ le atribuise egalității cocirculare de mai jos — au devenit **conforme**
 A1, vedeți [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` din fdp
 a devenit **conform** mai târziu, după o a doua remediere de partea portării în triangulare
 (ordinea vârfurilor fețelor după o interschimbare de muchie; vedeți paragraful despre fdp de mai jos). `241_0` din circo a devenit **conform** cu `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: `Math.sin(9π/8)` din V8 este la 1 ULP de valoarea libm rotunjită
+ellipse obstacle 8-gon`: pe arm64, `Math.sin(9π/8)` din V8 este la 1 ULP de valoarea libm rotunjită
 corect, ceea ce muta un colț al fiecărui obstacol eliptic și inversa coridorul (acceptare
-retrasă). `241_0` din sfdp a fost rediagnosticat de aceeași sarcină și acum este A1
+retrasă). Portarea citește acum toate cele nouă valori de colț dintr-un tabel din libm-ul gazdei, astfel că rezultatul nu mai depinde de `Math.sin` al mediului de execuție. `241_0` din sfdp a fost rediagnosticat de aceeași sarcină și acum este A1
 (vedeți paragraful despre sfdp de mai jos).
 
 **Afectate:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1080,7 +1080,7 @@ CDT. `fix(T28)` l-a rediagnosticat cu un sfdp nativ instrumentat:
   răcirea adaptivă o amplifică în poziții pe muchia de cuțit, în care muchia 1->2 este
   rutată diferit. Injectarea valorilor native `pow` face identice fiecare linie de urmă și
   xdot-ul final. Reziduul de rutare văzut cu pozițiile injectate a fost parțial un artefact
-  al injecției și parțial `Math.sin(9π/8)` din V8 în octogonul obstacolului, pe care
+  al injecției și parțial `Math.sin(9π/8)` din V8 (cu 1 ULP greșit pe arm64) în octogonul obstacolului, pe care
   portarea îl ia acum din libm-ul gazdei (remedierea care a făcut conform și circo
   `241_0`). Ce rămâne este deriva A1.
 

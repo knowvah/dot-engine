@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -888,7 +888,7 @@ täsmällinen Dekker-tulo + dyadinen BigInt-polku lähes-nollatapauksille.
 
 **Luokka.** V8:n `Math.sin`/`Math.cos` eivät ole bitti bitiltä identtisiä Apple libm:n
 `sin`/`cos`in kanssa (todistettu: 1 ULP:n ero kohdassa `2π·4.5/8`, yhdessä kahdeksasta
-ellipsiesteen kulmakulmasta). `makeObstacle`n ympäri piirretyn 8-kulmion kulmat
+ellipsiesteen kulmakulmasta). V8:n trigonometrinen pyöristys riippuu myös suorittimesta ja Node-versiosta: tässä kulmassa Node 22–26 arm64:llä palauttavat 1 ULP:n verran pielessä olevan arvon, kun taas Node 26 x64:llä ja Node 20 arm64:llä palauttavat oikein pyöristetyn. Tämän kirjanpidon läpikäynnit ja RCA:t ajettiin oraakkelin rinnalla sen macOS arm64 -isännällä. `makeObstacle`n ympäri piirretyn 8-kulmion kulmat
 perivät tuon ULP:n, joten kolmioreitittimen syötekoordinaatit eroavat
 oraakkelin koordinaateista ≤6e-14:n verran. Symmetriset asettelut (yhtä suuret solmut rankilla/renkaalla)
 tekevät reitittimen nelikulmioista **täsmälleen samalla ympyrällä olevia** reaaliaritmetiikassa,
@@ -908,9 +908,9 @@ alla olevalla samalle ympyrälle osuvalla tasapelillä — muuttuivat **yhdenmuk
 (hyväksynnät poistettu), ja sfdp:n `42`:lla ei osoittautunutkaan olevan tasapeliä
 lainkaan (se on A1-drift, katso [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)).
 fdp:n `241_0` muuttui myöhemmin **yhdenmukaiseksi** kolmioinnin toisen porttauspuolen korjauksen jälkeen (tahkon kärkien järjestys kaarenvaihdon jälkeen; katso fdp-kappale alla). circon `241_0` muuttui **yhdenmukaiseksi** korjauksella `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: V8:n `Math.sin(9π/8)` on 1 ULP:n päässä oikein pyöristetystä
+ellipse obstacle 8-gon`: arm64:llä V8:n `Math.sin(9π/8)` on 1 ULP:n päässä oikein pyöristetystä
 libm-arvosta, mikä siirsi jokaisen ellipsiesteen yhtä kulmaa ja käänsi käytävän
-(hyväksyntä poistettu). sfdp:n `241_0` diagnosoitiin uudelleen samassa tehtävässä ja se on
+(hyväksyntä poistettu). Porttaus lukee nyt kaikki yhdeksän kulma-arvoa isäntä-libm-taulukosta, joten tulos ei enää riipu ajoympäristön `Math.sin`:stä. sfdp:n `241_0` diagnosoitiin uudelleen samassa tehtävässä ja se on
 nyt A1 (katso sfdp-kappale alla).
 
 **Koskee:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1098,7 +1098,7 @@ natiivilla sfdp:llä:
   sen veitsenterä-sijainneiksi, joissa kaari 1->2 reititetään toisin. Natiivien
   `pow`-arvojen injektointi tekee jokaisesta jälkirivistä ja lopullisesta xdotista
   identtisen. Injektoiduilla sijainneilla nähty reitityksen jäännös oli osittain
-  injektion artefakti ja osittain V8:n `Math.sin(9π/8)` esteen 8-kulmiossa, jonka
+  injektion artefakti ja osittain V8:n `Math.sin(9π/8)` (arm64:llä 1 ULP pielessä) esteen 8-kulmiossa, jonka
   porttaus nyt ottaa isäntä-libm:stä (korjaus, joka teki myös circon `241_0`:n
   yhdenmukaiseksi). Jäljelle jää A1-drift.
 

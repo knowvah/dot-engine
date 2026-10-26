@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -879,7 +879,7 @@ een exact pad met Dekker-product + dyadische BigInt voor de bijna-nulgevallen.
 
 **Klasse.** `Math.sin`/`Math.cos` van V8 zijn niet bit-identiek aan `sin`/`cos` van
 Apple-libm (bewezen: 1-ULP-verschil bij `2π·4.5/8`, een van de acht
-hoeken van de ellips-obstakels). De hoeken van de omgeschreven 8-hoek van `makeObstacle`
+hoeken van de ellips-obstakels). De trigonometrische afronding van V8 hangt ook af van de CPU en de Node-versie: bij die hoek geven Node 22–26 op arm64 de waarde die 1 ULP afwijkt, terwijl Node 26 op x64 en Node 20 op arm64 de correct afgeronde waarde geven. De walks en RCA's in dit register liepen naast het orakel op diens macOS-arm64-host. De hoeken van de omgeschreven 8-hoek van `makeObstacle`
 erven die ULP, zodat de invoercoördinaten van de driehoeksrouter met ≤6e-14 van die
 van het orakel verschillen. Symmetrische lay-outs (even grote knopen op een rang/ring) maken
 de vierhoeken van de router in reële rekenkunde **exact cocirculair**, zodat het exacte
@@ -900,9 +900,9 @@ deze klasse aan de cocirculaire gelijkstand hieronder waren toegeschreven — we
 drift, zie [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp-`241_0` werd later
 **conformant**, na een tweede port-zijdige fix aan de triangulatie (volgorde van de
 hoekpunten van vlakken na een kantwissel; zie de fdp-alinea hieronder). circo-`241_0` werd **conformant** met `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: V8's `Math.sin(9π/8)` zit 1 ULP naast de correct afgeronde
+ellipse obstacle 8-gon`: op arm64 zit V8's `Math.sin(9π/8)` 1 ULP naast de correct afgeronde
 libm-waarde, wat één hoek van elk ellipsobstakel verschoof en de corridor liet omslaan
-(acceptatie ingetrokken). sfdp-`241_0` werd door dezelfde taak opnieuw gediagnosticeerd en
+(acceptatie ingetrokken). De port leest nu alle negen hoekwaarden uit een host-libm-tabel, zodat het resultaat niet meer afhangt van de `Math.sin` van de runtime. sfdp-`241_0` werd door dezelfde taak opnieuw gediagnosticeerd en
 is nu A1 (zie de sfdp-alinea hieronder).
 
 **Getroffen:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1087,7 +1087,7 @@ native sfdp:
   dat tot posities op het mesrandje waarop kant 1->2 anders wordt gerouteerd. Het
   injecteren van native `pow`-waarden maakt elke tracerregel en de uiteindelijke xdot
   identiek. Het routeringsrestverschil dat met geïnjecteerde posities zichtbaar was, was
-  deels een injectieartefact en deels V8's `Math.sin(9π/8)` in de 8-hoek van het obstakel,
+  deels een injectieartefact en deels V8's `Math.sin(9π/8)` (op arm64 1 ULP ernaast) in de 8-hoek van het obstakel,
   die de port nu uit de host-libm neemt (de fix die ook circo `241_0` conformant maakte).
   Wat overblijft is A1-drift.
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -946,7 +946,7 @@ prodotto di Dekker + BigInt diadico per i casi vicini allo zero.
 
 **Classe.** `Math.sin`/`Math.cos` di V8 non coincidono bit per bit con `sin`/`cos`
 di libm di Apple (dimostrato: discordanza di 1 ULP a `2π·4.5/8`, uno degli otto
-angoli degli spigoli dell'ostacolo ellittico). Gli spigoli dell'ottagono
+angoli degli spigoli dell'ostacolo ellittico). Anche l'arrotondamento trigonometrico di V8 dipende dalla CPU e dalla versione di Node: a quell'angolo Node 22–26 su arm64 restituiscono il valore sbagliato di 1 ULP, mentre Node 26 su x64 e Node 20 su arm64 restituiscono quello correttamente arrotondato. I percorsi e le RCA di questo registro sono stati eseguiti accanto all'oracolo sul suo host macOS arm64. Gli spigoli dell'ottagono
 circoscritto di `makeObstacle` ereditano quell'ULP, quindi le coordinate di input
 del router a triangoli differiscono da quelle dell'oracolo di ≤6e-14. I layout
 simmetrici (nodi di pari dimensione su un rango/anello) rendono i quadrilateri del
@@ -971,9 +971,9 @@ cocircolare qui sotto — sono diventati **conformant** (accettazioni ritirate),
 **conformant** in seguito, dopo una seconda correzione lato porting alla triangolazione
 (ordine dei vertici delle facce dopo uno scambio di arco; vedi il paragrafo su fdp qui
 sotto). `241_0` di circo è diventato **conformant** con `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: il `Math.sin(9π/8)` di V8 è a 1 ULP dal valore di libm
+ellipse obstacle 8-gon`: su arm64 il `Math.sin(9π/8)` di V8 è a 1 ULP dal valore di libm
 correttamente arrotondato, il che spostava un angolo di ogni ostacolo ellittico e invertiva
-il corridoio (accettazione ritirata). `241_0` di sfdp è stato rediagnosticato dallo stesso
+il corridoio (accettazione ritirata). Il porting ora legge tutti e nove i valori degli spigoli da una tabella della libm dell'host, quindi il risultato non dipende più dal `Math.sin` del runtime. `241_0` di sfdp è stato rediagnosticato dallo stesso
 compito e ora è A1 (vedi il paragrafo su sfdp qui sotto).
 
 **Interessati:** `2343`, `2239`,
@@ -1174,7 +1174,7 @@ dell'incircle di CDT. `fix(T28)` lo ha rediagnosticato con uno sfdp nativo strum
   viene instradato diversamente. Iniettare i valori nativi di `pow` rende identiche ogni
   riga di traccia e l'xdot finale. Il residuo di instradamento visto con posizioni
   iniettate era in parte un artefatto dell'iniezione e in parte il `Math.sin(9π/8)` di V8
-  nell'ottagono dell'ostacolo, che il porting ora prende dalla libm dell'host (la
+  (sbagliato di 1 ULP su arm64) nell'ottagono dell'ostacolo, che il porting ora prende dalla libm dell'host (la
   correzione che ha reso conformant anche `241_0` di circo). Ciò che resta è deriva A1.
 
 > **`42` di sfdp riclassificato da A9 ad A1-drift (sincronizzazione graphviz

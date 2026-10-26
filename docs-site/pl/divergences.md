@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -853,7 +853,7 @@ dokładna ścieżka z iloczynem Dekkera + diadycznym BigInt dla przypadków blis
 
 **Klasa.** `Math.sin`/`Math.cos` w V8 nie są identyczne bitowo z `sin`/`cos` z libm
 Apple (dowiedzione: rozbieżność 1 ULP przy `2π·4.5/8`, jednym z ośmiu kątów
-narożników przeszkody-elipsy). Narożniki opisanego 8-kąta z `makeObstacle`
+narożników przeszkody-elipsy). Zaokrąglanie funkcji trygonometrycznych w V8 zależy też od procesora i wersji Node: pod tym kątem Node 22–26 na arm64 zwracają wartość błędną o 1 ULP, a Node 26 na x64 i Node 20 na arm64 zwracają wartość poprawnie zaokrągloną. Przejścia i RCA w tym rejestrze były uruchamiane obok wyroczni na jej hoście macOS arm64. Narożniki opisanego 8-kąta z `makeObstacle`
 dziedziczą ten ULP, więc współrzędne wejściowe routera trójkątów różnią się od
 wyroczni o ≤6e-14. Symetryczne układy (węzły równej wielkości w randze/pierścieniu) sprawiają, że
 czworokąty routera są **dokładnie współokręgowe** w arytmetyce rzeczywistej, więc dokładny
@@ -874,9 +874,9 @@ przypisywała remisowi współokręgowości poniżej — stały się **conforman
 zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0`
 stał się później **conformant**, po drugiej poprawce po stronie portu w triangulacji
 (kolejność wierzchołków ściany po zamianie krawędzi; zob. akapit o fdp poniżej). circo `241_0` stał się **conformant** dzięki `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: `Math.sin(9π/8)` w V8 jest o 1 ULP od poprawnie zaokrąglonej
+ellipse obstacle 8-gon`: na arm64 `Math.sin(9π/8)` w V8 jest o 1 ULP od poprawnie zaokrąglonej
 wartości libm, co przesuwało jeden narożnik każdej eliptycznej przeszkody i przerzucało
-korytarz (akceptacja wycofana). sfdp `241_0` został ponownie zdiagnozowany przez to samo
+korytarz (akceptacja wycofana). Port odczytuje teraz wszystkie dziewięć wartości narożników z tablicy libm hosta, więc wynik nie zależy już od `Math.sin` środowiska uruchomieniowego. sfdp `241_0` został ponownie zdiagnozowany przez to samo
 zadanie i jest teraz A1 (zob. akapit o sfdp poniżej).
 
 **Dotyczy:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1062,7 +1062,7 @@ zinstrumentowanego natywnego sfdp:
   wzmacnia to do pozycji na ostrzu noża, w których krawędź 1->2 jest prowadzona inaczej.
   Wstrzyknięcie natywnych wartości `pow` czyni każdą linię śladu i końcowy xdot
   identycznymi. Residuum prowadzenia widoczne przy wstrzykniętych pozycjach było częściowo
-  artefaktem wstrzykiwania, a częściowo `Math.sin(9π/8)` z V8 w ośmiokącie przeszkody,
+  artefaktem wstrzykiwania, a częściowo `Math.sin(9π/8)` z V8 (błędny o 1 ULP na arm64) w ośmiokącie przeszkody,
   który port bierze teraz z libm hosta (poprawka, która uczyniła też circo `241_0`
   conformant). Pozostaje dryf A1.
 

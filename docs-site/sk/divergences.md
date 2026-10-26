@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -873,7 +873,7 @@ presná cesta Dekkerovho súčinu + dyadického BigInt pre prípady blízke nule
 
 **Trieda.** `Math.sin`/`Math.cos` vo V8 nie sú bitovo identické s `sin`/`cos`
 z libm od Apple (dokázané: nesúlad 1 ULP pri `2π·4.5/8`, jednom z ôsmich
-uhlov rohov obstrukcie v tvare elipsy). Rohy opísaného 8-uholníka z `makeObstacle`
+uhlov rohov obstrukcie v tvare elipsy). Zaokrúhľovanie goniometrických funkcií vo V8 závisí aj od procesora a verzie Node: pri tomto uhle vracajú Node 22–26 na arm64 hodnotu o 1 ULP vedľa, zatiaľ čo Node 26 na x64 a Node 20 na arm64 vracajú správne zaokrúhlenú. Prechody a RCA v tomto registri bežali popri orákule na jeho hostiteľovi macOS arm64. Rohy opísaného 8-uholníka z `makeObstacle`
 zdedia toto ULP, takže vstupné súradnice trojuholníkového smerovača sa líšia
 od súradníc orákula o ≤6e-14. Symetrické rozloženia (uzly rovnakej veľkosti v rade/kruhu) robia
 štvoruholníky smerovača **presne kokruhovými** v reálnej aritmetike, takže presný
@@ -894,9 +894,9 @@ trieda pripisovala kokruhovej remíze nižšie — sa stal **conformant**
 drift A1, pozri [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` pri fdp
 sa neskôr stal **conformant**, po druhej oprave na strane portu v triangulácii
 (poradie vrcholov plôšok po výmene hrany; pozri odsek o fdp nižšie). `241_0` pri circo sa stal **conformant** s `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: `Math.sin(9π/8)` vo V8 je o 1 ULP mimo správne zaokrúhlenej
+ellipse obstacle 8-gon`: na arm64 je `Math.sin(9π/8)` vo V8 o 1 ULP mimo správne zaokrúhlenej
 hodnoty libm, čo posúvalo jeden roh každej eliptickej prekážky a preklopilo koridor
-(akceptácia vyradená). `241_0` pri sfdp bol touto istou úlohou znovu diagnostikovaný a
+(akceptácia vyradená). Port teraz číta všetkých deväť hodnôt rohov z tabuľky libm hostiteľa, takže výsledok už nezávisí od `Math.sin` runtime. `241_0` pri sfdp bol touto istou úlohou znovu diagnostikovaný a
 teraz je A1 (pozri odsek o sfdp nižšie).
 
 **Dotknuté:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1079,7 +1079,7 @@ natívne `dot -Ksfdp -Txdot`, ±0.5) tu uvádzala `241_0` ako kokruhovú remízu
   zosilní na polohy na ostrí noža, v ktorých sa hrana 1->2 vedie inak. Vstreknutie natívnych
   hodnôt `pow` urobí každý riadok trasovania aj výsledné xdot totožnými. Zvyšok vo vedení
   pozorovaný pri vstreknutých polohách bol sčasti artefaktom vstrekovania a sčasti
-  `Math.sin(9π/8)` vo V8 v osemuholníku prekážky, ktorý port teraz berie z libm hostiteľa
+  `Math.sin(9π/8)` vo V8 (na arm64 o 1 ULP vedľa) v osemuholníku prekážky, ktorý port teraz berie z libm hostiteľa
   (oprava, ktorá urobila conformant aj circo `241_0`). Zostáva drift A1.
 
 > **sfdp `42` preklasifikované A9 → drift A1 (synchronizácia graphviz 16.1).** Bolo tu uvedené

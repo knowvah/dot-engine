@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -869,7 +869,7 @@ a přesná cesta s Dekkerovým součinem + dyadickým BigInt pro případy blíz
 
 **Třída.** `Math.sin`/`Math.cos` ve V8 nejsou bitově identické s `sin`/`cos` z
 Apple libm (prokázáno: nesouhlas o 1 ULP v `2π·4.5/8`, jednom z osmi
-rohových úhlů překážky ve tvaru elipsy). Rohy opsaného 8úhelníku v `makeObstacle`
+rohových úhlů překážky ve tvaru elipsy). Zaokrouhlování goniometrických funkcí ve V8 závisí také na procesoru a verzi Node: v tomto úhlu vrací Node 22–26 na arm64 hodnotu o 1 ULP vedle, zatímco Node 26 na x64 a Node 20 na arm64 vracejí správně zaokrouhlenou hodnotu. Průchody a RCA v tomto registru probíhaly vedle orákula na jeho hostiteli macOS arm64. Rohy opsaného 8úhelníku v `makeObstacle`
 zdědí tento ULP, takže vstupní souřadnice trojúhelníkového routeru se od
 souřadnic orákula liší o ≤6e-14. Symetrická rozvržení (stejně velké
 uzly na úrovni/kruhu) činí čtyřúhelníky routeru v reálné aritmetice **přesně
@@ -888,9 +888,9 @@ multispline routing geometry`) ji zrcadlil. twopi a neato `241_0` — které tat
 třída připisovala remíze kocirkulárních bodů níže — se staly **conformant**
 (akceptace vyřazeny) a u sfdp `42` se ukázalo, že žádnou remízu nemá (je to drift
 A1, viz [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` se později stal **conformant** po druhé opravě triangulace na straně portace (pořadí vrcholů stěny po výměně hrany; viz odstavec o fdp níže). circo `241_0` se stal **conformant** s `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: `Math.sin(9π/8)` ve V8 je o 1 ULP vedle správně zaokrouhlené
+ellipse obstacle 8-gon`: `Math.sin(9π/8)` ve V8 je na arm64 o 1 ULP vedle správně zaokrouhlené
 hodnoty z libm, což posunulo jeden roh každé eliptické překážky a překlopilo koridor
-(akceptace vyřazena). sfdp `241_0` byl touto samou úlohou znovu diagnostikován a nyní
+(akceptace vyřazena). Portace nyní čte všech devět hodnot rohů z tabulky libm hostitele, takže výsledek už nezávisí na `Math.sin` běhového prostředí. sfdp `241_0` byl touto samou úlohou znovu diagnostikován a nyní
 je A1 (viz odstavec o sfdp níže).
 
 **Dotčeno:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1073,7 +1073,7 @@ bodů v CDT. `fix(T28)` jej znovu diagnostikoval pomocí instrumentovaného nati
   zesílí do pozic na ostří nože, na nichž je hrana 1->2 vedena jinak. Vstříknutí nativních
   hodnot `pow` činí každý řádek trasování i výsledné xdot shodnými. Zbytek ve vedení
   pozorovaný při vstříknutých pozicích byl zčásti artefaktem vstřikování a zčásti
-  `Math.sin(9π/8)` ve V8 v 8úhelníku překážky, který portace nyní bere z libm hostitele
+  `Math.sin(9π/8)` ve V8 (na arm64 o 1 ULP vedle) v 8úhelníku překážky, který portace nyní bere z libm hostitele
   (oprava, která také učinila circo `241_0` conformant). Zbývá A1 drift.
 
 > **sfdp `42` překlasifikováno z A9 na A1-drift (synchronizace s graphviz 16.1).**
