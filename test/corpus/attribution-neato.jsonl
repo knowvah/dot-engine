@@ -1,9 +1,8 @@
-{"_meta":true,"oracleSha1":"0e0164de26a43dc43340f44915b32d7f7616c4a1","generatedAt":"2026-10-14T20:30:32.919Z"}
+{"_meta":true,"oracleSha1":"0e0164de26a43dc43340f44915b32d7f7616c4a1","generatedAt":"2026-10-24T03:51:23.289Z"}
 {"id":"graphs-clust1","verdict":"drift-exonerated","baseDiffs":42,"injectedDiffs":0,"bucket":{"shape":"cluster/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-graphs-directed-clust1","verdict":"drift-exonerated","baseDiffs":42,"injectedDiffs":0,"bucket":{"shape":"cluster/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"graphs-p","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2852","verdict":"drift-exonerated","baseDiffs":41,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
-{"id":"tree-doc-neato-inet","verdict":"drift-exonerated","baseDiffs":721,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"1990","verdict":"drift-exonerated","baseDiffs":17,"injectedDiffs":0,"bucket":{"shape":"edge/❰A❱->0⋯1/unknown","kind":"position","signature":"none"}}
 {"id":"graphs-jcctree","verdict":"drift-exonerated","baseDiffs":113,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-graphs-directed-jcctree","verdict":"drift-exonerated","baseDiffs":113,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
@@ -15,7 +14,6 @@
 {"id":"graphs-grammar","verdict":"drift-exonerated","baseDiffs":38,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-graphs-directed-grammar","verdict":"drift-exonerated","baseDiffs":38,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2183","verdict":"drift-exonerated","baseDiffs":22,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
-{"id":"tree-graphs-undirected-ngk10_4","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"share-KW91","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"graphs-sr_box","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"graphs-sl_box","verdict":"drift-exonerated","baseDiffs":2,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
@@ -82,6 +80,6 @@
 {"id":"2621","verdict":"drift-exonerated","baseDiffs":79577,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"graphs-b100","verdict":"drift-exonerated","baseDiffs":4,"injectedDiffs":0,"bucket":{"shape":"edge/_hdraw_/unknown","kind":"position","signature":"none"}}
 {"id":"graphs-b104","verdict":"drift-exonerated","baseDiffs":4,"injectedDiffs":0,"bucket":{"shape":"edge/_hdraw_/unknown","kind":"position","signature":"none"}}
+{"id":"2108","verdict":"drift-exonerated","baseDiffs":6256,"injectedDiffs":0,"bucket":{"shape":"edge/pos/unknown","kind":"position","signature":"none"}}
 {"id":"2371","verdict":"drift-exonerated","baseDiffs":405690,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2646","verdict":"drift-exonerated","baseDiffs":28,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}
-{"id":"2108","verdict":"drift-exonerated","baseDiffs":6256,"injectedDiffs":0,"bucket":{"shape":"edge/pos/unknown","kind":"position","signature":"none"}}

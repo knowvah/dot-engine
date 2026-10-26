@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-14T23:44:43.377Z",
+  "generatedAt": "2026-10-24T18:41:09.681Z",
   "oracleSha1": "0e0164de26a43dc43340f44915b32d7f7616c4a1",
   "tolerance": 0.5,
   "results": [
@@ -40,17 +40,6 @@
       "id": "2852",
       "verdict": "drift-exonerated",
       "baseDiffs": 41,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-neato-inet",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 721,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -172,17 +161,6 @@
       "id": "2183",
       "verdict": "drift-exonerated",
       "baseDiffs": 22,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-graphs-undirected-ngk10_4",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 2,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",
@@ -917,6 +895,17 @@
       }
     },
     {
+      "id": "2108",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 6256,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "edge/pos/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "2371",
       "verdict": "drift-exonerated",
       "baseDiffs": 405690,
@@ -934,17 +923,6 @@
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2108",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 6256,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/pos/unknown",
         "kind": "position",
         "signature": "none"
       }
