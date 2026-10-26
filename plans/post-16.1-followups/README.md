@@ -474,8 +474,8 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       both by the engine's own recorded cost (the previous walk row's `portMs`/`oracleMs`)
       (part 4 T29; worked around with env overrides and single-id resumes). The
       refreshed `attribution-neato.json(l)` (84 rows, all drift-exonerated, without the
-      now-passing inet/ngk10_4 rows) was outside T29's write-set and is not committed;
-      re-run `attribute-divergence.ts neato --fresh` with the overrides and commit it.
+      now-passing inet/ngk10_4 rows) landed separately on 2026-10-26; the budget
+      scaling itself is still open.
 
 ## Local leftovers (not committed, safe to delete)
 
