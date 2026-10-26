@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -933,7 +933,7 @@ und ein exakter Pfad aus Dekker-Produkt + dyadischem BigInt für die Fälle nahe
 
 **Klasse.** `Math.sin`/`Math.cos` von V8 sind nicht bitidentisch mit `sin`/`cos` der
 Apple-libm (bewiesen: 1-ULP-Unterschied bei `2π·4.5/8`, einem der acht
-Eckwinkel des Ellipsen-Hindernisses). Die Ecken des umschriebenen 8-Ecks von
+Eckwinkel des Ellipsen-Hindernisses). Auch die Rundung der Trigonometrie in V8 hängt von der CPU und der Node-Version ab: bei diesem Winkel liefern Node 22–26 auf arm64 den um 1 ULP abweichenden Wert, Node 26 auf x64 und Node 20 auf arm64 dagegen den korrekt gerundeten. Die Walks und RCAs in diesem Verzeichnis liefen neben dem Orakel auf dessen macOS-arm64-Host. Die Ecken des umschriebenen 8-Ecks von
 `makeObstacle` erben dieses ULP, sodass sich die Eingabekoordinaten des
 Dreiecks-Routers um ≤6e-14 von denen des Orakels unterscheiden. Symmetrische Layouts
 (gleich große Knoten auf einem Rang/Ring) machen die Vierecke des Routers in reeller
@@ -954,9 +954,9 @@ contraction in multispline routing geometry`) hat sie nachgebildet. twopi- und n
 **conformant** (Akzeptanzen entfernt), und sfdp `42` hatte sich als völlig ohne
 Gleichstand erwiesen (es ist A1-Drift, siehe
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp-`241_0` wurde später **conformant**, nach einer zweiten Korrektur der Triangulation auf Seiten der Portierung (Reihenfolge der Flächenecken nach einem Kantentausch; siehe den fdp-Absatz unten). circo-`241_0` wurde **conformant** mit `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: V8s `Math.sin(9π/8)` liegt 1 ULP neben dem korrekt gerundeten
+ellipse obstacle 8-gon`: V8s `Math.sin(9π/8)` liegt auf arm64 1 ULP neben dem korrekt gerundeten
 libm-Wert, was eine Ecke jedes Ellipsen-Hindernisses verschob und den Korridor kippte
-(Akzeptanz ausgemustert). sfdp-`241_0` wurde von derselben Aufgabe neu diagnostiziert und
+(Akzeptanz ausgemustert). Die Portierung liest jetzt alle neun Eckwerte aus einer Host-libm-Tabelle, sodass das Ergebnis nicht mehr vom `Math.sin` der Laufzeit abhängt. sfdp-`241_0` wurde von derselben Aufgabe neu diagnostiziert und
 ist jetzt A1 (siehe den sfdp-Absatz unten).
 
 **Betroffen:** `2343`, `2239`, `share-b29`, `windows-b29`
@@ -1147,7 +1147,7 @@ bitidentisch mit dem Orakel; **ausgemustert 2026-10-18** — konform, seit DIST2
   das zu Messerschneiden-Positionen, auf denen Kante 1->2 anders geroutet wird. Das
   Injizieren nativer `pow`-Werte macht jede Trace-Zeile und das finale xdot identisch.
   Der bei injizierten Positionen beobachtete Routing-Rest war teils ein
-  Injection-Artefakt und teils V8s `Math.sin(9π/8)` im Hindernis-8-Eck, das die
+  Injection-Artefakt und teils V8s `Math.sin(9π/8)` (auf arm64 1 ULP daneben) im Hindernis-8-Eck, das die
   Portierung jetzt aus der Host-libm nimmt (die Korrektur, die auch circo `241_0`
   conformant machte). Was bleibt, ist A1-Drift.
 

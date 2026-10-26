@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -878,7 +878,7 @@ egy pontos Dekker-szorzatos + diadikus BigInt útvonal a nullához közeli esete
 
 **Osztály.** A V8 `Math.sin`/`Math.cos` függvényei nem bitre azonosak az Apple libm
 `sin`/`cos` függvényeivel (bizonyított: 1 ULP-s eltérés a `2π·4.5/8` helyen, a nyolc
-ellipszis-akadály sarokszög egyikénél). A `makeObstacle` körülírt 8-szög csúcsai
+ellipszis-akadály sarokszög egyikénél). A V8 trigonometrikus kerekítése a CPU-tól és a Node verziójától is függ: ennél a szögnél a Node 22–26 arm64-en az 1 ULP-pel eltérő értéket adja, míg a Node 26 x64-en és a Node 20 arm64-en a helyesen kerekítettet. A jegyzék bejárásai és RCA-i az orákulum mellett, annak macOS arm64 gépén futottak. A `makeObstacle` körülírt 8-szög csúcsai
 öröklik ezt az ULP-t, így a háromszög-útvonalvezető bemeneti koordinátái az
 orákuluméitól ≤6e-14-gyel különböznek. A szimmetrikus elrendezések (egyforma méretű
 csúcsok egy rangon/gyűrűn) az útvonalvezető négyszögeit valós aritmetikában **pontosan körön fekvővé** teszik,
@@ -898,9 +898,9 @@ neato `241_0` — amelyeket ez az osztály az alábbi körön fekvő döntetlenn
 tulajdonított — **conformant** lett (az elfogadások kivonva), az sfdp `42`-ről
 pedig kiderült, hogy egyáltalán nincs döntetlen (A1-sodródás, lásd
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). Az fdp `241_0` később **conformant** lett, a triangulációnak egy második, portoldali javítása után (a lapcsúcsok sorrendje élcsere után; lásd lent az fdp bekezdést). A circo `241_0` **conformant** lett a `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon` javítással: a V8 `Math.sin(9π/8)` értéke 1 ULP-pel tér el a
+ellipse obstacle 8-gon` javítással: arm64-en a V8 `Math.sin(9π/8)` értéke 1 ULP-pel tér el a
 helyesen kerekített libm-értéktől, ami minden ellipszisakadály egy sarkát elmozdította, és
-átbillentette a folyosót (az elfogadás kivonva). Az sfdp `241_0`-t ugyanez a feladat
+átbillentette a folyosót (az elfogadás kivonva). A portolt változat most mind a kilenc sarokértéket egy hoszt libm-táblából olvassa, így az eredmény már nem függ a futtatókörnyezet `Math.sin` függvényétől. Az sfdp `241_0`-t ugyanez a feladat
 újradiagnosztizálta, és most A1 (lásd lent az sfdp bekezdést).
 
 **Érintett:** `2343`, `2239`, `share-b29`,
@@ -1087,7 +1087,7 @@ tartotta nyilván. A `fix(T28)` ezt újradiagnosztizálta egy műszerezett natí
   álló pozíciókká erősíti, amelyeken az 1->2 élet másként vezetik. A natív `pow` értékek
   injektálása minden nyomvonal-sort és a végső xdot-ot azonossá teszi. Az injektált
   pozíciókkal látott útvonalvezetési maradék részben injektálási műtermék volt, részben a
-  V8 `Math.sin(9π/8)` értéke az akadály 8 szögében, amelyet a portolt változat most a
+  V8 `Math.sin(9π/8)` értéke (arm64-en 1 ULP-pel eltér) az akadály 8 szögében, amelyet a portolt változat most a
   hoszt libm-ből vesz (a javítás, amely a circo `241_0`-t is conformanttá tette). Ami
   marad, az A1-sodródás.
 

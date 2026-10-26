@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -860,7 +860,7 @@ bir Dekker çarpımı + ikili-BigInt yolu.
 
 **Sınıf.** V8'in `Math.sin`/`Math.cos` işlevleri, Apple libm'in `sin`/`cos`'uyla bit
 düzeyinde özdeş değildir (kanıtlandı: sekiz elips engeli köşe açısından biri olan
-`2π·4.5/8`'de 1-ULP uyuşmazlık). `makeObstacle`'ın çevrel 8-gen köşeleri bu ULP'yi
+`2π·4.5/8`'de 1-ULP uyuşmazlık). V8'in trigonometri yuvarlaması CPU'ya ve Node sürümüne de bağlıdır: bu açıda arm64 üzerinde Node 22–26 1 ULP kaymış değeri döndürür, x64 üzerinde Node 26 ve arm64 üzerinde Node 20 ise doğru yuvarlanmış değeri döndürür. Bu defterdeki yürüyüşler ve RCA'lar kâhinin macOS arm64 ana makinesinde onunla yan yana çalıştırıldı. `makeObstacle`'ın çevrel 8-gen köşeleri bu ULP'yi
 devralır; bu yüzden üçgen yönlendiricisinin girdi koordinatları kâhininkinden ≤6e-14
 farklıdır. Simetrik yerleşimler (bir sıra/halka üzerinde eşit boyutlu düğümler),
 yönlendiricinin dörtgenlerini gerçek aritmetikte **tam eşdairesel** yapar; bu yüzden
@@ -881,9 +881,9 @@ emekli edildi) ve sfdp `42`'nin hiç beraberliği olmadığı ortaya çıktı (A
 sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` ise
 sonradan, üçgenlemede portun ikinci bir düzeltmesinden sonra (bir kenar takasından sonra yüz
 köşe sırası; bkz. aşağıdaki fdp paragrafı) **conformant**'a döndü. circo `241_0`, `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon` ile **conformant**'a döndü: V8'in `Math.sin(9π/8)` değeri doğru
+ellipse obstacle 8-gon` ile **conformant**'a döndü: arm64'te V8'in `Math.sin(9π/8)` değeri doğru
 yuvarlanmış libm değerinden 1 ULP uzaktır; bu, her elips engelinin bir köşesini kaydırıp
-koridoru çeviriyordu (kabul emekli edildi). sfdp `241_0` aynı görev tarafından yeniden
+koridoru çeviriyordu (kabul emekli edildi). Port artık dokuz köşe değerinin hepsini ana makine libm tablosundan okur; bu yüzden sonuç artık çalışma zamanının `Math.sin` değerine bağlı değildir. sfdp `241_0` aynı görev tarafından yeniden
 teşhis edildi ve artık A1'dir (bkz. aşağıdaki sfdp paragrafı).
 
 **Etkilenenler:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi, her
@@ -1062,7 +1062,7 @@ olarak listelemişti. `fix(T28)` bunu araçlandırılmış bir yerel sfdp ile ye
   1->2 kenarının farklı yönlendirildiği bıçak sırtı konumlara büyütür. Yerel `pow`
   değerlerini enjekte etmek her iz satırını ve nihai xdot'u özdeş yapar. Enjekte edilmiş
   konumlarla görülen yönlendirme artığı kısmen bir enjeksiyon artefaktıydı, kısmen de engelin
-  8 genindeki V8 `Math.sin(9π/8)` değeriydi; port bunu artık ana makine libm'inden alır
+  8 genindeki V8 `Math.sin(9π/8)` (arm64'te 1 ULP kayık) değeriydi; port bunu artık ana makine libm'inden alır
   (circo `241_0`'ı da conformant yapan düzeltme). Geriye kalan A1 sürüklenmesidir.
 
 > **sfdp `42`, A9'dan A1-drift'e yeniden sınıflandırıldı (graphviz 16.1 senkronu).** Burada

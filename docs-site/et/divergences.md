@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -863,7 +863,7 @@ täpne Dekkeri korrutise + düaadilise BigInt tee peaaegu nullijuhtudeks.
 
 **Klass.** V8 `Math.sin`/`Math.cos` ei ole bitiliselt identsed Apple libm-i
 `sin`/`cos`-iga (tõestatud: 1-ULP lahknevus kohas `2π·4.5/8`, üks kaheksast
-ellipsi-takistuse nurgast). `makeObstacle`-i ümberpiiratud 8-nurga nurgad
+ellipsi-takistuse nurgast). V8 trigonomeetria ümardamine sõltub ka protsessorist ja Node'i versioonist: selles nurgas tagastavad Node 22–26 arm64-l 1 ULP võrra vale väärtuse, Node 26 x64-l ja Node 20 arm64-l aga korrektselt ümardatud väärtuse. Selle registri läbikäigud ja RCA-d jooksid oraakli kõrval selle macOS arm64 hostis. `makeObstacle`-i ümberpiiratud 8-nurga nurgad
 pärivad selle ULP, seega erinevad kolmnurkruuteri sisendkoordinaadid
 oraakli omadest ≤6e-14 võrra. Sümmeetrilised paigutused (võrdse suurusega sõlmed astmel/ringil)
 muudavad ruuteri nelinurgad reaalaritmeetikas **täpselt kaasringseks**, seega täpne
@@ -882,9 +882,9 @@ peegeldas selle. twopi ja neato `241_0` — mille see klass oli omistanud allole
 kaasringsele viigile — said **conformant** (aktsepteerimised pensionile saadetud) ja
 sfdp `42` osutus viigita (see on A1 triiv, vt
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` muutus hiljem **conformant**, pärast teist triangulatsiooni pordipoolset parandust (tahkude tippude järjestus servavahetuse järel; vt allolevat fdp lõiku). circo `241_0` muutus **conformant**, kasutades `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: V8 `Math.sin(9π/8)` on 1 ULP korrektselt ümardatud libm-i väärtusest
+ellipse obstacle 8-gon`: arm64-l on V8 `Math.sin(9π/8)` 1 ULP korrektselt ümardatud libm-i väärtusest
 kõrval, mis nihutas iga ellipsitakistuse ühte nurka ja lülitas koridori ümber
-(aktsepteerimine pensionile saadetud). sfdp `241_0` diagnoositi sama ülesandega uuesti ja
+(aktsepteerimine pensionile saadetud). Port loeb nüüd kõik üheksa nurgaväärtust hosti libm-i tabelist, seega tulemus ei sõltu enam käitusaja `Math.sin`-ist. sfdp `241_0` diagnoositi sama ülesandega uuesti ja
 on nüüd A1 (vt allolevat sfdp lõiku).
 
 **Mõjutatud:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1068,7 +1068,7 @@ natiivne `dot -Ksfdp -Txdot`, ±0.5) loetles siin `241_0` CDT kaasringse incircl
   positsioonideni, kus serv 1->2 marsruuditakse teisiti. Natiivsete `pow` väärtuste
   süstimine teeb iga jäljerea ja lõpliku xdot-i identseks. Süstitud positsioonidega
   nähtud marsruutimisjääk oli osaliselt süstimisartefakt ja osaliselt V8 `Math.sin(9π/8)`
-  takistuse 8-nurgas, mille port võtab nüüd hosti libm-ist (parandus, mis tegi ka circo
+  (arm64-l 1 ULP võrra vale) takistuse 8-nurgas, mille port võtab nüüd hosti libm-ist (parandus, mis tegi ka circo
   `241_0` conformant-iks). Alles jääb A1 triiv.
 
 > **sfdp `42` klassifitseeriti ümber A9 → A1-drift (graphviz 16.1 sünkroonimine).**

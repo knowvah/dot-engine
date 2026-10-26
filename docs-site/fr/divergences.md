@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -984,7 +984,7 @@ pour les cas proches de zéro.
 
 **Classe.** Les `Math.sin`/`Math.cos` de V8 ne sont pas identiques au bit près
 aux `sin`/`cos` de libm d’Apple (prouvé : désaccord de 1 ULP à `2π·4.5/8`, l’un
-des huit angles de coin d’obstacle ellipse). Les coins de l’octogone circonscrit
+des huit angles de coin d’obstacle ellipse). L’arrondi trigonométrique de V8 dépend aussi du CPU et de la version de Node : à cet angle, Node 22–26 sur arm64 renvoient la valeur décalée de 1 ULP, alors que Node 26 sur x64 et Node 20 sur arm64 renvoient la valeur correctement arrondie. Les parcours et les RCA de ce registre ont été menés aux côtés de l’oracle sur son hôte macOS arm64. Les coins de l’octogone circonscrit
 de `makeObstacle` héritent de cet ULP, si bien que les coordonnées d’entrée du
 routeur triangulaire diffèrent de celles de l’oracle d’au plus 6e-14. Les
 dispositions symétriques (nœuds de même taille sur un rang/anneau) rendent les
@@ -1006,9 +1006,9 @@ de twopi et de neato — que cette classe avait attribués à l’égalité
 cocirculaire ci-dessous — sont devenus **conformes** (acceptations retirées), et
 `42` de sfdp s’est révélé ne comporter aucune égalité (c’est de la dérive A1,
 voir [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` de fdp est devenu **conforme** plus tard, après une seconde correction côté portage de la triangulation (ordre des sommets des faces après un échange d’arête ; voir le paragraphe fdp ci-dessous). `241_0` de circo est devenu **conforme** avec `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon` : le `Math.sin(9π/8)` de V8 est à 1 ULP de la valeur de libm
+ellipse obstacle 8-gon` : sur arm64, le `Math.sin(9π/8)` de V8 est à 1 ULP de la valeur de libm
 correctement arrondie, ce qui déplaçait un coin de chaque obstacle elliptique et faisait
-basculer le couloir (acceptation retirée). `241_0` de sfdp a été rediagnostiqué par la même
+basculer le couloir (acceptation retirée). Le portage lit désormais les neuf valeurs de coin dans une table de la libm de l’hôte, si bien que le résultat ne dépend plus du `Math.sin` du runtime. `241_0` de sfdp a été rediagnostiqué par la même
 tâche et relève désormais de A1 (voir le paragraphe sfdp ci-dessous).
 
 **Concernés :** `2343`,
@@ -1216,7 +1216,7 @@ cocirculaire du CDT. `fix(T28)` l’a rediagnostiquée avec un sfdp natif instru
   positions au fil du rasoir sur lesquelles l’arête 1->2 est routée différemment. Injecter
   les valeurs natives de `pow` rend identiques chaque ligne de trace et le xdot final. Le
   résidu de routage observé avec les positions injectées était en partie un artefact de
-  l’injection et en partie le `Math.sin(9π/8)` de V8 dans l’octogone de l’obstacle, que le
+  l’injection et en partie le `Math.sin(9π/8)` de V8 (décalé de 1 ULP sur arm64) dans l’octogone de l’obstacle, que le
   portage prend désormais dans la libm de l’hôte (le correctif qui a aussi rendu `241_0`
   de circo conforme). Ce qui reste est de la dérive A1.
 

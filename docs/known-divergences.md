@@ -886,7 +886,11 @@ an exact Dekker-product + dyadic-BigInt path for the near-zero cases.
 
 **Class.** V8's `Math.sin`/`Math.cos` are not bit-identical to Apple libm's
 `sin`/`cos` (proven: 1-ULP disagreement at `2π·4.5/8`, one of the eight
-ellipse-obstacle corner angles). `makeObstacle`'s circumscribed-8-gon corners
+ellipse-obstacle corner angles). V8's trig rounding also depends on the CPU
+and Node version: at that angle Node 22–26 on arm64 return the 1-ULP-off
+value, while Node 26 on x64 and Node 20 on arm64 return the correctly rounded
+one. The walks and RCAs in this ledger ran beside the oracle on its macOS
+arm64 host. `makeObstacle`'s circumscribed-8-gon corners
 inherit that ULP, so the triangle router's input coordinates differ from the
 oracle's by ≤6e-14. Symmetric layouts (equal-size nodes on a rank/ring) make
 the router's quads **exactly cocircular** in real arithmetic, so the exact
@@ -908,9 +912,11 @@ drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob
 went **conformant** later, after a second port-side fix to the triangulation
 (face vertex order after an edge swap; see the fdp paragraph below). circo
 `241_0` went **conformant** with `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: V8's `Math.sin(9π/8)` is 1 ULP off the correctly
-rounded libm value, which moved one corner of every ellipse obstacle and
-flipped the corridor (acceptance retired). sfdp `241_0` was re-diagnosed by the
+ellipse obstacle 8-gon`: on arm64, V8's `Math.sin(9π/8)` is 1 ULP off the
+correctly rounded libm value, which moved one corner of every ellipse obstacle
+and flipped the corridor (acceptance retired). The port now reads all nine
+corner values from a host-libm table, so the result no longer depends on the
+runtime's `Math.sin`. sfdp `241_0` was re-diagnosed by the
 same task and is now A1 (see the sfdp paragraph below).
 
 **Affected:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1097,8 +1103,8 @@ incircle tie. `fix(T28)` re-diagnosed it with an instrumented native sfdp:
   differently. Injecting native `pow` values makes every trace line and the
   final xdot identical. The routing residual seen with injected positions was
   partly an injection artifact and partly V8's `Math.sin(9π/8)` in the
-  obstacle 8-gon, which the port now takes from the host libm (the fix that
-  also made circo `241_0` conformant). What remains is A1 drift.
+  obstacle 8-gon (1 ULP off on arm64), which the port now takes from the host
+  libm (the fix that also made circo `241_0` conformant). What remains is A1 drift.
 
 > **sfdp `42` reclassified A9 → A1 drift (graphviz 16.1 sync).** It was listed
 > here as a CDT/libm incircle tie. The mission found otherwise

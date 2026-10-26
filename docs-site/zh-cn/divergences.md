@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -362,9 +362,9 @@ job->clip)` 为每个节点设置门槛（emit.c:1806-1809），而在这条中�
 
 ### A9. libm 三角函数 1-ULP → CDT 共圆平局翻转（`circo`/`twopi` 多重样条） {#a9-libm-trig-1-ulp-→-cdt-cocircular-tie-flip-circo-twopi-multispline}
 
-**类别。** V8 的 `Math.sin`/`Math.cos` 与 Apple libm 的 `sin`/`cos` 并不逐位一致（已证明：在 `2π·4.5/8`，即八个椭圆障碍角度之一，存在 1 ULP 的差异）。`makeObstacle` 的外接 8 边形角点继承了该 ULP，所以三角形路由器的输入坐标与参照程序相差 ≤6e-14。对称的布局（同一层/环上大小相等的节点）使路由器的四边形在实数运算中**精确共圆**，所以精确的内切圆判定恰好处于刀刃边缘：输入的 ULP 翻转了它的符号，受约束 Delaunay 的对角线随之翻转，而在参照程序中使 `Pshortestpath` 失败的通道多边形（“destination point not in any triangle” → 回退到普通样条）在移植版中成功了（反之亦然）。得到的样条相差约 0.2–0.5pt。与（现已关闭的）**A3**/**A8** 是同类：位于 C 源代码语义之下的不可约浮点可移植性约束——要匹配，就需要在 JS 中复现 Apple libm 的 `sin`/`cos` 的精确舍入。
+**类别。** V8 的 `Math.sin`/`Math.cos` 与 Apple libm 的 `sin`/`cos` 并不逐位一致（已证明：在 `2π·4.5/8`，即八个椭圆障碍角度之一，存在 1 ULP 的差异）。V8 的三角函数舍入还取决于 CPU 和 Node 版本：在该角度，arm64 上的 Node 22–26 返回偏差 1 ULP 的值，而 x64 上的 Node 26 和 arm64 上的 Node 20 返回正确舍入的值。本台账中的排查与根因分析（RCA）是在参照程序所在的 macOS arm64 主机上与其并排运行的。`makeObstacle` 的外接 8 边形角点继承了该 ULP，所以三角形路由器的输入坐标与参照程序相差 ≤6e-14。对称的布局（同一层/环上大小相等的节点）使路由器的四边形在实数运算中**精确共圆**，所以精确的内切圆判定恰好处于刀刃边缘：输入的 ULP 翻转了它的符号，受约束 Delaunay 的对角线随之翻转，而在参照程序中使 `Pshortestpath` 失败的通道多边形（“destination point not in any triangle” → 回退到普通样条）在移植版中成功了（反之亦然）。得到的样条相差约 0.2–0.5pt。与（现已关闭的）**A3**/**A8** 是同类：位于 C 源代码语义之下的不可约浮点可移植性约束——要匹配，就需要在 JS 中复现 Apple libm 的 `sin`/`cos` 的精确舍入。
 
-**16.1 重新基线。** 多重样条通道的几何缺少 clang 的 FMA 收缩（椭圆角点的被开方数、`mkCtrlPts`、`DIST` = sqrt(fmadd)、`line_intersect` 的点积）；`f66ac638`（`fix(neato): mirror fma contraction in multispline routing geometry`）镜像了它。twopi 和 neato 的 `241_0`——该类别曾把它们归因于下面的共圆平局——变为 **conformant**（接受已退役），而 sfdp 的 `42` 被证明根本没有平局（它是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）。fdp 的 `241_0` 后来也变为 **conformant**，那是移植版在三角剖分上的第二次修复（边交换之后的面顶点顺序；参见下面的 fdp 段落）。circo 的 `241_0` 随 `fix(T28): use host libm cos/sin for the ellipse obstacle 8-gon` 变为 **conformant**：V8 的 `Math.sin(9π/8)` 与正确舍入的 libm 值相差 1 ULP，这使每个椭圆障碍物的一个角点发生移动并翻转了通道（接受已退役）。sfdp 的 `241_0` 由同一任务重新诊断，现在属于 A1（参见下面的 sfdp 段落）。
+**16.1 重新基线。** 多重样条通道的几何缺少 clang 的 FMA 收缩（椭圆角点的被开方数、`mkCtrlPts`、`DIST` = sqrt(fmadd)、`line_intersect` 的点积）；`f66ac638`（`fix(neato): mirror fma contraction in multispline routing geometry`）镜像了它。twopi 和 neato 的 `241_0`——该类别曾把它们归因于下面的共圆平局——变为 **conformant**（接受已退役），而 sfdp 的 `42` 被证明根本没有平局（它是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）。fdp 的 `241_0` 后来也变为 **conformant**，那是移植版在三角剖分上的第二次修复（边交换之后的面顶点顺序；参见下面的 fdp 段落）。circo 的 `241_0` 随 `fix(T28): use host libm cos/sin for the ellipse obstacle 8-gon` 变为 **conformant**：在 arm64 上，V8 的 `Math.sin(9π/8)` 与正确舍入的 libm 值相差 1 ULP，这使每个椭圆障碍物的一个角点发生移动并翻转了通道（接受已退役）。移植版现在从宿主 libm 的表中读取全部九个角点值，因此结果不再依赖运行时的 `Math.sin`。sfdp 的 `241_0` 由同一任务重新诊断，现在属于 A1（参见下面的 sfdp 段落）。
 
 **受影响：** `2343`、`2239`、`share-b29`、`windows-b29`（twopi，每个有 1–2 处边标签位置差异——libm 的 1 ULP 出现在 `poly_init` 的单位顶点三角运算（`hypot`/`atan2`/`sin`）中，使一个节点计算出的高度比参照程序精确落在的最小尺寸钳制值多出 1 ULP，并通过 xlabel R 树加载中的 `floor()` 级联为单个标签候选的翻转。曾尝试正确舍入的 hypot 修复，并被证伪：它修好了 `2343`，却使 `2168_3` 出现回归，后者的八边形尺寸计算流经同一个调用，而参照程序在那里的值并不是正确舍入的——没有任何确定性的 hypot 策略能同时在两者上匹配参照程序）。
 `2168_1` 原本属于这个类别，但在移植版模拟了参照程序经 fp 收缩的 `ccw`（pathplan 的 `triang.ts`）之后变为一致：它的通道失败由经 FMA 的 `pointintri` 顶点端点拒绝所决定，移植版现在能逐位复现这一点，所以 CDT 对角线的 ULP 平局不再在那里出现。
@@ -411,7 +411,7 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 <a id="a9-sfdp-fp-ties"></a> sfdp 的 xdot 引擎轨道（`parity-sfdp.json`，
 原生 `dot -Ksfdp -Txdot`，±0.5）曾把 `241_0` 列在这里，视为 CDT 共圆内切圆平局。`fix(T28)` 用带插桩的原生 sfdp 重新诊断了它：
 
-- `241_0` — 边 1->2 上有 7 处绘制操作差异（`ptCount 8 vs 20`）。布局从第一个排斥力项开始漂移，此处 macOS libm 的 `pow(dist, 2)` 返回的值比正确舍入低 1 ULP（最粗层级，第 22 次迭代；参见布局保真度差距下的宿主 libm `pow` 条目），自适应冷却把它放大为刀刃上的位置，边 1->2 在这些位置上的路由方式不同。注入原生的 `pow` 值后，每一行跟踪输出以及最终的 xdot 都完全一致。注入位置后所见的路由残余，一部分是注入的假象，另一部分是障碍物八边形中 V8 的 `Math.sin(9π/8)`，移植版现在改用宿主 libm 的值（这一修复也使 circo 的 `241_0` 变为 conformant）。剩下的是 A1 漂移。
+- `241_0` — 边 1->2 上有 7 处绘制操作差异（`ptCount 8 vs 20`）。布局从第一个排斥力项开始漂移，此处 macOS libm 的 `pow(dist, 2)` 返回的值比正确舍入低 1 ULP（最粗层级，第 22 次迭代；参见布局保真度差距下的宿主 libm `pow` 条目），自适应冷却把它放大为刀刃上的位置，边 1->2 在这些位置上的路由方式不同。注入原生的 `pow` 值后，每一行跟踪输出以及最终的 xdot 都完全一致。注入位置后所见的路由残余，一部分是注入的假象，另一部分是障碍物八边形中 V8 的 `Math.sin(9π/8)`（在 arm64 上相差 1 ULP），移植版现在改用宿主 libm 的值（这一修复也使 circo 的 `241_0` 变为 conformant）。剩下的是 A1 漂移。
 
 > **sfdp 的 `42` 从 A9 重新归类为 A1 漂移（graphviz 16.1 同步）。** 它此前在这里被列为 CDT/libm 内切圆平局。该任务发现并非如此（[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)）：先前的通道翻转是多重样条通道几何中移植版一侧的 FMA 错误移植，已由 `f66ac638`（`fix(neato): mirror fma contraction in multispline routing geometry`）修复；注入原生位置后，移植版现在精确复现原生的 xdot。剩余的残余（节点偏移 0.06-0.65 pt）是迭代漂移，其种子是最粗层级上 Apple libm 的 `pow(dist, 2)` 与移植版的 ARM `pow` 之间的一处 1 ULP 不一致，并被更细的层级放大——A1（参见 [A1](#a1-floating-point-determinism-force-directed-engines)）。
 

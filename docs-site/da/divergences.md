@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -878,7 +878,7 @@ en eksakt Dekker-produkt- + dyadisk-BigInt-sti til de næsten-nul-tilfælde.
 
 **Klasse.** V8's `Math.sin`/`Math.cos` er ikke bit-identiske med Apple libm's
 `sin`/`cos` (bevist: uenighed på 1 ULP ved `2π·4.5/8`, en af de otte
-ellipseforhindringers hjørnevinkler). `makeObstacle`'s omskrevne 8-kants-hjørner
+ellipseforhindringers hjørnevinkler). V8's trigonometriafrunding afhænger også af CPU'en og Node-versionen: ved den vinkel returnerer Node 22–26 på arm64 den værdi, der er 1 ULP forkert, mens Node 26 på x64 og Node 20 på arm64 returnerer den korrekt afrundede. Gennemgangene og RCA'erne i dette register kørte side om side med oraklet på dets macOS arm64-vært. `makeObstacle`'s omskrevne 8-kants-hjørner
 arver den ULP, så trekantføringens inputkoordinater afviger fra
 oraklets med ≤6e-14. Symmetriske layouts (lige store knuder på en rang/ring) gør
 førerens firkanter **præcis cocirkulære** i reel aritmetik, så det eksakte
@@ -898,9 +898,9 @@ fma contraction in multispline routing geometry`) spejlede den. twopi og neato
 blev **conformant** (accepter pensioneret), og sfdp `42` viste sig slet ikke at
 have nogen uafgjort (den er A1-drift, se
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` blev senere **conformant** efter en anden rettelse af trianguleringen i porten (flademes hjørnerækkefølge efter et kantbyt; se fdp-afsnittet nedenfor). circo `241_0` blev **conformant** med `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: V8's `Math.sin(9π/8)` ligger 1 ULP fra den korrekt afrundede
+ellipse obstacle 8-gon`: på arm64 ligger V8's `Math.sin(9π/8)` 1 ULP fra den korrekt afrundede
 libm-værdi, hvilket flyttede ét hjørne af hver ellipse-forhindring og vippede korridoren
-(accepten pensioneret). sfdp `241_0` blev gendiagnosticeret af samme opgave og er nu A1
+(accepten pensioneret). Porten læser nu alle ni hjørneværdier fra en host-libm-tabel, så resultatet ikke længere afhænger af runtimens `Math.sin`. sfdp `241_0` blev gendiagnosticeret af samme opgave og er nu A1
 (se sfdp-afsnittet nedenfor).
 
 **Berørt:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
@@ -1080,7 +1080,7 @@ CDT-incircle-uafgjort. `fix(T28)` gendiagnosticerede den med et instrumenteret n
   Huller i layouttroskab), og adaptiv afkøling forstærker det til knivsæg-positioner, hvor
   kant 1->2 føres anderledes. Når native `pow`-værdier injiceres, bliver hver trace-linje
   og den endelige xdot identiske. Føringsresten set med injicerede positioner var dels
-  et injektionsartefakt og dels V8's `Math.sin(9π/8)` i forhindringens 8-kant, som porten
+  et injektionsartefakt og dels V8's `Math.sin(9π/8)` (1 ULP forkert på arm64) i forhindringens 8-kant, som porten
   nu tager fra host-libm (rettelsen, der også gjorde circo `241_0` conformant). Det, der
   er tilbage, er A1-drift.
 

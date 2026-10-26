@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -874,7 +874,7 @@ nákvæm Dekker-margfeldi + tvíundar-BigInt leið fyrir tilvik nærri núlli.
 
 **Flokkur.** `Math.sin`/`Math.cos` í V8 eru ekki bita-eins og `sin`/`cos` í Apple libm
 (sannað: 1 ULP ósamkomulag við `2π·4.5/8`, eitt af átta
-hornum sporöskjuhindrunar). Horn umritaðs 8-hyrnings í `makeObstacle`
+hornum sporöskjuhindrunar). Námundun hornafalla í V8 fer einnig eftir örgjörvanum og útgáfu Node: við það horn skila Node 22–26 á arm64 gildinu sem er 1 ULP frá, en Node 26 á x64 og Node 20 á arm64 skila rétt námunduðu gildi. Göngurnar og RCA í þessari skrá voru keyrðar við hlið véfréttarinnar á macOS arm64 hýsli hennar. Horn umritaðs 8-hyrnings í `makeObstacle`
 erfa þann ULP, svo hnit inntaks þríhyrningaleiðarans eru ólík
 véfréttarinnar um ≤6e-14. Samhverfar uppsetningar (jafnstórir hnútar í þrepi/hring) gera
 ferhyrninga leiðarans **nákvæmlega á einum hring** í raunverulegri reikningslist, svo nákvæma
@@ -895,9 +895,9 @@ hafði eignað jafnteflinu á einum hring hér á eftir — urðu **conformant**
 jafntefli (það er A1-rek, sjá [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` í fdp varð síðar **conformant**, eftir aðra lagfæringu í portinu á
 þríhyrningaskiptingunni (hornaröð flata eftir skipti á legg; sjá málsgreinina um fdp hér á
 eftir). `241_0` í circo varð **conformant** með `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`: `Math.sin(9π/8)` í V8 er 1 ULP frá rétt námunduðu libm-gildi, sem
+ellipse obstacle 8-gon`: `Math.sin(9π/8)` í V8 er á arm64 1 ULP frá rétt námunduðu libm-gildi, sem
 færði eitt horn hverrar sporöskjulaga hindrunar og flippaði ganginum (samþykki dregið til
-baka). `241_0` í sfdp var endurgreint af sama verkefni og er nú A1 (sjá sfdp-málsgreinina
+baka). Portið les nú öll níu hornagildin úr libm-töflu hýsilsins, svo niðurstaðan er ekki lengur háð `Math.sin` keyrsluumhverfisins. `241_0` í sfdp var endurgreint af sama verkefni og er nú A1 (sjá sfdp-málsgreinina
 hér á eftir).
 
 **Fyrir áhrifum:** `2343`, `2239`, `share-b29`, `windows-b29`
@@ -1080,7 +1080,7 @@ hring. `fix(T28)` greindi það upp á nýtt með mælitækjaútbúnu innbyggðu
   eyðum í uppsetningartrúnaði), og aðlögunarkæling magnar það upp í hnífseggjastöður þar
   sem leggur 1->2 er leiddur öðruvísi. Innsprautun innbyggðra `pow`-gilda gerir hverja
   ferillínu og lokaútgáfu xdot eins. Leiðingarafgangurinn sem sást með innsprautuðum
-  stöðum var að hluta gripur innsprautunarinnar og að hluta `Math.sin(9π/8)` í V8 í
+  stöðum var að hluta gripur innsprautunarinnar og að hluta `Math.sin(9π/8)` í V8 (1 ULP frá á arm64) í
   8-hyrningi hindrunarinnar, sem portið tekur nú úr libm hýsilsins (lagfæringin sem gerði
   einnig `241_0` í circo conformant). Það sem eftir stendur er A1-rek.
 

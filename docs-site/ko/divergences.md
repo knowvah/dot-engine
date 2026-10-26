@@ -1,5 +1,5 @@
 ---
-sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
+sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -764,7 +764,7 @@ point not in any triangle') `makeMultiSpline`은 병합된 모든 2-사이클에
 ### A9. libm 삼각함수 1-ULP → CDT 동원 동점 뒤바뀜(`circo`/`twopi` 멀티스플라인) {#a9-libm-trig-1-ulp-→-cdt-cocircular-tie-flip-circo-twopi-multispline}
 
 **클래스.** V8의 `Math.sin`/`Math.cos`는 Apple libm의 `sin`/`cos`와 비트 단위로 같지
-않습니다(증명됨: 타원 장애물의 여덟 모서리 각도 중 하나인 `2π·4.5/8`에서 1-ULP 불일치).
+않습니다(증명됨: 타원 장애물의 여덟 모서리 각도 중 하나인 `2π·4.5/8`에서 1-ULP 불일치). V8의 삼각함수 반올림은 CPU와 Node 버전에도 좌우됩니다. 그 각도에서 arm64의 Node 22–26은 1 ULP 어긋난 값을 반환하는 반면, x64의 Node 26과 arm64의 Node 20은 올바르게 반올림된 값을 반환합니다. 이 대장의 워크와 RCA는 오라클의 macOS arm64 호스트에서 오라클과 나란히 실행되었습니다.
 `makeObstacle`의 외접 8각형 모서리가 그 ULP를 물려받으므로, 삼각형 라우터의 입력 좌표는
 오라클과 최대 6e-14 차이가 납니다. 대칭 레이아웃(랭크/링 위의 같은 크기 노드)은 라우터의
 사각형을 실수 산술에서 **정확히 동원**으로 만들어, 정확한 내접원 판정식이 칼날 위에
@@ -780,9 +780,9 @@ mirror fma contraction in multispline routing geometry`)이 이를 반영했습�
 동원 동점으로 귀속했던 twopi와 neato의 `241_0`은 **conformant**가 되었고(수용 퇴출), sfdp `42`에는
 동점이 전혀 없었음이 밝혀졌습니다(A1 드리프트입니다. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)
 참고). fdp의 `241_0`은 이후 삼각분할에 대한 포팅 측의 두 번째 수정(에지 교환 뒤 면의 꼭짓점 순서; 아래 fdp 문단 참고)으로 **conformant**가 되었습니다. circo의 `241_0`은 `fix(T28): use host libm cos/sin for the
-ellipse obstacle 8-gon`으로 **conformant**가 되었습니다(수용 퇴출). V8의
+ellipse obstacle 8-gon`으로 **conformant**가 되었습니다(수용 퇴출). arm64에서 V8의
 `Math.sin(9π/8)`이 올바르게 반올림된 libm 값에서 1 ULP 벗어나 있어 모든 타원 장애물의
-한 모서리를 옮기고 통로를 뒤집었습니다. sfdp의 `241_0`은 같은 작업에서 재진단되어
+한 모서리를 옮기고 통로를 뒤집었습니다. 포팅은 이제 아홉 개의 모서리 값을 모두 호스트 libm 표에서 읽으므로 결과가 런타임의 `Math.sin`에 더 이상 좌우되지 않습니다. sfdp의 `241_0`은 같은 작업에서 재진단되어
 이제 A1입니다(아래 sfdp 문단 참고).
 
 **영향받는 대상:** `2343`, `2239`, `share-b29`, `windows-b29`(twopi, 각각 에지 레이블 위치 차이 1–2건 —
@@ -927,7 +927,7 @@ C의 노드 크기와 포팅의 노드 크기를 각각 주면 조사에서 이�
   어긋나기 시작하고, 적응형 냉각이 이를 칼날 위의 위치로 증폭해 에지 1->2가 다르게
   라우팅됩니다. 네이티브 `pow` 값을 주입하면 모든 추적 줄과 최종 xdot이 일치합니다.
   주입한 위치에서 보인 라우팅 잔여분은 일부는 주입 산물이었고 일부는 장애물 8각형의
-  V8 `Math.sin(9π/8)`이었으며, 포팅은 이제 이를 호스트 libm에서 가져옵니다(circo
+  V8 `Math.sin(9π/8)`(arm64에서 1 ULP 어긋남)이었으며, 포팅은 이제 이를 호스트 libm에서 가져옵니다(circo
   `241_0`도 conformant로 만든 수정). 남은 것은 A1 드리프트입니다.
 
 > **sfdp `42`를 A9 → A1-drift로 재분류(graphviz 16.1 동기화).** 이전에는 여기에 CDT/libm
