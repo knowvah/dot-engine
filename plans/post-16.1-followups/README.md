@@ -397,7 +397,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `not-cleared`, though the id passes since part 3 T9. Rerun
       `attribute-divergence.ts fdp` (or drop the row) so attribution covers only
       diverged ids (part 3 T14; outside T14's write-set).
-  71. **[DONE — part 4 T29: all seven engine walks re-run on d42aafd1 and committed]** Committed walk rows for still-diverged ids are stale where pre-mission src
+  71. **[DONE — part 4 T29: all seven engine walks re-run on d42aafd1 (signed: 23a0cfc7) and committed]** Committed walk rows for still-diverged ids are stale where pre-mission src
       changes moved output without a re-walk (twopi graphs-arrowsize: 23 diffs
       committed, 72 on today's head and on part 3's base). A full re-walk of all
       engines would refresh `nDiffs`/`firstDiff` (part 3 T14).
