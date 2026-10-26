@@ -5,9 +5,10 @@
  * inputs Graphviz feeds with constant arguments: the corner angles
  * 2π·(i ∓ 0.5)/8 of neatosplines.c's circumscribed ellipse 8-gon.
  *
- * V8's Math.sin/Math.cos (fdlibm) are not correctly rounded everywhere;
- * at 9π/8 Math.sin returns -0.3826834323650896 where the reference libm
- * (macOS arm64 libSystem) returns the correctly rounded -0.38268343236508967.
+ * V8's Math.sin/Math.cos are not correctly rounded everywhere, and the
+ * result depends on the CPU: at 9π/8 Node 22-26 on arm64 return
+ * -0.3826834323650896 (x64 and Node 20 return the correctly rounded value)
+ * where the reference libm (macOS arm64 libSystem) returns -0.38268343236508967.
  * The ulp moves an obstacle corner off its node's centre line, which flips
  * knife-edge triangulations in the multispline router. The table holds the
  * host values for those nine angles (printed with `%a` by a clang -O2

@@ -31,6 +31,12 @@
 - **Impact**: knife-edge routing (GTS triangulation, multispline) flips on one ulp
   of an obstacle vertex. Check the trig before blaming the solver.
 - **Confidence**: High (88/88 vertices bit-equal after the table).
+- **Update (PR #107 CI)**: the 1-ulp error is CPU-dependent. Node 22–26 on arm64
+  (26.12.1 included) return -0.3826834323650896; Node 26.12.1 on x64 (the GitHub
+  runner) and Node 20 on arm64 return the correctly rounded value. Never assert
+  the runtime's own `Math.sin`/`Math.cos` bits in a test; stub them instead.
+  The V8 trig code is a vendored glibc port (openSUSE packaging notes), so FMA
+  contraction per target is the likely cause (Medium; not traced in V8).
 
 ## Observation: native retries a failed image open on every reference
 - **Context**: T23 (missing `image=` file messages).

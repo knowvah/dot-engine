@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: EPL-2.0
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { libmCos, libmSin } from './libm-trig.js';
 
 /**
@@ -32,10 +32,18 @@ describe('libmCos / libmSin', () => {
     }
   });
 
-  it('sin(9π/8): host libm is correctly rounded, V8 Math.sin is 1 ulp off', () => {
+  // V8's own Math.sin(9π/8) depends on the CPU: Node 22-26 on arm64 return
+  // -0.3826834323650896 (1 ulp off), x64 returns the correctly rounded value.
+  // The table must win either way, so stub Math.sin with the arm64 result.
+  it('sin(9π/8): the host libm value, never the runtime Math.sin', () => {
     const angle = (2 * Math.PI * 4.5) / 8;
-    expect(libmSin(angle)).toBe(-0.38268343236508967);
-    expect(Math.sin(angle)).toBe(-0.3826834323650896);
+    const sin = vi.spyOn(Math, 'sin').mockReturnValue(-0.3826834323650896);
+    try {
+      expect(libmSin(angle)).toBe(-0.38268343236508967);
+      expect(sin).not.toHaveBeenCalled();
+    } finally {
+      sin.mockRestore();
+    }
   });
 
   it('fall back to Math.cos / Math.sin off the table', () => {
