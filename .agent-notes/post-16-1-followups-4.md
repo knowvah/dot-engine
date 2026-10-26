@@ -74,6 +74,9 @@
 - **Impact**: re-run those ids alone with `ENGINE_TIMEOUT_FLOOR_MS=18000000` /
   `ATTR_ORACLE_TIMEOUT_MS=3600000`, using the trimmed-JSONL resume. A timeout or
   harness-error on them is a budget hit, not a verdict.
+- **Resolved (2026-10-26, follow-up 88)**: both tools now scale by the engine's
+  previous walk row (`walkCosts` in `engine-walk.ts`); the overrides are only
+  needed for an id whose previous row is a `timeout`/`oracle-error`.
 - **Confidence**: High
 
 ## Observation: every new walk status must be added to the staleness normalizer
