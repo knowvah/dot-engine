@@ -2,7 +2,10 @@
 /**
  * Neato `start` handling (setSeed / initRegular / checkStart) and the
  * fail-loud checks for the neato init features this port does not have
- * (smart init, the subset/circuit distance models, hier/ipsep modes).
+ * (smart init for the stress path, the subset/circuit distance models, ipsep
+ * with constraints). mode=hier runs `stress_majorization_with_hierarchy`; its
+ * own unported branches (subset/circuit models, the smart-init fallback
+ * without a hierarchy) are loud in constrained-majorization.ts.
  *
  * Each loud check sits where neato's C branches into the unported code and
  * fires only for the modes whose C path reaches it (ADR-3).
@@ -20,7 +23,7 @@ import {
   MODE_KK, MODE_MAJOR, MODE_HIER, MODE_IPSEP, MODE_SGD,
   MODEL_CIRCUIT, MODEL_SUBSET,
 } from './init.js';
-import { agerrLineOn } from '../../common/agerr.js';
+import { agerrLineOn, agwarningf } from '../../common/agerr.js';
 
 /** @see lib/neatogen/neato.h:INIT_SELF */
 export const INIT_SELF = 0;
@@ -144,14 +147,12 @@ export function neatoMode(g: Graph): number {
   if (str === undefined || str === '') return MODE_MAJOR;
   const mode = modeByName().get(str);
   if (mode !== undefined) return mode;
-  agerrLineOn('warn', `Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
+  agwarningf(`Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
   return MODE_MAJOR;
 }
 
 function checkMode(g: Graph, mode: number): void {
-  const value = g.root.attrs.get('mode') || (mode === MODE_HIER ? 'hier' : 'ipsep');
-  // @see lib/neatogen/neatoinit.c:1117 (stress_majorization_with_hierarchy)
-  if (mode === MODE_HIER) unsupported('mode', value, 'hierarchical stress majorization');
+  const value = g.root.attrs.get('mode') || 'ipsep';
   // @see lib/neatogen/neatoinit.c:1121-1170 (stress_majorization_cola)
   if (mode === MODE_IPSEP && ipsepHasConstraints(g)) {
     unsupported('mode', value, 'constrained (ipsep) majorization');

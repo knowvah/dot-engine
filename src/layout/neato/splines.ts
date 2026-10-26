@@ -21,8 +21,8 @@ import type { SplineInfo, PolygonT, TextlabelT } from '../../common/types.js';
 import { polygonOutlineRing } from '../../common/poly-sizing.js';
 import { fma, fms } from '../../common/fma.js';
 import { ShapeKind } from '../../common/types.js';
-import type { ExpandT } from './sep-factor.js';
-import { esepFactor } from './sep-factor.js';
+import { esepFactor, type ExpandT } from './sep-factor.js';
+import { libmCos, libmSin } from '../../common/libm-trig.js';
 import type { Poly, VConfig } from '../../pathplan/types.js';
 import {
   obsOpen, obsClose, obsPath,
@@ -138,8 +138,8 @@ function ellipseTangentSlope(a: number, b: number, p: Point): number {
 function circumscribedCorner(a: number, b: number, i: number, nsides: number): Point {
   const angle0 = (2 * Math.PI * (i - 0.5)) / nsides;
   const angle1 = (2 * Math.PI * (i + 0.5)) / nsides;
-  const p0 = { x: a * Math.cos(angle0), y: b * Math.sin(angle0) };
-  const p1 = { x: a * Math.cos(angle1), y: b * Math.sin(angle1) };
+  const p0 = { x: a * libmCos(angle0), y: b * libmSin(angle0) }; // host libm
+  const p1 = { x: a * libmCos(angle1), y: b * libmSin(angle1) };
   const m0 = ellipseTangentSlope(a, b, p0);
   const m1 = ellipseTangentSlope(a, b, p1);
   // line_intersection, contracted as the binary: fnmsub, fmls, +; y = fmadd.

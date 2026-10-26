@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-14T16:49:50.800Z",
+  "generatedAt": "2026-10-24T03:40:50.471Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "neato",
   "oracleVersion": "dot 16.1.0",
@@ -4565,19 +4565,6 @@
       "hasHref": false
     },
     {
-      "id": "tree-doc-neato-inet",
-      "path": "../doc/neato/inet.dot",
-      "size": 349,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "graphs-colors",
       "path": "graphs/colors.gv",
       "size": 376,
@@ -8668,19 +8655,6 @@
       "hasHref": false
     },
     {
-      "id": "tree-graphs-undirected-ngk10_4",
-      "path": "../graphs/undirected/ngk10_4.gv",
-      "size": 1754,
-      "verdict": "conformant",
-      "cmapx": {
-        "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": false
-    },
-    {
       "id": "share-tree",
       "path": "share/tree.gv",
       "size": 1825,
@@ -12139,6 +12113,32 @@
       "imap": {
         "verdict": "accepted",
         "errMsg": "Map maximum size exceeded"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-doc-neato-inet",
+      "path": "../doc/neato/inet.dot",
+      "size": 349,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "tree-graphs-undirected-ngk10_4",
+      "path": "../graphs/undirected/ngk10_4.gv",
+      "size": 1754,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
       },
       "hasHref": false
     }

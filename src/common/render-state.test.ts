@@ -24,7 +24,7 @@ const UNSEEDED_DRAND48 = 0.39646477376027534;
 /** First rand() of an unseeded process (srand(1) state, minstd). */
 const UNSEEDED_RAND = 16807;
 /** The emit_once fallback warning for a face with no hard-coded metrics. */
-const MENLO_WARNING = "Warning: no hard-coded metrics for 'Menlo'.  Falling back to 'Times' metrics";
+const MENLO_WARNING = "Warning: Warning: no hard-coded metrics for 'Menlo'.  Falling back to 'Times' metrics";
 
 /** Graph A: unknown face (emit_once), html anchors (anchorId), neato drand48. */
 const GRAPH_A = 'graph{node[fontname=Menlo]; '
@@ -118,7 +118,7 @@ describe('render output is independent of earlier renders (AD-4)', () => {
     capture(renderSvg, src, 'dot');
     const after = capture(renderSvg, src, 'neato');
     expect(after.split('\n--stderr--\n')[1]).toBe(
-      "Warning: no hard-coded metrics for 'Symbol'.  Falling back to 'Times' metrics\n" +
+      "Warning: Warning: no hard-coded metrics for 'Symbol'.  Falling back to 'Times' metrics\n" +
         'Warning: Warning: no value for width of non-ASCII character 226. ' +
         'Falling back to width of space character',
     );

@@ -1,17 +1,18 @@
 {
-  "generatedAt": "2026-10-20T15:01:34.352Z",
+  "generatedAt": "2026-10-24T03:40:40.731Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "circo",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 928,
   "counts": {
-    "conformant": 914,
+    "conformant": 915,
     "diverged": 1,
-    "accepted": 5,
+    "accepted": 4,
     "port-error": 0,
     "oracle-error": 8,
-    "timeout": 0
+    "timeout": 0,
+    "oracle-nondeterministic": 0
   },
   "results": [
     {
@@ -2453,11 +2454,7 @@
       "id": "241_0",
       "path": "241_0.dot",
       "size": 578,
-      "verdict": "accepted",
-      "diffCount": 41,
-      "firstDiff": "edge:1->2#0/_draw_/op[1].b[1]",
-      "maxDelta": 118.24000000000001,
-      "maxDeltaPath": "edge:1->2#0/_draw_/op[1].b[13]"
+      "verdict": "conformant"
     },
     {
       "id": "share-labelclust-ndd",

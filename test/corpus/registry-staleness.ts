@@ -32,6 +32,7 @@ const OUTCOMES: Readonly<Record<string, RawOutcome['outcome']>> = {
   timeout: 'timeout',
   'oracle-error': 'oracle-error',
   oracleError: 'oracle-error',
+  'oracle-nondeterministic': 'oracle-nondeterministic',
 };
 
 /** Normalize a walker verdict string; throws on a spelling no walker emits. */
@@ -72,15 +73,15 @@ export function formatsRowOutcome(r: { verdict: string; formats?: Record<string,
 
 /**
  * Why `entry` is stale against its walk row, or null when the row still backs
- * it (AD-4). An absent row is stale; an oracle-error row is exempt (there is
- * no reference to verify against); an `accepted` row backs any entry, except
+ * it (AD-4). An absent row is stale; an oracle-error or oracle-nondeterministic
+ * row is exempt (there is no single reference to verify against); an `accepted` row backs any entry, except
  * that a port-error entry still needs every error text to carry
  * `errIncludes`; any other row must be one `acceptsOutcome` accepts.
  */
 export function staleReason(entry: FaultAcceptance, row: RawOutcome | undefined): string | null {
   const declared = declaredVerdict(entry);
   if (row === undefined) return `declares '${declared}' but the walk has no row`;
-  if (row.outcome === 'oracle-error') return null;
+  if (row.outcome === 'oracle-error' || row.outcome === 'oracle-nondeterministic') return null;
   if (row.outcome === 'accepted') {
     if (declared !== 'port-error') return null;
     return acceptsOutcome(entry, { outcome: 'port-error', errs: row.errs })

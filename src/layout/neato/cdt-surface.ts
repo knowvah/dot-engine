@@ -36,6 +36,7 @@
 
 import { incircle, orient2d } from './delaunay.js';
 import { InternalError } from '../../errors.js';
+import { gtsTriangleEnclosing } from './gts-triangle.js';
 
 /** Triangulated surface. @see lib/neatogen/delaunay.h:surface_t */
 export interface Surface {
@@ -644,8 +645,6 @@ class Cdt {
   }
 }
 
-const SQRT3 = 1.73205080756887729;
-
 /**
  * Build the constrained Delaunay surface over n points with nsegs directed
  * constraint segments (segs[2k], segs[2k+1]), removing hole faces.
@@ -659,21 +658,12 @@ export function mkSurface(
   const py = y.slice(0, n);
 
   // gts_triangle_enclosing(points, scale=100)
-  let xmin = px[0]!; let xmax = px[0]!;
-  let ymin = py[0]!; let ymax = py[0]!;
-  for (let i = 1; i < n; i++) {
-    if (px[i]! > xmax) xmax = px[i]!;
-    else if (px[i]! < xmin) xmin = px[i]!;
-    if (py[i]! > ymax) ymax = py[i]!;
-    else if (py[i]! < ymin) ymin = py[i]!;
-  }
-  const xo = (xmax + xmin) / 2;
-  const yo = (ymax + ymin) / 2;
-  let r = 100 * Math.hypot(xmax - xo, ymax - yo);
-  if (r === 0) r = 100;
   const s0 = n;
-  px.push(xo + r * SQRT3, xo, xo - r * SQRT3);
-  py.push(yo - r, yo + 2 * r, yo - r);
+  const enc = gtsTriangleEnclosing(px, py, n, 100);
+  for (const [ex, ey] of enc) {
+    px.push(ex);
+    py.push(ey);
+  }
 
   const cdt = new Cdt(px, py);
   // tri(): constraint edges are created BEFORE the vertices are inserted,

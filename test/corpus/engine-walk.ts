@@ -30,9 +30,14 @@ import {
   oracleCacheRoot, preflightOrExit, readOracleFailure, recordOracleFailure,
 } from './oracle-env.js';
 import { excludedFor } from './engine-exclusions.js';
+import { classifyDivergence, ORACLE_NONDETERMINISTIC } from './oracle-nondeterminism.js';
 
-/** Per-item outcome of the walk (one JSONL line each). */
-export type EngineWalkStatus = 'pass' | 'diverged' | 'oracle-error' | 'port-error' | 'timeout';
+/** Per-item outcome of the walk (one JSONL line each). `oracle-nondeterministic`
+ * (AD-13): the id diverged AND the native oracle's own output varies across
+ * re-draws, so the verdict says nothing about the port — neither pass nor
+ * regression; rows carry `nDraws`. */
+export type EngineWalkStatus =
+  | 'pass' | 'diverged' | 'oracle-error' | 'port-error' | 'timeout' | 'oracle-nondeterministic';
 
 /** One JSONL row / one entry of parity-<engine>.json's `results`. */
 export interface EngineWalkRow {
@@ -41,6 +46,8 @@ export interface EngineWalkRow {
   status: EngineWalkStatus;
   nDiffs?: number;
   firstDiff?: string;
+  /** `oracle-nondeterministic` rows: distinct oracle outputs seen (>= 2). */
+  nDraws?: number;
   err?: string;
   /**
    * ACTIVE ms for the native oracle invocation (monotonic clock, so sleep is
@@ -327,6 +334,21 @@ function oracleXdot(path: string, id: string, engine: string, cacheDir: string):
   return { xdot: out, ms, wallMs };
 }
 
+/** One UNCACHED oracle render (the nondeterminism probe's extra draws);
+ * `undefined` on failure or incomplete output. */
+function drawOracleXdot(path: string, engine: string): string | undefined {
+  try {
+    const out = execFileSync(DOT_BIN, ['-K', engine, '-Txdot', path], {
+      env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: CONFIG.oracleMs,
+      maxBuffer: 512 * 1024 * 1024,
+    });
+    return out.trimEnd().endsWith('}') ? out : undefined;
+  } catch (err) {
+    const so = (err as { stdout?: unknown }).stdout;
+    return typeof so === 'string' && so.trimEnd().endsWith('}') ? so : undefined;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Sweep
 // ---------------------------------------------------------------------------
@@ -473,6 +495,15 @@ async function main(): Promise<void> {
         rec.firstDiff = d
           ? `${d.object} ${d.attr} ${d.path}: ${d.actual} vs ${d.expected}`
           : 'no-diff-detail';
+        // A divergence against a nondeterministic oracle says nothing about
+        // the port (AD-13): re-draw the oracle uncached before believing it.
+        const probe = classifyDivergence(
+          { engine, format: 'xdot', id: it.id }, oracle, () => drawOracleXdot(it.path, engine),
+        );
+        if (probe.nondeterministic) {
+          rec.status = ORACLE_NONDETERMINISTIC;
+          rec.nDraws = probe.nDraws;
+        }
       }
     }
     appendFileSync(OUT, JSON.stringify(rec) + '\n');
@@ -486,7 +517,7 @@ async function main(): Promise<void> {
     try { results.push(JSON.parse(ln) as EngineWalkRow); } catch { /* partial line */ }
   }
   const counts: Record<EngineWalkStatus, number> = {
-    pass: 0, diverged: 0, 'oracle-error': 0, 'port-error': 0, timeout: 0,
+    pass: 0, diverged: 0, 'oracle-error': 0, 'port-error': 0, timeout: 0, [ORACLE_NONDETERMINISTIC]: 0,
   };
   for (const row of results) counts[row.status] = (counts[row.status] ?? 0) + 1;
   const summary: EngineParityReport = {

@@ -16,10 +16,11 @@ import { ObjType, EmitState, MapShape } from '../gvc/job.js';
 import type { RendererPlugin } from '../gvc/context.js';
 import { FillType, PenType } from '../gvc/context.js';
 import { transformPoint } from '../gvc/device.js';
-import { resolveRenderColor } from '../render/color-resolve.js';
+import { firstColor, resolveRenderColor } from '../render/color-resolve.js';
 import { emitRoundedBezier } from './poly-shapes.js';
 import type { PlacedHtml, PlacedCell } from './htmltable-pos.js';
 import { htmlStyle } from './htmltable-style.js';
+import { gvrenderSetStyle } from '../gvc/gvrender-set-style.js';
 import {
   BORDER_LEFT,
   BORDER_TOP,
@@ -27,25 +28,54 @@ import {
   BORDER_BOTTOM,
   BORDER_MASK,
 } from './htmltable-types.js';
+import { parseSegs, parseSegsSilent } from './multicolor.js';
+import { agwarningf } from './agerr.js';
 import { registerRenderState } from './render-state.js';
 
 // ---------------------------------------------------------------------------
 // Gradient spec parser
 // ---------------------------------------------------------------------------
 
+/** The colours and fraction findStopColor yields; `stop` null → DEFAULT_COLOR. */
+export interface HtmlStopColor {
+  fill: string;
+  stop: string | null;
+  frac: number;
+}
+
+/** @see lib/common/emit.c:findStopColor */
+const MSG_MANY_COLORS = 'More than 2 colors specified for a gradient - ignoring remaining';
+
 /**
- * Parse a color spec for gradient: "color1:color2" → [color1, color2].
- * Single-color strings return null (not a gradient spec).
+ * Port of C's findStopColor over parseSegs: null when parseSegs returns
+ * non-zero (including the rv 3 over-full warning), has < 2 segments or has no
+ * first colour. `silent` skips every diagnostic (port-internal pre-passes);
+ * otherwise parseSegs' once-per-render messages and the more-than-2-colours
+ * warning print as C does (no AGPREV context).
+ *
+ * @see lib/common/emit.c:findStopColor
+ */
+export function findHtmlStopColor(color: string, silent = false): HtmlStopColor | null {
+  const { segs, error } = silent ? parseSegsSilent(color) : parseSegs(color);
+  const first = segs[0];
+  const second = segs[1];
+  if (error !== 0 || first === undefined || second === undefined || first.color === null) {
+    return null;
+  }
+  if (segs.length > 2 && !silent) agwarningf(MSG_MANY_COLORS);
+  const frac = first.hasFraction ? first.t : second.hasFraction ? 1 - second.t : 0;
+  return { fill: first.color, stop: second.color, frac };
+}
+
+/**
+ * [fill, stop] of a colour-list gradient spec, or null for a solid colour.
+ * Silent {@link findHtmlStopColor} for call sites that only need the colours.
  *
  * @see lib/common/emit.c:findStopColor
  */
 export function parseGradientSpec(color: string): [string, string] | null {
-  const idx = color.indexOf(':');
-  if (idx < 1) return null;
-  const c0 = color.slice(0, idx).trim();
-  const c1 = color.slice(idx + 1).trim();
-  if (c0.length === 0) return null;
-  return [c0, c1.length > 0 ? c1 : 'black'];
+  const spec = findHtmlStopColor(color, true);
+  return spec === null ? null : [spec.fill, spec.stop ?? 'black'];
 }
 
 // ---------------------------------------------------------------------------
@@ -104,6 +134,8 @@ export interface HtmlPaint {
    * C setFill's findStopColor hit. @see lib/common/htmltable.c:setFill
    */
   stop?: string;
+  /** findStopColor's fraction; defaults to 0. Ignored without `stop`. */
+  gradientFrac?: number;
   /** Gradient angle in degrees; defaults to 0. Ignored without `stop`. */
   gradientAngle?: number;
   /** True → radial gradient (RGRADIENT); else linear. Ignored without `stop`. */
@@ -141,6 +173,16 @@ export function resetHtmlFillPenWidth(): void {
 registerRenderState(resetHtmlFillPenWidth);
 
 /** Map an HTML STYLE to the C pen type: dashed wins over dotted. @see lib/common/htmltable.c:doBorder */
+/** gvc->defaultlinestyle. @see lib/common/emit.c:105 */
+const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
+
+/** The style list doBorder hands to gvrender_set_style for a pen type. */
+function htmlBorderStyle(pen: PenType): readonly string[] {
+  if (pen === PenType.Dashed) return ['dashed'];
+  if (pen === PenType.Dotted) return ['dotted'];
+  return DEFAULT_LINE_STYLE;
+}
+
 function penTypeOf(style: string | undefined): PenType {
   const st = htmlStyle(style);
   if (st.dashed) return PenType.Dashed;
@@ -156,7 +198,7 @@ function penTypeOf(style: string | undefined): PenType {
  */
 export function withHtmlPaint(paint: HtmlPaint, job: RenderJob, drawFn: () => void): void {
   paintObj.fillColor = paint.fill !== undefined
-    ? resolveRenderColor(paint.fill) : { type: 'none' };
+    ? resolveRenderColor(firstColor(paint.fill)) : { type: 'none' };
   paintObj.penColor = paint.pen !== undefined
     ? resolveRenderColor(paint.pen) : { type: 'string', s: 'transparent' };
   applyHtmlFill(paint);
@@ -166,6 +208,9 @@ export function withHtmlPaint(paint: HtmlPaint, job: RenderJob, drawFn: () => vo
   // so xdot emits `S 5 -solid` per border/fill. rawStyle carries it (SVG's
   // style emit treats "solid" as the default → no visible change).
   paintObj.rawStyle = paintObj.pen === PenType.Solid ? ['solid'] : [];
+  // emit_html_tbl/cell border: dashed or dotted by name, else defaultlinestyle.
+  // @see lib/common/htmltable.c:267 doBorder
+  gvrenderSetStyle(htmlBorderStyle(paintObj.pen));
   // Inherit the enclosing object's emit-state (the label state during an HTML
   // label emit) so the fill/border ops route to the same xbuf as the label
   // (_ldraw_), not the shape draw buffer. SVG ignores emit_state, so unchanged.
@@ -186,7 +231,7 @@ function applyHtmlFill(paint: HtmlPaint): void {
     paintObj.fill = paint.radial === true ? FillType.Radial : FillType.Linear;
     paintObj.stopColor = resolveRenderColor(paint.stop);
     paintObj.gradientAngle = paint.gradientAngle ?? 0;
-    paintObj.gradientFrac = 0;
+    paintObj.gradientFrac = paint.gradientFrac ?? 0;
     return;
   }
   paintObj.fill = paint.fill !== undefined ? FillType.Solid : FillType.None;

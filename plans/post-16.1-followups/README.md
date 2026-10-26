@@ -14,6 +14,8 @@ item 28 by `fix/html-label-warn-parity`, item 39 by `fix/html-entity-port`.
 The open work is items 25, 29–31, 35–37 and 40–42 under "New follow-ups
 found by part 2" below, each journaled in `plans/decision-journal.md`.
 Being closed by `plans/post-16-1-followups-3/`.
+The open work is items 43–71 under "New follow-ups found by part 3" below.
+Being closed by `plans/post-16-1-followups-4/`.
 
 ## State at handoff
 
@@ -291,114 +293,189 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       in one process is unchanged. Next: replay one worker's actual job order
       to find the state that carries over.
 - **New follow-ups found by part 3** (`plans/post-16-1-followups-3/`):
-  43. neato `mode=hier` throws `hierarchical stress majorization is not supported
+  43. **[DONE — part 4 T15–T17, T22, T22b, T26: mode=hier ported (AD-6 + amendments); probe and 1554 match native; subset/circuit stay loud]** neato `mode=hier` throws `hierarchical stress majorization is not supported
       yet` (`assertSupported`, `src/layout/neato/init.ts`) where native lays out
       (`digraph{mode=hier;a->b->c->d->e->f;a->d;b->e;c->f}`: native 6 nodes, port
       throws). Corpus 1554 (`mode="hier"`) is quarantined `engine-deferred` for
       it; not in `docs/known-divergences.md` (part 3 T2).
-  44. A raw control character in HTML label text (`label=<a\001b>`) is an expat
+  44. **[DONE — part 4 T4: expat BT_NONXML in content]** A raw control character in HTML label text (`label=<a\001b>`) is an expat
       invalid token natively (`Error: not well-formed (invalid token) in line 1` /
       `... <HTML>a\001b ...` / `in label of node a`, label dropped); the port keeps
       the text (`ab`) and prints nothing. `&#1;` already matches. expat
       `contentTok` BT_NONXML is unmodelled in `htmltable-lex-expat.ts` (part 3 T3).
-  45. `test/architecture/module-globals.fitness.test.ts` allowlist reasons are
+  45. **[DONE — part 4 T2: reasons restated]** `test/architecture/module-globals.fitness.test.ts` allowlist reasons are
       stale after part 3 T1: the listed statics now reset through
       `resetRenderState` (`src/common/render-state.ts`), and `clType` is set in
       `graph-init.ts:330`. Reasons only; the allowlist itself still holds.
-  46. Rendering the same parsed `Graph` object twice suppresses the HTML
+  46. **[DONE — part 4 T7: dedupe sets reset per render (AD-7); label persistence split out as 72]** Rendering the same parsed `Graph` object twice suppresses the HTML
       "cell size too small" and "No or improper image" warnings on the second
       render: per-graph-object state survives `freeLayout` (not a module
       static, so AD-4's reset does not reach it). Native re-parses per run.
-  47. The low-level pipeline `GvcContext.layout` + `renderWithContext` has no
+  47. **[DONE — part 4 T8: GvcContext.layout resets render state (AD-8)]** The low-level pipeline `GvcContext.layout` + `renderWithContext` has no
       per-render reset (AD-4 covers `renderSvg`, `render`, `getDrawOps`,
       `renderAsync`); a caller driving it directly carries C process state
       between graphs. Needs a documented contract or an entry-point reset
       (part 3 T1).
-  48. `src/common/splines-clip.ts` `SplineClipHelper.arrowEndClip`/`arrowStartClip`
+  48. **[DONE — part 4 T10: fused DIST at all six splines-clip sites; bezier_clip already matched]** `src/common/splines-clip.ts` `SplineClipHelper.arrowEndClip`/`arrowStartClip`
       (used by the non-dot engines and the main dot routing path) computes DIST with
       `Math.hypot`, also in `sphereCtx`; native is `sqrt(fma(dx,dx,dy*dy))`
       (`_arrowEndClip`). Its `bezierClip` should be checked against `_bezier_clip`
       (part 3 T7).
-  49. `src/layout/dot/compound.ts` `arrowEndClipIdx`/`arrowStartClipIdx` test
+  49. **[DONE — part 4 T11: clipToNodes back-up + fused compound DIST]** `src/layout/dot/compound.ts` `arrowEndClipIdx`/`arrowStartClipIdx` test
       `dist < elen` with unfused `Math.hypot`, and `edge-route-routing.ts`
       `clipToNodes` lacks `arrows.c:291-293`'s `endp -= 3` back-up (part 3 T7).
-  50. `edge-route-clip.ts` `tailArrowEndClip` ports `arrowStartClip` forward in
+  50. **[DONE — part 4 T12: arrowStartClip in C's reversed absolute form]** `edge-route-clip.ts` `tailArrowEndClip` ports `arrowStartClip` forward in
       tip-local coordinates with `Math.hypot`; C reverses to
       `sp[0]=ps[start+3] … sp[3]=tip` with `left_inside=false` on absolute
       coordinates. Equal in exact arithmetic, not bit-equal (part 3 T7).
-  51. `cdt-surface.ts`'s enclosing triangle uses `SQRT3 = 1.73205080756887729` and
+  51. **[DONE — part 4 T13: GTS SQRT3 literal + fused enclosing triangle]** `cdt-surface.ts`'s enclosing triangle uses `SQRT3 = 1.73205080756887729` and
       `Math.hypot`; GTS uses `#define SQRT3 1.73205080757` (`triangle.c`) and
       `sqrt(dx*dx+dy*dy)`. Latent difference in the enclosing vertices; output
       effect unchecked (part 3 T9).
-  52. Port CDT face numbering and `neigh` order follow creation order; native
+  52. **[DONE — part 4 T9: documented irreducible, known-divergences A11]** Port CDT face numbering and `neigh` order follow creation order; native
       follows GHashTable (address) order, which is nondeterministic. This can
       change tgraph edge order and shortest-path tie-breaks in multispline
       routing (part 3 T9).
-  53. 241_0 sfdp: the layout drifts from native (node 3 y 0.41621 vs 0.4162), and
+  53. **[DONE — part 4 T28: (a) drift parked irreducible (host libm pow, A1); (b) injection artifact + fixed V8 sin(9π/8) ulp in the obstacle 8-gon]** 241_0 sfdp: the layout drifts from native (node 3 y 0.41621 vs 0.4162), and
       with native positions injected edge 3→4 is a 7-point spline in the port vs
       4 in native; the port also reports an extra routing failure on (1,2).
       Pre-existing, independent of the CDT face order (part 3 T9).
-  54. About 17 agerr-family sites print without the prefix `out` adds natively:
+  54. **[DONE — part 4 T5: agwarningf/agerrorf prefixes]** About 17 agerr-family sites print without the prefix `out` adds natively:
       `bad edge len`, `Max. iterations`, `Illegal value … mode`,
       `Unrecognized overlap value`, `Orthogonal edges …` (no `Warning: `), and
       `lost <t> <h> edge`, `in routesplines, Pshortestpath failed` (no
       `Error: `). T5 routes them through `agerrLineOn` with the text unchanged
       (part 3 T5).
-  55. Console channel is mixed: six agerr warnings go to `console.error`
+  55. **[DONE — part 4 T5: agerr warnings on console.warn]** Console channel is mixed: six agerr warnings go to `console.error`
       (`cluster.ts`, `conc.ts:295`, `graph-init.ts`, `poly-init.ts`, the parser's
       number-ambiguity and macro warnings) because tests spy on it; all agerr
       warnings should use `console.warn` (part 3 T5).
-  56. The lexer's syntax errors lack native's `<stdin>: ` file prefix (part 3 T5).
-  57. `parseSegs`' `Warning: Total size > 1 in "<spec>" color spec in edge a -> b`
+  56. **[DONE — part 4 T9: documented, known-divergences A12 (AD-10)]** The lexer's syntax errors lack native's `<stdin>: ` file prefix (part 3 T5).
+  57. **[DONE — part 4 T6: parseSegs warning + caller context]** `parseSegs`' `Warning: Total size > 1 in "<spec>" color spec in edge a -> b`
       is never printed by the port (part 3 T10).
-  58. Native prints `gvrender_set_style: unsupported style rounded - ignoring` for an
+  58. **[DONE — part 4 T18: shared gvrenderSetStyle warning port (user-approved scope)]** Native prints `gvrender_set_style: unsupported style rounded - ignoring` for an
       ortho `style=rounded` edge; the port does not (part 3 T10).
-  59. Native prints `layers not supported in <fmt> output` for xdot, cmapx and plain;
+  59. **[DONE — part 4 T19: firstlayer warning]** Native prints `layers not supported in <fmt> output` for xdot, cmapx and plain;
       the port does not (part 3 T10).
-  60. A missing `image=` file: native prints `No such file or directory while opening
+  60. **[DONE — part 4 T23: missing-image messages (no failure caching, as C)]** A missing `image=` file: native prints `No such file or directory while opening
       x.png` and `No or improper image="…" for node "a"`; for HTML `<IMG>` native also
       prints a `Warning: No such file…` line before the Error the port prints
       (part 3 T10).
-  61. Native's font fallback line is `Warning: Warning: no hard-coded metrics …`
+  61. **[DONE — part 4 T20: doubled prefix]** Native's font fallback line is `Warning: Warning: no hard-coded metrics …`
       (doubled prefix); the port prints one `Warning: ` (part 3 T5/T10).
-  62. Cluster `style=striped` is not drawn; T10 added only its colour warnings
+  62. **[DONE — part 4 T14: striped clusters drawn]** Cluster `style=striped` is not drawn; T10 added only its colour warnings
       (part 3 T10).
-  63. Under a colorscheme, the `transparent` pen of `peripheries=0` filled nodes and of
+  63. **[DONE — part 4 T24: transparent pen under a colorscheme (+ striped stripe scheme window)]** Under a colorscheme, the `transparent` pen of `peripheries=0` filled nodes and of
       clusters is not reported as an unknown color for non-svg renderers; only the
       root-background case is (part 3 T10).
-  64. `parseGradientSpec` (HTML) trims and splits at the first `:` where C's
+  64. **[DONE — part 4 T25: findStopColor over parseSegs for HTML BGCOLOR]** `parseGradientSpec` (HTML) trims and splits at the first `:` where C's
       `findStopColor` uses `parseSegs`; names with spaces or `;fraction` in HTML
       `BGCOLOR` may differ (part 3 T10).
-  65. Fuzz `classify.mjs` files native's duplicate-`baseline-shift` outputs (nested
+  65. **[DONE — part 4 T1: dup-baseline-shift class]** Fuzz `classify.mjs` files native's duplicate-`baseline-shift` outputs (nested
       `<sup>`/`<sub>`, invalid XML) under class 35 or svg-other; give them their own
       class (part 3 T12).
-  66. `probe.mjs` compares only text content and ellipse `cx`; it should also compare
+  66. **[DONE — part 4 T1: probe compares text x/y and ellipse rx/ry]** `probe.mjs` compares only text content and ellipse `cx`; it should also compare
       text x/y and ellipse rx/ry (it reported item 35 as SAME) (part 3 T12).
-  67. HTML line splitting and the simple test exist twice (sizing:
+  67. **[DONE — part 4 T27: one HTML line builder]** HTML line splitting and the simple test exist twice (sizing:
       `htmltable.ts` `splitSizedLines`/`htmlTextIsSimple`; placement:
       `htmltable-pos-runs.ts` `buildLineRuns`/`runsAreSimple`); share one builder
       so they cannot diverge again (refactor, output unchanged) (part 3 T12).
-  68. Dot virtual nodes/edges cost 2,490 B per pair in the port vs ≈1,056 B in C
+  68. **[DONE — part 4 T21: shared empty attrs on virtual objects, 2,217 → 1,850 B/pair]** Dot virtual nodes/edges cost 2,490 B per pair in the port vs ≈1,056 B in C
       (`class2` chains): each allocates an empty `attrs` Map (~372 B/pair, C virtual
       nodes have no attribute record), separate `Port`/point objects (~250 B; C embeds
       them in `Agedgeinfo_t`) and ~15 boxed numbers. Lazy `attrs` on virtual
       Node/Edge would save ~15% of class2 bytes for every dot render with long edges;
       needs corpus byte-identity (part 3 T13; does not rescue 1864, which needs
       ≥ 6.6 GB even at C's sizes).
-  69. Native 16.1.0 is nondeterministic on some fdp/sfdp/neato corpus ids (graphs-fdp,
+  69. **[DONE — part 4 T3: oracle-nondeterministic walk status (AD-13)]** Native 16.1.0 is nondeterministic on some fdp/sfdp/neato corpus ids (graphs-fdp,
       linux.x86-neatosplines_neato sfdp, ngk10_4 neato, directed-table fdp: 2-3
       distinct xdots in 5-6 runs; linux.i386-b102 fdp differs between sessions), so
       their walk verdicts flip with no port change. The walks should mark such ids
       (e.g. run the oracle N times and record `oracle-nondeterministic`) instead of
       caching one draw (part 3 T14). Seen on twopi too (nshare-arrows_dot).
-  70. `test/corpus/attribution-fdp.json(l)` still lists fdp `241_0` as
+  70. **[DONE — part 4 T29: `attribute-divergence.ts fdp --fresh`, 16 diverged ids, all drift-exonerated]** `test/corpus/attribution-fdp.json(l)` still lists fdp `241_0` as
       `not-cleared`, though the id passes since part 3 T9. Rerun
       `attribute-divergence.ts fdp` (or drop the row) so attribution covers only
       diverged ids (part 3 T14; outside T14's write-set).
-  71. Committed walk rows for still-diverged ids are stale where pre-mission src
+  71. **[DONE — part 4 T29: all seven engine walks re-run on d42aafd1 and committed]** Committed walk rows for still-diverged ids are stale where pre-mission src
       changes moved output without a re-walk (twopi graphs-arrowsize: 23 diffs
       committed, 72 on today's head and on part 3's base). A full re-walk of all
       engines would refresh `nDiffs`/`firstDiff` (part 3 T14).
+
+- **New follow-ups found by part 4** (`plans/post-16-1-followups-4/`):
+  72. Node/edge/graph labels survive `freeLayout`: `poly-init.ts` `buildNodeLabel`
+      returns early when `n.info.label` is set, so laying out the same `Graph` twice
+      never re-sizes its labels (no HTML size/image warnings on the second render; a
+      changed measurer is ignored). C frees them in `dot_cleanup_node`
+      (`dotgen/dotinit.c:110`, `common/utils.c:1517-1531`) and rebuilds them in
+      `common_init_node` (`utils.c:441`) each layout (part 4 T7).
+  73. Default neato (stress/major) never calls `setEdgeLen`: C's `scan_graph_mode`
+      does for every mode (`neatogen/stuff.c:245-261`), so `len=x` prints
+      `Warning: bad edge len "x" in %1 - setting to 1.00` natively and nothing in the
+      port, which reads `len` via `makeGraphDataC` `lateDouble` (`init.ts`). Check
+      whether `lenattr`'s fallback also changes major-mode distances (part 4 T5).
+  74. Anonymous graphs: native `agnameof` returns `%<id>` (`cgraph/id.c:163`,
+      LOCALNAMEPREFIX), so neato messages print `graph %1`; the port prints an empty
+      name (part 4 T5).
+  75. A filled node with `fillcolor="red;0.6:blue;0.6"` prints natively
+      `Warning: Total size > 1 in "…" color spec Warning: red;0.6 is not a known
+      color.` as one line (`findStopColor`, no AGPREV, agerr partial line); the port
+      prints only the first half on its own line and never the unknown-colour half
+      (part 4 T6).
+  76. `htmltable-lex-attvalue.ts` `NON_XML` rejects C0 controls in attribute values
+      but not U+FFFE/U+FFFF or lone surrogates, which expat rejects in content (T4
+      ported those for content); probe native attribute values first (part 4 T4).
+
+  77. Filled clusters with weighted/multi-colour fills: native prints `Warning: red;0.7
+      is not a known color.` (after a `findStopColor` Total-size line with no `in
+      cluster` tail) and `Warning: More than 2 colors specified for a gradient -
+      ignoring remaining`; the port prints neither (part 4 T14; pairs with 75).
+  78. Port `-Tjson` prints the layers warning `json` then `xdot`; native `xdot` then
+      `json`: the port's nested xdot render runs in `JsonRenderer.endGraph`
+      (`src/render/json.ts:252`), C's in `json_begin_graph` (part 4 T19).
+  79. `layerselect`/`layerlist` are unported (`emit.c` `firstlayer` branch) (part 4 T19).
+  80. Style parsing: C `parse_style` keeps whitespace inside tokens (`"dashed , bogus"`
+      → token `"dashed "`), the port trims; unmatched/nested parentheses get no
+      `agerrorf`; per-bezier style warnings print after `reportEdgeColors` instead of
+      interleaved with per-segment colour warnings (part 4 T18).
+  81. The cluster label sits inside C's cluster colorscheme window (`emit.c:3921`,
+      restored at 3943) but outside the port's; `svg-tapered-edge.ts:49` assigns a
+      literal `transparent` pen (unprobed) (part 4 T24).
+  82. HTML `BGCOLOR` stderr: `red;0.7:blue;0.6` needs agerr partial-line join (as 75);
+      `red;x:blue` prints the colour warning before the Error (pre-pass order); `:red`
+      warns `Warning:  is not a known color.` and fills solid natively, the port
+      renders no fill (`resolveRenderColor('')`); `style-resolve.ts` `findStopColor`
+      (nodes/clusters/graph bgcolor) treats rv 3 as a gradient and omits "More than 2
+      colors" (part 4 T25).
+  83. Images: HTML `<IMG>` consults only the global `setImageResolver`, not a per-context
+      `ctx.imageResolver` (`HtmlSizeEnv` lacks it; `make-label.ts`); node `image=` may
+      not size the node at all (`poly-sizing`) — unverified; corpus ids with a real
+      `.png` next to them now warn in port-only corpus runs (no resolver) (part 4 T23).
+  84. `src/common/fma.ts` (Dekker split) returns NaN for infinite operands where arm64
+      `fmadd` returns inf; `matrix-ops.ts` carries a local guard, other callers are
+      unchecked (part 4 T17).
+  85. `stress-kernel.ts` conjugate gradient and right-multiply are unfused vs the oracle
+      (production neato kD path ~1 ulp per step; `cgStep` returns true on `p_Ap == 0`
+      instead of breaking); `OPT_SMART_INIT` is 1 there vs C's 0x4; `stresswt`
+      (`checkExp`) unported. Swap in `conjgrad-mkernel.ts` under AD-4 (part 4 T22/T26).
+  86. Docs: the errors-table row for `mode=hier` says "after … `maxiter` is not
+      negative"; C returns before the model check when `maxiter` is 0, so "positive"
+      is exact (README and 24 docs-site pages) (part 4 T26b).
+
+  87. Patchwork (and any engine that never routes splines) prints `Error: lost <t> <h>
+      edge` for every edge in the port; native prints nothing, because C
+      `translate_drawing` calls `map_edge` only when `State == GVSPLINES`
+      (`lib/common/postproc.c`); `src/common/postproc.ts:224` assumes the state always
+      holds (part 4 T29 bytediff).
+  88. Heavy-tail budgets misfire on the iterative engines. `engine-walk.ts` scales its
+      port budget by perf.json's SVG `dot` cost, so sfdp 2371 (213 s recorded, 0.75–2.9 h
+      real) times out at the 1 h floor. `attribute-divergence.ts` caps the oracle at 300 s,
+      so neato 2371/2646 (native ~1000 s) come back harness-error under `--fresh`. Scale
+      both by the engine's own recorded cost (the previous walk row's `portMs`/`oracleMs`)
+      (part 4 T29; worked around with env overrides and single-id resumes). The
+      refreshed `attribution-neato.json(l)` (84 rows, all drift-exonerated, without the
+      now-passing inet/ngk10_4 rows) was outside T29's write-set and is not committed;
+      re-run `attribute-divergence.ts neato --fresh` with the overrides and commit it.
 
 ## Local leftovers (not committed, safe to delete)
 

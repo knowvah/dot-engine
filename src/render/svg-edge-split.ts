@@ -21,7 +21,7 @@ import type { RenderJob } from '../gvc/job.js';
 import type { Point, Bezier } from '../model/geom.js';
 import { bezier } from '../common/bezier.js';
 import { dist2 } from '../common/spline-midpoint.js';
-import { parseSegs } from '../common/multicolor.js';
+import { edgeSegsContext, parseSegs } from '../common/multicolor.js';
 import { transformPoint } from '../gvc/device.js';
 import { emitBezierPath, emitDash, emitPenWidth } from './svg-helpers.js';
 import { resolveRenderColor, colorPaint } from './color-resolve.js';
@@ -160,7 +160,7 @@ export function emitSplitEdgePaths(
   job: RenderJob,
   colorList: string,
 ): { firstColor: string; endColor: string } {
-  const segs = parseSegs(colorList).segs;
+  const segs = parseSegs(colorList, edgeSegsContext(e)).segs;
   const firstColor = segs[0]?.color ?? DEFAULT_COLOR;
   const spl = e.info.spl;
   let endColor = firstColor;

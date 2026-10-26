@@ -12,10 +12,10 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 929 (generated 2026-10-21T14:43:53.299Z)
+- **Surveyed:** 929 (generated 2026-10-24T02:41:13.030Z)
 - **Oracle:** dot 16.1.0
 - **pass:** 924 (99.5%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 5
-- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %)
+- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %) · **oracle-nondeterministic:** 0 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (5) — documented, not chased
 

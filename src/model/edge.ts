@@ -8,6 +8,7 @@
  */
 
 import type { Node } from './node.js';
+import { EMPTY_ATTRS } from './lazy-attrs.js';
 import { type EdgeInfo, makeEdgeInfo, makePort } from './edgeInfo.js';
 
 /**
@@ -93,12 +94,12 @@ export class Edge {
   info: EdgeInfo;
 
   /** @see lib/cgraph/edge.c:agedge */
-  constructor(tail: Node, head: Node, name: string) {
+  constructor(tail: Node, head: Node, name: string, lazyAttrs = false) {
     this.seq = Edge._nextSeq++;
     this.tail = tail;
     this.head = head;
     this.name = name;
-    this.attrs = new Map();
+    this.attrs = lazyAttrs ? EMPTY_ATTRS : new Map();
     this.info = makeEdgeInfo(makePort(), makePort());
   }
 }

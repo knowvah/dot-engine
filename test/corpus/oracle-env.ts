@@ -167,3 +167,48 @@ export function preflightOrExit(dotBin: string, gvbindir: string, engines: reado
     process.exit(2);
   }
 }
+
+/** The recorded outcome of the extra-draw probe for one native render:
+ * `nDraws` is the number of DISTINCT outputs seen (1 = stable, >= 2 =
+ * nondeterministic oracle). */
+export interface OracleDrawRecord {
+  readonly nDraws: number;
+}
+
+/** Where a probe outcome is recorded. Keyed like `oracleFailureFile`: by
+ * release, engine, format and id, so a rebuild of the same release reuses it
+ * and only a new graphviz release re-probes. */
+export function oracleDrawFile(
+  key: OracleFailureKey,
+  env: Readonly<Record<string, string | undefined>> = process.env,
+  home: string = homedir(),
+): string {
+  const dir = oracleCacheRoot('draws', join(ORACLE_VERSION, key.engine, key.format), env, home);
+  return join(dir, `${key.id}.json`);
+}
+
+/** The recorded probe outcome for `key`, or null when absent or unreadable. */
+export function readOracleDraws(
+  key: OracleFailureKey,
+  env: Readonly<Record<string, string | undefined>> = process.env,
+  home: string = homedir(),
+): OracleDrawRecord | null {
+  try {
+    const rec = JSON.parse(readFileSync(oracleDrawFile(key, env, home), 'utf8')) as OracleDrawRecord;
+    return Number.isInteger(rec.nDraws) && rec.nDraws >= 1 ? rec : null;
+  } catch {
+    return null; // absent, or truncated by a killed writer
+  }
+}
+
+/** Record a probe outcome so later walks skip the extra renders. */
+export function recordOracleDraws(
+  key: OracleFailureKey,
+  nDraws: number,
+  env: Readonly<Record<string, string | undefined>> = process.env,
+  home: string = homedir(),
+): void {
+  const file = oracleDrawFile(key, env, home);
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, JSON.stringify({ nDraws } satisfies OracleDrawRecord) + '\n');
+}

@@ -1,5 +1,5 @@
 ---
-sourceHash: 545227fb3a0a91494ed7a2c299e5a9ca93a594d68d99e0596f743e7597dfbae9
+sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,7 +131,7 @@ elkerüléséhez távolítsa el az attribútumot, vagy változtassa támogatott 
 
 | Motor | Attribútum és érték | Mikor lép működésbe | Szükséges Graphviz-funkció |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Mindig (miután a gráfnak 2+ csúcsa van, és a `maxiter` nem negatív) | Hierarchikus feszültségmajorizáció (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Csak ha a `model` értéke `subset` vagy `circuit` (miután a gráfnak 2+ csúcsa van, és a `maxiter` nem negatív) | Hierarchikus feszültségmajorizáció (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Csak ha a Graphviz megszorításokat építene: a `diredgeconstraints` igaz, vagy `hier*`, `overlap=ipsep`, vagy a gráfnak van legfelső szintű klasztere. Megszorítások nélkül feszültségmajorizációként fut, mint a Graphvizben | Megszorításos majorizáció (`stress_majorization_cola`) |
 | neato | `start=self` | A `mode` `major` (az alapértelmezés) vagy `ipsep` | Okos inicializálás (`smart_ini`). `mode=KK` vagy `mode=sgd` alatt renderelésenként egyszer naplózza: `start=0 not supported with mode=self - ignored`, ahogy a Graphviz teszi |
 | neato | `model=subset` | A `mode` `major` vagy `KK` | A részhalmaz-távolságmodell |

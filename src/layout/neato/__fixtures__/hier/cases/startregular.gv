@@ -1,0 +1,1 @@
+digraph{mode=hier; start=regular; a->b->c->d; a->c}

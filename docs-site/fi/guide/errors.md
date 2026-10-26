@@ -1,5 +1,5 @@
 ---
-sourceHash: 545227fb3a0a91494ed7a2c299e5a9ca93a594d68d99e0596f743e7597dfbae9
+sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,7 +132,7 @@ tuettuun arvoon.
 
 | Moottori | Attribuutti ja arvo | Laukeaa, kun | Tarvittava Graphviz-ominaisuus |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Aina (kun graafissa on 2+ solmua ja `maxiter` ei ole negatiivinen) | Hierarkkinen stressimajorisointi (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Vain, kun `model` on `subset` tai `circuit` (kun graafissa on 2+ solmua ja `maxiter` ei ole negatiivinen) | Hierarkkinen stressimajorisointi (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Vain kun Graphviz rakentaisi rajoitteita: `diredgeconstraints` on tosi tai `hier*`, `overlap=ipsep`, tai graafissa on ylätason klusteri. Ilman rajoitteita se ajetaan stressimajorisointina, kuten Graphvizissa | Rajoitettu majorisointi (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` on `major` (oletus) tai `ipsep` | Älykäs alustus (`smart_ini`). Arvoilla `mode=KK` tai `mode=sgd` se kirjaa viestin `start=0 not supported with mode=self - ignored` kerran renderöintiä kohden, kuten Graphviz |
 | neato | `model=subset` | `mode` on `major` tai `KK` | Osajoukkoetäisyysmalli |

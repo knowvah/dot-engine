@@ -1,30 +1,8 @@
 {
-  "generatedAt": "2026-10-15T01:10:41.912Z",
+  "generatedAt": "2026-10-24T03:49:23.893Z",
   "oracleSha1": "0e0164de26a43dc43340f44915b32d7f7616c4a1",
   "tolerance": 0.5,
   "results": [
-    {
-      "id": "241_0",
-      "verdict": "not-cleared",
-      "baseDiffs": 11,
-      "injectedDiffs": 11,
-      "bucket": {
-        "shape": "edge/_draw_/numeric",
-        "kind": "position",
-        "signature": "edge/_draw_/numeric+edge/_hdraw_/numeric+edge/pos/numeric"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-table",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 167,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
     {
       "id": "tree-doc-dotguide-clust2",
       "verdict": "drift-exonerated",
@@ -125,39 +103,6 @@
       }
     },
     {
-      "id": "2796",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 7032,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "windows-proc3d",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 20,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/pos/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "tree-doc-infosrc-plugins",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 4790,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
       "id": "share-ldbxtried",
       "verdict": "drift-exonerated",
       "baseDiffs": 2070,
@@ -202,17 +147,6 @@
       }
     },
     {
-      "id": "2620",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 11888,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
       "id": "nshare-root_circo",
       "verdict": "drift-exonerated",
       "baseDiffs": 37214,
@@ -238,83 +172,6 @@
       "id": "graphs-b103",
       "verdict": "drift-exonerated",
       "baseDiffs": 14727,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2475_2",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 324241,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2621",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 79633,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2470",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 19406,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "graphs-b100",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 156698,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2371",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 325657,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2108",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 1062877,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2471",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 37731,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",

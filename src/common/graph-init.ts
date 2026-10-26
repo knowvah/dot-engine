@@ -89,7 +89,7 @@ export function findCharset(g: Graph): number {
   }
   if (p === 'big-5' || p === 'big5') return CHAR_BIG5;
   if (p === 'utf-8' || p === 'utf8') return CHAR_UTF8;
-  agwarningf(`Unsupported charset "${raw}" - assuming utf-8`, 'error');
+  agwarningf(`Unsupported charset "${raw}" - assuming utf-8`);
   return CHAR_UTF8;
 }
 

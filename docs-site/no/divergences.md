@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -217,7 +217,7 @@ individuelt tilskrevet mot graphviz 16.1.0: injeksjonsverktøyet
 inn i porten og sammenligner på nytt, og hver gjeldende avvikende id er `drift-exonerated`
 (portens ruting og emisjon reproduserer orakelet nøyaktig så snart løserdriften er
 fjernet), bortsett fra to. To er separat godkjente rester per id: sfdp `241_0`s
-CDT-rest, og sfdp `2556`s NaN-layout. fdp `241_0` består siden
+host-libm-`pow`-drift (rediagnostisert av T28), og sfdp `2556`s NaN-layout. fdp `241_0` består siden
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` (se fdp-avsnittet
 under A9). fdp `2471` og sfdp
 `2371` beholdt tidligere kantetikettposisjoner (`lp`) som avvek etter injeksjon, det vil
@@ -892,14 +892,13 @@ hadde tilskrevet den kosirkulære likheten nedenfor — ble **samsvarende**
 (godkjenninger pensjonert), og sfdp `42` viste seg å ikke ha noen likhet i det hele tatt (det er A1-
 drift, se [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp-`241_0` ble senere
 **samsvarende**, etter en ny rettelse på portsiden i trianguleringen (rekkefølgen på
-flatenes hjørner etter et kantbytte; se fdp-avsnittet nedenfor). circo- og
-sfdp-`241_0` avviker fortsatt med uendrede eller reduserte rester; tilskrivningen
-av dem til likheten nedenfor er eldre enn `f66ac638` og er **ikke verifisert på nytt
-ved posisjonsinjeksjon** siden den rettelsen viste at den samme tilskrivningen var feil for
-twopi/neato.
+flatenes hjørner etter et kantbytte; se fdp-avsnittet nedenfor). circo-`241_0` ble **samsvarende** med `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: V8s `Math.sin(9π/8)` ligger 1 ULP fra den korrekt avrundede
+libm-verdien, noe som flyttet ett hjørne av hvert ellipseobstakel og vendte korridoren
+(godkjenningen pensjonert). sfdp-`241_0` ble rediagnostisert av den samme oppgaven og er
+nå A1 (se sfdp-avsnittet nedenfor).
 
-**Berørt:** `241_0` (circo Δ≈0.2 via korridorvendingen på kanten `1->2`; sfdp
-`241_0` på motorsporet nedenfor); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Berørt:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 forskjeller i etikettposisjon hver — libm-1-ULP oppstår i
 `poly_init`s enhetstoppunkt-trig (`hypot`/`atan2`/`sin`), setter én nodes
 beregnede høyde en ULP forbi minstestørrelsesbegrensningen orakelet lander
@@ -941,7 +940,8 @@ i `polylineMidpoint` — se b29-familieavsnittet nedenfor) og circo `241_0` (41
 forskjeller i tegneoperasjoner, Δ≈0.2pt på bezieren til kanten `1->2` — den samme
 vendingen av CDT-diagonalen i korridoren; beslutningsjournal, 2026-07-10, oppføringen «CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed»). Godkjent på motorsporsnivå via
+filed»; **pensjonert 2026-10-23** — samsvarende siden porten bruker host-libm-ens
+`cos`/`sin` for obstakelets 8-kant, se re-baseliningen på 16.1 ovenfor). Godkjent på motorsporsnivå via
 `test/corpus/accepted-divergences-engines.json`, koblet inn i
 `PARITY-twopi.md`/`PARITY-circo.md` av `parity-report.ts` — den samme koblingen
 `accepted.ts` utfører for dot-sporet `PARITY-dot.md`.
@@ -1066,22 +1066,20 @@ verdien 18.0, og `closestSide`s dyna-valg av hodeport snur TOP/BOTTOM ved
 akkurat den likheten; nodeposisjoner og bokser er ellers bit-identiske med
 orakelet; **trukket tilbake 2026-10-18** — den er konform siden portens DIST2 bruker clangs fusjonerte form, som avgjør nettopp denne likheten slik C gjør).
 
-**sfdp-motorsporet — FP-likhet i en kant (`241_0`).**
+**sfdp-motorsporet — `241_0` (omklassifisert A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> sfdps xdot-motorspor (`parity-sfdp.json`,
-innebygd `dot -Ksfdp -Txdot`, ±0.5) avdekker den kosirkulære CDT-incircle-likheten så snart
-eksakte innebygde posisjoner før ruting injiseres (så avviket er IKKE
-iterativ drift — se A1-driftklassen — men en diskret predikatlikhet):
+innebygd `dot -Ksfdp -Txdot`, ±0.5) oppførte her `241_0` som den kosirkulære
+CDT-incircle-likheten. `fix(T28)` rediagnostiserte den med en instrumentert innebygd sfdp:
 
-- `241_0` — tilskrevet den kosirkulære CDT-incircle-likheten (multispline-
-  korridoren; ikke verifisert på nytt etter `f66ac638`, se re-baseliningen på 16.1 ovenfor).
-  Resten er en **vending i segmentantall**: 7 forskjeller i tegneoperasjoner på kant 1->2,
-  `ptCount 8 vs 20` (20 forskjeller før `f66ac638`) — korridoren lykkes med
-  en spline på N punkter der det innebygde bygget faller tilbake på en kortere vanlig rute
-  (eller omvendt), som i circo-oppføringen `241_0` ovenfor. Porten emulerer allerede arm64-
-  `fmadd`-kontraksjonen i incircle-/`ccw`-predikatet (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) og bruker robust-incircle Delaunay; resten er
-  1-ULP-forskjellen mellom V8 og Apple-libm i `sin`/`hypot` i predikatinndataene, som ingen portabel
-  kode gjenskaper.
+- `241_0` — 7 forskjeller i tegneoperasjoner på kant 1->2 (`ptCount 8 vs 20`). Layouten
+  driver bort fra det første frastøtende kraftleddet, der macOS-libms `pow(dist, 2)`
+  returnerer 1 ULP under korrekt avrunding (groveste nivå, iterasjon 22; se oppføringen om
+  host-libm-`pow` under hull i layouttroskap), og adaptiv avkjøling forsterker det til
+  posisjoner på knivseggen der kant 1->2 rutes annerledes. Injeksjon av innebygde
+  `pow`-verdier gjør hver sporlinje og den endelige xdot identiske. Rutingresten som ble
+  sett med injiserte posisjoner var delvis en injeksjonsartefakt og delvis V8s
+  `Math.sin(9π/8)` i obstakelets 8-kant, som porten nå henter fra host-libm (rettelsen som
+  også gjorde circo `241_0` samsvarende). Det som gjenstår er A1-drift.
 
 > **sfdp `42` omklassifisert A9 → A1-drift (graphviz 16.1-synkronisering).** Den var oppført
 > her som en CDT-/libm-incircle-likhet. Oppdraget fant noe annet
@@ -1110,7 +1108,8 @@ systemets C-`hypot` og sammenligne med Nodes `Math.hypot` på representative
 avviksinndata for flate kanter viser 1-ULP-uenighet på 2 av 6 (Δ 7.1e-15 og
 5.7e-14) — deleterskelens knivsegg som snur delingsantallet.
 Ureduserbar: ingen portabel hypot gjenskaper Apples libm (presedensen `arm-pow.ts`
-for den samme grensen). `sfdp.241_0` er godkjent på motorsporsnivå via `accepted-divergences-engines.json`.
+for den samme grensen). `sfdp.241_0`, en gang godkjent under denne klassen,
+er A1-drift siden T28 (se ovenfor).
 `sfdp.42` er **ikke** en del av denne klassen: registeroppføringen er A1 (`comparisons/sfdp-42.md`), og
 sonden ovenfor forklarte den ikke.
 
@@ -1166,6 +1165,22 @@ feil i stedet for en `diverged`-dom, så oppføringene i
 den bærer den meldingen. En annen feil på `2784` ville dukket opp som en ikke-godkjent
 feil, og `registry-staleness.test.ts` ville flagget oppføringen som utdatert. Bevis:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Rekkefølgen på GTS Delaunay-flater ved degenerert inndata — irreduserbar {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Berørt:** Layouter som trianguleres via GTS (`lib/neatogen/delaunay.c`; 16.1-orakelet linker GTS 0.7.6) ved degenerert inndata: punkter på kanter eller kosirkulære rutenett.
+
+**Hva som avviker.** Porten nummererer Delaunay-flater og ordner hver flates naboer (`neigh`) etter opprettelsesrekkefølge. Nativ GTS nummererer flater i `GHashTable`-rekkefølge: `closest_face` itererer en tabell med pekere som nøkler, slik at flate-ID-er og naborekkefølge avhenger av heap-adresser og varierer mellom kjøringer. Alt som er utledet av flaterekkefølgen kan derfor avvike fra en gitt nativ kjøring.
+
+**Hvorfor godkjent.** Det finnes intet deterministisk mål. 60 kjøringer av den native binærfilen på én degenerert inndata ga 22 ulike utdata, selv med ASLR av og `MallocNanoZone=0`; variasjonen er en egenskap ved orakelet under koden, ikke en feil i porten. Sammenlign flater etter hjørnemengde, ikke ID. Belegg: GTS-notater fra del 3 (`.agent-notes/post-16-1-followups-3.md`, «GTS face vertex order and nondeterminism»).
+
+### A12. Ingen `<stdin>: `-prefiks på lexer-feil {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Berørt:** DOT-syntaksfeil rapportert av lexeren (`aagerror`) på stderr.
+
+**Hva som avviker.** Den native `dot`-CLI-en som leser standard inndata skriver `<stdin>: syntax error in line N …`; porten skriver samme melding uten prefikset `<stdin>: `.
+
+**Hvorfor godkjent.** `aagerror` (`lib/cgraph/scan.l:157`) legger til `InputFile: ` bare når `InputFile` er satt. CLI-en setter den til `<stdin>` ved lesing av standard inndata; bibliotekinngangen `agmemread`, som porten speiler, lar den stå usatt og skriver ikke prefiks. Porten har ingen CLI, så det er ingenting å rapportere. stderr-proben normaliserer prefikset ved sammenligning.
 
 ---
 

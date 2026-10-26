@@ -1,7 +1,15 @@
 // SPDX-License-Identifier: EPL-2.0
 
-import { describe, it, expect } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { parseSegs } from './multicolor.js';
+import { resetRenderState } from './render-state.js';
+
+// parseSegs prints once per process: restart the flag and keep stderr quiet.
+beforeEach(() => {
+  resetRenderState();
+  vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+  vi.spyOn(console, 'error').mockImplementation(() => undefined);
+});
 
 // ---------------------------------------------------------------------------
 // parseSegs — acceptance criteria from G1 task spec

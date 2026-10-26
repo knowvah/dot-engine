@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -214,8 +214,8 @@ indywidualnie przypisany względem graphviz 16.1.0: narzędzie wstrzykiwania
 (`test/corpus/attribute-divergence.ts`) podaje przedroutingowy `ND_pos` natywnej wyroczni
 do portu i porównuje ponownie, a każdy obecny rozbieżny id jest `drift-exonerated`
 (prowadzenie i emisja w porcie odtwarzają wyrocznię dokładnie po usunięciu dryfu solvera)
-z wyjątkiem dwóch. Dwa to osobno zaakceptowane residua dla poszczególnych id: residuum
-CDT sfdp `241_0` oraz układ NaN w sfdp `2556`. fdp `241_0` przechodzi od
+z wyjątkiem dwóch. Dwa to osobno zaakceptowane residua dla poszczególnych id: dryf `pow` w libm hosta dla sfdp `241_0`
+(ponownie zdiagnozowany przez T28) oraz układ NaN w sfdp `2556`. fdp `241_0` przechodzi od
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` (zob. akapit o fdp
 pod A9). fdp `2471` i sfdp
 `2371` zachowywały wcześniej pozycje etykiet krawędzi (`lp`), które po wstrzyknięciu się
@@ -873,14 +873,13 @@ przypisywała remisowi współokręgowości poniżej — stały się **conforman
 (akceptacje wycofane), a sfdp `42` okazał się nie mieć żadnego remisu (to dryf A1,
 zob. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0`
 stał się później **conformant**, po drugiej poprawce po stronie portu w triangulacji
-(kolejność wierzchołków ściany po zamianie krawędzi; zob. akapit o fdp poniżej). circo
-i sfdp `241_0` nadal się rozjeżdżają, z residuami niezmienionymi lub zmniejszonymi; ich
-przypisanie do remisu poniżej pochodzi sprzed `f66ac638` i **nie zostało ponownie zweryfikowane
-przez wstrzyknięcie pozycji** od czasu, gdy ta poprawka wykazała, że to samo przypisanie było błędne dla
-twopi/neato.
+(kolejność wierzchołków ściany po zamianie krawędzi; zob. akapit o fdp poniżej). circo `241_0` stał się **conformant** dzięki `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: `Math.sin(9π/8)` w V8 jest o 1 ULP od poprawnie zaokrąglonej
+wartości libm, co przesuwało jeden narożnik każdej eliptycznej przeszkody i przerzucało
+korytarz (akceptacja wycofana). sfdp `241_0` został ponownie zdiagnozowany przez to samo
+zadanie i jest teraz A1 (zob. akapit o sfdp poniżej).
 
-**Dotyczy:** `241_0` (circo Δ≈0.2 przez przerzut korytarza na krawędzi `1->2`; sfdp
-`241_0` na ścieżce silnika poniżej); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Dotyczy:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 po 1–2 różnice pozycji etykiet krawędzi — ULP libm 1 powstaje w
 trygonometrii wierzchołków jednostkowych w `poly_init` (`hypot`/`atan2`/`sin`), przesuwa obliczoną
 wysokość jednego węzła o ULP poza ograniczenie minimalnego rozmiaru, na którym wyrocznia ląduje
@@ -921,7 +920,8 @@ w `polylineMidpoint` — zob. akapit o rodzinie b29 poniżej) oraz circo `241_0`
 różnic operacji rysowania, Δ≈0.2pt na wyprowadzonym béziera krawędzi `1->2` — ten sam
 przerzut korytarza z przekątną CDT; dziennik decyzji, wpis z 2026-07-10 „CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed”). Zaakceptowane na poziomie ścieżki silnika przez
+filed”; **wycofane 2026-10-23** — conformant, odkąd port bierze `cos`/`sin` z libm hosta
+dla ośmiokąta przeszkody, zob. ponowne wyznaczenie bazy dla 16.1 powyżej). Zaakceptowane na poziomie ścieżki silnika przez
 `test/corpus/accepted-divergences-engines.json`, dołączane do
 `PARITY-twopi.md`/`PARITY-circo.md` przez `parity-report.ts` — to samo złączenie, które
 `accepted.ts` wykonuje dla `PARITY-dot.md` ścieżki dot.
@@ -1049,22 +1049,22 @@ wartości 18.0, a wybór portu głowy dyna w `closestSide` przerzuca TOP/BOTTOM 
 tym dokładnym remisie; pozycje węzłów i pudełka są poza tym bitowo identyczne z
 wyrocznią; **wycofano 2026-10-18** — jest zgodny, odkąd DIST2 w porcie używa połączonej (fused) postaci z clanga, która rozstrzyga ten dokładny remis tak jak C).
 
-**Ścieżka silnika sfdp — remis FP krawędzi (`241_0`).**
+**Ścieżka silnika sfdp — `241_0` (przeklasyfikowany A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> Ścieżka silnika xdot sfdp (`parity-sfdp.json`,
-natywny `dot -Ksfdp -Txdot`, ±0.5) ujawnia remis incircle współokręgowości w CDT po
-wstrzyknięciu dokładnych natywnych pozycji sprzed prowadzenia (więc rozbieżność NIE jest
-dryfem iteracyjnym — zob. klasa A1-drift — lecz dyskretnym remisem predykatu):
+natywny `dot -Ksfdp -Txdot`, ±0.5) wymieniała tu `241_0` jako remis incircle
+współokręgowości w CDT. `fix(T28)` zdiagnozował go ponownie za pomocą
+zinstrumentowanego natywnego sfdp:
 
-- `241_0` — przypisany remisowi incircle współokręgowości w CDT (korytarz multisplajnu;
-  nie zweryfikowano ponownie po `f66ac638`, zob. ponowne wyznaczenie bazy dla 16.1 powyżej).
-  Residuum to **przerzut liczby segmentów**: 7 różnic operacji rysowania na krawędzi 1->2,
-  `ptCount 8 vs 20` (20 różnic przed `f66ac638`) — korytarz udaje się ze splajnem
-  N-punktowym, gdzie kompilacja natywna wraca do krótszej zwykłej trasy
-  (lub odwrotnie), jak we wpisie circo `241_0` powyżej. Port już emuluje kontrakcję arm64
-  `fmadd` w predykacie incircle/`ccw` (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) i używa odpornej triangulacji Delaunaya z incircle; residuum to
-  1 ULP w `sin`/`hypot` V8-vs-libm Apple w wejściu predykatu, którego żaden przenośny
-  kod nie odtwarza.
+- `241_0` — 7 różnic operacji rysowania na krawędzi 1->2 (`ptCount 8 vs 20`). Układ dryfuje
+  od pierwszego członu siły odpychającej, w którym `pow(dist, 2)` z libm macOS zwraca
+  wartość o 1 ULP poniżej poprawnego zaokrąglenia (najgrubszy poziom, iteracja 22; zob. wpis
+  o `pow` z libm hosta w sekcji o lukach w wierności układu), a adaptacyjne chłodzenie
+  wzmacnia to do pozycji na ostrzu noża, w których krawędź 1->2 jest prowadzona inaczej.
+  Wstrzyknięcie natywnych wartości `pow` czyni każdą linię śladu i końcowy xdot
+  identycznymi. Residuum prowadzenia widoczne przy wstrzykniętych pozycjach było częściowo
+  artefaktem wstrzykiwania, a częściowo `Math.sin(9π/8)` z V8 w ośmiokącie przeszkody,
+  który port bierze teraz z libm hosta (poprawka, która uczyniła też circo `241_0`
+  conformant). Pozostaje dryf A1.
 
 > **sfdp `42` przeklasyfikowany z A9 na dryf A1 (synchronizacja z graphviz 16.1).** Był wymieniony
 > tutaj jako remis incircle w CDT/libm. Misja ustaliła co innego
@@ -1093,7 +1093,8 @@ systemowego `hypot` z C i porównanie z `Math.hypot` z Node na reprezentatywnych
 wejściach odchylenia krawędzi płaskiej pokazuje rozbieżność 1 ULP w 2 z 6 (Δ 7.1e-15 i
 5.7e-14) — ostrze noża progu podziału, które przerzuca liczbę podziałów.
 Nieredukowalne: żaden przenośny hypot nie odtwarza libm Apple (precedens `arm-pow.ts`
-dla tej samej granicy). `sfdp.241_0` jest zaakceptowany na poziomie ścieżki silnika przez `accepted-divergences-engines.json`.
+dla tej samej granicy). `sfdp.241_0`, niegdyś zaakceptowany w tej klasie,
+jest dryfem A1 od T28 (zob. powyżej).
 `sfdp.42` **nie** należy do tej klasy: jego wpis w rejestrze to A1 (`comparisons/sfdp-42.md`),
 a powyższa sonda go nie wyjaśniła.
 
@@ -1148,6 +1149,22 @@ błąd, a nie werdykt `diverged`, więc wpisy w
 niesie on ten komunikat. Inna awaria na `2784` ujawniłaby się jako niezaakceptowany
 błąd, a `registry-staleness.test.ts` oznaczyłby wpis jako nieaktualny. Dowody:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Kolejność ścian Delaunaya w GTS przy zdegenerowanych danych — nieredukowalne {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Dotyczy:** Układy triangulowane przez GTS (`lib/neatogen/delaunay.c`; wyrocznia 16.1 linkuje GTS 0.7.6) przy zdegenerowanych danych: punkty leżące na krawędziach lub kocykliczne siatki.
+
+**Czym się różni.** Port numeruje ściany Delaunaya i porządkuje sąsiadów każdej ściany (`neigh`) według kolejności utworzenia. Natywny GTS numeruje ściany w kolejności `GHashTable`: `closest_face` iteruje tablicę kluczowaną wskaźnikiem, więc identyfikatory ścian i kolejność sąsiadów zależą od adresów sterty i różnią się między uruchomieniami. Wszystko, co wynika z kolejności ścian, może więc różnić się od danego natywnego uruchomienia.
+
+**Dlaczego zaakceptowane.** Deterministyczny cel nie istnieje. 60 uruchomień natywnego pliku binarnego na jednych zdegenerowanych danych dało 22 różne wyniki, także przy wyłączonym ASLR i `MallocNanoZone=0`; zmienność jest cechą wyroczni poniżej kodu, a nie wadą portu. Ściany porównuj według zbioru wierzchołków, nie identyfikatora. Dowód: notatki o GTS z części 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism”).
+
+### A12. Brak prefiksu `<stdin>: ` w błędach leksera {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Dotyczy:** Błędy składni DOT zgłaszane przez lekser (`aagerror`) na stderr.
+
+**Czym się różni.** Natywny CLI `dot` czytający standardowe wejście wypisuje `<stdin>: syntax error in line N …`; port wypisuje ten sam komunikat bez prefiksu `<stdin>: `.
+
+**Dlaczego zaakceptowane.** `aagerror` (`lib/cgraph/scan.l:157`) dodaje `InputFile: ` tylko wtedy, gdy `InputFile` jest ustawiony. CLI ustawia go na `<stdin>` przy czytaniu standardowego wejścia; punkt wejścia biblioteki `agmemread`, który port odwzorowuje, zostawia go nieustawionego i nie wypisuje prefiksu. Port nie ma CLI, więc nie ma czego zgłaszać. Sonda stderr normalizuje prefiks przy porównaniu.
 
 ---
 

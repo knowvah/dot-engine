@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -221,7 +221,7 @@ egyenként tulajdonítva van a graphviz 16.1.0 ellenében: az injektáló eszkö
 jelenlegi eltérő azonosító `drift-exonerated` (a portolt változat útvonalvezetése
 és kibocsátása pontosan reprodukálja az orákulumot, amint a megoldósodródást
 eltávolítjuk), kettő kivételével. Kettő külön elfogadott, azonosítónkénti maradék: az sfdp `241_0`
-CDT-maradéka, valamint az sfdp `2556` NaN elrendezése. Az fdp `241_0` átmegy a(z)
+hoszt-libm `pow` sodródása (a T28 újradiagnosztizálta), valamint az sfdp `2556` NaN elrendezése. Az fdp `241_0` átmegy a(z)
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` óta (lásd az fdp bekezdést az A9 alatt). Az fdp `2471` és az sfdp `2371` élfeliratainak pozíciói (`lp`) korábban
 injektálás után is eltértek, vagyis az xlabel-elhelyező másik jelöltet választott. A
 `2471` megszűnt, amint a portolt `dotneato_closest` úgy kerekít, mint a clang összevont
@@ -897,14 +897,13 @@ mirror fma contraction in multispline routing geometry`) tükrözte. A twopi és
 neato `241_0` — amelyeket ez az osztály az alábbi körön fekvő döntetlennek
 tulajdonított — **conformant** lett (az elfogadások kivonva), az sfdp `42`-ről
 pedig kiderült, hogy egyáltalán nincs döntetlen (A1-sodródás, lásd
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). Az fdp `241_0` később **conformant** lett, a triangulációnak egy második, portoldali javítása után (a lapcsúcsok sorrendje élcsere után; lásd lent az fdp bekezdést). A circo és az sfdp `241_0` még
-mindig eltér, a maradékaik változatlanok vagy csökkentek; az alábbi döntetlenre
-tulajdonításuk megelőzi a `f66ac638`-at, és azóta **nem ellenőriztük újra
-pozíciók injektálásával**, hogy ez a javítás ugyanezt a tulajdonítást tévesnek
-mutatta a twopi/neato esetén.
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). Az fdp `241_0` később **conformant** lett, a triangulációnak egy második, portoldali javítása után (a lapcsúcsok sorrendje élcsere után; lásd lent az fdp bekezdést). A circo `241_0` **conformant** lett a `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon` javítással: a V8 `Math.sin(9π/8)` értéke 1 ULP-pel tér el a
+helyesen kerekített libm-értéktől, ami minden ellipszisakadály egy sarkát elmozdította, és
+átbillentette a folyosót (az elfogadás kivonva). Az sfdp `241_0`-t ugyanez a feladat
+újradiagnosztizálta, és most A1 (lásd lent az sfdp bekezdést).
 
-**Érintett:** `241_0` (circo Δ≈0.2 az `1->2` élen a folyosó átbillenésén át; az
-sfdp `241_0`-ja az alábbi motorsávon); `2343`, `2239`, `share-b29`,
+**Érintett:** `2343`, `2239`, `share-b29`,
 `windows-b29` (twopi,
 mindegyik 1–2 élcímke-pozíció eltérés — a libm 1 ULP a
 `poly_init` egységcsúcs-trigonometriájában (`hypot`/`atan2`/`sin`) keletkezik, egy csúcs
@@ -947,7 +946,8 @@ hű fmadd összevonásával — lásd az alábbi b29-család bekezdést) és a c
 rajzolásiművelet-eltérés, Δ≈0.2 pt az `1->2` él vezetett bezierjén — ugyanaz a
 CDT-átlós folyosó-átbillenés; döntési napló, 2026-07-10, „CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed” bejegyzés). A motorsáv szintjén elfogadva a
+filed” bejegyzés; **kivonva 2026-10-23** — conformant, mióta a portolt változat a hoszt libm
+`cos`/`sin` értékét veszi az akadály 8 szögéhez, lásd a fenti 16.1 újraalapozást). A motorsáv szintjén elfogadva a
 `test/corpus/accepted-divergences-engines.json` útján, amelyet a `parity-report.ts` a
 `PARITY-twopi.md`/`PARITY-circo.md` fájlokba kapcsol — ugyanazt az összekapcsolást végzi az
 `accepted.ts` a dot-sáv `PARITY-dot.md` fájljához.
@@ -1075,22 +1075,21 @@ a `node2.y` értéket egyetlen ULP-vel a `node8.y` fölé teszi a pontosan szimm
 értéket ezen a pontos döntetlenen; a csúcspozíciók és dobozok egyébként bitre azonosak az
 orákuluméval; **kivezetve 2026-10-18** — megfelel, mióta a port DIST2-je a clang összevont alakját használja, amely ezt a pontos döntetlent a C-vel azonosan dönti el).
 
-**sfdp motorsáv — él-lebegőpontos döntetlen (`241_0`).**
+**sfdp motorsáv — `241_0` (átsorolva A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> Az sfdp xdot motorsáv (`parity-sfdp.json`,
-natív `dot -Ksfdp -Txdot`, ±0.5) felszínre hozza a CDT körön fekvő incircle döntetlent, amint
-pontos natív útvonalvezetés előtti pozíciókat injektálunk (így az eltérés NEM
-iteratív sodródás — lásd az A1-drift osztályt — hanem diszkrét predikátum-döntetlen):
+natív `dot -Ksfdp -Txdot`, ±0.5) itt a `241_0`-t a CDT körön fekvő incircle döntetlenként
+tartotta nyilván. A `fix(T28)` ezt újradiagnosztizálta egy műszerezett natív sfdp-vel:
 
-- `241_0` — a CDT körön fekvő incircle döntetlennek tulajdonítva (a multispline
-  folyosó; a `f66ac638` után nem ellenőriztük újra, lásd a fenti 16.1
-  újraalapozást). A maradék **szakaszszám-átbillenés**: 7 rajzolásiművelet-eltérés
-  az 1->2 élen, `ptCount 8 vs 20` (20 eltérés a `f66ac638` előtt) — a folyosó N
-  pontos splinenal sikerül, ahol a natív build rövidebb sima útvonalra esik vissza
-  (vagy fordítva), mint a fenti circo `241_0` bejegyzésben. A portolt változat már emulálja az arm64
-  `fmadd` összevonást az incircle/`ccw` predikátumban (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`), és robusztus incircle Delaunay-t használ; a maradék a
-  predikátum bemenetében levő V8-vs-Apple-libm `sin`/`hypot` 1 ULP, amelyet semmilyen hordozható
-  kód nem reprodukál.
+- `241_0` — 7 rajzolásiművelet-eltérés az 1->2 élen (`ptCount 8 vs 20`). Az elrendezés az
+  első taszítóerő-tagtól sodródik el, ahol a macOS libm `pow(dist, 2)` értéke 1 ULP-vel a
+  helyes kerekítés alatt van (a legdurvább szint, 22. iteráció; lásd a hoszt-libm `pow`
+  bejegyzést az elrendezéshűségi hiányosságok alatt), és az adaptív hűtés ezt késélen
+  álló pozíciókká erősíti, amelyeken az 1->2 élet másként vezetik. A natív `pow` értékek
+  injektálása minden nyomvonal-sort és a végső xdot-ot azonossá teszi. Az injektált
+  pozíciókkal látott útvonalvezetési maradék részben injektálási műtermék volt, részben a
+  V8 `Math.sin(9π/8)` értéke az akadály 8 szögében, amelyet a portolt változat most a
+  hoszt libm-ből vesz (a javítás, amely a circo `241_0`-t is conformanttá tette). Ami
+  marad, az A1-sodródás.
 
 > **Az sfdp `42` átsorolva A9 → A1-drift (graphviz 16.1 szinkron).** Korábban itt
 > CDT/libm incircle döntetlenként szerepelt. A küldetés mást talált
@@ -1119,8 +1118,8 @@ iteratív sodródás — lásd az A1-drift osztályt — hanem diszkrét predik�
 lapos él-eltérési bemeneteken 1 ULP-s eltérést látunk 6-ból 2-nél (Δ 7.1e-15 és
 5.7e-14) — a felosztási küszöb élen táncoló pontja, amely átbillenti a felosztásszámot.
 Redukálhatatlan: nincs olyan hordozható hypot, amely reprodukálná az Apple libm-et (az `arm-pow.ts`
-precedens ugyanarra a határra). Az `sfdp.241_0` a motorsáv szintjén van elfogadva az
-`accepted-divergences-engines.json` útján. Az `sfdp.42` **nem** ennek az
+precedens ugyanarra a határra). Az `sfdp.241_0`, amelyet egykor ebben az osztályban fogadtunk el,
+a T28 óta A1-drift (lásd fent). Az `sfdp.42` **nem** ennek az
 osztálynak a része: a nyilvántartásbeli bejegyzése A1 (`comparisons/sfdp-42.md`),
 és a fenti próba nem magyarázta meg.
 
@@ -1176,6 +1175,22 @@ feltétellel: csak akkor fogadnak el portolási hibát, ha az ezt az üzenetet h
 Egy másféle hiba a `2784` esetén el nem fogadott hibaként jelenne meg, és a
 `registry-staleness.test.ts` elavultként jelölné meg a bejegyzést. Bizonyíték:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. A GTS Delaunay-lapjainak sorrendje elfajult bemeneten — nem csökkenthető {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Érintett:** A GTS-en keresztül háromszögelő elrendezések (`lib/neatogen/delaunay.c`; a 16.1-es orákulum a GTS 0.7.6-ot linkeli) elfajult bemenet esetén: éleken fekvő pontok vagy kocirkuláris rácsok.
+
+**Mi tér el.** A port a Delaunay-lapokat létrehozási sorrendben számozza, és minden lap szomszédait (`neigh`) is így rendezi. A natív GTS `GHashTable`-sorrendben számozza a lapokat: a `closest_face` mutatóval kulcsolt táblát jár be, így a lapazonosítók és a szomszédsági sorrend a heap-címektől függ, és futásonként változik. A lapsorrendből származtatott minden így eltérhet egy adott natív futástól.
+
+**Miért elfogadott.** Determinisztikus cél nincs. A natív bináris 60 futtatása egyetlen elfajult bemeneten 22 különböző kimenetet adott, kikapcsolt ASLR és `MallocNanoZone=0` mellett is; az ingadozás az orákulum kód alatti tulajdonsága, nem a port hibája. A lapokat csúcshalmaz, ne azonosító szerint hasonlítsa össze. Bizonyíték: a 3. rész GTS-jegyzetei (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism”).
+
+### A12. Nincs `<stdin>: ` előtag a lexer hibáin {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Érintett:** A lexer (`aagerror`) által stderr-re jelentett DOT-szintaktikai hibák.
+
+**Mi tér el.** A szabványos bemenetet olvasó natív `dot` CLI `<stdin>: syntax error in line N …` üzenetet ír; a port ugyanazt az üzenetet a `<stdin>: ` előtag nélkül írja.
+
+**Miért elfogadott.** Az `aagerror` (`lib/cgraph/scan.l:157`) csak akkor fűzi hozzá az `InputFile: ` előtagot, ha az `InputFile` be van állítva. A CLI szabványos bemenet olvasásakor `<stdin>`-re állítja; a port által tükrözött `agmemread` könyvtári belépési pont nem állítja be, és nem ír előtagot. A portnak nincs CLI-je, így nincs mit jelenteni. A stderr-szonda az összehasonlításkor normalizálja az előtagot.
 
 ---
 

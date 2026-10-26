@@ -26,7 +26,7 @@ import {
 import type { Edge } from '../model/edge.js';
 import { registerRenderState } from '../common/render-state.js';
 import { agerrorf, agwarningf } from '../common/agerr.js';
-import { parseSegs } from '../common/multicolor.js';
+import { parseSegsSilent } from '../common/multicolor.js';
 import { findStopColor, styleTokens } from '../common/style-resolve.js';
 import { emitOnce } from '../common/emit-once.js';
 
@@ -282,7 +282,7 @@ function multicolorNames(
   color: string,
   arrows: readonly EdgeArrowFlags[],
 ): string[] | null {
-  const { segs, error } = parseSegs(color);
+  const { segs, error } = parseSegsSilent(color);
   if (error === 1 || error === 2) return null;
   const out: string[] = [];
   const front = segs[0]?.color ?? null;

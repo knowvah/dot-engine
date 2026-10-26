@@ -175,7 +175,7 @@ describe("ortho acceptance", () => {
 
       expect(warnSpy).toHaveBeenCalledOnce();
       expect(warnSpy).toHaveBeenCalledWith(
-        "Orthogonal edges do not currently handle edge labels. Try using xlabels.\n",
+        "Warning: Orthogonal edges do not currently handle edge labels. Try using xlabels.\n",
       );
     });
   });

@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { dijkstra, type VtxData } from './dijkstra.js';
+import { dijkstra, FLT_MAX, type VtxData } from './dijkstra.js';
 import {
   bfs,
   BFS_UNREACHABLE,
@@ -85,7 +85,7 @@ export function testDijkstraUnreachable(): void {
   ]);
   const dist = new Float32Array(3);
   dijkstra(0, graph, 3, dist);
-  expect(dist[2]).toBe(Infinity);
+  expect(dist[2]).toBe(FLT_MAX);
 }
 
 // ---------------------------------------------------------------------------
@@ -234,7 +234,7 @@ describe('dijkstra', () => {
     testDijkstraFourNodeWeighted);
   it('prefers shortest weighted path over direct edge',
     testDijkstraPrefersShortestPath);
-  it('marks unreachable nodes with Infinity', testDijkstraUnreachable);
+  it('marks unreachable nodes with FLT_MAX', testDijkstraUnreachable);
 });
 
 describe('bfs', () => {

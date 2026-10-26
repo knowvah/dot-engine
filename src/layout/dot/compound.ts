@@ -12,10 +12,9 @@ import type { Edge } from '../../model/edge.js';
 import {
   inBoxf, midPointf, splineIntersectf, boxIntersectf,
 } from './compound-clip.js';
-import { arrowEndClip, tailArrowEndClip, arrowClipLength } from './edge-route-clip.js';
+import { arrowEndClip, tailArrowEndClip, arrowClipLength, distFused } from './edge-route-clip.js';
 import { arrowDrawOpsForEnd, edgeArrowName, edgeArrowsize } from './edge-route-arrow.js';
 import { edgePenwidthAttr, edgeRenderPenwidth } from './edge-route-helpers.js';
-import { dist } from '../../common/arrows-geometry.js';
 
 // Re-export geometry helpers so existing callers (tests) import from one place.
 export {
@@ -67,7 +66,7 @@ function arrowEndClipIdx(state: ClipState, endp: number): number {
   const elen = arrowClipLength(edgeArrowName(e, 'head'), edgeArrowsize(e), edgePenwidthAttr(e));
   bez.eflag = bez.eflag || 1;
   bez.ep = { ...bez.list[endp + 3] };
-  if (endp > state.starti && dist(bez.list[endp], bez.list[endp + 3]) < elen) endp -= 3;
+  if (endp > state.starti && distFused(bez.list[endp], bez.list[endp + 3]) < elen) endp -= 3;
   const seg = [bez.list[endp], bez.list[endp + 1], bez.list[endp + 2], bez.list[endp + 3]];
   const clipped = arrowEndClip(seg, bez.ep, elen);
   for (let k = 0; k < 4; k++) bez.list[endp + k] = clipped[k];
@@ -83,7 +82,7 @@ function arrowStartClipIdx(state: ClipState, startp: number, endp: number): numb
   const slen = arrowClipLength(edgeArrowName(e, 'tail'), edgeArrowsize(e), edgePenwidthAttr(e));
   bez.sflag = bez.sflag || 1;
   bez.sp = { ...bez.list[startp] };
-  if (endp > startp && dist(bez.list[startp], bez.list[startp + 3]) < slen) startp += 3;
+  if (endp > startp && distFused(bez.list[startp], bez.list[startp + 3]) < slen) startp += 3;
   const seg = [bez.list[startp], bez.list[startp + 1], bez.list[startp + 2], bez.list[startp + 3]];
   const clipped = tailArrowEndClip(seg, bez.sp, slen);
   for (let k = 0; k < 4; k++) bez.list[startp + k] = clipped[k];

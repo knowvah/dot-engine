@@ -1,5 +1,5 @@
 ---
-sourceHash: e3799316f3f4dfaec51d8f951fa9066e1958ffcc38a402c5fbaabdac99451534
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -215,8 +215,8 @@ atribuída individualmente em relação ao graphviz 16.1.0: o harness de injeç�
 (`test/corpus/attribute-divergence.ts`) alimenta o `ND_pos` pré-roteamento do oráculo
 nativo no port e compara de novo, e todo id divergente atual é `drift-exonerated` (o
 roteamento e a emissão do port reproduzem exatamente o oráculo assim que a deriva do
-solver é removida), exceto dois. Dois são resíduos por id aceitos separadamente: o resíduo
-do CDT de `241_0` no sfdp, e o layout NaN do `2556` do sfdp. O `241_0` do fdp passa desde
+solver é removida), exceto dois. Dois são resíduos por id aceitos separadamente: a deriva de `pow` da libm do host
+de `241_0` no sfdp (rediagnosticada pelo T28), e o layout NaN do `2556` do sfdp. O `241_0` do fdp passa desde
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` (veja o parágrafo do
 fdp em A9). `2471` do fdp e `2371` do sfdp mantinham posições de rótulos de aresta (`lp`) que
 diferiam após a injeção, isto é, o posicionador de xlabel escolhia outro candidato. O
@@ -893,14 +893,13 @@ atribuía ao empate cocircular abaixo — passaram a **conformantes**
 (aceitações aposentadas), e o `42` do sfdp mostrou não ter empate algum (é deriva
 A1, veja [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` do fdp
 passou depois a **conformante**, após uma segunda correção no port da triangulação (ordem
-dos vértices das faces após a troca de uma aresta; veja o parágrafo do fdp abaixo). `241_0` do circo
-e do sfdp ainda diverge, com resíduos inalterados ou reduzidos; a atribuição
-ao empate abaixo é anterior a `f66ac638` e **não foi reverificada
-por injeção de posição** desde que essa correção mostrou que a mesma atribuição estava errada para
-twopi/neato.
+dos vértices das faces após a troca de uma aresta; veja o parágrafo do fdp abaixo). `241_0` do circo passou a **conformante** com `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: o `Math.sin(9π/8)` do V8 fica 1 ULP fora do valor da libm
+corretamente arredondado, o que movia um canto de cada obstáculo elíptico e invertia o
+corredor (aceitação aposentada). `241_0` do sfdp foi rediagnosticado pela mesma tarefa e
+agora é A1 (veja o parágrafo do sfdp abaixo).
 
-**Afetados:** `241_0` (circo Δ≈0.2 via a inversão de corredor na aresta `1->2`; sfdp
-`241_0` na trilha de mecanismo abaixo); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Afetados:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 1–2 diferenças de posição de rótulo de aresta cada — o ULP da libm surge na
 trigonometria de vértice unitário de `poly_init` (`hypot`/`atan2`/`sin`), coloca a altura calculada
 de um nó um ULP além do piso de tamanho mínimo em que o oráculo cai
@@ -941,7 +940,8 @@ em `polylineMidpoint` — veja o parágrafo da família b29 abaixo) e circo `241
 diferenças de operações de desenho, Δ≈0.2pt na bézier roteada da aresta `1->2` — a mesma
 inversão de corredor por diagonal da CDT; diário de decisões, 2026-07-10, entrada “CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed”). Aceito no nível da trilha de mecanismo via
+filed”; **aposentada em 2026-10-23** — conformante desde que o port usa `cos`/`sin` da
+libm do host para o octógono do obstáculo, veja a nova linha de base no 16.1 acima). Aceito no nível da trilha de mecanismo via
 `test/corpus/accepted-divergences-engines.json`, cruzado com
 `PARITY-twopi.md`/`PARITY-circo.md` pelo `parity-report.ts` — o mesmo cruzamento que o
 `accepted.ts` faz para o `PARITY-dot.md` da trilha dot.
@@ -1069,22 +1069,21 @@ inverte TOP/BOTTOM
 nesse empate exato; as posições dos nós e as caixas são, de resto, idênticas bit a bit às do
 oráculo; **retirado em 2026-10-18** — é conforme desde que o DIST2 do port usa a forma fundida do clang, que resolve esse empate exato como o C).
 
-**Trilha de mecanismo do sfdp — empate de PF em aresta (`241_0`).**
+**Trilha de mecanismo do sfdp — `241_0` (reclassificado de A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> A trilha xdot de mecanismo do sfdp (`parity-sfdp.json`,
-`dot -Ksfdp -Txdot` nativo, ±0.5) faz emergir o empate de incírculo cocircular da CDT assim que
-posições pré-roteamento nativas exatas são injetadas (portanto a divergência NÃO é
-deriva iterativa — veja a classe A1-drift — mas um empate de predicado discreto):
+`dot -Ksfdp -Txdot` nativo, ±0.5) listava aqui `241_0` como o empate de incírculo
+cocircular da CDT. `fix(T28)` o rediagnosticou com um sfdp nativo instrumentado:
 
-- `241_0` — atribuído ao empate de incírculo cocircular da CDT (o corredor
-  multispline; não reverificado após `f66ac638`, veja a nova linha de base no 16.1 acima).
-  O resíduo é uma **inversão de contagem de segmentos**: 7 diferenças de operações de desenho na aresta 1->2,
-  `ptCount 8 vs 20` (20 diferenças antes de `f66ac638`) — o corredor tem sucesso com
-  uma spline de N pts onde o build nativo recorre a uma rota simples mais curta
-  (ou vice-versa), como na entrada de `241_0` do circo acima. O port já emula a contração `fmadd` do arm64
-  no predicado incircle/`ccw` (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) e usa Delaunay com incírculo robusto; o resíduo é o
-  1 ULP de `sin`/`hypot` do V8 vs. libm da Apple na entrada do predicado, que nenhum código
-  portátil reproduz.
+- `241_0` — 7 diferenças de operações de desenho na aresta 1->2 (`ptCount 8 vs 20`). O
+  layout deriva a partir do primeiro termo de força repulsiva, em que o `pow(dist, 2)` da
+  libm do macOS retorna 1 ULP abaixo do arredondamento correto (nível mais grosseiro,
+  iteração 22; veja a entrada sobre o `pow` da libm do host nas lacunas de fidelidade de
+  layout), e o resfriamento adaptativo o amplifica até posições no fio da navalha, nas
+  quais a aresta 1->2 é roteada de forma diferente. Injetar os valores nativos de `pow`
+  torna idênticas todas as linhas de rastreamento e o xdot final. O resíduo de roteamento
+  visto com posições injetadas era em parte um artefato da injeção e em parte o
+  `Math.sin(9π/8)` do V8 no octógono do obstáculo, que o port agora toma da libm do host (a
+  correção que também tornou `241_0` do circo conformante). O que resta é deriva A1.
 
 > **`42` do sfdp reclassificado de A9 → deriva A1 (sincronização com o graphviz 16.1).** Ele estava listado
 > aqui como um empate de incírculo da CDT/libm. A missão descobriu outra coisa
@@ -1113,7 +1112,8 @@ deriva iterativa — veja a classe A1-drift — mas um empate de predicado discr
 aresta plana mostra uma discordância de 1 ULP em 2 de 6 (Δ 7.1e-15 e
 5.7e-14) — o fio de navalha do limiar de divisão que inverte a contagem de subdivisões.
 Irredutível: nenhum hypot portátil reproduz a libm da Apple (o precedente do `arm-pow.ts`
-para a mesma fronteira). `sfdp.241_0` é aceito no nível da trilha de mecanismo via `accepted-divergences-engines.json`.
+para a mesma fronteira). `sfdp.241_0`, outrora aceito nesta classe,
+é deriva A1 desde o T28 (veja acima).
 `sfdp.42` **não** faz parte desta classe: sua entrada de registro é A1 (`comparisons/sfdp-42.md`), e a
 sonda acima não a explicou.
 
@@ -1169,6 +1169,22 @@ em vez de um veredito `diverged`, então as entradas em
 ele traz essa mensagem. Uma falha diferente em `2784` apareceria como uma falha não
 aceita, e o `registry-staleness.test.ts` marcaria a entrada como obsoleta. Evidência:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Ordem das faces de Delaunay no GTS com entrada degenerada — irredutível {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Afetados:** Layouts que trianguam via GTS (`lib/neatogen/delaunay.c`; o oráculo 16.1 linka o GTS 0.7.6) quando a entrada é degenerada: pontos sobre arestas ou grades cocirculares.
+
+**O que difere.** O port numera as faces de Delaunay e ordena os vizinhos de cada face (`neigh`) pela ordem de criação. O GTS nativo numera as faces na ordem de `GHashTable`: `closest_face` itera uma tabela indexada por ponteiro, de modo que os ids das faces e a ordem dos vizinhos dependem de endereços do heap e variam entre execuções. Tudo o que deriva da ordem das faces pode, portanto, diferir de uma execução nativa específica.
+
+**Por que aceito.** Não existe alvo determinístico. 60 execuções do binário nativo sobre uma entrada degenerada deram 22 saídas distintas, mesmo com ASLR desligado e `MallocNanoZone=0`; a variação é propriedade do oráculo abaixo do código, não um defeito do port. Compare as faces pelo conjunto de vértices, não pelo id. Evidência: notas de GTS da parte 3 (`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. Sem o prefixo `<stdin>: ` nos erros do lexer {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Afetados:** Erros de sintaxe DOT relatados pelo lexer (`aagerror`) no stderr.
+
+**O que difere.** A CLI nativa `dot`, ao ler a entrada padrão, imprime `<stdin>: syntax error in line N …`; o port imprime a mesma mensagem sem o prefixo `<stdin>: `.
+
+**Por que aceito.** `aagerror` (`lib/cgraph/scan.l:157`) acrescenta `InputFile: ` somente quando `InputFile` está definido. A CLI o define como `<stdin>` ao ler a entrada padrão; o ponto de entrada de biblioteca `agmemread`, que o port espelha, o deixa indefinido e não imprime prefixo. O port não tem CLI, então não há o que relatar. A sonda de stderr normaliza o prefixo na comparação.
 
 ---
 

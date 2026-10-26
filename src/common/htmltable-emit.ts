@@ -31,7 +31,7 @@ import type { PlacedHtml, PlacedCell, PlacedLine, PlacedImage } from './htmltabl
 import { transformPoint } from '../gvc/device.js';
 import { gvrenderTextspan } from '../gvc/textspan-emit.js';
 import {
-  withHtmlPaint, parseGradientSpec, doBorder, mkPts,
+  withHtmlPaint, findHtmlStopColor, doBorder, mkPts,
   htmlFillPenWidth, resetHtmlFillPenWidth, type HtmlPaint,
 } from './htmltable-emit-fill.js';
 import { emitRoundedBezier } from './poly-shapes.js';
@@ -121,10 +121,11 @@ function bgFillPaint(ctx: BgFillCtx): HtmlPaint {
   // penWidth = the leaked gvrender pen width (prior doBorder); a bordered cell's
   // fill carries it as stroke-width even with stroke="none". @see htmltable.c:setFill
   const penWidth = htmlFillPenWidth();
-  const spec = parseGradientSpec(ctx.bgcolor);
+  const spec = findHtmlStopColor(ctx.bgcolor);
   if (spec === null) return { fill: ctx.bgcolor, penWidth };
   return {
-    fill: spec[0], stop: spec[1], gradientAngle: ctx.gradientangle ?? 0,
+    fill: spec.fill, stop: spec.stop ?? 'black', gradientFrac: spec.frac,
+    gradientAngle: ctx.gradientangle ?? 0,
     radial: htmlStyle(ctx.style).radial, penWidth,
   };
 }

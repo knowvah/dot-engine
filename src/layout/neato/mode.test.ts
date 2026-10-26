@@ -44,7 +44,7 @@ describe('parseMode (C neatoMode)', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     expect(parseMode(graphWithMode('kk'))).toBe(MODE_MAJOR);
     expect(warn).toHaveBeenCalledWith(
-      'Illegal value kk for attribute "mode" in graph g - ignored',
+      'Warning: Illegal value kk for attribute "mode" in graph g - ignored',
     );
   });
 
@@ -69,8 +69,10 @@ describe('neato dispatch on mode', () => {
     expect(await plain('mode=sgd;')).not.toBe(await plain(''));
   });
 
-  it('mode=hier still fails loudly', async () => {
-    await expect(plain('mode=hier;')).rejects.toMatchObject({ code: 'UNSUPPORTED_FEATURE' });
+  it('mode=hier reaches stress_majorization_with_hierarchy (output differs from major)', async () => {
+    const hier = await plain('mode=hier;');
+    expect(hier).toMatch(/^graph 1 /);
+    expect(hier).not.toBe(await plain(''));
   });
 });
 
@@ -112,7 +114,7 @@ describe('mode=sgd matches native neato', () => {
   it('warns and ignores a bad edge len, like C lenattr', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     await plain('mode=sgd; start=3; a--z [len=-1];');
-    expect(warn).toHaveBeenCalledWith('bad edge len "-1" in g - setting to 1.00');
+    expect(warn).toHaveBeenCalledWith('Warning: bad edge len "-1" in g - setting to 1.00');
   });
 });
 

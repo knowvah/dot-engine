@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-18T13:27:39.606Z",
+  "generatedAt": "2026-10-24T03:40:42.296Z",
   "generatedWith": "test/corpus/plain-walk.ts",
   "engine": "circo",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 928,
   "counts": {
-    "pass": 908,
+    "pass": 909,
     "diverged": 0,
-    "accepted": 9,
+    "accepted": 8,
     "oracleError": 11,
     "portError": 0,
     "timeout": 0
@@ -5761,36 +5761,6 @@
         },
         "plain-ext": {
           "verdict": "pass"
-        }
-      }
-    },
-    {
-      "id": "241_0",
-      "path": "241_0.dot",
-      "size": 578,
-      "verdict": "accepted",
-      "formats": {
-        "plain": {
-          "verdict": "accepted",
-          "diffCount": 14,
-          "firstDiffs": [
-            "[edge] 1->2#0/point[2].x: port=3.2757 native=3.2536",
-            "[edge] 1->2#0/point[2].y: port=2.9389 native=3.2113",
-            "[edge] 1->2#0/point[3].y: port=2.87 native=3.2973",
-            "[edge] 1->2#0/point[4].x: port=3.0064 native=2.8453",
-            "[edge] 1->2#0/point[4].y: port=2.6791 native=3.9238"
-          ]
-        },
-        "plain-ext": {
-          "verdict": "accepted",
-          "diffCount": 14,
-          "firstDiffs": [
-            "[edge] 1->2#0/point[2].x: port=3.2757 native=3.2536",
-            "[edge] 1->2#0/point[2].y: port=2.9389 native=3.2113",
-            "[edge] 1->2#0/point[3].y: port=2.87 native=3.2973",
-            "[edge] 1->2#0/point[4].x: port=3.0064 native=2.8453",
-            "[edge] 1->2#0/point[4].y: port=2.6791 native=3.9238"
-          ]
         }
       }
     },
@@ -13158,6 +13128,20 @@
       "id": "tree-share-examples-world",
       "path": "../share/examples/world.gv",
       "size": 16326502,
+      "verdict": "pass",
+      "formats": {
+        "plain": {
+          "verdict": "pass"
+        },
+        "plain-ext": {
+          "verdict": "pass"
+        }
+      }
+    },
+    {
+      "id": "241_0",
+      "path": "241_0.dot",
+      "size": 578,
       "verdict": "pass",
       "formats": {
         "plain": {

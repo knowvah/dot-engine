@@ -297,6 +297,34 @@ export class DijHelper {
 }
 
 // ---------------------------------------------------------------------------
+// mdsModel
+// ---------------------------------------------------------------------------
+
+/**
+ * Packed shortest paths with the user-supplied edge lengths written over the
+ * entries of adjacent nodes; `null` (C `NULL`) when the graph carries no
+ * lengths (`graph->ewgts == NULL`, an empty `ewgts` here). C's `delta`
+ * accumulator is only printed under `Verbose` and is not ported.
+ * @see lib/neatogen/stress.c:mdsModel
+ */
+export function mdsModel(graph: VtxData[], nG: number): Float32Array | null {
+  if (graph[0]!.ewgts.length === 0) return null;
+  // first, compute shortest paths to fill in non-edges
+  const Dij = computeWeightedApspPacked(graph, nG);
+  // then, replace edge entries with user-supplied len
+  let shift = 0;
+  for (let i = 0; i < nG; i++) {
+    shift += i;
+    for (let e = 1; e < graph[i]!.nedges; e++) {
+      const j = graph[i]!.edges[e]!;
+      if (j < i) continue;
+      Dij[i * nG + j - shift] = graph[i]!.ewgts[e]!;
+    }
+  }
+  return Dij;
+}
+
+// ---------------------------------------------------------------------------
 // CoordHelper — coordinate conversion and initialization
 // ---------------------------------------------------------------------------
 

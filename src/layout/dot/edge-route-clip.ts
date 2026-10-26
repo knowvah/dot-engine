@@ -218,19 +218,31 @@ export function makeEllipseInsideFn(
 }
 
 /**
- * Clip path START to the tail arrowhead base (symmetric to arrowEndClip).
+ * Clip path START to the tail arrowhead base (the arrowEndClip counterpart).
  *
- * path4[0] = tail node boundary (inside arrowhead sphere); after clip,
- * path4[0] = arrowhead base (elen from tailTip).
+ * Ports the bezier part of lib/common/arrows.c:arrowStartClip (:313-339); the
+ * `spl->sflag/sp` bookkeeping and the `startp += 3` step live in the caller
+ * (compound.ts:arrowStartClipIdx). Line map (C -> here):
+ *   :323-326 sp[0..2] = ps[startp+3..], sp[3] = spl->sp -> `sp` below
+ *   :328     if (slen > 0)                              -> `elen > 0`
+ *   :329-330 inside_context {p = &sp[3], r = &slen}     -> `inside` (centre = tip)
+ *   :331     bezier_clip(&ctx, inside, sp, false)       -> bezierClipNode, right
+ *            inside, in ABSOLUTE coordinates (centre 0,0), as C does
+ *   :334-337 ps[startp..startp+3] = sp[3..0]            -> returned array
+ *   :281-283 inside(): DIST(p, a.p[0]) <= a.r[0]        -> distFused <= elen
+ * path4[0] is the tip (spl->sp) at every call site, so elen <= 0 returns the
+ * same points.
  *
- * @see lib/common/arrows.c:arrowEndClip
+ * @see lib/common/arrows.c:arrowStartClip
  */
 export function tailArrowEndClip(
   path4: Point[],
   tailTip: Point,
   elen: number,
 ): Point[] {
-  if (elen <= 0) return path4;
-  const inside = (lx: number, ly: number): boolean => Math.hypot(lx, ly) <= elen;
-  return bezierClipNode(path4, tailTip.x, tailTip.y, inside, true);
+  const sp: Point[] = [path4[3]!, path4[2]!, path4[1]!, tailTip];
+  const clipped = elen > 0
+    ? bezierClipNode(sp, 0, 0, (x, y) => distFused({ x, y }, tailTip) <= elen, false)
+    : sp;
+  return [clipped[3]!, clipped[2]!, clipped[1]!, clipped[0]!];
 }

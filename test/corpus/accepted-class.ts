@@ -54,7 +54,8 @@ export interface FaultAcceptance {
 
 /** A walk row's raw outcome, normalized across walkers. */
 export interface RawOutcome {
-  outcome: 'pass' | 'diverged' | 'accepted' | 'port-error' | 'timeout' | 'oracle-error';
+  outcome:
+    | 'pass' | 'diverged' | 'accepted' | 'port-error' | 'timeout' | 'oracle-error' | 'oracle-nondeterministic';
   /** Every error text on the row (map: one per format); [] when none. */
   errs: string[];
 }
