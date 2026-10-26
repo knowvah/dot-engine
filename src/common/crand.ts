@@ -21,11 +21,17 @@
  * @see lib/util/random.c:gv_random / gv_permutation (15.0.0)
  */
 
+import { registerRenderState } from './render-state.js';
+
 /** RAND_MAX on the reference platform. */
 export const C_RAND_MAX = 2147483647;
 
-/** Current stream state; unseeded C rand() behaves as srand(1). */
-let state = 1;
+/** Unseeded C rand() behaves as srand(1). */
+const UNSEEDED_STATE = 1;
+
+/** Current stream state. */
+let state = UNSEEDED_STATE;
+registerRenderState(() => { state = UNSEEDED_STATE; });
 
 /** srand(3). */
 export function csrand(seed: number): void {

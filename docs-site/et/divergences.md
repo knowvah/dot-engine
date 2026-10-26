@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -216,9 +216,9 @@ eraldi omistatud graphviz 16.1.0 vastu: süstimiskoormus
 (`test/corpus/attribute-divergence.ts`) söödab natiivse oraakli marsruutimiseelse
 `ND_pos` porti ja võrdleb uuesti, ning iga praegune lahknev id on
 `drift-exonerated` (pordi marsruutimine ja väljastus reprodutseerivad oraakli
-täpselt, kui lahendaja triiv on eemaldatud), välja arvatud kolm. Kolm on eraldi
-aktsepteeritud id-põhised jäägid: `241_0` CDT incircle'i viik fdp-l ja sfdp-l ning
-sfdp `2556` NaN-paigutus. fdp `2471` ja sfdp `2371` säilitasid varem pärast süstimist
+täpselt, kui lahendaja triiv on eemaldatud), välja arvatud kaks. Kaks on eraldi
+aktsepteeritud id-põhised jäägid: sfdp `241_0` hosti libm-i `pow` triiv (T28 diagnoosis uuesti) ning sfdp `2556` NaN-paigutus.
+fdp `241_0` läbib alates `fix(T9): start swapped cdt faces at the new diagonal as gts does` (vt fdp lõiku A9 all). fdp `2471` ja sfdp `2371` säilitasid varem pärast süstimist
 erinevad servasiltide asukohad (`lp`), st xlabel-paigutaja valis teise kandidaadi.
 `2471` lahenes, kui pordi `dotneato_closest` hakkas ümardama nagu clangi liidetud de
 Casteljau arvutus ja DIST2: servasiltide ankrud erinesid 1–2 ULP võrra, mis kallutas
@@ -881,14 +881,13 @@ nõuaks Apple libm-i täpse `sin`/`cos` ümardamise reprodutseerimist JS-is.
 peegeldas selle. twopi ja neato `241_0` — mille see klass oli omistanud allolevale
 kaasringsele viigile — said **conformant** (aktsepteerimised pensionile saadetud) ja
 sfdp `42` osutus viigita (see on A1 triiv, vt
-[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp ja sfdp `241_0`
-lahknevad endiselt muutumatute või vähenenud jääkidega; nende omistus allolevale viigile
-on varasem kui `f66ac638` ja seda **ei ole pärast seda parandust positsioonide
-süstimisega uuesti kontrollitud**, kuigi sama parandus näitas, et omistus oli twopi/neato
-puhul vale.
+[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` muutus hiljem **conformant**, pärast teist triangulatsiooni pordipoolset parandust (tahkude tippude järjestus servavahetuse järel; vt allolevat fdp lõiku). circo `241_0` muutus **conformant**, kasutades `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: V8 `Math.sin(9π/8)` on 1 ULP korrektselt ümardatud libm-i väärtusest
+kõrval, mis nihutas iga ellipsitakistuse ühte nurka ja lülitas koridori ümber
+(aktsepteerimine pensionile saadetud). sfdp `241_0` diagnoositi sama ülesandega uuesti ja
+on nüüd A1 (vt allolevat sfdp lõiku).
 
-**Mõjutatud:** `241_0` (circo Δ≈0.2 koridori ümberlülituse kaudu serval `1->2`; fdp ja sfdp
-`241_0` allolevatel mootoriradadel); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Mõjutatud:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 igaühel 1–2 serva sildi positsiooni erinevust — libm 1-ULP tekib
 `poly_init`-i ühikutipu trigonomeetrias (`hypot`/`atan2`/`sin`), paneb ühe sõlme
 arvutatud kõrguse ULP võrra üle minimaalse suuruse kärpe, millele oraakel maandub
@@ -930,7 +929,8 @@ selle kirje all, *parandati* 2026-07-11 ustava fmadd kontraktsiooniga
 joonistusoperatsiooni erinevust, Δ≈0.2pt serva `1->2` marsruuditud bezieril — sama
 CDT-diagonaali koridori ümberlülitus; otsustuspäevik, 2026-07-10 kirje „CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed“). Aktsepteeritud mootoriraja tasemel failiga
+filed“; **pensionile saadetud 2026-10-23** — conformant, kuna port võtab takistuse
+8-nurga jaoks hosti libm-i `cos`/`sin`, vt 16.1 uut lähtejoont ülal). Aktsepteeritud mootoriraja tasemel failiga
 `test/corpus/accepted-divergences-engines.json`, mille `parity-report.ts` ühendab
 faili `PARITY-twopi.md`/`PARITY-circo.md` — sama ühendus, mida `accepted.ts` teeb
 dot-raja `PARITY-dot.md` jaoks.
@@ -1056,23 +1056,20 @@ väärtuse 18.0 ümber, ja `closestSide`-i dyna pea-pordi valik lülitab TOP/BOT
 sellel täpsel viigil ümber; sõlmepositsioonid ja kastid on muus osas bitiliselt identsed
 oraakliga; **eemaldatud 2026-10-18** — see on vastav, sest pordi DIST2 kasutab clangi liidetud kuju, mis lahendab selle täpse viigi nagu C).
 
-**sfdp mootorirada — serva FP-viik (`241_0`).**
+**sfdp mootorirada — `241_0` (klassifitseeriti ümber A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> sfdp xdot-mootorirada (`parity-sfdp.json`,
-natiivne `dot -Ksfdp -Txdot`, ±0.5) toob esile CDT kaasringse incircle viigi, kui
-täpsed natiivsed marsruutimiseelsed positsioonid on süstitud (seega lahknevus EI OLE
-iteratiivne triiv — vt A1-drift klassi — vaid diskreetne predikaadiviik):
+natiivne `dot -Ksfdp -Txdot`, ±0.5) loetles siin `241_0` CDT kaasringse incircle viigina.
+`fix(T28)` diagnoosis selle uuesti instrumenteeritud natiivse sfdp-ga:
 
-- `241_0` — omistatud CDT kaasringsele incircle viigile (multispline koridor; pärast
-  `f66ac638` uuesti kontrollimata, vt 16.1 uut lähtejoont ülal). Jääk on **lõikude arvu
-  ümberlülitus**: 7 joonistusoperatsiooni erinevust serval 1->2, `ptCount 8 vs 20`
-  (20 erinevust enne `f66ac638`) — koridor õnnestub N-punktise splainiga, kus natiivne
-  ehitus langeb tagasi lühemale lihtsale marsruudile (või vastupidi), nagu ülaltoodud
-  circo `241_0` kirjes.
-  Port emuleerib juba arm64
-  `fmadd` kontraktsiooni incircle/`ccw` predikaadis (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) ja kasutab robustset incircle Delaunay'd; jääk on
-  V8-vs-Apple-libm `sin`/`hypot` 1-ULP predikaadi sisendis, mida ükski portatiivne
-  kood ei reprodutseeri.
+- `241_0` — 7 joonistusoperatsiooni erinevust serval 1->2 (`ptCount 8 vs 20`). Paigutus
+  triivib esimesest tõukejõu liikmest, kus macOS-i libm-i `pow(dist, 2)` annab 1 ULP
+  korrektsest ümardamisest vähem (jämedaim tase, iteratsioon 22; vt hosti libm-i `pow`
+  kirjet paigutusustavuse lünkade all), ja adaptiivne jahutus võimendab selle noaterava
+  positsioonideni, kus serv 1->2 marsruuditakse teisiti. Natiivsete `pow` väärtuste
+  süstimine teeb iga jäljerea ja lõpliku xdot-i identseks. Süstitud positsioonidega
+  nähtud marsruutimisjääk oli osaliselt süstimisartefakt ja osaliselt V8 `Math.sin(9π/8)`
+  takistuse 8-nurgas, mille port võtab nüüd hosti libm-ist (parandus, mis tegi ka circo
+  `241_0` conformant-iks). Alles jääb A1 triiv.
 
 > **sfdp `42` klassifitseeriti ümber A9 → A1-drift (graphviz 16.1 sünkroonimine).**
 > Seda loetleti siin kui CDT/libm incircle viiku. Missioon leidis muud
@@ -1101,27 +1098,32 @@ kompileerimine ja võrdlemine Node `Math.hypot`-iga tüüpilistel
 lamedaserva hälbe sisenditel näitab 1-ULP lahknevust 2-l 6-st (Δ 7.1e-15 ja
 5.7e-14) — lõhestuslävendi noaterv, mis lülitab ümber alajaotuste arvu.
 Taandamatu: ükski portatiivne hypot ei reprodutseeri Apple libm-i (`arm-pow.ts`
-pretsedent sama piiri jaoks). `sfdp.241_0` on aktsepteeritud mootoriraja tasemel failiga
-`accepted-divergences-engines.json`. `sfdp.42` **ei** kuulu sellesse klassi: selle
+pretsedent sama piiri jaoks). `sfdp.241_0`, mis oli kunagi selle klassi all aktsepteeritud,
+on alates T28-st A1-drift (vt ülal). `sfdp.42` **ei** kuulu sellesse klassi: selle
 registrikirje on A1 (`comparisons/sfdp-42.md`) ja ülaltoodud sond ei selgitanud seda.
 
 **fdp** xdot-mootorirada (`parity-fdp.json`, natiivne `dot -Kfdp -Txdot`,
-±0.5) toob esile SAMA CDT kaasringse viigi samal graafil `241_0`: kui
-oraakli täpsed marsruutimiseelsed positsioonid on süstitud, on jääk 11 arvulist
-`unfilled_bezier` erinevust, mis piirduvad ühe servaga (`0->1#0`, maxΔ 3.39pt). Kuna
-sõlmepositsioonid on süstituna identsed, on lahknevus allavoolu
-pathplani multispline koridoris — sama libm-1-ULP incircle viik mis
-circo/sfdp `241_0` puhul (täpne ratsionaalne incircle 185/185 ülal; 11 erinevust `f66ac638` poolt
-muutmata — süstimisega uuesti kontrollimata). Hoovad on
-juba rakendatud (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); viiku käsitletakse taandamatuna. Aktsepteeritud failiga `accepted-divergences-engines.json`
-`fdp.241_0`. fdp `2095` on seevastu **A1-drift, mitte A9**: ainsa tühja nimega
+±0.5) näitas varem sama graafi `241_0` selle klassi osana: kui oraakli täpsed
+marsruutimiseelsed positsioonid olid süstitud, jäi ühele servale (`0->1#0`, maxΔ
+3.39pt) 11 arvulist `unfilled_bezier` erinevust ning need omistati kaasringsele
+incircle viigile. See omistus oli vale. `fix(T9): start swapped cdt faces at the new diagonal as gts does` (2026-10-22) leidis pordipoolse
+vea: GTS `swap_if_in_circle` ehitab oma kaks uut tahku kui
+`gts_face_new(en, e5, e2)` ja `gts_face_new(en, e3, e4)` (`cdt.c:509-511`), ning
+`gts_triangle_vertices` loeb tahku selle servade järjestusest, nii et natiivne
+loetleb need kui (v3, v4, v2) ja (v4, v3, v1); port salvestas mõlemad ühe koha
+võrra pööratuna ning multispline marsruuteri `triCenter` summeeris tipud selles
+järjekorras. Pärast järjestuse parandamist ühtib fdp `241_0` natiivsega igal
+rajal (xdot läbib, json conformant, plain ja stderr võrdsed) ning selle kirjed
+failides `accepted-divergences-engines.json` ja `accepted-divergences-json.json`
+on pensionile saadetud. fdp `2095` on seevastu **A1-drift, mitte A9**: ainsa tühja nimega
 sõlme süstimine (pärast omistamise süstija parandamist `""`-nimega sõlmi
 sobitama) kukutab selle jäägi nulli — varasem „A9 saba“ oli
 süstimata tühi sõlm, mis lohistas oma külgnevaid servi. sfdp `2095` aktsepteerimine oli
 sama pimeala — värske sfdp omistamise taasgenereerimine (2026-07-22) parandatud
 süstijaga kinnitas, et ka see süstib 0 jäägini, ja selle aktsepteerimine eemaldati (vt
 ülaltoodud märkust `2095 reclassified`).
+
+**sfdp `2168_3` — Apple'i libm-i `sin` 1 ULP failis `poly_init` (suletud, taandamatu).** **Mõjutatud:** sfdp `2168_3` (ainult stderr: port väljastab ühe lisa-`Pshortestpath`-hoiatuse; xdot-mootoririba läbimäng läbib, sest mõlemad pooled taanduvad sirgjoontele). **Mis erineb:** `shapes.c:2329` arvutab `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); gamma = 1.0092081171617377 korral annab macOS-i libm 0.8464104077694533, V8 korrektselt ümardatud väärtuse 0.8464104077694532 (1 ULP). Erinevus jõuab multispline-ruuterisse (`neatosplines.c:428,444` → `multispline.c:598`) ruuteripunktina 10/18, y 28.391789367446776 vs …78; ringjoonel asuv trapets (punktid 9, 10, 15, 16) trianguleeritakse siis teise Delaunay diagonaaliga, mistõttu serva 1 koridoripolügoon erineb ja `Pshortestpath` ebaõnnestub pordi polügoonil. **Miks aktsepteeritud:** kontrollitud katse, mis süstib ainult selle `sin`-väärtuse, muudab stderri, kolmnurgad, polügoonid ja xdoti natiivsega identseks (ainult `atan2` ei muuda); sfdp positsioonid on bitikaupa võrdsed ning incircle-predikaat, pathplan, `makeObstacle` hypot ja kontuuriringi aritmeetika järjekord on välistatud. Ühtimine nõuaks Apple'i `sin`-i bititäpset mudelit, mille lähtekood pole avalik; ükski portatiivne kood ei saa seda taastoota (sama piir kui pretsedendil `arm-pow.ts`). **Tõend:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), rida 2026-10-20 T13.
 
 ---
 
@@ -1149,6 +1151,22 @@ aktsepteerivad pordi viga ainult siis, kui see kannab seda teadet. Teistsugune t
 `2784` puhul ilmneks aktsepteerimata veana ja `registry-staleness.test.ts` märgiks
 kirje aegunuks.
 Tõendid: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. GTS-i Delaunay tahkude järjekord degenereerunud sisendil — taandamatu {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Mõjutatud:** Paigutused, mis triangulaarivad GTS-i kaudu (`lib/neatogen/delaunay.c`; 16.1 oraakel linkib GTS 0.7.6) degenereerunud sisendi korral: servadel asuvad punktid või kotsirkulaarsed ruudustikud.
+
+**Mis erineb.** Port nummerdab Delaunay tahud ja järjestab iga tahu naabrid (`neigh`) loomisjärjekorras. Natiivne GTS nummerdab tahud `GHashTable`-i järjekorras: `closest_face` itereerib viidaga indekseeritud tabelit, seega sõltuvad tahu id-d ja naabrite järjekord hunniku aadressidest ning erinevad käivituste vahel. Kõik tahkude järjekorrast tuletatu võib seetõttu konkreetsest natiivsest käivitusest erineda.
+
+**Miks aktsepteeritud.** Deterministlikku sihti ei ole. Natiivse binaari 60 käivitust ühel degenereerunud sisendil andsid 22 erinevat väljundit ka väljalülitatud ASLR-i ja `MallocNanoZone=0` korral; varieeruvus on oraakli omadus koodist allpool, mitte pordi viga. Võrrelge tahke tippude hulga, mitte id järgi. Tõendus: 3. osa GTS-i märkmed (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism“).
+
+### A12. Lekseri vigadel puudub eesliide `<stdin>: ` {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Mõjutatud:** Lekseri (`aagerror`) stderr-i teatatud DOT-i süntaksivead.
+
+**Mis erineb.** Natiivne `dot` CLI prindib standardsisendi lugemisel `<stdin>: syntax error in line N …`; port prindib sama teate ilma eesliiteta `<stdin>: `.
+
+**Miks aktsepteeritud.** `aagerror` (`lib/cgraph/scan.l:157`) lisab `InputFile: ` ainult siis, kui `InputFile` on seatud. CLI seab selle standardsisendi lugemisel väärtuseks `<stdin>`; teegi sisenemispunkt `agmemread`, mida port peegeldab, jätab selle seadmata ega prindi eesliidet. Pordil CLI-d pole, seega pole midagi teatada. stderr-i sond normaliseerib eesliite võrdlemisel.
 
 ---
 

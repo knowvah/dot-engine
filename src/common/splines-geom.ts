@@ -10,6 +10,7 @@
 
 import type { Point, Box } from '../model/geom.js';
 import { bezier as evalBezier } from './bezier.js';
+import { fma } from './fma.js';
 
 // ---------------------------------------------------------------------------
 // Approximate equality
@@ -47,16 +48,19 @@ const HW = 2.0;
 const SMALL = 0.0000000001;
 
 /**
- * Distance from point p to line a-b, squared.
+ * Distance from point p to line a-b, squared. Native (arm64, clang
+ * -ffp-contract=on) fuses the numerator as fmadd(p.y-a.y, dx, -(dy*(p.x-a.x)))
+ * and the denominator as fmadd(dx, dx, dy*dy): libgvc _ptToLine2 at
+ * 0x21214-0x21244, identically in inlined _update_bb_bz and _approx_bezier.
  * @see lib/common/geom.c:ptToLine2
  */
-function ptToLine2(a: Point, b: Point, p: Point): number {
+export function ptToLine2(a: Point, b: Point, p: Point): number {
   const dx = b.x - a.x;
   const dy = b.y - a.y;
-  let a2 = (p.y - a.y) * dx - (p.x - a.x) * dy;
+  let a2 = fma(p.y - a.y, dx, -(dy * (p.x - a.x)));
   a2 *= a2; // square — ensures positive
   if (a2 < SMALL) return 0; // avoid 0/0 problems
-  return a2 / (dx * dx + dy * dy);
+  return a2 / fma(dx, dx, dy * dy);
 }
 
 /**

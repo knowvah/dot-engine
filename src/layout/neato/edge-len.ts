@@ -9,6 +9,7 @@
 
 import type { Graph } from '../../model/graph.js';
 import type { Edge } from '../../model/edge.js';
+import { agwarningf } from '../../common/agerr.js';
 
 /** `dfltlen` passed by scan_graph_mode. @see lib/neatogen/stuff.c:scan_graph_mode */
 export const DEFAULT_EDGE_LEN = 1.0;
@@ -24,7 +25,7 @@ export function lenattr(ep: Edge, g: Graph): number {
   const val = /^\s*[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?/.exec(s);
   const len = val === null ? Number.NaN : parseFloat(val[0]);
   if (Number.isNaN(len) || len < 0 || len === 0) {
-    console.warn(`bad edge len "${s}" in ${g.name} - setting to ${DEFAULT_EDGE_LEN.toFixed(2)}`);
+    agwarningf(`bad edge len "${s}" in ${g.name} - setting to ${DEFAULT_EDGE_LEN.toFixed(2)}`);
     return DEFAULT_EDGE_LEN;
   }
   return len;

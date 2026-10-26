@@ -1,0 +1,1 @@
+digraph{mode=hier; epsilon=0.1; maxiter=7; a->b->c->d->e; a->d; b->e}

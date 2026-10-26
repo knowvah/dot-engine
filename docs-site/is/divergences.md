@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -219,9 +219,11 @@ vélarræsingar og lagfæringunni á `setEdgeType` (fjölvi á móti falli).)
 gagnvart graphviz 16.1.0: innsprautunarverkfærið (`test/corpus/attribute-divergence.ts`)
 matar yfirfærsluna á `ND_pos` véfréttarinnar fyrir leiðingu og ber saman á ný, og
 hvert núverandi fráviksauðkenni er `drift-exonerated` (leiðing og úttak yfirfærslunnar
-endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt) nema þrjú.
-Þrjú eru sérstaklega samþykktir afgangar fyrir einstök auðkenni: CDT-incircle-jafntefli
-`241_0` á fdp og sfdp, og NaN-útlit sfdp `2556`. fdp `2471` og sfdp `2371` héldu áður
+endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt) nema tvö.
+Tvö eru sérstaklega samþykktir afgangar fyrir einstök auðkenni: libm-`pow`-rek hýsilsins í sfdp
+`241_0` (endurgreint í T28) og NaN-útlit sfdp `2556`. fdp `241_0` stenst síðan
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (sjá málsgreinina um
+fdp undir A9). fdp `2471` og sfdp `2371` héldu áður
 staðsetningum jaðarmerkimiða (`lp`) sem voru ólíkar eftir innsprautun, þ.e.
 xlabel-staðsetjarinn valdi annan frambjóðanda. `2471` leystist þegar `dotneato_closest`
 í portinu fór að rúna eins og samrunninn de Casteljau-reikningur og DIST2 clang: akkeri
@@ -890,14 +892,15 @@ krefðist þess að endurskapa nákvæma `sin`/`cos`-námundun Apple libm í JS.
 routing geometry`) speglaði hana. `241_0` í twopi og neato — sem þessi flokkur
 hafði eignað jafnteflinu á einum hring hér á eftir — urðu **conformant**
 (samþykki dregin til baka), og í ljós kom að sfdp `42` er alls ekki með neitt
-jafntefli (það er A1-rek, sjá [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` í
-circo, fdp og sfdp víkur enn, með afgöngum sem eru óbreyttir eða minni; eignun
-þeirra á jafnteflinu hér á eftir er eldri en `f66ac638` og hefur **ekki verið
-staðfest á ný með innsprautun staða** síðan sú lagfæring sýndi að sama eignun var
-röng fyrir twopi/neato.
+jafntefli (það er A1-rek, sjá [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` í fdp varð síðar **conformant**, eftir aðra lagfæringu í portinu á
+þríhyrningaskiptingunni (hornaröð flata eftir skipti á legg; sjá málsgreinina um fdp hér á
+eftir). `241_0` í circo varð **conformant** með `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: `Math.sin(9π/8)` í V8 er 1 ULP frá rétt námunduðu libm-gildi, sem
+færði eitt horn hverrar sporöskjulaga hindrunar og flippaði ganginum (samþykki dregið til
+baka). `241_0` í sfdp var endurgreint af sama verkefni og er nú A1 (sjá sfdp-málsgreinina
+hér á eftir).
 
-**Fyrir áhrifum:** `241_0` (circo Δ≈0.2 vegna gangaflipps á legg `1->2`; `241_0` í
-fdp og sfdp á vélaferlunum hér á eftir); `2343`, `2239`, `share-b29`, `windows-b29`
+**Fyrir áhrifum:** `2343`, `2239`, `share-b29`, `windows-b29`
 (twopi,
 1–2 mismunir á stöðu leggjamerkimiða hvert — libm-1-ULP verður til í
 einingahornpunktahornaföllum `poly_init` (`hypot`/`atan2`/`sin`), setur reiknaða
@@ -940,7 +943,8 @@ undir þessari færslu, voru *lagfærð* 2026-07-11 með trúrri fmadd-sameining
 mismunur í teikniaðgerðum, Δ≈0.2pt á leiddum Bézier leggjar `1->2` — sama
 gangaflipp CDT-hornalínu; ákvörðunardagbók, færsla 2026-07-10 „CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed“). Samþykkt á vélaferlisstigi með
+filed“; **dregið til baka 2026-10-23** — conformant þar sem portið tekur `cos`/`sin` úr
+libm hýsilsins fyrir 8-hyrning hindrunarinnar, sjá endurmatið á 16.1 hér að ofan). Samþykkt á vélaferlisstigi með
 `test/corpus/accepted-divergences-engines.json`, tengt við
 `PARITY-twopi.md`/`PARITY-circo.md` með `parity-report.ts` — sama tenging
 og `accepted.ts` framkvæmir fyrir `PARITY-dot.md` á dot-ferlinum.
@@ -1066,21 +1070,19 @@ gildið 18.0, og val dyna-höfuðhafnar í `closestSide` flippar TOP/BOTTOM við
 það nákvæma jafntefli; hnútastöður og kassar eru að öðru leyti bita-eins og hjá
 véfréttinni; **fellt niður 2026-10-18** — samræmist, þar sem DIST2 portsins notar samrunna mynd clang, sem sker úr þessu nákvæma jafntefli eins og C).
 
-**xdot-vélaferill sfdp — FP-jafntefli á legg (`241_0`).** <a id="a9-sfdp-fp-ties"></a> xdot-vélaferill sfdp (`parity-sfdp.json`,
-innbyggt `dot -Ksfdp -Txdot`, ±0.5) afhjúpar CDT-innhringsjafntefli á einum hring um leið og
-nákvæmum innbyggðum stöðum fyrir leiðingu er sprautað inn (svo fráviksorsökin er EKKI
-ítrekandi rek — sjá A1-drift-flokkinn — heldur stakrænt jafntefli í forsendu):
+**xdot-vélaferill sfdp — `241_0` (endurflokkað A9 → A1, 2026-10-23).** <a id="a9-sfdp-fp-ties"></a> xdot-vélaferill sfdp (`parity-sfdp.json`,
+innbyggt `dot -Ksfdp -Txdot`, ±0.5) skráði `241_0` hér sem CDT-innhringsjafntefli á einum
+hring. `fix(T28)` greindi það upp á nýtt með mælitækjaútbúnu innbyggðu sfdp:
 
-- `241_0` — eignað CDT-innhringsjafntefli á einum hring (fjölsplínugangurinn; ekki
-  staðfest á ný eftir `f66ac638`, sjá endurmatið á 16.1 hér að ofan). Afgangurinn
-  er **flipp á fjölda hluta**: 7 mismunir í teikniaðgerðum á legg 1->2, `ptCount 8
-  vs 20` (20 mismunir fyrir `f66ac638`) — gangurinn tekst með N punkta splínu þar
-  sem innbyggða smíðin hverfur aftur í styttri einfalda leið (eða öfugt), eins og í
-  circo-færslunni `241_0` hér að ofan. Yfirfærslan hermir þegar eftir arm64-
-  `fmadd`-sameiningunni í innhrings-/`ccw`-forsendunni (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) og notar öfluga Delaunay-innhringsprófun; afgangurinn er
-  1 ULP í `sin`/`hypot` (V8 á móti Apple libm) í inntaki forsendunnar sem enginn flytjanlegur
-  kóði endurskapar.
+- `241_0` — 7 mismunir í teikniaðgerðum á legg 1->2 (`ptCount 8 vs 20`). Útlitið rekur frá
+  fyrsta fráhrindikraftsliðnum þar sem `pow(dist, 2)` í libm á macOS skilar 1 ULP undir
+  réttri námundun (grófasta stig, ítrun 22; sjá færsluna um libm-`pow` hýsilsins undir
+  eyðum í uppsetningartrúnaði), og aðlögunarkæling magnar það upp í hnífseggjastöður þar
+  sem leggur 1->2 er leiddur öðruvísi. Innsprautun innbyggðra `pow`-gilda gerir hverja
+  ferillínu og lokaútgáfu xdot eins. Leiðingarafgangurinn sem sást með innsprautuðum
+  stöðum var að hluta gripur innsprautunarinnar og að hluta `Math.sin(9π/8)` í V8 í
+  8-hyrningi hindrunarinnar, sem portið tekur nú úr libm hýsilsins (lagfæringin sem gerði
+  einnig `241_0` í circo conformant). Það sem eftir stendur er A1-rek.
 
 > **sfdp `42` endurflokkað úr A9 í A1-drift (graphviz 16.1 samstilling).** Það var
 > skráð hér sem CDT-/libm-innhringsjafntefli. Verkefnið komst að öðru
@@ -1109,28 +1111,34 @@ nákvæmum innbyggðum stöðum fyrir leiðingu er sprautað inn (svo fráviksor
 frávikainntaki fyrir lárétta leggi kemur fram 1 ULP ósamkomulag í 2 af 6 (Δ 7.1e-15 og
 5.7e-14) — klofningsþröskuldshnífseggin sem flippar fjölda undirskiptinga.
 Óhjákvæmilegt: ekkert flytjanlegt hypot endurskapar Apple libm (fordæmi
-`arm-pow.ts` fyrir sömu mörk). `sfdp.241_0` er samþykkt á vélaferlisstigi með
-`accepted-divergences-engines.json`. `sfdp.42` er **ekki** hluti af þessum flokki:
+`arm-pow.ts` fyrir sömu mörk). `sfdp.241_0`, sem eitt sinn var samþykkt undir þessum flokki,
+er A1-drift frá T28 (sjá hér að ofan). `sfdp.42` er **ekki** hluti af þessum flokki:
 skráarfærsla þess er A1 (`comparisons/sfdp-42.md`), og könnunin hér að ofan skýrði
 það ekki.
 
 **fdp**-xdot-vélaferillinn (`parity-fdp.json`, innbyggt `dot -Kfdp -Txdot`,
-±0.5) afhjúpar SAMA CDT-jafntefli á einum hring á sama grafi, `241_0`: með
-nákvæmum stöðum véfréttarinnar fyrir leiðingu innsprautuðum er afgangurinn 11 tölulegir
-`unfilled_bezier`-mismunir bundnir við einn legg (`0->1#0`, maxΔ 3.39pt). Þar sem
-hnútastöður eru innsprautaðar-eins er fráviksorsökin niðurstreymis í
-fjölsplínugangi pathplan — sama libm-1-ULP-innhringsjafntefli og í
-circo/sfdp `241_0` (nákvæm hlutfallstölu-innhringur 185/185 hér að ofan; 11 mismunir
-óbreyttir af `f66ac638` — ekki staðfest á ný með innsprautun). Tökin eru
-þegar beitt (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); jafnteflið er talið óhjákvæmilegt. Samþykkt með `accepted-divergences-engines.json`
-`fdp.241_0`. `2095` í fdp er hins vegar **A1-drift, ekki A9**: að innsprauta
+±0.5) sýndi áður sama graf, `241_0`, sem þennan flokk: með nákvæmum stöðum
+véfréttarinnar fyrir leiðingu innsprautuðum voru eftir 11 tölulegir
+`unfilled_bezier`-mismunir á einum legg (`0->1#0`, maxΔ 3.39pt) og þeir voru
+eignaðir CDT-jafnteflinu á einum hring. Sú eignun var röng.
+`fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) fann villu í portinu: GTS
+`swap_if_in_circle` smíðar nýju fletina tvo sem `gts_face_new(en, e5, e2)` og
+`gts_face_new(en, e3, e4)` (`cdt.c:509-511`), og `gts_triangle_vertices` les flöt út frá
+röð leggja hans, svo innbyggða útgáfan telur þá upp sem (v3, v4, v2) og (v4, v3, v1);
+portið geymdi báða snúna um eitt sæti og `triCenter` í fjölsplínuleiðaranum lagði
+hornpunktana saman í þeirri röð. Eftir að röðin var löguð passar fdp `241_0` við innbyggðu
+útgáfuna á öllum ferlum (xdot stenst, json conformant, plain og stderr eins) og færslur
+þess í `accepted-divergences-engines.json` og `accepted-divergences-json.json` eru
+afturkallaðar. `2095` í fdp er hins vegar **A1-drift, ekki A9**: að innsprauta
 eina hnútinn með tómt heiti (eftir að rekjuinnsprautarinn var lagaður til að passa við
 hnúta með heitið `""`) fellir afganginn niður í núll — fyrri „A9-halinn“ var
 óinnsprautaði hnúturinn með tómt heiti sem dró leggi sína með sér. Samþykki sfdp `2095` var
 sama blindsvæðið — ný endurgerð rekju fyrir sfdp (2026-07-22) með lagaða
 innsprautaranum staðfesti að það innsprautast einnig í 0, og samþykki þess var fjarlægt (sjá
 athugasemdina um `2095` endurflokkað hér að ofan).
+
+**sfdp `2168_3` — Apple-libm `sin` 1 ULP í `poly_init` (lokað, óafturkræft).** **Áhrif:** sfdp `2168_3` (aðeins stderr: portið skrifar eina auka `Pshortestpath`-viðvörun; yfirferð xdot-vélaferils stenst, þar sem báðar hliðar falla aftur á beinar línur). **Hvað er ólíkt:** `shapes.c:2329` reiknar `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); fyrir gamma = 1.0092081171617377 skilar macOS-libm 0.8464104077694533, V8 rétt námunduðu gildi 0.8464104077694532 (1 ULP). Munurinn berst til multispline-beinisins (`neatosplines.c:428,444` → `multispline.c:598`) sem beinispunktur 10/18, y 28.391789367446776 á móti …78; samhringlaga trapisan (punktar 9, 10, 15, 16) er þá þríhyrningaskipt með öðrum Delaunay-hornalínu, svo gangapólýgon brúnar 1 er ólíkt og `Pshortestpath` mistekst á pólýgoni portsins. **Hvers vegna samþykkt:** stýrð tilraun sem sprautar aðeins inn þessu `sin`-gildi gerir stderr, þríhyrninga, pólýgon og xdot eins og upprunalega (`atan2` eitt og sér gerir það ekki); sfdp-staðsetningar eru bitajafnar og incircle-umsögnin, pathplan, `makeObstacle`-hypot og reikniröð útlínuhringsins voru útilokuð. Til að ná samræmi þarf bitnákvæmt líkan af `sin` hjá Apple, sem frumkóði er ekki opinber; enginn færanlegur kóði getur endurgert það (sömu mörk og fordæmið `arm-pow.ts`). **Sönnunargögn:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), lína 2026-10-20 T13.
 
 ---
 
@@ -1160,6 +1168,22 @@ villa fremur en `diverged`-dómur, svo færslurnar í
 þegar hún ber þessi skilaboð. Önnur bilun á `2784` kæmi fram sem ósamþykkt bilun,
 og `registry-staleness.test.ts` myndi merkja færsluna sem úrelta. Sönnunargögn:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Röð Delaunay-flata í GTS við úrkynjað inntak — óafturkræf {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Fyrir áhrifum:** Útlit sem þríhyrningaskipta í gegnum GTS (`lib/neatogen/delaunay.c`; 16.1-véfréttin tengir GTS 0.7.6) þegar inntakið er úrkynjað: punktar á jöðrum eða samhringlaga net.
+
+**Hvað er ólíkt.** Portið númerar Delaunay-fleti og raðar nágrönnum hvers flatar (`neigh`) eftir sköpunarröð. Upprunalega GTS númerar fleti í `GHashTable`-röð: `closest_face` fer yfir töflu með bendi sem lykil, þannig að auðkenni flata og nágrannaröð ráðast af heap-vistföngum og breytast milli keyrslna. Allt sem leitt er af flataröðinni getur því verið frábrugðið tiltekinni upprunalegri keyrslu.
+
+**Hvers vegna samþykkt.** Ekkert ákvarðandi markmið er til. 60 keyrslur upprunalega tvíundarskráarinnar á einu úrkynjuðu inntaki gáfu 22 ólík úttök, jafnvel með ASLR slökkt og `MallocNanoZone=0`; breytileikinn er eiginleiki véfréttarinnar undir kóðanum, ekki galli í portinu. Berðu fleti saman eftir hornpunktamengi, ekki auðkenni. Sönnun: GTS-athugasemdir úr hluta 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism“).
+
+### A12. Ekkert forskeytið `<stdin>: ` á lesgreinarvillum {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Fyrir áhrifum:** DOT-setningafræðivillur sem lesgreinirinn (`aagerror`) tilkynnir á stderr.
+
+**Hvað er ólíkt.** Upprunalega `dot`-skipanalínuforritið skrifar `<stdin>: syntax error in line N …` þegar það les staðalinntak; portið skrifar sömu skilaboð án forskeytisins `<stdin>: `.
+
+**Hvers vegna samþykkt.** `aagerror` (`lib/cgraph/scan.l:157`) bætir `InputFile: ` við aðeins þegar `InputFile` er stillt. Skipanalínuforritið stillir það á `<stdin>` við lestur staðalinntaks; safninngangurinn `agmemread`, sem portið speglar, skilur það eftir óstillt og skrifar ekkert forskeyti. Portið hefur ekkert skipanalínuforrit, svo ekkert er að tilkynna. stderr-könnunin normalíserar forskeytið við samanburð.
 
 ---
 

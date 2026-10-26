@@ -125,3 +125,52 @@ describe('cellBorder default resolution', () => {
     expect(cellBorder(cell(), tbl())).toBe(1);
   });
 });
+
+describe('sizeHtmlLabel — empty <BR/> line inside a font-style element', () => {
+  // Metric height 1.2×fs ≠ raw fs, so the simple (mxysize) and non-simple
+  // (mxfsize) line models give different block heights.
+  const tallMeasurer: TextMeasurer = {
+    measure: (text, _f, fs) => ({ w: text.length * fs * 0.5, h: fs * 1.2 }),
+  };
+  const height = (src: string): number | undefined => {
+    const label = parseHtmlLabel(src);
+    sizeHtmlLabel(label, tallMeasurer);
+    return label.dimen?.h;
+  };
+
+  // C appendFLineList gives the second line one "" item in the <U>/<B> font,
+  // whose flags make size_html_txt non-simple: lsize = mxfsize (14 + 14).
+  // @see lib/common/htmlparse.y:appendFLineList, htmltable.c:size_html_txt
+  it.each(['k<u><br/><br/></u>', 'k<b><br/><br/></b>', 'k<font point-size="20"><br/><br/></font>'])(
+    '%s sizes as a non-simple block', (src) => {
+      const expected = src.includes('20') ? 14 + 20 : 14 + 14;
+      expect(height(src)).toBe(expected);
+    });
+
+  it('k<br/><br/> stays simple: lsize = metric height (16.8 + 16.8)', () => {
+    expect(height('k<br/><br/>')).toBeCloseTo(33.6, 10);
+  });
+});
+
+// One line builder feeds sizing and placement (T27): the simple-text rule is
+// tested per built line, so a font style around <BR/> makes the block non-simple.
+// @see lib/common/htmltable.c:size_html_txt
+describe('sizeHtmlLabel — text blocks size from the shared line builder', () => {
+  const tallMeasurer: TextMeasurer = {
+    measure: (text, _font, fontSize) => ({ w: text.length * fontSize, h: fontSize * 1.5 }),
+  };
+  const heightOf = (src: string): number => {
+    const label = parseHtmlLabel(src);
+    sizeHtmlLabel(label, tallMeasurer, { fontsize: 14, fontname: 'Times' });
+    return label.dimen!.h;
+  };
+  it('plain uniform lines are simple: each line uses the metric height', () => {
+    expect(heightOf('a<BR/>b')).toBe(42);
+  });
+  it('a font-flagged item makes the block non-simple: raw font size per line', () => {
+    expect(heightOf('a<BR/><B>b</B>')).toBe(28);
+  });
+  it('an empty <BR/> line inside a font style is a line in that font', () => {
+    expect(heightOf('k<U><BR/><BR/></U>')).toBe(28);
+  });
+});

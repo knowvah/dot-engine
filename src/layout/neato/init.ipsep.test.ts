@@ -48,8 +48,8 @@ describe('makeGraphDataC haveDir (C neatoinit.c:827)', () => {
   it('stores 1.0 per merged neighbour when there is no len', () => {
     const { g } = twoNodeDup();
     const vtx = makeGraphDataC(g, assignNodeIds(g), false, true);
-    expect(vtx[0]).toEqual({ nedges: 2, edges: [0, 1], ewgts: [0, 1] });
-    expect(vtx[1]).toEqual({ nedges: 2, edges: [1, 0], ewgts: [0, 1] });
+    expect(vtx[0]).toEqual({ nedges: 2, edges: [0, 1], ewgts: [0, 1], edists: [0, -1] });
+    expect(vtx[1]).toEqual({ nedges: 2, edges: [1, 0], ewgts: [0, 1], edists: [0, 1] });
   });
 
   it('with len, a repeated neighbour keeps the max len', () => {

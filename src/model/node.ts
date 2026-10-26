@@ -8,6 +8,7 @@
 
 import type { Edge } from './edge.js';
 import type { Graph } from './graph.js';
+import { EMPTY_ATTRS } from './lazy-attrs.js';
 import { type NodeInfo, makeNodeInfo } from './nodeInfo.js';
 
 /**
@@ -64,10 +65,10 @@ export class Node {
   nodeDefaultsSnapshot?: Map<string, string>;
 
   /** @see lib/cgraph/node.c:agnode */
-  constructor(id: number, name: string, root: Graph) {
+  constructor(id: number, name: string, root: Graph, lazyAttrs = false) {
     this.id = id;
     this.name = name;
-    this.attrs = new Map();
+    this.attrs = lazyAttrs ? EMPTY_ATTRS : new Map();
     this.info = makeNodeInfo();
     this.root = root;
   }

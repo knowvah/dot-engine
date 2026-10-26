@@ -15,6 +15,7 @@ import { shortestPath, routeSpline, makePolyline } from '../pathplan/index.js';
 import type { Poly } from '../pathplan/types.js';
 import { INIT_DELTA, LOOP_TRIES, ROUTESPL_FUDGE } from './splines-constants.js';
 import { fma } from './fma.js';
+import { agerrorf } from './agerr.js';
 
 // ---------------------------------------------------------------------------
 // Stage-dump hook (diagnosis only; null in production — same pattern as
@@ -450,7 +451,7 @@ function routeSplinesInternal(pp: Path, polyline: boolean): Point[] | null {
   if (pl === null) {
     // C: agerrorf("in routesplines, Pshortestpath failed") — the caller then
     // loses the edge. @see lib/common/routespl.c (Pshortestpath < 0 branch)
-    console.warn('in routesplines, Pshortestpath failed');
+    agerrorf('in routesplines, Pshortestpath failed');
     return null;
   }
   emitDump('S3_POLY', dumpNames, () => ({

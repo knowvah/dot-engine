@@ -43,6 +43,11 @@ describe('staleReason', () => {
     expect(staleReason(portError, row('oracle-error', ['oracle exit null']))).toBeNull();
   });
 
+  it('exempts an oracle-nondeterministic row (no single native reference)', () => {
+    expect(staleReason({}, row('oracle-nondeterministic'))).toBeNull();
+    expect(staleReason(portError, row('oracle-nondeterministic'))).toBeNull();
+  });
+
   it('backs a diverged entry with a diverged or accepted row', () => {
     expect(staleReason({}, row('diverged'))).toBeNull();
     expect(staleReason({}, row('accepted'))).toBeNull();
@@ -82,6 +87,7 @@ describe('row normalizers', () => {
     expect(normalizeVerdict('oracleError')).toBe('oracle-error');
     expect(normalizeVerdict('portError')).toBe('port-error');
     expect(normalizeVerdict('timeout')).toBe('timeout');
+    expect(normalizeVerdict('oracle-nondeterministic')).toBe('oracle-nondeterministic');
     expect(() => normalizeVerdict('crashed')).toThrow(/crashed/);
   });
 

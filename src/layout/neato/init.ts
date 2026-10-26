@@ -16,15 +16,22 @@ import type { Edge } from '../../model/edge.js';
 import type { VtxData } from './dijkstra.js';
 import {
   DFLT_ITERATIONS,
+  OPT_SMART_INIT as STRESS_OPT_SMART_INIT,
   MODEL_MDS as STRESS_MODEL_MDS,
   MODEL_CIRCUIT as STRESS_MODEL_CIRCUIT,
   MODEL_SUBSET as STRESS_MODEL_SUBSET,
 } from './stress.js';
 import { sgdLayout } from './sgd.js';
 import { kkNeato } from './kk.js';
-import { checkStart, assertSupported, parseStart, INIT_RANDOM, INIT_REGULAR } from './start.js';
+import {
+  checkStart, assertSupported, parseStart, INIT_RANDOM, INIT_REGULAR, INIT_SELF,
+} from './start.js';
+import { makeGraphDataC, graphHasLen } from './make-graph-data.js';
+import type { DirectedVtxData } from './opt-arrangement.js';
+import { stressMajorizationWithHierarchy } from './constrained-majorization.js';
+import { agerr } from '../../common/agerr.js';
 
-export { checkStart };
+export { makeGraphDataC, graphHasLen, checkStart };
 import { mapbool } from '../dot/rank.js';
 import {
   computeApspPacked,
@@ -50,6 +57,7 @@ export const MODE_HIER = 2;
 export const MODE_IPSEP = 3;
 /** Stochastic gradient descent. @see lib/neatogen/neatoprocs.h */
 export const MODE_SGD = 4;
+/** `MaxIter` under MODE_SGD. @see neatoinit.c:1285 */ const SGD_ITERATIONS = 30;
 
 // ---------------------------------------------------------------------------
 // Model constants — @see lib/neatogen/defs.h
@@ -321,79 +329,75 @@ export function mapModelToStress(model: number): number {
 // solveModel helpers
 // ---------------------------------------------------------------------------
 
-/** Run stress majorization and write positions back. @see lib/neatogen/neatoinit.c:majorization */
-export function runMajorization(g: Graph, mode: number, model: number): void {
-  void model; // only MODEL_SHORTPATH distances are exercised by the suite
-  const nodeList = assignNodeIds(g);
+/** `MaxIter` per mode; `maxiter` goes through C `atoi` (no digits -> 0). @see neatoinit.c:1280-1287 */
+export function neatoMaxIter(maxiter: string | undefined, mode: number, n: number): number {
+  if (maxiter !== undefined) return parseInt(maxiter, 10) || 0;
+  if (mode === MODE_MAJOR) return DFLT_ITERATIONS;
+  return mode === MODE_SGD ? SGD_ITERATIONS : 100 * n;
+}
+
+/** `late_double(g, "levelsgap", 0.0, -DBL_MAX)`. @see lib/neatogen/neatoinit.c:majorization */
+const levelsGapOf = (g: Graph): number =>
+  lateDouble(g.root.attrs.get('levelsgap'), 0.0, -Number.MAX_VALUE);
+
+/** What `majorization` was called with, plus the options derived from it. */
+interface MajorizationCtx {
+  readonly g: Graph;
+  readonly mode: number;
+  readonly model: number;
+  readonly haveLen: boolean;
+  /** `opt_*` bits from `checkExp` and `checkStart`. */
+  readonly opts: number;
+}
+
+/**
+ * The solver step of `majorization`: `stress_majorization_with_hierarchy` for
+ * MODE_HIER, else the kD_mkernel (MODE_IPSEP without constraints runs it too).
+ * Returns C's `rv`; the coordinates are left in `dCoords`.
+ * @see lib/neatogen/neatoinit.c:majorization
+ */
+function solveStress(
+  c: MajorizationCtx, vtx: DirectedVtxData[], dCoords: Float64Array[], nodeList: Node[],
+): number {
+  const { g, mode, model, haveLen, opts } = c;
   const n = nodeList.length;
-  const haveLen = graphHasLen(g);
-  const vtx = makeGraphDataC(g, nodeList, haveLen, mode === MODE_HIER || mode === MODE_IPSEP);
-  checkStart(g); // C: srand48(seed) immediately before initLayout draws
-  const maxi = lateDouble(g.attrs.get('maxiter'), DFLT_ITERATIONS, 0);
+  const maxi = neatoMaxIter(g.attrs.get('maxiter'), mode, n);
   const epsilon = lateDouble(g.attrs.get('epsilon'), 1e-4, 0); // DFLT_TOLERANCE
+  if (mode === MODE_HIER) {
+    return stressMajorizationWithHierarchy(vtx, n, dCoords, nodeList, {
+      dim: DFLT_DIM, opts, model, maxi, epsilon, levelsGap: levelsGapOf(g),
+    });
+  }
   // C ipsep (stress_majorization_cola, constrained_majorization_ipsep.c:150) always uses
   // compute_apsp_packed; kD_mkernel uses the weighted APSP iff graph->ewgts (stress.c:855).
   const weighted = haveLen && mode !== MODE_IPSEP;
   const Dij = weighted ? computeWeightedApspPacked(vtx, n) : computeApspPacked(vtx, n);
-  const dCoords = [new Float64Array(n), new Float64Array(n)];
-  stressMajorizationKDMkernel(Dij, n, dCoords, nodeList, {
-    dim: DFLT_DIM, opts: OPT_EXP_FLAG, maxi, epsilon,
+  return stressMajorizationKDMkernel(Dij, n, dCoords, nodeList, {
+    dim: DFLT_DIM, opts, maxi, epsilon,
   });
+}
+
+/** Run stress majorization and write positions back. @see lib/neatogen/neatoinit.c:majorization */
+export function runMajorization(g: Graph, mode: number, model: number): void {
+  const nodeList = assignNodeIds(g);
+  const n = nodeList.length;
+  const haveLen = graphHasLen(g);
+  // C: srand48(seed) immediately before initLayout draws; hier starts from self
+  const init = checkStart(g, n, mode === MODE_HIER ? INIT_SELF : INIT_RANDOM);
+  const opts = init === INIT_SELF ? OPT_EXP_FLAG | STRESS_OPT_SMART_INIT : OPT_EXP_FLAG;
+  const haveDir = mode === MODE_HIER || mode === MODE_IPSEP;
+  const vtx = makeGraphDataC(g, nodeList, haveLen, haveDir, mode);
+  const dCoords = [new Float64Array(n), new Float64Array(n)];
+  if (solveStress({ g, mode, model, haveLen, opts }, vtx, dCoords, nodeList) < 0) {
+    agerr('prev', 'layout aborted');
+    return;
+  }
   for (let i = 0; i < n; i++) {
     nodeList[i]!.info.pos = [dCoords[0]![i]!, dCoords[1]![i]!];
   }
 }
 
-/** Any edge carries a len attr (C: agattr_text(g, AGEDGE, "len")). */
-export function graphHasLen(g: Graph): boolean {
-  for (const e of g.edges) {
-    if (e.attrs.has('len')) return true;
-  }
-  return false;
-}
-
-/**
- * C makeGraphData's vtx_data: per node out-edges then in-edges (agfstedge order), self at
- * index 0, duplicate neighbours merged (len keeps the max). ewgts: lens (default 1.0) if any
- * len attr, else 1.0 under haveDir (hier/ipsep), else absent (C NULL). eweights (haveWt)
- * and edists are not built: nothing on a supported path reads them.
- * @see lib/neatogen/neatoinit.c:makeGraphData
- * @see lib/neatogen/stuff.c:setEdgeLen
- */
-export function makeGraphDataC(
-  g: Graph, nodeList: Node[], haveLen: boolean, haveDir: boolean,
-): VtxData[] {
-  const vtx: VtxData[] = nodeList.map((_, i) => ({
-    nedges: 1, edges: [i], ewgts: haveLen || haveDir ? [0] : [],
-  }));
-  for (const np of nodeList) {
-    const i = np.info.id!;
-    const entry = vtx[i]!;
-    const seen = new Map<number, number>();
-    for (const ep of [...np.outEdges(g), ...np.inEdges(g)]) {
-      if (ep.head === ep.tail) continue;
-      const vp = ep.tail === np ? ep.head : ep.tail;
-      const vid = vp.info.id!;
-      const dist = haveLen ? lateDouble(ep.attrs.get('len'), 1.0, 0) : 1.0;
-      const idx = seen.get(vid);
-      if (idx !== undefined) {
-        if (haveLen) entry.ewgts[idx] = Math.max(entry.ewgts[idx]!, dist);
-        continue;
-      }
-      seen.set(vid, entry.nedges);
-      entry.edges.push(vid);
-      if (haveLen || haveDir) entry.ewgts.push(dist); // C neatoinit.c:827: haveDir 1.0
-      entry.nedges++;
-    }
-  }
-  return vtx;
-}
-
-/**
- * Dispatch to the appropriate layout solver for the given mode.
- *
- * @see lib/neatogen/neatoinit.c:neatoLayout
- */
+/** Dispatch to the layout solver for the mode. @see lib/neatogen/neatoinit.c:neatoLayout */
 export function solveModel(g: Graph, mode: number, model: number): void {
   if (g.nodes.size < 2) return;
   assertSupported(g, mode, model);
@@ -411,11 +415,7 @@ export function solveModel(g: Graph, mode: number, model: number): void {
 // neatoTranslate helpers
 // ---------------------------------------------------------------------------
 
-/**
- * Find minimum X and Y across all node positions.
- *
- * @see lib/neatogen/neatoinit.c (translate logic)
- */
+/** Minimum X and Y across all node positions. @see lib/neatogen/neatoinit.c (translate logic) */
 export function findMinPos(g: Graph): { minX: number; minY: number } {
   let minX = Infinity;
   let minY = Infinity;

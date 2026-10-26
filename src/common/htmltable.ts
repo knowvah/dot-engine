@@ -20,11 +20,13 @@ export type { TextMeasurer } from './textmeasure.js';
 
 import type {
   HtmlCell, HtmlCellContent, HtmlImage, HtmlLabel, HtmlTable, HtmlText,
-  HtmlTextItem, ImageSizer,
+  ImageSizer,
 } from './htmltable-types.js';
-import { findImageSize } from '../gvc/usershape.js';
+import { findImageSize, imageIsSupplied, imageOpenWarning } from '../gvc/usershape.js';
+import { registerRenderState } from './render-state.js';
 import { PointSet } from './pointset.js';
 import type { TextMeasurer } from './textmeasure.js';
+import { buildLineRuns, runsAreSimple } from './htmltable-pos-runs.js';
 import { withTableFont } from './htmltable-fontinfo.js';
 import { agerrLine, type StderrLines } from './htmltable-attr-warn.js';
 
@@ -90,108 +92,6 @@ export interface HtmlSizeEnv {
 
 const defaultSizeEnv = (): HtmlSizeEnv => ({ fontsize: DEFAULT_FONTSIZE, fontname: '' });
 
-/** One measured text line (a C "span"). @see size_html_txt */
-interface SizedLine {
-  items: HtmlTextItem[];
-  width: number;
-  /** Max metric line height over items (C mxysize). */
-  mxysize: number;
-  /** Max raw font size over items (C mxfsize). */
-  mxfsize: number;
-}
-
-const itemFont = (item: HtmlTextItem, env: HtmlSizeEnv): { fs: number; face: string } => ({
-  fs: item.fontSize !== undefined ? item.fontSize : env.fontsize,
-  face: item.fontFace !== undefined ? item.fontFace : env.fontname,
-});
-
-const measureItem = (
-  item: HtmlTextItem,
-  measurer: TextMeasurer,
-  env: HtmlSizeEnv,
-): { w: number; h: number } => {
-  const { fs, face } = itemFont(item, env);
-  // Variant widths per run flags. @see lib/common/htmltable.c:size_html_txt
-  const flags = (item.bold === true || item.italic === true)
-    ? { bold: item.bold === true, italic: item.italic === true }
-    : undefined;
-  return measurer.measure(item.text ?? '', face, fs, flags);
-};
-
-/**
- * Split items into measured lines at <BR/>, mirroring C's parser exactly
- * (htmlparse.y appendFLineList/mkText): a BR with no accumulated items yields
- * a line with one empty-string item in the current font (consecutive BRs = a
- * real blank line with height); at end of text a line is added ONLY if items
- * remain — a trailing BR does NOT create a phantom empty line. Must stay in
- * lockstep with buildLineRuns (htmltable-pos-runs.ts), the placement twin.
- * @see lib/common/htmlparse.y:appendFLineList / mkText
- * @see lib/common/htmltable.c:size_html_txt
- */
-const splitSizedLines = (
-  texts: HtmlText[],
-  measurer: TextMeasurer,
-  env: HtmlSizeEnv,
-): SizedLine[] => {
-  const lines: SizedLine[] = [];
-  let cur: SizedLine = { items: [], width: 0, mxysize: 0, mxfsize: 0 };
-  const accumulate = (item: HtmlTextItem): void => {
-    const sz = measureItem(item, measurer, env);
-    cur.items.push(item);
-    cur.width += sz.w;
-    cur.mxysize = Math.max(cur.mxysize, sz.h);
-    cur.mxfsize = Math.max(cur.mxfsize, itemFont(item, env).fs);
-  };
-  const flush = (br?: HtmlTextItem): void => {
-    if (cur.items.length === 0 && br !== undefined) {
-      // C: empty fitemList on a BR → one ""-item span in the current font.
-      const { br: _b, brAlign: _a, ...fontProps } = br;
-      accumulate({ text: '', ...fontProps });
-    }
-    lines.push(cur);
-    cur = { items: [], width: 0, mxysize: 0, mxfsize: 0 };
-  };
-  for (const txt of texts) {
-    for (const item of txt.items) {
-      if (item.br) { flush(item); continue; }
-      if (item.text === undefined) continue;
-      accumulate(item);
-    }
-    if (cur.items.length > 0) flush(); // C mkText: only when items remain
-  }
-  return lines;
-};
-
-/** Does an item carry any font flag (C textfont_t.flags)? */
-const itemHasFlags = (i: HtmlTextItem): boolean =>
-  i.bold === true || i.italic === true || i.underline === true ||
-  i.strikethrough === true || i.overline === true ||
-  i.subscript === true || i.superscript === true;
-
-/**
- * C's "simple" test: one item per line, no font flags, uniform
- * resolved face and size across all lines.
- * @see lib/common/htmltable.c:size_html_txt (lines 946-986)
- */
-export const htmlTextIsSimple = (texts: HtmlText[], env: HtmlSizeEnv): boolean => {
-  let prevFs = -1;
-  let prevFace: string | null = null;
-  let count = 0;
-  for (const txt of texts) {
-    for (const item of txt.items) {
-      if (item.br) { count = 0; continue; }
-      if (item.text === undefined) continue;
-      if (++count > 1 || itemHasFlags(item)) return false;
-      const { fs, face } = itemFont(item, env);
-      if (prevFs < 0) prevFs = fs;
-      else if (fs !== prevFs) return false;
-      if (prevFace === null) prevFace = face;
-      else if (face !== prevFace) return false;
-    }
-  }
-  return true;
-};
-
 /**
  * Size a text block. C: per line lsize = mxysize when simple, else the
  * raw max font size (mxfsize); a single-line block always uses mxysize.
@@ -202,16 +102,17 @@ const sizeTextContent = (
   measurer: TextMeasurer,
   env: HtmlSizeEnv = defaultSizeEnv(),
 ): { w: number; h: number } => {
-  const lines = splitSizedLines(texts, measurer, env);
-  const simple = htmlTextIsSimple(texts, env);
+  // The one line builder, shared with placement (htmltable-pos-runs.ts).
+  const lines = buildLineRuns(texts, env, measurer);
+  const simple = runsAreSimple(lines, env);
   let w = 0;
   let h = 0;
   for (const ln of lines) {
     w = Math.max(w, ln.width);
-    const lsize = simple ? ln.mxysize : ln.mxfsize;
+    const lsize = simple ? ln.height : ln.fontSize;
     h += ln.items.length > 0 ? lsize : DEFAULT_FONTSIZE;
   }
-  if (lines.length === 1) h = lines[0]!.items.length > 0 ? lines[0]!.mxysize : DEFAULT_FONTSIZE;
+  if (lines.length === 1) h = lines[0]!.items.length > 0 ? lines[0]!.height : DEFAULT_FONTSIZE;
   return { w, h };
 };
 
@@ -229,25 +130,28 @@ const sizeTextContent = (
  * @see lib/common/htmltable.c:size_html_img (line 1080)
  */
 /** Images whose sizing failed: size_html_img's rv = 1 on every later call. */
-const missingImages = new WeakSet<HtmlImage>();
+const missingImages = { set: new WeakSet<HtmlImage>() };
 
 const sizeHtmlImg = (img: HtmlImage, { imageSizer, stderr }: HtmlSizeEnv): number => {
   // C sizes each image once (processTbl); the port's size and pos passes
   // share layoutHtmlTable, so guard against re-sizing (and re-warning). The
   // returned rv still follows C on every call.
-  if (img.width !== undefined && img.height !== undefined) return missingImages.has(img) ? 1 : 0;
+  if (img.width !== undefined && img.height !== undefined) return missingImages.set.has(img) ? 1 : 0;
   const sz = imageSizer !== undefined ? imageSizer(img.src) : findImageSize(img.src);
   if (sz !== null) {
     img.width = sz.w; img.height = sz.h;
     return 0;
   }
-  // Missing-image: zero size + warning.
+  // Missing-image: gvusershape_open's warning (unless bytes are supplied),
+  // then zero size + the Error.
+  // @see lib/gvc/gvusershape.c:gvusershape_file_access
+  if (!imageIsSupplied(img.src, imageSizer)) agerrLine(stderr, `Warning: ${imageOpenWarning(img.src)}`);
   // C: agerrorf("No or improper image file=\"%s\"\n", img->src) — agerr
   // prefixes "Error: " on stderr.
   agerrLine(stderr, `Error: No or improper image file="${img.src}"`);
   img.width = 0;
   img.height = 0;
-  missingImages.add(img);
+  missingImages.set.add(img);
   return 1;
 };
 
@@ -318,7 +222,14 @@ const WARN_TABLE_UNSPECIFIED = 'Warning: fixed table size with unspecified width
  * C sizes each cell/table exactly once; the port's size and pos passes both
  * run layoutHtmlTable, so the size warnings are emitted on first sight only.
  */
-const sizeWarned = new WeakSet<object>();
+const sizeWarned = { set: new WeakSet<object>() };
+
+// Native re-parses per run, so each render starts with both sets empty (AD-7);
+// a WeakSet cannot be cleared, so the holder's field is swapped.
+registerRenderState(() => {
+  missingImages.set = new WeakSet<HtmlImage>();
+  sizeWarned.set = new WeakSet<object>();
+});
 
 /**
  * FIXED_FLAG branch of size_html_cell: C's rv (set at the warning sites; the
@@ -358,8 +269,8 @@ const getCellSize = (
   // @see lib/common/htmltable.c:size_html_cell (FIXED_FLAG branch + box.UR MAX)
   let szx = cw + margin;
   let szy = ch + margin;
-  const warn = !sizeWarned.has(cell);
-  sizeWarned.add(cell);
+  const warn = !sizeWarned.set.has(cell);
+  sizeWarned.set.add(cell);
   const fixed = fixedCellCheck(cell, { w: szx, h: szy }, warn, env.stderr);
   rv |= fixed.rv;
   if (fixed.zero) { szx = 0; szy = 0; }
@@ -505,8 +416,8 @@ export const layoutHtmlTable = (
  * @see lib/common/htmltable.c:size_html_tbl (:1683, :1689)
  */
 const warnFixedTable = (tbl: HtmlTable, dims: { wd: number; ht: number }, out: StderrLines | undefined): number => {
-  const warn = !sizeWarned.has(tbl);
-  sizeWarned.add(tbl);
+  const warn = !sizeWarned.set.has(tbl);
+  sizeWarned.set.add(tbl);
   if (tbl.fixedsize !== true) return 0;
   if (tbl.width && tbl.height) {
     if (tbl.width >= dims.wd && tbl.height >= dims.ht) return 0;

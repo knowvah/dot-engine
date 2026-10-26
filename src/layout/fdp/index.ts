@@ -27,6 +27,7 @@ import { fdpLayout, mkClusters } from './layout.js';
 import { gdata } from './fdp-model.js';
 import { graphInit } from '../../common/graph-init.js';
 import { csrand } from '../../common/crand.js';
+import { agerrLineOn } from '../../common/agerr.js';
 
 export { fdpLayout, mkClusters, evalPositions, setBB } from './layout.js';
 export { fdpTLayout } from './tlayout.js';
@@ -93,7 +94,7 @@ function fdpSplines(g: Graph): void {
       );
     }
     if (g.info.n_cluster_edges) { // HAS_CLUST_EDGE(g)
-      console.warn(CLUSTER_EDGE_WARNING);
+      agerrLineOn('warn', CLUSTER_EDGE_WARNING);
       et = EDGETYPE_LINE;
     } else {
       splineEdges1(g, et);

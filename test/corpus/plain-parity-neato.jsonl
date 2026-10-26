@@ -347,7 +347,6 @@
 {"id":"tree-graphs-directed-nhg","path":"../graphs/directed/nhg.gv","size":339,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"2168_2","path":"2168_2.dot","size":349,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"700813","path":"700813.dot","size":351,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
-{"id":"tree-doc-neato-inet","path":"../doc/neato/inet.dot","size":349,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"graphs-ZapfDingbats","path":"graphs/ZapfDingbats.gv","size":360,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"graphs-colors","path":"graphs/colors.gv","size":376,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"graphs-mike","path":"graphs/mike.gv","size":381,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
@@ -659,7 +658,6 @@
 {"id":"linux.i386-hashtable","path":"linux.i386/hashtable.gv","size":1756,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"windows-hashtable","path":"windows/hashtable.gv","size":1756,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"graphs-viewfile","path":"graphs/viewfile.gv","size":1767,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
-{"id":"tree-graphs-undirected-ngk10_4","path":"../graphs/undirected/ngk10_4.gv","size":1754,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"share-Petersen","path":"share/Petersen.gv","size":1768,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"tree-graphs-directed-viewfile","path":"../graphs/directed/viewfile.gv","size":1767,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
 {"id":"windows-Petersen","path":"windows/Petersen.gv","size":1768,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
@@ -926,3 +924,5 @@
 {"id":"2371","path":"2371.dot","size":1705517,"verdict":"oracleError","formats":{"plain":{"verdict":"oracleError","errMsg":"oracle exit null"},"plain-ext":{"verdict":"oracleError","errMsg":"oracle exit null"}}}
 {"id":"2646","path":"2646.dot","size":2975897,"verdict":"oracleError","formats":{"plain":{"verdict":"oracleError","errMsg":"oracle exit null"},"plain-ext":{"verdict":"oracleError","errMsg":"oracle exit null"}}}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"tree-doc-neato-inet","path":"../doc/neato/inet.dot","size":349,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}
+{"id":"tree-graphs-undirected-ngk10_4","path":"../graphs/undirected/ngk10_4.gv","size":1754,"verdict":"pass","formats":{"plain":{"verdict":"pass"},"plain-ext":{"verdict":"pass"}}}

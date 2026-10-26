@@ -29,6 +29,7 @@ import type { RatioKind } from '../model/layoutParams.js';
 import { doGraphLabel } from '../layout/dot/graph-label.js';
 import { mapbool, setClType, LOCAL, GLOBAL, NOCLUST } from '../layout/dot/rank.js';
 import { cround } from './arith.js';
+import { agwarningf } from './agerr.js';
 
 // ---------------------------------------------------------------------------
 // Constants — @see lib/common/const.h
@@ -88,7 +89,7 @@ export function findCharset(g: Graph): number {
   }
   if (p === 'big-5' || p === 'big5') return CHAR_BIG5;
   if (p === 'utf-8' || p === 'utf8') return CHAR_UTF8;
-  console.error(`Warning: Unsupported charset "${raw}" - assuming utf-8`);
+  agwarningf(`Unsupported charset "${raw}" - assuming utf-8`);
   return CHAR_UTF8;
 }
 

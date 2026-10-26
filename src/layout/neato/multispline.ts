@@ -25,6 +25,7 @@ import { clipAndInstall } from '../../common/splines-clip.js';
 import { makeStraightEdges, addEdgeLabels } from '../dot/straight-edges.js';
 import type { Router, Ipair } from './multispline-router.js';
 import { addEndpoint, edgeToSeg, triPath } from './multispline-router.js';
+import { agwarningf } from '../../common/agerr.js';
 
 export type { Router } from './multispline-router.js';
 export { mkRouter } from './multispline-router.js';
@@ -339,8 +340,8 @@ function chainOf(e: Edge): Edge[] {
  * @see multispline.c:genroute
  */
 function warnNoControlPoints(e: Edge): number {
-  console.warn(
-    `Warning: Could not create control points for multiple spline for edge (${e.tail.name},${e.head.name})`,
+  agwarningf(
+    `Could not create control points for multiple spline for edge (${e.tail.name},${e.head.name})`,
   );
   return 1;
 }

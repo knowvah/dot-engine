@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -200,10 +200,11 @@ PRISM 풀이에서 나온 명목상 같은 세 x 값의 마지막 ULP 순서에 
 
 첫 조사 때와 달리 929개 항목 전체의 어긋난 행은 모두 graphviz 16.1.0 기준으로 개별
 귀속되었습니다. 주입 도구(`test/corpus/attribute-divergence.ts`)가 네이티브 오라클의
-라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 세 건을 제외하고
+라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 두 건을 제외하고
 `drift-exonerated`(솔버 드리프트를 제거하면 포팅의 라우팅과 출력이 오라클을 정확히
-재현함)입니다. 세 건은 별도로 수용된 id별 잔여분으로, fdp와 sfdp에서 `241_0`의 CDT
-내접원 동점과 sfdp `2556`의 NaN 레이아웃입니다. fdp `2471`과 sfdp `2371`은 이전에는 주입 후에도 엣지 레이블 위치(`lp`)가 달라져, xlabel 배치기가 다른 후보를 골랐습니다. `2471`은 포팅의 `dotneato_closest`가 clang의 융합된 de Casteljau 계산 및 DIST2와 같은 방식으로 반올림하게 되자 해소되었습니다. 그전에는 엣지 레이블 앵커가 1~2 ULP 달라져 배치기의 엄격한 포함 검사가 뒤집혔습니다. `2371`은 포팅의 R-트리가 C처럼 사각형을 값으로 복사하게 되자 해소되었습니다. `2471`의 네이티브 fdp 레이아웃은 실행마다 달라지므로 해당 행은 한 번의 실행을 기록한 것입니다. (sfdp `42`는
+재현함)입니다. 두 건은 별도로 수용된 id별 잔여분으로, sfdp `241_0`의 호스트 libm `pow`
+드리프트(T28이 재진단)와 sfdp `2556`의 NaN 레이아웃입니다. fdp `241_0`은
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` 이후 통과합니다(A9의 fdp 문단 참고). fdp `2471`과 sfdp `2371`은 이전에는 주입 후에도 엣지 레이블 위치(`lp`)가 달라져, xlabel 배치기가 다른 후보를 골랐습니다. `2471`은 포팅의 `dotneato_closest`가 clang의 융합된 de Casteljau 계산 및 DIST2와 같은 방식으로 반올림하게 되자 해소되었습니다. 그전에는 엣지 레이블 앵커가 1~2 ULP 달라져 배치기의 엄격한 포함 검사가 뒤집혔습니다. `2371`은 포팅의 R-트리가 C처럼 사각형을 값으로 복사하게 되자 해소되었습니다. `2471`의 네이티브 fdp 레이아웃은 실행마다 달라지므로 해당 행은 한 번의 실행을 기록한 것입니다. (sfdp `42`는
 A1 드리프트이며 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md) 참고.) 아래 클래스 수용은 면책된 집합을 공식화하며, 최신 집계는
 엔진별 대시보드
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -778,12 +779,13 @@ point not in any triangle') `makeMultiSpline`은 병합된 모든 2-사이클에
 mirror fma contraction in multispline routing geometry`)이 이를 반영했습니다. 이 클래스가 아래의
 동원 동점으로 귀속했던 twopi와 neato의 `241_0`은 **conformant**가 되었고(수용 퇴출), sfdp `42`에는
 동점이 전혀 없었음이 밝혀졌습니다(A1 드리프트입니다. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)
-참고). circo, fdp, sfdp의 `241_0`은 여전히 어긋나며 잔여분은 그대로이거나 줄었습니다. 이들을 아래
-동점으로 귀속한 것은 `f66ac638`보다 앞서며, 그 수정이 twopi/neato에서 같은 귀속이 틀렸음을 보여
-준 뒤로 **위치 주입으로 다시 검증하지 않았습니다**.
+참고). fdp의 `241_0`은 이후 삼각분할에 대한 포팅 측의 두 번째 수정(에지 교환 뒤 면의 꼭짓점 순서; 아래 fdp 문단 참고)으로 **conformant**가 되었습니다. circo의 `241_0`은 `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`으로 **conformant**가 되었습니다(수용 퇴출). V8의
+`Math.sin(9π/8)`이 올바르게 반올림된 libm 값에서 1 ULP 벗어나 있어 모든 타원 장애물의
+한 모서리를 옮기고 통로를 뒤집었습니다. sfdp의 `241_0`은 같은 작업에서 재진단되어
+이제 A1입니다(아래 sfdp 문단 참고).
 
-**영향받는 대상:** `241_0`(에지 `1->2`의 통로 뒤바뀜으로 circo Δ≈0.2, fdp와 sfdp의 `241_0`은
-아래 엔진 트랙), `2343`, `2239`, `share-b29`, `windows-b29`(twopi, 각각 에지 레이블 위치 차이 1–2건 —
+**영향받는 대상:** `2343`, `2239`, `share-b29`, `windows-b29`(twopi, 각각 에지 레이블 위치 차이 1–2건 —
 libm 1-ULP는 `poly_init`의 단위 꼭짓점 삼각함수(`hypot`/`atan2`/`sin`)에서 생겨 한 노드의
 계산된 높이를 오라클이 정확히 걸리는 최소 크기 클램프보다 1 ULP 넘기고, xlabel R-트리
 적재의 `floor()`를 통해 연쇄되어 레이블 후보 하나를 뒤집습니다. 정확히 반올림되는
@@ -816,7 +818,8 @@ hypot 수정을 시도했으나 반증되었습니다. `2343`은 고쳤지만 `2
 2026-07-11에 `polylineMidpoint`의 충실한 fmadd 융합으로 *수정되었습니다* — 아래 b29 계열
 문단 참고)와 circo `241_0`(그리기 연산 차이 41건, 에지 `1->2`의 라우팅된 베지어에서
 Δ≈0.2pt — 같은 CDT 대각선 통로 뒤바뀜. 결정 저널 2026-07-10 'CDT rewritten as faithful
-GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9 filed' 항목). 엔진 트랙
+GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9 filed' 항목, **2026-10-23 퇴출** — 포팅이 장애물 8각형에 호스트 libm의
+`cos`/`sin`을 쓰게 되어 conformant, 위의 16.1 재기준선 참고). 엔진 트랙
 수준에서 `test/corpus/accepted-divergences-engines.json`을 통해 수용되며,
 `parity-report.ts`가 이를 `PARITY-twopi.md`/`PARITY-circo.md`에 결합합니다 —
 `accepted.ts`가 dot 트랙의 `PARITY-dot.md`에 대해 수행하는 것과 같은 결합입니다.
@@ -913,20 +916,19 @@ C의 노드 크기와 포팅의 노드 크기를 각각 주면 조사에서 이�
 동점에서 TOP/BOTTOM을 뒤집습니다. 노드 위치와 박스는 그 외에는 오라클과 비트 단위로
 동일합니다. **2026-10-18 폐기** — 포팅의 DIST2가 clang의 융합 형태를 사용해 이 정확한 동점을 C와 같이 결정하므로 일치합니다).
 
-**sfdp 엔진 트랙 — 에지 FP 동점(`241_0`).**
+**sfdp 엔진 트랙 — `241_0`(A9 → A1로 재분류, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> sfdp xdot 엔진 트랙(`parity-sfdp.json`,
-네이티브 `dot -Ksfdp -Txdot`, ±0.5)은 정확한 네이티브의 라우팅 이전 위치를 주입하면
-CDT 동원 내접원 동점을 드러냅니다(따라서 차이는 반복형 드리프트 — A1-drift 클래스 참고 —
-가 아니라 이산 판정식의 동점입니다).
+네이티브 `dot -Ksfdp -Txdot`, ±0.5)은 여기에 `241_0`을 CDT 동원 내접원 동점으로
+나열했습니다. `fix(T28)`이 계측한 네이티브 sfdp로 이를 재진단했습니다.
 
-- `241_0` — CDT 동원 내접원 동점으로 귀속(멀티스플라인 통로, `f66ac638` 이후 재검증하지 않음,
-  위의 16.1 재기준선 참고). 잔여분은 **세그먼트 개수 뒤바뀜**입니다. 에지 1->2에서 그리기 연산
-  차이 7건, `ptCount 8 vs 20`(`f66ac638` 이전에는 차이 20건) — 네이티브 빌드가 더 짧은 일반
-  경로로 되돌아가는 곳에서 통로는 N점 스플라인으로 성공합니다(또는 그 반대). 위의 circo
-  `241_0` 항목과 같습니다. 포팅은 이미 내접원/`ccw` 판정식에서
-  arm64 `fmadd` 융합을 에뮬레이션하고(`src/pathplan/triang.ts`, `src/common/fma.ts`)
-  견고한 내접원 들로네를 사용합니다. 남은 것은 판정식 입력에 있는 V8 대 Apple libm
-  `sin`/`hypot`의 1-ULP이며, 어떤 이식 가능한 코드도 이를 재현하지 못합니다.
+- `241_0` — 에지 1->2에서 그리기 연산 차이 7건, `ptCount 8 vs 20`. 레이아웃은 macOS
+  libm의 `pow(dist, 2)`가 올바른 반올림보다 1 ULP 작은 값을 반환하는 첫 번째 척력 항
+  (가장 거친 수준, 반복 22; 레이아웃 충실도 격차 아래의 호스트 libm `pow` 항목 참고)에서
+  어긋나기 시작하고, 적응형 냉각이 이를 칼날 위의 위치로 증폭해 에지 1->2가 다르게
+  라우팅됩니다. 네이티브 `pow` 값을 주입하면 모든 추적 줄과 최종 xdot이 일치합니다.
+  주입한 위치에서 보인 라우팅 잔여분은 일부는 주입 산물이었고 일부는 장애물 8각형의
+  V8 `Math.sin(9π/8)`이었으며, 포팅은 이제 이를 호스트 libm에서 가져옵니다(circo
+  `241_0`도 conformant로 만든 수정). 남은 것은 A1 드리프트입니다.
 
 > **sfdp `42`를 A9 → A1-drift로 재분류(graphviz 16.1 동기화).** 이전에는 여기에 CDT/libm
 > 내접원 동점으로 나열되어 있었습니다. 미션은 다른 사실을 확인했습니다
@@ -952,25 +954,30 @@ CDT 동원 내접원 동점을 드러냅니다(따라서 차이는 반복형 드
 대표적인 flat 에지 편차 입력에서 Node `Math.hypot`과 비교하면 6건 중 2건에서 1-ULP 불일치가
 나타납니다(Δ 7.1e-15와 5.7e-14) — 세분 개수를 뒤집는 분할 임계값의 칼날입니다.
 환원 불가능합니다. 어떤 이식 가능한 hypot도 Apple libm을 재현하지 못합니다(같은 경계에 대한
-`arm-pow.ts` 선례). `sfdp.241_0`은 엔진 트랙 수준에서
-`accepted-divergences-engines.json`을 통해 수용됩니다. `sfdp.42`는 이 클래스에 **속하지
+`arm-pow.ts` 선례). `sfdp.241_0`은 한때 이 클래스로 수용되었으나
+T28 이후 A1 드리프트입니다(위 참고). `sfdp.42`는 이 클래스에 **속하지
 않습니다**. 그 레지스트리 항목은 A1(`comparisons/sfdp-42.md`)이며, 위 탐침은 이를 설명하지
 못했습니다.
 
 **fdp** xdot 엔진 트랙(`parity-fdp.json`, 네이티브 `dot -Kfdp -Txdot`,
-±0.5)도 같은 그래프 `241_0`에서 같은 CDT 동원 동점을 드러냅니다. 오라클의 정확한 라우팅
-이전 위치를 주입하면 잔여분은 한 에지(`0->1#0`, maxΔ 3.39pt)에 국한된 숫자
-`unfilled_bezier` 차이 11건입니다. 노드 위치가 동일하게 주입되었으므로 차이는 하류의
-pathplan 멀티스플라인 통로에 있으며 — circo/sfdp `241_0`과 같은 libm 1-ULP 내접원
-동점입니다(위의 정확한 유리수 내접원 185/185, 11건의 차이는 `f66ac638`으로 바뀌지 않음 — 주입으로
-재검증하지 않음). 수단은 이미 적용되어 있으며
-(`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198` `Math.hypot`), 동점은 환원
-불가능한 것으로 봅니다. `accepted-divergences-engines.json`의 `fdp.241_0`으로 수용됩니다. 반면 fdp의
+±0.5)은 이전에는 같은 그래프 `241_0`을 이 클래스로 보여 주었습니다. 오라클의 정확한 라우팅
+이전 위치를 주입해도 한 에지(`0->1#0`, maxΔ 3.39pt)에 숫자
+`unfilled_bezier` 차이 11건이 남았고, 이는 동원 내접원 동점으로 귀속되었습니다.
+그 귀속은 틀렸습니다. `fix(T9): start swapped cdt faces at the new diagonal as gts does`
+(2026-10-22)가 포팅 측의 잘못된 이식을 찾았습니다. GTS의 `swap_if_in_circle`은 두 새 면을
+`gts_face_new(en, e5, e2)`와 `gts_face_new(en, e3, e4)`로 만들고(`cdt.c:509-511`),
+`gts_triangle_vertices`는 면을 그 에지 순서에서 읽으므로 네이티브는 이를
+(v3, v4, v2)와 (v4, v3, v1)로 나열합니다. 포팅은 둘 다 한 칸씩 회전해 저장했고,
+멀티스플라인 라우터의 `triCenter`는 그 순서로 꼭짓점을 합산했습니다. 순서를 고치자
+fdp `241_0`은 모든 트랙에서 네이티브와 일치하며(xdot 통과, json conformant, plain과 stderr 동일),
+`accepted-divergences-engines.json`과 `accepted-divergences-json.json`의 항목은 퇴출되었습니다. 반면 fdp의
 `2095`는 **A9가 아니라 A1-drift**입니다. 이름이 빈 단일 노드를 주입하면(귀속 주입기가
 `""`라는 이름의 노드와 일치하도록 고쳐진 뒤) 잔여분이 0으로 수렴합니다 — 앞서의 'A9 꼬리'는
 주입되지 않은 빈 노드가 그에 닿은 에지를 끌고 가던 것이었습니다. sfdp `2095` 수용도 같은 맹점이었습니다 —
 고쳐진 주입기로 새로 생성한 sfdp 귀속 재생성(2026-07-22)이 역시 0으로 주입됨을 확인하여
 수용이 제거되었습니다(위의 `2095 reclassified` 메모 참고).
+
+**sfdp `2168_3` — `poly_init`의 Apple libm `sin` 1 ULP 차이(종결, 환원 불가).** **영향:** sfdp `2168_3`(stderr만: 포트가 `Pshortestpath` 경고를 하나 더 출력한다. 양쪽 모두 직선으로 폴백하므로 xdot 엔진 트랙 워크는 통과한다). **차이점:** `shapes.c:2329`는 `temp = GAP / sin(gamma)`를 계산한다(포트 `src/common/poly-sizing.ts:379`). gamma = 1.0092081171617377일 때 macOS libm은 0.8464104077694533, V8은 올바르게 반올림된 0.8464104077694532를 반환한다(1 ULP). 이 차이는 multispline 라우터(`neatosplines.c:428,444` → `multispline.c:598`)에 라우터 점 10/18, y 28.391789367446776 대 …78로 도달하고, 공원(cocircular) 사다리꼴(점 9, 10, 15, 16)이 다른 Delaunay 대각선으로 삼각분할되어 간선 1의 코리도 다각형이 달라지며 포트의 다각형에서 `Pshortestpath`가 실패한다. **수용 이유:** 해당 `sin` 값만 주입하는 통제 실험에서 stderr, 삼각형, 다각형, xdot이 네이티브와 동일해진다(`atan2`만으로는 그렇지 않다). sfdp 위치는 비트 단위로 같고, incircle 술어, pathplan, `makeObstacle`의 hypot, 윤곽 링 연산 순서는 배제되었다. 일치시키려면 소스가 공개되지 않은 Apple `sin`의 비트 단위 정확한 모델이 필요하며, 이식 가능한 코드로는 재현할 수 없다(`arm-pow.ts` 선례와 같은 경계). **근거:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), 2026-10-20 T13 행.
 
 ---
 
@@ -994,6 +1001,22 @@ xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니�
 `errIncludes: "Map maximum size exceeded"`를 선언합니다. 즉, 그 메시지를 담은 경우에만 포팅 오류를
 수용합니다. `2784`에서 다른 실패가 일어나면 수용되지 않은 결함으로 드러나고,
 `registry-staleness.test.ts`가 그 항목을 낡은 것으로 표시합니다. 증거: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. 퇴화 입력에서 GTS Delaunay 면의 순서 — 환원 불가 {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**영향받는 대상:** 입력이 퇴화된 경우(변 위의 점, 공원(共圓) 격자) GTS를 통해 삼각분할하는 레이아웃(`lib/neatogen/delaunay.c`; 16.1 오라클은 GTS 0.7.6을 링크한다).
+
+**무엇이 다른가.** 포트는 Delaunay 면의 번호와 각 면의 이웃(`neigh`) 순서를 생성 순서로 매긴다. 네이티브 GTS는 면을 `GHashTable` 순서로 번호 매긴다. `closest_face`가 포인터를 키로 하는 테이블을 순회하므로 면 ID와 이웃 순서는 힙 주소에 좌우되며 실행마다 달라진다. 따라서 면 순서에서 파생되는 모든 것은 특정 네이티브 실행과 다를 수 있다.
+
+**수용하는 이유.** 결정적인 목표는 존재하지 않는다. 퇴화된 입력 하나에 네이티브 바이너리를 60회 실행하자 ASLR을 끄고 `MallocNanoZone=0`으로 해도 22가지의 서로 다른 출력이 나왔다. 이 변동은 코드 아래에 있는 오라클의 속성이며 포트의 결함이 아니다. 면은 ID가 아니라 꼭짓점 집합으로 비교해야 한다. 근거: 3부의 GTS 메모(`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. 렉서 오류에 `<stdin>: ` 접두사가 붙지 않음 {#a12-no-stdin-prefix-on-lexer-errors}
+
+**영향받는 대상:** 렉서(`aagerror`)가 stderr로 보고하는 DOT 구문 오류.
+
+**무엇이 다른가.** 표준 입력을 읽는 네이티브 `dot` CLI는 `<stdin>: syntax error in line N …`을 출력한다. 포트는 같은 메시지를 `<stdin>: ` 접두사 없이 출력한다.
+
+**수용하는 이유.** `aagerror`(`lib/cgraph/scan.l:157`)는 `InputFile`이 설정된 경우에만 `InputFile: `을 덧붙인다. CLI는 표준 입력을 읽을 때 이를 `<stdin>`으로 설정하지만, 포트가 그대로 따르는 라이브러리 진입점 `agmemread`는 설정하지 않은 채 두므로 접두사를 출력하지 않는다. 포트에는 CLI가 없어 보고할 `InputFile`이 없다. stderr 프로브는 비교 시 이 접두사를 정규화한다.
 
 ---
 

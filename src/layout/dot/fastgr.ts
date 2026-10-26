@@ -167,7 +167,7 @@ export function copyVirtualEdgeInfo(e: Edge, orig: Edge): void {
  * @see lib/dotgen/fastgr.c:new_virtual_edge
  */
 export function newVirtualEdge(u: Node, v: Node, orig: Edge | null): Edge {
-  const e = new EdgeClass(u, v, '');
+  const e = new EdgeClass(u, v, '', true);
   e.info.edge_type = VIRTUAL;
   if (orig) {
     copyVirtualEdgeInfo(e, orig);
@@ -353,7 +353,7 @@ export function removeFromRank(g: Graph, n: Node): void {
  * @see lib/dotgen/fastgr.c:virtual_node
  */
 export function virtualNode(g: Graph): Node {
-  const n = new NodeClass(0, '', g.root);
+  const n = new NodeClass(0, '', g.root, true);
   n.info.node_type = VIRTUAL;
   // C: ND_lw(n) = ND_rw(n) = 1; ND_ht(n) = 1; ND_UF_size(n) = 1
   // @see lib/dotgen/fastgr.c:virtual_node

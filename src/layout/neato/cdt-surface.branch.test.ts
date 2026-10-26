@@ -172,7 +172,9 @@ describe('mkSurface — constraint insertion: already-realized edge', () => {
     const sf = mkSurface([0, 10, 10, 0], [0, 0, 10, 10], 4, [0, 2], 1);
     expect(sf).not.toBeNull();
     expect(sf!.nfaces).toBe(1);
-    expect(sf!.faces).toEqual([0, 2, 3]);
+    // native 16.1.0 mkSurface (GTS 0.7.6) emits (2, 3, 0): the face comes from
+    // swap_if_in_circle's gts_face_new(en, e3, e4), which starts at en.
+    expect(sf!.faces).toEqual([2, 3, 0]);
   });
 });
 

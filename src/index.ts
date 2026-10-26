@@ -22,6 +22,7 @@ import type { GvError, RenderResult } from './errors.js';
 import type { EngineName } from './gvc/context.js';
 import { render as deviceRender } from './gvc/device.js';
 import { createDefaultContext } from './gvc/default-context.js';
+import { resetRenderState } from './common/render-state.js';
 
 
 
@@ -90,6 +91,7 @@ function classifyError(err: unknown): GvError {
  */
 export function renderSvg(dotSource: string, engine: EngineName): string {
   checkRenderArgs(dotSource, engine);
+  resetRenderState(); // AD-4: one render = one native process
   const ctx = createDefaultContext();
   try {
     // parse() is inside the try so any non-ParseError throw (e.g. a raw
@@ -122,6 +124,7 @@ export function renderSvg(dotSource: string, engine: EngineName): string {
 export function tryRenderSvg(dotSource: string, engine: EngineName): RenderResult {
   checkRenderArgs(dotSource, engine);
   try {
+    // renderSvg calls resetRenderState first (AD-4).
     return { svg: renderSvg(dotSource, engine) };
   } catch (err: unknown) {
     if (isUsageError(err)) throw err;

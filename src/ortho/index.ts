@@ -20,6 +20,7 @@ import {
 } from "./sgraph.js";
 import { convertSPtoRoute, assignSegs, assignTracks, vtrack, htrack } from "./ortho-route.js";
 import { gvQsort } from "../util/bsd-qsort.js";
+import { agwarningf } from '../common/agerr.js';
 
 export type { OrthoGraph, OrthoEdge, OrthoNode, OrthoPoint, ClipAndInstallFn };
 export { SEED } from "./partition.js";
@@ -144,7 +145,7 @@ export function orthoEdges(
   clipAndInstall?: ClipAndInstallFn,
 ): number {
   if (useLbls) {
-    console.warn(
+    agwarningf(
       "Orthogonal edges do not currently handle edge labels. Try using xlabels.\n",
     );
     useLbls = false; // eslint-disable-line no-param-reassign

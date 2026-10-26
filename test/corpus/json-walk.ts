@@ -45,7 +45,7 @@
 // (they carry a non-conformant SVG verdict too), so no separate exclusion
 // list is needed here. Node-only dev/test infra.
 
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
   appendFileSync,
@@ -68,6 +68,7 @@ import {
   type FormatAcceptedRegistry,
 } from './accepted-class.js';
 import { excludedFor } from './engine-exclusions.js';
+import { classifyDivergence, ORACLE_NONDETERMINISTIC } from './oracle-nondeterminism.js';
 import { preventIdleSleep, startClock } from './keep-awake.js';
 import {
   oracleCacheRoot, preflightOrExit, readOracleFailure, recordOracleFailure,
@@ -139,7 +140,8 @@ export type JsonVerdict =
   | 'accepted'
   | 'port-error'
   | 'oracle-error'
-  | 'timeout';
+  | 'timeout'
+  | 'oracle-nondeterministic';
 
 export interface JsonWalkResult {
   id: string;
@@ -155,6 +157,8 @@ export interface JsonWalkResult {
   maxDelta?: number;
   /** Path where `maxDelta` occurs — the dashboard bucket key. */
   maxDeltaPath?: string;
+  /** `oracle-nondeterministic` rows: distinct oracle outputs seen (>= 2). */
+  nDraws?: number;
   errMsg?: string;
 }
 
@@ -273,6 +277,16 @@ async function oracleJson(
   return { json: r.stdout, ms };
 }
 
+/** One UNCACHED oracle json render (the nondeterminism probe's extra draws);
+ * `undefined` on failure or incomplete output. */
+function drawOracleJson(absInput: string, engine: string): string | undefined {
+  const r = spawnSync(DOT_BIN, ['-K', engine, '-Tjson', absInput], {
+    env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: ORACLE_TIMEOUT_MS,
+    maxBuffer: 512 * 1024 * 1024,
+  });
+  return r.stdout.trimEnd().endsWith('}') ? r.stdout : undefined;
+}
+
 /** Render an input to json with the port in a budget-killed subprocess. */
 async function portJson(
   absInput: string,
@@ -344,6 +358,17 @@ async function walkOne(
   const tolerance = ['neato', 'fdp', 'sfdp'].includes(engine) ? 0.5 : 0.01;
   const { pass, diffs } = compareJson(port.json, oracle.json, tolerance);
   if (pass) return { result: { ...meta, verdict: 'conformant' }, diffs: [] };
+  // A divergence against a nondeterministic oracle says nothing about the port
+  // (AD-13): re-draw the oracle uncached before believing it.
+  const probe = classifyDivergence(
+    { engine, format: 'json', id: item.id }, oracle.json, () => drawOracleJson(absInput, engine),
+  );
+  if (probe.nondeterministic) {
+    return {
+      result: { ...meta, verdict: ORACLE_NONDETERMINISTIC, nDraws: probe.nDraws, ...summarize(diffs) },
+      diffs,
+    };
+  }
   const verdict: JsonVerdict = accepted.diverged.has(item.id) ? 'accepted' : 'diverged';
   return {
     result: { ...meta, verdict, ...summarize(diffs) },
@@ -521,6 +546,7 @@ async function runSurvey(
 
   const counts: Record<JsonVerdict, number> = {
     conformant: 0, diverged: 0, accepted: 0, 'port-error': 0, 'oracle-error': 0, timeout: 0,
+    [ORACLE_NONDETERMINISTIC]: 0,
   };
   for (const r of results) counts[r.verdict]++;
   const report = {

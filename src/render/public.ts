@@ -14,6 +14,7 @@ import type { Graph } from '../model/graph.js';
 import { createDefaultContext } from '../gvc/default-context.js';
 import { render as deviceRender } from '../gvc/device.js';
 import { invalidArgType, rethrowAtBoundary } from '../errors.js';
+import { resetRenderState } from '../common/render-state.js';
 import type { EngineName } from '../gvc/context.js';
 
 // ---------------------------------------------------------------------------
@@ -118,6 +119,7 @@ export function render(
   opts?: RenderOptions,
 ): string {
   checkRenderArgs(g, format, opts);
+  resetRenderState(); // AD-4: one render = one native process
   const engine: EngineName = opts?.engine ?? 'dot';
   const inlineImages = opts?.inlineImages ?? false;
   const ctx = createDefaultContext();

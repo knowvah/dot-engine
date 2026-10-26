@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -215,8 +215,10 @@ Na rozdiel od prvého prieskumu je každý odchýlený riadok univerza 929 polo�
 priradený voči graphviz 16.1.0: injekčný nástroj (`test/corpus/attribute-divergence.ts`) vkladá
 `ND_pos` z natívneho orákula pred vedením hrán do portu a znovu porovnáva, a každé súčasné odchýlené
 id je `drift-exonerated` (vedenie a emisia portu reprodukujú orákulum presne, keď sa drift solvera
-odstráni), okrem troch. Tri sú samostatne akceptované zvyšky po jednotlivých id: väzba incircle v
-CDT pri `241_0` na fdp a sfdp a NaN rozloženie sfdp `2556`. fdp `2471` a sfdp `2371` si
+odstráni), okrem dvoch. Dva sú samostatne akceptované zvyšky po jednotlivých id: drift `pow` z libm hostiteľa pri
+sfdp `241_0` (znovu diagnostikovaný v T28) a NaN rozloženie sfdp `2556`. fdp `241_0` prechádza od
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (pozri odsek
+o fdp v A9). fdp `2471` a sfdp `2371` si
 predtým po injekcii zachovávali odlišné pozície popisiek hrán (`lp`), t. j. umiestňovač
 xlabel vyberal iného kandidáta. `2471` sa vyriešil, keď `dotneato_closest` v porte začal
 zaokrúhľovať ako fúzované vyhodnotenie de Casteljau a DIST2 v clangu: kotvy popisiek
@@ -889,14 +891,15 @@ v `line_intersect`); `f66ac638` (`fix(neato): mirror fma contraction in
 multispline routing geometry`) ho zrkadlil. `241_0` pri twopi a neato — ktorý táto
 trieda pripisovala kokruhovej remíze nižšie — sa stal **conformant**
 (akceptácie vyradené) a sfdp `42` sa ukázal bez akejkoľvek remízy (je to
-drift A1, pozri [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` pri circo, fdp
-a sfdp sa stále líši s nezmenenými alebo zníženými zvyškami; ich
-pripísanie remíze nižšie predchádza `f66ac638` a od tej opravy, ktorá ukázala,
-že rovnaké pripísanie bolo pri twopi/neato nesprávne, **nebolo znovu overené
-vstreknutím polôh**.
+drift A1, pozri [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` pri fdp
+sa neskôr stal **conformant**, po druhej oprave na strane portu v triangulácii
+(poradie vrcholov plôšok po výmene hrany; pozri odsek o fdp nižšie). `241_0` pri circo sa stal **conformant** s `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: `Math.sin(9π/8)` vo V8 je o 1 ULP mimo správne zaokrúhlenej
+hodnoty libm, čo posúvalo jeden roh každej eliptickej prekážky a preklopilo koridor
+(akceptácia vyradená). `241_0` pri sfdp bol touto istou úlohou znovu diagnostikovaný a
+teraz je A1 (pozri odsek o sfdp nižšie).
 
-**Dotknuté:** `241_0` (circo Δ≈0.2 cez preklopenie koridoru na hrane `1->2`; `241_0`
-pri fdp a sfdp na stopách modulov nižšie); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Dotknuté:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 po 1–2 rozdieloch polohy popiskov hrán — libm 1-ULP vzniká
 v trigonometrii jednotkových vrcholov v `poly_init` (`hypot`/`atan2`/`sin`), posunie vypočítanú
 výšku jedného uzla o ULP za hranicu minimálnej veľkosti, na ktorej orákulum
@@ -937,7 +940,8 @@ v `polylineMidpoint` — pozri odsek o rodine b29 nižšie) a circo `241_0` (41
 rozdielov kresliacich operácií, Δ≈0.2pt na vedenom beziérovi hrany `1->2` — rovnaké
 preklopenie koridoru uhlopriečkou CDT; žurnál rozhodnutí, záznam z 2026-07-10 „CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed“). Akceptované na úrovni stopy modulu cez
+filed“; **vyradené 2026-10-23** — conformant, odkedy port berie `cos`/`sin` z libm
+hostiteľa pre osemuholník prekážky, pozri novú základňu 16.1 vyššie). Akceptované na úrovni stopy modulu cez
 `test/corpus/accepted-divergences-engines.json`, pripojené do
 `PARITY-twopi.md`/`PARITY-circo.md` nástrojom `parity-report.ts` — rovnaké pripojenie,
 aké vykonáva `accepted.ts` pre stopu dot v `PARITY-dot.md`.
@@ -1063,22 +1067,20 @@ hodnoty 18.0 a výber portu hlavy dyna v `closestSide` preklopí TOP/BOTTOM pri
 tejto presnej remíze; polohy uzlov a boxy sú inak bitovo identické s
 orákulom; **vyradené 2026-10-18** — zhoduje sa, odkedy DIST2 v porte používa fúzovaný tvar z clangu, ktorý túto presnú väzbu rozhodne rovnako ako C).
 
-**Stopa modulu sfdp — remíza FP pri hrane (`241_0`).**
+**Stopa modulu sfdp — `241_0` (preklasifikované A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> Stopa xdot modulu sfdp (`parity-sfdp.json`,
-natívne `dot -Ksfdp -Txdot`, ±0.5) odhaľuje kokruhovú remízu incircle v CDT, keď sa
-vstreknú presné natívne polohy pred vedením hrán (takže odchýlka NIE je
-iteratívny drift — pozri triedu A1-drift — ale diskrétna remíza predikátu):
+natívne `dot -Ksfdp -Txdot`, ±0.5) tu uvádzala `241_0` ako kokruhovú remízu incircle v CDT.
+`fix(T28)` ho znovu diagnostikoval s inštrumentovaným natívnym sfdp:
 
-- `241_0` — pripísaná kokruhovej remíze incircle v CDT (koridor multisplinu;
-  po `f66ac638` znovu neoverené, pozri novú základňu 16.1 vyššie).
-  Zvyškom je **preklopenie počtu segmentov**: 7 rozdielov kresliacich operácií na hrane 1->2,
-  `ptCount 8 vs 20` (20 rozdielov pred `f66ac638`) — koridor uspeje s N-bodovým
-  splinom, kde natívny build sa vráti k kratšiemu obyčajnému vedeniu
-  (alebo naopak), ako v zázname `241_0` pri circo vyššie. Port už emuluje kontrakciu arm64
-  `fmadd` v predikáte incircle/`ccw` (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) a používa Delaunay s robustným incircle; zvyškom je
-  1-ULP `sin`/`hypot` medzi V8 a libm od Apple vo vstupe predikátu, ktorý žiadny prenosný
-  kód nereprodukuje.
+- `241_0` — 7 rozdielov kresliacich operácií na hrane 1->2 (`ptCount 8 vs 20`). Rozloženie
+  driftuje od prvého člena odpudivej sily, kde `pow(dist, 2)` z libm v macOS vracia hodnotu
+  o 1 ULP pod správnym zaokrúhlením (najhrubšia úroveň, iterácia 22; pozri záznam o `pow`
+  z libm hostiteľa v častiach o medzerách vo vernosti rozloženia) a adaptívne chladenie to
+  zosilní na polohy na ostrí noža, v ktorých sa hrana 1->2 vedie inak. Vstreknutie natívnych
+  hodnôt `pow` urobí každý riadok trasovania aj výsledné xdot totožnými. Zvyšok vo vedení
+  pozorovaný pri vstreknutých polohách bol sčasti artefaktom vstrekovania a sčasti
+  `Math.sin(9π/8)` vo V8 v osemuholníku prekážky, ktorý port teraz berie z libm hostiteľa
+  (oprava, ktorá urobila conformant aj circo `241_0`). Zostáva drift A1.
 
 > **sfdp `42` preklasifikované A9 → drift A1 (synchronizácia graphviz 16.1).** Bolo tu uvedené
 > ako remíza incircle v CDT/libm. Misia zistila inak
@@ -1107,27 +1109,32 @@ systémového `hypot` z C a porovnanie s `Math.hypot` z Node na reprezentatívny
 vstupoch odchýlky plochých hrán ukazuje nesúlad 1 ULP v 2 zo 6 (Δ 7.1e-15 a
 5.7e-14) — ostrie noža prahu rozdelenia, ktoré preklopí počet delení.
 Neredukovateľné: žiadny prenosný hypot nereprodukuje libm od Apple (precedens `arm-pow.ts`
-pre tú istú hranicu). `sfdp.241_0` je akceptované na úrovni stopy modulu
-cez `accepted-divergences-engines.json`. `sfdp.42` do tejto triedy **nepatrí**:
+pre tú istú hranicu). `sfdp.241_0`, kedysi akceptované v tejto triede,
+je od T28 drift A1 (pozri vyššie). `sfdp.42` do tejto triedy **nepatrí**:
 jeho záznam v registri je A1 (`comparisons/sfdp-42.md`) a vyššie uvedená sonda ho nevysvetlila.
 
 Stopa xdot modulu **fdp** (`parity-fdp.json`, natívne `dot -Kfdp -Txdot`,
-±0.5) odhaľuje TÚ ISTÚ kokruhovú remízu CDT na rovnakom grafe, `241_0`: keď sa vstreknú
-presné polohy orákula pred vedením hrán, zvyškom je 11 číselných
-rozdielov `unfilled_bezier` obmedzených na jednu hranu (`0->1#0`, maxΔ 3.39pt). Keďže
-polohy uzlov sú po injekcii identické, odchýlka je nižšie v
-koridore multisplinu v pathplan — rovnaká remíza incircle s libm 1-ULP ako pri
-circo/sfdp `241_0` (incircle v presných racionálnych číslach 185/185 vyššie; 11 rozdielov nezmenených
-`f66ac638` — nie je znovu overené vstreknutím). Páky sú
-už uplatnené (`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198`
-`Math.hypot`); remíza sa považuje za neredukovateľnú. Akceptované cez `accepted-divergences-engines.json`
-`fdp.241_0`. `2095` pri fdp je naopak **A1-drift, nie A9**: vstreknutie
+±0.5) predtým ukazovala rovnaký graf, `241_0`, ako túto triedu: keď sa vstreknú
+presné polohy orákula pred vedením hrán, zostalo 11 číselných rozdielov
+`unfilled_bezier` na jednej hrane (`0->1#0`, maxΔ 3.39pt) a pripisovali sa
+kokruhovej remíze incircle. Toto pripísanie bolo nesprávne. `fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) našla chybný prenos na strane
+portu: GTS `swap_if_in_circle` vytvára dve nové plôšky ako
+`gts_face_new(en, e5, e2)` a `gts_face_new(en, e3, e4)` (`cdt.c:509-511`)
+a `gts_triangle_vertices` číta plôšku z poradia jej hrán, takže natívna verzia ich vypisuje
+ako (v3, v4, v2) a (v4, v3, v1); port uložil obe otočené o jedno miesto
+a `triCenter` multisplinového smerovača sčítaval vrcholy v tomto poradí. Po oprave
+poradia fdp `241_0` zodpovedá natívnej verzii na každej stope (xdot prechádza, json
+conformant, plain a stderr rovnaké) a jeho záznamy v `accepted-divergences-engines.json`
+a `accepted-divergences-json.json` sú vyradené. `2095` pri fdp je naopak **A1-drift, nie A9**: vstreknutie
 jediného uzla s prázdnym názvom (po oprave atribučného injektora, aby zodpovedal uzlom
 s názvom `""`) zredukuje jeho zvyšok na nulu — skorší „chvost A9“ bol
 nevstreknutý prázdny uzol, ktorý ťahal incidentné hrany. Akceptácia sfdp `2095` bola
 tou istou slepou škvrnou — nová regenerácia atribúcie sfdp (2026-07-22) s opraveným
 injektorom potvrdila, že aj ono injekciou dosiahne 0, a jeho akceptácia bola odstránená (pozri
 poznámku o preklasifikovaní `2095` vyššie).
+
+**sfdp `2168_3` — `sin` z Apple libm o 1 ULP v `poly_init` (uzavreté, neredukovateľné).** **Dotknuté:** sfdp `2168_3` (iba stderr: port vypíše jedno navyše varovanie `Pshortestpath`; prechod xdot stopy prejde, pretože obe strany prejdú na priame čiary). **V čom sa líši:** `shapes.c:2329` počíta `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); pre gamma = 1.0092081171617377 vracia libm v macOS 0.8464104077694533, V8 správne zaokrúhlenú hodnotu 0.8464104077694532 (1 ULP). Rozdiel sa dostane do multispline routera (`neatosplines.c:428,444` → `multispline.c:598`) ako bod routera 10/18, y 28.391789367446776 vs …78; kocirkulárny lichobežník (body 9, 10, 15, 16) sa potom trianguluje inou Delaunayho uhlopriečkou, takže polygón koridoru hrany 1 sa líši a `Pshortestpath` zlyhá na polygóne portu. **Prečo prijaté:** kontrolovaný experiment vstrekujúci iba túto hodnotu `sin` urobí stderr, trojuholníky, polygóny a xdot zhodné s natívnym (samotný `atan2` nie); pozície sfdp sú bitovo zhodné a predikát incircle, pathplan, hypot v `makeObstacle` aj poradie aritmetiky obrysového prstenca boli vylúčené. Zhoda by vyžadovala bitovo presný model `sin` od Applu, ktorého zdroj nie je verejný; žiadny prenosný kód ho nereprodukuje (rovnaká hranica ako precedens `arm-pow.ts`). **Dôkaz:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), riadok 2026-10-20 T13.
 
 ---
 
@@ -1157,6 +1164,22 @@ chyba, nie verdikt `diverged`, takže záznamy v
 nesie túto správu. Iné zlyhanie pri `2784` by sa prejavilo ako neakceptovaná chyba
 a `registry-staleness.test.ts` by záznam označil za zastaraný. Dôkaz:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Poradie Delaunayho stien v GTS pri degenerovanom vstupe — neredukovateľné {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Dotknuté:** Rozloženia, ktoré triangulujú cez GTS (`lib/neatogen/delaunay.c`; oracle 16.1 linkuje GTS 0.7.6) pri degenerovanom vstupe: body ležiace na hranách alebo kocirkulárne mriežky.
+
+**Čím sa líši.** Port očísluje steny Delaunayho triangulácie a susedov každej steny (`neigh`) radí podľa poradia vytvorenia. Natívny GTS očísluje steny v poradí `GHashTable`: `closest_face` prechádza tabuľku kľúčovanú ukazovateľom, takže id stien a poradie susedov závisia od adries haldy a medzi behmi sa líšia. Všetko odvodené z poradia stien sa preto môže líšiť od konkrétneho natívneho behu.
+
+**Prečo akceptované.** Deterministický cieľ neexistuje. 60 behov natívneho binárneho súboru na jednom degenerovanom vstupe dalo 22 rôznych výstupov, aj pri vypnutom ASLR a `MallocNanoZone=0`; variabilita je vlastnosťou oracle pod úrovňou kódu, nie chybou portu. Steny porovnávajte podľa množiny vrcholov, nie podľa id. Dôkaz: poznámky ku GTS z časti 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism“).
+
+### A12. Žiadna predpona `<stdin>: ` pri chybách lexera {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Dotknuté:** Syntaktické chyby DOT hlásené lexerom (`aagerror`) na stderr.
+
+**Čím sa líši.** Natívne CLI `dot` čítajúce štandardný vstup vypíše `<stdin>: syntax error in line N …`; port vypíše rovnakú správu bez predpony `<stdin>: `.
+
+**Prečo akceptované.** `aagerror` (`lib/cgraph/scan.l:157`) pridá `InputFile: ` iba vtedy, keď je `InputFile` nastavený. CLI ho pri čítaní štandardného vstupu nastaví na `<stdin>`; knižničný vstup `agmemread`, ktorý port zrkadlí, ho necháva nenastavený a predponu nevypisuje. Port nemá CLI, takže nie je čo hlásiť. Sonda stderr predponu pri porovnávaní normalizuje.
 
 ---
 

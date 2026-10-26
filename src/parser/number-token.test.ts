@@ -22,7 +22,7 @@ function ambiguity(text: string, line: number): string {
 }
 
 function parseWithWarnings(src: string): { names: string[]; warnings: unknown[] } {
-  const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
   const g = parse(src);
   return { names: [...g.nodes.keys()], warnings: spy.mock.calls.map((c) => c[0]) };
 }
@@ -61,9 +61,11 @@ describe('scan.l NUMBER / chkNum', () => {
   });
 
   it('an exponent value is a syntax error, after the warning', () => {
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const lines: unknown[] = [];
+    vi.spyOn(console, 'warn').mockImplementation((m) => void lines.push(m));
+    vi.spyOn(console, 'error').mockImplementation((m) => void lines.push(m));
     expect(() => parse('graph { a [width=1e1] }')).toThrow(ParseError);
-    expect(spy.mock.calls.map((c) => c[0])).toEqual([
+    expect(lines).toEqual([
       ambiguity('1e', 1),
       "Error: syntax error in line 1 near ']'",
     ]);

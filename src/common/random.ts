@@ -14,12 +14,22 @@
  * @see lib/neatogen/neatoinit.c:checkStart (srand48 call)
  */
 
+import { registerRenderState } from './render-state.js';
+
 const A = BigInt('0x5deece66d');
 const C = BigInt('0xb');
 const MASK48 = (1n << 48n) - 1n;
 const TWO48 = 2 ** 48;
+/**
+ * Unseeded generator state: libc's X0 = 0x1234ABCD330E (rand48 seed words
+ * 0x1234, 0xABCD, 0x330E); verified on the reference machine — an unseeded
+ * drand48() returns 0.39646477376027534.
+ * @see POSIX drand48(3)
+ */
+const UNSEEDED_STATE = 0x1234abcd330en;
 
-let state = 0x330en; // POSIX default: X0 = 0x1234ABCD330E... see srand48 note
+let state = UNSEEDED_STATE;
+registerRenderState(() => { state = UNSEEDED_STATE; });
 
 /**
  * Seed the generator: X = (seed << 16) | 0x330E (low 32 bits of seed).

@@ -12,6 +12,7 @@ import type { Point } from '../../model/geom.js';
 import { parseArrow, resolveArrowType } from '../../common/arrows.js';
 import { arrowLength } from '../../common/arrows-shapes.js';
 import { bezier } from '../../common/bezier.js';
+import { fma } from '../../common/fma.js';
 
 // ---------------------------------------------------------------------------
 // De Casteljau subdivision
@@ -115,17 +116,30 @@ export function bezierClipNode(
 }
 
 /**
- * Clip the path endpoint to the arrowhead BASE (not node boundary).
+ * DIST(p, q) = sqrt(SQR(dx) + SQR(dy)) as the oracle compiles it
+ * (libgvc 16.1 `_arrowEndClip`: `fmul dy*dy; fmadd dx, dx; fsqrt`), i.e.
+ * sqrt(fma(dx, dx, dy * dy)) -- not Math.hypot.
+ * @see lib/common/geom.h:DIST
+ */
+export function distFused(p: Point, q: Point): number {
+  const dx = p.x - q.x;
+  const dy = p.y - q.y;
+  return Math.sqrt(fma(dx, dx, dy * dy));
+}
+
+/**
+ * Clip the path endpoint to the arrowhead BASE (not the node boundary).
  *
- * Ports lib/common/arrows.c:arrowEndClip.
- * The path ends at arrowhead-BASE (arrowTip + elen toward tail), not at the
- * node boundary. The arrowTip (spl.ep) is the node-boundary clip result.
- *
- * Steps (matching C arrowEndClip):
- * 1. Reverse the last Bezier segment: sp[0]=arrowTip, sp[1..3]=reversed path
- * 2. inside = DIST(p, arrowTip) <= elen (arrowhead sphere)
- * 3. bezierClip with left_inside=true (sp[0]=arrowTip is "inside" the sphere)
- * 4. Un-reverse the clipped right subdivision → path ends at arrowhead BASE
+ * Ports the bezier part of lib/common/arrows.c:arrowEndClip (:285-330); the
+ * `spl->eflag/ep` bookkeeping and the `endp -= 3` back-up (:288-296) live in
+ * the callers (compound.ts:arrowEndClipIdx). Line map (C -> here):
+ *   :299-302 sp[3..0] = ps[endp..], sp[0] = spl->ep -> `sp` below
+ *   :304     if (elen > 0)                           -> `elen > 0`
+ *   :305-307 inside_context {p = &sp[0], r = &elen}  -> `inside` (centre = tip)
+ *   :308     bezier_clip(&ctx, inside, sp, true)     -> bezierClipNode, left
+ *            inside, in ABSOLUTE coordinates (centre 0,0), as C does
+ *   :311-314 ps[endp..endp+3] = sp[3..0]             -> returned array
+ *   :281-283 inside(): DIST(p, a.p[0]) <= a.r[0]     -> distFused <= elen
  *
  * @see lib/common/arrows.c:arrowEndClip
  */
@@ -134,18 +148,10 @@ export function arrowEndClip(
   arrowTip: Point,
   elen: number,
 ): Point[] {
-  if (elen <= 0) return path4;
-  // Reverse: sp[0]=tip (inside sphere), sp[1..3]=reversed last 3 path points
   const sp: Point[] = [arrowTip, path4[2]!, path4[1]!, path4[0]!];
-  const insideSphere = (lx: number, ly: number): boolean =>
-    Math.hypot(lx, ly) <= elen;
-  // bezierClipLocal with sp in RELATIVE coords (tip=origin)
-  const spRel: Point[] = sp.map(p => ({ x: p.x - arrowTip.x, y: p.y - arrowTip.y }));
-  const clippedRel = bezierClipLocal(spRel, insideSphere, true);
-  const clipped = clippedRel.map(p => ({ x: p.x + arrowTip.x, y: p.y + arrowTip.y }));
-  // Un-reverse: the clipped right subdivision = [arrowBase, ..., arrowTip]
-  // The path endpoint becomes arrowBase = clipped[0]
-  // Un-reverse the full clipped result; all 4 points update via de Casteljau
+  const clipped = elen > 0
+    ? bezierClipNode(sp, 0, 0, (x, y) => distFused({ x, y }, arrowTip) <= elen, true)
+    : sp;
   return [clipped[3]!, clipped[2]!, clipped[1]!, clipped[0]!];
 }
 
@@ -212,19 +218,31 @@ export function makeEllipseInsideFn(
 }
 
 /**
- * Clip path START to the tail arrowhead base (symmetric to arrowEndClip).
+ * Clip path START to the tail arrowhead base (the arrowEndClip counterpart).
  *
- * path4[0] = tail node boundary (inside arrowhead sphere); after clip,
- * path4[0] = arrowhead base (elen from tailTip).
+ * Ports the bezier part of lib/common/arrows.c:arrowStartClip (:313-339); the
+ * `spl->sflag/sp` bookkeeping and the `startp += 3` step live in the caller
+ * (compound.ts:arrowStartClipIdx). Line map (C -> here):
+ *   :323-326 sp[0..2] = ps[startp+3..], sp[3] = spl->sp -> `sp` below
+ *   :328     if (slen > 0)                              -> `elen > 0`
+ *   :329-330 inside_context {p = &sp[3], r = &slen}     -> `inside` (centre = tip)
+ *   :331     bezier_clip(&ctx, inside, sp, false)       -> bezierClipNode, right
+ *            inside, in ABSOLUTE coordinates (centre 0,0), as C does
+ *   :334-337 ps[startp..startp+3] = sp[3..0]            -> returned array
+ *   :281-283 inside(): DIST(p, a.p[0]) <= a.r[0]        -> distFused <= elen
+ * path4[0] is the tip (spl->sp) at every call site, so elen <= 0 returns the
+ * same points.
  *
- * @see lib/common/arrows.c:arrowEndClip
+ * @see lib/common/arrows.c:arrowStartClip
  */
 export function tailArrowEndClip(
   path4: Point[],
   tailTip: Point,
   elen: number,
 ): Point[] {
-  if (elen <= 0) return path4;
-  const inside = (lx: number, ly: number): boolean => Math.hypot(lx, ly) <= elen;
-  return bezierClipNode(path4, tailTip.x, tailTip.y, inside, true);
+  const sp: Point[] = [path4[3]!, path4[2]!, path4[1]!, tailTip];
+  const clipped = elen > 0
+    ? bezierClipNode(sp, 0, 0, (x, y) => distFused({ x, y }, tailTip) <= elen, false)
+    : sp;
+  return [clipped[3]!, clipped[2]!, clipped[1]!, clipped[0]!];
 }

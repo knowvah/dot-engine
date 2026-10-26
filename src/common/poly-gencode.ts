@@ -22,6 +22,7 @@ import { FillType } from '../gvc/context.js';
 import { emitHtmlLabel } from './htmltable-emit.js';
 import { transformPoint } from '../gvc/device.js';
 import { nodeAttr } from './poly-init.js';
+import { gvrenderSetStyle, checkStyleTokens } from '../gvc/gvrender-set-style.js';
 import { substObjAnchor, preprocessTooltip } from './subst.js';
 import type { ResolvedFill, PolyStyleFlags } from './style-resolve.js';
 import {
@@ -33,7 +34,8 @@ import {
   styleTokens,
 } from './style-resolve.js';
 import { stripedBox, wedgedEllipse } from '../render/svg-multicolor.js';
-import { resolveRenderColor } from '../render/color-resolve.js';
+import { resolveRenderColor, reportColorNames } from '../render/color-resolve.js';
+import { htmlLabelColors } from './htmltable-emit-fill.js';
 import { svgNodeId } from '../render/svg-id.js';
 import { drawRoundCorners, mcircleHack, underlineDraw } from './poly-shapes.js';
 
@@ -95,6 +97,7 @@ interface RingCtx {
   job: RenderJob;
   style: PolyStyleFlags;
   fillcolor: string;
+  nodeName: string; // agnameof(n): the `in node %s` AGPREV of a parseSegs rv > 1
   shape: number;
   diagonals: boolean;
   rounded: boolean;
@@ -113,7 +116,7 @@ function renderEllipseRing(
     const pf = ring.map(
       (v) => transformPoint({ x: v.x + coord.x, y: v.y + coord.y }, ctx.job),
     );
-    wedgedEllipse(ctx.job, pf, ctx.fillcolor, ctx.renderer);
+    wedgedEllipse(ctx.job, pf, ctx.fillcolor, ctx.renderer, () => `in node ${ctx.nodeName}`);
     renderEllipse(ring, coord, ctx.renderer, ctx.job, false); // boundary unfilled
   } else {
     renderEllipse(ring, coord, ctx.renderer, ctx.job, filled);
@@ -123,14 +126,12 @@ function renderEllipseRing(
 }
 
 /**
- * Render one polygon periphery ring, dispatching to stripedBox when
- * style.striped + j==0.
+ * Striped j===0 ring: the multicolor box plus an unfilled boundary polygon.
  * @see lib/common/shapes.c:poly_gencode :3037-3043
  */
-/** Striped j===0 ring: the multicolor box plus an unfilled boundary polygon. */
 function renderStripedRing(ring: Point[], coord: Point, ctx: RingCtx): void {
   const af = ring.map((v) => transformPoint({ x: v.x + coord.x, y: v.y + coord.y }, ctx.job));
-  stripedBox(ctx.job, af, ctx.fillcolor, true, ctx.renderer);
+  stripedBox(ctx.job, af, ctx.fillcolor, true, ctx.renderer, () => `in node ${ctx.nodeName}`);
   renderPolygon(ring, coord, ctx.renderer, ctx.job, false); // boundary unfilled
 }
 
@@ -191,6 +192,8 @@ export function renderLabel(
   job: RenderJob,
 ): void {
   if (label.u.kind !== 'txt' || label.u.nspans < 1) return;
+  // gvrender_set_pencolor(job, lp->fontcolor), once, before the spans.
+  reportColorNames([label.fontcolor]);
   label.pos = coord;
   label.set = true;
   // First-span baseline per valign (labelloc). @see lib/common/labels.c:240-251
@@ -227,6 +230,7 @@ function renderNodeLabel(
     // Route the HTML label's box/fill/text ops into the node LABEL emit-state
     // (→ _ldraw_ for xdot), not the node DRAW state. SVG ignores emit_state.
     const html = label.u.html as PlacedHtml;
+    reportColorNames(htmlLabelColors(html));
     withLabelEmitState(job, () => emitHtmlLabel(html, coord, renderer, job));
   } else {
     renderLabel(label, coord, renderer, job);
@@ -363,12 +367,27 @@ function applyPenState(obj: ObjState, styleAttr: string | undefined,
 export function applyNodeStyle(obj: ObjState, n: Node, job: RenderJob): boolean {
   const styleAttr = nodeAttr(n, n.root, 'style');
   const colorAttr = nodeAttr(n, n.root, 'color');
+  // stylenode: gvrender_set_style(job, checkStyle list), before any colour is
+  // resolved; point_gencode passes its own fixed list instead (never unknown).
+  // @see lib/common/shapes.c:536 stylenode · :3257 point_gencode
+  if (!isPointNode(n)) {
+    const shape = n.info.shape as ShapeDesc | undefined;
+    gvrenderSetStyle(checkStyleTokens(styleTokens(styleAttr), shape?.polygon ?? null));
+  }
   // The node's `colorscheme` window is NOT opened here: C opens it once around
   // the whole node emission (emit_begin_node..emit_end_node), which covers both
   // this color block and the label textspans. Both callers of this function are
   // codefns, so they already run inside that window. @see gvc/device.ts
+  const penwidth = nodeAttr(n, n.root, 'penwidth');
+  // record_gencode resolves the pen (penColor) before the fill; poly_gencode
+  // and point_gencode resolve the fill first. Only the order in which an
+  // unknown colour is reported differs. @see shapes.c:3890-3892 vs 2985-3004
+  if ((n.info.shape as ShapeDesc | undefined)?.kind === ShapeKind.SH_RECORD) {
+    applyPenState(obj, styleAttr, colorAttr, penwidth);
+    return applyFillState(obj, n, job);
+  }
   const filled = applyFillState(obj, n, job);
-  applyPenState(obj, styleAttr, colorAttr, nodeAttr(n, n.root, 'penwidth'));
+  applyPenState(obj, styleAttr, colorAttr, penwidth);
   return filled;
 }
 
@@ -379,7 +398,8 @@ export function applyNodeStyle(obj: ObjState, n: Node, job: RenderJob): boolean 
  */
 function prepareDrawPoly(poly: PolygonT, filled: boolean, obj: ObjState): PolygonT {
   if (poly.peripheries !== 0 || !filled) return poly;
-  obj.penColor = { type: 'string', s: 'transparent' };
+  // gvrender_set_pencolor resolves (and may report) the name like any other.
+  obj.penColor = resolveRenderColor('transparent');
   return { ...poly, peripheries: 1 };
 }
 
@@ -434,6 +454,7 @@ function resolveNodeDrawCtx(job: RenderJob, n: Node): NodeDrawCtx | null {
     job,
     style: styleFlags,
     fillcolor: nodeAttr(n, n.root, 'fillcolor') ?? '',
+    nodeName: n.name,
     ...specialCornerFlags(drawPoly.option, styleFlags),
   };
   return { poly: drawPoly, coord, filled, ringCtx };
@@ -455,8 +476,7 @@ function specialCornerFlags(
 }
 
 /**
- * Render node shape (polygon/ellipse) and label.
- * Shape codefn — called from walkNodes.
+ * Render node shape (polygon/ellipse) and label; shape codefn, from walkNodes.
  * @see lib/common/shapes.c:poly_gencode
  */
 export function polyGencode(rawJob: unknown, rawNode: unknown): void {

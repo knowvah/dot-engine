@@ -231,8 +231,9 @@ function drawWedge(seg: WedgeSeg, e: EllipseParams, ctx: RenderCtx): number {
  */
 export function wedgedEllipse(
   job: RenderJob, pf: Point[], clrs: string, renderer: RendererPlugin,
+  context?: () => string,
 ): number {
-  const { segs, error } = parseSegs(clrs);
+  const { segs, error } = parseSegs(clrs, context);
   if (error === 1 || error === 2) return error;
   const ctrX = (pf[0]!.x + pf[1]!.x) / 2;
   const ctrY = (pf[0]!.y + pf[1]!.y) / 2;
@@ -286,9 +287,9 @@ function drawBand(p: Point[], seg: BandSeg, ctx: RenderCtx): void {
  */
 export function stripedBox(
   job: RenderJob, pts: Point[], clrs: string,
-  rotate: boolean, renderer: RendererPlugin,
+  rotate: boolean, renderer: RendererPlugin, context?: () => string,
 ): number {
-  const { segs, error } = parseSegs(clrs);
+  const { segs, error } = parseSegs(clrs, context);
   if (error === 1 || error === 2) return error;
   // @see lib/common/emit.c:605-615 rotate swap
   const p: Point[] = rotate

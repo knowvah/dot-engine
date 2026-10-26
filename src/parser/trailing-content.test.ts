@@ -19,9 +19,11 @@ afterEach(() => vi.restoreAllMocks());
 
 /** Parse `src`, returning the graph's node names and every stderr line. */
 function parseQuietly(src: string): { nodes: string[]; stderr: unknown[] } {
-  const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  const lines: unknown[] = [];
+  vi.spyOn(console, 'warn').mockImplementation((m) => void lines.push(m));
+  vi.spyOn(console, 'error').mockImplementation((m) => void lines.push(m));
   const g = parse(src);
-  return { nodes: [...g.nodes.keys()], stderr: spy.mock.calls.map((c) => c[0]) };
+  return { nodes: [...g.nodes.keys()], stderr: lines };
 }
 
 describe('content after the first graph (agmemread)', () => {

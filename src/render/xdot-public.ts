@@ -35,6 +35,7 @@ import { createDefaultContext } from '../gvc/default-context.js';
 import { parseXDot } from '../xdot/index.js';
 import type { EngineName } from '../gvc/context.js';
 import { invalidArgType, rethrowAtBoundary } from '../errors.js';
+import { resetRenderState } from '../common/render-state.js';
 
 /**
  * `Xdot` — the parsed result of one xdot attribute stream: `ops` (the
@@ -160,6 +161,7 @@ function layoutAndRenderXdot(g: Graph, engine: EngineName): string {
  */
 export function getDrawOps(g: Graph, opts?: DrawOpsOptions): XdotOp[] {
   checkDrawOpsArgs(g, opts);
+  resetRenderState(); // AD-4: one render = one native process
   const engine = opts?.engine ?? DEFAULT_DRAW_ENGINE;
   return collectGraphOps(parse(layoutAndRenderXdot(g, engine)));
 }

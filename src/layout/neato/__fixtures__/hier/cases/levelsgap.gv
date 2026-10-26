@@ -1,0 +1,1 @@
+digraph{mode=hier; levelsgap=0.5; a->b->c; a->c}

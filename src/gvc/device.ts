@@ -26,6 +26,7 @@ import type { ShapeDesc, TextlabelT } from '../common/types.js';
 import { type LayerInfo, parseLayers } from '../common/layers.js';
 import { RenderJob, EMIT_CLUSTERS_LAST, createObjState, ObjType, EmitState } from './job.js';
 import { walkNodesAndEdges } from './emit-walk.js';
+import { warnLayersUnsupported } from './first-layer.js';
 import { polyInit } from '../common/poly-init.js';
 import {
   setHtmlAnchorObj,
@@ -42,11 +43,15 @@ import {
   styleTokens,
 } from '../common/style-resolve.js';
 import { isPointNode } from '../common/poly-gencode.js';
-import { resolveRenderColor, withColorScheme } from '../render/color-resolve.js';
+import {
+  resolveRenderColor, withColorScheme, reportEdgeColors, reportColorNames, backgroundColors,
+  setRendererKnownColors,
+} from '../render/color-resolve.js';
 import { emitRoundedBezier } from '../common/poly-shapes.js';
-import { applyClusterObjState, clusterStyle, clusterPeripheries } from './device-cluster.js';
+import { applyClusterObjState, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
-import { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
+import { gvrenderSetStyle, edgeStyleResets } from './gvrender-set-style.js';
+import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
 export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
 export { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
 import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId } from '../render/svg-id.js';
@@ -156,12 +161,15 @@ function setEdgePen(e: Edge, job: RenderJob): void {
   const obj = job.obj;
   const flags = parseStyleFlags(e.attrs.get('style'));
   obj.penColor = withColorScheme(e.attrs.get('colorscheme'),
-    () => resolveRenderColor(resolvePenColor(e.attrs.get('color'))));
+    () => resolveRenderColor(resolvePenColor(e.attrs.get('color')), false));
   obj.pen = resolvePenType(flags);
   obj.penWidth = resolvePenWidth(flags, e.attrs.get('penwidth'));
   // Raw style tokens for xdot's `S` ops (e.g. explicit style="solid"); SVG
   // reads only obj.pen, so this is xdot-only. @see gvrender_core_dot.c xdot_style
   obj.rawStyle = styleTokens(e.attrs.get('style'));
+  // emit_begin_edge: `if (styles && ED_spl(e)) gvrender_set_style(job, styles)`
+  // @see lib/common/emit.c:2726
+  if (e.info.spl !== undefined) gvrenderSetStyle(obj.rawStyle);
 }
 
 export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): void {
@@ -189,6 +197,14 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
     // @see lib/common/emit.c:emit_edge (begin/end color context)
     withColorScheme(e.attrs.get('colorscheme'), () => {
       renderer.beginEdge(e, job);
+      // emit_edge_graphics, then emit_end_edge's labels: C resolves these names
+      // here whatever the renderer draws (the non-drawing ones included).
+      reportEdgeColors(e);
+      // arrow_gen resets the style; C sets the edge's styles again after each
+      // flagged bezier of a multi-bezier spline. @see emit.c:2047, :2677
+      const styles = styleTokens(e.attrs.get('style'));
+      for (let i = edgeStyleResets(e, styles); i > 0; i--) gvrenderSetStyle(styles);
+      reportEdgeLabelColors(e);
       renderer.endEdge(e, job);
     });
   } finally {
@@ -223,6 +239,10 @@ function renderClusterBox(
   sg: Graph, filled: boolean, renderer: RendererPlugin, job: RenderJob,
 ): void {
   const { ll, ur } = sg.info.bb!;
+  if (isStripedCluster(sg)) {
+    renderStripedClusterBox(sg, renderer, job);
+    return;
+  }
   if (parseStyleFlags(clusterStyle(sg)).rounded) {
     const af = [{ x: ll.x, y: ll.y }, { x: ur.x, y: ll.y }, { x: ur.x, y: ur.y }, { x: ll.x, y: ur.y }];
     emitRoundedBezier(af, { x: 0, y: 0 }, filled, { renderer, job });
@@ -273,7 +293,7 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): 
     // style=invis sets PEN_NONE and gvrender_polygon skips the whole box
     // (fill included); the group/title still emit.
     // @see lib/common/emit.c:3907-3917, lib/gvc/gvrender.c:543
-    if ((clusterPeripheries(sg) !== 0 || filled) && job.obj?.pen !== PenType.None) {
+    if ((clusterPeripheries(sg) !== 0 || filled || isStripedCluster(sg)) && job.obj?.pen !== PenType.None) {
       renderClusterBox(sg, filled, renderer, job);
     }
     renderClusterLabel(sg, renderer, job);
@@ -327,6 +347,7 @@ export function renderGraph(g: Graph, job: RenderJob, renderer: RendererPlugin):
     job.numLayers = layered ? info.numLayers : 1;
     job.layerIDs = info.layerIDs;
     renderer.beginGraph(g, job);
+    warnLayersUnsupported(job.format, info.numLayers, renderer.beginLayer !== undefined);
     for (let ln = 1; ln <= job.numLayers; ln++) {
       job.layerNum = ln;
       if (layered) renderer.beginLayer!(info.layerIDs[ln]!, job);
@@ -351,9 +372,13 @@ function renderPage(g: Graph, renderer: RendererPlugin, job: RenderJob, info: La
     resolveObjAnchor(g, labelTextOf(g.info.label), svgGraphId(g, job), job.obj);
   }
   const anchored = beginAnchorIf(renderer, job);
-  renderer.pageBackground?.(g, job);
-  // emit root-graph label before clusters/nodes @see lib/common/emit.c:emit_page
-  renderGraphLabel(g, renderer, job);
+  // emit_page opens the graph's colorscheme around the background and label.
+  withColorScheme(g.attrs.get('colorscheme'), () => {
+    reportColorNames(backgroundColors(g.attrs.get('bgcolor'), renderer.type === 'svg'));
+    renderer.pageBackground?.(g, job);
+    // emit root-graph label before clusters/nodes @see lib/common/emit.c:emit_page
+    renderGraphLabel(g, renderer, job);
+  });
   if (anchored) renderer.endAnchor?.(job);
   // emit_view: clusters are drawn BEFORE nodes/edges normally, but the map
   // device (EMIT_CLUSTERS_LAST) emits their <area> AFTER, so a node/edge area
@@ -459,6 +484,7 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   // @see lib/common/emit.c:3260 (gvc->rotation=90); :3390 (job->rotation)
   job.rotation = parseLandscape(g) ? 90 : 0;
   job.renderer = renderer;
+  setRendererKnownColors(renderer.type === 'svg'); // svg_knowncolors; others have none
   resetHtmlAnchorIds(); // C: fresh anchorId per dot invocation
   for (const n of g.nodes.values()) polyInit(n, g, job.measurer);
   return renderGraph(g, job, renderer);

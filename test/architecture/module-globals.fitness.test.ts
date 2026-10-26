@@ -42,49 +42,50 @@ const SRC = join(ROOT, 'src');
  * Every entry is a promise that the global cannot leak across renders.
  */
 const ALLOWLIST: Readonly<Record<string, string>> = {
-  // --- Re-seeded/overwritten at the start of each render before any read ---
+  // --- Reset by a registered render-state reset (render-state.ts) ---
   'src/common/random.ts::state':
-    'drand48 PRNG; re-seeded via srand48 by every engine that uses it (neato/fdp/ortho) before use; dot uses no randomness',
+    'drand48 PRNG; registered render-state reset to the unseeded state (random.ts:32 registerRenderState); engines that use it (neato/fdp/ortho) still call srand48 before use',
   'src/common/crand.ts::state':
-    'crand PRNG; re-seeded via csrand by sfdp before use',
+    'crand PRNG; registered render-state reset to the unseeded state (crand.ts:34 registerRenderState); sfdp still calls csrand before use',
   'src/common/color.ts::colorScheme':
-    'set only through withColorScheme (color-resolve.ts), which save/restores in try/finally — no leak even on throw',
+    "registered render-state reset to '' (color.ts:41 registerRenderState); within a render it is only set through withColorScheme (color-resolve.ts), which save/restores in try/finally",
+  'src/common/agerr.ts::lastLevel':
+    "agerrno; registered render-state reset to 'warning' (agerr.ts:33 registerRenderState)",
   'src/common/postproc.ts::Rankdir':
-    'overwritten from g.info.rankdir at postproc start before any read',
+    'registered render-state reset to 0 (postproc.ts:43 registerRenderState); also overwritten from g.info.rankdir at postproc start before any read',
   'src/common/postproc.ts::Offset':
-    'recomputed at postproc start before any read',
+    'registered render-state reset to {0,0} (postproc.ts:43 registerRenderState); also recomputed at postproc start before any read',
   'src/layout/fdp/xlayout.ts::xMarg':
-    'set from sepFactor(g) at fdp layout start before any read',
+    'registered render-state reset to the zero margin (xlayout.ts:65 registerRenderState); also set from sepFactor(g) at fdp layout start (xlayout.ts:257) before any read',
   'src/layout/dot/mincross-cross.ts::reMincross':
-    'reset via setReMincross(false) at the start of each mincross run',
+    'registered render-state reset to false (mincross-cross.ts:28 registerRenderState); mincross.ts also calls setReMincross(false) at the start of each mincross run',
   'src/layout/dot/mincross-build.ts::fillSeq':
-    'reset to 0 within fillRanks before reuse',
+    'registered render-state reset to 0 (mincross-build.ts:103 registerRenderState); fillRanks also resets it to 0 on entry (mincross-build.ts:184)',
   'src/common/htmltable-emit-rules.ts::anchorSeq':
-    'reset to 0 per anchor environment before reuse',
+    'anchor id counter; registered render-state reset via resetHtmlAnchorIds (htmltable-emit-rules.ts:221 registerRenderState)',
   'src/common/htmltable-emit-fill.ts::htmlFillPen':
-    'gvrender penwidth leak for bgcolor fills; reset to 1.0 via resetHtmlFillPenWidth() at each top-level table (emitHtmlLabel entry)',
+    'gvrender penwidth leak for bgcolor fills; registered render-state reset via resetHtmlFillPenWidth (htmltable-emit-fill.ts:141 registerRenderState)',
 
-  // --- Currently never mutated (latent: must reset if ever wired) ---
   'src/layout/dot/rank.ts::clType':
-    'clusterrank type; setClType is currently never called so it stays LOCAL. IF wired to the clusterrank attr, it MUST be reset to LOCAL per render',
+    'clusterrank type; registered render-state reset to LOCAL (rank.ts:58 registerRenderState) and set before read from the clusterrank attr in graph initialization (graph-init.ts:330 setClType)',
 
-  // --- Immutable / one-time / DI wiring — not per-render render state ---
+  // --- Caller/debug hooks, one-time latches, DI wiring — not per-render state ---
   'src/gvc/usershape.ts::activeSizer':
-    'process-wide image-sizer DI hook set via setImageSizer; not mutated by rendering (shared config, last-write-wins by design)',
+    'caller hook: process-wide image-sizer DI set via setImageSizer; rendering only reads it (shared config, last-write-wins by design)',
   'src/gvc/image-resolver.ts::activeResolver':
-    'process-wide image-resolver DI hook set via setImageResolver (AD-1); consulted (never mutated) by rendering when RenderOptions.inlineImages is set — twin of activeSizer, shared config, last-write-wins by design',
+    'caller hook: process-wide image-resolver DI set via setImageResolver (AD-1); rendering only reads it when RenderOptions.inlineImages is set — twin of activeSizer, shared config, last-write-wins by design',
   'src/common/textmeasure-factory.ts::override':
-    'process-wide text-measurer DI hook set via setTextMeasurer; not mutated by rendering (shared config, last-write-wins by design), analogous to activeSizer',
+    'caller hook: process-wide text-measurer DI set via setTextMeasurer; rendering only reads it (shared config, last-write-wins by design), analogous to activeSizer',
   'src/common/textmeasure-factory.ts::adviceShown':
     'one-time process latch for the interactive host-faithful advice note; emitted at most once per process, never per-render output state',
   'src/label/node.ts::_splitNodeImpl':
-    'DI wiring for the record split-node impl; set once at import, not per render',
+    'DI wiring for the record split-node impl; assigned once at import, never during rendering',
   'src/layout/dot/mincross-order.ts::mincrossTrace':
-    'debug trace hook; null in production, never set during rendering',
+    'debug hook; null in production, only a test/diagnosis caller sets it, never set during rendering',
   'src/common/splines-routespl.ts::routeDump':
-    'debug stage-dump hook set via setRouteDump; null in production, never set during rendering (2621 diagnosis, twin of mincrossTrace)',
+    'debug hook set via setRouteDump; null in production, only a diagnosis caller sets it, never set during rendering (twin of mincrossTrace)',
   'src/common/splines-clip.ts::clipDump':
-    'debug clip-dump hook set via setClipDump; null in production, never set during rendering (2621 diagnosis, twin of mincrossTrace)',
+    'debug hook set via setClipDump; null in production, only a diagnosis caller sets it, never set during rendering (twin of mincrossTrace)',
   'src/layout/twopi/twopi-test-helpers.ts::_id':
     'test-only helper module; not reachable from the render path',
 };

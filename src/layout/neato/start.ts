@@ -2,7 +2,10 @@
 /**
  * Neato `start` handling (setSeed / initRegular / checkStart) and the
  * fail-loud checks for the neato init features this port does not have
- * (smart init, the subset/circuit distance models, hier/ipsep modes).
+ * (smart init for the stress path, the subset/circuit distance models, ipsep
+ * with constraints). mode=hier runs `stress_majorization_with_hierarchy`; its
+ * own unported branches (subset/circuit models, the smart-init fallback
+ * without a hierarchy) are loud in constrained-majorization.ts.
  *
  * Each loud check sits where neato's C branches into the unported code and
  * fires only for the modes whose C path reaches it (ADR-3).
@@ -13,12 +16,14 @@
 import { RenderError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
 import { srand48 } from '../../common/random.js';
+import { registerRenderState } from '../../common/render-state.js';
 import { mapbool, isACluster } from '../dot/rank.js';
 import { getPack } from '../pack/index.js';
 import {
   MODE_KK, MODE_MAJOR, MODE_HIER, MODE_IPSEP, MODE_SGD,
   MODEL_CIRCUIT, MODEL_SUBSET,
 } from './init.js';
+import { agerrLineOn, agwarningf } from '../../common/agerr.js';
 
 /** @see lib/neatogen/neato.h:INIT_SELF */
 export const INIT_SELF = 0;
@@ -41,11 +46,12 @@ const WARN_POS_IGNORED = 'node positions are ignored unless start=random';
 const WARN_SELF_IGNORED = 'start=0 not supported with mode=self - ignored';
 
 /**
- * Roots already warned about start=self under KK/SGD. C warns once per process
- * (stuff.c:330 static atomic_flag); one render is one C process here, so the
- * flag is per root graph rather than module state (multi-diagram safety).
+ * C's `static atomic_flag once` for the start=self warning under KK/SGD: once
+ * per process, so once per render here (AD-4 resets it at render entry).
+ * @see lib/neatogen/stuff.c:330
  */
-const selfWarned = new WeakSet<object>();
+const selfOnce = { warned: false };
+registerRenderState(() => { selfOnce.warned = false; });
 /** Roots already warned about the KK circuit fallback (one warning per graph). */
 const circuitWarned = new WeakSet<object>();
 
@@ -96,7 +102,7 @@ export function checkStart(
 ): number {
   const { init, seed } = parseStart(g.root.attrs.get('start'), dflt);
   if (init !== INIT_RANDOM && [...g.nodes.values()].some((n) => n.attrs.has('pos'))) {
-    console.warn(WARN_POS_IGNORED);
+    agerrLineOn('warn', WARN_POS_IGNORED);
   }
   if (init === INIT_REGULAR) initRegular(g, nG);
   srand48(seed);
@@ -141,14 +147,12 @@ export function neatoMode(g: Graph): number {
   if (str === undefined || str === '') return MODE_MAJOR;
   const mode = modeByName().get(str);
   if (mode !== undefined) return mode;
-  console.warn(`Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
+  agwarningf(`Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
   return MODE_MAJOR;
 }
 
 function checkMode(g: Graph, mode: number): void {
-  const value = g.root.attrs.get('mode') || (mode === MODE_HIER ? 'hier' : 'ipsep');
-  // @see lib/neatogen/neatoinit.c:1117 (stress_majorization_with_hierarchy)
-  if (mode === MODE_HIER) unsupported('mode', value, 'hierarchical stress majorization');
+  const value = g.root.attrs.get('mode') || 'ipsep';
   // @see lib/neatogen/neatoinit.c:1121-1170 (stress_majorization_cola)
   if (mode === MODE_IPSEP && ipsepHasConstraints(g)) {
     unsupported('mode', value, 'constrained (ipsep) majorization');
@@ -161,9 +165,9 @@ function checkStartAttr(g: Graph, mode: number): void {
   // @see lib/neatogen/neatoinit.c:1095, lib/neatogen/stress.c:884 (smart_ini)
   if (mode === MODE_MAJOR || mode === MODE_IPSEP) unsupported('start', value ?? '', 'smart initialisation');
   // @see lib/neatogen/stuff.c:330 (KK and SGD warn once and ignore it)
-  if ((mode === MODE_KK || mode === MODE_SGD) && !selfWarned.has(g.root)) {
-    selfWarned.add(g.root);
-    console.warn(WARN_SELF_IGNORED);
+  if ((mode === MODE_KK || mode === MODE_SGD) && !selfOnce.warned) {
+    selfOnce.warned = true;
+    agerrLineOn('warn', WARN_SELF_IGNORED);
   }
 }
 
@@ -189,7 +193,8 @@ function kkCircuitFallsBack(g: Graph): boolean {
 function warnCircuitDisconnected(g: Graph): void {
   if (circuitWarned.has(g.root)) return;
   circuitWarned.add(g.root);
-  console.warn(
+  agerrLineOn(
+    'warn',
     `graph ${g.root.name} is disconnected. Hence, the circuit model\n`
     + 'is undefined. Reverting to the shortest path model.\n'
     + 'Alternatively, consider running neato using -Gpack=true or decomposing\n'

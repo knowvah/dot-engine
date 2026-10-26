@@ -28,7 +28,7 @@ afterEach(() => {
 });
 
 test(`${ID} matches the native oracle and warns like native`, () => {
-  const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
   const actual = renderSvg(read(`inputs/${ID}.dot`), 'dot');
   const warnings = spy.mock.calls.map((c) => c[0]);
   const { pass, diffs } = compareSvg(

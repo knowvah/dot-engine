@@ -36,6 +36,7 @@
 
 import { incircle, orient2d } from './delaunay.js';
 import { InternalError } from '../../errors.js';
+import { gtsTriangleEnclosing } from './gts-triangle.js';
 
 /** Triangulated surface. @see lib/neatogen/delaunay.h:surface_t */
 export interface Surface {
@@ -354,14 +355,14 @@ class Cdt {
 
     if (this.inCircle(v1, v2, v3, v4) > 0) {
       const en = this.edgeOrNew(v3, v4);
-      // f3 ring: (v4, v2, v3) with edges (e5, e2, en); e5 = v4–v2
-      // f4 ring: (v1, v4, v3) with edges (e4, en, e3); e4 = v1–v4
-      // (rings derived from C's gts_face_new(en,e5,e2)/(en,e3,e4) cycles,
-      //  matching the vertex triples C passes to the recursive calls)
+      // C: f3 = gts_face_new(en, e5, e2), f4 = gts_face_new(en, e3, e4).
+      // The stored ring starts at C's t->e1 (en) because gts_triangle_vertices
+      // reads (e1-only, e1∩e2, e2-only): f3 → (v3, v4, v2), f4 → (v4, v3, v1).
+      // That is the vertex order mkSurface emits and triCenter sums in.
       this.removeFace(f1);
       this.removeFace(f2);
-      const f3 = this.addFace([v4, v2, v3], [e5, e2, en]);
-      const f4 = this.addFace([v1, v4, v3], [e4, en, e3]);
+      const f3 = this.addFace([v3, v4, v2], [en, e5, e2]);
+      const f4 = this.addFace([v4, v3, v1], [en, e3, e4]);
 
       this.swapIfInCircle(f3, v4, v2, v3, e5, e2, en);
       this.swapIfInCircle(f4, v1, v4, v3, e4, en, e3);
@@ -644,8 +645,6 @@ class Cdt {
   }
 }
 
-const SQRT3 = 1.73205080756887729;
-
 /**
  * Build the constrained Delaunay surface over n points with nsegs directed
  * constraint segments (segs[2k], segs[2k+1]), removing hole faces.
@@ -659,21 +658,12 @@ export function mkSurface(
   const py = y.slice(0, n);
 
   // gts_triangle_enclosing(points, scale=100)
-  let xmin = px[0]!; let xmax = px[0]!;
-  let ymin = py[0]!; let ymax = py[0]!;
-  for (let i = 1; i < n; i++) {
-    if (px[i]! > xmax) xmax = px[i]!;
-    else if (px[i]! < xmin) xmin = px[i]!;
-    if (py[i]! > ymax) ymax = py[i]!;
-    else if (py[i]! < ymin) ymin = py[i]!;
-  }
-  const xo = (xmax + xmin) / 2;
-  const yo = (ymax + ymin) / 2;
-  let r = 100 * Math.hypot(xmax - xo, ymax - yo);
-  if (r === 0) r = 100;
   const s0 = n;
-  px.push(xo + r * SQRT3, xo, xo - r * SQRT3);
-  py.push(yo - r, yo + 2 * r, yo - r);
+  const enc = gtsTriangleEnclosing(px, py, n, 100);
+  for (const [ex, ey] of enc) {
+    px.push(ex);
+    py.push(ey);
+  }
 
   const cdt = new Cdt(px, py);
   // tri(): constraint edges are created BEFORE the vertices are inserted,

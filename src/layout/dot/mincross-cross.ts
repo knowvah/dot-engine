@@ -18,12 +18,14 @@ import { CLUSTER } from './rank.js';
 import {
   MincrossContext, matrixGet, rankGet,
 } from './mincross-utils.js';
+import { registerRenderState } from '../../common/render-state.js';
 
 /**
  * Mirror of C's file-global `ReMincross`. Set true only during the remincross
  * pass so left2right tightens the cluster constraint. @see mincross.c
  */
 let reMincross = false;
+registerRenderState(() => { reMincross = false; });
 export function setReMincross(b: boolean): void { reMincross = b; }
 
 // ---------------------------------------------------------------------------

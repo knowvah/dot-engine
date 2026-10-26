@@ -402,7 +402,6 @@
 {"id":"1425_1","path":"1425_1.dot","size":544,"verdict":"conformant"}
 {"id":"graphs-nul_nul","path":"graphs/nul_nul.gv","size":576,"verdict":"conformant"}
 {"id":"windows-labelclust-ndd","path":"windows/labelclust-ndd.gv","size":586,"verdict":"conformant"}
-{"id":"241_0","path":"241_0.dot","size":578,"verdict":"accepted","diffCount":11,"firstDiff":"edge:0->1#0/_draw_/op[1].b[4]","maxDelta":3.3899999999999935,"maxDeltaPath":"edge:0->1#0/_draw_/op[1].b[4]"}
 {"id":"1408","path":"1408.dot","size":544,"verdict":"conformant"}
 {"id":"share-labelclust-ndd","path":"share/labelclust-ndd.gv","size":586,"verdict":"conformant"}
 {"id":"graphs-inv_nul","path":"graphs/inv_nul.gv","size":588,"verdict":"conformant"}
@@ -926,3 +925,4 @@
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"graphs-b100","path":"graphs/b100.gv","size":782464,"verdict":"conformant"}
 {"id":"graphs-b104","path":"graphs/b104.gv","size":782464,"verdict":"conformant"}
+{"id":"241_0","path":"241_0.dot","size":578,"verdict":"conformant"}

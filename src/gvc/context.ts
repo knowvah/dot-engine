@@ -26,6 +26,7 @@ import type { DebugOptions } from '../debug.js';
 import type { ImageSizer } from '../common/htmltable-types.js';
 import type { ImageResolver } from './image-resolver.js';
 import type { RenderJob } from './job.js';  // scaffold in T25; full class in T26
+import { resetRenderState } from '../common/render-state.js';
 import { RenderError, invalidArgType, invalidArgValue } from '../errors.js';
 
 // ---------------------------------------------------------------------------
@@ -285,6 +286,12 @@ export class GvcContext {
    * rendering happens in between and must see the layout state
    * (e.g. cluster arrays).
    *
+   * Contract (AD-4/AD-8): first resets the C process state (RNG streams,
+   * sequence counters, once-only warnings), so each `layout` call behaves
+   * as one native run — drive one graph per `layout`. Caller-installed hooks
+   * (setTextMeasurer, setImageSizer, setImageResolver, the per-context
+   * measurer/sizer/resolver) are configuration and are not reset.
+   *
    * @throws TypeError (ERR_INVALID_ARG_TYPE / ERR_INVALID_ARG_VALUE) for a
    *   bad `g`, or an engine argument that is not registered
    * @throws RenderError (UNKNOWN_LAYOUT) if the `layout` attribute names no
@@ -295,6 +302,7 @@ export class GvcContext {
    * @see lib/gvc/gvlayout.c:gvLayoutJobs
    */
   layout(g: Graph, engineName: EngineName): void {
+    resetRenderState(); // AD-8: idempotent under the public entries' own reset
     const selected = this.checkLayoutArgs(g, engineName);
     // C gvLayoutJobs: the graph's `layout` ATTRIBUTE unconditionally
     // overrides the selected engine (-K / API choice); an unrecognized

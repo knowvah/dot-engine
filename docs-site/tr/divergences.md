@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -217,9 +217,11 @@ başlatma birleştirmesi ve `setEdgeType` makro-işlev düzeltmesidir.)
 
 İlk taramanın aksine, 929 öğelik evrenin ayrışan her satırı graphviz 16.1.0'a karşı tek tek nedene
 bağlanmıştır: enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin yönlendirme
-öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, üç istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
-üretimi kâhini tam olarak yeniden üretir). Üçü ayrıca kabul edilmiş kimlik başına artıklardır:
-`241_0`'ın fdp ve sfdp'deki CDT iç çember beraberliği ile sfdp `2556`'nın NaN yerleşimi. fdp `2471` ve sfdp `2371` önceden enjeksiyondan sonra farklı kalan kenar etiketi
+öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, iki istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
+üretimi kâhini tam olarak yeniden üretir). İkisi ayrıca kabul edilmiş kimlik başına artıklardır:
+sfdp `241_0`'ın ana makine libm `pow` sürüklenmesi (T28 tarafından yeniden teşhis edildi) ile sfdp `2556`'nın NaN yerleşimi. fdp `241_0`,
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` değişikliğinden beri
+geçer (bkz. A9 altındaki fdp paragrafı). fdp `2471` ve sfdp `2371` önceden enjeksiyondan sonra farklı kalan kenar etiketi
 konumlarını (`lp`) koruyordu, yani xlabel yerleştirici farklı bir aday seçiyordu.
 `2471`, portun `dotneato_closest` işlevi clang'ın birleştirilmiş (fused) de Casteljau
 hesaplaması ve DIST2'si gibi yuvarlamaya başlayınca düzeldi: kenar etiketi çapaları 1–2
@@ -876,13 +878,15 @@ birleştirmesi eksikti (elips köşesi radikandı, `mkCtrlPts`, `DIST` = sqrt(fm
 multispline routing geometry`) onu yansıttı. Bu sınıfın aşağıdaki eşdairesel
 beraberliğe atfettiği twopi ve neato `241_0` **conformant**'a döndü (kabuller
 emekli edildi) ve sfdp `42`'nin hiç beraberliği olmadığı ortaya çıktı (A1
-sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). circo, fdp
-ve sfdp `241_0` hâlâ ayrışır; artıkları değişmemiş ya da azalmıştır; aşağıdaki
-beraberliğe atıfları `f66ac638`'ten öncedir ve aynı atfın twopi/neato için yanlış
-olduğunu gösteren o düzeltmeden beri **konum enjeksiyonuyla yeniden doğrulanmamıştır**.
+sürüklenmesidir, bkz. [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). fdp `241_0` ise
+sonradan, üçgenlemede portun ikinci bir düzeltmesinden sonra (bir kenar takasından sonra yüz
+köşe sırası; bkz. aşağıdaki fdp paragrafı) **conformant**'a döndü. circo `241_0`, `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon` ile **conformant**'a döndü: V8'in `Math.sin(9π/8)` değeri doğru
+yuvarlanmış libm değerinden 1 ULP uzaktır; bu, her elips engelinin bir köşesini kaydırıp
+koridoru çeviriyordu (kabul emekli edildi). sfdp `241_0` aynı görev tarafından yeniden
+teşhis edildi ve artık A1'dir (bkz. aşağıdaki sfdp paragrafı).
 
-**Etkilenenler:** `241_0` (circo Δ≈0.2, `1->2` kenarındaki koridor çevrilmesiyle;
-aşağıdaki motor hatlarında fdp ve sfdp `241_0`); `2343`, `2239`, `share-b29`, `windows-b29` (twopi, her
+**Etkilenenler:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi, her
 birinde 1–2 kenar etiketi konum farkı — libm 1-ULP'si `poly_init`'in birim köşe
 trigonometrisinde (`hypot`/`atan2`/`sin`) doğar, bir düğümün hesaplanan yüksekliğini
 kâhinin tam oturduğu asgari boyut kıskacının bir ULP ötesine koyar ve xlabel R-ağacı
@@ -921,7 +925,9 @@ ULP'si; bu girdi altında başlangıçta kabul edilen `2343`, `share-b29` ve `wi
 aşağıdaki b29 ailesi paragrafına bakın) ve circo `241_0` (41 çizim işlemi farkı,
 `1->2` kenarının yönlendirilmiş bezier'inde Δ≈0.2pt — aynı CDT köşegeni koridor
 çevrilmesi; karar günlüğü, 2026-07-10 “CDT rewritten as faithful GTS port; 2168_3
-outline-ring obstacle; 56/osage bb clobber; A9 filed” kaydı). Motor hattı düzeyinde
+outline-ring obstacle; 56/osage bb clobber; A9 filed” kaydı; **2026-10-23'te emekli edildi** — port, engelin 8 genine ana makine
+libm'inin `cos`/`sin` değerini aldığından beri conformant, bkz. yukarıdaki 16.1
+yeniden tabanlaması). Motor hattı düzeyinde
 `test/corpus/accepted-divergences-engines.json` aracılığıyla kabul edilir;
 `parity-report.ts` bunu `PARITY-twopi.md`/`PARITY-circo.md` ile birleştirir —
 `accepted.ts`'in dot hattı `PARITY-dot.md` için yaptığı birleştirmenin aynısı.
@@ -1044,23 +1050,20 @@ tam simetrik 18.0 değeri etrafında `node2.y`'yi `node8.y`'nin bir ULP üstüne
 `closestSide`'ın dyna baş portu seçimi tam o beraberlikte TOP/BOTTOM'u çevirir; düğüm
 konumları ve kutular aksi halde kâhinle bit düzeyinde özdeştir; **2026-10-18'de kaldırıldı** — portun DIST2'si clang'ın birleştirilmiş (fused) biçimini kullandığından beri uyumludur; bu biçim bu tam eşitliği C gibi çözer).
 
-**sfdp motor hattı — kenar FP beraberliği (`241_0`).**
+**sfdp motor hattı — `241_0` (A9'dan A1'e yeniden sınıflandırıldı, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> sfdp xdot motor hattı (`parity-sfdp.json`,
-yerel `dot -Ksfdp -Txdot`, ±0.5), tam yerel yönlendirme öncesi konumlar
-enjekte edildiğinde CDT eşdairesel iç çember beraberliğini ortaya çıkarır (yani
-ayrışma yinelemeli sürüklenme DEĞİL — bkz. A1-drift sınıfı — kesikli bir yüklem
-beraberliğidir):
+yerel `dot -Ksfdp -Txdot`, ±0.5), burada `241_0`'ı CDT eşdairesel iç çember beraberliği
+olarak listelemişti. `fix(T28)` bunu araçlandırılmış bir yerel sfdp ile yeniden teşhis etti:
 
-- `241_0` — CDT eşdairesel iç çember beraberliğine atfedilir (çoklu spline
-  koridoru; `f66ac638`'ten sonra yeniden doğrulanmadı, yukarıdaki 16.1 yeniden
-  tabanlamasına bakın). Artık bir **segment sayısı çevrilmesidir**: 1->2 kenarında
-  7 çizim işlemi farkı, `ptCount 8 vs 20` (`f66ac638`'ten önce 20 fark) — koridor,
-  yerel derlemenin daha kısa düz bir yola geri döndüğü yerde N noktalı bir spline ile
-  başarılı olur (veya tersi); yukarıdaki circo `241_0` kaydındaki gibi. Port, iç çember/`ccw` yükleminde arm64
-  `fmadd` birleştirmesine zaten öykünür (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) ve sağlam iç çemberli Delaunay kullanır; artık, hiçbir
-  taşınabilir kodun yeniden üretemediği yüklem girdisindeki V8-ile-Apple-libm
-  `sin`/`hypot` 1-ULP'sidir.
+- `241_0` — 1->2 kenarında 7 çizim işlemi farkı (`ptCount 8 vs 20`). Yerleşim, macOS libm'inin
+  `pow(dist, 2)` değerinin doğru yuvarlamanın 1 ULP altını döndürdüğü ilk itici kuvvet
+  teriminden itibaren sürüklenir (en kaba düzey, yineleme 22; yerleşim sadakati
+  boşlukları altındaki ana makine libm `pow` girdisine bakın) ve uyarlanır soğutma bunu,
+  1->2 kenarının farklı yönlendirildiği bıçak sırtı konumlara büyütür. Yerel `pow`
+  değerlerini enjekte etmek her iz satırını ve nihai xdot'u özdeş yapar. Enjekte edilmiş
+  konumlarla görülen yönlendirme artığı kısmen bir enjeksiyon artefaktıydı, kısmen de engelin
+  8 genindeki V8 `Math.sin(9π/8)` değeriydi; port bunu artık ana makine libm'inden alır
+  (circo `241_0`'ı da conformant yapan düzeltme). Geriye kalan A1 sürüklenmesidir.
 
 > **sfdp `42`, A9'dan A1-drift'e yeniden sınıflandırıldı (graphviz 16.1 senkronu).** Burada
 > bir CDT/libm iç çember beraberliği olarak listelenmişti. Görev farklı bir şey
@@ -1089,28 +1092,33 @@ beraberliğidir):
 derleyip temsili düz kenar sapma girdilerinde Node `Math.hypot` ile karşılaştırmak, 6
 girdiden 2'sinde 1-ULP uyuşmazlık gösterir (Δ 7.1e-15 ve 5.7e-14) — alt bölüm
 sayısını çeviren bölme eşiği bıçak sırtı. İndirgenemez: hiçbir taşınabilir hypot
-Apple libm'i yeniden üretmez (aynı sınır için `arm-pow.ts` emsali). `sfdp.241_0`, motor hattı
-düzeyinde `accepted-divergences-engines.json` aracılığıyla kabul edilir.
+Apple libm'i yeniden üretmez (aynı sınır için `arm-pow.ts` emsali). `sfdp.241_0`, bir zamanlar bu sınıf altında kabul edilmişti,
+T28'den beri A1 sürüklenmesidir (bkz. yukarısı).
 `sfdp.42` bu sınıfın parçası **değildir**: kayıt girdisi A1'dir
 (`comparisons/sfdp-42.md`) ve yukarıdaki sonda onu açıklamadı.
 
-**fdp** xdot motor hattı (`parity-fdp.json`, yerel `dot -Kfdp -Txdot`, ±0.5) AYNI CDT
-eşdairesel beraberliğini aynı grafta, `241_0`'da ortaya çıkarır: kâhinin tam
-yönlendirme öncesi konumları enjekte edildiğinde artık, tek bir kenara
-(`0->1#0`, maxΔ 3.39pt) sınırlı 11 sayısal `unfilled_bezier` farkıdır. Düğüm
-konumları enjeksiyonla özdeş olduğundan ayrışma aşağı akışta, pathplan çoklu spline
-koridorundadır — circo/sfdp `241_0` ile aynı libm-1-ULP iç çember beraberliği
-(yukarıdaki tam rasyonel iç çember 185/185; 11 fark `f66ac638` ile değişmedi —
-enjeksiyonla yeniden doğrulanmadı). Kaldıraçlar zaten uygulandı
-(`src/pathplan/triang.ts` fmadd, `src/pathplan/route.ts:198` `Math.hypot`);
-beraberlik indirgenemez sayılır. `accepted-divergences-engines.json` `fdp.241_0` aracılığıyla
-kabul edilir. fdp'nin `2095`'i ise **A9 değil, A1-drift'tir**: tek boş adlı düğümü
+**fdp** xdot motor hattı (`parity-fdp.json`, yerel `dot -Kfdp -Txdot`, ±0.5)
+eskiden aynı grafı, `241_0`'ı, bu sınıftan gösteriyordu: kâhinin tam
+yönlendirme öncesi konumları enjekte edildiğinde tek bir kenarda (`0->1#0`,
+maxΔ 3.39pt) 11 sayısal `unfilled_bezier` farkı kalıyordu ve bunlar eşdairesel
+iç çember beraberliğine atfediliyordu. Bu atıf yanlıştı. `fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22), port tarafında hatalı bir
+aktarım buldu: GTS `swap_if_in_circle` iki yeni yüzünü
+`gts_face_new(en, e5, e2)` ve `gts_face_new(en, e3, e4)` olarak kurar (`cdt.c:509-511`)
+ve `gts_triangle_vertices` bir yüzü kenar sırasından okur; yerel sürüm bu yüzleri
+(v3, v4, v2) ve (v4, v3, v1) olarak listeler; port ikisini de bir kaydırılmış
+saklıyordu ve çoklu spline yönlendiricisinin `triCenter`'ı köşeleri bu sırayla topluyordu.
+Sıra düzeltilince fdp `241_0` her hatta yerel sürümle eşleşir (xdot geçer, json
+conformant, plain ve stderr eşit) ve `accepted-divergences-engines.json` ile
+`accepted-divergences-json.json` içindeki kayıtları emekli edilmiştir. fdp'nin `2095`'i ise **A9 değil, A1-drift'tir**: tek boş adlı düğümü
 enjekte etmek (nedenlendirme enjektörü `""` adlı düğümlerle eşleşecek şekilde
 düzeltildikten sonra) artığını sıfıra indirir — önceki “A9 kuyruğu”, bağlı kenarlarını
 sürükleyen, enjekte edilmemiş boş düğümdü. sfdp `2095` kabulü aynı kör noktaydı —
 düzeltilmiş enjektörle yapılan yeni bir sfdp nedenlendirme yenilemesi (2026-07-22)
 onun da 0'a enjekte edildiğini doğruladı ve kabulü kaldırıldı (yukarıdaki
 `2095 reclassified` notuna bakın).
+
+**sfdp `2168_3` — `poly_init` içinde Apple libm `sin` 1 ULP farkı (kapatıldı, indirgenemez).** **Etkilenen:** sfdp `2168_3` (yalnızca stderr: port bir fazladan `Pshortestpath` uyarısı verir; xdot motor hattı taraması geçer, çünkü iki taraf da düz çizgilere döner). **Ne farklı:** `shapes.c:2329` `temp = GAP / sin(gamma)` hesaplar (port `src/common/poly-sizing.ts:379`); gamma = 1.0092081171617377 için macOS libm 0.8464104077694533, V8 doğru yuvarlanmış 0.8464104077694532 değerini döndürür (1 ULP). Fark, multispline yönlendiricisine (`neatosplines.c:428,444` → `multispline.c:598`) yönlendirici noktası 10/18, y 28.391789367446776 ile …78 olarak ulaşır; eşçemberli yamuk (9, 10, 15, 16. noktalar) bu kez farklı bir Delaunay köşegeniyle üçgenlenir, böylece kenar 1'in koridor çokgeni farklılaşır ve `Pshortestpath` portun çokgeninde başarısız olur. **Neden kabul edildi:** yalnızca bu `sin` değerini enjekte eden kontrollü bir deney stderr'i, üçgenleri, çokgenleri ve xdot'u yerelle özdeş yapar (tek başına `atan2` yapmaz); sfdp konumları bit düzeyinde eşittir ve incircle yüklemi, pathplan, `makeObstacle` hypot'u ve ana hat halkası aritmetik sırası elenmiştir. Eşleşme, kaynağı herkese açık olmayan Apple `sin`'in bit-tam bir modelini gerektirir; hiçbir taşınabilir kod bunu yeniden üretemez (`arm-pow.ts` emsaliyle aynı sınır). **Kanıt:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), 2026-10-20 T13 satırı.
 
 ---
 
@@ -1141,6 +1149,22 @@ bildirir: bir port hatasını yalnızca bu mesajı taşıdığında kabul ederle
 üzerinde farklı bir başarısızlık, kabul edilmemiş bir hata olarak ortaya çıkar ve
 `registry-staleness.test.ts` girdiyi bayat olarak işaretler. Kanıt:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Dejenere girdide GTS Delaunay yüz sırası — indirgenemez {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Etkilenenler:** Girdi dejenere olduğunda GTS üzerinden üçgenleme yapan yerleşimler (`lib/neatogen/delaunay.c`; 16.1 oracle'ı GTS 0.7.6'yı bağlar): kenarlar üzerindeki noktalar veya eşçevresel ızgaralar.
+
+**Ne farklı.** Port, Delaunay yüzlerini oluşturulma sırasına göre numaralandırır ve her yüzün komşularını (`neigh`) aynı sırayla dizer. Yerel GTS yüzleri `GHashTable` sırasıyla numaralandırır: `closest_face` işaretçi anahtarlı bir tabloyu dolaşır; bu yüzden yüz kimlikleri ve komşu sırası öbek adreslerine bağlıdır ve çalıştırmalar arasında değişir. Yüz sırasından türetilen her şey bu nedenle belirli bir yerel çalıştırmadan farklı olabilir.
+
+**Neden kabul edildi.** Deterministik bir hedef yoktur. Yerel ikilinin tek bir dejenere girdi üzerindeki 60 çalıştırması, ASLR kapalı ve `MallocNanoZone=0` iken bile 22 farklı çıktı verdi; değişkenlik kodun altındaki oracle'ın özelliğidir, portun kusuru değildir. Yüzleri kimliğe göre değil, köşe kümesine göre karşılaştırın. Kanıt: 3. bölümün GTS notları (`.agent-notes/post-16-1-followups-3.md`, "GTS face vertex order and nondeterminism").
+
+### A12. Sözcük çözümleyici hatalarında `<stdin>: ` öneki yok {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Etkilenenler:** Sözcük çözümleyicinin (`aagerror`) stderr'e bildirdiği DOT sözdizimi hataları.
+
+**Ne farklı.** Standart girdiyi okuyan yerel `dot` CLI'ı `<stdin>: syntax error in line N …` yazdırır; port aynı iletiyi `<stdin>: ` öneki olmadan yazdırır.
+
+**Neden kabul edildi.** `aagerror` (`lib/cgraph/scan.l:157`) `InputFile: ` önekini yalnızca `InputFile` ayarlıysa ekler. CLI, standart girdiyi okurken bunu `<stdin>` olarak ayarlar; portun yansıttığı kütüphane girişi `agmemread` ise onu ayarsız bırakır ve önek yazdırmaz. Portta CLI yoktur, dolayısıyla bildirilecek bir şey yoktur. stderr sondası karşılaştırmada öneki normalleştirir.
 
 ---
 

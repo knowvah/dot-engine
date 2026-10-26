@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -214,8 +214,10 @@ Spre deosebire de prima trecere, fiecare rând divergent din universul de 929 de
 atribuit individual față de graphviz 16.1.0: instrumentul de injecție
 (`test/corpus/attribute-divergence.ts`) alimentează portarea cu `ND_pos` dinaintea rutării din
 oracolul nativ și compară din nou, iar fiecare id divergent curent este `drift-exonerated` (rutarea
-și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția a trei. Trei sunt reziduuri acceptate separat pe id: egalitatea la testul incircle din CDT pentru
-`241_0` pe fdp și sfdp și aspectul NaN al lui sfdp `2556`. fdp `2471` și sfdp `2371`
+și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția a două. Două sunt reziduuri acceptate separat pe id: deriva `pow` din libm-ul gazdei a lui sfdp `241_0`
+(rediagnosticată de T28) și aspectul NaN al lui sfdp `2556`. fdp `241_0` trece de la `fix(T9): start
+swapped cdt faces at the new diagonal as gts does` (vedeți paragraful despre fdp
+de la A9). fdp `2471` și sfdp `2371`
 păstrau anterior poziții ale etichetelor de muchie (`lp`) care difereau după injecție,
 adică plasatorul de xlabel alegea un candidat diferit. `2471` s-a rezolvat când
 `dotneato_closest` din portare a început să rotunjească precum evaluarea de Casteljau
@@ -888,14 +890,15 @@ ar cere reproducerea în JS a rotunjirii exacte `sin`/`cos` din libm Apple.
 multispline routing geometry`) a oglindit-o. `241_0` din twopi și neato — pe care această clasă
 le atribuise egalității cocirculare de mai jos — au devenit **conforme**
 (acceptări retrase), iar sfdp `42` s-a dovedit că nu are nicio egalitate (este derivă
-A1, vedeți [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` din circo, fdp
-și sfdp încă divergă, cu reziduuri neschimbate sau reduse; atribuirea lor
-egalității de mai jos este anterioară lui `f66ac638` și **nu a fost reverificată
-prin injecție de poziție** de când acea remediere a arătat că aceeași atribuire era greșită pentru
-twopi/neato.
+A1, vedeți [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` din fdp
+a devenit **conform** mai târziu, după o a doua remediere de partea portării în triangulare
+(ordinea vârfurilor fețelor după o interschimbare de muchie; vedeți paragraful despre fdp de mai jos). `241_0` din circo a devenit **conform** cu `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon`: `Math.sin(9π/8)` din V8 este la 1 ULP de valoarea libm rotunjită
+corect, ceea ce muta un colț al fiecărui obstacol eliptic și inversa coridorul (acceptare
+retrasă). `241_0` din sfdp a fost rediagnosticat de aceeași sarcină și acum este A1
+(vedeți paragraful despre sfdp de mai jos).
 
-**Afectate:** `241_0` (circo Δ≈0.2 prin inversarea coridorului pe muchia `1->2`; fdp
-și sfdp `241_0` pe fluxurile de motor de mai jos); `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
+**Afectate:** `2343`, `2239`, `share-b29`, `windows-b29` (twopi,
 câte 1–2 diferențe de poziție a etichetelor de muchie — ULP-ul libm de 1 apare în
 trigonometria vârfurilor unitare din `poly_init` (`hypot`/`atan2`/`sin`), aduce înălțimea
 calculată a unui nod cu un ULP dincolo de limitarea la dimensiunea minimă pe care oracolul
@@ -936,7 +939,8 @@ sub această intrare, au fost *remediate* pe 2026-07-11 prin contracția fmadd f
 de diferențe de operații de desenare, Δ≈0.2pt pe bezier-ul rutat al muchiei `1->2` — aceeași
 inversare de coridor prin diagonala CDT; jurnalul de decizii, intrarea din 2026-07-10 „CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed”). Acceptate la nivelul fluxului de motor prin
+filed”; **retras 2026-10-23** — conform de când portarea ia `cos`/`sin` din libm-ul gazdei
+pentru octogonul obstacolului, vedeți re-baselining-ul la 16.1 de mai sus). Acceptate la nivelul fluxului de motor prin
 `test/corpus/accepted-divergences-engines.json`, îmbinat în
 `PARITY-twopi.md`/`PARITY-circo.md` de `parity-report.ts` — aceeași îmbinare pe care
 o execută `accepted.ts` pentru `PARITY-dot.md` al fluxului dot.
@@ -1064,22 +1068,21 @@ aduce `node2.y` cu un singur ULP deasupra lui `node8.y` în jurul valorii exact 
 acea egalitate exactă; pozițiile și casetele nodurilor sunt în rest identice bit cu bit cu
 oracolul; **retras la 2026-10-18** — este conform de când DIST2 din portare folosește forma fuzionată a lui clang, care decide această egalitate exactă ca C).
 
-**Fluxul de motor sfdp — egalitate FP la o muchie (`241_0`).**
+**Fluxul de motor sfdp — `241_0` (reclasificat A9 → A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> Fluxul xdot de motor sfdp (`parity-sfdp.json`,
-`dot -Ksfdp -Txdot` nativ, ±0.5) scoate la iveală egalitatea cocirculară incircle din CDT odată ce
-pozițiile native exacte dinaintea rutării sunt injectate (deci divergența NU este
-derivă iterativă — vedeți clasa A1-drift — ci o egalitate discretă de predicat):
+`dot -Ksfdp -Txdot` nativ, ±0.5) lista aici `241_0` ca egalitate cocirculară incircle din
+CDT. `fix(T28)` l-a rediagnosticat cu un sfdp nativ instrumentat:
 
-- `241_0` — atribuit egalității cocirculare incircle din CDT (coridorul multispline;
-  nereverificat după `f66ac638`, vedeți re-baselining-ul la 16.1 de mai sus).
-  Reziduul este o **inversare a numărului de segmente**: 7 diferențe de operații de desenare pe muchia 1->2,
-  `ptCount 8 vs 20` (20 de diferențe înainte de `f66ac638`) — coridorul reușește cu
-  un spline de N puncte acolo unde build-ul nativ revine la o rută simplă mai scurtă
-  (sau invers), ca la intrarea circo `241_0` de mai sus. Portarea emulează deja contracția arm64
-  `fmadd` în predicatul incircle/`ccw` (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) și folosește Delaunay cu incircle robust; reziduul este
-  ULP-ul de 1 al `sin`/`hypot` din V8 față de libm Apple în intrarea predicatului, pe care niciun
-  cod portabil nu îl reproduce.
+- `241_0` — 7 diferențe de operații de desenare pe muchia 1->2 (`ptCount 8 vs 20`).
+  Aranjarea derivă de la primul termen de forță repulsivă, unde `pow(dist, 2)` din libm
+  macOS returnează cu 1 ULP sub rotunjirea corectă (cel mai grosier nivel, iterația 22;
+  vedeți intrarea despre `pow` din libm-ul gazdei la lacunele de fidelitate a aranjării), iar
+  răcirea adaptivă o amplifică în poziții pe muchia de cuțit, în care muchia 1->2 este
+  rutată diferit. Injectarea valorilor native `pow` face identice fiecare linie de urmă și
+  xdot-ul final. Reziduul de rutare văzut cu pozițiile injectate a fost parțial un artefact
+  al injecției și parțial `Math.sin(9π/8)` din V8 în octogonul obstacolului, pe care
+  portarea îl ia acum din libm-ul gazdei (remedierea care a făcut conform și circo
+  `241_0`). Ce rămâne este deriva A1.
 
 > **sfdp `42` reclasificat A9 → derivă A1 (sincronizarea cu graphviz 16.1).** Era listat
 > aici ca o egalitate incircle din CDT/libm. Misiunea a constatat altceva
@@ -1108,27 +1111,33 @@ derivă iterativă — vedeți clasa A1-drift — ci o egalitate discretă de pr
 de deviație a muchiilor plate arată un dezacord de 1 ULP la 2 din 6 (Δ 7.1e-15 și
 5.7e-14) — muchia de cuțit a pragului de împărțire care inversează numărul de subdiviziuni.
 Ireductibil: niciun hypot portabil nu reproduce libm Apple (precedentul `arm-pow.ts`
-pentru aceeași limită). `sfdp.241_0` este acceptat la nivelul fluxului de motor prin `accepted-divergences-engines.json`.
+pentru aceeași limită). `sfdp.241_0`, acceptat cândva în această clasă,
+este derivă A1 din T28 (vedeți mai sus).
 `sfdp.42` **nu** face parte din această clasă: intrarea sa din registru este A1 (`comparisons/sfdp-42.md`), iar
 sonda de mai sus nu a explicat-o.
 
 Fluxul xdot de motor **fdp** (`parity-fdp.json`, `dot -Kfdp -Txdot` nativ,
-±0.5) scoate la iveală ACEEAȘI egalitate cocirculară CDT pe același graf, `241_0`: cu
-pozițiile exacte dinaintea rutării ale oracolului injectate, reziduul este de 11 diferențe numerice
-`unfilled_bezier`, limitate la o singură muchie (`0->1#0`, maxΔ 3.39pt). Deoarece
-pozițiile nodurilor sunt injectate identic, divergența este în aval, în
-coridorul multispline din pathplan — aceeași egalitate incircle cu 1 ULP libm ca la
-circo/sfdp `241_0` (incircle în numere raționale exacte 185/185 de mai sus; 11 diferențe neschimbate de
-`f66ac638` — nereverificat prin injecție). Pârghiile
-sunt deja aplicate (`src/pathplan/triang.ts` fmadd, `Math.hypot` în `src/pathplan/route.ts:198`);
-egalitatea este tratată ca ireductibilă. Acceptat prin `accepted-divergences-engines.json`
-`fdp.241_0`. În schimb, `2095` din fdp este **A1-drift, nu A9**: injectarea
+±0.5) arăta același graf, `241_0`, ca fiind din această clasă: cu pozițiile
+exacte dinaintea rutării ale oracolului injectate, rămâneau 11 diferențe numerice
+`unfilled_bezier` pe o singură muchie (`0->1#0`, maxΔ 3.39pt), atribuite
+egalității incircle cocirculare. Această atribuire a fost greșită. `fix(T9): start swapped
+cdt faces at the new diagonal as gts does` (2026-10-22) a găsit o portare
+greșită de partea portării: `swap_if_in_circle` din GTS își construiește cele două fețe noi ca
+`gts_face_new(en, e5, e2)` și `gts_face_new(en, e3, e4)` (`cdt.c:509-511`),
+iar `gts_triangle_vertices` citește o față din ordinea muchiilor ei, deci nativul le listează
+ca (v3, v4, v2) și (v4, v3, v1); portarea le stoca pe ambele rotite cu o poziție,
+iar `triCenter` din routerul multispline aduna vârfurile în această ordine. Cu
+ordinea corectată, fdp `241_0` se potrivește cu nativul pe fiecare flux (xdot trece, json
+conform, plain și stderr egale), iar intrările sale din `accepted-divergences-engines.json`
+și `accepted-divergences-json.json` sunt retrase. În schimb, `2095` din fdp este **A1-drift, nu A9**: injectarea
 singurului nod cu nume gol (după ce injectorul de atribuire a fost remediat pentru a potrivi
 nodurile cu numele `""`) reduce rezidul la zero — „coada A9” de dinainte era
 nodul gol neinjectat care își trăgea după el muchiile incidente. Acceptarea sfdp `2095` a avut
 același punct orb — o regenerare nouă a atribuirii sfdp (2026-07-22) cu injectorul remediat
 a confirmat că și aceasta se injectează la 0, iar acceptarea ei a fost eliminată (vedeți nota
 `2095 reclassified` de mai sus).
+
+**sfdp `2168_3` — `sin` din libm Apple cu 1 ULP în `poly_init` (închis, ireductibil).** **Afectat:** sfdp `2168_3` (doar stderr: portul emite un avertisment `Pshortestpath` în plus; parcursul pistei xdot trece, deoarece ambele părți revin la linii drepte). **Ce diferă:** `shapes.c:2329` calculează `temp = GAP / sin(gamma)` (port `src/common/poly-sizing.ts:379`); pentru gamma = 1.0092081171617377, libm din macOS returnează 0.8464104077694533, V8 valoarea rotunjită corect 0.8464104077694532 (1 ULP). Diferența ajunge în routerul multispline (`neatosplines.c:428,444` → `multispline.c:598`) ca punct 10/18 al routerului, y 28.391789367446776 față de …78; trapezul cocircular (punctele 9, 10, 15, 16) este apoi triangulat cu altă diagonală Delaunay, astfel încât poligonul coridorului muchiei 1 diferă, iar `Pshortestpath` eșuează pe poligonul portului. **De ce este acceptat:** un experiment controlat care injectează doar acea valoare `sin` face stderr, triunghiurile, poligoanele și xdot identice cu cele native (`atan2` singur nu); pozițiile sfdp sunt identice bit cu bit, iar predicatul incircle, pathplan, hypot din `makeObstacle` și ordinea aritmetică a inelului de contur au fost excluse. Potrivirea cere un model exact la nivel de bit al `sin` din Apple, al cărui cod sursă nu este public; niciun cod portabil nu îl poate reproduce (aceeași limită ca precedentul `arm-pow.ts`). **Dovadă:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), rândul 2026-10-20 T13.
 
 ---
 
@@ -1158,6 +1167,22 @@ nu un verdict `diverged`, așa că intrările din
 aceasta poartă acest mesaj. Un alt eșec pe `2784` ar apărea ca o eroare neacceptată,
 iar `registry-staleness.test.ts` ar semnala intrarea ca perimată. Dovezi:
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Ordinea fețelor Delaunay din GTS pe intrare degenerată — ireductibilă {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Afectate:** Aranjamente care triangulează prin GTS (`lib/neatogen/delaunay.c`; oracolul 16.1 leagă GTS 0.7.6) când intrarea este degenerată: puncte aflate pe muchii sau grile cociclice.
+
+**Ce diferă.** Portul numerotează fețele Delaunay și ordonează vecinii fiecărei fețe (`neigh`) după ordinea creării. GTS nativ numerotează fețele în ordinea `GHashTable`: `closest_face` parcurge un tabel indexat după pointer, deci id-urile fețelor și ordinea vecinilor depind de adresele din heap și diferă de la o rulare la alta. Tot ce derivă din ordinea fețelor poate, așadar, diferi de o anumită rulare nativă.
+
+**De ce este acceptată.** Nu există o țintă deterministă. 60 de rulări ale binarului nativ pe o singură intrare degenerată au dat 22 de ieșiri distincte, chiar cu ASLR dezactivat și `MallocNanoZone=0`; variația este o proprietate a oracolului aflată sub cod, nu un defect al portului. Comparați fețele după mulțimea de vârfuri, nu după id. Dovadă: notele GTS din partea 3 (`.agent-notes/post-16-1-followups-3.md`, „GTS face vertex order and nondeterminism”).
+
+### A12. Fără prefixul `<stdin>: ` la erorile lexerului {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Afectate:** Erorile de sintaxă DOT raportate de lexer (`aagerror`) pe stderr.
+
+**Ce diferă.** CLI-ul nativ `dot` care citește intrarea standard afișează `<stdin>: syntax error in line N …`; portul afișează același mesaj fără prefixul `<stdin>: `.
+
+**De ce este acceptată.** `aagerror` (`lib/cgraph/scan.l:157`) adaugă `InputFile: ` doar când `InputFile` este setat. CLI-ul îl setează la `<stdin>` la citirea intrării standard; punctul de intrare de bibliotecă `agmemread`, pe care portul îl oglindește, îl lasă nesetat și nu afișează prefix. Portul nu are CLI, deci nu e nimic de raportat. Sonda stderr normalizează prefixul la comparare.
 
 ---
 

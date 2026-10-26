@@ -169,9 +169,9 @@ describe('tokenize — entity decoding in text runs', () => {
     expect(toks).toEqual([{ type: 'text', value: 'a &<> b' }]);
   });
 
-  it('leaves an entity-like run that is not an XML name literal', () => {
-    const toks = tokenize('&not a name; x');
-    expect(toks).toEqual([{ type: 'text', value: '&not a name; x' }]);
+  // Native: "not well-formed (invalid token) in line 1" (expat's scanRef stops at the space).
+  it('rejects an entity-like run that is not an XML name literal', () => {
+    expect(() => tokenize('&not a name; x')).toThrow('not well-formed (invalid token)');
   });
 
   it('accepts the XML predefined apos entity', () => {

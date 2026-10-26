@@ -1,5 +1,5 @@
 ---
-sourceHash: 545227fb3a0a91494ed7a2c299e5a9ca93a594d68d99e0596f743e7597dfbae9
+sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -127,7 +127,7 @@ Vea vältimiseks eemaldage atribuut või muutke see toetatud väärtuseks.
 
 | Mootor | Atribuut ja väärtus | Käivitub, kui | Vajalik Graphvizi funktsioon |
 |--------|--------------------|---------------|-------------------------|
-| neato | `mode=hier` | Alati (pärast seda, kui graafis on 2+ sõlme ja `maxiter` ei ole negatiivne) | Hierarhiline pingemajoriseerimine (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Ainult siis, kui `model` on `subset` või `circuit` (pärast seda, kui graafis on 2+ sõlme ja `maxiter` ei ole negatiivne) | Hierarhiline pingemajoriseerimine (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Ainult siis, kui Graphviz ehitaks piirangud: `diredgeconstraints` on tõene või `hier*`, `overlap=ipsep` või graafil on ülemise taseme klaster. Ilma piiranguteta töötab see pingemajoriseerimisena, nagu Graphvizis | Piiranguga majoriseerimine (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` on `major` (vaikimisi) või `ipsep` | Nutikas lähtestamine (`smart_ini`). Režiimis `mode=KK` või `mode=sgd` logib see üks kord renderduse kohta `start=0 not supported with mode=self - ignored`, nagu Graphviz |
 | neato | `model=subset` | `mode` on `major` või `KK` | Alamhulga kaugusemudel |

@@ -1,5 +1,5 @@
 ---
-sourceHash: 545227fb3a0a91494ed7a2c299e5a9ca93a594d68d99e0596f743e7597dfbae9
+sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -130,7 +130,7 @@ podporovanou hodnotu.
 
 | Modul | Atribut a hodnota | Spustí se, když | Potřebná funkce Graphviz |
 |-------|-------------------|-----------------|--------------------------|
-| neato | `mode=hier` | Vždy (poté, co graf má 2+ uzlů a `maxiter` není záporné) | Hierarchická majorizace stresu (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Pouze když `model` je `subset` nebo `circuit` (poté, co graf má 2+ uzlů a `maxiter` není záporné) | Hierarchická majorizace stresu (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Pouze když by Graphviz sestavil omezení: `diredgeconstraints` je pravdivé nebo `hier*`, `overlap=ipsep`, nebo graf má cluster nejvyšší úrovně. Bez omezení běží jako majorizace stresu, stejně jako v Graphviz | Omezená majorizace (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` je `major` (výchozí) nebo `ipsep` | Chytrá inicializace (`smart_ini`). Pod `mode=KK` nebo `mode=sgd` jednou za vykreslení zaloguje `start=0 not supported with mode=self - ignored`, stejně jako Graphviz |
 | neato | `model=subset` | `mode` je `major` nebo `KK` | Model vzdáleností subset |

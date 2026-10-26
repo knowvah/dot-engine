@@ -15,6 +15,7 @@
 import type { Graph } from '../../model/graph.js';
 import { lateDouble, lateInt } from '../../common/nodeinit.js';
 import { type XParams, aggetGraph } from './fdp-model.js';
+import { registerRenderState } from '../../common/render-state.js';
 
 // ---------------------------------------------------------------------------
 // Constants — @see lib/fdpgen/tlayout.c:96-101, lib/neatogen/neato.h:27-30
@@ -90,12 +91,18 @@ export interface TParms {
   loopcnt: number;
 }
 
-/** Module-level mutable state, mirroring the C static. @see tlayout.c:parms */
-export const parms: TParms = {
+/** C's zero-initialized static parms_t. */
+const PARMS_INIT: Readonly<TParms> = {
   useGrid: 0, useNew: 0, seed: 0, numIters: 0, maxIters: 0, unscaled: 0,
   C: 0, Tfact: 0, K: 0, T0: 0, smode: 0, Cell: 0, Wd: 0, Ht: 0,
   pass1: 0, loopcnt: 0,
 };
+
+/** Module-level mutable state, mirroring the C static. @see tlayout.c:parms */
+export const parms: TParms = { ...PARMS_INIT };
+// fdpParms is not reset: it is the -L command-line configuration (args.c),
+// and the one field a render writes (K) is set by fdpInitParams before any read.
+registerRenderState(() => { Object.assign(parms, PARMS_INIT); });
 
 /** Linear cooling schedule. @see lib/fdpgen/tlayout.c:cool */
 export function cool(t: number): number {

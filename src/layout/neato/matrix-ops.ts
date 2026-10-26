@@ -10,7 +10,21 @@
  * @see lib/neatogen/matrix_ops.c
  */
 
+import { crand } from '../../common/crand.js';
+import { fma as softFma } from '../../common/fma.js';
+import type { VtxData } from './dijkstra.js';
+
 const fr = Math.fround;
+
+/**
+ * fmadd: round(a * b + c) once. `common/fma` splits operands (Dekker), which
+ * turns an infinite operand into NaN where the hardware fmadd gives inf, so
+ * non-finite products and addends take the plain expression (exact then).
+ */
+export function fma(a: number, b: number, c: number): number {
+  const p = a * b;
+  return Number.isFinite(p) && Number.isFinite(c) ? softFma(a, b, c) : p + c;
+}
 
 /** Subtract the mean (double precision). @see matrix_ops.c:orthog1 */
 export function orthog1(n: number, vec: Float64Array): void {
@@ -109,4 +123,128 @@ export function invertSqrtVec(n: number, vec: Float32Array): void {
   for (let i = 0; i < n; i++) {
     if (vec[i]! > 0) vec[i] = 1 / fr(Math.sqrt(vec[i]!));
   }
+}
+
+// ---------------------------------------------------------------------------
+// Double-precision helpers (vectors_inner_product, scadd, norm, ...).
+//
+// The 16.1 oracle is built `-O3 -flto=thin` for arm64, so each helper is
+// inlined into every call site and compiled there on its own: a vectorized
+// reduction rounds the products of its leading `block * floor(n / block)`
+// elements before the in-order adds (no reassociation is allowed), while its
+// scalar remainder (or a whole scalar loop) contracts `acc += a * b` to fmadd.
+// The block width is therefore a property of the call site; callers pass it,
+// named after the site, and `BLOCK_NONE` stands for a plain scalar loop.
+// Elementwise `x += a * b` (scadd) is fmadd/fmla in every shape.
+// ---------------------------------------------------------------------------
+
+/** Block width of a call site compiled as a scalar loop (all fmadd). */
+export const BLOCK_NONE = 1;
+
+/**
+ * Sum of `a[i] * b[i]` over `n` terms, the first `block * floor(n / block)`
+ * unfused and the rest fused, as the oracle's inlined copy of the site.
+ * @see lib/neatogen/matrix_ops.c:vectors_inner_product
+ */
+export function innerProduct(n: number, v1: Float64Array, v2: Float64Array, block: number): number {
+  let result = 0;
+  const blocked = block === BLOCK_NONE ? 0 : n - (n % block);
+  let i = 0;
+  for (; i < blocked; i++) result += v1[i]! * v2[i]!;
+  for (; i < n; i++) result = fma(v1[i]!, v2[i]!, result);
+  return result;
+}
+
+/** vec1[0..end] += fac * vec2[0..end] (fmadd). @see lib/neatogen/matrix_ops.c:scadd */
+export function scadd(vec1: Float64Array, end: number, fac: number, vec2: Float64Array): void {
+  for (let i = 0; i <= end; i++) vec1[i] = fma(fac, vec2[i]!, vec1[i]!);
+}
+
+/** 2-norm of vec[0..end]. @see lib/neatogen/matrix_ops.c:norm */
+export function norm(vec: Float64Array, end: number, block: number): number {
+  return Math.sqrt(innerProduct(end + 1, vec, vec, block));
+}
+
+/** result = vector * alpha (aliasing allowed). @see lib/neatogen/matrix_ops.c:vectors_scalar_mult */
+export function vectorsScalarMult(
+  n: number, vector: Float64Array, alpha: number, result: Float64Array,
+): void {
+  for (let i = 0; i < n; i++) result[i] = vector[i]! * alpha;
+}
+
+/** dest = source. @see lib/neatogen/matrix_ops.c:copy_vector */
+export function copyVector(n: number, source: Float64Array, dest: Float64Array): void {
+  for (let i = 0; i < n; i++) dest[i] = source[i]!;
+}
+
+/** result = v1 + v2 (aliasing allowed). @see lib/neatogen/matrix_ops.c:vectors_addition */
+export function vectorsAddition(
+  n: number, v1: Float64Array, v2: Float64Array, result: Float64Array,
+): void {
+  for (let i = 0; i < n; i++) result[i] = v1[i]! + v2[i]!;
+}
+
+/** result = v1 - v2 (aliasing allowed). @see lib/neatogen/matrix_ops.c:vectors_subtraction */
+export function vectorsSubtraction(
+  n: number, v1: Float64Array, v2: Float64Array, result: Float64Array,
+): void {
+  for (let i = 0; i < n; i++) result[i] = v1[i]! - v2[i]!;
+}
+
+/** Largest |vector[i]| (start -1e50). @see lib/neatogen/matrix_ops.c:max_abs */
+export function maxAbs(n: number, vector: Float64Array): number {
+  let maxVal = -1e50;
+  for (let i = 0; i < n; i++) {
+    const a = Math.abs(vector[i]!);
+    if (a > maxVal) maxVal = a; // fmax: a NaN operand is ignored, as `>` does
+  }
+  return maxVal;
+}
+
+/**
+ * result = matrix * vector for an n x n float** matrix and double vector;
+ * each row's reduction is blocked as the call site was compiled.
+ * @see lib/neatogen/matrix_ops.c:right_mult_with_vector_f
+ */
+export function rightMultWithVectorF(
+  matrix: readonly Float32Array[], n: number, vector: Float64Array, result: Float64Array,
+  block: number,
+): void {
+  const blocked = block === BLOCK_NONE ? 0 : n - (n % block);
+  for (let i = 0; i < n; i++) {
+    const row = matrix[i]!;
+    let res = 0;
+    let j = 0;
+    for (; j < blocked; j++) res += row[j]! * vector[j]!;
+    for (; j < n; j++) res = fma(row[j]!, vector[j]!, res);
+    result[i] = res;
+  }
+}
+
+/**
+ * result = matrix * vector over the sparse `vtx_data` rows (`ewgts` weights).
+ * The loop is scalar in the oracle: every term is an fmadd.
+ * @see lib/neatogen/matrix_ops.c:right_mult_with_vector
+ */
+export function rightMultWithVector(
+  matrix: VtxData[], n: number, vector: Float64Array, result: Float64Array,
+): void {
+  for (let i = 0; i < n; i++) {
+    let res = 0;
+    const row = matrix[i]!;
+    for (let j = 0; j < row.nedges; j++) res = fma(row.ewgts[j]!, vector[row.edges[j]!]!, res);
+    result[i] = res;
+  }
+}
+
+/** `#define RANGE` @see lib/neatogen/matrix_ops.c */
+const RANGE = 500;
+
+/**
+ * `vec[i] = rand() % RANGE`, then orthogonalize against 1.
+ * @see lib/neatogen/matrix_ops.c:init_vec_orth1
+ */
+export function initVecOrth1(n: number, vec: Float64Array): void {
+  for (let i = 0; i < n; i++) vec[i] = crand() % RANGE;
+  orthog1(n, vec);
 }

@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -198,10 +198,11 @@ neato の未移植だった `user_pos`/`P_SET` の処理、エンジン初期化
 最初のスイープの時点と違い、929 件の母集団の diverged のすべての行が graphviz 16.1.0 に対して
 個別に原因特定されています。注入ハーネス (`test/corpus/attribute-divergence.ts`) が、
 ネイティブオラクルのルーティング前の `ND_pos` をポートに与えて再比較します。現在の
-diverged な ID は、3 件を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
-ポートのルーティングと出力がオラクルを正確に再現する）です。そのうち 3 件は個別に
-受け入れられた ID ごとの残差で、fdp と sfdp での `241_0` の CDT の内接円の同順位と、
-sfdp `2556` の NaN レイアウトです。fdp `2471` と sfdp `2371` は、以前は注入後もエッジラベルの位置 (`lp`) が一致せず、xlabel 配置器が別の候補を選んでいました。`2471` は、ポートの `dotneato_closest` が clang の融合された de Casteljau 評価および DIST2 と同じ丸めをするようになって解消しました。それまではエッジラベルのアンカーが 1〜2 ULP ずれ、配置器の厳密な包含判定が反転していました。`2371` は、ポートの R 木が C と同様に矩形を値としてコピーするようになって解消しました。`2471` のネイティブの fdp レイアウトは実行ごとに変わるため、その行は 1 回の実行を記録したものです。（sfdp の `42` は A1 のずれです。
+diverged な ID は、2 件を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
+ポートのルーティングと出力がオラクルを正確に再現する）です。そのうち 2 件は個別に
+受け入れられた ID ごとの残差で、sfdp の `241_0` のホスト libm `pow` のずれ（T28 で再診断）と、
+sfdp `2556` の NaN レイアウトです。fdp の `241_0` は
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` 以降パスしています（A9 の下の fdp の段落を参照）。fdp `2471` と sfdp `2371` は、以前は注入後もエッジラベルの位置 (`lp`) が一致せず、xlabel 配置器が別の候補を選んでいました。`2471` は、ポートの `dotneato_closest` が clang の融合された de Casteljau 評価および DIST2 と同じ丸めをするようになって解消しました。それまではエッジラベルのアンカーが 1〜2 ULP ずれ、配置器の厳密な包含判定が反転していました。`2371` は、ポートの R 木が C と同様に矩形を値としてコピーするようになって解消しました。`2471` のネイティブの fdp レイアウトは実行ごとに変わるため、その行は 1 回の実行を記録したものです。（sfdp の `42` は A1 のずれです。
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md) を参照。）後述のクラスの受け入れは、この潔白とされた集合を正式化するものです。
 最新の件数はエンジン別のダッシュボードにあります
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
@@ -825,12 +826,13 @@ C のソースのセマンティクスより下の、縮減不能な浮動小数
 geometry`）がそれを再現しました。このクラスが下記の同一円周上の同順位に帰していた twopi と
 neato の `241_0` は **conformant** になり（受け入れは退役）、sfdp の `42` には同順位が
 まったくなかったことが判明しました（A1 のずれです。[`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)
-を参照）。circo、fdp、sfdp の `241_0` は依然として乖離しており、残差は変わらないか縮小して
-います。下記の同順位への帰属は `f66ac638` より前のもので、この修正が twopi/neato について
-同じ帰属を誤りだと示して以来、**位置の注入による再検証は行われていません**。
+を参照）。fdp の `241_0` はその後、三角分割に対するポート側の 2 回目の修正（辺の入れ替え後の面の頂点順序。下の fdp の段落を参照）により **conformant** になりました。circo の `241_0` は `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon` により **conformant** になりました。V8 の `Math.sin(9π/8)` は
+正しく丸められた libm の値から 1 ULP ずれており、それがすべての楕円障害物の角の 1 つを
+動かして回廊を反転させていました（受け入れは退役）。sfdp の `241_0` は同じタスクで
+再診断され、現在は A1 です（下の sfdp の段落を参照）。
 
-**影響を受けるもの：** `241_0`（circo Δ≈0.2。エッジ `1->2` の回廊の反転による。fdp と
-sfdp の `241_0` は後述のエンジントラックで）、`2343`、`2239`、`share-b29`、`windows-b29`（twopi、
+**影響を受けるもの：** `2343`、`2239`、`share-b29`、`windows-b29`（twopi、
 それぞれ 1〜2 個のエッジラベルの位置の差 — libm の 1 ULP は
 `poly_init` の単位頂点の三角関数 (`hypot`/`atan2`/`sin`) で生じ、あるノードの
 計算された高さを、オラクルがちょうど着地する最小サイズのクランプより 1 ULP 超過させ、
@@ -867,7 +869,8 @@ CDT 自体は潔白です。ポートの `mkSurface` は GTS 0.7.6 の逐次挿�
 オペレーションの差分 41 件、エッジ `1->2` のルート済みベジェで Δ≈0.2pt — 同じ
 CDT の対角線による回廊の反転。意思決定ジャーナル、2026-07-10 の「CDT rewritten as
 faithful GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9
-filed」エントリー）。エンジントラックのレベルでは
+filed」エントリー。**2026-10-23 に退役** — ポートが障害物の 8 角形にホストの libm の
+`cos`/`sin` を使うようになって conformant、上の 16.1 での再ベースラインを参照）。エンジントラックのレベルでは
 `test/corpus/accepted-divergences-engines.json` により受け入れられ、
 `parity-report.ts` によって `PARITY-twopi.md`/`PARITY-circo.md` に結合されます — dot トラックの
 `PARITY-dot.md` に対して `accepted.ts` が行うのと同じ結合です。
@@ -983,21 +986,20 @@ conformant であり、14 点対 8 点の回廊の反転は同順位ではなく
 `closestSide` の dyna のヘッドポート選択が、その厳密な同順位で TOP/BOTTOM を反転させる。
 ノードの位置とボックスは、それ以外ではオラクルとビット単位で同一。**2026-10-18 に廃止** — ポートの DIST2 が clang の融合形式を取り、この厳密な同順位を C と同じく解決するようになって一致しています）。
 
-**sfdp のエンジントラック — エッジの浮動小数点の同順位（`241_0`）。**
+**sfdp のエンジントラック — `241_0`（A9 → A1 に再分類、2026-10-23）。**
 <a id="a9-sfdp-fp-ties"></a> sfdp の xdot エンジントラック（`parity-sfdp.json`、
-ネイティブの `dot -Ksfdp -Txdot`、±0.5）は、ネイティブのルーティング前の正確な位置を
-注入すると、CDT の同一円周上の内接円の同順位を示します（したがって乖離は反復的なずれではなく
-— A1-drift クラスを参照 — 離散的な述語の同順位です）。
+ネイティブの `dot -Ksfdp -Txdot`、±0.5）は、ここで `241_0` を CDT の同一円周上の内接円の
+同順位として挙げていました。`fix(T28)` は計装したネイティブの sfdp でこれを再診断しました。
 
-- `241_0` — CDT の同一円周上の内接円の同順位に帰される（マルチスプラインの回廊。`f66ac638` の
-  後は再検証されていません。上の 16.1 での再ベースラインを参照）。残差は**セグメント数の反転**
-  です。エッジ 1->2 での描画オペレーションの差分 7 件、`ptCount 8 vs 20`（`f66ac638` の前は
-  差分 20 件）— ネイティブのビルドがより短い通常のルートにフォールバックするところで、回廊は
-  N 点のスプラインで成功します（またはその逆）。上の circo の `241_0` のエントリーと同様です。ポートはすでに内接円/`ccw` の述語での arm64 の
-  `fmadd` の融合をエミュレートしており（`src/pathplan/triang.ts`、
-  `src/common/fma.ts`）、ロバストな内接円のドロネーを使っています。残差は、
-  述語の入力における V8 対 Apple libm の `sin`/`hypot` の 1 ULP であり、移植可能な
-  コードでは再現できません。
+- `241_0` — エッジ 1->2 での描画オペレーションの差分 7 件（`ptCount 8 vs 20`）。レイアウトは、
+  macOS の libm の `pow(dist, 2)` が正しい丸めより 1 ULP 小さい値を返す最初の斥力の項
+  （最も粗いレベル、反復 22。レイアウト忠実度のギャップの下のホスト libm の `pow` の
+  エントリーを参照）からずれ始め、適応的な冷却がそれを刃の上のような位置へと増幅し、
+  そこではエッジ 1->2 が異なるルートを取ります。ネイティブの `pow` の値を注入すると、
+  すべてのトレース行と最終的な xdot が一致します。注入した位置で見えたルーティングの
+  残差は、一部が注入の産物で、一部が障害物の 8 角形での V8 の `Math.sin(9π/8)` であり、
+  ポートは現在これをホストの libm から取っています（circo の `241_0` も conformant に
+  した修正です）。残るのは A1 のずれです。
 
 > **sfdp の `42` を A9 → A1-drift に再分類（graphviz 16.1 同期）。** 以前はここで CDT/libm の
 > 内接円の同順位として列挙されていました。ミッションの調査で別の事実が分かりました
@@ -1025,28 +1027,34 @@ conformant であり、14 点対 8 点の回廊の反転は同順位ではなく
 6 件中 2 件で 1 ULP の不一致が示されます（Δ 7.1e-15 と
 5.7e-14）— 分割数を反転させる、分割閾値の刃の上の状態です。
 縮減不能：Apple libm を再現する移植可能な hypot はありません（同じ境界についての
-`arm-pow.ts` の前例）。`sfdp.241_0` は、エンジントラックのレベルで
-`accepted-divergences-engines.json` により受け入れられています。`sfdp.42` はこのクラスには
+`arm-pow.ts` の前例）。`sfdp.241_0` は、かつてこのクラスで受け入れられていましたが、
+T28 以降は A1 のずれです（上を参照）。`sfdp.42` はこのクラスには
 **含まれません**。そのレジストリのエントリーは A1（`comparisons/sfdp-42.md`）であり、上の
 プローブでは説明できませんでした。
 
 **fdp** の xdot エンジントラック（`parity-fdp.json`、ネイティブの `dot -Kfdp -Txdot`、
-±0.5）は、同じグラフ `241_0` で同じ CDT の同一円周上の同順位を示します。
-オラクルの正確なルーティング前の位置を注入すると、残差は 1 本のエッジ
-（`0->1#0`、maxΔ 3.39pt）に限られる、数値の `unfilled_bezier` の差分 11 件です。
-ノード位置は注入により同一であるため、乖離は下流の pathplan のマルチスプラインの回廊にあり
-— circo/sfdp の `241_0` と同じ libm の 1 ULP の内接円の同順位です
-（上の厳密な有理数での内接円 185/185。11 件の差分は `f66ac638` で変化なし — 注入による再検証は
-未実施）。打てる手はすでに適用済みで
-（`src/pathplan/triang.ts` の fmadd、`src/pathplan/route.ts:198` の
-`Math.hypot`）、同順位は縮減不能とみなされています。`accepted-divergences-engines.json` の
-`fdp.241_0` により受け入れられています。一方、fdp の `2095` は **A9 ではなく A1-drift** です。
+±0.5）は、以前は同じグラフ `241_0` をこのクラスとして示していました。
+オラクルの正確なルーティング前の位置を注入しても、1 本のエッジ
+（`0->1#0`、maxΔ 3.39pt）に数値の `unfilled_bezier` の差分 11 件が残り、
+それは同一円周上の内接円の同順位に帰されていました。その帰属は誤りでした。
+`fix(T9): start swapped
+cdt faces at the new diagonal as gts does`（2026-10-22）が
+ポート側の誤った移植を見つけました。GTS の `swap_if_in_circle` は 2 つの新しい面を
+`gts_face_new(en, e5, e2)` と `gts_face_new(en, e3, e4)` として作り（`cdt.c:509-511`）、
+`gts_triangle_vertices` は面をその辺の順序から読むため、ネイティブはそれらを
+(v3, v4, v2) と (v4, v3, v1) として列挙します。ポートは両方を 1 つずつ回転した状態で保存しており、
+マルチスプラインルーターの `triCenter` はその順序で頂点を合計していました。順序を修正すると、
+fdp の `241_0` はすべてのトラックでネイティブと一致し（xdot は pass、json は conformant、
+plain と stderr は一致）、`accepted-divergences-engines.json` と
+`accepted-divergences-json.json` のエントリは退役しました。一方、fdp の `2095` は **A9 ではなく A1-drift** です。
 空の名前の 1 つのノードを注入すると（原因特定のインジェクターが `""` という名前のノードに
 一致するよう修正された後）、その残差はゼロに収束します — 以前の「A9 のロングテール」は、
 注入されなかった空のノードが接続エッジを引きずっていたものでした。sfdp の `2095` の受け入れも
 同じ盲点でした — 修正したインジェクターでの sfdp の原因特定の再生成（2026-07-22）は、
 それも 0 に注入されることを確認し、その受け入れは削除されました（上の
 `2095 reclassified` の注記を参照）。
+
+**sfdp `2168_3` — `poly_init` における Apple libm `sin` の 1 ULP 差（クローズ、還元不能）。** **影響:** sfdp `2168_3`（stderr のみ。ポートは `Pshortestpath` 警告を 1 件余分に出力する。両側とも直線にフォールバックするため xdot エンジントラックのウォークは通過する）。 **相違点:** `shapes.c:2329` は `temp = GAP / sin(gamma)` を計算する（ポート側 `src/common/poly-sizing.ts:379`）。gamma = 1.0092081171617377 のとき macOS の libm は 0.8464104077694533、V8 は正しく丸められた 0.8464104077694532 を返す（1 ULP）。この差は multispline ルーターに（`neatosplines.c:428,444` → `multispline.c:598`）ルーター点 10/18、y 28.391789367446776 対 …78 として到達し、共円の台形（点 9、10、15、16）が別の Delaunay 対角線で三角形分割されるため、エッジ 1 のコリドー多角形が異なり、ポート側の多角形で `Pshortestpath` が失敗する。 **受容理由:** この `sin` 値だけを注入する対照実験で stderr・三角形・多角形・xdot がネイティブと一致する（`atan2` だけでは一致しない）。sfdp の位置はビット一致で、incircle 述語、pathplan、`makeObstacle` の hypot、輪郭リングの演算順序は除外済み。一致させるには Apple の `sin` のビット正確なモデルが必要だが、そのソースは非公開であり、移植可能なコードでは再現できない（`arm-pow.ts` の先例と同じ境界）。 **根拠:** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md)、2026-10-20 T13 の行。
 
 ---
 
@@ -1073,6 +1081,22 @@ conformant であり、14 点対 8 点の回廊の反転は同順位ではなく
 ポートエラーを受け入れます。`2784` で別の失敗が起きれば、受け入れられていない障害として表面化し、
 `registry-staleness.test.ts` がそのエントリーを古くなったものとして検出します。証拠：
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md)。
+
+### A11. 退化した入力における GTS の Delaunay 面の順序 — 縮小不能 {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**影響を受けるもの：** 入力が退化している（辺上の点、共円な格子）場合に GTS 経由で三角形分割を行うレイアウト（`lib/neatogen/delaunay.c`。16.1 のオラクルは GTS 0.7.6 をリンクする）。
+
+**何が異なるか。** ポートは Delaunay 面の番号付けと各面の隣接要素（`neigh`）の並びを生成順で行う。ネイティブの GTS は面を `GHashTable` の順に番号付けする。`closest_face` はポインタをキーとするテーブルを走査するため、面 ID と隣接順はヒープアドレスに依存し、実行ごとに変わる。面の順序から導かれるものはすべて、特定のネイティブ実行と異なる場合がある。
+
+**受け入れる理由。** 決定的な目標は存在しない。1 つの退化入力に対してネイティブバイナリを 60 回実行すると、ASLR を無効にし `MallocNanoZone=0` にしても 22 通りの異なる出力が得られた。この揺らぎはコードより下の層にあるオラクルの性質であり、ポートの欠陥ではない。面は ID ではなく頂点集合で比較すること。根拠：第 3 部の GTS に関するメモ（`.agent-notes/post-16-1-followups-3.md`、「GTS face vertex order and nondeterminism」）。
+
+### A12. 字句解析器エラーに `<stdin>: ` 接頭辞が付かない {#a12-no-stdin-prefix-on-lexer-errors}
+
+**影響を受けるもの：** 字句解析器（`aagerror`）が stderr に報告する DOT の構文エラー。
+
+**何が異なるか。** 標準入力を読むネイティブの `dot` CLI は `<stdin>: syntax error in line N …` を出力する。ポートは同じメッセージを接頭辞 `<stdin>: ` なしで出力する。
+
+**受け入れる理由。** `aagerror`（`lib/cgraph/scan.l:157`）は `InputFile` が設定されている場合にのみ `InputFile: ` を付加する。CLI は標準入力を読むときにこれを `<stdin>` に設定するが、ポートが写しているライブラリのエントリ `agmemread` は未設定のままで、接頭辞を出力しない。ポートには CLI がないため、報告すべき `InputFile` が存在しない。stderr プローブは比較時にこの接頭辞を正規化する。
 
 ---
 

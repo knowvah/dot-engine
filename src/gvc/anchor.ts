@@ -21,6 +21,7 @@ import { substObjAnchor, preprocessTooltip } from '../common/subst.js';
 import { parseStyleFlags } from '../common/style-resolve.js';
 import { nodeAttr } from '../common/poly-init.js';
 import { bezier } from '../common/bezier.js';
+import { ptToLine2 } from '../common/splines-geom.js';
 import type { RendererPlugin } from './context.js';
 import { MapShape, type ObjState, type RenderJob } from './job.js';
 
@@ -231,8 +232,6 @@ export function beginAnchorIf(renderer: RendererPlugin, job: RenderJob): boolean
 const DFLT_SAMPLE = 20;
 /** HW: maximum distance from line, in points. @see lib/common/emit.c:739 */
 const MAP_HW = 2.0;
-/** SMALL: 0/0 guard in ptToLine2. @see lib/common/geom.c:176 */
-const MAP_SMALL = 0.0000000001;
 
 /**
  * Coordinate-transform context for the imagemap device. `bb` is the unpadded
@@ -429,16 +428,6 @@ export function computeLabelRectMap(lab: TextlabelT, obj: ObjState, ctx: MapCtx)
 }
 
 // --- Edge spline hot spots (map_output_bspline) --------------------------
-
-/** ptToLine2: squared distance from p to segment (a,b). @see lib/common/geom.c */
-function ptToLine2(a: Point, b: Point, p: Point): number {
-  const dx = b.x - a.x;
-  const dy = b.y - a.y;
-  let a2 = (p.y - a.y) * dx - (p.x - a.x) * dy;
-  a2 *= a2;
-  if (a2 < MAP_SMALL) return 0;
-  return a2 / (dx * dx + dy * dy);
-}
 
 /** check_control_points: both handles within HW of the chord. @see emit.c */
 function checkControlPoints(cp: Point[]): boolean {

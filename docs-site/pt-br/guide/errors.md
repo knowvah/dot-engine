@@ -1,5 +1,5 @@
 ---
-sourceHash: 545227fb3a0a91494ed7a2c299e5a9ca93a594d68d99e0596f743e7597dfbae9
+sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,7 +131,7 @@ valor suportado.
 
 | Mecanismo | Atributo e valor | Dispara quando | Recurso do Graphviz necessário |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Sempre (depois que o grafo tem 2+ nós e `maxiter` não é negativo) | Majorização de stress hierárquica (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Somente quando `model` é `subset` ou `circuit` (depois que o grafo tem 2+ nós e `maxiter` não é negativo) | Majorização de stress hierárquica (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Somente quando o Graphviz construiria restrições: `diredgeconstraints` é verdadeiro ou `hier*`, `overlap=ipsep`, ou o grafo tem um cluster de nível superior. Sem restrições, ele roda como majorização de stress, como no Graphviz | Majorização com restrições (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` é `major` (o padrão) ou `ipsep` | Inicialização inteligente (`smart_ini`). Com `mode=KK` ou `mode=sgd`, registra `start=0 not supported with mode=self - ignored` uma vez por renderização, como o Graphviz faz |
 | neato | `model=subset` | `mode` é `major` ou `KK` | O modelo de distância por subconjunto |

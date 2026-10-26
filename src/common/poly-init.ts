@@ -24,6 +24,8 @@ import {
   DEFAULT_COLOR,
 } from './make-label.js';
 import { computeVertices } from './poly-vertices.js';
+import { agwarningf } from './agerr.js';
+import { imageIsSupplied, imageOpenWarning } from '../gvc/usershape.js';
 
 // Default half-dimensions in points (72 dpi, 0.75 in wide, 0.5 in tall)
 const DEFAULT_LW = 27;
@@ -110,6 +112,22 @@ export function buildNodeLabel(n: Node, g: Graph, measurer: TextMeasurer): void 
   n.info.label = makeAnyLabel(content, isHtml, font, measurer, n);
 }
 
+/**
+ * poly_init's `image` branch (a non-custom shape): when the caller supplies no
+ * image, gvusershape_size fails and C warns after gvusershape_open's own
+ * warning. The port never sizes node images.
+ * @see lib/common/shapes.c:2043-2046
+ */
+function warnMissingImage(n: Node, g: Graph, shapefile: string | undefined): void {
+  if (shapefile !== undefined && shapefile !== '' && nodeAttr(n, g, 'shape') !== 'epsf') return;
+  const image = nodeAttr(n, g, 'image');
+  if (image === undefined || image === '') return;
+  const gvc = g.root.info.gvc;
+  if (imageIsSupplied(image, gvc?.imageSizer, gvc?.imageResolver)) return;
+  agwarningf(imageOpenWarning(image));
+  agwarningf(`No or improper image="${image}" for node "${n.name}"`);
+}
+
 export function polyInit(n: Node, g: Graph, measurer: TextMeasurer): void {
   const shapeName = nodeAttr(n, g, 'shape') ?? 'ellipse';
   const shapefile = nodeAttr(n, g, 'shapefile');
@@ -117,12 +135,13 @@ export function polyInit(n: Node, g: Graph, measurer: TextMeasurer): void {
   // C warns when the custom shape's image cannot be sized (headless: always).
   // @see lib/common/shapes.c:2027-2033
   if (shapefile !== undefined && shapefile !== '' && shapeName !== 'epsf') {
-    console.error(`Warning: No or improper shapefile="${shapefile}" for node "${n.name}"`);
+    agwarningf(`No or improper shapefile="${shapefile}" for node "${n.name}"`);
   }
   if ((n.info.shape as ShapeDesc).kind === ShapeKind.SH_RECORD) {
     if (n.info.shape_info === undefined) recordNodeInit(n, g, measurer);
     return;
   }
+  warnMissingImage(n, g, shapefile);
   buildNodeLabel(n, g, measurer);
 
   // Layout-time common_init_node already installed the attr-resolved

@@ -21,30 +21,30 @@ won't-fix deltas (0 for engines without an acceptance list).
 
 ## Tracks
 
-| track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | pass % |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| [dot (SVG)](./PARITY-dot.md) | 950 | 929 | 1 | 5 | 1 | 14 | 99.3% |
-| [dot (xdot)](./PARITY-XDOT.md) | 929 | 926 | 0 | 0 | 0 | 3 | 100.0% |
-| [dot (json)](./PARITY-JSON.md) | 929 | 924 | 0 | 2 | 0 | 3 | 99.8% |
-| [circo (xdot)](./PARITY-circo.md) | 928 | 919 | 1 | 3 | 0 | 5 | 99.6% |
-| [twopi (xdot)](./PARITY-twopi.md) | 928 | 913 | 1 | 14 | 0 | 0 | 98.4% |
-| [osage (xdot)](./PARITY-osage.md) | 929 | 924 | 0 | 5 | 0 | 0 | 99.5% |
-| [patchwork (xdot)](./PARITY-patchwork.md) | 929 | 929 | 0 | 0 | 0 | 0 | 100.0% |
-| [dot (imagemap)](./PARITY-MAP.md) | 929 | 926 | 0 | 0 | 0 | 3 | 100.0% |
-| [dot (plain)](./PARITY-dot-plain.md) | 929 | 917 | 0 | 8 | 0 | 4 | 99.1% |
-| [circo (plain)](./PARITY-circo-plain.md) | 928 | 908 | 0 | 9 | 0 | 11 | 99.0% |
-| [twopi (plain)](./PARITY-twopi-plain.md) | 928 | 903 | 2 | 20 | 1 | 2 | 97.5% |
-| [osage (plain)](./PARITY-osage-plain.md) | 929 | 916 | 0 | 13 | 0 | 0 | 98.6% |
-| [patchwork (plain)](./PARITY-patchwork-plain.md) | 929 | 921 | 0 | 8 | 0 | 0 | 99.1% |
-| [dot (dot)](./PARITY-dot-dot.md) | 929 | 926 | 0 | 0 | 0 | 3 | 100.0% |
-| [circo (json)](./PARITY-circo-json.md) | 928 | 914 | 1 | 5 | 0 | 8 | 99.3% |
-| [twopi (json)](./PARITY-twopi-json.md) | 928 | 910 | 2 | 14 | 0 | 2 | 98.3% |
-| [osage (json)](./PARITY-osage-json.md) | 929 | 919 | 0 | 10 | 0 | 0 | 98.9% |
-| [patchwork (json)](./PARITY-patchwork-json.md) | 929 | 927 | 0 | 2 | 0 | 0 | 99.8% |
-| [circo (imagemap)](./PARITY-circo-map.md) | 928 | 920 | 0 | 1 | 0 | 7 | 99.9% |
-| [twopi (imagemap)](./PARITY-twopi-map.md) | 928 | 925 | 0 | 1 | 1 | 1 | 99.8% |
-| [osage (imagemap)](./PARITY-osage-map.md) | 929 | 928 | 0 | 1 | 0 | 0 | 99.9% |
-| [patchwork (imagemap)](./PARITY-patchwork-map.md) | 929 | 929 | 0 | 0 | 0 | 0 | 100.0% |
+| track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | oracle nondeterministic | pass % |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| [dot (SVG)](./PARITY-dot.md) | 950 | 929 | 1 | 5 | 1 | 14 | 0 | 99.3% |
+| [dot (xdot)](./PARITY-XDOT.md) | 929 | 926 | 0 | 0 | 0 | 3 | 0 | 100.0% |
+| [dot (json)](./PARITY-JSON.md) | 929 | 924 | 0 | 2 | 0 | 3 | 0 | 99.8% |
+| [circo (xdot)](./PARITY-circo.md) | 928 | 920 | 1 | 2 | 0 | 5 | 0 | 99.7% |
+| [twopi (xdot)](./PARITY-twopi.md) | 928 | 913 | 1 | 10 | 0 | 0 | 4 | 98.8% |
+| [osage (xdot)](./PARITY-osage.md) | 929 | 924 | 0 | 5 | 0 | 0 | 0 | 99.5% |
+| [patchwork (xdot)](./PARITY-patchwork.md) | 929 | 929 | 0 | 0 | 0 | 0 | 0 | 100.0% |
+| [dot (imagemap)](./PARITY-MAP.md) | 929 | 926 | 0 | 0 | 0 | 3 | 0 | 100.0% |
+| [dot (plain)](./PARITY-dot-plain.md) | 929 | 917 | 0 | 8 | 0 | 4 | 0 | 99.1% |
+| [circo (plain)](./PARITY-circo-plain.md) | 928 | 909 | 0 | 8 | 0 | 11 | 0 | 99.1% |
+| [twopi (plain)](./PARITY-twopi-plain.md) | 928 | 903 | 2 | 20 | 1 | 2 | 0 | 97.5% |
+| [osage (plain)](./PARITY-osage-plain.md) | 929 | 916 | 0 | 13 | 0 | 0 | 0 | 98.6% |
+| [patchwork (plain)](./PARITY-patchwork-plain.md) | 929 | 921 | 0 | 8 | 0 | 0 | 0 | 99.1% |
+| [dot (dot)](./PARITY-dot-dot.md) | 929 | 926 | 0 | 0 | 0 | 3 | 0 | 100.0% |
+| [circo (json)](./PARITY-circo-json.md) | 928 | 915 | 1 | 4 | 0 | 8 | 0 | 99.5% |
+| [twopi (json)](./PARITY-twopi-json.md) | 928 | 910 | 2 | 14 | 0 | 2 | 0 | 98.3% |
+| [osage (json)](./PARITY-osage-json.md) | 929 | 919 | 0 | 10 | 0 | 0 | 0 | 98.9% |
+| [patchwork (json)](./PARITY-patchwork-json.md) | 929 | 927 | 0 | 2 | 0 | 0 | 0 | 99.8% |
+| [circo (imagemap)](./PARITY-circo-map.md) | 928 | 920 | 0 | 1 | 0 | 7 | 0 | 99.9% |
+| [twopi (imagemap)](./PARITY-twopi-map.md) | 928 | 925 | 0 | 1 | 1 | 1 | 0 | 99.8% |
+| [osage (imagemap)](./PARITY-osage-map.md) | 929 | 928 | 0 | 1 | 0 | 0 | 0 | 99.9% |
+| [patchwork (imagemap)](./PARITY-patchwork-map.md) | 929 | 929 | 0 | 0 | 0 | 0 | 0 | 100.0% |
 
 
 ### Iterative engines (±0.5 characterization)
@@ -57,20 +57,20 @@ JavaScript cannot reproduce bit-for-bit — accepted class
 byte-fidelity; do not read their pass % against the deterministic
 bar above.
 
-| track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | pass % |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| [neato (xdot)](./PARITY-neato.md) | 928 | 840 | 0 | 87 | 0 | 1 | 90.6% |
-| [fdp (xdot)](./PARITY-fdp.md) | 928 | 893 | 0 | 30 | 1 | 4 | 96.6% |
-| [sfdp (xdot)](./PARITY-sfdp.md) | 928 | 633 | 0 | 295 | 0 | 0 | 68.2% |
-| [neato (plain)](./PARITY-neato-plain.md) | 928 | 916 | 0 | 8 | 0 | 4 | 99.1% |
-| [fdp (plain)](./PARITY-fdp-plain.md) | 928 | 912 | 0 | 8 | 1 | 7 | 99.0% |
-| [sfdp (plain)](./PARITY-sfdp-plain.md) | 928 | 918 | 0 | 8 | 0 | 2 | 99.1% |
-| [neato (json)](./PARITY-neato-json.md) | 928 | 838 | 3 | 83 | 0 | 4 | 90.7% |
-| [fdp (json)](./PARITY-fdp-json.md) | 928 | 889 | 2 | 29 | 1 | 7 | 96.5% |
-| [sfdp (json)](./PARITY-sfdp-json.md) | 928 | 631 | 10 | 285 | 0 | 2 | 68.1% |
-| [neato (imagemap)](./PARITY-neato-map.md) | 928 | 917 | 0 | 8 | 0 | 3 | 99.1% |
-| [fdp (imagemap)](./PARITY-fdp-map.md) | 928 | 915 | 2 | 5 | 1 | 5 | 99.1% |
-| [sfdp (imagemap)](./PARITY-sfdp-map.md) | 928 | 894 | 3 | 30 | 0 | 1 | 96.4% |
+| track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | oracle nondeterministic | pass % |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| [neato (xdot)](./PARITY-neato.md) | 928 | 842 | 0 | 85 | 0 | 1 | 0 | 90.8% |
+| [fdp (xdot)](./PARITY-fdp.md) | 928 | 893 | 0 | 17 | 1 | 4 | 13 | 98.0% |
+| [sfdp (xdot)](./PARITY-sfdp.md) | 928 | 632 | 0 | 295 | 0 | 0 | 1 | 68.2% |
+| [neato (plain)](./PARITY-neato-plain.md) | 928 | 916 | 0 | 8 | 0 | 4 | 0 | 99.1% |
+| [fdp (plain)](./PARITY-fdp-plain.md) | 928 | 912 | 0 | 8 | 1 | 7 | 0 | 99.0% |
+| [sfdp (plain)](./PARITY-sfdp-plain.md) | 928 | 918 | 0 | 8 | 0 | 2 | 0 | 99.1% |
+| [neato (json)](./PARITY-neato-json.md) | 928 | 840 | 3 | 81 | 0 | 4 | 0 | 90.9% |
+| [fdp (json)](./PARITY-fdp-json.md) | 928 | 890 | 2 | 28 | 1 | 7 | 0 | 96.6% |
+| [sfdp (json)](./PARITY-sfdp-json.md) | 928 | 631 | 10 | 285 | 0 | 2 | 0 | 68.1% |
+| [neato (imagemap)](./PARITY-neato-map.md) | 928 | 917 | 0 | 8 | 0 | 3 | 0 | 99.1% |
+| [fdp (imagemap)](./PARITY-fdp-map.md) | 928 | 915 | 2 | 5 | 1 | 5 | 0 | 99.1% |
+| [sfdp (imagemap)](./PARITY-sfdp-map.md) | 928 | 894 | 3 | 30 | 0 | 1 | 0 | 96.4% |
 
 
 
@@ -87,6 +87,7 @@ three* only when every format agrees with the oracle within tolerance.
 | conformant in all three | 924 | 99.5% |
 | accepted (won't-fix) in ≥1, diverged in none | 2 | 0.2% |
 | diverged / errored in ≥1 | 3 | 0.3% |
+| oracle nondeterministic in ≥1, diverged in none (not scored) | 0 | 0.0% |
 
 Per-format status of the ids not conformant in all three:
 

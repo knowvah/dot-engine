@@ -12,12 +12,12 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 928 (generated 2026-10-13T21:15:23.722Z)
+- **Surveyed:** 928 (generated 2026-10-24T03:45:34.127Z)
 - **Oracle:** dot 16.1.0
-- **pass:** 893 (96.6%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 3 · **accepted (A1-drift class):** 27
-- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 4 (excluded from pass %)
+- **pass:** 893 (98.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 16
+- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 4 (excluded from pass %) · **oracle-nondeterministic:** 13 (native output varies run to run; excluded from pass %, not a regression)
 
-## Accepted deltas (3) — documented, not chased
+## Accepted deltas (1) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -26,9 +26,7 @@ table below.
 
 | id | #diffs | class | bound | ref |
 |---|---:|---|---|---|
-| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 11888 | A1 | up to 5.4kpt, 30/30 nodes | plans/decision-journal.md 2026-07-24 T4b: chaos proven — node width +0.001in moves port-own layout max 3390pt |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) |  | A10 | port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries | known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines |
-| [`241_0`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/241_0.dot) | 11 | A9 | 11 numeric draw-op diffs confined to edge 0-&gt;1#0's unfilled_bezier (maxΔ 3.39pt), under injected-identical node positions ⇒ pathplan routing. Same graph and CDT cocircular incircle 1-ULP tie (V8 vs Apple libm) accepted for circo/twopi/sfdp 241_0; exact-rational incircle 185/185. Levers (fmadd triang.ts, hypot route.ts:198) applied; the tie is irreducible. Unchanged (11 diffs) after f66ac638, which cleared twopi/neato 241_0 (a port-side FMA mis-port, not a tie); tie attribution not re-verified by injection. | known-divergences.md#a9-sfdp-fp-ties |
 
 ## Accepted class: A1-drift — computed, not enumerated
 
@@ -38,7 +36,7 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **28** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **16** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
 ## Diverged (0)
 

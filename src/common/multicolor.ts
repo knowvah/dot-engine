@@ -13,6 +13,10 @@
  * @see lib/common/emit.c:470 parseSegs
  */
 
+import { agerr, agerrorf, agwarningf } from './agerr.js';
+import type { Edge } from '../model/edge.js';
+import { registerRenderState } from './render-state.js';
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -37,6 +41,28 @@ export interface ColorSeg {
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
+
+/**
+ * C's `static atomic_flag warned` in parseSegs: set by the first Total-size
+ * warning or Illegal-value error in the process, silencing both afterwards.
+ * Reset per render (AD-4).
+ * @see lib/common/emit.c:470 parseSegs
+ */
+const parseSegsState = { warned: false };
+
+registerRenderState(() => {
+  parseSegsState.warned = false;
+});
+
+/** `atomic_flag_test_and_set(&warned)` negated: true when this call claimed it. */
+function claimWarned(): boolean {
+  if (parseSegsState.warned) return false;
+  parseSegsState.warned = true;
+  return true;
+}
+
+/** A claim that never fires: parses without touching or consuming the flag. */
+const claimNever = (): boolean => false;
 
 /** @see lib/common/emit.c:451 EPS */
 const EPS = 1e-5;
@@ -76,7 +102,7 @@ function appendSeg(
   token: string,
   left: number,
   segs: ColorSeg[],
-  warnedExceeded: { v: boolean },
+  claim: () => boolean,
 ): { left: number; rval: 0 | 3 } | null {
   const { color, v } = getSegLen(token);
   if (v < 0) return null;
@@ -85,10 +111,7 @@ function appendSeg(
   let rval: 0 | 3 = 0;
   const del = t - left;
   if (del > 0) {
-    if (!aeq0(del) && !warnedExceeded.v) {
-      warnedExceeded.v = true;
-      rval = 3;
-    }
+    if (!aeq0(del) && claim()) rval = 3;
     t = left;
   }
   left -= t;
@@ -128,6 +151,31 @@ function trimTrailing(segs: ColorSeg[]): void {
 // ---------------------------------------------------------------------------
 
 /**
+ * The parse of `parseSegs` with the once-per-process flag abstracted as `claim`.
+ * @see lib/common/emit.c:470 parseSegs
+ */
+function scanSegs(
+  colorlist: string,
+  claim: () => boolean,
+): { segs: ColorSeg[]; error: 0 | 1 | 2 | 3 } {
+  const segs: ColorSeg[] = [];
+  let left = 1;
+  let rval: 0 | 3 = 0;
+
+  for (const token of colorlist.split(':')) {
+    const result = appendSeg(token, left, segs, claim);
+    if (result === null) return { segs: [], error: claim() ? 2 : 1 };
+    if (result.rval === 3) rval = 3;
+    left = result.left;
+    if (aeq0(left)) { left = 0; break; }
+  }
+
+  distributeLeft(segs, left);
+  trimTrailing(segs);
+  return { segs, error: rval };
+}
+
+/**
  * Parse `"c1;f1:c2;f2:…"` into segments.
  *
  * Fractions are optional and non-negative; their sum must not exceed 1.
@@ -138,30 +186,46 @@ function trimTrailing(segs: ColorSeg[]): void {
  *   0 → ok; 1 → silent error; 2 → error with message; 3 → warning (sum > 1).
  * On rv 1 or 2 the returned segs array is empty.
  *
+ * The rv 2 error and rv 3 warning are printed here, once per process (the
+ * shared `warned` flag). C's callers then append an AGPREV line for rv > 1;
+ * `context` supplies it (e.g. `in edge a -> b`): the warning continues the
+ * same line as C's AGPREV does, the error's context follows on its own line.
+ *
  * @see lib/common/emit.c:470 parseSegs
  */
 export function parseSegs(
   colorlist: string,
+  context?: () => string,
 ): { segs: ColorSeg[]; error: 0 | 1 | 2 | 3 } {
-  const segs: ColorSeg[] = [];
-  let left = 1;
-  let rval: 0 | 3 = 0;
-  let badFloatCount = 0;
-  const warnedExceeded = { v: false };
-
-  for (const token of colorlist.split(':')) {
-    const result = appendSeg(token, left, segs, warnedExceeded);
-    if (result === null) {
-      const errCode: 1 | 2 = badFloatCount === 0 ? 2 : 1;
-      badFloatCount++;
-      return { segs: [], error: errCode };
-    }
-    if (result.rval === 3) rval = 3;
-    left = result.left;
-    if (aeq0(left)) { left = 0; break; }
+  const result = scanSegs(colorlist, claimWarned);
+  if (result.error === 3) {
+    const tail = context === undefined ? '' : context();
+    agwarningf(`Total size > 1 in "${colorlist}" color spec ${tail}`);
+  } else if (result.error === 2) {
+    agerrorf(`Illegal value in "${colorlist}" color attribute; float expected after ';'`);
+    if (context !== undefined) agerr('prev', context());
   }
+  return result;
+}
 
-  distributeLeft(segs, left);
-  trimTrailing(segs);
-  return { segs, error: rval };
+/**
+ * {@link parseSegs} for port-internal re-parses that have no C counterpart
+ * call (pre-passes, parallel edges): same segments and error class, but never
+ * prints and never consumes the once-per-process flag.
+ */
+export function parseSegsSilent(
+  colorlist: string,
+): { segs: ColorSeg[]; error: 0 | 1 | 2 | 3 } {
+  return scanSegs(colorlist, claimNever);
+}
+
+/**
+ * The AGPREV line C's `multicolor` appends for an rv > 1 parseSegs.
+ * @see lib/common/emit.c:1985 multicolor
+ */
+export function edgeSegsContext(e: Edge): () => string {
+  return () => {
+    const directed = !e.tail.root.kind.endsWith('undirected');
+    return `in edge ${e.tail.name}${directed ? ' -> ' : ' -- '}${e.head.name}`;
+  };
 }

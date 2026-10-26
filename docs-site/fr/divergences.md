@@ -1,5 +1,5 @@
 ---
-sourceHash: 09070e046e37916eefc443e6cadb017241c342b8ef135b8d370cb6ce1a4d7a42
+sourceHash: 843c52115031a602c300efccbfd0c7b878e9902c815a3f1e82a215039948fe96
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -254,9 +254,10 @@ Contrairement au premier balayage, chaque ligne divergente de l’univers de 929
 d’injection (`test/corpus/attribute-divergence.ts`) fournit au portage le `ND_pos`
 pré-routage de l’oracle natif et recompare, et chaque identifiant divergent actuel
 est `drift-exonerated` (le routage et l’émission du portage reproduisent
-exactement l’oracle dès que la dérive du solveur est supprimée), sauf trois. Trois
-sont des résidus par identifiant acceptés séparément : l’égalité d’incercle CDT de
-`241_0` sur fdp et sfdp, et la disposition NaN de `2556` pour sfdp. `2471` pour fdp et
+exactement l’oracle dès que la dérive du solveur est supprimée), sauf deux. Deux
+sont des résidus par identifiant acceptés séparément : la dérive de `pow` de la libm de l’hôte pour `241_0` sur
+sfdp (rediagnostiquée par T28) et la disposition NaN de `2556` pour sfdp. `241_0` pour fdp passe depuis
+`fix(T9): start swapped cdt faces at the new diagonal as gts does` (voir le paragraphe fdp sous A9). `2471` pour fdp et
 `2371` pour sfdp conservaient des positions d’étiquettes d’arête (`lp`) qui différaient
 après injection, c’est-à-dire que le placeur de xlabels choisissait un autre candidat.
 `2471` s’est résolu dès que le `dotneato_closest` du portage a arrondi comme
@@ -1004,14 +1005,13 @@ mirror fma contraction in multispline routing geometry`) l’a reflétée. `241_
 de twopi et de neato — que cette classe avait attribués à l’égalité
 cocirculaire ci-dessous — sont devenus **conformes** (acceptations retirées), et
 `42` de sfdp s’est révélé ne comporter aucune égalité (c’est de la dérive A1,
-voir [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` de circo, fdp et sfdp
-diverge encore, avec des résidus inchangés ou réduits ; leur attribution à
-l’égalité ci-dessous est antérieure à `f66ac638` et n’a **pas été revérifiée par
-injection de positions** depuis que ce correctif a montré cette même attribution
-erronée pour twopi/neato.
+voir [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)). `241_0` de fdp est devenu **conforme** plus tard, après une seconde correction côté portage de la triangulation (ordre des sommets des faces après un échange d’arête ; voir le paragraphe fdp ci-dessous). `241_0` de circo est devenu **conforme** avec `fix(T28): use host libm cos/sin for the
+ellipse obstacle 8-gon` : le `Math.sin(9π/8)` de V8 est à 1 ULP de la valeur de libm
+correctement arrondie, ce qui déplaçait un coin de chaque obstacle elliptique et faisait
+basculer le couloir (acceptation retirée). `241_0` de sfdp a été rediagnostiqué par la même
+tâche et relève désormais de A1 (voir le paragraphe sfdp ci-dessous).
 
-**Concernés :** `241_0` (circo Δ≈0.2 via la bascule de couloir sur l’arête
-`1->2` ; `241_0` de fdp et de sfdp sur les pistes de moteur ci-dessous) ; `2343`,
+**Concernés :** `2343`,
 `2239`, `share-b29`, `windows-b29`
 (twopi, 1 à 2 différences de position d’étiquette d’arête chacun — l’ULP de
 libm naît dans la trigonométrie des sommets unitaires de `poly_init`
@@ -1058,7 +1058,9 @@ fidèle dans `polylineMidpoint` — voir le paragraphe de la famille b29 plus ba
 et circo `241_0` (41 différences d’opérations de dessin, Δ≈0.2pt sur la Bézier
 routée de l’arête `1->2` — la même bascule de couloir de diagonale CDT ; journal
 de décisions, entrée du 2026-07-10 « CDT rewritten as faithful GTS port;
-2168_3 outline-ring obstacle; 56/osage bb clobber; A9 filed »). Accepté au
+2168_3 outline-ring obstacle; 56/osage bb clobber; A9 filed » ; **retirée le 2026-10-23** — conforme depuis que le portage prend le
+`cos`/`sin` de la libm de l’hôte pour l’octogone de l’obstacle, voir la réévaluation 16.1
+ci-dessus). Accepté au
 niveau de la piste du moteur via `test/corpus/accepted-divergences-engines.json`,
 joint à `PARITY-twopi.md`/`PARITY-circo.md` par `parity-report.ts` — la même
 jointure que `accepted.ts` effectue pour `PARITY-dot.md` sur la piste dot.
@@ -1201,24 +1203,22 @@ simple ULP au-dessus de `node8.y` autour de la valeur exactement symétrique
 cette égalité exacte ; les positions et boîtes des nœuds sont par ailleurs
 identiques au bit près à l’oracle ; **retiré le 2026-10-18** — il est conforme depuis que le DIST2 du portage prend la forme fusionnée de clang, qui tranche cette égalité exacte comme C).
 
-**Piste du moteur sfdp — égalité FP sur les arêtes (`241_0`).**
+**Piste du moteur sfdp — `241_0` (reclassé de A9 à A1, 2026-10-23).**
 <a id="a9-sfdp-fp-ties"></a> La piste xdot du moteur sfdp (`parity-sfdp.json`,
-`dot -Ksfdp -Txdot` natif, ±0.5) fait apparaître l’égalité d’incercle
-cocirculaire du CDT dès lors que les positions natives exactes d’avant routage
-sont injectées (la divergence n’est donc PAS une dérive itérative — voir la
-classe A1-drift — mais une égalité de prédicat discrète) :
+`dot -Ksfdp -Txdot` natif, ±0.5) y répertoriait `241_0` comme l’égalité d’incercle
+cocirculaire du CDT. `fix(T28)` l’a rediagnostiquée avec un sfdp natif instrumenté :
 
-- `241_0` — attribuée à l’égalité d’incercle cocirculaire du CDT (le couloir
-  multispline ; non revérifiée après `f66ac638`, voir la réévaluation 16.1
-  ci-dessus). Le résidu est une **bascule du nombre de segments** : 7 différences
-  d’opérations de dessin sur l’arête 1->2, `ptCount 8 vs 20` (20 différences
-  avant `f66ac638`) — le couloir réussit avec une spline de N points là où le
-  build natif retombe sur un tracé simple plus court (ou inversement), comme
-  dans l’entrée circo `241_0` ci-dessus. Le portage émule déjà la contraction `fmadd`
-  d’arm64 dans le prédicat d’incercle/`ccw` (`src/pathplan/triang.ts`,
-  `src/common/fma.ts`) et utilise un Delaunay à incercle robuste ; le résidu est
-  le 1 ULP entre `sin`/`hypot` de V8 et de libm d’Apple dans l’entrée du
-  prédicat, qu’aucun code portable ne reproduit.
+- `241_0` — 7 différences d’opérations de dessin sur l’arête 1->2 (`ptCount 8 vs 20`). La
+  disposition dérive dès le premier terme de force répulsive, où le `pow(dist, 2)` de la
+  libm de macOS renvoie 1 ULP en dessous de l’arrondi correct (niveau le plus grossier,
+  itération 22 ; voir l’entrée sur le `pow` de la libm de l’hôte dans les écarts de
+  fidélité de disposition), et le refroidissement adaptatif l’amplifie jusqu’à des
+  positions au fil du rasoir sur lesquelles l’arête 1->2 est routée différemment. Injecter
+  les valeurs natives de `pow` rend identiques chaque ligne de trace et le xdot final. Le
+  résidu de routage observé avec les positions injectées était en partie un artefact de
+  l’injection et en partie le `Math.sin(9π/8)` de V8 dans l’octogone de l’obstacle, que le
+  portage prend désormais dans la libm de l’hôte (le correctif qui a aussi rendu `241_0`
+  de circo conforme). Ce qui reste est de la dérive A1.
 
 > **`42` de sfdp reclassé de A9 à A1-drift (synchronisation graphviz 16.1).** Il
 > était répertorié ici comme une égalité d’incercle CDT/libm. La mission a
@@ -1252,23 +1252,26 @@ représentatives de déviation d’arête à plat montre un désaccord de 1 ULP 
 cas sur 6 (Δ 7.1e-15 et 5.7e-14) — le fil du rasoir du seuil de scission qui
 fait basculer le nombre de subdivisions. Irréductible : aucun `hypot` portable ne
 reproduit celui de libm d’Apple (le précédent d’`arm-pow.ts` pour la même
-frontière). `sfdp.241_0` est accepté au niveau de la piste du moteur via
-`accepted-divergences-engines.json`. `sfdp.42` ne relève **pas** de cette classe :
+frontière). `sfdp.241_0`, jadis accepté dans cette classe,
+relève de la dérive A1 depuis T28 (voir ci-dessus). `sfdp.42` ne relève **pas** de cette classe :
 son entrée de registre est A1 (`comparisons/sfdp-42.md`), et la sonde ci-dessus
 ne l’a pas expliqué.
 
 La piste xdot du moteur **fdp** (`parity-fdp.json`, `dot -Kfdp -Txdot` natif,
-±0.5) fait apparaître LA MÊME égalité cocirculaire du CDT sur le même graphe,
-`241_0` : avec les positions exactes d’avant routage de l’oracle injectées, le
-résidu est de 11 différences numériques d’`unfilled_bezier` limitées à une seule
-arête (`0->1#0`, maxΔ 3.39pt). Les positions des nœuds étant injectées à
-l’identique, la divergence est en aval, dans le couloir multispline de pathplan
-— la même égalité d’incercle à 1 ULP de libm que pour circo/sfdp `241_0`
-(incercle en rationnels exacts 185/185 ci-dessus ; 11 différences inchangées par
-`f66ac638` — non revérifié par injection). Les leviers sont déjà
-appliqués (`src/pathplan/triang.ts` fmadd, `Math.hypot` à
-`src/pathplan/route.ts:198`) ; l’égalité est traitée comme irréductible. Accepté via
-`accepted-divergences-engines.json` `fdp.241_0`. En revanche, le `2095` de fdp
+±0.5) montrait auparavant le même graphe, `241_0`, comme relevant de cette classe :
+avec les positions exactes d’avant routage de l’oracle injectées, il restait 11
+différences numériques d’`unfilled_bezier` sur une seule arête (`0->1#0`, maxΔ
+3.39pt), attribuées à l’égalité d’incercle cocirculaire. Cette attribution était
+erronée. `fix(T9): start swapped cdt faces at the new diagonal as gts does` (2026-10-22) a trouvé
+une erreur de portage : `swap_if_in_circle` de GTS construit ses deux nouvelles faces
+comme `gts_face_new(en, e5, e2)` et `gts_face_new(en, e3, e4)` (`cdt.c:509-511`),
+et `gts_triangle_vertices` lit une face selon l’ordre de ses arêtes, si bien que le
+natif les énumère comme (v3, v4, v2) et (v4, v3, v1) ; le portage stockait les deux
+décalées d’un cran, et `triCenter` du routeur multispline sommait les sommets dans
+cet ordre. Une fois l’ordre corrigé, `241_0` de fdp concorde avec le natif sur
+toutes les pistes (xdot réussi, json conforme, plain et stderr identiques), et ses
+entrées de `accepted-divergences-engines.json` et de
+`accepted-divergences-json.json` sont retirées. En revanche, le `2095` de fdp
 relève de **A1-drift, et non de A9** : injecter l’unique nœud au nom vide (après
 correction de l’injecteur d’attribution pour qu’il accepte les nœuds nommés
 `""`) ramène son résidu à zéro — la « queue A9 » précédente était le nœud vide
@@ -1276,6 +1279,8 @@ non injecté qui entraînait ses arêtes incidentes. L’acceptation de `2095` p
 sfdp relevait du même angle mort — une nouvelle régénération de l’attribution
 sfdp (2026-07-22) avec l’injecteur corrigé a confirmé qu’il s’injecte lui aussi à
 0, et son acceptation a été retirée (voir la note `2095 reclassé` ci-dessus).
+
+**sfdp `2168_3` — `sin` d'Apple libm à 1 ULP dans `poly_init` (clos, irréductible).** **Concerné :** sfdp `2168_3` (stderr uniquement : le portage émet un avertissement `Pshortestpath` supplémentaire ; le parcours de la piste xdot passe, car les deux côtés retombent sur des lignes droites). **Ce qui diffère :** `shapes.c:2329` calcule `temp = GAP / sin(gamma)` (portage `src/common/poly-sizing.ts:379`) ; pour gamma = 1.0092081171617377, la libm de macOS renvoie 0.8464104077694533, V8 la valeur correctement arrondie 0.8464104077694532 (1 ULP). L'écart atteint le routeur multispline (`neatosplines.c:428,444` → `multispline.c:598`) comme point de routeur 10/18, y 28.391789367446776 contre …78 ; le trapèze cocirculaire (points 9, 10, 15, 16) est alors triangulé avec une autre diagonale de Delaunay, de sorte que le polygone de couloir de l'arête 1 diffère et que `Pshortestpath` échoue sur le polygone du portage. **Pourquoi accepté :** une expérience contrôlée n'injectant que cette valeur de `sin` rend stderr, triangles, polygones et xdot identiques au natif (`atan2` seul ne suffit pas) ; les positions sfdp sont identiques au bit près, et le prédicat incircle, pathplan, le hypot de `makeObstacle` et l'ordre arithmétique de l'anneau de contour ont été écartés. Y correspondre exige un modèle exact au bit du `sin` d'Apple, dont le source n'est pas public ; aucun code portable ne peut le reproduire (même frontière que le précédent `arm-pow.ts`). **Preuve :** [`plans/post-16-1-followups-2/decision-journal.md`](https://github.com/knowvah/dot-engine/blob/main/plans/post-16-1-followups-2/decision-journal.md), ligne 2026-10-20 T13.
 
 ---
 
@@ -1307,6 +1312,22 @@ n’acceptent une erreur du portage que si elle porte ce message. Un autre éche
 `2784` apparaîtrait comme une faute non acceptée, et
 `registry-staleness.test.ts` signalerait l’entrée comme périmée. Preuves :
 [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/2784-pack-cells.md).
+
+### A11. Ordre des faces de Delaunay dans GTS sur entrée dégénérée — irréductible {#a11-gts-delaunay-face-order-on-degenerate-input}
+
+**Concerné :** Les mises en page qui trianguent via GTS (`lib/neatogen/delaunay.c` ; l’oracle 16.1 lie GTS 0.7.6) lorsque l’entrée est dégénérée : points situés sur des arêtes ou grilles cocirculaires.
+
+**Ce qui diffère.** Le port numérote les faces de Delaunay et ordonne les voisins de chaque face (`neigh`) selon l’ordre de création. Le GTS natif numérote les faces dans l’ordre de `GHashTable` : `closest_face` itère une table indexée par pointeur, si bien que les identifiants de face et l’ordre des voisins dépendent des adresses du tas et varient d’une exécution à l’autre. Tout ce qui découle de l’ordre des faces peut donc différer d’une exécution native donnée.
+
+**Pourquoi c’est accepté.** Il n’existe aucune cible déterministe. 60 exécutions du binaire natif sur une même entrée dégénérée ont produit 22 sorties distinctes, même avec ASLR désactivé et `MallocNanoZone=0` ; la variation est une propriété de l’oracle située sous le code, non un défaut du port. Comparez les faces par ensemble de sommets, non par identifiant. Preuve : notes GTS de la partie 3 (`.agent-notes/post-16-1-followups-3.md`, « GTS face vertex order and nondeterminism »).
+
+### A12. Pas de préfixe `<stdin>: ` sur les erreurs du lexer {#a12-no-stdin-prefix-on-lexer-errors}
+
+**Concerné :** Erreurs de syntaxe DOT signalées par le lexer (`aagerror`) sur stderr.
+
+**Ce qui diffère.** La CLI native `dot` lisant l’entrée standard affiche `<stdin>: syntax error in line N …` ; le port affiche le même message sans le préfixe `<stdin>: `.
+
+**Pourquoi c’est accepté.** `aagerror` (`lib/cgraph/scan.l:157`) n’ajoute `InputFile: ` que lorsque `InputFile` est défini. La CLI le fixe à `<stdin>` en lisant l’entrée standard ; le point d’entrée de bibliothèque `agmemread`, que le port reproduit, le laisse non défini et n’affiche aucun préfixe. Le port n’a pas de CLI, donc rien à signaler. La sonde stderr normalise le préfixe lors de la comparaison.
 
 ---
 

@@ -311,7 +311,7 @@ describe('attribute macro name (grammar.y optmacroname)', () => {
   });
 
   function warningsFor(src: string): { g: ReturnType<typeof parse>; warnings: unknown[] } {
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const g = parse(src);
     return { g, warnings: spy.mock.calls.map((c) => c[0]) };
   }

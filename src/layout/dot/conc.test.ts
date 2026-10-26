@@ -134,10 +134,13 @@ const REPRO_2825 = `digraph CrashPOC {
 
 describe('rebuild_vlists failure propagation (corpus 2825 class)', () => {
   it('reports the same error/warning sequence as C, in order', () => {
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const lines: unknown[] = [];
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation((m) => void lines.push(m));
+    const spy = vi.spyOn(console, 'error').mockImplementation((m) => void lines.push(m));
     renderSvg(REPRO_2825, 'dot');
-    const msgs = spy.mock.calls.map((c) => c[0]).filter((m) => typeof m === 'string');
+    const msgs = lines.filter((m) => typeof m === 'string');
     spy.mockRestore();
+    warnSpy.mockRestore();
     expect(msgs).toContain('Warning: B was already in a rankset, deleted from cluster cluster_outer');
     expect(msgs).toContain('Warning: H was already in a rankset, deleted from cluster cluster_outer');
     expect(msgs).toContain('Error: rebuild_vlists: lead is null for rank 1');

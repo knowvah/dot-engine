@@ -1,0 +1,1 @@
+graph{mode=hier; a--b--c--a; c--d}
