@@ -16,6 +16,8 @@ import { makeHtmlLabelTo } from './htmltable-label.js';
 import { labelStderr } from './htmltable-attr-warn.js';
 import { substObj, type GraphObj } from './subst.js';
 import { Edge } from '../model/edge.js';
+import { Node } from '../model/node.js';
+import { nodeAttr, graphAttrInherited } from './attr-get.js';
 import { Graph } from '../model/graph.js';
 import { htmlEntityUTF8 } from './html-entities.js';
 
@@ -33,15 +35,25 @@ export { htmlEntityUTF8 };
 /**
  * The object's pen color: `pencolor` attr, else `color` attr, else undefined
  * (no default). An HTML table/cell border with no explicit COLOR inherits it.
+ * Read as C's agget does, so declared defaults count: a node's `node [...]`
+ * snapshot and a subgraph's inherited graph attributes (894589). Edge
+ * defaults are already materialized into `attrs` by the builder.
  * @see lib/common/htmltable.c:getPenColor
  */
 function getPenColor(obj?: GraphObj): string | undefined {
   if (obj === undefined) return undefined;
-  const pc = obj.attrs.get('pencolor');
+  const pc = aggetObj(obj, 'pencolor');
   if (pc !== undefined && pc !== '') return pc;
-  const c = obj.attrs.get('color');
+  const c = aggetObj(obj, 'color');
   if (c !== undefined && c !== '') return c;
   return undefined;
+}
+
+/** `agget(obj, key)` for any object kind. @see lib/cgraph/attr.c:agxget */
+function aggetObj(obj: GraphObj, key: string): string | undefined {
+  if (obj instanceof Node) return nodeAttr(obj, obj.root, key);
+  if (obj instanceof Graph) return graphAttrInherited(obj, key);
+  return obj.attrs.get(key);
 }
 
 /** The root graph owning `obj` (edges resolve through their tail node). */

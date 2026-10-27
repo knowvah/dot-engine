@@ -23,7 +23,7 @@ won't-fix deltas (0 for engines without an acceptance list).
 
 | track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | oracle nondeterministic | pass % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [dot (SVG)](./PARITY-dot.md) | 950 | 929 | 1 | 5 | 1 | 14 | 0 | 99.3% |
+| [dot (SVG)](./PARITY-dot.md) | 950 | 930 | 0 | 5 | 1 | 14 | 0 | 99.4% |
 | [dot (xdot)](./PARITY-XDOT.md) | 929 | 926 | 0 | 0 | 0 | 3 | 0 | 100.0% |
 | [dot (json)](./PARITY-JSON.md) | 929 | 924 | 0 | 2 | 0 | 3 | 0 | 99.8% |
 | [circo (xdot)](./PARITY-circo.md) | 928 | 920 | 1 | 2 | 0 | 5 | 0 | 99.7% |

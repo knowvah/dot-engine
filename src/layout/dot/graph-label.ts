@@ -9,6 +9,7 @@
 import type { Graph } from '../../model/graph.js';
 import type { Point } from '../../model/geom.js';
 import type { TextMeasurer } from '../../common/textmeasure.js';
+import { graphAttrInherited } from '../../common/attr-get.js';
 import { makeAnyLabel, DEFAULT_FONTSIZE, DEFAULT_FONTNAME, DEFAULT_COLOR } from '../../common/make-label.js';
 import { isHtmlValue, htmlValueContent } from '../../common/html-string.js';
 import { BOTTOM_IX, TOP_IX, RIGHT_IX, LEFT_IX } from './position-aux.js';
@@ -43,21 +44,6 @@ function readLabelPos(sg: Graph): number {
     else if (just[0] === 'r') pos |= LABEL_AT_RIGHT;
   }
   return pos;
-}
-
-/**
- * Read a graph attribute with subgraph→root inheritance, mirroring C's
- * agxget (late_nnstring(sg, agfindgraphattr(sg, key), ...) in do_graph_label):
- * a cluster inherits `fontname`/`fontsize`/`fontcolor` set on an ancestor
- * (e.g. root `graph[fontname=Arial]`) when it sets none of its own.
- * @see lib/common/input.c:do_graph_label
- */
-function graphAttrInherited(sg: Graph, key: string): string | undefined {
-  // Own value wins; otherwise the ancestor defaults SNAPSHOTTED when this
-  // subgraph opened (not a live parent walk) — so an ancestor attribute set
-  // later in statement order does not retroactively apply (2184).
-  // @see lib/cgraph/graph.c:agsubg (parse-time defval copy)
-  return sg.attrs.get(key) ?? sg.graphDefaultsSnapshot?.get(key);
 }
 
 /**
