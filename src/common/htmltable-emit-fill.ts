@@ -16,7 +16,7 @@ import { ObjType, EmitState, MapShape } from '../gvc/job.js';
 import type { RendererPlugin } from '../gvc/context.js';
 import { FillType, PenType } from '../gvc/context.js';
 import { transformPoint } from '../gvc/device.js';
-import { firstColor, resolveRenderColor } from '../render/color-resolve.js';
+import { firstColor, resolveFillColorName, resolveRenderColor } from '../render/color-resolve.js';
 import { emitRoundedBezier } from './poly-shapes.js';
 import type { PlacedHtml, PlacedCell } from './htmltable-pos.js';
 import { htmlStyle } from './htmltable-style.js';
@@ -28,7 +28,7 @@ import {
   BORDER_BOTTOM,
   BORDER_MASK,
 } from './htmltable-types.js';
-import { parseSegs, parseSegsSilent } from './multicolor.js';
+import { MSG_MANY_COLORS, parseSegs, parseSegsSilent } from './multicolor.js';
 import { agwarningf } from './agerr.js';
 import { registerRenderState } from './render-state.js';
 
@@ -42,9 +42,6 @@ export interface HtmlStopColor {
   stop: string | null;
   frac: number;
 }
-
-/** @see lib/common/emit.c:findStopColor */
-const MSG_MANY_COLORS = 'More than 2 colors specified for a gradient - ignoring remaining';
 
 /**
  * Port of C's findStopColor over parseSegs: null when parseSegs returns
@@ -197,8 +194,10 @@ function penTypeOf(style: string | undefined): PenType {
  * @see lib/common/htmltable.c:setFill
  */
 export function withHtmlPaint(paint: HtmlPaint, job: RenderJob, drawFn: () => void): void {
+  // gvrender_set_fillcolor hands the cut name to colorxlate even when empty
+  // (":red" -> ""), so the empty name warns and fills opaque black.
   paintObj.fillColor = paint.fill !== undefined
-    ? resolveRenderColor(firstColor(paint.fill)) : { type: 'none' };
+    ? resolveFillColorName(firstColor(paint.fill)) : { type: 'none' };
   paintObj.penColor = paint.pen !== undefined
     ? resolveRenderColor(paint.pen) : { type: 'string', s: 'transparent' };
   applyHtmlFill(paint);
@@ -425,7 +424,12 @@ const HTML_DEFAULT_COLOR = 'black';
 /** setFill's names: the fill (and a gradient's stop). @see htmltable.c:setFill */
 function bgNames(bgcolor: string): string[] {
   const spec = parseGradientSpec(bgcolor);
-  return spec === null ? [bgcolor] : [spec[0], spec[1]];
+  if (spec !== null) return [spec[0], spec[1]];
+  // A spec parseSegs rejects, or an empty cut name (":red"), is resolved by
+  // setFill itself, after findStopColor's own diagnostics: leave it to the
+  // paint. @see lib/common/htmltable.c:setFill
+  if (parseSegsSilent(bgcolor).error !== 0 || firstColor(bgcolor) === '') return [];
+  return [bgcolor];
 }
 
 /** One cell in emit_html_cell order: fill, border, then the child. */

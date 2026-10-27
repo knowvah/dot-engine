@@ -7,6 +7,7 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse, render } from '../index.js';
+import { agwarningf } from './agerr.js';
 import { parseSegs, parseSegsSilent } from './multicolor.js';
 import { resetRenderState } from './render-state.js';
 
@@ -43,7 +44,10 @@ describe('parseSegs messages', () => {
     const lines = capture();
     expect(parseSegs(OVER).error).toBe(3);
     expect(parseSegs(OVER).error).toBe(0);
-    expect(lines).toEqual([`Warning: Total size > 1 in "${OVER}" color spec `]);
+    expect(lines).toEqual([]);
+    agwarningf('next');
+    // The text has no newline in C: the next message continues the line.
+    expect(lines).toEqual([`Warning: Total size > 1 in "${OVER}" color spec Warning: next`]);
   });
 
   it('shares the flag with the Illegal-value error, in both orders', () => {

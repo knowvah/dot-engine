@@ -176,10 +176,7 @@ describe('style tokenizer diagnostics — native 16.1.0 stderr (item 80)', () =>
       Array<string>(2).fill("Error: unmatched ')' in style: a)"));
   });
 
-  // render/color-resolve.ts reportEdgeColors still calls the reporting
-  // styleTokens (T11 owns it): switching it to styleTokensQuiet makes this pass,
-  // and `it.fails` then flags the leftover marker.
-  it.fails('reports an edge style error once (emit_edge parses once)', () => {
+  it('reports an edge style error once (emit_edge parses once)', () => {
     expect(stderrOf('digraph{a->b[style="a)"]}', 'svg')).toEqual(["Error: unmatched ')' in style: a)"]);
   });
 

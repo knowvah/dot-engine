@@ -13,7 +13,7 @@
  * @see lib/common/emit.c:470 parseSegs
  */
 
-import { agerr, agerrorf, agwarningf } from './agerr.js';
+import { agerr, agerrPartial, agerrorf } from './agerr.js';
 import type { Edge } from '../model/edge.js';
 import { registerRenderState } from './render-state.js';
 
@@ -63,6 +63,9 @@ function claimWarned(): boolean {
 
 /** A claim that never fires: parses without touching or consuming the flag. */
 const claimNever = (): boolean => false;
+
+/** @see lib/common/emit.c:findStopColor */
+export const MSG_MANY_COLORS = 'More than 2 colors specified for a gradient - ignoring remaining';
 
 /** @see lib/common/emit.c:451 EPS */
 const EPS = 1e-5;
@@ -187,9 +190,10 @@ function scanSegs(
  * On rv 1 or 2 the returned segs array is empty.
  *
  * The rv 2 error and rv 3 warning are printed here, once per process (the
- * shared `warned` flag). C's callers then append an AGPREV line for rv > 1;
- * `context` supplies it (e.g. `in edge a -> b`): the warning continues the
- * same line as C's AGPREV does, the error's context follows on its own line.
+ * shared `warned` flag). The warning is a held partial line (no `\n`, as in
+ * C); C's callers then append an AGPREV line for rv > 1; `context` supplies it
+ * (e.g. `in edge a -> b`) and completes the held line. Without `context` the
+ * next agerr message continues the line.
  *
  * @see lib/common/emit.c:470 parseSegs
  */
@@ -199,8 +203,10 @@ export function parseSegs(
 ): { segs: ColorSeg[]; error: 0 | 1 | 2 | 3 } {
   const result = scanSegs(colorlist, claimWarned);
   if (result.error === 3) {
-    const tail = context === undefined ? '' : context();
-    agwarningf(`Total size > 1 in "${colorlist}" color spec ${tail}`);
+    // C's message has no newline: the line stays open for the next agerr*
+    // call (or the caller's AGPREV context line).
+    agerrPartial('warning', `Total size > 1 in "${colorlist}" color spec `);
+    if (context !== undefined) agerr('prev', context());
   } else if (result.error === 2) {
     agerrorf(`Illegal value in "${colorlist}" color attribute; float expected after ';'`);
     if (context !== undefined) agerr('prev', context());

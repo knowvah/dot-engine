@@ -24,7 +24,7 @@
 import { PenType } from '../gvc/context.js';
 import { agerrorf, agwarningf } from './agerr.js';
 import { parseGradientSpec } from './htmltable-emit-fill.js';
-import { parseSegs } from './multicolor.js';
+import { MSG_MANY_COLORS, parseSegs } from './multicolor.js';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -485,11 +485,10 @@ export function findStopColor(
   colorlist: string,
 ): { fillColor: string; stopColor: string; frac: number } | null {
   const { segs, error } = parseSegs(colorlist);
-  if (error === 1 || error === 2) return null;
-  if (segs.length < 2) return null;
-  const seg0 = segs[0]!;
-  const seg1 = segs[1]!;
-  if (seg0.color === null) return null;
+  const seg0 = segs[0];
+  const seg1 = segs[1];
+  if (error !== 0 || seg0 === undefined || seg1 === undefined || seg0.color === null) return null;
+  if (segs.length > 2) agwarningf(MSG_MANY_COLORS);
   const fillColor = seg0.color;
   const stopColor = seg1.color ?? DEFAULT_COLOR;
   const frac = seg0.hasFraction ? seg0.t
@@ -512,7 +511,9 @@ function buildResolvedFill(
   angle: number,
 ): ResolvedFill {
   const stop = findStopColor(rawColor);
-  if (stop === null) return { kind: 'solid', color: rawColor };
+  // gvrender_set_fillcolor cuts a colour list at the first ':' (and so does the
+  // unknown-colour warning it can raise).
+  if (stop === null) return { kind: 'solid', color: rawColor.split(':', 1)[0]! };
   const kind = flags.radial ? 'radial' : 'linear';
   return { kind, fillColor: stop.fillColor, stopColor: stop.stopColor, frac: stop.frac, angle };
 }
