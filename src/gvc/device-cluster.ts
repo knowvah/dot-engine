@@ -19,6 +19,7 @@ import {
 import { gvrenderSetStyle, checkClusterStyleTokens } from './gvrender-set-style.js';
 import { resolveRenderColor, withColorScheme, reportColorNames } from '../render/color-resolve.js';
 import { parseSegs } from '../common/multicolor.js';
+import { graphAttrInherited } from '../common/attr-get.js';
 
 /**
  * Copy gradient fields from a linear/radial ResolvedFill onto obj.
@@ -36,19 +37,14 @@ function applyClusterGradient(
 }
 
 /**
- * Read a cluster graph-attribute with ancestor inheritance (agxget): a cluster
- * with no value of its own inherits an ancestor's `graph[key=...]`. C resolves
- * every cluster attr this way (late_string(sg, agfindgraphattr(sg, key), ...)),
- * so a root-level style/color/pencolor/fillcolor/bgcolor/penwidth/gradientangle
- * applies to the cluster boundary as the oracle does.
- * @see lib/common/emit.c:emit_clusters (cluster attrs via agxget)
+ * Read a cluster graph-attribute as C's `agget(sg, key)` does: the cluster's
+ * own value, else the ancestor defaults snapshotted when `agsubg` opened it.
+ * A root `graph[key=...]` declared after the cluster is NOT seen (item 89).
+ * @see lib/cgraph/graph.c:agsubg
+ * @see lib/common/emit.c:emit_clusters (cluster attrs via agget/agxget)
  */
 export function clusterAttr(sg: Graph, key: string): string | undefined {
-  for (let g: Graph | null = sg; g !== null; g = g.parent) {
-    const v = g.attrs.get(key);
-    if (v !== undefined) return v;
-  }
-  return undefined;
+  return graphAttrInherited(sg, key);
 }
 
 /** Cluster `style` with ancestor inheritance. @see clusterAttr */
