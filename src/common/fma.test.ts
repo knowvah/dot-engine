@@ -36,3 +36,77 @@ describe('fma', () => {
     expect(fms(a, a, 1 + 2 ** -26)).toBe(-(2 ** -54));
   });
 });
+
+/** Previous implementation (finite-only Dekker split), kept for the bit-for-bit comparison. */
+function oldFma(a: number, b: number, c: number): number {
+  const SPLIT = 134217729;
+  const p = a * b;
+  const at = SPLIT * a;
+  const ahi = at - (at - a);
+  const alo = a - ahi;
+  const bt = SPLIT * b;
+  const bhi = bt - (bt - b);
+  const blo = b - bhi;
+  const e = ((ahi * bhi - p) + ahi * blo + alo * bhi) + alo * blo;
+  const s = p + c;
+  const bv = s - p;
+  const err = (p - (s - bv)) + (c - bv);
+  return s + (err + e);
+}
+
+/** mulberry32 seeded PRNG in [0, 1). */
+function prng(seed: number): () => number {
+  let t = seed >>> 0;
+  return () => {
+    t = (t + 0x6d2b79f5) >>> 0;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const TRIPLES = 100_000;
+const SEED = 84;
+const SUBNORMAL = 5e-324;
+const MAG_EXP = 500;
+
+function drawFinite(rnd: () => number): number {
+  const sign = rnd() < 0.5 ? -1 : 1;
+  const kind = Math.floor(rnd() * 5);
+  switch (kind) {
+    case 0: return sign * rnd();
+    case 1: return sign * rnd() * 1e3;
+    case 2: return sign * SUBNORMAL * Math.floor(rnd() * 1e6);
+    case 3: return sign * (1 + rnd()) * 2 ** MAG_EXP;
+    default: return sign * (1 + rnd()) * 2 ** -MAG_EXP;
+  }
+}
+
+describe('fma finite path vs previous implementation', () => {
+  it('is bit-identical over 1e5 random finite triples', () => {
+    const rnd = prng(SEED);
+    let mismatches = 0;
+    for (let i = 0; i < TRIPLES; i++) {
+      const a = drawFinite(rnd);
+      const b = drawFinite(rnd);
+      const c = drawFinite(rnd);
+      const p = a * b;
+      if (!Number.isFinite(p)) continue; // non-finite product: new short-circuit path
+      if (!Object.is(fma(a, b, c), oldFma(a, b, c))) mismatches++;
+    }
+    expect(mismatches).toBe(0);
+  });
+});
+
+describe('fma non-finite operands (IEEE fmadd)', () => {
+  it('propagates infinities', () => {
+    expect(fma(Infinity, 2, 1)).toBe(Infinity);
+    expect(fma(1, 2, Infinity)).toBe(Infinity);
+    expect(fma(1e308, 10, -Infinity)).toBe(-Infinity);
+  });
+  it('yields NaN for invalid operations and NaN input', () => {
+    expect(fma(Infinity, 0, 1)).toBeNaN();
+    expect(fma(-Infinity, 2, Infinity)).toBeNaN();
+    expect(fma(NaN, 1, 1)).toBeNaN();
+  });
+});

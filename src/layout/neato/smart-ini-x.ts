@@ -11,13 +11,13 @@
  */
 
 import { crand } from '../../common/crand.js';
+import { fma } from '../../common/fma.js';
 import { conjugateGradientF } from './conjgrad.js';
 import type { VtxData } from './dijkstra.js';
 import { computeApsp } from './kkutils.js';
 import {
   BLOCK_NONE,
   copyVector,
-  fma,
   innerProduct,
   norm,
   scadd,
