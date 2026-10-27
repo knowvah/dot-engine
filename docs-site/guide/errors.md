@@ -124,7 +124,7 @@ To avoid the error, remove the attribute or change it to a supported value.
 
 | Engine | Attribute and value | Fires when | Graphviz feature needed |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Only when `model` is `subset` or `circuit` (after the graph has 2+ nodes and `maxiter` is not negative) | Hierarchical stress majorization (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Only when `model` is `subset` or `circuit` (after the graph has 2+ nodes and `maxiter` is positive) | Hierarchical stress majorization (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Only when Graphviz would build constraints: `diredgeconstraints` is true or `hier*`, `overlap=ipsep`, or the graph has a top-level cluster. Without constraints it runs as stress majorization, as in Graphviz | Constrained majorization (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` is `major` (the default) or `ipsep` | Smart initialisation (`smart_ini`). Under `mode=KK` or `mode=sgd` it logs `start=0 not supported with mode=self - ignored` once per render, as Graphviz does |
 | neato | `model=subset` | `mode` is `major` or `KK` | The subset distance model |

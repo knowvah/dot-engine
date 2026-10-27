@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -130,7 +130,7 @@ understøttet værdi.
 
 | Motor | Attribut og værdi | Udløses når | Nødvendig Graphviz-funktion |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Kun når `model` er `subset` eller `circuit` (efter at grafen har 2+ knuder, og `maxiter` ikke er negativ) | Hierarkisk stress-majorisering (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Kun når `model` er `subset` eller `circuit` (efter at grafen har 2+ knuder, og `maxiter` er positiv) | Hierarkisk stress-majorisering (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Kun når Graphviz ville bygge begrænsninger: `diredgeconstraints` er sand eller `hier*`, `overlap=ipsep`, eller grafen har et cluster på øverste niveau. Uden begrænsninger kører den som stress-majorisering, som i Graphviz | Begrænset majorisering (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` er `major` (standarden) eller `ipsep` | Smart initialisering (`smart_ini`). Under `mode=KK` eller `mode=sgd` logger den `start=0 not supported with mode=self - ignored` én gang pr. rendering, som Graphviz gør |
 | neato | `model=subset` | `mode` er `major` eller `KK` | Delmængde-afstandsmodellen |

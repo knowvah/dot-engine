@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -134,7 +134,7 @@ Wert.
 
 | Engine | Attribut und Wert | Löst aus, wenn | Benötigtes Graphviz-Feature |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Nur wenn `model` `subset` oder `circuit` ist (nachdem der Graph 2+ Knoten hat und `maxiter` nicht negativ ist) | Hierarchische Stress-Majorization (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Nur wenn `model` `subset` oder `circuit` ist (nachdem der Graph 2+ Knoten hat und `maxiter` positiv ist) | Hierarchische Stress-Majorization (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Nur wenn Graphviz Constraints aufbauen würde: `diredgeconstraints` ist wahr oder `hier*`, `overlap=ipsep`, oder der Graph hat einen Cluster auf oberster Ebene. Ohne Constraints läuft es wie in Graphviz als Stress-Majorization | Eingeschränkte Majorization (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` ist `major` (der Standardwert) oder `ipsep` | Intelligente Initialisierung (`smart_ini`). Unter `mode=KK` oder `mode=sgd` protokolliert es wie Graphviz einmal pro Rendervorgang `start=0 not supported with mode=self - ignored` |
 | neato | `model=subset` | `mode` ist `major` oder `KK` | Das Distanzmodell „subset“ |

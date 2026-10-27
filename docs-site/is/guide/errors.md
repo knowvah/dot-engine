@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -130,7 +130,7 @@ gildi sem er stutt.
 
 | Vél | Eigindi og gildi | Kviknar þegar | Graphviz-eiginleiki sem þarf |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Aðeins þegar `model` er `subset` eða `circuit` (eftir að grafið hefur 2+ hnúta og `maxiter` er ekki neikvætt) | Stigveld streituhámörkun (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Aðeins þegar `model` er `subset` eða `circuit` (eftir að grafið hefur 2+ hnúta og `maxiter` er jákvætt) | Stigveld streituhámörkun (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Aðeins þegar Graphviz myndi smíða skorður: `diredgeconstraints` er satt eða `hier*`, `overlap=ipsep`, eða grafið hefur klasa á efsta stigi. Án skorða keyrir það sem streituhámörkun, eins og í Graphviz | Hámörkun með skorðum (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` er `major` (sjálfgildið) eða `ipsep` | Snjöll frumstilling (`smart_ini`). Undir `mode=KK` eða `mode=sgd` skráir það `start=0 not supported with mode=self - ignored` einu sinni við hverja teiknun, eins og Graphviz |
 | neato | `model=subset` | `mode` er `major` eða `KK` | Hlutmengisfjarlægðarlíkanið |

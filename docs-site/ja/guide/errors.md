@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -109,7 +109,7 @@ DOT の作者が何を変更しても、`InternalError` を確実に避けるこ
 
 | エンジン | 属性と値 | 発動条件 | 必要な Graphviz の機能 |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | `model` が `subset` または `circuit` の場合のみ（グラフに2つ以上のノードがあり、`maxiter` が負でない場合） | 階層的なストレスマジョライゼーション（`stress_majorization_with_hierarchy`） |
+| neato | `mode=hier` | `model` が `subset` または `circuit` の場合のみ（グラフに2つ以上のノードがあり、`maxiter` が正の場合） | 階層的なストレスマジョライゼーション（`stress_majorization_with_hierarchy`） |
 | neato | `mode=ipsep` | Graphviz が制約を構築する場合のみ: `diredgeconstraints` が true または `hier*`、`overlap=ipsep`、またはグラフが最上位のクラスターを持つ場合。制約がなければ、Graphviz と同様にストレスマジョライゼーションとして実行される | 制約付きマジョライゼーション（`stress_majorization_cola`） |
 | neato | `start=self` | `mode` が `major`（デフォルト）または `ipsep` | スマート初期化（`smart_ini`）。`mode=KK` または `mode=sgd` では、Graphviz と同様に、レンダリングごとに1回 `start=0 not supported with mode=self - ignored` をログに出す |
 | neato | `model=subset` | `mode` が `major` または `KK` | subset 距離モデル |

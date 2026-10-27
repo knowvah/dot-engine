@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,7 +131,7 @@ eroarea, eliminați atributul sau schimbați-l într-o valoare acceptată.
 
 | Motor | Atribut și valoare | Se declanșează când | Funcționalitate Graphviz necesară |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Numai când `model` este `subset` sau `circuit` (după ce graful are 2+ noduri și `maxiter` nu este negativ) | Majorizare de stres ierarhică (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Numai când `model` este `subset` sau `circuit` (după ce graful are 2+ noduri și `maxiter` este pozitiv) | Majorizare de stres ierarhică (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Doar când Graphviz ar construi constrângeri: `diredgeconstraints` este adevărat sau `hier*`, `overlap=ipsep` ori graful are un cluster de nivel superior. Fără constrângeri rulează ca majorizare de stres, ca în Graphviz | Majorizare constrânsă (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` este `major` (implicit) sau `ipsep` | Inițializare inteligentă (`smart_ini`). Sub `mode=KK` sau `mode=sgd` înregistrează o dată pe randare `start=0 not supported with mode=self - ignored`, ca Graphviz |
 | neato | `model=subset` | `mode` este `major` sau `KK` | Modelul de distanță subset |
