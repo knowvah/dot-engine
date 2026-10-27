@@ -26,7 +26,7 @@ import type { ShapeDesc, TextlabelT } from '../common/types.js';
 import { type LayerInfo, parseLayers } from '../common/layers.js';
 import { RenderJob, EMIT_CLUSTERS_LAST, createObjState, ObjType, EmitState } from './job.js';
 import { walkNodesAndEdges } from './emit-walk.js';
-import { warnLayersUnsupported } from './first-layer.js';
+import { firstLayer, nextLayer, numPhysicalLayers, validLayer } from './first-layer.js';
 import { polyInit } from '../common/poly-init.js';
 import {
   setHtmlAnchorObj,
@@ -343,18 +343,17 @@ export function renderGraph(g: Graph, job: RenderJob, renderer: RendererPlugin):
   job.pushObj(obj);
   try {
     const info = parseLayers(g);
-    // Only layer-capable renderers (SVG) do the layer loop; others collapse to
-    // one pass. @see lib/common/emit.c:1140 (GVDEVICE_DOES_LAYERS)
-    const layered = renderer.beginLayer !== undefined && info.numLayers > 1;
-    job.numLayers = layered ? info.numLayers : 1;
+    // emit_graph sets job->layerNum = 0 before emit_begin_graph.
+    job.layerNum = 0;
     job.layerIDs = info.layerIDs;
     renderer.beginGraph(g, job);
-    warnLayersUnsupported(job.format, info.numLayers, renderer.beginLayer !== undefined);
-    for (let ln = 1; ln <= job.numLayers; ln++) {
-      job.layerNum = ln;
-      if (layered) renderer.beginLayer!(info.layerIDs[ln]!, job);
+    const cur = firstLayer(job, info, renderer.beginLayer !== undefined);
+    for (; validLayer(job); nextLayer(job, cur)) {
+      const layered = numPhysicalLayers(job, info) > 1;
+      // gvrender_begin_layer/end_layer are no-ops without a plugin callback.
+      if (layered) renderer.beginLayer?.(info.layerIDs[job.layerNum]!, job);
       renderPage(g, renderer, job, info);
-      if (layered) renderer.endLayer!(job);
+      if (layered) renderer.endLayer?.(job);
     }
     renderer.endGraph(g, job);
   } finally {
