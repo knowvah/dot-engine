@@ -48,7 +48,7 @@ import {
   setRendererKnownColors,
 } from '../render/color-resolve.js';
 import { emitRoundedBezier } from '../common/poly-shapes.js';
-import { applyClusterObjState, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
+import { applyClusterObjState, clusterAttr, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
 import { gvrenderSetStyle, edgeStyleResets } from './gvrender-set-style.js';
 import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
@@ -255,6 +255,41 @@ function renderClusterBox(
 }
 
 /**
+ * The body of emit_clusters between setColorScheme and its restore.
+ * @see lib/common/emit.c:3800-3943 emit_clusters
+ */
+function drawClusterInScheme(sg: Graph, renderer: RendererPlugin, job: RenderJob): void {
+  // Resolve and wire cluster fill/pen into job.obj before the polygon.
+  // emit_clusters:3805-3874 — must happen before gvrender_box.
+  const filled = applyClusterObjState(sg, job);
+  // Cluster id is clust<AGSEQ seq> (getObjId); obj.id feeds emitGradientDefs
+  // the "clustN_l_0" gradient prefix. seq is stable on the subgraph, so the
+  // begin/assign order below is no longer load-bearing.
+  // @see lib/common/emit.c:209 getObjId (AGRAPH/cluster: pfx="clust")
+  renderer.beginCluster?.(sg, job);
+  if (job.obj !== null) job.obj.id = svgClusterId(sg, job);
+  // @see lib/common/emit.c:emit_begin_cluster / getObjId
+  setHtmlAnchorObj(svgClusterId(sg, job), labelTextOf(sg.info.label), job.obj ?? undefined);
+  // Resolve and open the cluster anchor around the box + label (closed before
+  // the cluster's child nodes — sibling of them). @see emit.c:3803.
+  if (job.obj !== null) {
+    resolveObjAnchor(sg, labelTextOf(sg.info.label), svgClusterId(sg, job), job.obj);
+  }
+  const anchored = beginAnchorIf(renderer, job);
+  // C draws the boundary box only when peripheries != 0, or (peripheries == 0
+  // and the cluster is filled). peripheries=0 + unfilled emits nothing.
+  // style=invis sets PEN_NONE and gvrender_polygon skips the whole box
+  // (fill included); the group/title still emit.
+  // @see lib/common/emit.c:3907-3917, lib/gvc/gvrender.c:543
+  if ((clusterPeripheries(sg) !== 0 || filled || isStripedCluster(sg)) && job.obj?.pen !== PenType.None) {
+    renderClusterBox(sg, filled, renderer, job);
+  }
+  renderClusterLabel(sg, renderer, job);
+  if (anchored) renderer.endAnchor?.(job);
+  renderer.endCluster?.(sg, job);
+}
+
+/**
  * Render one cluster: box, label, endCluster, then recurse into sub-clusters.
  * push_obj_state in emit_begin_cluster (3762); pop in emit_end_cluster (3774).
  * Sub-cluster recursion follows emit_end_cluster (line 3940-3941) — the pop
@@ -273,34 +308,10 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): 
   obj.emitState = EmitState.CDraw;
   job.pushObj(obj);
   try {
-    // Resolve and wire cluster fill/pen into job.obj before the polygon.
-    // emit_clusters:3805-3874 — must happen before gvrender_box.
-    const filled = applyClusterObjState(sg, job);
-    // Cluster id is clust<AGSEQ seq> (getObjId); obj.id feeds emitGradientDefs
-    // the "clustN_l_0" gradient prefix. seq is stable on the subgraph, so the
-    // begin/assign order below is no longer load-bearing.
-    // @see lib/common/emit.c:209 getObjId (AGRAPH/cluster: pfx="clust")
-    renderer.beginCluster?.(sg, job);
-    if (job.obj !== null) job.obj.id = svgClusterId(sg, job);
-    // @see lib/common/emit.c:emit_begin_cluster / getObjId
-    setHtmlAnchorObj(svgClusterId(sg, job), labelTextOf(sg.info.label), job.obj ?? undefined);
-    // Resolve and open the cluster anchor around the box + label (closed before
-    // the cluster's child nodes — sibling of them). @see emit.c:3803.
-    if (job.obj !== null) {
-      resolveObjAnchor(sg, labelTextOf(sg.info.label), svgClusterId(sg, job), job.obj);
-    }
-    const anchored = beginAnchorIf(renderer, job);
-    // C draws the boundary box only when peripheries != 0, or (peripheries == 0
-    // and the cluster is filled). peripheries=0 + unfilled emits nothing.
-    // style=invis sets PEN_NONE and gvrender_polygon skips the whole box
-    // (fill included); the group/title still emit.
-    // @see lib/common/emit.c:3907-3917, lib/gvc/gvrender.c:543
-    if ((clusterPeripheries(sg) !== 0 || filled || isStripedCluster(sg)) && job.obj?.pen !== PenType.None) {
-      renderClusterBox(sg, filled, renderer, job);
-    }
-    renderClusterLabel(sg, renderer, job);
-    if (anchored) renderer.endAnchor?.(job);
-    renderer.endCluster?.(sg, job);
+    // C opens setColorScheme right after emit_begin_cluster and restores it after
+    // emit_label(EMIT_CLABEL): the window spans fill, pen, box and label.
+    // @see lib/common/emit.c:3800 / :3943 emit_clusters
+    withColorScheme(clusterAttr(sg, 'colorscheme'), () => drawClusterInScheme(sg, renderer, job));
   } finally {
     // pop_obj_state in emit_end_cluster (line 3774), before sub-cluster recursion
     job.popObj();

@@ -17,7 +17,7 @@ import {
   resolveClusterFillEx, styleTokens,
 } from '../common/style-resolve.js';
 import { gvrenderSetStyle, checkClusterStyleTokens } from './gvrender-set-style.js';
-import { resolveRenderColor, withColorScheme, reportColorNames } from '../render/color-resolve.js';
+import { resolveRenderColor, reportColorNames } from '../render/color-resolve.js';
 import { parseSegs } from '../common/multicolor.js';
 import { graphAttrInherited } from '../common/attr-get.js';
 
@@ -103,15 +103,13 @@ export function applyClusterObjState(sg: Graph, job: RenderJob): boolean {
   // emit_clusters: gvrender_set_style(job, checkClusterStyle list) precedes the
   // colour resolution. @see lib/common/emit.c:3808
   gvrenderSetStyle(checkClusterStyleTokens(styleTokens(clusterStyle(sg))));
-  // C wraps the cluster color block with setColorScheme. @see emit.c:3800/3943
-  return withColorScheme(clusterAttr(sg, 'colorscheme'), () => {
-    // C resolves the fill (set_fillcolor / gradient vals) before the pen,
-    // which is set just before gvrender_box. @see emit.c:3846-3868 vs 3907-3913
-    const filled = applyClusterFill(obj, fillRes);
-    applyClusterPenState(obj, sg);
-    reportColorNames(stripedClusterColors(sg));
-    return filled;
-  });
+  // Runs inside renderCluster's setColorScheme window. @see emit.c:3800/3943
+  // C resolves the fill (set_fillcolor / gradient vals) before the pen,
+  // which is set just before gvrender_box. @see emit.c:3846-3868 vs 3907-3913
+  const filled = applyClusterFill(obj, fillRes);
+  applyClusterPenState(obj, sg);
+  reportColorNames(stripedClusterColors(sg));
+  return filled;
 }
 
 /**
@@ -160,24 +158,22 @@ function stripedClusterColors(sg: Graph): string[] {
 export function renderStripedClusterBox(
   sg: Graph, renderer: RendererPlugin, job: RenderJob,
 ): void {
-  // stripedBox runs inside emit_clusters' setColorScheme window (3800/3943).
-  withColorScheme(clusterAttr(sg, 'colorscheme'), () => {
-    const { ll, ur } = sg.info.bb!;
-    const af = [
-      { x: ll.x, y: ll.y }, { x: ur.x, y: ll.y }, { x: ur.x, y: ur.y }, { x: ll.x, y: ur.y },
-    ].map((p) => transformPoint(p, job));
-    // stripedBox passes filled=1 (never GRADIENT) to gvrender_polygon; the port's
-    // renderers read the gradient from obj.fill, so show them a solid fill.
-    const obj = job.obj;
-    const savedFill = obj?.fill;
-    if (obj !== null && savedFill !== undefined) obj.fill = FillType.Solid;
-    stripedBox(job, af, stripedFillSpec(sg), false, renderer, () => `in cluster ${sg.name}`);
-    if (obj !== null && savedFill !== undefined) obj.fill = savedFill;
-    const rawPts = [
-      { x: ll.x, y: ll.y }, { x: ll.x, y: ur.y }, { x: ur.x, y: ur.y }, { x: ur.x, y: ll.y },
-    ];
-    renderer.polygon(rawPts.map((p) => transformPoint(p, job)), false, job);
-  });
+  // stripedBox runs inside renderCluster's setColorScheme window (3800/3943).
+  const { ll, ur } = sg.info.bb!;
+  const af = [
+    { x: ll.x, y: ll.y }, { x: ur.x, y: ll.y }, { x: ur.x, y: ur.y }, { x: ll.x, y: ur.y },
+  ].map((p) => transformPoint(p, job));
+  // stripedBox passes filled=1 (never GRADIENT) to gvrender_polygon; the port's
+  // renderers read the gradient from obj.fill, so show them a solid fill.
+  const obj = job.obj;
+  const savedFill = obj?.fill;
+  if (obj !== null && savedFill !== undefined) obj.fill = FillType.Solid;
+  stripedBox(job, af, stripedFillSpec(sg), false, renderer, () => `in cluster ${sg.name}`);
+  if (obj !== null && savedFill !== undefined) obj.fill = savedFill;
+  const rawPts = [
+    { x: ll.x, y: ll.y }, { x: ll.x, y: ur.y }, { x: ur.x, y: ur.y }, { x: ur.x, y: ll.y },
+  ];
+  renderer.polygon(rawPts.map((p) => transformPoint(p, job)), false, job);
 }
 
 /** The fill half of {@link applyClusterObjState}; true when the box is filled. */
