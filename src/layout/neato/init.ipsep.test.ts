@@ -12,6 +12,7 @@ import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
 import { Edge } from '../../model/edge.js';
 import { assignNodeIds, makeGraphDataC } from './init.js';
+import { setEdgeLen } from './edge-len.js';
 
 const nodeLines = async (src: string): Promise<string[]> =>
   String(await render(parse(src), 'plain', { engine: 'neato' }))
@@ -55,7 +56,9 @@ describe('makeGraphDataC haveDir (C neatoinit.c:827)', () => {
   it('with len, a repeated neighbour keeps the max len', () => {
     const { g, withLen } = twoNodeDup();
     withLen.attrs.set('len', '2');
-    const vtx = makeGraphDataC(g, assignNodeIds(g), true, true);
+    const nodes = assignNodeIds(g);
+    setEdgeLen(g); // scan_graph_mode fills ED_dist
+    const vtx = makeGraphDataC(g, nodes, true, true);
     expect(vtx[0]!.ewgts).toEqual([0, 2]);
   });
 

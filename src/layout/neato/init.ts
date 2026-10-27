@@ -26,6 +26,7 @@ import { kkNeato } from './kk.js';
 import {
   checkStart, assertSupported, parseStart, INIT_RANDOM, INIT_REGULAR, INIT_SELF,
 } from './start.js';
+import { setEdgeLen } from './edge-len.js';
 import { makeGraphDataC, graphHasLen } from './make-graph-data.js';
 import type { DirectedVtxData } from './opt-arrangement.js';
 import { stressMajorizationWithHierarchy } from './constrained-majorization.js';
@@ -380,6 +381,7 @@ function solveStress(
 /** Run stress majorization and write positions back. @see lib/neatogen/neatoinit.c:majorization */
 export function runMajorization(g: Graph, mode: number, model: number): void {
   const nodeList = assignNodeIds(g);
+  setEdgeLen(g); // scan_graph_mode else-branch: ED_dist for major/hier/ipsep
   const n = nodeList.length;
   const haveLen = graphHasLen(g);
   // C: srand48(seed) immediately before initLayout draws; hier starts from self
