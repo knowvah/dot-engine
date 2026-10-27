@@ -489,6 +489,13 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       pen-color fix for 894589 uses) and confirm `pencolor`/`fillcolor`/`bgcolor`
       follow the same rule (found while fixing 894589, 2026-10-26; no corpus id
       hits it).
+- **New follow-ups found by part 5** (`plans/post-16-1-followups-5/`):
+  90. `-Tjson` prints the missing-image warning pair (`No such file or directory while
+      opening nope.png`, `No or improper image="nope.png" for node "a"`) twice in the
+      port, once per render pass (the nested xdot pass and the json pass); native
+      prints the pair once for `digraph{a[image="nope.png"]}` -Tjson. Not caused by
+      the T7 order fix; the once-per-process behaviour lives in the usershape /
+      image-size path (part 5 T7, 2026-10-27).
 
 ## Local leftovers (not committed, safe to delete)
 
