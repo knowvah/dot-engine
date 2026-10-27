@@ -62,3 +62,48 @@
 - **Finding**: `echo == $x` fails with `= not found`; quote the marker.
 - **Impact**: quote separators in zsh one-liners.
 - **Confidence**: High
+
+## Observation: engine `cleanup` functions live in `init.ts` for five engines
+- **Context**: T13.
+- **Finding**: `dotCleanup` (`dot/init.ts`), `neatoCleanup` (`neato/init.ts`), `fdpCleanup`
+  (`fdp/init.ts`), `sfdpCleanup` (`sfdp/init.ts`), `twopiCleanup` (`twopi/init.ts`); only
+  circo, osage and patchwork keep theirs in `index.ts`. `twopiCleanup` was also called
+  mid-layout from `twopi/pipeline.ts` as the stand-in for `twopi_layout`'s `free(ND_alg)`
+  (now `twopiFreeAlg`).
+- **Impact**: write-sets naming "the cleanup functions" must list `init.ts`.
+- **Confidence**: High
+
+## Observation: node `image=` sizing happens in `nodeinit.ts`, not `poly-init.ts`
+- **Context**: T14.
+- **Finding**: `polyInit` (`poly-init.ts`) runs at render time (`device.ts:491`) and only
+  warns; node sizes are fixed at layout time by `nodeinit.ts:initNodeFromLabel` →
+  `polySizeParamsFromNode` → `polySize`. HTML image hooks pass through
+  `htmltable-label.ts` (`HtmlLabelInfo`). The port never emits `<image>` for node `image=`
+  (follow-up 91). `ImageSizer` results are pixels at the graph dpi since T14.
+- **Impact**: image work touches `nodeinit.ts`/`htmltable-label.ts`; sizer tests return
+  pixels.
+- **Confidence**: High
+
+## Observation: `parseSegs` rv 3 fires once per process
+- **Context**: T11.
+- **Finding**: the Total-size warning is emitted on the first over-full parse only; later
+  identical parses return rv 0 and `findStopColor` draws a gradient. `colorxlate` on an
+  unknown name leaves opaque black (`#000000`), not `none`.
+- **Impact**: a second over-full fill in one render renders as a gradient, as native.
+- **Confidence**: High
+
+## Observation: the DOT parser rejects unquoted `0x10`, `inf`, `NaN` attribute values
+- **Context**: T10 `lenattr` tests.
+- **Finding**: tests must quote such values; `buildOutEdgeIndex` sorts by `head.id` then
+  `seq` (agfstout order); `g.edges` is not agfstout order.
+- **Impact**: per-node `agfstout` loops use the index or `np.outEdges`.
+- **Confidence**: High
+
+## Observation: a chained command with `git reset --hard` is denied by the auto-mode classifier
+- **Context**: T13 worktree rebase (orchestrator and agent alike).
+- **Finding**: `git reset --hard <sha>` was denied in a chained command and alone;
+  `git merge --ff-only <sha>` on a clean worktree branch passed. A denied chain leaves
+  every later step unrun, so a background gate launched in the same turn can run on the
+  wrong tree — launch gates only after the apply is confirmed.
+- **Impact**: move worktrees with `merge --ff-only`; never chain an apply and a gate launch.
+- **Confidence**: High

@@ -112,7 +112,7 @@ Sub-batches 2a/2b run in parallel; the batch gate runs once after both land.
 | [1](batch-1/overview.md) | T0 baselines, native references | orchestrator | [ ] |
 | [2a](batch-2a/overview.md) | T1 agerr partial lines · T2 `State` 87 · T3 fma 84 · T4 agNameOf 74 · T5 style tokenizer 80 | parallel worktrees | [x] |
 | [2b](batch-2b/overview.md) | T6 docs 86 · T7 json order 78 · T8 attvalue 76 · T9 cluster snapshot 89 | parallel worktrees | [x] |
-| [3](batch-3/overview.md) | T10 len 73 · T11 findStopColor 75/77/82 · T12 layerselect 79 · T13 cleanup labels 72 · T14 image sizing 83 | parallel worktrees | [ ] |
+| [3](batch-3/overview.md) | T10 len 73 · T11 findStopColor 75/77/82 · T12 layerselect 79 · T13 cleanup labels 72 · T14 image sizing 83 | parallel worktrees | [x] |
 | [4](batch-4/overview.md) | T15 fused kernel 85 · T16 colorscheme window 81 | parallel worktrees | [ ] |
 | [5](batch-5/overview.md) | T17 final verification, walk refresh, close-out, re-sign stop | orchestrator | [ ] |
 

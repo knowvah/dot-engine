@@ -496,6 +496,18 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       prints the pair once for `digraph{a[image="nope.png"]}` -Tjson. Not caused by
       the T7 order fix; the once-per-process behaviour lives in the usershape /
       image-size path (part 5 T7, 2026-10-27).
+  91. Node `image=` is sized (part 5 T14) but never drawn: the svg `usershape` emitter
+      (`src/render/svg.ts:240`) has no caller for nodes, whereas C `poly_gencode` emits
+      the image through `gvrender_usershape` (found by part 5 T14, 2026-10-27).
+  92. Node/cluster `fillcolor=":red"`: the port resolves the empty cut name through
+      `resolveRenderColor` (no fill, no warning); native warns `Warning:  is not a known
+      color.` and fills opaque black. Sites `poly-gencode.ts`, `device-cluster.ts`; the
+      HTML path was fixed by part 5 T11 (`resolveFillColorName`). Not yet probed natively
+      for node/cluster (found by part 5 T11, 2026-10-27).
+  93. Docs: `docs-site/guide/browser.md` says a node's `image=` attribute is not sized,
+      and `api.md`/`images.md` never state the sizer's unit; after part 5 T14 `ImageSizer`
+      returns intrinsic pixels converted at the graph `dpi` (default 96) and `image=` nodes
+      are sized. English pages, 23 locales and their `sourceHash` (2026-10-27).
 
 ## Local leftovers (not committed, safe to delete)
 
