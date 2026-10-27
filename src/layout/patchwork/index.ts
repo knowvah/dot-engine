@@ -15,6 +15,7 @@
  */
 
 import type { Graph } from '../../model/graph.js';
+import { gvCleanupEdgeLabels, gvCleanupNodeLabels } from '../dot/init.js';
 import type { Node } from '../../model/node.js';
 import type { LayoutEngine } from '../../gvc/context.js';
 import { ps2inch } from '../pack/index.js';
@@ -425,6 +426,9 @@ export function patchworkEngineLayout(g: Graph): void {
 
 /** @see lib/patchwork/patchworkinit.c:patchwork_cleanup */
 export function patchworkEngineCleanup(g: Graph): void {
+  if (g.nodes.size === 0) return; // C: if (!n) return
+  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge: per-node agfstout, all edges of root g
+  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // gv_cleanup_node
   g.info.clust = undefined;
   g.info.n_cluster = undefined;
   for (const n of g.nodes.values()) { n.info.alg = undefined; }

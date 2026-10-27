@@ -11,6 +11,7 @@
 
 import type { ShapeDesc } from '../../common/types.js';
 import type { Graph } from '../../model/graph.js';
+import { gvCleanupEdgeLabels, gvCleanupNodeLabels } from '../dot/init.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { VtxData } from './dijkstra.js';
@@ -491,6 +492,8 @@ export function neatoSetAspect(g: Graph): void {
  * @see lib/neatogen/neatoinit.c:neato_cleanup
  */
 export function neatoCleanup(g: Graph): void {
+  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge: per-node agfstout, all edges of root g
+  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // gv_cleanup_node
   for (const [, n] of g.nodes) {
     n.info.pos = undefined;
     n.info.pinned = undefined;
