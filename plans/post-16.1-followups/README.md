@@ -477,6 +477,17 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       now-passing inet/ngk10_4 rows) landed separately on 2026-10-26. DONE
       2026-10-26: both tools add `mult × previous walk row` (`walkCosts`), with
       timeout/oracle-error rows excluded as consumed caps.
+  89. Cluster border/fill attributes resolve through a live parent walk.
+      `clusterAttr` (`src/gvc/device-cluster.ts:46`) reads the cluster's own
+      `attrs`, then each ancestor's live `attrs`, so a root `graph [color=…]`
+      declared *after* the cluster opens applies to it; C's `agget` sees the
+      subgraph's parse-time default snapshot (`agsubg` copies `defval`), so native
+      draws the default black. Repro: `digraph { subgraph cluster_x { a }; graph
+      [color=white] }` — port white border, native black. Route through
+      `graphAttrInherited` (`src/common/attr-get.ts`, the snapshot read the HTML
+      pen-color fix for 894589 uses) and confirm `pencolor`/`fillcolor`/`bgcolor`
+      follow the same rule (found while fixing 894589, 2026-10-26; no corpus id
+      hits it).
 
 ## Local leftovers (not committed, safe to delete)
 

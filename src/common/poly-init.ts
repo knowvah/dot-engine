@@ -10,6 +10,7 @@
 import type { Node } from '../model/node.js';
 import type { Graph } from '../model/graph.js';
 import type { TextMeasurer } from './textmeasure.js';
+import { nodeAttr } from './attr-get.js';
 import type { PolygonT, ShapeDesc } from './types.js';
 import { ShapeKind } from './types.js';
 import type { TextlabelT } from './types.js';
@@ -32,24 +33,9 @@ const DEFAULT_LW = 27;
 const DEFAULT_RW = 27;
 const DEFAULT_HT = 36;
 
-/**
- * Read a node attribute: the node's own value, else the node-attribute defaults
- * (`node [...]`) captured from the node's declaring scope up to root *at the
- * time the node was created*. The snapshot makes a `node [...]` declared after
- * the node — at any scope — correctly not apply, and lets a cluster-scoped
- * default reach nodes declared in that cluster, as the oracle does.
- *
- * Programmatically created nodes have no snapshot; they fall back to the live
- * defaults of the passed graph `g` and root.
- * @see lib/cgraph/attr.c:agxget; src/parser/builder.ts:effectiveNodeDefaults
- */
-export function nodeAttr(n: Node, g: Graph, key: string): string | undefined {
-  const own = n.attrs.get(key);
-  if (own !== undefined) return own;
-  if (n.nodeDefaultsSnapshot !== undefined) return n.nodeDefaultsSnapshot.get(key);
-  return g.nodeDefaults.get(key)
-    ?? (g !== g.root ? g.root.nodeDefaults.get(key) : undefined);
-}
+// nodeAttr moved to attr-get.ts (leaf module, shared with make-label.ts);
+// re-exported so existing importers are unchanged.
+export { nodeAttr };
 
 /** Read label-font attributes from node, falling back to defaults. */
 export function readFontAttrs(n: Node, g: Graph): {

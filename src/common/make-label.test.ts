@@ -11,6 +11,9 @@
 import { describe, it, expect } from 'vitest';
 import type { TextMeasurer } from './textmeasure.js';
 import { makeLabel, makeAnyLabel, htmlEntityUTF8 } from './make-label.js';
+import type { GraphObj } from './subst.js';
+import type { PlacedHtml } from './htmltable-pos.js';
+import { parse } from '../parser/index.js';
 
 const stubMeasurer: TextMeasurer = { measure: () => ({ w: 20, h: 10 }) };
 const ARIAL = { fontname: 'Arial', fontsize: 12, fontcolor: 'black' };
@@ -180,5 +183,48 @@ describe('htmlEntityUTF8', () => {
 
   it('returns the input unchanged when there is no &', () => {
     expect(htmlEntityUTF8('plain text')).toBe('plain text');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// makeAnyLabel — HTML table pen color resolves through agget (894589)
+// C seeds the top table's pencolor from getPenColor(obj), and getPenColor reads
+// agget(obj, "pencolor") then agget(obj, "color"): agget sees the declared
+// defaults (`node [...]`, inherited graph attrs), not only the object's own
+// attributes. Expected values are the 16.1 oracle's cell-border strokes.
+// @see lib/common/htmltable.c:getPenColor, :1913
+// ---------------------------------------------------------------------------
+
+describe('makeAnyLabel — HTML pen color from declared defaults (894589)', () => {
+  const TABLE = '<TABLE><TR><TD>x</TD></TR></TABLE>';
+  const tableColor = (obj: GraphObj): string | undefined => {
+    const lbl = makeAnyLabel(TABLE, true, ARIAL, stubMeasurer, obj);
+    return (lbl.u as { kind: 'html'; html: PlacedHtml }).html.cells[0]!.color;
+  };
+  const nodeL = (dot: string) => parse(dot).nodes.get('L')!;
+  const clusterX = (dot: string) => parse(dot).subgraphs.get('cluster_x')!;
+
+  it('a node inherits a root `node [color=...]` default', () => {
+    expect(tableColor(nodeL('digraph { node [color=white]; L }'))).toBe('white');
+  });
+
+  it('a node inherits an anonymous-subgraph `node [color=...]` default', () => {
+    expect(tableColor(nodeL('digraph { { node [color=white]; L } }'))).toBe('white');
+  });
+
+  it('a `node [...]` default declared after the node does not apply', () => {
+    expect(tableColor(nodeL('digraph { L; node [color=white] }'))).toBeUndefined();
+  });
+
+  it('a default pencolor beats the node\'s own color', () => {
+    expect(tableColor(nodeL('digraph { node [pencolor=blue]; L [color=red] }'))).toBe('blue');
+  });
+
+  it('a cluster inherits a root graph color set before it opens', () => {
+    expect(tableColor(clusterX('digraph { color=white; subgraph cluster_x { a } }'))).toBe('white');
+  });
+
+  it('a root graph color set after the cluster opens does not apply', () => {
+    expect(tableColor(clusterX('digraph { subgraph cluster_x { a }; graph [color=white] }'))).toBeUndefined();
   });
 });

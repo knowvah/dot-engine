@@ -13,8 +13,8 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 
 - **Oracle:** dot 16.1.0 · **corpus:** [graphviz `tests/`](https://gitlab.com/graphviz/graphviz/-/tree/main/tests) (local clone `~/git/graphviz/tests`)
 - **Surveyed (applicable):** 950
-- **conformant\*:** 929 (99.3%) · structural-match: 3 → 932/936 structurally equal (99.6%)
-- **Accepted deltas (documented, won't-fix):** 5 · **Tracked gaps (unaccepted, will-fix):** 1 → of 6 non-conformant graphs
+- **conformant\*:** 930 (99.4%) · structural-match: 3 → 933/936 structurally equal (99.7%)
+- **Accepted deltas (documented, won't-fix):** 5 · **Tracked gaps (unaccepted, will-fix):** 0 → of 5 non-conformant graphs
 - **errored:** 1 · **timeout:** 0 · **oracle-error:** 14 (excluded from pass %)
 - **Quarantined (not surveyed, from corpus-manifest.json):** oracle-crash 3, not-a-layout-test 2, malformed 6, engine-deferred 6, multi-graph 3, perf 1
 
@@ -22,11 +22,11 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 
 Accepted deltas are deliberate, root-caused, won't-fix differences (`test/corpus/accepted-divergences.json` → [Known divergences](../../docs/known-divergences.md)). Everything else non-conformant is a tracked gap we intend to close.
 
-## conformant (929)
+## conformant (930)
 
 Port SVG is *conformant* with the oracle: numeric coordinates/paths agree within the `deterministic` tolerance (±0.01) and all non-numeric content is exactly equal — not literal byte equality. See [docs/conformance.md](../../docs/conformance.md).
 
-_Conformant ids (929) are omitted for brevity — the full roster is in
+_Conformant ids (930) are omitted for brevity — the full roster is in
 [parity.json](parity.json)._
 
 ## Accepted deltas (5) — documented, not chased
@@ -60,11 +60,10 @@ for driving groups to conformance. Mechanism-family attribution: see
 | id | maxΔ | kind | worst-diff path |
 |---|---:|---|---|
 
-## Tracked diverged (1) — worst-first
+## Tracked diverged (0) — worst-first
 
 | id | maxDelta | firstDiffPath |
 |---|---:|---|
-| [`894589`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/894589.dot) | 0.00 | `svg/g[1]/g[206]/polygon[2]/@stroke` |
 
 ## errored (1)
 
@@ -104,11 +103,6 @@ it rejects entirely); there is no reference to compare against.
 Named buckets over **tracked** (unaccepted) divergences, largest first. Each is
 a candidate oracle-pinned fix mission.
 
-### tracked diverged — by firstDiffPath shape
-
-| bucket | count | examples | hypothesis |
-|---|---:|---|---|
-| `color-stroke` | 1 | `894589` | fill/stroke value differs — color resolution or default styling |
 
 ### errored — by thrown message
 
