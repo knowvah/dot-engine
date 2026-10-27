@@ -16,6 +16,7 @@ found by part 2" below, each journaled in `plans/decision-journal.md`.
 Being closed by `plans/post-16-1-followups-3/`.
 The open work is items 43–71 under "New follow-ups found by part 3" below.
 Being closed by `plans/post-16-1-followups-4/`.
+Being closed by `plans/post-16-1-followups-5/`.
 
 ## State at handoff
 
