@@ -239,12 +239,8 @@ function applyDraws(attrs: Map<string, string> | undefined, d: XdotDraws | undef
  *  hand-built graph with no real layout state) so callers fall back cleanly. */
 function collectDrawLookup(g: Graph): DrawLookup | undefined {
   let xg: Graph;
-  // Inject our own XdotRenderer (last-registered wins bestRenderer) so we can
-  // read its per-object draw strings AFTER the render: the DOT-text re-parse
-  // below is faithful for coordinates but LOSSY for draw text containing `"`
-  // (a DOT quoted string cannot hold `\` before `"`; a cluster label's `\"`
-  // round-trips to `"`, id 2239). The draws map holds the pre-serialization
-  // strings C's -Tjson reads directly, so we overlay them onto the re-parse.
+  // Our own XdotRenderer (last-registered wins) exposes raw draw strings: the
+  // DOT re-parse is LOSSY for draw text containing `"` (id 2239); overlay them.
   const xr = new XdotRenderer();
   try {
     const ctx = createDefaultContext();
@@ -650,8 +646,8 @@ function latin1Reencode(s: string): string {
   return out;
 }
 
-export function buildJson(g: Graph, doXDot: boolean): string {
-  const draws = doXDot ? collectDrawLookup(g) : undefined;
+export function buildJson(g: Graph, doXDot: boolean, preDraws?: DrawLookup): string {
+  const draws = doXDot ? (preDraws ?? collectDrawLookup(g)) : undefined;
   const ctx = assignIds(g, doXDot, draws);
   const root = buildGraphObject(g, true, ctx);
   return JSON.stringify(root, null, 2) + '\n';
@@ -702,10 +698,13 @@ export class JsonRenderer implements RendererPlugin {
   /** @see plugin/core/gvplugin_core.c registration table */
   readonly quality = 0;
 
-  beginGraph(_g: Graph, _job: RenderJob): void { /* no-op */ }
+  private draws: DrawLookup | undefined; // set by beginGraph, cleared by endGraph
+  /** @see plugin/core/gvrender_core_json.c:json_begin_graph */
+  beginGraph(g: Graph, _job: RenderJob): void { this.draws = collectDrawLookup(g); }
 
   endGraph(g: Graph, job: RenderJob): void {
-    job.write(buildJson(g, true));
+    job.write(buildJson(g, true, this.draws));
+    this.draws = undefined;
   }
 
   beginNode(_n: Node, _job: RenderJob): void { /* no-op */ }
