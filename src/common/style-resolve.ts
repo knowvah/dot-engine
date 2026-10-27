@@ -22,6 +22,7 @@
  */
 
 import { PenType } from '../gvc/context.js';
+import { agerrorf, agwarningf } from './agerr.js';
 import { parseGradientSpec } from './htmltable-emit-fill.js';
 import { parseSegs } from './multicolor.js';
 
@@ -156,28 +157,113 @@ function zeroFlags(): PolyStyleFlags {
   };
 }
 
-/** C parse_style truncates the style list at FUNLIMIT tokens. @see lib/common/emit.c:4001 */
+/** C parse_style truncates the style list at FUNLIMIT tokens. @see lib/common/emit.c:3998 FUNLIMIT */
 const FUNLIMIT = 64;
 
+/** Characters `gv_isspace` accepts. @see lib/cgraph/gv_ctype.h:gv_isspace */
+const STYLE_SPACE: ReadonlySet<string> = new Set([' ', '\t', '\n', '\v', '\f', '\r']);
+
+/** @see lib/common/emit.c:3949 is_style_delim ('\0' is the end of the C string) */
+function isStyleDelim(c: string | undefined): boolean {
+  return c === undefined || c === '(' || c === ')' || c === ',';
+}
+
+/** One `style_token` result: `(`, `)`, an identifier, or the end (`null`). */
+interface StyleToken {
+  readonly type: '(' | ')' | 'id';
+  readonly text: string;
+  /** Index in the style string just past the token. */
+  readonly next: number;
+}
+
 /**
- * The raw style tokens C's parse_style produces (comma-separated, trimmed,
- * non-empty), truncated to empty past FUNLIMIT. These are what xdot's
- * `xdot_style` re-emits as `S` ops (it skips filled/bold/setlinewidth). The
- * port resolves style into a PenType for SVG; xdot needs the original tokens.
+ * Skips spaces and commas, then reads one token: a parenthesis, or everything
+ * up to the next delimiter (trailing spaces included). Null at the end.
+ * @see lib/common/emit.c:3974 style_token
+ */
+function styleToken(s: string, from: number): StyleToken | null {
+  let p = from;
+  while (p < s.length && (STYLE_SPACE.has(s[p]) || s[p] === ',')) p++;
+  if (p >= s.length) return null;
+  if (s[p] === '(' || s[p] === ')') return { type: s[p] as '(' | ')', text: s[p], next: p + 1 };
+  const start = p;
+  while (!isStyleDelim(s[p])) p++;
+  return { type: 'id', text: s.slice(start, p), next: p };
+}
+
+/** Why `parseStyle` produced an empty list, or null when it did not. */
+type StyleFault = 'nesting' | 'unmatched-close' | 'unmatched-open' | 'truncate';
+
+/** Result of the tokenizer: the list (empty on a fault) and the fault, if any. */
+interface StyleParse {
+  readonly tokens: string[];
+  readonly fault: StyleFault | null;
+}
+
+const NO_TOKENS: StyleParse['tokens'] = [];
+
+/**
+ * parse_style without the diagnostics. A token's `(args)` are appended to it,
+ * as C stores them after the token's NUL: `setlinewidth( 2 )` → `setlinewidth(2 )`.
+ * @see lib/common/emit.c:4010 parse_style
+ */
+function parseStyleQuiet(s: string): StyleParse {
+  const end = s.indexOf('\0');
+  const str = end < 0 ? s : s.slice(0, end);
+  const names: string[] = [];
+  const args: string[][] = [];
+  let inParens = false;
+  for (let c = styleToken(str, 0); c !== null; c = styleToken(str, c.next)) {
+    if (c.type === '(') {
+      if (inParens) return { tokens: NO_TOKENS, fault: 'nesting' };
+      inParens = true;
+    } else if (c.type === ')') {
+      if (!inParens) return { tokens: NO_TOKENS, fault: 'unmatched-close' };
+      inParens = false;
+    } else if (inParens) {
+      args[names.length - 1]?.push(c.text);
+    } else {
+      if (names.length === FUNLIMIT - 1) return { tokens: NO_TOKENS, fault: 'truncate' };
+      names.push(c.text);
+      args.push([]);
+    }
+  }
+  if (inParens) return { tokens: NO_TOKENS, fault: 'unmatched-open' };
+  const tokens = names.map((n, i) => (args[i].length === 0 ? n : `${n}(${args[i].join(',')})`));
+  return { tokens, fault: null };
+}
+
+/** The agerr line for a fault, byte for byte. @see lib/common/emit.c:4027-4062 */
+function reportStyleFault(fault: StyleFault, s: string): void {
+  if (fault === 'nesting') agerrorf(`nesting not allowed in style: ${s}`);
+  else if (fault === 'unmatched-close') agerrorf(`unmatched ')' in style: ${s}`);
+  else if (fault === 'unmatched-open') agerrorf(`unmatched '(' in style: ${s}`);
+  else agwarningf(`truncating style '${s}'`);
+}
+
+/**
+ * The raw style tokens C's `parse_style` produces, untrimmed, `(args)`
+ * attached; empty on a fault, which it reports (agerr) on every call. These
+ * are what xdot's `xdot_style` re-emits as `S` ops. Call it where C calls
+ * `parse_style`; use `styleTokensQuiet` to read a list C has already parsed.
  * @see lib/common/emit.c:4010 parse_style · gvrender_core_dot.c:161 xdot_style
  */
 export function styleTokens(style: string | undefined): string[] {
   if (!style) return [];
-  const out: string[] = [];
-  let fun = 0;
-  for (const raw of style.split(',')) {
-    const token = raw.trim();
-    if (token.length === 0) continue;
-    if (fun === FUNLIMIT - 1) return [];
-    fun++;
-    out.push(token);
-  }
-  return out;
+  const { tokens, fault } = parseStyleQuiet(style);
+  if (fault !== null) reportStyleFault(fault, style);
+  return tokens;
+}
+
+/** `styleTokens` without the diagnostics, for re-reads of a style C parsed once. */
+export function styleTokensQuiet(style: string | undefined): string[] {
+  return style ? parseStyleQuiet(style).tokens : [];
+}
+
+/** The name C compares: parse_style stores a token's `(args)` after its NUL. */
+export function styleName(token: string): string {
+  const paren = token.indexOf('(');
+  return paren < 0 ? token : token.slice(0, paren);
 }
 
 /**
@@ -187,9 +273,9 @@ export function styleTokens(style: string | undefined): string[] {
  * @see lib/gvc/gvrender.c:501
  */
 function parseSetLineWidth(token: string): number | null {
-  const m = /^setlinewidth\s*\(\s*([^)]*)\)\s*$/.exec(token);
-  if (m === null) return null;
-  const v = parseFloat(m[1]);
+  if (styleName(token) !== 'setlinewidth') return null;
+  const m = /^[^(]*\(([^,)]*)/.exec(token);
+  const v = m === null ? Number.NaN : parseFloat(m[1]);
   return Number.isNaN(v) ? 0 : v;
 }
 
@@ -227,29 +313,19 @@ function firstSolidColor(raw: string): string {
 /**
  * Parse a graphviz style attribute string into a flag set.
  *
- * Splits on commas and trims. A `setlinewidth(N)` token captures its pen-width
- * argument; other tokens containing '(' are ignored. When the non-empty token
- * count reaches FUNLIMIT (64), C's parse_style returns early before building
- * the style list — the observable effect is an empty style list (no flags
- * applied), which we reproduce by returning zeroFlags().
+ * Tokenizes like C's parse_style (untrimmed tokens, empty list on a fault) and
+ * reports nothing: C's callers parse once and reuse the list. A
+ * `setlinewidth(N)` token captures its pen-width argument.
  *
  * @see lib/common/emit.c:4010 parse_style (FUNLIMIT truncation)
  * @see lib/gvc/gvrender.c:481 gvrender_set_style (setlinewidth → penwidth)
  */
 export function parseStyleFlags(style: string | undefined): PolyStyleFlags {
   const flags = zeroFlags();
-  if (!style) return flags;
-  let fun = 0;
-  for (const raw of style.split(',')) {
-    const token = raw.trim();
-    if (token.length === 0) continue;
-    // C truncates at the FUNLIMIT-th token, skipping the pointer-construction
-    // loop → the returned list is empty → no flags apply.
-    if (fun === FUNLIMIT - 1) return zeroFlags();
-    fun++;
+  for (const token of styleTokensQuiet(style)) {
     const lw = parseSetLineWidth(token);
     if (lw !== null) { flags.setLineWidth = lw; continue; }
-    if (!token.includes('(')) applyToken(flags, token);
+    applyToken(flags, styleName(token));
   }
   return flags;
 }
@@ -274,16 +350,7 @@ export function parseStyleFlags(style: string | undefined): PolyStyleFlags {
  * @see lib/common/shapes.c:point_gencode (point_style whitelist)
  */
 export function styleHasInvisibleAlias(style: string | undefined): boolean {
-  if (!style) return false;
-  let fun = 0;
-  for (const raw of style.split(',')) {
-    const token = raw.trim();
-    if (token.length === 0) continue;
-    if (fun === FUNLIMIT - 1) return false;
-    fun++;
-    if (token === 'invisible') return true;
-  }
-  return false;
+  return styleTokensQuiet(style).some((token) => styleName(token) === 'invisible');
 }
 
 export function resolvePenType(flags: PolyStyleFlags): PenType {

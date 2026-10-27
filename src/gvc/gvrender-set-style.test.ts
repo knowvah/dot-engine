@@ -155,3 +155,44 @@ describe('unsupported style warning — per format (native 16.1.0 stderr)', () =
     }
   });
 });
+
+describe('style tokenizer diagnostics — native 16.1.0 stderr (item 80)', () => {
+  it('keeps the trailing space of an unsupported token', () => {
+    expect(stderrOf('digraph{a->b[style="dashed , bogus"]}', 'svg')).toEqual([
+      'Warning: gvrender_set_style: unsupported style dashed  - ignoring',
+      'Warning: gvrender_set_style: unsupported style bogus - ignoring',
+    ]);
+  });
+
+  it('draws the stroke solid when the dashed token carries a trailing space', () => {
+    const svg = render(parse('digraph{a->b[style="dashed , bogus"]}'), 'svg', { engine: 'dot' });
+    expect(svg).not.toContain('stroke-dasharray');
+  });
+
+  it('reports a node style error twice (emit_node, then stylenode)', () => {
+    expect(stderrOf('digraph{a[style="a(b(c))"]}', 'svg')).toEqual(
+      Array<string>(2).fill('Error: nesting not allowed in style: a(b(c))'));
+    expect(stderrOf('digraph{a[style="a)"]}', 'svg')).toEqual(
+      Array<string>(2).fill("Error: unmatched ')' in style: a)"));
+  });
+
+  // render/color-resolve.ts reportEdgeColors still calls the reporting
+  // styleTokens (T11 owns it): switching it to styleTokensQuiet makes this pass,
+  // and `it.fails` then flags the leftover marker.
+  it.fails('reports an edge style error once (emit_edge parses once)', () => {
+    expect(stderrOf('digraph{a->b[style="a)"]}', 'svg')).toEqual(["Error: unmatched ')' in style: a)"]);
+  });
+
+  it('truncates a 65-token node style, twice', () => {
+    const style = Array.from({ length: 65 }, (_, i) => `t${i + 1}`).join(',');
+    expect(stderrOf(`digraph{a[style="${style}"]}`, 'svg')).toEqual(
+      Array<string>(2).fill(`Warning: truncating style '${style}'`));
+  });
+
+  it('orders style and colour warnings of a two-bezier edge as emit_edge_graphics', () => {
+    const src = 'digraph{concentrate=true;a->c[minlen=3 color=bogus style=bogus2];b->c[minlen=3]}';
+    const expected = [warning('bogus2'), 'Warning: bogus is not a known color.', warning('bogus2')];
+    expect(stderrOf(src, 'svg')).toEqual(expected);
+    expect(stderrOf(src, 'xdot')).toEqual(expected);
+  });
+});

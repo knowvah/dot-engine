@@ -156,7 +156,7 @@ export function renderNode(n: Node, renderer: RendererPlugin, job: RenderJob, do
  * Set the edge pen color/type/width on job.obj from the edge's attrs — mirrors
  * emit_edge_graphics. (AD1: style flows through job.obj, not ad-hoc renderer reads.)
  */
-function setEdgePen(e: Edge, job: RenderJob): void {
+function setEdgePen(e: Edge, job: RenderJob, styles: readonly string[]): void {
   if (job.obj === null) return;
   const obj = job.obj;
   const flags = parseStyleFlags(e.attrs.get('style'));
@@ -166,7 +166,7 @@ function setEdgePen(e: Edge, job: RenderJob): void {
   obj.penWidth = resolvePenWidth(flags, e.attrs.get('penwidth'));
   // Raw style tokens for xdot's `S` ops (e.g. explicit style="solid"); SVG
   // reads only obj.pen, so this is xdot-only. @see gvrender_core_dot.c xdot_style
-  obj.rawStyle = styleTokens(e.attrs.get('style'));
+  obj.rawStyle = [...styles];
   // emit_begin_edge: `if (styles && ED_spl(e)) gvrender_set_style(job, styles)`
   // @see lib/common/emit.c:2726
   if (e.info.spl !== undefined) gvrenderSetStyle(obj.rawStyle);
@@ -178,13 +178,16 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
   // before emit_begin_edge. @see lib/common/emit.c:emit_edge (style "invis" return)
   // The "invisible" alias likewise suppresses all edge draw ops via PEN_NONE
   // (edges never use the point-shape whitelist). @see lib/gvc/gvrender.c:497
+  // emit_edge parses the style once (reporting its faults); the rest reuse the list.
+  // @see lib/common/emit.c:2013 emit_edge
   const edgeStyle = e.attrs.get('style');
+  const styles = styleTokens(edgeStyle);
   if (parseStyleFlags(edgeStyle).invis || styleHasInvisibleAlias(edgeStyle)) return;
   // push_obj_state in emit_begin_edge (line 2715)
   const obj = createObjState(ObjType.Edge);
   obj.emitState = EmitState.EDraw;
   job.pushObj(obj);
-  setEdgePen(e, job);
+  setEdgePen(e, job, styles);
   try {
     // @see lib/common/emit.c:emit_begin_edge / getObjId
     setHtmlAnchorObj(svgEdgeId(e, job), labelTextOf(e.info.label), job.obj ?? undefined);
@@ -202,7 +205,6 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
       reportEdgeColors(e);
       // arrow_gen resets the style; C sets the edge's styles again after each
       // flagged bezier of a multi-bezier spline. @see emit.c:2047, :2677
-      const styles = styleTokens(e.attrs.get('style'));
       for (let i = edgeStyleResets(e, styles); i > 0; i--) gvrenderSetStyle(styles);
       reportEdgeLabelColors(e);
       renderer.endEdge(e, job);

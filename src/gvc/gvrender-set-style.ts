@@ -13,6 +13,7 @@
 
 import { agwarningf } from '../common/agerr.js';
 import { parseSegsSilent } from '../common/multicolor.js';
+import { styleName } from '../common/style-resolve.js';
 import type { PolygonT } from '../common/types.js';
 import type { Edge } from '../model/edge.js';
 
@@ -28,12 +29,6 @@ const BOX_ORIENTATION_STEP = 90;
 const BOX_SIDES = 4;
 /** polygon_t.sides bound of shapes.c:isEllipse. @see lib/common/shapes.c:isEllipse */
 const ELLIPSE_MAX_SIDES = 2;
-
-/** The name C compares: parse_style stores a token's `(args)` after its NUL. */
-function styleName(token: string): string {
-  const paren = token.indexOf('(');
-  return paren < 0 ? token : token.slice(0, paren);
-}
 
 /**
  * Warn for every token the render engine cannot map, on every call.

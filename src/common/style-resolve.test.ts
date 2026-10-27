@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: EPL-2.0
 
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import {
   parseStyleFlags,
+  styleName,
+  styleTokens,
+  styleTokensQuiet,
   resolvePenType,
   resolvePenWidth,
   resolveNodeFill,
@@ -65,10 +68,13 @@ describe('parseStyleFlags — remaining flags and edge cases', () => {
     expect(f.wedged).toBe(true);
   });
 
-  it('trims whitespace around tokens', () => {
+  // style_token skips leading spaces/commas only; a token keeps its trailing
+  // spaces, so "filled " is not "filled" (native: 80-style-space).
+  it('keeps trailing whitespace inside a token, as C style_token', () => {
     const f = parseStyleFlags(' filled , dashed ');
-    expect(f.filled).toBe(true);
-    expect(f.dashed).toBe(true);
+    expect(f.filled).toBe(false);
+    expect(f.dashed).toBe(false);
+    expect(parseStyleFlags(' filled,\tdashed').dashed).toBe(true);
   });
 
   // C matches the style token with streq(p, "invis") (exact); "invisible" is an
@@ -377,5 +383,51 @@ describe('resolveClusterFill — penwidth and gradient (AD3)', () => {
     const r = resolveClusterFill({ style: 'filled', color: 'cyan:magenta' });
     expect(r.fillColor).toBe('cyan');
     expect(r.penColor).toBe('cyan');
+  });
+});
+
+describe('styleTokens — C parse_style port', () => {
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  it('keeps trailing spaces inside a token and skips leading spaces and commas', () => {
+    expect(styleTokens('dashed , bogus')).toEqual(['dashed ', 'bogus']);
+    expect(styleTokens(',, a,,b')).toEqual(['a', 'b']);
+  });
+
+  it('attaches (args) to the token', () => {
+    expect(styleTokens('setlinewidth(2),filled')).toEqual(['setlinewidth(2)', 'filled']);
+    expect(styleTokens('a(b, c)')).toEqual(['a(b,c)']);
+    expect(styleName('a(b,c)')).toBe('a');
+  });
+
+  it('reports nesting as an error and returns an empty list', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect(styleTokens('a(b(c))')).toEqual([]);
+    expect(err).toHaveBeenCalledWith('Error: nesting not allowed in style: a(b(c))');
+  });
+
+  it('reports unmatched parentheses as errors', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect(styleTokens('a)')).toEqual([]);
+    expect(styleTokens('a(b')).toEqual([]);
+    expect(err.mock.calls).toEqual([
+      ["Error: unmatched ')' in style: a)"],
+      ["Error: unmatched '(' in style: a(b"],
+    ]);
+  });
+
+  it('warns on truncation at 64 tokens and returns an empty list', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const style = Array.from({ length: 65 }, (_, i) => `t${i + 1}`).join(',');
+    expect(styleTokens(style)).toEqual([]);
+    expect(warn).toHaveBeenCalledWith(`Warning: truncating style '${style}'`);
+    expect(styleTokens(style.split(',').slice(0, 63).join(',')).length).toBe(63);
+  });
+
+  it('styleTokensQuiet returns the same list without reporting', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect(styleTokensQuiet('a)')).toEqual([]);
+    expect(styleTokensQuiet('x , y')).toEqual(['x ', 'y']);
+    expect(err).not.toHaveBeenCalled();
   });
 });
