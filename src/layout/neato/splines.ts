@@ -21,6 +21,7 @@ import type { SplineInfo, PolygonT, TextlabelT } from '../../common/types.js';
 import { polygonOutlineRing } from '../../common/poly-sizing.js';
 import { fma, fms } from '../../common/fma.js';
 import { ShapeKind } from '../../common/types.js';
+import { setState, GVSPLINES } from '../../common/layout-state.js';
 import { esepFactor, type ExpandT } from './sep-factor.js';
 import { libmCos, libmSin } from '../../common/libm-trig.js';
 import type { Poly, VConfig } from '../../pathplan/types.js';
@@ -821,10 +822,11 @@ export function splineEdges(g: Graph): void {
   }
   // C splineEdges wrapper: coalesce equivalent edges before routing.
   coalesceEdges(g);
-  if (edgetype === EDGETYPE_LINE) { RoutingHelper.straight(g, edgetype); return; }
+  if (edgetype === EDGETYPE_LINE) { RoutingHelper.straight(g, edgetype); setState(GVSPLINES); return; }
   // C: margin = esepFactor(g) — the edge separation, default {3.2, 3.2, add}.
   // @see lib/neatogen/neatosplines.c:746
   splineEdgesImpl(g, esepFactor(g), edgetype);
+  setState(GVSPLINES); // State = GVSPLINES, neatosplines.c:778 (also the LINE path)
 }
 
 // ---------------------------------------------------------------------------

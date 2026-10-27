@@ -27,6 +27,7 @@ import {
 } from '../layout/dot/init.js';
 import { addXLabels } from './xlabels-place.js';
 import { registerRenderState } from './render-state.js';
+import { getState, GVSPLINES } from './layout-state.js';
 import { agerrorf } from './agerr.js';
 
 /** Concentrated multi-edge duplicate — never drawn. @see lib/common/const.h:IGNORED */
@@ -221,7 +222,9 @@ function translateDrawing(g: Graph): void {
 
   for (const v of g.nodes.values()) {
     mapNode(v);
-    // State == GVSPLINES is always true post-spline-routing in the dot pipeline
+    // C: `if (State == GVSPLINES)` guards the whole edge loop; layouts that
+    // never route (patchwork, osage) leave State at GVBEGIN.
+    if (getState() !== GVSPLINES) continue;
     for (const e of g.edges) {
       if (e.tail !== v) continue;
       // C map_edge: a spline-less (non-concentrate, non-IGNORED) edge was
