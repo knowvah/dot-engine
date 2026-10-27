@@ -8,6 +8,7 @@
  */
 
 import type { Graph } from '../../model/graph.js';
+import { agNameOf } from '../../model/cgraph-ops.js';
 import type { Edge } from '../../model/edge.js';
 import { agwarningf } from '../../common/agerr.js';
 
@@ -25,7 +26,7 @@ export function lenattr(ep: Edge, g: Graph): number {
   const val = /^\s*[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?/.exec(s);
   const len = val === null ? Number.NaN : parseFloat(val[0]);
   if (Number.isNaN(len) || len < 0 || len === 0) {
-    agwarningf(`bad edge len "${s}" in ${g.name} - setting to ${DEFAULT_EDGE_LEN.toFixed(2)}`);
+    agwarningf(`bad edge len "${s}" in ${agNameOf(g)} - setting to ${DEFAULT_EDGE_LEN.toFixed(2)}`);
     return DEFAULT_EDGE_LEN;
   }
   return len;

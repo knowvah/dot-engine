@@ -17,6 +17,7 @@
  */
 
 import type { Graph } from '../../model/graph.js';
+import { agNameOf } from '../../model/cgraph-ops.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import { buildOutEdgeIndex } from '../../model/node.js';
@@ -290,7 +291,7 @@ function moveNode(st: KkState, m: number): void {
 function solveModel(g: Graph, st: KkState): void {
   for (let m = chooseNode(st); m >= 0; m = chooseNode(st)) moveNode(st, m);
   if (st.move === st.maxIter) {
-    agwarningf(`Max. iterations (${st.maxIter}) reached on graph ${g.name}`);
+    agwarningf(`Max. iterations (${st.maxIter}) reached on graph ${agNameOf(g)}`);
   }
 }
 

@@ -139,3 +139,23 @@ describe('mode=sgd edge cases (C sgd_graph / sgd)', () => {
     expect(nodes(sgd('graph g { mode=sgd }')).size).toBe(0);
   });
 });
+
+describe('agnameof in neato messages (anonymous root prints %1)', () => {
+  it('names an anonymous root %1 in the bad edge len warning', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    await plain('mode=sgd; start=3; a--z [len=x];');
+    expect(warn).toHaveBeenCalledWith('Warning: bad edge len "x" in g - setting to 1.00');
+    warn.mockRestore();
+    const warn2 = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    await render(parse('graph{mode=sgd; start=3; a--z [len=x]}'), 'plain', { engine: 'neato' });
+    expect(warn2).toHaveBeenCalledWith('Warning: bad edge len "x" in %1 - setting to 1.00');
+    warn2.mockRestore();
+  });
+
+  it('names an anonymous root %1 in the illegal mode warning', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    await render(parse('graph{mode=bogus;a}'), 'plain', { engine: 'neato' });
+    expect(warn).toHaveBeenCalledWith('Warning: Illegal value bogus for attribute "mode" in graph %1 - ignored');
+    warn.mockRestore();
+  });
+});

@@ -11,6 +11,7 @@
  */
 
 import type { Graph } from '../model/graph.js';
+import { agNameOf } from '../model/cgraph-ops.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
 import type { Point, Box } from '../model/geom.js';
@@ -583,13 +584,11 @@ export class PlainExtRenderer implements RendererPlugin {
 // Imagemap renderers (cmapx / imap and their no-polygon `_np` variants)
 // ---------------------------------------------------------------------------
 
-/** Graph name as `agnameof` returns it: the DOT name, or `%1` for an anonymous
- * root (cgraph's first anonymous id). The port stores `''` for an anonymous
- * root (dot/xdot re-serialization must not print a `%`-name — see dot.ts), so
- * the imagemap layer restores the internal name only here.
- * @see lib/cgraph/id.c:agnameof ; lib/cgraph/id.c:idmap (anon → `%1`) */
+/** Graph name as `agnameof` returns it (`%1` for an anonymous root; the port
+ * stores `''` there so dot/xdot re-serialization stays unchanged).
+ * @see lib/cgraph/id.c:agnameof */
 export function mapGraphName(g: Graph): string {
-  return g.anonymous ? '%1' : g.name;
+  return agNameOf(g);
 }
 
 /** First non-empty attr walking parent scopes (agget inheritance). */
