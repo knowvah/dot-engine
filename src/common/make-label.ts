@@ -20,6 +20,7 @@ import { Node } from '../model/node.js';
 import { nodeAttr, graphAttrInherited } from './attr-get.js';
 import { Graph } from '../model/graph.js';
 import { htmlEntityUTF8 } from './html-entities.js';
+import { usershapeDpi } from '../gvc/usershape.js';
 
 export const DEFAULT_FONTSIZE = 14.0;
 /** C's default fontname (non-Windows); renderers alias it, e.g. SVG
@@ -217,11 +218,14 @@ export function makeAnyLabel(
     // pen color so an HTML table/cell border with no explicit COLOR inherits
     // it (htmltable.c:1911 getPenColor). @see getPenColor
     // ADR-2: a per-context sizer (when set) wins over the global one.
-    const imageSizer = obj !== undefined ? rootOf(obj).info.gvc?.imageSizer : undefined;
+    const root = obj !== undefined ? rootOf(obj) : undefined;
+    const imageSizer = root?.info.gvc?.imageSizer;
+    const imageResolver = root?.info.gvc?.imageResolver;
+    const imageDpi = root !== undefined ? usershapeDpi(root.attrs) : undefined;
     // One stderr for the label: doInt's unterminated warning runs into the
     // next write, `in label of ...` included (agerr AGPREV).
     const stderr = labelStderr();
-    const { label, rv } = makeHtmlLabelTo(content, { ...font, pencolor: getPenColor(obj), imageSizer }, measurer, stderr);
+    const { label, rv } = makeHtmlLabelTo(content, { ...font, pencolor: getPenColor(obj), imageSizer, imageResolver, imageDpi }, measurer, stderr);
     if (rv !== 0 && obj !== undefined) stderr.write(`${inLabelOf(obj)}\n`);
     stderr.flush();
     return label;

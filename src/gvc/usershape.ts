@@ -63,3 +63,43 @@ export function imageIsSupplied(name: string, sizer?: ImageSizer, resolver?: Ima
 export function imageOpenWarning(name: string): string {
   return `${STRERROR_ENOENT} while opening ${name}`;
 }
+
+/** @see lib/gvc/gvusershape.c:DEFAULT_DPI */
+export const DEFAULT_DPI = 96;
+/** @see lib/common/geom.h:POINTS_PER_INCH */
+const POINTS_PER_INCH = 72;
+
+/**
+ * The graph's `dpi` as `gvusershape_size` reads it: GD_drawing->dpi is
+ * late_double(dpi, resolution, 0) (input.c:705), and a value below 1 means
+ * the 96 default.
+ * @see lib/common/input.c:graph_init (dpi), lib/gvc/gvusershape.c:gvusershape_size
+ */
+export function usershapeDpi(attrs: ReadonlyMap<string, string>): number {
+  const lateDouble = (s: string | undefined, dflt: number): number => {
+    if (s === undefined || s === '') return dflt;
+    const v = Number(s);
+    return Number.isNaN(v) || s.trim() === '' ? dflt : Math.max(v, 0);
+  };
+  const dpi = lateDouble(attrs.get('dpi'), lateDouble(attrs.get('resolution'), 0));
+  return dpi >= 1 ? dpi : DEFAULT_DPI;
+}
+
+/**
+ * Image size in points: `gvusershape_size`. The caller's sizer reports pixels;
+ * the result is `(int)(px * 72 / dpi)` (the file's own dpi is unknown to a
+ * sizer, so `us->dpi` is 0 as for most formats). Null stands for C's (-1,-1):
+ * empty name or an image nobody supplies.
+ * @see lib/gvc/gvusershape.c:gvusershape_size, gvusershape_size_dpi
+ */
+export function usershapeSizePts(
+  name: string | undefined, dpi: number, sizer?: ImageSizer,
+): { x: number; y: number } | null {
+  if (name === undefined || name === '') return null;
+  const px = sizer !== undefined ? sizer(name) : findImageSize(name);
+  if (px === null) return null;
+  return {
+    x: Math.trunc((px.w * POINTS_PER_INCH) / dpi),
+    y: Math.trunc((px.h * POINTS_PER_INCH) / dpi),
+  };
+}

@@ -22,9 +22,10 @@ import type {
   HtmlCell, HtmlCellContent, HtmlImage, HtmlLabel, HtmlTable, HtmlText,
   ImageSizer,
 } from './htmltable-types.js';
-import { findImageSize, imageIsSupplied, imageOpenWarning } from '../gvc/usershape.js';
+import { DEFAULT_DPI, imageIsSupplied, imageOpenWarning, usershapeSizePts } from '../gvc/usershape.js';
 import { registerRenderState } from './render-state.js';
 import { PointSet } from './pointset.js';
+import type { ImageResolver } from '../gvc/image-resolver.js';
 import type { TextMeasurer } from './textmeasure.js';
 import { buildLineRuns, runsAreSimple } from './htmltable-pos-runs.js';
 import { withTableFont } from './htmltable-fontinfo.js';
@@ -87,6 +88,10 @@ export interface HtmlSizeEnv {
   fontsize: number;
   fontname: string;
   imageSizer?: ImageSizer;
+  /** Per-context resolver: bytes it supplies count as a found file. */
+  imageResolver?: ImageResolver;
+  /** The graph's usershape dpi (`gvusershape_size` pixel to point); default 96. */
+  imageDpi?: number;
   stderr?: StderrLines; // the label's stderr; none: straight to the console
 }
 
@@ -132,20 +137,20 @@ const sizeTextContent = (
 /** Images whose sizing failed: size_html_img's rv = 1 on every later call. */
 const missingImages = { set: new WeakSet<HtmlImage>() };
 
-const sizeHtmlImg = (img: HtmlImage, { imageSizer, stderr }: HtmlSizeEnv): number => {
+const sizeHtmlImg = (img: HtmlImage, { imageSizer, imageResolver, imageDpi, stderr }: HtmlSizeEnv): number => {
   // C sizes each image once (processTbl); the port's size and pos passes
   // share layoutHtmlTable, so guard against re-sizing (and re-warning). The
   // returned rv still follows C on every call.
   if (img.width !== undefined && img.height !== undefined) return missingImages.set.has(img) ? 1 : 0;
-  const sz = imageSizer !== undefined ? imageSizer(img.src) : findImageSize(img.src);
+  const sz = usershapeSizePts(img.src, imageDpi ?? DEFAULT_DPI, imageSizer);
   if (sz !== null) {
-    img.width = sz.w; img.height = sz.h;
+    img.width = sz.x; img.height = sz.y;
     return 0;
   }
   // Missing-image: gvusershape_open's warning (unless bytes are supplied),
   // then zero size + the Error.
   // @see lib/gvc/gvusershape.c:gvusershape_file_access
-  if (!imageIsSupplied(img.src, imageSizer)) agerrLine(stderr, `Warning: ${imageOpenWarning(img.src)}`);
+  if (!imageIsSupplied(img.src, imageSizer, imageResolver)) agerrLine(stderr, `Warning: ${imageOpenWarning(img.src)}`);
   // C: agerrorf("No or improper image file=\"%s\"\n", img->src) — agerr
   // prefixes "Error: " on stderr.
   agerrLine(stderr, `Error: No or improper image file="${img.src}"`);

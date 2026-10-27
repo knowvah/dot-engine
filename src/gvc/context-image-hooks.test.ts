@@ -18,8 +18,8 @@ const SRC = 'logo.png';
 const IMG_DOT =
   'digraph { A [shape=plaintext label=<<TABLE><TR><TD>' +
   `<IMG SRC="${SRC}"/></TD></TR></TABLE>>]; }`;
-const GLOBAL_SIZE = { w: 24, h: 12 };
-const CTX_SIZE = { w: 50, h: 30 };
+const GLOBAL_SIZE = { w: 32, h: 16 }; // 24x12 pt at the default 96 dpi
+const CTX_SIZE = { w: 67, h: 40 }; // 50x30 pt
 const GLOBAL_BYTES = new Uint8Array([1, 2, 3]);
 const CTX_BYTES = new Uint8Array([4, 5, 6]);
 // base64 of the byte fixtures above

@@ -89,6 +89,7 @@ export interface PolySizeParams {
    * @see lib/common/shapes.c:2132-2145
    */
   nojustify?: boolean;
+  imageSize?: Point; // padded image size in points, shapes.c:2020-2051 imagesize
 }
 
 /** Node geometry in points: left/right half-widths and height. */
@@ -550,7 +551,8 @@ export function polySize(p: PolySizeParams): PolySizeResult {
   const init = initialSizePts(p);
   const dimen = quantize(padLabelDimen(p.labelDimen, p.margin, p.isPlain), p.quantumIn);
   const { sides, isBox } = effectiveShape(p);
-  let bb: Point = { x: dimen.x, y: dimen.y };
+  const img = p.imageSize ?? { x: 0, y: 0 }; // shapes.c:2055: bb = max(dimen, imagesize)
+  let bb: Point = { x: Math.max(dimen.x, img.x), y: Math.max(dimen.y, img.y) };
   // C shapes.c:2073-2085 dispatch: box → exact fit; poly_desc shapes (star,
   // cylinder) → their size_gen; everything else → generic ellipse fit.
   if (isBox) {
@@ -583,8 +585,6 @@ export function polySize(p: PolySizeParams): PolySizeResult {
  * Compute the label's justification borders (ND_label->space) and vertical
  * alignment — the "space available for label" block of poly_init. `bb` is the
  * final (constrained) box; `minBb` is the pre-constraint shape-fit box.
- * Image sizing is unported, so `imagesize` is 0 (which matches C for the
- * missing-image repro cases); revisit when image loading lands.
  * @see lib/common/shapes.c:poly_init (2132-2152)
  */
 function labelSpace(
@@ -604,7 +604,7 @@ function labelSpace(
     spaceX = dimen.x - spacex;
   }
   // space.y: !fixedshape → dimen.y + (bb.y - min_bb.y); fixedshape keeps dimen.y.
-  const spaceY = fixedshape ? dimen.y : dimen.y + (bb.y - minBb.y);
+  const spaceY = fixedshape ? dimen.y : dimen.y + ((bb.y - minBb.y) + Math.max(0, (p.imageSize?.y ?? 0) - dimen.y));
   return { space: { x: spaceX, y: spaceY }, valign: labelValign(p) };
 }
 

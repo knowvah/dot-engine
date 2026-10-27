@@ -15,7 +15,7 @@ import type { TextMeasurer } from './textmeasure.js';
 import type { PolygonT, ShapeDesc, TextlabelT } from './types.js';
 import { ShapeKind } from './types.js';
 import { bindShape } from './shapes.js';
-import { assignShapeInfo, buildNodeLabel, nodeAttr, readFontAttrs } from './poly-init.js';
+import { assignShapeInfo, buildNodeLabel, nodeAttr, nodeImageSize, readFontAttrs } from './poly-init.js';
 import { makeAnyLabel } from './make-label.js';
 import { isHtmlValue, htmlValueContent } from './html-string.js';
 import { NODE_XLABEL } from '../layout/dot/rank.js';
@@ -154,6 +154,7 @@ export function polySizeParamsFromNode(
     isPlain: shape.name === 'plain',
     optionShape: poly.option.shape, // size_gen discriminant (STAR/CYLINDER)
     nojustify: mapbool(nodeAttr(n, g, 'nojustify')), // shapes.c:2133
+    imageSize: nodeImageSize(n, g), // shapes.c:2039-2051
     flip,
   };
 }
