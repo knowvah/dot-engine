@@ -48,7 +48,7 @@ items 72–87 and 89 (88 is done): layout/label state (72, 73, 83, 85), diagnost
 | Stderr parity (warning tasks) | `npx tsx test/tools/probe.ts <bundle> <engine> <case>` vs native, per case | lines equal native's (`<stdin>: ` normalized) | diagnose |
 | Survey (after batches 3 and 4; batch 2 only if bytediff shows output changes; T17 always) | `rm -f test/corpus/parity-mission-probe.json && GVBINDIR=/tmp/ghl PARITY_OUT=parity-mission-probe.json npx tsx test/corpus/survey.ts && npx tsx test/corpus/rules-gate.ts test/corpus/parity-mission-probe.json test/corpus/parity.json` | `GATE PASS`, 0 regressions, `counts.oracle-error` == 14 | revert, STOP |
 | Engine walk (T10, T13, T15, T17) | `GVBINDIR=<full plugin dir> npx tsx test/corpus/engine-walk.ts <engine> <scratch>.jsonl`, compared by id with the committed `parity-<engine>.jsonl` | no pass→worse (`oracle-nondeterministic` neutral) | revert, STOP |
-| Speed (T5, T15; T17) | dot + neato A/B timing (`test/tools/speed.sh`) vs `timings-T0.json` | p50 ≤ 1.05× | STOP (stop 7) |
+| Speed (T5, T15; T17) | dot + neato A/B timing (`test/tools/speed.sh`) vs `timings-T0.json` | p50 ≤ 1.05× (T15's neato figure exempt, AD-4 amendment) | STOP (stop 7) |
 
 - The survey takes about 3 hours. Never edit `src/` while a survey or walk reads it: run it
   in a worktree of the commit under test (`ln -s <repo>/node_modules node_modules`,
@@ -74,8 +74,9 @@ items 72–87 and 89 (88 is done): layout/label state (72, 73, 83, 85), diagnost
 4. A change would contradict AD-1 to AD-18, or evidence shows one is wrong.
 5. A survey or walk verdict regression not explainable as a move toward the oracle.
 6. The oracle fails preflight, `dot -V` is not 16.1.0, or `counts.oracle-error` ≠ 14.
-7. Speed exceeds p50 1.05× for the fused kernel (T15) or the tokenizer (T5). Report; never
-   unfuse or drop the change to recover speed.
+7. Speed exceeds p50 1.05× for the tokenizer (T5). The fused kernel (T15) is exempt by the
+   AD-4 amendment (measured neato p50 1.853×, accepted 2026-10-28); report its figure at
+   T17, never unfuse or drop the change to recover speed.
 8. A fix would optimize, reorder or simplify C behaviour, or needs `any` or a Node-only API
    in `src/`.
 9. Anything would push, open a PR, publish, sign, rebase, or touch `main`.
@@ -113,7 +114,7 @@ Sub-batches 2a/2b run in parallel; the batch gate runs once after both land.
 | [2a](batch-2a/overview.md) | T1 agerr partial lines · T2 `State` 87 · T3 fma 84 · T4 agNameOf 74 · T5 style tokenizer 80 | parallel worktrees | [x] |
 | [2b](batch-2b/overview.md) | T6 docs 86 · T7 json order 78 · T8 attvalue 76 · T9 cluster snapshot 89 | parallel worktrees | [x] |
 | [3](batch-3/overview.md) | T10 len 73 · T11 findStopColor 75/77/82 · T12 layerselect 79 · T13 cleanup labels 72 · T14 image sizing 83 | parallel worktrees | [x] |
-| [4](batch-4/overview.md) | T15 fused kernel 85 · T16 colorscheme window 81 | parallel worktrees | [ ] |
+| [4](batch-4/overview.md) | T15 fused kernel 85 · T16 colorscheme window 81 | parallel worktrees | [x] |
 | [5](batch-5/overview.md) | T17 final verification, walk refresh, close-out, re-sign stop | orchestrator | [ ] |
 
 ## Documents

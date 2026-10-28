@@ -508,6 +508,13 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       and `api.md`/`images.md` never state the sizer's unit; after part 5 T14 `ImageSizer`
       returns intrinsic pixels converted at the graph `dpi` (default 96) and `image=` nodes
       are sized. English pages, 23 locales and their `sourceHash` (2026-10-27).
+  94. `mode=ipsep`: `stress_majorization_cola`'s inlined `right_mult_with_vector_ff`
+      copy (neato_layout 0x3904c+, the `fmul.4s`×4 / `fmla.4s`×4 blocks at 0x3b19c and
+      0x3b570) has not been read instruction by instruction, so the port's `COLA_OPS`
+      keeps that right-multiply unfused while its CG is the shared fused body and its
+      square-add is unfused by source (`constrained_majorization_ipsep.c:313-316`).
+      Six ipsep probes sit 0.010 pt from native either way; no corpus id sets
+      `mode=ipsep` (part 5 T15, 2026-10-28).
 
 ## Local leftovers (not committed, safe to delete)
 

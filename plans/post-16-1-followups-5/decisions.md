@@ -31,6 +31,13 @@ architecture this mission builds on.
   `stress.ts`; `init.ts` ports `checkExp` and feeds `opt_exp_flag` from it. No new fusion
   site without disassembly evidence (part-3 AD-6 bar). Output changes only toward the
   oracle: bytediff explained per id, neato/fdp/sfdp walks no pass→worse, speed p50 ≤ 1.05×.
+- **Amendment (2026-10-28, user: "Option 1, amend AD-4 and land it"):** the speed bar
+  does not apply to the fused kernel. A bit-exact `fmadd s` emulation costs ~7 ns per
+  packed-matrix element against ~2.4 ns unfused in V8 (two-sum + round-to-odd; every
+  cheaper formulation tried mispredicts on Laplacian data), and the right-multiply is
+  n² per CG iteration, so neato stress layouts run **p50 1.853× (1.01–2.45×)** slower
+  (dot unchanged, 1.001). Accepted for fidelity: 297 corpus ids strictly closer to the
+  oracle, `1652` and `stresswt` exact. T17 reports the figure; never unfuse to recover it.
 
 ## AD-5: `State == GVSPLINES` as render state (item 87)
 - **Context:** `lib/common/globals.h:66` `State` is set to `GVSPLINES` at

@@ -107,3 +107,44 @@
   wrong tree — launch gates only after the apply is confirmed.
 - **Impact**: move worktrees with `merge --ff-only`; never chain an apply and a gate launch.
 - **Confidence**: High
+
+## Observation: a session scratchpad wipe takes every worktree and baseline with it
+- **Context**: resuming after an out-of-memory crash; the previous session's scratchpad
+  (`53ffa636-…`) was gone, so `git worktree list` showed 19 `prunable` entries, `$BASE`
+  (bundles, native refs, `timings-T0.json`), the running batch-3 survey and the T10
+  walks had no result, and `/tmp/ghl` had been cleaned too.
+- **Finding**: `git worktree prune` clears the registrations; the branch refs (`wt/T*`)
+  survive. `test/corpus/gen-headless-gvbindir.sh /tmp/ghl` rebuilds the headless dir;
+  the full plugin dir is core + dot_layout + neato_layout with all three dylib names
+  linked, then `GVBINDIR=<dir> dot -c`. The engine-walk oracle caches under
+  `~/.cache/dot-engine/oracle/xdot-oracle/<engine>/<sig>` survive (928 neato, 924 fdp,
+  928 sfdp xdots) because `sig` hashes (dot path, GVBINDIR path, dot mtime): recreating
+  the plugin dir at the *same path* (`…/dfc80e32-…/scratchpad/ghl16-all`) keeps every
+  cached native render valid.
+- **Impact**: anything a later session needs (bundles, timings, survey JSONL) must be
+  copied out of the scratchpad or committed; keep the plugin-dir path stable.
+- **Confidence**: High
+
+## Observation: `stress_majorization_cola` shares the kD kernel's conjugate gradient
+- **Context**: T15 review (mode=ipsep kernel choice).
+- **Finding**: in `libgvplugin_neato_layout.dylib` (16.1.0, `-O3 -flto=thin`)
+  `_conjugate_gradient_mkernel` is one out-of-line body (0x128fc) called twice each from
+  `_stress_majorization_kD_mkernel` (0x32868), `_stress_majorization_with_hierarchy`
+  (0x14550) and `_stress_majorization_cola` (0x3904c); `right_mult_with_vector_ff` is
+  inlined per caller (no symbol). cola's squared distances are `square_vec` then
+  `vectors_additionf` (two loops, product rounded before the add), unlike stress.c:1000's
+  `dist_accumulator[x] += tmp * tmp` (one fmadd). `stress_majorization_kD_mkernel` is
+  also one body, so the hier path's no-directionality call runs the same fused kernels.
+- **Impact**: ipsep uses the fused CG, unfused square-add; its inlined right-multiply
+  copy is unread (follow-up 94). The corpus has no `mode=ipsep` id, so only probes
+  exercise it.
+- **Confidence**: High (disassembly + C source)
+
+## Observation: the float fma primitive costs ~7× an unfused multiply-add
+- **Context**: T15 fused kernels on the production neato path.
+- **Finding**: `fmaf` (`quad-prog-solve.ts`, Knuth two-sum + round-to-odd through a
+  DataView) measured ~7× `fr(fr(a*b)+c)` in a monomorphic loop; typed-array views or a
+  tie-only correction path gain ~10%. On the right-multiply (n² per CG iteration) 1652
+  went 52 s → 140 s and 2834 48 s → 128 s alone (load ~8).
+- **Impact**: the neato speed gate (p50 ≤ 1.05×) is governed by this primitive.
+- **Confidence**: High (timings), Medium (benchmark absolute numbers under load)
