@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -116,7 +116,7 @@ inntak undir sinni eigin vél í stað `dot`. Hreinskilið þak þeirrar vinnu e
 að **þrengja** A1 í „ekkert virkt frávik á viðmiðunarkerfinu“, aldrei að
 útrýma fyrirvaranum um mismunandi kerfi; niðurstöðurnar hingað til (hér á eftir) standast það
 þak: `circo`/`twopi`/`osage` hafa hver um sig afhjúpað og rótargreint nokkur
-raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 90.5/96.5/68.1%
+raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 99.8/96.6/68.0%
 innan 0.5pt frá innbyggðu á 929 atriða heildinni (graphviz 16.1.0), sem þýðir að yfirfærða
 reikningsaðferðin (`fma.ts`, `arm-pow.ts`, samstilltur slembitölugjafi) heldur fyrir flest graf —
 og hvert eitt afgangsfráviksauðkenni á 929 atriða heildinni er rakið sérstaklega með innsprautun (rek lausnara
@@ -202,13 +202,18 @@ inntaki sem C-véfréttin getur ekki teiknað, samkvæmt [Samræmi](./conformanc
 
 | vél | könnuð | innan ±0.5pt | ósamræmd | villa í yfirfærslu / tímamörk | villa í véfrétt |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Árangurshlutfall `fdp` hækkaði frá 77.5%
 vegna þess að fyrri innsetta yfirferðin var á undan stöðu yfirfærslunnar í fyrra
-verkefni.)
+verkefni.
+Árangurshlutfall `neato` hækkaði úr 90.5% þegar samrunnu stress-kjarnarnir úr
+sundurliðun 16.1 náðu til kD-slóðar framleiðslu (eftirfylgni eftir 16.1, hluti 5, T15):
+83 auðkenni sem höfðu vikið vegna reks lausnarans standast nú, þar á meðal áður
+samþykktur afgangur fyrir einstakt auðkenni `2619_2`, en samþykkt hans er afturkölluð;
+`2371` er eina `neato` auðkennið sem enn víkur.)
 
 (Fyrsta yfirferðin, 2026-07-11 við 762 atriði, mældi 263/311/260 innan
 ±0.5pt — stökkið í núverandi hlutföll kom frá lagfæringum fyrir einstök auðkenni sem hafa lent síðan,

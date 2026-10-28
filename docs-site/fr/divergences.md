@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -133,7 +133,7 @@ divergence active sur la plateforme de référence », jamais d’éliminer la r
 inter-plateformes ; les résultats obtenus jusqu’ici (ci-dessous) respectent ce
 plafond : `circo`/`twopi`/`osage` ont chacun fait apparaître et expliqué par
 leur cause racine une poignée d’instances authentiques de A1/A9, et
-`neato`/`fdp`/`sfdp` se situent désormais à 90.5/96.5/68.1 % à moins de 0.5pt du
+`neato`/`fdp`/`sfdp` se situent désormais à 99.8/96.6/68.0 % à moins de 0.5pt du
 natif sur l’univers de 929 éléments (graphviz 16.1.0), ce qui signifie que l’arithmétique
 portée (`fma.ts`, `arm-pow.ts`, PRNG concordant) tient pour la plupart des
 graphes — et chaque identifiant divergent de la univers de 929 éléments est attribué individuellement
@@ -235,13 +235,19 @@ rendre, conformément à [Conformité](./conformance.md)) :
 
 | moteur | relevées | à ±0.5pt | non conformes | erreur du portage / délai dépassé | erreur de l’oracle |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Le taux de réussite de `fdp` a augmenté
 depuis 77.5 % parce que le balayage validé précédent datait de l’état du
-portage de la mission précédente.)
+portage de la mission précédente.
+Le taux de réussite de `neato` a augmenté depuis 90.5 % lorsque les noyaux de stress
+fusionnés du désassemblage de 16.1 ont atteint le chemin kD de production (suites
+post-16.1, partie 5, T15) : 83 identifiants qui divergeaient par dérive du solveur
+réussissent désormais, parmi eux le résidu par identifiant précédemment accepté
+`2619_2`, dont l’acceptation est retirée ; `2371` est le seul identifiant `neato` encore
+divergent.)
 
 (Le premier balayage, le 2026-07-11 à 762 éléments, mesurait 263/311/260 à
 ±0.5pt — le bond vers les taux actuels vient de correctifs par identifiant

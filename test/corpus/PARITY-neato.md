@@ -12,12 +12,12 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 928 (generated 2026-10-24T01:26:05.604Z)
+- **Surveyed:** 929 (generated 2026-10-28T20:00:15.626Z)
 - **Oracle:** dot 16.1.0
-- **pass:** 842 (90.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 2 · **accepted (A1-drift class):** 83
+- **pass:** 926 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 1
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 1 (excluded from pass %) · **oracle-nondeterministic:** 0 (native output varies run to run; excluded from pass %, not a regression)
 
-## Accepted deltas (2) — documented, not chased
+## Accepted deltas (1) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant. Source of
 truth: `test/corpus/accepted-divergences-engines.json`; rationale in
@@ -26,7 +26,6 @@ table below.
 
 | id | #diffs | class | bound | ref |
 |---|---:|---|---|---|
-| [`2619_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot) | 8 | A1 | 0.81pt on 4 x-coords of one sub-point stub spline; nodes 0.13-0.18pt | plans/decision-journal.md 2026-07-24 T5: in-bar drift amplified by degenerate near-zero-length spline clip |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) |  | A10 | port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries | known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines |
 
 ## Accepted class: A1-drift — computed, not enumerated
@@ -37,7 +36,7 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **84** members — full per-id evidence in [`attribution-neato.json`](./attribution-neato.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **1** member — full per-id evidence in [`attribution-neato.json`](./attribution-neato.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
 ## Diverged (0)
 
@@ -50,5 +49,5 @@ _(none)_
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle-error | Command failed: dot -K neato -Txdot git/graphviz/share/examples/world.gv |
 
 **oracle errors:** 7 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (842) are omitted for brevity — the full roster is in
+_Passing ids (926) are omitted for brevity — the full roster is in
 `parity-neato.json`._

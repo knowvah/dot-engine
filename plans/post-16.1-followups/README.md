@@ -404,66 +404,66 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       engines would refresh `nDiffs`/`firstDiff` (part 3 T14).
 
 - **New follow-ups found by part 4** (`plans/post-16-1-followups-4/`):
-  72. Node/edge/graph labels survive `freeLayout`: `poly-init.ts` `buildNodeLabel`
+  72. **[DONE — part 5 T13 (AD-12): every engine's cleanup frees node/edge (and dot/fdp/osage cluster) labels where its C does]** Node/edge/graph labels survive `freeLayout`: `poly-init.ts` `buildNodeLabel`
       returns early when `n.info.label` is set, so laying out the same `Graph` twice
       never re-sizes its labels (no HTML size/image warnings on the second render; a
       changed measurer is ignored). C frees them in `dot_cleanup_node`
       (`dotgen/dotinit.c:110`, `common/utils.c:1517-1531`) and rebuilds them in
       `common_init_node` (`utils.c:441`) each layout (part 4 T7).
-  73. Default neato (stress/major) never calls `setEdgeLen`: C's `scan_graph_mode`
+  73. **[DONE — part 5 T10: `setEdgeLen` on every major/hier/ipsep layout, `ED_dist`, sscanf-style `lenattr`; fdp already matched]** Default neato (stress/major) never calls `setEdgeLen`: C's `scan_graph_mode`
       does for every mode (`neatogen/stuff.c:245-261`), so `len=x` prints
       `Warning: bad edge len "x" in %1 - setting to 1.00` natively and nothing in the
       port, which reads `len` via `makeGraphDataC` `lateDouble` (`init.ts`). Check
       whether `lenattr`'s fallback also changes major-mode distances (part 4 T5).
-  74. Anonymous graphs: native `agnameof` returns `%<id>` (`cgraph/id.c:163`,
+  74. **[DONE — part 5 T4: `agNameOf` returns `%1` for the anonymous root]** Anonymous graphs: native `agnameof` returns `%<id>` (`cgraph/id.c:163`,
       LOCALNAMEPREFIX), so neato messages print `graph %1`; the port prints an empty
       name (part 4 T5).
-  75. A filled node with `fillcolor="red;0.6:blue;0.6"` prints natively
+  75. **[DONE — part 5 T1 (agerr partial lines, AD-7) + T11 (`findStopColor`)]** A filled node with `fillcolor="red;0.6:blue;0.6"` prints natively
       `Warning: Total size > 1 in "…" color spec Warning: red;0.6 is not a known
       color.` as one line (`findStopColor`, no AGPREV, agerr partial line); the port
       prints only the first half on its own line and never the unknown-colour half
       (part 4 T6).
-  76. `htmltable-lex-attvalue.ts` `NON_XML` rejects C0 controls in attribute values
+  76. **[DONE — part 5 T8: native probed (AD-14); U+FFFE/U+FFFF/lone surrogates rejected in attribute values]** `htmltable-lex-attvalue.ts` `NON_XML` rejects C0 controls in attribute values
       but not U+FFFE/U+FFFF or lone surrogates, which expat rejects in content (T4
       ported those for content); probe native attribute values first (part 4 T4).
 
-  77. Filled clusters with weighted/multi-colour fills: native prints `Warning: red;0.7
+  77. **[DONE — part 5 T11: `findStopColor`/`parseSegs` diagnostics, native order]** Filled clusters with weighted/multi-colour fills: native prints `Warning: red;0.7
       is not a known color.` (after a `findStopColor` Total-size line with no `in
       cluster` tail) and `Warning: More than 2 colors specified for a gradient -
       ignoring remaining`; the port prints neither (part 4 T14; pairs with 75).
-  78. Port `-Tjson` prints the layers warning `json` then `xdot`; native `xdot` then
+  78. **[DONE — part 5 T7: nested xdot render in `beginGraph` (AD-18)]** Port `-Tjson` prints the layers warning `json` then `xdot`; native `xdot` then
       `json`: the port's nested xdot render runs in `JsonRenderer.endGraph`
       (`src/render/json.ts:252`), C's in `json_begin_graph` (part 4 T19).
-  79. `layerselect`/`layerlist` are unported (`emit.c` `firstlayer` branch) (part 4 T19).
-  80. Style parsing: C `parse_style` keeps whitespace inside tokens (`"dashed , bogus"`
+  79. **[DONE — part 5 T12 (`feat`): `parse_layerselect` + firstlayer/nextlayer walk (AD-9)]** `layerselect`/`layerlist` are unported (`emit.c` `firstlayer` branch) (part 4 T19).
+  80. **[DONE — part 5 T5: `style_token`/`parse_style` ported file for file (AD-8)]** Style parsing: C `parse_style` keeps whitespace inside tokens (`"dashed , bogus"`
       → token `"dashed "`), the port trims; unmatched/nested parentheses get no
       `agerrorf`; per-bezier style warnings print after `reportEdgeColors` instead of
       interleaved with per-segment colour warnings (part 4 T18).
-  81. The cluster label sits inside C's cluster colorscheme window (`emit.c:3921`,
+  81. **[DONE — part 5 T16: window spans box and label (AD-16); tapered pen probed, native]** The cluster label sits inside C's cluster colorscheme window (`emit.c:3921`,
       restored at 3943) but outside the port's; `svg-tapered-edge.ts:49` assigns a
       literal `transparent` pen (unprobed) (part 4 T24).
-  82. HTML `BGCOLOR` stderr: `red;0.7:blue;0.6` needs agerr partial-line join (as 75);
+  82. **[DONE — part 5 T11; the node/cluster `:red` sibling is 92]** HTML `BGCOLOR` stderr: `red;0.7:blue;0.6` needs agerr partial-line join (as 75);
       `red;x:blue` prints the colour warning before the Error (pre-pass order); `:red`
       warns `Warning:  is not a known color.` and fills solid natively, the port
       renders no fill (`resolveRenderColor('')`); `style-resolve.ts` `findStopColor`
       (nodes/clusters/graph bgcolor) treats rv 3 as a gradient and omits "More than 2
       colors" (part 4 T25).
-  83. Images: HTML `<IMG>` consults only the global `setImageResolver`, not a per-context
+  83. **[DONE — part 5 T14 (AD-10); drawing is 91, docs 93]** Images: HTML `<IMG>` consults only the global `setImageResolver`, not a per-context
       `ctx.imageResolver` (`HtmlSizeEnv` lacks it; `make-label.ts`); node `image=` may
       not size the node at all (`poly-sizing`) — unverified; corpus ids with a real
       `.png` next to them now warn in port-only corpus runs (no resolver) (part 4 T23).
-  84. `src/common/fma.ts` (Dekker split) returns NaN for infinite operands where arm64
+  84. **[DONE — part 5 T3 (AD-15 refinement: `c` when only the addend is non-finite)]** `src/common/fma.ts` (Dekker split) returns NaN for infinite operands where arm64
       `fmadd` returns inf; `matrix-ops.ts` carries a local guard, other callers are
       unchecked (part 4 T17).
-  85. `stress-kernel.ts` conjugate gradient and right-multiply are unfused vs the oracle
+  85. **[DONE — part 5 T15 under the AD-4 amendment (neato stress p50 1.85× accepted); cola's right-multiply is 94]** `stress-kernel.ts` conjugate gradient and right-multiply are unfused vs the oracle
       (production neato kD path ~1 ulp per step; `cgStep` returns true on `p_Ap == 0`
       instead of breaking); `OPT_SMART_INIT` is 1 there vs C's 0x4; `stresswt`
       (`checkExp`) unported. Swap in `conjgrad-mkernel.ts` under AD-4 (part 4 T22/T26).
-  86. Docs: the errors-table row for `mode=hier` says "after … `maxiter` is not
+  86. **[DONE — part 5 T6 (AD-17)]** Docs: the errors-table row for `mode=hier` says "after … `maxiter` is not
       negative"; C returns before the model check when `maxiter` is 0, so "positive"
       is exact (README and 24 docs-site pages) (part 4 T26b).
 
-  87. Patchwork (and any engine that never routes splines) prints `Error: lost <t> <h>
+  87. **[DONE — part 5 T2: `State == GVSPLINES` render state (AD-5); osage sets it too]** Patchwork (and any engine that never routes splines) prints `Error: lost <t> <h>
       edge` for every edge in the port; native prints nothing, because C
       `translate_drawing` calls `map_edge` only when `State == GVSPLINES`
       (`lib/common/postproc.c`); `src/common/postproc.ts:224` assumes the state always
@@ -478,7 +478,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       now-passing inet/ngk10_4 rows) landed separately on 2026-10-26. DONE
       2026-10-26: both tools add `mult × previous walk row` (`walkCosts`), with
       timeout/oracle-error rows excluded as consumed caps.
-  89. Cluster border/fill attributes resolve through a live parent walk.
+  89. **[DONE — part 5 T9: every key probed, all read the parse-time snapshot (AD-6)]** Cluster border/fill attributes resolve through a live parent walk.
       `clusterAttr` (`src/gvc/device-cluster.ts:46`) reads the cluster's own
       `attrs`, then each ancestor's live `attrs`, so a root `graph [color=…]`
       declared *after* the cluster opens applies to it; C's `agget` sees the

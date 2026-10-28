@@ -121,11 +121,6 @@
       "attributionFile": "attribution-neato.json",
       "ref": "known-divergences.md#a1-drift-iterative-engines"
     },
-    "2619_2": {
-      "class": "A1",
-      "bound": "0.81pt on 4 x-coords of one sub-point stub spline; nodes 0.13-0.18pt",
-      "ref": "plans/decision-journal.md 2026-07-24 T5: in-bar drift amplified by degenerate near-zero-length spline clip"
-    },
     "2784": {
       "class": "A10",
       "verdict": "port-error",

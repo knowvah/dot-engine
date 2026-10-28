@@ -293,3 +293,4 @@
 {"id":"2646","verdict":"drift-exonerated","baseDiffs":1979265,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"2108","verdict":"drift-exonerated","baseDiffs":1044748,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
 {"id":"tree-share-examples-world","verdict":"drift-exonerated","baseDiffs":3198828,"injectedDiffs":0,"bucket":{"shape":"graph/_draw_/unknown","kind":"position","signature":"none"}}
+{"id":"894589","verdict":"drift-exonerated","baseDiffs":44,"injectedDiffs":0,"bucket":{"shape":"edge/_draw_/unknown","kind":"position","signature":"none"}}

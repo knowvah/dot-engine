@@ -6,4 +6,4 @@ gates.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T0](T0-baselines.md) | Branch, brief commit, oracle preflight, gate baseline, base bundle, native refs, timings | orchestrator | brief commit; scratchpad | — | [ ] |
+| [T0](T0-baselines.md) | Branch, brief commit, oracle preflight, gate baseline, base bundle, native refs, timings | orchestrator | brief commit; scratchpad | — | [x] |

@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ entrada sob o seu próprio mecanismo em vez de `dot`. O teto honesto desse traba
 **estreitar** A1 para “nenhuma divergência ativa na plataforma de referência”, nunca
 eliminar a ressalva entre plataformas; os resultados até agora (abaixo) respeitam esse
 teto: `circo`/`twopi`/`osage` fizeram emergir e tiveram a causa raiz identificada em um punhado
-de instâncias genuínas de A1/A9, e `neato`/`fdp`/`sfdp` agora estão em 90.5/96.5/68.1%
+de instâncias genuínas de A1/A9, e `neato`/`fdp`/`sfdp` agora estão em 99.8/96.6/68.0%
 dentro de 0.5pt do nativo no universo de 929 itens (graphviz 16.1.0), o que significa que a aritmética
 portada (`fma.ts`, `arm-pow.ts`, PRNG equivalente) se sustenta na maioria dos grafos —
 e todo id divergente do universo de 929 itens é atribuído individualmente por injeção (deriva do solver
@@ -198,12 +198,17 @@ entradas que o oráculo C não consegue renderizar, conforme [Conformidade](./co
 
 | mecanismo | examinados | dentro de ±0.5pt | não conformantes | erro do port / timeout | erro do oráculo |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (A taxa de aprovação do `fdp` subiu de 77.5% porque a varredura anterior registrada
-era anterior ao estado do port da missão anterior.)
+era anterior ao estado do port da missão anterior.
+A taxa de aprovação do `neato` subiu de 90.5% quando os kernels de stress fundidos do
+desassembly do 16.1 chegaram ao caminho kD de produção (continuações pós-16.1, parte 5,
+T15): 83 ids que divergiam por deriva do solucionador agora passam, entre eles o resíduo
+por id aceito anteriormente `2619_2`, cuja aceitação foi retirada; `2371` é o único id
+do `neato` que ainda diverge.)
 
 (A primeira varredura, em 2026-07-11 com 762 itens, mediu 263/311/260 dentro de
 ±0.5pt — o salto para as taxas atuais veio de correções por id feitas desde então,

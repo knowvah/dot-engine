@@ -111,7 +111,7 @@ input under its own engine instead of `dot`. The honest ceiling on that work is
 to **narrow** A1 to "no active divergence on the reference platform," never to
 eliminate the cross-platform caveat; the results so far (below) hold to that
 ceiling: `circo`/`twopi`/`osage` have each surfaced and root-caused a handful of
-genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 90.5/96.5/68.1%
+genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 99.8/96.6/68.0%
 within 0.5pt of native over the 929-item universe (graphviz 16.1.0), meaning
 the ported arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most
 graphs — and every diverged id of the 929-item universe is individually
@@ -198,12 +198,17 @@ universe; pass % leaves out inputs the C oracle cannot render, per
 
 | engine | surveyed | within ±0.5pt | non-conformant | port error / timeout | oracle error |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (The `fdp` pass rate rose from 77.5% because the earlier committed walk
-predated the port state of the previous mission.)
+predated the port state of the previous mission. The `neato` rate rose from
+90.5% when the fused stress kernels of the 16.1 disassembly reached the
+production kD path (post-16.1 follow-ups part 5, T15): 83 ids that had
+diverged by solver drift now pass, among them the formerly accepted per-id
+residual `2619_2`, whose acceptance is retired; `2371` is the only diverged
+`neato` id left.)
 
 (The first sweep, 2026-07-11 at 762 items, measured 263/311/260 within
 ±0.5pt — the jump to the current rates came from per-id fixes landed since,

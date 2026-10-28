@@ -148,3 +148,18 @@
   went 52 s → 140 s and 2834 48 s → 128 s alone (load ~8).
 - **Impact**: the neato speed gate (p50 ≤ 1.05×) is governed by this primitive.
 - **Confidence**: High (timings), Medium (benchmark absolute numbers under load)
+
+## Observation: walk summaries appear only at the end; the big xdot inputs time out under load
+- **Context**: T17 fresh walks of the batch-4 head in a worktree (survey + 7 engine walks +
+  4 format walks + attribution overlapping, load 40–50).
+- **Finding**: `engine-walk.ts` writes `test/corpus/parity-<engine>.json` only when the walk
+  completes, and the file already present in a worktree is the committed copy, so its
+  existence is not a completion signal (check the log's `summary ->` line or mtime). The
+  xdot walk's timeout is 3× the oracle's own time with a 180 s floor; at load ~50 the five
+  largest inputs (`1718`, `graphs-b100`, `graphs-b104`, `2108`, `2095_1`) time out, and all
+  five are `conformant` when re-rendered alone (`XDOT_CONCURRENCY=1`, resume from the JSONL
+  with their rows deleted). Format walks record `verdict: conformant`, engine walks
+  `status: pass`.
+- **Impact**: run the xdot walk after the heavy engine walks, or re-render timeouts alone
+  before reading them as regressions; comparison scripts must map both status fields.
+- **Confidence**: High

@@ -24,14 +24,14 @@ won't-fix deltas (0 for engines without an acceptance list).
 | track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | oracle nondeterministic | pass % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | [dot (SVG)](./PARITY-dot.md) | 950 | 930 | 0 | 5 | 1 | 14 | 0 | 99.4% |
-| [dot (xdot)](./PARITY-XDOT.md) | 929 | 926 | 0 | 0 | 0 | 3 | 0 | 100.0% |
-| [dot (json)](./PARITY-JSON.md) | 929 | 924 | 0 | 2 | 0 | 3 | 0 | 99.8% |
-| [circo (xdot)](./PARITY-circo.md) | 928 | 920 | 1 | 2 | 0 | 5 | 0 | 99.7% |
-| [twopi (xdot)](./PARITY-twopi.md) | 928 | 913 | 1 | 10 | 0 | 0 | 4 | 98.8% |
-| [osage (xdot)](./PARITY-osage.md) | 929 | 924 | 0 | 5 | 0 | 0 | 0 | 99.5% |
-| [patchwork (xdot)](./PARITY-patchwork.md) | 929 | 929 | 0 | 0 | 0 | 0 | 0 | 100.0% |
-| [dot (imagemap)](./PARITY-MAP.md) | 929 | 926 | 0 | 0 | 0 | 3 | 0 | 100.0% |
-| [dot (plain)](./PARITY-dot-plain.md) | 929 | 917 | 0 | 8 | 0 | 4 | 0 | 99.1% |
+| [dot (xdot)](./PARITY-XDOT.md) | 930 | 927 | 0 | 0 | 0 | 3 | 0 | 100.0% |
+| [dot (json)](./PARITY-JSON.md) | 930 | 925 | 0 | 2 | 0 | 3 | 0 | 99.8% |
+| [circo (xdot)](./PARITY-circo.md) | 929 | 921 | 1 | 2 | 0 | 5 | 0 | 99.7% |
+| [twopi (xdot)](./PARITY-twopi.md) | 929 | 914 | 1 | 10 | 0 | 0 | 4 | 98.8% |
+| [osage (xdot)](./PARITY-osage.md) | 930 | 925 | 0 | 5 | 0 | 0 | 0 | 99.5% |
+| [patchwork (xdot)](./PARITY-patchwork.md) | 930 | 930 | 0 | 0 | 0 | 0 | 0 | 100.0% |
+| [dot (imagemap)](./PARITY-MAP.md) | 930 | 927 | 0 | 0 | 0 | 3 | 0 | 100.0% |
+| [dot (plain)](./PARITY-dot-plain.md) | 930 | 919 | 0 | 8 | 0 | 3 | 0 | 99.1% |
 | [circo (plain)](./PARITY-circo-plain.md) | 928 | 909 | 0 | 8 | 0 | 11 | 0 | 99.1% |
 | [twopi (plain)](./PARITY-twopi-plain.md) | 928 | 903 | 2 | 20 | 1 | 2 | 0 | 97.5% |
 | [osage (plain)](./PARITY-osage-plain.md) | 929 | 916 | 0 | 13 | 0 | 0 | 0 | 98.6% |
@@ -59,9 +59,9 @@ bar above.
 
 | track | surveyed | conformant / pass | diverged | accepted | port error / timeout | oracle error | oracle nondeterministic | pass % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [neato (xdot)](./PARITY-neato.md) | 928 | 842 | 0 | 85 | 0 | 1 | 0 | 90.8% |
-| [fdp (xdot)](./PARITY-fdp.md) | 928 | 893 | 0 | 17 | 1 | 4 | 13 | 98.0% |
-| [sfdp (xdot)](./PARITY-sfdp.md) | 928 | 632 | 0 | 295 | 0 | 0 | 1 | 68.2% |
+| [neato (xdot)](./PARITY-neato.md) | 929 | 926 | 0 | 2 | 0 | 1 | 0 | 99.8% |
+| [fdp (xdot)](./PARITY-fdp.md) | 929 | 894 | 0 | 17 | 1 | 4 | 13 | 98.0% |
+| [sfdp (xdot)](./PARITY-sfdp.md) | 929 | 632 | 1 | 295 | 0 | 0 | 1 | 68.1% |
 | [neato (plain)](./PARITY-neato-plain.md) | 928 | 916 | 0 | 8 | 0 | 4 | 0 | 99.1% |
 | [fdp (plain)](./PARITY-fdp-plain.md) | 928 | 912 | 0 | 8 | 1 | 7 | 0 | 99.0% |
 | [sfdp (plain)](./PARITY-sfdp-plain.md) | 928 | 918 | 0 | 8 | 0 | 2 | 0 | 99.1% |
@@ -79,12 +79,12 @@ bar above.
 
 How faithfully the port renders each input across all three deterministic
 dot outputs, joined by id. xdot and json survey the SVG-conformant roster,
-so this is the intersection (929 inputs); an input is *conformant in all
+so this is the intersection (930 inputs); an input is *conformant in all
 three* only when every format agrees with the oracle within tolerance.
 
 | status across SVG · xdot · json | count | % |
 |---|---:|---:|
-| conformant in all three | 924 | 99.5% |
+| conformant in all three | 925 | 99.5% |
 | accepted (won't-fix) in ≥1, diverged in none | 2 | 0.2% |
 | diverged / errored in ≥1 | 3 | 0.3% |
 | oracle nondeterministic in ≥1, diverged in none (not scored) | 0 | 0.0% |

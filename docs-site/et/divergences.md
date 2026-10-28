@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ sisendit selle enda mootoriga `dot`-i asemel. Selle töö aus lagi on
 A1 **kitsendamine** tasemele „aktiivset erinevust pole võrdlusplatvormil“, mitte kunagi
 platvormideülese reservatsiooni kõrvaldamine; senised tulemused (allpool) jäävad sellesse
 lakke: `circo`/`twopi`/`osage` on igaüks toonud päevavalgele ja algpõhjuseni
-jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 90.5/96.5/68.1%
+jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 99.8/96.6/68.0%
 natiivsest 0.5pt piires 929-kirjelise universumi ulatuses (graphviz 16.1.0), mis tähendab, et portitud
 aritmeetika (`fma.ts`, `arm-pow.ts`, sobitatud PRNG) peab enamiku graafide puhul vastu —
 ning iga 929-kirjelise universumi lahknev id on eraldi omistatud süstimise teel (lahendaja
@@ -199,12 +199,17 @@ läbimise % jätab välja sisendid, mida C-oraakel ei suuda renderdada, vt
 
 | mootor | uuritud | ±0.5pt piires | mittevastav | pordi viga / ajalõpp | oraakli viga |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (`fdp` läbimismäär tõusis 77.5%-st, sest varasem sisseviidud läbimine
-eelnes eelmise missiooni pordi seisule.)
+eelnes eelmise missiooni pordi seisule.
+`neato` läbimismäär tõusis 90.5%-st, kui 16.1 disassembleeringu sulatatud stress-tuumad
+jõudsid tootmise kD-rajale (16.1-järgsed järeltööd, 5. osa, T15): 83 id-d, mis erinesid
+lahendi triivi tõttu, läbivad nüüd, nende hulgas varem aktsepteeritud id-põhine jääk
+`2619_2`, mille aktsepteerimine on tühistatud; `2371` on ainus allesjäänud erinev
+`neato` id.)
 
 (Esimene pühkimine, 2026-07-11 762 kirjega, mõõtis 263/311/260 piires
 ±0.5pt — hüpe praegustele määradele tuli sellest ajast maandunud id-põhistest parandustest,
