@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -115,7 +115,7 @@ input under sin egen motor i stedet for `dot`. Det ærlige loft for dette arbejd
 at **indsnævre** A1 til „ingen aktiv afvigelse på referenceplatformen“ og aldrig at
 fjerne forbeholdet om tværplatform; resultaterne indtil videre (nedenfor) holder sig under
 det loft: `circo`/`twopi`/`osage` har hver afdækket og årsagsanalyseret en håndfuld
-ægte A1/A9-tilfælde, og `neato`/`fdp`/`sfdp` ligger nu på 90.5/96.5/68.1%
+ægte A1/A9-tilfælde, og `neato`/`fdp`/`sfdp` ligger nu på 99.8/96.6/68.0%
 inden for 0.5pt af native over de 929 elementer (graphviz 16.1.0), hvilket betyder,
 at den porterede aritmetik (`fma.ts`, `arm-pow.ts`, matchet PRNG) holder for de
 fleste grafer — og hvert afvigende id på universet på 929 elementer er individuelt
@@ -202,13 +202,18 @@ udelader inputs, som C-oraklet ikke kan rendere, jf.
 
 | motor | undersøgt | inden for ±0.5pt | ikke-conformant | porteringsfejl / timeout | orakelfejl |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Beståprocenten for `fdp` steg fra 77.5%, fordi den
 tidligere committede kørsel gik forud for portens tilstand fra den forrige
-mission.)
+mission.
+Beståprocenten for `neato` steg fra 90.5%, da de sammensmeltede stress-kerner fra
+16.1-disassemblyen nåede den produktive kD-sti (post-16.1-opfølgninger del 5, T15): 83
+id'er, der afveg på grund af solver-drift, består nu, blandt dem den tidligere
+accepterede rest pr. id `2619_2`, hvis accept er trukket tilbage; `2371` er det eneste
+tilbageværende afvigende `neato`-id.)
 
 (Den første kørsel, 2026-07-11 ved 762 elementer, målte 263/311/260 inden for
 ±0.5pt — springet til de nuværende rater kom fra rettelser pr. id, som er landet siden,

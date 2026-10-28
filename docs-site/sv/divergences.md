@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ indata under sin egen motor i stället för `dot`. Det ärliga taket för det ar
 att **minska** A1 till ”ingen aktiv avvikelse på referensplattformen”, aldrig att
 eliminera förbehållet om olika plattformar; resultaten hittills (nedan) håller sig
 till det taket: `circo`/`twopi`/`osage` har var och en dragit fram och orsaksanalyserat ett
-fåtal verkliga A1/A9-fall, och `neato`/`fdp`/`sfdp` ligger nu på 90.5/96.5/68.1%
+fåtal verkliga A1/A9-fall, och `neato`/`fdp`/`sfdp` ligger nu på 99.8/96.6/68.0%
 inom 0.5pt från inbyggd över universumet på 929 poster (graphviz 16.1.0), vilket
 betyder att den portade aritmetiken (`fma.ts`, `arm-pow.ts`, matchad PRNG) håller
 för de flesta grafer — och varje avvikande id i universumet på 929 poster är
@@ -200,12 +200,17 @@ utelämnar indata som C-oraklet inte kan rendera, enligt [Överensstämmelse](./
 
 | motor | undersökta | inom ±0.5pt | icke-konforma | portfel / timeout | orakelfel |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Godkännandegraden för `fdp` steg från 77.5% eftersom den tidigare incheckade
-genomgången föregick porteringsläget från det föregående uppdraget.)
+genomgången föregick porteringsläget från det föregående uppdraget.
+Godkännandegraden för `neato` steg från 90.5% när de sammanslagna stress-kärnorna från
+16.1-disassemblyn nådde produktionens kD-väg (uppföljningar efter 16.1, del 5, T15): 83
+id som hade avvikit på grund av solverdrift godkänns nu, bland dem den tidigare
+accepterade resten per id `2619_2`, vars acceptans är indragen; `2371` är det enda
+kvarvarande avvikande `neato`-id:t.)
 
 (Den första genomgången, 2026-07-11 vid 762 poster, mätte 263/311/260 inom
 ±0.5pt — hoppet till dagens nivåer kom från rättningar per id som landat sedan dess,

@@ -1,17 +1,18 @@
 {
-  "generatedAt": "2026-10-14T01:19:43.647Z",
+  "generatedAt": "2026-10-28T17:29:13.029Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "dot",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 929,
+  "total": 930,
   "counts": {
-    "conformant": 924,
+    "conformant": 925,
     "diverged": 0,
     "accepted": 2,
     "port-error": 0,
     "oracle-error": 3,
-    "timeout": 0
+    "timeout": 0,
+    "oracle-nondeterministic": 0
   },
   "results": [
     {
@@ -5218,6 +5219,12 @@
       "id": "linux.x86-rankdir_dot2",
       "path": "linux.x86/rankdir_dot2.gv",
       "size": 12815,
+      "verdict": "conformant"
+    },
+    {
+      "id": "894589",
+      "path": "894589.dot",
+      "size": 13020,
       "verdict": "conformant"
     },
     {

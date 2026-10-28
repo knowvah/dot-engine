@@ -11,6 +11,7 @@
 
 import type { TextlabelT } from './types.js';
 import type { TextMeasurer } from './textmeasure.js';
+import type { ImageResolver } from '../gvc/image-resolver.js';
 import type { HtmlLabel, ImageSizer } from './htmltable-types.js';
 import { sizeHtmlLabel, parseHtmlLabelRv, inheritTablePenColor } from './htmltable.js';
 import { makeLabel } from './make-label.js';
@@ -28,7 +29,9 @@ export interface HtmlLabelResult {
 }
 
 /** The label's font, the object's pen color, and the `<IMG>` sizer. */
-export type HtmlLabelInfo = HtmlFontInfo & { imageSizer?: ImageSizer; pencolor?: string };
+export type HtmlLabelInfo = HtmlFontInfo & {
+  imageSizer?: ImageSizer; imageResolver?: ImageResolver; imageDpi?: number; pencolor?: string;
+};
 
 /**
  * make_html_label: parse, size and position an HTML-like label. Returns C's
@@ -44,7 +47,7 @@ export function makeHtmlLabelTo(
   measurer: TextMeasurer,
   stderr: StderrLines,
 ): HtmlLabelResult {
-  const { fontname, fontsize, fontcolor, imageSizer, pencolor } = finfo;
+  const { fontname, fontsize, fontcolor, imageSizer, imageResolver, imageDpi, pencolor } = finfo;
   let lbl: HtmlLabel, lexWarn: boolean; // lexWarn: htmllex.c's ctx->warn, rv bit 1
   try {
     ({ label: lbl, warn: lexWarn } = parseHtmlLabelRv(content, stderr));
@@ -61,7 +64,7 @@ export function makeHtmlLabelTo(
   // @see lib/common/htmltable.c:1911 (getPenColor), :1406/:1556 (inheritance)
   if (lbl.kind === 'table') inheritTablePenColor(lbl.table, pencolor);
   const rv = Number(lexWarn) | sizeHtmlLabel(lbl, measurer, {
-    fontsize, fontname, imageSizer, stderr,
+    fontsize, fontname, imageSizer, imageResolver, imageDpi, stderr,
   });
   const placed = posHtmlLabel(lbl, { fontname, fontsize, fontcolor }, measurer);
   const dim = lbl.dimen ?? { w: 0, h: 0 };

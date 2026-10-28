@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -129,7 +129,7 @@ der Referenzplattform“ **einzugrenzen**, niemals den plattformübergreifenden
 Vorbehalt zu beseitigen; die bisherigen Ergebnisse (unten) halten diese Grenze
 ein: `circo`/`twopi`/`osage` haben jeweils eine Handvoll echter A1/A9-Fälle zutage
 gefördert und ihre Ursachen geklärt, und `neato`/`fdp`/`sfdp` liegen jetzt bei
-90.5/96.5/68.1 % innerhalb von 0.5pt gegenüber dem nativen Binary über das
+99.8/96.6/68.0 % innerhalb von 0.5pt gegenüber dem nativen Binary über das
 929-Item-Universum (graphviz 16.1.0) — die portierte Arithmetik (`fma.ts`,
 `arm-pow.ts`, passender PRNG) trägt also für die meisten Graphen —, und jede
 abweichende ID des 929-Item-Universums wird einzeln per Injection zugeordnet
@@ -226,13 +226,18 @@ die das C-Orakel nicht rendern kann, siehe [Konformität](./conformance.md)):
 
 | Engine | untersucht | innerhalb ±0.5pt | nicht konform | Portierungsfehler / Timeout | Orakelfehler |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Die Bestehensquote von `fdp` stieg
 gegenüber 77.5 %, weil der frühere eingecheckte Durchlauf dem Portierungsstand der
-vorherigen Mission vorausging.)
+vorherigen Mission vorausging.
+Die Bestehensquote von `neato` stieg von 90.5 %, als die fusionierten Stress-Kernels der
+16.1-Disassemblierung den Produktions-kD-Pfad erreichten (Nachfolgearbeiten zu 16.1,
+Teil 5, T15): 83 IDs, die wegen Solver-Drift abwichen, bestehen jetzt, darunter der
+zuvor akzeptierte Einzel-ID-Rest `2619_2`, dessen Akzeptanz aufgehoben ist; `2371` ist
+die einzige verbliebene abweichende `neato`-ID.)
 
 (Der erste Durchlauf am 2026-07-11 mit 762 Items maß 263/311/260 innerhalb von
 ±0.5pt — der Sprung auf die aktuellen Quoten kam von seither eingespielten

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: EPL-2.0
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { parseLayers, selectedLayer, type LayerInfo } from './layers.js';
 import { renderSvg } from '../index.js';
 
@@ -57,5 +57,31 @@ describe('layers — SVG output', () => {
   it('renders a single pass (no layer groups) when there is no layers attr', () => {
     const svg = renderSvg('digraph G { a -> b; }', 'dot');
     expect(svg).not.toContain('class="layer"');
+  });
+});
+
+describe('layers — parseLayerselect list shape', () => {
+  const withSel = (sel: string): LayerInfo =>
+    parseLayers({ attrs: new Map([['layers', 'a:b:c'], ['layerselect', sel]]) } as never);
+
+  it('single name gives [1, 2, numLayers+1]', () => {
+    expect(withSel('b').layerList).toEqual([1, 2, 4]);
+  });
+  it('list gives [2, 2, 3, numLayers+1]', () => {
+    expect(withSel('b,c').layerList).toEqual([2, 2, 3, 4]);
+  });
+  it('range gives every layer inside', () => {
+    expect(withSel('a:c').layerList).toEqual([3, 1, 2, 3, 4]);
+  });
+  it('no match yields null and warns', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(withSel('zz').layerList).toBeNull();
+    expect(warn).toHaveBeenCalledWith(
+      'Warning: The layerselect attribute "zz" does not match any layer specifed by the layers attribute - ignored.',
+    );
+    warn.mockRestore();
+  });
+  it('absent layerselect leaves layerList null', () => {
+    expect(infoFor('a:b:c').layerList).toBeNull();
   });
 });

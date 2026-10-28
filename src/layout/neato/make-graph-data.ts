@@ -6,7 +6,6 @@
  * @see lib/neatogen/neatoinit.c
  */
 
-import { lateDouble } from '../../common/nodeinit.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { DirectedVtxData } from './opt-arrangement.js';
@@ -129,7 +128,7 @@ function addNeighbours(g: Graph, np: Node, entry: DirectedVtxData, o: GraphDataO
     if (ep.head === ep.tail) continue;
     const vp = ep.tail === np ? ep.head : ep.tail;
     const vid = vp.info.id!;
-    const dist = o.haveLen ? lateDouble(ep.attrs.get('len'), 1.0, 0) : 1.0;
+    const dist = o.haveLen ? (ep.info.dist ?? 0) : 1.0; // ED_dist (calloc 0)
     const idx = seen.get(vid);
     if (idx !== undefined) {
       if (o.haveLen) entry.ewgts[idx] = Math.max(entry.ewgts[idx]!, dist);

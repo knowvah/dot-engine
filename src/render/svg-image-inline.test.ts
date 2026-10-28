@@ -63,21 +63,21 @@ describe('T1 — RenderOptions.inlineImages', () => {
   });
 
   it('inlineImages unset ⇒ byte-identical to the pre-AD-1 baseline', () => {
-    setImageSizer((s) => (s === 'logo.png' ? { w: 24, h: 12 } : null));
+    setImageSizer((s) => (s === 'logo.png' ? { w: 32, h: 16 } : null));
     const g = parse(IMG_DOT);
     const svg = render(g, 'svg');
     expect(svg).toBe(BASELINE_SVG);
   });
 
   it('inlineImages: false ⇒ also byte-identical to the baseline', () => {
-    setImageSizer((s) => (s === 'logo.png' ? { w: 24, h: 12 } : null));
+    setImageSizer((s) => (s === 'logo.png' ? { w: 32, h: 16 } : null));
     const g = parse(IMG_DOT);
     const svg = render(g, 'svg', { inlineImages: false });
     expect(svg).toBe(BASELINE_SVG);
   });
 
   it('inlineImages: true + resolver hit ⇒ data: URI, no raw src href', () => {
-    setImageSizer((s) => (s === 'logo.png' ? { w: 24, h: 12 } : null));
+    setImageSizer((s) => (s === 'logo.png' ? { w: 32, h: 16 } : null));
     const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]);
     setImageResolver((src) => (src === 'logo.png' ? { bytes: pngBytes, mime: 'image/png' } : null));
     const g = parse(IMG_DOT);
@@ -87,14 +87,14 @@ describe('T1 — RenderOptions.inlineImages', () => {
   });
 
   it('inlineImages: true, no resolver registered ⇒ graceful miss, raw href', () => {
-    setImageSizer((s) => (s === 'logo.png' ? { w: 24, h: 12 } : null));
+    setImageSizer((s) => (s === 'logo.png' ? { w: 32, h: 16 } : null));
     const g = parse(IMG_DOT);
     const svg = render(g, 'svg', { inlineImages: true });
     expect(svg).toContain('xlink:href="logo.png"');
   });
 
   it('bare Uint8Array resolver result infers mime from extension (.jpg)', () => {
-    setImageSizer((s) => (s === 'pic.jpg' ? { w: 24, h: 12 } : null));
+    setImageSizer((s) => (s === 'pic.jpg' ? { w: 32, h: 16 } : null));
     const jpgBytes = new Uint8Array([0xff, 0xd8, 0xff]);
     setImageResolver((src) => (src === 'pic.jpg' ? jpgBytes : null));
     const g = parse(

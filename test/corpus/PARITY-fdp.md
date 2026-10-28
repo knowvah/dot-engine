@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 928 (generated 2026-10-24T03:45:34.127Z)
+- **Surveyed:** 929 (generated 2026-10-28T20:54:03.156Z)
 - **Oracle:** dot 16.1.0
-- **pass:** 893 (98.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 16
+- **pass:** 894 (98.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 16
 - **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 4 (excluded from pass %) · **oracle-nondeterministic:** 13 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (1) — documented, not chased
@@ -53,5 +53,5 @@ _(none)_
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | port-error | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
 
 **oracle errors:** 13 native-crash (documented, excluded) / 3 timeout-flake (excluded this run, note to retry)
-_Passing ids (893) are omitted for brevity — the full roster is in
+_Passing ids (894) are omitted for brevity — the full roster is in
 `parity-fdp.json`._

@@ -4,7 +4,7 @@ import { describe, it, expect } from 'vitest';
 import { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import { THETA_UNSET, TWOPI_LAYOUT_ENGINE, twopiLayout } from './index.js';
-import { twopiInitNodeEdge, twopiCleanup } from './init.js';
+import { twopiInitNodeEdge, twopiCleanup, twopiFreeAlg } from './init.js';
 import { initLayout } from './circle.js';
 import { makeStar, makeTwoTriangles } from './twopi-test-helpers.js';
 
@@ -85,13 +85,24 @@ describe('twopiInitNodeEdge: edge factors', () => {
 // twopiCleanup — null first node only
 // ---------------------------------------------------------------------------
 
-describe('twopiCleanup', () => {
+describe('twopiFreeAlg', () => {
   it('nulls alg on the first node only', () => {
+    const g = makeStar(3);
+    twopiInitNodeEdge(g);
+    const nodes = [...g.nodes.values()];
+    twopiFreeAlg(g);
+    expect(nodes[0]!.info.alg).toBeUndefined();
+    expect(nodes[1]!.info.alg).toBeDefined();
+  });
+});
+
+describe('twopiCleanup', () => {
+  it('leaves alg alone (freed earlier by twopiFreeAlg)', () => {
     const g = makeStar(3);
     twopiInitNodeEdge(g);
     const first = g.nodes.values().next().value as Node;
     twopiCleanup(g);
-    expect(first.info.alg).toBeUndefined();
+    expect(first.info.alg).toBeDefined();
   });
 
   it('clears neato_nlist', () => {
@@ -176,9 +187,11 @@ describe('two-component graph: node count and cleanup', () => {
     for (const n of g.nodes.values()) expect(n.info.coord).toBeDefined();
   });
 
-  it('clears neato_nlist after layout', () => {
+  it('clears neato_nlist in twopi_cleanup, not during layout', () => {
     const g = makeTwoTriangles();
     twopiLayout(g);
+    expect(g.info.neato_nlist).toBeDefined();
+    twopiCleanup(g);
     expect(g.info.neato_nlist).toBeUndefined();
   });
 });

@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -126,7 +126,7 @@ katto tälle työlle on **kaventaa** A1 muotoon ”ei aktiivista poikkeamaa
 vertailualustalla”, ei koskaan poistaa alustojen välistä varausta; tähänastiset
 tulokset (alla) pysyvät tuossa katossa: `circo`/`twopi`/`osage` ovat kukin
 tuoneet esiin ja juurisyyanalysoineet kourallisen aitoja A1/A9-tapauksia, ja
-`neato`/`fdp`/`sfdp` ovat nyt 90.5/96.5/68.1 %:ssa 0.5 pt:n sisällä natiivista
+`neato`/`fdp`/`sfdp` ovat nyt 99.8/96.6/68.0 %:ssa 0.5 pt:n sisällä natiivista
 929 kohteen joukossa (graphviz 16.1.0), mikä tarkoittaa, että porttattu aritmetiikka
 (`fma.ts`, `arm-pow.ts`, vastaava PRNG) pitää useimmilla graafeilla — ja
 jokainen 929 kohteen joukon poikkeava tunniste on yksitellen selitetty injektiolla
@@ -219,12 +219,17 @@ pysty renderöimään, kohdan [Yhdenmukaisuus](./conformance.md) mukaisesti):
 
 | moottori | kartoitettu | ±0.5 pt:n sisällä | ei-yhdenmukainen | porttausvirhe / aikakatkaisu | oraakkelivirhe |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (`fdp`:n läpäisyprosentti nousi 77.5 %:sta,
-koska aiempi commitoitu läpikäynti edelsi edellisen mission porttaustilaa.)
+koska aiempi commitoitu läpikäynti edelsi edellisen mission porttaustilaa.
+`neato`:n läpäisyprosentti nousi 90.5 %:sta, kun 16.1:n disassemblyn yhdistetyt
+stress-ytimet saavuttivat tuotannon kD-polun (16.1:n jälkeiset jatkotyöt, osa 5, T15):
+83 id:tä, jotka poikkesivat ratkaisijan ajautuman vuoksi, läpäisee nyt, niiden joukossa
+aiemmin hyväksytty id-kohtainen jäänne `2619_2`, jonka hyväksyntä on peruttu; `2371` on
+ainoa jäljellä oleva poikkeava `neato`-id.)
 
 (Ensimmäinen ajo, 2026-07-11 762 kohteella, mittasi 263/311/260 ±0.5 pt:n
 sisällä — hyppy nykyisiin lukemiin tuli sittemmin toteutetuista

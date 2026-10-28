@@ -276,6 +276,35 @@ export function removeFill(g: Graph): void {
 // ---------------------------------------------------------------------------
 
 /**
+ * The label frees shared by every engine's per-edge cleanup.
+ * @see lib/common/utils.c:gv_cleanup_edge
+ */
+export function gvCleanupEdgeLabels(e: Edge): void {
+  e.info.label = undefined;
+  e.info.xlabel = undefined;
+  e.info.head_label = undefined;
+  e.info.tail_label = undefined;
+}
+
+/**
+ * The label frees shared by every non-dot engine's per-node cleanup.
+ * @see lib/common/utils.c:gv_cleanup_node
+ */
+export function gvCleanupNodeLabels(n: Node): void {
+  n.info.label = undefined;
+  n.info.xlabel = undefined;
+}
+
+/**
+ * Frees non-root subgraph labels, recursing into every subgraph first.
+ * @see lib/dotgen/dotinit.c:dot_cleanup_graph
+ */
+function dotCleanupGraph(g: Graph): void {
+  for (const subg of g.subgraphs.values()) dotCleanupGraph(subg);
+  if (g !== g.root) g.info.label = undefined;
+}
+
+/**
  * Clears all edge lists and linked-list pointers from nodes in the fast-graph,
  * releasing layout state without destroying the underlying graph structure.
  *
@@ -284,6 +313,9 @@ export function removeFill(g: Graph): void {
  * @see lib/dotgen/dotinit.c:dot_cleanup
  */
 export function dotCleanup(g: Graph): void {
+  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge (all out-edges)
+  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // dot_cleanup_node
+  dotCleanupGraph(g);
   let n: Node | undefined = g.info.nlist;
   while (n !== undefined) {
     const next: Node | undefined = n.info.next;

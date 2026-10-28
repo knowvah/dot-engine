@@ -221,14 +221,14 @@ describe('T7 — html IMG emission', () => {
   afterEach(() => setImageSizer(null));
 
   it('sized image emits <image> at C geometry (24x12pt centered)', () => {
-    setImageSizer((s) => (s === 'x.png' ? { w: 24, h: 12 } : null));
+    setImageSizer((s) => (s === 'x.png' ? { w: 32, h: 16 } : null));
     const svg = renderSvg(imgTbl(' SRC="x.png"'), 'dot');
     expect(svg).toContain(
       '<image xlink:href="x.png" width="24px" height="12px" preserveAspectRatio="xMinYMin meet" x="15" y="-24"/>');
   });
 
   it('SCALE="true" upscales preserving aspect into the cell box', () => {
-    setImageSizer((s) => (s === 'x.png' ? { w: 24, h: 12 } : null));
+    setImageSizer((s) => (s === 'x.png' ? { w: 32, h: 16 } : null));
     const svg = renderSvg(
       'digraph { A [shape=plaintext label=<<TABLE><TR><TD WIDTH="60" HEIGHT="40"><IMG SCALE="true" SRC="x.png"/></TD></TR></TABLE>>]; }',
       'dot');
@@ -303,7 +303,7 @@ describe('T9 — non-simple vertical model (size_html_txt simple branch)', () =>
 
 describe('IMG SCALE fallback to node imagescale attr (emit_html_img:615-618)', () => {
   it('node imagescale=true scales the image like IMG SCALE="true"', () => {
-    setImageSizer((s) => (s === 'x.png' ? { w: 24, h: 12 } : null));
+    setImageSizer((s) => (s === 'x.png' ? { w: 32, h: 16 } : null));
     const withAttr = renderSvg(
       'digraph { A [imagescale=true label=<<TABLE><TR><TD WIDTH="60" HEIGHT="40"><IMG SRC="x.png"/></TD></TR></TABLE>>]; }', 'dot');
     const withScale = renderSvg(
@@ -313,7 +313,7 @@ describe('IMG SCALE fallback to node imagescale attr (emit_html_img:615-618)', (
   });
 
   it('IMG SCALE attr overrides the node attr', () => {
-    setImageSizer((s) => (s === 'x.png' ? { w: 24, h: 12 } : null));
+    setImageSizer((s) => (s === 'x.png' ? { w: 32, h: 16 } : null));
     const svg = renderSvg(
       'digraph { A [imagescale=true label=<<TABLE><TR><TD WIDTH="60" HEIGHT="40"><IMG SCALE="false" SRC="x.png"/></TD></TR></TABLE>>]; }', 'dot');
     expect(svg).toContain('width="24px" height="12px"');

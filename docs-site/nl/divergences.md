@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -118,7 +118,7 @@ doorlicht in plaats van onder `dot`. Het eerlijke plafond van dat werk is A1 te
 kanttekening over platforms heen weg te nemen; de resultaten tot nu toe (hieronder)
 blijven binnen dat plafond: `circo`/`twopi`/`osage` hebben elk een handvol echte
 A1/A9-gevallen blootgelegd en tot de grondoorzaak herleid, en `neato`/`fdp`/`sfdp` zitten
-nu op 90.5/96.5/68.1% binnen 0.5pt van native over het universum van 929 items (graphviz 16.1.0), wat
+nu op 99.8/96.6/68.0% binnen 0.5pt van native over het universum van 929 items (graphviz 16.1.0), wat
 betekent dat de geporteerde rekenkunde (`fma.ts`, `arm-pow.ts`, overeenkomende PRNG) voor
 de meeste grafen standhoudt — en elk afwijkend id van het universum van 929 items wordt afzonderlijk door
 injectie toegeschreven (solverdrift vs. portdefect) in plaats van als niet-geanalyseerde
@@ -203,12 +203,17 @@ invoer weg die het C-orakel niet kan renderen, volgens [Conformiteit](./conforma
 
 | engine | surveyed | binnen ±0.5pt | niet-conform | port-fout / timeout | orakelfout |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Het slagingspercentage van `fdp` steeg van 77.5% omdat de eerdere vastgelegde sweep
-voorafging aan de portstatus van de vorige missie.)
+voorafging aan de portstatus van de vorige missie.
+Het slagingspercentage van `neato` steeg van 90.5% toen de samengevoegde stress-kernels
+van de 16.1-disassemblage het kD-productiepad bereikten (post-16.1-vervolgwerk, deel 5,
+T15): 83 id's die door solverdrift afweken, slagen nu, onder meer het eerder
+geaccepteerde residu per id `2619_2`, waarvan de acceptatie is ingetrokken; `2371` is
+het enige overgebleven afwijkende `neato`-id.)
 
 (De eerste sweep, 2026-07-11 bij 762 items, mat 263/311/260 binnen
 ±0.5pt — de sprong naar de huidige percentages kwam door sindsdien doorgevoerde

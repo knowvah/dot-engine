@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,7 +131,7 @@ na obsługiwaną wartość.
 
 | Silnik | Atrybut i wartość | Uruchamia się, gdy | Potrzebna funkcja Graphviza |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Tylko gdy `model` to `subset` lub `circuit` (gdy graf ma 2+ węzłów, a `maxiter` nie jest ujemne) | Hierarchiczna majoryzacja naprężeń (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Tylko gdy `model` to `subset` lub `circuit` (gdy graf ma 2+ węzłów, a `maxiter` jest dodatnie) | Hierarchiczna majoryzacja naprężeń (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Tylko gdy Graphviz zbudowałby ograniczenia: `diredgeconstraints` ma wartość prawda lub `hier*`, `overlap=ipsep`, albo graf ma klaster najwyższego poziomu. Bez ograniczeń działa jako majoryzacja naprężeń, jak w Graphviz | Majoryzacja z ograniczeniami (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` ma wartość `major` (domyślną) lub `ipsep` | Inteligentna inicjalizacja (`smart_ini`). Przy `mode=KK` lub `mode=sgd` loguje `start=0 not supported with mode=self - ignored` raz na renderowanie, jak Graphviz |
 | neato | `model=subset` | `mode` ma wartość `major` lub `KK` | Model odległości podzbiorowej |

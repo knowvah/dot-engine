@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -118,7 +118,7 @@ Bu çalışmanın dürüst tavanı, A1'i “başvuru platformunda etkin fark yok
 kadarki sonuçlar (aşağıda) bu tavana uyar: `circo`/`twopi`/`osage` her biri bir
 avuç gerçek A1/A9 örneği ortaya çıkarıp kök nedenine indirdi; `neato`/`fdp`/`sfdp`
 ise 929 öğelik evrende (graphviz 16.1.0) yerel çıktının 0.5pt içinde sırasıyla
-%90,5/%96,5/%68,1 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
+%99,8/%96,6/%68,0 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
 eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 929 öğelik evrenin her
 farklılaşan kimliği, triyajsız bir sürüklenme olarak bırakılmak yerine enjeksiyonla
 (çözücü sürüklenmesi ile port kusuru) tek tek nedene bağlanmıştır. Aşağıdaki yinelemeli motor nitelendirmesine
@@ -203,12 +203,17 @@ kâhininin işleyemediği girdileri dışarıda bırakır, bkz. [Uygunluk](./con
 
 | motor | taranan | ±0.5pt içinde | uyumlu olmayan | port hatası / zaman aşımı | kâhin hatası |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (%90,5) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (%96,5) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (%68,1) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (%99,8) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (%96,6) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (%68,0) | 296 | 1 | 0 |
 
 (`fdp` geçme oranı %77,5'ten yükseldi, çünkü daha önceki işlenmiş
-tarama bir önceki görevin port durumundan önceye aitti.)
+tarama bir önceki görevin port durumundan önceye aitti.
+`neato` geçme oranı %90,5'ten yükseldi; çünkü 16.1 ayrıştırmasındaki birleştirilmiş
+stress çekirdekleri üretim kD yoluna ulaştı (16.1 sonrası takip işleri, bölüm 5, T15):
+çözücü kayması nedeniyle ayrışan 83 kimlik artık geçiyor; bunların arasında daha önce
+kabul edilen kimlik başına kalıntı `2619_2` de var ve kabulü kaldırıldı; `2371` kalan
+tek ayrışan `neato` kimliğidir.)
 
 (2026-07-11'de 762 öğede yapılan ilk tarama ±0.5pt içinde 263/311/260 ölçmüştü —
 güncel oranlara sıçrama, o tarihten beri girilen kimlik başına düzeltmelerden

@@ -13,6 +13,10 @@
  * half-ULP boundary of s — not observed for any supported input
  * (validated against a full-precision C oracle).
  *
+ * A non-finite product or addend short-circuits to `a * b + c` (or the
+ * non-finite `c` when a and b are finite) before the split: the split's `a·b - p` terms turn an
+ * infinite operand into Inf - Inf = NaN where hardware fmadd gives ±Inf.
+ *
  * Per Boldo & Muller, "Some functions computable with a fused-mac"
  * (IEEE Trans. Computers, 2011) — the exact emulation needs
  * round-to-odd; this is the standard approximation without it.
@@ -25,8 +29,14 @@ const SPLIT = 134217729;
  * round(a·b + c) with one rounding (fmadd).
  */
 export function fma(a: number, b: number, c: number): number {
-  /* Dekker two-product: p + err == a·b exactly */
   const p = a * b;
+  /* Non-finite product or addend: the IEEE fmadd result is p + c, except
+   * that a finite a·b which merely overflowed p yields the non-finite c. */
+  if (!Number.isFinite(p) || !Number.isFinite(c)) {
+    return Number.isFinite(a) && Number.isFinite(b) && !Number.isFinite(c) ? c : p + c;
+  }
+
+  /* Dekker two-product: p + err == a·b exactly */
   const at = SPLIT * a;
   const ahi = at - (at - a);
   const alo = a - ahi;

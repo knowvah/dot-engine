@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,7 +131,7 @@ dot-engine выбрасывает ошибки двух видов. То, как
 
 | Механизм | Атрибут и значение | Срабатывает, когда | Необходимая возможность Graphviz |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Только когда `model` равен `subset` или `circuit` (после того как в графе 2+ узлов и `maxiter` не отрицателен) | Иерархическая стресс-мажоризация (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Только когда `model` равен `subset` или `circuit` (после того как в графе 2+ узлов и `maxiter` положителен) | Иерархическая стресс-мажоризация (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Только когда Graphviz построил бы ограничения: `diredgeconstraints` истинно или `hier*`, `overlap=ipsep`, либо в графе есть кластер верхнего уровня. Без ограничений он работает как стресс-мажоризация, как в Graphviz | Мажоризация с ограничениями (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` равен `major` (по умолчанию) или `ipsep` | Умная инициализация (`smart_ini`). При `mode=KK` или `mode=sgd` один раз за рендер пишет в лог `start=0 not supported with mode=self - ignored`, как Graphviz |
 | neato | `model=subset` | `mode` равен `major` или `KK` | Модель расстояний subset |

@@ -33,6 +33,22 @@ const DEC_DIGIT = /[0-9]/;
 const HEX_DIGIT = /[0-9A-Fa-f]/;
 /** Bytes expat's tokenizer rejects anywhere (BT_NONXML): controls other than tab, LF and CR. */
 const NON_XML = /[\x00-\x08\x0b\x0c\x0e-\x1f]/;
+/** The same classification for U+FFFE, U+FFFF and a lone surrogate (the UTF-8 form of one is invalid). */
+const NON_XML_BEYOND_ASCII = /[\ufffe\uffff]/;
+const HIGH_SURROGATE = /[\ud800-\udbff]/;
+const LOW_SURROGATE = /[\udc00-\udfff]/;
+
+/**
+ * Whether the character at `k` is BT_NONXML in a value: what `CONTENT_NON_XML`
+ * (htmltable-lex-expat.ts) rejects in content, one tokenizer table for both.
+ * @see expat lib/asciitab.h
+ */
+function isNonXmlAt(text: string, k: number): boolean {
+  const c = text[k]!;
+  if (NON_XML.test(c) || NON_XML_BEYOND_ASCII.test(c)) return true;
+  if (HIGH_SURROGATE.test(c)) return !LOW_SURROGATE.test(text[k + 1] ?? '');
+  return LOW_SURROGATE.test(c) && !HIGH_SURROGATE.test(text[k - 1] ?? '');
+}
 
 /** A reference's digits from `i` up to `;`: the index after it, or where scanning stops. */
 function scanDigits(text: string, i: number, digit: RegExp): number | AttValueScan {
@@ -74,7 +90,7 @@ export function scanAttValue(text: string, j: number): AttValueScan {
     const c = text[k];
     if (c === undefined) return { partial: true };
     if (c === q) return { close: k };
-    if (c === '<' || NON_XML.test(c)) return { invalid: k };
+    if (c === '<' || isNonXmlAt(text, k)) return { invalid: k };
     if (c !== '&') {
       k++;
       continue;

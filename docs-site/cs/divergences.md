@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -115,7 +115,7 @@ jeho vlastním modulem místo pod `dot`. Poctivým stropem této práce je A1
 **zúžit** na „žádná aktivní odchylka na referenční platformě“, nikdy neodstranit
 meziplatformní výhradu; dosavadní výsledky (níže) tento strop respektují:
 `circo`/`twopi`/`osage` každý odhalily a zpětně vystopovaly hrstku skutečných
-případů A1/A9 a `neato`/`fdp`/`sfdp` nyní stojí na 90.5/96.5/68.1 % v rozmezí 0.5pt
+případů A1/A9 a `neato`/`fdp`/`sfdp` nyní stojí na 99.8/96.6/68.0 % v rozmezí 0.5pt
 od nativního výstupu v univerzu 929 položek (graphviz 16.1.0), což znamená, že
 portovaná aritmetika (`fma.ts`, `arm-pow.ts`, sladěný PRNG) u většiny grafů drží — a
 každé rozcházející se id z univerza 929 položek je individuálně připsáno
@@ -202,12 +202,17 @@ procento úspěšnosti vynechává vstupy, které C orákulum nedokáže vykresl
 
 | modul | prozkoumáno | v rámci ±0.5pt | neshodné | chyba portace / timeout | chyba orákula |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Míra úspěšnosti `fdp` vzrostla ze 77.5 %, protože dřívější
-zapsaný průchod předcházel stavu portace z předchozí mise.)
+zapsaný průchod předcházel stavu portace z předchozí mise.
+Míra úspěšnosti `neato` vzrostla z 90.5 %, když fúzovaná stresová jádra z disassemblace
+16.1 dorazila do produkční cesty kD (následné práce po 16.1, část 5, T15): 83 id, která
+se lišila kvůli driftu řešiče, nyní prochází, mezi nimi dříve přijatý zbytek pro
+jednotlivé id `2619_2`, jehož přijetí je zrušeno; `2371` je jediné zbývající odlišné id
+v `neato`.)
 
 (První průchod, 2026-07-11 při 762 položkách, naměřil 263/311/260 v rámci
 ±0.5pt — skok na současné míry přinesly od té doby nasazené opravy jednotlivých id,

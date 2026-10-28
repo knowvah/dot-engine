@@ -156,3 +156,23 @@ describe('expat errors in attribute values', () => {
     expect(render('digraph{a[label=<x&#1;y>]}').stderr).toEqual(error('reference to invalid character number', 1, '<HTML>x&#1;y'));
   });
 });
+
+describe('scanAttValue (BT_NONXML beyond controls)', () => {
+  it('rejects U+FFFE and U+FFFF where the content scanner does', () => {
+    expect(scanAttValue('"a\ufffe"', 0)).toEqual({ invalid: 2 });
+    expect(scanAttValue('"a\uffff"', 0)).toEqual({ invalid: 2 });
+  });
+  it('rejects a lone surrogate but not a pair', () => {
+    expect(scanAttValue('"a\ud800"', 0)).toEqual({ invalid: 2 });
+    expect(scanAttValue('"a\udc00b"', 0)).toEqual({ invalid: 2 });
+    expect(scanAttValue('"a\ud83d\ude00"', 0)).toEqual({ close: 4 });
+  });
+  it.each(['\ufffe', '\uffff'])('reports native\'s invalid token for a literal %j', (ch) => {
+    const { stderr } = render(`digraph{a[label=<<TABLE><TR><TD BGCOLOR="${ch}">x</TD></TR></TABLE>>]}`);
+    expect(stderr.slice(0, 3)).toEqual([
+      'Error: not well-formed (invalid token) in line 1 ',
+      `... <TR><TD BGCOLOR="${ch}"> ...`,
+      IN_LABEL,
+    ]);
+  });
+});

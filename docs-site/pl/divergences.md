@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -113,7 +113,7 @@ wejście pod jego własnym silnikiem zamiast `dot`. Uczciwy pułap tej pracy to
 **zawężenie** A1 do „braku aktywnej rozbieżności na platformie referencyjnej”, nigdy
 wyeliminowanie zastrzeżenia o różnicach między platformami; dotychczasowe wyniki (poniżej) mieszczą się w tym
 pułapie: `circo`/`twopi`/`osage` ujawniły i rozłożyły na przyczyny źródłowe garstkę
-prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 90.5/96.5/68.1%
+prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 99.8/96.6/68.0%
 w granicach 0.5pt od natywnego na zbiorze 929 pozycji (graphviz 16.1.0), co oznacza, że przeportowana
 arytmetyka (`fma.ts`, `arm-pow.ts`, dopasowany PRNG) działa dla większości grafów —
 a każdy rozbieżny id ze zbioru 929 pozycji jest indywidualnie przypisany przez wstrzyknięcie (dryf
@@ -197,12 +197,17 @@ wejścia, których wyrocznia w C nie potrafi wyrenderować, zgodnie z [Zgodnośc
 
 | silnik | zbadano | w granicach ±0.5pt | niezgodne | błąd portu / timeout | błąd wyroczni |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Wskaźnik zaliczeń `fdp` wzrósł z 77.5%, ponieważ wcześniejszy zatwierdzony przebieg
-przedstawiał stan portu sprzed poprzedniej misji.)
+przedstawiał stan portu sprzed poprzedniej misji.
+Wskaźnik zaliczeń `neato` wzrósł z 90.5%, gdy połączone jądra stress z deasemblacji 16.1
+trafiły na produkcyjną ścieżkę kD (kontynuacje po 16.1, część 5, T15): 83 id, które
+różniły się z powodu dryfu solwera, teraz przechodzą, w tym wcześniej zaakceptowana
+reszta dla pojedynczego id `2619_2`, której akceptacja jest wycofana; `2371` to jedyne
+pozostałe rozbieżne id `neato`.)
 
 (Pierwszy przebieg, 2026-07-11 przy 762 pozycjach, zmierzył 263/311/260 w granicach
 ±0.5pt — skok do obecnych wskaźników wziął się z poprawek dla poszczególnych id wprowadzonych od tego czasu,

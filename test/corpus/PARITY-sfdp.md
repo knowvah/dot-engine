@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 928 (generated 2026-10-24T05:37:45.445Z)
+- **Surveyed:** 929 (generated 2026-10-28T22:23:16.621Z)
 - **Oracle:** dot 16.1.0
-- **pass:** 632 (68.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 289
+- **pass:** 632 (68.1%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 289
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %) · **oracle-nondeterministic:** 1 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (6) — documented, not chased
@@ -43,9 +43,11 @@ outright leaves the class silently on the next report regen.
 
 - **A1-drift**: **292** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`894589`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/894589.dot) | 13020 | 44 | `edge:dde-daemon->deepin-installer-timezones#0 _draw_ edge:dde-daemon->deepin-installer-timezones#0/_draw_/op[1].unfilled_bezier[3]: 687.59 vs 688.1` |
 
 ## Errors and timeouts (0)
 

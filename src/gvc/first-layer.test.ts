@@ -40,12 +40,9 @@ describe('firstlayer warning', () => {
     },
   );
 
-  it('json warns for json and for the nested xdot render', () => {
-    // Native prints xdot first (json_begin_graph renders xdot inside
-    // emit_begin_graph, before firstlayer). The port's json renderer does that
-    // nested render in endGraph, so the order is json, xdot. Order-insensitive
-    // here; the reordering lives in src/render/json.ts (open item for T19).
-    expect(stderrOf(LAYERED, 'json').lines.sort()).toEqual([warning('json'), warning('xdot')]);
+  it('json warns for the nested xdot render first, then json (native order)', () => {
+    // json_begin_graph renders xdot inside emit_begin_graph, before firstlayer.
+    expect(stderrOf(LAYERED, 'json').lines).toEqual([warning('xdot'), warning('json')]);
   });
 
   it('svg does layers: no warning, both layer groups present', () => {
@@ -57,5 +54,44 @@ describe('firstlayer warning', () => {
   it.each(['xdot', 'plain'])('no warning without layers or with one layer (%s)', (format) => {
     expect(stderrOf(UNLAYERED, format).lines).toEqual([]);
     expect(stderrOf(ONE_LAYER, format).lines).toEqual([]);
+  });
+});
+
+/** $BASE/native/79-sel-*.gv: n1/n2/n3 on layers a/b/c, n1->n2->n3. */
+const sel = (v: string): string =>
+  `digraph{layers="a:b:c";layerselect="${v}";n1[layer="a"];n2[layer="b"];n3[layer="c"];n1->n2->n3}`;
+const ZZ_WARNING =
+  'Warning: The layerselect attribute "zz" does not match any layer specifed by the layers attribute - ignored.';
+const groupIds = (svg: string): string[] => [...svg.matchAll(/<g id="([^"]*)"/g)].map((m) => m[1]!);
+
+describe('layerselect walk', () => {
+  it('b -Tsvg: one layer, no layer group, ids carry the b prefix and suffix', () => {
+    const { lines, out } = stderrOf(sel('b'), 'svg');
+    expect(lines).toEqual([]);
+    expect(groupIds(out)).toEqual(['b_graph0', 'b_node2_b', 'b_edge1', 'b_edge2']);
+  });
+
+  it('b,c -Tsvg: two layer groups in order', () => {
+    const { lines, out } = stderrOf(sel('b,c'), 'svg');
+    expect(lines).toEqual([]);
+    expect([...out.matchAll(/<g id="([^"]*)" class="layer"/g)].map((m) => m[1])).toEqual(['b', 'c']);
+  });
+
+  it('zz -Tsvg: native warning, all three layers', () => {
+    const { lines, out } = stderrOf(sel('zz'), 'svg');
+    expect(lines).toEqual([ZZ_WARNING]);
+    expect([...out.matchAll(/<g id="([^"]*)" class="layer"/g)].map((m) => m[1])).toEqual(['a', 'b', 'c']);
+  });
+
+  it.each(['xdot', 'cmapx'])('b,c -T%s: layers-unsupported warning only', (fmt) => {
+    expect(stderrOf(sel('b,c'), fmt).lines).toEqual([warning(fmt)]);
+  });
+
+  it.each(['xdot', 'cmapx'])('zz -T%s: zz warning then layers-unsupported', (fmt) => {
+    expect(stderrOf(sel('zz'), fmt).lines).toEqual([ZZ_WARNING, warning(fmt)]);
+  });
+
+  it.each(['xdot', 'cmapx'])('b -T%s: single selection warns nothing', (fmt) => {
+    expect(stderrOf(sel('b'), fmt).lines).toEqual([]);
   });
 });

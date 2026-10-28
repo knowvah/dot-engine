@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { parse, render } from '../index.js';
 import {
   stoj,
   ind,
@@ -183,6 +184,23 @@ describe('Json0Renderer', () => {
 });
 
 describe('JsonRenderer', () => {
+  it('runs the nested xdot render in beginGraph, before endGraph', () => {
+    const warns: string[] = [];
+    const spy = vi.spyOn(console, 'warn').mockImplementation((...a: unknown[]) => {
+      warns.push(a.map(String).join(' '));
+    });
+    try {
+      const g = parse('digraph{layers="a:b";a}');
+      const out = render(g, 'json', { engine: 'dot' });
+      expect(warns).toEqual([
+        'Warning: layers not supported in xdot output',
+        'Warning: layers not supported in json output',
+      ]);
+      expect(out).toContain('"_draw_"');
+    } finally {
+      spy.mockRestore();
+    }
+  });
   it('factory returns type=json quality=0', testJsonFactory);
   it('endGraph emits _draw_ on objects', testJsonEndGraph);
 });

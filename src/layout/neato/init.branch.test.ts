@@ -7,6 +7,7 @@
 // dispatch, and the translate/cleanup utilities.
 // @see lib/neatogen/neatoinit.c
 
+import { setEdgeLen } from './edge-len.js';
 import { describe, it, expect, vi } from 'vitest';
 import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
@@ -394,6 +395,7 @@ describe('makeGraphDataC', () => {
     const e2 = new Edge(a, b, 'AB2'); e2.attrs.set('len', '5');
     g.edges.push(e1, e2);
     const nodeList = assignNodeIds(g);
+    setEdgeLen(g); // scan_graph_mode fills ED_dist
     const vtx = makeGraphDataC(g, nodeList, true, false);
     expect(vtx[0]!.edges).toEqual([0, 1]); // one merged neighbour entry
     expect(vtx[0]!.ewgts).toEqual([0, 5]); // max(2,5)

@@ -14,6 +14,7 @@
  */
 
 import { RenderError } from '../../errors.js';
+import { agNameOf } from '../../model/cgraph-ops.js';
 import type { Graph } from '../../model/graph.js';
 import { srand48 } from '../../common/random.js';
 import { registerRenderState } from '../../common/render-state.js';
@@ -147,7 +148,7 @@ export function neatoMode(g: Graph): number {
   if (str === undefined || str === '') return MODE_MAJOR;
   const mode = modeByName().get(str);
   if (mode !== undefined) return mode;
-  agwarningf(`Illegal value ${str} for attribute "mode" in graph ${g.root.name} - ignored`);
+  agwarningf(`Illegal value ${str} for attribute "mode" in graph ${agNameOf(g.root)} - ignored`);
   return MODE_MAJOR;
 }
 
@@ -195,7 +196,7 @@ function warnCircuitDisconnected(g: Graph): void {
   circuitWarned.add(g.root);
   agerrLineOn(
     'warn',
-    `graph ${g.root.name} is disconnected. Hence, the circuit model\n`
+    `graph ${agNameOf(g.root)} is disconnected. Hence, the circuit model\n`
     + 'is undefined. Reverting to the shortest path model.\n'
     + 'Alternatively, consider running neato using -Gpack=true or decomposing\n'
     + 'the graph into connected components.',

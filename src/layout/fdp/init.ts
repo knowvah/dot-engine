@@ -14,6 +14,7 @@
  */
 
 import type { Graph } from '../../model/graph.js';
+import { gvCleanupEdgeLabels, gvCleanupNodeLabels } from '../dot/init.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import { commonInitNodeEdge, lateDouble, layoutMeasurer } from '../../common/nodeinit.js';
@@ -100,11 +101,27 @@ export function fdpInitNodeEdge(g: Graph): void {
 }
 
 /**
+ * Frees each cluster label, recursively.
+ * @see lib/fdpgen/fdpinit.c:cleanup_subgs
+ */
+function fdpCleanupSubgs(g: Graph): void {
+  const nClust = g.info.n_cluster ?? 0;
+  for (let i = 1; i <= nClust; i++) {
+    const subg = g.info.clust![i - 1];
+    subg.info.label = undefined;
+    fdpCleanupSubgs(subg);
+  }
+}
+
+/**
  * Release fdp layout state (gv_cleanup analogue; the render pipeline
  * runs before cleanup per the M2 ordering fix).
  * @see lib/fdpgen/fdpinit.c:fdp_cleanup
  */
 export function fdpCleanup(g: Graph): void {
+  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge: per-node agfstout, all edges of root g
+  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // gv_cleanup_node
+  fdpCleanupSubgs(g);
   for (const n of g.nodes.values()) {
     n.info.alg = undefined;
     n.info.pos = undefined;

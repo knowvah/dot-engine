@@ -26,7 +26,7 @@ import {
 } from './make-label.js';
 import { computeVertices } from './poly-vertices.js';
 import { agwarningf } from './agerr.js';
-import { imageIsSupplied, imageOpenWarning } from '../gvc/usershape.js';
+import { imageIsSupplied, imageOpenWarning, usershapeDpi, usershapeSizePts } from '../gvc/usershape.js';
 
 // Default half-dimensions in points (72 dpi, 0.75 in wide, 0.5 in tall)
 const DEFAULT_LW = 27;
@@ -112,6 +112,23 @@ function warnMissingImage(n: Node, g: Graph, shapefile: string | undefined): voi
   if (imageIsSupplied(image, gvc?.imageSizer, gvc?.imageResolver)) return;
   agwarningf(imageOpenWarning(image));
   agwarningf(`No or improper image="${image}" for node "${n.name}"`);
+}
+
+/**
+ * poly_init's imagesize for a non-custom shape's `image=`: gvusershape_size in
+ * points plus the fixed 2pt padding, and GD_has_images. Null (C's imagesize 0)
+ * when there is no image or the caller supplies no size; the missing-image
+ * warning stays in warnMissingImage.
+ * @see lib/common/shapes.c:2039-2051
+ */
+export function nodeImageSize(n: Node, g: Graph): { x: number; y: number } | undefined {
+  const shapefile = nodeAttr(n, g, 'shapefile');
+  if (shapefile !== undefined && shapefile !== '') return undefined;
+  const gvc = g.root.info.gvc;
+  const sz = usershapeSizePts(nodeAttr(n, g, 'image'), usershapeDpi(g.root.attrs), gvc?.imageSizer);
+  if (sz === null) return undefined;
+  g.root.info.has_images = true;
+  return { x: sz.x + 2, y: sz.y + 2 }; // some fixed padding
 }
 
 export function polyInit(n: Node, g: Graph, measurer: TextMeasurer): void {

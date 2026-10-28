@@ -6,6 +6,7 @@
 // only in the layers it belongs to (its `layer` attribute, or all layers when
 // it has none). All of this is inert unless numLayers > 1.
 
+import { agwarningf } from './agerr.js';
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
@@ -21,6 +22,11 @@ export interface LayerInfo {
   numLayers: number;
   sep: string;
   listSep: string;
+  /**
+   * C `gvc->layerlist`: `[count, l1, …, lcount, numLayers + 1]` from the
+   * `layerselect` attribute, or null when absent or matching no layer.
+   */
+  layerList: number[] | null;
 }
 
 /** Split `s` on any character in the `delims` set, dropping empty tokens
@@ -39,10 +45,13 @@ export function parseLayers(g: Graph): LayerInfo {
   // Conflict: a char in both sep sets → ignore listSep (C warns + clears it).
   if ([...sep].some((c) => listSep.includes(c))) listSep = '';
   if (p === undefined || p === '') {
-    return { layerIDs: [], numLayers: 1, sep, listSep };
+    return { layerIDs: [], numLayers: 1, sep, listSep, layerList: null };
   }
   const toks = splitOnSet(p, sep);
-  return { layerIDs: [null, ...toks], numLayers: toks.length, sep, listSep };
+  const info: LayerInfo = { layerIDs: [null, ...toks], numLayers: toks.length, sep, listSep, layerList: null };
+  const sel = g.attrs.get('layerselect');
+  if (sel !== undefined && sel !== '') info.layerList = parseLayerselect(info, sel);
+  return info;
 }
 
 function isNaturalNumber(s: string): boolean {
@@ -110,4 +119,24 @@ export function edgeInLayer(info: LayerInfo, layerNum: number, e: Edge): boolean
     const pn = n.attrs.get('layer') ?? '';
     return pn === '' || selectedLayer(info, layerNum, pn);
   });
+}
+
+/**
+ * Walk each layer index and keep those `selectedLayer` matches against `p`.
+ * Returns `[n, l1..ln, numLayers + 1]`, or null (after a warning) when nothing
+ * matches. The warning's "specifed" is native's spelling.
+ * @see lib/common/emit.c:parse_layerselect
+ */
+export function parseLayerselect(info: LayerInfo, p: string): number[] | null {
+  const picked: number[] = [];
+  for (let i = 1; i <= info.numLayers; i++) {
+    if (selectedLayer(info, i, p)) picked.push(i);
+  }
+  if (picked.length === 0) {
+    agwarningf(
+      `The layerselect attribute "${p}" does not match any layer specifed by the layers attribute - ignored.`,
+    );
+    return null;
+  }
+  return [picked.length, ...picked, info.numLayers + 1];
 }

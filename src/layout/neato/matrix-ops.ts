@@ -11,20 +11,10 @@
  */
 
 import { crand } from '../../common/crand.js';
-import { fma as softFma } from '../../common/fma.js';
+import { fma } from '../../common/fma.js';
 import type { VtxData } from './dijkstra.js';
 
 const fr = Math.fround;
-
-/**
- * fmadd: round(a * b + c) once. `common/fma` splits operands (Dekker), which
- * turns an infinite operand into NaN where the hardware fmadd gives inf, so
- * non-finite products and addends take the plain expression (exact then).
- */
-export function fma(a: number, b: number, c: number): number {
-  const p = a * b;
-  return Number.isFinite(p) && Number.isFinite(c) ? softFma(a, b, c) : p + c;
-}
 
 /** Subtract the mean (double precision). @see matrix_ops.c:orthog1 */
 export function orthog1(n: number, vec: Float64Array): void {

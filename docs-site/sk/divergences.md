@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ vstup pod jeho vlastným modulom namiesto `dot`. Úprimným stropom tejto práce
 **zúžiť** A1 na „žiadna aktívna odchýlka na referenčnej platforme“, nikdy neodstrániť
 medziplatformovú výhradu; doterajšie výsledky (nižšie) tento
 strop spĺňajú: `circo`/`twopi`/`osage` odhalili a vyriešili po koreňovú príčinu niekoľko
-skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 90.5/96.5/68.1 %
+skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 99.8/96.6/68.0 %
 v rámci 0.5pt od natívneho na univerze 929 položiek (graphviz 16.1.0), čo znamená, že
 portovaná aritmetika (`fma.ts`, `arm-pow.ts`, zhodný PRNG) pre väčšinu grafov drží —
 a každé odchýlené id z univerza 929 položiek je individuálne priradené injekciou (drift
@@ -199,12 +199,17 @@ vstupy, ktoré orákulum v C nedokáže vykresliť, podľa [Zhody](./conformance
 
 | modul | preskúmané | v rámci ±0.5pt | nezhodné | chyba portu / timeout | chyba orákula |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Miera úspešnosti `fdp` vzrástla zo 77.5 %, pretože skorší commitnutý prechod
-predchádzal stavu portu z predchádzajúcej misie.)
+predchádzal stavu portu z predchádzajúcej misie.
+Miera úspešnosti `neato` vzrástla z 90.5 %, keď zlúčené stress jadrá z disassembly 16.1
+dosiahli produkčnú cestu kD (nadväzujúce práce po 16.1, časť 5, T15): 83 id, ktoré sa
+líšili kvôli driftu riešiča, teraz prechádza, medzi nimi predtým akceptovaný zvyšok pre
+jednotlivé id `2619_2`, ktorého akceptácia je zrušená; `2371` je jediné zostávajúce
+odlišné id `neato`.)
 
 (Prvý prieskum, 2026-07-11 pri 762 položkách, nameral 263/311/260 v rámci
 ±0.5pt — skok na súčasné miery spôsobili opravy po jednotlivých id pristáté odvtedy,

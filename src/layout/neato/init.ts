@@ -11,12 +11,14 @@
 
 import type { ShapeDesc } from '../../common/types.js';
 import type { Graph } from '../../model/graph.js';
+import { gvCleanupEdgeLabels, gvCleanupNodeLabels } from '../dot/init.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { VtxData } from './dijkstra.js';
 import {
   DFLT_ITERATIONS,
   OPT_SMART_INIT as STRESS_OPT_SMART_INIT,
+  checkExp,
   MODEL_MDS as STRESS_MODEL_MDS,
   MODEL_CIRCUIT as STRESS_MODEL_CIRCUIT,
   MODEL_SUBSET as STRESS_MODEL_SUBSET,
@@ -26,6 +28,7 @@ import { kkNeato } from './kk.js';
 import {
   checkStart, assertSupported, parseStart, INIT_RANDOM, INIT_REGULAR, INIT_SELF,
 } from './start.js';
+import { setEdgeLen } from './edge-len.js';
 import { makeGraphDataC, graphHasLen } from './make-graph-data.js';
 import type { DirectedVtxData } from './opt-arrangement.js';
 import { stressMajorizationWithHierarchy } from './constrained-majorization.js';
@@ -37,7 +40,6 @@ import {
   computeApspPacked,
   computeWeightedApspPacked,
   stressMajorizationKDMkernel,
-  OPT_EXP_FLAG,
 } from './stress-kernel.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { inputscaleDivisor } from '../../common/utils-inputscale.js';
@@ -373,18 +375,19 @@ function solveStress(
   const weighted = haveLen && mode !== MODE_IPSEP;
   const Dij = weighted ? computeWeightedApspPacked(vtx, n) : computeApspPacked(vtx, n);
   return stressMajorizationKDMkernel(Dij, n, dCoords, nodeList, {
-    dim: DFLT_DIM, opts, maxi, epsilon,
+    dim: DFLT_DIM, opts, maxi, epsilon, cola: mode === MODE_IPSEP,
   });
 }
 
 /** Run stress majorization and write positions back. @see lib/neatogen/neatoinit.c:majorization */
 export function runMajorization(g: Graph, mode: number, model: number): void {
   const nodeList = assignNodeIds(g);
+  setEdgeLen(g); // scan_graph_mode else-branch: ED_dist for major/hier/ipsep
   const n = nodeList.length;
   const haveLen = graphHasLen(g);
   // C: srand48(seed) immediately before initLayout draws; hier starts from self
   const init = checkStart(g, n, mode === MODE_HIER ? INIT_SELF : INIT_RANDOM);
-  const opts = init === INIT_SELF ? OPT_EXP_FLAG | STRESS_OPT_SMART_INIT : OPT_EXP_FLAG;
+  const opts = checkExp(g) | (init === INIT_SELF ? STRESS_OPT_SMART_INIT : 0);
   const haveDir = mode === MODE_HIER || mode === MODE_IPSEP;
   const vtx = makeGraphDataC(g, nodeList, haveLen, haveDir, mode);
   const dCoords = [new Float64Array(n), new Float64Array(n)];
@@ -489,6 +492,8 @@ export function neatoSetAspect(g: Graph): void {
  * @see lib/neatogen/neatoinit.c:neato_cleanup
  */
 export function neatoCleanup(g: Graph): void {
+  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge: per-node agfstout, all edges of root g
+  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // gv_cleanup_node
   for (const [, n] of g.nodes) {
     n.info.pos = undefined;
     n.info.pinned = undefined;

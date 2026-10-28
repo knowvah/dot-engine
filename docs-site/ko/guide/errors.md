@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -127,7 +127,7 @@ DOT 작성자가 무엇을 바꾸어도 `InternalError`를 확실하게 피할 �
 
 | 엔진 | 속성과 값 | 발생 조건 | 필요한 Graphviz 기능 |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | `model`이 `subset` 또는 `circuit`인 경우에만(그래프에 노드가 2개 이상이고 `maxiter`가 음수가 아닌 경우) | 계층적 스트레스 매저라이제이션(`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | `model`이 `subset` 또는 `circuit`인 경우에만(그래프에 노드가 2개 이상이고 `maxiter`가 양수인 경우) | 계층적 스트레스 매저라이제이션(`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Graphviz가 제약 조건을 구성하는 경우에만: `diredgeconstraints`가 true이거나 `hier*`, `overlap=ipsep`이거나 그래프에 최상위 클러스터가 있는 경우. 제약 조건이 없으면 Graphviz와 마찬가지로 스트레스 매저라이제이션으로 실행됩니다 | 제약 조건 매저라이제이션(`stress_majorization_cola`) |
 | neato | `start=self` | `mode`가 `major`(기본값) 또는 `ipsep`인 경우 | 스마트 초기화(`smart_ini`). `mode=KK` 또는 `mode=sgd`에서는 Graphviz와 마찬가지로 렌더링당 한 번 `start=0 not supported with mode=self - ignored`를 기록합니다 |
 | neato | `model=subset` | `mode`가 `major` 또는 `KK`인 경우 | 부분 집합 거리 모델 |

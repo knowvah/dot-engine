@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ fiecare intrare cu propriul motor, în loc de `dot`. Plafonul onest al acestei a
 **restrângerea** lui A1 la „nicio divergență activă pe platforma de referință”, niciodată
 eliminarea rezervei privind platformele multiple; rezultatele de până acum (mai jos) respectă acest
 plafon: `circo`/`twopi`/`osage` au scos la iveală și au elucidat până la cauza rădăcină
-câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 90.5/96.5/68.1%
+câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 99.8/96.6/68.0%
 în limita a 0.5pt față de nativ pe universul de 929 de elemente (graphviz 16.1.0), ceea ce înseamnă că aritmetica
 portată (`fma.ts`, `arm-pow.ts`, PRNG potrivit) se menține pentru majoritatea grafurilor — iar
 fiecare id divergent din universul de 929 de elemente este atribuit individual prin injecție (derivă a solverului față de
@@ -198,12 +198,17 @@ intrările pe care oracolul C nu le poate randa, conform [Conformitate](./confor
 
 | motor | sondate | în limita ±0.5pt | neconforme | eroare portare / timeout | eroare oracol |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Rata de reușită a lui `fdp` a crescut de la 77.5% pentru că parcurgerea anterioară înregistrată
-era anterioară stării portării din misiunea precedentă.)
+era anterioară stării portării din misiunea precedentă.
+Rata de reușită a lui `neato` a crescut de la 90.5% când nucleele de stress fuzionate
+din dezasamblarea 16.1 au ajuns pe calea kD de producție (continuări post-16.1, partea
+5, T15): 83 de id-uri care divergeau din cauza derivei solverului trec acum, printre ele
+reziduul pe id acceptat anterior `2619_2`, a cărui acceptare este retrasă; `2371` este
+singurul id `neato` rămas divergent.)
 
 (Prima trecere, 2026-07-11, la 762 de elemente, a măsurat 263/311/260 în limita
 ±0.5pt — saltul la ratele actuale a venit din remedieri pe id integrate de atunci,

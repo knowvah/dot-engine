@@ -69,10 +69,9 @@ describe('HTML BGCOLOR render', () => {
   it('an over-full spec warns on one line then falls back to a solid fill', () => {
     const { svg, err } = run(OVER);
     expect(svg).not.toContain('<linearGradient');
-    // Native joins these on one line (agerr has no partial-line support).
+    // Native joins these on one line (the Total-size text has no newline).
     expect(err).toEqual([
-      `Warning: Total size > 1 in "${OVER}" color spec `,
-      'Warning: red;0.7 is not a known color.',
+      `Warning: Total size > 1 in "${OVER}" color spec Warning: red;0.7 is not a known color.`,
     ]);
   });
   it('more than two colors warns per paint', () => {

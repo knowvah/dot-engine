@@ -10,6 +10,7 @@
 
 import type { ShapeDesc } from '../../common/types.js';
 import type { Graph } from '../../model/graph.js';
+import { gvCleanupEdgeLabels, gvCleanupNodeLabels } from '../dot/init.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { TwopiAlgData } from '../../model/nodeInfo.js';
@@ -157,23 +158,34 @@ export function adjustNodes(g: Graph): void {
 }
 
 /**
- * Release twopi-specific per-node state after layout.
+ * Free ND_alg of the first node, as twopi_layout does before spline routing.
  *
- * Mirrors the C twopi_layout cleanup: free(ND_alg(first_node)) / ND_alg = NULL
- * on the FIRST node only (the contiguous block was allocated as a single unit).
- * Other nodes' ND_alg pointers were interior offsets into that block so they
- * do not need to be freed separately.
+ * Mirrors the C twopi_layout: free(ND_alg(n)) / ND_alg(n) = NULL on the FIRST
+ * node only (the contiguous block was allocated as a single unit). Other
+ * nodes' ND_alg pointers were interior offsets into that block so they do
+ * not need to be freed separately.
  *
  * ORDERING: must be called BEFORE splineEdges because edge routing may
  * store its own data in n.info.alg.
  *
- * @see lib/twopigen/twopiinit.c:twopi_layout (free(ND_alg) placement note)
- * @see lib/twopigen/twopiinit.c:twopi_cleanup
+ * @see lib/twopigen/twopiinit.c:twopi_layout (lines 113-115)
  */
-export function twopiCleanup(g: Graph): void {
+export function twopiFreeAlg(g: Graph): void {
   const first = g.nodes.values().next().value as Node | undefined;
   if (first !== undefined && first.info.alg?.kind === 'twopi') {
     first.info.alg = undefined;
   }
-  g.info.neato_nlist = undefined;
+}
+
+/**
+ * Release twopi layout state after rendering (the engine's `cleanup`).
+ * ND_alg is freed earlier, in twopi_layout (see twopiFreeAlg).
+ *
+ * @see lib/twopigen/twopiinit.c:twopi_cleanup
+ */
+export function twopiCleanup(g: Graph): void {
+  if (g.nodes.size === 0) return; // C: empty graph
+  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge
+  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // gv_cleanup_node
+  g.info.neato_nlist = undefined; // twopi_cleanup_graph
 }

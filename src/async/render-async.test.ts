@@ -20,7 +20,7 @@ const SRC = 'logo.png';
 const IMG_DOT =
   'digraph { A [shape=plaintext label=<<TABLE><TR><TD>' +
   `<IMG SRC="${SRC}"/></TD></TR></TABLE>>]; }`;
-const SIZE = { w: 50, h: 30 };
+const SIZE = { w: 67, h: 40 }; // 50x30 pt at the default 96 dpi
 const BYTES_A = new Uint8Array([1, 2, 3]);
 const BYTES_B = new Uint8Array([7, 8, 9]);
 const B64_A = 'AQID';

@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ inndata under sin egen motor i stedet for `dot`. Det ærlige taket for dette arb
 å **innsnevre** A1 til «ingen aktivt avvik på referanseplattformen», aldri å
 fjerne forbeholdet om tvers av plattformer; resultatene så langt (nedenfor) holder seg til
 det taket: `circo`/`twopi`/`osage` har hver avdekket og rotårsaksanalysert en håndfull
-ekte A1/A9-tilfeller, og `neato`/`fdp`/`sfdp` ligger nå på 90.5/96.5/68.1 %
+ekte A1/A9-tilfeller, og `neato`/`fdp`/`sfdp` ligger nå på 99.8/96.6/68.0 %
 innenfor 0.5pt av innebygd over universet på 929 elementer (graphviz 16.1.0), noe som betyr at den portede
 aritmetikken (`fma.ts`, `arm-pow.ts`, samsvarende PRNG) holder for de fleste grafer — og
 hver avvikende id i universet på 929 elementer er individuelt tilskrevet ved injeksjon (løserdrift
@@ -199,12 +199,17 @@ inndata C-orakelet ikke kan rendere, jf. [Samsvar](./conformance.md)):
 
 | motor | undersøkt | innenfor ±0.5pt | ikke samsvarende | portfeil / tidsavbrudd | orakelfeil |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5 %) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5 %) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1 %) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8 %) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6 %) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0 %) | 296 | 1 | 0 |
 
 (Beståttprosenten for `fdp` økte fra 77.5 % fordi den tidligere innsjekkede kjøringen
-var eldre enn portstatusen fra det forrige oppdraget.)
+var eldre enn portstatusen fra det forrige oppdraget.
+Beståttprosenten for `neato` økte fra 90.5 % da de sammenslåtte stress-kjernene fra
+16.1-disassemblyen nådde produksjonens kD-sti (oppfølginger etter 16.1, del 5, T15): 83
+id-er som hadde avveket på grunn av solver-drift, består nå, blant dem den tidligere
+godtatte resten per id `2619_2`, hvis godkjenning er trukket tilbake; `2371` er den
+eneste gjenværende avvikende `neato`-id-en.)
 
 (Den første kjøringen, 2026-07-11 med 762 elementer, målte 263/311/260 innenfor
 ±0.5pt — hoppet til dagens tall kom av rettelser per id som er landet siden,

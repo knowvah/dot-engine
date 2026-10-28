@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,7 +132,7 @@ değerle değiştirin.
 
 | Motor | Öznitelik ve değer | Ne zaman tetiklenir | Gereken Graphviz özelliği |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Yalnızca `model` değeri `subset` veya `circuit` olduğunda (grafın 2+ düğümü olduktan ve `maxiter` negatif olmadıktan sonra) | Hiyerarşik stres majorizasyonu (`stress_majorization_with_hierarchy`) |
+| neato | `mode=hier` | Yalnızca `model` değeri `subset` veya `circuit` olduğunda (grafın 2+ düğümü olduktan ve `maxiter` pozitif olduktan sonra) | Hiyerarşik stres majorizasyonu (`stress_majorization_with_hierarchy`) |
 | neato | `mode=ipsep` | Yalnızca Graphviz'in kısıtlar oluşturacağı durumda: `diredgeconstraints` doğrudur veya `hier*`, `overlap=ipsep`, ya da grafın en üst düzey bir kümesi vardır. Kısıt yoksa Graphviz'de olduğu gibi stres majorizasyonu olarak çalışır | Kısıtlı majorizasyon (`stress_majorization_cola`) |
 | neato | `start=self` | `mode` değeri `major` (varsayılan) veya `ipsep` ise | Akıllı ilklendirme (`smart_ini`). `mode=KK` veya `mode=sgd` altında, Graphviz'in yaptığı gibi her işlemede bir kez `start=0 not supported with mode=self - ignored` günlüğe yazar |
 | neato | `model=subset` | `mode` değeri `major` veya `KK` ise | Alt küme uzaklık modeli |

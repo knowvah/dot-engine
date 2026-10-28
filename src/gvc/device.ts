@@ -26,7 +26,7 @@ import type { ShapeDesc, TextlabelT } from '../common/types.js';
 import { type LayerInfo, parseLayers } from '../common/layers.js';
 import { RenderJob, EMIT_CLUSTERS_LAST, createObjState, ObjType, EmitState } from './job.js';
 import { walkNodesAndEdges } from './emit-walk.js';
-import { warnLayersUnsupported } from './first-layer.js';
+import { firstLayer, nextLayer, numPhysicalLayers, validLayer } from './first-layer.js';
 import { polyInit } from '../common/poly-init.js';
 import {
   setHtmlAnchorObj,
@@ -48,7 +48,7 @@ import {
   setRendererKnownColors,
 } from '../render/color-resolve.js';
 import { emitRoundedBezier } from '../common/poly-shapes.js';
-import { applyClusterObjState, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
+import { applyClusterObjState, clusterAttr, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
 import { gvrenderSetStyle, edgeStyleResets } from './gvrender-set-style.js';
 import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
@@ -156,7 +156,7 @@ export function renderNode(n: Node, renderer: RendererPlugin, job: RenderJob, do
  * Set the edge pen color/type/width on job.obj from the edge's attrs — mirrors
  * emit_edge_graphics. (AD1: style flows through job.obj, not ad-hoc renderer reads.)
  */
-function setEdgePen(e: Edge, job: RenderJob): void {
+function setEdgePen(e: Edge, job: RenderJob, styles: readonly string[]): void {
   if (job.obj === null) return;
   const obj = job.obj;
   const flags = parseStyleFlags(e.attrs.get('style'));
@@ -166,7 +166,7 @@ function setEdgePen(e: Edge, job: RenderJob): void {
   obj.penWidth = resolvePenWidth(flags, e.attrs.get('penwidth'));
   // Raw style tokens for xdot's `S` ops (e.g. explicit style="solid"); SVG
   // reads only obj.pen, so this is xdot-only. @see gvrender_core_dot.c xdot_style
-  obj.rawStyle = styleTokens(e.attrs.get('style'));
+  obj.rawStyle = [...styles];
   // emit_begin_edge: `if (styles && ED_spl(e)) gvrender_set_style(job, styles)`
   // @see lib/common/emit.c:2726
   if (e.info.spl !== undefined) gvrenderSetStyle(obj.rawStyle);
@@ -178,13 +178,16 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
   // before emit_begin_edge. @see lib/common/emit.c:emit_edge (style "invis" return)
   // The "invisible" alias likewise suppresses all edge draw ops via PEN_NONE
   // (edges never use the point-shape whitelist). @see lib/gvc/gvrender.c:497
+  // emit_edge parses the style once (reporting its faults); the rest reuse the list.
+  // @see lib/common/emit.c:2013 emit_edge
   const edgeStyle = e.attrs.get('style');
+  const styles = styleTokens(edgeStyle);
   if (parseStyleFlags(edgeStyle).invis || styleHasInvisibleAlias(edgeStyle)) return;
   // push_obj_state in emit_begin_edge (line 2715)
   const obj = createObjState(ObjType.Edge);
   obj.emitState = EmitState.EDraw;
   job.pushObj(obj);
-  setEdgePen(e, job);
+  setEdgePen(e, job, styles);
   try {
     // @see lib/common/emit.c:emit_begin_edge / getObjId
     setHtmlAnchorObj(svgEdgeId(e, job), labelTextOf(e.info.label), job.obj ?? undefined);
@@ -202,7 +205,6 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
       reportEdgeColors(e);
       // arrow_gen resets the style; C sets the edge's styles again after each
       // flagged bezier of a multi-bezier spline. @see emit.c:2047, :2677
-      const styles = styleTokens(e.attrs.get('style'));
       for (let i = edgeStyleResets(e, styles); i > 0; i--) gvrenderSetStyle(styles);
       reportEdgeLabelColors(e);
       renderer.endEdge(e, job);
@@ -253,6 +255,41 @@ function renderClusterBox(
 }
 
 /**
+ * The body of emit_clusters between setColorScheme and its restore.
+ * @see lib/common/emit.c:3800-3943 emit_clusters
+ */
+function drawClusterInScheme(sg: Graph, renderer: RendererPlugin, job: RenderJob): void {
+  // Resolve and wire cluster fill/pen into job.obj before the polygon.
+  // emit_clusters:3805-3874 — must happen before gvrender_box.
+  const filled = applyClusterObjState(sg, job);
+  // Cluster id is clust<AGSEQ seq> (getObjId); obj.id feeds emitGradientDefs
+  // the "clustN_l_0" gradient prefix. seq is stable on the subgraph, so the
+  // begin/assign order below is no longer load-bearing.
+  // @see lib/common/emit.c:209 getObjId (AGRAPH/cluster: pfx="clust")
+  renderer.beginCluster?.(sg, job);
+  if (job.obj !== null) job.obj.id = svgClusterId(sg, job);
+  // @see lib/common/emit.c:emit_begin_cluster / getObjId
+  setHtmlAnchorObj(svgClusterId(sg, job), labelTextOf(sg.info.label), job.obj ?? undefined);
+  // Resolve and open the cluster anchor around the box + label (closed before
+  // the cluster's child nodes — sibling of them). @see emit.c:3803.
+  if (job.obj !== null) {
+    resolveObjAnchor(sg, labelTextOf(sg.info.label), svgClusterId(sg, job), job.obj);
+  }
+  const anchored = beginAnchorIf(renderer, job);
+  // C draws the boundary box only when peripheries != 0, or (peripheries == 0
+  // and the cluster is filled). peripheries=0 + unfilled emits nothing.
+  // style=invis sets PEN_NONE and gvrender_polygon skips the whole box
+  // (fill included); the group/title still emit.
+  // @see lib/common/emit.c:3907-3917, lib/gvc/gvrender.c:543
+  if ((clusterPeripheries(sg) !== 0 || filled || isStripedCluster(sg)) && job.obj?.pen !== PenType.None) {
+    renderClusterBox(sg, filled, renderer, job);
+  }
+  renderClusterLabel(sg, renderer, job);
+  if (anchored) renderer.endAnchor?.(job);
+  renderer.endCluster?.(sg, job);
+}
+
+/**
  * Render one cluster: box, label, endCluster, then recurse into sub-clusters.
  * push_obj_state in emit_begin_cluster (3762); pop in emit_end_cluster (3774).
  * Sub-cluster recursion follows emit_end_cluster (line 3940-3941) — the pop
@@ -271,34 +308,10 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): 
   obj.emitState = EmitState.CDraw;
   job.pushObj(obj);
   try {
-    // Resolve and wire cluster fill/pen into job.obj before the polygon.
-    // emit_clusters:3805-3874 — must happen before gvrender_box.
-    const filled = applyClusterObjState(sg, job);
-    // Cluster id is clust<AGSEQ seq> (getObjId); obj.id feeds emitGradientDefs
-    // the "clustN_l_0" gradient prefix. seq is stable on the subgraph, so the
-    // begin/assign order below is no longer load-bearing.
-    // @see lib/common/emit.c:209 getObjId (AGRAPH/cluster: pfx="clust")
-    renderer.beginCluster?.(sg, job);
-    if (job.obj !== null) job.obj.id = svgClusterId(sg, job);
-    // @see lib/common/emit.c:emit_begin_cluster / getObjId
-    setHtmlAnchorObj(svgClusterId(sg, job), labelTextOf(sg.info.label), job.obj ?? undefined);
-    // Resolve and open the cluster anchor around the box + label (closed before
-    // the cluster's child nodes — sibling of them). @see emit.c:3803.
-    if (job.obj !== null) {
-      resolveObjAnchor(sg, labelTextOf(sg.info.label), svgClusterId(sg, job), job.obj);
-    }
-    const anchored = beginAnchorIf(renderer, job);
-    // C draws the boundary box only when peripheries != 0, or (peripheries == 0
-    // and the cluster is filled). peripheries=0 + unfilled emits nothing.
-    // style=invis sets PEN_NONE and gvrender_polygon skips the whole box
-    // (fill included); the group/title still emit.
-    // @see lib/common/emit.c:3907-3917, lib/gvc/gvrender.c:543
-    if ((clusterPeripheries(sg) !== 0 || filled || isStripedCluster(sg)) && job.obj?.pen !== PenType.None) {
-      renderClusterBox(sg, filled, renderer, job);
-    }
-    renderClusterLabel(sg, renderer, job);
-    if (anchored) renderer.endAnchor?.(job);
-    renderer.endCluster?.(sg, job);
+    // C opens setColorScheme right after emit_begin_cluster and restores it after
+    // emit_label(EMIT_CLABEL): the window spans fill, pen, box and label.
+    // @see lib/common/emit.c:3800 / :3943 emit_clusters
+    withColorScheme(clusterAttr(sg, 'colorscheme'), () => drawClusterInScheme(sg, renderer, job));
   } finally {
     // pop_obj_state in emit_end_cluster (line 3774), before sub-cluster recursion
     job.popObj();
@@ -341,18 +354,17 @@ export function renderGraph(g: Graph, job: RenderJob, renderer: RendererPlugin):
   job.pushObj(obj);
   try {
     const info = parseLayers(g);
-    // Only layer-capable renderers (SVG) do the layer loop; others collapse to
-    // one pass. @see lib/common/emit.c:1140 (GVDEVICE_DOES_LAYERS)
-    const layered = renderer.beginLayer !== undefined && info.numLayers > 1;
-    job.numLayers = layered ? info.numLayers : 1;
+    // emit_graph sets job->layerNum = 0 before emit_begin_graph.
+    job.layerNum = 0;
     job.layerIDs = info.layerIDs;
     renderer.beginGraph(g, job);
-    warnLayersUnsupported(job.format, info.numLayers, renderer.beginLayer !== undefined);
-    for (let ln = 1; ln <= job.numLayers; ln++) {
-      job.layerNum = ln;
-      if (layered) renderer.beginLayer!(info.layerIDs[ln]!, job);
+    const cur = firstLayer(job, info, renderer.beginLayer !== undefined);
+    for (; validLayer(job); nextLayer(job, cur)) {
+      const layered = numPhysicalLayers(job, info) > 1;
+      // gvrender_begin_layer/end_layer are no-ops without a plugin callback.
+      if (layered) renderer.beginLayer?.(info.layerIDs[job.layerNum]!, job);
       renderPage(g, renderer, job, info);
-      if (layered) renderer.endLayer!(job);
+      if (layered) renderer.endLayer?.(job);
     }
     renderer.endGraph(g, job);
   } finally {

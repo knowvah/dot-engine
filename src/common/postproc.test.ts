@@ -13,6 +13,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { gvPostprocess } from './postproc.js';
+import { setState, GVSPLINES } from './layout-state.js';
 import { ccwrotatepf } from '../model/geom.js';
 import { Graph } from '../model/graph.js';
 import { Node } from '../model/node.js';
@@ -200,6 +201,7 @@ function makeArrowEdge(
   pts: Array<{ x: number; y: number }>,
   key: 'headArrowOps' | 'tailArrowOps',
 ) {
+  setState(GVSPLINES); // edges carry splines: routing finished (State == GVSPLINES)
   const n = addNode(g);
   const ops = [{ kind: 'polygon', points: pts, filled: true }];
   const e = {

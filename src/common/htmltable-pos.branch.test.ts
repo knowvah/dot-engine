@@ -125,7 +125,7 @@ describe('placeCellImage', () => {
     const lbl = parseHtmlLabel('<TABLE><TR><TD><IMG SRC="a.png"/></TD></TR></TABLE>');
     if (lbl.kind !== 'table') throw new Error('expected table');
     sizeHtmlLabel(lbl, stubMeasurer, { fontsize: finfo.fontsize, fontname: finfo.fontname,
-      imageSizer: () => ({ w: 40, h: 20 }) });
+      imageSizer: () => ({ w: 40, h: 20 }), imageDpi: 72 });
     const placed = posHtmlTable(lbl.table, finfo, stubMeasurer);
     const img = placed.cells[0]!.image!;
     expect(img.iw).toBe(40);
@@ -146,7 +146,7 @@ describe('placeCellImage', () => {
     );
     if (lbl.kind !== 'table') throw new Error('expected table');
     sizeHtmlLabel(lbl, stubMeasurer, {
-      fontsize: finfo.fontsize, fontname: finfo.fontname, imageSizer: () => ({ w: 6, h: 6 }),
+      fontsize: finfo.fontsize, fontname: finfo.fontname, imageSizer: () => ({ w: 6, h: 6 }), imageDpi: 72,
     });
     const placed = posHtmlTable(lbl.table, finfo, stubMeasurer);
     return { cell: placed.cells[0]!, img: placed.cells[0]!.image! };

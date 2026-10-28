@@ -27,7 +27,7 @@ import type { Edge } from '../model/edge.js';
 import { registerRenderState } from '../common/render-state.js';
 import { agerrorf, agwarningf } from '../common/agerr.js';
 import { parseSegsSilent } from '../common/multicolor.js';
-import { findStopColor, styleTokens } from '../common/style-resolve.js';
+import { findStopColor, styleTokensQuiet } from '../common/style-resolve.js';
 import { emitOnce } from '../common/emit-once.js';
 
 /**
@@ -122,6 +122,21 @@ export function firstColor(name: string): string {
  */
 export function resolveRenderColor(raw: string, report = true): GVColor {
   if (raw === '' || raw === 'none') return { type: 'none' };
+  return resolveColorName(raw, report);
+}
+
+/**
+ * {@link resolveRenderColor} without the empty-name shortcut: C hands an empty
+ * name (a leading ':' cut at the first colon) to colorxlate, which rejects it
+ * (`Warning:  is not a known color.`) and leaves opaque black.
+ * @see lib/gvc/gvrender.c:456 gvrender_set_fillcolor
+ */
+export function resolveFillColorName(raw: string, report = true): GVColor {
+  if (raw === 'none') return { type: 'none' };
+  return resolveColorName(raw, report);
+}
+
+function resolveColorName(raw: string, report: boolean): GVColor {
   // C keeps a known name verbatim (case preserved); only the compare is
   // case-insensitive (bsearch over a lowercase table).
   const known = KNOWN_COLORS.has(raw.toLowerCase());
@@ -338,7 +353,7 @@ export function reportEdgeColors(e: Edge): void {
   reportColorNames(edgeGraphicsColors({
     color,
     fillcolor: e.attrs.get('fillcolor') ?? '',
-    tapered: styleTokens(e.attrs.get('style')).includes('tapered'),
+    tapered: styleTokensQuiet(e.attrs.get('style')).includes('tapered'),
     arrows: spl.list.map((bz) => ({ sflag: bz.sflag !== 0, eflag: bz.eflag !== 0 })),
   }));
 }

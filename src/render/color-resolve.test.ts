@@ -94,3 +94,13 @@ describe('color-resolve — withColorScheme save/restore', () => {
     expect(c).toEqual({ type: 'rgba', r: 0, g: 0, b: 0, a: 1 });
   });
 });
+
+describe('resolveFillColorName', () => {
+  it('sends an empty name to colorxlate: opaque black, unlike resolveRenderColor', async () => {
+    const { resolveFillColorName, resolveRenderColor } = await import('./color-resolve.js');
+    expect(resolveRenderColor('', false)).toEqual({ type: 'none' });
+    expect(resolveFillColorName('', false)).toEqual({ type: 'rgba', r: 0, g: 0, b: 0, a: 1 });
+    expect(resolveFillColorName('none', false)).toEqual({ type: 'none' });
+    expect(resolveFillColorName('red', false)).toEqual({ type: 'string', s: 'red' });
+  });
+});

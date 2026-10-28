@@ -11,6 +11,7 @@ import {
   agdelnode,
   agdelsubg,
   agGraphAttr,
+  agNameOf,
 } from './cgraph-ops.js';
 
 const NEW_RANK = '_new_rank';
@@ -163,5 +164,17 @@ describe('declaredGraphAttrs population via parse (builder)', () => {
   it('no ordering anywhere → agGraphAttr undefined', () => {
     const g = parse('digraph { a->b; }');
     expect(agGraphAttr(g, 'ordering')).toBeUndefined();
+  });
+});
+
+describe('agNameOf', () => {
+  it('returns the name of a named graph', () => {
+    expect(agNameOf(new Graph('G', 'directed'))).toBe('G');
+  });
+
+  it('returns %1 for an anonymous root, whose stored name stays empty', () => {
+    const g = new Graph('', 'directed', true);
+    expect(agNameOf(g)).toBe('%1');
+    expect(g.name).toBe('');
   });
 });

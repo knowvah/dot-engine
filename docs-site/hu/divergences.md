@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -115,7 +115,7 @@ minden bemenetet a saját motorjával mér fel a `dot` helyett. A munka őszinte
 hogy az A1-et „nincs aktív eltérés a referenciaplatformon” szintre **szűkítsük**, és a
 platformok közötti fenntartást soha ne szüntessük meg; az eddigi eredmények (alább) tartják ezt a
 plafont: a `circo`/`twopi`/`osage` mindegyike felszínre hozott és gyökérokig elemzett néhány
-valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 929 elemes univerzumon (graphviz 16.1.0) 90.5/96.5/68.1%-ban
+valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 929 elemes univerzumon (graphviz 16.1.0) 99.8/96.6/68.0%-ban
 van 0.5 pt-on belül a natívtól, vagyis a portolt
 aritmetika (`fma.ts`, `arm-pow.ts`, összehangolt PRNG) a legtöbb gráfnál tartja magát — és
 a 929 elemes univerzum minden eltérő azonosítója egyenként injektálással van tulajdonítva (megoldó-
@@ -201,13 +201,18 @@ azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, a [Megfelelős
 
 | motor | felmért | ±0.5 pt-on belül | nem megfelelő | portolási hiba / időtúllépés | orákulumhiba |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (Az `fdp` átmenési aránya azért nőtt a korábbi
 77.5%-ról, mert a korábbi rögzített végigfuttatás az előző küldetés portolási
-állapota előtt készült.)
+állapota előtt készült.
+A `neato` átmenési aránya 90.5%-ról nőtt, amikor a 16.1 diszasszemblyjének összevont
+stresszmagjai elérték az éles kD-utat (16.1 utáni folytatások, 5. rész, T15): 83
+azonosító, amely megoldó-sodródás miatt tért el, most átmegy, köztük a korábban
+elfogadott azonosítónkénti maradék `2619_2`, amelynek elfogadását visszavonták; `2371`
+az egyetlen megmaradt eltérő `neato` azonosító.)
 
 (Az első végigfuttatás, 2026-07-11-én 762 elemnél, 263/311/260 elemet mért
 ±0.5 pt-on belül — a mostani arányokra ugrást azóta beérkezett azonosítónkénti

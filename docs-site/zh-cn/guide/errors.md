@@ -1,5 +1,5 @@
 ---
-sourceHash: ac04751afff77b9faac27f60eda7b5a3e311dce2fdd4583c846512b08183e39f
+sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -109,7 +109,7 @@ DOT 作者做任何修改，都无法可靠地避免 `InternalError`。
 
 | 引擎 | 属性与值 | 触发条件 | 所需的 Graphviz 功能 |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | 仅当 `model` 为 `subset` 或 `circuit` 时（在图有 2 个及以上节点且 `maxiter` 不为负之后） | 分层应力优化（stress majorization）（`stress_majorization_with_hierarchy`） |
+| neato | `mode=hier` | 仅当 `model` 为 `subset` 或 `circuit` 时（在图有 2 个及以上节点且 `maxiter` 为正之后） | 分层应力优化（stress majorization）（`stress_majorization_with_hierarchy`） |
 | neato | `mode=ipsep` | 仅当 Graphviz 会构建约束时：`diredgeconstraints` 为真或为 `hier*`、`overlap=ipsep`，或图含有顶层簇。没有约束时，它按应力优化（stress majorization）运行，与 Graphviz 一致 | 带约束的最大化（`stress_majorization_cola`） |
 | neato | `start=self` | `mode` 为 `major`（默认值）或 `ipsep` | 智能初始化（`smart_ini`）。在 `mode=KK` 或 `mode=sgd` 下，它每次渲染记录一次 `start=0 not supported with mode=self - ignored`，与 Graphviz 一致 |
 | neato | `model=subset` | `mode` 为 `major` 或 `KK` | 子集距离模型 |

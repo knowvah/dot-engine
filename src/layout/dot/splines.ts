@@ -27,6 +27,7 @@ import { routeEdgeGroups } from './splines-groups.js';
 import { placePortLabels, placeRegularEdgeLabels, setEdgeLabelPos } from './splines-label.js';
 import { nodesInSeq } from './decomp.js';
 import { agerrLineOn } from '../../common/agerr.js';
+import { setState, GVSPLINES } from '../../common/layout-state.js';
 
 // ---------------------------------------------------------------------------
 // Edge-type flag constants
@@ -462,6 +463,7 @@ function orthoDispatch(g: Graph): number {
   // are placed via place_portlabel for ortho too. Skipping this left the
   // labels unset, so the xlabels pass placed them instead (144_ortho).
   placePortLabels(g);
+  setState(GVSPLINES); // @see dotsplines.c:477 (reached via goto finish)
   g.info.edgeLabelsDone = true;
   return 0;
 }
@@ -487,6 +489,7 @@ function finalizeSplines(g: Graph, et: number, normalize: boolean): void {
   if (normalize) edgeNormalize(g);
   if (et !== EDGETYPE_CURVED) routeDotEdges(g);
   placePortLabels(g);
+  setState(GVSPLINES); // @see dotsplines.c:477
   g.info.edgeLabelsDone = true; // @see dotsplines.c:471 (EdgeLabelsDone = 1)
 }
 

@@ -14,6 +14,7 @@
  * @see lib/neatogen/constrained_majorization.c
  */
 
+import { fma } from '../../common/fma.js';
 import { RenderError } from '../../errors.js';
 import type { Node } from '../../model/node.js';
 import { conjugateGradientMkernelFused, rightMultWithVectorFFFused } from './conjgrad-mkernel.js';
@@ -21,7 +22,7 @@ import { computeHierarchy, type Hierarchy } from './compute-hierarchy.js';
 import type { VtxData } from './dijkstra.js';
 import { MODEL_CIRCUIT, MODEL_MDS, MODEL_SUBSET } from './init.js';
 import {
-  fma, invertSqrtVec, invertVec, orthog1, sqrtVecF, squareVec, vectorsInnerProductF,
+  invertSqrtVec, invertVec, orthog1, sqrtVecF, squareVec, vectorsInnerProductF,
 } from './matrix-ops.js';
 import type { DirectedVtxData } from './opt-arrangement.js';
 import { computeYCoords } from './opt-arrangement.js';

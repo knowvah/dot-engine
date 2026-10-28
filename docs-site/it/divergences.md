@@ -1,5 +1,5 @@
 ---
-sourceHash: 0a68fd7d6b8dd40085337d733bd33392aa624e404444abc9e45e45a56b8072f4
+sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -126,7 +126,7 @@ quel lavoro è **restringere** A1 a «nessuna divergenza attiva sulla piattaform
 riferimento», mai eliminare l'avvertenza tra piattaforme; i risultati finora
 (sotto) rispettano quel tetto: `circo`/`twopi`/`osage` hanno ciascuno fatto
 emergere e ricondotto alla causa radice una manciata di vere istanze A1/A9, e
-`neato`/`fdp`/`sfdp` si attestano ora al 90.5/96.5/68.1% entro 0.5pt dal nativo
+`neato`/`fdp`/`sfdp` si attestano ora al 99.8/96.6/68.0% entro 0.5pt dal nativo
 sull'universo di 929 elementi (graphviz 16.1.0), il che significa che l'aritmetica portata
 (`fma.ts`, `arm-pow.ts`, PRNG corrispondente) regge per la maggior parte dei
 grafi — e ogni id divergente dell'universo di 929 elementi è attribuito singolarmente tramite iniezione
@@ -225,13 +225,18 @@ riesce a renderizzare, secondo la [Conformità](./conformance.md)):
 
 | motore | rilevati | entro ±0.5pt | non conformi | errore del porting / timeout | errore dell'oracolo |
 |---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 840 (90.5%) | 86 | 1 | 1 |
-| `fdp`   | 929 | 893 (96.5%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 633 (68.1%) | 294 | 1 | 0 |
+| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
+| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
+| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
 
 (La percentuale di superamento di `fdp` è salita dal 77.5% perché il
 rilevamento precedente, registrato nel repository, precedeva lo stato del porting
-della missione precedente.)
+della missione precedente.
+La percentuale di superamento di `neato` è salita dal 90.5% quando i kernel di stress
+fusi del disassemblato di 16.1 hanno raggiunto il percorso kD di produzione (seguiti
+post-16.1, parte 5, T15): 83 id che divergevano per deriva del solver ora superano il
+confronto, tra cui il residuo per singolo id accettato in precedenza `2619_2`, la cui
+accettazione è revocata; `2371` è l’unico id `neato` ancora divergente.)
 
 (Il primo rilevamento, il 2026-07-11 su 762 elementi, misurò 263/311/260 entro
 ±0.5pt — il salto alle percentuali attuali è dovuto alle correzioni per singolo id
