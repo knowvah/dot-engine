@@ -20,29 +20,22 @@ import { drand48 } from '../../common/random.js';
 import { bfs } from './bfs.js';
 import { dijkstra, type VtxData } from './dijkstra.js';
 import {
+  conjugateGradientMkernelFused, rightMultWithVectorFFFused, type CgMkernelOptions,
+} from './conjgrad-mkernel.js';
+import {
   copyVectorF,
   invertSqrtVec,
   invertVec,
-  maxAbsF,
   orthog1,
-  orthog1f,
   rightMultWithVectorFF,
   sqrtVecF,
   squareVec,
   vectorsInnerProductF,
-  vectorsMultAdditionF,
-  vectorsSubtractionF,
 } from './matrix-ops.js';
+import { fmaf } from './quad-prog-solve.js';
+import { OPT_EXP_FLAG, TOLERANCE_CG } from './stress.js';
 
 const fr = Math.fround;
-
-/** @see lib/neatogen/stress.h:tolerance_cg */
-const TOLERANCE_CG = 1e-3;
-
-/** Stress options bit: weight exponent (1 or 2). @see lib/neatogen/stress.h */
-export const OPT_EXP_FLAG = 2;
-/** Stress options bit: smart initialisation. @see lib/neatogen/stress.h */
-export const OPT_SMART_INIT = 1;
 
 /**
  * Packed all-pairs shortest paths over unit weights (BFS hops).
@@ -115,71 +108,32 @@ export function initLayout(
   return pinned;
 }
 
+/** The right-multiply and conjugate-gradient kernels one caller runs. */
+interface KernelOps {
+  /** `acc + tmp*tmp`, the distance accumulation of the Laplacian build. */
+  squareAdd(tmp: number, acc: number): number;
+  rightMult(m: Float32Array, n: number, vector: Float32Array, result: Float32Array): void;
+  /** Returns nonzero on an unexpected zero residual. */
+  cg(A: Float32Array, x: Float32Array, b: Float32Array, n: number, o: CgMkernelOptions): number;
+}
+
+/** The oracle's fused kernels, as `stress_majorization_kD_mkernel` runs them. */
+const FUSED_OPS: KernelOps = {
+  squareAdd: (tmp, acc) => fmaf(tmp, tmp, acc),
+  rightMult: rightMultWithVectorFFFused, cg: conjugateGradientMkernelFused,
+};
 /**
- * Conjugate gradients on a packed symmetric float matrix.
- * Returns negative on error.
- * @see lib/neatogen/conjgrad.c:conjugate_gradient_mkernel
+ * The kernels as `stress_majorization_cola` (mode=ipsep) runs them: its squared
+ * distances are `square_vec` then `vectors_additionf` (two loops, so the product
+ * is rounded before the add), its inlined `right_mult_with_vector_ff` copy is not
+ * read from the disassembly (kept unfused), and its conjugate gradient is the same
+ * out-of-line `conjugate_gradient_mkernel` the kD kernel calls.
+ * @see lib/neatogen/constrained_majorization_ipsep.c:stress_majorization_cola
  */
-/** Mutable CG iteration state. */
-interface CgState {
-  A: Float32Array;
-  x: Float32Array;
-  b: Float32Array;
-  n: number;
-  r: Float32Array;
-  p: Float32Array;
-  Ap: Float32Array;
-  rR: number;
-}
-
-/** One CG step; returns false on a zero-length residual error. */
-function cgStep(st: CgState, last: boolean): boolean {
-  const { n } = st;
-  orthog1f(n, st.p);
-  orthog1f(n, st.x);
-  orthog1f(n, st.r);
-  rightMultWithVectorFF(st.A, n, st.p, st.Ap);
-  orthog1f(n, st.Ap);
-  const pAp = vectorsInnerProductF(n, st.p, st.Ap);
-  if (pAp === 0) return true; // C: break
-  const alpha = st.rR / pAp;
-  vectorsMultAdditionF(n, st.x, alpha, st.p);
-  if (!last) {
-    vectorsMultAdditionF(n, st.r, -alpha, st.Ap);
-    const rRNew = vectorsInnerProductF(n, st.r, st.r);
-    if (st.rR === 0) return false;
-    const betaF = fr(rRNew / st.rR);
-    st.rR = rRNew;
-    for (let j = 0; j < n; j++) st.p[j] = fr(betaF * st.p[j]!) + st.r[j]!;
-  }
-  return true;
-}
-
-export function conjugateGradientMkernel(
-  A: Float32Array, x: Float32Array, b: Float32Array, n: number,
-  tol: number, maxIterations: number,
-): number {
-  const st: CgState = {
-    A, x, b, n,
-    r: new Float32Array(n),
-    p: new Float32Array(n),
-    Ap: new Float32Array(n),
-    rR: 0,
-  };
-  orthog1f(n, x);
-  orthog1f(n, b);
-  const Ax = new Float32Array(n);
-  rightMultWithVectorFF(A, n, x, Ax);
-  orthog1f(n, Ax);
-  vectorsSubtractionF(n, b, Ax, st.r);
-  copyVectorF(n, st.r, st.p);
-  st.rR = vectorsInnerProductF(n, st.r, st.r);
-
-  for (let i = 0; i < maxIterations && maxAbsF(n, st.r) > tol; i++) {
-    if (!cgStep(st, i >= maxIterations - 1)) return -1;
-  }
-  return 0;
-}
+const COLA_OPS: KernelOps = {
+  squareAdd: (tmp, acc) => acc + fr(tmp * tmp),
+  rightMult: rightMultWithVectorFF, cg: conjugateGradientMkernelFused,
+};
 
 /** Laplacian off-diagonal prep + diagonal degrees. @see stress.c (Laplacian computation) */
 function buildLap2(lap2: Float32Array, n: number, exp: number): void {
@@ -207,9 +161,9 @@ function buildLap2(lap2: Float32Array, n: number, exp: number): void {
 /** Per-iteration Laplacian of 1/(d_ij*|p_i-p_j|). @see stress.c (main loop head) */
 function buildLap1(
   lap1: Float32Array, lap2: Float32Array, coords: Float32Array[],
-  shape: { n: number; dim: number; exp: number },
+  shape: { n: number; dim: number; exp: number; ops: KernelOps },
 ): void {
-  const { n, dim, exp } = shape;
+  const { n, dim, exp, ops } = shape;
   const lapLength = (n * (n + 1)) / 2;
   const degrees = new Float64Array(n);
   const distAccumulator = new Float32Array(n);
@@ -222,7 +176,7 @@ function buildLap1(
       const ck = coords[k]!;
       for (let x = 0; x < len; x++) {
         const tmp = fr(ck[i]! + fr(-1 * ck[i + 1 + x]!));
-        distAccumulator[x] = distAccumulator[x]! + fr(tmp * tmp);
+        distAccumulator[x] = ops.squareAdd(tmp, distAccumulator[x]!);
       }
     }
     invertSqrtVec(len, distAccumulator);
@@ -264,32 +218,34 @@ interface KernelState {
   b: Float32Array[];
   tmpCoords: Float32Array;
   constantTerm: number;
+  ops: KernelOps;
 }
 
 /** One stress evaluation. @see stress.c (compute new stress block) */
 function computeStress(st: KernelState): number {
   let stress = 0;
   for (let k = 0; k < st.dim; k++) {
-    rightMultWithVectorFF(st.lap1, st.n, st.coords[k]!, st.b[k]!);
+    st.ops.rightMult(st.lap1, st.n, st.coords[k]!, st.b[k]!);
     stress += vectorsInnerProductF(st.n, st.coords[k]!, st.b[k]!);
   }
   stress *= 2;
   stress += st.constantTerm;
   for (let k = 0; k < st.dim; k++) {
-    rightMultWithVectorFF(st.lap2, st.n, st.coords[k]!, st.tmpCoords);
+    st.ops.rightMult(st.lap2, st.n, st.coords[k]!, st.tmpCoords);
     stress -= vectorsInnerProductF(st.n, st.coords[k]!, st.tmpCoords);
   }
   return stress;
 }
 
-/** Solve one axis, respecting pinned nodes. @see stress.c (CG block) */
+/** Solve one axis, respecting pinned nodes; nonzero on a CG error. @see stress.c (CG block) */
 function solveAxis(st: KernelState, k: number, havePinned: boolean, nodes: Node[]): number {
+  const cg = { tol: TOLERANCE_CG, maxIterations: st.n };
   if (!havePinned) {
-    return conjugateGradientMkernel(st.lap2, st.coords[k]!, st.b[k]!, st.n, TOLERANCE_CG, st.n);
+    return st.ops.cg(st.lap2, st.coords[k]!, st.b[k]!, st.n, cg);
   }
   copyVectorF(st.n, st.coords[k]!, st.tmpCoords);
-  const rc = conjugateGradientMkernel(st.lap2, st.tmpCoords, st.b[k]!, st.n, TOLERANCE_CG, st.n);
-  if (rc < 0) return rc;
+  const rc = st.ops.cg(st.lap2, st.tmpCoords, st.b[k]!, st.n, cg);
+  if (rc !== 0) return rc;
   for (let i = 0; i < st.n; i++) {
     if (!isFixed(nodes[i]!)) st.coords[k]![i] = st.tmpCoords[i]!;
   }
@@ -304,6 +260,8 @@ export interface StressOpts {
   /** MODEL_* — only the resulting Dij matters here; pass it in. */
   maxi: number;
   epsilon: number;
+  /** Run the kernels as `stress_majorization_cola` does (mode=ipsep). */
+  cola?: boolean;
 }
 
 /**
@@ -338,20 +296,21 @@ export function stressMajorizationKDMkernel(
     b: Array.from({ length: dim }, () => new Float32Array(n)),
     tmpCoords: new Float32Array(n),
     constantTerm,
+    ops: o.cola === true ? COLA_OPS : FUSED_OPS,
   };
 
   let oldStress = Number.MAX_VALUE;
   let converged = false;
   let iterations = 0;
   for (; iterations < maxi && !converged; iterations++) {
-    buildLap1(st.lap1, lap2, coords, { n, dim, exp });
+    buildLap1(st.lap1, lap2, coords, { n, dim, exp, ops: st.ops });
     const newStress = computeStress(st);
     if (typeof process !== 'undefined' && process.env['STRESS_DEBUG'] && iterations % 5 === 0) console.error(newStress.toFixed(3));
     const change = Math.abs(oldStress - newStress);
     converged = change / oldStress < o.epsilon || newStress < o.epsilon;
     oldStress = newStress;
     for (let k = 0; k < dim; k++) {
-      if (solveAxis(st, k, havePinned, nodes) < 0) return -1;
+      if (solveAxis(st, k, havePinned, nodes) !== 0) return -1;
     }
   }
 

@@ -250,6 +250,23 @@ describe('fmaf (float fused multiply-add, arm64 fmadd s)', () => {
     expect(fmaf(3, 5, 1)).toBe(16);
     expect(fmaf(Infinity, 2, 1)).toBe(Infinity);
   });
+
+  it('breaks a double-created tie toward the exact value, not to even', () => {
+    // p = 1.5 + 2^-23 + 2^-24 is a float32 midpoint; c = -2^-60 vanishes in the double sum
+    expect(fr(1.0000001192092896 * 1.5 - 2 ** -60)).toBe(1.5000002384185791);
+    expect(fmaf(1.0000001192092896, 1.5, -(2 ** -60))).toBe(1.5000001192092896);
+    expect(fmaf(1.0000001192092896, 1.5, 2 ** -60)).toBe(1.5000002384185791);
+  });
+
+  it('overflows as fmadd does: ties at FLT_MAX + ulp/2 go to infinity, below stay finite', () => {
+    const big = 2 ** 64 - 2 ** 40; // a float; big * 2^64 == FLT_MAX exactly
+    expect(fmaf(2 ** 64, 2 ** 64, 0)).toBe(Infinity);
+    expect(fmaf(big, 2 ** 64, 2 ** 103)).toBe(Infinity); // genuine tie
+    expect(fmaf(big, 2 ** 64, 2 ** 102)).toBe(3.4028234663852886e38);
+    expect(fmaf(-big, 2 ** 64, -(2 ** 102))).toBe(-3.4028234663852886e38);
+    expect(fmaf(NaN, 1, 1)).toBeNaN();
+    expect(fmaf(2 ** 64, 2 ** 64, -Infinity)).toBe(-Infinity);
+  });
 });
 
 describe('fminf / fmaxf NaN handling', () => {

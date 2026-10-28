@@ -18,6 +18,7 @@ import type { VtxData } from './dijkstra.js';
 import {
   DFLT_ITERATIONS,
   OPT_SMART_INIT as STRESS_OPT_SMART_INIT,
+  checkExp,
   MODEL_MDS as STRESS_MODEL_MDS,
   MODEL_CIRCUIT as STRESS_MODEL_CIRCUIT,
   MODEL_SUBSET as STRESS_MODEL_SUBSET,
@@ -39,7 +40,6 @@ import {
   computeApspPacked,
   computeWeightedApspPacked,
   stressMajorizationKDMkernel,
-  OPT_EXP_FLAG,
 } from './stress-kernel.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { inputscaleDivisor } from '../../common/utils-inputscale.js';
@@ -375,7 +375,7 @@ function solveStress(
   const weighted = haveLen && mode !== MODE_IPSEP;
   const Dij = weighted ? computeWeightedApspPacked(vtx, n) : computeApspPacked(vtx, n);
   return stressMajorizationKDMkernel(Dij, n, dCoords, nodeList, {
-    dim: DFLT_DIM, opts, maxi, epsilon,
+    dim: DFLT_DIM, opts, maxi, epsilon, cola: mode === MODE_IPSEP,
   });
 }
 
@@ -387,7 +387,7 @@ export function runMajorization(g: Graph, mode: number, model: number): void {
   const haveLen = graphHasLen(g);
   // C: srand48(seed) immediately before initLayout draws; hier starts from self
   const init = checkStart(g, n, mode === MODE_HIER ? INIT_SELF : INIT_RANDOM);
-  const opts = init === INIT_SELF ? OPT_EXP_FLAG | STRESS_OPT_SMART_INIT : OPT_EXP_FLAG;
+  const opts = checkExp(g) | (init === INIT_SELF ? STRESS_OPT_SMART_INIT : 0);
   const haveDir = mode === MODE_HIER || mode === MODE_IPSEP;
   const vtx = makeGraphDataC(g, nodeList, haveLen, haveDir, mode);
   const dCoords = [new Float64Array(n), new Float64Array(n)];

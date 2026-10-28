@@ -14,6 +14,9 @@
  * @see lib/neatogen/stress.h
  */
 
+import { agwarningf } from '../../common/agerr.js';
+import { lateInt } from '../../common/nodeinit.js';
+import type { Graph } from '../../model/graph.js';
 import type { VtxData } from './dijkstra.js';
 import {
   computeApspPacked,
@@ -40,6 +43,22 @@ export const OPT_SMART_INIT = 0x4;
 
 /** Exponent flag in opts bitmask (exp=2 when set, exp=1 when clear). */
 export const OPT_EXP_FLAG = 0x3;
+
+/** Name of the stress weight-exponent graph attribute. @see lib/neatogen/neatoinit.c:exp_name */
+const EXP_NAME = 'stresswt';
+
+/**
+ * The `stresswt` exponent, 1 or 2 (default 2).
+ * @see lib/neatogen/neatoinit.c:checkExp
+ */
+export function checkExp(g: Graph): number {
+  const exp = lateInt(g.attrs.get(EXP_NAME), 2, 0);
+  if (exp === 0 || exp > 2) {
+    agwarningf(`${EXP_NAME} attribute value must be 1 or 2 - ignoring`);
+    return 2;
+  }
+  return exp;
+}
 
 /** Model: MDS (user-supplied edge lengths). */
 export const MODEL_MDS = 1;

@@ -6,9 +6,8 @@
  * C statement `a += b * c` on floats is one `fmadd`/`fmla` (clang's default
  * contraction), and a reduction the vectoriser took in blocks of 16 rounds
  * the products of those leading elements before its in-order adds (strict FP
- * forbids reassociation) while the scalar remainder is fused. `stress-kernel.ts`
- * keeps the unfused rounding of these loops; the constrained-majorization driver
- * needs the oracle's bits.
+ * forbids reassociation) while the scalar remainder is fused. These kernels run
+ * `stress_majorization_kD_mkernel` and the constrained-majorization driver.
  *
  * @see lib/neatogen/conjgrad.c:conjugate_gradient_mkernel
  * @see lib/neatogen/matrix_ops.c:right_mult_with_vector_ff
