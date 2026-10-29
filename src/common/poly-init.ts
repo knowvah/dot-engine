@@ -99,13 +99,23 @@ export function buildNodeLabel(n: Node, g: Graph, measurer: TextMeasurer): void 
 }
 
 /**
- * poly_init's `image` branch (a non-custom shape): when the caller supplies no
- * image, gvusershape_size fails and C warns after gvusershape_open's own
- * warning. The port never sizes node images.
- * @see lib/common/shapes.c:2043-2046
+ * poly_init's shapefile and `image` warnings, emitted once per layout from
+ * common_init_node after the label is made. For a custom shape gvusershape_size
+ * fails (the port never sizes shapefiles), so gvusershape_open's "while
+ * opening" line precedes the "No or improper shapefile" line. For a non-custom
+ * shape's `image=`, the caller-supplied sizer/resolver decides; when it
+ * supplies nothing the same pair is emitted.
+ * @see lib/common/shapes.c:2027-2046
  */
-function warnMissingImage(n: Node, g: Graph, shapefile: string | undefined): void {
-  if (shapefile !== undefined && shapefile !== '' && nodeAttr(n, g, 'shape') !== 'epsf') return;
+export function warnPolyInitImages(n: Node, g: Graph): void {
+  const shapefile = nodeAttr(n, g, 'shapefile');
+  if (shapefile !== undefined && shapefile !== '') {
+    if (nodeAttr(n, g, 'shape') !== 'epsf') {
+      agwarningf(imageOpenWarning(shapefile));
+      agwarningf(`No or improper shapefile="${shapefile}" for node "${n.name}"`);
+      return;
+    }
+  }
   const image = nodeAttr(n, g, 'image');
   if (image === undefined || image === '') return;
   const gvc = g.root.info.gvc;
@@ -135,16 +145,10 @@ export function polyInit(n: Node, g: Graph, measurer: TextMeasurer): void {
   const shapeName = nodeAttr(n, g, 'shape') ?? 'ellipse';
   const shapefile = nodeAttr(n, g, 'shapefile');
   n.info.shape = bindShape(shapeName, shapefile);
-  // C warns when the custom shape's image cannot be sized (headless: always).
-  // @see lib/common/shapes.c:2027-2033
-  if (shapefile !== undefined && shapefile !== '' && shapeName !== 'epsf') {
-    agwarningf(`No or improper shapefile="${shapefile}" for node "${n.name}"`);
-  }
   if ((n.info.shape as ShapeDesc).kind === ShapeKind.SH_RECORD) {
     if (n.info.shape_info === undefined) recordNodeInit(n, g, measurer);
     return;
   }
-  warnMissingImage(n, g, shapefile);
   buildNodeLabel(n, g, measurer);
 
   // Layout-time common_init_node already installed the attr-resolved
