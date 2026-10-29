@@ -95,8 +95,8 @@ Nothing is pushed or signed (AD-1).
 
 | Batch | Tasks | Mode | Done |
 |---|---|---|---|
-| [1](batch-1/overview.md) | T0 baselines, native references | orchestrator | [ ] |
-| [2](batch-2/overview.md) | T1 warnings at layout 90 · T2 empty fill name 92 · T3 cola right-multiply 94 | parallel worktrees | [ ] |
+| [1](batch-1/overview.md) | T0 baselines, native references | orchestrator | [x] |
+| [2](batch-2/overview.md) | T1 warnings at layout 90 · T2 empty fill name 92 · T3 cola right-multiply 94 | parallel worktrees | [x] (T3 parked) |
 | [3](batch-3/overview.md) | T4 `gvrender_usershape`, node draw, xdot `I` 91 | worktree | [ ] |
 | [4](batch-4/overview.md) | T5 image docs 93 · T6 final verification, close-out, re-sign stop | T5 agent, then orchestrator | [ ] |
 
