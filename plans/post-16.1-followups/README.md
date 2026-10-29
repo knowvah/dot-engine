@@ -17,6 +17,7 @@ Being closed by `plans/post-16-1-followups-3/`.
 The open work is items 43–71 under "New follow-ups found by part 3" below.
 Being closed by `plans/post-16-1-followups-4/`.
 Being closed by `plans/post-16-1-followups-5/`.
+Being closed by `plans/post-16-1-followups-6/`.
 
 ## State at handoff
 
