@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API-referens
@@ -159,6 +159,8 @@ en:
   levererar själva bild-*byten* så att SVG-renderaren kan bädda in dem som en
   `data:`-URI i stället för att skriva `xlink:href="src"` som en rå
   vidareförmedling.
+
+Mätaren returnerar **egna pixlar**. Layouten räknar om dem till punkter vid grafens `dpi` (standard 96) och lägger för en nods `image=` till 2 pt utfyllnad; renderaren ritar bilden vid utdatats dpi (72 för SVG och xdot om inte `dpi` är satt), som inbyggd Graphviz. En bild på 40×20 px på en nod reserverar till exempel 30×15 pt (plus utfyllnad) i layouten och ritas som 40×20 i SVG.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

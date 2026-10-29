@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API-referanse
@@ -156,6 +156,8 @@ prosessglobale registre som følger samme mønster (registrer en callback, send
 - **`setImageResolver`** (ny — se [`inlineImages`](#inlineimages) nedenfor) —
   leverer de faktiske *bildebytene* slik at SVG-rendereren kan innline dem som en
   `data:`-URI i stedet for å emittere `xlink:href="src"` som en rå gjennomgang.
+
+Måleren returnerer **egenpiksler**. Layout omregner dem til punkter ved grafens `dpi` (standard 96) og legger til 2 pt polstring for en nodes `image=`; rendereren tegner bildet ved utdataens dpi (72 for SVG og xdot med mindre `dpi` er satt), som i native Graphviz. Et bilde på 40×20 px på en node reserverer for eksempel 30×15 pt (pluss polstring) i layouten og tegnes som 40×20 i SVG.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

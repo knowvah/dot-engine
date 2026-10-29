@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Obrazy
 
@@ -24,9 +24,7 @@ pojawiły, oraz konsekwencje każdego z nich dla CSP.
    szerokości/wysokości** obrazu, by ustalić rozmiar komórki, zanim zdoła rozłożyć
    cokolwiek innego — biblioteka nigdy nie sięga do systemu plików ani sieci, żeby to
    sprawdzić, więc rejestrujesz miernik (`setImageSizer`, omówiony w
-   [Użycie w przeglądarce](/pl/guide/browser) i jeszcze raz poniżej dla Node). Atrybut
-   `image=` węzła **nie** jest mierzony przez miernik: tak jak w natywnym Graphviz
-   bez interfejsu, węzeł zachowuje swoje zwykłe pudełko, a obraz jest w nim rysowany.
+   [Użycie w przeglądarce](/pl/guide/browser) i jeszcze raz poniżej dla Node). Atrybut `image=` węzła jest mierzony tym samym miernikiem i rysowany w węźle, tak jak komórka `<IMG>`; `imagescale` i `imagepos` dotyczą obrazów węzłów, natomiast `<IMG>` używa swojego atrybutu `SCALE` i jest wyśrodkowany. Jednostka zwracana przez miernik jest opisana w [`setImageSizer`](/pl/guide/api#setimagesizer-setimageresolver).
 3. Układ jest liczony z wymiarami, które Twój miernik zwrócił dla każdego `<IMG>`.
 4. Emiter SVG (`usershape()` z `src/render/svg.ts`) zapisuje
    `<image xlink:href="...">` z pudełkiem obliczonym w kroku 3. Domyślnie

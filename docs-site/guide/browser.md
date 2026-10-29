@@ -97,8 +97,8 @@ removes and keeps, and keep a Content-Security-Policy in place.
 
 When an HTML-like label contains an external image
 (`<IMG SRC="logo.png"/>`), Graphviz needs that image's intrinsic dimensions to
-size the cell. (A node's `image=` attribute is not sized: the node keeps its
-normal box, as in headless native Graphviz.) Because the library cannot
+size the cell. (A node's `image=` attribute is sized through the same sizer and drawn; the
+unit the sizer returns is described under [`setImageSizer`](/guide/api#setimagesizer-setimageresolver).) Because the library cannot
 read the filesystem, you supply a sizer:
 
 ```ts

@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Im Browser verwenden
 
@@ -103,8 +103,7 @@ Content-Security-Policy aufrecht.
 
 Wenn ein HTML-artiges Label ein externes Bild enthält
 (`<IMG SRC="logo.png"/>`), benötigt Graphviz die intrinsischen Abmessungen dieses Bildes,
-um die Zelle zu dimensionieren. (Das Attribut `image=` eines Knotens wird nicht vermessen:
-Der Knoten behält seinen normalen Kasten, wie im headless nativen Graphviz.) Da die
+um die Zelle zu dimensionieren. (Das Attribut `image=` eines Knotens wird über denselben Sizer bemessen und gezeichnet; die Einheit, die der Sizer zurückgibt, ist unter [`setImageSizer`](/de/guide/api#setimagesizer-setimageresolver) beschrieben.) Da die
 Bibliothek das Dateisystem nicht lesen kann, stellen Sie einen Sizer bereit:
 
 ```ts

@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API リファレンス
@@ -82,6 +82,8 @@ function getTextMeasurer(): TextMeasurer;
 
 - **`setImageSizer`** — 外部画像の*本来の寸法*を報告し、レンダリングの前に、レイアウトエンジンが HTML の `<IMG>` セルやノードの `image=` 属性のための領域を確保できるようにします。`null` を返す（またはサイザーを登録しない）と、ネイティブの Graphviz の画像欠落時の動作（警告とサイズゼロ）を再現します。
 - **`setImageResolver`**（新規 — 下の [`inlineImages`](#inlineimages) を参照） — 実際の画像の*バイト列*を提供し、SVG レンダラーが、`xlink:href="src"` をそのまま通す代わりに、`data:` URI としてインライン化できるようにします。
+
+サイザーは**画像本来のピクセル数**を返します。レイアウトはそれをグラフの `dpi`（既定は 96）でポイントに変換し、ノードの `image=` には 2 pt のパディングを加えます。レンダラーは、ネイティブ Graphviz と同様に、出力の dpi（`dpi` を設定しない限り SVG と xdot では 72）で画像を描画します。たとえば、ノード上の 40×20 px の画像はレイアウトで 30×15 pt（パディング別）を確保し、SVG では 40×20 で描画されます。
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

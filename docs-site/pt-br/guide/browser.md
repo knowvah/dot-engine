@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Uso no navegador
 
@@ -105,8 +105,7 @@ higienizador remove e mantém, e mantenha uma Content-Security-Policy em vigor.
 
 Quando um rótulo no estilo HTML contém uma imagem externa
 (`<IMG SRC="logo.png"/>`), o Graphviz precisa das dimensões intrínsecas dessa
-imagem para dimensionar a célula. (O atributo `image=` de um nó não é medido: o nó
-mantém sua caixa normal, como no Graphviz nativo sem interface.) Como a biblioteca
+imagem para dimensionar a célula. (O atributo `image=` de um nó é dimensionado pelo mesmo medidor e desenhado; a unidade que o medidor retorna é descrita em [`setImageSizer`](/pt-br/guide/api#setimagesizer-setimageresolver).) Como a biblioteca
 não pode ler o sistema de arquivos, você fornece um medidor:
 
 ```ts

@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # 在浏览器中使用
 
@@ -85,7 +85,7 @@ SVG 默认会经过清理；传入 `sanitize` 可使用您自己的清理器，�
 ## 外部图像：`setImageSizer`
 
 当类 HTML 标签包含外部图像（`<IMG SRC="logo.png"/>`）时，Graphviz 需要该图像的固有尺寸来确定单元格大小。
-（节点的 `image=` 属性不会被调整尺寸：节点保持其正常的方框，与无头原生 Graphviz 一致。）
+（节点的 `image=` 属性通过同一个尺寸器确定尺寸并被绘制；尺寸器返回值的单位见[`setImageSizer`](/zh-cn/guide/api#setimagesizer-setimageresolver)。）
 由于库无法读取文件系统，因此需要由您提供一个尺寸器：
 
 ```ts

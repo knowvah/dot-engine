@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Użycie w przeglądarce
 
@@ -104,8 +104,7 @@ utrzymuj też obowiązującą Content-Security-Policy.
 
 Gdy etykieta w stylu HTML zawiera obraz zewnętrzny
 (`<IMG SRC="logo.png"/>`), Graphviz potrzebuje jego wymiarów własnych, aby
-ustalić rozmiar komórki. (Atrybut `image=` węzła nie jest mierzony: węzeł zachowuje
-swoje zwykłe pudełko, tak jak w natywnym Graphviz bez interfejsu.) Ponieważ biblioteka
+ustalić rozmiar komórki. (Atrybut `image=` węzła jest mierzony tym samym miernikiem i rysowany; jednostka zwracana przez miernik jest opisana w [`setImageSizer`](/pl/guide/api#setimagesizer-setimageresolver).) Ponieważ biblioteka
 nie może czytać systemu plików, to Ty dostarczasz miernik:
 
 ```ts

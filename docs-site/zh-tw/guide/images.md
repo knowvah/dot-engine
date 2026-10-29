@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # 使用圖片
 
@@ -24,9 +24,7 @@ sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
    寬度／高度**，才能先決定儲存格大小，再安排其他一切——
    函式庫絕不會為了查出這些資訊而存取檔案系統或網路，
    因此您要註冊一個尺寸取得器（`setImageSizer`，說明於
-   [在瀏覽器中使用](/zh-tw/guide/browser)，下方也會針對 Node 再次說明）。節點的
-   `image=` 屬性**不會**由尺寸取得器量測：與無頭的原生
-   Graphviz 相同，節點維持其一般方框，圖片則繪製在其中。
+   [在瀏覽器中使用](/zh-tw/guide/browser)，下方也會針對 Node 再次說明）。節點的 `image=` 屬性透過同一個尺寸取得器決定尺寸，並與 `<IMG>` 儲存格一樣繪製在節點中；`imagescale` 與 `imagepos` 適用於節點圖片，而 `<IMG>` 使用其 `SCALE` 屬性並置中。尺寸取得器回傳值的單位請見[`setImageSizer`](/zh-tw/guide/api#setimagesizer-setimageresolver)。
 3. 版面配置使用您的尺寸取得器為每個 `<IMG>` 回傳的尺寸來執行。
 4. SVG 輸出器（`src/render/svg.ts` 的 `usershape()`）會寫出
    `<image xlink:href="...">`，其方框是第 3 步計算的結果。預設情況下，

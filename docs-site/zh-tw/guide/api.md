@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API 參考
@@ -82,6 +82,8 @@ function getTextMeasurer(): TextMeasurer;
 
 - **`setImageSizer`**——回報外部影像的*固有尺寸*，讓版面配置引擎能在轉譯之前，為 HTML `<IMG>` 儲存格或節點的 `image=` 屬性預留空間。回傳 `null`（或未註冊任何量測器）會重現原生 Graphviz 對缺少影像的行為：一個警告，加上尺寸為零。
 - **`setImageResolver`**（新功能——請見下方的 [`inlineImages`](#inlineimages)）——提供實際的影像*位元組*，讓 SVG 轉譯器能將它們內嵌成 `data:` URI，而不是原樣輸出 `xlink:href="src"`。
+
+尺寸取得器回傳**圖片的內在像素**。版面配置依圖的 `dpi`（預設 96）將其換算為點，並為節點的 `image=` 額外加上 2 pt 的內距；與原生 Graphviz 相同，轉譯器依輸出的 dpi 繪製圖片（SVG 與 xdot 為 72，除非設定了 `dpi`）。例如，節點上一張 40×20 px 的圖片在版面配置中預留 30×15 pt（外加內距），在 SVG 中以 40×20 繪製。
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

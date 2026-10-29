@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API teatmik
@@ -154,6 +154,8 @@ anna `null`), mõlemad ei tee midagi, kuni kutsuja ühe registreerib:
   annab tegelikud pildi *baidid*, et SVG-renderdaja saaks need `data:`
   URI-na sisse liita, selle asemel et väljastada `xlink:href="src"` toorelt
   läbilastuna.
+
+Mõõtja annab tagasi **omapikslid**. Paigutus teisendab need punktideks graafi `dpi` juures (vaikimisi 96) ja lisab sõlme `image=` puhul 2 pt polsterdust; renderdaja joonistab pildi väljundi dpi juures (SVG ja xdot puhul 72, kui `dpi` pole seatud), nagu natiivne Graphviz. Näiteks 40×20 px pilt sõlmel reserveerib paigutuses 30×15 pt (pluss polsterdus) ja joonistatakse SVG-s mõõtmetega 40×20.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

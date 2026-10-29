@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Bilder
 
@@ -24,9 +24,7 @@ vises på, og CSP-konsekvensene av hver av dem.
    bredde/høyde** for å fastsette cellens størrelse før noe annet kan legges ut — biblioteket
    rører aldri filsystemet eller nettverket for å finne ut av dette, så
    du registrerer en måler (`setImageSizer`, omtalt i
-   [Bruk i nettleseren](/no/guide/browser) og igjen nedenfor for Node). En nodes
-   `image=`-attributt får **ikke** størrelse fra måleren: som i hodeløs native
-   Graphviz beholder noden sin vanlige boks, og bildet tegnes inn i den.
+   [Bruk i nettleseren](/no/guide/browser) og igjen nedenfor for Node). En nodes `image=`-attributt får størrelse fra samme måler og tegnes inn i noden, på samme måte som en `<IMG>`-celle; `imagescale` og `imagepos` gjelder nodebilder, mens `<IMG>` bruker sitt `SCALE`-attributt og sentreres. Enheten måleren returnerer, er beskrevet under [`setImageSizer`](/no/guide/api#setimagesizer-setimageresolver).
 3. Layout kjører med målene måleren din returnerte for hver `<IMG>`.
 4. SVG-emitteren (`usershape()` i `src/render/svg.ts`) skriver
    `<image xlink:href="...">` med boksen som ble beregnet i trinn 3. Som standard er

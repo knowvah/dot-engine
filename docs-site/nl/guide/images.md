@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Afbeeldingen
 
@@ -24,9 +24,7 @@ zichtbaar te maken, en de CSP-gevolgen van elk daarvan.
    breedte/hoogte** van de afbeelding nodig om de cel te dimensioneren voordat iets anders kan worden ingedeeld — de
    bibliotheek raakt nooit het bestandssysteem of het netwerk aan om dit te achterhalen, dus
    registreert u een sizer (`setImageSizer`, behandeld in
-   [Gebruik in de browser](/nl/guide/browser) en hieronder nogmaals voor Node). Het attribuut
-   `image=` van een knoop wordt **niet** door de sizer gedimensioneerd: net als in headless native
-   Graphviz behoudt de knoop zijn normale kader en wordt de afbeelding erin getekend.
+   [Gebruik in de browser](/nl/guide/browser) en hieronder nogmaals voor Node). Het attribuut `image=` van een knoop wordt door dezelfde sizer gedimensioneerd en in de knoop getekend, net als een `<IMG>`-cel; `imagescale` en `imagepos` gelden voor knoopafbeeldingen, terwijl `<IMG>` zijn `SCALE`-attribuut gebruikt en gecentreerd wordt. De eenheid die de sizer teruggeeft staat beschreven onder [`setImageSizer`](/nl/guide/api#setimagesizer-setimageresolver).
 3. De lay-out draait met de afmetingen die uw sizer voor elke `<IMG>` teruggaf.
 4. De SVG-emitter (`usershape()` in `src/render/svg.ts`) schrijft
    `<image xlink:href="...">` met het in stap 3 berekende kader. Standaard is de

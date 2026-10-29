@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Obrázky
 
@@ -24,9 +24,7 @@ zobrazit, a dopady každého z nich na CSP.
    šířku/výšku** obrázku, aby určil velikost buňky dříve, než může rozvrhnout cokoli dalšího — knihovna
    se kvůli tomu nikdy nedotýká souborového systému ani sítě, takže
    zaregistrujete měřič (`setImageSizer`, popsaný v části
-   [Použití v prohlížeči](/cs/guide/browser) a níže znovu pro Node). Atribut uzlu
-   `image=` měřič **neměří**: stejně jako nativní Graphviz bez displeje si
-   uzel ponechá svůj běžný rámeček a obrázek se do něj vykreslí.
+   [Použití v prohlížeči](/cs/guide/browser) a níže znovu pro Node). Atribut `image=` uzlu se měří stejným měřičem a vykresluje se do uzlu, stejně jako buňka `<IMG>`; `imagescale` a `imagepos` platí pro obrázky uzlů, zatímco `<IMG>` používá svůj atribut `SCALE` a je vystředěno. Jednotka, kterou měřič vrací, je popsána v části [`setImageSizer`](/cs/guide/api#setimagesizer-setimageresolver).
 3. Rozvržení proběhne s rozměry, které váš měřič vrátil pro každé `<IMG>`.
 4. Emitor SVG (`usershape()` ze `src/render/svg.ts`) zapíše
    `<image xlink:href="...">` s rámečkem vypočteným v kroku 3. Ve výchozím nastavení

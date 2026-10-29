@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Käyttö selaimessa
 
@@ -100,8 +100,7 @@ poistaa ja säilyttää, ja pidä Content-Security-Policy käytössä.
 
 Kun HTML-tyyppinen nimiö sisältää ulkoisen kuvan
 (`<IMG SRC="logo.png"/>`), Graphviz tarvitsee kuvan luontaiset mitat solun
-mitoitukseen. (Solmun `image=`-attribuuttia ei mitoiteta: solmu säilyttää
-normaalin laatikkonsa, kuten ilman selainta ajettavassa natiivissa Graphvizissa.) Koska kirjasto ei voi
+mitoitukseen. (Solmun `image=`-attribuutti mitoitetaan samalla mittaajalla ja se piirretään; mittaajan palauttama yksikkö on kuvattu kohdassa [`setImageSizer`](/fi/guide/api#setimagesizer-setimageresolver).) Koska kirjasto ei voi
 lukea tiedostojärjestelmää, annat mittaajan:
 
 ```ts

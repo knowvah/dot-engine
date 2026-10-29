@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # Riferimento API
@@ -163,6 +163,8 @@ fanno nulla finché chi chiama non ne registra uno:
   sotto): fornisce i *byte* effettivi dell'immagine, così il renderer SVG può
   incorporarli come URI `data:` anziché emettere `xlink:href="src"` come
   passthrough grezzo.
+
+Il sizer restituisce **pixel intrinseci**. Il layout li converte in punti al `dpi` del grafo (96 per impostazione predefinita) e, per l'`image=` di un nodo, aggiunge 2 pt di spaziatura; il renderer disegna l'immagine al dpi dell'output (72 per SVG e xdot salvo che `dpi` sia impostato), come Graphviz nativo. Ad esempio, un'immagine di 40×20 px su un nodo riserva 30×15 pt (più la spaziatura) nel layout e viene disegnata 40×20 in SVG.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

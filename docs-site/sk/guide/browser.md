@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Použitie v prehliadači
 
@@ -99,8 +99,7 @@ ponechajte tiež zavedenú Content-Security-Policy.
 
 Keď HTML-like popisok obsahuje externý obrázok
 (`<IMG SRC="logo.png"/>`), Graphviz potrebuje na určenie veľkosti bunky vlastné rozmery
-tohto obrázka. (Atribút `image=` uzla sa nemeria: uzol si ponechá
-svoj bežný rámček, ako v natívnom Graphviz bez displeja.) Keďže knižnica nemôže
+tohto obrázka. (Atribút `image=` uzla sa meria tým istým meračom a vykresľuje sa; jednotka, ktorú merač vracia, je opísaná v časti [`setImageSizer`](/sk/guide/api#setimagesizer-setimageresolver).) Keďže knižnica nemôže
 čítať súborový systém, dodáte merač:
 
 ```ts

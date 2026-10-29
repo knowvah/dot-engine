@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Kasutamine brauseris
 
@@ -100,8 +100,7 @@ README „Security“ jaotisest, ning hoidke kehtivas Content-Security-Policy.
 
 Kui HTML-laadne silt sisaldab välispilti
 (`<IMG SRC="logo.png"/>`), vajab Graphviz lahtri suuruse määramiseks selle pildi omamõõtmeid.
-(Sõlme `image=`-atribuuti ei mõõdeta: sõlm säilitab oma
-tavalise kasti, nagu peata natiivses Graphvizis.) Kuna teek ei saa
+(Sõlme `image=`-atribuuti mõõdetakse sama mõõtjaga ja see joonistatakse; mõõtja tagastatava ühiku kirjeldus on jaotises [`setImageSizer`](/et/guide/api#setimagesizer-setimageresolver).) Kuna teek ei saa
 failisüsteemi lugeda, annate mõõtja ise:
 
 ```ts

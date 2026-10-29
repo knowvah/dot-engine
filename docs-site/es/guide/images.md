@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Imágenes
 
@@ -24,9 +24,7 @@ aparezcan de verdad y las implicaciones de CSP de cada una.
    intrínseco** de la imagen para dimensionar la celda antes de poder diseñar nada más — la
    biblioteca nunca toca el sistema de archivos ni la red para averiguarlo, así que
    registras un dimensionador (`setImageSizer`, tratado en
-   [Uso en el navegador](/es/guide/browser) y de nuevo más abajo para Node). El atributo
-   `image=` de un nodo **no** lo dimensiona el dimensionador: igual que el Graphviz nativo
-   sin interfaz gráfica, el nodo conserva su recuadro normal y la imagen se dibuja dentro de él.
+   [Uso en el navegador](/es/guide/browser) y de nuevo más abajo para Node). El atributo `image=` de un nodo se dimensiona con el mismo dimensionador y se dibuja dentro del nodo, igual que una celda `<IMG>`; `imagescale` e `imagepos` se aplican a las imágenes de nodo, mientras que `<IMG>` usa su atributo `SCALE` y se centra. La unidad que devuelve el dimensionador se describe en [`setImageSizer`](/es/guide/api#setimagesizer-setimageresolver).
 3. El diseño se ejecuta con las dimensiones que tu dimensionador devolvió para cada `<IMG>`.
 4. El emisor de SVG (`usershape()` de `src/render/svg.ts`) escribe
    `<image xlink:href="...">` con el recuadro calculado en el paso 3. Por defecto, el

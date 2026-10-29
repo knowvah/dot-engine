@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Tarayıcıda kullanım
 
@@ -101,8 +101,7 @@ README'deki “Security” bölümüne bakın ve bir Content-Security-Policy tan
 
 Bir HTML benzeri etiket harici bir görsel içerdiğinde (`<IMG SRC="logo.png"/>`),
 Graphviz'in hücreyi boyutlandırmak için o görselin doğal boyutlarına ihtiyacı vardır.
-(Bir düğümün `image=` özniteliği boyutlandırılmaz: düğüm, başsız yerel Graphviz'deki gibi
-normal kutusunu korur.) Kitaplık dosya sistemini okuyamadığından bir boyutlandırıcı
+(Bir düğümün `image=` özniteliği aynı boyutlandırıcıyla boyutlandırılır ve çizilir; boyutlandırıcının döndürdüğü birim [`setImageSizer`](/tr/guide/api#setimagesizer-setimageresolver) bölümünde açıklanır.) Kitaplık dosya sistemini okuyamadığından bir boyutlandırıcı
 sağlarsınız:
 
 ```ts

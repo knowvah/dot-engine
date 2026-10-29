@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Imagens
 
@@ -24,10 +24,7 @@ fazer os pixels realmente aparecerem e as implicações de CSP de cada uma.
    intrínseca** da imagem para dimensionar a célula antes de poder dispor
    qualquer outra coisa — a biblioteca nunca toca o sistema de arquivos nem a rede
    para descobrir isso, então você registra um medidor (`setImageSizer`, tratado em
-   [Uso no navegador](/pt-br/guide/browser) e novamente abaixo para o Node). O
-   atributo `image=` de um nó **não** é dimensionado pelo medidor: como no
-   Graphviz nativo sem interface, o nó mantém sua caixa normal e a imagem é
-   desenhada dentro dela.
+   [Uso no navegador](/pt-br/guide/browser) e novamente abaixo para o Node). O atributo `image=` de um nó é dimensionado pelo mesmo medidor e desenhado dentro do nó, assim como uma célula `<IMG>`; `imagescale` e `imagepos` se aplicam às imagens de nó, enquanto `<IMG>` usa seu atributo `SCALE` e é centralizada. A unidade que o medidor retorna é descrita em [`setImageSizer`](/pt-br/guide/api#setimagesizer-setimageresolver).
 3. O layout roda usando as dimensões que seu medidor retornou para cada `<IMG>`.
 4. O emissor de SVG (`usershape()` em `src/render/svg.ts`) escreve
    `<image xlink:href="...">` com a caixa calculada no passo 3. Por padrão, o

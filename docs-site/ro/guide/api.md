@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # Referință API
@@ -165,6 +165,8 @@ efect până când un apelant înregistrează unul:
   — furnizează *octeții* efectivi ai imaginii, astfel încât randatorul SVG să
   îi poată insera direct ca URI `data:` în loc să emită `xlink:href="src"` ca
   trecere brută.
+
+Măsurătorul returnează **pixeli intrinseci**. Aranjarea îi convertește în puncte la `dpi`-ul grafului (implicit 96) și, pentru `image=` al unui nod, adaugă 2 pt de umplutură; randarea desenează imaginea la dpi-ul ieșirii (72 pentru SVG și xdot, dacă nu este setat `dpi`), ca în Graphviz nativ. De exemplu, o imagine de 40×20 px pe un nod rezervă la aranjare 30×15 pt (plus umplutura) și este desenată de 40×20 în SVG.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # 브라우저에서 사용하기
 
@@ -94,8 +94,7 @@ if (fontIssues.length > 0) {
 ## 외부 이미지: `setImageSizer` {#external-images-setimagesizer}
 
 HTML 유사 레이블에 외부 이미지(`<IMG SRC="logo.png"/>`)가 들어 있으면, Graphviz는 셀 크기를
-정하기 위해 그 이미지의 고유 크기가 필요합니다. (노드의 `image=` 속성은 크기 측정 대상이
-아닙니다. 헤드리스 네이티브 Graphviz와 마찬가지로 노드는 일반 상자를 그대로 유지합니다.)
+정하기 위해 그 이미지의 고유 크기가 필요합니다. (노드의 `image=` 속성도 같은 측정기로 크기가 정해지고 그려집니다. 측정기가 반환하는 단위는 [`setImageSizer`](/ko/guide/api#setimagesizer-setimageresolver)에 설명되어 있습니다.)
 라이브러리는 파일 시스템을 읽을 수 없으므로 크기 측정기를 직접 제공합니다:
 
 ```ts

@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Billeder
 
@@ -24,9 +24,7 @@ CSP-konsekvenserne af hver.
    bredde/højde** for at dimensionere cellen, før noget andet kan lægges ud —
    biblioteket rører aldrig filsystemet eller netværket for at finde ud af det, så
    du registrerer en måler (`setImageSizer`, behandlet i
-   [Brug i browseren](/da/guide/browser) og igen nedenfor for Node). En knudes
-   `image=`-attribut dimensioneres **ikke** af målen: ligesom i headless native
-   Graphviz beholder knuden sin normale boks, og billedet tegnes ind i den.
+   [Brug i browseren](/da/guide/browser) og igen nedenfor for Node). En knudes `image=`-attribut dimensioneres af samme måler og tegnes ind i knuden, ligesom en `<IMG>`-celle; `imagescale` og `imagepos` gælder for knudebilleder, mens `<IMG>` bruger sin `SCALE`-attribut og centreres. Den enhed, målen returnerer, er beskrevet under [`setImageSizer`](/da/guide/api#setimagesizer-setimageresolver).
 3. Layout kører med de dimensioner, din måler returnerede for hver `<IMG>`.
 4. SVG-udsenderen (`usershape()` i `src/render/svg.ts`) skriver
    `<image xlink:href="...">` med den boks, der blev beregnet i trin 3. Som standard

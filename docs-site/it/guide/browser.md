@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Uso nel browser
 
@@ -101,8 +101,7 @@ ripulitore rimuove e cosa conserva, e mantieni attiva una Content-Security-Polic
 
 Quando un'etichetta in stile HTML contiene un'immagine esterna
 (`<IMG SRC="logo.png"/>`), Graphviz ha bisogno delle dimensioni intrinseche di quell'immagine per
-dimensionare la cella. (L'attributo `image=` di un nodo non viene dimensionato: il nodo mantiene il
-suo riquadro normale, come in Graphviz nativo headless.) Poiché la libreria non può
+dimensionare la cella. (L'attributo `image=` di un nodo viene dimensionato dallo stesso sizer e disegnato; l'unità restituita dal sizer è descritta in [`setImageSizer`](/it/guide/api#setimagesizer-setimageresolver).) Poiché la libreria non può
 leggere il filesystem, devi fornire un sizer:
 
 ```ts

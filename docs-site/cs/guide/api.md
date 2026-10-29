@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # Reference API
@@ -153,6 +153,8 @@ procesově globální registry se stejným vzorem (zaregistrujte zpětné volán
 - **`setImageResolver`** (nové — viz níže [`inlineImages`](#inlineimages)) —
   dodává skutečná *data bajtů* obrázku, aby je vykreslovač SVG mohl vložit jako
   URI `data:` místo vypsání `xlink:href="src"` jako surového průchodu.
+
+Měřič vrací **přirozené pixely**. Rozvržení je převede na body při `dpi` grafu (výchozí 96) a u `image=` uzlu přidá 2 b odsazení; vykreslovač kreslí obrázek při dpi výstupu (72 pro SVG a xdot, pokud není nastaveno `dpi`), stejně jako nativní Graphviz. Například obrázek 40×20 px na uzlu zabere při rozvržení 30×15 b (plus odsazení) a v SVG se nakreslí jako 40×20.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

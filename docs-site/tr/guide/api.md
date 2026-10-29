@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API referansı
@@ -159,6 +159,8 @@ etkisizdir:
   bölümüne bakın) — SVG işleyicisinin görselleri `xlink:href="src"` değerini
   ham geçirmek yerine `data:` URI olarak satır içine yerleştirebilmesi için
   gerçek görsel *baytlarını* sağlar.
+
+Boyutlandırıcı **doğal pikselleri** döndürür. Yerleşim bunları grafiğin `dpi` değerinde noktaya çevirir (varsayılan 96) ve bir düğümün `image=` özniteliği için 2 pt dolgu ekler; çizici görseli, yerel Graphviz gibi, çıktının dpi değerinde çizer (`dpi` ayarlanmadıkça SVG ve xdot için 72). Örneğin bir düğümdeki 40×20 px görsel yerleşimde 30×15 pt (artı dolgu) yer ayırır ve SVG'de 40×20 olarak çizilir.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

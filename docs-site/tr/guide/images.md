@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Görseller
 
@@ -24,9 +24,7 @@ yerleşim sırasında nasıl boyutlandırıldığını, piksellerin gerçekten g
    önce hücreyi boyutlandırmak üzere görselin **doğal genişlik/yüksekliğine** ihtiyaç
    duyar — kitaplık bunu öğrenmek için dosya sistemine veya ağa asla dokunmaz; bu yüzden
    bir boyutlandırıcı kaydedersiniz (`setImageSizer`; [Tarayıcıda kullanım](/tr/guide/browser)
-   sayfasında ve Node için aşağıda yeniden ele alınır). Bir düğümün `image=` özniteliği
-   boyutlandırıcı tarafından **boyutlandırılmaz**: başsız yerel Graphviz gibi, düğüm
-   normal kutusunu korur ve görsel o kutunun içine çizilir.
+   sayfasında ve Node için aşağıda yeniden ele alınır). Bir düğümün `image=` özniteliği aynı boyutlandırıcıyla boyutlandırılır ve bir `<IMG>` hücresi gibi düğümün içine çizilir; `imagescale` ve `imagepos` düğüm görsellerine uygulanır, `<IMG>` ise kendi `SCALE` özniteliğini kullanır ve ortalanır. Boyutlandırıcının döndürdüğü birim [`setImageSizer`](/tr/guide/api#setimagesizer-setimageresolver) bölümünde açıklanır.
 3. Yerleşim, boyutlandırıcınızın her `<IMG>` için döndürdüğü ölçüler kullanılarak çalışır.
 4. SVG yayıcısı (`src/render/svg.ts` içindeki `usershape()`), 3. adımda hesaplanan kutuyla
    `<image xlink:href="...">` yazar. Varsayılan olarak `href`, XML kaçışlı ham `src`

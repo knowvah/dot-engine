@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # 在瀏覽器中使用
 
@@ -98,8 +98,7 @@ if (fontIssues.length > 0) {
 
 當類 HTML 標籤含有外部圖片
 （`<IMG SRC="logo.png"/>`）時，Graphviz 需要該圖片的內在尺寸，
-才能決定儲存格大小。（節點的 `image=` 屬性不會被量測：節點維持
-其一般方框，與無頭的原生 Graphviz 相同。）由於函式庫無法
+才能決定儲存格大小。（節點的 `image=` 屬性透過同一個尺寸取得器決定尺寸並被繪製；尺寸取得器回傳值的單位請見[`setImageSizer`](/zh-tw/guide/api#setimagesizer-setimageresolver)。）由於函式庫無法
 讀取檔案系統，您需要提供一個尺寸取得器：
 
 ```ts
