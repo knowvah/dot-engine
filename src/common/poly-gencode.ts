@@ -34,7 +34,7 @@ import {
   styleTokens,
 } from './style-resolve.js';
 import { stripedBox, wedgedEllipse } from '../render/svg-multicolor.js';
-import { resolveRenderColor, reportColorNames } from '../render/color-resolve.js';
+import { resolveFillColorName, resolveRenderColor, reportColorNames } from '../render/color-resolve.js';
 import { htmlLabelColors } from './htmltable-emit-fill.js';
 import { svgNodeId } from '../render/svg-id.js';
 import { drawRoundCorners, mcircleHack, underlineDraw } from './poly-shapes.js';
@@ -338,7 +338,8 @@ function applyFillState(obj: ObjState, n: Node, job: RenderJob): boolean {
   if (fillRes.kind === 'none') { obj.fill = FillType.None; return false; }
   if (fillRes.kind === 'solid') {
     obj.fill = FillType.Solid;
-    obj.fillColor = resolveRenderColor(fillRes.color);
+    // gvrender_set_fillcolor hands an empty name (":red") to colorxlate.
+    obj.fillColor = resolveFillColorName(fillRes.color);
     return true;
   }
   applyGradientFields(obj, fillRes);

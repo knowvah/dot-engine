@@ -17,7 +17,7 @@ import {
   resolveClusterFillEx, styleTokens,
 } from '../common/style-resolve.js';
 import { gvrenderSetStyle, checkClusterStyleTokens } from './gvrender-set-style.js';
-import { resolveRenderColor, reportColorNames } from '../render/color-resolve.js';
+import { resolveFillColorName, resolveRenderColor, reportColorNames } from '../render/color-resolve.js';
 import { parseSegs } from '../common/multicolor.js';
 import { graphAttrInherited } from '../common/attr-get.js';
 
@@ -181,7 +181,8 @@ function applyClusterFill(obj: ObjState, fillRes: ResolvedFill): boolean {
   if (fillRes.kind === 'none') { obj.fill = FillType.None; return false; }
   if (fillRes.kind === 'solid') {
     obj.fill = FillType.Solid;
-    obj.fillColor = resolveRenderColor(fillRes.color);
+    // gvrender_set_fillcolor hands an empty name (":red") to colorxlate.
+    obj.fillColor = resolveFillColorName(fillRes.color);
     return true;
   }
   applyClusterGradient(obj, fillRes);
