@@ -426,6 +426,7 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   const job = new RenderJob(format, ctx.textMeasurer);
   job.inlineImages = inlineImages;
   if (ctx.imageResolver !== undefined) job.imageResolver = ctx.imageResolver;
+  if (ctx.imageSizer !== undefined) job.imageSizer = ctx.imageSizer;
   // gvc->bb = GD_bb(g) verbatim -- no recompute fallback. Every layout engine
   // sets g.info.bb itself before render() runs (set_aspect for dot,
   // compute_bb-equivalent computeSubgraphBB calls in neato/circo/sfdp/fdp/

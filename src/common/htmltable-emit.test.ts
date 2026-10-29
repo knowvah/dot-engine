@@ -316,7 +316,9 @@ describe('IMG SCALE fallback to node imagescale attr (emit_html_img:615-618)', (
     setImageSizer((s) => (s === 'x.png' ? { w: 32, h: 16 } : null));
     const svg = renderSvg(
       'digraph { A [imagescale=true label=<<TABLE><TR><TD WIDTH="60" HEIGHT="40"><IMG SCALE="false" SRC="x.png"/></TD></TR></TABLE>>]; }', 'dot');
-    expect(svg).toContain('width="24px" height="12px"');
+    // gvrender_usershape sizes at the job dpi (72): 32x16 px stays 32x16 pt
+    // (native 16.1), not the 24x12 pt layout reservation.
+    expect(svg).toContain('width="32px" height="16px"');
   });
 });
 

@@ -38,6 +38,7 @@ import { resolveFillColorName, resolveRenderColor, reportColorNames } from '../r
 import { htmlLabelColors } from './htmltable-emit-fill.js';
 import { svgNodeId } from '../render/svg-id.js';
 import { drawRoundCorners, mcircleHack, underlineDraw } from './poly-shapes.js';
+import { gvrenderUsershape } from '../gvc/render-usershape.js';
 
 // ---------------------------------------------------------------------------
 // Multicolor test
@@ -173,6 +174,51 @@ function renderPeripheries(
       renderPolyRing(ring, coord, ringFilled, j, ctx);
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// User shapes / images
+// ---------------------------------------------------------------------------
+
+/** The `custom` shape: a user shape only when `shapefile` names a file. */
+const CUSTOM_SHAPE_NAME = 'custom';
+
+/**
+ * The image name poly_gencode hands to gvrender_usershape, or undefined when
+ * the node draws none: a usershape shape (a `custom` one needs a non-empty
+ * `shapefile`, otherwise the shape's own name is the file) or a non-empty
+ * `image=`.
+ * @see lib/common/shapes.c:poly_gencode :3058-3067
+ */
+function usershapeName(n: Node): string | undefined {
+  const shape = n.info.shape as ShapeDesc | undefined;
+  if (shape?.usershape === true) {
+    if (shape.name !== CUSTOM_SHAPE_NAME) return shape.name;
+    const shapefile = nodeAttr(n, n.root, 'shapefile');
+    return shapefile !== undefined && shapefile !== '' ? shapefile : undefined;
+  }
+  const image = nodeAttr(n, n.root, 'image');
+  return image !== undefined && image !== '' ? image : undefined;
+}
+
+/**
+ * Draw the node's image over its innermost periphery.
+ * `filled` is C's value after the peripheries loop (0 once any periphery was
+ * drawn); it is only meaningful to loadimage plugins that paint a background.
+ * @see lib/common/shapes.c:poly_gencode :3068-3080
+ */
+function renderUsershape(n: Node, d: NodeDrawCtx): void {
+  const name = usershapeName(n);
+  if (name === undefined) return;
+  const { poly, coord } = d;
+  const sides = poly.sides <= 2 ? 2 : poly.sides;
+  // get coords of innermost periphery
+  const af = poly.vertices!.slice(0, sides).map((v) => ({ x: v.x + coord.x, y: v.y + coord.y }));
+  gvrenderUsershape(
+    d.ringCtx.job, name, af, poly.peripheries === 0 && d.filled,
+    nodeAttr(n, n.root, 'imagescale') ?? 'false',
+    nodeAttr(n, n.root, 'imagepos') ?? 'mc',
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -497,6 +543,8 @@ export function polyGencode(rawJob: unknown, rawNode: unknown): void {
   const savedPts = job.obj?.urlMapPts;
   let inAnchor = clustersLast ? false : beginNodeAnchor(n, renderer, job);
   renderPeripheries(ctx.poly, ctx.coord, ctx.filled, ctx.ringCtx);
+  // point_gencode has no usershape branch.
+  if (!isPointNode(n)) renderUsershape(n, ctx);
   // point_gencode never emits a label (AD-3).
   if (!isPointNode(n)) renderNodeLabel(n, ctx.coord, renderer, job);
   if (clustersLast) {
