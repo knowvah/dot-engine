@@ -331,14 +331,14 @@ describe('scrubSvgString: benign renderSvg output is untouched', () => {
   it('keeps an inlineImages data:image/png <image>', () => {
     setImageSizer((s) => (s === 'logo.png' ? { w: 24, h: 12 } : null));
     setImageResolver((s) =>
-      s === 'logo.png' ? { bytes: new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]), mime: 'image/png' } : null,
+      s === 'logo.png' ? { bytes: new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, ...new Array<number>(12).fill(0)]), mime: 'image/png' } : null,
     );
     const svg = render(
       parse('digraph { A [shape=plaintext label=<<TABLE><TR><TD><IMG SRC="logo.png"/></TD></TR></TABLE>>]; }'),
       'svg',
       { inlineImages: true },
     );
-    expect(svg).toContain('xlink:href="data:image/png;base64,iVBORw0K"');
+    expect(svg).toContain('xlink:href="data:image/png;base64,iVBORw0KGgoAAAAAAAAAAAAAAAA="');
     expect(scrubSvgString(svg, parser, serializer)).toBe(roundTrip(svg));
   });
 

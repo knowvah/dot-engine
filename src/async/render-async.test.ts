@@ -21,10 +21,10 @@ const IMG_DOT =
   'digraph { A [shape=plaintext label=<<TABLE><TR><TD>' +
   `<IMG SRC="${SRC}"/></TD></TR></TABLE>>]; }`;
 const SIZE = { w: 67, h: 40 }; // 50x30 pt at the default 96 dpi
-const BYTES_A = new Uint8Array([1, 2, 3]);
-const BYTES_B = new Uint8Array([7, 8, 9]);
-const B64_A = 'AQID';
-const B64_B = 'BwgJ';
+const BYTES_A = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3]);
+const BYTES_B = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 8, 9]);
+const B64_A = 'iVBORw0KGgoAAAAAAAAAAAAAAAABAgM=';
+const B64_B = 'iVBORw0KGgoAAAAAAAAAAAAAAAAHCAk=';
 const TEXT_DOT = 'digraph { a [fontname="Helvetica" label="hi"]; }';
 
 const goldenFiles = readdirSync(GOLDEN_DIR).filter((f) => f.endsWith('.dot')).sort();

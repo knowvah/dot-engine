@@ -10,7 +10,9 @@
 
 import type { Box, Point } from '../model/geom.js';
 import type { RenderJob } from './job.js';
-import { imageIsSupplied, usershapeSizePts, type ImageSizer } from './usershape.js';
+import { imageIsSupplied, usershapeSizePts, usershapeType, type ImageSizer } from './usershape.js';
+import { ImageType } from './image-type.js';
+import { agwarningf } from '../common/agerr.js';
 import { mapbool } from '../layout/dot/rank.js';
 
 /** @see lib/gvc/gvcjob.h:imagescale_t */
@@ -160,7 +162,49 @@ function polygonBox(a: readonly Point[]): Box {
 declare module './job.js' {
   interface RenderJob {
     imageSizer?: ImageSizer | undefined;
+    /** `job->loadimage.engine` is set (a `gvloadimage_select` succeeded). */
+    loadimageEngineSet?: boolean;
   }
+}
+
+/**
+ * The `type` strings `gvloadimage_core.c:gvloadimage_core_types` serves
+ * (`<stringtype>:<target>`); the plugin set lacks e.g. `png:json`.
+ * @see plugin/core/gvloadimage_core.c:280-335
+ */
+export const CORE_LOADIMAGE_TYPES: ReadonlySet<string> = new Set([
+  'png:svg', 'gif:svg', 'jpeg:svg', 'jpe:svg', 'jpg:svg',
+  'png:fig', 'gif:fig', 'jpeg:fig', 'jpe:fig', 'jpg:fig',
+  'png:vrml', 'gif:vrml', 'jpeg:vrml', 'jpe:vrml', 'jpg:vrml',
+  'eps:ps', 'ps:ps', '(lib):ps',
+  'png:map', 'gif:map', 'jpeg:map', 'jpe:map', 'jpg:map', 'ps:map', 'eps:map', 'svg:map',
+  'png:dot', 'gif:dot', 'jpeg:dot', 'jpe:dot', 'jpg:dot', 'ps:dot', 'eps:dot', 'svg:dot',
+  'png:xdot', 'gif:xdot', 'jpeg:xdot', 'jpe:xdot', 'jpg:xdot', 'ps:xdot', 'eps:xdot', 'svg:xdot',
+  'svg:svg',
+  'gif:tk',
+]);
+
+/**
+ * `job->render.type` for a port renderer type: the device name maps to the
+ * renderer it runs on (`plain:dot`, `cmapx:map`, ...), not to itself.
+ * @see plugin/core/gvrender_core_dot.c:775, gvrender_core_map.c:273-276
+ */
+const RENDER_TYPE_OF_DEVICE: Readonly<Record<string, string>> = {
+  plain: 'dot', 'plain-ext': 'dot',
+  imap: 'map', 'imap-np': 'map', cmapx: 'map', 'cmapx-np': 'map',
+};
+
+/**
+ * `gvloadimage`: build `"<stringtype>:<target>"`, warn when no loadimage
+ * plugin serves it. Returns whether the renderer's loadimage hook runs: C runs
+ * `job->loadimage.engine`, which stays set from an earlier successful select.
+ * @see lib/gvc/gvloadimage.c:gvloadimage (44-64), gvloadimage_select
+ */
+function gvloadimageSelect(job: RenderJob, stringtype: string, target: string): boolean {
+  const type = `${stringtype}:${target}`;
+  if (CORE_LOADIMAGE_TYPES.has(type)) job.loadimageEngineSet = true;
+  else agwarningf(`No loadimage plugin for "${type}"`);
+  return job.loadimageEngineSet === true;
 }
 
 /**
@@ -180,6 +224,9 @@ export function gvrenderUsershape(
   imagescale: string, imagepos: string,
 ): void {
   const sizer = job.imageSizer;
+  // gvusershape_find misses an image whose gvusershape_open failed (FT_NULL)
+  const utype = usershapeType(name, job.imageResolver);
+  if (utype?.type === ImageType.FT_NULL) return;
   if (!imageIsSupplied(name, sizer, job.imageResolver)) return;
 
   // gvusershape_size_dpi(us, job->dpi)
@@ -205,5 +252,9 @@ export function gvrenderUsershape(
 
   if (b.ll.x > b.ur.x) [b.ll.x, b.ur.x] = [b.ur.x, b.ll.x];
   if (b.ll.y > b.ur.y) [b.ll.y, b.ur.y] = [b.ur.y, b.ll.y];
+  // gvloadimage; a sizer-only image has no bytes and so no type (AD-5)
+  const device = job.renderer?.type ?? job.format;
+  const target = RENDER_TYPE_OF_DEVICE[device] ?? device;
+  if (utype !== null && !gvloadimageSelect(job, utype.stringtype, target)) return;
   job.renderer?.usershape?.(name, b, job);
 }

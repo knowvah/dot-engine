@@ -78,11 +78,11 @@ describe('T1 — RenderOptions.inlineImages', () => {
 
   it('inlineImages: true + resolver hit ⇒ data: URI, no raw src href', () => {
     setImageSizer((s) => (s === 'logo.png' ? { w: 32, h: 16 } : null));
-    const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]);
+    const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, ...new Array<number>(12).fill(0)]);
     setImageResolver((src) => (src === 'logo.png' ? { bytes: pngBytes, mime: 'image/png' } : null));
     const g = parse(IMG_DOT);
     const svg = render(g, 'svg', { inlineImages: true });
-    expect(svg).toContain('xlink:href="data:image/png;base64,iVBORw0K"');
+    expect(svg).toContain('xlink:href="data:image/png;base64,iVBORw0KGgoAAAAAAAAAAAAAAAA="');
     expect(svg).not.toContain('xlink:href="logo.png"');
   });
 
@@ -95,7 +95,7 @@ describe('T1 — RenderOptions.inlineImages', () => {
 
   it('bare Uint8Array resolver result infers mime from extension (.jpg)', () => {
     setImageSizer((s) => (s === 'pic.jpg' ? { w: 32, h: 16 } : null));
-    const jpgBytes = new Uint8Array([0xff, 0xd8, 0xff]);
+    const jpgBytes = new Uint8Array([0xff, 0xd8, 0xff, ...new Array<number>(17).fill(0)]);
     setImageResolver((src) => (src === 'pic.jpg' ? jpgBytes : null));
     const g = parse(
       'digraph { A [shape=plaintext label=<<TABLE><TR><TD>' +
