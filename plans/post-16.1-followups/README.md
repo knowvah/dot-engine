@@ -18,6 +18,7 @@ The open work is items 43–71 under "New follow-ups found by part 3" below.
 Being closed by `plans/post-16-1-followups-4/`.
 Being closed by `plans/post-16-1-followups-5/`.
 Being closed by `plans/post-16-1-followups-6/`.
+Being closed by `plans/post-16-1-followups-7/`.
 Items 90–93 are done and 94 is parked by part 6; the open work is items 94–102.
 
 ## State at handoff
