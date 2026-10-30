@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Använd i webbläsaren
 
@@ -100,8 +100,7 @@ tar bort och behåller, och behåll en Content-Security-Policy på plats.
 
 När en HTML-liknande etikett innehåller en extern bild
 (`<IMG SRC="logo.png"/>`) behöver Graphviz bildens egna mått för att
-dimensionera cellen. (En nods `image=`-attribut dimensioneras inte: noden behåller sin
-vanliga ruta, som i huvudlös inbyggd Graphviz.) Eftersom biblioteket inte kan
+dimensionera cellen. (En nods `image=`-attribut dimensioneras av samma mätare och ritas; enheten som mätaren returnerar beskrivs under [`setImageSizer`](/sv/guide/api#setimagesizer-setimageresolver).) Eftersom biblioteket inte kan
 läsa filsystemet tillhandahåller du en mätare:
 
 ```ts

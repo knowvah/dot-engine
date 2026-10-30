@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Notkun í vafra
 
@@ -100,8 +100,7 @@ fjarlægir og heldur, og hafðu Content-Security-Policy í gildi.
 
 Þegar HTML-líkt merki inniheldur ytri mynd
 (`<IMG SRC="logo.png"/>`) þarf Graphviz innbyggðar víddir myndarinnar til að
-ákvarða stærð hólfsins. (Eigindið `image=` á hnút er ekki mælt: hnúturinn heldur
-venjulegum kassa sínum, eins og í innbyggðu Graphviz án skjás.) Þar sem safnið getur ekki
+ákvarða stærð hólfsins. (Eigindið `image=` á hnút er mælt með sama mæli og teiknað; einingin sem mælirinn skilar er lýst í [`setImageSizer`](/is/guide/api#setimagesizer-setimageresolver).) Þar sem safnið getur ekki
 lesið skráakerfið gefur þú mæli:
 
 ```ts

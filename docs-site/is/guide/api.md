@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API-tilvísun
@@ -148,6 +148,8 @@ hreinsa), báðir án áhrifa þar til kallandi skráir slíkt:
 - **`setImageResolver`** (nýtt — sjá [`inlineImages`](#inlineimages) hér að neðan) —
   leggur til raunveruleg *bæti* myndarinnar svo SVG-teiknivélin geti fellt þau inn sem
   `data:`-URI í stað þess að gefa út `xlink:href="src"` sem hráa umferð.
+
+Mælirinn skilar **innbyggðum díplum**. Uppsetning breytir þeim í punkta við `dpi` grafsins (sjálfgefið 96) og bætir 2 pt fyllingu við `image=` hnúts; teiknarinn teiknar myndina við dpi úttaksins (72 fyrir SVG og xdot nema `dpi` sé stillt), eins og innbyggt Graphviz. Til dæmis tekur 40×20 px mynd á hnúti frá 30×15 pt (auk fyllingar) í uppsetningu og er teiknuð 40×20 í SVG.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

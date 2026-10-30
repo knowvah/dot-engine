@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Imagini
 
@@ -24,9 +24,7 @@ apară efectiv și implicațiile CSP ale fiecăruia.
    intrinsecă** a imaginii pentru a dimensiona celula înainte de a putea aranja orice altceva —
    biblioteca nu atinge niciodată sistemul de fișiere sau rețeaua pentru a afla aceasta, deci
    înregistrați un măsurător de dimensiuni (`setImageSizer`, tratat în
-   [Utilizare în browser](/ro/guide/browser) și din nou mai jos pentru Node). Atributul `image=`
-   al unui nod **nu** este dimensionat de acest măsurător: ca în Graphviz nativ fără interfață grafică,
-   nodul își păstrează caseta normală, iar imaginea este desenată în ea.
+   [Utilizare în browser](/ro/guide/browser) și din nou mai jos pentru Node). Atributul `image=` al unui nod este dimensionat de același măsurător și desenat în nod, la fel ca o celulă `<IMG>`; `imagescale` și `imagepos` se aplică imaginilor nodurilor, în timp ce `<IMG>` folosește atributul său `SCALE` și este centrată. Unitatea returnată de măsurător este descrisă în [`setImageSizer`](/ro/guide/api#setimagesizer-setimageresolver).
 3. Aranjarea rulează folosind dimensiunile returnate de măsurătorul dumneavoastră pentru fiecare `<IMG>`.
 4. Emițătorul SVG (`usershape()` din `src/render/svg.ts`) scrie
    `<image xlink:href="...">` cu caseta calculată la pasul 3. Implicit,

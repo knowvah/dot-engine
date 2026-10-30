@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API-reference
@@ -156,6 +156,8 @@ proces-globale registre, der følger samme mønster (registrér et callback, sen
   leverer de faktiske *bytes* i billedet, så SVG-rendereren kan indlejre dem som
   en `data:`-URI i stedet for at udsende `xlink:href="src"` som ren
   gennemstrømning.
+
+Målen rapporterer **iboende pixels**. Layout omregner dem til punkter ved grafens `dpi` (standard 96) og lægger for en knudes `image=` 2 pt padding til; rendereren tegner billedet ved outputtets dpi (72 for SVG og xdot, medmindre `dpi` er sat), som i native Graphviz. Et billede på 40×20 px på en knude reserverer for eksempel 30×15 pt (plus padding) i layoutet og tegnes som 40×20 i SVG.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API-Referenz
@@ -164,6 +164,8 @@ registriert:
 - **`setImageResolver`** (neu — siehe unten [`inlineImages`](#inlineimages)) —
   liefert die eigentlichen Bild-*Bytes*, damit der SVG-Renderer sie als
   `data:`-URI inlinen kann, statt `xlink:href="src"` unverändert durchzureichen.
+
+Der Sizer meldet **intrinsische Pixel**. Das Layout rechnet sie bei dem `dpi` des Graphen (Standard 96) in Punkte um und addiert für das `image=` eines Knotens 2 pt Innenabstand; der Renderer zeichnet das Bild mit der dpi der Ausgabe (72 für SVG und xdot, sofern `dpi` nicht gesetzt ist), wie das native Graphviz. Ein Bild von 40×20 px an einem Knoten belegt beispielsweise im Layout 30×15 pt (plus Innenabstand) und wird in SVG mit 40×20 gezeichnet.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

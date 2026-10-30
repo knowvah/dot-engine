@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Uso en el navegador
 
@@ -100,8 +100,7 @@ elimina y qué conserva el depurador, y mantén una Content-Security-Policy acti
 
 Cuando una etiqueta de tipo HTML contiene una imagen externa
 (`<IMG SRC="logo.png"/>`), Graphviz necesita las dimensiones intrínsecas de esa imagen para
-dimensionar la celda. (El atributo `image=` de un nodo no se dimensiona: el nodo conserva su
-recuadro normal, igual que en Graphviz nativo sin interfaz gráfica.) Como la biblioteca no puede
+dimensionar la celda. (El atributo `image=` de un nodo se dimensiona con el mismo dimensionador y se dibuja; la unidad que devuelve el dimensionador se describe en [`setImageSizer`](/es/guide/api#setimagesizer-setimageresolver).) Como la biblioteca no puede
 leer el sistema de archivos, tú proporcionas un dimensionador:
 
 ```ts

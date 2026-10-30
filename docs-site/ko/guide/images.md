@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # 이미지 다루기
 
@@ -22,8 +22,7 @@ SVG를 표시하는 쪽 — 브라우저의 `<img>`/인라인 `<svg>`, Electron 
    이미지의 **고유 너비/높이**가 필요합니다 — 라이브러리는 이를 알아내기 위해 파일 시스템이나
    네트워크에 접근하지 않으므로, 여러분이 측정기(`setImageSizer`)를 등록합니다. 이는
    [브라우저에서 사용하기](/ko/guide/browser)에서 다루었고 아래에서 Node 기준으로 다시
-   설명합니다. 노드의 `image=` 속성은 측정기로 크기가 정해지지 **않습니다**. 헤드리스 네이티브
-   Graphviz와 마찬가지로 노드는 일반 상자를 유지하고 이미지는 그 안에 그려집니다.
+   설명합니다. 노드의 `image=` 속성은 같은 측정기로 크기가 정해지며, `<IMG>` 셀과 마찬가지로 노드 안에 그려집니다. `imagescale`과 `imagepos`는 노드 이미지에 적용되고, `<IMG>`는 자신의 `SCALE` 속성을 사용하며 가운데에 배치됩니다. 측정기가 반환하는 단위는 [`setImageSizer`](/ko/guide/api#setimagesizer-setimageresolver)에 설명되어 있습니다.
 3. 레이아웃은 각 `<IMG>`에 대해 측정기가 반환한 크기를 사용하여 실행됩니다.
 4. SVG 출력기(`src/render/svg.ts`의 `usershape()`)는 3단계에서 계산된 상자로
    `<image xlink:href="...">`를 씁니다. 기본적으로 `href`는 XML 이스케이프만 거친 원본 `src`

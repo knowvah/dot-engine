@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Immagini
 
@@ -24,9 +24,7 @@ e le implicazioni sulla CSP di ciascuno.
    intrinseche** dell'immagine per dimensionare la cella prima di poter disporre qualsiasi altra cosa — la
    libreria non tocca mai il filesystem né la rete per scoprirlo, quindi
    registri un sizer (`setImageSizer`, trattato in
-   [Uso nel browser](/it/guide/browser) e di nuovo più sotto per Node). L'attributo `image=`
-   di un nodo **non** viene dimensionato dal sizer: come in Graphviz nativo headless,
-   il nodo mantiene il suo riquadro normale e l'immagine viene disegnata al suo interno.
+   [Uso nel browser](/it/guide/browser) e di nuovo più sotto per Node). L'attributo `image=` di un nodo viene dimensionato dallo stesso sizer e disegnato all'interno del nodo, come una cella `<IMG>`; `imagescale` e `imagepos` si applicano alle immagini dei nodi, mentre `<IMG>` usa il proprio attributo `SCALE` ed è centrata. L'unità restituita dal sizer è descritta in [`setImageSizer`](/it/guide/api#setimagesizer-setimageresolver).
 3. Il layout viene eseguito usando le dimensioni restituite dal tuo sizer per ogni `<IMG>`.
 4. L'emettitore SVG (`usershape()` in `src/render/svg.ts`) scrive
    `<image xlink:href="...">` con il riquadro calcolato al passo 3. Per impostazione predefinita

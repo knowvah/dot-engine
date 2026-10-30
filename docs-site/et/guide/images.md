@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Pildid
 
@@ -24,9 +24,7 @@ nähtavale tuua, ja igaühe CSP-tagajärgi.
    et lahtri suurus määrata, enne kui saab midagi muud paigutada — teek ei puuduta
    selle väljaselgitamiseks kunagi failisüsteemi ega võrku, seega registreerite
    mõõtja (`setImageSizer`, mida käsitletakse jaotises
-   [Kasutamine brauseris](/et/guide/browser) ja allpool uuesti Node'i jaoks). Sõlme
-   `image=`-atribuuti mõõtja **ei mõõda**: nagu peata natiivne
-   Graphviz, jätab sõlm oma tavalise kasti ja pilt joonistatakse selle sisse.
+   [Kasutamine brauseris](/et/guide/browser) ja allpool uuesti Node'i jaoks). Sõlme `image=`-atribuuti mõõdetakse sama mõõtjaga ja see joonistatakse sõlme sisse, nagu ka `<IMG>`-lahter; `imagescale` ja `imagepos` kehtivad sõlme piltide kohta, `<IMG>` kasutab aga oma `SCALE`-atribuuti ja on keskel. Mõõtja tagastatava ühiku kirjeldus on jaotises [`setImageSizer`](/et/guide/api#setimagesizer-setimageresolver).
 3. Paigutus töötab, kasutades mõõtmeid, mille teie mõõtja iga `<IMG>` kohta tagastas.
 4. SVG-väljastaja (`src/render/svg.ts` funktsioon `usershape()`) kirjutab
    `<image xlink:href="...">` sammus 3 arvutatud kastiga. Vaikimisi on

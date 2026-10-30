@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # Référence de l’API
@@ -165,6 +165,8 @@ tant qu’un appelant n’en a pas enregistré un :
   ci-dessous) — fournit les *octets* réels de l’image afin que le moteur de
   rendu SVG puisse les incorporer sous forme d’URI `data:` au lieu d’émettre
   `xlink:href="src"` en simple passage direct.
+
+Le sizer renvoie des **pixels intrinsèques**. La disposition les convertit en points au `dpi` du graphe (96 par défaut) et, pour le `image=` d’un nœud, ajoute 2 pt de marge ; le moteur de rendu dessine l’image au dpi de la sortie (72 pour SVG et xdot sauf si `dpi` est défini), comme Graphviz natif. Par exemple, une image de 40×20 px sur un nœud réserve 30×15 pt (plus la marge) à la disposition et est dessinée en 40×20 en SVG.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

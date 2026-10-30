@@ -29,6 +29,7 @@ import type { RendererPlugin } from '../gvc/context.js';
 import type { TextSpan } from './emit-types.js';
 import type { PlacedHtml, PlacedCell, PlacedLine, PlacedImage } from './htmltable-pos.js';
 import { transformPoint } from '../gvc/device.js';
+import { gvrenderUsershape } from '../gvc/render-usershape.js';
 import { gvrenderTextspan } from '../gvc/textspan-emit.js';
 import {
   withHtmlPaint, findHtmlStopColor, doBorder, mkPts,
@@ -194,61 +195,25 @@ function emitCellDecoration(
   }
 }
 
-/** Scale the intrinsic image size per the IMG SCALE attribute. */
-function scaleImage(d: { iw: number; ih: number; pw: number; ph: number; scale?: string }):
-    { iw: number; ih: number } {
-  const sx = d.pw / d.iw;
-  const sy = d.ph / d.ih;
-  const mode = (d.scale ?? '').toLowerCase();
-  if (mode === 'width') return { iw: d.iw * sx, ih: d.ih };
-  if (mode === 'height') return { iw: d.iw, ih: d.ih * sy };
-  if (mode === 'both') return { iw: d.iw * sx, ih: d.ih * sy };
-  if (mode === 'true' || mode === 'yes' || mode === '1') {
-    const f = Math.min(sx, sy);
-    return { iw: d.iw * f, ih: d.ih * f };
-  }
-  return { iw: d.iw, ih: d.ih };
-}
-
 /**
- * Emit a placed HTML IMG through the renderer's usershape hook.
+ * Emit a placed HTML IMG through the shared gvrender_usershape: the cell's
+ * content box is the polygon, imagepos is the fixed "mc", and the scale is the
+ * IMG's own SCALE, else the object's imagescale (C env->imgscale).
  *
- * Ports gvrender_usershape: compute the target box from the placed
- * box, apply the SCALE modes against the intrinsic size, then center
- * the result (imagepos "mc" — hardcoded by emit_html_img).
- *
- * SCALE falls back to the object's imagescale attribute (C
- * env->imgscale, default "false") when the IMG has no SCALE attr.
- *
- * @see lib/common/htmltable.c:emit_html_img (line 597)
- * @see lib/gvc/gvrender.c:gvrender_usershape (line 670)
+ * @see lib/common/htmltable.c:emit_html_img
+ * @see lib/gvc/gvrender.c:gvrender_usershape
  */
 export function emitHtmlImg(
   img: PlacedImage,
   pos: Point,
-  renderer: RendererPlugin,
+  _renderer: RendererPlugin,
   job: RenderJob,
 ): void {
-  if (img.iw <= 0 && img.ih <= 0) return; // C: zero-size image → skip
-  const b: Box = {
-    ll: { x: img.box.ll.x + pos.x, y: img.box.ll.y + pos.y },
-    ur: { x: img.box.ur.x + pos.x, y: img.box.ur.y + pos.y },
-  };
-  const pw = b.ur.x - b.ll.x;
-  const ph = b.ur.y - b.ll.y;
-  // @see lib/common/htmltable.c:emit_html_img (:615-618)
+  const ll = { x: img.box.ll.x + pos.x, y: img.box.ll.y + pos.y };
+  const ur = { x: img.box.ur.x + pos.x, y: img.box.ur.y + pos.y };
+  const a: Point[] = [ur, { x: ll.x, y: ur.y }, ll, { x: ur.x, y: ll.y }];
   const scale = img.scale !== undefined ? img.scale : htmlObjImgscale();
-  const { iw, ih } = scaleImage({ iw: img.iw, ih: img.ih, pw, ph, scale });
-  // imagepos "mc": center the (possibly scaled) image in the target box
-  if (iw < pw) {
-    b.ll.x += (pw - iw) / 2.0;
-    b.ur.x -= (pw - iw) / 2.0;
-  }
-  if (ih < ph) {
-    b.ll.y += (ph - ih) / 2.0;
-    b.ur.y -= (ph - ih) / 2.0;
-  }
-  renderer.usershape?.(img.src, b, job);
+  gvrenderUsershape(job, img.src, a, true, scale, 'mc');
 }
 
 /**

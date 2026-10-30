@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # ブラウザーでの利用
 
@@ -96,9 +96,7 @@ if (fontIssues.length > 0) {
 ## 外部画像: `setImageSizer` {#external-images-setimagesizer}
 
 HTML ライクなラベルに外部画像（`<IMG SRC="logo.png"/>`）が含まれる場合、Graphviz はセルの
-サイズを決めるために、その画像の本来の寸法を必要とします。（ノードの `image=` 属性は
-サイズ決定の対象ではありません。ヘッドレスのネイティブ Graphviz と同様に、ノードは通常のボックスの
-ままです。）ライブラリはファイルシステムを読めないため、サイザーを自分で用意します。
+サイズを決めるために、その画像の本来の寸法を必要とします。（ノードの `image=` 属性も同じサイザーでサイズが決まり、描画されます。サイザーが返す単位は[`setImageSizer`](/ja/guide/api#setimagesizer-setimageresolver)で説明しています。）ライブラリはファイルシステムを読めないため、サイザーを自分で用意します。
 
 ```ts
 import { setImageSizer } from '@knowvah/dot-engine';

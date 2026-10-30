@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Használat böngészőben
 
@@ -104,9 +104,7 @@ Hogy a tisztító mit távolít el és mit hagy meg, azt a README „Security”
 ## Külső képek: `setImageSizer`
 
 Ha egy HTML-szerű címke külső képet tartalmaz (`<IMG SRC="logo.png"/>`), a
-Graphviznek szüksége van a kép belső méreteire a cella méretezéséhez. (A csúcs
-`image=` attribútuma nincs méretezve: a csúcs megtartja a normál dobozát, mint a
-fej nélküli natív Graphvizben.) Mivel a könyvtár nem tud olvasni a fájlrendszerből,
+Graphviznek szüksége van a kép belső méreteire a cella méretezéséhez. (A csúcs `image=` attribútumát ugyanaz a méretező méretezi, és kirajzolódik; a méretező által visszaadott mértékegységet a [`setImageSizer`](/hu/guide/api#setimagesizer-setimageresolver) ismerteti.) Mivel a könyvtár nem tud olvasni a fájlrendszerből,
 Önnek kell megadnia egy méretezőt:
 
 ```ts

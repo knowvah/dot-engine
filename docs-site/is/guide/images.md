@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Myndir
 
@@ -24,9 +24,7 @@ birtast og CSP-áhrif hverrar leiðar.
    breidd/hæð** myndarinnar til að ákvarða stærð hólfsins áður en það getur raðað nokkru öðru upp —
    safnið snertir aldrei skráakerfið eða netið til að komast að þessu, svo
    þú skráir mæli (`setImageSizer`, fjallað um í
-   [Notkun í vafra](/is/guide/browser) og aftur hér fyrir neðan fyrir Node). Eigindið `image=` á hnút
-   er **ekki** mælt af mælinum: eins og í innbyggðu Graphviz án skjás
-   heldur hnúturinn venjulegum kassa sínum og myndin er teiknuð inn í hann.
+   [Notkun í vafra](/is/guide/browser) og aftur hér fyrir neðan fyrir Node). Eigindið `image=` á hnút er mælt með sama mæli og teiknað inn í hnútinn, rétt eins og `<IMG>`-hólf; `imagescale` og `imagepos` gilda um myndir hnúta, en `<IMG>` notar `SCALE`-eigindi sitt og er miðjað. Einingin sem mælirinn skilar er lýst í [`setImageSizer`](/is/guide/api#setimagesizer-setimageresolver).
 3. Uppsetning keyrir með þeim víddum sem mælirinn þinn skilaði fyrir hvert `<IMG>`.
 4. SVG-útgefandinn (`usershape()` í `src/render/svg.ts`) skrifar
    `<image xlink:href="...">` með kassanum sem reiknaður var í skrefi 3. Sjálfgefið er

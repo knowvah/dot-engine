@@ -22,8 +22,10 @@ show up, and the CSP implications of each.
    library never touches the filesystem or the network to find this out, so
    you register a sizer (`setImageSizer`, covered in
    [Browser usage](/guide/browser) and again below for Node). A node's
-   `image=` attribute is **not** sized by the sizer: like headless native
-   Graphviz, the node keeps its normal box and the image is drawn into it.
+   `image=` attribute is sized through the same sizer and drawn into the node,
+   as is an `<IMG>` cell; `imagescale` and `imagepos` apply to node images,
+   while an `<IMG>` uses its `SCALE` attribute and is centred. The unit the
+   sizer returns is described under [`setImageSizer`](/guide/api#setimagesizer-setimageresolver).
 3. Layout runs using the dimensions your sizer returned for each `<IMG>`.
 4. The SVG emitter (`src/render/svg.ts`'s `usershape()`) writes
    `<image xlink:href="...">` with the box computed in step 3. By default the

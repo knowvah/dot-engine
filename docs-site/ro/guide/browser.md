@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Utilizare în browser
 
@@ -100,8 +100,7 @@ curățătorul și păstrați o Content-Security-Policy activă.
 
 Când o etichetă de tip HTML conține o imagine externă
 (`<IMG SRC="logo.png"/>`), Graphviz are nevoie de dimensiunile intrinseci ale imaginii pentru a
-dimensiona celula. (Atributul `image=` al unui nod nu este dimensionat: nodul își păstrează
-caseta normală, ca în Graphviz nativ fără interfață grafică.) Deoarece biblioteca nu poate
+dimensiona celula. (Atributul `image=` al unui nod este dimensionat de același măsurător și desenat; unitatea returnată de măsurător este descrisă în [`setImageSizer`](/ro/guide/api#setimagesizer-setimageresolver).) Deoarece biblioteca nu poate
 citi sistemul de fișiere, furnizați dumneavoastră un măsurător de dimensiuni:
 
 ```ts

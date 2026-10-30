@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Images
 
@@ -24,9 +24,7 @@ apparaître les pixels, et les implications de chacune pour la CSP.
    intrinsèque** de l’image pour dimensionner la cellule avant de pouvoir disposer quoi que ce soit d’autre — la
    bibliothèque ne touche jamais au système de fichiers ni au réseau pour l’apprendre,
    vous enregistrez donc un sizer (`setImageSizer`, présenté dans
-   [Utilisation dans le navigateur](/fr/guide/browser) et de nouveau ci-dessous pour Node). L’attribut
-   `image=` d’un nœud n’est **pas** dimensionné par le sizer : comme Graphviz
-   natif sans interface, le nœud conserve sa boîte normale et l’image y est dessinée.
+   [Utilisation dans le navigateur](/fr/guide/browser) et de nouveau ci-dessous pour Node). L’attribut `image=` d’un nœud est dimensionné par le même sizer et dessiné dans le nœud, tout comme une cellule `<IMG>` ; `imagescale` et `imagepos` s’appliquent aux images de nœud, tandis que `<IMG>` utilise son attribut `SCALE` et est centrée. L’unité que renvoie le sizer est décrite dans [`setImageSizer`](/fr/guide/api#setimagesizer-setimageresolver).
 3. La disposition s’exécute avec les dimensions que votre sizer a renvoyées pour chaque `<IMG>`.
 4. L’émetteur SVG (`usershape()` dans `src/render/svg.ts`) écrit
    `<image xlink:href="...">` avec la boîte calculée à l’étape 3. Par défaut, le

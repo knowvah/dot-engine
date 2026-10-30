@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API 참고 자료
@@ -145,6 +145,8 @@ function getTextMeasurer(): TextMeasurer;
 - **`setImageResolver`**(신규 — 아래 [`inlineImages`](#inlineimages) 참조) —
   SVG 렌더러가 `xlink:href="src"`를 그대로 내보내는 대신 `data:` URI로 인라인할 수
   있도록 실제 이미지 *바이트*를 제공합니다.
+
+측정기는 **이미지의 고유 픽셀 수**를 반환합니다. 레이아웃은 이를 그래프의 `dpi`(기본값 96)로 포인트로 변환하고, 노드의 `image=`에는 2pt 패딩을 더합니다. 렌더러는 네이티브 Graphviz와 마찬가지로 출력의 dpi(`dpi`를 지정하지 않으면 SVG와 xdot은 72)로 이미지를 그립니다. 예를 들어 노드에 있는 40×20 px 이미지는 레이아웃에서 30×15pt(패딩 별도)를 확보하고 SVG에서는 40×20으로 그려집니다.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

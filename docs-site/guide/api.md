@@ -145,6 +145,12 @@ clear), both no-ops until a caller registers one:
   supplies the actual image *bytes* so the SVG renderer can inline them as a
   `data:` URI instead of emitting `xlink:href="src"` as a raw passthrough.
 
+The sizer reports **intrinsic pixels**. Layout converts them to points at the
+graph's `dpi` (default 96) and, for a node's `image=`, adds 2 pt of padding; the
+renderer draws the image at the output's dpi (72 for SVG and xdot unless `dpi`
+is set), as native Graphviz does. For example, a 40×20 px image on a node
+reserves 30×15 pt (plus the padding) at layout and is drawn 40×20 in SVG.
+
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;
 function setImageSizer(sizer: ImageSizer | null): void;

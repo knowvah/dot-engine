@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Obrázky
 
@@ -24,9 +24,7 @@ skutočne zobrazili, a dôsledkom každého z nich pre CSP.
    šírku/výšku** obrázka, aby mohol určiť veľkosť bunky skôr, než môže rozložiť čokoľvek iné —
    knižnica sa nikdy nedotkne súborového systému ani siete, aby to zistila, takže
    zaregistrujete merač (`setImageSizer`, opísaný v časti
-   [Použitie v prehliadači](/sk/guide/browser) a znova nižšie pre Node). Atribút uzla
-   `image=` merač **nemeria**: podobne ako natívny Graphviz bez displeja si
-   uzol ponechá svoj bežný rámček a obrázok sa do neho nakreslí.
+   [Použitie v prehliadači](/sk/guide/browser) a znova nižšie pre Node). Atribút `image=` uzla sa meria tým istým meračom a vykresľuje sa do uzla, rovnako ako bunka `<IMG>`; `imagescale` a `imagepos` platia pre obrázky uzlov, zatiaľ čo `<IMG>` používa svoj atribút `SCALE` a je vycentrovaný. Jednotka, ktorú merač vracia, je opísaná v časti [`setImageSizer`](/sk/guide/api#setimagesizer-setimageresolver).
 3. Rozloženie beží s rozmermi, ktoré váš merač vrátil pre každý `<IMG>`.
 4. Emitor SVG (`usershape()` v `src/render/svg.ts`) zapíše
    `<image xlink:href="...">` s rámčekom vypočítaným v kroku 3. Štandardne je

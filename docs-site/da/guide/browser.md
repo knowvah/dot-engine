@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Brug i browseren
 
@@ -104,8 +104,7 @@ for, hvad renseren fjerner og beholder, og hav en Content-Security-Policy på pl
 
 Når en HTML-lignende etiket indeholder et eksternt billede
 (`<IMG SRC="logo.png"/>`), har Graphviz brug for billedets iboende dimensioner for
-at dimensionere cellen. (En knudes `image=`-attribut dimensioneres ikke: knuden
-beholder sin normale boks, som i headless native Graphviz.) Fordi biblioteket ikke
+at dimensionere cellen. (En knudes `image=`-attribut dimensioneres af samme måler og tegnes; den enhed, målen returnerer, er beskrevet under [`setImageSizer`](/da/guide/api#setimagesizer-setimageresolver).) Fordi biblioteket ikke
 kan læse filsystemet, leverer du en måler:
 
 ```ts

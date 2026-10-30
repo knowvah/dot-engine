@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Utilisation dans le navigateur
 
@@ -100,8 +100,7 @@ supprime et conserve, et maintenez une Content-Security-Policy en place.
 
 Lorsqu’une étiquette de type HTML contient une image externe
 (`<IMG SRC="logo.png"/>`), Graphviz a besoin des dimensions intrinsèques de cette image pour
-dimensionner la cellule. (L’attribut `image=` d’un nœud n’est pas dimensionné : le nœud conserve sa
-boîte normale, comme dans Graphviz natif sans interface.) Comme la bibliothèque ne peut pas
+dimensionner la cellule. (L’attribut `image=` d’un nœud est dimensionné par le même sizer et dessiné ; l’unité que renvoie le sizer est décrite dans [`setImageSizer`](/fr/guide/api#setimagesizer-setimageresolver).) Comme la bibliothèque ne peut pas
 lire le système de fichiers, vous fournissez un sizer :
 
 ```ts

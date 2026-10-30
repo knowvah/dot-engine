@@ -13,7 +13,7 @@
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
-import type { Point } from '../model/geom.js';
+import type { Box, Point } from '../model/geom.js';
 import type { TextSpan } from '../common/emit-types.js';
 import type { ArrowDrawOp } from '../common/arrows-types.js';
 import type { GVColor } from '../common/color.js';
@@ -361,6 +361,17 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
     buf.push(this.styleOp(job), this.penOp(job), xdotPoints('L', pts));
   }
 
+  /**
+   * The `I` op: `x y w h` of the box, then the image name as an xdot string.
+   * @see plugin/core/gvrender_core_dot.c:core_loadimage_xdot
+   */
+  usershape(src: string, b: Box, job: RenderJob): void {
+    this.getBuf(job).push(
+      'I ', xdotPoint(b.ll), xdotNum(b.ur.x - b.ll.x) + ' ' + xdotNum(b.ur.y - b.ll.y) + ' ',
+      xdotStrOp('', src),
+    );
+  }
+
   // --- graphics-state ops ------------------------------------------------
 
   /** Pen color op from the resolved graphics state (default black). */
@@ -482,6 +493,8 @@ export class DotRenderer extends XdotRenderer {
   override polygon(_pts: Point[], _filled: boolean, _job: RenderJob): void { /* no-op */ }
   override bezier(_pts: Point[], _filled: boolean, _job: RenderJob): void { /* no-op */ }
   override polyline(_pts: Point[], _job: RenderJob): void { /* no-op */ }
+  /** No loadimage engine for "dot" (only "<type>:xdot"). */
+  override usershape(_src: string, _b: Box, _job: RenderJob): void { /* no-op */ }
 }
 
 /** @see plugin/core/gvrender_core_dot.c FORMAT_DOT */

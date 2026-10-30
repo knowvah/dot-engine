@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Bilder
 
@@ -24,9 +24,7 @@ und die CSP-Auswirkungen jedes Weges.
    Breite/Höhe** des Bildes, um die Zelle zu dimensionieren, bevor irgendetwas anderes
    angeordnet werden kann — die Bibliothek greift dafür nie auf Dateisystem oder Netzwerk
    zu, daher registrieren Sie einen Sizer (`setImageSizer`, behandelt unter
-   [Im Browser verwenden](/de/guide/browser) und unten nochmals für Node). Das Attribut
-   `image=` eines Knotens wird vom Sizer **nicht** vermessen: Wie im headless nativen
-   Graphviz behält der Knoten seinen normalen Kasten, und das Bild wird hineingezeichnet.
+   [Im Browser verwenden](/de/guide/browser) und unten nochmals für Node). Das Attribut `image=` eines Knotens wird über denselben Sizer bemessen und in den Knoten gezeichnet, ebenso eine `<IMG>`-Zelle; `imagescale` und `imagepos` gelten für Knotenbilder, während `<IMG>` sein `SCALE`-Attribut verwendet und zentriert wird. Die Einheit, die der Sizer zurückgibt, ist unter [`setImageSizer`](/de/guide/api#setimagesizer-setimageresolver) beschrieben.
 3. Das Layout läuft mit den Abmessungen, die Ihr Sizer für jedes `<IMG>` zurückgab.
 4. Der SVG-Emitter (`usershape()` in `src/render/svg.ts`) schreibt
    `<image xlink:href="...">` mit dem in Schritt 3 berechneten Kasten. Standardmäßig ist

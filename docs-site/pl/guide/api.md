@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # Referencja API
@@ -157,6 +157,8 @@ zarejestruje:
 - **`setImageResolver`** (nowość — zobacz niżej [`inlineImages`](#inlineimages))
   — dostarcza właściwe *bajty* obrazu, aby renderer SVG mógł osadzić je jako URI
   `data:` zamiast emitować `xlink:href="src"` jako surowe przepuszczenie.
+
+Miernik zwraca **piksele własne** obrazu. Układ przelicza je na punkty przy `dpi` grafu (domyślnie 96) i dla `image=` węzła dodaje 2 pt marginesu; moduł renderujący rysuje obraz przy dpi wyjścia (72 dla SVG i xdot, o ile nie ustawiono `dpi`), tak jak natywny Graphviz. Na przykład obraz 40×20 px na węźle rezerwuje w układzie 30×15 pt (plus margines) i jest rysowany jako 40×20 w SVG.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

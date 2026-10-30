@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Kuvat
 
@@ -24,9 +24,7 @@ näkyviin ja kunkin CSP-vaikutukset.
    leveyden/korkeuden** solun mitoittamiseen, ennen kuin se voi asetella mitään muuta — kirjasto
    ei koskaan kosketa tiedostojärjestelmään tai verkkoon selvittääkseen sitä, joten
    rekisteröit mittaajan (`setImageSizer`, katso
-   [Käyttö selaimessa](/fi/guide/browser) ja uudelleen alla Nodea varten). Solmun
-   `image=`-attribuuttia mittaaja **ei** mitoita: kuten ilman selainta ajettavassa natiivissa
-   Graphvizissa, solmu säilyttää normaalin laatikkonsa ja kuva piirretään sen sisään.
+   [Käyttö selaimessa](/fi/guide/browser) ja uudelleen alla Nodea varten). Solmun `image=`-attribuutti mitoitetaan samalla mittaajalla ja piirretään solmun sisään, samoin kuin `<IMG>`-solu; `imagescale` ja `imagepos` koskevat solmujen kuvia, kun taas `<IMG>` käyttää `SCALE`-attribuuttiaan ja keskitetään. Mittaajan palauttama yksikkö on kuvattu kohdassa [`setImageSizer`](/fi/guide/api#setimagesizer-setimageresolver).
 3. Asettelu ajetaan käyttäen mittoja, jotka mittaajasi palautti kullekin `<IMG>`-solulle.
 4. SVG-emitteri (`src/render/svg.ts`-tiedoston `usershape()`) kirjoittaa
    `<image xlink:href="...">` vaiheessa 3 lasketulla laatikolla. Oletuksena

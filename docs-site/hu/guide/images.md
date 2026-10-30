@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # Képek
 
@@ -25,8 +25,7 @@ a képpontok ténylegesen megjelenjenek, és mindegyik CSP-vonzatait.
    a könyvtár ennek kiderítéséhez soha nem nyúl a fájlrendszerhez vagy a hálózathoz,
    ezért Ön regisztrál egy méretezőt (`setImageSizer`, tárgyalva a
    [Használat böngészőben](/hu/guide/browser) oldalon, és alább még egyszer Node-hoz).
-   A csúcs `image=` attribútumát a méretező **nem** méretezi: a fej nélküli natív
-   Graphvizhez hasonlóan a csúcs megtartja a normál dobozát, és a kép beléje rajzolódik.
+   A csúcs `image=` attribútumát ugyanaz a méretező méretezi, és a csúcsba rajzolódik, akárcsak az `<IMG>` cellát; az `imagescale` és az `imagepos` a csúcsképekre vonatkozik, az `<IMG>` viszont a `SCALE` attribútumát használja, és középre kerül. A méretező által visszaadott mértékegységet a [`setImageSizer`](/hu/guide/api#setimagesizer-setimageresolver) ismerteti.
 3. Az elrendezés azokkal a méretekkel fut, amelyeket a méretezője az egyes `<IMG>`
    elemekhez visszaadott.
 4. Az SVG-kibocsátó (a `src/render/svg.ts` `usershape()` függvénye) a 3. lépésben

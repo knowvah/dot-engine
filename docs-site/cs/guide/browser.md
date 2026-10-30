@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Použití v prohlížeči
 
@@ -99,8 +99,7 @@ a ponechte zavedenou Content-Security-Policy.
 
 Když popisek ve stylu HTML obsahuje externí obrázek
 (`<IMG SRC="logo.png"/>`), Graphviz potřebuje vlastní rozměry tohoto obrázku, aby
-určil velikost buňky. (Atribut `image=` uzlu se neměří: uzel si ponechá svůj
-běžný rámeček, stejně jako v nativním Graphviz bez displeje.) Protože knihovna nemůže
+určil velikost buňky. (Atribut `image=` uzlu se měří stejným měřičem a vykresluje se; jednotka, kterou měřič vrací, je popsána v části [`setImageSizer`](/cs/guide/api#setimagesizer-setimageresolver).) Protože knihovna nemůže
 číst souborový systém, dodáte měřič:
 
 ```ts

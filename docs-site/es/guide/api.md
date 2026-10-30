@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # Referencia de la API
@@ -161,6 +161,8 @@ que quien llama registra uno:
   abajo): proporciona los *bytes* reales de la imagen para que el renderizador
   SVG pueda incrustarlos como URI `data:` en lugar de emitir `xlink:href="src"`
   tal cual.
+
+El dimensionador devuelve **píxeles intrínsecos**. El diseño los convierte a puntos con el `dpi` del grafo (96 por defecto) y, para el `image=` de un nodo, suma 2 pt de relleno; el renderizador dibuja la imagen al dpi de la salida (72 para SVG y xdot salvo que se fije `dpi`), como hace Graphviz nativo. Por ejemplo, una imagen de 40×20 px en un nodo reserva 30×15 pt (más el relleno) en el diseño y se dibuja de 40×20 en SVG.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

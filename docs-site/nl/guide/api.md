@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API-referentie
@@ -161,6 +161,8 @@ registreert:
   — levert de daadwerkelijke afbeeldings*bytes*, zodat de SVG-renderer ze als
   `data:`-URI kan inlinen in plaats van `xlink:href="src"` als ruwe doorgifte uit
   te geven.
+
+De sizer geeft **intrinsieke pixels** terug. De lay-out rekent deze om naar punten bij de `dpi` van de graaf (standaard 96) en telt voor de `image=` van een knoop 2 pt opvulling erbij; de renderer tekent de afbeelding bij de dpi van de uitvoer (72 voor SVG en xdot tenzij `dpi` is ingesteld), zoals native Graphviz. Een afbeelding van 40×20 px op een knoop reserveert bijvoorbeeld 30×15 pt (plus opvulling) in de lay-out en wordt in SVG als 40×20 getekend.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

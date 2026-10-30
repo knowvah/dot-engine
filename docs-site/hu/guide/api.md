@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API-referencia
@@ -163,6 +163,8 @@ nem regisztrál egyet:
   részt) — a tényleges kép *bájtjait* adja meg, hogy az SVG-renderelő
   `data:` URI-ként beágyazhassa őket ahelyett, hogy az `xlink:href="src"`
   értéket nyersen átengedné.
+
+A méretező **belső pixeleket** ad vissza. Az elrendezés ezeket pontokká alakítja a gráf `dpi` értékével (alapértelmezés 96), és a csúcs `image=` attribútumához 2 pt kitöltést ad; a megjelenítő a kimenet dpi értékén rajzolja a képet (SVG és xdot esetén 72, hacsak nincs `dpi` beállítva), ahogy a natív Graphviz is. Például egy 40×20 px-es kép egy csúcson az elrendezésben 30×15 pontot foglal (plusz a kitöltés), és SVG-ben 40×20 méretben rajzolódik ki.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;

@@ -1,5 +1,5 @@
 ---
-sourceHash: 96b80725180c7f6708fcc435c4ad98ed934b7e558b1db664f454212b152ed64d
+sourceHash: 895435e377f7ee4c116dd8a9140e0f632f2e8f58daf584d8860773325108ca3b
 ---
 # Gebruik in de browser
 
@@ -103,8 +103,7 @@ Content-Security-Policy aan.
 
 Wanneer een HTML-achtig label een externe afbeelding bevat
 (`<IMG SRC="logo.png"/>`), heeft Graphviz de intrinsieke afmetingen van die afbeelding nodig
-om de cel te dimensioneren. (Het attribuut `image=` van een knoop wordt niet gemeten:
-de knoop behoudt zijn normale kader, zoals in headless native Graphviz.) Omdat de
+om de cel te dimensioneren. (Het attribuut `image=` van een knoop wordt door dezelfde sizer gedimensioneerd en getekend; de eenheid die de sizer teruggeeft staat beschreven onder [`setImageSizer`](/nl/guide/api#setimagesizer-setimageresolver).) Omdat de
 bibliotheek het bestandssysteem niet kan lezen, levert u zelf een sizer:
 
 ```ts

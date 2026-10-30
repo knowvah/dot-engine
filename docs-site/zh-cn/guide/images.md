@@ -1,5 +1,5 @@
 ---
-sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
+sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
 ---
 # 使用图像
 
@@ -20,8 +20,7 @@ sourceHash: caef116c0b8959819373d82660fc2c5014f4b538fd6e44c6110d42251eff3955
 2. 对于类 HTML 的 `<IMG>` 单元格，Graphviz 需要先知道图像的**固有宽度/高度**才能确定单元格大小，
    然后才能布局其他内容——库绝不会访问文件系统或网络来获知这一点，
    因此需要您注册一个尺寸器（`setImageSizer`，在[在浏览器中使用](/zh-cn/guide/browser)中介绍，
-   下文也会针对 Node 再次说明）。节点的 `image=` 属性**不会**由尺寸器确定尺寸：
-   与无头原生 Graphviz 一样，节点保持其正常的方框，图像被绘制在其中。
+   下文也会针对 Node 再次说明）。节点的 `image=` 属性通过同一个尺寸器确定尺寸，并与 `<IMG>` 单元格一样绘制在节点中；`imagescale` 和 `imagepos` 适用于节点图像，而 `<IMG>` 使用其 `SCALE` 属性并居中。尺寸器返回值的单位见[`setImageSizer`](/zh-cn/guide/api#setimagesizer-setimageresolver)。
 3. 布局使用您的尺寸器为每个 `<IMG>` 返回的尺寸运行。
 4. SVG 输出器（`src/render/svg.ts` 的 `usershape()`）写出 `<image xlink:href="...">`，
    其方框由第 3 步计算得出。默认情况下，`href` 就是原始的 `src` 字符串，经过 XML 转义，别无其他。

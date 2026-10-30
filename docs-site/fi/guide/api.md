@@ -1,5 +1,5 @@
 ---
-sourceHash: e2e54229b04c577dfb514c415c7f02fd786b797b5bfc7a4bbf2e4192d03d0c09
+sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
 ---
 
 # API-viite
@@ -164,6 +164,8 @@ ovat tyhjiä operaatioita, kunnes kutsuja rekisteröi sellaisen:
   toimittaa varsinaiset kuvan *tavut*, jotta SVG-renderöijä voi upottaa ne
   `data:`-URI:ksi sen sijaan, että se lähettäisi `xlink:href="src"` raakana
   läpivientinä.
+
+Mittaaja palauttaa **luontaiset pikselit**. Asettelu muuntaa ne pisteiksi graafin `dpi`-arvolla (oletus 96) ja lisää solmun `image=`-kuvaan 2 pt:n täytteen; renderöijä piirtää kuvan tulosteen dpi-arvolla (SVG:lle ja xdotille 72, ellei `dpi`-arvoa ole asetettu), kuten natiivi Graphviz. Esimerkiksi 40×20 px:n kuva solmussa varaa asettelussa 30×15 pt (lisäksi täyte) ja piirretään SVG:ssä kokoon 40×20.
 
 ```ts
 type ImageSizer = (src: string) => { w: number; h: number } | null;
