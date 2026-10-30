@@ -15,7 +15,7 @@ text disagrees with native, native wins and the journal says so.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T2](T2-poly-init-keying.md) | Item 97: key `poly_init` on `usershape && name == custom` | typescript-pro | `src/common/poly-init.ts`, `src/common/shapes.ts` (+ tests) | T0 | [ ] |
-| [T3](T3-colon-fill-names.md) | Items 98–99: `":red"` in point-node and edge-arrowhead fills | typescript-pro | `src/common/poly-gencode.ts` (point path), `src/render/color-resolve.ts`, the T0-named arrow-fill site (+ tests) | T0 | [ ] |
-| [T4](T4-svg-rotation.md) | Item 100: `core_loadimage_svg` rotation branch | typescript-pro | `src/render/svg.ts` (+ tests) | T0 | [ ] |
-| [T6](T6-image-type.md) | Item 101: `imagetype` sniff, `No loadimage plugin`, `FT_NULL` | typescript-pro | `src/gvc/image-type.ts` (new), `src/gvc/usershape.ts`, `src/gvc/render-usershape.ts`, `src/render/json.ts` (+ tests) | T0 | [ ] |
+| [T2](T2-poly-init-keying.md) | Item 97: key `poly_init` on `usershape && name == custom` | typescript-pro | `src/common/poly-init.ts`, `src/common/shapes.ts` (+ tests) | T0 | [x] |
+| [T3](T3-colon-fill-names.md) | Items 98–99: `":red"` in point-node and edge-arrowhead fills | typescript-pro | `src/common/poly-gencode.ts` (point path), `src/render/color-resolve.ts`, the T0-named arrow-fill site (+ tests) | T0 | [x] |
+| [T4](T4-svg-rotation.md) | Item 100: `core_loadimage_svg` rotation branch | typescript-pro | `src/render/svg.ts` (+ tests) | T0 | [x] |
+| [T6](T6-image-type.md) | Item 101: `imagetype` sniff, `No loadimage plugin`, `FT_NULL` | typescript-pro | `src/gvc/image-type.ts` (new), `src/gvc/usershape.ts`, `src/gvc/render-usershape.ts`, `src/render/json.ts` (+ tests) | T0 | [x] |

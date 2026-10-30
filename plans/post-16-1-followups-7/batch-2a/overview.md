@@ -16,6 +16,6 @@ Never add a path to `~/.claude/hooks/complexity-ignore`.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T1](T1-cola-prologue.md) | Item 95: cola prologue plus fused right-multiply (staged patch) | typescript-pro | `src/layout/neato/stress-kernel.ts`, `stress-kernel.fused.test.ts`; un-skip `ipsep-probes.test.ts` | T0 | [ ] |
-| [T5](T5-quad-prog-vpsc.md) | Item 96a: port `quad_prog_vpsc.c` | typescript-pro (opus) | `src/layout/neato/quad-prog-vpsc.ts`, `quad-prog-vpsc-overlap.ts` (new), `vpsc-adjust.ts` (+ tests, `__fixtures__/quad-prog-vpsc.ts`) | T0 | [ ] |
-| [T7](T7-stress-models.md) | Item 96a: subset and circuit distance models | typescript-pro (opus) | `src/layout/neato/lu.ts`, `matinv.ts`, `circuit.ts`, `stress-models.ts` (new) (+ tests) | T0 | [ ] |
+| [T1](T1-cola-prologue.md) | Item 95: cola prologue plus fused right-multiply (staged patch) | typescript-pro | `src/layout/neato/stress-kernel.ts`, `stress-kernel.fused.test.ts`; un-skip `ipsep-probes.test.ts` | T0 | [x] |
+| [T5](T5-quad-prog-vpsc.md) | Item 96a: port `quad_prog_vpsc.c` | typescript-pro (opus) | `src/layout/neato/quad-prog-vpsc.ts`, `quad-prog-vpsc-overlap.ts` (new), `vpsc-adjust.ts` (+ tests, `__fixtures__/quad-prog-vpsc.ts`) | T0 | [x] |
+| [T7](T7-stress-models.md) | Item 96a: subset and circuit distance models | typescript-pro (opus) | `src/layout/neato/lu.ts`, `matinv.ts`, `circuit.ts`, `stress-models.ts` (new) (+ tests) | T0 | [x] |
