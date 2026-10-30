@@ -1,0 +1,3 @@
+Warning: Warning: no hard-coded metrics for 'Helvetica-Bold'.  Falling back to 'Times' metrics
+Warning: Filename "imagepath_test/image_dir/image.jpg" is unsafe
+Warning: No or improper image="imagepath_test/image_dir/image.jpg" for node "b"

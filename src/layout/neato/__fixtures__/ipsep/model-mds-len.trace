@@ -1,0 +1,52 @@
+dot - graphviz version 16.1.0 (20261012.1431)
+libdir = "/private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/dfc80e32-d4b2-43d1-a20b-4d2c1be89946/scratchpad/ghl16-all"
+Activated plugin library: libgvplugin_neato_layout.8.dylib
+Using layout: neato:neato_layout
+Activated plugin library: libgvplugin_core.8.dylib
+Using render: xdot:core
+Using device: xdot:xdot:core
+The plugin configuration file:
+	/private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/dfc80e32-d4b2-43d1-a20b-4d2c1be89946/scratchpad/ghl16-all/config8
+		was successfully loaded.
+    render	:  dot dot_json fig json json0 map pic pov ps svg svg_inline tk xdot xdot_json
+    layout	:  circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi
+    textlayout	: 
+    device	:  canon cmap cmapx cmapx_np dot dot_json eps fig gv imap imap_np ismap json json0 pic plain plain-ext pov ps ps2 svg svg_inline svgz tk xdot xdot1.2 xdot1.4 xdot_json
+    loadimage	:  (lib) eps gif jpe jpeg jpg png ps svg
+fontname: "Times-Roman" resolved to: [internal hard-coded]
+overlap: none value 15136480 scaling 0.0000
+pack info:
+  mode   undefined
+  size   0
+  flags  0
+Scanning graph %1, 6 nodes
+model 3 smart_init 0 stresswt 2 iterations 600 tol 0.000100
+convert graph: majorization
+6 nodes 0.00 sec
+Generating Edge Constraints...
+Node separation: add=1 (4.000000,4.000000)
+gap=0.111111,0.111111
+Calculating MDS modelmdsModel: delta = 0.000000
+: 0.00 sec
+Setting initial positions: 0.00 sec  initCMajVPSC done: 0 global constraints generated.
+  generate edge constraints...
+  initCMajVPSC done: 8 global constraints generated.
+261.285 
+5.039 4.077 3.696 2.906 2.050 1.558 1.300 1.139 1.032 0.955 
+0.893 0.837 0.785 0.737 0.699 0.671 0.652 0.641 0.635 0.632 
+0.630 0.629 0.628 0.627 0.627 0.626 0.626 0.626 0.625 0.625 
+0.625 0.624 0.624 0.624 0.623 0.623 0.623 0.623 0.622 0.622 
+0.622 0.621 0.621 0.621 0.621 0.621 0.620 0.620 0.620 0.620 
+0.619 0.619 0.619 0.619 0.619 0.618 0.618 0.618 0.618 0.618 
+0.618 0.617 0.617 0.617 0.617 0.617 0.617 0.616 0.616 0.616 
+0.616 0.616 0.616 0.616 0.616 0.615 0.615 0.615 0.615 0.615 
+0.615 0.615 0.615 0.614 0.614 0.614 0.614 0.614 0.614 0.614 
+0.614 0.614 0.614 0.613 0.613 0.613 0.613 0.613 0.613 0.613 
+0.613 0.613 0.613 0.613 0.613 0.612 0.612 0.612 0.612 0.612 
+0.612 0.612 0.612 0.612 0.612 0.612 0.612 0.612 0.612 
+final e = 0.611572 120 iterations 0.00 sec
+Edge separation: add=1 (3.200000,3.200000)
+Creating edges using line segments
+Using render: xdot:core
+Using device: xdot:xdot:core
+[Graphviz] emit.c:4323: 2026-10-30 15:33:55 gvRenderJobs %1: 0.00 secs.

@@ -1,0 +1,1 @@
+digraph{mode=ipsep; diredgeconstraints=true; a->b[len=2]; a->c; b->d[len=0.5]; c->d; d->e[len=3]; b->e; c->f; f->e}

@@ -1,0 +1,1 @@
+graph{mode=ipsep; r--a;r--b;r--c;a--a1;a--a2;b--b1;b--b2;c--c1;c--c2;c--c3}

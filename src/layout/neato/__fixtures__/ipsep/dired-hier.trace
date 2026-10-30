@@ -1,0 +1,43 @@
+dot - graphviz version 16.1.0 (20261012.1431)
+libdir = "/private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/dfc80e32-d4b2-43d1-a20b-4d2c1be89946/scratchpad/ghl16-all"
+Activated plugin library: libgvplugin_neato_layout.8.dylib
+Using layout: neato:neato_layout
+Activated plugin library: libgvplugin_core.8.dylib
+Using render: xdot:core
+Using device: xdot:xdot:core
+The plugin configuration file:
+	/private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/dfc80e32-d4b2-43d1-a20b-4d2c1be89946/scratchpad/ghl16-all/config8
+		was successfully loaded.
+    render	:  dot dot_json fig json json0 map pic pov ps svg svg_inline tk xdot xdot_json
+    layout	:  circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi
+    textlayout	: 
+    device	:  canon cmap cmapx cmapx_np dot dot_json eps fig gv imap imap_np ismap json json0 pic plain plain-ext pov ps ps2 svg svg_inline svgz tk xdot xdot1.2 xdot1.4 xdot_json
+    loadimage	:  (lib) eps gif jpe jpeg jpg png ps svg
+fontname: "Times-Roman" resolved to: [internal hard-coded]
+overlap: none value 44791520 scaling 0.0000
+pack info:
+  mode   undefined
+  size   0
+  flags  0
+Scanning graph %1, 7 nodes
+model 0 smart_init 0 stresswt 2 iterations 700 tol 0.000100
+convert graph: majorization
+7 nodes 0.00 sec
+Generating DiG-CoLa Edge Constraints...
+Node separation: add=1 (4.000000,4.000000)
+gap=0.111111,0.111111
+Calculating shortest paths: 0.00 sec
+Setting initial positions: 0.00 sec  initCMajVPSC done: 0 global constraints generated.
+Found 6 DiG-CoLa boundaries
+  initCMajVPSC done: 17 global constraints generated.
+378.561 
+7.383 5.385 4.543 3.506 2.816 2.471 2.322 2.255 2.218 2.194 
+2.176 2.161 2.148 2.136 2.125 2.114 2.102 2.090 2.076 2.061 
+2.043 2.025 2.004 1.993 1.985 1.981 1.978 1.977 1.976 1.975 
+1.974 1.974 1.974 1.974 
+final e = 1.973751 35 iterations 0.00 sec
+Edge separation: add=1 (3.200000,3.200000)
+Creating edges using line segments
+Using render: xdot:core
+Using device: xdot:xdot:core
+[Graphviz] emit.c:4323: 2026-10-30 15:33:39 gvRenderJobs %1: 0.00 secs.
