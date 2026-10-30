@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: EPL-2.0
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Shapes, bindShape } from '../common/shapes.js';
+import { resetRenderState } from './render-state.js';
 import { ShapeKind } from '../common/types.js';
 import type { NodeInfo } from '../common/types.js';
 
@@ -45,9 +46,29 @@ describe('bindShape', () => {
   });
 
   it("falls back to Shapes[0] (box) for an unknown name", () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    resetRenderState();
     const desc = bindShape('does_not_exist');
-    expect(desc.name).toBe('box');
-    expect(desc).toBe(Shapes[0]);
+    expect(desc.name).toBe('does_not_exist');
+    expect(desc.usershape).toBe(false);
+    expect(desc.polygon).toBe(Shapes[0].polygon);
+    expect(bindShape('does_not_exist')).toBe(desc);
+    expect(warn.mock.calls).toEqual([['Warning: using box for unknown shape does_not_exist']]);
+    warn.mockRestore();
+  });
+
+  it('forces custom (usershape) for a shapefile on a non-epsf shape', () => {
+    const desc = bindShape('ellipse', 'x.png');
+    expect(desc.name).toBe('custom');
+    expect(desc.usershape).toBe(true);
+    expect(bindShape('epsf', 'x.png').name).toBe('epsf');
+  });
+
+  it('treats bare custom as a usershape without warning', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(bindShape('custom', undefined).usershape).toBe(true);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 });
 
