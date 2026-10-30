@@ -18,6 +18,7 @@ The open work is items 43–71 under "New follow-ups found by part 3" below.
 Being closed by `plans/post-16-1-followups-4/`.
 Being closed by `plans/post-16-1-followups-5/`.
 Being closed by `plans/post-16-1-followups-6/`.
+Items 90–93 are done and 94 is parked by part 6; the open work is items 94–102.
 
 ## State at handoff
 
@@ -491,31 +492,69 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       follow the same rule (found while fixing 894589, 2026-10-26; no corpus id
       hits it).
 - **New follow-ups found by part 5** (`plans/post-16-1-followups-5/`):
-  90. `-Tjson` prints the missing-image warning pair (`No such file or directory while
+  90. **[DONE — part 6 T1: both `poly_init` warnings emitted once per layout from `initNodeFromLabel`]** `-Tjson` prints the missing-image warning pair (`No such file or directory while
       opening nope.png`, `No or improper image="nope.png" for node "a"`) twice in the
       port, once per render pass (the nested xdot pass and the json pass); native
       prints the pair once for `digraph{a[image="nope.png"]}` -Tjson. Not caused by
       the T7 order fix; the once-per-process behaviour lives in the usershape /
       image-size path (part 5 T7, 2026-10-27).
-  91. Node `image=` is sized (part 5 T14) but never drawn: the svg `usershape` emitter
+  91. **[DONE — part 6 T4: `gvrender_usershape` port, node `usershape_p` branch, xdot `I` op; svg `rotate=90` → item 100]** Node `image=` is sized (part 5 T14) but never drawn: the svg `usershape` emitter
       (`src/render/svg.ts:240`) has no caller for nodes, whereas C `poly_gencode` emits
       the image through `gvrender_usershape` (found by part 5 T14, 2026-10-27).
-  92. Node/cluster `fillcolor=":red"`: the port resolves the empty cut name through
+  92. **[DONE — part 6 T2: node/cluster solid fills via `resolveFillColorName`; point/edge variants → items 98, 99]** Node/cluster `fillcolor=":red"`: the port resolves the empty cut name through
       `resolveRenderColor` (no fill, no warning); native warns `Warning:  is not a known
       color.` and fills opaque black. Sites `poly-gencode.ts`, `device-cluster.ts`; the
       HTML path was fixed by part 5 T11 (`resolveFillColorName`). Not yet probed natively
       for node/cluster (found by part 5 T11, 2026-10-27).
-  93. Docs: `docs-site/guide/browser.md` says a node's `image=` attribute is not sized,
+  93. **[DONE — part 6 T5: English + 23 locales state the pixel unit and dpi conversion]** Docs: `docs-site/guide/browser.md` says a node's `image=` attribute is not sized,
       and `api.md`/`images.md` never state the sizer's unit; after part 5 T14 `ImageSizer`
       returns intrinsic pixels converted at the graph `dpi` (default 96) and `image=` nodes
       are sized. English pages, 23 locales and their `sourceHash` (2026-10-27).
-  94. `mode=ipsep`: `stress_majorization_cola`'s inlined `right_mult_with_vector_ff`
+  94. **[PARKED — part 6 T3: verdict fused (cola's inlined copies = kD's); landing waits on item 95]** `mode=ipsep`: `stress_majorization_cola`'s inlined `right_mult_with_vector_ff`
       copy (neato_layout 0x3904c+, the `fmul.4s`×4 / `fmla.4s`×4 blocks at 0x3b19c and
       0x3b570) has not been read instruction by instruction, so the port's `COLA_OPS`
       keeps that right-multiply unfused while its CG is the shared fused body and its
       square-add is unfused by source (`constrained_majorization_ipsep.c:313-316`).
       Six ipsep probes sit 0.010 pt from native either way; no corpus id sets
       `mode=ipsep` (part 5 T15, 2026-10-28).
+
+- **New follow-ups found by part 6** (`plans/post-16-1-followups-6/`):
+  95. `mode=ipsep`: port `stress_majorization_cola`'s layout prologue
+      (`constrained_majorization_ipsep.c:166-191`: `d_coords *= 10/max` with `max` from
+      1, `orthog1` per axis, y translated so y[0]=0) and land it together with item
+      94's fused right-multiply (`COLA_OPS.rightMult = rightMultWithVectorFFFused`).
+      Without the prologue the float trajectory differs from iteration 0 and fused alone
+      moves `ipsep-tree` 0.010 → 0.120 pt; with both, all 7 ipsep probes are
+      byte-identical to native xdot. Ready patch:
+      `plans/post-16-1-followups-6/patches/item94-95-fused-plus-cola-prologue.patch`
+      (neato suite 919/919; full gates not run) (part 6 T3, 2026-10-29).
+  96. `mode=ipsep` runs kD-only logic C's `stress_majorization_cola` lacks, and lacks
+      cola's own: the kD convergence test instead of `:363-367`; `havePinned`/`solveAxis`
+      pinned handling (cola ignores `initLayout`'s return); `maxi < 0` return order; no
+      `nsizeScale` loop, noverlap constraint generation / `constrained_majorization_vpsc`,
+      cluster `clap` extension or `removeoverlaps`. None moved the 7 probes (part 6 T3).
+  97. `poly_init` warnings are keyed on `shapefile non-empty && shape != epsf`; C keys on
+      `ND_shape(n)->usershape && name == "custom"` (`shapes.c:2021-2046`, `bind_shape`
+      3970). Differs for `shape=custom` without `shapefile` (C warns
+      `shapefile="<nil>"`) and for an unknown shape name (C `user_shape`: image branch
+      skipped) (part 6 T1).
+  98. Point node `fillcolor=":red"`: the port warns `:red is not a known color.`, native
+      ` is not a known color.` (fill `#000000` on both); `applyFillState`'s point path
+      resolves `findFillDflt` without `gvrender_set_fillcolor`'s cut at ':' (part 6 T2,
+      native-probed).
+  99. Edge `fillcolor=":red"` (arrowheads): native warns ` is not a known color.` and fills
+      `#000000`; the port fills `black` silently (part 6 T2, native-probed).
+  100. svg `usershape` (`src/render/svg.ts`) lacks `core_loadimage_svg`'s `job->rotation`
+      branch (`gvloadimage_core.c:74-82`: width/height swapped, `xMidYMid meet`,
+      `transform="rotate(%d %g %g)"`); reference `digraph{rotate=90;a[image="r.png"]}`
+      (part 6 T4).
+  101. Native `-Tjson` prints `Warning: No loadimage plugin for "png:json"` once per image
+      op; the port prints nothing (the image type is not known from a sizer) (part 6 T4).
+  102. With `imagepath` set and a relative `image=`, native `gvusershape_file_access`
+      prints `Filename "<name>" is unsafe` when `safefile`'s `findPath` finds no readable
+      `<dir>/<name>` (`gvusershape.c:695`, `utils.c:253-311`); the port, with nothing
+      supplied, prints the `No such file or directory while opening` line instead.
+      Reference `graphs-val_val` (pre-existing at T0; part 6 T6 bytediff).
 
 ## Local leftovers (not committed, safe to delete)
 
