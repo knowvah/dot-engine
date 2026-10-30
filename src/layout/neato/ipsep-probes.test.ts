@@ -31,7 +31,7 @@ const CONSTRAINED = [
 const read = (name: string): string => readFileSync(new URL(name, FIXTURES), 'utf8');
 const neatoXdot = (src: string): string => String(render(parse(src), 'xdot', { engine: 'neato' }));
 
-describe.skip('unconstrained ipsep probes are byte-identical to native', () => {
+describe('unconstrained ipsep probes are byte-identical to native', () => {
   it.each(UNCONSTRAINED)('%s', (id) => {
     expect(neatoXdot(read(`${id}.gv`))).toBe(read(`${id}.xdot`));
   });

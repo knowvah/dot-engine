@@ -27,7 +27,6 @@ import {
   invertSqrtVec,
   invertVec,
   orthog1,
-  rightMultWithVectorFF,
   sqrtVecF,
   squareVec,
   vectorsInnerProductF,
@@ -125,14 +124,15 @@ const FUSED_OPS: KernelOps = {
 /**
  * The kernels as `stress_majorization_cola` (mode=ipsep) runs them: its squared
  * distances are `square_vec` then `vectors_additionf` (two loops, so the product
- * is rounded before the add), its inlined `right_mult_with_vector_ff` copy is not
- * read from the disassembly (kept unfused), and its conjugate gradient is the same
- * out-of-line `conjugate_gradient_mkernel` the kD kernel calls.
+ * is rounded before the add); both inlined `right_mult_with_vector_ff` copies
+ * (16.1 dylib 0x3b088-0x3b24c, 0x3b444-0x3b620) are the kD copy's instructions
+ * (fused diagonal and remainder, 16-wide `fmul.4s` block, `fmla.4s` scatter); its
+ * conjugate gradient is the out-of-line `conjugate_gradient_mkernel` kD calls.
  * @see lib/neatogen/constrained_majorization_ipsep.c:stress_majorization_cola
  */
 const COLA_OPS: KernelOps = {
   squareAdd: (tmp, acc) => acc + fr(tmp * tmp),
-  rightMult: rightMultWithVectorFF, cg: conjugateGradientMkernelFused,
+  rightMult: rightMultWithVectorFFFused, cg: conjugateGradientMkernelFused,
 };
 
 /** Laplacian off-diagonal prep + diagonal degrees. @see stress.c (Laplacian computation) */
@@ -265,6 +265,24 @@ export interface StressOpts {
 }
 
 /**
+ * `stress_majorization_cola`'s layout initialization: scale the layout down so
+ * its largest coordinate is 10, centre each axis, then translate y so y[0] = 0.
+ * @see lib/neatogen/constrained_majorization_ipsep.c:stress_majorization_cola
+ */
+function colaScaleLayout(n: number, dim: number, dCoords: Float64Array[]): void {
+  let max = 1;
+  for (let i = 0; i < dim; i++) {
+    for (let j = 0; j < n; j++) max = Math.max(max, Math.abs(dCoords[i]![j]!));
+  }
+  for (let i = 0; i < dim; i++) {
+    for (let j = 0; j < n; j++) dCoords[i]![j] = dCoords[i]![j]! * (10 / max);
+  }
+  for (let i = 0; i < dim; i++) orthog1(n, dCoords[i]!);
+  const y0 = dCoords[1]![0]!;
+  for (let i = 0; i < n; i++) dCoords[1]![i] = dCoords[1]![i]! - y0;
+}
+
+/**
  * Dense stress majorization. Mutates dCoords in place; returns the
  * iteration count (negative on error).
  * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
@@ -277,6 +295,7 @@ export function stressMajorizationKDMkernel(
   if (maxi < 0) return 0;
   const havePinned = initLayout(n, dim, dCoords, nodes);
   if (n === 1 || maxi === 0) return 0;
+  if (o.cola === true) colaScaleLayout(n, dim, dCoords);
 
   const coords: Float32Array[] = [];
   for (let i = 0; i < dim; i++) {
