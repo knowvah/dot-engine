@@ -40,6 +40,7 @@ function makeEdgeJob(): RenderJob {
 function makeEdgeObj(penColorStr: string, pen: PenType, penWidth: number): ObjState {
   const obj = createObjState(ObjType.Edge);
   obj.penColor = { type: 'string', s: penColorStr };
+  obj.fillColor = { type: 'string', s: penColorStr }; // emit_edge_graphics: fill defaults to the edge colour
   obj.pen = pen;
   obj.penWidth = penWidth;
   return obj;

@@ -9,10 +9,11 @@ import type { Edge } from '../model/edge.js';
 import type { Bezier } from '../model/geom.js';
 import type { RenderJob } from '../gvc/job.js';
 import { bezierEndOps } from '../common/bezier-arrows.js';
-import { emitArrowOps } from './svg-arrow-ops.js';
+import { emitArrowOpsInk } from './svg-arrow-ops.js';
+import type { ArrowInk } from './svg-arrow-ops.js';
 
-/** The edge pen an arrow is drawn with. */
-export interface ArrowPaint { job: RenderJob; penColor: string; opacity: string | null; pw: number }
+/** The edge pen and fill an arrow is drawn with. */
+export interface ArrowPaint { job: RenderJob; ink: ArrowInk; pw: number }
 
 /** Which ends have drawn their edge-level arrow. */
 export interface ArrowsDone { tailDone: boolean; headDone: boolean }
@@ -32,7 +33,7 @@ export function emitBezierEndArrow(
   const ops = bezierEndOps(e, bz, end)
     ?? (flag !== 0 && !done && edgeOps?.length ? edgeOps : undefined);
   if (ops === undefined) return;
-  emitArrowOps(ops, p.penColor, p.job, p.pw, p.opacity);
+  emitArrowOpsInk(ops, p.ink, p.job, p.pw);
   if (tail) st.tailDone = true;
   else st.headDone = true;
 }
@@ -46,9 +47,9 @@ export function emitBezierEndArrow(
  */
 export function emitRemainingArrows(e: Edge, st: ArrowsDone, p: ArrowPaint): void {
   if (!st.tailDone && e.info.tailArrowOps?.length) {
-    emitArrowOps(e.info.tailArrowOps, p.penColor, p.job, p.pw, p.opacity);
+    emitArrowOpsInk(e.info.tailArrowOps, p.ink, p.job, p.pw);
   }
   if (!st.headDone && e.info.headArrowOps?.length) {
-    emitArrowOps(e.info.headArrowOps, p.penColor, p.job, p.pw, p.opacity);
+    emitArrowOpsInk(e.info.headArrowOps, p.ink, p.job, p.pw);
   }
 }

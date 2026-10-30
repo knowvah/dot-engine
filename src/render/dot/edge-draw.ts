@@ -41,14 +41,14 @@ const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
  * the four cases and their `filled` variants are exactly arrow_gen's.
  * @see lib/common/arrows.c arrow_gen
  */
-function emitArrowOp(buf: string[], op: ArrowDrawOp, pen: GVColor): void {
+function emitArrowOp(buf: string[], op: ArrowDrawOp, fill: GVColor): void {
   switch (op.kind) {
     case 'polygon':
-      if (op.filled) buf.push(xdotFillColor(pen));
+      if (op.filled) buf.push(xdotFillColor(fill));
       buf.push(xdotPoints(op.filled ? 'P' : 'p', op.points));
       break;
     case 'ellipse':
-      if (op.filled) buf.push(xdotFillColor(pen));
+      if (op.filled) buf.push(xdotFillColor(fill));
       buf.push(
         (op.filled ? 'E ' : 'e ') + xdotPoint(op.center) +
           xdotNum(op.rx) + ' ' + xdotNum(op.ry) + ' ',
@@ -217,6 +217,9 @@ export abstract class EdgeDrawBase extends DotWriterBase {
     const pen = penOverride !== undefined
       ? resolveRenderColor(penOverride)
       : job.obj?.penColor ?? { type: 'string', s: 'black' };
+    // arrow_gen paints with the current fillcolor: the segment colour on the
+    // multicolor paths (penOverride), else emit_edge_graphics' edge fill.
+    const fill = penOverride !== undefined ? pen : job.obj?.fillColor ?? pen;
     const pw = job.obj?.penWidth ?? 1;
     for (const op of ops) {
       if (Math.abs(pw - this.penwidth[state]!) >= 0.0005) {
@@ -225,7 +228,7 @@ export abstract class EdgeDrawBase extends DotWriterBase {
       }
       buf.push(xdotStrOp('S ', 'solid'));
       buf.push(xdotPenColor(pen));
-      emitArrowOp(buf, op, pen);
+      emitArrowOp(buf, op, fill);
     }
   }
 }

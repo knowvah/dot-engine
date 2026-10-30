@@ -32,7 +32,8 @@ import { colorPaint, colorOpacity, textFillAttrs } from './color-resolve.js';
 import { PenType, FillType } from '../gvc/context.js';
 import { emitLinearGradient, emitRadialGradient, gradientId } from './svg-gradient.js';
 import { transformPoint } from '../gvc/device.js';
-import { emitArrowOps } from './svg-arrow-ops.js';
+import { emitArrowOpsInk } from './svg-arrow-ops.js';
+import type { ArrowInk } from './svg-arrow-ops.js';
 
 // ---------------------------------------------------------------------------
 // Module-level constants
@@ -444,11 +445,7 @@ export function svgEdgePath(e: Edge, job: RenderJob): void {
   if (spl === undefined || spl.size === 0) return;
   const obj = job.obj;
   const stroke = obj !== null ? paintStr(obj, false) : 'black';
-  const paint: ArrowPaint = {
-    job, penColor: stroke,
-    opacity: obj !== null ? colorOpacity(obj.penColor) : null,
-    pw: obj !== null ? obj.penWidth : 1.0,
-  };
+  const paint: ArrowPaint = { job, ink: edgeArrowInk(obj), pw: obj !== null ? obj.penWidth : 1.0 };
   const st = { tailDone: false, headDone: false };
   for (let si = 0; si < spl.size; si++) {
     const bz = spl.list[si] as Bezier | undefined;
@@ -564,20 +561,31 @@ export function emitArrowPolygon(rawPts: Point[], penColor: string, job: RenderJ
 }
 
 /**
+ * The edge's arrow ink: stroke = pen colour, fill = the edge fill colour.
+ * @see lib/common/emit.c:2397-2434,2541-2547 emit_edge_graphics
+ */
+function edgeArrowInk(obj: ObjState | null): ArrowInk {
+  if (obj === null) return { pen: 'black', penOpacity: null, fill: 'black', fillOpacity: null };
+  return {
+    pen: paintStr(obj, false), penOpacity: colorOpacity(obj.penColor),
+    fill: paintStr(obj, true), fillOpacity: colorOpacity(obj.fillColor),
+  };
+}
+
+/**
  * Emit arrowhead polygon(s) for a routed edge (tail first, then head).
- * Arrow fill and stroke use the edge pen color from job.obj (AD1).
+ * Arrow stroke is the edge pen colour and fill the edge fill colour (AD1).
  * @see plugin/core/gvrender_core_svg.c:svg_polygon (arrowhead case)
  * @see lib/common/arrows.c:arrow_type_normal
  */
 export function svgArrowPolygons(e: Edge, job: RenderJob): void {
   const obj = job.obj;
-  const penColor = obj !== null ? paintStr(obj, false) : 'black';
-  const opacity = obj !== null ? colorOpacity(obj.penColor) : null;
+  const ink = edgeArrowInk(obj);
   const pw = obj !== null ? obj.penWidth : 1.0;
   const tailOps = e.info.tailArrowOps;
-  if (tailOps?.length) emitArrowOps(tailOps, penColor, job, pw, opacity);
+  if (tailOps?.length) emitArrowOpsInk(tailOps, ink, job, pw);
   const headOps = e.info.headArrowOps;
-  if (headOps?.length) emitArrowOps(headOps, penColor, job, pw, opacity);
+  if (headOps?.length) emitArrowOpsInk(headOps, ink, job, pw);
 }
 
 // ---------------------------------------------------------------------------
