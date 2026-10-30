@@ -29,6 +29,7 @@ import { recordGencode } from './record.js';
 import { polyInside, recordInside, starInside } from './poly-inside.js';
 import { agwarningf } from './agerr.js';
 import { registerRenderState } from './render-state.js';
+import { safefile } from './safefile.js';
 import { polyPort } from './compass-port.js';
 import { recordPort, recordPath } from './record-port.js';
 
@@ -190,13 +191,13 @@ function userShape(name: string): ShapeDesc {
 
 /**
  * Returns the ShapeDesc for the given name (case-sensitive). A non-empty
- * shapefile (safefile stand-in; T9 replaces it) on a non-epsf shape forces
+ * shapefile that `safefile` accepts on a non-epsf shape forces
  * `custom`; `custom` and unknown names go to `userShape`.
  *
  * @see lib/common/shapes.c:bind_shape (3970-3989)
  */
 export function bindShape(name: string, shapefile?: string): ShapeDesc {
-  const str = shapefile !== undefined && shapefile !== '' ? shapefile : null;
+  const str = safefile(shapefile);
   if (str !== null && name !== 'epsf') name = CUSTOM_SHAPE_NAME;
   if (name !== CUSTOM_SHAPE_NAME) {
     for (const shape of Shapes) {

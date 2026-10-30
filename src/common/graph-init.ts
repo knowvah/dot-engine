@@ -30,6 +30,7 @@ import { doGraphLabel } from '../layout/dot/graph-label.js';
 import { mapbool, setClType, LOCAL, GLOBAL, NOCLUST } from '../layout/dot/rank.js';
 import { cround } from './arith.js';
 import { agwarningf } from './agerr.js';
+import { setImagePath } from './safefile.js';
 
 // ---------------------------------------------------------------------------
 // Constants — @see lib/common/const.h
@@ -274,8 +275,9 @@ export function graphInit(g: Graph, useRankdir: boolean): void {
 
   g.info.charset = findCharset(g); // @see input.c:631
 
-  // SKIPPED — Gvimagepath / `imagepath` (input.c:633-638): the port loads no
-  // images from disk (browser-safe: image data arrives as a parameter).
+  // Gvimagepath = agget(g, "imagepath"), else Gvfilepath (unported: undefined).
+  // Set unconditionally so a previous graph's value never leaks. @see input.c:627-630
+  setImagePath(g.attrs.get('imagepath'));
 
   // SKIPPED — GD_drawing(g)->quantum (input.c:640-641): derived at its only
   // use-site, nodeinit.ts:129 — `lateDouble(g.root.attrs.get('quantum'), 0, 0)`

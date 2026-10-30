@@ -16,6 +16,7 @@
 import { invalidArgType } from '../errors.js';
 import type { ImageSizer } from '../common/htmltable-types.js';
 import { findImageBytes, type ImageResolver } from './image-resolver.js';
+import { safefile } from '../common/safefile.js';
 import { ImageType, imagetype, type ImageTypeResult } from './image-type.js';
 
 export type { ImageSizer } from '../common/htmltable-types.js';
@@ -92,6 +93,7 @@ export function imageOpenFailure(name: string, sizer?: ImageSizer, resolver?: Im
  * @see lib/gvc/gvusershape.c:gvusershape_file_access
  */
 export function imageOpenWarning(name: string): string {
+  if (safefile(name) === null) return `Filename "${name}" is unsafe`;
   return `${STRERROR_ENOENT} while opening ${name}`;
 }
 
