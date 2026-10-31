@@ -32,6 +32,9 @@ import { setEdgeLen } from './edge-len.js';
 import { makeGraphDataC, graphHasLen } from './make-graph-data.js';
 import type { DirectedVtxData } from './opt-arrangement.js';
 import { stressMajorizationWithHierarchy } from './constrained-majorization.js';
+import { stressMajorizationCola } from './stress-cola.js';
+import { ipsepOptions } from './ipsep-opts.js';
+import { AM_NONE, type AdjustData } from './fdp-adjust.js';
 import { agerr } from '../../common/agerr.js';
 
 export { makeGraphDataC, graphHasLen, checkStart };
@@ -108,10 +111,6 @@ export function neatoInitNode(n: Node, dim = DFLT_DIM): void {
   if (!n.info.height && !plainShaped) n.info.height = 0.5;
 }
 
-// ---------------------------------------------------------------------------
-// userPos
-// ---------------------------------------------------------------------------
-
 /**
  * Seed a node's initial position from its `pos=` attribute (C's P_SET),
  * mirroring user_pos. Sets info.pos + info.posSet so hasPos is true and neato
@@ -136,10 +135,6 @@ export function userPos(n: Node): boolean {
   if (m[3] === '!' || (pin !== undefined && mapbool(pin))) n.info.pinned = true;
   return true;
 }
-
-// ---------------------------------------------------------------------------
-// setSeed helpers
-// ---------------------------------------------------------------------------
 
 /**
  * Classify the first character of `p` as 'alpha', 'digit', or 'other'.
@@ -202,10 +197,6 @@ export function setSeed(
   seed.value = parseSeedInt(rest);
   return defaultMode;
 }
-
-// ---------------------------------------------------------------------------
-// buildVtxData helpers
-// ---------------------------------------------------------------------------
 
 /**
  * Assign sequential IDs to all nodes and return them in insertion order.
@@ -279,10 +270,6 @@ export function buildVtxData(g: Graph): VtxData[] {
   return vtx;
 }
 
-// ---------------------------------------------------------------------------
-// buildDCoords / writeBackCoords
-// ---------------------------------------------------------------------------
-
 /**
  * Copy node positions from `n.info.pos` into per-axis Float64Array.
  *
@@ -312,10 +299,6 @@ export function writeBackCoords(nodeList: Node[], dCoords: Float64Array[], dim: 
   }
 }
 
-// ---------------------------------------------------------------------------
-// mapModelToStress
-// ---------------------------------------------------------------------------
-
 /**
  * Map init.ts model constants to stress.ts model constants.
  * Both use the same numeric values but are distinct exports.
@@ -326,10 +309,6 @@ export function mapModelToStress(model: number): number {
   if (model === MODEL_SUBSET) return STRESS_MODEL_SUBSET;
   return 0;
 }
-
-// ---------------------------------------------------------------------------
-// solveModel helpers
-// ---------------------------------------------------------------------------
 
 /** `MaxIter` per mode; `maxiter` goes through C `atoi` (no digits -> 0). @see neatoinit.c:1280-1287 */
 export function neatoMaxIter(maxiter: string | undefined, mode: number, n: number): number {
@@ -350,11 +329,13 @@ interface MajorizationCtx {
   readonly haveLen: boolean;
   /** `opt_*` bits from `checkExp` and `checkStart`. */
   readonly opts: number;
+  /** The layout's resolved overlap mode (C's `am`). */
+  readonly am: AdjustData;
 }
 
 /**
  * The solver step of `majorization`: `stress_majorization_with_hierarchy` for
- * MODE_HIER, else the kD_mkernel (MODE_IPSEP without constraints runs it too).
+ * MODE_HIER, `stress_majorization_cola` for MODE_IPSEP, else the kD_mkernel.
  * Returns C's `rv`; the coordinates are left in `dCoords`.
  * @see lib/neatogen/neatoinit.c:majorization
  */
@@ -370,17 +351,22 @@ function solveStress(
       dim: DFLT_DIM, opts, model, maxi, epsilon, levelsGap: levelsGapOf(g),
     });
   }
-  // C ipsep (stress_majorization_cola, constrained_majorization_ipsep.c:150) always uses
-  // compute_apsp_packed; kD_mkernel uses the weighted APSP iff graph->ewgts (stress.c:855).
-  const weighted = haveLen && mode !== MODE_IPSEP;
-  const Dij = weighted ? computeWeightedApspPacked(vtx, n) : computeApspPacked(vtx, n);
+  if (mode === MODE_IPSEP) {
+    // mg is the root graph, g the component. @see neatoinit.c:1121-1170
+    const opt = ipsepOptions(g.root, g, nodeList, c.am);
+    return stressMajorizationCola(vtx, n, dCoords, nodeList, {
+      dim: DFLT_DIM, model, maxi, epsilon, opt,
+    });
+  }
+  // kD_mkernel uses the weighted APSP iff graph->ewgts (stress.c:855).
+  const Dij = haveLen ? computeWeightedApspPacked(vtx, n) : computeApspPacked(vtx, n);
   return stressMajorizationKDMkernel(Dij, n, dCoords, nodeList, {
-    dim: DFLT_DIM, opts, maxi, epsilon, cola: mode === MODE_IPSEP,
+    dim: DFLT_DIM, opts, maxi, epsilon,
   });
 }
 
 /** Run stress majorization and write positions back. @see lib/neatogen/neatoinit.c:majorization */
-export function runMajorization(g: Graph, mode: number, model: number): void {
+export function runMajorization(g: Graph, mode: number, model: number, am: AdjustData): void {
   const nodeList = assignNodeIds(g);
   setEdgeLen(g); // scan_graph_mode else-branch: ED_dist for major/hier/ipsep
   const n = nodeList.length;
@@ -391,7 +377,7 @@ export function runMajorization(g: Graph, mode: number, model: number): void {
   const haveDir = mode === MODE_HIER || mode === MODE_IPSEP;
   const vtx = makeGraphDataC(g, nodeList, haveLen, haveDir, mode);
   const dCoords = [new Float64Array(n), new Float64Array(n)];
-  if (solveStress({ g, mode, model, haveLen, opts }, vtx, dCoords, nodeList) < 0) {
+  if (solveStress({ g, mode, model, haveLen, opts, am }, vtx, dCoords, nodeList) < 0) {
     agerr('prev', 'layout aborted');
     return;
   }
@@ -400,8 +386,13 @@ export function runMajorization(g: Graph, mode: number, model: number): void {
   }
 }
 
+/** The overlap mode when the caller has none to pass (AM_NONE). @see lib/neatogen/adjust.h */
+const NO_ADJUST: AdjustData = { mode: AM_NONE, print: 'none', value: 0 };
+
 /** Dispatch to the layout solver for the mode. @see lib/neatogen/neatoinit.c:neatoLayout */
-export function solveModel(g: Graph, mode: number, model: number): void {
+export function solveModel(
+  g: Graph, mode: number, model: number, am: AdjustData = NO_ADJUST,
+): void {
   if (g.nodes.size < 2) return;
   assertSupported(g, mode, model);
   if (mode === MODE_KK) return kkNeato(g, g.nodes.size, model);
@@ -411,7 +402,7 @@ export function solveModel(g: Graph, mode: number, model: number): void {
     sgdLayout(g, model);
     return;
   }
-  runMajorization(g, mode, model);
+  runMajorization(g, mode, model, am);
 }
 
 // ---------------------------------------------------------------------------

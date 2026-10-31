@@ -53,22 +53,6 @@ const colaOpts = (s: Setup, model = MODEL_SHORTPATH, maxi = s.maxi) => (
 
 afterEach(() => { vi.restoreAllMocks(); srand48(1); });
 
-describe('unconstrained probes equal the kD kernel cola path bit for bit', () => {
-  it.each([
-    'ipsep-grid', 'ipsep-k6', 'ipsep-rand', 'ipsep-rand-len', 'ipsep-tree', 'kd-ipsep', 'kd-ipsep-len',
-  ])('%s', (id) => {
-    const src = readFileSync(new URL(`${id}.gv`, FIXTURES), 'utf8');
-    const kd = setup(src);
-    const kdIters = stressMajorizationKDMkernel(computeApspPacked(kd.vtx, kd.n), kd.n, kd.dCoords, kd.nodes, {
-      dim: DIM, opts: OPTS_EXP_2, maxi: kd.maxi, epsilon: DFLT_TOLERANCE, cola: true,
-    });
-    const cola = setup(src);
-    const colaIters = stressMajorizationCola(cola.vtx, cola.n, cola.dCoords, cola.nodes, colaOpts(cola));
-    expect(colaIters).toBe(kdIters);
-    expect(cola.dCoords).toEqual(kd.dCoords);
-  });
-});
-
 describe('early returns', () => {
   it('n == 1 returns 0 after initLayout, before any scaling', () => {
     const s = setup('graph{a}');

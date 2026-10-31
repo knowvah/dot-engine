@@ -46,29 +46,11 @@ describe('stressMajorizationKDMkernel', () => {
   });
 
   /**
-   * `_stress_majorization_cola` (16.1 dylib 0x3b088-0x3b24c, 0x3b444-0x3b620) inlines
-   * `right_mult_with_vector_ff` with the kD copy's instructions: fused diagonal and remainder,
-   * 16-wide rounded-product block, fused scatter.
-   */
-  it('runs cola kernels for mode=ipsep: the shared fused CG and the fused right-multiply', () => {
-    const n = 4;
-    const coords = [new Float64Array(n), new Float64Array(n)];
-    const iters = stressMajorizationKDMkernel(computeApspPacked(path4(), n), n, coords, freshNodes(n), {
-      dim: 2, opts: 2, maxi: 3, epsilon: 1e-4, cola: true,
-    });
-    expect(iters).toBe(3);
-    expect(vi.mocked(fused.conjugateGradientMkernelFused)).toHaveBeenCalledTimes(2 * iters);
-    expect(vi.mocked(fused.rightMultWithVectorFFFused).mock.calls.length).toBeGreaterThanOrEqual(4 * iters);
-    expect(vi.mocked(matrixOps.rightMultWithVectorFF)).not.toHaveBeenCalled();
-    expect(coords[0]!.every(Number.isFinite)).toBe(true);
-  });
-
-  /**
    * A 3x3 packed matrix whose row 0 is `DIAG + OFF*V`: the C kernel built `clang -O2` (the
    * oracle's contraction) gives 1.1459170579910278, `-ffp-contract=off` gives 1.1459171772003174.
-   * The right-multiply cola dispatches to must produce the former.
+   * The right-multiply stress_majorization_cola and the kD kernel share must produce the former.
    */
-  it('pins the fused right-multiply form cola runs on a matrix where fused and unfused differ', () => {
+  it('pins the fused right-multiply form on a matrix where fused and unfused differ', () => {
     const m = Float32Array.of(1.0972700119018555, 0.150409996509552, 0, 0, 0, 0);
     const v = Float32Array.of(1, 0.32343000173568726, 0);
     const out = new Float32Array(3);

@@ -2,10 +2,11 @@
 /**
  * Neato `start` handling (setSeed / initRegular / checkStart) and the
  * fail-loud checks for the neato init features this port does not have
- * (smart init for the stress path, the subset/circuit distance models, ipsep
- * with constraints). mode=hier runs `stress_majorization_with_hierarchy`; its
- * own unported branches (subset/circuit models, the smart-init fallback
- * without a hierarchy) are loud in constrained-majorization.ts.
+ * (smart init for the stress path, the subset/circuit distance models).
+ * mode=hier runs `stress_majorization_with_hierarchy`; its own unported
+ * branches (subset/circuit models, the smart-init fallback without a
+ * hierarchy) are loud in constrained-majorization.ts. mode=ipsep runs
+ * `stress_majorization_cola`, which ports both models and takes no smart init.
  *
  * Each loud check sits where neato's C branches into the unported code and
  * fires only for the modes whose C path reaches it (ADR-3).
@@ -18,7 +19,6 @@ import { agNameOf } from '../../model/cgraph-ops.js';
 import type { Graph } from '../../model/graph.js';
 import { srand48 } from '../../common/random.js';
 import { registerRenderState } from '../../common/render-state.js';
-import { mapbool, isACluster } from '../dot/rank.js';
 import { getPack } from '../pack/index.js';
 import {
   MODE_KK, MODE_MAJOR, MODE_HIER, MODE_IPSEP, MODE_SGD,
@@ -114,14 +114,6 @@ function unsupported(attr: string, value: string, what: string): never {
   throw new RenderError(`${attr}=${value}: ${what} is not supported yet`, 'UNSUPPORTED_FEATURE');
 }
 
-/** Does C's ipsep branch build constraints? @see neatoinit.c:1132-1150 */
-function ipsepHasConstraints(g: Graph): boolean {
-  const dir = g.root.attrs.get('diredgeconstraints') ?? '';
-  if (mapbool(dir) || /^hier/i.test(dir)) return true;
-  if ((g.root.attrs.get('overlap') ?? '').toLowerCase() === 'ipsep') return true;
-  return [...g.root.subgraphs.values()].some((s) => s !== g.root && isACluster(s));
-}
-
 /** @see lib/neatogen/neatoinit.c:1290 (MaxIter < 0 returns before any solver) */
 function maxIterNegative(g: Graph): boolean {
   const v = g.attrs.get('maxiter') ?? g.root.attrs.get('maxiter');
@@ -152,19 +144,13 @@ export function neatoMode(g: Graph): number {
   return MODE_MAJOR;
 }
 
-function checkMode(g: Graph, mode: number): void {
-  const value = g.root.attrs.get('mode') || 'ipsep';
-  // @see lib/neatogen/neatoinit.c:1121-1170 (stress_majorization_cola)
-  if (mode === MODE_IPSEP && ipsepHasConstraints(g)) {
-    unsupported('mode', value, 'constrained (ipsep) majorization');
-  }
-}
-
 function checkStartAttr(g: Graph, mode: number): void {
   const value = g.root.attrs.get('start');
   if (parseStart(value, INIT_RANDOM).init !== INIT_SELF) return;
-  // @see lib/neatogen/neatoinit.c:1095, lib/neatogen/stress.c:884 (smart_ini)
-  if (mode === MODE_MAJOR || mode === MODE_IPSEP) unsupported('start', value ?? '', 'smart initialisation');
+  // @see lib/neatogen/neatoinit.c:1095, lib/neatogen/stress.c:884 (smart_ini).
+  // mode=ipsep is not here: stress_majorization_cola takes no `opts`, so C
+  // lays start=self out from the random init, silently (T0 start-self fixtures).
+  if (mode === MODE_MAJOR) unsupported('start', value ?? '', 'smart initialisation');
   // @see lib/neatogen/stuff.c:330 (KK and SGD warn once and ignore it)
   if ((mode === MODE_KK || mode === MODE_SGD) && !selfOnce.warned) {
     selfOnce.warned = true;
@@ -222,7 +208,6 @@ function checkModel(g: Graph, mode: number, model: number): void {
  */
 export function assertSupported(g: Graph, mode: number, model: number): void {
   if (maxIterNegative(g)) return;
-  checkMode(g, mode);
   checkStartAttr(g, mode);
   checkModel(g, mode, model);
 }
