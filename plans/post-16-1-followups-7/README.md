@@ -145,7 +145,7 @@ is pushed or signed (part-5 AD-1).
 | [1](batch-1/overview.md) | T0 baselines, native probe fixtures | orchestrator | [x] |
 | [2a](batch-2a/overview.md) | T1 cola prologue + fused (95) · T5 `quad_prog_vpsc` (96a) · T7 subset/circuit models (96a) | parallel worktrees | [x] |
 | [2b](batch-2b/overview.md) | T2 poly_init keying (97) · T3 `:red` fills (98, 99) · T4 svg rotation (100) · T6 image type (101) | parallel worktrees (with 2a) | [x] |
-| [3](batch-3/overview.md) | T8 cola driver + ipsep options (96b) · T9 imagepath / safefile (102) | parallel worktrees | [ ] |
+| [3](batch-3/overview.md) | T8 cola driver + ipsep options (96b) · T9 imagepath / safefile (102) | parallel worktrees | [x] |
 | [4](batch-4/overview.md) | T10 ipsep wiring (96c) · T11 docs | parallel | [ ] |
 | [5](batch-5/overview.md) | T12 final verification, close-out, re-sign stop | orchestrator | [ ] |
 

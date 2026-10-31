@@ -529,7 +529,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       byte-identical to native xdot. Ready patch:
       `plans/post-16-1-followups-6/patches/item94-95-fused-plus-cola-prologue.patch`
       (neato suite 919/919; full gates not run) (part 6 T3, 2026-10-29).
-  96. `mode=ipsep` runs kD-only logic C's `stress_majorization_cola` lacks, and lacks
+  96. **[96a/96b DONE — part 7 T5, T7, T8; wiring 96c is T10]** `mode=ipsep` runs kD-only logic C's `stress_majorization_cola` lacks, and lacks
       cola's own: the kD convergence test instead of `:363-367`; `havePinned`/`solveAxis`
       pinned handling (cola ignores `initLayout`'s return); `maxi < 0` return order; no
       `nsizeScale` loop, noverlap constraint generation / `constrained_majorization_vpsc`,
@@ -551,7 +551,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       (part 6 T4).
   101. **[DONE — part 7 T6 (json warning, magic sniff); layout-time FT_NULL warning → item 104]** Native `-Tjson` prints `Warning: No loadimage plugin for "png:json"` once per image
       op; the port prints nothing (the image type is not known from a sizer) (part 6 T4).
-  102. With `imagepath` set and a relative `image=`, native `gvusershape_file_access`
+  102. **[DONE — part 7 T9: `safefile` + `Gvimagepath` mirror; `unsafe` warning as native]** With `imagepath` set and a relative `image=`, native `gvusershape_file_access`
       prints `Filename "<name>" is unsafe` when `safefile`'s `findPath` finds no readable
       `<dir>/<name>` (`gvusershape.c:695`, `utils.c:253-311`); the port, with nothing
       supplied, prints the `No such file or directory while opening` line instead.
@@ -581,6 +581,10 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   107. `safefile`'s "host supplies the name" check reads the global sizer/resolver, not
       the per-context hooks; matters for `bindShape`'s `shapefile` under `imagepath`
       with a per-context-only sizer (part 7 T9).
+  108. `index.ts:parseModel` lacks `neatoinit.c:neatoModel`'s warnings: `edges in graph
+      %s have no len attribute. Hence, the mds model / is inappropriate. Reverting to the
+      shortest path model.` (native prints a literal `%1`) with the shortpath fallback,
+      and `Unknown value %s for attribute "model"` (part 7 T8).
 
 ## Local leftovers (not committed, safe to delete)
 

@@ -8,5 +8,5 @@ Runs after batches 2a and 2b, in parallel worktrees, with disjoint write-sets.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T8](T8-cola-driver.md) | Item 96b: `stress_majorization_cola` and `neatoinit` ipsep options | typescript-pro (opus) | `src/layout/neato/stress-cola.ts`, `ipsep-opts.ts` (new) (+ tests) | T1, T5, T7 | [ ] |
-| [T9](T9-imagepath.md) | Item 102: `Gvimagepath`, `safefile`, the `unsafe` warning | typescript-pro | `src/common/graph-init.ts`, `src/common/safefile.ts` (new), `src/common/shapes.ts`, `src/gvc/usershape.ts` (+ tests) | T2, T6 | [ ] |
+| [T8](T8-cola-driver.md) | Item 96b: `stress_majorization_cola` and `neatoinit` ipsep options | typescript-pro (opus) | `src/layout/neato/stress-cola.ts`, `ipsep-opts.ts` (new) (+ tests) | T1, T5, T7 | [x] |
+| [T9](T9-imagepath.md) | Item 102: `Gvimagepath`, `safefile`, the `unsafe` warning | typescript-pro | `src/common/graph-init.ts`, `src/common/safefile.ts` (new), `src/common/shapes.ts`, `src/gvc/usershape.ts` (+ tests) | T2, T6 | [x] |
