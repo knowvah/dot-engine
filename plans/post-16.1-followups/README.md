@@ -529,7 +529,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       byte-identical to native xdot. Ready patch:
       `plans/post-16-1-followups-6/patches/item94-95-fused-plus-cola-prologue.patch`
       (neato suite 919/919; full gates not run) (part 6 T3, 2026-10-29).
-  96. **[96a/96b DONE — part 7 T5, T7, T8; wiring 96c is T10]** `mode=ipsep` runs kD-only logic C's `stress_majorization_cola` lacks, and lacks
+  96. **[DONE — part 7 T5, T7, T8, T10: `stress_majorization_cola` on `quad_prog_vpsc`; 22/22 ipsep probes]** `mode=ipsep` runs kD-only logic C's `stress_majorization_cola` lacks, and lacks
       cola's own: the kD convergence test instead of `:363-367`; `havePinned`/`solveAxis`
       pinned handling (cola ignores `initLayout`'s return); `maxi < 0` return order; no
       `nsizeScale` loop, noverlap constraint generation / `constrained_majorization_vpsc`,
