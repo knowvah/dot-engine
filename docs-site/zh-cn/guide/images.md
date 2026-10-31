@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # 使用图像
 
@@ -167,13 +167,16 @@ const svg = render(g, 'svg', { inlineImages: true });
 
 ### 3. `imagepath` 式的基础目录
 
-原生 Graphviz 的 `imagepath` 图属性告诉 C 二进制文件使用一个文件系统/`GDFONTPATH` 风格的搜索目录，
-来解析相对的 `image=` 值。@knowvah/dot-engine 没有实现 `imagepath`——该移植版自身从不从磁盘读取图像数据，
-因此没有可供解析的路径（完整的范围边界请参阅[已知差异](/zh-cn/divergences)）。
-如果您的图使用相对的 `image=` 路径，请在构造 DOT 源代码的那一层，
-或在您的 `setImageSizer`/`ImageResolver` 回调中，针对您自己的基础目录/URL 来解析它们——
-两者收到的都是图中所写的原始 `src` 字符串，因此在查找之前先给它加上基础路径前缀，
-是一种正常的、受认可的模式。
+原生 Graphviz 的 `imagepath` 图属性是以冒号分隔的目录列表，用于查找相对的 `image=` 和 `shapefile=` 名称。本移植版自身从不读取图像文件，因此从不搜索这些目录，也从不向宿主请求 `dir/name`：`setImageSizer` 和 `ImageResolver` 始终收到与书写完全一致的原始名称。本移植版仅用 `imagepath` 来决定宿主未提供相对名称时输出哪条警告：
+
+- 设置了 `imagepath` 时，宿主未提供的相对 `image=`/`shapefile=` 名称会先输出 `Warning: Filename "<name>" is unsafe`，再输出 `Warning: No or improper image="<name>" for node "<node>"`，与原生在没有可读的 `<dir>/<name>` 时一致。
+- 绝对名称，或未设置/为空的 `imagepath`，保持输出 `Warning: No such file or directory while opening <name>` 这一行。
+
+`GV_FILE_PATH` 和 `SERVER_NAME` 不会被采纳（它们是环境变量，而浏览器没有环境）。若要相对于自己的基准目录或 URL 解析相对路径，请在构建 DOT 源码的层，或在 `setImageSizer`/`ImageResolver` 回调中为名称加上前缀。
+
+**图像类型。** 与原生一致，类型由 resolver 返回的字节通过魔数识别得出：png、gif、jpeg、bmp、pdf、ps、eps、ico、riff/webp，以及仅当字节以 `<?xml` 声明开头并紧跟 `<svg` 时的 svg。不足 20 字节的数据无法识别。对于无法识别的字节，不会绘制任何内容，渲染时也不会测量该图像的尺寸。原生还会输出 `Warning: "<name>" was not found as a file or as a shape library member` 警告；本移植版尚未输出该行（参见[已知差异](/zh-cn/divergences)）。
+
+`-Tjson` 与原生一样，对每个被绘制的图像输出一次 `Warning: No loadimage plugin for "png:json"` 警告（类型因图像而异），因为原生没有 json 图像加载器。对于已识别的类型，`svg`、`xdot`、`dot`、`plain` 和 `cmapx` 不输出任何内容。仅通过 sizer 获知的图像没有类型，因此不会输出 loadimage 警告（参见[已知差异](/zh-cn/divergences)）。
 
 ## CSP 指南
 

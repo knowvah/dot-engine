@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1350,6 +1350,8 @@ Acestea sunt limite deliberate ale domeniului, nu defecte. Biblioteca vizează *
   a pluginurilor (`dlopen`) este înlocuită de înregistrarea statică a motoarelor/randatoarelor;
   citirile din sistemul de fișiere (fonturi, imagini, configurare) sunt înlocuite de
   callback-uri furnizate de apelant (de ex. `setImageSizer`). Comportamentul este păstrat; mecanismul diferă.
+
+- **Tipul imaginii și avertismentele `imagepath`.** O imagine cunoscută doar prin `setImageSizer` (fără octeți de la resolver) nu are tip și deci nu afișează avertismentul `No loadimage plugin`; versiunea nativă citește întotdeauna fișierul și deci cunoaște întotdeauna tipul. Pentru octeți de resolver nerecunoscuți, versiunea nativă avertizează în plus cu `Warning: "<name>" was not found as a file or as a shape library member`; portul nu afișează încă această linie (urmărire 104, conectare la momentul layout-ului). `GV_FILE_PATH` și `SERVER_NAME` nu sunt respectate, iar gazda nu este niciodată întrebată de numele `<dir>/<name>` din `imagepath`.
 
 ---
 

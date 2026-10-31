@@ -1373,6 +1373,8 @@ These are deliberate scope boundaries, not bugs. The library targets **SVG**
   filesystem reads (fonts, images, config) are replaced by caller-supplied
   callbacks (e.g. `setImageSizer`). Behavior is preserved; the mechanism differs.
 
+- **Image type and `imagepath` warnings.** An image known only through `setImageSizer` (no resolver bytes) has no type, so it prints no `No loadimage plugin` warning; native always reads the file and so always knows the type. For unrecognized resolver bytes native also warns `Warning: "<name>" was not found as a file or as a shape library member`; the port does not print that line yet (follow-up 104, layout-time wiring). `GV_FILE_PATH` and `SERVER_NAME` are not honoured, and the host is never asked for the `imagepath` `<dir>/<name>` name.
+
 ---
 
 ## Reporting a divergence

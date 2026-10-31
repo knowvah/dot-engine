@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1516,6 +1516,8 @@ cible le **SVG** (ainsi que les formats texte intermédiaires `json` / `xdot` /
   système de fichiers (polices, images, configuration) sont remplacées par des
   fonctions de rappel fournies par l’appelant (par exemple `setImageSizer`). Le
   comportement est préservé ; le mécanisme diffère.
+
+- **Type d'image et avertissements `imagepath`.** Une image connue uniquement via `setImageSizer` (sans octets du resolver) n'a pas de type et n'affiche donc pas l'avertissement `No loadimage plugin` ; le natif lit toujours le fichier et connaît donc toujours le type. Pour des octets de resolver non reconnus, le natif avertit aussi par `Warning: "<name>" was not found as a file or as a shape library member` ; le portage n'affiche pas encore cette ligne (suivi 104, câblage au moment du layout). `GV_FILE_PATH` et `SERVER_NAME` ne sont pas pris en compte, et l'hôte n'est jamais interrogé sur le nom `<dir>/<name>` d'`imagepath`.
 
 ---
 

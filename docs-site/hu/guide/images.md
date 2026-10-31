@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # Képek
 
@@ -196,16 +196,16 @@ kivételt.
 
 ### 3. `imagepath`-stílusú alapkönyvtárak
 
-A natív Graphviz `imagepath` gráfattribútuma megmondja a C binárisnak, melyik
-fájlrendszer-/`GDFONTPATH`-stílusú keresési könyvtárhoz viszonyítva oldja fel a
-relatív `image=` értékeket. A @knowvah/dot-engine nem implementálja az
-`imagepath`-t — a portolás soha nem olvas képadatot a lemezről, így nincs mihez
-viszonyítani az útvonalat (a teljes hatókör-határt lásd: [Ismert eltérések](/hu/divergences)).
-Ha a gráfjai relatív `image=` útvonalakat használnak, oldja fel őket a saját alap
-könyvtárához/URL-jéhez képest abban a rétegben, amely a DOT forráskódot
-összeállítja, vagy a `setImageSizer`/`ImageResolver` visszahívásaiban — mindkettő
-a nyers `src` sztringet kapja pontosan úgy, ahogy a gráfban le van írva, így az
-alapútvonallal való előtagolás keresés előtt normális, jóváhagyott minta.
+A natív Graphviz `imagepath` gráfattribútuma kettősponttal elválasztott könyvtárlista, amelyben a relatív `image=` és `shapefile=` neveket keresi. A port soha nem olvas maga képfájlokat, ezért soha nem keres ezekben a könyvtárakban, és soha nem kéri a gazdától a `dir/name` értéket: a `setImageSizer` és az `ImageResolver` mindig a nyers nevet kapja, pontosan úgy, ahogy le van írva. A port az `imagepath` értéket csak annak eldöntésére használja, hogy melyik figyelmeztetés kerüljön kiírásra, ha a gazda nem ad meg relatív nevet:
+
+- Beállított `imagepath` esetén a gazda által nem megadott relatív `image=`/`shapefile=` név a `Warning: Filename "<name>" is unsafe` majd a `Warning: No or improper image="<name>" for node "<node>"` figyelmeztetést váltja ki, ahogy a natív is teszi, ha egyetlen `<dir>/<name>` sem olvasható.
+- Abszolút név, illetve hiányzó vagy üres `imagepath` esetén a `Warning: No such file or directory while opening <name>` sor marad.
+
+A `GV_FILE_PATH` és a `SERVER_NAME` nem érvényesül (környezeti változók, a böngészőnek pedig nincs környezete). A relatív útvonalak saját alapkönyvtárhoz vagy alap-URL-hez való feloldásához a nevet a DOT-forrást összeállító rétegben, vagy a `setImageSizer`/`ImageResolver` visszahívásokban lássa el előtaggal.
+
+**Képtípus.** A natívhoz hasonlóan a típust a resolver által visszaadott bájtokból határozza meg, mágikus számok felismerésével: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, az svg pedig csak akkor, ha a bájtok `<?xml` deklarációval kezdődnek, amelyet `<svg` követ. Bármi, ami 20 bájtnál rövidebb, felismerhetetlen. Felismerhetetlen bájtoknál semmi sem rajzolódik, és a kép méretét renderelés közben nem határozza meg. A natív ezenkívül a `Warning: "<name>" was not found as a file or as a shape library member` sorral is figyelmeztet; a port ezt a sort még nem írja ki (lásd [Ismert eltérések](/hu/divergences)).
+
+A `-Tjson` a `Warning: No loadimage plugin for "png:json"` sorral figyelmeztet (a típus változik) rajzolt képenként egyszer, ahogy a natív is, mert annak nincs json képbetöltője. Az `svg`, `xdot`, `dot`, `plain` és `cmapx` felismert típusnál nem ír ki semmit. A csak a sizeren át ismert képnek nincs típusa, ezért nem ír ki loadimage figyelmeztetést (lásd [Ismert eltérések](/hu/divergences)).
 
 ## CSP-útmutató
 

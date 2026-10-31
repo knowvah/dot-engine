@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1347,6 +1347,8 @@ Dette er bevisste omfangsgrenser, ikke feil. Biblioteket retter seg mot **SVG**
   plugin-lasting (`dlopen`) er erstattet av statisk registrering av motorer/rendere;
   filsystemlesing (skrifter, bilder, konfigurasjon) er erstattet av tilbakekall levert av kalleren
   (f.eks. `setImageSizer`). Oppførselen er bevart; mekanismen er forskjellig.
+
+- **Bildetype og `imagepath`-advarsler.** Et bilde som bare er kjent via `setImageSizer` (uten resolver-byte), har ingen type og skriver derfor ikke ut advarselen `No loadimage plugin`; native leser alltid filen og kjenner derfor alltid typen. For ugjenkjente resolver-byte advarer native også med `Warning: "<name>" was not found as a file or as a shape library member`; porten skriver ikke ut den linjen ennå (oppfølging 104, kobling ved layouttidspunktet). `GV_FILE_PATH` og `SERVER_NAME` respekteres ikke, og verten blir aldri spurt om `imagepath`s `<dir>/<name>`-navn.
 
 ---
 

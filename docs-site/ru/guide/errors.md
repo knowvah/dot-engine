@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,10 +132,9 @@ dot-engine выбрасывает ошибки двух видов. То, как
 | Механизм | Атрибут и значение | Срабатывает, когда | Необходимая возможность Graphviz |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | Только когда `model` равен `subset` или `circuit` (после того как в графе 2+ узлов и `maxiter` положителен) | Иерархическая стресс-мажоризация (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Только когда Graphviz построил бы ограничения: `diredgeconstraints` истинно или `hier*`, `overlap=ipsep`, либо в графе есть кластер верхнего уровня. Без ограничений он работает как стресс-мажоризация, как в Graphviz | Мажоризация с ограничениями (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` равен `major` (по умолчанию) или `ipsep` | Умная инициализация (`smart_ini`). При `mode=KK` или `mode=sgd` один раз за рендер пишет в лог `start=0 not supported with mode=self - ignored`, как Graphviz |
-| neato | `model=subset` | `mode` равен `major` или `KK` | Модель расстояний subset |
-| neato | `model=circuit` | `mode` равен `major`, либо `KK` на связном графе. `KK` на несвязном графе без `pack` и `packmode` пишет предупреждение и использует кратчайшие пути, как Graphviz | Модель расстояний circuit (`circuit_model`) |
+| neato | `start=self` | `mode` равен `major` (по умолчанию). При `mode=ipsep` оно молча принимается, а раскладка использует случайный старт, как в Graphviz | Умная инициализация (`smart_ini`). При `mode=KK` или `mode=sgd` один раз за рендер пишет в лог `start=0 not supported with mode=self - ignored`, как Graphviz |
+| neato | `model=subset` | `mode` равен `major` или `KK`. Не срабатывает при `mode=ipsep`. | Модель расстояний subset |
+| neato | `model=circuit` | `mode` равен `major`, либо `KK` на связном графе. `KK` на несвязном графе без `pack` и `packmode` пишет предупреждение и использует кратчайшие пути, как Graphviz. Не срабатывает при `mode=ipsep`. | Модель расстояний circuit (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (без учёта регистра) | В графе (для twopi — в компоненте; для sfdp — во всём графе или в компоненте) 2+ узлов, и собственный подсчёт перекрытий Graphviz (`countOverlap`, проверяющий многоугольники узлов) больше 0. Узлы, которые лишь касаются по ограничивающему прямоугольнику, срабатывания не вызывают. circo доходит до него только для графа из одной компоненты (при нескольких компонентах Graphviz также игнорирует `overlap`). sfdp доходит до него, только если `overlap` не является режимом prism | Устранение перекрытий методом Вороного (`vAdjust`) |
 | fdp | `overlap=` одно из `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Режим достигается после `N:` попыток силовых итераций, то есть когда эти попытки не устраняют все перекрытия (или `N` равно 0 либо отсутствует). Префикс `N:` допустим, например `3:voronoi` | Соответствующий алгоритм корректировки `removeOverlapWith` |
 | fdp | `splines=compound` | Всегда, с кластерами или без | Трассировка рёбер в обход кластеров (`compoundEdges`) |

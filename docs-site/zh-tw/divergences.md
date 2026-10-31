@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1109,6 +1109,8 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
   外掛載入（`dlopen`）以靜態的引擎／轉譯器註冊取代；
   檔案系統讀取（字型、圖片、設定）以呼叫端提供的
   回呼取代（例如 `setImageSizer`）。行為保持不變；機制不同。
+
+- **影像類型與 `imagepath` 警告。** 僅透過 `setImageSizer` 得知的影像（沒有 resolver 位元組）沒有類型，因此不輸出 `No loadimage plugin` 警告；原生總是讀取檔案，因此總是知道類型。對於無法辨識的 resolver 位元組，原生還會輸出 `Warning: "<name>" was not found as a file or as a shape library member` 警告；本移植版尚未輸出該行（後續事項 104，版面配置階段的接線）。`GV_FILE_PATH` 與 `SERVER_NAME` 不會被採納，也從不向主機詢問 `imagepath` 的 `<dir>/<name>` 名稱。
 
 ---
 

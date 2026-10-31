@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1345,6 +1345,8 @@ Sú to zámerné hranice rozsahu, nie chyby. Knižnica cieli na **SVG**
   načítavanie pluginov (`dlopen`) je nahradené statickou registráciou modulov/renderérov;
   čítanie zo súborového systému (fonty, obrázky, konfigurácia) je nahradené spätnými volaniami
   dodanými volajúcim (napr. `setImageSizer`). Správanie je zachované; mechanizmus sa líši.
+
+- **Typ obrázka a varovania `imagepath`.** Obrázok známy len cez `setImageSizer` (bez bajtov z resolvera) nemá typ, a preto nevypisuje varovanie `No loadimage plugin`; natívna verzia súbor vždy číta, a typ teda vždy pozná. Pri nerozpoznaných bajtoch z resolvera natívna verzia navyše varuje riadkom `Warning: "<name>" was not found as a file or as a shape library member`; port tento riadok zatiaľ nevypisuje (nadväzujúca položka 104, zapojenie v čase layoutu). `GV_FILE_PATH` a `SERVER_NAME` sa nerešpektujú a hostiteľa sa nikdy nepýta na názov `<dir>/<name>` z `imagepath`.
 
 ---
 

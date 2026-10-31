@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,10 +132,9 @@ elkerüléséhez távolítsa el az attribútumot, vagy változtassa támogatott 
 | Motor | Attribútum és érték | Mikor lép működésbe | Szükséges Graphviz-funkció |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | Csak ha a `model` értéke `subset` vagy `circuit` (miután a gráfnak 2+ csúcsa van, és a `maxiter` pozitív) | Hierarchikus feszültségmajorizáció (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Csak ha a Graphviz megszorításokat építene: a `diredgeconstraints` igaz, vagy `hier*`, `overlap=ipsep`, vagy a gráfnak van legfelső szintű klasztere. Megszorítások nélkül feszültségmajorizációként fut, mint a Graphvizben | Megszorításos majorizáció (`stress_majorization_cola`) |
-| neato | `start=self` | A `mode` `major` (az alapértelmezés) vagy `ipsep` | Okos inicializálás (`smart_ini`). `mode=KK` vagy `mode=sgd` alatt renderelésenként egyszer naplózza: `start=0 not supported with mode=self - ignored`, ahogy a Graphviz teszi |
-| neato | `model=subset` | A `mode` `major` vagy `KK` | A részhalmaz-távolságmodell |
-| neato | `model=circuit` | A `mode` `major`, vagy `KK` összefüggő gráfon. A `KK` nem összefüggő gráfon `pack` vagy `packmode` nélkül figyelmeztetést naplóz, és legrövidebb utakat használ, ahogy a Graphviz teszi | Az áramköri távolságmodell (`circuit_model`) |
+| neato | `start=self` | a `mode` értéke `major` (az alapértelmezett). `mode=ipsep` esetén csendben elfogadja, és az elrendezés a véletlenszerű kezdést használja, mint a Graphviz | Okos inicializálás (`smart_ini`). `mode=KK` vagy `mode=sgd` alatt renderelésenként egyszer naplózza: `start=0 not supported with mode=self - ignored`, ahogy a Graphviz teszi |
+| neato | `model=subset` | A `mode` `major` vagy `KK`. `mode=ipsep` esetén nem lép életbe. | A részhalmaz-távolságmodell |
+| neato | `model=circuit` | A `mode` `major`, vagy `KK` összefüggő gráfon. A `KK` nem összefüggő gráfon `pack` vagy `packmode` nélkül figyelmeztetést naplóz, és legrövidebb utakat használ, ahogy a Graphviz teszi. `mode=ipsep` esetén nem lép életbe. | Az áramköri távolságmodell (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (kis- és nagybetűre érzéketlen) | A gráfnak (a twopi-nál egy komponensnek; az sfdp-nél a teljes gráfnak vagy egy komponensnek) 2+ csúcsa van, és a Graphviz saját átfedésszámlálója (`countOverlap`, amely a csúcssokszögeket teszteli) 0 fölött van. Azok a csúcsok, amelyek csak befoglaló dobozukkal érintkeznek, nem váltják ki. A circo csak egykomponensű gráfnál éri el (több komponensnél a Graphviz az `overlap`-et is figyelmen kívül hagyja). Az sfdp csak akkor éri el, ha az `overlap` nem prizma módú | Voronoi-alapú átfedéseltávolítás (`vAdjust`) |
 | fdp | `overlap=` a következők egyike: `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | A módot az `N:` erőiterációs próbálkozások után éri el, vagyis amikor ezek a próbálkozások nem távolítanak el minden átfedést (vagy az `N` 0 vagy hiányzik). Az `N:` előtag megengedett, például `3:voronoi` | A megfelelő `removeOverlapWith` igazító algoritmus |
 | fdp | `splines=compound` | Mindig, klaszterekkel vagy anélkül | Klasztert elkerülő élvezetés (`compoundEdges`) |

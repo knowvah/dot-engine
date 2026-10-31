@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1332,6 +1332,8 @@ Need on tahtlikud ulatuse piirid, mitte vead. Teek sihib **SVG-d**
   pluginate laadimine (`dlopen`) on asendatud staatilise mootori/renderdaja registreerimisega;
   failisüsteemi lugemised (fondid, pildid, konfiguratsioon) on asendatud kutsuja antud
   tagasikutsetega (nt `setImageSizer`). Käitumine säilib; mehhanism erineb.
+
+- **Pildi tüüp ja `imagepath`-i hoiatused.** Ainult `setImageSizer` kaudu tuntud pildil (ilma resolveri baitideta) pole tüüpi, seega ei trüki see hoiatust `No loadimage plugin`; natiivne loeb faili alati ja teab seetõttu tüüpi alati. Tundmatute resolveri baitide puhul hoiatab natiivne lisaks reaga `Warning: "<name>" was not found as a file or as a shape library member`; port seda rida veel ei trüki (jätkupunkt 104, ühendamine paigutuse ajal). `GV_FILE_PATH` ja `SERVER_NAME` ei ole arvestatud ning hostilt ei küsita kunagi `imagepath`-i `<dir>/<name>`-nime.
 
 ---
 

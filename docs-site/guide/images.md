@@ -192,16 +192,16 @@ passthrough automatically — inlining degrades gracefully, it never throws.
 
 ### 3. `imagepath`-style base directories
 
-Native Graphviz's `imagepath` graph attribute tells the C binary a
-filesystem/`GDFONTPATH`-style search directory to resolve relative `image=`
-values against. @knowvah/dot-engine does not implement `imagepath` — the port never
-reads image data from disk itself, so there is no path to resolve against
-(see [Known divergences](/divergences) for the full scope boundary). If your
-graphs use relative `image=` paths, resolve them against your own base
-directory/URL in whichever layer constructs the DOT source or in your
-`setImageSizer`/`ImageResolver` callbacks — both receive the raw `src` string
-exactly as written in the graph, so string-prefixing it with a base path
-before lookup is a normal, sanctioned pattern.
+Native Graphviz's `imagepath` graph attribute is a colon-separated list of directories searched for relative `image=` and `shapefile=` names. The port never reads image files itself, so it never searches them and never asks the host for `dir/name`: `setImageSizer` and `ImageResolver` always receive the raw name exactly as written. The port uses `imagepath` only to decide which warning prints when the host does not supply a relative name:
+
+- With `imagepath` set, a relative `image=`/`shapefile=` name that the host does not supply warns `Warning: Filename "<name>" is unsafe` and then `Warning: No or improper image="<name>" for node "<node>"`, as native does when no `<dir>/<name>` is readable.
+- An absolute name, or no or empty `imagepath`, keeps the `Warning: No such file or directory while opening <name>` line.
+
+`GV_FILE_PATH` and `SERVER_NAME` are not honoured (they are environment variables, and a browser has none). To resolve relative paths against your own base directory or URL, prefix the name in the layer that builds the DOT source or inside your `setImageSizer`/`ImageResolver` callbacks.
+
+**Image type.** As native does, the type is taken from the bytes the resolver returns, by magic-number sniffing: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, and svg only when the bytes start with an `<?xml` declaration followed by `<svg`. Anything shorter than 20 bytes is unrecognized. For unrecognized bytes nothing is drawn and the image is not sized at render time. Native also warns `Warning: "<name>" was not found as a file or as a shape library member`; the port does not print that line yet (see [Known divergences](/divergences)).
+
+`-Tjson` warns `Warning: No loadimage plugin for "png:json"` (the type varies) once per drawn image, as native does, because native has no json image loader. `svg`, `xdot`, `dot`, `plain` and `cmapx` print nothing for a recognized type. An image known only through the sizer has no type, so it prints no loadimage warning (see [Known divergences](/divergences)).
 
 ## CSP guidance
 

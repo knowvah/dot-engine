@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,10 +132,9 @@ valor suportado.
 | Mecanismo | Atributo e valor | Dispara quando | Recurso do Graphviz necessário |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | Somente quando `model` é `subset` ou `circuit` (depois que o grafo tem 2+ nós e `maxiter` é positivo) | Majorização de stress hierárquica (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Somente quando o Graphviz construiria restrições: `diredgeconstraints` é verdadeiro ou `hier*`, `overlap=ipsep`, ou o grafo tem um cluster de nível superior. Sem restrições, ele roda como majorização de stress, como no Graphviz | Majorização com restrições (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` é `major` (o padrão) ou `ipsep` | Inicialização inteligente (`smart_ini`). Com `mode=KK` ou `mode=sgd`, registra `start=0 not supported with mode=self - ignored` uma vez por renderização, como o Graphviz faz |
-| neato | `model=subset` | `mode` é `major` ou `KK` | O modelo de distância por subconjunto |
-| neato | `model=circuit` | `mode` é `major`, ou `KK` em um grafo conexo. `KK` em um grafo desconexo sem `pack` nem `packmode` registra um aviso e usa caminhos mais curtos, como o Graphviz faz | O modelo de distância de circuito (`circuit_model`) |
+| neato | `start=self` | `mode` é `major` (o padrão). Sob `mode=ipsep` é aceito silenciosamente e o layout usa o início aleatório, como o Graphviz | Inicialização inteligente (`smart_ini`). Com `mode=KK` ou `mode=sgd`, registra `start=0 not supported with mode=self - ignored` uma vez por renderização, como o Graphviz faz |
+| neato | `model=subset` | `mode` é `major` ou `KK`. Não dispara sob `mode=ipsep`. | O modelo de distância por subconjunto |
+| neato | `model=circuit` | `mode` é `major`, ou `KK` em um grafo conexo. `KK` em um grafo desconexo sem `pack` nem `packmode` registra um aviso e usa caminhos mais curtos, como o Graphviz faz. Não dispara sob `mode=ipsep`. | O modelo de distância de circuito (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (sem distinção entre maiúsculas e minúsculas) | O grafo (para twopi, um componente; para sfdp, o grafo inteiro ou um componente) tem 2+ nós e a própria contagem de sobreposição do Graphviz (`countOverlap`, que testa polígonos de nós) é maior que 0. Nós que apenas se tocam pela caixa delimitadora não a disparam. O circo só chega a ela para um grafo de um único componente (com vários componentes, o Graphviz também ignora `overlap`). O sfdp só chega a ela quando `overlap` não é um modo prism | Remoção de sobreposição por Voronoi (`vAdjust`) |
 | fdp | `overlap=` um entre `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | O modo é alcançado depois das tentativas de iteração de forças `N:`, ou seja, quando essas tentativas não removem toda sobreposição (ou `N` é 0 ou está ausente). O prefixo `N:` é permitido, por exemplo `3:voronoi` | O algoritmo de ajuste `removeOverlapWith` correspondente |
 | fdp | `splines=compound` | Sempre, com ou sem clusters | Roteamento de arestas que evita clusters (`compoundEdges`) |

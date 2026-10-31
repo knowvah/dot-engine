@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,10 +132,9 @@ eroarea, eliminați atributul sau schimbați-l într-o valoare acceptată.
 | Motor | Atribut și valoare | Se declanșează când | Funcționalitate Graphviz necesară |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | Numai când `model` este `subset` sau `circuit` (după ce graful are 2+ noduri și `maxiter` este pozitiv) | Majorizare de stres ierarhică (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Doar când Graphviz ar construi constrângeri: `diredgeconstraints` este adevărat sau `hier*`, `overlap=ipsep` ori graful are un cluster de nivel superior. Fără constrângeri rulează ca majorizare de stres, ca în Graphviz | Majorizare constrânsă (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` este `major` (implicit) sau `ipsep` | Inițializare inteligentă (`smart_ini`). Sub `mode=KK` sau `mode=sgd` înregistrează o dată pe randare `start=0 not supported with mode=self - ignored`, ca Graphviz |
-| neato | `model=subset` | `mode` este `major` sau `KK` | Modelul de distanță subset |
-| neato | `model=circuit` | `mode` este `major`, sau `KK` pe un graf conex. `KK` pe un graf neconex, fără `pack` sau `packmode`, înregistrează un avertisment și folosește cele mai scurte căi, ca Graphviz | Modelul de distanță circuit (`circuit_model`) |
+| neato | `start=self` | `mode` este `major` (implicit). Sub `mode=ipsep` este acceptat în tăcere, iar layout-ul folosește startul aleator, ca Graphviz | Inițializare inteligentă (`smart_ini`). Sub `mode=KK` sau `mode=sgd` înregistrează o dată pe randare `start=0 not supported with mode=self - ignored`, ca Graphviz |
+| neato | `model=subset` | `mode` este `major` sau `KK`. Nu se declanșează sub `mode=ipsep`. | Modelul de distanță subset |
+| neato | `model=circuit` | `mode` este `major`, sau `KK` pe un graf conex. `KK` pe un graf neconex, fără `pack` sau `packmode`, înregistrează un avertisment și folosește cele mai scurte căi, ca Graphviz. Nu se declanșează sub `mode=ipsep`. | Modelul de distanță circuit (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (insensibil la majuscule) | Graful (pentru twopi, o componentă; pentru sfdp, întregul graf sau o componentă) are 2+ noduri, iar numărătoarea proprie a Graphviz pentru suprapuneri (`countOverlap`, care testează poligoanele nodurilor) este peste 0. Nodurile care se ating doar prin caseta de încadrare nu o declanșează. circo ajunge aici doar pentru un graf cu o singură componentă (la mai multe componente Graphviz ignoră și el `overlap`). sfdp ajunge aici doar când `overlap` nu este un mod prism | Eliminarea suprapunerilor Voronoi (`vAdjust`) |
 | fdp | `overlap=` unul dintre `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Modul este atins după încercările de iterații de forțe `N:`, adică atunci când acele încercări nu elimină toate suprapunerile (sau `N` este 0 ori lipsește). Prefixul `N:` este permis, de exemplu `3:voronoi` | Algoritmul de ajustare `removeOverlapWith` corespunzător |
 | fdp | `splines=compound` | Întotdeauna, cu sau fără clustere | Rutarea muchiilor cu ocolirea clusterelor (`compoundEdges`) |

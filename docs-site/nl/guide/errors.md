@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -133,10 +133,9 @@ attribuut of wijzigt u het naar een ondersteunde waarde.
 | Engine | Attribuut en waarde | Slaat aan wanneer | Benodigde Graphviz-functie |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | Alleen wanneer `model` `subset` of `circuit` is (nadat de graaf 2+ knopen heeft en `maxiter` positief is) | Hiërarchische stressmajorisatie (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Alleen wanneer Graphviz beperkingen zou opbouwen: `diredgeconstraints` is waar of `hier*`, `overlap=ipsep`, of de graaf heeft een cluster op het hoogste niveau. Zonder beperkingen draait het als stressmajorisatie, zoals in Graphviz | Beperkte majorisatie (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` is `major` (de standaardwaarde) of `ipsep` | Slimme initialisatie (`smart_ini`). Onder `mode=KK` of `mode=sgd` logt het eenmaal per render `start=0 not supported with mode=self - ignored`, zoals Graphviz doet |
-| neato | `model=subset` | `mode` is `major` of `KK` | Het afstandsmodel subset |
-| neato | `model=circuit` | `mode` is `major`, of `KK` op een samenhangende graaf. `KK` op een niet-samenhangende graaf zonder `pack` of `packmode` logt een waarschuwing en gebruikt kortste paden, zoals Graphviz doet | Het afstandsmodel circuit (`circuit_model`) |
+| neato | `start=self` | `mode` is `major` (de standaard). Onder `mode=ipsep` wordt het stilzwijgend geaccepteerd en gebruikt de layout de willekeurige start, zoals Graphviz | Slimme initialisatie (`smart_ini`). Onder `mode=KK` of `mode=sgd` logt het eenmaal per render `start=0 not supported with mode=self - ignored`, zoals Graphviz doet |
+| neato | `model=subset` | `mode` is `major` of `KK`. Treedt niet op onder `mode=ipsep`. | Het afstandsmodel subset |
+| neato | `model=circuit` | `mode` is `major`, of `KK` op een samenhangende graaf. `KK` op een niet-samenhangende graaf zonder `pack` of `packmode` logt een waarschuwing en gebruikt kortste paden, zoals Graphviz doet. Treedt niet op onder `mode=ipsep`. | Het afstandsmodel circuit (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (hoofdletterongevoelig) | De graaf (voor twopi een component; voor sfdp de hele graaf of een component) heeft 2+ knopen en de eigen overlaptelling van Graphviz (`countOverlap`, die knoopveelhoeken toetst) is groter dan 0. Knopen die elkaar alleen via het omsluitende kader raken, triggeren het niet. circo bereikt het alleen voor een graaf met één component (bij meerdere componenten negeert Graphviz `overlap` ook). sfdp bereikt het alleen wanneer `overlap` geen prism-modus is | Voronoi-overlapverwijdering (`vAdjust`) |
 | fdp | `overlap=` een van `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | De modus wordt bereikt na de `N:`-krachtiteratiepogingen, dat wil zeggen wanneer die pogingen niet alle overlap verwijderen (of `N` is 0 of ontbreekt). Het voorvoegsel `N:` is toegestaan, bijvoorbeeld `3:voronoi` | Het bijbehorende `removeOverlapWith`-aanpassingsalgoritme |
 | fdp | `splines=compound` | Altijd, met of zonder clusters | Clustermijdende kantroutering (`compoundEdges`) |

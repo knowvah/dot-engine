@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # 画像
 
@@ -181,15 +181,16 @@ SVG の送り先が、表示時に外部リソースを取得できない場合�
 
 ### 3. `imagepath` 方式のベースディレクトリ {#3-imagepath-style-base-directories}
 
-ネイティブ Graphviz の `imagepath` グラフ属性は、C バイナリに対して、相対的な `image=` の値を
-解決する基準となる、ファイルシステム/`GDFONTPATH` 形式の検索ディレクトリを伝えます。
-@knowvah/dot-engine は `imagepath` を実装していません。この移植版は、ディスクから画像データを
-読むことが一切ないので、解決の基準となるパスがないためです
-（スコープの境界の詳細は[既知の差異](/ja/divergences)を参照してください）。グラフが相対的な
-`image=` パスを使う場合は、DOT ソースを組み立てる層、または `setImageSizer`/`ImageResolver`
-のコールバックの中で、自分のベースディレクトリ/URL を基準に解決してください。どちらも、
-グラフに書かれたとおりの生の `src` 文字列を受け取るので、参照の前にベースパスを文字列として
-前置するのは、正規に認められた通常のパターンです。
+ネイティブ Graphviz の `imagepath` グラフ属性は、相対的な `image=` および `shapefile=` の名前を探すディレクトリのコロン区切りリストです。この移植版は画像ファイルを自分では一切読まないため、これらのディレクトリを検索することはなく、ホストに `dir/name` を要求することもありません。`setImageSizer` と `ImageResolver` は、常に書かれたとおりの生の名前を受け取ります。この移植版が `imagepath` を使うのは、ホストが相対名を提供しなかったときにどの警告を出すかを決めるためだけです。
+
+- `imagepath` が設定されている場合、ホストが提供しない相対的な `image=`/`shapefile=` の名前は、ネイティブが `<dir>/<name>` を読めないときと同様に、`Warning: Filename "<name>" is unsafe` に続いて `Warning: No or improper image="<name>" for node "<node>"` を出力します。
+- 絶対名、または `imagepath` が未設定か空の場合は、従来どおり `Warning: No such file or directory while opening <name>` の行を出力します。
+
+`GV_FILE_PATH` と `SERVER_NAME` は考慮されません（これらは環境変数であり、ブラウザには環境がありません）。相対パスを自分のベースディレクトリや URL を基準に解決するには、DOT ソースを組み立てる層、または `setImageSizer`/`ImageResolver` のコールバックの中で名前に接頭辞を付けてください。
+
+**画像タイプ。** ネイティブと同様に、タイプは resolver が返したバイト列からマジックナンバーの判別で決まります。対象は png、gif、jpeg、bmp、pdf、ps、eps、ico、riff/webp で、svg はバイト列が `<?xml` 宣言で始まり、その後に `<svg` が続く場合に限ります。20 バイト未満のものは判別できません。判別できないバイト列では何も描画されず、レンダリング時に画像のサイズも決定されません。ネイティブはさらに `Warning: "<name>" was not found as a file or as a shape library member` も警告しますが、この移植版はまだその行を出力しません（[既知の差異](/ja/divergences)を参照）。
+
+`-Tjson` は、ネイティブと同様に、描画された画像ごとに 1 回 `Warning: No loadimage plugin for "png:json"` を警告します（タイプは画像により異なります）。ネイティブには json 用の画像ローダーがないためです。判別できたタイプについて、`svg`、`xdot`、`dot`、`plain`、`cmapx` は何も出力しません。サイザー経由でのみ知られている画像にはタイプがないため、loadimage の警告は出力されません（[既知の差異](/ja/divergences)を参照）。
 
 ## CSP のガイダンス {#csp-guidance}
 

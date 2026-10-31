@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -110,10 +110,9 @@ DOT 作者做任何修改，都无法可靠地避免 `InternalError`。
 | 引擎 | 属性与值 | 触发条件 | 所需的 Graphviz 功能 |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | 仅当 `model` 为 `subset` 或 `circuit` 时（在图有 2 个及以上节点且 `maxiter` 为正之后） | 分层应力优化（stress majorization）（`stress_majorization_with_hierarchy`） |
-| neato | `mode=ipsep` | 仅当 Graphviz 会构建约束时：`diredgeconstraints` 为真或为 `hier*`、`overlap=ipsep`，或图含有顶层簇。没有约束时，它按应力优化（stress majorization）运行，与 Graphviz 一致 | 带约束的最大化（`stress_majorization_cola`） |
-| neato | `start=self` | `mode` 为 `major`（默认值）或 `ipsep` | 智能初始化（`smart_ini`）。在 `mode=KK` 或 `mode=sgd` 下，它每次渲染记录一次 `start=0 not supported with mode=self - ignored`，与 Graphviz 一致 |
-| neato | `model=subset` | `mode` 为 `major` 或 `KK` | 子集距离模型 |
-| neato | `model=circuit` | `mode` 为 `major`，或在连通图上为 `KK`。在非连通图上，没有 `pack` 或 `packmode` 的 `KK` 会记录一条警告并使用最短路径，与 Graphviz 一致 | 电路距离模型（`circuit_model`） |
+| neato | `start=self` | `mode` 为 `major`（默认值）。在 `mode=ipsep` 下会被静默接受，布局与 Graphviz 一样使用随机起点 | 智能初始化（`smart_ini`）。在 `mode=KK` 或 `mode=sgd` 下，它每次渲染记录一次 `start=0 not supported with mode=self - ignored`，与 Graphviz 一致 |
+| neato | `model=subset` | `mode` 为 `major` 或 `KK`。 在 `mode=ipsep` 下不会触发。 | 子集距离模型 |
+| neato | `model=circuit` | `mode` 为 `major`，或在连通图上为 `KK`。在非连通图上，没有 `pack` 或 `packmode` 的 `KK` 会记录一条警告并使用最短路径，与 Graphviz 一致。 在 `mode=ipsep` 下不会触发。 | 电路距离模型（`circuit_model`） |
 | neato、twopi、circo、sfdp | `overlap=voronoi`（不区分大小写） | 图（对 twopi 是一个连通分量；对 sfdp 是整个图或一个连通分量）有 2 个及以上节点，且 Graphviz 自己的重叠计数（`countOverlap`，它检测节点多边形）大于 0。仅边界框相接触的节点不会触发。circo 仅在单连通分量的图上才会到达这里（在多个连通分量上，Graphviz 同样忽略 `overlap`）。sfdp 仅在 `overlap` 不是 prism 模式时才会到达这里 | Voronoi 重叠消除（`vAdjust`） |
 | fdp | `overlap=` 为 `voronoi`、`oscale`、`vpsc`、`ipsep`、`ortho`、`ortho_yx`、`orthoxy`、`orthoyx`、`portho`、`portho_yx`、`porthoxy`、`porthoyx` 之一 | 在 `N:` 力迭代尝试之后才到达该模式，即这些尝试没有消除所有重叠时（或 `N` 为 0 或缺省）。允许 `N:` 前缀，例如 `3:voronoi` | 对应的 `removeOverlapWith` 调整算法 |
 | fdp | `splines=compound` | 始终，无论有无簇 | 避开簇的边路由（`compoundEdges`） |

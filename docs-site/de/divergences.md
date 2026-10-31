@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1431,6 +1431,8 @@ Das sind bewusste Abgrenzungen des Umfangs, keine Fehler. Die Bibliothek zielt a
   ersetzt; Dateisystemzugriffe (Schriften, Bilder, Konfiguration) werden durch vom
   Aufrufer gelieferte Callbacks ersetzt (z. B. `setImageSizer`). Das Verhalten bleibt
   erhalten; der Mechanismus unterscheidet sich.
+
+- **Bildtyp und `imagepath`-Warnungen.** Ein nur über `setImageSizer` bekanntes Bild (ohne Resolver-Bytes) hat keinen Typ und gibt daher keine Warnung `No loadimage plugin` aus; das native Programm liest die Datei immer und kennt den Typ deshalb stets. Bei unerkannten Resolver-Bytes warnt das native Programm zusätzlich mit `Warning: "<name>" was not found as a file or as a shape library member`; die Portierung gibt diese Zeile noch nicht aus (Folgepunkt 104, Verdrahtung zur Layoutzeit). `GV_FILE_PATH` und `SERVER_NAME` werden nicht berücksichtigt, und der Host wird nie nach dem `<dir>/<name>`-Namen von `imagepath` gefragt.
 
 ---
 

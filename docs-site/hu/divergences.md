@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1357,6 +1357,8 @@ Ezek szándékos hatókörhatárok, nem hibák. A könyvtár az **SVG**-t céloz
   bővítménybetöltést (`dlopen`) statikus motor-/renderelő-regisztráció váltja fel;
   a fájlrendszer-olvasásokat (betűtípusok, képek, konfiguráció) a hívó által megadott
   visszahívások (pl. `setImageSizer`). A viselkedés megmarad; a mechanizmus különbözik.
+
+- **Képtípus és `imagepath` figyelmeztetések.** A csak a `setImageSizer` útján ismert képnek (resolver-bájtok nélkül) nincs típusa, ezért nem írja ki a `No loadimage plugin` figyelmeztetést; a natív mindig beolvassa a fájlt, így mindig ismeri a típust. Felismerhetetlen resolver-bájtoknál a natív ezenkívül a `Warning: "<name>" was not found as a file or as a shape library member` sorral is figyelmeztet; a port ezt a sort még nem írja ki (104. követő tétel, bekötés elrendezéskor). A `GV_FILE_PATH` és a `SERVER_NAME` nem érvényesül, és a gazdát soha nem kérdezi az `imagepath` `<dir>/<name>` nevéről.
 
 ---
 

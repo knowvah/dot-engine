@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1329,6 +1329,8 @@ Bunlar hata değil, bilinçli kapsam sınırlarıdır. Kitaplık **SVG**'yi hede
   okumaları (yazı tipleri, görseller, yapılandırma) çağıran tarafından sağlanan
   geri çağrılarla (örn. `setImageSizer`) değiştirilir. Davranış korunur; mekanizma
   farklıdır.
+
+- **Görüntü türü ve `imagepath` uyarıları.** Yalnızca `setImageSizer` üzerinden bilinen bir görüntünün (resolver baytları olmadan) türü yoktur; bu nedenle `No loadimage plugin` uyarısını yazdırmaz. Yerel sürüm dosyayı her zaman okur ve bu yüzden türü her zaman bilir. Tanınmayan resolver baytları için yerel sürüm ayrıca `Warning: "<name>" was not found as a file or as a shape library member` uyarısını verir; port bu satırı henüz yazdırmaz (takip maddesi 104, layout zamanı bağlantısı). `GV_FILE_PATH` ve `SERVER_NAME` dikkate alınmaz ve ana bilgisayara `imagepath` `<dir>/<name>` adı hiçbir zaman sorulmaz.
 
 ---
 

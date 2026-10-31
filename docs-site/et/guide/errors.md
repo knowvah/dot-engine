@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -128,10 +128,9 @@ Vea vältimiseks eemaldage atribuut või muutke see toetatud väärtuseks.
 | Mootor | Atribuut ja väärtus | Käivitub, kui | Vajalik Graphvizi funktsioon |
 |--------|--------------------|---------------|-------------------------|
 | neato | `mode=hier` | Ainult siis, kui `model` on `subset` või `circuit` (pärast seda, kui graafis on 2+ sõlme ja `maxiter` on positiivne) | Hierarhiline pingemajoriseerimine (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Ainult siis, kui Graphviz ehitaks piirangud: `diredgeconstraints` on tõene või `hier*`, `overlap=ipsep` või graafil on ülemise taseme klaster. Ilma piiranguteta töötab see pingemajoriseerimisena, nagu Graphvizis | Piiranguga majoriseerimine (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` on `major` (vaikimisi) või `ipsep` | Nutikas lähtestamine (`smart_ini`). Režiimis `mode=KK` või `mode=sgd` logib see üks kord renderduse kohta `start=0 not supported with mode=self - ignored`, nagu Graphviz |
-| neato | `model=subset` | `mode` on `major` või `KK` | Alamhulga kaugusemudel |
-| neato | `model=circuit` | `mode` on `major` või `KK` ühtsel graafil. `KK` mitteühtsel graafil ilma `pack`-i või `packmode`-ita logib hoiatuse ja kasutab lühimaid teid, nagu Graphviz | Vooluringi kaugusemudel (`circuit_model`) |
+| neato | `start=self` | `mode` on `major` (vaikeväärtus). Režiimis `mode=ipsep` aktsepteeritakse see vaikselt ja paigutus kasutab juhuslikku algust, nagu Graphviz | Nutikas lähtestamine (`smart_ini`). Režiimis `mode=KK` või `mode=sgd` logib see üks kord renderduse kohta `start=0 not supported with mode=self - ignored`, nagu Graphviz |
+| neato | `model=subset` | `mode` on `major` või `KK`. Ei rakendu režiimis `mode=ipsep`. | Alamhulga kaugusemudel |
+| neato | `model=circuit` | `mode` on `major` või `KK` ühtsel graafil. `KK` mitteühtsel graafil ilma `pack`-i või `packmode`-ita logib hoiatuse ja kasutab lühimaid teid, nagu Graphviz. Ei rakendu režiimis `mode=ipsep`. | Vooluringi kaugusemudel (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (tõstutundetu) | Graafil (twopi puhul komponendil; sfdp puhul kogu graafil või komponendil) on 2+ sõlme ja Graphvizi enda kattuvuste arv (`countOverlap`, mis testib sõlmede hulknurki) on üle 0. Sõlmed, mis puudutavad ainult piirdekasti kaudu, seda ei käivita. circo jõuab selleni ainult ühe komponendiga graafil (mitme komponendi korral eirab Graphviz `overlap`-i samuti). sfdp jõuab selleni ainult siis, kui `overlap` ei ole prisma-režiim | Voronoi kattuvuse eemaldamine (`vAdjust`) |
 | fdp | `overlap=` üks väärtustest `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Režiimini jõutakse pärast `N:` jõuiteratsioonide katseid, st kui need katsed ei eemalda kõiki kattuvusi (või `N` on 0 või puudub). Eesliide `N:` on lubatud, näiteks `3:voronoi` | Vastav `removeOverlapWith` kohandusalgoritm |
 | fdp | `splines=compound` | Alati, klastritega või ilma | Klastreid vältiv servade marsruutimine (`compoundEdges`) |

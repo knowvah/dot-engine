@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1248,6 +1248,8 @@ neato、twopi、circo、sfdp で依然として `UNSUPPORTED_FEATURE` を投げ�
   動的なプラグインのロード (`dlopen`) は静的なエンジン／レンダラーの登録に、
   ファイルシステムの読み取り（フォント、画像、設定）は呼び出し側が提供するコールバック
   （たとえば `setImageSizer`）に置き換えられます。挙動は保たれ、メカニズムが異なります。
+
+- **画像タイプと `imagepath` の警告。** `setImageSizer` 経由でのみ知られている画像（resolver のバイト列なし）にはタイプがないため、`No loadimage plugin` の警告を出力しません。ネイティブは常にファイルを読むので、常にタイプを知っています。判別できない resolver バイト列に対して、ネイティブはさらに `Warning: "<name>" was not found as a file or as a shape library member` も警告しますが、この移植版はまだその行を出力しません（フォローアップ 104、レイアウト時の配線）。`GV_FILE_PATH` と `SERVER_NAME` は考慮されず、ホストに `imagepath` の `<dir>/<name>` 名が問い合わされることもありません。
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # 이미지 다루기
 
@@ -178,14 +178,16 @@ CSP 임베드, 또는 후속 네트워크 요청 없이 자체 완결형 문자�
 
 ### 3. `imagepath` 방식의 기준 디렉터리 {#3-imagepath-style-base-directories}
 
-네이티브 Graphviz의 `imagepath` 그래프 속성은 C 바이너리에게 상대 `image=` 값을 해석할 때 기준이
-되는 파일 시스템/`GDFONTPATH` 방식의 검색 디렉터리를 알려 줍니다. @knowvah/dot-engine은
-`imagepath`를 구현하지 않습니다 — 이 포팅은 디스크에서 이미지 데이터를 직접 읽지 않으므로
-해석할 경로가 없습니다(범위의 전체 경계는 [알려진 차이](/ko/divergences)를 참조하세요). 그래프가
-상대 `image=` 경로를 사용한다면, DOT 소스를 만드는 계층이나 `setImageSizer`/`ImageResolver`
-콜백에서 여러분의 기준 디렉터리/URL을 기준으로 해석하세요 — 둘 다 그래프에 쓰인 그대로의 원본
-`src` 문자열을 받으므로, 조회 전에 기준 경로를 문자열 앞에 붙이는 것은 정상적이고 권장되는
-패턴입니다.
+네이티브 Graphviz의 `imagepath` 그래프 속성은 상대적인 `image=` 및 `shapefile=` 이름을 찾는 디렉터리의 콜론 구분 목록입니다. 이 포트는 이미지 파일을 직접 읽지 않으므로 해당 디렉터리를 검색하지 않으며 호스트에 `dir/name`을 요청하지도 않습니다. `setImageSizer`와 `ImageResolver`는 항상 작성된 그대로의 원본 이름을 받습니다. 이 포트는 호스트가 상대 이름을 제공하지 않을 때 어떤 경고를 출력할지 결정하는 데에만 `imagepath`를 사용합니다.
+
+- `imagepath`가 설정되어 있으면, 호스트가 제공하지 않는 상대적인 `image=`/`shapefile=` 이름은 네이티브가 `<dir>/<name>`을(를) 읽을 수 없을 때와 마찬가지로 `Warning: Filename "<name>" is unsafe` 다음에 `Warning: No or improper image="<name>" for node "<node>"`을(를) 경고합니다.
+- 절대 이름이거나 `imagepath`가 없거나 비어 있으면 기존대로 `Warning: No such file or directory while opening <name>` 줄을 유지합니다.
+
+`GV_FILE_PATH`와 `SERVER_NAME`은 고려되지 않습니다(환경 변수이며 브라우저에는 환경이 없습니다). 상대 경로를 자신의 기준 디렉터리나 URL 기준으로 해석하려면, DOT 소스를 만드는 계층이나 `setImageSizer`/`ImageResolver` 콜백 안에서 이름 앞에 접두사를 붙이세요.
+
+**이미지 유형.** 네이티브와 마찬가지로 유형은 resolver가 반환한 바이트에서 매직 넘버 판별로 결정됩니다. 대상은 png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp이며, svg는 바이트가 `<?xml` 선언으로 시작하고 그 뒤에 `<svg`가 오는 경우에만 해당합니다. 20바이트보다 짧은 데이터는 인식되지 않습니다. 인식되지 않는 바이트는 아무것도 그리지 않으며 렌더링 시 이미지 크기도 측정하지 않습니다. 네이티브는 추가로 `Warning: "<name>" was not found as a file or as a shape library member`도 경고하지만, 이 포트는 아직 그 줄을 출력하지 않습니다([알려진 차이점](/ko/divergences) 참조).
+
+`-Tjson`은 네이티브와 마찬가지로 그려진 이미지마다 한 번씩 `Warning: No loadimage plugin for "png:json"`을(를) 경고합니다(유형은 달라질 수 있음). 네이티브에는 json 이미지 로더가 없기 때문입니다. 인식된 유형에 대해 `svg`, `xdot`, `dot`, `plain`, `cmapx`는 아무것도 출력하지 않습니다. 사이저를 통해서만 알려진 이미지는 유형이 없으므로 loadimage 경고를 출력하지 않습니다([알려진 차이점](/ko/divergences) 참조).
 
 ## CSP 안내 {#csp-guidance}
 

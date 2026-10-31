@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -128,10 +128,9 @@ DOT 작성자가 무엇을 바꾸어도 `InternalError`를 확실하게 피할 �
 | 엔진 | 속성과 값 | 발생 조건 | 필요한 Graphviz 기능 |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | `model`이 `subset` 또는 `circuit`인 경우에만(그래프에 노드가 2개 이상이고 `maxiter`가 양수인 경우) | 계층적 스트레스 매저라이제이션(`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Graphviz가 제약 조건을 구성하는 경우에만: `diredgeconstraints`가 true이거나 `hier*`, `overlap=ipsep`이거나 그래프에 최상위 클러스터가 있는 경우. 제약 조건이 없으면 Graphviz와 마찬가지로 스트레스 매저라이제이션으로 실행됩니다 | 제약 조건 매저라이제이션(`stress_majorization_cola`) |
-| neato | `start=self` | `mode`가 `major`(기본값) 또는 `ipsep`인 경우 | 스마트 초기화(`smart_ini`). `mode=KK` 또는 `mode=sgd`에서는 Graphviz와 마찬가지로 렌더링당 한 번 `start=0 not supported with mode=self - ignored`를 기록합니다 |
-| neato | `model=subset` | `mode`가 `major` 또는 `KK`인 경우 | 부분 집합 거리 모델 |
-| neato | `model=circuit` | `mode`가 `major`이거나, 연결된 그래프에서 `KK`인 경우. `pack`이나 `packmode`가 없는 비연결 그래프의 `KK`는 Graphviz와 마찬가지로 경고를 기록하고 최단 경로를 사용합니다 | 회로 거리 모델(`circuit_model`) |
+| neato | `start=self` | `mode`가 `major`(기본값)인 경우. `mode=ipsep`에서는 조용히 수용되며 Graphviz와 같이 레이아웃이 무작위 시작을 사용한다 | 스마트 초기화(`smart_ini`). `mode=KK` 또는 `mode=sgd`에서는 Graphviz와 마찬가지로 렌더링당 한 번 `start=0 not supported with mode=self - ignored`를 기록합니다 |
+| neato | `model=subset` | `mode`가 `major` 또는 `KK`인 경우. `mode=ipsep`에서는 발생하지 않는다. | 부분 집합 거리 모델 |
+| neato | `model=circuit` | `mode`가 `major`이거나, 연결된 그래프에서 `KK`인 경우. `pack`이나 `packmode`가 없는 비연결 그래프의 `KK`는 Graphviz와 마찬가지로 경고를 기록하고 최단 경로를 사용합니다. `mode=ipsep`에서는 발생하지 않는다. | 회로 거리 모델(`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi`(대소문자 구분 없음) | 그래프(twopi는 컴포넌트, sfdp는 전체 그래프 또는 컴포넌트)에 노드가 2개 이상이고 Graphviz 자체의 겹침 개수(`countOverlap`, 노드 다각형을 검사함)가 0보다 큰 경우. 바운딩 박스로만 닿는 노드는 해당하지 않습니다. circo는 단일 컴포넌트 그래프에서만 도달합니다(컴포넌트가 여러 개이면 Graphviz도 `overlap`을 무시합니다). sfdp는 `overlap`이 prism 모드가 아닐 때만 도달합니다 | 보로노이 겹침 제거(`vAdjust`) |
 | fdp | `overlap=` 다음 중 하나: `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | `N:` 힘 반복 시도 뒤에 해당 모드에 도달하는 경우, 즉 그 시도로 겹침이 모두 제거되지 않은 경우(또는 `N`이 0이거나 없는 경우). `N:` 접두사는 허용됩니다(예: `3:voronoi`) | 대응하는 `removeOverlapWith` 조정 알고리즘 |
 | fdp | `splines=compound` | 클러스터 유무와 상관없이 항상 | 클러스터 회피 에지 라우팅(`compoundEdges`) |

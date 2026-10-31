@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # Imagini
 
@@ -191,16 +191,16 @@ transmiterea `src` brut — încorporarea se degradează grațios, nu aruncă ni
 
 ### 3. Directoare de bază în stilul `imagepath`
 
-Atributul de graf `imagepath` al Graphviz nativ indică binarului C un director de
-căutare în stilul sistemului de fișiere/`GDFONTPATH` față de care se rezolvă valorile relative `image=`.
-@knowvah/dot-engine nu implementează `imagepath` — portul nu citește niciodată el însuși datele imaginii de pe disc,
-deci nu există nicio cale față de care să se rezolve
-(vedeți [Divergențe cunoscute](/ro/divergences) pentru limita completă a domeniului). Dacă
-grafurile dumneavoastră folosesc căi relative `image=`, rezolvați-le față de propriul
-director/URL de bază, în oricare strat construiește sursa DOT sau în
-callback-urile `setImageSizer`/`ImageResolver` — ambele primesc șirul `src` brut
-exact așa cum este scris în graf, deci prefixarea lui cu o cale de bază
-înainte de căutare este un tipar normal, acceptat.
+Atributul de graf `imagepath` din Graphviz nativ este o listă de directoare separate prin două puncte, în care se caută numele relative din `image=` și `shapefile=`. Portul nu citește niciodată singur fișiere imagine, deci nu le parcurge niciodată și nu cere niciodată gazdei `dir/name`: `setImageSizer` și `ImageResolver` primesc întotdeauna numele brut, exact cum a fost scris. Portul folosește `imagepath` doar pentru a decide ce avertisment se afișează atunci când gazda nu furnizează un nume relativ:
+
+- Cu `imagepath` setat, un nume relativ din `image=`/`shapefile=` pe care gazda nu îl furnizează produce `Warning: Filename "<name>" is unsafe` și apoi `Warning: No or improper image="<name>" for node "<node>"`, ca versiunea nativă atunci când niciun `<dir>/<name>` nu poate fi citit.
+- Un nume absolut, sau un `imagepath` lipsă ori gol, păstrează linia `Warning: No such file or directory while opening <name>`.
+
+`GV_FILE_PATH` și `SERVER_NAME` nu sunt respectate (sunt variabile de mediu, iar un browser nu are mediu). Pentru a rezolva căile relative față de propriul director de bază sau URL, adăugați prefixul la nume în stratul care construiește sursa DOT sau în callback-urile `setImageSizer`/`ImageResolver`.
+
+**Tipul imaginii.** Ca în versiunea nativă, tipul este luat din octeții returnați de resolver, prin recunoașterea numerelor magice: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, iar svg doar când octeții încep cu o declarație `<?xml` urmată de `<svg`. Orice mai scurt de 20 de octeți este nerecunoscut. Pentru octeți nerecunoscuți nu se desenează nimic, iar imaginea nu este dimensionată la randare. Versiunea nativă avertizează în plus cu `Warning: "<name>" was not found as a file or as a shape library member`; portul nu afișează încă această linie (vezi [Divergențe cunoscute](/ro/divergences)).
+
+`-Tjson` avertizează cu `Warning: No loadimage plugin for "png:json"` (tipul variază) o dată pentru fiecare imagine desenată, ca versiunea nativă, care nu are încărcător de imagini json. `svg`, `xdot`, `dot`, `plain` și `cmapx` nu afișează nimic pentru un tip recunoscut. O imagine cunoscută doar prin sizer nu are tip și deci nu afișează niciun avertisment loadimage (vezi [Divergențe cunoscute](/ro/divergences)).
 
 ## Ghid CSP
 

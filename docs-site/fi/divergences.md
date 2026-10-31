@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1370,6 +1370,8 @@ Nämä ovat tarkoituksellisia soveltamisalan rajoja, ei vikoja. Kirjasto kohdist
   liitännäisten lataus (`dlopen`) korvataan staattisella moottori-/renderöijärekisteröinnillä;
   tiedostojärjestelmälukemat (fontit, kuvat, konfiguraatio) korvataan kutsujan toimittamilla
   takaisinkutsuilla (esim. `setImageSizer`). Käyttäytyminen säilyy; mekanismi eroaa.
+
+- **Kuvatyyppi ja `imagepath`-varoitukset.** Vain `setImageSizer`-funktion kautta tunnetulla kuvalla (ilman resolverin tavuja) ei ole tyyppiä, joten se ei tulosta varoitusta `No loadimage plugin`; natiivi lukee tiedoston aina ja tuntee siksi tyypin aina. Tunnistamattomille resolverin tavuille natiivi varoittaa lisäksi rivillä `Warning: "<name>" was not found as a file or as a shape library member`; portti ei vielä tulosta sitä riviä (jatkokohta 104, kytkentä layout-vaiheessa). `GV_FILE_PATH` ja `SERVER_NAME` eivät ole huomioon otettavia, eikä isännältä koskaan kysytä `imagepath`-attribuutin `<dir>/<name>`-nimeä.
 
 ---
 
