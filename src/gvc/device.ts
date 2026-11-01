@@ -167,11 +167,11 @@ function setEdgePen(e: Edge, job: RenderJob, styles: readonly string[]): void {
   // Raw style tokens for xdot's `S` ops (e.g. explicit style="solid"); SVG
   // reads only obj.pen, so this is xdot-only. @see gvrender_core_dot.c xdot_style
   obj.rawStyle = [...styles];
-  // emit_begin_edge: `if (styles && ED_spl(e)) gvrender_set_style(job, styles)`
-  // @see lib/common/emit.c:2726
-  if (e.info.spl !== undefined) gvrenderSetStyle(obj.rawStyle);
-  // After the style warnings, as emit_begin_edge precedes emit_edge_graphics.
-  // emit_edge_graphics' gvrender_set_fillcolor: arrowheads fill with it.
+  // emit_begin_edge: `if (styles && ED_spl(e)) gvrender_set_style` (emit.c:2726);
+  // emit_edge_graphics resolves colours only with a spline too (emit.c:2366).
+  if (e.info.spl === undefined) return;
+  gvrenderSetStyle(obj.rawStyle);
+  // After the style warnings: gvrender_set_fillcolor; arrowheads fill with it.
   const fill = edgeFillName(e.attrs.get('color') ?? '', e.attrs.get('fillcolor'));
   if (fill !== undefined) {
     obj.fillColor = withColorScheme(e.attrs.get('colorscheme'),

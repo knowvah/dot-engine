@@ -39,13 +39,13 @@ function drawing(text: string, format: string): string {
 }
 
 /** Render one probe in `format` on a fresh context; returns output + stderr. */
-function renderProbe(gv: string, format: string): { out: string; stderr: string } {
+function renderProbe(gv: string, format: string, engine = 'dot'): { out: string; stderr: string } {
   const spy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
   const ctx = createDefaultContext();
   const g = parse(gv);
-  ctx.layout(g, 'dot');
+  ctx.layout(g, engine);
   const out = deviceRender(ctx, g, format);
-  ctx.freeLayout(g, 'dot');
+  ctx.freeLayout(g, engine);
   const stderr = spy.mock.calls.map((c) => String(c[0]) + '\n').join('');
   spy.mockRestore();
   return { out, stderr };
@@ -77,5 +77,13 @@ describe('fill names cut at the first colon (items 98-99)', () => {
   it('a plain fillcolor name fills the arrowhead and leaves the pen', () => {
     const { out } = renderProbe('digraph{a->b[color=blue fillcolor=green]}', 'svg');
     expect(out).toContain('<polygon fill="green" stroke="blue"');
+  });
+
+  // emit_edge_graphics resolves no colour when the edge has no spline
+  // (`if (ED_spl(e))`, emit.c:2366); patchwork routes none. Native 16.1
+  // -Kpatchwork prints nothing for both graphs in svg, xdot and json.
+  it.each(FORMATS)('an edge without a spline resolves no fill or pen name (%s)', (format) => {
+    expect(renderProbe('digraph{a->b[color=blqck]}', format, 'patchwork').stderr).toBe('');
+    expect(renderProbe('digraph{a->b[fillcolor=":red"]}', format, 'patchwork').stderr).toBe('');
   });
 });
