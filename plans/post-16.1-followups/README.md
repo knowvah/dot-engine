@@ -18,8 +18,9 @@ The open work is items 43–71 under "New follow-ups found by part 3" below.
 Being closed by `plans/post-16-1-followups-4/`.
 Being closed by `plans/post-16-1-followups-5/`.
 Being closed by `plans/post-16-1-followups-6/`.
-Being closed by `plans/post-16-1-followups-7/`.
-Items 90–93 are done and 94 is parked by part 6; the open work is items 94–102.
+Items 95–102 closed by `plans/post-16-1-followups-7/` (101's layout-time FT_NULL line → 104);
+the open work is items 103–108 under "New follow-ups found by part 7".
+Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
 
@@ -511,7 +512,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       and `api.md`/`images.md` never state the sizer's unit; after part 5 T14 `ImageSizer`
       returns intrinsic pixels converted at the graph `dpi` (default 96) and `image=` nodes
       are sized. English pages, 23 locales and their `sourceHash` (2026-10-27).
-  94. **[PARKED — part 6 T3: verdict fused (cola's inlined copies = kD's); landing waits on item 95]** `mode=ipsep`: `stress_majorization_cola`'s inlined `right_mult_with_vector_ff`
+  94. **[DONE — part 7 T1: landed with item 95 (fused cola right-multiply)]** `mode=ipsep`: `stress_majorization_cola`'s inlined `right_mult_with_vector_ff`
       copy (neato_layout 0x3904c+, the `fmul.4s`×4 / `fmla.4s`×4 blocks at 0x3b19c and
       0x3b570) has not been read instruction by instruction, so the port's `COLA_OPS`
       keeps that right-multiply unfused while its CG is the shared fused body and its

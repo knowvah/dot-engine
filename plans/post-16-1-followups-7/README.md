@@ -147,7 +147,7 @@ is pushed or signed (part-5 AD-1).
 | [2b](batch-2b/overview.md) | T2 poly_init keying (97) · T3 `:red` fills (98, 99) · T4 svg rotation (100) · T6 image type (101) | parallel worktrees (with 2a) | [x] |
 | [3](batch-3/overview.md) | T8 cola driver + ipsep options (96b) · T9 imagepath / safefile (102) | parallel worktrees | [x] |
 | [4](batch-4/overview.md) | T10 ipsep wiring (96c) · T11 docs | parallel | [x] |
-| [5](batch-5/overview.md) | T12 final verification, close-out, re-sign stop | orchestrator | [ ] |
+| [5](batch-5/overview.md) | T12 final verification, close-out, re-sign stop | orchestrator | [x] |
 
 ## Documents
 
@@ -170,3 +170,27 @@ is pushed or signed (part-5 AD-1).
   - implementation: `typescript-pro` (sonnet);
   - T5, T7 and T8: `typescript-pro` (opus), because they are large numeric ports;
   - T11: `documentation-engineer` (locale edits need Bash and Edit).
+
+## Mission summary (2026-10-31)
+
+- **Tasks:** 13 of 13 planned (T0–T12), plus one gate fix commit (`fix(T3)`, the
+  spline guard found by the T12 bytediff).
+- **Items:** 94–100 and 102 DONE; 96 DONE (22/22 ipsep probes: 7 unconstrained
+  byte-identical, 15 constrained ≤ 0.01, with `big-dired` at one printed unit, inside native's own
+  heap-order nondeterminism); 101 DONE except the layout-time FT_NULL warning (→ 104).
+- **Decisions:** about 20 journaled. One user decision: T10 widened to `index.ts` to thread
+  `am`. Flagged for review:
+  - `vpsc-adjust.ts` now uses the C-faithful `removeoverlaps`. No corpus id reaches it; it is
+    closer to native on injected `overlap=vpsc`.
+  - Four test files outside T6's set had their fake image bytes updated (AD-5).
+  - T2/T9 process-global mirrors.
+  - Two `images.md` wording nits left in place.
+- **Gates (head):**
+  - typecheck 0; `npm test` 11611 + 2 expected fail; golden 5/5; corpus + docs 2832;
+    i18n 0 stale × 23; ipsep probes 22/22.
+  - Survey GATE PASS, 0 regressions, oracle-error 14.
+  - Full bytediff: output identical across all 38,000 jobs.
+- **Follow-ups:** 103 (subset/circuit on major/kk/hier), 104 (layout-time FT_NULL),
+  105 (SweepLine order), 106 (VPSC Blocks address order: known divergence), 107
+  (per-context hooks in `safefile`), 108 (`neatoModel` warnings).
+- **Not done (by design, AD-1):** nothing pushed, signed or PR'd; the user re-signs.
