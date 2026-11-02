@@ -597,6 +597,10 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       Likely the heap-address order of follow-up 106, unproven for this case. Also unchecked:
       `compareEvents` under libc++'s unstable `std::sort` against JS's stable sort, on equal
       event positions (part 8 T3).
+  111. `maxiter` is ignored on multi-component neato graphs: `g.attrs.get('maxiter')` on a
+      component misses the root's value, where C `agget` inherits it. `graph G {maxiter=3;
+      a--b--c--a; d--e--f--d}` keeps the no-`maxiter` layout while native differs (129 xdot
+      diffs). `epsilon` is read the same way, unchecked (part 8 T6).
 
 ## Local leftovers (not committed, safe to delete)
 
