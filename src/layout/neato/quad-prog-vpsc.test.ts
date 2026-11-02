@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: EPL-2.0
+import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   constrainedMajorizationVpsc,
@@ -17,8 +18,8 @@ import {
 
 /*
  * Every case replays a native harness script (see the fixture header): the
- * same calls on one environment, in order, asserting each native result
- * bit for bit (floats as float32, constraint gaps as doubles).
+ * same calls on one environment, in order, comparing each native result bit
+ * for bit (floats as float32, constraint gaps as doubles).
  */
 
 afterEach(() => { csrand(1); });
@@ -38,11 +39,8 @@ function env(r: Replay): CMajEnvVPSC {
   return r.e;
 }
 
-function expectFloats(actual: Float32Array, expected: readonly number[]): void {
-  expect(Array.from(actual)).toEqual(expected.map(Math.fround));
-}
-
-function replayGnc(r: Replay, op: Extract<VpscOp, { op: 'GNC' | 'GNCK' }>): void {
+/** What one harness step returns, in the shape of the fixture's `expect`. */
+function observeGnc(r: Replay, op: Extract<VpscOp, { op: 'GNC' | 'GNCK' }>): unknown {
   const coords = op.op === 'GNC'
     ? [Float32Array.from(op.coords[0]!), Float32Array.from(op.coords[1]!)]
     : [Float32Array.from(op.x), Float32Array.from(r.place)];
@@ -50,52 +48,133 @@ function replayGnc(r: Replay, op: Extract<VpscOp, { op: 'GNC' | 'GNCK' }>): void
   generateNonoverlapConstraints(e, {
     nsizeScale: Math.fround(op.scale), coords, k: op.k, transitiveClosure: op.tc, opt: r.opt,
   });
-  expect([e.m, e.gm]).toEqual([op.expect.m, op.expect.gm]);
-  expect(e.cs!.map((c) => [c.left.id, c.right.id, c.gap])).toEqual(op.expect.cs);
-  expect(r.opt.clusters.bb.map((b) => [b.ll.x, b.ll.y, b.ur.x, b.ur.y])).toEqual(op.expect.bb);
+  return {
+    m: e.m, gm: e.gm,
+    cs: e.cs!.map((c) => [c.left.id, c.right.id, c.gap]),
+    bb: r.opt.clusters.bb.map((b) => [b.ll.x, b.ll.y, b.ur.x, b.ur.y]),
+  };
 }
 
-function replayCmv(r: Replay, op: Extract<VpscOp, { op: 'CMV' | 'CMVK' }>): void {
+function observeCmv(r: Replay, op: Extract<VpscOp, { op: 'CMV' | 'CMVK' }>): unknown {
   if (op.op === 'CMV') r.place = Float32Array.from(op.place);
   const ret = constrainedMajorizationVpsc(env(r), Float32Array.from(op.b), r.place, op.iters);
-  expect(ret).toBe(op.expect.ret);
-  expectFloats(r.place, op.expect.place);
+  return { ret, place: Array.from(r.place) };
 }
 
-function replayOp(r: Replay, op: VpscOp): void {
+function observeOp(r: Replay, op: VpscOp): unknown {
   switch (op.op) {
-    case 'SRAND': csrand(op.seed); return;
-    case 'INIT': {
+    case 'SRAND': csrand(op.seed); return null;
+    case 'INIT':
       r.e = initCMajVPSC(r.c.n, r.packed, r.graph, r.opt, op.diredges);
-      const got = r.e === null ? null
+      return r.e === null ? null
         : { nv: r.e.nv, nldv: r.e.nldv, ndv: r.e.ndv, gm: r.e.gm, m: r.e.m };
-      expect(got).toEqual(op.expect);
-      return;
-    }
-    case 'CMV': case 'CMVK': replayCmv(r, op); return;
-    case 'GNC': case 'GNCK': replayGnc(r, op); return;
-    case 'DEL': deleteCMajEnvVPSC(env(r)); r.e = null; return;
+    case 'CMV': case 'CMVK': return observeCmv(r, op);
+    case 'GNC': case 'GNCK': return observeGnc(r, op);
+    case 'DEL': deleteCMajEnvVPSC(env(r)); r.e = null; return null;
     case 'RM': {
       const coords = [Float32Array.from(op.coords[0]!), Float32Array.from(op.coords[1]!)];
       removeoverlaps(r.c.n, coords, r.opt);
-      expectFloats(coords[0]!, op.expect.x);
-      expectFloats(coords[1]!, op.expect.y);
+      return { x: Array.from(coords[0]!), y: Array.from(coords[1]!) };
     }
   }
 }
 
-/**
- * Cases where src/vpsc's sweep line orders constraints differently from C++
- * (follow-up 105); `it.fails` flips to a failure once SweepLine is fixed.
- * - "cluster dir0": C++ `Node::leftNeighbours` is a `set<Node*,CmpNodePos>`
- *   iterated by position; TS keeps insertion order, and getLeftNeighbours
- *   inserts in descending position, so the top-level pass emits [0→10]
- *   before [7→10] (native: [7→10] first, x[7] < x[0]).
- * - "noverlap1 dir2 n10": three nodes per level share the exact centre y;
- *   C++ CmpNodePos breaks the tie by Node* address, TS nodePosLt compares
- *   objects with `<` (always false), so the y pass makes 26 constraints, not
- *   27. The native tie order is itself heap-dependent (4 results in 8
- *   harness runs); the fixture keeps the majority (5 of 8).
+/** Replays a case's steps on the port; one result per step. */
+function observeCase(c: VpscCase): unknown[] {
+  const r: Replay = {
+    c, opt: optionsOf(c), graph: graphOf(c),
+    packed: c.packed === null ? null : Float32Array.from(c.packed),
+    e: null, place: new Float32Array(c.n),
+  };
+  return c.ops.map((op) => observeOp(r, op));
+}
+
+const expectedOf = (op: VpscOp): unknown => ('expect' in op ? op.expect : null);
+
+describe('quad_prog_vpsc native harness replay', () => {
+  for (const c of VPSC_CASES) {
+    it(c.name, () => {
+      expect(observeCase(c)).toEqual(c.ops.map(expectedOf));
+    });
+  }
+});
+
+/** Reads the raw harness stdout one tagged line at a time. */
+class RunLines {
+  private next = 0;
+  private readonly lines: readonly string[];
+
+  constructor(text: string) {
+    this.lines = text.trim().split('\n');
+  }
+
+  words(): string[] {
+    return this.lines[this.next++]!.split(' ');
+  }
+
+  nums(tag: string): number[] {
+    const [got, ...rest] = this.words();
+    if (got !== tag) throw new Error(`expected a ${tag} line, got ${got}`);
+    return rest.map(Number);
+  }
+}
+
+function parseGnc(lines: RunLines, clusters: number): unknown {
+  const [m, gm] = lines.nums('gnc') as [number, number];
+  const cs = Array.from({ length: m }, () => lines.nums('c'));
+  const bb = Array.from({ length: clusters }, () => lines.nums('bb'));
+  return { m, gm, cs, bb };
+}
+
+function parseInit(lines: RunLines): unknown {
+  const p = lines.words();
+  if (p[1] === 'null') return null;
+  const [nv, nldv, ndv, gm, m] = p.slice(2).map(Number);
+  return { nv, nldv, ndv, gm, m };
+}
+
+function parseOp(lines: RunLines, op: VpscOp, clusters: number): unknown {
+  switch (op.op) {
+    case 'SRAND': lines.words(); return null;
+    case 'DEL': lines.words(); return null;
+    case 'INIT': return parseInit(lines);
+    case 'CMV': case 'CMVK': {
+      const [ret] = lines.nums('cmv');
+      return { ret, place: lines.nums('place') };
+    }
+    case 'GNC': case 'GNCK': return parseGnc(lines, clusters);
+    case 'RM': {
+      lines.words();
+      return { x: lines.nums('x'), y: lines.nums('y') };
+    }
+  }
+}
+
+/** One native run's results, parsed as harness/T5/gen.mjs `run()` does. */
+function parseRun(c: VpscCase, text: string): unknown[] {
+  const lines = new RunLines(text);
+  return c.ops.map((op) => parseOp(lines, op, c.clusters.length));
+}
+
+/** T0's eight native runs per tie case (part-8 AD-8). */
+const T0_RUNS = new URL('../../../plans/post-16-1-followups-8/harness/T0/runs/', import.meta.url);
+const T0_RUN_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8];
+
+function t0Runs(c: VpscCase): unknown[][] {
+  const slug = c.name.replaceAll(' ', '-');
+  return T0_RUN_NUMBERS.map((k) =>
+    parseRun(c, readFileSync(new URL(`${slug}.run${k}.out`, T0_RUNS), 'utf8')));
+}
+
+const vpscCase = (name: string): VpscCase => VPSC_CASES.find((x) => x.name === name)!;
+
+/*
+ * Cases where C++ `CmpNodePos` decides the constraint order, through exact
+ * position ties or neighbour sets of more than one node
+ * (generate-constraints.cpp:43-84). Native breaks a tie by `Node*` address and
+ * walks `Blocks : std::set<Block*>` by address (blocks.h:37), so its output
+ * varies run to run; the port takes creation order, and any native run is a
+ * valid result (follow-up 106).
  *
  * "noverlap1 dir1 n12" also has y ties: native gave the fixture's result in
  * 6 of 8 runs, and the port matches it.
@@ -106,20 +185,23 @@ function replayOp(r: Replay, op: VpscOp): void {
  * environment, an extra env var X=1, MallocNanoZone=0), one equal to the
  * port's. No native value is stable enough to assert (follow-up 106).
  */
-const SWEEP_ORDER_DIVERGENT = new Set(['cluster dir0', 'noverlap1 dir2 n10']);
+describe('quad_prog_vpsc tie cases against the native runs', () => {
+  it('noverlap1 dir2 n10 equals one of the 8 native runs', () => {
+    const c = vpscCase('noverlap1 dir2 n10');
+    expect(t0Runs(c)).toContainEqual(observeCase(c));
+  });
 
-describe('quad_prog_vpsc native harness replay', () => {
-  for (const c of VPSC_CASES) {
-    const test = SWEEP_ORDER_DIVERGENT.has(c.name) ? it.fails : it;
-    test(c.name, () => {
-      const r: Replay = {
-        c, opt: optionsOf(c), graph: graphOf(c),
-        packed: c.packed === null ? null : Float32Array.from(c.packed),
-        e: null, place: new Float32Array(c.n),
-      };
-      for (const op of c.ops) replayOp(r, op);
-    });
-  }
+  // The whole of this case is checked against the fixture, the run variant the
+  // port lands on. T0's 8 runs all hold the other variant, which differs only
+  // in the iterations of one CMV (IncVPSC::splitBlocks' address order), so they
+  // pin what src/vpsc/SweepLine.ts decides: the constraint lists.
+  it('cluster dir0 has the constraint lists of all 8 native runs', () => {
+    const c = vpscCase('cluster dir0');
+    const isGnc = (_: unknown, i: number): boolean => c.ops[i]!.op === 'GNC';
+    const observed = observeCase(c).filter(isGnc);
+    expect(observed.length).toBe(2);
+    for (const run of t0Runs(c)) expect(observed).toEqual(run.filter(isGnc));
+  });
 });
 
 describe('initCMajVPSC', () => {
