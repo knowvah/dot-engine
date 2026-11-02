@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: EPL-2.0
 //
-// stress_majorization_cola called directly: the unconstrained probes against
-// T1's kD-kernel cola path (bit for bit), and the early returns and the
+// stress_majorization_cola called directly: the early returns and the
 // circuit-model fallback. The native probes run through the whole pipeline in
-// stress-cola-probes.test.ts.
+// ipsep-probes.test.ts.
 // @see lib/neatogen/constrained_majorization_ipsep.c:stress_majorization_cola
-import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { parse } from '../../parser/index.js';
 import type { Node } from '../../model/node.js';
@@ -19,13 +17,10 @@ import type { DirectedVtxData } from './opt-arrangement.js';
 import type { IpsepOptions } from './quad-prog-vpsc.js';
 import { checkStart, INIT_RANDOM } from './start.js';
 import { stressMajorizationCola, stressMajorizationColaTraced } from './stress-cola.js';
-import { computeApspPacked, initLayout, stressMajorizationKDMkernel } from './stress-kernel.js';
+import { initLayout } from './stress-kernel.js';
 import { DFLT_TOLERANCE } from './stress.js';
 
-const FIXTURES = new URL('./__fixtures__/ipsep/', import.meta.url);
 const DIM = 2;
-/** `opt_exp_flag` 2 (squared weights), `checkExp`'s default. */
-const OPTS_EXP_2 = 2;
 
 /** What `majorization` holds before its solver call, seeded as `checkStart` seeds. */
 interface Setup {

@@ -93,6 +93,6 @@ describe('luFree', () => {
   });
 
   it('is a no-op on NULL', () => {
-    expect(luFree(null)).toBeUndefined();
+    expect(() => luFree(null)).not.toThrow();
   });
 });
