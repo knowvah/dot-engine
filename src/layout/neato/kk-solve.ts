@@ -6,6 +6,8 @@
  * @see lib/neatogen/solve.c
  */
 
+import { fms } from '../../common/fma.js';
+
 /** Pivots below this make the system ill-conditioned. @see solve.c:solve */
 const MIN_PIVOT = 1.0e-10;
 
@@ -31,8 +33,8 @@ function eliminate(a: Float64Array, c: Float64Array, n: number, i: number): bool
   swap(c, istar, i);
   for (let ii = i + 1; ii < n; ii++) {
     const pivot = a[ii * n + i]! / a[i * n + i]!;
-    c[ii]! -= pivot * c[i]!;
-    for (let j = 0; j < n; j++) a[ii * n + j] = a[ii * n + j]! - pivot * a[i * n + j]!;
+    c[ii] = fms(pivot, c[i]!, c[ii]!);
+    for (let j = 0; j < n; j++) a[ii * n + j] = fms(pivot, a[i * n + j]!, a[ii * n + j]!);
   }
   return true;
 }
@@ -56,7 +58,7 @@ export function solve(a: Float64Array, b: Float64Array, c: Float64Array, n: numb
   for (let k = 0; k < n - 1; k++) {
     const m = n - k - 2;
     b[m] = c[m]!;
-    for (let j = m + 1; j < n; j++) b[m]! -= a[m * n + j]! * b[j]!;
+    for (let j = m + 1; j < n; j++) b[m] = fms(a[m * n + j]!, b[j]!, b[m]!);
     b[m]! /= a[m * n + m]!;
   }
   c.set(csave);

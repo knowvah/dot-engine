@@ -87,3 +87,10 @@ put("hier-long-mds", graph("hier", [("model", "mds")], lens=LONG))
 put("major-long-shortpath", graph("major", [("model", "shortpath")], lens=LONG))
 LONGISO = {"a b": 1, "b c": 1, "c a": 4.0, "c d": 0.75, "d e": 2.5, "e a": 1.25}
 put("kk-iso-long-mds", graph("kk", [("model", "mds")], edges=ISO, lens=LONGISO).replace("}\n", "  z;\n}\n"))
+
+# T7: model=shortpath twins of the pack cases, native's layout evidence for them.
+put("kk-disc-shortpath-pack", graph("kk", [("model", "shortpath"), ("pack", "true")], edges=DISC))
+put("kk-disc4-shortpath-pack", graph("kk", [("model", "shortpath"), ("pack", "true")], edges=DISC4))
+
+# T7: the large graph under KK. It caught a pow mismatch the small cases passed.
+put("kk-large", graph("kk", [], edges=big))

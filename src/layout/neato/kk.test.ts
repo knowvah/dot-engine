@@ -2,15 +2,34 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { parse, render } from '../../index.js';
 import { solve } from './kk-solve.js';
-import { mdsModel, newPathState, shortestPath } from './kk-paths.js';
+import { mdsModel, newPathState, shortestPath, subsetModel } from './kk-paths.js';
 import { kkNeato } from './kk.js';
-import { MODE_KK, solveModel } from './init.js';
+import { MODE_KK, MODEL_CIRCUIT, MODEL_SUBSET, solveModel } from './init.js';
+import { SUBSET_CASES } from './__fixtures__/kk-models.js';
 
 /** Tolerance (inches) for neato output against the native oracle. */
 const TOL = 0.5;
 
 const plain = (src: string): string =>
   String(render(parse(src), 'plain', { engine: 'neato' }));
+
+/** The four lines of `kkNeato`'s circuit warning. @see neatoinit.c:1247-1254 */
+const circuitWarning = (name: string): string[] => [
+  `Warning: graph ${name} is disconnected. Hence, the circuit model`,
+  'is undefined. Reverting to the shortest path model.',
+  'Alternatively, consider running neato using -Gpack=true or decomposing',
+  'the graph into connected components.',
+];
+
+/** @see lib/neatogen/stuff.c:initial_positions */
+const START_SELF = 'Warning: start=0 not supported with mode=self - ignored';
+
+/** Spy on console.warn; returns the live list of what it was given. */
+function warnings(): string[] {
+  const lines: string[] = [];
+  vi.spyOn(console, 'warn').mockImplementation((m: unknown) => { lines.push(String(m)); });
+  return lines;
+}
 
 /** Parse `node` lines of -Tplain output into name -> [x, y] (inches). */
 function nodePositions(out: string): Map<string, [number, number]> {
@@ -119,14 +138,108 @@ describe('KK warnings (C text)', () => {
     expect(warn.mock.calls.map((c) => String(c[0])).filter((s) => s.startsWith('Warning: Max.'))).toEqual([]);
   });
 
-  it('start=self and the subset model keep their start.ts behaviour', () => {
+  it('start=self keeps its start.ts behaviour', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     plain('graph g { mode=KK; start=self; a--b--c }');
-    expect(warn).toHaveBeenCalledWith('Warning: start=0 not supported with mode=self - ignored');
-    expect(() => plain('graph g { mode=KK; model=subset; a--b--c }'))
-      .toThrow(expect.objectContaining({ code: 'UNSUPPORTED_FEATURE' }));
-    expect(() => plain('graph g { mode=KK; model=circuit; a--b--c }'))
-      .toThrow(expect.objectContaining({ code: 'UNSUPPORTED_FEATURE' }));
+    expect(warn).toHaveBeenCalledWith(START_SELF);
+  });
+});
+
+describe('kkNeato model dispatch', () => {
+  const CHAIN = 'a--b--c--d; a--c';
+
+  it('circuit warns under the graph name on a connected graph and uses shortest paths', () => {
+    const lines = warnings();
+    const out = plain(`graph g { mode=KK; model=circuit; ${CHAIN} }`);
+    expect(lines).toEqual(circuitWarning('g'));
+    expect(out).toBe(plain(`graph g { mode=KK; model=shortpath; ${CHAIN} }`));
+  });
+
+  it('circuit uses the edge lens for the fallback (ED_dist, not 1)', () => {
+    warnings();
+    const body = 'a--b[len=3]; b--c; c--d[len=2]; a--c';
+    expect(plain(`graph g { mode=KK; model=circuit; ${body} }`))
+      .toBe(plain(`graph g { mode=KK; ${body} }`));
+  });
+
+  it('circuit under pack warns once per component, under the component name', () => {
+    const lines = warnings();
+    plain('graph G { mode=KK; model=circuit; pack=true; a--b; c--d; e--f }');
+    expect(lines).toEqual([
+      ...circuitWarning('_neato_cc0'), ...circuitWarning('_neato_cc1'), ...circuitWarning('_neato_cc2'),
+    ]);
+  });
+
+  it('a one-node pack component stays silent: nG < 2 never reaches circuit_model', () => {
+    const lines = warnings();
+    plain('graph G { mode=KK; model=circuit; pack=true; a--b; c }');
+    expect(lines).toEqual(circuitWarning('_neato_cc0'));
+  });
+
+  it('circuit stays silent when nG < 2 or maxiter is negative', () => {
+    const lines = warnings();
+    plain('graph g { mode=KK; model=circuit; a }');
+    plain('graph g { mode=KK; model=circuit; maxiter=-1; a--b--c }');
+    expect(lines).toEqual([]);
+  });
+
+  // Native: dot -Kneato on these sources (graphviz 16.1.0, stable over 3 runs).
+  it('start=self warns after the circuit warning, as initial_positions follows the model', () => {
+    const lines = warnings();
+    plain('graph G { mode=KK; model=circuit; start=self; a--b; b--c; c--a; z }');
+    expect(lines).toEqual([...circuitWarning('G'), START_SELF]);
+  });
+
+  it('start=self warns after checkStart\'s position warning', () => {
+    const lines = warnings();
+    plain('graph G { mode=KK; start=self; a [pos="1,1"]; a--b; b--c; z }');
+    expect(lines).toEqual(['Warning: node positions are ignored unless start=random', START_SELF]);
+  });
+
+  it('start=self warns once across pack components, after the first model warning', () => {
+    const lines = warnings();
+    plain('graph G { mode=KK; model=circuit; start=self; pack=true; a--b; c--d }');
+    // Native prints the first five lines, then crashes on _neato_cc1.
+    expect(lines).toEqual([...circuitWarning('_neato_cc0'), START_SELF, ...circuitWarning('_neato_cc1')]);
+  });
+
+  it('a bad len warns under the component name', () => {
+    const lines = warnings();
+    plain('graph G { mode=KK; pack=true; a--b [len=-1]; c--d }');
+    expect(lines).toEqual(['Warning: bad edge len "-1" in _neato_cc0 - setting to 1.00']);
+  });
+
+  it('kkNeato itself prints the circuit warning', () => {
+    const lines = warnings();
+    const g = parse('graph g { a--b--c }');
+    for (const n of g.nodes.values()) n.info.pos = [0, 0];
+    kkNeato(g, 3, MODEL_CIRCUIT);
+    expect(lines).toEqual(circuitWarning('g'));
+  });
+
+  it('subset ignores len (makeGraphData is called without them)', () => {
+    const lines = warnings();
+    const out = plain(`graph g { mode=KK; model=subset; ${CHAIN} }`);
+    expect(out).toBe(plain('graph g { mode=KK; model=subset; a--b[len=9]; b--c; c--d[len=0.5]; a--c }'));
+    expect(out).not.toBe(plain(`graph g { mode=KK; ${CHAIN} }`));
+    expect(lines).toEqual([]);
+  });
+
+  it('subset reaches the solver through kkNeato and moves the nodes', () => {
+    const g = parse('graph g { a--b--c--d; a--c }');
+    for (const n of g.nodes.values()) n.info.pos = [0, 0];
+    kkNeato(g, 4, MODEL_SUBSET);
+    expect(new Set([...g.nodes.values()].map((n) => n.info.pos!.join())).size).toBe(4);
+  });
+});
+
+describe('subsetModel', () => {
+  it.each(SUBSET_CASES.map((c) => [c.name, c] as const))('%s: GD_dist is native Dij', (_name, c) => {
+    const g = parse(c.source);
+    [...g.nodes.values()].forEach((n, i) => { n.info.id = i; });
+    const dist = new Float64Array(c.n * c.n).fill(-1);
+    subsetModel(g, c.n, dist);
+    expect([...dist]).toEqual(c.dij);
   });
 });
 
@@ -214,6 +327,17 @@ describe('solve (Gaussian elimination)', () => {
     const b = new Float64Array(2);
     solve(Float64Array.of(1, 1, 1, 1), b, Float64Array.of(1, 1), 2);
     expect(warn).toHaveBeenCalledWith('ill-conditioned');
+  });
+});
+
+describe('solve fuses a - b*c as clang does', () => {
+  it('matches native bit for bit on a system where unfused rounding differs', () => {
+    // Native: lib/neatogen/solve.c, -O3 -flto=thin -arch arm64 (fp-contract=on).
+    const a = Float64Array.of(-3.489977886173266, 2.3382549010034106, 2.3382549010034106, 0.9063650153593104);
+    const c = Float64Array.of(-1.7477370441400009, -1.4226626624675291);
+    const b = new Float64Array(2);
+    solve(a, b, c, 2);
+    expect([...b]).toEqual([-0.2018925920746342, -1.0487897298153026]);
   });
 });
 

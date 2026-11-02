@@ -390,7 +390,7 @@ export function solveModel(
 ): void {
   const nG = g.nodes.size;
   if (nG < 2 || neatoMaxIter(g.attrs.get('maxiter'), mode, nG) < 0) return; // neatoinit.c:1290
-  assertSupported(g, mode, model);
+  assertSupported(g, mode);
   if (mode === MODE_KK) return kkNeato(g, g.nodes.size, model);
   if (mode === MODE_SGD) {
     // C initial_positions -> checkStart: regular positions are kept

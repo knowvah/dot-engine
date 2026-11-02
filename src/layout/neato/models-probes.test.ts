@@ -23,7 +23,10 @@
 // - A case with a `.native-crash` marker never survived (0 of 3000 runs for both
 //   pack cases): there is no native output, so the port defines the result
 //   (docs/known-divergences.md). Its stderr fixture holds what native printed
-//   before crashing.
+//   before crashing. The port runs C's mechanism per component: each
+//   `circuit_model` fails, warns under the component's name, and falls back to
+//   shortest paths, so the layout is native's for the `model=shortpath` twin
+//   (`kk-disc-shortpath-pack`, `kk-disc4-shortpath-pack`), which does not crash.
 // @see lib/neatogen/neatoinit.c:neato_layout
 // @see lib/neatogen/neatoinit.c:kkNeato
 // @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
@@ -38,7 +41,7 @@ const FIXTURES = new URL('./__fixtures__/models/', import.meta.url);
 /** compareXdot's test is strict; a one-printed-unit difference is 0.01 + ~1e-11. */
 const POSITION_TOLERANCE = XDOT_TOLERANCE + 1e-9;
 
-/** Cases the port already lays out as native does, by mode. */
+/** Cases compared with native's own output, by mode. */
 const MAJOR = [
   'large-circuit', 'major-circuit', 'major-default', 'major-disc-circuit', 'major-len-circuit', 'major-len-mds',
   'major-len-subset', 'major-long-mds', 'major-long-shortpath', 'major-mds-edge-default', 'major-mds-nolen',
@@ -49,16 +52,14 @@ const HIER = [
   'hier-circuit', 'hier-default', 'hier-disc-circuit', 'hier-len-circuit', 'hier-len-mds', 'hier-len-subset',
   'hier-long-mds', 'hier-mds-nolen', 'hier-pin-disc-circuit', 'hier-shortpath', 'hier-subset',
 ] as const;
-const KK = ['kk-default', 'kk-iso-len-mds', 'kk-iso-long-mds', 'kk-len-mds', 'kk-shortpath'] as const;
-
-/** Flipped to assertions by T7. */
-const KK_TODO = [
-  'kk-circuit', 'kk-disc-circuit', 'kk-iso-circuit', 'kk-iso-len-circuit', 'kk-len-circuit', 'kk-len-subset',
-  'kk-mds-nolen', 'kk-subset',
+const KK = [
+  'kk-circuit', 'kk-default', 'kk-disc-circuit', 'kk-disc-shortpath-pack', 'kk-disc4-shortpath-pack',
+  'kk-iso-circuit', 'kk-iso-len-circuit', 'kk-iso-len-mds', 'kk-iso-long-mds', 'kk-large', 'kk-len-circuit',
+  'kk-len-mds', 'kk-len-subset', 'kk-mds-nolen', 'kk-shortpath', 'kk-subset',
 ] as const;
 
 /** Native exits 139 on every run: no output to compare with. */
-const KK_NATIVE_CRASH_TODO = ['kk-disc-circuit-pack', 'kk-disc4-circuit-pack'] as const;
+const KK_NATIVE_CRASH = ['kk-disc-circuit-pack', 'kk-disc4-circuit-pack'] as const;
 
 const read = (name: string): string => readFileSync(new URL(name, FIXTURES), 'utf8');
 
@@ -91,13 +92,20 @@ describe('hier path models match native', () => {
 
 describe('KK path models match native', () => {
   it.each(KK)('%s', expectNative, 60_000);
-  for (const id of KK_TODO) it.todo(id);
 });
 
 describe('KK pack cases native cannot finish', () => {
-  it.each(KK_NATIVE_CRASH_TODO)('%s has no native output', (id) => {
+  it.each(KK_NATIVE_CRASH)('%s has no native output', (id) => {
     expect(read(`${id}.native-crash`)).toMatch(/^exit 139 on all \d+ runs\n$/);
     expect(read(`${id}.xdot`)).toBe('');
   });
-  for (const id of KK_NATIVE_CRASH_TODO) it.todo(`${id} lays out as the port defines`);
+
+  it.each(KK_NATIVE_CRASH)('%s warns per component and lays out as its shortpath twin', (id) => {
+    const r = neatoXdot(id);
+    const cc0 = read('kk-disc4-circuit-pack.xdot.stderr');
+    expect(r.stderr).toBe(cc0 + cc0.replace('_neato_cc0', '_neato_cc1'));
+    expect(r.stderr.startsWith(read(`${id}.xdot.stderr`))).toBe(true);
+    const twin = id.replace('-circuit-', '-shortpath-');
+    expect(compareXdot(r.xdot, read(`${twin}.xdot`), POSITION_TOLERANCE).diffs).toEqual([]);
+  }, 60_000);
 });

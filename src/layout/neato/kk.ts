@@ -9,6 +9,10 @@
  * typed arrays here; the file-statics (`Epsilon`, `Damping`, `MaxIter`,
  * `Initial_dist`) are fields of one {@link KkState} per run.
  *
+ * The oracle's clang contracts `a + b*c` within one statement
+ * (`-ffp-contract=on`), so those sites go through `fma`/`fms`. The Newton step's
+ * iteration count depends on these last bits.
+ *
  * Not ported: `Verbose` output (`total_e`, timers), `test_toggle` tracing,
  * and `Reduce` (`-x`, a command-line flag this library has no counterpart for).
  *
@@ -23,12 +27,14 @@ import type { Edge } from '../../model/edge.js';
 import { buildOutEdgeIndex } from '../../model/node.js';
 import { drand48 } from '../../common/random.js';
 import { lateDouble } from '../../common/nodeinit.js';
-import { checkStart, INIT_RANDOM, INIT_REGULAR } from './start.js';
-import { MODEL_MDS } from './init.js';
+import { checkStart, INIT_RANDOM, INIT_REGULAR, INIT_SELF, warnStartSelfOnce } from './start.js';
+import { MODEL_CIRCUIT, MODEL_MDS, MODEL_SUBSET } from './init.js';
+import { circuitModel } from './circuit.js';
 import { solve } from './kk-solve.js';
 import { lenattr } from './edge-len.js';
-import { newPathState, shortestPath, mdsModel, type Neighbour } from './kk-paths.js';
-import { agwarningf } from '../../common/agerr.js';
+import { newPathState, shortestPath, mdsModel, subsetModel, type Neighbour } from './kk-paths.js';
+import { agerr, agwarningf } from '../../common/agerr.js';
+import { fma, fms } from '../../common/fma.js';
 
 /** `Ndim`: layout dimension (this port lays out in 2-D only). */
 const NDIM = 2;
@@ -89,7 +95,7 @@ function initialDist(g: Graph, total: number, epsilon: number): number {
   const str = g.attrs.get('defaultdist');
   if (str !== undefined && str !== '') return Math.max(epsilon, parseFloat(str) || 0);
   const nE = g.edges.length;
-  return (total / (nE > 0 ? nE : 1)) * Math.sqrt(g.nodes.size) + 1;
+  return fma(total / (nE > 0 ? nE : 1), Math.sqrt(g.nodes.size), 1);
 }
 
 /** `getdouble(G, "epsilon", &Epsilon)`. @see lib/common/utils.c:getdouble */
@@ -146,7 +152,7 @@ function randompos(np: Node): void {
 function initialPositions(g: Graph, st: KkState): void {
   const init = checkStart(g, st.n, INIT_RANDOM);
   if (init === INIT_REGULAR) return;
-  // C: start=self warns once per process; start.ts:checkStartAttr already did.
+  if (init === INIT_SELF) warnStartSelfOnce();
   for (const np of st.nodes) {
     if (np.info.posSet === true || np.info.pinned === true) continue;
     randompos(np);
@@ -158,7 +164,7 @@ function distvec(p0: number[], p1: number[], del: Float64Array): number {
   let dist = 0.0;
   for (let k = 0; k < NDIM; k++) {
     del[k] = p0[k]! - p1[k]!;
-    dist += del[k]! * del[k]!;
+    dist = fma(del[k]!, del[k]!, dist);
   }
   return Math.sqrt(dist);
 }
@@ -241,14 +247,15 @@ function d2e(st: KkState, m: number, M: Float64Array): void {
     let sq = 0.0;
     for (let k = 0; k < NDIM; k++) {
       t[k] = vn.info.pos![k]! - vi.info.pos![k]!;
-      sq += t[k]! * t[k]!;
+      sq = fma(t[k]!, t[k]!, sq);
     }
     const scale = 1 / Math.pow(sq, 1.5);
     const K = st.spring[m * n + i]!;
     const D = st.dist[m * n + i]!;
     for (let k = 0; k < NDIM; k++) {
-      for (let l = 0; l < k; l++) M[l * NDIM + k]! += K * D * t[k]! * t[l]! * scale;
-      M[k * NDIM + k]! += K * (1.0 - D * (sq - t[k]! * t[k]!) * scale);
+      for (let l = 0; l < k; l++) M[l * NDIM + k] = fma(K * D * t[k]! * t[l]!, scale, M[l * NDIM + k]!);
+      const inner = fms(D * fms(t[k]!, t[k]!, sq), scale, 1.0);
+      M[k * NDIM + k] = fma(K, inner, M[k * NDIM + k]!);
     }
   }
   for (let k = 1; k < NDIM; k++) {
@@ -264,7 +271,7 @@ function chooseNode(st: KkState): number {
   for (let i = 0; i < st.n; i++) {
     if (st.nodes[i]!.info.pinned === true) continue;
     let m = 0.0;
-    for (let k = 0; k < NDIM; k++) m += st.sumT[i * NDIM + k]! * st.sumT[i * NDIM + k]!;
+    for (let k = 0; k < NDIM; k++) m = fma(st.sumT[i * NDIM + k]!, st.sumT[i * NDIM + k]!, m);
     if (m > max) { choice = i; max = m; }
   }
   return max < st.epsilon * st.epsilon ? -1 : choice;
@@ -280,7 +287,7 @@ function moveNode(st: KkState, m: number): void {
   solve(a, b, c, NDIM);
   const pos = st.nodes[m]!.info.pos!;
   for (let i = 0; i < NDIM; i++) {
-    b[i] = (st.damping + 2 * (1 - st.damping) * drand48()) * b[i]!;
+    b[i] = fma(2 * (1 - st.damping), drand48(), st.damping) * b[i]!;
     pos[i]! += b[i]!;
   }
   st.move++;
@@ -306,19 +313,44 @@ function mdsEdges(
 }
 
 /**
- * Solve the layout with Kamada-Kawai gradient descent. The subset and (connected)
- * circuit distance models stay loud in `start.ts:assertSupported`; a
- * disconnected circuit falls back to shortest paths there too.
+ * The distance-model dispatch at the head of `kkNeato`. The warning comes from
+ * `circuit_model`'s failure, which on the 1-based `AGSEQ` is every graph (see
+ * `circuit.ts`), so a connected graph prints "is disconnected" too; and under
+ * `pack` it prints once per component, under the component's own name.
+ * @see lib/neatogen/neatoinit.c:kkNeato (neatoinit.c:1243-1261)
+ */
+function kkModel(g: Graph, nG: number, model: number, run: ReturnType<typeof scanGraphMode>): void {
+  const { st, adj, ini, lens } = run;
+  const shortest = (): void => shortestPath(newPathState(st.n, st.dist, adj, ini));
+  if (model === MODEL_SUBSET) {
+    subsetModel(g, nG, st.dist);
+  } else if (model === MODEL_CIRCUIT) {
+    if (!circuitModel(g, nG, st.dist, lens)) {
+      agwarningf(`graph ${agNameOf(g)} is disconnected. Hence, the circuit model`);
+      agerr('prev', 'is undefined. Reverting to the shortest path model.');
+      agerr('prev', 'Alternatively, consider running neato using -Gpack=true or decomposing');
+      agerr('prev', 'the graph into connected components.');
+      shortest();
+    }
+  } else if (model === MODEL_MDS) {
+    shortest();
+    mdsModel(st.dist, st.n, mdsEdges(g, st.nodes, lens));
+  } else {
+    shortest();
+  }
+}
+
+/**
+ * Solve the layout with Kamada-Kawai gradient descent.
  * @see lib/neatogen/neatoinit.c:kkNeato
  */
 export function kkNeato(g: Graph, nG: number, model: number): void {
   const maxiter = g.attrs.get('maxiter');
   const maxIter = maxiter !== undefined ? atoi(maxiter) : ITERATIONS_PER_NODE * g.nodes.size;
   if (nG < 2 || maxIter < 0) return;
-  const { st, adj, ini, lens } = scanGraphMode(g, maxIter);
-  shortestPath(newPathState(st.n, st.dist, adj, ini));
-  if (model === MODEL_MDS) mdsModel(st.dist, st.n, mdsEdges(g, st.nodes, lens));
-  initialPositions(g, st);
-  diffeqModel(g, st);
-  solveModel(g, st);
+  const run = scanGraphMode(g, maxIter);
+  kkModel(g, nG, model, run);
+  initialPositions(g, run.st);
+  diffeqModel(g, run.st);
+  solveModel(g, run.st);
 }
