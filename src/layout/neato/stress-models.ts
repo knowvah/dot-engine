@@ -1,66 +1,25 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * The subset and circuit distance models of stress majorization, plus the
- * three kkutils.c neighbour-vector helpers they use (kept here because
- * kkutils.ts is outside the porting task that added them).
+ * The subset and circuit distance models of stress majorization. The kkutils.c
+ * neighbour-vector helpers they use live in kkutils.ts, re-exported here.
+ * `circuitModel` here is stress.c's (float `Dij` from `vtx_data`); `circuit.ts`'s
+ * `circuitModel` is circuit.c's `circuit_model` (`GD_dist` from a graph, KK path).
  *
  * `Dij` is C `float` (Float32Array); the circuit matrices are C `double`.
  * C `NULL` ewgts is the port's empty array.
  *
  * @see lib/neatogen/stress.c
- * @see lib/neatogen/kkutils.c
  */
 
 import type { VtxData } from './dijkstra.js';
 import { computeApspPacked, computeWeightedApspPacked } from './bfs.js';
 import { solveCircuit } from './circuit.js';
+import { artificialWeight, emptyNeighborsVec, fillNeighborsVecUnweighted } from './kkutils.js';
 import { newArray } from './lu.js';
 import { fmaxf } from './quad-prog-solve.js';
 
-/** 2^64: C `size_t` arithmetic wraps modulo this. */
-const SIZE_T_MODULUS = 2 ** 64;
-
-// ---------------------------------------------------------------------------
-// kkutils.c helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Count the neighbours of `u` marked in `vVector`.
- * @see lib/neatogen/kkutils.c:common_neighbors
- */
-export function commonNeighbors(graph: readonly VtxData[], u: number, vVector: Int32Array): number {
-  // count number of common neighbors of 'v_vector' and 'u'
-  let numSharedNeighbors = 0;
-  for (let j = 1; j < graph[u]!.nedges; j++) {
-    const neighbor = graph[u]!.edges[j]!;
-    if (vVector[neighbor]! > 0) {
-      // a shared neighbor
-      numSharedNeighbors++;
-    }
-  }
-  return numSharedNeighbors;
-}
-
-/**
- * Mark the neighbours of `vtx` (a node is NOT a neighbour of itself).
- * @see lib/neatogen/kkutils.c:fill_neighbors_vec_unweighted
- */
-export function fillNeighborsVecUnweighted(graph: readonly VtxData[], vtx: number, vtxVec: Int32Array): void {
-  for (let j = 1; j < graph[vtx]!.nedges; j++) {
-    vtxVec[graph[vtx]!.edges[j]!] = 1;
-  }
-}
-
-/**
- * Clear the marks set by `fillNeighborsVecUnweighted`.
- * @see lib/neatogen/kkutils.c:empty_neighbors_vec
- */
-export function emptyNeighborsVec(graph: readonly VtxData[], vtx: number, vtxVec: Int32Array): void {
-  for (let j = 1; j < graph[vtx]!.nedges; j++) {
-    vtxVec[graph[vtx]!.edges[j]!] = 0;
-  }
-}
+export { commonNeighbors, emptyNeighborsVec, fillNeighborsVecUnweighted } from './kkutils.js';
 
 // ---------------------------------------------------------------------------
 // circuitModel
@@ -123,18 +82,6 @@ function circuitDistances(GmInv: readonly Float64Array[], nG: number, Dij: Float
 // ---------------------------------------------------------------------------
 // compute_apsp_artificial_weights_packed
 // ---------------------------------------------------------------------------
-
-/**
- * The artificial weight of edge (i, neighbor): `deg_i + deg_j - 2 * common`
- * in C `size_t`, so a negative value (only possible with duplicate
- * neighbours) wraps modulo 2^64 before the (float) cast.
- * @see lib/neatogen/stress.c:compute_apsp_artificial_weights_packed (stress.c:735-736, 752-753)
- */
-function artificialWeight(graph: readonly VtxData[], degI: number, neighbor: number, vtxVec: Int32Array): number {
-  const degJ = graph[neighbor]!.nedges - 1;
-  const w = degI + degJ - 2 * commonNeighbors(graph, neighbor, vtxVec);
-  return Math.fround(w < 0 ? w + SIZE_T_MODULUS : w);
-}
 
 /**
  * Weighted branch: each weight is fmaxf(artificial, the caller's ewgts[j]),

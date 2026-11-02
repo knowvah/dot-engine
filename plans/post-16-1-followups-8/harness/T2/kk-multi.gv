@@ -1,0 +1,11 @@
+graph G {
+  a -- b [len=2];
+  b -- a [len=3];
+  a -- b [len=5];
+  a -- a [len=9];
+  a -- c [len=0.5];
+  c -- b;
+  d -- a [len=4];
+  a -- d [len=7];
+  z;
+}
