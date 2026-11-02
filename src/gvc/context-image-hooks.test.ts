@@ -20,12 +20,16 @@ const IMG_DOT =
   `<IMG SRC="${SRC}"/></TD></TR></TABLE>>]; }`;
 const GLOBAL_SIZE = { w: 32, h: 16 }; // 24x12 pt at the default 96 dpi
 const CTX_SIZE = { w: 67, h: 40 }; // 50x30 pt
-const GLOBAL_BYTES = new Uint8Array([1, 2, 3]);
-const CTX_BYTES = new Uint8Array([4, 5, 6]);
-// base64 of the byte fixtures above
-const GLOBAL_B64 = 'AQID';
-const CTX_B64 = 'BAUG';
-const OTHER_B64 = 'BwgJ';
+// Resolver bytes must sniff as a known type (AD-5): PNG magic padded past HDRLEN.
+const pngBytes = (tag: number[]): Uint8Array =>
+  new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...tag]);
+const GLOBAL_BYTES = pngBytes([1, 2, 3]);
+const CTX_BYTES = pngBytes([4, 5, 6]);
+const OTHER_BYTES = pngBytes([7, 8, 9]);
+const b64 = (b: Uint8Array): string => Buffer.from(b).toString('base64');
+const GLOBAL_B64 = b64(GLOBAL_BYTES);
+const CTX_B64 = b64(CTX_BYTES);
+const OTHER_B64 = b64(OTHER_BYTES);
 
 /** Lay out and render with an optionally hooked context. */
 function renderWith(
@@ -74,7 +78,7 @@ describe('GvcContext image hooks (ADR-2)', () => {
   it('two contexts with different resolvers each use their own', () => {
     setImageSizer(() => GLOBAL_SIZE);
     const a = renderWith({ resolver: () => CTX_BYTES }, true);
-    const b = renderWith({ resolver: () => new Uint8Array([7, 8, 9]) }, true);
+    const b = renderWith({ resolver: () => OTHER_BYTES }, true);
     expect(a).toContain(`base64,${CTX_B64}"`);
     expect(b).toContain(`base64,${OTHER_B64}"`);
   });

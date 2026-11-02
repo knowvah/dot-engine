@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1458,6 +1458,8 @@ Sono confini di ambito deliberati, non bug. La libreria ha come bersaglio **SVG*
   di motori/renderer; le letture dal filesystem (font, immagini, configurazione) sono
   sostituite da callback fornite da chi chiama (ad es. `setImageSizer`). Il
   comportamento è preservato; cambia il meccanismo.
+
+- **Tipo di immagine e avvisi di `imagepath`.** Un'immagine nota solo tramite `setImageSizer` (senza byte del resolver) non ha tipo e quindi non stampa l'avviso `No loadimage plugin`; il nativo legge sempre il file e quindi conosce sempre il tipo. Con byte del resolver non riconosciuti il nativo avvisa anche con `Warning: "<name>" was not found as a file or as a shape library member`; il port non stampa ancora quella riga (seguito 104, collegamento in fase di layout). `GV_FILE_PATH` e `SERVER_NAME` non sono rispettate e all'host non viene mai chiesto il nome `<dir>/<name>` di `imagepath`.
 
 ---
 

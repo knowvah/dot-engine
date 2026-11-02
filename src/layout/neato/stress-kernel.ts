@@ -27,7 +27,6 @@ import {
   invertSqrtVec,
   invertVec,
   orthog1,
-  rightMultWithVectorFF,
   sqrtVecF,
   squareVec,
   vectorsInnerProductF,
@@ -122,19 +121,6 @@ const FUSED_OPS: KernelOps = {
   squareAdd: (tmp, acc) => fmaf(tmp, tmp, acc),
   rightMult: rightMultWithVectorFFFused, cg: conjugateGradientMkernelFused,
 };
-/**
- * The kernels as `stress_majorization_cola` (mode=ipsep) runs them: its squared
- * distances are `square_vec` then `vectors_additionf` (two loops, so the product
- * is rounded before the add), its inlined `right_mult_with_vector_ff` copy is not
- * read from the disassembly (kept unfused), and its conjugate gradient is the same
- * out-of-line `conjugate_gradient_mkernel` the kD kernel calls.
- * @see lib/neatogen/constrained_majorization_ipsep.c:stress_majorization_cola
- */
-const COLA_OPS: KernelOps = {
-  squareAdd: (tmp, acc) => acc + fr(tmp * tmp),
-  rightMult: rightMultWithVectorFF, cg: conjugateGradientMkernelFused,
-};
-
 /** Laplacian off-diagonal prep + diagonal degrees. @see stress.c (Laplacian computation) */
 function buildLap2(lap2: Float32Array, n: number, exp: number): void {
   const lapLength = (n * (n + 1)) / 2;
@@ -260,8 +246,6 @@ export interface StressOpts {
   /** MODEL_* — only the resulting Dij matters here; pass it in. */
   maxi: number;
   epsilon: number;
-  /** Run the kernels as `stress_majorization_cola` does (mode=ipsep). */
-  cola?: boolean;
 }
 
 /**
@@ -296,7 +280,7 @@ export function stressMajorizationKDMkernel(
     b: Array.from({ length: dim }, () => new Float32Array(n)),
     tmpCoords: new Float32Array(n),
     constantTerm,
-    ops: o.cola === true ? COLA_OPS : FUSED_OPS,
+    ops: FUSED_OPS,
   };
 
   let oldStress = Number.MAX_VALUE;

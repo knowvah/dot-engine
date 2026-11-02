@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { Node } from '../../model/node.js';
 import { srand48 } from '../../common/random.js';
 import * as fused from './conjgrad-mkernel.js';
+import * as matrixOps from './matrix-ops.js';
 import { computeApspPacked, stressMajorizationKDMkernel } from './stress-kernel.js';
 import type { VtxData } from './dijkstra.js';
 
@@ -14,6 +15,10 @@ vi.mock('./conjgrad-mkernel.js', async (orig) => {
     conjugateGradientMkernelFused: vi.fn(actual.conjugateGradientMkernelFused),
     rightMultWithVectorFFFused: vi.fn(actual.rightMultWithVectorFFFused),
   };
+});
+vi.mock('./matrix-ops.js', async (orig) => {
+  const actual = await orig<typeof import('./matrix-ops.js')>();
+  return { ...actual, rightMultWithVectorFF: vi.fn(actual.rightMultWithVectorFF) };
 });
 afterEach(() => { vi.clearAllMocks(); });
 
@@ -40,16 +45,19 @@ describe('stressMajorizationKDMkernel', () => {
     expect(vi.mocked(fused.rightMultWithVectorFFFused).mock.calls.length).toBeGreaterThanOrEqual(4 * iters);
   });
 
-  it('runs cola kernels for mode=ipsep: the shared fused CG, an unfused right-multiply', () => {
-    const n = 4;
-    const coords = [new Float64Array(n), new Float64Array(n)];
-    const iters = stressMajorizationKDMkernel(computeApspPacked(path4(), n), n, coords, freshNodes(n), {
-      dim: 2, opts: 2, maxi: 3, epsilon: 1e-4, cola: true,
-    });
-    expect(iters).toBe(3);
-    expect(vi.mocked(fused.conjugateGradientMkernelFused)).toHaveBeenCalledTimes(2 * iters);
-    expect(vi.mocked(fused.rightMultWithVectorFFFused)).not.toHaveBeenCalled();
-    expect(coords[0]!.every(Number.isFinite)).toBe(true);
+  /**
+   * A 3x3 packed matrix whose row 0 is `DIAG + OFF*V`: the C kernel built `clang -O2` (the
+   * oracle's contraction) gives 1.1459170579910278, `-ffp-contract=off` gives 1.1459171772003174.
+   * The right-multiply stress_majorization_cola and the kD kernel share must produce the former.
+   */
+  it('pins the fused right-multiply form on a matrix where fused and unfused differ', () => {
+    const m = Float32Array.of(1.0972700119018555, 0.150409996509552, 0, 0, 0, 0);
+    const v = Float32Array.of(1, 0.32343000173568726, 0);
+    const out = new Float32Array(3);
+    fused.rightMultWithVectorFFFused(m, 3, v, out);
+    expect(out[0]).toBe(1.1459170579910278);
+    matrixOps.rightMultWithVectorFF(m, 3, v, out);
+    expect(out[0]).toBe(1.1459171772003174);
   });
 
   /**

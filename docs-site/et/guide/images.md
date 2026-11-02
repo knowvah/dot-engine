@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # Pildid
 
@@ -190,16 +190,16 @@ läbilaskmisele — sisseehitamine taandub sujuvalt, see ei viska kunagi.
 
 ### 3. `imagepath`-laadsed baaskataloogid
 
-Natiivse Graphvizi graafiatribuut `imagepath` ütleb C-binaarile failisüsteemi-/`GDFONTPATH`-laadse
-otsingukataloogi, mille suhtes suhtelisi `image=`
-väärtusi lahendada. @knowvah/dot-engine ei teosta `imagepath`-i — portimine
-ei loe kunagi pildiandmeid ise kettalt, seega pole teed, mille suhtes lahendada
-(täieliku ulatuse piiri kohta vt [Teadaolevad erinevused](/et/divergences)). Kui teie
-graafid kasutavad suhtelisi `image=` teid, lahendage need oma baaskataloogi/URL-i
-suhtes selles kihis, mis DOT-lähtekoodi koostab, või oma
-`setImageSizer`/`ImageResolver` tagasikutsetes — mõlemad saavad toore `src`-stringi
-täpselt nii, nagu see graafis kirjas on, seega on stringi ette baasitee
-lisamine enne otsingut normaalne, lubatud muster.
+Natiivse Graphvizi graafiatribuut `imagepath` on koolonitega eraldatud kaustade loend, kust otsitakse suhtelisi `image=`- ja `shapefile=`-nimesid. Port ei loe kunagi ise pildifaile, seega ei otsi neist kunagi ega küsi hostilt kunagi `dir/name`: `setImageSizer` ja `ImageResolver` saavad alati toore nime täpselt nii, nagu see on kirjutatud. Port kasutab `imagepath`-i ainult selleks, et otsustada, milline hoiatus trükitakse, kui host suhtelist nime ei anna:
+
+- Kui `imagepath` on seatud, annab suhteline `image=`/`shapefile=` nimi, mida host ei anna, hoiatuse `Warning: Filename "<name>" is unsafe` ja seejärel `Warning: No or improper image="<name>" for node "<node>"`, nagu natiivne teeb, kui ühtegi `<dir>/<name>` ei saa lugeda.
+- Absoluutne nimi või puuduv või tühi `imagepath` säilitab rea `Warning: No such file or directory while opening <name>`.
+
+`GV_FILE_PATH` ja `SERVER_NAME` ei ole arvestatud (need on keskkonnamuutujad ja brauseril keskkonda pole). Suhteliste teede lahendamiseks oma baaskausta või baas-URL-i suhtes lisage nimele eesliide DOT-lähtekoodi koostavas kihis või oma `setImageSizer`/`ImageResolver` tagasikutsetes.
+
+**Pildi tüüp.** Nagu natiivses, võetakse tüüp resolveri tagastatud baitidest maagiliste arvude tuvastamise teel: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp ning svg ainult siis, kui baidid algavad `<?xml` deklaratsiooniga, millele järgneb `<svg`. Kõike, mis on lühem kui 20 baiti, ei tuvastata. Tundmatute baitide puhul midagi ei joonistata ja pildi mõõtmeid renderdamisel ei määrata. Natiivne hoiatab lisaks reaga `Warning: "<name>" was not found as a file or as a shape library member`; port seda rida veel ei trüki (vt [Teadaolevad erinevused](/et/divergences)).
+
+`-Tjson` hoiatab reaga `Warning: No loadimage plugin for "png:json"` (tüüp varieerub) üks kord joonistatud pildi kohta, nagu natiivne, kuna natiivsel puudub json-pildilaadija. `svg`, `xdot`, `dot`, `plain` ja `cmapx` ei trüki tuvastatud tüübi korral midagi. Ainult sizeri kaudu tuntud pildil pole tüüpi, seega ei trüki see loadimage-hoiatust (vt [Teadaolevad erinevused](/et/divergences)).
 
 ## CSP juhised
 

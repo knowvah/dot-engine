@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # Obrázky
 
@@ -191,16 +191,16 @@ surového `src` — vkladanie sa degraduje elegantne, nikdy nevyhodí výnimku.
 
 ### 3. Základné adresáre v štýle `imagepath` {#3-imagepath-style-base-directories}
 
-Atribút grafu `imagepath` natívneho Graphviz hovorí binárke v C, v akom
-adresári v štýle súborového systému/`GDFONTPATH` má hľadať relatívne hodnoty `image=`.
-@knowvah/dot-engine `imagepath` neimplementuje — port nikdy sám
-nečíta obrazové dáta z disku, takže nie je voči čomu cestu rozlišovať
-(úplnú hranicu rozsahu nájdete v [Známych odchýlkach](/sk/divergences)). Ak vaše
-grafy používajú relatívne cesty `image=`, rozlíšte ich voči vlastnému základnému
-adresáru/URL vo vrstve, ktorá zostavuje zdrojový kód DOT, alebo vo svojich
-callbackoch `setImageSizer`/`ImageResolver` — oba dostanú surový reťazec `src`
-presne tak, ako je napísaný v grafe, takže pridanie základnej cesty ako prefixu
-pred vyhľadaním je bežný, schválený vzor.
+Atribút grafu `imagepath` v natívnom Graphvize je zoznam adresárov oddelených dvojbodkami, v ktorých sa hľadajú relatívne názvy z `image=` a `shapefile=`. Port nikdy sám nečíta súbory s obrázkami, takže tieto adresáre nikdy neprehľadáva a nikdy sa hostiteľa nepýta na `dir/name`: `setImageSizer` a `ImageResolver` vždy dostanú nespracovaný názov presne tak, ako bol zapísaný. Port používa `imagepath` iba na rozhodnutie, ktoré varovanie sa vypíše, keď hostiteľ relatívny názov nedodá:
+
+- Ak je `imagepath` nastavený, relatívny názov z `image=`/`shapefile=`, ktorý hostiteľ nedodá, vyvolá `Warning: Filename "<name>" is unsafe` a potom `Warning: No or improper image="<name>" for node "<node>"`, rovnako ako natívna verzia, keď sa nedá prečítať žiadny `<dir>/<name>`.
+- Absolútny názov alebo chýbajúci či prázdny `imagepath` ponecháva riadok `Warning: No such file or directory while opening <name>`.
+
+`GV_FILE_PATH` a `SERVER_NAME` sa nerešpektujú (sú to premenné prostredia a prehliadač žiadne prostredie nemá). Ak chcete relatívne cesty vyhodnotiť voči vlastnému základnému adresáru alebo URL, pridajte predponu k názvu vo vrstve, ktorá zostavuje zdroj DOT, alebo vo svojich callbackoch `setImageSizer`/`ImageResolver`.
+
+**Typ obrázka.** Rovnako ako v natívnej verzii sa typ určuje z bajtov vrátených resolverom pomocou rozpoznávania magických čísel: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp a svg iba vtedy, keď bajty začínajú deklaráciou `<?xml` nasledovanou `<svg`. Čokoľvek kratšie ako 20 bajtov sa nerozpozná. Pri nerozpoznaných bajtoch sa nič nevykreslí a obrázok sa pri vykresľovaní nemeria. Natívna verzia navyše varuje riadkom `Warning: "<name>" was not found as a file or as a shape library member`; port tento riadok zatiaľ nevypisuje (pozri [Známe odchýlky](/sk/divergences)).
+
+`-Tjson` varuje riadkom `Warning: No loadimage plugin for "png:json"` (typ sa líši) raz za každý vykreslený obrázok, rovnako ako natívna verzia, ktorá nemá žiadny json zavádzač obrázkov. `svg`, `xdot`, `dot`, `plain` a `cmapx` pre rozpoznaný typ nevypisujú nič. Obrázok známy len cez sizer nemá typ, a preto nevypisuje žiadne varovanie loadimage (pozri [Známe odchýlky](/sk/divergences)).
 
 ## Odporúčania k CSP {#csp-guidance}
 

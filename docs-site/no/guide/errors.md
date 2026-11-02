@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,10 +131,9 @@ For å unngå feilen fjerner du attributtet eller endrer det til en støttet ver
 | Motor | Attributt og verdi | Utløses når | Nødvendig Graphviz-funksjon |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | Bare når `model` er `subset` eller `circuit` (etter at grafen har 2+ noder og `maxiter` er positiv) | Hierarkisk stress-majorisering (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Bare når Graphviz ville bygd skranker: `diredgeconstraints` er sann eller `hier*`, `overlap=ipsep`, eller grafen har en klynge på toppnivå. Uten skranker kjører den som stress-majorisering, som i Graphviz | Skrankebegrenset majorisering (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` er `major` (standard) eller `ipsep` | Smart initialisering (`smart_ini`). Under `mode=KK` eller `mode=sgd` logger den `start=0 not supported with mode=self - ignored` én gang per rendering, som Graphviz gjør |
-| neato | `model=subset` | `mode` er `major` eller `KK` | Avstandsmodellen «subset» |
-| neato | `model=circuit` | `mode` er `major`, eller `KK` på en sammenhengende graf. `KK` på en usammenhengende graf uten `pack` eller `packmode` logger en advarsel og bruker korteste veier, som Graphviz gjør | Avstandsmodellen «circuit» (`circuit_model`) |
+| neato | `start=self` | `mode` er `major` (standard). Under `mode=ipsep` aksepteres det stille, og layouten bruker den tilfeldige starten, som Graphviz | Smart initialisering (`smart_ini`). Under `mode=KK` eller `mode=sgd` logger den `start=0 not supported with mode=self - ignored` én gang per rendering, som Graphviz gjør |
+| neato | `model=subset` | `mode` er `major` eller `KK`. Utløses ikke under `mode=ipsep`. | Avstandsmodellen «subset» |
+| neato | `model=circuit` | `mode` er `major`, eller `KK` på en sammenhengende graf. `KK` på en usammenhengende graf uten `pack` eller `packmode` logger en advarsel og bruker korteste veier, som Graphviz gjør. Utløses ikke under `mode=ipsep`. | Avstandsmodellen «circuit» (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (ikke skille mellom store og små bokstaver) | Grafen (for twopi en komponent; for sfdp hele grafen eller en komponent) har 2+ noder, og Graphvizs egen overlappstelling (`countOverlap`, som tester nodepolygoner) er over 0. Noder som bare berører hverandre med avgrensningsboksen utløser det ikke. circo når det bare for en graf med én komponent (ved flere komponenter ignorerer Graphviz også `overlap`). sfdp når det bare når `overlap` ikke er en prismemodus | Voronoi-fjerning av overlapp (`vAdjust`) |
 | fdp | `overlap=` en av `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Modusen nås etter `N:`-kraftiterasjonsforsøkene, altså når disse forsøkene ikke fjerner all overlapp (eller `N` er 0 eller mangler). Prefikset `N:` er tillatt, for eksempel `3:voronoi` | Den tilsvarende justeringsalgoritmen i `removeOverlapWith` |
 | fdp | `splines=compound` | Alltid, med eller uten klynger | Klyngeunngående kantruting (`compoundEdges`) |

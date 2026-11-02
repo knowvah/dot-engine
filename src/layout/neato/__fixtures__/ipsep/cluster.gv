@@ -1,0 +1,1 @@
+graph{mode=ipsep; overlap=ipsep; subgraph cluster_0{a; b; c; a--b; b--c} d; e; f; c--d; d--e; e--f; f--a; d--b}

@@ -31,14 +31,21 @@ function emitArrowOpacity(job: RenderJob, attr: string, opacity: string | null):
   if (opacity !== null) job.write(' ' + attr + '="' + opacity + '"');
 }
 
+/**
+ * The paint an arrow primitive is drawn with: the stroke (pen) and the fill
+ * colour with their stringified alphas (null when opaque).
+ * @see lib/common/arrows.c:arrow_gen
+ */
+export interface ArrowInk { pen: string; penOpacity: string | null; fill: string; fillOpacity: string | null }
+
 /** `<polygon>` with Adobe first-point repetition (matches svg_polygon). */
-function emitPolygonOp(points: Point[], filled: boolean, penColor: string, job: RenderJob, pw: number, opacity: string | null): void {
+function emitPolygonOp(points: Point[], filled: boolean, ink: ArrowInk, job: RenderJob, pw: number): void {
   const pts = points.map((p) => transformPoint(p, job));
-  job.write('<polygon fill="' + (filled ? penColor : 'none') + '"');
-  if (filled) emitArrowOpacity(job, 'fill-opacity', opacity);
-  job.write(' stroke="' + penColor + '"');
+  job.write('<polygon fill="' + (filled ? ink.fill : 'none') + '"');
+  if (filled) emitArrowOpacity(job, 'fill-opacity', ink.fillOpacity);
+  job.write(' stroke="' + ink.pen + '"');
   emitArrowPenWidth(job, pw);
-  emitArrowOpacity(job, 'stroke-opacity', opacity);
+  emitArrowOpacity(job, 'stroke-opacity', ink.penOpacity);
   job.write(' points="');
   emitPoints(job, pts);
   if (pts.length > 0) {
@@ -55,13 +62,13 @@ function emitPolygonOp(points: Point[], filled: boolean, penColor: string, job: 
 interface EllipseOp { center: Point; rx: number; ry: number; filled: boolean }
 
 /** `<ellipse>` (dot/odot). rx/ry are emitted in layout units (device scale 1). */
-function emitEllipseOp(op: EllipseOp, penColor: string, job: RenderJob, pw: number, opacity: string | null): void {
+function emitEllipseOp(op: EllipseOp, ink: ArrowInk, job: RenderJob, pw: number): void {
   const c = transformPoint(op.center, job);
-  job.write('<ellipse fill="' + (op.filled ? penColor : 'none') + '"');
-  if (op.filled) emitArrowOpacity(job, 'fill-opacity', opacity);
-  job.write(' stroke="' + penColor + '"');
+  job.write('<ellipse fill="' + (op.filled ? ink.fill : 'none') + '"');
+  if (op.filled) emitArrowOpacity(job, 'fill-opacity', ink.fillOpacity);
+  job.write(' stroke="' + ink.pen + '"');
   emitArrowPenWidth(job, pw);
-  emitArrowOpacity(job, 'stroke-opacity', opacity);
+  emitArrowOpacity(job, 'stroke-opacity', ink.penOpacity);
   job.write(' cx="');
   job.printDouble(c.x);
   job.write('" cy="');
@@ -96,18 +103,27 @@ function emitBezierOp(points: Point[], penColor: string, job: RenderJob, pw: num
 }
 
 /**
- * Emit one edge end's arrowhead draw-ops, in order, with the given pen color.
- * `opacity` is the stringified alpha (`colorOpacity`) or null when the pen color
- * is opaque; it drives the SVG fill/stroke-opacity attributes (e.g. an edge
- * color="#rrggbbaa"). @see lib/common/arrows.c:arrow_gen
+ * Emit one edge end's arrowhead draw-ops, in order, with the given ink.
+ * @see lib/common/arrows.c:arrow_gen
  */
-export function emitArrowOps(ops: ArrowDrawOp[], penColor: string, job: RenderJob, pw: number, opacity: string | null = null): void {
+export function emitArrowOpsInk(ops: ArrowDrawOp[], ink: ArrowInk, job: RenderJob, pw: number): void {
   for (const op of ops) {
     switch (op.kind) {
-      case 'polygon': emitPolygonOp(op.points, op.filled, penColor, job, pw, opacity); break;
-      case 'ellipse': emitEllipseOp(op, penColor, job, pw, opacity); break;
-      case 'polyline': emitPolylineOp(op.points, penColor, job, pw, opacity); break;
-      case 'bezier': emitBezierOp(op.points, penColor, job, pw, opacity); break;
+      case 'polygon': emitPolygonOp(op.points, op.filled, ink, job, pw); break;
+      case 'ellipse': emitEllipseOp(op, ink, job, pw); break;
+      case 'polyline': emitPolylineOp(op.points, ink.pen, job, pw, ink.penOpacity); break;
+      case 'bezier': emitBezierOp(op.points, ink.pen, job, pw, ink.penOpacity); break;
     }
   }
+}
+
+/**
+ * {@link emitArrowOpsInk} with the pen colour also as the fill (the multicolor
+ * paths set fill = segment colour). `opacity` is the stringified alpha
+ * (`colorOpacity`) or null when the pen color is opaque; it drives the SVG
+ * fill/stroke-opacity attributes (e.g. an edge color="#rrggbbaa").
+ * @see lib/common/arrows.c:arrow_gen
+ */
+export function emitArrowOps(ops: ArrowDrawOp[], penColor: string, job: RenderJob, pw: number, opacity: string | null = null): void {
+  emitArrowOpsInk(ops, { pen: penColor, penOpacity: opacity, fill: penColor, fillOpacity: opacity }, job, pw);
 }

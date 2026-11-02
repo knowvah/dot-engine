@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # Bilder
 
@@ -191,16 +191,16 @@ oförändrade `src` — infogningen degraderar mjukt och kastar aldrig.
 
 ### 3. Basmappar i stil med `imagepath`
 
-Den inbyggda Graphviz grafattribut `imagepath` talar om för C-binären en
-sökmapp i stil med filsystem/`GDFONTPATH` att lösa relativa `image=`-värden
-mot. @knowvah/dot-engine implementerar inte `imagepath` — porten läser aldrig bilddata
-från disk själv, så det finns ingen sökväg att lösa mot
-(se [Kända avvikelser](/sv/divergences) för hela omfattningsgränsen). Om dina
-grafer använder relativa `image=`-sökvägar löser du dem mot din egen basmapp/-URL i
-det lager som konstruerar DOT-källkoden eller i dina
-`setImageSizer`-/`ImageResolver`-callbacks — båda får den råa `src`-strängen
-exakt som den skrivits i grafen, så att sätta en basväg framför den
-före uppslagning är ett normalt, sanktionerat mönster.
+Grafattributet `imagepath` i inbyggda Graphviz är en kolonseparerad lista över kataloger där relativa `image=`- och `shapefile=`-namn söks. Porten läser aldrig bildfiler själv, söker alltså aldrig i dem och ber aldrig värden om `dir/name`: `setImageSizer` och `ImageResolver` får alltid det råa namnet, exakt som det är skrivet. Porten använder `imagepath` bara för att avgöra vilken varning som skrivs ut när värden inte levererar ett relativt namn:
+
+- Med `imagepath` satt ger ett relativt `image=`-/`shapefile=`-namn som värden inte levererar `Warning: Filename "<name>" is unsafe` och därefter `Warning: No or improper image="<name>" for node "<node>"`, som den inbyggda gör när ingen `<dir>/<name>` går att läsa.
+- Ett absolut namn, eller ett saknat eller tomt `imagepath`, behåller raden `Warning: No such file or directory while opening <name>`.
+
+`GV_FILE_PATH` och `SERVER_NAME` respekteras inte (de är miljövariabler, och en webbläsare har ingen miljö). För att lösa relativa sökvägar mot din egen baskatalog eller bas-URL, sätt prefixet på namnet i det lager som bygger DOT-källan eller i dina `setImageSizer`-/`ImageResolver`-callbacks.
+
+**Bildtyp.** Liksom i den inbyggda tas typen från de byte som resolvern returnerar, genom igenkänning av magiska tal: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, och svg bara när byten börjar med en `<?xml`-deklaration följd av `<svg`. Allt som är kortare än 20 byte känns inte igen. För okända byte ritas ingenting och bilden storleksbestäms inte vid rendering. Den inbyggda varnar även med `Warning: "<name>" was not found as a file or as a shape library member`; porten skriver ännu inte ut den raden (se [Kända avvikelser](/sv/divergences)).
+
+`-Tjson` varnar med `Warning: No loadimage plugin for "png:json"` (typen varierar) en gång per ritad bild, som den inbyggda, eftersom den saknar json-bildladdare. `svg`, `xdot`, `dot`, `plain` och `cmapx` skriver inte ut något för en igenkänd typ. En bild som bara är känd via sizern saknar typ och skriver därför inte ut någon loadimage-varning (se [Kända avvikelser](/sv/divergences)).
 
 ## Vägledning för CSP
 

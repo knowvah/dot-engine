@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # Kuvat
 
@@ -191,16 +191,16 @@ ratkaisija palauttaa kyseiselle `src`-arvolle `null`) palaa automaattisesti raak
 
 ### 3. `imagepath`-tyyliset perushakemistot
 
-Natiivin Graphvizin `imagepath`-graafiattribuutti kertoo C-binäärille
-tiedostojärjestelmän/`GDFONTPATH`-tyylisen hakuhakemiston, jota vasten suhteelliset `image=`-
-arvot ratkaistaan. @knowvah/dot-engine ei toteuta `imagepath`-attribuuttia — porttaus ei
-koskaan lue kuvadataa levyltä itse, joten ei ole polkua, jota vasten ratkaista
-(katso [Tunnetut poikkeamat](/fi/divergences) täydestä rajauksesta). Jos
-graafisi käyttävät suhteellisia `image=`-polkuja, ratkaise ne oman perushakemistosi/URL:si
-suhteen siinä kerroksessa, joka muodostaa DOT-lähdekoodin, tai omissa
-`setImageSizer`-/`ImageResolver`-takaisinkutsuissasi — molemmat saavat raa'an `src`-merkkijonon
-täsmälleen sellaisena kuin se on kirjoitettu graafiin, joten perushakemiston etuliitteen
-lisääminen merkkijonoon ennen hakua on normaali, hyväksytty malli.
+Natiivin Graphvizin graafiattribuutti `imagepath` on kaksoispisteillä erotettu luettelo hakemistoista, joista etsitään suhteellisia `image=`- ja `shapefile=`-nimiä. Portti ei koskaan lue kuvatiedostoja itse, joten se ei koskaan käy niitä läpi eikä koskaan pyydä isännältä `dir/name`: `setImageSizer` ja `ImageResolver` saavat aina raa'an nimen täsmälleen kirjoitetussa muodossa. Portti käyttää `imagepath`-attribuuttia vain päättääkseen, mikä varoitus tulostetaan, kun isäntä ei toimita suhteellista nimeä:
+
+- Kun `imagepath` on asetettu, suhteellinen `image=`-/`shapefile=`-nimi, jota isäntä ei toimita, tuottaa varoituksen `Warning: Filename "<name>" is unsafe` ja sen jälkeen `Warning: No or improper image="<name>" for node "<node>"`, kuten natiivi tekee, kun mitään `<dir>/<name>`-tiedostoa ei voi lukea.
+- Absoluuttinen nimi tai puuttuva tai tyhjä `imagepath` säilyttää rivin `Warning: No such file or directory while opening <name>`.
+
+`GV_FILE_PATH` ja `SERVER_NAME` eivät ole huomioon otettavia (ne ovat ympäristömuuttujia, eikä selaimessa ole ympäristöä). Jos haluat ratkaista suhteelliset polut oman perushakemistosi tai perus-URL:n suhteen, lisää etuliite nimeen DOT-lähdettä rakentavassa kerroksessa tai `setImageSizer`-/`ImageResolver`-takaisinkutsuissasi.
+
+**Kuvatyyppi.** Natiivin tavoin tyyppi päätellään resolverin palauttamista tavuista taikalukujen tunnistuksella: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp sekä svg vain, kun tavut alkavat `<?xml`-julistuksella, jota seuraa `<svg`. Mitä tahansa alle 20 tavun pituista ei tunnisteta. Tunnistamattomille tavuille ei piirretä mitään, eikä kuvan kokoa määritetä renderöinnin aikana. Natiivi varoittaa lisäksi rivillä `Warning: "<name>" was not found as a file or as a shape library member`; portti ei vielä tulosta sitä riviä (katso [Tunnetut poikkeamat](/fi/divergences)).
+
+`-Tjson` varoittaa rivillä `Warning: No loadimage plugin for "png:json"` (tyyppi vaihtelee) kerran piirrettyä kuvaa kohden, kuten natiivi, koska natiivilla ei ole json-kuvalataajaa. `svg`, `xdot`, `dot`, `plain` ja `cmapx` eivät tulosta mitään tunnistetulle tyypille. Vain sizerin kautta tunnetulla kuvalla ei ole tyyppiä, joten se ei tulosta loadimage-varoitusta (katso [Tunnetut poikkeamat](/fi/divergences)).
 
 ## CSP-ohjeistus
 

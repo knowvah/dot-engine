@@ -18,7 +18,9 @@ The open work is items 43–71 under "New follow-ups found by part 3" below.
 Being closed by `plans/post-16-1-followups-4/`.
 Being closed by `plans/post-16-1-followups-5/`.
 Being closed by `plans/post-16-1-followups-6/`.
-Items 90–93 are done and 94 is parked by part 6; the open work is items 94–102.
+Items 95–102 closed by `plans/post-16-1-followups-7/` (101's layout-time FT_NULL line → 104);
+the open work is items 103–108 under "New follow-ups found by part 7".
+Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
 
@@ -510,7 +512,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       and `api.md`/`images.md` never state the sizer's unit; after part 5 T14 `ImageSizer`
       returns intrinsic pixels converted at the graph `dpi` (default 96) and `image=` nodes
       are sized. English pages, 23 locales and their `sourceHash` (2026-10-27).
-  94. **[PARKED — part 6 T3: verdict fused (cola's inlined copies = kD's); landing waits on item 95]** `mode=ipsep`: `stress_majorization_cola`'s inlined `right_mult_with_vector_ff`
+  94. **[DONE — part 7 T1: landed with item 95 (fused cola right-multiply)]** `mode=ipsep`: `stress_majorization_cola`'s inlined `right_mult_with_vector_ff`
       copy (neato_layout 0x3904c+, the `fmul.4s`×4 / `fmla.4s`×4 blocks at 0x3b19c and
       0x3b570) has not been read instruction by instruction, so the port's `COLA_OPS`
       keeps that right-multiply unfused while its CG is the shared fused body and its
@@ -519,7 +521,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `mode=ipsep` (part 5 T15, 2026-10-28).
 
 - **New follow-ups found by part 6** (`plans/post-16-1-followups-6/`):
-  95. `mode=ipsep`: port `stress_majorization_cola`'s layout prologue
+  95. **[DONE — part 7 T1: patch applied; 7 unconstrained probes byte-identical]** `mode=ipsep`: port `stress_majorization_cola`'s layout prologue
       (`constrained_majorization_ipsep.c:166-191`: `d_coords *= 10/max` with `max` from
       1, `orthog1` per axis, y translated so y[0]=0) and land it together with item
       94's fused right-multiply (`COLA_OPS.rightMult = rightMultWithVectorFFFused`).
@@ -528,33 +530,62 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       byte-identical to native xdot. Ready patch:
       `plans/post-16-1-followups-6/patches/item94-95-fused-plus-cola-prologue.patch`
       (neato suite 919/919; full gates not run) (part 6 T3, 2026-10-29).
-  96. `mode=ipsep` runs kD-only logic C's `stress_majorization_cola` lacks, and lacks
+  96. **[DONE — part 7 T5, T7, T8, T10: `stress_majorization_cola` on `quad_prog_vpsc`; 22/22 ipsep probes]** `mode=ipsep` runs kD-only logic C's `stress_majorization_cola` lacks, and lacks
       cola's own: the kD convergence test instead of `:363-367`; `havePinned`/`solveAxis`
       pinned handling (cola ignores `initLayout`'s return); `maxi < 0` return order; no
       `nsizeScale` loop, noverlap constraint generation / `constrained_majorization_vpsc`,
       cluster `clap` extension or `removeoverlaps`. None moved the 7 probes (part 6 T3).
-  97. `poly_init` warnings are keyed on `shapefile non-empty && shape != epsf`; C keys on
+  97. **[DONE — part 7 T2: `bind_shape`/`user_shape` ported; native runs the image branch for unknown shapes (this text was wrong)]** `poly_init` warnings are keyed on `shapefile non-empty && shape != epsf`; C keys on
       `ND_shape(n)->usershape && name == "custom"` (`shapes.c:2021-2046`, `bind_shape`
       3970). Differs for `shape=custom` without `shapefile` (C warns
       `shapefile="<nil>"`) and for an unknown shape name (C `user_shape`: image branch
       skipped) (part 6 T1).
-  98. Point node `fillcolor=":red"`: the port warns `:red is not a known color.`, native
+  98. **[DONE — part 7 T3]** Point node `fillcolor=":red"`: the port warns `:red is not a known color.`, native
       ` is not a known color.` (fill `#000000` on both); `applyFillState`'s point path
       resolves `findFillDflt` without `gvrender_set_fillcolor`'s cut at ':' (part 6 T2,
       native-probed).
-  99. Edge `fillcolor=":red"` (arrowheads): native warns ` is not a known color.` and fills
+  99. **[DONE — part 7 T3: `emit_edge_graphics` fill selection; arrowheads fill with it]** Edge `fillcolor=":red"` (arrowheads): native warns ` is not a known color.` and fills
       `#000000`; the port fills `black` silently (part 6 T2, native-probed).
-  100. svg `usershape` (`src/render/svg.ts`) lacks `core_loadimage_svg`'s `job->rotation`
+  100. **[DONE — part 7 T4]** svg `usershape` (`src/render/svg.ts`) lacks `core_loadimage_svg`'s `job->rotation`
       branch (`gvloadimage_core.c:74-82`: width/height swapped, `xMidYMid meet`,
       `transform="rotate(%d %g %g)"`); reference `digraph{rotate=90;a[image="r.png"]}`
       (part 6 T4).
-  101. Native `-Tjson` prints `Warning: No loadimage plugin for "png:json"` once per image
+  101. **[DONE — part 7 T6 (json warning, magic sniff); layout-time FT_NULL warning → item 104]** Native `-Tjson` prints `Warning: No loadimage plugin for "png:json"` once per image
       op; the port prints nothing (the image type is not known from a sizer) (part 6 T4).
-  102. With `imagepath` set and a relative `image=`, native `gvusershape_file_access`
+  102. **[DONE — part 7 T9: `safefile` + `Gvimagepath` mirror; `unsafe` warning as native]** With `imagepath` set and a relative `image=`, native `gvusershape_file_access`
       prints `Filename "<name>" is unsafe` when `safefile`'s `findPath` finds no readable
       `<dir>/<name>` (`gvusershape.c:695`, `utils.c:253-311`); the port, with nothing
       supplied, prints the `No such file or directory while opening` line instead.
       Reference `graphs-val_val` (pre-existing at T0; part 6 T6 bytediff).
+
+- **New follow-ups found by part 7** (`plans/post-16-1-followups-7/`):
+  103. (reserved by part 7 AD-3) Wire `model=subset|circuit` into the major, kk and hier
+      paths (`start.ts:207-216`, `constrained-majorization.ts:96`), which stay loud; the
+      models are ported in `stress-models.ts` (part 7 T7).
+  104. Layout-time FT_NULL warning: resolver bytes with unrecognized magic must warn
+      `"<name>" was not found as a file or as a shape library member` and size to
+      nothing at layout (`common_init_node` → `poly_init` → `gvusershape_size` →
+      `gvusershape_open`). `poly-init.ts` (`warnPolyInitImages`, `nodeImageSize`) and
+      `htmltable.ts:145,153` must call `imageOpenFailure` / pass the resolver to
+      `usershapeSizePts`; a global-resolver read is needed for callers without a
+      context (part 7 T6).
+  105. `src/vpsc/SweepLine.ts`: C++ `Node::leftNeighbours`/`rightNeighbours` are
+      `set<Node*,CmpNodePos>` (position order, `generate-constraints.cpp:43-84`); TS uses
+      an insertion-ordered Set filled in descending position, and `nodePosLt` compares
+      objects with `<` (always false) where C++ breaks ties by address. Two
+      `quad-prog-vpsc.test.ts` cases are `it.fails` on it; the tie case's native result
+      itself varies run to run, so its fixture may need a refresh (part 7 T5).
+  106. Known divergence: C++ `IncVPSC::splitBlocks` iterates `std::set<Block*>` in heap
+      address order (`blocks.h:37`); native output varies with the allocator (3 results
+      for one input under default / `X=1` / `MallocNanoZone=0`). Not reproducible; ledger
+      entry needed (part 7 T5).
+  107. `safefile`'s "host supplies the name" check reads the global sizer/resolver, not
+      the per-context hooks; matters for `bindShape`'s `shapefile` under `imagepath`
+      with a per-context-only sizer (part 7 T9).
+  108. `index.ts:parseModel` lacks `neatoinit.c:neatoModel`'s warnings: `edges in graph
+      %s have no len attribute. Hence, the mds model / is inappropriate. Reverting to the
+      shortest path model.` (native prints a literal `%1`) with the shortpath fallback,
+      and `Unknown value %s for attribute "model"` (part 7 T8).
 
 ## Local leftovers (not committed, safe to delete)
 

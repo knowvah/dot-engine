@@ -1,0 +1,49 @@
+dot - graphviz version 16.1.0 (20261012.1431)
+libdir = "/private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/dfc80e32-d4b2-43d1-a20b-4d2c1be89946/scratchpad/ghl16-all"
+Activated plugin library: libgvplugin_neato_layout.8.dylib
+Using layout: neato:neato_layout
+Activated plugin library: libgvplugin_core.8.dylib
+Using render: xdot:core
+Using device: xdot:xdot:core
+The plugin configuration file:
+	/private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/dfc80e32-d4b2-43d1-a20b-4d2c1be89946/scratchpad/ghl16-all/config8
+		was successfully loaded.
+    render	:  dot dot_json fig json json0 map pic pov ps svg svg_inline tk xdot xdot_json
+    layout	:  circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi
+    textlayout	: 
+    device	:  canon cmap cmapx cmapx_np dot dot_json eps fig gv imap imap_np ismap json json0 pic plain plain-ext pov ps ps2 svg svg_inline svgz tk xdot xdot1.2 xdot1.4 xdot_json
+    loadimage	:  (lib) eps gif jpe jpeg jpg png ps svg
+fontname: "Times-Roman" resolved to: [internal hard-coded]
+overlap: none value 80934624 scaling 0.0000
+pack info:
+  mode   undefined
+  size   0
+  flags  0
+Scanning graph %1, 12 nodes
+model 0 smart_init 0 stresswt 2 iterations 1200 tol 0.000100
+convert graph: majorization
+12 nodes 0.00 sec
+Node separation: add=1 (4.000000,4.000000)
+gap=0.111111,0.111111
+Calculating shortest paths: 0.00 sec
+Setting initial positions: 0.00 sec  initCMajVPSC done: 0 global constraints generated.
+  initCMajVPSC done: 0 global constraints generated.
+704.129 
+15.255 13.819 12.925 12.227 11.648 11.236 10.992 10.857 10.762 10.619 
+10.368 10.118 9.943 9.814 9.697 9.581 9.464 9.349 9.233 9.108 
+8.972 8.827 8.680 8.538 8.404 8.277 8.159 8.048 7.942 7.835 
+7.726 7.614 7.501 7.389 7.283 7.185 7.097 7.021 6.956 6.900 
+6.853 6.811 6.774 6.741 6.709 6.681 6.655 6.634 6.615 6.600 
+6.588 6.579 6.571 6.565 6.560 6.555 6.550 6.546 6.542 6.538 
+6.534 6.530 6.526 6.522 6.518 6.514 6.509 6.505 6.501 6.497 
+6.492 6.488 6.483 6.477 6.471 6.465 6.457 6.449 6.439 6.428 
+6.417 6.404 6.391 6.379 6.367 6.357 6.348 6.340 6.334 6.328 
+6.323 6.319 6.315 6.311 6.308 6.305 6.302 6.299 6.297 6.294 
+6.292 6.291 6.289 6.287 6.286 6.284 6.283 6.282 6.281 6.280 
+6.279 6.278 6.278 6.277 
+final e = 6.277162 115 iterations 0.00 sec
+Edge separation: add=1 (3.200000,3.200000)
+Creating edges using line segments
+Using render: xdot:core
+Using device: xdot:xdot:core
+[Graphviz] emit.c:4323: 2026-10-30 15:33:39 gvRenderJobs %1: 0.00 secs.

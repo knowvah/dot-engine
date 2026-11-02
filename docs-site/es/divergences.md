@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1367,6 +1367,8 @@ Son límites de alcance deliberados, no errores. La biblioteca apunta a **SVG**
   complementos (`dlopen`) se sustituye por el registro estático de motores/renderizadores;
   las lecturas del sistema de archivos (fuentes, imágenes, configuración) se sustituyen por
   callbacks aportados por quien llama (p. ej. `setImageSizer`). El comportamiento se conserva; el mecanismo difiere.
+
+- **Tipo de imagen y advertencias de `imagepath`.** Una imagen conocida solo a través de `setImageSizer` (sin bytes del resolver) no tiene tipo, por lo que no imprime la advertencia `No loadimage plugin`; el nativo siempre lee el archivo y por tanto siempre conoce el tipo. Con bytes de resolver no reconocidos el nativo además advierte con `Warning: "<name>" was not found as a file or as a shape library member`; el port aún no imprime esa línea (seguimiento 104, cableado en tiempo de layout). `GV_FILE_PATH` y `SERVER_NAME` no se respetan, y nunca se pide al host el nombre `<dir>/<name>` de `imagepath`.
 
 ---
 

@@ -44,7 +44,7 @@ import {
 } from '../common/style-resolve.js';
 import { isPointNode } from '../common/poly-gencode.js';
 import {
-  resolveRenderColor, withColorScheme, reportEdgeColors, reportColorNames, backgroundColors,
+  resolveRenderColor, resolveFillColorName, edgeFillName, withColorScheme, reportEdgeColors, reportColorNames, backgroundColors,
   setRendererKnownColors,
 } from '../render/color-resolve.js';
 import { emitRoundedBezier } from '../common/poly-shapes.js';
@@ -167,9 +167,16 @@ function setEdgePen(e: Edge, job: RenderJob, styles: readonly string[]): void {
   // Raw style tokens for xdot's `S` ops (e.g. explicit style="solid"); SVG
   // reads only obj.pen, so this is xdot-only. @see gvrender_core_dot.c xdot_style
   obj.rawStyle = [...styles];
-  // emit_begin_edge: `if (styles && ED_spl(e)) gvrender_set_style(job, styles)`
-  // @see lib/common/emit.c:2726
-  if (e.info.spl !== undefined) gvrenderSetStyle(obj.rawStyle);
+  // emit_begin_edge: `if (styles && ED_spl(e)) gvrender_set_style` (emit.c:2726);
+  // emit_edge_graphics resolves colours only with a spline too (emit.c:2366).
+  if (e.info.spl === undefined) return;
+  gvrenderSetStyle(obj.rawStyle);
+  // After the style warnings: gvrender_set_fillcolor; arrowheads fill with it.
+  const fill = edgeFillName(e.attrs.get('color') ?? '', e.attrs.get('fillcolor'));
+  if (fill !== undefined) {
+    obj.fillColor = withColorScheme(e.attrs.get('colorscheme'),
+      () => resolveFillColorName(fill.name, fill.report));
+  }
 }
 
 export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): void {

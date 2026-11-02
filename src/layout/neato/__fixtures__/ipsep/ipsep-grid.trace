@@ -1,0 +1,41 @@
+dot - graphviz version 16.1.0 (20261012.1431)
+libdir = "/private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/dfc80e32-d4b2-43d1-a20b-4d2c1be89946/scratchpad/ghl16-all"
+Activated plugin library: libgvplugin_neato_layout.8.dylib
+Using layout: neato:neato_layout
+Activated plugin library: libgvplugin_core.8.dylib
+Using render: xdot:core
+Using device: xdot:xdot:core
+The plugin configuration file:
+	/private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/dfc80e32-d4b2-43d1-a20b-4d2c1be89946/scratchpad/ghl16-all/config8
+		was successfully loaded.
+    render	:  dot dot_json fig json json0 map pic pov ps svg svg_inline tk xdot xdot_json
+    layout	:  circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi
+    textlayout	: 
+    device	:  canon cmap cmapx cmapx_np dot dot_json eps fig gv imap imap_np ismap json json0 pic plain plain-ext pov ps ps2 svg svg_inline svgz tk xdot xdot1.2 xdot1.4 xdot_json
+    loadimage	:  (lib) eps gif jpe jpeg jpg png ps svg
+fontname: "Times-Roman" resolved to: [internal hard-coded]
+overlap: none value 45643488 scaling 0.0000
+pack info:
+  mode   undefined
+  size   0
+  flags  0
+Scanning graph %1, 9 nodes
+model 0 smart_init 0 stresswt 2 iterations 900 tol 0.000100
+convert graph: majorization
+9 nodes 0.00 sec
+Node separation: add=1 (4.000000,4.000000)
+gap=0.111111,0.111111
+Calculating shortest paths: 0.00 sec
+Setting initial positions: 0.00 sec  initCMajVPSC done: 0 global constraints generated.
+  initCMajVPSC done: 0 global constraints generated.
+403.634 
+8.950 8.469 8.087 7.751 7.450 7.132 6.718 6.187 5.668 5.181 
+4.699 4.280 3.936 3.425 3.009 2.780 2.611 2.369 1.959 1.504 
+1.204 1.055 0.984 0.949 0.931 0.920 0.914 0.910 0.907 0.906 
+0.905 0.904 0.904 0.904 0.903 0.903 0.903 
+final e = 0.903207 38 iterations 0.00 sec
+Edge separation: add=1 (3.200000,3.200000)
+Creating edges using line segments
+Using render: xdot:core
+Using device: xdot:xdot:core
+[Graphviz] emit.c:4323: 2026-10-30 15:33:39 gvRenderJobs %1: 0.00 secs.

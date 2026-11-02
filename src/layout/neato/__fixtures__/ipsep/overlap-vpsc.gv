@@ -1,0 +1,1 @@
+graph{mode=ipsep; overlap=vpsc; a[width=2]; b[height=1.2]; c[shape=box width=1.5 height=0.8]; d; e[width=0.3 height=0.3 fixedsize=true]; f[label="long label here"]; a--b; a--c; a--d; b--c; c--d; d--e; e--f; f--a; b--f}

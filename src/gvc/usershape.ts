@@ -16,6 +16,8 @@
 import { invalidArgType } from '../errors.js';
 import type { ImageSizer } from '../common/htmltable-types.js';
 import { findImageBytes, type ImageResolver } from './image-resolver.js';
+import { safefile } from '../common/safefile.js';
+import { ImageType, imagetype, type ImageTypeResult } from './image-type.js';
 
 export type { ImageSizer } from '../common/htmltable-types.js';
 
@@ -56,11 +58,42 @@ export function imageIsSupplied(name: string, sizer?: ImageSizer, resolver?: Ima
 }
 
 /**
+ * The type `gvusershape_open` sniffs from the bytes the resolver supplies for
+ * `name`; null when there are none (a sizer-only image has no type, AD-5).
+ * @see lib/gvc/gvusershape.c:gvusershape_open (imagetype)
+ */
+export function usershapeType(name: string, resolver?: ImageResolver): ImageTypeResult | null {
+  const found = findImageBytes(name, resolver);
+  return found === null ? null : imagetype(found.bytes);
+}
+
+/**
+ * The `agwarningf` text for bytes whose magic matches nothing and that name no
+ * shape-library member (the port has none).
+ * @see lib/gvc/gvusershape.c:gvusershape_open (FT_NULL case)
+ */
+export function imageNotFoundWarning(name: string): string {
+  return `"${name}" was not found as a file or as a shape library member`;
+}
+
+/**
+ * The first warning `gvusershape_open` prints when it fails for `name`, or
+ * null when it succeeds: nothing supplied (the open failure) or resolver
+ * bytes of unknown type (FT_NULL).
+ * @see lib/gvc/gvusershape.c:gvusershape_open
+ */
+export function imageOpenFailure(name: string, sizer?: ImageSizer, resolver?: ImageResolver): string | null {
+  if (!imageIsSupplied(name, sizer, resolver)) return imageOpenWarning(name);
+  return usershapeType(name, resolver)?.type === ImageType.FT_NULL ? imageNotFoundWarning(name) : null;
+}
+
+/**
  * The `agwarningf` text `gvusershape_file_access` prints when it cannot open
  * `name`. C does not cache a failed open, so every sizing request repeats it.
  * @see lib/gvc/gvusershape.c:gvusershape_file_access
  */
 export function imageOpenWarning(name: string): string {
+  if (safefile(name) === null) return `Filename "${name}" is unsafe`;
   return `${STRERROR_ENOENT} while opening ${name}`;
 }
 
@@ -90,12 +123,18 @@ export function usershapeDpi(attrs: ReadonlyMap<string, string>): number {
  * the result is `(int)(px * 72 / dpi)` (the file's own dpi is unknown to a
  * sizer, so `us->dpi` is 0 as for most formats). Null stands for C's (-1,-1):
  * empty name or an image nobody supplies.
+ * @param resolver - the caller's resolver, when it has one; bytes it supplies
+ *   with unknown magic make the open fail (no size).
  * @see lib/gvc/gvusershape.c:gvusershape_size, gvusershape_size_dpi
  */
 export function usershapeSizePts(
-  name: string | undefined, dpi: number, sizer?: ImageSizer,
+  name: string | undefined, dpi: number, sizer?: ImageSizer, resolver?: ImageResolver,
 ): { x: number; y: number } | null {
   if (name === undefined || name === '') return null;
+  // gvusershape_open fails on bytes of unknown type: no size. Only a resolver
+  // the caller names is consulted: an omitted one must not reach the global
+  // resolver behind a per-context one (ADR-2).
+  if (resolver !== undefined && usershapeType(name, resolver)?.type === ImageType.FT_NULL) return null;
   const px = sizer !== undefined ? sizer(name) : findImageSize(name);
   if (px === null) return null;
   return {

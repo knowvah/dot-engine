@@ -1,5 +1,5 @@
 ---
-sourceHash: 3d4656721c638d5a46da33386e0e21a7e4e80974f112d5463445a28237c8a012
+sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
 ---
 # Billeder
 
@@ -191,16 +191,16 @@ indlejring forringes elegant, den kaster aldrig.
 
 ### 3. Basisbiblioteker i stil med `imagepath`
 
-Native Graphviz' grafattribut `imagepath` fortæller C-binæren et
-filsystem-/`GDFONTPATH`-agtigt søgebibliotek, som relative `image=`-værdier
-skal opløses mod. @knowvah/dot-engine implementerer ikke `imagepath` — porteringen læser aldrig
-billeddata fra disk selv, så der er ingen sti at opløse mod
-(se [Kendte afvigelser](/da/divergences) for den fulde afgrænsning). Hvis dine
-grafer bruger relative `image=`-stier, så opløs dem mod dit eget basisbibliotek/din
-egen URL i det lag, der konstruerer DOT-kildekoden, eller i dine
-`setImageSizer`-/`ImageResolver`-callbacks — begge modtager den rå `src`-streng
-nøjagtigt som skrevet i grafen, så at sætte en basissti foran strengen
-før opslag er et normalt, godkendt mønster.
+Grafattributten `imagepath` i native Graphviz er en kolonseparet liste over mapper, hvor relative `image=`- og `shapefile=`-navne søges. Porten læser aldrig selv billedfiler, gennemsøger dem derfor aldrig og beder aldrig værten om `dir/name`: `setImageSizer` og `ImageResolver` modtager altid det rå navn, præcis som det er skrevet. Porten bruger kun `imagepath` til at afgøre, hvilken advarsel der udskrives, når værten ikke leverer et relativt navn:
+
+- Med `imagepath` sat giver et relativt `image=`-/`shapefile=`-navn, som værten ikke leverer, `Warning: Filename "<name>" is unsafe` og derefter `Warning: No or improper image="<name>" for node "<node>"`, som native gør, når ingen `<dir>/<name>` kan læses.
+- Et absolut navn, eller en manglende eller tom `imagepath`, beholder linjen `Warning: No such file or directory while opening <name>`.
+
+`GV_FILE_PATH` og `SERVER_NAME` respekteres ikke (de er miljøvariabler, og en browser har intet miljø). For at opløse relative stier mod din egen basemappe eller base-URL skal du sætte præfikset på navnet i det lag, der bygger DOT-kilden, eller i dine `setImageSizer`-/`ImageResolver`-callbacks.
+
+**Billedtype.** Som i native udledes typen af de bytes, resolveren returnerer, ved genkendelse af magiske tal: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, og svg kun når bytes begynder med en `<?xml`-erklæring efterfulgt af `<svg`. Alt under 20 bytes genkendes ikke. For ugenkendte bytes tegnes intet, og billedet dimensioneres ikke ved rendering. Native advarer også med `Warning: "<name>" was not found as a file or as a shape library member`; porten udskriver endnu ikke den linje (se [Kendte afvigelser](/da/divergences)).
+
+`-Tjson` advarer med `Warning: No loadimage plugin for "png:json"` (typen varierer) én gang pr. tegnet billede, som native, da native ikke har en json-billedindlæser. `svg`, `xdot`, `dot`, `plain` og `cmapx` udskriver intet for en genkendt type. Et billede, der kun er kendt via sizeren, har ingen type og udskriver derfor ingen loadimage-advarsel (se [Kendte afvigelser](/da/divergences)).
 
 ## CSP-vejledning
 

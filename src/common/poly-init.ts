@@ -14,7 +14,7 @@ import { nodeAttr } from './attr-get.js';
 import type { PolygonT, ShapeDesc } from './types.js';
 import { ShapeKind } from './types.js';
 import type { TextlabelT } from './types.js';
-import { bindShape } from './shapes.js';
+import { bindShape, CUSTOM_SHAPE_NAME } from './shapes.js';
 import { isHtmlValue, htmlValueContent } from './html-string.js';
 // Circular imports: poly-init ↔ record / htmltable-pos — safe for function declarations.
 import { recordNodeInit } from './record.js';
@@ -108,13 +108,14 @@ export function buildNodeLabel(n: Node, g: Graph, measurer: TextMeasurer): void 
  * @see lib/common/shapes.c:2027-2046
  */
 export function warnPolyInitImages(n: Node, g: Graph): void {
-  const shapefile = nodeAttr(n, g, 'shapefile');
-  if (shapefile !== undefined && shapefile !== '') {
-    if (nodeAttr(n, g, 'shape') !== 'epsf') {
-      agwarningf(imageOpenWarning(shapefile));
-      agwarningf(`No or improper shapefile="${shapefile}" for node "${n.name}"`);
-      return;
-    }
+  const shape = boundShape(n, g);
+  if (shape.usershape) {
+    if (shape.name !== CUSTOM_SHAPE_NAME) return;
+    const shapefile = nodeAttr(n, g, 'shapefile');
+    // gvusershape_open only runs (and warns) for a non-empty name.
+    if (shapefile !== undefined && shapefile !== '') agwarningf(imageOpenWarning(shapefile));
+    agwarningf(`No or improper shapefile="${shapefile ?? '<nil>'}" for node "${n.name}"`);
+    return;
   }
   const image = nodeAttr(n, g, 'image');
   if (image === undefined || image === '') return;
@@ -124,16 +125,24 @@ export function warnPolyInitImages(n: Node, g: Graph): void {
   agwarningf(`No or improper image="${image}" for node "${n.name}"`);
 }
 
+/** The node's bound descriptor (set by common_init_node), else bound now. */
+function boundShape(n: Node, g: Graph): ShapeDesc {
+  return (
+    (n.info.shape as ShapeDesc | undefined) ??
+    bindShape(nodeAttr(n, g, 'shape') ?? 'ellipse', nodeAttr(n, g, 'shapefile'))
+  );
+}
+
 /**
- * poly_init's imagesize for a non-custom shape's `image=`: gvusershape_size in
+ * poly_init's imagesize for a non-usershape's `image=`: gvusershape_size in
  * points plus the fixed 2pt padding, and GD_has_images. Null (C's imagesize 0)
  * when there is no image or the caller supplies no size; the missing-image
- * warning stays in warnMissingImage.
+ * warning stays in warnPolyInitImages. A custom shape's size is never
+ * available (the port opens no shapefiles).
  * @see lib/common/shapes.c:2039-2051
  */
 export function nodeImageSize(n: Node, g: Graph): { x: number; y: number } | undefined {
-  const shapefile = nodeAttr(n, g, 'shapefile');
-  if (shapefile !== undefined && shapefile !== '') return undefined;
+  if (boundShape(n, g).usershape) return undefined;
   const gvc = g.root.info.gvc;
   const sz = usershapeSizePts(nodeAttr(n, g, 'image'), usershapeDpi(g.root.attrs), gvc?.imageSizer);
   if (sz === null) return undefined;

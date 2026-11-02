@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,10 +132,9 @@ na obsługiwaną wartość.
 | Silnik | Atrybut i wartość | Uruchamia się, gdy | Potrzebna funkcja Graphviza |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | Tylko gdy `model` to `subset` lub `circuit` (gdy graf ma 2+ węzłów, a `maxiter` jest dodatnie) | Hierarchiczna majoryzacja naprężeń (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Tylko gdy Graphviz zbudowałby ograniczenia: `diredgeconstraints` ma wartość prawda lub `hier*`, `overlap=ipsep`, albo graf ma klaster najwyższego poziomu. Bez ograniczeń działa jako majoryzacja naprężeń, jak w Graphviz | Majoryzacja z ograniczeniami (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` ma wartość `major` (domyślną) lub `ipsep` | Inteligentna inicjalizacja (`smart_ini`). Przy `mode=KK` lub `mode=sgd` loguje `start=0 not supported with mode=self - ignored` raz na renderowanie, jak Graphviz |
-| neato | `model=subset` | `mode` ma wartość `major` lub `KK` | Model odległości podzbiorowej |
-| neato | `model=circuit` | `mode` ma wartość `major` albo `KK` na grafie spójnym. `KK` na grafie niespójnym bez `pack` ani `packmode` loguje ostrzeżenie i używa najkrótszych ścieżek, jak Graphviz | Model odległości obwodowej (`circuit_model`) |
+| neato | `start=self` | `mode` to `major` (domyślnie). Przy `mode=ipsep` jest przyjmowany po cichu, a layout używa losowego startu, tak jak Graphviz | Inteligentna inicjalizacja (`smart_ini`). Przy `mode=KK` lub `mode=sgd` loguje `start=0 not supported with mode=self - ignored` raz na renderowanie, jak Graphviz |
+| neato | `model=subset` | `mode` ma wartość `major` lub `KK`. Nie zgłasza się przy `mode=ipsep`. | Model odległości podzbiorowej |
+| neato | `model=circuit` | `mode` ma wartość `major` albo `KK` na grafie spójnym. `KK` na grafie niespójnym bez `pack` ani `packmode` loguje ostrzeżenie i używa najkrótszych ścieżek, jak Graphviz. Nie zgłasza się przy `mode=ipsep`. | Model odległości obwodowej (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (bez rozróżniania wielkości liter) | Graf (dla twopi składowa; dla sfdp cały graf lub składowa) ma 2+ węzłów, a własna liczba nakładań Graphviza (`countOverlap`, która testuje wielokąty węzłów) jest większa od 0. Węzły, które stykają się tylko prostokątami ograniczającymi, tego nie wywołują. circo dochodzi do tego tylko dla grafu jednoskładnikowego (przy wielu składowych Graphviz też ignoruje `overlap`). sfdp dochodzi do tego tylko wtedy, gdy `overlap` nie jest trybem prism | Usuwanie nakładań metodą Voronoia (`vAdjust`) |
 | fdp | `overlap=` jedno z: `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Tryb jest osiągany po próbach iteracji sił `N:`, czyli gdy te próby nie usuwają wszystkich nakładań (lub `N` wynosi 0 albo jest nieobecne). Prefiks `N:` jest dozwolony, na przykład `3:voronoi` | Odpowiadający algorytm korekty `removeOverlapWith` |
 | fdp | `splines=compound` | Zawsze, z klastrami lub bez | Prowadzenie krawędzi omijające klastry (`compoundEdges`) |

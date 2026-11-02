@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -526,6 +526,8 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
   对于空输入或仅含注释的输入，`agmemread` 返回 `NULL`，CLI 不输出任何内容；
   `parse` 则改为返回一个空的无向图，`renderSvg` 会渲染它，因为 API 每次调用返回一个 `Graph` 和一个 SVG。
 - **仅限原生的机制**，由适合浏览器的等价机制取代：动态插件加载（`dlopen`）由静态的引擎/渲染器注册取代；文件系统读取（字体、图像、配置）由调用方提供的回调取代（例如 `setImageSizer`）。行为得以保持；机制有所不同。
+
+- **图像类型与 `imagepath` 警告。** 仅通过 `setImageSizer` 获知的图像（没有 resolver 字节）没有类型，因此不输出 `No loadimage plugin` 警告；原生总是读取文件，因此总是知道类型。对于无法识别的 resolver 字节，原生还会输出 `Warning: "<name>" was not found as a file or as a shape library member` 警告；本移植版尚未输出该行（后续事项 104，布局阶段的接线）。`GV_FILE_PATH` 和 `SERVER_NAME` 不会被采纳，也从不向宿主询问 `imagepath` 的 `<dir>/<name>` 名称。
 
 ---
 

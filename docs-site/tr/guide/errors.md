@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -133,10 +133,9 @@ değerle değiştirin.
 | Motor | Öznitelik ve değer | Ne zaman tetiklenir | Gereken Graphviz özelliği |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | Yalnızca `model` değeri `subset` veya `circuit` olduğunda (grafın 2+ düğümü olduktan ve `maxiter` pozitif olduktan sonra) | Hiyerarşik stres majorizasyonu (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Yalnızca Graphviz'in kısıtlar oluşturacağı durumda: `diredgeconstraints` doğrudur veya `hier*`, `overlap=ipsep`, ya da grafın en üst düzey bir kümesi vardır. Kısıt yoksa Graphviz'de olduğu gibi stres majorizasyonu olarak çalışır | Kısıtlı majorizasyon (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` değeri `major` (varsayılan) veya `ipsep` ise | Akıllı ilklendirme (`smart_ini`). `mode=KK` veya `mode=sgd` altında, Graphviz'in yaptığı gibi her işlemede bir kez `start=0 not supported with mode=self - ignored` günlüğe yazar |
-| neato | `model=subset` | `mode` değeri `major` veya `KK` ise | Alt küme uzaklık modeli |
-| neato | `model=circuit` | `mode` değeri `major` ise ya da bağlantılı bir grafta `KK` ise. `pack` veya `packmode` olmayan, bağlantısız bir grafta `KK`, bir uyarı günlüğe yazar ve Graphviz'in yaptığı gibi en kısa yolları kullanır | Devre uzaklık modeli (`circuit_model`) |
+| neato | `start=self` | `mode` değeri `major` (varsayılan). `mode=ipsep` altında sessizce kabul edilir ve yerleşim, Graphviz gibi rastgele başlangıcı kullanır | Akıllı ilklendirme (`smart_ini`). `mode=KK` veya `mode=sgd` altında, Graphviz'in yaptığı gibi her işlemede bir kez `start=0 not supported with mode=self - ignored` günlüğe yazar |
+| neato | `model=subset` | `mode` değeri `major` veya `KK` ise. `mode=ipsep` altında tetiklenmez. | Alt küme uzaklık modeli |
+| neato | `model=circuit` | `mode` değeri `major` ise ya da bağlantılı bir grafta `KK` ise. `pack` veya `packmode` olmayan, bağlantısız bir grafta `KK`, bir uyarı günlüğe yazar ve Graphviz'in yaptığı gibi en kısa yolları kullanır. `mode=ipsep` altında tetiklenmez. | Devre uzaklık modeli (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (büyük/küçük harfe duyarsız) | Graf (twopi için bir bileşen; sfdp için tüm graf veya bir bileşen) 2+ düğüme sahiptir ve Graphviz'in kendi çakışma sayısı (düğüm çokgenlerini sınayan `countOverlap`) 0'ın üzerindedir. Yalnızca sınırlayıcı kutuyla temas eden düğümler bunu tetiklemez. circo buna yalnızca tek bileşenli bir grafta ulaşır (birden çok bileşende Graphviz `overlap` değerini yine yok sayar). sfdp buna yalnızca `overlap` bir prism modu değilse ulaşır | Voronoi çakışma giderme (`vAdjust`) |
 | fdp | `overlap=` şunlardan biri: `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Mod, `N:` kuvvet yinelemesi denemelerinden sonra ulaşılır; yani bu denemeler her çakışmayı gidermediğinde (veya `N` 0 ya da yoksa). `N:` öneki serbesttir, örneğin `3:voronoi` | Eşleşen `removeOverlapWith` ayarlama algoritması |
 | fdp | `splines=compound` | Her zaman, kümelerle veya kümesiz | Kümelerden kaçınan kenar yönlendirme (`compoundEdges`) |

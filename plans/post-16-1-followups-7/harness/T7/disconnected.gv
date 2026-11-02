@@ -1,0 +1,1 @@
+graph{mode=ipsep; model=circuit; a--b; b--c; d--e}

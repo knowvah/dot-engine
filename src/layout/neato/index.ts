@@ -175,7 +175,7 @@ export function neatoLayout(g: Graph): void {
   if (comps.length > 1) {
     layoutComponents(g, comps, { mode, model, am }, pinned);
   } else {
-    solveModel(g, mode, model); // srand48 happens inside (C checkStart)
+    solveModel(g, mode, model, am); // srand48 happens inside (C checkStart)
     maybeRemoveOverlap(g, am);
     // C: spline_edges shifts pos to the origin, syncs coord, routes.
     splineEdgesShifted(g);
@@ -242,7 +242,7 @@ function layoutComponents(
   for (const gc of comps) {
     // @see lib/neatogen/neatoinit.c:1398 (setEdgeType FUNCTION, per component)
     setEdgeTypeFromAttr(gc, EDGETYPE_LINE);
-    solveModel(gc, solve.mode, solve.model);
+    solveModel(gc, solve.mode, solve.model, solve.am);
     maybeRemoveOverlap(gc, solve.am);
     splineEdgesShifted(gc);
   }

@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,10 +131,9 @@ gildi sem er stutt.
 | Vél | Eigindi og gildi | Kviknar þegar | Graphviz-eiginleiki sem þarf |
 |--------|--------------------|------------|-------------------------|
 | neato | `mode=hier` | Aðeins þegar `model` er `subset` eða `circuit` (eftir að grafið hefur 2+ hnúta og `maxiter` er jákvætt) | Stigveld streituhámörkun (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Aðeins þegar Graphviz myndi smíða skorður: `diredgeconstraints` er satt eða `hier*`, `overlap=ipsep`, eða grafið hefur klasa á efsta stigi. Án skorða keyrir það sem streituhámörkun, eins og í Graphviz | Hámörkun með skorðum (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` er `major` (sjálfgildið) eða `ipsep` | Snjöll frumstilling (`smart_ini`). Undir `mode=KK` eða `mode=sgd` skráir það `start=0 not supported with mode=self - ignored` einu sinni við hverja teiknun, eins og Graphviz |
-| neato | `model=subset` | `mode` er `major` eða `KK` | Hlutmengisfjarlægðarlíkanið |
-| neato | `model=circuit` | `mode` er `major`, eða `KK` á samanhangandi grafi. `KK` á ósamanhangandi grafi án `pack` eða `packmode` skráir viðvörun og notar stystu leiðir, eins og Graphviz | Rásafjarlægðarlíkanið (`circuit_model`) |
+| neato | `start=self` | `mode` er `major` (sjálfgefið). Undir `mode=ipsep` er það samþykkt þegjandi og útlitið notar tilviljanakennda byrjun, eins og Graphviz | Snjöll frumstilling (`smart_ini`). Undir `mode=KK` eða `mode=sgd` skráir það `start=0 not supported with mode=self - ignored` einu sinni við hverja teiknun, eins og Graphviz |
+| neato | `model=subset` | `mode` er `major` eða `KK`. Virkjast ekki undir `mode=ipsep`. | Hlutmengisfjarlægðarlíkanið |
+| neato | `model=circuit` | `mode` er `major`, eða `KK` á samanhangandi grafi. `KK` á ósamanhangandi grafi án `pack` eða `packmode` skráir viðvörun og notar stystu leiðir, eins og Graphviz. Virkjast ekki undir `mode=ipsep`. | Rásafjarlægðarlíkanið (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (óháð há-/lágstöfum) | Grafið (fyrir twopi, íhlutur; fyrir sfdp, allt grafið eða íhlutur) hefur 2+ hnúta og eigin skörunartalning Graphviz (`countOverlap`, sem prófar marghyrninga hnúta) er yfir 0. Hnútar sem snertast aðeins í umgjörðarkassa kveikja það ekki. circo nær því aðeins fyrir graf með einn íhlut (með nokkrum íhlutum hunsar Graphviz `overlap` líka). sfdp nær því aðeins þegar `overlap` er ekki prism-hamur | Voronoi-skörunarfjarlæging (`vAdjust`) |
 | fdp | `overlap=` eitt af `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Hamurinn næst eftir `N:` kraftítrekunartilraunirnar, þ.e. þegar þær tilraunir fjarlægja ekki hverja skörun (eða `N` er 0 eða vantar). `N:`-forskeytið er leyft, til dæmis `3:voronoi` | Samsvarandi `removeOverlapWith`-aðlögunarreiknirit |
 | fdp | `splines=compound` | Alltaf, með eða án klasa | Leggjaleiðing sem forðast klasa (`compoundEdges`) |

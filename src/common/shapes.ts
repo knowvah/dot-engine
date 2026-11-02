@@ -27,6 +27,9 @@ import {
 import { polyGencode } from './poly-gencode.js';
 import { recordGencode } from './record.js';
 import { polyInside, recordInside, starInside } from './poly-inside.js';
+import { agwarningf } from './agerr.js';
+import { registerRenderState } from './render-state.js';
+import { safefile } from './safefile.js';
 import { polyPort } from './compass-port.js';
 import { recordPort, recordPath } from './record-port.js';
 
@@ -156,32 +159,50 @@ export const Shapes: readonly ShapeDesc[] = [
  */
 export const DEFAULT_SHAPE_NAME = 'box';
 
+/** The name `bind_shape` forces for a shapefile node and `user_shape` accepts. */
+export const CUSTOM_SHAPE_NAME = 'custom';
+
 /**
- * Returns the ShapeDesc for the given name (case-sensitive).
- * Falls back to Shapes[0] (box) when the name is not recognised.
+ * C's process-global `UserShape` list; cleared per render (AD-4).
+ * @see lib/common/shapes.c:UserShape
+ */
+const userShapes = new Map<string, ShapeDesc>();
+registerRenderState(() => userShapes.clear());
+
+/**
+ * Clone of Shapes[0] named `name`; `usershape` is set for `custom` (no `-l`
+ * library is ever loaded in the port), otherwise warns and the shape stays a
+ * plain box whose `image=` branch still runs.
+ * @see lib/common/shapes.c:user_shape (3949-3968)
+ */
+function userShape(name: string): ShapeDesc {
+  const found = userShapes.get(name); // find_user_shape
+  if (found !== undefined) return found;
+  const p: ShapeDesc = { ...Shapes[0], name };
+  if (name !== CUSTOM_SHAPE_NAME) {
+    agwarningf(`using ${Shapes[0].name} for unknown shape ${name}`);
+    p.usershape = false;
+  } else {
+    p.usershape = true;
+  }
+  userShapes.set(name, p);
+  return p;
+}
+
+/**
+ * Returns the ShapeDesc for the given name (case-sensitive). A non-empty
+ * shapefile that `safefile` accepts on a non-epsf shape forces
+ * `custom`; `custom` and unknown names go to `userShape`.
  *
- * Equivalent to C's bind_shape() for built-in shapes; the user-shape
- * and shapefile branches require a node argument not yet ported.
- *
- * @see lib/common/shapes.c:bind_shape
+ * @see lib/common/shapes.c:bind_shape (3970-3989)
  */
 export function bindShape(name: string, shapefile?: string): ShapeDesc {
-  // C bind_shape: a non-empty shapefile attr (safefile is a pass-through when
-  // no HTTP server / Gvfilepath is configured) switches any non-epsf shape to
-  // "custom" — a user_shape clone of Shapes[0] (box). Headless, the image
-  // never loads (gvusershape_size fails, warning printed at sizing), so the
-  // node renders as a plain box outline at its normal dims — which is exactly
-  // the headless oracle's output for shapefile nodes (graphs/user_shapes).
-  // The port models that endpoint directly: shapefile ⇒ the box descriptor.
-  // @see lib/common/shapes.c:bind_shape (3970), :3975-3978, :2022-2041
-  let effective = name;
-  if (shapefile !== undefined && shapefile !== '' && name !== 'epsf') {
-    effective = 'box';
-  }
-  for (const shape of Shapes) {
-    if (shape.name === effective) {
-      return shape;
+  const str = safefile(shapefile);
+  if (str !== null && name !== 'epsf') name = CUSTOM_SHAPE_NAME;
+  if (name !== CUSTOM_SHAPE_NAME) {
+    for (const shape of Shapes) {
+      if (shape.name === name) return shape;
     }
   }
-  return Shapes[0];
+  return userShape(name);
 }

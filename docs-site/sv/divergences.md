@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1347,6 +1347,8 @@ Det här är medvetna omfångsgränser, inte buggar. Biblioteket riktar sig mot 
   inläsning av insticksmoduler (`dlopen`) ersätts av statisk registrering av motorer/renderare;
   filsystemsläsningar (typsnitt, bilder, konfiguration) ersätts av återanrop som anroparen tillhandahåller
   (t.ex. `setImageSizer`). Beteendet bevaras; mekanismen skiljer sig.
+
+- **Bildtyp och `imagepath`-varningar.** En bild som bara är känd via `setImageSizer` (utan resolver-byte) saknar typ och skriver därför inte ut varningen `No loadimage plugin`; den inbyggda läser alltid filen och känner därför alltid typen. För okända resolver-byte varnar den inbyggda även med `Warning: "<name>" was not found as a file or as a shape library member`; porten skriver ännu inte ut den raden (uppföljning 104, koppling vid layouttid). `GV_FILE_PATH` och `SERVER_NAME` respekteras inte, och värden tillfrågas aldrig om `imagepath`s `<dir>/<name>`-namn.
 
 ---
 

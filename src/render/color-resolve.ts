@@ -132,8 +132,31 @@ export function resolveRenderColor(raw: string, report = true): GVColor {
  * @see lib/gvc/gvrender.c:456 gvrender_set_fillcolor
  */
 export function resolveFillColorName(raw: string, report = true): GVColor {
-  if (raw === 'none') return { type: 'none' };
-  return resolveColorName(raw, report);
+  // A colour list is cut at the first ':' for the lookup; a known name keeps
+  // its stored pointer into the (restored) full string, so svg (the renderer
+  // with a known-colors list) prints "red:"; xdot translates the cut name.
+  const colon = raw.indexOf(':');
+  const name = colon < 0 ? raw : raw.slice(0, colon);
+  if (name === 'none') return { type: 'none' };
+  const color = resolveColorName(name, report);
+  return color.type === 'string' && rendererColors.hasKnownList ? { type: 'string', s: raw } : color;
+}
+
+/**
+ * The edge fill colour emit_edge_graphics hands to gvrender_set_fillcolor, or
+ * undefined for the semicolon multicolor path (which `goto done`s before any
+ * fill is chosen and fills each segment with its own colour). `color` is the
+ * edge's color attribute ("" when unset); the fill is `late_nnstring(e,
+ * E_fillcolor, color)`, and an empty result is DEFAULT_COLOR. `report` is
+ * false when no fill was set and `color` is a list (that name is only used
+ * piecewise, by the per-segment pen colours).
+ * @see lib/common/emit.c:2397-2434,2541-2547 emit_edge_graphics
+ */
+export function edgeFillName(color: string, fillcolor: string | undefined): { name: string; report: boolean } | undefined {
+  if (color.includes(';') && color.includes(':')) return undefined;
+  const set = fillcolor !== undefined && fillcolor !== '';
+  const name = set ? fillcolor : color;
+  return { name: name === '' ? 'black' : name, report: set || !color.includes(':') };
 }
 
 function resolveColorName(raw: string, report: boolean): GVColor {

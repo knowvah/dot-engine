@@ -372,7 +372,8 @@ function applyFillState(obj: ObjState, n: Node, job: RenderJob): boolean {
   // point_gencode always fills, defaulting to black (AD-4).
   if (isPointNode(n)) {
     obj.fill = FillType.Solid;
-    obj.fillColor = resolveRenderColor(findFillDflt(n));
+    // point_gencode: gvrender_set_fillcolor(job, color) cuts a list at ':'.
+    obj.fillColor = resolveFillColorName(findFillDflt(n));
     return true;
   }
   const fillRes = resolveNodeFillEx({

@@ -77,18 +77,10 @@ describe('loud checks', () => {
     ['start=selfish', 'start=selfish: smart initialisation is not supported yet'],
     ['model=subset', 'model=subset: the subset distance model is not supported yet'],
     ['model=circuit', 'model=circuit: the circuit distance model is not supported yet'],
-    ['mode=ipsep; diredgeconstraints=true', 'mode=ipsep: constrained (ipsep) majorization is not supported yet'],
-    ['mode=ipsep; diredgeconstraints=Hier', 'mode=ipsep: constrained (ipsep) majorization is not supported yet'],
-    ['mode=ipsep; overlap=ipsep', 'mode=ipsep: constrained (ipsep) majorization is not supported yet'],
     ['mode=KK; model=subset', 'model=subset: the subset distance model is not supported yet'],
     ['mode=KK; model=circuit', 'model=circuit: the circuit distance model is not supported yet'],
   ])('%s throws UNSUPPORTED_FEATURE', async (attrs, message) => {
     await expect(plain(`graph { ${attrs}; ${CYCLE} }`)).rejects.toMatchObject({ ...UNSUPPORTED, message });
-  });
-
-  it('mode=ipsep with a cluster throws', async () => {
-    await expect(plain('graph { mode=ipsep; subgraph cluster_x { a; b } b--c--d }'))
-      .rejects.toMatchObject(UNSUPPORTED);
   });
 
   it('mode=hier lays out each disconnected component too', async () => {
@@ -109,6 +101,33 @@ describe('loud checks', () => {
 
   it('a single node never reaches the checks', async () => {
     expect(await plain('graph { mode=hier; start=self; model=subset; a }')).toMatch(/^graph /);
+  });
+});
+
+describe('mode=ipsep runs stress_majorization_cola for every constraint, model and start', () => {
+  it.each([
+    'diredgeconstraints=true', 'diredgeconstraints=Hier', 'overlap=ipsep', 'overlap=vpsc',
+    'start=self', 'model=subset', 'model=circuit',
+  ])('%s renders with no warning', async (attrs) => {
+    const lines: string[] = [];
+    vi.spyOn(console, 'warn').mockImplementation((m: unknown) => { lines.push(String(m)); });
+    expect(await plain(`digraph { mode=ipsep; ${attrs}; a->b->c->d; a->c }`)).toMatch(/^graph /);
+    expect(lines).toEqual([]);
+  });
+
+  it('lays out a cluster', async () => {
+    expect(await plain('graph { mode=ipsep; subgraph cluster_x { a; b } b--c--d }')).toMatch(/^graph /);
+  });
+
+  it('start=self is the random start (cola takes no smart-init option)', async () => {
+    const g = 'mode=ipsep; r--a; r--b; a--a1';
+    expect(await plain(`graph { start=self; ${g} }`)).toBe(await plain(`graph { ${g} }`));
+  });
+
+  it('overlap=ipsep reaches every pack component', async () => {
+    const body = 'mode=ipsep; pack=true; node [width=2, height=2]; a--b; c--d';
+    const constrained = await plain(`graph { overlap=ipsep; ${body} }`);
+    expect(constrained).not.toBe(await plain(`graph { ${body} }`));
   });
 });
 

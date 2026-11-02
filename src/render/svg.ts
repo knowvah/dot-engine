@@ -248,9 +248,21 @@ export class SvgRenderer implements RendererPlugin {
       const found = findImageBytes(src, job.imageResolver);
       if (found !== null) href = toDataUri(found.bytes, found.mime);
     }
-    job.write('<image xlink:href="' + escapeXml(href) + '" width="' + g(width)
-      + 'px" height="' + g(height) + 'px" preserveAspectRatio="xMinYMin meet" x="'
-      + g(originx) + '" y="' + g(-originy) + '"/>\n');
+    job.write('<image xlink:href="' + escapeXml(href));
+    if (job.rotation !== 0) {
+      // FIXME - this is messed up >>>
+      job.write('" width="' + g(height) + 'px" height="' + g(width)
+        + 'px" preserveAspectRatio="xMidYMid meet" x="' + g(originx)
+        + '" y="' + g(-originy) + '"');
+      job.write(' transform="rotate(' + String(Math.trunc(job.rotation)) + ' '
+        + g(originx) + ' ' + g(-originy) + ')"');
+      // <<<
+    } else {
+      job.write('" width="' + g(width) + 'px" height="' + g(height)
+        + 'px" preserveAspectRatio="xMinYMin meet" x="' + g(originx)
+        + '" y="' + g(-originy) + '"');
+    }
+    job.write('/>\n');
   }
 
   comment(text: string, job: RenderJob): void { svgComment(text, job); }

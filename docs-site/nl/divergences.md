@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1358,6 +1358,8 @@ Dit zijn bewuste scope-afbakeningen, geen bugs. De bibliotheek richt zich op **S
   laden van plug-ins (`dlopen`) is vervangen door statische registratie van engines/renderers;
   bestandsleesacties (lettertypen, afbeeldingen, configuratie) zijn vervangen door door de aanroeper geleverde
   callbacks (bijv. `setImageSizer`). Het gedrag blijft behouden; het mechanisme verschilt.
+
+- **Afbeeldingstype en `imagepath`-waarschuwingen.** Een afbeelding die alleen via `setImageSizer` bekend is (zonder resolver-bytes) heeft geen type en drukt dus de waarschuwing `No loadimage plugin` niet af; native leest het bestand altijd en kent het type dus altijd. Bij niet-herkende resolver-bytes waarschuwt native daarnaast met `Warning: "<name>" was not found as a file or as a shape library member`; de port drukt die regel nog niet af (vervolgpunt 104, bedrading tijdens layout). `GV_FILE_PATH` en `SERVER_NAME` worden niet gehonoreerd, en de host wordt nooit om de `<dir>/<name>`-naam van `imagepath` gevraagd.
 
 ---
 

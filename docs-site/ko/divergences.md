@@ -1,5 +1,5 @@
 ---
-sourceHash: 118fac167f8d4a887b0cd7102c1da5bd6e552ba8ebc18231c1a3cd4a841c0f7b
+sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1159,6 +1159,8 @@ xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니�
 - **브라우저에서 안전한 대응물로 대체된 네이티브 전용 메커니즘**: 동적 플러그인 로딩
   (`dlopen`)은 정적 엔진/렌더러 등록으로, 파일 시스템 읽기(폰트, 이미지, 설정)는 호출자가
   제공하는 콜백(예: `setImageSizer`)으로 대체됩니다. 동작은 보존되며 메커니즘만 다릅니다.
+
+- **이미지 유형과 `imagepath` 경고.** `setImageSizer`를 통해서만 알려진 이미지(resolver 바이트 없음)는 유형이 없으므로 `No loadimage plugin` 경고를 출력하지 않습니다. 네이티브는 항상 파일을 읽으므로 항상 유형을 압니다. 인식되지 않는 resolver 바이트에 대해 네이티브는 추가로 `Warning: "<name>" was not found as a file or as a shape library member`도 경고하지만, 이 포트는 아직 그 줄을 출력하지 않습니다(후속 104, 레이아웃 시점 연결). `GV_FILE_PATH`와 `SERVER_NAME`은 고려되지 않으며, 호스트에 `imagepath`의 `<dir>/<name>` 이름을 묻지도 않습니다.
 
 ---
 

@@ -104,3 +104,35 @@ describe('resolveFillColorName', () => {
     expect(resolveFillColorName('red', false)).toEqual({ type: 'string', s: 'red' });
   });
 });
+
+describe('resolveFillColorName colour lists (gvrender_set_fillcolor)', () => {
+  it('cuts at the first colon, keeping the full string for a known name', async () => {
+    const { resolveFillColorName, setRendererKnownColors } = await import('./color-resolve.js');
+    setRendererKnownColors(true);
+    expect(resolveFillColorName('red:', false)).toEqual({ type: 'string', s: 'red:' });
+    expect(resolveFillColorName('none:red', false)).toEqual({ type: 'none' });
+    setRendererKnownColors(false);
+    expect(resolveFillColorName('red:blue', false)).toEqual({ type: 'string', s: 'red' });
+    setRendererKnownColors(true);
+  });
+
+  it('hands the empty name before a leading colon to colorxlate (black)', async () => {
+    const { resolveFillColorName } = await import('./color-resolve.js');
+    expect(resolveFillColorName(':red', false)).toEqual({ type: 'rgba', r: 0, g: 0, b: 0, a: 1 });
+  });
+});
+
+describe('edgeFillName (emit_edge_graphics fillcolor selection)', () => {
+  it('uses the fillcolor attribute, else the color, else black', async () => {
+    const { edgeFillName } = await import('./color-resolve.js');
+    expect(edgeFillName('blue', ':red')).toEqual({ name: ':red', report: true });
+    expect(edgeFillName('blue', undefined)).toEqual({ name: 'blue', report: true });
+    expect(edgeFillName('', '')).toEqual({ name: 'black', report: true });
+  });
+
+  it('stays quiet for an unset fill under a colour list, skips semicolon lists', async () => {
+    const { edgeFillName } = await import('./color-resolve.js');
+    expect(edgeFillName('red:blue', undefined)).toEqual({ name: 'red:blue', report: false });
+    expect(edgeFillName('red;0.5:blue', 'green')).toBeUndefined();
+  });
+});

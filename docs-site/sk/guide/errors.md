@@ -1,5 +1,5 @@
 ---
-sourceHash: 9972959437199d1fb2fe98890e6a0063eb69ec75da575d78ac8a40512c908a00
+sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,10 +131,9 @@ alebo jeho zmenou na podporovanú hodnotu.
 | Modul | Atribút a hodnota | Spustí sa, keď | Potrebná funkcia Graphviz |
 |-------|-------------------|----------------|---------------------------|
 | neato | `mode=hier` | Iba keď `model` je `subset` alebo `circuit` (po tom, čo má graf 2+ uzlov a `maxiter` je kladný) | Hierarchická stresová majorizácia (`stress_majorization_with_hierarchy`) |
-| neato | `mode=ipsep` | Iba keď by Graphviz zostavil obmedzenia: `diredgeconstraints` je pravdivé alebo `hier*`, `overlap=ipsep`, alebo graf má klaster najvyššej úrovne. Bez obmedzení beží ako stresová majorizácia, rovnako ako v Graphviz | Obmedzená majorizácia (`stress_majorization_cola`) |
-| neato | `start=self` | `mode` je `major` (predvolené) alebo `ipsep` | Inteligentná inicializácia (`smart_ini`). Pri `mode=KK` alebo `mode=sgd` zaznamená `start=0 not supported with mode=self - ignored` raz za vykreslenie, rovnako ako Graphviz |
-| neato | `model=subset` | `mode` je `major` alebo `KK` | Model vzdialeností subset |
-| neato | `model=circuit` | `mode` je `major`, alebo `KK` pri súvislom grafe. `KK` pri nesúvislom grafe bez `pack` alebo `packmode` zaznamená varovanie a použije najkratšie cesty, rovnako ako Graphviz | Model vzdialeností circuit (`circuit_model`) |
+| neato | `start=self` | `mode` je `major` (predvolené). Pri `mode=ipsep` sa prijme bez hlásenia a layout použije náhodný štart, rovnako ako Graphviz | Inteligentná inicializácia (`smart_ini`). Pri `mode=KK` alebo `mode=sgd` zaznamená `start=0 not supported with mode=self - ignored` raz za vykreslenie, rovnako ako Graphviz |
+| neato | `model=subset` | `mode` je `major` alebo `KK`. Pri `mode=ipsep` sa nespustí. | Model vzdialeností subset |
+| neato | `model=circuit` | `mode` je `major`, alebo `KK` pri súvislom grafe. `KK` pri nesúvislom grafe bez `pack` alebo `packmode` zaznamená varovanie a použije najkratšie cesty, rovnako ako Graphviz. Pri `mode=ipsep` sa nespustí. | Model vzdialeností circuit (`circuit_model`) |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (bez ohľadu na veľkosť písmen) | Graf (pri twopi komponent; pri sfdp celý graf alebo komponent) má 2+ uzlov a vlastný počet prekrytí Graphviz (`countOverlap`, ktorý testuje polygóny uzlov) je väčší ako 0. Uzly, ktoré sa dotýkajú iba ohraničujúcimi rámcami, ho nespustia. circo sa k nemu dostane iba pri grafe s jedným komponentom (pri viacerých komponentoch Graphviz `overlap` tiež ignoruje). sfdp sa k nemu dostane iba vtedy, keď `overlap` nie je režim prism | Odstraňovanie prekrytí pomocou Voronoiho diagramu (`vAdjust`) |
 | fdp | `overlap=` jedna z hodnôt `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Režim sa dosiahne po `N:` pokusoch silových iterácií, teda keď tieto pokusy neodstránia každé prekrytie (alebo `N` je 0 či chýba). Predpona `N:` je povolená, napríklad `3:voronoi` | Zodpovedajúci algoritmus úpravy `removeOverlapWith` |
 | fdp | `splines=compound` | Vždy, s klastrami aj bez nich | Vedenie hrán obchádzajúce klastre (`compoundEdges`) |
