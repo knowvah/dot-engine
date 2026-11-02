@@ -1,0 +1,15 @@
+digraph G {
+  mode=hier;
+  model=shortpath;
+  a -> b;
+  b -> c;
+  c -> d;
+  d -> e;
+  e -> f;
+  f -> a;
+  a -> c;
+  a -> g;
+  g -> h;
+  c -> i;
+  i -> j;
+}

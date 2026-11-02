@@ -1,0 +1,11 @@
+graph G {
+  mode=KK;
+  model=mds;
+  a -- b [len=2];
+  b -- c [len=3];
+  c -- a [len=1.5];
+  c -- d [len=0.75];
+  d -- e [len=2.5];
+  e -- a [len=1.25];
+  z;
+}

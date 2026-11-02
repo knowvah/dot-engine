@@ -1,0 +1,15 @@
+graph G {
+  mode=KK;
+  model=circuit;
+  a -- b;
+  b -- c;
+  c -- d;
+  d -- e;
+  e -- f;
+  f -- a;
+  a -- c;
+  a -- g;
+  g -- h;
+  c -- i;
+  i -- j;
+}

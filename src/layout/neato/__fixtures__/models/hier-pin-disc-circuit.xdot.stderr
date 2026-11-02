@@ -1,0 +1,3 @@
+Warning: node positions are ignored unless start=random
+Warning: graph is disconnected. Hence, the circuit model
+is undefined. Reverting to the shortest path model.

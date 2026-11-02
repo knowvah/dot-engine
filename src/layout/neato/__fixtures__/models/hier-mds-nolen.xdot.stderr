@@ -1,0 +1,2 @@
+Warning: edges in graph G have no len attribute. Hence, the mds model
+is inappropriate. Reverting to the shortest path model.

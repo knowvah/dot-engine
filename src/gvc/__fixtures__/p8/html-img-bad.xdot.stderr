@@ -1,0 +1,3 @@
+Warning: "bad.png" was not found as a file or as a shape library member
+Error: No or improper image file="bad.png"
+in label of node a

@@ -1,0 +1,9 @@
+digraph G {
+  mode=hier;
+  model=circuit;
+  a -> b;
+  b -> c;
+  c -> a;
+  d -> e;
+  e -> f;
+}
