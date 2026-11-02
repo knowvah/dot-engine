@@ -45,6 +45,14 @@ declare module './job.js' {
 let activeResolver: ImageResolver | null = null;
 
 /**
+ * The active global resolver (null when none is registered). Layout callers
+ * pass the effective hook explicitly (AD-6).
+ */
+export function getGlobalImageResolver(): ImageResolver | null {
+  return activeResolver;
+}
+
+/**
  * Register (or clear, with null) the global image resolver consulted when
  * `RenderOptions.inlineImages` is set. Mirrors gvusershape's process-global
  * dictionary and `setImageSizer`'s registration shape.

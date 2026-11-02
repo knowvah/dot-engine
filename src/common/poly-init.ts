@@ -26,7 +26,8 @@ import {
 } from './make-label.js';
 import { computeVertices } from './poly-vertices.js';
 import { agwarningf } from './agerr.js';
-import { imageIsSupplied, imageOpenWarning, usershapeDpi, usershapeSizePts } from '../gvc/usershape.js';
+import { getGlobalImageResolver } from '../gvc/image-resolver.js';
+import { imageOpenFailure, imageOpenWarning, usershapeDpi, usershapeSizePts } from '../gvc/usershape.js';
 
 // Default half-dimensions in points (72 dpi, 0.75 in wide, 0.5 in tall)
 const DEFAULT_LW = 27;
@@ -99,10 +100,25 @@ export function buildNodeLabel(n: Node, g: Graph, measurer: TextMeasurer): void 
 }
 
 /**
+ * gvusershape_size for a custom shape's non-empty shapefile: true when the
+ * caller's hooks size it (no warning at all), else prints gvusershape_open's
+ * failure line, if any.
+ * @see lib/common/shapes.c:2033, lib/gvc/gvusershape.c:gvusershape_open
+ */
+function warnShapefileOpen(g: Graph, shapefile: string): boolean {
+  const gvc = g.root.info.gvc;
+  const resolver = gvc?.imageResolver ?? getGlobalImageResolver() ?? undefined;
+  if (usershapeSizePts(shapefile, usershapeDpi(g.root.attrs), gvc?.imageSizer, resolver) !== null) return true;
+  const failure = imageOpenFailure(shapefile, gvc?.imageSizer, resolver);
+  if (failure !== null) agwarningf(failure);
+  return false;
+}
+
+/**
  * poly_init's shapefile and `image` warnings, emitted once per layout from
- * common_init_node after the label is made. For a custom shape gvusershape_size
- * fails (the port never sizes shapefiles), so gvusershape_open's "while
- * opening" line precedes the "No or improper shapefile" line. For a non-custom
+ * common_init_node after the label is made. For a custom shape whose
+ * gvusershape_size fails, gvusershape_open's warning precedes the "No or improper shapefile" line; a shapefile the
+ * caller's sizer/resolver sizes prints nothing. For a non-custom
  * shape's `image=`, the caller-supplied sizer/resolver decides; when it
  * supplies nothing the same pair is emitted.
  * @see lib/common/shapes.c:2027-2046
@@ -112,16 +128,16 @@ export function warnPolyInitImages(n: Node, g: Graph): void {
   if (shape.usershape) {
     if (shape.name !== CUSTOM_SHAPE_NAME) return;
     const shapefile = nodeAttr(n, g, 'shapefile');
-    // gvusershape_open only runs (and warns) for a non-empty name.
-    if (shapefile !== undefined && shapefile !== '') agwarningf(imageOpenWarning(shapefile));
+    if (shapefile !== undefined && shapefile !== '' && warnShapefileOpen(g, shapefile)) return;
     agwarningf(`No or improper shapefile="${shapefile ?? '<nil>'}" for node "${n.name}"`);
     return;
   }
   const image = nodeAttr(n, g, 'image');
   if (image === undefined || image === '') return;
   const gvc = g.root.info.gvc;
-  if (imageIsSupplied(image, gvc?.imageSizer, gvc?.imageResolver)) return;
-  agwarningf(imageOpenWarning(image));
+  const failure = imageOpenFailure(image, gvc?.imageSizer, gvc?.imageResolver ?? getGlobalImageResolver() ?? undefined);
+  if (failure === null) return;
+  agwarningf(failure);
   agwarningf(`No or improper image="${image}" for node "${n.name}"`);
 }
 
@@ -137,14 +153,18 @@ function boundShape(n: Node, g: Graph): ShapeDesc {
  * poly_init's imagesize for a non-usershape's `image=`: gvusershape_size in
  * points plus the fixed 2pt padding, and GD_has_images. Null (C's imagesize 0)
  * when there is no image or the caller supplies no size; the missing-image
- * warning stays in warnPolyInitImages. A custom shape's size is never
- * available (the port opens no shapefiles).
- * @see lib/common/shapes.c:2039-2051
+ * warning stays in warnPolyInitImages. A `custom` shape sizes its shapefile
+ * the same way; any other usershape has imagesize 0.
+ * @see lib/common/shapes.c:2027-2051
  */
 export function nodeImageSize(n: Node, g: Graph): { x: number; y: number } | undefined {
-  if (boundShape(n, g).usershape) return undefined;
+  const shape = boundShape(n, g);
+  if (shape.usershape && shape.name !== CUSTOM_SHAPE_NAME) return undefined;
   const gvc = g.root.info.gvc;
-  const sz = usershapeSizePts(nodeAttr(n, g, 'image'), usershapeDpi(g.root.attrs), gvc?.imageSizer);
+  const sz = usershapeSizePts(
+    shape.usershape ? nodeAttr(n, g, 'shapefile') : nodeAttr(n, g, 'image'), usershapeDpi(g.root.attrs), gvc?.imageSizer,
+    gvc?.imageResolver ?? getGlobalImageResolver() ?? undefined,
+  );
   if (sz === null) return undefined;
   g.root.info.has_images = true;
   return { x: sz.x + 2, y: sz.y + 2 }; // some fixed padding
