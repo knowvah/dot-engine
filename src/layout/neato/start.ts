@@ -103,7 +103,7 @@ export function checkStart(
 ): number {
   const { init, seed } = parseStart(g.root.attrs.get('start'), dflt);
   if (init !== INIT_RANDOM && [...g.nodes.values()].some((n) => n.attrs.has('pos'))) {
-    agerrLineOn('warn', WARN_POS_IGNORED);
+    agwarningf(WARN_POS_IGNORED);
   }
   if (init === INIT_REGULAR) initRegular(g, nG);
   srand48(seed);
@@ -154,7 +154,7 @@ function checkStartAttr(g: Graph, mode: number): void {
   // @see lib/neatogen/stuff.c:330 (KK and SGD warn once and ignore it)
   if ((mode === MODE_KK || mode === MODE_SGD) && !selfOnce.warned) {
     selfOnce.warned = true;
-    agerrLineOn('warn', WARN_SELF_IGNORED);
+    agwarningf(WARN_SELF_IGNORED);
   }
 }
 
@@ -189,15 +189,16 @@ function warnCircuitDisconnected(g: Graph): void {
   );
 }
 
+/** Major and hier run their distance models in the solver; only KK is refused. */
 function checkModel(g: Graph, mode: number, model: number): void {
+  if (mode !== MODE_KK) return;
   const value = g.root.attrs.get('model') ?? '';
-  const stressPath = mode === MODE_MAJOR || mode === MODE_KK;
-  // @see lib/neatogen/stress.c:846, lib/neatogen/neatoinit.c:1246
-  if (model === MODEL_SUBSET && stressPath) unsupported('model', value, 'the subset distance model');
-  if (model !== MODEL_CIRCUIT || !stressPath) return;
+  // @see lib/neatogen/neatoinit.c:1246
+  if (model === MODEL_SUBSET) unsupported('model', value, 'the subset distance model');
+  if (model !== MODEL_CIRCUIT) return;
   // @see lib/neatogen/neatoinit.c:1248-1257 (disconnected: warn + shortpath)
-  if (mode === MODE_KK && kkCircuitFallsBack(g)) { warnCircuitDisconnected(g); return; }
-  // @see lib/neatogen/stress.c:851, lib/neatogen/circuit.c:circuit_model
+  if (kkCircuitFallsBack(g)) { warnCircuitDisconnected(g); return; }
+  // @see lib/neatogen/circuit.c:circuit_model
   unsupported('model', value, 'the circuit distance model');
 }
 

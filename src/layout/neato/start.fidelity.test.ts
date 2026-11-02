@@ -62,7 +62,7 @@ describe('start=regular end to end', () => {
   it('warns that node positions are ignored unless start=random', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     await plain('graph { start=regular; a [pos="1,1"]; a--b--c }');
-    expect(warn).toHaveBeenCalledWith('node positions are ignored unless start=random');
+    expect(warn).toHaveBeenCalledWith('Warning: node positions are ignored unless start=random');
   });
 
   it('is honoured by mode=sgd (positions kept as the starting layout)', async () => {
@@ -75,8 +75,6 @@ describe('loud checks', () => {
   it.each([
     ['start=self', 'start=self: smart initialisation is not supported yet'],
     ['start=selfish', 'start=selfish: smart initialisation is not supported yet'],
-    ['model=subset', 'model=subset: the subset distance model is not supported yet'],
-    ['model=circuit', 'model=circuit: the circuit distance model is not supported yet'],
     ['mode=KK; model=subset', 'model=subset: the subset distance model is not supported yet'],
     ['mode=KK; model=circuit', 'model=circuit: the circuit distance model is not supported yet'],
   ])('%s throws UNSUPPORTED_FEATURE', async (attrs, message) => {
@@ -139,7 +137,7 @@ describe('KK / sgd start=self and KK circuit fallback', () => {
     for (const mode of ['KK', 'sgd', 'KK']) {
       await plain(`graph { mode=${mode}; start=self; a--b--c }`);
     }
-    const hits = warn.mock.calls.filter((c) => c[0] === 'start=0 not supported with mode=self - ignored');
+    const hits = warn.mock.calls.filter((c) => c[0] === 'Warning: start=0 not supported with mode=self - ignored');
     expect(hits).toHaveLength(3);
   });
 

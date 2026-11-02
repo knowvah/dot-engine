@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * The subset and circuit distance models of stress majorization. The kkutils.c
- * neighbour-vector helpers they use live in kkutils.ts, re-exported here.
+ * The subset and circuit distance models of stress majorization, and the choice
+ * of `Dij` among them. The kkutils.c neighbour-vector helpers they use live in
+ * kkutils.ts, re-exported here.
  * `circuitModel` here is stress.c's (float `Dij` from `vtx_data`); `circuit.ts`'s
  * `circuitModel` is circuit.c's `circuit_model` (`GD_dist` from a graph, KK path).
  *
@@ -13,11 +14,14 @@
  */
 
 import type { VtxData } from './dijkstra.js';
+import { agerr, agwarningf } from '../../common/agerr.js';
 import { computeApspPacked, computeWeightedApspPacked } from './bfs.js';
 import { solveCircuit } from './circuit.js';
+import { MODEL_CIRCUIT, MODEL_MDS, MODEL_SUBSET } from './init.js';
 import { artificialWeight, emptyNeighborsVec, fillNeighborsVecUnweighted } from './kkutils.js';
 import { newArray } from './lu.js';
 import { fmaxf } from './quad-prog-solve.js';
+import { mdsModel } from './stress.js';
 
 export { commonNeighbors, emptyNeighborsVec, fillNeighborsVecUnweighted } from './kkutils.js';
 
@@ -156,4 +160,49 @@ export function computeApspArtificialWeightsPacked(graph: VtxData[], n: number):
     }
   }
   return Dij;
+}
+
+// ---------------------------------------------------------------------------
+// Dij selection
+// ---------------------------------------------------------------------------
+
+/**
+ * The model branches C writes twice, with the same shape: subset, circuit
+ * (warning when it fails), mds. `null` is C's `Dij` still NULL, where each
+ * caller picks its own shortest paths. `model` is the defs.h numbering of
+ * init.ts, not stress.ts's.
+ * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel (stress.c:837-852)
+ * @see lib/neatogen/constrained_majorization.c:stress_majorization_with_hierarchy (173-186)
+ */
+export function modelDistances(graph: VtxData[], n: number, model: number): Float32Array | null {
+  let Dij: Float32Array | null = null;
+  if (model === MODEL_SUBSET) {
+    /* weight graph to separate high-degree nodes */
+    /* and perform slower Dijkstra-based computation */
+    Dij = computeApspArtificialWeightsPacked(graph, n);
+  } else if (model === MODEL_CIRCUIT) {
+    Dij = circuitModel(graph, n);
+    if (Dij === null) {
+      agwarningf('graph is disconnected. Hence, the circuit model');
+      agerr('prev', 'is undefined. Reverting to the shortest path model.');
+    }
+  } else if (model === MODEL_MDS) {
+    Dij = mdsModel(graph, n);
+  }
+  return Dij;
+}
+
+/**
+ * The all-pairs-shortest-distances block of `stress_majorization_kD_mkernel`:
+ * the model's matrix, else shortest paths, weighted iff `graph->ewgts`.
+ *
+ * Boundary deviation: C computes this inside the kernel, after its `maxi < 0`
+ * return. The port's fused kernel takes `Dij` as a parameter, so the caller runs
+ * this first and owns that check (part-8 AD-2).
+ * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel (stress.c:833-859)
+ */
+export function stressModelDij(graph: VtxData[], n: number, model: number): Float32Array {
+  const Dij = modelDistances(graph, n, model);
+  if (Dij !== null) return Dij;
+  return graph[0]!.ewgts.length !== 0 ? computeWeightedApspPacked(graph, n) : computeApspPacked(graph, n);
 }

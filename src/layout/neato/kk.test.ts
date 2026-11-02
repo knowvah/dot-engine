@@ -122,7 +122,7 @@ describe('KK warnings (C text)', () => {
   it('start=self and the subset model keep their start.ts behaviour', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     plain('graph g { mode=KK; start=self; a--b--c }');
-    expect(warn).toHaveBeenCalledWith('start=0 not supported with mode=self - ignored');
+    expect(warn).toHaveBeenCalledWith('Warning: start=0 not supported with mode=self - ignored');
     expect(() => plain('graph g { mode=KK; model=subset; a--b--c }'))
       .toThrow(expect.objectContaining({ code: 'UNSUPPORTED_FEATURE' }));
     expect(() => plain('graph g { mode=KK; model=circuit; a--b--c }'))

@@ -20,7 +20,6 @@ import type { Node } from '../../model/node.js';
 import { conjugateGradientMkernelFused, rightMultWithVectorFFFused } from './conjgrad-mkernel.js';
 import { computeHierarchy, type Hierarchy } from './compute-hierarchy.js';
 import type { VtxData } from './dijkstra.js';
-import { MODEL_CIRCUIT, MODEL_MDS, MODEL_SUBSET } from './init.js';
 import {
   invertSqrtVec, invertVec, orthog1, sqrtVecF, squareVec, vectorsInnerProductF,
 } from './matrix-ops.js';
@@ -30,10 +29,9 @@ import {
   constrainedMajorizationNewWithGaps, initConstrainedMajorization, type CMajEnv,
 } from './quad-prog-solve.js';
 import { imdsGivenDim } from './smart-ini-x.js';
-import {
-  computeApspPacked, computeWeightedApspPacked, initLayout, stressMajorizationKDMkernel,
-} from './stress-kernel.js';
-import { mdsModel, OPT_SMART_INIT, TOLERANCE_CG } from './stress.js';
+import { computeApspPacked, initLayout, stressMajorizationKDMkernel } from './stress-kernel.js';
+import { modelDistances, stressModelDij } from './stress-models.js';
+import { OPT_SMART_INIT, TOLERANCE_CG } from './stress.js';
 
 const fr = Math.fround;
 
@@ -79,22 +77,9 @@ interface KdOpts {
   epsilon: number;
 }
 
-/** Throw where C runs a distance model or initialisation this port does not have. */
+/** Throw where C runs an initialisation this port does not have. */
 function unsupported(what: string): never {
   throw new RenderError(`hierarchical stress majorization: ${what} is not supported yet`, 'UNSUPPORTED_FEATURE');
-}
-
-/**
- * Distance model dispatch shared by both drivers: the MDS model is ported
- * (`mdsModel`, `null` when the graph has no lengths); the subset and circuit
- * models need C helpers that are not ported (AD-6, stop 12) and stay loud.
- * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
- * @see lib/neatogen/constrained_majorization.c:stress_majorization_with_hierarchy
- */
-function modelDistances(graph: VtxData[], n: number, model: number): Float32Array | null {
-  if (model === MODEL_SUBSET) unsupported('the subset distance model');
-  if (model === MODEL_CIRCUIT) unsupported('the circuit distance model');
-  return model === MODEL_MDS ? mdsModel(graph, n) : null;
 }
 
 /**
@@ -107,9 +92,7 @@ function unconstrainedMajorization(
   graph: VtxData[], n: number, dCoords: Float64Array[], nodes: Node[], o: KdOpts,
 ): number {
   if (o.maxi < 0) return 0;
-  const weighted = (graph[0]?.ewgts.length ?? 0) > 0;
-  const Dij = modelDistances(graph, n, o.model)
-    ?? (weighted ? computeWeightedApspPacked(graph, n) : computeApspPacked(graph, n));
+  const Dij = stressModelDij(graph, n, o.model);
   if ((o.opts & OPT_SMART_INIT) !== 0 && n > 1) unsupported('the smart initial layout');
   return stressMajorizationKDMkernel(Dij, n, dCoords, nodes, {
     dim: o.dim, opts: o.opts, maxi: o.maxi, epsilon: o.epsilon,

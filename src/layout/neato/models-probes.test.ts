@@ -40,21 +40,18 @@ const POSITION_TOLERANCE = XDOT_TOLERANCE + 1e-9;
 
 /** Cases the port already lays out as native does, by mode. */
 const MAJOR = [
-  'major-default', 'major-len-mds', 'major-long-shortpath', 'major-mds-edge-default', 'major-shortpath',
+  'large-circuit', 'major-circuit', 'major-default', 'major-disc-circuit', 'major-len-circuit', 'major-len-mds',
+  'major-len-subset', 'major-long-mds', 'major-long-shortpath', 'major-mds-edge-default', 'major-mds-nolen',
+  'major-mds-nolen-anon', 'major-model-Subset', 'major-model-foo', 'major-model-foo-anon',
+  'major-pin-disc-circuit', 'major-shortpath', 'major-subset',
 ] as const;
-const HIER = ['hier-default', 'hier-len-mds', 'hier-long-mds', 'hier-shortpath'] as const;
+const HIER = [
+  'hier-circuit', 'hier-default', 'hier-disc-circuit', 'hier-len-circuit', 'hier-len-mds', 'hier-len-subset',
+  'hier-long-mds', 'hier-mds-nolen', 'hier-pin-disc-circuit', 'hier-shortpath', 'hier-subset',
+] as const;
 const KK = ['kk-default', 'kk-iso-len-mds', 'kk-iso-long-mds', 'kk-len-mds', 'kk-shortpath'] as const;
 
-/** Flipped to assertions by T6 (major, hier) and T7 (KK). */
-const MAJOR_TODO = [
-  'large-circuit', 'major-circuit', 'major-disc-circuit', 'major-len-circuit', 'major-len-subset',
-  'major-long-mds', 'major-mds-nolen', 'major-mds-nolen-anon', 'major-model-Subset', 'major-model-foo',
-  'major-model-foo-anon', 'major-pin-disc-circuit', 'major-subset',
-] as const;
-const HIER_TODO = [
-  'hier-circuit', 'hier-disc-circuit', 'hier-len-circuit', 'hier-len-subset', 'hier-mds-nolen',
-  'hier-pin-disc-circuit', 'hier-subset',
-] as const;
+/** Flipped to assertions by T7. */
 const KK_TODO = [
   'kk-circuit', 'kk-disc-circuit', 'kk-iso-circuit', 'kk-iso-len-circuit', 'kk-len-circuit', 'kk-len-subset',
   'kk-mds-nolen', 'kk-subset',
@@ -86,12 +83,10 @@ afterEach(() => { vi.restoreAllMocks(); });
 
 describe('major path models match native', () => {
   it.each(MAJOR)('%s', expectNative, 60_000);
-  for (const id of MAJOR_TODO) it.todo(id);
 });
 
 describe('hier path models match native', () => {
   it.each(HIER)('%s', expectNative, 60_000);
-  for (const id of HIER_TODO) it.todo(id);
 });
 
 describe('KK path models match native', () => {
