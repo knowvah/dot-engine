@@ -109,7 +109,7 @@ Nothing is pushed or signed (part-5 AD-1).
 | Batch | Tasks | Mode | Done |
 |---|---|---|---|
 | [1](batch-1/overview.md) | T0 baselines, native fixtures | orchestrator | [x] |
-| [2](batch-2/overview.md) | T1 neatoModel (108) · T2 KK primitives (103a) · T3 SweepLine (105) · T4 FT_NULL (104) · T5 safefile hooks (107) | parallel worktrees | [ ] |
+| [2](batch-2/overview.md) | T1 neatoModel (108) · T2 KK primitives (103a) · T3 SweepLine (105) · T4 FT_NULL (104) · T5 safefile hooks (107) | parallel worktrees | [x] |
 | [3](batch-3/overview.md) | T6 major + hier models (103b) · T8 docs (103/106/108) | parallel | [ ] |
 | [4](batch-4/overview.md) | T7 KK models (103c) | single | [ ] |
 | [5](batch-5/overview.md) | T9 final verification, close-out, re-sign stop | orchestrator | [ ] |

@@ -563,14 +563,14 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   103. (reserved by part 7 AD-3) Wire `model=subset|circuit` into the major, kk and hier
       paths (`start.ts:207-216`, `constrained-majorization.ts:96`), which stay loud; the
       models are ported in `stress-models.ts` (part 7 T7).
-  104. Layout-time FT_NULL warning: resolver bytes with unrecognized magic must warn
+  104. **[DONE — part 8 T4: FT_NULL warning at layout, and the custom-shape branch of `poly_init`]** Layout-time FT_NULL warning: resolver bytes with unrecognized magic must warn
       `"<name>" was not found as a file or as a shape library member` and size to
       nothing at layout (`common_init_node` → `poly_init` → `gvusershape_size` →
       `gvusershape_open`). `poly-init.ts` (`warnPolyInitImages`, `nodeImageSize`) and
       `htmltable.ts:145,153` must call `imageOpenFailure` / pass the resolver to
       `usershapeSizePts`; a global-resolver read is needed for callers without a
       context (part 7 T6).
-  105. `src/vpsc/SweepLine.ts`: C++ `Node::leftNeighbours`/`rightNeighbours` are
+  105. **[DONE — part 8 T3: neighbour sets in `CmpNodePos` order, ties by creation order]** `src/vpsc/SweepLine.ts`: C++ `Node::leftNeighbours`/`rightNeighbours` are
       `set<Node*,CmpNodePos>` (position order, `generate-constraints.cpp:43-84`); TS uses
       an insertion-ordered Set filled in descending position, and `nodePosLt` compares
       objects with `<` (always false) where C++ breaks ties by address. Two
@@ -580,13 +580,23 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       address order (`blocks.h:37`); native output varies with the allocator (3 results
       for one input under default / `X=1` / `MallocNanoZone=0`). Not reproducible; ledger
       entry needed (part 7 T5).
-  107. `safefile`'s "host supplies the name" check reads the global sizer/resolver, not
+  107. **[DONE — part 8 T5: `safefile` sees the layout's own hooks]** `safefile`'s "host supplies the name" check reads the global sizer/resolver, not
       the per-context hooks; matters for `bindShape`'s `shapefile` under `imagepath`
       with a per-context-only sizer (part 7 T9).
-  108. `index.ts:parseModel` lacks `neatoinit.c:neatoModel`'s warnings: `edges in graph
+  108. **[DONE — part 8 T1: `neatoModel` ported]** `index.ts:parseModel` lacks `neatoinit.c:neatoModel`'s warnings: `edges in graph
       %s have no len attribute. Hence, the mds model / is inappropriate. Reverting to the
       shortest path model.` (native prints a literal `%1`) with the shortpath fallback,
       and `Unknown value %s for attribute "model"` (part 7 T8).
+
+- **New follow-ups found by part 8** (`plans/post-16-1-followups-8/`):
+  109. `src/layout/neato/dijkstra.ts:toDistType` wraps a float weight at or above 2^31 into
+      int32, where native arm64 saturates to INT_MAX (`dijkstra.c:166`). Only duplicate
+      neighbours yield such a weight, and `makeGraphData` merges them, so no graph reaches
+      it today (part 8 T2).
+  110. `dir1 n40` (`IncVPSC`, no `SweepLine`) matches none of 29 sampled native variants.
+      Likely the heap-address order of follow-up 106, unproven for this case. Also unchecked:
+      `compareEvents` under libc++'s unstable `std::sort` against JS's stable sort, on equal
+      event positions (part 8 T3).
 
 ## Local leftovers (not committed, safe to delete)
 
