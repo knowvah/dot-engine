@@ -6,6 +6,10 @@ import { renderSvg } from '../index.js';
 import { setImageSizer } from '../gvc/usershape.js';
 import { mkDirlist, safefile, setImagePath } from './safefile.js';
 import { resetRenderState } from './render-state.js';
+import { parse } from '../parser/index.js';
+import { createDefaultContext } from '../gvc/default-context.js';
+import type { ImageSizer } from '../gvc/usershape.js';
+import type { ImageResolver } from '../gvc/image-resolver.js';
 
 const FIX = new URL('../gvc/__fixtures__/p7/images/', import.meta.url);
 const fixture = (name: string): string => readFileSync(new URL(name, FIX), 'utf8');
@@ -97,5 +101,51 @@ describe('102-* stderr matrix', () => {
       'Warning: Filename "r.png" is unsafe',
       'Error: No or improper image file="r.png"',
     ]);
+  });
+});
+
+describe('per-context hooks (AD-7)', () => {
+  const FIX8 = new URL('../gvc/__fixtures__/p8/', import.meta.url);
+  const SIZE = { w: 40, h: 20 };
+  const R_PNG = (n: string) => (n === 'r.png' ? SIZE : null);
+
+  const laidOut = (dot: string, hooks: { sizer?: ImageSizer; resolver?: ImageResolver }) => {
+    const msgs: string[] = [];
+    const spies = (['warn', 'error'] as const).map(ch =>
+      vi.spyOn(console, ch).mockImplementation((m: unknown) => { msgs.push(String(m)); }));
+    try {
+      const ctx = createDefaultContext();
+      if (hooks.sizer !== undefined) ctx.imageSizer = hooks.sizer;
+      if (hooks.resolver !== undefined) ctx.imageResolver = hooks.resolver;
+      const g = parse(dot);
+      ctx.layout(g, 'dot');
+      const shape = g.nodes.get('a')!.info.shape as { name: string };
+      return { msgs, shape: shape.name };
+    } finally { for (const s of spies) s.mockRestore(); }
+  };
+
+  it('ip-shapefile: a per-context sizer alone equals native stderr', () => {
+    const dot = readFileSync(new URL('ip-shapefile.gv', FIX8), 'utf8');
+    const native = lines(readFileSync(new URL('ip-shapefile.xdot.stderr', FIX8), 'utf8'));
+    expect(laidOut(dot, { sizer: R_PNG }).msgs).toEqual(native);
+    expect(native).toEqual([]);
+  });
+
+  it('a shapefile supplied only per context forces custom', () => {
+    const dot = 'digraph{imagepath="d";a[shape=box shapefile="r.png"]}';
+    expect(laidOut(dot, { sizer: R_PNG }).shape).toBe('custom');
+    expect(laidOut(dot, {}).shape).toBe('box');
+  });
+
+  it('a per-context resolver alone also supplies the shapefile', () => {
+    const dot = 'digraph{imagepath="d";a[shape=box shapefile="r.png"]}';
+    const resolver: ImageResolver = n => (n === 'r.png' ? { bytes: new Uint8Array(0), mime: 'image/png' } : null);
+    expect(laidOut(dot, { resolver }).shape).toBe('custom');
+  });
+
+  it('the next layout sees only its own hooks', () => {
+    const dot = 'digraph{imagepath="d";a[shape=box shapefile="r.png"]}';
+    expect(laidOut(dot, { sizer: R_PNG }).shape).toBe('custom');
+    expect(laidOut(dot, {}).shape).toBe('box');
   });
 });

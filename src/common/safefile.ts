@@ -12,7 +12,8 @@
  * @see lib/common/utils.c:safefile (253-311)
  */
 
-import { imageIsSupplied } from '../gvc/usershape.js';
+import type { ImageResolver } from '../gvc/image-resolver.js';
+import { imageIsSupplied, type ImageSizer } from '../gvc/usershape.js';
 import { registerRenderState } from './render-state.js';
 
 /** utils.c PATHSEP on non-Windows. */
@@ -27,6 +28,23 @@ const PATH_SEPARATOR = '/';
  */
 const imagePathState: { value: string | undefined } = { value: undefined };
 registerRenderState(() => { imagePathState.value = undefined; });
+
+/**
+ * The layout's effective sizer and resolver (the per-context hooks, else
+ * undefined so the global ones apply). They stand in for C's filesystem and
+ * are set beside `Gvimagepath` at graph init (AD-7).
+ */
+const imageHooksState: { sizer: ImageSizer | undefined; resolver: ImageResolver | undefined } = {
+  sizer: undefined,
+  resolver: undefined,
+};
+registerRenderState(() => { imageHooksState.sizer = undefined; imageHooksState.resolver = undefined; });
+
+/** Record the layout's per-context image hooks; graph_init calls this per graph. */
+export function setImageHooks(sizer: ImageSizer | undefined, resolver: ImageResolver | undefined): void {
+  imageHooksState.sizer = sizer;
+  imageHooksState.resolver = resolver;
+}
 
 /**
  * graph_init's `Gvimagepath = agget(g, "imagepath")`, falling back to
@@ -54,7 +72,7 @@ export function mkDirlist(list: string): string[] {
  * @see lib/common/utils.c:findPath
  */
 function findPath(dirs: readonly string[], str: string): string | null {
-  return dirs.length > 0 && imageIsSupplied(str) ? str : null;
+  return dirs.length > 0 && imageIsSupplied(str, imageHooksState.sizer, imageHooksState.resolver) ? str : null;
 }
 
 /**

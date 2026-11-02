@@ -30,7 +30,7 @@ import { doGraphLabel } from '../layout/dot/graph-label.js';
 import { mapbool, setClType, LOCAL, GLOBAL, NOCLUST } from '../layout/dot/rank.js';
 import { cround } from './arith.js';
 import { agwarningf } from './agerr.js';
-import { setImagePath } from './safefile.js';
+import { setImageHooks, setImagePath } from './safefile.js';
 
 // ---------------------------------------------------------------------------
 // Constants — @see lib/common/const.h
@@ -278,6 +278,10 @@ export function graphInit(g: Graph, useRankdir: boolean): void {
   // Gvimagepath = agget(g, "imagepath"), else Gvfilepath (unported: undefined).
   // Set unconditionally so a previous graph's value never leaks. @see input.c:627-630
   setImagePath(g.attrs.get('imagepath'));
+  // The layout's own sizer/resolver stand in for the filesystem safefile reads
+  // (AD-7); the context installs itself on the root before the engine runs.
+  const gvc = g.root.info.gvc;
+  setImageHooks(gvc?.imageSizer, gvc?.imageResolver);
 
   // SKIPPED — GD_drawing(g)->quantum (input.c:640-641): derived at its only
   // use-site, nodeinit.ts:129 — `lateDouble(g.root.attrs.get('quantum'), 0, 0)`
