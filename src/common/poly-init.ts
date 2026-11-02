@@ -27,7 +27,7 @@ import {
 import { computeVertices } from './poly-vertices.js';
 import { agwarningf } from './agerr.js';
 import { getGlobalImageResolver } from '../gvc/image-resolver.js';
-import { imageOpenFailure, imageOpenWarning, usershapeDpi, usershapeSizePts } from '../gvc/usershape.js';
+import { imageOpenFailure, usershapeDpi, usershapeSizePts } from '../gvc/usershape.js';
 
 // Default half-dimensions in points (72 dpi, 0.75 in wide, 0.5 in tall)
 const DEFAULT_LW = 27;
@@ -117,10 +117,10 @@ function warnShapefileOpen(g: Graph, shapefile: string): boolean {
 /**
  * poly_init's shapefile and `image` warnings, emitted once per layout from
  * common_init_node after the label is made. For a custom shape whose
- * gvusershape_size fails, gvusershape_open's warning precedes the "No or improper shapefile" line; a shapefile the
- * caller's sizer/resolver sizes prints nothing. For a non-custom
- * shape's `image=`, the caller-supplied sizer/resolver decides; when it
- * supplies nothing the same pair is emitted.
+ * gvusershape_size fails, gvusershape_open's warning precedes the "No or
+ * improper shapefile" line; a shapefile the caller's sizer/resolver sizes prints
+ * nothing. For a non-custom shape's `image=`, the caller-supplied sizer/resolver
+ * decides; when it supplies nothing the same pair is emitted.
  * @see lib/common/shapes.c:2027-2046
  */
 export function warnPolyInitImages(n: Node, g: Graph): void {
