@@ -20,6 +20,7 @@ Being closed by `plans/post-16-1-followups-5/`.
 Being closed by `plans/post-16-1-followups-6/`.
 Items 95–102 closed by `plans/post-16-1-followups-7/` (101's layout-time FT_NULL line → 104);
 the open work is items 103–108 under "New follow-ups found by part 7".
+Being closed by `plans/post-16-1-followups-8/`.
 Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
