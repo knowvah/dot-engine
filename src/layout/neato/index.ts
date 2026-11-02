@@ -25,6 +25,8 @@ import {
   MODEL_MDS,
 } from './init.js';
 import { neatoMode } from './start.js';
+import { agerr, agwarningf } from '../../common/agerr.js';
+import { agNameOf } from '../../model/cgraph-ops.js';
 import { removeOverlapWith, graphAdjustMode, type AdjustData } from './fdp-adjust.js';
 import { splineEdgesShifted, EDGETYPE_LINE } from './splines.js';
 import { setEdgeTypeFromAttr } from '../dot/index.js';
@@ -74,25 +76,50 @@ export function parseMode(g: Graph): number {
 // Model parsing
 // ---------------------------------------------------------------------------
 
-/** Map from model string to numeric constant. @see lib/neatogen/defs.h */
-const MODEL_MAP: Record<string, number> = {
-  shortpath: MODEL_SHORTPATH,
-  circuit: MODEL_CIRCUIT,
-  subset: MODEL_SUBSET,
-  mds: MODEL_MDS,
-};
+/** Edge attribute whose declaration lets `model=mds` stand. @see lib/neatogen/neatoinit.c:neatoModel */
+const EDGE_LEN_ATTR = 'len';
 
 /**
- * Parse `g.info.model` string into a numeric model constant.
- * Defaults to MODEL_SHORTPATH when unset or unrecognised.
+ * C's `agattr_text(g, AGEDGE, "len", 0)` lookup: true when the edge attribute
+ * `len` has been declared anywhere in the root graph's dictionary. cgraph
+ * declares it by an `edge [len=...]` default in the root or any subgraph (even
+ * with no edge to use it) and by any edge carrying `len=`; the port keeps those
+ * three places apart, so this walks all of them. Native-verified: an
+ * `edge [len=2]` in a subgraph with no edges, or in a graph with no edges at
+ * all, suppresses the warning; `node [len=2]` does not.
  *
- * @see lib/neatogen/neato.h:neatoModel
+ * @see lib/neatogen/neatoinit.c:neatoModel (agattr_text lookup)
+ */
+function edgeLenDeclared(g: Graph): boolean {
+  if (g.edgeDefaults.has(EDGE_LEN_ATTR)) return true;
+  for (const e of g.edges) if (e.attrs.has(EDGE_LEN_ATTR)) return true;
+  for (const sub of g.subgraphs.values()) if (edgeLenDeclared(sub)) return true;
+  return false;
+}
+
+/**
+ * Parse the root `model` attribute into a numeric model constant (init.ts
+ * numbering). Unset or empty is MODEL_SHORTPATH; `circuit`, `subset` and
+ * `shortpath` match case-sensitively. `mds` stands only when the edge attribute
+ * `len` is declared, else it warns and reverts to MODEL_SHORTPATH; any other
+ * value warns and is ignored. Call once, where neato_layout does.
+ *
+ * @see lib/neatogen/neatoinit.c:neatoModel (605-627)
  */
 export function parseModel(g: Graph): number {
-  // model is not a GraphInfo field yet; read via attrs map as fallback
-  const s = g.attrs.get('model');
-  if (!s) return MODEL_SHORTPATH;
-  return MODEL_MAP[s] ?? MODEL_SHORTPATH;
+  const p = g.attrs.get('model');
+  if (p === undefined || p === '') return MODEL_SHORTPATH;
+  if (p === 'circuit') return MODEL_CIRCUIT;
+  if (p === 'subset') return MODEL_SUBSET;
+  if (p === 'shortpath') return MODEL_SHORTPATH;
+  if (p === 'mds') {
+    if (edgeLenDeclared(g)) return MODEL_MDS;
+    agwarningf(`edges in graph ${agNameOf(g.root)} have no len attribute. Hence, the mds model`);
+    agerr('prev', 'is inappropriate. Reverting to the shortest path model.');
+    return MODEL_SHORTPATH;
+  }
+  agwarningf(`Unknown value ${p} for attribute "model" in graph ${agNameOf(g.root)} - ignored`);
+  return MODEL_SHORTPATH;
 }
 
 // ---------------------------------------------------------------------------
