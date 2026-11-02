@@ -560,7 +560,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       Reference `graphs-val_val` (pre-existing at T0; part 6 T6 bytediff).
 
 - **New follow-ups found by part 7** (`plans/post-16-1-followups-7/`):
-  103. (reserved by part 7 AD-3) Wire `model=subset|circuit` into the major, kk and hier
+  103. **[DONE — part 8 T2, T6, T7: all modes lay out subset, circuit and mds; native KK circuit always falls back]** (reserved by part 7 AD-3) Wire `model=subset|circuit` into the major, kk and hier
       paths (`start.ts:207-216`, `constrained-majorization.ts:96`), which stay loud; the
       models are ported in `stress-models.ts` (part 7 T7).
   104. **[DONE — part 8 T4: FT_NULL warning at layout, and the custom-shape branch of `poly_init`]** Layout-time FT_NULL warning: resolver bytes with unrecognized magic must warn
@@ -576,7 +576,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       objects with `<` (always false) where C++ breaks ties by address. Two
       `quad-prog-vpsc.test.ts` cases are `it.fails` on it; the tie case's native result
       itself varies run to run, so its fixture may need a refresh (part 7 T5).
-  106. Known divergence: C++ `IncVPSC::splitBlocks` iterates `std::set<Block*>` in heap
+  106. **[DONE — part 8 T8: ledger bullet in `docs/known-divergences.md`]** Known divergence: C++ `IncVPSC::splitBlocks` iterates `std::set<Block*>` in heap
       address order (`blocks.h:37`); native output varies with the allocator (3 results
       for one input under default / `X=1` / `MallocNanoZone=0`). Not reproducible; ledger
       entry needed (part 7 T5).
@@ -601,6 +601,10 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       component misses the root's value, where C `agget` inherits it. `graph G {maxiter=3;
       a--b--c--a; d--e--f--d}` keeps the no-`maxiter` layout while native differs (129 xdot
       diffs). `epsilon` is read the same way, unchecked (part 8 T6).
+  112. `ccomps` callers pass prefixes C does not (`_twopi`, `_sfdp_cc`, `_cc`; C passes none,
+      giving `_cc_0`), and `ccomps` puts `_` before the index where C appends it directly. Fix
+      the form and the three callers together. Nothing native prints reads these names today.
+      Also check sfdp's `start=self` warning order against native (part 8 T7).
 
 ## Local leftovers (not committed, safe to delete)
 

@@ -302,3 +302,5 @@ accepted divergence.
 | 2026-11-02 | part 8 T5: item 107 | `safefile` mirrors the layout's hooks at graph init, overwritten per graph; p8 `ip-shapefile` stderr equals native. | part-8 journal |
 | 2026-11-02 | part 8 T6: item 103b | Major and hier lay out subset, circuit and mds (`stressModelDij`, AD-2); all their fixture cases match native. `solveModel` gained C's `MaxIter < 0` return; `start.ts:106,157` use `agwarningf`. Neato corpus 937 identical, 0 diffs, 13 capped both sides. | part-8 journal |
 | 2026-11-02 | part 8 T7: user decision | KK circuit + `pack=true` crashes native on every run, so the port defines it: warn per component, shortest paths, pack. | part-8 journal |
+| 2026-11-02 | part 8 T7: item 103c | KK lays out subset and circuit through C's dispatch (`circuit_model` fails on every graph, so warning + shortest paths). User widened T7 to fuse `kk-solve.ts` and fix `pccomps`' names; KK traces bit-identical to an instrumented native over 10467 lines. Speed 1.10× to 1.57×, accepted. | part-8 journal |
+| 2026-11-02 | part 8 T8: items 106, docs | Ledger, `errors.md`, `images.md` and 69 locale pages updated; 0 stale. | part-8 journal |
