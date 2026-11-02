@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1302,12 +1302,8 @@ eltér a natív Graphviz-től. A `v2-silent-gaps` küldetés találta meg
   `T_Wd * cos(alpha)` kifejezéssel helyezi el, és a macOS libm `cos(-2.3840764867756761)` értéke 1 ulp-ra van a
   V8 `Math.cos` értékétől; az fdp erőciklusa ezt kb. 3 hüvelykre erősíti. Az Apple
   `cos` függvénye nem reprodukálható rövid modellből úgy, ahogy a `hypot`.
-- **Natív összeomlások, amelyeket a portolt változat definiál.** A natív Graphviz 139-es kóddal lép ki a neato
-  `mode=KK` + `model=mds` és egy él `len` attribútuma esetén (az `mds_model` a `GD_dist`
-  tömböt 1-alapú sorszámmal indexeli: heap-túlcsordulás), valamint `model=circuit` mellett
-  nem összefüggő gráfon. A portolt változat az első esetben eldobja a tartományon kívüli cellákat, a
-  másodikban pedig a legrövidebb utakra esik vissza; nincs natív kimenet,
-  amellyel összehasonlítható lenne.
+- **Natív összeomlások, amelyeket a portolt változat definiál.** A natív Graphviz neato `mode=KK` és `model=mds` mellett, `len` értékű éllel szinte minden futtatáskor 139-es kóddal lép ki (kb. 1500 futtatásból 1 éli túl; a `mds_model` a `GD_dist` tömböt 1-alapú sorszámmal indexeli: heap-túlcsordulás). A port eldobja a tartományon kívüli cellákat, és az eredménye 0,01 pontossággal megegyezik azzal a túlélővel. A `circuit_model` az 1-alapú `AGSEQ` szerint indexel (`circuit.c:46`), ezért a mátrixának 0. sora soha nem íródik, és a mátrix minden gráfon szinguláris, összefüggőn és nem összefüggőn is: a natív `mode=KK` `model=circuit` mellett sosem ad circuit elrendezést. Ha a folyamat túléli, kiírja a következőt: `Warning: graph <name> is disconnected. Hence, the circuit model`, és a legrövidebb utakra tér vissza; ugyanez a hiba a sorutató-tömbön túl olvas, ha az utoljára létrehozott csomópontnak van éle, ezért a natív program többnyire 139-cel lép ki (a próbagráfon a futtatások kb. 3/4-ében). A port mindig a túlélő utat választja: a figyelmeztetést, majd a legrövidebb utakat, összefüggő gráfon és nem összefüggőn is. `pack=true` mellett a natív program minden futtatáskor összeomlott (két gráf mindegyikén 3000 feletti futtatásból 0 túlélő); döntés alapján a port komponensenként, saját név alatt (`_neato_cc0`, `_neato_cc1`, ...) figyelmeztet, a legrövidebb utakat használja, és csomagol. Erre a kombinációra nincs natív kimenet; az elrendezés megegyezik a natív `model=shortpath` eredményével ugyanarra a gráfra.
+- **A VPSC egyenlőségi sorrendje a létrehozás sorrendjét követi, nem a heapcímet.** A natív `IncVPSC::splitBlocks` egy heapcím szerint rendezett `std::set<Block*>` halmazt jár be, miközben elemeket szúr be, a `CmpNodePos` pedig a pozíciók egyenlőségét a cím alapján dönti el, így az `overlap=vpsc|ipsep` és a kényszerített `mode=ipsep` natív kimenete egyenlő pozíciók esetén futtatásról futtatásra változik (egy esetben 300 futtatás 21 különböző eredményt adott). A port az egyenlőségeket létrehozási sorrend szerint rendezi, és mindig meglátogatja az új blokkokat, így a kimenete determinisztikus. A vizsgált egyenlőségi eseteken megegyezik egy mintavételezett natív futtatással, kivéve egy 40 csomópontos esetet, amely a 29 mintavételezett natív eredmény egyikével sem egyezett (110. követő elem).
 
 ---
 
@@ -1358,7 +1354,7 @@ Ezek szándékos hatókörhatárok, nem hibák. A könyvtár az **SVG**-t céloz
   a fájlrendszer-olvasásokat (betűtípusok, képek, konfiguráció) a hívó által megadott
   visszahívások (pl. `setImageSizer`). A viselkedés megmarad; a mechanizmus különbözik.
 
-- **Képtípus és `imagepath` figyelmeztetések.** A csak a `setImageSizer` útján ismert képnek (resolver-bájtok nélkül) nincs típusa, ezért nem írja ki a `No loadimage plugin` figyelmeztetést; a natív mindig beolvassa a fájlt, így mindig ismeri a típust. Felismerhetetlen resolver-bájtoknál a natív ezenkívül a `Warning: "<name>" was not found as a file or as a shape library member` sorral is figyelmeztet; a port ezt a sort még nem írja ki (104. követő tétel, bekötés elrendezéskor). A `GV_FILE_PATH` és a `SERVER_NAME` nem érvényesül, és a gazdát soha nem kérdezi az `imagepath` `<dir>/<name>` nevéről.
+- **Képtípus és `imagepath` figyelmeztetések.** A csak a `setImageSizer` útján ismert képnek (resolver-bájtok nélkül) nincs típusa, ezért nem írja ki a `No loadimage plugin` figyelmeztetést; a natív mindig beolvassa a fájlt, így mindig ismeri a típust. `GV_FILE_PATH` és a `SERVER_NAME` nem érvényesül, és a gazdát soha nem kérdezi az `imagepath` `<dir>/<name>` nevéről.
 
 ---
 

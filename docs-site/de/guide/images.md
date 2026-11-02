@@ -1,5 +1,5 @@
 ---
-sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
+sourceHash: 5adedf304ed3717b602b9f4cc54a10f403c3ab37a8306bc067767eac53a013c5
 ---
 # Bilder
 
@@ -192,12 +192,13 @@ des rohen `src` zurück — Inlining degradiert sanft und wirft nie.
 
 Das Graphattribut `imagepath` des nativen Graphviz ist eine durch Doppelpunkte getrennte Liste von Verzeichnissen, in denen relative `image=`- und `shapefile=`-Namen gesucht werden. Die Portierung liest Bilddateien nie selbst, durchsucht diese Verzeichnisse also nie und fragt den Host nie nach `dir/name`: `setImageSizer` und `ImageResolver` erhalten den rohen Namen immer genau so, wie er geschrieben wurde. Die Portierung verwendet `imagepath` nur, um zu entscheiden, welche Warnung ausgegeben wird, wenn der Host einen relativen Namen nicht liefert:
 
-- Ist `imagepath` gesetzt, löst ein relativer `image=`-/`shapefile=`-Name, den der Host nicht liefert, `Warning: Filename "<name>" is unsafe` und danach `Warning: No or improper image="<name>" for node "<node>"` aus, wie das native Programm, wenn kein `<dir>/<name>` lesbar ist.
+- Ist `imagepath` gesetzt, löst ein relativer `image=`-/`shapefile=`-Name, den der Host nicht liefert, `Warning: Filename "<name>" is unsafe` und danach `Warning: No or improper image="<name>" for node "<node>"` (oder für das `shapefile=` einer benutzerdefinierten Form `Warning: No or improper shapefile="<name>" for node "<node>"`) aus, wie das native Programm, wenn kein `<dir>/<name>` lesbar ist.
+- Ein Name, den der Host über die Hooks `setImageSizer` oder `ImageResolver` des Kontexts liefert, der das Layout ausführt (oder über die globalen), gibt keine dieser Zeilen aus. Bei einer benutzerdefinierten Form wird der Knoten nach dem gelieferten Bild bemessen.
 - Bei einem absoluten Namen oder fehlendem bzw. leerem `imagepath` bleibt es bei der Zeile `Warning: No such file or directory while opening <name>`.
 
 `GV_FILE_PATH` und `SERVER_NAME` werden nicht berücksichtigt (es sind Umgebungsvariablen, die ein Browser nicht hat). Um relative Pfade gegen ein eigenes Basisverzeichnis oder eine eigene Basis-URL aufzulösen, stellen Sie den Namen in der Schicht voran, die den DOT-Quelltext erzeugt, oder in Ihren `setImageSizer`-/`ImageResolver`-Callbacks.
 
-**Bildtyp.** Wie beim nativen Programm wird der Typ aus den vom Resolver gelieferten Bytes per Magic-Number-Erkennung bestimmt: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp sowie svg nur, wenn die Bytes mit einer `<?xml`-Deklaration gefolgt von `<svg` beginnen. Alles unter 20 Bytes bleibt unerkannt. Bei unerkannten Bytes wird nichts gezeichnet und das Bild zur Renderzeit nicht vermessen. Das native Programm warnt zusätzlich mit `Warning: "<name>" was not found as a file or as a shape library member`; die Portierung gibt diese Zeile noch nicht aus (siehe [Bekannte Abweichungen](/de/divergences)).
+**Bildtyp.** Wie beim nativen Programm wird der Typ aus den vom Resolver gelieferten Bytes per Magic-Number-Erkennung bestimmt: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp sowie svg nur, wenn die Bytes mit einer `<?xml`-Deklaration gefolgt von `<svg` beginnen. Alles unter 20 Bytes bleibt unerkannt. Bei unerkannten Bytes wird nichts gezeichnet und das Bild zur Renderzeit nicht vermessen. Wie das native Programm warnt die Portierung zusätzlich mit `Warning: "<name>" was not found as a file or as a shape library member`, gefolgt von der Zeile `No or improper image=`.
 
 `-Tjson` warnt wie das native Programm einmal pro gezeichnetem Bild mit `Warning: No loadimage plugin for "png:json"` (der Typ variiert), da es dort keinen JSON-Bildlader gibt. `svg`, `xdot`, `dot`, `plain` und `cmapx` geben für einen erkannten Typ nichts aus. Ein nur über den Sizer bekanntes Bild hat keinen Typ und gibt daher keine loadimage-Warnung aus (siehe [Bekannte Abweichungen](/de/divergences)).
 

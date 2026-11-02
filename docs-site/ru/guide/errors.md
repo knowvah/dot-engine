@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,10 +131,7 @@ dot-engine выбрасывает ошибки двух видов. То, как
 
 | Механизм | Атрибут и значение | Срабатывает, когда | Необходимая возможность Graphviz |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Только когда `model` равен `subset` или `circuit` (после того как в графе 2+ узлов и `maxiter` положителен) | Иерархическая стресс-мажоризация (`stress_majorization_with_hierarchy`) |
-| neato | `start=self` | `mode` равен `major` (по умолчанию). При `mode=ipsep` оно молча принимается, а раскладка использует случайный старт, как в Graphviz | Умная инициализация (`smart_ini`). При `mode=KK` или `mode=sgd` один раз за рендер пишет в лог `start=0 not supported with mode=self - ignored`, как Graphviz |
-| neato | `model=subset` | `mode` равен `major` или `KK`. Не срабатывает при `mode=ipsep`. | Модель расстояний subset |
-| neato | `model=circuit` | `mode` равен `major`, либо `KK` на связном графе. `KK` на несвязном графе без `pack` и `packmode` пишет предупреждение и использует кратчайшие пути, как Graphviz. Не срабатывает при `mode=ipsep`. | Модель расстояний circuit (`circuit_model`) |
+| neato | `start=self` | `mode` равен `major` (по умолчанию). При `mode=ipsep` оно молча принимается, а раскладка использует случайный старт, как в Graphviz | Умная инициализация (`smart_ini`). При `mode=KK` или `mode=sgd` один раз за рендер пишет в лог `Warning: start=0 not supported with mode=self - ignored`, как Graphviz |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (без учёта регистра) | В графе (для twopi — в компоненте; для sfdp — во всём графе или в компоненте) 2+ узлов, и собственный подсчёт перекрытий Graphviz (`countOverlap`, проверяющий многоугольники узлов) больше 0. Узлы, которые лишь касаются по ограничивающему прямоугольнику, срабатывания не вызывают. circo доходит до него только для графа из одной компоненты (при нескольких компонентах Graphviz также игнорирует `overlap`). sfdp доходит до него, только если `overlap` не является режимом prism | Устранение перекрытий методом Вороного (`vAdjust`) |
 | fdp | `overlap=` одно из `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Режим достигается после `N:` попыток силовых итераций, то есть когда эти попытки не устраняют все перекрытия (или `N` равно 0 либо отсутствует). Префикс `N:` допустим, например `3:voronoi` | Соответствующий алгоритм корректировки `removeOverlapWith` |
 | fdp | `splines=compound` | Всегда, с кластерами или без | Трассировка рёбер в обход кластеров (`compoundEdges`) |
@@ -152,7 +149,7 @@ dot-engine выбрасывает ошибки двух видов. То, как
 
 Значения, выбирающие вариант по умолчанию (например, `quadtree=normal`, `true`,
 `yes`, `1`), и принимаемые Graphviz значения, которые портированы (например,
-`start=regular`, `start=random`, `model=mds`, `mode=KK`, `mode=sgd`,
+`start=regular`, `start=random`, `mode=hier`, `model=mds`, `model=subset`, `model=circuit`, `mode=KK`, `mode=sgd`,
 `overlap=prism`, семейство `scale` и, для neato, twopi, circo и sfdp,
 `overlap=oscale`, `vpsc` и режимы `ortho*` / `portho*`), отрисовываются как
 обычно.

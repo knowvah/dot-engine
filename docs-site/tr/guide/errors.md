@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,10 +132,7 @@ değerle değiştirin.
 
 | Motor | Öznitelik ve değer | Ne zaman tetiklenir | Gereken Graphviz özelliği |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Yalnızca `model` değeri `subset` veya `circuit` olduğunda (grafın 2+ düğümü olduktan ve `maxiter` pozitif olduktan sonra) | Hiyerarşik stres majorizasyonu (`stress_majorization_with_hierarchy`) |
-| neato | `start=self` | `mode` değeri `major` (varsayılan). `mode=ipsep` altında sessizce kabul edilir ve yerleşim, Graphviz gibi rastgele başlangıcı kullanır | Akıllı ilklendirme (`smart_ini`). `mode=KK` veya `mode=sgd` altında, Graphviz'in yaptığı gibi her işlemede bir kez `start=0 not supported with mode=self - ignored` günlüğe yazar |
-| neato | `model=subset` | `mode` değeri `major` veya `KK` ise. `mode=ipsep` altında tetiklenmez. | Alt küme uzaklık modeli |
-| neato | `model=circuit` | `mode` değeri `major` ise ya da bağlantılı bir grafta `KK` ise. `pack` veya `packmode` olmayan, bağlantısız bir grafta `KK`, bir uyarı günlüğe yazar ve Graphviz'in yaptığı gibi en kısa yolları kullanır. `mode=ipsep` altında tetiklenmez. | Devre uzaklık modeli (`circuit_model`) |
+| neato | `start=self` | `mode` değeri `major` (varsayılan). `mode=ipsep` altında sessizce kabul edilir ve yerleşim, Graphviz gibi rastgele başlangıcı kullanır | Akıllı ilklendirme (`smart_ini`). `mode=KK` veya `mode=sgd` altında, Graphviz'in yaptığı gibi her işlemede bir kez `Warning: start=0 not supported with mode=self - ignored` günlüğe yazar |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (büyük/küçük harfe duyarsız) | Graf (twopi için bir bileşen; sfdp için tüm graf veya bir bileşen) 2+ düğüme sahiptir ve Graphviz'in kendi çakışma sayısı (düğüm çokgenlerini sınayan `countOverlap`) 0'ın üzerindedir. Yalnızca sınırlayıcı kutuyla temas eden düğümler bunu tetiklemez. circo buna yalnızca tek bileşenli bir grafta ulaşır (birden çok bileşende Graphviz `overlap` değerini yine yok sayar). sfdp buna yalnızca `overlap` bir prism modu değilse ulaşır | Voronoi çakışma giderme (`vAdjust`) |
 | fdp | `overlap=` şunlardan biri: `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Mod, `N:` kuvvet yinelemesi denemelerinden sonra ulaşılır; yani bu denemeler her çakışmayı gidermediğinde (veya `N` 0 ya da yoksa). `N:` öneki serbesttir, örneğin `3:voronoi` | Eşleşen `removeOverlapWith` ayarlama algoritması |
 | fdp | `splines=compound` | Her zaman, kümelerle veya kümesiz | Kümelerden kaçınan kenar yönlendirme (`compoundEdges`) |
@@ -153,7 +150,7 @@ ve yukarıdaki ifadeleri kullanan şekil satırıdır. Metne değil
 
 Varsayılanı seçen değerler (örneğin `quadtree=normal`, `true`, `yes`, `1`) ve
 Graphviz'in kabul ettiği, port edilmiş değerler (örneğin `start=regular`,
-`start=random`, `model=mds`, `mode=KK`, `mode=sgd`, `overlap=prism`, `scale`
+`start=random`, `mode=hier`, `model=mds`, `model=subset`, `model=circuit`, `mode=KK`, `mode=sgd`, `overlap=prism`, `scale`
 ailesi ve neato, twopi, circo ile sfdp'de `overlap=oscale`, `vpsc` ve `ortho*` /
 `portho*` modları) normal biçimde işlenir.
 

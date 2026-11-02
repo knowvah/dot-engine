@@ -1,5 +1,5 @@
 ---
-sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
+sourceHash: 5adedf304ed3717b602b9f4cc54a10f403c3ab37a8306bc067767eac53a013c5
 ---
 # Afbeeldingen
 
@@ -192,12 +192,13 @@ inlinen degradeert soepel en gooit nooit een fout.
 
 Het grafenattribuut `imagepath` van native Graphviz is een door dubbele punten gescheiden lijst van mappen waarin relatieve `image=`- en `shapefile=`-namen worden gezocht. De port leest zelf nooit afbeeldingsbestanden, doorzoekt die mappen dus nooit en vraagt de host nooit om `dir/name`: `setImageSizer` en `ImageResolver` ontvangen altijd de ruwe naam, precies zoals geschreven. De port gebruikt `imagepath` alleen om te bepalen welke waarschuwing wordt afgedrukt wanneer de host een relatieve naam niet levert:
 
-- Met `imagepath` ingesteld geeft een relatieve `image=`/`shapefile=`-naam die de host niet levert `Warning: Filename "<name>" is unsafe` en daarna `Warning: No or improper image="<name>" for node "<node>"`, zoals native doet wanneer geen `<dir>/<name>` leesbaar is.
+- Met `imagepath` ingesteld geeft een relatieve `image=`/`shapefile=`-naam die de host niet levert `Warning: Filename "<name>" is unsafe` en daarna `Warning: No or improper image="<name>" for node "<node>"` (of, voor de `shapefile=` van een eigen vorm, `Warning: No or improper shapefile="<name>" for node "<node>"`), zoals native doet wanneer geen `<dir>/<name>` leesbaar is.
+- Een naam die de host levert via de `setImageSizer`- of `ImageResolver`-hooks van de context die de layout uitvoert (of de globale) geeft geen van deze regels. Bij een eigen vorm wordt de knoop gedimensioneerd naar de geleverde afbeelding.
 - Een absolute naam, of een ontbrekende of lege `imagepath`, behoudt de regel `Warning: No such file or directory while opening <name>`.
 
 `GV_FILE_PATH` en `SERVER_NAME` worden niet gehonoreerd (het zijn omgevingsvariabelen en een browser heeft geen omgeving). Om relatieve paden tegen een eigen basismap of basis-URL op te lossen, zet u het voorvoegsel voor de naam in de laag die de DOT-bron opbouwt of in uw `setImageSizer`-/`ImageResolver`-callbacks.
 
-**Afbeeldingstype.** Net als native wordt het type afgeleid uit de bytes die de resolver teruggeeft, via magic-number-herkenning: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, en svg alleen als de bytes beginnen met een `<?xml`-declaratie gevolgd door `<svg`. Alles korter dan 20 bytes wordt niet herkend. Bij niet-herkende bytes wordt niets getekend en wordt de afbeelding bij het renderen niet gedimensioneerd. Native waarschuwt daarnaast met `Warning: "<name>" was not found as a file or as a shape library member`; de port drukt die regel nog niet af (zie [Bekende afwijkingen](/nl/divergences)).
+**Afbeeldingstype.** Net als native wordt het type afgeleid uit de bytes die de resolver teruggeeft, via magic-number-herkenning: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, en svg alleen als de bytes beginnen met een `<?xml`-declaratie gevolgd door `<svg`. Alles korter dan 20 bytes wordt niet herkend. Bij niet-herkende bytes wordt niets getekend en wordt de afbeelding bij het renderen niet gedimensioneerd. Net als native waarschuwt de port ook met `Warning: "<name>" was not found as a file or as a shape library member`, gevolgd door de regel `No or improper image=`.
 
 `-Tjson` waarschuwt met `Warning: No loadimage plugin for "png:json"` (het type varieert) één keer per getekende afbeelding, zoals native, omdat native geen json-afbeeldingsloader heeft. `svg`, `xdot`, `dot`, `plain` en `cmapx` drukken niets af voor een herkend type. Een afbeelding die alleen via de sizer bekend is, heeft geen type en drukt dus geen loadimage-waarschuwing af (zie [Bekende afwijkingen](/nl/divergences)).
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1277,11 +1277,8 @@ farklıdır. `v2-silent-gaps` görevi tarafından bulundu
   V8'in `Math.cos`'undan 1 ulp farklıdır; fdp'nin kuvvet döngüsü bunu yaklaşık 3
   inç'e yükseltir. Apple'ın `cos`'u, `hypot`'un olduğu gibi kısa bir modelden yeniden
   üretilemez.
-- **Portun tanımladığı yerel çökmeler.** Yerel Graphviz, `model=mds` ve bir kenar
-  `len`'i olan neato `mode=KK`'da (`mds_model`, `GD_dist`'i 1 tabanlı bir sıra
-  numarasıyla dizinler: yığın taşması) ve bağlantısız bir grafla `model=circuit`'te
-  139 koduyla çıkar. Port ilk durumda aralık dışı hücreleri bırakır, ikincisinde
-  en kısa yollara geri döner; karşılaştırılacak yerel çıktı yoktur.
+- **Portun tanımladığı yerel çökmeler.** Yerel Graphviz, neato `mode=KK` ile `model=mds` ve `len` taşıyan bir kenar durumunda neredeyse her çalıştırmada 139 koduyla çıkar (yaklaşık 1500 çalıştırmada 1 hayatta kalan; `mds_model`, `GD_dist` dizisini 1 tabanlı bir sıra numarasıyla indeksler: yığın taşması). Port aralık dışı hücreleri atar ve sonucu o hayatta kalanla 0,01 toleransla eşleşir. `circuit_model` 1 tabanlı `AGSEQ` ile indeksler (`circuit.c:46`); bu yüzden matrisinin 0. satırı hiç yazılmaz ve matris, bağlantılı olsun olmasın her grafikte tekildir: yerel `mode=KK` ile `model=circuit` hiçbir zaman circuit yerleşimi üretmez. İşlem hayatta kalırsa `Warning: graph <name> is disconnected. Hence, the circuit model` yazdırır ve en kısa yollara geri döner; son oluşturulan düğümün kenarı olduğunda aynı hata satır işaretçisi dizisinin ötesini okur, bu yüzden yerel sürüm çoğunlukla 139 ile çıkar (deneme grafiğinde 4 çalıştırmanın yaklaşık 3'ü). Port her zaman hayatta kalan yolu izler: uyarı, ardından en kısa yollar; graf bağlantılı olsun olmasın. `pack=true` ile yerel sürüm her çalıştırmada çöktü (iki grafın her birinde 3000'den fazla çalıştırmada 0 hayatta kalan); karar gereği port, her bileşen için kendi adı altında (`_neato_cc0`, `_neato_cc1`, ...) uyarır, en kısa yolları kullanır ve paketler. Bu birleşim için yerel çıktı yoktur; yerleşim, aynı graf için yerel `model=shortpath` ile aynıdır.
+- **VPSC eşitlik sırası, yığın adresini değil oluşturulma sırasını izler.** Yerel `IncVPSC::splitBlocks`, yığın adresine göre sıralı bir `std::set<Block*>` içine eleman eklerken onu dolaşır ve `CmpNodePos` konum eşitliklerini adresle bozar; bu yüzden `overlap=vpsc|ipsep` ve kısıtlı `mode=ipsep` için yerel çıktı, konumlar eşit olduğunda çalıştırmadan çalıştırmaya değişir (bir durumda 300 çalıştırmada 21 farklı sonuç çıktı). Port eşitlikleri oluşturulma sırasına göre sıralar ve yeni blokları her zaman ziyaret eder; bu yüzden çıktısı belirlenimcidir. Denetlenen eşitlik durumlarında örneklenmiş bir yerel çalıştırmaya eşittir; yalnızca 40 düğümlü bir durum, örneklenen 29 yerel sonucun hiçbiriyle eşleşmedi (takip maddesi 110).
 
 ---
 
@@ -1330,7 +1327,7 @@ Bunlar hata değil, bilinçli kapsam sınırlarıdır. Kitaplık **SVG**'yi hede
   geri çağrılarla (örn. `setImageSizer`) değiştirilir. Davranış korunur; mekanizma
   farklıdır.
 
-- **Görüntü türü ve `imagepath` uyarıları.** Yalnızca `setImageSizer` üzerinden bilinen bir görüntünün (resolver baytları olmadan) türü yoktur; bu nedenle `No loadimage plugin` uyarısını yazdırmaz. Yerel sürüm dosyayı her zaman okur ve bu yüzden türü her zaman bilir. Tanınmayan resolver baytları için yerel sürüm ayrıca `Warning: "<name>" was not found as a file or as a shape library member` uyarısını verir; port bu satırı henüz yazdırmaz (takip maddesi 104, layout zamanı bağlantısı). `GV_FILE_PATH` ve `SERVER_NAME` dikkate alınmaz ve ana bilgisayara `imagepath` `<dir>/<name>` adı hiçbir zaman sorulmaz.
+- **Görüntü türü ve `imagepath` uyarıları.** Yalnızca `setImageSizer` üzerinden bilinen bir görüntünün (resolver baytları olmadan) türü yoktur; bu nedenle `No loadimage plugin` uyarısını yazdırmaz. Yerel sürüm dosyayı her zaman okur ve bu yüzden türü her zaman bilir. `GV_FILE_PATH` ve `SERVER_NAME` dikkate alınmaz ve ana bilgisayara `imagepath` `<dir>/<name>` adı hiçbir zaman sorulmaz.
 
 ---
 

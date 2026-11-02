@@ -1,5 +1,5 @@
 ---
-sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
+sourceHash: 5adedf304ed3717b602b9f4cc54a10f403c3ab37a8306bc067767eac53a013c5
 ---
 # Imagini
 
@@ -193,12 +193,13 @@ transmiterea `src` brut — încorporarea se degradează grațios, nu aruncă ni
 
 Atributul de graf `imagepath` din Graphviz nativ este o listă de directoare separate prin două puncte, în care se caută numele relative din `image=` și `shapefile=`. Portul nu citește niciodată singur fișiere imagine, deci nu le parcurge niciodată și nu cere niciodată gazdei `dir/name`: `setImageSizer` și `ImageResolver` primesc întotdeauna numele brut, exact cum a fost scris. Portul folosește `imagepath` doar pentru a decide ce avertisment se afișează atunci când gazda nu furnizează un nume relativ:
 
-- Cu `imagepath` setat, un nume relativ din `image=`/`shapefile=` pe care gazda nu îl furnizează produce `Warning: Filename "<name>" is unsafe` și apoi `Warning: No or improper image="<name>" for node "<node>"`, ca versiunea nativă atunci când niciun `<dir>/<name>` nu poate fi citit.
+- Cu `imagepath` setat, un nume relativ din `image=`/`shapefile=` pe care gazda nu îl furnizează produce `Warning: Filename "<name>" is unsafe` și apoi `Warning: No or improper image="<name>" for node "<node>"` (sau, pentru `shapefile=` al unei forme personalizate, `Warning: No or improper shapefile="<name>" for node "<node>"`), ca versiunea nativă atunci când niciun `<dir>/<name>` nu poate fi citit.
+- Un nume pe care gazda îl furnizează prin cârligele `setImageSizer` sau `ImageResolver` ale contextului care face aranjarea (sau prin cele globale) nu afișează niciuna dintre aceste linii. Pentru o formă personalizată, nodul este dimensionat după imaginea furnizată.
 - Un nume absolut, sau un `imagepath` lipsă ori gol, păstrează linia `Warning: No such file or directory while opening <name>`.
 
 `GV_FILE_PATH` și `SERVER_NAME` nu sunt respectate (sunt variabile de mediu, iar un browser nu are mediu). Pentru a rezolva căile relative față de propriul director de bază sau URL, adăugați prefixul la nume în stratul care construiește sursa DOT sau în callback-urile `setImageSizer`/`ImageResolver`.
 
-**Tipul imaginii.** Ca în versiunea nativă, tipul este luat din octeții returnați de resolver, prin recunoașterea numerelor magice: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, iar svg doar când octeții încep cu o declarație `<?xml` urmată de `<svg`. Orice mai scurt de 20 de octeți este nerecunoscut. Pentru octeți nerecunoscuți nu se desenează nimic, iar imaginea nu este dimensionată la randare. Versiunea nativă avertizează în plus cu `Warning: "<name>" was not found as a file or as a shape library member`; portul nu afișează încă această linie (vezi [Divergențe cunoscute](/ro/divergences)).
+**Tipul imaginii.** Ca în versiunea nativă, tipul este luat din octeții returnați de resolver, prin recunoașterea numerelor magice: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, iar svg doar când octeții încep cu o declarație `<?xml` urmată de `<svg`. Orice mai scurt de 20 de octeți este nerecunoscut. Pentru octeți nerecunoscuți nu se desenează nimic, iar imaginea nu este dimensionată la randare. Ca în varianta nativă, portul avertizează și cu `Warning: "<name>" was not found as a file or as a shape library member`, urmat de linia `No or improper image=`.
 
 `-Tjson` avertizează cu `Warning: No loadimage plugin for "png:json"` (tipul variază) o dată pentru fiecare imagine desenată, ca versiunea nativă, care nu are încărcător de imagini json. `svg`, `xdot`, `dot`, `plain` și `cmapx` nu afișează nimic pentru un tip recunoscut. O imagine cunoscută doar prin sizer nu are tip și deci nu afișează niciun avertisment loadimage (vezi [Divergențe cunoscute](/ro/divergences)).
 

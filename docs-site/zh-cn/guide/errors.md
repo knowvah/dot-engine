@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -109,10 +109,7 @@ DOT 作者做任何修改，都无法可靠地避免 `InternalError`。
 
 | 引擎 | 属性与值 | 触发条件 | 所需的 Graphviz 功能 |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | 仅当 `model` 为 `subset` 或 `circuit` 时（在图有 2 个及以上节点且 `maxiter` 为正之后） | 分层应力优化（stress majorization）（`stress_majorization_with_hierarchy`） |
-| neato | `start=self` | `mode` 为 `major`（默认值）。在 `mode=ipsep` 下会被静默接受，布局与 Graphviz 一样使用随机起点 | 智能初始化（`smart_ini`）。在 `mode=KK` 或 `mode=sgd` 下，它每次渲染记录一次 `start=0 not supported with mode=self - ignored`，与 Graphviz 一致 |
-| neato | `model=subset` | `mode` 为 `major` 或 `KK`。 在 `mode=ipsep` 下不会触发。 | 子集距离模型 |
-| neato | `model=circuit` | `mode` 为 `major`，或在连通图上为 `KK`。在非连通图上，没有 `pack` 或 `packmode` 的 `KK` 会记录一条警告并使用最短路径，与 Graphviz 一致。 在 `mode=ipsep` 下不会触发。 | 电路距离模型（`circuit_model`） |
+| neato | `start=self` | `mode` 为 `major`（默认值）。在 `mode=ipsep` 下会被静默接受，布局与 Graphviz 一样使用随机起点 | 智能初始化（`smart_ini`）。在 `mode=KK` 或 `mode=sgd` 下，它每次渲染记录一次 `Warning: start=0 not supported with mode=self - ignored`，与 Graphviz 一致 |
 | neato、twopi、circo、sfdp | `overlap=voronoi`（不区分大小写） | 图（对 twopi 是一个连通分量；对 sfdp 是整个图或一个连通分量）有 2 个及以上节点，且 Graphviz 自己的重叠计数（`countOverlap`，它检测节点多边形）大于 0。仅边界框相接触的节点不会触发。circo 仅在单连通分量的图上才会到达这里（在多个连通分量上，Graphviz 同样忽略 `overlap`）。sfdp 仅在 `overlap` 不是 prism 模式时才会到达这里 | Voronoi 重叠消除（`vAdjust`） |
 | fdp | `overlap=` 为 `voronoi`、`oscale`、`vpsc`、`ipsep`、`ortho`、`ortho_yx`、`orthoxy`、`orthoyx`、`portho`、`portho_yx`、`porthoxy`、`porthoyx` 之一 | 在 `N:` 力迭代尝试之后才到达该模式，即这些尝试没有消除所有重叠时（或 `N` 为 0 或缺省）。允许 `N:` 前缀，例如 `3:voronoi` | 对应的 `removeOverlapWith` 调整算法 |
 | fdp | `splines=compound` | 始终，无论有无簇 | 避开簇的边路由（`compoundEdges`） |
@@ -125,7 +122,7 @@ DOT 作者做任何修改，都无法可靠地避免 `InternalError`。
 
 大多数消息的形式为 `<attribute>=<value>: <what> is not supported yet`。例外是 `smoothing` 和 `rotation`（它们指出缺失的例程）、fdp 各行以及形状这一行，它们使用上面列出的措辞。请根据 `err.code === 'UNSUPPORTED_FEATURE'` 分支处理，而不要根据文本。
 
-选择默认值的取值（例如 `quadtree=normal`、`true`、`yes`、`1`），以及 Graphviz 接受且已移植的取值（例如 `start=regular`、`start=random`、`model=mds`、`mode=KK`、`mode=sgd`、`overlap=prism`、`scale` 系列，以及在 neato、twopi、circo 和 sfdp 上的 `overlap=oscale`、`vpsc` 和 `ortho*` / `portho*` 模式）都会正常渲染。
+选择默认值的取值（例如 `quadtree=normal`、`true`、`yes`、`1`），以及 Graphviz 接受且已移植的取值（例如 `start=regular`、`start=random`、`mode=hier`、`model=mds`、`model=subset`、`model=circuit`、`mode=KK`、`mode=sgd`、`overlap=prism`、`scale` 系列，以及在 neato、twopi、circo 和 sfdp 上的 `overlap=oscale`、`vpsc` 和 `ortho*` / `portho*` 模式）都会正常渲染。
 
 ## 按函数的参考
 

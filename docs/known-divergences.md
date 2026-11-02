@@ -1319,11 +1319,32 @@ differs from native Graphviz. Found by the `v2-silent-gaps` mission
   V8's `Math.cos`; fdp's force loop amplifies that to about 3 in. Apple's
   `cos` is not reproducible from a short model the way `hypot` is.
 - **Native crashes the port defines.** Native Graphviz exits 139 on neato
-  `mode=KK` with `model=mds` and an edge `len` (`mds_model` indexes `GD_dist`
-  by a 1-based sequence number: heap overflow), and on `model=circuit` with a
-  disconnected graph. The port drops out-of-range cells in the first case and
-  falls back to shortest paths in the second; there is no native output to
-  compare against.
+  `mode=KK` with `model=mds` and an edge `len` in nearly every run (1 survivor
+  in about 1500; `mds_model` indexes `GD_dist` by a 1-based sequence number:
+  heap overflow). The port drops out-of-range cells, and its result matches
+  that survivor at 0.01. `circuit_model` indexes by the 1-based `AGSEQ`
+  (`circuit.c:46`), so row 0 of its matrix is never written and the matrix is
+  singular on every graph, connected or not: native `mode=KK` `model=circuit`
+  never produces a circuit layout. When the process survives, it prints
+  `Warning: graph <name> is disconnected. Hence, the circuit model` and falls
+  back to shortest paths; the same bug reads past the row-pointer array when
+  the last-created node has an edge, so native usually exits 139 (about 3 runs
+  in 4 on the probe graph). The port always takes the surviving path: the
+  warning, then shortest paths, connected or not. With `pack=true` native
+  crashed on every run (0 survivors in 3000+ on each of two graphs); by
+  decision the port warns per component under its own name (`_neato_cc0`,
+  `_neato_cc1`, ...), uses shortest paths and packs. There is no native output
+  for that combination; the layout equals native's `model=shortpath` for the
+  same graph.
+- **VPSC tie order follows creation order, not heap address.** Native
+  `IncVPSC::splitBlocks` walks a `std::set<Block*>` ordered by heap address
+  while inserting into it, and `CmpNodePos` breaks position ties by address,
+  so native output for `overlap=vpsc|ipsep` and constrained `mode=ipsep`
+  varies from run to run when positions tie (one case gave 21 distinct
+  results in 300 runs). The port orders ties by creation order and always
+  visits new blocks, so its output is deterministic. It equals a sampled native
+  run on the tie cases checked, except one 40-node case that matched none of 29
+  sampled native results (follow-up 110).
 
 ---
 
@@ -1373,7 +1394,7 @@ These are deliberate scope boundaries, not bugs. The library targets **SVG**
   filesystem reads (fonts, images, config) are replaced by caller-supplied
   callbacks (e.g. `setImageSizer`). Behavior is preserved; the mechanism differs.
 
-- **Image type and `imagepath` warnings.** An image known only through `setImageSizer` (no resolver bytes) has no type, so it prints no `No loadimage plugin` warning; native always reads the file and so always knows the type. For unrecognized resolver bytes native also warns `Warning: "<name>" was not found as a file or as a shape library member`; the port does not print that line yet (follow-up 104, layout-time wiring). `GV_FILE_PATH` and `SERVER_NAME` are not honoured, and the host is never asked for the `imagepath` `<dir>/<name>` name.
+- **Image type and `imagepath` warnings.** An image known only through `setImageSizer` (no resolver bytes) has no type, so it prints no `No loadimage plugin` warning; native always reads the file and so always knows the type. `GV_FILE_PATH` and `SERVER_NAME` are not honoured, and the host is never asked for the `imagepath` `<dir>/<name>` name.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
+sourceHash: 5adedf304ed3717b602b9f4cc54a10f403c3ab37a8306bc067767eac53a013c5
 ---
 # Görseller
 
@@ -189,12 +189,13 @@ gömme zarifçe geriler, hiçbir zaman hata fırlatmaz.
 
 Yerel Graphviz'in `imagepath` çizge niteliği, göreli `image=` ve `shapefile=` adlarının aranacağı, iki nokta üst üste ile ayrılmış bir dizin listesidir. Port görüntü dosyalarını asla kendisi okumaz; bu yüzden bu dizinleri hiç taramaz ve ana bilgisayardan hiçbir zaman `dir/name` istemez: `setImageSizer` ve `ImageResolver` her zaman ham adı, yazıldığı gibi alır. Port `imagepath` değerini yalnızca, ana bilgisayar göreli bir ad sağlamadığında hangi uyarının yazdırılacağına karar vermek için kullanır:
 
-- `imagepath` ayarlıysa, ana bilgisayarın sağlamadığı göreli bir `image=`/`shapefile=` adı, yerel sürümün hiçbir `<dir>/<name>` okunamadığında yaptığı gibi önce `Warning: Filename "<name>" is unsafe`, ardından `Warning: No or improper image="<name>" for node "<node>"` uyarısını verir.
+- `imagepath` ayarlıysa, ana bilgisayarın sağlamadığı göreli bir `image=`/`shapefile=` adı, yerel sürümün hiçbir `<dir>/<name>` okunamadığında yaptığı gibi önce `Warning: Filename "<name>" is unsafe`, ardından `Warning: No or improper image="<name>" for node "<node>"` (veya özel bir şeklin `shapefile=` değeri için `Warning: No or improper shapefile="<name>" for node "<node>"`) uyarısını verir.
+- Ana makinenin, yerleşimi yapan bağlamın `setImageSizer` veya `ImageResolver` kancaları (ya da genel olanlar) üzerinden sağladığı bir ad, bu satırların hiçbirini yazdırmaz. Özel bir şekilde düğüm, sağlanan görüntüye göre boyutlandırılır.
 - Mutlak bir ad ya da eksik veya boş bir `imagepath`, `Warning: No such file or directory while opening <name>` satırını korur.
 
 `GV_FILE_PATH` ve `SERVER_NAME` dikkate alınmaz (bunlar ortam değişkenleridir ve bir tarayıcıda ortam yoktur). Göreli yolları kendi taban dizininize veya URL'nize göre çözmek için, adın önüne öneki DOT kaynağını oluşturan katmanda ya da `setImageSizer`/`ImageResolver` geri çağrılarınızda ekleyin.
 
-**Görüntü türü.** Yerel sürümde olduğu gibi tür, resolver'ın döndürdüğü baytlardan sihirli sayı tanıma ile belirlenir: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp ve svg yalnızca baytlar bir `<?xml` bildirimiyle başlayıp ardından `<svg` geldiğinde. 20 bayttan kısa her şey tanınmaz. Tanınmayan baytlar için hiçbir şey çizilmez ve görüntü, render sırasında boyutlandırılmaz. Yerel sürüm ayrıca `Warning: "<name>" was not found as a file or as a shape library member` uyarısını verir; port bu satırı henüz yazdırmaz (bkz. [Bilinen farklılıklar](/tr/divergences)).
+**Görüntü türü.** Yerel sürümde olduğu gibi tür, resolver'ın döndürdüğü baytlardan sihirli sayı tanıma ile belirlenir: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp ve svg yalnızca baytlar bir `<?xml` bildirimiyle başlayıp ardından `<svg` geldiğinde. 20 bayttan kısa her şey tanınmaz. Tanınmayan baytlar için hiçbir şey çizilmez ve görüntü, render sırasında boyutlandırılmaz. Yerel sürüm gibi port da `Warning: "<name>" was not found as a file or as a shape library member` ile uyarır, ardından `No or improper image=` satırı gelir.
 
 `-Tjson`, yerel sürümde olduğu gibi çizilen her görüntü için bir kez `Warning: No loadimage plugin for "png:json"` uyarısı verir (tür değişir); çünkü yerel sürümde json görüntü yükleyicisi yoktur. `svg`, `xdot`, `dot`, `plain` ve `cmapx` tanınan bir tür için hiçbir şey yazdırmaz. Yalnızca sizer üzerinden bilinen görüntünün türü yoktur; bu nedenle loadimage uyarısı yazdırmaz (bkz. [Bilinen farklılıklar](/tr/divergences)).
 

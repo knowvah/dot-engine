@@ -1,5 +1,5 @@
 ---
-sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
+sourceHash: 5adedf304ed3717b602b9f4cc54a10f403c3ab37a8306bc067767eac53a013c5
 ---
 # Képek
 
@@ -198,12 +198,13 @@ kivételt.
 
 A natív Graphviz `imagepath` gráfattribútuma kettősponttal elválasztott könyvtárlista, amelyben a relatív `image=` és `shapefile=` neveket keresi. A port soha nem olvas maga képfájlokat, ezért soha nem keres ezekben a könyvtárakban, és soha nem kéri a gazdától a `dir/name` értéket: a `setImageSizer` és az `ImageResolver` mindig a nyers nevet kapja, pontosan úgy, ahogy le van írva. A port az `imagepath` értéket csak annak eldöntésére használja, hogy melyik figyelmeztetés kerüljön kiírásra, ha a gazda nem ad meg relatív nevet:
 
-- Beállított `imagepath` esetén a gazda által nem megadott relatív `image=`/`shapefile=` név a `Warning: Filename "<name>" is unsafe` majd a `Warning: No or improper image="<name>" for node "<node>"` figyelmeztetést váltja ki, ahogy a natív is teszi, ha egyetlen `<dir>/<name>` sem olvasható.
+- Beállított `imagepath` esetén a gazda által nem megadott relatív `image=`/`shapefile=` név a `Warning: Filename "<name>" is unsafe` majd a `Warning: No or improper image="<name>" for node "<node>"` (vagy egyéni alakzat `shapefile=` értékénél `Warning: No or improper shapefile="<name>" for node "<node>"`) figyelmeztetést váltja ki, ahogy a natív is teszi, ha egyetlen `<dir>/<name>` sem olvasható.
+- Az a név, amelyet a gazda az elrendezést végző kontextus `setImageSizer` vagy `ImageResolver` horgain (vagy a globálisakon) keresztül ad meg, egyik fenti sort sem írja ki. Egyéni alakzatnál a csomópont mérete a megadott képből adódik.
 - Abszolút név, illetve hiányzó vagy üres `imagepath` esetén a `Warning: No such file or directory while opening <name>` sor marad.
 
 A `GV_FILE_PATH` és a `SERVER_NAME` nem érvényesül (környezeti változók, a böngészőnek pedig nincs környezete). A relatív útvonalak saját alapkönyvtárhoz vagy alap-URL-hez való feloldásához a nevet a DOT-forrást összeállító rétegben, vagy a `setImageSizer`/`ImageResolver` visszahívásokban lássa el előtaggal.
 
-**Képtípus.** A natívhoz hasonlóan a típust a resolver által visszaadott bájtokból határozza meg, mágikus számok felismerésével: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, az svg pedig csak akkor, ha a bájtok `<?xml` deklarációval kezdődnek, amelyet `<svg` követ. Bármi, ami 20 bájtnál rövidebb, felismerhetetlen. Felismerhetetlen bájtoknál semmi sem rajzolódik, és a kép méretét renderelés közben nem határozza meg. A natív ezenkívül a `Warning: "<name>" was not found as a file or as a shape library member` sorral is figyelmeztet; a port ezt a sort még nem írja ki (lásd [Ismert eltérések](/hu/divergences)).
+**Képtípus.** A natívhoz hasonlóan a típust a resolver által visszaadott bájtokból határozza meg, mágikus számok felismerésével: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, az svg pedig csak akkor, ha a bájtok `<?xml` deklarációval kezdődnek, amelyet `<svg` követ. Bármi, ami 20 bájtnál rövidebb, felismerhetetlen. Felismerhetetlen bájtoknál semmi sem rajzolódik, és a kép méretét renderelés közben nem határozza meg. A natívhoz hasonlóan a port is figyelmeztet a következővel: `Warning: "<name>" was not found as a file or as a shape library member`, majd jön a `No or improper image=` sor.
 
 A `-Tjson` a `Warning: No loadimage plugin for "png:json"` sorral figyelmeztet (a típus változik) rajzolt képenként egyszer, ahogy a natív is, mert annak nincs json képbetöltője. Az `svg`, `xdot`, `dot`, `plain` és `cmapx` felismert típusnál nem ír ki semmit. A csak a sizeren át ismert képnek nincs típusa, ezért nem ír ki loadimage figyelmeztetést (lásd [Ismert eltérések](/hu/divergences)).
 

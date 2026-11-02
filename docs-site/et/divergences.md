@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1279,12 +1279,8 @@ erineb natiivsest Graphvizist. Leitud missiooniga `v2-silent-gaps`
   `T_Wd * cos(alpha)` abil, ja macOS-i libm `cos(-2.3840764867756761)` on 1 ulp
   V8 `Math.cos`-ist; fdp jõutsükkel võimendab selle umbes 3 tollini. Apple'i
   `cos` ei ole lühikesest mudelist reprodutseeritav nii nagu `hypot`.
-- **Natiivsed krahhid, mille port määratleb.** Natiivne Graphviz väljub koodiga 139 neato
-  `mode=KK` korral `model=mds`-iga ja serva `len`-iga (`mds_model` indekseerib `GD_dist`
-  1-põhise järjenumbriga: kuhja ülevool), ja `model=circuit` korral
-  mitteseotud graafiga. Port jätab esimesel juhul vahemikust väljas olevad lahtrid maha ja
-  langeb teisel juhul tagasi lühimatele teedele; natiivset väljundit, millega
-  võrrelda, pole.
+- **Natiivsed krahhid, mille port määratleb.** Natiivne Graphviz lõpetab neato `mode=KK` korral koos `model=mds` ja `len`-iga servaga peaaegu igal käivitusel koodiga 139 (1 ellujääja umbes 1500-st; `mds_model` indekseerib `GD_dist` 1-põhise järjenumbriga: kuhja ületäitumine). Port jätab vahemikust väljas olevad lahtrid ära ja tema tulemus ühtib selle ellujääjaga täpsusega 0,01. `circuit_model` indekseerib 1-põhise `AGSEQ` järgi (`circuit.c:46`), seega maatriksi rida 0 ei kirjutata kunagi ja maatriks on singulaarne igal graafil, sidusal või mitte: natiivne `mode=KK` koos `model=circuit` ei anna kunagi circuit-paigutust. Kui protsess jääb ellu, trükib see `Warning: graph <name> is disconnected. Hence, the circuit model` ja langeb tagasi lühimatele teedele; sama viga loeb ridade viitade massiivist kaugemale, kui viimati loodud sõlmel on serv, mistõttu natiivne lõpetab tavaliselt koodiga 139 (umbes 3 käivitust 4-st proovigraafil). Port valib alati ellujäämistee: hoiatus, seejärel lühimad teed, sidusal graafil või mitte. Valikuga `pack=true` jooksis natiivne iga kord kokku (0 ellujääjat üle 3000 käivituse kummalgi kahest graafist); otsuse kohaselt hoiatab port komponendi kaupa oma nime all (`_neato_cc0`, `_neato_cc1`, ...), kasutab lühimaid teid ja pakib. Selle kombinatsiooni jaoks natiivset väljundit ei ole; paigutus võrdub natiivse `model=shortpath` tulemusega sama graafi puhul.
+- **VPSC viigijärjestus järgib loomisjärjestust, mitte kuhja aadressi.** Natiivne `IncVPSC::splitBlocks` käib läbi kuhja aadressi järgi järjestatud `std::set<Block*>`, lisades samal ajal sellesse elemente, ja `CmpNodePos` lahendab asukohaviigid aadressi järgi, mistõttu natiivne väljund valikute `overlap=vpsc|ipsep` ja piiratud `mode=ipsep` korral muutub võrdsete asukohtade puhul käivituselt käivitusele (üks juhtum andis 300 käivitusel 21 erinevat tulemust). Port järjestab viigid loomisjärjestuse järgi ja külastab alati uusi blokke, mistõttu tema väljund on deterministlik. See ühtib valimi natiivse käivitusega kontrollitud viigijuhtudel, välja arvatud üks 40 sõlmega juhtum, mis ei ühtinud ühegi 29 valimi natiivse tulemusega (järeltöö 110).
 
 ---
 
@@ -1333,7 +1329,7 @@ Need on tahtlikud ulatuse piirid, mitte vead. Teek sihib **SVG-d**
   failisüsteemi lugemised (fondid, pildid, konfiguratsioon) on asendatud kutsuja antud
   tagasikutsetega (nt `setImageSizer`). Käitumine säilib; mehhanism erineb.
 
-- **Pildi tüüp ja `imagepath`-i hoiatused.** Ainult `setImageSizer` kaudu tuntud pildil (ilma resolveri baitideta) pole tüüpi, seega ei trüki see hoiatust `No loadimage plugin`; natiivne loeb faili alati ja teab seetõttu tüüpi alati. Tundmatute resolveri baitide puhul hoiatab natiivne lisaks reaga `Warning: "<name>" was not found as a file or as a shape library member`; port seda rida veel ei trüki (jätkupunkt 104, ühendamine paigutuse ajal). `GV_FILE_PATH` ja `SERVER_NAME` ei ole arvestatud ning hostilt ei küsita kunagi `imagepath`-i `<dir>/<name>`-nime.
+- **Pildi tüüp ja `imagepath`-i hoiatused.** Ainult `setImageSizer` kaudu tuntud pildil (ilma resolveri baitideta) pole tüüpi, seega ei trüki see hoiatust `No loadimage plugin`; natiivne loeb faili alati ja teab seetõttu tüüpi alati. `GV_FILE_PATH` ja `SERVER_NAME` ei ole arvestatud ning hostilt ei küsita kunagi `imagepath`-i `<dir>/<name>`-nime.
 
 ---
 

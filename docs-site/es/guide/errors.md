@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,10 +131,7 @@ o cámbialo por un valor admitido.
 
 | Motor | Atributo y valor | Se activa cuando | Función de Graphviz necesaria |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Solo cuando `model` es `subset` o `circuit` (una vez que el grafo tiene 2 o más nodos y `maxiter` es positivo) | Mayorización de estrés jerárquica (`stress_majorization_with_hierarchy`) |
-| neato | `start=self` | `mode` es `major` (el valor predeterminado). Con `mode=ipsep` se acepta en silencio y el layout usa el inicio aleatorio, como Graphviz | Inicialización inteligente (`smart_ini`). Con `mode=KK` o `mode=sgd` registra `start=0 not supported with mode=self - ignored` una vez por renderizado, como hace Graphviz |
-| neato | `model=subset` | `mode` es `major` o `KK`. No se activa con `mode=ipsep`. | El modelo de distancia por subconjunto |
-| neato | `model=circuit` | `mode` es `major`, o `KK` en un grafo conexo. `KK` en un grafo no conexo sin `pack` ni `packmode` registra una advertencia y usa caminos más cortos, como hace Graphviz. No se activa con `mode=ipsep`. | El modelo de distancia de circuito (`circuit_model`) |
+| neato | `start=self` | `mode` es `major` (el valor predeterminado). Con `mode=ipsep` se acepta en silencio y el layout usa el inicio aleatorio, como Graphviz | Inicialización inteligente (`smart_ini`). Con `mode=KK` o `mode=sgd` registra `Warning: start=0 not supported with mode=self - ignored` una vez por renderizado, como hace Graphviz |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (sin distinguir mayúsculas) | El grafo (para twopi, una componente; para sfdp, el grafo completo o una componente) tiene 2 o más nodos y el propio recuento de solapamientos de Graphviz (`countOverlap`, que comprueba los polígonos de los nodos) es mayor que 0. Los nodos que solo se tocan por su caja delimitadora no lo activan. circo solo llega a él con un grafo de una sola componente (con varias componentes Graphviz también ignora `overlap`). sfdp solo llega a él cuando `overlap` no es un modo prism | Eliminación de solapamientos de Voronoi (`vAdjust`) |
 | fdp | `overlap=` uno de `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | El modo se alcanza tras los intentos de iteración de fuerzas `N:`, que es cuando esos intentos no eliminan todos los solapamientos (o `N` es 0 o está ausente). Se permite el prefijo `N:`, por ejemplo `3:voronoi` | El algoritmo de ajuste `removeOverlapWith` correspondiente |
 | fdp | `splines=compound` | Siempre, con o sin clústeres | Enrutamiento de aristas que evita clústeres (`compoundEdges`) |
@@ -153,7 +150,7 @@ la fila de la forma, que usan las redacciones indicadas arriba. Bifurca según
 
 Los valores que seleccionan el predeterminado (por ejemplo `quadtree=normal`,
 `true`, `yes`, `1`) y los valores aceptados por Graphviz que sí están portados
-(por ejemplo `start=regular`, `start=random`, `model=mds`, `mode=KK`,
+(por ejemplo `start=regular`, `start=random`, `mode=hier`, `model=mds`, `model=subset`, `model=circuit`, `mode=KK`,
 `mode=sgd`, `overlap=prism`, la familia `scale` y, en neato, twopi, circo y
 sfdp, `overlap=oscale`, `vpsc` y los modos `ortho*` / `portho*`) se renderizan
 con normalidad.

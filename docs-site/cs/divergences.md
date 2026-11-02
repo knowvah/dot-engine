@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1285,12 +1285,8 @@ liší se od nativního Graphviz. Nalezeno misí `v2-silent-gaps`
   `T_Wd * cos(alpha)` a `cos(-2.3840764867756761)` z macOS libm se od
   `Math.cos` ve V8 liší o 1 ulp; silová smyčka fdp to zesílí na asi 3 palce. `cos`
   od Apple není reprodukovatelný z krátkého modelu tak, jako `hypot`.
-- **Nativní pády, které portace definuje.** Nativní Graphviz končí s kódem 139 u neato
-  `mode=KK` s `model=mds` a hranou `len` (`mds_model` indexuje `GD_dist`
-  jednobázovým pořadovým číslem: přetečení haldy) a u `model=circuit` s
-  nesouvislým grafem. Portace v prvním případě zahazuje buňky mimo rozsah a
-  ve druhém se vrací k nejkratším cestám; není s čím nativní výstup
-  porovnat.
+- **Nativní pády, které portace definuje.** Nativní Graphviz končí s kódem 139 u neato `mode=KK` s `model=mds` a hranou `len` téměř při každém spuštění (1 přeživší z asi 1500; `mds_model` indexuje `GD_dist` jednobázovým pořadovým číslem: přetečení haldy). Portace zahazuje buňky mimo rozsah a její výsledek se s tímto přeživším shoduje v toleranci 0,01. `circuit_model` indexuje jednobázovým `AGSEQ` (`circuit.c:46`), takže řádek 0 jeho matice se nikdy nezapíše a matice je singulární u každého grafu, souvislého i nesouvislého: nativní `mode=KK` s `model=circuit` nikdy nevytvoří rozložení circuit. Když proces přežije, vypíše `Warning: graph <name> is disconnected. Hence, the circuit model` a vrátí se k nejkratším cestám; táž chyba čte za polem ukazatelů řádků, když má naposledy vytvořený uzel hranu, takže nativní program obvykle končí s kódem 139 (asi 3 spuštění ze 4 na zkušebním grafu). Portace vždy volí cestu, která přežije: varování, pak nejkratší cesty, u souvislého i nesouvislého grafu. S `pack=true` nativní program spadl při každém spuštění (0 přeživších z více než 3000 na každém ze dvou grafů); portace se podle rozhodnutí varuje pro každou komponentu pod vlastním jménem (`_neato_cc0`, `_neato_cc1`, ...), použije nejkratší cesty a komponenty sbalí. Pro tuto kombinaci neexistuje nativní výstup; rozložení se rovná nativnímu `model=shortpath` pro tentýž graf.
+- **Pořadí shod ve VPSC podle pořadí vzniku, ne podle adresy na haldě.** Nativní `IncVPSC::splitBlocks` prochází `std::set<Block*>` seřazenou podle adresy na haldě a zároveň do ní vkládá, a `CmpNodePos` rozhoduje shody pozic podle adresy, takže nativní výstup pro `overlap=vpsc|ipsep` a vázaný `mode=ipsep` se při shodě pozic mezi spuštěními liší (jeden případ dal 21 různých výsledků ve 300 spuštěních). Portace řadí shody podle pořadí vzniku a vždy navštíví nové bloky, takže její výstup je deterministický. Shoduje se s vzorkovaným nativním během u zkoumaných případů shody, kromě jednoho případu se 40 uzly, který se neshodoval s žádným z 29 vzorkovaných nativních výsledků (následná položka 110).
 
 ---
 
@@ -1339,7 +1335,7 @@ Jde o záměrné hranice rozsahu, nikoli o chyby. Knihovna cílí na **SVG**
   čtení souborového systému (písma, obrázky, konfigurace) je nahrazeno funkcemi zpětného volání
   dodanými volajícím (např. `setImageSizer`). Chování je zachováno; mechanismus se liší.
 
-- **Typ obrázku a varování `imagepath`.** Obrázek známý jen přes `setImageSizer` (bez bajtů z resolveru) nemá typ, a proto nevypisuje varování `No loadimage plugin`; nativní verze soubor vždy čte, a typ tedy vždy zná. U nerozpoznaných bajtů z resolveru nativní verze navíc varuje řádkem `Warning: "<name>" was not found as a file or as a shape library member`; port tento řádek zatím nevypisuje (navazující položka 104, zapojení v době layoutu). `GV_FILE_PATH` a `SERVER_NAME` se nerespektují a hostitele se nikdy neptá na název `<dir>/<name>` z `imagepath`.
+- **Typ obrázku a varování `imagepath`.** Obrázek známý jen přes `setImageSizer` (bez bajtů z resolveru) nemá typ, a proto nevypisuje varování `No loadimage plugin`; nativní verze soubor vždy čte, a typ tedy vždy zná. `GV_FILE_PATH` a `SERVER_NAME` se nerespektují a hostitele se nikdy neptá na název `<dir>/<name>` z `imagepath`.
 
 ---
 

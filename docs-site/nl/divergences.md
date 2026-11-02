@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1303,12 +1303,8 @@ wijkt af van native Graphviz. Gevonden door de missie `v2-silent-gaps`
   `T_Wd * cos(alpha)`, en macOS-libm `cos(-2.3840764867756761)` ligt 1 ulp van
   de `Math.cos` van V8; de krachtenlus van fdp versterkt dat tot ongeveer 3 inch. De `cos` van Apple
   is niet te reproduceren met een kort model zoals dat voor `hypot` kan.
-- **Native crashes die de port definieert.** Native Graphviz sluit af met 139 bij neato
-  `mode=KK` met `model=mds` en een kant-`len` (`mds_model` indexeert `GD_dist`
-  met een 1-gebaseerd volgnummer: heap-overloop), en bij `model=circuit` met een
-  niet-samenhangende graaf. De port laat in het eerste geval cellen buiten het bereik vallen en
-  valt in het tweede terug op kortste paden; er is geen native uitvoer om
-  mee te vergelijken.
+- **Native crashes die de port definieert.** Native Graphviz eindigt met 139 bij neato `mode=KK` met `model=mds` en een rand met `len` in vrijwel elke run (1 overlevende op ongeveer 1500; `mds_model` indexeert `GD_dist` met een 1-gebaseerd volgnummer: heap-overflow). De port laat cellen buiten bereik vallen en zijn resultaat komt op 0,01 overeen met die overlevende. `circuit_model` indexeert met de 1-gebaseerde `AGSEQ` (`circuit.c:46`), dus rij 0 van zijn matrix wordt nooit geschreven en de matrix is singulier bij elke graaf, samenhangend of niet: native `mode=KK` met `model=circuit` levert nooit een circuit-layout op. Als het proces overleeft, drukt het `Warning: graph <name> is disconnected. Hence, the circuit model` af en valt het terug op kortste paden; dezelfde fout leest voorbij de array met rijpointers wanneer de laatst aangemaakte knoop een rand heeft, dus native eindigt meestal met 139 (ongeveer 3 van de 4 runs op de proefgraaf). De port neemt altijd het overlevende pad: de waarschuwing, dan kortste paden, samenhangend of niet. Met `pack=true` crashte native bij elke run (0 overlevenden op meer dan 3000 voor elk van twee grafen); bij besluit waarschuwt de port per component onder een eigen naam (`_neato_cc0`, `_neato_cc1`, ...), gebruikt kortste paden en pakt in. Voor die combinatie bestaat geen native uitvoer; de layout is gelijk aan native `model=shortpath` voor dezelfde graaf.
+- **VPSC-gelijkstanden volgen aanmaakvolgorde, niet heap-adres.** Native `IncVPSC::splitBlocks` doorloopt een op heap-adres gesorteerde `std::set<Block*>` terwijl het er elementen in invoegt, en `CmpNodePos` beslist gelijke posities op adres, dus de native uitvoer voor `overlap=vpsc|ipsep` en beperkte `mode=ipsep` varieert van run tot run bij gelijke posities (één geval gaf 21 verschillende resultaten in 300 runs). De port ordent gelijkstanden op aanmaakvolgorde en bezoekt altijd nieuwe blokken, dus zijn uitvoer is deterministisch. Ze komt overeen met een gesamplede native run in de gecontroleerde gelijkstandgevallen, behalve één geval met 40 knopen dat met geen van 29 gesamplede native resultaten overeenkwam (vervolgpunt 110).
 
 ---
 
@@ -1359,7 +1355,7 @@ Dit zijn bewuste scope-afbakeningen, geen bugs. De bibliotheek richt zich op **S
   bestandsleesacties (lettertypen, afbeeldingen, configuratie) zijn vervangen door door de aanroeper geleverde
   callbacks (bijv. `setImageSizer`). Het gedrag blijft behouden; het mechanisme verschilt.
 
-- **Afbeeldingstype en `imagepath`-waarschuwingen.** Een afbeelding die alleen via `setImageSizer` bekend is (zonder resolver-bytes) heeft geen type en drukt dus de waarschuwing `No loadimage plugin` niet af; native leest het bestand altijd en kent het type dus altijd. Bij niet-herkende resolver-bytes waarschuwt native daarnaast met `Warning: "<name>" was not found as a file or as a shape library member`; de port drukt die regel nog niet af (vervolgpunt 104, bedrading tijdens layout). `GV_FILE_PATH` en `SERVER_NAME` worden niet gehonoreerd, en de host wordt nooit om de `<dir>/<name>`-naam van `imagepath` gevraagd.
+- **Afbeeldingstype en `imagepath`-waarschuwingen.** Een afbeelding die alleen via `setImageSizer` bekend is (zonder resolver-bytes) heeft geen type en drukt dus de waarschuwing `No loadimage plugin` niet af; native leest het bestand altijd en kent het type dus altijd. `GV_FILE_PATH` en `SERVER_NAME` worden niet gehonoreerd, en de host wordt nooit om de `<dir>/<name>`-naam van `imagepath` gevraagd.
 
 ---
 

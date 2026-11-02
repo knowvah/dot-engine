@@ -1,5 +1,5 @@
 ---
-sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
+sourceHash: 5adedf304ed3717b602b9f4cc54a10f403c3ab37a8306bc067767eac53a013c5
 ---
 # Bilder
 
@@ -193,12 +193,13 @@ oförändrade `src` — infogningen degraderar mjukt och kastar aldrig.
 
 Grafattributet `imagepath` i inbyggda Graphviz är en kolonseparerad lista över kataloger där relativa `image=`- och `shapefile=`-namn söks. Porten läser aldrig bildfiler själv, söker alltså aldrig i dem och ber aldrig värden om `dir/name`: `setImageSizer` och `ImageResolver` får alltid det råa namnet, exakt som det är skrivet. Porten använder `imagepath` bara för att avgöra vilken varning som skrivs ut när värden inte levererar ett relativt namn:
 
-- Med `imagepath` satt ger ett relativt `image=`-/`shapefile=`-namn som värden inte levererar `Warning: Filename "<name>" is unsafe` och därefter `Warning: No or improper image="<name>" for node "<node>"`, som den inbyggda gör när ingen `<dir>/<name>` går att läsa.
+- Med `imagepath` satt ger ett relativt `image=`-/`shapefile=`-namn som värden inte levererar `Warning: Filename "<name>" is unsafe` och därefter `Warning: No or improper image="<name>" for node "<node>"` (eller, för `shapefile=` på en egen form, `Warning: No or improper shapefile="<name>" for node "<node>"`), som den inbyggda gör när ingen `<dir>/<name>` går att läsa.
+- Ett namn som värden levererar via `setImageSizer`- eller `ImageResolver`-krokarna i den kontext som gör layouten (eller de globala) skriver inte ut någon av dessa rader. För en egen form dimensioneras noden efter den levererade bilden.
 - Ett absolut namn, eller ett saknat eller tomt `imagepath`, behåller raden `Warning: No such file or directory while opening <name>`.
 
 `GV_FILE_PATH` och `SERVER_NAME` respekteras inte (de är miljövariabler, och en webbläsare har ingen miljö). För att lösa relativa sökvägar mot din egen baskatalog eller bas-URL, sätt prefixet på namnet i det lager som bygger DOT-källan eller i dina `setImageSizer`-/`ImageResolver`-callbacks.
 
-**Bildtyp.** Liksom i den inbyggda tas typen från de byte som resolvern returnerar, genom igenkänning av magiska tal: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, och svg bara när byten börjar med en `<?xml`-deklaration följd av `<svg`. Allt som är kortare än 20 byte känns inte igen. För okända byte ritas ingenting och bilden storleksbestäms inte vid rendering. Den inbyggda varnar även med `Warning: "<name>" was not found as a file or as a shape library member`; porten skriver ännu inte ut den raden (se [Kända avvikelser](/sv/divergences)).
+**Bildtyp.** Liksom i den inbyggda tas typen från de byte som resolvern returnerar, genom igenkänning av magiska tal: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, och svg bara när byten börjar med en `<?xml`-deklaration följd av `<svg`. Allt som är kortare än 20 byte känns inte igen. För okända byte ritas ingenting och bilden storleksbestäms inte vid rendering. Precis som native varnar porten också med `Warning: "<name>" was not found as a file or as a shape library member`, följd av raden `No or improper image=`.
 
 `-Tjson` varnar med `Warning: No loadimage plugin for "png:json"` (typen varierar) en gång per ritad bild, som den inbyggda, eftersom den saknar json-bildladdare. `svg`, `xdot`, `dot`, `plain` och `cmapx` skriver inte ut något för en igenkänd typ. En bild som bara är känd via sizern saknar typ och skriver därför inte ut någon loadimage-varning (se [Kända avvikelser](/sv/divergences)).
 

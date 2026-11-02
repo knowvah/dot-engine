@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1313,12 +1313,8 @@ difiere de Graphviz nativo. Descubiertas por la misión `v2-silent-gaps`
   `T_Wd * cos(alpha)`, y el `cos(-2.3840764867756761)` de la libm de macOS está a 1 ulp del
   `Math.cos` de V8; el bucle de fuerzas de fdp lo amplifica hasta unas 3 pulgadas. El `cos`
   de Apple no es reproducible con un modelo corto como sí lo es `hypot`.
-- **Cuelgues nativos que el port define.** Graphviz nativo sale con 139 en neato
-  con `mode=KK` y `model=mds` y una arista con `len` (`mds_model` indexa `GD_dist`
-  con un número de secuencia basado en 1: desbordamiento de montón), y con `model=circuit` con un
-  grafo desconectado. El port descarta las celdas fuera de rango en el primer caso y
-  recurre a caminos más cortos en el segundo; no hay salida nativa con la que
-  comparar.
+- **Cuelgues nativos que el port define.** El Graphviz nativo termina con 139 en neato `mode=KK` con `model=mds` y una arista con `len` en casi todas las ejecuciones (1 superviviente de unas 1500; `mds_model` indexa `GD_dist` con un número de secuencia de base 1: desbordamiento de heap). El port descarta las celdas fuera de rango, y su resultado coincide con ese superviviente a 0,01. `circuit_model` indexa con el `AGSEQ` de base 1 (`circuit.c:46`), así que la fila 0 de su matriz nunca se escribe y la matriz es singular en todo grafo, conexo o no: el `mode=KK` nativo con `model=circuit` nunca produce un diseño circuit. Cuando el proceso sobrevive, imprime `Warning: graph <name> is disconnected. Hence, the circuit model` y recurre a caminos más cortos; el mismo error lee más allá del array de punteros de fila cuando el último nodo creado tiene una arista, por lo que el nativo suele terminar con 139 (unas 3 de cada 4 ejecuciones en el grafo de prueba). El port siempre toma el camino superviviente: la advertencia y después caminos más cortos, conexo o no. Con `pack=true` el nativo se cayó en todas las ejecuciones (0 supervivientes en más de 3000 en cada uno de dos grafos); por decisión, el port advierte por componente con su propio nombre (`_neato_cc0`, `_neato_cc1`, ...), usa caminos más cortos y empaqueta. No hay salida nativa para esa combinación; el diseño equivale al `model=shortpath` nativo para el mismo grafo.
+- **El orden de empates de VPSC sigue el orden de creación, no la dirección de heap.** El `IncVPSC::splitBlocks` nativo recorre un `std::set<Block*>` ordenado por dirección de heap mientras inserta en él, y `CmpNodePos` desempata posiciones por dirección, así que la salida nativa de `overlap=vpsc|ipsep` y de `mode=ipsep` con restricciones varía de una ejecución a otra cuando hay empates de posición (un caso dio 21 resultados distintos en 300 ejecuciones). El port ordena los empates por orden de creación y siempre visita los bloques nuevos, por lo que su salida es determinista. Coincide con una ejecución nativa muestreada en los casos de empate comprobados, salvo un caso de 40 nodos que no coincidió con ninguno de 29 resultados nativos muestreados (seguimiento 110).
 
 ---
 
@@ -1368,7 +1364,7 @@ Son límites de alcance deliberados, no errores. La biblioteca apunta a **SVG**
   las lecturas del sistema de archivos (fuentes, imágenes, configuración) se sustituyen por
   callbacks aportados por quien llama (p. ej. `setImageSizer`). El comportamiento se conserva; el mecanismo difiere.
 
-- **Tipo de imagen y advertencias de `imagepath`.** Una imagen conocida solo a través de `setImageSizer` (sin bytes del resolver) no tiene tipo, por lo que no imprime la advertencia `No loadimage plugin`; el nativo siempre lee el archivo y por tanto siempre conoce el tipo. Con bytes de resolver no reconocidos el nativo además advierte con `Warning: "<name>" was not found as a file or as a shape library member`; el port aún no imprime esa línea (seguimiento 104, cableado en tiempo de layout). `GV_FILE_PATH` y `SERVER_NAME` no se respetan, y nunca se pide al host el nombre `<dir>/<name>` de `imagepath`.
+- **Tipo de imagen y advertencias de `imagepath`.** Una imagen conocida solo a través de `setImageSizer` (sin bytes del resolver) no tiene tipo, por lo que no imprime la advertencia `No loadimage plugin`; el nativo siempre lee el archivo y por tanto siempre conoce el tipo. `GV_FILE_PATH` y `SERVER_NAME` no se respetan, y nunca se pide al host el nombre `<dir>/<name>` de `imagepath`.
 
 ---
 

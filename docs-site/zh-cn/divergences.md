@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -502,7 +502,8 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
   `…396`；对于 16201 个抽样的 `v` 中的 20 个，macOS 的 `pow(v, 2) != v*v`）。这改变了迭代的 `Fnorm` 的最后一位；sfdp 的自适应冷却把它放大为一个不同的（常常是镜像的）布局。移植版的 `armPow` 是 ARM optimized-routines 的 `pow`（glibc ≥ 2.28），即 Linux 版 Graphviz 所计算的结果；macOS 参照程序才是异类。已排除：种子（显式的 `start=` 值能匹配）、`pcp_rotate`（相同输入得到相同输出）、位置和吸引力项（逐位相同）。示例：默认种子下的单个三角形 `a--b; a--c; b--c`。
 - **fdp 可能因宿主 libm 的 `cos`/`sin` 而与原生不同。** fdp 遵循 15.0.0 之后的 Graphviz（基于 hypot 距离的斥力，`Mlimit`），宿主 libm 的 `hypot` 被逐位复现（`src/common/libm-hypot.ts`，在 40 万个样本上 0 处不匹配）。252 个可用 fdp 渲染的黄金输入中有 251 个与原生构建精确匹配；剩下的一个
   （`parallel-cluster-ldbxtried`）用 `T_Wd * cos(alpha)` 放置簇端口节点，而 macOS libm 的 `cos(-2.3840764867756761)` 与 V8 的 `Math.cos` 相差 1 ulp；fdp 的力循环把它放大到约 3 英寸。Apple 的 `cos` 不像 `hypot` 那样可以由一个简短的模型复现。
-- **原生崩溃而移植版有定义的行为。** 原生 Graphviz 在 neato 的 `mode=KK` 配合 `model=mds` 和一条边的 `len` 时退出码为 139（`mds_model` 用从 1 开始的序号索引 `GD_dist`：堆溢出），在 `model=circuit` 配合不连通的图时也是如此。移植版在第一种情形中丢弃越界的单元，在第二种情形中回退到最短路径；没有原生输出可供比较。
+- **原生崩溃而移植版有定义的行为。** 原生 Graphviz 在 neato 的 `mode=KK` 搭配 `model=mds` 且边带有 `len` 时，几乎每次运行都以退出码 139 结束（约 1500 次中仅 1 次存活；`mds_model` 用从 1 开始的序号索引 `GD_dist`：堆溢出）。移植版丢弃越界的单元格，其结果与那次存活的运行在 0.01 容差内一致。`circuit_model` 用从 1 开始的 `AGSEQ` 索引（`circuit.c:46`），因此其矩阵的第 0 行从不被写入，无论图是否连通，该矩阵在每个图上都是奇异的：原生 `mode=KK` 搭配 `model=circuit` 从不产生 circuit 布局。进程存活时，它会输出 `Warning: graph <name> is disconnected. Hence, the circuit model` 并回退到最短路径；同一缺陷在最后创建的节点带有边时会读越行指针数组，所以原生通常以 139 退出（在探针图上约 4 次中有 3 次）。移植版始终走存活路径：先输出该警告，再使用最短路径，无论图是否连通。使用 `pack=true` 时，原生每次运行都崩溃（两个图上各超过 3000 次，存活 0 次）；按决定，移植版以自己的名称（`_neato_cc0`、`_neato_cc1`、...）逐个连通分量发出警告，使用最短路径并打包。这一组合没有原生输出；布局与同一图的原生 `model=shortpath` 相同。
+- **VPSC 的并列次序遵循创建顺序，而非堆地址。** 原生 `IncVPSC::splitBlocks` 一边向按堆地址排序的 `std::set<Block*>` 中插入，一边遍历它，而 `CmpNodePos` 用地址来决定位置并列，因此 `overlap=vpsc|ipsep` 和带约束的 `mode=ipsep` 的原生输出在位置并列时每次运行都可能不同（一个用例在 300 次运行中得到 21 种不同结果）。移植版按创建顺序排列并列项，并始终访问新块，因此其输出是确定的。在已检查的并列用例中，它与某次抽样的原生运行一致，唯一例外是一个 40 节点的用例，它与 29 个抽样的原生结果均不一致（后续事项 110）。
 
 ---
 
@@ -527,7 +528,7 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
   `parse` 则改为返回一个空的无向图，`renderSvg` 会渲染它，因为 API 每次调用返回一个 `Graph` 和一个 SVG。
 - **仅限原生的机制**，由适合浏览器的等价机制取代：动态插件加载（`dlopen`）由静态的引擎/渲染器注册取代；文件系统读取（字体、图像、配置）由调用方提供的回调取代（例如 `setImageSizer`）。行为得以保持；机制有所不同。
 
-- **图像类型与 `imagepath` 警告。** 仅通过 `setImageSizer` 获知的图像（没有 resolver 字节）没有类型，因此不输出 `No loadimage plugin` 警告；原生总是读取文件，因此总是知道类型。对于无法识别的 resolver 字节，原生还会输出 `Warning: "<name>" was not found as a file or as a shape library member` 警告；本移植版尚未输出该行（后续事项 104，布局阶段的接线）。`GV_FILE_PATH` 和 `SERVER_NAME` 不会被采纳，也从不向宿主询问 `imagepath` 的 `<dir>/<name>` 名称。
+- **图像类型与 `imagepath` 警告。** 仅通过 `setImageSizer` 获知的图像（没有 resolver 字节）没有类型，因此不输出 `No loadimage plugin` 警告；原生总是读取文件，因此总是知道类型。`GV_FILE_PATH` 和 `SERVER_NAME` 不会被采纳，也从不向宿主询问 `imagepath` 的 `<dir>/<name>` 名称。
 
 ---
 
