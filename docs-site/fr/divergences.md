@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1334,6 +1334,14 @@ n’acceptent une erreur du portage que si elle porte ce message. Un autre éche
 **Ce qui diffère.** La CLI native `dot` lisant l’entrée standard affiche `<stdin>: syntax error in line N …` ; le port affiche le même message sans le préfixe `<stdin>: `.
 
 **Pourquoi c’est accepté.** `aagerror` (`lib/cgraph/scan.l:157`) n’ajoute `InputFile: ` que lorsque `InputFile` est défini. La CLI le fixe à `<stdin>` en lisant l’entrée standard ; le point d’entrée de bibliothèque `agmemread`, que le port reproduit, le laisse non défini et n’affiche aucun préfixe. Le port n’a pas de CLI, donc rien à signaler. La sonde stderr normalise le préfixe lors de la comparaison.
+
+### A13. Couleur de remplissage libérée dans la relecture de `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Concerné :** Sortie svg pour une entrée dont le `_background` (ou le `_draw_` du graphe) écrit à la main a une première opération remplie sans couleur de remplissage propre, sur un graphe ayant un `bgcolor` en dégradé tel que `bgcolor="red:blue"`.
+
+**Ce qui diffère.** Le natif affiche `fill=""` sur cette opération ; le port affiche le premier arrêt du dégradé. xdot se résout en RGBA et concorde avec le port, de sorte que seul svg diffère.
+
+**Pourquoi c’est accepté.** `emit_background` libère `clrs[0]` (`lib/common/emit.c:1518`) alors que l’état de remplissage de svg pointe encore dessus (`gvrender_resolve_color` conserve `color->u.string = name`, `lib/gvc/gvrender.c:193`) ; la sortie native est donc de la mémoire libérée, pas une couleur ; c’était `fill=""` dans 8 exécutions mesurées sur 8. Le port affiche la couleur que C voulait. Aucune entrée du corpus n’atteint ce cas ; `src/gvc/emit-xdot.test.ts` le fige.
 
 ---
 

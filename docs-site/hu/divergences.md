@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1196,6 +1196,14 @@ Egy másféle hiba a `2784` esetén el nem fogadott hibaként jelenne meg, és a
 **Mi tér el.** A szabványos bemenetet olvasó natív `dot` CLI `<stdin>: syntax error in line N …` üzenetet ír; a port ugyanazt az üzenetet a `<stdin>: ` előtag nélkül írja.
 
 **Miért elfogadott.** Az `aagerror` (`lib/cgraph/scan.l:157`) csak akkor fűzi hozzá az `InputFile: ` előtagot, ha az `InputFile` be van állítva. A CLI szabványos bemenet olvasásakor `<stdin>`-re állítja; a port által tükrözött `agmemread` könyvtári belépési pont nem állítja be, és nem ír előtagot. A portnak nincs CLI-je, így nincs mit jelenteni. A stderr-szonda az összehasonlításkor normalizálja az előtagot.
+
+### A13. Felszabadított kitöltőszín a `_background` visszajátszásában (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Érintett:** svg-kimenet olyan bemenetre, amelynek kézzel írt `_background` (vagy gráf-`_draw_`) attribútumában az első kitöltött műveletnek nincs saját kitöltőszíne, és a gráf színátmenetes `bgcolor` értéket használ, például `bgcolor="red:blue"`.
+
+**Mi tér el.** A natív ezen a műveleten `fill=""` értéket ír ki; a port a színátmenet első színpontját. Az xdot RGBA-vá oldódik fel, és egyezik a porttal, így csak az svg tér el.
+
+**Miért elfogadott.** Az `emit_background` felszabadítja a `clrs[0]` elemet (`lib/common/emit.c:1518`), miközben az svg kitöltési állapota még rá mutat (a `gvrender_resolve_color` meghagyja a `color->u.string = name` értéket, `lib/gvc/gvrender.c:193`), így a natív kimenet felszabadított memória, nem szín; a mért 8 futtatásból mind a 8-ban `fill=""` volt. A port azt a színt írja ki, amelyet a C szánt. A korpusz egyetlen bemenete sem éri el ezt; a `src/gvc/emit-xdot.test.ts` rögzíti.
 
 ---
 

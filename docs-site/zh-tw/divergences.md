@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -958,6 +958,14 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
 **有何不同。** 讀取標準輸入的原生 `dot` CLI 會輸出 `<stdin>: syntax error in line N …`；移植版輸出相同訊息，但沒有 `<stdin>: ` 前綴。
 
 **為何接受。** 僅當設定了 `InputFile` 時，`aagerror`（`lib/cgraph/scan.l:157`）才會加上 `InputFile: `。CLI 在讀取標準輸入時將其設為 `<stdin>`；移植版所對應的函式庫入口 `agmemread` 不設定它，也就不輸出前綴。移植版沒有 CLI，因此無可回報。stderr 探針在比較時會正規化該前綴。
+
+### A13. 重播 `_background` 時被釋放的填色（svg） {#a13-freed-fill-in-the-background-replay}
+
+**受影響：** svg 輸出：輸入含手寫的 `_background`（或圖的 `_draw_`），其第一個填色操作沒有自己的填色，且圖帶有漸層 `bgcolor`，例如 `bgcolor="red:blue"`。
+
+**有何不同。** 原生在該操作上輸出 `fill=""`；移植版輸出漸層的第一個色標。xdot 解析為 RGBA，與移植版一致，因此只有 svg 不同。
+
+**為何接受。** `emit_background` 釋放了 `clrs[0]`（`lib/common/emit.c:1518`），而 svg 的填色狀態仍指向它（`gvrender_resolve_color` 保留 `color->u.string = name`，`lib/gvc/gvrender.c:193`），所以原生輸出是已釋放的記憶體，而不是顏色；在測得的 8 次執行中 8 次都是 `fill=""`。移植版輸出 C 本意要輸出的顏色。語料庫中沒有輸入會走到這裡；`src/gvc/emit-xdot.test.ts` 固定了該行為。
 
 ---
 

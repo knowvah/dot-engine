@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1189,6 +1189,14 @@ og `registry-staleness.test.ts` myndi merkja færsluna sem úrelta. Sönnunargö
 **Hvað er ólíkt.** Upprunalega `dot`-skipanalínuforritið skrifar `<stdin>: syntax error in line N …` þegar það les staðalinntak; portið skrifar sömu skilaboð án forskeytisins `<stdin>: `.
 
 **Hvers vegna samþykkt.** `aagerror` (`lib/cgraph/scan.l:157`) bætir `InputFile: ` við aðeins þegar `InputFile` er stillt. Skipanalínuforritið stillir það á `<stdin>` við lestur staðalinntaks; safninngangurinn `agmemread`, sem portið speglar, skilur það eftir óstillt og skrifar ekkert forskeyti. Portið hefur ekkert skipanalínuforrit, svo ekkert er að tilkynna. stderr-könnunin normalíserar forskeytið við samanburð.
+
+### A13. Leyst fyllilitur í endurspilun `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Fyrir áhrifum:** svg-úttak fyrir inntak með handskrifuðu `_background` (eða `_draw_` grafsins) þar sem fyrsta fyllta aðgerðin hefur engan eigin fyllilit, á grafi með litasveigju-`bgcolor` eins og `bgcolor="red:blue"`.
+
+**Hvað er ólíkt.** Upprunalega útgáfan skrifar `fill=""` á þá aðgerð; gáttin skrifar fyrsta lit litasveigjunnar. xdot leysist í RGBA og er sammála gáttinni, svo aðeins svg er ólíkt.
+
+**Hvers vegna samþykkt.** `emit_background` losar `clrs[0]` (`lib/common/emit.c:1518`) á meðan fyllistaða svg bendir enn á það (`gvrender_resolve_color` heldur `color->u.string = name`, `lib/gvc/gvrender.c:193`), svo upprunalega úttakið er losað minni, ekki litur; það var `fill=""` í öllum 8 af 8 mældum keyrslum. Gáttin skrifar litinn sem C ætlaði. Ekkert inntak í safninu nær hingað; `src/gvc/emit-xdot.test.ts` festir það.
 
 ---
 

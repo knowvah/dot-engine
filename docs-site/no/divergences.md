@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1186,6 +1186,14 @@ feil, og `registry-staleness.test.ts` ville flagget oppføringen som utdatert. B
 **Hva som avviker.** Den native `dot`-CLI-en som leser standard inndata skriver `<stdin>: syntax error in line N …`; porten skriver samme melding uten prefikset `<stdin>: `.
 
 **Hvorfor godkjent.** `aagerror` (`lib/cgraph/scan.l:157`) legger til `InputFile: ` bare når `InputFile` er satt. CLI-en setter den til `<stdin>` ved lesing av standard inndata; bibliotekinngangen `agmemread`, som porten speiler, lar den stå usatt og skriver ikke prefiks. Porten har ingen CLI, så det er ingenting å rapportere. stderr-proben normaliserer prefikset ved sammenligning.
+
+### A13. Frigitt fyllfarge i `_background`-avspillingen (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Berørt:** svg-utdata for en inndata med en håndskrevet `_background` (eller grafens `_draw_`) der den første fylte operasjonen ikke har egen fyllfarge, på en graf med gradient-`bgcolor` som `bgcolor="red:blue"`.
+
+**Hva som avviker.** Native skriver ut `fill=""` på den operasjonen; porten skriver ut gradientens første stopp. xdot løses til RGBA og stemmer med porten, så bare svg avviker.
+
+**Hvorfor godkjent.** `emit_background` frigir `clrs[0]` (`lib/common/emit.c:1518`) mens svg sin fyllstatus fortsatt peker på den (`gvrender_resolve_color` beholder `color->u.string = name`, `lib/gvc/gvrender.c:193`), så native utdata er frigitt minne, ikke en farge; det var `fill=""` i 8 av 8 målte kjøringer. Porten skriver ut fargen C mente. Ingen korpusinndata når hit; `src/gvc/emit-xdot.test.ts` fastholder det.
 
 ---
 

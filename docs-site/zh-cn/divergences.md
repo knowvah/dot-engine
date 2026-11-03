@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -451,6 +451,14 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 **有何不同。** 读取标准输入的原生 `dot` CLI 会输出 `<stdin>: syntax error in line N …`；移植版输出相同消息，但没有 `<stdin>: ` 前缀。
 
 **为何接受。** 仅当设置了 `InputFile` 时，`aagerror`（`lib/cgraph/scan.l:157`）才会加上 `InputFile: `。CLI 在读取标准输入时将其设为 `<stdin>`；移植版所对应的库入口 `agmemread` 不设置它，也就不输出前缀。移植版没有 CLI，因此无可报告。stderr 探针在比较时会规范化该前缀。
+
+### A13. 重放 `_background` 时被释放的填充色（svg） {#a13-freed-fill-in-the-background-replay}
+
+**受影响：** svg 输出：输入含手写的 `_background`（或图的 `_draw_`），其第一个填充操作没有自己的填充色，且图带有渐变 `bgcolor`，例如 `bgcolor="red:blue"`。
+
+**有何不同。** 原生在该操作上输出 `fill=""`；移植版输出渐变的第一个色标。xdot 解析为 RGBA，与移植版一致，因此只有 svg 不同。
+
+**为何接受。** `emit_background` 释放了 `clrs[0]`（`lib/common/emit.c:1518`），而 svg 的填充状态仍指向它（`gvrender_resolve_color` 保留 `color->u.string = name`，`lib/gvc/gvrender.c:193`），所以原生输出是已释放的内存，而不是颜色；在测得的 8 次运行中 8 次都是 `fill=""`。移植版输出 C 本意要输出的颜色。语料库中没有输入会走到这里；`src/gvc/emit-xdot.test.ts` 固定了该行为。
 
 ---
 

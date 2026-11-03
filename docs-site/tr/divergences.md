@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1170,6 +1170,14 @@ bildirir: bir port hatasını yalnızca bu mesajı taşıdığında kabul ederle
 **Ne farklı.** Standart girdiyi okuyan yerel `dot` CLI'ı `<stdin>: syntax error in line N …` yazdırır; port aynı iletiyi `<stdin>: ` öneki olmadan yazdırır.
 
 **Neden kabul edildi.** `aagerror` (`lib/cgraph/scan.l:157`) `InputFile: ` önekini yalnızca `InputFile` ayarlıysa ekler. CLI, standart girdiyi okurken bunu `<stdin>` olarak ayarlar; portun yansıttığı kütüphane girişi `agmemread` ise onu ayarsız bırakır ve önek yazdırmaz. Portta CLI yoktur, dolayısıyla bildirilecek bir şey yoktur. stderr sondası karşılaştırmada öneki normalleştirir.
+
+### A13. `_background` yeniden oynatımında serbest bırakılmış dolgu rengi (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Etkilenenler:** El yazısıyla yazılmış `_background` (veya grafın `_draw_`) özniteliğinin ilk dolu işleminin kendi dolgu rengi olmadığı bir girdinin, `bgcolor="red:blue"` gibi gradyan `bgcolor` taşıyan bir grafta svg çıktısı.
+
+**Ne farklı.** Yerel, o işlemde `fill=""` yazdırır; port gradyanın ilk durağını yazdırır. xdot RGBA'ya çözülür ve portla uyuşur, bu yüzden yalnızca svg farklıdır.
+
+**Neden kabul edildi.** `emit_background`, svg'nin dolgu durumu hâlâ ona işaret ederken `clrs[0]`'ı serbest bırakır (`lib/common/emit.c:1518`; `gvrender_resolve_color`, `color->u.string = name` değerini korur, `lib/gvc/gvrender.c:193`); bu yüzden yerel çıktı bir renk değil, serbest bırakılmış bellektir; ölçülen 8 çalıştırmanın 8'inde `fill=""` idi. Port, C'nin kastettiği rengi yazdırır. Korpustaki hiçbir girdi buna ulaşmaz; `src/gvc/emit-xdot.test.ts` bunu sabitler.
 
 ---
 

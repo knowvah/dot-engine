@@ -1212,6 +1212,14 @@ stale. Evidence:
 
 **Why accepted.** `aagerror` (`lib/cgraph/scan.l:157`) adds `InputFile: ` only when `InputFile` is set. The CLI sets it to `<stdin>` when reading standard input; the library entry `agmemread`, which the port mirrors, leaves it unset and prints no prefix. The port has no CLI, so there is no `InputFile` to report. The stderr probe normalizes the prefix when comparing.
 
+### A13. Freed fill colour in the `_background` replay (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Affected:** svg output for an input whose hand-written `_background` (or graph `_draw_`) has a first filled op with no fill colour of its own, on a graph with a gradient `bgcolor` such as `bgcolor="red:blue"`.
+
+**What differs.** Native prints `fill=""` on that op; the port prints the gradient's first stop. xdot resolves to RGBA and agrees with the port, so only svg differs.
+
+**Why accepted.** `emit_background` frees `clrs[0]` (`lib/common/emit.c:1518`) while svg's fill state still points at it (`gvrender_resolve_color` keeps `color->u.string = name`, `lib/gvc/gvrender.c:193`), so native's output is freed memory, not a colour; it was `fill=""` in 8 of 8 measured runs. The port prints the colour C meant. No corpus input reaches this; `src/gvc/emit-xdot.test.ts` pins it.
+
 ---
 
 ## Tracked long tail (`dot` attribute & edge-case)

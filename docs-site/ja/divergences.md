@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1098,6 +1098,14 @@ plain と stderr は一致）、`accepted-divergences-engines.json` と
 **何が異なるか。** 標準入力を読むネイティブの `dot` CLI は `<stdin>: syntax error in line N …` を出力する。ポートは同じメッセージを接頭辞 `<stdin>: ` なしで出力する。
 
 **受け入れる理由。** `aagerror`（`lib/cgraph/scan.l:157`）は `InputFile` が設定されている場合にのみ `InputFile: ` を付加する。CLI は標準入力を読むときにこれを `<stdin>` に設定するが、ポートが写しているライブラリのエントリ `agmemread` は未設定のままで、接頭辞を出力しない。ポートには CLI がないため、報告すべき `InputFile` が存在しない。stderr プローブは比較時にこの接頭辞を正規化する。
+
+### A13. `_background` の再生で解放された塗りつぶし色（svg） {#a13-freed-fill-in-the-background-replay}
+
+**影響を受けるもの：** 手書きの `_background`（またはグラフの `_draw_`）の最初の塗りつぶし操作が独自の塗りつぶし色を持たない入力を、`bgcolor="red:blue"` のようなグラデーションの `bgcolor` を持つグラフで svg に出力する場合。
+
+**何が異なるか。** ネイティブはその操作に `fill=""` を出力します。ポートはグラデーションの最初のストップを出力します。xdot は RGBA に解決され、ポートと一致するため、異なるのは svg だけです。
+
+**受け入れる理由。** `emit_background` は `clrs[0]` を解放しますが（`lib/common/emit.c:1518`）、svg の塗りつぶし状態はまだそれを指しています（`gvrender_resolve_color` は `color->u.string = name` を保持します。`lib/gvc/gvrender.c:193`）。そのためネイティブの出力は色ではなく解放済みメモリです。測定した 8 回中 8 回で `fill=""` でした。ポートは C が意図した色を出力します。コーパスにここへ到達する入力はなく、`src/gvc/emit-xdot.test.ts` で固定しています。
 
 ---
 

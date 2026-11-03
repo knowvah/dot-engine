@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1189,6 +1189,14 @@ fejl, og `registry-staleness.test.ts` ville markere posten som forældet. Eviden
 **Hvad der adskiller sig.** Den native `dot`-CLI, der læser standard input, udskriver `<stdin>: syntax error in line N …`; porten udskriver samme meddelelse uden præfikset `<stdin>: `.
 
 **Hvorfor accepteret.** `aagerror` (`lib/cgraph/scan.l:157`) tilføjer `InputFile: ` kun når `InputFile` er sat. CLI'en sætter den til `<stdin>` ved læsning af standard input; biblioteksindgangen `agmemread`, som porten afspejler, lader den være usat og udskriver intet præfiks. Porten har ingen CLI, så der er intet at rapportere. stderr-proben normaliserer præfikset ved sammenligning.
+
+### A13. Frigivet udfyldningsfarve i `_background`-genafspilningen (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Berørt:** svg-output for et input med en håndskrevet `_background` (eller grafens `_draw_`), hvis første udfyldte operation ikke har sin egen udfyldningsfarve, på en graf med en gradient-`bgcolor` som `bgcolor="red:blue"`.
+
+**Hvad der adskiller sig.** Native udskriver `fill=""` på den operation; porten udskriver gradientens første stop. xdot opløses til RGBA og er enig med porten, så kun svg afviger.
+
+**Hvorfor accepteret.** `emit_background` frigiver `clrs[0]` (`lib/common/emit.c:1518`), mens svg's udfyldningstilstand stadig peger på den (`gvrender_resolve_color` beholder `color->u.string = name`, `lib/gvc/gvrender.c:193`), så native output er frigivet hukommelse, ikke en farve; det var `fill=""` i 8 af 8 målte kørsler. Porten udskriver den farve, C mente. Intet korpusinput når hertil; `src/gvc/emit-xdot.test.ts` fastholder det.
 
 ---
 

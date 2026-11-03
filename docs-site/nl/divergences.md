@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1196,6 +1196,14 @@ fout, en `registry-staleness.test.ts` zou de vermelding als verouderd markeren. 
 **Wat afwijkt.** De native `dot`-CLI die standaardinvoer leest, drukt `<stdin>: syntax error in line N …` af; de port drukt hetzelfde bericht af zonder het voorvoegsel `<stdin>: `.
 
 **Waarom geaccepteerd.** `aagerror` (`lib/cgraph/scan.l:157`) voegt `InputFile: ` alleen toe als `InputFile` is gezet. De CLI zet het op `<stdin>` bij het lezen van standaardinvoer; het bibliotheekingangspunt `agmemread`, dat de port spiegelt, laat het ongezet en drukt geen voorvoegsel af. De port heeft geen CLI, dus er is niets te melden. De stderr-sonde normaliseert het voorvoegsel bij vergelijking.
+
+### A13. Vrijgegeven vulkleur in de `_background`-weergave (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Getroffen:** svg-uitvoer voor een invoer met een met de hand geschreven `_background` (of `_draw_` van de graaf) waarvan de eerste gevulde bewerking geen eigen vulkleur heeft, op een graaf met een kleurverloop-`bgcolor` zoals `bgcolor="red:blue"`.
+
+**Wat afwijkt.** Native drukt `fill=""` af op die bewerking; de port drukt de eerste stop van het verloop af. xdot wordt omgezet naar RGBA en komt overeen met de port, dus alleen svg verschilt.
+
+**Waarom geaccepteerd.** `emit_background` geeft `clrs[0]` vrij (`lib/common/emit.c:1518`) terwijl de vultoestand van svg er nog naar wijst (`gvrender_resolve_color` behoudt `color->u.string = name`, `lib/gvc/gvrender.c:193`), dus de native uitvoer is vrijgegeven geheugen, geen kleur; het was `fill=""` in 8 van 8 gemeten runs. De port drukt de kleur af die C bedoelde. Geen corpusinvoer bereikt dit; `src/gvc/emit-xdot.test.ts` legt het vast.
 
 ---
 

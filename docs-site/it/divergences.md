@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1286,6 +1286,14 @@ obsoleta. Evidenza:
 **Che cosa differisce.** La CLI nativa `dot` che legge lo standard input stampa `<stdin>: syntax error in line N …`; il port stampa lo stesso messaggio senza il prefisso `<stdin>: `.
 
 **Perché è accettato.** `aagerror` (`lib/cgraph/scan.l:157`) aggiunge `InputFile: ` solo quando `InputFile` è impostato. La CLI lo imposta a `<stdin>` leggendo lo standard input; il punto d’ingresso di libreria `agmemread`, che il port rispecchia, lo lascia non impostato e non stampa alcun prefisso. Il port non ha una CLI, quindi non c’è nulla da riportare. La sonda stderr normalizza il prefisso nel confronto.
+
+### A13. Colore di riempimento liberato nella riproduzione di `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Interessato:** Output svg per un input con un `_background` scritto a mano (o il `_draw_` del grafo) la cui prima operazione riempita non ha un colore di riempimento proprio, su un grafo con un `bgcolor` a gradiente come `bgcolor="red:blue"`.
+
+**Che cosa differisce.** Il nativo stampa `fill=""` su quell'operazione; il port stampa il primo punto del gradiente. xdot si risolve in RGBA e concorda con il port, quindi differisce solo svg.
+
+**Perché è accettato.** `emit_background` libera `clrs[0]` (`lib/common/emit.c:1518`) mentre lo stato di riempimento di svg punta ancora a esso (`gvrender_resolve_color` mantiene `color->u.string = name`, `lib/gvc/gvrender.c:193`), quindi l'output nativo è memoria liberata, non un colore; era `fill=""` in 8 esecuzioni misurate su 8. Il port stampa il colore che C intendeva. Nessun input del corpus raggiunge questo caso; `src/gvc/emit-xdot.test.ts` lo fissa.
 
 ---
 

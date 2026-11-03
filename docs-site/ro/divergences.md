@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1188,6 +1188,14 @@ iar `registry-staleness.test.ts` ar semnala intrarea ca perimată. Dovezi:
 **Ce diferă.** CLI-ul nativ `dot` care citește intrarea standard afișează `<stdin>: syntax error in line N …`; portul afișează același mesaj fără prefixul `<stdin>: `.
 
 **De ce este acceptată.** `aagerror` (`lib/cgraph/scan.l:157`) adaugă `InputFile: ` doar când `InputFile` este setat. CLI-ul îl setează la `<stdin>` la citirea intrării standard; punctul de intrare de bibliotecă `agmemread`, pe care portul îl oglindește, îl lasă nesetat și nu afișează prefix. Portul nu are CLI, deci nu e nimic de raportat. Sonda stderr normalizează prefixul la comparare.
+
+### A13. Culoare de umplere eliberată în redarea `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Afectate:** Ieșirea svg pentru o intrare cu un `_background` scris de mână (sau `_draw_` al grafului) a cărui primă operație umplută nu are culoare de umplere proprie, pe un graf cu `bgcolor` în gradient, precum `bgcolor="red:blue"`.
+
+**Ce diferă.** Nativul afișează `fill=""` pe acea operație; portul afișează prima oprire a gradientului. xdot se rezolvă în RGBA și concordă cu portul, deci diferă doar svg.
+
+**De ce este acceptată.** `emit_background` eliberează `clrs[0]` (`lib/common/emit.c:1518`) în timp ce starea de umplere a svg încă indică spre el (`gvrender_resolve_color` păstrează `color->u.string = name`, `lib/gvc/gvrender.c:193`), deci ieșirea nativă este memorie eliberată, nu o culoare; a fost `fill=""` în 8 din 8 rulări măsurate. Portul afișează culoarea pe care a vrut-o C. Nicio intrare din corpus nu ajunge aici; `src/gvc/emit-xdot.test.ts` o fixează.
 
 ---
 

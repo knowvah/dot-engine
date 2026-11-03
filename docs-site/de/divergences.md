@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1262,6 +1262,14 @@ Fehlschlag bei `2784` würde als nicht akzeptierter Fehler auftauchen, und
 **Was abweicht.** Die native `dot`-CLI gibt beim Lesen der Standardeingabe `<stdin>: syntax error in line N …` aus; die Portierung gibt dieselbe Meldung ohne das Präfix `<stdin>: ` aus.
 
 **Warum akzeptiert.** `aagerror` (`lib/cgraph/scan.l:157`) fügt `InputFile: ` nur hinzu, wenn `InputFile` gesetzt ist. Die CLI setzt es beim Lesen der Standardeingabe auf `<stdin>`; der Bibliothekseinstieg `agmemread`, den die Portierung spiegelt, lässt es ungesetzt und gibt kein Präfix aus. Die Portierung hat keine CLI, also gibt es nichts zu melden. Die stderr-Sonde normalisiert das Präfix beim Vergleich.
+
+### A13. Freigegebene Füllfarbe im `_background`-Replay (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Betroffen:** svg-Ausgabe für eine Eingabe mit handgeschriebenem `_background` (oder `_draw_` des Graphen), dessen erste gefüllte Operation keine eigene Füllfarbe hat, auf einem Graphen mit Verlaufs-`bgcolor` wie `bgcolor="red:blue"`.
+
+**Was abweicht.** Das native Graphviz gibt bei dieser Operation `fill=""` aus; die Portierung gibt den ersten Verlaufsstopp aus. xdot löst zu RGBA auf und stimmt mit der Portierung überein, daher weicht nur svg ab.
+
+**Warum akzeptiert.** `emit_background` gibt `clrs[0]` frei (`lib/common/emit.c:1518`), während der Füllzustand von svg noch darauf zeigt (`gvrender_resolve_color` behält `color->u.string = name`, `lib/gvc/gvrender.c:193`); die native Ausgabe ist also freigegebener Speicher, keine Farbe. In allen 8 von 8 gemessenen Läufen war es `fill=""`. Die Portierung gibt die Farbe aus, die C meinte. Keine Korpuseingabe erreicht dies; `src/gvc/emit-xdot.test.ts` hält es fest.
 
 ---
 

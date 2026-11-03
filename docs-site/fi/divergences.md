@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1209,6 +1209,14 @@ vanhentuneeksi. Todiste:
 **Mikä eroaa.** Natiivi `dot`-CLI tulostaa vakiosyötettä lukiessaan `<stdin>: syntax error in line N …`; portti tulostaa saman viestin ilman etuliitettä `<stdin>: `.
 
 **Miksi hyväksytty.** `aagerror` (`lib/cgraph/scan.l:157`) lisää `InputFile: ` vain, kun `InputFile` on asetettu. CLI asettaa sen arvoon `<stdin>` vakiosyötettä luettaessa; kirjastosisäänkäynti `agmemread`, jota portti peilaa, jättää sen asettamatta eikä tulosta etuliitettä. Portilla ei ole CLI:tä, joten raportoitavaa ei ole. stderr-luotain normalisoi etuliitteen vertailussa.
+
+### A13. Vapautettu täyttöväri `_background`-toistossa (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Koskee:** svg-tuloste syötteelle, jonka käsin kirjoitetun `_background`-kentän (tai graafin `_draw_`-kentän) ensimmäisellä täytetyllä operaatiolla ei ole omaa täyttöväriä, graafilla, jolla on liukuväri-`bgcolor`, esimerkiksi `bgcolor="red:blue"`.
+
+**Mikä eroaa.** Natiivi tulostaa tälle operaatiolle `fill=""`; portti tulostaa liukuvärin ensimmäisen pysäytyspisteen. xdot ratkeaa RGBA:ksi ja on portin kanssa samaa mieltä, joten vain svg eroaa.
+
+**Miksi hyväksytty.** `emit_background` vapauttaa `clrs[0]`:n (`lib/common/emit.c:1518`), vaikka svg:n täyttötila osoittaa siihen yhä (`gvrender_resolve_color` säilyttää `color->u.string = name`, `lib/gvc/gvrender.c:193`), joten natiivin tuloste on vapautettua muistia, ei väri; se oli `fill=""` kaikissa 8 mitatussa ajossa 8:sta. Portti tulostaa värin, jota C tarkoitti. Mikään korpuksen syöte ei yllä tähän; `src/gvc/emit-xdot.test.ts` lukitsee sen.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1018,6 +1018,14 @@ xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니�
 **무엇이 다른가.** 표준 입력을 읽는 네이티브 `dot` CLI는 `<stdin>: syntax error in line N …`을 출력한다. 포트는 같은 메시지를 `<stdin>: ` 접두사 없이 출력한다.
 
 **수용하는 이유.** `aagerror`(`lib/cgraph/scan.l:157`)는 `InputFile`이 설정된 경우에만 `InputFile: `을 덧붙인다. CLI는 표준 입력을 읽을 때 이를 `<stdin>`으로 설정하지만, 포트가 그대로 따르는 라이브러리 진입점 `agmemread`는 설정하지 않은 채 두므로 접두사를 출력하지 않는다. 포트에는 CLI가 없어 보고할 `InputFile`이 없다. stderr 프로브는 비교 시 이 접두사를 정규화한다.
+
+### A13. `_background` 재생에서 해제된 채우기 색(svg) {#a13-freed-fill-in-the-background-replay}
+
+**영향받는 대상:** 직접 작성한 `_background`(또는 그래프의 `_draw_`)의 첫 번째 채워진 연산에 고유한 채우기 색이 없는 입력을, `bgcolor="red:blue"` 같은 그라디언트 `bgcolor`가 있는 그래프에서 svg로 출력하는 경우.
+
+**무엇이 다른가.** 네이티브는 그 연산에 `fill=""`를 출력하고, 포트는 그라디언트의 첫 번째 스톱을 출력합니다. xdot은 RGBA로 해석되어 포트와 일치하므로 svg만 다릅니다.
+
+**수용하는 이유.** `emit_background`는 `clrs[0]`을 해제하지만(`lib/common/emit.c:1518`) svg의 채우기 상태는 여전히 그것을 가리킵니다(`gvrender_resolve_color`는 `color->u.string = name`을 유지합니다. `lib/gvc/gvrender.c:193`). 따라서 네이티브 출력은 색이 아니라 해제된 메모리이며, 측정한 8회 중 8회 모두 `fill=""`였습니다. 포트는 C가 의도한 색을 출력합니다. 코퍼스에는 여기에 도달하는 입력이 없으며 `src/gvc/emit-xdot.test.ts`가 이를 고정합니다.
 
 ---
 

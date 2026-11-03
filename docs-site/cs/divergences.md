@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1178,6 +1178,14 @@ zastaralý. Důkaz:
 **Co se liší.** Nativní CLI `dot` čtoucí standardní vstup vypíše `<stdin>: syntax error in line N …`; port vypíše stejnou zprávu bez prefixu `<stdin>: `.
 
 **Proč akceptováno.** `aagerror` (`lib/cgraph/scan.l:157`) přidá `InputFile: ` jen tehdy, když je `InputFile` nastaven. CLI jej při čtení standardního vstupu nastaví na `<stdin>`; knihovní vstup `agmemread`, který port zrcadlí, jej nechává nenastavený a prefix nevypisuje. Port nemá CLI, takže není co hlásit. Sonda stderr prefix při porovnání normalizuje.
+
+### A13. Uvolněná výplňová barva při přehrání `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Dotčeno:** Výstup svg pro vstup s ručně psaným `_background` (nebo `_draw_` grafu), jehož první vyplněná operace nemá vlastní barvu výplně, na grafu s gradientním `bgcolor`, například `bgcolor="red:blue"`.
+
+**Co se liší.** Nativní výstup vypíše u této operace `fill=""`; portace vypíše první barvu gradientu. xdot se převádí na RGBA a s portací se shoduje, liší se tedy jen svg.
+
+**Proč akceptováno.** `emit_background` uvolní `clrs[0]` (`lib/common/emit.c:1518`), zatímco stav výplně svg na ni stále ukazuje (`gvrender_resolve_color` ponechává `color->u.string = name`, `lib/gvc/gvrender.c:193`), takže nativní výstup je uvolněná paměť, nikoli barva; ve všech 8 z 8 změřených běhů to bylo `fill=""`. Portace vypíše barvu, kterou C zamýšlelo. Žádný vstup korpusu sem nedospěje; ověřuje to `src/gvc/emit-xdot.test.ts`.
 
 ---
 

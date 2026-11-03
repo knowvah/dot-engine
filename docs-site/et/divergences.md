@@ -1,5 +1,5 @@
 ---
-sourceHash: cd444a3f4870a4eabd8d9cafbb50c434d10a748bc467d69c35434d67271bcd62
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1172,6 +1172,14 @@ Tõendid: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engi
 **Mis erineb.** Natiivne `dot` CLI prindib standardsisendi lugemisel `<stdin>: syntax error in line N …`; port prindib sama teate ilma eesliiteta `<stdin>: `.
 
 **Miks aktsepteeritud.** `aagerror` (`lib/cgraph/scan.l:157`) lisab `InputFile: ` ainult siis, kui `InputFile` on seatud. CLI seab selle standardsisendi lugemisel väärtuseks `<stdin>`; teegi sisenemispunkt `agmemread`, mida port peegeldab, jätab selle seadmata ega prindi eesliidet. Pordil CLI-d pole, seega pole midagi teatada. stderr-i sond normaliseerib eesliite võrdlemisel.
+
+### A13. Vabastatud täitevärv `_background` taasesituses (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Mõjutatud:** svg-väljund sisendile, mille käsitsi kirjutatud `_background`-i (või graafi `_draw_`-i) esimesel täidetud operatsioonil pole oma täitevärvi, graafil, millel on gradient-`bgcolor`, näiteks `bgcolor="red:blue"`.
+
+**Mis erineb.** Natiivne prindib sellele operatsioonile `fill=""`; port prindib gradiendi esimese peatuse. xdot lahendub RGBA-ks ja ühtib pordiga, seega erineb ainult svg.
+
+**Miks aktsepteeritud.** `emit_background` vabastab `clrs[0]` (`lib/common/emit.c:1518`), samal ajal kui svg täiteolek osutab sellele endiselt (`gvrender_resolve_color` jätab `color->u.string = name`, `lib/gvc/gvrender.c:193`), seega on natiivne väljund vabastatud mälu, mitte värv; see oli `fill=""` kõigil 8 mõõdetud käivitusel 8-st. Port prindib värvi, mida C mõtles. Ükski korpuse sisend siia ei jõua; seda kinnitab `src/gvc/emit-xdot.test.ts`.
 
 ---
 
