@@ -1,7 +1,7 @@
 # Decisions: part 9
 
-AD-1 to AD-10 were approved by the user during planning (2026-11-03). AD-11 was added at the
-user's direction the same day, during execution. They are locked; a change is stop 4.
+AD-1 to AD-10 were approved by the user during planning (2026-11-03). AD-11 and AD-12 were added at
+the user's direction the same day, during execution. They are locked; a change is stop 4.
 
 ## AD-1: where the root's attributes reach components (111)
 - **Context:** C's `agsubg` copies the parent's attribute values into a new subgraph, so
@@ -92,6 +92,16 @@ user's direction the same day, during execution. They are locked; a change is st
   single-use, which leaves the API diverging from native's cycle.
 - **Out of scope:** the plantuml-ts pin bump and tracker edits, which belong to that repo after this releases. Item 36 cannot be
   ticked until then.
+
+## AD-12: close both gaps T11 left in 37 (added 2026-11-03)
+- **Context:** T11 fixed a second layout after a free. Two gaps from native remained: a layout with no free lacks native's appended
+  bezier (the dot router gates on `e.info.spl`), and a second `xdot` render differs from native's second (native writes layout attributes
+  back onto the graph; the port does not). Offered three options, with parking both recommended.
+- **Decision (user):** fix both, before T9 and T10. T13 does the router, T14 the write-back. One agent, in that order, because both change
+  `rerender.test.ts` and T14's write-back reaches what T13's stale routes read.
+- **Consequence the user accepted:** `g.attrs` changes after a `dot` or `xdot` render, a later layout reads those values, and the port no longer
+  repeats on `xdot`, as native does not. T14 can park with the full artifact (part-5 AD-3); say so at the planned stop.
+- **Amends:** T11's parked items, and the rejected "port repeats" reading in plantuml-ts's filing, whose bar is native's cycle.
 
 ## Carried decisions
 - The C at `~/git/graphviz` (16.1.0) is the spec; diagnosis mode for every discrepancy.
