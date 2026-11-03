@@ -1,7 +1,7 @@
 # Decisions: part 9
 
-AD-1 to AD-10 were approved by the user during planning (2026-11-03). They are locked; a
-change is stop 4.
+AD-1 to AD-10 were approved by the user during planning (2026-11-03). AD-11 was added at the
+user's direction the same day, during execution. They are locked; a change is stop 4.
 
 ## AD-1: where the root's attributes reach components (111)
 - **Context:** C's `agsubg` copies the parent's attribute values into a new subgraph, so
@@ -78,6 +78,20 @@ change is stop 4.
 - **Decision:** full survey and full bytediff against the T0 bundle, plus the quarantined ids.
   No corpus move is expected from 111: in `tests/` and `graphs/`, `maxiter`, `epsilon` and
   `stresswt` appear only in two `.xdot` outputs. Any move must match native (stop 8).
+
+## AD-11: plantuml-ts tracker issues 37 and 36 (added 2026-11-03)
+- **Context:** the plantuml-ts tracker has two open items. 37: a second layout on one `Graph` reads stale
+  records, on every engine (measured: T11's spec), and `dot` can throw. 36: fixed on the base, nothing pins it.
+- **Decision (user):** fold 37 into part 9 before T10, so one survey and full bytediff cover it. T11 fixes 37, T12 pins 36.
+- **Design (37):** `freeLayout` marks the graph freed; the next `ctx.layout` resets the records once, before the engine.
+  This is an explicit deviation in *when* C's `gvFreeLayout` deletes the records, forced by the documented `getLayout` after
+  `render`. Native's observable results stay the bar: a layout after a free sees zeroed records, a layout without a free sees
+  stale ones. If T11's diagnosis contradicts this design, that is stop 4.
+- **Rejected:** a literal `agdelrec` in cleanup, which removes what `getLayout` reads. A reset at every layout entry, which
+  breaks native's no-free behaviour. A reset in `dotInitEdge`, which the flat-label machinery re-runs. Documenting a `Graph` as
+  single-use, which leaves the API diverging from native's cycle.
+- **Out of scope:** the plantuml-ts pin bump and tracker edits, which belong to that repo after this releases. Item 36 cannot be
+  ticked until then.
 
 ## Carried decisions
 - The C at `~/git/graphviz` (16.1.0) is the spec; diagnosis mode for every discrepancy.
