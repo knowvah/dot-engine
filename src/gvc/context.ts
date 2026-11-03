@@ -28,6 +28,7 @@ import type { ImageResolver } from './image-resolver.js';
 import type { RenderJob } from './job.js';  // scaffold in T25; full class in T26
 import { resetRenderState } from '../common/render-state.js';
 import { RenderError, invalidArgType, invalidArgValue } from '../errors.js';
+import { layoutWasFreed, resetLayoutRecords } from './layout-reset.js';
 
 // ---------------------------------------------------------------------------
 // Enums — match C definitions in lib/gvc/gvcjob.h exactly
@@ -292,6 +293,10 @@ export class GvcContext {
    * (setTextMeasurer, setImageSizer, setImageResolver, the per-context
    * measurer/sizer/resolver) are configuration and are not reset.
    *
+   * After a freeLayout, the engine sees new records, as it does in C (part-9
+   * AD-11, see layout-reset.ts). Without one it sees the stale records, as it
+   * does in C.
+   *
    * @throws TypeError (ERR_INVALID_ARG_TYPE / ERR_INVALID_ARG_VALUE) for a
    *   bad `g`, or an engine argument that is not registered
    * @throws RenderError (UNKNOWN_LAYOUT) if the `layout` attribute names no
@@ -319,6 +324,7 @@ export class GvcContext {
       }
       engine = override;
     }
+    if (layoutWasFreed(g)) resetLayoutRecords(g);
     if (g.info) g.info.gvc = this;
     engine.layout(g);
     // C: GD_cleanup(g) = gvle->cleanup — freeLayout must use the engine that
@@ -330,7 +336,9 @@ export class GvcContext {
   }
 
   /**
-   * Release engine layout state after rendering.
+   * Release engine layout state after rendering. The records themselves stay,
+   * for getLayout, until the next layout replaces them (part-9 AD-11, see
+   * layout-reset.ts).
    *
    * @throws TypeError (ERR_INVALID_ARG_TYPE / ERR_INVALID_ARG_VALUE) for a
    *   bad `g`, or an engine argument that is not registered

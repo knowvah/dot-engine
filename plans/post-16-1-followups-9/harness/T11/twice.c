@@ -1,6 +1,20 @@
 // SPDX-License-Identifier: EPL-2.0
 // Native control for issue 37: layout, render, gvFreeLayout twice on one graph.
-// usage: GVBINDIR=<full plugin dir> twice-native <file> <engine> <format>; prints SAME or DIFF.
+// usage: GVBINDIR=<full plugin dir> twice-native <file> <engine> <format> [print|nofree|<n>]
+//   no 4th arg: prints SAME or DIFF, comparing render 1 with render 2.
+//   print:      prints both renders, each after a "== render N" line.
+//   nofree:     as print, with no gvFreeLayout between the layouts.
+//   <n>:        as print, with n renders (a number, 1..9).
+//   then:<e>:   as print, render 2 uses engine <e>.
+//   fresh:      as print, render 2 runs on a new agmemread graph in the same process. A difference
+//               here is process-global state, not the graph's records.
+//   nobb:       as print, clears gvLayout's `bb` write-back before layout 2.
+//   restore:    as print, puts every attribute back to its pre-layout value before layout 2, so the
+//               records are the only difference from a fresh graph. Attributes the first cycle
+//               declared stay declared, with an empty value.
+//   keep:<a>:   as restore, except that attribute <a> keeps the value the first cycle wrote.
+//   members:    prints each subgraph's node and edge counts before and after one cycle, then the
+//               subgraphs the cycle added: what the object tables, not the records, carry over.
 // Copy this file and twice-matrix.mjs to a scratch dir, because the runner writes its job file beside
 // itself, then build there, with G=~/git/graphviz and B=$G/build:
 //   clang -O1 -o twice-native twice.c -I$G/lib/gvc -I$G/lib/cgraph -I$G/lib/common -I$G/lib/pathplan \
@@ -13,20 +27,89 @@
 #include <stdlib.h>
 #include <string.h>
 static char *slurp(const char *p) { FILE *f = fopen(p, "rb"); if (!f) return NULL; fseek(f, 0, SEEK_END); long n = ftell(f); fseek(f, 0, SEEK_SET); char *b = malloc((size_t)n + 1); fread(b, 1, (size_t)n, f); b[n] = 0; fclose(f); return b; }
+// One value per object per symbol; a pre-layout snapshot of the attribute tables.
+typedef struct { void *obj; int kind; char *name; char *value; } saved_t;
+static saved_t *saved; static size_t nsaved;
+static void save_obj(void *obj, int kind, Agraph_t *g) {
+  for (Agsym_t *sym = agnxtattr(g, kind, NULL); sym; sym = agnxtattr(g, kind, sym)) {
+    saved = realloc(saved, (nsaved + 1) * sizeof *saved);
+    saved[nsaved++] = (saved_t){obj, kind, sym->name, strdup(agxget(obj, sym))};
+  }
+}
+static void save_graph(Agraph_t *g, Agraph_t *root) {
+  save_obj(g, AGRAPH, root);
+  for (Agraph_t *s = agfstsubg(g); s; s = agnxtsubg(s)) save_graph(s, root);
+}
+static void save_all(Agraph_t *g) {
+  save_graph(g, g);
+  for (Agnode_t *n = agfstnode(g); n; n = agnxtnode(g, n)) {
+    save_obj(n, AGNODE, g);
+    for (Agedge_t *e = agfstout(g, n); e; e = agnxtout(g, e)) save_obj(e, AGEDGE, g);
+  }
+}
+static const char *saved_value(void *obj, int kind, const char *name) {
+  for (size_t i = 0; i < nsaved; i++)
+    if (saved[i].obj == obj && saved[i].kind == kind && strcmp(saved[i].name, name) == 0) return saved[i].value;
+  return "";
+}
+static void restore_obj(void *obj, int kind, Agraph_t *g, const char *keep) {
+  for (Agsym_t *sym = agnxtattr(g, kind, NULL); sym; sym = agnxtattr(g, kind, sym)) {
+    if (keep && strcmp(sym->name, keep) == 0) continue;
+    agxset(obj, sym, saved_value(obj, kind, sym->name));
+  }
+}
+static void restore_graph(Agraph_t *g, Agraph_t *root, const char *keep) {
+  restore_obj(g, AGRAPH, root, keep);
+  for (Agraph_t *s = agfstsubg(g); s; s = agnxtsubg(s)) restore_graph(s, root, keep);
+}
+static void restore_all(Agraph_t *g, const char *keep) {
+  restore_graph(g, g, keep);
+  for (Agnode_t *n = agfstnode(g); n; n = agnxtnode(g, n)) {
+    restore_obj(n, AGNODE, g, keep);
+    for (Agedge_t *e = agfstout(g, n); e; e = agnxtout(g, e)) restore_obj(e, AGEDGE, g, keep);
+  }
+}
+static void print_members(Agraph_t *g, const char *tag) {
+  printf("%s %s %d %d\n", tag, agnameof(g), agnnodes(g), agnedges(g));
+  for (Agraph_t *s = agfstsubg(g); s; s = agnxtsubg(s)) print_members(s, tag);
+}
+static int cycle(GVC_t *gvc, Agraph_t *g, const char *engine, const char *fmt, int dofree, char **out, size_t *len) {
+  if (gvLayout(gvc, g, engine) != 0) return 1;
+  gvRenderData(gvc, g, fmt, out, len);
+  if (dofree) gvFreeLayout(gvc, g);
+  return 0;
+}
 int main(int argc, char **argv) {
   const char *file = argv[1], *engine = argv[2], *fmt = argv[3];
+  const char *mode = argc > 4 ? argv[4] : "";
+  int nofree = strcmp(mode, "nofree") == 0;
+  int then = strncmp(mode, "then:", 5) == 0;
+  int count = mode[0] >= '1' && mode[0] <= '9' ? atoi(mode) : nofree ? 3 : 2;
+  int fresh = strcmp(mode, "fresh") == 0, nobb = strcmp(mode, "nobb") == 0;
+  int restore = strcmp(mode, "restore") == 0, keep = strncmp(mode, "keep:", 5) == 0;
+  int print = mode[0] != 0;
   agseterr(AGMAX);
   GVC_t *gvc = gvContext();
   char *src = slurp(file);
   Agraph_t *g = agmemread(src);
   if (!g) { puts("NOPARSE"); return 0; }
-  char *a = NULL, *b = NULL; size_t la = 0, lb = 0;
-  if (gvLayout(gvc, g, engine) != 0) { puts("LAYOUTFAIL1"); return 0; }
-  gvRenderData(gvc, g, fmt, &a, &la);
-  gvFreeLayout(gvc, g);
-  if (gvLayout(gvc, g, engine) != 0) { puts("LAYOUTFAIL2"); return 0; }
-  gvRenderData(gvc, g, fmt, &b, &lb);
-  gvFreeLayout(gvc, g);
-  puts(la == lb && memcmp(a, b, la) == 0 ? "SAME" : "DIFF");
+  char *r[9] = {0}; size_t l[9] = {0};
+  if (restore || keep) save_all(g);
+  if (strcmp(mode, "members") == 0) {
+    char *o; size_t ol;
+    print_members(g, "before");
+    cycle(gvc, g, engine, fmt, 1, &o, &ol);
+    print_members(g, "after");
+    return 0;
+  }
+  for (int i = 0; i < count; i++) {
+    const char *eng = then && i == 1 ? mode + 5 : engine;
+    if (fresh && i == 1) { agclose(g); g = agmemread(src); }
+    if (nobb && i == 1) agset(g, "bb", "");
+    if ((restore || keep) && i == 1) restore_all(g, keep ? mode + 5 : NULL);
+    if (cycle(gvc, g, eng, fmt, !nofree, &r[i], &l[i]) != 0) { printf("LAYOUTFAIL%d\n", i + 1); return 0; }
+    if (print) { printf("== render %d\n", i + 1); fwrite(r[i], 1, l[i], stdout); }
+  }
+  if (!print) puts(l[0] == l[1] && memcmp(r[0], r[1], l[0]) == 0 ? "SAME" : "DIFF");
   return 0;
 }
