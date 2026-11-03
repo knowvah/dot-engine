@@ -112,7 +112,7 @@ Nothing is pushed or signed (part-5 AD-1).
 | [2](batch-2/overview.md) | T1 neatoModel (108) · T2 KK primitives (103a) · T3 SweepLine (105) · T4 FT_NULL (104) · T5 safefile hooks (107) | parallel worktrees | [x] |
 | [3](batch-3/overview.md) | T6 major + hier models (103b) · T8 docs (103/106/108) | parallel | [x] |
 | [4](batch-4/overview.md) | T7 KK models (103c) | single | [x] |
-| [5](batch-5/overview.md) | T9 final verification, close-out, re-sign stop | orchestrator | [ ] |
+| [5](batch-5/overview.md) | T9 final verification, close-out, re-sign stop | orchestrator | [x] |
 
 ## Documents
 
@@ -133,3 +133,41 @@ Nothing is pushed or signed (part-5 AD-1).
   path and a scratch dir. Journal and README updates land as one `docs(mission)` commit per batch.
 - Model routing: T1, T4, T5 `typescript-pro` (sonnet); T2, T3, T6, T7 `typescript-pro`
   (opus: numeric ports and VPSC ordering); T8 `documentation-engineer`.
+
+## Mission summary (2026-11-02)
+
+- **Tasks:** 10 of 10 planned (T0–T9), plus one fix commit (`fix(T4)`, an unused import).
+  T8 ran after T7, not beside T6: its wording depended on T7's `pack` decision.
+- **Items:** 103–108 all DONE; none parked.
+  - 103: subset, circuit and mds lay out on major, KK and hier, matching the native probes.
+    Native KK circuit fails on every graph (`circuit.c:46`), so the port warns and uses
+    shortest paths, as native does when it survives.
+  - 104: FT_NULL warns at layout, including the custom-shape branch of `poly_init`.
+  - 105: neighbour sets in `CmpNodePos` order, ties by creation order.
+  - 106: ledger bullet for VPSC's heap-address order.
+  - 107: `safefile` sees the layout's own hooks.
+  - 108: `neatoModel` ported.
+- **Decisions:** about 40 journal rows. Two user decisions:
+  - KK circuit + `pack=true`, which crashes native on every run: warn per component, use
+    shortest paths, pack.
+  - T7 widened to fuse `kk-solve.ts` and fix `pccomps`' names.
+- **Flagged for review:**
+  - `solveModel` gained C's `MaxIter < 0` return, which also moves other negative-`maxiter`
+    layouts to native (T6).
+  - `start.ts:106,157` now print native's `Warning: ` prefix (T6).
+  - The `cluster dir0` fixture was refreshed to a less common native variant (T3).
+  - `usershape-missing.test.ts` changed its fake bytes to a 20-byte PNG header (T4).
+  - Locale pages have had no native-speaker pass (T8).
+- **Gates (head):**
+  - typecheck 0; `npm test` 11806 passed; golden 5/5; corpus + docs 2832; i18n 0 stale × 23;
+    ipsep probes 22/22; model probes 49/49.
+  - Survey GATE PASS, 0 regressions, oracle-error 14, counts equal to the baseline.
+  - Full bytediff: 38,000 jobs, 37,605 identical, 0 diffs (stderr included), 395 capped on
+    both sides and so unproven. The 21 quarantined ids: 810 of 840 identical, 0 diffs, 30
+    failing on both sides.
+- **Performance:** `large-circuit` port 719.5 ms, native 85.9 ms (T9). KK 1.10× to 1.57×
+  slower than before T7, accepted for fidelity.
+- **Follow-ups:** 109 (`toDistType` wrap), 110 (`dir1 n40`, `compareEvents`), 111 (`maxiter`
+  on multi-component graphs, `epsilon` unchecked), 112 (`ccomps` prefixes and form; sfdp
+  `start=self` order), 113 (`getGlobalImageSizer` has no production caller).
+- **Not done (by design, part-5 AD-1):** nothing pushed, signed or PR'd; the user re-signs.

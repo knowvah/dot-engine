@@ -38,3 +38,59 @@
   the path around it.
 - **Impact**: check that a probe fails before its fix is in.
 - **Confidence**: High
+
+## Observation: passing 0.01 on small KK fixtures does not prove the solver is bit-faithful
+- **Context**: T7, `kk-len-circuit` missed 0.01 by 9 coordinates; T7's first fix passed the
+  small case and gave 4159 diffs on a 160-node graph.
+- **Finding**: the KK solver needs clang's `-ffp-contract=on` fusion (`fma`/`fms`) in
+  `kk.ts` and `kk-solve.ts`. Last-bit drift moves the `max < Epsilon2` stopping move.
+  `Math.pow` matched macOS `pow` on 200001 of 200001 x^1.5 samples in Node here; `armPow`
+  missed 336. `kk-large` is committed for this reason.
+- **Impact**: judge solver fidelity with a per-move trace against an instrumented native and
+  a large graph, not with small fixtures at 0.01.
+- **Confidence**: High
+
+## Observation: a scratch instrumented plugin only needs the changed C file relinked
+- **Context**: T7's trace of `stuff.c`.
+- **Finding**: recompile the one file, `ar r` it into a copy of `libneatogen.a`, and relink
+  from `link.txt` with `/opt/homebrew/Cellar/X/V/` rewritten to `/opt/homebrew/opt/X/`,
+  because the Cellar gts path has moved.
+- **Impact**: no full graphviz rebuild is needed for one traced function.
+- **Confidence**: Medium (reported by T7; used in that one case)
+
+## Observation: a harness crash rate is not dot's crash rate
+- **Context**: T2, native `circuit_model` values.
+- **Finding**: `kk-disc-circuit` crashed a harness in all 2000 tries while `dot` survived 28
+  of 50: the overflow's outcome depends on the process's heap layout. An isolated last node
+  (`kk-disc-iso`) removes the overflow.
+- **Impact**: use a graph without the overflow to read native values in a harness.
+- **Confidence**: High
+
+## Observation: VPSC native variants need many runs to enumerate
+- **Context**: T3 fixture refresh.
+- **Finding**: `cluster dir0` looked like 1 variant in T0's 8 runs and is 2 in 800
+  (`e665a3` 69 of 800). `noverlap1 dir2 n10` shows 5 variants in 200 runs, `dir1 n40` 21 in
+  300.
+- **Impact**: 8 runs can miss a valid variant. Sample hundreds before calling a port output
+  "not native".
+- **Confidence**: High
+
+## Observation: image and model details that look like port bugs
+- **Context**: T4, T5, T6.
+- **Finding**: `imagetype` treats fewer than 20 bytes (`HDRLEN`) as FT_NULL, so a short fake
+  image warns. Graph init reaches the context through `g.root.info.gvc`, set before layout.
+  A declared `len` no edge carries leaves every `ED_dist` at 1.0, so `graphHasLen` testing
+  edges gives the same Dij as C's declaration test. Hier runs need `csrand(1)` before each
+  comparison, or libc `rand()` flips the x-axis sign.
+- **Impact**: test fixtures need 20+ bytes of real magic; seed before comparing hier runs.
+- **Confidence**: High
+
+## Observation: bytediff --all skips quarantined ids and near-cap jobs flip under load
+- **Context**: T9 full bytediff.
+- **Finding**: `--all` reads only `applicable` manifest ids, so the 21 quarantined ids need
+  a separate `bd-job.ts` comparison. Jobs near the 120 s cap time out on one side under load
+  (`2108` dot: head capped 4 times, yet 89.4 s vs 83.9 s when timed alone). `BD_CAP_MS=600000`
+  on those id/engine pairs clears them. The stderr is inside the compared bytes.
+- **Impact**: 38,000 jobs took 6h55m at load 8 to 13. Rerun one-sided caps instead of
+  assuming noise; plan the full run for an evening.
+- **Confidence**: High

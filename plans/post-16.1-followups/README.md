@@ -20,7 +20,8 @@ Being closed by `plans/post-16-1-followups-5/`.
 Being closed by `plans/post-16-1-followups-6/`.
 Items 95–102 closed by `plans/post-16-1-followups-7/` (101's layout-time FT_NULL line → 104);
 the open work is items 103–108 under "New follow-ups found by part 7".
-Being closed by `plans/post-16-1-followups-8/`.
+Items 103–108 closed by `plans/post-16-1-followups-8/`; the open work is items 109–113 under
+"New follow-ups found by part 8".
 Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
@@ -605,6 +606,9 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       giving `_cc_0`), and `ccomps` puts `_` before the index where C appends it directly. Fix
       the form and the three callers together. Nothing native prints reads these names today.
       Also check sfdp's `start=self` warning order against native (part 8 T7).
+  113. `getGlobalImageSizer` (`src/gvc/usershape.ts:40`) has no production caller: AD-6 named it,
+      but the sizer fallback still lives in `imageIsSupplied` and `usershapeSizePts`, and only
+      `image-ft-null.test.ts` calls it. Route those through it or remove it (part 8 T4, T9).
 
 ## Local leftovers (not committed, safe to delete)
 
