@@ -12,7 +12,7 @@
 4. **Timing row:** if T7 ported the sort, port before and after on its largest input (3 runs, median, load noted).
 5. **Close-out:**
    - `plans/post-16.1-followups/README.md`: mark 109–113 DONE or PARKED with task IDs; open 114 for `neato dim=3` (silently 2-D, 211–302
-     diffs on planning's probes, absent from `known-divergences.md`); open 115 for `ccomps` not reusing a user `_cc_N` subgraph (T6's journal row), 116 for `init.branch.test.ts` pinning `dotInitNode`'s list guard against C's unconditional `alloc_elist` (T11), and 117 for `graphs-fdp`'s second fdp render missing native's (T11) unless T14 clears it; 118 for port-only `g.info.abomShift` surviving a no-free layout, and 119 for `installEdgeSpline` overwriting a stale route and aux-edge weights stamped outside the `weight` attribute (T13); number other discoveries from 120; update the header line.
+     diffs on planning's probes, absent from `known-divergences.md`); open 115 for `ccomps` not reusing a user `_cc_N` subgraph (T6's journal row), 116 for `init.branch.test.ts` pinning `dotInitNode`'s list guard against C's unconditional `alloc_elist` (T11), and 117 for `graphs-fdp`'s second fdp render missing native's (T11) unless T14 clears it; 118 for port-only `g.info.abomShift` surviving a no-free layout, and 119 for `installEdgeSpline` overwriting a stale route and aux-edge weights stamped outside the `weight` attribute (T13); 120 for no-free arrows on the flat aux route (`splines-flat.ts:276-283`), 121 for sfdp first-render parity on the 15 ids in `xdot-second-T14.json`, 122 for a corpus input carrying `_draw_` or `_background` (T14); add `1581` fdp to 117; number other discoveries from 123; update the header line.
    - Mission-summary row in `plans/decision-journal.md`; this brief's checkboxes and a "Mission summary" section in the README.
    - `.agent-notes/post-16-1-followups-9.md` for anything novel.
 6. **Commit:** run the gates, then commit `chore(T10): close out post-16.1 follow-ups part 9`, with a one-line stop summary in the body.
@@ -26,7 +26,7 @@
    - circo's graph `root` no longer throws on a disconnected graph, and node `root=true` takes effect;
    - rendering one `Graph` twice now follows native's free cycle on every engine, and `dot` no longer throws on the second render (T11);
    - a layout with no free appends its route as native does (T13);
-   - a `dot` or `xdot` render now writes layout attributes onto the graph, as native does, so `g.attrs` changes and a later layout reads them (T14, or its parked state);
+   - a `dot`, `xdot` or `json` render now writes layout attributes onto the graph and any layout writes `bb`, as native does, so `g.attrs` changes and a later layout reads them; an input carrying a graph `_draw_` or `_background` now replays it, a first-render change on such inputs, of which the corpus has none (T14);
    - the T7 and T8 outcome, and any parked items.
 
 **Write-set:** open: `test/corpus/parity-*.json(l)`, `test/corpus/PARITY-*.md`, `test/corpus/accepted-divergences-*.json`,

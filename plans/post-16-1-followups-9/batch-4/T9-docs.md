@@ -10,8 +10,8 @@ Read `.agent-notes/post-16-1-followups-5.md` for the `sourceHash` procedure.
 3. Search `docs-site/guide/` for statements about `maxiter`, `epsilon`, `stresswt` or circo's `root` that T2 or T4 made false, and
    correct them. Do not add new sections for behaviour that simply matches native now.
    Also correct any statement T11, T13 or T14 made false about rendering one `Graph` twice, including the `render` lifecycle text in `README.md`.
-   State the new behaviour plainly there: `g.attrs` changes after a `dot` or `xdot` render, and a later layout reads those values, as native does (AD-12).
-   If T14 parked, record that in `docs/known-divergences.md`.
+   State the new behaviour plainly there: `g.attrs` changes after a `dot`, `xdot` or `json` render, any layout writes `bb`, a later layout reads those values, and a graph `_draw_` or
+   `_background` is replayed, as native does (AD-12). A second `xdot` render therefore differs from the first, as it does natively. If a page claims rendering leaves a graph unchanged, correct it.
 4. Mirror each changed page into the 23 locales, with `sourceHash` refreshed. Check the wording of each changed locale line against
    its source. Native-speaker review is not available; say so in the hand-back.
 

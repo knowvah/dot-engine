@@ -51,3 +51,16 @@
   output. A layout that throws after a reset leaves `laidOut` unset. A subgraph laid out after its root was freed is not reset. Neither is pinned.
 - **Impact**: rendering does not feed the next layout, unlike native.
 - **Confidence**: High
+
+## Observation: first-render JSON depends on not seeing the layout's bb attribute
+- **Context**: T14 porting `gvLayout`'s `bb` write.
+- **Finding**: the CLI's `gvLayoutJobs` never writes `bb`, and JSON first renders were built against that, while `gvLayout`, which the port's `ctx.layout` mirrors, does. `src/gvc/layout-bb.ts`
+  holds the difference, and the JSON writer reads root attributes without it. `context.ts` cannot import `viewport.ts` or style-resolve at runtime: the cycle breaks `PenType` at load.
+- **Impact**: the oracle is the CLI, so check which entry point a C write lives behind before porting it.
+- **Confidence**: High
+
+## Observation: shell grep silently skips some source files as binary
+- **Context**: T14.
+- **Finding**: `grep` here is ugrep and skips `src/render/json.ts` as binary; `grep -a` or `/usr/bin/grep` reads it.
+- **Impact**: an empty search result over `src/` is not proof of absence.
+- **Confidence**: Medium (reported by T14; the older note on ugrep agrees)

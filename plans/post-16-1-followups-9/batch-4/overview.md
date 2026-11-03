@@ -9,5 +9,5 @@ landed one at a time). T9 starts once all of them have landed, because it docume
 | [T11](T11-rerender.md) | plantuml-ts 37: second layout on one graph | typescript-pro (opus) | `src/gvc/context.ts`, `src/gvc/layout-reset.ts`, `rerender.test.ts`, its fixtures, engine cleanups if needed, `harness/T11/` | T6 | [x] |
 | [T12](T12-issue-36-golden.md) | plantuml-ts 36: pin against native | orchestrator | `test/golden/pt-issue-36*`, its inputs and refs | T0 | [x] |
 | [T13](T13-nofree-append.md) | 37: a layout with no free appends its route | typescript-pro (opus) | `src/layout/dot/` routing gates, `rerender.test.ts`, its fixtures | T11 | [x] |
-| [T14](T14-write-back.md) | 37: rendering writes attributes back | typescript-pro (opus) | `src/render/**`, `src/gvc/**`, `src/common/emit*`, `src/common/output*`, tests, fixtures | T13 | [ ] |
+| [T14](T14-write-back.md) | 37: rendering writes attributes back | typescript-pro (opus) | `src/render/**`, `src/gvc/**`, `src/common/emit*`, `src/common/output*`, tests, fixtures | T13 | [x] |
 | [T9](T9-docs.md) | Docs and locales | documentation-engineer | `docs/known-divergences.md`, `docs-site/guide/errors.md`, locale pages | T1–T8, T11–T14 | [ ] |
