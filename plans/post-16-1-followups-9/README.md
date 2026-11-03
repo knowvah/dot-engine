@@ -107,7 +107,7 @@ or signed. **Out of scope (user decision, PR 119):** layouts that vary with the 
 - **Temporary instrumentation** (incl. native harnesses): gate on an env var, remove before
   the commit; archive harness sources under `harness/`. Never edit `~/git/graphviz`.
 - **Pre-existing fixes of 1–3 lines** in files already being edited; larger → follow-up.
-- **New discoveries** not needed for this scope: a follow-up from 115 on (`dim=3` is 114).
+- **New discoveries** not needed for this scope: a follow-up from 116 on (`dim=3` is 114, the user `_cc_N` subgraph 115).
 - **Missing scratchpad:** T0 rebuilds `$BASE` and the plugin dirs.
 - **Wording:** test names, journal rows, README status lines, `.agent-notes/` entries.
 
@@ -117,7 +117,7 @@ or signed. **Out of scope (user decision, PR 119):** layouts that vary with the 
 |---|---|---|---|
 | [1](batch-1/overview.md) | T0 baselines, native fixtures | orchestrator | [x] |
 | [2](batch-2/overview.md) | T1 `toDistType` (109) · T2 component attrs (111) · T3 sfdp warning (112) · T4 circo root · T5 sizer (113) | parallel worktrees | [x] |
-| [3](batch-3/overview.md) | T6 `ccomps` names (112) · T7 `compareEvents` ties (110) | parallel worktrees | [ ] |
+| [3](batch-3/overview.md) | T6 `ccomps` names (112) · T7 `compareEvents` ties (110) | parallel worktrees | [x] |
 | [4](batch-4/overview.md) | T8 `dir1 n40` (110) · T11 re-render (37) · T12 pin 36, then T9 docs | parallel worktrees | [ ] |
 | [5](batch-5/overview.md) | T10 final verification, close-out, re-sign stop | orchestrator | [ ] |
 

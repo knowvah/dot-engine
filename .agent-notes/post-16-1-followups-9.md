@@ -21,3 +21,18 @@
   declare it after the edges.
 - **Impact**: a zero-diff result on such ids is not coverage of `find_blocks`' node branch.
 - **Confidence**: High
+
+## Observation: libc++ std::sort path and tooling details found by T7
+- **Context**: T7's native harness.
+- **Finding**: `generate-constraints.cpp.o` in `libvpsc.a` is ThinLTO bitcode, so `strings -a` reads mangled template
+  names, which show the non-branchless path and ABI tag `nqe220106`. `sort.h` is byte-identical in SDK 26.5 and 27.2 though
+  `_LIBCPP_VERSION` differs. A McIlroy adversary with a freeze budget reaches the depth-limit heap fallback, ties included.
+  Event order repeats across environments; constraints from `same`, `touch` and `overlap` still vary through `Node*` ties.
+- **Impact**: separate sort order from address order when comparing VPSC with native.
+- **Confidence**: High
+
+## Observation: check-complexity.py --help hangs
+- **Context**: T7.
+- **Finding**: `python3 ~/.claude/hooks/check-complexity.py --help` reads stdin and blocked a shell for 180 s.
+- **Impact**: do not call it by hand without input.
+- **Confidence**: Medium (reported by T7)

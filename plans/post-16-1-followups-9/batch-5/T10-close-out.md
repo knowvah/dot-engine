@@ -12,7 +12,7 @@
 4. **Timing row:** if T7 ported the sort, port before and after on its largest input (3 runs, median, load noted).
 5. **Close-out:**
    - `plans/post-16.1-followups/README.md`: mark 109–113 DONE or PARKED with task IDs; open 114 for `neato dim=3` (silently 2-D, 211–302
-     diffs on planning's probes, absent from `known-divergences.md`); number other discoveries from 115; update the header line.
+     diffs on planning's probes, absent from `known-divergences.md`); open 115 for `ccomps` not reusing a user `_cc_N` subgraph (T6's journal row); number other discoveries from 116; update the header line.
    - Mission-summary row in `plans/decision-journal.md`; this brief's checkboxes and a "Mission summary" section in the README.
    - `.agent-notes/post-16-1-followups-9.md` for anything novel.
 6. **Commit:** run the gates, then commit `chore(T10): close out post-16.1 follow-ups part 9`, with a one-line stop summary in the body.
