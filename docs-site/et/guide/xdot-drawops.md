@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Oma renderdus xdot-joonistusoperatsioonidega
@@ -120,10 +120,13 @@ sealhulgas:
 Graafi `digraph { a [color=red]; a -> b }` puhul langevad `_draw_`/`_hdraw_`
 geomeetria ja värviväärtused täpselt kokku natiivse `dot -Txdot` väljundiga
 (sõlme ellips, serva splain, nooleotsa hulknurk ja rakendatud `color=red`).
-Kutsuge `getDrawOps(g)` otse värske, veel renderdamata graafi peal — `render(g,
-...)` ja `getDrawOps(g)` kutsumine *sama* graafiobjekti peal käivitab
-paigutuse kaks korda ega ole toetatud muster; kasutage ühe graafi kohta kas
-üht või teist.
+Kutsuge `getDrawOps(g)` otse värske, veel renderdamata graafi peal. *Sama*
+graafiobjekti uuesti renderdamine järgib natiivse Graphvizi tsüklit: `dot`-,
+`xdot`- või `json`-renderdus kirjutab paigutuse tagasi `g.attrs`-i (`pos`,
+`width`, `height`, `bb` ja joonistusatribuudid), iga paigutus kirjutab `bb`,
+hilisem paigutus loeb neid väärtusi ning graafi `_draw_` või `_background`
+esitatakse uuesti. Teine `xdot`-renderdus erineb seetõttu esimesest, nagu
+natiivselgi.
 
 ## Canvase näide (ainult sõlmesildid)
 

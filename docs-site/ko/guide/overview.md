@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # 개요
 
@@ -75,6 +75,8 @@ digraph pipeline {
 실행하며, 계산된 좌표(노드 위치, 에지 스플라인, 경계 상자)는 이후에도 `Graph` 객체에
 유지됩니다. `getLayout`은 레이아웃을 다시 실행하지 않고, 앞서 `render` 호출이 이미 계산한
 지오메트리를 읽기만 하므로 항상 같은 그래프에서 `render` *이후에* 호출합니다.
+
+렌더링은 Graphviz와 마찬가지로 그래프를 변경합니다. `dot`, `xdot`, `json` 렌더링 후 `g.attrs`에는 레이아웃 속성(`pos`, `width`, `height`, `bb`와 그리기 속성)이 들어 있으며, 모든 레이아웃은 `bb`를 기록합니다. 같은 `Graph`를 다시 렌더링하면 그 값을 읽고 그래프의 `_draw_` 또는 `_background`가 재생되므로, 두 번째 `xdot` 렌더링은 네이티브와 마찬가지로 첫 번째와 다릅니다.
 
 ## 세 가지 진입점 — 어느 문으로? {#the-three-entry-points}
 

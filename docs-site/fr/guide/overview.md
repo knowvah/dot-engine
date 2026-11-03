@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Vue d’ensemble
 
@@ -82,6 +82,13 @@ splines des arêtes, boîte englobante) sont ensuite conservées sur l’objet `
 `getLayout` ne relance pas la disposition — il lit la géométrie qu’un appel précédent à `render`
 a déjà calculée ; il s’appelle donc toujours *après* `render`, sur le même
 graphe.
+
+Le rendu modifie le graphe, comme dans Graphviz. Après un rendu `dot`, `xdot` ou
+`json`, `g.attrs` contient les attributs de disposition (`pos`, `width`,
+`height`, `bb` et les attributs de dessin) ; toute disposition écrit `bb`.
+Rendre à nouveau le même `Graph` lit ces valeurs, et le `_draw_` ou
+`_background` du graphe est rejoué, de sorte qu'un second rendu `xdot` diffère
+du premier, comme avec le natif.
 
 ## Les trois points d’entrée — quelle porte ?
 

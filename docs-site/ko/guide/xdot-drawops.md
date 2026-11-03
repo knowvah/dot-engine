@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # xdot 그리기 연산으로 직접 렌더링
@@ -118,10 +118,7 @@ const screenY = canvasHeight - op.ellipse.y;
 
 `digraph { a [color=red]; a -> b }`의 경우 `_draw_`/`_hdraw_` 지오메트리와 색
 값이 네이티브 `dot -Txdot`과 정확히 일치합니다(노드 타원, 에지 스플라인, 화살촉
-다각형, 적용된 `color=red`). 아직 렌더링하지 않은 새 그래프에 `getDrawOps(g)`를
-직접 호출하세요. *같은* 그래프 객체에 `render(g, ...)`와 `getDrawOps(g)`를 모두
-호출하면 레이아웃이 두 번 실행되며 지원되는 패턴이 아닙니다. 그래프마다 둘 중
-하나만 사용하세요.
+다각형, 적용된 `color=red`). 아직 렌더링하지 않은 새 그래프에 `getDrawOps(g)`를 직접 호출하세요. *같은* 그래프 객체를 다시 렌더링하면 네이티브 Graphviz의 주기를 따릅니다. `dot`, `xdot`, `json` 렌더링은 레이아웃을 `g.attrs`에 다시 기록하고(`pos`, `width`, `height`, `bb`와 그리기 속성), 모든 레이아웃은 `bb`를 기록하며, 이후 레이아웃은 그 값을 읽고, 그래프의 `_draw_` 또는 `_background`가 재생됩니다. 따라서 두 번째 `xdot` 렌더링은 네이티브와 마찬가지로 첫 번째와 다릅니다.
 
 ## 캔버스 예제(노드 레이블만)
 

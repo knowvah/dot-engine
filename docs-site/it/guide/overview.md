@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Panoramica
 
@@ -82,6 +82,13 @@ spline degli archi, riquadro di delimitazione) restano poi conservate nell'ogget
 `getLayout` non riesegue il layout — legge la geometria che una precedente chiamata a `render`
 ha già calcolato, quindi va sempre chiamata *dopo* `render`, sullo stesso
 grafo.
+
+Il rendering modifica il grafo, come in Graphviz. Dopo un rendering `dot`,
+`xdot` o `json`, `g.attrs` contiene gli attributi di layout (`pos`, `width`,
+`height`, `bb` e gli attributi di disegno); qualsiasi layout scrive `bb`.
+Renderizzare di nuovo lo stesso `Graph` legge quei valori e il `_draw_` o
+`_background` del grafo viene riprodotto, quindi un secondo rendering `xdot`
+differisce dal primo, come avviene con il nativo.
 
 ## I tre punti di ingresso — quale porta?
 

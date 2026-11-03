@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # 概览
 
@@ -72,6 +72,8 @@ digraph pipeline {
 计算出的坐标（节点位置、边样条、边界框）随后保留在 `Graph` 对象上。
 `getLayout` 不会重新运行布局——它读取先前 `render` 调用已经计算好的几何信息，
 因此总是在 `render` 之后、针对同一个图调用。
+
+渲染会改变图，与 Graphviz 一致。`dot`、`xdot` 或 `json` 渲染之后，`g.attrs` 中保存着布局属性（`pos`、`width`、`height`、`bb` 和绘制属性）；任何布局都会写入 `bb`。再次渲染同一个 `Graph` 会读取这些值，并且会重放图的 `_draw_` 或 `_background`，因此第二次 `xdot` 渲染与第一次不同，与原生一致。
 
 ## 三个入口点——该选哪一个？
 

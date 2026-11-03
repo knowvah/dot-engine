@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Własne renderowanie z operacjami rysowania xdot
@@ -119,11 +119,13 @@ grafu, w tym:
 
 Dla `digraph { a [color=red]; a -> b }` geometria `_draw_`/`_hdraw_` i wartości
 kolorów dokładnie odpowiadają natywnemu `dot -Txdot` (elipsa węzła, splajn
-krawędzi, wielokąt grota i zastosowane `color=red`). Wywołuj `getDrawOps(g)`
-bezpośrednio na świeżym (jeszcze niezrenderowanym) grafie — wywołanie
-`render(g, ...)` i `getDrawOps(g)` na *tym samym* obiekcie grafu uruchamia układ
-dwukrotnie i nie jest wspieranym wzorcem; dla każdego grafu używaj jednego albo
-drugiego.
+krawędzi, wielokąt grota i zastosowane `color=red`). Wywołuj `getDrawOps(g)` bezpośrednio na świeżym (jeszcze niezrenderowanym)
+grafie. Ponowne renderowanie *tego samego* obiektu grafu podąża za cyklem
+natywnego Graphviza: renderowanie `dot`, `xdot` lub `json` zapisuje układ z
+powrotem do `g.attrs` (`pos`, `width`, `height`, `bb` i atrybuty rysowania),
+każdy układ zapisuje `bb`, późniejszy układ odczytuje te wartości, a `_draw_`
+lub `_background` grafu jest odtwarzany. Drugie renderowanie `xdot` różni się
+więc od pierwszego, tak jak w natywnym.
 
 ## Przykład z canvas (tylko etykiety węzłów)
 

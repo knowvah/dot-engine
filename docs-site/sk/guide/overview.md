@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Prehľad
 
@@ -82,6 +82,13 @@ splajny hrán, ohraničujúci rámec) zostávajú potom uložené v objekte `Gra
 `getLayout` rozloženie znova nespúšťa — číta geometriu, ktorú už vypočítalo
 predchádzajúce volanie `render`, takže sa vždy volá *po* `render`, na tom istom
 grafe.
+
+Vykreslenie graf mení, rovnako ako v Graphvize. Po vykreslení `dot`, `xdot`
+alebo `json` obsahuje `g.attrs` atribúty rozloženia (`pos`, `width`, `height`,
+`bb` a kresliace atribúty); každé rozloženie zapíše `bb`. Opätovné vykreslenie
+toho istého `Graph` tieto hodnoty číta a `_draw_` alebo `_background` grafu sa
+prehrá, takže druhé vykreslenie `xdot` sa líši od prvého, rovnako ako pri
+natívnom.
 
 ## Tri vstupné body — ktoré dvere? {#the-three-entry-points-which-door}
 

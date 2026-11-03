@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Visão geral
 
@@ -85,6 +85,13 @@ disparam o layout como parte da renderização, e as coordenadas calculadas
 objeto `Graph` depois disso. `getLayout` não executa o layout de novo — ele lê a
 geometria que uma chamada anterior a `render` já calculou, por isso é sempre
 chamado *depois* de `render`, no mesmo grafo.
+
+A renderização altera o grafo, como no Graphviz. Depois de uma renderização
+`dot`, `xdot` ou `json`, `g.attrs` contém os atributos de layout (`pos`,
+`width`, `height`, `bb` e os atributos de desenho); qualquer layout grava `bb`.
+Renderizar de novo o mesmo `Graph` lê esses valores e o `_draw_` ou
+`_background` do grafo é reproduzido, de modo que uma segunda renderização
+`xdot` difere da primeira, como no nativo.
 
 ## Os três pontos de entrada — qual porta?
 

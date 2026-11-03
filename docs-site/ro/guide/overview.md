@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Prezentare generală
 
@@ -82,6 +82,13 @@ spline-urile muchiilor, caseta de încadrare) sunt păstrate ulterior pe obiectu
 `getLayout` nu rulează din nou aranjarea — citește geometria pe care un apel
 anterior la `render` a calculat-o deja, deci se apelează întotdeauna *după* `render`, pe același
 graf.
+
+Randarea modifică graful, ca în Graphviz. După o randare `dot`, `xdot` sau
+`json`, `g.attrs` conține atributele de aranjare (`pos`, `width`, `height`, `bb`
+și atributele de desenare); orice aranjare scrie `bb`. Randarea din nou a
+aceluiași `Graph` citește aceste valori, iar `_draw_` sau `_background` al
+grafului este redat din nou, deci a doua randare `xdot` diferă de prima, ca la
+cel nativ.
 
 ## Cele trei puncte de intrare — ce ușă?
 

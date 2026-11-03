@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # xdot による独自レンダリング
@@ -109,7 +109,7 @@ const screenY = canvasHeight - op.ellipse.y;
 - 色設定のオペレーション（`fill_color`、`pen_color`）。ノードのカスタム `color` / `fillcolor` 属性も含む
 - エッジの描画オペレーション（スプラインには `unfilled_bezier`、矢印の先端には `pen_color` / `fill_color` / `filled_polygon`）
 
-`digraph { a [color=red]; a -> b }` では、`_draw_` / `_hdraw_` のジオメトリと色の値が、ネイティブの `dot -Txdot` と完全に一致します（ノードの楕円、エッジのスプライン、矢印の先端の多角形、適用された `color=red`）。`getDrawOps(g)` は、まだレンダリングしていない新しいグラフに対して直接呼び出してください。*同じ*グラフオブジェクトに対して `render(g, ...)` と `getDrawOps(g)` を呼ぶと、レイアウトが二重に実行されます。これはサポート対象外のパターンなので、グラフごとにどちらか一方だけを使ってください。
+`digraph { a [color=red]; a -> b }` では、`_draw_` / `_hdraw_` のジオメトリと色の値が、ネイティブの `dot -Txdot` と完全に一致します（ノードの楕円、エッジのスプライン、矢印の先端の多角形、適用された `color=red`）。`getDrawOps(g)` は、まだレンダリングしていない新しいグラフに対して直接呼び出してください。*同じ*グラフオブジェクトを再度レンダリングすると、ネイティブの Graphviz と同じサイクルをたどります。`dot`、`xdot`、`json` のレンダリングはレイアウトを `g.attrs` に書き戻し（`pos`、`width`、`height`、`bb` と描画属性）、どのレイアウトも `bb` を書き込み、後続のレイアウトはそれらの値を読み取り、グラフの `_draw_` または `_background` が再生されます。そのため、2 回目の `xdot` レンダリングは、ネイティブと同様に 1 回目と異なります。
 
 ## Canvas の例（ノードのラベルのみ）
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # 概要
 
@@ -78,6 +78,8 @@ digraph pipeline {
 エッジのスプライン、バウンディングボックス）は、その後も `Graph` オブジェクトに保持されます。
 `getLayout` はレイアウトを再実行しません。先に `render` を呼んだときに計算済みのジオメトリを
 読み取るだけなので、常に同じグラフに対して `render` の*後*に呼び出します。
+
+レンダリングは、Graphviz と同様にグラフを変更します。`dot`、`xdot`、`json` のレンダリング後、`g.attrs` にはレイアウト属性（`pos`、`width`、`height`、`bb` と描画属性）が入り、どのレイアウトも `bb` を書き込みます。同じ `Graph` を再度レンダリングするとそれらの値が読み取られ、グラフの `_draw_` または `_background` が再生されるため、2 回目の `xdot` レンダリングは、ネイティブと同様に 1 回目と異なります。
 
 ## 3 つのエントリポイント — どの入口を使うか {#the-three-entry-points}
 

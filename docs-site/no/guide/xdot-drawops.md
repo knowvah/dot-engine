@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Egen rendering med xdot-tegneoperasjoner
@@ -119,10 +119,13 @@ inkludert:
 
 For `digraph { a [color=red]; a -> b }` samsvarer geometrien i
 `_draw_`/`_hdraw_` og fargeverdiene nøyaktig med innebygd `dot -Txdot`
-(nodeellipsen, kantsplinen, pilspisspolygonet og den anvendte `color=red`). Kall
-`getDrawOps(g)` direkte på en fersk graf som ikke er rendret ennå — å kalle
-`render(g, ...)` og `getDrawOps(g)` på *samme* grafobjekt kjører layouten to
-ganger og er ikke et støttet mønster; bruk ett av dem per graf.
+(nodeellipsen, kantsplinen, pilspisspolygonet og den anvendte `color=red`). Kall `getDrawOps(g)` direkte på en fersk graf som ikke er rendret ennå. Å rendre
+det *samme* grafobjektet på nytt følger syklusen til native Graphviz: en `dot`-,
+`xdot`- eller `json`-rendering skriver layouten tilbake i `g.attrs` (`pos`,
+`width`, `height`, `bb` og tegneattributtene), enhver layout skriver `bb`, en
+senere layout leser disse verdiene, og grafens `_draw_` eller `_background`
+spilles av på nytt. En andre `xdot`-rendering skiller seg derfor fra den første,
+slik native gjør.
 
 ## Canvas-eksempel (kun nodeetiketter)
 

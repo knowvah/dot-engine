@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Egen rendering med xdot-tegneoperationer
@@ -119,10 +119,12 @@ herunder:
 
 For `digraph { a [color=red]; a -> b }` stemmer geometrien i `_draw_`/`_hdraw_`
 og farveværdierne præcist overens med den native `dot -Txdot` (knudeellipsen,
-kantsplinen, pilespidsens polygon og den anvendte `color=red`). Kald
-`getDrawOps(g)` direkte på en frisk (endnu ikke renderet) graf — at kalde
-`render(g, ...)` og `getDrawOps(g)` på det *samme* grafobjekt kører layout to
-gange og er ikke et understøttet mønster; brug det ene eller det andet pr. graf.
+kantsplinen, pilespidsens polygon og den anvendte `color=red`). Kald `getDrawOps(g)` direkte på en frisk (endnu ikke renderet) graf. At rendere
+det *samme* grafobjekt igen følger native Graphviz' cyklus: en `dot`-, `xdot`-
+eller `json`-rendering skriver layoutet tilbage i `g.attrs` (`pos`, `width`,
+`height`, `bb` og tegneattributterne), ethvert layout skriver `bb`, et senere
+layout læser disse værdier, og grafens `_draw_` eller `_background` afspilles.
+En anden `xdot`-rendering adskiller sig derfor fra den første, ligesom native.
 
 ## Canvas-eksempel (kun knudeetiketter)
 

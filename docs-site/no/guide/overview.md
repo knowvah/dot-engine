@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Oversikt
 
@@ -83,6 +83,13 @@ kantsplines, avgrensningsboks) beholdes på `Graph`-objektet etterpå.
 `getLayout` kjører ikke layout på nytt — den leser geometri som et tidligere `render`-kall
 allerede har beregnet, så den kalles alltid *etter* `render`, på den samme
 grafen.
+
+Rendering endrer grafen, som i Graphviz. Etter en `dot`-, `xdot`- eller
+`json`-rendering inneholder `g.attrs` layoutattributtene (`pos`, `width`,
+`height`, `bb` og tegneattributtene); enhver layout skriver `bb`. Å rendre samme
+`Graph` på nytt leser disse verdiene, og grafens `_draw_` eller `_background`
+spilles av på nytt, så en andre `xdot`-rendering skiller seg fra den første,
+slik native gjør.
 
 ## De tre inngangspunktene — hvilken dør? {#the-three-entry-points-which-door}
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Überblick
 
@@ -82,6 +82,13 @@ Kanten-Splines, Begrenzungsrahmen) bleiben danach am `Graph`-Objekt erhalten. `g
 führt das Layout nicht erneut aus — es liest Geometrie, die ein früherer `render`-Aufruf
 bereits berechnet hat, und wird daher immer *nach* `render` auf demselben Graphen
 aufgerufen.
+
+Rendern verändert den Graphen, wie in Graphviz. Nach einem `dot`-, `xdot`- oder
+`json`-Rendering enthält `g.attrs` die Layoutattribute (`pos`, `width`,
+`height`, `bb` und die Zeichenattribute); jedes Layout schreibt `bb`. Rendert
+man denselben `Graph` erneut, werden diese Werte gelesen, und ein `_draw_` oder
+`_background` des Graphen wird wiedergegeben, sodass sich ein zweites
+`xdot`-Rendering vom ersten unterscheidet, wie beim nativen.
 
 ## Die drei Einstiegspunkte — welche Tür?
 

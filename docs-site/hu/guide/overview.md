@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Áttekintés
 
@@ -82,6 +82,14 @@ részeként indítja el az elrendezést, a kiszámított koordináták (csúcspo
 A `getLayout` nem futtatja újra az elrendezést — olyan geometriát olvas ki, amelyet
 egy korábbi `render` hívás már kiszámított, ezért mindig a `render` *után*, ugyanazon
 a gráfon hívjuk.
+
+A renderelés megváltoztatja a gráfot, ahogy a Graphvizben is. Egy `dot`, `xdot`
+vagy `json` renderelés után a `g.attrs` tartalmazza az elrendezési
+attribútumokat (`pos`, `width`, `height`, `bb` és a rajzolási attribútumok);
+minden elrendezés írja a `bb` értéket. Ugyanannak a `Graph` objektumnak az
+ismételt renderelése beolvassa ezeket az értékeket, és a gráf `_draw_` vagy
+`_background` attribútuma újra lejátszásra kerül, így a második `xdot`
+renderelés eltér az elsőtől, ahogy a natívnál is.
 
 ## A három belépési pont — melyik ajtó?
 

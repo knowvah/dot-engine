@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Eigin teiknun með xdot-teikniaðgerðum
@@ -115,10 +115,13 @@ Aðgerðir berast í teikniröð: fyrst bakgrunnur grafsins, síðan hnútar, s�
 
 Fyrir `digraph { a [color=red]; a -> b }` samsvara `_draw_`/`_hdraw_`-rúmfræðin
 og litagildin nákvæmlega úttaki upprunalega `dot -Txdot` (sporbaugur hnúts,
-splína leggs, marghyrningur örvarhauss og `color=red` sem var beitt). Kallaðu
-beint á `getDrawOps(g)` á nýju grafi (sem hefur ekki enn verið teiknað) — að kalla
-á `render(g, ...)` og `getDrawOps(g)` á *sama* grafhlutinn keyrir uppsetningu
-tvisvar og er ekki studd aðferð; notaðu annað hvort fyrir hvert graf.
+splína leggs, marghyrningur örvarhauss og `color=red` sem var beitt). Kallaðu beint á `getDrawOps(g)` á nýju grafi (sem hefur ekki enn verið teiknað).
+Að teikna *sama* grafhlutinn aftur fylgir lotu upprunalega Graphviz: `dot`-,
+`xdot`- eða `json`-teikning skrifar uppsetninguna aftur í `g.attrs` (`pos`,
+`width`, `height`, `bb` og teiknieigindin), hver uppsetning skrifar `bb`, síðari
+uppsetning les þessi gildi og `_draw_` eða `_background` grafsins er spilað
+aftur. Önnur `xdot`-teikning er því frábrugðin þeirri fyrstu, eins og í
+upprunalega.
 
 ## Canvas-dæmi (aðeins merkimiðar hnúta)
 

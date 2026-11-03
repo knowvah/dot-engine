@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Rendu personnalisé avec les opérations de dessin xdot
@@ -120,10 +120,13 @@ un graphe, notamment :
 Pour `digraph { a [color=red]; a -> b }`, la géométrie `_draw_`/`_hdraw_` et
 les valeurs de couleur correspondent exactement à celles du `dot -Txdot` natif
 (ellipse du nœud, spline de l’arête, polygone de la pointe de flèche et
-`color=red` appliqué). Appelez `getDrawOps(g)` directement sur un graphe neuf
-(pas encore rendu) — appeler `render(g, ...)` puis `getDrawOps(g)` sur le
-*même* objet graphe exécute la disposition deux fois et n’est pas un usage
-pris en charge ; utilisez l’une ou l’autre par graphe.
+`color=red` appliqué). Appelez `getDrawOps(g)` directement sur un graphe neuf (pas encore rendu).
+Rendre à nouveau le *même* objet graphe suit le cycle de Graphviz natif : un
+rendu `dot`, `xdot` ou `json` réécrit la disposition dans `g.attrs` (`pos`,
+`width`, `height`, `bb` et les attributs de dessin), toute disposition écrit
+`bb`, une disposition ultérieure lit ces valeurs, et le `_draw_` ou
+`_background` du graphe est rejoué. Un second rendu `xdot` diffère donc du
+premier, comme avec le natif.
 
 ## Exemple avec canvas (étiquettes de nœuds uniquement)
 

@@ -1342,9 +1342,15 @@ differs from native Graphviz. Found by the `v2-silent-gaps` mission
   so native output for `overlap=vpsc|ipsep` and constrained `mode=ipsep`
   varies from run to run when positions tie (one case gave 21 distinct
   results in 300 runs). The port orders ties by creation order and always
-  visits new blocks, so its output is deterministic. It equals a sampled native
-  run on the tie cases checked, except one 40-node case that matched none of 29
-  sampled native results (follow-up 110).
+  visits new blocks, so its output is deterministic. Sweep-event ties follow
+  libc++: the port carries a port of its `std::sort`, so tie order matches
+  native's. It equals a sampled native run on the tie cases checked. The one
+  40-node case (`dir1 n40`) that once matched none of 29 sampled native
+  results is explained: in 332 native runs the oracle's `libvpsc.a` gave 17
+  distinct outputs, while a native copy ordering only `Blocks` by creation index
+  gave 1 in 332, and the port equals that output bit for bit. Block address order
+  is the whole difference for that case; the claim is measured on `dir1 n40`
+  only (follow-up 110).
 
 ---
 

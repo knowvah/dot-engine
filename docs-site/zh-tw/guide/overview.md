@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # 概覽
 
@@ -74,6 +74,8 @@ digraph pipeline {
 而計算出的座標（節點位置、邊樣條、邊界框）之後會保留在 `Graph` 物件上。
 `getLayout` 不會重新執行版面配置——它讀取的是先前 `render` 呼叫已計算好的幾何資訊，
 因此一律要在同一張圖上於 `render` *之後*呼叫。
+
+轉譯會改變圖，與 Graphviz 一致。`dot`、`xdot` 或 `json` 轉譯之後，`g.attrs` 中保存著版面配置屬性（`pos`、`width`、`height`、`bb` 與繪製屬性）；任何版面配置都會寫入 `bb`。再次轉譯同一個 `Graph` 會讀取這些值，並且會重播圖的 `_draw_` 或 `_background`，因此第二次 `xdot` 轉譯與第一次不同，與原生一致。
 
 ## 三個進入點——該選哪一個？ {#the-three-entry-points-which-door}
 

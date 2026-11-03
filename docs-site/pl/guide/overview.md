@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Przegląd
 
@@ -83,6 +83,13 @@ spline'y krawędzi, ramka ograniczająca) są potem przechowywane w obiekcie `Gr
 `getLayout` nie uruchamia układu ponownie — odczytuje geometrię, którą wcześniejsze
 wywołanie `render` już obliczyło, więc zawsze wywołuje się go *po* `render`, na tym
 samym grafie.
+
+Renderowanie zmienia graf, tak jak w Graphviz. Po renderowaniu `dot`, `xdot` lub
+`json` `g.attrs` zawiera atrybuty układu (`pos`, `width`, `height`, `bb` i
+atrybuty rysowania); każdy układ zapisuje `bb`. Ponowne renderowanie tego samego
+`Graph` odczytuje te wartości, a `_draw_` lub `_background` grafu jest
+odtwarzany, więc drugie renderowanie `xdot` różni się od pierwszego, tak jak w
+natywnym.
 
 ## Trzy punkty wejścia — które drzwi?
 

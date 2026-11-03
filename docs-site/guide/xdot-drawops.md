@@ -112,9 +112,12 @@ Ops arrive in paint order: graph background first, then nodes, then edges.
 For `digraph { a [color=red]; a -> b }`, the `_draw_`/`_hdraw_` geometry and
 color values match native `dot -Txdot` exactly (node ellipse, edge spline,
 arrowhead polygon, and the applied `color=red`). Call `getDrawOps(g)` directly
-on a fresh (not-yet-rendered) graph — calling `render(g, ...)` and
-`getDrawOps(g)` on the *same* graph object runs layout twice and is not a
-supported pattern; use one or the other per graph.
+on a fresh (not-yet-rendered) graph. Rendering the *same* graph object again
+follows native Graphviz's cycle: a `dot`, `xdot` or `json` render writes the
+layout back into `g.attrs` (`pos`, `width`, `height`, `bb` and the draw
+attributes), any layout writes `bb`, a later layout reads those values, and a
+graph `_draw_` or `_background` is replayed. A second `xdot` render therefore
+differs from the first, as native's does.
 
 ## Canvas example (node labels only)
 

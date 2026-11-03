@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Eigenes Rendering mit xdot-Zeichenoperationen
@@ -121,10 +121,13 @@ Zeichenreihenfolge für einen Graphen, darunter:
 Für `digraph { a [color=red]; a -> b }` stimmen die Geometrie von
 `_draw_`/`_hdraw_` und die Farbwerte exakt mit dem nativen `dot -Txdot`
 überein (Knotenellipse, Kanten-Spline, Pfeilspitzenpolygon und das angewendete
-`color=red`). Rufen Sie `getDrawOps(g)` direkt auf einem frischen, noch nicht
-gerenderten Graphen auf — `render(g, ...)` und `getDrawOps(g)` auf demselben
-Graphobjekt aufzurufen, führt das Layout zweimal aus und ist kein unterstütztes
-Muster; verwenden Sie pro Graph nur das eine oder das andere.
+`color=red`). Rufen Sie `getDrawOps(g)` direkt auf einem frischen, noch nicht gerenderten
+Graphen auf. Rendert man dasselbe Graphobjekt erneut, folgt das dem Zyklus des
+nativen Graphviz: Ein `dot`-, `xdot`- oder `json`-Rendering schreibt das Layout
+in `g.attrs` zurück (`pos`, `width`, `height`, `bb` und die Zeichenattribute),
+jedes Layout schreibt `bb`, ein späteres Layout liest diese Werte, und ein
+`_draw_` oder `_background` des Graphen wird wiedergegeben. Ein zweites
+`xdot`-Rendering unterscheidet sich daher vom ersten, wie beim nativen.
 
 ## Canvas-Beispiel (nur Knotenbeschriftungen)
 
