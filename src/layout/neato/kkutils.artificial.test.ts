@@ -12,6 +12,7 @@
 import { describe, it, expect } from 'vitest';
 import { parse } from '../../index.js';
 import type { VtxData } from './dijkstra.js';
+import { toDistType } from './dijkstra.js';
 import { computeApspArtificialWeights, computeNewWeights, restoreOldWeights } from './kkutils.js';
 import { makeGraphDataC } from './make-graph-data.js';
 import { RAW_CASES, SUBSET_CASES, type KkRow } from './__fixtures__/kk-models.js';
@@ -31,12 +32,7 @@ function toRows(flat: readonly number[], n: number): number[][] {
 }
 
 const ALL_CASES = [...SUBSET_CASES, ...RAW_CASES];
-/**
- * `size_t wrap`'s Dij is left out: `(DistType)` of its 2^64 weight saturates to
- * INT_MAX natively, while `dijkstra.ts:toDistType` wraps to 0 in the Int32Array.
- * Only duplicate neighbours reach it, which `makeGraphData` never builds.
- */
-const DIJ_CASES = ALL_CASES.filter((c) => c.name !== 'size_t wrap');
+const DIJ_CASES = ALL_CASES;
 
 describe('computeNewWeights', () => {
   it.each(ALL_CASES.map((c) => [c.name, c] as const))('%s: weights match native', (_name, c) => {
@@ -89,4 +85,19 @@ describe('the rows T7 will pass', () => {
       expect(rows.map((v) => v.ewgts)).toEqual(c.rows.map(() => []));
     },
   );
+});
+
+describe('toDistType', () => {
+  it.each([
+    ['>= 2^31', 2 ** 31, 2147483647],
+    ['2^64 (size_t wrap)', 2 ** 64, 2147483647],
+    ['2^31 - 1 after fround (rounds up to 2^31)', 2147483647, 2147483647],
+    ['largest float below 2^31', 2147483520, 2147483520],
+    ['< -2^31', -(2 ** 31) - 256, -2147483648],
+    ['-2^31 exactly', -(2 ** 31), -2147483648],
+    ['NaN', Number.NaN, 0],
+    ['truncates toward zero', -2.9, -2],
+  ])('%s', (_name, w, expected) => {
+    expect(toDistType(w)).toBe(expected);
+  });
 });

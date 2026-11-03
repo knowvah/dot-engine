@@ -244,9 +244,18 @@ export function ngIncreaseKey(
   h.index[increasedVertex] = i;
 }
 
-/** C `(DistType)` of a float edge weight (truncation toward zero). */
-function toDistType(w: number): number {
-  return Math.trunc(Math.fround(w));
+/**
+ * C `(DistType)` of a float edge weight: truncation toward zero, saturating
+ * (>= 2^31 to INT_MAX, < -2^31 to INT_MIN, NaN to 0). This is arm64's
+ * conversion, the oracle's.
+ * @see lib/neatogen/dijkstra.c:ngdijkstra
+ */
+export function toDistType(w: number): number {
+  const f = Math.fround(w);
+  if (Number.isNaN(f)) return 0;
+  if (f >= 2147483648) return MAX_DIST;
+  if (f < -2147483648) return -2147483648;
+  return Math.trunc(f);
 }
 
 /**
