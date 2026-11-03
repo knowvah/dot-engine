@@ -1,0 +1,17 @@
+graph G {
+  maxiter=-1;
+  a -- b;
+  b -- c;
+  c -- d;
+  d -- a;
+  a -- c;
+  e -- f;
+  f -- g;
+  g -- h;
+  h -- e;
+  e -- g;
+  h -- i;
+  j -- k;
+  k -- l;
+  l -- m;
+}
