@@ -17,7 +17,8 @@
  * coverage.
  */
 
-import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { describe, it, expect, vi } from 'vitest';
 import { parse } from '../../parser/index.js';
 import {
   sfdpInitGraph, tuneControl, makeMatrix, getSizes, getPos,
@@ -156,6 +157,47 @@ describe('tuneControl — start (resolveSeed)', () => {
     const ctrl = springElectricalControlNew();
     tuneControl(g, ctrl);
     expect(ctrl.randomSeed).toBe(123);
+  });
+});
+
+const START_WARNING = new URL('__fixtures__/start-warning/', import.meta.url);
+
+/** Warning lines tuneControl prints for a T0 fixture, via console.warn. */
+function tuneWarnings(name: string): string[] {
+  const g = parse(readFileSync(new URL(`${name}.gv`, START_WARNING), 'utf8'));
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  try {
+    tuneControl(g, springElectricalControlNew());
+    return warn.mock.calls.map((c) => String(c[0]));
+  } finally {
+    warn.mockRestore();
+  }
+}
+
+/** Native stderr lines for a T0 fixture. */
+function nativeStderr(name: string): string[] {
+  const t = readFileSync(new URL(`${name}.xdot.stderr`, START_WARNING), 'utf8');
+  return t.split('\n').filter((l) => l !== '');
+}
+
+describe('tuneControl — sfdp only supports start=random (native stderr)', () => {
+  it.each(['start-self', 'start-regular'])('%s warns exactly as native', (n) => {
+    expect(nativeStderr(n)).toEqual(['Warning: sfdp only supports start=random']);
+    expect(tuneWarnings(n)).toEqual(nativeStderr(n));
+  });
+
+  it.each(['start-5', 'start-random5', 'start-unset'])('%s prints nothing', (n) => {
+    expect(nativeStderr(n)).toEqual([]);
+    expect(tuneWarnings(n)).toEqual([]);
+  });
+
+  it('start=self then label_scheme=9 keeps native order', () => {
+    expect(nativeStderr('start-self-label-scheme')).toEqual([
+      'Warning: sfdp only supports start=random',
+      'Warning: label_scheme = 9 > 4 : ignoring',
+    ]);
+    expect(tuneWarnings('start-self-label-scheme')).toEqual(
+      nativeStderr('start-self-label-scheme'));
   });
 });
 
