@@ -610,6 +610,12 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       but the sizer fallback still lives in `imageIsSupplied` and `usershapeSizePts`, and only
       `image-ft-null.test.ts` calls it. Route those through it or remove it (part 8 T4, T9).
 
+  Accepted, not open (user decision, PR 119): layouts that vary with the runtime's `pow`, `hypot`
+  or similar. Last-bit libm differences change the decisions an algorithm encodes, as they
+  already do between OSes and chipsets on one implementation; the algorithm is still correct.
+  The oracle fixtures are macOS's, so a probe this sensitive replays macOS's values
+  (`kk-large.pow.json`). No library change is wanted.
+
 ## Local leftovers (not committed, safe to delete)
 
 - `test/corpus/parity-baseline.json`, `test/corpus/parity-probe.json`: survey

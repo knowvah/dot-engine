@@ -27,6 +27,11 @@
 //   `circuit_model` fails, warns under the component's name, and falls back to
 //   shortest paths, so the layout is native's for the `model=shortpath` twin
 //   (`kk-disc-shortpath-pack`, `kk-disc4-shortpath-pack`), which does not crash.
+// - KK calls pow(sq, 1.5) per move, and Math.pow is the platform's libm (V8's
+//   --use-std-math-pow). On a graph as large as `kk-large`, a last-bit difference
+//   moves the `max < Epsilon2` stop by whole moves, so the layout depends on the
+//   libm. The fixture comes from macOS, so that case replays macOS's pow on every
+//   platform. The other cases pass on Linux CI without a replay.
 // @see lib/neatogen/neatoinit.c:neato_layout
 // @see lib/neatogen/neatoinit.c:kkNeato
 // @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
@@ -35,6 +40,7 @@ import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { parse, render } from '../../index.js';
 import { compareXdot, XDOT_TOLERANCE } from '../../../test/golden/compare-xdot.js';
+import { exactPow15 } from '../../../test/helpers/exact-pow15.js';
 
 const FIXTURES = new URL('./__fixtures__/models/', import.meta.url);
 
@@ -54,7 +60,7 @@ const HIER = [
 ] as const;
 const KK = [
   'kk-circuit', 'kk-default', 'kk-disc-circuit', 'kk-disc-shortpath-pack', 'kk-disc4-shortpath-pack',
-  'kk-iso-circuit', 'kk-iso-len-circuit', 'kk-iso-len-mds', 'kk-iso-long-mds', 'kk-large', 'kk-len-circuit',
+  'kk-iso-circuit', 'kk-iso-len-circuit', 'kk-iso-len-mds', 'kk-iso-long-mds', 'kk-len-circuit',
   'kk-len-mds', 'kk-len-subset', 'kk-mds-nolen', 'kk-shortpath', 'kk-subset',
 ] as const;
 
@@ -92,6 +98,23 @@ describe('hier path models match native', () => {
 
 describe('KK path models match native', () => {
   it.each(KK)('%s', expectNative, 60_000);
+});
+
+describe('KK solver against the oracle libm', () => {
+  // kk-large.pow.json holds each x where macOS pow differs from exactPow15, from
+  // plans/post-16-1-followups-8/harness/ci-kk-large/record-pow.ts. Rerecord it if
+  // the sequence of `sq` values changes. Math.pow is assigned, not spied on: a
+  // spy would keep all 832,047 calls.
+  it('kk-large matches native with macOS pow replayed', () => {
+    const macPow = new Map(JSON.parse(read('kk-large.pow.json')) as [number, number][]);
+    const realPow = Math.pow;
+    Math.pow = (x, y) => (y === 1.5 ? macPow.get(x) ?? exactPow15(x) : realPow(x, y));
+    try {
+      expectNative('kk-large');
+    } finally {
+      Math.pow = realPow;
+    }
+  }, 60_000);
 });
 
 describe('KK pack cases native cannot finish', () => {

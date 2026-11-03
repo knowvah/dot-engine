@@ -94,3 +94,13 @@
 - **Impact**: 38,000 jobs took 6h55m at load 8 to 13. Rerun one-sided caps instead of
   assuming noise; plan the full run for an evening.
 - **Confidence**: High
+
+## Observation: Math.pow is the platform libm, so large KK layouts are platform-dependent
+- **Context**: PR 119 CI failed `kk-large` on Linux; it passes on macOS.
+- **Finding**: Node 26's V8 has `--use-std-math-pow` on by default. `Math.pow` equals a C `pow`
+  on 5M of 5M samples here, and differs with the flag off. macOS `pow` misses correct
+  rounding on about 0.13% of x^1.5 samples.
+- **Impact**: a probe that is chaotic in `pow`'s last bit passes only on the libm that recorded
+  it. CI runs Linux and the oracle is macOS, so a local green does not cover this. Replay the
+  oracle's values in the test (`kk-large.pow.json`).
+- **Confidence**: High for macOS; Linux is inferred until a CI run passes with the replay.
