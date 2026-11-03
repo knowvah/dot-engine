@@ -209,7 +209,7 @@ export function sfdpLayout(g: Graph): void {
   let singleComponent = true;
   if (g.nodes.size > 0) {
     const { ctrl, pad, doAdjust } = resolveControl(g);
-    const comps = ccomps(g, '_sfdp_cc');
+    const comps = ccomps(g);
     singleComponent = comps.length === 1;
     if (singleComponent) {
       sfdpLayoutComponent(g, ctrl, pad);

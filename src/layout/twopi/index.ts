@@ -52,7 +52,7 @@ export function twopiLayout(g: Graph): void {
   const globalRoot = setRoot && rootAttr !== ''
     ? (g.nodes.get(rootAttr!) ?? null)
     : null;
-  const comps = ccomps(g, '_twopi');
+  const comps = ccomps(g);
   if (comps.length === 1) {
     layoutSingle(g, comps, globalRoot, setRoot);
   } else {

@@ -88,7 +88,7 @@ export function buildDerivedEdges(g: Graph, dg: DerivedGraph): DerivedEdge[] {
 
 /** Decompose derived graph into connected components with their edges. */
 export function derivedComponents(g: Graph, dg: DerivedGraph, allEdges: DerivedEdge[]): SubGraph[] {
-  const comps = ccomps(g, '_cc');
+  const comps = ccomps(g);
   return comps.map((sg, i) => {
     const nodes: DerivedNode[] = [];
     for (const n of sg.nodes.values()) {
