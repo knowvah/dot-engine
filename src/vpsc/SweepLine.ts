@@ -11,6 +11,7 @@ import { Variable } from "./Variable.js";
 import { Constraint } from "./Constraint.js";
 import { Rectangle } from "./Solver.js";
 import { EvType, NodeSet, SweepNode, SweepEvent } from "./sweepTypes.js";
+import { libcxxSort } from "../util/libcxx-sort.js";
 
 /**
  * `seq` is the `make_shared<Node>` order: the rectangle index of the pass.
@@ -24,16 +25,14 @@ export function makeNode(v: Variable, r: Rectangle, pos: number, seq: number): S
   };
 }
 
-export function compareEventsSameRect(ea: SweepEvent, eb: SweepEvent): number {
-  if (ea.type === EvType.Open && eb.type !== EvType.Open) return -1;
-  return 1;
-}
-
-export function compareEvents(ea: SweepEvent, eb: SweepEvent): number {
-  if (ea.node.r === eb.node.r) return compareEventsSameRect(ea, eb);
-  if (ea.pos < eb.pos) return -1;
-  if (ea.pos > eb.pos) return 1;
-  return 0;
+/** @see lib/vpsc/generate-constraints.cpp: compare_events */
+export function compareEvents(ea: SweepEvent, eb: SweepEvent): boolean {
+  if (ea.node.r === eb.node.r) {
+    return ea.type === EvType.Open && eb.type !== EvType.Open;
+  }
+  if (ea.pos > eb.pos) return false;
+  if (ea.pos < eb.pos) return true;
+  return false;
 }
 
 /**
@@ -183,7 +182,7 @@ export function generateXConstraints(
   useNeighbourLists: boolean
 ): Constraint[] {
   const events = buildXEvents(rects, vs);
-  events.sort(compareEvents);
+  libcxxSort(events, compareEvents);
   const sl: NodeSet = [];
   const cs: Constraint[] = [];
   for (const e of events) {
@@ -210,7 +209,7 @@ export function generateYConstraints(
   vs: Variable[]
 ): Constraint[] {
   const events = buildYEvents(rects, vs);
-  events.sort(compareEvents);
+  libcxxSort(events, compareEvents);
   const sl: NodeSet = [];
   const cs: Constraint[] = [];
   for (const e of events) {
