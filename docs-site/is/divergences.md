@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1296,12 +1296,8 @@ er ólík innbyggðu Graphviz. Fundið af verkefninu `v2-silent-gaps`
   `T_Wd * cos(alpha)`, og `cos(-2.3840764867756761)` í libm á macOS er 1 ulp frá
   `Math.cos` í V8; kraftalykkja fdp magnar það upp í um 3 tommur. `cos` frá Apple
   er ekki endurskapanlegt úr stuttu líkani eins og `hypot` er.
-- **Innbyggð hrun sem yfirfærslan skilgreinir.** Innbyggt Graphviz hættir með 139 á neato
-  `mode=KK` með `model=mds` og legg með `len` (`mds_model` vísar í `GD_dist`
-  með raðnúmeri sem byrjar á 1: yfirflæði á hrúgu), og á `model=circuit` með
-  ótengt graf. Yfirfærslan sleppir hólfum utan marka í fyrra tilvikinu og
-  hverfur aftur í stystu slóðir í því síðara; ekkert innbyggt úttak er til að
-  bera saman við.
+- **Innbyggð hrun sem yfirfærslan skilgreinir.** Innbyggða Graphviz lýkur með 139 í neato `mode=KK` með `model=mds` og legg með `len` í næstum hverri keyrslu (1 lifði af um 1500; `mds_model` vísar í `GD_dist` með raðnúmeri sem byrjar á 1: yfirflæði á hrúgu). Gáttin sleppir hólfum utan marka og niðurstaða hennar samsvarar þeirri keyrslu innan 0,01. `circuit_model` vísar með `AGSEQ` sem byrjar á 1 (`circuit.c:46`), svo lína 0 í fylki þess er aldrei skrifuð og fylkið er sérstætt fyrir hvert netrit, samhangandi eða ekki: innbyggt `mode=KK` með `model=circuit` skilar aldrei circuit-uppsetningu. Þegar ferlið lifir af skrifar það `Warning: graph <name> is disconnected. Hence, the circuit model` og fellur aftur á stystu leiðir; sama villa les út fyrir línubendafylkið þegar síðast búni hnúturinn hefur legg, svo innbyggða útgáfan lýkur oftast með 139 (um 3 keyrslur af 4 á prófunarnetritinu). Gáttin tekur alltaf leiðina sem lifir af: viðvörunina og síðan stystu leiðir, samhangandi netrit eða ekki. Með `pack=true` hrundi innbyggða útgáfan í hverri keyrslu (0 lifðu af úr yfir 3000 á hvoru tveggja netritanna); samkvæmt ákvörðun varar gáttin við fyrir hvern hluta undir eigin nafni (`_neato_cc0`, `_neato_cc1`, ...), notar stystu leiðir og pakkar. Ekkert innbyggt úttak er til fyrir þá samsetningu; uppsetningin jafngildir innbyggðu `model=shortpath` fyrir sama netrit.
+- **Jafntefli í VPSC fylgja sköpunarröð, ekki hrúguvistfangi.** Innbyggða `IncVPSC::splitBlocks` gengur í gegnum `std::set<Block*>` sem er raðað eftir hrúguvistfangi á meðan það setur inn í það, og `CmpNodePos` sker úr um jafnar staðsetningar eftir vistfangi, svo innbyggt úttak fyrir `overlap=vpsc|ipsep` og takmarkað `mode=ipsep` er breytilegt milli keyrslna þegar staðsetningar eru jafnar (eitt tilvik gaf 21 mismunandi niðurstöðu í 300 keyrslum). Gáttin raðar jafnteflum eftir sköpunarröð og heimsækir alltaf nýja kubba, svo úttak hennar er ákvarðandi. Hún jafngildir sýnatekinni innbyggðri keyrslu í jafnteflistilvikunum sem voru athuguð, nema í einu tilviki með 40 hnútum sem samsvaraði engri af 29 sýnatekinni innbyggðum niðurstöðum (eftirfylgni 110).
 
 ---
 
@@ -1352,7 +1348,7 @@ er ólík innbyggðu Graphviz. Fundið af verkefninu `v2-silent-gaps`
   skráakerfislestri (letur, myndir, stillingar) er skipt út fyrir
   endurkall frá kallanda (t.d. `setImageSizer`). Hegðun varðveitist; vélrænan er ólík.
 
-- **Myndgerð og `imagepath` viðvaranir.** Mynd sem er aðeins þekkt í gegnum `setImageSizer` (án resolver-bæta) hefur enga gerð og prentar því ekki viðvörunina `No loadimage plugin`; upprunalega útgáfan les alltaf skrána og þekkir því alltaf gerðina. Fyrir óþekkt resolver-bæti varar upprunalega útgáfan einnig við með `Warning: "<name>" was not found as a file or as a shape library member`; gáttin prentar þá línu ekki enn (eftirfylgni 104, tenging á útlitstíma). `GV_FILE_PATH` og `SERVER_NAME` eru ekki virt og gestgjafinn er aldrei spurður um `<dir>/<name>`-nafn `imagepath`.
+- **Myndgerð og `imagepath` viðvaranir.** Mynd sem er aðeins þekkt í gegnum `setImageSizer` (án resolver-bæta) hefur enga gerð og prentar því ekki viðvörunina `No loadimage plugin`; upprunalega útgáfan les alltaf skrána og þekkir því alltaf gerðina. `GV_FILE_PATH` og `SERVER_NAME` eru ekki virt og gestgjafinn er aldrei spurður um `<dir>/<name>`-nafn `imagepath`.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,10 +131,7 @@ elkerüléséhez távolítsa el az attribútumot, vagy változtassa támogatott 
 
 | Motor | Attribútum és érték | Mikor lép működésbe | Szükséges Graphviz-funkció |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Csak ha a `model` értéke `subset` vagy `circuit` (miután a gráfnak 2+ csúcsa van, és a `maxiter` pozitív) | Hierarchikus feszültségmajorizáció (`stress_majorization_with_hierarchy`) |
-| neato | `start=self` | a `mode` értéke `major` (az alapértelmezett). `mode=ipsep` esetén csendben elfogadja, és az elrendezés a véletlenszerű kezdést használja, mint a Graphviz | Okos inicializálás (`smart_ini`). `mode=KK` vagy `mode=sgd` alatt renderelésenként egyszer naplózza: `start=0 not supported with mode=self - ignored`, ahogy a Graphviz teszi |
-| neato | `model=subset` | A `mode` `major` vagy `KK`. `mode=ipsep` esetén nem lép életbe. | A részhalmaz-távolságmodell |
-| neato | `model=circuit` | A `mode` `major`, vagy `KK` összefüggő gráfon. A `KK` nem összefüggő gráfon `pack` vagy `packmode` nélkül figyelmeztetést naplóz, és legrövidebb utakat használ, ahogy a Graphviz teszi. `mode=ipsep` esetén nem lép életbe. | Az áramköri távolságmodell (`circuit_model`) |
+| neato | `start=self` | a `mode` értéke `major` (az alapértelmezett). `mode=ipsep` esetén csendben elfogadja, és az elrendezés a véletlenszerű kezdést használja, mint a Graphviz | Okos inicializálás (`smart_ini`). `mode=KK` vagy `mode=sgd` alatt renderelésenként egyszer naplózza: `Warning: start=0 not supported with mode=self - ignored`, ahogy a Graphviz teszi |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (kis- és nagybetűre érzéketlen) | A gráfnak (a twopi-nál egy komponensnek; az sfdp-nél a teljes gráfnak vagy egy komponensnek) 2+ csúcsa van, és a Graphviz saját átfedésszámlálója (`countOverlap`, amely a csúcssokszögeket teszteli) 0 fölött van. Azok a csúcsok, amelyek csak befoglaló dobozukkal érintkeznek, nem váltják ki. A circo csak egykomponensű gráfnál éri el (több komponensnél a Graphviz az `overlap`-et is figyelmen kívül hagyja). Az sfdp csak akkor éri el, ha az `overlap` nem prizma módú | Voronoi-alapú átfedéseltávolítás (`vAdjust`) |
 | fdp | `overlap=` a következők egyike: `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | A módot az `N:` erőiterációs próbálkozások után éri el, vagyis amikor ezek a próbálkozások nem távolítanak el minden átfedést (vagy az `N` 0 vagy hiányzik). Az `N:` előtag megengedett, például `3:voronoi` | A megfelelő `removeOverlapWith` igazító algoritmus |
 | fdp | `splines=compound` | Mindig, klaszterekkel vagy anélkül | Klasztert elkerülő élvezetés (`compoundEdges`) |
@@ -152,7 +149,7 @@ az fdp sorok és az alakzatsor, amelyek a fenti megfogalmazásokat használják.
 
 Az alapértelmezést kiválasztó értékek (például `quadtree=normal`, `true`, `yes`,
 `1`) és a Graphviz által elfogadott, portolt értékek (például `start=regular`,
-`start=random`, `model=mds`, `mode=KK`, `mode=sgd`, `overlap=prism`, a `scale`
+`start=random`, `mode=hier`, `model=mds`, `model=subset`, `model=circuit`, `mode=KK`, `mode=sgd`, `overlap=prism`, a `scale`
 család, valamint a neato, a twopi, a circo és az sfdp esetén az `overlap=oscale`,
 `vpsc` és az `ortho*` / `portho*` módok) normálisan renderelődnek.
 

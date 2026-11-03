@@ -1,0 +1,10 @@
+graph G {
+  mode=KK;
+  model=shortpath;
+  pack=true;
+  a -- b;
+  b -- c;
+  c -- a;
+  d -- e;
+  e -- f;
+}

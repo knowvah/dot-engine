@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -130,10 +130,7 @@ stöds.
 
 | Motor | Attribut och värde | Utlöses när | Graphviz-funktion som behövs |
 |--------|--------------------|-------------|------------------------------|
-| neato | `mode=hier` | Endast när `model` är `subset` eller `circuit` (efter att grafen har 2+ noder och `maxiter` är positivt) | Hierarkisk stressmajorisering (`stress_majorization_with_hierarchy`) |
-| neato | `start=self` | `mode` är `major` (standard). Under `mode=ipsep` accepteras det tyst och layouten använder slumpstarten, som Graphviz | Smart initiering (`smart_ini`). Under `mode=KK` eller `mode=sgd` loggar den `start=0 not supported with mode=self - ignored` en gång per rendering, som Graphviz gör |
-| neato | `model=subset` | `mode` är `major` eller `KK`. Utlöses inte under `mode=ipsep`. | Delmängdsavståndsmodellen |
-| neato | `model=circuit` | `mode` är `major`, eller `KK` på en sammanhängande graf. `KK` på en icke sammanhängande graf utan `pack` eller `packmode` loggar en varning och använder kortaste vägar, som Graphviz gör. Utlöses inte under `mode=ipsep`. | Kretsavståndsmodellen (`circuit_model`) |
+| neato | `start=self` | `mode` är `major` (standard). Under `mode=ipsep` accepteras det tyst och layouten använder slumpstarten, som Graphviz | Smart initiering (`smart_ini`). Under `mode=KK` eller `mode=sgd` loggar den `Warning: start=0 not supported with mode=self - ignored` en gång per rendering, som Graphviz gör |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (skiftlägesokänsligt) | Grafen (för twopi en komponent; för sfdp hela grafen eller en komponent) har 2+ noder och Graphviz egen överlappsräkning (`countOverlap`, som testar nodpolygoner) är över 0. Noder som bara rör vid varandra med begränsningsrutan utlöser den inte. circo når den bara för en graf med en enda komponent (vid flera komponenter ignorerar Graphviz också `overlap`). sfdp når den bara när `overlap` inte är ett prismaläge | Voronoi-borttagning av överlapp (`vAdjust`) |
 | fdp | `overlap=` ett av `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Läget nås efter försöken med `N:` kraftiterationer, vilket är när de försöken inte tar bort alla överlapp (eller `N` är 0 eller saknas). Prefixet `N:` är tillåtet, till exempel `3:voronoi` | Motsvarande justeringsalgoritm i `removeOverlapWith` |
 | fdp | `splines=compound` | Alltid, med eller utan kluster | Klusterundvikande kantdragning (`compoundEdges`) |
@@ -151,7 +148,7 @@ fdp-raderna och formraden, som använder formuleringarna ovan. Förgrena på
 
 Värden som väljer standardvärdet (till exempel `quadtree=normal`, `true`, `yes`,
 `1`) och de av Graphviz godtagna värden som är portade (till exempel
-`start=regular`, `start=random`, `model=mds`, `mode=KK`, `mode=sgd`,
+`start=regular`, `start=random`, `mode=hier`, `model=mds`, `model=subset`, `model=circuit`, `mode=KK`, `mode=sgd`,
 `overlap=prism`, familjen `scale` och, på neato, twopi, circo och sfdp,
 `overlap=oscale`, `vpsc` och lägena `ortho*` / `portho*`) renderas normalt.
 

@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: EPL-2.0
 /**
  * Neato `start` handling (setSeed / initRegular / checkStart) and the
- * fail-loud checks for the neato init features this port does not have
- * (smart init for the stress path, the subset/circuit distance models).
- * mode=hier runs `stress_majorization_with_hierarchy`; its own unported
- * branches (subset/circuit models, the smart-init fallback without a
- * hierarchy) are loud in constrained-majorization.ts. mode=ipsep runs
- * `stress_majorization_cola`, which ports both models and takes no smart init.
+ * fail-loud check for the neato init feature this port does not have (smart
+ * init for the stress path). mode=hier runs `stress_majorization_with_hierarchy`;
+ * its own unported smart-init fallback without a hierarchy is loud in
+ * constrained-majorization.ts. mode=ipsep runs `stress_majorization_cola`, which
+ * takes no smart init.
  *
- * Each loud check sits where neato's C branches into the unported code and
- * fires only for the modes whose C path reaches it (ADR-3).
+ * The loud check sits where neato's C branches into the unported code and
+ * fires only for the mode whose C path reaches it (ADR-3).
  *
  * @see lib/neatogen/neatoinit.c
  */
@@ -19,12 +18,10 @@ import { agNameOf } from '../../model/cgraph-ops.js';
 import type { Graph } from '../../model/graph.js';
 import { srand48 } from '../../common/random.js';
 import { registerRenderState } from '../../common/render-state.js';
-import { getPack } from '../pack/index.js';
 import {
   MODE_KK, MODE_MAJOR, MODE_HIER, MODE_IPSEP, MODE_SGD,
-  MODEL_CIRCUIT, MODEL_SUBSET,
 } from './init.js';
-import { agerrLineOn, agwarningf } from '../../common/agerr.js';
+import { agwarningf } from '../../common/agerr.js';
 
 /** @see lib/neatogen/neato.h:INIT_SELF */
 export const INIT_SELF = 0;
@@ -53,8 +50,13 @@ const WARN_SELF_IGNORED = 'start=0 not supported with mode=self - ignored';
  */
 const selfOnce = { warned: false };
 registerRenderState(() => { selfOnce.warned = false; });
-/** Roots already warned about the KK circuit fallback (one warning per graph). */
-const circuitWarned = new WeakSet<object>();
+
+/** KK and SGD warn once and ignore start=self. @see lib/neatogen/stuff.c:330 */
+export function warnStartSelfOnce(): void {
+  if (selfOnce.warned) return;
+  selfOnce.warned = true;
+  agwarningf(WARN_SELF_IGNORED);
+}
 
 /**
  * Classify the `start` attribute: keyword prefix, digit-led (random), else the
@@ -103,7 +105,7 @@ export function checkStart(
 ): number {
   const { init, seed } = parseStart(g.root.attrs.get('start'), dflt);
   if (init !== INIT_RANDOM && [...g.nodes.values()].some((n) => n.attrs.has('pos'))) {
-    agerrLineOn('warn', WARN_POS_IGNORED);
+    agwarningf(WARN_POS_IGNORED);
   }
   if (init === INIT_REGULAR) initRegular(g, nG);
   srand48(seed);
@@ -151,63 +153,16 @@ function checkStartAttr(g: Graph, mode: number): void {
   // mode=ipsep is not here: stress_majorization_cola takes no `opts`, so C
   // lays start=self out from the random init, silently (T0 start-self fixtures).
   if (mode === MODE_MAJOR) unsupported('start', value ?? '', 'smart initialisation');
-  // @see lib/neatogen/stuff.c:330 (KK and SGD warn once and ignore it)
-  if ((mode === MODE_KK || mode === MODE_SGD) && !selfOnce.warned) {
-    selfOnce.warned = true;
-    agerrLineOn('warn', WARN_SELF_IGNORED);
-  }
-}
-
-function isConnected(g: Graph): boolean {
-  const nodes = [...g.nodes.values()];
-  if (nodes.length === 0) return true;
-  const adj = new Map<unknown, unknown[]>(nodes.map((n) => [n, []]));
-  for (const e of g.edges) { adj.get(e.tail)?.push(e.head); adj.get(e.head)?.push(e.tail); }
-  const seen = new Set<unknown>([nodes[0]]);
-  const stack: unknown[] = [nodes[0]];
-  for (let n = stack.pop(); n !== undefined; n = stack.pop()) {
-    for (const m of adj.get(n) ?? []) if (!seen.has(m)) { seen.add(m); stack.push(m); }
-  }
-  return seen.size === nodes.length;
-}
-
-/** KK runs unpacked unless `pack` or `packmode` is set. @see neatoinit.c:1380-1389 */
-function kkCircuitFallsBack(g: Graph): boolean {
-  const packed = getPack(g.root, -1, 0) >= 0 || (g.root.attrs.get('packmode') ?? '') !== '';
-  return !packed && !isConnected(g.root);
-}
-
-function warnCircuitDisconnected(g: Graph): void {
-  if (circuitWarned.has(g.root)) return;
-  circuitWarned.add(g.root);
-  agerrLineOn(
-    'warn',
-    `graph ${agNameOf(g.root)} is disconnected. Hence, the circuit model\n`
-    + 'is undefined. Reverting to the shortest path model.\n'
-    + 'Alternatively, consider running neato using -Gpack=true or decomposing\n'
-    + 'the graph into connected components.',
-  );
-}
-
-function checkModel(g: Graph, mode: number, model: number): void {
-  const value = g.root.attrs.get('model') ?? '';
-  const stressPath = mode === MODE_MAJOR || mode === MODE_KK;
-  // @see lib/neatogen/stress.c:846, lib/neatogen/neatoinit.c:1246
-  if (model === MODEL_SUBSET && stressPath) unsupported('model', value, 'the subset distance model');
-  if (model !== MODEL_CIRCUIT || !stressPath) return;
-  // @see lib/neatogen/neatoinit.c:1248-1257 (disconnected: warn + shortpath)
-  if (mode === MODE_KK && kkCircuitFallsBack(g)) { warnCircuitDisconnected(g); return; }
-  // @see lib/neatogen/stress.c:851, lib/neatogen/circuit.c:circuit_model
-  unsupported('model', value, 'the circuit distance model');
+  // KK warns at kk.ts:initialPositions, after its distance model, as C does.
+  if (mode === MODE_SGD) warnStartSelfOnce();
 }
 
 /**
  * Throw UNSUPPORTED_FEATURE where neato's C would run unported init code for
- * this mode/model/start. Call after the nG < 2 guard.
+ * this mode/start. Call after the nG < 2 guard.
  * @see lib/neatogen/neatoinit.c:neatoLayout
  */
-export function assertSupported(g: Graph, mode: number, model: number): void {
+export function assertSupported(g: Graph, mode: number): void {
   if (maxIterNegative(g)) return;
   checkStartAttr(g, mode);
-  checkModel(g, mode, model);
 }

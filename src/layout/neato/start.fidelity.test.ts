@@ -62,7 +62,7 @@ describe('start=regular end to end', () => {
   it('warns that node positions are ignored unless start=random', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     await plain('graph { start=regular; a [pos="1,1"]; a--b--c }');
-    expect(warn).toHaveBeenCalledWith('node positions are ignored unless start=random');
+    expect(warn).toHaveBeenCalledWith('Warning: node positions are ignored unless start=random');
   });
 
   it('is honoured by mode=sgd (positions kept as the starting layout)', async () => {
@@ -75,10 +75,6 @@ describe('loud checks', () => {
   it.each([
     ['start=self', 'start=self: smart initialisation is not supported yet'],
     ['start=selfish', 'start=selfish: smart initialisation is not supported yet'],
-    ['model=subset', 'model=subset: the subset distance model is not supported yet'],
-    ['model=circuit', 'model=circuit: the circuit distance model is not supported yet'],
-    ['mode=KK; model=subset', 'model=subset: the subset distance model is not supported yet'],
-    ['mode=KK; model=circuit', 'model=circuit: the circuit distance model is not supported yet'],
   ])('%s throws UNSUPPORTED_FEATURE', async (attrs, message) => {
     await expect(plain(`graph { ${attrs}; ${CYCLE} }`)).rejects.toMatchObject({ ...UNSUPPORTED, message });
   });
@@ -94,6 +90,7 @@ describe('loud checks', () => {
   it.each([
     'mode=ipsep', 'mode=sgd; model=subset', 'mode=sgd; model=circuit',
     'mode=hier; maxiter=-1', 'mode=hier', 'model=mds', 'start=random5', 'start=3',
+    'mode=KK; model=subset', 'mode=KK; model=circuit',
   ])('%s renders', async (attrs) => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     expect(await plain(`graph { ${attrs}; a--b--c--d; a--c [len=2] }`)).toMatch(/^graph /);
@@ -131,7 +128,7 @@ describe('mode=ipsep runs stress_majorization_cola for every constraint, model a
   });
 });
 
-describe('KK / sgd start=self and KK circuit fallback', () => {
+describe('KK / sgd start=self', () => {
   it('KK and sgd warn once per render for start=self and continue', async () => {
     // C warns once per process; each render is a fresh C process, so every
     // render warns once and no state leaks between diagrams.
@@ -139,19 +136,7 @@ describe('KK / sgd start=self and KK circuit fallback', () => {
     for (const mode of ['KK', 'sgd', 'KK']) {
       await plain(`graph { mode=${mode}; start=self; a--b--c }`);
     }
-    const hits = warn.mock.calls.filter((c) => c[0] === 'start=0 not supported with mode=self - ignored');
+    const hits = warn.mock.calls.filter((c) => c[0] === 'Warning: start=0 not supported with mode=self - ignored');
     expect(hits).toHaveLength(3);
-  });
-
-  it('mode=KK model=circuit on a disconnected graph warns and uses shortpath', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const out = await plain('graph G { mode=KK; model=circuit; a--b; c--d }');
-    expect(out).toMatch(/^graph /);
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('graph G is disconnected. Hence, the circuit model\nis undefined. Reverting to the shortest path model.'));
-  });
-
-  it('mode=KK model=circuit with pack set is per-component and therefore loud', async () => {
-    await expect(plain('graph { mode=KK; model=circuit; pack=true; a--b; c--d }'))
-      .rejects.toMatchObject(UNSUPPORTED);
   });
 });

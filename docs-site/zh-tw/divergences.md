@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1060,12 +1060,8 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
   `T_Wd * cos(alpha)` 擺放叢集連接埠節點，而 macOS libm 的 `cos(-2.3840764867756761)` 與
   V8 的 `Math.cos` 相差 1 ulp；fdp 的力迴圈將它放大到約 3 英寸。Apple 的
   `cos` 無法像 `hypot` 那樣，以簡短的模型重現。
-- **移植版所定義的原生當機。** 原生 Graphviz 在 neato
-  `mode=KK` 搭配 `model=mds` 與邊的 `len` 時結束碼為 139（`mds_model` 以從 1 起算的序號
-  索引 `GD_dist`：堆積溢位），在 `model=circuit` 搭配
-  不連通的圖時亦然。移植版在第一種情況下丟棄超出範圍的格子，
-  在第二種情況下退回最短路徑；沒有原生輸出可
-  比較。
+- **移植版所定義的原生當機。** 原生 Graphviz 在 neato 的 `mode=KK` 搭配 `model=mds` 且邊帶有 `len` 時，幾乎每次執行都以結束碼 139 結束（約 1500 次中僅 1 次存活；`mds_model` 以從 1 開始的序號索引 `GD_dist`：堆積溢位）。移植版會捨棄超出範圍的儲存格，其結果與那次存活的執行在 0.01 容差內一致。`circuit_model` 以從 1 開始的 `AGSEQ` 索引（`circuit.c:46`），因此其矩陣的第 0 列從不被寫入，無論圖是否連通，該矩陣在每個圖上都是奇異的：原生 `mode=KK` 搭配 `model=circuit` 從不產生 circuit 版面配置。行程存活時，會輸出 `Warning: graph <name> is disconnected. Hence, the circuit model` 並退回最短路徑；同一個缺陷在最後建立的節點帶有邊時會讀越列指標陣列，所以原生通常以 139 結束（在探測圖上約 4 次中有 3 次）。移植版一律走存活路徑：先輸出該警告，再使用最短路徑，無論圖是否連通。使用 `pack=true` 時，原生每次執行都當機（兩個圖上各超過 3000 次，存活 0 次）；依決定，移植版以自己的名稱（`_neato_cc0`、`_neato_cc1`、...）逐個連通分量發出警告，使用最短路徑並打包。這個組合沒有原生輸出；版面配置與同一個圖的原生 `model=shortpath` 相同。
+- **VPSC 的並列次序依循建立順序，而非堆積位址。** 原生 `IncVPSC::splitBlocks` 一邊對依堆積位址排序的 `std::set<Block*>` 插入，一邊走訪它，而 `CmpNodePos` 以位址決定位置並列，因此 `overlap=vpsc|ipsep` 與帶限制的 `mode=ipsep` 的原生輸出在位置並列時每次執行都可能不同（一個案例在 300 次執行中得到 21 種不同結果）。移植版依建立順序排列並列項，並一律走訪新區塊，因此其輸出是確定的。在已檢查的並列案例中，它與某次抽樣的原生執行一致，唯一例外是一個 40 節點的案例，它與 29 個抽樣的原生結果均不一致（後續事項 110）。
 
 ---
 
@@ -1110,7 +1106,7 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
   檔案系統讀取（字型、圖片、設定）以呼叫端提供的
   回呼取代（例如 `setImageSizer`）。行為保持不變；機制不同。
 
-- **影像類型與 `imagepath` 警告。** 僅透過 `setImageSizer` 得知的影像（沒有 resolver 位元組）沒有類型，因此不輸出 `No loadimage plugin` 警告；原生總是讀取檔案，因此總是知道類型。對於無法辨識的 resolver 位元組，原生還會輸出 `Warning: "<name>" was not found as a file or as a shape library member` 警告；本移植版尚未輸出該行（後續事項 104，版面配置階段的接線）。`GV_FILE_PATH` 與 `SERVER_NAME` 不會被採納，也從不向主機詢問 `imagepath` 的 `<dir>/<name>` 名稱。
+- **影像類型與 `imagepath` 警告。** 僅透過 `setImageSizer` 得知的影像（沒有 resolver 位元組）沒有類型，因此不輸出 `No loadimage plugin` 警告；原生總是讀取檔案，因此總是知道類型。`GV_FILE_PATH` 與 `SERVER_NAME` 不會被採納，也從不向主機詢問 `imagepath` 的 `<dir>/<name>` 名稱。
 
 ---
 

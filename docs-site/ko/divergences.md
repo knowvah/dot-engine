@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1116,11 +1116,8 @@ xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니�
   (`parallel-cluster-ldbxtried`)는 클러스터 포트 노드를 `T_Wd * cos(alpha)`로 배치하는데,
   macOS libm의 `cos(-2.3840764867756761)`은 V8의 `Math.cos`와 1 ulp 다르고 fdp의 힘 루프가
   이를 약 3인치로 증폭합니다. Apple의 `cos`는 `hypot`처럼 짧은 모델로 재현할 수 없습니다.
-- **포팅이 정의하는 네이티브 크래시.** 네이티브 Graphviz는 `model=mds`이면서 에지 `len`이
-  있는 neato `mode=KK`(`mds_model`이 `GD_dist`를 1부터 시작하는 순번으로 인덱싱: 힙
-  오버플로)와, 연결되지 않은 그래프의 `model=circuit`에서 139로 종료합니다. 포팅은 첫 번째
-  경우에는 범위를 벗어난 셀을 버리고 두 번째 경우에는 최단 경로로 되돌아갑니다. 비교할
-  네이티브 출력은 없습니다.
+- **포팅이 정의하는 네이티브 크래시.** 네이티브 Graphviz는 `mode=KK`에 `model=mds`이고 간선에 `len`이 있는 neato에서 거의 매 실행마다 종료 코드 139로 종료됩니다(약 1500회 중 1회만 생존. `mds_model`이 `GD_dist`를 1부터 시작하는 순번으로 인덱싱하기 때문: 힙 오버플로). 포트는 범위를 벗어난 셀을 버리며, 그 결과는 생존한 실행과 0.01 허용 오차로 일치합니다. `circuit_model`은 1부터 시작하는 `AGSEQ`로 인덱싱하므로(`circuit.c:46`) 행렬의 0번 행은 기록되지 않으며, 행렬은 연결 여부와 관계없이 모든 그래프에서 특이 행렬이 됩니다. 따라서 네이티브 `mode=KK`와 `model=circuit`은 circuit 레이아웃을 한 번도 만들어 내지 못합니다. 프로세스가 생존하면 `Warning: graph <name> is disconnected. Hence, the circuit model`를 출력하고 최단 경로로 되돌아갑니다. 같은 버그는 마지막에 생성된 노드에 간선이 있을 때 행 포인터 배열 너머를 읽으므로 네이티브는 보통 139로 종료합니다(테스트 그래프에서 4회 중 약 3회). 포트는 항상 생존 경로를 따릅니다. 즉 연결 여부와 관계없이 경고를 출력한 뒤 최단 경로를 사용합니다. `pack=true`에서는 네이티브가 매 실행마다 충돌했습니다(두 그래프 각각에서 3000회 이상 중 생존 0). 결정에 따라 포트는 컴포넌트별로 자체 이름(`_neato_cc0`, `_neato_cc1`, ...)으로 경고하고, 최단 경로를 사용하며 패킹합니다. 이 조합에는 네이티브 출력이 없으며, 레이아웃은 같은 그래프에 대한 네이티브 `model=shortpath`와 같습니다.
+- **VPSC 동순위는 힙 주소가 아니라 생성 순서를 따른다.** 네이티브 `IncVPSC::splitBlocks`는 힙 주소 순으로 정렬된 `std::set<Block*>`에 삽입하면서 그것을 순회하고, `CmpNodePos`는 위치 동순위를 주소로 결정합니다. 그래서 `overlap=vpsc|ipsep`와 제약이 있는 `mode=ipsep`의 네이티브 출력은 위치가 같을 때 실행마다 달라집니다(한 경우는 300회 실행에서 서로 다른 결과 21개). 포트는 동순위를 생성 순서로 정렬하고 새 블록을 항상 방문하므로 출력이 결정적입니다. 확인한 동순위 사례에서는 샘플링한 네이티브 실행 중 하나와 일치하지만, 40개 노드의 한 사례는 샘플링한 네이티브 결과 29개 중 어느 것과도 일치하지 않았습니다(후속 작업 110).
 
 ---
 
@@ -1160,7 +1157,7 @@ xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니�
   (`dlopen`)은 정적 엔진/렌더러 등록으로, 파일 시스템 읽기(폰트, 이미지, 설정)는 호출자가
   제공하는 콜백(예: `setImageSizer`)으로 대체됩니다. 동작은 보존되며 메커니즘만 다릅니다.
 
-- **이미지 유형과 `imagepath` 경고.** `setImageSizer`를 통해서만 알려진 이미지(resolver 바이트 없음)는 유형이 없으므로 `No loadimage plugin` 경고를 출력하지 않습니다. 네이티브는 항상 파일을 읽으므로 항상 유형을 압니다. 인식되지 않는 resolver 바이트에 대해 네이티브는 추가로 `Warning: "<name>" was not found as a file or as a shape library member`도 경고하지만, 이 포트는 아직 그 줄을 출력하지 않습니다(후속 104, 레이아웃 시점 연결). `GV_FILE_PATH`와 `SERVER_NAME`은 고려되지 않으며, 호스트에 `imagepath`의 `<dir>/<name>` 이름을 묻지도 않습니다.
+- **이미지 유형과 `imagepath` 경고.** `setImageSizer`를 통해서만 알려진 이미지(resolver 바이트 없음)는 유형이 없으므로 `No loadimage plugin` 경고를 출력하지 않습니다. 네이티브는 항상 파일을 읽으므로 항상 유형을 압니다. `GV_FILE_PATH`와 `SERVER_NAME`은 고려되지 않으며, 호스트에 `imagepath`의 `<dir>/<name>` 이름을 묻지도 않습니다.
 
 ---
 

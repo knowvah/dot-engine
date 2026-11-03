@@ -1,5 +1,5 @@
 ---
-sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
+sourceHash: 5adedf304ed3717b602b9f4cc54a10f403c3ab37a8306bc067767eac53a013c5
 ---
 # Immagini
 
@@ -193,12 +193,13 @@ il resolver restituisce `null` per quel `src`) ripiega automaticamente sul passa
 
 L'attributo di grafo `imagepath` di Graphviz nativo è un elenco di directory separate da due punti in cui si cercano i nomi relativi di `image=` e `shapefile=`. Il port non legge mai da sé i file immagine, quindi non le scorre mai e non chiede mai `dir/name` all'host: `setImageSizer` e `ImageResolver` ricevono sempre il nome grezzo, esattamente come scritto. Il port usa `imagepath` solo per decidere quale avviso stampare quando l'host non fornisce un nome relativo:
 
-- Con `imagepath` impostato, un nome relativo di `image=`/`shapefile=` che l'host non fornisce emette `Warning: Filename "<name>" is unsafe` e poi `Warning: No or improper image="<name>" for node "<node>"`, come fa il nativo quando nessun `<dir>/<name>` è leggibile.
+- Con `imagepath` impostato, un nome relativo di `image=`/`shapefile=` che l'host non fornisce emette `Warning: Filename "<name>" is unsafe` e poi `Warning: No or improper image="<name>" for node "<node>"` (oppure, per lo `shapefile=` di una forma personalizzata, `Warning: No or improper shapefile="<name>" for node "<node>"`), come fa il nativo quando nessun `<dir>/<name>` è leggibile.
+- Un nome che l'host fornisce tramite gli hook `setImageSizer` o `ImageResolver` del contesto che esegue il layout (o quelli globali) non stampa nessuna di queste righe. Per una forma personalizzata il nodo viene dimensionato in base all'immagine fornita.
 - Un nome assoluto, oppure un `imagepath` assente o vuoto, mantiene la riga `Warning: No such file or directory while opening <name>`.
 
 `GV_FILE_PATH` e `SERVER_NAME` non sono rispettate (sono variabili d'ambiente e un browser non ne ha). Per risolvere i percorsi relativi rispetto alla propria directory o URL di base, anteponete il prefisso al nome nel livello che costruisce il sorgente DOT o nei vostri callback `setImageSizer`/`ImageResolver`.
 
-**Tipo di immagine.** Come nel nativo, il tipo è ricavato dai byte restituiti dal resolver tramite riconoscimento dei magic number: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, e svg solo quando i byte iniziano con una dichiarazione `<?xml` seguita da `<svg`. Qualsiasi cosa più corta di 20 byte non è riconosciuta. Con byte non riconosciuti non viene disegnato nulla e l'immagine non viene dimensionata al rendering. Il nativo avvisa anche con `Warning: "<name>" was not found as a file or as a shape library member`; il port non stampa ancora quella riga (vedi [Divergenze note](/it/divergences)).
+**Tipo di immagine.** Come nel nativo, il tipo è ricavato dai byte restituiti dal resolver tramite riconoscimento dei magic number: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, e svg solo quando i byte iniziano con una dichiarazione `<?xml` seguita da `<svg`. Qualsiasi cosa più corta di 20 byte non è riconosciuta. Con byte non riconosciuti non viene disegnato nulla e l'immagine non viene dimensionata al rendering. Come il nativo, il port avvisa anche con `Warning: "<name>" was not found as a file or as a shape library member`, seguita dalla riga `No or improper image=`.
 
 `-Tjson` avvisa con `Warning: No loadimage plugin for "png:json"` (il tipo varia) una volta per ogni immagine disegnata, come il nativo, che non ha un loader di immagini json. `svg`, `xdot`, `dot`, `plain` e `cmapx` non stampano nulla per un tipo riconosciuto. Un'immagine nota solo tramite il sizer non ha tipo e quindi non stampa alcun avviso loadimage (vedi [Divergenze note](/it/divergences)).
 

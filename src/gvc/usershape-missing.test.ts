@@ -45,7 +45,8 @@ describe('missing image messages', () => {
     setImageSizer(() => ({ w: 10, h: 10 }));
     expect(stderrOf('digraph{a[image="x.png"]}')).toEqual([]);
     setImageSizer(null);
-    setImageResolver(() => new Uint8Array([1]));
+    // Recognized magic (PNG): bytes of unknown type are FT_NULL and warn (T4).
+    setImageResolver(() => new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, ...new Array<number>(12).fill(0)]));
     expect(stderrOf('digraph{a[image="x.png"]}')).toEqual([]);
   });
 

@@ -1,0 +1,15 @@
+digraph G {
+  mode=hier;
+  model=mds;
+  a -> b [len=1.5];
+  b -> c;
+  c -> d [len=0.7];
+  d -> e;
+  e -> f [len=2.0];
+  f -> a;
+  a -> c;
+  a -> g [len=1.25];
+  g -> h;
+  c -> i;
+  i -> j [len=0.5];
+}

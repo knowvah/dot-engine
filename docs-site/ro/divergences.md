@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1295,12 +1295,8 @@ diferă de Graphviz nativ. Găsite de misiunea `v2-silent-gaps`
   `T_Wd * cos(alpha)`, iar `cos(-2.3840764867756761)` din libm macOS se află la 1 ulp de
   `Math.cos` din V8; bucla de forțe a fdp amplifică aceasta la aproximativ 3 in. `cos`-ul Apple
   nu poate fi reprodus dintr-un model scurt așa cum poate fi `hypot`.
-- **Prăbușiri native pe care portarea le definește.** Graphviz nativ iese cu 139 pe neato
-  `mode=KK` cu `model=mds` și o muchie cu `len` (`mds_model` indexează `GD_dist`
-  după un număr de secvență începând de la 1: depășire de heap), precum și pe `model=circuit` cu un graf
-  neconex. Portarea elimină celulele din afara intervalului în primul caz
-  și revine la drumuri minime în al doilea; nu există ieșire nativă
-  cu care să se compare.
+- **Prăbușiri native pe care portarea le definește.** Graphviz nativ se încheie cu 139 la neato `mode=KK` cu `model=mds` și o muchie cu `len` în aproape fiecare rulare (1 supraviețuitor din aproximativ 1500; `mds_model` indexează `GD_dist` cu un număr de secvență în bază 1: depășire de heap). Portul elimină celulele din afara intervalului, iar rezultatul său coincide cu acel supraviețuitor la 0,01. `circuit_model` indexează cu `AGSEQ` în bază 1 (`circuit.c:46`), deci rândul 0 al matricei sale nu este scris niciodată, iar matricea este singulară pe orice graf, conex sau nu: `mode=KK` nativ cu `model=circuit` nu produce niciodată un aranjament circuit. Când procesul supraviețuiește, afișează `Warning: graph <name> is disconnected. Hence, the circuit model` și revine la drumurile cele mai scurte; aceeași eroare citește dincolo de tabloul de pointeri de rând când ultimul nod creat are o muchie, deci nativul se încheie de obicei cu 139 (aproximativ 3 rulări din 4 pe graful de probă). Portul alege întotdeauna calea supraviețuitoare: avertismentul, apoi drumurile cele mai scurte, graf conex sau nu. Cu `pack=true`, nativul s-a prăbușit la fiecare rulare (0 supraviețuitori din peste 3000 pe fiecare din două grafuri); prin decizie, portul avertizează pe componentă sub un nume propriu (`_neato_cc0`, `_neato_cc1`, ...), folosește drumurile cele mai scurte și împachetează. Nu există ieșire nativă pentru această combinație; aranjamentul este egal cu `model=shortpath` nativ pentru același graf.
+- **Ordinea egalităților din VPSC urmează ordinea creării, nu adresa de heap.** `IncVPSC::splitBlocks` nativ parcurge un `std::set<Block*>` ordonat după adresa de heap în timp ce inserează în el, iar `CmpNodePos` departajează egalitățile de poziție după adresă, deci ieșirea nativă pentru `overlap=vpsc|ipsep` și `mode=ipsep` constrâns variază de la o rulare la alta când pozițiile sunt egale (un caz a dat 21 de rezultate distincte în 300 de rulări). Portul ordonează egalitățile după ordinea creării și vizitează mereu blocurile noi, deci ieșirea sa este deterministă. Este egală cu o rulare nativă eșantionată în cazurile de egalitate verificate, cu excepția unui caz cu 40 de noduri care nu a coincis cu niciunul din 29 de rezultate native eșantionate (urmărire 110).
 
 ---
 
@@ -1351,7 +1347,7 @@ Acestea sunt limite deliberate ale domeniului, nu defecte. Biblioteca vizează *
   citirile din sistemul de fișiere (fonturi, imagini, configurare) sunt înlocuite de
   callback-uri furnizate de apelant (de ex. `setImageSizer`). Comportamentul este păstrat; mecanismul diferă.
 
-- **Tipul imaginii și avertismentele `imagepath`.** O imagine cunoscută doar prin `setImageSizer` (fără octeți de la resolver) nu are tip și deci nu afișează avertismentul `No loadimage plugin`; versiunea nativă citește întotdeauna fișierul și deci cunoaște întotdeauna tipul. Pentru octeți de resolver nerecunoscuți, versiunea nativă avertizează în plus cu `Warning: "<name>" was not found as a file or as a shape library member`; portul nu afișează încă această linie (urmărire 104, conectare la momentul layout-ului). `GV_FILE_PATH` și `SERVER_NAME` nu sunt respectate, iar gazda nu este niciodată întrebată de numele `<dir>/<name>` din `imagepath`.
+- **Tipul imaginii și avertismentele `imagepath`.** O imagine cunoscută doar prin `setImageSizer` (fără octeți de la resolver) nu are tip și deci nu afișează avertismentul `No loadimage plugin`; versiunea nativă citește întotdeauna fișierul și deci cunoaște întotdeauna tipul. `GV_FILE_PATH` și `SERVER_NAME` nu sunt respectate, iar gazda nu este niciodată întrebată de numele `<dir>/<name>` din `imagepath`.
 
 ---
 

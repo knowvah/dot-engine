@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1293,12 +1293,8 @@ skiljer sig från inbyggd Graphviz. Funna av uppdraget `v2-silent-gaps`
   `T_Wd * cos(alpha)`, och macOS libm-`cos(-2.3840764867756761)` ligger 1 ulp från
   V8:s `Math.cos`; fdp:s kraftloop förstärker det till ungefär 3 tum. Apples
   `cos` går inte att återskapa ur en kort modell på det sätt som `hypot` går.
-- **Inbyggda krascher som porteringen definierar.** Inbyggd Graphviz avslutas med 139 för neato
-  `mode=KK` med `model=mds` och en kant med `len` (`mds_model` indexerar `GD_dist`
-  med ett 1-baserat sekvensnummer: heapöverflöd), och för `model=circuit` med en
-  osammanhängande graf. Porteringen släpper celler utanför intervallet i det första fallet
-  och faller tillbaka på kortaste vägar i det andra; det finns ingen inbyggd utdata att
-  jämföra med.
+- **Inbyggda krascher som porteringen definierar.** Native Graphviz avslutas med 139 vid neato `mode=KK` med `model=mds` och en kant med `len` i nästan varje körning (1 överlevande av cirka 1500; `mds_model` indexerar `GD_dist` med ett 1-baserat sekvensnummer: heap-överskridning). Porten släpper celler utanför intervallet, och dess resultat stämmer med den överlevande inom 0,01. `circuit_model` indexerar med det 1-baserade `AGSEQ` (`circuit.c:46`), så rad 0 i dess matris skrivs aldrig och matrisen är singulär för varje graf, sammanhängande eller inte: native `mode=KK` med `model=circuit` ger aldrig en circuit-layout. När processen överlever skriver den ut `Warning: graph <name> is disconnected. Hence, the circuit model` och faller tillbaka på kortaste vägar; samma fel läser förbi radpekararrayen när den senast skapade noden har en kant, så native avslutas oftast med 139 (cirka 3 körningar av 4 på provgrafen). Porten tar alltid den överlevande vägen: varningen och sedan kortaste vägar, sammanhängande graf eller inte. Med `pack=true` kraschade native vid varje körning (0 överlevande av över 3000 på var och en av två grafer); enligt beslut varnar porten per komponent under eget namn (`_neato_cc0`, `_neato_cc1`, ...), använder kortaste vägar och packar. Det finns ingen native utdata för den kombinationen; layouten motsvarar natives `model=shortpath` för samma graf.
+- **VPSC-lika följer skapandeordning, inte heap-adress.** Native `IncVPSC::splitBlocks` går igenom en `std::set<Block*>` ordnad efter heap-adress medan den infogar i den, och `CmpNodePos` avgör lika positioner efter adress, så native utdata för `overlap=vpsc|ipsep` och begränsad `mode=ipsep` varierar från körning till körning vid lika positioner (ett fall gav 21 olika resultat på 300 körningar). Porten ordnar lika positioner efter skapandeordning och besöker alltid nya block, så dess utdata är deterministisk. Den motsvarar en provtagen native körning i de kontrollerade fallen med lika positioner, utom ett fall med 40 noder som inte matchade något av 29 provtagna native resultat (uppföljning 110).
 
 ---
 
@@ -1348,7 +1344,7 @@ Det här är medvetna omfångsgränser, inte buggar. Biblioteket riktar sig mot 
   filsystemsläsningar (typsnitt, bilder, konfiguration) ersätts av återanrop som anroparen tillhandahåller
   (t.ex. `setImageSizer`). Beteendet bevaras; mekanismen skiljer sig.
 
-- **Bildtyp och `imagepath`-varningar.** En bild som bara är känd via `setImageSizer` (utan resolver-byte) saknar typ och skriver därför inte ut varningen `No loadimage plugin`; den inbyggda läser alltid filen och känner därför alltid typen. För okända resolver-byte varnar den inbyggda även med `Warning: "<name>" was not found as a file or as a shape library member`; porten skriver ännu inte ut den raden (uppföljning 104, koppling vid layouttid). `GV_FILE_PATH` och `SERVER_NAME` respekteras inte, och värden tillfrågas aldrig om `imagepath`s `<dir>/<name>`-namn.
+- **Bildtyp och `imagepath`-varningar.** En bild som bara är känd via `setImageSizer` (utan resolver-byte) saknar typ och skriver därför inte ut varningen `No loadimage plugin`; den inbyggda läser alltid filen och känner därför alltid typen. `GV_FILE_PATH` och `SERVER_NAME` respekteras inte, och värden tillfrågas aldrig om `imagepath`s `<dir>/<name>`-namn.
 
 ---
 

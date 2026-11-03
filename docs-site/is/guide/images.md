@@ -1,5 +1,5 @@
 ---
-sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
+sourceHash: 5adedf304ed3717b602b9f4cc54a10f403c3ab37a8306bc067767eac53a013c5
 ---
 # Myndir
 
@@ -193,12 +193,13 @@ innfelling dofnar mjúklega, hún kastar aldrei.
 
 Grafeigindið `imagepath` í upprunalegu Graphviz er tvípunktaaðskilinn listi yfir möppur þar sem leitað er að afstæðum nöfnum í `image=` og `shapefile=`. Gáttin les aldrei myndaskrár sjálf, leitar því aldrei í þeim og biður gestgjafann aldrei um `dir/name`: `setImageSizer` og `ImageResolver` fá alltaf hrátt nafn, nákvæmlega eins og það er skrifað. Gáttin notar `imagepath` aðeins til að ákvarða hvaða viðvörun er prentuð þegar gestgjafinn lætur ekki afstætt nafn í té:
 
-- Þegar `imagepath` er stillt veldur afstætt `image=`/`shapefile=` nafn, sem gestgjafinn lætur ekki í té, `Warning: Filename "<name>" is unsafe` og síðan `Warning: No or improper image="<name>" for node "<node>"`, eins og upprunalega útgáfan gerir þegar engin `<dir>/<name>` er læsileg.
+- Þegar `imagepath` er stillt veldur afstætt `image=`/`shapefile=` nafn, sem gestgjafinn lætur ekki í té, `Warning: Filename "<name>" is unsafe` og síðan `Warning: No or improper image="<name>" for node "<node>"` (eða, fyrir `shapefile=` sérsniðins forms, `Warning: No or improper shapefile="<name>" for node "<node>"`), eins og upprunalega útgáfan gerir þegar engin `<dir>/<name>` er læsileg.
+- Nafn sem hýsillinn lætur í té með `setImageSizer`- eða `ImageResolver`-krókum samhengisins sem sér um uppsetninguna (eða almennu krókunum) skrifar enga af þessum línum. Fyrir sérsniðið form er stærð hnútsins tekin úr myndinni sem látin var í té.
 - Algilt nafn, eða `imagepath` sem vantar eða er tómt, heldur línunni `Warning: No such file or directory while opening <name>`.
 
 `GV_FILE_PATH` og `SERVER_NAME` eru ekki virt (þetta eru umhverfisbreytur og vafri hefur ekkert umhverfi). Til að leysa afstæðar slóðir miðað við eigin grunnmöppu eða grunnslóð skaltu setja forskeyti á nafnið í laginu sem smíðar DOT-frumkóðann eða í `setImageSizer`/`ImageResolver` svarköllunum þínum.
 
-**Myndgerð.** Eins og í upprunalegu útgáfunni er gerðin tekin úr bætunum sem resolver skilar, með greiningu töfratalna: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, og svg aðeins þegar bætin hefjast á `<?xml` yfirlýsingu og síðan `<svg`. Allt sem er styttra en 20 bæti er óþekkt. Fyrir óþekkt bæti er ekkert teiknað og myndin er ekki stærðarákvörðuð við teikningu. Upprunalega útgáfan varar einnig við með `Warning: "<name>" was not found as a file or as a shape library member`; gáttin prentar þá línu ekki enn (sjá [Þekkt frávik](/is/divergences)).
+**Myndgerð.** Eins og í upprunalegu útgáfunni er gerðin tekin úr bætunum sem resolver skilar, með greiningu töfratalna: png, gif, jpeg, bmp, pdf, ps, eps, ico, riff/webp, og svg aðeins þegar bætin hefjast á `<?xml` yfirlýsingu og síðan `<svg`. Allt sem er styttra en 20 bæti er óþekkt. Fyrir óþekkt bæti er ekkert teiknað og myndin er ekki stærðarákvörðuð við teikningu. Eins og innbyggða útgáfan varar gáttin einnig við með `Warning: "<name>" was not found as a file or as a shape library member`, og á eftir fylgir línan `No or improper image=`.
 
 `-Tjson` varar við með `Warning: No loadimage plugin for "png:json"` (gerðin er breytileg) einu sinni fyrir hverja teiknaða mynd, eins og upprunalega útgáfan, því hún hefur engan json-myndahleðslu. `svg`, `xdot`, `dot`, `plain` og `cmapx` prenta ekkert fyrir þekkta gerð. Mynd sem er aðeins þekkt í gegnum sizer hefur enga gerð og prentar því enga loadimage-viðvörun (sjá [Þekkt frávik](/is/divergences)).
 

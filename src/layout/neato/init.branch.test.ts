@@ -7,6 +7,7 @@
 // dispatch, and the translate/cleanup utilities.
 // @see lib/neatogen/neatoinit.c
 
+import { csrand } from '../../common/crand.js';
 import { setEdgeLen } from './edge-len.js';
 import { describe, it, expect, vi } from 'vitest';
 import { Graph } from '../../model/graph.js';
@@ -447,12 +448,58 @@ describe('solveModel', () => {
     expect(ys[0]! > ys[1]! && ys[1]! > ys[2]!).toBe(true);
   });
 
-  it('keeps the subset model loud for MODE_HIER', () => {
-    const g = new Graph('g', 'directed');
-    const a = new Node(0, 'A', g); const b = new Node(1, 'B', g);
-    g.nodes.set('A', a); g.nodes.set('B', b);
-    g.edges.push(new Edge(a, b, 'AB'));
-    expect(() => solveModel(g, MODE_HIER, MODEL_SUBSET)).toThrow(/subset distance model/);
+  /** The 4-cycle a-b-c-d with the chord a-c. */
+  function chordCycle(kind: 'directed' | 'undirected', edit: (e: Edge) => void = () => {}): Graph {
+    const g = new Graph('g', kind);
+    const nodes = ['A', 'B', 'C', 'D'].map((name, i) => new Node(i, name, g));
+    for (const n of nodes) g.nodes.set(n.name, n);
+    const pairs = [[0, 1], [1, 2], [2, 3], [3, 0], [0, 2]] as const;
+    for (const [t, h] of pairs) {
+      const e = new Edge(nodes[t]!, nodes[h]!, `${t}${h}`);
+      edit(e);
+      g.edges.push(e);
+    }
+    return g;
+  }
+  const positions = (g: Graph): number[][] => [...g.nodes.values()].map((n) => [...n.info.pos!]);
+
+  it.each([
+    ['MODE_MAJOR', MODE_MAJOR, 'undirected'],
+    ['MODE_HIER', MODE_HIER, 'directed'],
+  ] as const)('%s subset ignores len, as neatoinit.c:763 does', (_name, mode, kind) => {
+    const plain = chordCycle(kind);
+    const withLen = chordCycle(kind, (e) => { e.attrs.set('len', '7'); });
+    for (const g of [plain, withLen]) {
+      g.root.attrs.set('mode', kind === 'directed' ? 'hier' : 'major');
+      csrand(1); // the hier path draws from the libc rand() stream
+      solveModel(g, mode, MODEL_SUBSET);
+    }
+    expect(positions(withLen)).toEqual(positions(plain));
+  });
+
+  it('MODE_MAJOR mds uses the len of an edge longer than the path around it', () => {
+    const long = (e: Edge): void => { e.attrs.set('len', e.name === '02' ? '9' : '1'); };
+    const mds = chordCycle('undirected', long);
+    const shortpath = chordCycle('undirected', long);
+    solveModel(mds, MODE_MAJOR, MODEL_MDS);
+    solveModel(shortpath, MODE_MAJOR, MODEL_SHORTPATH);
+    expect(positions(mds)).not.toEqual(positions(shortpath));
+  });
+
+  it.each([
+    ['MODE_MAJOR', MODE_MAJOR, 'undirected'],
+    ['MODE_HIER', MODE_HIER, 'directed'],
+    ['MODE_IPSEP', MODE_IPSEP, 'directed'],
+    ['MODE_SGD', MODE_SGD, 'undirected'],
+  ] as const)('%s returns before any solver when maxiter < 0 (neatoinit.c:1290)', (_name, mode, kind) => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const g = chordCycle(kind);
+    g.attrs.set('maxiter', '-1');
+    [...g.nodes.values()].forEach((n, i) => { n.info.pos = [i, i + 1]; });
+    solveModel(g, mode, MODEL_CIRCUIT);
+    expect(positions(g)).toEqual([[0, 1], [1, 2], [2, 3], [3, 4]]);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 
   it('runs unconstrained MODE_IPSEP as plain majorization without warning', () => {

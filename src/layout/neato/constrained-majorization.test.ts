@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: EPL-2.0
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { HIER_GRAPHS, toVtx } from '../../../test/helpers/hier-graphs.js';
 import { csrand } from '../../common/crand.js';
 import { srand48 } from '../../common/random.js';
@@ -16,7 +16,7 @@ const OPTS_PLAIN = 2;
 const OPTS_SMART = OPTS_PLAIN | OPT_SMART_INIT;
 const EPSILON = 1e-4;
 
-afterEach(() => { csrand(1); });
+afterEach(() => { csrand(1); vi.restoreAllMocks(); });
 
 function graphOf(c: MajorizationCase): DirectedVtxData[] {
   if (c.graph === 'g40') {
@@ -133,15 +133,6 @@ describe('a layout that finds no hierarchy', () => {
 describe('distance models', () => {
   const probe = (): DirectedVtxData[] => toVtx(HIER_GRAPHS.probe);
 
-  it.each([
-    ['subset', MODEL_SUBSET, /subset distance model/],
-    ['circuit', MODEL_CIRCUIT, /circuit distance model/],
-  ])('%s stays loud at the C branch point', (_name, model, message) => {
-    csrand(1);
-    expect(() => stressMajorizationWithHierarchy(probe(), 6, zeros(2, 6), freshNodes(6), layoutOpts({ model })))
-      .toThrowError(message);
-  });
-
   /** Layout of the probe graph under `model`, after `edit` changed its rows. */
   function layoutProbe(model: number, edit: (g: DirectedVtxData[]) => void = () => {}): number[][] {
     csrand(1);
@@ -170,9 +161,44 @@ describe('distance models', () => {
       layoutOpts({ model: MODEL_SUBSET, maxi: 0 }))).toBe(0);
   });
 
-  it('raises an UNSUPPORTED_FEATURE error', () => {
-    csrand(1);
-    expect(() => stressMajorizationWithHierarchy(probe(), 6, zeros(2, 6), freshNodes(6),
-      layoutOpts({ model: MODEL_CIRCUIT }))).toThrowError(expect.objectContaining({ code: 'UNSUPPORTED_FEATURE' }));
+  it('subset restores every row\'s ewgts (stress.c:compute_apsp_artificial_weights_packed)', () => {
+    let graph: DirectedVtxData[] = [];
+    const moved = layoutProbe(MODEL_SUBSET, (g) => { graph = g; });
+    expect(graph.map((v) => v.ewgts)).toEqual(probe().map((v) => v.ewgts));
+    expect(moved).not.toEqual(layoutProbe(MODEL_SHORTPATH));
+  });
+
+  it('circuit takes the resistance distances on a connected graph, silently', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(layoutProbe(MODEL_CIRCUIT)).not.toEqual(layoutProbe(MODEL_SHORTPATH));
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it('circuit on a disconnected graph warns and uses compute_apsp_packed, not Dijkstra', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    // 0->1 and 2->3 of length 2.5: bfs truncates to 2 where Dijkstra keeps 2.5
+    const pairs = (g: DirectedVtxData[]): void => {
+      g.splice(0, g.length,
+        { nedges: 2, edges: [0, 1], ewgts: [0, 2.5], edists: [0, -1] },
+        { nedges: 2, edges: [1, 0], ewgts: [0, 2.5], edists: [0, 1] },
+        { nedges: 2, edges: [2, 3], ewgts: [0, 2.5], edists: [0, -1] },
+        { nedges: 2, edges: [3, 2], ewgts: [0, 2.5], edists: [0, 1] },
+      );
+    };
+    const run = (model: number): number[][] => {
+      csrand(1);
+      srand48(1);
+      const graph: DirectedVtxData[] = [];
+      pairs(graph);
+      const coords = zeros(2, 4);
+      stressMajorizationWithHierarchy(graph, 4, coords, freshNodes(4), layoutOpts({ model }));
+      return coords.map((a) => [...a]);
+    };
+    const circuit = run(MODEL_CIRCUIT);
+    expect(warn.mock.calls.map((c) => c[0])).toEqual([
+      'Warning: graph is disconnected. Hence, the circuit model',
+      'is undefined. Reverting to the shortest path model.',
+    ]);
+    expect(circuit).toEqual(run(MODEL_SHORTPATH));
   });
 });

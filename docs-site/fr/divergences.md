@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1456,12 +1456,8 @@ acceptés.
   est à 1 ulp du `Math.cos` de V8 ; la boucle de forces de fdp amplifie cela
   jusqu’à environ 3 pouces. Le `cos` d’Apple n’est pas reproductible à partir d’un
   modèle court comme l’est `hypot`.
-- **Plantages natifs que le portage définit.** Graphviz natif se termine avec le
-  code 139 sur neato `mode=KK` avec `model=mds` et une arête `len` (`mds_model`
-  indexe `GD_dist` par un numéro de séquence à base 1 : débordement de tas), et
-  sur `model=circuit` avec un graphe non connexe. Le portage écarte les cellules
-  hors plage dans le premier cas et retombe sur les plus courts chemins dans le
-  second ; il n’existe aucune sortie native à comparer.
+- **Plantages natifs que le portage définit.** Le Graphviz natif se termine avec 139 sur neato `mode=KK` avec `model=mds` et une arête portant `len` dans presque chaque exécution (1 survivant sur environ 1500 ; `mds_model` indexe `GD_dist` par un numéro de séquence base 1 : débordement de tas). Le port abandonne les cellules hors plage, et son résultat coïncide avec ce survivant à 0,01. `circuit_model` indexe par l'`AGSEQ` base 1 (`circuit.c:46`) : la ligne 0 de sa matrice n'est donc jamais écrite et la matrice est singulière sur tout graphe, connexe ou non ; le `mode=KK` natif avec `model=circuit` ne produit jamais de disposition circuit. Quand le processus survit, il affiche `Warning: graph <name> is disconnected. Hence, the circuit model` et se rabat sur les plus courts chemins ; le même défaut lit au-delà du tableau de pointeurs de lignes quand le dernier nœud créé a une arête, si bien que le natif se termine le plus souvent avec 139 (environ 3 exécutions sur 4 sur le graphe de test). Le port prend toujours le chemin du survivant : l'avertissement, puis les plus courts chemins, graphe connexe ou non. Avec `pack=true`, le natif a planté à chaque exécution (0 survivant sur plus de 3000 pour chacun de deux graphes) ; par décision, le port avertit par composante sous son propre nom (`_neato_cc0`, `_neato_cc1`, ...), utilise les plus courts chemins et empaquette. Il n'existe pas de sortie native pour cette combinaison ; la disposition équivaut au `model=shortpath` natif pour le même graphe.
+- **L'ordre des égalités de VPSC suit l'ordre de création, pas l'adresse de tas.** Le `IncVPSC::splitBlocks` natif parcourt un `std::set<Block*>` ordonné par adresse de tas tout en y insérant, et `CmpNodePos` départage les positions égales par l'adresse ; la sortie native pour `overlap=vpsc|ipsep` et `mode=ipsep` contraint varie donc d'une exécution à l'autre en cas d'égalité de positions (un cas a donné 21 résultats distincts en 300 exécutions). Le port ordonne les égalités par ordre de création et visite toujours les nouveaux blocs, de sorte que sa sortie est déterministe. Elle égale une exécution native échantillonnée sur les cas d'égalité vérifiés, sauf un cas de 40 nœuds qui ne correspondait à aucun des 29 résultats natifs échantillonnés (suivi 110).
 
 ---
 
@@ -1517,7 +1513,7 @@ cible le **SVG** (ainsi que les formats texte intermédiaires `json` / `xdot` /
   fonctions de rappel fournies par l’appelant (par exemple `setImageSizer`). Le
   comportement est préservé ; le mécanisme diffère.
 
-- **Type d'image et avertissements `imagepath`.** Une image connue uniquement via `setImageSizer` (sans octets du resolver) n'a pas de type et n'affiche donc pas l'avertissement `No loadimage plugin` ; le natif lit toujours le fichier et connaît donc toujours le type. Pour des octets de resolver non reconnus, le natif avertit aussi par `Warning: "<name>" was not found as a file or as a shape library member` ; le portage n'affiche pas encore cette ligne (suivi 104, câblage au moment du layout). `GV_FILE_PATH` et `SERVER_NAME` ne sont pas pris en compte, et l'hôte n'est jamais interrogé sur le nom `<dir>/<name>` d'`imagepath`.
+- **Type d'image et avertissements `imagepath`.** Une image connue uniquement via `setImageSizer` (sans octets du resolver) n'a pas de type et n'affiche donc pas l'avertissement `No loadimage plugin` ; le natif lit toujours le fichier et connaît donc toujours le type. `GV_FILE_PATH` et `SERVER_NAME` ne sont pas pris en compte, et l'hôte n'est jamais interrogé sur le nom `<dir>/<name>` d'`imagepath`.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -131,10 +131,7 @@ na obsługiwaną wartość.
 
 | Silnik | Atrybut i wartość | Uruchamia się, gdy | Potrzebna funkcja Graphviza |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Tylko gdy `model` to `subset` lub `circuit` (gdy graf ma 2+ węzłów, a `maxiter` jest dodatnie) | Hierarchiczna majoryzacja naprężeń (`stress_majorization_with_hierarchy`) |
-| neato | `start=self` | `mode` to `major` (domyślnie). Przy `mode=ipsep` jest przyjmowany po cichu, a layout używa losowego startu, tak jak Graphviz | Inteligentna inicjalizacja (`smart_ini`). Przy `mode=KK` lub `mode=sgd` loguje `start=0 not supported with mode=self - ignored` raz na renderowanie, jak Graphviz |
-| neato | `model=subset` | `mode` ma wartość `major` lub `KK`. Nie zgłasza się przy `mode=ipsep`. | Model odległości podzbiorowej |
-| neato | `model=circuit` | `mode` ma wartość `major` albo `KK` na grafie spójnym. `KK` na grafie niespójnym bez `pack` ani `packmode` loguje ostrzeżenie i używa najkrótszych ścieżek, jak Graphviz. Nie zgłasza się przy `mode=ipsep`. | Model odległości obwodowej (`circuit_model`) |
+| neato | `start=self` | `mode` to `major` (domyślnie). Przy `mode=ipsep` jest przyjmowany po cichu, a layout używa losowego startu, tak jak Graphviz | Inteligentna inicjalizacja (`smart_ini`). Przy `mode=KK` lub `mode=sgd` loguje `Warning: start=0 not supported with mode=self - ignored` raz na renderowanie, jak Graphviz |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (bez rozróżniania wielkości liter) | Graf (dla twopi składowa; dla sfdp cały graf lub składowa) ma 2+ węzłów, a własna liczba nakładań Graphviza (`countOverlap`, która testuje wielokąty węzłów) jest większa od 0. Węzły, które stykają się tylko prostokątami ograniczającymi, tego nie wywołują. circo dochodzi do tego tylko dla grafu jednoskładnikowego (przy wielu składowych Graphviz też ignoruje `overlap`). sfdp dochodzi do tego tylko wtedy, gdy `overlap` nie jest trybem prism | Usuwanie nakładań metodą Voronoia (`vAdjust`) |
 | fdp | `overlap=` jedno z: `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Tryb jest osiągany po próbach iteracji sił `N:`, czyli gdy te próby nie usuwają wszystkich nakładań (lub `N` wynosi 0 albo jest nieobecne). Prefiks `N:` jest dozwolony, na przykład `3:voronoi` | Odpowiadający algorytm korekty `removeOverlapWith` |
 | fdp | `splines=compound` | Zawsze, z klastrami lub bez | Prowadzenie krawędzi omijające klastry (`compoundEdges`) |
@@ -152,7 +149,7 @@ Rozgałęziaj po `err.code === 'UNSUPPORTED_FEATURE'`, a nie po tekście.
 
 Wartości wybierające domyślne zachowanie (na przykład `quadtree=normal`,
 `true`, `yes`, `1`) oraz akceptowane przez Graphviz wartości, które zostały
-przeniesione (na przykład `start=regular`, `start=random`, `model=mds`,
+przeniesione (na przykład `start=regular`, `start=random`, `mode=hier`, `model=mds`, `model=subset`, `model=circuit`,
 `mode=KK`, `mode=sgd`, `overlap=prism`, rodzina `scale` oraz, w neato, twopi,
 circo i sfdp, `overlap=oscale`, `vpsc` i tryby `ortho*` / `portho*`)
 renderują się normalnie.

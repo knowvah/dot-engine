@@ -452,14 +452,14 @@ export function pccomps(g: Graph, pfx: string): { graphs: Graph[]; pinned: boole
     pinned = true;
   }
   if (pinnedNodes.length > 0) {
-    result.push(buildSubgraph(g, pinnedNodes, `${pfx}_${idx++}`));
+    result.push(buildSubgraph(g, pinnedNodes, `${pfx}${idx++}`));
   }
 
   // Pass 2 — remaining components in node order.
   for (const n of g.nodes.values()) {
     if (visited.has(n.name)) continue;
     const comp = dfsCollect(g, n, visited);
-    result.push(buildSubgraph(g, comp, `${pfx}_${idx++}`));
+    result.push(buildSubgraph(g, comp, `${pfx}${idx++}`));
   }
   return { graphs: result, pinned };
 }

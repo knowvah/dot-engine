@@ -1,66 +1,29 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * The subset and circuit distance models of stress majorization, plus the
- * three kkutils.c neighbour-vector helpers they use (kept here because
- * kkutils.ts is outside the porting task that added them).
+ * The subset and circuit distance models of stress majorization, and the choice
+ * of `Dij` among them. The kkutils.c neighbour-vector helpers they use live in
+ * kkutils.ts, re-exported here.
+ * `circuitModel` here is stress.c's (float `Dij` from `vtx_data`); `circuit.ts`'s
+ * `circuitModel` is circuit.c's `circuit_model` (`GD_dist` from a graph, KK path).
  *
  * `Dij` is C `float` (Float32Array); the circuit matrices are C `double`.
  * C `NULL` ewgts is the port's empty array.
  *
  * @see lib/neatogen/stress.c
- * @see lib/neatogen/kkutils.c
  */
 
 import type { VtxData } from './dijkstra.js';
+import { agerr, agwarningf } from '../../common/agerr.js';
 import { computeApspPacked, computeWeightedApspPacked } from './bfs.js';
 import { solveCircuit } from './circuit.js';
+import { MODEL_CIRCUIT, MODEL_MDS, MODEL_SUBSET } from './init.js';
+import { artificialWeight, emptyNeighborsVec, fillNeighborsVecUnweighted } from './kkutils.js';
 import { newArray } from './lu.js';
 import { fmaxf } from './quad-prog-solve.js';
+import { mdsModel } from './stress.js';
 
-/** 2^64: C `size_t` arithmetic wraps modulo this. */
-const SIZE_T_MODULUS = 2 ** 64;
-
-// ---------------------------------------------------------------------------
-// kkutils.c helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Count the neighbours of `u` marked in `vVector`.
- * @see lib/neatogen/kkutils.c:common_neighbors
- */
-export function commonNeighbors(graph: readonly VtxData[], u: number, vVector: Int32Array): number {
-  // count number of common neighbors of 'v_vector' and 'u'
-  let numSharedNeighbors = 0;
-  for (let j = 1; j < graph[u]!.nedges; j++) {
-    const neighbor = graph[u]!.edges[j]!;
-    if (vVector[neighbor]! > 0) {
-      // a shared neighbor
-      numSharedNeighbors++;
-    }
-  }
-  return numSharedNeighbors;
-}
-
-/**
- * Mark the neighbours of `vtx` (a node is NOT a neighbour of itself).
- * @see lib/neatogen/kkutils.c:fill_neighbors_vec_unweighted
- */
-export function fillNeighborsVecUnweighted(graph: readonly VtxData[], vtx: number, vtxVec: Int32Array): void {
-  for (let j = 1; j < graph[vtx]!.nedges; j++) {
-    vtxVec[graph[vtx]!.edges[j]!] = 1;
-  }
-}
-
-/**
- * Clear the marks set by `fillNeighborsVecUnweighted`.
- * @see lib/neatogen/kkutils.c:empty_neighbors_vec
- */
-export function emptyNeighborsVec(graph: readonly VtxData[], vtx: number, vtxVec: Int32Array): void {
-  for (let j = 1; j < graph[vtx]!.nedges; j++) {
-    vtxVec[graph[vtx]!.edges[j]!] = 0;
-  }
-}
+export { commonNeighbors, emptyNeighborsVec, fillNeighborsVecUnweighted } from './kkutils.js';
 
 // ---------------------------------------------------------------------------
 // circuitModel
@@ -123,18 +86,6 @@ function circuitDistances(GmInv: readonly Float64Array[], nG: number, Dij: Float
 // ---------------------------------------------------------------------------
 // compute_apsp_artificial_weights_packed
 // ---------------------------------------------------------------------------
-
-/**
- * The artificial weight of edge (i, neighbor): `deg_i + deg_j - 2 * common`
- * in C `size_t`, so a negative value (only possible with duplicate
- * neighbours) wraps modulo 2^64 before the (float) cast.
- * @see lib/neatogen/stress.c:compute_apsp_artificial_weights_packed (stress.c:735-736, 752-753)
- */
-function artificialWeight(graph: readonly VtxData[], degI: number, neighbor: number, vtxVec: Int32Array): number {
-  const degJ = graph[neighbor]!.nedges - 1;
-  const w = degI + degJ - 2 * commonNeighbors(graph, neighbor, vtxVec);
-  return Math.fround(w < 0 ? w + SIZE_T_MODULUS : w);
-}
 
 /**
  * Weighted branch: each weight is fmaxf(artificial, the caller's ewgts[j]),
@@ -209,4 +160,49 @@ export function computeApspArtificialWeightsPacked(graph: VtxData[], n: number):
     }
   }
   return Dij;
+}
+
+// ---------------------------------------------------------------------------
+// Dij selection
+// ---------------------------------------------------------------------------
+
+/**
+ * The model branches C writes twice, with the same shape: subset, circuit
+ * (warning when it fails), mds. `null` is C's `Dij` still NULL, where each
+ * caller picks its own shortest paths. `model` is the defs.h numbering of
+ * init.ts, not stress.ts's.
+ * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel (stress.c:837-852)
+ * @see lib/neatogen/constrained_majorization.c:stress_majorization_with_hierarchy (173-186)
+ */
+export function modelDistances(graph: VtxData[], n: number, model: number): Float32Array | null {
+  let Dij: Float32Array | null = null;
+  if (model === MODEL_SUBSET) {
+    /* weight graph to separate high-degree nodes */
+    /* and perform slower Dijkstra-based computation */
+    Dij = computeApspArtificialWeightsPacked(graph, n);
+  } else if (model === MODEL_CIRCUIT) {
+    Dij = circuitModel(graph, n);
+    if (Dij === null) {
+      agwarningf('graph is disconnected. Hence, the circuit model');
+      agerr('prev', 'is undefined. Reverting to the shortest path model.');
+    }
+  } else if (model === MODEL_MDS) {
+    Dij = mdsModel(graph, n);
+  }
+  return Dij;
+}
+
+/**
+ * The all-pairs-shortest-distances block of `stress_majorization_kD_mkernel`:
+ * the model's matrix, else shortest paths, weighted iff `graph->ewgts`.
+ *
+ * Boundary deviation: C computes this inside the kernel, after its `maxi < 0`
+ * return. The port's fused kernel takes `Dij` as a parameter, so the caller runs
+ * this first and owns that check (part-8 AD-2).
+ * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel (stress.c:833-859)
+ */
+export function stressModelDij(graph: VtxData[], n: number, model: number): Float32Array {
+  const Dij = modelDistances(graph, n, model);
+  if (Dij !== null) return Dij;
+  return graph[0]!.ewgts.length !== 0 ? computeWeightedApspPacked(graph, n) : computeApspPacked(graph, n);
 }

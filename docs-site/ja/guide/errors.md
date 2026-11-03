@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -109,10 +109,7 @@ DOT の作者が何を変更しても、`InternalError` を確実に避けるこ
 
 | エンジン | 属性と値 | 発動条件 | 必要な Graphviz の機能 |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | `model` が `subset` または `circuit` の場合のみ（グラフに2つ以上のノードがあり、`maxiter` が正の場合） | 階層的なストレスマジョライゼーション（`stress_majorization_with_hierarchy`） |
-| neato | `start=self` | `mode` が `major`（デフォルト）の場合。`mode=ipsep` では黙って受け入れられ、Graphviz と同様にレイアウトはランダムな開始位置を使う | スマート初期化（`smart_ini`）。`mode=KK` または `mode=sgd` では、Graphviz と同様に、レンダリングごとに1回 `start=0 not supported with mode=self - ignored` をログに出す |
-| neato | `model=subset` | `mode` が `major` または `KK`。 `mode=ipsep` では発生しない。 | subset 距離モデル |
-| neato | `model=circuit` | `mode` が `major`、または連結グラフでの `KK`。連結でないグラフで `pack` も `packmode` もない `KK` は、警告をログに出して最短経路を使う（Graphviz と同じ）。 `mode=ipsep` では発生しない。 | circuit 距離モデル（`circuit_model`） |
+| neato | `start=self` | `mode` が `major`（デフォルト）の場合。`mode=ipsep` では黙って受け入れられ、Graphviz と同様にレイアウトはランダムな開始位置を使う | スマート初期化（`smart_ini`）。`mode=KK` または `mode=sgd` では、Graphviz と同様に、レンダリングごとに1回 `Warning: start=0 not supported with mode=self - ignored` をログに出す |
 | neato、twopi、circo、sfdp | `overlap=voronoi`（大文字小文字を区別しない） | グラフ（twopi ではコンポーネント、sfdp ではグラフ全体またはコンポーネント）に2つ以上のノードがあり、Graphviz 自身の重なり数（`countOverlap`。ノードの多角形をテストする）が0より大きい場合。バウンディングボックスだけが接しているノードでは発動しない。circo がここに到達するのは、単一コンポーネントのグラフだけ（複数のコンポーネントでは、Graphviz も `overlap` を無視する）。sfdp がここに到達するのは、`overlap` が prism モードでない場合だけ | Voronoi による重なりの除去（`vAdjust`） |
 | fdp | `overlap=` の `voronoi`、`oscale`、`vpsc`、`ipsep`、`ortho`、`ortho_yx`、`orthoxy`、`orthoyx`、`portho`、`portho_yx`、`porthoxy`、`porthoyx` のいずれか | `N:` の力学的反復の試行のあとで、そのモードに到達する場合。つまり、それらの試行がすべての重なりを取り除けない場合（または `N` が 0 か省略されている場合）。`N:` プレフィックスは許可される（例: `3:voronoi`） | 対応する `removeOverlapWith` の調整アルゴリズム |
 | fdp | `splines=compound` | クラスターの有無にかかわらず常に | クラスターを避けるエッジルーティング（`compoundEdges`） |
@@ -125,7 +122,7 @@ DOT の作者が何を変更しても、`InternalError` を確実に避けるこ
 
 ほとんどのメッセージは `<attribute>=<value>: <what> is not supported yet` という形です。例外は `smoothing` と `rotation`（欠けているルーチンの名前を示す）、fdp の行、形状の行で、これらは上記の文言を使います。テキストではなく、`err.code === 'UNSUPPORTED_FEATURE'` で分岐してください。
 
-デフォルトを選ぶ値（たとえば `quadtree=normal`、`true`、`yes`、`1`）や、Graphviz が受け付ける値のうち移植済みのもの（たとえば `start=regular`、`start=random`、`model=mds`、`mode=KK`、`mode=sgd`、`overlap=prism`、`scale` ファミリー、および neato、twopi、circo、sfdp での `overlap=oscale`、`vpsc`、`ortho*` / `portho*` モード）は、通常どおりレンダリングされます。
+デフォルトを選ぶ値（たとえば `quadtree=normal`、`true`、`yes`、`1`）や、Graphviz が受け付ける値のうち移植済みのもの（たとえば `start=regular`、`start=random`、`mode=hier`、`model=mds`、`model=subset`、`model=circuit`、`mode=KK`、`mode=sgd`、`overlap=prism`、`scale` ファミリー、および neato、twopi、circo、sfdp での `overlap=oscale`、`vpsc`、`ortho*` / `portho*` モード）は、通常どおりレンダリングされます。
 
 ## 関数ごとのリファレンス
 

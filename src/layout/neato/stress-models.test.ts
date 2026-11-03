@@ -9,14 +9,17 @@
  * @see lib/neatogen/stress.c:compute_apsp_artificial_weights_packed
  */
 
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import type { VtxData } from './dijkstra.js';
+import { MODEL_CIRCUIT, MODEL_MDS, MODEL_SHORTPATH, MODEL_SUBSET } from './init.js';
 import {
   circuitModel,
   computeApspArtificialWeightsPacked,
   commonNeighbors,
   fillNeighborsVecUnweighted,
   emptyNeighborsVec,
+  modelDistances,
+  stressModelDij,
 } from './stress-models.js';
 import { MODEL_CASES, type ModelRow } from './__fixtures__/stress-models.js';
 
@@ -120,5 +123,90 @@ describe('kkutils neighbour helpers', () => {
     fillNeighborsVecUnweighted(graph, 0, vec);
     expect(commonNeighbors(graph, 1, vec)).toBe(1);
     expect(commonNeighbors(graph, 0, vec)).toBe(2);
+  });
+});
+
+describe('stressModelDij', () => {
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  /** The path 0-1-2, with lengths when `lens` is given. */
+  const path3 = (lens?: readonly [number, number]): VtxData[] => [
+    { nedges: 2, edges: [0, 1], ewgts: lens ? [0, lens[0]] : [] },
+    { nedges: 3, edges: [1, 0, 2], ewgts: lens ? [0, lens[0], lens[1]] : [] },
+    { nedges: 2, edges: [2, 1], ewgts: lens ? [0, lens[1]] : [] },
+  ];
+  /** The triangle 0-1-2 whose edge 0-2 (length 5) is longer than the path around it. */
+  const longEdge = (): VtxData[] => [
+    { nedges: 3, edges: [0, 1, 2], ewgts: [0, 1, 5] },
+    { nedges: 3, edges: [1, 0, 2], ewgts: [0, 1, 1] },
+    { nedges: 3, edges: [2, 0, 1], ewgts: [0, 5, 1] },
+  ];
+  /** The unit triangle: each pair has resistance 2/3. */
+  const triangle = (): VtxData[] => [
+    { nedges: 3, edges: [0, 1, 2], ewgts: [] },
+    { nedges: 3, edges: [1, 0, 2], ewgts: [] },
+    { nedges: 3, edges: [2, 0, 1], ewgts: [] },
+  ];
+  /** The edges 0-1 and 2-3, which pinned nodes can hold in one component. */
+  const twoPairs = (): VtxData[] => [
+    { nedges: 2, edges: [0, 1], ewgts: [] },
+    { nedges: 2, edges: [1, 0], ewgts: [] },
+    { nedges: 2, edges: [2, 3], ewgts: [] },
+    { nedges: 2, edges: [3, 2], ewgts: [] },
+  ];
+  const dij = (graph: VtxData[], model: number): number[] =>
+    Array.from(stressModelDij(graph, graph.length, model));
+
+  it('shortpath hops when the graph has no ewgts (stress.c:858)', () => {
+    expect(dij(path3(), MODEL_SHORTPATH)).toEqual([0, 1, 2, 0, 1, 0]);
+  });
+
+  it('shortpath is weighted iff graph->ewgts (stress.c:855); bfs would truncate 2.5', () => {
+    expect(dij(path3([2.5, 4]), MODEL_SHORTPATH)).toEqual([0, 2.5, 6.5, 0, 4, 0]);
+  });
+
+  it('mds writes each edge length over its shortest path', () => {
+    expect(dij(longEdge(), MODEL_SHORTPATH)).toEqual([0, 1, 2, 0, 1, 0]);
+    expect(dij(longEdge(), MODEL_MDS)).toEqual([0, 1, 5, 0, 1, 0]);
+  });
+
+  it('mds on a graph with no ewgts falls through to shortest paths', () => {
+    expect(dij(path3(), MODEL_MDS)).toEqual([0, 1, 2, 0, 1, 0]);
+  });
+
+  it('subset takes the artificial weights: each hop of the path is 1 + 2 - 0', () => {
+    expect(dij(path3(), MODEL_SUBSET)).toEqual([0, 3, 6, 0, 3, 0]);
+  });
+
+  it('circuit takes the resistance distances, silently', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const third = Math.fround(2 / 3);
+    const got = dij(triangle(), MODEL_CIRCUIT);
+    expect([got[0], got[3], got[5]]).toEqual([0, 0, 0]);
+    expect(got[1]).toBeCloseTo(third, 5);
+    expect(got[2]).toBeCloseTo(third, 5);
+    expect(got[4]).toBeCloseTo(third, 5);
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it('circuit on a disconnected graph warns as native and reverts to shortest paths', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    // bfs puts an unreached node 10 past the last distance (bfs.c)
+    expect(dij(twoPairs(), MODEL_CIRCUIT)).toEqual([0, 1, 11, 11, 0, 11, 11, 0, 1, 0]);
+    expect(warn.mock.calls.map((c) => c[0])).toEqual([
+      'Warning: graph is disconnected. Hence, the circuit model',
+      'is undefined. Reverting to the shortest path model.',
+    ]);
+  });
+});
+
+describe('modelDistances', () => {
+  it('leaves shortest paths to its caller: null for shortpath, and for mds with no ewgts', () => {
+    const graph: VtxData[] = [
+      { nedges: 2, edges: [0, 1], ewgts: [] },
+      { nedges: 2, edges: [1, 0], ewgts: [] },
+    ];
+    expect(modelDistances(graph, 2, MODEL_SHORTPATH)).toBeNull();
+    expect(modelDistances(graph, 2, MODEL_MDS)).toBeNull();
   });
 });

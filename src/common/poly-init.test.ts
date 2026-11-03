@@ -75,4 +75,44 @@ describe('poly_init usershape keying', () => {
     expect(layoutWarnings(dot, false)).toEqual([line]);
     expect(layoutWarnings(dot, false)).toEqual([line]);
   });
+
+  describe('custom shapefile sized by the caller (shapes.c:2027-2038)', () => {
+    const DOT = 'digraph{a[shape=custom shapefile="s.png"]}';
+    const PNG20 = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, ...new Array<number>(12).fill(0)];
+
+    function run(hooks: (ctx: ReturnType<typeof createDefaultContext>) => void): { warns: string[]; svg: string } {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const ctx = createDefaultContext();
+      hooks(ctx);
+      const g = parse(DOT);
+      ctx.layout(g, 'dot');
+      const svg = String(render(ctx, g, 'svg', false));
+      const warns = warn.mock.calls.map((c) => String(c[0]));
+      warn.mockRestore();
+      return { warns, svg };
+    }
+
+    it('prints nothing when the per-context sizer sizes it', () => {
+      expect(run((c) => { c.imageSizer = () => SIZE; }).warns).toEqual([]);
+    });
+
+    it('a 200x100 px shapefile grows the node to max(dimen, size + 2)', () => {
+      // 200x100 px at 96 dpi = 150x75 pt (int trunc); +2 padding = 152x77 pt,
+      // bigger than the 54x36 default, so bb = imagesize; graph adds 4pt margin each side.
+      const { svg } = run((c) => { c.imageSizer = () => ({ w: 200, h: 100 }); });
+      expect(svg).toContain('width="160pt" height="85pt"');
+    });
+
+    it('bad resolver bytes give the FT_NULL pair', () => {
+      const { warns } = run((c) => { c.imageSizer = () => SIZE; c.imageResolver = () => new Uint8Array([104, 101, 108, 108, 111]); });
+      expect(warns).toEqual([
+        'Warning: "s.png" was not found as a file or as a shape library member',
+        'Warning: No or improper shapefile="s.png" for node "a"',
+      ]);
+    });
+
+    it('recognized resolver bytes with a sizer print nothing', () => {
+      expect(run((c) => { c.imageSizer = () => SIZE; c.imageResolver = () => new Uint8Array(PNG20); }).warns).toEqual([]);
+    });
+  });
 });

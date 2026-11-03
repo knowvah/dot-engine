@@ -2,14 +2,19 @@
 /**
  * Kamada-Kawai ideal-distance setup: Dijkstra over edge lengths with C's
  * binary heap (`neato_enqueue`/`neato_dequeue`, `shortest_path`, `s1`,
- * `make_spring`) and `mds_model`.
+ * `make_spring`), `subset_model` and `mds_model`.
  *
  * The C keeps the heap, its size and the source node in file-statics and the
  * per-node `ND_dist`/`ND_hops`/`ND_heapindex` in node records; here they live
  * in one {@link PathState} per run (no module state), indexed by `ND_id`.
  *
  * @see lib/neatogen/stuff.c
+ * @see lib/neatogen/neatoinit.c
  */
+
+import type { Graph } from '../../model/graph.js';
+import { computeApspArtificialWeights } from './kkutils.js';
+import { makeGraphDataC } from './make-graph-data.js';
 
 /** One neighbour of a node: its id and the edge's `ED_dist`. */
 export interface Neighbour {
@@ -128,6 +133,23 @@ function s1(s: PathState, src: number): void {
 /** All-pairs shortest paths into `GD_dist`. @see lib/neatogen/stuff.c:shortest_path */
 export function shortestPath(s: PathState): void {
   for (let v = 0; v < s.n; v++) s1(s, v);
+}
+
+/**
+ * Overwrite `GD_dist` (flat, nG*nG) with the artificial-weight distances.
+ * `makeGraphDataC` with neither `len` nor direction builds the rows of C's
+ * `makeGraphData(MODE_KK, MODEL_SUBSET)`; it reads `ND_id`, which
+ * `scan_graph_mode` has set.
+ * @see lib/neatogen/neatoinit.c:subset_model
+ */
+export function subsetModel(g: Graph, nG: number, dist: Float64Array): void {
+  const gp = makeGraphDataC(g, [...g.nodes.values()], false, false);
+  const Dij = computeApspArtificialWeights(gp, nG);
+  for (let i = 0; i < nG; i++) {
+    for (let j = 0; j < nG; j++) {
+      dist[i * nG + j] = Dij[i]![j]!;
+    }
+  }
 }
 
 /**

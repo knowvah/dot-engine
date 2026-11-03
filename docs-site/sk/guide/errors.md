@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -130,10 +130,7 @@ alebo jeho zmenou na podporovanú hodnotu.
 
 | Modul | Atribút a hodnota | Spustí sa, keď | Potrebná funkcia Graphviz |
 |-------|-------------------|----------------|---------------------------|
-| neato | `mode=hier` | Iba keď `model` je `subset` alebo `circuit` (po tom, čo má graf 2+ uzlov a `maxiter` je kladný) | Hierarchická stresová majorizácia (`stress_majorization_with_hierarchy`) |
-| neato | `start=self` | `mode` je `major` (predvolené). Pri `mode=ipsep` sa prijme bez hlásenia a layout použije náhodný štart, rovnako ako Graphviz | Inteligentná inicializácia (`smart_ini`). Pri `mode=KK` alebo `mode=sgd` zaznamená `start=0 not supported with mode=self - ignored` raz za vykreslenie, rovnako ako Graphviz |
-| neato | `model=subset` | `mode` je `major` alebo `KK`. Pri `mode=ipsep` sa nespustí. | Model vzdialeností subset |
-| neato | `model=circuit` | `mode` je `major`, alebo `KK` pri súvislom grafe. `KK` pri nesúvislom grafe bez `pack` alebo `packmode` zaznamená varovanie a použije najkratšie cesty, rovnako ako Graphviz. Pri `mode=ipsep` sa nespustí. | Model vzdialeností circuit (`circuit_model`) |
+| neato | `start=self` | `mode` je `major` (predvolené). Pri `mode=ipsep` sa prijme bez hlásenia a layout použije náhodný štart, rovnako ako Graphviz | Inteligentná inicializácia (`smart_ini`). Pri `mode=KK` alebo `mode=sgd` zaznamená `Warning: start=0 not supported with mode=self - ignored` raz za vykreslenie, rovnako ako Graphviz |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (bez ohľadu na veľkosť písmen) | Graf (pri twopi komponent; pri sfdp celý graf alebo komponent) má 2+ uzlov a vlastný počet prekrytí Graphviz (`countOverlap`, ktorý testuje polygóny uzlov) je väčší ako 0. Uzly, ktoré sa dotýkajú iba ohraničujúcimi rámcami, ho nespustia. circo sa k nemu dostane iba pri grafe s jedným komponentom (pri viacerých komponentoch Graphviz `overlap` tiež ignoruje). sfdp sa k nemu dostane iba vtedy, keď `overlap` nie je režim prism | Odstraňovanie prekrytí pomocou Voronoiho diagramu (`vAdjust`) |
 | fdp | `overlap=` jedna z hodnôt `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Režim sa dosiahne po `N:` pokusoch silových iterácií, teda keď tieto pokusy neodstránia každé prekrytie (alebo `N` je 0 či chýba). Predpona `N:` je povolená, napríklad `3:voronoi` | Zodpovedajúci algoritmus úpravy `removeOverlapWith` |
 | fdp | `splines=compound` | Vždy, s klastrami aj bez nich | Vedenie hrán obchádzajúce klastre (`compoundEdges`) |
@@ -151,7 +148,7 @@ podľa `err.code === 'UNSUPPORTED_FEATURE'`, nie podľa textu.
 
 Hodnoty, ktoré vyberajú predvolenú možnosť (napríklad `quadtree=normal`,
 `true`, `yes`, `1`), a hodnoty akceptované Graphviz, ktoré sú portované
-(napríklad `start=regular`, `start=random`, `model=mds`, `mode=KK`,
+(napríklad `start=regular`, `start=random`, `mode=hier`, `model=mds`, `model=subset`, `model=circuit`, `mode=KK`,
 `mode=sgd`, `overlap=prism`, rodina `scale` a pri neato, twopi, circo a sfdp
 `overlap=oscale`, `vpsc` a režimy `ortho*` / `portho*`), sa vykreslia
 normálne.

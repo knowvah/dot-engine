@@ -1,0 +1,134 @@
+// SPDX-License-Identifier: EPL-2.0
+//
+// neato `model=` (shortpath, subset, circuit, mds) on the major, KK and hier
+// paths against native graphviz 16.1.0 `-Kneato -Txdot`. Fixtures under
+// __fixtures__/models/ are the oracle's own output and stderr (part-8 AD-5);
+// inputs come from plans/post-16-1-followups-8/harness/T0/gen-models.py.
+//
+// Native facts these cases pin down:
+// - Major and hier pack by default (neato_layout: `Pack < 0 && layoutMode`), so
+//   `*-disc-circuit` is split into connected components and never warns.
+//   `*-pin-disc-circuit` keeps pinned nodes in one component (pccomps), which
+//   is what reaches stress.c's disconnected warning.
+// - KK `circuit_model` indexes by the 1-based AGSEQ (circuit.c:46), so row 0 of
+//   Gm is never written and lu_decompose reports a zero row on every graph,
+//   connected or not: native KK circuit always warns and falls back to shortest
+//   paths. When the last-created node has an edge C also reads past the row
+//   pointers and usually exits 139 (regen.sh keeps the first run that survives).
+//   `kk-iso-*` end in an isolated node, so nothing overflows and native is
+//   deterministic.
+// - KK mds has the same overflow on GD_dist (neatoinit.c:1231). `kk-len-mds`
+//   survived about 1 run in 1500; the port drops the out-of-range cells and
+//   matches that run at 0.01.
+// - A case with a `.native-crash` marker never survived (0 of 3000 runs for both
+//   pack cases): there is no native output, so the port defines the result
+//   (docs/known-divergences.md). Its stderr fixture holds what native printed
+//   before crashing. The port runs C's mechanism per component: each
+//   `circuit_model` fails, warns under the component's name, and falls back to
+//   shortest paths, so the layout is native's for the `model=shortpath` twin
+//   (`kk-disc-shortpath-pack`, `kk-disc4-shortpath-pack`), which does not crash.
+// - KK calls pow(sq, 1.5) per move, and Math.pow is the platform's libm (V8's
+//   --use-std-math-pow). On a graph as large as `kk-large`, a last-bit difference
+//   moves the `max < Epsilon2` stop by whole moves, so the layout depends on the
+//   libm. The fixture comes from macOS, so that case replays macOS's pow on every
+//   platform. The other cases pass on Linux CI without a replay.
+// @see lib/neatogen/neatoinit.c:neato_layout
+// @see lib/neatogen/neatoinit.c:kkNeato
+// @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
+// @see lib/neatogen/constrained_majorization.c:stress_majorization_with_hierarchy
+import { readFileSync } from 'node:fs';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { parse, render } from '../../index.js';
+import { compareXdot, XDOT_TOLERANCE } from '../../../test/golden/compare-xdot.js';
+import { exactPow15 } from '../../../test/helpers/exact-pow15.js';
+
+const FIXTURES = new URL('./__fixtures__/models/', import.meta.url);
+
+/** compareXdot's test is strict; a one-printed-unit difference is 0.01 + ~1e-11. */
+const POSITION_TOLERANCE = XDOT_TOLERANCE + 1e-9;
+
+/** Cases compared with native's own output, by mode. */
+const MAJOR = [
+  'large-circuit', 'major-circuit', 'major-default', 'major-disc-circuit', 'major-len-circuit', 'major-len-mds',
+  'major-len-subset', 'major-long-mds', 'major-long-shortpath', 'major-mds-edge-default', 'major-mds-nolen',
+  'major-mds-nolen-anon', 'major-model-Subset', 'major-model-foo', 'major-model-foo-anon',
+  'major-pin-disc-circuit', 'major-shortpath', 'major-subset',
+] as const;
+const HIER = [
+  'hier-circuit', 'hier-default', 'hier-disc-circuit', 'hier-len-circuit', 'hier-len-mds', 'hier-len-subset',
+  'hier-long-mds', 'hier-mds-nolen', 'hier-pin-disc-circuit', 'hier-shortpath', 'hier-subset',
+] as const;
+const KK = [
+  'kk-circuit', 'kk-default', 'kk-disc-circuit', 'kk-disc-shortpath-pack', 'kk-disc4-shortpath-pack',
+  'kk-iso-circuit', 'kk-iso-len-circuit', 'kk-iso-len-mds', 'kk-iso-long-mds', 'kk-len-circuit',
+  'kk-len-mds', 'kk-len-subset', 'kk-mds-nolen', 'kk-shortpath', 'kk-subset',
+] as const;
+
+/** Native exits 139 on every run: no output to compare with. */
+const KK_NATIVE_CRASH = ['kk-disc-circuit-pack', 'kk-disc4-circuit-pack'] as const;
+
+const read = (name: string): string => readFileSync(new URL(name, FIXTURES), 'utf8');
+
+/** What one render wrote to stderr (console.warn / console.error), newline-terminated. */
+interface Rendered { xdot: string; stderr: string }
+
+function neatoXdot(id: string): Rendered {
+  const lines: string[] = [];
+  vi.spyOn(console, 'warn').mockImplementation((m: unknown) => { lines.push(String(m)); });
+  vi.spyOn(console, 'error').mockImplementation((m: unknown) => { lines.push(String(m)); });
+  const xdot = String(render(parse(read(`${id}.gv`)), 'xdot', { engine: 'neato' }));
+  return { xdot, stderr: lines.map((l) => `${l}\n`).join('') };
+}
+
+function expectNative(id: string): void {
+  const r = neatoXdot(id);
+  expect(compareXdot(r.xdot, read(`${id}.xdot`), POSITION_TOLERANCE).diffs).toEqual([]);
+  expect(r.stderr).toBe(read(`${id}.xdot.stderr`));
+}
+
+afterEach(() => { vi.restoreAllMocks(); });
+
+describe('major path models match native', () => {
+  it.each(MAJOR)('%s', expectNative, 60_000);
+});
+
+describe('hier path models match native', () => {
+  it.each(HIER)('%s', expectNative, 60_000);
+});
+
+describe('KK path models match native', () => {
+  it.each(KK)('%s', expectNative, 60_000);
+});
+
+describe('KK solver against the oracle libm', () => {
+  // kk-large.pow.json holds each x where macOS pow differs from exactPow15, from
+  // plans/post-16-1-followups-8/harness/ci-kk-large/record-pow.ts. Rerecord it if
+  // the sequence of `sq` values changes. Math.pow is assigned, not spied on: a
+  // spy would keep all 832,047 calls.
+  it('kk-large matches native with macOS pow replayed', () => {
+    const macPow = new Map(JSON.parse(read('kk-large.pow.json')) as [number, number][]);
+    const realPow = Math.pow;
+    Math.pow = (x, y) => (y === 1.5 ? macPow.get(x) ?? exactPow15(x) : realPow(x, y));
+    try {
+      expectNative('kk-large');
+    } finally {
+      Math.pow = realPow;
+    }
+  }, 60_000);
+});
+
+describe('KK pack cases native cannot finish', () => {
+  it.each(KK_NATIVE_CRASH)('%s has no native output', (id) => {
+    expect(read(`${id}.native-crash`)).toMatch(/^exit 139 on all \d+ runs\n$/);
+    expect(read(`${id}.xdot`)).toBe('');
+  });
+
+  it.each(KK_NATIVE_CRASH)('%s warns per component and lays out as its shortpath twin', (id) => {
+    const r = neatoXdot(id);
+    const cc0 = read('kk-disc4-circuit-pack.xdot.stderr');
+    expect(r.stderr).toBe(cc0 + cc0.replace('_neato_cc0', '_neato_cc1'));
+    expect(r.stderr.startsWith(read(`${id}.xdot.stderr`))).toBe(true);
+    const twin = id.replace('-circuit-', '-shortpath-');
+    expect(compareXdot(r.xdot, read(`${twin}.xdot`), POSITION_TOLERANCE).diffs).toEqual([]);
+  }, 60_000);
+});

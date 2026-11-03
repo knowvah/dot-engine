@@ -59,12 +59,6 @@ function neatoXdot(id: string): Rendered {
   return { xdot, stderr: lines.map((l) => `${l}\n`).join('') };
 }
 
-/**
- * Probes whose native stderr carries the neatoModel `%1` mds warning that
- * parseModel does not port (follow-up 108): stdout only.
- */
-const STDERR_GAP = new Set<string>(['model-mds']);
-
 afterEach(() => { vi.restoreAllMocks(); });
 
 describe('unconstrained ipsep probes are byte-identical to native', () => {
@@ -80,6 +74,6 @@ describe('constrained ipsep probes match native at 0.01', () => {
     const r = neatoXdot(id);
     const cmp = compareXdot(r.xdot, read(`${id}.xdot`), POSITION_TOLERANCE);
     expect(cmp.diffs).toEqual([]);
-    if (!STDERR_GAP.has(id)) expect(r.stderr).toBe(read(`${id}.xdot.stderr`));
+    expect(r.stderr).toBe(read(`${id}.xdot.stderr`));
   }, 60_000);
 });

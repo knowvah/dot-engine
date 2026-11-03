@@ -20,6 +20,8 @@ Being closed by `plans/post-16-1-followups-5/`.
 Being closed by `plans/post-16-1-followups-6/`.
 Items 95–102 closed by `plans/post-16-1-followups-7/` (101's layout-time FT_NULL line → 104);
 the open work is items 103–108 under "New follow-ups found by part 7".
+Items 103–108 closed by `plans/post-16-1-followups-8/`; the open work is items 109–113 under
+"New follow-ups found by part 8".
 Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
@@ -559,33 +561,60 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       Reference `graphs-val_val` (pre-existing at T0; part 6 T6 bytediff).
 
 - **New follow-ups found by part 7** (`plans/post-16-1-followups-7/`):
-  103. (reserved by part 7 AD-3) Wire `model=subset|circuit` into the major, kk and hier
+  103. **[DONE — part 8 T2, T6, T7: all modes lay out subset, circuit and mds; native KK circuit always falls back]** (reserved by part 7 AD-3) Wire `model=subset|circuit` into the major, kk and hier
       paths (`start.ts:207-216`, `constrained-majorization.ts:96`), which stay loud; the
       models are ported in `stress-models.ts` (part 7 T7).
-  104. Layout-time FT_NULL warning: resolver bytes with unrecognized magic must warn
+  104. **[DONE — part 8 T4: FT_NULL warning at layout, and the custom-shape branch of `poly_init`]** Layout-time FT_NULL warning: resolver bytes with unrecognized magic must warn
       `"<name>" was not found as a file or as a shape library member` and size to
       nothing at layout (`common_init_node` → `poly_init` → `gvusershape_size` →
       `gvusershape_open`). `poly-init.ts` (`warnPolyInitImages`, `nodeImageSize`) and
       `htmltable.ts:145,153` must call `imageOpenFailure` / pass the resolver to
       `usershapeSizePts`; a global-resolver read is needed for callers without a
       context (part 7 T6).
-  105. `src/vpsc/SweepLine.ts`: C++ `Node::leftNeighbours`/`rightNeighbours` are
+  105. **[DONE — part 8 T3: neighbour sets in `CmpNodePos` order, ties by creation order]** `src/vpsc/SweepLine.ts`: C++ `Node::leftNeighbours`/`rightNeighbours` are
       `set<Node*,CmpNodePos>` (position order, `generate-constraints.cpp:43-84`); TS uses
       an insertion-ordered Set filled in descending position, and `nodePosLt` compares
       objects with `<` (always false) where C++ breaks ties by address. Two
       `quad-prog-vpsc.test.ts` cases are `it.fails` on it; the tie case's native result
       itself varies run to run, so its fixture may need a refresh (part 7 T5).
-  106. Known divergence: C++ `IncVPSC::splitBlocks` iterates `std::set<Block*>` in heap
+  106. **[DONE — part 8 T8: ledger bullet in `docs/known-divergences.md`]** Known divergence: C++ `IncVPSC::splitBlocks` iterates `std::set<Block*>` in heap
       address order (`blocks.h:37`); native output varies with the allocator (3 results
       for one input under default / `X=1` / `MallocNanoZone=0`). Not reproducible; ledger
       entry needed (part 7 T5).
-  107. `safefile`'s "host supplies the name" check reads the global sizer/resolver, not
+  107. **[DONE — part 8 T5: `safefile` sees the layout's own hooks]** `safefile`'s "host supplies the name" check reads the global sizer/resolver, not
       the per-context hooks; matters for `bindShape`'s `shapefile` under `imagepath`
       with a per-context-only sizer (part 7 T9).
-  108. `index.ts:parseModel` lacks `neatoinit.c:neatoModel`'s warnings: `edges in graph
+  108. **[DONE — part 8 T1: `neatoModel` ported]** `index.ts:parseModel` lacks `neatoinit.c:neatoModel`'s warnings: `edges in graph
       %s have no len attribute. Hence, the mds model / is inappropriate. Reverting to the
       shortest path model.` (native prints a literal `%1`) with the shortpath fallback,
       and `Unknown value %s for attribute "model"` (part 7 T8).
+
+- **New follow-ups found by part 8** (`plans/post-16-1-followups-8/`):
+  109. `src/layout/neato/dijkstra.ts:toDistType` wraps a float weight at or above 2^31 into
+      int32, where native arm64 saturates to INT_MAX (`dijkstra.c:166`). Only duplicate
+      neighbours yield such a weight, and `makeGraphData` merges them, so no graph reaches
+      it today (part 8 T2).
+  110. `dir1 n40` (`IncVPSC`, no `SweepLine`) matches none of 29 sampled native variants.
+      Likely the heap-address order of follow-up 106, unproven for this case. Also unchecked:
+      `compareEvents` under libc++'s unstable `std::sort` against JS's stable sort, on equal
+      event positions (part 8 T3).
+  111. `maxiter` is ignored on multi-component neato graphs: `g.attrs.get('maxiter')` on a
+      component misses the root's value, where C `agget` inherits it. `graph G {maxiter=3;
+      a--b--c--a; d--e--f--d}` keeps the no-`maxiter` layout while native differs (129 xdot
+      diffs). `epsilon` is read the same way, unchecked (part 8 T6).
+  112. `ccomps` callers pass prefixes C does not (`_twopi`, `_sfdp_cc`, `_cc`; C passes none,
+      giving `_cc_0`), and `ccomps` puts `_` before the index where C appends it directly. Fix
+      the form and the three callers together. Nothing native prints reads these names today.
+      Also check sfdp's `start=self` warning order against native (part 8 T7).
+  113. `getGlobalImageSizer` (`src/gvc/usershape.ts:40`) has no production caller: AD-6 named it,
+      but the sizer fallback still lives in `imageIsSupplied` and `usershapeSizePts`, and only
+      `image-ft-null.test.ts` calls it. Route those through it or remove it (part 8 T4, T9).
+
+  Accepted, not open (user decision, PR 119): layouts that vary with the runtime's `pow`, `hypot`
+  or similar. Last-bit libm differences change the decisions an algorithm encodes, as they
+  already do between OSes and chipsets on one implementation; the algorithm is still correct.
+  The oracle fixtures are macOS's, so a probe this sensitive replays macOS's values
+  (`kk-large.pow.json`). No library change is wanted.
 
 ## Local leftovers (not committed, safe to delete)
 

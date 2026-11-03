@@ -1,5 +1,5 @@
 ---
-sourceHash: 626678082866ff72735554e9cab8e9b0cbeed44bd56cbe0e70417789ecfc91b1
+sourceHash: 5adedf304ed3717b602b9f4cc54a10f403c3ab37a8306bc067767eac53a013c5
 ---
 # 使用圖片
 
@@ -193,12 +193,13 @@ const svg = render(g, 'svg', { inlineImages: true });
 
 原生 Graphviz 的 `imagepath` 圖屬性是以冒號分隔的目錄清單，用於尋找相對的 `image=` 與 `shapefile=` 名稱。本移植版本身從不讀取影像檔，因此從不搜尋這些目錄，也從不向主機要求 `dir/name`：`setImageSizer` 與 `ImageResolver` 一律收到與書寫完全相同的原始名稱。本移植版僅用 `imagepath` 來決定主機未提供相對名稱時輸出哪則警告：
 
-- 設定了 `imagepath` 時，主機未提供的相對 `image=`/`shapefile=` 名稱會先輸出 `Warning: Filename "<name>" is unsafe`，再輸出 `Warning: No or improper image="<name>" for node "<node>"`，與原生在沒有可讀的 `<dir>/<name>` 時一致。
+- 設定了 `imagepath` 時，主機未提供的相對 `image=`/`shapefile=` 名稱會先輸出 `Warning: Filename "<name>" is unsafe`，再輸出 `Warning: No or improper image="<name>" for node "<node>"`（或對於自訂形狀的 `shapefile=`，`Warning: No or improper shapefile="<name>" for node "<node>"`），與原生在沒有可讀的 `<dir>/<name>` 時一致。
+- 主機透過執行版面配置的情境的 `setImageSizer` 或 `ImageResolver` 掛鉤（或全域掛鉤）所提供的名稱，不會輸出上述任何一行。對於自訂形狀，節點依所提供的影像決定尺寸。
 - 絕對名稱，或未設定／為空的 `imagepath`，維持輸出 `Warning: No such file or directory while opening <name>` 這一行。
 
 `GV_FILE_PATH` 與 `SERVER_NAME` 不會被採納（它們是環境變數，而瀏覽器沒有環境）。若要相對於自己的基準目錄或 URL 解析相對路徑，請在建構 DOT 原始碼的層，或在 `setImageSizer`/`ImageResolver` 回呼中為名稱加上前綴。
 
-**影像類型。** 與原生一致，類型由 resolver 回傳的位元組透過魔術數字辨識得出：png、gif、jpeg、bmp、pdf、ps、eps、ico、riff/webp，以及僅當位元組以 `<?xml` 宣告開頭並緊接 `<svg` 時的 svg。不足 20 位元組的資料無法辨識。對於無法辨識的位元組，不會繪製任何內容，轉譯時也不會量測該影像的尺寸。原生還會輸出 `Warning: "<name>" was not found as a file or as a shape library member` 警告；本移植版尚未輸出該行（參見[已知差異](/zh-tw/divergences)）。
+**影像類型。** 與原生一致，類型由 resolver 回傳的位元組透過魔術數字辨識得出：png、gif、jpeg、bmp、pdf、ps、eps、ico、riff/webp，以及僅當位元組以 `<?xml` 宣告開頭並緊接 `<svg` 時的 svg。不足 20 位元組的資料無法辨識。對於無法辨識的位元組，不會繪製任何內容，轉譯時也不會量測該影像的尺寸。與原生一樣，移植版也會警告 `Warning: "<name>" was not found as a file or as a shape library member`，隨後輸出 `No or improper image=` 行。
 
 `-Tjson` 與原生一樣，對每個被繪製的影像輸出一次 `Warning: No loadimage plugin for "png:json"` 警告（類型因影像而異），因為原生沒有 json 影像載入器。對於已辨識的類型，`svg`、`xdot`、`dot`、`plain` 與 `cmapx` 不輸出任何內容。僅透過 sizer 得知的影像沒有類型，因此不會輸出 loadimage 警告（參見[已知差異](/zh-tw/divergences)）。
 

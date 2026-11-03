@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1375,12 +1375,8 @@ weicht vom nativen Graphviz ab. Gefunden von der Mission `v2-silent-gaps`
   liegt ein ULP neben dem `Math.cos` von V8; die Kräfteschleife von fdp verstärkt das auf
   etwa 3 in. Das `cos` von Apple lässt sich nicht aus einem kurzen Modell reproduzieren,
   wie es bei `hypot` möglich ist.
-- **Native Abstürze, die die Portierung definiert.** Das native Graphviz beendet sich mit
-  139 bei neato `mode=KK` mit `model=mds` und einer Kante mit `len` (`mds_model` indiziert
-  `GD_dist` mit einer 1-basierten Sequenznummer: Heap-Überlauf) sowie bei `model=circuit`
-  mit einem nicht zusammenhängenden Graphen. Die Portierung verwirft im ersten Fall
-  Zellen außerhalb des Bereichs und fällt im zweiten auf kürzeste Wege zurück; es gibt
-  keine native Ausgabe, mit der man vergleichen könnte.
+- **Native Abstürze, die die Portierung definiert.** Das native Graphviz beendet sich bei neato `mode=KK` mit `model=mds` und einer Kante mit `len` in nahezu jedem Lauf mit 139 (1 Überlebender bei etwa 1500 Läufen; `mds_model` indiziert `GD_dist` mit einer 1-basierten Sequenznummer: Heap-Überlauf). Die Portierung verwirft Zellen außerhalb des Bereichs, und ihr Ergebnis stimmt mit diesem Überlebenden auf 0,01 überein. `circuit_model` indiziert mit der 1-basierten `AGSEQ` (`circuit.c:46`); Zeile 0 seiner Matrix wird daher nie beschrieben, und die Matrix ist bei jedem Graphen singulär, ob zusammenhängend oder nicht: Das native `mode=KK` mit `model=circuit` erzeugt nie ein Circuit-Layout. Überlebt der Prozess, gibt er `Warning: graph <name> is disconnected. Hence, the circuit model` aus und fällt auf kürzeste Wege zurück; derselbe Fehler liest hinter das Zeilenzeiger-Array, wenn der zuletzt angelegte Knoten eine Kante hat, sodass das native Programm meist mit 139 endet (etwa 3 von 4 Läufen beim Testgraphen). Die Portierung nimmt immer den überlebenden Pfad: die Warnung, dann kürzeste Wege, ob zusammenhängend oder nicht. Mit `pack=true` stürzte das native Programm in jedem Lauf ab (0 Überlebende bei über 3000 Läufen auf jedem von zwei Graphen); per Entscheidung warnt die Portierung je Komponente unter einem eigenen Namen (`_neato_cc0`, `_neato_cc1`, ...), nutzt kürzeste Wege und packt. Für diese Kombination gibt es keine native Ausgabe; das Layout entspricht dem nativen `model=shortpath` für denselben Graphen.
+- **VPSC-Gleichstände folgen der Erzeugungsreihenfolge, nicht der Heap-Adresse.** Das native `IncVPSC::splitBlocks` durchläuft ein nach Heap-Adresse geordnetes `std::set<Block*>`, während es darin einfügt, und `CmpNodePos` entscheidet Positionsgleichstände nach der Adresse; die native Ausgabe für `overlap=vpsc|ipsep` und beschränktes `mode=ipsep` schwankt daher bei gleichen Positionen von Lauf zu Lauf (ein Fall ergab 21 verschiedene Ergebnisse in 300 Läufen). Die Portierung ordnet Gleichstände nach Erzeugungsreihenfolge und besucht neue Blöcke immer, ihre Ausgabe ist also deterministisch. Sie entspricht in den geprüften Gleichstandsfällen einem gesampelten nativen Lauf, außer in einem Fall mit 40 Knoten, der keinem von 29 gesampelten nativen Ergebnissen entsprach (Folgepunkt 110).
 
 ---
 
@@ -1432,7 +1428,7 @@ Das sind bewusste Abgrenzungen des Umfangs, keine Fehler. Die Bibliothek zielt a
   Aufrufer gelieferte Callbacks ersetzt (z. B. `setImageSizer`). Das Verhalten bleibt
   erhalten; der Mechanismus unterscheidet sich.
 
-- **Bildtyp und `imagepath`-Warnungen.** Ein nur über `setImageSizer` bekanntes Bild (ohne Resolver-Bytes) hat keinen Typ und gibt daher keine Warnung `No loadimage plugin` aus; das native Programm liest die Datei immer und kennt den Typ deshalb stets. Bei unerkannten Resolver-Bytes warnt das native Programm zusätzlich mit `Warning: "<name>" was not found as a file or as a shape library member`; die Portierung gibt diese Zeile noch nicht aus (Folgepunkt 104, Verdrahtung zur Layoutzeit). `GV_FILE_PATH` und `SERVER_NAME` werden nicht berücksichtigt, und der Host wird nie nach dem `<dir>/<name>`-Namen von `imagepath` gefragt.
+- **Bildtyp und `imagepath`-Warnungen.** Ein nur über `setImageSizer` bekanntes Bild (ohne Resolver-Bytes) hat keinen Typ und gibt daher keine Warnung `No loadimage plugin` aus; das native Programm liest die Datei immer und kennt den Typ deshalb stets. `GV_FILE_PATH` und `SERVER_NAME` werden nicht berücksichtigt, und der Host wird nie nach dem `<dir>/<name>`-Namen von `imagepath` gefragt.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -134,10 +134,7 @@ Wert.
 
 | Engine | Attribut und Wert | Löst aus, wenn | Benötigtes Graphviz-Feature |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Nur wenn `model` `subset` oder `circuit` ist (nachdem der Graph 2+ Knoten hat und `maxiter` positiv ist) | Hierarchische Stress-Majorization (`stress_majorization_with_hierarchy`) |
-| neato | `start=self` | `mode` ist `major` (der Standardwert). Unter `mode=ipsep` wird es stillschweigend akzeptiert und das Layout verwendet wie Graphviz den zufälligen Start | Intelligente Initialisierung (`smart_ini`). Unter `mode=KK` oder `mode=sgd` protokolliert es wie Graphviz einmal pro Rendervorgang `start=0 not supported with mode=self - ignored` |
-| neato | `model=subset` | `mode` ist `major` oder `KK`. Löst unter `mode=ipsep` nicht aus. | Das Distanzmodell „subset“ |
-| neato | `model=circuit` | `mode` ist `major`, oder `KK` bei einem zusammenhängenden Graphen. `KK` bei einem unzusammenhängenden Graphen ohne `pack` oder `packmode` protokolliert eine Warnung und verwendet kürzeste Wege, wie Graphviz. Löst unter `mode=ipsep` nicht aus. | Das Distanzmodell „circuit“ (`circuit_model`) |
+| neato | `start=self` | `mode` ist `major` (der Standardwert). Unter `mode=ipsep` wird es stillschweigend akzeptiert und das Layout verwendet wie Graphviz den zufälligen Start | Intelligente Initialisierung (`smart_ini`). Unter `mode=KK` oder `mode=sgd` protokolliert es wie Graphviz einmal pro Rendervorgang `Warning: start=0 not supported with mode=self - ignored` |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (Groß-/Kleinschreibung egal) | Der Graph (bei twopi eine Komponente; bei sfdp der ganze Graph oder eine Komponente) hat 2+ Knoten, und Graphvizs eigene Überlappungszählung (`countOverlap`, die Knotenpolygone prüft) liegt über 0. Knoten, die sich nur durch ihre Begrenzungsbox berühren, lösen es nicht aus. circo erreicht es nur bei einem Graphen mit einer einzigen Komponente (bei mehreren Komponenten ignoriert Graphviz `overlap` ebenfalls). sfdp erreicht es nur, wenn `overlap` kein Prism-Modus ist | Voronoi-Überlappungsentfernung (`vAdjust`) |
 | fdp | `overlap=` eines von `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Der Modus wird nach den `N:`-Kräfteiterationsversuchen erreicht, also wenn diese Versuche nicht jede Überlappung beseitigen (oder `N` 0 ist oder fehlt). Das Präfix `N:` ist erlaubt, zum Beispiel `3:voronoi` | Der passende Adjust-Algorithmus von `removeOverlapWith` |
 | fdp | `splines=compound` | Immer, mit oder ohne Cluster | Clustervermeidende Kantenführung (`compoundEdges`) |
@@ -156,7 +153,7 @@ den Text.
 
 Werte, die den Standard auswählen (zum Beispiel `quadtree=normal`, `true`,
 `yes`, `1`), und die von Graphviz akzeptierten Werte, die portiert sind (zum
-Beispiel `start=regular`, `start=random`, `model=mds`, `mode=KK`, `mode=sgd`,
+Beispiel `start=regular`, `start=random`, `mode=hier`, `model=mds`, `model=subset`, `model=circuit`, `mode=KK`, `mode=sgd`,
 `overlap=prism`, die Familie `scale` und, bei neato, twopi, circo und sfdp,
 `overlap=oscale`, `vpsc` und die Modi `ortho*` / `portho*`), rendern normal.
 

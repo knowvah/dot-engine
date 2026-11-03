@@ -1,0 +1,161 @@
+{
+  "dir1 n40": {
+    "runs": [
+      {
+        "run": 1,
+        "env": "default",
+        "rc": 0,
+        "hash": "b25fad233462"
+      },
+      {
+        "run": 2,
+        "env": "X=1",
+        "rc": 0,
+        "hash": "2517e8943483"
+      },
+      {
+        "run": 3,
+        "env": "pad1k",
+        "rc": 0,
+        "hash": "40ee59cc5234"
+      },
+      {
+        "run": 4,
+        "env": "pad8k",
+        "rc": 0,
+        "hash": "17f6a01a8893"
+      },
+      {
+        "run": 5,
+        "env": "nano0",
+        "rc": 0,
+        "hash": "40ee59cc5234"
+      },
+      {
+        "run": 6,
+        "env": "nano0-X=1",
+        "rc": 0,
+        "hash": "40ee59cc5234"
+      },
+      {
+        "run": 7,
+        "env": "nano0-pad1k",
+        "rc": 0,
+        "hash": "1c234f91a9a5"
+      },
+      {
+        "run": 8,
+        "env": "nano1",
+        "rc": 0,
+        "hash": "3a6133e66656"
+      }
+    ],
+    "distinct": 6
+  },
+  "noverlap1 dir2 n10": {
+    "runs": [
+      {
+        "run": 1,
+        "env": "default",
+        "rc": 0,
+        "hash": "ab659e4b11aa"
+      },
+      {
+        "run": 2,
+        "env": "X=1",
+        "rc": 0,
+        "hash": "ab659e4b11aa"
+      },
+      {
+        "run": 3,
+        "env": "pad1k",
+        "rc": 0,
+        "hash": "ab659e4b11aa"
+      },
+      {
+        "run": 4,
+        "env": "pad8k",
+        "rc": 0,
+        "hash": "ab659e4b11aa"
+      },
+      {
+        "run": 5,
+        "env": "nano0",
+        "rc": 0,
+        "hash": "ab659e4b11aa"
+      },
+      {
+        "run": 6,
+        "env": "nano0-X=1",
+        "rc": 0,
+        "hash": "5b75a05f9310"
+      },
+      {
+        "run": 7,
+        "env": "nano0-pad1k",
+        "rc": 0,
+        "hash": "ab659e4b11aa"
+      },
+      {
+        "run": 8,
+        "env": "nano1",
+        "rc": 0,
+        "hash": "ab659e4b11aa"
+      }
+    ],
+    "distinct": 2
+  },
+  "cluster dir0": {
+    "runs": [
+      {
+        "run": 1,
+        "env": "default",
+        "rc": 0,
+        "hash": "f3685bd04945"
+      },
+      {
+        "run": 2,
+        "env": "X=1",
+        "rc": 0,
+        "hash": "f3685bd04945"
+      },
+      {
+        "run": 3,
+        "env": "pad1k",
+        "rc": 0,
+        "hash": "f3685bd04945"
+      },
+      {
+        "run": 4,
+        "env": "pad8k",
+        "rc": 0,
+        "hash": "f3685bd04945"
+      },
+      {
+        "run": 5,
+        "env": "nano0",
+        "rc": 0,
+        "hash": "f3685bd04945"
+      },
+      {
+        "run": 6,
+        "env": "nano0-X=1",
+        "rc": 0,
+        "hash": "f3685bd04945"
+      },
+      {
+        "run": 7,
+        "env": "nano0-pad1k",
+        "rc": 0,
+        "hash": "f3685bd04945"
+      },
+      {
+        "run": 8,
+        "env": "nano1",
+        "rc": 0,
+        "hash": "f3685bd04945"
+      }
+    ],
+    "distinct": 1
+  }
+}

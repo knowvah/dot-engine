@@ -31,7 +31,7 @@ import {
   putRects, packRects, computeSubgraphBB, subgraphBBs, expandBounds,
   putGraphs, packGraphs, packSubgraphs,
   shiftGraphBBs, shiftEdgePoints, shiftOneGraph, normalizeGraphBB,
-  cccomps, isConnected,
+  ccomps, cccomps, pccomps, isConnected,
   chkFlags, parsePackModeInfo, getPackMode, getPack, mapClust,
   PackMode, PK_COL_MAJOR, PK_TOP_ALIGN, PK_LEFT_ALIGN, PK_BOT_ALIGN,
   PK_USER_VALS,
@@ -495,6 +495,31 @@ describe('cccomps', () => {
     const comps = cccomps(g, 'c');
     expect(comps).toHaveLength(1);
     expect(comps[0]!.nodes.size).toBe(2);
+  });
+});
+
+// C: setPrefix, then "%zu", with nothing between. @see lib/pack/ccomps.c:145-161,203-204
+// ccomps keeps its "_" until its callers pass C's prefix (follow-up 112): circo's `_cc`
+// plus "_" gives native's `_cc_0` today.
+describe('component names', () => {
+  function threeNodes(): Graph {
+    const g = makeGraph();
+    for (const [i, name] of ['a', 'b', 'c'].entries()) g.nodes.set(name, new Node(i, name, g));
+    return g;
+  }
+
+  it('ccomps separates prefix and index with an underscore (follow-up 112)', () => {
+    expect(ccomps(threeNodes(), '_cc').map((c) => c.name)).toEqual(['_cc_0', '_cc_1', '_cc_2']);
+  });
+
+  it('pccomps appends the index directly, with the pinned component first', () => {
+    const g = threeNodes();
+    g.nodes.get('b')!.info.pinned = true;
+    const { graphs, pinned } = pccomps(g, '_neato_cc');
+    expect(graphs.map((c) => [c.name, [...c.nodes.keys()]])).toEqual([
+      ['_neato_cc0', ['b']], ['_neato_cc1', ['a']], ['_neato_cc2', ['c']],
+    ]);
+    expect(pinned).toBe(true);
   });
 });
 

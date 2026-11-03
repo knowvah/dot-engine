@@ -1,0 +1,4 @@
+Warning: graph _neato_cc0 is disconnected. Hence, the circuit model
+is undefined. Reverting to the shortest path model.
+Alternatively, consider running neato using -Gpack=true or decomposing
+the graph into connected components.

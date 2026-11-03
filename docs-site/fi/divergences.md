@@ -1,5 +1,5 @@
 ---
-sourceHash: 48d0cc4c3eff229b10d77e0a1b3968acfb3a50145212164a5c09f43232cbf8a5
+sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1316,11 +1316,8 @@ eroaa natiivista Graphvizista. Löydetty `v2-silent-gaps`-missionilla
   `T_Wd * cos(alpha)`, ja macOS:n libm `cos(-2.3840764867756761)` on 1 ulp:n päässä
   V8:n `Math.cos`ista; fdp:n voimasilmukka vahvistaa sen noin 3 tuumaksi. Applen
   `cos` ei ole toistettavissa lyhyellä mallilla niin kuin `hypot`.
-- **Natiivit kaatumiset, jotka porttaus määrittelee.** Natiivi Graphviz poistuu koodilla 139
-  neaton `mode=KK` -tilassa asetuksella `model=mds` ja kaaren `len`illä (`mds_model` indeksoi `GD_dist`in
-  1-pohjaisella järjestysnumerolla: kekoylivuoto), sekä asetuksella `model=circuit` epäyhtenäisellä graafilla.
-  Porttaus pudottaa alueen ulkopuoliset solut ensimmäisessä tapauksessa ja
-  turvautuu lyhimpiin polkuihin toisessa; natiivia tulostetta, johon verrata, ei ole.
+- **Natiivit kaatumiset, jotka porttaus määrittelee.** Natiivi Graphviz päättyy koodiin 139 neatossa `mode=KK` ja `model=mds` sekä `len`-reunalla lähes joka ajolla (1 selviytyjä noin 1500:sta; `mds_model` indeksoi `GD_dist`-taulukon 1-pohjaisella järjestysnumerolla: kasan ylivuoto). Portti pudottaa alueen ulkopuoliset solut, ja sen tulos vastaa tuota selviytyjää 0,01:n tarkkuudella. `circuit_model` indeksoi 1-pohjaisella `AGSEQ`-arvolla (`circuit.c:46`), joten sen matriisin riviä 0 ei koskaan kirjoiteta ja matriisi on singulaarinen jokaisella graafilla, yhtenäisellä tai ei: natiivi `mode=KK` ja `model=circuit` ei koskaan tuota circuit-asettelua. Kun prosessi selviää, se tulostaa `Warning: graph <name> is disconnected. Hence, the circuit model` ja palaa lyhimpiin polkuihin; sama virhe lukee riviosoitintaulukon yli, kun viimeksi luodulla solmulla on reuna, joten natiivi päättyy yleensä koodiin 139 (noin 3 ajoa 4:stä koegraafilla). Portti valitsee aina selviytymispolun: varoituksen ja sitten lyhimmät polut, yhtenäinen graafi tai ei. Valinnalla `pack=true` natiivi kaatui jokaisella ajolla (0 selviytyjää yli 3000:sta kummallakin kahdesta graafista); päätöksen mukaan portti varoittaa komponenteittain omalla nimellään (`_neato_cc0`, `_neato_cc1`, ...), käyttää lyhimpiä polkuja ja pakkaa. Tälle yhdistelmälle ei ole natiivia tulostetta; asettelu vastaa natiivia `model=shortpath` -asettelua samalle graafille.
+- **VPSC:n tasatilanteet seuraavat luontijärjestystä, eivät kasan osoitetta.** Natiivi `IncVPSC::splitBlocks` käy läpi kasan osoitteen mukaan järjestettyä `std::set<Block*>`-joukkoa lisäten siihen samalla alkioita, ja `CmpNodePos` ratkaisee sijaintien tasatilanteet osoitteella, joten natiivin tuloste valinnoille `overlap=vpsc|ipsep` ja rajoitetulle `mode=ipsep` vaihtelee ajosta toiseen, kun sijainnit ovat samat (yhdessä tapauksessa 300 ajosta tuli 21 eri tulosta). Portti järjestää tasatilanteet luontijärjestyksen mukaan ja käy aina uusissa lohkoissa, joten sen tuloste on deterministinen. Se vastaa otosta natiiviajoa tarkistetuissa tasatilannetapauksissa, paitsi yhdessä 40 solmun tapauksessa, joka ei vastannut yhtäkään 29 otoksen natiivitulosta (jatkotoimi 110).
 
 ---
 
@@ -1371,7 +1368,7 @@ Nämä ovat tarkoituksellisia soveltamisalan rajoja, ei vikoja. Kirjasto kohdist
   tiedostojärjestelmälukemat (fontit, kuvat, konfiguraatio) korvataan kutsujan toimittamilla
   takaisinkutsuilla (esim. `setImageSizer`). Käyttäytyminen säilyy; mekanismi eroaa.
 
-- **Kuvatyyppi ja `imagepath`-varoitukset.** Vain `setImageSizer`-funktion kautta tunnetulla kuvalla (ilman resolverin tavuja) ei ole tyyppiä, joten se ei tulosta varoitusta `No loadimage plugin`; natiivi lukee tiedoston aina ja tuntee siksi tyypin aina. Tunnistamattomille resolverin tavuille natiivi varoittaa lisäksi rivillä `Warning: "<name>" was not found as a file or as a shape library member`; portti ei vielä tulosta sitä riviä (jatkokohta 104, kytkentä layout-vaiheessa). `GV_FILE_PATH` ja `SERVER_NAME` eivät ole huomioon otettavia, eikä isännältä koskaan kysytä `imagepath`-attribuutin `<dir>/<name>`-nimeä.
+- **Kuvatyyppi ja `imagepath`-varoitukset.** Vain `setImageSizer`-funktion kautta tunnetulla kuvalla (ilman resolverin tavuja) ei ole tyyppiä, joten se ei tulosta varoitusta `No loadimage plugin`; natiivi lukee tiedoston aina ja tuntee siksi tyypin aina. `GV_FILE_PATH` ja `SERVER_NAME` eivät ole huomioon otettavia, eikä isännältä koskaan kysytä `imagepath`-attribuutin `<dir>/<name>`-nimeä.
 
 ---
 

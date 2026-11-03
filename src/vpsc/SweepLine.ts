@@ -10,13 +10,17 @@
 import { Variable } from "./Variable.js";
 import { Constraint } from "./Constraint.js";
 import { Rectangle } from "./Solver.js";
-import { EvType, SweepNode, SweepEvent } from "./sweepTypes.js";
+import { EvType, NodeSet, SweepNode, SweepEvent } from "./sweepTypes.js";
 
-export function makeNode(v: Variable, r: Rectangle, pos: number): SweepNode {
+/**
+ * `seq` is the `make_shared<Node>` order: the rectangle index of the pass.
+ * @see lib/vpsc/generate-constraints.cpp: Node::Node
+ */
+export function makeNode(v: Variable, r: Rectangle, pos: number, seq: number): SweepNode {
   return {
-    v, r, pos,
+    v, r, pos, seq,
     firstAbove: null, firstBelow: null,
-    leftNeighbours: new Set(), rightNeighbours: new Set(),
+    leftNeighbours: [], rightNeighbours: [],
   };
 }
 
@@ -32,13 +36,19 @@ export function compareEvents(ea: SweepEvent, eb: SweepEvent): number {
   return 0;
 }
 
+/**
+ * C++ ends with `u < v` on `Node*`. Addresses cannot be reproduced and vary run
+ * to run, so a position tie goes by creation order (part-8 AD-8).
+ * @see lib/vpsc/generate-constraints.cpp: CmpNodePos::operator()
+ */
 export function nodePosLt(a: SweepNode, b: SweepNode): boolean {
   if (a.pos < b.pos) return true;
   if (b.pos < a.pos) return false;
-  return a < b;
+  return a.seq < b.seq;
 }
 
-export function scanlineInsert(sl: SweepNode[], node: SweepNode): void {
+/** @see lib/vpsc/generate-constraints.cpp: NodeSet::insert (std::set, so no duplicates) */
+export function scanlineInsert(sl: NodeSet, node: SweepNode): void {
   let lo = 0;
   let hi = sl.length;
   while (lo < hi) {
@@ -46,46 +56,49 @@ export function scanlineInsert(sl: SweepNode[], node: SweepNode): void {
     if (nodePosLt(sl[mid]!, node)) lo = mid + 1;
     else hi = mid;
   }
-  sl.splice(lo, 0, node);
+  if (sl[lo] !== node) sl.splice(lo, 0, node);
 }
 
-export function scanlineRemove(sl: SweepNode[], node: SweepNode): void {
+export function scanlineRemove(sl: NodeSet, node: SweepNode): void {
   const i = sl.indexOf(node);
   if (i !== -1) sl.splice(i, 1);
 }
 
-export function getLeftNeighbours(sl: SweepNode[], v: SweepNode): Set<SweepNode> {
-  const result = new Set<SweepNode>();
+/** @see lib/vpsc/generate-constraints.cpp: getLeftNeighbours */
+export function getLeftNeighbours(sl: NodeSet, v: SweepNode): NodeSet {
+  const result: NodeSet = [];
   const idx = sl.indexOf(v);
   for (let i = idx - 1; i >= 0; i--) {
     const u = sl[i]!;
-    if (u.r.overlapX(v.r) <= 0) { result.add(u); return result; }
-    if (u.r.overlapX(v.r) <= u.r.overlapY(v.r)) result.add(u);
+    if (u.r.overlapX(v.r) <= 0) { scanlineInsert(result, u); return result; }
+    if (u.r.overlapX(v.r) <= u.r.overlapY(v.r)) scanlineInsert(result, u);
   }
   return result;
 }
 
-export function getRightNeighbours(sl: SweepNode[], v: SweepNode): Set<SweepNode> {
-  const result = new Set<SweepNode>();
+/** @see lib/vpsc/generate-constraints.cpp: getRightNeighbours */
+export function getRightNeighbours(sl: NodeSet, v: SweepNode): NodeSet {
+  const result: NodeSet = [];
   const idx = sl.indexOf(v);
   for (let i = idx + 1; i < sl.length; i++) {
     const u = sl[i]!;
-    if (u.r.overlapX(v.r) <= 0) { result.add(u); return result; }
-    if (u.r.overlapX(v.r) <= u.r.overlapY(v.r)) result.add(u);
+    if (u.r.overlapX(v.r) <= 0) { scanlineInsert(result, u); return result; }
+    if (u.r.overlapX(v.r) <= u.r.overlapY(v.r)) scanlineInsert(result, u);
   }
   return result;
 }
 
-export function xOpenNeighbour(sl: SweepNode[], v: SweepNode): void {
+/** @see lib/vpsc/generate-constraints.cpp: Node::setNeighbours */
+export function xOpenNeighbour(sl: NodeSet, v: SweepNode): void {
   const left = getLeftNeighbours(sl, v);
   const right = getRightNeighbours(sl, v);
   v.leftNeighbours = left;
   v.rightNeighbours = right;
-  for (const n of left) n.rightNeighbours.add(v);
-  for (const n of right) n.leftNeighbours.add(v);
+  for (const n of left) scanlineInsert(n.rightNeighbours, v);
+  for (const n of right) scanlineInsert(n.leftNeighbours, v);
 }
 
-export function openLinkChain(sl: SweepNode[], v: SweepNode): void {
+export function openLinkChain(sl: NodeSet, v: SweepNode): void {
   const idx = sl.indexOf(v);
   if (idx > 0) { const u = sl[idx - 1]!; v.firstAbove = u; u.firstBelow = v; }
   if (idx < sl.length - 1) { const u = sl[idx + 1]!; v.firstBelow = u; u.firstAbove = v; }
@@ -94,14 +107,14 @@ export function openLinkChain(sl: SweepNode[], v: SweepNode): void {
 export function xCloseLeft(v: SweepNode, cs: Constraint[]): void {
   for (const u of v.leftNeighbours) {
     cs.push(new Constraint(u.v, v.v, (v.r.width() + u.r.width()) / 2.0));
-    u.rightNeighbours.delete(v);
+    scanlineRemove(u.rightNeighbours, v);
   }
 }
 
 export function xCloseRight(v: SweepNode, cs: Constraint[]): void {
   for (const u of v.rightNeighbours) {
     cs.push(new Constraint(v.v, u.v, (v.r.width() + u.r.width()) / 2.0));
-    u.leftNeighbours.delete(v);
+    scanlineRemove(u.leftNeighbours, v);
   }
 }
 
@@ -141,7 +154,7 @@ export function buildXEvents(rects: Rectangle[], vs: Variable[]): SweepEvent[] {
   for (let i = 0; i < rects.length; i++) {
     const r = rects[i]!;
     vs[i]!.desiredPosition = r.getCentreX();
-    const node = makeNode(vs[i]!, r, r.getCentreX());
+    const node = makeNode(vs[i]!, r, r.getCentreX(), i);
     events.push({ type: EvType.Open, node, pos: r.getMinY() });
     events.push({ type: EvType.Close, node, pos: r.getMaxY() });
   }
@@ -153,7 +166,7 @@ export function buildYEvents(rects: Rectangle[], vs: Variable[]): SweepEvent[] {
   for (let i = 0; i < rects.length; i++) {
     const r = rects[i]!;
     vs[i]!.desiredPosition = r.getCentreY();
-    const node = makeNode(vs[i]!, r, r.getCentreY());
+    const node = makeNode(vs[i]!, r, r.getCentreY(), i);
     events.push({ type: EvType.Open, node, pos: r.getMinX() });
     events.push({ type: EvType.Close, node, pos: r.getMaxX() });
   }
@@ -171,7 +184,7 @@ export function generateXConstraints(
 ): Constraint[] {
   const events = buildXEvents(rects, vs);
   events.sort(compareEvents);
-  const sl: SweepNode[] = [];
+  const sl: NodeSet = [];
   const cs: Constraint[] = [];
   for (const e of events) {
     const v = e.node;
@@ -198,7 +211,7 @@ export function generateYConstraints(
 ): Constraint[] {
   const events = buildYEvents(rects, vs);
   events.sort(compareEvents);
-  const sl: SweepNode[] = [];
+  const sl: NodeSet = [];
   const cs: Constraint[] = [];
   for (const e of events) {
     const v = e.node;

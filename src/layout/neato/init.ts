@@ -39,11 +39,8 @@ import { agerr } from '../../common/agerr.js';
 
 export { makeGraphDataC, graphHasLen, checkStart };
 import { mapbool } from '../dot/rank.js';
-import {
-  computeApspPacked,
-  computeWeightedApspPacked,
-  stressMajorizationKDMkernel,
-} from './stress-kernel.js';
+import { stressMajorizationKDMkernel } from './stress-kernel.js';
+import { stressModelDij } from './stress-models.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { inputscaleDivisor } from '../../common/utils-inputscale.js';
 import { parseNeatoDrawing, neatoSetAspectRatio } from './set-aspect.js';
@@ -326,7 +323,6 @@ interface MajorizationCtx {
   readonly g: Graph;
   readonly mode: number;
   readonly model: number;
-  readonly haveLen: boolean;
   /** `opt_*` bits from `checkExp` and `checkStart`. */
   readonly opts: number;
   /** The layout's resolved overlap mode (C's `am`). */
@@ -342,7 +338,7 @@ interface MajorizationCtx {
 function solveStress(
   c: MajorizationCtx, vtx: DirectedVtxData[], dCoords: Float64Array[], nodeList: Node[],
 ): number {
-  const { g, mode, model, haveLen, opts } = c;
+  const { g, mode, model, opts } = c;
   const n = nodeList.length;
   const maxi = neatoMaxIter(g.attrs.get('maxiter'), mode, n);
   const epsilon = lateDouble(g.attrs.get('epsilon'), 1e-4, 0); // DFLT_TOLERANCE
@@ -358,8 +354,7 @@ function solveStress(
       dim: DFLT_DIM, model, maxi, epsilon, opt,
     });
   }
-  // kD_mkernel uses the weighted APSP iff graph->ewgts (stress.c:855).
-  const Dij = haveLen ? computeWeightedApspPacked(vtx, n) : computeApspPacked(vtx, n);
+  const Dij = stressModelDij(vtx, n, model); // inside kD_mkernel in C (AD-2)
   return stressMajorizationKDMkernel(Dij, n, dCoords, nodeList, {
     dim: DFLT_DIM, opts, maxi, epsilon,
   });
@@ -370,14 +365,14 @@ export function runMajorization(g: Graph, mode: number, model: number, am: Adjus
   const nodeList = assignNodeIds(g);
   setEdgeLen(g); // scan_graph_mode else-branch: ED_dist for major/hier/ipsep
   const n = nodeList.length;
-  const haveLen = graphHasLen(g);
+  const haveLen = model !== MODEL_SUBSET && graphHasLen(g); // unused in reweight model, neatoinit.c:763
   // C: srand48(seed) immediately before initLayout draws; hier starts from self
   const init = checkStart(g, n, mode === MODE_HIER ? INIT_SELF : INIT_RANDOM);
   const opts = checkExp(g) | (init === INIT_SELF ? STRESS_OPT_SMART_INIT : 0);
   const haveDir = mode === MODE_HIER || mode === MODE_IPSEP;
   const vtx = makeGraphDataC(g, nodeList, haveLen, haveDir, mode);
   const dCoords = [new Float64Array(n), new Float64Array(n)];
-  if (solveStress({ g, mode, model, haveLen, opts, am }, vtx, dCoords, nodeList) < 0) {
+  if (solveStress({ g, mode, model, opts, am }, vtx, dCoords, nodeList) < 0) {
     agerr('prev', 'layout aborted');
     return;
   }
@@ -393,8 +388,9 @@ const NO_ADJUST: AdjustData = { mode: AM_NONE, print: 'none', value: 0 };
 export function solveModel(
   g: Graph, mode: number, model: number, am: AdjustData = NO_ADJUST,
 ): void {
-  if (g.nodes.size < 2) return;
-  assertSupported(g, mode, model);
+  const nG = g.nodes.size;
+  if (nG < 2 || neatoMaxIter(g.attrs.get('maxiter'), mode, nG) < 0) return; // neatoinit.c:1290
+  assertSupported(g, mode);
   if (mode === MODE_KK) return kkNeato(g, g.nodes.size, model);
   if (mode === MODE_SGD) {
     // C initial_positions -> checkStart: regular positions are kept

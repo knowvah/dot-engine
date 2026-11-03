@@ -8,14 +8,13 @@
 // @see lib/neatogen/neatoinit.c:majorization
 // @see lib/neatogen/constrained_majorization.c:stress_majorization_with_hierarchy
 import { readdirSync, readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { comparePlain } from '../../../test/golden/compare-plain.js';
 import { compareXdot } from '../../../test/golden/compare-xdot.js';
 import { parse, render } from '../../index.js';
 
 const FIXTURES = new URL('./__fixtures__/hier/', import.meta.url);
 const CASES = new URL('cases/', FIXTURES);
-const UNSUPPORTED = { code: 'UNSUPPORTED_FEATURE' };
 
 const read = (dir: URL, name: string): string => readFileSync(new URL(name, dir), 'utf8');
 const neato = async (src: string, format: 'plain' | 'xdot'): Promise<string> =>
@@ -81,16 +80,13 @@ describe('one case per branch of the wiring (native -Kneato -Tplain, 0.01)', () 
   });
 });
 
-describe('what stays loud on the hier path', () => {
-  it.each([
-    ['subset', /subset distance model/],
-    ['circuit', /circuit distance model/],
-  ])('model=%s names the model', async (model, message) => {
-    await expect(neato(`digraph { mode=hier; model=${model}; a->b->c }`, 'plain'))
-      .rejects.toMatchObject({ ...UNSUPPORTED, message: expect.stringMatching(message) });
-  });
-
-  it('is not reached when maxiter=0 returns first', async () => {
-    expect(await neato('digraph { mode=hier; model=subset; maxiter=0; a->b }', 'plain')).toMatch(/^graph /);
+describe('the hier path with maxiter=0', () => {
+  it('returns before the distance model (constrained_majorization.c:167)', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    // a pinned disconnected graph: the circuit model would warn if it ran
+    const src = 'digraph { mode=hier; model=circuit; maxiter=0; a [pos="0,0!"]; d [pos="3,3!"]; a->b; d->e }';
+    expect(await neato(src, 'plain')).toMatch(/^graph /);
+    expect(warn.mock.calls.map((c) => c[0])).not.toContain('Warning: graph is disconnected. Hence, the circuit model');
+    warn.mockRestore();
   });
 });

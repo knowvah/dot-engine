@@ -1,0 +1,2 @@
+Warning: graph is disconnected. Hence, the circuit model
+is undefined. Reverting to the shortest path model.

@@ -1,5 +1,5 @@
 ---
-sourceHash: 734b777c18facf32629aafe6abdba8017a9a53d6b7c13adc97f0c984347720c2
+sourceHash: 182817d2b1c1b77a01a812d3d03c6f5c714682018ebc9ad91f8412594568b41f
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -132,10 +132,7 @@ tuettuun arvoon.
 
 | Moottori | Attribuutti ja arvo | Laukeaa, kun | Tarvittava Graphviz-ominaisuus |
 |--------|--------------------|------------|-------------------------|
-| neato | `mode=hier` | Vain, kun `model` on `subset` tai `circuit` (kun graafissa on 2+ solmua ja `maxiter` on positiivinen) | Hierarkkinen stressimajorisointi (`stress_majorization_with_hierarchy`) |
-| neato | `start=self` | `mode` on `major` (oletus). Tilassa `mode=ipsep` se hyväksytään äänettömästi ja asettelu käyttää satunnaista aloitusta, kuten Graphviz | Älykäs alustus (`smart_ini`). Arvoilla `mode=KK` tai `mode=sgd` se kirjaa viestin `start=0 not supported with mode=self - ignored` kerran renderöintiä kohden, kuten Graphviz |
-| neato | `model=subset` | `mode` on `major` tai `KK`. Ei laukea tilassa `mode=ipsep`. | Osajoukkoetäisyysmalli |
-| neato | `model=circuit` | `mode` on `major` tai `KK` yhtenäisessä graafissa. `KK` epäyhtenäisessä graafissa ilman `pack`- tai `packmode`-arvoa kirjaa varoituksen ja käyttää lyhimpiä polkuja, kuten Graphviz. Ei laukea tilassa `mode=ipsep`. | Piirietäisyysmalli (`circuit_model`) |
+| neato | `start=self` | `mode` on `major` (oletus). Tilassa `mode=ipsep` se hyväksytään äänettömästi ja asettelu käyttää satunnaista aloitusta, kuten Graphviz | Älykäs alustus (`smart_ini`). Arvoilla `mode=KK` tai `mode=sgd` se kirjaa viestin `Warning: start=0 not supported with mode=self - ignored` kerran renderöintiä kohden, kuten Graphviz |
 | neato, twopi, circo, sfdp | `overlap=voronoi` (kirjainkoosta riippumaton) | Graafissa (twopilla komponentissa; sfdp:llä koko graafissa tai komponentissa) on 2+ solmua ja Graphvizin oma päällekkäisyyslaskuri (`countOverlap`, joka testaa solmujen monikulmiot) on yli 0. Solmut, jotka koskettavat vain rajauslaatikoillaan, eivät laukaise sitä. circo saavuttaa sen vain yhden komponentin graafille (usealla komponentilla Graphviz ohittaa myös `overlap`-arvon). sfdp saavuttaa sen vain, kun `overlap` ei ole prism-tila | Voronoi-päällekkäisyyden poisto (`vAdjust`) |
 | fdp | `overlap=` jokin arvoista `voronoi`, `oscale`, `vpsc`, `ipsep`, `ortho`, `ortho_yx`, `orthoxy`, `orthoyx`, `portho`, `portho_yx`, `porthoxy`, `porthoyx` | Tila saavutetaan `N:`-voimaiteraatioyritysten jälkeen, eli kun nuo yritykset eivät poista kaikkia päällekkäisyyksiä (tai `N` on 0 tai puuttuu). `N:`-etuliite on sallittu, esimerkiksi `3:voronoi` | Vastaava `removeOverlapWith`-säätöalgoritmi |
 | fdp | `splines=compound` | Aina, klustereiden kanssa tai ilman | Klustereita väistävä kaarten reititys (`compoundEdges`) |
@@ -153,7 +150,7 @@ fdp-rivit ja muotorivi, jotka käyttävät yllä olevia sanamuotoja. Haaraudu
 
 Arvot, jotka valitsevat oletuksen (esimerkiksi `quadtree=normal`, `true`, `yes`,
 `1`), sekä Graphvizin hyväksymät arvot, jotka on portattu (esimerkiksi
-`start=regular`, `start=random`, `model=mds`, `mode=KK`, `mode=sgd`,
+`start=regular`, `start=random`, `mode=hier`, `model=mds`, `model=subset`, `model=circuit`, `mode=KK`, `mode=sgd`,
 `overlap=prism`, `scale`-perhe sekä neatolla, twopilla, circolla ja sfdp:llä
 `overlap=oscale`, `vpsc` ja `ortho*` / `portho*` -tilat), renderöityvät
 normaalisti.
