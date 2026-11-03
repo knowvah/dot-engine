@@ -26,6 +26,7 @@
    - circo's graph `root` no longer throws on a disconnected graph, and node `root=true` takes effect;
    - rendering one `Graph` twice now follows native's free cycle on every engine, and `dot` no longer throws on the second render (T11);
    - a layout with no free appends its route as native does (T13);
+   - known divergence A13: where native svg prints freed memory (`fill=""`) in a `_background` replay after a gradient `bgcolor`, the port prints the colour C meant;
    - a `dot`, `xdot` or `json` render now writes layout attributes onto the graph and any layout writes `bb`, as native does, so `g.attrs` changes and a later layout reads them; an input carrying a graph `_draw_` or `_background` now replays it, a first-render change on such inputs, of which the corpus has none (T14);
    - the T7 and T8 outcome, and any parked items.
 
