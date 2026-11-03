@@ -8,7 +8,8 @@
  */
 
 import { agwarningf } from '../common/agerr.js';
-import { parseStyleFlags, resolvePenType, resolvePenWidth, styleTokens } from '../common/style-resolve.js';
+import { lateInt } from '../common/nodeinit.js';
+import { findStopColor, parseStyleFlags, resolvePenType, resolvePenWidth, styleTokens } from '../common/style-resolve.js';
 import type { Box, Point } from '../model/geom.js';
 import type { Graph } from '../model/graph.js';
 import { resolveFillColorName, resolveRenderColor } from '../render/color-resolve.js';
@@ -19,6 +20,11 @@ import { graphXdots } from './init-xdot.js';
 import { gvrenderSetStyle } from './gvrender-set-style.js';
 import type { ObjState, RenderJob } from './job.js';
 import { initJobViewportZoom, parseDrawingSize, parseGraphPad, setupPageClip } from './viewport.js';
+
+/** @see lib/common/const.h:48 */
+const DEFAULT_COLOR = 'black';
+/** @see lib/common/const.h:69 */
+const DEFAULT_FILL = 'lightgrey';
 
 /** C's defaultlinestyle. @see lib/gvc/gvcjob.h */
 const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
@@ -50,6 +56,39 @@ function zeroBoxInClip(clip: Box): boolean {
   return clip.ll.x <= 0 && clip.ll.y <= 0 && clip.ur.x >= 0 && clip.ur.y >= 0;
 }
 
+/**
+ * The state emit_background leaves on the job's object, which emit_xdot then draws with: a transparent
+ * pen and a `bgcolor` fill. A truecolor device paints nothing for `transparent`, so the state stays at C's
+ * defaults; any other device maps it to white. The port's renderers paint the box without touching
+ * `job.obj`, so this applies only when there are ops to replay, which leaves every other graph as it was.
+ *
+ * DEVIATION: after a gradient `bgcolor`, C frees `clrs[0]` while svg's fill state still points at it
+ * (gvrender_resolve_color keeps `color->u.string = name`; emit.c:1518 frees it), so native prints the freed
+ * bytes, `fill=""` in every run measured. The port keeps the colour C meant. xdot, which resolves to RGBA, agrees.
+ * @see lib/common/emit.c:1476 emit_background
+ */
+function applyBackgroundState(g: Graph, renderer: RendererPlugin, obj: ObjState): void {
+  const attr = g.attrs.get('bgcolor');
+  const color = attr !== undefined && attr !== '' ? attr : 'white';
+  const trueColor = renderer.type === 'svg';
+  if (trueColor && color === 'transparent') {
+    obj.penColor = resolveRenderColor(DEFAULT_COLOR);
+    obj.fillColor = resolveFillColorName(DEFAULT_FILL);
+    return;
+  }
+  const str = color === 'transparent' ? 'white' : color;
+  obj.penColor = resolveRenderColor('transparent');
+  const stop = str.includes(':') ? findStopColor(str) : null;
+  if (stop === null) {
+    obj.fillColor = resolveFillColorName(str);
+    return;
+  }
+  obj.fillColor = resolveFillColorName(stop.fillColor);
+  obj.stopColor = resolveFillColorName(stop.stopColor);
+  obj.gradientAngle = lateInt(g.attrs.get('gradientangle'), 0, 0);
+  obj.gradientFrac = stop.frac;
+}
+
 /** Sets the gradient fill state. @see lib/common/emit.c:1421-1444 */
 function setGradientFill(obj: ObjState, color: XdotColor): void {
   if (color.type === 'none') return;
@@ -59,9 +98,10 @@ function setGradientFill(obj: ObjState, color: XdotColor): void {
   obj.gradientFrac = ramp.stops[1]!.frac;
   if (color.type === 'radial') {
     const r = color.ring;
+    // `|| 0`: a zero r0 gives acos(-inf), NaN, and C's (int) cast on arm64, the oracle, makes that 0.
     obj.gradientAngle = r.x1 === r.x0 && r.y1 === r.y0
       ? 0
-      : Math.trunc(180 * Math.acos((r.x0 - r.x1) / r.r0) / Math.PI);
+      : Math.trunc(180 * Math.acos((r.x0 - r.x1) / r.r0) / Math.PI) || 0;
     obj.fill = FillType.Radial;
   } else {
     const l = color.ling;
@@ -149,6 +189,7 @@ export function emitXdot(g: Graph, renderer: RendererPlugin, job: RenderJob): vo
   const xd = graphXdots(g);
   const obj = job.obj;
   if (xd === undefined || obj === null) return;
+  applyBackgroundState(g, renderer, obj);
   const inClip = zeroBoxInClip(deviceClip(g, renderer, job));
   const warned = { image: false };
   let styled = false;
