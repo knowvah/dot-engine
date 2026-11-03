@@ -3,7 +3,7 @@
 Inputs named `pt-issue-NN-<label>.dot` are copies of repros from the
 plantuml-ts issue tracker (`docs/graphviz-issues/`, read-only source repo
 `/Users/scottseely/git/knowvah/plantuml-ts`, commit `72729c93c653f2939fd57be6943b61beda3b19b9`).
-The unlabelled `pt-issue-NN.dot` inputs (27, 29, 30, 32, 33, 35) are the
+The unlabelled `pt-issue-NN.dot` inputs (27, 29, 30, 32, 33, 35, 36) are the
 inline repros of those issues and are not listed; the labelled inline ones
 (`-w*`, `-line`, `-polyline`, `-pair`, `-inline`) are. `NN` is the lowest
 issue that names the repro; other issues that
@@ -72,3 +72,9 @@ the refs. `pt-issue-31-*` also carry `refs/pt-issue-31-<label>.stderr`.
 | pt-issue-32-zosuje.dot | `test-results/dot-cache/component/zosuje-43-zebi775/svek-1.dot` | `zosuje-43-zebi775` | 32 | `72729c93c653f2939fd57be6943b61beda3b19b9` | no |
 | pt-issue-33-xenusu.dot | `test-results/dot-cache/component/xenusu-76-sabi405/svek-1.dot` | `xenusu-76-sabi405` | 33 | `72729c93c653f2939fd57be6943b61beda3b19b9` | no |
 | pt-issue-34-inline.dot | `docs/graphviz-issues/34-*.md (dot block)` | - | 34 | `72729c93c653f2939fd57be6943b61beda3b19b9` | no |
+| pt-issue-36-cimare.dot | `test-results/dot-cache/usecase/cimare-47-deke334/svek-1.dot` | `cimare-47-deke334` | 36 | `34bbfa41b70c8925c7dc437c7fa27cc004a0a87e` | no |
+| pt-issue-36-zodela.dot | `test-results/dot-cache/unknown/zodela-36-sica712/svek-1.dot` | `zodela-36-sica712` | 36 | `34bbfa41b70c8925c7dc437c7fa27cc004a0a87e` | no |
+
+`refs/pt-issue-36*.native.dot` are `-Tdot` captures with the same oracle and `GVBINDIR`. `pt-issue-36` compares their `pos`,
+`lp` and `bb` values because cimare's edges are invisible, so its SVG has no paths to compare. `pt-issue-36.dot` is the
+inline repro of that issue, unlisted like the others.
