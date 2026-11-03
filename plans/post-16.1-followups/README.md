@@ -22,6 +22,7 @@ Items 95–102 closed by `plans/post-16-1-followups-7/` (101's layout-time FT_NU
 the open work is items 103–108 under "New follow-ups found by part 7".
 Items 103–108 closed by `plans/post-16-1-followups-8/`; the open work is items 109–113 under
 "New follow-ups found by part 8".
+Being closed by `plans/post-16-1-followups-9/`.
 Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
