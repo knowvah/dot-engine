@@ -834,25 +834,29 @@ export function splineEdges(g: Graph): void {
 // ---------------------------------------------------------------------------
 
 /**
- * Graph bounding box in points derived from node pos (inches) and node
- * sizes, expanded by any existing edge splines. xlabels are not ported
- * (no engine sets them yet).
+ * Graph bounding box in points from node pos (inches) and sizes, expanded by
+ * the beziers on the edges: none on a first layout, the stale ones on a layout
+ * with no gvFreeLayout. xlabels are not ported (no engine sets them yet).
  * @see lib/common/utils.c:compute_bb
  */
 export function computeBBFromPos(g: Graph): { ll: Point; ur: Point } {
-  const bb = {
-    ll: { x: Infinity, y: Infinity },
-    ur: { x: -Infinity, y: -Infinity },
+  const bb = { ll: { x: Infinity, y: Infinity }, ur: { x: -Infinity, y: -Infinity } };
+  const expandbp = (x: number, y: number): void => {
+    bb.ll = { x: Math.min(bb.ll.x, x), y: Math.min(bb.ll.y, y) };
+    bb.ur = { x: Math.max(bb.ur.x, x), y: Math.max(bb.ur.y, y) };
   };
   for (const n of g.nodes.values()) {
     const px = (n.info.pos?.[0] ?? 0) * 72;
     const py = (n.info.pos?.[1] ?? 0) * 72;
     const sx = (n.info.lw + n.info.rw) / 2;
     const sy = n.info.ht / 2;
-    bb.ll.x = Math.min(bb.ll.x, px - sx);
-    bb.ll.y = Math.min(bb.ll.y, py - sy);
-    bb.ur.x = Math.max(bb.ur.x, px + sx);
-    bb.ur.y = Math.max(bb.ur.y, py + sy);
+    expandbp(px - sx, py - sy);
+    expandbp(px + sx, py + sy);
+  }
+  for (const e of g.edges) {
+    for (const bz of e.info.spl?.list ?? []) {
+      for (let j = 0; j < bz.size; j++) expandbp(bz.list[j].x, bz.list[j].y);
+    }
   }
   // C compute_bb: an empty graph keeps bb = {0,0,0,0}. @see utils.c:641
   if (!Number.isFinite(bb.ll.x)) {
@@ -861,14 +865,6 @@ export function computeBBFromPos(g: Graph): { ll: Point; ur: Point } {
   return bb;
 }
 
-/**
- * The C spline_edges wrapper: translate pos so the drawing's lower
- * left corner is the origin, shift cluster bbs along, sync coord from
- * pos (neato_set_aspect), then route edges by edge type.
- * @see lib/neatogen/neatosplines.c:spline_edges
- * @see lib/neatogen/neatosplines.c:spline_edges0
- * @see lib/neatogen/neatosplines.c:shiftClusters
- */
 /** Shift every node pos (inches) by the given offset. */
 function shiftAllPos(g: Graph, ox: number, oy: number): void {
   for (const n of g.nodes.values()) {
@@ -984,6 +980,10 @@ export function injectOraclePositions(g: Graph): void {
   }
 }
 
+/**
+ * The C spline_edges wrapper: translate pos so the lower left corner is the origin,
+ * shift clusters, sync coord from pos, route. @see lib/neatogen/neatosplines.c:spline_edges
+ */
 export function splineEdgesShifted(g: Graph): void {
   injectOraclePositions(g);
   const bb = computeBBFromPos(g);

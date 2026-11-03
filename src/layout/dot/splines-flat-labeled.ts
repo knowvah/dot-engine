@@ -22,6 +22,7 @@ import { addBox } from '../../common/splines-path-shared.js';
 import { routeSplines, routePolylines } from '../../common/splines-routespl.js';
 import { clipAndInstall } from '../../common/splines-clip.js';
 import { buildDotSinfo } from './self-loop.js';
+import { routedThisPass } from './edge-route-rank.js';
 import { TOP } from '../../common/splines-constants.js';
 import { edgeType, EDGETYPE_LINE, EDGETYPE_SPLINE, EDGETYPE_PLINE, getMainEdge, swapEndsP, swapEdgeSpline } from './splines.js';
 import { shortestPath, routeSpline, polyBarriers, makePolyline } from '../../pathplan/index.js';
@@ -401,7 +402,7 @@ export function makeAdjFlatNoPortEdge(g: Graph, e: Edge): boolean {
   // The group is rendered as a unit (both directions). When the opposing leg is
   // dispatched later it is already installed — skip re-rendering but report it
   // handled. C does the whole unordered group in one make_flat_adj_edges call.
-  if (e.info.spl !== undefined) return true;
+  if (routedThisPass(e)) return true;
   const group = collectAdjFlatGroup(g, e);
   const et = edgeType(g);
   if (group.some(x => x.info.label !== undefined)) makeSimpleFlatLabels(group, et);

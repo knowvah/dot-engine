@@ -43,7 +43,13 @@ for c in cluster-skeleton cluster-lrvn; do
   run "$c" dot plain 2 "$c.dot.plain"
   run "$c" dot xdot 2 "$c.dot.xdot"
 done
-run filing dot plain nofree filing.dot.plain.nofree
+for e in $ALL; do
+  run filing "$e" plain nofree "filing.$e.plain.nofree"
+done
+# Native does not finish a no-free multi-edge.gv under neato, sfdp, circo, twopi or osage (over 8 s).
+for e in dot fdp patchwork; do
+  run multi-edge "$e" plain nofree "multi-edge.$e.plain.nofree"
+done
 for e in neato fdp circo; do
   run filing dot plain "then:$e" "filing.dot.plain.then-$e"
   rm -f "filing.dot.plain.then-$e.1"

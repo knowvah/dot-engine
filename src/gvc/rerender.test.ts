@@ -205,42 +205,51 @@ describe('the records survive until the next layout, and only a free resets them
   });
 });
 
-describe('ctx.layout twice with no freeLayout keeps native\'s stale records', () => {
-  const nativeLines = (n: number): string[] =>
-    read(`filing.dot.plain.nofree.${n}`).split('\n');
-
-  /** The edge line's fields before its point list, and the points themselves. */
-  const edgePoints = (line: string): string[] => line.split(' ').slice(4, -2);
-
-  it.each([1, 2, 3])('render %i has native\'s graph and node lines', (n) => {
-    const g = parse(read('filing.gv'));
+describe('ctx.layout with no freeLayout keeps stale records and appends its route', () => {
+  /** Renders 1 to `count`, on one context, with no free. */
+  function renders(id: string, engine: EngineName, count: number): string[] {
+    const g = parse(read(`${id}.gv`));
     const ctx = createDefaultContext();
-    let out = '';
-    for (let i = 1; i <= n; i++) out = layoutOnly(ctx, g, 'dot');
-    const lines = out.split('\n');
-    const native = nativeLines(n);
-    expect(lines.slice(0, 3)).toEqual(native.slice(0, 3));
+    return Array.from({ length: count }, () => layoutOnly(ctx, g, engine));
+  }
+
+  const NOFREE_CASES: ReadonlyArray<readonly [string, EngineName]> = [
+    ...ENGINES.map((e) => ['filing', e] as const),
+    ['multi-edge', 'dot'],
+    ['multi-edge', 'fdp'],
+    ['multi-edge', 'patchwork'],
+  ];
+
+  it.each(NOFREE_CASES)('%s on %s equals native on renders 1 to 3', (id, engine) => {
+    const native = [1, 2, 3].map((n) => read(`${id}.${engine}.plain.nofree.${n}`));
+    expect(renders(id, engine, 3)).toEqual(native);
   });
 
-  it.each([1, 2, 3])('render %i keeps the stale bezier, translated, first', (n) => {
-    const g = parse(read('filing.gv'));
-    const ctx = createDefaultContext();
-    let out = '';
-    for (let i = 1; i <= n; i++) out = layoutOnly(ctx, g, 'dot');
-    const points = edgePoints(out.split('\n')[3]);
-    expect(points).toEqual(edgePoints(nativeLines(n)[3]).slice(0, points.length));
-    expect(points.length).toBe(8);
+  // spline_edges runs compute_bb on the node positions before shifting them, and
+  // compute_bb counts the stale beziers: on circo, a's left edge at -90 and the
+  // stale end at 114.47 give native's width of 2.8398 in, not the first 2.5.
+  // @see lib/neatogen/neatosplines.c:848
+  // @see lib/common/utils.c:661
+  it('stale beziers widen the bb of a later circo layout', () => {
+    const lines = renders('filing', 'circo', 3).map((r) => r.split('\n')[0]);
+    expect(lines).toEqual(['graph 1 2.5 0.5', 'graph 1 2.8398 0.5', 'graph 1 2.8398 0.5']);
   });
 
-  // Parked with a follow-up: native's new_spline appends the bezier this layout
-  // routes. The dot router gates on e.info.spl === undefined, so it never routes
-  // an edge with a stale spline (src/layout/dot/edge-route.ts, not in T11's
-  // write-set). it.fails goes red the day that lands.
-  it.fails('render 2 appends the newly routed bezier as native does', () => {
-    const g = parse(read('filing.gv'));
+  it('render 2 on the filing graph holds both beziers, stale first', () => {
+    const edge = renders('filing', 'dot', 2)[1].split('\n')[3];
+    expect(edge).toBe(
+      'edge a b 8 0.75 0.99579 0.75 0.89454 0.75 0.77398 0.75 0.66022 '
+      + '0.75391 0.25 0.78171 0.25 0.80951 0.25 0.83731 0.25 solid black',
+    );
+  });
+
+  it('a free still drops the stale beziers', () => {
+    const g = parse(read('multi-edge.gv'));
     const ctx = createDefaultContext();
     layoutOnly(ctx, g, 'dot');
-    expect(layoutOnly(ctx, g, 'dot')).toBe(read('filing.dot.plain.nofree.2'));
+    layoutOnly(ctx, g, 'dot');
+    ctx.freeLayout(g, 'dot');
+    expect(layoutOnly(ctx, g, 'dot')).toBe(read('multi-edge.dot.plain.nofree.1'));
   });
 });
 

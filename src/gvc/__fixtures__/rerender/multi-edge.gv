@@ -1,0 +1,16 @@
+digraph M {
+  a -> b; a -> b;
+  a -> c [label="l1"];
+  { rank=same; c; d; e; h }
+  c -> d; d -> c;
+  c -> d [label="f1"];
+  c -> e; c -> e;
+  d -> h [label="f2"];
+  c -> h;
+  b -> f -> g;
+  a -> g; g -> a;
+  b -> b;
+  e:e -> h:w;
+  f -> h [dir=both];
+  g -> i [taillabel="t", headlabel="h"];
+}

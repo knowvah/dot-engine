@@ -30,7 +30,7 @@ import { TOP, BOTTOM, FLATEDGE } from '../../common/splines-constants.js';
 import {
   maximalBbox, appendRegularEnd, freshEndp, type BboxCtx,
 } from './edge-route-faithful.js';
-import { getSplineBounds } from './edge-route-rank.js';
+import { getSplineBounds, staleAdjacent } from './edge-route-rank.js';
 import { graphRanksep } from './position-aux.js';
 import { Edge as EdgeClass } from '../../model/edge.js';
 import { cloneNode, cloneEdge, cleanupCloneGraph, transformf } from './splines-clone.js';
@@ -386,13 +386,13 @@ export function makeFlatAdjEdges(g: Graph, edges: Edge[], cnt: number, et: numbe
 }
 
 /**
- * True when a same-rank edge's endpoints are adjacent in rank order (no NORMAL
- * or labeled-virtual node between them) — the make_flat_adj_edges case.
+ * True when a same-rank edge's ends are adjacent in rank order (no NORMAL or labeled-virtual node between).
  * @see lib/dotgen/flat.c:checkFlatAdjacent
  */
 export function isFlatAdjacent(g: Graph, e: Edge): boolean {
   const r = e.tail.info.rank;
   if (r === undefined || e.head.info.rank !== r) return false;
+  if (staleAdjacent(e)) return true;
   const rank = g.info.rank?.[r];
   if (rank === undefined) return false;
   const to = e.tail.info.order ?? 0;
