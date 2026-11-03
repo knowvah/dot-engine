@@ -36,3 +36,18 @@
 - **Finding**: `python3 ~/.claude/hooks/check-complexity.py --help` reads stdin and blocked a shell for 180 s.
 - **Impact**: do not call it by hand without input.
 - **Confidence**: Medium (reported by T7)
+
+## Observation: native repeats less than it appears to, for reasons other than write-back
+- **Context**: T11, the 25 `plain` cases native does not repeat.
+- **Finding**: `plain` has no `attach_attrs`. `graphs-b56` varies through corrupted label bytes between processes. sfdp and fdp `2184` vary
+  through process-global state (a fresh graph in one process gives the same render 2; the C `rand` stream is the likely cause, untraced). dot
+  `1581`, `2521` and fdp `graphs-fdp` carry subgraph membership changes from the first cycle. fdp `nshare-pack_neato1` is unexplained.
+- **Impact**: a second-render comparison needs native's own repeatability first; the port, per AD-4, repeats on the process-global cases.
+- **Confidence**: High for the classes; Medium for membership as the cause.
+
+## Observation: the port's dot and xdot writers do not mutate g.attrs; layouts do
+- **Context**: T11.
+- **Finding**: fdp adds `label`, `style` and `shape` on nodes, patchwork adds `shape`; `src/render/dot.ts` and `agwrite.ts` overlay computed values at
+  output. A layout that throws after a reset leaves `laidOut` unset. A subgraph laid out after its root was freed is not reset. Neither is pinned.
+- **Impact**: rendering does not feed the next layout, unlike native.
+- **Confidence**: High
