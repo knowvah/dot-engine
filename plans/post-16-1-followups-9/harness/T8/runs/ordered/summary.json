@@ -1,0 +1,34 @@
+{
+ "harness": "harness-ordered",
+ "input": "dir1-n40.in",
+ "environments": [
+  "default",
+  "X=1",
+  "pad1k",
+  "pad8k",
+  "nano0",
+  "nano0-X=1",
+  "nano0-pad1k",
+  "nano1"
+ ],
+ "roundsPerEnvironment": 4,
+ "samples": 300,
+ "failures": [],
+ "distinct": {
+  "08f91419dff0": {
+   "count": 332,
+   "firstEnv": "default"
+  }
+ },
+ "distinctCount": 1,
+ "perEnvironmentDistinct": {
+  "default": 1,
+  "X=1": 1,
+  "pad1k": 1,
+  "pad8k": 1,
+  "nano0": 1,
+  "nano0-X=1": 1,
+  "nano0-pad1k": 1,
+  "nano1": 1
+ }
+}

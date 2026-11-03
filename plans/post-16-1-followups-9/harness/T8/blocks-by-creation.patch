@@ -1,0 +1,48 @@
+diff -ru orig/lib/vpsc/block.cpp patched/lib/vpsc/block.cpp
+--- orig/lib/vpsc/block.cpp	2026-11-03 13:22:10
++++ patched/lib/vpsc/block.cpp	2026-11-03 13:22:10
+@@ -82,7 +82,12 @@
+ 	wposn += v->weight * (v->desiredPosition - v->offset);
+ 	posn=wposn/weight;
+ }
++static long blockCreationCtr; // T8 scratch
++bool BlockCreationLess::operator()(const Block *a, const Block *b) const {
++	return a->creationIndex < b->creationIndex;
++}
+ Block::Block(Variable *v) {
++	creationIndex=blockCreationCtr++;
+ 	timeStamp=0;
+ 	posn=weight=wposn=0;
+ 	deleted=false;
+diff -ru orig/lib/vpsc/block.h patched/lib/vpsc/block.h
+--- orig/lib/vpsc/block.h	2026-11-03 13:22:10
++++ patched/lib/vpsc/block.h	2026-11-03 13:22:10
+@@ -52,6 +52,7 @@
+ 	double cost();
+ 	bool deleted;
+ 	long timeStamp;
++	long creationIndex; // T8 scratch
+ 	std::vector<Constraint *> in;
+ 	std::vector<Constraint *> out;
+ private:
+diff -ru orig/lib/vpsc/blocks.h patched/lib/vpsc/blocks.h
+--- orig/lib/vpsc/blocks.h	2026-11-03 13:22:10
++++ patched/lib/vpsc/blocks.h	2026-11-03 13:22:10
+@@ -29,12 +29,16 @@
+ class Block;
+ struct Variable;
+ struct Constraint;
++/// T8 scratch: orders the set by Block::creationIndex, not by address
++struct BlockCreationLess {
++	bool operator()(const Block *a, const Block *b) const;
++};
+ /**
+  * A block structure defined over the variables such that each block contains
+  * 1 or more variables, with the invariant that all constraints inside a block
+  * are satisfied by keeping the variables fixed relative to one another
+  */
+-class Blocks : public std::set<Block*>
++class Blocks : public std::set<Block*, BlockCreationLess>
+ {
+ public:
+ 	Blocks(const int n, Variable *vs[]);

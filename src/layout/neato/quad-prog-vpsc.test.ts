@@ -15,6 +15,7 @@ import { InternalError } from '../../errors.js';
 import {
   VPSC_CASES, graphOf, optionsOf, type VpscCase, type VpscOp,
 } from './__fixtures__/quad-prog-vpsc.js';
+import { DIR1_N40 } from './__fixtures__/quad-prog-vpsc-dir1-n40.js';
 
 /*
  * Every case replays a native harness script (see the fixture header): the
@@ -179,13 +180,18 @@ const vpscCase = (name: string): VpscCase => VPSC_CASES.find((x) => x.name === n
  * "noverlap1 dir1 n12" also has y ties: native gave the fixture's result in
  * 6 of 8 runs, and the port matches it.
  *
- * A 40-node diredges-1 case ("dir1 n40") was dropped: its second
- * IncVPSC::satisfy iterates `Blocks : std::set<Block*>` in heap-address order,
- * and the same native harness input gave three different results (default
- * environment, an extra env var X=1, MallocNanoZone=0), one equal to the
- * port's. No native value is stable enough to assert (follow-up 106).
+ * "dir1 n40" (40 nodes, diredges 1) never reaches the sweep line, and block
+ * address order is its only difference from the port (part-9 AD-3): the oracle's
+ * library gave 17 stdouts in 332 runs, none equal to the port's. The same library
+ * with `Blocks : std::set<Block*>` ordered by a Block creation index, and nothing
+ * else changed, gave 1 stdout in 332 runs across the same environments, and the
+ * port equals it bit for bit (plans/post-16-1-followups-9/harness/T8/).
  */
 describe('quad_prog_vpsc tie cases against the native runs', () => {
+  it('dir1 n40 equals the native build that orders Blocks by creation index', () => {
+    expect(observeCase(DIR1_N40)).toEqual(DIR1_N40.ops.map(expectedOf));
+  });
+
   it('noverlap1 dir2 n10 equals one of the 8 native runs', () => {
     const c = vpscCase('noverlap1 dir2 n10');
     expect(t0Runs(c)).toContainEqual(observeCase(c));
