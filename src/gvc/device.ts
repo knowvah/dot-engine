@@ -50,6 +50,7 @@ import {
 import { emitRoundedBezier } from '../common/poly-shapes.js';
 import { applyClusterObjState, clusterAttr, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
+import { emitXdot } from './emit-xdot.js';
 import { gvrenderSetStyle, edgeStyleResets } from './gvrender-set-style.js';
 import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
 export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
@@ -346,9 +347,8 @@ export function renderClusters(g: Graph, renderer: RendererPlugin, job: RenderJo
 }
 
 /**
- * Primary render loop: beginGraph → graph-label → clusters → nodes → edges → endGraph.
- * Graph label emits before clusters/nodes to match C's emit_page order
- * (emit_background, GD_label, then emit_view).
+ * Primary render loop: beginGraph → graph-label → clusters → nodes → edges → endGraph,
+ * in C's emit_page order (emit_background, GD_label, then emit_view).
  *
  * @see lib/gvc/gvrender.c:gvrender_begin_graph
  * @see lib/gvc/gvrender.c:gvrender_end_graph
@@ -381,9 +381,8 @@ export function renderGraph(g: Graph, job: RenderJob, renderer: RendererPlugin):
   return job.output.join('');
 }
 
-/** One page (per layer): graph group, background+label (in the graph anchor),
- * clusters, nodes/edges. The graph anchor wraps emit_background + the graph
- * label, closing before emit_view (clusters/nodes) — siblings.
+/** One page (per layer): graph group, background+label (in the graph anchor, which
+ * closes before emit_view), clusters, nodes/edges.
  * @see lib/common/emit.c:emit_page (3651-3660) */
 function renderPage(g: Graph, renderer: RendererPlugin, job: RenderJob, info: LayerInfo): void {
   renderer.beginPage?.(g, job);
@@ -395,6 +394,7 @@ function renderPage(g: Graph, renderer: RendererPlugin, job: RenderJob, info: La
   withColorScheme(g.attrs.get('colorscheme'), () => {
     reportColorNames(backgroundColors(g.attrs.get('bgcolor'), renderer.type === 'svg'));
     renderer.pageBackground?.(g, job);
+    emitXdot(g, renderer, job); // the end of emit_background
     // emit root-graph label before clusters/nodes @see lib/common/emit.c:emit_page
     renderGraphLabel(g, renderer, job);
   });

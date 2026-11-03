@@ -10,8 +10,9 @@
 // @see lib/common/utils.c:gv_cleanup_edge
 // @see lib/common/utils.c:gv_cleanup_node
 import { readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { compareXdot, XDOT_TOLERANCE } from '../../test/golden/compare-xdot.js';
+import { renderFormat } from '../../test/helpers/render-format.js';
 import { createGraph } from '../api/builder.js';
 import { getLayout } from '../api/geometry.js';
 import { renderAsync } from '../async/render-async.js';
@@ -262,37 +263,216 @@ describe('renderAsync and getDrawOps twice', () => {
     expect(b.output).toBe(a.output);
   });
 
-  it('getDrawOps repeats', () => {
+  it('getDrawOps returns the first layout\'s ops, then does not throw on clusters', () => {
     const g = parse(read('cluster-skeleton.gv'));
     const first = getDrawOps(g);
     expect(first.length).toBeGreaterThan(10);
-    expect(getDrawOps(g)).toEqual(first);
+    expect(getDrawOps(g).length).toBeGreaterThan(first.length);
   });
 });
 
-describe('xdot: the write-back half is parked', () => {
+describe('rendering writes layout attributes back', () => {
   const XDOT_CASES: ReadonlyArray<readonly [string, EngineName]> = [
     ...ENGINES.map((e) => ['filing', e] as const),
+    ...ENGINES.filter((e) => !NATIVE_REPEATS_NOT.has(`mixed.${e}`)).map((e) => ['mixed', e] as const),
     ['cluster-skeleton', 'dot'],
     ['cluster-lrvn', 'dot'],
   ];
 
-  // The port's writer overlays attach_attrs at output time and never writes them
-  // to the graph, so no attribute carries over and the second render repeats.
-  it.each(XDOT_CASES)('%s on %s repeats the port\'s first render', (id, engine) => {
+  /** Native's renders of a twice.c seq: script. */
+  const nativeSeq = (id: string, engine: EngineName, name: string, n: number): string =>
+    read(`${id}.${engine}.seq-${name}.${n}`);
+
+  const xdotDiffs = (actual: string, expected: string): unknown[] =>
+    compareXdot(actual, expected, POSITION_TOLERANCE).diffs;
+
+  /** An SVG from its first group on: the header names the generator, which differs. */
+  const svgBody = (svg: string): string => svg.slice(svg.indexOf('<g '));
+
+  it.each(XDOT_CASES)('%s on %s equals native renders 1 and 2', (id, engine) => {
     const g = parse(read(`${id}.gv`));
-    const first = render(g, 'xdot', { engine });
-    expect(render(g, 'xdot', { engine })).toBe(first);
-    expect(compareXdot(first, read(`${id}.${engine}.xdot.1`), POSITION_TOLERANCE).diffs).toEqual([]);
+    expect(xdotDiffs(render(g, 'xdot', { engine }), read(`${id}.${engine}.xdot.1`))).toEqual([]);
+    expect(xdotDiffs(render(g, 'xdot', { engine }), read(`${id}.${engine}.xdot.2`))).toEqual([]);
   });
 
-  // Native's attach_attrs_and_arrows writes pos, width, height, bb and the draw
-  // attributes into the graph; init_xdot replays `_draw_`, and the next layout
-  // reads the rest. it.fails goes red the day the write-back lands.
-  it.fails.each(XDOT_CASES)('%s on %s equals native render 2', (id, engine) => {
+  it('the attributes hold what the xdot output printed', () => {
+    const g = parse(read('filing.gv'));
+    render(g, 'xdot');
+    expect(g.attrs.get('bb')).toBe('0,0,54,108');
+    expect(g.attrs.get('xdotversion')).toBe('1.7');
+    expect(g.attrs.get('_draw_')).toBe('c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 108 54 108 54 0 ');
+    const a = g.nodes.get('a');
+    expect(a?.attrs.get('pos')).toBe('27,90');
+    expect(a?.attrs.get('width')).toBe('0.75');
+    expect(a?.attrs.get('height')).toBe('0.5');
+    expect(a?.attrs.get('_draw_')).toBe('c 7 -#000000 e 27 90 27 18 ');
+    expect(g.edges[0].attrs.get('pos')).toBe('e,27,36.104 27,71.697 27,64.407 27,55.726 27,47.536');
+    expect(g.edges[0].attrs.get('_hdraw_')).toBe(
+      'S 5 -solid c 7 -#000000 C 7 -#000000 P 3 30.5 47.62 27 37.62 23.5 47.62 ',
+    );
+  });
+
+  it('a dot render writes pos and bb but no draw attributes', () => {
+    const g = parse(read('filing.gv'));
+    render(g, 'dot');
+    expect(g.attrs.get('bb')).toBe('0,0,54,108');
+    expect(g.attrs.get('xdotversion')).toBeUndefined();
+    expect(g.nodes.get('a')?.attrs.get('pos')).toBe('27,90');
+    expect(g.nodes.get('a')?.attrs.get('_draw_')).toBeUndefined();
+  });
+
+  it('a layout writes bb as gvLayout does, even with no render', () => {
+    const g = parse(read('filing.gv'));
+    const ctx = createDefaultContext();
+    ctx.layout(g, 'dot');
+    expect(g.attrs.get('bb')).toBe('0 0 54 108');
+    expect(deviceRender(ctx, g, 'plain')).toBe(read('filing.dot.plain.1'));
+    expect(g.attrs.get('bb')).toBe('0 0 54 108');
+    expect(g.nodes.get('a')?.attrs.has('pos')).toBe(false);
+  });
+
+  it('a landscape layout writes bb with its axes swapped', () => {
+    const g = parse('digraph { rotate=90; a -> b }');
+    const ctx = createDefaultContext();
+    ctx.layout(g, 'dot');
+    expect(g.attrs.get('bb')).toBe('0 0 108 54');
+  });
+
+  const CASES = ['filing', 'mixed', 'cluster-skeleton'] as const;
+
+  it.each(CASES)('%s: one layout, then xdot, then svg, each equals native', (id) => {
     const g = parse(read(`${id}.gv`));
-    render(g, 'xdot', { engine });
-    const second = render(g, 'xdot', { engine });
-    expect(compareXdot(second, read(`${id}.${engine}.xdot.2`), POSITION_TOLERANCE).diffs).toEqual([]);
+    const ctx = createDefaultContext();
+    ctx.layout(g, 'dot');
+    expect(xdotDiffs(deviceRender(ctx, g, 'xdot'), nativeSeq(id, 'dot', 'xdot-svg', 1))).toEqual([]);
+    expect(svgBody(deviceRender(ctx, g, 'svg'))).toBe(svgBody(nativeSeq(id, 'dot', 'xdot-svg', 2)));
+  });
+
+  it.each(CASES)('%s: one layout, then xdot twice, each equals native', (id) => {
+    const g = parse(read(`${id}.gv`));
+    const ctx = createDefaultContext();
+    ctx.layout(g, 'dot');
+    expect(xdotDiffs(deviceRender(ctx, g, 'xdot'), nativeSeq(id, 'dot', 'xdot-xdot', 1))).toEqual([]);
+    expect(xdotDiffs(deviceRender(ctx, g, 'xdot'), nativeSeq(id, 'dot', 'xdot-xdot', 2))).toEqual([]);
+  });
+
+  it.each(CASES)('%s: xdot, then plain with a layout between, equals native', (id) => {
+    const g = parse(read(`${id}.gv`));
+    render(g, 'xdot');
+    expect(render(g, 'plain')).toBe(nativeSeq(id, 'dot', 'xdot-plain', 2));
+  });
+
+  it.each(CASES)('%s: plain, then xdot, equals native', (id) => {
+    const g = parse(read(`${id}.gv`));
+    render(g, 'plain');
+    expect(xdotDiffs(render(g, 'xdot'), nativeSeq(id, 'dot', 'plain-xdot', 2))).toEqual([]);
+  });
+
+  it.each(CASES)('%s: xdot, then svg with a layout between, replays _draw_ as native', (id) => {
+    const g = parse(read(`${id}.gv`));
+    render(g, 'xdot');
+    expect(svgBody(render(g, 'svg'))).toBe(svgBody(nativeSeq(id, 'dot', 'xdot-then-svg', 2)));
+  });
+
+  it.each(CASES)('%s: dot twice equals native', (id) => {
+    const g = parse(read(`${id}.gv`));
+    render(g, 'dot');
+    expect(xdotDiffs(render(g, 'dot'), nativeSeq(id, 'dot', 'dot-dot', 2))).toEqual([]);
+  });
+
+  it.each(CASES)('%s: one layout, then xdot, then dot, equals native', (id) => {
+    const g = parse(read(`${id}.gv`));
+    const ctx = createDefaultContext();
+    ctx.layout(g, 'dot');
+    deviceRender(ctx, g, 'xdot');
+    expect(xdotDiffs(deviceRender(ctx, g, 'dot'), nativeSeq(id, 'dot', 'xdot-dot', 2))).toEqual([]);
+  });
+
+  it('neato: pos read back moves the next layout as native does', () => {
+    const g = parse(read('neato-pos.gv'));
+    const first = render(g, 'xdot', { engine: 'neato' });
+    const second = render(g, 'plain', { engine: 'neato' });
+    expect(second).toBe(nativeSeq('neato-pos', 'neato', 'xdot-plain', 2));
+    expect(second.split('\n')[1]).not.toBe(render(parse(read('neato-pos.gv')), 'plain', { engine: 'neato' }).split('\n')[1]);
+    expect(first.length).toBeGreaterThan(0);
+  });
+
+  it('neato: a dot render feeds pos back too', () => {
+    const g = parse(read('neato-pos.gv'));
+    render(g, 'dot', { engine: 'neato' });
+    expect(render(g, 'plain', { engine: 'neato' })).toBe(nativeSeq('neato-pos', 'neato', 'dot-plain', 2));
+  });
+
+  it.each(['json', 'json0'] as const)('neato: a %s render feeds pos back too', (format) => {
+    const g = parse(read('neato-pos.gv'));
+    renderFormat(g, format, 'neato');
+    expect(render(g, 'plain', { engine: 'neato' })).toBe(nativeSeq('neato-pos', 'neato', `${format}-plain`, 2));
+  });
+
+  it('a second json render holds the replayed _draw_ as native does', () => {
+    const g = parse(read('filing.gv'));
+    render(g, 'json');
+    const second = JSON.parse(render(g, 'json')) as Record<string, unknown>;
+    const native = JSON.parse(nativeSeq('filing', 'dot', 'json-json', 2)) as Record<string, unknown>;
+    // An unnamed graph prints '' here and native's internal %1: a first-render gap.
+    expect({ ...second, name: '' }).toEqual({ ...native, name: '' });
+  });
+
+  it('_background replays over the canvas on a first render, as native does', () => {
+    const g = parse(read('background.gv'));
+    const ctx = createDefaultContext();
+    ctx.layout(g, 'dot');
+    expect(xdotDiffs(deviceRender(ctx, g, 'xdot'), nativeSeq('background', 'dot', 'xdot-svg', 1))).toEqual([]);
+    expect(svgBody(deviceRender(ctx, g, 'svg'))).toBe(svgBody(nativeSeq('background', 'dot', 'xdot-svg', 2)));
+  });
+
+  it('a _background that does not parse warns as native does, and draws nothing', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const g = parse('digraph G { _background="c"; a }');
+    const out = render(g, 'xdot');
+    expect(warn.mock.calls.map((c) => String(c[0]))).toEqual([
+      'Warning: Could not parse "_background" attribute in graph G',
+      '  "c"',
+    ]);
+    expect(out).toContain('_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 ');
+    warn.mockRestore();
+  });
+
+  it('an image in _background warns once, as native does', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    render(parse('digraph G { _background="I 0 0 1 1 5 -a.png c 7 -#ff0000 I 0 0 1 1 5 -a.png"; a }'), 'xdot');
+    expect(warn.mock.calls.map((c) => String(c[0]))).toEqual([
+      'Warning: Images unsupported in "background" attribute',
+    ]);
+    warn.mockRestore();
+  });
+
+  // size= makes pageSize = Z * sz / Z round just past the bb, so the clip misses
+  // calloc's zero op box and native replays nothing.
+  it('a sized drawing whose clip misses the origin replays no _draw_, as native', () => {
+    const g = parse(read('sized-clip.gv'));
+    render(g, 'xdot', { engine: 'neato' });
+    const second = render(g, 'xdot', { engine: 'neato' });
+    expect(xdotDiffs(second, read('sized-clip.neato.xdot.2'))).toEqual([]);
+    expect(second.match(/P 4 /g)?.length).toBeGreaterThan(0);
+    expect(g.attrs.get('_draw_')?.match(/P 4 /g)?.length).toBe(1);
+  });
+
+  it('render, then getLayout, reads the layout\'s geometry after an xdot render too', () => {
+    const g = parse(read('filing.gv'));
+    render(g, 'xdot');
+    const snap = getLayout(g, { yAxis: 'up' });
+    expect(snap.bounds).toEqual({ x: 0, y: 0, width: 54, height: 108 });
+    expect(snap.nodes.map((n) => [n.name, n.x, n.y])).toEqual([['a', 27, 90], ['b', 27, 18]]);
+  });
+
+  it('getDrawOps sees the replayed _draw_ on a second call, as native\'s xdot does', () => {
+    const g = parse(read('filing.gv'));
+    const first = getDrawOps(g);
+    const second = getDrawOps(g);
+    const polygons = (ops: typeof first): number => ops.filter((o) => o.kind === 'filled_polygon').length;
+    expect(polygons(first)).toBe(2); // background and one arrowhead
+    expect(polygons(second)).toBe(3); // the old background comes back
+    expect(second.length).toBeGreaterThan(first.length);
   });
 });

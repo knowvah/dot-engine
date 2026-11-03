@@ -29,6 +29,8 @@ import type { RenderJob } from './job.js';  // scaffold in T25; full class in T2
 import { resetRenderState } from '../common/render-state.js';
 import { RenderError, invalidArgType, invalidArgValue } from '../errors.js';
 import { layoutWasFreed, resetLayoutRecords } from './layout-reset.js';
+import { initXdot } from './init-xdot.js';
+import { writeLayoutBb } from './layout-bb.js';
 
 // ---------------------------------------------------------------------------
 // Enums — match C definitions in lib/gvc/gvcjob.h exactly
@@ -326,7 +328,9 @@ export class GvcContext {
     }
     if (layoutWasFreed(g)) resetLayoutRecords(g);
     if (g.info) g.info.gvc = this;
+    initXdot(g); // C: graph_init, before the engine. @see lib/common/input.c:784
     engine.layout(g);
+    writeLayoutBb(g);
     // C: GD_cleanup(g) = gvle->cleanup — freeLayout must use the engine that
     // actually ran, not its argument. @see lib/gvc/gvlayout.c:88
     if (g.info) g.info.cleanup = (x: Graph): void => engine.cleanup(x);

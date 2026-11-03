@@ -5,6 +5,7 @@
 #   <case>.<engine>.<fmt>.<n>        render n of 2, with gvFreeLayout between them
 #   <case>.<engine>.<fmt>.nofree.<n> render n of 3, with no gvFreeLayout
 #   <case>.<engine>.<fmt>.then-<e>.2 render 2 with engine <e>
+#   <case>.<engine>.seq-<name>.<n>   render n of a twice.c seq: script, named after its formats
 #
 # Usage: GVBINDIR=<full plugin dir> bash regen.sh
 set -eu
@@ -54,3 +55,27 @@ for e in neato fdp circo; do
   run filing dot plain "then:$e" "filing.dot.plain.then-$e"
   rm -f "filing.dot.plain.then-$e.1"
 done
+seq() { # <case> <engine> <name> <script>
+  run "$1" "$2" unused "seq:$4" "$1.$2.seq-$3"
+}
+for c in filing mixed cluster-skeleton; do
+  seq "$c" dot xdot-svg l,xdot,svg,f
+  seq "$c" dot xdot-xdot l,xdot,xdot,f
+  seq "$c" dot xdot-plain l,xdot,f,l,plain,f
+  seq "$c" dot plain-xdot l,plain,f,l,xdot,f
+  seq "$c" dot xdot-then-svg l,xdot,f,l,svg,f
+  seq "$c" dot xdot-dot l,xdot,dot,f
+  seq "$c" dot dot-dot l,dot,f,l,dot,f
+done
+seq filing neato xdot-then-svg l,xdot,f,l,svg,f
+seq neato-pos neato xdot-plain l,xdot,f,l,plain,f
+seq neato-pos neato dot-plain l,dot,f,l,plain,f
+for e in $ALL; do
+  run mixed "$e" xdot 2 "mixed.$e.xdot"
+done
+rm -f mixed.fdp.xdot.2 mixed.sfdp.xdot.2
+seq background dot xdot-svg l,xdot,svg,f
+seq neato-pos neato json-plain l,json,f,l,plain,f
+seq neato-pos neato json0-plain l,json0,f,l,plain,f
+seq filing dot json-json l,json,f,l,json,f
+run sized-clip neato xdot 2 sized-clip.neato.xdot

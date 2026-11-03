@@ -25,6 +25,7 @@ import { edgeHasDrawableContent } from './svg.js';
 import type { Bezier } from '../model/geom.js';
 import type { RendererPlugin } from '../gvc/context.js';
 import { EdgeDrawBase } from './dot/edge-draw.js';
+import { attachXdotAttrs, storedDraws } from './dot/write-back.js';
 export * from './dot/types.js';
 export type { XdotDraws, SerCtx } from './dot/types.js';
 import type { XdotDraws } from './dot/types.js';
@@ -78,10 +79,10 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
    */
   protected override readonly emitDraws: boolean = true;
 
-  /** Draw strings for `obj`, or undefined in a format that emits none (`-Tdot`).
-   *  Single gate so the xdot path cannot drift from the dot path. */
+  /** Draw strings for `obj`. `-Tdot` computes none, and agwrite prints the ones the
+   *  attribute slots already hold. Single gate so the two paths cannot drift. */
   protected drawsOf(obj: Node | Edge | Graph): XdotDraws | undefined {
-    return this.emitDraws ? this.draws.get(obj) : undefined;
+    return this.emitDraws ? this.draws.get(obj) : storedDraws(obj.attrs);
   }
 
   /** Per-render draw buffers. Indices 8/9 alias 1; 10/11 alias 5. */
@@ -103,18 +104,14 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
     this.clusters = [];
   }
 
-  /** The per-object draw strings accumulated during the last render, keyed by
-   *  the ORIGINAL model object. These are the pre-serialization values C's
-   *  `-Tjson` reads directly (via agxget) — feeding them to parseXDot avoids the
-   *  DOT-text round-trip, which cannot represent draw text containing `"` and so
-   *  drops a preceding backslash (a cluster label's `\"` → `"`, id 2239). */
+  /** The last render's draw strings by ORIGINAL object: what `-Tjson` reads via agxget.
+   *  The DOT-text round-trip cannot represent draw text containing `"` (id 2239). */
   drawStringsByObject(): ReadonlyMap<Node | Edge | Graph, XdotDraws> {
     return this.draws;
   }
 
   endGraph(g: Graph, job: RenderJob): void {
-    // Flush the graph-level GDRAW/GLABEL buffers (canvas background + graph
-    // label) onto the root graph, then serialize the whole graph.
+    // Flush GDRAW/GLABEL (canvas background + graph label) onto the root, then serialize.
     // @see gvrender_core_dot.c:427 xdot_end_graph
     const gd = this.flush(EmitState.GDraw);
     const gl = this.flush(EmitState.GLabel);
@@ -124,6 +121,11 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
       if (gl) set.ldraw = escBackslash(gl);
     }
     job.write(this.serialize(g));
+    this.writeBack(g); // C writes before agwrite; the serializer overlaid the same values
+  }
+
+  protected writeBack(g: Graph): void {
+    attachXdotAttrs(g, this.emitDraws ? (o) => this.drawsOf(o) : undefined);
   }
 
   /** Emit the canvas background polygon into the GDRAW buffer.
@@ -460,8 +462,6 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
     }
     return d;
   }
-
-  // --- serialization (agwrite-at-end) ------------------------------------
 
 }
 

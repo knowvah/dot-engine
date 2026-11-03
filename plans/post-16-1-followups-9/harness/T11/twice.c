@@ -13,6 +13,14 @@
 //               records are the only difference from a fresh graph. Attributes the first cycle
 //               declared stay declared, with an empty value.
 //   keep:<a>:   as restore, except that attribute <a> keeps the value the first cycle wrote.
+//   seq:<ops>:  comma-separated script on one graph: l = gvLayout, f = gvFreeLayout, r = srand(1) and
+//               srand48(0), the state a new process starts with, so a difference that goes is
+//               process-global state and not the graph's; anything else
+//               is a format to render and print, e.g. seq:l,xdot,svg,f,l,plain,f.
+//   transplant:<path>: one <fmt> cycle, then writes every attribute value to <path>, one per
+//               line as kind index name length value.
+//   graft:<path>: sets those values on a newly parsed graph, then one cycle in <fmt>. This is native's
+//               second layout with the attributes and no process-global state: run it in a new process.
 //   members:    prints each subgraph's node and edge counts before and after one cycle, then the
 //               subgraphs the cycle added: what the object tables, not the records, carry over.
 // Copy this file and twice-matrix.mjs to a scratch dir, because the runner writes its job file beside
@@ -69,6 +77,44 @@ static void restore_all(Agraph_t *g, const char *keep) {
     for (Agedge_t *e = agfstout(g, n); e; e = agnxtout(g, e)) restore_obj(e, AGEDGE, g, keep);
   }
 }
+typedef void (*visit_fn)(void *obj, int kind, int ix, Agraph_t *root, void *ctx);
+static void visit_graphs(Agraph_t *g, Agraph_t *root, int *ix, visit_fn fn, void *ctx) {
+  fn(g, AGRAPH, (*ix)++, root, ctx);
+  for (Agraph_t *s = agfstsubg(g); s; s = agnxtsubg(s)) visit_graphs(s, root, ix, fn, ctx);
+}
+static void visit_all(Agraph_t *g, visit_fn fn, void *ctx) {
+  int gi = 0, ni = 0, ei = 0;
+  visit_graphs(g, g, &gi, fn, ctx);
+  for (Agnode_t *n = agfstnode(g); n; n = agnxtnode(g, n)) {
+    fn(n, AGNODE, ni++, g, ctx);
+    for (Agedge_t *e = agfstout(g, n); e; e = agnxtout(g, e)) fn(e, AGEDGE, ei++, g, ctx);
+  }
+}
+static void dump_obj(void *obj, int kind, int ix, Agraph_t *root, void *ctx) {
+  for (Agsym_t *sym = agnxtattr(root, kind, NULL); sym; sym = agnxtattr(root, kind, sym)) {
+    const char *v = agxget(obj, sym);
+    fprintf(ctx, "%d %d %s %zu %s\n", kind, ix, sym->name, strlen(v), v);
+  }
+}
+typedef struct { int kind, ix; const char *name, *value; } graft_t;
+static void graft_obj(void *obj, int kind, int ix, Agraph_t *root, void *ctx) {
+  (void)root;
+  graft_t *t = ctx;
+  if (t->kind == kind && t->ix == ix) agsafeset(obj, (char *)t->name, (char *)t->value, "");
+}
+static void graft_file(Agraph_t *g, const char *path) {
+  FILE *f = fopen(path, "rb");
+  graft_t t; char name[256]; size_t len;
+  while (fscanf(f, "%d %d %255s %zu ", &t.kind, &t.ix, name, &len) == 4) {
+    char *v = malloc(len + 1);
+    if (fread(v, 1, len, f) != len) break;
+    v[len] = 0;
+    t.name = name; t.value = v;
+    visit_all(g, graft_obj, &t);
+    free(v);
+  }
+  fclose(f);
+}
 static void print_members(Agraph_t *g, const char *tag) {
   printf("%s %s %d %d\n", tag, agnameof(g), agnnodes(g), agnedges(g));
   for (Agraph_t *s = agfstsubg(g); s; s = agnxtsubg(s)) print_members(s, tag);
@@ -95,6 +141,36 @@ int main(int argc, char **argv) {
   if (!g) { puts("NOPARSE"); return 0; }
   char *r[9] = {0}; size_t l[9] = {0};
   if (restore || keep) save_all(g);
+  if (strncmp(mode, "seq:", 4) == 0) {
+    int n = 0;
+    for (char *tok = strtok(strdup(mode + 4), ","); tok; tok = strtok(NULL, ",")) {
+      if (strcmp(tok, "l") == 0) { if (gvLayout(gvc, g, engine) != 0) { puts("LAYOUTFAIL"); return 0; } }
+      else if (strcmp(tok, "f") == 0) gvFreeLayout(gvc, g);
+      else if (strcmp(tok, "r") == 0) { srand(1); srand48(0); }
+      else {
+        char *o = NULL; size_t ol = 0;
+        gvRenderData(gvc, g, tok, &o, &ol);
+        printf("== render %d\n", ++n);
+        fwrite(o, 1, ol, stdout);
+      }
+    }
+    return 0;
+  }
+  if (strncmp(mode, "transplant:", 11) == 0) {
+    char *o = NULL; size_t ol = 0;
+    cycle(gvc, g, engine, fmt, 1, &o, &ol);
+    FILE *f = fopen(mode + 11, "wb");
+    visit_all(g, dump_obj, f);
+    fclose(f);
+    return 0;
+  }
+  if (strncmp(mode, "graft:", 6) == 0) {
+    char *o = NULL; size_t ol = 0;
+    graft_file(g, mode + 6);
+    cycle(gvc, g, engine, fmt, 1, &o, &ol);
+    fwrite(o, 1, ol, stdout);
+    return 0;
+  }
   if (strcmp(mode, "members") == 0) {
     char *o; size_t ol;
     print_members(g, "before");
