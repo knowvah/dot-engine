@@ -108,7 +108,7 @@ or signed. **Out of scope (user decision, PR 119):** layouts that vary with the 
 - **Temporary instrumentation** (incl. native harnesses): gate on an env var, remove before
   the commit; archive harness sources under `harness/`. Never edit `~/git/graphviz`.
 - **Pre-existing fixes of 1–3 lines** in files already being edited; larger → follow-up.
-- **New discoveries** not needed for this scope: a follow-up from 118 on (`dim=3` is 114, the user `_cc_N` subgraph 115, `dotInitNode`'s pinned guard 116, `graphs-fdp`'s second fdp render 117).
+- **New discoveries** not needed for this scope: a follow-up from 120 on (T10's list reserves 114–119).
 - **Missing scratchpad:** T0 rebuilds `$BASE` and the plugin dirs.
 - **Wording:** test names, journal rows, README status lines, `.agent-notes/` entries.
 

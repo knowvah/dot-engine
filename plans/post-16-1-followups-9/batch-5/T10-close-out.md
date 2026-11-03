@@ -12,7 +12,7 @@
 4. **Timing row:** if T7 ported the sort, port before and after on its largest input (3 runs, median, load noted).
 5. **Close-out:**
    - `plans/post-16.1-followups/README.md`: mark 109–113 DONE or PARKED with task IDs; open 114 for `neato dim=3` (silently 2-D, 211–302
-     diffs on planning's probes, absent from `known-divergences.md`); open 115 for `ccomps` not reusing a user `_cc_N` subgraph (T6's journal row), 116 for `init.branch.test.ts` pinning `dotInitNode`'s list guard against C's unconditional `alloc_elist` (T11), and 117 for `graphs-fdp`'s second fdp render missing native's (T11) unless T14 clears it; number other discoveries from 118; update the header line.
+     diffs on planning's probes, absent from `known-divergences.md`); open 115 for `ccomps` not reusing a user `_cc_N` subgraph (T6's journal row), 116 for `init.branch.test.ts` pinning `dotInitNode`'s list guard against C's unconditional `alloc_elist` (T11), and 117 for `graphs-fdp`'s second fdp render missing native's (T11) unless T14 clears it; 118 for port-only `g.info.abomShift` surviving a no-free layout, and 119 for `installEdgeSpline` overwriting a stale route and aux-edge weights stamped outside the `weight` attribute (T13); number other discoveries from 120; update the header line.
    - Mission-summary row in `plans/decision-journal.md`; this brief's checkboxes and a "Mission summary" section in the README.
    - `.agent-notes/post-16-1-followups-9.md` for anything novel.
 6. **Commit:** run the gates, then commit `chore(T10): close out post-16.1 follow-ups part 9`, with a one-line stop summary in the body.

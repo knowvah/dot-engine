@@ -15,6 +15,7 @@ produces native's appended bezier exactly. Read T11's rows in `plans/post-16-1-f
 
 **Write-set:** `src/layout/dot/edge-route.ts`, `src/layout/dot/splines-flat-multi.ts`, `src/layout/dot/splines-flat-labeled.ts`, any other `src/layout/dot/` routing file with such a gate,
 `src/gvc/rerender.test.ts`, `src/gvc/__fixtures__/rerender/`, `plans/post-16-1-followups-9/harness/T11/`.
+**Widened by the user (2026-11-03, stop 1):** `src/layout/dot/index.ts` (clearing stale `e.info.weight` in `dotPhaseInit`), `src/layout/dot/edge-route-rank.ts` (per-pass state), and the non-dot `compute_bb` path, so sfdp, circo and twopi count stale beziers as C does (`lib/neatogen/neatosplines.c:848`, `lib/common/utils.c:661`). `src/layout/dot/splines.ts` and `splines-flat.ts` count as routing files here (swap order, stale adjacency).
 
 **Acceptance criteria:**
 - *Given* `ctx.layout` twice or three times with no `freeLayout`, *when* compared with native's `nofree` run on the filing's graph and the multi-edge graph, *then* the output matches at 0.01,
