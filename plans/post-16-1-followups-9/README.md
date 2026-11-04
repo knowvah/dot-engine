@@ -120,7 +120,7 @@ or signed. **Out of scope (user decision, PR 119):** layouts that vary with the 
 | [2](batch-2/overview.md) | T1 `toDistType` (109) · T2 component attrs (111) · T3 sfdp warning (112) · T4 circo root · T5 sizer (113) | parallel worktrees | [x] |
 | [3](batch-3/overview.md) | T6 `ccomps` names (112) · T7 `compareEvents` ties (110) | parallel worktrees | [x] |
 | [4](batch-4/overview.md) | T8 `dir1 n40` (110) · T11 re-render (37) · T12 pin 36, then T13 no-free route · T14 write-back (37), then T9 docs | parallel worktrees, T13 and T14 one agent | [x] |
-| [5](batch-5/overview.md) | T10 final verification, close-out, re-sign stop | orchestrator | [ ] |
+| [5](batch-5/overview.md) | T10 final verification, close-out, re-sign stop | orchestrator | [x] |
 
 ## Documents
 
@@ -142,3 +142,44 @@ or signed. **Out of scope (user decision, PR 119):** layouts that vary with the 
   Journal and README updates land as one `docs(mission)` commit per batch.
 - Model routing: T1–T6 `typescript-pro` (sonnet); T7, T8, T11, T13, T14 `typescript-pro` (opus: native
   harnesses, the sort port, the re-render diagnosis); T9 `documentation-engineer`.
+
+## Mission summary (2026-11-04)
+
+- **Tasks:** T0–T14, one commit per task, plus one T14 fix found by T10's coverage review and one
+  T9 addition for it. T11–T14 were added during execution (AD-11, AD-12).
+- **Items:** 109–113 all DONE; none parked.
+  - 109: `toDistType` saturates as arm64 does.
+  - 110: libc++ `std::sort` ported for sweep events; block address order proven the whole
+    `dir1 n40` difference.
+  - 111: components copy the parent's attributes, so `maxiter`, `epsilon` and `stresswt` apply.
+  - 112: `ccomps` names follow C; sfdp warns on non-random `start`.
+  - 113: `getGlobalImageSizer` removed.
+  - circo: `root` lookup per component and per node (T4).
+  - Plantuml-ts 36: pinned against native (T12), still to be re-measured on the new pin from
+    plantuml-ts.
+  - Plantuml-ts 37: second renders follow native's free cycle, a no-free layout appends its route, and
+    rendering writes attributes back. `plain` native-same-but-port-not 212 → 0, throws 8 → 0 on each
+    format; second `xdot` against native's second, 1 → 248 of 280.
+- **Decisions:** three by the user: fold 37 in (AD-11), fix both of T11's gaps (AD-12), widen T13 to the
+  non-dot `compute_bb`.
+- **Flagged for review:**
+  - `g.attrs` now changes after a `dot`, `xdot` or `json` render, and any layout writes `bb` (AD-12).
+  - T14 reads stop 15 as not reached: `init_xdot` changes a first render only on an input carrying
+    `_background` or a graph `_draw_`, as native does. 0 corpus inputs carry them, so that replay is
+    tested only by `emit-xdot.test.ts` (follow-up 122).
+  - Known divergence A13: native svg prints freed memory (`fill=""`) in a `_background` replay after a
+    gradient `bgcolor`; the port prints the colour C meant.
+  - T11's edit to `dotInitNodeEdge`, past its task file's "cleanup functions only".
+  - Locale pages have had no native-speaker pass (T9).
+- **Gates (head):**
+  - typecheck 0; `npm test` 12308 passed; golden 5/5; corpus + docs pass; i18n 0 stale × 23; ipsep
+    probes 22/22; model probes 49/49; coverage thresholds met; libm gate passes, no fixture replays `pow`.
+  - Survey GATE PASS, 0 regressions, oracle-error 14, all 950 result rows equal to the baseline.
+  - Full bytediff: 38,000 jobs, 37,602 identical, 0 diffs (stderr included), 398 capped on both sides on
+    20 ids and so unproven. The 21 quarantined ids: 820 of 840 identical, 0 diffs, 20 timing out on
+    both sides.
+  - Not a quiet machine: load mostly 7–12 from other sessions.
+- **Performance:** `libcxxSort` 0.10–0.40× `Array.sort` at 1000 rectangles.
+- **Follow-ups:** 114–124 in `plans/post-16.1-followups/README.md`. 120 (no-free arrows on the flat aux
+  route) is the one known miss left in the no-free gap.
+- **Not done (by design):** nothing pushed, signed or PR'd; the user re-signs.

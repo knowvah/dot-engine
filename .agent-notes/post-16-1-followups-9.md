@@ -70,3 +70,9 @@
 - **Finding**: generated `_draw_` opens with its own pen and fill, so it can never observe the state `emit_background` leaves. A coverage gap on the new file (75%) is what exposed it. A malformed xdot op also makes native and port agree trivially, through the same parse warning: check that a probe's ops parse before trusting a match.
 - **Impact**: read per-file coverage on new code even when thresholds pass, and write at least some inputs by hand.
 - **Confidence**: High
+
+## Observation: native's repeatability on one id varies between processes
+- **Context**: T10's double-render matrix against T0's and T14's.
+- **Finding**: `graphs-b56`'s native second `plain` render is `SAME` in some processes and `DIFF` in others (osage 5 of 8, fdp 2, circo 1, twopi 1, sfdp 0). Port rows did not move. Cause not traced.
+- **Impact**: a change in the matrix's native column is not evidence about the port; compare port columns, and take several native runs on a moved row.
+- **Confidence**: High for the counts; none for the cause.
