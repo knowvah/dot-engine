@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Egyéni renderelés xdot rajzolási műveletekkel
@@ -119,11 +119,14 @@ beleértve a következőket:
 
 A `digraph { a [color=red]; a -> b }` gráfra a `_draw_`/`_hdraw_` geometriája és
 a színértékek pontosan megegyeznek a natív `dot -Txdot` kimenetével (csúcs-
-ellipszis, élspline, nyílhegy-sokszög és az alkalmazott `color=red`). A
-`getDrawOps(g)` függvényt közvetlenül egy friss, még nem renderelt gráfon hívja
-meg — a `render(g, ...)` és a `getDrawOps(g)` ugyanazon a gráfobjektumon való
-meghívása kétszer futtatja le az elrendezést, és nem támogatott minta; gráfonként
-csak az egyiket használja.
+ellipszis, élspline, nyílhegy-sokszög és az alkalmazott `color=red`). A `getDrawOps(g)` függvényt közvetlenül egy friss, még nem renderelt gráfon
+hívja meg. Ugyanannak a gráfobjektumnak az ismételt renderelése a natív Graphviz
+ciklusát követi: egy `dot`, `xdot` vagy `json` renderelés visszaírja az
+elrendezést a `g.attrs` mezőbe (`pos`, `width`, `height`, `bb` és a rajzolási
+attribútumok), minden elrendezés írja a `bb` értéket, egy későbbi elrendezés
+beolvassa ezeket az értékeket, és a gráf `_draw_` vagy `_background` attribútuma
+újra lejátszásra kerül. A második `xdot` renderelés ezért eltér az elsőtől,
+ahogy a natívnál is.
 
 ## Canvas-példa (csak csúcsfeliratok)
 

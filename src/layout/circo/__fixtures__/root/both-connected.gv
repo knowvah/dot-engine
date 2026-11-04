@@ -1,0 +1,11 @@
+graph G {
+  root=b;
+  a -- b;
+  b -- c;
+  c -- a;
+  c -- d;
+  d -- e;
+  e -- c;
+  e -- f;
+  e [root=true];
+}

@@ -1,0 +1,7 @@
+graph G {
+  root=a;
+  a -- b;
+  b -- c;
+  d -- e;
+  e -- f;
+}

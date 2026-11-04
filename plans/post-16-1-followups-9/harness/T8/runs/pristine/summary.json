@@ -1,0 +1,98 @@
+{
+ "harness": "harness-pristine",
+ "input": "dir1-n40.in",
+ "environments": [
+  "default",
+  "X=1",
+  "pad1k",
+  "pad8k",
+  "nano0",
+  "nano0-X=1",
+  "nano0-pad1k",
+  "nano1"
+ ],
+ "roundsPerEnvironment": 4,
+ "samples": 300,
+ "failures": [],
+ "distinct": {
+  "25d78af26c44": {
+   "count": 78,
+   "firstEnv": "default"
+  },
+  "bd3f9d751f31": {
+   "count": 4,
+   "firstEnv": "default"
+  },
+  "142b838332ce": {
+   "count": 37,
+   "firstEnv": "default"
+  },
+  "3defd45dd7b2": {
+   "count": 1,
+   "firstEnv": "X=1"
+  },
+  "8c7dda759fb9": {
+   "count": 89,
+   "firstEnv": "X=1"
+  },
+  "f4f0fb802c6f": {
+   "count": 50,
+   "firstEnv": "pad1k"
+  },
+  "b3ac043e978f": {
+   "count": 17,
+   "firstEnv": "pad1k"
+  },
+  "02b0fddf9a2c": {
+   "count": 4,
+   "firstEnv": "pad1k"
+  },
+  "17352c28496f": {
+   "count": 3,
+   "firstEnv": "pad8k"
+  },
+  "84efe3a66c94": {
+   "count": 23,
+   "firstEnv": "nano0"
+  },
+  "1c234f91a9a5": {
+   "count": 3,
+   "firstEnv": "sample13"
+  },
+  "5bbfa1aad1ed": {
+   "count": 8,
+   "firstEnv": "sample19"
+  },
+  "96aca8be359c": {
+   "count": 8,
+   "firstEnv": "sample43"
+  },
+  "2d22880260c2": {
+   "count": 3,
+   "firstEnv": "sample68"
+  },
+  "8e72038aba08": {
+   "count": 2,
+   "firstEnv": "sample120"
+  },
+  "b0ec4f5ee6f8": {
+   "count": 1,
+   "firstEnv": "sample170"
+  },
+  "2bf2d88ef10b": {
+   "count": 1,
+   "firstEnv": "sample253"
+  }
+ },
+ "distinctCount": 17,
+ "perEnvironmentDistinct": {
+  "default": 3,
+  "X=1": 3,
+  "pad1k": 4,
+  "pad8k": 3,
+  "nano0": 4,
+  "nano0-X=1": 2,
+  "nano0-pad1k": 3,
+  "nano1": 3
+ }
+}

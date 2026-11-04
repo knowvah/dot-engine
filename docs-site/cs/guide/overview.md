@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Přehled
 
@@ -82,6 +82,12 @@ spliny hran, ohraničující obdélník) zůstávají po něm uloženy v objektu
 `getLayout` rozvržení znovu nespouští — čte geometrii, kterou už dříve vypočetlo volání
 `render`, takže se vždy volá *po* `render`, na stejném
 grafu.
+
+Vykreslení graf mění, stejně jako v Graphvizu. Po vykreslení `dot`, `xdot` nebo
+`json` obsahuje `g.attrs` atributy rozvržení (`pos`, `width`, `height`, `bb` a
+kreslicí atributy); každé rozvržení zapíše `bb`. Opětovné vykreslení stejného
+`Graph` tyto hodnoty čte a `_draw_` nebo `_background` grafu se přehrává, takže
+druhé vykreslení `xdot` se liší od prvního, stejně jako u nativního.
 
 ## Tři vstupní body — které dveře?
 

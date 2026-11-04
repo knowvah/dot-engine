@@ -26,6 +26,7 @@ import { routeSplines, routePolylines } from '../../common/splines-routespl.js';
 import { clipAndInstall } from '../../common/splines-clip.js';
 import { graphRanksep } from './position-aux.js';
 import { buildDotSinfo } from './self-loop.js';
+import { routedThisPass } from './edge-route-rank.js';
 import { EDGETYPE_LINE, EDGETYPE_SPLINE } from './splines.js';
 import { makeSimpleFlat } from './splines-flat-labeled.js';
 import {
@@ -74,7 +75,7 @@ function flatPortKey(e: Edge, lo: Node): { loP: Port; hiP: Port } {
 /** True when x is an unrouted non-adjacent same-rank flat edge (C make_flat_edge
  * routes EVERY non-adjacent flat; side ports are not a precondition). */
 function isNonAdjGroupable(x: Edge, g: Graph): boolean {
-  return x.info.spl === undefined
+  return !routedThisPass(x)
     && x.tail.info.rank !== undefined
     && x.tail.info.rank === x.head.info.rank
     && !isFlatAdjacent(g, x);

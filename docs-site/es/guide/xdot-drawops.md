@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Renderizado propio con operaciones de dibujo xdot
@@ -120,10 +120,13 @@ grafo, incluyendo:
 Para `digraph { a [color=red]; a -> b }`, la geometría `_draw_`/`_hdraw_` y los
 valores de color coinciden exactamente con los de `dot -Txdot` nativo (elipse
 del nodo, spline de la arista, polígono de la punta de flecha y el
-`color=red` aplicado). Llama a `getDrawOps(g)` directamente sobre un grafo
-nuevo (aún no renderizado): llamar a `render(g, ...)` y a `getDrawOps(g)` sobre
-el *mismo* objeto de grafo ejecuta el diseño dos veces y no es un patrón
-admitido; usa una u otra por grafo.
+`color=red` aplicado). Llama a `getDrawOps(g)` directamente sobre un grafo nuevo (aún no renderizado).
+Renderizar de nuevo el *mismo* objeto de grafo sigue el ciclo de Graphviz
+nativo: un renderizado `dot`, `xdot` o `json` escribe el diseño de vuelta en
+`g.attrs` (`pos`, `width`, `height`, `bb` y los atributos de dibujo), cualquier
+diseño escribe `bb`, un diseño posterior lee esos valores y se reproduce el
+`_draw_` o `_background` del grafo. Por ello, un segundo renderizado `xdot`
+difiere del primero, igual que en el nativo.
 
 ## Ejemplo con canvas (solo etiquetas de nodo)
 

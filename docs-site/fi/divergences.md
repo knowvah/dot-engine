@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1210,6 +1210,14 @@ vanhentuneeksi. Todiste:
 
 **Miksi hyväksytty.** `aagerror` (`lib/cgraph/scan.l:157`) lisää `InputFile: ` vain, kun `InputFile` on asetettu. CLI asettaa sen arvoon `<stdin>` vakiosyötettä luettaessa; kirjastosisäänkäynti `agmemread`, jota portti peilaa, jättää sen asettamatta eikä tulosta etuliitettä. Portilla ei ole CLI:tä, joten raportoitavaa ei ole. stderr-luotain normalisoi etuliitteen vertailussa.
 
+### A13. Vapautettu täyttöväri `_background`-toistossa (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Koskee:** svg-tuloste syötteelle, jonka käsin kirjoitetun `_background`-kentän (tai graafin `_draw_`-kentän) ensimmäisellä täytetyllä operaatiolla ei ole omaa täyttöväriä, graafilla, jolla on liukuväri-`bgcolor`, esimerkiksi `bgcolor="red:blue"`.
+
+**Mikä eroaa.** Natiivi tulostaa tälle operaatiolle `fill=""`; portti tulostaa liukuvärin ensimmäisen pysäytyspisteen. xdot ratkeaa RGBA:ksi ja on portin kanssa samaa mieltä, joten vain svg eroaa.
+
+**Miksi hyväksytty.** `emit_background` vapauttaa `clrs[0]`:n (`lib/common/emit.c:1518`), vaikka svg:n täyttötila osoittaa siihen yhä (`gvrender_resolve_color` säilyttää `color->u.string = name`, `lib/gvc/gvrender.c:193`), joten natiivin tuloste on vapautettua muistia, ei väri; se oli `fill=""` kaikissa 8 mitatussa ajossa 8:sta. Portti tulostaa värin, jota C tarkoitti. Mikään korpuksen syöte ei yllä tähän; `src/gvc/emit-xdot.test.ts` lukitsee sen.
+
 ---
 
 ## Seurattu pitkä häntä (`dot`-attribuutit ja reunatapaukset) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1317,7 +1325,7 @@ eroaa natiivista Graphvizista. Löydetty `v2-silent-gaps`-missionilla
   V8:n `Math.cos`ista; fdp:n voimasilmukka vahvistaa sen noin 3 tuumaksi. Applen
   `cos` ei ole toistettavissa lyhyellä mallilla niin kuin `hypot`.
 - **Natiivit kaatumiset, jotka porttaus määrittelee.** Natiivi Graphviz päättyy koodiin 139 neatossa `mode=KK` ja `model=mds` sekä `len`-reunalla lähes joka ajolla (1 selviytyjä noin 1500:sta; `mds_model` indeksoi `GD_dist`-taulukon 1-pohjaisella järjestysnumerolla: kasan ylivuoto). Portti pudottaa alueen ulkopuoliset solut, ja sen tulos vastaa tuota selviytyjää 0,01:n tarkkuudella. `circuit_model` indeksoi 1-pohjaisella `AGSEQ`-arvolla (`circuit.c:46`), joten sen matriisin riviä 0 ei koskaan kirjoiteta ja matriisi on singulaarinen jokaisella graafilla, yhtenäisellä tai ei: natiivi `mode=KK` ja `model=circuit` ei koskaan tuota circuit-asettelua. Kun prosessi selviää, se tulostaa `Warning: graph <name> is disconnected. Hence, the circuit model` ja palaa lyhimpiin polkuihin; sama virhe lukee riviosoitintaulukon yli, kun viimeksi luodulla solmulla on reuna, joten natiivi päättyy yleensä koodiin 139 (noin 3 ajoa 4:stä koegraafilla). Portti valitsee aina selviytymispolun: varoituksen ja sitten lyhimmät polut, yhtenäinen graafi tai ei. Valinnalla `pack=true` natiivi kaatui jokaisella ajolla (0 selviytyjää yli 3000:sta kummallakin kahdesta graafista); päätöksen mukaan portti varoittaa komponenteittain omalla nimellään (`_neato_cc0`, `_neato_cc1`, ...), käyttää lyhimpiä polkuja ja pakkaa. Tälle yhdistelmälle ei ole natiivia tulostetta; asettelu vastaa natiivia `model=shortpath` -asettelua samalle graafille.
-- **VPSC:n tasatilanteet seuraavat luontijärjestystä, eivät kasan osoitetta.** Natiivi `IncVPSC::splitBlocks` käy läpi kasan osoitteen mukaan järjestettyä `std::set<Block*>`-joukkoa lisäten siihen samalla alkioita, ja `CmpNodePos` ratkaisee sijaintien tasatilanteet osoitteella, joten natiivin tuloste valinnoille `overlap=vpsc|ipsep` ja rajoitetulle `mode=ipsep` vaihtelee ajosta toiseen, kun sijainnit ovat samat (yhdessä tapauksessa 300 ajosta tuli 21 eri tulosta). Portti järjestää tasatilanteet luontijärjestyksen mukaan ja käy aina uusissa lohkoissa, joten sen tuloste on deterministinen. Se vastaa otosta natiiviajoa tarkistetuissa tasatilannetapauksissa, paitsi yhdessä 40 solmun tapauksessa, joka ei vastannut yhtäkään 29 otoksen natiivitulosta (jatkotoimi 110).
+- **VPSC:n tasatilanteet seuraavat luontijärjestystä, eivät kasan osoitetta.** Natiivi `IncVPSC::splitBlocks` käy läpi kasan osoitteen mukaan järjestettyä `std::set<Block*>`-joukkoa lisäten siihen samalla alkioita, ja `CmpNodePos` ratkaisee sijaintien tasatilanteet osoitteella, joten natiivin tuloste valinnoille `overlap=vpsc|ipsep` ja rajoitetulle `mode=ipsep` vaihtelee ajosta toiseen, kun sijainnit ovat samat (yhdessä tapauksessa 300 ajosta tuli 21 eri tulosta). Portti järjestää tasatilanteet luontijärjestyksen mukaan ja käy aina uusissa lohkoissa, joten sen tuloste on deterministinen. Pyyhkäisytapahtumien tasatilanteet seuraavat libc++:aa: portti sisältää sen `std::sort`-funktion portin, joten tasatilanteiden järjestys vastaa natiivia. Se vastaa otosta natiiviajoa tarkistetuissa tasatilannetapauksissa. 40 solmun tapaus (`dir1 n40`), joka ei aiemmin vastannut yhtäkään 29 otoksen natiivitulosta, on selitetty: 332 natiiviajossa oraakkelin `libvpsc.a` antoi 17 eri tulostetta, kun taas natiivikopio, joka järjesti vain `Blocks`-joukon luontiindeksin mukaan, antoi 1 tulosteen 332 ajossa, ja portti on bitilleen sama. Lohkojen osoitejärjestys on tämän tapauksen koko ero; väite on mitattu vain tapauksesta `dir1 n40` (jatkotoimi 110).
 
 ---
 

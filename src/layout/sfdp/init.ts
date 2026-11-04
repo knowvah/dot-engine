@@ -21,6 +21,8 @@ import {
 } from '../../common/nodeinit.js';
 import { initEdgeLabels } from '../../common/edge-label-init.js';
 import { aggetGraph } from '../fdp/fdp-model.js';
+import { agwarningf } from '../../common/agerr.js';
+import { INIT_RANDOM, parseStart } from '../neato/start.js';
 import { overlapPrismTries } from '../neato/fdp-adjust.js';
 import {
   type SpMatrix,
@@ -133,6 +135,9 @@ function resolveSeed(g: Graph, dflt: number): number {
  */
 export function tuneControl(g: Graph, ctrl: SpringElectricalControl): void {
   ctrl.randomSeed = resolveSeed(g, ctrl.randomSeed);
+  if (parseStart(aggetGraph(g, 'start'), INIT_RANDOM).init !== INIT_RANDOM) {
+    agwarningf('sfdp only supports start=random');
+  }
   ctrl.K = lateDouble(aggetGraph(g, 'K'), -1.0, 0.0);
   ctrl.p = -1.0 * lateDouble(aggetGraph(g, 'repulsiveforce'), -AUTOP, 0.0);
   ctrl.multilevels = lateInt(aggetGraph(g, 'levels'), INT_MAX, 0);
@@ -162,7 +167,10 @@ export function tuneControl(g: Graph, ctrl: SpringElectricalControl): void {
       'UNSUPPORTED_FEATURE');
   }
   ctrl.edgeLabelingScheme = lateInt(aggetGraph(g, 'label_scheme'), 0, 0);
-  if (ctrl.edgeLabelingScheme > 4) ctrl.edgeLabelingScheme = 0;
+  if (ctrl.edgeLabelingScheme > 4) {
+    agwarningf(`label_scheme = ${ctrl.edgeLabelingScheme} > 4 : ignoring`);
+    ctrl.edgeLabelingScheme = 0;
+  }
   assertEdgeLabelSchemeSupported(g, ctrl.edgeLabelingScheme);
 }
 

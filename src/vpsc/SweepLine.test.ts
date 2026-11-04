@@ -8,8 +8,12 @@
  * driver linked to the oracle's libvpsc.a.
  */
 
+import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
+  buildXEvents,
+  buildYEvents,
+  compareEvents,
   generateXConstraints,
   generateYConstraints,
   getLeftNeighbours,
@@ -23,7 +27,9 @@ import {
 import { Rectangle } from "./Solver.js";
 import { Variable } from "./Variable.js";
 import type { Constraint } from "./Constraint.js";
-import type { SweepNode } from "./sweepTypes.js";
+import { EvType } from "./sweepTypes.js";
+import type { SweepEvent, SweepNode } from "./sweepTypes.js";
+import { libcxxSort } from "../util/libcxx-sort.js";
 
 /** Rectangles spanning y 0..100, so every x overlap is resolved in x. */
 const TALL_MAX_Y = 100;
@@ -197,5 +203,103 @@ describe("ties on the scanline", () => {
     ];
     const cs = generateXConstraints(rects, variables(3), false);
     expect(triples(cs)).toEqual([[1, 2, 2], [0, 1, 2]]);
+  });
+});
+
+/**
+ * Dumps of plans/post-16-1-followups-9/harness/T7: sorted events from the oracle's sources with
+ * a print after `std::sort`, identical over 8 environments; constraints from the unpatched
+ * libvpsc.a, on the cases whose centres are distinct, so `Node*` addresses play no part.
+ */
+const T7_DUMPS = new URL("../../plans/post-16-1-followups-9/harness/T7/dumps/", import.meta.url);
+const readDump = (name: string): Record<string, string> =>
+  JSON.parse(fs.readFileSync(new URL(name, T7_DUMPS), "utf8")) as Record<string, string>;
+
+/** The layouts of harness/T7/native-unit.cpp. */
+function layoutRect(kind: string, i: number, side: number): Rectangle {
+  const col = (i % side) * 10;
+  const row = Math.trunc(i / side) * 10;
+  switch (kind) {
+    case "row": return new Rectangle(i * 10, i * 10 + 8, 0, 4);
+    case "col": return new Rectangle(0, 8, i * 10, i * 10 + 4);
+    case "same": return new Rectangle(0, 8, 0, 4);
+    case "grid": return new Rectangle(col, col + 8, row, row + 8);
+    case "touch": return new Rectangle(i * 8, i * 8 + 8, 0, 4);
+    case "overlap": return new Rectangle(i * 4, i * 4 + 8, 0, 4);
+    case "point": return new Rectangle(i * 10, i * 10, 0, 0);
+    default: throw new Error(`unknown layout ${kind}`);
+  }
+}
+
+function layout(kind: string, n: number): Rectangle[] {
+  const side = Math.ceil(Math.sqrt(n));
+  return Array.from({ length: n }, (_, i) => layoutRect(kind, i, side));
+}
+
+const eventText = (es: readonly SweepEvent[]): string =>
+  es.map((e) => `${e.type === EvType.Open ? "o" : "c"}${e.node.v.id}`).join(" ");
+
+describe("compareEvents (compare_events)", () => {
+  const eventsOf = (minY: number, maxY: number): SweepEvent[] =>
+    buildXEvents([new Rectangle(0, 1, minY, maxY)], variables(1));
+
+  it("puts Open before Close on one rectangle, whatever the positions", () => {
+    const [open, close] = eventsOf(3, 3) as [SweepEvent, SweepEvent];
+    expect(compareEvents(open, close)).toBe(true);
+    expect(compareEvents(close, open)).toBe(false);
+    expect(compareEvents(open, open)).toBe(false);
+  });
+
+  it("orders different rectangles by position, and a tie is false both ways", () => {
+    const rects = [new Rectangle(0, 1, 0, 2), new Rectangle(0, 1, 0, 5)];
+    const [a, closeA, b, closeB] = buildXEvents(rects, variables(2)) as [
+      SweepEvent, SweepEvent, SweepEvent, SweepEvent,
+    ];
+    expect(compareEvents(closeA, closeB)).toBe(true);
+    expect(compareEvents(closeB, closeA)).toBe(false);
+    expect(compareEvents(a, b)).toBe(false);
+    expect(compareEvents(b, a)).toBe(false);
+  });
+});
+
+describe("sweep event order (std::sort with compare_events)", () => {
+  const NATIVE = readDump("events.json");
+
+  it("covers every layout at every size in both passes", () => {
+    expect(Object.keys(NATIVE)).toHaveLength(7 * 8 * 2);
+    expect(NATIVE["row 24 X"]?.split(" ").slice(0, 24).join(" ")).toBe(
+      "o0 o1 o2 o3 o4 o5 o6 o7 o8 o9 o10 o11 o12 o13 o14 o15 o16 o17 o23 o22 o21 o20 o19 o18",
+    );
+  });
+
+  it.each(Object.keys(NATIVE))("matches native on %s", (key) => {
+    const [kind, n, pass] = key.split(" ") as [string, string, string];
+    const rects = layout(kind, Number(n));
+    const vs = variables(rects.length);
+    const events = pass === "X" ? buildXEvents(rects, vs) : buildYEvents(rects, vs);
+    libcxxSort(events, compareEvents);
+    expect(eventText(events)).toBe(NATIVE[key]?.trim());
+  });
+});
+
+describe("generated constraints follow native's event order", () => {
+  const NATIVE = readDump("constraints.json");
+
+  /** Mode 1 and 0 are the X pass with and without neighbour lists, 2 is the Y pass. */
+  function generate(rects: Rectangle[], mode: number): readonly Constraint[] {
+    const vs = variables(rects.length);
+    if (mode === 2) return generateYConstraints(rects, vs);
+    return generateXConstraints(rects, vs, mode === 1);
+  }
+
+  it("covers the address-free cases at every size", () => {
+    expect(Object.keys(NATIVE)).toHaveLength(9 * 8);
+  });
+
+  it.each(Object.keys(NATIVE))("matches the oracle's libvpsc on %s", (key) => {
+    const [kind, n, mode] = key.split(" ") as [string, string, string];
+    const got = generate(layout(kind, Number(n)), Number(mode));
+    const text = got.map((c) => `${c.left.id},${c.right.id},${c.gap}`).join(" ");
+    expect(text).toBe(NATIVE[key]);
   });
 });

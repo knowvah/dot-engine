@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Vlastné vykresľovanie pomocou kresliacich operácií xdot
@@ -120,10 +120,13 @@ vrátane:
 
 Pre `digraph { a [color=red]; a -> b }` sa geometria `_draw_`/`_hdraw_`
 a hodnoty farieb presne zhodujú s natívnym `dot -Txdot` (elipsa uzla, spline
-hrany, polygón hrotu šípky a použité `color=red`). `getDrawOps(g)` volajte
-priamo na čerstvom (ešte nevykreslenom) grafe — volanie `render(g, ...)`
-a `getDrawOps(g)` na *tom istom* objekte grafu spustí rozloženie dvakrát
-a nie je to podporovaný postup; pre každý graf použite jedno alebo druhé.
+hrany, polygón hrotu šípky a použité `color=red`). `getDrawOps(g)` volajte priamo na čerstvom (ešte nevykreslenom) grafe. Opätovné
+vykreslenie *toho istého* objektu grafu sleduje cyklus natívneho Graphvizu:
+vykreslenie `dot`, `xdot` alebo `json` zapíše rozloženie späť do `g.attrs`
+(`pos`, `width`, `height`, `bb` a kresliace atribúty), každé rozloženie zapíše
+`bb`, neskoršie rozloženie tieto hodnoty číta a `_draw_` alebo `_background`
+grafu sa prehrá. Druhé vykreslenie `xdot` sa preto líši od prvého, rovnako ako
+pri natívnom.
 
 ## Príklad pre canvas (iba popisy uzlov)
 

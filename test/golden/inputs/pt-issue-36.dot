@@ -1,0 +1,7 @@
+digraph unix {
+nodesep=0.486111;
+ranksep=0.833333;
+sh0011->sh0010[arrowtail=none,arrowhead=none,minlen=0];
+sh0010 [shape=rect,label="",width=1.693576,height=0.472222];
+sh0011 [shape=rect,label="",width=0.882465,height=0.375000];
+}

@@ -1,0 +1,21 @@
+digraph unix {
+	graph [bb="0,0,220.74,34",
+		nodesep=0.486111,
+		ranksep=0.833333
+	];
+	node [label="\N"];
+	sh0011	[height=0.375,
+		label="",
+		pos="31.769,17",
+		shape=rect,
+		width=0.88247];
+	sh0010	[height=0.47222,
+		label="",
+		pos="159.77,17",
+		shape=rect,
+		width=1.6936];
+	sh0011 -> sh0010	[arrowhead=none,
+		arrowtail=none,
+		minlen=0,
+		pos="64.019,17 75.489,17 86.959,17 98.429,17"];
+}

@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # 用 xdot 自定义渲染
@@ -108,7 +108,7 @@ const screenY = canvasHeight - op.ellipse.y;
 - 颜色设置操作（`fill_color`、`pen_color`），包括自定义的节点 `color`/`fillcolor` 属性
 - 边绘制操作（样条用 `unfilled_bezier`，箭头则用 `pen_color` / `fill_color` / `filled_polygon`）
 
-对于 `digraph { a [color=red]; a -> b }`，`_draw_`/`_hdraw_` 的几何数据和颜色值与原生 `dot -Txdot` 完全一致（节点椭圆、边样条、箭头多边形，以及生效的 `color=red`）。请在全新的（尚未渲染的）图上直接调用 `getDrawOps(g)`——在*同一个*图对象上既调用 `render(g, ...)` 又调用 `getDrawOps(g)` 会运行两次布局，不是受支持的用法；每个图请只选其一。
+对于 `digraph { a [color=red]; a -> b }`，`_draw_`/`_hdraw_` 的几何数据和颜色值与原生 `dot -Txdot` 完全一致（节点椭圆、边样条、箭头多边形，以及生效的 `color=red`）。请在全新的（尚未渲染的）图上直接调用 `getDrawOps(g)`。再次渲染*同一个*图对象会遵循原生 Graphviz 的循环：`dot`、`xdot` 或 `json` 渲染会把布局写回 `g.attrs`（`pos`、`width`、`height`、`bb` 和绘制属性），任何布局都会写入 `bb`，之后的布局会读取这些值，并且会重放图的 `_draw_` 或 `_background`。因此，第二次 `xdot` 渲染与第一次不同，与原生一致。
 
 ## Canvas 示例（仅节点标签）
 

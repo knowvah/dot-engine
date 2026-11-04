@@ -1,0 +1,47 @@
+digraph unix {
+	graph [bb="0,0,285,115",
+		nodesep=0.486111,
+		ranksep=0.833333,
+		remincross=true,
+		searchsize=500
+	];
+	node [label="\N"];
+	subgraph cluster6p0 {
+		graph [bb="8,8,277,107",
+			label=""
+		];
+		subgraph cluster6 {
+			graph [bb="16,16,269,99",
+				color="#000006",
+				label=<<TABLE BGCOLOR="#000007" FIXEDSIZE="TRUE" WIDTH="76" HEIGHT="9"><TR><TD></TD></TR></TABLE>>,
+				labeljust=c,
+				lheight=0.12,
+				lp="142.5,90.5",
+				lwidth=1.06,
+				style=solid
+			];
+			subgraph cluster6p1 {
+				graph [bb="24,24,261,74",
+					label=""
+				];
+				sh0011	[color="#00000B",
+					height=0.375,
+					label="",
+					pos="64,49",
+					shape=rect,
+					width=0.88247];
+				sh0010	[color="#00000A",
+					height=0.47222,
+					label="",
+					pos="192,49",
+					shape=rect,
+					width=1.6936];
+				sh0011 -> sh0010	[arrowhead=none,
+					arrowtail=none,
+					color="#00000C",
+					minlen=0,
+					pos="96,49 107.62,49 119.25,49 130.88,49"];
+			}
+		}
+	}
+}

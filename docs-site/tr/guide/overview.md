@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Genel bakış
 
@@ -81,6 +81,13 @@ işlemenin bir parçası olarak tetikler; hesaplanan koordinatlar (düğüm konu
 spline'ları, sınırlayıcı kutu) sonrasında `Graph` nesnesi üzerinde saklanır. `getLayout`
 yerleşimi yeniden çalıştırmaz — daha önceki bir `render` çağrısının zaten hesapladığı
 geometriyi okur; bu yüzden her zaman `render` sonrasında, aynı graf üzerinde çağrılır.
+
+İşleme, Graphviz'de olduğu gibi grafı değiştirir. Bir `dot`, `xdot` veya `json`
+işlemesinden sonra `g.attrs` yerleşim özniteliklerini (`pos`, `width`, `height`,
+`bb` ve çizim öznitelikleri) tutar; her yerleşim `bb` yazar. Aynı `Graph`
+yeniden işlendiğinde bu değerler okunur ve grafın `_draw_` veya `_background`
+özniteliği yeniden oynatılır; bu yüzden ikinci bir `xdot` işlemesi, yerelde
+olduğu gibi ilkinden farklıdır.
 
 ## Üç giriş noktası — hangi kapı?
 

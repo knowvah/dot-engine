@@ -88,7 +88,7 @@ export function buildDerivedEdges(g: Graph, dg: DerivedGraph): DerivedEdge[] {
 
 /** Decompose derived graph into connected components with their edges. */
 export function derivedComponents(g: Graph, dg: DerivedGraph, allEdges: DerivedEdge[]): SubGraph[] {
-  const comps = ccomps(g, '_cc');
+  const comps = ccomps(g);
   return comps.map((sg, i) => {
     const nodes: DerivedNode[] = [];
     for (const n of sg.nodes.values()) {
@@ -126,6 +126,17 @@ export function readMinDist(realg: Graph): number {
 }
 
 /**
+ * N_root = agattr_text(rootg, AGNODE, "root", NULL): the declared default of
+ * the node `root` attribute, or null when no node declares it.
+ * @see lib/circogen/circular.c:initGraphAttrs
+ */
+export function nodeRootDefault(realg: Graph): string | null {
+  const declared = realg.nodeDefaults.get('root');
+  if (declared !== undefined) return declared;
+  return Array.from(realg.nodes.values()).some((n) => n.attrs.has('root')) ? '' : null;
+}
+
+/**
  * Lay out one connected component of the derived graph.
  * @see lib/circogen/circular.c:circularLayout
  */
@@ -134,6 +145,7 @@ export function circularLayout(sg: SubGraph, realg: Graph, blockCount: number, a
   const state = makeCircState(blockCount);
   state.minDist = readMinDist(realg);
   state.rootname = realg.attrs.get('root') ?? '';
+  state.nRoot = nodeRootDefault(realg);
   let root: Block;
   if (isOneblock(realg)) root = createOneBlock(sg, state);
   else root = createBlocktree(sg, state, allEdges);

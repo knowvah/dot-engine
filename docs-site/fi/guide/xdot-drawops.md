@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Oma renderöinti xdotin piirto-operaatioilla
@@ -119,11 +119,13 @@ mukaan lukien:
 
 Graafille `digraph { a [color=red]; a -> b }` `_draw_`-/`_hdraw_`-geometria ja
 värien arvot vastaavat täsmälleen natiivia `dot -Txdot` -komentoa (solmun
-ellipsi, kaaren splini, nuolenkärjen monikulmio ja käytetty `color=red`). Kutsu
-`getDrawOps(g)` suoraan tuoreelle (vielä renderöimättömälle) graafille —
-`render(g, ...)`- ja `getDrawOps(g)`-kutsujen tekeminen *samalle* graafiolille
-ajaa asettelun kahdesti, eikä se ole tuettu tapa; käytä graafia kohden vain
-jompaakumpaa.
+ellipsi, kaaren splini, nuolenkärjen monikulmio ja käytetty `color=red`). Kutsu `getDrawOps(g)` suoraan tuoreelle (vielä renderöimättömälle) graafille.
+*Saman* graafiolion renderöinti uudelleen seuraa natiivin Graphvizin kiertoa:
+`dot`-, `xdot`- tai `json`-renderöinti kirjoittaa asettelun takaisin
+`g.attrs`-kenttään (`pos`, `width`, `height`, `bb` ja piirtoattribuutit), mikä
+tahansa asettelu kirjoittaa `bb`:n, myöhempi asettelu lukee nämä arvot ja
+graafin `_draw_` tai `_background` toistetaan. Toinen `xdot`-renderöinti eroaa
+siksi ensimmäisestä, kuten natiivissakin.
 
 ## Canvas-esimerkki (vain solmujen selitteet)
 

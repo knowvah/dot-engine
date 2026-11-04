@@ -42,6 +42,8 @@ import type { RenderJob } from '../gvc/job.js';
 import type { XdotOp, XdotColor } from '../xdot/types.js';
 import type { TextlabelT, FieldT } from '../common/types.js';
 import { printNum, gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
+import { attachAttrs } from './dot/write-back.js';
+import { attrsWithoutLayoutBb } from '../gvc/layout-bb.js';
 import { CHAR_LATIN1 } from '../common/graph-init.js';
 import { parse } from '../parser/index.js';
 import { render as deviceRender } from '../gvc/device.js';
@@ -58,8 +60,7 @@ const XDOT_ATTR_NAMES: ReadonlySet<string> = new Set([
   '_draw_', '_ldraw_', '_hdraw_', '_tdraw_', '_hldraw_', '_tldraw_',
 ]);
 
-/** Built-in node label default installed by graphviz (`\N`). Emitted for every
- *  node with no explicit/inherited label. @see lib/common/input.c NODENAME */
+/** Graphviz's built-in node label default (`\N`). @see lib/common/input.c NODENAME */
 const DEFAULT_NODE_LABEL = '\\N';
 
 /** Loosely-typed JSON value tree, serialized with JSON.stringify. */
@@ -200,6 +201,14 @@ interface DrawLookup {
   cluster: Map<Graph, Map<string, string>>;
   /** Edge xdot/layout attrs by the original graph's Edge object. */
   edge: Map<Edge, Map<string, string>>;
+  /** The inner xdot render's write-back, due once the JSON has been written. */
+  attach: () => void;
+}
+
+/** C's inner gvRender writes back first; buildJson overlays the same values. */
+class HeldXdotRenderer extends XdotRenderer {
+  protected override writeBack(): void { /* see attach */ }
+  attach(g: Graph): void { super.writeBack(g); }
 }
 
 /** Root edges in agfstnode/agfstout order, each tagged with its canonical
@@ -241,7 +250,7 @@ function collectDrawLookup(g: Graph): DrawLookup | undefined {
   let xg: Graph;
   // Our own XdotRenderer (last-registered wins) exposes raw draw strings: the
   // DOT re-parse is LOSSY for draw text containing `"` (id 2239); overlay them.
-  const xr = new XdotRenderer();
+  const xr = new HeldXdotRenderer();
   try {
     const ctx = createDefaultContext();
     ctx.register(xr);
@@ -289,7 +298,7 @@ function collectDrawLookup(g: Graph): DrawLookup | undefined {
   for (const [nm, gn] of g.nodes) applyDraws(node.get(nm), draws.get(gn));
   for (const [gc, attrs] of cluster) applyDraws(attrs, draws.get(gc));
   for (const [ge, attrs] of edge) applyDraws(attrs, draws.get(ge));
-  return { graph: graphAttrs, node, cluster, edge };
+  return { graph: graphAttrs, node, cluster, edge, attach: () => xr.attach(g) };
 }
 
 // ---------------------------------------------------------------------------
@@ -333,7 +342,7 @@ function isGraphLabelDeclared(g: Graph): boolean {
  *  graph-attribute values (agxget inheritance), captured at build time in
  *  `graphDefaultsSnapshot`; the root uses only its own. */
 function graphEffectiveAttrs(g: Graph, top: boolean): Map<string, string> {
-  if (top) return g.attrs;
+  if (top) return attrsWithoutLayoutBb(g);
   const m = new Map<string, string>(g.graphDefaultsSnapshot ?? []);
   for (const [k, v] of g.attrs) m.set(k, v);
   return m;
@@ -653,26 +662,10 @@ export function buildJson(g: Graph, doXDot: boolean, preDraws?: DrawLookup): str
   return JSON.stringify(root, null, 2) + '\n';
 }
 
-// ---------------------------------------------------------------------------
-// Json0Renderer
-// ---------------------------------------------------------------------------
-
-/**
- * JSON0 renderer — position data only, no xdot draw operations.
- *
- * @see plugin/core/gvrender_core_json.c FORMAT_JSON0
- */
-export class Json0Renderer implements RendererPlugin {
-  readonly type = 'json0';
+/** Everything the JSON writers leave to the graph walk: they write once, at the end. */
+abstract class JsonRendererBase {
   /** @see plugin/core/gvplugin_core.c registration table */
   readonly quality = 0;
-
-  beginGraph(_g: Graph, _job: RenderJob): void { /* no-op */ }
-
-  endGraph(g: Graph, job: RenderJob): void {
-    job.write(buildJson(g, false));
-  }
-
   beginNode(_n: Node, _job: RenderJob): void { /* no-op */ }
   endNode(_n: Node, _job: RenderJob): void { /* no-op */ }
   beginEdge(_e: Edge, _job: RenderJob): void { /* no-op */ }
@@ -685,6 +678,24 @@ export class Json0Renderer implements RendererPlugin {
 }
 
 // ---------------------------------------------------------------------------
+// Json0Renderer
+// ---------------------------------------------------------------------------
+
+/**
+ * JSON0 renderer — position data only, no xdot draw operations.
+ *
+ * @see plugin/core/gvrender_core_json.c FORMAT_JSON0
+ */
+export class Json0Renderer extends JsonRendererBase implements RendererPlugin {
+  readonly type = 'json0';
+
+  beginGraph(_g: Graph, _job: RenderJob): void { /* no-op */ }
+
+  /** C's json_begin_graph runs attach_attrs; buildJson overlays the same values. */
+  endGraph(g: Graph, job: RenderJob): void { job.write(buildJson(g, false)); attachAttrs(g); }
+}
+
+// ---------------------------------------------------------------------------
 // JsonRenderer
 // ---------------------------------------------------------------------------
 
@@ -693,10 +704,8 @@ export class Json0Renderer implements RendererPlugin {
  *
  * @see plugin/core/gvrender_core_json.c FORMAT_JSON
  */
-export class JsonRenderer implements RendererPlugin {
+export class JsonRenderer extends JsonRendererBase implements RendererPlugin {
   readonly type = 'json';
-  /** @see plugin/core/gvplugin_core.c registration table */
-  readonly quality = 0;
 
   private draws: DrawLookup | undefined; // set by beginGraph, cleared by endGraph
   /** @see plugin/core/gvrender_core_json.c:json_begin_graph */
@@ -704,18 +713,9 @@ export class JsonRenderer implements RendererPlugin {
 
   endGraph(g: Graph, job: RenderJob): void {
     job.write(buildJson(g, true, this.draws));
+    this.draws?.attach();
     this.draws = undefined;
   }
-
-  beginNode(_n: Node, _job: RenderJob): void { /* no-op */ }
-  endNode(_n: Node, _job: RenderJob): void { /* no-op */ }
-  beginEdge(_e: Edge, _job: RenderJob): void { /* no-op */ }
-  endEdge(_e: Edge, _job: RenderJob): void { /* no-op */ }
-  textspan(_pos: Point, _span: TextSpan, _job: RenderJob): void { /* no-op */ }
-  ellipse(_c: Point, _rx: number, _ry: number, _f: boolean, _j: RenderJob): void { /* no-op */ }
-  polygon(_pts: Point[], _filled: boolean, _job: RenderJob): void { /* no-op */ }
-  bezier(_pts: Point[], _filled: boolean, _job: RenderJob): void { /* no-op */ }
-  polyline(_pts: Point[], _job: RenderJob): void { /* no-op */ }
 }
 
 // ---------------------------------------------------------------------------

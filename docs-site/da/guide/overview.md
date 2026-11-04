@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Overblik
 
@@ -82,6 +82,13 @@ kantsplines, afgrænsningsramme) bevares bagefter på `Graph`-objektet.
 `getLayout` kører ikke layout igen — den læser geometri, som et tidligere
 `render`-kald allerede har beregnet, så den kaldes altid *efter* `render`, på
 den samme graf.
+
+Rendering ændrer grafen, ligesom i Graphviz. Efter en `dot`-, `xdot`- eller
+`json`-rendering indeholder `g.attrs` layoutattributterne (`pos`, `width`,
+`height`, `bb` og tegneattributterne); ethvert layout skriver `bb`. Når den
+samme `Graph` renderes igen, læses disse værdier, og grafens `_draw_` eller
+`_background` afspilles, så en anden `xdot`-rendering adskiller sig fra den
+første, ligesom native.
 
 ## De tre indgangspunkter — hvilken dør?
 

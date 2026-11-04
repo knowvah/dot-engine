@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -959,6 +959,14 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
 
 **為何接受。** 僅當設定了 `InputFile` 時，`aagerror`（`lib/cgraph/scan.l:157`）才會加上 `InputFile: `。CLI 在讀取標準輸入時將其設為 `<stdin>`；移植版所對應的函式庫入口 `agmemread` 不設定它，也就不輸出前綴。移植版沒有 CLI，因此無可回報。stderr 探針在比較時會正規化該前綴。
 
+### A13. 重播 `_background` 時被釋放的填色（svg） {#a13-freed-fill-in-the-background-replay}
+
+**受影響：** svg 輸出：輸入含手寫的 `_background`（或圖的 `_draw_`），其第一個填色操作沒有自己的填色，且圖帶有漸層 `bgcolor`，例如 `bgcolor="red:blue"`。
+
+**有何不同。** 原生在該操作上輸出 `fill=""`；移植版輸出漸層的第一個色標。xdot 解析為 RGBA，與移植版一致，因此只有 svg 不同。
+
+**為何接受。** `emit_background` 釋放了 `clrs[0]`（`lib/common/emit.c:1518`），而 svg 的填色狀態仍指向它（`gvrender_resolve_color` 保留 `color->u.string = name`，`lib/gvc/gvrender.c:193`），所以原生輸出是已釋放的記憶體，而不是顏色；在測得的 8 次執行中 8 次都是 `fill=""`。移植版輸出 C 本意要輸出的顏色。語料庫中沒有輸入會走到這裡；`src/gvc/emit-xdot.test.ts` 固定了該行為。
+
 ---
 
 ## 持續追蹤的長尾（`dot` 屬性與邊界案例） {#tracked-long-tail-dot-attribute-edge-case}
@@ -1061,7 +1069,7 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
   V8 的 `Math.cos` 相差 1 ulp；fdp 的力迴圈將它放大到約 3 英寸。Apple 的
   `cos` 無法像 `hypot` 那樣，以簡短的模型重現。
 - **移植版所定義的原生當機。** 原生 Graphviz 在 neato 的 `mode=KK` 搭配 `model=mds` 且邊帶有 `len` 時，幾乎每次執行都以結束碼 139 結束（約 1500 次中僅 1 次存活；`mds_model` 以從 1 開始的序號索引 `GD_dist`：堆積溢位）。移植版會捨棄超出範圍的儲存格，其結果與那次存活的執行在 0.01 容差內一致。`circuit_model` 以從 1 開始的 `AGSEQ` 索引（`circuit.c:46`），因此其矩陣的第 0 列從不被寫入，無論圖是否連通，該矩陣在每個圖上都是奇異的：原生 `mode=KK` 搭配 `model=circuit` 從不產生 circuit 版面配置。行程存活時，會輸出 `Warning: graph <name> is disconnected. Hence, the circuit model` 並退回最短路徑；同一個缺陷在最後建立的節點帶有邊時會讀越列指標陣列，所以原生通常以 139 結束（在探測圖上約 4 次中有 3 次）。移植版一律走存活路徑：先輸出該警告，再使用最短路徑，無論圖是否連通。使用 `pack=true` 時，原生每次執行都當機（兩個圖上各超過 3000 次，存活 0 次）；依決定，移植版以自己的名稱（`_neato_cc0`、`_neato_cc1`、...）逐個連通分量發出警告，使用最短路徑並打包。這個組合沒有原生輸出；版面配置與同一個圖的原生 `model=shortpath` 相同。
-- **VPSC 的並列次序依循建立順序，而非堆積位址。** 原生 `IncVPSC::splitBlocks` 一邊對依堆積位址排序的 `std::set<Block*>` 插入，一邊走訪它，而 `CmpNodePos` 以位址決定位置並列，因此 `overlap=vpsc|ipsep` 與帶限制的 `mode=ipsep` 的原生輸出在位置並列時每次執行都可能不同（一個案例在 300 次執行中得到 21 種不同結果）。移植版依建立順序排列並列項，並一律走訪新區塊，因此其輸出是確定的。在已檢查的並列案例中，它與某次抽樣的原生執行一致，唯一例外是一個 40 節點的案例，它與 29 個抽樣的原生結果均不一致（後續事項 110）。
+- **VPSC 的並列次序依循建立順序，而非堆積位址。** 原生 `IncVPSC::splitBlocks` 一邊對依堆積位址排序的 `std::set<Block*>` 插入，一邊走訪它，而 `CmpNodePos` 以位址決定位置並列，因此 `overlap=vpsc|ipsep` 與帶限制的 `mode=ipsep` 的原生輸出在位置並列時每次執行都可能不同（一個案例在 300 次執行中得到 21 種不同結果）。移植版依建立順序排列並列項，並一律走訪新區塊，因此其輸出是確定的。掃描事件的並列項依循 libc++：移植版包含其 `std::sort` 的移植，因此並列次序與原生一致。在已檢查的並列案例中，它與某次抽樣的原生執行一致。先前與 29 個抽樣的原生結果均不一致的 40 節點案例（`dir1 n40`）已得到解釋：在 332 次原生執行中，預言機的 `libvpsc.a` 給出 17 種不同輸出，而僅依建立索引排序 `Blocks` 的原生副本在 332 次中只給出 1 種輸出，移植版與它逐位元相同。在該案例中，區塊的位址順序就是全部差異；這項結論僅在 `dir1 n40` 上測得（後續事項 110）。
 
 ---
 

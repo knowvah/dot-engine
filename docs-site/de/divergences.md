@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1263,6 +1263,14 @@ Fehlschlag bei `2784` würde als nicht akzeptierter Fehler auftauchen, und
 
 **Warum akzeptiert.** `aagerror` (`lib/cgraph/scan.l:157`) fügt `InputFile: ` nur hinzu, wenn `InputFile` gesetzt ist. Die CLI setzt es beim Lesen der Standardeingabe auf `<stdin>`; der Bibliothekseinstieg `agmemread`, den die Portierung spiegelt, lässt es ungesetzt und gibt kein Präfix aus. Die Portierung hat keine CLI, also gibt es nichts zu melden. Die stderr-Sonde normalisiert das Präfix beim Vergleich.
 
+### A13. Freigegebene Füllfarbe im `_background`-Replay (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Betroffen:** svg-Ausgabe für eine Eingabe mit handgeschriebenem `_background` (oder `_draw_` des Graphen), dessen erste gefüllte Operation keine eigene Füllfarbe hat, auf einem Graphen mit Verlaufs-`bgcolor` wie `bgcolor="red:blue"`.
+
+**Was abweicht.** Das native Graphviz gibt bei dieser Operation `fill=""` aus; die Portierung gibt den ersten Verlaufsstopp aus. xdot löst zu RGBA auf und stimmt mit der Portierung überein, daher weicht nur svg ab.
+
+**Warum akzeptiert.** `emit_background` gibt `clrs[0]` frei (`lib/common/emit.c:1518`), während der Füllzustand von svg noch darauf zeigt (`gvrender_resolve_color` behält `color->u.string = name`, `lib/gvc/gvrender.c:193`); die native Ausgabe ist also freigegebener Speicher, keine Farbe. In allen 8 von 8 gemessenen Läufen war es `fill=""`. Die Portierung gibt die Farbe aus, die C meinte. Keine Korpuseingabe erreicht dies; `src/gvc/emit-xdot.test.ts` hält es fest.
+
 ---
 
 ## Nachverfolgter Long Tail (`dot`-Attribute & Randfälle) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1376,7 +1384,7 @@ weicht vom nativen Graphviz ab. Gefunden von der Mission `v2-silent-gaps`
   etwa 3 in. Das `cos` von Apple lässt sich nicht aus einem kurzen Modell reproduzieren,
   wie es bei `hypot` möglich ist.
 - **Native Abstürze, die die Portierung definiert.** Das native Graphviz beendet sich bei neato `mode=KK` mit `model=mds` und einer Kante mit `len` in nahezu jedem Lauf mit 139 (1 Überlebender bei etwa 1500 Läufen; `mds_model` indiziert `GD_dist` mit einer 1-basierten Sequenznummer: Heap-Überlauf). Die Portierung verwirft Zellen außerhalb des Bereichs, und ihr Ergebnis stimmt mit diesem Überlebenden auf 0,01 überein. `circuit_model` indiziert mit der 1-basierten `AGSEQ` (`circuit.c:46`); Zeile 0 seiner Matrix wird daher nie beschrieben, und die Matrix ist bei jedem Graphen singulär, ob zusammenhängend oder nicht: Das native `mode=KK` mit `model=circuit` erzeugt nie ein Circuit-Layout. Überlebt der Prozess, gibt er `Warning: graph <name> is disconnected. Hence, the circuit model` aus und fällt auf kürzeste Wege zurück; derselbe Fehler liest hinter das Zeilenzeiger-Array, wenn der zuletzt angelegte Knoten eine Kante hat, sodass das native Programm meist mit 139 endet (etwa 3 von 4 Läufen beim Testgraphen). Die Portierung nimmt immer den überlebenden Pfad: die Warnung, dann kürzeste Wege, ob zusammenhängend oder nicht. Mit `pack=true` stürzte das native Programm in jedem Lauf ab (0 Überlebende bei über 3000 Läufen auf jedem von zwei Graphen); per Entscheidung warnt die Portierung je Komponente unter einem eigenen Namen (`_neato_cc0`, `_neato_cc1`, ...), nutzt kürzeste Wege und packt. Für diese Kombination gibt es keine native Ausgabe; das Layout entspricht dem nativen `model=shortpath` für denselben Graphen.
-- **VPSC-Gleichstände folgen der Erzeugungsreihenfolge, nicht der Heap-Adresse.** Das native `IncVPSC::splitBlocks` durchläuft ein nach Heap-Adresse geordnetes `std::set<Block*>`, während es darin einfügt, und `CmpNodePos` entscheidet Positionsgleichstände nach der Adresse; die native Ausgabe für `overlap=vpsc|ipsep` und beschränktes `mode=ipsep` schwankt daher bei gleichen Positionen von Lauf zu Lauf (ein Fall ergab 21 verschiedene Ergebnisse in 300 Läufen). Die Portierung ordnet Gleichstände nach Erzeugungsreihenfolge und besucht neue Blöcke immer, ihre Ausgabe ist also deterministisch. Sie entspricht in den geprüften Gleichstandsfällen einem gesampelten nativen Lauf, außer in einem Fall mit 40 Knoten, der keinem von 29 gesampelten nativen Ergebnissen entsprach (Folgepunkt 110).
+- **VPSC-Gleichstände folgen der Erzeugungsreihenfolge, nicht der Heap-Adresse.** Das native `IncVPSC::splitBlocks` durchläuft ein nach Heap-Adresse geordnetes `std::set<Block*>`, während es darin einfügt, und `CmpNodePos` entscheidet Positionsgleichstände nach der Adresse; die native Ausgabe für `overlap=vpsc|ipsep` und beschränktes `mode=ipsep` schwankt daher bei gleichen Positionen von Lauf zu Lauf (ein Fall ergab 21 verschiedene Ergebnisse in 300 Läufen). Die Portierung ordnet Gleichstände nach Erzeugungsreihenfolge und besucht neue Blöcke immer, ihre Ausgabe ist also deterministisch. Gleichstände bei Sweep-Ereignissen folgen libc++: Die Portierung enthält eine Portierung von dessen `std::sort`, sodass die Gleichstandsreihenfolge der nativen entspricht. Sie entspricht in den geprüften Gleichstandsfällen einem gesampelten nativen Lauf. Der Fall mit 40 Knoten (`dir1 n40`), der früher keinem von 29 gesampelten nativen Ergebnissen entsprach, ist erklärt: In 332 nativen Läufen lieferte die `libvpsc.a` des Orakels 17 verschiedene Ausgaben, während eine native Kopie, die nur `Blocks` nach Erzeugungsindex ordnet, in 332 Läufen 1 Ausgabe lieferte; die Portierung ist bitgenau gleich dazu. Die Adressreihenfolge der Blöcke ist in diesem Fall der gesamte Unterschied; die Aussage ist nur an `dir1 n40` gemessen (Folgepunkt 110).
 
 ---
 

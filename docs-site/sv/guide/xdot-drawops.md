@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Egen rendering med xdot-ritoperationer
@@ -119,10 +119,12 @@ inklusive:
 
 För `digraph { a [color=red]; a -> b }` stämmer geometrin i `_draw_`/`_hdraw_`
 och färgvärdena exakt överens med inbyggda `dot -Txdot` (nodens ellips, kantens
-spline, pilspetsens polygon och det tillämpade `color=red`). Anropa
-`getDrawOps(g)` direkt på en ny graf som ännu inte renderats — att anropa
-`render(g, ...)` och `getDrawOps(g)` på *samma* grafobjekt kör layouten två
-gånger och är inget mönster som stöds; använd det ena eller det andra per graf.
+spline, pilspetsens polygon och det tillämpade `color=red`). Anropa `getDrawOps(g)` direkt på en ny graf som ännu inte renderats. Att rendera
+samma grafobjekt igen följer native Graphviz cykel: en `dot`-, `xdot`- eller
+`json`-rendering skriver tillbaka layouten i `g.attrs` (`pos`, `width`,
+`height`, `bb` och ritattributen), varje layout skriver `bb`, en senare layout
+läser dessa värden, och grafens `_draw_` eller `_background` spelas upp på nytt.
+En andra `xdot`-rendering skiljer sig därför från den första, precis som native.
 
 ## Canvas-exempel (endast nodetiketter)
 

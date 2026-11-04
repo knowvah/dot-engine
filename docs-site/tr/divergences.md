@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1171,6 +1171,14 @@ bildirir: bir port hatasını yalnızca bu mesajı taşıdığında kabul ederle
 
 **Neden kabul edildi.** `aagerror` (`lib/cgraph/scan.l:157`) `InputFile: ` önekini yalnızca `InputFile` ayarlıysa ekler. CLI, standart girdiyi okurken bunu `<stdin>` olarak ayarlar; portun yansıttığı kütüphane girişi `agmemread` ise onu ayarsız bırakır ve önek yazdırmaz. Portta CLI yoktur, dolayısıyla bildirilecek bir şey yoktur. stderr sondası karşılaştırmada öneki normalleştirir.
 
+### A13. `_background` yeniden oynatımında serbest bırakılmış dolgu rengi (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Etkilenenler:** El yazısıyla yazılmış `_background` (veya grafın `_draw_`) özniteliğinin ilk dolu işleminin kendi dolgu rengi olmadığı bir girdinin, `bgcolor="red:blue"` gibi gradyan `bgcolor` taşıyan bir grafta svg çıktısı.
+
+**Ne farklı.** Yerel, o işlemde `fill=""` yazdırır; port gradyanın ilk durağını yazdırır. xdot RGBA'ya çözülür ve portla uyuşur, bu yüzden yalnızca svg farklıdır.
+
+**Neden kabul edildi.** `emit_background`, svg'nin dolgu durumu hâlâ ona işaret ederken `clrs[0]`'ı serbest bırakır (`lib/common/emit.c:1518`; `gvrender_resolve_color`, `color->u.string = name` değerini korur, `lib/gvc/gvrender.c:193`); bu yüzden yerel çıktı bir renk değil, serbest bırakılmış bellektir; ölçülen 8 çalıştırmanın 8'inde `fill=""` idi. Port, C'nin kastettiği rengi yazdırır. Korpustaki hiçbir girdi buna ulaşmaz; `src/gvc/emit-xdot.test.ts` bunu sabitler.
+
 ---
 
 ## Takip edilen uzun kuyruk (`dot` öznitelikleri ve uç durumlar) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1278,7 +1286,7 @@ farklıdır. `v2-silent-gaps` görevi tarafından bulundu
   inç'e yükseltir. Apple'ın `cos`'u, `hypot`'un olduğu gibi kısa bir modelden yeniden
   üretilemez.
 - **Portun tanımladığı yerel çökmeler.** Yerel Graphviz, neato `mode=KK` ile `model=mds` ve `len` taşıyan bir kenar durumunda neredeyse her çalıştırmada 139 koduyla çıkar (yaklaşık 1500 çalıştırmada 1 hayatta kalan; `mds_model`, `GD_dist` dizisini 1 tabanlı bir sıra numarasıyla indeksler: yığın taşması). Port aralık dışı hücreleri atar ve sonucu o hayatta kalanla 0,01 toleransla eşleşir. `circuit_model` 1 tabanlı `AGSEQ` ile indeksler (`circuit.c:46`); bu yüzden matrisinin 0. satırı hiç yazılmaz ve matris, bağlantılı olsun olmasın her grafikte tekildir: yerel `mode=KK` ile `model=circuit` hiçbir zaman circuit yerleşimi üretmez. İşlem hayatta kalırsa `Warning: graph <name> is disconnected. Hence, the circuit model` yazdırır ve en kısa yollara geri döner; son oluşturulan düğümün kenarı olduğunda aynı hata satır işaretçisi dizisinin ötesini okur, bu yüzden yerel sürüm çoğunlukla 139 ile çıkar (deneme grafiğinde 4 çalıştırmanın yaklaşık 3'ü). Port her zaman hayatta kalan yolu izler: uyarı, ardından en kısa yollar; graf bağlantılı olsun olmasın. `pack=true` ile yerel sürüm her çalıştırmada çöktü (iki grafın her birinde 3000'den fazla çalıştırmada 0 hayatta kalan); karar gereği port, her bileşen için kendi adı altında (`_neato_cc0`, `_neato_cc1`, ...) uyarır, en kısa yolları kullanır ve paketler. Bu birleşim için yerel çıktı yoktur; yerleşim, aynı graf için yerel `model=shortpath` ile aynıdır.
-- **VPSC eşitlik sırası, yığın adresini değil oluşturulma sırasını izler.** Yerel `IncVPSC::splitBlocks`, yığın adresine göre sıralı bir `std::set<Block*>` içine eleman eklerken onu dolaşır ve `CmpNodePos` konum eşitliklerini adresle bozar; bu yüzden `overlap=vpsc|ipsep` ve kısıtlı `mode=ipsep` için yerel çıktı, konumlar eşit olduğunda çalıştırmadan çalıştırmaya değişir (bir durumda 300 çalıştırmada 21 farklı sonuç çıktı). Port eşitlikleri oluşturulma sırasına göre sıralar ve yeni blokları her zaman ziyaret eder; bu yüzden çıktısı belirlenimcidir. Denetlenen eşitlik durumlarında örneklenmiş bir yerel çalıştırmaya eşittir; yalnızca 40 düğümlü bir durum, örneklenen 29 yerel sonucun hiçbiriyle eşleşmedi (takip maddesi 110).
+- **VPSC eşitlik sırası, yığın adresini değil oluşturulma sırasını izler.** Yerel `IncVPSC::splitBlocks`, yığın adresine göre sıralı bir `std::set<Block*>` içine eleman eklerken onu dolaşır ve `CmpNodePos` konum eşitliklerini adresle bozar; bu yüzden `overlap=vpsc|ipsep` ve kısıtlı `mode=ipsep` için yerel çıktı, konumlar eşit olduğunda çalıştırmadan çalıştırmaya değişir (bir durumda 300 çalıştırmada 21 farklı sonuç çıktı). Port eşitlikleri oluşturulma sırasına göre sıralar ve yeni blokları her zaman ziyaret eder; bu yüzden çıktısı belirlenimcidir. Süpürme olaylarındaki eşitlikler libc++'ı izler: port, onun `std::sort` işlevinin bir portunu içerir; bu yüzden eşitlik sırası yerelle aynıdır. Denetlenen eşitlik durumlarında örneklenmiş bir yerel çalıştırmaya eşittir. Daha önce örneklenen 29 yerel sonucun hiçbiriyle eşleşmeyen 40 düğümlü durum (`dir1 n40`) açıklanmıştır: 332 yerel çalıştırmada kahinin `libvpsc.a` kütüphanesi 17 farklı çıktı verdi; yalnızca `Blocks` kümesini oluşturulma dizinine göre sıralayan yerel bir kopya ise 332 çalıştırmada 1 çıktı verdi ve port bununla bit düzeyinde aynıdır. Bu durumda farkın tamamı blokların adres sırasıdır; iddia yalnızca `dir1 n40` üzerinde ölçülmüştür (takip maddesi 110).
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Overzicht
 
@@ -82,6 +82,13 @@ kantsplines, omhullende rechthoek) blijven daarna op het `Graph`-object bewaard.
 `getLayout` voert de lay-out niet opnieuw uit — het leest geometrie die een eerdere
 `render`-aanroep al heeft berekend, en wordt dus altijd *na* `render` op dezelfde
 graaf aangeroepen.
+
+Renderen verandert de graaf, zoals in Graphviz. Na een `dot`-, `xdot`- of
+`json`-render bevat `g.attrs` de lay-outattributen (`pos`, `width`, `height`,
+`bb` en de tekenattributen); elke lay-out schrijft `bb`. Dezelfde `Graph`
+opnieuw renderen leest die waarden en een `_draw_` of `_background` van de graaf
+wordt opnieuw afgespeeld, zodat een tweede `xdot`-render verschilt van de
+eerste, net als bij native.
 
 ## De drie ingangen — welke deur?
 

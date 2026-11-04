@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1197,6 +1197,14 @@ fout, en `registry-staleness.test.ts` zou de vermelding als verouderd markeren. 
 
 **Waarom geaccepteerd.** `aagerror` (`lib/cgraph/scan.l:157`) voegt `InputFile: ` alleen toe als `InputFile` is gezet. De CLI zet het op `<stdin>` bij het lezen van standaardinvoer; het bibliotheekingangspunt `agmemread`, dat de port spiegelt, laat het ongezet en drukt geen voorvoegsel af. De port heeft geen CLI, dus er is niets te melden. De stderr-sonde normaliseert het voorvoegsel bij vergelijking.
 
+### A13. Vrijgegeven vulkleur in de `_background`-weergave (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Getroffen:** svg-uitvoer voor een invoer met een met de hand geschreven `_background` (of `_draw_` van de graaf) waarvan de eerste gevulde bewerking geen eigen vulkleur heeft, op een graaf met een kleurverloop-`bgcolor` zoals `bgcolor="red:blue"`.
+
+**Wat afwijkt.** Native drukt `fill=""` af op die bewerking; de port drukt de eerste stop van het verloop af. xdot wordt omgezet naar RGBA en komt overeen met de port, dus alleen svg verschilt.
+
+**Waarom geaccepteerd.** `emit_background` geeft `clrs[0]` vrij (`lib/common/emit.c:1518`) terwijl de vultoestand van svg er nog naar wijst (`gvrender_resolve_color` behoudt `color->u.string = name`, `lib/gvc/gvrender.c:193`), dus de native uitvoer is vrijgegeven geheugen, geen kleur; het was `fill=""` in 8 van 8 gemeten runs. De port drukt de kleur af die C bedoelde. Geen corpusinvoer bereikt dit; `src/gvc/emit-xdot.test.ts` legt het vast.
+
 ---
 
 ## Gevolgde long tail (`dot`-attributen & randgevallen) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1304,7 +1312,7 @@ wijkt af van native Graphviz. Gevonden door de missie `v2-silent-gaps`
   de `Math.cos` van V8; de krachtenlus van fdp versterkt dat tot ongeveer 3 inch. De `cos` van Apple
   is niet te reproduceren met een kort model zoals dat voor `hypot` kan.
 - **Native crashes die de port definieert.** Native Graphviz eindigt met 139 bij neato `mode=KK` met `model=mds` en een rand met `len` in vrijwel elke run (1 overlevende op ongeveer 1500; `mds_model` indexeert `GD_dist` met een 1-gebaseerd volgnummer: heap-overflow). De port laat cellen buiten bereik vallen en zijn resultaat komt op 0,01 overeen met die overlevende. `circuit_model` indexeert met de 1-gebaseerde `AGSEQ` (`circuit.c:46`), dus rij 0 van zijn matrix wordt nooit geschreven en de matrix is singulier bij elke graaf, samenhangend of niet: native `mode=KK` met `model=circuit` levert nooit een circuit-layout op. Als het proces overleeft, drukt het `Warning: graph <name> is disconnected. Hence, the circuit model` af en valt het terug op kortste paden; dezelfde fout leest voorbij de array met rijpointers wanneer de laatst aangemaakte knoop een rand heeft, dus native eindigt meestal met 139 (ongeveer 3 van de 4 runs op de proefgraaf). De port neemt altijd het overlevende pad: de waarschuwing, dan kortste paden, samenhangend of niet. Met `pack=true` crashte native bij elke run (0 overlevenden op meer dan 3000 voor elk van twee grafen); bij besluit waarschuwt de port per component onder een eigen naam (`_neato_cc0`, `_neato_cc1`, ...), gebruikt kortste paden en pakt in. Voor die combinatie bestaat geen native uitvoer; de layout is gelijk aan native `model=shortpath` voor dezelfde graaf.
-- **VPSC-gelijkstanden volgen aanmaakvolgorde, niet heap-adres.** Native `IncVPSC::splitBlocks` doorloopt een op heap-adres gesorteerde `std::set<Block*>` terwijl het er elementen in invoegt, en `CmpNodePos` beslist gelijke posities op adres, dus de native uitvoer voor `overlap=vpsc|ipsep` en beperkte `mode=ipsep` varieert van run tot run bij gelijke posities (één geval gaf 21 verschillende resultaten in 300 runs). De port ordent gelijkstanden op aanmaakvolgorde en bezoekt altijd nieuwe blokken, dus zijn uitvoer is deterministisch. Ze komt overeen met een gesamplede native run in de gecontroleerde gelijkstandgevallen, behalve één geval met 40 knopen dat met geen van 29 gesamplede native resultaten overeenkwam (vervolgpunt 110).
+- **VPSC-gelijkstanden volgen aanmaakvolgorde, niet heap-adres.** Native `IncVPSC::splitBlocks` doorloopt een op heap-adres gesorteerde `std::set<Block*>` terwijl het er elementen in invoegt, en `CmpNodePos` beslist gelijke posities op adres, dus de native uitvoer voor `overlap=vpsc|ipsep` en beperkte `mode=ipsep` varieert van run tot run bij gelijke posities (één geval gaf 21 verschillende resultaten in 300 runs). De port ordent gelijkstanden op aanmaakvolgorde en bezoekt altijd nieuwe blokken, dus zijn uitvoer is deterministisch. Gelijkstanden van sweep-gebeurtenissen volgen libc++: de port bevat een port van de `std::sort` ervan, dus de volgorde bij gelijkstand komt overeen met native. Ze komt overeen met een gesamplede native run in de gecontroleerde gelijkstandgevallen. Het geval met 40 knopen (`dir1 n40`), dat eerder met geen van 29 gesamplede native resultaten overeenkwam, is verklaard: in 332 native runs gaf de `libvpsc.a` van het orakel 17 verschillende uitvoeren, terwijl een native kopie die alleen `Blocks` op aanmaakindex ordent er 1 gaf in 332, en de port is er bit voor bit aan gelijk. De adresvolgorde van blokken is in dat geval het hele verschil; de bewering is alleen gemeten op `dir1 n40` (vervolgpunt 110).
 
 ---
 

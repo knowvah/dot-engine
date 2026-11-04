@@ -224,6 +224,21 @@ export function dotInitSubg(g: Graph): void {
 // ---------------------------------------------------------------------------
 
 /**
+ * Drops a node's fast-graph lists. dot_init_node allocates new ones
+ * unconditionally, and dot_cleanup frees them, so neither a later layout nor a
+ * layout with no gvFreeLayout before it reads the previous layout's edges.
+ * @see lib/dotgen/dotinit.c:dot_init_node (alloc_elist)
+ * @see lib/dotgen/dotinit.c:dot_cleanup_node (free_list)
+ */
+function clearFastGraphLists(n: Node): void {
+  n.info.in       = undefined;
+  n.info.out      = undefined;
+  n.info.flat_in  = undefined;
+  n.info.flat_out = undefined;
+  n.info.other    = undefined;
+}
+
+/**
  * Calls commonInitNode (shape-aware, label-driven sizing) then
  * dotInitNode for every node, then dotInitEdge for every edge.
  *
@@ -233,6 +248,7 @@ export function dotInitSubg(g: Graph): void {
 export function dotInitNodeEdge(g: Graph): void {
   for (const n of nodesInSeq(g)) {
     commonInitNode(n, g);
+    clearFastGraphLists(n); // C's alloc_elist does not keep the lists it replaces
     dotInitNode(n);
   }
   const measurer = g.root.info.gvc?.textMeasurer;
@@ -319,11 +335,7 @@ export function dotCleanup(g: Graph): void {
   let n: Node | undefined = g.info.nlist;
   while (n !== undefined) {
     const next: Node | undefined = n.info.next;
-    n.info.in       = undefined;
-    n.info.out      = undefined;
-    n.info.flat_in  = undefined;
-    n.info.flat_out = undefined;
-    n.info.other    = undefined;
+    clearFastGraphLists(n);
     n.info.next     = undefined;
     n.info.prev     = undefined;
     n = next;

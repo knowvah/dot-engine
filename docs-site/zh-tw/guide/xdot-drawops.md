@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # 以 xdot 繪製操作自訂轉譯
@@ -109,7 +109,7 @@ const screenY = canvasHeight - op.ellipse.y;
 - 邊的繪製操作（樣條使用 `unfilled_bezier`，箭頭則使用 `pen_color` /
   `fill_color` / `filled_polygon`）
 
-對於 `digraph { a [color=red]; a -> b }`，`_draw_`/`_hdraw_` 的幾何與色彩值會與原生 `dot -Txdot` 完全一致（節點橢圓、邊樣條、箭頭多邊形，以及套用的 `color=red`）。請直接對全新（尚未轉譯）的圖呼叫 `getDrawOps(g)`——對*同一個*圖物件先呼叫 `render(g, ...)` 再呼叫 `getDrawOps(g)` 會執行兩次版面配置，這不是受支援的用法；每個圖請擇一使用。
+對於 `digraph { a [color=red]; a -> b }`，`_draw_`/`_hdraw_` 的幾何與色彩值會與原生 `dot -Txdot` 完全一致（節點橢圓、邊樣條、箭頭多邊形，以及套用的 `color=red`）。請直接對全新（尚未轉譯）的圖呼叫 `getDrawOps(g)`。再次轉譯*同一個*圖物件會遵循原生 Graphviz 的循環：`dot`、`xdot` 或 `json` 轉譯會把版面配置寫回 `g.attrs`（`pos`、`width`、`height`、`bb` 與繪製屬性），任何版面配置都會寫入 `bb`，之後的版面配置會讀取這些值，並且會重播圖的 `_draw_` 或 `_background`。因此，第二次 `xdot` 轉譯與第一次不同，與原生一致。
 
 ## Canvas 範例（僅節點標籤）
 

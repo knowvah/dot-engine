@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -452,6 +452,14 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 
 **为何接受。** 仅当设置了 `InputFile` 时，`aagerror`（`lib/cgraph/scan.l:157`）才会加上 `InputFile: `。CLI 在读取标准输入时将其设为 `<stdin>`；移植版所对应的库入口 `agmemread` 不设置它，也就不输出前缀。移植版没有 CLI，因此无可报告。stderr 探针在比较时会规范化该前缀。
 
+### A13. 重放 `_background` 时被释放的填充色（svg） {#a13-freed-fill-in-the-background-replay}
+
+**受影响：** svg 输出：输入含手写的 `_background`（或图的 `_draw_`），其第一个填充操作没有自己的填充色，且图带有渐变 `bgcolor`，例如 `bgcolor="red:blue"`。
+
+**有何不同。** 原生在该操作上输出 `fill=""`；移植版输出渐变的第一个色标。xdot 解析为 RGBA，与移植版一致，因此只有 svg 不同。
+
+**为何接受。** `emit_background` 释放了 `clrs[0]`（`lib/common/emit.c:1518`），而 svg 的填充状态仍指向它（`gvrender_resolve_color` 保留 `color->u.string = name`，`lib/gvc/gvrender.c:193`），所以原生输出是已释放的内存，而不是颜色；在测得的 8 次运行中 8 次都是 `fill=""`。移植版输出 C 本意要输出的颜色。语料库中没有输入会走到这里；`src/gvc/emit-xdot.test.ts` 固定了该行为。
+
 ---
 
 ## 已跟踪的长尾（`dot` 属性与边界情形） {#tracked-long-tail-dot-attribute-edge-case}
@@ -503,7 +511,7 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 - **fdp 可能因宿主 libm 的 `cos`/`sin` 而与原生不同。** fdp 遵循 15.0.0 之后的 Graphviz（基于 hypot 距离的斥力，`Mlimit`），宿主 libm 的 `hypot` 被逐位复现（`src/common/libm-hypot.ts`，在 40 万个样本上 0 处不匹配）。252 个可用 fdp 渲染的黄金输入中有 251 个与原生构建精确匹配；剩下的一个
   （`parallel-cluster-ldbxtried`）用 `T_Wd * cos(alpha)` 放置簇端口节点，而 macOS libm 的 `cos(-2.3840764867756761)` 与 V8 的 `Math.cos` 相差 1 ulp；fdp 的力循环把它放大到约 3 英寸。Apple 的 `cos` 不像 `hypot` 那样可以由一个简短的模型复现。
 - **原生崩溃而移植版有定义的行为。** 原生 Graphviz 在 neato 的 `mode=KK` 搭配 `model=mds` 且边带有 `len` 时，几乎每次运行都以退出码 139 结束（约 1500 次中仅 1 次存活；`mds_model` 用从 1 开始的序号索引 `GD_dist`：堆溢出）。移植版丢弃越界的单元格，其结果与那次存活的运行在 0.01 容差内一致。`circuit_model` 用从 1 开始的 `AGSEQ` 索引（`circuit.c:46`），因此其矩阵的第 0 行从不被写入，无论图是否连通，该矩阵在每个图上都是奇异的：原生 `mode=KK` 搭配 `model=circuit` 从不产生 circuit 布局。进程存活时，它会输出 `Warning: graph <name> is disconnected. Hence, the circuit model` 并回退到最短路径；同一缺陷在最后创建的节点带有边时会读越行指针数组，所以原生通常以 139 退出（在探针图上约 4 次中有 3 次）。移植版始终走存活路径：先输出该警告，再使用最短路径，无论图是否连通。使用 `pack=true` 时，原生每次运行都崩溃（两个图上各超过 3000 次，存活 0 次）；按决定，移植版以自己的名称（`_neato_cc0`、`_neato_cc1`、...）逐个连通分量发出警告，使用最短路径并打包。这一组合没有原生输出；布局与同一图的原生 `model=shortpath` 相同。
-- **VPSC 的并列次序遵循创建顺序，而非堆地址。** 原生 `IncVPSC::splitBlocks` 一边向按堆地址排序的 `std::set<Block*>` 中插入，一边遍历它，而 `CmpNodePos` 用地址来决定位置并列，因此 `overlap=vpsc|ipsep` 和带约束的 `mode=ipsep` 的原生输出在位置并列时每次运行都可能不同（一个用例在 300 次运行中得到 21 种不同结果）。移植版按创建顺序排列并列项，并始终访问新块，因此其输出是确定的。在已检查的并列用例中，它与某次抽样的原生运行一致，唯一例外是一个 40 节点的用例，它与 29 个抽样的原生结果均不一致（后续事项 110）。
+- **VPSC 的并列次序遵循创建顺序，而非堆地址。** 原生 `IncVPSC::splitBlocks` 一边向按堆地址排序的 `std::set<Block*>` 中插入，一边遍历它，而 `CmpNodePos` 用地址来决定位置并列，因此 `overlap=vpsc|ipsep` 和带约束的 `mode=ipsep` 的原生输出在位置并列时每次运行都可能不同（一个用例在 300 次运行中得到 21 种不同结果）。移植版按创建顺序排列并列项，并始终访问新块，因此其输出是确定的。扫描事件的并列项遵循 libc++：移植版包含其 `std::sort` 的移植，因此并列次序与原生一致。在已检查的并列用例中，它与某次抽样的原生运行一致。此前与 29 个抽样的原生结果均不一致的 40 节点用例（`dir1 n40`）已得到解释：在 332 次原生运行中，预言机的 `libvpsc.a` 给出 17 种不同输出，而仅按创建索引排序 `Blocks` 的原生副本在 332 次中只给出 1 种输出，移植版与它逐位相同。在该用例中，块的地址顺序就是全部差异；这一结论仅在 `dir1 n40` 上测得（后续事项 110）。
 
 ---
 

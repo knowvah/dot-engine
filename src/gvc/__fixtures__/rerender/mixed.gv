@@ -1,0 +1,8 @@
+digraph G {
+  graph [label="top", compound=true];
+  subgraph cluster_a { label="A"; a1 [shape=record,label="{x|<p>y}"]; a2; a1:p -> a2 [label="e1"]; }
+  subgraph cluster_b { label="B"; b1; b2 [xlabel="xl"]; b1 -> b2 [taillabel="t",headlabel="h"]; }
+  a2 -> b1 [lhead=cluster_b];
+  a1 -> b2; c -> c; c -> d [style=dashed]; d -> a1; c -> d;
+  { rank=same; c; e; } c -> e [label="fl"];
+}

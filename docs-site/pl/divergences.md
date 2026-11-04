@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1171,6 +1171,14 @@ błąd, a `registry-staleness.test.ts` oznaczyłby wpis jako nieaktualny. Dowody
 
 **Dlaczego zaakceptowane.** `aagerror` (`lib/cgraph/scan.l:157`) dodaje `InputFile: ` tylko wtedy, gdy `InputFile` jest ustawiony. CLI ustawia go na `<stdin>` przy czytaniu standardowego wejścia; punkt wejścia biblioteki `agmemread`, który port odwzorowuje, zostawia go nieustawionego i nie wypisuje prefiksu. Port nie ma CLI, więc nie ma czego zgłaszać. Sonda stderr normalizuje prefiks przy porównaniu.
 
+### A13. Zwolniony kolor wypełnienia w odtwarzaniu `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Dotyczy:** Wyjście svg dla wejścia z ręcznie napisanym `_background` (lub `_draw_` grafu), którego pierwsza wypełniona operacja nie ma własnego koloru wypełnienia, na grafie z gradientowym `bgcolor`, np. `bgcolor="red:blue"`.
+
+**Czym się różni.** Natywny wypisuje przy tej operacji `fill=""`; port wypisuje pierwszy punkt gradientu. xdot rozwiązuje się do RGBA i zgadza się z portem, więc różni się tylko svg.
+
+**Dlaczego zaakceptowane.** `emit_background` zwalnia `clrs[0]` (`lib/common/emit.c:1518`), podczas gdy stan wypełnienia svg nadal na niego wskazuje (`gvrender_resolve_color` zachowuje `color->u.string = name`, `lib/gvc/gvrender.c:193`), więc natywne wyjście to zwolniona pamięć, a nie kolor; było to `fill=""` w 8 z 8 zmierzonych uruchomień. Port wypisuje kolor, który miał na myśli C. Żadne wejście korpusu tu nie dociera; przypina to `src/gvc/emit-xdot.test.ts`.
+
 ---
 
 ## Śledzony długi ogon (atrybuty `dot` i przypadki brzegowe) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1278,7 +1286,7 @@ różni się od natywnego Graphviz. Znalezione przez misję `v2-silent-gaps`
   `Math.cos` z V8; pętla sił fdp wzmacnia to do około 3 cali. `cos` Apple
   nie daje się odtworzyć z krótkiego modelu tak jak `hypot`.
 - **Awarie natywne, które port definiuje.** Natywny Graphviz kończy działanie kodem 139 w neato `mode=KK` z `model=mds` i krawędzią z `len` w niemal każdym uruchomieniu (1 ocalały na około 1500; `mds_model` indeksuje `GD_dist` numerem sekwencyjnym liczonym od 1: przepełnienie sterty). Port odrzuca komórki spoza zakresu, a jego wynik zgadza się z tym ocalałym z dokładnością 0,01. `circuit_model` indeksuje `AGSEQ` liczonym od 1 (`circuit.c:46`), więc wiersz 0 jego macierzy nigdy nie jest zapisywany, a macierz jest osobliwa dla każdego grafu, spójnego i niespójnego: natywny `mode=KK` z `model=circuit` nigdy nie tworzy układu circuit. Gdy proces przeżyje, wypisuje `Warning: graph <name> is disconnected. Hence, the circuit model` i wraca do najkrótszych ścieżek; ten sam błąd czyta poza tablicą wskaźników wierszy, gdy ostatnio utworzony węzeł ma krawędź, więc natywny program zwykle kończy się kodem 139 (około 3 uruchomień na 4 na grafie próbnym). Port zawsze wybiera ścieżkę ocalałego: ostrzeżenie, potem najkrótsze ścieżki, dla grafu spójnego i niespójnego. Z `pack=true` natywny program zawiesił się w każdym uruchomieniu (0 ocalałych na ponad 3000 dla każdego z dwóch grafów); decyzją port ostrzega dla każdej składowej pod własną nazwą (`_neato_cc0`, `_neato_cc1`, ...), używa najkrótszych ścieżek i pakuje. Dla tej kombinacji nie ma natywnego wyniku; układ jest równy natywnemu `model=shortpath` dla tego samego grafu.
-- **Kolejność remisów w VPSC wynika z kolejności utworzenia, nie z adresu sterty.** Natywny `IncVPSC::splitBlocks` przegląda `std::set<Block*>` uporządkowany według adresu sterty, wstawiając do niego elementy, a `CmpNodePos` rozstrzyga remisy pozycji adresem, więc natywny wynik dla `overlap=vpsc|ipsep` i ograniczonego `mode=ipsep` zmienia się między uruchomieniami przy równych pozycjach (jeden przypadek dał 21 różnych wyników w 300 uruchomieniach). Port porządkuje remisy według kolejności utworzenia i zawsze odwiedza nowe bloki, więc jego wynik jest deterministyczny. W sprawdzonych przypadkach remisów jest równy próbkowanemu uruchomieniu natywnemu, z wyjątkiem jednego przypadku z 40 węzłami, który nie zgadzał się z żadnym z 29 próbkowanych wyników natywnych (zadanie następcze 110).
+- **Kolejność remisów w VPSC wynika z kolejności utworzenia, nie z adresu sterty.** Natywny `IncVPSC::splitBlocks` przegląda `std::set<Block*>` uporządkowany według adresu sterty, wstawiając do niego elementy, a `CmpNodePos` rozstrzyga remisy pozycji adresem, więc natywny wynik dla `overlap=vpsc|ipsep` i ograniczonego `mode=ipsep` zmienia się między uruchomieniami przy równych pozycjach (jeden przypadek dał 21 różnych wyników w 300 uruchomieniach). Port porządkuje remisy według kolejności utworzenia i zawsze odwiedza nowe bloki, więc jego wynik jest deterministyczny. Remisy zdarzeń przemiatania wynikają z libc++: port zawiera port jego `std::sort`, więc kolejność remisów jest zgodna z natywną. W sprawdzonych przypadkach remisów jest równy próbkowanemu uruchomieniu natywnemu. Przypadek z 40 węzłami (`dir1 n40`), który wcześniej nie zgadzał się z żadnym z 29 próbkowanych wyników natywnych, został wyjaśniony: w 332 uruchomieniach natywnych `libvpsc.a` wyroczni dała 17 różnych wyników, a natywna kopia porządkująca tylko `Blocks` według indeksu utworzenia dała 1 w 332, i port jest z nią równy co do bitu. Kolejność adresów bloków to cała różnica w tym przypadku; twierdzenie jest zmierzone tylko na `dir1 n40` (zadanie następcze 110).
 
 ---
 

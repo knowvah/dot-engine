@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Randare proprie cu operații de desenare xdot
@@ -120,10 +120,13 @@ graf, inclusiv:
 Pentru `digraph { a [color=red]; a -> b }`, geometria `_draw_`/`_hdraw_` și
 valorile de culoare coincid exact cu cele din `dot -Txdot` nativ (elipsa
 nodului, spline-ul muchiei, poligonul vârfului de săgeată și `color=red`
-aplicat). Apelați `getDrawOps(g)` direct pe un graf proaspăt (încă nerandat) —
-apelarea `render(g, ...)` și `getDrawOps(g)` pe *același* obiect graf execută
-aranjarea de două ori și nu este un tipar acceptat; folosiți una sau alta
-pentru fiecare graf.
+aplicat). Apelați `getDrawOps(g)` direct pe un graf proaspăt (încă nerandat). Randarea din
+nou a *aceluiași* obiect graf urmează ciclul Graphviz nativ: o randare `dot`,
+`xdot` sau `json` scrie aranjarea înapoi în `g.attrs` (`pos`, `width`, `height`,
+`bb` și atributele de desenare), orice aranjare scrie `bb`, o aranjare
+ulterioară citește aceste valori, iar `_draw_` sau `_background` al grafului
+este redat din nou. O a doua randare `xdot` diferă așadar de prima, ca la cel
+nativ.
 
 ## Exemplu cu canvas (doar etichetele nodurilor)
 

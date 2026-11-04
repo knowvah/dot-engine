@@ -370,7 +370,7 @@ export abstract class DotWriterBase {
    *  @see plugin/core/gvrender_core_dot.c:284 xdot_end_cluster */
   private clusterAttrs(sg: Graph): string[] {
     const d = this.drawsOf(sg);
-    const parts: string[] = this.emitDraws ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
+    const parts: string[] = this.emitDraws || d?.draw ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
     if (d?.ldraw) parts.push(this.drawAttr('_ldraw_', d.ldraw));
     if (sg.info.bb) parts.push('bb="' + this.bbStr(sg) + '"');
     // rec_attach_bb recurses into GD_clust, so a labelled cluster carries the

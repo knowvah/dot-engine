@@ -81,6 +81,12 @@ edge splines, bounding box) are retained on the `Graph` object afterward.
 call already computed, so it's always called *after* `render`, on the same
 graph.
 
+Rendering changes the graph, as it does in Graphviz. After a `dot`, `xdot` or
+`json` render, `g.attrs` holds the layout attributes (`pos`, `width`, `height`,
+`bb` and the draw attributes); any layout writes `bb`. Rendering the same
+`Graph` again reads those values, and a graph `_draw_` or `_background` is
+replayed, so a second `xdot` render differs from the first, as native's does.
+
 ## The three entry points — which door?
 
 @knowvah/dot-engine ships three entry points: the root package re-exports everything

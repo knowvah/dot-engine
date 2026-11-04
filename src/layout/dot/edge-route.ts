@@ -25,7 +25,7 @@ import { clipAndInstall } from '../../common/splines-clip.js';
 import { normalizeVec } from './edge-route-geom.js';
 import { arrowDrawOpsForEnd } from './edge-route-arrow.js';
 import { linearBezier } from './edge-route-poly.js';
-import { rankEdgeInfoOf } from './edge-route-rank.js';
+import { rankEdgeInfoOf, routedThisPass } from './edge-route-rank.js';
 import { routeRegularEdgeFaithful } from './edge-route-faithful.js';
 import { edgeRouteCmp } from './edge-order.js';
 import { isFlatAdjacent, makeFlatAdjEdges } from './splines-flat.js';
@@ -316,7 +316,7 @@ function isAdjacentPortFlat(e: GraphEdge, g: Graph): boolean {
 /** True when x is an unrouted adjacent same-rank flat edge (port or not): C
  *  groups by main edge only, so a port-less sibling joins the aux call. */
 function isGroupableFlat(x: GraphEdge, g: Graph): boolean {
-  return x.info.spl === undefined && x.tail.info.rank !== undefined
+  return !routedThisPass(x) && x.tail.info.rank !== undefined
     && x.tail.info.rank === x.head.info.rank && isFlatAdjacent(g, x);
 }
 
@@ -373,7 +373,7 @@ function routeFaithfulSidePort(e: GraphEdge, g: Graph): boolean {
   if (sameRank && isFlatAdjacent(g, e)) {
     const group = collectAdjacentFlatGroup(e, g);
     return makeFlatAdjEdges(g, group, group.length, edgeType(g)) === 0
-      && e.info.spl !== undefined;
+      && routedThisPass(e);
   }
   // Non-adjacent flats: C groups identical-port siblings into ONE make_flat_edge
   // call and nests their splines (cnt-loop). Collect the group and route once;
@@ -382,7 +382,7 @@ function routeFaithfulSidePort(e: GraphEdge, g: Graph): boolean {
   // @see lib/dotgen/dotsplines.c:make_flat_edge, make_flat_bottom_edges
   if (sameRank) {
     const group = collectNonAdjacentFlatGroup(e, g);
-    return routeFlatEdgeGroupFaithful(g, group, group.length, edgeType(g)) && e.info.spl !== undefined;
+    return routeFlatEdgeGroupFaithful(g, group, group.length, edgeType(g)) && routedThisPass(e);
   }
   const pts = routeRegularEdgeFaithful(g, e);
   if (pts === null) return false;
@@ -431,7 +431,7 @@ function routeFlatEdge(e: GraphEdge, g: Graph): boolean {
     const group = collectNonAdjacentFlatGroup(e, g);
     if (group.length > 0
         && routeFlatEdgeGroupFaithful(g, group, group.length, edgeType(g))
-        && e.info.spl !== undefined) return true;
+        && routedThisPass(e)) return true;
   }
   return false;
 }
@@ -486,7 +486,7 @@ function orderedDotEdges(g: Graph): GraphEdge[] {
 export function routeLoneEdge(e: GraphEdge, g: Graph): void {
   // A lost edge (routesplines failure, C semantics) is consumed: C routes each
   // edge exactly once, so the backstop sweep must not re-attempt it.
-  if (e.info.spl !== undefined || e.info.lost === true) return;
+  if (routedThisPass(e) || e.info.lost === true) return;
   // C dot_splines_ skips FLATORDER/IGNORED edges when building the route list;
   // an IGNORED edge (e.g. a concentrate-merged parallel duplicate) must get no
   // spline so emit draws only the representative. @see dotsplines.c:295

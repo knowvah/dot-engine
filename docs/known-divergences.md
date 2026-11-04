@@ -1212,6 +1212,14 @@ stale. Evidence:
 
 **Why accepted.** `aagerror` (`lib/cgraph/scan.l:157`) adds `InputFile: ` only when `InputFile` is set. The CLI sets it to `<stdin>` when reading standard input; the library entry `agmemread`, which the port mirrors, leaves it unset and prints no prefix. The port has no CLI, so there is no `InputFile` to report. The stderr probe normalizes the prefix when comparing.
 
+### A13. Freed fill colour in the `_background` replay (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Affected:** svg output for an input whose hand-written `_background` (or graph `_draw_`) has a first filled op with no fill colour of its own, on a graph with a gradient `bgcolor` such as `bgcolor="red:blue"`.
+
+**What differs.** Native prints `fill=""` on that op; the port prints the gradient's first stop. xdot resolves to RGBA and agrees with the port, so only svg differs.
+
+**Why accepted.** `emit_background` frees `clrs[0]` (`lib/common/emit.c:1518`) while svg's fill state still points at it (`gvrender_resolve_color` keeps `color->u.string = name`, `lib/gvc/gvrender.c:193`), so native's output is freed memory, not a colour; it was `fill=""` in 8 of 8 measured runs. The port prints the colour C meant. No corpus input reaches this; `src/gvc/emit-xdot.test.ts` pins it.
+
 ---
 
 ## Tracked long tail (`dot` attribute & edge-case)
@@ -1342,9 +1350,15 @@ differs from native Graphviz. Found by the `v2-silent-gaps` mission
   so native output for `overlap=vpsc|ipsep` and constrained `mode=ipsep`
   varies from run to run when positions tie (one case gave 21 distinct
   results in 300 runs). The port orders ties by creation order and always
-  visits new blocks, so its output is deterministic. It equals a sampled native
-  run on the tie cases checked, except one 40-node case that matched none of 29
-  sampled native results (follow-up 110).
+  visits new blocks, so its output is deterministic. Sweep-event ties follow
+  libc++: the port carries a port of its `std::sort`, so tie order matches
+  native's. It equals a sampled native run on the tie cases checked. The one
+  40-node case (`dir1 n40`) that once matched none of 29 sampled native
+  results is explained: in 332 native runs the oracle's `libvpsc.a` gave 17
+  distinct outputs, while a native copy ordering only `Blocks` by creation index
+  gave 1 in 332, and the port equals that output bit for bit. Block address order
+  is the whole difference for that case; the claim is measured on `dir1 n40`
+  only (follow-up 110).
 
 ---
 

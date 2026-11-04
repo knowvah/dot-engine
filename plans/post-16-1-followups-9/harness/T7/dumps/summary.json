@@ -1,0 +1,1191 @@
+{
+ "environments": [
+  "default",
+  "X=1",
+  "pad1k",
+  "pad8k",
+  "nano0",
+  "nano0-X=1",
+  "nano0-pad1k",
+  "nano1"
+ ],
+ "sortDistinct": 1,
+ "cases": {
+  "row 5 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "row 5 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "row 5 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "2b3b3a554324"
+  },
+  "row 10 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "row 10 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "row 10 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8c9b66555f07"
+  },
+  "row 24 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "row 24 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "row 24 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a9bde312e455"
+  },
+  "row 25 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "85dce618feb7"
+  },
+  "row 25 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "85dce618feb7"
+  },
+  "row 25 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "fc48119e18fc"
+  },
+  "row 40 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "408d8e099446"
+  },
+  "row 40 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "408d8e099446"
+  },
+  "row 40 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9ce085adda87"
+  },
+  "row 128 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8962aab67f81"
+  },
+  "row 128 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8962aab67f81"
+  },
+  "row 128 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c7d4d283d3eb"
+  },
+  "row 200 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "1a7284b9db59"
+  },
+  "row 200 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "1a7284b9db59"
+  },
+  "row 200 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "95dee7363dc5"
+  },
+  "row 1000 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ff39f08116a9"
+  },
+  "row 1000 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ff39f08116a9"
+  },
+  "row 1000 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a222b745b3a7"
+  },
+  "col 5 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "2b3b3a554324"
+  },
+  "col 5 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "2b3b3a554324"
+  },
+  "col 5 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "col 10 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8c9b66555f07"
+  },
+  "col 10 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8c9b66555f07"
+  },
+  "col 10 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "col 24 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a9bde312e455"
+  },
+  "col 24 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a9bde312e455"
+  },
+  "col 24 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "col 25 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "fc48119e18fc"
+  },
+  "col 25 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "fc48119e18fc"
+  },
+  "col 25 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "85dce618feb7"
+  },
+  "col 40 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9ce085adda87"
+  },
+  "col 40 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9ce085adda87"
+  },
+  "col 40 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "408d8e099446"
+  },
+  "col 128 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c7d4d283d3eb"
+  },
+  "col 128 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c7d4d283d3eb"
+  },
+  "col 128 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8962aab67f81"
+  },
+  "col 200 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "95dee7363dc5"
+  },
+  "col 200 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "95dee7363dc5"
+  },
+  "col 200 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "1a7284b9db59"
+  },
+  "col 1000 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a222b745b3a7"
+  },
+  "col 1000 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a222b745b3a7"
+  },
+  "col 1000 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ff39f08116a9"
+  },
+  "same 5 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "same 5 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "same 5 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "same 10 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "same 10 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "same 10 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "same 24 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "same 24 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "same 24 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "same 25 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "85dce618feb7"
+  },
+  "same 25 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "85dce618feb7"
+  },
+  "same 25 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "85dce618feb7"
+  },
+  "same 40 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "408d8e099446"
+  },
+  "same 40 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "408d8e099446"
+  },
+  "same 40 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "408d8e099446"
+  },
+  "same 128 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8962aab67f81"
+  },
+  "same 128 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "8962aab67f81"
+  },
+  "same 128 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "8962aab67f81"
+  },
+  "same 200 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "1a7284b9db59"
+  },
+  "same 200 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 2,
+   "consEqualsPristine": false,
+   "eventsSha": "1a7284b9db59"
+  },
+  "same 200 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 2,
+   "consEqualsPristine": false,
+   "eventsSha": "1a7284b9db59"
+  },
+  "same 1000 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ff39f08116a9"
+  },
+  "same 1000 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 2,
+   "consEqualsPristine": false,
+   "eventsSha": "ff39f08116a9"
+  },
+  "same 1000 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 3,
+   "consEqualsPristine": false,
+   "eventsSha": "ff39f08116a9"
+  },
+  "grid 5 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "6cd3d709aab2"
+  },
+  "grid 5 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "6cd3d709aab2"
+  },
+  "grid 5 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9cfbd4350ca9"
+  },
+  "grid 10 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ffa5c9dfdc1e"
+  },
+  "grid 10 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ffa5c9dfdc1e"
+  },
+  "grid 10 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "48bbac2546d2"
+  },
+  "grid 24 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "f3cfceec18bb"
+  },
+  "grid 24 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "f3cfceec18bb"
+  },
+  "grid 24 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ba39ba9bc257"
+  },
+  "grid 25 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "abcf08c089ba"
+  },
+  "grid 25 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "abcf08c089ba"
+  },
+  "grid 25 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "3a6a1ad4e806"
+  },
+  "grid 40 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9d67eb2f4e00"
+  },
+  "grid 40 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9d67eb2f4e00"
+  },
+  "grid 40 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "fd3c2e5ee249"
+  },
+  "grid 128 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "e36f065f44b4"
+  },
+  "grid 128 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "e36f065f44b4"
+  },
+  "grid 128 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "e24b4a0d5024"
+  },
+  "grid 200 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "cdcb6aae5c61"
+  },
+  "grid 200 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "cdcb6aae5c61"
+  },
+  "grid 200 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "3837c22953dc"
+  },
+  "grid 1000 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "4ed3d5483e92"
+  },
+  "grid 1000 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "4ed3d5483e92"
+  },
+  "grid 1000 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "00fff9157622"
+  },
+  "touch 5 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "touch 5 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "touch 5 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "2b3b3a554324"
+  },
+  "touch 10 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "touch 10 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "touch 10 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8c9b66555f07"
+  },
+  "touch 24 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "touch 24 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "touch 24 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "31fc06d6e84d"
+  },
+  "touch 25 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "85dce618feb7"
+  },
+  "touch 25 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "85dce618feb7"
+  },
+  "touch 25 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "fc48119e18fc"
+  },
+  "touch 40 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "408d8e099446"
+  },
+  "touch 40 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "408d8e099446"
+  },
+  "touch 40 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 2,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "2c2be01693e1"
+  },
+  "touch 128 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8962aab67f81"
+  },
+  "touch 128 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8962aab67f81"
+  },
+  "touch 128 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 2,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "a6db02f9ebc7"
+  },
+  "touch 200 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "1a7284b9db59"
+  },
+  "touch 200 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "1a7284b9db59"
+  },
+  "touch 200 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "206c3f808f37"
+  },
+  "touch 1000 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ff39f08116a9"
+  },
+  "touch 1000 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ff39f08116a9"
+  },
+  "touch 1000 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "82c9c5439762"
+  },
+  "overlap 5 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "overlap 5 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "75950f3f2eac"
+  },
+  "overlap 5 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c0cdb405a4a1"
+  },
+  "overlap 10 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "overlap 10 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c1fd9ecb6072"
+  },
+  "overlap 10 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "e2f1c292d50a"
+  },
+  "overlap 24 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "overlap 24 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9c675f87ac6d"
+  },
+  "overlap 24 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "dd9a8fe5d4c2"
+  },
+  "overlap 25 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "85dce618feb7"
+  },
+  "overlap 25 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "85dce618feb7"
+  },
+  "overlap 25 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "3bc5fbda6910"
+  },
+  "overlap 40 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "408d8e099446"
+  },
+  "overlap 40 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "408d8e099446"
+  },
+  "overlap 40 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "9dcb46fb00d3"
+  },
+  "overlap 128 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8962aab67f81"
+  },
+  "overlap 128 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8962aab67f81"
+  },
+  "overlap 128 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": false,
+   "eventsSha": "2e1cf5ca7bbd"
+  },
+  "overlap 200 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "1a7284b9db59"
+  },
+  "overlap 200 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "1a7284b9db59"
+  },
+  "overlap 200 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 3,
+   "pristineDistinct": 2,
+   "consEqualsPristine": false,
+   "eventsSha": "2a7d3579e23e"
+  },
+  "overlap 1000 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ff39f08116a9"
+  },
+  "overlap 1000 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "ff39f08116a9"
+  },
+  "overlap 1000 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 4,
+   "pristineDistinct": 4,
+   "consEqualsPristine": false,
+   "eventsSha": "b08287db00a2"
+  },
+  "point 5 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "2b3b3a554324"
+  },
+  "point 5 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "2b3b3a554324"
+  },
+  "point 5 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "2b3b3a554324"
+  },
+  "point 10 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8c9b66555f07"
+  },
+  "point 10 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8c9b66555f07"
+  },
+  "point 10 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "8c9b66555f07"
+  },
+  "point 24 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a9bde312e455"
+  },
+  "point 24 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a9bde312e455"
+  },
+  "point 24 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a9bde312e455"
+  },
+  "point 25 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "fc48119e18fc"
+  },
+  "point 25 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "fc48119e18fc"
+  },
+  "point 25 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "fc48119e18fc"
+  },
+  "point 40 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9ce085adda87"
+  },
+  "point 40 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9ce085adda87"
+  },
+  "point 40 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "9ce085adda87"
+  },
+  "point 128 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "0ba0c98870b9"
+  },
+  "point 128 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "0ba0c98870b9"
+  },
+  "point 128 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "c7d4d283d3eb"
+  },
+  "point 200 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "d75e9255629a"
+  },
+  "point 200 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "d75e9255629a"
+  },
+  "point 200 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "95dee7363dc5"
+  },
+  "point 1000 1": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "33e63c44c921"
+  },
+  "point 1000 0": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "33e63c44c921"
+  },
+  "point 1000 2": {
+   "eventsDistinct": 1,
+   "consDistinct": 1,
+   "pristineDistinct": 1,
+   "consEqualsPristine": true,
+   "eventsSha": "a222b745b3a7"
+  }
+ }
+}

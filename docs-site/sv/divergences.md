@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1187,6 +1187,14 @@ och `registry-staleness.test.ts` skulle flagga posten som inaktuell. Belägg:
 
 **Varför godkänd.** `aagerror` (`lib/cgraph/scan.l:157`) lägger bara till `InputFile: ` när `InputFile` är satt. CLI:n sätter den till `<stdin>` vid läsning av standardindata; biblioteksingången `agmemread`, som porten speglar, lämnar den osatt och skriver inget prefix. Porten har ingen CLI, så det finns inget att rapportera. stderr-proben normaliserar prefixet vid jämförelse.
 
+### A13. Frigjord fyllnadsfärg i `_background`-uppspelningen (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Berörda:** svg-utdata för en indata med en handskriven `_background` (eller grafens `_draw_`) vars första fyllda operation saknar egen fyllnadsfärg, på en graf med gradient-`bgcolor` som `bgcolor="red:blue"`.
+
+**Vad som skiljer sig.** Native skriver ut `fill=""` på den operationen; porten skriver ut gradientens första stopp. xdot löses upp till RGBA och stämmer med porten, så bara svg skiljer sig.
+
+**Varför godkänd.** `emit_background` frigör `clrs[0]` (`lib/common/emit.c:1518`) medan svg:s fyllnadstillstånd fortfarande pekar på den (`gvrender_resolve_color` behåller `color->u.string = name`, `lib/gvc/gvrender.c:193`), så native utdata är frigjort minne, inte en färg; det var `fill=""` i 8 av 8 uppmätta körningar. Porten skriver ut den färg C avsåg. Ingen korpusindata når hit; `src/gvc/emit-xdot.test.ts` fastlåser det.
+
 ---
 
 ## Spårad lång svans (`dot`-attribut & specialfall) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1294,7 +1302,7 @@ skiljer sig från inbyggd Graphviz. Funna av uppdraget `v2-silent-gaps`
   V8:s `Math.cos`; fdp:s kraftloop förstärker det till ungefär 3 tum. Apples
   `cos` går inte att återskapa ur en kort modell på det sätt som `hypot` går.
 - **Inbyggda krascher som porteringen definierar.** Native Graphviz avslutas med 139 vid neato `mode=KK` med `model=mds` och en kant med `len` i nästan varje körning (1 överlevande av cirka 1500; `mds_model` indexerar `GD_dist` med ett 1-baserat sekvensnummer: heap-överskridning). Porten släpper celler utanför intervallet, och dess resultat stämmer med den överlevande inom 0,01. `circuit_model` indexerar med det 1-baserade `AGSEQ` (`circuit.c:46`), så rad 0 i dess matris skrivs aldrig och matrisen är singulär för varje graf, sammanhängande eller inte: native `mode=KK` med `model=circuit` ger aldrig en circuit-layout. När processen överlever skriver den ut `Warning: graph <name> is disconnected. Hence, the circuit model` och faller tillbaka på kortaste vägar; samma fel läser förbi radpekararrayen när den senast skapade noden har en kant, så native avslutas oftast med 139 (cirka 3 körningar av 4 på provgrafen). Porten tar alltid den överlevande vägen: varningen och sedan kortaste vägar, sammanhängande graf eller inte. Med `pack=true` kraschade native vid varje körning (0 överlevande av över 3000 på var och en av två grafer); enligt beslut varnar porten per komponent under eget namn (`_neato_cc0`, `_neato_cc1`, ...), använder kortaste vägar och packar. Det finns ingen native utdata för den kombinationen; layouten motsvarar natives `model=shortpath` för samma graf.
-- **VPSC-lika följer skapandeordning, inte heap-adress.** Native `IncVPSC::splitBlocks` går igenom en `std::set<Block*>` ordnad efter heap-adress medan den infogar i den, och `CmpNodePos` avgör lika positioner efter adress, så native utdata för `overlap=vpsc|ipsep` och begränsad `mode=ipsep` varierar från körning till körning vid lika positioner (ett fall gav 21 olika resultat på 300 körningar). Porten ordnar lika positioner efter skapandeordning och besöker alltid nya block, så dess utdata är deterministisk. Den motsvarar en provtagen native körning i de kontrollerade fallen med lika positioner, utom ett fall med 40 noder som inte matchade något av 29 provtagna native resultat (uppföljning 110).
+- **VPSC-lika följer skapandeordning, inte heap-adress.** Native `IncVPSC::splitBlocks` går igenom en `std::set<Block*>` ordnad efter heap-adress medan den infogar i den, och `CmpNodePos` avgör lika positioner efter adress, så native utdata för `overlap=vpsc|ipsep` och begränsad `mode=ipsep` varierar från körning till körning vid lika positioner (ett fall gav 21 olika resultat på 300 körningar). Porten ordnar lika positioner efter skapandeordning och besöker alltid nya block, så dess utdata är deterministisk. Lika händelser i svepet följer libc++: porten innehåller en port av dess `std::sort`, så ordningen vid lika motsvarar native. Den motsvarar en provtagen native körning i de kontrollerade fallen med lika positioner. Fallet med 40 noder (`dir1 n40`), som tidigare inte matchade något av 29 provtagna native resultat, är förklarat: i 332 native körningar gav orakelets `libvpsc.a` 17 olika utdata, medan en native kopia som bara ordnar `Blocks` efter skapandeindex gav 1 på 332, och porten är bit för bit lika med den. Blockens adressordning är hela skillnaden i det fallet; påståendet är bara uppmätt på `dir1 n40` (uppföljning 110).
 
 ---
 

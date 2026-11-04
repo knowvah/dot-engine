@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1179,6 +1179,14 @@ zastaralý. Důkaz:
 
 **Proč akceptováno.** `aagerror` (`lib/cgraph/scan.l:157`) přidá `InputFile: ` jen tehdy, když je `InputFile` nastaven. CLI jej při čtení standardního vstupu nastaví na `<stdin>`; knihovní vstup `agmemread`, který port zrcadlí, jej nechává nenastavený a prefix nevypisuje. Port nemá CLI, takže není co hlásit. Sonda stderr prefix při porovnání normalizuje.
 
+### A13. Uvolněná výplňová barva při přehrání `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Dotčeno:** Výstup svg pro vstup s ručně psaným `_background` (nebo `_draw_` grafu), jehož první vyplněná operace nemá vlastní barvu výplně, na grafu s gradientním `bgcolor`, například `bgcolor="red:blue"`.
+
+**Co se liší.** Nativní výstup vypíše u této operace `fill=""`; portace vypíše první barvu gradientu. xdot se převádí na RGBA a s portací se shoduje, liší se tedy jen svg.
+
+**Proč akceptováno.** `emit_background` uvolní `clrs[0]` (`lib/common/emit.c:1518`), zatímco stav výplně svg na ni stále ukazuje (`gvrender_resolve_color` ponechává `color->u.string = name`, `lib/gvc/gvrender.c:193`), takže nativní výstup je uvolněná paměť, nikoli barva; ve všech 8 z 8 změřených běhů to bylo `fill=""`. Portace vypíše barvu, kterou C zamýšlelo. Žádný vstup korpusu sem nedospěje; ověřuje to `src/gvc/emit-xdot.test.ts`.
+
 ---
 
 ## Sledovaný dlouhý chvost (atributy `dot` a okrajové případy) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1286,7 +1294,7 @@ liší se od nativního Graphviz. Nalezeno misí `v2-silent-gaps`
   `Math.cos` ve V8 liší o 1 ulp; silová smyčka fdp to zesílí na asi 3 palce. `cos`
   od Apple není reprodukovatelný z krátkého modelu tak, jako `hypot`.
 - **Nativní pády, které portace definuje.** Nativní Graphviz končí s kódem 139 u neato `mode=KK` s `model=mds` a hranou `len` téměř při každém spuštění (1 přeživší z asi 1500; `mds_model` indexuje `GD_dist` jednobázovým pořadovým číslem: přetečení haldy). Portace zahazuje buňky mimo rozsah a její výsledek se s tímto přeživším shoduje v toleranci 0,01. `circuit_model` indexuje jednobázovým `AGSEQ` (`circuit.c:46`), takže řádek 0 jeho matice se nikdy nezapíše a matice je singulární u každého grafu, souvislého i nesouvislého: nativní `mode=KK` s `model=circuit` nikdy nevytvoří rozložení circuit. Když proces přežije, vypíše `Warning: graph <name> is disconnected. Hence, the circuit model` a vrátí se k nejkratším cestám; táž chyba čte za polem ukazatelů řádků, když má naposledy vytvořený uzel hranu, takže nativní program obvykle končí s kódem 139 (asi 3 spuštění ze 4 na zkušebním grafu). Portace vždy volí cestu, která přežije: varování, pak nejkratší cesty, u souvislého i nesouvislého grafu. S `pack=true` nativní program spadl při každém spuštění (0 přeživších z více než 3000 na každém ze dvou grafů); portace se podle rozhodnutí varuje pro každou komponentu pod vlastním jménem (`_neato_cc0`, `_neato_cc1`, ...), použije nejkratší cesty a komponenty sbalí. Pro tuto kombinaci neexistuje nativní výstup; rozložení se rovná nativnímu `model=shortpath` pro tentýž graf.
-- **Pořadí shod ve VPSC podle pořadí vzniku, ne podle adresy na haldě.** Nativní `IncVPSC::splitBlocks` prochází `std::set<Block*>` seřazenou podle adresy na haldě a zároveň do ní vkládá, a `CmpNodePos` rozhoduje shody pozic podle adresy, takže nativní výstup pro `overlap=vpsc|ipsep` a vázaný `mode=ipsep` se při shodě pozic mezi spuštěními liší (jeden případ dal 21 různých výsledků ve 300 spuštěních). Portace řadí shody podle pořadí vzniku a vždy navštíví nové bloky, takže její výstup je deterministický. Shoduje se s vzorkovaným nativním během u zkoumaných případů shody, kromě jednoho případu se 40 uzly, který se neshodoval s žádným z 29 vzorkovaných nativních výsledků (následná položka 110).
+- **Pořadí shod ve VPSC podle pořadí vzniku, ne podle adresy na haldě.** Nativní `IncVPSC::splitBlocks` prochází `std::set<Block*>` seřazenou podle adresy na haldě a zároveň do ní vkládá, a `CmpNodePos` rozhoduje shody pozic podle adresy, takže nativní výstup pro `overlap=vpsc|ipsep` a vázaný `mode=ipsep` se při shodě pozic mezi spuštěními liší (jeden případ dal 21 různých výsledků ve 300 spuštěních). Portace řadí shody podle pořadí vzniku a vždy navštíví nové bloky, takže její výstup je deterministický. Pořadí shod u událostí zametací přímky se řídí libc++: portace obsahuje portaci jeho `std::sort`, takže pořadí shod odpovídá nativnímu. Shoduje se s vzorkovaným nativním během u zkoumaných případů shod. Případ se 40 uzly (`dir1 n40`), který se dříve neshodoval s žádným z 29 vzorkovaných nativních výsledků, je vysvětlen: ve 332 nativních během dala `libvpsc.a` orákula 17 různých výstupů, zatímco nativní kopie řadící pouze `Blocks` podle pořadí vzniku dala 1 výstup ve 332 během a portace se mu rovná bit po bitu. Pořadí adres bloků je celým rozdílem v tomto případě; tvrzení je změřeno pouze na `dir1 n40` (následná položka 110).
 
 ---
 

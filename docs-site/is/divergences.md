@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1190,6 +1190,14 @@ og `registry-staleness.test.ts` myndi merkja færsluna sem úrelta. Sönnunargö
 
 **Hvers vegna samþykkt.** `aagerror` (`lib/cgraph/scan.l:157`) bætir `InputFile: ` við aðeins þegar `InputFile` er stillt. Skipanalínuforritið stillir það á `<stdin>` við lestur staðalinntaks; safninngangurinn `agmemread`, sem portið speglar, skilur það eftir óstillt og skrifar ekkert forskeyti. Portið hefur ekkert skipanalínuforrit, svo ekkert er að tilkynna. stderr-könnunin normalíserar forskeytið við samanburð.
 
+### A13. Leyst fyllilitur í endurspilun `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Fyrir áhrifum:** svg-úttak fyrir inntak með handskrifuðu `_background` (eða `_draw_` grafsins) þar sem fyrsta fyllta aðgerðin hefur engan eigin fyllilit, á grafi með litasveigju-`bgcolor` eins og `bgcolor="red:blue"`.
+
+**Hvað er ólíkt.** Upprunalega útgáfan skrifar `fill=""` á þá aðgerð; gáttin skrifar fyrsta lit litasveigjunnar. xdot leysist í RGBA og er sammála gáttinni, svo aðeins svg er ólíkt.
+
+**Hvers vegna samþykkt.** `emit_background` losar `clrs[0]` (`lib/common/emit.c:1518`) á meðan fyllistaða svg bendir enn á það (`gvrender_resolve_color` heldur `color->u.string = name`, `lib/gvc/gvrender.c:193`), svo upprunalega úttakið er losað minni, ekki litur; það var `fill=""` í öllum 8 af 8 mældum keyrslum. Gáttin skrifar litinn sem C ætlaði. Ekkert inntak í safninu nær hingað; `src/gvc/emit-xdot.test.ts` festir það.
+
 ---
 
 ## Rakinn langur hali (eigindir og jaðartilvik í `dot`) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1297,7 +1305,7 @@ er ólík innbyggðu Graphviz. Fundið af verkefninu `v2-silent-gaps`
   `Math.cos` í V8; kraftalykkja fdp magnar það upp í um 3 tommur. `cos` frá Apple
   er ekki endurskapanlegt úr stuttu líkani eins og `hypot` er.
 - **Innbyggð hrun sem yfirfærslan skilgreinir.** Innbyggða Graphviz lýkur með 139 í neato `mode=KK` með `model=mds` og legg með `len` í næstum hverri keyrslu (1 lifði af um 1500; `mds_model` vísar í `GD_dist` með raðnúmeri sem byrjar á 1: yfirflæði á hrúgu). Gáttin sleppir hólfum utan marka og niðurstaða hennar samsvarar þeirri keyrslu innan 0,01. `circuit_model` vísar með `AGSEQ` sem byrjar á 1 (`circuit.c:46`), svo lína 0 í fylki þess er aldrei skrifuð og fylkið er sérstætt fyrir hvert netrit, samhangandi eða ekki: innbyggt `mode=KK` með `model=circuit` skilar aldrei circuit-uppsetningu. Þegar ferlið lifir af skrifar það `Warning: graph <name> is disconnected. Hence, the circuit model` og fellur aftur á stystu leiðir; sama villa les út fyrir línubendafylkið þegar síðast búni hnúturinn hefur legg, svo innbyggða útgáfan lýkur oftast með 139 (um 3 keyrslur af 4 á prófunarnetritinu). Gáttin tekur alltaf leiðina sem lifir af: viðvörunina og síðan stystu leiðir, samhangandi netrit eða ekki. Með `pack=true` hrundi innbyggða útgáfan í hverri keyrslu (0 lifðu af úr yfir 3000 á hvoru tveggja netritanna); samkvæmt ákvörðun varar gáttin við fyrir hvern hluta undir eigin nafni (`_neato_cc0`, `_neato_cc1`, ...), notar stystu leiðir og pakkar. Ekkert innbyggt úttak er til fyrir þá samsetningu; uppsetningin jafngildir innbyggðu `model=shortpath` fyrir sama netrit.
-- **Jafntefli í VPSC fylgja sköpunarröð, ekki hrúguvistfangi.** Innbyggða `IncVPSC::splitBlocks` gengur í gegnum `std::set<Block*>` sem er raðað eftir hrúguvistfangi á meðan það setur inn í það, og `CmpNodePos` sker úr um jafnar staðsetningar eftir vistfangi, svo innbyggt úttak fyrir `overlap=vpsc|ipsep` og takmarkað `mode=ipsep` er breytilegt milli keyrslna þegar staðsetningar eru jafnar (eitt tilvik gaf 21 mismunandi niðurstöðu í 300 keyrslum). Gáttin raðar jafnteflum eftir sköpunarröð og heimsækir alltaf nýja kubba, svo úttak hennar er ákvarðandi. Hún jafngildir sýnatekinni innbyggðri keyrslu í jafnteflistilvikunum sem voru athuguð, nema í einu tilviki með 40 hnútum sem samsvaraði engri af 29 sýnatekinni innbyggðum niðurstöðum (eftirfylgni 110).
+- **Jafntefli í VPSC fylgja sköpunarröð, ekki hrúguvistfangi.** Innbyggða `IncVPSC::splitBlocks` gengur í gegnum `std::set<Block*>` sem er raðað eftir hrúguvistfangi á meðan það setur inn í það, og `CmpNodePos` sker úr um jafnar staðsetningar eftir vistfangi, svo innbyggt úttak fyrir `overlap=vpsc|ipsep` og takmarkað `mode=ipsep` er breytilegt milli keyrslna þegar staðsetningar eru jafnar (eitt tilvik gaf 21 mismunandi niðurstöðu í 300 keyrslum). Gáttin raðar jafnteflum eftir sköpunarröð og heimsækir alltaf nýja kubba, svo úttak hennar er ákvarðandi. Jafntefli sópunarviðburða fylgja libc++: gáttin inniheldur gátt á `std::sort` þess, svo jafnteflisröðin samsvarar innbyggðu. Hún jafngildir sýnatekinni innbyggðri keyrslu í jafnteflistilvikunum sem voru athuguð. Tilvikið með 40 hnútum (`dir1 n40`), sem áður samsvaraði engri af 29 sýnatekinni innbyggðum niðurstöðum, er skýrt: í 332 innbyggðum keyrslum gaf `libvpsc.a` véfréttarinnar 17 mismunandi úttök, en innbyggt afrit sem raðar aðeins `Blocks` eftir sköpunarvísi gaf 1 í 332, og gáttin er bita fyrir bita eins og það. Vistfangaröð kubba er allur munurinn í því tilviki; fullyrðingin er mæld aðeins á `dir1 n40` (eftirfylgni 110).
 
 ---
 

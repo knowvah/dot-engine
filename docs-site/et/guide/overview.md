@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Ülevaade
 
@@ -81,6 +81,13 @@ servade splainid, piirkast) jäävad pärast seda `Graph`-objekti külge alles.
 `getLayout` ei käivita paigutust uuesti — see loeb geomeetriat, mille
 varasem `render`-kutse on juba arvutanud, ja seetõttu kutsutakse seda alati
 *pärast* `render`-it, samal graafil.
+
+Renderdamine muudab graafi, nagu Graphvizis. Pärast `dot`-, `xdot`- või
+`json`-renderdust sisaldab `g.attrs` paigutusatribuute (`pos`, `width`,
+`height`, `bb` ja joonistusatribuudid); iga paigutus kirjutab `bb`. Sama
+`Graph`-i uuesti renderdamine loeb neid väärtusi ning graafi `_draw_` või
+`_background` esitatakse uuesti, nii et teine `xdot`-renderdus erineb esimesest,
+nagu natiivselgi.
 
 ## Kolm sisenemispunkti — milline uks?
 

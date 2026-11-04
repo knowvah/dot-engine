@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1173,6 +1173,14 @@ Tõendid: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engi
 
 **Miks aktsepteeritud.** `aagerror` (`lib/cgraph/scan.l:157`) lisab `InputFile: ` ainult siis, kui `InputFile` on seatud. CLI seab selle standardsisendi lugemisel väärtuseks `<stdin>`; teegi sisenemispunkt `agmemread`, mida port peegeldab, jätab selle seadmata ega prindi eesliidet. Pordil CLI-d pole, seega pole midagi teatada. stderr-i sond normaliseerib eesliite võrdlemisel.
 
+### A13. Vabastatud täitevärv `_background` taasesituses (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Mõjutatud:** svg-väljund sisendile, mille käsitsi kirjutatud `_background`-i (või graafi `_draw_`-i) esimesel täidetud operatsioonil pole oma täitevärvi, graafil, millel on gradient-`bgcolor`, näiteks `bgcolor="red:blue"`.
+
+**Mis erineb.** Natiivne prindib sellele operatsioonile `fill=""`; port prindib gradiendi esimese peatuse. xdot lahendub RGBA-ks ja ühtib pordiga, seega erineb ainult svg.
+
+**Miks aktsepteeritud.** `emit_background` vabastab `clrs[0]` (`lib/common/emit.c:1518`), samal ajal kui svg täiteolek osutab sellele endiselt (`gvrender_resolve_color` jätab `color->u.string = name`, `lib/gvc/gvrender.c:193`), seega on natiivne väljund vabastatud mälu, mitte värv; see oli `fill=""` kõigil 8 mõõdetud käivitusel 8-st. Port prindib värvi, mida C mõtles. Ükski korpuse sisend siia ei jõua; seda kinnitab `src/gvc/emit-xdot.test.ts`.
+
 ---
 
 ## Jälgitav pikk saba (`dot` atribuudid ja äärejuhtumid) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1280,7 +1288,7 @@ erineb natiivsest Graphvizist. Leitud missiooniga `v2-silent-gaps`
   V8 `Math.cos`-ist; fdp jõutsükkel võimendab selle umbes 3 tollini. Apple'i
   `cos` ei ole lühikesest mudelist reprodutseeritav nii nagu `hypot`.
 - **Natiivsed krahhid, mille port määratleb.** Natiivne Graphviz lõpetab neato `mode=KK` korral koos `model=mds` ja `len`-iga servaga peaaegu igal käivitusel koodiga 139 (1 ellujääja umbes 1500-st; `mds_model` indekseerib `GD_dist` 1-põhise järjenumbriga: kuhja ületäitumine). Port jätab vahemikust väljas olevad lahtrid ära ja tema tulemus ühtib selle ellujääjaga täpsusega 0,01. `circuit_model` indekseerib 1-põhise `AGSEQ` järgi (`circuit.c:46`), seega maatriksi rida 0 ei kirjutata kunagi ja maatriks on singulaarne igal graafil, sidusal või mitte: natiivne `mode=KK` koos `model=circuit` ei anna kunagi circuit-paigutust. Kui protsess jääb ellu, trükib see `Warning: graph <name> is disconnected. Hence, the circuit model` ja langeb tagasi lühimatele teedele; sama viga loeb ridade viitade massiivist kaugemale, kui viimati loodud sõlmel on serv, mistõttu natiivne lõpetab tavaliselt koodiga 139 (umbes 3 käivitust 4-st proovigraafil). Port valib alati ellujäämistee: hoiatus, seejärel lühimad teed, sidusal graafil või mitte. Valikuga `pack=true` jooksis natiivne iga kord kokku (0 ellujääjat üle 3000 käivituse kummalgi kahest graafist); otsuse kohaselt hoiatab port komponendi kaupa oma nime all (`_neato_cc0`, `_neato_cc1`, ...), kasutab lühimaid teid ja pakib. Selle kombinatsiooni jaoks natiivset väljundit ei ole; paigutus võrdub natiivse `model=shortpath` tulemusega sama graafi puhul.
-- **VPSC viigijärjestus järgib loomisjärjestust, mitte kuhja aadressi.** Natiivne `IncVPSC::splitBlocks` käib läbi kuhja aadressi järgi järjestatud `std::set<Block*>`, lisades samal ajal sellesse elemente, ja `CmpNodePos` lahendab asukohaviigid aadressi järgi, mistõttu natiivne väljund valikute `overlap=vpsc|ipsep` ja piiratud `mode=ipsep` korral muutub võrdsete asukohtade puhul käivituselt käivitusele (üks juhtum andis 300 käivitusel 21 erinevat tulemust). Port järjestab viigid loomisjärjestuse järgi ja külastab alati uusi blokke, mistõttu tema väljund on deterministlik. See ühtib valimi natiivse käivitusega kontrollitud viigijuhtudel, välja arvatud üks 40 sõlmega juhtum, mis ei ühtinud ühegi 29 valimi natiivse tulemusega (järeltöö 110).
+- **VPSC viigijärjestus järgib loomisjärjestust, mitte kuhja aadressi.** Natiivne `IncVPSC::splitBlocks` käib läbi kuhja aadressi järgi järjestatud `std::set<Block*>`, lisades samal ajal sellesse elemente, ja `CmpNodePos` lahendab asukohaviigid aadressi järgi, mistõttu natiivne väljund valikute `overlap=vpsc|ipsep` ja piiratud `mode=ipsep` korral muutub võrdsete asukohtade puhul käivituselt käivitusele (üks juhtum andis 300 käivitusel 21 erinevat tulemust). Port järjestab viigid loomisjärjestuse järgi ja külastab alati uusi blokke, mistõttu tema väljund on deterministlik. Pühkimissündmuste viigid järgivad libc++-i: port sisaldab selle `std::sort`-i porti, mistõttu viigijärjestus ühtib natiivsega. See ühtib valimi natiivse käivitusega kontrollitud viigijuhtudel. 40 sõlmega juhtum (`dir1 n40`), mis varem ei ühtinud ühegi 29 valimi natiivse tulemusega, on selgitatud: 332 natiivsel käivitusel andis oraakli `libvpsc.a` 17 erinevat väljundit, samas kui natiivne koopia, mis järjestab ainult `Blocks` loomisindeksi järgi, andis 332-st 1 ja port on sellega bitthaaval võrdne. Plokkide aadressijärjestus on selle juhtumi kogu erinevus; väide on mõõdetud ainult juhtumil `dir1 n40` (järeltöö 110).
 
 ---
 

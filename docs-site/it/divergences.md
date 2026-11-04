@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1287,6 +1287,14 @@ obsoleta. Evidenza:
 
 **Perché è accettato.** `aagerror` (`lib/cgraph/scan.l:157`) aggiunge `InputFile: ` solo quando `InputFile` è impostato. La CLI lo imposta a `<stdin>` leggendo lo standard input; il punto d’ingresso di libreria `agmemread`, che il port rispecchia, lo lascia non impostato e non stampa alcun prefisso. Il port non ha una CLI, quindi non c’è nulla da riportare. La sonda stderr normalizza il prefisso nel confronto.
 
+### A13. Colore di riempimento liberato nella riproduzione di `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Interessato:** Output svg per un input con un `_background` scritto a mano (o il `_draw_` del grafo) la cui prima operazione riempita non ha un colore di riempimento proprio, su un grafo con un `bgcolor` a gradiente come `bgcolor="red:blue"`.
+
+**Che cosa differisce.** Il nativo stampa `fill=""` su quell'operazione; il port stampa il primo punto del gradiente. xdot si risolve in RGBA e concorda con il port, quindi differisce solo svg.
+
+**Perché è accettato.** `emit_background` libera `clrs[0]` (`lib/common/emit.c:1518`) mentre lo stato di riempimento di svg punta ancora a esso (`gvrender_resolve_color` mantiene `color->u.string = name`, `lib/gvc/gvrender.c:193`), quindi l'output nativo è memoria liberata, non un colore; era `fill=""` in 8 esecuzioni misurate su 8. Il port stampa il colore che C intendeva. Nessun input del corpus raggiunge questo caso; `src/gvc/emit-xdot.test.ts` lo fissa.
+
 ---
 
 ## Coda lunga monitorata (attributi di `dot` e casi limite) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1401,7 +1409,7 @@ differisce da Graphviz nativo. Individuate dalla missione `v2-silent-gaps`
   `Math.cos` di V8; il ciclo delle forze di fdp lo amplifica a circa 3 pollici. Il
   `cos` di Apple non è riproducibile da un breve modello come lo è `hypot`.
 - **Crash nativi che il porting definisce.** Il Graphviz nativo termina con 139 su neato `mode=KK` con `model=mds` e un arco con `len` in quasi ogni esecuzione (1 sopravvissuta su circa 1500; `mds_model` indicizza `GD_dist` con un numero di sequenza a base 1: overflow dell'heap). Il port scarta le celle fuori intervallo e il suo risultato coincide con quella sopravvissuta a 0,01. `circuit_model` indicizza con l'`AGSEQ` a base 1 (`circuit.c:46`), quindi la riga 0 della sua matrice non viene mai scritta e la matrice è singolare su ogni grafo, connesso o no: il `mode=KK` nativo con `model=circuit` non produce mai un layout circuit. Quando il processo sopravvive, stampa `Warning: graph <name> is disconnected. Hence, the circuit model` e ripiega sui cammini minimi; lo stesso difetto legge oltre l'array di puntatori di riga quando l'ultimo nodo creato ha un arco, quindi il nativo di solito termina con 139 (circa 3 esecuzioni su 4 sul grafo di prova). Il port prende sempre il percorso sopravvissuto: l'avviso, poi i cammini minimi, grafo connesso o no. Con `pack=true` il nativo è andato in crash a ogni esecuzione (0 sopravvissute su oltre 3000 per ciascuno di due grafi); per decisione, il port avvisa per componente con un proprio nome (`_neato_cc0`, `_neato_cc1`, ...), usa i cammini minimi e impacchetta. Per quella combinazione non esiste output nativo; il layout coincide con il `model=shortpath` nativo per lo stesso grafo.
-- **L'ordine dei pareggi di VPSC segue l'ordine di creazione, non l'indirizzo dell'heap.** Il `IncVPSC::splitBlocks` nativo scorre un `std::set<Block*>` ordinato per indirizzo dell'heap mentre vi inserisce, e `CmpNodePos` risolve i pareggi di posizione per indirizzo, quindi l'output nativo per `overlap=vpsc|ipsep` e `mode=ipsep` vincolato varia da un'esecuzione all'altra quando le posizioni sono pari (un caso ha dato 21 risultati distinti in 300 esecuzioni). Il port ordina i pareggi per ordine di creazione e visita sempre i nuovi blocchi, quindi il suo output è deterministico. Coincide con un'esecuzione nativa campionata nei casi di pareggio verificati, tranne un caso da 40 nodi che non ha coinciso con nessuno dei 29 risultati nativi campionati (follow-up 110).
+- **L'ordine dei pareggi di VPSC segue l'ordine di creazione, non l'indirizzo dell'heap.** Il `IncVPSC::splitBlocks` nativo scorre un `std::set<Block*>` ordinato per indirizzo dell'heap mentre vi inserisce, e `CmpNodePos` risolve i pareggi di posizione per indirizzo, quindi l'output nativo per `overlap=vpsc|ipsep` e `mode=ipsep` vincolato varia da un'esecuzione all'altra quando le posizioni sono pari (un caso ha dato 21 risultati distinti in 300 esecuzioni). Il port ordina i pareggi per ordine di creazione e visita sempre i nuovi blocchi, quindi il suo output è deterministico. I pareggi degli eventi di sweep seguono libc++: il port contiene un port del suo `std::sort`, quindi l'ordine dei pareggi coincide con quello nativo. Coincide con un'esecuzione nativa campionata nei casi di pareggio verificati. Il caso da 40 nodi (`dir1 n40`), che prima non coincideva con nessuno dei 29 risultati nativi campionati, è spiegato: in 332 esecuzioni native la `libvpsc.a` dell'oracolo ha dato 17 output distinti, mentre una copia nativa che ordina solo `Blocks` per indice di creazione ne ha dato 1 su 332, e il port è uguale a quell'output bit per bit. L'ordine per indirizzo dei blocchi è l'intera differenza per quel caso; l'affermazione è misurata solo su `dir1 n40` (follow-up 110).
 
 ---
 

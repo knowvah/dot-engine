@@ -12,6 +12,8 @@
 
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
+import type { Edge } from '../../model/edge.js';
+import { swapBezier, swapEndsP } from './splines.js';
 import type { RankEdgeInfo } from './edge-route-routing.js';
 
 /** Minimum edge routing width. @see lib/dotgen/dotsplines.c:MINW */
@@ -106,6 +108,76 @@ export function getSplineBounds(g: Graph): SplineBoundsSnapshot {
  */
 export function resetSplineBounds(g: Graph): void {
   boundsSnapshotByGraph.delete(g);
+}
+
+/**
+ * Per-edge count of the beziers a pass found already on the edge, which only a
+ * layout with no gvFreeLayout before it leaves there. An edge with no entry had
+ * no spline at the start of the pass. Rewritten by every `beginRoutingPass`.
+ */
+const staleBeziersByEdge = new WeakMap<Edge, number>();
+
+/**
+ * Start a `dotSplines_` pass on `g`: the bounds snapshot above, and the record of
+ * what an earlier layout left on each edge. C routes each edge once per
+ * `dot_splines_` and `new_spline` appends to whatever `ED_spl` holds, so stale
+ * beziers neither stop this pass routing an edge nor count as this pass's route.
+ * A stale `lost` is the same: this pass has not lost the edge yet.
+ * @see lib/dotgen/dotsplines.c:dot_splines_
+ * @see lib/common/splines.c:new_spline
+ */
+export function beginRoutingPass(g: Graph): void {
+  resetSplineBounds(g);
+  for (const e of g.edges) {
+    e.info.lost = undefined;
+    if (e.info.spl === undefined) staleBeziersByEdge.delete(e);
+    else staleBeziersByEdge.set(e, e.info.spl.size);
+  }
+}
+
+/**
+ * True when this routing pass has installed a bezier on `e`. On a first layout no
+ * edge has a stale count, and this is exactly `e.info.spl !== undefined`.
+ */
+export function routedThisPass(e: Edge): boolean {
+  const spl = e.info.spl;
+  if (spl === undefined) return false;
+  const stale = staleBeziersByEdge.get(e);
+  return stale === undefined || spl.size > stale;
+}
+
+/** The beziers `e` came into this routing pass holding, 0 on a first layout. */
+export function staleBezierCount(e: Edge): number {
+  return staleBeziersByEdge.get(e) ?? 0;
+}
+
+/**
+ * True when `e` kept ED_adjacent from an earlier layout. C never clears the flag,
+ * so it routes `e` as adjacent even if a node now sits between its ends.
+ * @see lib/dotgen/flat.c:236
+ * @see lib/dotgen/dotsplines.c:366
+ */
+export function staleAdjacent(e: Edge): boolean {
+  return staleBezierCount(e) > 0 && (e.info.adjacent ?? 0) !== 0;
+}
+
+/**
+ * Finish a pass's edge_normalize for the beziers an earlier layout left. C swaps
+ * the whole spline once, at the end of the pass, so a swapped edge's stale beziers
+ * end up reversed and after the new ones. The port's routers orient what they
+ * install as they go, and `swapSpline` leaves the stale beziers alone for this.
+ * @see lib/dotgen/dotsplines.c:edge_normalize
+ * @see lib/dotgen/dotsplines.c:swap_spline
+ */
+export function swapStaleBeziers(g: Graph): void {
+  for (const e of g.edges) {
+    const stale = staleBezierCount(e);
+    const spl = e.info.spl;
+    if (stale === 0 || spl === undefined || !swapEndsP(e)) continue;
+    const old = spl.list.splice(0, stale).reverse();
+    for (const bz of old) swapBezier(bz);
+    spl.list.push(...old);
+  }
 }
 
 /**

@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # Eigen rendering met xdot-tekenbewerkingen
@@ -120,10 +120,13 @@ graaf, onder andere:
 
 Voor `digraph { a [color=red]; a -> b }` komen de `_draw_`-/`_hdraw_`-geometrie
 en de kleurwaarden exact overeen met die van de native `dot -Txdot` (knoopellips,
-kantspline, pijlpuntveelhoek en de toegepaste `color=red`). Roep `getDrawOps(g)`
-rechtstreeks aan op een verse (nog niet gerenderde) graaf: `render(g, ...)` en
-`getDrawOps(g)` aanroepen op *hetzelfde* graafobject voert de lay-out twee keer
-uit en is geen ondersteund patroon; gebruik per graaf het een of het ander.
+kantspline, pijlpuntveelhoek en de toegepaste `color=red`). Roep `getDrawOps(g)` rechtstreeks aan op een verse (nog niet gerenderde) graaf.
+Hetzelfde graafobject opnieuw renderen volgt de cyclus van native Graphviz: een
+`dot`-, `xdot`- of `json`-render schrijft de lay-out terug in `g.attrs` (`pos`,
+`width`, `height`, `bb` en de tekenattributen), elke lay-out schrijft `bb`, een
+latere lay-out leest die waarden en een `_draw_` of `_background` van de graaf
+wordt opnieuw afgespeeld. Een tweede `xdot`-render verschilt daarom van de
+eerste, net als bij native.
 
 ## Canvasvoorbeeld (alleen knooplabels)
 

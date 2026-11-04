@@ -9,6 +9,7 @@
  */
 
 import type { DerivedNode, DerivedEdge, DerivedGraph, SubGraph } from './blocks.js';
+import { mapbool } from '../dot/rank.js';
 import { spanIncident } from './blockpath.js';
 import {
   type Block,
@@ -156,14 +157,27 @@ export function dfsVisit(ctx: DfsCtx, u: DerivedNode, isRoot: boolean): void {
   }
 }
 
+/**
+ * Root of the block search: the component's node named `rootname`, else the
+ * first node whose `root` attribute is true, else the first node.
+ * @see lib/circogen/blocktree.c:find_blocks
+ */
+export function findRoot(g: SubGraph, state: CircState): DerivedNode | null {
+  let root: DerivedNode | null = null;
+  if (state.rootname) root = g.nodes.find((dn) => dn.name === state.rootname) ?? null;
+  if (!root && state.nRoot !== null) {
+    root = g.nodes.find((dn) => mapbool(dn.orig.attrs.get('root') ?? state.nRoot ?? undefined)) ?? null;
+  }
+  if (!root && g.nodes.length > 0) root = g.nodes[0]!;
+  return root;
+}
+
 export function findBlocks(
   g: SubGraph,
   state: CircState,
   allEdges: DerivedEdge[],
 ): void {
-  let root: DerivedNode | null = null;
-  if (state.rootname) root = g.parent.nodes.get(state.rootname) ?? null;
-  if (!root && g.nodes.length > 0) root = g.nodes[0]!;
+  const root = findRoot(g, state);
   if (!root) return;
   const ord = new Map<DerivedNode, number>();
   g.nodes.forEach((dn, i) => ord.set(dn, i));

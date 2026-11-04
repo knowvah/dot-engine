@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1335,6 +1335,14 @@ n’acceptent une erreur du portage que si elle porte ce message. Un autre éche
 
 **Pourquoi c’est accepté.** `aagerror` (`lib/cgraph/scan.l:157`) n’ajoute `InputFile: ` que lorsque `InputFile` est défini. La CLI le fixe à `<stdin>` en lisant l’entrée standard ; le point d’entrée de bibliothèque `agmemread`, que le port reproduit, le laisse non défini et n’affiche aucun préfixe. Le port n’a pas de CLI, donc rien à signaler. La sonde stderr normalise le préfixe lors de la comparaison.
 
+### A13. Couleur de remplissage libérée dans la relecture de `_background` (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Concerné :** Sortie svg pour une entrée dont le `_background` (ou le `_draw_` du graphe) écrit à la main a une première opération remplie sans couleur de remplissage propre, sur un graphe ayant un `bgcolor` en dégradé tel que `bgcolor="red:blue"`.
+
+**Ce qui diffère.** Le natif affiche `fill=""` sur cette opération ; le port affiche le premier arrêt du dégradé. xdot se résout en RGBA et concorde avec le port, de sorte que seul svg diffère.
+
+**Pourquoi c’est accepté.** `emit_background` libère `clrs[0]` (`lib/common/emit.c:1518`) alors que l’état de remplissage de svg pointe encore dessus (`gvrender_resolve_color` conserve `color->u.string = name`, `lib/gvc/gvrender.c:193`) ; la sortie native est donc de la mémoire libérée, pas une couleur ; c’était `fill=""` dans 8 exécutions mesurées sur 8. Le port affiche la couleur que C voulait. Aucune entrée du corpus n’atteint ce cas ; `src/gvc/emit-xdot.test.ts` le fige.
+
 ---
 
 ## Longue traîne suivie (attributs de `dot` et cas limites) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1457,7 +1465,7 @@ acceptés.
   jusqu’à environ 3 pouces. Le `cos` d’Apple n’est pas reproductible à partir d’un
   modèle court comme l’est `hypot`.
 - **Plantages natifs que le portage définit.** Le Graphviz natif se termine avec 139 sur neato `mode=KK` avec `model=mds` et une arête portant `len` dans presque chaque exécution (1 survivant sur environ 1500 ; `mds_model` indexe `GD_dist` par un numéro de séquence base 1 : débordement de tas). Le port abandonne les cellules hors plage, et son résultat coïncide avec ce survivant à 0,01. `circuit_model` indexe par l'`AGSEQ` base 1 (`circuit.c:46`) : la ligne 0 de sa matrice n'est donc jamais écrite et la matrice est singulière sur tout graphe, connexe ou non ; le `mode=KK` natif avec `model=circuit` ne produit jamais de disposition circuit. Quand le processus survit, il affiche `Warning: graph <name> is disconnected. Hence, the circuit model` et se rabat sur les plus courts chemins ; le même défaut lit au-delà du tableau de pointeurs de lignes quand le dernier nœud créé a une arête, si bien que le natif se termine le plus souvent avec 139 (environ 3 exécutions sur 4 sur le graphe de test). Le port prend toujours le chemin du survivant : l'avertissement, puis les plus courts chemins, graphe connexe ou non. Avec `pack=true`, le natif a planté à chaque exécution (0 survivant sur plus de 3000 pour chacun de deux graphes) ; par décision, le port avertit par composante sous son propre nom (`_neato_cc0`, `_neato_cc1`, ...), utilise les plus courts chemins et empaquette. Il n'existe pas de sortie native pour cette combinaison ; la disposition équivaut au `model=shortpath` natif pour le même graphe.
-- **L'ordre des égalités de VPSC suit l'ordre de création, pas l'adresse de tas.** Le `IncVPSC::splitBlocks` natif parcourt un `std::set<Block*>` ordonné par adresse de tas tout en y insérant, et `CmpNodePos` départage les positions égales par l'adresse ; la sortie native pour `overlap=vpsc|ipsep` et `mode=ipsep` contraint varie donc d'une exécution à l'autre en cas d'égalité de positions (un cas a donné 21 résultats distincts en 300 exécutions). Le port ordonne les égalités par ordre de création et visite toujours les nouveaux blocs, de sorte que sa sortie est déterministe. Elle égale une exécution native échantillonnée sur les cas d'égalité vérifiés, sauf un cas de 40 nœuds qui ne correspondait à aucun des 29 résultats natifs échantillonnés (suivi 110).
+- **L'ordre des égalités de VPSC suit l'ordre de création, pas l'adresse de tas.** Le `IncVPSC::splitBlocks` natif parcourt un `std::set<Block*>` ordonné par adresse de tas tout en y insérant, et `CmpNodePos` départage les positions égales par l'adresse ; la sortie native pour `overlap=vpsc|ipsep` et `mode=ipsep` contraint varie donc d'une exécution à l'autre en cas d'égalité de positions (un cas a donné 21 résultats distincts en 300 exécutions). Le port ordonne les égalités par ordre de création et visite toujours les nouveaux blocs, de sorte que sa sortie est déterministe. Les égalités des événements de balayage suivent libc++ : le port contient un port de son `std::sort`, de sorte que l'ordre des égalités correspond au natif. Elle égale une exécution native échantillonnée sur les cas d'égalité vérifiés. Le cas de 40 nœuds (`dir1 n40`), qui ne correspondait auparavant à aucun des 29 résultats natifs échantillonnés, est expliqué : sur 332 exécutions natives, la `libvpsc.a` de l'oracle a donné 17 sorties distinctes, alors qu'une copie native ordonnant seulement `Blocks` par indice de création en a donné 1 sur 332, et le port lui est égal au bit près. L'ordre des adresses de blocs est toute la différence pour ce cas ; l'affirmation n'est mesurée que sur `dir1 n40` (suivi 110).
 
 ---
 

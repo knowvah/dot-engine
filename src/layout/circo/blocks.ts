@@ -194,6 +194,8 @@ export interface CircState {
   spanningTreeCount: number;
   minDist: number;
   rootname: string;
+  /** N_root: default of the declared node `root` attribute; null when undeclared. */
+  nRoot: string | null;
 }
 
 const MINDIST = 1.0;
@@ -208,6 +210,7 @@ export function makeCircState(blockCount: number): CircState {
     spanningTreeCount: 0,
     minDist: MINDIST,
     rootname: '',
+    nRoot: null,
   };
 }
 

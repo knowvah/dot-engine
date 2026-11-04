@@ -36,11 +36,6 @@ export function setImageSizer(sizer: ImageSizer | null): void {
   activeSizer = sizer;
 }
 
-/** The active global sizer (null when none is registered); see AD-6. */
-export function getGlobalImageSizer(): ImageSizer | null {
-  return activeSizer;
-}
-
 /** Resolve an image source via the registered sizer; null if unresolved. */
 export function findImageSize(src: string): { w: number; h: number } | null {
   return activeSizer !== null ? activeSizer(src) : null;

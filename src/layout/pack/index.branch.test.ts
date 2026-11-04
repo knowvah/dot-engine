@@ -499,8 +499,6 @@ describe('cccomps', () => {
 });
 
 // C: setPrefix, then "%zu", with nothing between. @see lib/pack/ccomps.c:145-161,203-204
-// ccomps keeps its "_" until its callers pass C's prefix (follow-up 112): circo's `_cc`
-// plus "_" gives native's `_cc_0` today.
 describe('component names', () => {
   function threeNodes(): Graph {
     const g = makeGraph();
@@ -508,8 +506,28 @@ describe('component names', () => {
     return g;
   }
 
-  it('ccomps separates prefix and index with an underscore (follow-up 112)', () => {
-    expect(ccomps(threeNodes(), '_cc').map((c) => c.name)).toEqual(['_cc_0', '_cc_1', '_cc_2']);
+  it('ccomps with no prefix names components _cc_0.. (setPrefix default)', () => {
+    expect(ccomps(threeNodes()).map((c) => c.name)).toEqual(['_cc_0', '_cc_1', '_cc_2']);
+    expect(ccomps(threeNodes(), null).map((c) => c.name)).toEqual(['_cc_0', '_cc_1', '_cc_2']);
+  });
+
+  it('ccomps appends the index directly to a legal prefix', () => {
+    expect(ccomps(threeNodes(), 'x_').map((c) => c.name)).toEqual(['x_0', 'x_1', 'x_2']);
+    expect(ccomps(threeNodes(), 'p').map((c) => c.name)).toEqual(['p0', 'p1', 'p2']);
+  });
+
+  it('ccomps falls back to _cc_ for an illegal prefix (isLegal)', () => {
+    expect(ccomps(threeNodes(), 'a-b').map((c) => c.name)).toEqual(['_cc_0', '_cc_1', '_cc_2']);
+    expect(ccomps(threeNodes(), 'é').map((c) => c.name)).toEqual(['_cc_0', '_cc_1', '_cc_2']);
+  });
+
+  it('cccomps follows the same rule', () => {
+    expect(cccomps(threeNodes()).map((c) => c.name)).toEqual(['_cc_0', '_cc_1', '_cc_2']);
+  });
+
+  it('pccomps with no or an illegal prefix names components _cc_0..', () => {
+    expect(pccomps(threeNodes()).graphs.map((c) => c.name)).toEqual(['_cc_0', '_cc_1', '_cc_2']);
+    expect(pccomps(threeNodes(), 'a b').graphs.map((c) => c.name)).toEqual(['_cc_0', '_cc_1', '_cc_2']);
   });
 
   it('pccomps appends the index directly, with the pinned component first', () => {

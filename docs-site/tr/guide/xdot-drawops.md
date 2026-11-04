@@ -1,5 +1,5 @@
 ---
-sourceHash: 36e363726bb2859530f8554c85ec42838f384f647f46aa432bea2437e024d140
+sourceHash: fbc44c99fe2224223b24b72e6c1bd3543aded187b4dc2394c64efecab072937b
 ---
 
 # xdot çizim işlemleriyle özel işleme
@@ -118,11 +118,13 @@ Buna şunlar dahildir:
 
 `digraph { a [color=red]; a -> b }` için `_draw_`/`_hdraw_` geometrisi ve renk
 değerleri, yerel `dot -Txdot` çıktısıyla tamamen eşleşir (düğüm elipsi, kenar
-spline'ı, ok ucu çokgeni ve uygulanan `color=red`). `getDrawOps(g)` işlevini
-doğrudan, henüz işlenmemiş yeni bir graf üzerinde çağırın — `render(g, ...)` ve
-`getDrawOps(g)` işlevlerini *aynı* graf nesnesi üzerinde çağırmak yerleşimi iki
-kez çalıştırır ve desteklenen bir kullanım biçimi değildir; her graf için
-birini veya diğerini kullanın.
+spline'ı, ok ucu çokgeni ve uygulanan `color=red`). `getDrawOps(g)` işlevini doğrudan, henüz işlenmemiş yeni bir graf üzerinde
+çağırın. *Aynı* graf nesnesini yeniden işlemek, yerel Graphviz'in döngüsünü
+izler: bir `dot`, `xdot` veya `json` işlemesi yerleşimi `g.attrs` içine geri
+yazar (`pos`, `width`, `height`, `bb` ve çizim öznitelikleri), her yerleşim `bb`
+yazar, sonraki bir yerleşim bu değerleri okur ve grafın `_draw_` veya
+`_background` özniteliği yeniden oynatılır. Bu yüzden ikinci bir `xdot`
+işlemesi, yerelde olduğu gibi ilkinden farklıdır.
 
 ## Canvas örneği (yalnızca düğüm etiketleri)
 

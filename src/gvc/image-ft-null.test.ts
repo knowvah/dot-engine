@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { parse, renderWithContext } from '../index.js';
 import { createDefaultContext } from './default-context.js';
-import { getGlobalImageSizer, setImageSizer } from './usershape.js';
+import { findImageSize, setImageSizer } from './usershape.js';
 import { getGlobalImageResolver, setImageResolver } from './image-resolver.js';
 
 const P7 = new URL('./__fixtures__/p7/images/', import.meta.url);
@@ -36,13 +36,16 @@ afterEach(() => { setImageSizer(null); setImageResolver(null); vi.restoreAllMock
 
 describe('global hook accessors', () => {
   it('return what was registered, else null', () => {
-    expect(getGlobalImageSizer()).toBeNull();
+    expect(findImageSize('x.png')).toBeNull();
     expect(getGlobalImageResolver()).toBeNull();
     const sizer = () => SIZE;
     const resolver = () => HELLO;
     setImageSizer(sizer);
     setImageResolver(resolver);
-    expect(getGlobalImageSizer()).toBe(sizer);
+    expect(findImageSize('x.png')).toEqual(SIZE);
+    setImageSizer(null);
+    expect(findImageSize('x.png')).toBeNull();
+    setImageSizer(sizer);
     expect(getGlobalImageResolver()).toBe(resolver);
   });
 });

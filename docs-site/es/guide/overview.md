@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Visión general
 
@@ -82,6 +82,13 @@ splines de las aristas, caja delimitadora) se conservan después en el objeto `G
 `getLayout` no vuelve a ejecutar el diseño: lee la geometría que una llamada previa a
 `render` ya calculó, por lo que siempre se llama *después* de `render`, sobre el mismo
 grafo.
+
+Renderizar modifica el grafo, como en Graphviz. Tras un renderizado `dot`,
+`xdot` o `json`, `g.attrs` contiene los atributos de diseño (`pos`, `width`,
+`height`, `bb` y los atributos de dibujo); cualquier diseño escribe `bb`. Al
+renderizar de nuevo el mismo `Graph` se leen esos valores y se reproduce el
+`_draw_` o `_background` del grafo, de modo que un segundo renderizado `xdot`
+difiere del primero, igual que en el nativo.
 
 ## Los tres puntos de entrada: ¿qué puerta?
 

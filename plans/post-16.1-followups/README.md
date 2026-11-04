@@ -22,6 +22,8 @@ Items 95–102 closed by `plans/post-16-1-followups-7/` (101's layout-time FT_NU
 the open work is items 103–108 under "New follow-ups found by part 7".
 Items 103–108 closed by `plans/post-16-1-followups-8/`; the open work is items 109–113 under
 "New follow-ups found by part 8".
+Items 109–113 closed by `plans/post-16-1-followups-9/`; the open work is items 114–124 under
+"New follow-ups found by part 9".
 Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
@@ -590,25 +592,53 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       and `Unknown value %s for attribute "model"` (part 7 T8).
 
 - **New follow-ups found by part 8** (`plans/post-16-1-followups-8/`):
-  109. `src/layout/neato/dijkstra.ts:toDistType` wraps a float weight at or above 2^31 into
+  109. **[DONE — part 9 T1: saturates as arm64 does]** `src/layout/neato/dijkstra.ts:toDistType` wraps a float weight at or above 2^31 into
       int32, where native arm64 saturates to INT_MAX (`dijkstra.c:166`). Only duplicate
       neighbours yield such a weight, and `makeGraphData` merges them, so no graph reaches
       it today (part 8 T2).
-  110. `dir1 n40` (`IncVPSC`, no `SweepLine`) matches none of 29 sampled native variants.
+  110. **[DONE — part 9 T7: libc++ `std::sort` ported; T8: block address order proven the whole `dir1 n40` difference]** `dir1 n40` (`IncVPSC`, no `SweepLine`) matches none of 29 sampled native variants.
       Likely the heap-address order of follow-up 106, unproven for this case. Also unchecked:
       `compareEvents` under libc++'s unstable `std::sort` against JS's stable sort, on equal
       event positions (part 8 T3).
-  111. `maxiter` is ignored on multi-component neato graphs: `g.attrs.get('maxiter')` on a
+  111. **[DONE — part 9 T2: components copy the parent's attributes]** `maxiter` is ignored on multi-component neato graphs: `g.attrs.get('maxiter')` on a
       component misses the root's value, where C `agget` inherits it. `graph G {maxiter=3;
       a--b--c--a; d--e--f--d}` keeps the no-`maxiter` layout while native differs (129 xdot
       diffs). `epsilon` is read the same way, unchecked (part 8 T6).
-  112. `ccomps` callers pass prefixes C does not (`_twopi`, `_sfdp_cc`, `_cc`; C passes none,
+  112. **[DONE — part 9 T3: sfdp `start` warning; T6: `setPrefix` and `isLegal`, callers as C; reuse of a user `_cc_N` → 115]** `ccomps` callers pass prefixes C does not (`_twopi`, `_sfdp_cc`, `_cc`; C passes none,
       giving `_cc_0`), and `ccomps` puts `_` before the index where C appends it directly. Fix
       the form and the three callers together. Nothing native prints reads these names today.
       Also check sfdp's `start=self` warning order against native (part 8 T7).
-  113. `getGlobalImageSizer` (`src/gvc/usershape.ts:40`) has no production caller: AD-6 named it,
+  113. **[DONE — part 9 T5: removed]** `getGlobalImageSizer` (`src/gvc/usershape.ts:40`) has no production caller: AD-6 named it,
       but the sizer fallback still lives in `imageIsSupplied` and `usershapeSizePts`, and only
       `image-ft-null.test.ts` calls it. Route those through it or remove it (part 8 T4, T9).
+
+- **New follow-ups found by part 9** (`plans/post-16-1-followups-9/`):
+  114. `neato dim=3` is silently 2-D: 211–302 diffs on planning's probes, and absent from
+      `docs/known-divergences.md`.
+  115. `ccomps` does not reuse a user `_cc_N` subgraph. On `graph G { a -- b; subgraph _cc_0 { c }
+      d -- e; }`, C's `agsubg(g, name, 1)` reuses it, so `c` joins it; `buildSubgraph` always makes
+      a fresh graph. circo matches native; twopi and sfdp do not, and native twopi also prints `use
+      of weight=0 creates disconnected component` (part 9 T6).
+  116. `init.branch.test.ts` pins `dotInitNode`'s list guard, where C's `alloc_elist` is
+      unconditional (part 9 T11).
+  117. Second renders still missing native's on fdp: `graphs-fdp` (T14 did not clear it; likely native's
+      first cycle changing cluster membership, no counterfactual run) and, in `dot` format, `1581`.
+  118. Port-only `g.info.abomShift` survives a no-free layout, so a scratch graph's no-free render 3 on
+      dot differs (part 9 T13).
+  119. `installEdgeSpline`'s fitter fallback overwrites a stale route where `new_spline` appends, and
+      aux-edge weights are stamped outside the `weight` attribute (part 9 T13).
+  120. No-free arrows on the flat aux route on dot: 21 of 211 svg lines on `multi-edge` render 2
+      (`splines-flat.ts:276-283`). The one known miss left in the no-free gap AD-12 closed (part 9 T14).
+  121. sfdp first-render parity on the 15 ids in `harness/T11/xdot-second-T14.json`. Not diagnosed; these
+      first renders did not change in part 9.
+  122. No corpus input carries a graph `_draw_` or `_background`, so the survey and bytediff never reach
+      `init_xdot`'s replay. Only `src/gvc/emit-xdot.test.ts` covers it. Add such an input (part 9 T14, T10).
+  123. `ctx.layout`'s reset has two unpinned edges: a layout that throws after a reset leaves `laidOut`
+      unset, and a subgraph laid out after its root was freed is not reset (part 9 T11).
+  124. `graphs-b56`'s second `plain` render on native varies per process: over 8 runs, `SAME` on fdp 2, circo 1,
+      twopi 1, osage 5, sfdp 0. Cause not traced. It moved the matrix's native-same count from 255 to 253 between
+      T0 and T10 with no native change. T14 also counted this id's `xdot` on all 8 engines as first-render misses
+      (part 9 T10).
 
   Accepted, not open (user decision, PR 119): layouts that vary with the runtime's `pow`, `hypot`
   or similar. Last-bit libm differences change the decisions an algorithm encodes, as they

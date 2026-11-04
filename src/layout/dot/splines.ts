@@ -21,7 +21,7 @@ import { IGNORED, EDGE_LABEL } from './rank.js';
 import { markLowclusters } from './cluster.js';
 import { routeDotEdges } from './edge-route.js';
 import { collectOtherEdges } from './self-loop.js';
-import { resetSplineBounds } from './edge-route-rank.js';
+import { beginRoutingPass, staleBezierCount, swapStaleBeziers } from './edge-route-rank.js';
 import { dispatchOrthoEdges } from './ortho-adapter.js';
 import { routeEdgeGroups } from './splines-groups.js';
 import { placePortLabels, placeRegularEdgeLabels, setEdgeLabelPos } from './splines-label.js';
@@ -298,10 +298,10 @@ export function swapBezier(b: Bezier): void {
   }
 }
 
-/** Reverse the list of beziers in a spline and swap each bezier. */
-export function swapSpline(s: Spline): void {
-  s.list.reverse();
-  for (const bz of s.list) swapBezier(bz);
+/** Reverse the list of beziers in a spline after its first `stale`, and swap each of those. */
+export function swapSpline(s: Spline, stale = 0): void {
+  s.list.push(...s.list.splice(stale).reverse());
+  for (let i = stale; i < s.list.length; i++) swapBezier(s.list[i]);
 }
 
 /**
@@ -317,7 +317,7 @@ export function swapSpline(s: Spline): void {
  */
 export function swapEdgeSpline(e: Edge): void {
   if (e.info.spl === undefined) return;
-  swapSpline(e.info.spl);
+  swapSpline(e.info.spl, staleBezierCount(e));
   const t = e.info.tailArrowOps;
   e.info.tailArrowOps = e.info.headArrowOps;
   e.info.headArrowOps = t;
@@ -481,13 +481,13 @@ function curvedTop(g: Graph): void {
 }
 
 /**
- * Post-loop: vnode labels, normalize, routeDotEdges backstop (curved already
- * routed its groups; C skips routesplinesterm), port labels. @see c:422-471
+ * Post-loop: labels, normalize, backstop (curved skips it), port labels. @see c:422-471
  */
 function finalizeSplines(g: Graph, et: number, normalize: boolean): void {
   placeRegularEdgeLabels(g);
   if (normalize) edgeNormalize(g);
   if (et !== EDGETYPE_CURVED) routeDotEdges(g);
+  if (normalize) swapStaleBeziers(g);
   placePortLabels(g);
   setState(GVSPLINES); // @see dotsplines.c:477
   g.info.edgeLabelsDone = true; // @see dotsplines.c:471 (EdgeLabelsDone = 1)
@@ -504,7 +504,7 @@ export function dotSplines_(g: Graph, normalize: boolean): number {
   // Force the next getSplineBounds(g) access to recompute so this pass sees
   // a frozen snapshot immune to recoverSlack/resizeVn vnode mutations from
   // edges routed earlier in THIS SAME pass. @see edge-route-rank.ts:getSplineBounds
-  resetSplineBounds(g);
+  beginRoutingPass(g);
   const edges: Edge[] = [];
   collectRankEdges(g, edges);
   // C sorts with libc qsort (LIST_SORT → gv_list_sort_ → qsort), which is

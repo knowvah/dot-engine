@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Yleiskatsaus
 
@@ -82,6 +82,13 @@ kaarten splinit, rajauslaatikko) säilyvät `Graph`-objektissa sen jälkeen.
 `getLayout` ei aja asettelua uudelleen — se lukee geometrian, jonka aiempi `render`-kutsu
 on jo laskenut, joten se kutsutaan aina *renderin jälkeen*, samalle
 graafille.
+
+Renderöinti muuttaa graafia, kuten Graphvizissä. `dot`-, `xdot`- tai
+`json`-renderöinnin jälkeen `g.attrs` sisältää asetteluattribuutit (`pos`,
+`width`, `height`, `bb` ja piirtoattribuutit); mikä tahansa asettelu kirjoittaa
+`bb`:n. Saman `Graph`-olion renderöinti uudelleen lukee nämä arvot, ja graafin
+`_draw_` tai `_background` toistetaan, joten toinen `xdot`-renderöinti eroaa
+ensimmäisestä, kuten natiivissakin.
 
 ## Kolme sisääntulopistettä — mikä ovi?
 

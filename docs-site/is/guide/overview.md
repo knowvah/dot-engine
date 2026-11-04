@@ -1,5 +1,5 @@
 ---
-sourceHash: b49fea0ff0ced8be6197e7a82abdee92840a79df656f5ce1a4f54f3f1690a26c
+sourceHash: e0f6eee9ad2d6fad0cea6370af860acf0913ef68026858f21bdf619bb9bef060
 ---
 # Yfirlit
 
@@ -82,6 +82,13 @@ splínur leggja, umgjörð) eru geymd á `Graph`-hlutnum á eftir.
 `getLayout` keyrir uppsetninguna ekki aftur — það les rúmfræði sem fyrra `render`-kall
 hefur þegar reiknað, svo það er alltaf kallað *eftir* `render`, á sama
 grafinu.
+
+Teikning breytir grafinu, eins og í Graphviz. Eftir `dot`-, `xdot`- eða
+`json`-teikningu inniheldur `g.attrs` uppsetningareigindin (`pos`, `width`,
+`height`, `bb` og teiknieigindin); hver uppsetning skrifar `bb`. Þegar sama
+`Graph` er teiknað aftur eru þessi gildi lesin og `_draw_` eða `_background`
+grafsins er spilað aftur, svo önnur `xdot`-teikning er frábrugðin þeirri fyrstu,
+eins og í upprunalega.
 
 ## Inngangspunktarnir þrír — hvaða dyr?
 

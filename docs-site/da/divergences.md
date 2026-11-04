@@ -1,5 +1,5 @@
 ---
-sourceHash: 1a6dc9d117cbf7ec8f92029dcacde31904fdc0e9f36ab141364777782a6fce03
+sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1190,6 +1190,14 @@ fejl, og `registry-staleness.test.ts` ville markere posten som forældet. Eviden
 
 **Hvorfor accepteret.** `aagerror` (`lib/cgraph/scan.l:157`) tilføjer `InputFile: ` kun når `InputFile` er sat. CLI'en sætter den til `<stdin>` ved læsning af standard input; biblioteksindgangen `agmemread`, som porten afspejler, lader den være usat og udskriver intet præfiks. Porten har ingen CLI, så der er intet at rapportere. stderr-proben normaliserer præfikset ved sammenligning.
 
+### A13. Frigivet udfyldningsfarve i `_background`-genafspilningen (svg) {#a13-freed-fill-in-the-background-replay}
+
+**Berørt:** svg-output for et input med en håndskrevet `_background` (eller grafens `_draw_`), hvis første udfyldte operation ikke har sin egen udfyldningsfarve, på en graf med en gradient-`bgcolor` som `bgcolor="red:blue"`.
+
+**Hvad der adskiller sig.** Native udskriver `fill=""` på den operation; porten udskriver gradientens første stop. xdot opløses til RGBA og er enig med porten, så kun svg afviger.
+
+**Hvorfor accepteret.** `emit_background` frigiver `clrs[0]` (`lib/common/emit.c:1518`), mens svg's udfyldningstilstand stadig peger på den (`gvrender_resolve_color` beholder `color->u.string = name`, `lib/gvc/gvrender.c:193`), så native output er frigivet hukommelse, ikke en farve; det var `fill=""` i 8 af 8 målte kørsler. Porten udskriver den farve, C mente. Intet korpusinput når hertil; `src/gvc/emit-xdot.test.ts` fastholder det.
+
 ---
 
 ## Sporet lang hale (`dot`-attributter og kanttilfælde) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1297,7 +1305,7 @@ afviger fra native Graphviz. Fundet af missionen `v2-silent-gaps`
   V8's `Math.cos`; fdp's kraftløkke forstærker det til omkring 3 tommer. Apples
   `cos` kan ikke reproduceres ud fra en kort model, sådan som `hypot` kan.
 - **Native nedbrud, som porten definerer.** Native Graphviz afslutter med 139 ved neato `mode=KK` med `model=mds` og en kant med `len` i næsten hver kørsel (1 overlevende af ca. 1500; `mds_model` indekserer `GD_dist` med et 1-baseret sekvensnummer: heap-overløb). Porten dropper celler uden for intervallet, og dens resultat stemmer med den overlevende inden for 0,01. `circuit_model` indekserer med det 1-baserede `AGSEQ` (`circuit.c:46`), så række 0 i dens matrix aldrig skrives, og matricen er singulær for enhver graf, sammenhængende eller ej: native `mode=KK` med `model=circuit` frembringer aldrig et circuit-layout. Når processen overlever, udskriver den `Warning: graph <name> is disconnected. Hence, the circuit model` og falder tilbage til korteste veje; den samme fejl læser forbi rækkepegerarrayet, når den sidst oprettede knude har en kant, så native afslutter normalt med 139 (ca. 3 kørsler ud af 4 på prøvegrafen). Porten tager altid den overlevende vej: advarslen og derefter korteste veje, sammenhængende graf eller ej. Med `pack=true` styrtede native ved hver kørsel (0 overlevende af over 3000 på hver af to grafer); efter beslutning advarer porten pr. komponent under sit eget navn (`_neato_cc0`, `_neato_cc1`, ...), bruger korteste veje og pakker. Der findes intet native output for den kombination; layoutet svarer til natives `model=shortpath` for samme graf.
-- **VPSC-uafgjorte følger oprettelsesrækkefølge, ikke heap-adresse.** Native `IncVPSC::splitBlocks` gennemløber et `std::set<Block*>` sorteret efter heap-adresse, mens der indsættes i det, og `CmpNodePos` afgør uafgjorte positioner efter adresse, så native output for `overlap=vpsc|ipsep` og begrænset `mode=ipsep` varierer fra kørsel til kørsel ved lige positioner (ét tilfælde gav 21 forskellige resultater i 300 kørsler). Porten ordner uafgjorte efter oprettelsesrækkefølge og besøger altid nye blokke, så dens output er deterministisk. Den svarer til en udtrukket native kørsel i de undersøgte tilfælde med uafgjorte, bortset fra ét tilfælde med 40 knuder, der ikke matchede nogen af 29 udtrukne native resultater (opfølgning 110).
+- **VPSC-uafgjorte følger oprettelsesrækkefølge, ikke heap-adresse.** Native `IncVPSC::splitBlocks` gennemløber et `std::set<Block*>` sorteret efter heap-adresse, mens der indsættes i det, og `CmpNodePos` afgør uafgjorte positioner efter adresse, så native output for `overlap=vpsc|ipsep` og begrænset `mode=ipsep` varierer fra kørsel til kørsel ved lige positioner (ét tilfælde gav 21 forskellige resultater i 300 kørsler). Porten ordner uafgjorte efter oprettelsesrækkefølge og besøger altid nye blokke, så dens output er deterministisk. Uafgjorte sweep-hændelser følger libc++: porten indeholder en port af dens `std::sort`, så rækkefølgen ved uafgjorte svarer til native. Den svarer til en udtrukket native kørsel i de undersøgte tilfælde med uafgjorte. Tilfældet med 40 knuder (`dir1 n40`), der tidligere ikke matchede nogen af 29 udtrukne native resultater, er forklaret: i 332 native kørsler gav oraklets `libvpsc.a` 17 forskellige output, mens en native kopi, der kun ordnede `Blocks` efter oprettelsesindeks, gav 1 i 332, og porten er bit for bit lig med det. Blokkenes adresserækkefølge er hele forskellen i det tilfælde; påstanden er kun målt på `dir1 n40` (opfølgning 110).
 
 ---
 
