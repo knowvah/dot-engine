@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: EPL-2.0
 //
-// Engine cleanup frees node/edge/cluster labels where its C does, so a second
-// layout of the same Graph rebuilds them (changed measurer, repeated warnings).
+// C's cleanup frees node/edge/cluster labels. The port drops them at the next
+// layout instead (layout-reset.ts), because `getLayout` reads them after
+// `render`'s free. A second layout of the same Graph still rebuilds them
+// (changed measurer, repeated warnings).
 // @see lib/common/utils.c:gv_cleanup_node
 // @see lib/common/utils.c:gv_cleanup_edge
 // @see lib/dotgen/dotinit.c:dot_cleanup_node
@@ -35,21 +37,24 @@ function nodeWidth(g: Graph, name: string): number {
   return (n.info.width ?? 0) as number;
 }
 
-describe('cleanup frees labels so a second layout re-measures', () => {
+describe('a freed layout keeps labels until the next layout re-measures them', () => {
   afterEach(() => { vi.restoreAllMocks(); });
 
   for (const engine of ENGINES) {
-    it(`${engine}: label/xlabel/edge labels cleared by freeLayout`, () => {
+    it(`${engine}: freeLayout leaves labels, and the next layout replaces them`, () => {
       const ctx = createDefaultContext();
       const g = parse(SRC);
       ctx.layout(g, engine);
-      expect(g.nodes.get('a')?.info.label).toBeDefined();
+      const a = g.nodes.get('a')!;
+      const nodeLabel = a.info.label;
+      const edgeLabel = g.edges[0]!.info.label;
+      expect(nodeLabel).toBeDefined();
       ctx.freeLayout(g, engine);
-      for (const n of g.nodes.values()) {
-        expect(n.info.label).toBeUndefined();
-        expect(n.info.xlabel).toBeUndefined();
-      }
-      for (const e of g.edges) expect(e.info.label).toBeUndefined();
+      expect(a.info.label).toBe(nodeLabel);
+      expect(g.edges[0]!.info.label).toBe(edgeLabel);
+      ctx.layout(g, engine);
+      expect(a.info.label).toBeDefined();
+      expect(a.info.label).not.toBe(nodeLabel);
     });
 
     it(`${engine}: doubled measurer widens the node on the second layout`, () => {
@@ -64,15 +69,19 @@ describe('cleanup frees labels so a second layout re-measures', () => {
     });
   }
 
-  it('dot and fdp and osage clear cluster labels', () => {
+  it('dot and fdp and osage keep cluster labels until the next layout', () => {
     for (const engine of ['dot', 'fdp', 'osage'] as const) {
       const ctx = createDefaultContext();
       const g = parse('digraph { subgraph cluster_x { label=L; a; } b; }');
       ctx.layout(g, engine);
       const cl = g.subgraphs.get('cluster_x') as Graph;
-      expect(cl.info.label).toBeDefined();
+      const label = cl.info.label;
+      expect(label).toBeDefined();
       ctx.freeLayout(g, engine);
-      expect(cl.info.label).toBeUndefined();
+      expect(cl.info.label).toBe(label);
+      ctx.layout(g, engine);
+      expect(cl.info.label).toBeDefined();
+      expect(cl.info.label).not.toBe(label);
     }
   });
 

@@ -10,7 +10,6 @@
 
 import type { ShapeDesc } from '../../common/types.js';
 import type { Graph } from '../../model/graph.js';
-import { gvCleanupEdgeLabels, gvCleanupNodeLabels } from '../dot/init.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { TwopiAlgData } from '../../model/nodeInfo.js';
@@ -185,7 +184,6 @@ export function twopiFreeAlg(g: Graph): void {
  */
 export function twopiCleanup(g: Graph): void {
   if (g.nodes.size === 0) return; // C: empty graph
-  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge
-  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // gv_cleanup_node
+  // gv_cleanup_edge, gv_cleanup_node: labels go at the next layout (layout-reset.ts).
   g.info.neato_nlist = undefined; // twopi_cleanup_graph
 }

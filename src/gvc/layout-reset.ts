@@ -9,9 +9,17 @@
  * therefore only marks the graph freed, and the next `layout` replaces the
  * records before the engine runs. That is an explicit deviation in WHEN the
  * records go. What a layout sees is the same: zeroed records after a free, stale
- * ones without one.
+ * ones without one. C's label frees (gv_cleanup_node, gv_cleanup_edge,
+ * dot_cleanup_graph, cleanup_subgs, cleanup_graphs), and osage's cluster arrays,
+ * go the same way, since `getLayout` publishes them: engine cleanups leave them,
+ * and this reset drops them.
  *
  * @see lib/gvc/gvlayout.c:gvFreeLayout
+ * @see lib/common/utils.c:gv_cleanup_node
+ * @see lib/common/utils.c:gv_cleanup_edge
+ * @see lib/dotgen/dotinit.c:dot_cleanup_graph
+ * @see lib/fdpgen/fdpinit.c:cleanup_subgs
+ * @see lib/osage/osageinit.c:cleanup_graphs
  */
 
 import { makeEdgeInfo, makePort } from '../model/edgeInfo.js';

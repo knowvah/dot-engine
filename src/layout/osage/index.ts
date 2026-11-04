@@ -11,7 +11,6 @@
  */
 
 import type { Graph } from '../../model/graph.js';
-import { gvCleanupEdgeLabels, gvCleanupNodeLabels } from '../dot/init.js';
 import type { Node } from '../../model/node.js';
 import type { Box } from '../../model/geom.js';
 import type { LayoutEngine } from '../../gvc/context.js';
@@ -502,40 +501,22 @@ export function osageLayout(g: Graph): void {
 }
 
 // ---------------------------------------------------------------------------
-// osageCleanup helpers — exported for Lizard
-// ---------------------------------------------------------------------------
-
-/** Recursively clear cluster arrays from g and all subclusters. */
-export function cleanupGraphs(g: Graph): void {
-  const nClust = g.info.n_cluster ?? 0;
-  for (let i = 1; i <= nClust; i++) {
-    const subg = g.info.clust![i - 1];
-    subg.info.label = undefined; // free_label(GD_label(subg))
-    cleanupGraphs(subg);
-  }
-  g.info.clust = undefined;
-  g.info.n_cluster = undefined;
-}
-
-// ---------------------------------------------------------------------------
 // osageCleanup
 // ---------------------------------------------------------------------------
 
 /**
  * Free all layout-specific memory attached to g.
  *
- * Clears alg (osage ownership tag) from all nodes and removes cluster
- * arrays from GraphInfo.
+ * Clears alg (osage ownership tag) from all nodes.
  *
  * @see lib/osage/osageinit.c:osage_cleanup
  */
 export function osageCleanup(g: Graph): void {
-  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge: per-node agfstout, all edges of root g
-  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // gv_cleanup_node
+  // gv_cleanup_edge, gv_cleanup_node: labels go at the next layout (layout-reset.ts).
   for (const n of g.nodes.values()) {
     if (n.info.alg?.kind === 'osage') n.info.alg = undefined;
   }
-  cleanupGraphs(g);
+  // cleanup_graphs: cluster labels and arrays go at the next layout (layout-reset.ts).
 }
 
 // ---------------------------------------------------------------------------

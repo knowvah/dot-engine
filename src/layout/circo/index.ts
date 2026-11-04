@@ -18,7 +18,6 @@
  */
 
 import type { Graph } from '../../model/graph.js';
-import { gvCleanupEdgeLabels, gvCleanupNodeLabels } from '../dot/init.js';
 import type { LayoutEngine } from '../../gvc/context.js';
 import { circoInitGraph, freeNData } from './init.js';
 import { circoLayout } from './circular.js';
@@ -74,8 +73,7 @@ export function circoLayoutFull(g: Graph): void {
 /** @see lib/circogen/circularinit.c:circo_cleanup */
 export function circoCleanup(g: Graph): void {
   if (g.nodes.size === 0) return; // C: g is empty
-  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge: per-node agfstout, all edges of root g
-  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // gv_cleanup_node
+  // gv_cleanup_edge, gv_cleanup_node: labels go at the next layout (layout-reset.ts).
   // Derived graph was stored in g.info.alg during circoLayout; clear it.
   g.info.alg = undefined;
   g.info.neato_nlist = undefined;

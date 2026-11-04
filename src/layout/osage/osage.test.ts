@@ -393,15 +393,16 @@ export function testCleanupClearsAlg(): void {
   expect(n.info.alg).toBeUndefined();
 }
 
-export function testCleanupClearsClusterArrays(): void {
+export function testCleanupKeepsClusterArrays(): void {
   const g = freshGraph();
   const c = addCluster(g, 'cluster_c');
   g.info.n_cluster = 1;
   g.info.clust = [c];
   c.info.n_cluster = 0;
   osageCleanup(g);
-  expect(g.info.clust).toBeUndefined();
-  expect(g.info.n_cluster).toBeUndefined();
+  // getLayout reads them after render's free; the next layout resets them.
+  expect(g.info.clust).toEqual([c]);
+  expect(g.info.n_cluster).toBe(1);
 }
 
 export function testCleanupLeavesOtherAlg(): void {
@@ -502,7 +503,7 @@ describe('osageReposition', () => {
 
 describe('osageCleanup', () => {
   it('clears alg from all nodes', testCleanupClearsAlg);
-  it('clears cluster arrays from GraphInfo', testCleanupClearsClusterArrays);
+  it('keeps cluster arrays for getLayout', testCleanupKeepsClusterArrays);
   it('leaves non-osage alg data untouched', testCleanupLeavesOtherAlg);
 });
 
