@@ -15,6 +15,7 @@ import githubLight from '@shikijs/themes/github-light';
 import githubDark from '@shikijs/themes/github-dark';
 import { dotLang } from '../dot.tmLanguage';
 import { pickStrings } from './strings';
+import { svgToPng } from './svg-to-png';
 
 const ENGINES = [
   'dot', 'neato', 'fdp', 'sfdp', 'circo', 'twopi', 'osage', 'patchwork',
@@ -107,7 +108,6 @@ onMounted(async () => {
 // --- export ---
 // Raster scale for PNG export: 2× the SVG's CSS-pixel size so the image stays
 // crisp on high-DPI displays and when zoomed.
-const PNG_SCALE = 2;
 const EXPORT_BASENAME = 'graph';
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -126,38 +126,6 @@ function exportSvg(): void {
     new Blob([svg.value], { type: 'image/svg+xml' }),
     `${EXPORT_BASENAME}.svg`,
   );
-}
-
-function svgToPng(markup: string): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(
-      new Blob([markup], { type: 'image/svg+xml' }),
-    );
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.ceil(img.naturalWidth * PNG_SCALE);
-      canvas.height = Math.ceil(img.naturalHeight * PNG_SCALE);
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        reject(new Error('Canvas 2D context unavailable'));
-        return;
-      }
-      // No background fill: the SVG paints its own bgcolor polygon, and a
-      // bgcolor=transparent graph should stay transparent in the PNG.
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(
-        (b) => (b ? resolve(b) : reject(new Error('PNG encoding failed'))),
-        'image/png',
-      );
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Could not rasterize the SVG'));
-    };
-    img.src = url;
-  });
 }
 
 async function exportPng(): Promise<void> {
