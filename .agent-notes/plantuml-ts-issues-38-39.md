@@ -17,3 +17,15 @@
 - **Finding**: No failure in the build step or the workflow's own code. The two symptoms were not shown to share a cause.
 - **Impact**: Re-check Docs on the next main push before looking for a code cause.
 - **Confidence**: Medium
+
+## Observation: output gates cannot see a regression in what `getLayout` reads after `render`
+- **Context**: plantuml-ts issue 40, live from v2.8.0 to v2.10.2 with every survey and bytediff green.
+- **Finding**: the survey and bytediff compare rendered output, and `render` frees only after output exists. A free that empties a record `getLayout` reads changes no output. C has no equivalent read, since it deletes records at the free, so a faithful port of the free looks correct against the oracle.
+- **Impact**: when a C free or reset is ported, check whether `src/api/geometry.ts` reads the record; `geometry.labels-after-render.test.ts` now covers labels and clusters.
+- **Confidence**: High
+
+## Observation: plantuml-ts's checkout is off limits while its queue driver runs
+- **Context**: my uncommitted edits to its issue 39 and `TRACKER.md` stopped the driver's planner with exit 2.
+- **Finding**: any tracked-file change there stops the driver. `pgrep -fl mission-driver` is the signal; `.claude/mission-active` is not. Results go to the plantuml-ts session to land between runs.
+- **Impact**: reading is fine, including running its source from a scratch script; writing is not, without the user's word.
+- **Confidence**: High

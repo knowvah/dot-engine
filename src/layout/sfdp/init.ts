@@ -12,7 +12,6 @@
 
 import { RenderError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
-import { gvCleanupEdgeLabels, gvCleanupNodeLabels } from '../dot/init.js';
 import { setEdgeTypeFromAttr } from '../dot/index.js';
 import { EDGETYPE_LINE } from '../neato/splines.js';
 import { neatoInitNode } from '../neato/init.js';
@@ -273,8 +272,7 @@ export function getPos(g: Graph, dim: number): number[] {
  * @see lib/sfdpgen/sfdpinit.c:sfdp_cleanup
  */
 export function sfdpCleanup(g: Graph): void {
-  for (const e of g.edges) gvCleanupEdgeLabels(e); // gv_cleanup_edge: per-node agfstout, all edges of root g
-  for (const n of g.nodes.values()) gvCleanupNodeLabels(n); // gv_cleanup_node
+  // gv_cleanup_edge, gv_cleanup_node: labels go at the next layout (layout-reset.ts).
   for (const n of g.nodes.values()) {
     n.info.pos = undefined;
     n.info.id = undefined;
