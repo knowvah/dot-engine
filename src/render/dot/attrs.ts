@@ -30,6 +30,22 @@ export function edgeAttrsAttached(e: Edge): boolean {
 }
 
 /**
+ * A node's `pos` value: x and y at `%.5g`, then, when the root's `odim` is 3 or
+ * more, `72 * ND_pos[k]` for k from 2 below `odim`. `plain` and the SVG family
+ * never reach this: they print two coordinates, as C.
+ * @see lib/common/output.c:attach_attrs_and_arrows
+ */
+export function nodePosRaw(n: Node): string {
+  const c = n.info.coord;
+  let raw = gfmt5(c.x) + ',' + gfmt5(c.y);
+  const odim = n.root.info.odim ?? 2;
+  for (let k = 2; odim >= 3 && k < odim; k++) {
+    raw += ',' + gfmt5(POINTS_PER_INCH * (n.info.pos?.[k] ?? 0));
+  }
+  return raw;
+}
+
+/**
  * Append the leaf-field rectangles of a record node, mirroring the recursion in
  * `set_record_rects`: a field with sub-fields contributes nothing itself, while
  * a LEAF field (`n_flds == 0`) contributes its box translated by the node centre

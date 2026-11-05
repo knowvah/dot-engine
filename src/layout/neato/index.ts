@@ -25,6 +25,7 @@ import {
   MODEL_MDS,
 } from './init.js';
 import { neatoMode } from './start.js';
+import { neatoInitGraphDim, addZ } from './init-dim.js';
 import { agerr, agwarningf } from '../../common/agerr.js';
 import { agNameOf } from '../../model/cgraph-ops.js';
 import { removeOverlapWith, graphAdjustMode, type AdjustData } from './fdp-adjust.js';
@@ -142,6 +143,27 @@ export function maybeRemoveOverlap(g: Graph, am: AdjustData): void {
 // ---------------------------------------------------------------------------
 
 /**
+ * C's neato_init_node_edge: neato_init_node then user_pos per node (user_pos
+ * seeds a `pos=` input into the initial layout, P_SET/hasPos, so majorization
+ * starts from it instead of a random init), then a SECOND loop calling
+ * neato_init_edge -> common_init_edge, which creates ED_label(e) and ORs
+ * GD_has_labels with EDGE_LABEL. Without it the edge label object never exists
+ * and addXLabels' gate (has_labels & EDGE_LABEL) is dead.
+ * @see lib/neatogen/neatoinit.c:128 neato_init_node_edge
+ * @see lib/neatogen/neatoinit.c:68 neato_init_edge
+ */
+function neatoInitNodeEdge(g: Graph, ndim: number): void {
+  for (const [, n] of g.nodes) {
+    neatoInitNode(n, ndim);
+    userPos(n, ndim, g.nodes.size);
+  }
+  const measurer = layoutMeasurer(g);
+  if (measurer !== undefined) {
+    for (const e of g.edges) initEdgeLabels(e, g, measurer);
+  }
+}
+
+/**
  * Full neato layout pipeline for a single graph.
  *
  * Pipeline (matches neato_layout in C):
@@ -171,23 +193,8 @@ export function neatoLayout(g: Graph): void {
   // @see lib/neatogen/neatoinit.c:598
   setEdgeTypeFromAttr(g, EDGETYPE_LINE);
   commonInitNodeEdge(g);
-  // C neato_init_node_edge: neato_init_node then user_pos, per node. user_pos
-  // seeds a `pos=` input into the initial layout (P_SET/hasPos) so majorization
-  // starts from it instead of a random init. @see neatoinit.c:139-141
-  for (const [, n] of g.nodes) {
-    neatoInitNode(n);
-    userPos(n);
-  }
-  // C neato_init_node_edge runs a SECOND loop calling neato_init_edge ->
-  // common_init_edge, which creates ED_label(e) and ORs GD_has_labels with
-  // EDGE_LABEL. Without it the edge label object never exists and addXLabels'
-  // gate (has_labels & EDGE_LABEL) is dead.
-  // @see lib/neatogen/neatoinit.c:142 neato_init_node_edge (edge loop)
-  // @see lib/neatogen/neatoinit.c:68 neato_init_edge -> common_init_edge
-  const measurer = layoutMeasurer(g);
-  if (measurer !== undefined) {
-    for (const e of g.edges) initEdgeLabels(e, g, measurer);
-  }
+  // neato_init_graph reads dim/dimen first, so ND_pos has GD_ndim entries.
+  neatoInitNodeEdge(g, neatoInitGraphDim(g));
 
   const mode = parseMode(g);
   // C resolves the overlap mode once, before any component. @see neatoinit.c:1369
@@ -207,6 +214,8 @@ export function neatoLayout(g: Graph): void {
     // C: spline_edges shifts pos to the origin, syncs coord, routes.
     splineEdgesShifted(g);
   }
+  // C: addZ before gv_postprocess on every path (neatoinit.c:1417,1433).
+  addZ(g);
   // C: addCluster registers top-level clusters (label + compute_bb)
   // after layout; gv_postprocess then places the cluster labels.
   addClusters(g);

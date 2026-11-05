@@ -96,6 +96,7 @@ export function initLayout(
     if (hasPos(np)) {
       coords[0]![i] = np.info.pos?.[0] ?? 0;
       coords[1]![i] = np.info.pos?.[1] ?? 0;
+      for (let d = 2; d < dim; d++) coords[d]![i] = np.info.pos?.[d] ?? 0;
       if (isFixed(np)) pinned = true;
     } else {
       coords[0]![i] = drand48();

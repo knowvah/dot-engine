@@ -20,7 +20,7 @@ import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import { ownAttrs } from '../../model/lazy-attrs.js';
 import type { FieldT, ShapeDesc, TextlabelT } from '../../common/types.js';
-import { appendRecordRects, edgeAttrsAttached, edgePosRaw } from './attrs.js';
+import { appendRecordRects, edgeAttrsAttached, edgePosRaw, nodePosRaw } from './attrs.js';
 import { gfmt2, gfmt5, lpStr, XDOT_VERSION } from './xdot-ops.js';
 import type { XdotDraws } from './types.js';
 
@@ -33,7 +33,7 @@ type DrawsOf = (obj: Node | Edge | Graph) => XdotDraws | undefined;
 function attachNode(n: Node): void {
   const attrs = ownAttrs(n);
   const info = n.info;
-  attrs.set('pos', gfmt5(info.coord.x) + ',' + gfmt5(info.coord.y));
+  attrs.set('pos', nodePosRaw(n));
   attrs.set('height', gfmt5(info.ht / POINTS_PER_INCH));
   attrs.set('width', gfmt5((info.lw + info.rw) / POINTS_PER_INCH));
   const xlabel = info.xlabel as TextlabelT | undefined;

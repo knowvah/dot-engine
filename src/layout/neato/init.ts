@@ -37,11 +37,11 @@ import { AM_NONE, type AdjustData } from './fdp-adjust.js';
 import { agerr } from '../../common/agerr.js';
 
 export { makeGraphDataC, graphHasLen, checkStart };
-import { mapbool } from '../dot/rank.js';
+export { userPos } from './init-dim.js';
 import { stressMajorizationKDMkernel } from './stress-kernel.js';
 import { stressModelDij } from './stress-models.js';
 import { lateDouble } from '../../common/nodeinit.js';
-import { inputscaleDivisor } from '../../common/utils-inputscale.js';
+import { DFLT_DIM, ndimOf } from './init-dim.js';
 import { parseNeatoDrawing, neatoSetAspectRatio } from './set-aspect.js';
 
 // ---------------------------------------------------------------------------
@@ -73,9 +73,6 @@ export const MODEL_SUBSET = 2;
 /** MDS distance model. @see lib/neatogen/defs.h */
 export const MODEL_MDS = 3;
 
-/** Default layout dimension (2D). */
-const DFLT_DIM = 2;
-
 /** Points per inch conversion factor. */
 const POINTS_PER_INCH = 72;
 
@@ -105,31 +102,6 @@ export function neatoInitNode(n: Node, dim = DFLT_DIM): void {
   const plainShaped = (n.info.shape as ShapeDesc | undefined)?.name === 'plain';
   if (!n.info.width && !plainShaped) n.info.width = 0.75;
   if (!n.info.height && !plainShaped) n.info.height = 0.5;
-}
-
-/**
- * Seed a node's initial position from its `pos=` attribute (C's P_SET),
- * mirroring user_pos. Sets info.pos + info.posSet so hasPos is true and neato
- * majorization starts from the input layout instead of a random init; a `!`
- * suffix or `pin=true` additionally sets info.pinned (P_PIN → isFixed).
- *
- * `pos` is divided by PSinputscale when > 0 (neatoinit.c:90-95). Must run
- * AFTER neatoInitNode, which zeroes info.pos.
- * @see lib/neatogen/neatoinit.c:user_pos
- */
-export function userPos(n: Node): boolean {
-  const p = n.attrs.get('pos');
-  if (p === undefined || p.length === 0) return false;
-  // 2-D "x,y" with an optional trailing '!' (3-D is absent from the 2-D suite).
-  const num = '(-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)';
-  const m = new RegExp(`^\\s*${num}\\s*,\\s*${num}(.?)`).exec(p);
-  if (m === null) return false; // C agerrorf: malformed pos, non-fatal
-  const div = inputscaleDivisor(n.root);
-  n.info.pos = [Number(m[1]) / div, Number(m[2]) / div];
-  n.info.posSet = true;
-  const pin = n.attrs.get('pin');
-  if (m[3] === '!' || (pin !== undefined && mapbool(pin))) n.info.pinned = true;
-  return true;
 }
 
 /**
@@ -340,22 +312,23 @@ function solveStress(
   const { g, mode, model, opts } = c;
   const n = nodeList.length;
   const maxi = neatoMaxIter(g.attrs.get('maxiter'), mode, n);
+  const dim = ndimOf(g);
   const epsilon = lateDouble(g.attrs.get('epsilon'), 1e-4, 0); // DFLT_TOLERANCE
   if (mode === MODE_HIER) {
     return stressMajorizationWithHierarchy(vtx, n, dCoords, nodeList, {
-      dim: DFLT_DIM, opts, model, maxi, epsilon, levelsGap: levelsGapOf(g),
+      dim, opts, model, maxi, epsilon, levelsGap: levelsGapOf(g),
     });
   }
   if (mode === MODE_IPSEP) {
     // mg is the root graph, g the component. @see neatoinit.c:1121-1170
     const opt = ipsepOptions(g.root, g, nodeList, c.am);
     return stressMajorizationCola(vtx, n, dCoords, nodeList, {
-      dim: DFLT_DIM, model, maxi, epsilon, opt,
+      dim, model, maxi, epsilon, opt,
     });
   }
   const Dij = stressModelDij(vtx, n, model); // inside kD_mkernel in C (AD-2)
   return stressMajorizationKDMkernel(Dij, n, dCoords, nodeList, {
-    dim: DFLT_DIM, opts, maxi, epsilon,
+    dim, opts, maxi, epsilon,
   });
 }
 
@@ -370,13 +343,14 @@ export function runMajorization(g: Graph, mode: number, model: number, am: Adjus
   const opts = checkExp(g) | (init === INIT_SELF ? STRESS_OPT_SMART_INIT : 0);
   const haveDir = mode === MODE_HIER || mode === MODE_IPSEP;
   const vtx = makeGraphDataC(g, nodeList, haveLen, haveDir, mode);
-  const dCoords = [new Float64Array(n), new Float64Array(n)];
+  const ndim = ndimOf(g);
+  const dCoords = Array.from({ length: ndim }, () => new Float64Array(n));
   if (solveStress({ g, mode, model, opts, am }, vtx, dCoords, nodeList) < 0) {
     agerr('prev', 'layout aborted');
     return;
   }
   for (let i = 0; i < n; i++) {
-    nodeList[i]!.info.pos = [dCoords[0]![i]!, dCoords[1]![i]!];
+    nodeList[i]!.info.pos = dCoords.map((c) => c[i]!);
   }
 }
 
