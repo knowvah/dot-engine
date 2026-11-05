@@ -35,3 +35,27 @@
 - **Finding**: `circular.ts:91` calls `ccomps(g)`; C's `circularinit.c:126` calls `ccomps(dg)`. Harmless until `ccomps` reuses a user's subgraph. twopi and sfdp `agdelete` each component (`twopiinit.c:146`, `sfdpinit.c:289`), which removes a reused user subgraph from `dot` output; circo, neato and osage print it.
 - **Impact**: any `ccomps` behaviour change on user subgraphs reaches circo.
 - **Confidence**: High
+
+## Observation: dir=none is not undirected under mode=hier
+- **Context**: T7, finding graphs that reach `mode=hier`'s smart init at `dim=2`.
+- **Finding**: `dfsCycle` (`lib/neatogen/neatoinit.c:680-705`) treats `edists == 0` edges as out-edges and reverses back edges, so `dir=none` edges gain a direction and a connected 2-D graph takes IMDS. Reaching smart init at `dim=2` takes a graph with no edges and pinned nodes, or edges too short for `abs_tol` (`len=0.001`).
+- **Impact**: count `embed_graph` and `IMDS_given_dim` hits before trusting a fixture's name for the path it takes.
+- **Confidence**: High (agent's lldb counts; not re-run by the orchestrator)
+
+## Observation: a harness call site does not reproduce the library's inlined vector shapes
+- **Context**: T7, unit fixtures for the `mult_*` routines.
+- **Finding**: `right_mult_with_vector_d` compiled at a harness call site was scalar and all-fused; the copies inlined in `_power_iteration` and `_stress_majorization_kD_mkernel` are 8-wide per their disassembly.
+- **Impact**: a harness mismatch on these routines is not evidence of a port defect; read `otool` of the plugin per site.
+- **Confidence**: Medium (agent-reported)
+
+## Observation: the complexity hook does not reliably stop subagent writes
+- **Context**: T1 and T7.
+- **Finding**: T1's `userPos` (CCN 13) and T7's `selectPivots` (33 NLOC) were written with no block. The cause is not traced. The orchestrator's own Edit was blocked in the same session.
+- **Impact**: run lizard on every task's `src/` files at landing; a quiet hook proves nothing.
+- **Confidence**: High for the two cases; cause unknown
+
+## Observation: native heap corruption under mode=hier with very short edges
+- **Context**: orchestrator's T7 check.
+- **Finding**: `mode=hier dim=3` with `len=0.001` dies by SIGBUS, SIGSEGV or SIGTRAP in 3 of 8 runs at 19 nodes and 8 of 8 at 27; 8 of 8 survive at 11, 38 and 58. The port renders and matches each surviving run.
+- **Impact**: a native crash on this path may be size-dependent; repeat before fixing a fixture on one run.
+- **Confidence**: High for the counts; the overrun's site is not proven
