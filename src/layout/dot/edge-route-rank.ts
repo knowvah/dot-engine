@@ -153,12 +153,19 @@ export function staleBezierCount(e: Edge): number {
 
 /**
  * True when `e` kept ED_adjacent from an earlier layout. C never clears the flag,
- * so it routes `e` as adjacent even if a node now sits between its ends.
+ * so it routes `e` as adjacent even if a node now sits between its ends. A flat
+ * edge this layout merged into a new reversed edge goes by that edge's flag: C
+ * routes the representative, whose record has no stale flag.
  * @see lib/dotgen/flat.c:236
  * @see lib/dotgen/dotsplines.c:366
+ * @see lib/dotgen/mincross.c:flat_rev
  */
 export function staleAdjacent(e: Edge): boolean {
-  return staleBezierCount(e) > 0 && (e.info.adjacent ?? 0) !== 0;
+  let rep = e;
+  while (rep.info.to_virt !== undefined && rep.info.to_virt !== rep) rep = rep.info.to_virt;
+  const samePair = (rep.tail === e.tail && rep.head === e.head)
+    || (rep.tail === e.head && rep.head === e.tail);
+  return staleBezierCount(e) > 0 && ((samePair ? rep : e).info.adjacent ?? 0) !== 0;
 }
 
 /**

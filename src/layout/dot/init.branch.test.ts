@@ -216,14 +216,18 @@ describe('dotInitEdge', () => {
     expect(e.info.weight).toBe(7);
   });
 
-  it('preserves a pre-stamped synthetic weight when no weight attr is present', () => {
+  it('reads the weight attr alone: agxset(hvye, E_weight, "10000"), not a stamped record', () => {
     const g = makeGraph();
     const a = makeNode(g, 0, 'a');
     const b = makeNode(g, 1, 'b');
-    const e = makeEdge(a, b);
-    e.info.weight = 10000; // flat-label machinery stamp
-    dotInitEdge(e);
-    expect(e.info.weight).toBe(10000);
+    const stamped = makeEdge(a, b);
+    stamped.info.weight = 10000;
+    dotInitEdge(stamped);
+    expect(stamped.info.weight).toBe(1);
+    const hvye = makeEdge(a, b);
+    hvye.attrs.set('weight', '10000');
+    dotInitEdge(hvye);
+    expect(hvye.info.weight).toBe(10000);
   });
 
   it('applies the same-group penalty: xpenalty=CL_CROSS, weight*100', () => {

@@ -55,6 +55,8 @@ done
 for c in abom-shift abom-shift-parity abom-shift-pack; do
   run "$c" dot plain nofree "$c.dot.plain.nofree"
 done
+# tests/2368.dot: its third layout merges an edge flagged adjacent into a new reversed flat edge.
+run flat-rev-stale dot plain nofree flat-rev-stale.dot.plain.nofree
 for e in neato fdp circo; do
   run filing dot plain "then:$e" "filing.dot.plain.then-$e"
   rm -f "filing.dot.plain.then-$e.1"

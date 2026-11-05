@@ -194,7 +194,7 @@ function buildFlatAux(g: Graph, edges: Edge[], cnt: number): FlatAux {
     if (hvye === null && isPortless(orig)) hvye = auxe;
   }
   if (hvye === null) { hvye = new EdgeClass(auxt, auxh, ''); auxg.edges.push(hvye); }
-  hvye.info.weight = 10000;
+  hvye.attrs.set('weight', '10000');
   return { auxg, auxt, auxh, alg };
 }
 

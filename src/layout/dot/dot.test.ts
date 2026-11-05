@@ -315,11 +315,8 @@ describe('dotInitEdge: edge field defaults and pre-set values', () => {
     expect(e.info.minlen).toBe(1);
   });
 
-  it('preserves a pre-set weight when no attr; minlen always reads the attr', () => {
-    // C: ED_weight = late_int(e, E_weight, 1, 0). With no weight attr the port
-    // keeps a pre-set e.info.weight (the flat-label machinery stamps 10000 and
-    // dotInitEdge is re-run) instead of resetting to 1.
-    // C: ED_minlen = late_int(e, E_minlen, 1, 0) — always reads attr, not info.
+  it('reads weight and minlen from the attrs only, as late_int does', () => {
+    // C: ED_weight = late_int(e, E_weight, 1, 0), ED_minlen = late_int(e, E_minlen, 1, 0).
     const g = makeGraph('presetedge');
     const a = addNode(g, 0, 'a');
     const b = addNode(g, 1, 'b');
@@ -327,8 +324,8 @@ describe('dotInitEdge: edge field defaults and pre-set values', () => {
     e.info.weight = 10000;
     e.info.minlen = 2;
     dotInitEdge(e);
-    expect(e.info.weight).toBe(10000); // no attr → pre-set preserved
-    expect(e.info.minlen).toBe(1); // no attr → late_int default = 1
+    expect(e.info.weight).toBe(1); // no attr: late_int default
+    expect(e.info.minlen).toBe(1); // no attr: late_int default
   });
 
   it('reads an explicit weight attr (default 1, min 0)', () => {

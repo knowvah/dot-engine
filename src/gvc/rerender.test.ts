@@ -21,6 +21,7 @@ import { render } from '../render/public.js';
 import { getDrawOps } from '../render/xdot-public.js';
 import { createDefaultContext } from './default-context.js';
 import { render as deviceRender } from './device.js';
+import { installEdgeSpline } from '../layout/dot/edge-route-helpers.js';
 import type { EngineName } from './context.js';
 
 const FIXTURES = new URL('./__fixtures__/rerender/', import.meta.url);
@@ -222,6 +223,7 @@ describe('ctx.layout with no freeLayout keeps stale records and appends its rout
     ['abom-shift', 'dot'],
     ['abom-shift-parity', 'dot'],
     ['abom-shift-pack', 'dot'],
+    ['flat-rev-stale', 'dot'],
   ];
 
   it.each(NOFREE_CASES)('%s on %s equals native on renders 1 to 3', (id, engine) => {
@@ -258,6 +260,23 @@ describe('ctx.layout with no freeLayout keeps stale records and appends its rout
       return g.info.abomShift;
     });
     expect(shifts).toEqual([1, 1, 1, 1]);
+  });
+
+  // No input reaches this fallback where native draws the same route: native has no
+  // fitter. Inputs that reach it: 121 and 258, which abort native on layout 2, and
+  // nestedclust, whose no-free layouts route other edges differently (follow-up).
+  it('the fitter fallback appends its route after the stale ones, as new_spline does', () => {
+    const g = parse('digraph { a -> b }');
+    createDefaultContext().layout(g, 'dot');
+    const e = g.edges[0];
+    const stale = e.info.spl?.list[0];
+    const route = [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }];
+    installEdgeSpline(e, route, { x: 4, y: 4 });
+    expect(e.info.spl?.size).toBe(2);
+    expect(e.info.spl?.list[0]).toBe(stale);
+    expect(e.info.spl?.list[1]).toMatchObject({
+      list: route, size: 4, sflag: 0, eflag: 1, sp: { x: 0, y: 0 }, ep: { x: 4, y: 4 },
+    });
   });
 
   it('a free still drops the stale beziers', () => {

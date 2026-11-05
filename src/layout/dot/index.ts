@@ -138,8 +138,6 @@ function resetAbomShift(g: Graph): void {
  * @see lib/dotgen/dotinit.c:dotLayout (static)
  */
 export function dotPhaseInit(g: Graph): void {
-  // C's dot_init_edge overwrites ED_weight; dotInitEdge keeps only an aux graph's stamp.
-  for (const e of g.edges) e.info.weight = undefined;
   resetAbomShift(g);
   dotGraphInit(g);
   setEdgeTypeFromAttr(g, EDGETYPE_SPLINE);

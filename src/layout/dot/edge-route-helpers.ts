@@ -22,6 +22,7 @@ import { routeSpline } from '../../pathplan/route.js';
 import type { Edge as BarrierEdge } from '../../pathplan/types.js';
 import { linearBezier } from './edge-route-poly.js';
 import { updateBbBz } from '../../common/splines-geom.js';
+import { newSpline } from '../../common/splines-clip.js';
 import { DEFAULT_NODEPENWIDTH } from './edge-route-clip.js';
 import { resolvePenWidth, parseStyleFlags } from '../../common/style-resolve.js';
 import type { NodeBox } from './edge-route-geom.js';
@@ -140,9 +141,14 @@ export function makeSplineRecord(bz: Bezier): Spline {
   return { list: [bz], size: 1, bb: { ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } } };
 }
 
-/** Create and install a Spline on the edge. @see lib/common/splines.c:clip_and_install */
+/**
+ * Append a Bezier to the edge's Spline, as new_spline does: a layout with no free
+ * keeps the routes of the layouts before it.
+ * @see lib/common/splines.c:new_spline
+ * @see lib/common/splines.c:clip_and_install
+ */
 export function installEdgeSpline(e: GraphEdge, bezierPts: Point[], arrowTip: Point): void {
-  e.info.spl = makeSplineRecord(makeBezierRecord(bezierPts, arrowTip));
+  Object.assign(newSpline(e, bezierPts.length), makeBezierRecord(bezierPts, arrowTip));
   // C clip_and_install expands GD_bb by every installed bezier segment via
   // update_bb_bz (splines.c:312). This direct-install path (chain/long-edge
   // router) must do the same, else a spline that bows outside the node hull —
