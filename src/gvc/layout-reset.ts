@@ -63,7 +63,9 @@ export function undoRenderedClusterEdges(g: Graph): void {
  * @see lib/cgraph/rec.c:agclean (agapply over the subgraphs)
  */
 function resetGraphRecords(g: Graph): void {
+  const clusterEdges = g.info.n_cluster_edges;
   g.info = makeGraphInfo();
+  if (clusterEdges !== undefined) g.info.n_cluster_edges = clusterEdges;
   for (const subg of g.subgraphs.values()) resetGraphRecords(subg);
 }
 
@@ -87,7 +89,40 @@ function resetGraphRecords(g: Graph): void {
 export function resetLayoutRecords(g: Graph): void {
   for (const n of g.nodes.values()) n.info = makeNodeInfo();
   for (const e of g.edges) e.info = makeEdgeInfo(makePort(), makePort());
-  const clusterEdges = g.info.n_cluster_edges;
   resetGraphRecords(g);
-  if (clusterEdges !== undefined) g.info.n_cluster_edges = clusterEdges;
+}
+
+/**
+ * Runs the reset of every graph in `g`'s tree whose layout was freed. C frees a
+ * graph's records when that graph is freed, whichever graph is laid out next: a
+ * subgraph after its root, or a root after its subgraph.
+ *
+ * @see lib/gvc/gvlayout.c:61-64 (gvLayoutJobs binds the root's record too)
+ * @see lib/gvc/gvlayout.c:gvFreeLayout
+ */
+export function resetFreedLayouts(g: Graph): void {
+  const visit = (h: Graph): void => {
+    if (layoutWasFreed(h)) resetLayoutRecords(h);
+    else for (const subg of h.subgraphs.values()) visit(subg);
+  };
+  visit(g.root);
+}
+
+/**
+ * C has one GD_dotroot, on the root, and dot_init_subg points it at the graph
+ * being laid out. The port reads each graph's own slot (`dotRoot`, and
+ * pack-components.ts for the same reason), so a subgraph points itself and all
+ * under it. A root layout clears what an earlier one left, which reads as the
+ * root again; on a first layout there is nothing to clear.
+ *
+ * @see lib/dotgen/dotinit.c:36 (GD_dotroot(agroot(g)) = droot)
+ * @see lib/dotgen/dotinit.c:520 dot_root
+ */
+export function bindDotRoot(g: Graph): void {
+  const droot = g === g.root ? undefined : g;
+  const visit = (h: Graph): void => {
+    h.info.dotroot = droot;
+    for (const subg of h.subgraphs.values()) visit(subg);
+  };
+  visit(g);
 }
