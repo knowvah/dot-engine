@@ -95,3 +95,4 @@ non-`-n` layout (the op's text span is built only by `xdotBB`, `lib/neatogen/nea
 | draw-replay-graph-draw.dot | `_draw_`: c, C, p, S dotted, b | replayed only because no `_background` |
 | draw-replay-both.dot | both | `_background` wins; `_draw_` ignored |
 | draw-replay-a13.dot | `_background`: P | gradient bgcolor; native `fill=""` is known divergence A13 |
+| draw-replay-style-order.dot | `_draw_`: every pen and width token in order, multi-token ops, `S filled`, `S unfilled` | gvrender_set_style changes only the field a token names (follow-up 125) |

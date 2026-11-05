@@ -9,12 +9,12 @@
 
 import { agwarningf } from '../common/agerr.js';
 import { lateInt } from '../common/nodeinit.js';
-import { findStopColor, parseStyleFlags, resolvePenType, resolvePenWidth, styleTokens } from '../common/style-resolve.js';
+import { findStopColor, parseStyleFlags, resolvePenWidth, styleName, styleTokens } from '../common/style-resolve.js';
 import type { Box, Point } from '../model/geom.js';
 import type { Graph } from '../model/graph.js';
 import { resolveFillColorName, resolveRenderColor } from '../render/color-resolve.js';
 import type { XdotColor, XdotOp, XdotPoint } from '../xdot/types.js';
-import { FillType, type RendererPlugin } from './context.js';
+import { FillType, PenType, type RendererPlugin } from './context.js';
 import { transformPoint } from './device-transform.js';
 import { graphXdots } from './init-xdot.js';
 import { gvrenderSetStyle } from './gvrender-set-style.js';
@@ -110,13 +110,34 @@ function setGradientFill(obj: ObjState, color: XdotColor): void {
   }
 }
 
-/** @see lib/gvc/gvrender.c:480 gvrender_set_style */
+/**
+ * The pen each pen token sets. `filled` and `unfilled` are absent: they write
+ * C's `obj->fill`, which emit_xdot does not read (it passes a local `filled`).
+ * The port's `obj.fill` stands in for that local, so they must not write it.
+ * @see lib/gvc/gvrender.c:480 gvrender_set_style
+ */
+const PEN_OF_STYLE: ReadonlyMap<string, PenType> = new Map([
+  ['solid', PenType.Solid],
+  ['dashed', PenType.Dashed],
+  ['dotted', PenType.Dotted],
+  ['invis', PenType.None],
+  ['invisible', PenType.None],
+]);
+
+/**
+ * Tokens apply in order, and each changes only the field it names: `bold` leaves
+ * a dashed pen dashed, and `dashed` leaves the width.
+ * @see lib/gvc/gvrender.c:480 gvrender_set_style
+ */
 function setStyle(obj: ObjState, tokens: readonly string[]): void {
   gvrenderSetStyle(tokens);
   obj.rawStyle = [...tokens];
-  const flags = parseStyleFlags(tokens.join(','));
-  obj.pen = resolvePenType(flags);
-  obj.penWidth = resolvePenWidth(flags, undefined);
+  for (const token of tokens) {
+    const pen = PEN_OF_STYLE.get(styleName(token));
+    if (pen !== undefined) obj.pen = pen;
+    const flags = parseStyleFlags(token);
+    if (flags.bold || flags.setLineWidth !== null) obj.penWidth = resolvePenWidth(flags, undefined);
+  }
 }
 
 /** What a drawing op passes to the renderer, in device coordinates. */
@@ -196,10 +217,19 @@ export function emitXdot(g: Graph, renderer: RendererPlugin, job: RenderJob): vo
   for (const op of xd.ops) {
     styled ||= op.kind === 'style';
     if (op.kind === 'text') continue;
-    if (!inClip && isDrawing(op)) continue;
+    if (isDrawing(op) && !drawsNow(obj, inClip)) continue;
     if (!drawOp(op, renderer, job)) stateOp(op, obj, warned);
   }
   if (styled) setStyle(obj, DEFAULT_LINE_STYLE);
+}
+
+/**
+ * A drawing op's clip test, and gvrender's own: its ellipse, polygon, beziercurve
+ * and polyline all draw only if `pen != PEN_NONE`.
+ * @see lib/gvc/gvrender.c:524,543,583,600
+ */
+function drawsNow(obj: ObjState, inClip: boolean): boolean {
+  return inClip && obj.pen !== PenType.None;
 }
 
 function isDrawing(op: XdotOp): boolean {

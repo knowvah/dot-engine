@@ -1,0 +1,17 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 36 54 36 54 0 S 6 -dashed c 7 -#0000ff L 2 0 0 10 10 S 15 -setlinewidth(2) c 7 -#0000ff L \
+2 0 10 10 20 S 5 -solid c 7 -#0000ff L 2 0 20 10 30 S 15 -setlinewidth(3) c 7 -#0000ff L 2 0 30 10 40 S 6 -dotted c 7 -#0000ff L \
+2 0 40 10 50 S 15 -setlinewidth(2) c 7 -#0000ff L 2 0 50 10 60 S 15 -setlinewidth(4) c 7 -#0000ff L 2 0 60 10 70 S 6 -dashed c 7 \
+-#0000ff L 2 0 80 10 90 S 15 -setlinewidth(2) S 6 -dashed c 7 -#0000ff L 2 0 90 10 100 S 15 -setlinewidth(5) S 6 -dotted c 7 -#0000ff \
+L 2 0 100 10 110 c 7 -#0000ff C 7 -#ff0000 P 3 0 110 10 110 10 120 S 8 -unfilled c 7 -#0000ff C 7 -#ff0000 P 3 0 120 10 120 10 130 \
+S 8 -unfilled c 7 -#0000ff C 7 -#ff0000 E 5 135 5 5 ",
+		bb="0,0,54,36",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	a	[_draw_="c 7 -#000000 e 27 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 6.21 1 -a ",
+		height=0.5,
+		pos="27,18",
+		width=0.75];
+}

@@ -12,7 +12,7 @@
  * and ignores `_draw_` when it is non-empty, so the ref replays `_background` only.
  * `draw-replay-a13` is known divergence A13: after a gradient `bgcolor` native
  * prints freed memory (`fill=""`) for the first op that has no fill of its own.
- * `draw-replay-background` svg is pinned against follow-up 125 (setStyle accumulation).
+ * `draw-replay-style-order` walks gvrender_set_style's accumulation (follow-up 125).
  * Text ops (`T`) have no ref: native segfaults, because xdotBB (neatoinit.c, `-n` only)
  * is the sole place that builds an op's text span; one test pins the port's output.
  *
@@ -36,14 +36,7 @@ const xdotRef = (id: string): string => read(`./refs-xdot/${id}.xdot`);
 const FREED_FILL = '<polygon fill=""';
 const MEANT_FILL = '<polygon fill="red"';
 
-const EXACT_CASES = ['draw-replay-graph-draw', 'draw-replay-both'];
-/** svg is pinned against follow-up 125; its xdot stays exact. */
-const STYLE_CASE = 'draw-replay-background';
-/** What native prints after `S bold` on a dashed pen, and what the port prints (follow-up 125). */
-const NATIVE_BOLD_DASHED = ' stroke-width="2" stroke-dasharray="5,2"';
-const PORT_BOLD_ONLY = ' stroke-width="2"';
-/** Ops after `S bold` in draw-replay-background: the ellipse and the polyline. */
-const OPS_AFTER_BOLD = 2;
+const EXACT_CASES = ['draw-replay-background', 'draw-replay-graph-draw', 'draw-replay-both', 'draw-replay-style-order'];
 const A13_CASE = 'draw-replay-a13';
 
 describe('init_xdot replay golden inputs', () => {
@@ -59,7 +52,7 @@ describe('init_xdot replay golden inputs', () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
-  it.each([...EXACT_CASES, STYLE_CASE, A13_CASE])('%s xdot matches native', (id) => {
+  it.each([...EXACT_CASES, A13_CASE])('%s xdot matches native', (id) => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     expect(compareXdot(render(parse(input(id)), 'xdot'), xdotRef(id)).diffs).toEqual([]);
   });
@@ -78,21 +71,17 @@ describe('init_xdot replay golden inputs', () => {
     expect(pass).toBe(true);
   });
 
-  // FOLLOW-UP 125: the port's setStyle (src/gvc/emit-xdot.ts) replaces pen state on every `S` op,
-  // where gvrender_set_style (lib/gvc/gvrender.c:480) accumulates: `S bold` leaves a dashed pen dashed.
-  // Remove this pin, and move the case into EXACT_CASES, when 125 is fixed.
-  it('follow-up 125: svg drops the dash after `S bold`, where native keeps it', () => {
-    vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const ref = svgRef(STYLE_CASE);
-    // The ref must hold the accumulated dash on exactly the ops after `S bold`, or this pin proves nothing.
-    expect(ref.split(NATIVE_BOLD_DASHED)).toHaveLength(OPS_AFTER_BOLD + 1);
-    const { pass, diffs } = compareSvg(
-      renderSvg(input(STYLE_CASE), 'dot'),
-      ref.replaceAll(NATIVE_BOLD_DASHED, PORT_BOLD_ONLY),
-      'deterministic',
-    );
-    expect(diffs.slice(0, 4)).toEqual([]);
-    expect(pass).toBe(true);
+  it('style ops change only the field a token names', () => {
+    const svg = renderSvg(input('draw-replay-style-order'), 'dot');
+    expect(svg).toContain('stroke-width="2" stroke-dasharray="5,2" points="0,-10 10,-20"');
+    expect(svg).toContain('stroke="#0000ff" stroke-width="2" points="0,-20 10,-30"');
+    expect(svg).toContain('stroke-width="3" stroke-dasharray="1,5" points="0,-40 10,-50"');
+    // The invis pen draws nothing, and the next op's `dashed` keeps the width.
+    expect(svg).not.toContain('points="0,-70 10,-80"');
+    expect(svg).toContain('stroke-width="4" stroke-dasharray="5,2" points="0,-80 10,-90"');
+    // Within one op, tokens apply in order: `bold` after `setlinewidth(3)` wins.
+    expect(svg).toContain('stroke-width="2" stroke-dasharray="5,2" points="0,-90 10,-100"');
+    expect(svg).toContain('stroke-width="5" stroke-dasharray="1,5" points="0,-100 10,-110"');
   });
 
   // Native segfaults (rc 139) on a `T` op in `_draw_`: op->span is NULL outside neato -n, so no ref exists.
