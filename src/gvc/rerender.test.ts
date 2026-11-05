@@ -279,6 +279,20 @@ describe('ctx.layout with no freeLayout keeps stale records and appends its rout
     });
   });
 
+  // C draws each bezier's arrows from its own flags at emit. e:e->h:w's first
+  // bezier came through the flat aux route; g->a's stale bezier swaps its arrow to
+  // the tail, where no other bezier has one. Native's <g> lines are the fixture.
+  it.each([1, 2, 3])('multi-edge render %i svg equals native, arrows included', (n) => {
+    const g = parse(read('multi-edge.gv'));
+    const ctx = createDefaultContext();
+    const svgs = [1, 2, 3].map(() => {
+      ctx.layout(g, 'dot');
+      return deviceRender(ctx, g, 'svg');
+    });
+    const body = (svg: string): string => svg.slice(svg.indexOf('<g '));
+    expect(body(svgs[n - 1])).toBe(body(read(`multi-edge.dot.svg.nofree.${n}`)));
+  });
+
   it('a free still drops the stale beziers', () => {
     const g = parse(read('multi-edge.gv'));
     const ctx = createDefaultContext();

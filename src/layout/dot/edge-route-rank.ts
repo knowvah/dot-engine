@@ -13,6 +13,7 @@
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
+import type { Bezier } from '../../model/geom.js';
 import { swapBezier, swapEndsP } from './splines.js';
 import type { RankEdgeInfo } from './edge-route-routing.js';
 
@@ -184,7 +185,17 @@ export function swapStaleBeziers(g: Graph): void {
     const old = spl.list.splice(0, stale).reverse();
     for (const bz of old) swapBezier(bz);
     spl.list.push(...old);
+    fillEdgeArrowSlots(e, old);
   }
+}
+
+/**
+ * C draws from each bezier's flags. The edge slot is the port's source for an end
+ * with one flagged bezier, and the swap can make a stale one that bezier.
+ */
+function fillEdgeArrowSlots(e: Edge, old: readonly Bezier[]): void {
+  e.info.tailArrowOps ??= old.find((bz) => bz.sflag !== 0)?.sArrowOps;
+  e.info.headArrowOps ??= old.find((bz) => bz.eflag !== 0)?.eArrowOps;
 }
 
 /**

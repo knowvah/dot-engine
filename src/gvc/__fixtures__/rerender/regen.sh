@@ -51,6 +51,7 @@ done
 for e in dot fdp patchwork; do
   run multi-edge "$e" plain nofree "multi-edge.$e.plain.nofree"
 done
+run multi-edge dot svg nofree multi-edge.dot.svg.nofree
 # A flat label at rank 0 runs abomination on every layout: the shift must not carry over.
 for c in abom-shift abom-shift-parity abom-shift-pack; do
   run "$c" dot plain nofree "$c.dot.plain.nofree"
