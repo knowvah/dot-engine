@@ -78,3 +78,20 @@ the refs. `pt-issue-31-*` also carry `refs/pt-issue-31-<label>.stderr`.
 `refs/pt-issue-36*.native.dot` are `-Tdot` captures with the same oracle and `GVBINDIR`. `pt-issue-36` compares their `pos`,
 `lp` and `bb` values because cimare's edges are invisible, so its SVG has no paths to compare. `pt-issue-36.dot` is the
 inline repro of that issue, unlisted like the others.
+
+## draw-replay-*.dot (init_xdot's replay, follow-up 122)
+
+Hand-written graphs carrying `_background` and/or a graph `_draw_`, so the replay in
+`lib/common/emit.c:init_xdot` / `emit_xdot` is reached; generated `_draw_` never observes the
+state `emit_background` leaves. Refs are native graphviz 16.1.0 captures
+(`GVBINDIR=/tmp/ghl dot -Tsvg` into `refs/draw-replay-*.svg`, `-Txdot` into
+`refs-xdot/draw-replay-*.xdot`), all with empty stderr. Test: `test/golden/draw-replay.test.ts`.
+Run bytediff on one with `--file`. No text (`T`) ops: native segfaults on them in a
+non-`-n` layout (the op's text span is built only by `xdotBB`, `lib/neatogen/neatoinit.c:560`).
+
+| input | ops | note |
+| --- | --- | --- |
+| draw-replay-background.dot | `_background`: S dashed, c, P, F, S bold, C, E, L | bgcolor=lightyellow |
+| draw-replay-graph-draw.dot | `_draw_`: c, C, p, S dotted, b | replayed only because no `_background` |
+| draw-replay-both.dot | both | `_background` wins; `_draw_` ignored |
+| draw-replay-a13.dot | `_background`: P | gradient bgcolor; native `fill=""` is known divergence A13 |

@@ -1,0 +1,5 @@
+digraph G {
+  bgcolor=lightyellow;
+  _background="S 6 -dashed c 7 -#0000ff P 4 0 0 0 60 60 60 60 0 F 14 11 -Times-Roman S 4 -bold C 7 -#ff0000 E 30 30 10 10 L 2 0 0 60 60 ";
+  a -> b;
+}

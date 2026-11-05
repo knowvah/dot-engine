@@ -1,0 +1,6 @@
+digraph G {
+  bgcolor=white;
+  _background="c 7 -#ff00ff C 7 -#00ffff P 4 0 0 0 70 70 70 70 0 S 6 -dotted L 2 0 0 70 70 ";
+  _draw_="S 6 -dashed p 4 5 5 5 40 40 40 40 5 ";
+  a -> b;
+}
