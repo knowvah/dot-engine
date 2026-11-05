@@ -1,0 +1,1 @@
+digraph S { {rank=same; a; b; e} a -> b [label="x"]; a -> e [label="zz"]; a -> c [label="y"]; b -> c; a -> a [label="sl"]; b -> b; d->e; c -> d; c->f; c->g; f->h; g->h; }

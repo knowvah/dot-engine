@@ -117,6 +117,21 @@ export function getAttrInt(g: Graph, key: string, defaultVal: number): number {
 // ---------------------------------------------------------------------------
 
 /**
+ * abomShift is port-only (AD-2): C's abomination uses rank -1 and leaves ND_rank
+ * alone, so a later layout starts from unshifted ranks. expand_ranksets adds to a
+ * rank set member's old ND_rank when no free ran, so the old shift comes off too.
+ * @see lib/dotgen/flat.c:abomination
+ * @see lib/dotgen/rank.c:expand_ranksets
+ */
+function resetAbomShift(g: Graph): void {
+  const shift = g.info.abomShift ?? 0;
+  if (shift !== 0) {
+    for (const n of g.nodes.values()) n.info.rank = (n.info.rank ?? 0) - shift;
+  }
+  g.info.abomShift = 0;
+}
+
+/**
  * Phase 0: parse rankdir, set edge type, and run aspect + init passes.
  * dotGraphInit must run first so g.info.flip is set before nodeinit uses it.
  * @see lib/common/input.c:600-663 graph_init
@@ -125,6 +140,7 @@ export function getAttrInt(g: Graph, key: string, defaultVal: number): number {
 export function dotPhaseInit(g: Graph): void {
   // C's dot_init_edge overwrites ED_weight; dotInitEdge keeps only an aux graph's stamp.
   for (const e of g.edges) e.info.weight = undefined;
+  resetAbomShift(g);
   dotGraphInit(g);
   setEdgeTypeFromAttr(g, EDGETYPE_SPLINE);
   setAspect(g);
@@ -307,6 +323,7 @@ export function doDot(g: Graph): void {
   } else if (ratioIsNone(g)) {
     pinfo.doSplines = true;
     layoutAndPack(g, comps, pinfo, origOf);
+    for (const comp of comps) resetAbomShift(comp); // the next layout builds new components
   } else {
     // Non-trivial ratio with multiple components: C lays out the whole graph.
     dotLayoutPipeline(g);

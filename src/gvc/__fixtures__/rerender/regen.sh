@@ -51,6 +51,10 @@ done
 for e in dot fdp patchwork; do
   run multi-edge "$e" plain nofree "multi-edge.$e.plain.nofree"
 done
+# A flat label at rank 0 runs abomination on every layout: the shift must not carry over.
+for c in abom-shift abom-shift-parity abom-shift-pack; do
+  run "$c" dot plain nofree "$c.dot.plain.nofree"
+done
 for e in neato fdp circo; do
   run filing dot plain "then:$e" "filing.dot.plain.then-$e"
   rm -f "filing.dot.plain.then-$e.1"

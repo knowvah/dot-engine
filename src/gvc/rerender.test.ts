@@ -219,6 +219,9 @@ describe('ctx.layout with no freeLayout keeps stale records and appends its rout
     ['multi-edge', 'dot'],
     ['multi-edge', 'fdp'],
     ['multi-edge', 'patchwork'],
+    ['abom-shift', 'dot'],
+    ['abom-shift-parity', 'dot'],
+    ['abom-shift-pack', 'dot'],
   ];
 
   it.each(NOFREE_CASES)('%s on %s equals native on renders 1 to 3', (id, engine) => {
@@ -242,6 +245,19 @@ describe('ctx.layout with no freeLayout keeps stale records and appends its rout
       'edge a b 8 0.75 0.99579 0.75 0.89454 0.75 0.77398 0.75 0.66022 '
       + '0.75391 0.25 0.78171 0.25 0.80951 0.25 0.83731 0.25 solid black',
     );
+  });
+
+  // expand_ranksets adds to a rank set member's old ND_rank, and C's abomination
+  // leaves ND_rank alone, so the port's +1 comes off when the next layout starts.
+  // @see lib/dotgen/rank.c:expand_ranksets
+  it('abomination shifts each layout once, whatever the last layout did', () => {
+    const g = parse(read('abom-shift-parity.gv'));
+    const ctx = createDefaultContext();
+    const shifts = [1, 2, 3, 4].map(() => {
+      ctx.layout(g, 'dot');
+      return g.info.abomShift;
+    });
+    expect(shifts).toEqual([1, 1, 1, 1]);
   });
 
   it('a free still drops the stale beziers', () => {
