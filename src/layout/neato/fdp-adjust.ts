@@ -24,13 +24,28 @@ import { AM_ORTHO, AM_ORTHO_YX, AM_ORTHOXY, AM_ORTHOYX, AM_PORTHO, AM_PORTHO_YX,
 import { countOverlapIn, sAdjustGraph } from './adjust-info.js';
 import { vpscAdjust } from './vpsc-adjust.js';
 import { sepFactor } from './sep-factor.js';
+import { ndimOf } from './init-dim.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { RenderError } from '../../errors.js';
 import { agwarningf } from '../../common/agerr.js';
 
 /** @see lib/neatogen/adjust.c:DFLT_MARGIN (points) */
 const DFLT_MARGIN = 4;
-const NDIM = 2;
+
+/**
+ * getSizes lays `sizes` out Ndim apart (x, y, then zeros); sfdp's getSizes
+ * returns the 2-wide layout, so widen it to `ndim`.
+ * @see lib/neatogen/adjust.c:getSizes
+ */
+function sizesByNdim(sizes2: number[], ndim: number): number[] {
+  if (ndim === 2) return sizes2;
+  const sizes = new Array<number>((sizes2.length / 2) * ndim).fill(0);
+  for (let i = 0; i < sizes2.length / 2; i++) {
+    sizes[i * ndim] = sizes2[i * 2]!;
+    sizes[i * ndim + 1] = sizes2[i * 2 + 1]!;
+  }
+  return sizes;
+}
 
 /** @see lib/common/utils.c:mapBool */
 function mapBoolDflt(p: string | undefined, defaultValue: boolean): boolean {
@@ -81,17 +96,17 @@ export function overlapPrismTries(flag: string | undefined): number | null {
  */
 export function fdpAdjust(g: Graph, ntry: number): void {
   const A0 = makeMatrix(g);
-  const pos = new Array<number>(NDIM * g.nodes.size).fill(0);
+  const ndim = ndimOf(g);
+  const pos = new Array<number>(ndim * g.nodes.size).fill(0);
   const sep = sepFactor(g);
   const pad = sep.doAdd
     ? { x: sep.x / 72, y: sep.y / 72 }
     : { x: DFLT_MARGIN / 72, y: DFLT_MARGIN / 72 };
-  const sizes = getSizes(g, pad);
+  const sizes = sizesByNdim(getSizes(g, pad), ndim);
 
   for (const n of g.nodes.values()) {
     const i = n.info.id!;
-    pos[i * NDIM] = n.info.pos?.[0] ?? 0;
-    pos[i * NDIM + 1] = n.info.pos?.[1] ?? 0;
+    for (let k = 0; k < ndim; k++) pos[i * ndim + k] = n.info.pos?.[k] ?? 0;
   }
 
   const A = !smIsSymmetric(A0, false) || A0.type !== MATRIX_TYPE_REAL
@@ -103,13 +118,12 @@ export function fdpAdjust(g: Graph, ntry: number): void {
   const doShrinking = mapBoolDflt(
     g.attrs.get('overlap_shrink') ?? g.root.attrs.get('overlap_shrink'), true);
 
-  removeOverlapPrism(NDIM, A, pos, sizes, ntry, scaling, doShrinking);
+  removeOverlapPrism(ndim, A, pos, sizes, ntry, scaling, doShrinking);
 
   for (const n of g.nodes.values()) {
     const i = n.info.id!;
     if (!n.info.pos) n.info.pos = [0, 0];
-    n.info.pos[0] = pos[i * NDIM]!;
-    n.info.pos[1] = pos[i * NDIM + 1]!;
+    for (let k = 0; k < ndim; k++) n.info.pos[k] = pos[i * ndim + k]!;
   }
 }
 

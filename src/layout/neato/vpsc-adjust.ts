@@ -56,7 +56,9 @@ export function vpscAdjust(g: Graph): number {
   };
   removeoverlaps(nodes.length, coords, opt);
   nodes.forEach((n, j) => {
-    n.info.pos = [coords[0]![j]!, coords[1]![j]!];
+    /* C stores only the dim=2 coordinates; the others of ND_pos stay. */
+    n.info.pos![0] = coords[0]![j]!;
+    n.info.pos![1] = coords[1]![j]!;
   });
   return 0;
 }
