@@ -112,7 +112,7 @@ T8 and T13 are `feat`, so the merged PR cuts a **minor release** (AD-12). Nothin
 
 | Batch | Tasks | Mode | Done |
 |---|---|---|---|
-| [1](batch-1/overview.md) | T0 baselines, native fixtures | orchestrator | [ ] |
+| [1](batch-1/overview.md) | T0 baselines, native fixtures | orchestrator | [x] |
 | [2](batch-2/overview.md) | T1 neato `dim` plumbing (114) · T2 sfdp drift (121) · T3 `_cc_N` (115) · T4 draw input (122) · T5 native variance (124) | parallel worktrees | [ ] |
 | [3a](batch-3a/overview.md) | T6 KK `dim` · T7 stress, hier, ipsep, sgd `dim` · T8 overlap `dim` · T13 sfdp `dim` (114) | parallel worktrees | [ ] |
 | [3b](batch-3b/overview.md) | T9 list guard (116), T10 `abomShift` (118), T11 fitter and weights (119), T12 flat arrows (120) | one agent, in order; parallel with 3a | [ ] |

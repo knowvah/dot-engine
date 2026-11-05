@@ -1,0 +1,21 @@
+graph G {
+	graph [bb="0,0,159,166"];
+	node [label="\N"];
+	a	[height=0.5,
+		pos="132,81",
+		width=0.75];
+	b	[height=0.5,
+		pos="132,81",
+		width=0.75];
+	a -- b	[pos="132,81 132,81 132,81 132,81"];
+	c	[height=0.5,
+		pos="110,148",
+		width=0.75];
+	d	[height=0.5,
+		pos="99,18",
+		width=0.75];
+	e	[height=0.5,
+		pos="27,18",
+		width=0.75];
+	d -- e	[pos="71.78,18 66.045,18 59.994,18 54.259,18"];
+}

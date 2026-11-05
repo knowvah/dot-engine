@@ -1,0 +1,1 @@
+graph G { a -- b; subgraph _cc_0 { c } d -- e; }
