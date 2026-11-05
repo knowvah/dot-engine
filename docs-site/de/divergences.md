@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -129,7 +129,7 @@ der Referenzplattform“ **einzugrenzen**, niemals den plattformübergreifenden
 Vorbehalt zu beseitigen; die bisherigen Ergebnisse (unten) halten diese Grenze
 ein: `circo`/`twopi`/`osage` haben jeweils eine Handvoll echter A1/A9-Fälle zutage
 gefördert und ihre Ursachen geklärt, und `neato`/`fdp`/`sfdp` liegen jetzt bei
-99.8/96.6/68.0 % innerhalb von 0.5pt gegenüber dem nativen Binary über das
+99.8/96.6/68.1 % innerhalb von 0.5pt gegenüber dem nativen Binary über das
 929-Item-Universum (graphviz 16.1.0) — die portierte Arithmetik (`fma.ts`,
 `arm-pow.ts`, passender PRNG) trägt also für die meisten Graphen —, und jede
 abweichende ID des 929-Item-Universums wird einzeln per Injection zugeordnet
@@ -228,7 +228,7 @@ die das C-Orakel nicht rendern kann, siehe [Konformität](./conformance.md)):
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
 
 (Die Bestehensquote von `fdp` stieg
 gegenüber 77.5 %, weil der frühere eingecheckte Durchlauf dem Portierungsstand der
@@ -267,6 +267,8 @@ aktuelle Zählwerte in den Dashboards je Engine
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
+
+**Wo die Solver-Drift von sfdp beginnt (Teil 10, T2).** Ein instrumentiertes natives sfdp, an kleinen Ids gegen die Portierung verfolgt, weicht erstmals im letzten Bit von `pow(dist, 1-p)` in der Abstoßungskraft ab (`lib/sfdpgen/spring_electrical.c:625,617`; Portierung `spring-electrical.ts:260`). Bei `flatedge` liefert `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` nativ `...8811p+2` und in der Portierung `...8812p+2`; `graphs-p` und `1767` beginnen genauso. Das adaptive Abkühlen verstärkt das Bit: es erreicht `x[0]` in Iteration 5, `max|dx|` beträgt 2.4e-9 in Iteration 100 und 3.9e-5 in Iteration 200, und der Schritt kippt in Iteration 244. Zwei kontrollierte Läufe bestätigen es. Mit den nativen Bits bei genau diesen 8 Aufrufen ist der 62090-zeilige Trace von `flatedge` identisch, und mit dem echten `pow` von macOS hinter einem Node-API-Addon haben 288 der 292 nicht bestandenen Ids bitidentische Traces (die übrigen 4, alle `overlap=false`, unterscheiden sich nur bei `xfinal`). Operationsreihenfolge und Fusion im Solver, Multilevel, Quadtree und Sparse-Code wurden ausgeschlossen. Das ist die Host-libm, akzeptiert unter A1 (siehe den `pow`-Punkt in der Liste der bekannten Lücken weiter unten); `src/` hat sich nicht geändert, die Zählung bleibt daher bei 632 von 929. Das nur auf macOS durchgeführte Experiment erreichte etwa 923 von 929; das misst das `pow` des Orakels und ist nichts, was die Bibliothek auf jedem Host leisten kann. `Math.pow` in der Abstoßungskraft besteht 153 der 292, verschlechtert aber 6 heute bestandene Ids und wurde deshalb nicht übernommen. Die sfdp-Zeile der Tabelle entspricht der aus [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 abweichend plus 295 akzeptiert ergibt die 296, und 1 weitere Id ist dort als Orakel-nichtdeterministisch geführt.
 
 **Klassen-Akzeptanz A1-drift (iterative Engines, berechnete Mitgliedschaft).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -1385,6 +1387,20 @@ weicht vom nativen Graphviz ab. Gefunden von der Mission `v2-silent-gaps`
   wie es bei `hypot` möglich ist.
 - **Native Abstürze, die die Portierung definiert.** Das native Graphviz beendet sich bei neato `mode=KK` mit `model=mds` und einer Kante mit `len` in nahezu jedem Lauf mit 139 (1 Überlebender bei etwa 1500 Läufen; `mds_model` indiziert `GD_dist` mit einer 1-basierten Sequenznummer: Heap-Überlauf). Die Portierung verwirft Zellen außerhalb des Bereichs, und ihr Ergebnis stimmt mit diesem Überlebenden auf 0,01 überein. `circuit_model` indiziert mit der 1-basierten `AGSEQ` (`circuit.c:46`); Zeile 0 seiner Matrix wird daher nie beschrieben, und die Matrix ist bei jedem Graphen singulär, ob zusammenhängend oder nicht: Das native `mode=KK` mit `model=circuit` erzeugt nie ein Circuit-Layout. Überlebt der Prozess, gibt er `Warning: graph <name> is disconnected. Hence, the circuit model` aus und fällt auf kürzeste Wege zurück; derselbe Fehler liest hinter das Zeilenzeiger-Array, wenn der zuletzt angelegte Knoten eine Kante hat, sodass das native Programm meist mit 139 endet (etwa 3 von 4 Läufen beim Testgraphen). Die Portierung nimmt immer den überlebenden Pfad: die Warnung, dann kürzeste Wege, ob zusammenhängend oder nicht. Mit `pack=true` stürzte das native Programm in jedem Lauf ab (0 Überlebende bei über 3000 Läufen auf jedem von zwei Graphen); per Entscheidung warnt die Portierung je Komponente unter einem eigenen Namen (`_neato_cc0`, `_neato_cc1`, ...), nutzt kürzeste Wege und packt. Für diese Kombination gibt es keine native Ausgabe; das Layout entspricht dem nativen `model=shortpath` für denselben Graphen.
 - **VPSC-Gleichstände folgen der Erzeugungsreihenfolge, nicht der Heap-Adresse.** Das native `IncVPSC::splitBlocks` durchläuft ein nach Heap-Adresse geordnetes `std::set<Block*>`, während es darin einfügt, und `CmpNodePos` entscheidet Positionsgleichstände nach der Adresse; die native Ausgabe für `overlap=vpsc|ipsep` und beschränktes `mode=ipsep` schwankt daher bei gleichen Positionen von Lauf zu Lauf (ein Fall ergab 21 verschiedene Ergebnisse in 300 Läufen). Die Portierung ordnet Gleichstände nach Erzeugungsreihenfolge und besucht neue Blöcke immer, ihre Ausgabe ist also deterministisch. Gleichstände bei Sweep-Ereignissen folgen libc++: Die Portierung enthält eine Portierung von dessen `std::sort`, sodass die Gleichstandsreihenfolge der nativen entspricht. Sie entspricht in den geprüften Gleichstandsfällen einem gesampelten nativen Lauf. Der Fall mit 40 Knoten (`dir1 n40`), der früher keinem von 29 gesampelten nativen Ergebnissen entsprach, ist erklärt: In 332 nativen Läufen lieferte die `libvpsc.a` des Orakels 17 verschiedene Ausgaben, während eine native Kopie, die nur `Blocks` nach Erzeugungsindex ordnet, in 332 Läufen 1 Ausgabe lieferte; die Portierung ist bitgenau gleich dazu. Die Adressreihenfolge der Blöcke ist in diesem Fall der gesamte Unterschied; die Aussage ist nur an `dir1 n40` gemessen (Folgepunkt 110).
+
+### `dim`, `dimen` und `z` (neato, sfdp) {#dim-dimen-and-z-neato-sfdp}
+
+neato und sfdp legen in jedem Modus in `dim` Dimensionen aus, begrenzt auf `MAXDIM` (10) von C. `dim=3` allein legt in 3-D aus, gibt aber 2 Koordinaten aus; `dimen=3` allein setzt `dim` auf 3 und gibt 3 aus; `dim=11 dimen=11` gibt 10 aus. Die z-Koordinate ist nur über die Attribute `pos` und `z` verfügbar; `getLayout` ist unverändert. fdp, circo, twopi, osage und patchwork bleiben 2-D, wie es C erzwingt. `mode=hier` über 2-D startet aus einem (`dim`-1)-D-Layout über `opt_smart_init` (`constrained_majorization.c:95`, `stress.c:874`), das portiert ist; ein `mode=hier`-Graph ohne gerichtete Kante oder ohne Hierarchie wird nun gerendert, statt zu werfen. `mode=major start=self` wirft weiterhin. Der Renderer-Zweig `GVRENDER_DOES_Z` (`lib/common/emit.c:1660,2734`) ist nicht portiert: Er braucht ein Gerät, das z zeichnet, und hier tut das keines.
+
+### Native Abstürze und Heap-Adress-Variation (Teil 10) {#native-crashes-and-heap-address-variation-part-10}
+
+Jeder Punkt nennt, was nativ geschieht und was die Portierung tut.
+
+- **`mode=hier dim=4` auf zwei Knoten.** Nativ schreibt über `directions` hinaus (`lib/neatogen/stress.c:514`) und bricht in manchen Läufen ab (Exit 133 in 5 von 16 Läufen). Die Portierung rendert.
+- **`mode=hier dim=3` mit `len=0.001`.** Nativ stirbt per Signal: 3 von 8 Läufen bei 19 Knoten (SIGBUS) und 8 von 8 bei 27 Knoten (SIGBUS, SIGSEGV, SIGTRAP). Der Stack ist `mfm_alloc` unter `stress_majorization_kD_mkernel`, was Heap-Korruption zeigt; die genaue Stelle ist nicht bewiesen. Die Portierung rendert, und wo nativ überlebt (19 Knoten, 5 von 8 Läufen), ist sie byte-gleich.
+- **Zweite Layouts von fdp auf einem Graphen variieren nativ mit Heap-Adressen.** `deriveGraph` und `genPorts` vergleichen Knotenzeiger (`lib/fdpgen/layout.c:466,501,637`). Über je 12 native Läufe fällt Render 2 von `graphs-fdp` als `plain` in 2 Klassen (1 und 11 Läufe) und `1581` als `dot` in 2 Klassen (8 und 4 Läufe); die Portierung ist byte-gleich zur 1-Lauf-Klasse von `plain` und liegt innerhalb von 5e-13 der 4-Lauf-Klasse von `dot`. Ein natives Build mit diesen drei Vergleichen auf `ND_id` wiederholt sich 8 von 8 und ist bei `plain` byte-gleich zur Portierung. Eine Entscheidung nur der Portierung: Das native `attach_attrs` endet mit `undoClusterEdges` (`lib/common/output.c:403-404`), und die Portierung führt dieses Rückgängigmachen beim nächsten Layout aus, nicht beim Rendern, weil ihre Writer die `__0:`-Proxies lesen.
+- **Eine `T`-Operation in `_draw_` oder `_background` des Graphen.** Nativ stürzt per Segfault ab (Exit 139): `op->span` ist außerhalb von neato `-n` NULL (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Die Portierung zeichnet dafür keinen Text.
+- **neato auf einem Teilgraphen.** Nativ endete mit Exit 139 beim Auslegen beider Teilgraphen des einen getesteten Graphen, eines einfachen Teilgraphen und eines Clusters. Die Portierung gibt eine Ausgabe zurück.
 
 ---
 

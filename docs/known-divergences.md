@@ -111,7 +111,7 @@ input under its own engine instead of `dot`. The honest ceiling on that work is
 to **narrow** A1 to "no active divergence on the reference platform," never to
 eliminate the cross-platform caveat; the results so far (below) hold to that
 ceiling: `circo`/`twopi`/`osage` have each surfaced and root-caused a handful of
-genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 99.8/96.6/68.0%
+genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 99.8/96.6/68.1%
 within 0.5pt of native over the 929-item universe (graphviz 16.1.0), meaning
 the ported arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most
 graphs — and every diverged id of the 929-item universe is individually
@@ -200,7 +200,7 @@ universe; pass % leaves out inputs the C oracle cannot render, per
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
 
 (The `fdp` pass rate rose from 77.5% because the earlier committed walk
 predated the port state of the previous mission. The `neato` rate rose from
@@ -233,6 +233,30 @@ placer's strict enclosure test. `2371` cleared once the port's R-tree copied
 rects by value, as C does. The native fdp layout of `2471` varies from run
 to run, so its row records one run. (sfdp `42`
 is A1 drift, see [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md).)
+
+**Where sfdp's solver drift starts (part 10, T2).** An instrumented native
+sfdp, traced against the port on small ids, first differs at the last bit of
+`pow(dist, 1-p)` in the repulsive force (`lib/sfdpgen/spring_electrical.c:625,617`;
+port `spring-electrical.ts:260`). On `flatedge`,
+`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` gives `...8811p+2` natively
+and `...8812p+2` in the port; `graphs-p` and `1767` start the same way.
+Adaptive cooling amplifies the bit: it reaches `x[0]` at iteration 5,
+`max|dx|` is 2.4e-9 at iteration 100 and 3.9e-5 at 200, and the step flips at
+iteration 244. Two controlled runs confirm it. Native's bits at exactly those 8
+calls make `flatedge`'s 62090-line trace identical, and with macOS's real
+`pow` behind a Node-API addon, 288 of the 292 ids that did not pass have
+bit-identical traces (the other 4, all `overlap=false`, differ only at
+`xfinal`). Operation order and fusion in the solver, multilevel, quadtree and
+sparse code were ruled out. This is host libm, accepted under A1 (see the `pow`
+item in the list of known gaps below); `src/` did not change, so the counts
+stay at 632 of 929. The macOS-only experiment reached about 923 of 929, which
+measures the oracle's `pow` and is not something the library can do on every
+host. `Math.pow` in the repulsive force passes 153 of the 292 but regresses 6
+ids that pass today, so it was not applied. The table's sfdp row equals
+[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)'s:
+1 diverged plus 295 accepted gives the 296, and 1 more id is listed there as
+oracle-nondeterministic.
+
 The class acceptance below formalizes the exonerated set; live counts in
 the per-engine dashboards
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
@@ -1359,6 +1383,48 @@ differs from native Graphviz. Found by the `v2-silent-gaps` mission
   gave 1 in 332, and the port equals that output bit for bit. Block address order
   is the whole difference for that case; the claim is measured on `dir1 n40`
   only (follow-up 110).
+
+
+### `dim`, `dimen` and `z` (neato, sfdp)
+
+neato and sfdp lay out in `dim` dimensions in every mode, clamped at C's
+`MAXDIM` (10). `dim=3` alone lays out in 3-D but prints 2 coordinates;
+`dimen=3` alone sets `dim` to 3 and prints 3; `dim=11 dimen=11` prints 10.
+The z coordinate is available only through the `pos` and `z` attributes;
+`getLayout` is unchanged. fdp, circo, twopi, osage and patchwork stay 2-D, as
+the C forces. `mode=hier` above 2-D seeds from a (`dim`-1)-D layout through
+`opt_smart_init` (`constrained_majorization.c:95`, `stress.c:874`), which is
+ported; a `mode=hier` graph with no directed edge or no hierarchy now renders
+instead of throwing. `mode=major start=self` still throws. The renderer branch
+`GVRENDER_DOES_Z` (`lib/common/emit.c:1660,2734`) is not ported: it needs a
+device that draws z, and no device here does.
+
+### Native crashes and heap-address variation (part 10)
+
+Each item states what native does and what the port does.
+
+- **`mode=hier dim=4` on two nodes.** Native writes past `directions`
+  (`lib/neatogen/stress.c:514`) and, in some runs, aborts (exit 133 in 5 of 16 runs). The port renders.
+- **`mode=hier dim=3` with `len=0.001`.** Native dies by signal: 3 of 8 runs at
+  19 nodes (SIGBUS) and 8 of 8 at 27 nodes (SIGBUS, SIGSEGV, SIGTRAP). The
+  stack is `mfm_alloc` under `stress_majorization_kD_mkernel`, which shows heap
+  corruption; the exact site is not proven. The port renders, and where native
+  survives (19 nodes, 5 of 8 runs) it is byte-equal.
+- **fdp's second layouts on one graph vary with heap addresses in native.**
+  `deriveGraph` and `genPorts` compare node pointers
+  (`lib/fdpgen/layout.c:466,501,637`). Over 12 native runs each, render 2 of
+  `graphs-fdp` as `plain` falls in 2 classes (1 and 11 runs) and `1581` as `dot`
+  in 2 classes (8 and 4 runs); the port is byte-equal to the 1-run `plain` class and
+  within 5e-13 of the 4-run `dot` class. Native rebuilt with those three comparisons
+  on `ND_id` repeats 8 of 8 and is byte-equal to the port on `plain`. One
+  port-only choice: native's `attach_attrs` ends with `undoClusterEdges`
+  (`lib/common/output.c:403-404`), and the port runs that undo at the next
+  layout, not at render, because its writers read the `__0:` proxies.
+- **A `T` op in a graph `_draw_` or `_background`.** Native segfaults (exit
+  139): `op->span` is NULL outside neato `-n` (`xdotBB`,
+  `lib/neatogen/neatoinit.c:560`). The port draws no text for it.
+- **neato on a subgraph.** Native exited 139 laying out either subgraph of the one graph tested, a plain
+  subgraph and a cluster. The port returns output.
 
 ---
 

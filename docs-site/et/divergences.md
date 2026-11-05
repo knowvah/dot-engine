@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ sisendit selle enda mootoriga `dot`-i asemel. Selle töö aus lagi on
 A1 **kitsendamine** tasemele „aktiivset erinevust pole võrdlusplatvormil“, mitte kunagi
 platvormideülese reservatsiooni kõrvaldamine; senised tulemused (allpool) jäävad sellesse
 lakke: `circo`/`twopi`/`osage` on igaüks toonud päevavalgele ja algpõhjuseni
-jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 99.8/96.6/68.0%
+jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 99.8/96.6/68.1%
 natiivsest 0.5pt piires 929-kirjelise universumi ulatuses (graphviz 16.1.0), mis tähendab, et portitud
 aritmeetika (`fma.ts`, `arm-pow.ts`, sobitatud PRNG) peab enamiku graafide puhul vastu —
 ning iga 929-kirjelise universumi lahknev id on eraldi omistatud süstimise teel (lahendaja
@@ -201,7 +201,7 @@ läbimise % jätab välja sisendid, mida C-oraakel ei suuda renderdada, vt
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
 
 (`fdp` läbimismäär tõusis 77.5%-st, sest varasem sisseviidud läbimine
 eelnes eelmise missiooni pordi seisule.
@@ -236,6 +236,8 @@ mootoripõhistel töölaudadel
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
+
+**Kus algab sfdp lahendaja triiv (10. osa, T2).** Instrumenteeritud natiivne sfdp, mida jälgiti pordi vastu väikestel id-del, erineb esimest korda tõukejõu `pow(dist, 1-p)` viimases bitis (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). Juhul `flatedge` annab `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` natiivselt `...8811p+2` ja pordis `...8812p+2`; `graphs-p` ja `1767` algavad samamoodi. Adaptiivne jahutus võimendab bitti: see jõuab `x[0]`-ni iteratsioonil 5, `max|dx|` on 2.4e-9 iteratsioonil 100 ja 3.9e-5 iteratsioonil 200, ning samm pöördub iteratsioonil 244. Seda kinnitavad kaks kontrollitud jooksu. Natiivi bittidega täpselt nendel 8 kutsel on `flatedge`-i 62090-realine jälg identne ning macOS-i päris `pow`-iga Node-API lisandmooduli taga on 288-l 292-st läbi kukkunud id-st bitt-bitilt identne jälg (ülejäänud 4, kõik `overlap=false`, erinevad ainult kohal `xfinal`). Operatsioonide järjekord ja liitmine lahendajas, mitmetasemelises osas, quadtree'is ja hõredas koodis on välistatud. See on hosti libm, aktsepteeritud klassis A1 (vt allpool teadaolevate lünkade loendi `pow`-punkti); `src/` ei muutunud, seega arvud jäävad 632-ks 929-st. Ainult macOS-il tehtud katse jõudis umbes 923-ni 929-st; see mõõdab oraakli `pow`-i ega ole midagi, mida teek suudab igal hostil. `Math.pow` tõukejõus läbib 153 neist 292-st, kuid halvendab 6 täna läbivat id-d, mistõttu seda ei rakendatud. Tabeli sfdp rida on võrdne [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) reaga: 1 erinev pluss 295 aktsepteeritud annab 296 ning veel 1 id on seal oraakli mittedeterministlikuna.
 
 **A1-drift klassi aktsepteerimine (iteratiivsed mootorid, arvutatud liikmelisus).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -1289,6 +1291,20 @@ erineb natiivsest Graphvizist. Leitud missiooniga `v2-silent-gaps`
   `cos` ei ole lühikesest mudelist reprodutseeritav nii nagu `hypot`.
 - **Natiivsed krahhid, mille port määratleb.** Natiivne Graphviz lõpetab neato `mode=KK` korral koos `model=mds` ja `len`-iga servaga peaaegu igal käivitusel koodiga 139 (1 ellujääja umbes 1500-st; `mds_model` indekseerib `GD_dist` 1-põhise järjenumbriga: kuhja ületäitumine). Port jätab vahemikust väljas olevad lahtrid ära ja tema tulemus ühtib selle ellujääjaga täpsusega 0,01. `circuit_model` indekseerib 1-põhise `AGSEQ` järgi (`circuit.c:46`), seega maatriksi rida 0 ei kirjutata kunagi ja maatriks on singulaarne igal graafil, sidusal või mitte: natiivne `mode=KK` koos `model=circuit` ei anna kunagi circuit-paigutust. Kui protsess jääb ellu, trükib see `Warning: graph <name> is disconnected. Hence, the circuit model` ja langeb tagasi lühimatele teedele; sama viga loeb ridade viitade massiivist kaugemale, kui viimati loodud sõlmel on serv, mistõttu natiivne lõpetab tavaliselt koodiga 139 (umbes 3 käivitust 4-st proovigraafil). Port valib alati ellujäämistee: hoiatus, seejärel lühimad teed, sidusal graafil või mitte. Valikuga `pack=true` jooksis natiivne iga kord kokku (0 ellujääjat üle 3000 käivituse kummalgi kahest graafist); otsuse kohaselt hoiatab port komponendi kaupa oma nime all (`_neato_cc0`, `_neato_cc1`, ...), kasutab lühimaid teid ja pakib. Selle kombinatsiooni jaoks natiivset väljundit ei ole; paigutus võrdub natiivse `model=shortpath` tulemusega sama graafi puhul.
 - **VPSC viigijärjestus järgib loomisjärjestust, mitte kuhja aadressi.** Natiivne `IncVPSC::splitBlocks` käib läbi kuhja aadressi järgi järjestatud `std::set<Block*>`, lisades samal ajal sellesse elemente, ja `CmpNodePos` lahendab asukohaviigid aadressi järgi, mistõttu natiivne väljund valikute `overlap=vpsc|ipsep` ja piiratud `mode=ipsep` korral muutub võrdsete asukohtade puhul käivituselt käivitusele (üks juhtum andis 300 käivitusel 21 erinevat tulemust). Port järjestab viigid loomisjärjestuse järgi ja külastab alati uusi blokke, mistõttu tema väljund on deterministlik. Pühkimissündmuste viigid järgivad libc++-i: port sisaldab selle `std::sort`-i porti, mistõttu viigijärjestus ühtib natiivsega. See ühtib valimi natiivse käivitusega kontrollitud viigijuhtudel. 40 sõlmega juhtum (`dir1 n40`), mis varem ei ühtinud ühegi 29 valimi natiivse tulemusega, on selgitatud: 332 natiivsel käivitusel andis oraakli `libvpsc.a` 17 erinevat väljundit, samas kui natiivne koopia, mis järjestab ainult `Blocks` loomisindeksi järgi, andis 332-st 1 ja port on sellega bitthaaval võrdne. Plokkide aadressijärjestus on selle juhtumi kogu erinevus; väide on mõõdetud ainult juhtumil `dir1 n40` (järeltöö 110).
+
+### `dim`, `dimen` ja `z` (neato, sfdp) {#dim-dimen-and-z-neato-sfdp}
+
+neato ja sfdp paigutavad igas režiimis `dim` mõõtmes, piiratuna C-i `MAXDIM`-iga (10). Üksi `dim=3` paigutab 3-D-s, kuid kirjutab 2 koordinaati; üksi `dimen=3` seab `dim`-i 3-ks ja kirjutab 3; `dim=11 dimen=11` kirjutab 10. Z-koordinaat on saadaval ainult atribuutide `pos` ja `z` kaudu; `getLayout` ei muutu. fdp, circo, twopi, osage ja patchwork jäävad 2-D-ks, nagu C seda nõuab. `mode=hier` üle 2-D alustab (`dim`-1)-mõõtmelisest paigutusest `opt_smart_init` kaudu (`constrained_majorization.c:95`, `stress.c:874`), mis on portitud; `mode=hier` graaf ilma suunatud servata või ilma hierarhiata renderdatakse nüüd vea viskamise asemel. `mode=major start=self` viskab endiselt vea. Renderdaja haru `GVRENDER_DOES_Z` (`lib/common/emit.c:1660,2734`) ei ole portitud: see vajab seadet, mis joonistab z-i, ja siin ei tee seda ükski.
+
+### Natiivsed kokkujooksmised ja kuhjaadressidest sõltuv varieeruvus (10. osa) {#native-crashes-and-heap-address-variation-part-10}
+
+Iga punkt ütleb, mida natiivne teeb ja mida port teeb.
+
+- **`mode=hier dim=4` kahel sõlmel.** Natiivne kirjutab üle `directions` (`lib/neatogen/stress.c:514`) ja katkeb mõnes jooksus (väljumiskood 133 viiel jooksul 16-st). Port renderdab.
+- **`mode=hier dim=3` ja `len=0.001`.** Natiivne sureb signaali tõttu: 3 jooksu 8-st 19 sõlmega (SIGBUS) ja 8 8-st 27 sõlmega (SIGBUS, SIGSEGV, SIGTRAP). Pinu on `mfm_alloc` funktsiooni `stress_majorization_kD_mkernel` all, mis näitab kuhja riknemist; täpne koht ei ole tõendatud. Port renderdab ning kus natiivne ellu jääb (19 sõlme, 5 jooksu 8-st), on see baidi täpsusega võrdne.
+- **fdp teised paigutused samal graafil varieeruvad natiivses kuhjaadressidega.** `deriveGraph` ja `genPorts` võrdlevad sõlmeviitu (`lib/fdpgen/layout.c:466,501,637`). 12 natiivse jooksu kohta kummalgi langeb `graphs-fdp` renderdus 2 kujul `plain` 2 klassi (1 ja 11 jooksu) ja `1581` kujul `dot` 2 klassi (8 ja 4 jooksu); port on baidi täpsusega võrdne `plain`-i 1 jooksu klassiga ja 5e-13 piires `dot`-i 4 jooksu klassist. Natiivne, mis on ehitatud nende kolme võrdlusega `ND_id` peal, kordub 8 korda 8-st ja on `plain` puhul pordiga baidi täpsusega võrdne. Ainult pordi valik: natiivne `attach_attrs` lõpeb `undoClusterEdges`-iga (`lib/common/output.c:403-404`) ja port teeb selle tagasivõtmise järgmisel paigutusel, mitte renderdamisel, sest selle kirjutajad loevad `__0:` vahendussõlmi.
+- **`T` operatsioon graafi `_draw_` või `_background` atribuudis.** Natiivne jookseb kokku segmenteerimisveaga (väljumiskood 139): `op->span` on NULL väljaspool neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Port ei joonista selle jaoks teksti.
+- **neato alamgraafil.** Natiivne väljus koodiga 139 mõlema alamgraafi paigutamisel ühel testitud graafil, tavalise alamgraafi ja klastri puhul. Port tagastab väljundi.
 
 ---
 

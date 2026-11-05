@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ inndata under sin egen motor i stedet for `dot`. Det ærlige taket for dette arb
 å **innsnevre** A1 til «ingen aktivt avvik på referanseplattformen», aldri å
 fjerne forbeholdet om tvers av plattformer; resultatene så langt (nedenfor) holder seg til
 det taket: `circo`/`twopi`/`osage` har hver avdekket og rotårsaksanalysert en håndfull
-ekte A1/A9-tilfeller, og `neato`/`fdp`/`sfdp` ligger nå på 99.8/96.6/68.0 %
+ekte A1/A9-tilfeller, og `neato`/`fdp`/`sfdp` ligger nå på 99.8/96.6/68.1 %
 innenfor 0.5pt av innebygd over universet på 929 elementer (graphviz 16.1.0), noe som betyr at den portede
 aritmetikken (`fma.ts`, `arm-pow.ts`, samsvarende PRNG) holder for de fleste grafer — og
 hver avvikende id i universet på 929 elementer er individuelt tilskrevet ved injeksjon (løserdrift
@@ -201,7 +201,7 @@ inndata C-orakelet ikke kan rendere, jf. [Samsvar](./conformance.md)):
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8 %) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6 %) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0 %) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1 %) | 296 | 0 | 0 |
 
 (Beståttprosenten for `fdp` økte fra 77.5 % fordi den tidligere innsjekkede kjøringen
 var eldre enn portstatusen fra det forrige oppdraget.
@@ -237,6 +237,8 @@ dashbordene per motor
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
+
+**Hvor sfdps solverdrift begynner (del 10, T2).** En instrumentert nativ sfdp, sporet mot porten på små id-er, avviker først i siste bit av `pow(dist, 1-p)` i frastøtingskraften (`lib/sfdpgen/spring_electrical.c:625,617`; porten `spring-electrical.ts:260`). På `flatedge` gir `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` `...8811p+2` nativt og `...8812p+2` i porten; `graphs-p` og `1767` begynner på samme måte. Adaptiv kjøling forsterker biten: den når `x[0]` i iterasjon 5, `max|dx|` er 2.4e-9 i iterasjon 100 og 3.9e-5 i 200, og steget snur i iterasjon 244. To kontrollerte kjøringer bekrefter det. Med nativets biter ved nøyaktig disse 8 kallene blir `flatedge`s spor på 62090 linjer identisk, og med macOS' ekte `pow` bak et Node-API-tillegg har 288 av de 292 id-ene som ikke besto, bitidentiske spor (de øvrige 4, alle `overlap=false`, skiller seg bare ved `xfinal`). Rekkefølgen på operasjoner og fusjon i solveren, multilevel, quadtree og sparse-kode er utelukket. Dette er vertens libm, akseptert under A1 (se `pow`-punktet i listen over kjente hull nedenfor); `src/` ble ikke endret, så tallene forblir 632 av 929. Eksperimentet som bare kjørte på macOS nådde omtrent 923 av 929; det måler orakelets `pow` og er ikke noe biblioteket kan gjøre på enhver vert. `Math.pow` i frastøtingskraften består 153 av de 292, men får 6 id-er som består i dag til å gå tilbake, så den ble ikke tatt i bruk. Tabellens sfdp-rad er lik den i [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 avvikende pluss 295 akseptert gir de 296, og ytterligere 1 id står der som ikke-deterministisk hos oraklet.
 
 **Klassegodkjenning av A1-drift (iterative motorer, beregnet medlemskap).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -1303,6 +1305,20 @@ avviker fra innebygd Graphviz. Funnet av oppdraget `v2-silent-gaps`
   `cos` kan ikke gjenskapes fra en kort modell slik `hypot` kan.
 - **Innebygde krasj som porten definerer.** Native Graphviz avslutter med 139 ved neato `mode=KK` med `model=mds` og en kant med `len` i nesten hver kjøring (1 overlevende av omtrent 1500; `mds_model` indekserer `GD_dist` med et 1-basert sekvensnummer: heap-overskridelse). Porten dropper celler utenfor området, og resultatet stemmer med den overlevende innenfor 0,01. `circuit_model` indekserer med det 1-baserte `AGSEQ` (`circuit.c:46`), så rad 0 i matrisen skrives aldri, og matrisen er singulær for enhver graf, sammenhengende eller ikke: native `mode=KK` med `model=circuit` gir aldri en circuit-layout. Når prosessen overlever, skriver den ut `Warning: graph <name> is disconnected. Hence, the circuit model` og faller tilbake til korteste veier; den samme feilen leser forbi radpekerarrayet når den sist opprettede noden har en kant, så native avslutter vanligvis med 139 (omtrent 3 kjøringer av 4 på prøvegrafen). Porten tar alltid den overlevende veien: advarselen og deretter korteste veier, sammenhengende graf eller ikke. Med `pack=true` krasjet native i hver kjøring (0 overlevende av over 3000 på hver av to grafer); etter beslutning advarer porten per komponent under eget navn (`_neato_cc0`, `_neato_cc1`, ...), bruker korteste veier og pakker. Det finnes ingen native utdata for den kombinasjonen; layouten tilsvarer natives `model=shortpath` for samme graf.
 - **VPSC-likheter følger opprettelsesrekkefølge, ikke heap-adresse.** Native `IncVPSC::splitBlocks` går gjennom en `std::set<Block*>` ordnet etter heap-adresse mens den setter inn i den, og `CmpNodePos` avgjør like posisjoner etter adresse, så native utdata for `overlap=vpsc|ipsep` og begrenset `mode=ipsep` varierer fra kjøring til kjøring ved like posisjoner (ett tilfelle ga 21 ulike resultater på 300 kjøringer). Porten ordner like posisjoner etter opprettelsesrekkefølge og besøker alltid nye blokker, så utdataen er deterministisk. Like hendelser i sveipet følger libc++: porten inneholder en port av dens `std::sort`, så rekkefølgen ved likhet tilsvarer native. Den tilsvarer en utvalgt native kjøring i de undersøkte tilfellene med like posisjoner. Tilfellet med 40 noder (`dir1 n40`), som tidligere ikke samsvarte med noen av 29 utvalgte native resultater, er forklart: i 332 native kjøringer ga orakelets `libvpsc.a` 17 ulike utdata, mens en native kopi som bare ordner `Blocks` etter opprettelsesindeks ga 1 på 332, og porten er bit for bit lik den. Adresserekkefølgen til blokkene er hele forskjellen i det tilfellet; påstanden er bare målt på `dir1 n40` (oppfølging 110).
+
+### `dim`, `dimen` og `z` (neato, sfdp) {#dim-dimen-and-z-neato-sfdp}
+
+neato og sfdp legger ut i `dim` dimensjoner i alle moduser, begrenset til Cs `MAXDIM` (10). `dim=3` alene legger ut i 3-D, men skriver 2 koordinater; `dimen=3` alene setter `dim` til 3 og skriver 3; `dim=11 dimen=11` skriver 10. Z-koordinaten er bare tilgjengelig gjennom attributtene `pos` og `z`; `getLayout` er uendret. fdp, circo, twopi, osage og patchwork forblir 2-D, slik C tvinger. `mode=hier` over 2-D starter fra et (`dim`-1)-D-oppsett via `opt_smart_init` (`constrained_majorization.c:95`, `stress.c:874`), som er portert; en `mode=hier`-graf uten rettet kant eller uten hierarki blir nå rendret i stedet for å kaste en feil. `mode=major start=self` kaster fortsatt en feil. Rendererens gren `GVRENDER_DOES_Z` (`lib/common/emit.c:1660,2734`) er ikke portert: den krever en enhet som tegner z, og ingen her gjør det.
+
+### Native krasj og variasjon med heapadresser (del 10) {#native-crashes-and-heap-address-variation-part-10}
+
+Hvert punkt oppgir hva nativt gjør og hva porten gjør.
+
+- **`mode=hier dim=4` på to noder.** Nativt skriver forbi `directions` (`lib/neatogen/stress.c:514`) og avbryter i noen kjøringer (exit 133 i 5 av 16 kjøringer). Porten rendrer.
+- **`mode=hier dim=3` med `len=0.001`.** Nativt dør av signal: 3 av 8 kjøringer ved 19 noder (SIGBUS) og 8 av 8 ved 27 noder (SIGBUS, SIGSEGV, SIGTRAP). Stakken er `mfm_alloc` under `stress_majorization_kD_mkernel`, noe som viser heapkorrupsjon; det nøyaktige stedet er ikke bevist. Porten rendrer, og der nativt overlever (19 noder, 5 av 8 kjøringer) er den byte-lik.
+- **fdps andre oppsett på én graf varierer med heapadresser i nativt.** `deriveGraph` og `genPorts` sammenligner nodepekere (`lib/fdpgen/layout.c:466,501,637`). Over 12 native kjøringer hver faller rendering 2 av `graphs-fdp` som `plain` i 2 klasser (1 og 11 kjøringer) og `1581` som `dot` i 2 klasser (8 og 4 kjøringer); porten er byte-lik med 1-kjøringsklassen for `plain` og innenfor 5e-13 av 4-kjøringsklassen for `dot`. Et nativt bygg med de tre sammenligningene på `ND_id` gjentar seg 8 av 8 og er byte-likt porten på `plain`. Et valg bare i porten: nativt `attach_attrs` slutter med `undoClusterEdges` (`lib/common/output.c:403-404`), og porten kjører den angringen ved neste oppsett, ikke ved rendering, fordi skriverne dens leser `__0:`-proxyene.
+- **En `T`-op i grafens `_draw_` eller `_background`.** Nativt segfaulter (exit 139): `op->span` er NULL utenfor neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Porten tegner ingen tekst for den.
+- **neato på en undergraf.** Nativt avsluttet med 139 ved oppsett av begge undergrafene i den ene testede grafen, en vanlig undergraf og en klynge. Porten returnerer utdata.
 
 ---
 
