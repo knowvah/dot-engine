@@ -24,6 +24,7 @@ Items 103–108 closed by `plans/post-16-1-followups-8/`; the open work is items
 "New follow-ups found by part 8".
 Items 109–113 closed by `plans/post-16-1-followups-9/`; the open work is items 114–124 under
 "New follow-ups found by part 9".
+Being closed by `plans/post-16-1-followups-10/`.
 Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
