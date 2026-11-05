@@ -9,6 +9,7 @@
 import type { Graph } from '../../model/graph.js';
 import type { LayoutEngine } from '../../gvc/context.js';
 import { twopiInitGraph, twopiCleanup } from './init.js';
+import { agdelsubg } from '../../model/cgraph-ops.js';
 import { ccomps, normalizeGraphBB } from '../pack/index.js';
 import { layoutSingle, layoutMulti, buildPackInfo } from './pipeline.js';
 import { commonInitNodeEdge, layoutMeasurer } from '../../common/nodeinit.js';
@@ -58,6 +59,8 @@ export function twopiLayout(g: Graph): void {
   } else {
     layoutMulti(g, comps, globalRoot, buildPackInfo(g));
   }
+  // @see lib/twopigen/twopiinit.c:twopi_layout (agdelete of each component)
+  for (const c of comps) agdelsubg(g, c);
   normalizeGraphBB(g);
   // C: dotneato_postprocess(g) — cluster labels, edge labels (addXLabels), root
   // graph label space + translate. @see lib/twopigen/twopiinit.c:152

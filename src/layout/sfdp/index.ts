@@ -13,6 +13,7 @@
 
 import type { Graph } from '../../model/graph.js';
 import type { LayoutEngine } from '../../gvc/context.js';
+import { agdelsubg } from '../../model/cgraph-ops.js';
 import { csrand } from '../../common/crand.js';
 import { graphInit } from '../../common/graph-init.js';
 import { setEdgeTypeFromAttr } from '../dot/index.js';
@@ -218,6 +219,7 @@ export function sfdpLayout(g: Graph): void {
     } else {
       layoutComponents(g, comps, ctrl, pad, doAdjust);
     }
+    for (const c of comps) agdelsubg(g, c); // @see lib/sfdpgen/sfdpinit.c:289
   }
 
   postprocess(g, singleComponent);

@@ -88,7 +88,9 @@ export function buildDerivedEdges(g: Graph, dg: DerivedGraph): DerivedEdge[] {
 
 /** Decompose derived graph into connected components with their edges. */
 export function derivedComponents(g: Graph, dg: DerivedGraph, allEdges: DerivedEdge[]): SubGraph[] {
-  const comps = ccomps(g);
+  // C decomposes the derived graph, which holds no user subgraph to reuse.
+  // @see lib/circogen/circularinit.c:circomps
+  const comps = ccomps(g, null, false);
   return comps.map((sg, i) => {
     const nodes: DerivedNode[] = [];
     for (const n of sg.nodes.values()) {

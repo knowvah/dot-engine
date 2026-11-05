@@ -8,6 +8,7 @@
  * @see lib/twopigen/circle.h
  */
 
+import { agerrorf } from '../../common/agerr.js';
 import { InternalError } from '../../errors.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
@@ -331,7 +332,10 @@ export function circleLayout(sg: Graph, center: Node | null): Node | null {
   if (center === null) center = findCenterNode(sg);
   if (center === null) return null;
   const maxN = setParentNodes(sg, center);
-  if (maxN === Number.MAX_SAFE_INTEGER) return center;
+  if (maxN === Number.MAX_SAFE_INTEGER) {
+    agerrorf('twopi: use of weight=0 creates disconnected component.');
+    return center;
+  }
   setSubtreeSize(sg);
   setSubtreeSpans(sg, center);
   setPositions(sg, center);
