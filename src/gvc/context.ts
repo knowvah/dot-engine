@@ -28,7 +28,7 @@ import type { ImageResolver } from './image-resolver.js';
 import type { RenderJob } from './job.js';  // scaffold in T25; full class in T26
 import { resetRenderState } from '../common/render-state.js';
 import { RenderError, invalidArgType, invalidArgValue } from '../errors.js';
-import { layoutWasFreed, resetLayoutRecords } from './layout-reset.js';
+import { layoutWasFreed, resetLayoutRecords, undoRenderedClusterEdges } from './layout-reset.js';
 import { initXdot } from './init-xdot.js';
 import { writeLayoutBb } from './layout-bb.js';
 
@@ -326,6 +326,7 @@ export class GvcContext {
       }
       engine = override;
     }
+    undoRenderedClusterEdges(g);
     if (layoutWasFreed(g)) resetLayoutRecords(g);
     if (g.info) g.info.gvc = this;
     initXdot(g); // C: graph_init, before the engine. @see lib/common/input.c:784

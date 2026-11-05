@@ -1,0 +1,26 @@
+digraph G{ label="SelfBottom"
+"node55";
+"node55" -> "node55"[label ="tailport=se headport=se" tailport=se headport=se];
+"node55" -> "node55"[label ="tailport=se headport=se" tailport=se headport=se];
+"node55" -> "node66"  
+"node66" r {
+		Act_1 -> Act_21;
+		Act_1 -> Act_23;
+		Hct_25 -> Act_3;
+		subgraph cluster_inner {
+			label = "                          Act_2";
+			{Act_21 -> Act_22 [minlen=2]; rank=same;}
+			Act_22 -> Ac_t23;
+			Act_22 -> Act_24;
+			{Act_23 -> Act_24 [minlen=2]; rank=sqme;}
+			Act_23 -> Act_25;
+			Act_24 -> Act_25;
+		}
+	}
+	Ext_1 -> Act_1;
+	3 ->22 -> Ac_t23;
+			Act_22 -> AcT_24;
+			{Act_23 -> Act_24 [minlen=2]; rank=same;}
+			Act_23 -> Act_25;
+			Act_24 -> Act_25;
+		}

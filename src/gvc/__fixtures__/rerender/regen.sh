@@ -86,3 +86,21 @@ seq neato-pos neato json-plain l,json,f,l,plain,f
 seq neato-pos neato json0-plain l,json0,f,l,plain,f
 seq filing dot json-json l,json,f,l,json,f
 run sized-clip neato xdot 2 sized-clip.neato.xdot
+# Part 10 T14. An edge to a cluster: -Tdot, -Txdot and -Tjson undo the first cycle's proxy nodes.
+run cluster-edges fdp dot 2 cluster-edges.fdp.dot
+run cluster-edges fdp xdot 2 cluster-edges.fdp.xdot
+seq cluster-edges fdp dot-svg l,dot,f,l,svg,f
+seq cluster-edges fdp dot-plain l,dot,f,l,plain,f
+seq cluster-edges fdp json-json l,json,f,l,json,f
+seq cluster-edges fdp nofree-dot-svg l,dot,l,svg
+# The cluster-edge record outlives gvFreeLayout, so render 2 keeps line segments.
+run cluster-edge-splines fdp plain 2 cluster-edge-splines.fdp.plain
+# Native's render 2 of fdp-1581 takes one of two values per process (deriveGraph compares node addresses,
+# lib/fdpgen/layout.c:466). Keep the one the port's id order gives; an unlucky run retries.
+for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16; do
+  run fdp-1581 fdp dot 2 fdp-1581.fdp.dot
+  grep -q 'bb="0,-24.8,29358,25432"' fdp-1581.fdp.dot.2 && break
+done
+grep -q 'bb="0,-24.8,29358,25432"' fdp-1581.fdp.dot.2
+# cluster-edges.fdp.plain.noaddr.{1,2} are not regenerated here: render 2 of plain moves with node addresses
+# at the same three sites, so they come from T14's patched plugin, GVTS_NOADDR=1, which orders by ND_id.

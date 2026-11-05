@@ -525,3 +525,126 @@ describe('rendering writes layout attributes back', () => {
     expect(second.length).toBeGreaterThan(first.length);
   });
 });
+
+// An edge to a cluster (part 10 T14). processClusterEdges swaps the node named
+// for the cluster for a proxy; attach_attrs undoes that when it writes
+// (output.c:404), so -Tdot, -Txdot and -Tjson leave the graph with the original
+// membership, while -Tplain and -Tsvg leave the proxies as ordinary nodes.
+// @see lib/common/utils.c:undoClusterEdges
+describe('a second render on a graph with an edge to a cluster', () => {
+  const xdotDiffs = (actual: string, expected: string): unknown[] =>
+    compareXdot(actual, expected, POSITION_TOLERANCE).diffs;
+
+  /** An SVG from its first group on: the header names the generator, which differs. */
+  const svgBody = (svg: string): string => svg.slice(svg.indexOf('<g '));
+
+  /** One context, one graph: layout, render in `fmt`, free. */
+  const cycle = (
+    ctx: ReturnType<typeof createDefaultContext>,
+    g: ReturnType<typeof parse>,
+    fmt: string,
+  ): string => {
+    ctx.layout(g, 'fdp');
+    const out = deviceRender(ctx, g, fmt);
+    ctx.freeLayout(g, 'fdp');
+    return out;
+  };
+
+  it.each(['dot', 'xdot'] as const)('%s equals native renders 1 and 2', (fmt) => {
+    const g = parse(read('cluster-edges.gv'));
+    expect(xdotDiffs(render(g, fmt, { engine: 'fdp' }), read(`cluster-edges.fdp.${fmt}.1`))).toEqual([]);
+    expect(xdotDiffs(render(g, fmt, { engine: 'fdp' }), read(`cluster-edges.fdp.${fmt}.2`))).toEqual([]);
+  });
+
+  it('a dot render leaves the proxies until the next layout undoes them', () => {
+    const g = parse(read('cluster-edges.gv'));
+    render(g, 'dot', { engine: 'fdp' });
+    expect([...g.nodes.keys()]).toEqual(['e', 'a', 'b', 'C', 'D', 'd', 'f', '__0:clusterB', '__0:clusterC']);
+    const ctx = createDefaultContext();
+    ctx.layout(g, 'fdp');
+    // Undone, then made again: new proxies, so new edge numbers below.
+    expect([...g.nodes.keys()]).toEqual(['e', 'a', 'b', 'C', 'D', 'd', 'f', '__0:clusterB', '__0:clusterC']);
+    expect(g.subgraphs.get('clusterB')?.nodes.has('__0:clusterB')).toBe(true);
+    expect(g.edges.map((e) => [e.tail.name, e.head.name, e.graphSeq])).toEqual([
+      ['a', 'b', 1], ['C', 'D', 2], ['d', 'f', 3], ['d', 'D', 4],
+      ['e', '__0:clusterB', 11], ['__0:clusterC', '__0:clusterB', 12],
+    ]);
+  });
+
+  it('a svg render after a dot render numbers the edges as native does', () => {
+    const ctx = createDefaultContext();
+    const g = parse(read('cluster-edges.gv'));
+    expect(xdotDiffs(cycle(ctx, g, 'dot'), read('cluster-edges.fdp.seq-dot-svg.1'))).toEqual([]);
+    expect(svgBody(cycle(ctx, g, 'svg')).match(/id="edge\d+"/g)).toEqual(
+      svgBody(read('cluster-edges.fdp.seq-dot-svg.2')).match(/id="edge\d+"/g),
+    );
+  });
+
+  it('a plain render after a dot render equals native', () => {
+    const ctx = createDefaultContext();
+    const g = parse(read('cluster-edges.gv'));
+    cycle(ctx, g, 'dot');
+    expect(cycle(ctx, g, 'plain')).toBe(read('cluster-edges.fdp.seq-dot-plain.2'));
+  });
+
+  // Clusters only: the port's JSON writer prints proxies on a first render too,
+  // where native's does not, which a first render here may not change.
+  it('a json render undoes the proxies, so render 2 lays out the clusters as native', () => {
+    const ctx = createDefaultContext();
+    const g = parse(read('cluster-edges.gv'));
+    const clusters = (json: string): unknown =>
+      (JSON.parse(json) as { objects: Array<{ name: string; bb?: string }> }).objects
+        .filter((o) => o.bb !== undefined)
+        .map((o) => [o.name, o.bb]);
+    cycle(ctx, g, 'json');
+    expect(clusters(cycle(ctx, g, 'json'))).toEqual(clusters(read('cluster-edges.fdp.seq-json-json.2')));
+  });
+
+  it('a no-free layout after a dot render equals native on svg', () => {
+    const ctx = createDefaultContext();
+    const g = parse(read('cluster-edges.gv'));
+    ctx.layout(g, 'fdp');
+    deviceRender(ctx, g, 'dot');
+    ctx.layout(g, 'fdp');
+    expect(svgBody(deviceRender(ctx, g, 'svg'))).toBe(svgBody(read('cluster-edges.fdp.seq-nofree-dot-svg.2')));
+  });
+
+  // The second layout's other input is heap order: deriveGraph and genPorts
+  // compare node addresses (lib/fdpgen/layout.c:466,501,637), and a first cycle's
+  // frees reorder them. The port orders by id, what an unfragmented heap gives,
+  // as each layout is one native process (AD-4). These fixtures come from a plugin
+  // patched to compare ND_id, so they hold everything but the address order.
+  it('plain equals native with node addresses replaced by ND_id', () => {
+    const g = parse(read('cluster-edges.gv'));
+    expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edges.fdp.plain.noaddr.1'));
+    expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edges.fdp.plain.noaddr.2'));
+  });
+
+  it('1581 in dot format equals the native process whose addresses ascend', () => {
+    const g = parse(read('fdp-1581.gv'));
+    expect(xdotDiffs(render(g, 'dot', { engine: 'fdp' }), read('fdp-1581.fdp.dot.1'))).toEqual([]);
+    expect(xdotDiffs(render(g, 'dot', { engine: 'fdp' }), read('fdp-1581.fdp.dot.2'))).toEqual([]);
+  });
+
+  // HAS_CLUST_EDGE is a record of its own (CL_EDGE_TAG), which gvFreeLayout does
+  // not delete: render 2 has no cluster edge left but still takes line segments.
+  it('the cluster-edge record outlives the free, so render 2 keeps line segments', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const g = parse(read('cluster-edge-splines.gv'));
+    expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edge-splines.fdp.plain.1'));
+    expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edge-splines.fdp.plain.2'));
+    expect(warn.mock.calls.map((c) => String(c[0]))).toEqual([
+      'splines and cluster edges not supported - using line segments',
+      'splines and cluster edges not supported - using line segments',
+    ]);
+    warn.mockRestore();
+  });
+
+  it('a graph with no cluster edge has nothing to undo', () => {
+    const g = parse('graph { subgraph clusterA { a -- b } a -- c }');
+    render(g, 'dot', { engine: 'fdp' });
+    render(g, 'dot', { engine: 'fdp' });
+    expect([...g.nodes.keys()]).toEqual(['a', 'b', 'c']);
+    expect(g.info.n_cluster_edges).toBeUndefined();
+  });
+});
