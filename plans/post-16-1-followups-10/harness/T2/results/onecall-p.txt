@@ -1,0 +1,84 @@
+--- overrides=0
+first diff line 4819
+  native pow 0x1.1949767764cecp+1 0x1p+1 0x1.35125b26e237ap+2
+  port   pow 0x1.1949767764cecp+1 0x1p+1 0x1.35125b26e237bp+2
+--- overrides=1
+first diff line 6024
+  native pow 0x1.27bb1249c8204p+1 0x1p+1 0x1.55a0acd9c4533p+2
+  port   pow 0x1.27bb1249c8204p+1 0x1p+1 0x1.55a0acd9c4532p+2
+--- overrides=2
+first diff line 11560
+  native pow 0x1.8714f4c1b217ep+1 0x1p+1 0x1.2ab882af6b254p+3
+  port   pow 0x1.8714f4c1b217ep+1 0x1p+1 0x1.2ab882af6b255p+3
+--- overrides=3
+first diff line 16451
+  native pow 0x1.3894756e1e8bp+0 0x1p+1 0x1.7daa345467a3fp+0
+  port   pow 0x1.3894756e1e8bp+0 0x1p+1 0x1.7daa345467a4p+0
+--- overrides=4
+first diff line 20177
+  native pow 0x1.36e4573f15023p+0 0x1p+1 0x1.798dcef84cfabp+0
+  port   pow 0x1.36e4573f15023p+0 0x1p+1 0x1.798dcef84cfaap+0
+--- overrides=5
+first diff line 22165
+  native pow 0x1.6bdc9b3dfb06ep+0 0x1p+1 0x1.0295af2e7b488p+1
+  port   pow 0x1.6bdc9b3dfb06ep+0 0x1p+1 0x1.0295af2e7b489p+1
+--- overrides=6
+first diff line 22367
+  native pow 0x1.274db82dbfe41p+2 0x1p+1 0x1.54a43611c046dp+4
+  port   pow 0x1.274db82dbfe41p+2 0x1p+1 0x1.54a43611c046ep+4
+--- overrides=7
+first diff line 23075
+  native pow 0x1.35b224f19b14cp+0 0x1p+1 0x1.76a78926a5b09p+0
+  port   pow 0x1.35b224f19b14cp+0 0x1p+1 0x1.76a78926a5b0ap+0
+--- overrides=8
+first diff line 29699
+  native pow 0x1.3357bc178fe0fp+0 0x1p+1 0x1.70fb8b31e54bep+0
+  port   pow 0x1.3357bc178fe0fp+0 0x1p+1 0x1.70fb8b31e54bfp+0
+--- overrides=9
+first diff line 31066
+  native pow 0x1.71a5157e7bf1cp+0 0x1p+1 0x1.0adea935ac145p+1
+  port   pow 0x1.71a5157e7bf1cp+0 0x1p+1 0x1.0adea935ac146p+1
+--- overrides=10
+first diff line 32876
+  native pow 0x1.2f2b563bb8a37p+0 0x1p+1 0x1.67079d77742f1p+0
+  port   pow 0x1.2f2b563bb8a37p+0 0x1p+1 0x1.67079d77742f2p+0
+--- overrides=11
+first diff line 36981
+  native pow 0x1.1c3eacaed4ad2p+0 0x1p+1 0x1.3b9b1e7c010a9p+0
+  port   pow 0x1.1c3eacaed4ad2p+0 0x1p+1 0x1.3b9b1e7c010a8p+0
+--- overrides=12
+first diff line 39682
+  native pow 0x1.4e4c3b1d49a8ep+1 0x1p+1 0x1.b48b00f3933efp+2
+  port   pow 0x1.4e4c3b1d49a8ep+1 0x1p+1 0x1.b48b00f3933eep+2
+--- overrides=13
+first diff line 41796
+  native pow 0x1.728adfe1a51c4p+0 0x1p+1 0x1.0c2add3f322b4p+1
+  port   pow 0x1.728adfe1a51c4p+0 0x1p+1 0x1.0c2add3f322b5p+1
+--- overrides=14
+first diff line 41801
+  native pow 0x1.2c236dbaea21ap+2 0x1p+1 0x1.5fe30e1544e38p+4
+  port   pow 0x1.2c236dbaea21ap+2 0x1p+1 0x1.5fe30e1544e39p+4
+--- overrides=15
+first diff line 47005
+  native pow 0x1.714b58a53b3c9p+0 0x1p+1 0x1.0a5d25dcb223bp+1
+  port   pow 0x1.714b58a53b3c9p+0 0x1p+1 0x1.0a5d25dcb223ap+1
+--- overrides=16
+first diff line 48863
+  native pow 0x1.29986bbaa4abbp+2 0x1p+1 0x1.59f304b72d0f7p+4
+  port   pow 0x1.29986bbaa4abbp+2 0x1p+1 0x1.59f304b72d0f8p+4
+--- overrides=17
+first diff line 50702
+  native pow 0x1.2c35641ae9c89p+2 0x1p+1 0x1.600d2dc1ae37ep+4
+  port   pow 0x1.2c35641ae9c89p+2 0x1p+1 0x1.600d2dc1ae37fp+4
+--- overrides=18
+first diff line 65924
+  native pow 0x1.2b133fc0fc23bp+0 0x1p+1 0x1.5d65f85f53815p+0
+  port   pow 0x1.2b133fc0fc23bp+0 0x1p+1 0x1.5d65f85f53816p+0
+--- overrides=19
+first diff line 70974
+  native pow 0x1.865cec321000bp+1 0x1p+1 0x1.299fa0b19354fp+3
+  port   pow 0x1.865cec321000bp+1 0x1p+1 0x1.299fa0b19355p+3
+--- overrides=20
+first diff line 81348
+  native pow 0x1.9253e837059c3p+1 0x1p+1 0x1.3c25d06699f7fp+3
+  port   pow 0x1.9253e837059c3p+1 0x1p+1 0x1.3c25d06699f8p+3

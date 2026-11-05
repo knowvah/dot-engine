@@ -1,0 +1,34 @@
+--- overrides=0
+first diff line 8282
+  native pow 0x1.e82070708b236p+0 0x1.6666666666666p+1 0x1.85f0fc2ec8811p+2
+  port   pow 0x1.e82070708b236p+0 0x1.6666666666666p+1 0x1.85f0fc2ec8812p+2
+--- overrides=1
+first diff line 12980
+  native pow 0x1.37662ee6822abp+0 0x1p+1 0x1.7ac96ebd788b1p+0
+  port   pow 0x1.37662ee6822abp+0 0x1p+1 0x1.7ac96ebd788b2p+0
+--- overrides=2
+first diff line 14262
+  native pow 0x1.70f137ae73f61p+0 0x1p+1 0x1.09db31afb7fb1p+1
+  port   pow 0x1.70f137ae73f61p+0 0x1p+1 0x1.09db31afb7fb2p+1
+--- overrides=3
+first diff line 18744
+  native pow 0x1.763f6fdb63bf7p+1 0x1p+1 0x1.118eb546a3273p+3
+  port   pow 0x1.763f6fdb63bf7p+1 0x1p+1 0x1.118eb546a3274p+3
+--- overrides=4
+first diff line 42821
+  native pow 0x1.4f6dd335130e5p+0 0x1p+1 0x1.b7809de271524p+0
+  port   pow 0x1.4f6dd335130e5p+0 0x1p+1 0x1.b7809de271523p+0
+--- overrides=5
+first diff line 44598
+  native pow 0x1.4ec08d635b5fbp+0 0x1p+1 0x1.b5bb01c3a58d5p+0
+  port   pow 0x1.4ec08d635b5fbp+0 0x1p+1 0x1.b5bb01c3a58d6p+0
+--- overrides=6
+first diff line 46677
+  native pow 0x1.50082d2539667p+0 0x1p+1 0x1.b91576c490f6ap+0
+  port   pow 0x1.50082d2539667p+0 0x1p+1 0x1.b91576c490f69p+0
+--- overrides=7
+first diff line 52419
+  native pow 0x1.5003da93816ddp+0 0x1p+1 0x1.b90a1dd20dd4dp+0
+  port   pow 0x1.5003da93816ddp+0 0x1p+1 0x1.b90a1dd20dd4ep+0
+--- overrides=8
+identical over 62090 lines; lens 62090 62090

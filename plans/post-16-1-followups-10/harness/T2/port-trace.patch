@@ -1,0 +1,135 @@
+--- src/layout/sfdp/spring-electrical.ts	2026-11-04 18:59:03
++++ src/layout/sfdp/spring-electrical.ts	2026-11-04 19:06:29
+@@ -19,6 +19,7 @@
+  * @see lib/sfdpgen/spring_electrical.c (15.0.0)
+  */
+ 
++import * as T from './trace.js';
+ import { fma } from '../../common/fma.js';
+ import { armPow } from '../../common/arm-pow.js';
+ import { csrand, cdrand } from '../../common/crand.js';
+@@ -257,7 +258,10 @@
+ /** pow(dist, 1−p) via ARM optimized-routines pow (~0.54 ULP; the legally clean
+  *  libm, not the macOS one — see the mission journal on golden reproduction). */
+ function repulsivePow(dist: number, p: number): number {
+-  return armPow(dist, 1 - p);
++  const y = 1 - p;
++  const r = T.override(dist, y) ?? (T.MODE === 'libm' ? T.libm(dist, y) : T.MODE === 'math' ? Math.pow(dist, y) : armPow(dist, y));
++  T.pw(dist, y, r);
++  return r;
+ }
+ 
+ // ---------------------------------------------------------------------------
+@@ -291,11 +295,13 @@
+   for (let j = ia[i]!; j < ia[i + 1]!; j++) {
+     if (ja[j] === i) continue;
+     const dist = distance(x, dim, i, ja[j]!);
++    T.dd('adist',i,ja[j]!,dist);
+     for (let k = 0; k < dim; k++) {
+       // binary: fnmul(CRK·Δ) rounded, then fmadd with dist
+       const t = fp.CRK * (x[i * dim + k]! - x[ja[j]! * dim + k]!);
+       f[k] = fma(-t, dist, f[k]!);
+     }
++    T.dd('af0',i,ja[j]!,f[0]!);T.dd('af1',i,ja[j]!,f[1]!);
+   }
+ }
+ 
+@@ -305,9 +311,11 @@
+   for (let j = 0; j < n; j++) {
+     if (j === i) continue;
+     const dist = distanceCropped(x, dim, i, j);
++    T.dd('rdist',i,j,dist);
+     for (let k = 0; k < dim; k++) {
+       f[k]! += fp.KP * (x[i * dim + k]! - x[j * dim + k]!) / repulsivePow(dist, fp.p);
+     }
++    T.dd('rf0',i,j,f[0]!);T.dd('rf1',i,j,f[1]!);
+   }
+ }
+ 
+@@ -325,10 +333,12 @@
+   acc.nsuperAvg += nsuper;
+   for (let j = 0; j < nsuper; j++) {
+     const dist = Math.max(distances[j]!, MINDIST);
++    T.dd('qdist',i,j,dist);T.dd('qw',i,j,supernodeWgts[j]!);T.dd('qc0',i,j,center[j*dim]!);T.dd('qc1',i,j,center[j*dim+1]!);
+     for (let k = 0; k < dim; k++) {
+       f[k]! += supernodeWgts[j]! * fp.KP * (x[i * dim + k]! - center[j * dim + k]!)
+         / repulsivePow(dist, fp.p);
+     }
++    T.dd('qf0',i,j,f[0]!);T.dd('qf1',i,j,f[1]!);
+   }
+ }
+ 
+@@ -339,6 +349,7 @@
+   let F = 0;
+   for (let k = 0; k < dim; k++) F = fma(f[k]!, f[k]!, F);
+   F = Math.sqrt(F);
++  T.dd('F',i,T.st.iter,F);
+   if (F > 0) for (let k = 0; k < dim; k++) f[k] = f[k]! / F;
+   for (let k = 0; k < dim; k++) {
+     x[i * dim + k] = fma(step, f[k]!, x[i * dim + k]!);
+@@ -381,6 +392,7 @@
+   let Fnorm = 0, iter = 0;
+   do {
+     iter++;
++    T.st.iter=iter;
+     const Fnorm0 = Fnorm;
+     Fnorm = 0;
+     const acc = { nsuperAvg: 0, countsAvg: 0 };
+@@ -391,7 +403,9 @@
+     }
+     for (let i = 0; i < n; i++) Fnorm += embedNode(ctx, i, qt, acc, step);
+     if (qt !== null) trainOptimizer(optimizer, acc, n);
++    T.i('iter',iter);T.d('Fnorm',Fnorm);T.x('x',x,dim*n);
+     step = updateStep(ctrl.adaptiveCooling, step, Fnorm, Fnorm0);
++    T.d('step',step);
+   } while (step > TOL && iter < ctrl.maxiter);
+   return maxQtreeLevel;
+ }
+@@ -418,9 +432,10 @@
+   if (ctrl.p >= 0) ctrl.p = -1;
+   const fp: ForceParams = {
+     K: ctrl.K, p: ctrl.p,
+-    KP: Math.pow(ctrl.K, 1 - ctrl.p),
+-    CRK: Math.pow(C_PARAM, (2 - ctrl.p) / 3) / ctrl.K,
++    KP: T.MODE === 'libm' ? T.libm(ctrl.K, 1 - ctrl.p) : Math.pow(ctrl.K, 1 - ctrl.p),
++    CRK: (T.MODE === 'libm' ? T.libm(C_PARAM, (2 - ctrl.p) / 3) : Math.pow(C_PARAM, (2 - ctrl.p) / 3)) / ctrl.K,
+   };
++  T.i('EMBED n',n);T.d('K',fp.K);T.d('p',fp.p);T.d('KP',fp.KP);T.d('CRK',fp.CRK);T.d('step0',ctrl.step);T.m('A',A);T.x('x0',x,dim*n);
+   const ctx: ForceCtx = { A, x, dim, n, fp, f: new Array<number>(dim).fill(0) };
+   const maxQtreeLevel = springIterate(ctx, useQT, optimizer, ctrl);
+   // @see lib/sfdpgen/spring_electrical.c:378 (per multilevel level). A is the
+--- src/layout/sfdp/spring-driver.ts	2026-11-04 18:59:03
++++ src/layout/sfdp/spring-driver.ts	2026-11-04 19:01:57
+@@ -11,6 +11,7 @@
+  * @see lib/neatogen/overlap.c:remove_overlap (15.0.0)
+  */
+ 
++import * as T from './trace.js';
+ import { RenderError } from '../../errors.js';
+ import { fma } from '../../common/fma.js';
+ import { cdrand } from '../../common/crand.js';
+@@ -247,6 +248,7 @@
+       ? x
+       : new Array<number>(grid!.n * dim).fill(0);
+     prolongate(dim, grid!.A, P, grid!.R!, xc, xf, ctrl.K * 0.001);
++    T.i('PROLONG n',grid!.n);T.x('xp',xf,dim*grid!.n);
+     xc = xf;
+     ctrl.randomStart = false;
+     ctrl.K = ctrl.K * 0.75;
+@@ -257,7 +259,9 @@
+   // post_process_smoothing: no-op for SMOOTHING_NONE (the default)
+ 
+   /* rotation has to be done before overlap removal */
++  T.x('xpre',x,dim*n);
+   if (dim === 2) pcpRotate(n, dim, x);
++  T.x('xrot',x,dim*n);
+   // ctrl.rotation === 0 for all supported inputs (rotate() not ported)
+ 
+   // remove_overlap: initial scaling, then (ntry>0) the PRISM OverlapSmoother.
+@@ -266,5 +270,6 @@
+   removeOverlapPrism(
+     dim, A, x, labelSizes, ctrl.overlap, ctrl.initialScaling, ctrl.doShrinking);
+ 
++  T.x('xfinal',x,dim*n);
+   Object.assign(ctrl, ctrl0); // C: *ctrl = ctrl0
+ }
