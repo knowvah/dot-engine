@@ -14,12 +14,11 @@
  * @see lib/neatogen/constrained_majorization.c
  */
 
-import { fma } from '../../common/fma.js';
-import { RenderError } from '../../errors.js';
 import type { Node } from '../../model/node.js';
 import { conjugateGradientMkernelFused, rightMultWithVectorFFFused } from './conjgrad-mkernel.js';
 import { computeHierarchy, type Hierarchy } from './compute-hierarchy.js';
 import type { VtxData } from './dijkstra.js';
+import { MODEL_SUBSET } from './init.js';
 import {
   invertSqrtVec, invertVec, orthog1, sqrtVecF, squareVec, vectorsInnerProductF,
 } from './matrix-ops.js';
@@ -31,6 +30,7 @@ import {
 import { imdsGivenDim } from './smart-ini-x.js';
 import { computeApspPacked, initLayout, stressMajorizationKDMkernel } from './stress-kernel.js';
 import { modelDistances, stressModelDij } from './stress-models.js';
+import { distanceKD } from './stress-subspace.js';
 import { OPT_SMART_INIT, TOLERANCE_CG } from './stress.js';
 
 const fr = Math.fround;
@@ -77,15 +77,9 @@ interface KdOpts {
   epsilon: number;
 }
 
-/** Throw where C runs an initialisation this port does not have. */
-function unsupported(what: string): never {
-  throw new RenderError(`hierarchical stress majorization: ${what} is not supported yet`, 'UNSUPPORTED_FEATURE');
-}
-
 /**
  * `stress_majorization_kD_mkernel`: the distance matrix per model, then the
- * ported kernel. C takes `smart_ini` through `sparse_stress_subspace_majorization_kD`,
- * which is not ported.
+ * ported kernel, which takes `smart_ini` through the subspace estimate.
  * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
  */
 function unconstrainedMajorization(
@@ -93,9 +87,9 @@ function unconstrainedMajorization(
 ): number {
   if (o.maxi < 0) return 0;
   const Dij = stressModelDij(graph, n, o.model);
-  if ((o.opts & OPT_SMART_INIT) !== 0 && n > 1) unsupported('the smart initial layout');
   return stressMajorizationKDMkernel(Dij, n, dCoords, nodes, {
     dim: o.dim, opts: o.opts, maxi: o.maxi, epsilon: o.epsilon,
+    smart: { graph, reweightGraph: o.model === MODEL_SUBSET },
   });
 }
 
@@ -172,19 +166,6 @@ function plainInitLayers(
   initLayout(n, dim, dCoords, nodes);
   const h = computeHierarchy(graph, n, ABS_TOL, LEVELS_SEP_TOL, null);
   return h === null ? -1 : h;
-}
-
-/**
- * Euclidean distance between nodes `i` and `j` in `dim` dimensions.
- * @see lib/neatogen/kkutils.c:distance_kD
- */
-function distanceKD(coords: Float64Array[], dim: number, i: number, j: number): number {
-  let sum = 0;
-  for (let k = 0; k < dim; k++) {
-    const d = coords[k]![i]! - coords[k]![j]!;
-    sum = fma(d, d, sum);
-  }
-  return Math.sqrt(sum);
 }
 
 /**

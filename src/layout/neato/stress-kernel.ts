@@ -8,14 +8,15 @@
  * where C uses double/long double (long double == double on AArch64
  * macOS, where the reference SVGs were generated).
  *
- * smart_init (sparse subspace estimation) is not ported — no `start`
- * attr in the suite, so checkStart always yields INIT_RANDOM.
+ * The smart initial layout (sparse subspace estimation) is stress-subspace.ts;
+ * mode=hier reaches it. The default solver's start=self stays loud (start.ts).
  *
  * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
  * @see lib/neatogen/conjgrad.c:conjugate_gradient_mkernel
  */
 
 import type { Node } from '../../model/node.js';
+import { fma } from '../../common/fma.js';
 import { drand48 } from '../../common/random.js';
 import { bfs } from './bfs.js';
 import { dijkstra, type VtxData } from './dijkstra.js';
@@ -32,9 +33,17 @@ import {
   vectorsInnerProductF,
 } from './matrix-ops.js';
 import { fmaf } from './quad-prog-solve.js';
-import { OPT_EXP_FLAG, TOLERANCE_CG } from './stress.js';
+import { OPT_EXP_FLAG, OPT_SMART_INIT, TOLERANCE_CG } from './stress.js';
+import { sparseStressSubspaceMajorizationKD } from './stress-subspace.js';
 
 const fr = Math.fround;
+
+/** At most 50 iterations within the subspace. @see lib/neatogen/stress.c:stress_majorization_kD_mkernel */
+const SMART_SUBSPACE_ITERATIONS = 50;
+/** `num_pivots_stress` @see lib/neatogen/stress.h */
+const NUM_PIVOTS_STRESS = 40;
+/** The scale of the small random noise on a smart start. @see lib/neatogen/stress.c:stress_majorization_kD_mkernel */
+const SMART_NOISE = 1e-6;
 
 /**
  * Packed all-pairs shortest paths over unit weights (BFS hops).
@@ -239,6 +248,13 @@ function solveAxis(st: KernelState, k: number, havePinned: boolean, nodes: Node[
   return 0;
 }
 
+/** What the smart initial layout needs beyond the distances `Dij`. */
+export interface SmartInit {
+  graph: VtxData[];
+  /** `model == MODEL_SUBSET`. */
+  reweightGraph: boolean;
+}
+
 /** Options for stressMajorizationKDMkernel. */
 export interface StressOpts {
   dim: number;
@@ -247,6 +263,48 @@ export interface StressOpts {
   /** MODEL_* — only the resulting Dij matters here; pass it in. */
   maxi: number;
   epsilon: number;
+  /** Set by the callers whose C path reaches `opt_smart_init` (mode=hier). */
+  smart?: SmartInit;
+}
+
+/**
+ * Optimize quickly within a subspace to get an estimate, then scale each axis
+ * down for numerical stability and add small random noise. Returns -1 when the
+ * subspace optimization fails, else 0: a smart start pins nothing.
+ * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
+ */
+function smartLayout(
+  smart: SmartInit, n: number, dCoords: Float64Array[], o: StressOpts,
+): number {
+  const { dim } = o;
+  const iterations = sparseStressSubspaceMajorizationKD(smart.graph, n, dCoords, {
+    dim, exp: o.opts & OPT_EXP_FLAG, reweightGraph: smart.reweightGraph,
+    nIterations: SMART_SUBSPACE_ITERATIONS, numCenters: NUM_PIVOTS_STRESS, epsilon: o.epsilon,
+  });
+  if (iterations < 0) return -1;
+  for (let i = 0; i < dim; i++) {
+    const c = dCoords[i]!;
+    let max = 1;
+    for (let j = 0; j < n; j++) {
+      if (Math.abs(c[j]!) > max) max = Math.abs(c[j]!);
+    }
+    for (let j = 0; j < n; j++) c[j] = c[j]! / max;
+    for (let j = 0; j < n; j++) c[j] = fma(drand48() - 0.5, SMART_NOISE, c[j]!);
+    orthog1(n, c);
+  }
+  return 0;
+}
+
+/**
+ * The initial layout: `smart_ini && n > 1` takes the subspace estimate. Returns
+ * -1 on failure, else whether some node is pinned, as 0 or 1.
+ * @see lib/neatogen/stress.c:stress_majorization_kD_mkernel
+ */
+function initialLayout(n: number, dCoords: Float64Array[], nodes: Node[], o: StressOpts): number {
+  if (o.smart !== undefined && (o.opts & OPT_SMART_INIT) !== 0 && n > 1) {
+    return smartLayout(o.smart, n, dCoords, o);
+  }
+  return initLayout(n, o.dim, dCoords, nodes) ? 1 : 0;
 }
 
 /**
@@ -260,7 +318,9 @@ export function stressMajorizationKDMkernel(
   const { dim, maxi } = o;
   const exp = o.opts & OPT_EXP_FLAG;
   if (maxi < 0) return 0;
-  const havePinned = initLayout(n, dim, dCoords, nodes);
+  const layout = initialLayout(n, dCoords, nodes, o);
+  if (layout < 0) return -1;
+  const havePinned = layout === 1;
   if (n === 1 || maxi === 0) return 0;
 
   const coords: Float32Array[] = [];
@@ -290,7 +350,6 @@ export function stressMajorizationKDMkernel(
   for (; iterations < maxi && !converged; iterations++) {
     buildLap1(st.lap1, lap2, coords, { n, dim, exp, ops: st.ops });
     const newStress = computeStress(st);
-    if (typeof process !== 'undefined' && process.env['STRESS_DEBUG'] && iterations % 5 === 0) console.error(newStress.toFixed(3));
     const change = Math.abs(oldStress - newStress);
     converged = change / oldStress < o.epsilon || newStress < o.epsilon;
     oldStress = newStress;

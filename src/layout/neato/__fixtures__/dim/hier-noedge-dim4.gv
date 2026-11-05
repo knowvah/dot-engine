@@ -1,0 +1,10 @@
+graph G {
+  dim=4;
+  dimen=4;
+  mode=hier;
+  a [pos="0,0!"];
+  b [pos="2,0!"];
+  c [pos="0,3!"];
+  d [pos="4,4!"];
+  e [pos="1,5!"];
+}

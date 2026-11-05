@@ -1,0 +1,14 @@
+graph G {
+  dim=3;
+  dimen=3;
+  mode=hier;
+  hub -- s0;
+  hub -- s1;
+  hub -- s2;
+  hub -- s3;
+  hub -- s4;
+  hub -- s5;
+  hub -- s6;
+  hub -- s7;
+  hub -- s8;
+}

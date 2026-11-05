@@ -88,8 +88,19 @@ describe('stressMajorizationWithHierarchy failure returns', () => {
     expect([...dCoords[0]!]).not.toEqual([...reference[0]!]);
   });
 
-  it('stops at the (dim-1)-D seed layout of a 3-D layout: it is the unconstrained solver with smart init', () => {
-    expect(() => run({ ...OPTS, dim: 3 }, zeros(3))).toThrowError(/smart initial layout/);
+  it('returns -1 when the (dim-1)-D seed layout of a 3-D layout fails', () => {
+    vi.mocked(conjgradMkernel.conjugateGradientMkernelFused).mockReturnValueOnce(1);
+    expect(run({ ...OPTS, dim: 3 }, zeros(3))).toBe(FAILED);
     expect(vi.mocked(optArrangement.computeYCoords)).not.toHaveBeenCalled();
+  });
+
+  it('copies the seed layout\'s y into the last axis, then replaces y', () => {
+    const dCoords = zeros(3);
+    csrand(1);
+    expect(run({ ...OPTS, dim: 3, maxi: 0 }, dCoords)).toBe(0);
+    expect(vi.mocked(optArrangement.computeYCoords)).toHaveBeenCalledOnce();
+    expect(dCoords[2]!.some((v) => v !== 0)).toBe(true);
+    expect([...dCoords[1]!]).not.toEqual([...dCoords[2]!]);
+    expect(dCoords[0]!.every((v) => v === 0)).toBe(true); // x stays zero: IMDS is 2-D only
   });
 });

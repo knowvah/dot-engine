@@ -1,0 +1,33 @@
+graph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 174.35 189.35 174.35 189.35 0 ",
+		bb="0,0,189.35,174.35",
+		mode=hier,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	a	[_draw_="c 7 -#000000 e 162.35 93.36 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 162.35 89.16 0 6.21 1 -a ",
+		height=0.5,
+		pos="162.35,93.361",
+		width=0.75];
+	b	[_draw_="c 7 -#000000 e 27 119.88 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 115.68 0 7 1 -b ",
+		height=0.5,
+		pos="27,119.88",
+		width=0.75];
+	c	[_draw_="c 7 -#000000 e 104.09 156.35 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 104.09 152.15 0 6.21 1 -c ",
+		height=0.5,
+		pos="104.09,156.35",
+		width=0.75];
+	d	[_draw_="c 7 -#000000 e 120.96 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 120.96 13.8 0 7 1 -d ",
+		height=0.5,
+		pos="120.96,18",
+		width=0.75];
+	e	[_draw_="c 7 -#000000 e 37.36 34.15 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 37.36 29.95 0 6.21 1 -e ",
+		height=0.5,
+		pos="37.359,34.147",
+		width=0.75];
+}

@@ -1,0 +1,7 @@
+digraph G {
+  mode=hier;
+  a -> b [len=0.001];
+  b -> c [len=0.001];
+  c -> d [len=0.001];
+  a -> d [len=0.001];
+}

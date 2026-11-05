@@ -1,0 +1,15 @@
+graph G {
+	graph [bb="0,0,54,106.76",
+		dim=3,
+		dimen=3,
+		mode=hier
+	];
+	node [label="\N"];
+	a	[height=0.5,
+		pos="27,88.764,6.6431",
+		width=0.75];
+	b	[height=0.5,
+		pos="27,18,-6.6431",
+		width=0.75];
+	a -- b	[pos="27,70.54 27,60.057 27,46.922 27,36.408"];
+}

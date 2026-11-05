@@ -2,10 +2,9 @@
 /**
  * Neato `start` handling (setSeed / initRegular / checkStart) and the
  * fail-loud check for the neato init feature this port does not have (smart
- * init for the stress path). mode=hier runs `stress_majorization_with_hierarchy`;
- * its own unported smart-init fallback without a hierarchy is loud in
- * constrained-majorization.ts. mode=ipsep runs `stress_majorization_cola`, which
- * takes no smart init.
+ * init for the stress path). mode=hier runs `stress_majorization_with_hierarchy`,
+ * whose smart init is ported (stress-subspace.ts). mode=ipsep runs
+ * `stress_majorization_cola`, which takes no smart init.
  *
  * The loud check sits where neato's C branches into the unported code and
  * fires only for the mode whose C path reaches it (ADR-3).
@@ -21,6 +20,7 @@ import { registerRenderState } from '../../common/render-state.js';
 import {
   MODE_KK, MODE_MAJOR, MODE_HIER, MODE_IPSEP, MODE_SGD,
 } from './init.js';
+import { jitter3d, ndimOf } from './init-dim.js';
 import { agwarningf } from '../../common/agerr.js';
 
 /** @see lib/neatogen/neato.h:INIT_SELF */
@@ -82,10 +82,12 @@ export function parseStart(
 
 /**
  * Place the nodes on a regular polygon and mark them P_SET (positioned, not
- * pinned), so the stress kernel's initLayout starts from them.
+ * pinned), so the stress kernel's initLayout starts from them. Above 2-D the
+ * other coordinates are jittered, before checkStart's srand48.
  * @see lib/neatogen/neatoinit.c:initRegular
  */
 export function initRegular(g: Graph, nG: number): void {
+  const ndim = ndimOf(g);
   let a = 0.0;
   const da = (2 * Math.PI) / nG;
   for (const np of g.nodes.values()) {
@@ -93,6 +95,7 @@ export function initRegular(g: Graph, nG: number): void {
     np.info.posSet = true;
     np.info.pinned = false; // C: ND_pinned = P_SET overrides P_PIN
     a += da;
+    if (ndim > 2) jitter3d(np, nG, ndim);
   }
 }
 
