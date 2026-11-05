@@ -59,3 +59,21 @@
 - **Finding**: `mode=hier dim=3` with `len=0.001` dies by SIGBUS, SIGSEGV or SIGTRAP in 3 of 8 runs at 19 nodes and 8 of 8 at 27; 8 of 8 survive at 11, 38 and 58. The port renders and matches each surviving run.
 - **Impact**: a native crash on this path may be size-dependent; repeat before fixing a fixture on one run.
 - **Confidence**: High for the counts; the overrun's site is not proven
+
+## Observation: fdp's second layouts vary with heap addresses
+- **Context**: T14, `graphs-fdp` and `1581`.
+- **Finding**: `lib/fdpgen/layout.c:466,501,637` compare node pointers, so the first cycle's frees and ASLR choose derived-edge direction and port order. Twelve stock runs give 2 classes on `graphs-fdp` `plain` (1 and 11) and `1581` `dot` (8 and 4). `harness/T14/noaddr.patch` orders by `ND_id` behind `GVTS_NOADDR=1` and repeats 8 of 8.
+- **Impact**: repeat native before reading a second-render fdp miss as a port bug. Other fdp "process-global" rows may share this; only these two were measured.
+- **Confidence**: High for the two ids
+
+## Observation: a scratch plugin relink can write through a symlink
+- **Context**: T14, rebuilding the neato plugin.
+- **Finding**: relinking from `build/plugin/neato_layout/CMakeFiles/.../link.txt` with rebuilt `.o` files first works, with the gts path corrected to `/opt/homebrew/opt/gts`. Remove any symlink at the `-o` path first, or the link writes into the shared plugin dir.
+- **Impact**: an unremoved symlink would corrupt `ghl16-all`, the oracle's plugin dir.
+- **Confidence**: Medium (agent-reported)
+
+## Observation: Edit refuses a file holding a raw NUL
+- **Context**: T14, `src/layout/fdp/cluster-edges.ts`.
+- **Finding**: the file's `edgeKey` held a raw NUL, so Edit refused it, `grep` treats it as binary, and `git diff` shows no text without `-a`. It now uses `\0`.
+- **Impact**: other `src/` files with raw control bytes hide from `grep`; use `/usr/bin/grep -a`.
+- **Confidence**: High

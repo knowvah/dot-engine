@@ -1,0 +1,34 @@
+--- /Users/scottseely/git/graphviz/lib/fdpgen/layout.c	2026-10-12 09:19:16
++++ /private/tmp/claude-501/-Users-scottseely-git-knowvah-dot-engine/651ef5af-dfcd-42a8-846b-e2b51864f3ea/scratchpad/sc/B4/tr/src/layout.c	2026-11-05 10:52:06
+@@ -1,3 +1,4 @@
++#include <stdlib.h>
+ /*************************************************************************
+  * Copyright (c) 2011 AT&T Intellectual Property 
+  * All rights reserved. This program and the accompanying materials
+@@ -463,7 +464,7 @@
+ 	    hd = DNODE(aghead(e));
+ 	    if (hd == tl)
+ 		continue;
+-	    if (hd > tl)
++	    if (getenv("GVTS_NOADDR") ? ND_id(hd) > ND_id(tl) : hd > tl)
+ 		de = agedge(dg, tl, hd, NULL,1);
+ 	    else
+ 		de = agedge(dg, hd, tl, NULL,1);
+@@ -498,7 +499,7 @@
+ 		dn = mkDeriveNode(dg, portName(g, pp, &portname));
+ 		sz++;
+ 		ND_id(dn) = id++;
+-		if (dn > m)
++		if (getenv("GVTS_NOADDR") ? ND_id(dn) > ND_id(m) : dn > m)
+ 		    de = agedge(dg, m, dn, NULL,1);
+ 		else
+ 		    de = agedge(dg, dn, m, NULL,1);
+@@ -631,7 +632,7 @@
+     delta = fmin((bnd - er->alpha) / cnt, ANG);
+     angle = er->alpha;
+ 
+-    if (n < other) {
++    if (getenv("GVTS_NOADDR") ? ND_id(n) < ND_id(other) : n < other) {
+ 	i = idx;
+ 	inc = 1;
+     } else {
