@@ -122,29 +122,31 @@ describe('dotInitNode', () => {
     expect(n.info.node_type).toBe(0);
   });
 
-  it('preserves pre-existing edge lists and sizes, including a legitimate 0', () => {
+  it('allocates new, empty edge lists unconditionally, as alloc_elist does', () => {
     const g = makeGraph();
     const n = makeNode(g, 0, 'a');
-    const sentinelIn = { list: [], size: 5 };
-    const sentinelOut = { list: [], size: 6 };
-    const sentinelFlatIn = { list: [], size: 7 };
-    const sentinelFlatOut = { list: [], size: 8 };
-    const sentinelOther = { list: [], size: 9 };
-    n.info.in = sentinelIn;
-    n.info.out = sentinelOut;
-    n.info.flat_in = sentinelFlatIn;
-    n.info.flat_out = sentinelFlatOut;
-    n.info.other = sentinelOther;
+    const stale = { list: [makeEdge(n, makeNode(g, 1, 'x'))], size: 5 };
+    n.info.in = { ...stale };
+    n.info.out = { ...stale, size: 6 };
+    n.info.flat_in = { ...stale, size: 7 };
+    n.info.flat_out = { ...stale, size: 8 };
+    n.info.other = { ...stale, size: 9 };
+    const before = [n.info.in, n.info.out, n.info.flat_in, n.info.flat_out, n.info.other];
+    dotInitNode(n);
+    const after = [n.info.in, n.info.out, n.info.flat_in, n.info.flat_out, n.info.other];
+    expect(after).toEqual(Array.from({ length: 5 }, () => ({ list: [], size: 0 })));
+    expect(after.map((l, i) => l === before[i])).toEqual([false, false, false, false, false]);
+    expect(new Set(after).size).toBe(5);
+  });
+
+  it('keeps a computed size, including a legitimate 0, since gv_nodesize set it', () => {
+    const g = makeGraph();
+    const n = makeNode(g, 0, 'a');
     // shape=plain nodes legitimately compute lw=rw=ht=0; must not be clobbered.
     n.info.lw = 0;
     n.info.rw = 0;
     n.info.ht = 0;
     dotInitNode(n);
-    expect(n.info.in).toBe(sentinelIn);
-    expect(n.info.out).toBe(sentinelOut);
-    expect(n.info.flat_in).toBe(sentinelFlatIn);
-    expect(n.info.flat_out).toBe(sentinelFlatOut);
-    expect(n.info.other).toBe(sentinelOther);
     expect(n.info.lw).toBe(0);
     expect(n.info.rw).toBe(0);
     expect(n.info.ht).toBe(0);

@@ -98,11 +98,11 @@ export const CL_CROSS = 1000;
  */
 export function dotInitNode(n: Node): void {
   n.info.UF_size = 1;
-  if (!n.info.in)       n.info.in       = { list: [], size: 0 };
-  if (!n.info.out)      n.info.out      = { list: [], size: 0 };
-  if (!n.info.flat_in)  n.info.flat_in  = { list: [], size: 0 };
-  if (!n.info.flat_out) n.info.flat_out = { list: [], size: 0 };
-  if (!n.info.other)    n.info.other    = { list: [], size: 0 };
+  n.info.in       = { list: [], size: 0 };
+  n.info.out      = { list: [], size: 0 };
+  n.info.flat_in  = { list: [], size: 0 };
+  n.info.flat_out = { list: [], size: 0 };
+  n.info.other    = { list: [], size: 0 };
   // Default lw = rw = 0.75in/2 × 72 = 27 pts; ht = 0.5in × 72 = 36 pts. C's
   // dot_init_node has no such fallback (gv_nodesize always sets a size); this is
   // only a guard for a node that reached here UNSIZED. Test `=== undefined`, not
@@ -224,10 +224,7 @@ export function dotInitSubg(g: Graph): void {
 // ---------------------------------------------------------------------------
 
 /**
- * Drops a node's fast-graph lists. dot_init_node allocates new ones
- * unconditionally, and dot_cleanup frees them, so neither a later layout nor a
- * layout with no gvFreeLayout before it reads the previous layout's edges.
- * @see lib/dotgen/dotinit.c:dot_init_node (alloc_elist)
+ * Drops a node's fast-graph lists, as dot_cleanup frees them.
  * @see lib/dotgen/dotinit.c:dot_cleanup_node (free_list)
  */
 function clearFastGraphLists(n: Node): void {
@@ -248,7 +245,6 @@ function clearFastGraphLists(n: Node): void {
 export function dotInitNodeEdge(g: Graph): void {
   for (const n of nodesInSeq(g)) {
     commonInitNode(n, g);
-    clearFastGraphLists(n); // C's alloc_elist does not keep the lists it replaces
     dotInitNode(n);
   }
   const measurer = g.root.info.gvc?.textMeasurer;
