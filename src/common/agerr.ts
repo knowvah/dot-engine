@@ -13,6 +13,10 @@
  * joined line printed on the held line's channel. A held line is flushed on
  * its own by {@link agerrLineOn}/{@link agerrFinished} and by render-state
  * reset.
+ *
+ * A caller-set {@link agseterrf} function replaces the console as C's
+ * `usererrf` replaces `default_usererrf`: it receives the raw pieces `out`
+ * writes, and no line is held.
  */
 
 import { registerRenderState } from './render-state.js';
@@ -44,6 +48,31 @@ let lastLevel: 'error' | 'warning' = 'warning';
  * Cleared by {@link flushPending}; reset per render.
  */
 const pending: { line: string | null; channel: AgerrChannel } = { line: null, channel: 'warn' };
+
+/**
+ * C's `agusererrf`: called with each piece of a message as `out` writes it.
+ * The return value is ignored, as C ignores it.
+ * @see lib/cgraph/cgraph.h:agusererrf
+ */
+export type AgUserErrF = (message: string) => number | void;
+
+/**
+ * The user-set error function, or null for the console. Process-wide and not
+ * reset per render, as C's `usererrf` static is not.
+ * @see lib/cgraph/agerror.c:usererrf
+ */
+let usererrf: AgUserErrF | null = null;
+
+/**
+ * Set the function that receives engine messages in place of the console;
+ * null restores the console. Returns the previous function.
+ * @see lib/cgraph/agerror.c:agseterrf
+ */
+export function agseterrf(newf: AgUserErrF | null): AgUserErrF | null {
+  const oldf = usererrf;
+  usererrf = newf;
+  return oldf;
+}
 
 registerRenderState(() => {
   flushPending();
@@ -84,7 +113,8 @@ function flushPending(): void {
 }
 
 function writeLine(channel: AgerrChannel, line: string): void {
-  if (channel === 'warn') console.warn(escapeControl(line));
+  if (usererrf !== null) usererrf(`${line}\n`);
+  else if (channel === 'warn') console.warn(escapeControl(line));
   else console.error(escapeControl(line));
 }
 
@@ -93,6 +123,19 @@ function assemble(level: AgerrLevel, msg: string): string {
   if (level === 'prev') return msg;
   const prefix = level === 'error' ? PREFIX_ERROR : PREFIX_WARNING;
   return `${prefix}${PREFIX_SEP}${msg}`;
+}
+
+/**
+ * `out` with a user function: the prefix and `": "` (none for AGPREV), then
+ * the message, each as its own call.
+ * @see lib/cgraph/agerror.c:out
+ */
+function outToUser(errf: AgUserErrF, level: AgerrLevel, msg: string): void {
+  if (level !== 'prev') {
+    errf(level === 'error' ? PREFIX_ERROR : PREFIX_WARNING);
+    errf(PREFIX_SEP);
+  }
+  errf(msg);
 }
 
 /** Console channel of a message; AGPREV continues the previous level's. */
@@ -108,6 +151,11 @@ function channelOf(level: AgerrLevel): AgerrChannel {
 function emit(level: AgerrLevel, msg: string, channel: AgerrChannel | undefined, hold: boolean): void {
   const target = channel ?? channelOf(level);
   if (level !== 'prev') lastLevel = level;
+  if (usererrf !== null) {
+    flushPending();
+    outToUser(usererrf, level, hold ? msg : `${msg}\n`);
+    return;
+  }
   const text = assemble(level, msg);
   if (pending.line === null) {
     pending.channel = target;

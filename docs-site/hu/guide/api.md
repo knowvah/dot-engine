@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API-referencia
@@ -186,6 +186,40 @@ esik vissza, mintha nem lenne regisztrált feloldó. A feloldó regisztrálásá
 opciója `true` (lásd lent). Egy kidolgozott példát a [Munka
 képekkel](/hu/guide/images) mutat, mindkét visszahívástípust pedig a
 [Referencia](/reference/).
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+A Graphviz a figyelmeztetéseit és hibáit a stderr-re írja, például
+`Warning: table size too small for content`. Alapértelmezés szerint a könyvtár a
+konzolra írja őket: a figyelmeztetéseket a `console.warn`, a hibákat a
+`console.error` segítségével. Az `agseterrf` ehelyett az Ön függvényének adja át
+őket, ahogy a cgraph `agseterrf` függvénye is. Visszaadja a lecserélt függvényt,
+a `null` pedig visszaállítja a konzolt.
+
+A függvény minden üzenetet darabokban kap, úgy, ahogy a Graphviz írja:
+`"Warning"` vagy `"Error"`, majd `": "`, végül a szöveg a sorvéggel együtt. A
+folytatósornak nincs előtagja. A darabok összefűzésével megkapjuk azt a
+szöveget, amelyet a natív `dot` a stderr-re ír. A szöveg escape-elés nélkül
+érkezik; csak a konzolos út escape-eli a vezérlőkaraktereket. A beállítás
+folyamatszintű, és a renderelések között is megmarad. Azok az üzenetek,
+amelyeket a natív Graphviz a hiba-API-ján kívül ír, például az ortho
+trapéz-hibái, továbbra is a konzolra kerülnek.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

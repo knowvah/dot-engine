@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: EPL-2.0
-import { describe, it, expect } from 'vitest';
-import { renderSvg, tryRenderSvg, RenderError, ParseError } from './index.js';
+import { describe, it, expect, vi } from 'vitest';
+import { renderSvg, tryRenderSvg, RenderError, ParseError, agseterrf } from './index.js';
 
 const VALID = 'digraph { a -> b }';
 
@@ -60,5 +60,26 @@ describe('exports', () => {
   it('re-exports ParseError and RenderError', () => {
     expect(new ParseError('x', 'SYNTAX_ERROR', { line: 1, column: 1 })).toBeInstanceOf(Error);
     expect(new RenderError('x')).toBeInstanceOf(Error);
+  });
+});
+
+describe('agseterrf (plantuml-ts 42)', () => {
+  // Native 16.1.0 stderr for this graph, `dot -Tsvg`, 2026-11-06.
+  const TOO_SMALL = 'digraph{a[shape=plaintext,label=<<TABLE FIXEDSIZE="TRUE" WIDTH="5" '
+    + 'HEIGHT="5"><TR><TD>long text</TD></TR></TABLE>>]}';
+  const NATIVE_STDERR = 'Warning: table size too small for content\nin label of node a\n';
+
+  it('takes engine messages off the console and gives them to the caller', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const got: string[] = [];
+    agseterrf((m) => { got.push(m); });
+    try {
+      renderSvg(TOO_SMALL, 'dot');
+    } finally {
+      agseterrf(null);
+      warn.mockRestore();
+    }
+    expect(got.join('')).toBe(NATIVE_STDERR);
+    expect(warn).not.toHaveBeenCalled();
   });
 });

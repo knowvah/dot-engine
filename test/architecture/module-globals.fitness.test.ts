@@ -70,6 +70,8 @@ const ALLOWLIST: Readonly<Record<string, string>> = {
     'clusterrank type; registered render-state reset to LOCAL (rank.ts:58 registerRenderState) and set before read from the clusterrank attr in graph initialization (graph-init.ts:330 setClType)',
 
   // --- Caller/debug hooks, one-time latches, DI wiring — not per-render state ---
+  'src/common/agerr.ts::usererrf':
+    "caller hook: cgraph's usererrf, set via agseterrf; process-wide and not reset per render, as C's static is not (shared config, last-write-wins by design)",
   'src/gvc/usershape.ts::activeSizer':
     'caller hook: process-wide image-sizer DI set via setImageSizer; rendering only reads it (shared config, last-write-wins by design)',
   'src/gvc/image-resolver.ts::activeResolver':

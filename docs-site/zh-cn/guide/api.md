@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API 参考
@@ -96,6 +96,28 @@ function setImageResolver(fn: ImageResolver | null): void;
 ```
 
 `ImageResolver` 可以返回裸的 `Uint8Array`（MIME 由 `src` 的文件扩展名推断——`.png`、`.jpg`/`.jpeg`、`.gif`、`.svg`、`.webp`；其他一律回退为 `application/octet-stream`），也可以返回 `{ bytes, mime }` 来显式设置 MIME 类型。当无法解析 `src` 时返回 `null`——渲染器会回退为原样透传 `src`，与未注册 resolver 时相同。注册 resolver 本身没有任何效果；只有当 `render` 的 `inlineImages` 选项为 `true`（见下文）时才会查询它。完整的示例参见[使用图像](/zh-cn/guide/images)，两种回调类型参见[参考](/reference/)。
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz 会把警告和错误输出到 stderr，例如 `Warning: table size too small for content`。默认情况下，库会把它们写入控制台：警告使用 `console.warn`，错误使用 `console.error`。`agseterrf` 则改为把它们交给你的函数，与 cgraph 的 `agseterrf` 一致。它返回被替换的函数，传入 `null` 会恢复控制台。
+
+函数会按 Graphviz 写出的片段接收每条消息：`"Warning"` 或 `"Error"`，然后是 `": "`，最后是带行尾的文本。续行没有前缀。把这些片段拼接起来，就得到原生 `dot` 输出到 stderr 的文本。文本以未转义的形式传入；只有控制台路径会转义控制字符。该设置作用于整个进程，并在多次渲染之间保持。原生 Graphviz 在其错误 API 之外写出的消息（例如 ortho 的梯形失败）仍然输出到控制台。
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

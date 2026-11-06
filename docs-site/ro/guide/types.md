@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Referință de tipuri
@@ -384,6 +384,19 @@ externe, consultat când `RenderOptions.inlineImages` este `true`. O returnare
 de `Uint8Array` simplu deduce tipul MIME din extensia fișierului din `src`.
 `null` (de la resolver sau fără resolver înregistrat) revine la trecerea brută
 a lui `src`. Consultați [Lucrul cu imagini](/ro/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Primește mesajele de avertisment și de eroare ale Graphviz în locul consolei, în
+bucățile pe care Graphviz nativ le scrie pe stderr. Valoarea returnată este
+ignorată. `agseterrf` returnează funcția anterioară; `null` restabilește
+consola. Vezi [`agseterrf`](/ro/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

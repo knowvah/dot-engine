@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API-referanse
@@ -178,6 +178,40 @@ registrert. Å registrere en resolver har ingen effekt i seg selv; den
 konsulteres bare når `inlineImages`-valget til `render` er `true` (under). Se
 [Arbeid med bilder](/no/guide/images) for et gjennomarbeidet eksempel og
 [Referanse](/reference/) for begge callback-typene.
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz skriver advarsler og feil til stderr, for eksempel
+`Warning: table size too small for content`. Som standard skriver biblioteket
+dem til konsollen: advarsler med `console.warn`, feil med `console.error`.
+`agseterrf` sender dem i stedet til funksjonen din, slik cgraphs `agseterrf`
+gjør. Den returnerer funksjonen den erstatter, og `null` gjenoppretter
+konsollen.
+
+Funksjonen får hver melding i de delene Graphviz skriver: `"Warning"` eller
+`"Error"`, deretter `": "`, og så teksten med linjeslutten. En
+fortsettelseslinje har ingen prefiks. Setter man delene sammen, får man teksten
+som native `dot` skriver til stderr. Teksten sendes uten escaping; bare
+konsollveien escaper kontrolltegn. Innstillingen gjelder for hele prosessen og
+består på tvers av gjengivelser. Meldinger som native Graphviz skriver utenom
+feil-API-et sitt, for eksempel ortho sine trapesfeil, går fortsatt til
+konsollen.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

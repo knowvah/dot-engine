@@ -634,8 +634,8 @@ describe('a second render on a graph with an edge to a cluster', () => {
     expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edge-splines.fdp.plain.1'));
     expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edge-splines.fdp.plain.2'));
     expect(warn.mock.calls.map((c) => String(c[0]))).toEqual([
-      'splines and cluster edges not supported - using line segments',
-      'splines and cluster edges not supported - using line segments',
+      'Warning: splines and cluster edges not supported - using line segments',
+      'Warning: splines and cluster edges not supported - using line segments',
     ]);
     warn.mockRestore();
   });

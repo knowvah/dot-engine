@@ -369,6 +369,19 @@ its MIME type from the `src` file extension. `null` (from the resolver, or no
 resolver registered) falls back to the raw `src` passthrough. See
 [Working with images](/guide/images).
 
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Receives Graphviz's warning and error messages in place of the console, in
+the pieces native Graphviz writes to stderr. The return value is ignored.
+`agseterrf` returns the previous function; `null` restores the console. See
+[`agseterrf`](/guide/api#agseterrf).
+
 ### `TextMeasurer` / `TextSize`
 
 ```ts

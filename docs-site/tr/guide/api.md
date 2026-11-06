@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API referansı
@@ -181,6 +181,39 @@ geçirmeye geri döner. Bir çözümleyici kaydetmek tek başına bir etki yarat
 yalnızca `render`'ın `inlineImages` seçeneği `true` olduğunda başvurulur
 (aşağıda). Çalışılmış bir örnek için [Görsellerle çalışma](/tr/guide/images),
 her iki geri çağırma türü için [Referans](/reference/) bölümüne bakın.
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz uyarılarını ve hatalarını stderr'e yazar, örneğin
+`Warning: table size too small for content`. Varsayılan olarak kütüphane bunları
+konsola yazar: uyarıları `console.warn` ile, hataları `console.error` ile.
+`agseterrf`, cgraph'ın `agseterrf` işlevinin yaptığı gibi bunları bunun yerine
+sizin işlevinize gönderir. Değiştirdiği işlevi döndürür; `null` konsolu geri
+yükler.
+
+İşlev her iletiyi Graphviz'in yazdığı parçalar halinde alır: `"Warning"` veya
+`"Error"`, ardından `": "`, sonra satır sonuyla birlikte metin. Devam satırının
+öneki yoktur. Parçalar birleştirildiğinde yerel `dot`'un stderr'e yazdığı metin
+elde edilir. Metin kaçışsız olarak iletilir; denetim karakterlerini yalnızca
+konsol yolu kaçışlar. Ayar süreç genelindedir ve oluşturmalar boyunca kalıcıdır.
+Yerel Graphviz'in hata API'sinin dışında yazdığı iletiler, örneğin ortho'nun
+yamuk hataları, yine konsola gider.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

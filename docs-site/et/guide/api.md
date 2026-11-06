@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API teatmik
@@ -176,6 +176,38 @@ registreeritud. Resolveri registreerimine ei mõjuta iseenesest midagi; seda
 küsitakse ainult siis, kui `render`-i valik `inlineImages` on `true` (allpool).
 Töönäite kohta vt [Piltidega töötamine](/et/guide/images) ning mõlema
 tagasikutse tüübi kohta [Teatmik](/reference/).
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz kirjutab oma hoiatused ja vead stderr-i, näiteks
+`Warning: table size too small for content`. Vaikimisi kirjutab teek need
+konsooli: hoiatused meetodiga `console.warn`, vead meetodiga `console.error`.
+`agseterrf` suunab need hoopis teie funktsioonile, nagu teeb cgraphi
+`agseterrf`. See tagastab asendatud funktsiooni ja `null` taastab konsooli.
+
+Funktsioon saab iga teate tükkidena, nii nagu Graphviz need kirjutab:
+`"Warning"` või `"Error"`, seejärel `": "` ja siis tekst koos reavahetusega.
+Jätkurea ees pole prefiksit. Tükkide ühendamisel saadakse tekst, mille natiivne
+`dot` stderr-i kirjutab. Tekst antakse edasi ilma põgenduseta; juhtmärke
+põgenetakse ainult konsooliteel. Säte kehtib kogu protsessile ja säilib
+renderduste vahel. Teated, mida natiivne Graphviz kirjutab oma veateegist mööda,
+näiteks ortho trapetsite tõrked, lähevad endiselt konsooli.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

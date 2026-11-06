@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API-referentie
@@ -184,6 +184,40 @@ zichzelf geen effect; hij wordt alleen geraadpleegd wanneer de optie
 `inlineImages` van `render` `true` is (hieronder). Zie
 [Werken met afbeeldingen](/nl/guide/images) voor een uitgewerkt voorbeeld en
 [Referentie](/reference/) voor beide callbacktypen.
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz schrijft zijn waarschuwingen en fouten naar stderr, bijvoorbeeld
+`Warning: table size too small for content`. Standaard schrijft de bibliotheek
+ze naar de console: waarschuwingen met `console.warn`, fouten met
+`console.error`. `agseterrf` stuurt ze in plaats daarvan naar uw functie, zoals
+`agseterrf` van cgraph dat doet. Het geeft de vervangen functie terug, en `null`
+herstelt de console.
+
+De functie ontvangt elk bericht in de stukken die Graphviz schrijft: `"Warning"`
+of `"Error"`, dan `": "`, dan de tekst met zijn regeleinde. Een vervolgregel
+heeft geen voorvoegsel. Door de stukken samen te voegen krijgt u de tekst die
+het native `dot` naar stderr schrijft. De tekst wordt zonder escaping
+doorgegeven; alleen het consolepad escapet stuurtekens. De instelling geldt voor
+het hele proces en blijft behouden over renders heen. Berichten die het native
+Graphviz buiten zijn fout-API om schrijft, zoals de trapeziumfouten van ortho,
+gaan nog steeds naar de console.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

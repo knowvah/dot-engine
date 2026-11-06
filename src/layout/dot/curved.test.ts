@@ -148,8 +148,9 @@ it('curved: warns but still routes with edge labels (ADR-3, no downgrade)', () =
   const rc = dotSplines_(g, true);
 
   expect(rc).toBe(0);
+  // Native 16.1.0 stderr: agwarningf's prefix, one line.
   expect(warn).toHaveBeenCalledWith(
-    expect.stringContaining('splines=curved not supported'),
+    'Warning: edge labels with splines=curved not supported in dot - use xlabels',
   );
   expect(e.info.spl).toBeDefined(); // still routed (not downgraded/skipped)
   warn.mockRestore();

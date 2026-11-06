@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # Riferimento API
@@ -186,6 +186,40 @@ non ha effetto di per sé; viene consultato solo quando l'opzione `inlineImages`
 di `render` è `true` (sotto). Vedi [Lavorare con le immagini](/it/guide/images)
 per un esempio completo e il [Riferimento](/reference/) per entrambi i tipi di
 callback.
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz scrive avvisi ed errori su stderr, ad esempio
+`Warning: table size too small for content`. Per impostazione predefinita la
+libreria li scrive sulla console: gli avvisi con `console.warn`, gli errori con
+`console.error`. `agseterrf` li invia invece alla vostra funzione, come fa
+`agseterrf` di cgraph. Restituisce la funzione che sostituisce, e `null`
+ripristina la console.
+
+La funzione riceve ogni messaggio nei frammenti che Graphviz scrive: `"Warning"`
+oppure `"Error"`, poi `": "`, poi il testo con il suo fine riga. Una riga di
+continuazione non ha prefisso. Unendo i frammenti si ottiene il testo che il
+`dot` nativo stampa su stderr. Il testo viene passato senza escape; solo il
+percorso della console applica l'escape ai caratteri di controllo.
+L'impostazione vale per l'intero processo e persiste tra un rendering e l'altro.
+I messaggi che Graphviz nativo scrive al di fuori della sua API degli errori,
+come i fallimenti dei trapezi di ortho, vanno ancora alla console.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

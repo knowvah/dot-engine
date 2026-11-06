@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # 型リファレンス
@@ -289,6 +289,16 @@ function setImageResolver(fn: ImageResolver | null): void;
 ```
 
 外部画像の生のバイト列を返すコールバックを登録します。`RenderOptions.inlineImages` が `true` のときに参照されます。素の `Uint8Array` を返すと、MIME タイプは `src` のファイル拡張子から推測されます。`null`（リゾルバーが返した場合、またはリゾルバーが登録されていない場合）は、生の `src` をそのまま通す動作に戻ります。[画像の扱い](/ja/guide/images)を参照してください。
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+コンソールの代わりに、Graphviz の警告メッセージとエラーメッセージを、ネイティブの Graphviz が stderr に書き出す単位のまま受け取ります。戻り値は無視されます。`agseterrf` は以前の関数を返し、`null` でコンソールに戻ります。[`agseterrf`](/ja/guide/api#agseterrf)を参照してください。
 
 ### `TextMeasurer` / `TextSize`
 

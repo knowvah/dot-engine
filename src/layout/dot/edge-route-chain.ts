@@ -13,7 +13,7 @@
 
 import type { Graph } from '../../model/graph.js';
 import type { Edge as GraphEdge } from '../../model/edge.js';
-import type { Point, Box } from '../../model/geom.js';
+import type { Point, Box, Port } from '../../model/geom.js';
 import type { Node } from '../../model/node.js';
 import { VIRTUAL, NORMAL } from './fastgr.js';
 import type { NodeBox } from './edge-route-geom.js';
@@ -229,6 +229,77 @@ function routeChainSegmented(
   return finishChain(w, endEdge, segs[ei], segFirst, segs) ? w.pts : null;
 }
 
+// ---------------------------------------------------------------------------
+// Hackflag views for an edge routed on another edge's chain
+// @see lib/dotgen/dotsplines.c:make_regular_edge (abs(rank diff) > 1)
+// ---------------------------------------------------------------------------
+
+/** A port copied by value, as C's struct assignment copies `port`. */
+function copyPort(p: Port): Port {
+  return { ...p, p: { ...p.p } };
+}
+
+/**
+ * C's `fwdedgea`: a copy of `e` from its rank-low end to the first vnode of the
+ * chain, head port undefined at (0,0), VIRTUAL with `to_orig = e`. beginpath's
+ * side-port clip reset therefore lands on `e` itself.
+ */
+function hackflagBeginView(e: GraphEdge, back: boolean, firstVnode: Node): GraphEdge {
+  const tailPort = back ? e.info.head_port : e.info.tail_port;
+  return {
+    ...e,
+    tail: back ? e.head : e.tail,
+    head: firstVnode,
+    info: {
+      ...e.info,
+      tail_port: copyPort(tailPort),
+      head_port: { ...copyPort(e.info.head_port), defined: false, p: { x: 0, y: 0 } },
+      edge_type: VIRTUAL,
+      to_orig: e,
+    },
+  } as GraphEdge;
+}
+
+/**
+ * C's `fwdedgeb`: for a back edge, `makefwdedge(e)` (VIRTUAL, `to_orig = e`);
+ * otherwise a plain struct copy of `e` that stays NORMAL, so endpath's
+ * side-port clip reset lands on the copy and `e` keeps its head clip.
+ */
+function hackflagEndView(e: GraphEdge, back: boolean): GraphEdge {
+  if (back) return makeFwdEdge(e);
+  return {
+    ...e,
+    info: { ...e.info, tail_port: copyPort(e.info.tail_port), head_port: copyPort(e.info.head_port) },
+  } as GraphEdge;
+}
+
+/**
+ * The edges that drive the chain's first beginpath and last endpath. A chain
+ * owned by `e` itself is C's ordinary walk from the first to the last fast
+ * edge. A chain owned by another edge means class2 merged `e` into it
+ * (`merge_chain`), so `e` sits in ND_other and C's group loop hands the real
+ * edge to make_regular_edge, which takes the hackflag branch: beginpath on
+ * `fwdedgea`, endpath on `fwdedgeb`. Driving those calls with the owner's
+ * segments reset the owner's clip flags instead of `e`'s (plantuml-ts 41).
+ * @see lib/dotgen/dotsplines.c:make_regular_edge (hackflag)
+ * @see lib/dotgen/class2.c:class2 (merge_chain, other_edge)
+ */
+function chainEnds(e: GraphEdge, segs: GraphEdge[]): [GraphEdge, GraphEdge] {
+  const first = segs[0];
+  const last = segs[segs.length - 1];
+  const orig = resolveOrigEdge(e);
+  if (resolveOrigEdge(first) === orig) return [first, last];
+  const back = (orig.head.info.rank ?? 0) < (orig.tail.info.rank ?? 0);
+  return [hackflagBeginView(orig, back, first.head), hackflagEndView(orig, back)];
+}
+
+/** True when `e` runs forward across two or more ranks of a ranked graph. */
+function spansRanksForward(g: Graph, e: GraphEdge): boolean {
+  const r = e.tail.info.rank;
+  const rh = e.head.info.rank;
+  return g.info.rank !== undefined && r !== undefined && rh !== undefined && rh > r + 1;
+}
+
 /**
  * Route a forward edge spanning ≥2 ranks via its virtual-node chain through the
  * faithful pipeline (REGULAREDGE side boxes steer the port, routeSplines over
@@ -240,9 +311,7 @@ function routeChainSegmented(
  * @see lib/dotgen/dotsplines.c:make_regular_edge (hackflag forward path)
  */
 export function routeMultiRankEdgeFaithful(g: Graph, e: GraphEdge): Point[] | null | 'lost' {
-  const r = e.tail.info.rank;
-  const rh = e.head.info.rank;
-  if (g.info.rank === undefined || r === undefined || rh === undefined || rh <= r + 1) return null;
+  if (!spansRanksForward(g, e)) return null;
   const et = edgeType(g);
   // EDGETYPE_LINE: C tries makeLineEdge first (direct tail→head segment),
   // falling back to the box corridor only when it declines (delr==1, or delr==2
@@ -261,8 +330,10 @@ export function routeMultiRankEdgeFaithful(g: Graph, e: GraphEdge): Point[] | nu
   // endpath with the LAST (each carries the orig's copied port, so a dyna
   // record port resolves toward the adjacent-rank vnode, not the far real
   // endpoint). @see lib/dotgen/dotsplines.c:make_regular_edge (tn/hn walk),
-  // lib/dotgen/fastgr.c:new_virtual_edge (port copies)
-  return routeChainSegmented(g, segs[0], segs[segs.length - 1], segs) ?? 'lost';
+  // lib/dotgen/fastgr.c:new_virtual_edge (port copies). An edge merged into
+  // another's chain takes the hackflag views instead (chainEnds).
+  const [beginEdge, endEdge] = chainEnds(e, segs);
+  return routeChainSegmented(g, beginEdge, endEdge, segs) ?? 'lost';
 }
 
 /**
@@ -415,7 +486,8 @@ export function routeBackEdge(e: GraphEdge, _tailBox: NodeBox, _headBox: NodeBox
   // (fastgr new_virtual_edge copy rules); fwdEdge remains the clip target so
   // bezier_clip keeps the load-bearing forward direction (1644).
   // @see lib/dotgen/dotsplines.c:make_regular_edge (segfirst/tn/hn walk)
-  const fwd = routeChainSegmented(g, segs[0], segs[segs.length - 1], segs);
+  const [beginEdge, endEdge] = chainEnds(e, segs);
+  const fwd = routeChainSegmented(g, beginEdge, endEdge, segs);
   // Chain routing failed: C's make_regular_edge returns with no spline and
   // dot_splines_ never revisits the edge — mark it consumed so the backstop
   // sweep does not re-route (and re-report) it.

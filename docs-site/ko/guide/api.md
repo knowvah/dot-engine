@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API 참고 자료
@@ -167,6 +167,35 @@ function setImageResolver(fn: ImageResolver | null): void;
 `inlineImages` 옵션이 `true`일 때만 참조됩니다(아래). 실제 예제는
 [이미지 다루기](/ko/guide/images)를, 두 콜백 타입은 [참고 자료](/reference/)를
 참조하세요.
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz는 경고와 오류를 stderr에 출력합니다. 예를 들면
+`Warning: table size too small for content` 같은 것입니다. 기본적으로 라이브러리는 이를 콘솔에 기록합니다.
+경고는 `console.warn`, 오류는 `console.error`를 사용합니다. `agseterrf`는 cgraph의
+`agseterrf`처럼 이를 대신 사용자 함수로 보냅니다. 대체한 함수를 반환하며, `null`을 전달하면 콘솔로 복원됩니다.
+
+함수는 Graphviz가 기록하는 조각 단위로 각 메시지를 받습니다. `"Warning"` 또는 `"Error"`, 그다음 `": "`,
+마지막으로 줄 끝이 붙은 텍스트입니다. 이어지는 줄에는 접두사가 없습니다. 조각을 이어 붙이면 네이티브 `dot`이 stderr에 출력하는
+텍스트가 됩니다. 텍스트는 이스케이프 없이 전달되며, 제어 문자를 이스케이프하는 것은 콘솔 경로뿐입니다. 이 설정은 프로세스 전체에 적용되고
+여러 번의 렌더링에 걸쳐 유지됩니다. 네이티브 Graphviz가 오류 API 밖에서 기록하는 메시지(예: ortho의 사다리꼴 실패)는 여전히
+콘솔로 출력됩니다.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

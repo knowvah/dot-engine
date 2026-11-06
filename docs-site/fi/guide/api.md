@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API-viite
@@ -187,6 +187,39 @@ ole yksinään vaikutusta; sitä käytetään vain, kun `render`-funktion
 `inlineImages`-valitsin on `true` (alla). Katso
 [Kuvien käyttö](/fi/guide/images) esimerkkitoteutuksesta ja
 [Viite](/reference/) molempien takaisinkutsutyyppien osalta.
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz tulostaa varoituksensa ja virheensä stderriin, esimerkiksi
+`Warning: table size too small for content`. Oletuksena kirjasto kirjoittaa ne
+konsoliin: varoitukset metodilla `console.warn` ja virheet metodilla
+`console.error`. `agseterrf` ohjaa ne sen sijaan omalle funktiollesi, kuten
+cgraphin `agseterrf`. Se palauttaa korvaamansa funktion, ja `null` palauttaa
+konsolin.
+
+Funktio saa jokaisen viestin osissa, joissa Graphviz sen kirjoittaa: `"Warning"`
+tai `"Error"`, sitten `": "` ja lopuksi teksti rivinvaihtoineen. Jatkorivillä ei
+ole etuliitettä. Osat yhdistämällä saadaan teksti, jonka natiivi `dot` tulostaa
+stderriin. Teksti välitetään ilman escape-merkintää; vain konsolipolku
+käsittelee ohjausmerkit escapella. Asetus on prosessikohtainen ja säilyy
+renderöintien yli. Viestit, jotka natiivi Graphviz kirjoittaa virhe-API:nsa ohi,
+kuten ortho-moduulin puolisuunnikasvirheet, menevät edelleen konsoliin.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

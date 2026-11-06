@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Referencja typów
@@ -381,6 +381,19 @@ Rejestruje callback zwracający surowe bajty zewnętrznego obrazu, używany, gdy
 wnioskuje typ MIME z rozszerzenia pliku `src`. `null` (z resolvera albo brak
 zarejestrowanego resolvera) wraca do surowego przepuszczenia `src`. Zobacz
 [Praca z obrazami](/pl/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Otrzymuje ostrzeżenia i komunikaty o błędach Graphviz zamiast konsoli, we
+fragmentach, w jakich natywny Graphviz zapisuje je na stderr. Wartość zwracana
+jest ignorowana. `agseterrf` zwraca poprzednią funkcję; `null` przywraca
+konsolę. Zobacz [`agseterrf`](/pl/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

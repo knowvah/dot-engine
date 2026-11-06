@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # Referencia API
@@ -180,6 +180,39 @@ vráti k surovému prepusteniu `src`, rovnako ako keď nie je zaregistrovaný
 iba vtedy, keď je voľba `inlineImages` funkcie `render` nastavená na `true`
 (nižšie). Pozrite [Práca s obrázkami](/sk/guide/images), kde nájdete prepracovaný
 príklad, a [Referenciu](/reference/) pre oba typy spätných volaní.
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz vypisuje varovania a chyby na stderr, napríklad
+`Warning: table size too small for content`. Knižnica ich predvolene zapisuje do
+konzoly: varovania cez `console.warn`, chyby cez `console.error`. `agseterrf`
+ich namiesto toho odovzdá vašej funkcii, rovnako ako `agseterrf` v cgraph.
+Vracia funkciu, ktorú nahrádza, a `null` obnoví konzolu.
+
+Funkcia dostane každú správu po častiach, tak ako ju zapisuje Graphviz:
+`"Warning"` alebo `"Error"`, potom `": "` a nakoniec text s koncom riadka.
+Pokračovací riadok nemá žiadnu predponu. Spojením častí vznikne text, ktorý
+natívny `dot` vypisuje na stderr. Text sa odovzdáva bez escapovania; riadiace
+znaky escapuje iba cesta cez konzolu. Nastavenie platí pre celý proces a
+pretrváva naprieč vykresleniami. Správy, ktoré natívny Graphviz zapisuje mimo
+svojho chybového API, napríklad zlyhania lichobežníkov v ortho, stále idú do
+konzoly.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

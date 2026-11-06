@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # 型別參考
@@ -289,6 +289,16 @@ function setImageResolver(fn: ImageResolver | null): void;
 ```
 
 註冊一個回呼，傳回外部影像的原始位元組，當 `RenderOptions.inlineImages` 為 `true` 時會被參照。若回傳單純的 `Uint8Array`，會從 `src` 的副檔名推斷其 MIME 類型。`null`（來自解析器，或未註冊解析器）會退回原樣輸出 `src`。請見[使用圖片](/zh-tw/guide/images)。
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+取代主控台，依原生 Graphviz 寫入 stderr 的片段接收 Graphviz 的警告與錯誤訊息。傳回值會被忽略。`agseterrf` 會傳回先前的函式；`null` 會還原主控台。請參閱 [`agseterrf`](/zh-tw/guide/api#agseterrf)。
 
 ### `TextMeasurer` / `TextSize`
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Tyyppiviite
@@ -380,6 +380,19 @@ käytetään, kun `RenderOptions.inlineImages` on `true`. Pelkkä `Uint8Array`-
 paluuarvo päättelee MIME-tyypin `src`-tiedostopäätteestä. `null` (ratkaisijalta
 tai ratkaisijaa ei ole rekisteröity) palaa raakaan `src`-läpivientiin. Katso
 [Kuvien käyttö](/fi/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Vastaanottaa Graphvizin varoitus- ja virheviestit konsolin sijaan niissä osissa,
+jotka natiivi Graphviz kirjoittaa stderriin. Paluuarvo ohitetaan. `agseterrf`
+palauttaa edellisen funktion; `null` palauttaa konsolin. Katso
+[`agseterrf`](/fi/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

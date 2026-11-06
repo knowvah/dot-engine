@@ -171,6 +171,39 @@ Registering a resolver has no effect by itself; it's consulted only when
 [Working with images](/guide/images) for a worked example and
 [Reference](/reference/) for both callback types.
 
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz prints its warnings and errors on stderr, for example
+`Warning: table size too small for content`. By default the library writes
+them to the console: warnings with `console.warn`, errors with
+`console.error`. `agseterrf` sends them to your function instead, as cgraph's
+`agseterrf` does. It returns the function it replaces, and `null` restores
+the console.
+
+The function gets each message in the pieces Graphviz writes: `"Warning"` or
+`"Error"`, then `": "`, then the text with its line end. A continuation line
+has no prefix. Joining the pieces gives the text native `dot` prints on
+stderr. The text is passed unescaped; only the console path escapes control
+characters. The setting is process-wide and lasts across renders. Messages
+native Graphviz writes outside its error API, such as ortho's trapezoid
+failures, still go to the console.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
+
 ### `renderSvgAsync` / `renderSvgInto`
 
 ```ts
