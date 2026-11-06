@@ -117,8 +117,9 @@ describe('MODEL_CIRCUIT fallback', () => {
     const g = buildGraph(4);
     g.info.seed = 0;
     expect(() => sgdLayout(g, MODEL_CIRCUIT)).not.toThrow();
+    // Native 16.1.0 stderr: agwarningf's prefix.
     expect(spy).toHaveBeenCalledWith(
-      expect.stringContaining('circuit model not yet supported'),
+      'Warning: circuit model not yet supported in Gmode=sgd, reverting to shortpath model',
     );
     spy.mockRestore();
   });
@@ -134,8 +135,9 @@ describe('MODEL_MDS fallback', () => {
     const g = buildGraph(4);
     g.info.seed = 0;
     expect(() => sgdLayout(g, MODEL_MDS)).not.toThrow();
+    // Native 16.1.0 stderr: agwarningf's prefix.
     expect(spy).toHaveBeenCalledWith(
-      expect.stringContaining('mds model not yet supported'),
+      'Warning: mds model not yet supported in Gmode=sgd, reverting to shortpath model',
     );
     spy.mockRestore();
   });

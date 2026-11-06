@@ -12,8 +12,9 @@ import { RenderError } from '../../errors.js';
 import { EDGETYPE_SPLINE } from '../dot/splines.js';
 import { fdpLayoutEngine } from './index.js';
 
+// Native 16.1.0 stderr: agwarningf's prefix.
 const CLUSTER_EDGE_WARNING =
-  'splines and cluster edges not supported - using line segments';
+  'Warning: splines and cluster edges not supported - using line segments';
 
 /** Pinned nodes: c sits on the a--b line, so a routed a--b edge must curve. */
 const PINNED = `a[pos="0,0!"] b[pos="4,0!"] c[pos="2,0.05!"] a -- b  c -- d`;
