@@ -4,8 +4,7 @@
  * A routesplines failure consumes the edge: C's dot_splines_ calls
  * make_regular_edge exactly once per edge group and never revisits it, so each
  * failing group/chain reports `in routesplines, Pshortestpath failed` once. The
- * port's post-loop routeDotEdges backstop must skip edges whose routing already
- * failed — a parallel group whose shared base was lost, a multi-rank forward
+ * port's routers must skip edges whose routing already failed — a parallel group whose shared base was lost, a multi-rank forward
  * chain, a multi-rank back chain (makefwdedge view), and a labeled flat edge
  * whose make_flat_labeled_edge route is degenerate (pn == 0).
  *

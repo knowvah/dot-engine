@@ -58,6 +58,11 @@ for c in abom-shift abom-shift-parity abom-shift-pack; do
 done
 # tests/2368.dot: its third layout merges an edge flagged adjacent into a new reversed flat edge.
 run flat-rev-stale dot plain nofree flat-rev-stale.dot.plain.nofree
+# Part 11 T8: tests/graphs/nestedclust.gv. Layout 3 continues decompose's Cmark past layout 2's ND_mark, and
+# dot_splines_ routes only the edges in the rank arrays.
+for f in dot xdot; do
+  run nestedclust dot "$f" nofree "nestedclust.dot.$f.nofree"
+done
 for e in neato fdp circo; do
   run filing dot plain "then:$e" "filing.dot.plain.then-$e"
   rm -f "filing.dot.plain.then-$e.1"

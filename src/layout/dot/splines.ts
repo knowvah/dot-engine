@@ -19,7 +19,6 @@ import { VIRTUAL, NORMAL, FLATORDER } from './fastgr.js';
 import { gvQsort } from '../../util/bsd-qsort.js';
 import { IGNORED, EDGE_LABEL } from './rank.js';
 import { markLowclusters } from './cluster.js';
-import { routeDotEdges } from './edge-route.js';
 import { collectOtherEdges } from './self-loop.js';
 import { beginRoutingPass, staleBezierCount, swapStaleBeziers } from './edge-route-rank.js';
 import { dispatchOrthoEdges } from './ortho-adapter.js';
@@ -417,9 +416,11 @@ export function collectRankEdges(g: Graph, edges: Edge[]): void {
 /**
  * Main spline routing entry point (internal, with normalize flag).
  *
- * Performs straight-line edge routing via routeDotEdges, then normalizes
- * spline orientation when normalize=true. The full pathplan-based obstacle
- * routing (routesplines, boxes, clip_and_install) is deferred.
+ * Routes the edges collected from the rank arrays, group by group in
+ * `edgecmp` order, then normalizes spline orientation when normalize=true. An
+ * edge that is not in the rank arrays is not routed and keeps whatever route
+ * it already had: a layout with no free between it and the last one appends
+ * nothing to such an edge's spline, as `new_spline` is never called for it.
  *
  * @see lib/dotgen/dotsplines.c:dot_splines_
  */
@@ -481,12 +482,11 @@ function curvedTop(g: Graph): void {
 }
 
 /**
- * Post-loop: labels, normalize, backstop (curved skips it), port labels. @see c:422-471
+ * Post-loop: labels, normalize, port labels. @see c:422-471
  */
-function finalizeSplines(g: Graph, et: number, normalize: boolean): void {
+function finalizeSplines(g: Graph, normalize: boolean): void {
   placeRegularEdgeLabels(g);
   if (normalize) edgeNormalize(g);
-  if (et !== EDGETYPE_CURVED) routeDotEdges(g);
   if (normalize) swapStaleBeziers(g);
   placePortLabels(g);
   setState(GVSPLINES); // @see dotsplines.c:477
@@ -520,7 +520,7 @@ export function dotSplines_(g: Graph, normalize: boolean): number {
   if (et === EDGETYPE_LINE) placeRegularEdgeLabels(g);
   const runOrigs = routeEdgeGroups(g, edges, g.info.nodesep ?? 18, et);
   if (normalize) normalizeRunOrigs(runOrigs);
-  finalizeSplines(g, et, normalize);
+  finalizeSplines(g, normalize);
   return 0;
 }
 

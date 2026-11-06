@@ -387,8 +387,8 @@ export function routeParallelEdgeGroup(
   }) ?? edges[0]!;
   const base = baseSplineForGroup(g, baseEdge);
   // A lost group base consumes every member: C's dot_splines_ calls
-  // make_regular_edge once per group and never re-routes its edges, so the
-  // routeDotEdges backstop must not re-attempt (and re-report) them.
+  // make_regular_edge once per group and never re-routes its edges, so no
+  // later group may re-attempt (and re-report) them.
   // @see lib/dotgen/dotsplines.c:dot_splines_ (group loop, one call per group)
   if (base === 'lost') {
     for (const e of edges) resolveOrigEdge(e).info.lost = true;

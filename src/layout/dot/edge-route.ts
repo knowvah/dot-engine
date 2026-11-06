@@ -15,7 +15,6 @@
 
 import type { Graph } from '../../model/graph.js';
 import type { Edge as GraphEdge } from '../../model/edge.js';
-import { buildOutEdgeIndex } from '../../model/node.js';
 import type { Point } from '../../model/geom.js';
 import type { NodeBox } from './edge-route-geom.js';
 import type { PortRoute } from './edge-route-routing.js';
@@ -27,7 +26,6 @@ import { arrowDrawOpsForEnd } from './edge-route-arrow.js';
 import { linearBezier } from './edge-route-poly.js';
 import { rankEdgeInfoOf, routedThisPass } from './edge-route-rank.js';
 import { routeRegularEdgeFaithful } from './edge-route-faithful.js';
-import { edgeRouteCmp } from './edge-order.js';
 import { isFlatAdjacent, makeFlatAdjEdges } from './splines-flat.js';
 import { ShapeKind, type ShapeDesc } from '../../common/types.js';
 import {
@@ -138,7 +136,7 @@ export function hasValidCoords(e: GraphEdge): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// routeOneEdge / routeDotEdges
+// routeOneEdge / routeLoneEdge
 // @see lib/dotgen/dotsplines.c:dot_splines_
 // ---------------------------------------------------------------------------
 
@@ -231,10 +229,9 @@ function routeFaithfulRegularPlain(e: GraphEdge, g: Graph): boolean {
  * the faithful pipeline (AD-1). A back edge is the forward edge with swapped
  * ends (C `makefwdedge`): route the forward view as a plain adjacent edge, then
  * `clipAndInstall` installs the forward-geometry spline on the ORIGINAL edge
- * (makeFwdEdge sets `to_orig`/`edge_type`). `dotSplines_` runs `edgeNormalize`
- * *before* `routeDotEdges`, so the global `swapSpline` pass has already run for
- * this edge — apply the back-edge swap here so the spline runs tail→head with
- * the arrow at the head. Returns false when `e` is not an adjacent back edge.
+ * (makeFwdEdge sets `to_orig`/`edge_type`). Apply the back-edge swap here so
+ * the spline runs tail→head with the arrow at the head. Returns false when `e`
+ * is not an adjacent back edge.
  * @see lib/dotgen/dotsplines.c:make_regular_edge (BWDEDGE makefwdedge), edge_normalize
  */
 function routeFaithfulAdjacentBack(e: GraphEdge, g: Graph): boolean {
@@ -454,38 +451,16 @@ function routeForwardEdge(
 }
 
 /**
- * Collect every real out-edge (same set as `g.nodes.values()` × out-edges) in
- * C `dot_splines_` routing order: rank-major collection + `edgecmp` sort. Order
- * matters because `recover_slack` mutates shared virtual nodes that other edges
- * read as `maximal_bbox` neighbours (S1). When the graph is unranked, preserve
- * the legacy insertion order (the sort keys are rank-derived).
- * @see lib/dotgen/dotsplines.c:dot_splines_ (edges list build + edgecmp sort)
- */
-function orderedDotEdges(g: Graph): GraphEdge[] {
-  const outIdx = buildOutEdgeIndex(g);
-  const edges: GraphEdge[] = [];
-  for (const n of g.nodes.values()) {
-    for (const e of outIdx.get(n) ?? []) edges.push(e);
-  }
-  if (g.info.rank !== undefined) edges.sort(edgeRouteCmp);
-  return edges;
-}
-
-/**
- * Compute and install edge splines for all unrouted edges in g.
- * @see lib/dotgen/dotsplines.c:dot_splines_
- */
-/**
  * Route one not-yet-routed edge, applying the `dot_splines_` skip guards. No-op
  * if the edge is already routed or ineligible (FLATORDER/IGNORED, self-loop, or
- * lacking valid coords). Used both by the unified `dotSplines_` loop — which
- * routes lone edges at their `edgecmp` position, interleaved with groups, as C
- * does — and by the `routeDotEdges` backstop sweep below.
+ * lacking valid coords). The `dotSplines_` group loop calls it for the edges it
+ * collected from the rank arrays, at their `edgecmp` position, as C does; an
+ * edge it did not collect keeps the route it had, as `ED_spl` does in C.
  * @see lib/dotgen/dotsplines.c:dot_splines_ (per-edge dispatch + 295 skip)
  */
 export function routeLoneEdge(e: GraphEdge, g: Graph): void {
   // A lost edge (routesplines failure, C semantics) is consumed: C routes each
-  // edge exactly once, so the backstop sweep must not re-attempt it.
+  // edge exactly once, so a later group must not re-attempt it.
   if (routedThisPass(e) || e.info.lost === true) return;
   // C dot_splines_ skips FLATORDER/IGNORED edges when building the route list;
   // an IGNORED edge (e.g. a concentrate-merged parallel duplicate) must get no
@@ -506,8 +481,4 @@ export function routeLoneEdge(e: GraphEdge, g: Graph): void {
   if (e.tail === e.head) return;
   if (!hasValidCoords(e)) return;
   routeOneEdge(e, g);
-}
-
-export function routeDotEdges(g: Graph): void {
-  for (const e of orderedDotEdges(g)) routeLoneEdge(e, g);
 }

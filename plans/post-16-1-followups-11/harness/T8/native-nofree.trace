@@ -1,0 +1,190 @@
+T8 dump entry
+T8   e unbound
+T8   f unbound
+T8   a unbound
+T8   b unbound
+T8   c unbound
+T8   x unbound
+T8   y unbound
+T8   G G minr=0 maxr=0 ncl=0 nlist= rl= ranks=
+T8 dump init
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   f r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   a r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   b r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   c r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   x r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   y r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   G G minr=0 maxr=0 ncl=0 nlist= rl= ranks=
+T8 dump rank
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   f r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   a r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   b r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   x r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   y r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   G G minr=0 maxr=2 ncl=2 nlist=y, rl= ranks=
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=
+T8 dump mincross
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=1 fin=0 fout=0 oth=0 x=0 y=0
+T8   f r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=1 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   a r=0 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=1 fin=0 fout=0 oth=0 x=1 y=0
+T8   b r=1 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=1 fin=0 fout=0 oth=0 x=1 y=0
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=0 fin=0 fout=0 oth=0 x=0 y=0
+T8   x r=0 o=3 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=3 y=0
+T8   y r=0 o=2 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=2 y=0
+T8   G G minr=0 maxr=2 ncl=2 nlist=y,x,c,b,a,e,f, rl= ranks=[4:e,a,y,x,][2:f,b,][1:c,]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[2:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 dump position
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=1 fin=0 fout=0 oth=0 x=1 y=170
+T8   f r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=1 out=0 fin=0 fout=0 oth=0 x=1 y=98
+T8   a r=0 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=1 fin=0 fout=0 oth=0 x=73 y=170
+T8   b r=1 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=1 fin=0 fout=0 oth=0 x=73 y=98
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=0 fin=0 fout=0 oth=0 x=73 y=26
+T8   x r=0 o=3 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=231 y=170
+T8   y r=0 o=2 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=159 y=170
+T8   G G minr=0 maxr=2 ncl=2 nlist=y,x,c,b,a,e,f, rl= ranks=[4:e,a,y,x,][2:f,b,][1:c,]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[2:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 splines g=G minrank=0 maxrank=2 nedges=3
+T8  rank 0 n=4: e(t0,x1,o1,fo0) a(t0,x73,o1,fo0) y(t0,x159,o0,fo0) x(t0,x231,o0,fo0)
+T8  rank 1 n=2: f(t0,x1,o0,fo0) b(t0,x73,o1,fo0)
+T8  rank 2 n=1: c(t0,x73,o0,fo0)
+T8  edge e->f type=1 ti=81
+T8  edge a->b type=1 ti=81
+T8  edge b->c type=1 ti=81
+T8 dump entry
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=1 fin=0 fout=0 oth=0 x=27 y=178
+T8   f r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=1 out=0 fin=0 fout=0 oth=0 x=27 y=106
+T8   a r=0 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=1 fin=0 fout=0 oth=0 x=99 y=178
+T8   b r=1 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=1 fin=0 fout=0 oth=0 x=99 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=0 fin=0 fout=0 oth=0 x=99 y=34
+T8   x r=0 o=3 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=257 y=178
+T8   y r=0 o=2 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=185 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist=y,x,c,b,a,e,f, rl= ranks=[4:e,a,y,x,][2:f,b,][1:c,]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[2:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 dump init
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=0 fout=0 oth=0 x=27 y=178
+T8   f r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=0 fout=0 oth=0 x=27 y=106
+T8   a r=0 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=99 y=178
+T8   b r=1 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=99 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=99 y=34
+T8   x r=0 o=3 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=257 y=178
+T8   y r=0 o=2 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=185 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist=y,x,c,b,a,e,f, rl= ranks=[4:e,a,y,x,][2:f,b,][1:c,]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[2:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 dump rank
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=27 y=178
+T8   f r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=27 y=106
+T8   a r=0 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=99 y=178
+T8   b r=1 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=99 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=99 y=34
+T8   x r=0 o=3 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=257 y=178
+T8   y r=0 o=2 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=185 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist=y, rl= ranks=[4:e,a,y,x,][2:f,b,][1:c,]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[2:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 dump mincross
+T8   e r=0 o=0 mark=1 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=0 fout=1 oth=0 x=0 y=178
+T8   f r=0 o=1 mark=1 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=1 fout=0 oth=0 x=1 y=106
+T8   a r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=1 fin=0 fout=0 oth=0 x=0 y=178
+T8   b r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=1 fin=0 fout=0 oth=0 x=0 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=0 fin=0 fout=0 oth=0 x=0 y=34
+T8   x r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   y r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist= rl= ranks=[2:y,f,][0:][0:]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[1:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 dump position
+T8   e r=0 o=0 mark=1 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=0 fout=1 oth=0 x=0 y=178
+T8   f r=0 o=1 mark=1 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=1 fout=0 oth=0 x=1 y=106
+T8   a r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=1 fin=0 fout=0 oth=0 x=0 y=178
+T8   b r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=1 fin=0 fout=0 oth=0 x=0 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=0 fin=0 fout=0 oth=0 x=0 y=34
+T8   x r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   y r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist= rl= ranks=[2:y,f,][0:][0:]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[1:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 splines g=G minrank=0 maxrank=2 nedges=0
+T8  rank 0 n=2: y(t0,x0,o0,fo0) f(t0,x1,o0,fo0)
+T8  rank 1 n=0:
+T8  rank 2 n=0:
+T8 dump entry
+T8   e r=0 o=0 mark=1 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=0 fout=1 oth=0 x=0 y=178
+T8   f r=0 o=1 mark=1 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=1 fout=0 oth=0 x=1 y=106
+T8   a r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=1 fin=0 fout=0 oth=0 x=0 y=178
+T8   b r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=1 fin=0 fout=0 oth=0 x=0 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=0 fin=0 fout=0 oth=0 x=0 y=34
+T8   x r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   y r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist= rl= ranks=[2:y,f,][0:][0:]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[1:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 dump init
+T8   e r=0 o=0 mark=1 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   f r=0 o=1 mark=1 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=0 fin=0 fout=0 oth=0 x=1 y=106
+T8   a r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   b r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=0 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=0 y=34
+T8   x r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   y r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist= rl= ranks=[2:y,f,][0:][0:]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[1:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 dump rank
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   f r=1 o=1 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=- in=0 out=0 fin=0 fout=0 oth=0 x=1 y=106
+T8   a r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   b r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=0 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=0 fin=0 fout=0 oth=0 x=0 y=34
+T8   x r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   y r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist=y, rl= ranks=[2:y,f,][0:][0:]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[1:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 dump mincross
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=1 fin=0 fout=0 oth=0 x=0 y=178
+T8   f r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=1 out=0 fin=0 fout=0 oth=0 x=0 y=106
+T8   a r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=1 fin=0 fout=0 oth=0 x=0 y=178
+T8   b r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=1 fin=0 fout=0 oth=0 x=0 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=0 fin=0 fout=0 oth=0 x=0 y=34
+T8   x r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   y r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist= rl= ranks=[1:y,][1:b,][0:]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[1:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 dump position
+T8   e r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=0 out=1 fin=0 fout=0 oth=0 x=0 y=178
+T8   f r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=G in=1 out=0 fin=0 fout=0 oth=0 x=0 y=106
+T8   a r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=0 out=1 fin=0 fout=0 oth=0 x=0 y=178
+T8   b r=1 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=1 fin=0 fout=0 oth=0 x=0 y=106
+T8   c r=2 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_ss81 in=1 out=0 fin=0 fout=0 oth=0 x=0 y=34
+T8   x r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_x in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   y r=0 o=0 mark=0 onst=0 t=0 ufs=1 ufp=- rt=0 cl=cluster_y in=0 out=0 fin=0 fout=0 oth=0 x=0 y=178
+T8   G G minr=0 maxr=2 ncl=2 nlist= rl= ranks=[1:y,][1:b,][0:]
+T8     G cluster_ss81 minr=0 maxr=2 ncl=0 nlist= rl= ranks=[1:][1:][1:]
+T8     G cluster_x minr=0 maxr=0 ncl=1 nlist= rl= ranks=[1:]
+T8       G cluster_y minr=0 maxr=0 ncl=0 nlist= rl= ranks=[1:]
+T8 splines g=G minrank=0 maxrank=2 nedges=1
+T8  rank 0 n=1: y(t0,x0,o0,fo0)
+T8  rank 1 n=1: b(t0,x0,o1,fo0)
+T8  rank 2 n=0:
+T8  edge b->c type=1 ti=81

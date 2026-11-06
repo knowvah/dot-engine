@@ -6,7 +6,7 @@
  * SR6 finding (verify-first): self-edges already route through the faithful
  * `makeSelfEdge` common path (`src/common/splines-selfedge.ts`), dispatched by
  * `routeSelfEdgeGroup` (self-loop.ts) from `dotSplines_` — NOT through
- * `routeOneEdge`/`hasSidePort`. `routeDotEdges` skips self-edges
+ * `routeOneEdge`/`hasSidePort`. `routeLoneEdge` skips self-edges
  * (`e.tail === e.head` continue). So SR6 is a validation+pin task, not a port:
  * `self-loop.ts` is unchanged. A side port reaches the self-edge router via
  * `e.info.tail_port`/`head_port` and `makeSelfEdge` honors it.

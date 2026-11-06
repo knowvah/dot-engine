@@ -1,0 +1,109 @@
+--- a/lib/dotgen/dotinit.c
++++ b/lib/dotgen/dotinit.c
+@@ -1,3 +1,4 @@
++#include <string.h>
+ /*************************************************************************
+  * Copyright (c) 2011 AT&T Intellectual Property 
+  * All rights reserved. This program and the accompanying materials
+@@ -293,23 +294,51 @@
+ }
+ 
+ /// @return 0 on success
++
++static int t8_size(elist l) { return (int)l.size; }
++static void t8dumpg(graph_t *g, int depth) {
++  fprintf(stderr, "T8   %*sG %s minr=%d maxr=%d ncl=%d nlist=", depth*2, "", agnameof(g), GD_minrank(g), GD_maxrank(g), GD_n_cluster(g));
++  if (depth == 0) for (node_t *v = GD_nlist(g); v; v = ND_next(v)) fprintf(stderr, "%s,", ND_node_type(v)==NORMAL?agnameof(v):"V");
++  fprintf(stderr, " rl=");
++  if (depth == 0 && GD_rankleader(g)) for (int r = GD_minrank(g); r <= GD_maxrank(g); r++) { node_t *v = GD_rankleader(g)[r]; fprintf(stderr, "%s,", v ? (ND_node_type(v)==NORMAL?agnameof(v):"V") : "-"); }
++  fprintf(stderr, " ranks=");
++  if (GD_rank(g)) for (int r = GD_minrank(g); r <= GD_maxrank(g); r++) { fprintf(stderr, "[%d:", GD_rank(g)[r].n); if (depth == 0) for (int q = 0; q < GD_rank(g)[r].n; q++) { node_t *v = GD_rank(g)[r].v[q]; fprintf(stderr, "%s,", v ? (ND_node_type(v)==NORMAL?agnameof(v):"V") : "-"); } fprintf(stderr, "]"); }
++  fprintf(stderr, "\n");
++  for (int c = 1; c <= GD_n_cluster(g); c++) t8dumpg(GD_clust(g)[c], depth+1);
++}
++static void t8dump(graph_t *g, const char *tag) {
++  if (!getenv("T8TRACE")) return;
++  fprintf(stderr, "T8 dump %s\n", tag);
++  for (node_t *n = agfstnode(g); n; n = agnxtnode(g, n)) {
++    if (!AGDATA(n) || strcmp(AGDATA(n)->name, "Agnodeinfo_t")) { fprintf(stderr, "T8   %s unbound\n", agnameof(n)); continue; }
++    fprintf(stderr, "T8   %s r=%d o=%d mark=%d onst=%d t=%d ufs=%d ufp=%s rt=%d cl=%s in=%d out=%d fin=%d fout=%d oth=%d x=%g y=%g\n",
++      agnameof(n), ND_rank(n), ND_order(n), ND_mark(n), ND_onstack(n), ND_node_type(n), ND_UF_size(n), ND_UF_parent(n)?agnameof(ND_UF_parent(n)):"-", ND_ranktype(n), ND_clust(n)?agnameof(ND_clust(n)):"-",
++      t8_size(ND_in(n)), t8_size(ND_out(n)), t8_size(ND_flat_in(n)), t8_size(ND_flat_out(n)), t8_size(ND_other(n)), ND_coord(n).x, ND_coord(n).y);
++  }
++  t8dumpg(g, 0);
++}
+ static int dotLayout(Agraph_t *g) {
+     int maxphase = late_int(g, agfindgraphattr(g,"phase"), -1, 1);
+ 
+     setEdgeType (g, EDGETYPE_SPLINE);
+     setAspect(g);
+ 
++    { void t8_reset_cmark(void); if (getenv("T8CMARK_RESET") && atoi(getenv("T8CMARK_RESET")) == 2) t8_reset_cmark(); }
++    t8dump(g, "entry");
+     dot_init_subg(g,g);
+     dot_init_node_edge(g);
++    t8dump(g, "init");
+ 
+     GV_INFO("Starting phase 1 [dot_rank]");
+     dot_rank(g);
++    t8dump(g, "rank");
+     if (maxphase == 1) {
+         attach_phase_attrs (g, 1);
+         return 0;
+     }
+     GV_INFO("Starting phase 2 [dot_mincross]");
+     const int rc = dot_mincross(g);
++    t8dump(g, "mincross");
+     if (rc != 0) {
+         return rc;
+     }
+@@ -320,6 +349,7 @@
+     GV_INFO("Starting phase 3 [dot_position]");
+     {
+         const int r = dot_position(g);
++        t8dump(g, "position");
+         if (r != 0) {
+             return r;
+         }
+--- a/lib/dotgen/dotsplines.c
++++ b/lib/dotgen/dotsplines.c
+@@ -332,6 +332,15 @@
+    * alternatively, the edges would be routed identically if
+    * routed separately.
+    */
++  if (getenv("T8TRACE")) {
++    fprintf(stderr, "T8 splines g=%s minrank=%d maxrank=%d nedges=%zu\n", agnameof(g), GD_minrank(g), GD_maxrank(g), (size_t)LIST_SIZE(&edges));
++    for (int r = GD_minrank(g); r <= GD_maxrank(g); r++) {
++      fprintf(stderr, "T8  rank %d n=%d:", r, GD_rank(g)[r].n);
++      for (int q = 0; q < GD_rank(g)[r].n; q++) { node_t *v = GD_rank(g)[r].v[q]; fprintf(stderr, " %s(t%d,x%g,o%zu,fo%zu)", ND_node_type(v)==NORMAL?agnameof(v):"V", ND_node_type(v), ND_coord(v).x, ND_out(v).size, ND_flat_out(v).size); }
++      fprintf(stderr, "\n");
++    }
++    for (unsigned q = 0; q < LIST_SIZE(&edges); q++) { edge_t *x = LIST_GET(&edges, q); fprintf(stderr, "T8  edge %s->%s type=%d ti=%d\n", ND_node_type(agtail(x))==NORMAL?agnameof(agtail(x)):"V", ND_node_type(aghead(x))==NORMAL?agnameof(aghead(x)):"V", ED_edge_type(x), ED_tree_index(x)); }
++  }
+   LIST_SORT(&edges, edgecmp);
+ 
+   /* FIXME: just how many boxes can there be? */
+--- a/lib/dotgen/decomp.c
++++ b/lib/dotgen/decomp.c
+@@ -1,3 +1,5 @@
++#include <stdio.h>
++#include <stdlib.h>
+ /*************************************************************************
+  * Copyright (c) 2011 AT&T Intellectual Property 
+  * All rights reserved. This program and the accompanying materials
+@@ -105,12 +107,15 @@
+     }
+ }
+ 
++void t8_reset_cmark(void);
++void t8_reset_cmark(void) { Cmark = 0; }
+ void decompose(graph_t * g, int pass)
+ {
+     graph_t *subg;
+     node_t *n, *v;
+     node_stack_t stk = {0};
+ 
++    if (getenv("T8CMARK_RESET")) fprintf(stderr, "T8 decompose Cmark-before=%zu pass=%d\n", Cmark, pass);
+     if (++Cmark == 0)
+ 	Cmark = 1;
+     GD_comp(g).size = 0;
