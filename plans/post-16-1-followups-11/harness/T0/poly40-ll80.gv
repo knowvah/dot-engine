@@ -1,0 +1,1 @@
+digraph{linelength=80; a[shape=polygon,sides=40]; a->b}

@@ -1,0 +1,7 @@
+digraph G {
+  a -> b -> c
+  subgraph s { c -> d; d -> e; e [label="E\nx"] }
+  subgraph cluster_k { f -> g; g [shape=box] }
+  a -> f
+  d -> g
+}

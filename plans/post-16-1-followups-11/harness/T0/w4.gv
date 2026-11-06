@@ -1,0 +1,1 @@
+digraph { {rank=same; a; b} a:n->b:n [constraint=false]; a:s->b:s [constraint=false]; a->b [constraint=false]; }
