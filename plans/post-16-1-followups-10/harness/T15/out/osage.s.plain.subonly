@@ -1,0 +1,8 @@
+== render 1
+graph 1 1.5556 1.3727
+node c 1.1806 0.95833 0.75 0.5 c solid ellipse black lightgrey
+node d 0.375 0.25 0.75 0.5 d solid ellipse black lightgrey
+node e 0.375 0.96411 0.75 0.8171 "E\nx" solid ellipse black lightgrey
+edge c d 4 0.95187 0.75725 0.88105 0.69498 0.80134 0.62489 0.72429 0.55713 solid black
+edge d e 4 0.375 0.50378 0.375 0.50578 0.375 0.50779 0.375 0.50981 solid black
+stop

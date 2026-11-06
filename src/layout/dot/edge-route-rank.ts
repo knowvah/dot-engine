@@ -13,6 +13,7 @@
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
+import type { Bezier } from '../../model/geom.js';
 import { swapBezier, swapEndsP } from './splines.js';
 import type { RankEdgeInfo } from './edge-route-routing.js';
 
@@ -153,12 +154,19 @@ export function staleBezierCount(e: Edge): number {
 
 /**
  * True when `e` kept ED_adjacent from an earlier layout. C never clears the flag,
- * so it routes `e` as adjacent even if a node now sits between its ends.
+ * so it routes `e` as adjacent even if a node now sits between its ends. A flat
+ * edge this layout merged into a new reversed edge goes by that edge's flag: C
+ * routes the representative, whose record has no stale flag.
  * @see lib/dotgen/flat.c:236
  * @see lib/dotgen/dotsplines.c:366
+ * @see lib/dotgen/mincross.c:flat_rev
  */
 export function staleAdjacent(e: Edge): boolean {
-  return staleBezierCount(e) > 0 && (e.info.adjacent ?? 0) !== 0;
+  let rep = e;
+  while (rep.info.to_virt !== undefined && rep.info.to_virt !== rep) rep = rep.info.to_virt;
+  const samePair = (rep.tail === e.tail && rep.head === e.head)
+    || (rep.tail === e.head && rep.head === e.tail);
+  return staleBezierCount(e) > 0 && ((samePair ? rep : e).info.adjacent ?? 0) !== 0;
 }
 
 /**
@@ -177,7 +185,17 @@ export function swapStaleBeziers(g: Graph): void {
     const old = spl.list.splice(0, stale).reverse();
     for (const bz of old) swapBezier(bz);
     spl.list.push(...old);
+    fillEdgeArrowSlots(e, old);
   }
+}
+
+/**
+ * C draws from each bezier's flags. The edge slot is the port's source for an end
+ * with one flagged bezier, and the swap can make a stale one that bezier.
+ */
+function fillEdgeArrowSlots(e: Edge, old: readonly Bezier[]): void {
+  e.info.tailArrowOps ??= old.find((bz) => bz.sflag !== 0)?.sArrowOps;
+  e.info.headArrowOps ??= old.find((bz) => bz.eflag !== 0)?.eArrowOps;
 }
 
 /**

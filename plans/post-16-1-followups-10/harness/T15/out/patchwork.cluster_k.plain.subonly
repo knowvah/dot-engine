@@ -1,0 +1,6 @@
+== render 1
+graph 1 0.62115 0.62115
+node f 0.15529 0.31057 0.75 0.5 f solid box black lightgrey
+node g 0.46586 0.31057 0.75 0.5 g solid box black lightgrey
+ solid black
+stop

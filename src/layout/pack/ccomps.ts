@@ -54,6 +54,28 @@ function copyParentAttrs(parent: Graph, sg: Graph): Graph {
   return sg;
 }
 
+/**
+ * agsubg(g, name, 1) for a component: an existing subgraph of that name is
+ * returned as is, and gains the component's nodes and induced edges (the C
+ * dfs adds them with agsubnode/agsubedge); otherwise a new component graph
+ * takes the parent's attribute values.
+ * @see lib/cgraph/subg.c:agsubg
+ * @see lib/pack/ccomps.c:dfs
+ */
+function componentSubgraph(g: Graph, nodes: Node[], name: string, reuse: boolean): Graph {
+  const existing = reuse ? g.subgraphs.get(name) : undefined;
+  if (existing === undefined) return copyParentAttrs(g, buildSubgraph(g, nodes, name));
+  const members = new Set<Node>([...existing.nodes.values(), ...nodes]);
+  existing.nodes.clear();
+  for (const n of [...members].sort((a, b) => a.id - b.id)) existing.nodes.set(n.name, n);
+  const ns = new Set(nodes);
+  const have = new Set(existing.edges);
+  for (const e of g.edges) {
+    if (ns.has(e.tail) && ns.has(e.head) && !have.has(e)) existing.edges.push(e);
+  }
+  return existing;
+}
+
 /** @see lib/pack/ccomps.c:isLegal */
 function isLegal(p: string): boolean {
   return /^[A-Za-z0-9_]*$/.test(p);
@@ -68,17 +90,19 @@ function setPrefix(pfx: string | null | undefined): string {
 }
 
 /**
- * Decompose g into connected components (nodes only, no edges).
+ * Decompose g into connected components (nodes only, no edges). `reuse`
+ * false is for a graph that has no user subgraphs in C, such as circo's
+ * derived graph: components are always fresh.
  * @see lib/pack/ccomps.c:ccomps
  */
-export function ccomps(g: Graph, pfx?: string | null): Graph[] {
+export function ccomps(g: Graph, pfx?: string | null, reuse = true): Graph[] {
   const visited = new Set<string>();
   const result: Graph[] = [];
   let idx = 0;
   for (const n of g.nodes.values()) {
     if (visited.has(n.name)) continue;
     const comp = dfsCollect(g, n, visited);
-    result.push(copyParentAttrs(g, buildSubgraph(g, comp, `${setPrefix(pfx)}${idx++}`)));
+    result.push(componentSubgraph(g, comp, `${setPrefix(pfx)}${idx++}`, reuse));
   }
   return result;
 }
@@ -113,19 +137,23 @@ export function pccomps(g: Graph, pfx?: string | null): { graphs: Graph[]; pinne
     pinned = true;
   }
   if (pinnedNodes.length > 0) {
-    result.push(copyParentAttrs(g, buildSubgraph(g, pinnedNodes, `${setPrefix(pfx)}${idx++}`)));
+    result.push(componentSubgraph(g, pinnedNodes, `${setPrefix(pfx)}${idx++}`, true));
   }
 
   // Pass 2 — remaining components in node order.
   for (const n of g.nodes.values()) {
     if (visited.has(n.name)) continue;
     const comp = dfsCollect(g, n, visited);
-    result.push(copyParentAttrs(g, buildSubgraph(g, comp, `${setPrefix(pfx)}${idx++}`)));
+    result.push(componentSubgraph(g, comp, `${setPrefix(pfx)}${idx++}`, true));
   }
   return { graphs: result, pinned };
 }
 
 /** True if g has exactly one connected component. @see lib/pack/ccomps.c:isConnected */
 export function isConnected(g: Graph): boolean {
-  return ccomps(g).length <= 1;
+  if (g.nodes.size === 0) return true;
+  // C runs one dfs from the first node and compares the count; it creates no
+  // subgraph, so a user's `_cc_N` is left alone.
+  const first = g.nodes.values().next().value as Node;
+  return dfsCollect(g, first, new Set<string>()).length === g.nodes.size;
 }

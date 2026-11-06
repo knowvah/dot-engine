@@ -1,0 +1,50 @@
+== process 1 canon-hits=8 frees=10
+canon arg=0x7b6f0083e8 buf=0x102c552c0 ret=0x7b6f0083e8 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 0
+free   s=0x7b6f0083e8 rc=0 after 78 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b'x'
+  plain render 2 label byte of Torwaechter: b'x'
+== process 2 canon-hits=8 frees=10
+canon arg=0x7581038108 buf=0x7580c5d680 ret=0x7581038108 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 
+free   s=0x7581038108 rc=0 after 2a 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b'*'
+  plain render 2 label byte of Torwaechter: b'*'
+== process 3 canon-hits=8 frees=10
+canon arg=0x751b024148 buf=0x751b420040 ret=0x751b024148 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 
+free   s=0x751b024148 rc=0 after 4e 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b'N'
+  plain render 2 label byte of Torwaechter: b'N'
+== process 4 canon-hits=8 frees=10
+canon arg=0x7c58c482c8 buf=0x7c590247a0 ret=0x7c58c482c8 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 
+free   s=0x7c58c482c8 rc=0 after 66 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b'f'
+  plain render 2 label byte of Torwaechter: b'f'
+== process 5 canon-hits=8 frees=10
+canon arg=0x7c00c282c8 buf=0x104bc4540 ret=0x7c00c282c8 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 0
+free   s=0x7c00c282c8 rc=0 after 66 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b'f'
+  plain render 2 label byte of Torwaechter: b'f'
+== process 6 canon-hits=8 frees=10
+canon arg=0x7bfb4003e8 buf=0x7bfb418000 ret=0x7bfb4003e8 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 
+free   s=0x7bfb4003e8 rc=0 after 78 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b'x'
+  plain render 2 label byte of Torwaechter: b'x'
+== process 7 canon-hits=8 frees=10
+canon arg=0x74d50043c8 buf=0x74d503c000 ret=0x74d50043c8 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 
+free   s=0x74d50043c8 rc=0 after 76 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b'v'
+  plain render 2 label byte of Torwaechter: b'v'
+== process 8 canon-hits=8 frees=10
+canon arg=0x7c39048168 buf=0x7c39400020 ret=0x7c39048168 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 
+free   s=0x7c39048168 rc=0 after 18 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b'\x18'
+  plain render 2 label byte of Torwaechter: b'\x18'
+== process 9 canon-hits=8 frees=10
+canon arg=0x7bc305c028 buf=0x7bc3064040 ret=0x7bc305c028 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 
+free   s=0x7bc305c028 rc=0 after 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b''
+  plain render 2 label byte of Torwaechter: b''
+== process 10 canon-hits=8 frees=10
+canon arg=0x7b4f024188 buf=0x7b4f030320 ret=0x7b4f024188 ret==arg:1 bytes 54 6f 72 77 c3 a4 63 68 74 65 72 00 
+free   s=0x7b4f024188 rc=0 after 32 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  plain render 1 label byte of Torwaechter: b'2'
+  plain render 2 label byte of Torwaechter: b'2'

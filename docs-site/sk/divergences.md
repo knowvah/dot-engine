@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ vstup pod jeho vlastným modulom namiesto `dot`. Úprimným stropom tejto práce
 **zúžiť** A1 na „žiadna aktívna odchýlka na referenčnej platforme“, nikdy neodstrániť
 medziplatformovú výhradu; doterajšie výsledky (nižšie) tento
 strop spĺňajú: `circo`/`twopi`/`osage` odhalili a vyriešili po koreňovú príčinu niekoľko
-skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 99.8/96.6/68.0 %
+skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 99.8/96.6/68.1 %
 v rámci 0.5pt od natívneho na univerze 929 položiek (graphviz 16.1.0), čo znamená, že
 portovaná aritmetika (`fma.ts`, `arm-pow.ts`, zhodný PRNG) pre väčšinu grafov drží —
 a každé odchýlené id z univerza 929 položiek je individuálne priradené injekciou (drift
@@ -201,7 +201,7 @@ vstupy, ktoré orákulum v C nedokáže vykresliť, podľa [Zhody](./conformance
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
 
 (Miera úspešnosti `fdp` vzrástla zo 77.5 %, pretože skorší commitnutý prechod
 predchádzal stavu portu z predchádzajúcej misie.
@@ -238,6 +238,8 @@ dashboardoch jednotlivých modulov
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
+
+**Kde začína odchýlka riešiča sfdp (časť 10, T2).** Inštrumentovaný natívny sfdp, sledovaný proti portu na malých idoch, sa prvýkrát líši v poslednom bite `pow(dist, 1-p)` v odpudivej sile (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). Pri `flatedge` dáva `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` natívne `...8811p+2` a v porte `...8812p+2`; `graphs-p` a `1767` začínajú rovnako. Adaptívne chladenie tento bit zosilňuje: dosiahne `x[0]` v iterácii 5, `max|dx|` je 2.4e-9 v iterácii 100 a 3.9e-5 v 200 a krok sa preklopí v iterácii 244. Potvrdzujú to dva kontrolované behy. S bitmi natívu presne pri týchto 8 volaniach je 62090-riadková stopa `flatedge` zhodná a so skutočným `pow` z macOS za doplnkom Node-API má 288 z 292 idov, ktoré neprešli, bitovo zhodné stopy (zvyšné 4, všetky `overlap=false`, sa líšia len pri `xfinal`). Poradie operácií a fúzia v riešiči, multileveli, quadtree a riedkom kóde boli vylúčené. Ide o libm hostiteľa, prijatú v rámci A1 (pozri položku `pow` v zozname známych medzier nižšie); `src/` sa nezmenil, počty teda ostávajú na 632 z 929. Experiment len na macOS dosiahol približne 923 z 929; meria `pow` orákula a nie je to nič, čo by knižnica zvládla na každom hostiteľovi. `Math.pow` v odpudivej sile prejde 153 z 292, ale zhorší 6 idov, ktoré dnes prechádzajú, preto nebol použitý. Riadok sfdp v tabuľke sa rovná riadku v [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 odlišný plus 295 prijatých dáva 296 a 1 ďalšie id je tam vedené ako nedeterministické pri orákule.
 
 **Akceptácia triedy A1-drift (iteratívne moduly, vypočítané členstvo).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -1302,6 +1304,20 @@ líši sa od natívneho Graphviz. Nájdené misiou `v2-silent-gaps`
   od Apple sa nedá reprodukovať z krátkeho modelu tak, ako `hypot`.
 - **Natívne pády, ktoré port definuje.** Natívny Graphviz končí s kódom 139 pri neato `mode=KK` s `model=mds` a hranou s `len` takmer pri každom spustení (1 prežívajúci z približne 1500; `mds_model` indexuje `GD_dist` poradovým číslom od 1: pretečenie haldy). Port zahadzuje bunky mimo rozsahu a jeho výsledok sa s týmto prežívajúcim zhoduje s toleranciou 0,01. `circuit_model` indexuje podľa `AGSEQ` od 1 (`circuit.c:46`), takže riadok 0 jeho matice sa nikdy nezapíše a matica je singulárna pri každom grafe, súvislom aj nesúvislom: natívny `mode=KK` s `model=circuit` nikdy nevytvorí rozloženie circuit. Ak proces prežije, vypíše `Warning: graph <name> is disconnected. Hence, the circuit model` a vráti sa k najkratším cestám; tá istá chyba číta za poľom ukazovateľov riadkov, keď má naposledy vytvorený uzol hranu, takže natívny program zvyčajne končí s kódom 139 (asi 3 spustenia zo 4 na skúšobnom grafe). Port vždy volí cestu, ktorá prežije: varovanie, potom najkratšie cesty, pri súvislom aj nesúvislom grafe. S `pack=true` natívny program spadol pri každom spustení (0 prežívajúcich z viac ako 3000 na každom z dvoch grafov); podľa rozhodnutia port varuje pre každú komponentu pod vlastným menom (`_neato_cc0`, `_neato_cc1`, ...), použije najkratšie cesty a zbalí ich. Pre túto kombináciu neexistuje natívny výstup; rozloženie sa rovná natívnemu `model=shortpath` pre ten istý graf.
 - **Poradie zhôd vo VPSC sleduje poradie vzniku, nie adresu na halde.** Natívny `IncVPSC::splitBlocks` prechádza `std::set<Block*>` zoradenú podľa adresy na halde a zároveň do nej vkladá, a `CmpNodePos` rozhoduje zhody pozícií podľa adresy, takže natívny výstup pre `overlap=vpsc|ipsep` a viazaný `mode=ipsep` sa pri zhode pozícií medzi spusteniami líši (jeden prípad dal 21 rôznych výsledkov v 300 spusteniach). Port zoraďuje zhody podľa poradia vzniku a vždy navštívi nové bloky, takže jeho výstup je deterministický. Zhody udalostí zametacej priamky sledujú libc++: port obsahuje port jeho `std::sort`, takže poradie zhôd zodpovedá natívnemu. V skúmaných prípadoch zhôd sa rovná vzorkovanému natívnemu behu. Prípad so 40 uzlami (`dir1 n40`), ktorý sa predtým nezhodoval so žiadnym z 29 vzorkovaných natívnych výsledkov, je vysvetlený: v 332 natívnych behoch dala `libvpsc.a` orákula 17 rôznych výstupov, zatiaľ čo natívna kópia zoraďujúca iba `Blocks` podľa indexu vzniku dala 1 v 332 a port sa jej rovná bit po bite. Poradie adries blokov je v tom prípade celým rozdielom; tvrdenie je zmerané iba na `dir1 n40` (následná položka 110).
+
+### `dim`, `dimen` a `z` (neato, sfdp) {#dim-dimen-and-z-neato-sfdp}
+
+neato a sfdp rozvrhujú v `dim` rozmeroch v každom režime, obmedzených na `MAXDIM` (10) z C. Samotné `dim=3` rozvrhne v 3-D, ale vypíše 2 súradnice; samotné `dimen=3` nastaví `dim` na 3 a vypíše 3; `dim=11 dimen=11` vypíše 10. Súradnica z je dostupná len cez atribúty `pos` a `z`; `getLayout` je bezo zmeny. fdp, circo, twopi, osage a patchwork ostávajú 2-D, ako to vynucuje C. `mode=hier` nad 2-D štartuje z rozvrhnutia s (`dim`-1) rozmermi cez `opt_smart_init` (`constrained_majorization.c:95`, `stress.c:874`), ktoré je portované; graf s `mode=hier` bez orientovanej hrany alebo bez hierarchie sa teraz vykreslí namiesto vyvolania chyby. `mode=major start=self` stále vyvolá chybu. Vetva renderera `GVRENDER_DOES_Z` (`lib/common/emit.c:1660,2734`) nie je portovaná: vyžaduje zariadenie, ktoré kreslí z, a žiadne tu to nerobí.
+
+### Natívne pády a variácie podľa adries haldy (časť 10) {#native-crashes-and-heap-address-variation-part-10}
+
+Každá položka hovorí, čo robí natív a čo robí port.
+
+- **`mode=hier dim=4` na dvoch uzloch.** Natív zapisuje za `directions` (`lib/neatogen/stress.c:514`) a v niektorých behoch sa preruší (návratový kód 133 v 5 zo 16 behov). Port vykreslí.
+- **`mode=hier dim=3` s `len=0.001`.** Natív umiera signálom: 3 z 8 behov pri 19 uzloch (SIGBUS) a 8 z 8 pri 27 uzloch (SIGBUS, SIGSEGV, SIGTRAP). Zásobník je `mfm_alloc` pod `stress_majorization_kD_mkernel`, čo ukazuje poškodenie haldy; presné miesto nie je dokázané. Port vykreslí a tam, kde natív prežije (19 uzlov, 5 z 8 behov), je bajtovo zhodný.
+- **Druhé rozvrhnutia fdp na jednom grafe sa v natíve menia podľa adries haldy.** `deriveGraph` a `genPorts` porovnávajú ukazovatele uzlov (`lib/fdpgen/layout.c:466,501,637`). Pri 12 natívnych behoch každý spadá vykreslenie 2 pri `graphs-fdp` ako `plain` do 2 tried (1 a 11 behov) a `1581` ako `dot` do 2 tried (8 a 4 behy); port je bajtovo zhodný s jednobehovou triedou `plain` a v rozmedzí 5e-13 od štvorbehovej triedy `dot`. Natív preložený s týmito tromi porovnaniami na `ND_id` sa opakuje 8 z 8 a pri `plain` je bajtovo zhodný s portom. Voľba len portu: natívny `attach_attrs` končí `undoClusterEdges` (`lib/common/output.c:403-404`) a port toto vrátenie vykoná pri ďalšom rozvrhnutí, nie pri vykreslení, pretože jeho zapisovače čítajú proxy `__0:`.
+- **Operácia `T` v `_draw_` alebo `_background` grafu.** Natív spadne so segfaultom (kód 139): `op->span` je mimo neato `-n` NULL (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Port pre ňu nekreslí žiadny text.
+- **neato na podgrafe.** Natív skončil s kódom 139 pri rozvrhnutí oboch podgrafov jedného testovaného grafu, bežného podgrafu aj clustra. Port vráti výstup.
 
 ---
 

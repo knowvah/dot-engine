@@ -22,6 +22,7 @@
  * @see lib/osage/osageinit.c:cleanup_graphs
  */
 
+import { undoClusterEdges } from '../layout/fdp/cluster-edges.js';
 import { makeEdgeInfo, makePort } from '../model/edgeInfo.js';
 import { makeGraphInfo } from '../model/graphInfo.js';
 import type { Graph } from '../model/graph.js';
@@ -41,12 +42,30 @@ export function layoutWasFreed(g: Graph): boolean {
 }
 
 /**
+ * attach_attrs ends by undoing the cluster edges, so -Tdot, -Txdot and -Tjson
+ * leave the graph with its original nodes, and -Tplain and -Tsvg leave the
+ * proxies as ordinary ones. The port's writers read the proxies as they print
+ * (`src/render/dot/agwrite.ts`), so the undo waits for the next layout, as the
+ * records do. Nothing sees the difference: a second attach_attrs on one layout
+ * crashes C. Only attach_attrs replaces `bb` with its comma-separated form
+ * (rec_attach_bb); `gvLayout`'s, which `writeLayoutBb` wrote, has spaces.
+ *
+ * @see lib/common/output.c:403 (if (HAS_CLUST_EDGE(g)) undoClusterEdges(g))
+ * @see lib/common/output.c:229 rec_attach_bb
+ */
+export function undoRenderedClusterEdges(g: Graph): void {
+  if (g.info?.n_cluster_edges && g.attrs.get('bb')?.includes(',')) undoClusterEdges(g);
+}
+
+/**
  * Replaces the record of `g` and of every subgraph under it.
  * @see lib/common/input.c:802 (agclean(g, AGRAPH, "Agraphinfo_t"))
  * @see lib/cgraph/rec.c:agclean (agapply over the subgraphs)
  */
 function resetGraphRecords(g: Graph): void {
+  const clusterEdges = g.info.n_cluster_edges;
   g.info = makeGraphInfo();
+  if (clusterEdges !== undefined) g.info.n_cluster_edges = clusterEdges;
   for (const subg of g.subgraphs.values()) resetGraphRecords(subg);
 }
 
@@ -56,15 +75,54 @@ function resetGraphRecords(g: Graph): void {
  * graph, including those declared in a subgraph (as agfstnode/agfstout do), and
  * the virtual nodes and edges of a layout are reachable only through the
  * records this drops. The parser and the builder stamp nothing on a record, and
- * `layout` sets `gvc` after this runs, so there is nothing to carry over.
+ * `layout` sets `gvc` after this runs. The one thing to carry over is the
+ * cluster-edge count, which C keeps in a record of its own (CL_EDGE_TAG) that no
+ * free deletes: a later layout still sees HAS_CLUST_EDGE and takes line segments.
  *
  * @see lib/common/utils.c:1522 (gv_cleanup_edge: agdelrec Agedgeinfo_t)
  * @see lib/common/utils.c:gv_cleanup_node (agdelrec Agnodeinfo_t)
  * @see lib/dotgen/dotinit.c:114 (dot_cleanup_node: agdelrec Agnodeinfo_t)
  * @see lib/common/input.c:graph_cleanup
+ * @see lib/common/utils.c:960 (agbindrec(g, CL_EDGE_TAG, ...))
+ * @see lib/fdpgen/layout.c:1049 (HAS_CLUST_EDGE)
  */
 export function resetLayoutRecords(g: Graph): void {
   for (const n of g.nodes.values()) n.info = makeNodeInfo();
   for (const e of g.edges) e.info = makeEdgeInfo(makePort(), makePort());
   resetGraphRecords(g);
+}
+
+/**
+ * Runs the reset of every graph in `g`'s tree whose layout was freed. C frees a
+ * graph's records when that graph is freed, whichever graph is laid out next: a
+ * subgraph after its root, or a root after its subgraph.
+ *
+ * @see lib/gvc/gvlayout.c:61-64 (gvLayoutJobs binds the root's record too)
+ * @see lib/gvc/gvlayout.c:gvFreeLayout
+ */
+export function resetFreedLayouts(g: Graph): void {
+  const visit = (h: Graph): void => {
+    if (layoutWasFreed(h)) resetLayoutRecords(h);
+    else for (const subg of h.subgraphs.values()) visit(subg);
+  };
+  visit(g.root);
+}
+
+/**
+ * C has one GD_dotroot, on the root, and dot_init_subg points it at the graph
+ * being laid out. The port reads each graph's own slot (`dotRoot`, and
+ * pack-components.ts for the same reason), so a subgraph points itself and all
+ * under it. A root layout clears what an earlier one left, which reads as the
+ * root again; on a first layout there is nothing to clear.
+ *
+ * @see lib/dotgen/dotinit.c:36 (GD_dotroot(agroot(g)) = droot)
+ * @see lib/dotgen/dotinit.c:520 dot_root
+ */
+export function bindDotRoot(g: Graph): void {
+  const droot = g === g.root ? undefined : g;
+  const visit = (h: Graph): void => {
+    h.info.dotroot = droot;
+    for (const subg of h.subgraphs.values()) visit(subg);
+  };
+  visit(g);
 }

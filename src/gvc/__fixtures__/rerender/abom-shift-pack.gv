@@ -1,0 +1,1 @@
+digraph S { pack=true; {rank=same; a; b; e} a -> b [label="x"]; a -> e [label="zz"]; a -> c [label="y"]; b -> c; a -> a; c->d; {rank=same; p; q; r} p -> q [label="k"]; p -> r [label="m"]; p -> s; }

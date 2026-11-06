@@ -35,9 +35,8 @@ import { lenattr } from './edge-len.js';
 import { newPathState, shortestPath, mdsModel, subsetModel, type Neighbour } from './kk-paths.js';
 import { agerr, agwarningf } from '../../common/agerr.js';
 import { fma, fms } from '../../common/fma.js';
+import { jitter3d, ndimOf } from './init-dim.js';
 
-/** `Ndim`: layout dimension (this port lays out in 2-D only). */
-const NDIM = 2;
 /** `Damping` when the root has no `Damping` attribute. @see stuff.c:scan_graph_mode */
 const DEFAULT_DAMPING = 0.99;
 /** `Epsilon` is this times nV unless `epsilon` is set. @see stuff.c:scan_graph_mode */
@@ -50,14 +49,16 @@ const SPRING_COEFF = 1.0;
 /** Per-run solver state. @see lib/neatogen/stuff.c (GD_*, Epsilon2, Damping) */
 export interface KkState {
   readonly n: number;
+  /** `Ndim`, the root's layout dimension. */
+  readonly ndim: number;
   readonly nodes: readonly Node[];
   /** `GD_dist`, n*n. */
   readonly dist: Float64Array;
   /** `GD_spring`, n*n. */
   readonly spring: Float64Array;
-  /** `GD_sum_t`, n*NDIM. */
+  /** `GD_sum_t`, n*ndim. */
   readonly sumT: Float64Array;
-  /** `GD_t`, n*n*NDIM. */
+  /** `GD_t`, n*n*ndim. */
   readonly t: Float64Array;
   readonly damping: number;
   readonly epsilon: number;
@@ -133,9 +134,10 @@ function scanGraphMode(g: Graph, maxIter: number): { st: KkState; adj: Neighbour
   const damp = g.root.attrs.get('Damping');
   const { total, lens } = setEdgeLens(g, nodes);
   const ini = initialDist(g, total, epsilon);
+  const ndim = ndimOf(g);
   const st: KkState = {
-    n, nodes, dist: new Float64Array(n * n).fill(ini), spring: new Float64Array(n * n).fill(1),
-    sumT: new Float64Array(n * NDIM).fill(1), t: new Float64Array(n * n * NDIM),
+    n, ndim, nodes, dist: new Float64Array(n * n).fill(ini), spring: new Float64Array(n * n).fill(1),
+    sumT: new Float64Array(n * ndim).fill(1), t: new Float64Array(n * n * ndim),
     damping: damp === undefined ? DEFAULT_DAMPING : parseFloat(damp) || 0,
     epsilon, maxIter, move: 0,
   };
@@ -143,9 +145,10 @@ function scanGraphMode(g: Graph, maxIter: number): { st: KkState; adj: Neighbour
 }
 
 /** @see lib/neatogen/stuff.c:randompos (called with nG = 1 by initial_positions) */
-function randompos(np: Node): void {
+function randompos(np: Node, ndim: number): void {
   np.info.pos![0] = drand48();
   np.info.pos![1] = drand48();
+  if (ndim > 2) jitter3d(np, 1, ndim);
 }
 
 /** @see lib/neatogen/stuff.c:initial_positions */
@@ -155,14 +158,14 @@ function initialPositions(g: Graph, st: KkState): void {
   if (init === INIT_SELF) warnStartSelfOnce();
   for (const np of st.nodes) {
     if (np.info.posSet === true || np.info.pinned === true) continue;
-    randompos(np);
+    randompos(np, st.ndim);
   }
 }
 
 /** `distvec`: returns |p0-p1| and leaves p0-p1 in `del`. @see stuff.c:distvec */
-function distvec(p0: number[], p1: number[], del: Float64Array): number {
+function distvec(p0: number[], p1: number[], del: Float64Array, ndim: number): number {
   let dist = 0.0;
-  for (let k = 0; k < NDIM; k++) {
+  for (let k = 0; k < ndim; k++) {
     del[k] = p0[k]! - p1[k]!;
     dist = fma(del[k]!, del[k]!, dist);
   }
@@ -185,14 +188,15 @@ function springFactors(g: Graph): (a: Node, b: Node) => number | undefined {
 
 /** Row `i` of `GD_t`/`GD_sum_t` for node `i`. @see lib/neatogen/stuff.c:diffeq_model */
 function fillRow(st: KkState, i: number, del: Float64Array): void {
+  const { ndim } = st;
   const vi = st.nodes[i]!;
   for (let j = 0; j < st.n; j++) {
     if (i === j) continue;
-    const dist = distvec(vi.info.pos!, st.nodes[j]!.info.pos!, del);
-    for (let k = 0; k < NDIM; k++) {
+    const dist = distvec(vi.info.pos!, st.nodes[j]!.info.pos!, del, ndim);
+    for (let k = 0; k < ndim; k++) {
       const v = st.spring[i * st.n + j]! * (del[k]! - (st.dist[i * st.n + j]! * del[k]!) / dist);
-      st.t[(i * st.n + j) * NDIM + k] = v;
-      st.sumT[i * NDIM + k]! += v;
+      st.t[(i * st.n + j) * ndim + k] = v;
+      st.sumT[i * ndim + k]! += v;
     }
   }
 }
@@ -211,67 +215,68 @@ function diffeqModel(g: Graph, st: KkState): void {
     }
   }
   st.sumT.fill(0);
-  const del = new Float64Array(NDIM);
+  const del = new Float64Array(st.ndim);
   for (let i = 0; i < n; i++) fillRow(st, i, del);
 }
 
 /** Recompute node `i`'s row and the mirrored column. @see stuff.c:update_arrays */
 function updateArrays(st: KkState, i: number): void {
-  const { n } = st;
-  const del = new Float64Array(NDIM);
+  const { n, ndim } = st;
+  const del = new Float64Array(ndim);
   const vi = st.nodes[i]!;
-  for (let k = 0; k < NDIM; k++) st.sumT[i * NDIM + k] = 0.0;
+  for (let k = 0; k < ndim; k++) st.sumT[i * ndim + k] = 0.0;
   for (let j = 0; j < n; j++) {
     if (i === j) continue;
-    const dist = distvec(vi.info.pos!, st.nodes[j]!.info.pos!, del);
-    for (let k = 0; k < NDIM; k++) {
+    const dist = distvec(vi.info.pos!, st.nodes[j]!.info.pos!, del, ndim);
+    for (let k = 0; k < ndim; k++) {
       const tij = st.spring[i * n + j]! * (del[k]! - (st.dist[i * n + j]! * del[k]!) / dist);
-      st.t[(i * n + j) * NDIM + k] = tij;
-      st.sumT[i * NDIM + k]! += tij;
-      const old = st.t[(j * n + i) * NDIM + k]!;
-      st.t[(j * n + i) * NDIM + k] = -tij;
-      st.sumT[j * NDIM + k]! += -tij - old;
+      st.t[(i * n + j) * ndim + k] = tij;
+      st.sumT[i * ndim + k]! += tij;
+      const old = st.t[(j * n + i) * ndim + k]!;
+      st.t[(j * n + i) * ndim + k] = -tij;
+      st.sumT[j * ndim + k]! += -tij - old;
     }
   }
 }
 
-/** Hessian of node `m`'s energy into `M` (NDIM x NDIM). @see stuff.c:D2E */
+/** Hessian of node `m`'s energy into `M` (ndim x ndim). @see stuff.c:D2E */
 function d2e(st: KkState, m: number, M: Float64Array): void {
-  const { n } = st;
+  const { n, ndim } = st;
   const vn = st.nodes[m]!;
-  const t = new Float64Array(NDIM);
+  const t = new Float64Array(ndim);
   M.fill(0);
   for (let i = 0; i < n; i++) {
     if (m === i) continue;
     const vi = st.nodes[i]!;
     let sq = 0.0;
-    for (let k = 0; k < NDIM; k++) {
+    for (let k = 0; k < ndim; k++) {
       t[k] = vn.info.pos![k]! - vi.info.pos![k]!;
       sq = fma(t[k]!, t[k]!, sq);
     }
     const scale = 1 / Math.pow(sq, 1.5);
     const K = st.spring[m * n + i]!;
     const D = st.dist[m * n + i]!;
-    for (let k = 0; k < NDIM; k++) {
-      for (let l = 0; l < k; l++) M[l * NDIM + k] = fma(K * D * t[k]! * t[l]!, scale, M[l * NDIM + k]!);
+    for (let k = 0; k < ndim; k++) {
+      for (let l = 0; l < k; l++) M[l * ndim + k] = fma(K * D * t[k]! * t[l]!, scale, M[l * ndim + k]!);
       const inner = fms(D * fms(t[k]!, t[k]!, sq), scale, 1.0);
-      M[k * NDIM + k] = fma(K, inner, M[k * NDIM + k]!);
+      M[k * ndim + k] = fma(K, inner, M[k * ndim + k]!);
     }
   }
-  for (let k = 1; k < NDIM; k++) {
-    for (let l = 0; l < k; l++) M[k * NDIM + l] = M[l * NDIM + k]!;
+  for (let k = 1; k < ndim; k++) {
+    for (let l = 0; l < k; l++) M[k * ndim + l] = M[l * ndim + k]!;
   }
 }
 
 /** Index of the unpinned node with the largest gradient, or -1. @see stuff.c:choose_node */
 function chooseNode(st: KkState): number {
   if (st.move >= st.maxIter) return -1;
+  const { ndim } = st;
   let max = 0.0;
   let choice = -1;
   for (let i = 0; i < st.n; i++) {
     if (st.nodes[i]!.info.pinned === true) continue;
     let m = 0.0;
-    for (let k = 0; k < NDIM; k++) m = fma(st.sumT[i * NDIM + k]!, st.sumT[i * NDIM + k]!, m);
+    for (let k = 0; k < ndim; k++) m = fma(st.sumT[i * ndim + k]!, st.sumT[i * ndim + k]!, m);
     if (m > max) { choice = i; max = m; }
   }
   return max < st.epsilon * st.epsilon ? -1 : choice;
@@ -279,14 +284,15 @@ function chooseNode(st: KkState): number {
 
 /** Newton step for node `m`. @see lib/neatogen/stuff.c:move_node */
 function moveNode(st: KkState, m: number): void {
-  const a = new Float64Array(NDIM * NDIM);
-  const b = new Float64Array(NDIM);
-  const c = new Float64Array(NDIM);
+  const { ndim } = st;
+  const a = new Float64Array(ndim * ndim);
+  const b = new Float64Array(ndim);
+  const c = new Float64Array(ndim);
   d2e(st, m, a);
-  for (let i = 0; i < NDIM; i++) c[i] = -st.sumT[m * NDIM + i]!;
-  solve(a, b, c, NDIM);
+  for (let i = 0; i < ndim; i++) c[i] = -st.sumT[m * ndim + i]!;
+  solve(a, b, c, ndim);
   const pos = st.nodes[m]!.info.pos!;
-  for (let i = 0; i < NDIM; i++) {
+  for (let i = 0; i < ndim; i++) {
     b[i] = fma(2 * (1 - st.damping), drand48(), st.damping) * b[i]!;
     pos[i]! += b[i]!;
   }

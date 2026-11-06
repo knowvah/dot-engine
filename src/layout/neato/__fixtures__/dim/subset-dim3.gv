@@ -1,0 +1,12 @@
+graph G {
+  dim=3;
+  dimen=3;
+  model=subset;
+  a -- b;
+  b -- c;
+  c -- d;
+  d -- e;
+  e -- a;
+  a -- c;
+  e -- f;
+}

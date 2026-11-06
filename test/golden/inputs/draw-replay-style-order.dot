@@ -1,0 +1,4 @@
+digraph G {
+  _draw_="c 7 -#0000ff S 6 -dashed L 2 0 0 10 10 S 4 -bold L 2 0 10 10 20 S 5 -solid L 2 0 20 10 30 S 15 -setlinewidth(3) L 2 0 30 10 40 S 6 -dotted L 2 0 40 10 50 S 4 -bold L 2 0 50 10 60 S 15 -setlinewidth(4) L 2 0 60 10 70 S 5 -invis L 2 0 70 10 80 S 6 -dashed L 2 0 80 10 90 S 27 -setlinewidth(3),bold,dashed L 2 0 90 10 100 S 27 -bold,dotted,setlinewidth(5) L 2 0 100 10 110 S 6 -filled C 7 -#ff0000 P 3 0 110 10 110 10 120 S 8 -unfilled P 3 0 120 10 120 10 130 E 5 135 5 5 ";
+  a;
+}

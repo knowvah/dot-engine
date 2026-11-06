@@ -13,10 +13,12 @@
 
 import type { Graph } from '../../model/graph.js';
 import type { LayoutEngine } from '../../gvc/context.js';
+import { agdelsubg } from '../../model/cgraph-ops.js';
 import { csrand } from '../../common/crand.js';
 import { graphInit } from '../../common/graph-init.js';
 import { setEdgeTypeFromAttr } from '../dot/index.js';
 import { EDGETYPE_LINE, splineEdgesShifted } from '../neato/splines.js';
+import { ndimOf } from '../neato/init-dim.js';
 import { sepFactor, DFLT_MARGIN } from '../neato/sep-factor.js';
 import {
   ccomps,
@@ -50,9 +52,6 @@ import {
 export { sfdpInitGraph, sfdpCleanup, tuneControl, makeMatrix, getSizes, getPos };
 export { multilevelSpringElectricalEmbedding };
 
-/** GD_ndim is fixed at 2 — see sfdpInitGraph. */
-const DIM = 2;
-
 /**
  * Lay out one connected graph: adjacency matrix, label half-sizes,
  * starting positions, the multilevel embedding, ND_pos write-back.
@@ -61,16 +60,17 @@ const DIM = 2;
 export function sfdpLayoutComponent(
   g: Graph, ctrl: SpringElectricalControl, pad: { x: number; y: number },
 ): void {
+  const ndim = ndimOf(g);
   const A = makeMatrix(g);
   // edge_labeling_scheme > 0 (|edgelabel| nodes) is not ported.
-  const sizes = ctrl.overlap >= 0 ? getSizes(g, pad) : null;
-  const pos = getPos(g, DIM);
+  const sizes = ctrl.overlap >= 0 ? getSizes(g, pad, ndim) : null;
+  const pos = getPos(g, ndim);
 
-  multilevelSpringElectricalEmbedding(DIM, A, ctrl, sizes, pos);
+  multilevelSpringElectricalEmbedding(ndim, A, ctrl, sizes, pos);
 
   for (const n of g.nodes.values()) {
     const i = n.info.id!;
-    n.info.pos = [pos[i * DIM]!, pos[i * DIM + 1]!];
+    n.info.pos = pos.slice(i * ndim, (i + 1) * ndim);
   }
 }
 
@@ -100,7 +100,10 @@ function resolveControl(g: Graph): {
   const flag = overlap === undefined ? 'prism0' : overlap;
   warnUnrecognizedOverlap(flag); // graphAdjustMode → getAdjustMode, once per layout
   const ntry = overlapPrismTries(flag);
-  if (ntry !== null) {
+  // C: `int doAdjust = Ndim == 2;` — in 3 or more dimensions no overlap is
+  // removed at all (ctrl.overlap = -1 and no removeOverlapWith).
+  const doAdjust = ndimOf(g) === 2;
+  if (ntry !== null && doAdjust) {
     // AM_PRISM && doAdjust: overlap removal happens inside sfdp.
     ctrl.overlap = ntry;
     ctrl.initialScaling = lateDouble(
@@ -112,9 +115,10 @@ function resolveControl(g: Graph): {
     }
     return { ctrl, pad, doAdjust: false };
   }
-  // Non-PRISM: turn off in-sfdp removal; run removeOverlapWith after layout.
+  // Non-PRISM (or Ndim != 2): turn off in-sfdp removal; run removeOverlapWith
+  // after layout only when doAdjust.
   ctrl.overlap = -1;
-  return { ctrl, pad, doAdjust: true };
+  return { ctrl, pad, doAdjust };
 }
 
 /**
@@ -218,6 +222,7 @@ export function sfdpLayout(g: Graph): void {
     } else {
       layoutComponents(g, comps, ctrl, pad, doAdjust);
     }
+    for (const c of comps) agdelsubg(g, c); // @see lib/sfdpgen/sfdpinit.c:289
   }
 
   postprocess(g, singleComponent);

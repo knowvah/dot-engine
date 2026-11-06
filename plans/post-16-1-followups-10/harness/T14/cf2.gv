@@ -1,0 +1,21 @@
+graph G {
+  e
+  subgraph clusterA {
+    a -- b;
+    subgraph clusterC {
+      C -- D;
+    }
+  }
+  subgraph clusterB {
+    d -- f
+  }
+  d -- D
+  subgraph clusterB {
+      "__0:clusterB" [label="",style=invis,shape=box];
+  }
+  subgraph clusterA { subgraph clusterC {
+      "__0:clusterC" [label="",style=invis,shape=box];
+  }}
+  e -- "__0:clusterB"
+  "__0:clusterC" -- "__0:clusterB"
+}

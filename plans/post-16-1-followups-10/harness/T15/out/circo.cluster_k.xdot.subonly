@@ -1,0 +1,22 @@
+== render 1
+digraph cluster_k {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 36 180 36 180 0 ",
+		bb="0,0,180,36",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	f	[_draw_="c 7 -#000000 e 27 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 4.66 1 -f ",
+		height=0.5,
+		pos="27,18",
+		width=0.75];
+	g	[_draw_="c 7 -#000000 p 4 180 36 126 36 126 0 180 0 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 153 13.8 0 7 1 -g ",
+		height=0.5,
+		pos="153,18",
+		shape=box,
+		width=0.75];
+	f -> g	[_draw_="c 7 -#000000 B 4 54.34 18 71.92 18 95.04 18 114.47 18 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 114.2 21.5 124.2 18 114.2 14.5 ",
+		pos="e,125.71,18 54.34,18 71.925,18 95.036,18 114.47,18"];
+}

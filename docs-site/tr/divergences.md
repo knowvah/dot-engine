@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -118,7 +118,7 @@ Bu çalışmanın dürüst tavanı, A1'i “başvuru platformunda etkin fark yok
 kadarki sonuçlar (aşağıda) bu tavana uyar: `circo`/`twopi`/`osage` her biri bir
 avuç gerçek A1/A9 örneği ortaya çıkarıp kök nedenine indirdi; `neato`/`fdp`/`sfdp`
 ise 929 öğelik evrende (graphviz 16.1.0) yerel çıktının 0.5pt içinde sırasıyla
-%99,8/%96,6/%68,0 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
+%99,8/%96,6/%68,1 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
 eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 929 öğelik evrenin her
 farklılaşan kimliği, triyajsız bir sürüklenme olarak bırakılmak yerine enjeksiyonla
 (çözücü sürüklenmesi ile port kusuru) tek tek nedene bağlanmıştır. Aşağıdaki yinelemeli motor nitelendirmesine
@@ -205,7 +205,7 @@ kâhininin işleyemediği girdileri dışarıda bırakır, bkz. [Uygunluk](./con
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (%99,8) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (%96,6) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (%68,0) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (%68,1) | 296 | 0 | 0 |
 
 (`fdp` geçme oranı %77,5'ten yükseldi, çünkü daha önceki işlenmiş
 tarama bir önceki görevin port durumundan önceye aitti.
@@ -239,6 +239,8 @@ sınıf kabulü, aklanan kümeyi resmileştirir; güncel sayılar motor başına
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
+
+**sfdp çözücü kaymasının başladığı yer (bölüm 10, T2).** Araçlandırılmış yerel sfdp, küçük id'lerde taşıma ile karşılaştırılarak izlendiğinde, itme kuvvetindeki `pow(dist, 1-p)` ifadesinin son bitinde ilk kez ayrışır (`lib/sfdpgen/spring_electrical.c:625,617`; taşıma `spring-electrical.ts:260`). `flatedge` üzerinde `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` yerelde `...8811p+2`, taşımada `...8812p+2` verir; `graphs-p` ve `1767` aynı şekilde başlar. Uyarlamalı soğutma bu biti büyütür: `x[0]`'a 5. yinelemede ulaşır, `max|dx|` 100. yinelemede 2.4e-9, 200'de 3.9e-5 olur ve adım 244. yinelemede döner. Bunu iki denetimli çalıştırma doğrular. Yerelin bitleri tam bu 8 çağrıda uygulandığında `flatedge`'in 62090 satırlık izi aynıdır ve macOS'un gerçek `pow`'u bir Node-API eklentisinin arkasındayken geçmeyen 292 id'den 288'inin izi bit bit aynıdır (diğer 4, hepsi `overlap=false`, yalnızca `xfinal`'da ayrışır). Çözücüde, çok düzeyli kısımda, quadtree'de ve seyrek kodda işlem sırası ve birleştirme dışlandı. Bu, ana makinenin libm'idir ve A1 kapsamında kabul edilmiştir (aşağıdaki bilinen boşluklar listesindeki `pow` maddesine bakın); `src/` değişmedi, bu yüzden sayılar 929'da 632 olarak kalır. Yalnızca macOS'ta yapılan deney 929'da yaklaşık 923'e ulaştı; bu, kâhinin `pow`'unu ölçer ve kütüphanenin her ana makinede yapabileceği bir şey değildir. İtme kuvvetinde `Math.pow`, 292'den 153'ünü geçirir ancak bugün geçen 6 id'yi geriletir, bu yüzden uygulanmadı. Tablodaki sfdp satırı [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)'dekine eşittir: 1 ayrışan artı 295 kabul edilen 296 eder ve orada 1 id daha kâhin tarafında deterministik olmayan olarak listelenir.
 
 **A1-drift sınıf kabulü (yinelemeli motorlar, hesaplanan üyelik).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`,
@@ -1287,6 +1289,20 @@ farklıdır. `v2-silent-gaps` görevi tarafından bulundu
   üretilemez.
 - **Portun tanımladığı yerel çökmeler.** Yerel Graphviz, neato `mode=KK` ile `model=mds` ve `len` taşıyan bir kenar durumunda neredeyse her çalıştırmada 139 koduyla çıkar (yaklaşık 1500 çalıştırmada 1 hayatta kalan; `mds_model`, `GD_dist` dizisini 1 tabanlı bir sıra numarasıyla indeksler: yığın taşması). Port aralık dışı hücreleri atar ve sonucu o hayatta kalanla 0,01 toleransla eşleşir. `circuit_model` 1 tabanlı `AGSEQ` ile indeksler (`circuit.c:46`); bu yüzden matrisinin 0. satırı hiç yazılmaz ve matris, bağlantılı olsun olmasın her grafikte tekildir: yerel `mode=KK` ile `model=circuit` hiçbir zaman circuit yerleşimi üretmez. İşlem hayatta kalırsa `Warning: graph <name> is disconnected. Hence, the circuit model` yazdırır ve en kısa yollara geri döner; son oluşturulan düğümün kenarı olduğunda aynı hata satır işaretçisi dizisinin ötesini okur, bu yüzden yerel sürüm çoğunlukla 139 ile çıkar (deneme grafiğinde 4 çalıştırmanın yaklaşık 3'ü). Port her zaman hayatta kalan yolu izler: uyarı, ardından en kısa yollar; graf bağlantılı olsun olmasın. `pack=true` ile yerel sürüm her çalıştırmada çöktü (iki grafın her birinde 3000'den fazla çalıştırmada 0 hayatta kalan); karar gereği port, her bileşen için kendi adı altında (`_neato_cc0`, `_neato_cc1`, ...) uyarır, en kısa yolları kullanır ve paketler. Bu birleşim için yerel çıktı yoktur; yerleşim, aynı graf için yerel `model=shortpath` ile aynıdır.
 - **VPSC eşitlik sırası, yığın adresini değil oluşturulma sırasını izler.** Yerel `IncVPSC::splitBlocks`, yığın adresine göre sıralı bir `std::set<Block*>` içine eleman eklerken onu dolaşır ve `CmpNodePos` konum eşitliklerini adresle bozar; bu yüzden `overlap=vpsc|ipsep` ve kısıtlı `mode=ipsep` için yerel çıktı, konumlar eşit olduğunda çalıştırmadan çalıştırmaya değişir (bir durumda 300 çalıştırmada 21 farklı sonuç çıktı). Port eşitlikleri oluşturulma sırasına göre sıralar ve yeni blokları her zaman ziyaret eder; bu yüzden çıktısı belirlenimcidir. Süpürme olaylarındaki eşitlikler libc++'ı izler: port, onun `std::sort` işlevinin bir portunu içerir; bu yüzden eşitlik sırası yerelle aynıdır. Denetlenen eşitlik durumlarında örneklenmiş bir yerel çalıştırmaya eşittir. Daha önce örneklenen 29 yerel sonucun hiçbiriyle eşleşmeyen 40 düğümlü durum (`dir1 n40`) açıklanmıştır: 332 yerel çalıştırmada kahinin `libvpsc.a` kütüphanesi 17 farklı çıktı verdi; yalnızca `Blocks` kümesini oluşturulma dizinine göre sıralayan yerel bir kopya ise 332 çalıştırmada 1 çıktı verdi ve port bununla bit düzeyinde aynıdır. Bu durumda farkın tamamı blokların adres sırasıdır; iddia yalnızca `dir1 n40` üzerinde ölçülmüştür (takip maddesi 110).
+
+### `dim`, `dimen` ve `z` (neato, sfdp) {#dim-dimen-and-z-neato-sfdp}
+
+neato ve sfdp, her kipte C'nin `MAXDIM` (10) değeriyle sınırlı `dim` boyutta yerleşim yapar. Tek başına `dim=3` 3-B yerleşim yapar ama 2 koordinat yazar; tek başına `dimen=3`, `dim`'i 3 yapar ve 3 yazar; `dim=11 dimen=11` 10 yazar. z koordinatı yalnızca `pos` ve `z` öznitelikleriyle erişilebilir; `getLayout` değişmedi. fdp, circo, twopi, osage ve patchwork, C'nin zorladığı gibi 2-B kalır. 2-B üzerindeki `mode=hier`, taşınmış olan `opt_smart_init` ile (`constrained_majorization.c:95`, `stress.c:874`) (`dim`-1) boyutlu bir yerleşimden başlar; yönlü kenarı veya hiyerarşisi olmayan bir `mode=hier` grafı artık hata fırlatmak yerine çizilir. `mode=major start=self` hâlâ hata fırlatır. Oluşturucunun `GVRENDER_DOES_Z` dalı (`lib/common/emit.c:1660,2734`) taşınmadı: z çizen bir aygıt gerektirir ve buradaki hiçbir aygıt çizmez.
+
+### Yerel çökmeler ve yığın adresine bağlı değişim (bölüm 10) {#native-crashes-and-heap-address-variation-part-10}
+
+Her madde, yerelin ne yaptığını ve taşımanın ne yaptığını belirtir.
+
+- **İki düğümde `mode=hier dim=4`.** Yerel, `directions` dizisinin ötesine yazar (`lib/neatogen/stress.c:514`) ve bazı çalıştırmalarda durur (çıkış kodu 133, 16 çalıştırmanın 5'i). Taşıma çizer.
+- **`len=0.001` ile `mode=hier dim=3`.** Yerel bir sinyalle ölür: 19 düğümde 8 çalıştırmanın 3'ü (SIGBUS) ve 27 düğümde 8'in 8'i (SIGBUS, SIGSEGV, SIGTRAP). Yığın, `stress_majorization_kD_mkernel` altında `mfm_alloc`'tur; bu, yığın bozulmasını gösterir; tam yer kanıtlanmadı. Taşıma çizer ve yerelin hayatta kaldığı yerde (19 düğüm, 8 çalıştırmanın 5'i) bayt bayt aynıdır.
+- **fdp'nin aynı grafikteki ikinci yerleşimleri yerelde yığın adresleriyle değişir.** `deriveGraph` ve `genPorts` düğüm işaretçilerini karşılaştırır (`lib/fdpgen/layout.c:466,501,637`). Her biri 12 yerel çalıştırmada, `graphs-fdp`'nin `plain` olarak 2. çıktısı 2 sınıfa (1 ve 11 çalıştırma), `1581`'in `dot` olarak 2. çıktısı 2 sınıfa (8 ve 4 çalıştırma) düşer; taşıma, `plain`'in 1 çalıştırmalık sınıfıyla bayt bayt aynıdır ve `dot`'un 4 çalıştırmalık sınıfına 5e-13 içindedir. Bu üç karşılaştırması `ND_id` üzerinde olacak şekilde yeniden derlenen yerel 8'de 8 tekrarlanır ve `plain`'de taşımayla bayt bayt aynıdır. Yalnızca taşımaya ait bir seçim: yerel `attach_attrs`, `undoClusterEdges` ile biter (`lib/common/output.c:403-404`) ve taşıma bu geri almayı oluşturmada değil bir sonraki yerleşimde yapar, çünkü yazıcıları `__0:` vekillerini okur.
+- **Grafiğin `_draw_` veya `_background` içinde `T` işlemi.** Yerel segfault ile çöker (çıkış kodu 139): `op->span`, neato `-n` dışında NULL'dır (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Taşıma bunun için metin çizmez.
+- **Bir alt grafikte neato.** Yerel, test edilen tek grafiğin her iki alt grafiğini, yani sıradan bir alt grafiği ve bir kümeyi yerleştirirken 139 ile çıktı. Taşıma çıktı döndürür.
 
 ---
 

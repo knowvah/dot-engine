@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -113,7 +113,7 @@ wejście pod jego własnym silnikiem zamiast `dot`. Uczciwy pułap tej pracy to
 **zawężenie** A1 do „braku aktywnej rozbieżności na platformie referencyjnej”, nigdy
 wyeliminowanie zastrzeżenia o różnicach między platformami; dotychczasowe wyniki (poniżej) mieszczą się w tym
 pułapie: `circo`/`twopi`/`osage` ujawniły i rozłożyły na przyczyny źródłowe garstkę
-prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 99.8/96.6/68.0%
+prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 99.8/96.6/68.1%
 w granicach 0.5pt od natywnego na zbiorze 929 pozycji (graphviz 16.1.0), co oznacza, że przeportowana
 arytmetyka (`fma.ts`, `arm-pow.ts`, dopasowany PRNG) działa dla większości grafów —
 a każdy rozbieżny id ze zbioru 929 pozycji jest indywidualnie przypisany przez wstrzyknięcie (dryf
@@ -199,7 +199,7 @@ wejścia, których wyrocznia w C nie potrafi wyrenderować, zgodnie z [Zgodnośc
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
 
 (Wskaźnik zaliczeń `fdp` wzrósł z 77.5%, ponieważ wcześniejszy zatwierdzony przebieg
 przedstawiał stan portu sprzed poprzedniej misji.
@@ -237,6 +237,8 @@ panelach poszczególnych silników
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
+
+**Gdzie zaczyna się dryf solvera sfdp (część 10, T2).** Zinstrumentowany natywny sfdp, śledzony względem portu na małych idach, po raz pierwszy różni się na ostatnim bicie `pow(dist, 1-p)` w sile odpychania (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). W `flatedge` `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` daje natywnie `...8811p+2`, a w porcie `...8812p+2`; `graphs-p` i `1767` zaczynają się tak samo. Adaptacyjne chłodzenie wzmacnia ten bit: dociera do `x[0]` w iteracji 5, `max|dx|` wynosi 2.4e-9 w iteracji 100 i 3.9e-5 w 200, a krok się przełącza w iteracji 244. Potwierdzają to dwa kontrolowane przebiegi. Przy bitach natywnych dla dokładnie tych 8 wywołań 62090-wierszowy ślad `flatedge` jest identyczny, a z prawdziwym `pow` z macOS za dodatkiem Node-API 288 z 292 idów, które nie przechodziły, ma ślady identyczne co do bitu (pozostałe 4, wszystkie `overlap=false`, różnią się tylko przy `xfinal`). Wykluczono kolejność operacji i fuzję w solverze, multilevel, quadtree i kodzie rzadkim. To libm hosta, zaakceptowana w ramach A1 (zob. pozycję `pow` na liście znanych luk poniżej); `src/` się nie zmienił, więc liczby pozostają 632 z 929. Eksperyment tylko na macOS osiągnął około 923 z 929; mierzy `pow` wyroczni i nie jest czymś, co biblioteka potrafi na każdym hoście. `Math.pow` w sile odpychania przechodzi 153 z 292, ale pogarsza 6 idów, które dziś przechodzą, więc nie został zastosowany. Wiersz sfdp w tabeli jest równy wierszowi z [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 rozbieżny plus 295 zaakceptowanych daje 296, a 1 kolejny id jest tam wykazany jako niedeterministyczny u wyroczni.
 
 **Akceptacja klasy A1-drift (silniki iteracyjne, członkostwo wyliczane).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -1287,6 +1289,20 @@ różni się od natywnego Graphviz. Znalezione przez misję `v2-silent-gaps`
   nie daje się odtworzyć z krótkiego modelu tak jak `hypot`.
 - **Awarie natywne, które port definiuje.** Natywny Graphviz kończy działanie kodem 139 w neato `mode=KK` z `model=mds` i krawędzią z `len` w niemal każdym uruchomieniu (1 ocalały na około 1500; `mds_model` indeksuje `GD_dist` numerem sekwencyjnym liczonym od 1: przepełnienie sterty). Port odrzuca komórki spoza zakresu, a jego wynik zgadza się z tym ocalałym z dokładnością 0,01. `circuit_model` indeksuje `AGSEQ` liczonym od 1 (`circuit.c:46`), więc wiersz 0 jego macierzy nigdy nie jest zapisywany, a macierz jest osobliwa dla każdego grafu, spójnego i niespójnego: natywny `mode=KK` z `model=circuit` nigdy nie tworzy układu circuit. Gdy proces przeżyje, wypisuje `Warning: graph <name> is disconnected. Hence, the circuit model` i wraca do najkrótszych ścieżek; ten sam błąd czyta poza tablicą wskaźników wierszy, gdy ostatnio utworzony węzeł ma krawędź, więc natywny program zwykle kończy się kodem 139 (około 3 uruchomień na 4 na grafie próbnym). Port zawsze wybiera ścieżkę ocalałego: ostrzeżenie, potem najkrótsze ścieżki, dla grafu spójnego i niespójnego. Z `pack=true` natywny program zawiesił się w każdym uruchomieniu (0 ocalałych na ponad 3000 dla każdego z dwóch grafów); decyzją port ostrzega dla każdej składowej pod własną nazwą (`_neato_cc0`, `_neato_cc1`, ...), używa najkrótszych ścieżek i pakuje. Dla tej kombinacji nie ma natywnego wyniku; układ jest równy natywnemu `model=shortpath` dla tego samego grafu.
 - **Kolejność remisów w VPSC wynika z kolejności utworzenia, nie z adresu sterty.** Natywny `IncVPSC::splitBlocks` przegląda `std::set<Block*>` uporządkowany według adresu sterty, wstawiając do niego elementy, a `CmpNodePos` rozstrzyga remisy pozycji adresem, więc natywny wynik dla `overlap=vpsc|ipsep` i ograniczonego `mode=ipsep` zmienia się między uruchomieniami przy równych pozycjach (jeden przypadek dał 21 różnych wyników w 300 uruchomieniach). Port porządkuje remisy według kolejności utworzenia i zawsze odwiedza nowe bloki, więc jego wynik jest deterministyczny. Remisy zdarzeń przemiatania wynikają z libc++: port zawiera port jego `std::sort`, więc kolejność remisów jest zgodna z natywną. W sprawdzonych przypadkach remisów jest równy próbkowanemu uruchomieniu natywnemu. Przypadek z 40 węzłami (`dir1 n40`), który wcześniej nie zgadzał się z żadnym z 29 próbkowanych wyników natywnych, został wyjaśniony: w 332 uruchomieniach natywnych `libvpsc.a` wyroczni dała 17 różnych wyników, a natywna kopia porządkująca tylko `Blocks` według indeksu utworzenia dała 1 w 332, i port jest z nią równy co do bitu. Kolejność adresów bloków to cała różnica w tym przypadku; twierdzenie jest zmierzone tylko na `dir1 n40` (zadanie następcze 110).
+
+### `dim`, `dimen` i `z` (neato, sfdp) {#dim-dimen-and-z-neato-sfdp}
+
+neato i sfdp układają w `dim` wymiarach w każdym trybie, ograniczonych do `MAXDIM` (10) z C. Samo `dim=3` układa w 3-D, ale wypisuje 2 współrzędne; samo `dimen=3` ustawia `dim` na 3 i wypisuje 3; `dim=11 dimen=11` wypisuje 10. Współrzędna z jest dostępna tylko przez atrybuty `pos` i `z`; `getLayout` jest bez zmian. fdp, circo, twopi, osage i patchwork pozostają 2-D, jak wymusza C. `mode=hier` powyżej 2-D startuje z układu o (`dim`-1) wymiarach przez `opt_smart_init` (`constrained_majorization.c:95`, `stress.c:874`), który jest przeportowany; graf z `mode=hier` bez skierowanej krawędzi lub bez hierarchii jest teraz renderowany zamiast zgłaszać błąd. `mode=major start=self` nadal zgłasza błąd. Gałąź renderera `GVRENDER_DOES_Z` (`lib/common/emit.c:1660,2734`) nie jest przeportowana: wymaga urządzenia rysującego z, a żadne tutaj tego nie robi.
+
+### Natywne awarie i zmienność zależna od adresów sterty (część 10) {#native-crashes-and-heap-address-variation-part-10}
+
+Każda pozycja mówi, co robi natyw, a co port.
+
+- **`mode=hier dim=4` na dwóch węzłach.** Natyw zapisuje poza `directions` (`lib/neatogen/stress.c:514`) i w niektórych przebiegach przerywa (kod 133 w 5 z 16 przebiegów). Port renderuje.
+- **`mode=hier dim=3` z `len=0.001`.** Natyw ginie od sygnału: 3 z 8 przebiegów przy 19 węzłach (SIGBUS) i 8 z 8 przy 27 węzłach (SIGBUS, SIGSEGV, SIGTRAP). Stos to `mfm_alloc` pod `stress_majorization_kD_mkernel`, co pokazuje uszkodzenie sterty; dokładne miejsce nie jest udowodnione. Port renderuje, a tam, gdzie natyw przeżywa (19 węzłów, 5 z 8 przebiegów), jest identyczny bajt w bajt.
+- **Drugie układy fdp na jednym grafie zmieniają się w natywie wraz z adresami sterty.** `deriveGraph` i `genPorts` porównują wskaźniki węzłów (`lib/fdpgen/layout.c:466,501,637`). Przy 12 przebiegach natywnych każdy renderowanie 2 `graphs-fdp` jako `plain` wpada w 2 klasy (1 i 11 przebiegów), a `1581` jako `dot` w 2 klasy (8 i 4 przebiegi); port jest identyczny bajt w bajt z klasą 1 przebiegu `plain` i w granicach 5e-13 od klasy 4 przebiegów `dot`. Natyw zbudowany z tymi trzema porównaniami na `ND_id` powtarza się 8 z 8 i na `plain` jest identyczny bajt w bajt z portem. Wybór tylko portu: natywne `attach_attrs` kończy się `undoClusterEdges` (`lib/common/output.c:403-404`), a port wykonuje to cofnięcie przy następnym układzie, nie przy renderowaniu, ponieważ jego zapisywacze czytają proxy `__0:`.
+- **Operacja `T` w `_draw_` lub `_background` grafu.** Natyw kończy się segfaultem (kod 139): `op->span` jest NULL poza neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Port nie rysuje dla niej tekstu.
+- **neato na podgrafie.** Natyw zakończył się kodem 139 przy układaniu obu podgrafów jednego przetestowanego grafu, zwykłego podgrafu i klastra. Port zwraca wynik.
 
 ---
 

@@ -1,0 +1,5 @@
+digraph G {
+  bgcolor="red:blue";
+  _background="P 4 0 0 0 40 40 40 40 0 ";
+  a -> b;
+}

@@ -1,0 +1,14 @@
+graph G {
+  dim=3;
+  dimen=3;
+  pack=true;
+  a -- b;
+  b -- c;
+  c -- a;
+  d -- e;
+  e -- f;
+  f -- g;
+  g -- d;
+  h -- i;
+  i -- j;
+}

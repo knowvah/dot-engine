@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -115,7 +115,7 @@ minden bemenetet a saját motorjával mér fel a `dot` helyett. A munka őszinte
 hogy az A1-et „nincs aktív eltérés a referenciaplatformon” szintre **szűkítsük**, és a
 platformok közötti fenntartást soha ne szüntessük meg; az eddigi eredmények (alább) tartják ezt a
 plafont: a `circo`/`twopi`/`osage` mindegyike felszínre hozott és gyökérokig elemzett néhány
-valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 929 elemes univerzumon (graphviz 16.1.0) 99.8/96.6/68.0%-ban
+valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 929 elemes univerzumon (graphviz 16.1.0) 99.8/96.6/68.1%-ban
 van 0.5 pt-on belül a natívtól, vagyis a portolt
 aritmetika (`fma.ts`, `arm-pow.ts`, összehangolt PRNG) a legtöbb gráfnál tartja magát — és
 a 929 elemes univerzum minden eltérő azonosítója egyenként injektálással van tulajdonítva (megoldó-
@@ -203,7 +203,7 @@ azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, a [Megfelelős
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
 
 (Az `fdp` átmenési aránya azért nőtt a korábbi
 77.5%-ról, mert a korábbi rögzített végigfuttatás az előző küldetés portolási
@@ -241,6 +241,8 @@ motoronkénti irányítópultokon találhatók
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
+
+**Hol kezdődik az sfdp megoldójának eltérése (10. rész, T2).** Egy műszerezett natív sfdp, kis id-kön a porttal szemben nyomon követve, először a taszítóerő `pow(dist, 1-p)` kifejezésének utolsó bitjén tér el (`lib/sfdpgen/spring_electrical.c:625,617`; port: `spring-electrical.ts:260`). A `flatedge` esetén a `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` natívan `...8811p+2`-t, a portban `...8812p+2`-t ad; a `graphs-p` és az `1767` ugyanígy kezdődik. Az adaptív hűtés felerősíti a bitet: az 5. iterációban eléri `x[0]`-t, `max|dx|` a 100. iterációban 2.4e-9, a 200.-ban 3.9e-5, a lépés pedig a 244. iterációban átbillen. Ezt két ellenőrzött futás igazolja. A natív bitjeivel pontosan ennél a 8 hívásnál a `flatedge` 62090 soros nyoma azonos, a macOS valódi `pow`-jával egy Node-API-bővítmény mögött pedig a 292 nem teljesítő id közül 288 bitazonos nyomot ad (a másik 4, mind `overlap=false`, csak `xfinal`-nál tér el). A műveletsorrendet és a fúziót a megoldóban, a multilevelben, a quadtree-ben és a ritka kódban kizártuk. Ez a gazdagép libm-je, az A1 alatt elfogadva (lásd a `pow` pontot az alábbi ismert hiányok listájában); a `src/` nem változott, így a számok 632 a 929-ből maradnak. A csak macOS-en futó kísérlet nagyjából 923-ig jutott 929-ből; ez az orákulum `pow`-ját méri, nem olyasmi, amit a könyvtár minden gazdagépen meg tud tenni. A `Math.pow` a taszítóerőben a 292-ből 153-at teljesít, de 6 ma teljesítő id-t visszavet, ezért nem alkalmaztuk. A táblázat sfdp sora megegyezik a [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) soráéval: 1 eltérő plusz 295 elfogadott adja a 296-ot, és még 1 id szerepel ott nemdeterminisztikusként az orákulumnál.
 
 **Az A1-drift osztályelfogadás (iteratív motorok, számított tagság).**
 <a id="a1-drift-iterative-engines"></a> A `test/corpus/accepted-divergences-engines.json`
@@ -1312,6 +1314,20 @@ eltér a natív Graphviz-től. A `v2-silent-gaps` küldetés találta meg
   `cos` függvénye nem reprodukálható rövid modellből úgy, ahogy a `hypot`.
 - **Natív összeomlások, amelyeket a portolt változat definiál.** A natív Graphviz neato `mode=KK` és `model=mds` mellett, `len` értékű éllel szinte minden futtatáskor 139-es kóddal lép ki (kb. 1500 futtatásból 1 éli túl; a `mds_model` a `GD_dist` tömböt 1-alapú sorszámmal indexeli: heap-túlcsordulás). A port eldobja a tartományon kívüli cellákat, és az eredménye 0,01 pontossággal megegyezik azzal a túlélővel. A `circuit_model` az 1-alapú `AGSEQ` szerint indexel (`circuit.c:46`), ezért a mátrixának 0. sora soha nem íródik, és a mátrix minden gráfon szinguláris, összefüggőn és nem összefüggőn is: a natív `mode=KK` `model=circuit` mellett sosem ad circuit elrendezést. Ha a folyamat túléli, kiírja a következőt: `Warning: graph <name> is disconnected. Hence, the circuit model`, és a legrövidebb utakra tér vissza; ugyanez a hiba a sorutató-tömbön túl olvas, ha az utoljára létrehozott csomópontnak van éle, ezért a natív program többnyire 139-cel lép ki (a próbagráfon a futtatások kb. 3/4-ében). A port mindig a túlélő utat választja: a figyelmeztetést, majd a legrövidebb utakat, összefüggő gráfon és nem összefüggőn is. `pack=true` mellett a natív program minden futtatáskor összeomlott (két gráf mindegyikén 3000 feletti futtatásból 0 túlélő); döntés alapján a port komponensenként, saját név alatt (`_neato_cc0`, `_neato_cc1`, ...) figyelmeztet, a legrövidebb utakat használja, és csomagol. Erre a kombinációra nincs natív kimenet; az elrendezés megegyezik a natív `model=shortpath` eredményével ugyanarra a gráfra.
 - **A VPSC egyenlőségi sorrendje a létrehozás sorrendjét követi, nem a heapcímet.** A natív `IncVPSC::splitBlocks` egy heapcím szerint rendezett `std::set<Block*>` halmazt jár be, miközben elemeket szúr be, a `CmpNodePos` pedig a pozíciók egyenlőségét a cím alapján dönti el, így az `overlap=vpsc|ipsep` és a kényszerített `mode=ipsep` natív kimenete egyenlő pozíciók esetén futtatásról futtatásra változik (egy esetben 300 futtatás 21 különböző eredményt adott). A port az egyenlőségeket létrehozási sorrend szerint rendezi, és mindig meglátogatja az új blokkokat, így a kimenete determinisztikus. A pásztázóvonal-események egyenlőségei a libc++-t követik: a port tartalmazza a `std::sort` portját, így az egyenlőségi sorrend megegyezik a natívval. A vizsgált egyenlőségi eseteken megegyezik egy mintavételezett natív futtatással. A 40 csomópontos eset (`dir1 n40`), amely korábban a 29 mintavételezett natív eredmény egyikével sem egyezett, magyarázatot kapott: 332 natív futtatásban az orákulum `libvpsc.a` könyvtára 17 különböző kimenetet adott, míg egy natív másolat, amely csak a `Blocks` halmazt rendezi létrehozási index szerint, 332-ből 1 kimenetet adott, és a port ezzel bitre pontosan megegyezik. A blokkok címsorrendje ennek az esetnek a teljes különbsége; az állítás csak a `dir1 n40` esetre van mérve (110. követő elem).
+
+### `dim`, `dimen` és `z` (neato, sfdp) {#dim-dimen-and-z-neato-sfdp}
+
+A neato és az sfdp minden módban `dim` dimenzióban rendez el, a C `MAXDIM` (10) értékére korlátozva. Önmagában a `dim=3` 3-D-ben rendez el, de 2 koordinátát ír ki; önmagában a `dimen=3` a `dim`-et 3-ra állítja és 3-at ír ki; a `dim=11 dimen=11` 10-et ír ki. A z koordináta csak a `pos` és a `z` attribútumon át érhető el; a `getLayout` változatlan. Az fdp, a circo, a twopi, az osage és a patchwork 2-D marad, ahogy a C kikényszeríti. A 2-D feletti `mode=hier` egy (`dim`-1) dimenziós elrendezésből indul az `opt_smart_init`-en át (`constrained_majorization.c:95`, `stress.c:874`), amely portolva van; az irányított él nélküli vagy hierarchia nélküli `mode=hier` gráf most kirajzolódik hibadobás helyett. A `mode=major start=self` továbbra is hibát dob. A renderer `GVRENDER_DOES_Z` ága (`lib/common/emit.c:1660,2734`) nincs portolva: olyan eszközt igényel, amely z-t rajzol, és itt egy sem ilyen.
+
+### Natív összeomlások és a heapcímektől függő változás (10. rész) {#native-crashes-and-heap-address-variation-part-10}
+
+Minden pont megmondja, mit csinál a natív és mit a port.
+
+- **`mode=hier dim=4` két csomóponton.** A natív a `directions` mögé ír (`lib/neatogen/stress.c:514`), és egyes futásokban megszakad (kilépési kód 133, 16 futásból 5-ben). A port kirajzol.
+- **`mode=hier dim=3` `len=0.001`-gyel.** A natív jelzéstől hal meg: 8 futásból 3 19 csomópontnál (SIGBUS) és 8-ból 8 27 csomópontnál (SIGBUS, SIGSEGV, SIGTRAP). A verem `mfm_alloc` a `stress_majorization_kD_mkernel` alatt, ami heapsérülést mutat; a pontos hely nincs bizonyítva. A port kirajzol, és ahol a natív túléli (19 csomópont, 8-ból 5 futás), bájtra azonos.
+- **Az fdp második elrendezései ugyanazon a gráfon a natívban a heapcímekkel változnak.** A `deriveGraph` és a `genPorts` csomópontmutatókat hasonlít össze (`lib/fdpgen/layout.c:466,501,637`). Egyenként 12 natív futás alatt a `graphs-fdp` 2. renderelése `plain`-ként 2 osztályba esik (1 és 11 futás), az `1581` `dot`-ként 2 osztályba (8 és 4 futás); a port bájtra azonos a `plain` 1 futásos osztályával, és 5e-13-on belül van a `dot` 4 futásos osztályától. Az a natív build, amely e három összehasonlítást `ND_id`-n végzi, 8-ból 8-szor ismétlődik, és `plain`-en bájtra azonos a porttal. Csak a port döntése: a natív `attach_attrs` `undoClusterEdges`-szel végződik (`lib/common/output.c:403-404`), a port pedig ezt a visszavonást a következő elrendezésnél végzi, nem renderelésnél, mert az írói a `__0:` proxykat olvassák.
+- **`T` művelet a gráf `_draw_` vagy `_background` attribútumában.** A natív szegmentációs hibával leáll (kilépési kód 139): az `op->span` a neato `-n` kivételével NULL (`xdotBB`, `lib/neatogen/neatoinit.c:560`). A port nem rajzol hozzá szöveget.
+- **neato egy részgráfon.** A natív 139-cel lépett ki az egyetlen tesztelt gráf mindkét részgráfjának elrendezésekor, egy sima részgráfnál és egy klaszternél. A port kimenetet ad vissza.
 
 ---
 

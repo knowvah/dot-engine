@@ -1,0 +1,33 @@
+== render 1
+graph 1 3.2222 1.3727
+node a 2.8472 0.95833 0.75 0.5 a solid ellipse black lightgrey
+node b 0.80556 0.25 0.75 0.5 b solid ellipse black lightgrey
+node c 2.0417 0.25 0.75 0.5 c solid ellipse black lightgrey
+node d 2.8472 0.25 0.75 0.5 d solid ellipse black lightgrey
+node e 2.0417 0.96411 0.75 0.8171 "E\nx" solid ellipse black lightgrey
+node f 0.40278 0.95833 0.75 0.5 f solid ellipse black lightgrey
+node g 1.2083 0.95833 0.75 0.5 g solid box black lightgrey
+edge a b 4 2.5101 0.84137 2.1776 0.72602 1.666 0.54854 1.2901 0.41809 solid black
+edge a f 4 2.4706 0.95833 2.0609 0.95833 1.4025 0.95833 0.93895 0.95833 solid black
+edge b c 4 1.1831 0.25 1.284 0.25 1.3951 0.25 1.5028 0.25 solid black
+edge c d 4 2.4209 0.25 2.4229 0.25 2.4249 0.25 2.427 0.25 solid black
+edge d e 4 2.6185 0.45272 2.5666 0.49875 2.5099 0.54902 2.453 0.59948 solid black
+edge d g 4 2.5273 0.38826 2.3005 0.48631 1.991 0.62008 1.7288 0.73339 solid black
+edge f g 4 0.78197 0.95833 0.78401 0.95833 0.78605 0.95833 0.78809 0.95833 solid black
+stop
+== render 2
+graph 1 1.5556 1.3727
+node c 1.1806 0.95833 0.75 0.5 c solid ellipse black lightgrey
+node d 0.375 0.25 0.75 0.5 d solid ellipse black lightgrey
+node e 0.375 0.96411 0.75 0.8171 "E\nx" solid ellipse black lightgrey
+edge c d 4 0.95187 0.75725 0.88105 0.69498 0.80134 0.62489 0.72429 0.55713 solid black
+edge d e 4 0.375 0.50378 0.375 0.50578 0.375 0.50779 0.375 0.50981 solid black
+stop
+== render 3
+graph 1 1.5556 1.3727
+node c 1.1806 0.95833 0.75 0.5 c solid ellipse black lightgrey
+node d 0.375 0.25 0.75 0.5 d solid ellipse black lightgrey
+node e 0.375 0.96411 0.75 0.8171 "E\nx" solid ellipse black lightgrey
+edge c d 4 0.95187 0.75725 0.88105 0.69498 0.80134 0.62489 0.72429 0.55713 solid black
+edge d e 4 0.375 0.50378 0.375 0.50578 0.375 0.50779 0.375 0.50981 solid black
+stop

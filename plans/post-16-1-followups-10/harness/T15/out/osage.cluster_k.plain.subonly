@@ -1,0 +1,6 @@
+== render 1
+graph 1 1.5556 0.5
+node f 0.375 0.25 0.75 0.5 f solid ellipse black lightgrey
+node g 1.1806 0.25 0.75 0.5 g solid box black lightgrey
+edge f g 4 0.75419 0.25 0.75623 0.25 0.75827 0.25 0.76031 0.25 solid black
+stop

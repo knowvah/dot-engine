@@ -21,6 +21,7 @@ import { render } from '../render/public.js';
 import { getDrawOps } from '../render/xdot-public.js';
 import { createDefaultContext } from './default-context.js';
 import { render as deviceRender } from './device.js';
+import { installEdgeSpline } from '../layout/dot/edge-route-helpers.js';
 import type { EngineName } from './context.js';
 
 const FIXTURES = new URL('./__fixtures__/rerender/', import.meta.url);
@@ -219,6 +220,10 @@ describe('ctx.layout with no freeLayout keeps stale records and appends its rout
     ['multi-edge', 'dot'],
     ['multi-edge', 'fdp'],
     ['multi-edge', 'patchwork'],
+    ['abom-shift', 'dot'],
+    ['abom-shift-parity', 'dot'],
+    ['abom-shift-pack', 'dot'],
+    ['flat-rev-stale', 'dot'],
   ];
 
   it.each(NOFREE_CASES)('%s on %s equals native on renders 1 to 3', (id, engine) => {
@@ -242,6 +247,50 @@ describe('ctx.layout with no freeLayout keeps stale records and appends its rout
       'edge a b 8 0.75 0.99579 0.75 0.89454 0.75 0.77398 0.75 0.66022 '
       + '0.75391 0.25 0.78171 0.25 0.80951 0.25 0.83731 0.25 solid black',
     );
+  });
+
+  // expand_ranksets adds to a rank set member's old ND_rank, and C's abomination
+  // leaves ND_rank alone, so the port's +1 comes off when the next layout starts.
+  // @see lib/dotgen/rank.c:expand_ranksets
+  it('abomination shifts each layout once, whatever the last layout did', () => {
+    const g = parse(read('abom-shift-parity.gv'));
+    const ctx = createDefaultContext();
+    const shifts = [1, 2, 3, 4].map(() => {
+      ctx.layout(g, 'dot');
+      return g.info.abomShift;
+    });
+    expect(shifts).toEqual([1, 1, 1, 1]);
+  });
+
+  // No input reaches this fallback where native draws the same route: native has no
+  // fitter. Inputs that reach it: 121 and 258, which abort native on layout 2, and
+  // nestedclust, whose no-free layouts route other edges differently (follow-up).
+  it('the fitter fallback appends its route after the stale ones, as new_spline does', () => {
+    const g = parse('digraph { a -> b }');
+    createDefaultContext().layout(g, 'dot');
+    const e = g.edges[0];
+    const stale = e.info.spl?.list[0];
+    const route = [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }];
+    installEdgeSpline(e, route, { x: 4, y: 4 });
+    expect(e.info.spl?.size).toBe(2);
+    expect(e.info.spl?.list[0]).toBe(stale);
+    expect(e.info.spl?.list[1]).toMatchObject({
+      list: route, size: 4, sflag: 0, eflag: 1, sp: { x: 0, y: 0 }, ep: { x: 4, y: 4 },
+    });
+  });
+
+  // C draws each bezier's arrows from its own flags at emit. e:e->h:w's first
+  // bezier came through the flat aux route; g->a's stale bezier swaps its arrow to
+  // the tail, where no other bezier has one. Native's <g> lines are the fixture.
+  it.each([1, 2, 3])('multi-edge render %i svg equals native, arrows included', (n) => {
+    const g = parse(read('multi-edge.gv'));
+    const ctx = createDefaultContext();
+    const svgs = [1, 2, 3].map(() => {
+      ctx.layout(g, 'dot');
+      return deviceRender(ctx, g, 'svg');
+    });
+    const body = (svg: string): string => svg.slice(svg.indexOf('<g '));
+    expect(body(svgs[n - 1])).toBe(body(read(`multi-edge.dot.svg.nofree.${n}`)));
   });
 
   it('a free still drops the stale beziers', () => {
@@ -474,5 +523,128 @@ describe('rendering writes layout attributes back', () => {
     expect(polygons(first)).toBe(2); // background and one arrowhead
     expect(polygons(second)).toBe(3); // the old background comes back
     expect(second.length).toBeGreaterThan(first.length);
+  });
+});
+
+// An edge to a cluster (part 10 T14). processClusterEdges swaps the node named
+// for the cluster for a proxy; attach_attrs undoes that when it writes
+// (output.c:404), so -Tdot, -Txdot and -Tjson leave the graph with the original
+// membership, while -Tplain and -Tsvg leave the proxies as ordinary nodes.
+// @see lib/common/utils.c:undoClusterEdges
+describe('a second render on a graph with an edge to a cluster', () => {
+  const xdotDiffs = (actual: string, expected: string): unknown[] =>
+    compareXdot(actual, expected, POSITION_TOLERANCE).diffs;
+
+  /** An SVG from its first group on: the header names the generator, which differs. */
+  const svgBody = (svg: string): string => svg.slice(svg.indexOf('<g '));
+
+  /** One context, one graph: layout, render in `fmt`, free. */
+  const cycle = (
+    ctx: ReturnType<typeof createDefaultContext>,
+    g: ReturnType<typeof parse>,
+    fmt: string,
+  ): string => {
+    ctx.layout(g, 'fdp');
+    const out = deviceRender(ctx, g, fmt);
+    ctx.freeLayout(g, 'fdp');
+    return out;
+  };
+
+  it.each(['dot', 'xdot'] as const)('%s equals native renders 1 and 2', (fmt) => {
+    const g = parse(read('cluster-edges.gv'));
+    expect(xdotDiffs(render(g, fmt, { engine: 'fdp' }), read(`cluster-edges.fdp.${fmt}.1`))).toEqual([]);
+    expect(xdotDiffs(render(g, fmt, { engine: 'fdp' }), read(`cluster-edges.fdp.${fmt}.2`))).toEqual([]);
+  });
+
+  it('a dot render leaves the proxies until the next layout undoes them', () => {
+    const g = parse(read('cluster-edges.gv'));
+    render(g, 'dot', { engine: 'fdp' });
+    expect([...g.nodes.keys()]).toEqual(['e', 'a', 'b', 'C', 'D', 'd', 'f', '__0:clusterB', '__0:clusterC']);
+    const ctx = createDefaultContext();
+    ctx.layout(g, 'fdp');
+    // Undone, then made again: new proxies, so new edge numbers below.
+    expect([...g.nodes.keys()]).toEqual(['e', 'a', 'b', 'C', 'D', 'd', 'f', '__0:clusterB', '__0:clusterC']);
+    expect(g.subgraphs.get('clusterB')?.nodes.has('__0:clusterB')).toBe(true);
+    expect(g.edges.map((e) => [e.tail.name, e.head.name, e.graphSeq])).toEqual([
+      ['a', 'b', 1], ['C', 'D', 2], ['d', 'f', 3], ['d', 'D', 4],
+      ['e', '__0:clusterB', 11], ['__0:clusterC', '__0:clusterB', 12],
+    ]);
+  });
+
+  it('a svg render after a dot render numbers the edges as native does', () => {
+    const ctx = createDefaultContext();
+    const g = parse(read('cluster-edges.gv'));
+    expect(xdotDiffs(cycle(ctx, g, 'dot'), read('cluster-edges.fdp.seq-dot-svg.1'))).toEqual([]);
+    expect(svgBody(cycle(ctx, g, 'svg')).match(/id="edge\d+"/g)).toEqual(
+      svgBody(read('cluster-edges.fdp.seq-dot-svg.2')).match(/id="edge\d+"/g),
+    );
+  });
+
+  it('a plain render after a dot render equals native', () => {
+    const ctx = createDefaultContext();
+    const g = parse(read('cluster-edges.gv'));
+    cycle(ctx, g, 'dot');
+    expect(cycle(ctx, g, 'plain')).toBe(read('cluster-edges.fdp.seq-dot-plain.2'));
+  });
+
+  // Clusters only: the port's JSON writer prints proxies on a first render too,
+  // where native's does not, which a first render here may not change.
+  it('a json render undoes the proxies, so render 2 lays out the clusters as native', () => {
+    const ctx = createDefaultContext();
+    const g = parse(read('cluster-edges.gv'));
+    const clusters = (json: string): unknown =>
+      (JSON.parse(json) as { objects: Array<{ name: string; bb?: string }> }).objects
+        .filter((o) => o.bb !== undefined)
+        .map((o) => [o.name, o.bb]);
+    cycle(ctx, g, 'json');
+    expect(clusters(cycle(ctx, g, 'json'))).toEqual(clusters(read('cluster-edges.fdp.seq-json-json.2')));
+  });
+
+  it('a no-free layout after a dot render equals native on svg', () => {
+    const ctx = createDefaultContext();
+    const g = parse(read('cluster-edges.gv'));
+    ctx.layout(g, 'fdp');
+    deviceRender(ctx, g, 'dot');
+    ctx.layout(g, 'fdp');
+    expect(svgBody(deviceRender(ctx, g, 'svg'))).toBe(svgBody(read('cluster-edges.fdp.seq-nofree-dot-svg.2')));
+  });
+
+  // The second layout's other input is heap order: deriveGraph and genPorts
+  // compare node addresses (lib/fdpgen/layout.c:466,501,637), and a first cycle's
+  // frees reorder them. The port orders by id, what an unfragmented heap gives,
+  // as each layout is one native process (AD-4). These fixtures come from a plugin
+  // patched to compare ND_id, so they hold everything but the address order.
+  it('plain equals native with node addresses replaced by ND_id', () => {
+    const g = parse(read('cluster-edges.gv'));
+    expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edges.fdp.plain.noaddr.1'));
+    expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edges.fdp.plain.noaddr.2'));
+  });
+
+  it('1581 in dot format equals the native process whose addresses ascend', () => {
+    const g = parse(read('fdp-1581.gv'));
+    expect(xdotDiffs(render(g, 'dot', { engine: 'fdp' }), read('fdp-1581.fdp.dot.1'))).toEqual([]);
+    expect(xdotDiffs(render(g, 'dot', { engine: 'fdp' }), read('fdp-1581.fdp.dot.2'))).toEqual([]);
+  });
+
+  // HAS_CLUST_EDGE is a record of its own (CL_EDGE_TAG), which gvFreeLayout does
+  // not delete: render 2 has no cluster edge left but still takes line segments.
+  it('the cluster-edge record outlives the free, so render 2 keeps line segments', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const g = parse(read('cluster-edge-splines.gv'));
+    expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edge-splines.fdp.plain.1'));
+    expect(render(g, 'plain', { engine: 'fdp' })).toBe(read('cluster-edge-splines.fdp.plain.2'));
+    expect(warn.mock.calls.map((c) => String(c[0]))).toEqual([
+      'splines and cluster edges not supported - using line segments',
+      'splines and cluster edges not supported - using line segments',
+    ]);
+    warn.mockRestore();
+  });
+
+  it('a graph with no cluster edge has nothing to undo', () => {
+    const g = parse('graph { subgraph clusterA { a -- b } a -- c }');
+    render(g, 'dot', { engine: 'fdp' });
+    render(g, 'dot', { engine: 'fdp' });
+    expect([...g.nodes.keys()]).toEqual(['a', 'b', 'c']);
+    expect(g.info.n_cluster_edges).toBeUndefined();
   });
 });

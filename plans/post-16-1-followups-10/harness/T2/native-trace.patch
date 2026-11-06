@@ -1,0 +1,112 @@
+--- gv/lib/sfdpgen/spring_electrical.c.orig	2026-11-04 19:01:20
++++ gv/lib/sfdpgen/spring_electrical.c	2026-11-04 19:03:04
+@@ -48,6 +48,19 @@
+ 
+ static const double cool = 0.90;
+ 
++
++/* GVTS T2 trace: env-gated hex dumps, out of line so the kernels keep their codegen. */
++#include <stdio.h>
++#include <stdlib.h>
++__attribute__((noinline)) static int gvts_on(void){ static int v=-1; if(v<0) v=getenv("GVTS_T2")!=NULL; return v; }
++__attribute__((noinline)) static void gvts_d(const char *tag,double v){ if(gvts_on()) fprintf(stderr,"%s %a\n",tag,v); }
++__attribute__((noinline)) static void gvts_i(const char *tag,long v){ if(gvts_on()) fprintf(stderr,"%s %ld\n",tag,v); }
++__attribute__((noinline)) static void gvts_x(const char *tag,const double *x,int n){ if(!gvts_on()) return; for(int i=0;i<n;i++) fprintf(stderr,"%s[%d] %a\n",tag,i,x[i]); }
++__attribute__((noinline)) static void gvts_m(const char *tag,SparseMatrix A){ if(!gvts_on()) return; fprintf(stderr,"%s m=%d n=%d nz=%d\n",tag,(int)A->m,A->n,(int)A->nz); for(int i=0;i<=A->m;i++) fprintf(stderr,"%s.ia[%d] %d\n",tag,i,A->ia[i]); for(int i=0;i<A->nz;i++) fprintf(stderr,"%s.ja[%d] %d\n",tag,i,A->ja[i]); if(A->type==MATRIX_TYPE_REAL) for(int i=0;i<A->nz;i++) fprintf(stderr,"%s.a[%d] %a\n",tag,i,((double*)A->a)[i]); }
++
++__attribute__((noinline)) static int gvts_deep(void){ static int v=-1; if(v<0) v=getenv("GVTS_T2_DEEP")!=NULL; return v; }
++__attribute__((noinline)) static void gvts_dd(const char *tag,int a,int b,double v){ if(gvts_deep()) fprintf(stderr,"%s %d %d %a\n",tag,a,b,v); }
++__attribute__((noinline)) static double gvts_pow(double x,double y){ double r=pow(x,y); if(gvts_deep()) fprintf(stderr,"pow %a %a %a\n",x,y,r); return r; }
+ spring_electrical_control spring_electrical_control_new(void){
+   spring_electrical_control ctrl = {0};
+   ctrl.p = AUTOP; ///< a negative number default to -1. repulsive force = distᵖ
+@@ -564,6 +577,9 @@
+   if (p >= 0) ctrl->p = p = -1;
+   KP = pow(K, 1 - p);
+   CRK = pow(C, (2.-p)/3.)/K;
++  gvts_i("EMBED n",n); gvts_d("K",K); gvts_d("p",p); gvts_d("KP",KP); gvts_d("CRK",CRK); gvts_d("step0",step);
++  gvts_m("A",A);
++  gvts_x("x0",x,dim*n);
+ 
+   f = gv_calloc(dim, sizeof(double));
+   do {
+@@ -592,9 +608,11 @@
+       for (j = ia[i]; j < ia[i+1]; j++){
+ 	if (ja[j] == i) continue;
+ 	dist = distance(x, dim, i, ja[j]);
++	gvts_dd("adist",i,ja[j],dist);
+ 	for (k = 0; k < dim; k++){
+ 	  f[k] -= CRK*(x[i*dim+k] - x[ja[j]*dim+k])*dist;
+ 	}
++	gvts_dd("af0",i,ja[j],f[0]); gvts_dd("af1",i,ja[j],f[1]);
+       }
+ 
+       /* repulsive force K^(1 - p)/||x_i-x_j||^(1 - p) (x_i - x_j) */
+@@ -613,17 +631,21 @@
+ 	nsuper_avg += nsuper;
+ 	for (j = 0; j < nsuper; j++){
+ 	  dist = MAX(distances[j], MINDIST);
++	  gvts_dd("qdist",i,j,dist); gvts_dd("qw",i,j,supernode_wgts[j]); gvts_dd("qc0",i,j,center[j*dim]); gvts_dd("qc1",i,j,center[j*dim+1]);
+ 	  for (k = 0; k < dim; k++){
+-	    f[k] += supernode_wgts[j]*KP*(x[i*dim+k] - center[j*dim+k])/pow(dist, 1.- p);
++	    f[k] += supernode_wgts[j]*KP*(x[i*dim+k] - center[j*dim+k])/gvts_pow(dist, 1.- p);
+ 	  }
++	  gvts_dd("qf0",i,j,f[0]); gvts_dd("qf1",i,j,f[1]);
+ 	}
+       } else {
+ 	for (j = 0; j < n; j++){
+ 	  if (j == i) continue;
+ 	  dist = distance_cropped(x, dim, i, j);
++	  gvts_dd("rdist",i,j,dist);
+ 	  for (k = 0; k < dim; k++){
+-	    f[k] += KP*(x[i*dim+k] - x[j*dim+k])/pow(dist, 1.- p);
++	    f[k] += KP*(x[i*dim+k] - x[j*dim+k])/gvts_pow(dist, 1.- p);
+ 	  }
++	  gvts_dd("rf0",i,j,f[0]); gvts_dd("rf1",i,j,f[1]);
+ 	}
+       }
+ 	
+@@ -631,6 +653,7 @@
+       F = 0.;
+       for (k = 0; k < dim; k++) F += f[k]*f[k];
+       F = sqrt(F);
++      gvts_dd("F",i,iter,F);
+       Fnorm += F;
+ 
+       if (F > 0) for (k = 0; k < dim; k++) f[k] /= F;
+@@ -646,7 +669,9 @@
+       oned_optimizer_train(&qtree_level_optimizer, 5 * nsuper_avg + counts_avg);
+     }
+ 
++    gvts_i("iter",iter); gvts_d("Fnorm",Fnorm); gvts_x("x",x,dim*n);
+     step = update_step(adaptive_cooling, step, Fnorm, Fnorm0);
++    gvts_d("step",step);
+   } while (step > tol && iter < maxiter);
+ 
+ #ifdef DEBUG_PRINT
+@@ -1153,6 +1178,7 @@
+       xf = gv_calloc(grid->n * dim, sizeof(double));
+     }
+     prolongate(dim, grid->A, P, grid->R, xc, xf, ctrl->K * 0.001);
++    gvts_i("PROLONG n",grid->n); gvts_x("xp",xf,dim*grid->n);
+     free(xc);
+     xc = xf;
+     ctrl->random_start = false;
+@@ -1172,14 +1198,17 @@
+   if (Verbose) fprintf(stderr, "ctrl->overlap=%d\n",ctrl->overlap);
+ 
+   /* rotation has to be done before overlap removal, since rotation could induce overlaps */
++  gvts_x("xpre",x,dim*n);
+   if (dim == 2){
+     pcp_rotate(n, dim, x);
+   }
++  gvts_x("xrot",x,dim*n);
+   if (ctrl->rotation != 0) rotate(n, dim, x, ctrl->rotation);
+ 
+ 
+   remove_overlap(dim, A, x, label_sizes, ctrl->overlap, ctrl->initial_scaling,
+ 		 ctrl->edge_labeling_scheme, n_edge_label_nodes, edge_label_nodes, A, ctrl->do_shrinking);
++  gvts_x("xfinal",x,dim*n);
+ 
+  RETURN:
+   *ctrl = ctrl0;

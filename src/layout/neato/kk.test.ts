@@ -314,6 +314,16 @@ describe('solve (Gaussian elimination)', () => {
     expect([b[0], b[1]]).toEqual([2, 3]);
   });
 
+  it('solves a 3x3 system through a row swap, restoring a and c', () => {
+    const a = Float64Array.of(0, 0, 8, 0, 4, 4, 2, 2, 2);
+    const c = Float64Array.of(24, 20, 12);
+    const b = new Float64Array(3);
+    solve(a, b, c, 3);
+    expect([...b]).toEqual([1, 2, 3]);
+    expect([...a]).toEqual([0, 0, 8, 0, 4, 4, 2, 2, 2]);
+    expect([...c]).toEqual([24, 20, 12]);
+  });
+
   it('warns and leaves b zero when a pivot is too small', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const b = new Float64Array(2);

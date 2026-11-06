@@ -1,0 +1,13 @@
+graph G {
+  dim=3;
+  dimen=3;
+  mode=hier;
+  edge [dir=none];
+  a -- b;
+  b -- c;
+  c -- d;
+  d -- e;
+  e -- a;
+  a -- c;
+  e -- f;
+}

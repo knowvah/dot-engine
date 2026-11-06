@@ -1,0 +1,11 @@
+graph G {
+  mode=hier;
+  edge [dir=none];
+  a -- b;
+  b -- c;
+  c -- d;
+  d -- e;
+  e -- a;
+  a -- c;
+  e -- f;
+}

@@ -1,0 +1,9 @@
+graph G {
+  splines=true
+  x [pos="0,0!"]
+  m [pos="2,0!"]
+  z [pos="4,0!"]
+  subgraph clusterA { q -- r }
+  x -- z
+  x -- clusterA
+}

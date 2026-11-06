@@ -17,6 +17,7 @@ import type { RkState } from '../../util/mt19937.js';
 import { drand48 } from '../../common/random.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { checkStart, parseStart, INIT_RANDOM, INIT_REGULAR } from './start.js';
+import { jitter3d, ndimOf } from './init-dim.js';
 import { agerrLineOn } from '../../common/agerr.js';
 
 // ---------------------------------------------------------------------------
@@ -270,20 +271,26 @@ function hasPos(np: Node): boolean {
   return np.info.posSet === true || np.info.pinned === true;
 }
 
+/** @see lib/neatogen/stuff.c:randompos */
+function randompos(np: Node, nG: number, ndim: number): void {
+  np.info.pos = [nG * drand48(), nG * drand48()];
+  if (ndim > 2) jitter3d(np, nG, ndim);
+}
+
 /**
  * Seed drand48 from `start` (checkStart) and give every node without a
  * position a random one. start=regular keeps the regular placement that
  * solveModel already made (checkStart's INIT_REGULAR early return).
  *
  * @see lib/neatogen/stuff.c:initial_positions
- * @see lib/neatogen/stuff.c:randompos
  */
 export function initialPositions(g: Graph, nG: number = g.nodes.size): void {
   if (parseStart(g.root.attrs.get('start'), INIT_RANDOM).init === INIT_REGULAR) return;
   checkStart(g, nG, INIT_RANDOM);
+  const ndim = ndimOf(g);
   for (const np of g.nodes.values()) {
     if (hasPos(np)) continue;
-    np.info.pos = [drand48(), drand48()];
+    randompos(np, 1, ndim);
   }
 }
 
@@ -449,8 +456,8 @@ export function runSgdLoop(
  * MODEL_CIRCUIT and MODEL_MDS are not yet supported and fall back to
  * MODEL_SHORTPATH with a console.warn (matching agwarningf in C).
  *
- * Node positions are written to `node.info.pos` ([x, y]).
- * Nodes with `node.info.pinned === true` are not moved.
+ * The solver moves x and y only (`node.info.pos` keeps any later coordinate
+ * from the initial positions). Nodes with `node.info.pinned === true` are not moved.
  * The shuffle RNG is seeded with 0 as in C; `start` seeds only the initial
  * positions (drand48, via checkStart).
  *

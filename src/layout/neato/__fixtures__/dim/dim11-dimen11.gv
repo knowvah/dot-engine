@@ -1,0 +1,11 @@
+graph G {
+  dim=11;
+  dimen=11;
+  a -- b;
+  b -- c;
+  c -- d;
+  d -- e;
+  e -- a;
+  a -- c;
+  e -- f;
+}

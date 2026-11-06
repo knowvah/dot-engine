@@ -15,6 +15,7 @@ import type { Graph } from '../../model/graph.js';
 import { setEdgeTypeFromAttr } from '../dot/index.js';
 import { EDGETYPE_LINE } from '../neato/splines.js';
 import { neatoInitNode } from '../neato/init.js';
+import { DFLT_DIM, MAXDIM } from '../neato/init-dim.js';
 import {
   commonInitNodeEdge, lateDouble, lateInt, layoutMeasurer,
 } from '../../common/nodeinit.js';
@@ -47,9 +48,22 @@ const ELSCHEME_PENALTY2 = 2;
 const EDGE_LABEL_NODE_PREFIX = '|edgelabel|';
 
 /**
- * Graph-level init: line edges, 2-D, per-node neato init.
- * GD_ndim handling is fixed at 2 — the "dim"/"dimen" 3D+ modes are not
- * ported (no supported input sets them).
+ * Read `dimen`, then `dim`, clamp at MAXDIM, into the root's `ndim` and `odim`
+ * (C's GD_ndim, GD_odim and the global Ndim).
+ * @see lib/sfdpgen/sfdpinit.c:sfdp_init_graph
+ */
+function sfdpInitDim(g: Graph): number {
+  const root = g.root;
+  const outdim = lateInt(aggetGraph(g, 'dimen'), DFLT_DIM, 2);
+  const ndim = Math.min(lateInt(aggetGraph(g, 'dim'), outdim, 2), MAXDIM);
+  root.info.ndim = ndim;
+  root.info.odim = Math.min(outdim, ndim);
+  return ndim;
+}
+
+/**
+ * Graph-level init: line edges, the layout dimension from `dimen` and `dim`
+ * (root `ndim`, `odim`), per-node neato init sized to it.
  * @see lib/sfdpgen/sfdpinit.c:sfdp_init_graph
  * @see lib/sfdpgen/sfdpinit.c:sfdp_init_node_edge
  */
@@ -59,8 +73,9 @@ export function sfdpInitGraph(g: Graph): void {
   // setEdgeType FUNCTION (utils.c:1423): reads `splines`, LINE is the default.
   // @see lib/sfdpgen/sfdpinit.c:54
   setEdgeTypeFromAttr(g, EDGETYPE_LINE);
+  const ndim = sfdpInitDim(g);
   commonInitNodeEdge(g); // common_init_node inside neato_init_node
-  for (const n of g.nodes.values()) neatoInitNode(n);
+  for (const n of g.nodes.values()) neatoInitNode(n, ndim);
   // C sfdp_init_node_edge runs a second loop over out-edges calling
   // sfdp_init_edge -> common_init_edge: it creates ED_label(e) and ORs
   // GD_has_labels with EDGE_LABEL, which is what lets addXLabels (in
@@ -228,17 +243,17 @@ export function makeMatrix(g: Graph): SpMatrix {
 }
 
 /**
- * Half node sizes plus padding, in inches, indexed by ND_id.
- * The |edgelabel| branch (edge_labeling_scheme > 0) is not ported —
- * no supported input sets label_scheme.
+ * Half node sizes plus padding, in inches, indexed by ND_id, `ndim` apart
+ * (x, y, then zeros). The |edgelabel| branch (edge_labeling_scheme > 0) is
+ * not ported — no supported input sets label_scheme.
  * @see lib/neatogen/adjust.c:getSizes (15.0.0)
  */
-export function getSizes(g: Graph, pad: { x: number; y: number }): number[] {
-  const sizes = new Array<number>(2 * g.nodes.size).fill(0);
+export function getSizes(g: Graph, pad: { x: number; y: number }, ndim: number = DFLT_DIM): number[] {
+  const sizes = new Array<number>(ndim * g.nodes.size).fill(0);
   for (const n of g.nodes.values()) {
     const i = n.info.id!;
-    sizes[i * 2] = (n.info.width ?? 0) * 0.5 + pad.x;
-    sizes[i * 2 + 1] = (n.info.height ?? 0) * 0.5 + pad.y;
+    sizes[i * ndim] = (n.info.width ?? 0) * 0.5 + pad.x;
+    sizes[i * ndim + 1] = (n.info.height ?? 0) * 0.5 + pad.y;
   }
   return sizes;
 }

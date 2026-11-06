@@ -1,0 +1,4 @@
+digraph G {
+  _draw_="c 7 -#00aa00 C 7 -#ffee00 p 4 0 0 0 50 50 50 50 0 S 6 -dotted b 4 0 0 10 20 30 40 50 50 ";
+  a -> b;
+}

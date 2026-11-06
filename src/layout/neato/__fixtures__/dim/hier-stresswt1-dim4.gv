@@ -1,0 +1,13 @@
+graph G {
+  dim=4;
+  dimen=4;
+  mode=hier;
+  stresswt=1;
+  a -- b;
+  b -- c;
+  c -- d;
+  d -- e;
+  e -- a;
+  a -- c;
+  e -- f;
+}

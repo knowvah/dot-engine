@@ -3,6 +3,9 @@
 // pooled renders are history-dependent, follow-up 42).
 //
 // Usage: npx tsx test/tools/bytediff.ts <bundleA> <bundleB> <ids-file|--amp|--all> <out.json>
+//        npx tsx test/tools/bytediff.ts <bundleA> <bundleB> --file <input> <out.json>
+// --file names one input outside the corpus manifest (e.g. test/golden/inputs/draw-replay-*.dot);
+// its id is the file's basename, and it runs on every engine in BD_ENGINES and format in BD_FORMATS.
 //   env BD_ENGINES=dot,neato (default all 8)  BD_FORMATS=svg,xdot (default svg,xdot,json,plain,cmapx)
 //       BD_CAP_MS=120000  BD_LANES=<n> (default 5)  BD_REPO=<repo> (default: this checkout)
 // ids-file: one manifest id per line, optionally "id engine[,engine]" to limit engines.
@@ -33,7 +36,10 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const JOB = path.join(HERE, 'bd-job.ts');
 const REPO = process.env.BD_REPO ?? path.resolve(HERE, '../..');
 const ROOT = path.join(os.homedir(), 'git/graphviz/tests');
-const [bundleA = '', bundleB = '', sel = '', outFile = ''] = process.argv.slice(2);
+const [bundleA = '', bundleB = '', sel = '', ...tail] = process.argv.slice(2);
+const FILE_OPT = '--file';
+const inputFile = sel === FILE_OPT ? path.resolve(tail[0] ?? '') : null;
+const outFile = (sel === FILE_OPT ? tail[1] : tail[0]) ?? '';
 const ENGINES = (process.env.BD_ENGINES ?? DEFAULT_ENGINES).split(',');
 const FORMATS = (process.env.BD_FORMATS ?? DEFAULT_FORMATS).split(',');
 const CAP_MS = Number(process.env.BD_CAP_MS ?? 120_000);
@@ -75,7 +81,13 @@ function idTargets(manifest: readonly ManifestEntry[]): Target[] {
   });
 }
 
+function fileTarget(file: string): Target[] {
+  if (!fs.existsSync(file)) throw new Error(`--file input not found: ${file}`);
+  return [{ id: path.basename(file), file, engines: ENGINES }];
+}
+
 function selectTargets(): Target[] {
+  if (inputFile !== null) return fileTarget(inputFile);
   const manifest = loadManifest();
   return sel === '--all' || sel === '--amp' ? allTargets(manifest, sel === '--amp') : idTargets(manifest);
 }

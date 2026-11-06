@@ -1,0 +1,17 @@
+graph G {
+  dim=3;
+  dimen=3;
+  mode=hier;
+  n0 -- n1;
+  n1 -- n2;
+  n2 -- n3;
+  n3 -- n4;
+  n4 -- n5;
+  n5 -- n6;
+  n6 -- n7;
+  n7 -- n8;
+  n8 -- n9;
+  n9 -- n10;
+  n10 -- n11;
+  n11 -- n0;
+}

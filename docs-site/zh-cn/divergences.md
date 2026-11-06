@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -53,7 +53,7 @@ sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
 
 **特征描述。** 这些引擎运行迭代式数值布局，其结果取决于浮点舍入——具体来说是融合乘加（FMA）和 `Math.pow`，它们在不同的 JavaScript 引擎和 CPU 架构上可能不同。移植版在可能的地方与 C 的运算顺序保持一致（`src/common/fma.ts`、`src/common/arm-pow.ts`）——例如 `sfdp` 在使用匹配的伪随机数发生器和 `fma` 时，与原生参照程序可对齐到约 6 位有效数字——但精确、坐标完全相同的复现**无法保证跨平台**。拓扑得以保持；潜在的差异出现在精细的节点坐标上。
 
-**为何接受。** 这是在 JS 中运行的硬性约束，而不是设计选择——与 A3/A8 中（此后已关闭的）`hypot`/FMA 敏感性属于同一类。没有办法保证所有目标运行环境上的超越函数/FMA 结果逐位相同，所以字节标准不只是代价高昂，而是无法测试。**评估 A1**（而不仅仅是给出提示）需要一条单独的原生引擎对齐度轨道——于 2026-07-11 作为 `test/corpus/engine-walk.ts` + `parity-report.ts` 建立，它让每个输入在各自的引擎下接受调查，而不是在 `dot` 下。这项工作诚实的上限，是把 A1 **收窄**为“在参考平台上没有活跃的差异”，而绝不是消除跨平台的前提；到目前为止的结果（见下）符合这一上限：`circo`/`twopi`/`osage` 各自暴露并找出了少量真实的 A1/A9 实例的根因，而 `neato`/`fdp`/`sfdp` 现在在 929 项的全集（graphviz 16.1.0）中分别有 99.8/96.6/68.0% 与原生程序相差不超过 0.5pt，这意味着已移植的算术（`fma.ts`、`arm-pow.ts`、匹配的伪随机数发生器）对大多数图都成立——而且 929 项全集中每一个存在差异的 id 都通过注入逐个归因（求解器漂移还是移植缺陷），而不是留作未分诊的漂移。参见下面的迭代式引擎特征描述。
+**为何接受。** 这是在 JS 中运行的硬性约束，而不是设计选择——与 A3/A8 中（此后已关闭的）`hypot`/FMA 敏感性属于同一类。没有办法保证所有目标运行环境上的超越函数/FMA 结果逐位相同，所以字节标准不只是代价高昂，而是无法测试。**评估 A1**（而不仅仅是给出提示）需要一条单独的原生引擎对齐度轨道——于 2026-07-11 作为 `test/corpus/engine-walk.ts` + `parity-report.ts` 建立，它让每个输入在各自的引擎下接受调查，而不是在 `dot` 下。这项工作诚实的上限，是把 A1 **收窄**为“在参考平台上没有活跃的差异”，而绝不是消除跨平台的前提；到目前为止的结果（见下）符合这一上限：`circo`/`twopi`/`osage` 各自暴露并找出了少量真实的 A1/A9 实例的根因，而 `neato`/`fdp`/`sfdp` 现在在 929 项的全集（graphviz 16.1.0）中分别有 99.8/96.6/68.1% 与原生程序相差不超过 0.5pt，这意味着已移植的算术（`fma.ts`、`arm-pow.ts`、匹配的伪随机数发生器）对大多数图都成立——而且 929 项全集中每一个存在差异的 id 都通过注入逐个归因（求解器漂移还是移植缺陷），而不是留作未分诊的漂移。参见下面的迭代式引擎特征描述。
 
 **引擎轨道接受：twopi 箭头族。** <a id="a1-twopi-arrows-family"></a>
 上面的引用块描述的是 dot 引擎的 SVG 调查，其中 A1 匹配零个图；而单独的 `twopi` **xdot 引擎轨道**（`parity-twopi.json`，原生 `dot -K twopi -Txdot` 参照程序，`test/corpus/engine-walk.ts`）*确实*在其原生引擎下运行，并在 9 个语料库 id 上暴露出一个具体的、经过验证的 A1 实例：
@@ -82,7 +82,7 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
 
 （`fdp` 的通过率自 77.5% 上升，是因为先前提交的那次扫描早于上一个任务的移植状态。`neato` 的通过率自 90.5% 上升，是因为 16.1 反汇编得到的融合 stress 内核进入了生产环境的 kD 路径（16.1 后续跟进第 5 部分，T15）：此前因求解器漂移而存在差异的 83 个 id 现已通过，其中包括先前被接受的逐 id 残余 `2619_2`，该接受已撤销；`2371` 是 `neato` 中仅剩的存在差异的 id。）
 
@@ -92,6 +92,8 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 （[`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)）。
+
+**sfdp 求解器漂移从哪里开始（第 10 部分，T2）。** 对插桩的原生 sfdp 在小 id 上与移植版对照追踪，首次分歧出现在斥力中 `pow(dist, 1-p)` 的最后一位（`lib/sfdpgen/spring_electrical.c:625,617`；移植版 `spring-electrical.ts:260`）。在 `flatedge` 上，`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` 在原生中得到 `...8811p+2`，在移植版中得到 `...8812p+2`；`graphs-p` 和 `1767` 的开头相同。自适应冷却会放大这一位：它在第 5 次迭代到达 `x[0]`，`max|dx|` 在第 100 次迭代为 2.4e-9、第 200 次为 3.9e-5，步长在第 244 次迭代翻转。两次受控运行证实了这一点。在恰好这 8 次调用上采用原生的位，`flatedge` 的 62090 行追踪即完全一致；在 Node-API 插件后使用 macOS 真实的 `pow`，292 个未通过的 id 中有 288 个追踪逐位一致（其余 4 个均为 `overlap=false`，只在 `xfinal` 处不同）。求解器、多层部分、四叉树和稀疏代码中的运算顺序与融合已被排除。这是主机的 libm，在 A1 下被接受（见下方已知缺口列表中的 `pow` 一项）；`src/` 没有改动，所以计数仍是 929 中的 632。仅限 macOS 的实验达到了 929 中约 923；这衡量的是预言机的 `pow`，并不是库在每台主机上都能做到的事。在斥力中使用 `Math.pow` 能通过这 292 个中的 153 个，但会使 6 个当前通过的 id 回退，因此没有采用。表中的 sfdp 行与 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 的行相同：1 个分歧加 295 个已接受得到 296，另有 1 个 id 在该处被列为预言机非确定。
 
 **A1-drift 类别接受（迭代式引擎，成员由计算得出）。**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -512,6 +514,20 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
   （`parallel-cluster-ldbxtried`）用 `T_Wd * cos(alpha)` 放置簇端口节点，而 macOS libm 的 `cos(-2.3840764867756761)` 与 V8 的 `Math.cos` 相差 1 ulp；fdp 的力循环把它放大到约 3 英寸。Apple 的 `cos` 不像 `hypot` 那样可以由一个简短的模型复现。
 - **原生崩溃而移植版有定义的行为。** 原生 Graphviz 在 neato 的 `mode=KK` 搭配 `model=mds` 且边带有 `len` 时，几乎每次运行都以退出码 139 结束（约 1500 次中仅 1 次存活；`mds_model` 用从 1 开始的序号索引 `GD_dist`：堆溢出）。移植版丢弃越界的单元格，其结果与那次存活的运行在 0.01 容差内一致。`circuit_model` 用从 1 开始的 `AGSEQ` 索引（`circuit.c:46`），因此其矩阵的第 0 行从不被写入，无论图是否连通，该矩阵在每个图上都是奇异的：原生 `mode=KK` 搭配 `model=circuit` 从不产生 circuit 布局。进程存活时，它会输出 `Warning: graph <name> is disconnected. Hence, the circuit model` 并回退到最短路径；同一缺陷在最后创建的节点带有边时会读越行指针数组，所以原生通常以 139 退出（在探针图上约 4 次中有 3 次）。移植版始终走存活路径：先输出该警告，再使用最短路径，无论图是否连通。使用 `pack=true` 时，原生每次运行都崩溃（两个图上各超过 3000 次，存活 0 次）；按决定，移植版以自己的名称（`_neato_cc0`、`_neato_cc1`、...）逐个连通分量发出警告，使用最短路径并打包。这一组合没有原生输出；布局与同一图的原生 `model=shortpath` 相同。
 - **VPSC 的并列次序遵循创建顺序，而非堆地址。** 原生 `IncVPSC::splitBlocks` 一边向按堆地址排序的 `std::set<Block*>` 中插入，一边遍历它，而 `CmpNodePos` 用地址来决定位置并列，因此 `overlap=vpsc|ipsep` 和带约束的 `mode=ipsep` 的原生输出在位置并列时每次运行都可能不同（一个用例在 300 次运行中得到 21 种不同结果）。移植版按创建顺序排列并列项，并始终访问新块，因此其输出是确定的。扫描事件的并列项遵循 libc++：移植版包含其 `std::sort` 的移植，因此并列次序与原生一致。在已检查的并列用例中，它与某次抽样的原生运行一致。此前与 29 个抽样的原生结果均不一致的 40 节点用例（`dir1 n40`）已得到解释：在 332 次原生运行中，预言机的 `libvpsc.a` 给出 17 种不同输出，而仅按创建索引排序 `Blocks` 的原生副本在 332 次中只给出 1 种输出，移植版与它逐位相同。在该用例中，块的地址顺序就是全部差异；这一结论仅在 `dir1 n40` 上测得（后续事项 110）。
+
+### `dim`、`dimen` 和 `z`（neato、sfdp） {#dim-dimen-and-z-neato-sfdp}
+
+neato 和 sfdp 在每种模式下都按 `dim` 个维度布局，上限为 C 的 `MAXDIM`（10）。单独设置 `dim=3` 会按 3-D 布局，但只输出 2 个坐标；单独设置 `dimen=3` 会把 `dim` 设为 3 并输出 3 个；`dim=11 dimen=11` 输出 10 个。z 坐标只能通过 `pos` 和 `z` 属性获得，`getLayout` 保持不变。fdp、circo、twopi、osage 和 patchwork 仍是 2-D，这是 C 所强制的。超过 2-D 的 `mode=hier` 通过已移植的 `opt_smart_init`（`constrained_majorization.c:95`，`stress.c:874`）从 (`dim`-1) 维布局开始；没有有向边或没有层次结构的 `mode=hier` 图现在会渲染，而不是抛出错误。`mode=major start=self` 仍会抛出错误。渲染器的 `GVRENDER_DOES_Z` 分支（`lib/common/emit.c:1660,2734`）没有移植：它需要一个绘制 z 的设备，而这里没有任何设备这样做。
+
+### 原生崩溃与堆地址导致的差异（第 10 部分） {#native-crashes-and-heap-address-variation-part-10}
+
+每一项都说明原生做什么、移植版做什么。
+
+- **两个节点上的 `mode=hier dim=4`。** 原生写入越过 `directions`（`lib/neatogen/stress.c:514`），在某些运行中中止（退出码 133，16 次中 5 次）。移植版会渲染。
+- **`len=0.001` 的 `mode=hier dim=3`。** 原生被信号杀死：19 个节点时 8 次中 3 次（SIGBUS），27 个节点时 8 次中 8 次（SIGBUS、SIGSEGV、SIGTRAP）。栈为 `stress_majorization_kD_mkernel` 之下的 `mfm_alloc`，表明堆损坏；确切位置未被证明。移植版会渲染，而在原生幸存的情况下（19 个节点，8 次中 5 次）两者逐字节相同。
+- **同一个图上 fdp 的第二次布局在原生中随堆地址变化。** `deriveGraph` 和 `genPorts` 比较节点指针（`lib/fdpgen/layout.c:466,501,637`）。各 12 次原生运行中，`graphs-fdp` 以 `plain` 输出的第 2 次渲染落入 2 个类别（1 次和 11 次），`1581` 以 `dot` 输出落入 2 个类别（8 次和 4 次）；移植版与 `plain` 的 1 次类别逐字节相同，与 `dot` 的 4 次类别相差在 5e-13 以内。把这三处比较改为基于 `ND_id` 后重新构建的原生版本，8 次中 8 次重复，并且在 `plain` 上与移植版逐字节相同。一项仅属于移植版的选择：原生的 `attach_attrs` 以 `undoClusterEdges` 结束（`lib/common/output.c:403-404`），而移植版在下一次布局时而不是渲染时执行这一撤销，因为它的写出器读取 `__0:` 代理。
+- **图的 `_draw_` 或 `_background` 中的 `T` 操作。** 原生发生段错误（退出码 139）：在 neato `-n` 之外 `op->span` 为 NULL（`xdotBB`，`lib/neatogen/neatoinit.c:560`）。移植版不为它绘制文本。
+- **子图上的 neato。** 原生在对所测试的那一个图的两个子图（普通子图和簇）进行布局时，都以 139 退出。移植版返回输出。
 
 ---
 

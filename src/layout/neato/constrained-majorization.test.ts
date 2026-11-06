@@ -9,6 +9,7 @@ import { stressMajorizationWithHierarchy, type HierarchyOpts } from './constrain
 import { MODEL_CIRCUIT, MODEL_MDS, MODEL_SHORTPATH, MODEL_SUBSET } from './init.js';
 import type { DirectedVtxData } from './opt-arrangement.js';
 import { computeApspPacked, computeWeightedApspPacked, stressMajorizationKDMkernel } from './stress-kernel.js';
+import { stressModelDij } from './stress-models.js';
 import { OPT_SMART_INIT } from './stress.js';
 
 /** `opts` of a layout with the default squared weights and no smart init. */
@@ -108,10 +109,23 @@ describe('graphs without a hierarchy constraint', () => {
     expect(coords.every((a) => a.every((v) => v === 0))).toBe(true);
   });
 
-  it('stops where C runs sparse_stress_subspace_majorization_kD (smart init is not ported)', () => {
+  it('runs the unconstrained solver from sparse_stress_subspace_majorization_kD under smart init', () => {
     const graph = undirected();
-    expect(() => stressMajorizationWithHierarchy(graph, graph.length, zeros(2, graph.length),
-      freshNodes(graph.length), layoutOpts())).toThrowError(/smart initial layout/);
+    const n = graph.length;
+    csrand(1);
+    srand48(1);
+    const coords = zeros(2, n);
+    const iterations = stressMajorizationWithHierarchy(graph, n, coords, freshNodes(n), layoutOpts());
+    const expected = zeros(2, n);
+    csrand(1);
+    srand48(1);
+    const direct = stressMajorizationKDMkernel(stressModelDij(graph, n, MODEL_SHORTPATH), n, expected, freshNodes(n), {
+      dim: 2, opts: layoutOpts().opts, maxi: layoutOpts().maxi, epsilon: layoutOpts().epsilon,
+      smart: { graph, reweightGraph: false },
+    });
+    expect(iterations).toBe(direct);
+    expect(iterations).toBeGreaterThan(0);
+    expect(coords.map((a) => [...a])).toEqual(expected.map((a) => [...a]));
   });
 });
 
@@ -123,10 +137,16 @@ describe('a layout that finds no hierarchy', () => {
     return [row(0, 1, 2, -1, 1), row(1, 0, 2, 1, -1), row(2, 1, 0, 1, -1)];
   }
 
-  it('falls back to the unconstrained stress majorization (loud: its smart init is not ported)', () => {
+  it('falls back to the unconstrained stress majorization: the smart start is near-collinear, and stays so', () => {
     csrand(1);
-    expect(() => stressMajorizationWithHierarchy(cycle(), 3, zeros(2, 3), freshNodes(3), layoutOpts()))
-      .toThrowError(/smart initial layout/);
+    srand48(1);
+    const coords = zeros(2, 3);
+    expect(stressMajorizationWithHierarchy(cycle(), 3, coords, freshNodes(3), layoutOpts())).toBeGreaterThan(0);
+    const dist = (i: number, j: number): number => Math.hypot(coords[0]![i]! - coords[0]![j]!, coords[1]![i]! - coords[1]![j]!);
+    const sorted = [dist(0, 1), dist(1, 2), dist(0, 2)].sort((a, b) => a - b);
+    expect(sorted[0]).toBeCloseTo(2 / 3, 2); // the 1-D stress minimum of a unit triangle
+    expect(sorted[1]).toBeCloseTo(2 / 3, 2);
+    expect(sorted[2]).toBeCloseTo(4 / 3, 2);
   });
 });
 

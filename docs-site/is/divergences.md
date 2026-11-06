@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -116,7 +116,7 @@ inntak undir sinni eigin vél í stað `dot`. Hreinskilið þak þeirrar vinnu e
 að **þrengja** A1 í „ekkert virkt frávik á viðmiðunarkerfinu“, aldrei að
 útrýma fyrirvaranum um mismunandi kerfi; niðurstöðurnar hingað til (hér á eftir) standast það
 þak: `circo`/`twopi`/`osage` hafa hver um sig afhjúpað og rótargreint nokkur
-raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 99.8/96.6/68.0%
+raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 99.8/96.6/68.1%
 innan 0.5pt frá innbyggðu á 929 atriða heildinni (graphviz 16.1.0), sem þýðir að yfirfærða
 reikningsaðferðin (`fma.ts`, `arm-pow.ts`, samstilltur slembitölugjafi) heldur fyrir flest graf —
 og hvert eitt afgangsfráviksauðkenni á 929 atriða heildinni er rakið sérstaklega með innsprautun (rek lausnara
@@ -204,7 +204,7 @@ inntaki sem C-véfréttin getur ekki teiknað, samkvæmt [Samræmi](./conformanc
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
 
 (Árangurshlutfall `fdp` hækkaði frá 77.5%
 vegna þess að fyrri innsetta yfirferðin var á undan stöðu yfirfærslunnar í fyrra
@@ -242,6 +242,8 @@ mælaborðum hverrar vélar
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
+
+**Hvar rek sfdp-lausnarans byrjar (hluti 10, T2).** Tækjabúin innfædd útgáfa af sfdp, rakin á móti portinu á litlum id-um, víkur fyrst í síðasta bita `pow(dist, 1-p)` í fráhrindikraftinum (`lib/sfdpgen/spring_electrical.c:625,617`; portið `spring-electrical.ts:260`). Í `flatedge` gefur `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` `...8811p+2` í innfædda og `...8812p+2` í portinu; `graphs-p` og `1767` byrja eins. Aðlögunarkæling magnar bitann: hann nær `x[0]` í ítrun 5, `max|dx|` er 2.4e-9 í ítrun 100 og 3.9e-5 í 200, og skrefið snýst í ítrun 244. Tvær stýrðar keyrslur staðfesta þetta. Með bitum innfædda nákvæmlega í þessum 8 köllum er 62090 lína rakning `flatedge` eins, og með raunverulegu `pow` macOS á bak við Node-API viðbót hafa 288 af 292 id-um sem stóðust ekki bita-eins rakningar (hin 4, öll `overlap=false`, eru aðeins ólík við `xfinal`). Röð aðgerða og samruni í lausnaranum, margþrepa hlutanum, quadtree og gisnum kóða voru útilokuð. Þetta er libm gestgjafans, samþykkt undir A1 (sjá `pow`-liðinn í lista yfir þekktar eyður hér á eftir); `src/` breyttist ekki, svo tölurnar haldast 632 af 929. Tilraunin sem aðeins keyrði á macOS náði um 923 af 929; hún mælir `pow` véfréttarinnar og er ekki eitthvað sem bókasafnið getur gert á hverjum gestgjafa. `Math.pow` í fráhrindikraftinum stenst 153 af þessum 292 en lætur 6 id sem standast í dag versna, svo hún var ekki tekin í notkun. Sfdp-röð töflunnar er jöfn röðinni í [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 frábrugðið plús 295 samþykkt gefur 296, og 1 id til viðbótar er þar skráð sem óákvarðandi hjá véfréttinni.
 
 **Flokkssamþykki A1-rek (ítrekandi vélar, reiknuð aðild).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -1306,6 +1308,20 @@ er ólík innbyggðu Graphviz. Fundið af verkefninu `v2-silent-gaps`
   er ekki endurskapanlegt úr stuttu líkani eins og `hypot` er.
 - **Innbyggð hrun sem yfirfærslan skilgreinir.** Innbyggða Graphviz lýkur með 139 í neato `mode=KK` með `model=mds` og legg með `len` í næstum hverri keyrslu (1 lifði af um 1500; `mds_model` vísar í `GD_dist` með raðnúmeri sem byrjar á 1: yfirflæði á hrúgu). Gáttin sleppir hólfum utan marka og niðurstaða hennar samsvarar þeirri keyrslu innan 0,01. `circuit_model` vísar með `AGSEQ` sem byrjar á 1 (`circuit.c:46`), svo lína 0 í fylki þess er aldrei skrifuð og fylkið er sérstætt fyrir hvert netrit, samhangandi eða ekki: innbyggt `mode=KK` með `model=circuit` skilar aldrei circuit-uppsetningu. Þegar ferlið lifir af skrifar það `Warning: graph <name> is disconnected. Hence, the circuit model` og fellur aftur á stystu leiðir; sama villa les út fyrir línubendafylkið þegar síðast búni hnúturinn hefur legg, svo innbyggða útgáfan lýkur oftast með 139 (um 3 keyrslur af 4 á prófunarnetritinu). Gáttin tekur alltaf leiðina sem lifir af: viðvörunina og síðan stystu leiðir, samhangandi netrit eða ekki. Með `pack=true` hrundi innbyggða útgáfan í hverri keyrslu (0 lifðu af úr yfir 3000 á hvoru tveggja netritanna); samkvæmt ákvörðun varar gáttin við fyrir hvern hluta undir eigin nafni (`_neato_cc0`, `_neato_cc1`, ...), notar stystu leiðir og pakkar. Ekkert innbyggt úttak er til fyrir þá samsetningu; uppsetningin jafngildir innbyggðu `model=shortpath` fyrir sama netrit.
 - **Jafntefli í VPSC fylgja sköpunarröð, ekki hrúguvistfangi.** Innbyggða `IncVPSC::splitBlocks` gengur í gegnum `std::set<Block*>` sem er raðað eftir hrúguvistfangi á meðan það setur inn í það, og `CmpNodePos` sker úr um jafnar staðsetningar eftir vistfangi, svo innbyggt úttak fyrir `overlap=vpsc|ipsep` og takmarkað `mode=ipsep` er breytilegt milli keyrslna þegar staðsetningar eru jafnar (eitt tilvik gaf 21 mismunandi niðurstöðu í 300 keyrslum). Gáttin raðar jafnteflum eftir sköpunarröð og heimsækir alltaf nýja kubba, svo úttak hennar er ákvarðandi. Jafntefli sópunarviðburða fylgja libc++: gáttin inniheldur gátt á `std::sort` þess, svo jafnteflisröðin samsvarar innbyggðu. Hún jafngildir sýnatekinni innbyggðri keyrslu í jafnteflistilvikunum sem voru athuguð. Tilvikið með 40 hnútum (`dir1 n40`), sem áður samsvaraði engri af 29 sýnatekinni innbyggðum niðurstöðum, er skýrt: í 332 innbyggðum keyrslum gaf `libvpsc.a` véfréttarinnar 17 mismunandi úttök, en innbyggt afrit sem raðar aðeins `Blocks` eftir sköpunarvísi gaf 1 í 332, og gáttin er bita fyrir bita eins og það. Vistfangaröð kubba er allur munurinn í því tilviki; fullyrðingin er mæld aðeins á `dir1 n40` (eftirfylgni 110).
+
+### `dim`, `dimen` og `z` (neato, sfdp) {#dim-dimen-and-z-neato-sfdp}
+
+neato og sfdp raða út í `dim` víddum í öllum hömum, takmarkað við `MAXDIM` (10) í C. `dim=3` eitt og sér raðar í 3-D en skrifar 2 hnit; `dimen=3` eitt og sér stillir `dim` á 3 og skrifar 3; `dim=11 dimen=11` skrifar 10. Z-hnitið er aðeins aðgengilegt í gegnum eigindin `pos` og `z`; `getLayout` er óbreytt. fdp, circo, twopi, osage og patchwork haldast 2-D, eins og C þvingar. `mode=hier` yfir 2-D byrjar á uppröðun með (`dim`-1) víddir í gegnum `opt_smart_init` (`constrained_majorization.c:95`, `stress.c:874`), sem er portað; `mode=hier` gráfur án stefndrar brúnar eða án stigveldis er nú teiknaður í stað þess að kasta villu. `mode=major start=self` kastar enn villu. Teiknigrein `GVRENDER_DOES_Z` (`lib/common/emit.c:1660,2734`) er ekki portuð: hún krefst tækis sem teiknar z, og ekkert hér gerir það.
+
+### Hrun í innfædda og breytileiki eftir hrúguvistföngum (hluti 10) {#native-crashes-and-heap-address-variation-part-10}
+
+Hver liður segir hvað innfædda gerir og hvað portið gerir.
+
+- **`mode=hier dim=4` á tveimur hnútum.** Innfædda skrifar framhjá `directions` (`lib/neatogen/stress.c:514`) og stöðvast í sumum keyrslum (útgönguskilakóði 133 í 5 af 16 keyrslum). Portið teiknar.
+- **`mode=hier dim=3` með `len=0.001`.** Innfædda deyr af merki: 3 af 8 keyrslum með 19 hnúta (SIGBUS) og 8 af 8 með 27 hnúta (SIGBUS, SIGSEGV, SIGTRAP). Staflinn er `mfm_alloc` undir `stress_majorization_kD_mkernel`, sem sýnir hrúguspillingu; nákvæmur staður er ekki sannaður. Portið teiknar, og þar sem innfædda lifir af (19 hnútar, 5 af 8 keyrslum) er það bæta-eins.
+- **Önnur uppröðun fdp á sama grafi breytist í innfædda með hrúguvistföngum.** `deriveGraph` og `genPorts` bera saman hnútabendla (`lib/fdpgen/layout.c:466,501,637`). Yfir 12 innfæddar keyrslur hvor fellur teikning 2 af `graphs-fdp` sem `plain` í 2 flokka (1 og 11 keyrslur) og `1581` sem `dot` í 2 flokka (8 og 4 keyrslur); portið er bæta-eins og 1 keyrslu flokkur `plain` og innan 5e-13 frá 4 keyrslu flokki `dot`. Innfædda byggt með þessum þremur samanburðum á `ND_id` endurtekur sig 8 af 8 og er bæta-eins og portið á `plain`. Val eingöngu í portinu: innfædda `attach_attrs` endar á `undoClusterEdges` (`lib/common/output.c:403-404`), og portið framkvæmir þá afturköllun við næstu uppröðun, ekki við teikningu, því ritarar þess lesa `__0:` milliliðina.
+- **`T`-aðgerð í `_draw_` eða `_background` grafsins.** Innfædda hrynur með minnisvillu (útgönguskilakóði 139): `op->span` er NULL utan neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Portið teiknar engan texta fyrir hana.
+- **neato á undirgrafi.** Innfædda hætti með 139 við uppröðun beggja undirgrafa í því eina grafi sem var prófað, venjulegs undirgrafs og klasa. Portið skilar úttaki.
 
 ---
 

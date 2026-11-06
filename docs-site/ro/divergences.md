@@ -1,5 +1,5 @@
 ---
-sourceHash: 045de45aea0beb99a14150ec754d4a6360e481a0d37f911425b9ed0c0ce66d53
+sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ fiecare intrare cu propriul motor, în loc de `dot`. Plafonul onest al acestei a
 **restrângerea** lui A1 la „nicio divergență activă pe platforma de referință”, niciodată
 eliminarea rezervei privind platformele multiple; rezultatele de până acum (mai jos) respectă acest
 plafon: `circo`/`twopi`/`osage` au scos la iveală și au elucidat până la cauza rădăcină
-câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 99.8/96.6/68.0%
+câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 99.8/96.6/68.1%
 în limita a 0.5pt față de nativ pe universul de 929 de elemente (graphviz 16.1.0), ceea ce înseamnă că aritmetica
 portată (`fma.ts`, `arm-pow.ts`, PRNG potrivit) se menține pentru majoritatea grafurilor — iar
 fiecare id divergent din universul de 929 de elemente este atribuit individual prin injecție (derivă a solverului față de
@@ -200,7 +200,7 @@ intrările pe care oracolul C nu le poate randa, conform [Conformitate](./confor
 |---|---:|---:|---:|---:|---:|
 | `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
 | `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.0%) | 296 | 1 | 0 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
 
 (Rata de reușită a lui `fdp` a crescut de la 77.5% pentru că parcurgerea anterioară înregistrată
 era anterioară stării portării din misiunea precedentă.
@@ -237,6 +237,8 @@ panourile pe motor
 ([`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md),
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
+
+**Unde începe deriva solverului sfdp (partea 10, T2).** Un sfdp nativ instrumentat, urmărit față de port pe id-uri mici, diferă prima dată la ultimul bit al lui `pow(dist, 1-p)` din forța de respingere (`lib/sfdpgen/spring_electrical.c:625,617`; portul `spring-electrical.ts:260`). Pe `flatedge`, `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` dă nativ `...8811p+2` și în port `...8812p+2`; `graphs-p` și `1767` încep la fel. Răcirea adaptivă amplifică bitul: ajunge la `x[0]` în iterația 5, `max|dx|` este 2.4e-9 în iterația 100 și 3.9e-5 în 200, iar pasul se răstoarnă în iterația 244. Două rulări controlate o confirmă. Cu biții nativului la exact aceste 8 apeluri, urma de 62090 de linii a lui `flatedge` este identică, iar cu `pow`-ul real din macOS în spatele unui addon Node-API, 288 din cele 292 de id-uri care nu treceau au urme identice bit cu bit (celelalte 4, toate `overlap=false`, diferă doar la `xfinal`). Ordinea operațiilor și fuziunea din solver, multilevel, quadtree și codul rar au fost excluse. Este libm al gazdei, acceptată sub A1 (vezi elementul `pow` din lista golurilor cunoscute de mai jos); `src/` nu s-a schimbat, deci numerele rămân 632 din 929. Experimentul doar pe macOS a ajuns la aproximativ 923 din 929; măsoară `pow`-ul oracolului și nu este ceva ce biblioteca poate face pe orice gazdă. `Math.pow` în forța de respingere trece 153 din cele 292, dar regresează 6 id-uri care trec azi, așa că nu a fost aplicat. Rândul sfdp din tabel este egal cu cel din [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 divergent plus 295 acceptate dă 296, iar încă 1 id apare acolo ca nedeterminist la oracol.
 
 **Acceptarea clasei A1-drift (motoare iterative, membri calculați).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -1305,6 +1307,20 @@ diferă de Graphviz nativ. Găsite de misiunea `v2-silent-gaps`
   nu poate fi reprodus dintr-un model scurt așa cum poate fi `hypot`.
 - **Prăbușiri native pe care portarea le definește.** Graphviz nativ se încheie cu 139 la neato `mode=KK` cu `model=mds` și o muchie cu `len` în aproape fiecare rulare (1 supraviețuitor din aproximativ 1500; `mds_model` indexează `GD_dist` cu un număr de secvență în bază 1: depășire de heap). Portul elimină celulele din afara intervalului, iar rezultatul său coincide cu acel supraviețuitor la 0,01. `circuit_model` indexează cu `AGSEQ` în bază 1 (`circuit.c:46`), deci rândul 0 al matricei sale nu este scris niciodată, iar matricea este singulară pe orice graf, conex sau nu: `mode=KK` nativ cu `model=circuit` nu produce niciodată un aranjament circuit. Când procesul supraviețuiește, afișează `Warning: graph <name> is disconnected. Hence, the circuit model` și revine la drumurile cele mai scurte; aceeași eroare citește dincolo de tabloul de pointeri de rând când ultimul nod creat are o muchie, deci nativul se încheie de obicei cu 139 (aproximativ 3 rulări din 4 pe graful de probă). Portul alege întotdeauna calea supraviețuitoare: avertismentul, apoi drumurile cele mai scurte, graf conex sau nu. Cu `pack=true`, nativul s-a prăbușit la fiecare rulare (0 supraviețuitori din peste 3000 pe fiecare din două grafuri); prin decizie, portul avertizează pe componentă sub un nume propriu (`_neato_cc0`, `_neato_cc1`, ...), folosește drumurile cele mai scurte și împachetează. Nu există ieșire nativă pentru această combinație; aranjamentul este egal cu `model=shortpath` nativ pentru același graf.
 - **Ordinea egalităților din VPSC urmează ordinea creării, nu adresa de heap.** `IncVPSC::splitBlocks` nativ parcurge un `std::set<Block*>` ordonat după adresa de heap în timp ce inserează în el, iar `CmpNodePos` departajează egalitățile de poziție după adresă, deci ieșirea nativă pentru `overlap=vpsc|ipsep` și `mode=ipsep` constrâns variază de la o rulare la alta când pozițiile sunt egale (un caz a dat 21 de rezultate distincte în 300 de rulări). Portul ordonează egalitățile după ordinea creării și vizitează mereu blocurile noi, deci ieșirea sa este deterministă. Egalitățile evenimentelor de baleiaj urmează libc++: portul conține un port al `std::sort`-ului său, deci ordinea egalităților coincide cu cea nativă. Este egală cu o rulare nativă eșantionată în cazurile de egalitate verificate. Cazul cu 40 de noduri (`dir1 n40`), care înainte nu coincidea cu niciunul din 29 de rezultate native eșantionate, este explicat: în 332 de rulări native, `libvpsc.a` al oracolului a dat 17 ieșiri distincte, în timp ce o copie nativă care ordonează doar `Blocks` după indexul de creare a dat 1 în 332, iar portul îi este egal bit cu bit. Ordinea adreselor blocurilor este întreaga diferență în acel caz; afirmația este măsurată doar pe `dir1 n40` (urmărire 110).
+
+### `dim`, `dimen` și `z` (neato, sfdp) {#dim-dimen-and-z-neato-sfdp}
+
+neato și sfdp așază în `dim` dimensiuni în fiecare mod, limitate la `MAXDIM` (10) din C. `dim=3` singur așază în 3-D, dar scrie 2 coordonate; `dimen=3` singur setează `dim` la 3 și scrie 3; `dim=11 dimen=11` scrie 10. Coordonata z este disponibilă doar prin atributele `pos` și `z`; `getLayout` este neschimbat. fdp, circo, twopi, osage și patchwork rămân 2-D, cum impune C. `mode=hier` peste 2-D pornește dintr-o așezare cu (`dim`-1) dimensiuni prin `opt_smart_init` (`constrained_majorization.c:95`, `stress.c:874`), care este portat; un graf `mode=hier` fără muchie orientată sau fără ierarhie este acum redat în loc să arunce o eroare. `mode=major start=self` încă aruncă o eroare. Ramura de randare `GVRENDER_DOES_Z` (`lib/common/emit.c:1660,2734`) nu este portată: cere un dispozitiv care desenează z, iar aici niciunul nu o face.
+
+### Prăbușiri native și variație după adresele heap-ului (partea 10) {#native-crashes-and-heap-address-variation-part-10}
+
+Fiecare element spune ce face nativul și ce face portul.
+
+- **`mode=hier dim=4` pe două noduri.** Nativul scrie dincolo de `directions` (`lib/neatogen/stress.c:514`) și, în unele rulări, se oprește brusc (ieșire 133 în 5 din 16 rulări). Portul redă.
+- **`mode=hier dim=3` cu `len=0.001`.** Nativul moare prin semnal: 3 din 8 rulări la 19 noduri (SIGBUS) și 8 din 8 la 27 de noduri (SIGBUS, SIGSEGV, SIGTRAP). Stiva este `mfm_alloc` sub `stress_majorization_kD_mkernel`, ceea ce arată corupere a heap-ului; locul exact nu este dovedit. Portul redă, iar unde nativul supraviețuiește (19 noduri, 5 din 8 rulări) este identic octet cu octet.
+- **A doua așezare a lui fdp pe același graf variază în nativ cu adresele heap-ului.** `deriveGraph` și `genPorts` compară pointeri de noduri (`lib/fdpgen/layout.c:466,501,637`). Pe câte 12 rulări native, redarea 2 a lui `graphs-fdp` ca `plain` cade în 2 clase (1 și 11 rulări), iar `1581` ca `dot` în 2 clase (8 și 4 rulări); portul este identic octet cu octet cu clasa de 1 rulare a lui `plain` și în limita de 5e-13 față de clasa de 4 rulări a lui `dot`. Un nativ recompilat cu cele trei comparații pe `ND_id` se repetă 8 din 8 și este identic octet cu octet cu portul pe `plain`. O alegere doar a portului: `attach_attrs` nativ se încheie cu `undoClusterEdges` (`lib/common/output.c:403-404`), iar portul execută această anulare la următoarea așezare, nu la randare, pentru că scriitorii lui citesc proxy-urile `__0:`.
+- **O operație `T` în `_draw_` sau `_background` al grafului.** Nativul face segfault (ieșire 139): `op->span` este NULL în afara lui neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Portul nu desenează text pentru ea.
+- **neato pe un subgraf.** Nativul a ieșit cu 139 la așezarea ambelor subgrafuri ale singurului graf testat, un subgraf simplu și un cluster. Portul returnează o ieșire.
 
 ---
 

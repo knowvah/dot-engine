@@ -1,0 +1,29 @@
+== render 1
+graph 1 1.162 1.162
+node a 0.96836 0.91303 0.75 0.5 a solid box black lightgrey
+node b 0.29051 0.49802 0.75 0.5 b solid box black lightgrey
+node c 0.29051 0.16601 0.75 0.5 c solid box black lightgrey
+node d 0.87153 0.49802 0.75 0.5 d solid box black lightgrey
+node e 0.87153 0.16601 0.75 0.57778 "E\nx" solid box black lightgrey
+node f 0.19368 0.91303 0.75 0.5 f solid box black lightgrey
+node g 0.58102 0.91303 0.75 0.5 g solid box black lightgrey
+ solid black
+ solid black
+ solid black
+ solid black
+ solid black
+ solid black
+ solid black
+stop
+== render 2
+graph 1 0.62115 0.62115
+node f 0.15529 0.31057 0.75 0.5 f solid box black lightgrey
+node g 0.46586 0.31057 0.75 0.5 g solid box black lightgrey
+ solid black
+stop
+== render 3
+graph 1 0.62115 0.62115
+node f 0.15529 0.31057 0.75 0.5 f solid box black lightgrey
+node g 0.46586 0.31057 0.75 0.5 g solid box black lightgrey
+ solid black
+stop

@@ -1,0 +1,23 @@
+graph G {
+	graph [bb="0,0,320,116"];
+	node [label="\N"];
+	subgraph _cc_0 {
+		c	[height=0.5,
+			pos="77,98",
+			width=0.75];
+	}
+	a	[height=0.5,
+		pos="27,18",
+		width=0.75];
+	b	[height=0.5,
+		pos="153,18",
+		width=0.75];
+	a -- b	[pos="54.34,18 75.475,18 104.59,18 125.71,18"];
+	d	[height=0.5,
+		pos="167,88",
+		width=0.75];
+	e	[height=0.5,
+		pos="293,88",
+		width=0.75];
+	d -- e	[pos="194.34,88 215.47,88 244.59,88 265.71,88"];
+}

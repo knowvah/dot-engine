@@ -1,0 +1,12 @@
+graph G {
+  dim=4;
+  dimen=4;
+  mode=KK;
+  a -- b;
+  b -- c;
+  c -- d;
+  d -- e;
+  e -- a;
+  a -- c;
+  e -- f;
+}

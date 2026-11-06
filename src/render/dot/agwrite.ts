@@ -25,7 +25,7 @@ import {
   COMPUTED_EDGE_ATTRS, COMPUTED_NODE_ATTRS, appendRecordRects, computedPart, dictParts,
   echoAttr, echoGraphAttr, edgeAttrsAttached, edgeConnector, edgePosRaw,
   effectiveEdgeDefaults, effectiveNodeDefaults, graphInputParts, graphLabelAttrs,
-  isDirected, nodeDictParts, nodeRecord, objInputParts,
+  isDirected, nodeDictParts, nodePosRaw, nodeRecord, objInputParts,
 } from './attrs.js';
 import { nodesInSeq } from '../../layout/dot/decomp.js';
 import type { XdotDraws, SerCtx } from './types.js';
@@ -390,7 +390,7 @@ export abstract class DotWriterBase {
     // engine leaves them divergent — patchwork's finishNode lets poly_init
     // clobber ND_width/height while the tile survives in lw/rw/ht.
     const defs = effectiveNodeDefaults(scope);
-    const posRaw = gfmt5(info.coord.x) + ',' + gfmt5(info.coord.y);
+    const posRaw = nodePosRaw(n);
     const widthRaw = gfmt5((info.lw + info.rw) / 72);
     const heightRaw = gfmt5(info.ht / 72);
     const parts: string[] = [
