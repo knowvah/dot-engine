@@ -1,0 +1,51 @@
+## CF=A
+subg-fdp.s.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 42 lines differ cmp=0
+subg-fdp.s.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-fdp.s.nofree.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0
+subg-fdp.s.nofree.svg  r1: 5 lines differ  r2: 20 lines differ
+subg-fdp.cluster_k.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 70 lines differ cmp=1
+subg-fdp.cluster_k.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-fdp.cluster_k.nofree.xdot  r1: bytes= cmp=0  r2: no native
+subg-fdp.cluster_k.nofree.svg  r1: 5 lines differ  r2: 5 lines differ
+subg-osage.s.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 42 lines differ cmp=0
+subg-osage.s.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-osage.s.nofree.xdot  r1: bytes= cmp=0  r2: 6 lines differ cmp=4
+subg-osage.s.nofree.svg  r1: 5 lines differ  r2: 26 lines differ
+subg-osage.cluster_k.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 70 lines differ cmp=1
+subg-osage.cluster_k.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-osage.cluster_k.nofree.xdot  r1: bytes= cmp=0  r2: 4 lines differ cmp=2
+subg-osage.cluster_k.nofree.svg  r1: 5 lines differ  r2: 18 lines differ
+## CF=B
+subg-fdp.s.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 70 lines differ cmp=1
+subg-fdp.s.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-fdp.s.nofree.xdot  r1: bytes= cmp=0  r2: 24 lines differ cmp=10
+subg-fdp.s.nofree.svg  r1: 5 lines differ  r2: 5 lines differ
+subg-fdp.cluster_k.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 42 lines differ cmp=0
+subg-fdp.cluster_k.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-fdp.cluster_k.nofree.xdot  r1: bytes= cmp=0  r2: no native
+subg-fdp.cluster_k.nofree.svg  r1: 5 lines differ  r2: 5 lines differ
+subg-osage.s.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 70 lines differ cmp=1
+subg-osage.s.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-osage.s.nofree.xdot  r1: bytes= cmp=0  r2: 26 lines differ cmp=10
+subg-osage.s.nofree.svg  r1: 5 lines differ  r2: 7 lines differ
+subg-osage.cluster_k.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 42 lines differ cmp=0
+subg-osage.cluster_k.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-osage.cluster_k.nofree.xdot  r1: bytes= cmp=0  r2: 18 lines differ cmp=6
+subg-osage.cluster_k.nofree.svg  r1: 5 lines differ  r2: 7 lines differ
+## CF=AB
+subg-fdp.s.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 42 lines differ cmp=0
+subg-fdp.s.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-fdp.s.nofree.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0
+subg-fdp.s.nofree.svg  r1: 5 lines differ  r2: 5 lines differ
+subg-fdp.cluster_k.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 70 lines differ cmp=1
+subg-fdp.cluster_k.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-fdp.cluster_k.nofree.xdot  r1: bytes= cmp=0  r2: no native
+subg-fdp.cluster_k.nofree.svg  r1: 5 lines differ  r2: 5 lines differ
+subg-osage.s.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 42 lines differ cmp=0
+subg-osage.s.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-osage.s.nofree.xdot  r1: bytes= cmp=0  r2: 2 lines differ cmp=0
+subg-osage.s.nofree.svg  r1: 5 lines differ  r2: 7 lines differ
+subg-osage.cluster_k.root.xdot  r1: bytes= cmp=0  r2: bytes= cmp=0  r3: 70 lines differ cmp=1
+subg-osage.cluster_k.root.svg  r1: 5 lines differ  r2: 5 lines differ  r3: 5 lines differ
+subg-osage.cluster_k.nofree.xdot  r1: bytes= cmp=0  r2: 2 lines differ cmp=0
+subg-osage.cluster_k.nofree.svg  r1: 5 lines differ  r2: 7 lines differ

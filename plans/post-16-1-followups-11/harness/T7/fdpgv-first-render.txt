@@ -1,0 +1,8 @@
+tests/graphs/fdp.gv (graphviz repo), dot -Kfdp -Txdot, first render, 16 runs per arm (shasum prefix: count):
+  stock   31531a5b:2  a6e0163b:14
+  ctrl    31531a5b:2  a6e0163b:14     (patched plugin, GVTS_NOADDR unset)
+  noaddr  a6e0163b:16                 (patched plugin, GVTS_NOADDR=1)
+  a6e0163b bb="0,0,372.26,290.4"; 31531a5b bb="0,0,340.89,272.99"
+Port: compareXdot vs noaddr 0 diffs, vs the 31531a5b class 171 diffs. Bytes (backslash-newline removed) differ on one
+value only: clusterA bb x0 1.5987e-14 (port) vs 3.1974e-14 (native). Port node positions after fdpLayout differ from
+native's GVTS_POS_DUMP by up to 6.0e-12 inch (C) and 3.2e-13 (a): fdp's force-solve drift, which carries into the bb.

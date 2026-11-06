@@ -1,0 +1,64 @@
+diff --git a/src/common/edge-in-box.ts b/src/common/edge-in-box.ts
+index 214eb508..ae8f58db 100644
+--- a/src/common/edge-in-box.ts
++++ b/src/common/edge-in-box.ts
+@@ -47,8 +47,29 @@ function overlapLabel(lp: TextlabelT, b: Box): boolean {
+  */
+ export function edgeHasDrawableContent(e: Edge, clip: Box): boolean {
+   const i = e.info;
++  if ((globalThis as {CF_B?: boolean}).CF_B) return (i.spl !== undefined && boxOverlap(cfSplBb(i.spl), clip))
++    || (i.label !== undefined && overlapLabel(i.label, clip))
++    || (i.xlabel !== undefined && i.xlabel.set && overlapLabel(i.xlabel, clip));
+   return i.spl !== undefined
+     || (i.label !== undefined && i.label.set && overlapLabel(i.label, clip))
+     || i.xlabel !== undefined
+     || i.head_label !== undefined || i.tail_label !== undefined;
+ }
++
++function cfSplBb(spl: NonNullable<Edge['info']['spl']>): Box {
++  const bb: Box = { ll: { ...spl.list[0]!.list[0]! }, ur: { ...spl.list[0]!.list[0]! } };
++  const ex = (p: { x: number; y: number }): void => {
++    bb.ll.x = Math.min(bb.ll.x, p.x); bb.ll.y = Math.min(bb.ll.y, p.y);
++    bb.ur.x = Math.max(bb.ur.x, p.x); bb.ur.y = Math.max(bb.ur.y, p.y);
++  };
++  for (const bz of spl.list) {
++    ex(bz.list[0]!);
++    for (let k = 1; k < bz.list.length; k += 3) {
++      ex({ x: (bz.list[k]!.x + bz.list[k + 1]!.x) / 2, y: (bz.list[k]!.y + bz.list[k + 1]!.y) / 2 });
++      ex(bz.list[k + 2]!);
++    }
++    if (bz.sflag) ex(bz.sp);
++    if (bz.eflag) ex(bz.ep);
++  }
++  return bb;
++}
+diff --git a/src/render/dot.ts b/src/render/dot.ts
+index 222c1e34..4727142e 100644
+--- a/src/render/dot.ts
++++ b/src/render/dot.ts
+@@ -82,6 +82,11 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
+   /** Draw strings for `obj`. `-Tdot` computes none, and agwrite prints the ones the
+    *  attribute slots already hold. Single gate so the two paths cannot drift. */
+   protected drawsOf(obj: Node | Edge | Graph): XdotDraws | undefined {
++    if (this.emitDraws && (globalThis as {CF_A?: boolean}).CF_A) {
++      const c = this.draws.get(obj); const st = storedDraws(obj.attrs);
++      return { draw: c?.draw || st.draw, ldraw: c?.ldraw || st.ldraw, hdraw: c?.hdraw || st.hdraw,
++        tdraw: c?.tdraw || st.tdraw, hldraw: c?.hldraw || st.hldraw, tldraw: c?.tldraw || st.tldraw };
++    }
+     return this.emitDraws ? this.draws.get(obj) : storedDraws(obj.attrs);
+   }
+ 
+diff --git a/src/render/dot/attrs.ts b/src/render/dot/attrs.ts
+index a39f0a7e..b80c8dfc 100644
+--- a/src/render/dot/attrs.ts
++++ b/src/render/dot/attrs.ts
+@@ -257,7 +257,8 @@ export function rootOf(g: Graph): Graph {
+  * @see lib/cgraph/attr.c:287 (agapply/addattr) · lib/cgraph/write.c:262
+  */
+ export function graphInputParts(g: Graph, top: boolean, emitDraws: boolean): string[] {
+-  const computed = computedGraphAttrs(emitDraws);
++  let computed = computedGraphAttrs(emitDraws);
++  if (!top && (globalThis as {CF_A?: boolean}).CF_A) { computed = new Set(computed); computed.delete('xdotversion'); if (!g.name.startsWith('cluster')) computed.delete('_draw_'); }
+   const parts: string[] = [];
+   const snap = g.graphDefaultsSnapshot;
+   const seeded = g.seededAttrs;
