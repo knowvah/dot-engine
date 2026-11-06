@@ -110,7 +110,7 @@
     "@types/fontkit": "^2.0.9",
     "@types/node": "^22.0.0",
     "@typescript/native-preview": "^7.0.0-dev.20260622.1",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.12",
     "@xmldom/xmldom": "^0.9.12",
     "esbuild": "^0.28.1",
     "fontkit": "^2.0.4",
@@ -122,13 +122,13 @@
     "typedoc-vitepress-theme": "^1.1.3",
     "typescript": "^6.0.0",
     "vitepress": "^1.6.0",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   },
   "overrides": {
     "postcss": "^8.5.25",
     "brace-expansion": "^5.0.12",
     "vitepress": {
-      "vite": "^6.4.3"
+      "vite": "^6.4.4"
     },
     "@knowvah/dot-engine": "https://registry.npmjs.org/@knowvah/dot-engine/-/dot-engine-1.7.0.tgz"
   },
