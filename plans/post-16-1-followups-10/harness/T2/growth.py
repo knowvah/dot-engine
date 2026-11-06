@@ -1,13 +1,14 @@
 # SPDX-License-Identifier: EPL-2.0
-import sys,re
+import sys
 def parse(fn):
     out=[];comp=-1;it=None;
-    for l in open(fn):
-        f=l.split()
-        if not f: continue
-        if f[0]=='EMBED': comp+=1;it=0
-        elif f[0]=='iter': it=int(f[1])
-        out.append((comp,it,f[0],f[-1]))
+    with open(fn) as fh:
+        for l in fh:
+            f=l.split()
+            if not f: continue
+            if f[0]=='EMBED': comp+=1;it=0
+            elif f[0]=='iter': it=int(f[1])
+            out.append((comp,it,f[0],f[-1]))
     return out
 a=parse(sys.argv[1]);b=parse(sys.argv[2])
 print(len(a),len(b))

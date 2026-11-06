@@ -2,8 +2,10 @@
 # SPDX-License-Identifier: EPL-2.0
 """First-difference report between two trace streams."""
 import sys
-a=[l.rstrip('\n') for l in open(sys.argv[1])]
-b=[l.rstrip('\n') for l in open(sys.argv[2])]
+with open(sys.argv[1]) as fa:
+    a=[l.rstrip('\n') for l in fa]
+with open(sys.argv[2]) as fb:
+    b=[l.rstrip('\n') for l in fb]
 a=[l for l in a if not l.startswith('Warning')]
 b=[l for l in b if not l.startswith('Warning')]
 for i,(x,y) in enumerate(zip(a,b)):

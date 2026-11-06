@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: EPL-2.0
 """For each id: native instrumented trace vs port trace in a pow mode, report the first differing line."""
-import json,os,subprocess,sys,tempfile,threading,queue,time
+import json,os,subprocess,sys,tempfile,threading,queue
 SC=os.environ['T2_SC']; WT=os.environ['T2_WT']
 mode=sys.argv[1]; lst=sys.argv[2]; out=sys.argv[3]; par=int(sys.argv[4]); cap=int(sys.argv[5])
-paths={r['id']:r['path'] for r in json.load(open(WT+'/test/corpus/parity.json'))['results']}
-ids=[l.strip() for l in open(lst) if l.strip()]
+with open(WT+'/test/corpus/parity.json') as fp:
+    paths={r['id']:r['path'] for r in json.load(fp)['results']}
+with open(lst) as fl:
+    ids=[l.strip() for l in fl if l.strip()]
 done=set()
 if os.path.exists(out):
-    done={json.loads(l)['id'] for l in open(out) if l.strip()}
+    with open(out) as fo:
+        done={json.loads(l)['id'] for l in fo if l.strip()}
 q=queue.Queue()
 for i in ids:
     if i not in done: q.put(i)
@@ -45,6 +48,7 @@ def work():
             except subprocess.TimeoutExpired:
                 row['timeout']=True
         with lock:
-            open(out,'a').write(json.dumps(row)+'\n')
+            with open(out,'a') as fo:
+                fo.write(json.dumps(row)+'\n')
 ts=[threading.Thread(target=work) for _ in range(par)]
 [t.start() for t in ts]; [t.join() for t in ts]
