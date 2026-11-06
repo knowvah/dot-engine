@@ -1,0 +1,2 @@
+hypot: 49590 native calls, Math.hypot misses 18516
+exp: 30 native calls, Math.exp misses 4 (t = 1, 5, 19, 24)
