@@ -75,6 +75,14 @@ neato = {
     "overlap-false-dim3": graph(SMALL, D3 + [("overlap", "false")]),
     "pins-dim3": graph(SMALL, D3, ['a [pos="1,2,3!"];', 'b [pos="4,5"];', "c [z=7];"]),
     "pack-dim3": graph(THREE, D3 + [("pack", "true")]),
+    # Added by T6 and T8; the hier-* inputs come from ../T7/gen.py.
+    "kk-dim4-dimen4": graph(SMALL, [("dim", "4"), ("dimen", "4"), ("mode", "KK")]),
+    "kk-pins-dim3": graph(
+        SMALL, D3 + [("mode", "KK")], ['a [pos="1,2,3!"];', 'b [pos="4,5"];', "c [z=7];"]
+    ),
+    "regular-dim3": graph(SMALL, D3 + [("start", "regular")]),
+    "overlap-scale-dim3": graph(SMALL, D3 + [("overlap", "scale")]),
+    "overlap-vpsc-dim3": graph(SMALL, D3 + [("overlap", "vpsc")]),
 }
 emit("src/layout/neato/__fixtures__/dim", "neato", "Engine neato.", neato)
 

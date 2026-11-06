@@ -77,3 +77,9 @@
 - **Finding**: the file's `edgeKey` held a raw NUL, so Edit refused it, `grep` treats it as binary, and `git diff` shows no text without `-a`. It now uses `\0`.
 - **Impact**: other `src/` files with raw control bytes hide from `grep`; use `/usr/bin/grep -a`.
 - **Confidence**: High
+
+## Observation: the survey's last line names parity.json whatever PARITY_OUT says
+- **Context**: T17's survey with `PARITY_OUT=parity-mission-probe.json`.
+- **Finding**: `test/corpus/survey.ts:638` prints `wrote parity.json` while line 73 writes to `PARITY_OUT`. The run wrote only `parity-mission-probe.json`; `git status` showed `parity.json` untouched.
+- **Impact**: check the file named by `PARITY_OUT`, not the log line, before reading a survey result.
+- **Confidence**: High

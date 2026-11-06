@@ -117,7 +117,34 @@ T8 and T13 are `feat`, so the merged PR cuts a **minor release** (AD-12). Nothin
 | [3a](batch-3a/overview.md) | T6 KK `dim` · T7 stress, hier, ipsep, sgd `dim` · T8 overlap `dim` · T13 sfdp `dim` (114) | parallel worktrees | [x] |
 | [3b](batch-3b/overview.md) | T9 list guard (116), T10 `abomShift` (118), T11 fitter and weights (119), T12 flat arrows (120) | one agent, in order; parallel with 3a | [x] |
 | [4](batch-4/overview.md) | T14 second renders (117), T15 reset edges (123), then T16 docs | one agent, then docs | [x] |
-| [5](batch-5/overview.md) | T17 final verification, close-out, re-sign stop | orchestrator | [ ] |
+| [5](batch-5/overview.md) | T17 final verification, close-out, re-sign stop | orchestrator | [x] |
+
+## Mission summary
+
+Items 114–124 are closed; none parked. Details per task are in [decision-journal.md](decision-journal.md).
+
+| Item | Task | Outcome |
+|---|---|---|
+| 114 | T1, T6, T7, T8, T13, T16 | neato and sfdp lay out and print in `dim` and `dimen` up to `MAXDIM`; `mode=hier` smart init ported |
+| 115 | T3 | `ccomps` reuses a user's `_cc_N`; twopi prints native's `weight=0` error |
+| 116 | T9 | `alloc_elist` unconditional |
+| 117 | T14 | proxies undone at the next layout; the rest is native's heap-address order |
+| 118 | T10 | abomination rank as C |
+| 119 | T11 | aux weight kept in the attribute; the fallback appends |
+| 120 | T12 | the aux bezier's arrows kept |
+| 121 | T2 | the last bit of macOS `pow`; accepted under PR 119, no change |
+| 122 | T4 | `draw-replay-*` golden inputs |
+| 123 | T15 | both reset edges pinned against native |
+| 124 | T5 | native's `canon` prints freed memory for non-ASCII labels |
+
+- **User decisions:** T1, T3, T11 and T12 write-sets widened; 125 fixed under a stop-8 exception; `mode=hier`
+  smart init ported under a stop-8 exception; twopi's `weight=0` error kept under a stop-8 exception (`2095`).
+- **Final verification (T17):** survey `GATE PASS`, counts equal `parity.json`, oracle-error 14. Full
+  bytediff, T0 vs head, 38,000 jobs and the quarantined ids: every job compared is identical except `2095`
+  twopi stderr; 427 jobs capped on both sides are unproven. T4's inputs change only through 125. T5's
+  matrix is unchanged; no slowdown on neato or sfdp.
+- **Opened:** follow-ups 126–138 (125 closed here).
+- **Stops:** 1 (T1, T3, T7, T11, T12), 8 (`2095`), and the planned 12.
 
 ## Documents
 

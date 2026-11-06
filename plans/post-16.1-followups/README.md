@@ -24,7 +24,8 @@ Items 103–108 closed by `plans/post-16-1-followups-8/`; the open work is items
 "New follow-ups found by part 8".
 Items 109–113 closed by `plans/post-16-1-followups-9/`; the open work is items 114–124 under
 "New follow-ups found by part 9".
-Being closed by `plans/post-16-1-followups-10/`.
+Items 114–124 closed by `plans/post-16-1-followups-10/`; the open work is items 126–138 under
+"New follow-ups found by part 10".
 Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
@@ -614,32 +615,59 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `image-ft-null.test.ts` calls it. Route those through it or remove it (part 8 T4, T9).
 
 - **New follow-ups found by part 9** (`plans/post-16-1-followups-9/`):
-  114. `neato dim=3` is silently 2-D: 211–302 diffs on planning's probes, and absent from
+  114. **[DONE — part 10 T1, T6, T7, T8, T13: neato and sfdp honour `dim` and `dimen`; T16 documents it]** `neato dim=3` is silently 2-D: 211–302 diffs on planning's probes, and absent from
       `docs/known-divergences.md`.
-  115. `ccomps` does not reuse a user `_cc_N` subgraph. On `graph G { a -- b; subgraph _cc_0 { c }
+  115. **[DONE — part 10 T3: `ccomps` reuses it; twopi prints the `weight=0` error]** `ccomps` does not reuse a user `_cc_N` subgraph. On `graph G { a -- b; subgraph _cc_0 { c }
       d -- e; }`, C's `agsubg(g, name, 1)` reuses it, so `c` joins it; `buildSubgraph` always makes
       a fresh graph. circo matches native; twopi and sfdp do not, and native twopi also prints `use
       of weight=0 creates disconnected component` (part 9 T6).
-  116. `init.branch.test.ts` pins `dotInitNode`'s list guard, where C's `alloc_elist` is
+  116. **[DONE — part 10 T9: `alloc_elist` unconditional]** `init.branch.test.ts` pins `dotInitNode`'s list guard, where C's `alloc_elist` is
       unconditional (part 9 T11).
-  117. Second renders still missing native's on fdp: `graphs-fdp` (T14 did not clear it; likely native's
+  117. **[DONE — part 10 T14: proxies undone as `attach_attrs` does; the rest is native's heap-address order]** Second renders still missing native's on fdp: `graphs-fdp` (T14 did not clear it; likely native's
       first cycle changing cluster membership, no counterfactual run) and, in `dot` format, `1581`.
-  118. Port-only `g.info.abomShift` survives a no-free layout, so a scratch graph's no-free render 3 on
+  118. **[DONE — part 10 T10: abomination rank as C]** Port-only `g.info.abomShift` survives a no-free layout, so a scratch graph's no-free render 3 on
       dot differs (part 9 T13).
-  119. `installEdgeSpline`'s fitter fallback overwrites a stale route where `new_spline` appends, and
+  119. **[DONE — part 10 T11: weight kept in the attribute; the fallback appends]** `installEdgeSpline`'s fitter fallback overwrites a stale route where `new_spline` appends, and
       aux-edge weights are stamped outside the `weight` attribute (part 9 T13).
-  120. No-free arrows on the flat aux route on dot: 21 of 211 svg lines on `multi-edge` render 2
+  120. **[DONE — part 10 T12: aux bezier ops kept]** No-free arrows on the flat aux route on dot: 21 of 211 svg lines on `multi-edge` render 2
       (`splines-flat.ts:276-283`). The one known miss left in the no-free gap AD-12 closed (part 9 T14).
-  121. sfdp first-render parity on the 15 ids in `harness/T11/xdot-second-T14.json`. Not diagnosed; these
+  121. **[DONE — part 10 T2: the last bit of macOS `pow`, accepted under PR 119; no change]** sfdp first-render parity on the 15 ids in `harness/T11/xdot-second-T14.json`. Not diagnosed; these
       first renders did not change in part 9.
-  122. No corpus input carries a graph `_draw_` or `_background`, so the survey and bytediff never reach
+  122. **[DONE — part 10 T4: four `draw-replay-*` golden inputs; 125 found by them]** No corpus input carries a graph `_draw_` or `_background`, so the survey and bytediff never reach
       `init_xdot`'s replay. Only `src/gvc/emit-xdot.test.ts` covers it. Add such an input (part 9 T14, T10).
-  123. `ctx.layout`'s reset has two unpinned edges: a layout that throws after a reset leaves `laidOut`
+  123. **[DONE — part 10 T15: both edges pinned against native]** `ctx.layout`'s reset has two unpinned edges: a layout that throws after a reset leaves `laidOut`
       unset, and a subgraph laid out after its root was freed is not reset (part 9 T11).
-  124. `graphs-b56`'s second `plain` render on native varies per process: over 8 runs, `SAME` on fdp 2, circo 1,
+  124. **[DONE — part 10 T5: native's `canon` prints freed memory for non-ASCII labels]** `graphs-b56`'s second `plain` render on native varies per process: over 8 runs, `SAME` on fdp 2, circo 1,
       twopi 1, osage 5, sfdp 0. Cause not traced. It moved the matrix's native-same count from 255 to 253 between
       T0 and T10 with no native change. T14 also counted this id's `xdot` on all 8 engines as first-render misses
       (part 9 T10).
+
+- **New follow-ups found by part 10** (`plans/post-16-1-followups-10/`):
+  125. **[DONE — part 10 `fix(T4)`, by user decision]** The xdot replay's `setStyle` rebuilt pen and width
+      from each `S` op, and drew under an invis pen (`gvrender.c:480,524,543,583,600`) (part 10 T4).
+  126. `spring-electrical.ts:12-14` cites a nonexistent `src/common/apple-pow.ts` (part 10 T2).
+  127. The port's xdot omits native's backslash-newline wrap of long `_draw_` strings (`write.c`,
+      `MAX_OUTPUTLINE` 128). `compareXdot` parses, so surveys miss it (part 10 T2).
+  128. First renders throw in the port where native succeeds, on the T0 bundle too:
+      `plans/post-16-1-followups-10/harness/B3b/w4.gv` (`Maximum call stack size exceeded`) and `w5.gv`
+      (`Cannot read properties of undefined (reading 'll')`). Not diagnosed (part 10 B3b).
+  129. `graphs/nestedclust.gv` no-free render 2 differs on 6 lines and render 3 on 8; native is stable over
+      8 runs. Not diagnosed (part 10 B3b).
+  130. `fdp-adjust.ts:sizesByNdim` is redundant now that `getSizes` strides by `ndim` (part 10 T13).
+  131. `conjgrad.ts:209,326` pass a trailing `\n` to `agerrorf`, reported to print a blank second line
+      (part 10 T3).
+  132. 2-D `mode=sgd` differs from native, before this mission too: 58 nodes, max delta 1.59 on 133 of 256
+      `dot` lines; native repeats 8 of 8. Not diagnosed (part 10 T7 check).
+  133. A first `json` render on a graph with an edge to a cluster prints `__0:` proxies and edges with no
+      `pos` (`src/render/json.ts`). Agent-reported (part 10 T14).
+  134. `CLUSTER_EDGE_WARNING` lacks native's `Warning: ` prefix (`src/layout/fdp/index.ts:41`); first-render
+      stderr. Agent-reported (part 10 T14).
+  135. A second `xdot` does not fold a replayed long `_draw_`; may be 127 (part 10 T14).
+  136. svg `id="graph<seq>"` on a subgraph render: native `graph1`, the port `graph0` (part 10 T15).
+  137. Subgraph then root, and root with no free then subgraph, on fdp and osage: 6 to 10 comparator diffs
+      on `xdot` and `svg`; heap addresses suspected, untested (part 10 T15).
+  138. `docs/known-divergences.md` A1's neato and fdp rows and "99.8/96.6" lag `PARITY.md`, and the
+      non-goals line "`-Tplain` text output. Deferred" may be stale (part 10 T16).
 
   Accepted, not open (user decision, PR 119): layouts that vary with the runtime's `pow`, `hypot`
   or similar. Last-bit libm differences change the decisions an algorithm encodes, as they
