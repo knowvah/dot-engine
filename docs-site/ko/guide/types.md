@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # 타입 참고 자료
@@ -363,6 +363,18 @@ function setImageResolver(fn: ImageResolver | null): void;
 `true`일 때 참조됩니다. 순수 `Uint8Array`를 반환하면 `src` 파일 확장자에서 MIME
 타입을 추론합니다. (리졸버가 반환했거나 리졸버가 등록되지 않아서) `null`이면 원시
 `src` 그대로 내보내기로 폴백합니다. [이미지 다루기](/ko/guide/images)를 참조하세요.
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+콘솔 대신 Graphviz의 경고 및 오류 메시지를, 네이티브 Graphviz가 stderr에 기록하는 조각 단위 그대로 받습니다. 반환값은
+무시됩니다. `agseterrf`는 이전 함수를 반환하며, `null`은 콘솔로 복원합니다.
+[`agseterrf`](/ko/guide/api#agseterrf)를 참조하세요.
 
 ### `TextMeasurer` / `TextSize`
 

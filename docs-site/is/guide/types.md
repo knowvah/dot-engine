@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Tegundatilvísun
@@ -372,6 +372,19 @@ Skráir endurkall sem skilar hráum bætum ytri myndar, haft til ráða
 MIME-tegund sína af skráarendingu `src`. `null` (frá leysinum, eða enginn
 leysir skráður) fellur aftur á hráa `src`-umferð. Sjá
 [Unnið með myndir](/is/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Tekur við viðvörunum og villuskilaboðum Graphviz í stað stjórnborðsins, í þeim
+hlutum sem upprunalegt Graphviz skrifar á stderr. Skilagildið er hunsað.
+`agseterrf` skilar fyrra fallinu; `null` endurheimtir stjórnborðið. Sjá
+[`agseterrf`](/is/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Türler referansı
@@ -380,6 +380,19 @@ Harici bir görselin ham baytlarını döndüren, `RenderOptions.inlineImages`
 dönüşü, MIME türünü `src` dosya uzantısından çıkarır. `null` (çözümleyiciden ya
 da hiçbir çözümleyici kayıtlı olmamasından) ham `src` geçirmesine geri döner.
 Bkz. [Görsellerle çalışma](/tr/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz'in uyarı ve hata iletilerini konsol yerine, yerel Graphviz'in stderr'e
+yazdığı parçalar halinde alır. Dönüş değeri yok sayılır. `agseterrf` önceki
+işlevi döndürür; `null` konsolu geri yükler. Bkz.
+[`agseterrf`](/tr/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

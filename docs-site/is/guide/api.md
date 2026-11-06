@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API-tilvísun
@@ -170,6 +170,40 @@ Skráning leysis hefur engin áhrif ein og sér; hann er aðeins hafður til rá
 `inlineImages`-valkostur `render` er `true` (hér að neðan). Sjá
 [Unnið með myndir](/is/guide/images) fyrir útfært dæmi og
 [Tilvísun](/reference/) fyrir báðar endurkallstegundir.
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz skrifar viðvaranir sínar og villur á stderr, til dæmis
+`Warning: table size too small for content`. Sjálfgefið skrifar safnið þær á
+stjórnborðið: viðvaranir með `console.warn` og villur með `console.error`.
+`agseterrf` sendir þær þess í stað á fallið þitt, eins og `agseterrf` í cgraph
+gerir. Það skilar fallinu sem það leysir af hólmi, og `null` endurheimtir
+stjórnborðið.
+
+Fallið fær hver skilaboð í þeim hlutum sem Graphviz skrifar: `"Warning"` eða
+`"Error"`, síðan `": "` og svo textann með línulokum. Framhaldslína hefur engan
+forskeyti. Þegar hlutarnir eru tengdir saman fæst textinn sem upprunalega `dot`
+skrifar á stderr. Textinn er sendur óbreyttur, án undankomu; aðeins
+stjórnborðsleiðin ræður við stýristafi með undankomu. Stillingin gildir fyrir
+allt ferlið og helst á milli teikninga. Skilaboð sem upprunalegt Graphviz
+skrifar utan villu-API síns, svo sem trapisuvillur ortho, fara áfram á
+stjórnborðið.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

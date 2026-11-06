@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Typreferens
@@ -378,6 +378,19 @@ anlitas när `RenderOptions.inlineImages` är `true`. Ett returvärde som är en
 bar `Uint8Array` härleder sin MIME-typ från filändelsen i `src`. `null` (från
 resolvern, eller ingen registrerad resolver) faller tillbaka på rå
 vidareförmedling av `src`. Se [Arbeta med bilder](/sv/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Tar emot Graphviz varnings- och felmeddelanden i stället för konsolen, i de
+delar som det inbyggda Graphviz skriver till stderr. Returvärdet ignoreras.
+`agseterrf` returnerar den tidigare funktionen; `null` återställer konsolen. Se
+[`agseterrf`](/sv/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

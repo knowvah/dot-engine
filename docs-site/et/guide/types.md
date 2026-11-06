@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Tüüpide teatmik
@@ -374,6 +374,19 @@ kui `RenderOptions.inlineImages` on `true`. Paljas `Uint8Array` tagastus
 tuletab MIME-tüübi `src`-i faililaiendist. `null` (resolverilt või kui
 resolverit ei ole registreeritud) taandub toorele `src`-i läbilaskele. Vt
 [Piltidega töötamine](/et/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Võtab konsooli asemel vastu Graphvizi hoiatus- ja veateated tükkidena, nagu
+natiivne Graphviz need stderr-i kirjutab. Tagastusväärtust eiratakse.
+`agseterrf` tagastab eelmise funktsiooni; `null` taastab konsooli. Vt
+[`agseterrf`](/et/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

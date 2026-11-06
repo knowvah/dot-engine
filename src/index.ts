@@ -143,6 +143,10 @@ export type {
   GvExpectation,
   RenderResult,
 } from './errors.js';
+// Engine messages (graphviz's stderr): a caller-set function receives them
+// in place of the console, as cgraph's agseterrf. @see lib/cgraph/agerror.c
+export { agseterrf } from './common/agerr.js';
+export type { AgUserErrF } from './common/agerr.js';
 export { setImageSizer } from './gvc/usershape.js';
 export type { ImageSizer } from './common/htmltable-types.js';
 export { setImageResolver } from './gvc/image-resolver.js';

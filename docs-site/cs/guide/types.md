@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Reference typů
@@ -373,6 +373,19 @@ když je `RenderOptions.inlineImages` `true`. Při vrácení holého `Uint8Array
 typ MIME odvodí z přípony souboru v `src`. `null` (z resolveru, nebo když není
 registrován žádný resolver) se vrací k surovému průchodu `src`. Viz
 [Práce s obrázky](/cs/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Přijímá varování a chybová hlášení Graphviz místo konzole, po částech, tak jak
+je nativní Graphviz zapisuje na stderr. Návratová hodnota se ignoruje.
+`agseterrf` vrací předchozí funkci; `null` obnoví konzoli. Viz
+[`agseterrf`](/cs/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

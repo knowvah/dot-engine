@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Справочник по типам
@@ -379,6 +379,19 @@ function setImageResolver(fn: ImageResolver | null): void;
 «голого» `Uint8Array` тип MIME определяется по расширению файла в `src`. `null`
 (от разрешителя или при отсутствии зарегистрированного) возвращает к передаче
 исходного `src` как есть. См. [Работа с изображениями](/ru/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Получает предупреждения и сообщения об ошибках Graphviz вместо консоли, теми
+частями, которыми нативный Graphviz пишет их в stderr. Возвращаемое значение
+игнорируется. `agseterrf` возвращает прежнюю функцию; `null` восстанавливает
+консоль. См. [`agseterrf`](/ru/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

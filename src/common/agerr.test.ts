@@ -2,10 +2,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { resetRenderState } from './render-state.js';
 import {
-  agerr, agerrFinished, agerrLineOn, agerrPartial, agerrorf, agwarningf, escapeControl,
+  agerr, agerrFinished, agerrLineOn, agerrPartial, agerrorf, agseterrf, agwarningf, escapeControl,
 } from './agerr.js';
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  agseterrf(null);
+  vi.restoreAllMocks();
+});
 
 describe('escapeControl', () => {
   it('writes control characters as three-digit octal', () => {
@@ -114,6 +117,78 @@ describe('partial lines (AD-7)', () => {
   });
   it('leaves ordinary calls unchanged when nothing is held', () => {
     const { warn } = quiet();
+    agwarningf('plain');
+    expect(warn.mock.calls).toEqual([['Warning: plain']]);
+  });
+});
+
+describe('agseterrf', () => {
+  /** Install a sink that records every piece it is given. */
+  const capture = (): string[] => {
+    const got: string[] = [];
+    agseterrf((message) => { got.push(message); return 0; });
+    return got;
+  };
+  const quiet = () => ({
+    warn: vi.spyOn(console, 'warn').mockImplementation(() => {}),
+    err: vi.spyOn(console, 'error').mockImplementation(() => {}),
+  });
+
+  it('returns the previous function, null at first', () => {
+    const f = () => 0;
+    expect(agseterrf(f)).toBeNull();
+    expect(agseterrf(null)).toBe(f);
+  });
+  it('hands over the pieces C\'s out() writes: prefix, separator, message', () => {
+    const { warn, err } = quiet();
+    const got = capture();
+    agwarningf('careful');
+    agerrorf('bad');
+    expect(got).toEqual(['Warning', ': ', 'careful\n', 'Error', ': ', 'bad\n']);
+    expect(warn.mock.calls).toEqual([]);
+    expect(err.mock.calls).toEqual([]);
+  });
+  it('writes AGPREV with no prefix', () => {
+    const got = capture();
+    agwarningf('table size too small for content');
+    agerr('prev', 'in label of node a');
+    expect(got).toEqual(['Warning', ': ', 'table size too small for content\n', 'in label of node a\n']);
+  });
+  it('does not escape: that is default_usererrf\'s job', () => {
+    const got = capture();
+    agwarningf('a\x01b');
+    expect(got).toEqual(['Warning', ': ', 'a\x01b\n']);
+  });
+  it('streams a partial message at once, with no line end', () => {
+    const got = capture();
+    agerrPartial('warning', 'Total size > 1 ');
+    expect(got).toEqual(['Warning', ': ', 'Total size > 1 ']);
+    agwarningf('red;0.6 is not a known color.');
+    expect(got.join('')).toBe('Warning: Total size > 1 Warning: red;0.6 is not a known color.\n');
+  });
+  it('gets an assembled line whole, ended once', () => {
+    const got = capture();
+    agerrFinished('Warning: whole');
+    agerrLineOn('error', 'bare');
+    expect(got).toEqual(['Warning: whole\n', 'bare\n']);
+  });
+  it('hands a line held before it was set to the new function', () => {
+    quiet();
+    agerrPartial('warning', 'held ');
+    const got = capture();
+    agwarningf('next');
+    expect(got.join('')).toBe('Warning: held \nWarning: next\n');
+  });
+  it('survives a render-state reset, as C\'s static does', () => {
+    const got = capture();
+    resetRenderState();
+    agwarningf('after');
+    expect(got).toEqual(['Warning', ': ', 'after\n']);
+  });
+  it('gives the console back once cleared', () => {
+    const { warn } = quiet();
+    capture();
+    agseterrf(null);
     agwarningf('plain');
     expect(warn.mock.calls).toEqual([['Warning: plain']]);
   });

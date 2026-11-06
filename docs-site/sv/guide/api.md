@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API-referens
@@ -181,6 +181,38 @@ resolver är registrerad. Att registrera en resolver har ingen effekt i sig; den
 anlitas bara när alternativet `inlineImages` i `render` är `true` (nedan). Se
 [Arbeta med bilder](/sv/guide/images) för ett genomgånget exempel och
 [Referens](/reference/) för båda callback-typerna.
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz skriver sina varningar och fel till stderr, till exempel
+`Warning: table size too small for content`. Som standard skriver biblioteket
+dem till konsolen: varningar med `console.warn`, fel med `console.error`.
+`agseterrf` skickar dem i stället till din funktion, som cgraphs `agseterrf`
+gör. Den returnerar funktionen den ersätter, och `null` återställer konsolen.
+
+Funktionen får varje meddelande i de delar som Graphviz skriver: `"Warning"`
+eller `"Error"`, sedan `": "` och därefter texten med radslutet. En
+fortsättningsrad har inget prefix. Sätter man ihop delarna får man texten som
+det inbyggda `dot` skriver till stderr. Texten skickas utan escape-tecken; bara
+konsolvägen escapar styrtecken. Inställningen gäller hela processen och består
+mellan renderingar. Meddelanden som det inbyggda Graphviz skriver vid sidan av
+sitt fel-API, till exempel ortho-trapetsfel, går fortfarande till konsolen.
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 

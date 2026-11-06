@@ -1,5 +1,5 @@
 ---
-sourceHash: a49bdc5fdca8b04f5bd951935e322d616028e44f4567709824dbbd5229f60e3b
+sourceHash: 2496c665d29755bbd40f6415d260c413833791db741e7d79150276822a0e29ef
 ---
 
 # Typenreferentie
@@ -390,6 +390,19 @@ kale `Uint8Array` als returnwaarde leidt het MIME-type af uit de
 bestandsextensie van `src`. `null` (van de resolver, of geen geregistreerde
 resolver) valt terug op de ruwe `src`-doorgifte. Zie
 [Werken met afbeeldingen](/nl/guide/images).
+
+### `AgUserErrF`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Ontvangt de waarschuwings- en foutberichten van Graphviz in plaats van de
+console, in de stukken die het native Graphviz naar stderr schrijft. De
+retourwaarde wordt genegeerd. `agseterrf` geeft de vorige functie terug; `null`
+herstelt de console. Zie [`agseterrf`](/nl/guide/api#agseterrf).
 
 ### `TextMeasurer` / `TextSize`
 

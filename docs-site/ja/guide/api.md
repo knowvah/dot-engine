@@ -1,5 +1,5 @@
 ---
-sourceHash: 285fc6f4d917fc89d0b585e852addecdbbafb4e2de69cdac5aae1c72515376b2
+sourceHash: 743fb8b8b92ce0e7980303f19ee7c401618f6831dbc55ec3e79fc0d77d96a305
 ---
 
 # API リファレンス
@@ -96,6 +96,28 @@ function setImageResolver(fn: ImageResolver | null): void;
 ```
 
 `ImageResolver` は、素の `Uint8Array`（MIME は `src` のファイル拡張子から推測されます — `.png`、`.jpg` / `.jpeg`、`.gif`、`.svg`、`.webp`。それ以外は `application/octet-stream` になります）か、MIME タイプを明示的に設定する `{ bytes, mime }` を返せます。`src` を解決できない場合は `null` を返してください。レンダラーは、リゾルバーが登録されていない場合と同様に、生の `src` をそのまま通す動作に戻ります。リゾルバーを登録しただけでは効果はありません。`render` の `inlineImages` オプションが `true` のとき（下記）にだけ参照されます。実際の例は[画像の扱い](/ja/guide/images)、両方のコールバックの型は[リファレンス](/reference/)を参照してください。
+
+### `agseterrf`
+
+```ts
+type AgUserErrF = (message: string) => number | void;
+function agseterrf(fn: AgUserErrF | null): AgUserErrF | null;
+```
+
+Graphviz は警告とエラーを stderr に出力します。たとえば `Warning: table size too small for content` のようなものです。既定では、ライブラリはこれらをコンソールに書き出します。警告は `console.warn`、エラーは `console.error` です。`agseterrf` は、cgraph の `agseterrf` と同様に、これらを代わりにあなたの関数へ送ります。置き換えた関数を返し、`null` を渡すとコンソールに戻ります。
+
+関数は、Graphviz が書き出す単位に分かれた形で各メッセージを受け取ります。`"Warning"` または `"Error"`、続いて `": "`、最後に行末付きのテキストです。継続行にはプレフィックスがありません。これらをつなげると、ネイティブの `dot` が stderr に出力するテキストになります。テキストはエスケープされずに渡されます。制御文字をエスケープするのはコンソール経路だけです。この設定はプロセス全体に及び、複数回のレンダリングにわたって保持されます。ネイティブの Graphviz がエラー API の外で書き出すメッセージ（ortho の台形の失敗など）は、引き続きコンソールに出力されます。
+
+```ts
+const messages: string[] = [];
+const previous = agseterrf((piece) => { messages.push(piece); });
+try {
+  renderSvg(dot, 'dot');
+} finally {
+  agseterrf(previous);
+}
+console.log(messages.join('')); // e.g. "Warning: table size too small for content\n…"
+```
 
 ### `renderSvgAsync` / `renderSvgInto`
 
