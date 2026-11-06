@@ -26,6 +26,7 @@ Items 109–113 closed by `plans/post-16-1-followups-9/`; the open work is items
 "New follow-ups found by part 9".
 Items 114–124 closed by `plans/post-16-1-followups-10/`; the open work is items 126–138 under
 "New follow-ups found by part 10".
+Being closed by `plans/post-16-1-followups-11/`.
 Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
@@ -660,7 +661,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `dot` lines; native repeats 8 of 8. Not diagnosed (part 10 T7 check).
   133. A first `json` render on a graph with an edge to a cluster prints `__0:` proxies and edges with no
       `pos` (`src/render/json.ts`). Agent-reported (part 10 T14).
-  134. `CLUSTER_EDGE_WARNING` lacks native's `Warning: ` prefix (`src/layout/fdp/index.ts:41`); first-render
+  134. **[DONE — PR #128: printed with native's prefix]** `CLUSTER_EDGE_WARNING` lacks native's `Warning: ` prefix (`src/layout/fdp/index.ts:41`); first-render
       stderr. Agent-reported (part 10 T14).
   135. A second `xdot` does not fold a replayed long `_draw_`; may be 127 (part 10 T14).
   136. svg `id="graph<seq>"` on a subgraph render: native `graph1`, the port `graph0` (part 10 T15).
