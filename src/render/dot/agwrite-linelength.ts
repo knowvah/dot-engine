@@ -8,7 +8,25 @@
  */
 
 import type { Graph } from '../../model/graph.js';
-import { MAX_OUTPUTLINE, MIN_OUTPUTLINE, setMaxOutputline } from '../map.js';
+
+/** Default line-break threshold. @see lib/cgraph/write.c:MAX_OUTPUTLINE */
+export const MAX_OUTPUTLINE = 128;
+
+/** Smallest nonzero `linelength` agwrite accepts. @see lib/cgraph/write.c:MIN_OUTPUTLINE */
+export const MIN_OUTPUTLINE = 60;
+
+/** C's static `Max_outputline` (write.c): agwrite sets it from the root's
+ * `linelength` and restores {@link MAX_OUTPUTLINE} after, so the plain path
+ * (direct agstrcanon, no agwrite) observes the default. 0 disables breaking.
+ * Single-threaded, set and restored synchronously around one serialize.
+ * @see lib/cgraph/write.c:44,676,692 */
+let maxOutputlineValue = MAX_OUTPUTLINE;
+
+/** `Max_outputline`, as `_write_canonstr` reads it. @see lib/cgraph/write.c:_write_canonstr */
+export function maxOutputline(): number { return maxOutputlineValue; }
+
+/** Set `Max_outputline`. @see lib/cgraph/write.c:agwrite */
+function setMaxOutputline(n: number): void { maxOutputlineValue = n; }
 
 /** `INT_MAX`, the upper bound agwrite accepts for `linelength`. */
 const INT_MAX = 2147483647;
