@@ -111,7 +111,7 @@ input under its own engine instead of `dot`. The honest ceiling on that work is
 to **narrow** A1 to "no active divergence on the reference platform," never to
 eliminate the cross-platform caveat; the results so far (below) hold to that
 ceiling: `circo`/`twopi`/`osage` have each surfaced and root-caused a handful of
-genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 99.8/96.6/68.1%
+genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 99.8/98.0/68.1%
 within 0.5pt of native over the 929-item universe (graphviz 16.1.0), meaning
 the ported arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most
 graphs — and every diverged id of the 929-item universe is individually
@@ -193,22 +193,26 @@ field for these three and `parity-report.ts` renders them in a separate
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explicitly **not** comparable to the ±0.01 deterministic pass rates elsewhere
 in this document. Current counts against graphviz 16.1.0 (929-item
-universe; pass % leaves out inputs the C oracle cannot render, per
-[Conformance](./conformance.md)):
+universe; pass % leaves out inputs the C oracle cannot render and inputs whose
+native output varies from run to run, per [Conformance](./conformance.md)):
 
-| engine | surveyed | within ±0.5pt | non-conformant | port error / timeout | oracle error |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| engine | surveyed | within ±0.5pt | non-conformant | port error / timeout | oracle error | oracle nondeterministic |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+`fdp`'s 13 nondeterministic inputs, where native output varies from run to run,
+are left out of its pass %; its one port error is `1879`, which needs
+`splines=compound` routing that the port does not support.
 
 (The `fdp` pass rate rose from 77.5% because the earlier committed walk
 predated the port state of the previous mission. The `neato` rate rose from
 90.5% when the fused stress kernels of the 16.1 disassembly reached the
 production kD path (post-16.1 follow-ups part 5, T15): 83 ids that had
 diverged by solver drift now pass, among them the formerly accepted per-id
-residual `2619_2`, whose acceptance is retired; `2371` is the only diverged
-`neato` id left.)
+residual `2619_2`, whose acceptance is retired; the two `neato` ids
+outside ±0.5pt are `2784` (A10) and `2371` (A1 drift).)
 
 (The first sweep, 2026-07-11 at 762 items, measured 263/311/260 within
 ±0.5pt — the jump to the current rates came from per-id fixes landed since,
@@ -1418,20 +1422,48 @@ Each item states what native does and what the port does.
   within 5e-13 of the 4-run `dot` class. Native rebuilt with those three comparisons
   on `ND_id` repeats 8 of 8 and is byte-equal to the port on `plain`. One
   port-only choice: native's `attach_attrs` ends with `undoClusterEdges`
-  (`lib/common/output.c:403-404`), and the port runs that undo at the next
-  layout, not at render, because its writers read the `__0:` proxies.
+  (`lib/common/output.c:403-404`). The port's `json` and `json0` writers undo
+  the proxies before writing, as C does; its `dot` and `xdot` writers read the
+  `__0:` proxies, so for them the undo runs at the next layout, not at render.
 - **A `T` op in a graph `_draw_` or `_background`.** Native segfaults (exit
   139): `op->span` is NULL outside neato `-n` (`xdotBB`,
   `lib/neatogen/neatoinit.c:560`). The port draws no text for it.
 - **neato on a subgraph.** Native exited 139 laying out either subgraph of the one graph tested, a plain
   subgraph and a cluster. The port returns output.
 
+### Part 11 outcomes
+
+- **Long strings in `xdot` and `dot` output (closed).** Native breaks a quoted
+  value with a trailing backslash after 128 columns, or after the root graph's
+  `linelength` when that is 0 or at least 60 (`lib/cgraph/write.c:160-195,670-677`).
+  The port now wraps `_draw_`-family strings the same way, byte-equal to native.
+- **fdp `json` and `json0` with edges to clusters (closed).** Native undoes the
+  cluster-edge proxies before writing json (`lib/common/output.c:403`); the port
+  printed the `__0:` proxies and now undoes them first. Native fdp exits 139 on
+  `2717` in every format, so it has no reference.
+- **2-D `mode=sgd` (accepted, A1).** On macOS the layout differs from native in
+  the last bit of libm `hypot` (`lib/neatogen/sgd.c:223`) and `exp`
+  (`sgd.c:216`), which SGD amplifies to as much as 1.59 points on the graph
+  tested. With macOS's `hypot` and `exp` replayed, the port's trace equals
+  native's, so no code changed (PR 119).
+- **A subgraph rendered before its root, on fdp and osage (closed).** Native
+  prints stored attribute values (a later render keeps an earlier one's
+  `_draw_`, `_ldraw_` and `xdotversion`), prints `inf` and `nan` as C's printf
+  does, and tests each edge's spline box against the page clip (`edge_in_box`,
+  `lib/common/emit.c:2692`). The port now does all three and equals native,
+  except one cluster bounding-box value at fdp's own drift (1.6e-11 against
+  -3.3e-11). Native fdp itself varies with heap addresses
+  (`lib/fdpgen/layout.c:466,501,637`), including the first render of
+  `graphs-fdp`, so the comparison uses native with those comparisons removed.
+  As a side effect, `1581` as svg gains two empty `<g id="edgeN">` groups for
+  labelled self-loops, as native has them.
+
 ---
 
 ## Intentionally not ported (non-goals)
 
 These are deliberate scope boundaries, not bugs. The library targets **SVG**
-(plus the `json` / `xdot` / `dot` / imagemap intermediate text formats).
+(plus the `json` / `xdot` / `dot` / `plain` / imagemap intermediate text formats).
 
 - **Other output formats.** Raster (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS,
   and GUI/interactive backends are out of scope. Use the SVG output and convert
@@ -1440,7 +1472,6 @@ These are deliberate scope boundaries, not bugs. The library targets **SVG**
   SVG device sets no pagination flag), so `page=` is a no-op on this path in both
   implementations — documented here only because it is a common point of
   confusion.
-- **`-Tplain` text output.** Deferred (a faithful text format), not excluded.
 - **`gvpr`** (the graph-processing scripting language) — out of scope.
 - **C++ convenience wrappers** (`cgraph++`, `gvc++`) — the C API is ported
   first; an idiomatic-TypeScript convenience layer, if wanted, would be a

@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -115,7 +115,7 @@ minden bemenetet a saját motorjával mér fel a `dot` helyett. A munka őszinte
 hogy az A1-et „nincs aktív eltérés a referenciaplatformon” szintre **szűkítsük**, és a
 platformok közötti fenntartást soha ne szüntessük meg; az eddigi eredmények (alább) tartják ezt a
 plafont: a `circo`/`twopi`/`osage` mindegyike felszínre hozott és gyökérokig elemzett néhány
-valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 929 elemes univerzumon (graphviz 16.1.0) 99.8/96.6/68.1%-ban
+valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 929 elemes univerzumon (graphviz 16.1.0) 99.8/98.0/68.1%-ban
 van 0.5 pt-on belül a natívtól, vagyis a portolt
 aritmetika (`fma.ts`, `arm-pow.ts`, összehangolt PRNG) a legtöbb gráfnál tartja magát — és
 a 929 elemes univerzum minden eltérő azonosítója egyenként injektálással van tulajdonítva (megoldó-
@@ -199,11 +199,13 @@ kifejezetten **nem** összevethetően a dokumentum többi részében szereplő �
 átmenési arányokkal. Jelenlegi számok a graphviz 16.1.0 ellen (929 elemes univerzum; az átmenési arány kihagyja
 azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, a [Megfelelőség](./conformance.md) szerint):
 
-| motor | felmért | ±0.5 pt-on belül | nem megfelelő | portolási hiba / időtúllépés | orákulumhiba |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| motor | felmért | ±0.5 pt-on belül | nem megfelelő | portolási hiba / időtúllépés | orákulumhiba | orákulum nem determinisztikus |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+Az `fdp` 13 nem determinisztikus bemenete, amelyeknél a natív kimenet futásról futásra változik, kimarad az átmenési arányából; egyetlen portolási hibája az `1879`, amelyhez `splines=compound` útvonalvezetés kell, és ezt a port nem támogatja.
 
 (Az `fdp` átmenési aránya azért nőtt a korábbi
 77.5%-ról, mert a korábbi rögzített végigfuttatás az előző küldetés portolási
@@ -211,8 +213,7 @@ azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, a [Megfelelős
 A `neato` átmenési aránya 90.5%-ról nőtt, amikor a 16.1 diszasszemblyjének összevont
 stresszmagjai elérték az éles kD-utat (16.1 utáni folytatások, 5. rész, T15): 83
 azonosító, amely megoldó-sodródás miatt tért el, most átmegy, köztük a korábban
-elfogadott azonosítónkénti maradék `2619_2`, amelynek elfogadását visszavonták; `2371`
-az egyetlen megmaradt eltérő `neato` azonosító.)
+elfogadott azonosítónkénti maradék `2619_2`, amelynek elfogadását visszavonták; a két ±0.5 pt-on kívüli `neato` azonosító a `2784` (A10) és a `2371` (A1-sodródás).)
 
 (Az első végigfuttatás, 2026-07-11-én 762 elemnél, 263/311/260 elemet mért
 ±0.5 pt-on belül — a mostani arányokra ugrást azóta beérkezett azonosítónkénti
@@ -1325,16 +1326,23 @@ Minden pont megmondja, mit csinál a natív és mit a port.
 
 - **`mode=hier dim=4` két csomóponton.** A natív a `directions` mögé ír (`lib/neatogen/stress.c:514`), és egyes futásokban megszakad (kilépési kód 133, 16 futásból 5-ben). A port kirajzol.
 - **`mode=hier dim=3` `len=0.001`-gyel.** A natív jelzéstől hal meg: 8 futásból 3 19 csomópontnál (SIGBUS) és 8-ból 8 27 csomópontnál (SIGBUS, SIGSEGV, SIGTRAP). A verem `mfm_alloc` a `stress_majorization_kD_mkernel` alatt, ami heapsérülést mutat; a pontos hely nincs bizonyítva. A port kirajzol, és ahol a natív túléli (19 csomópont, 8-ból 5 futás), bájtra azonos.
-- **Az fdp második elrendezései ugyanazon a gráfon a natívban a heapcímekkel változnak.** A `deriveGraph` és a `genPorts` csomópontmutatókat hasonlít össze (`lib/fdpgen/layout.c:466,501,637`). Egyenként 12 natív futás alatt a `graphs-fdp` 2. renderelése `plain`-ként 2 osztályba esik (1 és 11 futás), az `1581` `dot`-ként 2 osztályba (8 és 4 futás); a port bájtra azonos a `plain` 1 futásos osztályával, és 5e-13-on belül van a `dot` 4 futásos osztályától. Az a natív build, amely e három összehasonlítást `ND_id`-n végzi, 8-ból 8-szor ismétlődik, és `plain`-en bájtra azonos a porttal. Csak a port döntése: a natív `attach_attrs` `undoClusterEdges`-szel végződik (`lib/common/output.c:403-404`), a port pedig ezt a visszavonást a következő elrendezésnél végzi, nem renderelésnél, mert az írói a `__0:` proxykat olvassák.
+- **Az fdp második elrendezései ugyanazon a gráfon a natívban a heapcímekkel változnak.** A `deriveGraph` és a `genPorts` csomópontmutatókat hasonlít össze (`lib/fdpgen/layout.c:466,501,637`). Egyenként 12 natív futás alatt a `graphs-fdp` 2. renderelése `plain`-ként 2 osztályba esik (1 és 11 futás), az `1581` `dot`-ként 2 osztályba (8 és 4 futás); a port bájtra azonos a `plain` 1 futásos osztályával, és 5e-13-on belül van a `dot` 4 futásos osztályától. Az a natív build, amely e három összehasonlítást `ND_id`-n végzi, 8-ból 8-szor ismétlődik, és `plain`-en bájtra azonos a porttal. Csak a port döntése: a natív `attach_attrs` `undoClusterEdges`-szel végződik (`lib/common/output.c:403-404`). A port `json` és `json0` író függvényei az írás előtt visszavonják a proxykat, ahogy a C is; a `dot` és `xdot` írói a `__0:` proxykat olvassák, ezért náluk a visszavonás a következő elrendezéskor történik, nem rendereléskor.
 - **`T` művelet a gráf `_draw_` vagy `_background` attribútumában.** A natív szegmentációs hibával leáll (kilépési kód 139): az `op->span` a neato `-n` kivételével NULL (`xdotBB`, `lib/neatogen/neatoinit.c:560`). A port nem rajzol hozzá szöveget.
 - **neato egy részgráfon.** A natív 139-cel lépett ki az egyetlen tesztelt gráf mindkét részgráfjának elrendezésekor, egy sima részgráfnál és egy klaszternél. A port kimenetet ad vissza.
+
+### A 11. rész eredményei
+
+- **Hosszú karakterláncok az `xdot` és `dot` kimenetben (lezárva).** A natív idézőjeles értéket záró fordított perjellel tör 128 oszlop után, vagy a gyökérgráf `linelength` értéke után, ha az 0 vagy legalább 60 (`lib/cgraph/write.c:160-195,670-677`). A port most ugyanígy tördeli a `_draw_` család karakterláncait, bájtra azonosan a natívval.
+- **fdp `json` és `json0` klaszterekhez vezető élekkel (lezárva).** A natív a json írása előtt visszavonja a klaszterél-proxykat (`lib/common/output.c:403`); a port kiírta a `__0:` proxykat, most előbb visszavonja őket. A natív fdp a `2717`-en minden formátumban 139-cel lép ki, így nincs referenciája.
+- **2-D `mode=sgd` (elfogadva, A1).** macOS-en az elrendezés a libm `hypot` (`lib/neatogen/sgd.c:223`) és `exp` (`sgd.c:216`) utolsó bitjében tér el a natívtól, amit az SGD a tesztelt gráfon akár 1,59 pontra erősít. A macOS `hypot` és `exp` visszajátszásával a port nyoma megegyezik a natívéval, ezért a kód nem változott (PR 119).
+- **A gyökere előtt renderelt részgráf, fdp és osage esetén (lezárva).** A natív a tárolt attribútumértékeket írja ki (egy későbbi renderelés megtartja egy korábbi `_draw_`, `_ldraw_` és `xdotversion` értékét), az `inf` és `nan` értéket a C printf módján írja ki, és minden él spline-dobozát az oldalvágáshoz teszteli (`edge_in_box`, `lib/common/emit.c:2692`). A port most mindhármat teszi, és egyezik a natívval, kivéve egy klaszter határolódoboz-értékét az fdp saját sodródásánál (1.6e-11 a -3.3e-11 ellen). A natív fdp maga is változik a heap-címekkel (`lib/fdpgen/layout.c:466,501,637`), a `graphs-fdp` első renderelését is beleértve, ezért az összehasonlítás ezen összehasonlítások nélküli natívot használja. Mellékhatásként az `1581` svg-ként két üres `<g id="edgeN">` csoportot kap a címkézett önhurkokhoz, ahogy a natív is.
 
 ---
 
 ## Szándékosan nem portolt (nem-célok) {#intentionally-not-ported-non-goals}
 
 Ezek szándékos hatókörhatárok, nem hibák. A könyvtár az **SVG**-t célozza
-(valamint a `json` / `xdot` / `dot` / imagemap köztes szövegformátumokat).
+(valamint a `json` / `xdot` / `dot` / `plain` / imagemap köztes szövegformátumokat).
 
 - **Más kimeneti formátumok.** A raszteres (PNG/JPG/GIF/WebP/BMP), a PostScript/PDF/EPS,
   és a GUI-s/interaktív háttérrendszerek hatókörön kívül vannak. Használja az SVG-kimenetet, és alakítsa át
@@ -1343,7 +1351,6 @@ Ezek szándékos hatókörhatárok, nem hibák. A könyvtár az **SVG**-t céloz
   SVG-eszköz nem állít be lapozási jelzőt), így a `page=` ezen az úton mindkét
   implementációban hatástalan — itt csak azért dokumentáljuk, mert gyakori
   félreértés.
-- **`-Tplain` szöveges kimenet.** Elhalasztott (hű szöveges formátum), nem kizárt.
 - **`gvpr`** (a gráffeldolgozó szkriptnyelv) — hatókörön kívül.
 - **C++ kényelmi burkolók** (`cgraph++`, `gvc++`) — a C API-t portoltuk
   először; egy idiomatikus TypeScript kényelmi réteg, ha igény van rá, külön

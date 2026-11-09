@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -126,7 +126,7 @@ katto tälle työlle on **kaventaa** A1 muotoon ”ei aktiivista poikkeamaa
 vertailualustalla”, ei koskaan poistaa alustojen välistä varausta; tähänastiset
 tulokset (alla) pysyvät tuossa katossa: `circo`/`twopi`/`osage` ovat kukin
 tuoneet esiin ja juurisyyanalysoineet kourallisen aitoja A1/A9-tapauksia, ja
-`neato`/`fdp`/`sfdp` ovat nyt 99.8/96.6/68.1 %:ssa 0.5 pt:n sisällä natiivista
+`neato`/`fdp`/`sfdp` ovat nyt 99.8/98.0/68.1 %:ssa 0.5 pt:n sisällä natiivista
 929 kohteen joukossa (graphviz 16.1.0), mikä tarkoittaa, että porttattu aritmetiikka
 (`fma.ts`, `arm-pow.ts`, vastaava PRNG) pitää useimmilla graafeilla — ja
 jokainen 929 kohteen joukon poikkeava tunniste on yksitellen selitetty injektiolla
@@ -217,19 +217,20 @@ nimenomaisesti **ei** vertailukelpoisina muualla tässä dokumentissa esiintyvii
 vasten (929 kohteen joukko; läpäisyprosentti jättää pois syötteet, joita C-oraakkeli ei
 pysty renderöimään, kohdan [Yhdenmukaisuus](./conformance.md) mukaisesti):
 
-| moottori | kartoitettu | ±0.5 pt:n sisällä | ei-yhdenmukainen | porttausvirhe / aikakatkaisu | oraakkelivirhe |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| moottori | kartoitettu | ±0.5 pt:n sisällä | ei-yhdenmukainen | porttausvirhe / aikakatkaisu | oraakkelivirhe | oraakkeli epädeterministinen |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+`fdp`:n 13 epädeterminististä syötettä, joiden natiivituloste vaihtelee ajosta toiseen, on jätetty pois sen läpäisyprosentista; sen ainoa porttausvirhe on `1879`, joka vaatii `splines=compound`-reitityksen, jota portti ei tue.
 
 (`fdp`:n läpäisyprosentti nousi 77.5 %:sta,
 koska aiempi commitoitu läpikäynti edelsi edellisen mission porttaustilaa.
 `neato`:n läpäisyprosentti nousi 90.5 %:sta, kun 16.1:n disassemblyn yhdistetyt
 stress-ytimet saavuttivat tuotannon kD-polun (16.1:n jälkeiset jatkotyöt, osa 5, T15):
 83 id:tä, jotka poikkesivat ratkaisijan ajautuman vuoksi, läpäisee nyt, niiden joukossa
-aiemmin hyväksytty id-kohtainen jäänne `2619_2`, jonka hyväksyntä on peruttu; `2371` on
-ainoa jäljellä oleva poikkeava `neato`-id.)
+aiemmin hyväksytty id-kohtainen jäänne `2619_2`, jonka hyväksyntä on peruttu; kaksi `neato`-id:tä ±0.5 pt:n ulkopuolella ovat `2784` (A10) ja `2371` (A1-ajautuma).)
 
 (Ensimmäinen ajo, 2026-07-11 762 kohteella, mittasi 263/311/260 ±0.5 pt:n
 sisällä — hyppy nykyisiin lukemiin tuli sittemmin toteutetuista
@@ -1339,16 +1340,23 @@ Jokainen kohta kertoo, mitä natiivi tekee ja mitä portti tekee.
 
 - **`mode=hier dim=4` kahdella solmulla.** Natiivi kirjoittaa `directions`-taulukon yli (`lib/neatogen/stress.c:514`) ja keskeytyy joissakin ajoissa (poistumiskoodi 133 viidessä ajossa 16:sta). Portti renderöi.
 - **`mode=hier dim=3` ja `len=0.001`.** Natiivi kuolee signaaliin: 3 ajoa 8:sta 19 solmulla (SIGBUS) ja 8 8:sta 27 solmulla (SIGBUS, SIGSEGV, SIGTRAP). Pino on `mfm_alloc` funktion `stress_majorization_kD_mkernel` alla, mikä osoittaa keon turmeltumista; tarkkaa kohtaa ei ole todistettu. Portti renderöi, ja missä natiivi selviää (19 solmua, 5 ajoa 8:sta) se on tavutasolla sama.
-- **fdp:n toiset asettelut samalle graafille vaihtelevat natiivissa kekoosoitteiden mukaan.** `deriveGraph` ja `genPorts` vertaavat solmuosoittimia (`lib/fdpgen/layout.c:466,501,637`). 12 natiivin ajon aikana kummallakin `graphs-fdp`:n renderöinti 2 muodossa `plain` jakautuu 2 luokkaan (1 ja 11 ajoa) ja `1581` muodossa `dot` 2 luokkaan (8 ja 4 ajoa); portti on tavutasolla sama kuin `plain`-muodon 1 ajon luokka ja 5e-13:n sisällä `dot`-muodon 4 ajon luokasta. Natiivi, joka on käännetty näillä kolmella vertailulla `ND_id`:llä, toistuu 8 kertaa 8:sta ja on `plain`-muodossa tavutasolla sama kuin portti. Vain portin valinta: natiivi `attach_attrs` päättyy `undoClusterEdges`:iin (`lib/common/output.c:403-404`), ja portti suorittaa tämän kumoamisen seuraavalla asettelulla, ei renderöinnissä, koska sen kirjoittajat lukevat `__0:`-välityssolmut.
+- **fdp:n toiset asettelut samalle graafille vaihtelevat natiivissa kekoosoitteiden mukaan.** `deriveGraph` ja `genPorts` vertaavat solmuosoittimia (`lib/fdpgen/layout.c:466,501,637`). 12 natiivin ajon aikana kummallakin `graphs-fdp`:n renderöinti 2 muodossa `plain` jakautuu 2 luokkaan (1 ja 11 ajoa) ja `1581` muodossa `dot` 2 luokkaan (8 ja 4 ajoa); portti on tavutasolla sama kuin `plain`-muodon 1 ajon luokka ja 5e-13:n sisällä `dot`-muodon 4 ajon luokasta. Natiivi, joka on käännetty näillä kolmella vertailulla `ND_id`:llä, toistuu 8 kertaa 8:sta ja on `plain`-muodossa tavutasolla sama kuin portti. Vain portin valinta: natiivi `attach_attrs` päättyy `undoClusterEdges`:iin (`lib/common/output.c:403-404`). Portin `json`- ja `json0`-kirjoittajat kumoavat välityssolmut ennen kirjoittamista, kuten C; sen `dot`- ja `xdot`-kirjoittajat lukevat `__0:`-välityssolmut, joten niillä kumoaminen tapahtuu seuraavalla asettelulla, ei renderöinnissä.
 - **`T`-operaatio graafin `_draw_`- tai `_background`-attribuutissa.** Natiivi kaatuu segmenttivirheeseen (poistumiskoodi 139): `op->span` on NULL muualla kuin neato `-n`:ssä (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Portti ei piirrä sille tekstiä.
 - **neato aligraafilla.** Natiivi poistui koodilla 139 asetellessaan kumpaakin aligraafia yhdessä testatussa graafissa, tavallista aligraafia ja klusteria. Portti palauttaa tulosteen.
+
+### Osan 11 tulokset
+
+- **Pitkät merkkijonot `xdot`- ja `dot`-tulosteessa (suljettu).** Natiivi katkaisee lainausmerkeissä olevan arvon rivin lopun kenoviivalla 128 sarakkeen jälkeen tai juurikaavion `linelength`-arvon jälkeen, kun se on 0 tai vähintään 60 (`lib/cgraph/write.c:160-195,670-677`). Portti rivittää nyt `_draw_`-perheen merkkijonot samoin, tavutasolla samoin kuin natiivi.
+- **fdp `json` ja `json0` klusteriin johtavilla särmillä (suljettu).** Natiivi kumoaa klusterisärmien välityssolmut ennen jsonin kirjoittamista (`lib/common/output.c:403`); portti tulosti `__0:`-välityssolmut ja kumoaa ne nyt ensin. Natiivi fdp päättyy `2717`:llä koodiin 139 jokaisessa muodossa, joten sille ei ole vertailukohtaa.
+- **2-D `mode=sgd` (hyväksytty, A1).** macOS:llä asettelu poikkeaa natiivista libm:n `hypot`-funktion (`lib/neatogen/sgd.c:223`) ja `exp`-funktion (`sgd.c:216`) viimeisessä bitissä, minkä SGD vahvistaa testatulla kaaviolla jopa 1,59 pisteeseen. Kun macOS:n `hypot` ja `exp` toistetaan, portin jälki on sama kuin natiivin, joten koodia ei muutettu (PR 119).
+- **Ennen juurtaan renderöity alikaavio, fdp ja osage (suljettu).** Natiivi tulostaa tallennetut attribuuttiarvot (myöhempi renderöinti säilyttää aiemman `_draw_`, `_ldraw_` ja `xdotversion`), tulostaa `inf` ja `nan` kuten C:n printf ja testaa jokaisen särmän splinelaatikon sivun leikkausta vasten (`edge_in_box`, `lib/common/emit.c:2692`). Portti tekee nyt kaikki kolme ja vastaa natiivia, lukuun ottamatta yhtä klusterin rajalaatikon arvoa fdp:n oman ajautuman kohdalla (1.6e-11 vs. -3.3e-11). Natiivi fdp itse vaihtelee keon osoitteiden mukaan (`lib/fdpgen/layout.c:466,501,637`), myös `graphs-fdp`:n ensimmäisessä renderöinnissä, joten vertailussa käytetään natiivia ilman näitä vertailuja. Sivuvaikutuksena `1581` svg:nä saa kaksi tyhjää `<g id="edgeN">`-ryhmää nimetyille silmukoille, kuten natiivilla.
 
 ---
 
 ## Tarkoituksella porttaamatta (ei-tavoitteet) {#intentionally-not-ported-non-goals}
 
 Nämä ovat tarkoituksellisia soveltamisalan rajoja, ei vikoja. Kirjasto kohdistuu **SVG**:hen
-(sekä tekstimuotoisiin välimuotoihin `json` / `xdot` / `dot` / imagemap).
+(sekä tekstimuotoisiin välimuotoihin `json` / `xdot` / `dot` / `plain` / imagemap).
 
 - **Muut tulostemuodot.** Rasteri (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS
   sekä GUI-/interaktiiviset taustajärjestelmät ovat soveltamisalan ulkopuolella. Käytä SVG-tulostetta ja muunna
@@ -1357,7 +1365,6 @@ Nämä ovat tarkoituksellisia soveltamisalan rajoja, ei vikoja. Kirjasto kohdist
   ei aseta sivutuslippua), joten `page=` on tällä polulla tyhjäoperaatio molemmissa
   toteutuksissa — dokumentoitu tässä vain, koska se on yleinen sekaannuksen
   aihe.
-- **`-Tplain`-tekstitulostus.** Lykätty (uskollinen tekstimuoto), ei poissuljettu.
 - **`gvpr`** (graafinkäsittelyn skriptauskieli) — soveltamisalan ulkopuolella.
 - **C++-mukavuuskääreet** (`cgraph++`, `gvc++`) — C-API porttataan
   ensin; idiomaattinen TypeScript-mukavuuskerros, jos sellaista halutaan, olisi

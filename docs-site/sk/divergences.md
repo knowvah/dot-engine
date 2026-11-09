@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ vstup pod jeho vlastným modulom namiesto `dot`. Úprimným stropom tejto práce
 **zúžiť** A1 na „žiadna aktívna odchýlka na referenčnej platforme“, nikdy neodstrániť
 medziplatformovú výhradu; doterajšie výsledky (nižšie) tento
 strop spĺňajú: `circo`/`twopi`/`osage` odhalili a vyriešili po koreňovú príčinu niekoľko
-skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 99.8/96.6/68.1 %
+skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 99.8/98.0/68.1 %
 v rámci 0.5pt od natívneho na univerze 929 položiek (graphviz 16.1.0), čo znamená, že
 portovaná aritmetika (`fma.ts`, `arm-pow.ts`, zhodný PRNG) pre väčšinu grafov drží —
 a každé odchýlené id z univerza 929 položiek je individuálne priradené injekciou (drift
@@ -197,19 +197,20 @@ výslovne **nie je porovnateľná** s deterministickou mierou úspešnosti ±0.0
 v tomto dokumente. Aktuálne počty voči graphviz 16.1.0 (univerzum 929 položiek; percento úspešnosti vynecháva
 vstupy, ktoré orákulum v C nedokáže vykresliť, podľa [Zhody](./conformance.md)):
 
-| modul | preskúmané | v rámci ±0.5pt | nezhodné | chyba portu / timeout | chyba orákula |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| modul | preskúmané | v rámci ±0.5pt | nezhodné | chyba portu / timeout | chyba orákula | orákulum nedeterministické |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+13 nedeterministických vstupov `fdp`, pri ktorých sa natívny výstup medzi behmi mení, je vynechaných z jeho percenta úspešnosti; jedinou chybou portu je `1879`, ktoré vyžaduje smerovanie `splines=compound`, ktoré port nepodporuje.
 
 (Miera úspešnosti `fdp` vzrástla zo 77.5 %, pretože skorší commitnutý prechod
 predchádzal stavu portu z predchádzajúcej misie.
 Miera úspešnosti `neato` vzrástla z 90.5 %, keď zlúčené stress jadrá z disassembly 16.1
 dosiahli produkčnú cestu kD (nadväzujúce práce po 16.1, časť 5, T15): 83 id, ktoré sa
 líšili kvôli driftu riešiča, teraz prechádza, medzi nimi predtým akceptovaný zvyšok pre
-jednotlivé id `2619_2`, ktorého akceptácia je zrušená; `2371` je jediné zostávajúce
-odlišné id `neato`.)
+jednotlivé id `2619_2`, ktorého akceptácia je zrušená; dve id `neato` mimo ±0.5pt sú `2784` (A10) a `2371` (drift A1).)
 
 (Prvý prieskum, 2026-07-11 pri 762 položkách, nameral 263/311/260 v rámci
 ±0.5pt — skok na súčasné miery spôsobili opravy po jednotlivých id pristáté odvtedy,
@@ -1315,16 +1316,23 @@ Každá položka hovorí, čo robí natív a čo robí port.
 
 - **`mode=hier dim=4` na dvoch uzloch.** Natív zapisuje za `directions` (`lib/neatogen/stress.c:514`) a v niektorých behoch sa preruší (návratový kód 133 v 5 zo 16 behov). Port vykreslí.
 - **`mode=hier dim=3` s `len=0.001`.** Natív umiera signálom: 3 z 8 behov pri 19 uzloch (SIGBUS) a 8 z 8 pri 27 uzloch (SIGBUS, SIGSEGV, SIGTRAP). Zásobník je `mfm_alloc` pod `stress_majorization_kD_mkernel`, čo ukazuje poškodenie haldy; presné miesto nie je dokázané. Port vykreslí a tam, kde natív prežije (19 uzlov, 5 z 8 behov), je bajtovo zhodný.
-- **Druhé rozvrhnutia fdp na jednom grafe sa v natíve menia podľa adries haldy.** `deriveGraph` a `genPorts` porovnávajú ukazovatele uzlov (`lib/fdpgen/layout.c:466,501,637`). Pri 12 natívnych behoch každý spadá vykreslenie 2 pri `graphs-fdp` ako `plain` do 2 tried (1 a 11 behov) a `1581` ako `dot` do 2 tried (8 a 4 behy); port je bajtovo zhodný s jednobehovou triedou `plain` a v rozmedzí 5e-13 od štvorbehovej triedy `dot`. Natív preložený s týmito tromi porovnaniami na `ND_id` sa opakuje 8 z 8 a pri `plain` je bajtovo zhodný s portom. Voľba len portu: natívny `attach_attrs` končí `undoClusterEdges` (`lib/common/output.c:403-404`) a port toto vrátenie vykoná pri ďalšom rozvrhnutí, nie pri vykreslení, pretože jeho zapisovače čítajú proxy `__0:`.
+- **Druhé rozvrhnutia fdp na jednom grafe sa v natíve menia podľa adries haldy.** `deriveGraph` a `genPorts` porovnávajú ukazovatele uzlov (`lib/fdpgen/layout.c:466,501,637`). Pri 12 natívnych behoch každý spadá vykreslenie 2 pri `graphs-fdp` ako `plain` do 2 tried (1 a 11 behov) a `1581` ako `dot` do 2 tried (8 a 4 behy); port je bajtovo zhodný s jednobehovou triedou `plain` a v rozmedzí 5e-13 od štvorbehovej triedy `dot`. Natív preložený s týmito tromi porovnaniami na `ND_id` sa opakuje 8 z 8 a pri `plain` je bajtovo zhodný s portom. Voľba len portu: natívny `attach_attrs` končí `undoClusterEdges` (`lib/common/output.c:403-404`). Zapisovače `json` a `json0` v porte proxy pred zápisom vrátia späť, ako to robí C; zapisovače `dot` a `xdot` proxy `__0:` čítajú, takže pre ne vrátenie prebehne pri ďalšom rozložení, nie pri vykresľovaní.
 - **Operácia `T` v `_draw_` alebo `_background` grafu.** Natív spadne so segfaultom (kód 139): `op->span` je mimo neato `-n` NULL (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Port pre ňu nekreslí žiadny text.
 - **neato na podgrafe.** Natív skončil s kódom 139 pri rozvrhnutí oboch podgrafov jedného testovaného grafu, bežného podgrafu aj clustra. Port vráti výstup.
+
+### Výsledky časti 11
+
+- **Dlhé reťazce vo výstupe `xdot` a `dot` (uzavreté).** Natív zalomí hodnotu v úvodzovkách koncovým spätným lomítkom po 128 stĺpcoch alebo po `linelength` koreňového grafu, ak je 0 alebo aspoň 60 (`lib/cgraph/write.c:160-195,670-677`). Port teraz reťazce rodiny `_draw_` zalamuje rovnako, bajt po bajte zhodne s natívom.
+- **fdp `json` a `json0` s hranami ku clusterom (uzavreté).** Natív pred zápisom json vráti proxy hrán clustera späť (`lib/common/output.c:403`); port tlačil proxy `__0:` a teraz ich najprv vracia. Natívny fdp na `2717` končí kódom 139 v každom formáte, takže nemá referenciu.
+- **2-D `mode=sgd` (akceptované, A1).** Na macOS sa rozloženie líši od natívu v poslednom bite libm `hypot` (`lib/neatogen/sgd.c:223`) a `exp` (`sgd.c:216`), čo SGD zosilní až na 1,59 bodu na testovanom grafe. S prehranými `hypot` a `exp` z macOS je stopa portu rovnaká ako natívna, takže sa kód nezmenil (PR 119).
+- **Podgraf vykreslený pred koreňom, pri fdp a osage (uzavreté).** Natív tlačí uložené hodnoty atribútov (neskoršie vykreslenie si ponechá `_draw_`, `_ldraw_` a `xdotversion` skoršieho), tlačí `inf` a `nan` ako printf v C a testuje box splinu každej hrany voči orezaniu strany (`edge_in_box`, `lib/common/emit.c:2692`). Port teraz robí všetky tri veci a rovná sa natívu, okrem jednej hodnoty ohraničujúceho boxu clustera pri vlastnom drifte fdp (1.6e-11 oproti -3.3e-11). Natívny fdp sám kolíše podľa adries haldy (`lib/fdpgen/layout.c:466,501,637`), vrátane prvého vykreslenia `graphs-fdp`, takže porovnanie používa natív bez týchto porovnaní. Vedľajším účinkom je, že `1581` ako svg získa dve prázdne skupiny `<g id="edgeN">` pre popísané slučky, ako ich má natív.
 
 ---
 
 ## Zámerne neportované (necieľové oblasti) {#intentionally-not-ported-non-goals}
 
 Sú to zámerné hranice rozsahu, nie chyby. Knižnica cieli na **SVG**
-(plus sprostredkujúce textové formáty `json` / `xdot` / `dot` / imagemap).
+(plus sprostredkujúce textové formáty `json` / `xdot` / `dot` / `plain` / imagemap).
 
 - **Iné výstupné formáty.** Rastrové (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS
   a GUI/interaktívne backendy sú mimo rozsahu. Použite výstup SVG a v prípade
@@ -1333,7 +1341,6 @@ Sú to zámerné hranice rozsahu, nie chyby. Knižnica cieli na **SVG**
   SVG nenastavuje príznak stránkovania), takže `page=` je na tejto ceste v oboch
   implementáciách bez efektu — uvedené tu iba preto, že ide o častý
   zdroj zmätku.
-- **Textový výstup `-Tplain`.** Odložené (verný textový formát), nie vylúčené.
 - **`gvpr`** (skriptovací jazyk na spracovanie grafov) — mimo rozsahu.
 - **Pohodlné obaly pre C++** (`cgraph++`, `gvc++`) — najprv sa portuje API v C;
   idiomatická pohodlná vrstva v TypeScripte, ak by bola žiaduca, by bola

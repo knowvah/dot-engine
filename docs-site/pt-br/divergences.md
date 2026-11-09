@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ entrada sob o seu próprio mecanismo em vez de `dot`. O teto honesto desse traba
 **estreitar** A1 para “nenhuma divergência ativa na plataforma de referência”, nunca
 eliminar a ressalva entre plataformas; os resultados até agora (abaixo) respeitam esse
 teto: `circo`/`twopi`/`osage` fizeram emergir e tiveram a causa raiz identificada em um punhado
-de instâncias genuínas de A1/A9, e `neato`/`fdp`/`sfdp` agora estão em 99.8/96.6/68.1%
+de instâncias genuínas de A1/A9, e `neato`/`fdp`/`sfdp` agora estão em 99.8/98.0/68.1%
 dentro de 0.5pt do nativo no universo de 929 itens (graphviz 16.1.0), o que significa que a aritmética
 portada (`fma.ts`, `arm-pow.ts`, PRNG equivalente) se sustenta na maioria dos grafos —
 e todo id divergente do universo de 929 itens é atribuído individualmente por injeção (deriva do solver
@@ -196,19 +196,20 @@ explicitamente **não** comparável às taxas de aprovação determinísticas de
 deste documento. Contagens atuais contra o graphviz 16.1.0 (universo de 929 itens; a % de aprovação deixa de fora
 entradas que o oráculo C não consegue renderizar, conforme [Conformidade](./conformance.md)):
 
-| mecanismo | examinados | dentro de ±0.5pt | não conformantes | erro do port / timeout | erro do oráculo |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| mecanismo | examinados | dentro de ±0.5pt | não conformantes | erro do port / timeout | erro do oráculo | oráculo não determinístico |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+As 13 entradas não determinísticas do `fdp`, cuja saída nativa varia de execução para execução, ficam fora da sua taxa de aprovação; seu único erro do port é `1879`, que exige o roteamento `splines=compound`, não suportado pelo port.
 
 (A taxa de aprovação do `fdp` subiu de 77.5% porque a varredura anterior registrada
 era anterior ao estado do port da missão anterior.
 A taxa de aprovação do `neato` subiu de 90.5% quando os kernels de stress fundidos do
 desassembly do 16.1 chegaram ao caminho kD de produção (continuações pós-16.1, parte 5,
 T15): 83 ids que divergiam por deriva do solucionador agora passam, entre eles o resíduo
-por id aceito anteriormente `2619_2`, cuja aceitação foi retirada; `2371` é o único id
-do `neato` que ainda diverge.)
+por id aceito anteriormente `2619_2`, cuja aceitação foi retirada; os dois ids do `neato` fora de ±0.5pt são `2784` (A10) e `2371` (deriva A1).)
 
 (A primeira varredura, em 2026-07-11 com 762 itens, mediu 263/311/260 dentro de
 ±0.5pt — o salto para as taxas atuais veio de correções por id feitas desde então,
@@ -1320,16 +1321,23 @@ Cada item diz o que o nativo faz e o que o port faz.
 
 - **`mode=hier dim=4` em dois nós.** O nativo escreve além de `directions` (`lib/neatogen/stress.c:514`) e, em algumas execuções, aborta (saída 133 em 5 de 16 execuções). O port renderiza.
 - **`mode=hier dim=3` com `len=0.001`.** O nativo morre por sinal: 3 de 8 execuções com 19 nós (SIGBUS) e 8 de 8 com 27 nós (SIGBUS, SIGSEGV, SIGTRAP). A pilha é `mfm_alloc` sob `stress_majorization_kD_mkernel`, o que mostra corrupção do heap; o ponto exato não está provado. O port renderiza, e onde o nativo sobrevive (19 nós, 5 de 8 execuções) é idêntico byte a byte.
-- **Os segundos layouts do fdp no mesmo grafo variam com endereços do heap no nativo.** `deriveGraph` e `genPorts` comparam ponteiros de nós (`lib/fdpgen/layout.c:466,501,637`). Em 12 execuções nativas cada, o render 2 de `graphs-fdp` como `plain` cai em 2 classes (1 e 11 execuções) e `1581` como `dot` em 2 classes (8 e 4 execuções); o port é idêntico byte a byte à classe de 1 execução de `plain` e fica a menos de 5e-13 da classe de 4 execuções de `dot`. Um nativo recompilado com essas três comparações sobre `ND_id` se repete 8 de 8 e é idêntico byte a byte ao port em `plain`. Uma escolha só do port: o `attach_attrs` nativo termina com `undoClusterEdges` (`lib/common/output.c:403-404`), e o port executa esse desfazer no layout seguinte, não na renderização, porque seus escritores leem os proxies `__0:`.
+- **Os segundos layouts do fdp no mesmo grafo variam com endereços do heap no nativo.** `deriveGraph` e `genPorts` comparam ponteiros de nós (`lib/fdpgen/layout.c:466,501,637`). Em 12 execuções nativas cada, o render 2 de `graphs-fdp` como `plain` cai em 2 classes (1 e 11 execuções) e `1581` como `dot` em 2 classes (8 e 4 execuções); o port é idêntico byte a byte à classe de 1 execução de `plain` e fica a menos de 5e-13 da classe de 4 execuções de `dot`. Um nativo recompilado com essas três comparações sobre `ND_id` se repete 8 de 8 e é idêntico byte a byte ao port em `plain`. Uma escolha só do port: o `attach_attrs` nativo termina com `undoClusterEdges` (`lib/common/output.c:403-404`). Os escritores `json` e `json0` do port desfazem os proxies antes de escrever, como o C faz; seus escritores `dot` e `xdot` leem os proxies `__0:`, então para eles o desfazer roda no próximo layout, não na renderização.
 - **Uma operação `T` no `_draw_` ou no `_background` do grafo.** O nativo dá segfault (saída 139): `op->span` é NULL fora de neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). O port não desenha texto para ela.
 - **neato em um subgrafo.** O nativo saiu com 139 ao dispor ambos os subgrafos do único grafo testado, um subgrafo simples e um cluster. O port devolve uma saída.
+
+### Resultados da parte 11
+
+- **Strings longas na saída `xdot` e `dot` (fechado).** O nativo quebra um valor entre aspas com uma barra invertida final após 128 colunas, ou após o `linelength` do grafo raiz quando é 0 ou pelo menos 60 (`lib/cgraph/write.c:160-195,670-677`). O port agora quebra as strings da família `_draw_` do mesmo jeito, idênticas byte a byte ao nativo.
+- **fdp `json` e `json0` com arestas para clusters (fechado).** O nativo desfaz os proxies de arestas de cluster antes de escrever o json (`lib/common/output.c:403`); o port imprimia os proxies `__0:` e agora os desfaz primeiro. O fdp nativo termina com 139 em `2717` em todos os formatos, então não há referência.
+- **`mode=sgd` em 2-D (aceito, A1).** No macOS o layout difere do nativo no último bit de `hypot` (`lib/neatogen/sgd.c:223`) e `exp` (`sgd.c:216`) da libm, que o SGD amplifica em até 1,59 ponto no grafo testado. Com `hypot` e `exp` do macOS reproduzidos, o rastro do port é igual ao nativo, então nenhum código mudou (PR 119).
+- **Um subgrafo renderizado antes de sua raiz, em fdp e osage (fechado).** O nativo imprime os valores de atributo armazenados (uma renderização posterior mantém `_draw_`, `_ldraw_` e `xdotversion` de uma anterior), imprime `inf` e `nan` como o printf do C e testa a caixa de spline de cada aresta contra o recorte da página (`edge_in_box`, `lib/common/emit.c:2692`). O port agora faz as três coisas e iguala o nativo, exceto um valor da caixa delimitadora de um cluster na deriva própria do fdp (1.6e-11 contra -3.3e-11). O próprio fdp nativo varia com os endereços do heap (`lib/fdpgen/layout.c:466,501,637`), inclusive na primeira renderização de `graphs-fdp`, então a comparação usa o nativo sem essas comparações. Como efeito colateral, `1581` em svg ganha dois grupos `<g id="edgeN">` vazios para laços próprios rotulados, como o nativo.
 
 ---
 
 ## Intencionalmente não portado (não objetivos) {#intentionally-not-ported-non-goals}
 
 Estes são limites de escopo deliberados, não bugs. A biblioteca visa **SVG**
-(mais os formatos de texto intermediários `json` / `xdot` / `dot` / imagemap).
+(mais os formatos de texto intermediários `json` / `xdot` / `dot` / `plain` / imagemap).
 
 - **Outros formatos de saída.** Raster (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS
   e backends de GUI/interativos estão fora do escopo. Use a saída SVG e converta
@@ -1338,7 +1346,6 @@ Estes são limites de escopo deliberados, não bugs. A biblioteca visa **SVG**
   dispositivo SVG não define nenhum sinalizador de paginação), de modo que `page=` é uma operação nula neste caminho nas duas
   implementações — documentado aqui apenas por ser um ponto comum de
   confusão.
-- **Saída de texto `-Tplain`.** Adiada (um formato de texto fiel), não excluída.
 - **`gvpr`** (a linguagem de script de processamento de grafos) — fora do escopo.
 - **Wrappers de conveniência em C++** (`cgraph++`, `gvc++`) — a API em C é portada
   primeiro; uma camada de conveniência idiomática em TypeScript, se desejada, seria um

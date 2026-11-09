@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -116,7 +116,7 @@ inntak undir sinni eigin vél í stað `dot`. Hreinskilið þak þeirrar vinnu e
 að **þrengja** A1 í „ekkert virkt frávik á viðmiðunarkerfinu“, aldrei að
 útrýma fyrirvaranum um mismunandi kerfi; niðurstöðurnar hingað til (hér á eftir) standast það
 þak: `circo`/`twopi`/`osage` hafa hver um sig afhjúpað og rótargreint nokkur
-raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 99.8/96.6/68.1%
+raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 99.8/98.0/68.1%
 innan 0.5pt frá innbyggðu á 929 atriða heildinni (graphviz 16.1.0), sem þýðir að yfirfærða
 reikningsaðferðin (`fma.ts`, `arm-pow.ts`, samstilltur slembitölugjafi) heldur fyrir flest graf —
 og hvert eitt afgangsfráviksauðkenni á 929 atriða heildinni er rakið sérstaklega með innsprautun (rek lausnara
@@ -200,11 +200,13 @@ sem er beinlínis **ekki** sambærilegur við ±0.01 ákvarðandi árangurshlutf
 í þessu skjali. Núverandi talningar gegn graphviz 16.1.0 (929 atriða heild; árangurshlutfall sleppir
 inntaki sem C-véfréttin getur ekki teiknað, samkvæmt [Samræmi](./conformance.md)):
 
-| vél | könnuð | innan ±0.5pt | ósamræmd | villa í yfirfærslu / tímamörk | villa í véfrétt |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| vél | könnuð | innan ±0.5pt | ósamræmd | villa í yfirfærslu / tímamörk | villa í véfrétt | véfrétt ekki ákvörðuð |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+13 óákvörðuðu inntök `fdp`, þar sem úttak upprunalega forritsins breytist milli keyrslna, eru ekki talin með í árangurshlutfalli þess; eina yfirfærsluvillan er `1879`, sem þarf `splines=compound` leiðarval sem yfirfærslan styður ekki.
 
 (Árangurshlutfall `fdp` hækkaði frá 77.5%
 vegna þess að fyrri innsetta yfirferðin var á undan stöðu yfirfærslunnar í fyrra
@@ -213,7 +215,7 @@ verkefni.
 sundurliðun 16.1 náðu til kD-slóðar framleiðslu (eftirfylgni eftir 16.1, hluti 5, T15):
 83 auðkenni sem höfðu vikið vegna reks lausnarans standast nú, þar á meðal áður
 samþykktur afgangur fyrir einstakt auðkenni `2619_2`, en samþykkt hans er afturkölluð;
-`2371` er eina `neato` auðkennið sem enn víkur.)
+auðkennin tvö í `neato` utan ±0.5pt eru `2784` (A10) og `2371` (A1-rek).)
 
 (Fyrsta yfirferðin, 2026-07-11 við 762 atriði, mældi 263/311/260 innan
 ±0.5pt — stökkið í núverandi hlutföll kom frá lagfæringum fyrir einstök auðkenni sem hafa lent síðan,
@@ -1319,16 +1321,23 @@ Hver liður segir hvað innfædda gerir og hvað portið gerir.
 
 - **`mode=hier dim=4` á tveimur hnútum.** Innfædda skrifar framhjá `directions` (`lib/neatogen/stress.c:514`) og stöðvast í sumum keyrslum (útgönguskilakóði 133 í 5 af 16 keyrslum). Portið teiknar.
 - **`mode=hier dim=3` með `len=0.001`.** Innfædda deyr af merki: 3 af 8 keyrslum með 19 hnúta (SIGBUS) og 8 af 8 með 27 hnúta (SIGBUS, SIGSEGV, SIGTRAP). Staflinn er `mfm_alloc` undir `stress_majorization_kD_mkernel`, sem sýnir hrúguspillingu; nákvæmur staður er ekki sannaður. Portið teiknar, og þar sem innfædda lifir af (19 hnútar, 5 af 8 keyrslum) er það bæta-eins.
-- **Önnur uppröðun fdp á sama grafi breytist í innfædda með hrúguvistföngum.** `deriveGraph` og `genPorts` bera saman hnútabendla (`lib/fdpgen/layout.c:466,501,637`). Yfir 12 innfæddar keyrslur hvor fellur teikning 2 af `graphs-fdp` sem `plain` í 2 flokka (1 og 11 keyrslur) og `1581` sem `dot` í 2 flokka (8 og 4 keyrslur); portið er bæta-eins og 1 keyrslu flokkur `plain` og innan 5e-13 frá 4 keyrslu flokki `dot`. Innfædda byggt með þessum þremur samanburðum á `ND_id` endurtekur sig 8 af 8 og er bæta-eins og portið á `plain`. Val eingöngu í portinu: innfædda `attach_attrs` endar á `undoClusterEdges` (`lib/common/output.c:403-404`), og portið framkvæmir þá afturköllun við næstu uppröðun, ekki við teikningu, því ritarar þess lesa `__0:` milliliðina.
+- **Önnur uppröðun fdp á sama grafi breytist í innfædda með hrúguvistföngum.** `deriveGraph` og `genPorts` bera saman hnútabendla (`lib/fdpgen/layout.c:466,501,637`). Yfir 12 innfæddar keyrslur hvor fellur teikning 2 af `graphs-fdp` sem `plain` í 2 flokka (1 og 11 keyrslur) og `1581` sem `dot` í 2 flokka (8 og 4 keyrslur); portið er bæta-eins og 1 keyrslu flokkur `plain` og innan 5e-13 frá 4 keyrslu flokki `dot`. Innfædda byggt með þessum þremur samanburðum á `ND_id` endurtekur sig 8 af 8 og er bæta-eins og portið á `plain`. Val eingöngu í portinu: innfædda `attach_attrs` endar á `undoClusterEdges` (`lib/common/output.c:403-404`). `json`- og `json0`-ritarar yfirfærslunnar afturkalla milliliðina áður en skrifað er, eins og C gerir; `dot`- og `xdot`-ritararnir lesa `__0:` milliliðina, svo hjá þeim keyrir afturköllunin við næsta umbrot, ekki við teikningu.
 - **`T`-aðgerð í `_draw_` eða `_background` grafsins.** Innfædda hrynur með minnisvillu (útgönguskilakóði 139): `op->span` er NULL utan neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Portið teiknar engan texta fyrir hana.
 - **neato á undirgrafi.** Innfædda hætti með 139 við uppröðun beggja undirgrafa í því eina grafi sem var prófað, venjulegs undirgrafs og klasa. Portið skilar úttaki.
+
+### Niðurstöður 11. hluta
+
+- **Langir strengir í `xdot`- og `dot`-úttaki (lokað).** Upprunalega forritið brýtur gildi í gæsalöppum með öfugu skástriki í lok línu eftir 128 dálka, eða eftir `linelength` rótargrafsins þegar það er 0 eða að minnsta kosti 60 (`lib/cgraph/write.c:160-195,670-677`). Yfirfærslan brýtur nú strengi `_draw_`-fjölskyldunnar eins, bæti fyrir bæti eins og upprunalega forritið.
+- **fdp `json` og `json0` með leggjum til klasa (lokað).** Upprunalega forritið afturkallar milliliði klasaleggja áður en json er skrifað (`lib/common/output.c:403`); yfirfærslan prentaði `__0:` milliliðina og afturkallar þá nú fyrst. Upprunalegt fdp lýkur með 139 á `2717` í öllum sniðum, svo ekkert viðmið er til.
+- **2-D `mode=sgd` (samþykkt, A1).** Á macOS víkur umbrotið frá upprunalega forritinu í síðasta biti libm `hypot` (`lib/neatogen/sgd.c:223`) og `exp` (`sgd.c:216`), sem SGD magnar upp í allt að 1,59 punkta á prófaða grafinu. Þegar `hypot` og `exp` frá macOS eru endurspiluð er ferill yfirfærslunnar sá sami og upprunalega forritsins, svo kóða var ekki breytt (PR 119).
+- **Undirgraf teiknað á undan rót sinni, í fdp og osage (lokað).** Upprunalega forritið prentar geymd eigindagildi (síðari teikning heldur `_draw_`, `_ldraw_` og `xdotversion` fyrri teikningar), prentar `inf` og `nan` eins og printf í C og prófar splínukassa hvers leggjar gegn síðuklippingunni (`edge_in_box`, `lib/common/emit.c:2692`). Yfirfærslan gerir nú allt þrennt og jafnast á við upprunalega forritið, nema eitt jaðarkassagildi klasa við eigin rek fdp (1.6e-11 á móti -3.3e-11). Upprunalegt fdp breytist sjálft eftir hrúguvistföngum (`lib/fdpgen/layout.c:466,501,637`), þar með talin fyrsta teikning `graphs-fdp`, svo samanburðurinn notar upprunalega forritið án þessara samanburða. Aukaverkun er að `1581` sem svg fær tvo tóma `<g id="edgeN">` hópa fyrir merktar sjálflykkjur, eins og upprunalega forritið.
 
 ---
 
 ## Viljandi ekki yfirfært (utan markmiða) {#intentionally-not-ported-non-goals}
 
 Þetta eru viljandi mörk umfangs, ekki gallar. Safnið miðar við **SVG**
-(auk millitextasniðanna `json` / `xdot` / `dot` / imagemap).
+(auk millitextasniðanna `json` / `xdot` / `dot` / `plain` / imagemap).
 
 - **Önnur úttakssnið.** Punktamyndir (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS
   og myndræn/gagnvirk bakendi eru utan umfangs. Notaðu SVG-úttakið
@@ -1337,8 +1346,6 @@ Hver liður segir hvað innfædda gerir og hvað portið gerir.
   tækið setur engan síðuskiptingarfána), svo `page=` gerir ekkert á þessari leið í báðum
   útfærslum — skjalfest hér aðeins vegna þess að það er algengur
   ruglingspunktur.
-- **`-Tplain`-textaúttak.** Frestað (trútt textasnið), ekki
-  undanskilið.
 - **`gvpr`** (forskriftarmálið til graf-vinnslu) — utan umfangs.
 - **C++-þægindaumbúðir** (`cgraph++`, `gvc++`) — C-API er yfirfært
   fyrst; hefðbundið TypeScript-þægindalag, ef óskað er, yrði

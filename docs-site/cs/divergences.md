@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -115,7 +115,7 @@ jeho vlastním modulem místo pod `dot`. Poctivým stropem této práce je A1
 **zúžit** na „žádná aktivní odchylka na referenční platformě“, nikdy neodstranit
 meziplatformní výhradu; dosavadní výsledky (níže) tento strop respektují:
 `circo`/`twopi`/`osage` každý odhalily a zpětně vystopovaly hrstku skutečných
-případů A1/A9 a `neato`/`fdp`/`sfdp` nyní stojí na 99.8/96.6/68.1 % v rozmezí 0.5pt
+případů A1/A9 a `neato`/`fdp`/`sfdp` nyní stojí na 99.8/98.0/68.1 % v rozmezí 0.5pt
 od nativního výstupu v univerzu 929 položek (graphviz 16.1.0), což znamená, že
 portovaná aritmetika (`fma.ts`, `arm-pow.ts`, sladěný PRNG) u většiny grafů drží — a
 každé rozcházející se id z univerza 929 položek je individuálně připsáno
@@ -200,19 +200,20 @@ tomto dokumentu. Aktuální počty vůči graphviz 16.1.0 (univerzum 929 polože
 procento úspěšnosti vynechává vstupy, které C orákulum nedokáže vykreslit, podle
 [Shoda](./conformance.md)):
 
-| modul | prozkoumáno | v rámci ±0.5pt | neshodné | chyba portace / timeout | chyba orákula |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| modul | prozkoumáno | v rámci ±0.5pt | neshodné | chyba portace / timeout | chyba orákula | nedeterminismus orákula |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+13 nedeterministických vstupů `fdp`, u nichž se nativní výstup mezi běhy mění, se do jeho procenta úspěšnosti nepočítá; jedinou chybou portace je `1879`, které vyžaduje směrování `splines=compound`, jež port nepodporuje.
 
 (Míra úspěšnosti `fdp` vzrostla ze 77.5 %, protože dřívější
 zapsaný průchod předcházel stavu portace z předchozí mise.
 Míra úspěšnosti `neato` vzrostla z 90.5 %, když fúzovaná stresová jádra z disassemblace
 16.1 dorazila do produkční cesty kD (následné práce po 16.1, část 5, T15): 83 id, která
 se lišila kvůli driftu řešiče, nyní prochází, mezi nimi dříve přijatý zbytek pro
-jednotlivé id `2619_2`, jehož přijetí je zrušeno; `2371` je jediné zbývající odlišné id
-v `neato`.)
+jednotlivé id `2619_2`, jehož přijetí je zrušeno; dvě id `neato` mimo ±0.5pt jsou `2784` (A10) a `2371` (drift A1).)
 
 (První průchod, 2026-07-11 při 762 položkách, naměřil 263/311/260 v rámci
 ±0.5pt — skok na současné míry přinesly od té doby nasazené opravy jednotlivých id,
@@ -1308,16 +1309,23 @@ Každá položka říká, co dělá nativ a co dělá port.
 
 - **`mode=hier dim=4` na dvou uzlech.** Nativ zapisuje za `directions` (`lib/neatogen/stress.c:514`) a v některých během se přeruší (návratový kód 133 v 5 z 16 běhů). Port vykreslí.
 - **`mode=hier dim=3` s `len=0.001`.** Nativ umírá signálem: 3 z 8 běhů při 19 uzlech (SIGBUS) a 8 z 8 při 27 uzlech (SIGBUS, SIGSEGV, SIGTRAP). Zásobník je `mfm_alloc` pod `stress_majorization_kD_mkernel`, což ukazuje poškození haldy; přesné místo není prokázáno. Port vykreslí a tam, kde nativ přežije (19 uzlů, 5 z 8 běhů), je bajtově shodný.
-- **Druhá rozvržení fdp na jednom grafu se v nativu mění podle adres haldy.** `deriveGraph` a `genPorts` porovnávají ukazatele uzlů (`lib/fdpgen/layout.c:466,501,637`). Při 12 nativních bězích každý spadá vykreslení 2 u `graphs-fdp` jako `plain` do 2 tříd (1 a 11 běhů) a `1581` jako `dot` do 2 tříd (8 a 4 běhy); port je bajtově shodný s jednoběhovou třídou `plain` a v rozmezí 5e-13 od čtyřběhové třídy `dot`. Nativ přeložený s těmito třemi porovnáními na `ND_id` se opakuje 8 z 8 a u `plain` je bajtově shodný s portem. Volba pouze portu: nativní `attach_attrs` končí `undoClusterEdges` (`lib/common/output.c:403-404`) a port toto vrácení provádí při dalším rozvržení, ne při vykreslení, protože jeho zapisovače čtou proxy `__0:`.
+- **Druhá rozvržení fdp na jednom grafu se v nativu mění podle adres haldy.** `deriveGraph` a `genPorts` porovnávají ukazatele uzlů (`lib/fdpgen/layout.c:466,501,637`). Při 12 nativních bězích každý spadá vykreslení 2 u `graphs-fdp` jako `plain` do 2 tříd (1 a 11 běhů) a `1581` jako `dot` do 2 tříd (8 a 4 běhy); port je bajtově shodný s jednoběhovou třídou `plain` a v rozmezí 5e-13 od čtyřběhové třídy `dot`. Nativ přeložený s těmito třemi porovnáními na `ND_id` se opakuje 8 z 8 a u `plain` je bajtově shodný s portem. Volba pouze portu: nativní `attach_attrs` končí `undoClusterEdges` (`lib/common/output.c:403-404`). Zapisovače `json` a `json0` v portu proxy před zápisem vrátí, jako to dělá C; zapisovače `dot` a `xdot` proxy `__0:` čtou, takže pro ně vrácení probíhá při dalším rozvržení, ne při vykreslení.
 - **Operace `T` v `_draw_` nebo `_background` grafu.** Nativ spadne se segfaultem (kód 139): `op->span` je mimo neato `-n` NULL (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Port pro ni nekreslí žádný text.
 - **neato na podgrafu.** Nativ skončil s kódem 139 při rozvržení obou podgrafů jednoho testovaného grafu, běžného podgrafu i clusteru. Port vrátí výstup.
+
+### Výsledky části 11
+
+- **Dlouhé řetězce ve výstupu `xdot` a `dot` (uzavřeno).** Nativ zalomí řetězec v uvozovkách zpětným lomítkem na konci řádku po 128 sloupcích, nebo po `linelength` kořenového grafu, je-li 0 nebo alespoň 60 (`lib/cgraph/write.c:160-195,670-677`). Port nyní řetězce rodiny `_draw_` zalamuje stejně, bajtově shodně s nativem.
+- **fdp `json` a `json0` s hranami ke clusterům (uzavřeno).** Nativ před zápisem json vrací proxy hran clusterů (`lib/common/output.c:403`); port tiskl proxy `__0:` a nyní je nejprve vrací. Nativní fdp na `2717` končí kódem 139 v každém formátu, takže pro něj neexistuje reference.
+- **2-D `mode=sgd` (přijato, A1).** Na macOS se rozvržení liší od nativu v posledním bitu libm `hypot` (`lib/neatogen/sgd.c:223`) a `exp` (`sgd.c:216`), což SGD zesílí až na 1,59 bodu na testovaném grafu. S přehranými `hypot` a `exp` z macOS je stopa portu shodná s nativní, takže se kód nezměnil (PR 119).
+- **Podgraf vykreslený před kořenem, u fdp a osage (uzavřeno).** Nativ tiskne uložené hodnoty atributů (pozdější vykreslení si ponechá `_draw_`, `_ldraw_` a `xdotversion` dřívějšího), tiskne `inf` a `nan` jako printf v C a testuje box splinu každé hrany vůči ořezu stránky (`edge_in_box`, `lib/common/emit.c:2692`). Port nyní dělá všechny tři a rovná se nativu, kromě jedné hodnoty bounding boxu clusteru při vlastním driftu fdp (1.6e-11 proti -3.3e-11). Nativní fdp samo kolísá podle adres na haldě (`lib/fdpgen/layout.c:466,501,637`), včetně prvního vykreslení `graphs-fdp`, takže srovnání používá nativ s těmito porovnáními odstraněnými. Vedlejším účinkem je, že `1581` jako svg získá dvě prázdné skupiny `<g id="edgeN">` pro popisené smyčky, jak je má nativ.
 
 ---
 
 ## Záměrně neportováno (necíle) {#intentionally-not-ported-non-goals}
 
 Jde o záměrné hranice rozsahu, nikoli o chyby. Knihovna cílí na **SVG**
-(plus textové mezilehlé formáty `json` / `xdot` / `dot` / imagemap).
+(plus textové mezilehlé formáty `json` / `xdot` / `dot` / `plain` / imagemap).
 
 - **Jiné výstupní formáty.** Rastrové (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS
   a GUI/interaktivní backendy jsou mimo rozsah. Použijte výstup SVG a v případě
@@ -1326,7 +1334,6 @@ Jde o záměrné hranice rozsahu, nikoli o chyby. Knihovna cílí na **SVG**
   SVG nenastavuje příznak stránkování), takže `page=` je na této cestě v obou
   implementacích bez účinku — zde uvedeno jen proto, že jde o častý zdroj
   nedorozumění.
-- **Textový výstup `-Tplain`.** Odloženo (věrný textový formát), nikoli vyloučeno.
 - **`gvpr`** (skriptovací jazyk pro zpracování grafů) — mimo rozsah.
 - **Pohodlné obaly pro C++** (`cgraph++`, `gvc++`) — nejprve se portuje API v C;
   případná vrstva pro pohodlí v idiomatickém TypeScriptu by byla

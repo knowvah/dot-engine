@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -133,7 +133,7 @@ divergence active sur la plateforme de référence », jamais d’éliminer la r
 inter-plateformes ; les résultats obtenus jusqu’ici (ci-dessous) respectent ce
 plafond : `circo`/`twopi`/`osage` ont chacun fait apparaître et expliqué par
 leur cause racine une poignée d’instances authentiques de A1/A9, et
-`neato`/`fdp`/`sfdp` se situent désormais à 99.8/96.6/68.1 % à moins de 0.5pt du
+`neato`/`fdp`/`sfdp` se situent désormais à 99.8/98.0/68.1 % à moins de 0.5pt du
 natif sur l’univers de 929 éléments (graphviz 16.1.0), ce qui signifie que l’arithmétique
 portée (`fma.ts`, `arm-pow.ts`, PRNG concordant) tient pour la plupart des
 graphes — et chaque identifiant divergent de la univers de 929 éléments est attribué individuellement
@@ -233,11 +233,13 @@ donnés ailleurs dans ce document. Compteurs actuels face à graphviz 16.1.0 (un
 le pourcentage de réussite laisse de côté les entrées que l’oracle C ne peut pas
 rendre, conformément à [Conformité](./conformance.md)) :
 
-| moteur | relevées | à ±0.5pt | non conformes | erreur du portage / délai dépassé | erreur de l’oracle |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| moteur | relevées | à ±0.5pt | non conformes | erreur du portage / délai dépassé | erreur de l’oracle | oracle non déterministe |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+Les 13 entrées non déterministes de `fdp`, dont la sortie native varie d’une exécution à l’autre, sont exclues de son taux de réussite ; sa seule erreur de portage est `1879`, qui exige le routage `splines=compound`, que le portage ne prend pas en charge.
 
 (Le taux de réussite de `fdp` a augmenté
 depuis 77.5 % parce que le balayage validé précédent datait de l’état du
@@ -246,8 +248,7 @@ Le taux de réussite de `neato` a augmenté depuis 90.5 % lorsque les noyaux de 
 fusionnés du désassemblage de 16.1 ont atteint le chemin kD de production (suites
 post-16.1, partie 5, T15) : 83 identifiants qui divergeaient par dérive du solveur
 réussissent désormais, parmi eux le résidu par identifiant précédemment accepté
-`2619_2`, dont l’acceptation est retirée ; `2371` est le seul identifiant `neato` encore
-divergent.)
+`2619_2`, dont l’acceptation est retirée ; les deux identifiants `neato` hors de ±0.5pt sont `2784` (A10) et `2371` (dérive A1).)
 
 (Le premier balayage, le 2026-07-11 à 762 éléments, mesurait 263/311/260 à
 ±0.5pt — le bond vers les taux actuels vient de correctifs par identifiant
@@ -1479,9 +1480,16 @@ Chaque élément dit ce que fait le natif et ce que fait le portage.
 
 - **`mode=hier dim=4` sur deux nœuds.** Le natif écrit au-delà de `directions` (`lib/neatogen/stress.c:514`) et, dans certaines exécutions, s'interrompt (sortie 133 dans 5 exécutions sur 16). Le portage produit un rendu.
 - **`mode=hier dim=3` avec `len=0.001`.** Le natif meurt par signal : 3 exécutions sur 8 à 19 nœuds (SIGBUS) et 8 sur 8 à 27 nœuds (SIGBUS, SIGSEGV, SIGTRAP). La pile est `mfm_alloc` sous `stress_majorization_kD_mkernel`, ce qui montre une corruption du tas ; le site exact n'est pas prouvé. Le portage produit un rendu, et là où le natif survit (19 nœuds, 5 exécutions sur 8) il est identique à l'octet près.
-- **Les deuxièmes dispositions de fdp sur un même graphe varient avec les adresses du tas en natif.** `deriveGraph` et `genPorts` comparent des pointeurs de nœuds (`lib/fdpgen/layout.c:466,501,637`). Sur 12 exécutions natives chacun, le rendu 2 de `graphs-fdp` en `plain` tombe dans 2 classes (1 et 11 exécutions) et `1581` en `dot` dans 2 classes (8 et 4 exécutions) ; le portage est identique à l'octet près à la classe à 1 exécution de `plain` et à moins de 5e-13 de la classe à 4 exécutions de `dot`. Un natif reconstruit avec ces trois comparaisons sur `ND_id` se répète 8 fois sur 8 et est identique à l'octet près au portage sur `plain`. Un choix propre au portage : `attach_attrs` natif se termine par `undoClusterEdges` (`lib/common/output.c:403-404`), et le portage exécute cette annulation à la disposition suivante, non au rendu, car ses écrivains lisent les proxys `__0:`.
+- **Les deuxièmes dispositions de fdp sur un même graphe varient avec les adresses du tas en natif.** `deriveGraph` et `genPorts` comparent des pointeurs de nœuds (`lib/fdpgen/layout.c:466,501,637`). Sur 12 exécutions natives chacun, le rendu 2 de `graphs-fdp` en `plain` tombe dans 2 classes (1 et 11 exécutions) et `1581` en `dot` dans 2 classes (8 et 4 exécutions) ; le portage est identique à l'octet près à la classe à 1 exécution de `plain` et à moins de 5e-13 de la classe à 4 exécutions de `dot`. Un natif reconstruit avec ces trois comparaisons sur `ND_id` se répète 8 fois sur 8 et est identique à l'octet près au portage sur `plain`. Un choix propre au portage : `attach_attrs` natif se termine par `undoClusterEdges` (`lib/common/output.c:403-404`). Les écrivains `json` et `json0` du portage annulent les proxys avant d’écrire, comme le fait C ; ses écrivains `dot` et `xdot` lisent les proxys `__0:`, donc pour eux l’annulation s’exécute au prochain layout, non au rendu.
 - **Une opération `T` dans le `_draw_` ou le `_background` du graphe.** Le natif plante par segfault (sortie 139) : `op->span` est NULL hors de neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Le portage ne dessine aucun texte pour elle.
 - **neato sur un sous-graphe.** Le natif est sorti avec 139 en disposant l'un et l'autre des sous-graphes du seul graphe testé, un sous-graphe simple et un cluster. Le portage renvoie une sortie.
+
+### Résultats de la partie 11
+
+- **Longues chaînes dans la sortie `xdot` et `dot` (clos).** Le natif coupe une valeur entre guillemets par une barre oblique inverse finale après 128 colonnes, ou après le `linelength` du graphe racine lorsqu’il vaut 0 ou au moins 60 (`lib/cgraph/write.c:160-195,670-677`). Le portage coupe désormais de même les chaînes de la famille `_draw_`, à l’identique octet pour octet du natif.
+- **fdp `json` et `json0` avec des arêtes vers des clusters (clos).** Le natif annule les proxys d’arêtes de cluster avant d’écrire le json (`lib/common/output.c:403`) ; le portage imprimait les proxys `__0:` et les annule maintenant d’abord. Le fdp natif se termine par 139 sur `2717` dans tous les formats, il n’a donc pas de référence.
+- **`mode=sgd` en 2-D (accepté, A1).** Sous macOS, le layout diffère du natif au dernier bit de `hypot` (`lib/neatogen/sgd.c:223`) et `exp` (`sgd.c:216`) de la libm, que SGD amplifie jusqu’à 1,59 point sur le graphe testé. Avec `hypot` et `exp` de macOS rejoués, la trace du portage est égale à celle du natif, donc aucun code n’a changé (PR 119).
+- **Un sous-graphe rendu avant sa racine, sur fdp et osage (clos).** Le natif imprime les valeurs d’attributs stockées (un rendu ultérieur conserve les `_draw_`, `_ldraw_` et `xdotversion` d’un rendu antérieur), imprime `inf` et `nan` comme le printf de C, et teste la boîte de spline de chaque arête contre le découpage de page (`edge_in_box`, `lib/common/emit.c:2692`). Le portage fait désormais les trois et égale le natif, sauf une valeur de boîte englobante de cluster à la dérive propre de fdp (1.6e-11 contre -3.3e-11). Le fdp natif varie lui-même avec les adresses du tas (`lib/fdpgen/layout.c:466,501,637`), y compris au premier rendu de `graphs-fdp` ; la comparaison utilise donc le natif sans ces comparaisons. En effet de bord, `1581` en svg gagne deux groupes `<g id="edgeN">` vides pour les boucles étiquetées, comme le natif.
 
 ---
 
@@ -1489,7 +1497,7 @@ Chaque élément dit ce que fait le natif et ce que fait le portage.
 
 Ce sont des limites de périmètre délibérées, et non des bogues. La bibliothèque
 cible le **SVG** (ainsi que les formats texte intermédiaires `json` / `xdot` /
-`dot` / imagemap).
+`dot` / `plain` / imagemap).
 
 - **Autres formats de sortie.** Les formats matriciels (PNG/JPG/GIF/WebP/BMP),
   PostScript/PDF/EPS et les backends graphiques/interactifs sont hors périmètre.
@@ -1499,7 +1507,6 @@ cible le **SVG** (ainsi que les formats texte intermédiaires `json` / `xdot` /
   (le périphérique SVG ne positionne aucun drapeau de pagination), si bien que
   `page=` est sans effet sur ce chemin dans les deux implémentations — documenté
   ici uniquement parce que c’est un point de confusion fréquent.
-- **Sortie texte `-Tplain`.** Différée (un format texte fidèle), et non exclue.
 - **`gvpr`** (le langage de script de traitement de graphes) — hors périmètre.
 - **Enveloppes de commodité C++** (`cgraph++`, `gvc++`) — l’API C est portée en
   premier ; une couche de commodité en TypeScript idiomatique, si elle est

@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ sisendit selle enda mootoriga `dot`-i asemel. Selle töö aus lagi on
 A1 **kitsendamine** tasemele „aktiivset erinevust pole võrdlusplatvormil“, mitte kunagi
 platvormideülese reservatsiooni kõrvaldamine; senised tulemused (allpool) jäävad sellesse
 lakke: `circo`/`twopi`/`osage` on igaüks toonud päevavalgele ja algpõhjuseni
-jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 99.8/96.6/68.1%
+jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 99.8/98.0/68.1%
 natiivsest 0.5pt piires 929-kirjelise universumi ulatuses (graphviz 16.1.0), mis tähendab, et portitud
 aritmeetika (`fma.ts`, `arm-pow.ts`, sobitatud PRNG) peab enamiku graafide puhul vastu —
 ning iga 929-kirjelise universumi lahknev id on eraldi omistatud süstimise teel (lahendaja
@@ -197,19 +197,20 @@ selles dokumendis. Praegused arvud graphviz 16.1.0 vastu (929-kirjeline universu
 läbimise % jätab välja sisendid, mida C-oraakel ei suuda renderdada, vt
 [Vastavus](./conformance.md)):
 
-| mootor | uuritud | ±0.5pt piires | mittevastav | pordi viga / ajalõpp | oraakli viga |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| mootor | uuritud | ±0.5pt piires | mittevastav | pordi viga / ajalõpp | oraakli viga | oraakel mittedeterministlik |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+`fdp` 13 mittedeterministlikku sisendit, mille natiivne väljund erineb jooksult jooksule, on selle läbimisprotsendist välja jäetud; selle ainus pordi viga on `1879`, mis vajab `splines=compound` marsruutimist, mida port ei toeta.
 
 (`fdp` läbimismäär tõusis 77.5%-st, sest varasem sisseviidud läbimine
 eelnes eelmise missiooni pordi seisule.
 `neato` läbimismäär tõusis 90.5%-st, kui 16.1 disassembleeringu sulatatud stress-tuumad
 jõudsid tootmise kD-rajale (16.1-järgsed järeltööd, 5. osa, T15): 83 id-d, mis erinesid
 lahendi triivi tõttu, läbivad nüüd, nende hulgas varem aktsepteeritud id-põhine jääk
-`2619_2`, mille aktsepteerimine on tühistatud; `2371` on ainus allesjäänud erinev
-`neato` id.)
+`2619_2`, mille aktsepteerimine on tühistatud; kaks `neato` id-d väljaspool ±0.5pt on `2784` (A10) ja `2371` (A1 triiv).)
 
 (Esimene pühkimine, 2026-07-11 762 kirjega, mõõtis 263/311/260 piires
 ±0.5pt — hüpe praegustele määradele tuli sellest ajast maandunud id-põhistest parandustest,
@@ -1302,16 +1303,23 @@ Iga punkt ütleb, mida natiivne teeb ja mida port teeb.
 
 - **`mode=hier dim=4` kahel sõlmel.** Natiivne kirjutab üle `directions` (`lib/neatogen/stress.c:514`) ja katkeb mõnes jooksus (väljumiskood 133 viiel jooksul 16-st). Port renderdab.
 - **`mode=hier dim=3` ja `len=0.001`.** Natiivne sureb signaali tõttu: 3 jooksu 8-st 19 sõlmega (SIGBUS) ja 8 8-st 27 sõlmega (SIGBUS, SIGSEGV, SIGTRAP). Pinu on `mfm_alloc` funktsiooni `stress_majorization_kD_mkernel` all, mis näitab kuhja riknemist; täpne koht ei ole tõendatud. Port renderdab ning kus natiivne ellu jääb (19 sõlme, 5 jooksu 8-st), on see baidi täpsusega võrdne.
-- **fdp teised paigutused samal graafil varieeruvad natiivses kuhjaadressidega.** `deriveGraph` ja `genPorts` võrdlevad sõlmeviitu (`lib/fdpgen/layout.c:466,501,637`). 12 natiivse jooksu kohta kummalgi langeb `graphs-fdp` renderdus 2 kujul `plain` 2 klassi (1 ja 11 jooksu) ja `1581` kujul `dot` 2 klassi (8 ja 4 jooksu); port on baidi täpsusega võrdne `plain`-i 1 jooksu klassiga ja 5e-13 piires `dot`-i 4 jooksu klassist. Natiivne, mis on ehitatud nende kolme võrdlusega `ND_id` peal, kordub 8 korda 8-st ja on `plain` puhul pordiga baidi täpsusega võrdne. Ainult pordi valik: natiivne `attach_attrs` lõpeb `undoClusterEdges`-iga (`lib/common/output.c:403-404`) ja port teeb selle tagasivõtmise järgmisel paigutusel, mitte renderdamisel, sest selle kirjutajad loevad `__0:` vahendussõlmi.
+- **fdp teised paigutused samal graafil varieeruvad natiivses kuhjaadressidega.** `deriveGraph` ja `genPorts` võrdlevad sõlmeviitu (`lib/fdpgen/layout.c:466,501,637`). 12 natiivse jooksu kohta kummalgi langeb `graphs-fdp` renderdus 2 kujul `plain` 2 klassi (1 ja 11 jooksu) ja `1581` kujul `dot` 2 klassi (8 ja 4 jooksu); port on baidi täpsusega võrdne `plain`-i 1 jooksu klassiga ja 5e-13 piires `dot`-i 4 jooksu klassist. Natiivne, mis on ehitatud nende kolme võrdlusega `ND_id` peal, kordub 8 korda 8-st ja on `plain` puhul pordiga baidi täpsusega võrdne. Ainult pordi valik: natiivne `attach_attrs` lõpeb `undoClusterEdges`-iga (`lib/common/output.c:403-404`). Pordi `json` ja `json0` kirjutajad võtavad vahendussõlmed enne kirjutamist tagasi, nagu C teeb; selle `dot` ja `xdot` kirjutajad loevad `__0:` vahendussõlmi, nii et neil toimub tagasivõtmine järgmisel paigutusel, mitte renderdamisel.
 - **`T` operatsioon graafi `_draw_` või `_background` atribuudis.** Natiivne jookseb kokku segmenteerimisveaga (väljumiskood 139): `op->span` on NULL väljaspool neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Port ei joonista selle jaoks teksti.
 - **neato alamgraafil.** Natiivne väljus koodiga 139 mõlema alamgraafi paigutamisel ühel testitud graafil, tavalise alamgraafi ja klastri puhul. Port tagastab väljundi.
+
+### Osa 11 tulemused
+
+- **Pikad stringid `xdot` ja `dot` väljundis (suletud).** Natiivne murrab jutumärkides väärtuse lõpetava kaldkriipsuga pärast 128 veergu või juurgraafi `linelength` järel, kui see on 0 või vähemalt 60 (`lib/cgraph/write.c:160-195,670-677`). Port murrab nüüd `_draw_` perekonna stringid samamoodi, baidi täpsusega nagu natiivne.
+- **fdp `json` ja `json0` servadega klastritesse (suletud).** Natiivne võtab klastri servade vahendussõlmed enne json kirjutamist tagasi (`lib/common/output.c:403`); port trükkis `__0:` vahendussõlmed ja võtab need nüüd esmalt tagasi. Natiivne fdp lõpeb `2717` peal igas vormingus koodiga 139, seega pole sellel võrdlust.
+- **2-D `mode=sgd` (aktsepteeritud, A1).** macOS-il erineb paigutus natiivsest libm `hypot` (`lib/neatogen/sgd.c:223`) ja `exp` (`sgd.c:216`) viimases bitis, mida SGD võimendab katsetatud graafil kuni 1,59 punktini. macOS-i `hypot` ja `exp` taasesitamisel on pordi jälg natiivse omaga võrdne, seega koodi ei muudetud (PR 119).
+- **Alamgraaf renderdatud enne oma juurt, fdp ja osage puhul (suletud).** Natiivne trükib salvestatud atribuudiväärtused (hilisem renderdus säilitab varasema `_draw_`, `_ldraw_` ja `xdotversion`), trükib `inf` ja `nan` nagu C printf ning testib iga serva splaini kasti lehe lõike vastu (`edge_in_box`, `lib/common/emit.c:2692`). Port teeb nüüd kõiki kolme ja võrdub natiivsega, välja arvatud ühe klastri piirkasti väärtuse puhul fdp enda triivi korral (1.6e-11 vs -3.3e-11). Natiivne fdp ise varieerub kuhja aadressidega (`lib/fdpgen/layout.c:466,501,637`), sealhulgas `graphs-fdp` esimene renderdus, seega kasutab võrdlus natiivset ilma nende võrdlusteta. Kõrvalmõjuna saab `1581` svg-na kaks tühja `<g id="edgeN">` gruppi sildistatud enesesilmuste jaoks, nagu natiivsel.
 
 ---
 
 ## Tahtlikult portimata (mitte-eesmärgid) {#intentionally-not-ported-non-goals}
 
 Need on tahtlikud ulatuse piirid, mitte vead. Teek sihib **SVG-d**
-(pluss `json` / `xdot` / `dot` / imagemap vahetekstivorminguid).
+(pluss `json` / `xdot` / `dot` / `plain` / imagemap vahetekstivorminguid).
 
 - **Muud väljundvormingud.** Rasteri (PNG/JPG/GIF/WebP/BMP), PostScripti/PDF/EPS
   ja GUI/interaktiivsed taustaprogrammid on ulatusest väljas. Kasutage SVG väljundit ja konverteerige
@@ -1320,7 +1328,6 @@ Need on tahtlikud ulatuse piirid, mitte vead. Teek sihib **SVG-d**
   seade ei sea lehekülgede lippu), seega on `page=` sellel teel mõlemas
   teostuses tühitoiming — dokumenteeritud siin ainult seetõttu, et see on levinud
   segaduskoht.
-- **`-Tplain` tekstiväljund.** Edasi lükatud (ustav tekstivorming), mitte välistatud.
 - **`gvpr`** (graafitöötluse skriptikeel) — ulatusest väljas.
 - **C++ mugavusümbrised** (`cgraph++`, `gvc++`) — C API on portitud
   esimesena; idiomaatiline TypeScripti mugavuskiht, kui soovitakse, oleks

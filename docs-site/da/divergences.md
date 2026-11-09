@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -115,7 +115,7 @@ input under sin egen motor i stedet for `dot`. Det ærlige loft for dette arbejd
 at **indsnævre** A1 til „ingen aktiv afvigelse på referenceplatformen“ og aldrig at
 fjerne forbeholdet om tværplatform; resultaterne indtil videre (nedenfor) holder sig under
 det loft: `circo`/`twopi`/`osage` har hver afdækket og årsagsanalyseret en håndfuld
-ægte A1/A9-tilfælde, og `neato`/`fdp`/`sfdp` ligger nu på 99.8/96.6/68.1%
+ægte A1/A9-tilfælde, og `neato`/`fdp`/`sfdp` ligger nu på 99.8/98.0/68.1%
 inden for 0.5pt af native over de 929 elementer (graphviz 16.1.0), hvilket betyder,
 at den porterede aritmetik (`fma.ts`, `arm-pow.ts`, matchet PRNG) holder for de
 fleste grafer — og hvert afvigende id på universet på 929 elementer er individuelt
@@ -200,11 +200,13 @@ i dette dokument. Aktuelle tal mod graphviz 16.1.0 (929 elementer; beståprocent
 udelader inputs, som C-oraklet ikke kan rendere, jf.
 [Overensstemmelse](./conformance.md)):
 
-| motor | undersøgt | inden for ±0.5pt | ikke-conformant | porteringsfejl / timeout | orakelfejl |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| motor | undersøgt | inden for ±0.5pt | ikke-conformant | porteringsfejl / timeout | orakelfejl | orakel ikke-deterministisk |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+De 13 ikke-deterministiske input til `fdp`, hvor nativt output varierer fra kørsel til kørsel, er udeladt af dets beståelsesprocent; dets ene porteringsfejl er `1879`, som kræver `splines=compound`-routing, som porten ikke understøtter.
 
 (Beståprocenten for `fdp` steg fra 77.5%, fordi den
 tidligere committede kørsel gik forud for portens tilstand fra den forrige
@@ -212,8 +214,7 @@ mission.
 Beståprocenten for `neato` steg fra 90.5%, da de sammensmeltede stress-kerner fra
 16.1-disassemblyen nåede den produktive kD-sti (post-16.1-opfølgninger del 5, T15): 83
 id'er, der afveg på grund af solver-drift, består nu, blandt dem den tidligere
-accepterede rest pr. id `2619_2`, hvis accept er trukket tilbage; `2371` er det eneste
-tilbageværende afvigende `neato`-id.)
+accepterede rest pr. id `2619_2`, hvis accept er trukket tilbage; de to `neato`-id'er uden for ±0.5pt er `2784` (A10) og `2371` (A1-drift).)
 
 (Den første kørsel, 2026-07-11 ved 762 elementer, målte 263/311/260 inden for
 ±0.5pt — springet til de nuværende rater kom fra rettelser pr. id, som er landet siden,
@@ -1319,16 +1320,23 @@ Hvert punkt angiver, hvad nativt gør, og hvad porten gør.
 
 - **`mode=hier dim=4` på to knuder.** Nativt skriver forbi `directions` (`lib/neatogen/stress.c:514`) og afbryder i nogle kørsler (exit 133 i 5 af 16 kørsler). Porten renderer.
 - **`mode=hier dim=3` med `len=0.001`.** Nativt dør af signal: 3 af 8 kørsler ved 19 knuder (SIGBUS) og 8 af 8 ved 27 knuder (SIGBUS, SIGSEGV, SIGTRAP). Stakken er `mfm_alloc` under `stress_majorization_kD_mkernel`, hvilket viser heapkorruption; det præcise sted er ikke bevist. Porten renderer, og hvor nativt overlever (19 knuder, 5 af 8 kørsler) er den byte-ens.
-- **fdp's andet layout på én graf varierer med heapadresser i nativt.** `deriveGraph` og `genPorts` sammenligner knudepegere (`lib/fdpgen/layout.c:466,501,637`). Over 12 native kørsler hver falder rendering 2 af `graphs-fdp` som `plain` i 2 klasser (1 og 11 kørsler) og `1581` som `dot` i 2 klasser (8 og 4 kørsler); porten er byte-ens med 1-kørselsklassen for `plain` og inden for 5e-13 af 4-kørselsklassen for `dot`. Et nativt build med de tre sammenligninger på `ND_id` gentager sig 8 af 8 og er byte-ens med porten på `plain`. Et valg kun i porten: nativt `attach_attrs` slutter med `undoClusterEdges` (`lib/common/output.c:403-404`), og porten kører den fortrydelse ved næste layout, ikke ved rendering, fordi dens skrivere læser `__0:`-proxyerne.
+- **fdp's andet layout på én graf varierer med heapadresser i nativt.** `deriveGraph` og `genPorts` sammenligner knudepegere (`lib/fdpgen/layout.c:466,501,637`). Over 12 native kørsler hver falder rendering 2 af `graphs-fdp` som `plain` i 2 klasser (1 og 11 kørsler) og `1581` som `dot` i 2 klasser (8 og 4 kørsler); porten er byte-ens med 1-kørselsklassen for `plain` og inden for 5e-13 af 4-kørselsklassen for `dot`. Et nativt build med de tre sammenligninger på `ND_id` gentager sig 8 af 8 og er byte-ens med porten på `plain`. Et valg kun i porten: nativt `attach_attrs` slutter med `undoClusterEdges` (`lib/common/output.c:403-404`). Portens `json`- og `json0`-skrivere fortryder proxyerne før skrivning, som C gør; dens `dot`- og `xdot`-skrivere læser `__0:`-proxyerne, så for dem kører fortrydelsen ved næste layout, ikke ved rendering.
 - **En `T`-op i grafens `_draw_` eller `_background`.** Nativt segfaulter (exit 139): `op->span` er NULL uden for neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Porten tegner ingen tekst for den.
 - **neato på en undergraf.** Nativt sluttede med 139 ved layout af begge undergrafer i den ene testede graf, en almindelig undergraf og en cluster. Porten returnerer output.
+
+### Resultater fra del 11
+
+- **Lange strenge i `xdot`- og `dot`-output (lukket).** Nativt bryder en citeret værdi med en afsluttende omvendt skråstreg efter 128 kolonner, eller efter rodgrafens `linelength`, når den er 0 eller mindst 60 (`lib/cgraph/write.c:160-195,670-677`). Porten ombryder nu `_draw_`-familiens strenge på samme måde, byte-ens med nativt.
+- **fdp `json` og `json0` med kanter til clusters (lukket).** Nativt fortryder klyngekant-proxyerne, før json skrives (`lib/common/output.c:403`); porten udskrev `__0:`-proxyerne og fortryder dem nu først. Nativ fdp afslutter med 139 på `2717` i alle formater, så den har ingen reference.
+- **2-D `mode=sgd` (accepteret, A1).** På macOS afviger layoutet fra nativt i sidste bit af libm `hypot` (`lib/neatogen/sgd.c:223`) og `exp` (`sgd.c:216`), som SGD forstærker til op til 1,59 punkter på den testede graf. Med macOS' `hypot` og `exp` afspillet er portens spor lig nativt, så koden er uændret (PR 119).
+- **En undergraf renderet før sin rod, på fdp og osage (lukket).** Nativt udskriver gemte attributværdier (en senere rendering beholder en tidligere renderings `_draw_`, `_ldraw_` og `xdotversion`), udskriver `inf` og `nan` som Cs printf og tester hver kants spline-boks mod sideklippet (`edge_in_box`, `lib/common/emit.c:2692`). Porten gør nu alle tre og er lig nativt, bortset fra én bounding-box-værdi for en cluster ved fdp's egen drift (1.6e-11 mod -3.3e-11). Nativ fdp varierer selv med heapadresser (`lib/fdpgen/layout.c:466,501,637`), også den første rendering af `graphs-fdp`, så sammenligningen bruger nativt med disse sammenligninger fjernet. Som bivirkning får `1581` som svg to tomme `<g id="edgeN">`-grupper for selvløkker med label, som nativt har dem.
 
 ---
 
 ## Bevidst ikke porteret (ikke-mål) {#intentionally-not-ported-non-goals}
 
 Det er bevidste afgrænsninger af omfanget, ikke fejl. Biblioteket retter sig mod **SVG**
-(plus de mellemliggende tekstformater `json` / `xdot` / `dot` / imagemap).
+(plus de mellemliggende tekstformater `json` / `xdot` / `dot` / `plain` / imagemap).
 
 - **Andre outputformater.** Raster (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS
   og GUI-/interaktive backends er uden for omfanget. Brug SVG-outputtet og konvertér
@@ -1337,7 +1345,6 @@ Det er bevidste afgrænsninger af omfanget, ikke fejl. Biblioteket retter sig mo
   enheden sætter intet pagineringsflag), så `page=` er en no-op på denne sti i begge
   implementeringer — dokumenteret her kun fordi det er et almindeligt punkt for
   forvirring.
-- **`-Tplain`-tekstoutput.** Udskudt (et trofast tekstformat), ikke udelukket.
 - **`gvpr`** (grafbehandlingsscriptsproget) — uden for omfanget.
 - **C++-bekvemmelighedswrappere** (`cgraph++`, `gvc++`) — C-API'et porteres
   først; et idiomatisk TypeScript-bekvemmelighedslag ville, hvis ønsket, være
