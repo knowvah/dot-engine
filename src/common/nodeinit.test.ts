@@ -325,7 +325,7 @@ describe.each(['record', 'Mrecord', 'box'])('xdot output — xlabel on shape=%s'
 
   it('emits the xlabel text as an _ldraw_ text op', () => {
     // T <x> <y> <justify> <width> <len> -<text>; the xlabel text is "NX" (len 2).
-    expect(nodeBlock(renderXdotWithXlabel(shape), 'r')).toMatch(/_ldraw_="[^"]*T [-\d.]+ [-\d.]+ 0 [\d.]+ 2 -NX/);
+    expect(nodeBlock(renderXdotWithXlabel(shape), 'r')).toMatch(/_ldraw_="[^"]*T [-\d.]+ [-\d.]+ 0 [\d.]+ 2 (?:\\\n)?-NX/);
   });
 
   it('the plain box node keeps its own xlabel (control)', () => {

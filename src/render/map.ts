@@ -145,10 +145,20 @@ export function plainCoord(v: number): string {
 /** must agree with scan.l @see lib/cgraph/write.c:120 tokenlist */
 const CANON_KEYWORDS = ['node', 'edge', 'strict', 'graph', 'digraph', 'subgraph'];
 
-/** Line-break threshold. agwrite may override via `linelength` but always
- * restores this value, so the plain path (direct agstrcanon, no agwrite)
- * observes the default. @see lib/cgraph/write.c:44,676,692 */
-const MAX_OUTPUTLINE = 128;
+/** Default line-break threshold. @see lib/cgraph/write.c:MAX_OUTPUTLINE */
+export const MAX_OUTPUTLINE = 128;
+
+/** Smallest nonzero `linelength` agwrite accepts. @see lib/cgraph/write.c:MIN_OUTPUTLINE */
+export const MIN_OUTPUTLINE = 60;
+
+/** C's static `Max_outputline`: agwrite sets it from the root's `linelength` and
+ * restores {@link MAX_OUTPUTLINE} after, so the plain path (direct agstrcanon, no
+ * agwrite) observes the default. 0 disables breaking. Single-threaded, set and
+ * restored synchronously around one serialize. @see lib/cgraph/write.c:44,676,692 */
+let maxOutputline = MAX_OUTPUTLINE;
+
+/** Set `Max_outputline`. @see lib/cgraph/write.c:agwrite */
+export function setMaxOutputline(n: number): void { maxOutputline = n; }
 
 function isDigitByte(b: number): boolean { return b >= 0x30 && b <= 0x39; }
 
@@ -228,7 +238,7 @@ export function agstrcanonText(arg: string): string {
     const next = bytes[i + 1];
     // Long-string line breaking: only after a non-id, non-backslash output
     // char where the next input char is an id char. @see write.c:170-190
-    if (next !== undefined) {
+    if (next !== undefined && maxOutputline) {
       const last = out[out.length - 1]!;
       const canBreak = !(isIdCharByte(last) || last === 0x5c) && isIdCharByte(next);
       if (backslashPending && canBreak) {
@@ -236,7 +246,7 @@ export function agstrcanonText(arg: string): string {
         needsQuotes = true;
         backslashPending = false;
         cnt = 0;
-      } else if (cnt >= MAX_OUTPUTLINE) {
+      } else if (cnt >= maxOutputline) {
         if (canBreak) {
           out.push(0x5c, 0x0a);
           needsQuotes = true;

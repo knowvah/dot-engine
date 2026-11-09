@@ -69,6 +69,9 @@ const ALLOWLIST: Readonly<Record<string, string>> = {
   'src/layout/dot/rank.ts::clType':
     'clusterrank type; registered render-state reset to LOCAL (rank.ts:58 registerRenderState) and set before read from the clusterrank attr in graph initialization (graph-init.ts:330 setClType)',
 
+  'src/render/map.ts::maxOutputline':
+    "C's static Max_outputline; set from the root linelength and restored to 128 in a finally by withLinelength (agwrite-linelength.ts) around each serialize; a direct agstrcanon call outside agwrite sees 128",
+
   // --- Caller/debug hooks, one-time latches, DI wiring — not per-render state ---
   'src/common/agerr.ts::usererrf':
     "caller hook: cgraph's usererrf, set via agseterrf; process-wide and not reset per render, as C's static is not (shared config, last-write-wins by design)",
