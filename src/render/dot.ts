@@ -20,7 +20,7 @@ import type { GVColor } from '../common/color.js';
 import { resolveRenderColor } from './color-resolve.js';
 import { edgeIsTapered } from './svg-tapered-edge.js';
 import { findStopColor, parseStyleFlags } from '../common/style-resolve.js';
-import { parseGraphPad } from '../gvc/viewport.js';
+import { deviceClip } from '../gvc/emit-xdot.js';
 import { edgeHasDrawableContent } from './svg.js';
 import type { Bezier } from '../model/geom.js';
 import type { RendererPlugin } from '../gvc/context.js';
@@ -137,18 +137,12 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
     // explicit `bgcolor=transparent` to white (a filled white canvas), unlike a
     // truecolor device that paints nothing. @see lib/common/emit.c:1490
     if (fillSpec === 'transparent') fillSpec = 'white';
-    // The canvas fill covers job->clip = gvc->bb ± job->pad. The dot/xdot device
-    // default pad is 0 (SVG's is 4), so only an explicit `pad` attr expands the
-    // background box (e.g. pad=2.0 → ±144). @see gvrender_core_dot.c:739
-    // (render_features_dot default_pad 0) · emit.c:3367 (job->bb = bb ± pad)
-    const padAttr = g.attrs.get('pad');
-    const pad = padAttr !== undefined && padAttr !== '' ? parseGraphPad(padAttr) : { x: 0, y: 0 };
-    const bb = job.bb;
+    // The canvas fill covers job->clip, which setup_page derives from the focus
+    // and page size: bb ± pad (xdot's default pad is 0), and nan for an infinite
+    // bb. @see emit.c:1559-1562 setup_page · gvrender_core_dot.c:739 (default_pad)
+    const c = deviceClip(g, this, job);
     const corners: Point[] = [
-      { x: bb.ll.x - pad.x, y: bb.ll.y - pad.y },
-      { x: bb.ll.x - pad.x, y: bb.ur.y + pad.y },
-      { x: bb.ur.x + pad.x, y: bb.ur.y + pad.y },
-      { x: bb.ur.x + pad.x, y: bb.ll.y - pad.y },
+      { x: c.ll.x, y: c.ll.y }, { x: c.ll.x, y: c.ur.y }, { x: c.ur.x, y: c.ur.y }, { x: c.ur.x, y: c.ll.y },
     ];
     const buf = this.bufs[EmitState.GDraw]!;
     buf.push(xdotPenColor(resolveRenderColor('transparent')));

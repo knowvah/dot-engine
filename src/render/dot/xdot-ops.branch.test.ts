@@ -122,10 +122,13 @@ describe('xdotFont non-positive size', () => {
 });
 
 describe('gfmt5 — %.5g formatting', () => {
-  it('returns "NaN"/"Infinity" for non-finite input', () => {
-    // L341: !Number.isFinite(v) branch.
-    expect(gfmt5(NaN)).toBe('NaN');
-    expect(gfmt5(Infinity)).toBe('Infinity');
+  it('prints non-finite input as C %.5g does', () => {
+    // agxbprint("%.5g") prints inf/-inf/nan (output.c:71); native's bb for an
+    // osage subgraph after a no-free root layout is "0,0,-inf,-inf"
+    // (plans/post-16-1-followups-11/harness/T7b/noaddr/subg-osage.s.nofree.xdot).
+    expect(gfmt5(NaN)).toBe('nan');
+    expect(gfmt5(Infinity)).toBe('inf');
+    expect(gfmt5(-Infinity)).toBe('-inf');
   });
 
   it('switches to scientific notation with a "+" exponent for a large magnitude', () => {

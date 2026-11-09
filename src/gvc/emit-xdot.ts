@@ -36,7 +36,7 @@ const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
  * @see plugin/core/gvrender_core_dot.c:739 render_features_dot
  * @see lib/common/emit.c:1558
  */
-function deviceClip(g: Graph, renderer: RendererPlugin, job: RenderJob): Box {
+export function deviceClip(g: Graph, renderer: RendererPlugin, job: RenderJob): Box {
   if (renderer.type === 'svg') return job.clip;
   const attr = g.attrs.get('pad');
   const pad = attr ? parseGraphPad(attr) : { x: 0, y: 0 };
