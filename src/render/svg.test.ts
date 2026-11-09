@@ -22,6 +22,7 @@ const measurer: TextMeasurer = { measure: () => ({ w: 0, h: 0 }) };
 export function makeJob(): RenderJob {
   const j = new RenderJob('svg', measurer);
   j.bb = { ll: { x: 0, y: 0 }, ur: { x: 100, y: 80 } };
+  j.clip = j.bb; // edge_in_box tests spl->bb against job->clip
   return j;
 }
 
@@ -129,10 +130,9 @@ export function testBeginEdge(): void {
   const job = makeJob();
   const g = makeGraph();
   const e = new Edge(new Node(0, 'A', g), new Node(1, 'B', g), '');
-  // A drawable edge has a spline; the renderer defers the <g> for content-less
-  // edges (e.g. concentrate-merged IGNORED duplicates), matching C.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- spl is runtime-dynamic
-  (e.info as any).spl = { size: 0, list: [] };
+  // A drawable edge has a spline whose box (spl->bb) overlaps the clip; the
+  // renderer defers the <g> for content-less edges, matching C's edge_in_box.
+  e.info.spl = { size: 0, list: [], bb: { ll: { x: 10, y: 10 }, ur: { x: 20, y: 20 } } };
   r.beginEdge(e, job);
   expect(job.output.join('')).toContain('class="edge"');
 }

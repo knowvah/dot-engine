@@ -191,7 +191,7 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
     // SVG renderer applies the same gate via edgeGroupOpen; the xdot renderer
     // must too, else concentrate-merged edges (no spline, stale off-box label
     // position) emit a spurious _ldraw_. @see lib/common/emit.c:emit_edge (3039)
-    this.edgeDrawable = edgeHasDrawableContent(e, job.bb);
+    this.edgeDrawable = edgeHasDrawableContent(e, job.clip);
     const spl = e.info.spl;
     if (!this.edgeDrawable || spl === undefined) return;
     const edraw = this.bufs[EmitState.EDraw]!;

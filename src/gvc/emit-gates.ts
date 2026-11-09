@@ -81,7 +81,7 @@ export function emitNodeComments(n: Node, renderer: RendererPlugin, job: RenderJ
  * @see lib/common/emit.c:emit_edge (gvrender_comment x2)
  */
 export function emitEdgeComments(e: Edge, renderer: RendererPlugin, job: RenderJob): void {
-  if (!edgeHasDrawableContent(e, job.bb)) return;
+  if (!edgeHasDrawableContent(e, job.clip)) return;
   const kind = e.head.root.kind; // agisdirected(agraphof(aghead(e)))
   const op = kind === 'directed' || kind === 'strict-directed' ? '->' : '--';
   gvrenderComment(renderer, job, e.tail.name + op + e.head.name);
