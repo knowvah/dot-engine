@@ -117,7 +117,7 @@ Each item is fixed faithfully to the C (graphviz 16.1.0) or parked with a full d
 |---|---|---|---|
 | [1](batch-1/overview.md) | T0 baselines, native fixtures | orchestrator | [x] |
 | [2](batch-2/overview.md) | T1 w4 recursion · T2 w5 `.ll` (128) · T3 xdot wrap (127, 135) · T4 fdp json (133) · T5 conjgrad (131) | parallel worktrees | [[x] |
-| [3](batch-3/overview.md) | T6 sgd drift (132) · T7 native variance (137) · T8 nestedclust (129) · T9 svg subgraph id (136) | parallel worktrees, after batch 2 | [ ] |
+| [3](batch-3/overview.md) | T6 sgd drift (132) · T7 native variance (137) · T8 nestedclust (129) · T9 svg subgraph id (136) | parallel worktrees, after batch 2 | [x] |
 | [4](batch-4/overview.md) | T10 comment and helper (126, 130) · T11 ledger and docs (138) | parallel | [ ] |
 | [5](batch-5/overview.md) | T12 final verification, close-out, re-sign stop | orchestrator | [ ] |
 
