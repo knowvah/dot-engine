@@ -100,6 +100,27 @@ export function storedDraws(attrs: Map<string, string>): XdotDraws {
   };
 }
 
+/**
+ * The draw strings agwrite prints for `obj` after this render. C stores them in
+ * the attributes before agwrite: xdot_end_node and xdot_end_edge agxset only
+ * non-empty buffers, so an object this render did not draw (outside the clip,
+ * invisible, or outside a subgraph render) prints what an earlier render or the
+ * input stored; xdot_end_cluster sets a drawn cluster's `_draw_` even when empty.
+ * @see plugin/core/gvrender_core_dot.c:237 xdot_end_node, :251 xdot_end_edge
+ * @see plugin/core/gvrender_core_dot.c:280 xdot_end_cluster, :427 xdot_end_graph
+ */
+export function renderedDraws(obj: Node | Edge | Graph, d: XdotDraws | undefined, cluster: boolean): XdotDraws {
+  const st = storedDraws(obj.attrs);
+  return {
+    draw: cluster ? (d?.draw ?? '') : d?.draw || st.draw,
+    ldraw: d?.ldraw || st.ldraw,
+    hdraw: d?.hdraw || st.hdraw,
+    tdraw: d?.tdraw || st.tdraw,
+    hldraw: d?.hldraw || st.hldraw,
+    tldraw: d?.tldraw || st.tldraw,
+  };
+}
+
 /** One object's non-empty draw strings; an empty buffer leaves the slot alone. */
 function attachDraws(attrs: Map<string, string>, d: XdotDraws | undefined): void {
   if (d?.draw) attrs.set('_draw_', d.draw);

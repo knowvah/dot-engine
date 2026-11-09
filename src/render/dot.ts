@@ -25,7 +25,7 @@ import { edgeHasDrawableContent } from './svg.js';
 import type { Bezier } from '../model/geom.js';
 import type { RendererPlugin } from '../gvc/context.js';
 import { EdgeDrawBase } from './dot/edge-draw.js';
-import { attachXdotAttrs, storedDraws } from './dot/write-back.js';
+import { attachXdotAttrs, renderedDraws, storedDraws } from './dot/write-back.js';
 export * from './dot/types.js';
 export type { XdotDraws, SerCtx } from './dot/types.js';
 import type { XdotDraws } from './dot/types.js';
@@ -79,10 +79,10 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
    */
   protected override readonly emitDraws: boolean = true;
 
-  /** Draw strings for `obj`. `-Tdot` computes none, and agwrite prints the ones the
-   *  attribute slots already hold. Single gate so the two paths cannot drift. */
+  /** The draw strings agwrite prints for `obj`: `-Tdot` computes none (renderedDraws). */
   protected drawsOf(obj: Node | Edge | Graph): XdotDraws | undefined {
-    return this.emitDraws ? this.draws.get(obj) : storedDraws(obj.attrs);
+    if (!this.emitDraws) return storedDraws(obj.attrs);
+    return renderedDraws(obj, this.draws.get(obj), this.clusters.includes(obj as Graph));
   }
 
   /** Per-render draw buffers. Indices 8/9 alias 1; 10/11 alias 5. */
