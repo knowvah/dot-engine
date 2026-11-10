@@ -683,7 +683,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   (`kk-large.pow.json`). No library change is wanted.
 
 - **New follow-ups found by part 11** (`plans/post-16-1-followups-11/`):
-  139. `conjgrad-mkernel.ts:28` (C `conjgrad.c:65`) still ends its `agerrorf` text with `\n`, the
+  139. **[DONE — issue #129: dropped the `\n`]** `conjgrad-mkernel.ts:28` (C `conjgrad.c:65`) still ends its `agerrorf` text with `\n`, the
       defect 131 fixed at the other two sites; its test pins the `\n` (part 11 T5).
   140. `make_flat_adj_edges` builds a `rank=source` subgraph `xxx` (`dotsplines.c:1177-1185`) the port
       omits; no output difference on w4 and six variants (part 11 T1).
