@@ -702,7 +702,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       native ref covers it (part 11 T3).
   146. **[DONE — issue #135: json's label_subgs/insert/lookup ported, warning included]** json's `insert()` warns `Duplicate cluster name` (`gvrender_core_json.c:617`); the port's json
       has no such warning (part 11 T4).
-  147. json0 prints `.5`/`125.354` where native prints `0.5`/`125.35` (the `printNum` fallback for
+  147. **[DONE — issue #136: json0 node pos/width/height via write-back's formatting]** json0 prints `.5`/`125.354` where native prints `0.5`/`125.35` (the `printNum` fallback for
       json0 nodes); pre-existing, `compareJson` passes (part 11 T4).
   148–150. **[DONE — part 11 T7b]** The three render causes behind 137: (A) stored draw strings,
       (B) `Spline.bb` and `edge_in_box`, (C) `inf`/`nan` text and the page clip (part 11 T7).

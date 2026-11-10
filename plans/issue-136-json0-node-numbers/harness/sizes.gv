@@ -1,0 +1,1 @@
+digraph { a -> b; c [width=0.5 height=0.3 shape=box]; d [label="a long label here"] }

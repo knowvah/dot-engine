@@ -1,0 +1,1 @@
+digraph { node [shape=box]; a [label="xyzzy"]; b [label="a wider label"]; c; a -> b; a -> c; b -> d; c -> d; e [label="q" width=0.3333] }

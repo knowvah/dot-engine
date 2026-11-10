@@ -41,8 +41,8 @@ import type { RendererPlugin } from '../gvc/context.js';
 import type { RenderJob } from '../gvc/job.js';
 import type { XdotOp, XdotColor } from '../xdot/types.js';
 import type { TextlabelT, FieldT } from '../common/types.js';
-import { printNum, gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
-import { attachAttrs } from './dot/write-back.js';
+import { gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
+import { attachAttrs, nodeLayoutAttrs } from './dot/write-back.js';
 import { attachBeforeWriteWithClusterEdges as attachFirst, jsonNodes, labelSubgs, lookupCluster } from './json-cluster-edge.js';
 import { attrsWithoutLayoutBb } from '../gvc/layout-bb.js';
 import { CHAR_LATIN1 } from '../common/graph-init.js';
@@ -515,11 +515,10 @@ function buildNodeObject(n: Node, ctx: BuildCtx): JObj {
   const eff = nodeEffectiveAttrs(n);
   const xd = ctx.draws?.node.get(n.name);
   if (xd === undefined) {
-    // Fallback (json0 / hand-built graph): synthesize the layout attrs the
-    // xdot render would otherwise supply, from the laid-out node.
-    eff.set('pos', printNum(n.info.coord.x) + ',' + printNum(n.info.coord.y));
-    eff.set('width', printNum(n.info.width));
-    eff.set('height', printNum(n.info.height));
+    // Fallback (json0 / hand-built graph): no xdot render supplies the layout
+    // attrs, so take the strings attach_attrs writes (output.c:296-309).
+    const layout = nodeLayoutAttrs(n);
+    eff.set('pos', layout.pos).set('width', layout.width).set('height', layout.height);
   }
   emitAttrs(o, eff, xd, ctx);
   attachNodeRects(o, n);
