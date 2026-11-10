@@ -12,7 +12,7 @@ import type { Edge } from '../../model/edge.js';
 import type { Point } from '../../model/geom.js';
 import { Edge as EdgeClass } from '../../model/edge.js';
 import { makePort } from '../../model/edgeInfo.js';
-import { agnode } from '../../model/cgraph-ops.js';
+import { agnode, agsubnode } from '../../model/cgraph-ops.js';
 
 /**
  * Map a point from the flat-adj auxiliary frame back to the original frame:
@@ -30,7 +30,8 @@ export function transformf(p: Point, del: Point, flip: boolean): Point {
 // ---------------------------------------------------------------------------
 
 /**
- * Create a copy of orign in graph g, carrying geometry from NodeInfo.
+ * Create a copy of orign in graph g, carrying geometry from NodeInfo. When g
+ * is a subgraph the copy is a member of g and of every graph above it.
  * @see lib/dotgen/dotsplines.c:cloneNode
  */
 export function cloneNode(g: Graph, orign: Node): Node {
@@ -42,6 +43,11 @@ export function cloneNode(g: Graph, orign: Node): Node {
   // the aux graph's own auxt/auxh creation order.
   // @see lib/dotgen/dotsplines.c:cloneNode (agnode(g,...,1))
   const n = agnode(g, orign.name, true)!;
+  // C's agnode(g, name, 1) on a subgraph installs the node into g and every
+  // graph above it (installnodetoroot); the port's agnode installs into the
+  // root only, so do the subgraph half here.
+  // @see lib/cgraph/node.c:agnode
+  if (g !== g.root) agsubnode(g, n, true);
   n.info.coord = { x: orign.info.coord.x, y: orign.info.coord.y };
   n.info.lw = orign.info.lw;
   n.info.rw = orign.info.rw;

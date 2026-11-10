@@ -13,6 +13,7 @@ import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
 import { Edge } from '../../model/edge.js';
 import type { Port } from '../../model/geom.js';
+import { agsubg } from '../../model/cgraph-ops.js';
 import {
   ensureList, elistAppend, zapinlist,
   deleteFastEdge, fastEdge, findFastEdge,
@@ -428,6 +429,28 @@ describe('flatEdge', () => {
     expect(a.info.flat_out).toBe(out1);
     expect(a.info.flat_out!.size).toBe(2);
     expect(g.info.has_flat_edges).toBe(true);
+  });
+  // C: GD_has_flat_edges(dot_root(g)) = GD_has_flat_edges(g) = true. flat_reorder
+  // reads the flag of the graph it is run on, so an edge added through a
+  // subgraph (ordered_edges recursing into a rank subgraph) must flag the root.
+  it('marks has_flat_edges on the subgraph it is given and on its dot root', () => {
+    const root = mkGraph();
+    const subg = agsubg(root, 'xxx', true)!;
+    const a = mkNode(root, 0), b = mkNode(root, 1);
+    flatEdge(subg, new Edge(a, b, ''));
+    expect(subg.info.has_flat_edges).toBe(true);
+    expect(root.info.has_flat_edges).toBe(true);
+  });
+  it('marks the graph being laid out, not the cgraph root, when dotroot is bound', () => {
+    const root = mkGraph();
+    const laidOut = agsubg(root, 'sub', true)!;
+    const inner = agsubg(laidOut, 'inner', true)!;
+    inner.info.dotroot = laidOut;
+    const a = mkNode(root, 0), b = mkNode(root, 1);
+    flatEdge(inner, new Edge(a, b, ''));
+    expect(inner.info.has_flat_edges).toBe(true);
+    expect(laidOut.info.has_flat_edges).toBe(true);
+    expect(root.info.has_flat_edges).toBeUndefined();
   });
 });
 

@@ -685,7 +685,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
 - **New follow-ups found by part 11** (`plans/post-16-1-followups-11/`):
   139. **[DONE — issue #129: dropped the `\n`]** `conjgrad-mkernel.ts:28` (C `conjgrad.c:65`) still ends its `agerrorf` text with `\n`, the
       defect 131 fixed at the other two sites; its test pins the `\n` (part 11 T5).
-  140. `make_flat_adj_edges` builds a `rank=source` subgraph `xxx` (`dotsplines.c:1177-1185`) the port
+  140. **[DONE — issue #130: built the subgraph; native aux ranks equal]** `make_flat_adj_edges` builds a `rank=source` subgraph `xxx` (`dotsplines.c:1177-1185`) the port
       omits; no output difference on w4 and six variants (part 11 T1).
   141. `setState` also unbinds `E_fontcolor`, `E_labelfontcolor`, `E_xlabel`, `N_style`, `N_fontcolor`,
       `N_xlabel`, `N_showboxes`, `N_nojustify` (`dotsplines.c:731-771`) for the aux layout; head and
