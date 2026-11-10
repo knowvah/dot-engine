@@ -104,8 +104,8 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
     this.clusters = [];
   }
 
-  /** The last render's draw strings by ORIGINAL object: what `-Tjson` reads via agxget.
-   *  The DOT-text round-trip cannot represent draw text containing `"` (id 2239). */
+  /** This render's draw strings by ORIGINAL object. `-Tjson` lays them over the re-parsed xdot text,
+   *  which cannot represent draw text containing `"` (id 2239); stored strings reach it by that text. */
   drawStringsByObject(): ReadonlyMap<Node | Edge | Graph, XdotDraws> {
     return this.draws;
   }

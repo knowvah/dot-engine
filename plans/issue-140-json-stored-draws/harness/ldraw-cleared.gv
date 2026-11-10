@@ -1,0 +1,6 @@
+digraph G {
+  subgraph cluster_x { style=invis; label="L"; _draw_="c 7 -#ff0000 e 1 1 1 1 "; _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -h "; p }
+  subgraph cluster_y { label=""; _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -i "; q }
+  subgraph cluster_z { style=invis; _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -j "; subgraph cluster_zz { label="in"; _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -k "; r } }
+  p -> q -> r
+}

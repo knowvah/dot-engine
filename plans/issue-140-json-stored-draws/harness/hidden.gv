@@ -1,0 +1,1 @@
+digraph G { node [style="", color=black]; edge [style="", color=black]; a [label="x\\\"y\\z"]; b [label="p\"q"]; a -> b [label="e\"f\\g"] }

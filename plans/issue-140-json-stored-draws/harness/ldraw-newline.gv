@@ -1,0 +1,5 @@
+digraph G {
+  label="\n"; _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -r ";
+  subgraph cluster_n { label="\n"; _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -n "; p }
+  p -> q
+}

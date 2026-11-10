@@ -390,9 +390,9 @@ function assignIds(g: Graph, doXDot: boolean, draws?: DrawLookup): BuildCtx {
  * Emit an object's attributes into `o`, mirroring C's write_attrs: `agxget`
  * returns HTML-string content with the marker stripped, empty non-`label`
  * values are skipped, and xdot draw attrs are re-serialized as op arrays.
- * `base` carries user/inherited attrs; `overlay` (from the xdot re-render)
- * supplies the post-layout `pos`/`width`/`height`/`bb`/draw strings and wins
- * on conflict.
+ * `base` is the object's own attrs: user/inherited values and the draw strings the input or an
+ * earlier render stored, which an object this render does not draw prints as agxget would.
+ * `overlay` (the xdot re-render: `pos`/`width`/`height`/`bb`/draw strings) wins on conflict.
  */
 function emitAttrs(
   o: JObj,
