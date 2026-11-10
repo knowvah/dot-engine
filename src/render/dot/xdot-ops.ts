@@ -385,42 +385,6 @@ export function escBackslash(s: string): string {
   return s.replace(/\\/g, '\\\\');
 }
 
-/** True if s[i..] starts an escape sequence agcanonStr keeps verbatim: a `\`
- *  followed by one of E G H L N T l n r \ ". @see lib/cgraph/write.c:is_escape */
-export function isEscapeSeq(s: string, i: number): boolean {
-  if (s[i] !== '\\') return false;
-  const n = s[i + 1];
-  return n === 'E' || n === 'G' || n === 'H' || n === 'L' || n === 'N' || n === 'T'
-    || n === 'l' || n === 'n' || n === 'r' || n === '\\' || n === '"';
-}
-
-/**
- * Escape a value for a DOT attribute exactly as agwrite's agcanonStr does: a `"`
- * becomes `\"` ONLY when it is not already part of an escape sequence, so an
- * existing `\"` or `\\` in the value is passed through verbatim rather than
- * double-escaped. For an already-backslash-doubled value (node/edge/graph labels,
- * post put_escaping_backslashes) this is identical to a naive `"`→`\"` — every
- * `"` follows a doubled `\\`, so none are ever part_of_escape. For raw cluster
- * labels (agset, no put_escaping) it preserves the source `\"`/`\\` unchanged.
- * @see lib/cgraph/write.c:_agstrcanon (135-167)
- */
-export function agcanonEscape(s: string): string {
-  let out = '';
-  let partOfEscape = false;
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i]!;
-    if (c === '"' && !partOfEscape) {
-      out += '\\';
-    } else if (!partOfEscape && isEscapeSeq(s, i)) {
-      partOfEscape = true;
-    } else {
-      partOfEscape = false;
-    }
-    out += c;
-  }
-  return out;
-}
-
 /** Trim a "%.3f" fixed string like C's agxbuf_trim_zeros (trailing 0s + dot). */
 export function trimFixed3(v: number): string {
   let s = v.toFixed(3);

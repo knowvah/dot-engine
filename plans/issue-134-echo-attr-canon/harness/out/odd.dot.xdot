@@ -1,0 +1,75 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 196 270 196 270 0 ",
+		bb="0,0,270,196",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph s1 {
+		graph [bb="1,2,3,4",
+			lheight=.5,
+			lp="node",
+			lwidth="-"
+		];
+		a	[_draw_="c 7 -#000000 e 27 162 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 157.8 0 6.21 1 -a ",
+			height=0.5,
+			pos="27,162",
+			width=0.75];
+	}
+	subgraph cluster_k {
+		graph [_draw_="c 7 -#000000 p 4 64 136 64 188 134 188 134 136 ",
+			bb="64,136,134,188",
+			lheight="x\ny",
+			lp=<b>,
+			lwidth="a\"b"
+		];
+		k	[_draw_="c 7 -#000000 e 99 162 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 99 157.8 0 7 1 -k ",
+			height=0.5,
+			pos="99,162",
+			width=0.75];
+	}
+	subgraph s2 {
+		graph [bb=7];
+		s	[_draw_="c 7 -#000000 e 171 162 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 171 157.8 0 5.45 1 -s ",
+			height=0.5,
+			pos="171,162",
+			width=0.75];
+	}
+	n	[_draw_="c 7 -#000000 e 243 162 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 243 157.8 0 7 1 -n ",
+		height=0.5,
+		pos="243,162",
+		rects="Graph",
+		width=0.75,
+		xlp=<i>];
+	m	[_draw_="c 7 -#000000 e 243 90 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 243 85.8 0 10.89 1 -m ",
+		height=0.5,
+		pos="243,90",
+		rects="a b",
+		width=0.75,
+		xlp=-1.5];
+	n -> m	[_draw_="c 7 -#000000 B 4 243 143.7 243 136.41 243 127.73 243 119.54 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 246.5 119.62 243 109.62 239.5 119.62 ",
+		head_lp="1-2",
+		lp=12,
+		pos="e,243,108.1 243,143.7 243,136.41 243,127.73 243,119.54",
+		tail_lp=abc_9,
+		xlp="\N"];
+	p	[_draw_="c 7 -#000000 e 243 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 243 13.8 0 7 1 -p ",
+		height=0.5,
+		pos="243,18",
+		rects="1.2.3",
+		width=0.75,
+		xlp=é];
+	m -> p	[_draw_="c 7 -#000000 B 4 243 71.7 243 64.41 243 55.73 243 47.54 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 246.5 47.62 243 37.62 239.5 47.62 ",
+		head_lp="-",
+		lp=".",
+		pos="e,243,36.104 243,71.697 243,64.407 243,55.726 243,47.536",
+		tail_lp="say \"hi\"",
+		xlp="a\\b"];
+}

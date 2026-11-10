@@ -301,7 +301,7 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
       if (draw) set.draw = draw;
       // Cluster labels are stored via plain agxset (xdot_end_cluster:286), NOT
       // put_escaping_backslashes like node/edge/graph labels — so NO escBackslash.
-      // The source `\"`/`\\` in the label survive as-is through agcanonEscape on
+      // The source `\"`/`\\` in the label survive as-is through agstrcanonText on
       // serialize (drawAttr). @see gvrender_core_dot.c:286
       if (ldraw) set.ldraw = ldraw;
     }

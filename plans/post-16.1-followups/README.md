@@ -697,7 +697,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `libm-hypot.ts`, taking sgd58 to 6 of 255 lines (max 0.01); not adopted (part 11 T6).
   144. There is no macOS `exp` model; `Math.exp` misses 4 of 30 sgd eta values (`sgd.c:216`), the rest
       of 132's drift. Same user decision as 143 (part 11 T6).
-  145. `echoAttr`/`echoGraphAttr` (`src/render/dot/attrs.ts:362,397`) print cluster and graph
+  145. **[DONE — issue #134: echoAttr/echoGraphAttr use agstrcanon; labels already wrapped]** `echoAttr`/`echoGraphAttr` (`src/render/dot/attrs.ts:362,397`) print cluster and graph
       attributes through `agcanonEscape`, so long labels there never wrap at `Max_outputline`; no
       native ref covers it (part 11 T3).
   146. json's `insert()` warns `Duplicate cluster name` (`gvrender_core_json.c:617`); the port's json
