@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -48,7 +48,7 @@ sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 > **dot 引擎的主 SVG 调查**（`test/corpus/survey.ts`）仍然**仅限 dot**：原生参照程序在 `GVBINDIR=/tmp/ghl` 下运行，该目录**只**符号链接了 `core` + `dot_layout` 插件（`test/corpus/gen-headless-gvbindir.sh` 恰好只遍历 `core dot_layout`——不存在 `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` 布局插件），并且参照程序和移植版调用的都是 `dot` 引擎。因此，像 `*_neato` / `*_circo` / `root_twopi` 这样的语料库 id 在该调查中只是用 `dot` 布局的*文件名*，而不是它们各自的原生引擎，A1 在那里匹配**零个**图——并不是因为这些引擎被证明一致，而是因为该调查根本没有运行过它们。
 >
 > **但是，现在全部六个 A1 引擎都有各自的原生引擎调查**，通过
-> `test/corpus/engine-walk.ts` + `parity-report.ts`（不依赖 `GVBINDIR`——每个都直接启动 `dot -K <engine> -Txdot`），分为两种不同的严格程度，下文分别说明：`circo`/`twopi`/`osage` 以与 dot 调查相同的 **±0.01 确定性**容差运行，并对每个 id 做根因分诊（下文“引擎轨道接受”）；`neato`/`fdp`/`sfdp` 以更宽松的 **±0.5 特征描述**容差运行，尚未逐 id 分诊（下文“迭代式引擎特征描述”）。当前的跨引擎数据：
+> `test/corpus/engine-walk.ts` + `parity-report.ts`（不依赖 `GVBINDIR`——每个都直接启动 `dot -K <engine> -Txdot`），分为两种不同的严格程度，下文分别说明：`circo`/`twopi`/`osage` 以与 dot 调查相同的 **±0.01 确定性**容差运行，并对每个 id 做根因分诊（下文“引擎轨道接受”）；`neato`/`fdp`/`sfdp` 以更宽松的 **±0.5 特征描述**容差运行，并逐 id 归因（下文“迭代式引擎特征描述”）。当前的跨引擎数据：
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)。
 
 **特征描述。** 这些引擎运行迭代式数值布局，其结果取决于浮点舍入——具体来说是融合乘加（FMA）和 `Math.pow`，它们在不同的 JavaScript 引擎和 CPU 架构上可能不同。移植版在可能的地方与 C 的运算顺序保持一致（`src/common/fma.ts`、`src/common/arm-pow.ts`）——例如 `sfdp` 在使用匹配的伪随机数发生器和 `fma` 时，与原生参照程序可对齐到约 6 位有效数字——但精确、坐标完全相同的复现**无法保证跨平台**。拓扑得以保持；潜在的差异出现在精细的节点坐标上。
@@ -75,8 +75,8 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 同一个星形图在 `circo` 轨道上也有偏差（2026-10-16 接受，599 处绘制操作差异，最大 0.71pt）。移植版复现了 clang 在 `circpos.c` 中的 FMA 收缩和求值顺序，因此进入 PRISM 的 32 个位置中有 31 个逐位精确。最后一个相差 1 ULP，因为 V8 与 Apple libm 在 `positionChildren` 的三个子块角度上对 `cos`/`sin` 的舍入不同。随后 PRISM 的 Delaunay 三角剖分在镜像轴上翻转了一条近乎共圆的对角线。注入 A/B：给定原生的 `cos`/`sin` 值时，移植版与参照程序一致。给定 V8 的值时，原生构建在 30 次运行中有 22 次产生参照程序的布局，其余 8 次产生移植版的布局，因为 GTS 按分配地址排列其边。
 
 **迭代式引擎特征描述：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
-与上面的 `circo`/`twopi`/`osage` 引擎轨道不同，`neato`/`fdp`/`sfdp` 尚**未**逐 id 分诊——`engine-walk.ts` 为这三个引擎记录了 `tolerance: 0.5` 字段，`parity-report.ts` 将它们渲染在
-[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 中单独的“Iterative engines (±0.5 characterization)”一节里，明确**不能**与本文档其他位置的 ±0.01 确定性通过率相比较。针对 graphviz 16.1.0 的当前计数（929 项全集；通过率不计入 C 参照程序无法渲染的输入，依据[一致性](./conformance.md)）：
+与上面以 ±0.01 为标准的 `circo`/`twopi`/`osage` 引擎轨道不同，`neato`/`fdp`/`sfdp` 按 ±0.5pt 比较，其每个存在差异的 id 均已归因（见下文）——`engine-walk.ts` 为这三个引擎记录了 `tolerance: 0.5` 字段，`parity-report.ts` 将它们渲染在
+[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 中单独的“Iterative engines (±0.5 characterization)”一节里，明确**不能**与本文档其他位置的 ±0.01 确定性通过率相比较。针对 graphviz 16.1.0 的当前计数（929 项全集；通过率不计入 C 参照程序无法渲染的输入以及原生输出每次运行都会变化的输入，依据[一致性](./conformance.md)）：
 
 | 引擎 | 已调查 | ±0.5pt 以内 | 不一致 | 移植版错误 / 超时 | 参照程序错误 | 参照程序非确定 |
 |---|---:|---:|---:|---:|---:|---:|

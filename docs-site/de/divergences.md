@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -101,7 +101,7 @@ iterativer Modelle **nicht** betroffen; die früheren Gleitkomma-Abweichungen de
 > `circo`/`twopi`/`osage` laufen mit derselben **deterministischen Toleranz von
 > ±0.01** wie der dot-Survey, mit Ursachen-Triage je ID („Engine-Track-Akzeptanz“
 > unten); `neato`/`fdp`/`sfdp` laufen mit einer lockereren
-> **Charakterisierungstoleranz von ±0.5** und bislang ohne Triage je ID
+> **Charakterisierungstoleranz von ±0.5** und mit Zuordnung je ID
 > („Charakterisierung der iterativen Engines“ unten). Aktuelle Zahlen über alle
 > Engines hinweg:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
@@ -214,15 +214,17 @@ Läufen das Layout des Orakels und in den übrigen 8 das der Portierung, weil GT
 seine Kanten nach Allokationsadresse ordnet.
 
 **Charakterisierung der iterativen Engines: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Anders als die oben beschriebenen Engine-Tracks für `circo`/`twopi`/`osage` sind
-`neato`/`fdp`/`sfdp` bislang **nicht** je ID triagiert — `engine-walk.ts` führt für
+Anders als die oben beschriebenen Engine-Tracks für `circo`/`twopi`/`osage`, für die
+±0.01 gilt, werden `neato`/`fdp`/`sfdp` bei ±0.5pt verglichen, und jede ihrer
+abweichenden IDs ist zugeordnet, wie unten beschrieben — `engine-walk.ts` führt für
 diese drei ein Feld `tolerance: 0.5`, und `parity-report.ts` stellt sie in einem
 eigenen Abschnitt „Iterative engines (±0.5 characterization)“ von
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 dar, ausdrücklich **nicht** vergleichbar mit den deterministischen
 ±0.01-Bestehensquoten an anderer Stelle in diesem Dokument. Aktuelle Zählwerte
 gegenüber graphviz 16.1.0 (929-Item-Universum; die Bestehensquote lässt Eingaben aus,
-die das C-Orakel nicht rendern kann, siehe [Konformität](./conformance.md)):
+die das C-Orakel nicht rendern kann, und Eingaben, bei denen die native Ausgabe von
+Lauf zu Lauf variiert, siehe [Konformität](./conformance.md)):
 
 | Engine | untersucht | innerhalb ±0.5pt | nicht konform | Portierungsfehler / Timeout | Orakelfehler | Orakel nichtdeterministisch |
 |---|---:|---:|---:|---:|---:|---:|

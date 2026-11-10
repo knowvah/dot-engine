@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -102,7 +102,7 @@ touchée par ce déterminisme du modèle itératif ; les anciens écarts en virg
 > **déterministe de ±0.01** que le relevé dot, avec un triage de cause racine
 > par identifiant (« Acceptation au niveau de la piste d’un moteur » plus bas) ;
 > `neato`/`fdp`/`sfdp` s’exécutent à une tolérance de **caractérisation de
-> ±0.5**, plus lâche, sans triage par identifiant pour l’instant
+> ±0.5**, plus lâche, avec attribution par identifiant
 > (« Caractérisation des moteurs itératifs » plus bas). Chiffres actuels tous
 > moteurs confondus :
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
@@ -222,8 +222,9 @@ portage dans les 8 autres, car GTS ordonne ses arêtes selon l’adresse
 d’allocation.
 
 **Caractérisation des moteurs itératifs : neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Contrairement aux pistes de moteur `circo`/`twopi`/`osage` ci-dessus,
-`neato`/`fdp`/`sfdp` ne sont **pas** encore triés par identifiant —
+Contrairement aux pistes de moteur `circo`/`twopi`/`osage` ci-dessus, tenues à
+±0.01, `neato`/`fdp`/`sfdp` sont comparés à ±0.5pt, et chacun de leurs identifiants
+divergents est attribué, comme décrit plus bas —
 `engine-walk.ts` consigne un champ `tolerance: 0.5` pour ces trois moteurs et
 `parity-report.ts` les présente dans une section distincte, « Iterative engines
 (±0.5 characterization) », de
@@ -231,7 +232,8 @@ Contrairement aux pistes de moteur `circo`/`twopi`/`osage` ci-dessus,
 explicitement **non comparable** aux taux de réussite déterministes à ±0.01
 donnés ailleurs dans ce document. Compteurs actuels face à graphviz 16.1.0 (univers de 929 éléments ;
 le pourcentage de réussite laisse de côté les entrées que l’oracle C ne peut pas
-rendre, conformément à [Conformité](./conformance.md)) :
+rendre et les entrées dont la sortie native varie d’une exécution à l’autre,
+conformément à [Conformité](./conformance.md)) :
 
 | moteur | relevées | à ±0.5pt | non conformes | erreur du portage / délai dépassé | erreur de l’oracle | oracle non déterministe |
 |---|---:|---:|---:|---:|---:|---:|

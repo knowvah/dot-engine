@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ spline-ruting (A3, A8) er lukket og beholdt nedenfor som historikk.
 > som er dokumentert hver for seg nedenfor: `circo`/`twopi`/`osage` kjøres med samme
 > **deterministiske ±0.01**-toleranse som dot-undersøkelsen, med rotårsaksanalyse per id
 > («Godkjenning på motorsporet» nedenfor); `neato`/`fdp`/`sfdp` kjøres med en
-> løsere **±0.5-karakterisering** uten analyse per id ennå
+> løsere **±0.5-karakterisering** med tilskrivning per id
 > («Karakterisering av iterative motorer» nedenfor). Gjeldende tall på tvers av motorer:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -188,14 +188,16 @@ kjøringer og portens layout i de øvrige 8, fordi GTS ordner kantene sine etter
 allokeringsadresse.
 
 **Karakterisering av iterative motorer: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-I motsetning til motorsporene `circo`/`twopi`/`osage` ovenfor er `neato`/`fdp`/`sfdp`
-ennå **ikke** analysert per id — `engine-walk.ts` registrerer et felt `tolerance: 0.5`
+I motsetning til motorsporene `circo`/`twopi`/`osage` ovenfor, som holdes til ±0.01,
+sammenlignes `neato`/`fdp`/`sfdp` ved ±0.5pt, og hver av deres avvikende id-er er
+tilskrevet, som beskrevet nedenfor — `engine-walk.ts` registrerer et felt `tolerance: 0.5`
 for disse tre, og `parity-report.ts` viser dem i en egen seksjon,
 «Iterative engines (±0.5 characterization)», i
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 uttrykkelig **ikke** sammenlignbar med de deterministiske ±0.01-beståttandelene ellers
 i dette dokumentet. Gjeldende tall mot graphviz 16.1.0 (univers på 929 elementer; beståttprosenten utelater
-inndata C-orakelet ikke kan rendere, jf. [Samsvar](./conformance.md)):
+inndata C-orakelet ikke kan rendere, og inndata der nativ utdata varierer fra kjøring til
+kjøring, jf. [Samsvar](./conformance.md)):
 
 | motor | undersøkt | innenfor ±0.5pt | ikke samsvarende | portfeil / tidsavbrudd | orakelfeil | orakel ikke-deterministisk |
 |---|---:|---:|---:|---:|---:|---:|

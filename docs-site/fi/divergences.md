@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -99,8 +99,8 @@ säilytetty alla historiana.
 > alla: `circo`/`twopi`/`osage` ajetaan samalla **±0.01:n deterministisellä**
 > toleranssilla kuin dot-kartoitus ja syykohtaisella juurisyyluokittelulla
 > (”Moottoriraidan hyväksyntä” alla); `neato`/`fdp`/`sfdp` ajetaan
-> väljemmällä **±0.5:n luonnehdinta**-toleranssilla ilman syykohtaista
-> luokittelua toistaiseksi (”Iteratiivisten moottorien luonnehdinta” alla).
+> väljemmällä **±0.5:n luonnehdinta**-toleranssilla, ja jokainen poikkeama
+> selitetään tunnistekohtaisesti (”Iteratiivisten moottorien luonnehdinta” alla).
 > Nykyiset moottorien väliset luvut:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -207,15 +207,17 @@ asettelun 22 ajossa 30:stä ja portin asettelun lopuissa 8:ssa, koska GTS
 järjestää särmänsä varausosoitteen mukaan.
 
 **Iteratiivisten moottorien luonnehdinta: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Toisin kuin edellä olevat `circo`/`twopi`/`osage`-moottoriraidat, `neato`/`fdp`/`sfdp`
-**ei** ole vielä luokiteltu syykohtaisesti — `engine-walk.ts` kirjaa näille kolmelle
+Toisin kuin edellä olevat `circo`/`twopi`/`osage`-moottoriraidat, joilta vaaditaan ±0.01,
+`neato`/`fdp`/`sfdp` verrataan ±0.5pt:n toleranssilla, ja jokainen niiden poikkeava tunniste
+on selitetty, kuten alla kuvataan — `engine-walk.ts` kirjaa näille kolmelle
 kentän `tolerance: 0.5`, ja `parity-report.ts` renderöi ne erilliseen
 ”Iteratiiviset moottorit (±0.5 luonnehdinta)” -osioon tiedostossa
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 nimenomaisesti **ei** vertailukelpoisina muualla tässä dokumentissa esiintyviin
 ±0.01:n deterministisiin läpäisyprosentteihin. Nykyiset lukumäärät graphviz 16.1.0:aa
 vasten (929 kohteen joukko; läpäisyprosentti jättää pois syötteet, joita C-oraakkeli ei
-pysty renderöimään, kohdan [Yhdenmukaisuus](./conformance.md) mukaisesti):
+pysty renderöimään, ja syötteet, joiden natiivituloste vaihtelee ajosta toiseen, kohdan
+[Yhdenmukaisuus](./conformance.md) mukaisesti):
 
 | moottori | kartoitettu | ±0.5 pt:n sisällä | ei-yhdenmukainen | porttausvirhe / aikakatkaisu | oraakkelivirhe | oraakkeli epädeterministinen |
 |---|---:|---:|---:|---:|---:|---:|

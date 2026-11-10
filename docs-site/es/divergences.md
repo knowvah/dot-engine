@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -92,7 +92,7 @@ enrutamiento de splines de `dot` (A3, A8) están cerrados y se conservan abajo c
 > distintos documentados por separado más abajo: `circo`/`twopi`/`osage` se ejecutan con la
 > misma tolerancia **determinista de ±0.01** que el sondeo de dot, con triaje de causa raíz
 > por id («Aceptación en la pista del motor», más abajo); `neato`/`fdp`/`sfdp` se ejecutan con
-> una tolerancia de **caracterización de ±0.5** más laxa, todavía sin triaje por id
+> una tolerancia de **caracterización de ±0.5** más laxa, con atribución por id
 > («Caracterización de los motores iterativos», más abajo). Cifras actuales entre motores:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -194,15 +194,17 @@ oráculo en 22 de 30 ejecuciones y el del port en las otras 8, porque GTS ordena
 sus aristas por dirección de asignación.
 
 **Caracterización de los motores iterativos: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-A diferencia de las pistas de motor `circo`/`twopi`/`osage` de arriba, `neato`/`fdp`/`sfdp`
-**todavía no** están triados por id: `engine-walk.ts` registra un campo `tolerance: 0.5`
+A diferencia de las pistas de motor `circo`/`twopi`/`osage` de arriba, que se mantienen en ±0.01,
+`neato`/`fdp`/`sfdp` se comparan a ±0.5pt, y cada uno de sus id divergentes está atribuido,
+como se describe más abajo: `engine-walk.ts` registra un campo `tolerance: 0.5`
 para estos tres y `parity-report.ts` los muestra en una sección aparte,
 «Iterative engines (±0.5 characterization)», de
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explícitamente **no** comparable con los porcentajes de acierto deterministas de ±0.01 del
 resto de este documento. Recuentos actuales frente a graphviz 16.1.0 (universo de 929
 elementos; el % de aciertos deja fuera las entradas que el oráculo en C no puede
-renderizar, según [Conformidad](./conformance.md)):
+renderizar y las entradas cuya salida nativa varía de una ejecución a otra, según
+[Conformidad](./conformance.md)):
 
 | motor | sondeados | dentro de ±0.5pt | no conformes | error del port / timeout | error del oráculo | oráculo no determinista |
 |---|---:|---:|---:|---:|---:|---:|

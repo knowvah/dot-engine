@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ determinism **ei** mõjuta; endised `dot` splaini marsruutimise ujukomadeltad
 > mida on allpool eraldi dokumenteeritud: `circo`/`twopi`/`osage` töötavad sama
 > **±0.01 deterministliku** tolerantsiga nagu dot-uuring koos id-põhise
 > algpõhjuse sorteerimisega („Mootoriraja aktsepteerimine“ allpool); `neato`/`fdp`/`sfdp` töötavad
-> lõdvema **±0.5 iseloomustus**-tolerantsiga, kuni id-põhise sorteerimiseta
+> lõdvema **±0.5 iseloomustus**-tolerantsiga ja id-põhise omistamisega
 > („Iteratiivsete mootorite iseloomustus“ allpool). Praegused mootoriteülesed arvud:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -187,15 +187,16 @@ natiivne build oraakli paigutuse 22 käivitusel 30-st ja pordi paigutuse
 ülejäänud 8-l, sest GTS järjestab oma servad eraldusaadressi järgi.
 
 **Iteratiivsete mootorite iseloomustus: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Erinevalt ülaltoodud `circo`/`twopi`/`osage` mootoriradadest ei ole `neato`/`fdp`/`sfdp`
-veel id-põhiselt sorteeritud — `engine-walk.ts` salvestab nendele kolmele välja `tolerance: 0.5`
+Erinevalt ülaltoodud `circo`/`twopi`/`osage` mootoriradadest, mille puhul kehtib ±0.01,
+võrreldakse mootoreid `neato`/`fdp`/`sfdp` tolerantsiga ±0.5pt ja iga nende lahknev id on
+omistatud, nagu allpool kirjeldatud — `engine-walk.ts` salvestab nendele kolmele välja `tolerance: 0.5`
 ja `parity-report.ts` kuvab need eraldi
 jaotises „Iteratiivsed mootorid (±0.5 iseloomustus)“ failis
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 sõnaselgelt **mitte** võrreldavana ±0.01 deterministlike läbimismääradega mujal
 selles dokumendis. Praegused arvud graphviz 16.1.0 vastu (929-kirjeline universum;
-läbimise % jätab välja sisendid, mida C-oraakel ei suuda renderdada, vt
-[Vastavus](./conformance.md)):
+läbimise % jätab välja sisendid, mida C-oraakel ei suuda renderdada, ja sisendid,
+mille natiivne väljund erineb jooksult jooksule, vt [Vastavus](./conformance.md)):
 
 | mootor | uuritud | ±0.5pt piires | mittevastav | pordi viga / ajalõpp | oraakli viga | oraakel mittedeterministlik |
 |---|---:|---:|---:|---:|---:|---:|

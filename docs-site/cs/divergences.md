@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ ve vedení splines modulu `dot` (A3, A8) jsou uzavřeny a ponechány níže jako
 > přísnosti zdokumentovaných samostatně níže: `circo`/`twopi`/`osage` běží se
 > stejnou **deterministickou tolerancí ±0.01** jako průzkum dot s tříděním příčin
 > pro každé id („Akceptace stopy modulu“ níže); `neato`/`fdp`/`sfdp` běží s volnější
-> **charakterizační tolerancí ±0.5** zatím bez třídění po jednotlivých id
+> **charakterizační tolerancí ±0.5** s připsáním po jednotlivých id
 > („Charakterizace iterativních modulů“ níže). Aktuální čísla napříč moduly:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -190,15 +190,16 @@ orákulu. S hodnotami z V8 dává nativní build rozložení orákula ve 22 ze 3
 a rozložení portu ve zbylých 8, protože GTS řadí své hrany podle adres alokace.
 
 **Charakterizace iterativních modulů: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Na rozdíl od stop modulů `circo`/`twopi`/`osage` výše nejsou `neato`/`fdp`/`sfdp`
-zatím tříděny po jednotlivých id — `engine-walk.ts` pro tyto tři zaznamenává pole
+Na rozdíl od stop modulů `circo`/`twopi`/`osage` výše, u nichž platí tolerance ±0.01,
+se `neato`/`fdp`/`sfdp` porovnávají s tolerancí ±0.5pt a každé jejich rozcházející se id
+je připsáno, jak je popsáno níže — `engine-walk.ts` pro tyto tři zaznamenává pole
 `tolerance: 0.5` a `parity-report.ts` je vykresluje v samostatné sekci
 „Iterative engines (±0.5 characterization)“ v
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 výslovně **nesrovnatelné** s deterministickými mírami úspěšnosti ±0.01 jinde v
 tomto dokumentu. Aktuální počty vůči graphviz 16.1.0 (univerzum 929 položek;
-procento úspěšnosti vynechává vstupy, které C orákulum nedokáže vykreslit, podle
-[Shoda](./conformance.md)):
+procento úspěšnosti vynechává vstupy, které C orákulum nedokáže vykreslit, a vstupy,
+u nichž se nativní výstup mezi běhy mění, podle [Shoda](./conformance.md)):
 
 | modul | prozkoumáno | v rámci ±0.5pt | neshodné | chyba portace / timeout | chyba orákula | nedeterminismus orákula |
 |---|---:|---:|---:|---:|---:|---:|

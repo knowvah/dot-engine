@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ no roteamento de splines do `dot` (A3, A8) estão encerrados e mantidos abaixo c
 > rigor documentados separadamente abaixo: `circo`/`twopi`/`osage` rodam com a mesma
 > tolerância **determinística de ±0.01** da pesquisa do dot, com triagem de causa raiz por id
 > (“Aceitação na trilha de mecanismo” abaixo); `neato`/`fdp`/`sfdp` rodam com uma
-> tolerância de **caracterização de ±0.5** mais frouxa, ainda sem triagem por id
+> tolerância de **caracterização de ±0.5** mais frouxa, com atribuição por id
 > (“Caracterização dos mecanismos iterativos” abaixo). Números atuais entre mecanismos:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -187,14 +187,16 @@ build nativo produz o layout do oráculo em 22 de 30 execuções e o do port nas
 outras 8, porque o GTS ordena suas arestas pelo endereço de alocação.
 
 **Caracterização dos mecanismos iterativos: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Diferentemente das trilhas de mecanismo `circo`/`twopi`/`osage` acima, `neato`/`fdp`/`sfdp`
-**ainda não** passaram por triagem por id — o `engine-walk.ts` registra um campo `tolerance: 0.5`
+Diferentemente das trilhas de mecanismo `circo`/`twopi`/`osage` acima, mantidas em ±0.01,
+`neato`/`fdp`/`sfdp` são comparados a ±0.5pt, e cada um dos seus ids divergentes está atribuído,
+como descrito abaixo — o `engine-walk.ts` registra um campo `tolerance: 0.5`
 para esses três e o `parity-report.ts` os apresenta em uma seção separada,
 “Iterative engines (±0.5 characterization)”, do
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explicitamente **não** comparável às taxas de aprovação determinísticas de ±0.01 em outras partes
 deste documento. Contagens atuais contra o graphviz 16.1.0 (universo de 929 itens; a % de aprovação deixa de fora
-entradas que o oráculo C não consegue renderizar, conforme [Conformidade](./conformance.md)):
+entradas que o oráculo C não consegue renderizar e entradas cuja saída nativa varia de execução
+para execução, conforme [Conformidade](./conformance.md)):
 
 | mecanismo | examinados | dentro de ±0.5pt | não conformantes | erro do port / timeout | erro do oráculo | oráculo não determinístico |
 |---|---:|---:|---:|---:|---:|---:|

@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -92,7 +92,7 @@ farkları (A3, A8) kapatılmıştır ve aşağıda geçmiş olarak saklanır.
 > çalıştırır), aşağıda ayrı ayrı belgelenen iki farklı titizlik düzeyinde:
 > `circo`/`twopi`/`osage`, dot taramasıyla aynı **±0.01 belirlenimci**
 > toleransta ve kimlik başına kök neden triyajıyla çalışır (aşağıda “Motor hattı
-> kabulü”); `neato`/`fdp`/`sfdp` ise henüz kimlik başına triyaj olmaksızın daha
+> kabulü”); `neato`/`fdp`/`sfdp` ise kimlik başına nedene bağlamayla daha
 > gevşek bir **±0.5 nitelendirme** toleransında çalışır (aşağıda “Yinelemeli motor
 > nitelendirmesi”). Motorlar arası güncel sayılar:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
@@ -192,14 +192,16 @@ derleme 30 çalıştırmanın 22'sinde kâhinin yerleşimini, kalan 8'inde portu
 yerleşimini üretir, çünkü GTS kenarlarını ayırma adresine göre sıralar.
 
 **Yinelemeli motor nitelendirmesi: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Yukarıdaki `circo`/`twopi`/`osage` motor hatlarının aksine, `neato`/`fdp`/`sfdp`
-henüz kimlik başına triyaj edilmemiştir — `engine-walk.ts` bu üçü için
+±0.01 sınırına tabi olan yukarıdaki `circo`/`twopi`/`osage` motor hatlarının aksine,
+`neato`/`fdp`/`sfdp` ±0.5pt toleransla karşılaştırılır ve bunların ayrışan her kimliği,
+aşağıda anlatıldığı gibi, nedene bağlanmıştır — `engine-walk.ts` bu üçü için
 `tolerance: 0.5` alanı kaydeder ve `parity-report.ts` onları
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 içinde ayrı bir “Iterative engines (±0.5 characterization)” bölümünde işler;
 bu bölüm bu belgedeki başka yerlerde geçen ±0.01 belirlenimci geçme oranlarıyla
 açıkça **karşılaştırılamaz**. graphviz 16.1.0'a karşı güncel sayılar (929 öğelik evren; geçme yüzdesi, C
-kâhininin işleyemediği girdileri dışarıda bırakır, bkz. [Uygunluk](./conformance.md)):
+kâhininin işleyemediği girdileri ve yerel çıktısı çalıştırmadan çalıştırmaya değişen girdileri
+dışarıda bırakır, bkz. [Uygunluk](./conformance.md)):
 
 | motor | taranan | ±0.5pt içinde | uyumlu olmayan | port hatası / zaman aşımı | kâhin hatası | kâhin belirlenimsiz |
 |---|---:|---:|---:|---:|---:|---:|

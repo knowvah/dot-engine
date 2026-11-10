@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -90,7 +90,7 @@ C 소스가 곧 명세이며, 목록에 없는 차이는 수용된 동작이 아
 > 따로 문서화되어 있습니다. `circo`/`twopi`/`osage`는 dot 조사와 같은 **±0.01
 > 결정적** 허용 오차로 id별 근본 원인 분류와 함께 실행합니다(아래 '엔진 트랙
 > 수용'). `neato`/`fdp`/`sfdp`는 더 느슨한 **±0.5 특성화** 허용 오차로 실행하며
-> 아직 id별 분류는 없습니다(아래 '반복형 엔진 특성화'). 엔진 전반의 현재 수치:
+> id별로 귀속합니다(아래 '반복형 엔진 특성화'). 엔진 전반의 현재 수치:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
 **특성화.** 이 엔진들은 결과가 부동소수점 반올림에 좌우되는 반복적 수치 레이아웃을
@@ -176,13 +176,14 @@ PRISM 풀이에서 나온 명목상 같은 세 x 값의 마지막 ULP 순서에 
 중 22회는 오라클의 레이아웃을, 나머지 8회는 포팅의 레이아웃을 생성하는데, GTS가 간선을 할당 주소 순으로 정렬하기 때문입니다.
 
 **반복형 엔진 특성화: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-위의 `circo`/`twopi`/`osage` 엔진 트랙과 달리 `neato`/`fdp`/`sfdp`는 아직 id별
-분류를 거치지 **않았습니다** — `engine-walk.ts`는 이 셋에 `tolerance: 0.5`
+±0.01을 기준으로 하는 위의 `circo`/`twopi`/`osage` 엔진 트랙과 달리 `neato`/`fdp`/`sfdp`는 ±0.5pt로
+비교하며, 어긋난 id는 아래에 설명한 대로 각각 귀속되었습니다 — `engine-walk.ts`는 이 셋에 `tolerance: 0.5`
 필드를 기록하고, `parity-report.ts`는 이를
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)의
 별도 '반복형 엔진(±0.5 특성화)' 섹션에 표시하며, 이는 이 문서 다른 곳의 ±0.01
 결정적 통과율과 명시적으로 비교할 수 **없습니다**. graphviz 16.1.0 기준 현재 집계(929개 항목 전체; 통과
-%는 [적합성](./conformance.md)에 따라 C 오라클이 렌더링할 수 없는 입력을 제외):
+%는 [적합성](./conformance.md)에 따라 C 오라클이 렌더링할 수 없는 입력과 네이티브 출력이
+실행마다 달라지는 입력을 제외):
 
 | 엔진 | 조사 | ±0.5pt 이내 | 부적합 | 포팅 오류 / 타임아웃 | 오라클 오류 | 오라클 비결정적 |
 |---|---:|---:|---:|---:|---:|---:|

@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -89,7 +89,7 @@ C のソースが仕様であり、一覧にない差異は、受け入れられ
 > 以下に別々に記述されています。`circo`/`twopi`/`osage` は dot 調査と同じ
 > **±0.01 の決定的**許容誤差で実行され、ID ごとに根本原因を分類します
 > （後述の「エンジントラックの受け入れ」）。`neato`/`fdp`/`sfdp` は、より緩い
-> **±0.5 の特性評価**許容誤差で実行され、ID ごとの分類はまだありません
+> **±0.5 の特性評価**許容誤差で実行され、ID ごとに原因特定しています
 > （後述の「反復型エンジンの特性評価」）。現在のエンジン横断の数値：
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)。
 
@@ -171,14 +171,14 @@ pathplan の `directVis` の `intersect()` は、障害物の頂点が線分の�
 同じスターは `circo` トラックでも乖離します（2026-10-16 に受け入れ、描画オペレーションの差分 599 件、最大 0.71pt）。ポートは `circpos.c` における clang の FMA 縮約と評価順序を再現しているため、PRISM に入る 32 個の位置のうち 31 個はビット単位で正確です。残りの 1 個は 1 ULP ずれています。`positionChildren` の 3 つの子の角度で、V8 と Apple libm が `cos`/`sin` を異なる方向に丸めるためです。その後、PRISM の Delaunay 三角形分割が、鏡映軸上でほぼ同一円周上にある対角線を 1 本反転させます。注入 A/B：ネイティブの `cos`/`sin` の値を与えると、ポートはオラクルと一致します。V8 の値を与えると、ネイティブビルドは 30 回の実行のうち 22 回でオラクルのレイアウトを、残り 8 回でポートのレイアウトを生成します。GTS が辺をアロケーションアドレス順に並べるためです。
 
 **反復型エンジンの特性評価：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
-上の `circo`/`twopi`/`osage` のエンジントラックとは異なり、`neato`/`fdp`/`sfdp` は
-ID ごとの分類が**まだ行われていません**。`engine-walk.ts` はこの 3 つについて
+±0.01 を基準とする上の `circo`/`twopi`/`osage` のエンジントラックとは異なり、`neato`/`fdp`/`sfdp` は
+±0.5pt で比較し、その diverged な ID は後述のとおりそれぞれ原因特定されています。`engine-walk.ts` はこの 3 つについて
 `tolerance: 0.5` フィールドを記録し、`parity-report.ts` はそれらを
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 の別の「Iterative engines (±0.5 characterization)」セクションに表示します。これは
 この文書の他の箇所の ±0.01 の決定的な合格率とは、明示的に**比較できません**。
 graphviz 16.1.0 に対する現在の件数（929 件の母集団。合格率は、[適合性](./conformance.md)に従い、
-C のオラクルがレンダリングできない入力を除く）：
+C のオラクルがレンダリングできない入力と、ネイティブの出力が実行ごとに変わる入力を除く）：
 
 | エンジン | 調査数 | ±0.5pt 以内 | 非適合 | ポートエラー / タイムアウト | オラクルエラー | オラクル非決定的 |
 |---|---:|---:|---:|---:|---:|---:|

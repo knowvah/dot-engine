@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -90,7 +90,7 @@ zmiennoprzecinkowe w prowadzeniu splajnów `dot` (A3, A8) są zamknięte i zacho
 > poziomach rygoru opisanych osobno poniżej: `circo`/`twopi`/`osage` działają z tą samą
 > **deterministyczną tolerancją ±0.01** co przegląd dot, z analizą przyczyn źródłowych dla każdego id
 > („Akceptacja ścieżki silnika” poniżej); `neato`/`fdp`/`sfdp` działają z luźniejszą
-> **tolerancją charakteryzacji ±0.5**, jeszcze bez analizy poszczególnych id
+> **tolerancją charakteryzacji ±0.5**, z przypisaniem dla każdego id
 > („Charakteryzacja silników iteracyjnych” poniżej). Aktualne liczby dla wszystkich silników:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -186,14 +186,16 @@ układ wyroczni w 22 z 30 uruchomień, a układ portu w pozostałych 8, poniewa�
 porządkuje swoje krawędzie według adresów alokacji.
 
 **Charakteryzacja silników iteracyjnych: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-W przeciwieństwie do ścieżek silników `circo`/`twopi`/`osage` powyżej, `neato`/`fdp`/`sfdp`
-**nie** są jeszcze analizowane dla poszczególnych id — `engine-walk.ts` zapisuje dla tych trzech pole `tolerance: 0.5`,
+W przeciwieństwie do ścieżek silników `circo`/`twopi`/`osage` powyżej, dla których obowiązuje ±0.01,
+`neato`/`fdp`/`sfdp` są porównywane z tolerancją ±0.5pt, a każdy ich rozbieżny id jest przypisany,
+jak opisano niżej — `engine-walk.ts` zapisuje dla tych trzech pole `tolerance: 0.5`,
 a `parity-report.ts` renderuje je w osobnej sekcji
 „Iterative engines (±0.5 characterization)” w
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 wyraźnie **nieporównywalnej** ze wskaźnikami zaliczeń deterministycznych ±0.01 w innych miejscach
 tego dokumentu. Aktualne liczby względem graphviz 16.1.0 (zbiór 929 pozycji; wskaźnik zaliczeń pomija
-wejścia, których wyrocznia w C nie potrafi wyrenderować, zgodnie z [Zgodnością](./conformance.md)):
+wejścia, których wyrocznia w C nie potrafi wyrenderować, oraz wejścia, dla których natywne wyjście
+zmienia się między uruchomieniami, zgodnie z [Zgodnością](./conformance.md)):
 
 | silnik | zbadano | w granicach ±0.5pt | niezgodne | błąd portu / timeout | błąd wyroczni | wyrocznia niedeterministyczna |
 |---|---:|---:|---:|---:|---:|---:|

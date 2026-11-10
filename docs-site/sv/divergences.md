@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ iterativa modellens determinism; de tidigare flyttalsavvikelserna i
 > stringensnivåer som dokumenteras separat nedan: `circo`/`twopi`/`osage` körs med samma
 > **±0.01 deterministiska** tolerans som dot-undersökningen, med orsaksanalys per id
 > (”Godkännande på motorspårsnivå” nedan); `neato`/`fdp`/`sfdp` körs med en lösare
-> **±0.5-karakterisering** utan triage per id ännu (”Karakterisering av iterativa
+> **±0.5-karakterisering** med tillskrivning per id (”Karakterisering av iterativa
 > motorer” nedan). Aktuella siffror över alla motorer:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -189,14 +189,16 @@ körningar och portens layout i de övriga 8, eftersom GTS ordnar sina kanter
 efter allokeringsadress.
 
 **Karakterisering av iterativa motorer: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Till skillnad från motorspåren för `circo`/`twopi`/`osage` ovan är `neato`/`fdp`/`sfdp`
-ännu **inte** triagerade per id — `engine-walk.ts` registrerar ett fält `tolerance: 0.5`
+Till skillnad från motorspåren för `circo`/`twopi`/`osage` ovan, som hålls till ±0.01,
+jämförs `neato`/`fdp`/`sfdp` vid ±0.5pt, och vart och ett av deras avvikande id är
+tillskrivet, så som beskrivs nedan — `engine-walk.ts` registrerar ett fält `tolerance: 0.5`
 för dessa tre och `parity-report.ts` återger dem i ett separat avsnitt,
 ”Iterative engines (±0.5 characterization)”, i
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 uttryckligen **inte** jämförbart med de deterministiska godkännandegraderna på ±0.01 på andra ställen
 i det här dokumentet. Aktuella antal mot graphviz 16.1.0 (universum på 929 poster; godkändandeprocenten
-utelämnar indata som C-oraklet inte kan rendera, enligt [Överensstämmelse](./conformance.md)):
+utelämnar indata som C-oraklet inte kan rendera och indata där nativ utdata varierar från körning
+till körning, enligt [Överensstämmelse](./conformance.md)):
 
 | motor | undersökta | inom ±0.5pt | icke-konforma | portfel / timeout | orakelfel | orakel icke-deterministiskt |
 |---|---:|---:|---:|---:|---:|---:|

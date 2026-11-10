@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ desatinnej čiarky pri vedení splinov v `dot` (A3, A8) sú uzavreté a ponechan
 > zdokumentovaných samostatne nižšie: `circo`/`twopi`/`osage` bežia s rovnakou
 > **deterministickou toleranciou ±0.01** ako prieskum dot s triážou koreňovej príčiny po jednotlivých id
 > („Akceptácia na úrovni stopy modulu“ nižšie); `neato`/`fdp`/`sfdp` bežia s
-> voľnejšou **charakterizačnou toleranciou ±0.5** zatiaľ bez triáže po jednotlivých id
+> voľnejšou **charakterizačnou toleranciou ±0.5** s priradením po jednotlivých id
 > („Charakterizácia iteratívnych modulov“ nižšie). Aktuálne čísla naprieč modulmi:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -188,14 +188,16 @@ rozloženie orákula v 22 z 30 behov a rozloženie portu vo zvyšných 8, preto�
 radí svoje hrany podľa adries alokácie.
 
 **Charakterizácia iteratívnych modulov: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Na rozdiel od stôp modulov `circo`/`twopi`/`osage` vyššie, `neato`/`fdp`/`sfdp`
-zatiaľ **nie sú** triedené po jednotlivých id — `engine-walk.ts` zaznamenáva pre tieto tri pole
+Na rozdiel od stôp modulov `circo`/`twopi`/`osage` vyššie, pre ktoré platí tolerancia ±0.01,
+sa `neato`/`fdp`/`sfdp` porovnávajú s toleranciou ±0.5pt a každé ich odchýlené id je priradené,
+ako je opísané nižšie — `engine-walk.ts` zaznamenáva pre tieto tri pole
 `tolerance: 0.5` a `parity-report.ts` ich vykresľuje v samostatnej
 sekcii „Iterative engines (±0.5 characterization)“ súboru
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 výslovne **nie je porovnateľná** s deterministickou mierou úspešnosti ±0.01 inde
 v tomto dokumente. Aktuálne počty voči graphviz 16.1.0 (univerzum 929 položiek; percento úspešnosti vynecháva
-vstupy, ktoré orákulum v C nedokáže vykresliť, podľa [Zhody](./conformance.md)):
+vstupy, ktoré orákulum v C nedokáže vykresliť, a vstupy, pri ktorých sa natívny výstup medzi behmi
+mení, podľa [Zhody](./conformance.md)):
 
 | modul | preskúmané | v rámci ±0.5pt | nezhodné | chyba portu / timeout | chyba orákula | orákulum nedeterministické |
 |---|---:|---:|---:|---:|---:|---:|

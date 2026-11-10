@@ -88,7 +88,7 @@ deltas (A3, A8) are closed and kept below as history.
 > levels documented separately below: `circo`/`twopi`/`osage` run at the same
 > **±0.01 deterministic** tolerance as the dot survey with per-id root-cause
 > triage ("Engine-track acceptance" below); `neato`/`fdp`/`sfdp` run at a
-> looser **±0.5 characterization** tolerance with no per-id triage yet
+> looser **±0.5 characterization** tolerance with per-id attribution
 > ("Iterative-engine characterization" below). Current cross-engine numbers:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -186,8 +186,9 @@ of 30 runs and the port's layout in the other 8, because GTS orders its edges
 by allocation address.
 
 **Iterative-engine characterization: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Unlike the `circo`/`twopi`/`osage` engine tracks above, `neato`/`fdp`/`sfdp`
-are **not** yet triaged per-id — `engine-walk.ts` records a `tolerance: 0.5`
+Unlike the `circo`/`twopi`/`osage` engine tracks above, which are held to ±0.01,
+`neato`/`fdp`/`sfdp` are compared at ±0.5pt, and each of their diverged ids is
+attributed, as described below — `engine-walk.ts` records a `tolerance: 0.5`
 field for these three and `parity-report.ts` renders them in a separate
 "Iterative engines (±0.5 characterization)" section of
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),

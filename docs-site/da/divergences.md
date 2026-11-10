@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -92,7 +92,7 @@ spline-føring (A3, A8) er lukkede og bevaret nedenfor som historik.
 > dokumenteret hver for sig nedenfor: `circo`/`twopi`/`osage` kører med samme
 > **±0.01 deterministiske** tolerance som dot-undersøgelsen med årsagstriage pr. id
 > („Accept på motorsporet“ nedenfor); `neato`/`fdp`/`sfdp` kører med en
-> løsere **±0.5-karakteriserende** tolerance uden triage pr. id endnu
+> løsere **±0.5-karakteriserende** tolerance med tilskrivning pr. id
 > („Karakterisering af de iterative motorer“ nedenfor). Aktuelle tal på tværs af motorer:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -190,15 +190,16 @@ kørsler og portens layout i de øvrige 8, fordi GTS ordner sine kanter efter
 allokeringsadresse.
 
 **Karakterisering af de iterative motorer: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-I modsætning til motorsporene `circo`/`twopi`/`osage` ovenfor er `neato`/`fdp`/`sfdp`
-**endnu ikke** triageret pr. id — `engine-walk.ts` registrerer et felt `tolerance: 0.5`
+I modsætning til motorsporene `circo`/`twopi`/`osage` ovenfor, som holdes til ±0.01,
+sammenlignes `neato`/`fdp`/`sfdp` ved ±0.5pt, og hvert af deres afvigende id'er er
+tilskrevet, som beskrevet nedenfor — `engine-walk.ts` registrerer et felt `tolerance: 0.5`
 for disse tre, og `parity-report.ts` viser dem i et separat afsnit,
 „Iterative engines (±0.5 characterization)“, i
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 udtrykkeligt **ikke** sammenligneligt med de deterministiske beståprocenter på ±0.01 andre steder
 i dette dokument. Aktuelle tal mod graphviz 16.1.0 (929 elementer; beståprocenten
-udelader inputs, som C-oraklet ikke kan rendere, jf.
-[Overensstemmelse](./conformance.md)):
+udelader inputs, som C-oraklet ikke kan rendere, og inputs, hvor nativt output
+varierer fra kørsel til kørsel, jf. [Overensstemmelse](./conformance.md)):
 
 | motor | undersøgt | inden for ±0.5pt | ikke-conformant | porteringsfejl / timeout | orakelfejl | orakel ikke-deterministisk |
 |---|---:|---:|---:|---:|---:|---:|

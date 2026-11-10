@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -92,7 +92,7 @@ lebegőpontos eltérések (A3, A8) lezártak, és alább történetként maradta
 > szinten, amelyeket alább külön dokumentálunk: a `circo`/`twopi`/`osage` ugyanazon a
 > **±0.01 determinisztikus** tűrésen fut, mint a dot-felmérés, azonosítónkénti gyökérok-
 > osztályozással (alább: „Motorsáv-elfogadás”); a `neato`/`fdp`/`sfdp` lazább,
-> **±0.5 jellemzési** tűréssel fut, még azonosítónkénti osztályozás nélkül
+> **±0.5 jellemzési** tűréssel fut, azonosítónkénti tulajdonítással
 > (alább: „Az iteratív motorok jellemzése”). A jelenlegi motorokon átívelő számok:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -190,14 +190,16 @@ maradék 8-ban a portolt változatét, mert a GTS az éleit foglalási cím szer
 rendezi.
 
 **Az iteratív motorok jellemzése: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-A fenti `circo`/`twopi`/`osage` motorsávokkal ellentétben a `neato`/`fdp`/`sfdp`
-még **nincs** azonosítónként osztályozva — az `engine-walk.ts` ezekhez a háromhoz
+A fenti `circo`/`twopi`/`osage` motorsávokkal ellentétben, amelyekre ±0.01 érvényes,
+a `neato`/`fdp`/`sfdp` összehasonlítása ±0.5pt tűréssel történik, és minden eltérő azonosítójuk
+tulajdonítva van, ahogy alább olvasható — az `engine-walk.ts` ezekhez a háromhoz
 `tolerance: 0.5` mezőt rögzít, a `parity-report.ts` pedig külön
 „Iteratív motorok (±0.5 jellemzés)” szakaszban jeleníti meg őket a
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) fájlban,
 kifejezetten **nem** összevethetően a dokumentum többi részében szereplő ±0.01-es determinisztikus
 átmenési arányokkal. Jelenlegi számok a graphviz 16.1.0 ellen (929 elemes univerzum; az átmenési arány kihagyja
-azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, a [Megfelelőség](./conformance.md) szerint):
+azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, és azokat, amelyeknél a natív kimenet
+futásról futásra változik, a [Megfelelőség](./conformance.md) szerint):
 
 | motor | felmért | ±0.5 pt-on belül | nem megfelelő | portolási hiba / időtúllépés | orákulumhiba | orákulum nem determinisztikus |
 |---|---:|---:|---:|---:|---:|---:|

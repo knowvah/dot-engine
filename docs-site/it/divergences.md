@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -100,7 +100,7 @@ sotto come storico.
 > tolleranza **deterministica ±0.01** del rilevamento dot, con triage della causa
 > radice per singolo id («Accettazione per traccia del motore» più sotto);
 > `neato`/`fdp`/`sfdp` girano con una tolleranza di **caratterizzazione ±0.5**
-> più larga e senza ancora un triage per singolo id («Caratterizzazione dei motori
+> più larga e con attribuzione per singolo id («Caratterizzazione dei motori
 > iterativi» più sotto). Numeri attuali tra i motori:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -212,8 +212,9 @@ in 22 esecuzioni su 30 e quello del port nelle altre 8, perché GTS ordina i suo
 spigoli per indirizzo di allocazione.
 
 **Caratterizzazione dei motori iterativi: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-A differenza delle tracce dei motori `circo`/`twopi`/`osage` qui sopra,
-`neato`/`fdp`/`sfdp` **non** sono ancora analizzati per singolo id —
+A differenza delle tracce dei motori `circo`/`twopi`/`osage` qui sopra, tenute a
+±0.01, `neato`/`fdp`/`sfdp` sono confrontati a ±0.5pt, e ciascuno dei loro id
+divergenti è attribuito, come descritto più sotto —
 `engine-walk.ts` registra un campo `tolerance: 0.5` per questi tre e
 `parity-report.ts` li rende in una sezione separata «Iterative engines (±0.5
 characterization)» di
@@ -221,7 +222,8 @@ characterization)» di
 esplicitamente **non** confrontabile con le percentuali di superamento
 deterministiche ±0.01 altrove in questo documento. Conteggi attuali rispetto a graphviz 16.1.0 (universo di
 929 elementi; la percentuale di superamento esclude gli input che l'oracolo C non
-riesce a renderizzare, secondo la [Conformità](./conformance.md)):
+riesce a renderizzare e gli input il cui output nativo varia da un'esecuzione all'altra,
+secondo la [Conformità](./conformance.md)):
 
 | motore | rilevati | entro ±0.5pt | non conformi | errore del porting / timeout | errore dell'oracolo | oracolo non deterministico |
 |---|---:|---:|---:|---:|---:|---:|

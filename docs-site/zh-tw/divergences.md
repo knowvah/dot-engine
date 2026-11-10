@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -78,7 +78,7 @@ A2、A3 與 A8 已結案，作為歷史保留；A10 作為各引擎登錄檔中�
 > `circo`／`twopi`／`osage` 採用與 dot 調查相同的 **±0.01 決定性**容許誤差，
 > 並逐 id 進行根本原因分級處理（見下方「引擎軌道接受」）；
 > `neato`／`fdp`／`sfdp` 則採用較寬鬆的 **±0.5 特徵描述**容許誤差，
-> 目前尚未逐 id 分級處理（見下方「迭代式引擎的特徵描述」）。目前各引擎的整體數字：
+> 並逐 id 歸因（見下方「迭代式引擎的特徵描述」）。目前各引擎的整體數字：
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)。
 
 **特徵描述。** 這些引擎執行迭代式數值版面配置，其結果取決於浮點數捨入——特別是
@@ -152,13 +152,14 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 同一個星形圖在 `circo` 軌道上也有偏差（2026-10-16 接受，599 處繪製操作差異，最大 0.71pt）。移植版重現了 clang 在 `circpos.c` 中的 FMA 收縮與求值順序，因此進入 PRISM 的 32 個位置中有 31 個位元精確。最後一個相差 1 ULP，因為 V8 與 Apple libm 在 `positionChildren` 的三個子區塊角度上對 `cos`／`sin` 的捨入不同。接著 PRISM 的 Delaunay 三角剖分在鏡像軸上翻轉了一條近乎共圓的對角線。注入 A/B：給定原生的 `cos`／`sin` 值時，移植版與參照程式一致。給定 V8 的值時，原生建置在 30 次執行中有 22 次產生參照程式的版面配置，其餘 8 次產生移植版的版面配置，因為 GTS 依配置位址排列其邊。
 
 **迭代式引擎的特徵描述：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
-與上方的 `circo`／`twopi`／`osage` 引擎軌道不同，`neato`／`fdp`／`sfdp`
-**尚未**逐 id 分級處理——`engine-walk.ts` 為這三者記錄 `tolerance: 0.5`
+與上方以 ±0.01 為標準的 `circo`／`twopi`／`osage` 引擎軌道不同，`neato`／`fdp`／`sfdp`
+以 ±0.5pt 比較，其每個差異 id 均已歸因（見下文）——`engine-walk.ts` 為這三者記錄 `tolerance: 0.5`
 欄位，而 `parity-report.ts` 將它們呈現於
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 中獨立的「Iterative engines (±0.5 characterization)」章節，
 明確**不可**與本文件其他地方 ±0.01 決定性的通過率相比較。針對 graphviz 16.1.0 的目前計數
-（929 項範圍；通過率排除 C 參照程式無法轉譯的輸入，依據[一致性](./conformance.md)）：
+（929 項範圍；通過率排除 C 參照程式無法轉譯的輸入以及原生輸出每次執行都會變化的輸入，
+依據[一致性](./conformance.md)）：
 
 | 引擎 | 調查數 | ±0.5pt 內 | 不一致 | 移植版錯誤／逾時 | 參照程式錯誤 | 參照程式非確定 |
 |---|---:|---:|---:|---:|---:|---:|

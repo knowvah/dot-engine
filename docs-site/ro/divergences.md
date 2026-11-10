@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ determinism al modelelor iterative; fostele diferențe de virgulă mobilă
 > rigoare, documentate separat mai jos: `circo`/`twopi`/`osage` rulează la aceeași
 > toleranță **deterministă de ±0.01** ca sondajul dot, cu triere a cauzei rădăcină pe
 > fiecare id („Acceptarea pe flux de motor” mai jos); `neato`/`fdp`/`sfdp` rulează la o
-> toleranță de **caracterizare de ±0.5** mai laxă, încă fără triere pe id
+> toleranță de **caracterizare de ±0.5** mai laxă, cu atribuire pe id
 > („Caracterizarea motoarelor iterative” mai jos). Numerele curente între motoare:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -187,14 +187,16 @@ nativ produce aranjarea oracolului în 22 din 30 de rulări și pe cea a portulu
 în celelalte 8, deoarece GTS își ordonează muchiile după adresa de alocare.
 
 **Caracterizarea motoarelor iterative: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Spre deosebire de fluxurile de motor `circo`/`twopi`/`osage` de mai sus, `neato`/`fdp`/`sfdp`
-**nu** sunt încă triate pe id — `engine-walk.ts` înregistrează un câmp `tolerance: 0.5`
+Spre deosebire de fluxurile de motor `circo`/`twopi`/`osage` de mai sus, ținute la ±0.01,
+`neato`/`fdp`/`sfdp` sunt comparate la ±0.5pt, iar fiecare id divergent al lor este atribuit,
+așa cum se descrie mai jos — `engine-walk.ts` înregistrează un câmp `tolerance: 0.5`
 pentru aceste trei, iar `parity-report.ts` le afișează într-o secțiune separată,
 „Iterative engines (±0.5 characterization)”, din
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 în mod explicit **necomparabilă** cu ratele de reușită deterministe de ±0.01 din restul
 acestui document. Numerele curente față de graphviz 16.1.0 (univers de 929 de elemente; procentul de reușită exclude
-intrările pe care oracolul C nu le poate randa, conform [Conformitate](./conformance.md)):
+intrările pe care oracolul C nu le poate randa și intrările la care ieșirea nativă variază de la o
+rulare la alta, conform [Conformitate](./conformance.md)):
 
 | motor | sondate | în limita ±0.5pt | neconforme | eroare portare / timeout | eroare oracol | oracol nedeterminist |
 |---|---:|---:|---:|---:|---:|---:|

@@ -718,7 +718,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       case found needs it (part 11 T7b).
   156. fdp root-mode render 3 of `subg-fdp.cluster_k` has a cluster `bb` x0 of 1.6e-11 where native has
       -3.3e-11: fdp force drift (A1 class), in `src/layout/fdp` (part 11 T7, T7b).
-  157. `docs/known-divergences.md`'s A1 intro says neato/fdp/sfdp are "not yet triaged per-id", which
+  157. **[DONE — issue #143: the clause names the ±0.5 tolerance as the difference, and the scope note's "no per-id triage yet" (`:91`) now reads "per-id attribution"; 23 locales re-translated and re-hashed, and given the pass-% clause on nondeterministic inputs that part 11 T11 added to the English only. Left open: #200 (fi's word for per-id, an sv typo)]** `docs/known-divergences.md`'s A1 intro says neato/fdp/sfdp are "not yet triaged per-id", which
       the paragraph after it contradicts; no figure is wrong (part 11 T11).
   158. On osage `1221`, `1332` and `2721`, native's json `_draw_` for a cluster with an infinite `bb`
       holds a `p` op with `inf`/`nan` points; the port's json omits that op (the `bb` text equals

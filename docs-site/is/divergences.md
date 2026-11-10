@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -93,7 +93,7 @@ gormalíkansvélarnar). *Uppsetning* `dot`-vélarinnar verður **ekki** fyrir á
 > strangleikastigum sem eru skjalfest sérstaklega hér á eftir: `circo`/`twopi`/`osage` keyra með sömu
 > **±0.01 ákvarðandi** vikmörkum og dot-könnunin, með rótarorsakagreiningu fyrir hvert auðkenni
 > („Samþykki ferils vélar“ hér á eftir); `neato`/`fdp`/`sfdp` keyra með rýmri
-> **±0.5 einkennavikmörkum** og enn án greiningar fyrir hvert auðkenni
+> **±0.5 einkennavikmörkum** og með rakningu fyrir hvert auðkenni
 > („Einkenni ítrekandi véla“ hér á eftir). Núverandi tölur þvert á vélar:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -191,14 +191,16 @@ véfréttarinnar í 22 af 30 keyrslum og uppsetningu yfirfærslunnar í hinum 8,
 GTS raðar leggjum sínum eftir úthlutunarvistfangi.
 
 **Einkenni ítrekandi véla: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Ólíkt vélaferlunum `circo`/`twopi`/`osage` hér að ofan eru `neato`/`fdp`/`sfdp`
-**enn ekki** flokkaðar eftir auðkennum — `engine-walk.ts` skráir reitinn `tolerance: 0.5`
+Ólíkt vélaferlunum `circo`/`twopi`/`osage` hér að ofan, þar sem vikmörkin ±0.01 gilda,
+eru `neato`/`fdp`/`sfdp` bornar saman með ±0.5pt vikmörkum og hvert fráviksauðkenni þeirra
+er rakið, eins og lýst er hér að neðan — `engine-walk.ts` skráir reitinn `tolerance: 0.5`
 fyrir þessar þrjár og `parity-report.ts` birtir þær í sérstökum kafla
 „Iterative engines (±0.5 characterization)“ í
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 sem er beinlínis **ekki** sambærilegur við ±0.01 ákvarðandi árangurshlutföll annars staðar
 í þessu skjali. Núverandi talningar gegn graphviz 16.1.0 (929 atriða heild; árangurshlutfall sleppir
-inntaki sem C-véfréttin getur ekki teiknað, samkvæmt [Samræmi](./conformance.md)):
+inntaki sem C-véfréttin getur ekki teiknað og inntaki þar sem úttak upprunalega forritsins
+breytist milli keyrslna, samkvæmt [Samræmi](./conformance.md)):
 
 | vél | könnuð | innan ±0.5pt | ósamræmd | villa í yfirfærslu / tímamörk | villa í véfrétt | véfrétt ekki ákvörðuð |
 |---|---:|---:|---:|---:|---:|---:|

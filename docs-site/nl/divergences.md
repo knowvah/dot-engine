@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -92,7 +92,7 @@ iteratieve-model-determinisme; de voormalige drijvendekomma-afwijkingen in de sp
 > striktheidsniveaus die hieronder apart worden beschreven: `circo`/`twopi`/`osage` draaien
 > op dezelfde **deterministische tolerantie van ±0.01** als de dot-survey met
 > grondoorzaakanalyse per id („Engine-spoor-acceptatie” hieronder); `neato`/`fdp`/`sfdp`
-> draaien op een ruimere **karakteriseringstolerantie van ±0.5** en nog zonder analyse per
+> draaien op een ruimere **karakteriseringstolerantie van ±0.5** met toeschrijving per
 > id („Karakterisering van de iteratieve engines” hieronder). Actuele cijfers over alle
 > engines heen:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
@@ -192,14 +192,16 @@ overeen met het orakel. Met de waarden van V8 levert de native build in 22 van
 zijn kanten op allocatieadres ordent.
 
 **Karakterisering van de iteratieve engines: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Anders dan de enginesporen `circo`/`twopi`/`osage` hierboven zijn `neato`/`fdp`/`sfdp`
-nog **niet** per id geanalyseerd — `engine-walk.ts` legt voor deze drie een veld
+Anders dan de enginesporen `circo`/`twopi`/`osage` hierboven, waarvoor ±0.01 geldt,
+worden `neato`/`fdp`/`sfdp` vergeleken op ±0.5pt, en elk van hun afwijkende id's is
+toegeschreven, zoals hieronder beschreven — `engine-walk.ts` legt voor deze drie een veld
 `tolerance: 0.5` vast en `parity-report.ts` toont ze in een aparte sectie
 „Iteratieve engines (karakterisering ±0.5)” van
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 uitdrukkelijk **niet** vergelijkbaar met de deterministische slagingspercentages van ±0.01
 elders in dit document. Actuele aantallen ten opzichte van graphviz 16.1.0 (universum van 929 items; het slagings-% laat
-invoer weg die het C-orakel niet kan renderen, volgens [Conformiteit](./conformance.md)):
+invoer weg die het C-orakel niet kan renderen en invoer waarvan de native uitvoer van run tot run
+verschilt, volgens [Conformiteit](./conformance.md)):
 
 | engine | surveyed | binnen ±0.5pt | niet-conform | port-fout / timeout | orakelfout | orakel niet-deterministisch |
 |---|---:|---:|---:|---:|---:|---:|
