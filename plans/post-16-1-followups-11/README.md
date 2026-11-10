@@ -116,10 +116,57 @@ Each item is fixed faithfully to the C (graphviz 16.1.0) or parked with a full d
 | Batch | Tasks | Mode | Done |
 |---|---|---|---|
 | [1](batch-1/overview.md) | T0 baselines, native fixtures | orchestrator | [x] |
-| [2](batch-2/overview.md) | T1 w4 recursion · T2 w5 `.ll` (128) · T3 xdot wrap (127, 135) · T4 fdp json (133) · T5 conjgrad (131) | parallel worktrees | [[x] |
+| [2](batch-2/overview.md) | T1 w4 recursion · T2 w5 `.ll` (128) · T3 xdot wrap (127, 135) · T4 fdp json (133) · T5 conjgrad (131) | parallel worktrees | [x] |
 | [3](batch-3/overview.md) | T6 sgd drift (132) · T7 native variance (137) · T8 nestedclust (129) · T9 svg subgraph id (136) | parallel worktrees, after batch 2 | [x] |
 | [4](batch-4/overview.md) | T10 comment and helper (126, 130) · T11 ledger and docs (138) | parallel | [x] |
-| [5](batch-5/overview.md) | T12 final verification, close-out, re-sign stop | orchestrator | [ ] |
+| [5](batch-5/overview.md) | T12 final verification, close-out, re-sign stop | orchestrator | [x] |
+
+## Mission summary
+
+T0–T12 landed on `chore/post-16-1-followups-11`, unsigned (the user re-signs before the PR). Items
+126–138 are closed and none is parked:
+
+- **126, 130** (T10): `spring-electrical.ts` cites `arm-pow.ts`; `sizesByNdim` removed.
+- **127, 135** (T3): `_draw_`-family strings wrap at `Max_outputline` (128, or `linelength`) with
+  native's backslash-newline on `-Tdot` and `-Txdot`, second renders included.
+- **128** (T1, T2): C's `setState` unbinds `constraint`, `minlen` and `group` for the flat-adjacent
+  aux layout, so `w4.gv` no longer recurses and `w5.gv` keeps its rank boxes.
+- **129** (T8): decompose's `Cmark` is a process static, carried with the root record, so
+  `nestedclust.gv`'s no-free renders 2 and 3 equal native.
+- **131** (T5): `conjgrad.ts` prints its error on one line.
+- **132** (T6): 2-D `mode=sgd` drift is macOS libm (`hypot`, `exp` last bits); closed under PR 119,
+  no change.
+- **133** (T4): fdp `json` undoes its cluster-edge proxies as `attach_attrs` does.
+- **134**: already fixed by PR #128.
+- **136** (T9): svg's graph and gradient ids use the emitted graph's `AGSEQ` (`graph1` on a subgraph).
+- **137** (T7, T7b): native's subgraph/root variance is heap order; the port equals settled native
+  after three render fixes (stored draw strings, `Spline.bb`/`edge_in_box`, `inf`/`nan` text and the
+  page clip).
+- **138** (T11): the divergences ledger's A1 table equals `PARITY.md`; 23 locales mirrored.
+
+**User decisions:** T3's two writes outside its write-set; T7's three render causes fixed in this
+mission (T7b) with a widened write-set.
+
+**Final verification (T12):**
+
+- Gates at `7bbf1e64`: typecheck, `npm test` 12729, goldens 1–5, corpus + docs 2837, ipsep 22, models
+  49, i18n 0 stale; `npm run coverage` statements 97.08, branches 92.79, functions 98.35, lines 98.13;
+  libm gate over the 18 changed layout test files 243 passed.
+- Survey at `8eb101c0`: `GATE PASS`, 0 regressions, oracle-error 14; conformant 931.
+- Bytediff, T0 against the head, 8 engines × 5 formats: 38,000 jobs, 35,372 identical, 2,229 diffs;
+  the 21 quarantined ids 840 jobs, 762 identical, 53 diffs. No stderr changed. Every diff falls under
+  a stop-8 exception: 2,237 xdot wrap-only (T3; 1,994 byte-equal to native, 221 where the layout
+  differs from native on both bundles, 22 equal to native modulo wrapping, follow-ups 145 and 159);
+  34 render diffs by T7b (18 B: empty edge groups `edge_in_box` now keeps; 16 C: `inf`/`nan` text and
+  the clip background), equal to native in the changed spans (pre-existing residuals: `1367`'s
+  non-UTF-8 name, follow-up 158, the anonymous `%1` name); 11 fdp `json` diffs by T4 (proxies gone,
+  native-equal in structure; `2717` has no native output). Capped jobs:
+  the 7 one-sided caps (`1652` neato × 3, `2108` dot json, `2371` osage json, `2834` neato
+  × 2) rerun at a 10-minute limit all finish: 6 identical, `2834` neato xdot a T3 wrap-only diff
+  byte-equal to native. Unproven, capped on both bundles: 392 jobs of the full run (356 timeouts, 36
+  out of memory) and 25 of the quarantined run (`2782`, `2854`: 20 timeouts, 5 out of memory).
+- Follow-ups opened: 139–147 and 151–159 (148–150 found and fixed by T7b), filed as GitHub issues
+  #129–#145 and #167.
 
 ## Documents
 

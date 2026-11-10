@@ -26,7 +26,13 @@ Items 109–113 closed by `plans/post-16-1-followups-9/`; the open work is items
 "New follow-ups found by part 9".
 Items 114–124 closed by `plans/post-16-1-followups-10/`; the open work is items 126–138 under
 "New follow-ups found by part 10".
-Being closed by `plans/post-16-1-followups-11/`.
+Items 126–138 closed by `plans/post-16-1-followups-11/`; the open work is items 139–147 and 151–159
+under "New follow-ups found by part 11" (148–150 were found and fixed by part 11 T7b).
+From 2026-11-09 open work is tracked in GitHub issues (knowvah/dot-engine). Follow-up → issue:
+139 → #129, 140 → #130, 141 → #131, 142 → #132, 143 and 144 → #133, 145 → #134, 146 → #135,
+147 → #136, 151 → #137, 152 → #138, 153 → #139, 154 → #140, 155 → #141, 156 → #142, 157 → #143,
+158 → #144, 159 → #167; corpus `2475_1` out of memory → #145. Issue numbers and follow-up numbers overlap: cite
+issues as `#N`, follow-ups as "item N".
 Items 90–93 are done by part 6; 94 landed with 95 (part 7 T1).
 
 ## State at handoff
@@ -646,28 +652,28 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
 - **New follow-ups found by part 10** (`plans/post-16-1-followups-10/`):
   125. **[DONE — part 10 `fix(T4)`, by user decision]** The xdot replay's `setStyle` rebuilt pen and width
       from each `S` op, and drew under an invis pen (`gvrender.c:480,524,543,583,600`) (part 10 T4).
-  126. `spring-electrical.ts:12-14` cites a nonexistent `src/common/apple-pow.ts` (part 10 T2).
-  127. The port's xdot omits native's backslash-newline wrap of long `_draw_` strings (`write.c`,
+  126. **[DONE — part 11 T10: the header cites `arm-pow.ts`]** `spring-electrical.ts:12-14` cites a nonexistent `src/common/apple-pow.ts` (part 10 T2).
+  127. **[DONE — part 11 T3: `_write_canonstr` wrap at `Max_outputline`, honouring `linelength`]** The port's xdot omits native's backslash-newline wrap of long `_draw_` strings (`write.c`,
       `MAX_OUTPUTLINE` 128). `compareXdot` parses, so surveys miss it (part 10 T2).
-  128. First renders throw in the port where native succeeds, on the T0 bundle too:
+  128. **[DONE — part 11 T1, T2: the aux layout unbinds `constraint`, `minlen`, `group`]** First renders throw in the port where native succeeds, on the T0 bundle too:
       `plans/post-16-1-followups-10/harness/B3b/w4.gv` (`Maximum call stack size exceeded`) and `w5.gv`
       (`Cannot read properties of undefined (reading 'll')`). Not diagnosed (part 10 B3b).
-  129. `graphs/nestedclust.gv` no-free render 2 differs on 6 lines and render 3 on 8; native is stable over
+  129. **[DONE — part 11 T8: decompose `Cmark` carried with the record; backstop removed]** `graphs/nestedclust.gv` no-free render 2 differs on 6 lines and render 3 on 8; native is stable over
       8 runs. Not diagnosed (part 10 B3b).
-  130. `fdp-adjust.ts:sizesByNdim` is redundant now that `getSizes` strides by `ndim` (part 10 T13).
-  131. `conjgrad.ts:209,326` pass a trailing `\n` to `agerrorf`, reported to print a blank second line
+  130. **[DONE — part 11 T10: removed]** `fdp-adjust.ts:sizesByNdim` is redundant now that `getSizes` strides by `ndim` (part 10 T13).
+  131. **[DONE — part 11 T5: dropped at both sites; the third is 139]** `conjgrad.ts:209,326` pass a trailing `\n` to `agerrorf`, reported to print a blank second line
       (part 10 T3).
-  132. 2-D `mode=sgd` differs from native, before this mission too: 58 nodes, max delta 1.59 on 133 of 256
+  132. **[DONE — part 11 T6: libm `hypot`/`exp` last bits, closed under PR 119; no change]** 2-D `mode=sgd` differs from native, before this mission too: 58 nodes, max delta 1.59 on 133 of 256
       `dot` lines; native repeats 8 of 8. Not diagnosed (part 10 T7 check).
-  133. A first `json` render on a graph with an edge to a cluster prints `__0:` proxies and edges with no
+  133. **[DONE — part 11 T4: json undoes cluster edges and skips stand-ins]** A first `json` render on a graph with an edge to a cluster prints `__0:` proxies and edges with no
       `pos` (`src/render/json.ts`). Agent-reported (part 10 T14).
   134. **[DONE — PR #128: printed with native's prefix]** `CLUSTER_EDGE_WARNING` lacks native's `Warning: ` prefix (`src/layout/fdp/index.ts:41`); first-render
       stderr. Agent-reported (part 10 T14).
-  135. A second `xdot` does not fold a replayed long `_draw_`; may be 127 (part 10 T14).
-  136. svg `id="graph<seq>"` on a subgraph render: native `graph1`, the port `graph0` (part 10 T15).
-  137. Subgraph then root, and root with no free then subgraph, on fdp and osage: 6 to 10 comparator diffs
+  135. **[DONE — part 11 T3: same mechanism as 127]** A second `xdot` does not fold a replayed long `_draw_`; may be 127 (part 10 T14).
+  136. **[DONE — part 11 T9: `"graph" + AGSEQ` on the top group and gradient]** svg `id="graph<seq>"` on a subgraph render: native `graph1`, the port `graph0` (part 10 T15).
+  137. **[DONE — part 11 T7, T7b: heap order natively; stored draws, `Spline.bb`, `inf`/`nan` fixed]** Subgraph then root, and root with no free then subgraph, on fdp and osage: 6 to 10 comparator diffs
       on `xdot` and `svg`; heap addresses suspected, untested (part 10 T15).
-  138. `docs/known-divergences.md` A1's neato and fdp rows and "99.8/96.6" lag `PARITY.md`, and the
+  138. **[DONE — part 11 T11]** `docs/known-divergences.md` A1's neato and fdp rows and "99.8/96.6" lag `PARITY.md`, and the
       non-goals line "`-Tplain` text output. Deferred" may be stale (part 10 T16).
 
   Accepted, not open (user decision, PR 119): layouts that vary with the runtime's `pow`, `hypot`
@@ -675,6 +681,53 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   already do between OSes and chipsets on one implementation; the algorithm is still correct.
   The oracle fixtures are macOS's, so a probe this sensitive replays macOS's values
   (`kk-large.pow.json`). No library change is wanted.
+
+- **New follow-ups found by part 11** (`plans/post-16-1-followups-11/`):
+  139. `conjgrad-mkernel.ts:28` (C `conjgrad.c:65`) still ends its `agerrorf` text with `\n`, the
+      defect 131 fixed at the other two sites; its test pins the `\n` (part 11 T5).
+  140. `make_flat_adj_edges` builds a `rank=source` subgraph `xxx` (`dotsplines.c:1177-1185`) the port
+      omits; no output difference on w4 and six variants (part 11 T1).
+  141. `setState` also unbinds `E_fontcolor`, `E_labelfontcolor`, `E_xlabel`, `N_style`, `N_fontcolor`,
+      `N_xlabel`, `N_showboxes`, `N_nojustify` (`dotsplines.c:731-771`) for the aux layout; head and
+      tail labels probed equal, the rest unprobed (part 11 T1, T2).
+  142. `svgGraphId` (`src/render/svg-id.ts:54`) still hardcodes `graph0` for the graph anchor and map id
+      (`device.ts:235,391`) and duplicates T9's `graphObjId`; the comment in
+      `layout-reset.edges.test.ts` before the svg graph-id test is stale (part 11 T9).
+  143. For the user (AD-3, PR 119): sgd's `hypot` (`sgd.ts:346`) could use the existing macOS model
+      `libm-hypot.ts`, taking sgd58 to 6 of 255 lines (max 0.01); not adopted (part 11 T6).
+  144. There is no macOS `exp` model; `Math.exp` misses 4 of 30 sgd eta values (`sgd.c:216`), the rest
+      of 132's drift. Same user decision as 143 (part 11 T6).
+  145. `echoAttr`/`echoGraphAttr` (`src/render/dot/attrs.ts:362,397`) print cluster and graph
+      attributes through `agcanonEscape`, so long labels there never wrap at `Max_outputline`; no
+      native ref covers it (part 11 T3).
+  146. json's `insert()` warns `Duplicate cluster name` (`gvrender_core_json.c:617`); the port's json
+      has no such warning (part 11 T4).
+  147. json0 prints `.5`/`125.354` where native prints `0.5`/`125.35` (the `printNum` fallback for
+      json0 nodes); pre-existing, `compareJson` passes (part 11 T4).
+  148–150. **[DONE — part 11 T7b]** The three render causes behind 137: (A) stored draw strings,
+      (B) `Spline.bb` and `edge_in_box`, (C) `inf`/`nan` text and the page clip (part 11 T7).
+  151. Comments still name the removed `routeDotEdges` backstop or `edge-order.ts`:
+      `splines-flat-labeled.ts:153`, `splines-flat.ts:377`, `svg.ts:119`, `edgeInfo.ts:177`,
+      `bsd-qsort.ts:11` (part 11 T8).
+  152. Other process statics that `ctx.layout` resets per layout (AD-4) may meet stale records on a
+      no-free relayout, as decompose's `Cmark` did; only `Cmark` was audited (part 11 T8).
+  153. The port prints `digraph {` for an input named `digraph "" {` (`1896`); pre-existing (part 11 T3).
+  154. `-Tjson` prints only this render's draw strings (`drawStringsByObject`); C prints the stored
+      `_draw_` of an object this render does not draw, as T7b made `-Tdot`/`-Txdot` do (part 11 T7b).
+  155. `nodeInBox` applies the svg pad 4 on xdot renders (`emit-gates.ts:49`); C's xdot pad is 0. No
+      case found needs it (part 11 T7b).
+  156. fdp root-mode render 3 of `subg-fdp.cluster_k` has a cluster `bb` x0 of 1.6e-11 where native has
+      -3.3e-11: fdp force drift (A1 class), in `src/layout/fdp` (part 11 T7, T7b).
+  157. `docs/known-divergences.md`'s A1 intro says neato/fdp/sfdp are "not yet triaged per-id", which
+      the paragraph after it contradicts; no figure is wrong (part 11 T11).
+  158. On osage `1221`, `1332` and `2721`, native's json `_draw_` for a cluster with an infinite `bb`
+      holds a `p` op with `inf`/`nan` points; the port's json omits that op (the `bb` text equals
+      native). Pre-existing at the T0 bundle (part 11 T12 bytediff).
+  159. Node, edge-endpoint and graph names print through `xdotId` (`src/render/dot/xdot-ops.ts:318`,
+      from `agwrite.ts:158,162,302,339-341`), not `_agstrcanon`, so a name over `Max_outputline` never
+      wraps where C's `write_nodename`/`write_hdr` → `write_canonstr` does. With 145 (which the T12
+      bytediff also shows on patchwork's echoed `rects` and edge `pos`), these are the 22 xdot diffs
+      equal to native only modulo wrapping. Pre-existing at the T0 bundle (part 11 T12 bytediff).
 
 ## Local leftovers (not committed, safe to delete)
 
