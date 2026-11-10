@@ -709,7 +709,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   151. **[DONE — issue #137: comments name the live readers; aux label re-place removed]** Comments still name the removed `routeDotEdges` backstop or `edge-order.ts`:
       `splines-flat-labeled.ts:153`, `splines-flat.ts:377`, `svg.ts:119`, `edgeInfo.ts:177`,
       `bsd-qsort.ts:11` (part 11 T8).
-  152. Other process statics that `ctx.layout` resets per layout (AD-4) may meet stale records on a
+  152. **[DONE — issue #138: all 24 registered resets audited in `docs/process-statics.md`; `Cmark` is the only one compared with stale records]** Other process statics that `ctx.layout` resets per layout (AD-4) may meet stale records on a
       no-free relayout, as decompose's `Cmark` did; only `Cmark` was audited (part 11 T8).
   153. The port prints `digraph {` for an input named `digraph "" {` (`1896`); pre-existing (part 11 T3).
   154. `-Tjson` prints only this render's draw strings (`drawStringsByObject`); C prints the stored
