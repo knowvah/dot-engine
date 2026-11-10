@@ -478,9 +478,11 @@ export function buildFromAst(ast: ParsedGraph): Graph {
   const graph = new Graph(ast.id ?? '', kind, ast.id == null);
   // An unnamed root graph is itself anonymous in cgraph (agopen with no name),
   // consuming anon id 1 before any statement — so the first anonymous subgraph is
-  // %3, not %1 (a named root leaves the counter at 0 → first subgraph %1).
+  // %3, not %1 (a named root leaves the counter at 0 → first subgraph %1). A root
+  // named `""` is named: idmap maps the string and leaves the counter alone, so
+  // the test is for null, not for a falsy id.
   // @see lib/cgraph/graph.c:agopen, lib/cgraph/id.c:idmap
-  if (!ast.id) processor.advanceAnonId();
+  if (ast.id == null) processor.advanceAnonId();
   buildGraph(ast.stmts, graph, graph, ast.directed, processor);
   return graph;
 }

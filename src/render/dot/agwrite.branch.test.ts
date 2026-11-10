@@ -38,7 +38,7 @@ type Priv = any;
 describe("irrelevantSubgraph", () => {
   it("an anonymous subgraph registered as a cluster is never irrelevant", () => {
     const g = new Graph("G", "directed");
-    const sg = new Graph("", "directed");
+    const sg = new Graph("", "directed", true);
     sg.parent = g; sg.root = g;
     const r = new XdotRenderer() as Priv;
     r.clusters = [sg];
@@ -47,9 +47,9 @@ describe("irrelevantSubgraph", () => {
 
   it("an anonymous subgraph whose own attr differs from its parent's is not irrelevant", () => {
     const root = new Graph("G", "directed");
-    const mid = new Graph("", "directed");
+    const mid = new Graph("", "directed", true);
     mid.parent = root; mid.root = root;
-    const sg = new Graph("", "directed");
+    const sg = new Graph("", "directed", true);
     sg.parent = mid; sg.root = root;
     sg.attrs.set("rank", "same"); // mid.attrs has no 'rank' -> mismatch
     const r = new XdotRenderer() as Priv;
@@ -58,7 +58,7 @@ describe("irrelevantSubgraph", () => {
   });
 
   it("a root-like graph (parent=null) with attrs is not irrelevant", () => {
-    const root = new Graph("", "directed"); // parent stays null (constructor default)
+    const root = new Graph("", "directed", true); // parent stays null (constructor default)
     root.attrs.set("foo", "bar");
     const r = new XdotRenderer() as Priv;
     r.clusters = [];
@@ -66,7 +66,7 @@ describe("irrelevantSubgraph", () => {
   });
 
   it("a root-like graph (parent=null) with no attrs IS irrelevant", () => {
-    const root = new Graph("", "directed");
+    const root = new Graph("", "directed", true);
     const r = new XdotRenderer() as Priv;
     r.clusters = [];
     expect(r.irrelevantSubgraph(root)).toBe(true);
@@ -111,7 +111,7 @@ describe("writeSubgs — irrelevant subgraph inlines its children", () => {
     const outer = new Graph("sub1", "directed"); // named, non-cluster -> always written
     outer.parent = g; outer.root = g;
     g.subgraphs.set("sub1", outer);
-    const mid = new Graph("", "directed"); // anonymous, no attrs -> irrelevant (matches outer's hasBb=false)
+    const mid = new Graph("", "directed", true); // anonymous, no attrs -> irrelevant (matches outer's hasBb=false)
     mid.parent = outer; mid.root = g;
     outer.subgraphs.set("%1", mid);
     const inner = new Graph("cluster_x", "directed");

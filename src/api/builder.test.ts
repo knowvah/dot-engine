@@ -7,6 +7,7 @@ import { GvcContext } from '../gvc/context.js';
 import { createMeasurer } from '../common/textmeasure-factory.js';
 import { DOT_LAYOUT_ENGINE } from '../layout/dot/index.js';
 import { getLayout } from './geometry.js';
+import { render } from '../render/public.js';
 import type { GvGraphBuilder } from './builder.js';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -49,6 +50,26 @@ describe('createGraph defaults', () => {
   it('sets graph name from opts', () => {
     const b = createGraph({ name: 'G' });
     expect(b.graph.name).toBe('G');
+    expect(b.graph.anonymous).toBe(false);
+  });
+
+  // agopen(NULL) is anonymous; agopen("") maps the name "". @see lib/cgraph/id.c:idmap
+  it('is anonymous when no name is given', () => {
+    expect(createGraph().graph.anonymous).toBe(true);
+    expect(createGraph({ directed: false }).graph.anonymous).toBe(true);
+    expect(createGraph().graph.name).toBe('');
+  });
+
+  it('keeps an explicit empty name as a name', () => {
+    const b = createGraph({ name: '' });
+    expect(b.graph.anonymous).toBe(false);
+    expect(b.graph.name).toBe('');
+  });
+
+  it('writes digraph { for an unnamed graph and digraph "" { for one named ""', () => {
+    expect(render(createGraph().graph, 'dot', { engine: 'dot' }).startsWith('digraph {\n')).toBe(true);
+    expect(render(createGraph({ name: '' }).graph, 'dot', { engine: 'dot' }).startsWith('digraph "" {\n')).toBe(true);
+    expect(render(createGraph({ name: 'G' }).graph, 'dot', { engine: 'dot' }).startsWith('digraph G {\n')).toBe(true);
   });
 });
 

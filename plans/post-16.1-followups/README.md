@@ -711,7 +711,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       `bsd-qsort.ts:11` (part 11 T8).
   152. **[DONE — issue #138: all 24 registered resets audited in `docs/process-statics.md`; `Cmark` is the only one compared with stale records]** Other process statics that `ctx.layout` resets per layout (AD-4) may meet stale records on a
       no-free relayout, as decompose's `Cmark` did; only `Cmark` was audited (part 11 T8).
-  153. The port prints `digraph {` for an input named `digraph "" {` (`1896`); pre-existing (part 11 T3).
+  153. **[DONE — issue #139: writeHdr/isAnonymous read the anonymous flag; parser anon id and createGraph default fixed]** The port prints `digraph {` for an input named `digraph "" {` (`1896`); pre-existing (part 11 T3).
   154. `-Tjson` prints only this render's draw strings (`drawStringsByObject`); C prints the stored
       `_draw_` of an object this render does not draw, as T7b made `-Tdot`/`-Txdot` do (part 11 T7b).
   155. `nodeInBox` applies the svg pad 4 on xdot renders (`emit-gates.ts:49`); C's xdot pad is 0. No
