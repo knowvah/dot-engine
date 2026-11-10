@@ -1,0 +1,1 @@
+digraph { node [shape=box]; {rank=same; a; b} a:ne -> b:nw [label="long label text", headlabel="h", taillabel="t"]; a -> b [label="mid"]; a -> c; b -> c; }

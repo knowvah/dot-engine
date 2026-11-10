@@ -116,7 +116,7 @@ export class SvgRenderer implements RendererPlugin {
   /**
    * Close the edge group.  Edge graphics (path + arrowhead) are emitted here
    * because the full spline is available on e.info.spl only after layout has
-   * run routeDotEdges.
+   * routed the edges.
    *
    * For multi-color edges (color="c1:c2:…"), emits parallel offset Béziers
    * (one per color, SEP=2.0 apart) then arrows in headcolor/tailcolor.

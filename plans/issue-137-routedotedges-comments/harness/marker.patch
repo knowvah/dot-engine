@@ -1,0 +1,49 @@
+--- issue137-base/src/layout/dot/splines-flat.ts	2026-11-10 12:39:48
++++ src/layout/dot/splines-flat.ts	2026-11-10 13:02:45
+@@ -358,6 +358,7 @@
+  * @see lib/dotgen/dotsplines.c:make_flat_adj_edges
+  */
+ export function makeFlatAdjEdges(g: Graph, edges: Edge[], cnt: number, et: number): number {
++  console.error('ISSUE137_FLATADJ');
+   const aux = buildFlatAux(g, edges, cnt);
+   // C setEdgeType(auxg, et); inlined (index.ts's setEdgeType would be an import cycle).
+   // @see lib/dotgen/dotsplines.c:make_flat_adj_edges
+@@ -373,7 +374,28 @@
+   // label pass), so recover_slack repositions the label vnode only afterward.
+   // Re-place the aux labels here to read the final vnode coords (DOT-12).
+   // @see lib/dotgen/dotsplines.c:make_regular_edge (recover_slack before place_vnlabel)
++  const snap137 = (): string => {
++    const parts: string[] = [JSON.stringify(aux.auxg.info.bb)];
++    for (let n = aux.auxg.info.nlist; n; n = n.info.next) {
++      const l = n.info.label as { pos?: { x: number; y: number }; set?: boolean } | undefined;
++      parts.push(`${n.info.coord?.x},${n.info.coord?.y}`);
++      if (l) parts.push(`L${l.pos?.x},${l.pos?.y},${l.set}`);
++    }
++    for (const e of aux.auxg.edges) {
++      const l = e.info.label as { pos?: { x: number; y: number }; set?: boolean } | undefined;
++      if (l) parts.push(`E${l.pos?.x},${l.pos?.y},${l.set}`);
++    }
++    return parts.join('|');
++  };
++  const before137 = snap137();
+   placeRegularEdgeLabels(aux.auxg);
++  const after137 = snap137();
++  console.error(before137 === after137 ? 'ISSUE137_SAME' : `ISSUE137_CHANGED ${before137} => ${after137}`);
++  let vl137 = 0;
++  for (let n = aux.auxg.info.nlist; n; n = n.info.next) {
++    if (n.info.node_type === VIRTUAL && n.info.label && (n.info.in?.size ?? 0) > 0) vl137++;
++  }
++  console.error(`ISSUE137_VLABELS ${vl137}`);
+   gvPostprocess(aux.auxg);
+   copyFlatSplines(g, edges, aux);
+   cleanupCloneGraph(aux.auxg);
+--- issue137-base/src/layout/dot/edge-route.ts	2026-11-10 12:39:48
++++ src/layout/dot/edge-route.ts	2026-11-10 12:46:22
+@@ -461,6 +461,7 @@
+ export function routeLoneEdge(e: GraphEdge, g: Graph): void {
+   // A lost edge (routesplines failure, C semantics) is consumed: C routes each
+   // edge exactly once, so a later group must not re-attempt it.
++  if (!routedThisPass(e) && e.info.lost === true) console.error('ISSUE137_LOSTSKIP');
+   if (routedThisPass(e) || e.info.lost === true) return;
+   // C dot_splines_ skips FLATORDER/IGNORED edges when building the route list;
+   // an IGNORED edge (e.g. a concentrate-merged parallel duplicate) must get no

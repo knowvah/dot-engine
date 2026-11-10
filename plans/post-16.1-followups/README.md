@@ -706,7 +706,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       json0 nodes); pre-existing, `compareJson` passes (part 11 T4).
   148–150. **[DONE — part 11 T7b]** The three render causes behind 137: (A) stored draw strings,
       (B) `Spline.bb` and `edge_in_box`, (C) `inf`/`nan` text and the page clip (part 11 T7).
-  151. Comments still name the removed `routeDotEdges` backstop or `edge-order.ts`:
+  151. **[DONE — issue #137: comments name the live readers; aux label re-place removed]** Comments still name the removed `routeDotEdges` backstop or `edge-order.ts`:
       `splines-flat-labeled.ts:153`, `splines-flat.ts:377`, `svg.ts:119`, `edgeInfo.ts:177`,
       `bsd-qsort.ts:11` (part 11 T8).
   152. Other process statics that `ctx.layout` resets per layout (AD-4) may meet stale records on a
