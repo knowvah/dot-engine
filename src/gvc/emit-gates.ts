@@ -31,27 +31,18 @@ function nodeBBox(n: Node): Box {
 }
 
 /**
- * node_in_box: is the node's own bbox within job's page/view clip?
+ * node_in_box: is the node's own bbox within the job's page clip?
  *
- * C's `job->clip` is derived from `job->bb` (= `GD_bb(g)`) expanded by
- * `job->pad` on every side (init_job_viewport's `job->bb = gvc->bb ±
- * job->pad`, feeding `job->view`/`job->focus`, which setup_page's `job->clip`
- * algebraically reduces back to for the single-page, unpaginated case this
- * port implements — Z and rotation cancel out of that derivation). This port
- * has no separate `page=` pagination model, so `job.bb` padded by `job.pad`
- * IS `job->clip` here.
+ * emit_node passes `job->clip`, which setup_page builds from the bb padded by
+ * the device's pad (see deviceClip). The edge gate, the clusters and the
+ * background read the same box, so `job.clip` has to be set before a node is
+ * rendered; `render` sets it.
  *
  * @see lib/common/emit.c:1636-1639 node_in_box
  * @see lib/common/emit.c:1808 emit_node gate
- * @see lib/common/emit.c:3356 init_job_viewport (job->bb = gvc->bb ± pad)
- * @see lib/common/emit.c:1553-1564 setup_page (job->clip from focus/view)
  */
 export function nodeInBox(n: Node, job: RenderJob): boolean {
-  const clip: Box = {
-    ll: { x: job.bb.ll.x - job.pad.x, y: job.bb.ll.y - job.pad.y },
-    ur: { x: job.bb.ur.x + job.pad.x, y: job.bb.ur.y + job.pad.y },
-  };
-  return boxOverlap(nodeBBox(n), clip);
+  return boxOverlap(nodeBBox(n), job.clip);
 }
 
 /**

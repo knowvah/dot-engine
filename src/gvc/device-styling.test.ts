@@ -131,38 +131,41 @@ function nodeAt(coord: { x: number; y: number }): Node {
 }
 
 describe('AC17: renderNode — node_in_box gate', () => {
-  it('omits a node whose own bbox falls entirely outside job.bb (+ pad)', () => {
+  it('omits a node whose own bbox falls entirely outside job.clip', () => {
     const n = nodeAt({ x: 1000, y: 1000 }); // far outside the clip below
     const svgRenderer = createSvgRenderer();
     const job = new RenderJob('svg', stubMeasurer);
     job.bb = { ll: { x: 0, y: 0 }, ur: { x: 10, y: 10 } };
     job.pad = { x: 4, y: 4 };
+    job.clip = { ll: { x: -4, y: -4 }, ur: { x: 14, y: 14 } }; // bb ± pad
     job.renderer = svgRenderer;
     renderNode(n, svgRenderer, job, new Set<Node>());
     expect(job.output.join('')).not.toContain('<ellipse');
   });
 
-  it('draws a node whose own bbox overlaps job.bb (+ pad)', () => {
+  it('draws a node whose own bbox is within job.clip', () => {
     const n = nodeAt({ x: 5, y: 5 }); // inside the clip below
     const svgRenderer = createSvgRenderer();
     const job = new RenderJob('svg', stubMeasurer);
     job.bb = { ll: { x: 0, y: 0 }, ur: { x: 10, y: 10 } };
     job.pad = { x: 4, y: 4 };
+    job.clip = { ll: { x: -4, y: -4 }, ur: { x: 14, y: 14 } }; // bb ± pad
     job.renderer = svgRenderer;
     renderNode(n, svgRenderer, job, new Set<Node>());
     expect(job.output.join('')).toContain('<ellipse');
   });
 
-  it('draws a node just inside the padded clip (job.bb alone would exclude it)', () => {
-    // Node bbox is [102,108]x[95,105] — outside job.bb=[0,100]^2 but within
-    // pad=4 of it, matching C's job->clip = job->bb ± job->pad (not job->bb
-    // alone). Regression guard for the degenerate-bb / abort-path fix: the
-    // gate must read job.bb padded, not job.bb raw.
+  it('draws a node within job.clip that job.bb alone would exclude', () => {
+    // Node bbox is [98,108]x[95,105] against job.bb=[0,100]^2 and the svg
+    // clip bb ± 4. Regression guard for the degenerate-bb / abort-path fix:
+    // the gate reads the clip setup_page built, which on svg is the padded bb.
+    // The per-device pad is pinned in node-in-box-pad.test.ts.
     const n = nodeAt({ x: 103, y: 100 });
     const svgRenderer = createSvgRenderer();
     const job = new RenderJob('svg', stubMeasurer);
     job.bb = { ll: { x: 0, y: 0 }, ur: { x: 100, y: 100 } };
     job.pad = { x: 4, y: 4 };
+    job.clip = { ll: { x: -4, y: -4 }, ur: { x: 104, y: 104 } }; // bb ± pad
     job.renderer = svgRenderer;
     renderNode(n, svgRenderer, job, new Set<Node>());
     expect(job.output.join('')).toContain('<ellipse');

@@ -714,7 +714,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   153. **[DONE — issue #139: writeHdr/isAnonymous read the anonymous flag; parser anon id and createGraph default fixed]** The port prints `digraph {` for an input named `digraph "" {` (`1896`); pre-existing (part 11 T3).
   154. **[DONE — issue #140: no defect as written; json prints stored draw strings through emitAttrs's base and the xdot overlay; pinned by json-stored-draws.test.ts. Left open in #196 (needs-ruling): a labelled cluster's or root's `_ldraw_` that xdot_end_cluster/xdot_end_graph clear and the port keeps]** `-Tjson` prints only this render's draw strings (`drawStringsByObject`); C prints the stored
       `_draw_` of an object this render does not draw, as T7b made `-Tdot`/`-Txdot` do (part 11 T7b).
-  155. `nodeInBox` applies the svg pad 4 on xdot renders (`emit-gates.ts:49`); C's xdot pad is 0. No
+  155. **[DONE — issue #141: `init_job_pad` ported; each renderer states `defaultPad` (svg and map 4; dot, xdot, plain, json 0), `render` resolves `job.pad` from `pad=` or that, `deviceClip` uses `job.pad` and `nodeInBox` reads `job.clip`. A native case exists: corpus 2825 with `margin=1` on its clusters leaves node G 2 pt above the `0,0,0,0` bb, drawn in svg and cmapx and not in xdot or json (`plans/issue-141-nodeinbox-pad/harness`, `node-in-box-pad.test.ts`). Left open: #198 (plain's `graph` scale ignores `pad=`)]** `nodeInBox` applies the svg pad 4 on xdot renders (`emit-gates.ts:49`); C's xdot pad is 0. No
       case found needs it (part 11 T7b).
   156. fdp root-mode render 3 of `subg-fdp.cluster_k` has a cluster `bb` x0 of 1.6e-11 where native has
       -3.3e-11: fdp force drift (A1 class), in `src/layout/fdp` (part 11 T7, T7b).

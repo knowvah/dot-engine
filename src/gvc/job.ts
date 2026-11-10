@@ -274,10 +274,13 @@ export class RenderJob {
   readonly format: string;
 
   bb: Box = { ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } };
+  /** `pad=`, or else the render device's default pad (`RendererPlugin.defaultPad`).
+   * @see lib/common/emit.c:3290-3304 init_job_pad */
   pad: Point = { x: 0, y: 0 };
   /** Current page clip in graph units, as setup_page computes it from the
-   * viewport focus/view (see setupPageClip). Read by the SVG page translate and
-   * background. @see lib/gvc/gvcjob.h:GVJ_s.clip; lib/common/emit.c:setup_page */
+   * viewport focus/view (see setupPageClip). Read by the node and edge gates
+   * and by the SVG page translate and background.
+   * @see lib/gvc/gvcjob.h:GVJ_s.clip; lib/common/emit.c:setup_page */
   clip: Box = { ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } };
   /** Graph-level `margin=` (init_job_margin); page-pagination margin, distinct
    * from node/cluster label margin. @see lib/common/emit.c:3309-3331 */

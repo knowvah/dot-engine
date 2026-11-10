@@ -53,6 +53,7 @@ import {
   emitParallelEdgePaths,
   escapeXml,
   emitPoints,
+  SVG_PAD,
 } from './svg-helpers.js';
 import { emitArrowOps } from './svg-arrow-ops.js';
 import { resolveRenderColor, colorOpacity, colorPaint } from './color-resolve.js';
@@ -93,6 +94,8 @@ export class SvgRenderer implements RendererPlugin {
   readonly type = 'svg';
   /** @see plugin/core/gvplugin_core.c registration table */
   readonly quality = 0;
+  /** @see plugin/core/gvrender_core_svg.c:810 render_features_svg (default pad) */
+  readonly defaultPad = SVG_PAD;
   /** Whether the current edge's <g> group was opened (deferred-emit state). */
   private edgeGroupOpen = false;
 

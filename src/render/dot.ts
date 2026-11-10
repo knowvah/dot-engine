@@ -68,6 +68,8 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
   readonly type: string = 'xdot';
   /** @see plugin/core/gvplugin_core.c registration table */
   readonly quality = 0;
+  /** `-Tdot` too (`:734`). @see plugin/core/gvrender_core_dot.c:745 render_features_xdot */
+  readonly defaultPad = 0;
 
   /**
    * Whether this format attaches the xdot draw attributes before agwrite.
@@ -139,8 +141,8 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
     if (fillSpec === 'transparent') fillSpec = 'white';
     // The canvas fill covers job->clip, which setup_page derives from the focus
     // and page size: bb ± pad (xdot's default pad is 0), and nan for an infinite
-    // bb. @see emit.c:1559-1562 setup_page · gvrender_core_dot.c:739 (default_pad)
-    const c = deviceClip(g, this, job);
+    // bb. @see emit.c:1559-1562 setup_page · gvrender_core_dot.c:745 (default_pad)
+    const c = deviceClip(g, job);
     const corners: Point[] = [
       { x: c.ll.x, y: c.ll.y }, { x: c.ll.x, y: c.ur.y }, { x: c.ur.x, y: c.ur.y }, { x: c.ur.x, y: c.ll.y },
     ];

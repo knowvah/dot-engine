@@ -10,6 +10,7 @@ import { describe, it, expect } from "vitest";
 import { XdotRenderer } from "./dot.js";
 import { RenderJob, createObjState, ObjType } from "../gvc/job.js";
 import { PenType } from "../gvc/context.js";
+import { parseGraphPad } from "../gvc/viewport.js";
 import type { TextMeasurer } from "../common/textmeasure.js";
 import type { TextSpan } from "../common/emit-types.js";
 import { Graph } from "../model/graph.js";
@@ -54,6 +55,8 @@ describe("pageBackground", () => {
     const r = new XdotRenderer();
     const g = new Graph("G", "directed");
     g.attrs.set("pad", "0.5");
+    // What render's init_job_pad step resolves; deviceClip reads job.pad.
+    job.pad = parseGraphPad(g.attrs.get("pad"), r.defaultPad);
     r.beginGraph(g, job);
     r.pageBackground(g, job);
     r.endGraph(g, job);

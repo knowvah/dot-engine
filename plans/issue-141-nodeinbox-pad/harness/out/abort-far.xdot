@@ -1,0 +1,76 @@
+digraph CrashPOC {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 0 0 0 0 0 ",
+		bb="0,0,0,0",
+		concentrate=true,
+		xdotversion=1.7
+	];
+	node [URL="u\N",
+		label="\N"
+	];
+	subgraph cluster_outer {
+		graph [_draw_="c 7 -#000000 p 4 0 0 0 0 0 0 0 0 ",
+			bb="0,0,0,0"
+		];
+		subgraph cluster_inner {
+			graph [_draw_="c 7 -#000000 p 4 0 0 0 0 0 0 0 0 ",
+				bb="0,0,0,0"
+			];
+			{
+				C	[height=0.5,
+					pos="2,178",
+					width=0.75];
+				D	[height=0.5,
+					pos="0,106",
+					width=0.75];
+				E	[height=0.5,
+					pos="0,178",
+					width=0.75];
+				F	[height=0.5,
+					pos="1,106",
+					width=0.75];
+			}
+			A	[height=0.5,
+				pos="0,322",
+				width=0.75];
+			C -> D;
+			C -> F;
+			P	[height=0.05,
+				pos="1,466",
+				shape=point,
+				style=invis,
+				width=0.05];
+			C -> P	[constraint=false,
+				style=invis];
+			G	[height=0.5,
+				pos="0,34",
+				width=0.75];
+			D -> G;
+			D -> P	[constraint=false,
+				style=invis];
+			E -> P	[constraint=false,
+				style=invis];
+			I	[height=0.5,
+				pos="0,466",
+				width=0.75];
+			F -> P	[constraint=false,
+				style=invis];
+		}
+		{
+			graph [rank=same];
+			B	[height=0.5,
+				pos="4,250",
+				width=0.75];
+			H	[height=0.5,
+				pos="5,394",
+				width=0.75];
+		}
+		A -> B;
+		B -> C;
+		B -> E;
+		B -> P	[constraint=false,
+			style=invis];
+		I -> H;
+		H -> A;
+		H -> C;
+	}
+}

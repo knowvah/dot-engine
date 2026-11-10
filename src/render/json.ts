@@ -652,6 +652,8 @@ export function buildJson(g: Graph, doXDot: boolean, preDraws?: DrawLookup): str
 abstract class JsonRendererBase {
   /** @see plugin/core/gvplugin_core.c registration table */
   readonly quality = 0;
+  /** @see plugin/core/gvrender_core_json.c:745 render_features_json (default pad) */
+  readonly defaultPad = 0;
   beginNode(_n: Node, _job: RenderJob): void { /* no-op */ }
   endNode(_n: Node, _job: RenderJob): void { /* no-op */ }
   beginEdge(_e: Edge, _job: RenderJob): void { /* no-op */ }

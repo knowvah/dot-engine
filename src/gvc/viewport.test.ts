@@ -75,38 +75,38 @@ describe('parseLandscape — rotate/orientation/landscape precedence', () => {
 
 describe('parseGraphPad — sscanf("%lf,%lf") + init_job_pad fallback', () => {
   it('absent attr → default (SVG_PAD, 4pt both axes)', () => {
-    expect(parseGraphPad(undefined)).toEqual({ x: SVG_PAD, y: SVG_PAD });
+    expect(parseGraphPad(undefined, SVG_PAD)).toEqual({ x: SVG_PAD, y: SVG_PAD });
   });
 
   it('single value "2" → both axes 2in = 144pt', () => {
-    expect(parseGraphPad('2')).toEqual({ x: 144, y: 144 });
+    expect(parseGraphPad('2', SVG_PAD)).toEqual({ x: 144, y: 144 });
   });
 
   it('two values "1,0.5" → independent x/y (72pt, 36pt)', () => {
-    expect(parseGraphPad('1,0.5')).toEqual({ x: 72, y: 36 });
+    expect(parseGraphPad('1,0.5', SVG_PAD)).toEqual({ x: 72, y: 36 });
   });
 
   it('fractional single value "0.209" (2592.dot) → 15.048pt both axes', () => {
-    const p = parseGraphPad('0.209');
+    const p = parseGraphPad('0.209', SVG_PAD);
     expect(p.x).toBeCloseTo(15.048, 6);
     expect(p.y).toBeCloseTo(15.048, 6);
   });
 
   it('unparsable garbage → default fallback (sscanf 0 matches)', () => {
-    expect(parseGraphPad('nonsense')).toEqual({ x: SVG_PAD, y: SVG_PAD });
+    expect(parseGraphPad('nonsense', SVG_PAD)).toEqual({ x: SVG_PAD, y: SVG_PAD });
   });
 
   it('empty string → default fallback', () => {
-    expect(parseGraphPad('')).toEqual({ x: SVG_PAD, y: SVG_PAD });
+    expect(parseGraphPad('', SVG_PAD)).toEqual({ x: SVG_PAD, y: SVG_PAD });
   });
 
   it('negative value accepted (no positivity check, unlike size=)', () => {
-    expect(parseGraphPad('-1')).toEqual({ x: -72, y: -72 });
+    expect(parseGraphPad('-1', SVG_PAD)).toEqual({ x: -72, y: -72 });
   });
 
   it('not rounded (unlike size=, no POINTS() macro)', () => {
     // 2.0 -> exactly 144 already; use a value where round() would differ.
-    const p = parseGraphPad('1.0069444444'); // ~72.5/72
+    const p = parseGraphPad('1.0069444444', SVG_PAD); // ~72.5/72
     expect(p.x).toBeCloseTo(72.5, 4);
   });
 });
@@ -176,6 +176,6 @@ describe('parseGraphMargin — sscanf("%lf,%lf") + init_job_margin fallback', ()
   });
 
   it('distinct default from parseGraphPad (0 vs 4)', () => {
-    expect(parseGraphMargin(undefined)).not.toEqual(parseGraphPad(undefined));
+    expect(parseGraphMargin(undefined)).not.toEqual(parseGraphPad(undefined, SVG_PAD));
   });
 });

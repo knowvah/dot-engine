@@ -1,0 +1,4 @@
+Warning: B was already in a rankset, deleted from cluster cluster_outer
+Warning: H was already in a rankset, deleted from cluster cluster_outer
+Error: rebuild_vlists: lead is null for rank 1
+concentrate=true may not work correctly.
