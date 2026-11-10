@@ -231,7 +231,7 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
  * @see lib/common/emit.c:emit_page (3656-3657)
  */
 export function renderGraphLabel(g: Graph, renderer: RendererPlugin, job: RenderJob): void {
-  // @see lib/common/emit.c:emit_begin_graph / getObjId (root graph → graph0)
+  // @see lib/common/emit.c:emit_begin_graph / getObjId (graph being emitted → graph<AGSEQ>)
   setHtmlAnchorObj(svgGraphId(g, job), labelTextOf(g.info.label), job.obj ?? undefined);
   renderOneLabel(g.info.label as TextlabelT | undefined, renderer, job, false);
 }

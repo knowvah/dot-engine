@@ -690,7 +690,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   141. **[DONE — issue #131: unbound the four label symbols (stderr now equal); the other six probed equal]** `setState` also unbinds `E_fontcolor`, `E_labelfontcolor`, `E_xlabel`, `N_style`, `N_fontcolor`,
       `N_xlabel`, `N_showboxes`, `N_nojustify` (`dotsplines.c:731-771`) for the aux layout; head and
       tail labels probed equal, the rest unprobed (part 11 T1, T2).
-  142. `svgGraphId` (`src/render/svg-id.ts:54`) still hardcodes `graph0` for the graph anchor and map id
+  142. **[DONE — issue #132: svgGraphId carries the seq; graphObjId deleted]** `svgGraphId` (`src/render/svg-id.ts:54`) still hardcodes `graph0` for the graph anchor and map id
       (`device.ts:235,391`) and duplicates T9's `graphObjId`; the comment in
       `layout-reset.edges.test.ts` before the svg graph-id test is stale (part 11 T9).
   143. For the user (AD-3, PR 119): sgd's `hypot` (`sgd.ts:346`) could use the existing macOS model

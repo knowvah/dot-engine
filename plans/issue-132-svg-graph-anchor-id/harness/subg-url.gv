@@ -1,0 +1,7 @@
+digraph G {
+  a -> b -> c
+  subgraph s { URL="http://s"; tooltip="sub s"; c -> d; d -> e }
+  subgraph cluster_k { URL="http://k"; f -> g; g [shape=box] }
+  a -> f
+  d -> g
+}

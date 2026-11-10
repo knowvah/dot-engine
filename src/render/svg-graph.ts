@@ -18,7 +18,7 @@ import { createObjState, ObjType } from '../gvc/job.js';
 import { FillType } from '../gvc/context.js';
 import { escapeXml, escapeXmlTitle, svgComment } from './svg-helpers.js';
 import { resolveRenderColor, colorPaint } from './color-resolve.js';
-import { svgGraphClass } from './svg-id.js';
+import { svgGraphClass, svgGraphId } from './svg-id.js';
 import { parseGradientSpec } from '../common/htmltable-emit-fill.js';
 import { findStopColor, parseStyleFlags } from '../common/style-resolve.js';
 import { croundNarrow32 } from '../common/arith.js';
@@ -233,18 +233,6 @@ function bgGradientPts(clip: Box): Point[] {
 }
 
 /**
- * Object id of the graph being emitted, as getObjId builds it for an AGRAPH:
- * the DOT `id` attr wins; else "graph" + AGSEQ. The graph being emitted is
- * job->gvc->g, i.e. `root == obj`, so neither the `<gid>_` prefix nor the
- * "clust" prefix applies. The root's AGSEQ is 0; a subgraph rendered after
- * its own layout carries its creation sequence among subgraphs.
- * @see lib/common/emit.c:getObjId
- */
-function graphObjId(g: Graph, job: RenderJob): string {
-  return job.objId(g.attrs.get('id'), 'graph' + g.seq, true);
-}
-
-/**
  * Write background polygon element with gradient fill url reference.
  * Coords identical to emitGraphBackground; only fill changes.
  * @see plugin/core/gvrender_core_svg.c:svg_polygon:686
@@ -281,7 +269,7 @@ function writeGradientPolygon(clip: Box, id: string, job: RenderJob): void {
  */
 function emitGradientBackground(g: Graph, clip: Box, spec: BgGradientSpec, job: RenderJob): void {
   const obj = createObjState(ObjType.RootGraph);
-  obj.id = graphObjId(g, job);
+  obj.id = svgGraphId(g, job);
   obj.fillColor = resolveRenderColor(spec.fillColor);
   obj.stopColor = resolveRenderColor(spec.stopColor);
   obj.gradientFrac = spec.frac;
@@ -421,7 +409,7 @@ export function svgBeginPage(g: Graph, job: RenderJob): void {
     : -clip.ll.x + job.margin.x / z;
   const ty = clip.ur.y + job.margin.y / z;
   emitGraphGroupOpen(
-    job.idLayerPrefix() + graphObjId(g, job),
+    job.idLayerPrefix() + svgGraphId(g, job),
     svgGraphClass(g),
     tx, ty, job,
   );
