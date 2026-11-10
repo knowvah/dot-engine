@@ -14,7 +14,7 @@
 
 import { POINTS_PER_INCH } from '../model/geom.js';
 import { lateDouble } from '../common/nodeinit.js';
-import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin, setupPageClip } from './viewport.js';
+import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin } from './viewport.js';
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
@@ -26,6 +26,7 @@ import type { ShapeDesc, TextlabelT } from '../common/types.js';
 import { type LayerInfo, parseLayers } from '../common/layers.js';
 import { RenderJob, EMIT_CLUSTERS_LAST, createObjState, ObjType, EmitState } from './job.js';
 import { walkNodesAndEdges } from './emit-walk.js';
+import { initBb } from '../common/emit-bb.js';
 import { firstLayer, nextLayer, numPhysicalLayers, validLayer } from './first-layer.js';
 import { polyInit } from '../common/poly-init.js';
 import {
@@ -50,7 +51,7 @@ import {
 import { emitRoundedBezier } from '../common/poly-shapes.js';
 import { applyClusterObjState, clusterAttr, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
-import { emitXdot } from './emit-xdot.js';
+import { deviceClip, emitXdot } from './emit-xdot.js';
 import { gvrenderSetStyle, edgeStyleResets } from './gvrender-set-style.js';
 import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
 export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
@@ -413,6 +414,15 @@ function renderPage(g: Graph, renderer: RendererPlugin, job: RenderJob, info: La
 // render — top-level convenience
 // ---------------------------------------------------------------------------
 
+/** A job for `format` carrying the context's image hooks. */
+function newRenderJob(ctx: GvcContext, format: string, inlineImages: boolean): RenderJob {
+  const job = new RenderJob(format, ctx.textMeasurer);
+  job.inlineImages = inlineImages;
+  if (ctx.imageResolver !== undefined) job.imageResolver = ctx.imageResolver;
+  if (ctx.imageSizer !== undefined) job.imageSizer = ctx.imageSizer;
+  return job;
+}
+
 /**
  * Select renderer, create job, initialise bb from graph, then render.
  *
@@ -430,38 +440,27 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   if (!(ctx instanceof GvcContext)) throw invalidArgType('ctx', 'GvcContext', ctx);
   if (typeof g !== 'object' || g === null) throw invalidArgType('g', 'object', g);
   const renderer = ctx.bestRenderer(format);
-  const job = new RenderJob(format, ctx.textMeasurer);
-  job.inlineImages = inlineImages;
-  if (ctx.imageResolver !== undefined) job.imageResolver = ctx.imageResolver;
-  if (ctx.imageSizer !== undefined) job.imageSizer = ctx.imageSizer;
+  const job = newRenderJob(ctx, format, inlineImages);
+  initBb(g); // spl->bb for edge_in_box, before init_gvc. @see lib/common/emit.c:4216
   // gvc->bb = GD_bb(g) verbatim -- no recompute fallback. Every layout engine
-  // sets g.info.bb itself before render() runs (set_aspect for dot,
-  // compute_bb-equivalent computeSubgraphBB calls in neato/circo/sfdp/fdp/
-  // twopi/osage); when a layout phase aborts before that point (2825: dot_
-  // position fails before set_aspect), C leaves GD_bb at its zero default and
-  // the degenerate box propagates into job.bb/job.pad-derived clip below,
-  // excluding every node via node_in_box -- do not paper over that with a
-  // recompute, it is the mechanism that produces C's near-empty output.
+  // sets g.info.bb itself before render() runs; when a layout phase aborts
+  // before that point (2825: dot_position fails before set_aspect), C leaves
+  // GD_bb at its zero default and the degenerate box propagates into the clip
+  // below, excluding every node via node_in_box -- do not paper over that with
+  // a recompute, it is the mechanism that produces C's near-empty output.
   // @see lib/common/emit.c:3272 init_gvc (gvc->bb = GD_bb(g))
   job.bb = g.info.bb;
-  // init_job_pad: resolve job.pad from the `pad=` graph attribute before the
-  // size= fit is computed — C calls init_job_pad before init_job_viewport
-  // (emit.c:4289-4291) because the fit uses the padded bb.
+  // init_job_pad: job.pad from `pad=`, before the size= fit, which uses the
+  // padded bb (C calls init_job_pad before init_job_viewport, emit.c:4289-4291).
   // @see lib/common/emit.c:3241-3251 (attr read); :3290-3304 (fallback)
   job.pad = parseGraphPad(g.attrs.get('pad'));
-  // init_job_margin: resolve job.margin from the `margin=` graph attribute,
-  // immediately after init_job_pad (C's call order, emit.c:4290-4291).
-  // margin does NOT feed the size= zoom fit below (only pad does) -- it is
-  // read here and consumed later, after Z is known, by emitSvgTag/svgBeginPage
-  // (job.width/height and the page group translate), matching C's
-  // init_job_margin -> init_job_dpi -> init_job_viewport -> init_job_pagination
-  // order where margin is resolved before Z but only used after it.
+  // init_job_margin, right after init_job_pad (emit.c:4290-4291). margin does
+  // not feed the size= fit (only pad does); emitSvgTag/svgBeginPage use it after
+  // Z is known, as C resolves it before init_job_viewport and uses it after.
   // @see lib/common/emit.c:3229-3239 (attr read); :3309-3331 (fallback)
   job.margin = parseGraphMargin(g.attrs.get('margin'));
   // init_job_viewport: fit the drawing into size= via a zoom Z carried by the
-  // SVG group transform (D1: parse here, not graph_init).
-  //
-  // Correction to D3: only the trailing `!` on size= sets the *filled* flag
+  // SVG group transform (D1: parse here, not graph_init). Correction to D3: only the trailing `!` on size= sets the *filled* flag
   // that init_job_viewport reads (input.c:694 GD_drawing->filled =
   // getdoubles2ptf). `ratio=fill` instead sets ratio_kind=R_FILL (setRatio),
   // which reshapes the *layout* (out of scope, D3) and does NOT feed
@@ -479,7 +478,7 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   // not job->zoom. job.scale is read only by the SVG group/dims.
   const drawingSize = parseDrawingSize(g.attrs.get('size'));
   const z = initJobViewportZoom(job.bb, drawingSize, job.pad);
-  job.clip = setupPageClip(job.bb, drawingSize, job.pad, z); // @see emit.c:setup_page
+  job.clip = deviceClip(g, renderer, job); // @see emit.c:setup_page (xdot's default pad is 0)
   // init_job_dpi (emit.c:3333): GD_drawing->dpi = late_double(dpi, resolution, 0)
   // (input.c:713). When >0 it becomes job->dpi; otherwise the SVG device's
   // default_dpi = 72 (gvrender_core_svg.c:814) applies. init_job_viewport then

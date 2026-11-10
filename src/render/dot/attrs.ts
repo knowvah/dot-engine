@@ -222,6 +222,32 @@ function computedGraphAttrs(emitDraws: boolean): Set<string> {
   return emitDraws ? COMPUTED_GRAPH_ATTRS_XDOT : COMPUTED_GRAPH_ATTRS;
 }
 
+/** `COMPUTED_GRAPH_ATTRS` for a subgraph that is not a laid-out cluster. */
+const COMPUTED_SUBGRAPH_ATTRS = new Set(['bb', 'lp', 'lwidth', 'lheight']);
+
+/**
+ * The attributes a scope does not echo from its own dict: at the root,
+ * `computed`; at a subgraph scope, never xdotversion (xdot_end_graph agsafesets
+ * it on the render root, so a subgraph rendered as a root keeps it), and
+ * `_draw_`/`_ldraw_` only for a cluster in an ancestor's GD_clust, which
+ * emit_clusters draws and clusterAttrs prints. Any other subgraph prints its
+ * stored or input values.
+ * @see plugin/core/gvrender_core_dot.c:427 xdot_end_graph, :280 xdot_end_cluster
+ */
+function ownComputedAttrs(g: Graph, top: boolean, computed: Set<string>): ReadonlySet<string> {
+  if (top) return computed;
+  return inClusterTree(g) ? COMPUTED_GRAPH_ATTRS : COMPUTED_SUBGRAPH_ATTRS;
+}
+
+/** Whether an ancestor's GD_clust holds `g` (a cluster inside an anonymous
+ *  subgraph belongs to the nearest cluster or root above it). */
+function inClusterTree(g: Graph): boolean {
+  for (let a = g.parent; a !== null; a = a.parent) {
+    if ((a.info.clust ?? []).slice(0, a.info.n_cluster ?? 0).includes(g)) return true;
+  }
+  return false;
+}
+
 /** Walk to the root graph (cgraph `agroot`). */
 export function rootOf(g: Graph): Graph {
   let cur: Graph = g;
@@ -262,7 +288,7 @@ export function graphInputParts(g: Graph, top: boolean, emitDraws: boolean): str
   const snap = g.graphDefaultsSnapshot;
   const seeded = g.seededAttrs;
   for (const [k, v] of g.attrs) {
-    if (computed.has(k)) continue;
+    if (ownComputedAttrs(g, top, computed).has(k)) continue;
     if (!top && seeded !== undefined && seeded.has(k)) continue;
     if (writeDictSkips(v, snap?.get(k))) continue;
     parts.push(k + '=' + agstrcanon(v));

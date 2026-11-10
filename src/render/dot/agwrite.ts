@@ -20,13 +20,14 @@ import type { Edge } from '../../model/edge.js';
 import type { TextlabelT, FieldT, ShapeDesc } from '../../common/types.js';
 import { agstrcanon, agstrcanonText } from '../map.js';
 import { isHtmlValue } from '../../common/html-string.js';
-import { XDOT_VERSION, agcanonEscape, gfmt5, lpStr, xdotId } from './xdot-ops.js';
+import { XDOT_VERSION, gfmt5, lpStr, xdotId } from './xdot-ops.js';
 import {
   COMPUTED_EDGE_ATTRS, COMPUTED_NODE_ATTRS, appendRecordRects, computedPart, dictParts,
   echoAttr, echoGraphAttr, edgeAttrsAttached, edgeConnector, edgePosRaw,
   effectiveEdgeDefaults, effectiveNodeDefaults, graphInputParts, graphLabelAttrs,
   isDirected, nodeDictParts, nodePosRaw, nodeRecord, objInputParts,
 } from './attrs.js';
+import { withLinelength } from './agwrite-linelength.js';
 import { nodesInSeq } from '../../layout/dot/decomp.js';
 import type { XdotDraws, SerCtx } from './types.js';
 
@@ -40,16 +41,13 @@ export abstract class DotWriterBase {
   protected abstract drawsOf(obj: Node | Edge | Graph): XdotDraws | undefined;
 
   /**
-   * Emit `key="value"`, escaping the value the way agwrite's agcanonStr does: a
-   * `"` becomes `\"` unless it is already part of an escape sequence (see
-   * agcanonEscape). A draw string carries label text that may contain a bare `"`
-   * (would close the attribute early) or a source `\"`/`\\` (must not be
-   * double-escaped). The byte-length prefix stays on the UNescaped text (the
-   * parser un-escapes before parseXDot re-reads it), matching native exactly.
-   * @see lib/cgraph/write.c:_agstrcanon (135-167)
+   * Emit `key=<canon value>` through `_agstrcanon`, as `agwrite` does for the xdot
+   * op attributes: `"` becomes `\"` unless part of an escape, and long strings
+   * wrap at Max_outputline. The byte-length prefix stays on the UNescaped text.
+   * @see lib/cgraph/write.c:_agstrcanon
    */
   private drawAttr(key: string, value: string): string {
-    return key + '="' + agcanonEscape(value) + '"';
+    return key + '=' + agstrcanonText(value);
   }
 
   /** `llx,lly,urx,ury` from a graph's layout bb. */
@@ -79,10 +77,12 @@ export abstract class DotWriterBase {
       level: 0,
     };
     this.subgdfs(g, 1, ctx.preorder);
-    this.writeHdr(g, true, ctx);
-    this.writeBody(g, ctx);
-    this.writeTrl(ctx);
-    return ctx.out.join('');
+    return withLinelength(g, () => {
+      this.writeHdr(g, true, ctx);
+      this.writeBody(g, ctx);
+      this.writeTrl(ctx);
+      return ctx.out.join('');
+    });
   }
 
   /** Preorder-number the subgraph tree. @see write.c:subgdfs */

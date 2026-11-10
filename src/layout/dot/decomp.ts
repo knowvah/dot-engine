@@ -140,6 +140,28 @@ export function decompSearch(g: Graph, start: Node, cmark: number): void {
 const _dc = { cmark: 0 };
 registerRenderState(() => { _dc.cmark = 0; });
 
+/**
+ * The Cmark each graph's records last met, keyed by the root's record. Cmark is
+ * a process static, so a layout with no gvFreeLayout before it continues the
+ * count, and the ND_mark the last layout left can never equal the new Cmark.
+ * The port starts each layout as a new process (AD-4), so the count is carried
+ * with the records it is compared against: a free replaces the root's record
+ * (layout-reset.ts), and the next layout starts at the reset value, as the
+ * zeroed records of a new process do.
+ * @see lib/dotgen/decomp.c:Cmark
+ * @see lib/gvc/gvlayout.c:gvFreeLayout
+ */
+const cmarkByRecord = new WeakMap<object, number>();
+
+/** `++Cmark`, continuing the count `g`'s records last met. @see lib/dotgen/decomp.c:decompose */
+function nextCmark(g: Graph): number {
+  const record = g.root.info;
+  _dc.cmark = Math.max(_dc.cmark, cmarkByRecord.get(record) ?? 0);
+  if (++_dc.cmark === 0) _dc.cmark = 1;
+  cmarkByRecord.set(record, _dc.cmark);
+  return _dc.cmark;
+}
+
 // ONE private function immediately before decompose — the acyclic.ts pattern.
 function resolveNode(n: Node, pass: 0 | 1): Node | undefined {
   if (pass > 0) {
@@ -155,8 +177,7 @@ function resolveNode(n: Node, pass: 0 | 1): Node | undefined {
  * @see lib/dotgen/decomp.c:decompose
  */
 export function decompose(g: Graph, pass: 0 | 1): void {
-  if (++_dc.cmark === 0) _dc.cmark = 1;
-  const cmark = _dc.cmark;
+  const cmark = nextCmark(g);
   g.info.comp = [];
   for (const n of nodesInSeq(g)) {
     const v = resolveNode(n, pass);

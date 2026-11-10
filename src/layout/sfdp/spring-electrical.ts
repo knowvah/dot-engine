@@ -9,9 +9,11 @@
  * _spring_electrical_embedding), the attractive update to
  * `fnmul`+`fmadd` (the CRK·Δ product is rounded, then fused with
  * dist), and the position update to fmadd. The repulsive pow() is a
- * REAL libm call in the binary (runtime exponent) — reproduced by the
- * bit-exact Apple pow port in src/common/apple-pow.ts (its ~0.5-ULP
- * roundings flip adaptive-cooling branches if approximated).
+ * REAL libm call in the binary (runtime exponent); this port calls
+ * `armPow` (src/common/arm-pow.ts). Its last bit can differ from the
+ * platform's `pow`, which flips adaptive-cooling branches; that drift is
+ * accepted (user decision, PR 119; `.agent-notes/post-16-1-followups-10.md`,
+ * "sfdp's drift is the repulsive pow's last bit").
  *
  * The slow (QUAD_TREE_NONE) and fast (QUAD_TREE_FAST/large-HYBRID)
  * embedding variants are unreachable at sfdp defaults and not ported.

@@ -27,6 +27,7 @@ const measurer: TextMeasurer = { measure: () => ({ w: 0, h: 0 }) };
 function makeJob(): RenderJob {
   const j = new RenderJob("xdot", measurer);
   j.bb = { ll: { x: 0, y: 0 }, ur: { x: 200, y: 200 } };
+  j.clip = j.bb; // edge_in_box tests spl->bb against job->clip
   return j;
 }
 

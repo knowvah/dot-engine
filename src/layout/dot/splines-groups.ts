@@ -94,8 +94,8 @@ export function dedupByOrig(group: Edge[]): Edge[] {
 /**
  * Dispatch one edgecmp group: self-loop → routeSelfEdgeGroup; cross-rank cnt>1 →
  * routeParallelEdgeGroup (Multisep offsets); cross-rank cnt==1 → per-run or
- * whole-chain lone routing in-place (C order); same-rank flat → left for the
- * routeDotEdges sweep.
+ * whole-chain lone routing in-place (C order); same-rank flat → routed in place
+ * at its edgecmp position.
  * @see lib/dotgen/dotsplines.c:367-419
  */
 function dispatchEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): void {

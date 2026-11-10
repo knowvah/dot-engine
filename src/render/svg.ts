@@ -107,9 +107,9 @@ export class SvgRenderer implements RendererPlugin {
   beginNode(n: Node, job: RenderJob): void { svgBeginNode(n, job); }
   endNode(_n: Node, job: RenderJob): void { svgEndNode(job); }
   beginEdge(e: Edge, job: RenderJob): void {
-    // job.bb is the final drawing bbox (= GD_bb / job->clip); emit_edge gates
-    // all edge drawing on edge_in_box(e, job->clip). @see lib/common/emit.c:emit_edge
-    this.edgeGroupOpen = edgeHasDrawableContent(e, job.bb);
+    // emit_edge gates all edge drawing on edge_in_box(e, job->clip).
+    // @see lib/common/emit.c:emit_edge
+    this.edgeGroupOpen = edgeHasDrawableContent(e, job.clip);
     if (this.edgeGroupOpen) svgBeginEdge(e, job);
   }
 

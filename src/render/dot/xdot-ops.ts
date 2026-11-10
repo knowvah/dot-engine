@@ -338,7 +338,7 @@ export function xdotId(s: string): string {
  * @see lib/common/output.c:71 (agxbprint "%.5g")
  */
 export function gfmt5(v: number): string {
-  if (!Number.isFinite(v)) return String(v);
+  if (!Number.isFinite(v)) return printfSig(v, 5); // inf, -inf, nan
   if (v === 0) return '0';
   let s = printfSig(v, 5);
   const e = s.indexOf('e');

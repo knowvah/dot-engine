@@ -1,0 +1,7 @@
+digraph G {
+  subgraph s { _draw_="c 7 -#ff0000 e 1 1 1 1 "; xdotversion="1.2"; a }
+  subgraph cluster_k { _draw_="c 7 -#00ff00 e 2 2 2 2 "; b }
+  h [style=invis, _draw_="c 7 -#0000ff e 3 3 3 3 ", _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -h "]
+  a -> b [_draw_="c 7 -#000000 B 4 0 0 0 0 0 0 0 0 "]
+  h -> a [style=invis, _hdraw_="c 7 -#000000 P 3 0 0 1 1 2 2 "]
+}

@@ -69,29 +69,30 @@ describe('printfSig — additional exact ties', () => {
 // Notation/threshold parity with toPrecision for non-tie magnitudes
 // ---------------------------------------------------------------------------
 
-describe('printf-round — non-finite inputs match toFixed/toPrecision', () => {
-  // The bit-decomposition below is only valid for finite magnitudes; the
-  // helpers must fall back to the native method they replace so Infinity/NaN
-  // emit "Infinity"/"NaN" (canonicalized to the oracle's C printf "inf"/"nan"
-  // by the xdot comparator) rather than a spurious ~309-digit integer.
+describe('printf-round — non-finite inputs print as C printf does', () => {
+  // The bit-decomposition is only valid for finite magnitudes. C's printf
+  // prints "inf"/"-inf"/"nan" for both %f and %g, and macOS libc prints no sign
+  // on a NaN whose sign bit is set (checked natively: printf("%.2f", -(-INF+INF))
+  // gives "nan"). Native's osage subgraph render after a no-free root layout
+  // has bb="0,0,-inf,-inf" and a nan page clip
+  // (plans/post-16-1-followups-11/harness/T7b/noaddr/subg-osage.s.nofree.*).
   // Regression: osage degenerate-cluster _draw_ ops (2721/1221/1332).
   it.each<[number, number, string]>([
-    [Infinity, 2, 'Infinity'],
-    [-Infinity, 2, '-Infinity'],
-    [NaN, 2, 'NaN'],
-    [Infinity, 0, 'Infinity'],
+    [Infinity, 2, 'inf'],
+    [-Infinity, 2, '-inf'],
+    [NaN, 2, 'nan'],
+    [-NaN, 2, 'nan'],
+    [Infinity, 0, 'inf'],
   ])('printfFixed(%f, %i) => %s', (v, decimals, expected) => {
     expect(printfFixed(v, decimals)).toBe(expected);
-    expect(printfFixed(v, decimals)).toBe(v.toFixed(decimals));
   });
 
   it.each<[number, number, string]>([
-    [Infinity, 5, 'Infinity'],
-    [-Infinity, 5, '-Infinity'],
-    [NaN, 5, 'NaN'],
+    [Infinity, 5, 'inf'],
+    [-Infinity, 5, '-inf'],
+    [NaN, 5, 'nan'],
   ])('printfSig(%f, %i) => %s', (v, sig, expected) => {
     expect(printfSig(v, sig)).toBe(expected);
-    expect(printfSig(v, sig)).toBe(v.toPrecision(sig));
   });
 });
 

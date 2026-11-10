@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -118,7 +118,7 @@ Bu çalışmanın dürüst tavanı, A1'i “başvuru platformunda etkin fark yok
 kadarki sonuçlar (aşağıda) bu tavana uyar: `circo`/`twopi`/`osage` her biri bir
 avuç gerçek A1/A9 örneği ortaya çıkarıp kök nedenine indirdi; `neato`/`fdp`/`sfdp`
 ise 929 öğelik evrende (graphviz 16.1.0) yerel çıktının 0.5pt içinde sırasıyla
-%99,8/%96,6/%68,1 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
+%99,8/%98,0/%68,1 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
 eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 929 öğelik evrenin her
 farklılaşan kimliği, triyajsız bir sürüklenme olarak bırakılmak yerine enjeksiyonla
 (çözücü sürüklenmesi ile port kusuru) tek tek nedene bağlanmıştır. Aşağıdaki yinelemeli motor nitelendirmesine
@@ -201,19 +201,20 @@ bu bölüm bu belgedeki başka yerlerde geçen ±0.01 belirlenimci geçme oranla
 açıkça **karşılaştırılamaz**. graphviz 16.1.0'a karşı güncel sayılar (929 öğelik evren; geçme yüzdesi, C
 kâhininin işleyemediği girdileri dışarıda bırakır, bkz. [Uygunluk](./conformance.md)):
 
-| motor | taranan | ±0.5pt içinde | uyumlu olmayan | port hatası / zaman aşımı | kâhin hatası |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (%99,8) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (%96,6) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (%68,1) | 296 | 0 | 0 |
+| motor | taranan | ±0.5pt içinde | uyumlu olmayan | port hatası / zaman aşımı | kâhin hatası | kâhin belirlenimsiz |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (%99,8) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (%98,0) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (%68,1) | 296 | 0 | 0 | 1 |
+
+`fdp`'nin yerel çıktısı çalıştırmadan çalıştırmaya değişen 13 belirlenimsiz girdisi geçme oranının dışında bırakılmıştır; tek port hatası, portun desteklemediği `splines=compound` yönlendirmesini gerektiren `1879`'dur.
 
 (`fdp` geçme oranı %77,5'ten yükseldi, çünkü daha önceki işlenmiş
 tarama bir önceki görevin port durumundan önceye aitti.
 `neato` geçme oranı %90,5'ten yükseldi; çünkü 16.1 ayrıştırmasındaki birleştirilmiş
 stress çekirdekleri üretim kD yoluna ulaştı (16.1 sonrası takip işleri, bölüm 5, T15):
 çözücü kayması nedeniyle ayrışan 83 kimlik artık geçiyor; bunların arasında daha önce
-kabul edilen kimlik başına kalıntı `2619_2` de var ve kabulü kaldırıldı; `2371` kalan
-tek ayrışan `neato` kimliğidir.)
+kabul edilen kimlik başına kalıntı `2619_2` de var ve kabulü kaldırıldı; ±0.5pt dışındaki iki `neato` kimliği `2784` (A10) ve `2371`'dir (A1 kayması).)
 
 (2026-07-11'de 762 öğede yapılan ilk tarama ±0.5pt içinde 263/311/260 ölçmüştü —
 güncel oranlara sıçrama, o tarihten beri girilen kimlik başına düzeltmelerden
@@ -1300,16 +1301,23 @@ Her madde, yerelin ne yaptığını ve taşımanın ne yaptığını belirtir.
 
 - **İki düğümde `mode=hier dim=4`.** Yerel, `directions` dizisinin ötesine yazar (`lib/neatogen/stress.c:514`) ve bazı çalıştırmalarda durur (çıkış kodu 133, 16 çalıştırmanın 5'i). Taşıma çizer.
 - **`len=0.001` ile `mode=hier dim=3`.** Yerel bir sinyalle ölür: 19 düğümde 8 çalıştırmanın 3'ü (SIGBUS) ve 27 düğümde 8'in 8'i (SIGBUS, SIGSEGV, SIGTRAP). Yığın, `stress_majorization_kD_mkernel` altında `mfm_alloc`'tur; bu, yığın bozulmasını gösterir; tam yer kanıtlanmadı. Taşıma çizer ve yerelin hayatta kaldığı yerde (19 düğüm, 8 çalıştırmanın 5'i) bayt bayt aynıdır.
-- **fdp'nin aynı grafikteki ikinci yerleşimleri yerelde yığın adresleriyle değişir.** `deriveGraph` ve `genPorts` düğüm işaretçilerini karşılaştırır (`lib/fdpgen/layout.c:466,501,637`). Her biri 12 yerel çalıştırmada, `graphs-fdp`'nin `plain` olarak 2. çıktısı 2 sınıfa (1 ve 11 çalıştırma), `1581`'in `dot` olarak 2. çıktısı 2 sınıfa (8 ve 4 çalıştırma) düşer; taşıma, `plain`'in 1 çalıştırmalık sınıfıyla bayt bayt aynıdır ve `dot`'un 4 çalıştırmalık sınıfına 5e-13 içindedir. Bu üç karşılaştırması `ND_id` üzerinde olacak şekilde yeniden derlenen yerel 8'de 8 tekrarlanır ve `plain`'de taşımayla bayt bayt aynıdır. Yalnızca taşımaya ait bir seçim: yerel `attach_attrs`, `undoClusterEdges` ile biter (`lib/common/output.c:403-404`) ve taşıma bu geri almayı oluşturmada değil bir sonraki yerleşimde yapar, çünkü yazıcıları `__0:` vekillerini okur.
+- **fdp'nin aynı grafikteki ikinci yerleşimleri yerelde yığın adresleriyle değişir.** `deriveGraph` ve `genPorts` düğüm işaretçilerini karşılaştırır (`lib/fdpgen/layout.c:466,501,637`). Her biri 12 yerel çalıştırmada, `graphs-fdp`'nin `plain` olarak 2. çıktısı 2 sınıfa (1 ve 11 çalıştırma), `1581`'in `dot` olarak 2. çıktısı 2 sınıfa (8 ve 4 çalıştırma) düşer; taşıma, `plain`'in 1 çalıştırmalık sınıfıyla bayt bayt aynıdır ve `dot`'un 4 çalıştırmalık sınıfına 5e-13 içindedir. Bu üç karşılaştırması `ND_id` üzerinde olacak şekilde yeniden derlenen yerel 8'de 8 tekrarlanır ve `plain`'de taşımayla bayt bayt aynıdır. Yalnızca taşımaya ait bir seçim: yerel `attach_attrs`, `undoClusterEdges` ile biter (`lib/common/output.c:403-404`). Portun `json` ve `json0` yazıcıları, C'nin yaptığı gibi yazmadan önce vekil düğümleri geri alır; `dot` ve `xdot` yazıcıları `__0:` vekil düğümlerini okur, bu yüzden onlarda geri alma işleme sırasında değil, bir sonraki yerleşimde çalışır.
 - **Grafiğin `_draw_` veya `_background` içinde `T` işlemi.** Yerel segfault ile çöker (çıkış kodu 139): `op->span`, neato `-n` dışında NULL'dır (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Taşıma bunun için metin çizmez.
 - **Bir alt grafikte neato.** Yerel, test edilen tek grafiğin her iki alt grafiğini, yani sıradan bir alt grafiği ve bir kümeyi yerleştirirken 139 ile çıktı. Taşıma çıktı döndürür.
+
+### 11. bölümün sonuçları
+
+- **`xdot` ve `dot` çıktısında uzun dizgiler (kapandı).** Yerel sürüm, tırnaklı bir değeri 128 sütundan sonra, ya da kök grafın `linelength` değeri 0 veya en az 60 ise ondan sonra, sondaki ters eğik çizgiyle böler (`lib/cgraph/write.c:160-195,670-677`). Port artık `_draw_` ailesinin dizgilerini aynı şekilde bölüyor ve yerel sürümle bayt bayt aynı.
+- **Kümelere kenarı olan fdp `json` ve `json0` (kapandı).** Yerel sürüm, json yazmadan önce küme kenarı vekil düğümlerini geri alır (`lib/common/output.c:403`); port `__0:` vekil düğümlerini yazdırıyordu, artık önce geri alıyor. Yerel fdp, `2717` üzerinde her biçimde 139 ile çıkar, bu yüzden referansı yoktur.
+- **2-D `mode=sgd` (kabul edildi, A1).** macOS'ta yerleşim, libm `hypot` (`lib/neatogen/sgd.c:223`) ve `exp`'in (`sgd.c:216`) son bitinde yerel sürümden ayrılır; SGD bunu denenen grafta 1,59 noktaya kadar büyütür. macOS'un `hypot` ve `exp` değerleri yeniden oynatıldığında portun izi yerel olanla aynıdır, bu yüzden kod değişmedi (PR 119).
+- **Kökünden önce işlenen alt graf, fdp ve osage (kapandı).** Yerel sürüm saklanan öznitelik değerlerini yazdırır (sonraki bir işleme, öncekinin `_draw_`, `_ldraw_` ve `xdotversion` değerlerini korur), `inf` ve `nan` değerlerini C'nin printf'i gibi yazdırır ve her kenarın spline kutusunu sayfa kırpmasına karşı sınar (`edge_in_box`, `lib/common/emit.c:2692`). Port artık üçünü de yapıyor ve fdp'nin kendi kayması dışında (bir küme sınırlayıcı kutusu değeri, 1.6e-11 ve -3.3e-11) yerel sürüme eşit. Yerel fdp'nin kendisi yığın adreslerine göre değişir (`lib/fdpgen/layout.c:466,501,637`), `graphs-fdp`'nin ilk işlemesi de dahil; bu yüzden karşılaştırma bu karşılaştırmaları çıkarılmış yerel sürümü kullanır. Yan etki olarak `1581` svg olarak, etiketli kendi kendine döngüler için yerel sürümdeki gibi iki boş `<g id="edgeN">` grubu kazanır.
 
 ---
 
 ## Bilerek taşınmayanlar (hedef dışı) {#intentionally-not-ported-non-goals}
 
 Bunlar hata değil, bilinçli kapsam sınırlarıdır. Kitaplık **SVG**'yi hedefler
-(artı `json` / `xdot` / `dot` / imagemap ara metin biçimleri).
+(artı `json` / `xdot` / `dot` / `plain` / imagemap ara metin biçimleri).
 
 - **Diğer çıktı biçimleri.** Raster (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS ve
   GUI/etkileşimli arka uçlar kapsam dışıdır. Raster gerekiyorsa SVG çıktısını
@@ -1318,7 +1326,6 @@ Bunlar hata değil, bilinçli kapsam sınırlarıdır. Kitaplık **SVG**'yi hede
   sayfalama bayrağı ayarlamaz), bu yüzden `page=` her iki uygulamada da bu yolda
   işlemsizdir — burada yalnızca yaygın bir kafa karışıklığı noktası olduğu için
   belgelenmiştir.
-- **`-Tplain` metin çıktısı.** Ertelendi (sadık bir metin biçimi), dışlanmadı.
 - **`gvpr`** (graf işleme betik dili) — kapsam dışı.
 - **C++ kolaylık sarmalayıcıları** (`cgraph++`, `gvc++`) — önce C API'si taşınır;
   istenirse deyimsel TypeScript kolaylık katmanı ayrı bir paket olurdu.

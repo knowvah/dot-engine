@@ -119,13 +119,36 @@ export function dotInitNode(n: Node): void {
 // ---------------------------------------------------------------------------
 
 /**
+ * Which of dot_init_edge's attribute symbols are bound. C reads `constraint`,
+ * `minlen` and `group` through the globals E_constr, E_minlen and N_group
+ * (bound per graph by graph_init). make_flat_adj_edges' setState nulls all
+ * three for the aux layout and cleanupCloneGraph restores them, so an aux
+ * edge's copied `constraint=false` or `minlen`, and its clones' `group`, are
+ * never read: late_int(e, NULL, 1, 0) is 1 and late_string(n, NULL, "") "".
+ * @see lib/common/input.c:graph_init (E_constr, E_minlen, N_group)
+ * @see lib/dotgen/dotsplines.c:setState, cleanupCloneGraph
+ */
+export interface InitEdgeSyms {
+  readonly constr: boolean;
+  readonly minlen: boolean;
+  readonly group: boolean;
+}
+
+/** The main graph's symbols, as graph_init binds them. */
+export const DOT_INIT_SYMS: InitEdgeSyms = { constr: true, minlen: true, group: true };
+
+/** The flat-adj aux graph's symbols. @see lib/dotgen/dotsplines.c:setState */
+export const AUX_INIT_SYMS: InitEdgeSyms = { constr: false, minlen: false, group: false };
+
+/**
  * True when tail and head carry the same non-empty `group` attribute.
  * C compares interned refstr pointers (`tailgroup == headgroup`); cgraph's
  * per-graph string pool makes that exactly content equality, and the
  * `tailgroup[0]` guard excludes the shared "" default.
  * @see lib/dotgen/dotinit.c:dot_init_edge (tailgroup/headgroup check)
  */
-export function sameNonemptyGroup(e: Edge): boolean {
+export function sameNonemptyGroup(e: Edge, syms: InitEdgeSyms = DOT_INIT_SYMS): boolean {
+  if (!syms.group) return false;
   const tailgroup = nodeAttr(e.tail, e.tail.root, 'group') ?? '';
   const headgroup = nodeAttr(e.head, e.head.root, 'group') ?? '';
   return tailgroup !== '' && tailgroup === headgroup;
@@ -146,8 +169,8 @@ function initEdgeConstraint(e: Edge): void {
  * Applies the same-group penalty to xpenalty and weight.
  * @see lib/dotgen/dotinit.c:dot_init_edge (tailgroup/headgroup block)
  */
-function applyGroupPenalty(e: Edge): void {
-  if (!sameNonemptyGroup(e)) return;
+function applyGroupPenalty(e: Edge, syms: InitEdgeSyms): void {
+  if (!sameNonemptyGroup(e, syms)) return;
   e.info.xpenalty = CL_CROSS;
   e.info.weight = (e.info.weight ?? 1) * 100;
 }
@@ -168,8 +191,8 @@ function applyNonconstraintZero(e: Edge): void {
  *
  * @see lib/dotgen/dotinit.c:dot_init_edge
  */
-export function dotInitEdge(e: Edge): void {
-  initEdgeConstraint(e);
+export function dotInitEdge(e: Edge, syms: InitEdgeSyms = DOT_INIT_SYMS): void {
+  if (syms.constr) initEdgeConstraint(e);
   // C: ED_weight(e) = late_int(e, E_weight, 1, 0), the attribute only, on an aux
   // edge too: make_flat_adj_edges writes its 10000 with agxset. The group and
   // nonconstraint adjustments below then apply on top, matching C's order.
@@ -177,11 +200,11 @@ export function dotInitEdge(e: Edge): void {
   e.info.weight = lateInt(e.attrs.get('weight'), 1, 0);
   e.info.count = 1;
   e.info.xpenalty = 1;
-  applyGroupPenalty(e);
+  applyGroupPenalty(e, syms);
   applyNonconstraintZero(e);
-  // late_int semantics: default 1, minimum 0.
+  // late_int semantics: default 1, minimum 0; an unbound E_minlen gives 1.
   // @see lib/dotgen/dotinit.c:85  ED_minlen(e) = late_int(e, E_minlen, 1, 0)
-  e.info.minlen = lateInt(e.attrs.get('minlen'), 1, 0);
+  e.info.minlen = lateInt(syms.minlen ? e.attrs.get('minlen') : undefined, 1, 0);
   // samehead / sametail group ids for shared-port merging. C reads these via
   // agxget(e, E_samehead/E_sametail) in dot_sameports and treats an empty
   // string (id[0] == '\0') as "no group". Without populating these, the ported
@@ -233,19 +256,21 @@ function clearFastGraphLists(n: Node): void {
 
 /**
  * Calls commonInitNode (shape-aware, label-driven sizing) then
- * dotInitNode for every node, then dotInitEdge for every edge.
+ * dotInitNode for every node, then dotInitEdge for every edge. `syms` stands
+ * for the global symbol state C's dot_init_edge reads (AUX_INIT_SYMS inside
+ * make_flat_adj_edges).
  *
  * @see lib/dotgen/dotinit.c:dot_init_node_edge
  * @see lib/dotgen/dotinit.c:dot_init_node (common_init_node + gv_nodesize)
  */
-export function dotInitNodeEdge(g: Graph): void {
+export function dotInitNodeEdge(g: Graph, syms: InitEdgeSyms = DOT_INIT_SYMS): void {
   for (const n of nodesInSeq(g)) {
     commonInitNode(n, g);
     dotInitNode(n);
   }
   const measurer = g.root.info.gvc?.textMeasurer;
   for (const e of g.edges) {
-    dotInitEdge(e);
+    dotInitEdge(e, syms);
     if (measurer) initEdgeLabels(e, g, measurer);
   }
 }

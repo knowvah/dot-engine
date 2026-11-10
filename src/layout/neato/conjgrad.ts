@@ -206,7 +206,7 @@ function cgNextDirection(n: number, w: CgWork, alpha: number, rR: number): numbe
   vectorsSubtraction(n, w.r, w.Ap, w.r); // fast computation of r, the residual
   const rRNew = innerProduct(n, w.r, w.r, BLOCK_NONE);
   if (rR === 0) {
-    agerrorf('conjugate_gradient: unexpected length 0 vector\n');
+    agerrorf('conjugate_gradient: unexpected length 0 vector');
     return null;
   }
   const beta = rRNew / rR;
@@ -323,7 +323,7 @@ function cgfUpdate(n: number, alpha: number, st: CgfState): number {
   vectorsSubtraction(n, st.r, st.Ap, st.r);
   const rrNew = innerProduct(n, st.r, st.r, BLOCK_NONE);
   if (st.rr === 0) {
-    agerrorf('conjugate_gradient: unexpected length 0 vector\n');
+    agerrorf('conjugate_gradient: unexpected length 0 vector');
     return 1;
   }
   const beta = rrNew / st.rr;

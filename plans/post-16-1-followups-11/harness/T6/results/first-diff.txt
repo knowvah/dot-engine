@@ -1,0 +1,26 @@
+== stock (T6_HYPOT=math): 133 of 255 dot lines differ
+first diff line 3375
+  native step 0 2 0x1p+0 0x1.e459300db7646p-1 -0x1.adcb9a3876185p+0 0x1.ed53ed6ed918fp+0 0x1.ec9f0130081e5p-3
+  port   step 0 2 0x1p+0 0x1.e459300db7646p-1 -0x1.adcb9a3876185p+0 0x1.ed53ed6ed919p+0 0x1.ec9f0130081e6p-3
+  ctx shuf0[1651] 33 19 0x1.8p+2 0x1.c71c72p-6 | shuf0[1651] 33 19 0x1.8p+2 0x1.c71c72p-6
+  ctx shuf0[1652] 37 35 0x1.4p+2 0x1.47ae14p-5 | shuf0[1652] 37 35 0x1.4p+2 0x1.47ae14p-5
+  ctx step 0 0 0x1p+0 -0x1.dd28e46cb3fp-3 0x1.bc6d12cdc2dp-3 0x1.4609064d2d62bp-2 -0x1.7204939662a27p+2 | step 0 0 0x1p+0 -0x1.dd28e46cb3fp-3 0x1.bc6d12cdc2dp-3 0x1.4609064d2d62bp-2 -0x1.7204939662a27p+2
+  ctx step 0 1 0x1p+0 -0x1.604e24d92dep-2 -0x1.a6fd68bf218p-4 0x1.6fd5632ab4958p-2 -0x1.4455c89be1824p+2 | step 0 1 0x1p+0 -0x1.604e24d92dep-2 -0x1.a6fd68bf218p-4 0x1.6fd5632ab4958p-2 -0x1.4455c89be1824p+2
+== libm-hypot (T6_HYPOT=libm): 6 of 255 dot lines differ
+first diff line 5084
+  native eta 0x1.db1db2450cc69p+5
+  port   eta 0x1.db1db2450cc67p+5
+  ctx pos 0 54 0x1.bf637243ec1dp-1 -0x1.b25301fee4c39p+1 | pos 0 54 0x1.bf637243ec1dp-1 -0x1.b25301fee4c39p+1
+  ctx pos 0 55 -0x1.7d2cf5001b3acp+0 -0x1.24fb2d9b22dfap-1 | pos 0 55 -0x1.7d2cf5001b3acp+0 -0x1.24fb2d9b22dfap-1
+  ctx pos 0 56 -0x1.878d5cfde271ep+1 0x1.567adbf0c0147p+0 | pos 0 56 -0x1.878d5cfde271ep+1 0x1.567adbf0c0147p+0
+  ctx pos 0 57 0x1.cf3e48386ff3bp+1 -0x1.8c6d3b7cf8906p+1 | pos 0 57 0x1.cf3e48386ff3bp+1 -0x1.8c6d3b7cf8906p+1
+== mac-exp (T6_HYPOT=math T6_EXP=exp-mac.txt): 133 of 255 dot lines differ
+first diff line 3375
+  native step 0 2 0x1p+0 0x1.e459300db7646p-1 -0x1.adcb9a3876185p+0 0x1.ed53ed6ed918fp+0 0x1.ec9f0130081e5p-3
+  port   step 0 2 0x1p+0 0x1.e459300db7646p-1 -0x1.adcb9a3876185p+0 0x1.ed53ed6ed919p+0 0x1.ec9f0130081e6p-3
+  ctx shuf0[1651] 33 19 0x1.8p+2 0x1.c71c72p-6 | shuf0[1651] 33 19 0x1.8p+2 0x1.c71c72p-6
+  ctx shuf0[1652] 37 35 0x1.4p+2 0x1.47ae14p-5 | shuf0[1652] 37 35 0x1.4p+2 0x1.47ae14p-5
+  ctx step 0 0 0x1p+0 -0x1.dd28e46cb3fp-3 0x1.bc6d12cdc2dp-3 0x1.4609064d2d62bp-2 -0x1.7204939662a27p+2 | step 0 0 0x1p+0 -0x1.dd28e46cb3fp-3 0x1.bc6d12cdc2dp-3 0x1.4609064d2d62bp-2 -0x1.7204939662a27p+2
+  ctx step 0 1 0x1p+0 -0x1.604e24d92dep-2 -0x1.a6fd68bf218p-4 0x1.6fd5632ab4958p-2 -0x1.4455c89be1824p+2 | step 0 1 0x1p+0 -0x1.604e24d92dep-2 -0x1.a6fd68bf218p-4 0x1.6fd5632ab4958p-2 -0x1.4455c89be1824p+2
+== libm-hypot+mac-exp (T6_HYPOT=libm T6_EXP=exp-mac.txt): 0 of 255 dot lines differ
+identical over 54731 lines; lens 54731 54731

@@ -18,7 +18,7 @@ import { createObjState, ObjType } from '../gvc/job.js';
 import { FillType } from '../gvc/context.js';
 import { escapeXml, escapeXmlTitle, svgComment } from './svg-helpers.js';
 import { resolveRenderColor, colorPaint } from './color-resolve.js';
-import { svgGraphId, svgGraphClass } from './svg-id.js';
+import { svgGraphClass } from './svg-id.js';
 import { parseGradientSpec } from '../common/htmltable-emit-fill.js';
 import { findStopColor, parseStyleFlags } from '../common/style-resolve.js';
 import { croundNarrow32 } from '../common/arith.js';
@@ -233,6 +233,18 @@ function bgGradientPts(clip: Box): Point[] {
 }
 
 /**
+ * Object id of the graph being emitted, as getObjId builds it for an AGRAPH:
+ * the DOT `id` attr wins; else "graph" + AGSEQ. The graph being emitted is
+ * job->gvc->g, i.e. `root == obj`, so neither the `<gid>_` prefix nor the
+ * "clust" prefix applies. The root's AGSEQ is 0; a subgraph rendered after
+ * its own layout carries its creation sequence among subgraphs.
+ * @see lib/common/emit.c:getObjId
+ */
+function graphObjId(g: Graph, job: RenderJob): string {
+  return job.objId(g.attrs.get('id'), 'graph' + g.seq, true);
+}
+
+/**
  * Write background polygon element with gradient fill url reference.
  * Coords identical to emitGraphBackground; only fill changes.
  * @see plugin/core/gvrender_core_svg.c:svg_polygon:686
@@ -259,16 +271,17 @@ function writeGradientPolygon(clip: Box, id: string, job: RenderJob): void {
  * Emit the gradient background for a graph with a two-color bgcolor.
  * Pushes a temporary ObjState, emits the <defs> gradient, writes the polygon.
  *
- * The gradient id is prefixed "graph0_" to match C's svg_gradstyle behaviour
- * when obj->id is set: graph0_l_0 / graph0_r_0.
+ * The gradient id is prefixed with the graph's object id to match C's
+ * svg_gradstyle behaviour when obj->id is set: graph0_l_0 / graph0_r_0 for a
+ * root, graph<AGSEQ>_l_0 for a subgraph render.
  *
  * @see lib/common/emit.c:emit_background:1503-1519
  * @see plugin/core/gvrender_core_svg.c:svg_gradstyle:572
  * @see plugin/core/gvrender_core_svg.c:svg_rgradstyle:608
  */
-function emitGradientBackground(clip: Box, spec: BgGradientSpec, job: RenderJob): void {
+function emitGradientBackground(g: Graph, clip: Box, spec: BgGradientSpec, job: RenderJob): void {
   const obj = createObjState(ObjType.RootGraph);
-  obj.id = 'graph0';
+  obj.id = graphObjId(g, job);
   obj.fillColor = resolveRenderColor(spec.fillColor);
   obj.stopColor = resolveRenderColor(spec.stopColor);
   obj.gradientFrac = spec.frac;
@@ -277,10 +290,10 @@ function emitGradientBackground(clip: Box, spec: BgGradientSpec, job: RenderJob)
   job.pushObj(obj);
   let gid: string;
   if (spec.radial) {
-    gid = gradientId('graph0', 'r', job.radialGradId++);
+    gid = gradientId(obj.id, 'r', job.radialGradId++);
     emitRadialGradient(job, gid);
   } else {
-    gid = gradientId('graph0', 'l', job.linearGradId++);
+    gid = gradientId(obj.id, 'l', job.linearGradId++);
     emitLinearGradient(job, bgGradientPts(clip), gid);
   }
   job.popObj();
@@ -313,7 +326,7 @@ function emitBgcolorBackground(g: Graph, clip: Box, bgcolorAttr: string | undefi
   }
   const spec = resolveBgGradientSpec(g, bgcolorAttr);
   if (spec !== null) {
-    emitGradientBackground(clip, spec, job);
+    emitGradientBackground(g, clip, spec, job);
     return;
   }
   emitGraphBackground(clip, resolveGraphBgcolor(bgcolorAttr), job);
@@ -408,7 +421,7 @@ export function svgBeginPage(g: Graph, job: RenderJob): void {
     : -clip.ll.x + job.margin.x / z;
   const ty = clip.ur.y + job.margin.y / z;
   emitGraphGroupOpen(
-    job.idLayerPrefix() + svgGraphId(g, job),
+    job.idLayerPrefix() + graphObjId(g, job),
     svgGraphClass(g),
     tx, ty, job,
   );

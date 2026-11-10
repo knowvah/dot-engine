@@ -1,0 +1,59 @@
+--- src/layout/neato/sgd.ts.orig
++++ src/layout/neato/sgd.ts
+@@ -19,6 +19,7 @@
+ import { checkStart, parseStart, INIT_RANDOM, INIT_REGULAR } from './start.js';
+ import { jitter3d, ndimOf } from './init-dim.js';
+ import { agwarningf } from '../../common/agerr.js';
++import * as T6 from './t6trace.js';
+ 
+ // ---------------------------------------------------------------------------
+ // Model constants — @see lib/neatogen/defs.h
+@@ -320,6 +321,7 @@
+   const etaMax = 1 / wMin;
+   const etaMin = epsilon / wMax;
+   const lambda = Math.log(etaMax / etaMin) / (maxIter - 1);
++  T6.d('w_min', wMin); T6.d('w_max', wMax); T6.d('eta_max', etaMax); T6.d('eta_min', etaMin); T6.d('lambda', lambda);
+   return { etaMax, lambda };
+ }
+ 
+@@ -343,9 +345,10 @@
+     const mu = Math.min(eta * t.w, 1);
+     const dx = pos[2 * t.i] - pos[2 * t.j];
+     const dy = pos[2 * t.i + 1] - pos[2 * t.j + 1];
+-    const mag = Math.hypot(dx, dy);
++    const mag = T6.hyp(dx, dy);
+     if (mag === 0) continue;
+     const r = (mu * (mag - t.d)) / (2 * mag);
++    T6.step(T6.state.t, ij, mu, dx, dy, mag, r);
+     const rx = r * dx;
+     const ry = r * dy;
+     if (unfixed[t.i]) { pos[2 * t.i] -= rx; pos[2 * t.i + 1] -= ry; }
+@@ -435,8 +438,11 @@
+ ): void {
+   for (let t = 0; t < sched.maxIter; t++) {
+     fisheryatesShuffle(terms, state);
+-    const eta = sched.etaMax * Math.exp(-sched.lambda * t);
++    const eta = sched.etaMax * T6.exp(-sched.lambda * t);
++    T6.d('eta', eta); T6.state.t = t;
++    if (t === 0) T6.terms('shuf0', terms);
+     sgdIteration(pos, terms, unfixed, eta);
++    T6.pos('pos', t, pos, pos.length / 2);
+   }
+ }
+ 
+@@ -468,6 +474,7 @@
+   setEdgeLen(g);
+   const graph = extractAdjacency(g, resolvedModel);
+   const terms = sgdBuildTerms(graph);
++  T6.terms('term', terms);
+   if (terms.length === 0) return;
+ 
+   // C: MaxIter = atoi(maxiter) else 30; Epsilon = late_double(epsilon, 1e-4)
+@@ -480,6 +487,7 @@
+   initialPositions(g, n);
+   const pos = posToArray(g, n);
+   const unfixed = buildUnfixed(g, n);
++  T6.pos('pos0', -1, pos, n);
+ 
+   const state = rkNewState();
+   rkSeed(SHUFFLE_SEED, state);

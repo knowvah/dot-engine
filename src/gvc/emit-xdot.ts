@@ -30,16 +30,15 @@ const DEFAULT_FILL = 'lightgrey';
 const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
 
 /**
- * job->clip for this device. `job.clip` carries the SVG default pad of 4; the
- * xdot device's default is 0, so with no `pad` its clip is the bb, computed in
- * C's order, rounding included.
+ * job->clip for this device, computed in C's order, rounding included. svg's
+ * pad is `job.pad` (default 4); the xdot device's default is 0, so with no
+ * `pad` its clip is the bb.
  * @see plugin/core/gvrender_core_dot.c:739 render_features_dot
  * @see lib/common/emit.c:1558
  */
-function deviceClip(g: Graph, renderer: RendererPlugin, job: RenderJob): Box {
-  if (renderer.type === 'svg') return job.clip;
+export function deviceClip(g: Graph, renderer: RendererPlugin, job: RenderJob): Box {
   const attr = g.attrs.get('pad');
-  const pad = attr ? parseGraphPad(attr) : { x: 0, y: 0 };
+  const pad = renderer.type === 'svg' ? job.pad : attr ? parseGraphPad(attr) : { x: 0, y: 0 };
   const size = parseDrawingSize(g.attrs.get('size'));
   return setupPageClip(job.bb, size, pad, initJobViewportZoom(job.bb, size, pad));
 }

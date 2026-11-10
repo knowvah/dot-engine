@@ -32,21 +32,6 @@ import { agwarningf } from '../../common/agerr.js';
 /** @see lib/neatogen/adjust.c:DFLT_MARGIN (points) */
 const DFLT_MARGIN = 4;
 
-/**
- * getSizes lays `sizes` out Ndim apart (x, y, then zeros); sfdp's getSizes
- * returns the 2-wide layout, so widen it to `ndim`.
- * @see lib/neatogen/adjust.c:getSizes
- */
-function sizesByNdim(sizes2: number[], ndim: number): number[] {
-  if (ndim === 2) return sizes2;
-  const sizes = new Array<number>((sizes2.length / 2) * ndim).fill(0);
-  for (let i = 0; i < sizes2.length / 2; i++) {
-    sizes[i * ndim] = sizes2[i * 2]!;
-    sizes[i * ndim + 1] = sizes2[i * 2 + 1]!;
-  }
-  return sizes;
-}
-
 /** @see lib/common/utils.c:mapBool */
 function mapBoolDflt(p: string | undefined, defaultValue: boolean): boolean {
   if (p === undefined || p === '') return defaultValue;
@@ -102,7 +87,7 @@ export function fdpAdjust(g: Graph, ntry: number): void {
   const pad = sep.doAdd
     ? { x: sep.x / 72, y: sep.y / 72 }
     : { x: DFLT_MARGIN / 72, y: DFLT_MARGIN / 72 };
-  const sizes = sizesByNdim(getSizes(g, pad), ndim);
+  const sizes = getSizes(g, pad, ndim);
 
   for (const n of g.nodes.values()) {
     const i = n.info.id!;

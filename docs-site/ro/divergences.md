@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -114,7 +114,7 @@ fiecare intrare cu propriul motor, în loc de `dot`. Plafonul onest al acestei a
 **restrângerea** lui A1 la „nicio divergență activă pe platforma de referință”, niciodată
 eliminarea rezervei privind platformele multiple; rezultatele de până acum (mai jos) respectă acest
 plafon: `circo`/`twopi`/`osage` au scos la iveală și au elucidat până la cauza rădăcină
-câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 99.8/96.6/68.1%
+câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 99.8/98.0/68.1%
 în limita a 0.5pt față de nativ pe universul de 929 de elemente (graphviz 16.1.0), ceea ce înseamnă că aritmetica
 portată (`fma.ts`, `arm-pow.ts`, PRNG potrivit) se menține pentru majoritatea grafurilor — iar
 fiecare id divergent din universul de 929 de elemente este atribuit individual prin injecție (derivă a solverului față de
@@ -196,19 +196,20 @@ pentru aceste trei, iar `parity-report.ts` le afișează într-o secțiune separ
 acestui document. Numerele curente față de graphviz 16.1.0 (univers de 929 de elemente; procentul de reușită exclude
 intrările pe care oracolul C nu le poate randa, conform [Conformitate](./conformance.md)):
 
-| motor | sondate | în limita ±0.5pt | neconforme | eroare portare / timeout | eroare oracol |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| motor | sondate | în limita ±0.5pt | neconforme | eroare portare / timeout | eroare oracol | oracol nedeterminist |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+Cele 13 intrări nedeterministe ale `fdp`, la care ieșirea nativă variază de la o rulare la alta, sunt excluse din rata sa de reușită; singura sa eroare de portare este `1879`, care cere rutarea `splines=compound`, nesusținută de port.
 
 (Rata de reușită a lui `fdp` a crescut de la 77.5% pentru că parcurgerea anterioară înregistrată
 era anterioară stării portării din misiunea precedentă.
 Rata de reușită a lui `neato` a crescut de la 90.5% când nucleele de stress fuzionate
 din dezasamblarea 16.1 au ajuns pe calea kD de producție (continuări post-16.1, partea
 5, T15): 83 de id-uri care divergeau din cauza derivei solverului trec acum, printre ele
-reziduul pe id acceptat anterior `2619_2`, a cărui acceptare este retrasă; `2371` este
-singurul id `neato` rămas divergent.)
+reziduul pe id acceptat anterior `2619_2`, a cărui acceptare este retrasă; cele două id-uri `neato` din afara ±0.5pt sunt `2784` (A10) și `2371` (derivă A1).)
 
 (Prima trecere, 2026-07-11, la 762 de elemente, a măsurat 263/311/260 în limita
 ±0.5pt — saltul la ratele actuale a venit din remedieri pe id integrate de atunci,
@@ -1318,16 +1319,23 @@ Fiecare element spune ce face nativul și ce face portul.
 
 - **`mode=hier dim=4` pe două noduri.** Nativul scrie dincolo de `directions` (`lib/neatogen/stress.c:514`) și, în unele rulări, se oprește brusc (ieșire 133 în 5 din 16 rulări). Portul redă.
 - **`mode=hier dim=3` cu `len=0.001`.** Nativul moare prin semnal: 3 din 8 rulări la 19 noduri (SIGBUS) și 8 din 8 la 27 de noduri (SIGBUS, SIGSEGV, SIGTRAP). Stiva este `mfm_alloc` sub `stress_majorization_kD_mkernel`, ceea ce arată corupere a heap-ului; locul exact nu este dovedit. Portul redă, iar unde nativul supraviețuiește (19 noduri, 5 din 8 rulări) este identic octet cu octet.
-- **A doua așezare a lui fdp pe același graf variază în nativ cu adresele heap-ului.** `deriveGraph` și `genPorts` compară pointeri de noduri (`lib/fdpgen/layout.c:466,501,637`). Pe câte 12 rulări native, redarea 2 a lui `graphs-fdp` ca `plain` cade în 2 clase (1 și 11 rulări), iar `1581` ca `dot` în 2 clase (8 și 4 rulări); portul este identic octet cu octet cu clasa de 1 rulare a lui `plain` și în limita de 5e-13 față de clasa de 4 rulări a lui `dot`. Un nativ recompilat cu cele trei comparații pe `ND_id` se repetă 8 din 8 și este identic octet cu octet cu portul pe `plain`. O alegere doar a portului: `attach_attrs` nativ se încheie cu `undoClusterEdges` (`lib/common/output.c:403-404`), iar portul execută această anulare la următoarea așezare, nu la randare, pentru că scriitorii lui citesc proxy-urile `__0:`.
+- **A doua așezare a lui fdp pe același graf variază în nativ cu adresele heap-ului.** `deriveGraph` și `genPorts` compară pointeri de noduri (`lib/fdpgen/layout.c:466,501,637`). Pe câte 12 rulări native, redarea 2 a lui `graphs-fdp` ca `plain` cade în 2 clase (1 și 11 rulări), iar `1581` ca `dot` în 2 clase (8 și 4 rulări); portul este identic octet cu octet cu clasa de 1 rulare a lui `plain` și în limita de 5e-13 față de clasa de 4 rulări a lui `dot`. Un nativ recompilat cu cele trei comparații pe `ND_id` se repetă 8 din 8 și este identic octet cu octet cu portul pe `plain`. O alegere doar a portului: `attach_attrs` nativ se încheie cu `undoClusterEdges` (`lib/common/output.c:403-404`). Scriitorii `json` și `json0` ai portului anulează proxy-urile înainte de scriere, ca C; scriitorii `dot` și `xdot` citesc proxy-urile `__0:`, deci pentru ei anularea rulează la următorul layout, nu la randare.
 - **O operație `T` în `_draw_` sau `_background` al grafului.** Nativul face segfault (ieșire 139): `op->span` este NULL în afara lui neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Portul nu desenează text pentru ea.
 - **neato pe un subgraf.** Nativul a ieșit cu 139 la așezarea ambelor subgrafuri ale singurului graf testat, un subgraf simplu și un cluster. Portul returnează o ieșire.
+
+### Rezultatele părții 11
+
+- **Șiruri lungi în ieșirea `xdot` și `dot` (închis).** Nativul rupe o valoare între ghilimele cu o bară inversă finală după 128 de coloane, sau după `linelength` al grafului rădăcină când acesta este 0 sau cel puțin 60 (`lib/cgraph/write.c:160-195,670-677`). Portul rupe acum șirurile familiei `_draw_` la fel, identic octet cu octet cu nativul.
+- **fdp `json` și `json0` cu muchii către clustere (închis).** Nativul anulează proxy-urile muchiilor de cluster înainte de a scrie json (`lib/common/output.c:403`); portul tipărea proxy-urile `__0:` și acum le anulează mai întâi. Fdp nativ se termină cu 139 pe `2717` în orice format, deci nu are referință.
+- **`mode=sgd` în 2-D (acceptat, A1).** Pe macOS, layoutul diferă de nativ în ultimul bit al `hypot` (`lib/neatogen/sgd.c:223`) și `exp` (`sgd.c:216`) din libm, pe care SGD îl amplifică până la 1,59 puncte pe graful testat. Cu `hypot` și `exp` de pe macOS reluate, urma portului este egală cu cea nativă, deci codul nu s-a schimbat (PR 119).
+- **Un subgraf randat înaintea rădăcinii, la fdp și osage (închis).** Nativul tipărește valorile de atribut stocate (o randare ulterioară păstrează `_draw_`, `_ldraw_` și `xdotversion` ale uneia anterioare), tipărește `inf` și `nan` ca printf din C și testează caseta de spline a fiecărei muchii față de decuparea paginii (`edge_in_box`, `lib/common/emit.c:2692`). Portul face acum toate trei și egalează nativul, cu excepția unei valori a casetei de delimitare a unui cluster la deriva proprie a fdp (1.6e-11 față de -3.3e-11). Fdp nativ însuși variază cu adresele din heap (`lib/fdpgen/layout.c:466,501,637`), inclusiv la prima randare a `graphs-fdp`, deci comparația folosește nativul fără acele comparații. Ca efect secundar, `1581` ca svg primește două grupuri `<g id="edgeN">` goale pentru buclele proprii etichetate, ca nativul.
 
 ---
 
 ## Nu sunt portate în mod intenționat (non-obiective) {#intentionally-not-ported-non-goals}
 
 Acestea sunt limite deliberate ale domeniului, nu defecte. Biblioteca vizează **SVG**
-(plus formatele text intermediare `json` / `xdot` / `dot` / imagemap).
+(plus formatele text intermediare `json` / `xdot` / `dot` / `plain` / imagemap).
 
 - **Alte formate de ieșire.** Raster (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS
   și backend-urile GUI/interactive sunt în afara domeniului. Folosiți ieșirea SVG și convertiți
@@ -1336,7 +1344,6 @@ Acestea sunt limite deliberate ale domeniului, nu defecte. Biblioteca vizează *
   SVG nu setează niciun indicator de paginare), deci `page=` nu are niciun efect pe această cale în ambele
   implementări — documentat aici doar pentru că este un punct frecvent de
   confuzie.
-- **Ieșirea text `-Tplain`.** Amânată (un format text fidel), nu exclusă.
 - **`gvpr`** (limbajul de scripting pentru procesarea grafurilor) — în afara domeniului.
 - **Wrappere C++ de conveniență** (`cgraph++`, `gvc++`) — API-ul C este portat
   primul; un strat de conveniență idiomatic TypeScript, dacă este dorit, ar fi un

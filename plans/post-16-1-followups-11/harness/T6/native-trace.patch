@@ -1,0 +1,65 @@
+--- sgd.c.orig
++++ sgd.c
+@@ -13,6 +13,15 @@
+ #include <util/bitarray.h>
+ #include <util/gv_math.h>
+ #include <util/unreachable.h>
++
++#include <stdio.h>
++/* GVTS T6 trace: env-gated hex dumps, out of line so the kernel keeps its codegen. */
++__attribute__((noinline)) static int gvts_on(void){ static int v=-1; if(v<0) v=getenv("GVTS_T6")!=NULL; return v; }
++__attribute__((noinline)) static int gvts_deep(void){ static int v=-1; if(v<0) v=getenv("GVTS_T6_DEEP")!=NULL; return v; }
++__attribute__((noinline)) static void gvts_d(const char *tag,double v){ if(gvts_on()) fprintf(stderr,"%s %a\n",tag,v); }
++__attribute__((noinline)) static void gvts_terms(const char *tag,const term_sgd *t,size_t n){ if(!gvts_on()) return; fprintf(stderr,"%s n=%zu\n",tag,n); for(size_t k=0;k<n;k++) fprintf(stderr,"%s[%zu] %d %d %a %a\n",tag,k,t[k].i,t[k].j,(double)t[k].d,(double)t[k].w); }
++__attribute__((noinline)) static void gvts_pos(const char *tag,int it,const double *x,size_t n){ if(!gvts_on()) return; for(size_t k=0;k<n;k++) fprintf(stderr,"%s %d %zu %a %a\n",tag,it,k,x[2*k],x[2*k+1]); }
++__attribute__((noinline)) static void gvts_step(int t,size_t ij,double mu,double dx,double dy,double mag,double r){ if(gvts_deep()) fprintf(stderr,"step %d %zu %a %a %a %a %a\n",t,ij,mu,dx,dy,mag,r); }
+ 
+ static double calculate_stress(double *pos, term_sgd *terms, size_t n_terms) {
+   double stress = 0;
+@@ -173,6 +182,7 @@
+     }
+   }
+   assert(offset == n_terms);
++  gvts_terms("term",terms,n_terms);
+   free_adjacency(graph);
+   if (Verbose) {
+     fprintf(stderr, " %.2f sec\n", elapsed_sec());
+@@ -191,6 +201,7 @@
+   const double eta_max = 1.0 / w_min;
+   const double eta_min = Epsilon / w_max;
+   const double lambda = log(eta_max / eta_min) / (MaxIter - 1);
++  gvts_d("w_min",w_min); gvts_d("w_max",w_max); gvts_d("eta_max",eta_max); gvts_d("eta_min",eta_min); gvts_d("lambda",lambda);
+ 
+   // initialise starting positions (from neatoprocs)
+   initial_positions(G, (int)n);
+@@ -209,11 +220,14 @@
+     fprintf(stderr, "solving model:");
+     start_timer();
+   }
++  gvts_pos("pos0",-1,pos,n);
+   rk_state rstate;
+   rk_seed(0, &rstate); // TODO: get seed from graph
+   for (int t = 0; t < MaxIter; t++) {
+     fisheryates_shuffle(terms, n_terms, &rstate);
+     const double eta = eta_max * exp(-lambda * t);
++    gvts_d("eta",eta);
++    if (t == 0) gvts_terms("shuf0",terms,n_terms);
+     for (size_t ij = 0; ij < n_terms; ij++) {
+       // cap step size
+       const double mu = fmin(eta * terms[ij].w, 1);
+@@ -223,6 +237,7 @@
+       const double mag = hypot(dx, dy);
+ 
+       const double r = (mu * (mag - terms[ij].d)) / (2 * mag);
++      gvts_step(t,ij,mu,dx,dy,mag,r);
+       const double r_x = r * dx;
+       const double r_y = r * dy;
+ 
+@@ -235,6 +250,7 @@
+         pos[2 * terms[ij].j + 1] += r_y;
+       }
+     }
++    gvts_pos("pos",t,pos,n);
+     if (Verbose) {
+       fprintf(stderr, " %.3f", calculate_stress(pos, terms, n_terms));
+     }

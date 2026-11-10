@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -118,7 +118,7 @@ doorlicht in plaats van onder `dot`. Het eerlijke plafond van dat werk is A1 te
 kanttekening over platforms heen weg te nemen; de resultaten tot nu toe (hieronder)
 blijven binnen dat plafond: `circo`/`twopi`/`osage` hebben elk een handvol echte
 A1/A9-gevallen blootgelegd en tot de grondoorzaak herleid, en `neato`/`fdp`/`sfdp` zitten
-nu op 99.8/96.6/68.1% binnen 0.5pt van native over het universum van 929 items (graphviz 16.1.0), wat
+nu op 99.8/98.0/68.1% binnen 0.5pt van native over het universum van 929 items (graphviz 16.1.0), wat
 betekent dat de geporteerde rekenkunde (`fma.ts`, `arm-pow.ts`, overeenkomende PRNG) voor
 de meeste grafen standhoudt — en elk afwijkend id van het universum van 929 items wordt afzonderlijk door
 injectie toegeschreven (solverdrift vs. portdefect) in plaats van als niet-geanalyseerde
@@ -201,19 +201,20 @@ uitdrukkelijk **niet** vergelijkbaar met de deterministische slagingspercentages
 elders in dit document. Actuele aantallen ten opzichte van graphviz 16.1.0 (universum van 929 items; het slagings-% laat
 invoer weg die het C-orakel niet kan renderen, volgens [Conformiteit](./conformance.md)):
 
-| engine | surveyed | binnen ±0.5pt | niet-conform | port-fout / timeout | orakelfout |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| engine | surveyed | binnen ±0.5pt | niet-conform | port-fout / timeout | orakelfout | orakel niet-deterministisch |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+De 13 niet-deterministische invoeren van `fdp`, waarvan de native uitvoer van run tot run verschilt, zijn buiten zijn slagingspercentage gelaten; zijn enige portfout is `1879`, dat `splines=compound`-routering nodig heeft die de port niet ondersteunt.
 
 (Het slagingspercentage van `fdp` steeg van 77.5% omdat de eerdere vastgelegde sweep
 voorafging aan de portstatus van de vorige missie.
 Het slagingspercentage van `neato` steeg van 90.5% toen de samengevoegde stress-kernels
 van de 16.1-disassemblage het kD-productiepad bereikten (post-16.1-vervolgwerk, deel 5,
 T15): 83 id's die door solverdrift afweken, slagen nu, onder meer het eerder
-geaccepteerde residu per id `2619_2`, waarvan de acceptatie is ingetrokken; `2371` is
-het enige overgebleven afwijkende `neato`-id.)
+geaccepteerde residu per id `2619_2`, waarvan de acceptatie is ingetrokken; de twee `neato`-id's buiten ±0.5pt zijn `2784` (A10) en `2371` (A1-drift).)
 
 (De eerste sweep, 2026-07-11 bij 762 items, mat 263/311/260 binnen
 ±0.5pt — de sprong naar de huidige percentages kwam door sindsdien doorgevoerde
@@ -1326,16 +1327,23 @@ Elk punt zegt wat native doet en wat de port doet.
 
 - **`mode=hier dim=4` op twee knopen.** Native schrijft voorbij `directions` (`lib/neatogen/stress.c:514`) en breekt in sommige runs af (exit 133 in 5 van 16 runs). De port rendert.
 - **`mode=hier dim=3` met `len=0.001`.** Native sterft door een signaal: 3 van 8 runs bij 19 knopen (SIGBUS) en 8 van 8 bij 27 knopen (SIGBUS, SIGSEGV, SIGTRAP). De stack is `mfm_alloc` onder `stress_majorization_kD_mkernel`, wat heapcorruptie toont; de exacte plek is niet bewezen. De port rendert, en waar native overleeft (19 knopen, 5 van 8 runs) is hij byte-gelijk.
-- **De tweede layouts van fdp op één graaf variëren in native met heapadressen.** `deriveGraph` en `genPorts` vergelijken knoopwijzers (`lib/fdpgen/layout.c:466,501,637`). Over elk 12 native runs valt render 2 van `graphs-fdp` als `plain` in 2 klassen (1 en 11 runs) en `1581` als `dot` in 2 klassen (8 en 4 runs); de port is byte-gelijk aan de klasse van 1 run van `plain` en binnen 5e-13 van de klasse van 4 runs van `dot`. Een native build met die drie vergelijkingen op `ND_id` herhaalt 8 van 8 en is bij `plain` byte-gelijk aan de port. Een keuze alleen van de port: het native `attach_attrs` eindigt met `undoClusterEdges` (`lib/common/output.c:403-404`), en de port voert die ongedaanmaking uit bij de volgende layout, niet bij het renderen, omdat zijn writers de `__0:`-proxy's lezen.
+- **De tweede layouts van fdp op één graaf variëren in native met heapadressen.** `deriveGraph` en `genPorts` vergelijken knoopwijzers (`lib/fdpgen/layout.c:466,501,637`). Over elk 12 native runs valt render 2 van `graphs-fdp` als `plain` in 2 klassen (1 en 11 runs) en `1581` als `dot` in 2 klassen (8 en 4 runs); de port is byte-gelijk aan de klasse van 1 run van `plain` en binnen 5e-13 van de klasse van 4 runs van `dot`. Een native build met die drie vergelijkingen op `ND_id` herhaalt 8 van 8 en is bij `plain` byte-gelijk aan de port. Een keuze alleen van de port: het native `attach_attrs` eindigt met `undoClusterEdges` (`lib/common/output.c:403-404`). De `json`- en `json0`-schrijvers van de port maken de proxy's ongedaan voordat ze schrijven, zoals C doet; de `dot`- en `xdot`-schrijvers lezen de `__0:`-proxy's, dus voor hen vindt het ongedaan maken plaats bij de volgende layout, niet bij het renderen.
 - **Een `T`-op in `_draw_` of `_background` van de graaf.** Native geeft een segfault (exit 139): `op->span` is NULL buiten neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). De port tekent er geen tekst voor.
 - **neato op een subgraaf.** Native eindigde met 139 bij het uitleggen van beide subgrafen van de ene geteste graaf, een gewone subgraaf en een cluster. De port geeft uitvoer terug.
+
+### Resultaten van deel 11
+
+- **Lange strings in `xdot`- en `dot`-uitvoer (gesloten).** Native breekt een waarde tussen aanhalingstekens af met een afsluitende backslash na 128 kolommen, of na de `linelength` van de hoofdgraaf als die 0 of minstens 60 is (`lib/cgraph/write.c:160-195,670-677`). De port breekt `_draw_`-familiestrings nu op dezelfde manier af, byte-gelijk aan native.
+- **fdp `json` en `json0` met randen naar clusters (gesloten).** Native maakt de clusterrand-proxy's ongedaan voordat json wordt geschreven (`lib/common/output.c:403`); de port drukte de `__0:`-proxy's af en maakt ze nu eerst ongedaan. Native fdp eindigt met 139 op `2717` in elk formaat, dus er is geen referentie.
+- **2-D `mode=sgd` (geaccepteerd, A1).** Op macOS wijkt de layout van native af in het laatste bit van libm `hypot` (`lib/neatogen/sgd.c:223`) en `exp` (`sgd.c:216`), wat SGD versterkt tot maximaal 1,59 punt op de geteste graaf. Met macOS' `hypot` en `exp` afgespeeld is het spoor van de port gelijk aan dat van native, dus er is geen code gewijzigd (PR 119).
+- **Een subgraaf gerenderd vóór zijn wortel, bij fdp en osage (gesloten).** Native drukt opgeslagen attribuutwaarden af (een latere render behoudt `_draw_`, `_ldraw_` en `xdotversion` van een eerdere), drukt `inf` en `nan` af zoals de printf van C en test de splinebox van elke rand tegen de paginaclip (`edge_in_box`, `lib/common/emit.c:2692`). De port doet nu alle drie en evenaart native, behalve één bounding-boxwaarde van een cluster bij fdp's eigen drift (1.6e-11 tegen -3.3e-11). Native fdp varieert zelf met heapadressen (`lib/fdpgen/layout.c:466,501,637`), ook bij de eerste render van `graphs-fdp`, dus de vergelijking gebruikt native zonder die vergelijkingen. Als neveneffect krijgt `1581` als svg twee lege `<g id="edgeN">`-groepen voor gelabelde zelflussen, zoals native.
 
 ---
 
 ## Bewust niet geport (niet-doelen) {#intentionally-not-ported-non-goals}
 
 Dit zijn bewuste scope-afbakeningen, geen bugs. De bibliotheek richt zich op **SVG**
-(plus de tussenliggende tekstformaten `json` / `xdot` / `dot` / imagemap).
+(plus de tussenliggende tekstformaten `json` / `xdot` / `dot` / `plain` / imagemap).
 
 - **Andere uitvoerformaten.** Raster (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS
   en GUI-/interactieve backends vallen buiten de scope. Gebruik de SVG-uitvoer en converteer
@@ -1344,7 +1352,6 @@ Dit zijn bewuste scope-afbakeningen, geen bugs. De bibliotheek richt zich op **S
   SVG-device zet geen pagineringsvlag), dus `page=` doet op dit pad in beide
   implementaties niets — hier alleen gedocumenteerd omdat het een veelvoorkomend
   punt van verwarring is.
-- **`-Tplain`-tekstuitvoer.** Uitgesteld (een getrouw tekstformaat), niet uitgesloten.
 - **`gvpr`** (de scripttaal voor graafverwerking) — buiten de scope.
 - **C++-gemaksomhulsels** (`cgraph++`, `gvc++`) — de C-API wordt eerst
   geport; een idiomatische TypeScript-gemakslaag zou, indien gewenst, een

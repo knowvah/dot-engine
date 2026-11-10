@@ -81,6 +81,17 @@ function roundHalfEvenDrop(value: bigint, dropCount: number): bigint {
 }
 
 /**
+ * What C's printf prints for a non-finite double under `%f`, `%g` and `%e`:
+ * `inf`, `-inf` or `nan`. The reference libc (macOS) prints no sign on a NaN
+ * whose sign bit is set.
+ * @see lib/gvc/gvdevice.c:gvprintdouble · lib/common/output.c:71 ("%.5g")
+ */
+function printfNonFinite(v: number): string {
+  if (Number.isNaN(v)) return 'nan';
+  return v > 0 ? 'inf' : '-inf';
+}
+
+/**
  * Format `v` as C's `%.<decimals>f` would (fixed decimal places, rounded
  * half-to-even on exact ties). Mirrors `Number.prototype.toFixed(decimals)`
  * byte-for-byte on every non-tie input; only exact-tie inputs differ.
@@ -89,11 +100,8 @@ function roundHalfEvenDrop(value: bigint, dropCount: number): bigint {
  */
 export function printfFixed(v: number, decimals: number): string {
   // Non-finite: the exact-decimal decomposition below reads the IEEE-754
-  // bit pattern as a finite mantissa, so Infinity/NaN would emit a spurious
-  // ~309-digit integer. Match the `toFixed` contract this helper replaces:
-  // it returns "Infinity"/"-Infinity"/"NaN" verbatim (canonicalized to the
-  // oracle's C printf "inf"/"nan" by the xdot comparator).
-  if (!Number.isFinite(v)) return v.toFixed(decimals);
+  // bit pattern as a finite mantissa, so print C's text instead.
+  if (!Number.isFinite(v)) return printfNonFinite(v);
   if (v === 0) return decimals > 0 ? '0.' + '0'.repeat(decimals) : '0';
   const sign = v < 0 ? '-' : '';
   const { digits, exponent10 } = exactDecimalDigits(Math.abs(v));
@@ -124,11 +132,9 @@ export function printfFixed(v: number, decimals: number): string {
  * @see lib/common/output.c:71 (agxbprint "%.5g")
  */
 export function printfSig(v: number, sig: number): string {
-  // Non-finite: mirror the `toPrecision` contract this helper replaces
-  // ("Infinity"/"-Infinity"/"NaN"); the bit-decomposition below is only
-  // valid for finite magnitudes. (gfmt5 already short-circuits non-finite,
-  // but the contract must hold for every caller.)
-  if (!Number.isFinite(v)) return v.toPrecision(sig);
+  // Non-finite: the bit-decomposition below is only valid for finite
+  // magnitudes, so print C's text instead.
+  if (!Number.isFinite(v)) return printfNonFinite(v);
   if (v === 0) return sig > 1 ? '0.' + '0'.repeat(sig - 1) : '0';
   const sign = v < 0 ? '-' : '';
   const { digits, exponent10 } = exactDecimalDigits(Math.abs(v));

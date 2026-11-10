@@ -43,6 +43,7 @@ import type { XdotOp, XdotColor } from '../xdot/types.js';
 import type { TextlabelT, FieldT } from '../common/types.js';
 import { printNum, gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
 import { attachAttrs } from './dot/write-back.js';
+import { attachBeforeWriteWithClusterEdges as attachFirst, clusterNodeGid, jsonNodes } from './json-cluster-edge.js';
 import { attrsWithoutLayoutBb } from '../gvc/layout-bb.js';
 import { CHAR_LATIN1 } from '../common/graph-init.js';
 import { parse } from '../parser/index.js';
@@ -262,14 +263,11 @@ function collectDrawLookup(g: Graph): DrawLookup | undefined {
   const draws = xr.drawStringsByObject();
   const node = new Map<string, Map<string, string>>();
   for (const [nm, xn] of xg.nodes) node.set(nm, new Map(xn.attrs));
-  // Correlate each original-graph cluster with its xdot-re-render attrs by a
-  // PARALLEL walk keyed on the cluster OBJECT, not its name. A bare-name Map
-  // collides when two clusters share a name at different tree depths (empty
-  // `cluster_1` in `cluster_0` + a real top-level `cluster_1` — graphs-b7).
-  // xg holds only the drawable clusters (the xdot writer drops anonymous/rank
-  // subgraphs), so when a g-child has no same-named xg-child at this level it
-  // is a filtered non-cluster (or a cluster nested under one): descend g but
-  // hold the xg position, matching xg's flattened cluster tree (1436).
+  // Correlate each cluster with its xdot-re-render attrs by a PARALLEL walk
+  // keyed on the cluster OBJECT, not its name: a bare-name Map collides when two
+  // clusters share a name at different depths (graphs-b7). xg holds only the
+  // drawable clusters, so a g-child with no same-named xg-child here is a
+  // filtered non-cluster (or nested under one): descend g, hold xg (1436).
   const cluster = new Map<Graph, Map<string, string>>();
   const correlate = (gSub: Graph, xgSub: Graph): void => {
     for (const [nm, gChild] of gSub.subgraphs) {
@@ -298,7 +296,7 @@ function collectDrawLookup(g: Graph): DrawLookup | undefined {
   for (const [nm, gn] of g.nodes) applyDraws(node.get(nm), draws.get(gn));
   for (const [gc, attrs] of cluster) applyDraws(attrs, draws.get(gc));
   for (const [ge, attrs] of edge) applyDraws(attrs, draws.get(ge));
-  return { graph: graphAttrs, node, cluster, edge, attach: () => xr.attach(g) };
+  return { graph: graphAttrs, node, cluster, edge, attach: attachFirst(g, () => xr.attach(g)) };
 }
 
 // ---------------------------------------------------------------------------
@@ -379,7 +377,7 @@ function assignIds(g: Graph, doXDot: boolean, draws?: DrawLookup): BuildCtx {
   const sgcnt = dfsSubs.length;
   const nodeGid = new Map<Node, number>();
   let ncnt = 0;
-  for (const [, n] of g.nodes) nodeGid.set(n, sgcnt + ncnt++);
+  for (const [, n] of g.nodes) nodeGid.set(n, n.info.clustnode ? clusterNodeGid(n, dfsSubs) : sgcnt + ncnt++);
   const edgeGid = new Map<Edge, number>();
   let ecnt = 0;
   for (const { e } of canonicalRootEdges(g)) edgeGid.set(e, ecnt++);
@@ -607,10 +605,10 @@ function buildGraphObject(g: Graph, top: boolean, ctx: BuildCtx): JObj {
   if (top) {
     // "objects": all subgraphs (DFS preorder) then all node objects. Emitted
     // only when the graph has any subgraph or node. @see write_subgs/write_nodes
-    if (ctx.dfsSubs.length > 0 || g.nodes.size > 0) {
+    if (ctx.dfsSubs.length > 0 || jsonNodes(g).length > 0) {
       const objects: JObj[] = [];
       for (const sg of ctx.dfsSubs) objects.push(buildGraphObject(sg, false, ctx));
-      for (const [, n] of g.nodes) objects.push(buildNodeObject(n, ctx));
+      for (const n of jsonNodes(g)) objects.push(buildNodeObject(n, ctx));
       o.objects = objects;
     }
   } else {
@@ -619,10 +617,7 @@ function buildGraphObject(g: Graph, top: boolean, ctx: BuildCtx): JObj {
     for (const [, sg] of g.subgraphs) childGids.push(ctx.subgGid.get(sg)!);
     if (childGids.length > 0) o.subgraphs = childGids;
     const nodeGids: number[] = [];
-    for (const [, n] of g.nodes) {
-      const gid = ctx.nodeGid.get(n);
-      if (gid !== undefined) nodeGids.push(gid);
-    }
+    for (const n of jsonNodes(g)) nodeGids.push(ctx.nodeGid.get(n)!);
     if (nodeGids.length > 0) o.nodes = nodeGids;
     const eGids = memberEdgeGids(g, ctx);
     if (eGids.length > 0) o.edges = eGids;
@@ -658,8 +653,7 @@ function latin1Reencode(s: string): string {
 export function buildJson(g: Graph, doXDot: boolean, preDraws?: DrawLookup): string {
   const draws = doXDot ? (preDraws ?? collectDrawLookup(g)) : undefined;
   const ctx = assignIds(g, doXDot, draws);
-  const root = buildGraphObject(g, true, ctx);
-  return JSON.stringify(root, null, 2) + '\n';
+  return JSON.stringify(buildGraphObject(g, true, ctx), null, 2) + '\n';
 }
 
 /** Everything the JSON writers leave to the graph walk: they write once, at the end. */
@@ -692,7 +686,10 @@ export class Json0Renderer extends JsonRendererBase implements RendererPlugin {
   beginGraph(_g: Graph, _job: RenderJob): void { /* no-op */ }
 
   /** C's json_begin_graph runs attach_attrs; buildJson overlays the same values. */
-  endGraph(g: Graph, job: RenderJob): void { job.write(buildJson(g, false)); attachAttrs(g); }
+  endGraph(g: Graph, job: RenderJob): void {
+    const later = attachFirst(g, () => attachAttrs(g));
+    job.write(buildJson(g, false)); later();
+  }
 }
 
 // ---------------------------------------------------------------------------

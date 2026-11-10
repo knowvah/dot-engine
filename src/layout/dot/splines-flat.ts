@@ -34,7 +34,7 @@ import { getSplineBounds, staleAdjacent } from './edge-route-rank.js';
 import { graphRanksep } from './position-aux.js';
 import { Edge as EdgeClass } from '../../model/edge.js';
 import { cloneNode, cloneEdge, cleanupCloneGraph, transformf } from './splines-clone.js';
-import { dotInitNodeEdge } from './init.js';
+import { dotInitNodeEdge, AUX_INIT_SYMS } from './init.js';
 import { gvPostprocess } from '../../common/postproc.js';
 import { newSpline } from '../../common/splines-clip.js';
 import { mapArrowOpPoints } from '../../common/arrows-shapes-util.js';
@@ -367,7 +367,7 @@ export function makeFlatAdjEdges(g: Graph, edges: Edge[], cnt: number, et: numbe
   // C setEdgeType(auxg, et); inlined (index.ts's setEdgeType would be an import cycle).
   // @see lib/dotgen/dotsplines.c:make_flat_adj_edges
   aux.auxg.info.flags = (aux.auxg.info.flags & ~0xf) | (et & 0xf);
-  dotInitNodeEdge(aux.auxg);
+  dotInitNodeEdge(aux.auxg, AUX_INIT_SYMS);
   dotRank(aux.auxg);
   if (dotMincross(aux.auxg) !== 0) return 1;
   if (dotPosition(aux.auxg) !== 0) return 1;

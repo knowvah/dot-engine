@@ -1,5 +1,5 @@
 ---
-sourceHash: cc18f38596b72b81da0a384b96f1dacba31e9f8e324585d5ad44b68a13fecae4
+sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -113,7 +113,7 @@ wejście pod jego własnym silnikiem zamiast `dot`. Uczciwy pułap tej pracy to
 **zawężenie** A1 do „braku aktywnej rozbieżności na platformie referencyjnej”, nigdy
 wyeliminowanie zastrzeżenia o różnicach między platformami; dotychczasowe wyniki (poniżej) mieszczą się w tym
 pułapie: `circo`/`twopi`/`osage` ujawniły i rozłożyły na przyczyny źródłowe garstkę
-prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 99.8/96.6/68.1%
+prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 99.8/98.0/68.1%
 w granicach 0.5pt od natywnego na zbiorze 929 pozycji (graphviz 16.1.0), co oznacza, że przeportowana
 arytmetyka (`fma.ts`, `arm-pow.ts`, dopasowany PRNG) działa dla większości grafów —
 a każdy rozbieżny id ze zbioru 929 pozycji jest indywidualnie przypisany przez wstrzyknięcie (dryf
@@ -195,19 +195,20 @@ wyraźnie **nieporównywalnej** ze wskaźnikami zaliczeń deterministycznych ±0
 tego dokumentu. Aktualne liczby względem graphviz 16.1.0 (zbiór 929 pozycji; wskaźnik zaliczeń pomija
 wejścia, których wyrocznia w C nie potrafi wyrenderować, zgodnie z [Zgodnością](./conformance.md)):
 
-| silnik | zbadano | w granicach ±0.5pt | niezgodne | błąd portu / timeout | błąd wyroczni |
-|---|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 1 | 1 | 1 |
-| `fdp`   | 929 | 894 (96.6%) | 29 | 2 | 4 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 |
+| silnik | zbadano | w granicach ±0.5pt | niezgodne | błąd portu / timeout | błąd wyroczni | wyrocznia niedeterministyczna |
+|---|---:|---:|---:|---:|---:|---:|
+| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
+| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+
+13 niedeterministycznych wejść `fdp`, dla których natywne wyjście zmienia się między uruchomieniami, pominięto w jego odsetku zaliczeń; jedyny błąd portu to `1879`, które wymaga trasowania `splines=compound`, nieobsługiwanego przez port.
 
 (Wskaźnik zaliczeń `fdp` wzrósł z 77.5%, ponieważ wcześniejszy zatwierdzony przebieg
 przedstawiał stan portu sprzed poprzedniej misji.
 Wskaźnik zaliczeń `neato` wzrósł z 90.5%, gdy połączone jądra stress z deasemblacji 16.1
 trafiły na produkcyjną ścieżkę kD (kontynuacje po 16.1, część 5, T15): 83 id, które
 różniły się z powodu dryfu solwera, teraz przechodzą, w tym wcześniej zaakceptowana
-reszta dla pojedynczego id `2619_2`, której akceptacja jest wycofana; `2371` to jedyne
-pozostałe rozbieżne id `neato`.)
+reszta dla pojedynczego id `2619_2`, której akceptacja jest wycofana; dwa id `neato` poza ±0.5pt to `2784` (A10) i `2371` (dryf A1).)
 
 (Pierwszy przebieg, 2026-07-11 przy 762 pozycjach, zmierzył 263/311/260 w granicach
 ±0.5pt — skok do obecnych wskaźników wziął się z poprawek dla poszczególnych id wprowadzonych od tego czasu,
@@ -1300,16 +1301,23 @@ Każda pozycja mówi, co robi natyw, a co port.
 
 - **`mode=hier dim=4` na dwóch węzłach.** Natyw zapisuje poza `directions` (`lib/neatogen/stress.c:514`) i w niektórych przebiegach przerywa (kod 133 w 5 z 16 przebiegów). Port renderuje.
 - **`mode=hier dim=3` z `len=0.001`.** Natyw ginie od sygnału: 3 z 8 przebiegów przy 19 węzłach (SIGBUS) i 8 z 8 przy 27 węzłach (SIGBUS, SIGSEGV, SIGTRAP). Stos to `mfm_alloc` pod `stress_majorization_kD_mkernel`, co pokazuje uszkodzenie sterty; dokładne miejsce nie jest udowodnione. Port renderuje, a tam, gdzie natyw przeżywa (19 węzłów, 5 z 8 przebiegów), jest identyczny bajt w bajt.
-- **Drugie układy fdp na jednym grafie zmieniają się w natywie wraz z adresami sterty.** `deriveGraph` i `genPorts` porównują wskaźniki węzłów (`lib/fdpgen/layout.c:466,501,637`). Przy 12 przebiegach natywnych każdy renderowanie 2 `graphs-fdp` jako `plain` wpada w 2 klasy (1 i 11 przebiegów), a `1581` jako `dot` w 2 klasy (8 i 4 przebiegi); port jest identyczny bajt w bajt z klasą 1 przebiegu `plain` i w granicach 5e-13 od klasy 4 przebiegów `dot`. Natyw zbudowany z tymi trzema porównaniami na `ND_id` powtarza się 8 z 8 i na `plain` jest identyczny bajt w bajt z portem. Wybór tylko portu: natywne `attach_attrs` kończy się `undoClusterEdges` (`lib/common/output.c:403-404`), a port wykonuje to cofnięcie przy następnym układzie, nie przy renderowaniu, ponieważ jego zapisywacze czytają proxy `__0:`.
+- **Drugie układy fdp na jednym grafie zmieniają się w natywie wraz z adresami sterty.** `deriveGraph` i `genPorts` porównują wskaźniki węzłów (`lib/fdpgen/layout.c:466,501,637`). Przy 12 przebiegach natywnych każdy renderowanie 2 `graphs-fdp` jako `plain` wpada w 2 klasy (1 i 11 przebiegów), a `1581` jako `dot` w 2 klasy (8 i 4 przebiegi); port jest identyczny bajt w bajt z klasą 1 przebiegu `plain` i w granicach 5e-13 od klasy 4 przebiegów `dot`. Natyw zbudowany z tymi trzema porównaniami na `ND_id` powtarza się 8 z 8 i na `plain` jest identyczny bajt w bajt z portem. Wybór tylko portu: natywne `attach_attrs` kończy się `undoClusterEdges` (`lib/common/output.c:403-404`). Zapisywacze `json` i `json0` w porcie cofają proxy przed zapisem, tak jak C; zapisywacze `dot` i `xdot` czytają proxy `__0:`, więc dla nich cofnięcie następuje przy następnym układzie, a nie przy renderowaniu.
 - **Operacja `T` w `_draw_` lub `_background` grafu.** Natyw kończy się segfaultem (kod 139): `op->span` jest NULL poza neato `-n` (`xdotBB`, `lib/neatogen/neatoinit.c:560`). Port nie rysuje dla niej tekstu.
 - **neato na podgrafie.** Natyw zakończył się kodem 139 przy układaniu obu podgrafów jednego przetestowanego grafu, zwykłego podgrafu i klastra. Port zwraca wynik.
+
+### Wyniki części 11
+
+- **Długie łańcuchy w wyjściu `xdot` i `dot` (zamknięte).** Natywnie wartość w cudzysłowie jest łamana końcowym ukośnikiem wstecznym po 128 kolumnach albo po `linelength` grafu głównego, gdy wynosi 0 lub co najmniej 60 (`lib/cgraph/write.c:160-195,670-677`). Port łamie teraz łańcuchy rodziny `_draw_` tak samo, bajt w bajt jak natywnie.
+- **fdp `json` i `json0` z krawędziami do klastrów (zamknięte).** Natywnie proxy krawędzi klastrów są cofane przed zapisem json (`lib/common/output.c:403`); port drukował proxy `__0:`, a teraz najpierw je cofa. Natywny fdp kończy się kodem 139 na `2717` w każdym formacie, więc nie ma odniesienia.
+- **2-D `mode=sgd` (zaakceptowane, A1).** Na macOS układ różni się od natywnego na ostatnim bicie `hypot` (`lib/neatogen/sgd.c:223`) i `exp` (`sgd.c:216`) z libm, co SGD wzmacnia do 1,59 punktu na badanym grafie. Po odtworzeniu `hypot` i `exp` z macOS ślad portu jest równy natywnemu, więc kodu nie zmieniono (PR 119).
+- **Podgraf renderowany przed swoim korzeniem, w fdp i osage (zamknięte).** Natywnie drukowane są zapisane wartości atrybutów (późniejsze renderowanie zachowuje `_draw_`, `_ldraw_` i `xdotversion` wcześniejszego), `inf` i `nan` drukowane są jak w printf z C, a pudełko splajnu każdej krawędzi jest testowane względem przycięcia strony (`edge_in_box`, `lib/common/emit.c:2692`). Port robi teraz wszystkie trzy rzeczy i równa się natywnemu, poza jedną wartością ramki otaczającej klastra przy własnym dryfie fdp (1.6e-11 wobec -3.3e-11). Natywny fdp sam zmienia się wraz z adresami sterty (`lib/fdpgen/layout.c:466,501,637`), także przy pierwszym renderowaniu `graphs-fdp`, więc porównanie używa natywnego bez tych porównań. Skutkiem ubocznym jest to, że `1581` jako svg zyskuje dwie puste grupy `<g id="edgeN">` dla etykietowanych pętli własnych, jak w natywnym.
 
 ---
 
 ## Celowo nieprzeportowane (cele wykluczone) {#intentionally-not-ported-non-goals}
 
 To są celowe granice zakresu, a nie błędy. Biblioteka celuje w **SVG**
-(plus pośrednie formaty tekstowe `json` / `xdot` / `dot` / imagemap).
+(plus pośrednie formaty tekstowe `json` / `xdot` / `dot` / `plain` / imagemap).
 
 - **Inne formaty wyjściowe.** Rastrowe (PNG/JPG/GIF/WebP/BMP), PostScript/PDF/EPS
   oraz backendy GUI/interaktywne są poza zakresem. Użyj wyjścia SVG i skonwertuj
@@ -1318,7 +1326,6 @@ To są celowe granice zakresu, a nie błędy. Biblioteka celuje w **SVG**
   SVG nie ustawia flagi paginacji), więc `page=` jest bez efektu na tej ścieżce w obu
   implementacjach — udokumentowane tu tylko dlatego, że jest to częste miejsce
   nieporozumień.
-- **Wyjście tekstowe `-Tplain`.** Odłożone (wierny format tekstowy), a nie wykluczone.
 - **`gvpr`** (język skryptowy do przetwarzania grafów) — poza zakresem.
 - **Wygodne nakładki C++** (`cgraph++`, `gvc++`) — najpierw portowane jest API C;
   idiomatyczna warstwa wygody dla TypeScript, jeśli będzie potrzebna, byłaby
