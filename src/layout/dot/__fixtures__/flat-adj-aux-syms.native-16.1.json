@@ -1,0 +1,1210 @@
+{
+ "oracle": "graphviz 16.1.0 (oracle/16.1.0): dot -Kdot -Tdot, GVBINDIR=/tmp/ghl, input on stdin",
+ "captured": "2026-11-10",
+ "cases": [
+  {
+   "name": "base-plain-B1",
+   "sym": "base",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "base-plain-B3",
+   "sym": "base",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "base-plain-B4",
+   "sym": "base",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "base-plain-B5",
+   "sym": "base",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-short-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=xl];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,115.59\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\txlabel=xl,\n\t\txlp=\"66.333,107.19\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-short-B3",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false xlabel=xl];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,103.94\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\",\n\t\txlabel=xl,\n\t\txlp=\"57.209,95.54\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-short-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=xl];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\txlabel=xl,\n\t\txlp=\"20.95,59.665\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-short-B5",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false xlabel=xl];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\",\n\t\txlabel=xl,\n\t\txlp=\"39.764,53.529\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj3-short-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x xlabel=xl];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\txlabel=xl,\n\t\txlp=\"66.327,41.068\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj3-short-B3",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false xlabel=xl];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\",\n\t\txlabel=xl,\n\t\txlp=\"65.859,52.22\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj3-short-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x xlabel=xl];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\",\n\t\txlabel=xl,\n\t\txlp=\"21.555,45.731\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj3-short-B5",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false xlabel=xl];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\",\n\t\txlabel=xl,\n\t\txlp=\"32.445,52.326\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-objall-short-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=x1];\n  a:s -> b:s [xlabel=x2];\n  a -> b [label=x xlabel=x3];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,115.59\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\txlabel=x1,\n\t\txlp=\"64.778,107.19\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\",\n\t\txlabel=x2,\n\t\txlp=\"64.778,8.5471\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\txlabel=x3,\n\t\txlp=\"64.772,41.068\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-objall-short-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=x2];\n  a -> b [label=x xlabel=x3];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\txlabel=x2,\n\t\txlp=\"19.394,59.665\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\",\n\t\txlabel=x3,\n\t\txlp=\"20,45.731\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-short-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  edge [xlabel=xl];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,115.59\"];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=xl];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\txlp=\"66.333,107.19\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\",\n\t\txlp=\"66.333,8.5471\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\txlp=\"66.327,41.068\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-short-B3",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  edge [xlabel=xl];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,103.94\"];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=xl];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\",\n\t\txlp=\"57.209,95.54\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\",\n\t\txlp=\"57.209,8.9005\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\",\n\t\txlp=\"65.859,52.22\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-short-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [xlabel=xl];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=xl];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\txlp=\"20.95,59.665\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\",\n\t\txlp=\"21.555,45.731\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-short-B5",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [xlabel=xl];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=xl];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\",\n\t\txlp=\"39.764,53.529\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\",\n\t\txlp=\"27.821,45.757\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\",\n\t\txlp=\"21.555,64.926\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-long-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=\"a very long external label\"];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,214.49,115.59\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"97.492,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"187.49,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,187.49,68.788 97.492,68.788 97.492,104.73 170.14,108.38 184.9,79.738\",\n\t\txlabel=\"a very long external label\",\n\t\txlp=\"71.135,107.19\"];\n\ta:s -> b:s\t[pos=\"e,187.49,30.147 97.492,30.147 97.492,-5.7907 170.14,-9.4406 184.9,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"142.49,57.868\",\n\t\tpos=\"e,160.11,49.468 124.89,49.468 132.38,49.468 140.67,49.468 148.69,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-long-B3",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false xlabel=\"a very long external label\"];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,205.62,103.94\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"106.62,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"178.62,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,178.62,63.141 106.62,63.141 106.62,91.016 161.25,94.609 175.33,73.921\",\n\t\txlabel=\"a very long external label\",\n\t\txlp=\"71.135,95.54\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,178.62,24.5 106.62,24.5 106.62,-3.3755 161.25,-6.9688 175.33,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,151.58,43.82 134.08,43.82 136.05,43.82 138.06,43.82 140.08,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-long-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=\"a very long external label\"];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,177.96,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"142.88,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"142.88,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,142.88,36 132.86,41.453 129.4,41.689 125.89,42.326 123.88,45.6 119.96,51.96 119.17,56.606 123.88,62.4 137.05,78.606 156.7,55.794 \\\n169.88,72 180.06,84.526 181.08,96.697 169.88,108.32 167.79,110.48 142.88,112.32 142.88,109.32\",\n\t\txlabel=\"a very long external label\",\n\t\txlp=\"71.135,59.665\"];\n\ta -> b\t[label=x,\n\t\tlp=\"146.38,54\",\n\t\tpos=\"s,142.88,36.104 142.88,47.536 142.88,55.726 142.88,64.407 142.88,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-long-B5",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false xlabel=\"a very long external label\"];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,176.59,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\",\n\t\txlabel=\"a very long external label\",\n\t\txlp=\"105.45,53.529\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-long-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  edge [xlabel=\"a very long external label\"];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,214.5,115.59\"];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=\"a very long external label\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"97.498,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"187.5,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,187.5,68.788 97.498,68.788 97.498,104.73 170.14,108.38 184.9,79.738\",\n\t\txlp=\"71.14,107.19\"];\n\ta:s -> b:s\t[pos=\"e,187.5,30.147 97.498,30.147 97.498,-5.7907 170.14,-9.4406 184.9,19.197\",\n\t\txlp=\"71.14,8.5471\"];\n\ta -> b\t[label=x,\n\t\tlp=\"142.5,57.868\",\n\t\tpos=\"e,160.11,49.468 124.9,49.468 132.38,49.468 140.68,49.468 148.7,49.468\",\n\t\txlp=\"71.135,41.068\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-long-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [xlabel=\"a very long external label\"];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,285.14,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=\"a very long external label\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"142.88,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"142.88,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,142.88,36 132.86,41.453 129.4,41.689 125.89,42.326 123.88,45.6 119.96,51.96 119.17,56.606 123.88,62.4 137.05,78.606 156.7,55.794 \\\n169.88,72 180.06,84.526 181.08,96.697 169.88,108.32 167.79,110.48 142.88,112.32 142.88,109.32\",\n\t\txlp=\"71.135,59.665\"];\n\ta -> b\t[label=x,\n\t\tlp=\"146.38,54\",\n\t\tpos=\"s,142.88,36.104 142.88,47.536 142.88,55.726 142.88,64.407 142.88,71.697\",\n\t\txlp=\"214.01,45.731\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-noforce-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  forcelabels=false;\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=\"a very long external label\"];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,214.49,115.59\",\n\t\tforcelabels=false\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"97.492,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"187.49,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,187.49,68.788 97.492,68.788 97.492,104.73 170.14,108.38 184.9,79.738\",\n\t\txlabel=\"a very long external label\",\n\t\txlp=\"71.135,107.19\"];\n\ta:s -> b:s\t[pos=\"e,187.49,30.147 97.492,30.147 97.492,-5.7907 170.14,-9.4406 184.9,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"142.49,57.868\",\n\t\tpos=\"e,160.11,49.468 124.89,49.468 132.38,49.468 140.67,49.468 148.69,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-noforce-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  forcelabels=false;\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=\"a very long external label\"];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,177.96,111.11\",\n\t\tforcelabels=false,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"142.88,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"142.88,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,142.88,36 132.86,41.453 129.4,41.689 125.89,42.326 123.88,45.6 119.96,51.96 119.17,56.606 123.88,62.4 137.05,78.606 156.7,55.794 \\\n169.88,72 180.06,84.526 181.08,96.697 169.88,108.32 167.79,110.48 142.88,112.32 142.88,109.32\",\n\t\txlabel=\"a very long external label\",\n\t\txlp=\"71.135,59.665\"];\n\ta -> b\t[label=x,\n\t\tlp=\"146.38,54\",\n\t\tpos=\"s,142.88,36.104 142.88,47.536 142.88,55.726 142.88,64.407 142.88,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-noforce-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  forcelabels=false;\n  edge [xlabel=xl];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,115.59\",\n\t\tforcelabels=false\n\t];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=xl];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\txlp=\"66.333,107.19\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\",\n\t\txlp=\"66.333,8.5471\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\txlp=\"66.327,41.068\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-noforce-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  forcelabels=false;\n  edge [xlabel=xl];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\tforcelabels=false,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=xl];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\txlp=\"20.95,59.665\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": [
+    "Warning: 1 out of 2 exterior labels positioned."
+   ]
+  },
+  {
+   "name": "E_xlabel-obj-html-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=<<b>x</b>>];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,115.59\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\txlabel=<<b>x</b>>,\n\t\txlp=\"68.278,107.19\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-html-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=<<b>x</b>>];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\txlabel=<<b>x</b>>,\n\t\txlp=\"22.894,59.665\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-html-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  edge [xlabel=<<b>x</b>>];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,115.59\"];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=<<b>x</b>>];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\txlp=\"68.278,107.19\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\",\n\t\txlp=\"68.278,8.5471\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\txlp=\"68.272,41.068\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-def-html-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [xlabel=<<b>x</b>>];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [xlabel=<<b>x</b>>];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\txlp=\"22.894,59.665\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\",\n\t\txlp=\"23.5,45.731\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_xlabel-obj-badhtml-B1",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=<<b>x</i>>];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\txlabel=<<b>x</i>>,\n\t\txlp=\"71.778,98.788\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "xdot": "digraph {\n\tgraph [_draw_=\"c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 98.94 144 98.94 144 0 \",\n\t\tbb=\"0,0,144,98.935\",\n\t\txdotversion=1.7\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[_draw_=\"c 7 -#000000 e 27 49.47 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 45.27 0 6.21 1 -a \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[_draw_=\"c 7 -#000000 e 117 49.47 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 117 45.27 0 7 1 -b \",\n\t\t\theight=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[_draw_=\"c 7 -#000000 B 4 27 68.79 27 104.73 99.65 108.38 114.4 79.74 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 117.75 80.8 116.65 70.26 110.94 79.18 \",\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\txlabel=<<b>x</i>>,\n\t\txlp=\"71.778,98.788\"];\n\ta:s -> b:s\t[_draw_=\"c 7 -#000000 B 4 27 30.15 27 -5.79 99.65 -9.44 114.4 19.2 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 110.94 19.75 116.65 28.67 117.75 18.14 \",\n\t\tpos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[_draw_=\"c 7 -#000000 B 4 54.4 49.47 61.89 49.47 70.18 49.47 78.2 49.47 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 78.1 52.97 88.1 49.47 78.1 45.97 \",\n\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 72 53.67 0 7 1 -x \",\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": [
+    "Error: mismatched tag in line 1 ",
+    "... x</i> ...",
+    "in label of edge a -> b"
+   ]
+  },
+  {
+   "name": "E_xlabel-obj-badhtml-B4",
+   "sym": "E_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [xlabel=<<b>x</i>>];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\txlabel=<<b>x</i>>,\n\t\txlp=\"26.394,68.065\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "xdot": "digraph {\n\tgraph [_draw_=\"c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 111.11 62.08 111.11 62.08 0 \",\n\t\tbb=\"0,0,62.082,111.11\",\n\t\trankdir=LR,\n\t\txdotversion=1.7\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[_draw_=\"c 7 -#000000 e 27 90 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 85.8 0 6.21 1 -a \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[_draw_=\"c 7 -#000000 e 27 18 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 7 1 -b \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[_draw_=\"c 7 -#000000 B 16 16.99 41.45 13.53 41.69 10.01 42.33 8 45.6 4.09 51.96 3.29 56.61 8 62.4 21.17 78.61 40.83 55.79 54 72 64.18 84.53 \\\n65.2 96.7 54 108.32 51.92 110.48 27 112.32 27 109.32 \",\n\t\t_tdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 18.56 44.58 25.67 36.72 15.21 38.43 \",\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\txlabel=<<b>x</i>>,\n\t\txlp=\"26.394,68.065\"];\n\ta -> b\t[_draw_=\"c 7 -#000000 B 4 27 47.54 27 55.73 27 64.41 27 71.7 \",\n\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 30.5 49.8 0 7 1 -x \",\n\t\t_tdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 30.5 47.62 27 37.62 23.5 47.62 \",\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": [
+    "Error: mismatched tag in line 1 ",
+    "... x</i> ...",
+    "in label of edge a -> b"
+   ]
+  },
+  {
+   "name": "E_headlabel-obj-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [headlabel=HL];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"107.67,77.188\",\n\t\theadlabel=HL,\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-B3",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false headlabel=HL];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\thead_lp=\"89.669,71.541\",\n\t\theadlabel=HL,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [headlabel=HL];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,126.12\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"17.669,117.72\",\n\t\theadlabel=HL,\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-B5",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false headlabel=HL];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,116.81\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\thead_lp=\"17.669,108.41\",\n\t\theadlabel=HL,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj3-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x headlabel=HL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[head_lp=\"80.285,41.068\",\n\t\theadlabel=HL,\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj3-B3",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false headlabel=HL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\thead_lp=\"62.632,52.22\",\n\t\theadlabel=HL,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj3-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x headlabel=HL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[head_lp=\"17.669,63.297\",\n\t\theadlabel=HL,\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj3-B5",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false headlabel=HL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\thead_lp=\"17.669,53.97\",\n\t\theadlabel=HL,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-def-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  edge [headlabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=HL];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"107.67,77.188\",\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[head_lp=\"107.67,21.747\",\n\t\tpos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[head_lp=\"80.285,41.068\",\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-def-B3",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  edge [headlabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=HL];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\thead_lp=\"89.669,71.541\",\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\thead_lp=\"89.669,16.1\",\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\thead_lp=\"62.632,52.22\",\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-def-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [headlabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,126.12\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=HL];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"17.669,117.72\",\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[head_lp=\"17.669,63.297\",\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-def-B5",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [headlabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,116.81\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=HL];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\thead_lp=\"17.669,108.41\",\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\"];\n\ta:s -> b:s\t[constraint=false,\n\t\thead_lp=\"17.669,54.286\",\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\thead_lp=\"36.331,53.97\",\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-angle-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [headlabel=HL labelangle=45 labeldistance=2];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"99.976,79.286\",\n\t\theadlabel=HL,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-angle-B3",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false headlabel=HL labelangle=45 labeldistance=2];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\thead_lp=\"81.353,72.553\",\n\t\theadlabel=HL,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-angle-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [headlabel=HL labelangle=45 labeldistance=2];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,137.7\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"26.177,129.3\",\n\t\theadlabel=HL,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-angle-B5",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false headlabel=HL labelangle=45 labeldistance=2];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,124.72\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\thead_lp=\"15.428,116.32\",\n\t\theadlabel=HL,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-def-angle-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  edge [headlabel=HL labelangle=45 labeldistance=2];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=HL,\n\t\tlabelangle=45,\n\t\tlabeldistance=2\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"99.976,79.286\",\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[head_lp=\"127.5,13.123\",\n\t\tpos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[head_lp=\"75.474,35.325\",\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-def-angle-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [headlabel=HL labelangle=45 labeldistance=2];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,137.7\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=HL,\n\t\tlabelangle=45,\n\t\tlabeldistance=2\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"26.177,129.3\",\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[head_lp=\"41.142,57.554\",\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-long-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s [headlabel=\"a very long external label\"];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,169.27,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"52.27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"142.27,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,142.27,68.788 52.27,68.788 52.27,104.73 124.92,108.38 139.67,79.738\"];\n\ta:s -> b:s\t[head_lp=\"71.135,21.747\",\n\t\theadlabel=\"a very long external label\",\n\t\tpos=\"e,142.27,30.147 52.27,30.147 52.27,-5.7907 124.92,-9.4406 139.67,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"97.27,57.868\",\n\t\tpos=\"e,114.89,49.468 79.672,49.468 87.156,49.468 95.452,49.468 103.47,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-long-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [headlabel=\"a very long external label\"];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,177.35,126.12\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"142.27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"142.27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"71.135,117.72\",\n\t\theadlabel=\"a very long external label\",\n\t\tpos=\"s,142.27,36 132.26,41.453 128.8,41.689 125.28,42.326 123.27,45.6 119.36,51.96 118.56,56.606 123.27,62.4 136.44,78.606 156.1,55.794 \\\n169.27,72 179.45,84.526 180.47,96.697 169.27,108.32 167.19,110.48 142.27,112.32 142.27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"145.77,54\",\n\t\tpos=\"s,142.27,36.104 142.27,47.536 142.27,55.726 142.27,64.407 142.27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-html-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [headlabel=<<b>x</b>>];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"113.5,77.188\",\n\t\theadlabel=<<b>x</b>>,\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-html-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [headlabel=<<b>x</b>>];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,126.12\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"23.5,117.72\",\n\t\theadlabel=<<b>x</b>>,\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-def-html-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  edge [headlabel=<<b>x</b>>];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=<<b>x</b>>];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"113.5,77.188\",\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[head_lp=\"113.5,21.747\",\n\t\tpos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[head_lp=\"86.116,57.868\",\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-def-html-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [headlabel=<<b>x</b>>];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,126.12\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=<<b>x</b>>];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"23.5,117.72\",\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[head_lp=\"23.5,63.297\",\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-obj-badhtml-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [headlabel=<<b>x</i>>];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"117,68.788\",\n\t\theadlabel=<<b>x</i>>,\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "xdot": "digraph {\n\tgraph [_draw_=\"c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 98.94 144 98.94 144 0 \",\n\t\tbb=\"0,0,144,98.935\",\n\t\txdotversion=1.7\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[_draw_=\"c 7 -#000000 e 27 49.47 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 45.27 0 6.21 1 -a \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[_draw_=\"c 7 -#000000 e 117 49.47 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 117 45.27 0 7 1 -b \",\n\t\t\theight=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[_draw_=\"c 7 -#000000 B 4 27 68.79 27 104.73 99.65 108.38 114.4 79.74 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 117.75 80.8 116.65 70.26 110.94 79.18 \",\n\t\thead_lp=\"117,68.788\",\n\t\theadlabel=<<b>x</i>>,\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[_draw_=\"c 7 -#000000 B 4 27 30.15 27 -5.79 99.65 -9.44 114.4 19.2 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 110.94 19.75 116.65 28.67 117.75 18.14 \",\n\t\tpos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[_draw_=\"c 7 -#000000 B 4 54.4 49.47 61.89 49.47 70.18 49.47 78.2 49.47 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 78.1 52.97 88.1 49.47 78.1 45.97 \",\n\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 72 53.67 0 7 1 -x \",\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": [
+    "Error: mismatched tag in line 1 ",
+    "... x</i> ...",
+    "in label of edge a -> b"
+   ]
+  },
+  {
+   "name": "E_headlabel-obj-badhtml-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [headlabel=<<b>x</i>>];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"27,109.32\",\n\t\theadlabel=<<b>x</i>>,\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "xdot": "digraph {\n\tgraph [_draw_=\"c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 111.11 62.08 111.11 62.08 0 \",\n\t\tbb=\"0,0,62.082,111.11\",\n\t\trankdir=LR,\n\t\txdotversion=1.7\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[_draw_=\"c 7 -#000000 e 27 90 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 85.8 0 6.21 1 -a \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[_draw_=\"c 7 -#000000 e 27 18 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 7 1 -b \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[_draw_=\"c 7 -#000000 B 16 16.99 41.45 13.53 41.69 10.01 42.33 8 45.6 4.09 51.96 3.29 56.61 8 62.4 21.17 78.61 40.83 55.79 54 72 64.18 84.53 \\\n65.2 96.7 54 108.32 51.92 110.48 27 112.32 27 109.32 \",\n\t\t_tdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 18.56 44.58 25.67 36.72 15.21 38.43 \",\n\t\thead_lp=\"27,109.32\",\n\t\theadlabel=<<b>x</i>>,\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[_draw_=\"c 7 -#000000 B 4 27 47.54 27 55.73 27 64.41 27 71.7 \",\n\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 30.5 49.8 0 7 1 -x \",\n\t\t_tdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 30.5 47.62 27 37.62 23.5 47.62 \",\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": [
+    "Error: mismatched tag in line 1 ",
+    "... x</i> ...",
+    "in label of edge a -> b"
+   ]
+  },
+  {
+   "name": "E_taillabel-obj-B1",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [taillabel=HL];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\ttail_lp=\"17.669,77.188\",\n\t\ttaillabel=HL];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-B3",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false taillabel=HL];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\",\n\t\ttail_lp=\"17.669,71.541\",\n\t\ttaillabel=HL];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-B4",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [taillabel=HL];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\ttail_lp=\"17.669,44.4\",\n\t\ttaillabel=HL];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-B5",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false taillabel=HL];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\",\n\t\ttail_lp=\"17.669,53.086\",\n\t\ttaillabel=HL];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj3-B1",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x taillabel=HL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\ttail_lp=\"63.734,41.068\",\n\t\ttaillabel=HL];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj3-B3",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false taillabel=HL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\",\n\t\ttail_lp=\"63.795,52.22\",\n\t\ttaillabel=HL];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj3-B4",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x taillabel=HL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\",\n\t\ttail_lp=\"17.669,44.504\",\n\t\ttaillabel=HL];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj3-B5",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false taillabel=HL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\",\n\t\ttail_lp=\"17.669,53.502\",\n\t\ttaillabel=HL];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-def-B1",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  edge [taillabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\tedge [taillabel=HL];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\ttail_lp=\"17.669,77.188\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\",\n\t\ttail_lp=\"17.669,21.747\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\ttail_lp=\"63.734,41.068\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-def-B3",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  edge [taillabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\tedge [taillabel=HL];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\",\n\t\ttail_lp=\"17.669,71.541\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\",\n\t\ttail_lp=\"17.669,16.1\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\",\n\t\ttail_lp=\"63.795,52.22\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-def-B4",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [taillabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [taillabel=HL];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\ttail_lp=\"17.669,44.4\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\",\n\t\ttail_lp=\"36.331,44.504\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-def-B5",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [taillabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,117.02\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [taillabel=HL];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90.121\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,36.121\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,27,54.121 34.243,62.944 40.734,64.739 49.853,64.372 54,72.121 61.617,86.353 65.201,96.818 54,108.44 45.668,117.09 27,121.45 27,\\\n109.44\",\n\t\ttail_lp=\"17.669,62.521\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,16.8 35.8,9.4352 41.795,9.6242 49.443,13.071 54,17.8 65.201,29.424 61.617,39.888 54,54.121 47.195,66.836 27,57.699 27,72.121\",\n\t\ttail_lp=\"17.669,8.4\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,54.538 27,65.914 27,67.916 27,69.896 27,71.805\",\n\t\ttail_lp=\"36.331,62.938\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-angle-B1",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [taillabel=HL labelangle=45 labeldistance=2];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[labelangle=45,\n\t\tlabeldistance=2,\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\ttail_lp=\"16.047,85.522\",\n\t\ttaillabel=HL];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-angle-B3",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false taillabel=HL labelangle=45 labeldistance=2];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,88.206\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\",\n\t\ttail_lp=\"15.942,79.806\",\n\t\ttaillabel=HL];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-angle-B4",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [taillabel=HL labelangle=45 labeldistance=2];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,63.598,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"28.515,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"28.515,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[labelangle=45,\n\t\tlabeldistance=2,\n\t\tpos=\"s,28.515,36 18.504,41.453 15.042,41.689 11.529,42.326 9.5152,45.6 5.6031,51.96 4.8056,56.606 9.5152,62.4 22.688,78.606 42.342,55.794 \\\n55.515,72 65.697,84.526 66.716,96.697 55.515,108.32 53.432,110.48 28.515,112.32 28.515,109.32\",\n\t\ttail_lp=\"9.3311,30.346\",\n\t\ttaillabel=HL];\n\ta -> b\t[label=x,\n\t\tlp=\"32.015,54\",\n\t\tpos=\"s,28.515,36.104 28.515,47.536 28.515,55.726 28.515,64.407 28.515,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-angle-B5",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false taillabel=HL labelangle=45 labeldistance=2];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\",\n\t\ttail_lp=\"25.042,64.589\",\n\t\ttaillabel=HL];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-def-angle-B1",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  edge [taillabel=HL labelangle=45 labeldistance=2];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\tedge [labelangle=45,\n\t\tlabeldistance=2,\n\t\ttaillabel=HL\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\ttail_lp=\"16.047,85.522\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\",\n\t\ttail_lp=\"43.734,19.194\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\ttail_lp=\"68.545,63.61\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-def-angle-B4",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [taillabel=HL labelangle=45 labeldistance=2];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,63.598,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [labelangle=45,\n\t\tlabeldistance=2,\n\t\ttaillabel=HL\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"28.515,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"28.515,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,28.515,36 18.504,41.453 15.042,41.689 11.529,42.326 9.5152,45.6 5.6031,51.96 4.8056,56.606 9.5152,62.4 22.688,78.606 42.342,55.794 \\\n55.515,72 65.697,84.526 66.716,96.697 55.515,108.32 53.432,110.48 28.515,112.32 28.515,109.32\",\n\t\ttail_lp=\"9.3311,30.346\"];\n\ta -> b\t[label=x,\n\t\tlp=\"32.015,54\",\n\t\tpos=\"s,28.515,36.104 28.515,47.536 28.515,55.726 28.515,64.407 28.515,71.697\",\n\t\ttail_lp=\"14.373,50.246\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-long-B1",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s [taillabel=\"a very long external label\"];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,259.27,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"142.27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"232.27,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,232.27,68.788 142.27,68.788 142.27,104.73 214.92,108.38 229.67,79.738\"];\n\ta:s -> b:s\t[pos=\"e,232.27,30.147 142.27,30.147 142.27,-5.7907 214.92,-9.4406 229.67,19.197\",\n\t\ttail_lp=\"71.135,21.747\",\n\t\ttaillabel=\"a very long external label\"];\n\ta -> b\t[label=x,\n\t\tlp=\"187.27,57.868\",\n\t\tpos=\"e,204.89,49.468 169.67,49.468 177.16,49.468 185.45,49.468 193.47,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-long-B4",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [taillabel=\"a very long external label\"];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,177.35,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"142.27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"142.27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,142.27,36 132.26,41.453 128.8,41.689 125.28,42.326 123.27,45.6 119.36,51.96 118.56,56.606 123.27,62.4 136.44,78.606 156.1,55.794 \\\n169.27,72 179.45,84.526 180.47,96.697 169.27,108.32 167.19,110.48 142.27,112.32 142.27,109.32\",\n\t\ttail_lp=\"71.135,44.4\",\n\t\ttaillabel=\"a very long external label\"];\n\ta -> b\t[label=x,\n\t\tlp=\"145.77,54\",\n\t\tpos=\"s,142.27,36.104 142.27,47.536 142.27,55.726 142.27,64.407 142.27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-html-B1",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [taillabel=<<b>x</b>>];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\ttail_lp=\"23.5,77.188\",\n\t\ttaillabel=<<b>x</b>>];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-html-B4",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [taillabel=<<b>x</b>>];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\ttail_lp=\"23.5,44.4\",\n\t\ttaillabel=<<b>x</b>>];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-def-html-B1",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  edge [taillabel=<<b>x</b>>];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\tedge [taillabel=<<b>x</b>>];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\ttail_lp=\"23.5,77.188\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\",\n\t\ttail_lp=\"23.5,21.747\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\ttail_lp=\"57.903,57.868\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-def-html-B4",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [taillabel=<<b>x</b>>];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [taillabel=<<b>x</b>>];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\ttail_lp=\"23.5,44.4\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\",\n\t\ttail_lp=\"30.5,44.504\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_taillabel-obj-badhtml-B1",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [taillabel=<<b>x</i>>];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\ttail_lp=\"27,68.788\",\n\t\ttaillabel=<<b>x</i>>];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "xdot": "digraph {\n\tgraph [_draw_=\"c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 98.94 144 98.94 144 0 \",\n\t\tbb=\"0,0,144,98.935\",\n\t\txdotversion=1.7\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[_draw_=\"c 7 -#000000 e 27 49.47 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 45.27 0 6.21 1 -a \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[_draw_=\"c 7 -#000000 e 117 49.47 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 117 45.27 0 7 1 -b \",\n\t\t\theight=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[_draw_=\"c 7 -#000000 B 4 27 68.79 27 104.73 99.65 108.38 114.4 79.74 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 117.75 80.8 116.65 70.26 110.94 79.18 \",\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\ttail_lp=\"27,68.788\",\n\t\ttaillabel=<<b>x</i>>];\n\ta:s -> b:s\t[_draw_=\"c 7 -#000000 B 4 27 30.15 27 -5.79 99.65 -9.44 114.4 19.2 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 110.94 19.75 116.65 28.67 117.75 18.14 \",\n\t\tpos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[_draw_=\"c 7 -#000000 B 4 54.4 49.47 61.89 49.47 70.18 49.47 78.2 49.47 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 78.1 52.97 88.1 49.47 78.1 45.97 \",\n\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 72 53.67 0 7 1 -x \",\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": [
+    "Error: mismatched tag in line 1 ",
+    "... x</i> ...",
+    "in label of edge a -> b"
+   ]
+  },
+  {
+   "name": "E_taillabel-obj-badhtml-B4",
+   "sym": "E_taillabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [taillabel=<<b>x</i>>];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\ttail_lp=\"27,36\",\n\t\ttaillabel=<<b>x</i>>];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "xdot": "digraph {\n\tgraph [_draw_=\"c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 111.11 62.08 111.11 62.08 0 \",\n\t\tbb=\"0,0,62.082,111.11\",\n\t\trankdir=LR,\n\t\txdotversion=1.7\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[_draw_=\"c 7 -#000000 e 27 90 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 85.8 0 6.21 1 -a \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[_draw_=\"c 7 -#000000 e 27 18 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 7 1 -b \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[_draw_=\"c 7 -#000000 B 16 16.99 41.45 13.53 41.69 10.01 42.33 8 45.6 4.09 51.96 3.29 56.61 8 62.4 21.17 78.61 40.83 55.79 54 72 64.18 84.53 \\\n65.2 96.7 54 108.32 51.92 110.48 27 112.32 27 109.32 \",\n\t\t_tdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 18.56 44.58 25.67 36.72 15.21 38.43 \",\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\ttail_lp=\"27,36\",\n\t\ttaillabel=<<b>x</i>>];\n\ta -> b\t[_draw_=\"c 7 -#000000 B 4 27 47.54 27 55.73 27 64.41 27 71.7 \",\n\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 30.5 49.8 0 7 1 -x \",\n\t\t_tdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 30.5 47.62 27 37.62 23.5 47.62 \",\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": [
+    "Error: mismatched tag in line 1 ",
+    "... x</i> ...",
+    "in label of edge a -> b"
+   ]
+  },
+  {
+   "name": "E_headlabel-both-angle-B1",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  edge [headlabel=H taillabel=T labelangle=45 labeldistance=2];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=H,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\ttaillabel=T\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"99.976,79.286\",\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\",\n\t\ttail_lp=\"16.047,85.522\"];\n\ta:s -> b:s\t[head_lp=\"127.5,13.123\",\n\t\tpos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\",\n\t\ttail_lp=\"43.734,19.194\"];\n\ta -> b\t[head_lp=\"75.474,35.325\",\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\ttail_lp=\"68.545,63.61\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-both-angle-B3",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  edge [headlabel=H taillabel=T labelangle=45 labeldistance=2];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,89.753\"];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=H,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\ttaillabel=T\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,45.368\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,45.368\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\thead_lp=\"81.353,74.1\",\n\t\tpos=\"e,99,64.688 27,64.688 27,92.563 81.634,96.157 95.719,75.468\",\n\t\ttail_lp=\"15.942,81.353\"];\n\ta:s -> b:s\t[constraint=false,\n\t\thead_lp=\"108.41,8.4\",\n\t\tpos=\"e,99,26.047 27,26.047 27,-1.828 81.634,-5.4212 95.719,15.267\",\n\t\ttail_lp=\"43.665,14.989\"];\n\ta -> b\t[constraint=false,\n\t\thead_lp=\"57.82,31.226\",\n\t\tpos=\"e,71.963,45.368 54.464,45.368 56.434,45.368 58.442,45.368 60.461,45.368\",\n\t\ttail_lp=\"68.606,59.51\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-both-angle-B4",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [headlabel=H taillabel=T labelangle=45 labeldistance=2];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,137.7\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=H,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\ttaillabel=T\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"26.177,129.3\",\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\",\n\t\ttail_lp=\"7.8159,30.346\"];\n\ta -> b\t[head_lp=\"41.142,57.554\",\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\",\n\t\ttail_lp=\"12.858,50.246\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_headlabel-both-angle-B5",
+   "sym": "E_headlabel",
+   "src": "digraph {\n  rankdir=LR;\n  edge [headlabel=H taillabel=T labelangle=45 labeldistance=2];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,61.281,124.72\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=H,\n\t\tlabelangle=45,\n\t\tlabeldistance=2,\n\t\ttaillabel=T\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,80.686\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\thead_lp=\"15.428,116.32\",\n\t\tpos=\"s,27,44.686 34.243,53.508 40.734,55.303 49.853,54.937 54,62.686 61.617,76.918 65.201,87.382 54,99.006 45.668,107.65 27,112.01 27,\\\n100.01\",\n\t\ttail_lp=\"25.042,64.589\"];\n\ta:s -> b:s\t[constraint=false,\n\t\thead_lp=\"43.154,50.894\",\n\t\tpos=\"s,27,7.3648 35.8,0 41.795,0.189 49.443,3.6361 54,8.3648 65.201,19.989 61.617,30.453 54,44.686 47.195,57.401 27,48.263 27,62.686\",\n\t\ttail_lp=\"46.922,9.1339\"];\n\ta -> b\t[constraint=false,\n\t\thead_lp=\"41.142,48.228\",\n\t\tpos=\"s,27,45.102 27,56.479 27,58.481 27,60.461 27,62.37\",\n\t\ttail_lp=\"12.858,59.245\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  {rank=same; a [xlabel=nx]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,158,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nx,\n\t\t\txlp=\"7,75.868\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"131,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,131,68.788 41,68.788 41,104.73 113.65,108.38 128.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,131,30.147 41,30.147 41,-5.7907 113.65,-9.4406 128.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"86,57.868\",\n\t\tpos=\"e,103.62,49.468 68.403,49.468 75.886,49.468 84.183,49.468 92.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-B3",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  {rank=same; a [xlabel=nx]; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,140,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,43.82\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nx,\n\t\t\txlp=\"7,70.22\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"113,43.82\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,113,63.141 41,63.141 41,91.016 95.634,94.609 109.72,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,113,24.5 41,24.5 41,-3.3755 95.634,-6.9688 109.72,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,85.963,43.82 68.464,43.82 70.434,43.82 72.442,43.82 74.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [xlabel=nx]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,76.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,90\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nx,\n\t\t\txlp=\"7,63.6\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"41,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,41,36 30.989,41.453 27.527,41.689 24.014,42.326 22,45.6 18.088,51.96 17.29,56.606 22,62.4 35.173,78.606 54.827,55.794 68,72 78.182,\\\n84.526 79.201,96.697 68,108.32 65.917,110.48 41,112.32 41,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"44.5,54\",\n\t\tpos=\"s,41,36.104 41,47.536 41,55.726 41,64.407 41,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-B5",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [xlabel=nx]; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,75.281,107.59\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,80.686\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nx,\n\t\t\txlp=\"7,54.286\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"41,26.686\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,41,44.686 48.243,53.508 54.734,55.303 63.853,54.937 68,62.686 75.617,76.918 79.201,87.382 68,99.006 59.668,107.65 41,112.01 41,\\\n100.01\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,41,7.3648 49.8,0 55.795,0.189 63.443,3.6361 68,8.3648 79.201,19.989 75.617,30.453 68,44.686 61.195,57.401 41,48.263 41,62.686\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,41,45.102 41,56.479 41,58.481 41,60.461 41,62.37\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-b-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  {rank=same; a; b [xlabel=nx]}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nx,\n\t\t\txlp=\"83,75.868\"];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-b-B3",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  {rank=same; a; b [xlabel=nx]}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,126,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,43.82\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"99,43.82\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nx,\n\t\t\txlp=\"65,70.22\"];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,99,63.141 27,63.141 27,91.016 81.634,94.609 95.719,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,99,24.5 27,24.5 27,-3.3755 81.634,-6.9688 95.719,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,71.963,43.82 54.464,43.82 56.434,43.82 58.442,43.82 60.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-b-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b [xlabel=nx]}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,76.082,127.91\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,106.8\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"41,34.8\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nx,\n\t\t\txlp=\"7,8.4\"];\n\t}\n\ta:n -> b:n\t[pos=\"s,41,52.8 30.989,58.253 27.527,58.489 24.014,59.126 22,62.4 18.088,68.76 17.29,73.406 22,79.2 35.173,95.406 54.827,72.594 68,88.8 \\\n78.182,101.33 79.201,113.5 68,125.12 65.917,127.28 41,129.12 41,126.12\"];\n\ta -> b\t[label=x,\n\t\tlp=\"44.5,70.8\",\n\t\tpos=\"s,41,52.904 41,64.336 41,72.526 41,81.207 41,88.497\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-b-B5",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b [xlabel=nx]}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,75.281,115.7\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,88.8\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"41,34.8\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nx,\n\t\t\txlp=\"7,8.4\"];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,41,52.8 48.243,61.623 54.734,63.418 63.853,63.051 68,70.8 75.617,85.032 79.201,95.497 68,107.12 59.668,115.77 41,120.13 41,108.12\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,41,15.479 49.8,8.1145 55.795,8.3035 63.443,11.751 68,16.479 79.201,28.103 75.617,38.568 68,52.8 61.195,65.516 41,56.378 41,70.8\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,41,53.217 41,64.593 41,66.596 41,68.575 41,70.485\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-both-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  {rank=same; a [xlabel=na]; b [xlabel=nb]}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,157.21,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"40.214,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlabel=na,\n\t\t\txlp=\"6.6069,75.868\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"130.21,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nb,\n\t\t\txlp=\"96.214,75.868\"];\n\t}\n\ta:n -> b:n\t[pos=\"e,130.21,68.788 40.214,68.788 40.214,104.73 112.86,108.38 127.62,79.738\"];\n\ta:s -> b:s\t[pos=\"e,130.21,30.147 40.214,30.147 40.214,-5.7907 112.86,-9.4406 127.62,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"85.214,57.868\",\n\t\tpos=\"e,102.83,49.468 67.617,49.468 75.1,49.468 83.396,49.468 91.413,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-both-B3",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  {rank=same; a [xlabel=na]; b [xlabel=nb]}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,139.21,87.64\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"40.214,43.82\",\n\t\t\twidth=0.75,\n\t\t\txlabel=na,\n\t\t\txlp=\"6.6069,70.22\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"112.21,43.82\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nb,\n\t\t\txlp=\"78.214,70.22\"];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,112.21,63.141 40.214,63.141 40.214,91.016 94.848,94.609 108.93,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,112.21,24.5 40.214,24.5 40.214,-3.3755 94.848,-6.9688 108.93,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,85.176,43.82 67.678,43.82 69.648,43.82 71.656,43.82 73.675,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-both-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [xlabel=na]; b [xlabel=nb]}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,76.082,127.91\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,106.8\",\n\t\t\twidth=0.75,\n\t\t\txlabel=na,\n\t\t\txlp=\"7.3931,80.4\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"41,34.8\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nb,\n\t\t\txlp=\"7,8.4\"];\n\t}\n\ta:n -> b:n\t[pos=\"s,41,52.8 30.989,58.253 27.527,58.489 24.014,59.126 22,62.4 18.088,68.76 17.29,73.406 22,79.2 35.173,95.406 54.827,72.594 68,88.8 \\\n78.182,101.33 79.201,113.5 68,125.12 65.917,127.28 41,129.12 41,126.12\"];\n\ta -> b\t[label=x,\n\t\tlp=\"44.5,70.8\",\n\t\tpos=\"s,41,52.904 41,64.336 41,72.526 41,81.207 41,88.497\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-both-B5",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [xlabel=na]; b [xlabel=nb]}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,75.281,115.7\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,88.8\",\n\t\t\twidth=0.75,\n\t\t\txlabel=na,\n\t\t\txlp=\"7.3931,62.4\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"41,34.8\",\n\t\t\twidth=0.75,\n\t\t\txlabel=nb,\n\t\t\txlp=\"7,8.4\"];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,41,52.8 48.243,61.623 54.734,63.418 63.853,63.051 68,70.8 75.617,85.032 79.201,95.497 68,107.12 59.668,115.77 41,120.13 41,108.12\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,41,15.479 49.8,8.1145 55.795,8.3035 63.443,11.751 68,16.479 79.201,28.103 75.617,38.568 68,52.8 61.195,65.516 41,56.378 41,70.8\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,41,53.217 41,64.593 41,66.596 41,68.575 41,70.485\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-def-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  node [xlabel=nx];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,158,98.935\"];\n\tnode [label=\"\\N\",\n\t\txlabel=nx\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"7,75.868\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"131,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"97,75.868\"];\n\t}\n\ta:n -> b:n\t[pos=\"e,131,68.788 41,68.788 41,104.73 113.65,108.38 128.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,131,30.147 41,30.147 41,-5.7907 113.65,-9.4406 128.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"86,57.868\",\n\t\tpos=\"e,103.62,49.468 68.403,49.468 75.886,49.468 84.183,49.468 92.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-def-B3",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  node [xlabel=nx];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,140,87.64\"];\n\tnode [label=\"\\N\",\n\t\txlabel=nx\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,43.82\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"7,70.22\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"113,43.82\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"79,70.22\"];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"e,113,63.141 41,63.141 41,91.016 95.634,94.609 109.72,73.921\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"e,113,24.5 41,24.5 41,-3.3755 95.634,-6.9688 109.72,13.72\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"e,85.963,43.82 68.464,43.82 70.434,43.82 72.442,43.82 74.461,43.82\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-def-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  node [xlabel=nx];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,76.082,127.91\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\txlabel=nx\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,106.8\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"7,80.4\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"41,34.8\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"7,8.4\"];\n\t}\n\ta:n -> b:n\t[pos=\"s,41,52.8 30.989,58.253 27.527,58.489 24.014,59.126 22,62.4 18.088,68.76 17.29,73.406 22,79.2 35.173,95.406 54.827,72.594 68,88.8 \\\n78.182,101.33 79.201,113.5 68,125.12 65.917,127.28 41,129.12 41,126.12\"];\n\ta -> b\t[label=x,\n\t\tlp=\"44.5,70.8\",\n\t\tpos=\"s,41,52.904 41,64.336 41,72.526 41,81.207 41,88.497\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-def-B5",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  node [xlabel=nx];\n  {rank=same; a; b}\n  a:n -> b:n [constraint=false];\n  a:s -> b:s [constraint=false];\n  a -> b [constraint=false];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,75.281,115.7\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\txlabel=nx\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"41,88.8\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"7,62.4\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"41,34.8\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"7,8.4\"];\n\t}\n\ta:n -> b:n\t[constraint=false,\n\t\tpos=\"s,41,52.8 48.243,61.623 54.734,63.418 63.853,63.051 68,70.8 75.617,85.032 79.201,95.497 68,107.12 59.668,115.77 41,120.13 41,108.12\"];\n\ta:s -> b:s\t[constraint=false,\n\t\tpos=\"s,41,15.479 49.8,8.1145 55.795,8.3035 63.443,11.751 68,16.479 79.201,28.103 75.617,38.568 68,52.8 61.195,65.516 41,56.378 41,70.8\"];\n\ta -> b\t[constraint=false,\n\t\tpos=\"s,41,53.217 41,64.593 41,66.596 41,68.575 41,70.485\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-long-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  {rank=same; a [xlabel=\"a very long external label\"]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,286.27,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"169.27,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlabel=\"a very long external label\",\n\t\t\txlp=\"71.135,75.868\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"259.27,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,259.27,68.788 169.27,68.788 169.27,104.73 241.92,108.38 256.67,79.738\"];\n\ta:s -> b:s\t[pos=\"e,259.27,30.147 169.27,30.147 169.27,-5.7907 241.92,-9.4406 256.67,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"214.27,57.868\",\n\t\tpos=\"e,231.89,49.468 196.67,49.468 204.16,49.468 212.45,49.468 220.47,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-long-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [xlabel=\"a very long external label\"]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,204.35,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"169.27,90\",\n\t\t\twidth=0.75,\n\t\t\txlabel=\"a very long external label\",\n\t\t\txlp=\"71.135,63.6\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"169.27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,169.27,36 159.26,41.453 155.8,41.689 152.28,42.326 150.27,45.6 146.36,51.96 145.56,56.606 150.27,62.4 163.44,78.606 183.1,55.794 \\\n196.27,72 206.45,84.526 207.47,96.697 196.27,108.32 194.19,110.48 169.27,112.32 169.27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"172.77,54\",\n\t\tpos=\"s,169.27,36.104 169.27,47.536 169.27,55.726 169.27,64.407 169.27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-def-long-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  node [xlabel=\"a very long external label\"];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,286.27,98.935\"];\n\tnode [label=\"\\N\",\n\t\txlabel=\"a very long external label\"\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"169.27,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"71.135,75.868\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"259.27,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"161.13,23.068\"];\n\t}\n\ta:n -> b:n\t[pos=\"e,259.27,68.788 169.27,68.788 169.27,104.73 241.92,108.38 256.67,79.738\"];\n\ta:s -> b:s\t[pos=\"e,259.27,30.147 169.27,30.147 169.27,-5.7907 241.92,-9.4406 256.67,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"214.27,57.868\",\n\t\tpos=\"e,231.89,49.468 196.67,49.468 204.16,49.468 212.45,49.468 220.47,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-def-long-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  node [xlabel=\"a very long external label\"];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,204.35,127.91\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\txlabel=\"a very long external label\"\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"169.27,106.8\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"71.135,80.4\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"169.27,34.8\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"71.135,8.4\"];\n\t}\n\ta:n -> b:n\t[pos=\"s,169.27,52.8 159.26,58.253 155.8,58.489 152.28,59.126 150.27,62.4 146.36,68.76 145.56,73.406 150.27,79.2 163.44,95.406 183.1,72.594 \\\n196.27,88.8 206.45,101.33 207.47,113.5 196.27,125.12 194.19,127.28 169.27,129.12 169.27,126.12\"];\n\ta -> b\t[label=x,\n\t\tlp=\"172.77,70.8\",\n\t\tpos=\"s,169.27,52.904 169.27,64.336 169.27,72.526 169.27,81.207 169.27,88.497\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-noforce-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  forcelabels=false;\n  {rank=same; a [xlabel=\"a very long external label\"]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,286.27,98.935\",\n\t\tforcelabels=false\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"169.27,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlabel=\"a very long external label\",\n\t\t\txlp=\"71.135,75.868\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"259.27,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,259.27,68.788 169.27,68.788 169.27,104.73 241.92,108.38 256.67,79.738\"];\n\ta:s -> b:s\t[pos=\"e,259.27,30.147 169.27,30.147 169.27,-5.7907 241.92,-9.4406 256.67,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"214.27,57.868\",\n\t\tpos=\"e,231.89,49.468 196.67,49.468 204.16,49.468 212.45,49.468 220.47,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-noforce-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  forcelabels=false;\n  {rank=same; a [xlabel=\"a very long external label\"]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,204.35,111.11\",\n\t\tforcelabels=false,\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"169.27,90\",\n\t\t\twidth=0.75,\n\t\t\txlabel=\"a very long external label\",\n\t\t\txlp=\"71.135,63.6\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"169.27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,169.27,36 159.26,41.453 155.8,41.689 152.28,42.326 150.27,45.6 146.36,51.96 145.56,56.606 150.27,62.4 163.44,78.606 183.1,55.794 \\\n196.27,72 206.45,84.526 207.47,96.697 196.27,108.32 194.19,110.48 169.27,112.32 169.27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"172.77,54\",\n\t\tpos=\"s,169.27,36.104 169.27,47.536 169.27,55.726 169.27,64.407 169.27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-html-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  {rank=same; a [xlabel=<<b>x</b>>]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,151,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"34,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlabel=<<b>x</b>>,\n\t\t\txlp=\"3.5,75.868\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"124,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,124,68.788 34,68.788 34,104.73 106.65,108.38 121.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,124,30.147 34,30.147 34,-5.7907 106.65,-9.4406 121.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"79,57.868\",\n\t\tpos=\"e,96.616,49.468 61.403,49.468 68.886,49.468 77.183,49.468 85.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-html-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [xlabel=<<b>x</b>>]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,69.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"34,90\",\n\t\t\twidth=0.75,\n\t\t\txlabel=<<b>x</b>>,\n\t\t\txlp=\"3.5,63.6\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"34,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,34,36 23.989,41.453 20.527,41.689 17.014,42.326 15,45.6 11.088,51.96 10.29,56.606 15,62.4 28.173,78.606 47.827,55.794 61,72 71.182,\\\n84.526 72.201,96.697 61,108.32 58.917,110.48 34,112.32 34,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"37.5,54\",\n\t\tpos=\"s,34,36.104 34,47.536 34,55.726 34,64.407 34,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-def-html-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  node [xlabel=<<b>x</b>>];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,151,98.935\"];\n\tnode [label=\"\\N\",\n\t\txlabel=<<b>x</b>>\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"34,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"3.5,75.868\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"124,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"93.5,75.868\"];\n\t}\n\ta:n -> b:n\t[pos=\"e,124,68.788 34,68.788 34,104.73 106.65,108.38 121.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,124,30.147 34,30.147 34,-5.7907 106.65,-9.4406 121.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"79,57.868\",\n\t\tpos=\"e,96.616,49.468 61.403,49.468 68.886,49.468 77.183,49.468 85.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-def-html-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  node [xlabel=<<b>x</b>>];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,69.082,127.91\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\txlabel=<<b>x</b>>\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"34,106.8\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"3.5,80.4\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"34,34.8\",\n\t\t\twidth=0.75,\n\t\t\txlp=\"3.5,8.4\"];\n\t}\n\ta:n -> b:n\t[pos=\"s,34,52.8 23.989,58.253 20.527,58.489 17.014,59.126 15,62.4 11.088,68.76 10.29,73.406 15,79.2 28.173,95.406 47.827,72.594 61,88.8 \\\n71.182,101.33 72.201,113.5 61,125.12 58.917,127.28 34,129.12 34,126.12\"];\n\ta -> b\t[label=x,\n\t\tlp=\"37.5,70.8\",\n\t\tpos=\"s,34,52.904 34,64.336 34,72.526 34,81.207 34,88.497\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_xlabel-a-badhtml-B1",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  {rank=same; a [xlabel=<<b>x</i>>]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlabel=<<b>x</i>>,\n\t\t\txlp=\"0,67.468\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "xdot": "digraph {\n\tgraph [_draw_=\"c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 98.94 144 98.94 144 0 \",\n\t\tbb=\"0,0,144,98.935\",\n\t\txdotversion=1.7\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[_draw_=\"c 7 -#000000 e 27 49.47 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 45.27 0 6.21 1 -a \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75,\n\t\t\txlabel=<<b>x</i>>,\n\t\t\txlp=\"0,67.468\"];\n\t\tb\t[_draw_=\"c 7 -#000000 e 117 49.47 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 117 45.27 0 7 1 -b \",\n\t\t\theight=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[_draw_=\"c 7 -#000000 B 4 27 68.79 27 104.73 99.65 108.38 114.4 79.74 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 117.75 80.8 116.65 70.26 110.94 79.18 \",\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[_draw_=\"c 7 -#000000 B 4 27 30.15 27 -5.79 99.65 -9.44 114.4 19.2 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 110.94 19.75 116.65 28.67 117.75 18.14 \",\n\t\tpos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[_draw_=\"c 7 -#000000 B 4 54.4 49.47 61.89 49.47 70.18 49.47 78.2 49.47 \",\n\t\t_hdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 78.1 52.97 88.1 49.47 78.1 45.97 \",\n\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 72 53.67 0 7 1 -x \",\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": [
+    "Error: mismatched tag in line 1 ",
+    "... x</i> ...",
+    "in label of node a"
+   ]
+  },
+  {
+   "name": "N_xlabel-a-badhtml-B4",
+   "sym": "N_xlabel",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [xlabel=<<b>x</i>>]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75,\n\t\t\txlabel=<<b>x</i>>,\n\t\t\txlp=\"0,72\"];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "xdot": "digraph {\n\tgraph [_draw_=\"c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 111.11 62.08 111.11 62.08 0 \",\n\t\tbb=\"0,0,62.082,111.11\",\n\t\trankdir=LR,\n\t\txdotversion=1.7\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[_draw_=\"c 7 -#000000 e 27 90 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 85.8 0 6.21 1 -a \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75,\n\t\t\txlabel=<<b>x</i>>,\n\t\t\txlp=\"0,72\"];\n\t\tb\t[_draw_=\"c 7 -#000000 e 27 18 27 18 \",\n\t\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 7 1 -b \",\n\t\t\theight=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[_draw_=\"c 7 -#000000 B 16 16.99 41.45 13.53 41.69 10.01 42.33 8 45.6 4.09 51.96 3.29 56.61 8 62.4 21.17 78.61 40.83 55.79 54 72 64.18 84.53 \\\n65.2 96.7 54 108.32 51.92 110.48 27 112.32 27 109.32 \",\n\t\t_tdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 18.56 44.58 25.67 36.72 15.21 38.43 \",\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[_draw_=\"c 7 -#000000 B 4 27 47.54 27 55.73 27 64.41 27 71.7 \",\n\t\t_ldraw_=\"F 14 11 -Times-Roman c 7 -#000000 T 30.5 49.8 0 7 1 -x \",\n\t\t_tdraw_=\"S 5 -solid c 7 -#000000 C 7 -#000000 P 3 30.5 47.62 27 37.62 23.5 47.62 \",\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": [
+    "Error: mismatched tag in line 1 ",
+    "... x</i> ...",
+    "in label of node a"
+   ]
+  },
+  {
+   "name": "E_fontcolor-obj-B1",
+   "sym": "E_fontcolor",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x fontcolor=red];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[fontcolor=red,\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_fontcolor-obj-B4",
+   "sym": "E_fontcolor",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x fontcolor=red];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[fontcolor=red,\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_fontcolor-obj1-B1",
+   "sym": "E_fontcolor",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [fontcolor=red label=y];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,115.59\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[fontcolor=red,\n\t\tlabel=y,\n\t\tlp=\"72,107.19\",\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_fontcolor-obj1-B4",
+   "sym": "E_fontcolor",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [fontcolor=red label=y];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,65.615,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"30.474,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"30.474,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[fontcolor=red,\n\t\tlabel=y,\n\t\tlp=\"6.9741,54\",\n\t\tpos=\"s,30.474,36 20.542,41.741 14.536,41.268 7.3181,40.153 3.4741,45.6 -0.83137,51.7 -1.3214,56.677 3.4741,62.4 19.13,81.084 41.818,53.316 \\\n57.474,72 67.842,84.373 68.675,96.697 57.474,108.32 55.391,110.48 30.474,112.32 30.474,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"33.974,54\",\n\t\tpos=\"s,30.474,36.104 30.474,47.536 30.474,55.726 30.474,64.407 30.474,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_fontcolor-def-B1",
+   "sym": "E_fontcolor",
+   "src": "digraph {\n  edge [fontcolor=red];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\tedge [fontcolor=red];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_fontcolor-def-B4",
+   "sym": "E_fontcolor",
+   "src": "digraph {\n  rankdir=LR;\n  edge [fontcolor=red];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [fontcolor=red];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_labelfontcolor-obj-B1",
+   "sym": "E_labelfontcolor",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n [labelfontcolor=red headlabel=HL];\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"107.67,77.188\",\n\t\theadlabel=HL,\n\t\tlabelfontcolor=red,\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_labelfontcolor-obj-B4",
+   "sym": "E_labelfontcolor",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n [labelfontcolor=red headlabel=HL];\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,126.12\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"17.669,117.72\",\n\t\theadlabel=HL,\n\t\tlabelfontcolor=red,\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_labelfontcolor-obj-tail-B1",
+   "sym": "E_labelfontcolor",
+   "src": "digraph {\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x labelfontcolor=red taillabel=TL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlabelfontcolor=red,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\",\n\t\ttail_lp=\"62.955,41.068\",\n\t\ttaillabel=TL];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_labelfontcolor-obj-tail-B4",
+   "sym": "E_labelfontcolor",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x labelfontcolor=red taillabel=TL];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlabelfontcolor=red,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\",\n\t\ttail_lp=\"18.448,44.504\",\n\t\ttaillabel=TL];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_labelfontcolor-def-B1",
+   "sym": "E_labelfontcolor",
+   "src": "digraph {\n  edge [labelfontcolor=red headlabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=HL,\n\t\tlabelfontcolor=red\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"107.67,77.188\",\n\t\tpos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[head_lp=\"107.67,21.747\",\n\t\tpos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[head_lp=\"80.285,41.068\",\n\t\tlabel=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "E_labelfontcolor-def-B4",
+   "sym": "E_labelfontcolor",
+   "src": "digraph {\n  rankdir=LR;\n  edge [labelfontcolor=red headlabel=HL];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,126.12\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\tedge [headlabel=HL,\n\t\tlabelfontcolor=red\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[head_lp=\"17.669,117.72\",\n\t\tpos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[head_lp=\"17.669,63.297\",\n\t\tlabel=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_fontcolor-obj-B1",
+   "sym": "N_fontcolor",
+   "src": "digraph {\n  {rank=same; a [fontcolor=red]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[fontcolor=red,\n\t\t\theight=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_fontcolor-obj-B4",
+   "sym": "N_fontcolor",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [fontcolor=red]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[fontcolor=red,\n\t\t\theight=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_fontcolor-def-B1",
+   "sym": "N_fontcolor",
+   "src": "digraph {\n  node [fontcolor=red];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [fontcolor=red,\n\t\tlabel=\"\\N\"\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_fontcolor-def-B4",
+   "sym": "N_fontcolor",
+   "src": "digraph {\n  rankdir=LR;\n  node [fontcolor=red];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [fontcolor=red,\n\t\tlabel=\"\\N\"\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-obj-filled-B1",
+   "sym": "N_style",
+   "src": "digraph {\n  {rank=same; a [style=filled]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\tstyle=filled,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-obj-filled-B4",
+   "sym": "N_style",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [style=filled]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\tstyle=filled,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-def-filled-B1",
+   "sym": "N_style",
+   "src": "digraph {\n  node [style=filled];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\",\n\t\tstyle=filled\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-def-filled-B4",
+   "sym": "N_style",
+   "src": "digraph {\n  rankdir=LR;\n  node [style=filled];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\tstyle=filled\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-obj-rounded-B1",
+   "sym": "N_style",
+   "src": "digraph {\n  {rank=same; a [style=rounded]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\tstyle=rounded,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-obj-rounded-B4",
+   "sym": "N_style",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [style=rounded]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\tstyle=rounded,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-def-rounded-B1",
+   "sym": "N_style",
+   "src": "digraph {\n  node [style=rounded];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\",\n\t\tstyle=rounded\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-def-rounded-B4",
+   "sym": "N_style",
+   "src": "digraph {\n  rankdir=LR;\n  node [style=rounded];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\tstyle=rounded\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-obj-invis-B1",
+   "sym": "N_style",
+   "src": "digraph {\n  {rank=same; a [style=invis]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\tstyle=invis,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-obj-invis-B4",
+   "sym": "N_style",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [style=invis]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\tstyle=invis,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-def-invis-B1",
+   "sym": "N_style",
+   "src": "digraph {\n  node [style=invis];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\",\n\t\tstyle=invis\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-def-invis-B4",
+   "sym": "N_style",
+   "src": "digraph {\n  rankdir=LR;\n  node [style=invis];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\tstyle=invis\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-obj-diagonals-B1",
+   "sym": "N_style",
+   "src": "digraph {\n  {rank=same; a [style=diagonals]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\tstyle=diagonals,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-obj-diagonals-B4",
+   "sym": "N_style",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [style=diagonals]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\tstyle=diagonals,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-def-diagonals-B1",
+   "sym": "N_style",
+   "src": "digraph {\n  node [style=diagonals];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\",\n\t\tstyle=diagonals\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_style-def-diagonals-B4",
+   "sym": "N_style",
+   "src": "digraph {\n  rankdir=LR;\n  node [style=diagonals];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\tstyle=diagonals\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_showboxes-obj-1-B1",
+   "sym": "N_showboxes",
+   "src": "digraph {\n  {rank=same; a [showboxes=1]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\tshowboxes=1,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_showboxes-obj-1-B4",
+   "sym": "N_showboxes",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [showboxes=1]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\tshowboxes=1,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_showboxes-def-1-B1",
+   "sym": "N_showboxes",
+   "src": "digraph {\n  node [showboxes=1];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\",\n\t\tshowboxes=1\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_showboxes-def-1-B4",
+   "sym": "N_showboxes",
+   "src": "digraph {\n  rankdir=LR;\n  node [showboxes=1];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\tshowboxes=1\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_showboxes-obj-2-B1",
+   "sym": "N_showboxes",
+   "src": "digraph {\n  {rank=same; a [showboxes=2]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\tshowboxes=2,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_showboxes-obj-2-B4",
+   "sym": "N_showboxes",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [showboxes=2]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\tshowboxes=2,\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_showboxes-def-2-B1",
+   "sym": "N_showboxes",
+   "src": "digraph {\n  node [showboxes=2];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,144,98.935\"];\n\tnode [label=\"\\N\",\n\t\tshowboxes=2\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,49.468\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"117,49.468\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,117,68.788 27,68.788 27,104.73 99.647,108.38 114.4,79.738\"];\n\ta:s -> b:s\t[pos=\"e,117,30.147 27,30.147 27,-5.7907 99.647,-9.4406 114.4,19.197\"];\n\ta -> b\t[label=x,\n\t\tlp=\"72,57.868\",\n\t\tpos=\"e,89.616,49.468 54.403,49.468 61.886,49.468 70.183,49.468 78.199,49.468\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_showboxes-def-2-B4",
+   "sym": "N_showboxes",
+   "src": "digraph {\n  rankdir=LR;\n  node [showboxes=2];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,62.082,111.11\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\",\n\t\tshowboxes=2\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.5,\n\t\t\tpos=\"27,90\",\n\t\t\twidth=0.75];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"27,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,27,36 16.989,41.453 13.527,41.689 10.014,42.326 8,45.6 4.0879,51.96 3.2904,56.606 8,62.4 21.173,78.606 40.827,55.794 54,72 64.182,\\\n84.526 65.201,96.697 54,108.32 51.917,110.48 27,112.32 27,109.32\"];\n\ta -> b\t[label=x,\n\t\tlp=\"30.5,54\",\n\t\tpos=\"s,27,36.104 27,47.536 27,55.726 27,64.407 27,71.697\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_nojustify-obj-B1",
+   "sym": "N_nojustify",
+   "src": "digraph {\n  {rank=same; a [nojustify=true label=\"line one\\lline two\"]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,176.48,122.68\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.8171,\n\t\t\tlabel=\"line one\\lline two\",\n\t\t\tnojustify=true,\n\t\t\tpos=\"43.482,61.339\",\n\t\t\twidth=1.2078];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"149.48,61.339\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,149.48,80.66 43.482,92.238 43.482,135.74 132.8,129.55 147.46,91.587\"];\n\ta:s -> b:s\t[pos=\"e,149.48,42.018 43.482,30.439 43.482,-13.064 132.8,-6.876 147.46,31.091\"];\n\ta -> b\t[label=x,\n\t\tlp=\"104.72,69.739\",\n\t\tpos=\"e,122.05,61.339 87.383,61.339 95.094,61.339 103.08,61.339 110.64,61.339\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_nojustify-obj-wide-B1",
+   "sym": "N_nojustify",
+   "src": "digraph {\n  {rank=same; a [nojustify=true label=\"line one\\lline two\" width=3]; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,306,108.69\"];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.8171,\n\t\t\tlabel=\"line one\\lline two\",\n\t\t\tnojustify=true,\n\t\t\tpos=\"108,54.344\",\n\t\t\twidth=3];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"279,54.344\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"e,279,73.664 108,85.037 108,119.4 247.23,113.5 274.43,84.036\"];\n\ta:s -> b:s\t[pos=\"e,279,35.023 108,23.65 108,-10.714 247.23,-4.8107 274.43,24.651\"];\n\ta -> b\t[label=x,\n\t\tlp=\"234,62.744\",\n\t\tpos=\"e,251.61,54.344 216.03,54.344 224.53,54.344 232.69,54.344 240.15,54.344\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_nojustify-obj-wide-B4",
+   "sym": "N_nojustify",
+   "src": "digraph {\n  rankdir=LR;\n  {rank=same; a [nojustify=true label=\"line one\\lline two\" width=3]; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,229.68,133.48\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"\\N\"];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.8171,\n\t\t\tlabel=\"line one\\lline two\",\n\t\t\tnojustify=true,\n\t\t\tpos=\"108,101\",\n\t\t\twidth=3];\n\t\tb\t[height=0.5,\n\t\t\tpos=\"108,18\",\n\t\t\twidth=0.75];\n\t}\n\ta:n -> b:n\t[pos=\"s,108,36 97.995,41.333 94.534,41.537 91.019,42.141 89,45.392 85.06,51.735 83.919,56.721 89,62.192 108.26,82.928 196.74,50.849 216,\\\n71.584 233.88,90.833 234.49,112.03 216,130.69 213.89,132.82 108,134.69 108,131.69\"];\n\ta -> b\t[label=x,\n\t\tlp=\"111.5,53.792\",\n\t\tpos=\"s,108,36.377 108,47.693 108,55.327 108,63.575 108,71.214\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_nojustify-def-B1",
+   "sym": "N_nojustify",
+   "src": "digraph {\n  node [nojustify=true label=\"line one\\lline two\"];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,208.96,143.62\"];\n\tnode [label=\"line one\\lline two\",\n\t\tnojustify=true\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.8171,\n\t\t\tpos=\"43.482,71.808\",\n\t\t\twidth=1.2078];\n\t\tb\t[height=0.8171,\n\t\t\tpos=\"165.48,71.808\",\n\t\t\twidth=1.2078];\n\t}\n\ta:n -> b:n\t[pos=\"e,165.48,102.71 43.482,102.71 43.482,152.91 148.04,156.63 163.57,113.88\"];\n\ta:s -> b:s\t[pos=\"e,165.48,40.908 43.482,40.908 43.482,-9.2896 148.04,-13.015 163.57,29.731\"];\n\ta -> b\t[label=x,\n\t\tlp=\"104.48,80.208\",\n\t\tpos=\"e,121.57,71.808 87.128,71.808 94.554,71.808 102.37,71.808 110.06,71.808\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_nojustify-def-wide-B1",
+   "sym": "N_nojustify",
+   "src": "digraph {\n  node [nojustify=true label=\"line one\\lline two\" width=3];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,468,145.89\"];\n\tnode [label=\"line one\\lline two\",\n\t\tnojustify=true,\n\t\twidth=3\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.8171,\n\t\t\tpos=\"108,72.943\"];\n\t\tb\t[height=0.8171,\n\t\t\tpos=\"360,72.943\"];\n\t}\n\ta:n -> b:n\t[pos=\"e,360,103.64 108,103.64 108,155.81 326.72,159.37 356.63,114.34\"];\n\ta:s -> b:s\t[pos=\"e,360,42.25 108,42.25 108,-9.9223 326.72,-13.489 356.63,31.55\"];\n\ta -> b\t[label=x,\n\t\tlp=\"234,81.343\",\n\t\tpos=\"e,251.62,72.943 216.47,72.943 224.39,72.943 232.4,72.943 240.38,72.943\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_nojustify-def-wide-B4",
+   "sym": "N_nojustify",
+   "src": "digraph {\n  rankdir=LR;\n  node [nojustify=true label=\"line one\\lline two\" width=3];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,229.68,155.89\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"line one\\lline two\",\n\t\tnojustify=true,\n\t\twidth=3\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.8171,\n\t\t\tpos=\"108,123.42\"];\n\t\tb\t[height=0.8171,\n\t\t\tpos=\"108,29.416\"];\n\t}\n\ta:n -> b:n\t[pos=\"s,108,58.831 98.001,64.043 94.54,64.215 91.025,64.788 89,68.016 85.032,74.341 83.914,79.349 89,84.816 108.27,105.53 196.73,73.283 \\\n216,94 233.89,113.23 234.49,134.45 216,153.11 213.89,155.24 108,157.11 108,154.11\"];\n\ta -> b\t[label=x,\n\t\tlp=\"111.5,76.416\",\n\t\tpos=\"s,108,59.17 108,70.608 108,78.333 108,86.28 108,93.559\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_nojustify-off-wide-B1",
+   "sym": "N_nojustify",
+   "src": "digraph {\n  node [label=\"line one\\lline two\" width=3];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a:s -> b:s;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,468,145.89\"];\n\tnode [label=\"line one\\lline two\",\n\t\twidth=3\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.8171,\n\t\t\tpos=\"108,72.943\"];\n\t\tb\t[height=0.8171,\n\t\t\tpos=\"360,72.943\"];\n\t}\n\ta:n -> b:n\t[pos=\"e,360,103.64 108,103.64 108,155.81 326.72,159.37 356.63,114.34\"];\n\ta:s -> b:s\t[pos=\"e,360,42.25 108,42.25 108,-9.9223 326.72,-13.489 356.63,31.55\"];\n\ta -> b\t[label=x,\n\t\tlp=\"234,81.343\",\n\t\tpos=\"e,251.62,72.943 216.47,72.943 224.39,72.943 232.4,72.943 240.38,72.943\"];\n}\n",
+   "stderr": []
+  },
+  {
+   "name": "N_nojustify-off-wide-B4",
+   "sym": "N_nojustify",
+   "src": "digraph {\n  rankdir=LR;\n  node [label=\"line one\\lline two\" width=3];\n  {rank=same; a; b}\n  a:n -> b:n;\n  a -> b [label=x];\n}\n",
+   "dot": "digraph {\n\tgraph [bb=\"0,0,229.68,155.89\",\n\t\trankdir=LR\n\t];\n\tnode [label=\"line one\\lline two\",\n\t\twidth=3\n\t];\n\t{\n\t\tgraph [rank=same];\n\t\ta\t[height=0.8171,\n\t\t\tpos=\"108,123.42\"];\n\t\tb\t[height=0.8171,\n\t\t\tpos=\"108,29.416\"];\n\t}\n\ta:n -> b:n\t[pos=\"s,108,58.831 98.001,64.043 94.54,64.215 91.025,64.788 89,68.016 85.032,74.341 83.914,79.349 89,84.816 108.27,105.53 196.73,73.283 \\\n216,94 233.89,113.23 234.49,134.45 216,153.11 213.89,155.24 108,157.11 108,154.11\"];\n\ta -> b\t[label=x,\n\t\tlp=\"111.5,76.416\",\n\t\tpos=\"s,108,59.17 108,70.608 108,78.333 108,86.28 108,93.559\"];\n}\n",
+   "stderr": []
+  }
+ ]
+}

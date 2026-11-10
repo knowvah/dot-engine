@@ -119,26 +119,72 @@ export function dotInitNode(n: Node): void {
 // ---------------------------------------------------------------------------
 
 /**
- * Which of dot_init_edge's attribute symbols are bound. C reads `constraint`,
- * `minlen` and `group` through the globals E_constr, E_minlen and N_group
- * (bound per graph by graph_init). make_flat_adj_edges' setState nulls all
- * three for the aux layout and cleanupCloneGraph restores them, so an aux
- * edge's copied `constraint=false` or `minlen`, and its clones' `group`, are
- * never read: late_int(e, NULL, 1, 0) is 1 and late_string(n, NULL, "") "".
- * @see lib/common/input.c:graph_init (E_constr, E_minlen, N_group)
+ * Which of the attribute symbols make_flat_adj_edges' setState nulls are bound.
+ * C reads each attribute through a global (bound per graph by graph_init).
+ * setState nulls thirteen of them for the aux layout and cleanupCloneGraph
+ * restores them. Seven are modelled here, because a bound read changes what
+ * the aux graph holds:
+ *
+ * - E_constr, E_minlen, N_group (dot_init_edge): an aux edge's copied
+ *   `constraint=false` or `minlen`, and its clones' `group`, are never read:
+ *   late_int(e, NULL, 1, 0) is 1 and late_string(n, NULL, "") "".
+ * - E_headlabel, E_taillabel, E_xlabel (common_init_edge, utils.c:525-545) and
+ *   N_xlabel (common_init_node, utils.c:443): the `sym && ...` guards fail, so
+ *   the aux makes no head, tail or external label and sets none of their
+ *   GD_has_labels bits. A bound read made each label a second time: a
+ *   malformed HTML value was reported twice where native reports it once, and
+ *   the aux postprocess (addXLabels, the aux bounding box) saw labels C never
+ *   makes.
+ *
+ * The other six set a field on an aux object that no aux pass reads and that
+ * cleanupCloneGraph discards, so they have no gate. Each was probed against
+ * native 16.1.0 on flat-adjacent inputs that set it (issue #131: dot, xdot,
+ * svg and stderr equal on every input that equals native without it):
+ *
+ * - E_fontcolor (initFontEdgeAttr, utils.c:460), E_labelfontcolor
+ *   (initFontLabelEdgeAttr, utils.c:470) and N_fontcolor (common_init_node,
+ *   utils.c:440): the colour of an aux label. Only the aux edge label's
+ *   position is copied back.
+ * - N_nojustify (poly_init, shapes.c:2133): the aux node label's space.x.
+ * - N_showboxes (common_init_node, utils.c:450): not read by the port's init.
+ * - N_style (stylenode, shapes.c:471): render only, and the aux is never
+ *   rendered.
+ *
+ * _dot_splines' port-label pass tests `E_headlabel || E_taillabel`
+ * (dotsplines.c:447). The port's placePortLabels tests whether the attributes
+ * are declared, which is true on the aux graph. With no head or tail label on
+ * any aux edge its loops do nothing, which is C's result.
+ * @see lib/common/input.c:graph_init (E_constr, E_minlen, N_group, ...)
  * @see lib/dotgen/dotsplines.c:setState, cleanupCloneGraph
  */
 export interface InitEdgeSyms {
+  /** E_constr. */
   readonly constr: boolean;
+  /** E_minlen. */
   readonly minlen: boolean;
+  /** N_group. */
   readonly group: boolean;
+  /** E_headlabel. */
+  readonly headlabel: boolean;
+  /** E_taillabel. */
+  readonly taillabel: boolean;
+  /** E_xlabel. */
+  readonly xlabel: boolean;
+  /** N_xlabel. */
+  readonly nodeXlabel: boolean;
 }
 
 /** The main graph's symbols, as graph_init binds them. */
-export const DOT_INIT_SYMS: InitEdgeSyms = { constr: true, minlen: true, group: true };
+export const DOT_INIT_SYMS: InitEdgeSyms = {
+  constr: true, minlen: true, group: true,
+  headlabel: true, taillabel: true, xlabel: true, nodeXlabel: true,
+};
 
 /** The flat-adj aux graph's symbols. @see lib/dotgen/dotsplines.c:setState */
-export const AUX_INIT_SYMS: InitEdgeSyms = { constr: false, minlen: false, group: false };
+export const AUX_INIT_SYMS: InitEdgeSyms = {
+  constr: false, minlen: false, group: false,
+  headlabel: false, taillabel: false, xlabel: false, nodeXlabel: false,
+};
 
 /**
  * True when tail and head carry the same non-empty `group` attribute.
@@ -257,21 +303,21 @@ function clearFastGraphLists(n: Node): void {
 /**
  * Calls commonInitNode (shape-aware, label-driven sizing) then
  * dotInitNode for every node, then dotInitEdge for every edge. `syms` stands
- * for the global symbol state C's dot_init_edge reads (AUX_INIT_SYMS inside
- * make_flat_adj_edges).
+ * for the global symbol state C's dot_init_edge, common_init_node and
+ * common_init_edge read (AUX_INIT_SYMS inside make_flat_adj_edges).
  *
  * @see lib/dotgen/dotinit.c:dot_init_node_edge
  * @see lib/dotgen/dotinit.c:dot_init_node (common_init_node + gv_nodesize)
  */
 export function dotInitNodeEdge(g: Graph, syms: InitEdgeSyms = DOT_INIT_SYMS): void {
   for (const n of nodesInSeq(g)) {
-    commonInitNode(n, g);
+    commonInitNode(n, g, syms);
     dotInitNode(n);
   }
   const measurer = g.root.info.gvc?.textMeasurer;
   for (const e of g.edges) {
     dotInitEdge(e, syms);
-    if (measurer) initEdgeLabels(e, g, measurer);
+    if (measurer) initEdgeLabels(e, g, measurer, syms);
   }
 }
 

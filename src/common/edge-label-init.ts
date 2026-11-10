@@ -221,11 +221,31 @@ function applyTailLabel(e: Edge, g: Graph, lfi: FontInfo, measurer: TextMeasurer
 // ---------------------------------------------------------------------------
 
 /**
+ * Which of common_init_edge's guarded label symbols are bound. C tests each
+ * global before reading it (`E_xlabel && (str = agxget(e, E_xlabel)) && str[0]`),
+ * and make_flat_adj_edges' setState nulls these three for the aux layout, so an
+ * aux edge's copied `xlabel`, `headlabel` and `taillabel` are never read: no
+ * label is made and no GD_has_labels bit is set. E_label is rebound from the
+ * aux graph instead, so it has no entry here.
+ * @see lib/common/utils.c:common_init_edge (525, 533, 539)
+ * @see lib/dotgen/dotsplines.c:setState
+ */
+export interface EdgeLabelSyms {
+  readonly headlabel: boolean;
+  readonly taillabel: boolean;
+  readonly xlabel: boolean;
+}
+
+/** Every symbol bound, as graph_init leaves them. @see lib/common/input.c:graph_init */
+export const BOUND_EDGE_LABEL_SYMS: EdgeLabelSyms = { headlabel: true, taillabel: true, xlabel: true };
+
+/**
  * Apply label and xlabel with lazy fi init mirroring C's NULL-guard pattern.
- * fi is initialized at most once and reused for xlabel.
+ * fi is initialized at most once and reused for xlabel. An unbound E_xlabel
+ * fails C's guard before the attribute is read.
  * @see lib/common/utils.c:common_init_edge (lines 515-531)
  */
-function applyMainLabels(e: Edge, g: Graph, measurer: TextMeasurer): void {
+function applyMainLabels(e: Edge, g: Graph, measurer: TextMeasurer, syms: EdgeLabelSyms): void {
   // C: fi.fontname = NULL; init on first need, reuse for xlabel.
   let fi: FontInfo | null = null;
   const labelStr = e.attrs.get('label');
@@ -233,29 +253,25 @@ function applyMainLabels(e: Edge, g: Graph, measurer: TextMeasurer): void {
     fi = initFontEdgeAttr(e);
     applyLabel(e, g, fi, measurer);
   }
-  const xlabelStr = e.attrs.get('xlabel');
+  // utils.c:525 — E_xlabel && (str = agxget(e, E_xlabel)) && str[0]
+  const xlabelStr = syms.xlabel ? e.attrs.get('xlabel') : undefined;
   if (xlabelStr) {
     applyXLabel(e, g, fi ?? initFontEdgeAttr(e), measurer);
   }
 }
 
 /**
- * Apply headlabel and taillabel using the labelfont* chain.
+ * Apply headlabel and taillabel using the labelfont* chain. An unbound
+ * E_headlabel or E_taillabel fails C's guard before the attribute is read.
  * @see lib/common/utils.c:common_init_edge (lines 533-545)
  */
-function applyEndLabels(e: Edge, g: Graph, measurer: TextMeasurer): void {
+function applyEndLabels(e: Edge, g: Graph, measurer: TextMeasurer, syms: EdgeLabelSyms): void {
+  if (!syms.headlabel && !syms.taillabel) return;
   const lfi = getLabelFontInfo(e);
-  applyHeadLabel(e, g, lfi, measurer);
-  applyTailLabel(e, g, lfi, measurer);
+  if (syms.headlabel) applyHeadLabel(e, g, lfi, measurer); // utils.c:533
+  if (syms.taillabel) applyTailLabel(e, g, lfi, measurer); // utils.c:539
 }
 
-/**
- * Creates label, xlabel, head_label, and tail_label TextlabelT objects on the
- * edge, mirroring common_init_edge in C. C statement order is preserved:
- * label → xlabel → headlabel → taillabel.
- *
- * @see lib/common/utils.c:common_init_edge (lines 509-545)
- */
 /** Shape portfn: aiming point + slope for a named/compass port. */
 type PortFn = (n: unknown, portname: string, compass: string) => Port;
 
@@ -307,11 +323,21 @@ export function initEdgePorts(e: Edge): void {
   if (isClipDisabled(e.attrs.get('headclip'))) e.info.head_port.clip = false;
 }
 
-export function initEdgeLabels(e: Edge, g: Graph, measurer: TextMeasurer): void {
+/**
+ * Creates label, xlabel, head_label, and tail_label TextlabelT objects on the
+ * edge, mirroring common_init_edge in C. C statement order is preserved:
+ * label → xlabel → headlabel → taillabel. `syms` stands for the global symbol
+ * state the three guarded reads test (unbound inside make_flat_adj_edges).
+ *
+ * @see lib/common/utils.c:common_init_edge (lines 509-545)
+ */
+export function initEdgeLabels(
+  e: Edge, g: Graph, measurer: TextMeasurer, syms: EdgeLabelSyms = BOUND_EDGE_LABEL_SYMS,
+): void {
   initEdgePorts(e); // port block runs for every edge, before the label short-circuit
   const hasMain = e.attrs.has('label') || e.attrs.has('xlabel');
   const hasEnd  = e.attrs.has('headlabel') || e.attrs.has('taillabel');
   if (!hasMain && !hasEnd) return;
-  if (hasMain) applyMainLabels(e, g, measurer);
-  if (hasEnd)  applyEndLabels(e, g, measurer);
+  if (hasMain) applyMainLabels(e, g, measurer, syms);
+  if (hasEnd)  applyEndLabels(e, g, measurer, syms);
 }

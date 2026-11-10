@@ -687,7 +687,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       defect 131 fixed at the other two sites; its test pins the `\n` (part 11 T5).
   140. **[DONE — issue #130: built the subgraph; native aux ranks equal]** `make_flat_adj_edges` builds a `rank=source` subgraph `xxx` (`dotsplines.c:1177-1185`) the port
       omits; no output difference on w4 and six variants (part 11 T1).
-  141. `setState` also unbinds `E_fontcolor`, `E_labelfontcolor`, `E_xlabel`, `N_style`, `N_fontcolor`,
+  141. **[DONE — issue #131: unbound the four label symbols (stderr now equal); the other six probed equal]** `setState` also unbinds `E_fontcolor`, `E_labelfontcolor`, `E_xlabel`, `N_style`, `N_fontcolor`,
       `N_xlabel`, `N_showboxes`, `N_nojustify` (`dotsplines.c:731-771`) for the aux layout; head and
       tail labels probed equal, the rest unprobed (part 11 T1, T2).
   142. `svgGraphId` (`src/render/svg-id.ts:54`) still hardcodes `graph0` for the graph anchor and map id

@@ -287,6 +287,43 @@ describe.each(['record', 'Mrecord', 'box'])('commonInitNode — xlabel on shape=
 });
 
 // ---------------------------------------------------------------------------
+// N_xlabel unbound — make_flat_adj_edges' setState nulls it for the aux graph,
+// so common_init_node's `N_xlabel && ...` guard fails for every shape.
+// @see lib/dotgen/dotsplines.c:setState · lib/common/utils.c:443
+// ---------------------------------------------------------------------------
+
+describe.each(['record', 'Mrecord', 'box', 'ellipse'])(
+  'commonInitNode — N_xlabel unbound on shape=%s', (shape) => {
+    function init(nodeXlabel: boolean): { g: Graph; n: Node } {
+      const g = makeGraph();
+      const n = addNode(g, 'A', { shape, label: '<p1>x|<p2>y', xlabel: 'NX' });
+      commonInitNode(n, g, { nodeXlabel });
+      return { g, n };
+    }
+
+    it('makes no ND_xlabel and sets no NODE_XLABEL bit', () => {
+      const { g, n } = init(false);
+      expect(n.info.xlabel).toBeUndefined();
+      expect((g.root.info.has_labels ?? 0) & NODE_XLABEL).toBe(0);
+    });
+
+    it('still builds the main label and the same node size', () => {
+      const unbound = init(false).n;
+      const bound = init(true).n;
+      expect(unbound.info.label).toBeDefined();
+      expect([unbound.info.lw, unbound.info.rw, unbound.info.ht])
+        .toEqual([bound.info.lw, bound.info.rw, bound.info.ht]);
+    });
+
+    it('makes the xlabel when the symbol is bound', () => {
+      const { g, n } = init(true);
+      expect((n.info.xlabel as TextlabelT).text).toBe('NX');
+      expect((g.root.info.has_labels ?? 0) & NODE_XLABEL).toBe(NODE_XLABEL);
+    });
+  },
+);
+
+// ---------------------------------------------------------------------------
 // End-to-end: the xlabel must survive placement and reach the xdot output.
 // Values below are the native oracle's
 // (`GVBINDIR=/tmp/ghl ~/git/graphviz/build/cmd/dot/dot -Txdot -Kdot`).
