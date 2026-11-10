@@ -1,0 +1,5 @@
+graph G {
+  subgraph p { subgraph q { cluster=true; a } }
+  subgraph r { subgraph q { b } }
+  subgraph r2 { subgraph q { cluster=true; c } }
+}

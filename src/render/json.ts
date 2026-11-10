@@ -43,7 +43,7 @@ import type { XdotOp, XdotColor } from '../xdot/types.js';
 import type { TextlabelT, FieldT } from '../common/types.js';
 import { printNum, gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
 import { attachAttrs } from './dot/write-back.js';
-import { attachBeforeWriteWithClusterEdges as attachFirst, clusterNodeGid, jsonNodes } from './json-cluster-edge.js';
+import { attachBeforeWriteWithClusterEdges as attachFirst, jsonNodes, labelSubgs, lookupCluster } from './json-cluster-edge.js';
 import { attrsWithoutLayoutBb } from '../gvc/layout-bb.js';
 import { CHAR_LATIN1 } from '../common/graph-init.js';
 import { parse } from '../parser/index.js';
@@ -219,10 +219,10 @@ function canonicalRootEdges(g: Graph): Array<{ e: Edge; key: string }> {
   const counter = new Map<string, number>();
   for (const [, n] of g.nodes) {
     for (const e of n.outEdges(g)) {
-      const base = e.tail.name + ' ' + e.head.name;
+      const base = e.tail.name + '\0' + e.head.name;
       const occ = counter.get(base) ?? 0;
       counter.set(base, occ + 1);
-      out.push({ e, key: base + ' ' + occ });
+      out.push({ e, key: base + '\0' + occ });
     }
   }
   return out;
@@ -310,7 +310,7 @@ interface BuildCtx {
   subgGid: Map<Graph, number>;
   nodeGid: Map<Node, number>;
   edgeGid: Map<Edge, number>;
-  /** All subgraphs in DFS preorder (the flat top-level "objects" ordering). */
+  /** The subgraphs below the rendered graph in DFS preorder (the flat top-level "objects" ordering). */
   dfsSubs: Graph[];
   /** True once any edge (or edge default) declares `label`: cgraph then carries
    *  a global `label` edge symbol, and write_attrs emits `label` (its value or
@@ -358,26 +358,19 @@ function isEdgeLabelDeclared(g: Graph): boolean {
   return walk(g);
 }
 
-/** DFS preorder over the subgraph tree. @see label_subgs recursion order */
-function dfsSubgraphs(g: Graph, out: Graph[]): void {
-  for (const [, sg] of g.subgraphs) {
-    out.push(sg);
-    dfsSubgraphs(sg, out);
-  }
-}
-
 /** Assign every object its `_gvid`, mirroring write_graph's top-level pass:
  *  subgraphs DFS-preorder 0..sgcnt-1, then nodes sgcnt.., then edges 0.. in
  *  agfstnode/agfstout order. @see plugin/core/gvrender_core_json.c:write_graph */
 function assignIds(g: Graph, doXDot: boolean, draws?: DrawLookup): BuildCtx {
   const dfsSubs: Graph[] = [];
-  dfsSubgraphs(g, dfsSubs);
+  const clusters = new Map<string, number>();
+  const sgcnt = labelSubgs(g, 0, clusters, dfsSubs);
   const subgGid = new Map<Graph, number>();
   dfsSubs.forEach((sg, i) => subgGid.set(sg, i));
-  const sgcnt = dfsSubs.length;
+  if (dfsSubs[0] === g) dfsSubs.shift(); // a subgraph render: label_subgs numbers g, write_subgs lists below it
   const nodeGid = new Map<Node, number>();
   let ncnt = 0;
-  for (const [, n] of g.nodes) nodeGid.set(n, n.info.clustnode ? clusterNodeGid(n, dfsSubs) : sgcnt + ncnt++);
+  for (const [, n] of g.nodes) nodeGid.set(n, n.info.clustnode ? lookupCluster(clusters, n.name) : sgcnt + ncnt++);
   const edgeGid = new Map<Edge, number>();
   let ecnt = 0;
   for (const { e } of canonicalRootEdges(g)) edgeGid.set(e, ecnt++);

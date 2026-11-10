@@ -9,10 +9,17 @@
  * the same helper. A graph with no cluster edges keeps the usual order (attach
  * after the write): nothing there can differ.
  *
+ * Also the json cluster map: write_graph's top pass numbers the subgraphs and
+ * maps each cluster's name to its gid (label_subgs, insert), which is where a
+ * cluster node's gid comes from (lookup) and where a repeated cluster name is
+ * warned about.
+ *
  * @see plugin/core/gvrender_core_json.c:json_begin_graph
+ * @see plugin/core/gvrender_core_json.c:write_graph
  * @see lib/common/output.c:403 (if (HAS_CLUST_EDGE(g)) undoClusterEdges(g))
  */
 
+import { agwarningf } from '../common/agerr.js';
 import { undoRenderedClusterEdges } from '../gvc/layout-reset.js';
 import { isACluster } from '../layout/dot/rank.js';
 import type { Graph } from '../model/graph.js';
@@ -41,10 +48,40 @@ export function jsonNodes(g: Graph): Node[] {
 }
 
 /**
- * A cluster node's `_gvid`: that of the first cluster of its name, as write_graph's
- * `lookup(map, agnameof(np))` finds it, or -1 when there is none.
- * @see plugin/core/gvrender_core_json.c:658 lookup, label_subgs
+ * The gid mapped to cluster `name`, or -1 when there is none.
+ * @see plugin/core/gvrender_core_json.c:lookup
  */
-export function clusterNodeGid(n: Node, dfsSubs: readonly Graph[]): number {
-  return dfsSubs.findIndex((sg) => sg.name === n.name && isACluster(sg));
+export function lookupCluster(map: ReadonlyMap<string, number>, name: string): number {
+  return map.get(name) ?? -1;
+}
+
+/**
+ * Maps cluster `name` to gid `v`. The first entry of a name is kept; a later
+ * one with another value is warned about and dropped.
+ * @see plugin/core/gvrender_core_json.c:insert
+ */
+export function insertCluster(map: Map<string, number>, name: string, v: number): void {
+  const ip = map.get(name);
+  if (ip !== undefined) {
+    if (ip !== v) agwarningf(`Duplicate cluster name "${name}"`);
+    return;
+  }
+  map.set(name, v);
+}
+
+/**
+ * Numbers `g`'s subgraphs in DFS preorder from `lbl` (C's `GD_gid(g) = lbl++`;
+ * here a subgraph's gid is its index in `out`) and maps each cluster's name to
+ * its gid. Returns the next label: the subgraph count when called on the root
+ * with 0.
+ * @see plugin/core/gvrender_core_json.c:label_subgs
+ */
+export function labelSubgs(g: Graph, lbl: number, map: Map<string, number>, out: Graph[]): number {
+  if (g !== g.root) {
+    const gid = lbl++;
+    out.push(g);
+    if (isACluster(g)) insertCluster(map, g.name, gid);
+  }
+  for (const [, sg] of g.subgraphs) lbl = labelSubgs(sg, lbl, map, out);
+  return lbl;
 }

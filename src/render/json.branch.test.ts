@@ -536,6 +536,7 @@ describe('graphEffectiveAttrs — subgraph with no graphDefaultsSnapshot (hand-b
     const g = makeGraph();
     const sg = new Graph('cluster_0', 'directed');
     sg.parent = g;
+    sg.root = g; // as agsubg sets it: label_subgs numbers every g != agroot(g)
     g.subgraphs.set('cluster_0', sg);
     const n = makeNode(g, 'A');
     sg.nodes.set('A', n);

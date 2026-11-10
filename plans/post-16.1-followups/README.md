@@ -700,7 +700,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   145. **[DONE — issue #134: echoAttr/echoGraphAttr use agstrcanon; labels already wrapped]** `echoAttr`/`echoGraphAttr` (`src/render/dot/attrs.ts:362,397`) print cluster and graph
       attributes through `agcanonEscape`, so long labels there never wrap at `Max_outputline`; no
       native ref covers it (part 11 T3).
-  146. json's `insert()` warns `Duplicate cluster name` (`gvrender_core_json.c:617`); the port's json
+  146. **[DONE — issue #135: json's label_subgs/insert/lookup ported, warning included]** json's `insert()` warns `Duplicate cluster name` (`gvrender_core_json.c:617`); the port's json
       has no such warning (part 11 T4).
   147. json0 prints `.5`/`125.354` where native prints `0.5`/`125.35` (the `printNum` fallback for
       json0 nodes); pre-existing, `compareJson` passes (part 11 T4).
