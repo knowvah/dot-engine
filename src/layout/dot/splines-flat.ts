@@ -157,7 +157,7 @@ function cloneFlatEdge(auxg: Graph, tn: Node, auxt: Node, auxh: Node, orig: Edge
  * @see lib/dotgen/dotsplines.c:setflags (FLATEDGE order predicate)
  * @see lib/dotgen/dotsplines.c:make_flat_edge (makefwdedge of *edges)
  */
-function flatLeadPair(edges: Edge[]): { tn: Node; hn: Node } {
+export function flatLeadPair(edges: Edge[]): { tn: Node; hn: Node } {
   const t = edges[0].tail, h = edges[0].head;
   return (t.info.order ?? 0) < (h.info.order ?? 0) ? { tn: t, hn: h } : { tn: h, hn: t };
 }

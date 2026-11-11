@@ -1,0 +1,1 @@
+digraph { {rank=same; a [shape=record, label="a very wide record label here"]; b; c [shape=record]; d; c -> d; a -> b; b -> c [style=invis];} }

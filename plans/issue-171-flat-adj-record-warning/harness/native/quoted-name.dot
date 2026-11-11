@@ -1,0 +1,16 @@
+digraph {
+	graph [bb="0,0,126,37"];
+	node [label="\N"];
+	{
+		graph [rank=same];
+		"x y"	[height=0.51389,
+			pos="27,18.5",
+			rects="0,0.5,53.5,36.5",
+			shape=record,
+			width=0.75];
+		"p\"q"	[height=0.5,
+			pos="99,18.5",
+			width=0.75];
+		"x y" -> "p\"q";
+	}
+}

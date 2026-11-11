@@ -1,0 +1,1 @@
+digraph { concentrate=true; {rank=same; a [shape=record]; b; a -> b;} a -> c; b -> c; }

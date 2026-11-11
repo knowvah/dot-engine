@@ -1,0 +1,1 @@
+digraph { subgraph cluster_x { {rank=same; a [shape=record]; b; a -> b;} } subgraph cluster_y { {rank=same; c [shape=record]; d; d -> c;} } a -> c; }

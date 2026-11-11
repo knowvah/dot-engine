@@ -1,0 +1,96 @@
+digraph vfs {
+	graph [bb="0,0,365.47,654",
+		color=lightgray
+	];
+	node [fontsize=10,
+		label="\N",
+		shape=record,
+		style=filled
+	];
+	subgraph cluster_mnt_namespace {
+		graph [bb="8,421,154,518",
+			fontsize=10,
+			label=mnt_namespace,
+			lheight=0.17,
+			lp="81,508",
+			lwidth=0.89
+		];
+		namespace1	[height=0.84722,
+			label="{
+       <f0>struct vfsmount * root       |{<f1>struct list_head list|{<f2>*next|<f3>*prev}}}
+        ",
+			pos="81,459.5",
+			rects="15.842,469.5,146.16,489.5 15.842,429.5,107.39,469.5 107.39,449.5,146.16,469.5 107.39,429.5,146.16,449.5",
+			width=1.8099];
+	}
+	subgraph cluster_vfsmount {
+		graph [bb="162,8,352,646",
+			fontsize=10,
+			label="struct vfsmount",
+			lheight=0.17,
+			lp="257,636",
+			lwidth=0.87
+		];
+		subgraph cluster_mount1 {
+			graph [bb="170,16,344,313",
+				lheight=0.17,
+				lp="257,303",
+				lwidth=0.87
+			];
+			vfsmount1	[height=3.625,
+				label="{
+       {<f0>struct list_head\nmnt_hash|{<f1>*next|<f2>*prev}}        |<f3>struct vfsmount *mnt_parent        |<f4>struct dentry * \
+mnt_mountpoint       |<f5>struct dentry * mnt_root        |<f6>struct super_block * mnt_sb        |{<f7>struct list_head\nmnt_mounts|{<\
+f8>*next|<f9>*prev}}        |{<f10>struct list_head\nmnt_child|{<f11>*next|<f12>*prev}}        |{<f13>struct list_head\nmnt_list|{<\
+f14>*next|<f15>*prev}}        |<f16>struct namespace * mnt_namespace}
+        ",
+				pos="257,154.5",
+				rects="177.5,244.5,275.32,284.5 275.32,264.5,336.09,284.5 275.32,244.5,336.09,264.5 177.5,224.5,336.5,244.5 177.5,204.5,336.5,224.5 177.5,\
+184.5,336.5,204.5 177.5,164.5,336.5,184.5 177.5,124.5,275.32,164.5 275.32,144.5,336.09,164.5 275.32,124.5,336.09,144.5 177.5,84.5,\
+275.32,124.5 275.32,104.5,336.09,124.5 275.32,84.5,336.09,104.5 177.5,44.5,275.32,84.5 275.32,64.5,336.09,84.5 275.32,44.5,336.09,\
+64.5 177.5,24.5,336.5,44.5",
+				width=2.2083];
+		}
+		subgraph cluster_mount2 {
+			graph [bb="170,321,344,618",
+				lheight=0.17,
+				lp="257,608",
+				lwidth=0.87
+			];
+			vfsmount2	[height=3.625,
+				label="{
+       {<f0>struct list_head\nmnt_hash|{<f1>*next|<f2>*prev}}        |<f3>struct vfsmount *mnt_parent        |<f4>struct dentry * \
+mnt_mountpoint       |<f5>struct dentry * mnt_root        |<f6>struct super_block * mnt_sb        |{<f7>struct list_head\nmnt_mounts|{<\
+f8>*next|<f9>*prev}}        |{<f10>struct list_head\nmnt_child|{<f11>*next|<f12>*prev}}        |{<f13>struct list_head\nmnt_list|{<\
+f14>*next|<f15>*prev}}        |<f16>struct namespace * mnt_namespace}
+        ",
+				pos="257,459.5",
+				rects="177.5,549.5,275.32,589.5 275.32,569.5,336.09,589.5 275.32,549.5,336.09,569.5 177.5,529.5,336.5,549.5 177.5,509.5,336.5,529.5 177.5,\
+489.5,336.5,509.5 177.5,469.5,336.5,489.5 177.5,429.5,275.32,469.5 275.32,449.5,336.09,469.5 275.32,429.5,336.09,449.5 177.5,389.5,\
+275.32,429.5 275.32,409.5,336.09,429.5 275.32,389.5,336.09,409.5 177.5,349.5,275.32,389.5 275.32,369.5,336.09,389.5 275.32,349.5,\
+336.09,369.5 177.5,329.5,336.5,349.5",
+				width=2.2083];
+		}
+		vfsmount1:f8 -> vfsmount2:f10	[color=blue,
+			pos="e,176.5,409.5 337.09,154.5 366.09,154.5 353.73,261.98 336.09,285 291.6,343.06 222.13,271.05 177.5,329 168.93,340.13 162.17,383.41 \
+168.32,401.49"];
+		vfsmount1:f9 -> vfsmount2:f10	[color=blue,
+			pos="e,176.5,409.5 337.09,134.5 370.54,134.5 356.42,258.44 336.09,285 291.62,343.08 222.13,271.05 177.5,329 168.93,340.13 162.17,383.41 \
+168.32,401.49"];
+		vfsmount1:f14 -> vfsmount2:f13	[pos="e,176.5,369.5 337.09,74.5 383.87,74.5 364.49,247.83 336.09,285 291.68,343.12 222.49,271.32 177.5,329 169.71,338.98 163.48,354.95 \
+166.73,363.55"];
+		vfsmount2:f12 -> vfsmount1:f7	[color=green,
+			pos="e,176.5,144.5 337.09,399.5 368.43,399.5 355.23,353.81 336.09,329 291.41,271.09 221.98,343.07 177.5,285 142.05,238.72 117.49,156.39 \
+165.2,145.66"];
+		vfsmount2:f11 -> vfsmount1:f7	[color=green,
+			pos="e,176.5,144.5 337.09,419.5 377.31,419.5 360.61,360.89 336.09,329 291.5,271.02 221.98,343.07 177.5,285 142.05,238.72 117.49,156.39 \
+165.2,145.66"];
+		vfsmount2:f3 -> vfsmount1:f0	[pos="e,226.41,285.5 337.5,539.5 384.28,539.5 362.9,367.62 336.5,329 309.36,289.3 239.86,329.79 228.11,296.86"];
+		vfsmount2:f15 -> vfsmount1:f13	[pos="e,176.5,64.5 337.09,359.5 350.65,359.5 344.47,339.66 336.09,329 290.87,271.51 221.9,343.13 177.5,285 120.45,210.32 81.775,76.091 \
+165.13,65.205"];
+	}
+	namespace1:f0 -> vfsmount1:f0	[pos="e,176.5,264.5 147.16,479.5 191.05,479.5 139.41,301.4 166.13,269.39"];
+	namespace1:f2 -> vfsmount1:f13	[pos="e,176.5,64.5 147.16,459.5 187.64,459.5 141.23,125.23 167.8,71.693"];
+	namespace1:f3 -> vfsmount2:f13;
+	vfsmount2:f14 -> namespace1:f1;
+}

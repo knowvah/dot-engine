@@ -1,0 +1,1 @@
+digraph { {rank=same; "x y" [shape=record]; "p\"q"; "x y" -> "p\"q";} }

@@ -27,7 +27,7 @@ import { linearBezier } from './edge-route-poly.js';
 import { rankEdgeInfoOf, routedThisPass } from './edge-route-rank.js';
 import { routeRegularEdgeFaithful } from './edge-route-faithful.js';
 import { isFlatAdjacent, makeFlatAdjEdges } from './splines-flat.js';
-import { ShapeKind, type ShapeDesc } from '../../common/types.js';
+import { lostFlatAdjRecordEdge } from './flat-adj-record.js';
 import {
   collectNonAdjacentFlatGroup, routeFlatEdgeGroupFaithful,
 } from './splines-flat-multi.js';
@@ -392,19 +392,6 @@ function routeFaithfulSidePort(e: GraphEdge, g: Graph, run: readonly GraphEdge[]
   return true;
 }
 
-/** graphviz #1323: C make_flat_adj_edges bails on a flat edge between ADJACENT
- *  nodes with a record-shape endpoint — no spline is built, map_edge "lost"s it,
- *  and it is never drawn. Detect that case so the router leaves e.info.spl
- *  undefined (edgeHasDrawableContent then skips it), matching the oracle.
- *  @see lib/dotgen/dotsplines.c:make_flat_adj_edges */
-function isLostFlatAdjRecordEdge(g: Graph, e: GraphEdge): boolean {
-  const tr = e.tail.info.rank;
-  if (tr === undefined || tr !== e.head.info.rank) return false;
-  if (!isFlatAdjacent(g, e)) return false;
-  const rec = (s: unknown): boolean => (s as ShapeDesc | undefined)?.kind === ShapeKind.SH_RECORD;
-  return rec(e.tail.info.shape) || rec(e.head.info.shape);
-}
-
 /**
  * Dispatch a same-rank (flat) edge to its faithful router. C routes flat edges
  * by topology in `dot_splines_` independent of ED_dir (only the arrowheads
@@ -415,7 +402,7 @@ function isLostFlatAdjRecordEdge(g: Graph, e: GraphEdge): boolean {
  * @see lib/dotgen/dotsplines.c:dot_splines_ (flat edge group dispatch)
  */
 function routeFlatEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): boolean {
-  if (isLostFlatAdjRecordEdge(g, e)) return true; // #1323: lost edge, leave unrouted
+  if (lostFlatAdjRecordEdge(g, e)) return true; // #1323: lost edge, leave unrouted
   // Labeled same-rank edges: non-adjacent routes around the flat label vnode
   // (make_flat_labeled_edge); adjacent no-port routes straight with the label
   // above (make_flat_adj_edges → makeSimpleFlatLabels). Both decline for every

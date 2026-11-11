@@ -1,0 +1,1 @@
+digraph { node [shape=record]; {rank=same; a; b;} a -> b [headlabel=h, taillabel=t]; a:e -> b:w; }
