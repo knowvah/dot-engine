@@ -1,0 +1,1 @@
+graph "graph" { node [label=x]; a -- b; }

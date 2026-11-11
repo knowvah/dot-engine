@@ -256,6 +256,25 @@ describe('HTML label preservation', () => {
   });
 });
 
+// The lexer interns an html string in the graph being built; the root's own name is read before
+// that graph exists, so agopen copies it as plain text. @see lib/cgraph/scan.l:233, id.c:52
+describe('html-like names', () => {
+  it('makes the root graph name plain text', () => {
+    const g = parse('digraph <h g> {}');
+    expect(g.name).toBe('h g');
+    expect(g.anonymous).toBe(false);
+  });
+
+  it('keeps the html flag on node and subgraph names', () => {
+    const g = parse('digraph { <n>; subgraph <s> { a } }');
+    const [node] = [...g.nodes.keys()].filter(isHtmlValue);
+    expect(htmlValueContent(node!)).toBe('n');
+    const [sub] = [...g.subgraphs.keys()].filter(isHtmlValue);
+    expect(htmlValueContent(sub!)).toBe('s');
+    expect(htmlValueContent(g.subgraphs.get(sub!)!.name)).toBe('s');
+  });
+});
+
 // ── attrstmt requires a bracket list ─────────────────────────────────────────
 // lib/cgraph/grammar.y: attrstmt : attrtype optmacroname attrlist
 //                       attrlist : optattr '[' optattrdefs ']'

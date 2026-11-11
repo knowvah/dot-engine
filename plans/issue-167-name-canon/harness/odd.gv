@@ -1,0 +1,11 @@
+digraph {
+  node [label=x];
+  "node"; "EDGE"; "Graph"; "strict"; "subgraph";
+  "é"; "日本語 x"; "a\"b"; "a\\"; "a\nb"; "a\\\"c"; "-."; "-"; "."; ".."; "1."; "-1-2"; "1.2.3"; "_"; "a-b"; "a.b";
+  <html name>; <<b>x</b>>;
+  "\\N";
+  "node" -> "EDGE";
+  <html name> -> "é";
+  subgraph "node" { "z" }
+  subgraph <hs> { "y" }
+}

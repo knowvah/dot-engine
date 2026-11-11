@@ -10,6 +10,7 @@ import { Graph, type GraphKind } from '../model/graph.js';
 import { Node } from '../model/node.js';
 import { Edge } from '../model/edge.js';
 import { assignSubgSeq } from '../model/cgraph-ops.js';
+import { htmlValueContent, isHtmlValue } from '../common/html-string.js';
 import type {
   AttrPair,
   NodeId,
@@ -475,7 +476,13 @@ export function buildFromAst(ast: ParsedGraph): Graph {
   else kind = 'undirected';
   // ast.id is null for a nameless root (`digraph {`) and '' for an explicit
   // empty name (`digraph "" {`); only the former is anonymous in cgraph (→ `%1`).
-  const graph = new Graph(ast.id ?? '', kind, ast.id == null);
+  // An html-like root name (`digraph <h g> {`) is plain text: the lexer interns
+  // it with agstrdup_html before the graph exists, so agopen's idmap finds no
+  // html ref in the new graph's dictionary and copies it as text. Node and
+  // subgraph names are interned in the graph and keep the flag.
+  // @see lib/cgraph/scan.l:233, lib/cgraph/id.c:52, lib/cgraph/refstr.c:agstrdup
+  const id = ast.id ?? '';
+  const graph = new Graph(isHtmlValue(id) ? htmlValueContent(id) : id, kind, ast.id == null);
   // An unnamed root graph is itself anonymous in cgraph (agopen with no name),
   // consuming anon id 1 before any statement — so the first anonymous subgraph is
   // %3, not %1 (a named root leaves the counter at 0 → first subgraph %1). A root

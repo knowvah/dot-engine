@@ -13,6 +13,8 @@ import { colorxlate } from '../../common/color.js';
 import { getGradientPoints } from '../svg-gradient.js';
 import { EmitState, toFixed2HalfEven } from '../../gvc/job.js';
 import { printfSig, printfFixed } from '../../util/printf-round.js';
+import { isHtmlValue } from '../../common/html-string.js';
+import { agstrcanon } from '../map.js';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -296,31 +298,34 @@ export function xdotStrOp(prefix: string, s: string): string {
 }
 
 /**
- * Quote a DOT identifier unless it is a bare id or numeral, mirroring agwrite's
- * agcanonStr so the serialized graph reparses (the comparator reparses both
- * sides). Only `"` is escaped (→ `\"`); a `\` is left as-is — it is already the
- * start of a stored escape like `\n`/`\l` that agcanonStr keeps verbatim, so
- * doubling it (`\\n`) would change the name (`a\n(b\n"c")` must stay `a\n…`, not
- * `a\\n…`). Over-quoting a value native leaves bare is harmless: both parse to
- * the same name. @see lib/cgraph/write.c:_agstrcanon (escapes '"', keeps '\')
+ * Canonicalize a node, edge-endpoint or graph/subgraph name for `-Tdot`/`-Txdot`
+ * as agwrite does: `write_nodename` and `write_hdr` both print the name through
+ * `write_canonstr`, i.e. `agstrcanon` with the html check on. So a name is bare
+ * when it is an id or numeral, quoted when it is a keyword or holds any other
+ * byte, wrapped at `Max_outputline`, and angle-bracketed when it is html-like.
+ * A `\` is copied verbatim: it is already the start of a stored escape like
+ * `\n`/`\l`, so doubling it would change the name.
+ * @see lib/cgraph/write.c:write_nodename
+ * @see lib/cgraph/write.c:write_hdr
+ * @see lib/cgraph/write.c:write_canonstr
  *
- * ONE DELIBERATE DIVERGENCE from _agstrcanon: an ODD trailing backslash run is
- * padded to even. C copies it verbatim and appends the closing quote, so a name
- * ending in a single `\` serializes as `"a\"` — the backslash escapes the quote
- * and the output does not reparse. The DOT lexer cannot produce such a name
- * (source `"a\"` never terminates), so this is unreachable from any file and no
- * corpus id changes; it is reachable only through the programmatic API, where a
- * caller supplies the string directly. Padding costs a name that round-trips to
- * `a\\` instead of `a\`, which beats emitting a document that cannot be parsed.
+ * ONE DELIBERATE DIVERGENCE from _agstrcanon: an ODD trailing backslash run on
+ * a non-html name is padded to even. C copies it verbatim and appends the
+ * closing quote, so a name ending in a single `\` serializes as `"a\"` — the
+ * backslash escapes the quote and the output does not reparse. The DOT lexer
+ * cannot produce such a name (source `"a\"` never terminates), so this is
+ * unreachable from any file and no corpus id changes; it is reachable only
+ * through the programmatic API, where a caller supplies the string directly.
+ * Padding costs a name that round-trips to `a\\` instead of `a\`, which beats
+ * emitting a document that cannot be parsed. An html name is never padded: C
+ * prints `<a\>` and that reparses.
  * @see CodeQL "Incomplete string escaping or encoding" — the alert's own remedy
  *      (escape every `\`) is wrong here and breaks `\n`/`\l` parity.
  */
 export function xdotId(s: string): string {
-  if (/^[A-Za-z_][A-Za-z_0-9]*$/.test(s)) return s;
-  if (/^-?(\.[0-9]+|[0-9]+(\.[0-9]*)?)$/.test(s)) return s;
-  const body = s.replace(/"/g, '\\"');
-  const trailingBackslashes = /\\*$/.exec(body)![0].length;
-  return '"' + body + (trailingBackslashes % 2 === 1 ? '\\' : '') + '"';
+  if (isHtmlValue(s)) return agstrcanon(s);
+  const oddTrailingRun = /\\*$/.exec(s)![0].length % 2 === 1;
+  return agstrcanon(oddTrailingRun ? `${s}\\` : s);
 }
 
 /**
