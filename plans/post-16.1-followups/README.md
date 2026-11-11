@@ -720,7 +720,7 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
       -3.3e-11: fdp force drift (A1 class), in `src/layout/fdp` (part 11 T7, T7b).
   157. **[DONE — issue #143: the clause names the ±0.5 tolerance as the difference, and the scope note's "no per-id triage yet" (`:91`) now reads "per-id attribution"; 23 locales re-translated and re-hashed, and given the pass-% clause on nondeterministic inputs that part 11 T11 added to the English only. Left open: #200 (fi's word for per-id, an sv typo)]** `docs/known-divergences.md`'s A1 intro says neato/fdp/sfdp are "not yet triaged per-id", which
       the paragraph after it contradicts; no figure is wrong (part 11 T11).
-  158. On osage `1221`, `1332` and `2721`, native's json `_draw_` for a cluster with an infinite `bb`
+  158. **[DONE — issue #144: the port's xdot `parseReal` took only decimal digits, so the frame `p 4 inf inf inf nan ...` failed to parse and json dropped it; it now scans what C's `strtod` accepts (`src/xdot/strtod.ts`), json prints a non-finite number as `%.03f` does (`inf`, `-inf`, `nan`), and `compare-json` reads those tokens and compares non-finite values exactly. The three osage json rows are conformant and their `[parse]/oracle` acceptances retired. Left open: #201 (`compare-xdot.ts` and `compare.ts` let a NaN delta pass), #202 (`parseString` skips only whitespace before the `-`)]** On osage `1221`, `1332` and `2721`, native's json `_draw_` for a cluster with an infinite `bb`
       holds a `p` op with `inf`/`nan` points; the port's json omits that op (the `bb` text equals
       native). Pre-existing at the T0 bundle (part 11 T12 bytediff).
   159. Node, edge-endpoint and graph names print through `xdotId` (`src/render/dot/xdot-ops.ts:318`,

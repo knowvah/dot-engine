@@ -39,7 +39,7 @@ won't-fix deltas (0 for engines without an acceptance list).
 | [dot (dot)](./PARITY-dot-dot.md) | 929 | 926 | 0 | 0 | 0 | 3 | 0 | 100.0% |
 | [circo (json)](./PARITY-circo-json.md) | 928 | 915 | 1 | 4 | 0 | 8 | 0 | 99.5% |
 | [twopi (json)](./PARITY-twopi-json.md) | 928 | 910 | 2 | 14 | 0 | 2 | 0 | 98.3% |
-| [osage (json)](./PARITY-osage-json.md) | 929 | 919 | 0 | 10 | 0 | 0 | 0 | 98.9% |
+| [osage (json)](./PARITY-osage-json.md) | 929 | 922 | 0 | 7 | 0 | 0 | 0 | 99.2% |
 | [patchwork (json)](./PARITY-patchwork-json.md) | 929 | 927 | 0 | 2 | 0 | 0 | 0 | 99.8% |
 | [circo (imagemap)](./PARITY-circo-map.md) | 928 | 920 | 0 | 1 | 0 | 7 | 0 | 99.9% |
 | [twopi (imagemap)](./PARITY-twopi-map.md) | 928 | 925 | 0 | 1 | 1 | 1 | 0 | 99.8% |

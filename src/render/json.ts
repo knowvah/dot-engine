@@ -28,6 +28,8 @@
  * conformance bar is the semantic `compare-json` comparator (±0.01, colors /
  * fonts canonicalized). `stoj`/`ind` are retained as the C-faithful string
  * helpers referenced by the unit tests.
+ * A non-finite draw coordinate prints as C's `%.03f` token (`inf`, `-inf`,
+ * `nan`), so such a document is not valid JSON, exactly as native's is not.
  *
  * @see plugin/core/gvrender_core_json.c
  */
@@ -50,6 +52,7 @@ import { parse } from '../parser/index.js';
 import { render as deviceRender } from '../gvc/device.js';
 import { createDefaultContext } from '../gvc/default-context.js';
 import { parseXDot } from '../xdot/index.js';
+import { stringifyJsonTree } from './json-nonfinite.js';
 import { isHtmlValue, htmlValueContent } from '../common/html-string.js';
 
 // ---------------------------------------------------------------------------
@@ -645,7 +648,7 @@ function latin1Reencode(s: string): string {
 export function buildJson(g: Graph, doXDot: boolean, preDraws?: DrawLookup): string {
   const draws = doXDot ? (preDraws ?? collectDrawLookup(g)) : undefined;
   const ctx = assignIds(g, doXDot, draws);
-  return JSON.stringify(buildGraphObject(g, true, ctx), null, 2) + '\n';
+  return stringifyJsonTree(buildGraphObject(g, true, ctx)) + '\n';
 }
 
 /** Everything the JSON writers leave to the graph walk: they write once, at the end. */

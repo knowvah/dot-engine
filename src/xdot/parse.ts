@@ -12,6 +12,7 @@ import type {
   XdotRadialGrad, XdotColorStop, OpFunctions,
 } from "./types.js";
 import { XDOT_PARSE_ERROR } from "./types.js";
+import { isSpace, scanStrtod } from "./strtod.js";
 
 /** ULONG_MAX on an LP64 target: strtoul saturation value. */
 const ULONG_MAX = 0xffff_ffff_ffff_ffffn;
@@ -21,8 +22,9 @@ type OpResult = { op: XdotOp; pos: number } | "error";
 type OpMaybeResult = OpResult | null;
 
 class XdotParser {
+  /** @see lib/util/gv_ctype.h:gv_isspace */
   static isWs(c: string): boolean {
-    return c === " " || c === "\t" || c === "\n" || c === "\r";
+    return isSpace(c);
   }
 
   static skipWs(s: string, pos: number): number {
@@ -35,25 +37,13 @@ class XdotParser {
     return i;
   }
 
-  static consumeExponent(s: string, i: number): number {
-    if (i < s.length && (s[i] === "e" || s[i] === "E")) {
-      i++;
-      if (i < s.length && (s[i] === "+" || s[i] === "-")) i++;
-      i = XdotParser.consumeDigits(s, i);
-    }
-    return i;
-  }
-
+  /**
+   * C reads every xdot double with strtod, so a number may be a decimal, a
+   * hex float, inf/infinity or nan/nan(...); null is C's `p == s`.
+   * @see lib/xdot/xdot.c:parseReal
+   */
   static parseReal(s: string, pos: number): PR<number> {
-    let i = XdotParser.skipWs(s, pos);
-    const start = i;
-    if (i < s.length && (s[i] === "-" || s[i] === "+")) i++;
-    const digStart = i;
-    i = XdotParser.consumeDigits(s, i);
-    if (i < s.length && s[i] === ".") { i++; i = XdotParser.consumeDigits(s, i); }
-    i = XdotParser.consumeExponent(s, i);
-    if (i === start || i === digStart) return null;
-    return { val: parseFloat(s.slice(start, i)), pos: i };
+    return scanStrtod(s, pos);
   }
 
   static parseInt_(s: string, pos: number): PR<number> {
