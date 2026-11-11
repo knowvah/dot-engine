@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1354,7 +1354,7 @@ Elk punt zegt wat native doet en wat de port doet.
 
 - **Lange strings in `xdot`- en `dot`-uitvoer (gesloten).** Native breekt een waarde tussen aanhalingstekens af met een afsluitende backslash na 128 kolommen, of na de `linelength` van de hoofdgraaf als die 0 of minstens 60 is (`lib/cgraph/write.c:160-195,670-677`). De port breekt `_draw_`-familiestrings nu op dezelfde manier af, byte-gelijk aan native.
 - **fdp `json` en `json0` met randen naar clusters (gesloten).** Native maakt de clusterrand-proxy's ongedaan voordat json wordt geschreven (`lib/common/output.c:403`); de port drukte de `__0:`-proxy's af en maakt ze nu eerst ongedaan. Native fdp eindigt met 139 op `2717` in elk formaat, dus er is geen referentie.
-- **2-D `mode=sgd` (geaccepteerd, A1).** Op macOS wijkt de layout van native af in het laatste bit van libm `hypot` (`lib/neatogen/sgd.c:223`) en `exp` (`sgd.c:216`), wat SGD versterkt tot maximaal 1,59 punt op de geteste graaf. Met macOS' `hypot` en `exp` afgespeeld is het spoor van de port gelijk aan dat van native, dus er is geen code gewijzigd (PR 119).
+- **2-D `mode=sgd` (geaccepteerd, A1).** De port modelleert macOS' libm `hypot` op `lib/neatogen/sgd.c:223` met `src/common/libm-hypot.ts`. De layout wijkt nog steeds van native af in het laatste bit van `exp` (`sgd.c:216`), met maximaal 0,01 punt op de geteste graaf. Een macOS-model van `exp` is niet gepland (#133, PR 119).
 - **Een subgraaf gerenderd vóór zijn wortel, bij fdp en osage (gesloten).** Native drukt opgeslagen attribuutwaarden af (een latere render behoudt `_draw_`, `_ldraw_` en `xdotversion` van een eerdere), drukt `inf` en `nan` af zoals de printf van C en test de splinebox van elke rand tegen de paginaclip (`edge_in_box`, `lib/common/emit.c:2692`). De port doet nu alle drie en evenaart native, behalve één bounding-boxwaarde van een cluster bij fdp's eigen drift (1.6e-11 tegen -3.3e-11). Native fdp varieert zelf met heapadressen (`lib/fdpgen/layout.c:466,501,637`), ook bij de eerste render van `graphs-fdp`, dus de vergelijking gebruikt native zonder die vergelijkingen. Als neveneffect krijgt `1581` als svg twee lege `<g id="edgeN">`-groepen voor gelabelde zelflussen, zoals native.
 
 ---

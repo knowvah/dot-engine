@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1452,7 +1452,7 @@ Ogni voce indica cosa fa il nativo e cosa fa il port.
 
 - **Stringhe lunghe nell'output `xdot` e `dot` (chiuso).** Il nativo spezza un valore tra virgolette con una barra rovesciata finale dopo 128 colonne, o dopo il `linelength` del grafo radice quando è 0 o almeno 60 (`lib/cgraph/write.c:160-195,670-677`). Il porting ora spezza le stringhe della famiglia `_draw_` allo stesso modo, identiche byte per byte al nativo.
 - **fdp `json` e `json0` con archi verso cluster (chiuso).** Il nativo annulla i proxy degli archi di cluster prima di scrivere il json (`lib/common/output.c:403`); il porting stampava i proxy `__0:` e ora li annulla prima. Il fdp nativo termina con 139 su `2717` in ogni formato, quindi non ha riferimento.
-- **`mode=sgd` in 2-D (accettato, A1).** Su macOS il layout differisce dal nativo nell'ultimo bit di `hypot` (`lib/neatogen/sgd.c:223`) ed `exp` (`sgd.c:216`) della libm, che SGD amplifica fino a 1,59 punti sul grafo provato. Con `hypot` ed `exp` di macOS riprodotte, la traccia del porting è uguale a quella nativa, quindi il codice non è cambiato (PR 119).
+- **`mode=sgd` in 2-D (accettato, A1).** Il porting modella l'`hypot` della libm di macOS in `lib/neatogen/sgd.c:223` con `src/common/libm-hypot.ts`. Il layout differisce ancora dal nativo nell'ultimo bit di `exp` (`sgd.c:216`), al massimo di 0,01 punti sul grafo provato. Un modello di `exp` di macOS non è previsto (#133, PR 119).
 - **Un sottografo reso prima della sua radice, su fdp e osage (chiuso).** Il nativo stampa i valori di attributo memorizzati (un rendering successivo conserva `_draw_`, `_ldraw_` e `xdotversion` di uno precedente), stampa `inf` e `nan` come il printf di C e verifica il riquadro di spline di ogni arco rispetto al ritaglio di pagina (`edge_in_box`, `lib/common/emit.c:2692`). Il porting ora fa tutte e tre le cose e uguaglia il nativo, tranne un valore del riquadro di delimitazione di un cluster alla deriva propria di fdp (1.6e-11 contro -3.3e-11). Il fdp nativo varia di suo con gli indirizzi dell'heap (`lib/fdpgen/layout.c:466,501,637`), compreso il primo rendering di `graphs-fdp`, quindi il confronto usa il nativo senza quei confronti. Come effetto collaterale, `1581` in svg ottiene due gruppi `<g id="edgeN">` vuoti per i self-loop con etichetta, come nel nativo.
 
 ---

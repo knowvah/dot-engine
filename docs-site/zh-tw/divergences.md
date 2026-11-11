@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1111,7 +1111,7 @@ neato 和 sfdp 在每種模式下都以 `dim` 個維度佈局，上限為 C 的 
 
 - **`xdot` 與 `dot` 輸出中的長字串（已關閉）。** 原生在 128 欄後，或在根圖的 `linelength` 為 0 或不小於 60 時在該欄後，用行尾反斜線換行帶引號的值（`lib/cgraph/write.c:160-195,670-677`）。移植版現在以同樣方式換行 `_draw_` 系列字串，與原生逐位元組一致。
 - **帶有指向 cluster 的邊的 fdp `json` 和 `json0`（已關閉）。** 原生在寫出 json 前撤銷 cluster 邊代理（`lib/common/output.c:403`）；移植版曾輸出 `__0:` 代理，現在先將其撤銷。原生 fdp 在 `2717` 上於所有格式下都以 139 結束，因此沒有參照。
-- **二維 `mode=sgd`（已接受，A1）。** 在 macOS 上，佈局與原生的差異出自 libm `hypot`（`lib/neatogen/sgd.c:223`）和 `exp`（`sgd.c:216`）的最後一位，SGD 將其在所測圖上放大至最多 1.59 點。重放 macOS 的 `hypot` 和 `exp` 後，移植版的軌跡與原生一致，因此未更動程式碼（PR 119）。
+- **二維 `mode=sgd`（已接受，A1）。** 移植版以 `src/common/libm-hypot.ts` 為 `lib/neatogen/sgd.c:223` 處的 macOS libm `hypot` 建模。佈局與原生的差異仍出自 `exp`（`sgd.c:216`）的最後一位，在所測圖上至多 0.01 點。不計畫為 macOS 的 `exp` 建模（#133，PR 119）。
 - **先於根圖渲染的子圖，fdp 和 osage（已關閉）。** 原生輸出已儲存的屬性值（後一次渲染會保留先前渲染的 `_draw_`、`_ldraw_` 和 `xdotversion`），按 C 的 printf 輸出 `inf` 和 `nan`，並將每條邊的樣條框與頁面裁剪區域比對（`edge_in_box`，`lib/common/emit.c:2692`）。移植版現在三者都做到了，並與原生一致，僅有一個 cluster 邊界框數值處於 fdp 自身的漂移中（1.6e-11 對 -3.3e-11）。原生 fdp 自身也會隨堆積位址變化（`lib/fdpgen/layout.c:466,501,637`），包括 `graphs-fdp` 的首次渲染，因此比較使用去掉這些比較的原生版本。附帶效果是，`1581` 的 svg 為帶標籤的自環增加了兩個空的 `<g id="edgeN">` 群組，與原生相同。
 
 ---

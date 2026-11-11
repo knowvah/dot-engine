@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1344,7 +1344,7 @@ Hvert punkt oppgir hva nativt gjør og hva porten gjør.
 
 - **Lange strenger i `xdot`- og `dot`-utdata (lukket).** Nativ bryter en sitert verdi med en avsluttende omvendt skråstrek etter 128 kolonner, eller etter rotgrafens `linelength` når den er 0 eller minst 60 (`lib/cgraph/write.c:160-195,670-677`). Porten bryter nå strenger i `_draw_`-familien på samme måte, byte-lik nativ.
 - **fdp `json` og `json0` med kanter til klynger (lukket).** Nativ angrer klyngekant-proxyene før json skrives (`lib/common/output.c:403`); porten skrev ut `__0:`-proxyene og angrer dem nå først. Nativ fdp avslutter med 139 på `2717` i alle formater, så den har ingen referanse.
-- **2-D `mode=sgd` (godtatt, A1).** På macOS avviker layouten fra nativ i siste bit av libm `hypot` (`lib/neatogen/sgd.c:223`) og `exp` (`sgd.c:216`), som SGD forsterker til opptil 1,59 punkter på den testede grafen. Med macOS' `hypot` og `exp` avspilt er portens spor lik nativs, så ingen kode ble endret (PR 119).
+- **2-D `mode=sgd` (godtatt, A1).** Porten modellerer macOS' libm `hypot` ved `lib/neatogen/sgd.c:223` med `src/common/libm-hypot.ts`. Layouten avviker fortsatt fra nativ i siste bit av `exp` (`sgd.c:216`), med høyst 0,01 punkter på den testede grafen. En macOS-modell av `exp` er ikke planlagt (#133, PR 119).
 - **En undergraf rendret før roten, på fdp og osage (lukket).** Nativ skriver ut lagrede attributtverdier (en senere rendering beholder en tidligere renderings `_draw_`, `_ldraw_` og `xdotversion`), skriver `inf` og `nan` som Cs printf og tester hver kants splineboks mot sideklippet (`edge_in_box`, `lib/common/emit.c:2692`). Porten gjør nå alle tre og er lik nativ, bortsett fra én bounding-boks-verdi for en klynge ved fdps egen drift (1.6e-11 mot -3.3e-11). Nativ fdp varierer selv med heap-adresser (`lib/fdpgen/layout.c:466,501,637`), også ved første rendering av `graphs-fdp`, så sammenligningen bruker nativ uten disse sammenligningene. Som bieffekt får `1581` som svg to tomme `<g id="edgeN">`-grupper for selvløkker med etikett, slik nativ har dem.
 
 ---

@@ -15,6 +15,7 @@ import { setEdgeLen } from './edge-len.js';
 import { rkNewState, rkSeed, rkInterval } from '../../util/mt19937.js';
 import type { RkState } from '../../util/mt19937.js';
 import { drand48 } from '../../common/random.js';
+import { libmHypot } from '../../common/libm-hypot.js';
 import { lateDouble } from '../../common/nodeinit.js';
 import { checkStart, parseStart, INIT_RANDOM, INIT_REGULAR } from './start.js';
 import { jitter3d, ndimOf } from './init-dim.js';
@@ -343,7 +344,7 @@ export function sgdIteration(
     const mu = Math.min(eta * t.w, 1);
     const dx = pos[2 * t.i] - pos[2 * t.j];
     const dy = pos[2 * t.i + 1] - pos[2 * t.j + 1];
-    const mag = Math.hypot(dx, dy);
+    const mag = libmHypot(dx, dy);
     if (mag === 0) continue;
     const r = (mu * (mag - t.d)) / (2 * mag);
     const rx = r * dx;

@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1507,7 +1507,7 @@ Chaque élément dit ce que fait le natif et ce que fait le portage.
 
 - **Longues chaînes dans la sortie `xdot` et `dot` (clos).** Le natif coupe une valeur entre guillemets par une barre oblique inverse finale après 128 colonnes, ou après le `linelength` du graphe racine lorsqu’il vaut 0 ou au moins 60 (`lib/cgraph/write.c:160-195,670-677`). Le portage coupe désormais de même les chaînes de la famille `_draw_`, à l’identique octet pour octet du natif.
 - **fdp `json` et `json0` avec des arêtes vers des clusters (clos).** Le natif annule les proxys d’arêtes de cluster avant d’écrire le json (`lib/common/output.c:403`) ; le portage imprimait les proxys `__0:` et les annule maintenant d’abord. Le fdp natif se termine par 139 sur `2717` dans tous les formats, il n’a donc pas de référence.
-- **`mode=sgd` en 2-D (accepté, A1).** Sous macOS, le layout diffère du natif au dernier bit de `hypot` (`lib/neatogen/sgd.c:223`) et `exp` (`sgd.c:216`) de la libm, que SGD amplifie jusqu’à 1,59 point sur le graphe testé. Avec `hypot` et `exp` de macOS rejoués, la trace du portage est égale à celle du natif, donc aucun code n’a changé (PR 119).
+- **`mode=sgd` en 2-D (accepté, A1).** Le portage modélise le `hypot` de la libm de macOS à `lib/neatogen/sgd.c:223` avec `src/common/libm-hypot.ts`. Le layout diffère encore du natif au dernier bit de `exp` (`sgd.c:216`), d’au plus 0,01 point sur le graphe testé. Aucun modèle de `exp` de macOS n’est prévu (#133, PR 119).
 - **Un sous-graphe rendu avant sa racine, sur fdp et osage (clos).** Le natif imprime les valeurs d’attributs stockées (un rendu ultérieur conserve les `_draw_`, `_ldraw_` et `xdotversion` d’un rendu antérieur), imprime `inf` et `nan` comme le printf de C, et teste la boîte de spline de chaque arête contre le découpage de page (`edge_in_box`, `lib/common/emit.c:2692`). Le portage fait désormais les trois et égale le natif, sauf une valeur de boîte englobante de cluster à la dérive propre de fdp (1.6e-11 contre -3.3e-11). Le fdp natif varie lui-même avec les adresses du tas (`lib/fdpgen/layout.c:466,501,637`), y compris au premier rendu de `graphs-fdp` ; la comparaison utilise donc le natif sans ces comparaisons. En effet de bord, `1581` en svg gagne deux groupes `<g id="edgeN">` vides pour les boucles étiquetées, comme le natif.
 
 ---

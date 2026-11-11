@@ -10,6 +10,7 @@ import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
 import { Edge } from '../../model/edge.js';
 import {
+  sgdIteration,
   sgdLayout,
   MODEL_SHORTPATH,
   MODEL_CIRCUIT,
@@ -193,5 +194,29 @@ describe('pinned nodes are not moved', () => {
 
     expect(first.info.pos![0]).toBeCloseTo(100, 10);
     expect(first.info.pos![1]).toBeCloseTo(200, 10);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Test 6: the magnitude is libm hypot, not Math.hypot (issue #189)
+// ---------------------------------------------------------------------------
+
+describe('sgdIteration takes the magnitude from the libm-hypot model', () => {
+  /**
+   * Step 0, term 2 of native's trace on sgd58 (macOS arm64 libm): dx and dy
+   * below give mag = 0x1.ed53ed6ed918fp+0, one ulp below Math.hypot's
+   * 0x1.ed53ed6ed919p+0. `d: 3` is chosen, not traced: it makes the two
+   * magnitudes land on different coordinates.
+   * @see lib/neatogen/sgd.c:223
+   */
+  it('moves the unfixed node by the step native computes', () => {
+    const pos = Float64Array.of(0.9459929482215521, -1.6788879764409057, 0, 0);
+
+    sgdIteration(pos, [{ i: 0, j: 1, d: 3, w: 1 }], [true, false], 1);
+
+    expect(pos[0]).toBe(1.2093451279240262);
+    expect(pos[1]).toBe(-2.146268635993602);
+    expect(pos[2]).toBe(0);
+    expect(pos[3]).toBe(0);
   });
 });

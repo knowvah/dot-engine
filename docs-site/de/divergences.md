@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1426,7 +1426,7 @@ Jeder Punkt nennt, was nativ geschieht und was die Portierung tut.
 
 - **Lange Zeichenketten in `xdot`- und `dot`-Ausgabe (geschlossen).** Nativ bricht einen Wert in Anführungszeichen mit einem abschließenden Backslash nach 128 Spalten um, oder nach der `linelength` des Wurzelgraphen, wenn diese 0 oder mindestens 60 ist (`lib/cgraph/write.c:160-195,670-677`). Die Portierung bricht Zeichenketten der `_draw_`-Familie jetzt genauso um, byte-gleich zu nativ.
 - **fdp `json` und `json0` mit Kanten zu Clustern (geschlossen).** Nativ macht die Cluster-Kanten-Proxies vor dem Schreiben von json rückgängig (`lib/common/output.c:403`); die Portierung gab die `__0:`-Proxies aus und macht sie jetzt zuerst rückgängig. Natives fdp endet bei `2717` in jedem Format mit 139, also gibt es keine Referenz.
-- **2-D `mode=sgd` (akzeptiert, A1).** Auf macOS weicht das Layout vom nativen im letzten Bit von libm-`hypot` (`lib/neatogen/sgd.c:223`) und `exp` (`sgd.c:216`) ab; SGD verstärkt das beim getesteten Graphen auf bis zu 1,59 Punkte. Mit nachgespielten macOS-`hypot` und `exp` ist die Spur der Portierung gleich der nativen, daher wurde kein Code geändert (PR 119).
+- **2-D `mode=sgd` (akzeptiert, A1).** Die Portierung modelliert macOS-libm-`hypot` an `lib/neatogen/sgd.c:223` mit `src/common/libm-hypot.ts`. Das Layout weicht weiterhin vom nativen im letzten Bit von `exp` (`sgd.c:216`) ab, beim getesteten Graphen um höchstens 0,01 Punkte. Ein macOS-Modell für `exp` ist nicht geplant (#133, PR 119).
 - **Ein vor seiner Wurzel gerenderter Untergraph, bei fdp und osage (geschlossen).** Nativ gibt gespeicherte Attributwerte aus (ein späteres Rendern behält `_draw_`, `_ldraw_` und `xdotversion` eines früheren), gibt `inf` und `nan` wie das printf von C aus und prüft die Spline-Box jeder Kante gegen den Seitenausschnitt (`edge_in_box`, `lib/common/emit.c:2692`). Die Portierung tut jetzt alle drei und gleicht nativ, bis auf einen Bounding-Box-Wert eines Clusters bei fdps eigener Drift (1.6e-11 gegen -3.3e-11). Natives fdp variiert selbst mit Heap-Adressen (`lib/fdpgen/layout.c:466,501,637`), auch beim ersten Rendern von `graphs-fdp`; der Vergleich nutzt daher natives fdp ohne diese Vergleiche. Als Nebeneffekt erhält `1581` als svg zwei leere `<g id="edgeN">`-Gruppen für beschriftete Selbstschleifen, wie nativ.
 
 ---

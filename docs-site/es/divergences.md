@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1365,7 +1365,7 @@ Cada elemento indica qué hace el nativo y qué hace el port.
 
 - **Cadenas largas en la salida `xdot` y `dot` (cerrado).** El nativo parte un valor entre comillas con una barra invertida final tras 128 columnas, o tras el `linelength` del grafo raíz cuando es 0 o al menos 60 (`lib/cgraph/write.c:160-195,670-677`). El port ahora parte las cadenas de la familia `_draw_` igual, idénticas byte a byte al nativo.
 - **fdp `json` y `json0` con aristas hacia clusters (cerrado).** El nativo deshace los proxies de aristas de cluster antes de escribir json (`lib/common/output.c:403`); el port imprimía los proxies `__0:` y ahora los deshace primero. El fdp nativo termina con 139 en `2717` en todos los formatos, así que no hay referencia.
-- **`mode=sgd` en 2-D (aceptado, A1).** En macOS el diseño difiere del nativo en el último bit de `hypot` (`lib/neatogen/sgd.c:223`) y `exp` (`sgd.c:216`) de libm, que SGD amplifica hasta 1,59 puntos en el grafo probado. Con `hypot` y `exp` de macOS reproducidos, la traza del port es igual a la nativa, así que no cambió código (PR 119).
+- **`mode=sgd` en 2-D (aceptado, A1).** El port modela el `hypot` de libm de macOS en `lib/neatogen/sgd.c:223` con `src/common/libm-hypot.ts`. El diseño sigue difiriendo del nativo en el último bit de `exp` (`sgd.c:216`), como máximo en 0,01 puntos en el grafo probado. No está previsto un modelo de `exp` de macOS (#133, PR 119).
 - **Un subgrafo renderizado antes que su raíz, en fdp y osage (cerrado).** El nativo imprime los valores de atributo almacenados (un renderizado posterior conserva `_draw_`, `_ldraw_` y `xdotversion` de uno anterior), imprime `inf` y `nan` como el printf de C y prueba la caja de spline de cada arista contra el recorte de página (`edge_in_box`, `lib/common/emit.c:2692`). El port ahora hace las tres cosas e iguala al nativo, salvo un valor del bounding box de un cluster en la deriva propia de fdp (1.6e-11 frente a -3.3e-11). El fdp nativo varía por sí mismo con las direcciones de heap (`lib/fdpgen/layout.c:466,501,637`), incluido el primer renderizado de `graphs-fdp`, por lo que la comparación usa el nativo sin esas comparaciones. Como efecto secundario, `1581` en svg gana dos grupos `<g id="edgeN">` vacíos para bucles propios con etiqueta, como los tiene el nativo.
 
 ---

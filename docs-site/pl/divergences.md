@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1328,7 +1328,7 @@ Każda pozycja mówi, co robi natyw, a co port.
 
 - **Długie łańcuchy w wyjściu `xdot` i `dot` (zamknięte).** Natywnie wartość w cudzysłowie jest łamana końcowym ukośnikiem wstecznym po 128 kolumnach albo po `linelength` grafu głównego, gdy wynosi 0 lub co najmniej 60 (`lib/cgraph/write.c:160-195,670-677`). Port łamie teraz łańcuchy rodziny `_draw_` tak samo, bajt w bajt jak natywnie.
 - **fdp `json` i `json0` z krawędziami do klastrów (zamknięte).** Natywnie proxy krawędzi klastrów są cofane przed zapisem json (`lib/common/output.c:403`); port drukował proxy `__0:`, a teraz najpierw je cofa. Natywny fdp kończy się kodem 139 na `2717` w każdym formacie, więc nie ma odniesienia.
-- **2-D `mode=sgd` (zaakceptowane, A1).** Na macOS układ różni się od natywnego na ostatnim bicie `hypot` (`lib/neatogen/sgd.c:223`) i `exp` (`sgd.c:216`) z libm, co SGD wzmacnia do 1,59 punktu na badanym grafie. Po odtworzeniu `hypot` i `exp` z macOS ślad portu jest równy natywnemu, więc kodu nie zmieniono (PR 119).
+- **2-D `mode=sgd` (zaakceptowane, A1).** Port modeluje `hypot` z libm macOS w `lib/neatogen/sgd.c:223` za pomocą `src/common/libm-hypot.ts`. Układ nadal różni się od natywnego na ostatnim bicie `exp` (`sgd.c:216`), najwyżej o 0,01 punktu na badanym grafie. Model `exp` z macOS nie jest planowany (#133, PR 119).
 - **Podgraf renderowany przed swoim korzeniem, w fdp i osage (zamknięte).** Natywnie drukowane są zapisane wartości atrybutów (późniejsze renderowanie zachowuje `_draw_`, `_ldraw_` i `xdotversion` wcześniejszego), `inf` i `nan` drukowane są jak w printf z C, a pudełko splajnu każdej krawędzi jest testowane względem przycięcia strony (`edge_in_box`, `lib/common/emit.c:2692`). Port robi teraz wszystkie trzy rzeczy i równa się natywnemu, poza jedną wartością ramki otaczającej klastra przy własnym dryfie fdp (1.6e-11 wobec -3.3e-11). Natywny fdp sam zmienia się wraz z adresami sterty (`lib/fdpgen/layout.c:466,501,637`), także przy pierwszym renderowaniu `graphs-fdp`, więc porównanie używa natywnego bez tych porównań. Skutkiem ubocznym jest to, że `1581` jako svg zyskuje dwie puste grupy `<g id="edgeN">` dla etykietowanych pętli własnych, jak w natywnym.
 
 ---

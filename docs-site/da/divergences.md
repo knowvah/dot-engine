@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1346,7 +1346,7 @@ Hvert punkt angiver, hvad nativt gør, og hvad porten gør.
 
 - **Lange strenge i `xdot`- og `dot`-output (lukket).** Nativt bryder en citeret værdi med en afsluttende omvendt skråstreg efter 128 kolonner, eller efter rodgrafens `linelength`, når den er 0 eller mindst 60 (`lib/cgraph/write.c:160-195,670-677`). Porten ombryder nu `_draw_`-familiens strenge på samme måde, byte-ens med nativt.
 - **fdp `json` og `json0` med kanter til clusters (lukket).** Nativt fortryder klyngekant-proxyerne, før json skrives (`lib/common/output.c:403`); porten udskrev `__0:`-proxyerne og fortryder dem nu først. Nativ fdp afslutter med 139 på `2717` i alle formater, så den har ingen reference.
-- **2-D `mode=sgd` (accepteret, A1).** På macOS afviger layoutet fra nativt i sidste bit af libm `hypot` (`lib/neatogen/sgd.c:223`) og `exp` (`sgd.c:216`), som SGD forstærker til op til 1,59 punkter på den testede graf. Med macOS' `hypot` og `exp` afspillet er portens spor lig nativt, så koden er uændret (PR 119).
+- **2-D `mode=sgd` (accepteret, A1).** Porten modellerer macOS' libm `hypot` ved `lib/neatogen/sgd.c:223` med `src/common/libm-hypot.ts`. Layoutet afviger stadig fra nativt i sidste bit af `exp` (`sgd.c:216`), med højst 0,01 punkter på den testede graf. En macOS-model af `exp` er ikke planlagt (#133, PR 119).
 - **En undergraf renderet før sin rod, på fdp og osage (lukket).** Nativt udskriver gemte attributværdier (en senere rendering beholder en tidligere renderings `_draw_`, `_ldraw_` og `xdotversion`), udskriver `inf` og `nan` som Cs printf og tester hver kants spline-boks mod sideklippet (`edge_in_box`, `lib/common/emit.c:2692`). Porten gør nu alle tre og er lig nativt, bortset fra én bounding-box-værdi for en cluster ved fdp's egen drift (1.6e-11 mod -3.3e-11). Nativ fdp varierer selv med heapadresser (`lib/fdpgen/layout.c:466,501,637`), også den første rendering af `graphs-fdp`, så sammenligningen bruger nativt med disse sammenligninger fjernet. Som bivirkning får `1581` som svg to tomme `<g id="edgeN">`-grupper for selvløkker med label, som nativt har dem.
 
 ---

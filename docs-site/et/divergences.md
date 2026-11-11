@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1329,7 +1329,7 @@ Iga punkt ütleb, mida natiivne teeb ja mida port teeb.
 
 - **Pikad stringid `xdot` ja `dot` väljundis (suletud).** Natiivne murrab jutumärkides väärtuse lõpetava kaldkriipsuga pärast 128 veergu või juurgraafi `linelength` järel, kui see on 0 või vähemalt 60 (`lib/cgraph/write.c:160-195,670-677`). Port murrab nüüd `_draw_` perekonna stringid samamoodi, baidi täpsusega nagu natiivne.
 - **fdp `json` ja `json0` servadega klastritesse (suletud).** Natiivne võtab klastri servade vahendussõlmed enne json kirjutamist tagasi (`lib/common/output.c:403`); port trükkis `__0:` vahendussõlmed ja võtab need nüüd esmalt tagasi. Natiivne fdp lõpeb `2717` peal igas vormingus koodiga 139, seega pole sellel võrdlust.
-- **2-D `mode=sgd` (aktsepteeritud, A1).** macOS-il erineb paigutus natiivsest libm `hypot` (`lib/neatogen/sgd.c:223`) ja `exp` (`sgd.c:216`) viimases bitis, mida SGD võimendab katsetatud graafil kuni 1,59 punktini. macOS-i `hypot` ja `exp` taasesitamisel on pordi jälg natiivse omaga võrdne, seega koodi ei muudetud (PR 119).
+- **2-D `mode=sgd` (aktsepteeritud, A1).** Port modelleerib macOS-i libm `hypot`-i kohas `lib/neatogen/sgd.c:223` failiga `src/common/libm-hypot.ts`. Paigutus erineb natiivsest endiselt `exp` (`sgd.c:216`) viimases bitis, katsetatud graafil kuni 0,01 punkti võrra. macOS-i `exp` mudelit ei ole kavas (#133, PR 119).
 - **Alamgraaf renderdatud enne oma juurt, fdp ja osage puhul (suletud).** Natiivne trükib salvestatud atribuudiväärtused (hilisem renderdus säilitab varasema `_draw_`, `_ldraw_` ja `xdotversion`), trükib `inf` ja `nan` nagu C printf ning testib iga serva splaini kasti lehe lõike vastu (`edge_in_box`, `lib/common/emit.c:2692`). Port teeb nüüd kõiki kolme ja võrdub natiivsega, välja arvatud ühe klastri piirkasti väärtuse puhul fdp enda triivi korral (1.6e-11 vs -3.3e-11). Natiivne fdp ise varieerub kuhja aadressidega (`lib/fdpgen/layout.c:466,501,637`), sealhulgas `graphs-fdp` esimene renderdus, seega kasutab võrdlus natiivset ilma nende võrdlusteta. Kõrvalmõjuna saab `1581` svg-na kaks tühja `<g id="edgeN">` gruppi sildistatud enesesilmuste jaoks, nagu natiivsel.
 
 ---

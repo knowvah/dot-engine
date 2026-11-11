@@ -1459,11 +1459,10 @@ Each item states what native does and what the port does.
   cluster-edge proxies before writing json (`lib/common/output.c:403`); the port
   printed the `__0:` proxies and now undoes them first. Native fdp exits 139 on
   `2717` in every format, so it has no reference.
-- **2-D `mode=sgd` (accepted, A1).** On macOS the layout differs from native in
-  the last bit of libm `hypot` (`lib/neatogen/sgd.c:223`) and `exp`
-  (`sgd.c:216`), which SGD amplifies to as much as 1.59 points on the graph
-  tested. With macOS's `hypot` and `exp` replayed, the port's trace equals
-  native's, so no code changed (PR 119).
+- **2-D `mode=sgd` (accepted, A1).** The port models macOS libm `hypot` at
+  `lib/neatogen/sgd.c:223` with `src/common/libm-hypot.ts`. The layout still
+  differs from native in the last bit of `exp` (`sgd.c:216`), by at most 0.01
+  points on the graph tested. A macOS `exp` model is not planned (#133, PR 119).
 - **A subgraph rendered before its root, on fdp and osage (closed).** Native
   prints stored attribute values (a later render keeps an earlier one's
   `_draw_`, `_ldraw_` and `xdotversion`), prints `inf` and `nan` as C's printf

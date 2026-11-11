@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1353,7 +1353,7 @@ Minden pont megmondja, mit csinál a natív és mit a port.
 
 - **Hosszú karakterláncok az `xdot` és `dot` kimenetben (lezárva).** A natív idézőjeles értéket záró fordított perjellel tör 128 oszlop után, vagy a gyökérgráf `linelength` értéke után, ha az 0 vagy legalább 60 (`lib/cgraph/write.c:160-195,670-677`). A port most ugyanígy tördeli a `_draw_` család karakterláncait, bájtra azonosan a natívval.
 - **fdp `json` és `json0` klaszterekhez vezető élekkel (lezárva).** A natív a json írása előtt visszavonja a klaszterél-proxykat (`lib/common/output.c:403`); a port kiírta a `__0:` proxykat, most előbb visszavonja őket. A natív fdp a `2717`-en minden formátumban 139-cel lép ki, így nincs referenciája.
-- **2-D `mode=sgd` (elfogadva, A1).** macOS-en az elrendezés a libm `hypot` (`lib/neatogen/sgd.c:223`) és `exp` (`sgd.c:216`) utolsó bitjében tér el a natívtól, amit az SGD a tesztelt gráfon akár 1,59 pontra erősít. A macOS `hypot` és `exp` visszajátszásával a port nyoma megegyezik a natívéval, ezért a kód nem változott (PR 119).
+- **2-D `mode=sgd` (elfogadva, A1).** A port a macOS libm `hypot` függvényét a `lib/neatogen/sgd.c:223` helyen a `src/common/libm-hypot.ts` modellel modellezi. Az elrendezés továbbra is eltér a natívtól az `exp` (`sgd.c:216`) utolsó bitjében, a tesztelt gráfon legfeljebb 0,01 ponttal. A macOS `exp` modellje nincs tervben (#133, PR 119).
 - **A gyökere előtt renderelt részgráf, fdp és osage esetén (lezárva).** A natív a tárolt attribútumértékeket írja ki (egy későbbi renderelés megtartja egy korábbi `_draw_`, `_ldraw_` és `xdotversion` értékét), az `inf` és `nan` értéket a C printf módján írja ki, és minden él spline-dobozát az oldalvágáshoz teszteli (`edge_in_box`, `lib/common/emit.c:2692`). A port most mindhármat teszi, és egyezik a natívval, kivéve egy klaszter határolódoboz-értékét az fdp saját sodródásánál (1.6e-11 a -3.3e-11 ellen). A natív fdp maga is változik a heap-címekkel (`lib/fdpgen/layout.c:466,501,637`), a `graphs-fdp` első renderelését is beleértve, ezért az összehasonlítás ezen összehasonlítások nélküli natívot használja. Mellékhatásként az `1581` svg-ként két üres `<g id="edgeN">` csoportot kap a címkézett önhurkokhoz, ahogy a natív is.
 
 ---

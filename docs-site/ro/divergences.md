@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1346,7 +1346,7 @@ Fiecare element spune ce face nativul și ce face portul.
 
 - **Șiruri lungi în ieșirea `xdot` și `dot` (închis).** Nativul rupe o valoare între ghilimele cu o bară inversă finală după 128 de coloane, sau după `linelength` al grafului rădăcină când acesta este 0 sau cel puțin 60 (`lib/cgraph/write.c:160-195,670-677`). Portul rupe acum șirurile familiei `_draw_` la fel, identic octet cu octet cu nativul.
 - **fdp `json` și `json0` cu muchii către clustere (închis).** Nativul anulează proxy-urile muchiilor de cluster înainte de a scrie json (`lib/common/output.c:403`); portul tipărea proxy-urile `__0:` și acum le anulează mai întâi. Fdp nativ se termină cu 139 pe `2717` în orice format, deci nu are referință.
-- **`mode=sgd` în 2-D (acceptat, A1).** Pe macOS, layoutul diferă de nativ în ultimul bit al `hypot` (`lib/neatogen/sgd.c:223`) și `exp` (`sgd.c:216`) din libm, pe care SGD îl amplifică până la 1,59 puncte pe graful testat. Cu `hypot` și `exp` de pe macOS reluate, urma portului este egală cu cea nativă, deci codul nu s-a schimbat (PR 119).
+- **`mode=sgd` în 2-D (acceptat, A1).** Portul modelează `hypot` din libm de pe macOS la `lib/neatogen/sgd.c:223` cu `src/common/libm-hypot.ts`. Layoutul diferă în continuare de nativ în ultimul bit al `exp` (`sgd.c:216`), cu cel mult 0,01 puncte pe graful testat. Un model al `exp` de pe macOS nu este planificat (#133, PR 119).
 - **Un subgraf randat înaintea rădăcinii, la fdp și osage (închis).** Nativul tipărește valorile de atribut stocate (o randare ulterioară păstrează `_draw_`, `_ldraw_` și `xdotversion` ale uneia anterioare), tipărește `inf` și `nan` ca printf din C și testează caseta de spline a fiecărei muchii față de decuparea paginii (`edge_in_box`, `lib/common/emit.c:2692`). Portul face acum toate trei și egalează nativul, cu excepția unei valori a casetei de delimitare a unui cluster la deriva proprie a fdp (1.6e-11 față de -3.3e-11). Fdp nativ însuși variază cu adresele din heap (`lib/fdpgen/layout.c:466,501,637`), inclusiv la prima randare a `graphs-fdp`, deci comparația folosește nativul fără acele comparații. Ca efect secundar, `1581` ca svg primește două grupuri `<g id="edgeN">` goale pentru buclele proprii etichetate, ca nativul.
 
 ---

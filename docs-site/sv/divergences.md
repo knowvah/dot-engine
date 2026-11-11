@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1344,7 +1344,7 @@ Varje punkt anger vad nativt gör och vad porten gör.
 
 - **Långa strängar i `xdot`- och `dot`-utdata (stängt).** Nativt bryter ett citerat värde med ett avslutande omvänt snedstreck efter 128 kolumner, eller efter rotgrafens `linelength` när den är 0 eller minst 60 (`lib/cgraph/write.c:160-195,670-677`). Porten bryter nu strängar i `_draw_`-familjen på samma sätt, byte-lika med nativt.
 - **fdp `json` och `json0` med kanter till kluster (stängt).** Nativt ångrar klusterkant-proxyerna innan json skrivs (`lib/common/output.c:403`); porten skrev ut `__0:`-proxyerna och ångrar dem nu först. Nativt fdp avslutas med 139 på `2717` i alla format, så det saknar referens.
-- **2-D `mode=sgd` (godkänt, A1).** På macOS avviker layouten från nativt i sista biten av libm `hypot` (`lib/neatogen/sgd.c:223`) och `exp` (`sgd.c:216`), som SGD förstärker till upp till 1,59 punkter på den testade grafen. Med macOS `hypot` och `exp` återspelade är portens spår lika med nativt, så ingen kod ändrades (PR 119).
+- **2-D `mode=sgd` (godkänt, A1).** Porten modellerar macOS libm `hypot` vid `lib/neatogen/sgd.c:223` med `src/common/libm-hypot.ts`. Layouten avviker fortfarande från nativt i sista biten av `exp` (`sgd.c:216`), med högst 0,01 punkter på den testade grafen. En macOS-modell av `exp` är inte planerad (#133, PR 119).
 - **En undergraf renderad före sin rot, på fdp och osage (stängt).** Nativt skriver ut lagrade attributvärden (en senare rendering behåller en tidigare renderings `_draw_`, `_ldraw_` och `xdotversion`), skriver `inf` och `nan` som Cs printf och testar varje kants splinelåda mot sidklippet (`edge_in_box`, `lib/common/emit.c:2692`). Porten gör nu alla tre och är lika med nativt, utom ett bounding-box-värde för ett kluster vid fdp:s egen drift (1.6e-11 mot -3.3e-11). Nativt fdp varierar självt med heapadresser (`lib/fdpgen/layout.c:466,501,637`), även vid första renderingen av `graphs-fdp`, så jämförelsen använder nativt utan dessa jämförelser. Som bieffekt får `1581` som svg två tomma `<g id="edgeN">`-grupper för märkta självslingor, som nativt har dem.
 
 ---

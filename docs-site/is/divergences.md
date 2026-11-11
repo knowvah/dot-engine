@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1348,7 +1348,7 @@ Hver liður segir hvað innfædda gerir og hvað portið gerir.
 
 - **Langir strengir í `xdot`- og `dot`-úttaki (lokað).** Upprunalega forritið brýtur gildi í gæsalöppum með öfugu skástriki í lok línu eftir 128 dálka, eða eftir `linelength` rótargrafsins þegar það er 0 eða að minnsta kosti 60 (`lib/cgraph/write.c:160-195,670-677`). Yfirfærslan brýtur nú strengi `_draw_`-fjölskyldunnar eins, bæti fyrir bæti eins og upprunalega forritið.
 - **fdp `json` og `json0` með leggjum til klasa (lokað).** Upprunalega forritið afturkallar milliliði klasaleggja áður en json er skrifað (`lib/common/output.c:403`); yfirfærslan prentaði `__0:` milliliðina og afturkallar þá nú fyrst. Upprunalegt fdp lýkur með 139 á `2717` í öllum sniðum, svo ekkert viðmið er til.
-- **2-D `mode=sgd` (samþykkt, A1).** Á macOS víkur umbrotið frá upprunalega forritinu í síðasta biti libm `hypot` (`lib/neatogen/sgd.c:223`) og `exp` (`sgd.c:216`), sem SGD magnar upp í allt að 1,59 punkta á prófaða grafinu. Þegar `hypot` og `exp` frá macOS eru endurspiluð er ferill yfirfærslunnar sá sami og upprunalega forritsins, svo kóða var ekki breytt (PR 119).
+- **2-D `mode=sgd` (samþykkt, A1).** Yfirfærslan líkir eftir libm `hypot` frá macOS í `lib/neatogen/sgd.c:223` með `src/common/libm-hypot.ts`. Umbrotið víkur enn frá upprunalega forritinu í síðasta biti `exp` (`sgd.c:216`), um í mesta lagi 0,01 punkt á prófaða grafinu. Líkan af `exp` frá macOS er ekki á áætlun (#133, PR 119).
 - **Undirgraf teiknað á undan rót sinni, í fdp og osage (lokað).** Upprunalega forritið prentar geymd eigindagildi (síðari teikning heldur `_draw_`, `_ldraw_` og `xdotversion` fyrri teikningar), prentar `inf` og `nan` eins og printf í C og prófar splínukassa hvers leggjar gegn síðuklippingunni (`edge_in_box`, `lib/common/emit.c:2692`). Yfirfærslan gerir nú allt þrennt og jafnast á við upprunalega forritið, nema eitt jaðarkassagildi klasa við eigin rek fdp (1.6e-11 á móti -3.3e-11). Upprunalegt fdp breytist sjálft eftir hrúguvistföngum (`lib/fdpgen/layout.c:466,501,637`), þar með talin fyrsta teikning `graphs-fdp`, svo samanburðurinn notar upprunalega forritið án þessara samanburða. Aukaverkun er að `1581` sem svg fær tvo tóma `<g id="edgeN">` hópa fyrir merktar sjálflykkjur, eins og upprunalega forritið.
 
 ---

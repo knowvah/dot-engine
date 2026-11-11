@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1367,7 +1367,7 @@ Jokainen kohta kertoo, mitä natiivi tekee ja mitä portti tekee.
 
 - **Pitkät merkkijonot `xdot`- ja `dot`-tulosteessa (suljettu).** Natiivi katkaisee lainausmerkeissä olevan arvon rivin lopun kenoviivalla 128 sarakkeen jälkeen tai juurikaavion `linelength`-arvon jälkeen, kun se on 0 tai vähintään 60 (`lib/cgraph/write.c:160-195,670-677`). Portti rivittää nyt `_draw_`-perheen merkkijonot samoin, tavutasolla samoin kuin natiivi.
 - **fdp `json` ja `json0` klusteriin johtavilla särmillä (suljettu).** Natiivi kumoaa klusterisärmien välityssolmut ennen jsonin kirjoittamista (`lib/common/output.c:403`); portti tulosti `__0:`-välityssolmut ja kumoaa ne nyt ensin. Natiivi fdp päättyy `2717`:llä koodiin 139 jokaisessa muodossa, joten sille ei ole vertailukohtaa.
-- **2-D `mode=sgd` (hyväksytty, A1).** macOS:llä asettelu poikkeaa natiivista libm:n `hypot`-funktion (`lib/neatogen/sgd.c:223`) ja `exp`-funktion (`sgd.c:216`) viimeisessä bitissä, minkä SGD vahvistaa testatulla kaaviolla jopa 1,59 pisteeseen. Kun macOS:n `hypot` ja `exp` toistetaan, portin jälki on sama kuin natiivin, joten koodia ei muutettu (PR 119).
+- **2-D `mode=sgd` (hyväksytty, A1).** Portti mallintaa macOS:n libm:n `hypot`-funktion kohdassa `lib/neatogen/sgd.c:223` tiedostolla `src/common/libm-hypot.ts`. Asettelu poikkeaa natiivista yhä `exp`-funktion (`sgd.c:216`) viimeisessä bitissä, testatulla kaaviolla enintään 0,01 pistettä. macOS:n `exp`-mallia ei ole suunnitteilla (#133, PR 119).
 - **Ennen juurtaan renderöity alikaavio, fdp ja osage (suljettu).** Natiivi tulostaa tallennetut attribuuttiarvot (myöhempi renderöinti säilyttää aiemman `_draw_`, `_ldraw_` ja `xdotversion`), tulostaa `inf` ja `nan` kuten C:n printf ja testaa jokaisen särmän splinelaatikon sivun leikkausta vasten (`edge_in_box`, `lib/common/emit.c:2692`). Portti tekee nyt kaikki kolme ja vastaa natiivia, lukuun ottamatta yhtä klusterin rajalaatikon arvoa fdp:n oman ajautuman kohdalla (1.6e-11 vs. -3.3e-11). Natiivi fdp itse vaihtelee keon osoitteiden mukaan (`lib/fdpgen/layout.c:466,501,637`), myös `graphs-fdp`:n ensimmäisessä renderöinnissä, joten vertailussa käytetään natiivia ilman näitä vertailuja. Sivuvaikutuksena `1581` svg:nä saa kaksi tyhjää `<g id="edgeN">`-ryhmää nimetyille silmukoille, kuten natiivilla.
 
 ---

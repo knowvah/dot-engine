@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1343,7 +1343,7 @@ Každá položka hovorí, čo robí natív a čo robí port.
 
 - **Dlhé reťazce vo výstupe `xdot` a `dot` (uzavreté).** Natív zalomí hodnotu v úvodzovkách koncovým spätným lomítkom po 128 stĺpcoch alebo po `linelength` koreňového grafu, ak je 0 alebo aspoň 60 (`lib/cgraph/write.c:160-195,670-677`). Port teraz reťazce rodiny `_draw_` zalamuje rovnako, bajt po bajte zhodne s natívom.
 - **fdp `json` a `json0` s hranami ku clusterom (uzavreté).** Natív pred zápisom json vráti proxy hrán clustera späť (`lib/common/output.c:403`); port tlačil proxy `__0:` a teraz ich najprv vracia. Natívny fdp na `2717` končí kódom 139 v každom formáte, takže nemá referenciu.
-- **2-D `mode=sgd` (akceptované, A1).** Na macOS sa rozloženie líši od natívu v poslednom bite libm `hypot` (`lib/neatogen/sgd.c:223`) a `exp` (`sgd.c:216`), čo SGD zosilní až na 1,59 bodu na testovanom grafe. S prehranými `hypot` a `exp` z macOS je stopa portu rovnaká ako natívna, takže sa kód nezmenil (PR 119).
+- **2-D `mode=sgd` (akceptované, A1).** Port modeluje `hypot` z libm na macOS v `lib/neatogen/sgd.c:223` pomocou `src/common/libm-hypot.ts`. Rozloženie sa od natívu stále líši v poslednom bite `exp` (`sgd.c:216`), najviac o 0,01 bodu na testovanom grafe. Model `exp` pre macOS sa neplánuje (#133, PR 119).
 - **Podgraf vykreslený pred koreňom, pri fdp a osage (uzavreté).** Natív tlačí uložené hodnoty atribútov (neskoršie vykreslenie si ponechá `_draw_`, `_ldraw_` a `xdotversion` skoršieho), tlačí `inf` a `nan` ako printf v C a testuje box splinu každej hrany voči orezaniu strany (`edge_in_box`, `lib/common/emit.c:2692`). Port teraz robí všetky tri veci a rovná sa natívu, okrem jednej hodnoty ohraničujúceho boxu clustera pri vlastnom drifte fdp (1.6e-11 oproti -3.3e-11). Natívny fdp sám kolíše podľa adries haldy (`lib/fdpgen/layout.c:466,501,637`), vrátane prvého vykreslenia `graphs-fdp`, takže porovnanie používa natív bez týchto porovnaní. Vedľajším účinkom je, že `1581` ako svg získa dve prázdne skupiny `<g id="edgeN">` pre popísané slučky, ako ich má natív.
 
 ---

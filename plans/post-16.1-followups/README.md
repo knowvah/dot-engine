@@ -693,9 +693,9 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   142. **[DONE — issue #132: svgGraphId carries the seq; graphObjId deleted]** `svgGraphId` (`src/render/svg-id.ts:54`) still hardcodes `graph0` for the graph anchor and map id
       (`device.ts:235,391`) and duplicates T9's `graphObjId`; the comment in
       `layout-reset.edges.test.ts` before the svg graph-id test is stale (part 11 T9).
-  143. For the user (AD-3, PR 119): sgd's `hypot` (`sgd.ts:346`) could use the existing macOS model
+  143. **[DONE — issue #189: sgd.ts calls libmHypot. Left open: #208 (the port's `mag === 0` guard has no C counterpart)]** For the user (AD-3, PR 119): sgd's `hypot` (`sgd.ts:346`) could use the existing macOS model
       `libm-hypot.ts`, taking sgd58 to 6 of 255 lines (max 0.01); not adopted (part 11 T6).
-  144. There is no macOS `exp` model; `Math.exp` misses 4 of 30 sgd eta values (`sgd.c:216`), the rest
+  144. **[WONTFIX — ruling on #133: exp residual stays accepted]** There is no macOS `exp` model; `Math.exp` misses 4 of 30 sgd eta values (`sgd.c:216`), the rest
       of 132's drift. Same user decision as 143 (part 11 T6).
   145. **[DONE — issue #134: echoAttr/echoGraphAttr use agstrcanon; labels already wrapped]** `echoAttr`/`echoGraphAttr` (`src/render/dot/attrs.ts:362,397`) print cluster and graph
       attributes through `agcanonEscape`, so long labels there never wrap at `Max_outputline`; no

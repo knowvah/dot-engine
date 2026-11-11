@@ -1,5 +1,5 @@
 ---
-sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1328,7 +1328,7 @@ Her madde, yerelin ne yaptığını ve taşımanın ne yaptığını belirtir.
 
 - **`xdot` ve `dot` çıktısında uzun dizgiler (kapandı).** Yerel sürüm, tırnaklı bir değeri 128 sütundan sonra, ya da kök grafın `linelength` değeri 0 veya en az 60 ise ondan sonra, sondaki ters eğik çizgiyle böler (`lib/cgraph/write.c:160-195,670-677`). Port artık `_draw_` ailesinin dizgilerini aynı şekilde bölüyor ve yerel sürümle bayt bayt aynı.
 - **Kümelere kenarı olan fdp `json` ve `json0` (kapandı).** Yerel sürüm, json yazmadan önce küme kenarı vekil düğümlerini geri alır (`lib/common/output.c:403`); port `__0:` vekil düğümlerini yazdırıyordu, artık önce geri alıyor. Yerel fdp, `2717` üzerinde her biçimde 139 ile çıkar, bu yüzden referansı yoktur.
-- **2-D `mode=sgd` (kabul edildi, A1).** macOS'ta yerleşim, libm `hypot` (`lib/neatogen/sgd.c:223`) ve `exp`'in (`sgd.c:216`) son bitinde yerel sürümden ayrılır; SGD bunu denenen grafta 1,59 noktaya kadar büyütür. macOS'un `hypot` ve `exp` değerleri yeniden oynatıldığında portun izi yerel olanla aynıdır, bu yüzden kod değişmedi (PR 119).
+- **2-D `mode=sgd` (kabul edildi, A1).** Port, `lib/neatogen/sgd.c:223` konumundaki macOS libm `hypot`'unu `src/common/libm-hypot.ts` ile modeller. Yerleşim, `exp`'in (`sgd.c:216`) son bitinde yerel sürümden hâlâ ayrılır; denenen grafta en fazla 0,01 nokta. Bir macOS `exp` modeli planlanmıyor (#133, PR 119).
 - **Kökünden önce işlenen alt graf, fdp ve osage (kapandı).** Yerel sürüm saklanan öznitelik değerlerini yazdırır (sonraki bir işleme, öncekinin `_draw_`, `_ldraw_` ve `xdotversion` değerlerini korur), `inf` ve `nan` değerlerini C'nin printf'i gibi yazdırır ve her kenarın spline kutusunu sayfa kırpmasına karşı sınar (`edge_in_box`, `lib/common/emit.c:2692`). Port artık üçünü de yapıyor ve fdp'nin kendi kayması dışında (bir küme sınırlayıcı kutusu değeri, 1.6e-11 ve -3.3e-11) yerel sürüme eşit. Yerel fdp'nin kendisi yığın adreslerine göre değişir (`lib/fdpgen/layout.c:466,501,637`), `graphs-fdp`'nin ilk işlemesi de dahil; bu yüzden karşılaştırma bu karşılaştırmaları çıkarılmış yerel sürümü kullanır. Yan etki olarak `1581` svg olarak, etiketli kendi kendine döngüler için yerel sürümdeki gibi iki boş `<g id="edgeN">` grubu kazanır.
 
 ---
