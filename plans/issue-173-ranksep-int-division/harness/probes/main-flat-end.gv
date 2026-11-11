@@ -1,0 +1,1 @@
+digraph { rankdir=BT; ranksep=0.07; {rank=same; a; b; c} a:s -> c:n [label=x]; a -> b -> c; }

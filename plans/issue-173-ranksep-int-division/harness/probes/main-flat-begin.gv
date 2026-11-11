@@ -1,0 +1,1 @@
+digraph { ranksep=0.25; {rank=same; a; b; c} a:s -> c:n [label=x]; a -> b -> c; }

@@ -198,7 +198,8 @@ export function applyFlatLabel(
   const nodesep = graphNodesep(g);
   const e0 = nodeOrder(e0raw.head) <= nodeOrder(e1raw.head) ? e0raw : e1raw;
   const e1 = e0 === e0raw ? e1raw : e0raw;
-  const m0 = edgeMinlen(e) * nodesep / 2;
+  // C: int m0 (position.c:222,276), so the half truncates
+  const m0 = Math.trunc(edgeMinlen(e) * nodesep / 2);
   const m1a = m0 + nodeRw(e0.head) + nodeLw(e0.tail);
   if (!canReach(e0.tail, e0.head)) makeAuxEdge(e0.head, e0.tail, m1a, edgeWeight(e));
   const m1b = m0 + nodeRw(e1.tail) + nodeLw(e1.head);
