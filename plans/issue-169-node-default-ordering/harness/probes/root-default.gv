@@ -1,0 +1,1 @@
+digraph { node [ordering=out]; q -> p; q -> z; z -> v; p -> v; p -> u; }

@@ -1,0 +1,1 @@
+digraph { ordering=bogus; q -> p; q -> z; }

@@ -23,6 +23,8 @@ import { CLUSTER, isACluster } from './rank.js';
 import { installCluster, expandCluster, markLowclusters } from './cluster.js';
 import { agnode, agsubg, agsubnode, agGraphAttr } from '../../model/cgraph-ops.js';
 import { nodesInSeq } from './decomp.js';
+import { nodeAttr } from '../../common/attr-get.js';
+import { agerrorf } from '../../common/agerr.js';
 
 // betweenclust — @see lib/dotgen/mincross.c:betweenclust
 export function betweenclust(e: Edge): boolean {
@@ -338,11 +340,20 @@ export function doOrderingNode(ctx: MincrossContext, g: Graph, n: Node, outflag:
   doOrderingAddFlatEdges(g, sortlist, outflag);
 }
 
+/**
+ * Order the nodes that carry `ordering`. C reads
+ * `late_string(n, N_ordering, NULL)`, which is agxget: the node's own value,
+ * else the `node [...]` default the node was created under ({@link nodeAttr}).
+ * @see lib/dotgen/mincross.c:do_ordering_for_nodes (489)
+ */
 export function doOrderingForNodes(ctx: MincrossContext, g: Graph): void {
   for (const n of nodesInSeq(g)) {
-    const ordering = n.attrs.get('ordering');
+    const ordering = nodeAttr(n, g, 'ordering');
     if (ordering === 'out') doOrderingNode(ctx, g, n, true);
     else if (ordering === 'in') doOrderingNode(ctx, g, n, false);
+    else if (ordering !== undefined && ordering !== '') {
+      agerrorf(`ordering '${ordering}' not recognized for node '${n.name}'.`);
+    }
   }
 }
 
@@ -359,10 +370,12 @@ export function orderedEdges(ctx: MincrossContext, g: Graph): void {
   // does NOT recurse into subgraphs. So C silently ignores subgraph-scoped
   // ordering; only a root-level (or cluster's own) "out"/"in" is applied.
   // agGraphAttr reproduces the load-bearing "" vs undefined distinction.
+  // Any other non-empty value is an error (525), and still does not recurse.
   const ordering = agGraphAttr(g, 'ordering');
   if (ordering !== undefined) {
     if (ordering === 'out') doOrdering(ctx, g, true);
     else if (ordering === 'in') doOrdering(ctx, g, false);
+    else if (ordering !== '') agerrorf(`ordering '${ordering}' not recognized.`);
     return;
   }
   for (const subg of g.subgraphs.values()) {
