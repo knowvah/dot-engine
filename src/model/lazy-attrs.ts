@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: EPL-2.0
 
 /**
- * Shared empty attribute map for dot virtual nodes/edges (AD-12).
+ * Shared empty attribute map for dot virtual nodes/edges (AD-12) and for
+ * auxiliary edges (make_aux_edge, issue #145).
  *
  * C virtual nodes/edges carry no attribute record; allocating an empty `Map`
  * per object cost ~372 B per virtual pair. Virtual objects start with this
@@ -9,6 +10,7 @@
  * through {@link ownAttrs}, which materialises a private `Map`. A direct
  * mutation of the shared map throws rather than leaking into every virtual.
  * @see lib/dotgen/fastgr.c:virtual_node
+ * @see lib/dotgen/position.c:make_aux_edge
  */
 
 class SharedEmptyAttrs extends Map<string, string> {

@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1347,6 +1347,23 @@ n’acceptent une erreur du portage que si elle porte ce message. Un autre éche
 **Ce qui diffère.** Le natif affiche `fill=""` sur cette opération ; le port affiche le premier arrêt du dégradé. xdot se résout en RGBA et concorde avec le port, de sorte que seul svg diffère.
 
 **Pourquoi c’est accepté.** `emit_background` libère `clrs[0]` (`lib/common/emit.c:1518`) alors que l’état de remplissage de svg pointe encore dessus (`gvrender_resolve_color` conserve `color->u.string = name`, `lib/gvc/gvrender.c:193`) ; la sortie native est donc de la mémoire libérée, pas une couleur ; c’était `fill=""` dans 8 exécutions mesurées sur 8. Le port affiche la couleur que C voulait. Aucune entrée du corpus n’atteint ce cas ; `src/gvc/emit-xdot.test.ts` le fige.
+
+### A14. Une arête auxiliaire par paire de clusters frères (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Concerné :** `2475_1` avec `dot`, un graphe de 5 711 clusters frères. Avec le tas par défaut de V8 (4 192 Mo sur la machine de référence), le rendu du portage se termine par `JavaScript heap out of memory` ; le relevé dot donne donc à ce seul id un tas plus grand (`PORT_HEAP_MB` dans `test/corpus/survey.ts`).
+
+**Ce qui se passe.** `separate_subclust` (`lib/dotgen/position.c:454`) ajoute au graphe de contraintes de la coordonnée x une arête auxiliaire pour chaque paire de clusters frères dont les intervalles de `rank` se chevauchent, et toutes restent allouées jusqu’à `remove_aux_edges`. Dans `2475_1`, toutes les paires se chevauchent : 16 304 905 arêtes. La version native 16.1.0 dépense environ 423 o pour chacune et culmine à 8.41 Go résidents. Le portage construit les mêmes arêtes dans le même ordre (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Pourquoi c’est accepté.** La croissance est celle de l’algorithme C lui-même, quadratique en nombre de clusters frères, et le pic de la version native vaut à lui seul le double du tas par défaut de V8. La part propre au portage a disparu : une arête auxiliaire coûtait 995 o, car chacune portait en plus deux objets `Port` et un `Map` d’attributs vide ; elle coûte désormais 458 o. Dans le tableau, `cN` désigne les N premiers clusters de `2475_1`, et chaque cellule donne le pic de mémoire résidente et le temps d’exécution.
+
+| Entrée | Paires de clusters | Natif 16.1.0 | Portage avant le correctif | Portage |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 Mo, 0.8 s | 539 Mo, 6.0 s | 374 Mo, 5.4 s |
+| c800 | 319 600 | 257 Mo, 4.8 s | 812 Mo, 27 s | 665 Mo, 26 s |
+| c1600 | 1 279 200 | 844 Mo, 35 s | 2 424 Mo, 131 s | 1 621 Mo, 131 s |
+| `2475_1` | 16 304 905 | 8.41 Go, 1 412 s | `JavaScript heap out of memory` | 10.15 Go, 4 197 s, `conformant` |
+
+Preuve : [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

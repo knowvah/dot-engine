@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1203,6 +1203,23 @@ aceita, e o `registry-staleness.test.ts` marcaria a entrada como obsoleta. Evid�
 **O que difere.** O nativo imprime `fill=""` nessa operação; o port imprime a primeira parada do gradiente. O xdot resolve para RGBA e concorda com o port, então só o svg difere.
 
 **Por que aceito.** `emit_background` libera `clrs[0]` (`lib/common/emit.c:1518`) enquanto o estado de preenchimento do svg ainda aponta para ele (`gvrender_resolve_color` mantém `color->u.string = name`, `lib/gvc/gvrender.c:193`), então a saída nativa é memória liberada, não uma cor; foi `fill=""` em 8 de 8 execuções medidas. O port imprime a cor que o C pretendia. Nenhuma entrada do corpus chega a isso; `src/gvc/emit-xdot.test.ts` a fixa.
+
+### A14. Uma aresta auxiliar por par de clusters irmãos (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Afetados:** `2475_1` no `dot`, um grafo com 5.711 clusters irmãos. Com o heap padrão do V8 (4.192 MB na máquina de referência), a renderização do port termina em `JavaScript heap out of memory`; por isso a pesquisa do dot dá a este único id um heap maior (`PORT_HEAP_MB` em `test/corpus/survey.ts`).
+
+**O que acontece.** `separate_subclust` (`lib/dotgen/position.c:454`) adiciona ao grafo de restrições da coordenada x uma aresta auxiliar para cada par de clusters irmãos cujos intervalos de `rank` se sobrepõem, e todas permanecem alocadas até `remove_aux_edges`. Em `2475_1` todos os pares se sobrepõem: 16.304.905 arestas. O nativo 16.1.0 gasta cerca de 423 B em cada uma e atinge um pico de 8,41 GB residentes. O port constrói as mesmas arestas na mesma ordem (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Por que aceito.** O crescimento é do próprio algoritmo em C, quadrático no número de clusters irmãos, e o pico do nativo sozinho é o dobro do heap padrão do V8. A parte própria do port foi removida: uma aresta auxiliar custava 995 B, porque cada uma carregava também dois objetos `Port` e um `Map` de atributos vazio; agora custa 458 B. Na tabela, `cN` são os primeiros N clusters de `2475_1`, e cada célula traz o pico de memória residente e o tempo de execução.
+
+| Entrada | Pares de clusters | Nativo 16.1.0 | Port antes da correção | Port |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Evidência: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -971,6 +971,23 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
 **有何不同。** 原生在該操作上輸出 `fill=""`；移植版輸出漸層的第一個色標。xdot 解析為 RGBA，與移植版一致，因此只有 svg 不同。
 
 **為何接受。** `emit_background` 釋放了 `clrs[0]`（`lib/common/emit.c:1518`），而 svg 的填色狀態仍指向它（`gvrender_resolve_color` 保留 `color->u.string = name`，`lib/gvc/gvrender.c:193`），所以原生輸出是已釋放的記憶體，而不是顏色；在測得的 8 次執行中 8 次都是 `fill=""`。移植版輸出 C 本意要輸出的顏色。語料庫中沒有輸入會走到這裡；`src/gvc/emit-xdot.test.ts` 固定了該行為。
+
+### A14. 每對兄弟叢集一條輔助邊（`2475_1`，dot） {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**受影響：** `dot` 上的 `2475_1`，一個包含 5,711 個兄弟叢集的圖。在 V8 的預設堆積（參考主機上為 4,192 MB）下，移植版的渲染以 `JavaScript heap out of memory` 結束，因此 dot 調查只為這一個 id 提供較大的堆積（`test/corpus/survey.ts` 中的 `PORT_HEAP_MB`）。
+
+**發生了什麼。** `separate_subclust`（`lib/dotgen/position.c:454`）會為每一對 `rank` 範圍重疊的兄弟叢集，在 x 座標的約束圖中加入一條輔助邊，而且它們全部維持已配置狀態，直到 `remove_aux_edges`。在 `2475_1` 中每一對都重疊：共 16,304,905 條邊。原生 16.1.0 每條邊約使用 423 B，常駐記憶體峰值為 8.41 GB。移植版以相同的順序建立相同的邊（`separateSubclust`，`src/layout/dot/position-cluster.ts`）。
+
+**為何接受。** 這種成長是 C 演算法本身的，與兄弟叢集數量的平方成正比，而光是原生程式的峰值就是 V8 預設堆積的兩倍。移植版自身的部分已經消除：一條輔助邊原本要 995 B，因為每條邊還帶有兩個 `Port` 物件和一個空的屬性 `Map`；現在是 458 B。表中 `cN` 是 `2475_1` 的前 N 個叢集，每個儲存格列出常駐記憶體峰值和執行時間。
+
+| 輸入 | 叢集對 | 原生 16.1.0 | 修正前的移植版 | 移植版 |
+|---|---:|---|---|---|
+| c400 | 79,800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319,600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1,279,200 | 844 MB, 35 s | 2,424 MB, 131 s | 1,621 MB, 131 s |
+| `2475_1` | 16,304,905 | 8.41 GB, 1,412 s | `JavaScript heap out of memory` | 10.15 GB, 4,197 s, `conformant` |
+
+證據：[issue #145](https://github.com/knowvah/dot-engine/issues/145)。
 
 ---
 

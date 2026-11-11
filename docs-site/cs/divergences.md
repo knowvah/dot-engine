@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1190,6 +1190,23 @@ zastaralý. Důkaz:
 **Co se liší.** Nativní výstup vypíše u této operace `fill=""`; portace vypíše první barvu gradientu. xdot se převádí na RGBA a s portací se shoduje, liší se tedy jen svg.
 
 **Proč akceptováno.** `emit_background` uvolní `clrs[0]` (`lib/common/emit.c:1518`), zatímco stav výplně svg na ni stále ukazuje (`gvrender_resolve_color` ponechává `color->u.string = name`, `lib/gvc/gvrender.c:193`), takže nativní výstup je uvolněná paměť, nikoli barva; ve všech 8 z 8 změřených běhů to bylo `fill=""`. Portace vypíše barvu, kterou C zamýšlelo. Žádný vstup korpusu sem nedospěje; ověřuje to `src/gvc/emit-xdot.test.ts`.
+
+### A14. Jedna pomocná hrana na každou dvojici sourozeneckých clusterů (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Dotčeno:** `2475_1` v modulu `dot`, graf s 5 711 sourozeneckými clustery. Pod výchozí haldou V8 (4 192 MB na referenčním stroji) skončí vykreslení portace chybou `JavaScript heap out of memory`, proto průzkum pro dot dává tomuto jedinému id větší haldu (`PORT_HEAP_MB` v `test/corpus/survey.ts`).
+
+**Co se děje.** `separate_subclust` (`lib/dotgen/position.c:454`) přidá do grafu omezení pro souřadnici x jednu pomocnou hranu za každou dvojici sourozeneckých clusterů, jejichž rozsahy `rank` se překrývají, a všechny zůstávají alokované až do `remove_aux_edges`. V `2475_1` se překrývá každá dvojice: 16 304 905 hran. Nativní 16.1.0 spotřebuje na každou asi 423 B a ve špičce má 8.41 GB rezidentní paměti. Portace staví tytéž hrany ve stejném pořadí (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Proč akceptováno.** Růst je vlastní algoritmu v C, kvadratický v počtu sourozeneckých clusterů, a už sama špička nativního běhu je dvojnásobkem výchozí haldy V8. Vlastní podíl portace je pryč: pomocná hrana dříve stála 995 B, protože každá nesla navíc dva objekty `Port` a prázdnou atributovou `Map`; nyní stojí 458 B. V tabulce je `cN` prvních N clusterů z `2475_1` a každá buňka udává špičku rezidentní paměti a dobu běhu.
+
+| Vstup | Dvojice clusterů | Nativní 16.1.0 | Portace před opravou | Portace |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Důkaz: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

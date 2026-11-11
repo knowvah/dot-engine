@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1198,6 +1198,23 @@ a `registry-staleness.test.ts` by záznam označil za zastaraný. Dôkaz:
 **Čím sa líši.** Natívny výstup vypíše pri tejto operácii `fill=""`; port vypíše prvú zarážku gradientu. xdot sa prevedie na RGBA a zhoduje sa s portom, takže sa líši iba svg.
 
 **Prečo akceptované.** `emit_background` uvoľní `clrs[0]` (`lib/common/emit.c:1518`), zatiaľ čo stav výplne svg naň stále ukazuje (`gvrender_resolve_color` ponecháva `color->u.string = name`, `lib/gvc/gvrender.c:193`), takže natívny výstup je uvoľnená pamäť, nie farba; vo všetkých 8 z 8 nameraných behov to bolo `fill=""`. Port vypíše farbu, ktorú mal C na mysli. Žiadny vstup korpusu sem nedospeje; zafixuje to `src/gvc/emit-xdot.test.ts`.
+
+### A14. Jedna pomocná hrana na každú dvojicu súrodeneckých klastrov (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Dotknuté:** `2475_1` v module `dot`, graf s 5 711 súrodeneckými klastrami. Pri predvolenej halde V8 (4 192 MB na referenčnom stroji) sa vykreslenie portu skončí chybou `JavaScript heap out of memory`, preto prieskum dot dáva tomuto jedinému id väčšiu haldu (`PORT_HEAP_MB` v `test/corpus/survey.ts`).
+
+**Čo sa deje.** `separate_subclust` (`lib/dotgen/position.c:454`) pridá do grafu obmedzení pre súradnicu x jednu pomocnú hranu za každú dvojicu súrodeneckých klastrov, ktorých rozsahy `rank` sa prekrývajú, a všetky zostávajú alokované až do `remove_aux_edges`. V `2475_1` sa prekrýva každá dvojica: 16 304 905 hrán. Natívny build 16.1.0 minie na každú asi 423 B a v špičke má 8.41 GB rezidentnej pamäte. Port stavia tie isté hrany v rovnakom poradí (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Prečo akceptované.** Rast je vlastný algoritmu v C, kvadratický v počte súrodeneckých klastrov, a už samotná špička natívneho buildu je dvojnásobkom predvolenej haldy V8. Vlastný podiel portu je preč: pomocná hrana predtým stála 995 B, pretože každá niesla navyše dva objekty `Port` a prázdnu `Map` atribútov; teraz stojí 458 B. V tabuľke je `cN` prvých N klastrov z `2475_1` a každá bunka udáva špičku rezidentnej pamäte a čas behu.
+
+| Vstup | Dvojice klastrov | Natívny build 16.1.0 | Port pred opravou | Port |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Dôkaz: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

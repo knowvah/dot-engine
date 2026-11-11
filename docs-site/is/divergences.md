@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1203,6 +1203,23 @@ og `registry-staleness.test.ts` myndi merkja færsluna sem úrelta. Sönnunargö
 **Hvað er ólíkt.** Upprunalega útgáfan skrifar `fill=""` á þá aðgerð; gáttin skrifar fyrsta lit litasveigjunnar. xdot leysist í RGBA og er sammála gáttinni, svo aðeins svg er ólíkt.
 
 **Hvers vegna samþykkt.** `emit_background` losar `clrs[0]` (`lib/common/emit.c:1518`) á meðan fyllistaða svg bendir enn á það (`gvrender_resolve_color` heldur `color->u.string = name`, `lib/gvc/gvrender.c:193`), svo upprunalega úttakið er losað minni, ekki litur; það var `fill=""` í öllum 8 af 8 mældum keyrslum. Gáttin skrifar litinn sem C ætlaði. Ekkert inntak í safninu nær hingað; `src/gvc/emit-xdot.test.ts` festir það.
+
+### A14. Einn hjálparleggur fyrir hvert par systkinaklasa (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Fyrir áhrifum:** `2475_1` á `dot`, graf með 5.711 systkinaklösum. Undir sjálfgefnu heap-minni V8 (4.192 MB á viðmiðunarvélinni) endar teiknun yfirfærslunnar í `JavaScript heap out of memory`, svo dot-könnunin gefur þessu eina auðkenni stærra heap-minni (`PORT_HEAP_MB` í `test/corpus/survey.ts`).
+
+**Hvað gerist.** `separate_subclust` (`lib/dotgen/position.c:454`) bætir einum hjálparlegg við skorðugrafið fyrir x-hnitið fyrir hvert par systkinaklasa þar sem `rank`-bilin skarast, og þeir haldast allir úthlutaðir fram að `remove_aux_edges`. Í `2475_1` skarast hvert par: 16.304.905 leggir. Innbyggða 16.1.0 notar um 423 B í hvern og nær hámarki í 8,41 GB í minni. Yfirfærslan byggir sömu leggi í sömu röð (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Hvers vegna samþykkt.** Vöxturinn er C-algrímsins sjálfs, í öðru veldi af fjölda systkinaklasa, og hámark innbyggðu útgáfunnar eitt og sér er tvöfalt sjálfgefið heap-minni V8. Eigin hlutur yfirfærslunnar er horfinn: hjálparleggur kostaði áður 995 B, því hver þeirra bar að auki tvo `Port`-hluti og tómt eiginda-`Map`; nú kostar hann 458 B. Í töflunni er `cN` fyrstu N klasarnir í `2475_1`, og hver reitur gefur hámark minnisnotkunar og keyrslutíma.
+
+| Inntak | Klasapör | Innbyggt 16.1.0 | Yfirfærslan fyrir lagfæringu | Yfirfærslan |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Sönnunargögn: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

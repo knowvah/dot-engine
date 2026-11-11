@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1183,6 +1183,23 @@ bildirir: bir port hatasını yalnızca bu mesajı taşıdığında kabul ederle
 **Ne farklı.** Yerel, o işlemde `fill=""` yazdırır; port gradyanın ilk durağını yazdırır. xdot RGBA'ya çözülür ve portla uyuşur, bu yüzden yalnızca svg farklıdır.
 
 **Neden kabul edildi.** `emit_background`, svg'nin dolgu durumu hâlâ ona işaret ederken `clrs[0]`'ı serbest bırakır (`lib/common/emit.c:1518`; `gvrender_resolve_color`, `color->u.string = name` değerini korur, `lib/gvc/gvrender.c:193`); bu yüzden yerel çıktı bir renk değil, serbest bırakılmış bellektir; ölçülen 8 çalıştırmanın 8'inde `fill=""` idi. Port, C'nin kastettiği rengi yazdırır. Korpustaki hiçbir girdi buna ulaşmaz; `src/gvc/emit-xdot.test.ts` bunu sabitler.
+
+### A14. Her kardeş küme çifti için bir yardımcı kenar (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Etkilenenler:** `dot` üzerinde `2475_1`, 5.711 kardeş kümeden oluşan bir graf. V8'in varsayılan yığınıyla (referans makinede 4.192 MB) portun çizimi `JavaScript heap out of memory` ile sonlanır; bu yüzden dot taraması yalnızca bu kimliğe daha büyük bir yığın verir (`test/corpus/survey.ts` içindeki `PORT_HEAP_MB`).
+
+**Ne olur.** `separate_subclust` (`lib/dotgen/position.c:454`), `rank` aralıkları örtüşen her kardeş küme çifti için x koordinatının kısıt grafına bir yardımcı kenar ekler ve bunların hepsi `remove_aux_edges` çağrısına kadar ayrılmış kalır. `2475_1` içinde her çift örtüşür: 16.304.905 kenar. Yerel 16.1.0 her biri için yaklaşık 423 B harcar ve 8,41 GB rezident bellekle tepe yapar. Port aynı kenarları aynı sırayla kurar (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Neden kabul edildi.** Büyüme C algoritmasının kendisine aittir, kardeş küme sayısına göre kareseldir ve yalnızca yerel sürümün tepe değeri bile V8'in varsayılan yığınının iki katıdır. Portun kendi payı giderildi: bir yardımcı kenar önceden 995 B tutuyordu, çünkü her biri ayrıca iki `Port` nesnesi ve boş bir öznitelik `Map`'i taşıyordu; şimdi 458 B tutuyor. Tabloda `cN`, `2475_1`'in ilk N kümesidir ve her hücre rezident bellek tepe değerini ve çalışma süresini verir.
+
+| Girdi | Küme çiftleri | Yerel 16.1.0 | Düzeltmeden önce port | Port |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Kanıt: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

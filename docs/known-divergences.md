@@ -1249,6 +1249,23 @@ stale. Evidence:
 
 **Why accepted.** `emit_background` frees `clrs[0]` (`lib/common/emit.c:1518`) while svg's fill state still points at it (`gvrender_resolve_color` keeps `color->u.string = name`, `lib/gvc/gvrender.c:193`), so native's output is freed memory, not a colour; it was `fill=""` in 8 of 8 measured runs. The port prints the colour C meant. No corpus input reaches this; `src/gvc/emit-xdot.test.ts` pins it.
 
+### A14. One auxiliary edge per pair of sibling clusters (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Affected:** `2475_1` on `dot`, a graph of 5,711 sibling clusters. Under V8's default heap (4,192 MB on the reference host) the port's render ends in `JavaScript heap out of memory`, so the dot survey gives this one id a larger heap (`PORT_HEAP_MB` in `test/corpus/survey.ts`).
+
+**What happens.** `separate_subclust` (`lib/dotgen/position.c:454`) adds one auxiliary edge to the x-coordinate constraint graph for every pair of sibling clusters whose `rank` ranges overlap, and all of them stay allocated until `remove_aux_edges`. In `2475_1` every pair overlaps: 16,304,905 edges. Native 16.1.0 spends about 423 B on each and peaks at 8.41 GB resident. The port builds the same edges in the same order (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Why accepted.** The growth is the C algorithm's own, quadratic in the number of sibling clusters, and native's peak alone is twice V8's default heap. The port's own share is gone: an auxiliary edge used to cost 995 B, because each one also carried two `Port` objects and an empty attribute `Map`; it now costs 458 B. In the table, `cN` is the first N clusters of `2475_1`, and each cell gives peak resident memory and wall time.
+
+| Input | Cluster pairs | Native 16.1.0 | Port before the fix | Port |
+|---|---:|---|---|---|
+| c400 | 79,800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319,600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1,279,200 | 844 MB, 35 s | 2,424 MB, 131 s | 1,621 MB, 131 s |
+| `2475_1` | 16,304,905 | 8.41 GB, 1,412 s | `JavaScript heap out of memory` | 10.15 GB, 4,197 s, `conformant` |
+
+Evidence: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Tracked long tail (`dot` attribute & edge-case)

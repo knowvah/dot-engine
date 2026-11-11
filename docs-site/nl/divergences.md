@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1209,6 +1209,23 @@ fout, en `registry-staleness.test.ts` zou de vermelding als verouderd markeren. 
 **Wat afwijkt.** Native drukt `fill=""` af op die bewerking; de port drukt de eerste stop van het verloop af. xdot wordt omgezet naar RGBA en komt overeen met de port, dus alleen svg verschilt.
 
 **Waarom geaccepteerd.** `emit_background` geeft `clrs[0]` vrij (`lib/common/emit.c:1518`) terwijl de vultoestand van svg er nog naar wijst (`gvrender_resolve_color` behoudt `color->u.string = name`, `lib/gvc/gvrender.c:193`), dus de native uitvoer is vrijgegeven geheugen, geen kleur; het was `fill=""` in 8 van 8 gemeten runs. De port drukt de kleur af die C bedoelde. Geen corpusinvoer bereikt dit; `src/gvc/emit-xdot.test.ts` legt het vast.
+
+### A14. Eén hulprand per paar zusterclusters (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Getroffen:** `2475_1` op `dot`, een graaf met 5.711 zusterclusters. Onder de standaard-heap van V8 (4.192 MB op de referentiemachine) eindigt het renderen van de port in `JavaScript heap out of memory`; de dot-survey geeft daarom dit ene id een grotere heap (`PORT_HEAP_MB` in `test/corpus/survey.ts`).
+
+**Wat er gebeurt.** `separate_subclust` (`lib/dotgen/position.c:454`) voegt aan de constraintgraaf van de x-coördinaat één hulprand toe voor elk paar zusterclusters waarvan de `rank`-bereiken overlappen, en ze blijven allemaal gealloceerd tot `remove_aux_edges`. In `2475_1` overlapt elk paar: 16.304.905 randen. Native 16.1.0 besteedt ongeveer 423 B aan elke rand en piekt op 8,41 GB resident. De port bouwt dezelfde randen in dezelfde volgorde (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Waarom geaccepteerd.** De groei is die van het C-algoritme zelf, kwadratisch in het aantal zusterclusters, en de piek van native alleen al is het dubbele van de standaard-heap van V8. Het eigen aandeel van de port is weg: een hulprand kostte eerst 995 B, omdat elke rand ook twee `Port`-objecten en een lege attribuut-`Map` droeg; nu kost hij 458 B. In de tabel is `cN` de eerste N clusters van `2475_1`, en elke cel geeft de piek van het residente geheugen en de looptijd.
+
+| Invoer | Clusterparen | Native 16.1.0 | Port vóór de correctie | Port |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Bewijs: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

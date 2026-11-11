@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1183,6 +1183,23 @@ błąd, a `registry-staleness.test.ts` oznaczyłby wpis jako nieaktualny. Dowody
 **Czym się różni.** Natywny wypisuje przy tej operacji `fill=""`; port wypisuje pierwszy punkt gradientu. xdot rozwiązuje się do RGBA i zgadza się z portem, więc różni się tylko svg.
 
 **Dlaczego zaakceptowane.** `emit_background` zwalnia `clrs[0]` (`lib/common/emit.c:1518`), podczas gdy stan wypełnienia svg nadal na niego wskazuje (`gvrender_resolve_color` zachowuje `color->u.string = name`, `lib/gvc/gvrender.c:193`), więc natywne wyjście to zwolniona pamięć, a nie kolor; było to `fill=""` w 8 z 8 zmierzonych uruchomień. Port wypisuje kolor, który miał na myśli C. Żadne wejście korpusu tu nie dociera; przypina to `src/gvc/emit-xdot.test.ts`.
+
+### A14. Jedna krawędź pomocnicza na każdą parę klastrów-rodzeństwa (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Dotyczy:** `2475_1` w silniku `dot`, graf z 5 711 klastrami-rodzeństwem. Przy domyślnej stercie V8 (4 192 MB na maszynie referencyjnej) renderowanie portu kończy się błędem `JavaScript heap out of memory`, dlatego przegląd dot daje temu jednemu id większą stertę (`PORT_HEAP_MB` w `test/corpus/survey.ts`).
+
+**Co się dzieje.** `separate_subclust` (`lib/dotgen/position.c:454`) dodaje do grafu ograniczeń współrzędnej x jedną krawędź pomocniczą dla każdej pary klastrów-rodzeństwa, których zakresy `rank` na siebie zachodzą, i wszystkie pozostają zaalokowane aż do `remove_aux_edges`. W `2475_1` zachodzi na siebie każda para: 16 304 905 krawędzi. Natywne 16.1.0 zużywa na każdą około 423 B i osiąga szczyt 8,41 GB rezydentnie. Port buduje te same krawędzie w tej samej kolejności (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Dlaczego zaakceptowane.** Wzrost jest własnością samego algorytmu w C, kwadratowy względem liczby klastrów-rodzeństwa, a już sam szczyt natywnego programu to dwukrotność domyślnej sterty V8. Własny udział portu zniknął: krawędź pomocnicza kosztowała wcześniej 995 B, bo każda niosła dodatkowo dwa obiekty `Port` i pustą `Map` atrybutów; teraz kosztuje 458 B. W tabeli `cN` to pierwsze N klastrów z `2475_1`, a każda komórka podaje szczyt pamięci rezydentnej i czas wykonania.
+
+| Wejście | Pary klastrów | Natywne 16.1.0 | Port przed poprawką | Port |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319 600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8,41 GB, 1 412 s | `JavaScript heap out of memory` | 10,15 GB, 4 197 s, `conformant` |
+
+Dowody: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

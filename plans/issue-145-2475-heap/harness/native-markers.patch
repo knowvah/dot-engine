@@ -1,0 +1,137 @@
+--- a/lib/dotgen/dotinit.c	2026-07-05 17:11:29
++++ b/lib/dotgen/dotinit.c	2026-11-10 18:17:23
+@@ -293,6 +293,17 @@
+ }
+ 
+ /// @return 0 on success
++
++#include <malloc/malloc.h>
++#include <stdio.h>
++size_t gv145_aux_edges;
++void gv145_phase(const char *name) {
++    malloc_statistics_t st;
++    malloc_zone_statistics(NULL, &st);
++    fprintf(stderr, "PHASE %s inuse=%.1f allocated=%.1f aux=%zu\n", name,
++            (double)st.size_in_use / 1048576.0, (double)st.size_allocated / 1048576.0,
++            gv145_aux_edges);
++}
+ static int dotLayout(Agraph_t *g) {
+     int maxphase = late_int(g, agfindgraphattr(g,"phase"), -1, 1);
+ 
+@@ -301,15 +312,18 @@
+ 
+     dot_init_subg(g,g);
+     dot_init_node_edge(g);
++    gv145_phase("init");
+ 
+     GV_INFO("Starting phase 1 [dot_rank]");
+     dot_rank(g);
++    gv145_phase("rank");
+     if (maxphase == 1) {
+         attach_phase_attrs (g, 1);
+         return 0;
+     }
+     GV_INFO("Starting phase 2 [dot_mincross]");
+     const int rc = dot_mincross(g);
++    gv145_phase("mincross");
+     if (rc != 0) {
+         return rc;
+     }
+@@ -320,6 +334,7 @@
+     GV_INFO("Starting phase 3 [dot_position]");
+     {
+         const int r = dot_position(g);
++        gv145_phase("position");
+         if (r != 0) {
+             return r;
+         }
+@@ -332,6 +347,7 @@
+ 	removeFill (g);
+     dot_sameports(g);
+     const int r = dot_splines(g);
++    gv145_phase("splines");
+     if (r != 0) {
+ 	return r;
+     }
+--- a/lib/dotgen/position.c	2026-07-14 08:28:04
++++ b/lib/dotgen/position.c	2026-11-10 18:17:44
+@@ -124,6 +124,8 @@
+     }
+ }
+ 
++extern size_t gv145_aux_edges;
++void gv145_phase(const char *name);
+ int dot_position(graph_t *g) {
+     if (GD_nlist(g) == NULL)
+ 	return 0; // ignore empty graph
+@@ -138,16 +140,20 @@
+     expand_leaves(g);
+     if (flat_edges(g))
+ 	set_ycoords(g);
++    gv145_phase("pos.ycoords");
+     create_aux_edges(g);
++    gv145_phase("pos.auxedges");
+     if (rank(g, 2, nsiter2(g))) { /* LR balance == 2 */
+ 	connectGraph (g);
+ 	const int rank_result = rank(g, 2, nsiter2(g));
+ 	assert(rank_result == 0);
+ 	(void)rank_result;
+     }
++    gv145_phase("pos.xrank");
+     set_xcoords(g);
+     set_aspect(g);
+-    remove_aux_edges(g);	/* must come after set_aspect since we now
++    remove_aux_edges(g);
++    gv145_phase("pos.removeaux");	/* must come after set_aspect since we now
+ 				 * use GD_ln and GD_rn for bbox width.
+ 				 */
+     return 0;
+@@ -183,6 +189,7 @@
+ edge_t *make_aux_edge(node_t * u, node_t * v, double len, int wt)
+ {
+     Agedgepair_t* e2 = gv_alloc(sizeof(Agedgepair_t));
++    gv145_aux_edges++;
+     AGTYPE(&e2->in) = AGINEDGE;
+     AGTYPE(&e2->out) = AGOUTEDGE;
+     e2->out.base.data = gv_alloc(sizeof(Agedgeinfo_t));
+--- a/cmd/dot/dot.c	2026-06-10 12:42:20
++++ b/cmd/dot/dot.c	2026-11-10 18:17:44
+@@ -44,6 +44,14 @@
+ #endif
+ #endif
+ 
++
++#include <malloc/malloc.h>
++static void gv145_main_phase(const char *name) {
++    malloc_statistics_t st;
++    malloc_zone_statistics(NULL, &st);
++    fprintf(stderr, "PHASE %s inuse=%.1f allocated=%.1f\n", name,
++            (double)st.size_in_use / 1048576.0, (double)st.size_allocated / 1048576.0);
++}
+ int main(int argc, char **argv)
+ {
+     graph_t *prev = NULL;
+@@ -60,8 +68,11 @@
+ #endif
+ 
+     if ((G = gvPluginsGraph(Gvc))) {
++	    gv145_main_phase("parse");
+ 	    gvLayoutJobs(Gvc, G);  /* take layout engine from command line */
++	    gv145_main_phase("layout");
+ 	    gvRenderJobs(Gvc, G);
++	    gv145_main_phase("render");
+     }
+     else {
+ 	while ((G = gvNextInputGraph(Gvc))) {
+@@ -69,8 +80,11 @@
+ 		gvFreeLayout(Gvc, prev);
+ 		agclose(prev);
+ 	    }
++	    gv145_main_phase("parse");
+ 	    gvLayoutJobs(Gvc, G);  /* take layout engine from command line */
++	    gv145_main_phase("layout");
+ 	    gvRenderJobs(Gvc, G);
++	    gv145_main_phase("render");
+ 	    r = agreseterrors();
+ 	    rc = MAX(rc,r);
+ 	    prev = G;

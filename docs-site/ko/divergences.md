@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1031,6 +1031,23 @@ xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니�
 **무엇이 다른가.** 네이티브는 그 연산에 `fill=""`를 출력하고, 포트는 그라디언트의 첫 번째 스톱을 출력합니다. xdot은 RGBA로 해석되어 포트와 일치하므로 svg만 다릅니다.
 
 **수용하는 이유.** `emit_background`는 `clrs[0]`을 해제하지만(`lib/common/emit.c:1518`) svg의 채우기 상태는 여전히 그것을 가리킵니다(`gvrender_resolve_color`는 `color->u.string = name`을 유지합니다. `lib/gvc/gvrender.c:193`). 따라서 네이티브 출력은 색이 아니라 해제된 메모리이며, 측정한 8회 중 8회 모두 `fill=""`였습니다. 포트는 C가 의도한 색을 출력합니다. 코퍼스에는 여기에 도달하는 입력이 없으며 `src/gvc/emit-xdot.test.ts`가 이를 고정합니다.
+
+### A14. 형제 클러스터 쌍마다 보조 에지 하나(`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**영향받는 대상:** `dot`의 `2475_1`. 형제 클러스터 5,711개로 이루어진 그래프입니다. V8의 기본 힙(기준 호스트에서 4,192 MB)에서는 포팅의 렌더링이 `JavaScript heap out of memory`로 끝나므로, dot 조사는 이 id 하나에만 더 큰 힙을 줍니다(`test/corpus/survey.ts`의 `PORT_HEAP_MB`).
+
+**무슨 일이 일어나는가.** `separate_subclust`(`lib/dotgen/position.c:454`)는 `rank` 범위가 겹치는 형제 클러스터 쌍마다 x 좌표 제약 그래프에 보조 에지를 하나씩 추가하며, 이들은 모두 `remove_aux_edges`까지 할당된 채로 남습니다. `2475_1`에서는 모든 쌍이 겹쳐 에지가 16,304,905개입니다. 네이티브 16.1.0은 에지 하나에 약 423 B를 쓰고 상주 메모리 최대치는 8.41 GB입니다. 포팅은 같은 에지를 같은 순서로 만듭니다(`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**수용하는 이유.** 이 증가는 C 알고리즘 자체의 것으로 형제 클러스터 수의 제곱에 비례하며, 네이티브의 최대치만으로도 V8 기본 힙의 두 배입니다. 포팅 고유의 몫은 제거되었습니다. 이전에는 보조 에지 하나가 995 B였는데, 에지마다 `Port` 객체 두 개와 빈 속성 `Map`을 추가로 가졌기 때문입니다. 지금은 458 B입니다. 표에서 `cN`은 `2475_1`의 처음 N개 클러스터이며, 각 칸은 상주 메모리 최대치와 실행 시간입니다.
+
+| 입력 | 클러스터 쌍 | 네이티브 16.1.0 | 수정 전 포팅 | 포팅 |
+|---|---:|---|---|---|
+| c400 | 79,800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319,600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1,279,200 | 844 MB, 35 s | 2,424 MB, 131 s | 1,621 MB, 131 s |
+| `2475_1` | 16,304,905 | 8.41 GB, 1,412 s | `JavaScript heap out of memory` | 10.15 GB, 4,197 s, `conformant` |
+
+증거: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

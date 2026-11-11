@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1222,6 +1222,23 @@ vanhentuneeksi. Todiste:
 **Mikä eroaa.** Natiivi tulostaa tälle operaatiolle `fill=""`; portti tulostaa liukuvärin ensimmäisen pysäytyspisteen. xdot ratkeaa RGBA:ksi ja on portin kanssa samaa mieltä, joten vain svg eroaa.
 
 **Miksi hyväksytty.** `emit_background` vapauttaa `clrs[0]`:n (`lib/common/emit.c:1518`), vaikka svg:n täyttötila osoittaa siihen yhä (`gvrender_resolve_color` säilyttää `color->u.string = name`, `lib/gvc/gvrender.c:193`), joten natiivin tuloste on vapautettua muistia, ei väri; se oli `fill=""` kaikissa 8 mitatussa ajossa 8:sta. Portti tulostaa värin, jota C tarkoitti. Mikään korpuksen syöte ei yllä tähän; `src/gvc/emit-xdot.test.ts` lukitsee sen.
+
+### A14. Yksi apukaari jokaista sisarklusteriparia kohden (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Koskee:** `2475_1` moottorilla `dot`, graafi jossa on 5 711 sisarklusteria. V8:n oletuskeolla (4 192 MB viitekoneella) porttauksen renderöinti päättyy virheeseen `JavaScript heap out of memory`, joten dot-kartoitus antaa tälle yhdelle tunnisteelle suuremman keon (`PORT_HEAP_MB` tiedostossa `test/corpus/survey.ts`).
+
+**Mitä tapahtuu.** `separate_subclust` (`lib/dotgen/position.c:454`) lisää x-koordinaatin rajoitegraafiin yhden apukaaren jokaista sellaista sisarklusteriparia kohden, jonka `rank`-välit menevät päällekkäin, ja ne kaikki pysyvät varattuina kutsuun `remove_aux_edges` asti. Tiedostossa `2475_1` jokainen pari menee päällekkäin: 16 304 905 kaarta. Natiivi 16.1.0 käyttää kuhunkin noin 423 B, ja sen huippu on 8.41 GB resident-muistia. Porttaus rakentaa samat kaaret samassa järjestyksessä (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Miksi hyväksytty.** Kasvu on C-algoritmin omaa, neliöllistä sisarklusterien määrän suhteen, ja jo natiivin huippu yksin on kaksinkertainen V8:n oletuskekoon nähden. Porttauksen oma osuus on poistettu: apukaari maksoi aiemmin 995 B, koska jokaisella oli lisäksi kaksi `Port`-oliota ja tyhjä attribuutti-`Map`; nyt se maksaa 458 B. Taulukossa `cN` on tiedoston `2475_1` N ensimmäistä klusteria, ja jokainen solu kertoo resident-muistin huipun ja ajoajan.
+
+| Syöte | Klusteriparit | Natiivi 16.1.0 | Porttaus ennen korjausta | Porttaus |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Todiste: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

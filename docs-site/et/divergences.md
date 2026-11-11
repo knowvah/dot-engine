@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1184,6 +1184,23 @@ Tõendid: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engi
 **Mis erineb.** Natiivne prindib sellele operatsioonile `fill=""`; port prindib gradiendi esimese peatuse. xdot lahendub RGBA-ks ja ühtib pordiga, seega erineb ainult svg.
 
 **Miks aktsepteeritud.** `emit_background` vabastab `clrs[0]` (`lib/common/emit.c:1518`), samal ajal kui svg täiteolek osutab sellele endiselt (`gvrender_resolve_color` jätab `color->u.string = name`, `lib/gvc/gvrender.c:193`), seega on natiivne väljund vabastatud mälu, mitte värv; see oli `fill=""` kõigil 8 mõõdetud käivitusel 8-st. Port prindib värvi, mida C mõtles. Ükski korpuse sisend siia ei jõua; seda kinnitab `src/gvc/emit-xdot.test.ts`.
+
+### A14. Üks abiserv iga õdeklastrite paari kohta (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Mõjutatud:** `2475_1` mootoriga `dot`, graaf 5 711 õdeklastriga. V8 vaikekuhjaga (4 192 MB viitemasinal) lõpeb pordi renderdus veaga `JavaScript heap out of memory`, seega annab dot'i uuring sellele ühele id-le suurema kuhja (`PORT_HEAP_MB` failis `test/corpus/survey.ts`).
+
+**Mis juhtub.** `separate_subclust` (`lib/dotgen/position.c:454`) lisab x-koordinaadi kitsenduste graafi ühe abiserva iga õdeklastrite paari kohta, mille `rank`-vahemikud kattuvad, ja need kõik jäävad eraldatuks kuni `remove_aux_edges` kutseni. Failis `2475_1` kattub iga paar: 16 304 905 serva. Natiivne 16.1.0 kulutab igaühele umbes 423 B ja selle tipp on 8.41 GB resident-mälu. Port ehitab samad servad samas järjekorras (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Miks aktsepteeritud.** Kasv on C-algoritmi enda oma, ruutsõltuvuses õdeklastrite arvust, ja juba natiivse tipp üksi on kaks korda suurem kui V8 vaikekuhi. Pordi enda osa on kadunud: abiserv maksis varem 995 B, sest igaüks kandis lisaks kaht `Port`-objekti ja tühja atribuutide `Map`-i; nüüd maksab see 458 B. Tabelis on `cN` faili `2475_1` esimesed N klastrit ja iga lahter annab resident-mälu tipu ja tööaja.
+
+| Sisend | Klastripaarid | Natiivne 16.1.0 | Port enne parandust | Port |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Tõendid: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

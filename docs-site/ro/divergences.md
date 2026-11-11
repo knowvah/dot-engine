@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1201,6 +1201,23 @@ iar `registry-staleness.test.ts` ar semnala intrarea ca perimată. Dovezi:
 **Ce diferă.** Nativul afișează `fill=""` pe acea operație; portul afișează prima oprire a gradientului. xdot se rezolvă în RGBA și concordă cu portul, deci diferă doar svg.
 
 **De ce este acceptată.** `emit_background` eliberează `clrs[0]` (`lib/common/emit.c:1518`) în timp ce starea de umplere a svg încă indică spre el (`gvrender_resolve_color` păstrează `color->u.string = name`, `lib/gvc/gvrender.c:193`), deci ieșirea nativă este memorie eliberată, nu o culoare; a fost `fill=""` în 8 din 8 rulări măsurate. Portul afișează culoarea pe care a vrut-o C. Nicio intrare din corpus nu ajunge aici; `src/gvc/emit-xdot.test.ts` o fixează.
+
+### A14. O muchie auxiliară pentru fiecare pereche de clustere surori (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Afectate:** `2475_1` pe `dot`, un graf cu 5.711 de clustere surori. Cu heap-ul implicit al V8 (4.192 MB pe mașina de referință), randarea portării se încheie cu `JavaScript heap out of memory`, așa că sondajul dot îi dă acestui singur id un heap mai mare (`PORT_HEAP_MB` în `test/corpus/survey.ts`).
+
+**Ce se întâmplă.** `separate_subclust` (`lib/dotgen/position.c:454`) adaugă în graful de constrângeri al coordonatei x câte o muchie auxiliară pentru fiecare pereche de clustere surori ale căror intervale de `rank` se suprapun, iar toate rămân alocate până la `remove_aux_edges`. În `2475_1` se suprapune fiecare pereche: 16.304.905 de muchii. Nativul 16.1.0 consumă aproximativ 423 B pentru fiecare și atinge un vârf de 8,41 GB rezidenți. Portarea construiește aceleași muchii în aceeași ordine (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**De ce este acceptată.** Creșterea aparține algoritmului C însuși, pătratică în numărul de clustere surori, iar vârful nativului singur este dublul heap-ului implicit al V8. Partea proprie a portării a dispărut: o muchie auxiliară costa 995 B, pentru că fiecare purta în plus două obiecte `Port` și un `Map` de atribute gol; acum costă 458 B. În tabel, `cN` reprezintă primele N clustere din `2475_1`, iar fiecare celulă dă vârful memoriei rezidente și timpul de execuție.
+
+| Intrare | Perechi de clustere | Nativ 16.1.0 | Portarea înainte de corecție | Portarea |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Dovezi: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

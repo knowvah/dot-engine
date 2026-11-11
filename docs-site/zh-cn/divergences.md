@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -463,6 +463,23 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 **有何不同。** 原生在该操作上输出 `fill=""`；移植版输出渐变的第一个色标。xdot 解析为 RGBA，与移植版一致，因此只有 svg 不同。
 
 **为何接受。** `emit_background` 释放了 `clrs[0]`（`lib/common/emit.c:1518`），而 svg 的填充状态仍指向它（`gvrender_resolve_color` 保留 `color->u.string = name`，`lib/gvc/gvrender.c:193`），所以原生输出是已释放的内存，而不是颜色；在测得的 8 次运行中 8 次都是 `fill=""`。移植版输出 C 本意要输出的颜色。语料库中没有输入会走到这里；`src/gvc/emit-xdot.test.ts` 固定了该行为。
+
+### A14. 每对兄弟簇一条辅助边（`2475_1`，dot） {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**受影响：** `dot` 上的 `2475_1`，一个包含 5,711 个兄弟簇的图。在 V8 的默认堆（参考主机上为 4,192 MB）下，移植版的渲染以 `JavaScript heap out of memory` 结束，因此 dot 调查只为这一个 id 提供更大的堆（`test/corpus/survey.ts` 中的 `PORT_HEAP_MB`）。
+
+**发生了什么。** `separate_subclust`（`lib/dotgen/position.c:454`）为每一对 `rank` 范围重叠的兄弟簇向 x 坐标约束图添加一条辅助边，并且它们全部保持已分配状态，直到 `remove_aux_edges`。在 `2475_1` 中每一对都重叠：共 16,304,905 条边。原生 16.1.0 每条边约用 423 B，常驻内存峰值为 8.41 GB。移植版以相同的顺序构建相同的边（`separateSubclust`，`src/layout/dot/position-cluster.ts`）。
+
+**为何接受。** 这种增长是 C 算法本身的，与兄弟簇数量的平方成正比，而仅原生程序的峰值就是 V8 默认堆的两倍。移植版自身的那一部分已经消除：一条辅助边原先要 995 B，因为每条边还带有两个 `Port` 对象和一个空的属性 `Map`；现在是 458 B。表中 `cN` 是 `2475_1` 的前 N 个簇，每个单元格给出常驻内存峰值和运行时间。
+
+| 输入 | 簇对 | 原生 16.1.0 | 修复前的移植版 | 移植版 |
+|---|---:|---|---|---|
+| c400 | 79,800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319,600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1,279,200 | 844 MB, 35 s | 2,424 MB, 131 s | 1,621 MB, 131 s |
+| `2475_1` | 16,304,905 | 8.41 GB, 1,412 s | `JavaScript heap out of memory` | 10.15 GB, 4,197 s, `conformant` |
+
+证据：[issue #145](https://github.com/knowvah/dot-engine/issues/145)。
 
 ---
 

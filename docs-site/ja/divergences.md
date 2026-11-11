@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1110,6 +1110,23 @@ plain と stderr は一致）、`accepted-divergences-engines.json` と
 **何が異なるか。** ネイティブはその操作に `fill=""` を出力します。ポートはグラデーションの最初のストップを出力します。xdot は RGBA に解決され、ポートと一致するため、異なるのは svg だけです。
 
 **受け入れる理由。** `emit_background` は `clrs[0]` を解放しますが（`lib/common/emit.c:1518`）、svg の塗りつぶし状態はまだそれを指しています（`gvrender_resolve_color` は `color->u.string = name` を保持します。`lib/gvc/gvrender.c:193`）。そのためネイティブの出力は色ではなく解放済みメモリです。測定した 8 回中 8 回で `fill=""` でした。ポートは C が意図した色を出力します。コーパスにここへ到達する入力はなく、`src/gvc/emit-xdot.test.ts` で固定しています。
+
+### A14. 兄弟クラスターの組ごとに 1 本の補助エッジ（`2475_1`、dot） {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**影響を受けるもの：** `dot` での `2475_1`。5,711 個の兄弟クラスターからなるグラフです。V8 の既定のヒープ（リファレンスホストでは 4,192 MB）では、ポートのレンダリングは `JavaScript heap out of memory` で終了するため、dot の調査はこの 1 つの ID にだけ大きなヒープを与えます（`test/corpus/survey.ts` の `PORT_HEAP_MB`）。
+
+**何が起きるか。** `separate_subclust`（`lib/dotgen/position.c:454`）は、`rank` の範囲が重なる兄弟クラスターの組ごとに、x 座標の制約グラフへ補助エッジを 1 本追加し、それらはすべて `remove_aux_edges` まで割り当てられたままです。`2475_1` ではすべての組が重なり、エッジは 16,304,905 本になります。ネイティブの 16.1.0 は 1 本あたり約 423 B を使い、常駐メモリのピークは 8.41 GB です。ポートは同じエッジを同じ順序で構築します（`separateSubclust`、`src/layout/dot/position-cluster.ts`）。
+
+**受け入れる理由。** この増加は C のアルゴリズム自体のもので、兄弟クラスター数の 2 乗に比例し、ネイティブのピークだけで V8 の既定ヒープの 2 倍あります。ポート固有の分は取り除かれました。以前は補助エッジ 1 本が 995 B でした（各エッジが 2 つの `Port` オブジェクトと空の属性 `Map` も持っていたため）が、現在は 458 B です。表の `cN` は `2475_1` の先頭 N 個のクラスターで、各セルは常駐メモリのピークと実行時間です。
+
+| 入力 | クラスターの組 | ネイティブ 16.1.0 | 修正前のポート | ポート |
+|---|---:|---|---|---|
+| c400 | 79,800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319,600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1,279,200 | 844 MB, 35 s | 2,424 MB, 131 s | 1,621 MB, 131 s |
+| `2475_1` | 16,304,905 | 8.41 GB, 1,412 s | `JavaScript heap out of memory` | 10.15 GB, 4,197 s, `conformant` |
+
+証拠：[issue #145](https://github.com/knowvah/dot-engine/issues/145)。
 
 ---
 

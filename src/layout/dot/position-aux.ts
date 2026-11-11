@@ -99,9 +99,15 @@ export function graphRanksep(g: Graph): number { return g.info.ranksep ?? 0; }
 // make_aux_edge — @see lib/dotgen/position.c:make_aux_edge
 // ---------------------------------------------------------------------------
 
-/** @see lib/dotgen/position.c:make_aux_edge */
+/**
+ * The edge's two ports are the shared default port: C zeroes them inside the
+ * Agedgeinfo_t it allocates here and never writes them. Its attributes are the
+ * shared empty map: C binds no attribute record to an aux edge, only the
+ * Agedgeinfo_t (issue #145).
+ * @see lib/dotgen/position.c:make_aux_edge
+ */
 export function makeAuxEdge(u: Node, v: Node, len: number, wt: number): Edge {
-  const e = new EdgeClass(u, v, '');
+  const e = new EdgeClass(u, v, '', true, true);
   // C ROUND() is half away from zero. @see lib/dotgen/position.c:195
   e.info.minlen = cround(Math.min(len, 2147483647));
   e.info.weight = wt;

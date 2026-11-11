@@ -9,7 +9,7 @@
 
 import type { Node } from './node.js';
 import { EMPTY_ATTRS } from './lazy-attrs.js';
-import { type EdgeInfo, makeEdgeInfo, makePort } from './edgeInfo.js';
+import { type EdgeInfo, AUX_EDGE_PORT, makeEdgeInfo, makePort } from './edgeInfo.js';
 
 /**
  * Represents an abstract edge in the graph, corresponding to Agedgepair_t.
@@ -93,13 +93,20 @@ export class Edge {
    */
   info: EdgeInfo;
 
-  /** @see lib/cgraph/edge.c:agedge */
-  constructor(tail: Node, head: Node, name: string, lazyAttrs = false) {
+  /**
+   * `auxPorts` is for dot's auxiliary edges only: both ends take the shared
+   * {@link AUX_EDGE_PORT} in place of a private port each.
+   * @see lib/cgraph/edge.c:agedge
+   * @see lib/dotgen/position.c:make_aux_edge
+   */
+  constructor(tail: Node, head: Node, name: string, lazyAttrs = false, auxPorts = false) {
     this.seq = Edge._nextSeq++;
     this.tail = tail;
     this.head = head;
     this.name = name;
     this.attrs = lazyAttrs ? EMPTY_ATTRS : new Map();
-    this.info = makeEdgeInfo(makePort(), makePort());
+    this.info = auxPorts
+      ? makeEdgeInfo(AUX_EDGE_PORT, AUX_EDGE_PORT)
+      : makeEdgeInfo(makePort(), makePort());
   }
 }

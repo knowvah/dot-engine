@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1199,6 +1199,23 @@ och `registry-staleness.test.ts` skulle flagga posten som inaktuell. Belägg:
 **Vad som skiljer sig.** Native skriver ut `fill=""` på den operationen; porten skriver ut gradientens första stopp. xdot löses upp till RGBA och stämmer med porten, så bara svg skiljer sig.
 
 **Varför godkänd.** `emit_background` frigör `clrs[0]` (`lib/common/emit.c:1518`) medan svg:s fyllnadstillstånd fortfarande pekar på den (`gvrender_resolve_color` behåller `color->u.string = name`, `lib/gvc/gvrender.c:193`), så native utdata är frigjort minne, inte en färg; det var `fill=""` i 8 av 8 uppmätta körningar. Porten skriver ut den färg C avsåg. Ingen korpusindata når hit; `src/gvc/emit-xdot.test.ts` fastlåser det.
+
+### A14. En hjälpkant per par av syskonkluster (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Berörda:** `2475_1` på `dot`, en graf med 5 711 syskonkluster. Med V8:s standard-heap (4 192 MB på referensmaskinen) slutar porteringens rendering i `JavaScript heap out of memory`, så dot-undersökningen ger detta enda id en större heap (`PORT_HEAP_MB` i `test/corpus/survey.ts`).
+
+**Vad som händer.** `separate_subclust` (`lib/dotgen/position.c:454`) lägger till en hjälpkant i villkorsgrafen för x-koordinaten för varje par av syskonkluster vars `rank`-intervall överlappar, och alla förblir allokerade fram till `remove_aux_edges`. I `2475_1` överlappar varje par: 16 304 905 kanter. Inbyggd 16.1.0 lägger omkring 423 B på varje och når som mest 8.41 GB resident. Porteringen bygger samma kanter i samma ordning (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Varför godkänd.** Tillväxten är C-algoritmens egen, kvadratisk i antalet syskonkluster, och enbart den inbyggdas topp är det dubbla av V8:s standard-heap. Porteringens egen andel är borta: en hjälpkant kostade tidigare 995 B, eftersom var och en också bar två `Port`-objekt och en tom attribut-`Map`; nu kostar den 458 B. I tabellen är `cN` de första N klustren i `2475_1`, och varje cell anger toppen i resident minne och körtiden.
+
+| Indata | Klusterpar | Inbyggd 16.1.0 | Porteringen före rättningen | Porteringen |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Belägg: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

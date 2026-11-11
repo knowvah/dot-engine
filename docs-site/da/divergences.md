@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1201,6 +1201,23 @@ fejl, og `registry-staleness.test.ts` ville markere posten som forældet. Eviden
 **Hvad der adskiller sig.** Native udskriver `fill=""` på den operation; porten udskriver gradientens første stop. xdot opløses til RGBA og er enig med porten, så kun svg afviger.
 
 **Hvorfor accepteret.** `emit_background` frigiver `clrs[0]` (`lib/common/emit.c:1518`), mens svg's udfyldningstilstand stadig peger på den (`gvrender_resolve_color` beholder `color->u.string = name`, `lib/gvc/gvrender.c:193`), så native output er frigivet hukommelse, ikke en farve; det var `fill=""` i 8 af 8 målte kørsler. Porten udskriver den farve, C mente. Intet korpusinput når hertil; `src/gvc/emit-xdot.test.ts` fastholder det.
+
+### A14. Én hjælpekant for hvert par af søskendeklynger (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Berørt:** `2475_1` på `dot`, en graf med 5.711 søskendeklynger. Under V8's standard-heap (4.192 MB på referenceværten) ender portens rendering i `JavaScript heap out of memory`, så dot-undersøgelsen giver dette ene id en større heap (`PORT_HEAP_MB` i `test/corpus/survey.ts`).
+
+**Hvad der sker.** `separate_subclust` (`lib/dotgen/position.c:454`) tilføjer én hjælpekant til begrænsningsgrafen for x-koordinaten for hvert par af søskendeklynger, hvis `rank`-intervaller overlapper, og de forbliver alle allokeret indtil `remove_aux_edges`. I `2475_1` overlapper hvert par: 16.304.905 kanter. Native 16.1.0 bruger omkring 423 B på hver og topper ved 8,41 GB resident. Porten bygger de samme kanter i samme rækkefølge (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Hvorfor accepteret.** Væksten er C-algoritmens egen, kvadratisk i antallet af søskendeklynger, og alene natives spids er det dobbelte af V8's standard-heap. Portens egen andel er væk: en hjælpekant kostede før 995 B, fordi hver også bar to `Port`-objekter og et tomt attribut-`Map`; nu koster den 458 B. I tabellen er `cN` de første N klynger i `2475_1`, og hver celle angiver spidsen i resident hukommelse og køretiden.
+
+| Input | Klyngepar | Native 16.1.0 | Porten før rettelsen | Porten |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Evidens: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

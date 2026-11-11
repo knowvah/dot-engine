@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1209,6 +1209,23 @@ Egy másféle hiba a `2784` esetén el nem fogadott hibaként jelenne meg, és a
 **Mi tér el.** A natív ezen a műveleten `fill=""` értéket ír ki; a port a színátmenet első színpontját. Az xdot RGBA-vá oldódik fel, és egyezik a porttal, így csak az svg tér el.
 
 **Miért elfogadott.** Az `emit_background` felszabadítja a `clrs[0]` elemet (`lib/common/emit.c:1518`), miközben az svg kitöltési állapota még rá mutat (a `gvrender_resolve_color` meghagyja a `color->u.string = name` értéket, `lib/gvc/gvrender.c:193`), így a natív kimenet felszabadított memória, nem szín; a mért 8 futtatásból mind a 8-ban `fill=""` volt. A port azt a színt írja ki, amelyet a C szánt. A korpusz egyetlen bemenete sem éri el ezt; a `src/gvc/emit-xdot.test.ts` rögzíti.
+
+### A14. Egy segédél minden testvérklaszter-párra (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Érintett:** `2475_1` a `dot` motoron, egy 5 711 testvérklaszterből álló gráf. A V8 alapértelmezett heapje mellett (4 192 MB a referenciagépen) a portolt változat renderelése `JavaScript heap out of memory` hibával ér véget, ezért a dot felmérés ennek az egy azonosítónak nagyobb heapet ad (`PORT_HEAP_MB` a `test/corpus/survey.ts` fájlban).
+
+**Mi történik.** A `separate_subclust` (`lib/dotgen/position.c:454`) az x-koordináta kényszergráfjához egy segédélt ad minden olyan testvérklaszter-párra, amelynek `rank`-tartományai átfedik egymást, és mindegyik lefoglalva marad a `remove_aux_edges` hívásig. A `2475_1` esetén minden pár átfedi egymást: 16 304 905 él. A natív 16.1.0 mindegyikre körülbelül 423 B-ot költ, csúcsa 8.41 GB rezidens memória. A portolt változat ugyanazokat az éleket építi fel ugyanabban a sorrendben (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Miért elfogadott.** A növekedés magáé a C algoritmusé, a testvérklaszterek számában négyzetes, és már a natív csúcsa egymagában kétszerese a V8 alapértelmezett heapjének. A portolt változat saját része megszűnt: egy segédél korábban 995 B-ba került, mert mindegyik két `Port` objektumot és egy üres attribútum-`Map`-et is hordozott; most 458 B-ba kerül. A táblázatban `cN` a `2475_1` első N klasztere, és minden cella a rezidens memória csúcsát és a futási időt adja meg.
+
+| Bemenet | Klaszterpárok | Natív 16.1.0 | Portolt változat a javítás előtt | Portolt változat |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Bizonyíték: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

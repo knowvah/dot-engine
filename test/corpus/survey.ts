@@ -117,6 +117,32 @@ const PORT_TIMES: Record<string, number> = (() => {
  *  slow/timeout tail and focuses on divergences that complete in reasonable time.
  *  Graphs with no recorded port time are kept (assumed fast). 0 = no filter. */
 const MAX_PORT_MS = Number(process.env.SURVEY_MAX_PORT_MS ?? 0);
+/**
+ * Heap cap (MB) for the port render of an id that cannot finish under V8's
+ * default heap (4,192 MB on the reference host), by id. Every other id keeps
+ * the default, so a heap regression anywhere else still fails as `errored`.
+ *
+ * `2475_1` is the only entry. Its 5,711 sibling clusters make
+ * `separate_subclust` build 16.3 M auxiliary edges, in C as in the port: native
+ * 16.1.0 peaks at 8,410 MB RSS (1,411.9 s, 2026-11-10), so no port fits the
+ * default heap. The cap is `ceil(1.25 x k x 8,410 MB)` rounded up to a whole
+ * GB, where k is the port's measured peak RSS over native's: the port renders
+ * it in about 4,200 s (`conformant`), and the larger of two measured peaks is
+ * 10,151 MB (k = 1.207, 2026-11-10), which gives 12,689 MB and a cap of 13 GB
+ * (issue #145, docs/known-divergences.md A14).
+ */
+export const PORT_HEAP_MB: Readonly<Record<string, number>> = { '2475_1': 13 * 1024 };
+
+/**
+ * Environment for one port render: `env` itself, or for an id in
+ * {@link PORT_HEAP_MB} a copy whose `NODE_OPTIONS` ends with that id's
+ * `--max-old-space-size` (tsx passes NODE_OPTIONS on to the node it starts).
+ */
+export function portEnv(id: string, env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  if (!Object.hasOwn(PORT_HEAP_MB, id)) return env;
+  const flag = `--max-old-space-size=${PORT_HEAP_MB[id]}`;
+  return { ...env, NODE_OPTIONS: env.NODE_OPTIONS ? `${env.NODE_OPTIONS} ${flag}` : flag };
+}
 /** Extracts a semantic version from `dot -V` output. */
 const VERSION_RE = /version (\d+\.\d+\.\d+)/;
 
@@ -383,12 +409,13 @@ async function oracleSvg(absInput: string, id: string): Promise<{ svg?: string; 
 
 /** Render an input with the port in an isolated, budget-killed subprocess. */
 async function portSvg(
+  id: string,
   absInput: string,
   tsx: { cmd: string; pre: string[] },
   budgetMs: number,
 ): Promise<{ svg?: string; verdict?: Verdict; errMsg?: string }> {
   const args = [...tsx.pre, RENDER_ONE, absInput, 'dot'];
-  const r = await spawnCapture(tsx.cmd, args, process.env, budgetMs);
+  const r = await spawnCapture(tsx.cmd, args, portEnv(id, process.env), budgetMs);
   if (r.timedOut) return { verdict: 'timeout' };
   if (r.code !== 0 || r.stdout.length === 0) {
     return { verdict: 'errored', errMsg: portErrMsg(r.stderr) || `port exit ${r.code}` };
@@ -521,7 +548,7 @@ async function surveyOne(
   // time the oracle run just measured.
   const nativeMs = CANON_NATIVE[entry.id] ?? oracle.ms ?? 0;
   const budgetMs = renderBudgetMs(entry.id, nativeMs);
-  const port = await portSvg(absInput, tsx, budgetMs);
+  const port = await portSvg(entry.id, absInput, tsx, budgetMs);
   if (port.svg === undefined) return { ...meta, verdict: port.verdict!, errMsg: port.errMsg };
   const co = clipOverflow(port.svg, oracle.svg);
   return {
@@ -608,6 +635,7 @@ async function main(): Promise<void> {
       `${TIMEOUT_MULT}x recorded port, ${TIMEOUT_FLOOR_MS}ms))\n` +
       (MAX_PORT_MS > 0 ? `fast mode: excluded ${skippedSlow} graphs with port time > ${MAX_PORT_MS}ms\n` : '') +
       `oracle ${DOT_BIN} (cap ${ORACLE_TIMEOUT_MS}ms)\ncache ${CACHE}\nport via ${tsx.cmd}\n` +
+      `port heap caps: ${Object.entries(PORT_HEAP_MB).map(([id, mb]) => `${id}=${mb}MB`).join(', ')}\n` +
       `idle-sleep assertion: ${awake ? 'held' : 'NOT held'}\n`,
   );
   // LPT dispatch (longest expected job first): start the slowest renders at

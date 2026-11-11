@@ -393,6 +393,21 @@ export function makePort(): Port {
 }
 
 /**
+ * The default port both ends of every auxiliary edge share.
+ *
+ * C's make_aux_edge zero-allocates one Agedgeinfo_t, so an aux edge's
+ * ED_tail_port and ED_head_port are two structs inside that block, and nothing
+ * writes them before remove_aux_edges frees the edge. A makePort() pair per aux
+ * edge stood for those 96 inline bytes with 352 B of separate objects (two
+ * ports, two points, four boxed doubles), on a structure separate_subclust
+ * builds once per pair of sibling clusters (16.3 M on tests/2475_1.dot). It
+ * carries makePort()'s values and is frozen with its point, so a write throws
+ * rather than reaching every aux edge.
+ * @see lib/dotgen/position.c:make_aux_edge
+ */
+export const AUX_EDGE_PORT: Port = Object.freeze({ ...makePort(), p: Object.freeze({ x: 0, y: 0 }) });
+
+/**
  * Constructs a minimal EdgeInfo with required port fields initialized.
  *
  * Both ports are required — tail_port and head_port are always initialized

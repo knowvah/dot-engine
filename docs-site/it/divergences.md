@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1300,6 +1300,23 @@ obsoleta. Evidenza:
 **Che cosa differisce.** Il nativo stampa `fill=""` su quell'operazione; il port stampa il primo punto del gradiente. xdot si risolve in RGBA e concorda con il port, quindi differisce solo svg.
 
 **Perché è accettato.** `emit_background` libera `clrs[0]` (`lib/common/emit.c:1518`) mentre lo stato di riempimento di svg punta ancora a esso (`gvrender_resolve_color` mantiene `color->u.string = name`, `lib/gvc/gvrender.c:193`), quindi l'output nativo è memoria liberata, non un colore; era `fill=""` in 8 esecuzioni misurate su 8. Il port stampa il colore che C intendeva. Nessun input del corpus raggiunge questo caso; `src/gvc/emit-xdot.test.ts` lo fissa.
+
+### A14. Un arco ausiliario per ogni coppia di cluster fratelli (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Interessato:** `2475_1` su `dot`, un grafo di 5.711 cluster fratelli. Con l'heap predefinito di V8 (4.192 MB sulla macchina di riferimento) il rendering del porting termina con `JavaScript heap out of memory`, perciò il rilevamento di dot assegna a questo solo id un heap più grande (`PORT_HEAP_MB` in `test/corpus/survey.ts`).
+
+**Che cosa succede.** `separate_subclust` (`lib/dotgen/position.c:454`) aggiunge al grafo dei vincoli della coordinata x un arco ausiliario per ogni coppia di cluster fratelli i cui intervalli di `rank` si sovrappongono, e tutti restano allocati fino a `remove_aux_edges`. In `2475_1` ogni coppia si sovrappone: 16.304.905 archi. La versione nativa 16.1.0 spende circa 423 B per ciascuno e raggiunge un picco di 8,41 GB residenti. Il porting costruisce gli stessi archi nello stesso ordine (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Perché è accettato.** La crescita è propria dell'algoritmo C, quadratica nel numero di cluster fratelli, e il solo picco della versione nativa è il doppio dell'heap predefinito di V8. La parte propria del porting è stata eliminata: un arco ausiliario costava 995 B, perché ciascuno portava in più due oggetti `Port` e una `Map` di attributi vuota; ora costa 458 B. Nella tabella `cN` indica i primi N cluster di `2475_1`, e ogni cella riporta il picco di memoria residente e il tempo di esecuzione.
+
+| Input | Coppie di cluster | Nativo 16.1.0 | Porting prima della correzione | Porting |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Evidenza: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 

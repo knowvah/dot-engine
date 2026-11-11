@@ -1,5 +1,5 @@
 ---
-sourceHash: 6e5ae3b7ba37e6f4b4bf1a5f8ba650396ccc243a6ff846cf08a6b58309b674ec
+sourceHash: 698db30518aebdfadafb624de4adc68d2e7653620eeeb0986f49058b832455d8
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -1275,6 +1275,23 @@ Fehlschlag bei `2784` würde als nicht akzeptierter Fehler auftauchen, und
 **Was abweicht.** Das native Graphviz gibt bei dieser Operation `fill=""` aus; die Portierung gibt den ersten Verlaufsstopp aus. xdot löst zu RGBA auf und stimmt mit der Portierung überein, daher weicht nur svg ab.
 
 **Warum akzeptiert.** `emit_background` gibt `clrs[0]` frei (`lib/common/emit.c:1518`), während der Füllzustand von svg noch darauf zeigt (`gvrender_resolve_color` behält `color->u.string = name`, `lib/gvc/gvrender.c:193`); die native Ausgabe ist also freigegebener Speicher, keine Farbe. In allen 8 von 8 gemessenen Läufen war es `fill=""`. Die Portierung gibt die Farbe aus, die C meinte. Keine Korpuseingabe erreicht dies; `src/gvc/emit-xdot.test.ts` hält es fest.
+
+### A14. Eine Hilfskante je Paar von Geschwister-Clustern (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Betroffen:** `2475_1` auf `dot`, ein Graph mit 5.711 Geschwister-Clustern. Unter dem Standard-Heap von V8 (4.192 MB auf dem Referenzrechner) endet das Rendern der Portierung mit `JavaScript heap out of memory`; der dot-Survey gibt deshalb dieser einen ID einen größeren Heap (`PORT_HEAP_MB` in `test/corpus/survey.ts`).
+
+**Was geschieht.** `separate_subclust` (`lib/dotgen/position.c:454`) fügt dem Constraint-Graphen der x-Koordinate für jedes Paar von Geschwister-Clustern, deren `rank`-Bereiche sich überlappen, eine Hilfskante hinzu, und alle bleiben bis `remove_aux_edges` alloziert. In `2475_1` überlappt jedes Paar: 16.304.905 Kanten. Das native 16.1.0 verbraucht für jede etwa 423 B und erreicht in der Spitze 8,41 GB resident. Die Portierung baut dieselben Kanten in derselben Reihenfolge (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Warum akzeptiert.** Das Wachstum ist das des C-Algorithmus selbst, quadratisch in der Zahl der Geschwister-Cluster, und schon die Spitze des nativen Laufs ist das Doppelte des Standard-Heaps von V8. Der eigene Anteil der Portierung ist beseitigt: Eine Hilfskante kostete zuvor 995 B, weil jede zusätzlich zwei `Port`-Objekte und eine leere Attribut-`Map` trug; jetzt kostet sie 458 B. In der Tabelle steht `cN` für die ersten N Cluster von `2475_1`, und jede Zelle nennt die Spitze des residenten Speichers und die Laufzeit.
+
+| Eingabe | Cluster-Paare | Nativ 16.1.0 | Portierung vor der Korrektur | Portierung |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Belege: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 
