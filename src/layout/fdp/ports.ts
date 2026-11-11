@@ -12,6 +12,7 @@
  */
 
 import { InternalError } from '../../errors.js';
+import { fma } from '../../common/fma.js';
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
@@ -76,7 +77,8 @@ export function getEdgeList(n: Node, g: Graph): Erec[] {
     const m = e.head === n ? e.tail : e.head;
     const dx = m.info.pos![0]! - n.info.pos![0]!;
     const dy = m.info.pos![1]! - n.info.pos![1]!;
-    erecs.push({ e, alpha: Math.atan2(dy, dx), dist2: dx * dx + dy * dy });
+    // contracted (-ffp-contract=on): fmadd of the first product
+    erecs.push({ e, alpha: Math.atan2(dy, dx), dist2: fma(dx, dx, dy * dy) });
   }
   if (erecs.length !== deg) {
     throw new InternalError(`fdp getEdgeList: ${erecs.length} edges vs deg ${deg}`);
@@ -107,7 +109,9 @@ export function genPorts(
   const fwd = n.id < other.id;
   const fan = fwd
     ? { i: idx, inc: 1, angle: er.alpha, delta }
-    : { i: idx + cnt - 1, inc: -1, angle: er.alpha + delta * (cnt - 1), delta: -delta };
+    : { // contracted (-ffp-contract=on): angle += delta * (cnt - 1) is one fmadd
+      i: idx + cnt - 1, inc: -1, angle: fma(delta, cnt - 1, er.alpha), delta: -delta,
+    };
 
   fillPorts(n, e, pp, fan);
   return idx + cnt;

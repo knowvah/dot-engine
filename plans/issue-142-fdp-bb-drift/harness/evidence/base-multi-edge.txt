@@ -1,0 +1,72 @@
+== raw port against native
+xdot lines differing: 100
+lines native=19113 port=18694 differing=12878
+  = 1212: libm atan2 -0x1.290ae334f2038p-2 0x1.7f974da238bap-2 = -0x1.515dba870fedbp-1
+first difference at line 1213:
+  native: gel.e clusterA 1 dx=0x1.7f974da238bap-2 dy=-0x1.290ae334f2038p-2 alpha=-0x1.515dba870fedbp-1 dist2=0x1.cbb82bafbafe3p-3
+  port:   gel.e clusterA 1 dx=0x1.7f974da238bap-2 dy=-0x1.290ae334f2038p-2 alpha=-0x1.515dba870fedbp-1 dist2=0x1.cbb82bafbafe4p-3
+differing lines per label: {
+  'gel.e': 4,
+  libm: 33,
+  'tl.port': 16,
+  'tl.init': 24,
+  'tl.git': 11092,
+  'tl.end': 37,
+  'lay.prex': 16,
+  'lay.norm': 16,
+  'xl.parm': 297,
+  'xl.it': 1221,
+  'lay.x': 16,
+  'fcc.bb0': 3,
+  'fcc.pt': 3,
+  'fcc.bb1': 3,
+  'fcc.del': 3,
+  'fcc.pos': 41,
+  'fcc.bbf': 3,
+  'lay.clsz': 2,
+  'gp.in': 3,
+  'gp.port': 14,
+  'tl.parms': 1,
+  'rec.bb': 3,
+  'eval.pos': 18,
+  'setbb.in': 4,
+  'setbb.pt': 4,
+  '': 1
+}
+== port with native's libm results injected against native
+libm calls=80 injected-where-v8-differs=2 misses=14
+  cos -0x1.41f013cd9658ep+1 native=-0x1.9ec6f8a9641e7p-1 v8=-0x1.9ec6f8a9641e6p-1
+  cos -0x1.272129da1a6dp+1 native=-0x1.574dca8c13e15p-1 v8=-0x1.574dca8c13e14p-1
+xdot lines differing: 100
+lines native=19113 port=18747 differing=7982
+  = 1212: libm atan2 -0x1.290ae334f2038p-2 0x1.7f974da238bap-2 = -0x1.515dba870fedbp-1
+first difference at line 1213:
+  native: gel.e clusterA 1 dx=0x1.7f974da238bap-2 dy=-0x1.290ae334f2038p-2 alpha=-0x1.515dba870fedbp-1 dist2=0x1.cbb82bafbafe3p-3
+  port:   gel.e clusterA 1 dx=0x1.7f974da238bap-2 dy=-0x1.290ae334f2038p-2 alpha=-0x1.515dba870fedbp-1 dist2=0x1.cbb82bafbafe4p-3
+differing lines per label: {
+  'gel.e': 2,
+  'gp.port': 7,
+  libm: 28,
+  'tl.port': 14,
+  'tl.parms': 1,
+  'tl.init': 21,
+  'tl.git': 6300,
+  'tl.end': 21,
+  'lay.prex': 11,
+  'lay.norm': 11,
+  'xl.parm': 293,
+  'xl.it': 1196,
+  'lay.x': 11,
+  'fcc.bb0': 2,
+  'fcc.pt': 2,
+  'fcc.bb1': 2,
+  'fcc.del': 2,
+  'fcc.pos': 25,
+  'fcc.bbf': 2,
+  'lay.clsz': 1,
+  'rec.bb': 3,
+  'eval.pos': 18,
+  'setbb.in': 4,
+  'setbb.pt': 4,
+  '': 1
+}

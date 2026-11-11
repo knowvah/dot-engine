@@ -1,0 +1,76 @@
+# gate 6: compare.mjs <base f544f206> <head e742e778>, stock oracle 16.1.0 (GVBINDIR with core, dot_layout, neato_layout)
+fdp.gv xdot native-varies
+fdp.gv dot lines=40 base=1 head=1 lost=0 structure=true max=1.5987e-14
+fdp.gv plain native-varies
+clust2.dot xdot lines=344 base=225 head=225 lost=0 structure=true max=186.23
+clust2.dot dot lines=196 base=82 head=82 lost=0 structure=true max=186.23
+clust2.dot plain lines=63 base=62 head=62 lost=0 structure=true max=2.586
+2183.dot xdot lines=269 base=140 head=140 lost=0 structure=false max=172.58
+2183.dot dot lines=181 base=53 head=53 lost=0 structure=false max=172.58
+2183.dot plain lines=41 base=40 head=40 lost=0 structure=false max=2.3969
+2242.dot xdot lines=320 base=88 head=88 lost=0 structure=true max=299
+2242.dot dot lines=263 base=38 head=38 lost=0 structure=true max=299
+2242.dot plain lines=92 base=31 head=31 lost=0 structure=true max=4.0973
+1436.dot xdot lines=302 base=112 head=112 lost=0 structure=true max=912.23
+1436.dot dot lines=175 base=40 head=40 lost=0 structure=true max=912.23
+1436.dot plain lines=58 base=33 head=33 lost=0 structure=true max=11.185
+56.dot xdot lines=254 base=111 head=111 lost=0 structure=false max=382.33
+56.dot dot lines=185 base=43 head=43 lost=0 structure=false max=382.28
+56.dot plain native-varies
+ldbxtried.gv xdot lines=586 base=327 head=327 lost=0 structure=true max=239.04
+ldbxtried.gv dot lines=361 base=103 head=103 lost=0 structure=true max=239.04
+ldbxtried.gv plain lines=102 base=101 head=101 lost=0 structure=true max=3.32
+ldbxtried.gv xdot lines=586 base=327 head=327 lost=0 structure=true max=239.04
+ldbxtried.gv dot lines=361 base=103 head=103 lost=0 structure=true max=239.04
+ldbxtried.gv plain lines=102 base=101 head=101 lost=0 structure=true max=3.32
+crazy.gv xdot lines=570 base=274 head=274 lost=0 structure=true max=498.86
+crazy.gv dot lines=387 base=92 head=92 lost=0 structure=true max=498.86
+crazy.gv plain lines=92 base=91 head=91 lost=0 structure=true max=6.928
+b15.gv xdot lines=820 base=668 head=668 lost=0 structure=false max=646.32
+b15.gv dot lines=408 base=247 head=247 lost=0 structure=true max=646.32
+b15.gv plain lines=218 base=201 head=201 lost=0 structure=true max=8.9766
+ldbxtried.gv xdot lines=569 base=327 head=327 lost=0 structure=true max=157
+ldbxtried.gv dot lines=344 base=103 head=103 lost=0 structure=true max=157
+ldbxtried.gv plain lines=102 base=101 head=101 lost=0 structure=true max=2.17
+mode.gv xdot lines=2085 base=1640 head=1640 lost=0 structure=false max=363.09
+mode.gv dot lines=1219 base=483 head=483 lost=0 structure=true max=363.09
+mode.gv plain native-varies
+b51.gv xdot lines=870 base=667 head=667 lost=0 structure=false max=18.3
+b51.gv dot lines=553 base=184 head=184 lost=0 structure=true max=18.3
+b51.gv plain native-varies
+viewport.gv xdot lines=2085 base=1665 head=1665 lost=0 structure=false max=8732.2
+viewport.gv dot lines=1219 base=483 head=483 lost=0 structure=true max=8736.4
+viewport.gv plain lines=484 base=483 head=483 lost=0 structure=true max=121.34
+clust.gv xdot lines=97 base=0 head=0 lost=0 structure=true max=0
+clust.gv dot lines=56 base=0 head=0 lost=0 structure=true max=0
+clust.gv plain lines=19 base=0 head=0 lost=0 structure=true max=0
+clust1.gv xdot lines=92 base=1 head=1 lost=0 structure=true max=1.5987e-14
+clust1.gv dot lines=47 base=1 head=1 lost=0 structure=true max=1.5987e-14
+clust1.gv plain lines=21 base=0 head=0 lost=0 structure=true max=0
+clust2.gv xdot lines=92 base=0 head=0 lost=0 structure=true max=0
+clust2.gv dot lines=47 base=0 head=0 lost=0 structure=true max=0
+clust2.gv plain lines=21 base=0 head=0 lost=0 structure=true max=0
+clust3.gv xdot lines=92 base=0 head=0 lost=0 structure=true max=0
+clust3.gv dot lines=47 base=0 head=0 lost=0 structure=true max=0
+clust3.gv plain lines=21 base=0 head=0 lost=0 structure=true max=0
+clust4.gv xdot lines=125 base=0 head=0 lost=0 structure=true max=0
+clust4.gv dot lines=72 base=0 head=0 lost=0 structure=true max=0
+clust4.gv plain lines=25 base=0 head=0 lost=0 structure=true max=0
+clust5.gv xdot lines=122 base=0 head=0 lost=0 structure=true max=0
+clust5.gv dot lines=64 base=0 head=0 lost=0 structure=true max=0
+clust5.gv plain lines=27 base=0 head=0 lost=0 structure=true max=0
+clust1.dot xdot lines=125 base=0 head=0 lost=0 structure=true max=0
+clust1.dot dot lines=72 base=0 head=0 lost=0 structure=true max=0
+clust1.dot plain lines=25 base=0 head=0 lost=0 structure=true max=0
+compound.dot xdot lines=95 base=0 head=0 lost=0 structure=true max=0
+compound.dot dot lines=51 base=0 head=0 lost=0 structure=true max=0
+compound.dot plain lines=21 base=0 head=0 lost=0 structure=true max=0
+root_circo.gv xdot lines=16419 base=15630 head=15630 lost=0 structure=false max=NaN
+root_circo.gv dot lines=11806 base=9850 head=9850 lost=0 structure=false max=76396000
+root_circo.gv plain lines=2139 base=2140 head=2140 lost=0 structure=false max=NaN
+root_circo.gv xdot lines=16419 base=15630 head=15630 lost=0 structure=false max=NaN
+root_circo.gv dot lines=11806 base=9848 head=9848 lost=0 structure=false max=75388000
+root_circo.gv plain lines=2139 base=2140 head=2140 lost=0 structure=false max=NaN
+b103.gv xdot lines=27458 base=26506 head=26506 lost=0 structure=false max=1.9
+b103.gv dot lines=20691 base=18760 head=18760 lost=0 structure=false max=3.1
+b103.gv plain lines=3384 base=3385 head=3385 lost=0 structure=false max=0.052
