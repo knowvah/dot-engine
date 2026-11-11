@@ -1,0 +1,24 @@
+mincross: pass 0 iter 0 trying 0 cur_cross 0 best_cross 0
+merge2: graph %1, rank 0 has only 2 < 3 nodes
+mincross %1: 0 crossings, 0.00 secs.
+mincross: pass 0 iter 0 trying 0 cur_cross 4 best_cross 4
+mincross: pass 0 iter 1 trying 1 cur_cross 4 best_cross 4
+mincross: pass 0 iter 2 trying 2 cur_cross 4 best_cross 4
+mincross: pass 0 iter 3 trying 3 cur_cross 4 best_cross 4
+mincross: pass 1 iter 0 trying 0 cur_cross 4 best_cross 4
+mincross: pass 1 iter 1 trying 1 cur_cross 4 best_cross 4
+mincross: pass 1 iter 2 trying 2 cur_cross 4 best_cross 4
+mincross: pass 1 iter 3 trying 3 cur_cross 4 best_cross 4
+mincross: pass 2 iter 0 trying 0 cur_cross 4 best_cross 4
+mincross: pass 2 iter 1 trying 1 cur_cross 4 best_cross 4
+mincross: pass 2 iter 2 trying 2 cur_cross 4 best_cross 4
+mincross: pass 2 iter 3 trying 3 cur_cross 4 best_cross 4
+mincross: pass 2 iter 4 trying 4 cur_cross 4 best_cross 4
+mincross: pass 2 iter 5 trying 5 cur_cross 4 best_cross 4
+mincross: pass 2 iter 6 trying 6 cur_cross 4 best_cross 4
+mincross: pass 2 iter 7 trying 7 cur_cross 4 best_cross 4
+mincross: pass 2 iter 8 trying 8 cur_cross 4 best_cross 4
+merge2: graph auxg, rank 0 has only 1 < 2 nodes
+merge2: graph auxg, rank 1 has only 3 < 4 nodes
+merge2: graph auxg, rank 2 has only 1 < 2 nodes
+mincross auxg: 4 crossings, 0.00 secs.

@@ -1,0 +1,1 @@
+digraph { a [ordering=out]; {rank=same; a; b} a:n -> b:n [label=x]; a:s -> b:s [label=y]; }

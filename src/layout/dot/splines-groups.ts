@@ -115,10 +115,12 @@ function dispatchEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): void {
   const uniq = dedupByOrig(group);
   // Flat group: route HERE at its edgecmp position, as C's make_flat_edge call
   // does, so it reads vnodes before later regular edges' recover_slack moves
-  // them. The flat routers gather their own group and skip routed members.
+  // them. Each member carries the run (C's `edges + ind`, `cnt`): the
+  // flat-adjacent router takes its group from it, in this order, and the other
+  // flat routers gather their own group; all skip routed members.
   // @see lib/dotgen/dotsplines.c:dot_splines_ (410-411)
   if (nodeRankOf(e0.tail) === nodeRankOf(e0.head)) {
-    for (const e of uniq) routeLoneEdge(e, g);
+    for (const e of uniq) routeLoneEdge(e, g, uniq);
     return;
   }
   // Lone edge: route HERE at its edgecmp position (interleaved with groups), as C
@@ -139,7 +141,7 @@ function dispatchEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): void {
     const lone = resolveOrigEdge(uniq[0]);
     // Plain chains (no interior splineMerge boundary) keep the whole-chain
     // routers. @see dotsplines.c:make_regular_edge (spline_merge)
-    routeLoneEdge(lone, g);
+    routeLoneEdge(lone, g, uniq);
     return;
   }
   // Lane offsets follow the edgecmp collected order — C passes the sorted list
