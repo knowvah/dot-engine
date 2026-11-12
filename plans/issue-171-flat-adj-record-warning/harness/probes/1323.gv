@@ -1,0 +1,63 @@
+digraph vfs {
+node [shape = "record" fontsize = 10 style = filled];
+color = lightgray;
+subgraph cluster_mnt_namespace {
+graph [fontsize = 10];
+label = "mnt_namespace";
+namespace1 [shape = "record",label = "{
+       <f0>struct vfsmount * root\
+       |{<f1>struct list_head list|{<f2>*next|<f3>*prev}}}
+        "];
+}
+subgraph cluster_vfsmount {
+graph [fontsize = 10];
+label = "struct vfsmount";
+subgraph cluster_mount1 {
+//graph [bgcolor="#c1c1df", fontsize=12, labelloc=t];
+//edge [style="invis"];
+//label = "/";
+"vfsmount1" [shape = "record",label ="{
+       {<f0>struct list_head\nmnt_hash|{<f1>*next|<f2>*prev}} \
+       |<f3>struct vfsmount *mnt_parent \
+       |<f4>struct dentry * mnt_mountpoint\
+       |<f5>struct dentry * mnt_root \
+       |<f6>struct super_block * mnt_sb \
+       |{<f7>struct list_head\nmnt_mounts|{<f8>*next|<f9>*prev}} \
+       |{<f10>struct list_head\nmnt_child|{<f11>*next|<f12>*prev}} \
+       |{<f13>struct list_head\nmnt_list|{<f14>*next|<f15>*prev}} \
+       |<f16>struct namespace * mnt_namespace}
+        "];
+}
+subgraph cluster_mount2 {
+//graph [bgcolor="#c1c1df", fontsize=12, labelloc=t];
+//edge [style="invis"];
+//label = "/ext2";
+"vfsmount2" [shape = "record",label ="{
+       {<f0>struct list_head\nmnt_hash|{<f1>*next|<f2>*prev}} \
+       |<f3>struct vfsmount *mnt_parent \
+       |<f4>struct dentry * mnt_mountpoint\
+       |<f5>struct dentry * mnt_root \
+       |<f6>struct super_block * mnt_sb \
+       |{<f7>struct list_head\nmnt_mounts|{<f8>*next|<f9>*prev}} \
+       |{<f10>struct list_head\nmnt_child|{<f11>*next|<f12>*prev}} \
+       |{<f13>struct list_head\nmnt_list|{<f14>*next|<f15>*prev}} \
+       |<f16>struct namespace * mnt_namespace}
+        "];
+}
+}
+vfsmount1:f8 -> vfsmount2:f10 [color = "blue"];
+vfsmount2:f12 -> vfsmount1:f7 [color = "green"];
+vfsmount2:f11 -> vfsmount1:f7 [color = "green"];
+vfsmount1:f9 -> vfsmount2:f10 [color = "blue"];
+vfsmount2:f3 -> vfsmount1:f0;
+
+namespace1:f0 -> vfsmount1:f0;
+
+
+namespace1:f2 -> vfsmount1:f13;
+vfsmount1:f14 -> vfsmount2:f13;
+vfsmount2:f14 -> namespace1:f1;
+namespace1:f3 -> vfsmount2:f13;
+vfsmount2:f15 -> vfsmount1:f13;
+//vfsmount1:f15 -> namespace1:f1;
+}

@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -78,7 +78,7 @@ A2、A3 與 A8 已結案，作為歷史保留；A10 作為各引擎登錄檔中�
 > `circo`／`twopi`／`osage` 採用與 dot 調查相同的 **±0.01 決定性**容許誤差，
 > 並逐 id 進行根本原因分級處理（見下方「引擎軌道接受」）；
 > `neato`／`fdp`／`sfdp` 則採用較寬鬆的 **±0.5 特徵描述**容許誤差，
-> 目前尚未逐 id 分級處理（見下方「迭代式引擎的特徵描述」）。目前各引擎的整體數字：
+> 並逐 id 歸因（見下方「迭代式引擎的特徵描述」）。目前各引擎的整體數字：
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)。
 
 **特徵描述。** 這些引擎執行迭代式數值版面配置，其結果取決於浮點數捨入——特別是
@@ -152,13 +152,14 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 同一個星形圖在 `circo` 軌道上也有偏差（2026-10-16 接受，599 處繪製操作差異，最大 0.71pt）。移植版重現了 clang 在 `circpos.c` 中的 FMA 收縮與求值順序，因此進入 PRISM 的 32 個位置中有 31 個位元精確。最後一個相差 1 ULP，因為 V8 與 Apple libm 在 `positionChildren` 的三個子區塊角度上對 `cos`／`sin` 的捨入不同。接著 PRISM 的 Delaunay 三角剖分在鏡像軸上翻轉了一條近乎共圓的對角線。注入 A/B：給定原生的 `cos`／`sin` 值時，移植版與參照程式一致。給定 V8 的值時，原生建置在 30 次執行中有 22 次產生參照程式的版面配置，其餘 8 次產生移植版的版面配置，因為 GTS 依配置位址排列其邊。
 
 **迭代式引擎的特徵描述：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
-與上方的 `circo`／`twopi`／`osage` 引擎軌道不同，`neato`／`fdp`／`sfdp`
-**尚未**逐 id 分級處理——`engine-walk.ts` 為這三者記錄 `tolerance: 0.5`
+與上方以 ±0.01 為標準的 `circo`／`twopi`／`osage` 引擎軌道不同，`neato`／`fdp`／`sfdp`
+以 ±0.5pt 比較，其每個差異 id 均已歸因（見下文）——`engine-walk.ts` 為這三者記錄 `tolerance: 0.5`
 欄位，而 `parity-report.ts` 將它們呈現於
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 中獨立的「Iterative engines (±0.5 characterization)」章節，
 明確**不可**與本文件其他地方 ±0.01 決定性的通過率相比較。針對 graphviz 16.1.0 的目前計數
-（929 項範圍；通過率排除 C 參照程式無法轉譯的輸入，依據[一致性](./conformance.md)）：
+（929 項範圍；通過率排除 C 參照程式無法轉譯的輸入以及原生輸出每次執行都會變化的輸入，
+依據[一致性](./conformance.md)）：
 
 | 引擎 | 調查數 | ±0.5pt 內 | 不一致 | 移植版錯誤／逾時 | 參照程式錯誤 | 參照程式非確定 |
 |---|---:|---:|---:|---:|---:|---:|
@@ -971,6 +972,23 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
 
 **為何接受。** `emit_background` 釋放了 `clrs[0]`（`lib/common/emit.c:1518`），而 svg 的填色狀態仍指向它（`gvrender_resolve_color` 保留 `color->u.string = name`，`lib/gvc/gvrender.c:193`），所以原生輸出是已釋放的記憶體，而不是顏色；在測得的 8 次執行中 8 次都是 `fill=""`。移植版輸出 C 本意要輸出的顏色。語料庫中沒有輸入會走到這裡；`src/gvc/emit-xdot.test.ts` 固定了該行為。
 
+### A14. 每對兄弟叢集一條輔助邊（`2475_1`，dot） {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**受影響：** `dot` 上的 `2475_1`，一個包含 5,711 個兄弟叢集的圖。在 V8 的預設堆積（參考主機上為 4,192 MB）下，移植版的渲染以 `JavaScript heap out of memory` 結束，因此 dot 調查只為這一個 id 提供較大的堆積（`test/corpus/survey.ts` 中的 `PORT_HEAP_MB`）。
+
+**發生了什麼。** `separate_subclust`（`lib/dotgen/position.c:454`）會為每一對 `rank` 範圍重疊的兄弟叢集，在 x 座標的約束圖中加入一條輔助邊，而且它們全部維持已配置狀態，直到 `remove_aux_edges`。在 `2475_1` 中每一對都重疊：共 16,304,905 條邊。原生 16.1.0 每條邊約使用 423 B，常駐記憶體峰值為 8.41 GB。移植版以相同的順序建立相同的邊（`separateSubclust`，`src/layout/dot/position-cluster.ts`）。
+
+**為何接受。** 這種成長是 C 演算法本身的，與兄弟叢集數量的平方成正比，而光是原生程式的峰值就是 V8 預設堆積的兩倍。移植版自身的部分已經消除：一條輔助邊原本要 995 B，因為每條邊還帶有兩個 `Port` 物件和一個空的屬性 `Map`；現在是 458 B。表中 `cN` 是 `2475_1` 的前 N 個叢集，每個儲存格列出常駐記憶體峰值和執行時間。
+
+| 輸入 | 叢集對 | 原生 16.1.0 | 修正前的移植版 | 移植版 |
+|---|---:|---|---|---|
+| c400 | 79,800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319,600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1,279,200 | 844 MB, 35 s | 2,424 MB, 131 s | 1,621 MB, 131 s |
+| `2475_1` | 16,304,905 | 8.41 GB, 1,412 s | `JavaScript heap out of memory` | 10.15 GB, 4,197 s, `conformant` |
+
+證據：[issue #145](https://github.com/knowvah/dot-engine/issues/145)。
+
 ---
 
 ## 持續追蹤的長尾（`dot` 屬性與邊界案例） {#tracked-long-tail-dot-attribute-edge-case}
@@ -1093,7 +1111,7 @@ neato 和 sfdp 在每種模式下都以 `dim` 個維度佈局，上限為 C 的 
 
 - **`xdot` 與 `dot` 輸出中的長字串（已關閉）。** 原生在 128 欄後，或在根圖的 `linelength` 為 0 或不小於 60 時在該欄後，用行尾反斜線換行帶引號的值（`lib/cgraph/write.c:160-195,670-677`）。移植版現在以同樣方式換行 `_draw_` 系列字串，與原生逐位元組一致。
 - **帶有指向 cluster 的邊的 fdp `json` 和 `json0`（已關閉）。** 原生在寫出 json 前撤銷 cluster 邊代理（`lib/common/output.c:403`）；移植版曾輸出 `__0:` 代理，現在先將其撤銷。原生 fdp 在 `2717` 上於所有格式下都以 139 結束，因此沒有參照。
-- **二維 `mode=sgd`（已接受，A1）。** 在 macOS 上，佈局與原生的差異出自 libm `hypot`（`lib/neatogen/sgd.c:223`）和 `exp`（`sgd.c:216`）的最後一位，SGD 將其在所測圖上放大至最多 1.59 點。重放 macOS 的 `hypot` 和 `exp` 後，移植版的軌跡與原生一致，因此未更動程式碼（PR 119）。
+- **二維 `mode=sgd`（已接受，A1）。** 移植版以 `src/common/libm-hypot.ts` 為 `lib/neatogen/sgd.c:223` 處的 macOS libm `hypot` 建模。佈局與原生的差異仍出自 `exp`（`sgd.c:216`）的最後一位，在所測圖上至多 0.01 點。不計畫為 macOS 的 `exp` 建模（#133，PR 119）。
 - **先於根圖渲染的子圖，fdp 和 osage（已關閉）。** 原生輸出已儲存的屬性值（後一次渲染會保留先前渲染的 `_draw_`、`_ldraw_` 和 `xdotversion`），按 C 的 printf 輸出 `inf` 和 `nan`，並將每條邊的樣條框與頁面裁剪區域比對（`edge_in_box`，`lib/common/emit.c:2692`）。移植版現在三者都做到了，並與原生一致，僅有一個 cluster 邊界框數值處於 fdp 自身的漂移中（1.6e-11 對 -3.3e-11）。原生 fdp 自身也會隨堆積位址變化（`lib/fdpgen/layout.c:466,501,637`），包括 `graphs-fdp` 的首次渲染，因此比較使用去掉這些比較的原生版本。附帶效果是，`1581` 的 svg 為帶標籤的自環增加了兩個空的 `<g id="edgeN">` 群組，與原生相同。
 
 ---

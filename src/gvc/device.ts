@@ -14,7 +14,7 @@
 
 import { POINTS_PER_INCH } from '../model/geom.js';
 import { lateDouble } from '../common/nodeinit.js';
-import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin } from './viewport.js';
+import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin, DEFAULT_GRAPH_PAD } from './viewport.js';
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
@@ -231,7 +231,7 @@ export function renderEdge(e: Edge, renderer: RendererPlugin, job: RenderJob): v
  * @see lib/common/emit.c:emit_page (3656-3657)
  */
 export function renderGraphLabel(g: Graph, renderer: RendererPlugin, job: RenderJob): void {
-  // @see lib/common/emit.c:emit_begin_graph / getObjId (root graph → graph0)
+  // @see lib/common/emit.c:emit_begin_graph / getObjId (graph being emitted → graph<AGSEQ>)
   setHtmlAnchorObj(svgGraphId(g, job), labelTextOf(g.info.label), job.obj ?? undefined);
   renderOneLabel(g.info.label as TextlabelT | undefined, renderer, job, false);
 }
@@ -450,10 +450,10 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   // a recompute, it is the mechanism that produces C's near-empty output.
   // @see lib/common/emit.c:3272 init_gvc (gvc->bb = GD_bb(g))
   job.bb = g.info.bb;
-  // init_job_pad: job.pad from `pad=`, before the size= fit, which uses the
-  // padded bb (C calls init_job_pad before init_job_viewport, emit.c:4289-4291).
+  // init_job_pad: job.pad from `pad=`, else the render device's default pad,
+  // before the size= fit, which uses the padded bb (emit.c:4289-4291).
   // @see lib/common/emit.c:3241-3251 (attr read); :3290-3304 (fallback)
-  job.pad = parseGraphPad(g.attrs.get('pad'));
+  job.pad = parseGraphPad(g.attrs.get('pad'), renderer.defaultPad ?? DEFAULT_GRAPH_PAD);
   // init_job_margin, right after init_job_pad (emit.c:4290-4291). margin does
   // not feed the size= fit (only pad does); emitSvgTag/svgBeginPage use it after
   // Z is known, as C resolves it before init_job_viewport and uses it after.
@@ -478,7 +478,7 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   // not job->zoom. job.scale is read only by the SVG group/dims.
   const drawingSize = parseDrawingSize(g.attrs.get('size'));
   const z = initJobViewportZoom(job.bb, drawingSize, job.pad);
-  job.clip = deviceClip(g, renderer, job); // @see emit.c:setup_page (xdot's default pad is 0)
+  job.clip = deviceClip(g, job); // @see lib/common/emit.c:1550-1564 setup_page
   // init_job_dpi (emit.c:3333): GD_drawing->dpi = late_double(dpi, resolution, 0)
   // (input.c:713). When >0 it becomes job->dpi; otherwise the SVG device's
   // default_dpi = 72 (gvrender_core_svg.c:814) applies. init_job_viewport then

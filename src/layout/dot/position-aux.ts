@@ -99,9 +99,15 @@ export function graphRanksep(g: Graph): number { return g.info.ranksep ?? 0; }
 // make_aux_edge — @see lib/dotgen/position.c:make_aux_edge
 // ---------------------------------------------------------------------------
 
-/** @see lib/dotgen/position.c:make_aux_edge */
+/**
+ * The edge's two ports are the shared default port: C zeroes them inside the
+ * Agedgeinfo_t it allocates here and never writes them. Its attributes are the
+ * shared empty map: C binds no attribute record to an aux edge, only the
+ * Agedgeinfo_t (issue #145).
+ * @see lib/dotgen/position.c:make_aux_edge
+ */
 export function makeAuxEdge(u: Node, v: Node, len: number, wt: number): Edge {
-  const e = new EdgeClass(u, v, '');
+  const e = new EdgeClass(u, v, '', true, true);
   // C ROUND() is half away from zero. @see lib/dotgen/position.c:195
   e.info.minlen = cround(Math.min(len, 2147483647));
   e.info.weight = wt;
@@ -192,7 +198,8 @@ export function applyFlatLabel(
   const nodesep = graphNodesep(g);
   const e0 = nodeOrder(e0raw.head) <= nodeOrder(e1raw.head) ? e0raw : e1raw;
   const e1 = e0 === e0raw ? e1raw : e0raw;
-  const m0 = edgeMinlen(e) * nodesep / 2;
+  // C: int m0 (position.c:222,276), so the half truncates
+  const m0 = Math.trunc(edgeMinlen(e) * nodesep / 2);
   const m1a = m0 + nodeRw(e0.head) + nodeLw(e0.tail);
   if (!canReach(e0.tail, e0.head)) makeAuxEdge(e0.head, e0.tail, m1a, edgeWeight(e));
   const m1b = m0 + nodeRw(e1.tail) + nodeLw(e1.head);

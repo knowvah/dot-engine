@@ -1,0 +1,8 @@
+{
+ "bundleA": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/issue137-base.mjs",
+ "bundleB": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/issue137-head.mjs",
+ "jobs": 1960,
+ "identical": 1960,
+ "diffs": [],
+ "capped": []
+}

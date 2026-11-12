@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ iterativa modellens determinism; de tidigare flyttalsavvikelserna i
 > stringensnivåer som dokumenteras separat nedan: `circo`/`twopi`/`osage` körs med samma
 > **±0.01 deterministiska** tolerans som dot-undersökningen, med orsaksanalys per id
 > (”Godkännande på motorspårsnivå” nedan); `neato`/`fdp`/`sfdp` körs med en lösare
-> **±0.5-karakterisering** utan triage per id ännu (”Karakterisering av iterativa
+> **±0.5-karakterisering** med tillskrivning per id (”Karakterisering av iterativa
 > motorer” nedan). Aktuella siffror över alla motorer:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -189,14 +189,16 @@ körningar och portens layout i de övriga 8, eftersom GTS ordnar sina kanter
 efter allokeringsadress.
 
 **Karakterisering av iterativa motorer: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Till skillnad från motorspåren för `circo`/`twopi`/`osage` ovan är `neato`/`fdp`/`sfdp`
-ännu **inte** triagerade per id — `engine-walk.ts` registrerar ett fält `tolerance: 0.5`
+Till skillnad från motorspåren för `circo`/`twopi`/`osage` ovan, som hålls till ±0.01,
+jämförs `neato`/`fdp`/`sfdp` vid ±0.5pt, och vart och ett av deras avvikande id är
+tillskrivet, så som beskrivs nedan — `engine-walk.ts` registrerar ett fält `tolerance: 0.5`
 för dessa tre och `parity-report.ts` återger dem i ett separat avsnitt,
 ”Iterative engines (±0.5 characterization)”, i
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 uttryckligen **inte** jämförbart med de deterministiska godkännandegraderna på ±0.01 på andra ställen
 i det här dokumentet. Aktuella antal mot graphviz 16.1.0 (universum på 929 poster; godkändandeprocenten
-utelämnar indata som C-oraklet inte kan rendera, enligt [Överensstämmelse](./conformance.md)):
+utelämnar indata som C-oraklet inte kan rendera och indata där nativ utdata varierar från körning
+till körning, enligt [Överensstämmelse](./conformance.md)):
 
 | motor | undersökta | inom ±0.5pt | icke-konforma | portfel / timeout | orakelfel | orakel icke-deterministiskt |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1198,6 +1200,23 @@ och `registry-staleness.test.ts` skulle flagga posten som inaktuell. Belägg:
 
 **Varför godkänd.** `emit_background` frigör `clrs[0]` (`lib/common/emit.c:1518`) medan svg:s fyllnadstillstånd fortfarande pekar på den (`gvrender_resolve_color` behåller `color->u.string = name`, `lib/gvc/gvrender.c:193`), så native utdata är frigjort minne, inte en färg; det var `fill=""` i 8 av 8 uppmätta körningar. Porten skriver ut den färg C avsåg. Ingen korpusindata når hit; `src/gvc/emit-xdot.test.ts` fastlåser det.
 
+### A14. En hjälpkant per par av syskonkluster (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Berörda:** `2475_1` på `dot`, en graf med 5 711 syskonkluster. Med V8:s standard-heap (4 192 MB på referensmaskinen) slutar porteringens rendering i `JavaScript heap out of memory`, så dot-undersökningen ger detta enda id en större heap (`PORT_HEAP_MB` i `test/corpus/survey.ts`).
+
+**Vad som händer.** `separate_subclust` (`lib/dotgen/position.c:454`) lägger till en hjälpkant i villkorsgrafen för x-koordinaten för varje par av syskonkluster vars `rank`-intervall överlappar, och alla förblir allokerade fram till `remove_aux_edges`. I `2475_1` överlappar varje par: 16 304 905 kanter. Inbyggd 16.1.0 lägger omkring 423 B på varje och når som mest 8.41 GB resident. Porteringen bygger samma kanter i samma ordning (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Varför godkänd.** Tillväxten är C-algoritmens egen, kvadratisk i antalet syskonkluster, och enbart den inbyggdas topp är det dubbla av V8:s standard-heap. Porteringens egen andel är borta: en hjälpkant kostade tidigare 995 B, eftersom var och en också bar två `Port`-objekt och en tom attribut-`Map`; nu kostar den 458 B. I tabellen är `cN` de första N klustren i `2475_1`, och varje cell anger toppen i resident minne och körtiden.
+
+| Indata | Klusterpar | Inbyggd 16.1.0 | Porteringen före rättningen | Porteringen |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Belägg: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Spårad lång svans (`dot`-attribut & specialfall) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1325,7 +1344,7 @@ Varje punkt anger vad nativt gör och vad porten gör.
 
 - **Långa strängar i `xdot`- och `dot`-utdata (stängt).** Nativt bryter ett citerat värde med ett avslutande omvänt snedstreck efter 128 kolumner, eller efter rotgrafens `linelength` när den är 0 eller minst 60 (`lib/cgraph/write.c:160-195,670-677`). Porten bryter nu strängar i `_draw_`-familjen på samma sätt, byte-lika med nativt.
 - **fdp `json` och `json0` med kanter till kluster (stängt).** Nativt ångrar klusterkant-proxyerna innan json skrivs (`lib/common/output.c:403`); porten skrev ut `__0:`-proxyerna och ångrar dem nu först. Nativt fdp avslutas med 139 på `2717` i alla format, så det saknar referens.
-- **2-D `mode=sgd` (godkänt, A1).** På macOS avviker layouten från nativt i sista biten av libm `hypot` (`lib/neatogen/sgd.c:223`) och `exp` (`sgd.c:216`), som SGD förstärker till upp till 1,59 punkter på den testade grafen. Med macOS `hypot` och `exp` återspelade är portens spår lika med nativt, så ingen kod ändrades (PR 119).
+- **2-D `mode=sgd` (godkänt, A1).** Porten modellerar macOS libm `hypot` vid `lib/neatogen/sgd.c:223` med `src/common/libm-hypot.ts`. Layouten avviker fortfarande från nativt i sista biten av `exp` (`sgd.c:216`), med högst 0,01 punkter på den testade grafen. En macOS-modell av `exp` är inte planerad (#133, PR 119).
 - **En undergraf renderad före sin rot, på fdp och osage (stängt).** Nativt skriver ut lagrade attributvärden (en senare rendering behåller en tidigare renderings `_draw_`, `_ldraw_` och `xdotversion`), skriver `inf` och `nan` som Cs printf och testar varje kants splinelåda mot sidklippet (`edge_in_box`, `lib/common/emit.c:2692`). Porten gör nu alla tre och är lika med nativt, utom ett bounding-box-värde för ett kluster vid fdp:s egen drift (1.6e-11 mot -3.3e-11). Nativt fdp varierar självt med heapadresser (`lib/fdpgen/layout.c:466,501,637`), även vid första renderingen av `graphs-fdp`, så jämförelsen använder nativt utan dessa jämförelser. Som bieffekt får `1581` som svg två tomma `<g id="edgeN">`-grupper för märkta självslingor, som nativt har dem.
 
 ---

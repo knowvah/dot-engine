@@ -135,14 +135,68 @@ function isDrawAttr(name: string): boolean {
 // Numeric helpers (shared philosophy with compare-xdot.ts extractNumbers)
 // ---------------------------------------------------------------------------
 
+/**
+ * C's `%.03f` spelling of each non-finite double on the oracle platform
+ * (macOS libc; a negative NaN also prints `nan`). Native json writes these as
+ * bare tokens, so its document is not valid JSON.
+ * @see plugin/core/gvrender_core_json.c:write_polyline
+ */
+const NON_FINITE: ReadonlyMap<string, number> = new Map([
+  ['inf', Infinity],
+  ['-inf', -Infinity],
+  ['nan', NaN],
+]);
+
+/** Brackets a rewritten token inside a JSON string; a C string cannot hold NUL. */
+const TOKEN_MARK = '\u0000';
+
+/** A string literal (kept as it is), or a bare non-finite token at a value position. */
+const STRING_OR_TOKEN = /"(?:[^"\\]|\\.)*"|(?<=[[,:]\s*)(?:-?inf|nan)(?=\s*[,\]}])/g;
+
+/**
+ * JSON.parse that also reads C's bare `inf`, `-inf` and `nan` tokens, as
+ * Infinity, -Infinity and NaN. Text that parses as JSON is untouched; text
+ * with no such token rethrows the original error.
+ */
+function parseJsonText(text: string): JObj {
+  try {
+    return JSON.parse(text) as JObj;
+  } catch (e) {
+    const rewritten = text.replace(STRING_OR_TOKEN, (m) =>
+      m.startsWith('"') ? m : JSON.stringify(`${TOKEN_MARK}${m}${TOKEN_MARK}`));
+    if (rewritten === text) throw e;
+    return JSON.parse(rewritten, (_k, v: unknown) => {
+      if (typeof v !== 'string' || !v.startsWith(TOKEN_MARK)) return v;
+      return NON_FINITE.get(v.slice(TOKEN_MARK.length, -TOKEN_MARK.length)) ?? v;
+    }) as JObj;
+  }
+}
+
+/**
+ * |a - b| for the tolerance test, with non-finite values compared exactly: 0
+ * when both are NaN or the same infinity, Infinity when only one is
+ * non-finite or the infinities differ in sign. A bare `Math.abs(a - b)` is
+ * NaN there, and `NaN > tolerance` is false.
+ */
+function numDelta(a: number, b: number): number {
+  if (a === b || (Number.isNaN(a) && Number.isNaN(b))) return 0;
+  if (!Number.isFinite(a) || !Number.isFinite(b)) return Infinity;
+  return Math.abs(a - b);
+}
+
+/** The value of one extractNumbers token: a decimal, or a signed `inf` / `nan`. */
+function tokenValue(tok: string): number {
+  const word = tok.replace(/^[-+]/, '');
+  if (word === 'nan') return NaN;
+  if (word === 'inf') return tok.startsWith('-') ? -Infinity : Infinity;
+  return parseFloat(tok);
+}
+
 function extractNumbers(s: string): number[] {
   const nums: number[] = [];
-  const re = /[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g;
+  const re = /[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?|[-+]?\b(?:inf|nan)\b/g;
   let m: RegExpExecArray | null;
-  while ((m = re.exec(s)) !== null) {
-    const n = parseFloat(m[0]);
-    if (!isNaN(n)) nums.push(n);
-  }
+  while ((m = re.exec(s)) !== null) nums.push(tokenValue(m[0]));
   return nums;
 }
 
@@ -280,7 +334,7 @@ function compareOps(
       continue;
     }
     for (let j = 0; j < an.length; j++) {
-      const delta = Math.abs(an[j] - bn[j]);
+      const delta = numDelta(an[j], bn[j]);
       if (delta > tolerance) {
         diffs.push({
           object: objKey,
@@ -372,7 +426,7 @@ function comparePositional(
     return;
   }
   for (let i = 0; i < an.length; i++) {
-    const delta = Math.abs(an[i] - bn[i]);
+    const delta = numDelta(an[i], bn[i]);
     if (delta > tolerance) {
       diffs.push({
         object: objKey,
@@ -607,7 +661,7 @@ export function compareJson(
   let portRoot: JObj;
   let oracleRoot: JObj;
   try {
-    portRoot = JSON.parse(portText) as JObj;
+    portRoot = parseJsonText(portText);
   } catch (e) {
     return {
       pass: false,
@@ -624,7 +678,7 @@ export function compareJson(
     };
   }
   try {
-    oracleRoot = JSON.parse(oracleText) as JObj;
+    oracleRoot = parseJsonText(oracleText);
   } catch (e) {
     return {
       pass: false,

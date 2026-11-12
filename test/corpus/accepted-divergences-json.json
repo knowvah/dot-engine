@@ -2330,20 +2330,6 @@
       "rationale": "layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "2721",
-      "engine": "osage",
-      "opClass": "[parse]/oracle",
-      "delta": 0,
-      "rationale": "oracle bug (A4): native -Kosage -Tjson emits bare inf/nan tokens (invalid JSON) for degenerate cluster draw coordinates; the document is unparseable so no comparison is possible. Port emits finite, valid JSON. Journal 2026-07-24."
-    },
-    {
-      "id": "1221",
-      "engine": "osage",
-      "opClass": "[parse]/oracle",
-      "delta": 0,
-      "rationale": "oracle bug (A4): native -Kosage -Tjson emits bare inf/nan tokens (invalid JSON) for degenerate cluster draw coordinates; the document is unparseable so no comparison is possible. Port emits finite, valid JSON. Journal 2026-07-24."
-    },
-    {
       "id": "share-polypoly",
       "engine": "osage",
       "opClass": "node:9002/_draw_/op[1].p[0]",
@@ -2377,13 +2363,6 @@
       "opClass": "edge:16->1#0/_draw_/op[1].b[0]",
       "delta": 62.629999999999995,
       "rationale": "layout drift inherited from the osage xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1332",
-      "engine": "osage",
-      "opClass": "[parse]/oracle",
-      "delta": 0,
-      "rationale": "oracle bug (A4): native -Kosage -Tjson emits bare inf/nan tokens (invalid JSON) for degenerate cluster draw coordinates; the document is unparseable so no comparison is possible. Port emits finite, valid JSON. Journal 2026-07-24."
     },
     {
       "id": "2784",

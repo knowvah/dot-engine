@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ determinism al modelelor iterative; fostele diferențe de virgulă mobilă
 > rigoare, documentate separat mai jos: `circo`/`twopi`/`osage` rulează la aceeași
 > toleranță **deterministă de ±0.01** ca sondajul dot, cu triere a cauzei rădăcină pe
 > fiecare id („Acceptarea pe flux de motor” mai jos); `neato`/`fdp`/`sfdp` rulează la o
-> toleranță de **caracterizare de ±0.5** mai laxă, încă fără triere pe id
+> toleranță de **caracterizare de ±0.5** mai laxă, cu atribuire pe id
 > („Caracterizarea motoarelor iterative” mai jos). Numerele curente între motoare:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -187,14 +187,16 @@ nativ produce aranjarea oracolului în 22 din 30 de rulări și pe cea a portulu
 în celelalte 8, deoarece GTS își ordonează muchiile după adresa de alocare.
 
 **Caracterizarea motoarelor iterative: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Spre deosebire de fluxurile de motor `circo`/`twopi`/`osage` de mai sus, `neato`/`fdp`/`sfdp`
-**nu** sunt încă triate pe id — `engine-walk.ts` înregistrează un câmp `tolerance: 0.5`
+Spre deosebire de fluxurile de motor `circo`/`twopi`/`osage` de mai sus, ținute la ±0.01,
+`neato`/`fdp`/`sfdp` sunt comparate la ±0.5pt, iar fiecare id divergent al lor este atribuit,
+așa cum se descrie mai jos — `engine-walk.ts` înregistrează un câmp `tolerance: 0.5`
 pentru aceste trei, iar `parity-report.ts` le afișează într-o secțiune separată,
 „Iterative engines (±0.5 characterization)”, din
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 în mod explicit **necomparabilă** cu ratele de reușită deterministe de ±0.01 din restul
 acestui document. Numerele curente față de graphviz 16.1.0 (univers de 929 de elemente; procentul de reușită exclude
-intrările pe care oracolul C nu le poate randa, conform [Conformitate](./conformance.md)):
+intrările pe care oracolul C nu le poate randa și intrările la care ieșirea nativă variază de la o
+rulare la alta, conform [Conformitate](./conformance.md)):
 
 | motor | sondate | în limita ±0.5pt | neconforme | eroare portare / timeout | eroare oracol | oracol nedeterminist |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1200,6 +1202,23 @@ iar `registry-staleness.test.ts` ar semnala intrarea ca perimată. Dovezi:
 
 **De ce este acceptată.** `emit_background` eliberează `clrs[0]` (`lib/common/emit.c:1518`) în timp ce starea de umplere a svg încă indică spre el (`gvrender_resolve_color` păstrează `color->u.string = name`, `lib/gvc/gvrender.c:193`), deci ieșirea nativă este memorie eliberată, nu o culoare; a fost `fill=""` în 8 din 8 rulări măsurate. Portul afișează culoarea pe care a vrut-o C. Nicio intrare din corpus nu ajunge aici; `src/gvc/emit-xdot.test.ts` o fixează.
 
+### A14. O muchie auxiliară pentru fiecare pereche de clustere surori (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Afectate:** `2475_1` pe `dot`, un graf cu 5.711 de clustere surori. Cu heap-ul implicit al V8 (4.192 MB pe mașina de referință), randarea portării se încheie cu `JavaScript heap out of memory`, așa că sondajul dot îi dă acestui singur id un heap mai mare (`PORT_HEAP_MB` în `test/corpus/survey.ts`).
+
+**Ce se întâmplă.** `separate_subclust` (`lib/dotgen/position.c:454`) adaugă în graful de constrângeri al coordonatei x câte o muchie auxiliară pentru fiecare pereche de clustere surori ale căror intervale de `rank` se suprapun, iar toate rămân alocate până la `remove_aux_edges`. În `2475_1` se suprapune fiecare pereche: 16.304.905 de muchii. Nativul 16.1.0 consumă aproximativ 423 B pentru fiecare și atinge un vârf de 8,41 GB rezidenți. Portarea construiește aceleași muchii în aceeași ordine (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**De ce este acceptată.** Creșterea aparține algoritmului C însuși, pătratică în numărul de clustere surori, iar vârful nativului singur este dublul heap-ului implicit al V8. Partea proprie a portării a dispărut: o muchie auxiliară costa 995 B, pentru că fiecare purta în plus două obiecte `Port` și un `Map` de atribute gol; acum costă 458 B. În tabel, `cN` reprezintă primele N clustere din `2475_1`, iar fiecare celulă dă vârful memoriei rezidente și timpul de execuție.
+
+| Intrare | Perechi de clustere | Nativ 16.1.0 | Portarea înainte de corecție | Portarea |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Dovezi: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Coada lungă urmărită (atribute `dot` și cazuri-limită) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1327,7 +1346,7 @@ Fiecare element spune ce face nativul și ce face portul.
 
 - **Șiruri lungi în ieșirea `xdot` și `dot` (închis).** Nativul rupe o valoare între ghilimele cu o bară inversă finală după 128 de coloane, sau după `linelength` al grafului rădăcină când acesta este 0 sau cel puțin 60 (`lib/cgraph/write.c:160-195,670-677`). Portul rupe acum șirurile familiei `_draw_` la fel, identic octet cu octet cu nativul.
 - **fdp `json` și `json0` cu muchii către clustere (închis).** Nativul anulează proxy-urile muchiilor de cluster înainte de a scrie json (`lib/common/output.c:403`); portul tipărea proxy-urile `__0:` și acum le anulează mai întâi. Fdp nativ se termină cu 139 pe `2717` în orice format, deci nu are referință.
-- **`mode=sgd` în 2-D (acceptat, A1).** Pe macOS, layoutul diferă de nativ în ultimul bit al `hypot` (`lib/neatogen/sgd.c:223`) și `exp` (`sgd.c:216`) din libm, pe care SGD îl amplifică până la 1,59 puncte pe graful testat. Cu `hypot` și `exp` de pe macOS reluate, urma portului este egală cu cea nativă, deci codul nu s-a schimbat (PR 119).
+- **`mode=sgd` în 2-D (acceptat, A1).** Portul modelează `hypot` din libm de pe macOS la `lib/neatogen/sgd.c:223` cu `src/common/libm-hypot.ts`. Layoutul diferă în continuare de nativ în ultimul bit al `exp` (`sgd.c:216`), cu cel mult 0,01 puncte pe graful testat. Un model al `exp` de pe macOS nu este planificat (#133, PR 119).
 - **Un subgraf randat înaintea rădăcinii, la fdp și osage (închis).** Nativul tipărește valorile de atribut stocate (o randare ulterioară păstrează `_draw_`, `_ldraw_` și `xdotversion` ale uneia anterioare), tipărește `inf` și `nan` ca printf din C și testează caseta de spline a fiecărei muchii față de decuparea paginii (`edge_in_box`, `lib/common/emit.c:2692`). Portul face acum toate trei și egalează nativul, cu excepția unei valori a casetei de delimitare a unui cluster la deriva proprie a fdp (1.6e-11 față de -3.3e-11). Fdp nativ însuși variază cu adresele din heap (`lib/fdpgen/layout.c:466,501,637`), inclusiv la prima randare a `graphs-fdp`, deci comparația folosește nativul fără acele comparații. Ca efect secundar, `1581` ca svg primește două grupuri `<g id="edgeN">` goale pentru buclele proprii etichetate, ca nativul.
 
 ---

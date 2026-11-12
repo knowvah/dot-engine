@@ -1,0 +1,7 @@
+graph 1 1.75 1.5
+node q 0.875 1.25 0.75 0.5 q solid ellipse black lightgrey
+node p 0.375 0.25 0.75 0.5 p solid ellipse black lightgrey
+node z 1.375 0.25 0.75 0.5 z solid ellipse black lightgrey
+edge q p 4 0.75903 1.0106 0.70034 0.8965 0.62766 0.75518 0.56138 0.62629 solid black
+edge q z 4 0.99097 1.0106 1.0497 0.8965 1.1223 0.75518 1.1886 0.62629 solid black
+stop

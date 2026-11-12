@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -90,7 +90,7 @@ C 소스가 곧 명세이며, 목록에 없는 차이는 수용된 동작이 아
 > 따로 문서화되어 있습니다. `circo`/`twopi`/`osage`는 dot 조사와 같은 **±0.01
 > 결정적** 허용 오차로 id별 근본 원인 분류와 함께 실행합니다(아래 '엔진 트랙
 > 수용'). `neato`/`fdp`/`sfdp`는 더 느슨한 **±0.5 특성화** 허용 오차로 실행하며
-> 아직 id별 분류는 없습니다(아래 '반복형 엔진 특성화'). 엔진 전반의 현재 수치:
+> id별로 귀속합니다(아래 '반복형 엔진 특성화'). 엔진 전반의 현재 수치:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
 **특성화.** 이 엔진들은 결과가 부동소수점 반올림에 좌우되는 반복적 수치 레이아웃을
@@ -176,13 +176,14 @@ PRISM 풀이에서 나온 명목상 같은 세 x 값의 마지막 ULP 순서에 
 중 22회는 오라클의 레이아웃을, 나머지 8회는 포팅의 레이아웃을 생성하는데, GTS가 간선을 할당 주소 순으로 정렬하기 때문입니다.
 
 **반복형 엔진 특성화: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-위의 `circo`/`twopi`/`osage` 엔진 트랙과 달리 `neato`/`fdp`/`sfdp`는 아직 id별
-분류를 거치지 **않았습니다** — `engine-walk.ts`는 이 셋에 `tolerance: 0.5`
+±0.01을 기준으로 하는 위의 `circo`/`twopi`/`osage` 엔진 트랙과 달리 `neato`/`fdp`/`sfdp`는 ±0.5pt로
+비교하며, 어긋난 id는 아래에 설명한 대로 각각 귀속되었습니다 — `engine-walk.ts`는 이 셋에 `tolerance: 0.5`
 필드를 기록하고, `parity-report.ts`는 이를
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)의
 별도 '반복형 엔진(±0.5 특성화)' 섹션에 표시하며, 이는 이 문서 다른 곳의 ±0.01
 결정적 통과율과 명시적으로 비교할 수 **없습니다**. graphviz 16.1.0 기준 현재 집계(929개 항목 전체; 통과
-%는 [적합성](./conformance.md)에 따라 C 오라클이 렌더링할 수 없는 입력을 제외):
+%는 [적합성](./conformance.md)에 따라 C 오라클이 렌더링할 수 없는 입력과 네이티브 출력이
+실행마다 달라지는 입력을 제외):
 
 | 엔진 | 조사 | ±0.5pt 이내 | 부적합 | 포팅 오류 / 타임아웃 | 오라클 오류 | 오라클 비결정적 |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1031,6 +1032,23 @@ xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니�
 
 **수용하는 이유.** `emit_background`는 `clrs[0]`을 해제하지만(`lib/common/emit.c:1518`) svg의 채우기 상태는 여전히 그것을 가리킵니다(`gvrender_resolve_color`는 `color->u.string = name`을 유지합니다. `lib/gvc/gvrender.c:193`). 따라서 네이티브 출력은 색이 아니라 해제된 메모리이며, 측정한 8회 중 8회 모두 `fill=""`였습니다. 포트는 C가 의도한 색을 출력합니다. 코퍼스에는 여기에 도달하는 입력이 없으며 `src/gvc/emit-xdot.test.ts`가 이를 고정합니다.
 
+### A14. 형제 클러스터 쌍마다 보조 에지 하나(`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**영향받는 대상:** `dot`의 `2475_1`. 형제 클러스터 5,711개로 이루어진 그래프입니다. V8의 기본 힙(기준 호스트에서 4,192 MB)에서는 포팅의 렌더링이 `JavaScript heap out of memory`로 끝나므로, dot 조사는 이 id 하나에만 더 큰 힙을 줍니다(`test/corpus/survey.ts`의 `PORT_HEAP_MB`).
+
+**무슨 일이 일어나는가.** `separate_subclust`(`lib/dotgen/position.c:454`)는 `rank` 범위가 겹치는 형제 클러스터 쌍마다 x 좌표 제약 그래프에 보조 에지를 하나씩 추가하며, 이들은 모두 `remove_aux_edges`까지 할당된 채로 남습니다. `2475_1`에서는 모든 쌍이 겹쳐 에지가 16,304,905개입니다. 네이티브 16.1.0은 에지 하나에 약 423 B를 쓰고 상주 메모리 최대치는 8.41 GB입니다. 포팅은 같은 에지를 같은 순서로 만듭니다(`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**수용하는 이유.** 이 증가는 C 알고리즘 자체의 것으로 형제 클러스터 수의 제곱에 비례하며, 네이티브의 최대치만으로도 V8 기본 힙의 두 배입니다. 포팅 고유의 몫은 제거되었습니다. 이전에는 보조 에지 하나가 995 B였는데, 에지마다 `Port` 객체 두 개와 빈 속성 `Map`을 추가로 가졌기 때문입니다. 지금은 458 B입니다. 표에서 `cN`은 `2475_1`의 처음 N개 클러스터이며, 각 칸은 상주 메모리 최대치와 실행 시간입니다.
+
+| 입력 | 클러스터 쌍 | 네이티브 16.1.0 | 수정 전 포팅 | 포팅 |
+|---|---:|---|---|---|
+| c400 | 79,800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319,600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1,279,200 | 844 MB, 35 s | 2,424 MB, 131 s | 1,621 MB, 131 s |
+| `2475_1` | 16,304,905 | 8.41 GB, 1,412 s | `JavaScript heap out of memory` | 10.15 GB, 4,197 s, `conformant` |
+
+증거: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## 추적 중인 롱테일(`dot` 속성 및 예외 사례) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1149,7 +1167,7 @@ neato와 sfdp는 모든 모드에서 C의 `MAXDIM`(10)으로 제한된 `dim` 차
 
 - **`xdot`과 `dot` 출력의 긴 문자열(종결).** 네이티브는 따옴표로 묶은 값을 128열에서, 또는 루트 그래프의 `linelength`가 0이거나 60 이상이면 그 열에서 끝의 역슬래시로 줄바꿈합니다(`lib/cgraph/write.c:160-195,670-677`). 포트도 이제 `_draw_` 계열 문자열을 같은 방식으로 줄바꿈하며, 네이티브와 바이트 단위로 같습니다.
 - **클러스터로 가는 에지가 있는 fdp `json`과 `json0`(종결).** 네이티브는 json을 쓰기 전에 클러스터 에지 프록시를 되돌립니다(`lib/common/output.c:403`). 포트는 `__0:` 프록시를 출력했으나 이제 먼저 되돌립니다. 네이티브 fdp는 `2717`에서 모든 형식에서 종료 코드 139로 끝나므로 참조가 없습니다.
-- **2차원 `mode=sgd`(허용, A1).** macOS에서는 libm `hypot`(`lib/neatogen/sgd.c:223`)과 `exp`(`sgd.c:216`)의 마지막 비트에서 레이아웃이 네이티브와 달라지며, SGD가 이를 시험한 그래프에서 최대 1.59포인트까지 증폭합니다. macOS의 `hypot`과 `exp`를 재현하면 포트의 추적이 네이티브와 같으므로 코드는 바꾸지 않았습니다(PR 119).
+- **2차원 `mode=sgd`(허용, A1).** 포트는 `lib/neatogen/sgd.c:223`의 macOS libm `hypot`을 `src/common/libm-hypot.ts`로 모델링합니다. 레이아웃은 `exp`(`sgd.c:216`)의 마지막 비트에서 여전히 네이티브와 다르며, 시험한 그래프에서 그 차이는 최대 0.01포인트입니다. macOS `exp` 모델은 계획하고 있지 않습니다(#133, PR 119).
 - **루트보다 먼저 렌더링된 서브그래프, fdp와 osage(종결).** 네이티브는 저장된 속성 값을 출력하고(이후 렌더링은 이전 렌더링의 `_draw_`, `_ldraw_`, `xdotversion`을 유지합니다), `inf`와 `nan`을 C의 printf처럼 출력하며, 각 에지의 스플라인 상자를 페이지 클립과 대조합니다(`edge_in_box`, `lib/common/emit.c:2692`). 포트는 이제 세 가지를 모두 수행하여, fdp 자체 드리프트에서 나온 클러스터 경계 상자 값 하나(1.6e-11 대 -3.3e-11)를 제외하면 네이티브와 같습니다. 네이티브 fdp 자체가 힙 주소에 따라 달라지며(`lib/fdpgen/layout.c:466,501,637`) `graphs-fdp`의 첫 렌더링도 마찬가지이므로, 비교에는 그 비교들을 제거한 네이티브를 사용합니다. 부수 효과로 `1581`의 svg에는 레이블이 있는 자기 루프용 빈 `<g id="edgeN">` 그룹 두 개가 추가되어 네이티브와 같아집니다.
 
 ---

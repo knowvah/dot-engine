@@ -16,7 +16,7 @@ import { IGNORED } from '../../layout/dot/rank.js';
 import { agstrcanon } from '../map.js';
 import { POINTS_PER_INCH } from '../../model/geom.js';
 import type { TextlabelT, FieldT } from '../../common/types.js';
-import { agcanonEscape, gfmt2, gfmt5, lpStr } from './xdot-ops.js';
+import { gfmt2, gfmt5, lpStr } from './xdot-ops.js';
 
 /**
  * C's `attach_attrs` edge loop skips IGNORED edges and edges with no spline
@@ -356,10 +356,19 @@ export function nodeDictParts(g: Graph, top: boolean): string[] {
   return dictParts(defs);
 }
 
+/**
+ * A node or edge attribute the layout did not overwrite: the input's own value,
+ * written as agwrite writes every value, `name=` + `agstrcanon(value)` — an
+ * html value as `<...>`, a plain one quoted only when it needs it and broken
+ * with backslash-newline at `Max_outputline`. An absent or empty value prints
+ * nothing.
+ * @see lib/cgraph/write.c:write_nondefault_attrs (502-504)
+ * @see lib/cgraph/write.c:_write_canonstr
+ */
 export function echoAttr(attrs: Map<string, string>, key: string): string[] {
   const v = attrs.get(key);
   if (v === undefined || v.length === 0) return [];
-  return [key + '="' + agcanonEscape(v) + '"'];
+  return [`${key}=${agstrcanon(v)}`];
 }
 
 /**
@@ -385,16 +394,18 @@ export function writeDictSkips(v: string, inherited: string | undefined): boolea
 
 /**
  * `echoAttr` for a GRAPH attribute the layout did not overwrite — same as
- * echoAttr except an EMPTY value can still be emitted, per `writeDictSkips`.
- * So a re-fed dot output whose `{rank=same}` block carries `bb=""`/`lp=""`
- * under a boxed, labelled cluster echoes both back verbatim
- * (tests/share/KW91.gv).
+ * echoAttr (the value goes through `agstrcanon`, as write_dict's does) except
+ * an EMPTY value can still be emitted, per `writeDictSkips`. So a re-fed dot
+ * output whose `{rank=same}` block carries `bb=""`/`lp=""` under a boxed,
+ * labelled cluster echoes both back verbatim (tests/share/KW91.gv).
+ * @see lib/cgraph/write.c:write_dict (290-292)
+ * @see lib/cgraph/write.c:_write_canonstr
  */
 export function echoGraphAttr(g: Graph, key: string): string[] {
   const v = g.attrs.get(key);
   if (v === undefined) return [];
   if (writeDictSkips(v, g.graphDefaultsSnapshot?.get(key))) return [];
-  return [key + '="' + agcanonEscape(v) + '"'];
+  return [`${key}=${agstrcanon(v)}`];
 }
 
 /**

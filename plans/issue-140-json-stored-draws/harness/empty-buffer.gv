@@ -1,0 +1,8 @@
+digraph G {
+  a -> b [dir=none, _hdraw_="c 7 -#00ff00 P 3 0 0 1 1 2 2 ", _tdraw_="c 7 -#0000ff P 3 0 0 1 1 2 2 "]
+  c [label="", _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -q "]
+  c -> a [_tldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -t ", _hldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -u ", _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -v "]
+  d [shape=none, label="", _draw_="c 7 -#ff00ff e 1 1 1 1 "]
+  subgraph cluster_q { _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -w "; _draw_="c 7 -#ff00ff e 1 1 1 1 "; peripheries=0; e }
+  _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -r "
+}

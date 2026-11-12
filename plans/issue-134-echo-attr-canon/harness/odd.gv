@@ -1,0 +1,10 @@
+digraph G {
+  subgraph s1 { bb="1,2,3,4"; lp="node"; lwidth="-"; lheight=".5"; a }
+  subgraph cluster_k { lp=<b>; lwidth="a\"b"; lheight="x\ny"; k }
+  subgraph s2 { bb=7; s }
+  n [rects="Graph", xlp=<i>];
+  m [rects="a b", xlp="-1.5"];
+  p [rects="1.2.3", xlp="é"];
+  n -> m [pos=<p>, lp=12, head_lp="1-2", tail_lp=abc_9, xlp="\N"];
+  m -> p [pos="subgraph", lp=".", head_lp="-", tail_lp="say \"hi\"", xlp="a\\b"];
+}

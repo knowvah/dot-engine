@@ -1,0 +1,1 @@
+digraph { splines=polyline; {rank=same; a [shape=record]; b; a -> b;} }

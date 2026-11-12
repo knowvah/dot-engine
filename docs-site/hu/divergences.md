@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -92,7 +92,7 @@ lebegőpontos eltérések (A3, A8) lezártak, és alább történetként maradta
 > szinten, amelyeket alább külön dokumentálunk: a `circo`/`twopi`/`osage` ugyanazon a
 > **±0.01 determinisztikus** tűrésen fut, mint a dot-felmérés, azonosítónkénti gyökérok-
 > osztályozással (alább: „Motorsáv-elfogadás”); a `neato`/`fdp`/`sfdp` lazább,
-> **±0.5 jellemzési** tűréssel fut, még azonosítónkénti osztályozás nélkül
+> **±0.5 jellemzési** tűréssel fut, azonosítónkénti tulajdonítással
 > (alább: „Az iteratív motorok jellemzése”). A jelenlegi motorokon átívelő számok:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -190,14 +190,16 @@ maradék 8-ban a portolt változatét, mert a GTS az éleit foglalási cím szer
 rendezi.
 
 **Az iteratív motorok jellemzése: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-A fenti `circo`/`twopi`/`osage` motorsávokkal ellentétben a `neato`/`fdp`/`sfdp`
-még **nincs** azonosítónként osztályozva — az `engine-walk.ts` ezekhez a háromhoz
+A fenti `circo`/`twopi`/`osage` motorsávokkal ellentétben, amelyekre ±0.01 érvényes,
+a `neato`/`fdp`/`sfdp` összehasonlítása ±0.5pt tűréssel történik, és minden eltérő azonosítójuk
+tulajdonítva van, ahogy alább olvasható — az `engine-walk.ts` ezekhez a háromhoz
 `tolerance: 0.5` mezőt rögzít, a `parity-report.ts` pedig külön
 „Iteratív motorok (±0.5 jellemzés)” szakaszban jeleníti meg őket a
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) fájlban,
 kifejezetten **nem** összevethetően a dokumentum többi részében szereplő ±0.01-es determinisztikus
 átmenési arányokkal. Jelenlegi számok a graphviz 16.1.0 ellen (929 elemes univerzum; az átmenési arány kihagyja
-azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, a [Megfelelőség](./conformance.md) szerint):
+azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, és azokat, amelyeknél a natív kimenet
+futásról futásra változik, a [Megfelelőség](./conformance.md) szerint):
 
 | motor | felmért | ±0.5 pt-on belül | nem megfelelő | portolási hiba / időtúllépés | orákulumhiba | orákulum nem determinisztikus |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1208,6 +1210,23 @@ Egy másféle hiba a `2784` esetén el nem fogadott hibaként jelenne meg, és a
 
 **Miért elfogadott.** Az `emit_background` felszabadítja a `clrs[0]` elemet (`lib/common/emit.c:1518`), miközben az svg kitöltési állapota még rá mutat (a `gvrender_resolve_color` meghagyja a `color->u.string = name` értéket, `lib/gvc/gvrender.c:193`), így a natív kimenet felszabadított memória, nem szín; a mért 8 futtatásból mind a 8-ban `fill=""` volt. A port azt a színt írja ki, amelyet a C szánt. A korpusz egyetlen bemenete sem éri el ezt; a `src/gvc/emit-xdot.test.ts` rögzíti.
 
+### A14. Egy segédél minden testvérklaszter-párra (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Érintett:** `2475_1` a `dot` motoron, egy 5 711 testvérklaszterből álló gráf. A V8 alapértelmezett heapje mellett (4 192 MB a referenciagépen) a portolt változat renderelése `JavaScript heap out of memory` hibával ér véget, ezért a dot felmérés ennek az egy azonosítónak nagyobb heapet ad (`PORT_HEAP_MB` a `test/corpus/survey.ts` fájlban).
+
+**Mi történik.** A `separate_subclust` (`lib/dotgen/position.c:454`) az x-koordináta kényszergráfjához egy segédélt ad minden olyan testvérklaszter-párra, amelynek `rank`-tartományai átfedik egymást, és mindegyik lefoglalva marad a `remove_aux_edges` hívásig. A `2475_1` esetén minden pár átfedi egymást: 16 304 905 él. A natív 16.1.0 mindegyikre körülbelül 423 B-ot költ, csúcsa 8.41 GB rezidens memória. A portolt változat ugyanazokat az éleket építi fel ugyanabban a sorrendben (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Miért elfogadott.** A növekedés magáé a C algoritmusé, a testvérklaszterek számában négyzetes, és már a natív csúcsa egymagában kétszerese a V8 alapértelmezett heapjének. A portolt változat saját része megszűnt: egy segédél korábban 995 B-ba került, mert mindegyik két `Port` objektumot és egy üres attribútum-`Map`-et is hordozott; most 458 B-ba kerül. A táblázatban `cN` a `2475_1` első N klasztere, és minden cella a rezidens memória csúcsát és a futási időt adja meg.
+
+| Bemenet | Klaszterpárok | Natív 16.1.0 | Portolt változat a javítás előtt | Portolt változat |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Bizonyíték: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Nyomon követett hosszú farok (`dot` attribútumok és szélső esetek) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1334,7 +1353,7 @@ Minden pont megmondja, mit csinál a natív és mit a port.
 
 - **Hosszú karakterláncok az `xdot` és `dot` kimenetben (lezárva).** A natív idézőjeles értéket záró fordított perjellel tör 128 oszlop után, vagy a gyökérgráf `linelength` értéke után, ha az 0 vagy legalább 60 (`lib/cgraph/write.c:160-195,670-677`). A port most ugyanígy tördeli a `_draw_` család karakterláncait, bájtra azonosan a natívval.
 - **fdp `json` és `json0` klaszterekhez vezető élekkel (lezárva).** A natív a json írása előtt visszavonja a klaszterél-proxykat (`lib/common/output.c:403`); a port kiírta a `__0:` proxykat, most előbb visszavonja őket. A natív fdp a `2717`-en minden formátumban 139-cel lép ki, így nincs referenciája.
-- **2-D `mode=sgd` (elfogadva, A1).** macOS-en az elrendezés a libm `hypot` (`lib/neatogen/sgd.c:223`) és `exp` (`sgd.c:216`) utolsó bitjében tér el a natívtól, amit az SGD a tesztelt gráfon akár 1,59 pontra erősít. A macOS `hypot` és `exp` visszajátszásával a port nyoma megegyezik a natívéval, ezért a kód nem változott (PR 119).
+- **2-D `mode=sgd` (elfogadva, A1).** A port a macOS libm `hypot` függvényét a `lib/neatogen/sgd.c:223` helyen a `src/common/libm-hypot.ts` modellel modellezi. Az elrendezés továbbra is eltér a natívtól az `exp` (`sgd.c:216`) utolsó bitjében, a tesztelt gráfon legfeljebb 0,01 ponttal. A macOS `exp` modellje nincs tervben (#133, PR 119).
 - **A gyökere előtt renderelt részgráf, fdp és osage esetén (lezárva).** A natív a tárolt attribútumértékeket írja ki (egy későbbi renderelés megtartja egy korábbi `_draw_`, `_ldraw_` és `xdotversion` értékét), az `inf` és `nan` értéket a C printf módján írja ki, és minden él spline-dobozát az oldalvágáshoz teszteli (`edge_in_box`, `lib/common/emit.c:2692`). A port most mindhármat teszi, és egyezik a natívval, kivéve egy klaszter határolódoboz-értékét az fdp saját sodródásánál (1.6e-11 a -3.3e-11 ellen). A natív fdp maga is változik a heap-címekkel (`lib/fdpgen/layout.c:466,501,637`), a `graphs-fdp` első renderelését is beleértve, ezért az összehasonlítás ezen összehasonlítások nélküli natívot használja. Mellékhatásként az `1581` svg-ként két üres `<g id="edgeN">` csoportot kap a címkézett önhurkokhoz, ahogy a natív is.
 
 ---

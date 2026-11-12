@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -92,7 +92,7 @@ iteratieve-model-determinisme; de voormalige drijvendekomma-afwijkingen in de sp
 > striktheidsniveaus die hieronder apart worden beschreven: `circo`/`twopi`/`osage` draaien
 > op dezelfde **deterministische tolerantie van ±0.01** als de dot-survey met
 > grondoorzaakanalyse per id („Engine-spoor-acceptatie” hieronder); `neato`/`fdp`/`sfdp`
-> draaien op een ruimere **karakteriseringstolerantie van ±0.5** en nog zonder analyse per
+> draaien op een ruimere **karakteriseringstolerantie van ±0.5** met toeschrijving per
 > id („Karakterisering van de iteratieve engines” hieronder). Actuele cijfers over alle
 > engines heen:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
@@ -192,14 +192,16 @@ overeen met het orakel. Met de waarden van V8 levert de native build in 22 van
 zijn kanten op allocatieadres ordent.
 
 **Karakterisering van de iteratieve engines: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Anders dan de enginesporen `circo`/`twopi`/`osage` hierboven zijn `neato`/`fdp`/`sfdp`
-nog **niet** per id geanalyseerd — `engine-walk.ts` legt voor deze drie een veld
+Anders dan de enginesporen `circo`/`twopi`/`osage` hierboven, waarvoor ±0.01 geldt,
+worden `neato`/`fdp`/`sfdp` vergeleken op ±0.5pt, en elk van hun afwijkende id's is
+toegeschreven, zoals hieronder beschreven — `engine-walk.ts` legt voor deze drie een veld
 `tolerance: 0.5` vast en `parity-report.ts` toont ze in een aparte sectie
 „Iteratieve engines (karakterisering ±0.5)” van
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 uitdrukkelijk **niet** vergelijkbaar met de deterministische slagingspercentages van ±0.01
 elders in dit document. Actuele aantallen ten opzichte van graphviz 16.1.0 (universum van 929 items; het slagings-% laat
-invoer weg die het C-orakel niet kan renderen, volgens [Conformiteit](./conformance.md)):
+invoer weg die het C-orakel niet kan renderen en invoer waarvan de native uitvoer van run tot run
+verschilt, volgens [Conformiteit](./conformance.md)):
 
 | engine | surveyed | binnen ±0.5pt | niet-conform | port-fout / timeout | orakelfout | orakel niet-deterministisch |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1208,6 +1210,23 @@ fout, en `registry-staleness.test.ts` zou de vermelding als verouderd markeren. 
 
 **Waarom geaccepteerd.** `emit_background` geeft `clrs[0]` vrij (`lib/common/emit.c:1518`) terwijl de vultoestand van svg er nog naar wijst (`gvrender_resolve_color` behoudt `color->u.string = name`, `lib/gvc/gvrender.c:193`), dus de native uitvoer is vrijgegeven geheugen, geen kleur; het was `fill=""` in 8 van 8 gemeten runs. De port drukt de kleur af die C bedoelde. Geen corpusinvoer bereikt dit; `src/gvc/emit-xdot.test.ts` legt het vast.
 
+### A14. Eén hulprand per paar zusterclusters (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Getroffen:** `2475_1` op `dot`, een graaf met 5.711 zusterclusters. Onder de standaard-heap van V8 (4.192 MB op de referentiemachine) eindigt het renderen van de port in `JavaScript heap out of memory`; de dot-survey geeft daarom dit ene id een grotere heap (`PORT_HEAP_MB` in `test/corpus/survey.ts`).
+
+**Wat er gebeurt.** `separate_subclust` (`lib/dotgen/position.c:454`) voegt aan de constraintgraaf van de x-coördinaat één hulprand toe voor elk paar zusterclusters waarvan de `rank`-bereiken overlappen, en ze blijven allemaal gealloceerd tot `remove_aux_edges`. In `2475_1` overlapt elk paar: 16.304.905 randen. Native 16.1.0 besteedt ongeveer 423 B aan elke rand en piekt op 8,41 GB resident. De port bouwt dezelfde randen in dezelfde volgorde (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Waarom geaccepteerd.** De groei is die van het C-algoritme zelf, kwadratisch in het aantal zusterclusters, en de piek van native alleen al is het dubbele van de standaard-heap van V8. Het eigen aandeel van de port is weg: een hulprand kostte eerst 995 B, omdat elke rand ook twee `Port`-objecten en een lege attribuut-`Map` droeg; nu kost hij 458 B. In de tabel is `cN` de eerste N clusters van `2475_1`, en elke cel geeft de piek van het residente geheugen en de looptijd.
+
+| Invoer | Clusterparen | Native 16.1.0 | Port vóór de correctie | Port |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Bewijs: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Gevolgde long tail (`dot`-attributen & randgevallen) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1335,7 +1354,7 @@ Elk punt zegt wat native doet en wat de port doet.
 
 - **Lange strings in `xdot`- en `dot`-uitvoer (gesloten).** Native breekt een waarde tussen aanhalingstekens af met een afsluitende backslash na 128 kolommen, of na de `linelength` van de hoofdgraaf als die 0 of minstens 60 is (`lib/cgraph/write.c:160-195,670-677`). De port breekt `_draw_`-familiestrings nu op dezelfde manier af, byte-gelijk aan native.
 - **fdp `json` en `json0` met randen naar clusters (gesloten).** Native maakt de clusterrand-proxy's ongedaan voordat json wordt geschreven (`lib/common/output.c:403`); de port drukte de `__0:`-proxy's af en maakt ze nu eerst ongedaan. Native fdp eindigt met 139 op `2717` in elk formaat, dus er is geen referentie.
-- **2-D `mode=sgd` (geaccepteerd, A1).** Op macOS wijkt de layout van native af in het laatste bit van libm `hypot` (`lib/neatogen/sgd.c:223`) en `exp` (`sgd.c:216`), wat SGD versterkt tot maximaal 1,59 punt op de geteste graaf. Met macOS' `hypot` en `exp` afgespeeld is het spoor van de port gelijk aan dat van native, dus er is geen code gewijzigd (PR 119).
+- **2-D `mode=sgd` (geaccepteerd, A1).** De port modelleert macOS' libm `hypot` op `lib/neatogen/sgd.c:223` met `src/common/libm-hypot.ts`. De layout wijkt nog steeds van native af in het laatste bit van `exp` (`sgd.c:216`), met maximaal 0,01 punt op de geteste graaf. Een macOS-model van `exp` is niet gepland (#133, PR 119).
 - **Een subgraaf gerenderd vóór zijn wortel, bij fdp en osage (gesloten).** Native drukt opgeslagen attribuutwaarden af (een latere render behoudt `_draw_`, `_ldraw_` en `xdotversion` van een eerdere), drukt `inf` en `nan` af zoals de printf van C en test de splinebox van elke rand tegen de paginaclip (`edge_in_box`, `lib/common/emit.c:2692`). De port doet nu alle drie en evenaart native, behalve één bounding-boxwaarde van een cluster bij fdp's eigen drift (1.6e-11 tegen -3.3e-11). Native fdp varieert zelf met heapadressen (`lib/fdpgen/layout.c:466,501,637`), ook bij de eerste render van `graphs-fdp`, dus de vergelijking gebruikt native zonder die vergelijkingen. Als neveneffect krijgt `1581` als svg twee lege `<g id="edgeN">`-groepen voor gelabelde zelflussen, zoals native.
 
 ---

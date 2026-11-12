@@ -540,6 +540,7 @@ export function mapOutputImap(
 export class PlainRenderer implements RendererPlugin {
   readonly type = 'plain';
   readonly quality = 0;
+  readonly defaultPad = 0; // @see plugin/core/gvrender_core_dot.c:734 render_features_dot
 
   beginGraph(_g: Graph, _job: RenderJob): void { /* no-op */ }
   endGraph(g: Graph, job: RenderJob): void { writePlain(g, job, false); }
@@ -562,6 +563,7 @@ export class PlainRenderer implements RendererPlugin {
 export class PlainExtRenderer implements RendererPlugin {
   readonly type = 'plain-ext';
   readonly quality = 0;
+  readonly defaultPad = 0; // @see plugin/core/gvrender_core_dot.c:734 render_features_dot
 
   beginGraph(_g: Graph, _job: RenderJob): void { /* no-op */ }
   endGraph(g: Graph, job: RenderJob): void { writePlain(g, job, true); }
@@ -637,6 +639,7 @@ function anchorOf(url: string | null, tooltip: string | null, target: string | n
 abstract class MapRendererBase implements RendererPlugin {
   abstract readonly type: string;
   readonly quality = 0;
+  readonly defaultPad = 4; // @see plugin/core/gvrender_core_map.c:244 render_features_map
   protected abstract readonly isCmapx: boolean;
   protected abstract readonly mapPolygon: boolean;
   private mapCtx: MapCtx | null = null;

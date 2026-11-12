@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ determinism **ei** mõjuta; endised `dot` splaini marsruutimise ujukomadeltad
 > mida on allpool eraldi dokumenteeritud: `circo`/`twopi`/`osage` töötavad sama
 > **±0.01 deterministliku** tolerantsiga nagu dot-uuring koos id-põhise
 > algpõhjuse sorteerimisega („Mootoriraja aktsepteerimine“ allpool); `neato`/`fdp`/`sfdp` töötavad
-> lõdvema **±0.5 iseloomustus**-tolerantsiga, kuni id-põhise sorteerimiseta
+> lõdvema **±0.5 iseloomustus**-tolerantsiga ja id-põhise omistamisega
 > („Iteratiivsete mootorite iseloomustus“ allpool). Praegused mootoriteülesed arvud:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -187,15 +187,16 @@ natiivne build oraakli paigutuse 22 käivitusel 30-st ja pordi paigutuse
 ülejäänud 8-l, sest GTS järjestab oma servad eraldusaadressi järgi.
 
 **Iteratiivsete mootorite iseloomustus: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Erinevalt ülaltoodud `circo`/`twopi`/`osage` mootoriradadest ei ole `neato`/`fdp`/`sfdp`
-veel id-põhiselt sorteeritud — `engine-walk.ts` salvestab nendele kolmele välja `tolerance: 0.5`
+Erinevalt ülaltoodud `circo`/`twopi`/`osage` mootoriradadest, mille puhul kehtib ±0.01,
+võrreldakse mootoreid `neato`/`fdp`/`sfdp` tolerantsiga ±0.5pt ja iga nende lahknev id on
+omistatud, nagu allpool kirjeldatud — `engine-walk.ts` salvestab nendele kolmele välja `tolerance: 0.5`
 ja `parity-report.ts` kuvab need eraldi
 jaotises „Iteratiivsed mootorid (±0.5 iseloomustus)“ failis
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 sõnaselgelt **mitte** võrreldavana ±0.01 deterministlike läbimismääradega mujal
 selles dokumendis. Praegused arvud graphviz 16.1.0 vastu (929-kirjeline universum;
-läbimise % jätab välja sisendid, mida C-oraakel ei suuda renderdada, vt
-[Vastavus](./conformance.md)):
+läbimise % jätab välja sisendid, mida C-oraakel ei suuda renderdada, ja sisendid,
+mille natiivne väljund erineb jooksult jooksule, vt [Vastavus](./conformance.md)):
 
 | mootor | uuritud | ±0.5pt piires | mittevastav | pordi viga / ajalõpp | oraakli viga | oraakel mittedeterministlik |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1184,6 +1185,23 @@ Tõendid: [`comparisons/2784-pack-cells.md`](https://github.com/knowvah/dot-engi
 
 **Miks aktsepteeritud.** `emit_background` vabastab `clrs[0]` (`lib/common/emit.c:1518`), samal ajal kui svg täiteolek osutab sellele endiselt (`gvrender_resolve_color` jätab `color->u.string = name`, `lib/gvc/gvrender.c:193`), seega on natiivne väljund vabastatud mälu, mitte värv; see oli `fill=""` kõigil 8 mõõdetud käivitusel 8-st. Port prindib värvi, mida C mõtles. Ükski korpuse sisend siia ei jõua; seda kinnitab `src/gvc/emit-xdot.test.ts`.
 
+### A14. Üks abiserv iga õdeklastrite paari kohta (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Mõjutatud:** `2475_1` mootoriga `dot`, graaf 5 711 õdeklastriga. V8 vaikekuhjaga (4 192 MB viitemasinal) lõpeb pordi renderdus veaga `JavaScript heap out of memory`, seega annab dot'i uuring sellele ühele id-le suurema kuhja (`PORT_HEAP_MB` failis `test/corpus/survey.ts`).
+
+**Mis juhtub.** `separate_subclust` (`lib/dotgen/position.c:454`) lisab x-koordinaadi kitsenduste graafi ühe abiserva iga õdeklastrite paari kohta, mille `rank`-vahemikud kattuvad, ja need kõik jäävad eraldatuks kuni `remove_aux_edges` kutseni. Failis `2475_1` kattub iga paar: 16 304 905 serva. Natiivne 16.1.0 kulutab igaühele umbes 423 B ja selle tipp on 8.41 GB resident-mälu. Port ehitab samad servad samas järjekorras (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Miks aktsepteeritud.** Kasv on C-algoritmi enda oma, ruutsõltuvuses õdeklastrite arvust, ja juba natiivse tipp üksi on kaks korda suurem kui V8 vaikekuhi. Pordi enda osa on kadunud: abiserv maksis varem 995 B, sest igaüks kandis lisaks kaht `Port`-objekti ja tühja atribuutide `Map`-i; nüüd maksab see 458 B. Tabelis on `cN` faili `2475_1` esimesed N klastrit ja iga lahter annab resident-mälu tipu ja tööaja.
+
+| Sisend | Klastripaarid | Natiivne 16.1.0 | Port enne parandust | Port |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Tõendid: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Jälgitav pikk saba (`dot` atribuudid ja äärejuhtumid) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1311,7 +1329,7 @@ Iga punkt ütleb, mida natiivne teeb ja mida port teeb.
 
 - **Pikad stringid `xdot` ja `dot` väljundis (suletud).** Natiivne murrab jutumärkides väärtuse lõpetava kaldkriipsuga pärast 128 veergu või juurgraafi `linelength` järel, kui see on 0 või vähemalt 60 (`lib/cgraph/write.c:160-195,670-677`). Port murrab nüüd `_draw_` perekonna stringid samamoodi, baidi täpsusega nagu natiivne.
 - **fdp `json` ja `json0` servadega klastritesse (suletud).** Natiivne võtab klastri servade vahendussõlmed enne json kirjutamist tagasi (`lib/common/output.c:403`); port trükkis `__0:` vahendussõlmed ja võtab need nüüd esmalt tagasi. Natiivne fdp lõpeb `2717` peal igas vormingus koodiga 139, seega pole sellel võrdlust.
-- **2-D `mode=sgd` (aktsepteeritud, A1).** macOS-il erineb paigutus natiivsest libm `hypot` (`lib/neatogen/sgd.c:223`) ja `exp` (`sgd.c:216`) viimases bitis, mida SGD võimendab katsetatud graafil kuni 1,59 punktini. macOS-i `hypot` ja `exp` taasesitamisel on pordi jälg natiivse omaga võrdne, seega koodi ei muudetud (PR 119).
+- **2-D `mode=sgd` (aktsepteeritud, A1).** Port modelleerib macOS-i libm `hypot`-i kohas `lib/neatogen/sgd.c:223` failiga `src/common/libm-hypot.ts`. Paigutus erineb natiivsest endiselt `exp` (`sgd.c:216`) viimases bitis, katsetatud graafil kuni 0,01 punkti võrra. macOS-i `exp` mudelit ei ole kavas (#133, PR 119).
 - **Alamgraaf renderdatud enne oma juurt, fdp ja osage puhul (suletud).** Natiivne trükib salvestatud atribuudiväärtused (hilisem renderdus säilitab varasema `_draw_`, `_ldraw_` ja `xdotversion`), trükib `inf` ja `nan` nagu C printf ning testib iga serva splaini kasti lehe lõike vastu (`edge_in_box`, `lib/common/emit.c:2692`). Port teeb nüüd kõiki kolme ja võrdub natiivsega, välja arvatud ühe klastri piirkasti väärtuse puhul fdp enda triivi korral (1.6e-11 vs -3.3e-11). Natiivne fdp ise varieerub kuhja aadressidega (`lib/fdpgen/layout.c:466,501,637`), sealhulgas `graphs-fdp` esimene renderdus, seega kasutab võrdlus natiivset ilma nende võrdlusteta. Kõrvalmõjuna saab `1581` svg-na kaks tühja `<g id="edgeN">` gruppi sildistatud enesesilmuste jaoks, nagu natiivsel.
 
 ---

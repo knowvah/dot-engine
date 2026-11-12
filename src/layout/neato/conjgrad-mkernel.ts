@@ -24,8 +24,12 @@ const fr = Math.fround;
 /** Width of the vectorised reduction block of `right_mult_with_vector_ff`. */
 const RIGHT_MULT_BLOCK = 16;
 
-/** The unexpected-zero-residual diagnostic. @see lib/neatogen/conjgrad.c */
-const ZERO_LENGTH_MESSAGE = 'conjugate_gradient: unexpected length 0 vector\n';
+/**
+ * The unexpected-zero-residual diagnostic, without C's trailing `\n`: the
+ * port's agerr writers finish the line themselves (`common/agerr.ts`).
+ * @see lib/neatogen/conjgrad.c:65
+ */
+const ZERO_LENGTH_MESSAGE = 'conjugate_gradient: unexpected length 0 vector';
 
 /**
  * `result = packed_matrix * vector` for the packed upper triangle of a

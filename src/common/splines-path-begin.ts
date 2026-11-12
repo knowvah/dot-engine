@@ -35,9 +35,10 @@ class BeginRegSide {
   static topLeft(ctx: BeginCtx): void {
     const { P, n, endp, ranksep } = ctx;
     const b = endp.nb;
+    // C: GD_ranksep is int (types.h:335), so /2 truncates
     endp.boxes[0] = {
       ll: { x: b.ll.x - 1, y: P.start.p.y },
-      ur: { x: b.ur.x, y: n.info.coord.y + n.info.ht / 2 + ranksep / 2 },
+      ur: { x: b.ur.x, y: n.info.coord.y + n.info.ht / 2 + Math.trunc(ranksep / 2) },
     };
     endp.boxes[1] = {
       ll: { x: b.ll.x - 1, y: n.info.coord.y - n.info.ht / 2 },
@@ -50,7 +51,7 @@ class BeginRegSide {
     const b = endp.nb;
     endp.boxes[0] = {
       ll: { x: b.ll.x, y: P.start.p.y },
-      ur: { x: b.ur.x + 1, y: n.info.coord.y + n.info.ht / 2 + ranksep / 2 },
+      ur: { x: b.ur.x + 1, y: n.info.coord.y + n.info.ht / 2 + Math.trunc(ranksep / 2) },
     };
     endp.boxes[1] = {
       ll: { x: n.info.coord.x + n.info.rw + (FUDGE - 2), y: n.info.coord.y - n.info.ht / 2 },
@@ -121,7 +122,7 @@ class BeginFlatSide {
     const { P, n, endp, ranksep } = ctx;
     if (endp.sidemask === TOP) {
       endp.boxes[0] = {
-        ll: { x: P.start.p.x, y: n.info.coord.y - n.info.ht / 2 - ranksep / 2 },
+        ll: { x: P.start.p.x, y: n.info.coord.y - n.info.ht / 2 - Math.trunc(ranksep / 2) },
         ur: { x: b.ur.x + 1, y: n.info.coord.y - n.info.ht / 2 },
       };
       endp.boxes[1] = {

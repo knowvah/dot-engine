@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -92,7 +92,7 @@ spline-føring (A3, A8) er lukkede og bevaret nedenfor som historik.
 > dokumenteret hver for sig nedenfor: `circo`/`twopi`/`osage` kører med samme
 > **±0.01 deterministiske** tolerance som dot-undersøgelsen med årsagstriage pr. id
 > („Accept på motorsporet“ nedenfor); `neato`/`fdp`/`sfdp` kører med en
-> løsere **±0.5-karakteriserende** tolerance uden triage pr. id endnu
+> løsere **±0.5-karakteriserende** tolerance med tilskrivning pr. id
 > („Karakterisering af de iterative motorer“ nedenfor). Aktuelle tal på tværs af motorer:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -190,15 +190,16 @@ kørsler og portens layout i de øvrige 8, fordi GTS ordner sine kanter efter
 allokeringsadresse.
 
 **Karakterisering af de iterative motorer: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-I modsætning til motorsporene `circo`/`twopi`/`osage` ovenfor er `neato`/`fdp`/`sfdp`
-**endnu ikke** triageret pr. id — `engine-walk.ts` registrerer et felt `tolerance: 0.5`
+I modsætning til motorsporene `circo`/`twopi`/`osage` ovenfor, som holdes til ±0.01,
+sammenlignes `neato`/`fdp`/`sfdp` ved ±0.5pt, og hvert af deres afvigende id'er er
+tilskrevet, som beskrevet nedenfor — `engine-walk.ts` registrerer et felt `tolerance: 0.5`
 for disse tre, og `parity-report.ts` viser dem i et separat afsnit,
 „Iterative engines (±0.5 characterization)“, i
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 udtrykkeligt **ikke** sammenligneligt med de deterministiske beståprocenter på ±0.01 andre steder
 i dette dokument. Aktuelle tal mod graphviz 16.1.0 (929 elementer; beståprocenten
-udelader inputs, som C-oraklet ikke kan rendere, jf.
-[Overensstemmelse](./conformance.md)):
+udelader inputs, som C-oraklet ikke kan rendere, og inputs, hvor nativt output
+varierer fra kørsel til kørsel, jf. [Overensstemmelse](./conformance.md)):
 
 | motor | undersøgt | inden for ±0.5pt | ikke-conformant | porteringsfejl / timeout | orakelfejl | orakel ikke-deterministisk |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1201,6 +1202,23 @@ fejl, og `registry-staleness.test.ts` ville markere posten som forældet. Eviden
 
 **Hvorfor accepteret.** `emit_background` frigiver `clrs[0]` (`lib/common/emit.c:1518`), mens svg's udfyldningstilstand stadig peger på den (`gvrender_resolve_color` beholder `color->u.string = name`, `lib/gvc/gvrender.c:193`), så native output er frigivet hukommelse, ikke en farve; det var `fill=""` i 8 af 8 målte kørsler. Porten udskriver den farve, C mente. Intet korpusinput når hertil; `src/gvc/emit-xdot.test.ts` fastholder det.
 
+### A14. Én hjælpekant for hvert par af søskendeklynger (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Berørt:** `2475_1` på `dot`, en graf med 5.711 søskendeklynger. Under V8's standard-heap (4.192 MB på referenceværten) ender portens rendering i `JavaScript heap out of memory`, så dot-undersøgelsen giver dette ene id en større heap (`PORT_HEAP_MB` i `test/corpus/survey.ts`).
+
+**Hvad der sker.** `separate_subclust` (`lib/dotgen/position.c:454`) tilføjer én hjælpekant til begrænsningsgrafen for x-koordinaten for hvert par af søskendeklynger, hvis `rank`-intervaller overlapper, og de forbliver alle allokeret indtil `remove_aux_edges`. I `2475_1` overlapper hvert par: 16.304.905 kanter. Native 16.1.0 bruger omkring 423 B på hver og topper ved 8,41 GB resident. Porten bygger de samme kanter i samme rækkefølge (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Hvorfor accepteret.** Væksten er C-algoritmens egen, kvadratisk i antallet af søskendeklynger, og alene natives spids er det dobbelte af V8's standard-heap. Portens egen andel er væk: en hjælpekant kostede før 995 B, fordi hver også bar to `Port`-objekter og et tomt attribut-`Map`; nu koster den 458 B. I tabellen er `cN` de første N klynger i `2475_1`, og hver celle angiver spidsen i resident hukommelse og køretiden.
+
+| Input | Klyngepar | Native 16.1.0 | Porten før rettelsen | Porten |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Evidens: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Sporet lang hale (`dot`-attributter og kanttilfælde) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1328,7 +1346,7 @@ Hvert punkt angiver, hvad nativt gør, og hvad porten gør.
 
 - **Lange strenge i `xdot`- og `dot`-output (lukket).** Nativt bryder en citeret værdi med en afsluttende omvendt skråstreg efter 128 kolonner, eller efter rodgrafens `linelength`, når den er 0 eller mindst 60 (`lib/cgraph/write.c:160-195,670-677`). Porten ombryder nu `_draw_`-familiens strenge på samme måde, byte-ens med nativt.
 - **fdp `json` og `json0` med kanter til clusters (lukket).** Nativt fortryder klyngekant-proxyerne, før json skrives (`lib/common/output.c:403`); porten udskrev `__0:`-proxyerne og fortryder dem nu først. Nativ fdp afslutter med 139 på `2717` i alle formater, så den har ingen reference.
-- **2-D `mode=sgd` (accepteret, A1).** På macOS afviger layoutet fra nativt i sidste bit af libm `hypot` (`lib/neatogen/sgd.c:223`) og `exp` (`sgd.c:216`), som SGD forstærker til op til 1,59 punkter på den testede graf. Med macOS' `hypot` og `exp` afspillet er portens spor lig nativt, så koden er uændret (PR 119).
+- **2-D `mode=sgd` (accepteret, A1).** Porten modellerer macOS' libm `hypot` ved `lib/neatogen/sgd.c:223` med `src/common/libm-hypot.ts`. Layoutet afviger stadig fra nativt i sidste bit af `exp` (`sgd.c:216`), med højst 0,01 punkter på den testede graf. En macOS-model af `exp` er ikke planlagt (#133, PR 119).
 - **En undergraf renderet før sin rod, på fdp og osage (lukket).** Nativt udskriver gemte attributværdier (en senere rendering beholder en tidligere renderings `_draw_`, `_ldraw_` og `xdotversion`), udskriver `inf` og `nan` som Cs printf og tester hver kants spline-boks mod sideklippet (`edge_in_box`, `lib/common/emit.c:2692`). Porten gør nu alle tre og er lig nativt, bortset fra én bounding-box-værdi for en cluster ved fdp's egen drift (1.6e-11 mod -3.3e-11). Nativ fdp varierer selv med heapadresser (`lib/fdpgen/layout.c:466,501,637`), også den første rendering af `graphs-fdp`, så sammenligningen bruger nativt med disse sammenligninger fjernet. Som bivirkning får `1581` som svg to tomme `<g id="edgeN">`-grupper for selvløkker med label, som nativt har dem.
 
 ---

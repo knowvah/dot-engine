@@ -1,0 +1,57 @@
+digraph G {
+	graph [bb="0,0,77.46,77.46"];
+	node [label="\N",
+		shape=box
+	];
+	subgraph s1 {
+		graph [bb="1,2,3,4",
+			lheight=.5,
+			lp="node",
+			lwidth="-"
+		];
+		a	[height=0.53791,
+			pos="38.73,58.095",
+			width=0.35861];
+	}
+	subgraph cluster_k {
+		graph [bb="0.00032275,38.73,25.82,77.46",
+			lheight="x\ny",
+			lp=<b>,
+			lwidth="a\"b"
+		];
+		k	[height=0.53791,
+			pos="12.91,58.095",
+			width=0.35861];
+	}
+	subgraph s2 {
+		graph [bb=7];
+		s	[height=0.53791,
+			pos="64.55,58.095",
+			width=0.35861];
+	}
+	n	[height=0.53791,
+		pos="12.91,19.365",
+		rects="Graph",
+		width=0.35861,
+		xlp=<i>];
+	m	[height=0.53791,
+		pos="38.73,19.365",
+		rects="a b",
+		width=0.35861,
+		xlp=-1.5];
+	n -> m	[head_lp="1-2",
+		lp=12,
+		pos=<p>,
+		tail_lp=abc_9,
+		xlp="\N"];
+	p	[height=0.53791,
+		pos="64.55,19.365",
+		rects="1.2.3",
+		width=0.35861,
+		xlp=é];
+	m -> p	[head_lp="-",
+		lp=".",
+		pos="subgraph",
+		tail_lp="say \"hi\"",
+		xlp="a\\b"];
+}

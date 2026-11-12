@@ -78,13 +78,14 @@ describe('a subgraph laid out after its root was freed', () => {
     expect(cycle(ctx, s(sub), engine, 'plain')).toBe(second);
   });
 
-  // The SVG writer numbers the graph group graph0 where native writes the
-  // subgraph's AGSEQ, so this compares from the title on.
-  it.each(SUBGRAPHS)('dot %s in svg equals native below the graph id', (sub) => {
+  // The header lines above the graph group (generator comment, <svg> attribute
+  // wrapping) are the port's by design, so this compares from the group on; its
+  // id is the subgraph's graph<AGSEQ>, as native's.
+  it.each(SUBGRAPHS)('dot %s in svg equals native from the graph group on', (sub) => {
     const { g, s } = parseCase();
     const ctx = createDefaultContext();
     const [, nativeSub] = nativeRenders('dot', sub, 'svg', 'free');
-    const body = (svg: string): string => svg.slice(svg.indexOf('<title>'));
+    const body = (svg: string): string => svg.slice(svg.indexOf('<g id="graph'));
     cycle(ctx, g, 'dot', 'svg');
     expect(body(cycle(ctx, s(sub), 'dot', 'svg'))).toBe(body(nativeSub));
   });

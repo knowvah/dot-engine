@@ -64,6 +64,14 @@ export interface RendererPlugin {
   readonly type: string;
   /** Capability quality — higher wins when multiple plugins match the same format. */
   readonly quality: number;
+  /**
+   * The pad around the drawing, in graph units (points), when the graph sets no
+   * `pad=`. A renderer that omits it gets `DEFAULT_GRAPH_PAD`, as C's output
+   * languages that are not render plugins do.
+   * @see lib/gvc/gvcjob.h gvrender_features_t.default_pad
+   * @see lib/common/emit.c:3290-3304 init_job_pad
+   */
+  readonly defaultPad?: number;
 
   beginGraph(g: Graph, job: RenderJob): void;
   endGraph(g: Graph, job: RenderJob): void;

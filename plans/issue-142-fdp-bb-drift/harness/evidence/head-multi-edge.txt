@@ -1,0 +1,41 @@
+== raw port against native
+xdot lines differing: 100
+lines native=19113 port=18989 differing=12877
+  = 6197: tl.port ccderived_2 alpha=-0x1.827a6e70e5559p+1 Wd=0x1.2a3c6c1f28731p-1 Ht=0x1.2a3c6c1f28731p-1 x=-0x1.2802ca4d689b1p-1 y=-0x1.22e798feda2dp-4
+first difference at line 6198:
+  native: libm cos -0x1.41f013cd9658ep+1 = -0x1.9ec6f8a9641e7p-1
+  port:   libm cos -0x1.41f013cd9658ep+1 = -0x1.9ec6f8a9641e6p-1
+differing lines per label: {
+  libm: 33,
+  'tl.port': 16,
+  'tl.init': 24,
+  'tl.git': 11092,
+  'tl.end': 37,
+  'lay.prex': 16,
+  'lay.norm': 16,
+  'xl.parm': 297,
+  'xl.it': 1221,
+  'lay.x': 16,
+  'fcc.bb0': 3,
+  'fcc.pt': 3,
+  'fcc.bb1': 3,
+  'fcc.del': 3,
+  'fcc.pos': 41,
+  'fcc.bbf': 3,
+  'lay.clsz': 2,
+  'gel.e': 3,
+  'gp.in': 3,
+  'gp.port': 14,
+  'tl.parms': 1,
+  'rec.bb': 3,
+  'eval.pos': 18,
+  'setbb.in': 4,
+  'setbb.pt': 4,
+  '': 1
+}
+== port with native's libm results injected against native
+libm calls=80 injected-where-v8-differs=2 misses=0
+  cos -0x1.41f013cd9658ep+1 native=-0x1.9ec6f8a9641e7p-1 v8=-0x1.9ec6f8a9641e6p-1
+  cos -0x1.272129da1a6dp+1 native=-0x1.574dca8c13e15p-1 v8=-0x1.574dca8c13e14p-1
+xdot lines differing: 0
+lines native=19113 port=19113 differing=0

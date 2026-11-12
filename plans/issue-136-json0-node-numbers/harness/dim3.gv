@@ -1,0 +1,1 @@
+graph { dimen=3; a -- b; b -- c; c -- a; c -- d }

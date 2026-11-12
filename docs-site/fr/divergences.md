@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -102,7 +102,7 @@ touchée par ce déterminisme du modèle itératif ; les anciens écarts en virg
 > **déterministe de ±0.01** que le relevé dot, avec un triage de cause racine
 > par identifiant (« Acceptation au niveau de la piste d’un moteur » plus bas) ;
 > `neato`/`fdp`/`sfdp` s’exécutent à une tolérance de **caractérisation de
-> ±0.5**, plus lâche, sans triage par identifiant pour l’instant
+> ±0.5**, plus lâche, avec attribution par identifiant
 > (« Caractérisation des moteurs itératifs » plus bas). Chiffres actuels tous
 > moteurs confondus :
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
@@ -222,8 +222,9 @@ portage dans les 8 autres, car GTS ordonne ses arêtes selon l’adresse
 d’allocation.
 
 **Caractérisation des moteurs itératifs : neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Contrairement aux pistes de moteur `circo`/`twopi`/`osage` ci-dessus,
-`neato`/`fdp`/`sfdp` ne sont **pas** encore triés par identifiant —
+Contrairement aux pistes de moteur `circo`/`twopi`/`osage` ci-dessus, tenues à
+±0.01, `neato`/`fdp`/`sfdp` sont comparés à ±0.5pt, et chacun de leurs identifiants
+divergents est attribué, comme décrit plus bas —
 `engine-walk.ts` consigne un champ `tolerance: 0.5` pour ces trois moteurs et
 `parity-report.ts` les présente dans une section distincte, « Iterative engines
 (±0.5 characterization) », de
@@ -231,7 +232,8 @@ Contrairement aux pistes de moteur `circo`/`twopi`/`osage` ci-dessus,
 explicitement **non comparable** aux taux de réussite déterministes à ±0.01
 donnés ailleurs dans ce document. Compteurs actuels face à graphviz 16.1.0 (univers de 929 éléments ;
 le pourcentage de réussite laisse de côté les entrées que l’oracle C ne peut pas
-rendre, conformément à [Conformité](./conformance.md)) :
+rendre et les entrées dont la sortie native varie d’une exécution à l’autre,
+conformément à [Conformité](./conformance.md)) :
 
 | moteur | relevées | à ±0.5pt | non conformes | erreur du portage / délai dépassé | erreur de l’oracle | oracle non déterministe |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1346,6 +1348,23 @@ n’acceptent une erreur du portage que si elle porte ce message. Un autre éche
 
 **Pourquoi c’est accepté.** `emit_background` libère `clrs[0]` (`lib/common/emit.c:1518`) alors que l’état de remplissage de svg pointe encore dessus (`gvrender_resolve_color` conserve `color->u.string = name`, `lib/gvc/gvrender.c:193`) ; la sortie native est donc de la mémoire libérée, pas une couleur ; c’était `fill=""` dans 8 exécutions mesurées sur 8. Le port affiche la couleur que C voulait. Aucune entrée du corpus n’atteint ce cas ; `src/gvc/emit-xdot.test.ts` le fige.
 
+### A14. Une arête auxiliaire par paire de clusters frères (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Concerné :** `2475_1` avec `dot`, un graphe de 5 711 clusters frères. Avec le tas par défaut de V8 (4 192 Mo sur la machine de référence), le rendu du portage se termine par `JavaScript heap out of memory` ; le relevé dot donne donc à ce seul id un tas plus grand (`PORT_HEAP_MB` dans `test/corpus/survey.ts`).
+
+**Ce qui se passe.** `separate_subclust` (`lib/dotgen/position.c:454`) ajoute au graphe de contraintes de la coordonnée x une arête auxiliaire pour chaque paire de clusters frères dont les intervalles de `rank` se chevauchent, et toutes restent allouées jusqu’à `remove_aux_edges`. Dans `2475_1`, toutes les paires se chevauchent : 16 304 905 arêtes. La version native 16.1.0 dépense environ 423 o pour chacune et culmine à 8.41 Go résidents. Le portage construit les mêmes arêtes dans le même ordre (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Pourquoi c’est accepté.** La croissance est celle de l’algorithme C lui-même, quadratique en nombre de clusters frères, et le pic de la version native vaut à lui seul le double du tas par défaut de V8. La part propre au portage a disparu : une arête auxiliaire coûtait 995 o, car chacune portait en plus deux objets `Port` et un `Map` d’attributs vide ; elle coûte désormais 458 o. Dans le tableau, `cN` désigne les N premiers clusters de `2475_1`, et chaque cellule donne le pic de mémoire résidente et le temps d’exécution.
+
+| Entrée | Paires de clusters | Natif 16.1.0 | Portage avant le correctif | Portage |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 Mo, 0.8 s | 539 Mo, 6.0 s | 374 Mo, 5.4 s |
+| c800 | 319 600 | 257 Mo, 4.8 s | 812 Mo, 27 s | 665 Mo, 26 s |
+| c1600 | 1 279 200 | 844 Mo, 35 s | 2 424 Mo, 131 s | 1 621 Mo, 131 s |
+| `2475_1` | 16 304 905 | 8.41 Go, 1 412 s | `JavaScript heap out of memory` | 10.15 Go, 4 197 s, `conformant` |
+
+Preuve : [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Longue traîne suivie (attributs de `dot` et cas limites) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1488,7 +1507,7 @@ Chaque élément dit ce que fait le natif et ce que fait le portage.
 
 - **Longues chaînes dans la sortie `xdot` et `dot` (clos).** Le natif coupe une valeur entre guillemets par une barre oblique inverse finale après 128 colonnes, ou après le `linelength` du graphe racine lorsqu’il vaut 0 ou au moins 60 (`lib/cgraph/write.c:160-195,670-677`). Le portage coupe désormais de même les chaînes de la famille `_draw_`, à l’identique octet pour octet du natif.
 - **fdp `json` et `json0` avec des arêtes vers des clusters (clos).** Le natif annule les proxys d’arêtes de cluster avant d’écrire le json (`lib/common/output.c:403`) ; le portage imprimait les proxys `__0:` et les annule maintenant d’abord. Le fdp natif se termine par 139 sur `2717` dans tous les formats, il n’a donc pas de référence.
-- **`mode=sgd` en 2-D (accepté, A1).** Sous macOS, le layout diffère du natif au dernier bit de `hypot` (`lib/neatogen/sgd.c:223`) et `exp` (`sgd.c:216`) de la libm, que SGD amplifie jusqu’à 1,59 point sur le graphe testé. Avec `hypot` et `exp` de macOS rejoués, la trace du portage est égale à celle du natif, donc aucun code n’a changé (PR 119).
+- **`mode=sgd` en 2-D (accepté, A1).** Le portage modélise le `hypot` de la libm de macOS à `lib/neatogen/sgd.c:223` avec `src/common/libm-hypot.ts`. Le layout diffère encore du natif au dernier bit de `exp` (`sgd.c:216`), d’au plus 0,01 point sur le graphe testé. Aucun modèle de `exp` de macOS n’est prévu (#133, PR 119).
 - **Un sous-graphe rendu avant sa racine, sur fdp et osage (clos).** Le natif imprime les valeurs d’attributs stockées (un rendu ultérieur conserve les `_draw_`, `_ldraw_` et `xdotversion` d’un rendu antérieur), imprime `inf` et `nan` comme le printf de C, et teste la boîte de spline de chaque arête contre le découpage de page (`edge_in_box`, `lib/common/emit.c:2692`). Le portage fait désormais les trois et égale le natif, sauf une valeur de boîte englobante de cluster à la dérive propre de fdp (1.6e-11 contre -3.3e-11). Le fdp natif varie lui-même avec les adresses du tas (`lib/fdpgen/layout.c:466,501,637`), y compris au premier rendu de `graphs-fdp` ; la comparaison utilise donc le natif sans ces comparaisons. En effet de bord, `1581` en svg gagne deux groupes `<g id="edgeN">` vides pour les boucles étiquetées, comme le natif.
 
 ---

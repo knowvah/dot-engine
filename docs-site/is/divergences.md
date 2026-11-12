@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -93,7 +93,7 @@ gormalíkansvélarnar). *Uppsetning* `dot`-vélarinnar verður **ekki** fyrir á
 > strangleikastigum sem eru skjalfest sérstaklega hér á eftir: `circo`/`twopi`/`osage` keyra með sömu
 > **±0.01 ákvarðandi** vikmörkum og dot-könnunin, með rótarorsakagreiningu fyrir hvert auðkenni
 > („Samþykki ferils vélar“ hér á eftir); `neato`/`fdp`/`sfdp` keyra með rýmri
-> **±0.5 einkennavikmörkum** og enn án greiningar fyrir hvert auðkenni
+> **±0.5 einkennavikmörkum** og með rakningu fyrir hvert auðkenni
 > („Einkenni ítrekandi véla“ hér á eftir). Núverandi tölur þvert á vélar:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -191,14 +191,16 @@ véfréttarinnar í 22 af 30 keyrslum og uppsetningu yfirfærslunnar í hinum 8,
 GTS raðar leggjum sínum eftir úthlutunarvistfangi.
 
 **Einkenni ítrekandi véla: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Ólíkt vélaferlunum `circo`/`twopi`/`osage` hér að ofan eru `neato`/`fdp`/`sfdp`
-**enn ekki** flokkaðar eftir auðkennum — `engine-walk.ts` skráir reitinn `tolerance: 0.5`
+Ólíkt vélaferlunum `circo`/`twopi`/`osage` hér að ofan, þar sem vikmörkin ±0.01 gilda,
+eru `neato`/`fdp`/`sfdp` bornar saman með ±0.5pt vikmörkum og hvert fráviksauðkenni þeirra
+er rakið, eins og lýst er hér að neðan — `engine-walk.ts` skráir reitinn `tolerance: 0.5`
 fyrir þessar þrjár og `parity-report.ts` birtir þær í sérstökum kafla
 „Iterative engines (±0.5 characterization)“ í
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 sem er beinlínis **ekki** sambærilegur við ±0.01 ákvarðandi árangurshlutföll annars staðar
 í þessu skjali. Núverandi talningar gegn graphviz 16.1.0 (929 atriða heild; árangurshlutfall sleppir
-inntaki sem C-véfréttin getur ekki teiknað, samkvæmt [Samræmi](./conformance.md)):
+inntaki sem C-véfréttin getur ekki teiknað og inntaki þar sem úttak upprunalega forritsins
+breytist milli keyrslna, samkvæmt [Samræmi](./conformance.md)):
 
 | vél | könnuð | innan ±0.5pt | ósamræmd | villa í yfirfærslu / tímamörk | villa í véfrétt | véfrétt ekki ákvörðuð |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1202,6 +1204,23 @@ og `registry-staleness.test.ts` myndi merkja færsluna sem úrelta. Sönnunargö
 
 **Hvers vegna samþykkt.** `emit_background` losar `clrs[0]` (`lib/common/emit.c:1518`) á meðan fyllistaða svg bendir enn á það (`gvrender_resolve_color` heldur `color->u.string = name`, `lib/gvc/gvrender.c:193`), svo upprunalega úttakið er losað minni, ekki litur; það var `fill=""` í öllum 8 af 8 mældum keyrslum. Gáttin skrifar litinn sem C ætlaði. Ekkert inntak í safninu nær hingað; `src/gvc/emit-xdot.test.ts` festir það.
 
+### A14. Einn hjálparleggur fyrir hvert par systkinaklasa (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Fyrir áhrifum:** `2475_1` á `dot`, graf með 5.711 systkinaklösum. Undir sjálfgefnu heap-minni V8 (4.192 MB á viðmiðunarvélinni) endar teiknun yfirfærslunnar í `JavaScript heap out of memory`, svo dot-könnunin gefur þessu eina auðkenni stærra heap-minni (`PORT_HEAP_MB` í `test/corpus/survey.ts`).
+
+**Hvað gerist.** `separate_subclust` (`lib/dotgen/position.c:454`) bætir einum hjálparlegg við skorðugrafið fyrir x-hnitið fyrir hvert par systkinaklasa þar sem `rank`-bilin skarast, og þeir haldast allir úthlutaðir fram að `remove_aux_edges`. Í `2475_1` skarast hvert par: 16.304.905 leggir. Innbyggða 16.1.0 notar um 423 B í hvern og nær hámarki í 8,41 GB í minni. Yfirfærslan byggir sömu leggi í sömu röð (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Hvers vegna samþykkt.** Vöxturinn er C-algrímsins sjálfs, í öðru veldi af fjölda systkinaklasa, og hámark innbyggðu útgáfunnar eitt og sér er tvöfalt sjálfgefið heap-minni V8. Eigin hlutur yfirfærslunnar er horfinn: hjálparleggur kostaði áður 995 B, því hver þeirra bar að auki tvo `Port`-hluti og tómt eiginda-`Map`; nú kostar hann 458 B. Í töflunni er `cN` fyrstu N klasarnir í `2475_1`, og hver reitur gefur hámark minnisnotkunar og keyrslutíma.
+
+| Inntak | Klasapör | Innbyggt 16.1.0 | Yfirfærslan fyrir lagfæringu | Yfirfærslan |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Sönnunargögn: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Rakinn langur hali (eigindir og jaðartilvik í `dot`) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1329,7 +1348,7 @@ Hver liður segir hvað innfædda gerir og hvað portið gerir.
 
 - **Langir strengir í `xdot`- og `dot`-úttaki (lokað).** Upprunalega forritið brýtur gildi í gæsalöppum með öfugu skástriki í lok línu eftir 128 dálka, eða eftir `linelength` rótargrafsins þegar það er 0 eða að minnsta kosti 60 (`lib/cgraph/write.c:160-195,670-677`). Yfirfærslan brýtur nú strengi `_draw_`-fjölskyldunnar eins, bæti fyrir bæti eins og upprunalega forritið.
 - **fdp `json` og `json0` með leggjum til klasa (lokað).** Upprunalega forritið afturkallar milliliði klasaleggja áður en json er skrifað (`lib/common/output.c:403`); yfirfærslan prentaði `__0:` milliliðina og afturkallar þá nú fyrst. Upprunalegt fdp lýkur með 139 á `2717` í öllum sniðum, svo ekkert viðmið er til.
-- **2-D `mode=sgd` (samþykkt, A1).** Á macOS víkur umbrotið frá upprunalega forritinu í síðasta biti libm `hypot` (`lib/neatogen/sgd.c:223`) og `exp` (`sgd.c:216`), sem SGD magnar upp í allt að 1,59 punkta á prófaða grafinu. Þegar `hypot` og `exp` frá macOS eru endurspiluð er ferill yfirfærslunnar sá sami og upprunalega forritsins, svo kóða var ekki breytt (PR 119).
+- **2-D `mode=sgd` (samþykkt, A1).** Yfirfærslan líkir eftir libm `hypot` frá macOS í `lib/neatogen/sgd.c:223` með `src/common/libm-hypot.ts`. Umbrotið víkur enn frá upprunalega forritinu í síðasta biti `exp` (`sgd.c:216`), um í mesta lagi 0,01 punkt á prófaða grafinu. Líkan af `exp` frá macOS er ekki á áætlun (#133, PR 119).
 - **Undirgraf teiknað á undan rót sinni, í fdp og osage (lokað).** Upprunalega forritið prentar geymd eigindagildi (síðari teikning heldur `_draw_`, `_ldraw_` og `xdotversion` fyrri teikningar), prentar `inf` og `nan` eins og printf í C og prófar splínukassa hvers leggjar gegn síðuklippingunni (`edge_in_box`, `lib/common/emit.c:2692`). Yfirfærslan gerir nú allt þrennt og jafnast á við upprunalega forritið, nema eitt jaðarkassagildi klasa við eigin rek fdp (1.6e-11 á móti -3.3e-11). Upprunalegt fdp breytist sjálft eftir hrúguvistföngum (`lib/fdpgen/layout.c:466,501,637`), þar með talin fyrsta teikning `graphs-fdp`, svo samanburðurinn notar upprunalega forritið án þessara samanburða. Aukaverkun er að `1581` sem svg fær tvo tóma `<g id="edgeN">` hópa fyrir merktar sjálflykkjur, eins og upprunalega forritið.
 
 ---

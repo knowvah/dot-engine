@@ -29,10 +29,10 @@ import { parse } from '../../parser/index.js';
 import { deriveGraph, type LayoutInfo } from './derive.js';
 import { fdpInitGraph } from './index.js';
 import { initInfo } from './layout.js';
-import { expandCluster } from './ports.js';
+import { expandCluster, genPorts, getEdgeList } from './ports.js';
 import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
-import { dndata, gdata, setDnode, setParent } from './fdp-model.js';
+import { type Bport, dndata, gdata, setDnode, setParent } from './fdp-model.js';
 
 function freshInfo(g: ReturnType<typeof parse>): LayoutInfo {
   return initInfo(g);
@@ -280,5 +280,72 @@ describe('deriveGraph — boundary ports (derivePorts / derivePort)', () => {
     // the orphaned port contributes nothing: only A's own edge (self-loop
     // A--A) is present, no port node was created.
     expect([...dg2.nodes.values()].some((n) => n.name.startsWith('_port_'))).toBe(false);
+  });
+});
+
+// Issue #142: the oracle binary contracts these two statements into fmadd
+// (otool -tv libgvplugin_neato_layout.8.dylib, layout() at 0x63154 and
+// 0x6334c). Inputs and expected values are %a traces of the 16.1.0 oracle
+// (plans/issue-142-fdp-bb-drift/harness); the plain mul-then-add form is one
+// ulp away on each.
+describe('ports — statements the oracle contracts into fmadd', () => {
+  it('getEdgeList computes dist2 as fma(dx, dx, dy*dy) (layout.c:569)', () => {
+    const g = parse(`graph G {
+      subgraph cluster_0 { A; B; A -- B; }
+      C;
+      A -- C;
+    }`);
+    fdpInitGraph(g);
+    const dg = deriveGraph(g, freshInfo(g))!;
+    const cn = [...dg.nodes.values()].find((n) => dndata(n).clust !== null)!;
+    const other = [...dg.nodes.values()].find((n) => n !== cn)!;
+    // tests/graphs/fdp.gv, getEdgeList(clusterC), edge 0
+    cn.info.pos = [0, 0];
+    other.info.pos = [
+      -0.5139332688210255, // dx -0x1.072242ebd34afp-1
+      -0.059478310085102154, // dy -0x1.e73f0e946129cp-5
+    ];
+
+    const erecs = getEdgeList(cn, dg);
+
+    expect(erecs.length).toBe(1);
+    // native 0x1.1216cb0f64fe1p-2; dx*dx + dy*dy is 0x1.1216cb0f64fe2p-2
+    expect(erecs[0]!.dist2).toBe(0.26766507417164404);
+  });
+
+  it('genPorts starts the reversed fan at fma(delta, cnt - 1, alpha) (layout.c:640)', () => {
+    // harness/multi-edge.gv's shape: two clusters joined by 7 real edges.
+    const g = parse(`graph G {
+      subgraph clusterA { a1; a2; a3; a4; a5; a6; a7 }
+      subgraph clusterC { c1; c2; c3; c4; c5; c6; c7 }
+      a1 -- c1; a2 -- c2; a3 -- c3; a4 -- c4; a5 -- c5; a6 -- c6; a7 -- c7;
+    }`);
+    fdpInitGraph(g);
+    const dg = deriveGraph(g, freshInfo(g))!;
+    const [first, second] = [...dg.nodes.values()];
+    const e = dg.edges[0]!;
+    expect(e.info.count).toBe(7);
+    expect(second!.id).toBeGreaterThan(first!.id); // second is the reversed side
+
+    const pp: Bport[] = [];
+    const next = genPorts(
+      second!,
+      { e, alpha: 0.6264535741292478, dist2: 0 }, // 0x1.40be85dab1e28p-1
+      pp, 0,
+      1.8071546493773658, // bnd 0x1.cea1afe5e3dfcp+0
+    );
+
+    expect(next).toBe(7);
+    // native gp.port lines, index 6 down to 0; index 6 is the contracted
+    // statement (alpha + delta*6 is 0x1.abfa2da8a191ep-1), the rest add -delta
+    expect(pp.map((p) => p.alpha)).toEqual([
+      0.6264535741292475, // 0x1.40be85dab1e25p-1
+      0.6613601591691342, // 0x1.529dcc7d047f9p-1
+      0.6962667442090208, // 0x1.647d131f571cdp-1
+      0.7311733292489074, // 0x1.765c59c1a9ba1p-1
+      0.7660799142887941, // 0x1.883ba063fc575p-1
+      0.8009864993286807, // 0x1.9a1ae7064ef49p-1
+      0.8358930843685674, // 0x1.abfa2da8a191dp-1
+    ]);
   });
 });

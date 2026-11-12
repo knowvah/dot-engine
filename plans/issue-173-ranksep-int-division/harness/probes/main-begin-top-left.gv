@@ -1,0 +1,1 @@
+digraph { ranksep=0.32; a [width=3]; a:nw -> b:se; }

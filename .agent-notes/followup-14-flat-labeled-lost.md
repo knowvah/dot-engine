@@ -8,6 +8,9 @@
 - **Impact**: Any new router branch that consumes an edge without installing a spline
   must set `e.info.lost = true`.
 - **Confidence**: High (stack traces; byte-identity over 950 dot ids).
+- **2026-11-10 (issue #137)**: the `routeDotEdges` backstop is gone (part 11 T8). The
+  re-route risk is now inside the flat group loop, which calls `routeLoneEdge` for every
+  member (`splines-groups.ts:121`); its `lost` skip is the only reader.
 
 ## Observation: survey verdicts ignore warning counts
 - **Context**: Deciding whether a stderr-only fix needs the 3 h survey.

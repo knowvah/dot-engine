@@ -19,7 +19,7 @@ import { transformPoint } from './device-transform.js';
 import { graphXdots } from './init-xdot.js';
 import { gvrenderSetStyle } from './gvrender-set-style.js';
 import type { ObjState, RenderJob } from './job.js';
-import { initJobViewportZoom, parseDrawingSize, parseGraphPad, setupPageClip } from './viewport.js';
+import { initJobViewportZoom, parseDrawingSize, setupPageClip } from './viewport.js';
 
 /** @see lib/common/const.h:48 */
 const DEFAULT_COLOR = 'black';
@@ -30,17 +30,16 @@ const DEFAULT_FILL = 'lightgrey';
 const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
 
 /**
- * job->clip for this device, computed in C's order, rounding included. svg's
- * pad is `job.pad` (default 4); the xdot device's default is 0, so with no
- * `pad` its clip is the bb.
- * @see plugin/core/gvrender_core_dot.c:739 render_features_dot
- * @see lib/common/emit.c:1558
+ * job->clip, computed in C's order, rounding included, from the bb and
+ * `job.pad`. init_job_pad has already made that pad the device's: with no
+ * `pad=` it is 4 on svg and map, and 0 on dot, xdot, plain and json, whose clip
+ * is then the bb.
+ * @see lib/common/emit.c:3290-3304 init_job_pad
+ * @see lib/common/emit.c:1550-1564 setup_page
  */
-export function deviceClip(g: Graph, renderer: RendererPlugin, job: RenderJob): Box {
-  const attr = g.attrs.get('pad');
-  const pad = renderer.type === 'svg' ? job.pad : attr ? parseGraphPad(attr) : { x: 0, y: 0 };
+export function deviceClip(g: Graph, job: RenderJob): Box {
   const size = parseDrawingSize(g.attrs.get('size'));
-  return setupPageClip(job.bb, size, pad, initJobViewportZoom(job.bb, size, pad));
+  return setupPageClip(job.bb, size, job.pad, initJobViewportZoom(job.bb, size, job.pad));
 }
 
 /**
@@ -210,7 +209,7 @@ export function emitXdot(g: Graph, renderer: RendererPlugin, job: RenderJob): vo
   const obj = job.obj;
   if (xd === undefined || obj === null) return;
   applyBackgroundState(g, renderer, obj);
-  const inClip = zeroBoxInClip(deviceClip(g, renderer, job));
+  const inClip = zeroBoxInClip(deviceClip(g, job));
   const warned = { image: false };
   let styled = false;
   for (const op of xd.ops) {

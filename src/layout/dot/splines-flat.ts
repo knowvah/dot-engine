@@ -34,13 +34,14 @@ import { getSplineBounds, staleAdjacent } from './edge-route-rank.js';
 import { graphRanksep } from './position-aux.js';
 import { Edge as EdgeClass } from '../../model/edge.js';
 import { cloneNode, cloneEdge, cleanupCloneGraph, transformf } from './splines-clone.js';
+import { agsubg } from '../../model/cgraph-ops.js';
 import { dotInitNodeEdge, AUX_INIT_SYMS } from './init.js';
 import { gvPostprocess } from '../../common/postproc.js';
 import { newSpline } from '../../common/splines-clip.js';
 import { mapArrowOpPoints } from '../../common/arrows-shapes-util.js';
 import type { ArrowDrawOp } from '../../common/arrows-types.js';
 import { updateBbBz } from '../../common/splines-geom.js';
-import { placeRegularEdgeLabels, updateBB } from './splines-label.js';
+import { updateBB } from './splines-label.js';
 import { NORMAL, VIRTUAL } from './fastgr.js';
 import { EDGE_LABEL } from './rank.js';
 
@@ -110,15 +111,6 @@ export function runAuxSplines(auxg: Graph): number {
 // @see lib/dotgen/dotsplines.c:make_flat_adj_edges
 // ---------------------------------------------------------------------------
 
-/**
- * Route flat edges between adjacent nodes by running the full dot pipeline
- * on a cloned subgraph (rotated 90°).
- *
- * Acceptance criterion 1: after this call, the cloned graph's nodes have
- * coord set (verified by dotPosition setting ND_coord).
- *
- * @see lib/dotgen/dotsplines.c:make_flat_adj_edges
- */
 /** Aux graph + the two cloned endpoints + original→aux edge map. */
 interface FlatAux { auxg: Graph; auxt: Node; auxh: Node; alg: Map<Edge, Edge>; }
 
@@ -165,15 +157,16 @@ function cloneFlatEdge(auxg: Graph, tn: Node, auxt: Node, auxh: Node, orig: Edge
  * @see lib/dotgen/dotsplines.c:setflags (FLATEDGE order predicate)
  * @see lib/dotgen/dotsplines.c:make_flat_edge (makefwdedge of *edges)
  */
-function flatLeadPair(edges: Edge[]): { tn: Node; hn: Node } {
+export function flatLeadPair(edges: Edge[]): { tn: Node; hn: Node } {
   const t = edges[0].tail, h = edges[0].head;
   return (t.info.order ?? 0) < (h.info.order ?? 0) ? { tn: t, hn: h } : { tn: h, hn: t };
 }
 
 /**
- * Build the rotated auxiliary graph: clone tail/head + each edge, then add a
+ * Build the rotated auxiliary graph: clone the tail into the `rank=source`
+ * subgraph `xxx` and the head into the aux root, clone each edge, then add a
  * heavy ordering edge so the pair lands on adjacent ranks.
- * @see lib/dotgen/dotsplines.c:make_flat_adj_edges (clone + hvye)
+ * @see lib/dotgen/dotsplines.c:make_flat_adj_edges 1177-1185 (subg, clone + hvye)
  */
 function buildFlatAux(g: Graph, edges: Edge[], cnt: number): FlatAux {
   const { tn: ltn, hn: lhn } = flatLeadPair(edges);
@@ -183,7 +176,9 @@ function buildFlatAux(g: Graph, edges: Edge[], cnt: number): FlatAux {
   // cloned from — so the orientation test in cloneFlatEdge matches C.
   const refTn = flip ? lhn : ltn;
   const auxg = cloneGraph(g);
-  const auxt = cloneNode(auxg, refTn);
+  const subg = agsubg(auxg, 'xxx', true)!;
+  subg.attrs.set('rank', 'source');
+  const auxt = cloneNode(subg, refTn);
   const auxh = cloneNode(auxg, flip ? ltn : lhn);
   const alg = new Map<Edge, Edge>();
   let hvye: Edge | null = null;
@@ -374,11 +369,6 @@ export function makeFlatAdjEdges(g: Graph, edges: Edge[], cnt: number, et: numbe
   repositionFlatAux(g, edges, aux);
   dotSameports(aux.auxg);
   dotSplines_(aux.auxg, false);
-  // The labeled chain edge routes in routeDotEdges (after dotSplines_'s own
-  // label pass), so recover_slack repositions the label vnode only afterward.
-  // Re-place the aux labels here to read the final vnode coords (DOT-12).
-  // @see lib/dotgen/dotsplines.c:make_regular_edge (recover_slack before place_vnlabel)
-  placeRegularEdgeLabels(aux.auxg);
   gvPostprocess(aux.auxg);
   copyFlatSplines(g, edges, aux);
   cleanupCloneGraph(aux.auxg);

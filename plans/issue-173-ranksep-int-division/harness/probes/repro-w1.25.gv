@@ -1,0 +1,1 @@
+digraph { rankdir=LR; {rank=same; a [width=1.25]; b} a:n -> b:n; a -> b [label=x]; }

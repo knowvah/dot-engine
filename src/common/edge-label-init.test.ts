@@ -25,6 +25,8 @@ import {
   initFontLabelEdgeAttr,
   initEdgeLabels,
   initEdgePorts,
+  BOUND_EDGE_LABEL_SYMS,
+  type EdgeLabelSyms,
 } from './edge-label-init.js';
 import { DEFAULT_FONTNAME, DEFAULT_COLOR, DEFAULT_FONTSIZE } from './make-label.js';
 import { HTML_STRING_MARK } from './html-string.js';
@@ -431,6 +433,64 @@ describe('initEdgeLabels — html taillabel', () => {
     const { g, e } = edgeWithHtmlAttr('taillabel');
     initEdgeLabels(e, g, stubMeasurer);
     expect(e.info.tail_label?.u.kind).toBe('html');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// initEdgeLabels — unbound symbols (make_flat_adj_edges' setState)
+// @see lib/dotgen/dotsplines.c:setState (E_headlabel, E_taillabel, E_xlabel = NULL)
+// @see lib/common/utils.c:525, 533, 539 (the `E_x && ...` guards)
+// ---------------------------------------------------------------------------
+
+/** An edge carrying all four label attributes. */
+function fullyLabelledEdge(): { g: Graph; e: Edge } {
+  return makeEdgeInGraph(new Map([
+    ['label', 'L'], ['xlabel', 'X'], ['headlabel', 'H'], ['taillabel', 'T'],
+  ]));
+}
+
+const ALL_LABEL_BITS = EDGE_LABEL | EDGE_XLABEL | HEAD_LABEL | TAIL_LABEL;
+const UNBOUND_EDGE_LABEL_SYMS: EdgeLabelSyms = { headlabel: false, taillabel: false, xlabel: false };
+
+describe('initEdgeLabels — symbol state', () => {
+  it('binds every symbol by default', () => {
+    expect(BOUND_EDGE_LABEL_SYMS).toEqual({ headlabel: true, taillabel: true, xlabel: true });
+    const { g, e } = fullyLabelledEdge();
+    initEdgeLabels(e, g, stubMeasurer);
+    expect([e.info.label?.text, e.info.xlabel?.text, e.info.head_label?.text, e.info.tail_label?.text])
+      .toEqual(['L', 'X', 'H', 'T']);
+    expect(g.info.has_labels).toBe(ALL_LABEL_BITS);
+  });
+
+  it('makes only the centre label when the three symbols are unbound', () => {
+    const { g, e } = fullyLabelledEdge();
+    initEdgeLabels(e, g, stubMeasurer, UNBOUND_EDGE_LABEL_SYMS);
+    expect(e.info.label?.text).toBe('L');
+    expect([e.info.xlabel, e.info.head_label, e.info.tail_label]).toEqual([undefined, undefined, undefined]);
+    expect(g.info.has_labels).toBe(EDGE_LABEL);
+  });
+
+  it.each([
+    { sym: 'xlabel', bit: EDGE_XLABEL, texts: ['L', undefined, 'H', 'T'] },
+    { sym: 'headlabel', bit: HEAD_LABEL, texts: ['L', 'X', undefined, 'T'] },
+    { sym: 'taillabel', bit: TAIL_LABEL, texts: ['L', 'X', 'H', undefined] },
+  ])('an unbound $sym drops that label and its bit only', ({ sym, bit, texts }) => {
+    const { g, e } = fullyLabelledEdge();
+    initEdgeLabels(e, g, stubMeasurer, { ...BOUND_EDGE_LABEL_SYMS, [sym]: false });
+    expect([e.info.label?.text, e.info.xlabel?.text, e.info.head_label?.text, e.info.tail_label?.text])
+      .toEqual(texts);
+    expect(g.info.has_labels).toBe(ALL_LABEL_BITS & ~bit);
+  });
+
+  it('leaves an edge with only unbound labels untouched, ports aside', () => {
+    const { g, e } = makeEdgeInGraph(new Map([
+      ['xlabel', 'X'], ['headlabel', 'H'], ['taillabel', 'T'], ['tailport', 's'],
+    ]));
+    initEdgeLabels(e, g, stubMeasurer, UNBOUND_EDGE_LABEL_SYMS);
+    expect([e.info.label, e.info.xlabel, e.info.head_label, e.info.tail_label])
+      .toEqual([undefined, undefined, undefined, undefined]);
+    expect(g.info.has_labels ?? 0).toBe(0);
+    expect(e.info.tail_port.name).toBe('s');
   });
 });
 

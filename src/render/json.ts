@@ -28,6 +28,8 @@
  * conformance bar is the semantic `compare-json` comparator (±0.01, colors /
  * fonts canonicalized). `stoj`/`ind` are retained as the C-faithful string
  * helpers referenced by the unit tests.
+ * A non-finite draw coordinate prints as C's `%.03f` token (`inf`, `-inf`,
+ * `nan`), so such a document is not valid JSON, exactly as native's is not.
  *
  * @see plugin/core/gvrender_core_json.c
  */
@@ -41,15 +43,16 @@ import type { RendererPlugin } from '../gvc/context.js';
 import type { RenderJob } from '../gvc/job.js';
 import type { XdotOp, XdotColor } from '../xdot/types.js';
 import type { TextlabelT, FieldT } from '../common/types.js';
-import { printNum, gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
-import { attachAttrs } from './dot/write-back.js';
-import { attachBeforeWriteWithClusterEdges as attachFirst, clusterNodeGid, jsonNodes } from './json-cluster-edge.js';
+import { gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
+import { attachAttrs, nodeLayoutAttrs } from './dot/write-back.js';
+import { attachBeforeWriteWithClusterEdges as attachFirst, jsonNodes, labelSubgs, lookupCluster } from './json-cluster-edge.js';
 import { attrsWithoutLayoutBb } from '../gvc/layout-bb.js';
 import { CHAR_LATIN1 } from '../common/graph-init.js';
 import { parse } from '../parser/index.js';
 import { render as deviceRender } from '../gvc/device.js';
 import { createDefaultContext } from '../gvc/default-context.js';
 import { parseXDot } from '../xdot/index.js';
+import { stringifyJsonTree } from './json-nonfinite.js';
 import { isHtmlValue, htmlValueContent } from '../common/html-string.js';
 
 // ---------------------------------------------------------------------------
@@ -219,10 +222,10 @@ function canonicalRootEdges(g: Graph): Array<{ e: Edge; key: string }> {
   const counter = new Map<string, number>();
   for (const [, n] of g.nodes) {
     for (const e of n.outEdges(g)) {
-      const base = e.tail.name + ' ' + e.head.name;
+      const base = e.tail.name + '\0' + e.head.name;
       const occ = counter.get(base) ?? 0;
       counter.set(base, occ + 1);
-      out.push({ e, key: base + ' ' + occ });
+      out.push({ e, key: base + '\0' + occ });
     }
   }
   return out;
@@ -310,7 +313,7 @@ interface BuildCtx {
   subgGid: Map<Graph, number>;
   nodeGid: Map<Node, number>;
   edgeGid: Map<Edge, number>;
-  /** All subgraphs in DFS preorder (the flat top-level "objects" ordering). */
+  /** The subgraphs below the rendered graph in DFS preorder (the flat top-level "objects" ordering). */
   dfsSubs: Graph[];
   /** True once any edge (or edge default) declares `label`: cgraph then carries
    *  a global `label` edge symbol, and write_attrs emits `label` (its value or
@@ -358,26 +361,19 @@ function isEdgeLabelDeclared(g: Graph): boolean {
   return walk(g);
 }
 
-/** DFS preorder over the subgraph tree. @see label_subgs recursion order */
-function dfsSubgraphs(g: Graph, out: Graph[]): void {
-  for (const [, sg] of g.subgraphs) {
-    out.push(sg);
-    dfsSubgraphs(sg, out);
-  }
-}
-
 /** Assign every object its `_gvid`, mirroring write_graph's top-level pass:
  *  subgraphs DFS-preorder 0..sgcnt-1, then nodes sgcnt.., then edges 0.. in
  *  agfstnode/agfstout order. @see plugin/core/gvrender_core_json.c:write_graph */
 function assignIds(g: Graph, doXDot: boolean, draws?: DrawLookup): BuildCtx {
   const dfsSubs: Graph[] = [];
-  dfsSubgraphs(g, dfsSubs);
+  const clusters = new Map<string, number>();
+  const sgcnt = labelSubgs(g, 0, clusters, dfsSubs);
   const subgGid = new Map<Graph, number>();
   dfsSubs.forEach((sg, i) => subgGid.set(sg, i));
-  const sgcnt = dfsSubs.length;
+  if (dfsSubs[0] === g) dfsSubs.shift(); // a subgraph render: label_subgs numbers g, write_subgs lists below it
   const nodeGid = new Map<Node, number>();
   let ncnt = 0;
-  for (const [, n] of g.nodes) nodeGid.set(n, n.info.clustnode ? clusterNodeGid(n, dfsSubs) : sgcnt + ncnt++);
+  for (const [, n] of g.nodes) nodeGid.set(n, n.info.clustnode ? lookupCluster(clusters, n.name) : sgcnt + ncnt++);
   const edgeGid = new Map<Edge, number>();
   let ecnt = 0;
   for (const { e } of canonicalRootEdges(g)) edgeGid.set(e, ecnt++);
@@ -397,9 +393,9 @@ function assignIds(g: Graph, doXDot: boolean, draws?: DrawLookup): BuildCtx {
  * Emit an object's attributes into `o`, mirroring C's write_attrs: `agxget`
  * returns HTML-string content with the marker stripped, empty non-`label`
  * values are skipped, and xdot draw attrs are re-serialized as op arrays.
- * `base` carries user/inherited attrs; `overlay` (from the xdot re-render)
- * supplies the post-layout `pos`/`width`/`height`/`bb`/draw strings and wins
- * on conflict.
+ * `base` is the object's own attrs: user/inherited values and the draw strings the input or an
+ * earlier render stored, which an object this render does not draw prints as agxget would.
+ * `overlay` (the xdot re-render: `pos`/`width`/`height`/`bb`/draw strings) wins on conflict.
  */
 function emitAttrs(
   o: JObj,
@@ -522,11 +518,10 @@ function buildNodeObject(n: Node, ctx: BuildCtx): JObj {
   const eff = nodeEffectiveAttrs(n);
   const xd = ctx.draws?.node.get(n.name);
   if (xd === undefined) {
-    // Fallback (json0 / hand-built graph): synthesize the layout attrs the
-    // xdot render would otherwise supply, from the laid-out node.
-    eff.set('pos', printNum(n.info.coord.x) + ',' + printNum(n.info.coord.y));
-    eff.set('width', printNum(n.info.width));
-    eff.set('height', printNum(n.info.height));
+    // Fallback (json0 / hand-built graph): no xdot render supplies the layout
+    // attrs, so take the strings attach_attrs writes (output.c:296-309).
+    const layout = nodeLayoutAttrs(n);
+    eff.set('pos', layout.pos).set('width', layout.width).set('height', layout.height);
   }
   emitAttrs(o, eff, xd, ctx);
   attachNodeRects(o, n);
@@ -653,13 +648,15 @@ function latin1Reencode(s: string): string {
 export function buildJson(g: Graph, doXDot: boolean, preDraws?: DrawLookup): string {
   const draws = doXDot ? (preDraws ?? collectDrawLookup(g)) : undefined;
   const ctx = assignIds(g, doXDot, draws);
-  return JSON.stringify(buildGraphObject(g, true, ctx), null, 2) + '\n';
+  return stringifyJsonTree(buildGraphObject(g, true, ctx)) + '\n';
 }
 
 /** Everything the JSON writers leave to the graph walk: they write once, at the end. */
 abstract class JsonRendererBase {
   /** @see plugin/core/gvplugin_core.c registration table */
   readonly quality = 0;
+  /** @see plugin/core/gvrender_core_json.c:745 render_features_json (default pad) */
+  readonly defaultPad = 0;
   beginNode(_n: Node, _job: RenderJob): void { /* no-op */ }
   endNode(_n: Node, _job: RenderJob): void { /* no-op */ }
   beginEdge(_e: Edge, _job: RenderJob): void { /* no-op */ }

@@ -45,8 +45,9 @@ class EndRegSide {
     const { P, n, e, endp, ranksep } = ctx;
     const b = endp.nb;
     if (P.end.p.x < n.info.coord.x) {
+      // C: GD_ranksep is int (types.h:335), so /2 truncates
       endp.boxes[0] = {
-        ll: { x: b.ll.x - 1, y: n.info.coord.y - n.info.ht / 2 - ranksep / 2 },
+        ll: { x: b.ll.x - 1, y: n.info.coord.y - n.info.ht / 2 - Math.trunc(ranksep / 2) },
         ur: { x: b.ur.x, y: P.end.p.y },
       };
       endp.boxes[1] = {
@@ -55,7 +56,7 @@ class EndRegSide {
       };
     } else {
       endp.boxes[0] = {
-        ll: { x: b.ll.x, y: n.info.coord.y - n.info.ht / 2 - ranksep / 2 },
+        ll: { x: b.ll.x, y: n.info.coord.y - n.info.ht / 2 - Math.trunc(ranksep / 2) },
         ur: { x: b.ur.x + 1, y: P.end.p.y },
       };
       endp.boxes[1] = {
@@ -121,7 +122,7 @@ class EndFlatSide {
     const { P, n, endp, ranksep } = ctx;
     if (endp.sidemask === TOP) {
       endp.boxes[0] = {
-        ll: { x: b.ll.x - 1, y: n.info.coord.y - n.info.ht / 2 - ranksep / 2 },
+        ll: { x: b.ll.x - 1, y: n.info.coord.y - n.info.ht / 2 - Math.trunc(ranksep / 2) },
         ur: { x: P.end.p.x, y: n.info.coord.y - n.info.ht / 2 },
       };
       endp.boxes[1] = {

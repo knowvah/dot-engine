@@ -426,6 +426,21 @@ describe('applyFlatLabel', () => {
     expect(h1.info.out?.size).toBe(1);
     expect(lbl.info.out).toBeUndefined();
   });
+  it('halves an odd minlen * nodesep as the int m0 does', () => {
+    // C: `int m0 = ED_minlen(e) * GD_nodesep(g) / 2` (position.c:222,276):
+    // 1 * 23 / 2 is 11, not 11.5, so the aux lengths are 11 + 50 and 11 + 25.
+    const g = new Graph('g', 'directed');
+    g.info.nodesep = 23;
+    const lbl = new Node(0, 'lbl', g); lbl.info.lw = 30; lbl.info.rw = 10;
+    const h0 = new Node(1, 'h0', g); h0.info.order = 0; h0.info.rw = 20;
+    const h1 = new Node(2, 'h1', g); h1.info.order = 1; h1.info.lw = 15;
+    const e = new Edge(lbl, lbl, ''); e.info.minlen = 1;
+    applyFlatLabel(g, e, new Edge(lbl, h0, ''), new Edge(lbl, h1, ''));
+    expect(h0.info.out?.list[0]?.head).toBe(lbl);
+    expect(h0.info.out?.list[0]?.info.minlen).toBe(61);
+    expect(lbl.info.out?.list[0]?.head).toBe(h1);
+    expect(lbl.info.out?.list[0]?.info.minlen).toBe(36);
+  });
 });
 
 // ---------------------------------------------------------------------------

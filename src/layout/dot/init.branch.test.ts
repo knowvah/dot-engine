@@ -19,7 +19,7 @@ import { EstimateTextMeasurer } from '../../common/textmeasure.js';
 import { agsubg } from '../../model/cgraph-ops.js';
 import {
   dotGraphInit, dotInitNode, sameNonemptyGroup, dotInitEdge, dotInitSubg,
-  dotInitNodeEdge, removeFill, dotCleanup, CL_CROSS,
+  dotInitNodeEdge, removeFill, dotCleanup, CL_CROSS, AUX_INIT_SYMS, DOT_INIT_SYMS,
 } from './init.js';
 
 // ---------------------------------------------------------------------------
@@ -387,6 +387,56 @@ describe('dotInitNodeEdge', () => {
     g.edges.push(e);
     dotInitNodeEdge(g);
     expect(e.info.label).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Symbol state  @see lib/dotgen/dotsplines.c:setState
+// ---------------------------------------------------------------------------
+
+describe('InitEdgeSyms constants', () => {
+  const FIELDS = ['constr', 'group', 'headlabel', 'minlen', 'nodeXlabel', 'taillabel', 'xlabel'];
+
+  it('DOT_INIT_SYMS binds all seven modelled symbols', () => {
+    expect(Object.keys(DOT_INIT_SYMS).sort()).toEqual(FIELDS);
+    expect(Object.values(DOT_INIT_SYMS)).toEqual(FIELDS.map(() => true));
+  });
+
+  it('AUX_INIT_SYMS unbinds all seven', () => {
+    expect(Object.keys(AUX_INIT_SYMS).sort()).toEqual(FIELDS);
+    expect(Object.values(AUX_INIT_SYMS)).toEqual(FIELDS.map(() => false));
+  });
+});
+
+describe('dotInitNodeEdge with the aux symbols', () => {
+  /** a -> b with every label attribute setState's symbols cover, and a measurer. */
+  function labelledGraph(): { g: Graph; a: Node; e: Edge } {
+    const g = makeGraph();
+    g.root = g;
+    g.info.gvc = new GvcContext(new EstimateTextMeasurer());
+    const a = makeNode(g, 0, 'a');
+    const b = makeNode(g, 1, 'b');
+    a.attrs.set('xlabel', 'NX');
+    const e = makeEdge(a, b);
+    for (const k of ['label', 'xlabel', 'headlabel', 'taillabel']) e.attrs.set(k, k);
+    g.edges.push(e);
+    return { g, a, e };
+  }
+  const labelsOf = (a: Node, e: Edge): boolean[] => [
+    e.info.label, e.info.xlabel, e.info.head_label, e.info.tail_label, a.info.xlabel,
+  ].map((l) => l !== undefined);
+
+  it('makes every label with the main symbols', () => {
+    const { g, a, e } = labelledGraph();
+    dotInitNodeEdge(g);
+    expect(labelsOf(a, e)).toEqual([true, true, true, true, true]);
+  });
+
+  it('makes only the centre edge label with AUX_INIT_SYMS', () => {
+    const { g, a, e } = labelledGraph();
+    dotInitNodeEdge(g, AUX_INIT_SYMS);
+    expect(labelsOf(a, e)).toEqual([true, false, false, false, false]);
+    expect(a.info.label).toBeDefined();
   });
 });
 

@@ -1,0 +1,47 @@
+== raw port against native
+xdot lines differing: 1
+lines native=25890 port=25890 differing=6501
+  = 1813: tl.end ccderived+0 5 -0x1.5ac02983fbc98p-9 0x1.0ea5549f07f38p+0
+first difference at line 1814:
+  native: libm atan2 -0x1.4960e3329db3ap-1 -0x1.e0d2deb210e46p-4 = -0x1.c0542daaf4c46p+0
+  port:   libm atan2 -0x1.4960e3329db3ap-1 -0x1.e0d2deb210e46p-4 = -0x1.c0542daaf4c47p+0
+differing lines per label: {
+  libm: 12,
+  'gel.e': 3,
+  'gp.in': 3,
+  'gp.port': 3,
+  'tl.port': 3,
+  'tl.init': 6,
+  'tl.git': 1852,
+  'tl.parms': 1,
+  'tl.end': 4,
+  'lay.prex': 3,
+  'lay.norm': 3,
+  'lay.x': 7,
+  'fcc.bb0': 2,
+  'fcc.pt': 2,
+  'fcc.del': 2,
+  'fcc.pos': 9,
+  'xl.it': 4566,
+  'xl.end': 6,
+  'fcc.bb1': 1,
+  'fcc.bbf': 1,
+  'rec.bb': 1,
+  'eval.pos': 7,
+  'setbb.in': 2,
+  'setbb.pt': 2
+}
+== port with native's libm results injected against native
+libm calls=21 injected-where-v8-differs=5 misses=0
+  atan2 -0x1.4960e3329db3ap-1 -0x1.e0d2deb210e46p-4 native=-0x1.c0542daaf4c46p+0 v8=-0x1.c0542daaf4c47p+0
+  sin -0x1.c0542daaf4c46p+0 native=-0x1.f7aee405bf893p-1 v8=-0x1.f7aee405bf894p-1
+  atan2 0x1.2519999999999p+7 0x1.1ce147ae147adp+6 native=0x1.1e5165d00ba1cp+0 v8=0x1.1e5165d00ba1dp+0
+  atan2 0x1.191a409829b7p+5 0x1.e11e81eff8f6ep+6 native=0x1.230bd0e1a794ap-2 v8=0x1.230bd0e1a7949p-2
+  cos 0x1.230bd0e1a794ap-2 native=0x1.eb754da610ba7p-1 v8=0x1.eb754da610ba8p-1
+xdot lines differing: 0
+lines native=25890 port=25890 differing=1
+  = 5704: libm atan2 0x1.191a409829b7p+5 0x1.e11e81eff8f6ep+6 = 0x1.230bd0e1a794ap-2
+first difference at line 5705:
+  native: gel.e cluster_k 1 dx=0x1.e11e81eff8f6ep+6 dy=0x1.191a409829b7p+5 alpha=0x1.230bd0e1a794ap-2 dist2=0x1.eaaf2885253ap+13
+  port:   gel.e cluster_k 1 dx=0x1.e11e81eff8f6ep+6 dy=0x1.191a409829b7p+5 alpha=0x1.230bd0e1a794ap-2 dist2=0x1.eaaf28852539fp+13
+differing lines per label: { 'gel.e': 1 }

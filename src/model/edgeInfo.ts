@@ -173,8 +173,9 @@ export interface EdgeInfo {
 
   /**
    * Routing attempted and routesplines failed: the edge is LOST exactly as in
-   * C (no spline installed, map_edge warns, emit skips). Port-only bookkeeping
-   * so the routeDotEdges backstop does not re-attempt an edge C routes once.
+   * C (no spline installed, map_edge warns, emit skips). Port-only bookkeeping:
+   * routeLoneEdge skips a lost edge, so a later call in the same routing pass
+   * does not re-attempt an edge C routes once; beginRoutingPass clears it.
    * @see lib/common/routespl.c:routesplines (NULL), lib/common/postproc.c:map_edge
    */
   lost?: boolean;
@@ -390,6 +391,21 @@ export function makePort(): Port {
     name: null,
   };
 }
+
+/**
+ * The default port both ends of every auxiliary edge share.
+ *
+ * C's make_aux_edge zero-allocates one Agedgeinfo_t, so an aux edge's
+ * ED_tail_port and ED_head_port are two structs inside that block, and nothing
+ * writes them before remove_aux_edges frees the edge. A makePort() pair per aux
+ * edge stood for those 96 inline bytes with 352 B of separate objects (two
+ * ports, two points, four boxed doubles), on a structure separate_subclust
+ * builds once per pair of sibling clusters (16.3 M on tests/2475_1.dot). It
+ * carries makePort()'s values and is frozen with its point, so a write throws
+ * rather than reaching every aux edge.
+ * @see lib/dotgen/position.c:make_aux_edge
+ */
+export const AUX_EDGE_PORT: Port = Object.freeze({ ...makePort(), p: Object.freeze({ x: 0, y: 0 }) });
 
 /**
  * Constructs a minimal EdgeInfo with required port fields initialized.

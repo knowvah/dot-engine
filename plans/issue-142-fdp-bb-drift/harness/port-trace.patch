@@ -1,0 +1,375 @@
+diff --git a/src/layout/fdp/layout.ts b/src/layout/fdp/layout.ts
+index 65085ea8..33ea4f5d 100644
+--- a/src/layout/fdp/layout.ts
++++ b/src/layout/fdp/layout.ts
+@@ -10,6 +10,7 @@
+  * @see lib/fdpgen/layout.c (15.0.0)
+  */
+ 
++import { TR, TR_ON, hx } from './tr142.js';
+ import type { Graph } from '../../model/graph.js';
+ import type { Node } from '../../model/node.js';
+ import type { Box, Point } from '../../model/geom.js';
+@@ -162,7 +163,7 @@ function widenForLabel(rg: Graph, bb: Box): boolean {
+ 
+ /** Translate every component's node positions by del (inches). */
+ function shiftComponents(
+-  cc: Graph[], pts: Point[] | null, pt: Point,
++  cc: Graph[], pts: Point[] | null, pt: Point, rgname142 = '',
+ ): void {
+   for (let i = 0; i < cc.length; i++) {
+     let p: Point;
+@@ -172,6 +173,7 @@ function shiftComponents(
+       p = pt;
+     }
+     const del = { x: p.x / POINTS_PER_INCH, y: p.y / POINTS_PER_INCH };
++    TR(`fcc.del ${rgname142} ${i} ${hx(del.x)} ${hx(del.y)}`);
+     for (const n of cc[i]!.nodes.values()) {
+       n.info.pos![0]! += del.x;
+       n.info.pos![1]! += del.y;
+@@ -197,14 +199,23 @@ function finalCC(
+   const margin = isRoot || isEmpty
+     ? 0
+     : lateInt(rg.attrs.get('margin'), CL_OFFSET, 0);
++  TR(`fcc.bb0 ${rg.name} ${hx(bb.ll.x)} ${hx(bb.ll.y)} ${hx(bb.ur.x)} ${hx(bb.ur.y)}`);
+   const pt = applyMarginAndBorder(rg, bb, margin);
++  TR(`fcc.pt ${rg.name} ${hx(pt.x)} ${hx(pt.y)} margin=${margin}`);
++  TR(`fcc.bb1 ${rg.name} ${hx(bb.ll.x)} ${hx(bb.ll.y)} ${hx(bb.ur.x)} ${hx(bb.ur.y)}`);
+ 
+-  if (cc.length > 0) shiftComponents(cc, pts, pt);
++  if (cc.length > 0) shiftComponents(cc, pts, pt, rg.name);
+ 
+   gdata(g).bb = {
+     ll: { x: bb.ll.x / POINTS_PER_INCH, y: bb.ll.y / POINTS_PER_INCH },
+     ur: { x: bb.ur.x / POINTS_PER_INCH, y: bb.ur.y / POINTS_PER_INCH },
+   };
++  if (TR_ON()) {
++    let k = 0;
++    for (const n of g.nodes.values()) TR(`fcc.pos ${rg.name} ${k++} ${n.name} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++    const b = gdata(g).bb;
++    TR(`fcc.bbf ${rg.name} ${hx(b.ll.x)} ${hx(b.ll.y)} ${hx(b.ur.x)} ${hx(b.ur.y)}`);
++  }
+ }
+ 
+ /**
+@@ -276,6 +287,8 @@ export function setBB(g: Graph): void {
+     ll: { x: POINTS_PER_INCH * bb.ll.x, y: POINTS_PER_INCH * bb.ll.y },
+     ur: { x: POINTS_PER_INCH * bb.ur.x, y: POINTS_PER_INCH * bb.ur.y },
+   };
++  TR(`setbb.in ${g.name} ${hx(bb.ll.x)} ${hx(bb.ll.y)} ${hx(bb.ur.x)} ${hx(bb.ur.y)}`);
++  { const b = g.info.bb as Box; TR(`setbb.pt ${g.name} ${hx(b.ll.x)} ${hx(b.ll.y)} ${hx(b.ur.x)} ${hx(b.ur.y)}`); }
+   const nClusters = g.info.n_cluster ?? 0;
+   for (let i = 0; i < nClusters; i++) {
+     setBB(g.info.clust![i]!);
+@@ -345,7 +358,7 @@ function syncCoordFromPos(cg: Graph): void {
+  * @see lib/fdpgen/layout.c:layout (component inner loop)
+  */
+ function expandComponentClusters(
+-  cg: Graph, infop: LayoutInfo, counter: { value: number },
++  cg: Graph, infop: LayoutInfo, counter: { value: number }, gname142 = '',
+ ): number {
+   for (const n of [...cg.nodes.values()]) {
+     if (dndata(n).clust !== null) {
+@@ -358,6 +371,7 @@ function expandComponentClusters(
+       const pty = POINTS_PER_INCH * gdata(sg).bb.ur.y;
+       n.info.rw = n.info.lw = ptx / 2;
+       n.info.ht = pty;
++      TR(`lay.clsz ${gname142} ${n.name} ${hx(n.info.width)} ${hx(n.info.height)}`);
+     } else if (isPort(n)) {
+       deleteNodeFrom(cg, n); /* remove ports from component */
+     }
+@@ -405,6 +419,7 @@ function recordPositions(dg: Graph, g: Graph): void {
+         ll: { x: llx, y: lly },
+         ur: { x: llx + dn.info.width, y: lly + dn.info.height },
+       };
++      { const b = gdata(sg).bb; TR(`rec.bb ${g.name} ${sg.name} ${hx(b.ll.x)} ${hx(b.ll.y)} ${hx(b.ur.x)} ${hx(b.ur.y)}`); }
+     } else if (dnd.dn !== null) {
+       const n = dnd.dn;
+       n.info.pos![0] = dn.info.pos![0]!;
+@@ -450,13 +465,25 @@ function layoutComponents(
+   const xpms: XParams = { numIters: 0, T0: 0, K: 0, C: 0, loopcnt: 0 };
+   for (const cg of cc) {
+     fdpTLayout(cg, xpms);
+-    const r = expandComponentClusters(cg, infop, counter);
++    const r = expandComponentClusters(cg, infop, counter, g.name);
+     if (r !== 0) return r;
+ 
+     /* Remove overlaps */
+     if (cg.nodes.size >= 2) {
++      if (TR_ON()) {
++        let k = 0;
++        for (const n of cg.nodes.values()) TR(`lay.prex ${g.name} ${k++} ${n.name} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++      }
+       if (g === infop.rootg) normalizeG(cg);
++      if (TR_ON()) {
++        let k = 0;
++        for (const n of cg.nodes.values()) TR(`lay.norm ${g.name} ${k++} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++      }
+       fdpXLayout(cg, xpms);
++      if (TR_ON()) {
++        let k = 0;
++        for (const n of cg.nodes.values()) TR(`lay.x ${g.name} ${k++} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++      }
+     }
+   }
+   return 0;
+@@ -478,6 +505,9 @@ export function fdpLayout(g: Graph): number {
+   if (r !== 0) return r;
+   setClustNodes(g);
+   evalPositions(g, g);
++  if (TR_ON()) {
++    for (const n of g.nodes.values()) TR(`eval.pos ${n.name} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++  }
+ 
+   /* Set bbox info for g and all clusters, needed for spline drawing */
+   setBB(g);
+diff --git a/src/layout/fdp/ports.ts b/src/layout/fdp/ports.ts
+index a65e97ee..191eb0d2 100644
+--- a/src/layout/fdp/ports.ts
++++ b/src/layout/fdp/ports.ts
+@@ -11,6 +11,7 @@
+  *      (15.0.0)
+  */
+ 
++import { TR, hx, lm142 } from './tr142.js';
+ import { InternalError } from '../../errors.js';
+ import { fma } from '../../common/fma.js';
+ import type { Graph } from '../../model/graph.js';
+@@ -78,7 +79,8 @@ export function getEdgeList(n: Node, g: Graph): Erec[] {
+     const dx = m.info.pos![0]! - n.info.pos![0]!;
+     const dy = m.info.pos![1]! - n.info.pos![1]!;
+     // contracted (-ffp-contract=on): fmadd of the first product
+-    erecs.push({ e, alpha: Math.atan2(dy, dx), dist2: fma(dx, dx, dy * dy) });
++    erecs.push({ e, alpha: lm142('atan2', dy, dx), dist2: fma(dx, dx, dy * dy) });
++    { const r = erecs[erecs.length - 1]!; TR(`gel.e ${n.name} ${erecs.length - 1} dx=${hx(dx)} dy=${hx(dy)} alpha=${hx(r.alpha)} dist2=${hx(r.dist2)}`); }
+   }
+   if (erecs.length !== deg) {
+     throw new InternalError(`fdp getEdgeList: ${erecs.length} edges vs deg ${deg}`);
+@@ -105,6 +107,7 @@ export function genPorts(
+   const other = e.head === n ? e.tail : e.head;
+ 
+   const delta = Math.min((bnd - er.alpha) / cnt, ANG);
++  TR(`gp.in ${n.name} alpha=${hx(er.alpha)} bnd=${hx(bnd)} cnt=${cnt} delta=${hx(delta)}`);
+   // C: n < other (pointer order) → ascending fill; else reversed
+   const fwd = n.id < other.id;
+   const fan = fwd
+@@ -130,6 +133,7 @@ function fillPorts(
+       n: getDnode(el.tail) === n ? el.tail : el.head,
+       alpha: fan.angle,
+     };
++    TR(`gp.port ${n.name} ${fan.i} alpha=${hx(fan.angle)}`);
+     fan.i += fan.inc;
+     fan.angle += fan.delta;
+   }
+diff --git a/src/layout/fdp/tlayout-init.ts b/src/layout/fdp/tlayout-init.ts
+index 2b921d54..fe3c0519 100644
+--- a/src/layout/fdp/tlayout-init.ts
++++ b/src/layout/fdp/tlayout-init.ts
+@@ -13,6 +13,7 @@
+  * @see lib/fdpgen/tlayout.c:initPositions (15.0.0)
+  */
+ 
++import { TR, hx, lm142 } from './tr142.js';
+ import type { Graph } from '../../model/graph.js';
+ import type { Node } from '../../model/node.js';
+ import type { Edge } from '../../model/edge.js';
+@@ -60,8 +61,9 @@ function placeByNeighbors(g: Graph, np: Node, ctr: Point): void {
+   } else {
+     const angle = Math.PI * 2.0 * drand48();
+     const radius = 0.9 * drand48();
+-    np.info.pos![0] = radius * parms.Wd * Math.cos(angle);
+-    np.info.pos![1] = radius * parms.Ht * Math.sin(angle);
++    np.info.pos![0] = radius * parms.Wd * lm142('cos', angle);
++    np.info.pos![1] = radius * parms.Ht * lm142('sin', angle);
++    TR(`tl.rnd ${g.name} angle=${hx(angle)} radius=${hx(radius)} x=${hx(np.info.pos![0]!)} y=${hx(np.info.pos![1]!)}`);
+   }
+   dndata(np).pinned = P_SET;
+ }
+@@ -125,9 +127,9 @@ function boundaryFromBB(bb: PinBB): Point {
+   sizeBoundary(width, height);
+ 
+   /* Construct enclosing ellipse */
+-  const alpha = Math.atan2(parms.Ht, parms.Wd);
+-  parms.Wd = parms.Wd / Math.cos(alpha);
+-  parms.Ht = parms.Ht / Math.sin(alpha);
++  const alpha = lm142('atan2', parms.Ht, parms.Wd);
++  parms.Wd = parms.Wd / lm142('cos', alpha);
++  parms.Ht = parms.Ht / lm142('sin', alpha);
+   return ctr;
+ }
+ 
+@@ -164,8 +166,9 @@ function sizeBoundary(width: number, height: number): void {
+ function placeWithPorts(g: Graph, pp: Bport[], ctr: Point): void {
+   for (const port of pp) { /* position ports on ellipse */
+     const np = port.n;
+-    np.info.pos![0] = fma(parms.Wd, Math.cos(port.alpha), ctr.x); // contracted
+-    np.info.pos![1] = fma(parms.Ht, Math.sin(port.alpha), ctr.y);
++    np.info.pos![0] = fma(parms.Wd, lm142('cos', port.alpha), ctr.x); // contracted
++    np.info.pos![1] = fma(parms.Ht, lm142('sin', port.alpha), ctr.y);
++    TR(`tl.port ${g.name} alpha=${hx(port.alpha)} Wd=${hx(parms.Wd)} Ht=${hx(parms.Ht)} x=${hx(np.info.pos![0]!)} y=${hx(np.info.pos![1]!)}`);
+     dndata(np).pinned = P_SET;
+   }
+   for (const np of g.nodes.values()) {
+diff --git a/src/layout/fdp/tlayout.ts b/src/layout/fdp/tlayout.ts
+index 17773ac0..e8b8e955 100644
+--- a/src/layout/fdp/tlayout.ts
++++ b/src/layout/fdp/tlayout.ts
+@@ -18,6 +18,7 @@
+  * @see lib/fdpgen/tlayout.c
+  */
+ 
++import { TR, TR_ON, hx } from './tr142.js';
+ import type { Graph } from '../../model/graph.js';
+ import type { Node } from '../../model/node.js';
+ import type { Edge } from '../../model/edge.js';
+@@ -294,17 +295,30 @@ export function fdpTLayout(g: Graph, xpms: XParams): void {
+   const pp = gdata(g).ports;
+   const reset = initParams(g, xpms);
+   const ctr = initPositions(g, pp);
++  if (TR_ON()) {
++    TR(`tl.parms ${g.name} K=${hx(parms.K)} T0=${hx(parms.T0)} Wd=${hx(parms.Wd)} Ht=${hx(parms.Ht)} loopcnt=${parms.loopcnt} grid=${parms.useGrid ? 1 : 0} ctr=${hx(ctr.x)},${hx(ctr.y)}`);
++    let k = 0;
++    for (const n of g.nodes.values()) TR(`tl.init ${g.name} ${k++} ${n.name} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++  }
+ 
+   if (parms.useGrid) {
+     const grid = new Grid();
+     for (let i = 0; i < parms.loopcnt; i++) {
+       const temp = cool(i);
+       gAdjust(g, temp, pp, grid);
++      if (TR_ON()) {
++        let k = 0;
++        for (const n of g.nodes.values()) TR(`tl.git ${g.name} ${i} ${k++} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++      }
+     }
+   } else {
+     for (let i = 0; i < parms.loopcnt; i++) {
+       const temp = cool(i);
+       adjust(g, temp, pp);
++      if (TR_ON()) {
++        let k = 0;
++        for (const n of g.nodes.values()) TR(`tl.it ${g.name} ${i} ${k++} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++      }
+     }
+   }
+ 
+@@ -314,5 +328,9 @@ export function fdpTLayout(g: Graph, xpms: XParams): void {
+       n.info.pos![1]! += ctr.y;
+     }
+   }
++  if (TR_ON()) {
++    let k = 0;
++    for (const n of g.nodes.values()) TR(`tl.end ${g.name} ${k++} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++  }
+   if (reset) resetParams();
+ }
+diff --git a/src/layout/fdp/tr142.ts b/src/layout/fdp/tr142.ts
+new file mode 100644
+index 00000000..0b2bf8b3
+--- /dev/null
++++ b/src/layout/fdp/tr142.ts
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: EPL-2.0
++// TEMPORARY issue #142 trace helper (never committed): %a-formatted traces
++// through globalThis.__tr142, set by harness/port-trace.ts.
++
++const view = new DataView(new ArrayBuffer(8));
++
++/** C printf("%a") for a double. */
++export function hx(x: number): string {
++  if (Number.isNaN(x)) return 'nan';
++  if (!Number.isFinite(x)) return x < 0 ? '-inf' : 'inf';
++  view.setFloat64(0, x);
++  const hi = view.getUint32(0);
++  const lo = view.getUint32(4);
++  const sign = hi >>> 31 ? '-' : '';
++  const exp = (hi >>> 20) & 0x7ff;
++  const mant = (BigInt(hi & 0xfffff) << 32n) | BigInt(lo);
++  if (exp === 0 && mant === 0n) return `${sign}0x0p+0`;
++  let frac = mant.toString(16).padStart(13, '0').replace(/0+$/, '');
++  if (frac) frac = `.${frac}`;
++  const lead = exp === 0 ? '0' : '1';
++  const e = exp === 0 ? -1022 : exp - 1023;
++  return `${sign}0x${lead}${frac}p${e < 0 ? '-' : '+'}${Math.abs(e)}`;
++}
++
++type Sink = (line: string) => void;
++const sink = (): Sink | undefined =>
++  (globalThis as { __tr142?: Sink }).__tr142;
++
++export const TR_ON = (): boolean => sink() !== undefined;
++export function TR(line: string): void {
++  sink()?.(line);
++}
++
++type Hooks = { __libm142?: Map<string, number>; __libmdiff142?: string[] };
++
++/**
++ * A libm call, traced as C's `libm <fn> <args> = <result>`. Counterfactual:
++ * when harness/port-trace.ts loaded a native trace, the result is native's
++ * for bit-equal arguments (a miss is traced as `cf.miss` and uses V8).
++ */
++export function lm142(fn: 'atan2' | 'cos' | 'sin', a: number, b?: number): number {
++  const key = b === undefined ? `${fn} ${hx(a)}` : `${fn} ${hx(a)} ${hx(b)}`;
++  const hooks = globalThis as Hooks;
++  const v8 = fn === 'atan2' ? Math.atan2(a, b!) : fn === 'cos' ? Math.cos(a) : Math.sin(a);
++  const hit = hooks.__libm142?.get(key);
++  if (hooks.__libm142 && hit === undefined) TR(`cf.miss ${key}`);
++  if (hit !== undefined && hit !== v8) hooks.__libmdiff142?.push(`${key} native=${hx(hit)} v8=${hx(v8)}`);
++  const r = hit ?? v8;
++  TR(`libm ${key} = ${hx(r)}`);
++  return r;
++}
+diff --git a/src/layout/fdp/xlayout.ts b/src/layout/fdp/xlayout.ts
+index d369f5a0..0cc0a663 100644
+--- a/src/layout/fdp/xlayout.ts
++++ b/src/layout/fdp/xlayout.ts
+@@ -17,6 +17,7 @@
+  * @see lib/fdpgen/xlayout.c
+  */
+ 
++import { TR, TR_ON, hx } from './tr142.js';
+ import { RenderError } from '../../errors.js';
+ import type { Graph } from '../../model/graph.js';
+ import type { Node } from '../../model/node.js';
+@@ -264,7 +265,7 @@ function xLayout(g: Graph, pxpms: XParams, tries: number): number {
+   const xpms: XParams = { ...pxpms };
+   const K = xpms.K;
+   for (let t = 0; ov && t < tries; ++t) {
+-    ov = xLayoutTry(g, xpms, ov);
++    ov = xLayoutTry(g, xpms, ov, t);
+     xpms.K += K; /* increase distance */
+   }
+ 
+@@ -272,7 +273,7 @@ function xLayout(g: Graph, pxpms: XParams, tries: number): number {
+ }
+ 
+ /** One expansion try: cool from T0 until no overlaps or loopcnt. */
+-function xLayoutTry(g: Graph, xpms: XParams, ov: number): number {
++function xLayoutTry(g: Graph, xpms: XParams, ov: number, t = 0): number {
+   const nnodes = g.nodes.size;
+   const nedges = g.edges.length;
+   const K2 = xinitParams(nnodes, xpms);
+@@ -285,6 +286,11 @@ function xLayoutTry(g: Graph, xpms: XParams, ov: number): number {
+     const temp = cool(i);
+     if (temp <= 0.0) break;
+     ov = adjust(g, temp, rs);
++    if (TR_ON()) {
++      let k = 0;
++      TR(`xl.parm ${g.name} ${t} ${i} temp=${hx(temp)} ov=${hx(rs.ov)} nonov=${hx(rs.nonov)} novl=${ov}`);
++      for (const n of g.nodes.values()) TR(`xl.it ${g.name} ${t} ${i} ${k++} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++    }
+     if (ov === 0) break;
+   }
+   return ov;
+@@ -315,6 +321,10 @@ export function fdpXLayout(g: Graph, xpms: XParams): void {
+   if (ovlp === undefined || ovlp === '') ovlp = DFLT_OVERLAP;
+   const { tries, rest } = parseOverlapTries(ovlp);
+   if (tries && !xLayout(g, xpms, tries)) return;
++  if (TR_ON()) {
++    let k = 0;
++    for (const n of g.nodes.values()) TR(`xl.end ${g.name} ${k++} ${hx(n.info.pos![0]!)} ${hx(n.info.pos![1]!)}`);
++  }
+   removeOverlapAs(g, rest);
+ }
+ 

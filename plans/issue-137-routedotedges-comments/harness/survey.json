@@ -1,0 +1,380 @@
+[
+ {
+  "id": "1444-2",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "1444-2",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "1444-2",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "1444",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "1444",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "1444",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "1949",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "1949",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "1949",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "241_0",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "241_0",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "241_0",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "241_1",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "241_1",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "241_1",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "2437",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "2437",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "2437",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f1.gv",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f1.gv",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f1.gv",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f2.gv",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f2.gv",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f2.gv",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f3.gv",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f3.gv",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f3.gv",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f4.gv",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f4.gv",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f4.gv",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f5.gv",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f5.gv",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f5.gv",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f6.gv",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f6.gv",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f6.gv",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f7.gv",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f7.gv",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f7.gv",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f8.gv",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f8.gv",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "fixture:f8.gv",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "golden:c90-dot-flat-adj-both-arrows",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "golden:c90-dot-flat-adj-both-arrows",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "golden:c90-dot-flat-adj-both-arrows",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "graphs-ports",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "graphs-ports",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "graphs-ports",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "linux.x86-ports_dot",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "linux.x86-ports_dot",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "linux.x86-ports_dot",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "nshare-ports_dot",
+  "fmt": "json",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "nshare-ports_dot",
+  "fmt": "svg",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ },
+ {
+  "id": "nshare-ports_dot",
+  "fmt": "xdot",
+  "baseEqHead": true,
+  "cap": null,
+  "native": "equal"
+ }
+]

@@ -1,0 +1,31 @@
+graph "" {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 68 214 68 214 0 ",
+		bb="0,0,214,68",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph "" {
+		a	[_draw_="c 7 -#000000 e 27 34 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 29.8 0 6.21 1 -a ",
+			height=0.5,
+			pos="27,34",
+			width=0.75];
+	}
+	{
+		b	[_draw_="c 7 -#000000 e 99 34 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 99 29.8 0 7 1 -b ",
+			height=0.5,
+			pos="99,34",
+			width=0.75];
+	}
+	subgraph cluster_x {
+		graph [_draw_="c 7 -#000000 p 4 136 8 136 60 206 60 206 8 ",
+			bb="136,8,206,60"
+		];
+		c	[_draw_="c 7 -#000000 e 171 34 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 171 29.8 0 6.21 1 -c ",
+			height=0.5,
+			pos="171,34",
+			width=0.75];
+	}
+}

@@ -17,6 +17,7 @@
 import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
+import { LOCALNAMEPREFIX, agNameOf } from '../../model/cgraph-ops.js';
 import type { TextlabelT, FieldT, ShapeDesc } from '../../common/types.js';
 import { agstrcanon, agstrcanonText } from '../map.js';
 import { isHtmlValue } from '../../common/html-string.js';
@@ -93,9 +94,13 @@ export abstract class DotWriterBase {
     return ix0 + 1;
   }
 
-  /** A subgraph is anonymous when its name is empty or a `%N` local name. */
+  /** A graph is anonymous when `agnameof` gives a `%` local name: a nameless
+   *  root (`%1`), a nameless subgraph (the parser names it `%N`), or a name
+   *  that itself starts with `%`. A graph named `""` is named: cgraph maps `""`
+   *  as a name, so it keeps its header and is never inlined.
+   *  @see write.c:is_anonymous ; write.c:write_hdr ; lib/cgraph/id.c:idmap */
   private isAnonymous(g: Graph): boolean {
-    return g.name.length === 0 || g.name.charCodeAt(0) === 0x25 /* % */;
+    return agNameOf(g).startsWith(LOCALNAMEPREFIX);
   }
 
   /** A graph carries a `bb` attribute when it is the root or has a layout bb
@@ -155,7 +160,9 @@ export abstract class DotWriterBase {
     if (top) {
       const strict = g.kind === 'strict-directed' || g.kind === 'strict-undirected' ? 'strict ' : '';
       const kw = isDirected(g) ? 'digraph' : 'graph';
-      const nm = g.name.length > 0 && !this.isAnonymous(g) ? xdotId(g.name) + ' ' : '';
+      // The root's name is '' both when it has none (agnameof: `%1`, not
+      // printed) and when it is named `""` (printed as `""`).
+      const nm = this.isAnonymous(g) ? '' : xdotId(g.name) + ' ';
       ctx.out.push(strict + kw + ' ' + nm + '{\n');
       ctx.level++;
     } else {

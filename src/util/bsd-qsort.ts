@@ -8,7 +8,8 @@
  * (`lib/util/list.c:gv_list_sort_`). libc `qsort` is **not stable**: it reorders
  * comparator-equal elements in an implementation-defined permutation. Most port
  * sort sites can use JS's stable `Array.prototype.sort` because their comparator
- * never reports a tie (e.g. `edge-order.ts`). Where ties DO occur AND the
+ * never reports a tie (e.g. `routeCurvedGroup`'s sort of distinct originals by
+ * creation seq, `splines-groups.ts`). Where ties DO occur AND the
  * downstream result depends on their order, a stable sort diverges from the C
  * oracle.
  *

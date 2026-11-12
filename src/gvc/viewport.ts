@@ -26,7 +26,7 @@
 
 import type { Box, Point } from '../model/geom.js';
 import { POINTS_PER_INCH } from '../model/geom.js';
-import { SVG_PAD, SVG_MARGIN } from '../render/svg-helpers.js';
+import { SVG_MARGIN } from '../render/svg-helpers.js';
 import type { Graph } from '../model/graph.js';
 import { cround } from '../common/arith.js';
 
@@ -77,13 +77,19 @@ export function parseDrawingSize(raw: string | undefined): DrawingSize | null {
 }
 
 /**
+ * The pad init_job_pad gives an output language that is not a render plugin,
+ * in points. Here it is the pad of a renderer that states no `defaultPad`.
+ * @see lib/common/const.h:96
+ */
+export const DEFAULT_GRAPH_PAD = 4;
+
+/**
  * Port of the `pad=` graph-attribute parse: init_gvc reads it via
  * `sscanf(p, "%lf,%lf", &xf, &yf)` (2 values matched → both axes
  * independently; 1 value → y = x; 0 matched — attr absent or unparsable —
- * leaves `graph_sets_pad` false) and init_job_pad falls back to the SVG
- * plugin's `default_pad` (this port's only renderer) when unset, which is
- * numerically identical to `DEFAULT_GRAPH_PAD` (4pt) — so the two C fallback
- * branches collapse to the same constant here (`SVG_PAD`).
+ * leaves `graph_sets_pad` false) and init_job_pad then takes `fallback` on
+ * both axes: the render plugin's `default_pad` (`RendererPlugin.defaultPad`),
+ * or `DEFAULT_GRAPH_PAD` where there is none.
  *
  * Unlike `size=`, pad values are NOT rounded (`xf * POINTS_PER_INCH`
  * directly — no `POINTS()` macro) and are not required to be positive.
@@ -91,7 +97,7 @@ export function parseDrawingSize(raw: string | undefined): DrawingSize | null {
  * @see lib/common/emit.c:3241-3251 init_gvc (pad attr read)
  * @see lib/common/emit.c:3290-3304 init_job_pad (fallback)
  */
-export function parseGraphPad(raw: string | undefined): Point {
+export function parseGraphPad(raw: string | undefined, fallback: number): Point {
   if (raw !== undefined) {
     const xy = PAD_XY_RE.exec(raw);
     if (xy) {
@@ -103,7 +109,7 @@ export function parseGraphPad(raw: string | undefined): Point {
       return { x: v, y: v };
     }
   }
-  return { x: SVG_PAD, y: SVG_PAD };
+  return { x: fallback, y: fallback };
 }
 
 /**

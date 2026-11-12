@@ -50,9 +50,18 @@ export function svgClusterId(sg: Graph, job: RenderJob): string {
   return job.objId(sg.attrs.get('id'), 'clust' + sg.seq);
 }
 
-/** SVG id for the root graph group: DOT `id` attr, else `graph0` (no prefix). */
+/**
+ * Object id of the graph being emitted, as getObjId builds it for an AGRAPH:
+ * the DOT `id` attr wins; else `graph<AGSEQ>`. The graph being emitted is
+ * job->gvc->g, i.e. `root == obj`, so neither the `<gid>_` prefix nor the
+ * "clust" prefix applies. The root's AGSEQ is 0; a subgraph rendered after
+ * its own layout carries its creation sequence among subgraphs. It names the
+ * top group, the gradients, the graph anchor and map area (obj->id) and the
+ * base of the graph label's HTML anchor ids.
+ * @see lib/common/emit.c:getObjId
+ */
 export function svgGraphId(g: Graph, job: RenderJob): string {
-  return job.objId(g.attrs.get('id'), 'graph0', true);
+  return job.objId(g.attrs.get('id'), 'graph' + g.seq, true);
 }
 
 /** `class="node[ <class>]"`, reading the inherited DOT `class` attribute. */

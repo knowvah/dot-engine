@@ -160,11 +160,28 @@ export function polySizeParamsFromNode(
 }
 
 /**
- * Create ND_xlabel when the xlabel attr is non-empty and set NODE_XLABEL.
+ * Which of common_init_node's guarded symbols are bound. C tests N_xlabel
+ * before reading it (`N_xlabel && (str = agxget(n, N_xlabel)) && str[0]`), and
+ * make_flat_adj_edges' setState nulls it for the aux layout, so an aux node's
+ * copied `xlabel` is never read.
+ * @see lib/common/utils.c:common_init_node (443)
+ * @see lib/dotgen/dotsplines.c:setState
+ */
+export interface NodeInitSyms {
+  readonly nodeXlabel: boolean;
+}
+
+/** N_xlabel bound, as graph_init leaves it. @see lib/common/input.c:graph_init */
+export const BOUND_NODE_INIT_SYMS: NodeInitSyms = { nodeXlabel: true };
+
+/**
+ * Create ND_xlabel when N_xlabel is bound and the xlabel attr is non-empty,
+ * and set NODE_XLABEL.
  * @see lib/common/utils.c:443-447
  * @see lib/common/utils.c:447 — GD_has_labels scoped to agraphof(n) root
  */
-function initNodeXLabel(n: Node, g: Graph, measurer: TextMeasurer): void {
+function initNodeXLabel(n: Node, g: Graph, measurer: TextMeasurer, syms: NodeInitSyms): void {
+  if (!syms.nodeXlabel) return; // utils.c:443 — the `N_xlabel &&` guard
   const str = nodeAttr(n, g, 'xlabel');
   if (!str || str.length === 0) return;
   const font = readFontAttrs(n, g);
@@ -228,7 +245,7 @@ function initPointSize(n: Node, g: Graph, shape: ShapeDesc & { polygon: PolygonT
  * has no polygon descriptor to size against.
  * @see lib/common/utils.c:common_init_node
  */
-function initNodeFromLabel(n: Node, g: Graph, measurer: TextMeasurer): boolean {
+function initNodeFromLabel(n: Node, g: Graph, measurer: TextMeasurer, syms: NodeInitSyms): boolean {
   const shape = bindShape(nodeAttr(n, g, 'shape') ?? 'ellipse', nodeAttr(n, g, 'shapefile'));
   n.info.shape = shape;
   if (shape.kind === ShapeKind.SH_RECORD) {
@@ -237,12 +254,12 @@ function initNodeFromLabel(n: Node, g: Graph, measurer: TextMeasurer): boolean {
     // only selects make_label's is_record flag and initfn=record_init — it is
     // NOT a reason to skip the xlabel (utils.c:441/443/453).
     recordMakeLabel(n, g, measurer);
-    initNodeXLabel(n, g, measurer);
+    initNodeXLabel(n, g, measurer, syms);
     recordInit(n, g, measurer); // initfn: sets lw/rw/ht from the field tree
     return true;
   }
   buildNodeLabel(n, g, measurer);
-  initNodeXLabel(n, g, measurer);
+  initNodeXLabel(n, g, measurer, syms);
   // Layout-time poly_init warnings (once per layout; render-time polyInit is silent).
   if (shape.kind !== ShapeKind.SH_POINT) warnPolyInitImages(n, g);
   const poly = shape.polygon;
@@ -330,13 +347,16 @@ function initNodeDefaults(n: Node, g: Graph): void {
 
 /**
  * Initialise per-node geometry: shape-aware, label-driven sizing when a
- * text measurer is available; width/height attr defaults otherwise.
+ * text measurer is available; width/height attr defaults otherwise. `syms`
+ * stands for the global symbol state common_init_node reads.
  * @see lib/common/utils.c:common_init_node
  * @see lib/common/utils.c:gv_nodesize
  */
-export function commonInitNode(n: Node, g: Graph): void {
+export function commonInitNode(
+  n: Node, g: Graph, syms: NodeInitSyms = BOUND_NODE_INIT_SYMS,
+): void {
   const measurer = layoutMeasurer(g);
-  if (measurer !== undefined && initNodeFromLabel(n, g, measurer)) return;
+  if (measurer !== undefined && initNodeFromLabel(n, g, measurer, syms)) return;
   initNodeDefaults(n, g);
 }
 

@@ -29,13 +29,37 @@ const POINTS_PER_INCH = 72;
 /** The draw strings of one object, or undefined for an object drawn with none. */
 type DrawsOf = (obj: Node | Edge | Graph) => XdotDraws | undefined;
 
+/** The three strings attach_attrs writes on every node. */
+export interface NodeLayoutAttrs {
+  readonly pos: string;
+  readonly height: string;
+  readonly width: string;
+}
+
+/**
+ * A laid-out node's `pos`, `height` and `width` as attach_attrs prints them:
+ * `%.5g` of ND_coord (every coordinate when `odim >= 3`), PS2INCH(ND_ht) and
+ * PS2INCH(ND_lw + ND_rw). Pure: the write-back and json0, which has no xdot
+ * render to read them from, both take their values here.
+ * @see lib/common/output.c:296-309
+ */
+export function nodeLayoutAttrs(n: Node): NodeLayoutAttrs {
+  const info = n.info;
+  return {
+    pos: nodePosRaw(n),
+    height: gfmt5(info.ht / POINTS_PER_INCH),
+    width: gfmt5((info.lw + info.rw) / POINTS_PER_INCH),
+  };
+}
+
 /** @see lib/common/output.c:296-317 */
 function attachNode(n: Node): void {
   const attrs = ownAttrs(n);
   const info = n.info;
-  attrs.set('pos', nodePosRaw(n));
-  attrs.set('height', gfmt5(info.ht / POINTS_PER_INCH));
-  attrs.set('width', gfmt5((info.lw + info.rw) / POINTS_PER_INCH));
+  const layout = nodeLayoutAttrs(n);
+  attrs.set('pos', layout.pos);
+  attrs.set('height', layout.height);
+  attrs.set('width', layout.width);
   const xlabel = info.xlabel as TextlabelT | undefined;
   if (xlabel?.set) attrs.set('xlp', lpStr(xlabel.pos));
   if ((info.shape as ShapeDesc | undefined)?.name === 'record') {

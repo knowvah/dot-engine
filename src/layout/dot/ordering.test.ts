@@ -16,13 +16,16 @@
  * @see lib/dotgen/mincross.c:do_ordering_node, lib/dotgen/fastgr.c:new_virtual_edge
  */
 
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect } from 'vitest';
+import { parse } from '../../parser/index.js';
+import { render } from '../../render/index.js';
+import { agseterrf } from '../../common/agerr.js';
 import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
 import { Edge } from '../../model/edge.js';
 import { makeNodeInfo } from '../../model/nodeInfo.js';
 import { newVirtualEdge, findFlatEdge, FLATORDER } from './fastgr.js';
-import { doOrderingNode } from './mincross-build.js';
+import { doOrderingNode, doOrderingForNodes } from './mincross-build.js';
 import type { MincrossContext } from './mincross-utils.js';
 
 function mkNode(g: Graph, id: number, name: string): Node {
@@ -118,5 +121,181 @@ describe('doOrderingNode — FLATORDER follows DOT-declaration order', () => {
     expect(ab).toBeDefined();
     expect(ab!.info.edge_type).toBe(FLATORDER);
     expect(findFlatEdge(b, a)).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Issue #169: a node-default `ordering`, and the two "not recognized" errors.
+//
+// C `do_ordering_for_nodes` reads `late_string(n, N_ordering, NULL)`: the
+// node's own value, else the `node [...]` default it was created under. Each
+// NATIVE_* constant is native graphviz 16.1.0 `dot -Tplain` (stdout) or its
+// stderr for the source above it (plans/issue-169-node-default-ordering/
+// harness/native/).
+// @see lib/dotgen/mincross.c:do_ordering_for_nodes, ordered_edges
+// ---------------------------------------------------------------------------
+
+const ROOT_DEFAULT = 'digraph { node [ordering=out]; q -> p; q -> z; z -> v; p -> v; p -> u; }';
+const NATIVE_ROOT_DEFAULT_PLAIN = `graph 1 1.75 2.5
+node q 0.875 2.25 0.75 0.5 q solid ellipse black lightgrey
+node p 0.375 1.25 0.75 0.5 p solid ellipse black lightgrey
+node z 1.375 1.25 0.75 0.5 z solid ellipse black lightgrey
+node v 0.375 0.25 0.75 0.5 v solid ellipse black lightgrey
+node u 1.375 0.25 0.75 0.5 u solid ellipse black lightgrey
+edge q p 4 0.75903 2.0106 0.70034 1.8965 0.62766 1.7552 0.56138 1.6263 solid black
+edge q z 4 0.99097 2.0106 1.0497 1.8965 1.1223 1.7552 1.1886 1.6263 solid black
+edge p v 4 0.375 0.99579 0.375 0.89454 0.375 0.77398 0.375 0.66022 solid black
+edge p u 4 0.5822 1.0347 0.71896 0.9017 0.90085 0.72486 1.0559 0.57411 solid black
+edge z v 4 1.1678 1.0347 1.031 0.9017 0.84915 0.72486 0.69409 0.57411 solid black
+stop
+`;
+
+const SUBGRAPH_DEFAULT = 'digraph { subgraph s { node [ordering=out]; q } q -> p; q -> z; z -> v; p -> v; p -> u; }';
+const NATIVE_SUBGRAPH_DEFAULT_PLAIN = `graph 1 1.75 2.5
+node q 0.875 2.25 0.75 0.5 q solid ellipse black lightgrey
+node p 0.375 1.25 0.75 0.5 p solid ellipse black lightgrey
+node z 1.375 1.25 0.75 0.5 z solid ellipse black lightgrey
+node v 1.375 0.25 0.75 0.5 v solid ellipse black lightgrey
+node u 0.375 0.25 0.75 0.5 u solid ellipse black lightgrey
+edge q p 4 0.75903 2.0106 0.70034 1.8965 0.62766 1.7552 0.56138 1.6263 solid black
+edge q z 4 0.99097 2.0106 1.0497 1.8965 1.1223 1.7552 1.1886 1.6263 solid black
+edge p v 4 0.5822 1.0347 0.71896 0.9017 0.90085 0.72486 1.0559 0.57411 solid black
+edge p u 4 0.375 0.99579 0.375 0.89454 0.375 0.77398 0.375 0.66022 solid black
+edge z v 4 1.375 0.99579 1.375 0.89454 1.375 0.77398 1.375 0.66022 solid black
+stop
+`;
+
+const LATE_DEFAULT = 'digraph { q -> p; q -> z; z -> v; p -> v; p -> u; node [ordering=out]; }';
+const NATIVE_LATE_DEFAULT_PLAIN = `graph 1 1.75 2.5
+node q 0.875 2.25 0.75 0.5 q solid ellipse black lightgrey
+node p 1.375 1.25 0.75 0.5 p solid ellipse black lightgrey
+node z 0.375 1.25 0.75 0.5 z solid ellipse black lightgrey
+node v 0.375 0.25 0.75 0.5 v solid ellipse black lightgrey
+node u 1.375 0.25 0.75 0.5 u solid ellipse black lightgrey
+edge q p 4 0.99097 2.0106 1.0497 1.8965 1.1223 1.7552 1.1886 1.6263 solid black
+edge q z 4 0.75903 2.0106 0.70034 1.8965 0.62766 1.7552 0.56138 1.6263 solid black
+edge p v 4 1.1678 1.0347 1.031 0.9017 0.84915 0.72486 0.69409 0.57411 solid black
+edge p u 4 1.375 0.99579 1.375 0.89454 1.375 0.77398 1.375 0.66022 solid black
+edge z v 4 0.375 0.99579 0.375 0.89454 0.375 0.77398 0.375 0.66022 solid black
+stop
+`;
+
+const BAD_NODE_DEFAULT = 'digraph { node [ordering=bogus]; q -> p; q -> z; }';
+const NATIVE_BAD_NODE_DEFAULT_PLAIN = `graph 1 1.75 1.5
+node q 0.875 1.25 0.75 0.5 q solid ellipse black lightgrey
+node p 0.375 0.25 0.75 0.5 p solid ellipse black lightgrey
+node z 1.375 0.25 0.75 0.5 z solid ellipse black lightgrey
+edge q p 4 0.75903 1.0106 0.70034 0.8965 0.62766 0.75518 0.56138 0.62629 solid black
+edge q z 4 0.99097 1.0106 1.0497 0.8965 1.1223 0.75518 1.1886 0.62629 solid black
+stop
+`;
+const NATIVE_BAD_NODE_DEFAULT_ERR = `Error: ordering 'bogus' not recognized for node 'q'.
+Error: ordering 'bogus' not recognized for node 'p'.
+Error: ordering 'bogus' not recognized for node 'z'.
+`;
+
+const BAD_NODE_OWN = 'digraph { q [ordering=bogus]; q -> p; q -> z; }';
+const NATIVE_BAD_NODE_OWN_PLAIN = `graph 1 1.75 1.5
+node q 0.875 1.25 0.75 0.5 q solid ellipse black lightgrey
+node p 0.375 0.25 0.75 0.5 p solid ellipse black lightgrey
+node z 1.375 0.25 0.75 0.5 z solid ellipse black lightgrey
+edge q p 4 0.75903 1.0106 0.70034 0.8965 0.62766 0.75518 0.56138 0.62629 solid black
+edge q z 4 0.99097 1.0106 1.0497 0.8965 1.1223 0.75518 1.1886 0.62629 solid black
+stop
+`;
+const NATIVE_BAD_NODE_OWN_ERR = `Error: ordering 'bogus' not recognized for node 'q'.
+`;
+
+const BAD_GRAPH = 'digraph { ordering=bogus; q -> p; q -> z; }';
+const NATIVE_BAD_GRAPH_PLAIN = `graph 1 1.75 1.5
+node q 0.875 1.25 0.75 0.5 q solid ellipse black lightgrey
+node p 0.375 0.25 0.75 0.5 p solid ellipse black lightgrey
+node z 1.375 0.25 0.75 0.5 z solid ellipse black lightgrey
+edge q p 4 0.75903 1.0106 0.70034 0.8965 0.62766 0.75518 0.56138 0.62629 solid black
+edge q z 4 0.99097 1.0106 1.0497 0.8965 1.1223 0.75518 1.1886 0.62629 solid black
+stop
+`;
+const NATIVE_BAD_GRAPH_ERR = `Error: ordering 'bogus' not recognized.
+`;
+
+/** Render to plain, returning the output and everything the port wrote
+ * through agerr (the pieces C's `out` hands a user error function, joined). */
+function renderPlain(src: string): { out: string; err: string } {
+  const pieces: string[] = [];
+  agseterrf((m) => { pieces.push(m); });
+  const out = render(parse(src), 'plain');
+  return { out, err: pieces.join('') };
+}
+
+describe('node-default ordering (issue #169)', () => {
+  afterEach(() => {
+    agseterrf(null);
+  });
+
+  /** `t` with out-edges to `a` then `b` (declaration order), listed reversed. */
+  function fanOut(): { g: Graph; t: Node; a: Node; b: Node } {
+    const g = new Graph('g', 'directed');
+    const t = mkNode(g, 1, 't');
+    const a = mkNode(g, 2, 'a');
+    const b = mkNode(g, 3, 'b');
+    const ea = new Edge(t, a, '');
+    const eb = new Edge(t, b, '');
+    t.info.out = { list: [eb, ea], size: 2 };
+    return { g, t, a, b };
+  }
+
+  it('doOrderingForNodes reads the default the node was created under', () => {
+    const { g, t, a, b } = fanOut();
+    t.nodeDefaultsSnapshot = new Map([['ordering', 'out']]);
+
+    doOrderingForNodes(mkCtx(g), g);
+
+    const fe = findFlatEdge(a, b);
+    expect(fe).toBeDefined();
+    expect(fe!.info.edge_type).toBe(FLATORDER);
+  });
+
+  // C: `else if (ordering[0])`. An empty value is neither applied nor reported.
+  it('doOrderingForNodes neither orders nor reports an empty ordering', () => {
+    const { g, t, a, b } = fanOut();
+    t.attrs.set('ordering', '');
+    const pieces: string[] = [];
+    agseterrf((m) => { pieces.push(m); });
+
+    doOrderingForNodes(mkCtx(g), g);
+
+    expect(findFlatEdge(a, b)).toBeUndefined();
+    expect(findFlatEdge(b, a)).toBeUndefined();
+    expect(pieces).toEqual([]);
+  });
+
+  it('applies a root node [ordering=out] default to the nodes created under it', () => {
+    expect(renderPlain(ROOT_DEFAULT)).toEqual({ out: NATIVE_ROOT_DEFAULT_PLAIN, err: '' });
+  });
+
+  it('applies a subgraph-scoped default only to the node declared in that subgraph', () => {
+    expect(renderPlain(SUBGRAPH_DEFAULT)).toEqual({ out: NATIVE_SUBGRAPH_DEFAULT_PLAIN, err: '' });
+  });
+
+  it('ignores a default declared after the nodes, as agxget does', () => {
+    expect(renderPlain(LATE_DEFAULT)).toEqual({ out: NATIVE_LATE_DEFAULT_PLAIN, err: '' });
+  });
+
+  it('reports an unrecognised node default once per node, in node order', () => {
+    expect(renderPlain(BAD_NODE_DEFAULT)).toEqual({
+      out: NATIVE_BAD_NODE_DEFAULT_PLAIN, err: NATIVE_BAD_NODE_DEFAULT_ERR,
+    });
+  });
+
+  it("reports an unrecognised value on a node's own attribute", () => {
+    expect(renderPlain(BAD_NODE_OWN)).toEqual({
+      out: NATIVE_BAD_NODE_OWN_PLAIN, err: NATIVE_BAD_NODE_OWN_ERR,
+    });
+  });
+
+  it('reports an unrecognised graph ordering once, without the node name', () => {
+    expect(renderPlain(BAD_GRAPH)).toEqual({
+      out: NATIVE_BAD_GRAPH_PLAIN, err: NATIVE_BAD_GRAPH_ERR,
+    });
   });
 });

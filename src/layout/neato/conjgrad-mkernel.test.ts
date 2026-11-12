@@ -1,8 +1,15 @@
 // SPDX-License-Identifier: EPL-2.0
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { agseterrf } from '../../common/agerr.js';
 import { conjugateGradientMkernelFused, rightMultWithVectorFFFused } from './conjgrad-mkernel.js';
 
-afterEach(() => { vi.restoreAllMocks(); });
+/** C's text at `lib/neatogen/conjgrad.c:65`, without its trailing `\n`. */
+const ZERO_LENGTH_TEXT = 'conjugate_gradient: unexpected length 0 vector';
+
+afterEach(() => {
+  agseterrf(null);
+  vi.restoreAllMocks();
+});
 
 /** Packed upper triangle of a symmetric matrix, row by row. */
 function pack(rows: readonly (readonly number[])[]): Float32Array {
@@ -61,13 +68,24 @@ describe('conjugateGradientMkernelFused', () => {
     out.forEach((v, i) => expect(v).toBeCloseTo(b[i]!, 4));
   });
 
-  it('reports an unexpected zero-length residual product with return code 1', () => {
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    // r.r underflows to 0 while max|r| = 1e-30 > tol; A scales p.Ap back above 0
+  /** r.r underflows to 0 while max|r| = 1e-30 > tol; A scales p.Ap back above 0. */
+  function underflow(): number {
     const A = pack([[1e30, 0], [0, 1e30]]);
     const b = Float32Array.of(1e-30, -1e-30);
-    expect(conjugateGradientMkernelFused(A, new Float32Array(2), b, 2, { tol: 0, maxIterations: 3 })).toBe(1);
-    expect(spy).toHaveBeenCalledWith('Error: conjugate_gradient: unexpected length 0 vector\n');
+    return conjugateGradientMkernelFused(A, new Float32Array(2), b, 2, { tol: 0, maxIterations: 3 });
+  }
+
+  it('reports a zero-length residual product on exactly one console line, return code 1', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(underflow()).toBe(1);
+    expect(err.mock.calls).toEqual([[`Error: ${ZERO_LENGTH_TEXT}`]]);
+  });
+
+  it('gives an agseterrf sink C\'s three pieces with one trailing newline', () => {
+    const pieces: string[] = [];
+    agseterrf((m) => { pieces.push(m); });
+    expect(underflow()).toBe(1);
+    expect(pieces).toEqual(['Error', ': ', `${ZERO_LENGTH_TEXT}\n`]);
   });
 
   it('stops quietly when p.Ap is zero', () => {

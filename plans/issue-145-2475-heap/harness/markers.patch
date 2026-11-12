@@ -1,0 +1,153 @@
+diff --git a/src/index.ts b/src/index.ts
+index 98cab761..03358e3f 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -97,10 +97,14 @@ export function renderSvg(dotSource: string, engine: EngineName): string {
+     // parse() is inside the try so any non-ParseError throw (e.g. a raw
+     // RangeError from stack exhaustion) is still normalized (InternalError).
+     const g = parse(dotSource);
++    (globalThis as { __phase?: (n: string) => void }).__phase?.('parse');
+     ctx.layout(g, engine);
++    (globalThis as { __phase?: (n: string) => void }).__phase?.('layout');
+     const svg = deviceRender(ctx, g, 'svg');
++    (globalThis as { __phase?: (n: string) => void }).__phase?.('render');
+     // C: gvFreeLayout runs after gvRenderJobs; cleanup is destructive.
+     ctx.freeLayout(g, engine);
++    (globalThis as { __phase?: (n: string) => void }).__phase?.('freeLayout');
+     return svg;
+   } catch (err: unknown) {
+     return rethrowAtBoundary(err);
+diff --git a/src/layout/dot/index.ts b/src/layout/dot/index.ts
+index 219b2820..6b58c3a5 100644
+--- a/src/layout/dot/index.ts
++++ b/src/layout/dot/index.ts
+@@ -162,6 +162,7 @@ export function dotPhasePostNoFinish(g: Graph): number {
+   removeFill(g);
+   dotSameports(g);
+   const r = dotSplines(g);
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('splines');
+   if (r !== 0) return r;
+   // C: if (mapbool(agget(g, "compound"))) dot_compoundEdges(g);
+   // agget on a pack-branch component subgraph (_cc_N) falls back to the
+@@ -184,6 +185,7 @@ export function dotPhasePostNoFinish(g: Graph): number {
+ export function dotPhasePost(g: Graph): void {
+   if (dotPhasePostNoFinish(g) !== 0) return;
+   gvPostprocess(g);
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('postprocess');
+ }
+ 
+ // ---------------------------------------------------------------------------
+@@ -253,7 +255,9 @@ function graphPhase(g: Graph): number {
+ export function dotLayoutPipeline(g: Graph): void {
+   const maxphase = graphPhase(g);
+   dotPhaseInit(g);
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('init');
+   dotRank(g);
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('rank');
+   // A phase stop is a SUCCESS return in C (dotLayout returns 0), and
+   // `dot_layout` skips dotneato_postprocess only when doDot reports an ERROR
+   // (dotinit.c:512-517). So the postprocess still runs on every phase stop —
+@@ -261,9 +265,11 @@ export function dotLayoutPipeline(g: Graph): void {
+   // the origin. The rc/posRc paths below are the error paths and stay bare.
+   if (maxphase === 1) { gvPostprocess(g); return; }
+   const rc = dotMincross(g);
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('mincross');
+   if (rc !== 0) return;
+   if (maxphase === 2) { gvPostprocess(g); return; }
+   const posRc = dotPosition(g);
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('position');
+   if (posRc !== 0) return;
+   if (maxphase === 3) { gvPostprocess(g); return; }
+   dotPhasePost(g);
+diff --git a/src/layout/dot/position-aux.ts b/src/layout/dot/position-aux.ts
+index 78ed9916..f9f82639 100644
+--- a/src/layout/dot/position-aux.ts
++++ b/src/layout/dot/position-aux.ts
+@@ -101,6 +101,7 @@ export function graphRanksep(g: Graph): number { return g.info.ranksep ?? 0; }
+ 
+ /** @see lib/dotgen/position.c:make_aux_edge */
+ export function makeAuxEdge(u: Node, v: Node, len: number, wt: number): Edge {
++  { const c = (globalThis as { __aux?: Record<string, number> }).__aux; if (c) c.total = (c.total ?? 0) + 1; }
+   const e = new EdgeClass(u, v, '');
+   // C ROUND() is half away from zero. @see lib/dotgen/position.c:195
+   e.info.minlen = cround(Math.min(len, 2147483647));
+diff --git a/src/layout/dot/position-cluster.ts b/src/layout/dot/position-cluster.ts
+index f4e4a6b6..dc4c34e0 100644
+--- a/src/layout/dot/position-cluster.ts
++++ b/src/layout/dot/position-cluster.ts
+@@ -237,6 +237,7 @@ export function separateClustPair(low: Graph, high: Graph, margin: number): void
+   // swapped (right.rn, left.ln); with the old raw-.v[0] bug left/right were
+   // arbitrary, so the two errors cancelled for rankdir=TB but compounded under
+   // flip. @see lib/dotgen/position.c:480
++  { const c = (globalThis as { __aux?: Record<string, number> }).__aux; if (c) c.sep = (c.sep ?? 0) + 1; }
+   makeAuxEdge(left.info.rn!, right.info.ln!, margin, 0);
+ }
+ 
+diff --git a/src/layout/dot/position.ts b/src/layout/dot/position.ts
+index e6a4b910..257064a7 100644
+--- a/src/layout/dot/position.ts
++++ b/src/layout/dot/position.ts
+@@ -188,12 +188,15 @@ export function dotPosition(g: Graph): number {
+   }
+   expandLeaves(g);
+   if (flatEdges(g)) setYcoords(g);
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('pos.ycoords');
+   createAuxEdges(g, posClusters, compressGraph);
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('pos.auxedges');
+   g.info.rankIsXCoord = true;
+   if (rank(g, 2, nsiter2(g))) {
+     connectGraph(g);
+     rank(g, 2, nsiter2(g));
+   }
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('pos.xrank');
+   setXcoords(g);
+   /* C does NOT normalize the x-frame here: rank(g,2,…) is balance=2/LR_balance,
+    * which skips scan_and_normalize, so the frame stays un-normalized (the
+@@ -208,5 +211,6 @@ export function dotPosition(g: Graph): number {
+   placeGraphLabel(g);
+   /* remove_aux_edges must come after set_aspect: GD_ln/GD_rn used for bbox width */
+   removeAuxEdges(g);
++  (globalThis as { __phase?: (n: string) => void }).__phase?.('pos.removeaux');
+   return 0;
+ }
+diff --git a/test/corpus/render-one.ts b/test/corpus/render-one.ts
+index cf67deee..a7fb58f5 100644
+--- a/test/corpus/render-one.ts
++++ b/test/corpus/render-one.ts
+@@ -13,6 +13,7 @@
+ // Node-only dev/test infra — never imported by src/index.ts.
+ 
+ import { readFileSync } from 'node:fs';
++import { writeHeapSnapshot } from 'node:v8';
+ import { renderSvg } from '../../src/index.js';
+ 
+ /**
+@@ -32,6 +33,28 @@ function decodeDotInput(buf: Buffer): string {
+   }
+ }
+ 
++// TEMPORARY (issue #145 T1/T2): per-phase live-heap marker. Never committed.
++{
++  const t0 = Date.now();
++  (globalThis as { __aux?: Record<string, number> }).__aux = {};
++  const mb = (n: number): string => (n / 1048576).toFixed(1);
++  (globalThis as { __phase?: (n: string) => void }).__phase = (name: string): void => {
++    const before = process.memoryUsage();
++    (globalThis as { gc?: () => void }).gc?.();
++    const m = process.memoryUsage();
++    process.stderr.write(
++      `PHASE ${name} t=${((Date.now() - t0) / 1000).toFixed(1)}s heapUsed=${mb(m.heapUsed)} ` +
++      `preGc=${mb(before.heapUsed)} rss=${mb(m.rss)} ext=${mb(m.external)} ab=${mb(m.arrayBuffers)}\n`,
++    );
++    const aux = (globalThis as { __aux?: Record<string, number> }).__aux;
++    if (name.startsWith('pos.')) process.stderr.write(`AUX ${JSON.stringify(aux)}\n`);
++    if (process.env.PHASE_SNAPSHOT === name) {
++      const f = writeHeapSnapshot(process.env.PHASE_SNAPSHOT_FILE);
++      process.stderr.write(`SNAPSHOT ${f}\n`);
++    }
++  };
++}
++
+ const inputPath = process.argv[2];
+ const engine = process.argv[3];
+ 

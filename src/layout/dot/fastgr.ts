@@ -236,15 +236,21 @@ export function deleteFlatEdge(e: Edge): void {
 }
 
 /**
- * Add `e` to the flat graph (tail.flat_out and head.flat_in) and mark the
- * graph as having flat edges.
+ * Add `e` to the flat graph (tail.flat_out and head.flat_in) and mark `g` and
+ * its dot root as having flat edges. flat_reorder reads the flag of the graph
+ * it runs on, so an edge added through a subgraph (ordered_edges recursing
+ * into a rank subgraph, e.g. make_flat_adj_edges' `xxx`) must flag the root.
  * @see lib/dotgen/fastgr.c:flat_edge
  */
-export function flatEdge(g: import('../../model/graph.js').Graph, e: Edge): void {
+export function flatEdge(g: Graph, e: Edge): void {
   if (!e.tail.info.flat_out) e.tail.info.flat_out = { list: [], size: 0 };
   if (!e.head.info.flat_in) e.head.info.flat_in = { list: [], size: 0 };
   elistAppend(e.tail.info.flat_out, e);
   elistAppend(e.head.info.flat_in, e);
+  // C: GD_has_flat_edges(dot_root(g)) = GD_has_flat_edges(g) = true. dot_root
+  // is inlined (mincross-utils.ts:dotRoot imports this module).
+  // @see lib/dotgen/dotinit.c:dot_root
+  (g.info.dotroot ?? g.root).info.has_flat_edges = true;
   g.info.has_flat_edges = true;
 }
 

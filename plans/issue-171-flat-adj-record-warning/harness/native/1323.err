@@ -1,0 +1,4 @@
+Warning: flat edge between adjacent nodes one of which has a record shape - replace records with HTML-like labels
+  Edge namespace1 -> vfsmount2
+Error: lost namespace1 vfsmount2 edge
+Error: lost vfsmount2 namespace1 edge

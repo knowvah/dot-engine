@@ -1,0 +1,73 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 77.46 77.46 77.46 77.46 0 ",
+		bb="0,0,77.46,77.46",
+		xdotversion=1.7
+	];
+	node [label="\N",
+		shape=box
+	];
+	subgraph s1 {
+		graph [bb="1,2,3,4",
+			lheight=.5,
+			lp="node",
+			lwidth="-"
+		];
+		a	[_draw_="c 7 -#000000 p 4 51.64 77.46 25.82 77.46 25.82 38.73 51.64 38.73 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 38.73 53.9 0 6.21 1 -a ",
+			height=0.53791,
+			pos="38.73,58.095",
+			width=0.35861];
+	}
+	subgraph cluster_k {
+		graph [_draw_="c 7 -#000000 p 4 0 38.73 0 77.46 25.82 77.46 25.82 38.73 ",
+			bb="0.00032275,38.73,25.82,77.46",
+			lheight="x\ny",
+			lp=<b>,
+			lwidth="a\"b"
+		];
+		k	[_draw_="c 7 -#000000 p 4 25.82 77.46 0 77.46 0 38.73 25.82 38.73 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 12.91 53.9 0 7 1 -k ",
+			height=0.53791,
+			pos="12.91,58.095",
+			width=0.35861];
+	}
+	subgraph s2 {
+		graph [bb=7];
+		s	[_draw_="c 7 -#000000 p 4 77.46 77.46 51.64 77.46 51.64 38.73 77.46 38.73 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 64.55 53.9 0 5.45 1 -s ",
+			height=0.53791,
+			pos="64.55,58.095",
+			width=0.35861];
+	}
+	n	[_draw_="c 7 -#000000 p 4 25.82 38.73 0 38.73 0 0 25.82 0 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 12.91 15.17 0 7 1 -n ",
+		height=0.53791,
+		pos="12.91,19.365",
+		rects="Graph",
+		width=0.35861,
+		xlp=<i>];
+	m	[_draw_="c 7 -#000000 p 4 51.64 38.73 25.82 38.73 25.82 0 51.64 0 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 38.73 15.17 0 10.89 1 -m ",
+		height=0.53791,
+		pos="38.73,19.365",
+		rects="a b",
+		width=0.35861,
+		xlp=-1.5];
+	n -> m	[head_lp="1-2",
+		lp=12,
+		pos=<p>,
+		tail_lp=abc_9,
+		xlp="\N"];
+	p	[_draw_="c 7 -#000000 p 4 77.46 38.73 51.64 38.73 51.64 0 77.46 0 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 64.55 15.17 0 7 1 -p ",
+		height=0.53791,
+		pos="64.55,19.365",
+		rects="1.2.3",
+		width=0.35861,
+		xlp=é];
+	m -> p	[head_lp="-",
+		lp=".",
+		pos="subgraph",
+		tail_lp="say \"hi\"",
+		xlp="a\\b"];
+}

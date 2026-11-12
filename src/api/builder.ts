@@ -26,6 +26,8 @@ import { HTML_STRING_MARK } from '../common/html-string.js';
 export interface CreateGraphOptions {
   directed?: boolean;
   strict?: boolean;
+  /** The graph's name. Omitted: the graph is anonymous, as `agopen(NULL)` is
+   *  (written `digraph {`). An explicit `''` is a name (written `digraph "" {`). */
   name?: string;
 }
 
@@ -331,15 +333,19 @@ function resolveKind(opts: CreateGraphOptions | undefined): GraphKind {
  * Create a new programmatic graph builder.
  *
  * The builder's `.graph` is a fresh Graph ready for handoff to layout/render.
- * Defaults: directed=true, strict=false, name=''.
+ * Defaults: directed=true, strict=false, no name. A graph created without a
+ * `name` is anonymous, as `agopen(NULL)` is: `graph.name` reads `''` and dot
+ * output starts `digraph {`. An explicit `name: ''` is a name, as `agopen("")`
+ * is, and prints `digraph "" {`.
  *
  * @throws TypeError `ERR_INVALID_ARG_TYPE` if `opts` or one of its fields has
  *   the wrong type. Builder and handle methods throw the same for wrong
  *   argument types, and `InternalError` if node/subgraph creation fails.
  * @see lib/cgraph/graph.c:agopen
+ * @see lib/cgraph/id.c:agmapnametoid
  */
 export function createGraph(opts?: CreateGraphOptions): GvGraphBuilder {
   requireGraphOptions(opts);
-  const g = new Graph(opts?.name ?? '', resolveKind(opts));
+  const g = new Graph(opts?.name ?? '', resolveKind(opts), opts?.name === undefined);
   return new GraphBuilder(g, g);
 }

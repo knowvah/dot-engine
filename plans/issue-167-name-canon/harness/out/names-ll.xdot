@@ -1,0 +1,113 @@
+digraph "graph word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39" {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 124.5 430 124.5 430 0 ",
+		bb="0,0,430,124.5",
+		linelength=70,
+		xdotversion=1.7
+	];
+	node [label=x];
+	subgraph "cluster_c word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 \
+word10 word11 word12 word13 word14 word15 word16 word17 word18 word19 \
+word20 word21 word22 word23 word24 word25 word26 word27 word28 word29 \
+word30 word31 word32 word33 word34 word35 word36 word37 word38 word39" {
+		graph [_draw_="c 7 -#000000 p 4 8 64.5 8 116.5 78 116.5 78 64.5 ",
+			bb="8,64.5,78,116.5"
+		];
+		"in_cluster word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 \
+word10 word11 word12 word13 word14 word15 word16 word17 word18 word19 \
+word20 word21 word22 word23 word24 word25 word26 word27 word28 word29 \
+word30 word31 word32 word33 word34 word35 word36 word37 word38 word39"	[_draw_="c 7 -#000000 e 43 90.5 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 86.3 0 7 1 -x ",
+			height=0.5,
+			pos="43,90.5",
+			width=0.75];
+	}
+	subgraph "plainsub word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39" {
+		"in_sub word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39"	[_draw_="c 7 -#000000 e 115 90.5 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 115 86.3 0 7 1 -x ",
+			height=0.5,
+			pos="115,90.5",
+			width=0.75];
+	}
+	"node word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39"	[_draw_="c 7 -#000000 e 187 90.5 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 187 86.3 0 7 1 -x ",
+		height=0.5,
+		pos="187,90.5",
+		width=0.75];
+	"слово0 слово1 слово2 слово3 слово4 слово5 \
+слово6 слово7 слово8 слово9 слово10 слово11 \
+слово12 слово13 слово14 слово15 слово16 слово17 \
+слово18 слово19 слово20 слово21 слово22 слово23 \
+слово24 слово25 слово26 слово27 слово28 слово29"	[_draw_="c 7 -#000000 e 259 90.5 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 259 86.3 0 7 1 -x ",
+		height=0.5,
+		pos="259,90.5",
+		width=0.75];
+	"tail word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39"	[_draw_="c 7 -#000000 e 331 90.5 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 331 86.3 0 7 1 -x ",
+		height=0.5,
+		pos="331,90.5",
+		width=0.75];
+	"head word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39"	[_draw_="c 7 -#000000 e 331 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 331 13.8 0 7 1 -x ",
+		height=0.5,
+		pos="331,18",
+		width=0.75];
+	"tail word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39" -> "head word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39"	[_draw_="c 7 -#000000 B 4 331 72.07 331 64.73 331 55.99 331 47.74 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 334.5 47.74 331 37.74 327.5 47.74 ",
+		pos="e,331,36.227 331,72.073 331,64.731 331,55.989 331,47.74"];
+	"porttail word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39"	[_draw_="c 7 -#000000 p 4 376 72.5 376 108.5 430 108.5 430 72.5 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 402.61 86.3 0 6.21 1 -a ",
+		height=0.51389,
+		label="<p1> a",
+		pos="403,90.5",
+		rects="376,72.5,429.21,108.5",
+		shape=record,
+		width=0.75];
+	"porthead word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39"	[_draw_="c 7 -#000000 e 403 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 403 13.8 0 7 1 -x ",
+		height=0.5,
+		pos="403,18",
+		width=0.75];
+	"porttail word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39":p1:n -> "porthead word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 \
+word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 \
+word21 word22 word23 word24 word25 word26 word27 word28 word29 word30 \
+word31 word32 word33 word34 word35 word36 word37 word38 word39"	[_draw_="c 7 -#000000 B 10 402.61 109.5 402.61 121.33 384.21 117.02 376 108.5 364.75 \
+96.82 372.21 87.77 376 72 378.24 62.68 382.4 53.15 386.8 44.79 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 389.76 46.67 391.63 36.25 383.66 \
+43.23 ",
+		pos="e,392.37,34.929 402.61,109.5 402.61,121.33 384.21,117.02 376,108.5 364.75,\
+96.816 372.21,87.774 376,72 378.24,62.68 382.4,53.152 386.8,44.791"];
+}

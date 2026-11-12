@@ -1,0 +1,1 @@
+digraph { rankdir=LR; {rank=same; a [shape=record]; b; b -> a;} }

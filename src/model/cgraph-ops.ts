@@ -24,7 +24,7 @@ import { Node } from './node.js';
  * @see lib/cgraph/cghdr.h:LOCALNAMEPREFIX
  * @see lib/cgraph/id.c:aginternalmapprint
  */
-const LOCALNAMEPREFIX = '%';
+export const LOCALNAMEPREFIX = '%';
 
 /**
  * cgraph's id for the first anonymous object, which an anonymous root graph is
@@ -37,8 +37,9 @@ const ANONYMOUS_ROOT_ID = 1;
  * Graph name as `agnameof` returns it: the DOT name, or `%<id>` for an
  * anonymous graph. The port stores `''` for an anonymous root (dot/xdot
  * re-serialization must not print the `%` name), so it is restored here.
- * Anonymous subgraph ids are not tracked; callers pass the root, as C's
- * neato message sites do.
+ * An anonymous subgraph already carries its `%N` name (the parser allocates
+ * it), so only the root needs restoring; the dot writer passes either, and
+ * the neato message sites pass the root, as C's do.
  * @see lib/cgraph/id.c:agnameof
  */
 export function agNameOf(g: Graph): string {

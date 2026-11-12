@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-21T14:43:53.865Z",
+  "generatedAt": "2026-11-10T23:10:44.688Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "osage",
   "oracleVersion": "dot 16.1.0",
   "corpusRoot": "~/git/graphviz/tests",
   "total": 929,
   "counts": {
-    "conformant": 919,
+    "conformant": 922,
     "diverged": 0,
-    "accepted": 10,
+    "accepted": 7,
     "port-error": 0,
     "oracle-error": 0,
     "timeout": 0
@@ -480,9 +480,7 @@
       "id": "2721",
       "path": "2721.dot",
       "size": 82,
-      "verdict": "accepted",
-      "diffCount": 1,
-      "firstDiff": "[parse]/oracle"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-b79",
@@ -1334,9 +1332,7 @@
       "id": "1221",
       "path": "1221.dot",
       "size": 149,
-      "verdict": "accepted",
-      "diffCount": 1,
-      "firstDiff": "[parse]/oracle"
+      "verdict": "conformant"
     },
     {
       "id": "regression_tests-shapes-reference-parallelogram",
@@ -5248,9 +5244,7 @@
       "id": "1332",
       "path": "1332.dot",
       "size": 13890,
-      "verdict": "accepted",
-      "diffCount": 1,
-      "firstDiff": "[parse]/oracle"
+      "verdict": "conformant"
     },
     {
       "id": "share-jsort",

@@ -74,7 +74,7 @@
 {"id":"2391_1","path":"2391_1.dot","size":82,"verdict":"conformant"}
 {"id":"1585_1","path":"1585_1.dot","size":82,"verdict":"conformant"}
 {"id":"2564","path":"2564.dot","size":82,"verdict":"conformant"}
-{"id":"2721","path":"2721.dot","size":82,"verdict":"accepted","diffCount":1,"firstDiff":"[parse]/oracle"}
+{"id":"2721","path":"2721.dot","size":82,"verdict":"conformant"}
 {"id":"graphs-b79","path":"graphs/b79.gv","size":82,"verdict":"conformant"}
 {"id":"2572","path":"2572.dot","size":82,"verdict":"conformant"}
 {"id":"tree-doc-dotguide-Mrecord","path":"../doc/dotguide/Mrecord.dot","size":82,"verdict":"conformant"}
@@ -215,7 +215,7 @@
 {"id":"graphs-clust3","path":"graphs/clust3.gv","size":146,"verdict":"conformant"}
 {"id":"tree-graphs-directed-clust1","path":"../graphs/directed/clust1.gv","size":146,"verdict":"conformant"}
 {"id":"tree-graphs-directed-clust2","path":"../graphs/directed/clust2.gv","size":146,"verdict":"conformant"}
-{"id":"1221","path":"1221.dot","size":149,"verdict":"accepted","diffCount":1,"firstDiff":"[parse]/oracle"}
+{"id":"1221","path":"1221.dot","size":149,"verdict":"conformant"}
 {"id":"tree-graphs-directed-clust3","path":"../graphs/directed/clust3.gv","size":146,"verdict":"conformant"}
 {"id":"705","path":"705.dot","size":155,"verdict":"conformant"}
 {"id":"regression_tests-shapes-reference-parallelogram","path":"regression_tests/shapes/reference/parallelogram.gv","size":149,"verdict":"conformant"}
@@ -865,7 +865,7 @@
 {"id":"nshare-rankdir_dot2","path":"nshare/rankdir_dot2.gv","size":12795,"verdict":"conformant"}
 {"id":"nshare-rankdir_dot","path":"nshare/rankdir_dot.gv","size":12803,"verdict":"conformant"}
 {"id":"linux.x86-rankdir_dot2","path":"linux.x86/rankdir_dot2.gv","size":12815,"verdict":"conformant"}
-{"id":"1332","path":"1332.dot","size":13890,"verdict":"accepted","diffCount":1,"firstDiff":"[parse]/oracle"}
+{"id":"1332","path":"1332.dot","size":13890,"verdict":"conformant"}
 {"id":"share-jsort","path":"share/jsort.gv","size":14030,"verdict":"conformant"}
 {"id":"windows-jsort","path":"windows/jsort.gv","size":14425,"verdict":"conformant"}
 {"id":"windows-b94","path":"windows/b94.gv","size":14509,"verdict":"conformant"}

@@ -9,7 +9,7 @@
 // is the unusable side. See plans/fix-1472-oracle-classification/decisions.md AD-1.
 
 import { describe, it, expect } from 'vitest';
-import { isWellFormedSvg, diffVerdict } from './survey.js';
+import { isWellFormedSvg, diffVerdict, PORT_HEAP_MB, portEnv } from './survey.js';
 
 /** Minimal well-formed SVG wrapper with a single <g> of children. */
 function svg(children: string): string {
@@ -65,5 +65,42 @@ describe('isWellFormedSvg', () => {
 
   it('returns false for an empty string (no root element)', () => {
     expect(isWellFormedSvg('')).toBe(false);
+  });
+});
+
+// Per-id heap cap (issue #145): one id's port render needs more than V8's
+// default heap because native itself peaks above it; every other id must keep
+// the default so a real heap regression still fails.
+describe('portEnv — per-id heap cap for the port render', () => {
+  const HEAP_FLAG = '--max-old-space-size';
+
+  it('caps exactly one id, 2475_1, with a whole number of GB', () => {
+    expect(Object.keys(PORT_HEAP_MB)).toEqual(['2475_1']);
+    expect(PORT_HEAP_MB['2475_1']).toBeGreaterThan(8410);
+    expect(PORT_HEAP_MB['2475_1']).toBeLessThanOrEqual(48 * 1024);
+    expect(PORT_HEAP_MB['2475_1'] % 1024).toBe(0);
+  });
+
+  it('gives a capped id NODE_OPTIONS with its heap size', () => {
+    const env = portEnv('2475_1', { PATH: '/bin' });
+    expect(env).toEqual({ PATH: '/bin', NODE_OPTIONS: `${HEAP_FLAG}=${PORT_HEAP_MB['2475_1']}` });
+  });
+
+  it('keeps existing NODE_OPTIONS and appends the heap size after them', () => {
+    const env = portEnv('2475_1', { NODE_OPTIONS: '--stack-size=65500' });
+    expect(env.NODE_OPTIONS).toBe(`--stack-size=65500 ${HEAP_FLAG}=${PORT_HEAP_MB['2475_1']}`);
+  });
+
+  it('returns the input env itself for any other id', () => {
+    const input = { PATH: '/bin', NODE_OPTIONS: '--stack-size=65500' };
+    expect(portEnv('2108', input)).toBe(input);
+    expect(portEnv('2475', input)).toBe(input);
+    expect(portEnv('toString', input)).toBe(input);
+  });
+
+  it('does not mutate the input env', () => {
+    const input = { PATH: '/bin', NODE_OPTIONS: '--stack-size=65500' };
+    portEnv('2475_1', input);
+    expect(input).toEqual({ PATH: '/bin', NODE_OPTIONS: '--stack-size=65500' });
   });
 });

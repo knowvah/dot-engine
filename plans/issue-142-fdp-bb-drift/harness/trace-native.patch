@@ -1,0 +1,258 @@
+--- src/layout.c
++++ src/layout.c
+@@ -1,4 +1,5 @@
+ #include <stdlib.h>
++#include "gvts142.h"
+ /*************************************************************************
+  * Copyright (c) 2011 AT&T Intellectual Property 
+  * All rights reserved. This program and the accompanying materials
+@@ -135,12 +136,15 @@
+ 	margin = 0;
+     else
+ 	margin = late_int (rg, G_margin, CL_OFFSET, 0);
++    TR142("fcc.bb0 %s %a %a %a %a\n", agnameof(rg), bb.LL.x, bb.LL.y, bb.UR.x, bb.UR.y);
+     pt.x = -bb.LL.x + margin;
+     pt.y = -bb.LL.y + margin + GD_border(rg)[BOTTOM_IX].y;
+     bb.LL.x = 0;
+     bb.LL.y = 0;
+     bb.UR.x += pt.x + margin;
+     bb.UR.y += pt.y + margin + GD_border(rg)[TOP_IX].y;
++    TR142("fcc.pt %s %a %a margin=%d\n", agnameof(rg), pt.x, pt.y, margin);
++    TR142("fcc.bb1 %s %a %a %a %a\n", agnameof(rg), bb.LL.x, bb.LL.y, bb.UR.x, bb.UR.y);
+ 
+     /* translate nodes */
+     if (!LIST_IS_EMPTY(cc)) {
+@@ -160,6 +164,7 @@
+ 	    }
+ 	    del.x = PS2INCH(p.x);
+ 	    del.y = PS2INCH(p.y);
++	    TR142("fcc.del %s %zu %a %a\n", agnameof(rg), i, del.x, del.y);
+ 	    for (n = agfstnode(cg); n; n = agnxtnode(cg, n)) {
+ 		ND_pos(n)[0] += del.x;
+ 		ND_pos(n)[1] += del.y;
+@@ -172,6 +177,12 @@
+     bbf.UR.x = PS2INCH(bb.UR.x);
+     bbf.UR.y = PS2INCH(bb.UR.y);
+     BB(g) = bbf;
++    if (TR142_ON()) {
++	int k_ = 0;
++	for (node_t *n_ = agfstnode(g); n_; n_ = agnxtnode(g, n_))
++	    TR142("fcc.pos %s %d %s %a %a\n", agnameof(rg), k_++, agnameof(n_), ND_pos(n_)[0], ND_pos(n_)[1]);
++	TR142("fcc.bbf %s %a %a %a %a\n", agnameof(rg), bbf.LL.x, bbf.LL.y, bbf.UR.x, bbf.UR.y);
++    }
+ 
+ }
+ 
+@@ -568,6 +579,8 @@
+ 	erecs[i].e = e;
+ 	erecs[i].alpha = atan2(dy, dx);
+ 	erecs[i].dist2 = dx * dx + dy * dy;
++	TR142_LIBM2("atan2", dy, dx, erecs[i].alpha);
++	TR142("gel.e %s %d dx=%a dy=%a alpha=%a dist2=%a\n", agnameof(n), i, dx, dy, erecs[i].alpha, erecs[i].dist2);
+ 	i++;
+     }
+     assert(i == deg);
+@@ -631,6 +644,7 @@
+ 
+     delta = fmin((bnd - er->alpha) / cnt, ANG);
+     angle = er->alpha;
++    TR142("gp.in %s alpha=%a bnd=%a cnt=%d delta=%a\n", agnameof(n), er->alpha, bnd, cnt, delta);
+ 
+     if (getenv("GVTS_NOADDR") ? ND_id(n) < ND_id(other) : n < other) {
+ 	i = idx;
+@@ -648,6 +662,7 @@
+ 	pp[i].e = el;
+ 	pp[i].n = DNODE(agtail(el)) == n ? agtail(el) : aghead(el);
+ 	pp[i].alpha = angle;
++	TR142("gp.port %s %d alpha=%a\n", agnameof(n), i, angle);
+ 	i += inc;
+ 	angle += delta;
+     }
+@@ -845,15 +860,31 @@
+ 		pt.y = POINTS_PER_INCH * BB(sg).UR.y;
+ 		ND_rw(n) = ND_lw(n) = pt.x/2;
+ 		ND_ht(n) = pt.y;
++		TR142("lay.clsz %s %s %a %a\n", agnameof(g), agnameof(n), ND_width(n), ND_height(n));
+ 	    } else if (IS_PORT(n))
+ 		agdelete(cg, n);	/* remove ports from component */
+ 	}
+ 
+ 	/* Remove overlaps */
+ 	if (agnnodes(cg) >= 2) {
++	    if (TR142_ON()) {
++		int k_ = 0;
++		for (node_t *n_ = agfstnode(cg); n_; n_ = agnxtnode(cg, n_))
++		    TR142("lay.prex %s %d %s %a %a\n", agnameof(g), k_++, agnameof(n_), ND_pos(n_)[0], ND_pos(n_)[1]);
++	    }
+ 	    if (g == infop->rootg)
+ 		normalize (cg);
++	    if (TR142_ON()) {
++		int k_ = 0;
++		for (node_t *n_ = agfstnode(cg); n_; n_ = agnxtnode(cg, n_))
++		    TR142("lay.norm %s %d %a %a\n", agnameof(g), k_++, ND_pos(n_)[0], ND_pos(n_)[1]);
++	    }
+ 	    fdp_xLayout(cg, &xpms);
++	    if (TR142_ON()) {
++		int k_ = 0;
++		for (node_t *n_ = agfstnode(cg); n_; n_ = agnxtnode(cg, n_))
++		    TR142("lay.x %s %d %a %a\n", agnameof(g), k_++, ND_pos(n_)[0], ND_pos(n_)[1]);
++	    }
+ 	}
+     }
+ 
+@@ -896,6 +927,7 @@
+ 	    BB(sg).LL.y = ND_pos(dn)[1] - ND_height(dn) / 2;
+ 	    BB(sg).UR.x = BB(sg).LL.x + ND_width(dn);
+ 	    BB(sg).UR.y = BB(sg).LL.y + ND_height(dn);
++	    TR142("rec.bb %s %s %a %a %a %a\n", agnameof(g), agnameof(sg), BB(sg).LL.x, BB(sg).LL.y, BB(sg).UR.x, BB(sg).UR.y);
+ 	} else if ((n = ANODE(dn))) {
+ 	    ND_pos(n)[0] = ND_pos(dn)[0];
+ 	    ND_pos(n)[1] = ND_pos(dn)[1];
+@@ -934,6 +966,8 @@
+     bb.UR.x = POINTS_PER_INCH * BB(g).UR.x;
+     bb.UR.y = POINTS_PER_INCH * BB(g).UR.y;
+     GD_bb(g) = bb;
++    TR142("setbb.in %s %a %a %a %a\n", agnameof(g), BB(g).LL.x, BB(g).LL.y, BB(g).UR.x, BB(g).UR.y);
++    TR142("setbb.pt %s %a %a %a %a\n", agnameof(g), bb.LL.x, bb.LL.y, bb.UR.x, bb.UR.y);
+     for (i = 1; i <= GD_n_cluster(g); i++) {
+ 	setBB(GD_clust(g)[i]);
+     }
+@@ -1023,6 +1057,10 @@
+     }
+     setClustNodes(g);
+     evalPositions(g,g);
++    if (TR142_ON()) {
++	for (node_t *n_ = agfstnode(g); n_; n_ = agnxtnode(g, n_))
++	    TR142("eval.pos %s %a %a\n", agnameof(n_), ND_pos(n_)[0], ND_pos(n_)[1]);
++    }
+ 
+     /* Set bbox info for g and all clusters. This is needed for
+      * spline drawing. We already know the graph bbox is at the origin.
+--- src/tlayout.c
++++ src/tlayout.c
+@@ -42,6 +42,7 @@
+ 
+ #include <common/globals.h>
+ #include <fdpgen/tlayout.h>
++#include "gvts142.h"
+ 
+ #define D_useGrid (fdp_parms->useGrid)
+ #define D_useNew (fdp_parms->useNew)
+@@ -472,6 +473,11 @@
+ 
+     /* Construct enclosing ellipse */
+     alpha = atan2(T_Ht, T_Wd);
++    if (TR142_ON()) {
++      TR142_LIBM2("atan2", T_Ht, T_Wd, alpha);
++      TR142_LIBM1("cos", alpha, cos(alpha));
++      TR142_LIBM1("sin", alpha, sin(alpha));
++    }
+     T_Wd = T_Wd / cos(alpha);
+     T_Ht = T_Ht / sin(alpha);
+   } else {
+@@ -500,6 +506,11 @@
+       np = pp->n;
+       ND_pos(np)[0] = T_Wd * cos(pp->alpha) + ctr.x;
+       ND_pos(np)[1] = T_Ht * sin(pp->alpha) + ctr.y;
++      if (TR142_ON()) {
++        TR142_LIBM1("cos", pp->alpha, cos(pp->alpha));
++        TR142_LIBM1("sin", pp->alpha, sin(pp->alpha));
++        TR142("tl.port %s alpha=%a Wd=%a Ht=%a x=%a y=%a\n", agnameof(g), pp->alpha, T_Wd, T_Ht, ND_pos(np)[0], ND_pos(np)[1]);
++      }
+       ND_pinned(np) = P_SET;
+       pp++;
+     }
+@@ -540,6 +551,11 @@
+           double radius = 0.9 * drand48();
+           ND_pos(np)[0] = radius * T_Wd * cos(angle);
+           ND_pos(np)[1] = radius * T_Ht * sin(angle);
++          if (TR142_ON()) {
++            TR142_LIBM1("cos", angle, cos(angle));
++            TR142_LIBM1("sin", angle, sin(angle));
++            TR142("tl.rnd %s angle=%a radius=%a x=%a y=%a\n", agnameof(g), angle, radius, ND_pos(np)[0], ND_pos(np)[1]);
++          }
+         }
+         ND_pinned(np) = P_SET;
+       }
+@@ -574,6 +590,12 @@
+   bport_t *const pp = PORTS(g);
+   const bool reset = init_params(g, xpms);
+   const pointf ctr = initPositions(g, pp);
++  if (TR142_ON()) {
++    TR142("tl.parms %s K=%a T0=%a Wd=%a Ht=%a loopcnt=%d grid=%d ctr=%a,%a\n", agnameof(g), T_K, T_T0, T_Wd, T_Ht, T_loopcnt, T_useGrid, ctr.x, ctr.y);
++    int k_ = 0;
++    for (Agnode_t *n_ = agfstnode(g); n_; n_ = agnxtnode(g, n_))
++      TR142("tl.init %s %d %s %a %a\n", agnameof(g), k_++, agnameof(n_), ND_pos(n_)[0], ND_pos(n_)[1]);
++  }
+ 
+   if (T_useGrid) {
+     Grid *const grid = mkGrid(agnnodes(g));
+@@ -581,12 +603,22 @@
+     for (int i = 0; i < T_loopcnt; i++) {
+       const double temp = cool(i);
+       gAdjust(g, temp, pp, grid);
++      if (TR142_ON()) {
++        int k_ = 0;
++        for (Agnode_t *n_ = agfstnode(g); n_; n_ = agnxtnode(g, n_))
++          TR142("tl.git %s %d %d %a %a\n", agnameof(g), i, k_++, ND_pos(n_)[0], ND_pos(n_)[1]);
++      }
+     }
+     delGrid(grid);
+   } else {
+     for (int i = 0; i < T_loopcnt; i++) {
+       const double temp = cool(i);
+       adjust(g, temp, pp);
++      if (TR142_ON()) {
++        int k_ = 0;
++        for (Agnode_t *n_ = agfstnode(g); n_; n_ = agnxtnode(g, n_))
++          TR142("tl.it %s %d %d %a %a\n", agnameof(g), i, k_++, ND_pos(n_)[0], ND_pos(n_)[1]);
++      }
+     }
+   }
+ 
+@@ -596,6 +628,11 @@
+       ND_pos(n)[1] += ctr.y;
+     }
+   }
++  if (TR142_ON()) {
++    int k_ = 0;
++    for (Agnode_t *n_ = agfstnode(g); n_; n_ = agnxtnode(g, n_))
++      TR142("tl.end %s %d %a %a\n", agnameof(g), k_++, ND_pos(n_)[0], ND_pos(n_)[1]);
++  }
+   if (reset)
+     reset_params();
+ }
+--- src/xlayout.c
++++ src/xlayout.c
+@@ -26,6 +26,7 @@
+ #define FDP_PRIVATE 1
+ #include <fdpgen/dbg.h>
+ #include <fdpgen/xlayout.h>
++#include "gvts142.h"
+ #include <math.h>
+ #include <neatogen/adjust.h>
+ #include <util/gv_ctype.h>
+@@ -277,6 +278,12 @@
+       if (temp <= 0.0)
+         break;
+       ov = adjust(g, temp, X_ov, X_nonov);
++      if (TR142_ON()) {
++        int k_ = 0;
++        TR142("xl.parm %s %d %d temp=%a ov=%a nonov=%a novl=%d\n", agnameof(g), try, i, temp, X_ov, X_nonov, ov);
++        for (Agnode_t *n_ = agfstnode(g); n_; n_ = agnxtnode(g, n_))
++          TR142("xl.it %s %d %d %d %a %a\n", agnameof(g), try, i, k_++, ND_pos(n_)[0], ND_pos(n_)[1]);
++      }
+       if (ov == 0)
+         break;
+     }
+@@ -338,5 +345,10 @@
+   }
+   if (tries && !x_layout(g, xpms, tries))
+     return;
++  if (TR142_ON()) {
++    int k_ = 0;
++    for (Agnode_t *n_ = agfstnode(g); n_; n_ = agnxtnode(g, n_))
++      TR142("xl.end %s %d %a %a\n", agnameof(g), k_++, ND_pos(n_)[0], ND_pos(n_)[1]);
++  }
+   removeOverlapAs(g, rest);
+ }

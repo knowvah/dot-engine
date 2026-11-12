@@ -1,0 +1,19 @@
+digraph CrashPOC {
+  concentrate=true
+  pad=0
+  node [URL="u\N"]
+  subgraph cluster_outer { margin=1
+    subgraph cluster_inner { margin=1
+      A -> B -> C -> D
+      B -> E
+      I -> H -> C -> F
+      D -> G
+
+      P [shape=point style=invis]
+      {B C D E F} -> P [constraint="false" style=invis]
+    }
+
+    H -> A
+    {rank=same; H; B}
+  }
+}

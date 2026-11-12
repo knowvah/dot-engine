@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 //
-// Tests for xdotId's DOT identifier quoting — agwrite's agcanonStr.
+// Tests for xdotId's DOT identifier quoting — agwrite's agstrcanon.
+// @see lib/cgraph/write.c:write_canonstr
 // @see lib/cgraph/write.c:113 _agstrcanon
 //
 // Every "matches native" expectation below was taken from the oracle
@@ -8,6 +9,7 @@
 // which is why an unparseable trailing-backslash case survived unnoticed.
 
 import { describe, it, expect } from 'vitest';
+import { HTML_STRING_MARK } from '../../common/html-string.js';
 import { xdotId } from './xdot-ops.js';
 
 describe('xdotId — bare vs quoted', () => {
@@ -27,6 +29,32 @@ describe('xdotId — bare vs quoted', () => {
     expect(xdotId('1a')).toBe('"1a"');
     expect(xdotId('')).toBe('""');
   });
+
+  it('quotes a DOT keyword in any case', () => {
+    expect(xdotId('node')).toBe('"node"');
+    expect(xdotId('Graph')).toBe('"Graph"');
+  });
+
+  it('leaves a non-ascii name bare: bytes >= 0x80 are id chars', () => {
+    expect(xdotId('é')).toBe('é');
+  });
+
+  it('quotes a lone - or . but leaves -. bare', () => {
+    expect(xdotId('-')).toBe('"-"');
+    expect(xdotId('.')).toBe('"."');
+    expect(xdotId('-.')).toBe('-.');
+  });
+});
+
+describe('xdotId — html-like names', () => {
+  it('prints an html-marked name angle-bracketed, without the marker', () => {
+    expect(xdotId(HTML_STRING_MARK + 'x')).toBe('<x>');
+    expect(xdotId(HTML_STRING_MARK + '<b>x y</b>')).toBe('<<b>x y</b>>');
+  });
+
+  it('does not pad an html-marked name that ends in a backslash', () => {
+    expect(xdotId(HTML_STRING_MARK + 'a\\')).toBe('<a\\>');
+  });
 });
 
 describe('xdotId — backslash handling matches _agstrcanon', () => {
@@ -44,6 +72,10 @@ describe('xdotId — backslash handling matches _agstrcanon', () => {
   it('escapes a bare quote', () => {
     expect(xdotId('a"b')).toBe('"a\\"b"');
     expect(xdotId('"q"')).toBe('"\\"q\\""');
+  });
+
+  it('does not re-escape a quote that is already escaped', () => {
+    expect(xdotId('a\\"b')).toBe('"a\\"b"');
   });
 
   it('leaves an even trailing backslash run alone', () => {

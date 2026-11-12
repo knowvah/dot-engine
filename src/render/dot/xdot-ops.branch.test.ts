@@ -5,13 +5,12 @@
 // uncovered branches from the T4d coverage digest: trimAndStrip,
 // printNum/xdotNum edge cases, utf8Len surrogate/3-byte paths,
 // gvColorRgba none/hsva paths, radialGradientOp angle branch, xdotFont
-// non-positive size, gfmt5 scientific-notation branches, isEscapeSeq,
-// agcanonEscape, trimFixed3.
+// non-positive size, gfmt5 scientific-notation branches, trimFixed3.
 
 import { describe, it, expect } from 'vitest';
 import {
   trimAndStrip, printNum, xdotNum, utf8Len, gvColorRgba, radialGradientOp,
-  xdotFont, gfmt5, gfmt2, isEscapeSeq, agcanonEscape, trimFixed3,
+  xdotFont, gfmt5, gfmt2, trimFixed3,
 } from './xdot-ops.js';
 
 describe('trimAndStrip', () => {
@@ -154,35 +153,6 @@ describe('gfmt5 — %.5g formatting', () => {
 describe('gfmt2 — %.2f formatting (sanity)', () => {
   it('formats with 2 fixed decimals', () => {
     expect(gfmt2(1)).toBe('1.00');
-  });
-});
-
-describe('isEscapeSeq', () => {
-  it('returns false when the char at i is not a backslash', () => {
-    expect(isEscapeSeq('abc', 0)).toBe(false);
-  });
-
-  it.each(['E', 'G', 'H', 'L', 'N', 'T', 'l', 'n', 'r', '\\', '"'])(
-    'recognizes \\%s as an escape sequence',
-    (letter) => {
-      expect(isEscapeSeq('\\' + letter, 0)).toBe(true);
-    },
-  );
-
-  it('returns false for an unrecognized escape letter', () => {
-    expect(isEscapeSeq('\\x', 0)).toBe(false);
-  });
-});
-
-describe('agcanonEscape', () => {
-  it('escapes a bare quote not part of an existing escape', () => {
-    expect(agcanonEscape('a"b')).toBe('a\\"b');
-  });
-
-  it('passes through an existing escape sequence verbatim, resetting after', () => {
-    // L414 (isEscapeSeq true) then L417 (partOfEscape reset false) on the
-    // character following the escape letter.
-    expect(agcanonEscape('a\\nb')).toBe('a\\nb');
   });
 });
 

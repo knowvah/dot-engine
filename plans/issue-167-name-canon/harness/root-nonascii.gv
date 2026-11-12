@@ -1,0 +1,1 @@
+digraph "é" { node [label=x]; a -> b; }

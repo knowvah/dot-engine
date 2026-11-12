@@ -683,47 +683,47 @@ Details and evidence: `plans/post-16-1-followups-mission/decision-journal.md`.
   (`kk-large.pow.json`). No library change is wanted.
 
 - **New follow-ups found by part 11** (`plans/post-16-1-followups-11/`):
-  139. `conjgrad-mkernel.ts:28` (C `conjgrad.c:65`) still ends its `agerrorf` text with `\n`, the
+  139. **[DONE — issue #129: dropped the `\n`]** `conjgrad-mkernel.ts:28` (C `conjgrad.c:65`) still ends its `agerrorf` text with `\n`, the
       defect 131 fixed at the other two sites; its test pins the `\n` (part 11 T5).
-  140. `make_flat_adj_edges` builds a `rank=source` subgraph `xxx` (`dotsplines.c:1177-1185`) the port
+  140. **[DONE — issue #130: built the subgraph; native aux ranks equal]** `make_flat_adj_edges` builds a `rank=source` subgraph `xxx` (`dotsplines.c:1177-1185`) the port
       omits; no output difference on w4 and six variants (part 11 T1).
-  141. `setState` also unbinds `E_fontcolor`, `E_labelfontcolor`, `E_xlabel`, `N_style`, `N_fontcolor`,
+  141. **[DONE — issue #131: unbound the four label symbols (stderr now equal); the other six probed equal]** `setState` also unbinds `E_fontcolor`, `E_labelfontcolor`, `E_xlabel`, `N_style`, `N_fontcolor`,
       `N_xlabel`, `N_showboxes`, `N_nojustify` (`dotsplines.c:731-771`) for the aux layout; head and
       tail labels probed equal, the rest unprobed (part 11 T1, T2).
-  142. `svgGraphId` (`src/render/svg-id.ts:54`) still hardcodes `graph0` for the graph anchor and map id
+  142. **[DONE — issue #132: svgGraphId carries the seq; graphObjId deleted]** `svgGraphId` (`src/render/svg-id.ts:54`) still hardcodes `graph0` for the graph anchor and map id
       (`device.ts:235,391`) and duplicates T9's `graphObjId`; the comment in
       `layout-reset.edges.test.ts` before the svg graph-id test is stale (part 11 T9).
-  143. For the user (AD-3, PR 119): sgd's `hypot` (`sgd.ts:346`) could use the existing macOS model
+  143. **[DONE — issue #189: sgd.ts calls libmHypot. Left open: #208 (the port's `mag === 0` guard has no C counterpart)]** For the user (AD-3, PR 119): sgd's `hypot` (`sgd.ts:346`) could use the existing macOS model
       `libm-hypot.ts`, taking sgd58 to 6 of 255 lines (max 0.01); not adopted (part 11 T6).
-  144. There is no macOS `exp` model; `Math.exp` misses 4 of 30 sgd eta values (`sgd.c:216`), the rest
+  144. **[WONTFIX — ruling on #133: exp residual stays accepted]** There is no macOS `exp` model; `Math.exp` misses 4 of 30 sgd eta values (`sgd.c:216`), the rest
       of 132's drift. Same user decision as 143 (part 11 T6).
-  145. `echoAttr`/`echoGraphAttr` (`src/render/dot/attrs.ts:362,397`) print cluster and graph
+  145. **[DONE — issue #134: echoAttr/echoGraphAttr use agstrcanon; labels already wrapped]** `echoAttr`/`echoGraphAttr` (`src/render/dot/attrs.ts:362,397`) print cluster and graph
       attributes through `agcanonEscape`, so long labels there never wrap at `Max_outputline`; no
       native ref covers it (part 11 T3).
-  146. json's `insert()` warns `Duplicate cluster name` (`gvrender_core_json.c:617`); the port's json
+  146. **[DONE — issue #135: json's label_subgs/insert/lookup ported, warning included]** json's `insert()` warns `Duplicate cluster name` (`gvrender_core_json.c:617`); the port's json
       has no such warning (part 11 T4).
-  147. json0 prints `.5`/`125.354` where native prints `0.5`/`125.35` (the `printNum` fallback for
+  147. **[DONE — issue #136: json0 node pos/width/height via write-back's formatting]** json0 prints `.5`/`125.354` where native prints `0.5`/`125.35` (the `printNum` fallback for
       json0 nodes); pre-existing, `compareJson` passes (part 11 T4).
   148–150. **[DONE — part 11 T7b]** The three render causes behind 137: (A) stored draw strings,
       (B) `Spline.bb` and `edge_in_box`, (C) `inf`/`nan` text and the page clip (part 11 T7).
-  151. Comments still name the removed `routeDotEdges` backstop or `edge-order.ts`:
+  151. **[DONE — issue #137: comments name the live readers; aux label re-place removed]** Comments still name the removed `routeDotEdges` backstop or `edge-order.ts`:
       `splines-flat-labeled.ts:153`, `splines-flat.ts:377`, `svg.ts:119`, `edgeInfo.ts:177`,
       `bsd-qsort.ts:11` (part 11 T8).
-  152. Other process statics that `ctx.layout` resets per layout (AD-4) may meet stale records on a
+  152. **[DONE — issue #138: all 24 registered resets audited in `docs/process-statics.md`; `Cmark` is the only one compared with stale records]** Other process statics that `ctx.layout` resets per layout (AD-4) may meet stale records on a
       no-free relayout, as decompose's `Cmark` did; only `Cmark` was audited (part 11 T8).
-  153. The port prints `digraph {` for an input named `digraph "" {` (`1896`); pre-existing (part 11 T3).
-  154. `-Tjson` prints only this render's draw strings (`drawStringsByObject`); C prints the stored
+  153. **[DONE — issue #139: writeHdr/isAnonymous read the anonymous flag; parser anon id and createGraph default fixed]** The port prints `digraph {` for an input named `digraph "" {` (`1896`); pre-existing (part 11 T3).
+  154. **[DONE — issue #140: no defect as written; json prints stored draw strings through emitAttrs's base and the xdot overlay; pinned by json-stored-draws.test.ts. Left open in #196 (needs-ruling): a labelled cluster's or root's `_ldraw_` that xdot_end_cluster/xdot_end_graph clear and the port keeps]** `-Tjson` prints only this render's draw strings (`drawStringsByObject`); C prints the stored
       `_draw_` of an object this render does not draw, as T7b made `-Tdot`/`-Txdot` do (part 11 T7b).
-  155. `nodeInBox` applies the svg pad 4 on xdot renders (`emit-gates.ts:49`); C's xdot pad is 0. No
+  155. **[DONE — issue #141: `init_job_pad` ported; each renderer states `defaultPad` (svg and map 4; dot, xdot, plain, json 0), `render` resolves `job.pad` from `pad=` or that, `deviceClip` uses `job.pad` and `nodeInBox` reads `job.clip`. A native case exists: corpus 2825 with `margin=1` on its clusters leaves node G 2 pt above the `0,0,0,0` bb, drawn in svg and cmapx and not in xdot or json (`plans/issue-141-nodeinbox-pad/harness`, `node-in-box-pad.test.ts`). Left open: #198 (plain's `graph` scale ignores `pad=`)]** `nodeInBox` applies the svg pad 4 on xdot renders (`emit-gates.ts:49`); C's xdot pad is 0. No
       case found needs it (part 11 T7b).
-  156. fdp root-mode render 3 of `subg-fdp.cluster_k` has a cluster `bb` x0 of 1.6e-11 where native has
+  156. **[DONE — issue #142: traced to Apple libm `atan2` against V8 at `lib/fdpgen/layout.c:568` (`getEdgeList`, port `src/layout/fdp/ports.ts`), with `sin`/`cos` at `tlayout.c:501-502`; one ulp in a cluster's port angle is amplified inside the cluster and reaches `pos - width/2`. With native's libm results injected the port's three renders equal native byte for byte, so the drift is accepted as the `sin`/`cos` class (`known-divergences.md:921`), wontfix per the ruling on #133; #209 (needs-ruling) asks whether fdp should model `atan2`. Fixed on the way: two fma contractions the oracle binary has and the port lacked, `dist2` (`layout.c:569`) and the reversed port fan (`layout.c:640`), pinned by native traces in `derive.branch.test.ts`. Left open: #210 (2242's cluster margin), #211 (1436's component sequence), #212 (`x_layout` on non-clustered inputs), #213 (`normalize`'s rotation)]** fdp root-mode render 3 of `subg-fdp.cluster_k` has a cluster `bb` x0 of 1.6e-11 where native has
       -3.3e-11: fdp force drift (A1 class), in `src/layout/fdp` (part 11 T7, T7b).
-  157. `docs/known-divergences.md`'s A1 intro says neato/fdp/sfdp are "not yet triaged per-id", which
+  157. **[DONE — issue #143: the clause names the ±0.5 tolerance as the difference, and the scope note's "no per-id triage yet" (`:91`) now reads "per-id attribution"; 23 locales re-translated and re-hashed, and given the pass-% clause on nondeterministic inputs that part 11 T11 added to the English only. Left open: #200 (fi's word for per-id, an sv typo)]** `docs/known-divergences.md`'s A1 intro says neato/fdp/sfdp are "not yet triaged per-id", which
       the paragraph after it contradicts; no figure is wrong (part 11 T11).
-  158. On osage `1221`, `1332` and `2721`, native's json `_draw_` for a cluster with an infinite `bb`
+  158. **[DONE — issue #144: the port's xdot `parseReal` took only decimal digits, so the frame `p 4 inf inf inf nan ...` failed to parse and json dropped it; it now scans what C's `strtod` accepts (`src/xdot/strtod.ts`), json prints a non-finite number as `%.03f` does (`inf`, `-inf`, `nan`), and `compare-json` reads those tokens and compares non-finite values exactly. The three osage json rows are conformant and their `[parse]/oracle` acceptances retired. Left open: #201 (`compare-xdot.ts` and `compare.ts` let a NaN delta pass), #202 (`parseString` skips only whitespace before the `-`)]** On osage `1221`, `1332` and `2721`, native's json `_draw_` for a cluster with an infinite `bb`
       holds a `p` op with `inf`/`nan` points; the port's json omits that op (the `bb` text equals
       native). Pre-existing at the T0 bundle (part 11 T12 bytediff).
-  159. Node, edge-endpoint and graph names print through `xdotId` (`src/render/dot/xdot-ops.ts:318`,
+  159. **[DONE — issue #167: `xdotId` delegates to `agstrcanon` as `write_nodename`/`write_hdr` → `write_canonstr` do, so names wrap at `Max_outputline`, keywords are quoted, non-ascii names are bare and html-like names print `<...>`; the root's html-like name is plain text as `agopen` makes it. Pinned by `name-canon.test.ts` against 14 native refs (`plans/issue-167-name-canon/harness`). Left open: #205 (attribute names printed raw), #206 (html-marked node and subgraph names outside dot/xdot), #207 (corpus `1472` node widths on labels with a 0x80-0x9F byte; needs-ruling)]** Node, edge-endpoint and graph names print through `xdotId` (`src/render/dot/xdot-ops.ts:318`,
       from `agwrite.ts:158,162,302,339-341`), not `_agstrcanon`, so a name over `Max_outputline` never
       wraps where C's `write_nodename`/`write_hdr` → `write_canonstr` does. With 145 (which the T12
       bytediff also shows on patchwork's echoed `rects` and edge `pos`), these are the 22 xdot diffs

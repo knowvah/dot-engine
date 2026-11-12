@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -92,7 +92,7 @@ farkları (A3, A8) kapatılmıştır ve aşağıda geçmiş olarak saklanır.
 > çalıştırır), aşağıda ayrı ayrı belgelenen iki farklı titizlik düzeyinde:
 > `circo`/`twopi`/`osage`, dot taramasıyla aynı **±0.01 belirlenimci**
 > toleransta ve kimlik başına kök neden triyajıyla çalışır (aşağıda “Motor hattı
-> kabulü”); `neato`/`fdp`/`sfdp` ise henüz kimlik başına triyaj olmaksızın daha
+> kabulü”); `neato`/`fdp`/`sfdp` ise kimlik başına nedene bağlamayla daha
 > gevşek bir **±0.5 nitelendirme** toleransında çalışır (aşağıda “Yinelemeli motor
 > nitelendirmesi”). Motorlar arası güncel sayılar:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
@@ -192,14 +192,16 @@ derleme 30 çalıştırmanın 22'sinde kâhinin yerleşimini, kalan 8'inde portu
 yerleşimini üretir, çünkü GTS kenarlarını ayırma adresine göre sıralar.
 
 **Yinelemeli motor nitelendirmesi: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Yukarıdaki `circo`/`twopi`/`osage` motor hatlarının aksine, `neato`/`fdp`/`sfdp`
-henüz kimlik başına triyaj edilmemiştir — `engine-walk.ts` bu üçü için
+±0.01 sınırına tabi olan yukarıdaki `circo`/`twopi`/`osage` motor hatlarının aksine,
+`neato`/`fdp`/`sfdp` ±0.5pt toleransla karşılaştırılır ve bunların ayrışan her kimliği,
+aşağıda anlatıldığı gibi, nedene bağlanmıştır — `engine-walk.ts` bu üçü için
 `tolerance: 0.5` alanı kaydeder ve `parity-report.ts` onları
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 içinde ayrı bir “Iterative engines (±0.5 characterization)” bölümünde işler;
 bu bölüm bu belgedeki başka yerlerde geçen ±0.01 belirlenimci geçme oranlarıyla
 açıkça **karşılaştırılamaz**. graphviz 16.1.0'a karşı güncel sayılar (929 öğelik evren; geçme yüzdesi, C
-kâhininin işleyemediği girdileri dışarıda bırakır, bkz. [Uygunluk](./conformance.md)):
+kâhininin işleyemediği girdileri ve yerel çıktısı çalıştırmadan çalıştırmaya değişen girdileri
+dışarıda bırakır, bkz. [Uygunluk](./conformance.md)):
 
 | motor | taranan | ±0.5pt içinde | uyumlu olmayan | port hatası / zaman aşımı | kâhin hatası | kâhin belirlenimsiz |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1182,6 +1184,23 @@ bildirir: bir port hatasını yalnızca bu mesajı taşıdığında kabul ederle
 
 **Neden kabul edildi.** `emit_background`, svg'nin dolgu durumu hâlâ ona işaret ederken `clrs[0]`'ı serbest bırakır (`lib/common/emit.c:1518`; `gvrender_resolve_color`, `color->u.string = name` değerini korur, `lib/gvc/gvrender.c:193`); bu yüzden yerel çıktı bir renk değil, serbest bırakılmış bellektir; ölçülen 8 çalıştırmanın 8'inde `fill=""` idi. Port, C'nin kastettiği rengi yazdırır. Korpustaki hiçbir girdi buna ulaşmaz; `src/gvc/emit-xdot.test.ts` bunu sabitler.
 
+### A14. Her kardeş küme çifti için bir yardımcı kenar (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Etkilenenler:** `dot` üzerinde `2475_1`, 5.711 kardeş kümeden oluşan bir graf. V8'in varsayılan yığınıyla (referans makinede 4.192 MB) portun çizimi `JavaScript heap out of memory` ile sonlanır; bu yüzden dot taraması yalnızca bu kimliğe daha büyük bir yığın verir (`test/corpus/survey.ts` içindeki `PORT_HEAP_MB`).
+
+**Ne olur.** `separate_subclust` (`lib/dotgen/position.c:454`), `rank` aralıkları örtüşen her kardeş küme çifti için x koordinatının kısıt grafına bir yardımcı kenar ekler ve bunların hepsi `remove_aux_edges` çağrısına kadar ayrılmış kalır. `2475_1` içinde her çift örtüşür: 16.304.905 kenar. Yerel 16.1.0 her biri için yaklaşık 423 B harcar ve 8,41 GB rezident bellekle tepe yapar. Port aynı kenarları aynı sırayla kurar (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Neden kabul edildi.** Büyüme C algoritmasının kendisine aittir, kardeş küme sayısına göre kareseldir ve yalnızca yerel sürümün tepe değeri bile V8'in varsayılan yığınının iki katıdır. Portun kendi payı giderildi: bir yardımcı kenar önceden 995 B tutuyordu, çünkü her biri ayrıca iki `Port` nesnesi ve boş bir öznitelik `Map`'i taşıyordu; şimdi 458 B tutuyor. Tabloda `cN`, `2475_1`'in ilk N kümesidir ve her hücre rezident bellek tepe değerini ve çalışma süresini verir.
+
+| Girdi | Küme çiftleri | Yerel 16.1.0 | Düzeltmeden önce port | Port |
+|---|---:|---|---|---|
+| c400 | 79.800 | 89 MB, 0,8 s | 539 MB, 6,0 s | 374 MB, 5,4 s |
+| c800 | 319.600 | 257 MB, 4,8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1.279.200 | 844 MB, 35 s | 2.424 MB, 131 s | 1.621 MB, 131 s |
+| `2475_1` | 16.304.905 | 8,41 GB, 1.412 s | `JavaScript heap out of memory` | 10,15 GB, 4.197 s, `conformant` |
+
+Kanıt: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Takip edilen uzun kuyruk (`dot` öznitelikleri ve uç durumlar) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1309,7 +1328,7 @@ Her madde, yerelin ne yaptığını ve taşımanın ne yaptığını belirtir.
 
 - **`xdot` ve `dot` çıktısında uzun dizgiler (kapandı).** Yerel sürüm, tırnaklı bir değeri 128 sütundan sonra, ya da kök grafın `linelength` değeri 0 veya en az 60 ise ondan sonra, sondaki ters eğik çizgiyle böler (`lib/cgraph/write.c:160-195,670-677`). Port artık `_draw_` ailesinin dizgilerini aynı şekilde bölüyor ve yerel sürümle bayt bayt aynı.
 - **Kümelere kenarı olan fdp `json` ve `json0` (kapandı).** Yerel sürüm, json yazmadan önce küme kenarı vekil düğümlerini geri alır (`lib/common/output.c:403`); port `__0:` vekil düğümlerini yazdırıyordu, artık önce geri alıyor. Yerel fdp, `2717` üzerinde her biçimde 139 ile çıkar, bu yüzden referansı yoktur.
-- **2-D `mode=sgd` (kabul edildi, A1).** macOS'ta yerleşim, libm `hypot` (`lib/neatogen/sgd.c:223`) ve `exp`'in (`sgd.c:216`) son bitinde yerel sürümden ayrılır; SGD bunu denenen grafta 1,59 noktaya kadar büyütür. macOS'un `hypot` ve `exp` değerleri yeniden oynatıldığında portun izi yerel olanla aynıdır, bu yüzden kod değişmedi (PR 119).
+- **2-D `mode=sgd` (kabul edildi, A1).** Port, `lib/neatogen/sgd.c:223` konumundaki macOS libm `hypot`'unu `src/common/libm-hypot.ts` ile modeller. Yerleşim, `exp`'in (`sgd.c:216`) son bitinde yerel sürümden hâlâ ayrılır; denenen grafta en fazla 0,01 nokta. Bir macOS `exp` modeli planlanmıyor (#133, PR 119).
 - **Kökünden önce işlenen alt graf, fdp ve osage (kapandı).** Yerel sürüm saklanan öznitelik değerlerini yazdırır (sonraki bir işleme, öncekinin `_draw_`, `_ldraw_` ve `xdotversion` değerlerini korur), `inf` ve `nan` değerlerini C'nin printf'i gibi yazdırır ve her kenarın spline kutusunu sayfa kırpmasına karşı sınar (`edge_in_box`, `lib/common/emit.c:2692`). Port artık üçünü de yapıyor ve fdp'nin kendi kayması dışında (bir küme sınırlayıcı kutusu değeri, 1.6e-11 ve -3.3e-11) yerel sürüme eşit. Yerel fdp'nin kendisi yığın adreslerine göre değişir (`lib/fdpgen/layout.c:466,501,637`), `graphs-fdp`'nin ilk işlemesi de dahil; bu yüzden karşılaştırma bu karşılaştırmaları çıkarılmış yerel sürümü kullanır. Yan etki olarak `1581` svg olarak, etiketli kendi kendine döngüler için yerel sürümdeki gibi iki boş `<g id="edgeN">` grubu kazanır.
 
 ---

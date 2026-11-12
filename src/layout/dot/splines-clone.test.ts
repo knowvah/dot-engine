@@ -18,6 +18,7 @@
 import { describe, it, expect } from 'vitest';
 import { Graph } from '../../model/graph.js';
 import { Node } from '../../model/node.js';
+import { agsubg } from '../../model/cgraph-ops.js';
 import { cloneNode } from './splines-clone.js';
 import { nodesInSeq } from './decomp.js';
 
@@ -63,5 +64,32 @@ describe('cloneNode — fresh AGSEQ, not orign.id carried across graphs', () => 
     expect(clone.attrs.get('label')).toBe('foo');
     expect(clone.nodeDefaultsSnapshot?.get('fontsize')).toBe('8');
     expect(auxg.nodes.get('n')).toBe(clone);
+  });
+});
+
+describe('cloneNode into a subgraph (C agnode(subg, name, 1))', () => {
+  it('makes the clone a member of the subgraph and of its root', () => {
+    const root = new Graph('root', 'directed');
+    const orign = new Node(0, 'n', root);
+    const auxg = new Graph('auxg', 'directed');
+    const subg = agsubg(auxg, 'xxx', true)!;
+
+    const clone = cloneNode(subg, orign);
+
+    expect(clone.root).toBe(auxg);
+    expect(subg.nodes.get('n')).toBe(clone);
+    expect(auxg.nodes.get('n')).toBe(clone);
+  });
+
+  it('leaves a clone made in the root out of the subgraph', () => {
+    const root = new Graph('root', 'directed');
+    const orign = new Node(0, 'n', root);
+    const auxg = new Graph('auxg', 'directed');
+    const subg = agsubg(auxg, 'xxx', true)!;
+
+    const clone = cloneNode(auxg, orign);
+
+    expect(auxg.nodes.get('n')).toBe(clone);
+    expect([...subg.nodes.keys()]).toEqual([]);
   });
 });

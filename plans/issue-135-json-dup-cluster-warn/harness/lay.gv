@@ -1,0 +1,1 @@
+digraph G { layers="a:b"; subgraph cluster_a { subgraph cluster_x { a [layer=a] } } subgraph cluster_b { subgraph cluster_x { b [layer=b] } } a -> b }

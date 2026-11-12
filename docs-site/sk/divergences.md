@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -91,7 +91,7 @@ desatinnej čiarky pri vedení splinov v `dot` (A3, A8) sú uzavreté a ponechan
 > zdokumentovaných samostatne nižšie: `circo`/`twopi`/`osage` bežia s rovnakou
 > **deterministickou toleranciou ±0.01** ako prieskum dot s triážou koreňovej príčiny po jednotlivých id
 > („Akceptácia na úrovni stopy modulu“ nižšie); `neato`/`fdp`/`sfdp` bežia s
-> voľnejšou **charakterizačnou toleranciou ±0.5** zatiaľ bez triáže po jednotlivých id
+> voľnejšou **charakterizačnou toleranciou ±0.5** s priradením po jednotlivých id
 > („Charakterizácia iteratívnych modulov“ nižšie). Aktuálne čísla naprieč modulmi:
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md).
 
@@ -188,14 +188,16 @@ rozloženie orákula v 22 z 30 behov a rozloženie portu vo zvyšných 8, preto�
 radí svoje hrany podľa adries alokácie.
 
 **Charakterizácia iteratívnych modulov: neato/fdp/sfdp.** <a id="a1-iterative-characterization"></a>
-Na rozdiel od stôp modulov `circo`/`twopi`/`osage` vyššie, `neato`/`fdp`/`sfdp`
-zatiaľ **nie sú** triedené po jednotlivých id — `engine-walk.ts` zaznamenáva pre tieto tri pole
+Na rozdiel od stôp modulov `circo`/`twopi`/`osage` vyššie, pre ktoré platí tolerancia ±0.01,
+sa `neato`/`fdp`/`sfdp` porovnávajú s toleranciou ±0.5pt a každé ich odchýlené id je priradené,
+ako je opísané nižšie — `engine-walk.ts` zaznamenáva pre tieto tri pole
 `tolerance: 0.5` a `parity-report.ts` ich vykresľuje v samostatnej
 sekcii „Iterative engines (±0.5 characterization)“ súboru
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 výslovne **nie je porovnateľná** s deterministickou mierou úspešnosti ±0.01 inde
 v tomto dokumente. Aktuálne počty voči graphviz 16.1.0 (univerzum 929 položiek; percento úspešnosti vynecháva
-vstupy, ktoré orákulum v C nedokáže vykresliť, podľa [Zhody](./conformance.md)):
+vstupy, ktoré orákulum v C nedokáže vykresliť, a vstupy, pri ktorých sa natívny výstup medzi behmi
+mení, podľa [Zhody](./conformance.md)):
 
 | modul | preskúmané | v rámci ±0.5pt | nezhodné | chyba portu / timeout | chyba orákula | orákulum nedeterministické |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1197,6 +1199,23 @@ a `registry-staleness.test.ts` by záznam označil za zastaraný. Dôkaz:
 
 **Prečo akceptované.** `emit_background` uvoľní `clrs[0]` (`lib/common/emit.c:1518`), zatiaľ čo stav výplne svg naň stále ukazuje (`gvrender_resolve_color` ponecháva `color->u.string = name`, `lib/gvc/gvrender.c:193`), takže natívny výstup je uvoľnená pamäť, nie farba; vo všetkých 8 z 8 nameraných behov to bolo `fill=""`. Port vypíše farbu, ktorú mal C na mysli. Žiadny vstup korpusu sem nedospeje; zafixuje to `src/gvc/emit-xdot.test.ts`.
 
+### A14. Jedna pomocná hrana na každú dvojicu súrodeneckých klastrov (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**Dotknuté:** `2475_1` v module `dot`, graf s 5 711 súrodeneckými klastrami. Pri predvolenej halde V8 (4 192 MB na referenčnom stroji) sa vykreslenie portu skončí chybou `JavaScript heap out of memory`, preto prieskum dot dáva tomuto jedinému id väčšiu haldu (`PORT_HEAP_MB` v `test/corpus/survey.ts`).
+
+**Čo sa deje.** `separate_subclust` (`lib/dotgen/position.c:454`) pridá do grafu obmedzení pre súradnicu x jednu pomocnú hranu za každú dvojicu súrodeneckých klastrov, ktorých rozsahy `rank` sa prekrývajú, a všetky zostávajú alokované až do `remove_aux_edges`. V `2475_1` sa prekrýva každá dvojica: 16 304 905 hrán. Natívny build 16.1.0 minie na každú asi 423 B a v špičke má 8.41 GB rezidentnej pamäte. Port stavia tie isté hrany v rovnakom poradí (`separateSubclust`, `src/layout/dot/position-cluster.ts`).
+
+**Prečo akceptované.** Rast je vlastný algoritmu v C, kvadratický v počte súrodeneckých klastrov, a už samotná špička natívneho buildu je dvojnásobkom predvolenej haldy V8. Vlastný podiel portu je preč: pomocná hrana predtým stála 995 B, pretože každá niesla navyše dva objekty `Port` a prázdnu `Map` atribútov; teraz stojí 458 B. V tabuľke je `cN` prvých N klastrov z `2475_1` a každá bunka udáva špičku rezidentnej pamäte a čas behu.
+
+| Vstup | Dvojice klastrov | Natívny build 16.1.0 | Port pred opravou | Port |
+|---|---:|---|---|---|
+| c400 | 79 800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319 600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1 279 200 | 844 MB, 35 s | 2 424 MB, 131 s | 1 621 MB, 131 s |
+| `2475_1` | 16 304 905 | 8.41 GB, 1 412 s | `JavaScript heap out of memory` | 10.15 GB, 4 197 s, `conformant` |
+
+Dôkaz: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
+
 ---
 
 ## Sledovaný dlhý chvost (atribúty a hraničné prípady v `dot`) {#tracked-long-tail-dot-attribute-edge-case}
@@ -1324,7 +1343,7 @@ Každá položka hovorí, čo robí natív a čo robí port.
 
 - **Dlhé reťazce vo výstupe `xdot` a `dot` (uzavreté).** Natív zalomí hodnotu v úvodzovkách koncovým spätným lomítkom po 128 stĺpcoch alebo po `linelength` koreňového grafu, ak je 0 alebo aspoň 60 (`lib/cgraph/write.c:160-195,670-677`). Port teraz reťazce rodiny `_draw_` zalamuje rovnako, bajt po bajte zhodne s natívom.
 - **fdp `json` a `json0` s hranami ku clusterom (uzavreté).** Natív pred zápisom json vráti proxy hrán clustera späť (`lib/common/output.c:403`); port tlačil proxy `__0:` a teraz ich najprv vracia. Natívny fdp na `2717` končí kódom 139 v každom formáte, takže nemá referenciu.
-- **2-D `mode=sgd` (akceptované, A1).** Na macOS sa rozloženie líši od natívu v poslednom bite libm `hypot` (`lib/neatogen/sgd.c:223`) a `exp` (`sgd.c:216`), čo SGD zosilní až na 1,59 bodu na testovanom grafe. S prehranými `hypot` a `exp` z macOS je stopa portu rovnaká ako natívna, takže sa kód nezmenil (PR 119).
+- **2-D `mode=sgd` (akceptované, A1).** Port modeluje `hypot` z libm na macOS v `lib/neatogen/sgd.c:223` pomocou `src/common/libm-hypot.ts`. Rozloženie sa od natívu stále líši v poslednom bite `exp` (`sgd.c:216`), najviac o 0,01 bodu na testovanom grafe. Model `exp` pre macOS sa neplánuje (#133, PR 119).
 - **Podgraf vykreslený pred koreňom, pri fdp a osage (uzavreté).** Natív tlačí uložené hodnoty atribútov (neskoršie vykreslenie si ponechá `_draw_`, `_ldraw_` a `xdotversion` skoršieho), tlačí `inf` a `nan` ako printf v C a testuje box splinu každej hrany voči orezaniu strany (`edge_in_box`, `lib/common/emit.c:2692`). Port teraz robí všetky tri veci a rovná sa natívu, okrem jednej hodnoty ohraničujúceho boxu clustera pri vlastnom drifte fdp (1.6e-11 oproti -3.3e-11). Natívny fdp sám kolíše podľa adries haldy (`lib/fdpgen/layout.c:466,501,637`), vrátane prvého vykreslenia `graphs-fdp`, takže porovnanie používa natív bez týchto porovnaní. Vedľajším účinkom je, že `1581` ako svg získa dve prázdne skupiny `<g id="edgeN">` pre popísané slučky, ako ich má natív.
 
 ---

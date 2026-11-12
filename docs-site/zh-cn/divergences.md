@@ -1,5 +1,5 @@
 ---
-sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
+sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -48,7 +48,7 @@ sourceHash: a6a72b0ac1b2c20b3ac4b073770e2a57ff03fad63e8f2a6afd9e9e94c15f714b
 > **dot 引擎的主 SVG 调查**（`test/corpus/survey.ts`）仍然**仅限 dot**：原生参照程序在 `GVBINDIR=/tmp/ghl` 下运行，该目录**只**符号链接了 `core` + `dot_layout` 插件（`test/corpus/gen-headless-gvbindir.sh` 恰好只遍历 `core dot_layout`——不存在 `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` 布局插件），并且参照程序和移植版调用的都是 `dot` 引擎。因此，像 `*_neato` / `*_circo` / `root_twopi` 这样的语料库 id 在该调查中只是用 `dot` 布局的*文件名*，而不是它们各自的原生引擎，A1 在那里匹配**零个**图——并不是因为这些引擎被证明一致，而是因为该调查根本没有运行过它们。
 >
 > **但是，现在全部六个 A1 引擎都有各自的原生引擎调查**，通过
-> `test/corpus/engine-walk.ts` + `parity-report.ts`（不依赖 `GVBINDIR`——每个都直接启动 `dot -K <engine> -Txdot`），分为两种不同的严格程度，下文分别说明：`circo`/`twopi`/`osage` 以与 dot 调查相同的 **±0.01 确定性**容差运行，并对每个 id 做根因分诊（下文“引擎轨道接受”）；`neato`/`fdp`/`sfdp` 以更宽松的 **±0.5 特征描述**容差运行，尚未逐 id 分诊（下文“迭代式引擎特征描述”）。当前的跨引擎数据：
+> `test/corpus/engine-walk.ts` + `parity-report.ts`（不依赖 `GVBINDIR`——每个都直接启动 `dot -K <engine> -Txdot`），分为两种不同的严格程度，下文分别说明：`circo`/`twopi`/`osage` 以与 dot 调查相同的 **±0.01 确定性**容差运行，并对每个 id 做根因分诊（下文“引擎轨道接受”）；`neato`/`fdp`/`sfdp` 以更宽松的 **±0.5 特征描述**容差运行，并逐 id 归因（下文“迭代式引擎特征描述”）。当前的跨引擎数据：
 > [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)。
 
 **特征描述。** 这些引擎运行迭代式数值布局，其结果取决于浮点舍入——具体来说是融合乘加（FMA）和 `Math.pow`，它们在不同的 JavaScript 引擎和 CPU 架构上可能不同。移植版在可能的地方与 C 的运算顺序保持一致（`src/common/fma.ts`、`src/common/arm-pow.ts`）——例如 `sfdp` 在使用匹配的伪随机数发生器和 `fma` 时，与原生参照程序可对齐到约 6 位有效数字——但精确、坐标完全相同的复现**无法保证跨平台**。拓扑得以保持；潜在的差异出现在精细的节点坐标上。
@@ -75,8 +75,8 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 同一个星形图在 `circo` 轨道上也有偏差（2026-10-16 接受，599 处绘制操作差异，最大 0.71pt）。移植版复现了 clang 在 `circpos.c` 中的 FMA 收缩和求值顺序，因此进入 PRISM 的 32 个位置中有 31 个逐位精确。最后一个相差 1 ULP，因为 V8 与 Apple libm 在 `positionChildren` 的三个子块角度上对 `cos`/`sin` 的舍入不同。随后 PRISM 的 Delaunay 三角剖分在镜像轴上翻转了一条近乎共圆的对角线。注入 A/B：给定原生的 `cos`/`sin` 值时，移植版与参照程序一致。给定 V8 的值时，原生构建在 30 次运行中有 22 次产生参照程序的布局，其余 8 次产生移植版的布局，因为 GTS 按分配地址排列其边。
 
 **迭代式引擎特征描述：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
-与上面的 `circo`/`twopi`/`osage` 引擎轨道不同，`neato`/`fdp`/`sfdp` 尚**未**逐 id 分诊——`engine-walk.ts` 为这三个引擎记录了 `tolerance: 0.5` 字段，`parity-report.ts` 将它们渲染在
-[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 中单独的“Iterative engines (±0.5 characterization)”一节里，明确**不能**与本文档其他位置的 ±0.01 确定性通过率相比较。针对 graphviz 16.1.0 的当前计数（929 项全集；通过率不计入 C 参照程序无法渲染的输入，依据[一致性](./conformance.md)）：
+与上面以 ±0.01 为标准的 `circo`/`twopi`/`osage` 引擎轨道不同，`neato`/`fdp`/`sfdp` 按 ±0.5pt 比较，其每个存在差异的 id 均已归因（见下文）——`engine-walk.ts` 为这三个引擎记录了 `tolerance: 0.5` 字段，`parity-report.ts` 将它们渲染在
+[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 中单独的“Iterative engines (±0.5 characterization)”一节里，明确**不能**与本文档其他位置的 ±0.01 确定性通过率相比较。针对 graphviz 16.1.0 的当前计数（929 项全集；通过率不计入 C 参照程序无法渲染的输入以及原生输出每次运行都会变化的输入，依据[一致性](./conformance.md)）：
 
 | 引擎 | 已调查 | ±0.5pt 以内 | 不一致 | 移植版错误 / 超时 | 参照程序错误 | 参照程序非确定 |
 |---|---:|---:|---:|---:|---:|---:|
@@ -464,6 +464,23 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 
 **为何接受。** `emit_background` 释放了 `clrs[0]`（`lib/common/emit.c:1518`），而 svg 的填充状态仍指向它（`gvrender_resolve_color` 保留 `color->u.string = name`，`lib/gvc/gvrender.c:193`），所以原生输出是已释放的内存，而不是颜色；在测得的 8 次运行中 8 次都是 `fill=""`。移植版输出 C 本意要输出的颜色。语料库中没有输入会走到这里；`src/gvc/emit-xdot.test.ts` 固定了该行为。
 
+### A14. 每对兄弟簇一条辅助边（`2475_1`，dot） {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
+
+**受影响：** `dot` 上的 `2475_1`，一个包含 5,711 个兄弟簇的图。在 V8 的默认堆（参考主机上为 4,192 MB）下，移植版的渲染以 `JavaScript heap out of memory` 结束，因此 dot 调查只为这一个 id 提供更大的堆（`test/corpus/survey.ts` 中的 `PORT_HEAP_MB`）。
+
+**发生了什么。** `separate_subclust`（`lib/dotgen/position.c:454`）为每一对 `rank` 范围重叠的兄弟簇向 x 坐标约束图添加一条辅助边，并且它们全部保持已分配状态，直到 `remove_aux_edges`。在 `2475_1` 中每一对都重叠：共 16,304,905 条边。原生 16.1.0 每条边约用 423 B，常驻内存峰值为 8.41 GB。移植版以相同的顺序构建相同的边（`separateSubclust`，`src/layout/dot/position-cluster.ts`）。
+
+**为何接受。** 这种增长是 C 算法本身的，与兄弟簇数量的平方成正比，而仅原生程序的峰值就是 V8 默认堆的两倍。移植版自身的那一部分已经消除：一条辅助边原先要 995 B，因为每条边还带有两个 `Port` 对象和一个空的属性 `Map`；现在是 458 B。表中 `cN` 是 `2475_1` 的前 N 个簇，每个单元格给出常驻内存峰值和运行时间。
+
+| 输入 | 簇对 | 原生 16.1.0 | 修复前的移植版 | 移植版 |
+|---|---:|---|---|---|
+| c400 | 79,800 | 89 MB, 0.8 s | 539 MB, 6.0 s | 374 MB, 5.4 s |
+| c800 | 319,600 | 257 MB, 4.8 s | 812 MB, 27 s | 665 MB, 26 s |
+| c1600 | 1,279,200 | 844 MB, 35 s | 2,424 MB, 131 s | 1,621 MB, 131 s |
+| `2475_1` | 16,304,905 | 8.41 GB, 1,412 s | `JavaScript heap out of memory` | 10.15 GB, 4,197 s, `conformant` |
+
+证据：[issue #145](https://github.com/knowvah/dot-engine/issues/145)。
+
 ---
 
 ## 已跟踪的长尾（`dot` 属性与边界情形） {#tracked-long-tail-dot-attribute-edge-case}
@@ -535,7 +552,7 @@ neato 和 sfdp 在每种模式下都按 `dim` 个维度布局，上限为 C 的 
 
 - **`xdot` 与 `dot` 输出中的长字符串（已关闭）。** 原生在 128 列后，或在根图的 `linelength` 为 0 或不小于 60 时在该列后，用行尾反斜杠折行带引号的值（`lib/cgraph/write.c:160-195,670-677`）。移植版现在以同样方式折行 `_draw_` 系列字符串，与原生逐字节一致。
 - **带有指向 cluster 的边的 fdp `json` 和 `json0`（已关闭）。** 原生在写出 json 前撤销 cluster 边代理（`lib/common/output.c:403`）；移植版曾输出 `__0:` 代理，现在先将其撤销。原生 fdp 在 `2717` 上于所有格式下都以 139 退出，因此没有参照。
-- **二维 `mode=sgd`（已接受，A1）。** 在 macOS 上，布局与原生的差异出自 libm `hypot`（`lib/neatogen/sgd.c:223`）和 `exp`（`sgd.c:216`）的最后一位，SGD 将其在所测图上放大至最多 1.59 点。重放 macOS 的 `hypot` 和 `exp` 后，移植版的轨迹与原生一致，因此未改动代码（PR 119）。
+- **二维 `mode=sgd`（已接受，A1）。** 移植版用 `src/common/libm-hypot.ts` 对 `lib/neatogen/sgd.c:223` 处的 macOS libm `hypot` 建模。布局与原生的差异仍出自 `exp`（`sgd.c:216`）的最后一位，在所测图上至多 0.01 点。不计划为 macOS 的 `exp` 建模（#133，PR 119）。
 - **先于根图渲染的子图，fdp 和 osage（已关闭）。** 原生输出已存储的属性值（后一次渲染会保留先前渲染的 `_draw_`、`_ldraw_` 和 `xdotversion`），按 C 的 printf 输出 `inf` 和 `nan`，并将每条边的样条框与页面裁剪区域比对（`edge_in_box`，`lib/common/emit.c:2692`）。移植版现在三者都做到了，并与原生一致，仅有一个 cluster 边界框数值处于 fdp 自身的漂移中（1.6e-11 对 -3.3e-11）。原生 fdp 自身也会随堆地址变化（`lib/fdpgen/layout.c:466,501,637`），包括 `graphs-fdp` 的首次渲染，因此比较使用去掉这些比较的原生版本。附带效果是，`1581` 的 svg 为带标签的自环增加了两个空的 `<g id="edgeN">` 分组，与原生相同。
 
 ---

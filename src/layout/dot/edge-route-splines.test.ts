@@ -299,7 +299,7 @@ describe('T1 (DOT-1b): faithful adjacent back edge via makefwdedge (dot oracle)'
     const g = layoutToPosition('digraph{a->b; b->a}');
     const ba = findEdge(g, 'b', 'a');
     expect(ba).toBeDefined();
-    routeOneEdge(ba!, g);
+    routeOneEdge(ba!, g, [ba!]);
     const pts = splineSvgPts(ba!);
     // Same geometry as dot's rankdir=BT a->b, in the internal (x=0) frame.
     expect(pts.length).toBe(DOT_BT_CHAIN_AB_INTERNAL.length);
@@ -315,7 +315,7 @@ describe('T1 (DOT-1b): faithful adjacent back edge via makefwdedge (dot oracle)'
     const g = layoutToPosition('digraph{a->b; b->a}');
     const ab = findEdge(g, 'a', 'b');
     expect(ab).toBeDefined();
-    routeOneEdge(ab!, g);
+    routeOneEdge(ab!, g, [ab!]);
     // Lone `digraph{a->b}` dot 15.x final: M27,-71.7 C27,-64.41 27,-55.73 27,-47.54.
     // maxphase=3 routes in the internal (pre-translate, un-normalized) frame, so
     // the lone column is at x=0 (not the post-translate x=27); y is unchanged.

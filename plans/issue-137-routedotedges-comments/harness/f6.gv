@@ -1,0 +1,1 @@
+digraph { rankdir=BT; {rank=same; x; y} x:n -> y:n [label="up\nlabel", fontsize=20]; y:s -> x:s [xlabel="xl"]; }
