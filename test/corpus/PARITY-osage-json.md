@@ -11,14 +11,16 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 929
-- **Oracle:** dot 16.1.0
-- **pass:** 922 (99.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 7
+- **Surveyed:** 899
+- **Oracle:** dot 16.1.1
+- **pass:** 891 (99.1%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 7
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 0
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`1581`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1581.dot) | 695 | 3 | `cluster:cluster_inner/_draw_[missing]` |
 
 ## Accepted (7) — documented, not chased
 
@@ -36,5 +38,5 @@ _(none)_
 
 _(none)_
 
-_Passing ids (922) are omitted for brevity — the full roster is in
+_Passing ids (891) are omitted for brevity — the full roster is in
 `json-parity-osage.json`._

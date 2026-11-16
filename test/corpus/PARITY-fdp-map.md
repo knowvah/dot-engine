@@ -11,38 +11,38 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 928
-- **Oracle:** dot 16.1.0
-- **pass:** 915 (99.1%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 5
-- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 5
+- **Surveyed:** 898
+- **Oracle:** dot 16.1.1
+- **pass:** 885 (99.2%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 4
+- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 6
 
 ## Diverged (2)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 782464 | 5838 | `area[0].coords[0]` |
-| [`windows-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b29.gv) | 149114 | 4 | `area[44].coords[0]` |
+| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 782464 | 5837 | `imap/line[1].coords[0]` |
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 721934 | 5044 | `area[0].coords[0]` |
 
-## Accepted (5) — documented, not chased
+## Accepted (4) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
-| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 5044 | `area[0].coords[0]` |  |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | 0 | `` | A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md. |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | 201 | `area[16].coords[2]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
 | [`linux.x86-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_circo.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`nshare-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_circo.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 
-## Errors and timeouts (6)
+## Errors and timeouts (7)
 
 | id | message |
 |---|---|
+| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
-| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | Warning: Warning: no hard-coded metrics for 'sans'.  Falling back to 'Times' metrics |
-| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | Warning: Two clusters named %9 - the second will be ignored |
+| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | Warning: Warning: no hard-coded metrics for 'Times-Bold'.  Falling back to 'Times' metrics |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle exit null |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle exit null |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (915) are omitted for brevity — the full roster is in
+_Passing ids (885) are omitted for brevity — the full roster is in
 `map-parity-fdp.json`._

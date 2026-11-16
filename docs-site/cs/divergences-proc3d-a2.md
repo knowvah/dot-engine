@@ -1,5 +1,5 @@
 ---
-sourceHash: 133104b64763457635328188088e909f4552d8353f4a7468655c540706263625
+sourceHash: 108900a6526f9e995c80f6640cba948df61fe8bc937f8c32e4df82dd8d902cd1
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -86,7 +86,7 @@ stránky. Překryvné obrázky výše jsou zachovány jako snímek mechanismu, n
 
 ## Reprodukce {#reproduce}
 
-Nativní orákulum běží pod headless `GVBINDIR` (`/tmp/ghl`, z
+Nativní orákulum běží pod headless `GVBINDIR` (`/tmp/ghl1611`, z
 `test/corpus/gen-headless-gvbindir.sh`), takže obě strany používají stejný měřič
 `estimate_textspan_size` — viz
 [§A2 „Isolating the algorithm from the font backend“](/cs/divergences#a2-text-measurement-font-metrics-label-driven-layout).
@@ -97,8 +97,8 @@ GV_TEXT_MEASURER=estimate \
   npx tsx test/corpus/render-one.ts ~/git/graphviz/tests/graphs/proc3d.gv dot
 
 # native C oracle (headless, estimate measurer)
-GVBINDIR=/tmp/ghl \
-  ~/git/graphviz/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
+GVBINDIR=/tmp/ghl1611 \
+  ~/git/graphviz-16.1.1/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
 ```
 
 Dnešní spuštění vytváří shodná SVG (0 rozdílů při toleranci `deterministic`

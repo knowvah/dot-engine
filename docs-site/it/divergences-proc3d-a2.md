@@ -1,5 +1,5 @@
 ---
-sourceHash: 133104b64763457635328188088e909f4552d8353f4a7468655c540706263625
+sourceHash: 108900a6526f9e995c80f6640cba948df61fe8bc937f8c32e4df82dd8d902cd1
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -89,7 +89,7 @@ confronto dal vivo.
 
 ## Riprodurre {#reproduce}
 
-L'oracolo nativo gira con il `GVBINDIR` headless (`/tmp/ghl`, da
+L'oracolo nativo gira con il `GVBINDIR` headless (`/tmp/ghl1611`, da
 `test/corpus/gen-headless-gvbindir.sh`) così entrambi i lati usano lo stesso
 misuratore `estimate_textspan_size` — vedi
 [§A2 «Isolating the algorithm from the font backend»](/it/divergences#a2-text-measurement-font-metrics-label-driven-layout).
@@ -100,8 +100,8 @@ GV_TEXT_MEASURER=estimate \
   npx tsx test/corpus/render-one.ts ~/git/graphviz/tests/graphs/proc3d.gv dot
 
 # native C oracle (headless, estimate measurer)
-GVBINDIR=/tmp/ghl \
-  ~/git/graphviz/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
+GVBINDIR=/tmp/ghl1611 \
+  ~/git/graphviz-16.1.1/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
 ```
 
 Eseguire questo comando oggi produce SVG coincidenti (0 differenze alla tolleranza

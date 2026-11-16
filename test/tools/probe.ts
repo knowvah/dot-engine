@@ -6,21 +6,21 @@
 // captured). Each case runs in its own process. PROBE_VERBOSE=1 prints both sides on DIFF.
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
-import os from 'node:os';
 import { pathToFileURL } from 'node:url';
 import { compareProbe, formatVerdict } from './lib/probe-compare.js';
 import { normalizeStderrLines } from './lib/stderr.js';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR, ORACLE_GVBINDIR_ALL } from '../corpus/oracle-paths.mjs';
 import { extractNodeShapes, extractTextSpans } from './lib/svg-extract.js';
 
 interface Bundle {
   renderSvg(src: string, engine: string): string;
 }
 
-const ORACLE = `${os.homedir()}/git/graphviz/build/cmd/dot/dot`;
-// GV_PLUGINS_DOT: dot-only plugin dir (default /tmp/ghl); GV_PLUGINS_ALL: full plugin dir (required
-// for non-dot engines).
-const DOTDIR = process.env.GV_PLUGINS_DOT ?? '/tmp/ghl';
-const FULL = process.env.GV_PLUGINS_ALL;
+const ORACLE = ORACLE_DOT_BIN;
+// GV_PLUGINS_DOT: dot-only plugin dir (default /tmp/ghl1611); GV_PLUGINS_ALL: full plugin
+// dir for non-dot engines (default /tmp/ghl1611-all).
+const DOTDIR = process.env.GV_PLUGINS_DOT ?? ORACLE_GVBINDIR;
+const FULL = process.env.GV_PLUGINS_ALL ?? ORACLE_GVBINDIR_ALL;
 const MAX_BUFFER = 1 << 28;
 const [bundle = '', engine = '', ...cases] = process.argv.slice(2);
 
@@ -83,7 +83,6 @@ function verbose(ns: string, ps: string, nerr: string, pe: string, v: ReturnType
 async function runCases(): Promise<void> {
   const DE = (await import(pathToFileURL(bundle).href)) as Bundle;
   const GVBINDIR = engine === 'dot' ? DOTDIR : FULL;
-  if (!GVBINDIR) throw new Error('set GV_PLUGINS_ALL to the full 16.1 plugin dir for non-dot engines');
   let diffs = 0;
   for (const c of cases) {
     const src = fs.existsSync(c) ? decode(fs.readFileSync(c)) : c;

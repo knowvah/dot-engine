@@ -11,25 +11,25 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 
 ## Summary
 
-- **Oracle:** dot 16.1.0 · **corpus:** [graphviz `tests/`](https://gitlab.com/graphviz/graphviz/-/tree/main/tests) (local clone `~/git/graphviz/tests`)
+- **Oracle:** dot 16.1.1 · **corpus:** [graphviz `tests/`](https://gitlab.com/graphviz/graphviz/-/tree/main/tests) (local clone `~/git/graphviz/tests`)
 - **Surveyed (applicable):** 950
-- **conformant\*:** 930 (99.4%) · structural-match: 3 → 933/936 structurally equal (99.7%)
-- **Accepted deltas (documented, won't-fix):** 5 · **Tracked gaps (unaccepted, will-fix):** 0 → of 5 non-conformant graphs
-- **errored:** 1 · **timeout:** 0 · **oracle-error:** 14 (excluded from pass %)
+- **conformant\*:** 899 (95.6%) · structural-match: 14 → 913/940 structurally equal (97.1%)
+- **Accepted deltas (documented, won't-fix):** 4 · **Tracked gaps (unaccepted, will-fix):** 35 → of 39 non-conformant graphs
+- **errored:** 2 · **timeout:** 0 · **oracle-error:** 10 (excluded from pass %)
 - **Quarantined (not surveyed, from corpus-manifest.json):** oracle-crash 3, not-a-layout-test 2, malformed 6, engine-deferred 6, multi-graph 3, perf 1
 
 \* **conformant** is a *deterministic-tolerance* verdict, not literal byte equality: numeric coordinates/paths agree within ±0.01 and all non-numeric content (tags, colors, text) is exactly equal (`compareSvg(…, 'deterministic')`). Full definition: [docs/conformance.md](../../docs/conformance.md).
 
 Accepted deltas are deliberate, root-caused, won't-fix differences (`test/corpus/accepted-divergences.json` → [Known divergences](../../docs/known-divergences.md)). Everything else non-conformant is a tracked gap we intend to close.
 
-## conformant (930)
+## conformant (899)
 
 Port SVG is *conformant* with the oracle: numeric coordinates/paths agree within the `deterministic` tolerance (±0.01) and all non-numeric content is exactly equal — not literal byte equality. See [docs/conformance.md](../../docs/conformance.md).
 
-_Conformant ids (930) are omitted for brevity — the full roster is in
+_Conformant ids (899) are omitted for brevity — the full roster is in
 [parity.json](parity.json)._
 
-## Accepted deltas (5) — documented, not chased
+## Accepted deltas (4) — documented, not chased
 
 Deliberate, root-caused differences we have chosen not to make conformant (a
 portability constraint, sub-perceptual and bounded). Source of truth:
@@ -40,12 +40,11 @@ the diverged table and the backlog below.
 | id | verdict | maxΔ | class | bound | ref |
 |---|---|---:|---|---|---|
 | [`1435`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1435.dot) | structural-match | 0.39 | A4 | maxΔ 503 on pathplan-fallback spline debris; 11/11 edges on both sides; nodes/clusters conformant | known-divergences.md#a4-oracle-in-an-acknowledged-broken-state-the-init_rank--pathplan-family |
-| [`1581`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1581.dot) | diverged | 0.00 | A4 | maxDelta 465; top-level childCount 39 vs 22 (oracle recovery discards content) | known-divergences.md#a4-oracle-in-an-acknowledged-broken-state-the-init_rank--pathplan-family |
 | [`1367`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1367.dot) | diverged | 0.00 | A5 | maxDelta 0; exactly one structural diff (one &lt;title&gt; byte: raw 0x80 vs UTF-8 U+0080); all element counts and coordinates conformant | known-divergences.md#a5-invalid-input-bytes-encoding-representation |
 | [`graphs-honda-tokoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/honda-tokoro.gv) | structural-match | 1.06 | A7 | maxΔ ~1pt on one edge (n012-&gt;n011); every node/label/bbox conformant | known-divergences.md#a7-round-box-wall-rounding-boundary-dot |
 | [`tree-graphs-directed-honda-tokoro`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/honda-tokoro.gv) | structural-match | 1.06 | A7 | maxΔ 1.06pt on the n012-&gt;n011 parallel pair; every node/label/bbox conformant | known-divergences.md#a7-round-box-wall-rounding-boundary-dot |
 
-## Tracked structural-match (0)
+## Tracked structural-match (11)
 
 Same element tree; only numeric coordinate diffs above tolerance (no missing
 or extra elements). Near-misses — sub-pixel-to-modest position drift — that we
@@ -56,27 +55,70 @@ diff (`maxDeltaPath`) crossed with a magnitude band — an equivalence-class map
 for driving groups to conformance. Mechanism-family attribution: see
 [analysis](../../plans/structural-match-buckets/analysis/README.md).
 
+### tracked structural-match — by worst-diff signature
+
+| bucket | count | examples | hypothesis |
+|---|---:|---|---|
+| `node-ellipse · Δ10-100` | 7 | `tree-graphs-directed-longflat`, `1444-2`, `1444` | node x-coord placement drift (NS / LR_balance) |
+| `text-position · Δ100-1000` | 3 | `graphs-html2`, `linux.x86-html2_dot`, `nshare-html2_dot` | label placement — text x/y or group transform |
+| `polygon-points · Δ100-1000` | 1 | `2592` | polygon geometry — node-shape, cluster box, or arrowhead vertices |
 
 | id | maxΔ | kind | worst-diff path |
 |---|---:|---|---|
+| [`2592`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2592.dot) | 540.00 | `polygon-points` | `svg/g[1]/g[7]/polygon[1]/@points[0]` |
+| [`graphs-html2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/html2.gv) | 209.92 | `text-position` | `svg/g[1]/g[4]/text[2]/@y` |
+| [`linux.x86-html2_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/html2_dot.gv) | 209.92 | `text-position` | `svg/g[1]/g[2]/text[2]/@y` |
+| [`nshare-html2_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/html2_dot.gv) | 209.92 | `text-position` | `svg/g[1]/g[2]/text[2]/@y` |
+| [`tree-graphs-directed-longflat`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/longflat.gv) | 72.00 | `node-ellipse` | `svg/g[1]/g[1]/ellipse[1]/@cy` |
+| [`1444-2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1444-2.dot) | 72.00 | `node-ellipse` | `svg/g[1]/g[1]/ellipse[1]/@cx` |
+| [`1444`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1444.dot) | 72.00 | `node-ellipse` | `svg/g[1]/g[1]/ellipse[1]/@cx` |
+| [`graphs-in`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/in.gv) | 72.00 | `node-ellipse` | `svg/g[1]/g[1]/ellipse[1]/@cx` |
+| [`graphs-longflat`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/longflat.gv) | 72.00 | `node-ellipse` | `svg/g[1]/g[1]/ellipse[1]/@cy` |
+| [`share-longflat`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/longflat.gv) | 72.00 | `node-ellipse` | `svg/g[1]/g[1]/ellipse[1]/@cy` |
+| [`windows-longflat`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/longflat.gv) | 72.00 | `node-ellipse` | `svg/g[1]/g[1]/ellipse[1]/@cy` |
 
-## Tracked diverged (0) — worst-first
+## Tracked diverged (24) — worst-first
 
 | id | maxDelta | firstDiffPath |
 |---|---:|---|
+| [`1314`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1314.dot) | 1683199999996.00 | `svg/g[1][childCount]` |
+| [`share-shells`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/shells.gv) | 342.00 | `svg/g[1]/g[9]/path[1]/@d` |
+| [`windows-shells`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/shells.gv) | 342.00 | `svg/g[1]/g[9]/path[1]/@d` |
+| [`graphs-ports`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/ports.gv) | 292.64 | `svg/g[1]/g[7]/path[1]/@d` |
+| [`linux.x86-ports_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/ports_dot.gv) | 292.64 | `svg/g[1]/g[5]/path[1]/@d` |
+| [`nshare-ports_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/ports_dot.gv) | 292.64 | `svg/g[1]/g[5]/path[1]/@d` |
+| [`tree-graphs-directed-shells`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/shells.gv) | 264.00 | `svg/g[1]/g[27]/path[1]/@d` |
+| [`graphs-shells`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/shells.gv) | 264.00 | `svg/g[1]/g[27]/path[1]/@d` |
+| [`tree-graphs-directed-sdh`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/sdh.gv) | 236.15 | `svg/g[1]/g[33]/path[1]/@d` |
+| [`2368`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2368.dot) | 213.65 | `svg/g[1]/g[5]/path[1]/@d` |
+| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 165.50 | `svg/g[1]/g[165]/path[1]/@d` |
+| [`graphs-b58`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b58.gv) | 144.00 | `svg/g[1]/g[12]/path[1]/@d` |
+| [`2521`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2521.dot) | 114.00 | `svg/g[1]/g[8]/path[1]/@d` |
+| [`700813`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/700813.dot) | 108.00 | `svg/g[1]/g[3]/path[1]/@d` |
+| [`121`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/121.dot) | 72.00 | `svg/g[1]/g[7]/path[1]/@d` |
+| [`258`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/258.dot) | 72.00 | `svg/g[1]/g[7]/path[1]/@d` |
+| [`linux.x86-ordering_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/ordering_dot.gv) | 72.00 | `svg/g[1]/g[25]/path[1]/@d` |
+| [`linux.x86-ordering_dot1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/ordering_dot1.gv) | 72.00 | `svg/g[1]/g[25]/path[1]/@d` |
+| [`macosx-ordering_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/macosx/ordering_dot.gv) | 72.00 | `svg/g[1]/g[25]/path[1]/@d` |
+| [`macosx-ordering_dot1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/macosx/ordering_dot1.gv) | 72.00 | `svg/g[1]/g[25]/path[1]/@d` |
+| [`nshare-ordering_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/ordering_dot.gv) | 72.00 | `svg/g[1]/g[25]/path[1]/@d` |
+| [`nshare-ordering_dot1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/ordering_dot1.gv) | 72.00 | `svg/g[1]/g[25]/path[1]/@d` |
+| [`1453`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1453.dot) | 0.00 | `svg/g[1][childCount]` |
+| [`2368_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2368_1.dot) | 0.00 | `svg/g[1][childCount]` |
 
-## errored (1)
+## errored (2)
 
 | id | path | message |
 |---|---|---|
-| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | `2475_1.dot` | &lt;--- Last few GCs ---&gt; |
+| [`2723`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2723.dot) | `2723.dot` | Cannot read properties of undefined (reading 'v') |
+| [`2778`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2778.dot) | `2778.dot` | Cannot read properties of undefined (reading 'll') |
 
 ## timeout (0)
 
 | id | path | message |
 |---|---|---|
 
-## oracle-error (14) — excluded from port scoring
+## oracle-error (10) — excluded from port scoring
 
 The native oracle did not emit a complete SVG (usually a hard syntax error
 it rejects entirely); there is no reference to compare against.
@@ -84,16 +126,12 @@ it rejects entirely); there is no reference to compare against.
 | id | path | message |
 |---|---|---|
 | [`1411`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1411.dot) | `1411.dot` | Error: https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1411.dot: syntax error in line 17 near '\\' |
-| [`1472`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1472.dot) | `1472.dot` | oracle not well-formed XML: 102050B |
+| [`1472`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1472.dot) | `1472.dot` | oracle not well-formed XML: 101887B |
 | [`1783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1783.dot) | `1783.dot` | Error: overflow when calculating virtual weight of edge |
 | [`1864`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1864.dot) | `1864.dot` | Warning: Warning: no hard-coded metrics for 'monospace'.  Falling back to 'Times' metrics |
 | [`2064`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2064.dot) | `2064.dot` | oracle exit null |
 | [`2593`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2593.dot) | `2593.dot` | oracle exit null |
-| [`2723`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2723.dot) | `2723.dot` | oracle exit null |
-| [`2778`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2778.dot) | `2778.dot` | oracle exit null |
 | [`2834`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2834.dot) | `2834.dot` | oracle exit null |
-| [`2854_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2854_1.dot) | `2854_1.dot` | oracle exit null |
-| [`2855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2855.dot) | `2855.dot` | oracle exit null |
 | [`imagepath_test-base`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/imagepath_test/base.gv) | `imagepath_test/base.gv` | Error: https://gitlab.com/graphviz/graphviz/-/blob/main/tests/imagepath_test/base.gv: syntax error in line 8 near ']' |
 | [`share-b545`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b545.gv) | `share/b545.gv` | Error: https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b545.gv: syntax error in line 1 near '3.583' |
 | [`tree-share-examples-4elt`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/4elt.gv) | `../share/examples/4elt.gv` | oracle exit null |
@@ -103,10 +141,17 @@ it rejects entirely); there is no reference to compare against.
 Named buckets over **tracked** (unaccepted) divergences, largest first. Each is
 a candidate oracle-pinned fix mission.
 
+### tracked diverged — by firstDiffPath shape
+
+| bucket | count | examples | hypothesis |
+|---|---:|---|---|
+| `path-structure` | 21 | `tree-graphs-directed-sdh`, `tree-graphs-directed-shells`, `121` | edge path has a different command sequence or point count — spline routing structure |
+| `element-count` | 3 | `1314`, `1453`, `2368_1` | missing/extra SVG elements — node, edge, cluster box, or arrowhead count differs |
 
 ### errored — by thrown message
 
 | bucket | count | examples | hypothesis |
 |---|---:|---|---|
-| `last-few-gcs` | 1 | `2475_1` | port threw — see message; group for a focused fix |
+| `undefined-v` | 1 | `2723` | null/undefined access on .v during layout — unported field or invariant gap |
+| `undefined-ll` | 1 | `2778` | null/undefined access on .ll during layout — unported field or invariant gap |
 

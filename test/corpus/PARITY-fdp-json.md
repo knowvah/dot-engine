@@ -11,37 +11,28 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 928
-- **Oracle:** dot 16.1.0
-- **pass:** 890 (96.6%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 28
-- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 7
+- **Surveyed:** 898
+- **Oracle:** dot 16.1.1
+- **pass:** 861 (97.6%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 17
+- **port-error / timeout (scored as failures):** 2 · **oracle-error (excluded from pass %):** 5
 
 ## Diverged (2)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 35660 | `edge:n0->n3#0/_draw_/op[1].b[ptCount]` |
-| [`2796`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2796.dot) | 8959 | 7064 | `[graph]/_draw_/op[2].P[3]` |
+| [`tree-doc-infosrc-plugins`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/infosrc/plugins.gv) | 11343 | 4790 | `[graph]/_draw_/op[2].P[3]` |
+| [`1581`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1581.dot) | 695 | 3 | `cluster:cluster_inner/_draw_[missing]` |
 
-## Accepted (28) — documented, not chased
+## Accepted (17) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
 | [`1436`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1436.dot) | 435 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) | 743 | `edge:1482->1505#0/_draw_/op[1].b[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) | 1062866 | `[graph]/_draw_/op[2].P[3]` | A1 drift, chaos-proven 2026-07-24: fdp's spring layout on this graph is chaotically input-sensitive — port self-perturbation experiments (2620: node width +0.001in -&gt; median 1120pt/max 3390pt movement of the port's OWN layout; badvoro: ONE edge len +0.0001 -&gt; median 322pt/max 1322pt across all 1235 nodes) move the layout by the same magnitude as the port-vs-native divergence. Sub-ULP V8-vs-libm FP dust separates basins; no port stage is implicated. Same class as the fdp engine track's documented 149-id drift tail. (2108/1652: layout additionally exceeds the xdot-track port time budget; perf class, see 2621.) |
 | [`2183`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2183.dot) | 1087 | `edge:c->m#0/_draw_/op[2].b[ptCount]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2242`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2242.dot) | 754 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`2470`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2470.dot) | 20266 | `edge:n135->n101#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`2475_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_2.dot) | 322220 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | 11397 | `edge:advisor->auditlog_logmessage#0/_draw_/op[1].b[ptCount]` |  |
-| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 79629 | `[graph]/_draw_/op[2].P[3]` |  |
-| [`56`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/56.dot) | 531 | `edge:kinect2_bridge_launch->ramcip_mapping_or_hector_mapping#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`56`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/56.dot) | 640 | `edge:ramcip_mapping_or_hector_mapping->ramcip_large_object_tracking_large_object_tracking#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | 14727 | `[graph]/_draw_/op[2].P[4]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`graphs-b145`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b145.gv) | 4 | `cluster:cluster_foo/nodes[members]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-b15`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b15.gv) | 5696 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`graphs-b51`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b51.gv) | 3760 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`graphs-fdp`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/fdp.gv) | 9 | `cluster:clusterA/nodes[members]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-ldbxtried`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/ldbxtried.gv) | 2163 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-mode`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/mode.gv) | 7454 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-viewport`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/viewport.gv) | 7529 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
@@ -50,24 +41,32 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 1 | `node:a/label` | Input is Latin-1 with NO `charset` declaration, so the bytes are invalid UTF-8. Native dot's -Tjson then emits a MIXED-ENCODING document: attribute values (e.g. node `label`) are echoed as RAW Latin-1 bytes (0xe1 0xe2 ... unconverted), while the DRAWN label text (_ldraw_ T op, via make_label) is UTF-8 (0xc3 0xa1 ...). No single decode reads both halves correctly: Latin-1 recovers the attribute but mojibakes the text, UTF-8 does the reverse (and the attribute bytes are not valid UTF-8). The port decodes the input once (utils.c latin1ToUTF8 fallback) and is internally consistent valid UTF-8 on BOTH surfaces, so it cannot reproduce the oracle's split encoding. A4 class: the oracle output is an encoding bug; the port declines to emit invalid/mixed-encoding JSON. The DECLARED charset=latin1 case (graphs-Latin1/b60) IS handled via the stoj double-encode fix; only the UNDECLARED-charset case is irreducible. |
 | [`share-ldbxtried`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/ldbxtried.gv) | 2070 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`tree-doc-dotguide-clust2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/dotguide/clust2.dot) | 1168 | `[graph]/_draw_/op[2].P[3]` | A1 iterative-solver drift (class) — membership computed from `attribution-fdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
-| [`tree-doc-infosrc-plugins`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../doc/infosrc/plugins.gv) | 4790 | `[graph]/_draw_/op[2].P[3]` |  |
 | [`tree-graphs-directed-crazy`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/crazy.gv) | 1908 | `[graph]/_draw_/op[2].P[3]` | A1 iterative-solver drift (class) — membership computed from `attribution-fdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`tree-graphs-directed-ldbxtried`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/ldbxtried.gv) | 2163 | `[graph]/_draw_/op[2].P[3]` | A1 iterative-solver drift (class) — membership computed from `attribution-fdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
-| [`windows-proc3d`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/proc3d.gv) | 20 | `edge:22316->22324#0/pos[1]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (8)
+## Errors and timeouts (18)
 
 | id | message |
 |---|---|
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
-| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | Warning: Warning: no hard-coded metrics for 'sans'.  Falling back to 'Times' metrics |
-| [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2095_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095_1.dot) |  |
+| [`2108`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2108.dot) |  |
+| [`2470`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2470.dot) |  |
+| [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) |  |
+| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | Warning: Two clusters named %9 - the second will be ignored |
+| [`2475_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_2.dot) |  |
+| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) |  |
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) |  |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle exit null |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle exit null |
-| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Warning: syntax ambiguity - badly delimited number '00s' in line 1 of https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot splits into two tokens |
+| [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
+| [`2796`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2796.dot) |  |
+| [`894589`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/894589.dot) |  |
+| [`graphs-b51`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b51.gv) |  |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
+| [`windows-proc3d`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/proc3d.gv) |  |
 
-_Passing ids (890) are omitted for brevity — the full roster is in
+_Passing ids (861) are omitted for brevity — the full roster is in
 `json-parity-fdp.json`._

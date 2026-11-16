@@ -27,6 +27,7 @@ import { fileURLToPath } from 'node:url';
 import { parse, render } from '../../src/index.js';
 import type { OutputFormat, RenderOptions } from '../../src/render/public.js';
 import { compareXdot } from './compare-xdot.js';
+import { goldenTest } from '../helpers/known-failing.js';
 import type { XdotDiff } from './compare-xdot.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -76,8 +77,10 @@ test('every deterministic-engine manifest entry has an xdot reference', () => {
 describe('golden-file xdot comparison (deterministic engines)', () => {
   for (const entry of detEntries) {
     const residual = XDOT_KNOWN_RESIDUALS[entry.id];
-    const run = residual ? test.skip : test;
-    run(`${entry.engine} / ${entry.id}${residual ? ' [xdot residual]' : ''}`, () => {
+    const name = `${entry.engine} / ${entry.id}${residual ? ' [xdot residual]' : ''}`;
+    // Ids in known-failing.json `goldens` run as test.fails (the SVG suite's ratchet).
+    const run = residual ? test.skip : (n: string, fn: () => void) => goldenTest(entry.id, n, fn);
+    run(name, () => {
       const src = readFileSync(join(ROOT, entry.input), 'utf8');
       const ref = readFileSync(join(REFS_DIR, `${entry.id}.xdot`), 'utf8');
       const opts: RenderOptions = { engine: entry.engine };

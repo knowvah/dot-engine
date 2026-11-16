@@ -3,12 +3,15 @@
 # Builds a scratch neato_layout plugin with part 10's noaddr.patch (fdp orders derived edges and
 # ports by ND_id, not node address, when GVTS_NOADDR is set) and a plugin dir that uses it.
 # Usage: bash build.sh <scratch-dir> <stock-plugin-dir>
+#   env G (graphviz checkout, default ~/git/graphviz), GV_SOVER (plugin version in the build's
+#   neato link line: 8.0.15 for 16.1.0, 8.0.16 for 16.1.1; default 8.0.15)
 #   <scratch-dir>/gv is the new GVBINDIR. Its core and dot_layout entries are symlinks copied from
 #   <stock-plugin-dir>; the neato plugin is a fresh file (any symlink at the -o path is removed
 #   first, so the link can never write through into the shared plugin dir or the graphviz build).
 set -eu
 G=${G:-$HOME/git/graphviz}
 B=$G/build
+SOVER=${GV_SOVER:-8.0.15}
 here=$(cd "$(dirname "$0")" && pwd)
 scr=$1; stock=$2
 mkdir -p "$scr/src" "$scr/obj" "$scr/gv"
@@ -24,6 +27,6 @@ rm -f "$scr"/gv/libgvplugin_neato_layout*
 out=$scr/gv/libgvplugin_neato_layout.8.dylib
 cd "$B/plugin/neato_layout"
 gts=$(ls -d /opt/homebrew/opt/gts/lib/libgts.dylib)
-$(sed -e "s#-o libgvplugin_neato_layout.8.0.15.dylib#-o $out $scr/obj/layout.c.o#" \
+$(sed -e "s#-o libgvplugin_neato_layout.$SOVER.dylib#-o $out $scr/obj/layout.c.o#" \
   -e "s#/opt/homebrew/Cellar/gts/[^/]*/lib/libgts.dylib#$gts#" CMakeFiles/gvplugin_neato_layout.dir/link.txt)
 [ ! -L "$out" ] && echo "built $out"

@@ -14,17 +14,17 @@ EXACTLY, coords compared exact-after-round — both sides are already
 
 ## Summary
 
-- **Oracle:** dot 16.1.0 · **corpus:** `~/git/graphviz/tests`
-- **Walked (conformant SVG set):** 929
-- **map-conformant (overall, worst-of-both-formats):** 926 (100.0%)
-- **cmapx-conformant:** 926 (100.0%) · **imap-conformant:** 926 (100.0%)
+- **Oracle:** dot 16.1.1 · **corpus:** `~/git/graphviz/tests`
+- **Walked (conformant SVG set):** 899
+- **map-conformant (overall, worst-of-both-formats):** 895 (100.0%)
+- **cmapx-conformant:** 895 (100.0%) · **imap-conformant:** 895 (100.0%)
 - **diverged (tracked, will-fix, either format):** 0 · **accepted (documented, won't-fix):** 0
-- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 3 (excluded from pass %)
-- **href-bearing ids in the surveyed set:** 40 — the substantive
+- **port-error:** 0 · **timeout:** 0 · **oracle-error:** 4 (excluded from pass %)
+- **href-bearing ids in the surveyed set:** 37 — the substantive
   coverage (ids whose ORACLE output actually emits ≥1 real href, not an
   empty or tooltip-only map); see the dedicated table below.
 
-## href-bearing ids (40) — the substantive coverage
+## href-bearing ids (37) — the substantive coverage
 
 Every id in the surveyed (conformant-SVG) set whose oracle cmapx/imap
 output contains a real `href` — i.e. actually exercises anchor emission,
@@ -52,17 +52,14 @@ reader does not have to cross-reference `map-parity.json`.
 | [`graphs-b155`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b155.gv) | `graphs/b155.gv` | conformant | conformant | conformant |
 | [`graphs-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b29.gv) | `graphs/b29.gv` | conformant | conformant | conformant |
 | [`graphs-b85`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b85.gv) | `graphs/b85.gv` | conformant | conformant | conformant |
-| [`graphs-html2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/html2.gv) | `graphs/html2.gv` | conformant | conformant | conformant |
 | [`graphs-root`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/root.gv) | `graphs/root.gv` | conformant | conformant | conformant |
 | [`graphs-url`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/url.gv) | `graphs/url.gv` | conformant | conformant | conformant |
 | [`graphs-xx`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/xx.gv) | `graphs/xx.gv` | conformant | conformant | conformant |
 | [`linux.i386-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b102.gv) | `linux.i386/b102.gv` | conformant | conformant | conformant |
 | [`linux.i386-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b106.gv) | `linux.i386/b106.gv` | conformant | conformant | conformant |
 | [`linux.i386-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b29.gv) | `linux.i386/b29.gv` | conformant | conformant | conformant |
-| [`linux.x86-html2_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/html2_dot.gv) | `linux.x86/html2_dot.gv` | conformant | conformant | conformant |
 | [`linux.x86-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_circo.gv) | `linux.x86/root_circo.gv` | conformant | conformant | conformant |
 | [`linux.x86-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_twopi.gv) | `linux.x86/root_twopi.gv` | conformant | conformant | conformant |
-| [`nshare-html2_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/html2_dot.gv) | `nshare/html2_dot.gv` | conformant | conformant | conformant |
 | [`nshare-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_circo.gv) | `nshare/root_circo.gv` | conformant | conformant | conformant |
 | [`nshare-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_twopi.gv) | `nshare/root_twopi.gv` | conformant | conformant | conformant |
 | [`share-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b102.gv) | `share/b102.gv` | conformant | conformant | conformant |
@@ -74,13 +71,13 @@ reader does not have to cross-reference `map-parity.json`.
 | [`windows-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b106.gv) | `windows/b106.gv` | conformant | conformant | conformant |
 | [`windows-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b29.gv) | `windows/b29.gv` | conformant | conformant | conformant |
 
-## map-conformant (926)
+## map-conformant (895)
 
 Port output is *conformant* with the oracle in BOTH cmapx and imap: every
 area/line matches exactly (shape/href/title/alt/target) with coords equal
 after rounding.
 
-_Conformant ids (926) are omitted for brevity — the full roster is in
+_Conformant ids (895) are omitted for brevity — the full roster is in
 [map-parity.json](map-parity.json)._
 
 ## Tracked diverged (0 format-rows) — worst-first
@@ -100,17 +97,9 @@ Each is referenced in the mission decision journal with its mechanism.
 | id | opClass | delta | rationale |
 |---|---|---:|---|
 | `graphs-xx` | area[271].coords[2] | 1 | A8 rounding-boundary dust: 1 of 272 hotspot coords sits within the sub-0.01pt model tolerance of the integer rounding boundary (port 2654.5x vs native 2654.4x -&gt; 2655 vs 2654); osage xdot track passes at 0.01. Irreducible print amplification. Journal 2026-07-24. |
-| `graphs-url` | area[8].coords[0] | 24 | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `share-b102` | area[47].coords[0] | 6 | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `linux.i386-b102` | area[47].coords[0] | 6 | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `linux.x86-root_circo` | area[0].coords[0] | 3 | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `nshare-root_twopi` | area[0].coords[0] | 2 | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `linux.x86-root_twopi` | area[0].coords[0] | 3 | layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `nshare-root_circo` | area[0].coords[0] | 48414506 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `linux.x86-root_circo` | area[0].coords[0] | 47792182 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `graphs-b103` | area[0].coords[0] | 3546 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. T6 2026-07-24: classified — port completes in 63-109s vs oracle 38-47s (1.7-2.3x, NOT the &gt;=10x perf-quarantine class); earlier diverged/timeout flips were 8-way sweep-load artifacts (180s budget). Divergence itself is the fdp chaos class (see 1879/badvoro perturbation proof). Re-verdict big fdp ids with MAP_CONCURRENCY=1 if a load flip recurs; registry row keeps flips harmless. |
-| `nshare-html2_dot` | area[0].coords[0] | 8 | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| `linux.x86-html2_dot` | area[0].coords[0] | 8 | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `graphs-url` | area[0].coords[1] | 4 | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | `2619_1` | area[1].coords[0] | 2 | A1 sfdp spring drift (diagnosed 2026-07-24): 6 nodes, positional drift 0.7-1.3pt — the documented chaotic-engine regime, mildly above the 0.5 bar on a small graph. Same class as the sfdp engine track's 232-id tail. |
 | `1447` | area[0].coords[1] | 4 | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
@@ -152,11 +141,12 @@ Each is referenced in the mission decision journal with its mechanism.
 | id | path | message |
 |---|---|---|
 
-## oracle-error (3) — excluded from pass %
+## oracle-error (4) — excluded from pass %
 
 | id | path | message |
 |---|---|---|
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | `1652.dot` | oracle exit null |
+| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | `2475_1.dot` | oracle exit null |
 | [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | `2621.dot` | oracle exit null |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | `../share/examples/world.gv` | oracle exit null |
 

@@ -10,17 +10,17 @@
 // engine-walk uses for the corpus sweep, so a PASS here means the same thing a
 // corpus pass means.
 //
-//   GVBINDIR=/tmp/ghl npx tsx test/corpus/probe-fixture.ts <input.dot> [engine=dot]
+//   GVBINDIR=/tmp/ghl1611 npx tsx test/corpus/probe-fixture.ts <input.dot> [engine=dot]
 //
 // Exit 0 = pass, 1 = diverged/error. Node-only dev/test infra.
 
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { compareXdot, XDOT_TOLERANCE } from '../golden/compare-xdot.js';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 
-const DOT_BIN = join(homedir(), 'git/graphviz/build/cmd/dot/dot');
+const DOT_BIN = ORACLE_DOT_BIN;
 
 const input = process.argv[2];
 const engine = process.argv[3] ?? 'dot';
@@ -32,7 +32,7 @@ if (!input || !existsSync(input)) {
 function oracleXdot(): string {
   return execFileSync(DOT_BIN, [`-K${engine}`, '-Txdot', input], {
     encoding: 'utf8',
-    env: { ...process.env, GVBINDIR: process.env.GVBINDIR ?? '/tmp/ghl' },
+    env: { ...process.env, GVBINDIR: process.env.GVBINDIR ?? ORACLE_GVBINDIR },
     maxBuffer: 64 * 1024 * 1024,
   });
 }

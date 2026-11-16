@@ -4,7 +4,7 @@
 //
 // Runs the SVG-conformant corpus set (parity.json, dot-track verdicts) through
 // ONE non-dot deterministic engine, comparing the port's xdot against the
-// native oracle (`dot -K <engine> -Txdot`, GVBINDIR=/tmp/ghl) with the semantic
+// native oracle (`dot -K <engine> -Txdot`, GVBINDIR=/tmp/ghl1611) with the semantic
 // comparator (test/golden/compare-xdot.ts). Items are size-sorted small→large
 // so shared mechanisms surface early. Output is JSONL (append-per-item) so
 // progress is monitorable and survives interruption — a re-run resumes by
@@ -23,6 +23,7 @@ import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
+import { defaultGvbindir, ORACLE_DOT_BIN } from './oracle-paths.mjs';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
 import { preventIdleSleep, startClock, sleepInflated } from './keep-awake.js';
@@ -101,7 +102,7 @@ export interface EngineParityReport {
   engine: string;
   /** comparison tolerance in points (0.01 deterministic, 0.5 iterative) */
   tolerance?: number;
-  /** `dot -V` of the oracle (e.g. "dot 16.1.0"); absent in older summaries. */
+  /** `dot -V` of the oracle (e.g. "dot 16.1.1"); absent in older summaries. */
   oracleVersion?: string;
   total: number;
   counts: Record<EngineWalkStatus, number>;
@@ -110,8 +111,9 @@ export interface EngineParityReport {
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const CORPUS = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
-const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
+const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
+/** Engine under sweep: first non-flag CLI arg (`dot` when absent). */
+const GVBINDIR = defaultGvbindir(process.argv.slice(2).find((a) => !a.startsWith('--')) ?? 'dot');
 
 /**
  * Per-engine comparison tolerance. The deterministic engines are held to
@@ -397,7 +399,7 @@ function drawOracleXdot(path: string, engine: string): string | undefined {
 // Sweep
 // ---------------------------------------------------------------------------
 
-/** `dot -V` as a short version string ("dot 16.1.0"), same probe and format
+/** `dot -V` as a short version string ("dot 16.1.1"), same probe and format
  * as survey.ts / xdot-walk.ts so every walk summary names its oracle alike. */
 function oracleVersion(): string {
   const r = spawnSync(DOT_BIN, ['-V'], { env: { ...process.env, GVBINDIR }, encoding: 'utf8', timeout: 5000 });

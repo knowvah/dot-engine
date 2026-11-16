@@ -27,12 +27,15 @@ hypothesizing — the default stance is "my port differs — find where."
 
 ## Verification
 
-- Oracle = **graphviz 16.1.0**, the native build binary
-  `~/git/graphviz/build/cmd/dot/dot` (branch `oracle/16.1.0`) with
-  `GVBINDIR=/tmp/ghl` (never WASM; homebrew dot is only a cross-check, never
-  the oracle — ABI mismatch). The 15.x reference build is
-  `~/git/graphviz-15` with `GVBINDIR=/tmp/ghl15`. See
-  `docs/adr/0001-graphviz-16.1-oracle.md`.
+- Oracle = **graphviz 16.1.1**, the native build binary
+  `~/git/graphviz-16.1.1/build/cmd/dot/dot` (branch `oracle/16.1.1`) with
+  `GVBINDIR=/tmp/ghl1611` for dot and `/tmp/ghl1611-all` for the other
+  engines (never WASM; homebrew dot is only a cross-check, never the oracle —
+  ABI mismatch). Locations live in `test/corpus/oracle-paths.mjs`. See
+  `docs/adr/0002-graphviz-16.1.1-oracle.md`. The 16.1.0 build
+  `~/git/graphviz/build/cmd/dot/dot` (`GVBINDIR=/tmp/ghl`) stays for
+  bisecting until #149–#165 land; the 15.x reference build is
+  `~/git/graphviz-15` with `GVBINDIR=/tmp/ghl15`.
 - Conformance bar = xdot/SVG comparison at 0.01 tolerance (deterministic
   engines). Byte-exactness is not required; structural match is progress.
 - Gates before any commit: `tsc --noEmit` clean, `npm test` green, golden

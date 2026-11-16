@@ -5,7 +5,7 @@
 // Walks the SVG-conformant corpus items from parity.json,
 // sorted by input file size (small → large, same discipline as xdot-walk.ts
 // AD-2), rendering each to BOTH `cmapx` and `imap` through the native oracle
-// (`dot -Tcmapx` / `dot -Timap`, GVBINDIR=/tmp/ghl) and through the port
+// (`dot -Tcmapx` / `dot -Timap`, GVBINDIR=/tmp/ghl1611) and through the port
 // (render-one-map.ts, T1), diffing each format with its own semantic
 // comparator (compare-map.ts, T2). THREE modes:
 //
@@ -46,6 +46,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { homedir } from 'node:os';
+import { defaultGvbindir, ORACLE_DOT_BIN } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareCmapx, compareImap, type MapDiff } from '../golden/compare-map.js';
@@ -66,8 +67,9 @@ import type { EngineName } from '../../src/gvc/context.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
-const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
+const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
+/** Engine under sweep: first non-flag CLI arg (`dot` when absent). */
+const GVBINDIR = defaultGvbindir(process.argv.slice(2).find((a) => !a.startsWith('--')) ?? 'dot');
 const RENDER_ONE = join(REPO, 'test/corpus/render-one-map.ts');
 const PARITY = new URL('./parity.json', import.meta.url);
 const MAP_PARITY = new URL('./map-parity.json', import.meta.url);

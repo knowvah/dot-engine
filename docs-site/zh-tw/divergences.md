@@ -1,5 +1,5 @@
 ---
-sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
+sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -63,7 +63,7 @@ A2、A3 與 A8 已結案，作為歷史保留；A10 作為各引擎登錄檔中�
 
 > **範圍，歷史上是一項未量測的但書——現在已部分量測。**
 > **主要的 dot 引擎 SVG 調查**（`test/corpus/survey.ts`）仍然**只涵蓋 dot**：
-> 原生參照程式在 `GVBINDIR=/tmp/ghl` 下執行，該目錄**只**以符號連結
+> 原生參照程式在 `GVBINDIR=/tmp/ghl1611` 下執行，該目錄**只**以符號連結
 > `core` + `dot_layout` 外掛
 > （`test/corpus/gen-headless-gvbindir.sh` 只迴圈處理 `core dot_layout`
 > ——不存在 `neato`／`fdp`／`circo`／`twopi`／`osage`／`sfdp` 的版面配置外掛），
@@ -96,10 +96,10 @@ A2、A3 與 A8 已結案，作為歷史保留；A10 作為各引擎登錄檔中�
 以每個輸入自己的引擎而非 `dot` 進行調查。這項工作誠實的上限，是把 A1
 **縮小**為「在參考平台上沒有現行差異」，而絕不是消除跨平台的但書；
 目前的結果（見下）都守住了這個上限：`circo`／`twopi`／`osage` 各自揭露並找出了
-少數真正的 A1／A9 案例的根本原因，而 `neato`／`fdp`／`sfdp` 如今在 929 項的範圍（graphviz 16.1.0）內，
-與原生版相差 0.5pt 以內的比例分別為 99.8／98.0／68.1%，
+少數真正的 A1／A9 案例的根本原因，而 `neato`／`fdp`／`sfdp` 如今在 898 項的範圍（graphviz 16.1.1）內，
+與原生版相差 0.5pt 以內的比例分別為 99.8／98.0／68.2%，
 意味著移植的算術（`fma.ts`、`arm-pow.ts`、相符的 PRNG）對大多數圖成立——
-而且 929 項範圍中每個差異 id 都是透過注入個別歸因（求解器漂移 vs. 移植缺陷），
+而且 898 項範圍中每個差異 id 都是透過注入個別歸因（求解器漂移 vs. 移植缺陷），
 而不是留作未分級處理的漂移。請見下方迭代式引擎的特徵描述。
 
 **引擎軌道接受：twopi 箭頭家族。** <a id="a1-twopi-arrows-family"></a>
@@ -157,17 +157,17 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 欄位，而 `parity-report.ts` 將它們呈現於
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 中獨立的「Iterative engines (±0.5 characterization)」章節，
-明確**不可**與本文件其他地方 ±0.01 決定性的通過率相比較。針對 graphviz 16.1.0 的目前計數
-（929 項範圍；通過率排除 C 參照程式無法轉譯的輸入以及原生輸出每次執行都會變化的輸入，
+明確**不可**與本文件其他地方 ±0.01 決定性的通過率相比較。針對 graphviz 16.1.1 的目前計數
+（898 項範圍；通過率排除 C 參照程式無法轉譯的輸入以及原生輸出每次執行都會變化的輸入，
 依據[一致性](./conformance.md)）：
 
 | 引擎 | 調查數 | ±0.5pt 內 | 不一致 | 移植版錯誤／逾時 | 參照程式錯誤 | 參照程式非確定 |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
+| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
 
-`fdp` 的 13 個非確定輸入（原生輸出每次執行都會變化）不計入其通過率；它唯一的移植版錯誤是 `1879`，該輸入需要移植版不支援的 `splines=compound` 路由。
+`fdp` 的 11 個非確定輸入（原生輸出每次執行都會變化）不計入其通過率；它唯一的移植版錯誤是 `1879`，該輸入需要移植版不支援的 `splines=compound` 路由。
 
 （`fdp` 的通過率自 77.5% 上升，是因為先前提交的那次掃描早於上一個任務的移植狀態。`neato` 的通過率自 90.5% 上升，是因為 16.1 反組譯得到的融合 stress 核心進入了正式環境的 kD 路徑（16.1 後續跟進第 5 部分，T15）：先前因求解器漂移而有差異的 83 個 id 現已通過，其中包括先前被接受的逐 id 殘餘 `2619_2`，該接受已撤銷；±0.5pt 之外的兩個 `neato` id 是 `2784`（A10）和 `2371`（A1 漂移）。）
 
@@ -176,11 +176,11 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 主要是 neato 未移植的 `user_pos`／`P_SET` 處理、引擎初始化的整併，
 以及 `setEdgeType` 巨集與函式的修正。）
 
-與第一次掃描時不同，929 項範圍中每一列差異都已針對 graphviz 16.1.0 個別歸因：
+與第一次掃描時不同，898 項範圍中每一列差異都已針對 graphviz 16.1.1 個別歸因：
 注入工具（`test/corpus/attribute-divergence.ts`）將原生參照程式繞線前的
-`ND_pos` 餵給移植版並重新比對，而目前每個差異 id 除了兩個之外，都是
+`ND_pos` 餵給移植版並重新比對，而目前每個差異 id 除了 sfdp `2556` 之外，都是
 `drift-exonerated`（一旦移除求解器漂移，移植版的繞線與輸出就能精確重現參照程式）。
-其中兩個是另行接受的逐 id 殘留項：sfdp `241_0` 的宿主 libm `pow` 漂移（由 T28 重新診斷），以及 sfdp `2556` 的 NaN 版面。自 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 起，fdp `241_0` 已通過（見 A9 下的 fdp 段落）。
+其中兩個是另行接受的逐 id 殘留項：sfdp `241_0` 的宿主 libm `pow` 漂移（由 T28 重新診斷；自 `12dddc48` 起其注入列為 `drift-exonerated`），以及 sfdp `2556` 的 NaN 版面。自 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 起，fdp `241_0` 已通過（見 A9 下的 fdp 段落）。
 fdp `2471` 與 sfdp `2371` 先前在注入之後保留的邊標籤位置（`lp`）仍不相同，亦即 xlabel 放置器挑選了不同的候選。移植版的 `dotneato_closest` 改為依 clang 融合後的 de Casteljau 求值與 DIST2 方式捨入後，`2471` 已經消除：先前邊標籤錨點相差 1–2 ULP，使放置器的嚴格包含判斷翻轉。
 移植版的 R 樹像 C 一樣以值複製矩形之後，`2371` 已經消除。
 `2471` 的原生 fdp 版面每次執行都會變動，因此其列只記錄一次執行。
@@ -190,7 +190,7 @@ fdp `2471` 與 sfdp `2371` 先前在注入之後保留的邊標籤位置（`lp`�
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)）。
 
-**sfdp 求解器漂移從哪裡開始（第 10 部分，T2）。** 對插樁的原生 sfdp 在小 id 上與移植版對照追蹤，首次分歧出現在斥力中 `pow(dist, 1-p)` 的最後一位（`lib/sfdpgen/spring_electrical.c:625,617`；移植版 `spring-electrical.ts:260`）。在 `flatedge` 上，`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` 在原生中得到 `...8811p+2`，在移植版中得到 `...8812p+2`；`graphs-p` 和 `1767` 的開頭相同。自適應冷卻會放大這一位：它在第 5 次迭代到達 `x[0]`，`max|dx|` 在第 100 次迭代為 2.4e-9、第 200 次為 3.9e-5，步長在第 244 次迭代翻轉。兩次受控執行證實了這一點。在恰好這 8 次呼叫上採用原生的位元，`flatedge` 的 62090 行追蹤即完全一致；在 Node-API 外掛後使用 macOS 真實的 `pow`，292 個未通過的 id 中有 288 個追蹤逐位元一致（其餘 4 個皆為 `overlap=false`，只在 `xfinal` 處不同）。求解器、多層部分、四元樹和稀疏程式碼中的運算順序與融合已被排除。這是主機的 libm，在 A1 下被接受（見下方已知缺口清單中的 `pow` 一項）；`src/` 沒有變動，所以計數仍是 929 中的 632。僅限 macOS 的實驗達到了 929 中約 923；這衡量的是預言機的 `pow`，並不是函式庫在每台主機上都能做到的事。在斥力中使用 `Math.pow` 能通過這 292 個中的 153 個，但會使 6 個目前通過的 id 退步，因此沒有採用。表中的 sfdp 列與 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 的列相同：1 個分歧加 295 個已接受得到 296，另有 1 個 id 在該處被列為預言機非確定。
+**sfdp 求解器漂移從哪裡開始（第 10 部分，T2）。** 對插樁的原生 sfdp 在小 id 上與移植版對照追蹤，首次分歧出現在斥力中 `pow(dist, 1-p)` 的最後一位（`lib/sfdpgen/spring_electrical.c:625,617`；移植版 `spring-electrical.ts:260`）。在 `flatedge` 上，`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` 在原生中得到 `...8811p+2`，在移植版中得到 `...8812p+2`；`graphs-p` 和 `1767` 的開頭相同。自適應冷卻會放大這一位：它在第 5 次迭代到達 `x[0]`，`max|dx|` 在第 100 次迭代為 2.4e-9、第 200 次為 3.9e-5，步長在第 244 次迭代翻轉。兩次受控執行證實了這一點。在恰好這 8 次呼叫上採用原生的位元，`flatedge` 的 62090 行追蹤即完全一致；在 Node-API 外掛後使用 macOS 真實的 `pow`，292 個未通過的 id 中有 288 個追蹤逐位元一致（其餘 4 個皆為 `overlap=false`，只在 `xfinal` 處不同）。求解器、多層部分、四元樹和稀疏程式碼中的運算順序與融合已被排除。這是主機的 libm，在 A1 下被接受（見下方已知缺口清單中的 `pow` 一項）；`src/` 沒有變動，所以計數仍是 929 中的 632。僅限 macOS 的實驗達到了 929 中約 923；這衡量的是預言機的 `pow`，並不是函式庫在每台主機上都能做到的事。在斥力中使用 `Math.pow` 能通過這 292 個中的 153 個，但會使 6 個目前通過的 id 退步，因此沒有採用。表中的 sfdp 列與 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 的列相同：在 graphviz 16.1.1 下，0 個分歧加 286 個已接受得到 286，且該處沒有 id 被列為預言機非確定。
 
 **A1-drift 類別接受（迭代式引擎，成員為計算得出）。**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -246,7 +246,7 @@ fdp `2471` 與 sfdp `2371` 先前在注入之後保留的邊標籤位置（`lp`�
 
 **調查的兩側都執行同一個估算器——量測已被化解。**
 原生 `dot` 參照程式在無頭（headless）的 `GVBINDIR`
-（`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl`）下執行，該目錄只以符號連結
+（`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`）下執行，該目錄只以符號連結
 `core` 與 `dot_layout` 外掛——沒有 `gd`／`pango`／`quartz` 文字版面配置外掛。
 該位置為空時，graphviz 會退回其內建的
 `estimate_textspan_size`。TypeScript 移植版的 `EstimateTextMeasurer`
@@ -363,7 +363,7 @@ x 網路單純形路徑是忠實的——每一項約束輸入都與 C 相符（
 
 **狀態（2026-10-12）：已結案。** 不再有語料庫 id 被歸入此類別而被接受；本節作為該機制的歷史文件保留。先前的成員（`2368`、`graphs-b100`、`graphs-b104`、`241_1`、`2413_1`、`2413_2`、`graphs-decorate`、`2371`）在最新掃描（`test/corpus/parity-probe.json`）中全部為 **`conformant`**。
 
-**機制，以及是什麼讓它結案。** 樣條擬合器（`Proutespline` -> `findMaxDev`，`src/pathplan/route.ts`）在偏差最大的內部路徑點處拆分擬合出的貝茲曲線。在幾何對稱的通道上，候選偏差相差約 1 ULP，所以勝者由算術的最後一位元決定。先前移植版被歸因於一個無法消除的差距（「Apple `hypot` 與任何可攜的 `hypot` 都不相符」），並以一個容忍的、平移等變的平手判定來補償。這項歸因已被推翻：平手由 C 的*精確*算術決定，而這是可重現的。提交 `cdf597bc`（`fix(pathplan): split splines at C's max-deviation point bit for bit`）移植了它：距離使用 libm 的 `hypot`（`route.c:448`）、C 嚴格的 `>` 比較（`route.c:139`），以及 clang 對貝茲求值（`route.c:137-138`）、`mkspline` 行列式（`route.c:181-183`）、`dot`（459）、`normv`（413）、`B01`（488）與 `B23`（494）的 `fp-contract` 融合。容忍的平手判定已移除；`241_0` 的結點被固定在 C 的繞線座標系中，因為 C 在這類平手上並不具備平移等變性。這讓 `2368`、`2371`、`2413_1`、`2413_2`、`graphs-b100`、`graphs-b104` 與 `graphs-decorate` 結案。
+**機制，以及是什麼讓它結案。** 樣條擬合器（`Proutespline` -> `findMaxDev`，`src/pathplan/route.ts`）在偏差最大的內部路徑點處拆分擬合出的貝茲曲線。在幾何對稱的通道上，候選偏差相差約 1 ULP，所以勝者由算術的最後一位元決定。先前移植版被歸因於一個無法消除的差距（「Apple `hypot` 與任何可攜的 `hypot` 都不相符」），並以一個容忍的、平移等變的平手判定來補償。這項歸因已被推翻：平手由 C 的*精確*算術決定，而這是可重現的。提交 `cdf597bc`（`fix(pathplan): split splines at C's max-deviation point bit for bit`）移植了它：距離使用 libm 的 `hypot`（`route.c:448`）、C 嚴格的 `>` 比較（`route.c:139`），以及 clang 對貝茲求值（`route.c:137-138`）、`mkspline` 行列式（`route.c:181-183`）、`dot`（459）、`normv`（413）、`B01`（488）與 `B23`（494）的 `fp-contract` 融合。容忍的平手判定已移除；`241_0` 的結點被固定在 C 的繞線座標系中，因為 C 在這類平手上並不具備平移等變性。這讓 `2368`、`2371`、`2413_1`、`2413_2`、`graphs-b100`、`graphs-b104` 與 `graphs-decorate` 結案。 在 graphviz 16.1.1 下，`2368` 因一個無關的原因再次出現分歧：原生版本對 `flat_reorder` 的改動（[#158](#pending-16-1-1-ports)）。
 
 `241_1` 並不是 `hypot` 平手：它由 `87347711`（`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`）結案。C 將共用同一條主邊的所有相鄰同層邊歸入一次 `make_flat_adj_edges` 呼叫，並在整組範圍內檢查連接埠，所以帶連接埠邊的無連接埠同級邊會經由輔助圖繞線。移植版依有無連接埠把該組拆開，並讓同級邊經由 `makeSimpleFlat` 繞線，其裁切落在不同的 `bezier_clip` 點（54.28，而原生為 54.46）。
 
@@ -991,6 +991,23 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
 
 ---
 
+## 待處理的 16.1.1 移植 {#pending-16-1-1-ports}
+
+參照程式已從 graphviz 16.1.0 遷移到 16.1.1（[ADR-0002](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0002-graphviz-16.1.1-oracle.md)）。下面每一項上游變更都會讓一些 id 偏離移植版，而移植版在這些地方仍遵循 16.1.0，直到該變更被移植。計數來自重新建立基線時的分類（`plans/graphviz-16-1-1-rebaseline/classification/`），該分類把兩個參照程式之間每一處判定變化都追溯到了原因。這些不是已接受的差異：每一項都是其 issue 上尚未完成的工作。
+
+| issue | 上游變更 | 在 16.1.1 中發生變動的 id | 引擎 |
+|---|---|---|---|
+| [#158](https://github.com/knowvah/dot-engine/issues/158) | `flat_reorder` 會跳過傳入平邊受限制的 rank | 34 個調查 id 從 conformant 變為 diverged（23 個）或 structural-match（11 個），其中包括 `2368` 和 `2592`；`2854_1` 和 `2855` 在原生版本中不再卡住，現在是 conformant。Golden：`dot-newrank-cluster-ranksame`、`dot-pack-flat-label` 以及 10 個 `pt-issue-*` 夾具（`test/golden/known-failing.json`） | `dot`; 這 34 個 id 也會退出所有採用調查中 conformant id 的引擎走訪 |
+| [#164](https://github.com/knowvah/dot-engine/issues/164) | 來自 libc `rand()` 的 ortho 線段排列 | 6: circo `1658` (現在是預言機錯誤), `1880`, `1990`; twopi `2168_5`, `2183`, `2643` | `circo`, `twopi` (`splines=ortho`) |
+| [#149](https://github.com/knowvah/dot-engine/issues/149) | `write_body` 在主體的節點之後依建立順序寫出邊 | 2: `1514`, `1581` | `-Tdot`, `-Txdot` 輸出 |
+| [#162](https://github.com/knowvah/dot-engine/issues/162) | 輔助邊過長時讓版面失敗 | 1: `1314` | `dot` |
+| [#159](https://github.com/knowvah/dot-engine/issues/159) | `flat_edges` 為 abomination rank 統計帶標籤的非相鄰 `other` 邊 | 1: `2723` (原生版本在 16.1.0 中當機；現在以結束碼 1 結束並產生 SVG，移植版尚未產生) | `dot` |
+| [#151](https://github.com/knowvah/dot-engine/issues/151) | 拒絕所有方框都已退化的路徑 | 1: `2778` (與 `2723` 模式相同) | `dot` |
+| [#163](https://github.com/knowvah/dot-engine/issues/163) | 未記載的 `compact` 屬性被移除 | 沒有語料庫 id; Golden `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
+| [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | 16.1.1 其餘的行為變更 | 語料庫和 golden 中均沒有 | — |
+
+觸及每項變更的輸入記錄在 [#148](https://github.com/knowvah/dot-engine/issues/148) 中。
+
 ## 持續追蹤的長尾（`dot` 屬性與邊界案例） {#tracked-long-tail-dot-attribute-edge-case}
 
 在**預設值**下，`dot` 引擎在黃金語料庫上以嚴格的決定性容許誤差與 C 二進位檔相符
@@ -1073,7 +1090,7 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
   以插樁的原生 sfdp 診斷：位置保持位元相同，
   直到某一個斥力項 `pow(dist, 1 - p)`（`spring_electrical.c`，
   `p = -1`，所以是 `pow(x, 2)`）從 macOS libm 傳回比 `x*x` 小 1 ulp 的值
-  （`pow(1.4116727416983157, 2)`：libm 為 `1.9928199296540394`，正確捨入的結果為
+  （`pow(1.4116727416983157, 2)`：libm 為 `1.9928198986540394`，正確捨入的結果為
   `…396`；在 16201 個抽樣 `v` 中，有 20 個的 macOS `pow(v, 2) != v*v`）。這改變了
   迭代的 `Fnorm` 的最後一位元；sfdp 的自適應冷卻將它放大
   為不同的（通常是鏡像的）版面配置。移植版的 `armPow` 是 ARM 的

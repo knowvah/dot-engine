@@ -1,5 +1,5 @@
 ---
-sourceHash: 133104b64763457635328188088e909f4552d8353f4a7468655c540706263625
+sourceHash: 108900a6526f9e995c80f6640cba948df61fe8bc937f8c32e4df82dd8d902cd1
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -82,7 +82,7 @@ y 좌표는 동일했습니다. 해결책은 proc3d 전용 패치가 아니었�
 
 ## 재현 {#reproduce}
 
-네이티브 오라클은 헤드리스 `GVBINDIR`(`/tmp/ghl`, `test/corpus/gen-headless-gvbindir.sh`로
+네이티브 오라클은 헤드리스 `GVBINDIR`(`/tmp/ghl1611`, `test/corpus/gen-headless-gvbindir.sh`로
 생성)에서 실행되므로 양쪽이 같은 `estimate_textspan_size` 측정기를 사용합니다 —
 [§A2 “Isolating the algorithm from the font backend”](/ko/divergences#a2-text-measurement-font-metrics-label-driven-layout)를
 참고하십시오.
@@ -93,8 +93,8 @@ GV_TEXT_MEASURER=estimate \
   npx tsx test/corpus/render-one.ts ~/git/graphviz/tests/graphs/proc3d.gv dot
 
 # native C oracle (headless, estimate measurer)
-GVBINDIR=/tmp/ghl \
-  ~/git/graphviz/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
+GVBINDIR=/tmp/ghl1611 \
+  ~/git/graphviz-16.1.1/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
 ```
 
 오늘 이것을 실행하면 위에서 설명한 3.55pt 델타가 아니라 일치하는 SVG(`deterministic`

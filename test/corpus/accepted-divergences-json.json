@@ -34,503 +34,6 @@
       "rationale": "Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class."
     },
     {
-      "id": "graphs-p",
-      "engine": "neato",
-      "opClass": "edge:sleep->swap#0/_draw_/op[1].b[7]",
-      "delta": 0.5300000000000011,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-clust1",
-      "engine": "neato",
-      "opClass": "cluster:cluster_c1/_draw_/op[1].p[0]",
-      "delta": 0.8499999999999943,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-Symbol",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 2.7900000000000773,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-clust1",
-      "engine": "neato",
-      "opClass": "cluster:cluster_c1/_draw_/op[1].p[3]",
-      "delta": 0.6500000000000057,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-jcctree",
-      "engine": "neato",
-      "opClass": "edge:DEF2->ID2#0/_draw_/op[1].b[1]",
-      "delta": 0.6000000000000227,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1990",
-      "engine": "neato",
-      "opClass": "edge:0\u22ef7 \u2770A\u2771->0\u22ef1 'a'#0/_draw_/op[1].b[ptCount]",
-      "delta": 30.44,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-grdshapes",
-      "engine": "neato",
-      "opClass": "edge:n15->n16#0/_draw_/op[1].b[0]",
-      "delta": 3.6400000000000006,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-url",
-      "engine": "neato",
-      "opClass": "cluster:cluster0/_draw_/op[2].P[4]",
-      "delta": 18,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-clust1",
-      "engine": "neato",
-      "opClass": "cluster:cluster_c1/_draw_/op[1].p[3]",
-      "delta": 0.6500000000000057,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2183",
-      "engine": "neato",
-      "opClass": "edge:c->m#0/_draw_/op[2].b[5]",
-      "delta": 1,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-grammar",
-      "engine": "neato",
-      "opClass": "edge:n10->n11#0/_draw_/op[1].b[0]",
-      "delta": 0.660000000000025,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-KW91",
-      "engine": "neato",
-      "opClass": "edge:Act_3->Ext_2#0/_draw_/op[1].b[7]",
-      "delta": 0.5600000000000023,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sr_box",
-      "engine": "neato",
-      "opClass": "edge:node62->node63#0/_draw_/op[1].b[7]",
-      "delta": 0.6000000000001364,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sl_box",
-      "engine": "neato",
-      "opClass": "edge:node82->node86#0/_draw_/op[1].b[7]",
-      "delta": 0.6000000000001364,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1436",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 598.004,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-Helvetica",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 2.2000000000000455,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-train11",
-      "engine": "neato",
-      "opClass": "edge:st10->st0#0/_ldraw_/op[2].T[0]",
-      "delta": 5.569999999999993,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-grammar",
-      "engine": "neato",
-      "opClass": "edge:n31->n32#0/_hdraw_/op[3].P[1]",
-      "delta": 0.8199999999999932,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sl_box_dbl",
-      "engine": "neato",
-      "opClass": "edge:node82->node86#0/_draw_/op[1].b[7]",
-      "delta": 0.6000000000001364,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-shells",
-      "engine": "neato",
-      "opClass": "edge:Thompson->Mashey#0/_draw_/op[1].b[5]",
-      "delta": 0.8000000000000114,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-viewfile",
-      "engine": "neato",
-      "opClass": "edge:printf->write#0/_hdraw_/op[3].P[3]",
-      "delta": 0.8100000000000023,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-sr_box_dbl",
-      "engine": "neato",
-      "opClass": "edge:node62->node63#0/_draw_/op[1].b[7]",
-      "delta": 0.6000000000001364,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1949",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 0.9000000000000341,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-newarrows",
-      "engine": "neato",
-      "opClass": "edge:Z->H#0/_draw_/op[1].b[ptCount]",
-      "delta": 42.71000000000001,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2095",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 9.030000000000086,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-trapeziumlr",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 42.129999999999995,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2193",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1.920000000000016,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-trapeziumlr",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 76.47000000000003,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1447",
-      "engine": "neato",
-      "opClass": "edge:0x00400ba6->0x00400b68#0/_draw_/op[1].b[0]",
-      "delta": 0.9300000000000068,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-newarrows",
-      "engine": "neato",
-      "opClass": "edge:Z->H#0/_draw_/op[1].b[ptCount]",
-      "delta": 42.71000000000001,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.x86-arrows_dot",
-      "engine": "neato",
-      "opClass": "edge:Z->H#0/_draw_/op[1].b[ptCount]",
-      "delta": 41.56999999999999,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "macosx-arrows_dot",
-      "engine": "neato",
-      "opClass": "edge:Z->H#0/_draw_/op[1].b[ptCount]",
-      "delta": 41.56999999999999,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-arrows_dot",
-      "engine": "neato",
-      "opClass": "edge:Z->H#0/_draw_/op[1].b[ptCount]",
-      "delta": 41.56999999999999,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2619_2",
-      "engine": "neato",
-      "opClass": "edge:I57->F7#0/_draw_/op[2].b[0]",
-      "delta": 0.8100000000000023,
-      "rationale": "A1 drift + degenerate-clip amplification (diagnosed 2026-07-24): all 6 node positions differ only 0.13-0.18pt (within the 0.5 iterative bar); the sole over-bar values are 4 x-coords of ONE sub-point-long stub spline (I57->F7 between overlapping nodes), where clipping a near-zero-length bezier amplifies the in-bar endpoint drift to 0.81pt. Spline shape matches modulo the clip start; no port stage implicated."
-    },
-    {
-      "id": "nshare-dotsplines_dot",
-      "engine": "neato",
-      "opClass": "edge:7th Edition->Ultrix-11#0/_draw_/op[1].b[0]",
-      "delta": 0.82000000000005,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-fig6",
-      "engine": "neato",
-      "opClass": "edge:2->18#0/_draw_/op[1].b[0]",
-      "delta": 1.1200000000000045,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-fig6",
-      "engine": "neato",
-      "opClass": "edge:2->18#0/_draw_/op[1].b[0]",
-      "delta": 1.1200000000000045,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b15",
-      "engine": "neato",
-      "opClass": "edge:FaceBack->JumpVertical#0/_draw_/op[1].b[4]",
-      "delta": 0.7599999999999909,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-dotsplines_dot1",
-      "engine": "neato",
-      "opClass": "edge:7th Edition->Ultrix-11#0/_draw_/op[1].b[0]",
-      "delta": 0.82000000000005,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-weight_dot",
-      "engine": "neato",
-      "opClass": "edge:7th Edition->UniPlus+#0/_draw_/op[1].b[1]",
-      "delta": 1.079999999999984,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-crazy",
-      "engine": "neato",
-      "opClass": "edge:7th Edition->8th Edition#0/_draw_/op[1].b[1]",
-      "delta": 0.82000000000005,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-overlap_neato1",
-      "engine": "neato",
-      "opClass": "edge:Almgren->vd#0/_draw_/op[1].b[4]",
-      "delta": 1.2099999999999795,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-crazy",
-      "engine": "neato",
-      "opClass": "edge:7th Edition->8th Edition#0/_draw_/op[1].b[1]",
-      "delta": 0.8700000000000045,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-pgram",
-      "engine": "neato",
-      "opClass": "edge:Parallelogram->A#0/_draw_/op[1].b[0]",
-      "delta": 35.75999999999999,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-ngk10_4",
-      "engine": "neato",
-      "opClass": "edge:14->18#0/_draw_/op[1].b[2]",
-      "delta": 0.9499999999999886,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-ngk10_4",
-      "engine": "neato",
-      "opClass": "edge:14->18#0/_draw_/op[1].b[2]",
-      "delta": 0.9499999999999886,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-pgram",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 42.72,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.x86-rankdir_dot1",
-      "engine": "neato",
-      "opClass": "edge:4.1 BSD->8th Edition#0/_draw_/op[1].b[0]",
-      "delta": 0.8300000000000409,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-rankdir_dot1",
-      "engine": "neato",
-      "opClass": "edge:32V->3 BSD#0/_draw_/op[1].b[1]",
-      "delta": 0.8300000000000409,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.x86-rankdir_dot2",
-      "engine": "neato",
-      "opClass": "edge:4.2 BSD->Ultrix-32#0/_draw_/op[1].b[1]",
-      "delta": 0.7100000000000364,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-rankdir_dot",
-      "engine": "neato",
-      "opClass": "edge:3 BSD->4 BSD#0/_draw_/op[1].b[5]",
-      "delta": 0.9199999999999591,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1332",
-      "engine": "neato",
-      "opClass": "edge:c5381->c5382#0/_draw_/op[1].b[5]",
-      "delta": 1.2300000000000182,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2239",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 392.00000000000006,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-mode",
-      "engine": "neato",
-      "opClass": "edge:ccsfpr2_0_1t_99->359100#0/_draw_/op[1].b[0]",
-      "delta": 2.8599999999999,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-b29",
-      "engine": "neato",
-      "opClass": "edge:Node14650->Node14649#0/_ldraw_/op[2].T[0]",
-      "delta": 110.54999999999998,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-b29",
-      "engine": "neato",
-      "opClass": "edge:Node14650->Node14649#0/_ldraw_/op[2].T[1]",
-      "delta": 102.72000000000003,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2620",
-      "engine": "neato",
-      "opClass": "edge:visualcron_skat_pere_archive_reciept_org->visualcron#0/_draw_/op[1].b[6]",
-      "delta": 0.5400000000000205,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b81",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 36559,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "share-b102",
-      "engine": "neato",
-      "opClass": "edge:Node103->Node79#0/_draw_/op[2].b[0]",
-      "delta": 4.2000000000000455,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.i386-b102",
-      "engine": "neato",
-      "opClass": "edge:Node103->Node79#0/_draw_/op[2].b[0]",
-      "delta": 4.2000000000000455,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-b102",
-      "engine": "neato",
-      "opClass": "edge:Node109->Node79#0/_draw_/op[2].b[1]",
-      "delta": 1.240000000000009,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2343",
-      "engine": "neato",
-      "opClass": "edge:node802->node6132#0/_draw_/op[2].b[7]",
-      "delta": 0.5500000000000682,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.x86-root_circo",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 65.05999999999995,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2095_1",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 3750.05,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-root_circo",
-      "engine": "neato",
-      "opClass": "edge:1->189E#0/_draw_/op[1].b[0]",
-      "delta": 85.22000000000003,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "linux.x86-root_twopi",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 38.00999999999999,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-root_twopi",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 19.690000000000055,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2475_2",
-      "engine": "neato",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 13237.49,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1652",
-      "engine": "neato",
-      "opClass": "edge:Op_10->Op_35#0/_ldraw_/op[2].T[1]",
-      "delta": 68.80999999999995,
-      "rationale": "layout drift inherited from the neato xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-fdp",
-      "engine": "fdp",
-      "opClass": "cluster:clusterA/nodes[members]",
-      "delta": 7.900000000000034,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-b145",
-      "engine": "fdp",
-      "opClass": "cluster:cluster_foo/nodes[members]",
-      "delta": 6.909999999999997,
-      "rationale": "layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "2183",
       "engine": "fdp",
       "opClass": "edge:a->b#0/_draw_/op[1].b[ptCount]",
@@ -783,13 +286,6 @@
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "2521",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 12,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-p4",
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
@@ -955,13 +451,6 @@
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 1.3799999999999955,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "graphs-ports",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 1.4300000000000637,
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -1287,20 +776,6 @@
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "linux.x86-html2_dot",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 5.600000000000023,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-html2_dot",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 5.6299999999999955,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "share-pm2way",
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
@@ -1389,13 +864,6 @@
       "engine": "sfdp",
       "opClass": "edge:0->1#0/_draw_/op[1].b[0]",
       "delta": 1.3100000000000023,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "1453",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 3.299999999999983,
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -1490,20 +958,6 @@
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "linux.x86-ports_dot",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 2.2200000000000273,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "nshare-ports_dot",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[4]",
-      "delta": 2.230000000000018,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "windows-alf",
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
@@ -1588,13 +1042,6 @@
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "share-shells",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1.1300000000000239,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-crazy",
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
@@ -1606,13 +1053,6 @@
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
       "delta": 6.6299999999999955,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "windows-shells",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 1.1299999999999955,
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
@@ -2036,13 +1476,6 @@
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {
-      "id": "2239",
-      "engine": "sfdp",
-      "opClass": "[graph]/_draw_/op[2].P[3]",
-      "delta": 7.5,
-      "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
       "id": "graphs-viewport",
       "engine": "sfdp",
       "opClass": "[graph]/_draw_/op[2].P[3]",
@@ -2313,13 +1746,6 @@
       "engine": "twopi",
       "opClass": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
       "delta": 42.50999999999999,
-      "rationale": "layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
-    },
-    {
-      "id": "2239",
-      "engine": "twopi",
-      "opClass": "edge:srtpdec1_0x5641244e6b50_rtcp_src_0x7f06a000ebd0->_proxypad10_0x5641244e58c0#0/_ldraw_/op[2].T[1]",
-      "delta": 10.800000000000011,
       "rationale": "layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24."
     },
     {

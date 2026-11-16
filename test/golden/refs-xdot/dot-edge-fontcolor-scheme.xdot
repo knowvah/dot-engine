@@ -16,6 +16,30 @@ strict digraph {
 		label="colorscheme=x11",
 		pos="79.767,18",
 		width=2.2157];
+	c	[_draw_="c 7 -#000000 e 255.77 106.8 78.7 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 255.77 102.6 0 98.09 15 -colorscheme=svg ",
+		height=0.5,
+		label="colorscheme=svg",
+		pos="255.77,106.8",
+		width=2.186];
+	d	[_draw_="c 7 -#000000 e 255.77 18 78.7 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 255.77 13.8 0 98.09 15 -colorscheme=svg ",
+		height=0.5,
+		label="colorscheme=svg",
+		pos="255.77,18",
+		width=2.186];
+	e	[_draw_="c 7 -#000000 e 451.77 106.8 99.07 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 451.77 102.6 0 127.62 20 -colorscheme=paired12 ",
+		height=0.5,
+		label="colorscheme=paired12",
+		pos="451.77,106.8",
+		width=2.7518];
+	f	[_draw_="c 7 -#000000 e 451.77 18 99.07 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 451.77 13.8 0 127.62 20 -colorscheme=paired12 ",
+		height=0.5,
+		label="colorscheme=paired12",
+		pos="451.77,18",
+		width=2.7518];
 	a -> b	[_draw_="c 7 -#000000 B 4 79.77 88.65 79.77 76.96 79.77 61.19 79.77 47.62 ",
 		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 83.27 47.92 79.77 37.92 76.27 47.92 ",
 		_hldraw_="F 14 11 -Times-Roman c 7 -#0000ff T 66.55 40.61 0 26.43 4 -head ",
@@ -31,18 +55,6 @@ strict digraph {
 		pos="e,79.767,36.41 79.767,88.651 79.767,76.958 79.767,61.192 79.767,47.618",
 		tail_lp="70.825,80.251",
 		taillabel=tail];
-	c	[_draw_="c 7 -#000000 e 255.77 106.8 78.7 18 ",
-		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 255.77 102.6 0 98.09 15 -colorscheme=svg ",
-		height=0.5,
-		label="colorscheme=svg",
-		pos="255.77,106.8",
-		width=2.186];
-	d	[_draw_="c 7 -#000000 e 255.77 18 78.7 18 ",
-		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 255.77 13.8 0 98.09 15 -colorscheme=svg ",
-		height=0.5,
-		label="colorscheme=svg",
-		pos="255.77,18",
-		width=2.186];
 	c -> d	[_draw_="c 7 -#000000 B 4 255.77 88.65 255.77 76.96 255.77 61.19 255.77 47.62 ",
 		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 259.27 47.92 255.77 37.92 252.27 47.92 ",
 		_hldraw_="F 14 11 -Times-Roman c 7 -#32cd32 T 242.55 40.61 0 26.43 4 -head ",
@@ -58,18 +70,6 @@ strict digraph {
 		pos="e,255.77,36.41 255.77,88.651 255.77,76.958 255.77,61.192 255.77,47.618",
 		tail_lp="246.83,80.251",
 		taillabel=tail];
-	e	[_draw_="c 7 -#000000 e 451.77 106.8 99.07 18 ",
-		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 451.77 102.6 0 127.62 20 -colorscheme=paired12 ",
-		height=0.5,
-		label="colorscheme=paired12",
-		pos="451.77,106.8",
-		width=2.7518];
-	f	[_draw_="c 7 -#000000 e 451.77 18 99.07 18 ",
-		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 451.77 13.8 0 127.62 20 -colorscheme=paired12 ",
-		height=0.5,
-		label="colorscheme=paired12",
-		pos="451.77,18",
-		width=2.7518];
 	e -> f	[_draw_="c 7 -#000000 B 4 451.77 88.65 451.77 76.96 451.77 61.19 451.77 47.62 ",
 		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 455.27 47.92 451.77 37.92 448.27 47.92 ",
 		_hldraw_="F 14 11 -Times-Roman c 7 -#6a3d9a T 438.55 40.61 0 26.43 4 -head ",

@@ -17,6 +17,7 @@ import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareSvg, type Diff } from '../golden/compare.js';
@@ -40,11 +41,11 @@ function scrubHome(s: string): string {
   const home = homedir();
   return home ? s.split(home).join('~') : s;
 }
-const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
+const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
+const GVBINDIR = process.env.GVBINDIR ?? ORACLE_GVBINDIR;
 // Oracle-cache identity. The cache stores native `dot` SVGs keyed by input id;
 // a bare shared dir silently cross-contaminated different oracles (the headless
-// /tmp/ghl rules survey vs a pango plugin-dir baseline read each other's
+// /tmp/ghl1611 rules survey vs a pango plugin-dir baseline read each other's
 // cached SVGs — same id, same dir) and went stale when `dot` was rebuilt (only
 // missing entries are (re)written). Namespace the default cache by a signature
 // of (binary, GVBINDIR, binary mtime) so oracles never collide and a rebuild

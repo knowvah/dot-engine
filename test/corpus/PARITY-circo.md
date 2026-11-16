@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 929 (generated 2026-10-28T19:17:59.698Z)
-- **Oracle:** dot 16.1.0
-- **pass:** 921 (99.7%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 2
+- **Surveyed:** 898 (generated 2026-11-13T16:26:01.054Z)
+- **Oracle:** dot 16.1.1
+- **pass:** 887 (99.3%) · **diverged (tracked):** 4 · **accepted (documented, won't-fix):** 2
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 5 (excluded from pass %) · **oracle-nondeterministic:** 0 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (2) — documented, not chased
@@ -29,11 +29,14 @@ table below.
 | [`1855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1855.dot) | 599 | A1 | 599 xdot draw-op diffs; the 31-leaf star settles in the mirror basin of the oracle's layout (node draw ops within 0.12pt, routed splines within 0.71pt; all 599 numeric). Mechanism: with circpos.c's fma contraction and evaluation order mirrored, 31/32 pre-adjust positions are bit-exact; node 22 differs by 1 ULP because V8 and Apple libm round cos/sin differently at 3 positionChildren angles (cos 0x1.c7bd892b3aa91p+1, sin 0x1.fd5b5d123280bp+1, cos 0x1.0c152382d7364p+2). PRISM's Delaunay then flips one near-cocircular diagonal on the mirror axis (prism iteration 1: edge 15-17 vs 16-18). Injection A/B: native cos/sin fed to the port -&gt; every pre-adjust position bit-exact, 0 diffs; V8 cos/sin fed to the native build -&gt; the oracle's layout in 22/30 runs, the port's in 8/30 (GTS edge order depends on allocation addresses). | known-divergences.md#a1-twopi-arrows-family |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) |  | A10 | port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries | known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines |
 
-## Diverged (1)
+## Diverged (4)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | 16326502 | 533 | `edge:100476->100486#0 _draw_ edge:100476->100486#0/_draw_/op[1].unfilled_bezier[1]: 926234675433.21 vs 926234675433.2` |
+| [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | 3451 | 214 | `edge:4564909->4564918#0 _draw_ edge:4564909->4564918#0/_draw_/op[2].unfilled_bezier[0]: 302.74 vs 302.69` |
+| [`1990`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1990.dot) | 610 | 36 | `edge:1⋯7 ❰A❱->2⋯7 ❰A❱#0 _draw_ edge:1⋯7 ❰A❱->2⋯7 ❰A❱#0/_draw_/op[1].unfilled_bezier[ptCount]: 14 vs 8` |
+| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | 9735186 | 1 | `edge:1242_589985->1242_589980#0 _hdraw_ edge:1242_589985->1242_589980#0/_hdraw_/op[3].filled_polygon[2]: 230577088.9 vs 230577088.89` |
 
 ## Errors and timeouts (5)
 
@@ -41,10 +44,10 @@ table below.
 |---|---|---|
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | oracle-error | Command failed: dot -K circo -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot |
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | oracle-error | Command failed: dot -K circo -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot |
+| [`1658`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1658.dot) | oracle-error | Command failed: dot -K circo -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1658.dot |
 | [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle-error | spawnSync dot ETIMEDOUT |
 
-**oracle errors:** 10 native-crash (documented, excluded) / 5 timeout-flake (excluded this run, note to retry)
-_Passing ids (921) are omitted for brevity — the full roster is in
+**oracle errors:** 5 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
+_Passing ids (887) are omitted for brevity — the full roster is in
 `parity-circo.json`._

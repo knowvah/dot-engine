@@ -16,12 +16,13 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir, hostname, cpus } from 'node:os';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { performance } from 'node:perf_hooks';
 
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
-const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
+const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
+const GVBINDIR = process.env.GVBINDIR ?? ORACLE_GVBINDIR;
 const MANIFEST = new URL('./corpus-manifest.json', import.meta.url);
 const OUT = new URL('./native-timings.json', import.meta.url);
 const CAP_MS = Number(process.env.CAPTURE_CAP_MS ?? 300_000);

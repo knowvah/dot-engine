@@ -4,7 +4,7 @@
 //
 // Walks the 759 SVG-conformant corpus items sorted by input file size
 // (small → large, AD-2), rendering each to xdot through the native oracle
-// (`dot -Txdot`, GVBINDIR=/tmp/ghl — AD-4) and through the port
+// (`dot -Txdot`, GVBINDIR=/tmp/ghl1611 — AD-4) and through the port
 // (render-one-xdot.ts, T1), and diffs the two with the semantic comparator
 // (compare-xdot.ts, T2). Two modes (AD-6):
 //
@@ -30,6 +30,7 @@ import {
   appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync,
 } from 'node:fs';
 import { homedir } from 'node:os';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareXdot, type XdotDiff } from '../golden/compare-xdot.js';
@@ -39,8 +40,8 @@ import {
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
-const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
+const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
+const GVBINDIR = process.env.GVBINDIR ?? ORACLE_GVBINDIR;
 const RENDER_ONE = join(REPO, 'test/corpus/render-one-xdot.ts');
 const PARITY = new URL('./parity.json', import.meta.url);
 const XDOT_PARITY = new URL('./xdot-parity.json', import.meta.url);

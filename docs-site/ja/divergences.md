@@ -1,5 +1,5 @@
 ---
-sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
+sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -73,7 +73,7 @@ C のソースが仕様であり、一覧にない差異は、受け入れられ
 
 > **スコープ。以前は未測定の注意書きだったが、現在は部分的に測定済み。**
 > **dot エンジンのメイン SVG 調査** (`test/corpus/survey.ts`) は依然として
-> **dot のみ**です。ネイティブオラクルは `GVBINDIR=/tmp/ghl` の下で動作し、これは
+> **dot のみ**です。ネイティブオラクルは `GVBINDIR=/tmp/ghl1611` の下で動作し、これは
 > `core` と `dot_layout` のプラグイン**のみ**をシンボリックリンクします
 > （`test/corpus/gen-headless-gvbindir.sh` はちょうど `core dot_layout` をループします
 > — `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` のレイアウトプラグインは存在しません）。
@@ -110,9 +110,9 @@ C のソースが仕様であり、一覧にない差異は、受け入れられ
 現役の差異なし」まで**狭める**ことであり、プラットフォーム間の注意書きを取り除くことでは決してありません。
 これまでの結果（後述）はその上限を守っています。`circo`/`twopi`/`osage` は、それぞれ
 少数の本物の A1/A9 の事例を発見して根本原因を特定しました。また `neato`/`fdp`/`sfdp` は
-929 件の母集団（graphviz 16.1.0）でネイティブの 0.5pt 以内にそれぞれ 99.8/98.0/68.1% が入っており、
+898 件の母集団（graphviz 16.1.1）でネイティブの 0.5pt 以内にそれぞれ 99.8/98.0/68.2% が入っており、
 これは移植された演算（`fma.ts`、`arm-pow.ts`、一致させた PRNG）がほとんどのグラフで
-成り立っていることを意味します。そして 929 件の母集団に含まれる残るすべての diverged ID は、未分類のずれとして放置されるのではなく、
+成り立っていることを意味します。そして 898 件の母集団に含まれる残るすべての diverged ID は、未分類のずれとして放置されるのではなく、
 （ソルバーのずれかポートの欠陥かを）注入によって個別に原因が特定されています。
 後述の反復型エンジンの特性評価を参照してください。
 
@@ -177,16 +177,16 @@ pathplan の `directVis` の `intersect()` は、障害物の頂点が線分の�
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 の別の「Iterative engines (±0.5 characterization)」セクションに表示します。これは
 この文書の他の箇所の ±0.01 の決定的な合格率とは、明示的に**比較できません**。
-graphviz 16.1.0 に対する現在の件数（929 件の母集団。合格率は、[適合性](./conformance.md)に従い、
+graphviz 16.1.1 に対する現在の件数（898 件の母集団。合格率は、[適合性](./conformance.md)に従い、
 C のオラクルがレンダリングできない入力と、ネイティブの出力が実行ごとに変わる入力を除く）：
 
 | エンジン | 調査数 | ±0.5pt 以内 | 非適合 | ポートエラー / タイムアウト | オラクルエラー | オラクル非決定的 |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
+| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
 
-`fdp` の非決定的な 13 件の入力は、ネイティブの出力が実行ごとに変わるもので、合格率から除外しています。ポートエラーの 1 件は `1879` で、ポートが対応していない `splines=compound` のルーティングを必要とします。
+`fdp` の非決定的な 11 件の入力は、ネイティブの出力が実行ごとに変わるもので、合格率から除外しています。ポートエラーの 1 件は `1879` で、ポートが対応していない `splines=compound` のルーティングを必要とします。
 
 （`fdp` の合格率が
 77.5% から上がったのは、以前にコミットされたスイープが、前回のミッション時点のポートの状態より
@@ -198,12 +198,12 @@ C のオラクルがレンダリングできない入力と、ネイティブの
 neato の未移植だった `user_pos`/`P_SET` の処理、エンジン初期化の統合、
 そして `setEdgeType` のマクロと関数の修正です。）
 
-最初のスイープの時点と違い、929 件の母集団の diverged のすべての行が graphviz 16.1.0 に対して
+最初のスイープの時点と違い、898 件の母集団の diverged のすべての行が graphviz 16.1.1 に対して
 個別に原因特定されています。注入ハーネス (`test/corpus/attribute-divergence.ts`) が、
 ネイティブオラクルのルーティング前の `ND_pos` をポートに与えて再比較します。現在の
-diverged な ID は、2 件を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
+diverged な ID は、sfdp の `2556` を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
 ポートのルーティングと出力がオラクルを正確に再現する）です。そのうち 2 件は個別に
-受け入れられた ID ごとの残差で、sfdp の `241_0` のホスト libm `pow` のずれ（T28 で再診断）と、
+受け入れられた ID ごとの残差で、sfdp の `241_0` のホスト libm `pow` のずれ（T28 で再診断。`12dddc48` 以降、その注入行は `drift-exonerated` です）と、
 sfdp `2556` の NaN レイアウトです。fdp の `241_0` は
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 以降パスしています（A9 の下の fdp の段落を参照）。fdp `2471` と sfdp `2371` は、以前は注入後もエッジラベルの位置 (`lp`) が一致せず、xlabel 配置器が別の候補を選んでいました。`2471` は、ポートの `dotneato_closest` が clang の融合された de Casteljau 評価および DIST2 と同じ丸めをするようになって解消しました。それまではエッジラベルのアンカーが 1〜2 ULP ずれ、配置器の厳密な包含判定が反転していました。`2371` は、ポートの R 木が C と同様に矩形を値としてコピーするようになって解消しました。`2471` のネイティブの fdp レイアウトは実行ごとに変わるため、その行は 1 回の実行を記録したものです。（sfdp の `42` は A1 のずれです。
 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md) を参照。）後述のクラスの受け入れは、この潔白とされた集合を正式化するものです。
@@ -212,7 +212,7 @@ sfdp `2556` の NaN レイアウトです。fdp の `241_0` は
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md))。
 
-**sfdp ソルバーのずれが始まる場所（パート 10、T2）。** 計装したネイティブの sfdp を小さな id でポートと突き合わせて追跡すると、反発力の `pow(dist, 1-p)` の最下位ビットで初めて食い違います（`lib/sfdpgen/spring_electrical.c:625,617`、ポートは `spring-electrical.ts:260`）。`flatedge` では、`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` はネイティブで `...8811p+2`、ポートで `...8812p+2` になり、`graphs-p` と `1767` も同じ形で始まります。適応冷却がこのビットを増幅します。反復 5 で `x[0]` に達し、`max|dx|` は反復 100 で 2.4e-9、200 で 3.9e-5 となり、ステップは反復 244 で反転します。2 つの制御実験がこれを裏付けます。ちょうどこの 8 回の呼び出しにネイティブのビットを与えると `flatedge` の 62090 行のトレースが一致し、Node-API アドオン越しに macOS の本物の `pow` を使うと、通らなかった 292 件の id のうち 288 件でトレースがビット単位で一致します（残り 4 件はすべて `overlap=false` で、`xfinal` でのみ異なります）。ソルバー、マルチレベル、クアッドツリー、疎コードの演算順序と融合は除外されました。これはホストの libm であり、A1 の下で受け入れられます（下の既知の欠落の一覧の `pow` の項を参照）。`src/` は変更されていないので、件数は 929 件中 632 件のままです。macOS のみの実験は 929 件中約 923 件に達しましたが、これはオラクルの `pow` を測ったものであり、ライブラリがあらゆるホストでできることではありません。反発力に `Math.pow` を使うと 292 件中 153 件が通りますが、現在通っている 6 件の id が退行するため、適用しませんでした。表の sfdp 行は [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) の行と一致します。乖離 1 件と受容 295 件で 296 件になり、さらに 1 件の id がオラクル非決定として同ファイルに載っています。
+**sfdp ソルバーのずれが始まる場所（パート 10、T2）。** 計装したネイティブの sfdp を小さな id でポートと突き合わせて追跡すると、反発力の `pow(dist, 1-p)` の最下位ビットで初めて食い違います（`lib/sfdpgen/spring_electrical.c:625,617`、ポートは `spring-electrical.ts:260`）。`flatedge` では、`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` はネイティブで `...8811p+2`、ポートで `...8812p+2` になり、`graphs-p` と `1767` も同じ形で始まります。適応冷却がこのビットを増幅します。反復 5 で `x[0]` に達し、`max|dx|` は反復 100 で 2.4e-9、200 で 3.9e-5 となり、ステップは反復 244 で反転します。2 つの制御実験がこれを裏付けます。ちょうどこの 8 回の呼び出しにネイティブのビットを与えると `flatedge` の 62090 行のトレースが一致し、Node-API アドオン越しに macOS の本物の `pow` を使うと、通らなかった 292 件の id のうち 288 件でトレースがビット単位で一致します（残り 4 件はすべて `overlap=false` で、`xfinal` でのみ異なります）。ソルバー、マルチレベル、クアッドツリー、疎コードの演算順序と融合は除外されました。これはホストの libm であり、A1 の下で受け入れられます（下の既知の欠落の一覧の `pow` の項を参照）。`src/` は変更されていないので、件数は 929 件中 632 件のままです。macOS のみの実験は 929 件中約 923 件に達しましたが、これはオラクルの `pow` を測ったものであり、ライブラリがあらゆるホストでできることではありません。反発力に `Math.pow` を使うと 292 件中 153 件が通りますが、現在通っている 6 件の id が退行するため、適用しませんでした。表の sfdp 行は [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) の行と一致します。graphviz 16.1.1 では乖離 0 件と受容 286 件で 286 件になり、オラクル非決定として同ファイルに載っている id はありません。
 
 **A1-drift クラスの受け入れ（反復型エンジン、メンバーシップは算出）。**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json` は、
@@ -278,7 +278,7 @@ bbox は一致し、パスデータの差分はゼロ、ラベルアンカーの
 
 **調査の両側が同じ推定器を実行する — 計測は無力化されている。**
 ネイティブの `dot` オラクルは、ヘッドレスの `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl`) の下で動作し、これは
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`) の下で動作し、これは
 `core` と `dot_layout` のプラグインのみをシンボリックリンクします — `gd`/`pango`/`quartz` の
 テキストレイアウトプラグインはありません。そのスロットが空だと、graphviz は組み込みの
 `estimate_textspan_size` にフォールバックします。TypeScript ポートの `EstimateTextMeasurer`
@@ -418,7 +418,7 @@ C を正確に再現し（node-x のずれ 53/76→0/76、スプライン 7→4 
 `normv`（413）、`B01`（488）、`B23`（494）に対する clang の `fp-contract` の融合です。
 許容的な同順位解決は廃止されました。C はそのような同順位で平行移動不変ではないため、`241_0` の
 結節点は C のルーティング座標系に固定されています。これにより `2368`、`2371`、`2413_1`、
-`2413_2`、`graphs-b100`、`graphs-b104`、`graphs-decorate` がクローズされました。
+`2413_2`、`graphs-b100`、`graphs-b104`、`graphs-decorate` がクローズされました。 graphviz 16.1.1 では、無関係な理由で `2368` が再び diverge します。ネイティブ側の `flat_reorder` の変更です（[#158](#pending-16-1-1-ports)）。
 
 `241_1` は `hypot` の同順位ではありませんでした。`87347711`（`fix(dot): match port-less edge
 endpoints in flat-adjacent aux layout`）でクローズされました。C は、メインエッジを共有する
@@ -1130,6 +1130,23 @@ plain と stderr は一致）、`accepted-divergences-engines.json` と
 
 ---
 
+## 保留中の 16.1.1 ポート {#pending-16-1-1-ports}
+
+オラクルは graphviz 16.1.0 から 16.1.1 に移りました（[ADR-0002](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0002-graphviz-16.1.1-oracle.md)）。以下の上流の変更はそれぞれ、変更をポートするまでは、その箇所でなお 16.1.0 に従っているポートから一部の id を遠ざけます。件数は再ベースラインの分類（`plans/graphviz-16-1-1-rebaseline/classification/`）に基づいており、この分類は 2 つのオラクルの間で判定が変わったものをすべて原因まで追跡したものです。これらは受容済みの差分ではありません。いずれも、それぞれの issue で進行中の作業です。
+
+| issue | 上流の変更 | 16.1.1 で動いた id | エンジン |
+|---|---|---|---|
+| [#158](https://github.com/knowvah/dot-engine/issues/158) | `flat_reorder` は、流入するフラットエッジが制約されているランクを飛ばす | サーベイの 34 件の id が conformant → diverged（23 件）または structural-match（11 件）に変わり、その中に `2368` と `2592` があります。`2854_1` と `2855` はネイティブでハングしなくなり、いまは conformant です。ゴールデン: `dot-newrank-cluster-ranksame`、`dot-pack-flat-label`、および 10 件の `pt-issue-*` フィクスチャ（`test/golden/known-failing.json`） | `dot`; この 34 件の id は、サーベイの conformant な id を対象とするすべてのエンジンの走査からも外れる |
+| [#164](https://github.com/knowvah/dot-engine/issues/164) | libc の `rand()` による ortho セグメントの並べ替え | 6: circo `1658` (いまはオラクルエラー), `1880`, `1990`; twopi `2168_5`, `2183`, `2643` | `circo`, `twopi` (`splines=ortho`) |
+| [#149](https://github.com/knowvah/dot-engine/issues/149) | `write_body` は本体のノードの後に、作成順でエッジを書き出す | 2: `1514`, `1581` | `-Tdot`, `-Txdot` 出力 |
+| [#162](https://github.com/knowvah/dot-engine/issues/162) | 補助エッジが長すぎるときはレイアウトを失敗させる | 1: `1314` | `dot` |
+| [#159](https://github.com/knowvah/dot-engine/issues/159) | `flat_edges` は、abomination ランクについてラベル付きの非隣接 `other` エッジを数える | 1: `2723` (ネイティブは 16.1.0 でクラッシュしていたが、いまは終了コード 1 で SVG を出力する。ポートはまだ出力しない) | `dot` |
+| [#151](https://github.com/knowvah/dot-engine/issues/151) | すべてのボックスが縮退しているパスを拒否する | 1: `2778` (`2723` と同じパターン) | `dot` |
+| [#163](https://github.com/knowvah/dot-engine/issues/163) | ドキュメントのない `compact` 属性が削除された | コーパスの id なし; ゴールデン `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
+| [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | 16.1.1 のその他の挙動変更 | コーパスにもゴールデンにもなし | — |
+
+各変更に到達する入力は [#148](https://github.com/knowvah/dot-engine/issues/148) で追跡しています。
+
 ## 追跡中のロングテール（`dot` の属性とエッジケース） {#tracked-long-tail-dot-attribute-edge-case}
 
 **デフォルト**では、`dot` エンジンはゴールデンコーパス上で、厳密な決定的許容誤差の範囲で
@@ -1213,7 +1230,7 @@ neato、twopi、circo、sfdp で依然として `UNSUPPORTED_FEATURE` を投げ�
   計装したネイティブの sfdp で診断しました。位置は、斥力の 1 つの項
   `pow(dist, 1 - p)`（`spring_electrical.c`、`p = -1` なので `pow(x, 2)`）が、macOS の libm から
   `x*x` より 1 ulp 小さい値を返すまで、ビット単位で同一のままです
-  （`pow(1.4116727416983157, 2)`：libm `1.9928199296540394`、正しく丸めた値は
+  （`pow(1.4116727416983157, 2)`：libm `1.9928198986540394`、正しく丸めた値は
   `…396`。macOS の `pow(v, 2) != v*v` は、サンプルした 16201 個の `v` のうち 20 個）。
   これが反復の `Fnorm` を最下位ビットで変え、sfdp の適応的な冷却がそれを
   異なる（しばしば鏡像の）レイアウトへと増幅します。ポートの `armPow` は ARM の

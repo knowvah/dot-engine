@@ -41,8 +41,9 @@ const DOC_CLAIMS_CONFORMANT = [
   // A8 ortho instance 2620 collapsed 2026-07-11 (faithful sgraph adjacency-spill + chancmpid)
   '2620',
   // A3 (hypot tie) and A8 (Proutespline FMA) members, closed: conformant at
-  // graphviz 16.1 in the fresh sweep (T13).
-  '2368', '241_1', '2413_1', '2413_2', 'graphs-decorate', '2371', '2646',
+  // graphviz 16.1 in the fresh sweep (T13). `2368` left this list at 16.1.1:
+  // native's flat_reorder change (#158) diverges it until the port follows.
+  '241_1', '2413_1', '2413_2', 'graphs-decorate', '2371', '2646',
 ];
 
 // Graphs the doc cites as CURRENT accepted divergences (A2/A3 examples). If one

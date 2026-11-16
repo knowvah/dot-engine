@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-24T03:49:23.893Z",
-  "oracleSha1": "0e0164de26a43dc43340f44915b32d7f7616c4a1",
+  "generatedAt": "2026-11-13T16:49:05.374Z",
+  "oracleSha1": "43f37451c166faa1b308d502c65140b88c238e54",
   "tolerance": 0.5,
   "results": [
     {
@@ -127,7 +127,7 @@
     {
       "id": "graphs-b51",
       "verdict": "drift-exonerated",
-      "baseDiffs": 3760,
+      "baseDiffs": 3856,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",

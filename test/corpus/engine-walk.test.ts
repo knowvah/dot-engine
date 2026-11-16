@@ -33,6 +33,7 @@ import {
   type EngineWalkRow,
 } from './engine-walk.js';
 import { preventIdleSleep, sleepInflated } from './keep-awake.js';
+import { ORACLE_GVBINDIR } from './oracle-paths.mjs';
 
 const DEFAULTS: BudgetConfig = budgetConfigFromEnv({});
 const NO_COSTS: CostTables = { portMs: {}, nativeMs: {} };
@@ -110,8 +111,8 @@ describe('renderBudgetMs', () => {
 
 describe('oracleCacheSig', () => {
   it('is stable for identical inputs and 12 hex chars', () => {
-    const a = oracleCacheSig('/bin/dot', '/tmp/ghl', '1234');
-    expect(a).toBe(oracleCacheSig('/bin/dot', '/tmp/ghl', '1234'));
+    const a = oracleCacheSig('/bin/dot', ORACLE_GVBINDIR, '1234');
+    expect(a).toBe(oracleCacheSig('/bin/dot', ORACLE_GVBINDIR, '1234'));
     expect(a).toMatch(/^[0-9a-f]{12}$/);
   });
 
@@ -119,10 +120,10 @@ describe('oracleCacheSig', () => {
     // Each component must participate, or two differently-built oracles could
     // read each other's cached renders — the cross-contamination survey.ts
     // documents from experience. mtime is what makes a rebuild self-invalidating.
-    const base = oracleCacheSig('/bin/dot', '/tmp/ghl', '1234');
-    expect(oracleCacheSig('/other/dot', '/tmp/ghl', '1234')).not.toBe(base);
+    const base = oracleCacheSig('/bin/dot', ORACLE_GVBINDIR, '1234');
+    expect(oracleCacheSig('/other/dot', ORACLE_GVBINDIR, '1234')).not.toBe(base);
     expect(oracleCacheSig('/bin/dot', '/tmp/pango', '1234')).not.toBe(base);
-    expect(oracleCacheSig('/bin/dot', '/tmp/ghl', '9999')).not.toBe(base);
+    expect(oracleCacheSig('/bin/dot', ORACLE_GVBINDIR, '9999')).not.toBe(base);
   });
 });
 

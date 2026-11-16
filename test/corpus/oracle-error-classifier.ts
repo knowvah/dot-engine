@@ -32,6 +32,7 @@ import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import type { EngineWalkStatus } from './engine-walk.js';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 
 /** One rerun attempt's raw outcome. */
 export interface AttemptOutcome {
@@ -59,8 +60,8 @@ export interface OracleErrorsReport {
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const CORPUS_DEFAULT = join(homedir(), 'git/graphviz/tests');
-const DOT_BIN_DEFAULT = join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR_DEFAULT = '/tmp/ghl';
+const DOT_BIN_DEFAULT = ORACLE_DOT_BIN;
+const GVBINDIR_DEFAULT = ORACLE_GVBINDIR;
 
 /** D6: escalating timeout budget, one attempt per entry. */
 export const RETRY_TIMEOUTS_MS = [60_000, 120_000, 240_000] as const;

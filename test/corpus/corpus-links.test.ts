@@ -6,6 +6,10 @@
 import { describe, it, expect } from 'vitest';
 import { CORPUS_GITLAB_BLOB, gitlabTestUrl, testIdLink, scrubLocalPaths } from './corpus-links.js';
 
+/** A synthetic oracle path: the scrubber matches any `.../cmd/dot/dot`, so this
+ * deliberately is not the real oracle location (oracle-paths.mjs). */
+const ORACLE_BIN = '/Users/scottseely/oracle/build/cmd/dot/dot';
+
 describe('gitlabTestUrl', () => {
   it('joins a bare corpus-relative path to the gitlab blob URL', () => {
     expect(gitlabTestUrl('1447.dot')).toBe(
@@ -51,7 +55,7 @@ describe('scrubLocalPaths', () => {
 
   it('collapses the oracle binary invocation path to `dot` and links the tests/ path', () => {
     const msg =
-      'Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo ' +
+      `Command failed: ${ORACLE_BIN} -K circo ` +
       '-Txdot /Users/scottseely/git/graphviz/tests/1447.dot';
     const out = scrubLocalPaths(msg, roots);
     expect(out).not.toContain('/Users/scottseely');
@@ -62,13 +66,13 @@ describe('scrubLocalPaths', () => {
   });
 
   it('collapses a spawnSync ETIMEDOUT message referencing the oracle binary', () => {
-    const msg = 'spawnSync /Users/scottseely/git/graphviz/build/cmd/dot/dot ETIMEDOUT';
+    const msg = `spawnSync ${ORACLE_BIN} ETIMEDOUT`;
     expect(scrubLocalPaths(msg, roots)).toBe('spawnSync dot ETIMEDOUT');
   });
 
   it('preserves a subdirectory corpus-relative path (graphs/b53.gv)', () => {
     const msg =
-      'Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K fdp ' +
+      `Command failed: ${ORACLE_BIN} -K fdp ` +
       '-Txdot /Users/scottseely/git/graphviz/tests/graphs/b53.gv';
     const out = scrubLocalPaths(msg, roots);
     expect(out).not.toContain('/Users/scottseely');
@@ -89,7 +93,7 @@ describe('scrubLocalPaths', () => {
 
   it('is pure given explicit roots — independent of process.env/os.homedir()', () => {
     const msg =
-      'Command failed: /Users/scottseely/git/graphviz/build/cmd/dot/dot -K circo ' +
+      `Command failed: ${ORACLE_BIN} -K circo ` +
       '-Txdot /Users/scottseely/git/graphviz/tests/1447.dot';
     const originalCorpusRoot = process.env.CORPUS_ROOT;
     const originalGvbindir = process.env.GVBINDIR;

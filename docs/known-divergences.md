@@ -72,7 +72,7 @@ deltas (A3, A8) are closed and kept below as history.
 
 > **Scope, historically an unmeasured caveat — now partially measured.** The
 > **main dot-engine SVG survey** (`test/corpus/survey.ts`) is still
-> **dot-only**: the native oracle runs under `GVBINDIR=/tmp/ghl`, which
+> **dot-only**: the native oracle runs under `GVBINDIR=/tmp/ghl1611`, which
 > symlinks **only** the `core` + `dot_layout` plugins
 > (`test/corpus/gen-headless-gvbindir.sh` loops over exactly `core dot_layout`
 > — no `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` layout plugin is present),
@@ -111,10 +111,10 @@ input under its own engine instead of `dot`. The honest ceiling on that work is
 to **narrow** A1 to "no active divergence on the reference platform," never to
 eliminate the cross-platform caveat; the results so far (below) hold to that
 ceiling: `circo`/`twopi`/`osage` have each surfaced and root-caused a handful of
-genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 99.8/98.0/68.1%
-within 0.5pt of native over the 929-item universe (graphviz 16.1.0), meaning
+genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 99.8/98.0/68.2%
+within 0.5pt of native over the 898-item universe (graphviz 16.1.1), meaning
 the ported arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most
-graphs — and every diverged id of the 929-item universe is individually
+graphs — and every diverged id of the 898-item universe is individually
 attributed by injection (solver drift vs. port defect) rather than left as
 untriaged drift. See the iterative-engine characterization below.
 
@@ -193,17 +193,17 @@ field for these three and `parity-report.ts` renders them in a separate
 "Iterative engines (±0.5 characterization)" section of
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explicitly **not** comparable to the ±0.01 deterministic pass rates elsewhere
-in this document. Current counts against graphviz 16.1.0 (929-item
+in this document. Current counts against graphviz 16.1.1 (898-item
 universe; pass % leaves out inputs the C oracle cannot render and inputs whose
 native output varies from run to run, per [Conformance](./conformance.md)):
 
 | engine | surveyed | within ±0.5pt | non-conformant | port error / timeout | oracle error | oracle nondeterministic |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
+| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
 
-`fdp`'s 13 nondeterministic inputs, where native output varies from run to run,
+`fdp`'s 11 nondeterministic inputs, where native output varies from run to run,
 are left out of its pass %; its one port error is `1879`, which needs
 `splines=compound` routing that the port does not support.
 
@@ -220,14 +220,15 @@ outside ±0.5pt are `2784` (A10) and `2371` (A1 drift).)
 chiefly neato's unported `user_pos`/`P_SET` handling, the engine-init
 consolidation, and the `setEdgeType` macro-vs-function fix.)
 
-Unlike at first sweep, every diverged row of the 929-item universe is
-individually attributed against graphviz 16.1.0: the injection harness
+Unlike at first sweep, every diverged row of the 898-item universe is
+individually attributed against graphviz 16.1.1: the injection harness
 (`test/corpus/attribute-divergence.ts`) feeds the native oracle's
 pre-routing `ND_pos` into the port and re-compares, and every current
 diverged id is `drift-exonerated` (the port's routing and emission
-reproduce the oracle exactly once the solver drift is removed) except two.
-Two are separately accepted per-id residuals: sfdp `241_0`'s host-libm `pow`
-drift (re-diagnosed by T28) and sfdp `2556`'s NaN layout. fdp `241_0` passes since `fix(T9): start
+reproduce the oracle exactly once the solver drift is removed) except sfdp
+`2556`. Two are separately accepted per-id residuals: sfdp `241_0`'s host-libm `pow`
+drift (re-diagnosed by T28; its injection row reads `drift-exonerated` since
+`12dddc48`) and sfdp `2556`'s NaN layout. fdp `241_0` passes since `fix(T9): start
 swapped cdt faces at the new diagonal as gts does` (see the fdp paragraph
 under A9). fdp `2471` and sfdp `2371`
 used to keep edge-label positions (`lp`) that differed after injection, i.e.
@@ -259,8 +260,8 @@ measures the oracle's `pow` and is not something the library can do on every
 host. `Math.pow` in the repulsive force passes 153 of the 292 but regresses 6
 ids that pass today, so it was not applied. The table's sfdp row equals
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)'s:
-1 diverged plus 295 accepted gives the 296, and 1 more id is listed there as
-oracle-nondeterministic.
+0 diverged plus 286 accepted gives the 286 at graphviz 16.1.1, and no id is
+listed there as oracle-nondeterministic.
 
 The class acceptance below formalizes the exonerated set; live counts in
 the per-engine dashboards
@@ -335,7 +336,7 @@ closed `42`, `clust2`, `ngk10_4` (structural-match → conformant) and moved
 
 **Both survey sides run the same estimator — measurement is neutralized.**
 The native `dot` oracle runs under a headless `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl`) that symlinks only the
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`) that symlinks only the
 `core` and `dot_layout` plugins — no `gd`/`pango`/`quartz` text-layout plugin.
 With that slot empty, graphviz falls back to its built-in
 `estimate_textspan_size`. The TypeScript port's `EstimateTextMeasurer`
@@ -488,7 +489,9 @@ it: libm `hypot` for the distance (`route.c:448`), C's strict `>` comparison
 (459), `normv` (413), `B01` (488) and `B23` (494). The tolerant tie-break is
 gone; the `241_0` knot is pinned in C's routing frame, because C is not
 translation-equivariant on such ties. This closed `2368`, `2371`, `2413_1`,
-`2413_2`, `graphs-b100`, `graphs-b104` and `graphs-decorate`.
+`2413_2`, `graphs-b100`, `graphs-b104` and `graphs-decorate`. At graphviz 16.1.1
+`2368` diverges again for an unrelated reason: native's `flat_reorder` change
+([#158](#pending-16-1-1-ports)).
 
 `241_1` was not a `hypot` tie: it was closed by `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
@@ -1267,6 +1270,30 @@ stale. Evidence:
 Evidence: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
+
+## Pending 16.1.1 ports {#pending-16-1-1-ports}
+
+The oracle moved from graphviz 16.1.0 to 16.1.1
+([ADR-0002](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0002-graphviz-16.1.1-oracle.md)).
+Each upstream change below moves some ids away from the port, which still follows
+16.1.0 there, until the change is ported. The counts come from the re-baseline's
+classification (`plans/graphviz-16-1-1-rebaseline/classification/`), which traced
+every verdict change between the two oracles to a cause. These are not accepted
+deltas: each is open work on its issue.
+
+| issue | upstream change | ids that moved at 16.1.1 | engines |
+|---|---|---|---|
+| [#158](https://github.com/knowvah/dot-engine/issues/158) | `flat_reorder` skips a rank whose incoming flat edges are constrained | 34 survey ids conformant → diverged (23) or structural-match (11), among them `2368` and `2592`; `2854_1` and `2855` no longer hang natively and are now conformant. Goldens: `dot-newrank-cluster-ranksame`, `dot-pack-flat-label` and 10 `pt-issue-*` fixtures (`test/golden/known-failing.json`) | `dot`; the 34 ids also leave every engine walk, which takes the survey's conformant ids |
+| [#164](https://github.com/knowvah/dot-engine/issues/164) | ortho segment permutation from libc `rand()` | 6: circo `1658` (now an oracle error), `1880`, `1990`; twopi `2168_5`, `2183`, `2643` | `circo`, `twopi` (`splines=ortho`) |
+| [#149](https://github.com/knowvah/dot-engine/issues/149) | `write_body` writes edges after a body's nodes, in creation order | 2: `1514`, `1581` | `-Tdot`, `-Txdot` output |
+| [#162](https://github.com/knowvah/dot-engine/issues/162) | fail the layout when an aux edge is too long | 1: `1314` | `dot` |
+| [#159](https://github.com/knowvah/dot-engine/issues/159) | `flat_edges` counts labelled non-adjacent `other` edges for the abomination rank | 1: `2723` (native crashed at 16.1.0; it now exits 1 with an SVG, which the port does not produce yet) | `dot` |
+| [#151](https://github.com/knowvah/dot-engine/issues/151) | reject a path whose boxes are all degenerate | 1: `2778` (same pattern as `2723`) | `dot` |
+| [#163](https://github.com/knowvah/dot-engine/issues/163) | the undocumented `compact` attribute is removed | no corpus id; goldens `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
+| [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | the rest of 16.1.1's behavioural changes | none in the corpus or the goldens | — |
+
+Inputs that reach each change are tracked in
+[#148](https://github.com/knowvah/dot-engine/issues/148).
 
 ## Tracked long tail (`dot` attribute & edge-case)
 

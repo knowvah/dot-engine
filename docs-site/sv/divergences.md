@@ -1,5 +1,5 @@
 ---
-sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
+sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -75,7 +75,7 @@ iterativa modellens determinism; de tidigare flyttalsavvikelserna i
 
 > **Omfång, historiskt en omätt reservation — nu delvis mätt.** Den
 > **huvudsakliga SVG-undersökningen för dot-motorn** (`test/corpus/survey.ts`) är
-> fortfarande **enbart dot**: det inbyggda oraklet körs under `GVBINDIR=/tmp/ghl`,
+> fortfarande **enbart dot**: det inbyggda oraklet körs under `GVBINDIR=/tmp/ghl1611`,
 > som symlänkar **endast** insticksmodulerna `core` + `dot_layout`
 > (`test/corpus/gen-headless-gvbindir.sh` loopar över exakt `core dot_layout`
 > — ingen layoutmodul för `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` finns), och
@@ -114,10 +114,10 @@ indata under sin egen motor i stället för `dot`. Det ärliga taket för det ar
 att **minska** A1 till ”ingen aktiv avvikelse på referensplattformen”, aldrig att
 eliminera förbehållet om olika plattformar; resultaten hittills (nedan) håller sig
 till det taket: `circo`/`twopi`/`osage` har var och en dragit fram och orsaksanalyserat ett
-fåtal verkliga A1/A9-fall, och `neato`/`fdp`/`sfdp` ligger nu på 99.8/98.0/68.1%
-inom 0.5pt från inbyggd över universumet på 929 poster (graphviz 16.1.0), vilket
+fåtal verkliga A1/A9-fall, och `neato`/`fdp`/`sfdp` ligger nu på 99.8/98.0/68.2%
+inom 0.5pt från inbyggd över universumet på 898 poster (graphviz 16.1.1), vilket
 betyder att den portade aritmetiken (`fma.ts`, `arm-pow.ts`, matchad PRNG) håller
-för de flesta grafer — och varje avvikande id i universumet på 929 poster är
+för de flesta grafer — och varje avvikande id i universumet på 898 poster är
 individuellt tillskrivet genom injektion (lösardrift mot portfel) i stället för
 att lämnas som otriagerad drift. Se karakteriseringen av de iterativa motorerna nedan.
 
@@ -196,17 +196,17 @@ för dessa tre och `parity-report.ts` återger dem i ett separat avsnitt,
 ”Iterative engines (±0.5 characterization)”, i
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 uttryckligen **inte** jämförbart med de deterministiska godkännandegraderna på ±0.01 på andra ställen
-i det här dokumentet. Aktuella antal mot graphviz 16.1.0 (universum på 929 poster; godkändandeprocenten
+i det här dokumentet. Aktuella antal mot graphviz 16.1.1 (universum på 898 poster; godkändandeprocenten
 utelämnar indata som C-oraklet inte kan rendera och indata där nativ utdata varierar från körning
 till körning, enligt [Överensstämmelse](./conformance.md)):
 
 | motor | undersökta | inom ±0.5pt | icke-konforma | portfel / timeout | orakelfel | orakel icke-deterministiskt |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
+| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
 
-De 13 icke-deterministiska indata till `fdp`, där nativ utdata varierar från körning till körning, är utelämnade ur dess godkännandeandel; dess enda portfel är `1879`, som kräver `splines=compound`-routning som porten inte stöder.
+De 11 icke-deterministiska indata till `fdp`, där nativ utdata varierar från körning till körning, är utelämnade ur dess godkännandeandel; dess enda portfel är `1879`, som kräver `splines=compound`-routning som porten inte stöder.
 
 (Godkännandegraden för `fdp` steg från 77.5% eftersom den tidigare incheckade
 genomgången föregick porteringsläget från det föregående uppdraget.
@@ -220,12 +220,12 @@ accepterade resten per id `2619_2`, vars acceptans är indragen; de två `neato`
 främst neatos oportade hantering av `user_pos`/`P_SET`, konsolideringen av
 motorinitieringen och rättningen av `setEdgeType` (makro mot funktion).)
 
-Till skillnad från vid första genomgången är varje avvikande rad i universumet på 929 poster
-individuellt tillskriven mot graphviz 16.1.0: injektionsverktyget
+Till skillnad från vid första genomgången är varje avvikande rad i universumet på 898 poster
+individuellt tillskriven mot graphviz 16.1.1: injektionsverktyget
 (`test/corpus/attribute-divergence.ts`) matar in det inbyggda oraklets `ND_pos` före dragningen i
 porteringen och jämför på nytt, och varje nuvarande avvikande id är `drift-exonerated` (porteringens
-dragning och emission återger oraklet exakt när lösardriften är borttagen) utom två. Två är separat
-godkända residualer per id: sfdp `241_0`:s värdens libm-`pow`-drift (omdiagnostiserad av T28) samt sfdp `2556`:s
+dragning och emission återger oraklet exakt när lösardriften är borttagen) utom sfdp `2556`. Två är separat
+godkända residualer per id: sfdp `241_0`:s värdens libm-`pow`-drift (omdiagnostiserad av T28; dess injektionsrad lyder `drift-exonerated` sedan `12dddc48`) samt sfdp `2556`:s
 NaN-layout. fdp `241_0` klarar sig sedan `fix(T9): start swapped cdt faces at
 the new diagonal as gts does` (se fdp-stycket under A9). fdp `2471` och sfdp `2371` behöll tidigare kantetikettpositioner (`lp`) som
 skilde sig efter injektion, dvs. xlabel-placeraren valde en annan kandidat. `2471`
@@ -241,7 +241,7 @@ instrumentpanelerna per motor
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Var sfdp:s solverdrift börjar (del 10, T2).** En instrumenterad nativ sfdp, spårad mot porten på små id:n, avviker först i sista biten av `pow(dist, 1-p)` i repulsionskraften (`lib/sfdpgen/spring_electrical.c:625,617`; porten `spring-electrical.ts:260`). På `flatedge` ger `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` `...8811p+2` nativt och `...8812p+2` i porten; `graphs-p` och `1767` börjar på samma sätt. Adaptiv kylning förstärker biten: den når `x[0]` i iteration 5, `max|dx|` är 2.4e-9 i iteration 100 och 3.9e-5 i 200, och steget slår om i iteration 244. Två kontrollerade körningar bekräftar det. Med nativets bitar vid exakt dessa 8 anrop blir `flatedge`s spår på 62090 rader identiskt, och med macOS verkliga `pow` bakom ett Node-API-tillägg har 288 av de 292 id:n som inte klarade sig bitidentiska spår (de andra 4, alla `overlap=false`, skiljer sig bara vid `xfinal`). Operationsordning och fusion i solvern, multilevel, quadtree och gles kod har uteslutits. Detta är värdens libm, accepterat under A1 (se `pow`-punkten i listan över kända luckor nedan); `src/` ändrades inte, så antalen förblir 632 av 929. Experimentet som bara gick på macOS nådde cirka 923 av 929; det mäter orakelts `pow` och är inte något biblioteket kan göra på varje värd. `Math.pow` i repulsionskraften klarar 153 av de 292 men får 6 id:n som klarar sig i dag att regrediera, så den tillämpades inte. Tabellens sfdp-rad är lika med den i [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 avvikande plus 295 accepterade ger 296, och ytterligare 1 id står där som icke-deterministiskt hos oraklet.
+**Var sfdp:s solverdrift börjar (del 10, T2).** En instrumenterad nativ sfdp, spårad mot porten på små id:n, avviker först i sista biten av `pow(dist, 1-p)` i repulsionskraften (`lib/sfdpgen/spring_electrical.c:625,617`; porten `spring-electrical.ts:260`). På `flatedge` ger `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` `...8811p+2` nativt och `...8812p+2` i porten; `graphs-p` och `1767` börjar på samma sätt. Adaptiv kylning förstärker biten: den når `x[0]` i iteration 5, `max|dx|` är 2.4e-9 i iteration 100 och 3.9e-5 i 200, och steget slår om i iteration 244. Två kontrollerade körningar bekräftar det. Med nativets bitar vid exakt dessa 8 anrop blir `flatedge`s spår på 62090 rader identiskt, och med macOS verkliga `pow` bakom ett Node-API-tillägg har 288 av de 292 id:n som inte klarade sig bitidentiska spår (de andra 4, alla `overlap=false`, skiljer sig bara vid `xfinal`). Operationsordning och fusion i solvern, multilevel, quadtree och gles kod har uteslutits. Detta är värdens libm, accepterat under A1 (se `pow`-punkten i listan över kända luckor nedan); `src/` ändrades inte, så antalen förblir 632 av 929. Experimentet som bara gick på macOS nådde cirka 923 av 929; det mäter orakelts `pow` och är inte något biblioteket kan göra på varje värd. `Math.pow` i repulsionskraften klarar 153 av de 292 men får 6 id:n som klarar sig i dag att regrediera, så den tillämpades inte. Tabellens sfdp-rad är lika med den i [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 0 avvikande plus 286 accepterade ger 286 vid graphviz 16.1.1, och inget id står där som icke-deterministiskt hos oraklet.
 
 **Klassgodkännande av A1-drift (iterativa motorer, beräknat medlemskap).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -308,7 +308,7 @@ stängde `42`, `clust2`, `ngk10_4` (structural-match → conformant) och flyttad
 
 **Båda undersökningssidorna kör samma estimator — mätningen är neutraliserad.**
 Det inbyggda orakel-`dot` körs under en headless `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl`) som endast symlänkar
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`) som endast symlänkar
 insticksmodulerna `core` och `dot_layout` — ingen textlayoutmodul för `gd`/`pango`/`quartz`.
 Med den platsen tom faller graphviz tillbaka på sin inbyggda
 `estimate_textspan_size`. TypeScript-porteringens `EstimateTextMeasurer`
@@ -460,7 +460,7 @@ den: libms `hypot` för avståndet (`route.c:448`), C:s strikta `>`-jämförelse
 (459), `normv` (413), `B01` (488) och `B23` (494). Det toleranta oavgörandet är
 borta; knuten för `241_0` är låst i C:s dragningsram, eftersom C inte är
 translationsekvivariant vid sådana oavgjorda lägen. Detta stängde `2368`, `2371`,
-`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` och `graphs-decorate`.
+`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` och `graphs-decorate`. Vid graphviz 16.1.1 avviker `2368` återigen av ett orelaterat skäl: nativets ändring av `flat_reorder` ([#158](#pending-16-1-1-ports)).
 
 `241_1` var inget `hypot`-oavgörande: den stängdes av `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
@@ -1219,6 +1219,23 @@ Belägg: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 
+## Väntande 16.1.1-porteringar {#pending-16-1-1-ports}
+
+Oraklet har gått från graphviz 16.1.0 till 16.1.1 ([ADR-0002](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0002-graphviz-16.1.1-oracle.md)). Varje uppströmsändring nedan flyttar vissa id bort från porteringen, som där fortfarande följer 16.1.0, tills ändringen har porterats. Antalen kommer från omgrundlinjens klassificering (`plans/graphviz-16-1-1-rebaseline/classification/`), som spårade varje domsändring mellan de två oraklen till en orsak. Det här är inte accepterade avvikelser: var och en är öppet arbete i sitt ärende.
+
+| ärende | uppströmsändring | id som flyttades vid 16.1.1 | motorer |
+|---|---|---|---|
+| [#158](https://github.com/knowvah/dot-engine/issues/158) | `flat_reorder` hoppar över en rank vars inkommande platta kanter är begränsade | 34 id i undersökningen conformant → diverged (23) eller structural-match (11), bland dem `2368` och `2592`; `2854_1` och `2855` hänger sig inte längre nativt och är nu conformant. Goldens: `dot-newrank-cluster-ranksame`, `dot-pack-flat-label` och 10 `pt-issue-*` fixtures (`test/golden/known-failing.json`) | `dot`; de 34 id:na lämnar också varje motorgenomgång, som tar undersökningens conformant-id |
+| [#164](https://github.com/knowvah/dot-engine/issues/164) | ortho-segmentpermutation från libc `rand()` | 6: circo `1658` (nu ett orakelfel), `1880`, `1990`; twopi `2168_5`, `2183`, `2643` | `circo`, `twopi` (`splines=ortho`) |
+| [#149](https://github.com/knowvah/dot-engine/issues/149) | `write_body` skriver kanter efter en kropps noder, i skapandeordning | 2: `1514`, `1581` | `-Tdot`, `-Txdot` utdata |
+| [#162](https://github.com/knowvah/dot-engine/issues/162) | låt layouten misslyckas när en hjälpkant är för lång | 1: `1314` | `dot` |
+| [#159](https://github.com/knowvah/dot-engine/issues/159) | `flat_edges` räknar märkta icke-angränsande `other`-kanter för abomination-ranken | 1: `2723` (nativt kraschade vid 16.1.0; det avslutas nu med 1 och en SVG, som porteringen ännu inte producerar) | `dot` |
+| [#151](https://github.com/knowvah/dot-engine/issues/151) | avvisa en bana vars lådor alla är degenererade | 1: `2778` (samma mönster som `2723`) | `dot` |
+| [#163](https://github.com/knowvah/dot-engine/issues/163) | det odokumenterade attributet `compact` tas bort | inget korpus-id; goldens `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
+| [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | resten av 16.1.1:s beteendeändringar | inga i korpusen eller goldens | — |
+
+Indata som når varje ändring spåras i [#148](https://github.com/knowvah/dot-engine/issues/148).
+
 ## Spårad lång svans (`dot`-attribut & specialfall) {#tracked-long-tail-dot-attribute-edge-case}
 
 Vid **standardvärden** matchar motorn `dot` C-binären inom en snäv deterministisk
@@ -1305,7 +1322,7 @@ skiljer sig från inbyggd Graphviz. Funna av uppdraget `v2-silent-gaps`
   Diagnostiserat med en instrumenterad inbyggd sfdp: positionerna förblir bitidentiska
   tills en term i den repulsiva kraften, `pow(dist, 1 - p)` (`spring_electrical.c`,
   `p = -1` så `pow(x, 2)`), returnerar 1 ulp mindre än `x*x` från macOS libm
-  (`pow(1.4116727416983157, 2)`: libm `1.9928199296540394`, korrekt avrundat
+  (`pow(1.4116727416983157, 2)`: libm `1.9928198986540394`, korrekt avrundat
   `…396`; macOS `pow(v, 2) != v*v` för 20 av 16201 samplade `v`). Det ändrar
   iterationens `Fnorm` i sista biten; sfdp:s adaptiva avkylning förstärker det
   till en annan (ofta speglad) layout. Porteringens `armPow` är ARM:s

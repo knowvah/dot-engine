@@ -12,9 +12,9 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 929 (generated 2026-10-28T20:00:15.626Z)
-- **Oracle:** dot 16.1.0
-- **pass:** 926 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 1
+- **Surveyed:** 898 (generated 2026-11-13T07:24:22.560Z)
+- **Oracle:** dot 16.1.1
+- **pass:** 895 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 1
 - **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 1 (excluded from pass %) · **oracle-nondeterministic:** 0 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (1) — documented, not chased
@@ -48,6 +48,6 @@ _(none)_
 |---|---|---|
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle-error | Command failed: dot -K neato -Txdot git/graphviz/share/examples/world.gv |
 
-**oracle errors:** 7 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (926) are omitted for brevity — the full roster is in
+**oracle errors:** 1 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
+_Passing ids (895) are omitted for brevity — the full roster is in
 `parity-neato.json`._

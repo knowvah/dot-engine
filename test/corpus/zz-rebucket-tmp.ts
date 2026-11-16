@@ -9,10 +9,11 @@ import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { compareXdot } from '../golden/compare-xdot.js';
 import { classifyBucket } from './attribute-divergence.js';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 
 const REPO = '/Users/scottseely/git/graphviz-ts';
 const CORPUS = join(homedir(), 'git/graphviz/tests');
-const DOT_BIN = join(homedir(), 'git/graphviz/build/cmd/dot/dot');
+const DOT_BIN = ORACLE_DOT_BIN;
 const engine = process.argv[2];
 const ITER = new Set(['neato', 'fdp', 'sfdp']);
 const TOL = ITER.has(engine) ? 0.5 : 0.01;
@@ -30,7 +31,7 @@ for (const [i, r] of diverged.entries()) {
   let oracle: string;
   try {
     oracle = execFileSync(DOT_BIN, ['-K', engine, '-Txdot', p], {
-      encoding: 'utf8', timeout: 120000, env: { ...process.env, GVBINDIR: '/tmp/ghl' },
+      encoding: 'utf8', timeout: 120000, env: { ...process.env, GVBINDIR: ORACLE_GVBINDIR },
     });
   } catch { continue; }
   const res = spawnSync('npx', ['tsx', join(REPO, 'test/corpus/render-one-xdot.ts'), p, engine], {
