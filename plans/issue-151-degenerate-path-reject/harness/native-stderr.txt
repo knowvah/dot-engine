@@ -1,0 +1,65 @@
+== 2773 (exit 1)
+Error: in checkpath, all bounding boxes are below threshold
+0 boxes:
+start port: (0, 7.286e+17), tangent angle: 0, not constrained
+end port: (0, 7.286e+17), tangent angle: 0, not constrained
+Error: lost 0 Se3ffa81011d69e3db000538bf02fa1d0 edge
+== 2773_1 (exit 1)
+Error: in checkpath, all bounding boxes are below threshold
+0 boxes:
+start port: (0, 7.286e+17), tangent angle: 0, not constrained
+end port: (0, 7.286e+17), tangent angle: 0, not constrained
+Error: lost 0 Se3ffa81011d69e3db000538bf02fa1d0 edge
+== 2774 (exit 1)
+Error: in checkpath, all bounding boxes are below threshold
+0 boxes:
+start port: (0, 7.2e+17), tangent angle: 0, not constrained
+end port: (0, 7.2e+17), tangent angle: 0, not constrained
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:338: triangulation failed
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:182: source point not in any triangle
+Error: in routesplines, Pshortestpath failed
+Error: lost 0 Se0ffa00000d60e0db000000bf00fa0d0 edge
+Error: lost Se0ffa00000d60e0db000000bf00fa0d0 a edge
+== 2774_1 (exit 1)
+Error: in checkpath, all bounding boxes are below threshold
+0 boxes:
+start port: (0, 7.2e+17), tangent angle: 0, not constrained
+end port: (0, 7.2e+17), tangent angle: 0, not constrained
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:338: triangulation failed
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:182: source point not in any triangle
+Error: in routesplines, Pshortestpath failed
+Error: lost 0 Se0ffa00000d60e0db000000bf00fa0d0 edge
+Error: lost Se0ffa00000d60e0db000000bf00fa0d0 a edge
+== 2776 (exit 1)
+Error: in checkpath, all bounding boxes are below threshold
+0 boxes:
+start port: (-172, 7.2e+17), tangent angle: 0, not constrained
+end port: (-172, 7.2e+17), tangent angle: 0, not constrained
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:338: triangulation failed
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:182: source point not in any triangle
+Error: in routesplines, Pshortestpath failed
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:338: triangulation failed
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:182: source point not in any triangle
+Error: in routesplines, Pshortestpath failed
+Error: lost 0 Ie0ffa00600d60e0db000000bf00fa0d0 edge
+Error: lost Ie0ffa00600d60e0db000000bf00fa0d0 Se0ffa00d00d60e0db000000bf00fa0d0 edge
+Error: lost S Se0ffa00d00d60e0db000000bf00fa0d0 edge
+== 2776_1 (exit 1)
+Error: Edge length 300000000000000000.000000 larger than maximum 2147483647 allowed.
+Check for overwide node(s).
+== 2778 (exit 1)
+Error: in checkpath, all bounding boxes are below threshold
+0 boxes:
+start port: (0, 7.286e+17), tangent angle: 0, not constrained
+end port: (0, 7.286e+17), tangent angle: 0, not constrained
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:338: triangulation failed
+lib/pathplan/~/git/graphviz-16.1.1/lib/pathplan/shortest.c:182: source point not in any triangle
+Error: in routesplines, Pshortestpath failed
+Error: lost d0 Se3ffa81011d69e3db000538bf02fa1d0 edge
+Error: lost Se3ffa81011d69e3db000538bf02fa1d0 Se3fd0 edge
+== 2780 (exit 1)
+Error: in checkpath, all bounding boxes are below threshold
+0 boxes:
+start port: (525, 7.286e+17), tangent angle: 0, not constrained
+end port: (525, 7.286e+17), tangent angle: 0, not constrained
+Error: lost d0 Se3ffa81011d69e3db000538bf02fa1d0 edge
