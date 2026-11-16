@@ -111,27 +111,40 @@ function invflipSide(side: number, rankdir: number): number {
 
 // ---------------------------------------------------------------------------
 // invflipAngle helpers
-// @see lib/common/shapes.c:invflip_angle (line 2606)
+// @see lib/common/shapes.c:invflip_angle (line 2607)
 // ---------------------------------------------------------------------------
 
+/** The RANKDIR_RL arm of invflip_angle, on ¼×π units; no match leaves the angle unchanged. */
 function invflipAngleRL(angle: number): number {
-  if (angle === Math.PI)         return -0.5 * Math.PI;
-  if (angle === Math.PI * 0.75)  return -0.25 * Math.PI;
-  if (angle === Math.PI * 0.5)   return 0;
-  if (angle === 0)               return Math.PI * 0.5;
-  if (angle === Math.PI * -0.25) return Math.PI * 0.75;
-  if (angle === Math.PI * -0.5)  return Math.PI;
+  if (angle === 4)  return -2;
+  if (angle === 3)  return -1;
+  if (angle === 2)  return 0;
+  if (angle === 0)  return 2;
+  if (angle === -1) return 3;
+  if (angle === -2) return 4;
   return angle;
 }
 
-/** Adjust theta for rankdir. @see lib/common/shapes.c:invflip_angle (line 2606) */
+/**
+ * Adjust theta for rankdir.
+ * @param angle Angle in units of ¼×π (C's `int`)
+ * @returns Computed angle in radians
+ * @see lib/common/shapes.c:invflip_angle (line 2607)
+ */
 function invflipAngle(angle: number, rankdir: number): number {
+  let a = angle;
   switch (rankdir) {
-    case RANKDIR_BT: return -angle;
-    case RANKDIR_LR: return angle - Math.PI * 0.5;
-    case RANKDIR_RL: return invflipAngleRL(angle);
-    default:         return angle; // RANKDIR_TB: identity
+    case RANKDIR_BT:
+      // C: `angle *= -1` on an int, where 0 stays 0. In JS `-a` and `a * -1`
+      // turn 0 into -0, which would survive the conversion below; `0 - a`
+      // keeps it +0.
+      a = 0 - a;
+      break;
+    case RANKDIR_LR: a -= 2; break;
+    case RANKDIR_RL: a = invflipAngleRL(a); break;
+    default: break; // RANKDIR_TB: identity
   }
+  return a * 0.25 * Math.PI;
 }
 
 // ---------------------------------------------------------------------------
@@ -165,7 +178,10 @@ function compassBbox(n: Node, bp: Box | null): BboxResult {
 // ---------------------------------------------------------------------------
 
 type DirectionResult = {
-  p: Point; theta: number; side: number;
+  p: Point;
+  /** C's `int theta`, in units of ¼×π; invflipAngle converts it to radians. */
+  theta: number;
+  side: number;
   constrain: boolean; clip: boolean; dyna: boolean;
   defined: boolean; rv: number;
 };
@@ -188,9 +204,9 @@ function dirUnrecognized(p: Point): DirectionResult {
 function dirN(rest: string, b: Box, ctr: Point, sides: number): DirectionResult {
   const base = { constrain: true, clip: false, dyna: false };
   switch (rest) {
-    case '':  return { ...base, p: { x: ctr.x,  y: b.ur.y }, theta: Math.PI * 0.5,  side: sides & TOP,           defined: true, rv: 0 };
-    case 'e': return { ...base, p: { x: b.ur.x, y: b.ur.y }, theta: Math.PI * 0.25, side: sides & (TOP | RIGHT), defined: true, rv: 0 };
-    case 'w': return { ...base, p: { x: b.ll.x, y: b.ur.y }, theta: Math.PI * 0.75, side: sides & (TOP | LEFT),  defined: true, rv: 0 };
+    case '':  return { ...base, p: { x: ctr.x,  y: b.ur.y }, theta: 2, side: sides & TOP,           defined: true, rv: 0 };
+    case 'e': return { ...base, p: { x: b.ur.x, y: b.ur.y }, theta: 1, side: sides & (TOP | RIGHT), defined: true, rv: 0 };
+    case 'w': return { ...base, p: { x: b.ll.x, y: b.ur.y }, theta: 3, side: sides & (TOP | LEFT),  defined: true, rv: 0 };
     default:  return dirUnrecognized({ x: ctr.x, y: ctr.y });
   }
 }
@@ -198,9 +214,9 @@ function dirN(rest: string, b: Box, ctr: Point, sides: number): DirectionResult 
 function dirS(rest: string, b: Box, ctr: Point, sides: number): DirectionResult {
   const base = { constrain: true, clip: false, dyna: false };
   switch (rest) {
-    case '':  return { ...base, p: { x: ctr.x,  y: b.ll.y }, theta: -Math.PI * 0.5,  side: sides & BOTTOM,           defined: true, rv: 0 };
-    case 'e': return { ...base, p: { x: b.ur.x, y: b.ll.y }, theta: -Math.PI * 0.25, side: sides & (BOTTOM | RIGHT), defined: true, rv: 0 };
-    case 'w': return { ...base, p: { x: b.ll.x, y: b.ll.y }, theta: -Math.PI * 0.75, side: sides & (BOTTOM | LEFT),  defined: true, rv: 0 };
+    case '':  return { ...base, p: { x: ctr.x,  y: b.ll.y }, theta: -2, side: sides & BOTTOM,           defined: true, rv: 0 };
+    case 'e': return { ...base, p: { x: b.ur.x, y: b.ll.y }, theta: -1, side: sides & (BOTTOM | RIGHT), defined: true, rv: 0 };
+    case 'w': return { ...base, p: { x: b.ll.x, y: b.ll.y }, theta: -3, side: sides & (BOTTOM | LEFT),  defined: true, rv: 0 };
     default:  return dirUnrecognized({ x: ctr.x, y: ctr.y });
   }
 }
@@ -212,7 +228,7 @@ function dirE(rest: string, b: Box, ctr: Point, sides: number): DirectionResult 
 
 function dirW(rest: string, b: Box, ctr: Point, sides: number): DirectionResult {
   if (rest.length > 0) return dirUnrecognized(ctr);
-  return { p: { x: b.ll.x, y: ctr.y }, theta: Math.PI, side: sides & LEFT, constrain: true, clip: false, dyna: false, defined: true, rv: 0 };
+  return { p: { x: b.ll.x, y: ctr.y }, theta: 4, side: sides & LEFT, constrain: true, clip: false, dyna: false, defined: true, rv: 0 };
 }
 
 // ---------------------------------------------------------------------------

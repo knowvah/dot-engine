@@ -1,0 +1,32 @@
+digraph compass_RL {
+  rankdir=RL;
+  node [shape=ellipse];
+  c;
+  c:n -> t_n;
+  h_n -> c:n;
+  c:ne -> t_ne;
+  h_ne -> c:ne;
+  c:e -> t_e;
+  h_e -> c:e;
+  c:se -> t_se;
+  h_se -> c:se;
+  c:s -> t_s;
+  h_s -> c:s;
+  c:sw -> t_sw;
+  h_sw -> c:sw;
+  c:w -> t_w;
+  h_w -> c:w;
+  c:nw -> t_nw;
+  h_nw -> c:nw;
+  r [shape=record, label="<a>a|<b>b"];
+  r:a:n -> x_n;
+  r:a:e -> x_e;
+  r:a:s -> x_s;
+  r:a:w -> x_w;
+  r:a:ne -> x_ne;
+  r:a:sw -> x_sw;
+  b [shape=box];
+  b:e -> b_e [label=e];
+  b:se -> b_se [label=se];
+  b:nw -> b_nw [label=nw];
+}

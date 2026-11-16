@@ -12,7 +12,7 @@
  *
  * @see lib/common/shapes.c:compassPort (line 2698)
  * @see lib/common/shapes.c:invflip_side (line 2548)
- * @see lib/common/shapes.c:invflip_angle (line 2606)
+ * @see lib/common/shapes.c:invflip_angle (line 2607)
  * @see lib/common/htmltable.c:html_port (line 916)
  */
 
@@ -21,7 +21,7 @@ import { compassPort, polyPort } from './compass-port.js';
 import { makePort } from '../model/edgeInfo.js';
 import { makeNodeInfo } from '../model/nodeInfo.js';
 import { BOTTOM, RIGHT, TOP, LEFT } from './splines-constants.js';
-import { RANKDIR_BT, RANKDIR_RL } from '../layout/dot/init.js';
+import { RANKDIR_TB, RANKDIR_LR, RANKDIR_BT, RANKDIR_RL } from '../layout/dot/init.js';
 import type { Node } from '../model/node.js';
 import type { Port } from '../model/geom.js';
 
@@ -91,23 +91,33 @@ describe('compassPort — invflipSide under rankdir=RL', () => {
 });
 
 // ---------------------------------------------------------------------------
-// invflipAngle — RL 8-direction table
+// invflipAngle — 8 compass points × 4 rankdirs, exact
 // ---------------------------------------------------------------------------
 
-describe('compassPort — invflipAngle under rankdir=RL', () => {
-  const cases: Array<[string, number]> = [
-    ['n', 0],
-    ['ne', Math.PI * 0.25],   // unmatched angle → returned unchanged (fallback)
-    ['nw', -Math.PI * 0.25],
-    ['s', Math.PI],
-    ['se', Math.PI * 0.75],
-    ['sw', -Math.PI * 0.75],  // unmatched angle → returned unchanged (fallback)
-    ['e', Math.PI * 0.5],
-    ['w', -Math.PI * 0.5],
+describe('invflipAngle — 16.1.1 quarter-pi table (shapes.c:2607)', () => {
+  const COMPASS = ['e', 'ne', 'n', 'nw', 'w', 'sw', 's', 'se'] as const;
+  // C's `int theta` after invflip_angle's flip, in units of ¼×π, per COMPASS.
+  // RL leaves 1 (ne) and -3 (sw) unmatched, so they pass through unchanged.
+  const UNITS: Array<[string, number, readonly number[]]> = [
+    ['TB', RANKDIR_TB, [0, 1, 2, 3, 4, -3, -2, -1]],
+    ['BT', RANKDIR_BT, [0, -1, -2, -3, -4, 3, 2, 1]],
+    ['LR', RANKDIR_LR, [-2, -1, 0, 1, 2, -5, -4, -3]],
+    ['RL', RANKDIR_RL, [2, 1, 0, -1, -2, -3, 4, 3]],
   ];
+  const rows = UNITS.flatMap(([name, rankdir, units]) =>
+    COMPASS.map((compass, i): [string, string, number, number] => [name, compass, units[i]!, rankdir]));
 
-  it.each(cases)('compass %s → theta %f', (compass, expected) => {
-    expect(resolve(compass, RANKDIR_RL).theta).toBeCloseTo(expected, 5);
+  it.each(rows)('rankdir=%s compass %s → theta is exactly %i × ¼π', (_name, compass, k, rankdir) => {
+    // toBe is Object.is: bit-exact, and it tells +0 from -0.
+    expect(resolve(compass, rankdir).theta).toBe(k * 0.25 * Math.PI);
+  });
+
+  it('rankdir=BT keeps a zero theta at +0 for "e" (C negates an int)', () => {
+    expect(Object.is(resolve('e', RANKDIR_BT).theta, 0)).toBe(true);
+  });
+
+  it('rankdir=BT keeps a zero theta at +0 for "c"', () => {
+    expect(Object.is(resolve('c', RANKDIR_BT).theta, 0)).toBe(true);
   });
 });
 
