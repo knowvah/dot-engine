@@ -1,5 +1,5 @@
 ---
-sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
+sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -76,7 +76,7 @@ iteratieve-model-determinisme; de voormalige drijvendekomma-afwijkingen in de sp
 
 > **Reikwijdte, historisch een ongemeten kanttekening — nu gedeeltelijk gemeten.** De
 > **hoofd-SVG-survey van de dot-engine** (`test/corpus/survey.ts`) is nog steeds
-> **alleen voor dot**: het native orakel draait onder `GVBINDIR=/tmp/ghl`, dat
+> **alleen voor dot**: het native orakel draait onder `GVBINDIR=/tmp/ghl1611`, dat
 > **alleen** de plug-ins `core` + `dot_layout` symlinkt
 > (`test/corpus/gen-headless-gvbindir.sh` doorloopt precies `core dot_layout`
 > — er is geen lay-outplug-in voor `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp`
@@ -118,9 +118,9 @@ doorlicht in plaats van onder `dot`. Het eerlijke plafond van dat werk is A1 te
 kanttekening over platforms heen weg te nemen; de resultaten tot nu toe (hieronder)
 blijven binnen dat plafond: `circo`/`twopi`/`osage` hebben elk een handvol echte
 A1/A9-gevallen blootgelegd en tot de grondoorzaak herleid, en `neato`/`fdp`/`sfdp` zitten
-nu op 99.8/98.0/68.1% binnen 0.5pt van native over het universum van 929 items (graphviz 16.1.0), wat
+nu op 99.8/98.0/68.2% binnen 0.5pt van native over het universum van 898 items (graphviz 16.1.1), wat
 betekent dat de geporteerde rekenkunde (`fma.ts`, `arm-pow.ts`, overeenkomende PRNG) voor
-de meeste grafen standhoudt — en elk afwijkend id van het universum van 929 items wordt afzonderlijk door
+de meeste grafen standhoudt — en elk afwijkend id van het universum van 898 items wordt afzonderlijk door
 injectie toegeschreven (solverdrift vs. portdefect) in plaats van als niet-geanalyseerde
 drift te worden achtergelaten. Zie de karakterisering van de iteratieve engines hieronder.
 
@@ -199,17 +199,17 @@ toegeschreven, zoals hieronder beschreven — `engine-walk.ts` legt voor deze dr
 „Iteratieve engines (karakterisering ±0.5)” van
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 uitdrukkelijk **niet** vergelijkbaar met de deterministische slagingspercentages van ±0.01
-elders in dit document. Actuele aantallen ten opzichte van graphviz 16.1.0 (universum van 929 items; het slagings-% laat
+elders in dit document. Actuele aantallen ten opzichte van graphviz 16.1.1 (universum van 898 items; het slagings-% laat
 invoer weg die het C-orakel niet kan renderen en invoer waarvan de native uitvoer van run tot run
 verschilt, volgens [Conformiteit](./conformance.md)):
 
 | engine | surveyed | binnen ±0.5pt | niet-conform | port-fout / timeout | orakelfout | orakel niet-deterministisch |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
+| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
 
-De 13 niet-deterministische invoeren van `fdp`, waarvan de native uitvoer van run tot run verschilt, zijn buiten zijn slagingspercentage gelaten; zijn enige portfout is `1879`, dat `splines=compound`-routering nodig heeft die de port niet ondersteunt.
+De 11 niet-deterministische invoeren van `fdp`, waarvan de native uitvoer van run tot run verschilt, zijn buiten zijn slagingspercentage gelaten; zijn enige portfout is `1879`, dat `splines=compound`-routering nodig heeft die de port niet ondersteunt.
 
 (Het slagingspercentage van `fdp` steeg van 77.5% omdat de eerdere vastgelegde sweep
 voorafging aan de portstatus van de vorige missie.
@@ -224,13 +224,13 @@ correcties per id, voornamelijk de niet-geporteerde `user_pos`/`P_SET`-afhandeli
 neato, de consolidatie van de engine-initialisatie en de correctie van `setEdgeType`
 als macro vs. functie.)
 
-Anders dan bij de eerste sweep is elke afwijkende rij van het universum van 929 items
-afzonderlijk toegeschreven ten opzichte van graphviz 16.1.0: het injectietestharnas
+Anders dan bij de eerste sweep is elke afwijkende rij van het universum van 898 items
+afzonderlijk toegeschreven ten opzichte van graphviz 16.1.1: het injectietestharnas
 (`test/corpus/attribute-divergence.ts`) voert de pre-routerings-`ND_pos` van het native
 orakel in de port in en vergelijkt opnieuw, en elk huidig afwijkend id is
 `drift-exonerated` (routering en uitvoer van de port reproduceren het orakel exact zodra
-de solverdrift is weggenomen), op twee na. Twee zijn afzonderlijk geaccepteerde
-restgevallen per id: de host-libm-`pow`-drift van sfdp `241_0` (opnieuw gediagnosticeerd door T28), en de
+de solverdrift is weggenomen), op sfdp `2556` na. Twee zijn afzonderlijk geaccepteerde
+restgevallen per id: de host-libm-`pow`-drift van sfdp `241_0` (opnieuw gediagnosticeerd door T28; de injectierij luidt sinds `12dddc48` `drift-exonerated`), en de
 NaN-lay-out van sfdp `2556`. fdp `241_0` slaagt sinds
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` (zie de fdp-alinea
 onder A9). fdp `2471` en sfdp `2371` hielden na injectie eerder
@@ -248,7 +248,7 @@ in de dashboards per engine
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Waar de solverdrift van sfdp begint (deel 10, T2).** Een geïnstrumenteerde native sfdp, op kleine ids naast de port getraceerd, wijkt voor het eerst af in het laatste bit van `pow(dist, 1-p)` in de afstotingskracht (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). Bij `flatedge` geeft `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` native `...8811p+2` en in de port `...8812p+2`; `graphs-p` en `1767` beginnen op dezelfde manier. Adaptieve afkoeling versterkt het bit: het bereikt `x[0]` in iteratie 5, `max|dx|` is 2.4e-9 in iteratie 100 en 3.9e-5 in 200, en de stap kantelt in iteratie 244. Twee gecontroleerde runs bevestigen het. Met de bits van native bij precies die 8 aanroepen is de trace van 62090 regels van `flatedge` identiek, en met de echte `pow` van macOS achter een Node-API-addon hebben 288 van de 292 ids die niet slaagden bitidentieke traces (de andere 4, alle `overlap=false`, verschillen alleen bij `xfinal`). Volgorde van bewerkingen en fusie in de solver, multilevel, quadtree en sparse code zijn uitgesloten. Dit is de libm van de host, geaccepteerd onder A1 (zie het `pow`-punt in de lijst met bekende hiaten hieronder); `src/` is niet gewijzigd, dus de aantallen blijven 632 van 929. Het experiment dat alleen op macOS draaide, haalde ongeveer 923 van 929; dat meet de `pow` van het orakel en is niet iets wat de bibliotheek op elke host kan. `Math.pow` in de afstotingskracht slaagt voor 153 van de 292 maar laat 6 ids die nu slagen terugvallen, en is daarom niet toegepast. De sfdp-rij van de tabel is gelijk aan die van [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 afwijkend plus 295 geaccepteerd geeft de 296, en 1 id meer staat daar als niet-deterministisch bij het orakel.
+**Waar de solverdrift van sfdp begint (deel 10, T2).** Een geïnstrumenteerde native sfdp, op kleine ids naast de port getraceerd, wijkt voor het eerst af in het laatste bit van `pow(dist, 1-p)` in de afstotingskracht (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). Bij `flatedge` geeft `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` native `...8811p+2` en in de port `...8812p+2`; `graphs-p` en `1767` beginnen op dezelfde manier. Adaptieve afkoeling versterkt het bit: het bereikt `x[0]` in iteratie 5, `max|dx|` is 2.4e-9 in iteratie 100 en 3.9e-5 in 200, en de stap kantelt in iteratie 244. Twee gecontroleerde runs bevestigen het. Met de bits van native bij precies die 8 aanroepen is de trace van 62090 regels van `flatedge` identiek, en met de echte `pow` van macOS achter een Node-API-addon hebben 288 van de 292 ids die niet slaagden bitidentieke traces (de andere 4, alle `overlap=false`, verschillen alleen bij `xfinal`). Volgorde van bewerkingen en fusie in de solver, multilevel, quadtree en sparse code zijn uitgesloten. Dit is de libm van de host, geaccepteerd onder A1 (zie het `pow`-punt in de lijst met bekende hiaten hieronder); `src/` is niet gewijzigd, dus de aantallen blijven 632 van 929. Het experiment dat alleen op macOS draaide, haalde ongeveer 923 van 929; dat meet de `pow` van het orakel en is niet iets wat de bibliotheek op elke host kan. `Math.pow` in de afstotingskracht slaagt voor 153 van de 292 maar laat 6 ids die nu slagen terugvallen, en is daarom niet toegepast. De sfdp-rij van de tabel is gelijk aan die van [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 0 afwijkend plus 286 geaccepteerd geeft de 286 bij graphviz 16.1.1, en er staat daar geen id als niet-deterministisch bij het orakel.
 
 **A1-drift-klasse-acceptatie (iteratieve engines, berekend lidmaatschap).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -315,7 +315,7 @@ sloot `42`, `clust2`, `ngk10_4` (structural-match → conformant) en verplaatste
 
 **Beide survey-kanten gebruiken dezelfde schatter — de meting is geneutraliseerd.**
 Het native `dot`-orakel draait onder een headless `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl`) dat alleen de plug-ins
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`) dat alleen de plug-ins
 `core` en `dot_layout` symlinkt — geen tekstlay-outplug-in `gd`/`pango`/`quartz`.
 Met die lege plek valt graphviz terug op zijn ingebouwde
 `estimate_textspan_size`. De `EstimateTextMeasurer` van de TypeScript-port
@@ -465,7 +465,7 @@ die geport: libm-`hypot` voor de afstand (`route.c:448`), de strikte `>`-vergeli
 (459), `normv` (413), `B01` (488) en `B23` (494). De tolerante gelijkstandsbeslissing is
 verdwenen; de knoop van `241_0` is vastgepind in het routeringsframe van C, omdat C op
 zulke gelijkstanden niet translatie-equivariant is. Dit sloot `2368`, `2371`, `2413_1`,
-`2413_2`, `graphs-b100`, `graphs-b104` en `graphs-decorate`.
+`2413_2`, `graphs-b100`, `graphs-b104` en `graphs-decorate`. Bij graphviz 16.1.1 wijkt `2368` opnieuw af, om een niet-gerelateerde reden: de `flat_reorder`-wijziging van native ([#158](#pending-16-1-1-ports)).
 
 `241_1` was geen `hypot`-gelijkstand: het werd gesloten door `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
@@ -1229,6 +1229,23 @@ Bewijs: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 
+## Openstaande 16.1.1-porteringen {#pending-16-1-1-ports}
+
+Het orakel is van graphviz 16.1.0 naar 16.1.1 gegaan ([ADR-0002](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0002-graphviz-16.1.1-oracle.md)). Elke upstream-wijziging hieronder verschuift enkele id's weg van de port, die daar nog 16.1.0 volgt, totdat de wijziging is geport. De aantallen komen uit de classificatie van de herbasislijn (`plans/graphviz-16-1-1-rebaseline/classification/`), die elke oordeelwijziging tussen de twee orakels terugvoerde op een oorzaak. Dit zijn geen geaccepteerde delta's: elk is openstaand werk in zijn issue.
+
+| issue | upstream-wijziging | id's die bij 16.1.1 verschoven | engines |
+|---|---|---|---|
+| [#158](https://github.com/knowvah/dot-engine/issues/158) | `flat_reorder` slaat een rank over waarvan de inkomende vlakke randen beperkt zijn | 34 survey-id's conformant → diverged (23) of structural-match (11), onder andere `2368` en `2592`; `2854_1` en `2855` blijven native niet meer hangen en zijn nu conformant. Goldens: `dot-newrank-cluster-ranksame`, `dot-pack-flat-label` en 10 `pt-issue-*` fixtures (`test/golden/known-failing.json`) | `dot`; de 34 id's verlaten ook elke engine-doorloop, die de conformant id's van de survey neemt |
+| [#164](https://github.com/knowvah/dot-engine/issues/164) | ortho-segmentpermutatie uit libc `rand()` | 6: circo `1658` (nu een orakelfout), `1880`, `1990`; twopi `2168_5`, `2183`, `2643` | `circo`, `twopi` (`splines=ortho`) |
+| [#149](https://github.com/knowvah/dot-engine/issues/149) | `write_body` schrijft randen na de knopen van een body, in aanmaakvolgorde | 2: `1514`, `1581` | `-Tdot`, `-Txdot` uitvoer |
+| [#162](https://github.com/knowvah/dot-engine/issues/162) | laat de lay-out mislukken wanneer een hulprand te lang is | 1: `1314` | `dot` |
+| [#159](https://github.com/knowvah/dot-engine/issues/159) | `flat_edges` telt gelabelde niet-aangrenzende `other`-randen voor de abomination-rank | 1: `2723` (native crashte bij 16.1.0; het eindigt nu met 1 en een SVG, die de port nog niet produceert) | `dot` |
+| [#151](https://github.com/knowvah/dot-engine/issues/151) | weiger een pad waarvan alle boxen gedegenereerd zijn | 1: `2778` (hetzelfde patroon als `2723`) | `dot` |
+| [#163](https://github.com/knowvah/dot-engine/issues/163) | het ongedocumenteerde attribuut `compact` wordt verwijderd | geen corpus-id; goldens `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
+| [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | de rest van de gedragswijzigingen van 16.1.1 | geen in het corpus of de goldens | — |
+
+Invoer die elke wijziging bereikt, wordt gevolgd in [#148](https://github.com/knowvah/dot-engine/issues/148).
+
 ## Gevolgde long tail (`dot`-attributen & randgevallen) {#tracked-long-tail-dot-attribute-edge-case}
 
 Bij **standaardwaarden** komt de `dot`-engine met de C-binary overeen binnen een strakke deterministische
@@ -1315,7 +1332,7 @@ wijkt af van native Graphviz. Gevonden door de missie `v2-silent-gaps`
   Gediagnosticeerd met een geïnstrumenteerde native sfdp: posities blijven bit-identiek
   tot één afstotende-krachtterm, `pow(dist, 1 - p)` (`spring_electrical.c`,
   `p = -1`, dus `pow(x, 2)`), 1 ulp minder teruggeeft dan `x*x` van macOS-libm
-  (`pow(1.4116727416983157, 2)`: libm `1.9928199296540394`, correct afgerond
+  (`pow(1.4116727416983157, 2)`: libm `1.9928198986540394`, correct afgerond
   `…396`; macOS `pow(v, 2) != v*v` voor 20 van 16201 getrokken `v`). Dat verandert
   de `Fnorm` van de iteratie in het laatste bit; de adaptieve afkoeling van sfdp versterkt dat
   tot een andere (vaak gespiegelde) lay-out. De `armPow` van de port is de

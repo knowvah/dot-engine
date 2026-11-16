@@ -43,6 +43,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { homedir, tmpdir } from 'node:os';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
 import type { XdotDiff } from '../golden/compare-xdot.js';
@@ -117,8 +118,8 @@ export interface AttributionReport {
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const CORPUS = process.env['CORPUS_ROOT'] ?? join(homedir(), 'git/graphviz/tests');
-const DOT_BIN = process.env['DOT_BIN'] ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env['GVBINDIR'] ?? '/tmp/ghl';
+const DOT_BIN = process.env['DOT_BIN'] ?? ORACLE_DOT_BIN;
+const GVBINDIR = process.env['GVBINDIR'] ?? ORACLE_GVBINDIR;
 
 /** D1: only the pre-routing ND_pos stage is implemented in bulk. */
 const SUPPORTED_STAGE = 'pos';

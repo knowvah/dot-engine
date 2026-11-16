@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-10-24T03:40:40.731Z",
+  "generatedAt": "2026-11-13T00:44:39.592Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "circo",
-  "oracleVersion": "dot 16.1.0",
+  "oracleVersion": "dot 16.1.1",
   "corpusRoot": "~/git/graphviz/tests",
-  "total": 928,
+  "total": 898,
   "counts": {
-    "conformant": 915,
-    "diverged": 1,
-    "accepted": 4,
+    "conformant": 882,
+    "diverged": 4,
+    "accepted": 3,
     "port-error": 0,
-    "oracle-error": 8,
+    "oracle-error": 9,
     "timeout": 0,
     "oracle-nondeterministic": 0
   },
@@ -172,12 +172,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "1314",
-      "path": "1314.dot",
-      "size": 51,
-      "verdict": "conformant"
-    },
-    {
       "id": "2457_1",
       "path": "2457_1.dot",
       "size": 51,
@@ -205,12 +199,6 @@
       "id": "tree-doc-dotguide-none",
       "path": "../doc/dotguide/none.dot",
       "size": 54,
-      "verdict": "conformant"
-    },
-    {
-      "id": "graphs-in",
-      "path": "graphs/in.gv",
-      "size": 55,
       "verdict": "conformant"
     },
     {
@@ -361,8 +349,8 @@
       "id": "2784",
       "path": "2784.dot",
       "size": 78,
-      "verdict": "accepted",
-      "errMsg": "Map maximum size exceeded"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz/tests/2784.dot splits into two tokens"
     },
     {
       "id": "graphs-clustlabel",
@@ -521,12 +509,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "graphs-longflat",
-      "path": "graphs/longflat.gv",
-      "size": 86,
-      "verdict": "conformant"
-    },
-    {
       "id": "graphs-rowcolsep",
       "path": "graphs/rowcolsep.gv",
       "size": 86,
@@ -536,24 +518,6 @@
       "id": "tree-doc-dotguide-invtriangle",
       "path": "../doc/dotguide/invtriangle.dot",
       "size": 86,
-      "verdict": "conformant"
-    },
-    {
-      "id": "tree-graphs-directed-longflat",
-      "path": "../graphs/directed/longflat.gv",
-      "size": 86,
-      "verdict": "conformant"
-    },
-    {
-      "id": "1444",
-      "path": "1444.dot",
-      "size": 87,
-      "verdict": "conformant"
-    },
-    {
-      "id": "1444-2",
-      "path": "1444-2.dot",
-      "size": 87,
       "verdict": "conformant"
     },
     {
@@ -1449,12 +1413,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "graphs-b58",
-      "path": "graphs/b58.gv",
-      "size": 194,
-      "verdict": "conformant"
-    },
-    {
       "id": "graphs-labelclust-fdd",
       "path": "graphs/labelclust-fdd.gv",
       "size": 202,
@@ -1506,12 +1464,6 @@
       "id": "2563",
       "path": "2563.dot",
       "size": 213,
-      "verdict": "conformant"
-    },
-    {
-      "id": "258",
-      "path": "258.dot",
-      "size": 218,
       "verdict": "conformant"
     },
     {
@@ -1740,12 +1692,6 @@
       "id": "graphs-p3",
       "path": "graphs/p3.gv",
       "size": 248,
-      "verdict": "conformant"
-    },
-    {
-      "id": "121",
-      "path": "121.dot",
-      "size": 249,
       "verdict": "conformant"
     },
     {
@@ -2055,12 +2001,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "2521",
-      "path": "2521.dot",
-      "size": 320,
-      "verdict": "conformant"
-    },
-    {
       "id": "2168_3",
       "path": "2168_3.dot",
       "size": 322,
@@ -2118,12 +2058,6 @@
       "id": "tree-doc-neato-inet",
       "path": "../doc/neato/inet.dot",
       "size": 349,
-      "verdict": "conformant"
-    },
-    {
-      "id": "700813",
-      "path": "700813.dot",
-      "size": 351,
       "verdict": "conformant"
     },
     {
@@ -2202,24 +2136,6 @@
       "id": "graphs-xlabels",
       "path": "graphs/xlabels.gv",
       "size": 404,
-      "verdict": "conformant"
-    },
-    {
-      "id": "2368_1",
-      "path": "2368_1.dot",
-      "size": 405,
-      "verdict": "conformant"
-    },
-    {
-      "id": "share-longflat",
-      "path": "share/longflat.gv",
-      "size": 405,
-      "verdict": "conformant"
-    },
-    {
-      "id": "windows-longflat",
-      "path": "windows/longflat.gv",
-      "size": 409,
       "verdict": "conformant"
     },
     {
@@ -2445,6 +2361,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2854_1",
+      "path": "2854_1.dot",
+      "size": 568,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-nul_nul",
       "path": "graphs/nul_nul.gv",
       "size": 576,
@@ -2604,7 +2526,11 @@
       "id": "1990",
       "path": "1990.dot",
       "size": 610,
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "diffCount": 36,
+      "firstDiff": "edge:1⋯7 ❰A❱->2⋯7 ❰A❱#0/_draw_/op[1].b[ptCount]",
+      "maxDelta": 53.039999999999964,
+      "maxDeltaPath": "edge:1⋯7 ❰A❱->2⋯7 ❰A❱#0/_hdraw_/op[3].P[4]"
     },
     {
       "id": "share-labelclust-nbd",
@@ -3249,15 +3175,15 @@
       "verdict": "conformant"
     },
     {
-      "id": "graphs-b85",
-      "path": "graphs/b85.gv",
+      "id": "2855",
+      "path": "2855.dot",
       "size": 668,
       "verdict": "conformant"
     },
     {
-      "id": "graphs-ports",
-      "path": "graphs/ports.gv",
-      "size": 677,
+      "id": "graphs-b85",
+      "path": "graphs/b85.gv",
+      "size": 668,
       "verdict": "conformant"
     },
     {
@@ -3273,6 +3199,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "1581",
+      "path": "1581.dot",
+      "size": 695,
+      "verdict": "conformant"
+    },
+    {
       "id": "share-structs",
       "path": "share/structs.gv",
       "size": 710,
@@ -3282,7 +3214,8 @@
       "id": "1658",
       "path": "1658.dot",
       "size": 711,
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "oracle exit null"
     },
     {
       "id": "windows-structs",
@@ -3513,12 +3446,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "2368",
-      "path": "2368.dot",
-      "size": 960,
-      "verdict": "conformant"
-    },
-    {
       "id": "graphs-world",
       "path": "graphs/world.gv",
       "size": 980,
@@ -3570,18 +3497,6 @@
       "id": "graphs-grdangles",
       "path": "graphs/grdangles.gv",
       "size": 1076,
-      "verdict": "conformant"
-    },
-    {
-      "id": "graphs-shells",
-      "path": "graphs/shells.gv",
-      "size": 1102,
-      "verdict": "conformant"
-    },
-    {
-      "id": "tree-graphs-directed-shells",
-      "path": "../graphs/directed/shells.gv",
-      "size": 1102,
       "verdict": "conformant"
     },
     {
@@ -3748,12 +3663,6 @@
       "id": "tree-doc-dotguide-clust2",
       "path": "../doc/dotguide/clust2.dot",
       "size": 1407,
-      "verdict": "conformant"
-    },
-    {
-      "id": "graphs-html2",
-      "path": "graphs/html2.gv",
-      "size": 1414,
       "verdict": "conformant"
     },
     {
@@ -4051,18 +3960,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "linux.x86-html2_dot",
-      "path": "linux.x86/html2_dot.gv",
-      "size": 1945,
-      "verdict": "conformant"
-    },
-    {
-      "id": "nshare-html2_dot",
-      "path": "nshare/html2_dot.gv",
-      "size": 1946,
-      "verdict": "conformant"
-    },
-    {
       "id": "share-pm2way",
       "path": "share/pm2way.gv",
       "size": 1974,
@@ -4111,24 +4008,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "linux.x86-ordering_dot1",
-      "path": "linux.x86/ordering_dot1.gv",
-      "size": 2042,
-      "verdict": "conformant"
-    },
-    {
-      "id": "macosx-ordering_dot1",
-      "path": "macosx/ordering_dot1.gv",
-      "size": 2042,
-      "verdict": "conformant"
-    },
-    {
-      "id": "nshare-ordering_dot1",
-      "path": "nshare/ordering_dot1.gv",
-      "size": 2042,
-      "verdict": "conformant"
-    },
-    {
       "id": "graphs-rd_rules",
       "path": "graphs/rd_rules.gv",
       "size": 2043,
@@ -4168,24 +4047,6 @@
       "id": "share-ER",
       "path": "share/ER.gv",
       "size": 2072,
-      "verdict": "conformant"
-    },
-    {
-      "id": "linux.x86-ordering_dot",
-      "path": "linux.x86/ordering_dot.gv",
-      "size": 2097,
-      "verdict": "conformant"
-    },
-    {
-      "id": "macosx-ordering_dot",
-      "path": "macosx/ordering_dot.gv",
-      "size": 2097,
-      "verdict": "conformant"
-    },
-    {
-      "id": "nshare-ordering_dot",
-      "path": "nshare/ordering_dot.gv",
-      "size": 2097,
       "verdict": "conformant"
     },
     {
@@ -4258,12 +4119,6 @@
       "id": "windows-Heawood",
       "path": "windows/Heawood.gv",
       "size": 2340,
-      "verdict": "conformant"
-    },
-    {
-      "id": "1453",
-      "path": "1453.dot",
-      "size": 2446,
       "verdict": "conformant"
     },
     {
@@ -4381,12 +4236,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "2592",
-      "path": "2592.dot",
-      "size": 3001,
-      "verdict": "conformant"
-    },
-    {
       "id": "2082",
       "path": "2082.dot",
       "size": 3033,
@@ -4444,20 +4293,11 @@
       "id": "1880",
       "path": "1880.dot",
       "size": 3451,
-      "verdict": "oracle-error",
-      "errMsg": "oracle exit null"
-    },
-    {
-      "id": "linux.x86-ports_dot",
-      "path": "linux.x86/ports_dot.gv",
-      "size": 3470,
-      "verdict": "conformant"
-    },
-    {
-      "id": "nshare-ports_dot",
-      "path": "nshare/ports_dot.gv",
-      "size": 3493,
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "diffCount": 214,
+      "firstDiff": "edge:4564932->4564952#0/_draw_/op[2].b[ptCount]",
+      "maxDelta": 841.653,
+      "maxDeltaPath": "edge:4564918->4564920#0/pos[3]"
     },
     {
       "id": "graphs-pmpipe",
@@ -4670,18 +4510,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "tree-graphs-directed-sdh",
-      "path": "../graphs/directed/sdh.gv",
-      "size": 5428,
-      "verdict": "conformant"
-    },
-    {
-      "id": "share-shells",
-      "path": "share/shells.gv",
-      "size": 5493,
-      "verdict": "conformant"
-    },
-    {
       "id": "graphs-crazy",
       "path": "graphs/crazy.gv",
       "size": 5556,
@@ -4691,12 +4519,6 @@
       "id": "tree-graphs-directed-crazy",
       "path": "../graphs/directed/crazy.gv",
       "size": 5572,
-      "verdict": "conformant"
-    },
-    {
-      "id": "windows-shells",
-      "path": "windows/shells.gv",
-      "size": 5589,
       "verdict": "conformant"
     },
     {
@@ -5229,6 +5051,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "894589",
+      "path": "894589.dot",
+      "size": 13020,
+      "verdict": "conformant"
+    },
+    {
       "id": "1332",
       "path": "1332.dot",
       "size": 13890,
@@ -5370,12 +5198,6 @@
       "id": "graphs-viewport",
       "path": "graphs/viewport.gv",
       "size": 37292,
-      "verdict": "conformant"
-    },
-    {
-      "id": "2239",
-      "path": "2239.dot",
-      "size": 48090,
       "verdict": "conformant"
     },
     {
@@ -5593,6 +5415,16 @@
       "size": 3136769,
       "verdict": "oracle-error",
       "errMsg": "oracle exit null"
+    },
+    {
+      "id": "2475_1",
+      "path": "2475_1.dot",
+      "size": 9735186,
+      "verdict": "diverged",
+      "diffCount": 1,
+      "firstDiff": "edge:1242_589985->1242_589980#0/_hdraw_/op[3].P[2]",
+      "maxDelta": 0.010000020265579224,
+      "maxDeltaPath": "edge:1242_589985->1242_589980#0/_hdraw_/op[3].P[2]"
     },
     {
       "id": "tree-share-examples-world",

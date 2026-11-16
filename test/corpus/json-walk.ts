@@ -5,7 +5,7 @@
 //
 // Walks the SVG-conformant corpus items sorted by input file size (small →
 // large, mirrors xdot-walk.ts AD-2), rendering each to json through the
-// native oracle (`dot -K<engine> -Tjson`, GVBINDIR=/tmp/ghl — AD-4) and
+// native oracle (`dot -K<engine> -Tjson`, GVBINDIR=/tmp/ghl1611 — AD-4) and
 // through the port (render-one-json.ts), and diffs the two with the semantic
 // comparator (compare-json.ts). Two modes (mirrors xdot-walk.ts AD-6):
 //
@@ -57,6 +57,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { homedir } from 'node:os';
+import { defaultGvbindir, ORACLE_DOT_BIN } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareJson, type JsonDiff } from '../golden/compare-json.js';
@@ -76,8 +77,7 @@ import {
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
-const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
+const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
 const RENDER_ONE = join(REPO, 'test/corpus/render-one-json.ts');
 const PARITY = new URL('./parity.json', import.meta.url);
 const ACCEPTED = new URL('./accepted-divergences-json.json', import.meta.url);
@@ -91,6 +91,7 @@ const CLI_FLAGS = process.argv.slice(2);
 const CLI_POSITIONAL = CLI_FLAGS.filter((a) => !a.startsWith('--'));
 /** Layout engine to sweep. Default `dot` — back-compat with the pre-AD-3 CLI. */
 const ENGINE = CLI_POSITIONAL[0] ?? 'dot';
+const GVBINDIR = defaultGvbindir(ENGINE);
 const OUT_JSONL_ARG = CLI_POSITIONAL[1];
 const SURVEY = CLI_FLAGS.includes('--survey');
 

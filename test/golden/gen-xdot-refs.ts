@@ -5,7 +5,7 @@
 // Mirrors the SVG golden refs: each `.xdot` under test/golden/refs-xdot/ is the
 // native oracle's `dot -Txdot` output, committed so the xdot golden suite runs
 // without a live oracle (browser/CI). The oracle is the SAME headless build that
-// generated the SVG refs (`~/git/graphviz/build/cmd/dot/dot`, GVBINDIR=/tmp/ghl,
+// generated the SVG refs (`~/git/graphviz-16.1.1/build/cmd/dot/dot`, GVBINDIR=/tmp/ghl1611-all,
 // estimate text metrics) so xdot geometry matches the port's estimate LUT.
 //
 // Scope: the DETERMINISTIC engines (dot/circo/twopi/osage/patchwork). Iterative
@@ -14,20 +14,20 @@
 // provides circo/twopi/osage/patchwork) alongside dot_layout — run `dot -c`
 // after symlinking libgvplugin_neato_layout.* into the plugin dir.
 //
-// Usage:  DOT_BIN=~/git/graphviz/build/cmd/dot/dot npx tsx test/golden/gen-xdot-refs.ts
+// Usage:  DOT_BIN=~/git/graphviz-16.1.1/build/cmd/dot/dot npx tsx test/golden/gen-xdot-refs.ts
 // Node-only dev/test infra — never imported by src/index.ts.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR_ALL } from '../corpus/oracle-paths.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
-const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
+const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
+const GVBINDIR = process.env.GVBINDIR ?? ORACLE_GVBINDIR_ALL;
 const REFS_DIR = join(__dirname, 'refs-xdot');
 
 interface ManifestEntry {

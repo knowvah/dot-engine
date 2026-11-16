@@ -28,14 +28,15 @@
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { preflightOrExit } from './oracle-env.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
-const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
+const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
+const GVBINDIR = process.env.GVBINDIR ?? ORACLE_GVBINDIR;
 const BUDGET_MS = Number(process.env.FORMAT_WALK_BUDGET_MS ?? 60_000);
 
 const ALL_ENGINES = ['dot', 'neato', 'fdp', 'sfdp', 'circo', 'twopi', 'osage', 'patchwork'] as const;

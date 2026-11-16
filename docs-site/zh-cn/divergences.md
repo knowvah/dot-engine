@@ -1,5 +1,5 @@
 ---
-sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
+sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -45,7 +45,7 @@ sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 **受影响：** `neato`、`fdp`、`sfdp`、`circo`、`twopi`、`osage`（迭代式的弹簧模型引擎）。`dot` 引擎的*布局*不受这种迭代模型确定性的影响；`dot` 样条路由中先前的浮点差值（A3、A8）已经关闭，并在下面作为历史保留。
 
 > **范围，历史上是一个未经测量的前提 — 现已部分测量。**
-> **dot 引擎的主 SVG 调查**（`test/corpus/survey.ts`）仍然**仅限 dot**：原生参照程序在 `GVBINDIR=/tmp/ghl` 下运行，该目录**只**符号链接了 `core` + `dot_layout` 插件（`test/corpus/gen-headless-gvbindir.sh` 恰好只遍历 `core dot_layout`——不存在 `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` 布局插件），并且参照程序和移植版调用的都是 `dot` 引擎。因此，像 `*_neato` / `*_circo` / `root_twopi` 这样的语料库 id 在该调查中只是用 `dot` 布局的*文件名*，而不是它们各自的原生引擎，A1 在那里匹配**零个**图——并不是因为这些引擎被证明一致，而是因为该调查根本没有运行过它们。
+> **dot 引擎的主 SVG 调查**（`test/corpus/survey.ts`）仍然**仅限 dot**：原生参照程序在 `GVBINDIR=/tmp/ghl1611` 下运行，该目录**只**符号链接了 `core` + `dot_layout` 插件（`test/corpus/gen-headless-gvbindir.sh` 恰好只遍历 `core dot_layout`——不存在 `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` 布局插件），并且参照程序和移植版调用的都是 `dot` 引擎。因此，像 `*_neato` / `*_circo` / `root_twopi` 这样的语料库 id 在该调查中只是用 `dot` 布局的*文件名*，而不是它们各自的原生引擎，A1 在那里匹配**零个**图——并不是因为这些引擎被证明一致，而是因为该调查根本没有运行过它们。
 >
 > **但是，现在全部六个 A1 引擎都有各自的原生引擎调查**，通过
 > `test/corpus/engine-walk.ts` + `parity-report.ts`（不依赖 `GVBINDIR`——每个都直接启动 `dot -K <engine> -Txdot`），分为两种不同的严格程度，下文分别说明：`circo`/`twopi`/`osage` 以与 dot 调查相同的 **±0.01 确定性**容差运行，并对每个 id 做根因分诊（下文“引擎轨道接受”）；`neato`/`fdp`/`sfdp` 以更宽松的 **±0.5 特征描述**容差运行，并逐 id 归因（下文“迭代式引擎特征描述”）。当前的跨引擎数据：
@@ -53,7 +53,7 @@ sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
 
 **特征描述。** 这些引擎运行迭代式数值布局，其结果取决于浮点舍入——具体来说是融合乘加（FMA）和 `Math.pow`，它们在不同的 JavaScript 引擎和 CPU 架构上可能不同。移植版在可能的地方与 C 的运算顺序保持一致（`src/common/fma.ts`、`src/common/arm-pow.ts`）——例如 `sfdp` 在使用匹配的伪随机数发生器和 `fma` 时，与原生参照程序可对齐到约 6 位有效数字——但精确、坐标完全相同的复现**无法保证跨平台**。拓扑得以保持；潜在的差异出现在精细的节点坐标上。
 
-**为何接受。** 这是在 JS 中运行的硬性约束，而不是设计选择——与 A3/A8 中（此后已关闭的）`hypot`/FMA 敏感性属于同一类。没有办法保证所有目标运行环境上的超越函数/FMA 结果逐位相同，所以字节标准不只是代价高昂，而是无法测试。**评估 A1**（而不仅仅是给出提示）需要一条单独的原生引擎对齐度轨道——于 2026-07-11 作为 `test/corpus/engine-walk.ts` + `parity-report.ts` 建立，它让每个输入在各自的引擎下接受调查，而不是在 `dot` 下。这项工作诚实的上限，是把 A1 **收窄**为“在参考平台上没有活跃的差异”，而绝不是消除跨平台的前提；到目前为止的结果（见下）符合这一上限：`circo`/`twopi`/`osage` 各自暴露并找出了少量真实的 A1/A9 实例的根因，而 `neato`/`fdp`/`sfdp` 现在在 929 项的全集（graphviz 16.1.0）中分别有 99.8/98.0/68.1% 与原生程序相差不超过 0.5pt，这意味着已移植的算术（`fma.ts`、`arm-pow.ts`、匹配的伪随机数发生器）对大多数图都成立——而且 929 项全集中每一个存在差异的 id 都通过注入逐个归因（求解器漂移还是移植缺陷），而不是留作未分诊的漂移。参见下面的迭代式引擎特征描述。
+**为何接受。** 这是在 JS 中运行的硬性约束，而不是设计选择——与 A3/A8 中（此后已关闭的）`hypot`/FMA 敏感性属于同一类。没有办法保证所有目标运行环境上的超越函数/FMA 结果逐位相同，所以字节标准不只是代价高昂，而是无法测试。**评估 A1**（而不仅仅是给出提示）需要一条单独的原生引擎对齐度轨道——于 2026-07-11 作为 `test/corpus/engine-walk.ts` + `parity-report.ts` 建立，它让每个输入在各自的引擎下接受调查，而不是在 `dot` 下。这项工作诚实的上限，是把 A1 **收窄**为“在参考平台上没有活跃的差异”，而绝不是消除跨平台的前提；到目前为止的结果（见下）符合这一上限：`circo`/`twopi`/`osage` 各自暴露并找出了少量真实的 A1/A9 实例的根因，而 `neato`/`fdp`/`sfdp` 现在在 898 项的全集（graphviz 16.1.1）中分别有 99.8/98.0/68.2% 与原生程序相差不超过 0.5pt，这意味着已移植的算术（`fma.ts`、`arm-pow.ts`、匹配的伪随机数发生器）对大多数图都成立——而且 898 项全集中每一个存在差异的 id 都通过注入逐个归因（求解器漂移还是移植缺陷），而不是留作未分诊的漂移。参见下面的迭代式引擎特征描述。
 
 **引擎轨道接受：twopi 箭头族。** <a id="a1-twopi-arrows-family"></a>
 上面的引用块描述的是 dot 引擎的 SVG 调查，其中 A1 匹配零个图；而单独的 `twopi` **xdot 引擎轨道**（`parity-twopi.json`，原生 `dot -K twopi -Txdot` 参照程序，`test/corpus/engine-walk.ts`）*确实*在其原生引擎下运行，并在 9 个语料库 id 上暴露出一个具体的、经过验证的 A1 实例：
@@ -76,26 +76,26 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 
 **迭代式引擎特征描述：neato/fdp/sfdp。** <a id="a1-iterative-characterization"></a>
 与上面以 ±0.01 为标准的 `circo`/`twopi`/`osage` 引擎轨道不同，`neato`/`fdp`/`sfdp` 按 ±0.5pt 比较，其每个存在差异的 id 均已归因（见下文）——`engine-walk.ts` 为这三个引擎记录了 `tolerance: 0.5` 字段，`parity-report.ts` 将它们渲染在
-[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 中单独的“Iterative engines (±0.5 characterization)”一节里，明确**不能**与本文档其他位置的 ±0.01 确定性通过率相比较。针对 graphviz 16.1.0 的当前计数（929 项全集；通过率不计入 C 参照程序无法渲染的输入以及原生输出每次运行都会变化的输入，依据[一致性](./conformance.md)）：
+[`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 中单独的“Iterative engines (±0.5 characterization)”一节里，明确**不能**与本文档其他位置的 ±0.01 确定性通过率相比较。针对 graphviz 16.1.1 的当前计数（898 项全集；通过率不计入 C 参照程序无法渲染的输入以及原生输出每次运行都会变化的输入，依据[一致性](./conformance.md)）：
 
 | 引擎 | 已调查 | ±0.5pt 以内 | 不一致 | 移植版错误 / 超时 | 参照程序错误 | 参照程序非确定 |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
+| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
 
-`fdp` 的 13 个非确定输入（原生输出每次运行都会变化）不计入其通过率；它唯一的移植版错误是 `1879`，该输入需要移植版不支持的 `splines=compound` 路由。
+`fdp` 的 11 个非确定输入（原生输出每次运行都会变化）不计入其通过率；它唯一的移植版错误是 `1879`，该输入需要移植版不支持的 `splines=compound` 路由。
 
 （`fdp` 的通过率自 77.5% 上升，是因为先前提交的那次扫描早于上一个任务的移植状态。`neato` 的通过率自 90.5% 上升，是因为 16.1 反汇编得到的融合 stress 内核进入了生产环境的 kD 路径（16.1 后续跟进第 5 部分，T15）：此前因求解器漂移而存在差异的 83 个 id 现已通过，其中包括先前被接受的逐 id 残余 `2619_2`，该接受已撤销；±0.5pt 之外的两个 `neato` id 是 `2784`（A10）和 `2371`（A1 漂移）。）
 
 （第一次扫描，2026-07-11，762 项时，测得 ±0.5pt 以内的分别为 263/311/260——升至当前比率，是因为此后落地的逐 id 修复，主要是 neato 未移植的 `user_pos`/`P_SET` 处理、引擎初始化的整合，以及 `setEdgeType` 宏与函数的修复。）
 
-与第一次扫描时不同，929 项全集中每一个存在差异的行都已针对 graphviz 16.1.0 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除两个之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中两个是单独接受的逐 id 残余：sfdp `241_0` 的宿主 libm `pow` 漂移（由 T28 重新诊断），以及 sfdp `2556` 的 NaN 布局。自 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 起，fdp `241_0` 已通过（参见 A9 下的 fdp 段落）。fdp `2471` 和 sfdp `2371` 此前在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。移植版的 `dotneato_closest` 改为按 clang 融合后的 de Casteljau 求值和 DIST2 方式舍入后，`2471` 已经消除：此前边标签锚点相差 1–2 ULP，使放置器的严格包含判断翻转。移植版的 R 树像 C 一样按值复制矩形之后，`2371` 已经消除。`2471` 的原生 fdp 布局每次运行都会变化，因此其行只记录一次运行。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
+与第一次扫描时不同，898 项全集中每一个存在差异的行都已针对 graphviz 16.1.1 逐个归因：注入工具（`test/corpus/attribute-divergence.ts`）把原生参照程序路由前的 `ND_pos` 送入移植版并重新比较，而当前每个存在差异的 id，除 sfdp `2556` 之外都是 `drift-exonerated`（一旦消除求解器漂移，移植版的路由和输出就能精确复现参照程序）。其中两个是单独接受的逐 id 残余：sfdp `241_0` 的宿主 libm `pow` 漂移（由 T28 重新诊断；自 `12dddc48` 起其注入行为 `drift-exonerated`），以及 sfdp `2556` 的 NaN 布局。自 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 起，fdp `241_0` 已通过（参见 A9 下的 fdp 段落）。fdp `2471` 和 sfdp `2371` 此前在注入之后保留的边标签位置（`lp`）仍不同，即 xlabel 放置器选了不同的候选。移植版的 `dotneato_closest` 改为按 clang 融合后的 de Casteljau 求值和 DIST2 方式舍入后，`2471` 已经消除：此前边标签锚点相差 1–2 ULP，使放置器的严格包含判断翻转。移植版的 R 树像 C 一样按值复制矩形之后，`2371` 已经消除。`2471` 的原生 fdp 布局每次运行都会变化，因此其行只记录一次运行。（sfdp 的 `42` 是 A1 漂移，参见 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md)。）下面的类别接受将这个被排除嫌疑的集合形式化；实时计数见各引擎仪表板
 （[`PARITY-neato.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-neato.md)、
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)）。
 
-**sfdp 求解器漂移从哪里开始（第 10 部分，T2）。** 对插桩的原生 sfdp 在小 id 上与移植版对照追踪，首次分歧出现在斥力中 `pow(dist, 1-p)` 的最后一位（`lib/sfdpgen/spring_electrical.c:625,617`；移植版 `spring-electrical.ts:260`）。在 `flatedge` 上，`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` 在原生中得到 `...8811p+2`，在移植版中得到 `...8812p+2`；`graphs-p` 和 `1767` 的开头相同。自适应冷却会放大这一位：它在第 5 次迭代到达 `x[0]`，`max|dx|` 在第 100 次迭代为 2.4e-9、第 200 次为 3.9e-5，步长在第 244 次迭代翻转。两次受控运行证实了这一点。在恰好这 8 次调用上采用原生的位，`flatedge` 的 62090 行追踪即完全一致；在 Node-API 插件后使用 macOS 真实的 `pow`，292 个未通过的 id 中有 288 个追踪逐位一致（其余 4 个均为 `overlap=false`，只在 `xfinal` 处不同）。求解器、多层部分、四叉树和稀疏代码中的运算顺序与融合已被排除。这是主机的 libm，在 A1 下被接受（见下方已知缺口列表中的 `pow` 一项）；`src/` 没有改动，所以计数仍是 929 中的 632。仅限 macOS 的实验达到了 929 中约 923；这衡量的是预言机的 `pow`，并不是库在每台主机上都能做到的事。在斥力中使用 `Math.pow` 能通过这 292 个中的 153 个，但会使 6 个当前通过的 id 回退，因此没有采用。表中的 sfdp 行与 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 的行相同：1 个分歧加 295 个已接受得到 296，另有 1 个 id 在该处被列为预言机非确定。
+**sfdp 求解器漂移从哪里开始（第 10 部分，T2）。** 对插桩的原生 sfdp 在小 id 上与移植版对照追踪，首次分歧出现在斥力中 `pow(dist, 1-p)` 的最后一位（`lib/sfdpgen/spring_electrical.c:625,617`；移植版 `spring-electrical.ts:260`）。在 `flatedge` 上，`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` 在原生中得到 `...8811p+2`，在移植版中得到 `...8812p+2`；`graphs-p` 和 `1767` 的开头相同。自适应冷却会放大这一位：它在第 5 次迭代到达 `x[0]`，`max|dx|` 在第 100 次迭代为 2.4e-9、第 200 次为 3.9e-5，步长在第 244 次迭代翻转。两次受控运行证实了这一点。在恰好这 8 次调用上采用原生的位，`flatedge` 的 62090 行追踪即完全一致；在 Node-API 插件后使用 macOS 真实的 `pow`，292 个未通过的 id 中有 288 个追踪逐位一致（其余 4 个均为 `overlap=false`，只在 `xfinal` 处不同）。求解器、多层部分、四叉树和稀疏代码中的运算顺序与融合已被排除。这是主机的 libm，在 A1 下被接受（见下方已知缺口列表中的 `pow` 一项）；`src/` 没有改动，所以计数仍是 929 中的 632。仅限 macOS 的实验达到了 929 中约 923；这衡量的是预言机的 `pow`，并不是库在每台主机上都能做到的事。在斥力中使用 `Math.pow` 能通过这 292 个中的 153 个，但会使 6 个当前通过的 id 回退，因此没有采用。表中的 sfdp 行与 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) 的行相同：在 graphviz 16.1.1 下，0 个分歧加 286 个已接受得到 286，且该处没有 id 被列为预言机非确定。
 
 **A1-drift 类别接受（迭代式引擎，成员由计算得出）。**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -120,7 +120,7 @@ twopi arrows family EXONERATED...” 条目）直接证明了其机制：
 
 **调查的双方运行同一个估算器 — 测量被化解。**
 原生 `dot` 参照程序在无头的 `GVBINDIR`
-（`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl`）下运行，该目录只符号链接 `core` 和 `dot_layout` 插件——没有 `gd`/`pango`/`quartz` 文本布局插件。
+（`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`）下运行，该目录只符号链接 `core` 和 `dot_layout` 插件——没有 `gd`/`pango`/`quartz` 文本布局插件。
 该位置为空时，graphviz 回退到其内置的
 `estimate_textspan_size`。TypeScript 移植版的 `EstimateTextMeasurer`
 （`src/common/textmeasure.ts`）是同一例程的忠实移植，是 Node 下的默认值，由 `createMeasurer()`
@@ -177,7 +177,7 @@ flags) → {w, h, …}`），通过依赖注入传入每一个标签尺寸计算
 
 **状态（2026-10-12）：已关闭。** 不再有语料库 id 被归入该类别而被接受；本节作为该机制的历史文档保留。先前的成员（`2368`、`graphs-b100`、`graphs-b104`、`241_1`、`2413_1`、`2413_2`、`graphs-decorate`、`2371`）在最新扫描（`test/corpus/parity-probe.json`）中全部为 **`conformant`**。
 
-**机制，以及是什么关闭了它。** 样条拟合器（`Proutespline` -> `findMaxDev`，`src/pathplan/route.ts`）在偏差最大的内部路由点处拆分拟合出的贝塞尔曲线。在几何对称的通道上，候选偏差相差约 1 ULP，所以胜者由算术的最后一位决定。此前移植版被归因于一个不可约的差距（“Apple `hypot` 与任何可移植的 `hypot` 都不匹配”），并用一个容忍的、平移等变的平局裁决来补偿。这一归因已被证伪：平局由 C 的*精确*算术决定，而这是可复现的。提交 `cdf597bc`（`fix(pathplan): split splines at C's max-deviation point bit for bit`）移植了它：距离使用 libm 的 `hypot`（`route.c:448`）、C 严格的 `>` 比较（`route.c:139`），以及 clang 对贝塞尔求值（`route.c:137-138`）、`mkspline` 行列式（`route.c:181-183`）、`dot`（459）、`normv`（413）、`B01`（488）和 `B23`（494）的 `fp-contract` 融合。容忍的平局裁决已被移除；`241_0` 的结点被固定在 C 的路由坐标系中，因为 C 在这类平局上并不具备平移等变性。这关闭了 `2368`、`2371`、`2413_1`、`2413_2`、`graphs-b100`、`graphs-b104` 和 `graphs-decorate`。
+**机制，以及是什么关闭了它。** 样条拟合器（`Proutespline` -> `findMaxDev`，`src/pathplan/route.ts`）在偏差最大的内部路由点处拆分拟合出的贝塞尔曲线。在几何对称的通道上，候选偏差相差约 1 ULP，所以胜者由算术的最后一位决定。此前移植版被归因于一个不可约的差距（“Apple `hypot` 与任何可移植的 `hypot` 都不匹配”），并用一个容忍的、平移等变的平局裁决来补偿。这一归因已被证伪：平局由 C 的*精确*算术决定，而这是可复现的。提交 `cdf597bc`（`fix(pathplan): split splines at C's max-deviation point bit for bit`）移植了它：距离使用 libm 的 `hypot`（`route.c:448`）、C 严格的 `>` 比较（`route.c:139`），以及 clang 对贝塞尔求值（`route.c:137-138`）、`mkspline` 行列式（`route.c:181-183`）、`dot`（459）、`normv`（413）、`B01`（488）和 `B23`（494）的 `fp-contract` 融合。容忍的平局裁决已被移除；`241_0` 的结点被固定在 C 的路由坐标系中，因为 C 在这类平局上并不具备平移等变性。这关闭了 `2368`、`2371`、`2413_1`、`2413_2`、`graphs-b100`、`graphs-b104` 和 `graphs-decorate`。 在 graphviz 16.1.1 下，`2368` 因一个无关的原因再次出现分歧：原生版本对 `flat_reorder` 的改动（[#158](#pending-16-1-1-ports)）。
 
 `241_1` 并不是 `hypot` 平局：它由 `87347711`（`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`）关闭。C 把共享同一条主边的所有相邻平边归入一次 `make_flat_adj_edges` 调用，并在整组范围内检测端口，所以带端口边的无端口同级边会经由辅助图路由。移植版按有无端口把该组拆开，并让同级边经由 `makeSimpleFlat` 路由，其裁剪落在不同的 `bezier_clip` 点（54.28，而原生为 54.46）。
 
@@ -483,6 +483,23 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 
 ---
 
+## 待处理的 16.1.1 移植 {#pending-16-1-1-ports}
+
+参照程序已从 graphviz 16.1.0 迁移到 16.1.1（[ADR-0002](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0002-graphviz-16.1.1-oracle.md)）。下面每一项上游变更都会让一些 id 偏离移植版，而移植版在这些地方仍遵循 16.1.0，直到该变更被移植。计数来自重新建立基线时的分类（`plans/graphviz-16-1-1-rebaseline/classification/`），该分类把两个参照程序之间每一处判定变化都追溯到了原因。这些不是已接受的差异：每一项都是其 issue 上尚未完成的工作。
+
+| issue | 上游变更 | 在 16.1.1 中发生变动的 id | 引擎 |
+|---|---|---|---|
+| [#158](https://github.com/knowvah/dot-engine/issues/158) | `flat_reorder` 会跳过传入平边受约束的 rank | 34 个调查 id 从 conformant 变为 diverged（23 个）或 structural-match（11 个），其中包括 `2368` 和 `2592`；`2854_1` 和 `2855` 在原生版本中不再挂起，现在是 conformant。Golden：`dot-newrank-cluster-ranksame`、`dot-pack-flat-label` 以及 10 个 `pt-issue-*` 夹具（`test/golden/known-failing.json`） | `dot`; 这 34 个 id 也会退出所有采用调查中 conformant id 的引擎遍历 |
+| [#164](https://github.com/knowvah/dot-engine/issues/164) | 来自 libc `rand()` 的 ortho 线段排列 | 6: circo `1658` (现在是预言机错误), `1880`, `1990`; twopi `2168_5`, `2183`, `2643` | `circo`, `twopi` (`splines=ortho`) |
+| [#149](https://github.com/knowvah/dot-engine/issues/149) | `write_body` 在主体的节点之后按创建顺序写出边 | 2: `1514`, `1581` | `-Tdot`, `-Txdot` 输出 |
+| [#162](https://github.com/knowvah/dot-engine/issues/162) | 辅助边过长时让布局失败 | 1: `1314` | `dot` |
+| [#159](https://github.com/knowvah/dot-engine/issues/159) | `flat_edges` 为 abomination rank 统计带标签的非相邻 `other` 边 | 1: `2723` (原生版本在 16.1.0 中崩溃；现在以退出码 1 退出并生成 SVG，移植版尚未生成) | `dot` |
+| [#151](https://github.com/knowvah/dot-engine/issues/151) | 拒绝所有盒子都已退化的路径 | 1: `2778` (与 `2723` 模式相同) | `dot` |
+| [#163](https://github.com/knowvah/dot-engine/issues/163) | 未记录的 `compact` 属性被移除 | 没有语料库 id; Golden `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
+| [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | 16.1.1 其余的行为变更 | 语料库和 golden 中均没有 | — |
+
+触及每项变更的输入记录在 [#148](https://github.com/knowvah/dot-engine/issues/148) 中。
+
 ## 已跟踪的长尾（`dot` 属性与边界情形） {#tracked-long-tail-dot-attribute-edge-case}
 
 在**默认值**下，`dot` 引擎在黄金语料库上以严格的确定性容差与 C 二进制文件匹配（即 `conformant` 判定；见顶部的说明）。剩下的差异是**属性和边界情形的长尾**——这在任何 Graphviz 移植中都是历来最困难的部分。与上面已接受的差值不同，这些差异*将会*被弥合；它们在
@@ -527,7 +544,7 @@ osage 轨道带有 `polypoly` 三联组（`graphs-polypoly`、`share-polypoly`�
 - **`getAdjustMode` 的 “Unrecognized overlap value” 警告没有输出。**
 - **旋转后的多边形顶点在最后几位上可能与原生不同（不可约：宿主数学库）。** `poly_init` 用 `atan2`、`hypot`、`sin` 和 `cos` 为每个顶点定向。在输入逐位相同的情况下，macOS libm 与 V8 返回的最后几位不同（例如 `atan2(0x3fd6a09e667f3bce,
   0xbfd6a09e667f3bca)`：libm `…21d1`，V8 `…21d2`；下一个顶点处的 `hypot`：libm `…fffd`，V8 `…fffe`），所以一个 `orientation=20` 的方框，其顶点 y 在移植版中是 `-18`，而在原生中是 `-17.999999999999996`。原生 Graphviz 自身也随平台的 libm 而变化，而浏览器无法调用它。移植版自己的算术与 C 一致（`RADIANS` 的顺序已固定；1664 个抽样顶点坐标中有 776 个逐位相同，其余仅通过 libm 产生差异）。影响：恰好相接的 `polyOverlap` 判定可能翻转；使用原生顶点时，每个判定都匹配。
-- **sfdp 在 macOS 上可能与原生不同（不可约：宿主 libm 的 `pow`）。** 用带插桩的原生 sfdp 诊断：位置保持逐位相同，直到某个斥力项 `pow(dist, 1 - p)`（`spring_electrical.c`，`p = -1`，即 `pow(x, 2)`）从 macOS libm 返回的结果比 `x*x` 小 1 ulp（`pow(1.4116727416983157, 2)`：libm `1.9928199296540394`，正确舍入为
+- **sfdp 在 macOS 上可能与原生不同（不可约：宿主 libm 的 `pow`）。** 用带插桩的原生 sfdp 诊断：位置保持逐位相同，直到某个斥力项 `pow(dist, 1 - p)`（`spring_electrical.c`，`p = -1`，即 `pow(x, 2)`）从 macOS libm 返回的结果比 `x*x` 小 1 ulp（`pow(1.4116727416983157, 2)`：libm `1.9928198986540394`，正确舍入为
   `…396`；对于 16201 个抽样的 `v` 中的 20 个，macOS 的 `pow(v, 2) != v*v`）。这改变了迭代的 `Fnorm` 的最后一位；sfdp 的自适应冷却把它放大为一个不同的（常常是镜像的）布局。移植版的 `armPow` 是 ARM optimized-routines 的 `pow`（glibc ≥ 2.28），即 Linux 版 Graphviz 所计算的结果；macOS 参照程序才是异类。已排除：种子（显式的 `start=` 值能匹配）、`pcp_rotate`（相同输入得到相同输出）、位置和吸引力项（逐位相同）。示例：默认种子下的单个三角形 `a--b; a--c; b--c`。
 - **fdp 可能因宿主 libm 的 `cos`/`sin` 而与原生不同。** fdp 遵循 15.0.0 之后的 Graphviz（基于 hypot 距离的斥力，`Mlimit`），宿主 libm 的 `hypot` 被逐位复现（`src/common/libm-hypot.ts`，在 40 万个样本上 0 处不匹配）。252 个可用 fdp 渲染的黄金输入中有 251 个与原生构建精确匹配；剩下的一个
   （`parallel-cluster-ldbxtried`）用 `T_Wd * cos(alpha)` 放置簇端口节点，而 macOS libm 的 `cos(-2.3840764867756761)` 与 V8 的 `Math.cos` 相差 1 ulp；fdp 的力循环把它放大到约 3 英寸。Apple 的 `cos` 不像 `hypot` 那样可以由一个简短的模型复现。

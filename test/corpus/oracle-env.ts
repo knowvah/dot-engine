@@ -11,9 +11,10 @@ import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
+import { ORACLE_VERSION } from './oracle-paths.mjs';
 
-/** The oracle version every sweep is pinned to (ADR-0001). */
-export const ORACLE_VERSION = '16.1.0';
+/** The oracle version every sweep is pinned to (ADR-0002); defined in oracle-paths.mjs. */
+export { ORACLE_VERSION };
 
 const PREFLIGHT_TIMEOUT_MS = 10_000;
 const PREFLIGHT_INPUT = 'digraph{a->b}';
@@ -119,7 +120,7 @@ export function recordOracleFailure(
   writeFileSync(file, JSON.stringify(rec) + '\n');
 }
 
-/** Fail fast (throw) unless `dotBin` reports 16.1.0 and renders a trivial graph
+/** Fail fast (throw) unless `dotBin` reports ORACLE_VERSION and renders a trivial graph
  * with `-K<engine> -Tsvg` under `GVBINDIR=<gvbindir>`. */
 export function oraclePreflight(dotBin: string, gvbindir: string, engine: string): void {
   const env = { ...process.env, GVBINDIR: gvbindir };

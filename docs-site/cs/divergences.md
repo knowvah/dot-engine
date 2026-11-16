@@ -1,5 +1,5 @@
 ---
-sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
+sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -75,7 +75,7 @@ ve vedení splines modulu `dot` (A3, A8) jsou uzavřeny a ponechány níže jako
 
 > **Rozsah, historicky neměřená výhrada — nyní částečně změřená.** **Hlavní
 > průzkum SVG modulu dot** (`test/corpus/survey.ts`) je stále
-> **pouze pro dot**: nativní orákulum běží pod `GVBINDIR=/tmp/ghl`, který
+> **pouze pro dot**: nativní orákulum běží pod `GVBINDIR=/tmp/ghl1611`, který
 > symlinkuje **pouze** pluginy `core` + `dot_layout`
 > (`test/corpus/gen-headless-gvbindir.sh` prochází právě `core dot_layout`
 > — žádný layout plugin `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` tam není)
@@ -115,10 +115,10 @@ jeho vlastním modulem místo pod `dot`. Poctivým stropem této práce je A1
 **zúžit** na „žádná aktivní odchylka na referenční platformě“, nikdy neodstranit
 meziplatformní výhradu; dosavadní výsledky (níže) tento strop respektují:
 `circo`/`twopi`/`osage` každý odhalily a zpětně vystopovaly hrstku skutečných
-případů A1/A9 a `neato`/`fdp`/`sfdp` nyní stojí na 99.8/98.0/68.1 % v rozmezí 0.5pt
-od nativního výstupu v univerzu 929 položek (graphviz 16.1.0), což znamená, že
+případů A1/A9 a `neato`/`fdp`/`sfdp` nyní stojí na 99.8/98.0/68.2 % v rozmezí 0.5pt
+od nativního výstupu v univerzu 898 položek (graphviz 16.1.1), což znamená, že
 portovaná aritmetika (`fma.ts`, `arm-pow.ts`, sladěný PRNG) u většiny grafů drží — a
-každé rozcházející se id z univerza 929 položek je individuálně připsáno
+každé rozcházející se id z univerza 898 položek je individuálně připsáno
 vstřikováním (drift řešiče vs. vada portace), místo aby zůstalo netříděným
 driftem. Viz charakterizace
 iterativních modulů níže.
@@ -197,17 +197,17 @@ je připsáno, jak je popsáno níže — `engine-walk.ts` pro tyto tři zazname
 „Iterative engines (±0.5 characterization)“ v
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 výslovně **nesrovnatelné** s deterministickými mírami úspěšnosti ±0.01 jinde v
-tomto dokumentu. Aktuální počty vůči graphviz 16.1.0 (univerzum 929 položek;
+tomto dokumentu. Aktuální počty vůči graphviz 16.1.1 (univerzum 898 položek;
 procento úspěšnosti vynechává vstupy, které C orákulum nedokáže vykreslit, a vstupy,
 u nichž se nativní výstup mezi běhy mění, podle [Shoda](./conformance.md)):
 
 | modul | prozkoumáno | v rámci ±0.5pt | neshodné | chyba portace / timeout | chyba orákula | nedeterminismus orákula |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
+| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
 
-13 nedeterministických vstupů `fdp`, u nichž se nativní výstup mezi běhy mění, se do jeho procenta úspěšnosti nepočítá; jedinou chybou portace je `1879`, které vyžaduje směrování `splines=compound`, jež port nepodporuje.
+11 nedeterministických vstupů `fdp`, u nichž se nativní výstup mezi běhy mění, se do jeho procenta úspěšnosti nepočítá; jedinou chybou portace je `1879`, které vyžaduje směrování `splines=compound`, jež port nepodporuje.
 
 (Míra úspěšnosti `fdp` vzrostla ze 77.5 %, protože dřívější
 zapsaný průchod předcházel stavu portace z předchozí mise.
@@ -221,13 +221,13 @@ jednotlivé id `2619_2`, jehož přijetí je zrušeno; dvě id `neato` mimo ±0.
 zejména neportované zpracování `user_pos`/`P_SET` v neato, konsolidace
 inicializace modulů a oprava makro-vs-funkce u `setEdgeType`.)
 
-Na rozdíl od prvního průchodu je každý rozcházející se řádek univerza 929 položek
-individuálně připsán vůči graphviz 16.1.0: vstřikovací harness
+Na rozdíl od prvního průchodu je každý rozcházející se řádek univerza 898 položek
+individuálně připsán vůči graphviz 16.1.1: vstřikovací harness
 (`test/corpus/attribute-divergence.ts`) vkládá `ND_pos` nativního orákula před
 vedením hran do portace a znovu porovnává, a každé aktuální rozcházející se id je
 `drift-exonerated` (vedení a emise portace přesně reprodukují orákulum, jakmile se
-drift řešiče odstraní), kromě dvou. Dva jsou samostatně akceptované zbytky po
-jednotlivých id: drift `pow` z libm hostitele u sfdp `241_0` (znovu diagnostikovaný v T28) a layout s NaN u sfdp `2556`. fdp `241_0`
+drift řešiče odstraní), kromě sfdp `2556`. Dva jsou samostatně akceptované zbytky po
+jednotlivých id: drift `pow` z libm hostitele u sfdp `241_0` (znovu diagnostikovaný v T28; jeho injekční řádek zní `drift-exonerated` od `12dddc48`) a layout s NaN u sfdp `2556`. fdp `241_0`
 projde od `fix(T9): start swapped cdt faces at the new diagonal as gts does` (viz odstavec o fdp v A9). fdp `2471` a sfdp `2371` si dříve po vstřiknutí ponechávaly odlišné pozice
 popisků hran (`lp`), tj. umísťovač xlabel vybíral jiného kandidáta. `2471` se vyřešil,
 jakmile `dotneato_closest` v portaci začal zaokrouhlovat jako fúzované vyhodnocení de
@@ -243,7 +243,7 @@ jednotlivých modulů
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Kde začíná odchylka řešiče sfdp (část 10, T2).** Instrumentovaný nativní sfdp, sledovaný proti portu na malých idech, se poprvé liší v posledním bitu `pow(dist, 1-p)` v odpudivé síle (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). U `flatedge` dává `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` nativně `...8811p+2` a v portu `...8812p+2`; `graphs-p` a `1767` začínají stejně. Adaptivní chlazení tento bit zesiluje: dosáhne `x[0]` v iteraci 5, `max|dx|` je 2.4e-9 v iteraci 100 a 3.9e-5 ve 200 a krok se překlopí v iteraci 244. Potvrzují to dva kontrolované běhy. S bity nativu přesně u těchto 8 volání je 62090řádková stopa `flatedge` shodná a se skutečným `pow` z macOS za doplňkem Node-API má 288 z 292 idů, které neprošly, bitově shodné stopy (zbylé 4, všechny `overlap=false`, se liší jen u `xfinal`). Pořadí operací a fúze v řešiči, multilevelu, quadtree a řídkém kódu byly vyloučeny. Jde o libm hostitele, přijatou v rámci A1 (viz položku `pow` v seznamu známých mezer níže); `src/` se nezměnil, počty tedy zůstávají na 632 z 929. Experiment pouze na macOS dosáhl asi 923 z 929; měří `pow` orákula a není to nic, co by knihovna zvládla na každém hostiteli. `Math.pow` v odpudivé síle projde 153 z 292, ale zhorší 6 idů, které dnes procházejí, proto nebyl použit. Řádek sfdp v tabulce se rovná řádku v [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 odlišný plus 295 přijatých dává 296 a 1 další id je tam vedeno jako nedeterministické u orákula.
+**Kde začíná odchylka řešiče sfdp (část 10, T2).** Instrumentovaný nativní sfdp, sledovaný proti portu na malých idech, se poprvé liší v posledním bitu `pow(dist, 1-p)` v odpudivé síle (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). U `flatedge` dává `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` nativně `...8811p+2` a v portu `...8812p+2`; `graphs-p` a `1767` začínají stejně. Adaptivní chlazení tento bit zesiluje: dosáhne `x[0]` v iteraci 5, `max|dx|` je 2.4e-9 v iteraci 100 a 3.9e-5 ve 200 a krok se překlopí v iteraci 244. Potvrzují to dva kontrolované běhy. S bity nativu přesně u těchto 8 volání je 62090řádková stopa `flatedge` shodná a se skutečným `pow` z macOS za doplňkem Node-API má 288 z 292 idů, které neprošly, bitově shodné stopy (zbylé 4, všechny `overlap=false`, se liší jen u `xfinal`). Pořadí operací a fúze v řešiči, multilevelu, quadtree a řídkém kódu byly vyloučeny. Jde o libm hostitele, přijatou v rámci A1 (viz položku `pow` v seznamu známých mezer níže); `src/` se nezměnil, počty tedy zůstávají na 632 z 929. Experiment pouze na macOS dosáhl asi 923 z 929; měří `pow` orákula a není to nic, co by knihovna zvládla na každém hostiteli. `Math.pow` v odpudivé síle projde 153 z 292, ale zhorší 6 idů, které dnes procházejí, proto nebyl použit. Řádek sfdp v tabulce se rovná řádku v [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 0 odlišných plus 286 přijatých dává 286 u graphviz 16.1.1 a žádné id tam není vedeno jako nedeterministické u orákula.
 
 **Akceptace třídy A1-drift (iterativní moduly, počítané členství).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -310,7 +310,7 @@ uzavřel `42`, `clust2`, `ngk10_4` (structural-match → conformant) a posunul
 
 **Obě strany průzkumu používají stejný odhadovač — měření je neutralizováno.**
 Nativní orákulum `dot` běží pod headless `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl`), který symlinkuje pouze
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`), který symlinkuje pouze
 pluginy `core` a `dot_layout` — žádný textový layout plugin `gd`/`pango`/`quartz`.
 Je-li tento slot prázdný, graphviz se vrátí k vestavěné funkci
 `estimate_textspan_size`. `EstimateTextMeasurer` v portaci TypeScript
@@ -460,7 +460,7 @@ portoval: libm `hypot` pro vzdálenost (`route.c:448`), striktní porovnání `>
 `normv` (413), `B01` (488) a `B23` (494). Tolerantní rozhodnutí remízy je pryč;
 uzlový bod splinu `241_0` je zafixován v routovacím rámci C, protože C není na
 takových remízách translačně ekvivariantní. Tím byly uzavřeny `2368`, `2371`,
-`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` a `graphs-decorate`.
+`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` a `graphs-decorate`. U graphviz 16.1.1 se `2368` znovu rozchází z nesouvisejícího důvodu: kvůli změně `flat_reorder` v nativní verzi ([#158](#pending-16-1-1-ports)).
 
 `241_1` nebyl remízou `hypot`: uzavřel jej `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
@@ -1210,6 +1210,23 @@ Důkaz: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 
+## Čekající porty z 16.1.1 {#pending-16-1-1-ports}
+
+Orákulum se přesunulo z graphviz 16.1.0 na 16.1.1 ([ADR-0002](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0002-graphviz-16.1.1-oracle.md)). Každá níže uvedená změna upstreamu odsouvá některá id od portace, která v těchto místech stále sleduje 16.1.0, dokud změnu nenaportujeme. Počty pocházejí z klasifikace nového základu (`plans/graphviz-16-1-1-rebaseline/classification/`), která u každé změny verdiktu mezi oběma orákuly dohledala příčinu. Nejde o akceptované odchylky: každá je otevřenou prací v příslušném issue.
+
+| issue | změna upstreamu | id, která se při 16.1.1 posunula | enginy |
+|---|---|---|---|
+| [#158](https://github.com/knowvah/dot-engine/issues/158) | `flat_reorder` přeskakuje rank, jehož příchozí ploché hrany jsou omezené | 34 id průzkumu conformant → diverged (23) nebo structural-match (11), mezi nimi `2368` a `2592`; `2854_1` a `2855` už nativně nevisí a jsou nyní conformant. Golden soubory: `dot-newrank-cluster-ranksame`, `dot-pack-flat-label` a 10 `pt-issue-*` fixtur (`test/golden/known-failing.json`) | `dot`; těchto 34 id také opouští každý průchod enginů, který bere conformant id průzkumu |
+| [#164](https://github.com/knowvah/dot-engine/issues/164) | permutace ortho segmentů z libc `rand()` | 6: circo `1658` (nyní chyba orákula), `1880`, `1990`; twopi `2168_5`, `2183`, `2643` | `circo`, `twopi` (`splines=ortho`) |
+| [#149](https://github.com/knowvah/dot-engine/issues/149) | `write_body` zapisuje hrany za uzly těla, v pořadí vytvoření | 2: `1514`, `1581` | `-Tdot`, `-Txdot` výstup |
+| [#162](https://github.com/knowvah/dot-engine/issues/162) | selhat layout, když je pomocná hrana příliš dlouhá | 1: `1314` | `dot` |
+| [#159](https://github.com/knowvah/dot-engine/issues/159) | `flat_edges` počítá označené nesousední hrany `other` pro rank abomination | 1: `2723` (nativní verze při 16.1.0 spadla; nyní skončí s kódem 1 a SVG, které portace zatím nevytváří) | `dot` |
+| [#151](https://github.com/knowvah/dot-engine/issues/151) | odmítnout cestu, jejíž boxy jsou všechny degenerované | 1: `2778` (stejný vzorec jako `2723`) | `dot` |
+| [#163](https://github.com/knowvah/dot-engine/issues/163) | nedokumentovaný atribut `compact` je odstraněn | žádné id korpusu; golden soubory `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
+| [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | zbytek behaviorálních změn 16.1.1 | žádné v korpusu ani v golden souborech | — |
+
+Vstupy, které se každé změny dotýkají, sleduje [#148](https://github.com/knowvah/dot-engine/issues/148).
+
 ## Sledovaný dlouhý chvost (atributy `dot` a okrajové případy) {#tracked-long-tail-dot-attribute-edge-case}
 
 Při **výchozím nastavení** se modul `dot` shoduje s binárkou C v těsné deterministické
@@ -1296,7 +1313,7 @@ liší se od nativního Graphviz. Nalezeno misí `v2-silent-gaps`
   Diagnostikováno instrumentovaným nativním sfdp: pozice zůstávají bitově identické,
   dokud jeden člen odpudivé síly, `pow(dist, 1 - p)` (`spring_electrical.c`,
   `p = -1`, takže `pow(x, 2)`), nevrátí z macOS libm o 1 ulp méně než `x*x`
-  (`pow(1.4116727416983157, 2)`: libm `1.9928199296540394`, správně zaokrouhleno
+  (`pow(1.4116727416983157, 2)`: libm `1.9928198986540394`, správně zaokrouhleno
   `…396`; na macOS `pow(v, 2) != v*v` pro 20 z 16201 vzorkovaných `v`). To mění
   `Fnorm` iterace v posledním bitu; adaptivní chlazení sfdp jej zesílí
   do odlišného (často zrcadleného) rozvržení. `armPow` v portaci je optimalizovaný

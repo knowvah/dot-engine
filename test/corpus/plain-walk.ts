@@ -5,7 +5,7 @@
 // Walks the SVG-conformant corpus items from parity.json, sorted by input
 // file size (small -> large, same discipline as engine-walk.ts/json-walk.ts),
 // rendering each to BOTH `plain` and `plain-ext` through the native oracle
-// (`dot -K<engine> -Tplain` / `-Tplain-ext`, GVBINDIR=/tmp/ghl) and through
+// (`dot -K<engine> -Tplain` / `-Tplain-ext`, GVBINDIR=/tmp/ghl1611) and through
 // the port (render-one-plain.ts, T3), diffing each format with the shared
 // semantic comparator (compare-plain.ts, T1).
 //
@@ -46,6 +46,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { homedir } from 'node:os';
+import { defaultGvbindir, ORACLE_DOT_BIN } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { comparePlain, type PlainDiff } from '../golden/compare-plain.js';
@@ -58,8 +59,9 @@ import { excludedFor } from './engine-exclusions.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
-const DOT_BIN = process.env.DOT_BIN ?? join(homedir(), 'git/graphviz/build/cmd/dot/dot');
-const GVBINDIR = process.env.GVBINDIR ?? '/tmp/ghl';
+const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
+/** Engine under sweep: first non-flag CLI arg (`dot` when absent). */
+const GVBINDIR = defaultGvbindir(process.argv.slice(2).find((a) => !a.startsWith('--')) ?? 'dot');
 const RENDER_ONE = join(REPO, 'test/corpus/render-one-plain.ts');
 const PARITY = new URL('./parity.json', import.meta.url);
 const ACCEPTED = new URL('./accepted-divergences-plain.json', import.meta.url);

@@ -1,5 +1,5 @@
 ---
-sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
+sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -75,7 +75,7 @@ determinism al modelelor iterative; fostele diferențe de virgulă mobilă
 
 > **Domeniu, istoric o rezervă nemăsurată — acum parțial măsurată.** **Sondajul SVG
 > principal al motorului dot** (`test/corpus/survey.ts`) este în continuare
-> **doar pentru dot**: oracolul nativ rulează sub `GVBINDIR=/tmp/ghl`, care
+> **doar pentru dot**: oracolul nativ rulează sub `GVBINDIR=/tmp/ghl1611`, care
 > face legături simbolice **doar** către pluginurile `core` + `dot_layout`
 > (`test/corpus/gen-headless-gvbindir.sh` parcurge exact `core dot_layout`
 > — nu există niciun plugin de aranjare `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp`),
@@ -114,10 +114,10 @@ fiecare intrare cu propriul motor, în loc de `dot`. Plafonul onest al acestei a
 **restrângerea** lui A1 la „nicio divergență activă pe platforma de referință”, niciodată
 eliminarea rezervei privind platformele multiple; rezultatele de până acum (mai jos) respectă acest
 plafon: `circo`/`twopi`/`osage` au scos la iveală și au elucidat până la cauza rădăcină
-câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 99.8/98.0/68.1%
-în limita a 0.5pt față de nativ pe universul de 929 de elemente (graphviz 16.1.0), ceea ce înseamnă că aritmetica
+câteva instanțe autentice A1/A9, iar `neato`/`fdp`/`sfdp` se situează acum la 99.8/98.0/68.2%
+în limita a 0.5pt față de nativ pe universul de 898 de elemente (graphviz 16.1.1), ceea ce înseamnă că aritmetica
 portată (`fma.ts`, `arm-pow.ts`, PRNG potrivit) se menține pentru majoritatea grafurilor — iar
-fiecare id divergent din universul de 929 de elemente este atribuit individual prin injecție (derivă a solverului față de
+fiecare id divergent din universul de 898 de elemente este atribuit individual prin injecție (derivă a solverului față de
 defect al portării), nu lăsat ca derivă netriată. Vedeți mai jos caracterizarea motoarelor iterative.
 
 **Acceptarea pe flux de motor: familia de săgeți twopi.** <a id="a1-twopi-arrows-family"></a>
@@ -194,17 +194,17 @@ pentru aceste trei, iar `parity-report.ts` le afișează într-o secțiune separ
 „Iterative engines (±0.5 characterization)”, din
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 în mod explicit **necomparabilă** cu ratele de reușită deterministe de ±0.01 din restul
-acestui document. Numerele curente față de graphviz 16.1.0 (univers de 929 de elemente; procentul de reușită exclude
+acestui document. Numerele curente față de graphviz 16.1.1 (univers de 898 de elemente; procentul de reușită exclude
 intrările pe care oracolul C nu le poate randa și intrările la care ieșirea nativă variază de la o
 rulare la alta, conform [Conformitate](./conformance.md)):
 
 | motor | sondate | în limita ±0.5pt | neconforme | eroare portare / timeout | eroare oracol | oracol nedeterminist |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 929 | 894 (98.0%) | 17 | 1 | 4 | 13 |
-| `sfdp`  | 929 | 632 (68.1%) | 296 | 0 | 0 | 1 |
+| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
+| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
+| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
 
-Cele 13 intrări nedeterministe ale `fdp`, la care ieșirea nativă variază de la o rulare la alta, sunt excluse din rata sa de reușită; singura sa eroare de portare este `1879`, care cere rutarea `splines=compound`, nesusținută de port.
+Cele 11 intrări nedeterministe ale `fdp`, la care ieșirea nativă variază de la o rulare la alta, sunt excluse din rata sa de reușită; singura sa eroare de portare este `1879`, care cere rutarea `splines=compound`, nesusținută de port.
 
 (Rata de reușită a lui `fdp` a crescut de la 77.5% pentru că parcurgerea anterioară înregistrată
 era anterioară stării portării din misiunea precedentă.
@@ -218,12 +218,12 @@ reziduul pe id acceptat anterior `2619_2`, a cărui acceptare este retrasă; cel
 în principal gestionarea neportată `user_pos`/`P_SET` din neato, consolidarea
 inițializării motoarelor și remedierea `setEdgeType` între macro și funcție.)
 
-Spre deosebire de prima trecere, fiecare rând divergent din universul de 929 de elemente este
-atribuit individual față de graphviz 16.1.0: instrumentul de injecție
+Spre deosebire de prima trecere, fiecare rând divergent din universul de 898 de elemente este
+atribuit individual față de graphviz 16.1.1: instrumentul de injecție
 (`test/corpus/attribute-divergence.ts`) alimentează portarea cu `ND_pos` dinaintea rutării din
 oracolul nativ și compară din nou, iar fiecare id divergent curent este `drift-exonerated` (rutarea
-și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția a două. Două sunt reziduuri acceptate separat pe id: deriva `pow` din libm-ul gazdei a lui sfdp `241_0`
-(rediagnosticată de T28) și aspectul NaN al lui sfdp `2556`. fdp `241_0` trece de la `fix(T9): start
+și emiterea portării reproduc exact oracolul odată ce deriva solverului este eliminată), cu excepția lui sfdp `2556`. Două sunt reziduuri acceptate separat pe id: deriva `pow` din libm-ul gazdei a lui sfdp `241_0`
+(rediagnosticată de T28; rândul său de injecție indică `drift-exonerated` din `12dddc48`) și aspectul NaN al lui sfdp `2556`. fdp `241_0` trece de la `fix(T9): start
 swapped cdt faces at the new diagonal as gts does` (vedeți paragraful despre fdp
 de la A9). fdp `2471` și sfdp `2371`
 păstrau anterior poziții ale etichetelor de muchie (`lp`) care difereau după injecție,
@@ -241,7 +241,7 @@ panourile pe motor
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Unde începe deriva solverului sfdp (partea 10, T2).** Un sfdp nativ instrumentat, urmărit față de port pe id-uri mici, diferă prima dată la ultimul bit al lui `pow(dist, 1-p)` din forța de respingere (`lib/sfdpgen/spring_electrical.c:625,617`; portul `spring-electrical.ts:260`). Pe `flatedge`, `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` dă nativ `...8811p+2` și în port `...8812p+2`; `graphs-p` și `1767` încep la fel. Răcirea adaptivă amplifică bitul: ajunge la `x[0]` în iterația 5, `max|dx|` este 2.4e-9 în iterația 100 și 3.9e-5 în 200, iar pasul se răstoarnă în iterația 244. Două rulări controlate o confirmă. Cu biții nativului la exact aceste 8 apeluri, urma de 62090 de linii a lui `flatedge` este identică, iar cu `pow`-ul real din macOS în spatele unui addon Node-API, 288 din cele 292 de id-uri care nu treceau au urme identice bit cu bit (celelalte 4, toate `overlap=false`, diferă doar la `xfinal`). Ordinea operațiilor și fuziunea din solver, multilevel, quadtree și codul rar au fost excluse. Este libm al gazdei, acceptată sub A1 (vezi elementul `pow` din lista golurilor cunoscute de mai jos); `src/` nu s-a schimbat, deci numerele rămân 632 din 929. Experimentul doar pe macOS a ajuns la aproximativ 923 din 929; măsoară `pow`-ul oracolului și nu este ceva ce biblioteca poate face pe orice gazdă. `Math.pow` în forța de respingere trece 153 din cele 292, dar regresează 6 id-uri care trec azi, așa că nu a fost aplicat. Rândul sfdp din tabel este egal cu cel din [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 divergent plus 295 acceptate dă 296, iar încă 1 id apare acolo ca nedeterminist la oracol.
+**Unde începe deriva solverului sfdp (partea 10, T2).** Un sfdp nativ instrumentat, urmărit față de port pe id-uri mici, diferă prima dată la ultimul bit al lui `pow(dist, 1-p)` din forța de respingere (`lib/sfdpgen/spring_electrical.c:625,617`; portul `spring-electrical.ts:260`). Pe `flatedge`, `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` dă nativ `...8811p+2` și în port `...8812p+2`; `graphs-p` și `1767` încep la fel. Răcirea adaptivă amplifică bitul: ajunge la `x[0]` în iterația 5, `max|dx|` este 2.4e-9 în iterația 100 și 3.9e-5 în 200, iar pasul se răstoarnă în iterația 244. Două rulări controlate o confirmă. Cu biții nativului la exact aceste 8 apeluri, urma de 62090 de linii a lui `flatedge` este identică, iar cu `pow`-ul real din macOS în spatele unui addon Node-API, 288 din cele 292 de id-uri care nu treceau au urme identice bit cu bit (celelalte 4, toate `overlap=false`, diferă doar la `xfinal`). Ordinea operațiilor și fuziunea din solver, multilevel, quadtree și codul rar au fost excluse. Este libm al gazdei, acceptată sub A1 (vezi elementul `pow` din lista golurilor cunoscute de mai jos); `src/` nu s-a schimbat, deci numerele rămân 632 din 929. Experimentul doar pe macOS a ajuns la aproximativ 923 din 929; măsoară `pow`-ul oracolului și nu este ceva ce biblioteca poate face pe orice gazdă. `Math.pow` în forța de respingere trece 153 din cele 292, dar regresează 6 id-uri care trec azi, așa că nu a fost aplicat. Rândul sfdp din tabel este egal cu cel din [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 0 divergente plus 286 acceptate dă 286 la graphviz 16.1.1, iar niciun id nu apare acolo ca nedeterminist la oracol.
 
 **Acceptarea clasei A1-drift (motoare iterative, membri calculați).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -308,7 +308,7 @@ directoare (pe element: noduri 0, muchii 0 diferite), iar același mecanism a
 
 **Ambele părți ale sondajului rulează același estimator — măsurarea este neutralizată.**
 Oracolul `dot` nativ rulează sub un `GVBINDIR` fără interfață grafică
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl`) care face legături simbolice doar către
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`) care face legături simbolice doar către
 pluginurile `core` și `dot_layout` — niciun plugin de aranjare a textului `gd`/`pango`/`quartz`.
 Cu acel slot gol, graphviz revine la `estimate_textspan_size` încorporat.
 `EstimateTextMeasurer` al portării TypeScript
@@ -459,7 +459,7 @@ decisă de aritmetica *exactă* din C, care este reproductibilă. Commit-ul `cdf
 (459), `normv` (413), `B01` (488) și `B23` (494). Departajarea tolerantă a
 dispărut; nodul lui `241_0` este fixat în cadrul de rutare al lui C, deoarece C nu este
 echivariant la translație pe astfel de egalități. Aceasta a închis `2368`, `2371`, `2413_1`,
-`2413_2`, `graphs-b100`, `graphs-b104` și `graphs-decorate`.
+`2413_2`, `graphs-b100`, `graphs-b104` și `graphs-decorate`. La graphviz 16.1.1, `2368` diverge din nou dintr-un motiv fără legătură: modificarea `flat_reorder` din versiunea nativă ([#158](#pending-16-1-1-ports)).
 
 `241_1` nu era o egalitate `hypot`: a fost închis de `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
@@ -1221,6 +1221,23 @@ Dovezi: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 
+## Portări în așteptare pentru 16.1.1 {#pending-16-1-1-ports}
+
+Oracolul a trecut de la graphviz 16.1.0 la 16.1.1 ([ADR-0002](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0002-graphviz-16.1.1-oracle.md)). Fiecare modificare upstream de mai jos îndepărtează unele id-uri de portare, care acolo încă urmează 16.1.0, până când modificarea este portată. Numerele provin din clasificarea re-liniei de bază (`plans/graphviz-16-1-1-rebaseline/classification/`), care a urmărit până la o cauză fiecare schimbare de verdict dintre cele două oracole. Acestea nu sunt diferențe acceptate: fiecare este muncă deschisă în issue-ul ei.
+
+| issue | modificare upstream | id-uri mutate la 16.1.1 | motoare |
+|---|---|---|---|
+| [#158](https://github.com/knowvah/dot-engine/issues/158) | `flat_reorder` sare peste un rang ale cărui muchii plate de intrare sunt constrânse | 34 de id-uri din sondaj conformant → diverged (23) sau structural-match (11), printre ele `2368` și `2592`; `2854_1` și `2855` nu se mai blochează în nativ și sunt acum conformant. Goldens: `dot-newrank-cluster-ranksame`, `dot-pack-flat-label` și 10 `pt-issue-*` fixture-uri (`test/golden/known-failing.json`) | `dot`; cele 34 de id-uri ies și din fiecare parcurgere de motor, care ia id-urile conformant ale sondajului |
+| [#164](https://github.com/knowvah/dot-engine/issues/164) | permutarea segmentelor ortho din `rand()` al libc | 6: circo `1658` (acum o eroare a oracolului), `1880`, `1990`; twopi `2168_5`, `2183`, `2643` | `circo`, `twopi` (`splines=ortho`) |
+| [#149](https://github.com/knowvah/dot-engine/issues/149) | `write_body` scrie muchiile după nodurile unui corp, în ordinea creării | 2: `1514`, `1581` | `-Tdot`, `-Txdot` ieșire |
+| [#162](https://github.com/knowvah/dot-engine/issues/162) | face ca aranjarea să eșueze când o muchie auxiliară este prea lungă | 1: `1314` | `dot` |
+| [#159](https://github.com/knowvah/dot-engine/issues/159) | `flat_edges` numără muchiile `other` etichetate, neadiacente, pentru rangul abomination | 1: `2723` (nativul se prăbușea la 16.1.0; acum iese cu 1 și un SVG, pe care portarea nu îl produce încă) | `dot` |
+| [#151](https://github.com/knowvah/dot-engine/issues/151) | respinge o cale ale cărei casete sunt toate degenerate | 1: `2778` (același tipar ca `2723`) | `dot` |
+| [#163](https://github.com/knowvah/dot-engine/issues/163) | atributul nedocumentat `compact` este eliminat | niciun id din corpus; goldens `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
+| [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | restul modificărilor de comportament din 16.1.1 | niciunul în corpus sau în goldens | — |
+
+Intrările care ajung la fiecare modificare sunt urmărite în [#148](https://github.com/knowvah/dot-engine/issues/148).
+
 ## Coada lungă urmărită (atribute `dot` și cazuri-limită) {#tracked-long-tail-dot-attribute-edge-case}
 
 La **valorile implicite**, motorul `dot` se potrivește cu binarul C în limita unei toleranțe
@@ -1307,7 +1324,7 @@ diferă de Graphviz nativ. Găsite de misiunea `v2-silent-gaps`
   Diagnosticat cu un sfdp nativ instrumentat: pozițiile rămân identice bit cu bit
   până când un termen al forței de respingere, `pow(dist, 1 - p)` (`spring_electrical.c`,
   `p = -1`, deci `pow(x, 2)`), returnează cu 1 ulp mai puțin decât `x*x` din libm macOS
-  (`pow(1.4116727416983157, 2)`: libm `1.9928199296540394`, corect rotunjit
+  (`pow(1.4116727416983157, 2)`: libm `1.9928198986540394`, corect rotunjit
   `…396`; în macOS `pow(v, 2) != v*v` pentru 20 din 16201 de `v` eșantionate). Aceasta schimbă
   `Fnorm` al iterației la ultimul bit; răcirea adaptivă a sfdp o amplifică
   într-o aranjare diferită (adesea în oglindă). `armPow` al portării este `pow`-ul

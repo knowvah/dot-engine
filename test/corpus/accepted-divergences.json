@@ -51,17 +51,6 @@
     },
     {
       "match": {
-        "id": "1581"
-      },
-      "class": "A4",
-      "scope": "parity",
-      "verdict": "diverged",
-      "bound": "maxDelta 465; top-level childCount 39 vs 22 (oracle recovery discards content)",
-      "reason": "fuzzer input; upstream test_1581 asserts only no memory-safety violation (issue #1581). C hits 'Error: install_in_rank' and its recovery drops ranks; the port reaches the identical rankset deletions (warning parity: Act_23/Act_24 from G) without the internal inconsistency and lays out the surviving graph. Oracle output is crash-recovery debris with no upstream-defined semantics.",
-      "ref": "known-divergences.md#a4-oracle-in-an-acknowledged-broken-state-the-init_rank--pathplan-family"
-    },
-    {
-      "match": {
         "id": "graphs-honda-tokoro"
       },
       "class": "A7",

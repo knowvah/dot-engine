@@ -11,31 +11,30 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 928
-- **Oracle:** dot 16.1.0
-- **pass:** 894 (96.4%) · **diverged (tracked):** 3 · **accepted (documented, won't-fix):** 30
+- **Surveyed:** 898
+- **Oracle:** dot 16.1.1
+- **pass:** 866 (96.5%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 31
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 1
 
-## Diverged (3)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | 782464 | 5834 | `area[0].coords[0]` |
-| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 782464 | 5834 | `area[0].coords[0]` |
-| [`2413_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_2.dot) | 9721 | 87 | `area[0].coords[0]` |
+_(none)_
 
-## Accepted (30) — documented, not chased
+## Accepted (31) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | 88 | `area[0].coords[1]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`1447_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447_1.dot) | 590 | `area[0].coords[1]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | 2118 | `area[0].coords[0]` | A1 sfdp chaotic drift (2026-07-24): whole-layout basin divergence on a huge graph (maxDelta 7.6kpt), the documented sfdp spring chaos regime — same class as fdp 1879 (chaos proven by perturbation A/B on the fdp family; sfdp is the measured chaotic engine). |
+| [`2413_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_2.dot) | 87 | `area[0].coords[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-sfdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | 12 | `area[1].coords[0]` | A1 sfdp spring drift (diagnosed 2026-07-24): 6 nodes, positional drift 0.7-1.3pt — the documented chaotic-engine regime, mildly above the 0.5 bar on a small graph. Same class as the sfdp engine track's 232-id tail. |
 | [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 4961 | `area[0].coords[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-sfdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | 0 | `` | A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md. |
+| [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | 5834 | `area[0].coords[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-sfdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`graphs-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b102.gv) | 1174 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | 3164 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
+| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 5834 | `area[0].coords[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-sfdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`graphs-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b106.gv) | 206 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`graphs-b143`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b143.gv) | 45 | `area[0].coords[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`graphs-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b29.gv) | 415 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
@@ -45,10 +44,8 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`linux.i386-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b102.gv) | 1174 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`linux.i386-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b106.gv) | 206 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`linux.i386-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b29.gv) | 418 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`linux.x86-html2_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/html2_dot.gv) | 30 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`linux.x86-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_circo.gv) | 14 | `area[0].coords[1]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`linux.x86-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_twopi.gv) | 14 | `area[0].coords[1]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
-| [`nshare-html2_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/html2_dot.gv) | 30 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`nshare-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_circo.gv) | 14 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`nshare-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_twopi.gv) | 14 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`share-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b102.gv) | 1174 | `area[0].coords[0]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
@@ -65,5 +62,5 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 |---|---|
 | [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
 
-_Passing ids (894) are omitted for brevity — the full roster is in
+_Passing ids (866) are omitted for brevity — the full roster is in
 `map-parity-sfdp.json`._

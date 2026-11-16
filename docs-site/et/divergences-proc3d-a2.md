@@ -1,5 +1,5 @@
 ---
-sourceHash: 133104b64763457635328188088e909f4552d8353f4a7468655c540706263625
+sourceHash: 108900a6526f9e995c80f6640cba948df61fe8bc937f8c32e4df82dd8d902cd1
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -87,7 +87,7 @@ elava võrdlusena.
 
 ## Reprodutseerimine {#reproduce}
 
-Natiivne oraakel töötab peata `GVBINDIR` all (`/tmp/ghl`, failist
+Natiivne oraakel töötab peata `GVBINDIR` all (`/tmp/ghl1611`, failist
 `test/corpus/gen-headless-gvbindir.sh`), nii et mõlemad pooled kasutavad sama
 `estimate_textspan_size` mõõtjat — vt
 [§A2 „Isolating the algorithm from the font backend“](/et/divergences#a2-text-measurement-font-metrics-label-driven-layout).
@@ -98,8 +98,8 @@ GV_TEXT_MEASURER=estimate \
   npx tsx test/corpus/render-one.ts ~/git/graphviz/tests/graphs/proc3d.gv dot
 
 # native C oracle (headless, estimate measurer)
-GVBINDIR=/tmp/ghl \
-  ~/git/graphviz/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
+GVBINDIR=/tmp/ghl1611 \
+  ~/git/graphviz-16.1.1/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
 ```
 
 Selle tänane käitamine annab sobivad SVG-d (0 erinevust `deterministic`

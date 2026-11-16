@@ -19,7 +19,6 @@ digraph G {
 		pos="82,90",
 		rank=1,
 		width=0.75];
-	a -> b;
 	c	[_draw_="c 7 -#000000 e 27 18 27 18 ",
 		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 6.21 1 -c ",
 		height=0.5,
@@ -27,8 +26,6 @@ digraph G {
 		pos="27,18",
 		rank=2,
 		width=0.75];
-	a -> c;
-	b -> c;
 	d	[_draw_="c 7 -#000000 e 99 18 27 18 ",
 		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 99 13.8 0 7 1 -d ",
 		height=0.5,
@@ -36,5 +33,8 @@ digraph G {
 		pos="99,18",
 		rank=2,
 		width=0.75];
+	a -> b;
+	b -> c;
+	a -> c;
 	b -> d;
 }

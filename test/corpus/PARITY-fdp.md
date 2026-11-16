@@ -12,10 +12,10 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 929 (generated 2026-10-28T20:54:03.156Z)
-- **Oracle:** dot 16.1.0
-- **pass:** 894 (98.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 16
-- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 4 (excluded from pass %) · **oracle-nondeterministic:** 13 (native output varies run to run; excluded from pass %, not a regression)
+- **Surveyed:** 898 (generated 2026-11-13T11:53:41.163Z)
+- **Oracle:** dot 16.1.1
+- **pass:** 866 (98.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 16
+- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 3 (excluded from pass %) · **oracle-nondeterministic:** 11 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (1) — documented, not chased
 
@@ -42,16 +42,15 @@ outright leaves the class silently on the next report regen.
 
 _(none)_
 
-## Errors and timeouts (5)
+## Errors and timeouts (4)
 
 | id | status | message |
 |---|---|---|
-| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle-error | spawnSync dot ETIMEDOUT |
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | port-error | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
 
-**oracle errors:** 13 native-crash (documented, excluded) / 3 timeout-flake (excluded this run, note to retry)
-_Passing ids (894) are omitted for brevity — the full roster is in
+**oracle errors:** 3 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
+_Passing ids (866) are omitted for brevity — the full roster is in
 `parity-fdp.json`._

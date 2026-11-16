@@ -11,14 +11,16 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 928
-- **Oracle:** dot 16.1.0
-- **pass:** 920 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
+- **Surveyed:** 898
+- **Oracle:** dot 16.1.1
+- **pass:** 889 (99.8%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 1
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 7
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | 3451 | 56 | `area[25].coords[count]` |
 
 ## Accepted (1) — documented, not chased
 
@@ -32,11 +34,11 @@ _(none)_
 |---|---|
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | oracle exit null |
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
-| [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | oracle exit null |
+| [`1658`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1658.dot) | oracle exit null |
 | [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | oracle exit null |
 | [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | oracle exit null |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle exit null |
 | [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle exit null |
 
-_Passing ids (920) are omitted for brevity — the full roster is in
+_Passing ids (889) are omitted for brevity — the full roster is in
 `map-parity-circo.json`._

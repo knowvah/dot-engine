@@ -4,7 +4,8 @@
 
 ## Status
 
-Accepted (graphviz 16.1 sync mission).
+Accepted (graphviz 16.1 sync mission). Decision 1 is superseded by
+[ADR-0002](0002-graphviz-16.1.1-oracle.md) (graphviz 16.1.1) once its re-baseline lands.
 
 ## Context
 

@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 928
-- **Oracle:** dot 16.1.0
-- **pass:** 912 (99.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 8
+- **Surveyed:** 898
+- **Oracle:** dot 16.1.1
+- **pass:** 882 (99.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 8
 - **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 7
 
 ## Diverged (0)
@@ -24,8 +24,8 @@ _(none)_
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
-| [`graphs-b34`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b34.gv) | 1 | `[node] 7/label: port=montañas native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
-| [`graphs-b56`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b56.gv) | 6 | `[node] Schluesseloel/label: port=Schluesselöl native=$; [node] Schluesseltraeger/label: port=Schlueßelträger native=&; [node] Torschluessel/label: port=Torschlüssel native=$; [node] Torwaechter/label: port=Torwächter native=$; [node] creation/label: port=<f0>genPräfix\|<f1>legennStamm\|<f2>heitnSuffix native=<f0>genPr�fix\|<f1>legennStamm\|<f2>heitnSuffix` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
+| [`graphs-b34`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b34.gv) | 5 | `[node] 7/label: port=montañas native=solid; [node] 7/style: port=solid native=box; [node] 7/shape: port=box native=black; [node] 7/color: port=black native=lightgrey; [node] 7/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
+| [`graphs-b56`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b56.gv) | 6 | `[node] Schluesseloel/label: port=Schluesselöl native=n; [node] Schluesseltraeger/label: port=Schlueßelträger native=r; [node] Torschluessel/label: port=Torschlüssel native=n; [node] Torwaechter/label: port=Torwächter native=n; [node] creation/label: port=<f0>genPräfix\|<f1>legennStamm\|<f2>heitnSuffix native=<f0>genPr�fix\|<f1>legennStamm\|<f2>heitnSuffix` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
 | [`graphs-b60`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b60.gv) | 1 | `[node] 0/label: port=XXXrôôôôôôôôôôôôôôleXXX native=�` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
 | [`graphs-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/Latin1.gv) | 5 | `[node] a/label: port=áâãäåæçèéêëìíîïðñòóôõöøùúûü native=solid; [node] a/style: port=solid native=ellipse; [node] a/shape: port=ellipse native=black; [node] a/color: port=black native=lightgrey; [node] a/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
 | [`graphs-Symbol`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/Symbol.gv) | 6 | `[node] greek/label: port=αβγδεζηθικλμνξοπρςστυφχψωϒϖ native=solid; [node] greek/style: port=solid native=ellipse; [node] greek/shape: port=ellipse native=black; [node] greek/color: port=black native=lightgrey; [node] greek/fillcolor: port=lightgrey native=` | oracle bug (A4): canon() use-after-free — output.c:103-108 agstrfree()s the agstrdup-ed refstr before the caller prints it, and _agstrcanon returns that pointer whenever no quoting is needed. Labels whose text is not otherwise pooled (latin1/entity-converted, differs from the raw attr bytes) hit refcnt 0 and are freed; the intervening printdouble allocations reuse the block, so native prints garbage/empty. Port prints the correct converted text. Journal 2026-07-24. |
@@ -39,12 +39,12 @@ _(none)_
 |---|---|
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
-| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | Warning: Warning: no hard-coded metrics for 'sans'.  Falling back to 'Times' metrics |
 | [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | Warning: Two clusters named %9 - the second will be ignored |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle exit null |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle exit null |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Warning: syntax ambiguity - badly delimited number '00s' in line 1 of https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot splits into two tokens |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (912) are omitted for brevity — the full roster is in
+_Passing ids (882) are omitted for brevity — the full roster is in
 `plain-parity-fdp.json`._

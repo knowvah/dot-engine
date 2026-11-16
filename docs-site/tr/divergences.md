@@ -1,5 +1,5 @@
 ---
-sourceHash: 02a63a29cfbb9dc54c3d4cd765c78ffd93bf1c3c0eb4523ed5e2a7f8acd62ccb
+sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -77,7 +77,7 @@ farkları (A3, A8) kapatılmıştır ve aşağıda geçmiş olarak saklanır.
 > **Kapsam; tarihsel olarak ölçülmemiş bir uyarıydı — şimdi kısmen ölçülüyor.**
 > **Ana dot motoru SVG taraması** (`test/corpus/survey.ts`) hâlâ
 > **yalnızca dot içindir**: yerel kâhin, yalnızca `core` + `dot_layout`
-> eklentilerini sembolik bağlayan `GVBINDIR=/tmp/ghl` altında çalışır
+> eklentilerini sembolik bağlayan `GVBINDIR=/tmp/ghl1611` altında çalışır
 > (`test/corpus/gen-headless-gvbindir.sh` tam olarak `core dot_layout` üzerinde
 > döner — `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` yerleşim eklentisi yoktur)
 > ve hem kâhin hem port `dot` motoruyla çağrılır. Dolayısıyla `*_neato` /
@@ -117,9 +117,9 @@ Bu çalışmanın dürüst tavanı, A1'i “başvuru platformunda etkin fark yok
 **daraltmaktır**; platformlar arası uyarıyı asla ortadan kaldırmak değil; şimdiye
 kadarki sonuçlar (aşağıda) bu tavana uyar: `circo`/`twopi`/`osage` her biri bir
 avuç gerçek A1/A9 örneği ortaya çıkarıp kök nedenine indirdi; `neato`/`fdp`/`sfdp`
-ise 929 öğelik evrende (graphviz 16.1.0) yerel çıktının 0.5pt içinde sırasıyla
+ise 898 öğelik evrende (graphviz 16.1.1) yerel çıktının 0.5pt içinde sırasıyla
 %99,8/%98,0/%68,1 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
-eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 929 öğelik evrenin her
+eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 898 öğelik evrenin her
 farklılaşan kimliği, triyajsız bir sürüklenme olarak bırakılmak yerine enjeksiyonla
 (çözücü sürüklenmesi ile port kusuru) tek tek nedene bağlanmıştır. Aşağıdaki yinelemeli motor nitelendirmesine
 bakın.
@@ -199,17 +199,17 @@ aşağıda anlatıldığı gibi, nedene bağlanmıştır — `engine-walk.ts` bu
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 içinde ayrı bir “Iterative engines (±0.5 characterization)” bölümünde işler;
 bu bölüm bu belgedeki başka yerlerde geçen ±0.01 belirlenimci geçme oranlarıyla
-açıkça **karşılaştırılamaz**. graphviz 16.1.0'a karşı güncel sayılar (929 öğelik evren; geçme yüzdesi, C
+açıkça **karşılaştırılamaz**. graphviz 16.1.1'e karşı güncel sayılar (898 öğelik evren; geçme yüzdesi, C
 kâhininin işleyemediği girdileri ve yerel çıktısı çalıştırmadan çalıştırmaya değişen girdileri
 dışarıda bırakır, bkz. [Uygunluk](./conformance.md)):
 
 | motor | taranan | ±0.5pt içinde | uyumlu olmayan | port hatası / zaman aşımı | kâhin hatası | kâhin belirlenimsiz |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 929 | 926 (%99,8) | 2 | 0 | 1 | 0 |
-| `fdp`   | 929 | 894 (%98,0) | 17 | 1 | 4 | 13 |
-| `sfdp`  | 929 | 632 (%68,1) | 296 | 0 | 0 | 1 |
+| `neato` | 898 | 895 (%99,8) | 2 | 0 | 1 | 0 |
+| `fdp`   | 898 | 866 (%98,0) | 17 | 1 | 3 | 11 |
+| `sfdp`  | 898 | 612 (%68,2) | 286 | 0 | 0 | 0 |
 
-`fdp`'nin yerel çıktısı çalıştırmadan çalıştırmaya değişen 13 belirlenimsiz girdisi geçme oranının dışında bırakılmıştır; tek port hatası, portun desteklemediği `splines=compound` yönlendirmesini gerektiren `1879`'dur.
+`fdp`'nin yerel çıktısı çalıştırmadan çalıştırmaya değişen 11 belirlenimsiz girdisi geçme oranının dışında bırakılmıştır; tek port hatası, portun desteklemediği `splines=compound` yönlendirmesini gerektiren `1879`'dur.
 
 (`fdp` geçme oranı %77,5'ten yükseldi, çünkü daha önceki işlenmiş
 tarama bir önceki görevin port durumundan önceye aitti.
@@ -223,11 +223,11 @@ güncel oranlara sıçrama, o tarihten beri girilen kimlik başına düzeltmeler
 geldi; başlıcaları neato'nun taşınmamış `user_pos`/`P_SET` işlenişi, motor
 başlatma birleştirmesi ve `setEdgeType` makro-işlev düzeltmesidir.)
 
-İlk taramanın aksine, 929 öğelik evrenin ayrışan her satırı graphviz 16.1.0'a karşı tek tek nedene
+İlk taramanın aksine, 898 öğelik evrenin ayrışan her satırı graphviz 16.1.1'e karşı tek tek nedene
 bağlanmıştır: enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin yönlendirme
-öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, iki istisna dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
+öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, sfdp `2556` dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
 üretimi kâhini tam olarak yeniden üretir). İkisi ayrıca kabul edilmiş kimlik başına artıklardır:
-sfdp `241_0`'ın ana makine libm `pow` sürüklenmesi (T28 tarafından yeniden teşhis edildi) ile sfdp `2556`'nın NaN yerleşimi. fdp `241_0`,
+sfdp `241_0`'ın ana makine libm `pow` sürüklenmesi (T28 tarafından yeniden teşhis edildi; enjeksiyon satırı `12dddc48`'den beri `drift-exonerated` olarak okunur) ile sfdp `2556`'nın NaN yerleşimi. fdp `241_0`,
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` değişikliğinden beri
 geçer (bkz. A9 altındaki fdp paragrafı). fdp `2471` ve sfdp `2371` önceden enjeksiyondan sonra farklı kalan kenar etiketi
 konumlarını (`lp`) koruyordu, yani xlabel yerleştirici farklı bir aday seçiyordu.
@@ -243,7 +243,7 @@ sınıf kabulü, aklanan kümeyi resmileştirir; güncel sayılar motor başına
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**sfdp çözücü kaymasının başladığı yer (bölüm 10, T2).** Araçlandırılmış yerel sfdp, küçük id'lerde taşıma ile karşılaştırılarak izlendiğinde, itme kuvvetindeki `pow(dist, 1-p)` ifadesinin son bitinde ilk kez ayrışır (`lib/sfdpgen/spring_electrical.c:625,617`; taşıma `spring-electrical.ts:260`). `flatedge` üzerinde `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` yerelde `...8811p+2`, taşımada `...8812p+2` verir; `graphs-p` ve `1767` aynı şekilde başlar. Uyarlamalı soğutma bu biti büyütür: `x[0]`'a 5. yinelemede ulaşır, `max|dx|` 100. yinelemede 2.4e-9, 200'de 3.9e-5 olur ve adım 244. yinelemede döner. Bunu iki denetimli çalıştırma doğrular. Yerelin bitleri tam bu 8 çağrıda uygulandığında `flatedge`'in 62090 satırlık izi aynıdır ve macOS'un gerçek `pow`'u bir Node-API eklentisinin arkasındayken geçmeyen 292 id'den 288'inin izi bit bit aynıdır (diğer 4, hepsi `overlap=false`, yalnızca `xfinal`'da ayrışır). Çözücüde, çok düzeyli kısımda, quadtree'de ve seyrek kodda işlem sırası ve birleştirme dışlandı. Bu, ana makinenin libm'idir ve A1 kapsamında kabul edilmiştir (aşağıdaki bilinen boşluklar listesindeki `pow` maddesine bakın); `src/` değişmedi, bu yüzden sayılar 929'da 632 olarak kalır. Yalnızca macOS'ta yapılan deney 929'da yaklaşık 923'e ulaştı; bu, kâhinin `pow`'unu ölçer ve kütüphanenin her ana makinede yapabileceği bir şey değildir. İtme kuvvetinde `Math.pow`, 292'den 153'ünü geçirir ancak bugün geçen 6 id'yi geriletir, bu yüzden uygulanmadı. Tablodaki sfdp satırı [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)'dekine eşittir: 1 ayrışan artı 295 kabul edilen 296 eder ve orada 1 id daha kâhin tarafında deterministik olmayan olarak listelenir.
+**sfdp çözücü kaymasının başladığı yer (bölüm 10, T2).** Araçlandırılmış yerel sfdp, küçük id'lerde taşıma ile karşılaştırılarak izlendiğinde, itme kuvvetindeki `pow(dist, 1-p)` ifadesinin son bitinde ilk kez ayrışır (`lib/sfdpgen/spring_electrical.c:625,617`; taşıma `spring-electrical.ts:260`). `flatedge` üzerinde `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` yerelde `...8811p+2`, taşımada `...8812p+2` verir; `graphs-p` ve `1767` aynı şekilde başlar. Uyarlamalı soğutma bu biti büyütür: `x[0]`'a 5. yinelemede ulaşır, `max|dx|` 100. yinelemede 2.4e-9, 200'de 3.9e-5 olur ve adım 244. yinelemede döner. Bunu iki denetimli çalıştırma doğrular. Yerelin bitleri tam bu 8 çağrıda uygulandığında `flatedge`'in 62090 satırlık izi aynıdır ve macOS'un gerçek `pow`'u bir Node-API eklentisinin arkasındayken geçmeyen 292 id'den 288'inin izi bit bit aynıdır (diğer 4, hepsi `overlap=false`, yalnızca `xfinal`'da ayrışır). Çözücüde, çok düzeyli kısımda, quadtree'de ve seyrek kodda işlem sırası ve birleştirme dışlandı. Bu, ana makinenin libm'idir ve A1 kapsamında kabul edilmiştir (aşağıdaki bilinen boşluklar listesindeki `pow` maddesine bakın); `src/` değişmedi, bu yüzden sayılar 929'da 632 olarak kalır. Yalnızca macOS'ta yapılan deney 929'da yaklaşık 923'e ulaştı; bu, kâhinin `pow`'unu ölçer ve kütüphanenin her ana makinede yapabileceği bir şey değildir. İtme kuvvetinde `Math.pow`, 292'den 153'ünü geçirir ancak bugün geçen 6 id'yi geriletir, bu yüzden uygulanmadı. Tablodaki sfdp satırı [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)'dekine eşittir: 0 ayrışan artı 286 kabul edilen graphviz 16.1.1'de 286 eder ve orada hiçbir id kâhin tarafında deterministik olmayan olarak listelenmez.
 
 **A1-drift sınıf kabulü (yinelemeli motorlar, hesaplanan üyelik).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`,
@@ -309,7 +309,7 @@ structural-match'e taşıdı — hepsi 2-döngü/paralel çiftlerde.
 **Anket yapılan her iki taraf da aynı kestiriciyi çalıştırır — ölçüm etkisiz kılınmıştır.**
 Yerel `dot` kâhini, yalnızca `core` ve `dot_layout` eklentilerini sembolik bağlayan
 başsız bir `GVBINDIR` altında çalışır (`test/corpus/gen-headless-gvbindir.sh` →
-`/tmp/ghl`) — `gd`/`pango`/`quartz` metin yerleşimi eklentisi yoktur. Bu yuva boş
+`/tmp/ghl1611`) — `gd`/`pango`/`quartz` metin yerleşimi eklentisi yoktur. Bu yuva boş
 olduğunda graphviz, yerleşik `estimate_textspan_size` işlevine geri döner.
 TypeScript portunun `EstimateTextMeasurer`'ı (`src/common/textmeasure.ts`) aynı
 yordamın sadık bir portudur ve `createMeasurer()`
@@ -461,7 +461,7 @@ uzaklık için libm `hypot` (`route.c:448`), C'nin katı `>` karşılaştırmas�
 (459), `normv` (413), `B01` (488) ve `B23` (494). Toleranslı beraberlik çözümü
 kalktı; `241_0` düğümü C'nin yönlendirme çerçevesinde sabitlenmiştir, çünkü C
 bu tür beraberliklerde öteleme-eşdeğişkenli değildir. Bu, `2368`, `2371`, `2413_1`,
-`2413_2`, `graphs-b100`, `graphs-b104` ve `graphs-decorate`'i kapattı.
+`2413_2`, `graphs-b100`, `graphs-b104` ve `graphs-decorate`'i kapattı. graphviz 16.1.1'de `2368` ilgisiz bir nedenle yeniden ayrışır: yerelin `flat_reorder` değişikliği ([#158](#pending-16-1-1-ports)).
 
 `241_1` bir `hypot` beraberliği değildi: `87347711` ile kapatıldı
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C,
@@ -1203,6 +1203,23 @@ Kanıt: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
 
+## Bekleyen 16.1.1 portları {#pending-16-1-1-ports}
+
+Kâhin graphviz 16.1.0'dan 16.1.1'e geçti ([ADR-0002](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0002-graphviz-16.1.1-oracle.md)). Aşağıdaki her yukarı akış değişikliği, değişiklik taşınana kadar orada hâlâ 16.1.0'ı izleyen porttan bazı kimlikleri uzaklaştırır. Sayılar, yeniden temel çizgisinin sınıflandırmasından (`plans/graphviz-16-1-1-rebaseline/classification/`) gelir; bu sınıflandırma iki kâhin arasındaki her hüküm değişikliğini bir nedene bağlamıştır. Bunlar kabul edilmiş farklar değildir: her biri kendi issue'sunda açık iştir.
+
+| issue | yukarı akış değişikliği | 16.1.1'de kayan kimlikler | motorlar |
+|---|---|---|---|
+| [#158](https://github.com/knowvah/dot-engine/issues/158) | `flat_reorder`, gelen düz kenarları kısıtlı olan bir sırayı atlar | 34 tarama kimliği conformant → diverged (23) veya structural-match (11), bunların arasında `2368` ve `2592`; `2854_1` ve `2855` artık yerel sürümde takılmıyor ve şimdi conformant. Goldens: `dot-newrank-cluster-ranksame`, `dot-pack-flat-label` ve 10 `pt-issue-*` fixture (`test/golden/known-failing.json`) | `dot`; bu 34 kimlik, taramanın conformant kimliklerini alan her motor taramasından da çıkar |
+| [#164](https://github.com/knowvah/dot-engine/issues/164) | libc `rand()` kaynaklı ortho segment permütasyonu | 6: circo `1658` (artık bir kâhin hatası), `1880`, `1990`; twopi `2168_5`, `2183`, `2643` | `circo`, `twopi` (`splines=ortho`) |
+| [#149](https://github.com/knowvah/dot-engine/issues/149) | `write_body`, kenarları bir gövdenin düğümlerinden sonra, oluşturulma sırasıyla yazar | 2: `1514`, `1581` | `-Tdot`, `-Txdot` çıktı |
+| [#162](https://github.com/knowvah/dot-engine/issues/162) | yardımcı kenar çok uzun olduğunda yerleşimi başarısız kıl | 1: `1314` | `dot` |
+| [#159](https://github.com/knowvah/dot-engine/issues/159) | `flat_edges`, abomination sırası için etiketli bitişik olmayan `other` kenarlarını sayar | 1: `2723` (yerel sürüm 16.1.0'da çöküyordu; artık 1 koduyla bir SVG üreterek çıkıyor, port henüz üretmiyor) | `dot` |
+| [#151](https://github.com/knowvah/dot-engine/issues/151) | tüm kutuları dejenere olan bir yolu reddet | 1: `2778` (`2723` ile aynı örüntü) | `dot` |
+| [#163](https://github.com/knowvah/dot-engine/issues/163) | belgelenmemiş `compact` özniteliği kaldırıldı | korpus kimliği yok; goldens `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
+| [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | 16.1.1'in davranışsal değişikliklerinin geri kalanı | korpusta veya goldens içinde yok | — |
+
+Her değişikliğe ulaşan girdiler [#148](https://github.com/knowvah/dot-engine/issues/148) içinde izlenir.
+
 ## Takip edilen uzun kuyruk (`dot` öznitelikleri ve uç durumlar) {#tracked-long-tail-dot-attribute-edge-case}
 
 **Varsayılanlarda**, `dot` motoru golden derleminde C ikilisiyle sıkı bir
@@ -1290,7 +1307,7 @@ farklıdır. `v2-silent-gaps` görevi tarafından bulundu
   Enstrümante edilmiş bir yerel sfdp ile teşhis edildi: konumlar, bir itici kuvvet
   terimi olan `pow(dist, 1 - p)` (`spring_electrical.c`, `p = -1` olduğundan
   `pow(x, 2)`) macOS libm'den `x*x`'ten 1 ulp az döndürene kadar bit düzeyinde özdeş
-  kalır (`pow(1.4116727416983157, 2)`: libm `1.9928199296540394`, doğru yuvarlanmış
+  kalır (`pow(1.4116727416983157, 2)`: libm `1.9928198986540394`, doğru yuvarlanmış
   `…396`; örneklenen 16201 `v` değerinden 20'si için macOS `pow(v, 2) != v*v`). Bu,
   yinelemenin `Fnorm` değerini son bitte değiştirir; sfdp'nin uyarlamalı soğutması bunu
   farklı (çoğunlukla aynalanmış) bir yerleşime yükseltir. Portun `armPow`'u ARM'ın

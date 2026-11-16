@@ -12,10 +12,10 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 929 (generated 2026-10-28T22:23:16.621Z)
-- **Oracle:** dot 16.1.0
-- **pass:** 632 (68.1%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 289
-- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %) · **oracle-nondeterministic:** 1 (native output varies run to run; excluded from pass %, not a regression)
+- **Surveyed:** 898 (generated 2026-11-13T15:21:11.422Z)
+- **Oracle:** dot 16.1.1
+- **pass:** 612 (68.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 280
+- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %) · **oracle-nondeterministic:** 0 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (6) — documented, not chased
 
@@ -31,7 +31,7 @@ table below.
 | [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | 100 | A1 | 0.7-1.3pt on 6 nodes | plans/decision-journal.md 2026-07-24 T5: sfdp spring drift regime |
 | [`42`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/42.dot) | 164 | A1 | 0.06-0.65pt on all 25 nodes (168 draw-op diffs in the sfdp walk, 3525 under compare-xdot); first divergence is pow(dist, 2) in the repulsive force, Apple libm vs the port's ARM pow, 1 ULP on a near-tie (coarsest level, iteration 95). Injecting the oracle's pow values makes the embedding and the xdot bit-exact; injecting the oracle's positions gives 0 diffs (routing FMA fixed in f66ac638) | comparisons/sfdp-42.md |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) |  | A10 | port throws 'Map maximum size exceeded': faithful pack.c int step/placement (97fcccd8) needs 2,011,656,764 PointSet cells (native 16.1.0: 482 s, 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries | known-divergences.md#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines |
-| [`2556`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2556.dot) | 54 | A6 | degenerate NaN layout: repulsiveforce=100 drives the spring-electrical solver to NaN in BOTH engines (the native oracle emits all-nan positions). Residual 54 diffs are NaN-garbage serialization only - C rounds NaN-&gt;int (bb -4.295e9 vs port 0) and suppresses NaN-spline edge draws (port emits them). No real layout exists on either side. The armPow throw + bezierClip NaN-hang that previously blocked rendering are fixed (C-faithful, NaN-only). | known-divergences.md#a6b-degenerate-nan-layout |
+| [`2556`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2556.dot) | 6 | A6 | degenerate NaN layout: repulsiveforce=100 drives the spring-electrical solver to NaN in BOTH engines (the native oracle emits all-nan positions). Residual 54 diffs are NaN-garbage serialization only - C rounds NaN-&gt;int (bb -4.295e9 vs port 0) and suppresses NaN-spline edge draws (port emits them). No real layout exists on either side. The armPow throw + bezierClip NaN-hang that previously blocked rendering are fixed (C-faithful, NaN-only). | known-divergences.md#a6b-degenerate-nan-layout |
 
 ## Accepted class: A1-drift — computed, not enumerated
 
@@ -41,18 +41,15 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **292** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **284** members — full per-id evidence in [`attribution-sfdp.json`](./attribution-sfdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`894589`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/894589.dot) | 13020 | 44 | `edge:dde-daemon->deepin-installer-timezones#0 _draw_ edge:dde-daemon->deepin-installer-timezones#0/_draw_/op[1].unfilled_bezier[3]: 687.59 vs 688.1` |
+_(none)_
 
 ## Errors and timeouts (0)
 
 _(none)_
 
-**oracle errors:** 7 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (632) are omitted for brevity — the full roster is in
+_Passing ids (612) are omitted for brevity — the full roster is in
 `parity-sfdp.json`._

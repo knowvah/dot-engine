@@ -90,8 +90,8 @@ Env: `BENCH_POOL`, `BENCH_CAP_MS`, `BENCH_IDS`, `BENCH_LIMIT`, `BENCH_HEAVY_MS`,
 | Variable | Default | Meaning |
 |----------|---------|---------|
 | `CORPUS_ROOT` (or `enumerate.ts` argv[1]) | `~/git/graphviz/tests` | Corpus input tree to walk. |
-| `DOT_BIN` | `~/git/graphviz/build/cmd/dot/dot` | Native oracle binary (15.0.0). |
-| `GVBINDIR` | `/tmp/gvplugins` | Oracle plugin dir. |
+| `DOT_BIN` | `~/git/graphviz-16.1.1/build/cmd/dot/dot` | Native oracle binary (16.1.1). |
+| `GVBINDIR` | `/tmp/ghl1611` for `dot`, `/tmp/ghl1611-all` for other engines | Oracle plugin dir (`oracle-paths.mjs`; build with `gen-headless-gvbindir.sh [all]`). |
 | `ORACLE_CACHE` | a `/tmp` dir | Gitignored cache of oracle SVGs (AD-3). |
 | `RENDER_TIMEOUT_MULT` | 3 | Port budget = `max(MULT × native, FLOOR)`. |
 | `RENDER_TIMEOUT_FLOOR_MS` | 180000 | Lower bound on the port budget (3 min). |

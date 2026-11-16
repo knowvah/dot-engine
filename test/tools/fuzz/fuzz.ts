@@ -3,6 +3,7 @@
 import { spawnSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { normalizeStderrLines } from '../lib/stderr.js';
+import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from '../../corpus/oracle-paths.mjs';
 // FUZZ_REPO = repo or worktree under test (default: this checkout).
 const REPO = process.env.FUZZ_REPO ?? new URL('../../..', import.meta.url).pathname.replace(/\/$/, '');
 const { renderSvg } = (await import(`${REPO}/src/index.ts`)) as { renderSvg(src: string, engine: string): string };
@@ -35,13 +36,13 @@ function label(): string {
   const t = pick(NOISE) + table(0) + pick(NOISE);
   return rnd() < 0.2 ? `<b>${t}</b>` : t;
 }
-const NATIVE = `${process.env.HOME}/git/graphviz/build/cmd/dot/dot`;
+const NATIVE = ORACLE_DOT_BIN;
 const origErr = console.error, origWarn = console.warn;
 let ok = 0; const bad: string[] = [];
 for (let k = 0; k < N; k++) {
   const lbl = label();
   const dot = `digraph{a[label=<${lbl}>]}`;
-  const n = spawnSync(NATIVE, ['-Tsvg'], { input: dot, env: { ...process.env, GVBINDIR: process.env.GV_PLUGINS_DOT ?? '/tmp/ghl' } });
+  const n = spawnSync(NATIVE, ['-Tsvg'], { input: dot, env: { ...process.env, GVBINDIR: process.env.GV_PLUGINS_DOT ?? ORACLE_GVBINDIR } });
   const nErr = normalizeStderrLines(n.stderr.toString('latin1')).filter((l) => !l.includes('hard-coded metrics'));
   const pLines: string[] = [];
   console.error = console.warn = (...a: unknown[]) => { pLines.push(a.map(String).join(' ')); };
