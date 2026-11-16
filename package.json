@@ -65,6 +65,7 @@
     "typecheck": "tsc --noEmit --stableTypeOrdering",
     "pretypecheck:ts7": "npm run parser:regen",
     "typecheck:ts7": "tsgo --noEmit",
+    "codeql:gate": "bash test/tools/codeql-gate.sh",
     "parser:regen": "peggy --format es --dts src/parser/dot.pegjs -o src/parser/dot.js",
     "survey:setup": "sh test/corpus/gen-headless-gvbindir.sh",
     "survey": "npm run survey:setup && PARITY_OUT=parity-rules.json tsx test/corpus/survey.ts",

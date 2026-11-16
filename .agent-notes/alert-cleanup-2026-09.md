@@ -21,3 +21,9 @@
 - **Finding**: 2242/twopi hashed differently depending on which job ran earlier in the same worker. A fresh-process render is deterministic.
 - **Impact**: byte-identity sweeps must use one process per render, or re-verify mismatches in fresh processes.
 - **Confidence**: High
+
+## Observation: Homebrew's CodeQL cask has no query packs
+- **Context**: building the local CodeQL gate (`npm run codeql:gate`), 2026-11-16.
+- **Finding**: `/opt/homebrew` CodeQL 2.27.4 is the CLI only; `codeql/<lang>-queries` packs come from GHCR into `~/.codeql/packages` (cpp-queries was missing). `codeql database analyze --download` fetches them on first use. The javascript extractor also reports the 5 workflow files, but the separate `actions` language is what GitHub runs for them.
+- **Impact**: a fresh machine needs network on its first gate run. GitHub's dismissed alerts #4/#12 no longer reproduce, so the tracked dismissals file starts empty.
+- **Confidence**: High
