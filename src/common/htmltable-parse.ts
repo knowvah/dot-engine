@@ -10,7 +10,6 @@
 import type {
   HtmlCell,
   HtmlCellContent,
-  HtmlImage,
   HtmlLabel,
   HtmlRow,
   HtmlTable,
@@ -22,8 +21,9 @@ import type {
 import { HtmlParseError } from './htmltable-types.js';
 import { StderrLines } from './htmltable-attr-warn.js';
 import type { ParseState } from './htmltable-parse-state.js';
-import { consume, emitEof, emitWarnings, peek } from './htmltable-parse-state.js';
-import { htmlErrorAtToken, tokenizeDeferred } from './htmltable-lex.js';
+import { consume, consumedTag, emitEof, emitWarnings, peek } from './htmltable-parse-state.js';
+import { HtmlLexError, htmlErrorAtToken, tokenizeDeferred } from './htmltable-lex.js';
+import { scanCellImage } from './htmltable-parse-image.js';
 import type { FontState } from './htmltable-parse-font.js';
 import {
   fontItemProps, inlineFontState, isInlineTag, mergeFontState, tableFont, wrapperFont,
@@ -38,7 +38,7 @@ import {
 } from './htmltable-parse-attrs.js';
 
 /** bison's default message for an unexpected token. @see lib/common/htmlparse.y */
-const MSG_SYNTAX_ERROR = 'syntax error';
+export const MSG_SYNTAX_ERROR = 'syntax error';
 /** @see lib/common/htmlparse.y:288 (table rule) */
 const MSG_TEXT_BEFORE_TABLE = 'Syntax error: non-space string used before <TABLE>';
 /** @see lib/common/htmlparse.y:298 (table rule) */
@@ -51,16 +51,24 @@ const nonSpace = (text: string): boolean => /[^ ]/.test(text);
 const heldNonSpace = (tbl: Token | undefined): boolean => tbl?.type === 'open' && nonSpace(tbl.heldText ?? '');
 
 /**
+ * `e` as C prints it once `ctx->error` is set: htmlerror and the expat path
+ * print nothing more (a silent HtmlParseError); only lexerror still does.
+ * @see lib/common/htmllex.c:htmlerror
+ */
+const guarded = (s: ParseState, e: HtmlParseError): HtmlParseError =>
+  s.error === true && !(e instanceof HtmlLexError && e.unguarded) ? new HtmlParseError(e.tag) : e;
+
+/**
  * The parse failure C reports through `htmlerror` when the lexer last returned
  * `tok`. At end of input the deferred lexical error is what C would hit next.
  * A token without a recorded chunk yields a plain, silent HtmlParseError.
  * @see lib/common/htmllex.c:htmlerror
  */
-const parseError = (s: ParseState, tok: Token | undefined, message: string): HtmlParseError => {
+export const parseError = (s: ParseState, tok: Token | undefined, message: string): HtmlParseError => {
   // The lexer already ran for the token the error is reported at.
   if (tok !== undefined) emitWarnings(s, tok);
   else emitEof(s);
-  return (tok === undefined ? s.pending : htmlErrorAtToken(message, tok)) ?? new HtmlParseError(message);
+  return guarded(s, (tok === undefined ? s.pending : htmlErrorAtToken(message, tok)) ?? new HtmlParseError(message));
 };
 
 // ---------------------------------------------------------------------------
@@ -73,7 +81,7 @@ const parseError = (s: ParseState, tok: Token | undefined, message: string): Htm
  * syntax error at that token.
  * @see lib/common/htmlparse.y:br, image
  */
-const consumeClose = (s: ParseState, tag: string): void => {
+export const consumeClose = (s: ParseState, tag: string): void => {
   const nxt = peek(s);
   if (nxt === undefined) return;
   if (nxt.type === 'close' && nxt.tag === tag) {
@@ -172,7 +180,7 @@ const fontTableWrapper = (s: ParseState): OpenToken | undefined => {
 };
 
 /** Consume strings; true when any is non-space (the table rule's nonSpace check). */
-const skipStrings = (s: ParseState): boolean => {
+export const skipStrings = (s: ParseState): boolean => {
   let found = false;
   for (let t = peek(s); t?.type === 'text'; t = peek(s)) {
     consume(s);
@@ -210,29 +218,18 @@ const parseFontTable = (s: ParseState, open: OpenToken, fontStack: FontState[]):
 const rejectTableAfterTag = (s: ParseState, start: number): void => {
   const nxt = peek(s);
   if (nxt?.type !== 'open' || nxt.tag !== 'TABLE') return;
-  if (s.tokens.slice(start, s.pos).some((t) => t.type !== 'text')) {
-    throw parseError(s, nxt, MSG_SYNTAX_ERROR);
-  }
+  if (consumedTag(s, start)) throw parseError(s, nxt, MSG_SYNTAX_ERROR);
 };
 
 // ---------------------------------------------------------------------------
 // Cell content helpers — mirrors htmlparse.y cell rule
 // ---------------------------------------------------------------------------
 
-const parseImgContent = (s: ParseState, t: OpenToken): HtmlImage => {
-  consume(s);
-  const img: HtmlImage = {
-    kind: 'image',
-    src: t.attrs['src'] ?? '',
-    scale: t.attrs['scale'],
-  };
-  consumeClose(s, 'IMG');
-  return img;
-};
-
 /** What a cell holds so far: C's cell has exactly one child. */
-interface CellScan {
+export interface CellScan {
   kind: 'none' | 'text' | 'table' | 'fonttable' | 'image';
+  /** Index of the cell's first token. */
+  start: number;
   /** Non-space text before the nested table (checked when the table opens). */
   textNonSpace: boolean;
   /** Non-space text after the nested table (checked when the run ends). */
@@ -243,7 +240,6 @@ interface CellScan {
 const scanCellTable = (
   s: ParseState, t: Token, fontStack: FontState[], st: CellScan,
 ): HtmlCellContent[] => {
-  if (st.kind === 'image' || st.kind === 'table') throw parseError(s, t, MSG_SYNTAX_ERROR);
   if (st.textNonSpace || heldNonSpace(t)) throw parseError(s, t, MSG_TEXT_BEFORE_TABLE);
   const tbl = parseTable(s, fontStack);
   st.kind = 'table';
@@ -269,18 +265,12 @@ const scanAfterTable = (s: ParseState, t: Token, st: CellScan): HtmlCellContent[
   return [];
 };
 
-/** `image` as the cell's only child. */
-const scanCellImage = (s: ParseState, t: OpenToken, st: CellScan): HtmlCellContent[] => {
-  if (st.kind !== 'none') throw parseError(s, t, MSG_SYNTAX_ERROR);
-  st.kind = 'image';
-  return [parseImgContent(s, t)];
-};
-
 /** One step of `cell: T_cell (fonttable | fonttext | image) T_end_cell`. */
 const scanCellItem = (
   s: ParseState, t: Token, fontStack: FontState[], st: CellScan,
 ): HtmlCellContent[] => {
-  if (st.kind === 'fonttable') throw parseError(s, t, MSG_SYNTAX_ERROR);
+  // After an image only the cell's close may come: its opt_space took the strings.
+  if (st.kind === 'fonttable' || st.kind === 'image') throw parseError(s, t, MSG_SYNTAX_ERROR);
   if (st.kind === 'table') return scanAfterTable(s, t, st);
   const wrapper = st.kind === 'none' ? fontTableWrapper(s) : undefined;
   if (wrapper !== undefined) {
@@ -289,7 +279,6 @@ const scanCellItem = (
   }
   if (t.type === 'open' && t.tag === 'TABLE') return scanCellTable(s, t, fontStack, st);
   if (t.type === 'open' && t.tag === 'IMG') return scanCellImage(s, t, st);
-  if (st.kind === 'image') throw parseError(s, t, MSG_SYNTAX_ERROR);
   return scanCellText(s, t, fontStack, st);
 };
 
@@ -303,19 +292,18 @@ const endsCell = (s: ParseState, t: Token, st: CellScan): boolean => {
 
 const parseCellContent = (s: ParseState, fontStack: FontState[]): HtmlCellContent[] => {
   const content: HtmlCellContent[] = [];
-  const st: CellScan = { kind: 'none', textNonSpace: false, afterNonSpace: false };
+  const st: CellScan = { kind: 'none', start: s.pos, textNonSpace: false, afterNonSpace: false };
   for (let t = peek(s); t !== undefined; t = peek(s)) {
     if (endsCell(s, t, st)) break;
     content.push(...scanCellItem(s, t, fontStack, st));
   }
   const nxt = peek(s);
   if (nxt?.type === 'close' && nxt.tag === 'TD') consume(s);
-  // C models a cell child as a single object; the `TD table TD` rule discards
-  // whitespace around a nested table, so a table IS the cell's sole content.
-  // @see lib/common/htmltable.h:htmlcell_t.child
-  const tbl = content.find((c) => c.kind === 'table');
-  if (tbl !== undefined) return [tbl];
-  return content;
+  // C models a cell child as a single object; the table and image rules take
+  // the strings around them (opt_space), so a table or image IS the cell's
+  // sole content. @see lib/common/htmltable.h:htmlcell_t.child
+  const sole = content.find((c) => c.kind === 'table' || c.kind === 'image');
+  return sole !== undefined ? [sole] : content;
 };
 
 /** @see lib/common/htmlparse.y:cell rule / lib/common/htmllex.c:mkCell */
@@ -547,10 +535,12 @@ const parseTokens = (s: ParseState): HtmlLabel => {
   return parseTextLabel(s, fontStack);
 };
 
-/** A parsed label and `ctx->warn`, which `make_html_label` ORs into its rv. */
+/** A parsed label with `ctx->warn` and `ctx->error`, from which `clearHTMLlexer` makes parseHTML's rv. */
 export interface ParsedHtmlLabel {
   label: HtmlLabel;
   warn: boolean;
+  /** htmlerror printed but the parse went on: rv 3 with a label. */
+  error: boolean;
 }
 
 /**
@@ -566,11 +556,11 @@ export const parseHtmlLabelRv = (src: string, stderr: StderrLines): ParsedHtmlLa
   const s: ParseState = { tokens, pos: 0, pending: error, stderr, emitted: new WeakSet(), warn: false, eof };
   try {
     const label = parseTokens(s);
-    if (error !== undefined) throw error;
-    return { label, warn: s.warn === true };
+    if (error !== undefined) throw guarded(s, error);
+    return { label, warn: s.warn === true, error: s.error === true };
   } catch (e) {
     // Running off the truncated stream means C's lexer would have hit the error.
-    if (error !== undefined && s.pos >= tokens.length) { emitEof(s); throw error; }
+    if (error !== undefined && s.pos >= tokens.length) { emitEof(s); throw guarded(s, error); }
     throw e;
   }
 };

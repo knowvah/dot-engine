@@ -1,0 +1,216 @@
+# Excerpt of bison 3.8.2's state report for graphviz 16.1.1 lib/common/htmlparse.y:
+# the states the image rule passes through. Regenerate the whole report with
+#   bison --report=all --report-file=html.output -o html.c lib/common/htmlparse.y
+
+State 27
+
+    7 textitem: string •  [T_end_html, T_end_cell, T_end_font, T_string, T_n_italic, T_n_bold, T_n_underline, T_n_overline, T_BR, T_br, T_font, T_italic, T_bold, T_underline, T_overline, T_sup, T_sub, T_s]
+   36 string: string • T_string
+   45 opt_space: string •  [T_IMG, T_img, T_table]
+
+    T_string  shift, and go to state 54
+
+    T_string  [reduce using rule 7 (textitem)]
+    T_IMG     reduce using rule 45 (opt_space)
+    T_img     reduce using rule 45 (opt_space)
+    T_table   reduce using rule 45 (opt_space)
+    $default  reduce using rule 7 (textitem)
+
+    shift/reduce conflict on token T_string:
+        7 textitem: string •
+       36 string: string • T_string
+      Example: string • T_string
+      Shift derivation
+        text
+        ↳ 6: textitem
+             ↳ 7: string
+                  ↳ 36: string • T_string
+      Reduce derivation
+        text
+        ↳ 5: text               textitem
+             ↳ 6: textitem      ↳ 7: string
+                  ↳ 7: string •      ↳ 35: T_string
+
+
+
+State 88
+
+    4 fonttext: • text
+    5 text: • text textitem
+    6     | • textitem
+    7 textitem: • string
+    8         | • br
+    9         | • font text n_font
+   10         | • italic text n_italic
+   11         | • underline text n_underline
+   12         | • overline text n_overline
+   13         | • bold text n_bold
+   14         | • sup text n_sup
+   15         | • sub text n_sub
+   16         | • strike text n_strike
+   17 font: • T_font
+   19 italic: • T_italic
+   21 bold: • T_bold
+   23 strike: • T_s
+   25 underline: • T_underline
+   27 overline: • T_overline
+   29 sup: • T_sup
+   31 sub: • T_sub
+   33 br: • T_br T_end_br
+   34   | • T_BR
+   35 string: • T_string
+   36       | • string T_string
+   38 table: • opt_space T_table @1 rows T_end_table opt_space
+   39 fonttable: • table
+   40          | • font table n_font
+   41          | • italic table n_italic
+   42          | • underline table n_underline
+   43          | • overline table n_overline
+   44          | • bold table n_bold
+   45 opt_space: • string
+   46          | ε •  [T_IMG, T_img, T_table]
+   56 cell: T_cell • fonttable $@3 T_end_cell
+   58     | T_cell • fonttext $@4 T_end_cell
+   60     | T_cell • image $@5 T_end_cell
+   61 $@6: ε •  [T_end_cell]
+   62 cell: T_cell • $@6 T_end_cell
+   64 image: • opt_space $@7 T_img T_end_img opt_space
+   66      | • opt_space $@8 T_IMG opt_space
+
+    T_string     shift, and go to state 4
+    T_BR         shift, and go to state 5
+    T_br         shift, and go to state 6
+    T_font       shift, and go to state 7
+    T_italic     shift, and go to state 8
+    T_bold       shift, and go to state 9
+    T_underline  shift, and go to state 10
+    T_overline   shift, and go to state 11
+    T_sup        shift, and go to state 12
+    T_sub        shift, and go to state 13
+    T_s          shift, and go to state 14
+
+    T_end_cell  reduce using rule 61 ($@6)
+    $default    reduce using rule 46 (opt_space)
+
+    fonttext   go to state 95
+    text       go to state 16
+    textitem   go to state 17
+    font       go to state 18
+    italic     go to state 19
+    bold       go to state 20
+    strike     go to state 21
+    underline  go to state 22
+    overline   go to state 23
+    sup        go to state 24
+    sub        go to state 25
+    br         go to state 26
+    string     go to state 27
+    table      go to state 28
+    fonttable  go to state 96
+    opt_space  go to state 97
+    $@6        go to state 98
+    image      go to state 99
+
+
+State 91
+
+   36 string: string • T_string
+   45 opt_space: string •  [T_end_html, T_end_cell, T_end_font, T_n_italic, T_n_bold, T_n_underline, T_n_overline]
+
+    T_string  shift, and go to state 54
+
+    $default  reduce using rule 45 (opt_space)
+
+
+State 97
+
+   38 table: opt_space • T_table @1 rows T_end_table opt_space
+   63 $@7: ε •  [T_img]
+   64 image: opt_space • $@7 T_img T_end_img opt_space
+   65 $@8: ε •  [T_IMG]
+   66 image: opt_space • $@8 T_IMG opt_space
+
+    T_table  shift, and go to state 56
+
+    T_IMG     reduce using rule 65 ($@8)
+    $default  reduce using rule 63 ($@7)
+
+    $@7  go to state 107
+    $@8  go to state 108
+
+
+State 99
+
+   59 $@5: ε •
+   60 cell: T_cell image • $@5 T_end_cell
+
+    $default  reduce using rule 59 ($@5)
+
+    $@5  go to state 110
+
+
+State 107
+
+   64 image: opt_space $@7 • T_img T_end_img opt_space
+
+    T_img  shift, and go to state 115
+
+
+State 108
+
+   66 image: opt_space $@8 • T_IMG opt_space
+
+    T_IMG  shift, and go to state 116
+
+
+State 115
+
+   64 image: opt_space $@7 T_img • T_end_img opt_space
+
+    T_end_img  shift, and go to state 118
+
+
+State 116
+
+   35 string: • T_string
+   36       | • string T_string
+   45 opt_space: • string
+   46          | ε •  [T_end_cell]
+   66 image: opt_space $@8 T_IMG • opt_space
+
+    T_string  shift, and go to state 4
+
+    $default  reduce using rule 46 (opt_space)
+
+    string     go to state 91
+    opt_space  go to state 119
+
+
+State 118
+
+   35 string: • T_string
+   36       | • string T_string
+   45 opt_space: • string
+   46          | ε •  [T_end_cell]
+   64 image: opt_space $@7 T_img T_end_img • opt_space
+
+    T_string  shift, and go to state 4
+
+    $default  reduce using rule 46 (opt_space)
+
+    string     go to state 91
+    opt_space  go to state 120
+
+
+State 119
+
+   66 image: opt_space $@8 T_IMG opt_space •
+
+    $default  reduce using rule 66 (image)
+
+
+State 120
+
+   64 image: opt_space $@7 T_img T_end_img opt_space •
+
+    $default  reduce using rule 64 (image)

@@ -19,7 +19,7 @@ import { HtmlLexError } from './htmltable-lex.js';
 import { labelStderr, type StderrLines } from './htmltable-attr-warn.js';
 import { posHtmlLabel, type HtmlFontInfo, type PlacedHtml } from './htmltable-pos.js';
 
-/** parseHTML's rv for a label that failed to parse (`ctx->error`). */
+/** parseHTML's rv once htmlerror or the lexer printed an error (`ctx->error`), with or without a label. */
 const HTML_PARSE_FATAL = 3;
 
 /** A built HTML label plus make_html_label's "problem" return value. */
@@ -48,9 +48,14 @@ export function makeHtmlLabelTo(
   stderr: StderrLines,
 ): HtmlLabelResult {
   const { fontname, fontsize, fontcolor, imageSizer, imageResolver, imageDpi, pencolor } = finfo;
-  let lbl: HtmlLabel, lexWarn: boolean; // lexWarn: htmllex.c's ctx->warn, rv bit 1
+  let lbl: HtmlLabel, lexRv: number; // lexRv: clearHTMLlexer's `ctx->error ? 3 : ctx->warn`
   try {
-    ({ label: lbl, warn: lexWarn } = parseHtmlLabelRv(content, stderr));
+    const parsed = parseHtmlLabelRv(content, stderr);
+    lbl = parsed.label;
+    // An error a rule reported without YYABORT (the image rule's) leaves the
+    // label: it is sized and drawn, and rv 3 makes make_label name the object.
+    // @see lib/common/htmllex.c:clearHTMLlexer
+    lexRv = parsed.error ? HTML_PARSE_FATAL : Number(parsed.warn);
   } catch (e) {
     // C aborts the HTML parse on a syntax error (YYABORT): parseHTML returns
     // rv 3 (ctx->error) with no label, and make_html_label returns it with
@@ -63,7 +68,7 @@ export function makeHtmlLabelTo(
   // which then flows table->cell->nested-table.
   // @see lib/common/htmltable.c:1911 (getPenColor), :1406/:1556 (inheritance)
   if (lbl.kind === 'table') inheritTablePenColor(lbl.table, pencolor);
-  const rv = Number(lexWarn) | sizeHtmlLabel(lbl, measurer, {
+  const rv = lexRv | sizeHtmlLabel(lbl, measurer, {
     fontsize, fontname, imageSizer, imageResolver, imageDpi, stderr,
   });
   const placed = posHtmlLabel(lbl, { fontname, fontsize, fontcolor }, measurer);

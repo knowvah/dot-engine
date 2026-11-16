@@ -1,0 +1,13 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 12 12 12 12 0 ",
+		bb="0,0,12,12",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	Q	[_ldraw_="S 5 -solid c 7 -#000000 p 4 0 0 0 12 12 12 12 0 S 5 -solid c 7 -#000000 p 4 3 3 3 9 9 9 9 3 ",
+		height=0.16667,
+		label=<<TABLE><TR><TD>x<IMG SRC="2821.png"></IMG>y</TD></TR></TABLE>>,
+		pos="6,6",
+		shape=plain,
+		width=0.16667];
+}

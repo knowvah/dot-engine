@@ -25,9 +25,15 @@ export interface ParseState {
   warn?: boolean;
   /** What the lexer wrote after its last token, printed when the parser asks for more. */
   eof?: LexerOutput;
+  /** `ctx->error`: htmlerror printed from a rule that went on parsing; the label's rv is 3. */
+  error?: boolean;
 }
 
 export const peek = (s: ParseState): Token | undefined => s.tokens[s.pos];
+
+/** True when a tag, not only strings, was consumed since `start` (an `opt_space` is strings alone). */
+export const consumedTag = (s: ParseState, start: number): boolean =>
+  s.tokens.slice(start, s.pos).some((t) => t.type !== 'text');
 
 /**
  * Print what the C lexer wrote while lexing `tok`, once, and fold its `warn`

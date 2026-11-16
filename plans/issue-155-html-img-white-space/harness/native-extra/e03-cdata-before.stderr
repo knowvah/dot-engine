@@ -1,0 +1,5 @@
+Error: Syntax error: non-space string used before <IMG> in line 1 
+... <![CDATA[x]]><IMG SRC="2821.png"/> ...
+Warning: No such file or directory while opening 2821.png
+Error: No or improper image file="2821.png"
+in label of node Q

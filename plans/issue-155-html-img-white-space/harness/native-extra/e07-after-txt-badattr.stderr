@@ -1,0 +1,4 @@
+Warning: Illegal attribute BOGUS in <BR> - ignored
+Error: Syntax error: non-space string used after <IMG> in line 1 
+...  y<BR BOGUS="1"/> ...
+in label of node Q

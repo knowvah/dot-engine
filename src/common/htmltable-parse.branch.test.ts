@@ -13,7 +13,8 @@
  * @see lib/common/htmllex.c
  */
 import { describe, expect, it } from 'vitest';
-import { parseHtmlLabel, parseTable, parseText } from './htmltable-parse.js';
+import { parseHtmlLabel, parseHtmlLabelRv, parseTable, parseText } from './htmltable-parse.js';
+import { StderrLines } from './htmltable-attr-warn.js';
 import { HtmlLexError, tokenize } from './htmltable-lex.js';
 import { HtmlParseError } from './htmltable-types.js';
 import type { HtmlTable, HtmlCell, HtmlText } from './htmltable-types.js';
@@ -169,11 +170,135 @@ describe('IMG cell content', () => {
       '... <IMG></TD> ...',
     ]);
   });
-  it('text next to an IMG is a syntax error (a cell has one child)', () => {
-    expect(diagnosticsOf('<TABLE><TR><TD><IMG SRC="n.png"/>xx</TD></TR></TABLE>')).toEqual([
-      'Error: syntax error in line 1 ',
-      '... <IMG SRC="n.png"/>xx ...',
-    ]);
+  it('text after an IMG is reported and the cell keeps the image alone', () => {
+    expect(imgParse('<TD><IMG SRC="n.png"/>xx</TD>')).toEqual({
+      stderr: afterImg('xx</TD>'), error: true, cells: [[{ kind: 'image', src: 'n.png', scale: undefined }]],
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The 16.1.1 image rule: strings before and after <IMG> (htmlparse.y:338-356).
+// Expected stderr is native dot 16.1.1's, byte for byte, without make_label's
+// `in label of ...` line.
+// ---------------------------------------------------------------------------
+
+const IMG = '<IMG SRC="a.png"/>';
+const IMAGE = { kind: 'image', src: 'a.png', scale: undefined };
+const beforeImg = (context: string): string[] => [
+  'Error: Syntax error: non-space string used before <IMG> in line 1 ', `... ${context} ...`,
+];
+const afterImg = (context: string): string[] => [
+  'Error: Syntax error: non-space string used after <IMG> in line 1 ', `... ${context} ...`,
+];
+const syntaxErr = (context: string): string[] => ['Error: syntax error in line 1 ', `... ${context} ...`];
+
+/**
+ * Parse a one-row table of `cells` as make_html_label does: what it writes to
+ * stderr, then either the content of each cell and `ctx->error`, or `dropped`
+ * when the parse aborted (no label).
+ */
+function imgParse(cells: string, tail = '</TR></TABLE>'): Record<string, unknown> {
+  const stderr: string[] = [];
+  try {
+    const r = parseHtmlLabelRv(`<TABLE><TR>${cells}${tail}`, new StderrLines((l) => stderr.push(l)));
+    if (r.label.kind !== 'table') throw new Error('expected table label');
+    return { stderr, error: r.error, cells: r.label.table.rows[0].cells.map((c) => c.content) };
+  } catch (e) {
+    if (!(e instanceof HtmlParseError)) throw e;
+    if (e instanceof HtmlLexError) stderr.push(...e.diagnostics);
+    return { stderr, dropped: true };
+  }
+}
+
+describe('image rule: blank strings around <IMG> are ignored', () => {
+  it.each([
+    ['before', ` ${IMG}`],
+    ['after', `${IMG} `],
+    ['on both sides', `  ${IMG}  `],
+    ['after <IMG></IMG>', '<IMG SRC="a.png"></IMG> '],
+    ['around <IMG></IMG>', ' <IMG SRC="a.png"></IMG> '],
+    ['as dropped control characters', `\t\n${IMG}`],
+    ['inside CDATA', `<![CDATA[ ]]>${IMG}`],
+  ])('%s', (_name, cell) => {
+    expect(imgParse(`<TD>${cell}</TD>`)).toEqual({ stderr: [], error: false, cells: [[IMAGE]] });
+  });
+});
+
+describe('image rule: a non-space string is reported and the image kept', () => {
+  it.each([
+    ['before, at the IMG token', `x ${IMG}`, beforeImg(`x ${IMG}`)],
+    ['after, at </TD>', `${IMG} y`, afterImg(' y</TD>')],
+    ['on both sides: only the first prints', `x${IMG}y`, beforeImg(`x${IMG}`)],
+    ['a no-break space is non-space', `${IMG}&#160;`, afterImg('&#160;</TD>')],
+    ['CDATA text before', `<![CDATA[x]]>${IMG}`, beforeImg(`<![CDATA[x]]>${IMG}`)],
+    ['CDATA text after', `${IMG}<![CDATA[y]]>`, afterImg('<![CDATA[y]]></TD>')],
+    ['a string split by a comment', `x<!-- c -->y ${IMG}`, beforeImg(`y ${IMG}`)],
+    ['before <IMG></IMG>', 'x<IMG SRC="a.png"></IMG>y', beforeImg('x<IMG SRC="a.png">')],
+  ])('%s', (_name, cell, stderr) => {
+    expect(imgParse(`<TD>${cell}</TD>`)).toEqual({ stderr, error: true, cells: [[IMAGE]] });
+  });
+});
+
+describe('image rule: anything but strings next to <IMG> drops the label', () => {
+  it.each([
+    ['a second IMG', `${IMG} ${IMG}`, syntaxErr(` ${IMG}`)],
+    ['a BR after blanks', `${IMG} <BR/>`, syntaxErr(' <BR/>')],
+    ['a tag before the IMG', `<B>x</B>${IMG}`, syntaxErr(`</B>${IMG}`)],
+    ['a tag, then blanks, before the IMG', `x<BR/> ${IMG}`, syntaxErr(` ${IMG}`)],
+    ['a string inside <IMG></IMG>', '<IMG SRC="a.png"> </IMG>', syntaxErr('<IMG SRC="a.png"> ')],
+    // The trailing opt_space reduces at the token after it, so the check runs
+    // there; the syntax error at that token then finds ctx->error set.
+    ['text, then a BR: the after-IMG error alone', `${IMG} y<BR/>`, afterImg(' y<BR/>')],
+    ['text, then an IMG: the after-IMG error alone', `${IMG} y${IMG}`, afterImg(` y${IMG}`)],
+    ['text, then a nested cell', `${IMG} y<TD>z</TD>`, afterImg(' y<TD>')],
+    ['text, then a tag with a bad attribute: its warning comes first', `${IMG} y<BR BOGUS="1"/>`, [
+      'Warning: Illegal attribute BOGUS in <BR> - ignored', ...afterImg(' y<BR BOGUS="1"/>'),
+    ]],
+    // The lexer fails fetching the token after the string and sets ctx->error first.
+    ['text, then an unknown element: the lexer error alone', `${IMG} y<BOGUS/>`, [
+      'Error: Unknown HTML element <BOGUS> on line 1 ',
+    ]],
+    ['text, then a mismatched tag: the expat error alone', `${IMG} y</TR>`, [
+      'Error: mismatched tag in line 1 ', '...  y</TR> ...',
+    ]],
+  ])('%s', (_name, cell, stderr) => {
+    expect(imgParse(`<TD>${cell}</TD>`)).toEqual({ stderr, dropped: true });
+  });
+});
+
+describe('after the image rule set ctx->error', () => {
+  const SOFT = `<TD>x ${IMG}</TD>`;
+  const first = beforeImg(`x ${IMG}`);
+
+  it.each([
+    ['a syntax error', `<TD>${IMG} <BR/></TD>`],
+    ['an expat mismatched tag', '<TD><B>y</I></TD>'],
+    ['an undefined entity', '<TD>&bogus;</TD>'],
+    ['text before a nested <TABLE>', '<TD>y<TABLE><TR><TD>a</TD></TR></TABLE></TD>'],
+    ['text after a nested </TABLE>', '<TD><TABLE><TR><TD>a</TD></TR></TABLE>y</TD>'],
+  ])('%s prints nothing and drops the label', (_name, cell) => {
+    expect(imgParse(`${SOFT}${cell}`)).toEqual({ stderr: first, dropped: true });
+  });
+
+  it('an unfinished table prints nothing and drops the label', () => {
+    expect(imgParse(SOFT, '</TR>')).toEqual({ stderr: first, dropped: true });
+  });
+
+  it('a second image-rule error prints nothing and both images stay', () => {
+    expect(imgParse(`${SOFT}<TD>${IMG} y</TD>`)).toEqual({ stderr: first, error: true, cells: [[IMAGE], [IMAGE]] });
+  });
+
+  it('an unknown element still prints (lexerror has no ctx->error guard)', () => {
+    expect(imgParse(`${SOFT}<TD><BOGUS/></TD>`)).toEqual({
+      stderr: [...first, 'Error: Unknown HTML element <BOGUS> on line 1 '], dropped: true,
+    });
+  });
+
+  it('lexer warnings of later tokens still print', () => {
+    const r = imgParse(`${SOFT}<TD BOGUS="1">z</TD>`);
+    expect(r.stderr).toEqual([...first, 'Warning: Illegal attribute BOGUS in <TD> - ignored']);
+    expect(r.error).toBe(true);
   });
 });
 
