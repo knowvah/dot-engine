@@ -92,6 +92,56 @@ describe('updateBbBz', () => {
     expect(bb.ur.x).toBeCloseTo(6.25, 2);
     expect(bb.ur.y).toBeCloseTo(10.15625, 4);
   });
+
+  it('refines a wide curve for 10 levels and skips what is still unrefined', () => {
+    const bb = { ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } };
+    updateBbBz(bb, [
+      { x: 0, y: 0 },
+      { x: 3e6, y: 1e6 },
+      { x: -2e6, y: 5e5 },
+      { x: 10, y: 7 },
+    ]);
+    // native 16.1.1 update_bb_bz (harness/native-bb.c of
+    // plans/issue-150-update-bb-bz-limit)
+    expect(bb.ll.x).toBe(-413400.40513363667);
+    expect(bb.ll.y).toBe(0);
+    expect(bb.ur.x).toBe(921725.5469250213);
+    expect(bb.ur.y).toBe(577351.0327252895);
+  });
+
+  it('leaves the bb alone when no segment is refined within 10 levels', () => {
+    const bb = { ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } };
+    updateBbBz(bb, [
+      { x: 0, y: 0 },
+      { x: -3e7, y: 1e8 },
+      { x: 7e7, y: -2e7 },
+      { x: 100, y: 5 },
+    ]);
+    // native 16.1.1 update_bb_bz (harness/native-bb.c of
+    // plans/issue-150-update-bb-bz-limit)
+    expect(bb.ll.x).toBe(0);
+    expect(bb.ll.y).toBe(0);
+    expect(bb.ur.x).toBe(0);
+    expect(bb.ur.y).toBe(0);
+  });
+
+  it('returns on coordinates too large to ever refine', () => {
+    // This curve hangs native 16.1.0 and the unbounded port: halving never
+    // brings the control points within tolerance of the chord.
+    const bb = { ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } };
+    updateBbBz(bb, [
+      { x: 0, y: 0 },
+      { x: 1e17, y: 7e17 },
+      { x: -1e17, y: 3e17 },
+      { x: 5, y: 7 },
+    ]);
+    // native 16.1.1 update_bb_bz (harness/native-bb.c of
+    // plans/issue-150-update-bb-bz-limit)
+    expect(bb.ll.x).toBe(0);
+    expect(bb.ll.y).toBe(0);
+    expect(bb.ur.x).toBe(0);
+    expect(bb.ur.y).toBe(0);
+  });
 });
 
 // ---------------------------------------------------------------------------
