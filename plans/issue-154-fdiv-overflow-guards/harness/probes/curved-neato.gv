@@ -1,0 +1,7 @@
+graph curvedn {
+  splines=curved;
+  a -- b -- c -- a;
+  c -- d -- e -- c;
+  a -- d; a -- d;
+  e -- f;
+}

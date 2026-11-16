@@ -39,6 +39,7 @@ import {
   type Variable,
 } from '../../vpsc/index.js';
 import { InternalError } from '../../errors.js';
+import { fdivfOverflow } from '../../util/overflow.js';
 import { computeHierarchy } from './compute-hierarchy.js';
 import type { DirectedVtxData } from './opt-arrangement.js';
 import { fmaf, unpackMatrix } from './quad-prog-solve.js';
@@ -173,12 +174,14 @@ function descentStep(e: CMajEnvVPSC, b: Float32Array, place: Float32Array, n: nu
     const r = rowReduce(A[i]!, 2, g, n, 0);
     denominator = fmaf(-r, g[i]!, denominator);
   }
-  return denominator !== 0 ? -fr(numerator / denominator) : -1.0;
+  // C: if (fdivf_overflow(numerator, denominator, &alpha)) alpha = 1.0;
+  const alpha = fdivfOverflow(numerator, denominator) ?? 1.0;
+  return -alpha;
 }
 
 /**
  * `d = place - old_place` and the line-search factor `beta` along it.
- * @see lib/neatogen/quad_prog_vpsc.c:constrained_majorization_vpsc (130-147)
+ * @see lib/neatogen/quad_prog_vpsc.c:constrained_majorization_vpsc (130-146)
  */
 function lineSearchBeta(e: CMajEnvVPSC, place: Float32Array, n: number): number {
   const A = e.A!;
@@ -195,9 +198,8 @@ function lineSearchBeta(e: CMajEnvVPSC, place: Float32Array, n: number): number 
     const r = rowReduce(A[i]!, 2, d, n, 0);
     denominator = fmaf(r, d[i]!, denominator);
   }
-  // C: !is_exactly_zero(denominator) && !is_exactly_equal(denominator, -0.0)
-  if (!Object.is(denominator, 0) && !Object.is(denominator, -0)) return fr(numerator / denominator);
-  return 1.0;
+  // C: if (fdivf_overflow(numerator, denominator, &beta)) beta = 1.0;
+  return fdivfOverflow(numerator, denominator) ?? 1.0;
 }
 
 /**

@@ -132,6 +132,27 @@ describe('makeStraightEdges — curved lone edge in a real 3-cycle', () => {
     }
   });
 
+  it.each([
+    ['+Infinity', Infinity],
+    ['-Infinity', -Infinity],
+    ['NaN', NaN],
+  ])('leaves the edge unbent when the centroid x is %s (16.1.1 bend guard)', (_name, bx) => {
+    const { g, b, eCA } = triangle();
+    // B's x makes the cycle centroid's x non-finite, so vX and magV are too:
+    // vX / magV is inf/inf (or NaN/NaN) = NaN. fdiv_overflow reports that
+    // and bend returns before writing spl[1] and spl[2]. 16.1.0's
+    // `magV == 0` guard let NaN through into both control points.
+    b.info.coord = { x: bx, y: 45 };
+    makeStraightEdges(g, [eCA], 1, EDGETYPE_CURVED, SINFO);
+    const pts = ctrlPoints(eCA);
+    expect(pts.length).toBe(4);
+    for (const p of pts) {
+      // The unbent C->A line is vertical at x = 0.
+      expect(p.x).toBe(0);
+      expect(Number.isFinite(p.y)).toBe(true);
+    }
+  });
+
   it('no cycle contains the edge (open chain) falls back to the graph centroid', () => {
     // A->B, B->C with NO C->A: findShortestCycleWithEdge returns null for
     // every edge (findAllCycles finds no cycle at all), so getCycleCentroid

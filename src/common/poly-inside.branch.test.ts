@@ -245,6 +245,33 @@ describe('polyInside — insideScale flip and zero-size branches', () => {
     expect(polyInside(ctxFor(n), { x: 0.4, y: 0 })).toBe(true);
     expect(polyInside(ctxFor(n), { x: 1, y: 0 })).toBe(false);
   });
+
+  it('a subnormal xsize keeps scalex=w: the quotient is not finite (16.1.1)', () => {
+    // As the zero-xsize case, with lw+rw = 5e-324 (the smallest subnormal,
+    // not zero). w / xsize = 20 / 5e-324 = inf, so fdiv_overflow reports an
+    // overflow and scalex stays n_width (20). 16.1.0's `xsize != 0` guard
+    // took the quotient: P.x = 0.4 * inf, outside every box.
+    const n = node({ lw: 5e-324, rw: 0, ht: 0, width: 20 / 72, height: 20 / 72 });
+    n.info.shape_info = polygon({ sides: 4, vertices: boxVerts(10, 10), penwidth: 1 });
+    // P.x = 0.4 * 20 = 8 < boxURx = 10: inside. p.x = 1 -> P.x = 20: outside.
+    expect(polyInside(ctxFor(n), { x: 0.4, y: 0 })).toBe(true);
+    expect(polyInside(ctxFor(n), { x: 1, y: 0 })).toBe(false);
+  });
+
+  it('fixedshape, flip=true, a subnormal-high box keeps scalex=w (16.1.1)', () => {
+    const n = node({ flip: true });
+    n.info.shape_info = polygon({
+      sides: 4, vertices: boxVerts(30, 1e-320), penwidth: 1,
+      option: style({ fixedshape: true }),
+    });
+    // fixedShapeSize -> w = 60, h = 2e-320; flip swaps xsize = h, ysize = w.
+    // w / xsize = 60 / 2e-320 = inf: fdiv_overflow leaves scalex = w = 60.
+    // scaley = h / ysize = 2e-320 / 60, finite (0 after underflow).
+    // boxURx = 30. p = (0.1, 0): P = (6, 0), inside. 16.1.0 scaled by inf.
+    expect(polyInside(ctxFor(n), { x: 0.1, y: 0 })).toBe(true);
+    // p = (1, 0): P.x = 60 > 30, outside.
+    expect(polyInside(ctxFor(n), { x: 1, y: 0 })).toBe(false);
+  });
 });
 
 describe('polyInside — fixedshape branch', () => {
@@ -279,10 +306,10 @@ describe('polyInside — fixedshape branch', () => {
       sides: 4, vertices: boxVerts(0, 0), penwidth: 1,
       option: style({ fixedshape: true }),
     });
-    // w=h=0, xsize=ysize=0 -> scalex=w=0, scaley=h=0 (the zero branch of the
-    // cond-exprs). Every query point scales to P=(0,0), which trivially
-    // passes the boxURx/boxURy bounding check (0 <= 0) and the degenerate
-    // same-side walk over collapsed (all-origin) vertices.
+    // w=h=0, xsize=ysize=0 -> scalex=w=0, scaley=h=0 (0 / 0 is NaN, so
+    // fdiv_overflow keeps w and h). Every query point scales to P=(0,0),
+    // which trivially passes the boxURx/boxURy bounding check (0 <= 0) and
+    // the degenerate same-side walk over collapsed (all-origin) vertices.
     expect(polyInside(ctxFor(n), { x: 1, y: 0 })).toBe(true);
   });
 });
