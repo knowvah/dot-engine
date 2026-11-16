@@ -5,6 +5,7 @@ import type { Edge } from '../../model/edge.js';
 import { addTreeEdge, isTreeEdge, nsSlack } from './ns-core.js';
 import type { NsCtx } from './ns-core.js';
 import { initCutvalues } from './ns-range.js';
+import { saddSaturate } from '../../util/overflow.js';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -262,19 +263,22 @@ export function stExtractMin(heap: STheap): Subtree {
 
 /**
  * Add `delta` to ND_rank of every node in the tight tree reachable from `v`
- * (the parent back-edge to `from` excluded). C's `tree_adjust` is a recursive
- * DFS; the tight tree is acyclic, so each node is visited exactly once and the
- * mutation (`rank += delta`) is order-independent. Ported with an explicit
- * stack instead of recursion: deep trees (e.g. corpus 2646, a 7-deep quadtree
- * with thousands of nodes) overflow the JS call stack where C's larger native
- * stack does not. Outcome is identical to the recursive form.
+ * (the parent back-edge to `from` excluded), clamping each sum to
+ * [INT_MIN, INT_MAX] as C's `sadd_saturate` does (graphviz 16.1.1, upstream
+ * issue 2758). C's `tree_adjust` is a DFS; the tight tree is acyclic, so each
+ * node is visited exactly once and the mutation
+ * (`rank = sadd_saturate(rank, delta)`) depends only on the node's own rank,
+ * which makes it order-independent. Ported with an explicit stack instead of
+ * recursion: deep trees (e.g. corpus 2646, a 7-deep quadtree with thousands of
+ * nodes) overflow the JS call stack where C's larger native stack does not.
+ * Outcome is identical to the recursive form.
  * @see lib/common/ns.c:tree_adjust
  */
 export function treeAdjust(v: Node, from: Node | undefined, delta: number): void {
   const stack: Array<[Node, Node | undefined]> = [[v, from]];
   while (stack.length > 0) {
     const [n, f] = stack.pop()!;
-    n.info.rank = (n.info.rank ?? 0) + delta;
+    n.info.rank = saddSaturate(n.info.rank ?? 0, delta);
     const ti = n.info.tree_in;
     if (ti) for (let i = 0; i < ti.size; i++) {
       const w = ti.list[i].tail;
