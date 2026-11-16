@@ -2,8 +2,10 @@
 //
 // neato's stress, hier, ipsep and sgd solvers under `dim=3 dimen=3`, plus the
 // subset and circuit models, a three-component pack and start=regular, against
-// native graphviz 16.1.0 `-Kneato -Txdot/-Tdot`. Fixtures under __fixtures__/dim/
-// are the oracle's own output (part-10 AD-3: byte-equal or within 0.01).
+// native graphviz `-Kneato -Txdot/-Tdot`. Fixtures under __fixtures__/dim/
+// are the oracle's own output (part-10 AD-3: byte-equal or within 0.01): 16.1.0
+// captures, except the `hier-*` cases whose output 16.1.1 changed (the double
+// Laplacian and conjugate_gradient_d, #156), which are 16.1.1 captures.
 //
 // mode=hier reaches the smart initial layout (stress.c's subspace estimate) three
 // ways: above 2-D, for the (dim-1)-D seed; with no directed edge, which takes a

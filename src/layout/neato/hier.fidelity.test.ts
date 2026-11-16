@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: EPL-2.0
 //
 // mode=hier (neatoinit.c:majorization -> stress_majorization_with_hierarchy)
-// against native graphviz 16.1.0 `-Kneato` output (-Tplain and -Txdot, 0.01
+// against native graphviz 16.1.1 `-Kneato` output (-Tplain and -Txdot, 0.01
 // tolerance): the item-43 probe graph, corpus 1554 (forced layout=neato,
 // model=mds) and one case per branch of the wiring. Fixtures under
-// __fixtures__/hier/ are the oracle's own output (GVBINDIR=ghl16-all).
+// __fixtures__/hier/ are the oracle's own output (GVBINDIR=/tmp/ghl1611-all).
 // @see lib/neatogen/neatoinit.c:majorization
 // @see lib/neatogen/constrained_majorization.c:stress_majorization_with_hierarchy
 import { readdirSync, readFileSync } from 'node:fs';

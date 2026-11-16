@@ -14,7 +14,7 @@ import {
 
 vi.mock('./conjgrad.js', async (importOriginal) => {
   const actual = await importOriginal<typeof import('./conjgrad.js')>();
-  return { ...actual, conjugateGradientF: vi.fn(actual.conjugateGradientF) };
+  return { ...actual, conjugateGradientD: vi.fn(actual.conjugateGradientD) };
 });
 vi.mock('./pca.js', async (importOriginal) => {
   const actual = await importOriginal<typeof import('./pca.js')>();
@@ -33,7 +33,7 @@ function path(n: number): VtxData[] {
 const zeros = (dim: number, n: number): Float64Array[] => Array.from({ length: dim }, () => new Float64Array(n));
 
 afterEach(() => {
-  vi.mocked(conjgrad.conjugateGradientF).mockClear();
+  vi.mocked(conjgrad.conjugateGradientD).mockClear();
   vi.mocked(pca.iterativePCA1D).mockClear();
 });
 
@@ -70,7 +70,7 @@ describe('sparse_stress_subspace_majorization_kD', () => {
   it('returns -1 and restores the weights when conjugate gradient fails', () => {
     const graph = path(6);
     const before = graph[2]!.ewgts;
-    vi.mocked(conjgrad.conjugateGradientF).mockReturnValueOnce(1);
+    vi.mocked(conjgrad.conjugateGradientD).mockReturnValueOnce(1);
     csrand(1);
     expect(sparseStressSubspaceMajorizationKD(graph, 6, zeros(2, 6), { ...OPTS, reweightGraph: true })).toBe(-1);
     expect(graph[2]!.ewgts).toBe(before);

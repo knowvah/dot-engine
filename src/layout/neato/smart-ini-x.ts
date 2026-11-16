@@ -12,7 +12,7 @@
 
 import { crand } from '../../common/crand.js';
 import { fma } from '../../common/fma.js';
-import { conjugateGradientF } from './conjgrad.js';
+import { conjugateGradientD } from './conjgrad.js';
 import type { VtxData } from './dijkstra.js';
 import { computeApsp } from './kkutils.js';
 import {
@@ -366,19 +366,19 @@ function scaleGivenCoords(Dij: Int32Array[], n: number, x: Float64Array): number
 }
 
 /**
- * The Laplacian of the weights w_ij = 1 / D_ij^2, as floats.
+ * The Laplacian of the weights w_ij = 1 / D_ij^2, in double (`double **lap`).
  * @see lib/neatogen/smart_ini_x.c:IMDS_given_dim
  */
-function computeLaplacian(Dij: Int32Array[], n: number): FloatMatrix {
-  const lap: FloatMatrix = [];
+function computeLaplacian(Dij: Int32Array[], n: number): Float64Array[] {
+  const lap: Float64Array[] = [];
   for (let i = 0; i < n; i++) {
-    const row = new Float32Array(n);
-    let degree = fr(0);
+    const row = new Float64Array(n);
+    let degree = 0;
     for (let j = 0; j < n; j++) {
       if (j === i) continue;
-      const w = fr(fr(-1.0) / fr(fr(Dij[i]![j]!) * fr(Dij[i]![j]!))); // w_{ij}
+      const w = -1.0 / (Dij[i]![j]! * Dij[i]![j]!); // w_{ij}
       row[j] = w;
-      degree = fr(degree - w);
+      degree -= w;
     }
     row[i] = degree;
     lap.push(row);
@@ -406,7 +406,8 @@ function computeResidualDistances(Dij: Int32Array[], n: number, x: Float64Array)
 
 /**
  * One entry of the balance vector: sum_j sign * delta_ij * w_ij, the sign
- * following the order of y_i and y_j.
+ * following the order of y_i and y_j. The oracle fuses both branches:
+ * `b += D * -lap` and `b -= D * -lap` are one fmadd / fmsub each.
  * @see lib/neatogen/smart_ini_x.c:IMDS_given_dim
  */
 function balanceOf(i: number, n: number, y: Float64Array, ctx: BalanceCtx): number {
@@ -414,9 +415,8 @@ function balanceOf(i: number, n: number, y: Float64Array, ctx: BalanceCtx): numb
   let b = 0;
   for (let j = 0; j < n; j++) {
     if (j === i) continue;
-    const term = fr(fr(ctx.Dij[i]![j]!) * -ctx.lap[i]![j]!); // w_{ij}*delta_{ij}
-    if (posI >= y[j]!) b += term;
-    else b -= term;
+    const lap = ctx.lap[i]![j]!;
+    b = fma(ctx.Dij[i]![j]!, posI >= y[j]! ? -lap : lap, b); // w_{ij}*delta_{ij}
   }
   return b;
 }
@@ -424,7 +424,7 @@ function balanceOf(i: number, n: number, y: Float64Array, ctx: BalanceCtx): numb
 /** Distances and Laplacian read by {@link balanceOf}. */
 interface BalanceCtx {
   Dij: Int32Array[];
-  lap: FloatMatrix;
+  lap: Float64Array[];
 }
 
 /**
@@ -441,11 +441,11 @@ function solveBalanced(
 ): 0 | 1 {
   let converged = false;
   for (let iterations2 = 0; iterations2 < 200 && !converged; iterations2++) {
-    if (conjugateGradientF(ctx.lap, y, balance, n, { tol: convTol, maxIterations: n, ortho1: true }) < 0) return 1;
+    if (conjugateGradientD(ctx.lap, y, balance, n, { tol: convTol, maxIterations: n, ortho1: true }) < 0) return 1;
     converged = true;
     for (let i = 0; i < n; i++) {
       const b = balanceOf(i, n, y, ctx);
-      if (b !== balance[i] && Math.abs(1 - b / balance[i]!) > 1e-5) {
+      if (Math.abs(1 - b / balance[i]!) > 1e-5) {
         converged = false;
         balance[i] = b;
       }

@@ -192,26 +192,6 @@ export function maxAbs(n: number, vector: Float64Array): number {
 }
 
 /**
- * result = matrix * vector for an n x n float** matrix and double vector;
- * each row's reduction is blocked as the call site was compiled.
- * @see lib/neatogen/matrix_ops.c:right_mult_with_vector_f
- */
-export function rightMultWithVectorF(
-  matrix: readonly Float32Array[], n: number, vector: Float64Array, result: Float64Array,
-  block: number,
-): void {
-  const blocked = block === BLOCK_NONE ? 0 : n - (n % block);
-  for (let i = 0; i < n; i++) {
-    const row = matrix[i]!;
-    let res = 0;
-    let j = 0;
-    for (; j < blocked; j++) res += row[j]! * vector[j]!;
-    for (; j < n; j++) res = fma(row[j]!, vector[j]!, res);
-    result[i] = res;
-  }
-}
-
-/**
  * result = matrix * vector over the sparse `vtx_data` rows (`ewgts` weights).
  * The loop is scalar in the oracle: every term is an fmadd.
  * @see lib/neatogen/matrix_ops.c:right_mult_with_vector

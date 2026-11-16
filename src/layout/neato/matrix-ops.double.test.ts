@@ -6,7 +6,6 @@ import {
   innerProduct,
   maxAbs,
   norm,
-  rightMultWithVectorF,
   scadd,
   vectorsAddition,
   vectorsScalarMult,
@@ -87,27 +86,5 @@ describe('double-precision matrix_ops helpers', () => {
   it('maxAbs returns the largest magnitude, -1e50 for an empty range', () => {
     expect(maxAbs(3, Float64Array.of(-7, 2, 5))).toBe(7);
     expect(maxAbs(0, new Float64Array(0))).toBe(-1e50);
-  });
-
-  it('rightMultWithVectorF multiplies a float** matrix by a double vector', () => {
-    const m = [Float32Array.of(1, 2), Float32Array.of(0.5, -1)];
-    const r = new Float64Array(2);
-    rightMultWithVectorF(m, 2, Float64Array.of(3, 4), r, BLOCK_NONE);
-    expect(Array.from(r)).toEqual([11, -2.5]);
-  });
-
-  it('rightMultWithVectorF fuses the tail and rounds the blocked prefix', () => {
-    // m1*v1 = 1 + 2^-23 + 2^-30 + 2^-53 needs 54 bits: unfused it rounds to
-    // 1 + 2^-23 + 2^-30 and the row sums to 0; fused the 2^-53 survives.
-    const m = [Float32Array.of(-1, 1 + 2 ** -23), Float32Array.of(0, 0)];
-    const v = Float64Array.of(1 + 2 ** -23 + 2 ** -30, 1 + 2 ** -30);
-    const r = new Float64Array(2);
-    rightMultWithVectorF(m, 2, v, r, BLOCK_NONE);
-    expect(r[0]).toBe(2 ** -53);
-    const wide = [Float32Array.of(-1, 1 + 2 ** -23, 0, 0), new Float32Array(4), new Float32Array(4), new Float32Array(4)];
-    const wv = Float64Array.of(1 + 2 ** -23 + 2 ** -30, 1 + 2 ** -30, 0, 0);
-    const wr = new Float64Array(4);
-    rightMultWithVectorF(wide, 4, wv, wr, 4);
-    expect(wr[0]).toBe(0);
   });
 });

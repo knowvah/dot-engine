@@ -8,13 +8,13 @@ import { crand, csrand } from '../../common/crand.js';
 import { fma } from '../../common/fma.js';
 import type { VtxData } from './dijkstra.js';
 import {
-  multDenseMat, multDenseMatD, multSparseDenseMatTranspose, powerIteration,
+  multDenseMatD, multSparseDenseMatTranspose, powerIteration,
   rightMultWithVectorD, rightMultWithVectorTranspose,
 } from './matrix-ops-dense.js';
 
 const NATIVE = JSON.parse(readFileSync(new URL('./__fixtures__/dim/smart-units.json', import.meta.url), 'utf8')) as {
   powerSym: PowerCase; powerRank1: PowerCase; powerZero: PowerCase; powerRotation: PowerCase;
-  multDense: { c: number[][]; d: number[][] };
+  multDense: { d: number[][] };
   multSparse: { c: number[][] };
   rightT: { r: number[] };
 };
@@ -42,10 +42,6 @@ function graph7(): VtxData[] {
 }
 
 describe('dense products', () => {
-  it('mult_dense_mat rounds each fused sum to float', () => {
-    expect(list(multDenseMat(A(), B(), R, C, S))).toEqual(NATIVE.multDense.c);
-  });
-
   it('mult_dense_mat_d keeps each fused sum', () => {
     expect(list(multDenseMatD(A(), B(), R, C, S))).toEqual(NATIVE.multDense.d);
   });

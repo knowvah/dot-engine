@@ -28,12 +28,12 @@ const P_ITERATION_THRESHOLD = 1e-3;
 const POWER_LENGTH_FLOOR = 1e-10;
 /** `rand() % 100`, the components of a guessed eigenvector. */
 const GUESS_RANGE = 100;
-/** Vector width of the reductions inlined in `_power_iteration` and `_stress_majorization_kD_mkernel`. */
+/** Vector width of the reductions inlined in `_power_iteration`, `_stress_majorization_kD_mkernel` and `_conjugate_gradient_d`. */
 const BLOCK_ROW = 8;
 
 /**
  * result = matrix × vector, matrix dim1 × dim2. Its inlined copies (in
- * power_iteration and the subspace loop) are both 8-wide.
+ * power_iteration, the subspace loop and conjugate_gradient_d) are all 8-wide.
  * @see lib/neatogen/matrix_ops.c:right_mult_with_vector_d
  */
 export function rightMultWithVectorD(
@@ -62,24 +62,6 @@ export function rightMultWithVectorTranspose(
     for (let j = 0; j < dim2; j++) res = fma(matrix[j]![i]!, vector[j]!, res);
     result[i] = res;
   }
-}
-
-/**
- * C = A × B: A is dim1 × dim2 (double), B is dim2 × dim3 (float), C is float.
- * @see lib/neatogen/matrix_ops.c:mult_dense_mat
- */
-export function multDenseMat(
-  A: readonly Float64Array[], B: readonly Float32Array[], dim1: number, dim2: number, dim3: number,
-): Float32Array[] {
-  const C = Array.from({ length: dim1 }, () => new Float32Array(dim3));
-  for (let i = 0; i < dim1; i++) {
-    for (let j = 0; j < dim3; j++) {
-      let sum = 0;
-      for (let k = 0; k < dim2; k++) sum = fma(A[i]![k]!, B[k]![j]!, sum);
-      C[i]![j] = sum;
-    }
-  }
-  return C;
 }
 
 /**
