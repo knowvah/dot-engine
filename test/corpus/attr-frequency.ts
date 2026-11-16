@@ -29,11 +29,11 @@
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
-import { homedir } from 'node:os';
 import { parse } from '../../src/index.js';
 import type { Graph } from '../../src/model/graph.js';
+import { ORACLE_CORPUS_ROOT } from './oracle-paths.mjs';
 
-const CORPUS = join(homedir(), 'git/graphviz/tests');
+const CORPUS = ORACLE_CORPUS_ROOT;
 const GOLDEN = new URL('../golden/inputs', import.meta.url).pathname;
 const SRC = new URL('../../src', import.meta.url).pathname;
 

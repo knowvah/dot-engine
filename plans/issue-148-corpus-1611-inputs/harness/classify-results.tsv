@@ -1,0 +1,104 @@
+id	engine	format	cwd	native 16.1.0	native 16.1.1	port	port vs 16.1.1	port vs 16.1.0	16.1.0 vs 16.1.1	stderr port = 16.1.1
+2746	dot	svg	tests	signal SIGSEGV	signal SIGSEGV	errored: Cannot read properties of undefined (reading 'x')	-	-	-	false
+2746	dot	xdot	tests	signal SIGSEGV	signal SIGSEGV	errored: Cannot read properties of undefined (reading 'x')	-	-	-	false
+2756	dot	svg	tests	signal SIGSEGV	ok/exit 0	errored: Cannot read properties of undefined (reading 'v')	-	-	-	false
+2756	dot	xdot	tests	signal SIGSEGV	ok/exit 0	errored: Cannot read properties of undefined (reading 'v')	-	-	-	false
+2756_1	dot	svg	tests	signal SIGSEGV	ok/exit 0	errored: Cannot read properties of undefined (reading 'v')	-	-	-	false
+2756_1	dot	xdot	tests	signal SIGSEGV	ok/exit 0	errored: Cannot read properties of undefined (reading 'v')	-	-	-	false
+2758	dot	svg	tests	ok/exit 1	ok/exit 1	ok	diverged (max 1414970008)	diverged (max 732510000)	diverged (max 2147480008)	false
+2758	dot	xdot	tests	ok/exit 1	ok/exit 1	ok	diverged (max 7175000000)	diverged (max 5027500000)	diverged (max 2147500000)	false
+2759	dot	svg	tests	signal SIGSEGV	ok/exit 0	errored: Cannot read properties of null (reading 'info')	-	-	-	false
+2759	dot	xdot	tests	signal SIGSEGV	ok/exit 0	errored: Cannot read properties of null (reading 'info')	-	-	-	false
+2759_1	dot	svg	tests	signal SIGSEGV	ok/exit 0	errored: Cannot read properties of null (reading 'info')	-	-	-	false
+2759_1	dot	xdot	tests	signal SIGSEGV	ok/exit 0	errored: Cannot read properties of null (reading 'info')	-	-	-	false
+2761	dot	svg	tests	signal SIGSEGV	signal SIGSEGV	errored: Cannot read properties of undefined (reading 'info')	-	-	-	false
+2761	dot	xdot	tests	signal SIGABRT	signal SIGABRT	errored: Cannot read properties of undefined (reading 'info')	-	-	-	false
+2761_1	dot	svg	tests	signal SIGSEGV	signal SIGSEGV	errored: Cannot read properties of undefined (reading 'info')	-	-	-	false
+2761_1	dot	xdot	tests	signal SIGSEGV	signal SIGSEGV	errored: Cannot read properties of undefined (reading 'info')	-	-	-	false
+2765	dot	svg	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	false
+2765	dot	xdot	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	false
+2765_1	dot	svg	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2765_1	dot	xdot	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2768	dot	svg	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2768	dot	xdot	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2768_1	dot	svg	tests	signal SIGBUS	ok/exit 0	ok	conformant	-	-	true
+2768_1	dot	xdot	tests	signal SIGBUS	ok/exit 0	ok	conformant	-	-	true
+2768_2	dot	svg	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2768_2	dot	xdot	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2769	dot	svg	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2769	dot	xdot	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2769_1	dot	svg	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2769_1	dot	xdot	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2769_2	dot	svg	tests	signal SIGSEGV	ok/exit 0	ok	conformant	-	-	true
+2769_2	dot	xdot	tests	signal SIGBUS	ok/exit 0	ok	conformant	-	-	true
+2773	dot	svg	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2773	dot	xdot	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2773_1	dot	svg	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2773_1	dot	xdot	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2774	dot	svg	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2774	dot	xdot	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2774_1	dot	svg	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2774_1	dot	xdot	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2776	dot	svg	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2776	dot	xdot	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2776_1	dot	svg	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2776_1	dot	xdot	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2780	dot	svg	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2780	dot	xdot	tests	signal SIGBUS	ok/exit 1	errored: Cannot read properties of undefined (reading 'll')	-	-	-	false
+2781	dot	svg	tests	signal SIGSEGV	ok/exit 1	ok	diverged (max 1.44e+26)	-	-	false
+2781	dot	xdot	tests	signal SIGSEGV	ok/exit 1	ok	diverged (max 1.44e+26)	-	-	false
+2781_1	dot	svg	tests	signal SIGSEGV	ok/exit 1	ok	diverged (max 1.44e+26)	-	-	false
+2781_1	dot	xdot	tests	signal SIGSEGV	ok/exit 1	ok	diverged (max 1.44e+26)	-	-	false
+2783	dot	svg	tests	ok/exit 0	ok/exit 0	ok	structural-match (max 27)	conformant	structural-match (max 27)	false
+2783	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	diverged (max 27)	conformant	diverged (max 27)	false
+2821_0	dot	svg	tests	ok/exit 0	ok/exit 0	ok	diverged	diverged	conformant	false
+2821_0	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	diverged	diverged	conformant	false
+2821_1	dot	svg	tests	ok/exit 1	ok/exit 0	ok	diverged (max 6)	conformant	diverged (max 6)	false
+2821_1	dot	xdot	tests	ok/exit 1	ok/exit 0	ok	diverged (max 6.057000000000002)	conformant	diverged (max 6.057000000000002)	false
+2821_2	dot	svg	tests	ok/exit 1	ok/exit 0	ok	diverged (max 6)	conformant	diverged (max 6)	false
+2821_2	dot	xdot	tests	ok/exit 1	ok/exit 0	ok	diverged (max 6)	conformant	diverged (max 6)	false
+2841	fdp	svg	tests	ok/exit 1	ok/exit 1	ok	structural-match (max 259.87)	structural-match (max 259.87)	conformant	true
+2841	fdp	xdot	tests	ok/exit 1	ok/exit 1	ok	diverged (max 259.87)	diverged (max 259.87)	conformant	true
+2860	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2860	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2860_1	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2860_1	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2866	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2866	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2866	circo	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2866	circo	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2870_0	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2870_0	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2870_1	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2870_1	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2870_2	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2870_2	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+linux.i386-radius_dot	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+linux.i386-radius_dot	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+linux.x86-radius_dot	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+linux.x86-radius_dot	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+linux.x86-shapes_dot	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+linux.x86-shapes_dot	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+macosx-radius_dot	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+macosx-radius_dot	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+nshare-radius_dot	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+nshare-radius_dot	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+nshare-shapes_dot	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+nshare-shapes_dot	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+windows-radius_dot	dot	svg	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+windows-radius_dot	dot	xdot	tests	ok/exit 0	ok/exit 0	ok	conformant	conformant	conformant	true
+2821_0	dot	svg	repo	ok/exit 1	ok/exit 1	ok	conformant	conformant	conformant	true
+2821_0	dot	xdot	repo	ok/exit 1	ok/exit 1	ok	conformant	conformant	conformant	true
+2821_1	dot	svg	repo	ok/exit 1	ok/exit 1	ok	diverged (max 6)	conformant	diverged (max 6)	false
+2821_1	dot	xdot	repo	ok/exit 1	ok/exit 1	ok	diverged (max 6.057000000000002)	conformant	diverged (max 6.057000000000002)	false
+2821_2	dot	svg	repo	ok/exit 1	ok/exit 1	ok	diverged (max 6)	conformant	diverged (max 6)	false
+2821_2	dot	xdot	repo	ok/exit 1	ok/exit 1	ok	diverged (max 6)	conformant	diverged (max 6)	false
+2860	dot	dot	tests	ok/exit 0	ok/exit 0	ok	conformant (bytes equal)	conformant (bytes equal)	conformant (bytes equal)	true
+2860_1	dot	dot	tests	ok/exit 0	ok/exit 0	ok	conformant (bytes equal)	conformant (bytes equal)	conformant (bytes equal)	true
+linux.i386-radius_dot	dot	dot	tests	ok/exit 0	ok/exit 0	ok	conformant (bytes differ)	conformant (bytes equal)	conformant (bytes differ)	true
+linux.x86-radius_dot	dot	dot	tests	ok/exit 0	ok/exit 0	ok	conformant (bytes differ)	conformant (bytes equal)	conformant (bytes differ)	true
+linux.x86-shapes_dot	dot	dot	tests	ok/exit 0	ok/exit 0	ok	conformant (bytes differ)	conformant (bytes equal)	conformant (bytes differ)	true
+macosx-radius_dot	dot	dot	tests	ok/exit 0	ok/exit 0	ok	conformant (bytes differ)	conformant (bytes equal)	conformant (bytes differ)	true
+nshare-radius_dot	dot	dot	tests	ok/exit 0	ok/exit 0	ok	conformant (bytes differ)	conformant (bytes equal)	conformant (bytes differ)	true
+nshare-shapes_dot	dot	dot	tests	ok/exit 0	ok/exit 0	ok	conformant (bytes differ)	conformant (bytes equal)	conformant (bytes differ)	true
+windows-radius_dot	dot	dot	tests	ok/exit 0	ok/exit 0	ok	conformant (bytes differ)	conformant (bytes equal)	conformant (bytes differ)	true

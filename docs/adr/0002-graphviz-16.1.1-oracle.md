@@ -88,6 +88,9 @@ survey's oracle-error count and the quarantine move with the pin.
 - The oracle depends on a third local, unpushed branch per machine.
 - Native harness scripts that rewrite plugin link lines take the plugin
   version as a parameter (`8.0.15` → `8.0.16`).
+- The corpus root moved with the oracle (#148): every corpus script defaults
+  to the oracle checkout's `tests/` through `ORACLE_CORPUS_ROOT` in
+  `oracle-paths.mjs`, so inputs and reference come from one version.
 
 ## Rollback
 

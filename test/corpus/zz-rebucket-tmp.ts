@@ -6,13 +6,12 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { compareXdot } from '../golden/compare-xdot.js';
 import { classifyBucket } from './attribute-divergence.js';
-import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
+import { ORACLE_CORPUS_ROOT, ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 
 const REPO = '/Users/scottseely/git/graphviz-ts';
-const CORPUS = join(homedir(), 'git/graphviz/tests');
+const CORPUS = ORACLE_CORPUS_ROOT;
 const DOT_BIN = ORACLE_DOT_BIN;
 const engine = process.argv[2];
 const ITER = new Set(['neato', 'fdp', 'sfdp']);

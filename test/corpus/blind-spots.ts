@@ -23,12 +23,12 @@
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
+import { ORACLE_CORPUS_ROOT } from './oracle-paths.mjs';
 
 // Both trees count as coverage: the upstream corpus AND our own golden inputs.
 // Scanning only upstream would report a cell as dark after we have closed it
 // with a fixture — the number has to reflect what actually gets exercised.
-const CORPUS = join(homedir(), 'git/graphviz/tests');
+const CORPUS = ORACLE_CORPUS_ROOT;
 const GOLDEN = new URL('../golden/inputs', import.meta.url).pathname;
 const ONLY_UPSTREAM = process.argv.includes('--upstream-only');
 

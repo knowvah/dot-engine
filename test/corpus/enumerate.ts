@@ -13,8 +13,8 @@
 // Full-render parse failures are discovered later by T2 (parse-unsupported).
 
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { homedir } from 'node:os';
 import { join, relative, dirname, basename } from 'node:path';
+import { ORACLE_CORPUS_ROOT } from './oracle-paths.mjs';
 
 /** A single classified corpus entry (interface contract consumed by T2). */
 export interface CorpusEntry {
@@ -76,7 +76,7 @@ const LINE_COMMENT = new RegExp('(^|\\n)\\s*(#|' + SLASH + SLASH + ')[^\\n]*', '
 
 /** Default corpus root; overridable via argv[2] or CORPUS_ROOT. */
 export function corpusRoot(): string {
-  return process.argv[2] ?? process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
+  return process.argv[2] ?? process.env.CORPUS_ROOT ?? ORACLE_CORPUS_ROOT;
 }
 
 /** Recursively collect `*.gv` and `*.dot` files under `dir`. */
@@ -212,6 +212,15 @@ const MANUAL_QUARANTINE: Record<string, QuarantineReason> = {
   '../doc/infosrc/record.dot': 'oracle-crash',
   '../doc/dotguide/structs.dot': 'oracle-crash',
   '../graphs/directed/structs.gv': 'oracle-crash',
+
+  // --- graphviz 16.1.1 inputs (issue #148), added 2026-11-16 -------------
+  // The ORACLE (native 16.1.1, `dot -Tsvg`) dies on SIGSEGV (exit 139) on
+  // these three, so there is no reference to compare against. Upstream knows:
+  // tests/test_regression.py marks test_2746 and test_2761 (both variants)
+  // `xfail` against graphviz issues 2746 and 2761. Re-test on an oracle bump.
+  '2746.dot': 'oracle-crash',
+  '2761.dot': 'oracle-crash',
+  '2761_1.dot': 'oracle-crash',
 };
 
 /** Build the manifest from the corpus root, ensuring unique ids. */

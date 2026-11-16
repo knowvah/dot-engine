@@ -89,7 +89,7 @@ Env: `BENCH_POOL`, `BENCH_CAP_MS`, `BENCH_IDS`, `BENCH_LIMIT`, `BENCH_HEAVY_MS`,
 
 | Variable | Default | Meaning |
 |----------|---------|---------|
-| `CORPUS_ROOT` (or `enumerate.ts` argv[1]) | `~/git/graphviz/tests` | Corpus input tree to walk. |
+| `CORPUS_ROOT` (or `enumerate.ts` argv[1]) | `~/git/graphviz-16.1.1/tests` | Corpus input tree to walk: the oracle checkout's own `tests/` (`ORACLE_CORPUS_ROOT` in `oracle-paths.mjs`). |
 | `DOT_BIN` | `~/git/graphviz-16.1.1/build/cmd/dot/dot` | Native oracle binary (16.1.1). |
 | `GVBINDIR` | `/tmp/ghl1611` for `dot`, `/tmp/ghl1611-all` for other engines | Oracle plugin dir (`oracle-paths.mjs`; build with `gen-headless-gvbindir.sh [all]`). |
 | `ORACLE_CACHE` | a `/tmp` dir | Gitignored cache of oracle SVGs (AD-3). |
@@ -128,10 +128,11 @@ classifies each with cheap structural checks (no rendering — that is T2):
 ### Current totals
 
 Run `npx tsx test/corpus/enumerate.ts` to regenerate. As of the last run over
-`~/git/graphviz/tests` (corpus 805 files):
+`~/git/graphviz-16.1.1/tests` and its sibling roots (corpus 1007 files):
 
-- **applicable: 790**
-- quarantined: `malformed` 6, `engine-deferred` 6, `multi-graph` 3
+- **applicable: 982**
+- quarantined: `engine-deferred` 7, `malformed` 6, `oracle-crash` 6,
+  `multi-graph` 3, `not-a-layout-test` 2, `perf` 1
 
 ## Verdicts (T2)
 

@@ -57,7 +57,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { homedir } from 'node:os';
-import { defaultGvbindir, ORACLE_DOT_BIN } from './oracle-paths.mjs';
+import { defaultGvbindir, ORACLE_CORPUS_ROOT, ORACLE_DOT_BIN } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareJson, type JsonDiff } from '../golden/compare-json.js';
@@ -76,7 +76,7 @@ import {
 } from './oracle-env.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
-const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
+const ROOT = process.env.CORPUS_ROOT ?? ORACLE_CORPUS_ROOT;
 const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
 const RENDER_ONE = join(REPO, 'test/corpus/render-one-json.ts');
 const PARITY = new URL('./parity.json', import.meta.url);

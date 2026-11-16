@@ -4,7 +4,15 @@
 // plans/docs-overhaul/batch-1/T2-gitlab-test-links.md).
 
 import { describe, it, expect } from 'vitest';
-import { CORPUS_GITLAB_BLOB, gitlabTestUrl, testIdLink, scrubLocalPaths } from './corpus-links.js';
+import {
+  CORPUS_GITLAB_BLOB,
+  CORPUS_GITLAB_TREE,
+  corpusRootMd,
+  gitlabTestUrl,
+  testIdLink,
+  scrubLocalPaths,
+} from './corpus-links.js';
+import { ORACLE_CORPUS_ROOT } from './oracle-paths.mjs';
 
 /** A synthetic oracle path: the scrubber matches any `.../cmd/dot/dot`, so this
  * deliberately is not the real oracle location (oracle-paths.mjs). */
@@ -47,6 +55,32 @@ describe('testIdLink', () => {
 
   it('yields inline code (no link) when no path is known', () => {
     expect(testIdLink('1447')).toBe('`1447`');
+  });
+});
+
+/** A synthetic versioned checkout, shaped like the oracle's (`graphviz-<version>/tests`);
+ * deliberately not the real corpus root (oracle-paths.mjs). */
+const VERSIONED_ROOT = '~/src/graphviz-99.9.9/tests';
+
+describe('corpusRootMd', () => {
+  it('links a versioned checkout\'s tests/ tree to gitlab', () => {
+    expect(corpusRootMd(VERSIONED_ROOT)).toBe(
+      `[graphviz \`tests/\`](${CORPUS_GITLAB_TREE}) (local clone \`${VERSIONED_ROOT}\`)`,
+    );
+  });
+
+  it('links the default corpus root', () => {
+    expect(corpusRootMd(ORACLE_CORPUS_ROOT)).toContain(`](${CORPUS_GITLAB_TREE})`);
+  });
+
+  it('links an unversioned graphviz checkout, with or without a trailing slash', () => {
+    expect(corpusRootMd('/x/graphviz/tests')).toContain(`](${CORPUS_GITLAB_TREE})`);
+    expect(corpusRootMd('/x/graphviz/tests/')).toContain(`](${CORPUS_GITLAB_TREE})`);
+  });
+
+  it('shows a custom corpus root verbatim', () => {
+    expect(corpusRootMd('/data/my-corpus')).toBe('`/data/my-corpus`');
+    expect(corpusRootMd('/x/notgraphviz/tests')).toBe('`/x/notgraphviz/tests`');
   });
 });
 

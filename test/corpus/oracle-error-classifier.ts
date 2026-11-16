@@ -29,10 +29,9 @@
 import { readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import type { EngineWalkStatus } from './engine-walk.js';
-import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
+import { ORACLE_CORPUS_ROOT, ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 
 /** One rerun attempt's raw outcome. */
 export interface AttemptOutcome {
@@ -59,7 +58,7 @@ export interface OracleErrorsReport {
 }
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
-const CORPUS_DEFAULT = join(homedir(), 'git/graphviz/tests');
+const CORPUS_DEFAULT = ORACLE_CORPUS_ROOT;
 const DOT_BIN_DEFAULT = ORACLE_DOT_BIN;
 const GVBINDIR_DEFAULT = ORACLE_GVBINDIR;
 

@@ -14,9 +14,9 @@
 // to <out.json>.d/<n>.{a,b}.txt.
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ORACLE_CORPUS_ROOT } from '../corpus/oracle-paths.mjs';
 import {
   DEFAULT_ENGINES,
   DEFAULT_FORMATS,
@@ -35,7 +35,7 @@ import {
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const JOB = path.join(HERE, 'bd-job.ts');
 const REPO = process.env.BD_REPO ?? path.resolve(HERE, '../..');
-const ROOT = path.join(os.homedir(), 'git/graphviz/tests');
+const ROOT = ORACLE_CORPUS_ROOT;
 const [bundleA = '', bundleB = '', sel = '', ...tail] = process.argv.slice(2);
 const FILE_OPT = '--file';
 const inputFile = sel === FILE_OPT ? path.resolve(tail[0] ?? '') : null;
