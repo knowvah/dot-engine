@@ -356,18 +356,21 @@ export function hasInterveningNode(rk: RankEntry, lo: number, hi: number): boole
  * `g` is the graph being laid out — C's `dot_root(tn)`, NOT `agroot(tn)`. See
  * `flatNode` above for why these differ under `pack`.
  *
+ * A self-loop is never adjacent: C's `for (i = lo + 1; i < hi; i++)` leaves
+ * `i == lo + 1` when `lo == hi`, so its `if (i == hi)` is false. dot_splines_'
+ * group loop reads the flag on loops too (dotsplines.c:366), so marking one
+ * would merge a node's loops across portcmp breaks.
+ *
  * @see lib/dotgen/flat.c:checkFlatAdjacent (rank = &GD_rank(dot_root(tn))[...])
+ * @see lib/dotgen/flat.c:checkFlatAdjacent (16.1.1) 224-236
  */
 export function checkFlatAdjacent(g: Graph, e: Edge): void {
   const tOrd = nodeOrder(e.tail);
   const hOrd = nodeOrder(e.head);
   const lo = Math.min(tOrd, hOrd);
   const hi = Math.max(tOrd, hOrd);
-  let adjacent = hi - lo <= 1;
-  if (!adjacent) {
-    adjacent = !hasInterveningNode(g.info.rank![nodeRank(e.tail)], lo, hi);
-  }
-  if (!adjacent) return;
+  if (hi <= lo) return;
+  if (hasInterveningNode(g.info.rank![nodeRank(e.tail)], lo, hi)) return;
   for (let le: Edge | undefined = e; le; le = le.info.to_virt) le.info.adjacent = 1;
 }
 
@@ -401,30 +404,48 @@ export function markAdjacent(g: Graph): void {
   }
 }
 
-export function rankHasNonAdjacentLabel(rk: RankEntry): boolean {
-  for (let i = 0; i < rk.n; i++) {
-    const fo = rk.v[i].info.flat_out;
-    if (!fo) continue;
-    for (let j = 0; j < fo.size; j++) {
-      if (isLabeledFlat(fo.list[j]) && !fo.list[j].info.adjacent) return true;
-    }
+/** True when `edges` holds a labeled edge that is not flat-adjacent.
+ *  @see lib/dotgen/flat.c:flat_edges (16.1.1, 4e50c9abd) 277-289 */
+function hasNonAdjacentLabel(edges: EdgeList | undefined): boolean {
+  if (!edges) return false;
+  for (let j = 0; j < edges.size; j++) {
+    if (isLabeledFlat(edges.list[j]) && !edges.list[j].info.adjacent) return true;
   }
   return false;
 }
 
 /**
- * AD-1: C gates this on `GD_rank(g)[0].flat || GD_n_cluster(g) > 0` and then
- * scans for a labeled non-adjacent flat edge on rank mn. In this port the
- * `rank[mn].flat` adjacency matrix is unreliable at position-time (mincross
- * builds it before `flat_out` is populated), so we detect the rank-mn labeled
- * non-adjacent flat edge directly via `flat_out` — which is the real gate. This
- * only fires for a graph with such an edge on the lowest rank (none of the 115
- * goldens have one), so it is byte-safe. @see lib/dotgen/flat.c:flat_edges 279
+ * Per node of the rank, C scans `ND_flat_in` and then `ND_other` (the scan
+ * upstream 4e50c9abd added for gitlab #2756) for a labeled non-adjacent edge.
+ * The `ND_other` scan has no rank filter and no loop filter, so a labeled
+ * self-loop counts: checkFlatAdjacent never marks one.
+ * @see lib/dotgen/flat.c:flat_edges (16.1.1, 4e50c9abd) 276-290
+ */
+export function rankHasNonAdjacentLabel(rk: RankEntry): boolean {
+  for (let i = 0; i < rk.n; i++) {
+    const n = rk.v[i];
+    if (hasNonAdjacentLabel(n.info.flat_in)) return true;
+    if (hasNonAdjacentLabel(n.info.other)) return true;
+  }
+  return false;
+}
+
+/**
+ * C's gate, `GD_rank(g)[0].flat || GD_n_cluster(g) > 0`, then the scan of the
+ * lowest rank. The matrix field is read as a flag: cleanup2 calls
+ * `free_matrix(GD_rank(g)[r].flat)` (mincross.c:864) and free_matrix
+ * (mincross.c:415-420) frees without nulling it, so here it is non-null
+ * exactly when some flat_breakcycles run on the root saw a node of the rank
+ * with a flat out-edge (FLATORDER edges included). `cleanup2Ranks` keeps the
+ * field for this read. Without the gate the `ND_other` scan would add a rank
+ * for a labeled rank-0 self-loop in a graph where C adds none.
+ * @see lib/dotgen/flat.c:flat_edges (16.1.1, 4e50c9abd) 274-291
  */
 export function needsAbomination(g: Graph): boolean {
   const mn = graphMinrank(g);
   const rank = g.info.rank;
   if (!rank || rank[mn] === undefined) return false;
+  if (rank[mn].flat === undefined && (g.info.n_cluster ?? 0) <= 0) return false;
   return rankHasNonAdjacentLabel(rank[mn]);
 }
 

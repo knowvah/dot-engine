@@ -1,0 +1,1 @@
+digraph G { ranksep="0.5 equally"; a -> a [label="loop"]; a -> b; subgraph cluster_x { b; c; } b -> c; }

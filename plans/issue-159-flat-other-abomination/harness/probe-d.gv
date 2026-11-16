@@ -1,0 +1,1 @@
+digraph G { a -> a:n [label="n"]; a -> a:s [label="s"]; a -> a; a -> b; }

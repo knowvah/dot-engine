@@ -237,7 +237,12 @@ export function cleanup2(ctx: MincrossContext, g: Graph): void {
   cleanup2Ranks(g);
 }
 
-/** @see lib/dotgen/mincross.c:cleanup2 (rank loop) */
+/**
+ * `rank[r].flat` is left set: C's `free_matrix(GD_rank(g)[r].flat)` frees the
+ * matrix without nulling the field (mincross.c:415-420), and flat_edges then
+ * reads `GD_rank(g)[0].flat` as a flag (flat.c:274, `needsAbomination`).
+ * @see lib/dotgen/mincross.c:cleanup2 (rank loop; 16.1.1 853-865)
+ */
 export function cleanup2Ranks(g: Graph): void {
   const rank = g.info.rank;
   if (!rank) return;
@@ -248,7 +253,6 @@ export function cleanup2Ranks(g: Graph): void {
       rank[r].v[i].info.order = i;
       removeFlatorderEdges(rank[r].v[i]);
     }
-    rank[r].flat = undefined;
   }
 }
 

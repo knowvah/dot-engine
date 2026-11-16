@@ -1,0 +1,30 @@
+tree-graphs-directed-train11    1 P159GATED
+2368_1    1 P159ABOM both
+2723    1 P159ABOM both
+2759    1 P159ABOM new loop
+2759_1    1 P159ABOM new loop
+2851    1 P159ABOM both
+2870_0    1 P159ABOM new loop
+2870_1    1 P159ABOM new loop
+graphs-b491    1 P159GATED
+graphs-sb_box    1 P159GATED
+graphs-sb_box_dbl    1 P159GATED
+graphs-sb_circle    1 P159GATED
+graphs-sb_circle_dbl    1 P159GATED
+graphs-sl_box    1 P159GATED
+graphs-sl_box_dbl    1 P159GATED
+graphs-sl_circle    1 P159GATED
+graphs-sl_circle_dbl    1 P159GATED
+graphs-sr_box    1 P159GATED
+graphs-sr_box_dbl    1 P159GATED
+graphs-sr_circle    1 P159GATED
+graphs-sr_circle_dbl    1 P159GATED
+graphs-st_box    1 P159GATED
+graphs-st_box_dbl    1 P159GATED
+graphs-st_circle    1 P159GATED
+graphs-st_circle_dbl    1 P159GATED
+graphs-train11    1 P159GATED
+share-b491    1 P159GATED
+share-train11    1 P159GATED
+windows-b491    1 P159GATED
+windows-train11    1 P159GATED

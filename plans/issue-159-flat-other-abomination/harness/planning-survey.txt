@@ -1,0 +1,47 @@
+# native-compare.sh base.mjs (d6636b15) cf.mjs (base + counterfactual.patch), 2026-11-16, load 3
+# json residuals predate the mission: root name (#185), cluster bb/_draw_ on 2759* (#231)
+2759 svg base=head:y base~native:0 head~native:0
+2759 xdot base=head:y base~native:0 head~native:0
+2759 plain base=head:y base~native:0 head~native:0
+2759 json base=head:y base~native:31 head~native:31
+2759 cmapx base=head:y base~native:0 head~native:0
+2759_1 svg base=head:y base~native:0 head~native:0
+2759_1 xdot base=head:y base~native:0 head~native:0
+2759_1 plain base=head:y base~native:0 head~native:0
+2759_1 json base=head:y base~native:31 head~native:31
+2759_1 cmapx base=head:y base~native:0 head~native:0
+2870_0 svg base=head:y base~native:0 head~native:0
+2870_0 xdot base=head:y base~native:0 head~native:0
+2870_0 plain base=head:y base~native:0 head~native:0
+2870_0 json base=head:y base~native:2 head~native:2
+2870_0 cmapx base=head:y base~native:0 head~native:0
+2870_1 svg base=head:y base~native:0 head~native:0
+2870_1 xdot base=head:y base~native:0 head~native:0
+2870_1 plain base=head:y base~native:0 head~native:0
+2870_1 json base=head:y base~native:2 head~native:2
+2870_1 cmapx base=head:y base~native:0 head~native:0
+2368_1 svg base=head:y base~native:0 head~native:0
+2368_1 xdot base=head:y base~native:0 head~native:0
+2368_1 plain base=head:y base~native:0 head~native:0
+2368_1 json base=head:y base~native:0 head~native:0
+2368_1 cmapx base=head:y base~native:0 head~native:0
+2723 svg base=head:y base~native:0 head~native:0 native-rc=1
+2723 xdot base=head:y base~native:0 head~native:0 native-rc=1
+2723 plain base=head:y base~native:0 head~native:0 native-rc=1
+2723 json base=head:y base~native:2 head~native:2 native-rc=1
+2723 cmapx base=head:y base~native:0 head~native:0 native-rc=1
+2851 svg base=head:y base~native:0 head~native:0
+2851 xdot base=head:y base~native:0 head~native:0
+2851 plain base=head:y base~native:0 head~native:0
+2851 json base=head:y base~native:2 head~native:2
+2851 cmapx base=head:y base~native:0 head~native:0
+graphs-sl_box svg base=head:y base~native:0 head~native:0
+graphs-sl_box xdot base=head:y base~native:0 head~native:0
+graphs-sl_box plain base=head:y base~native:0 head~native:0
+graphs-sl_box json base=head:y base~native:0 head~native:0
+graphs-sl_box cmapx base=head:y base~native:0 head~native:0
+graphs-train11 svg base=head:y base~native:0 head~native:0
+graphs-train11 xdot base=head:y base~native:0 head~native:0
+graphs-train11 plain base=head:y base~native:0 head~native:0
+graphs-train11 json base=head:y base~native:0 head~native:0
+graphs-train11 cmapx base=head:y base~native:0 head~native:0
