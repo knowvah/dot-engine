@@ -5,6 +5,8 @@
 // needed, keywords quoted, html names angle-bracketed. The refs under
 // plans/issue-167-name-canon/harness are native 16.1.0's (regen.sh). Fixtures and refs are read as
 // UTF-8: agstrcanon counts bytes, and names.gv carries a long Cyrillic name.
+// out/{names,names-ll,names-ll0,odd}.{dot,xdot} are native 16.1.1's (edges after nodes, in creation
+// order), re-captured by #149 (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 // @see lib/cgraph/write.c:write_nodename
 // @see lib/cgraph/write.c:write_hdr
 // @see lib/cgraph/write.c:write_canonstr

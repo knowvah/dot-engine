@@ -12,6 +12,8 @@
  *
  * Expected `pos` values are native graphviz 16.1.0 `-Tdot`
  * (`~/git/graphviz/build/cmd/dot/dot`, `GVBINDIR=/tmp/ghl`), 2026-11-06.
+ * The values are unchanged at 16.1.1; the order is 16.1.1's, which writes a
+ * body's edges in creation order (#149), so the first case's last two swap.
  *
  * @see lib/dotgen/dotsplines.c:make_regular_edge (hackflag)
  * @see lib/common/splines.c:beginpath, endpath (side-port clip = false)
@@ -60,8 +62,8 @@ describe('merged multi-rank edge routed through hackflag views (plantuml-ts 41)'
         + '90.267,44 97.904,32.653 104.94,13.305 91.586,13.004',
       '65.767,123.8 65.767,101.63 61.351,94.897 68.767,74 74.253,58.541 84.997,59.534 '
         + '90.267,44 94.695,30.946 105.05,13 91.267,13',
-      '78.449,120.82 99.367,84.322 134.69,13 91.267,13',
       '91.267,13 102.3,13 126.34,62.04 114.77,90.8 110.14,102.3 101.53,112.67 92.811,121',
+      '78.449,120.82 99.367,84.322 134.69,13 91.267,13',
     ]);
   });
 

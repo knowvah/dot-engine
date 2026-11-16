@@ -5,6 +5,8 @@
 #     bash plans/issue-134-echo-attr-canon/harness/regen.sh
 # NEATO_GVBINDIR: symlink build/plugin/{core,dot_layout,neato_layout}/libgvplugin_*
 # into a dir under $TMPDIR, then `GVBINDIR=<dir> <dot> -c` (.agent-notes/issue-129.md).
+# out/odd.{dot,patchwork}.{dot,xdot} are native 16.1.1's, re-captured by #149
+# (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 set -euo pipefail
 DOT=${DOT_BIN:-$HOME/git/graphviz/build/cmd/dot/dot}
 H=$(cd "$(dirname "$0")" && pwd)

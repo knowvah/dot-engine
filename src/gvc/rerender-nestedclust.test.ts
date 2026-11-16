@@ -4,6 +4,9 @@
 // gvFreeLayout between the layouts (part-11 item 129). Fixtures are native
 // 16.1.0's renders in one process (__fixtures__/rerender/regen.sh, twice.c
 // nofree).
+// nestedclust.dot.{dot,xdot}.nofree.{1,2,3} are native 16.1.1's (edges after
+// nodes, in creation order), re-captured by #149
+// (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 //
 // Layout 2 ranks e and f together and leaves every edge out of the rank
 // arrays; layout 3 ranks them apart and collects b -> c alone. Two things

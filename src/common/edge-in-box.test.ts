@@ -4,6 +4,9 @@
 // label boxes against job->clip. Native refs: plans/post-16-1-followups-11/
 // harness/T7b (regen.sh): the subg-after-free renders under fdp's settled
 // (noaddr) class, and corpus 1581 under dot.
+// noaddr/subg-<e>.<s>.{root,nofree}.xdot are native 16.1.1's (edges after
+// nodes, in creation order), re-captured by #149
+// (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 // @see lib/common/emit.c:2686 edge_in_box · lib/common/emit.c:4157 init_bb
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';

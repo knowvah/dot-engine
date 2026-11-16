@@ -7,6 +7,8 @@
 // are native 16.1.0's (regen.sh). labels/labels-ll pin the long graph and cluster labels, which
 // never went through the echo helpers. odd.gv echoes values that are html, keywords, numerals,
 // escapes and non-ascii, on subgraph bb, cluster lp/lwidth/lheight, node rects/xlp and edge keys.
+// out/odd.{dot,patchwork}.{dot,xdot} are native 16.1.1's (edges after nodes, in creation order),
+// re-captured by #149 (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 // @see lib/cgraph/write.c:_write_canonstr
 // @see lib/cgraph/write.c:write_nondefault_attrs
 // @see lib/cgraph/write.c:write_dict

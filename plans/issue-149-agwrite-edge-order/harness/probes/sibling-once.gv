@@ -1,0 +1,5 @@
+strict digraph G {
+	subgraph s1 { rank=same; a -> b; }
+	subgraph s2 { rank=same; c; a -> b; }
+	b -> c;
+}

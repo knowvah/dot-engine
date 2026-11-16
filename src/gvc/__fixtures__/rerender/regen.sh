@@ -6,6 +6,8 @@
 #   <case>.<engine>.<fmt>.nofree.<n> render n of 3, with no gvFreeLayout
 #   <case>.<engine>.<fmt>.then-<e>.2 render 2 with engine <e>
 #   <case>.<engine>.seq-<name>.<n>   render n of a twice.c seq: script, named after its formats
+# nestedclust.dot.{dot,xdot}.nofree.{1,2,3} are native 16.1.1's, re-captured by #149
+# (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 #
 # Usage: GVBINDIR=<full plugin dir> bash regen.sh
 set -eu

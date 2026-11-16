@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: EPL-2.0
 # Native 16.1.0 refs for issue #167. Run from the repo root:
 #   GVBINDIR=/tmp/ghl bash plans/issue-167-name-canon/harness/regen.sh
+# out/{names,names-ll,names-ll0,odd}.{dot,xdot} are native 16.1.1's, re-captured by #149
+# (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 set -euo pipefail
 DOT=${DOT_BIN:-$HOME/git/graphviz/build/cmd/dot/dot}
 H=$(cd "$(dirname "$0")" && pwd)

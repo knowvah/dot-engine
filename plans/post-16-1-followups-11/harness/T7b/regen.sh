@@ -6,6 +6,8 @@
 #   1581.dot.svg                      dot -Kdot -Tsvg on 1581.dot, a copy of corpus input tests/1581.dot (stock)
 #   stored-draws.<e>.<fmt>            dot and circo, xdot and dot, on stored-draws.gv (input draw attrs, stock)
 #   emit-bb.out                       emit-bb.c: arrow_bb and init_splines_bb on fixed inputs
+# stored-draws.<e>.<fmt> and noaddr/subg-<e>.<s>.{root,nofree}.xdot are native 16.1.1's,
+# re-captured by #149 (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 # Usage: bash regen.sh <scratch-dir> <stock-plugin-dir>
 set -u
 G=${G:-$HOME/git/graphviz}
