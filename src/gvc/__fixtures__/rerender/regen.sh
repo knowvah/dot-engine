@@ -8,6 +8,10 @@
 #   <case>.<engine>.seq-<name>.<n>   render n of a twice.c seq: script, named after its formats
 # nestedclust.dot.{dot,xdot}.nofree.{1,2,3} are native 16.1.1's, re-captured by #149
 # (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
+# abom-shift-pack.dot.plain.nofree.{1,2,3}, abom-shift-parity.dot.plain.nofree.{2,3},
+# flat-rev-stale.dot.plain.nofree.{1,2,3} and multi-edge.dot.{plain,svg}.nofree.{1,2,3} are native
+# 16.1.1's, re-captured by #158
+# (plans/issue-158-flat-reorder-valid-rank/harness/recapture-rerender.sh).
 #
 # Usage: GVBINDIR=<full plugin dir> bash regen.sh
 set -eu

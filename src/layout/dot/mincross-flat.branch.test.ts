@@ -557,7 +557,7 @@ describe('flatReorderBuildTemprank', () => {
     const v1 = makeNode(g, 'v1');
     const rk = makeRank([v0, v1]);
     const temprank: Node[] = [];
-    flatReorderBuildTemprank(g, rk, temprank, false);
+    expect(flatReorderBuildTemprank(g, rk, temprank, false)).toBe(true);
     expect(temprank).toEqual([v1, v0]);
   });
 
@@ -567,11 +567,11 @@ describe('flatReorderBuildTemprank', () => {
     const v1 = makeNode(g, 'v1');
     const rk = makeRank([v0, v1]);
     const temprank: Node[] = [];
-    flatReorderBuildTemprank(g, rk, temprank, true);
+    expect(flatReorderBuildTemprank(g, rk, temprank, true)).toBe(true);
     expect(temprank).toEqual([v0, v1]);
   });
 
-  it('drops a node with nonzero inCnt and unmarked state (neither push nor postorder)', () => {
+  it('reports an invalid rank on an unmarked node with nonzero inCnt (neither push nor postorder)', () => {
     const g = new Graph('g', 'directed');
     const x = makeNode(g, 'x');
     const v = makeNode(g, 'v');
@@ -581,8 +581,24 @@ describe('flatReorderBuildTemprank', () => {
     v.info.flat_in = el(eIn);
     const rk = makeRank([v]);
     const temprank: Node[] = [];
-    flatReorderBuildTemprank(g, rk, temprank, true);
+    expect(flatReorderBuildTemprank(g, rk, temprank, true)).toBe(false);
     expect(temprank).toEqual([]);
+  });
+
+  it('stops the walk at the first invalid node (C break): later nodes are never pushed', () => {
+    const g = new Graph('g', 'directed');
+    const s = makeNode(g, 's');
+    const x = makeNode(g, 'x');
+    const v = makeNode(g, 'v');
+    const w = makeNode(g, 'w');
+    markInCluster(g, x, v);
+    const eIn = makeEdge(x, v);
+    eIn.info.weight = 1; // constraining -> v's inCnt=1
+    v.info.flat_in = el(eIn);
+    const rk = makeRank([s, v, w]); // flip=true walks s, v, w
+    const temprank: Node[] = [];
+    expect(flatReorderBuildTemprank(g, rk, temprank, true)).toBe(false);
+    expect(temprank).toEqual([s]); // s was pushed; the break left w out
   });
 
   it('runs postorder (default rank 0) when unmarked with inCnt=0 and outCnt>0', () => {
@@ -596,11 +612,11 @@ describe('flatReorderBuildTemprank', () => {
     // v.info.rank left undefined -> exercises the `?? 0` default arm.
     const rk = makeRank([v]);
     const temprank: Node[] = [];
-    flatReorderBuildTemprank(g, rk, temprank, true);
+    expect(flatReorderBuildTemprank(g, rk, temprank, true)).toBe(true);
     expect(temprank).toEqual([c, v]); // postorder(v) pushes c then v
   });
 
-  it('skips postorder when v.info.mark is already set', () => {
+  it('reports an invalid rank when v.info.mark is already set (postorder skipped)', () => {
     const g = new Graph('g', 'directed');
     const v = makeNode(g, 'v');
     const c = makeNode(g, 'c');
@@ -612,7 +628,7 @@ describe('flatReorderBuildTemprank', () => {
     v.info.rank = 3; // exercises the defined arm of the `?? 0` default
     const rk = makeRank([v]);
     const temprank: Node[] = [];
-    flatReorderBuildTemprank(g, rk, temprank, true);
+    expect(flatReorderBuildTemprank(g, rk, temprank, true)).toBe(false);
     expect(temprank).toEqual([]);
   });
 });
@@ -728,6 +744,54 @@ describe('flatReorderRank', () => {
     expect(rk.v[1]).toBe(v1);
     expect(v0.info.order).toBe(10);
     expect(v1.info.order).toBe(11);
+  });
+
+  // 16.1.1 valid_rank (upstream 9fb21f570): a rank whose walk meets a node
+  // with a constraining incoming flat edge keeps mincross's order.
+  it('keeps the rank order when it holds a constraining flat edge', () => {
+    const g = new Graph('g', 'directed');
+    const a = makeNode(g, 'a');
+    const b = makeNode(g, 'b');
+    markInCluster(g, a, b);
+    const e = makeEdge(a, b);
+    e.info.weight = 1; // constraining a -> b
+    a.info.flat_out = el(e);
+    b.info.flat_in = el(e);
+    b.info.order = 0;
+    a.info.order = 1;
+    const rk = makeRank([b, a]); // b before a: 16.1.0 moved a to the left
+    const rootRank = [makeRank([])];
+    flatReorderRank(g, rk, rootRank, 0, false);
+    expect(rk.v).toEqual([b, a]);
+    expect(b.info.order).toBe(0);
+    expect(a.info.order).toBe(1);
+    expect(rootRank[0]!.valid).toBe(false);
+  });
+
+  it('does not reverse a right-to-left non-constraint flat edge on an invalid rank', () => {
+    const g = new Graph('g', 'directed');
+    const a = makeNode(g, 'a');
+    const b = makeNode(g, 'b');
+    const c = makeNode(g, 'c');
+    const d = makeNode(g, 'd');
+    markInCluster(g, a, b, c, d);
+    const eCon = makeEdge(a, b);
+    eCon.info.weight = 1; // constraining a -> b: makes the rank invalid
+    a.info.flat_out = el(eCon);
+    b.info.flat_in = el(eCon);
+    const eFree = makeEdge(d, c); // weight 0, points right-to-left
+    d.info.flat_out = el(eFree);
+    c.info.flat_in = el(eFree);
+    const rk = makeRank([a, b, c, d]);
+    [a, b, c, d].forEach((n, i) => { n.info.order = i; });
+    const rootRank = [makeRank([])];
+    flatReorderRank(g, rk, rootRank, 0, false);
+    expect(rk.v).toEqual([a, b, c, d]);
+    expect([a, b, c, d].map((n) => n.info.order)).toEqual([0, 1, 2, 3]);
+    expect(d.info.flat_out.size).toBe(1); // flatReorderFixEdges never ran
+    expect(d.info.flat_out.list[0]).toBe(eFree);
+    expect(c.info.flat_in.size).toBe(1);
+    expect(rootRank[0]!.valid).toBe(false);
   });
 });
 

@@ -55,14 +55,19 @@ describe('flatReorderRank — windowed cluster rank access (RC1)', () => {
     expect(() => layoutOf(DOT_258)).not.toThrow();
   });
 
-  it('orders the constraining flat edge faithfully: A before B in cluster_G1', () => {
-    // A -> B is a constraining flat edge inside cluster_G1, so A (tail) must
-    // precede B (head) in the rank. The windowing bug placed a virtual node in
-    // A's slot and dropped A from temprank, so this order was never computed.
+  it('keeps mincross order on the constrained rank, as native 16.1.1: B before A in cluster_G1', () => {
+    // A -> B is a constraining flat edge inside cluster_G1. Graphviz 16.1.1's
+    // valid_rank (upstream 9fb21f570, issue #158) makes flat_reorder leave
+    // such a rank as mincross ordered it, which here is B left of A; 16.1.0
+    // re-sorted it to A before B. Native 16.1.1 `-Tplain` on tests/121.dot:
+    //   node A 1.5972 0.47222 0.75 0.5 A solid ellipse black lightgrey
+    //   node B 0.59722 0.47222 0.75 0.5 B solid ellipse black lightgrey
+    // The windowing bug placed a virtual node in A's slot, so the orders must
+    // still be real ones.
     const g = layoutOf(DOT_121);
     const a = orderOf(g, 'A');
     const b = orderOf(g, 'B');
-    expect(a).toBeGreaterThanOrEqual(0);
-    expect(a).toBeLessThan(b);
+    expect(b).toBeGreaterThanOrEqual(0);
+    expect(b).toBeLessThan(a);
   });
 });

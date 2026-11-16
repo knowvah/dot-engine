@@ -132,36 +132,44 @@ describe('doOrderingNode — FLATORDER follows DOT-declaration order', () => {
 // NATIVE_* constant is native graphviz 16.1.0 `dot -Tplain` (stdout) or its
 // stderr for the source above it (plans/issue-169-node-default-ordering/
 // harness/native/).
+//
+// NATIVE_ROOT_DEFAULT_PLAIN and NATIVE_SUBGRAPH_DEFAULT_PLAIN are native
+// 16.1.1's, re-captured by issue #158 (exit 0, empty stderr). 16.1.1's
+// flat_reorder leaves a rank holding a FLATORDER edge as mincross ordered it
+// (valid_rank, upstream 9fb21f570), so both now equal
+// NATIVE_LATE_DEFAULT_PLAIN: on these inputs the drawing no longer shows
+// whether the default was applied. The FLATORDER unit test and the two
+// "not recognized" default probes below do.
 // @see lib/dotgen/mincross.c:do_ordering_for_nodes, ordered_edges
 // ---------------------------------------------------------------------------
 
 const ROOT_DEFAULT = 'digraph { node [ordering=out]; q -> p; q -> z; z -> v; p -> v; p -> u; }';
 const NATIVE_ROOT_DEFAULT_PLAIN = `graph 1 1.75 2.5
 node q 0.875 2.25 0.75 0.5 q solid ellipse black lightgrey
-node p 0.375 1.25 0.75 0.5 p solid ellipse black lightgrey
-node z 1.375 1.25 0.75 0.5 z solid ellipse black lightgrey
+node p 1.375 1.25 0.75 0.5 p solid ellipse black lightgrey
+node z 0.375 1.25 0.75 0.5 z solid ellipse black lightgrey
 node v 0.375 0.25 0.75 0.5 v solid ellipse black lightgrey
 node u 1.375 0.25 0.75 0.5 u solid ellipse black lightgrey
-edge q p 4 0.75903 2.0106 0.70034 1.8965 0.62766 1.7552 0.56138 1.6263 solid black
-edge q z 4 0.99097 2.0106 1.0497 1.8965 1.1223 1.7552 1.1886 1.6263 solid black
-edge p v 4 0.375 0.99579 0.375 0.89454 0.375 0.77398 0.375 0.66022 solid black
-edge p u 4 0.5822 1.0347 0.71896 0.9017 0.90085 0.72486 1.0559 0.57411 solid black
-edge z v 4 1.1678 1.0347 1.031 0.9017 0.84915 0.72486 0.69409 0.57411 solid black
+edge q p 4 0.99097 2.0106 1.0497 1.8965 1.1223 1.7552 1.1886 1.6263 solid black
+edge q z 4 0.75903 2.0106 0.70034 1.8965 0.62766 1.7552 0.56138 1.6263 solid black
+edge p v 4 1.1678 1.0347 1.031 0.9017 0.84915 0.72486 0.69409 0.57411 solid black
+edge p u 4 1.375 0.99579 1.375 0.89454 1.375 0.77398 1.375 0.66022 solid black
+edge z v 4 0.375 0.99579 0.375 0.89454 0.375 0.77398 0.375 0.66022 solid black
 stop
 `;
 
 const SUBGRAPH_DEFAULT = 'digraph { subgraph s { node [ordering=out]; q } q -> p; q -> z; z -> v; p -> v; p -> u; }';
 const NATIVE_SUBGRAPH_DEFAULT_PLAIN = `graph 1 1.75 2.5
 node q 0.875 2.25 0.75 0.5 q solid ellipse black lightgrey
-node p 0.375 1.25 0.75 0.5 p solid ellipse black lightgrey
-node z 1.375 1.25 0.75 0.5 z solid ellipse black lightgrey
-node v 1.375 0.25 0.75 0.5 v solid ellipse black lightgrey
-node u 0.375 0.25 0.75 0.5 u solid ellipse black lightgrey
-edge q p 4 0.75903 2.0106 0.70034 1.8965 0.62766 1.7552 0.56138 1.6263 solid black
-edge q z 4 0.99097 2.0106 1.0497 1.8965 1.1223 1.7552 1.1886 1.6263 solid black
-edge p v 4 0.5822 1.0347 0.71896 0.9017 0.90085 0.72486 1.0559 0.57411 solid black
-edge p u 4 0.375 0.99579 0.375 0.89454 0.375 0.77398 0.375 0.66022 solid black
-edge z v 4 1.375 0.99579 1.375 0.89454 1.375 0.77398 1.375 0.66022 solid black
+node p 1.375 1.25 0.75 0.5 p solid ellipse black lightgrey
+node z 0.375 1.25 0.75 0.5 z solid ellipse black lightgrey
+node v 0.375 0.25 0.75 0.5 v solid ellipse black lightgrey
+node u 1.375 0.25 0.75 0.5 u solid ellipse black lightgrey
+edge q p 4 0.99097 2.0106 1.0497 1.8965 1.1223 1.7552 1.1886 1.6263 solid black
+edge q z 4 0.75903 2.0106 0.70034 1.8965 0.62766 1.7552 0.56138 1.6263 solid black
+edge p v 4 1.1678 1.0347 1.031 0.9017 0.84915 0.72486 0.69409 0.57411 solid black
+edge p u 4 1.375 0.99579 1.375 0.89454 1.375 0.77398 1.375 0.66022 solid black
+edge z v 4 0.375 0.99579 0.375 0.89454 0.375 0.77398 0.375 0.66022 solid black
 stop
 `;
 
@@ -192,6 +200,13 @@ stop
 const NATIVE_BAD_NODE_DEFAULT_ERR = `Error: ordering 'bogus' not recognized for node 'q'.
 Error: ordering 'bogus' not recognized for node 'p'.
 Error: ordering 'bogus' not recognized for node 'z'.
+`;
+
+// Native 16.1.1, captured by issue #158 (exit 1): the default reaches `q`
+// alone, and C reports it twice.
+const BAD_SUBGRAPH_DEFAULT = 'digraph { subgraph s { node [ordering=bogus]; q } q -> p; q -> z; }';
+const NATIVE_BAD_SUBGRAPH_DEFAULT_ERR = `Error: ordering 'bogus' not recognized for node 'q'.
+Error: ordering 'bogus' not recognized for node 'q'.
 `;
 
 const BAD_NODE_OWN = 'digraph { q [ordering=bogus]; q -> p; q -> z; }';
@@ -284,6 +299,12 @@ describe('node-default ordering (issue #169)', () => {
   it('reports an unrecognised node default once per node, in node order', () => {
     expect(renderPlain(BAD_NODE_DEFAULT)).toEqual({
       out: NATIVE_BAD_NODE_DEFAULT_PLAIN, err: NATIVE_BAD_NODE_DEFAULT_ERR,
+    });
+  });
+
+  it('reports an unrecognised subgraph-scoped default for the node declared there only', () => {
+    expect(renderPlain(BAD_SUBGRAPH_DEFAULT)).toEqual({
+      out: NATIVE_BAD_NODE_DEFAULT_PLAIN, err: NATIVE_BAD_SUBGRAPH_DEFAULT_ERR,
     });
   });
 

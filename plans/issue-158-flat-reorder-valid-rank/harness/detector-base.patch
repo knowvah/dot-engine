@@ -1,0 +1,62 @@
+--- a/src/layout/dot/mincross-flat.ts	2026-11-16 14:33:50
++++ det-a/src/layout/dot/mincross-flat.ts	2026-11-16 14:45:30
+@@ -150,6 +150,7 @@
+   list.push(v);
+ }
+ 
++let flatReorderFixEdgesTouched = false;
+ // flat_reorder — @see lib/dotgen/mincross.c:flat_reorder
+ export function flatReorderBuildTemprank(g: Graph, rk: RankEntry, temprank: Node[], flip: boolean): void {
+   for (let i = 0; i < rk.n; i++) {
+@@ -173,6 +174,7 @@
+       const tOrd = e.tail.info.order !== undefined ? e.tail.info.order : 0;
+       const shouldRev = (!flip && hOrd < tOrd) || (flip && hOrd > tOrd);
+       if (shouldRev) {
++        flatReorderFixEdgesTouched = true;
+         deleteFlatEdge(e);
+         flatRev(g, e);
+       } else { j++; }
+@@ -189,13 +191,30 @@
+   for (let i = 0; i < rk.n; i++) rankGet(rk, i).info.mark = 0;
+   const temprank: Node[] = [];
+   flatReorderBuildTemprank(g, rk, temprank, flip);
++  // P158 detector: would 16.1.1's valid_rank bail on this rank?
++  let p158Invalid = false;
++  for (let i = 0; i < rk.n; i++) {
++    const v = rankGet(rk, i);
++    if (v.info.flat_in !== undefined && countConstraining(g, v.info.flat_in) > 0) { p158Invalid = true; break; }
++  }
+   if (temprank.length > 0) {
+     if (!flip) temprank.reverse();
++    const before: Node[] = [];
++    for (let i = 0; i < rk.n; i++) before.push(rankGet(rk, i));
+     for (let i = 0; i < rk.n; i++) {
+       rankSet(rk, i, temprank[i]!);
+       temprank[i]!.info.order = i + baseOrder;
+     }
++    const moved = before.some((v, i) => v !== rankGet(rk, i));
++    let flatCount = 0;
++    for (let i = 0; i < rk.n; i++) flatCount += rankGet(rk, i).info.flat_out?.size ?? 0;
+     flatReorderFixEdges(g, rk, flip);
++    let flatAfter = 0;
++    for (let i = 0; i < rk.n; i++) flatAfter += rankGet(rk, i).info.flat_out?.size ?? 0;
++    if (p158Invalid && (moved || flatCount !== flatAfter || flatReorderFixEdgesTouched)) {
++      console.error(`P158MOVE r=${r} moved=${moved} fix=${flatReorderFixEdgesTouched}`);
++    }
++    flatReorderFixEdgesTouched = false;
+   }
+   rootRank[r].valid = false;
+ }
+--- a/src/layout/dot/splines-flat-multi.ts	2026-11-16 14:33:50
++++ det-a/src/layout/dot/splines-flat-multi.ts	2026-11-16 14:44:41
+@@ -107,6 +107,10 @@
+     x => sharesPair(x) && isNonAdjGroupable(x, g) && samePortsAs(x, lo, key)
+       && x.info.label === e.info.label);
+   group.sort((a, b) => Number(b.tail === lo) - Number(a.tail === lo) || a.seq - b.seq);
++  const bySeq = [...group].sort((a, b) => a.seq - b.seq);
++  if (group.length > 1 && group.some((x, i) => x !== bySeq[i])) {
++    console.error(`P158SORT ${group.map((x) => `${x.tail.name}->${x.head.name}#${x.seq}`).join(' ')}`);
++  }
+   return group;
+ }
+ 

@@ -78,26 +78,36 @@ const REV_EDGES = 'b:n -> a:n; b:s -> a:s;';
 const LABEL_EDGES = 'a:n -> b:n [label=x]; a:s -> b:s [label=y];';
 
 /**
- * The variants of the issue-130 brief, each with the aux ranks native 16.1.0
+ * The variants of the issue-130 brief, each with the aux ranks native 16.1.1
  * prints for it, one entry per make_flat_adj_edges call.
  *
  * Native values: an instrumented copy of the oracle's dot_layout plugin
  * (`fprintf` of agnameof/ND_rank of auxt and auxh, GD_minset, GD_minrank,
  * GD_maxrank and GD_has_flat_edges of auxg, just before cleanupCloneGraph),
- * run by the unmodified 16.1.0 `dot -Tdot`.
+ * run by the unmodified 16.1.1 `dot -Tdot`.
  * One `I130` line per call; every variant makes one call. The plugin without
  * the trace renders every variant byte-identically to the oracle.
+ *
+ * Re-captured from 16.1.1 by issue #158
+ * (plans/issue-158-flat-reorder-valid-rank/harness/native-i130.sh). V1-V7 and
+ * V10 are as 16.1.0 printed them. V8, V9 and V11 changed: 16.1.1's
+ * flat_reorder leaves a rank with a constraining flat edge as mincross
+ * ordered it (valid_rank, upstream 9fb21f570), which swaps the main graph's
+ * `a` and `b`, and so auxt and auxh.
  */
 const A_THEN_B: NativeAux = {
   auxt: 'a', auxtRank: 0, auxh: 'b', auxhRank: 1, maxrank: 1, hasFlatEdges: false,
 };
-const B_THEN_A: NativeAux = { ...A_THEN_B, auxt: 'b', auxh: 'a' };
 // edgelabel_ranks doubles the aux minlen, so the labelled edge spans two ranks.
 const A_THEN_B_LABEL: NativeAux = { ...A_THEN_B, auxhRank: 2, maxrank: 2 };
 // A node `ordering` makes ordered_edges add FLATORDER edges between the label
 // vnodes. C's ordered_edges recurses into `xxx`, so for auxt it calls
 // flat_edge(xxx, ...), which flags dot_root(xxx) = auxg as well.
 const A_THEN_B_ORDERED: NativeAux = { ...A_THEN_B_LABEL, hasFlatEdges: true };
+// V11 at 16.1.1: `b`, the node with the `ordering=in`, is auxt, and native
+// prints the aux root's flat-edge flag clear (`hasflat=0`; 16.1.0 had `a` as
+// auxt and the flag set).
+const B_THEN_A_LABEL: NativeAux = { ...A_THEN_B_LABEL, auxt: 'b', auxh: 'a' };
 
 const VARIANTS: ReadonlyArray<{ name: string; src: string; native: NativeAux[] }> = [
   { name: 'V1 w4', src: `digraph { ${SAME} ${W4_EDGES} }`, native: [A_THEN_B] },
@@ -117,8 +127,8 @@ const VARIANTS: ReadonlyArray<{ name: string; src: string; native: NativeAux[] }
     src: `digraph { newrank=true; ${SAME} a:n -> b:n; a:s -> b:s; }`,
     native: [A_THEN_B],
   },
-  { name: 'V8 rev', src: `digraph { ${SAME} ${REV_EDGES} }`, native: [B_THEN_A] },
-  { name: 'V9 rev-lr', src: `digraph { rankdir=LR; ${SAME} ${REV_EDGES} }`, native: [B_THEN_A] },
+  { name: 'V8 rev', src: `digraph { ${SAME} ${REV_EDGES} }`, native: [A_THEN_B] },
+  { name: 'V9 rev-lr', src: `digraph { rankdir=LR; ${SAME} ${REV_EDGES} }`, native: [A_THEN_B] },
   {
     name: 'V10 auxt-ordering',
     src: `digraph { a [ordering=out]; ${SAME} ${LABEL_EDGES} }`,
@@ -127,7 +137,7 @@ const VARIANTS: ReadonlyArray<{ name: string; src: string; native: NativeAux[] }
   {
     name: 'V11 auxh-ordering',
     src: `digraph { b [ordering=in]; ${SAME} ${LABEL_EDGES} a -> b; }`,
-    native: [A_THEN_B_ORDERED],
+    native: [B_THEN_A_LABEL],
   },
 ];
 

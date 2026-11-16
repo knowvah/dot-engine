@@ -89,9 +89,17 @@ function samePortsAs(x: Edge, lo: Node, key: { loP: Port; hiP: Port }): boolean 
 
 /**
  * Collect all unrouted non-adjacent same-rank side-port flat edges between e's
- * endpoints that share e's tail/head ports (C portcmp), ordered so group[0].tail
- * is the lower-order (left) node, ties by seq (AD-3). Mirrors edge-route.ts:
- * collectAdjacentFlatGroup with the non-adjacent + identical-port group key.
+ * endpoints that share e's tail/head ports (C portcmp), in C's edgecmp order.
+ * Inside one make_flat_edge run every edgecmp key before the last is equal
+ * (same main edge, so the same rank and x difference; the same ports through
+ * makefwdedge; the same graph type and label), so the order is AGSEQ's,
+ * whichever node is on the left. make_flat_edge gives edge i the (i+1)-th
+ * route out. This follows C where "left tail first" differed from it
+ * (nonadjacent-flat-multi AD-3: "if C's order differs, follow C"; issue #158,
+ * 700813). `lo` keys the port match only, not the order. Mirrors
+ * edge-route.ts: collectAdjacentFlatGroup with the non-adjacent +
+ * identical-port group key.
+ * @see lib/dotgen/dotsplines.c:edgecmp
  * @see lib/dotgen/dotsplines.c:dot_splines_ (portcmp 370-373), make_flat_edge
  */
 export function collectNonAdjacentFlatGroup(e: Edge, g: Graph): Edge[] {
@@ -106,7 +114,7 @@ export function collectNonAdjacentFlatGroup(e: Edge, g: Graph): Edge[] {
   const group = g.edges.filter(
     x => sharesPair(x) && isNonAdjGroupable(x, g) && samePortsAs(x, lo, key)
       && x.info.label === e.info.label);
-  group.sort((a, b) => Number(b.tail === lo) - Number(a.tail === lo) || a.seq - b.seq);
+  group.sort((a, b) => a.seq - b.seq);
   return group;
 }
 
