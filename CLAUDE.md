@@ -40,6 +40,11 @@ hypothesizing — the default stance is "my port differs — find where."
   engines). Byte-exactness is not required; structural match is progress.
 - Gates before any commit: `tsc --noEmit` clean, `npm test` green, golden
   cross-product monotonic, corpus sweep with **0 regressions**.
+- Gate before opening a PR: `npm run codeql:gate` exits 0. It runs GitHub's
+  code-scanning setup locally (same 4 languages and suites) on the committed
+  HEAD. A false positive goes in `.github/codeql/dismissed.json` (rule, path,
+  message, reason) only with the maintainer's agreement; never change code just
+  to silence a finding.
 - Sweep discipline: never edit `src/` while a sweep runs (it reads live
   source). Resume-style sweeps skip once-passing ids and hide regressions —
   run a fresh (deleted-JSONL) sweep before committing routing changes.
