@@ -288,6 +288,9 @@ function adjust(g: Graph, temp: number, pp: Bport[] | null): void {
 
 /**
  * Lay out one derived component g, respecting its boundary ports.
+ * The pinned-node centre ctr is added back to every node unconditionally,
+ * as in 16.1.1 (upstream 3135d895a): a -0 coordinate becomes +0 when ctr
+ * is zero.
  * @see lib/fdpgen/tlayout.c:fdp_tLayout
  */
 export function fdpTLayout(g: Graph, xpms: XParams): void {
@@ -308,11 +311,9 @@ export function fdpTLayout(g: Graph, xpms: XParams): void {
     }
   }
 
-  if (ctr.x !== 0.0 || ctr.y !== 0.0) {
-    for (const n of g.nodes.values()) {
-      n.info.pos![0]! += ctr.x;
-      n.info.pos![1]! += ctr.y;
-    }
+  for (const n of g.nodes.values()) {
+    n.info.pos![0]! += ctr.x;
+    n.info.pos![1]! += ctr.y;
   }
   if (reset) resetParams();
 }
