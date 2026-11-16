@@ -261,10 +261,16 @@ export function lrRankPair(g: Graph, r: number, u: Node, v: Node, last: number):
   return next;
 }
 
-/** @see lib/dotgen/position.c:make_LR_constraints (per-rank inner loop) */
+/**
+ * 16.1.1 skips a rank with no leader (`rank[i].v[0] == NULL` → `continue`).
+ * The per-rank body is its own function here, so C's `continue` is a `return`.
+ * @see lib/dotgen/position.c:make_LR_constraints (per-rank inner loop;
+ *   16.1.1 :240-243, d49e3a529 "anticipate empty ranks")
+ */
 export function makeLrRankConstraints(g: Graph, r: number): void {
   const rank = g.info.rank!;
   const rk = rank[r];
+  if (rk.v[0] == null) return;
   let last = 0;
   for (let j = 0; j < rk.n; j++) {
     const u = rk.v[j];

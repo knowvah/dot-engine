@@ -23,7 +23,7 @@ import { NORMAL, VIRTUAL } from './fastgr.js';
 import {
   rankNormalXRange, computeBbRootX, scaleBb,
   aspectFillScale, aspectExpandScale, aspectValueScale, aspectScaleFactors,
-  setAspect, placeGraphLabel,
+  setAspect, placeGraphLabel, dotComputeBb,
 } from './position-bbox.js';
 
 // ---------------------------------------------------------------------------
@@ -98,6 +98,59 @@ describe('rankNormalXRange', () => {
       get n() { calls++; return calls === 1 ? 1 : 0; },
     };
     expect(rankNormalXRange(rk)).toEqual([5, -2147483647]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// dotComputeBb: UR.y with an empty min rank (graphviz 16.1.1, issue #160)
+// ---------------------------------------------------------------------------
+
+// Upstream 8e06a6261 "dot_compute_bb: anticipate min rank being empty": UR.y
+// comes from the first rank in minrank..maxrank of the root's rank array with
+// `n != 0` and a non-NULL leader. LL.y still reads the max rank unguarded.
+// @see lib/dotgen/position.c:dot_compute_bb (16.1.1, :885-894)
+describe('dotComputeBb with an empty min rank (16.1.1)', () => {
+  /** A cluster spanning root ranks 0..2 (ht1 5, ht2 7, ln/rn at x 10/90). */
+  function clusterOver(root: Graph, ranks: RankEntry[]): Graph {
+    const g = new Graph('clust', 'directed');
+    g.info.dotroot = root;
+    root.info.minrank = 0;
+    root.info.maxrank = 2;
+    root.info.rank = ranks;
+    g.info.minrank = 0;
+    g.info.maxrank = 2;
+    g.info.ht1 = 5;
+    g.info.ht2 = 7;
+    g.info.ln = { info: { rank: 10 } } as unknown as Node;
+    g.info.rn = { info: { rank: 90 } } as unknown as Node;
+    return g;
+  }
+  function leaderRank(root: Graph, y: number): RankEntry {
+    const n = makeNode(root, NORMAL, 0);
+    n.info.coord = { x: 0, y };
+    return { ...makeRankEntry(), v: [n], n: 1 };
+  }
+
+  it('takes UR.y from the next non-empty rank when the min rank has n === 0', () => {
+    const root = makeTestGraph();
+    const g = clusterOver(root, [makeRankEntry(), leaderRank(root, 50), leaderRank(root, 10)]);
+    dotComputeBb(g, root);
+    expect(g.info.bb).toEqual({ ll: { x: 10, y: 5 }, ur: { x: 90, y: 57 } });
+  });
+
+  it('skips a rank whose leader is null although n > 0', () => {
+    const root = makeTestGraph();
+    const noLeader = { ...makeRankEntry(), v: [null as unknown as Node], n: 1 };
+    const g = clusterOver(root, [makeRankEntry(), noLeader, leaderRank(root, 10)]);
+    dotComputeBb(g, root);
+    expect(g.info.bb).toEqual({ ll: { x: 10, y: 5 }, ur: { x: 90, y: 17 } });
+  });
+
+  it('still reads the min rank when it has a leader', () => {
+    const root = makeTestGraph();
+    const g = clusterOver(root, [leaderRank(root, 90), leaderRank(root, 50), leaderRank(root, 10)]);
+    dotComputeBb(g, root);
+    expect(g.info.bb).toEqual({ ll: { x: 10, y: 5 }, ur: { x: 90, y: 97 } });
   });
 });
 

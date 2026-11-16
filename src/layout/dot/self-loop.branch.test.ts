@@ -137,3 +137,68 @@ describe('computeSizey', () => {
     expect(computeSizey(g, n)).toBe(40);
   });
 });
+
+// Graphviz 16.1.1 tests the neighbouring rank's leader for NULL before it
+// reads it (upstream ca3353d80 "anticipate an empty rank above", 1a77ac9df
+// "anticipate an empty rank below"; issue #160). An empty rank has `v[0]`
+// absent (`v` is `[]`) or null in the port; both stand for C's `v[0] == NULL`.
+// @see lib/dotgen/dotsplines.c:dot_splines_ (16.1.1, :399-411)
+describe('computeSizey with an empty neighbouring rank (16.1.1)', () => {
+  /** Ranks 0..2 with `n` on rank 1; `above`/`below` are the leaders' y. */
+  function midGraph(above: number | null, below: number | null): { g: Graph; n: Node } {
+    const g = new Graph('g', 'directed');
+    const leader = (y: number | null): Node[] => {
+      if (y === null) return [];
+      const v = makeNode(g);
+      v.info.coord = { x: 0, y };
+      return [v];
+    };
+    const n = makeNode(g);
+    n.info.rank = 1;
+    n.info.coord = { x: 0, y: 60 };
+    n.info.ht = 36;
+    g.info.rank = [makeRankEntry(leader(above)), makeRankEntry([n]), makeRankEntry(leader(below))];
+    g.info.minrank = 0;
+    g.info.maxrank = 2;
+    return { g, n };
+  }
+
+  it('takes the max-rank branch when rank r+1 is empty and r is not the max rank', () => {
+    const { g, n } = midGraph(100, null);
+    // C: `r == GD_maxrank(g) || GD_rank(g)[r + 1].v[0] == NULL`, then
+    // `r > 0 && GD_rank(g)[r - 1].v[0] != NULL`: rank[0].y - n.y = 100 - 60.
+    expect(computeSizey(g, n)).toBe(40);
+  });
+
+  it('gives ND_ht when rank r+1 and rank r-1 are both empty', () => {
+    const { g, n } = midGraph(null, null);
+    expect(computeSizey(g, n)).toBe(36);
+  });
+
+  it('takes the min-rank branch when rank r-1 is empty and r is not the min rank', () => {
+    const { g, n } = midGraph(null, 20);
+    // C: `r == GD_minrank(g) || GD_rank(g)[r - 1].v[0] == NULL`:
+    // n.y - rank[2].y = 60 - 20.
+    expect(computeSizey(g, n)).toBe(40);
+  });
+
+  it('gives ND_ht at the max rank when rank r-1 is empty', () => {
+    const g = new Graph('g', 'directed');
+    const n = makeNode(g);
+    n.info.rank = 1;
+    n.info.coord = { x: 0, y: 60 };
+    n.info.ht = 36;
+    g.info.rank = [makeRankEntry([]), makeRankEntry([n])];
+    g.info.minrank = 0;
+    g.info.maxrank = 1;
+    expect(computeSizey(g, n)).toBe(36);
+  });
+
+  it('reads a null leader (v[0] === null) as an empty rank too', () => {
+    const { g, n } = midGraph(100, null);
+    g.info.rank![2].v = [null as unknown as Node];
+    expect(computeSizey(g, n)).toBe(40);
+    g.info.rank![0].v = [null as unknown as Node];
+    expect(computeSizey(g, n)).toBe(36);
+  });
+});

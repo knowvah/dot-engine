@@ -388,6 +388,66 @@ describe('setYcoordsInitial', () => {
     expect(g.info.rank[0].v.length).toBe(0);
   });
 
+  // Graphviz 16.1.1 (upstream 9fca64d0f "set_ycoords: anticipate empty
+  // ranks", issue #160): rank r's leader is assigned only when rank r+1 has
+  // one. @see lib/dotgen/position.c:set_ycoords (16.1.1, :793-797)
+  it('leaves the leader above an empty rank where it was (16.1.1)', () => {
+    const g = makeTestGraph();
+    g.info.minrank = 0;
+    g.info.maxrank = 3;
+    g.info.ranksep = 20;
+    const top = makeNode(g, 99);
+    const mid = makeNode(g, 77);
+    const bottom = makeNode(g, 55);
+    const sized = { ht1: 5, ht2: 5, pht1: 5, pht2: 5 };
+    g.info.rank = [
+      makeRankEntry({ v: [top], n: 1, ...sized }),
+      makeRankEntry({ v: [mid], n: 1, ...sized }),
+      makeRankEntry(), // empty: n 0, v[0] absent
+      makeRankEntry({ v: [bottom], n: 1, ...sized }),
+    ];
+    setYcoordsInitial(g, false);
+    expect(bottom.info.coord.y).toBe(5); // anchored at rank[maxR].ht1
+    expect(mid.info.coord.y).toBe(77); // rank 2 has no leader: not written
+    expect(top.info.coord.y).toBe(107); // 77 + max(5+5+20, 5+5+8)
+  });
+
+  it('reads a null leader below (v[0] === null) as an empty rank (16.1.1)', () => {
+    const g = makeTestGraph();
+    g.info.minrank = 0;
+    g.info.maxrank = 2;
+    g.info.ranksep = 20;
+    const top = makeNode(g, 99);
+    const bottom = makeNode(g, 55);
+    const sized = { ht1: 5, ht2: 5, pht1: 5, pht2: 5 };
+    g.info.rank = [
+      makeRankEntry({ v: [top], n: 1, ...sized }),
+      makeRankEntry({ v: [null as unknown as Node] }),
+      makeRankEntry({ v: [bottom], n: 1, ...sized }),
+    ];
+    setYcoordsInitial(g, false);
+    expect(bottom.info.coord.y).toBe(5);
+    expect(top.info.coord.y).toBe(99);
+  });
+
+  // C leaves the exact_ranksep re-assign (position.c:828-830) unguarded, and
+  // native 16.1.1 crashes there (corpus 2761, quarantined oracle-crash). The
+  // port keeps its throw (issue #160, AD-1).
+  it('still throws in the unguarded exact_ranksep re-assign over an empty rank', () => {
+    const g = makeTestGraph();
+    g.info.minrank = 0;
+    g.info.maxrank = 2;
+    g.info.ranksep = 20;
+    g.info.exact_ranksep = true;
+    const sized = { ht1: 5, ht2: 5, pht1: 5, pht2: 5 };
+    g.info.rank = [
+      makeRankEntry({ v: [makeNode(g, 99)], n: 1, ...sized }),
+      makeRankEntry(),
+      makeRankEntry({ v: [makeNode(g, 55)], n: 1, ...sized }),
+    ];
+    expect(() => setYcoordsInitial(g, false)).toThrow(TypeError);
+  });
+
   it('recomputes maxht and re-spaces ranks when lbl/flip/exact_ranksep all apply', () => {
     const g = makeTestGraph();
     g.info.minrank = 0;

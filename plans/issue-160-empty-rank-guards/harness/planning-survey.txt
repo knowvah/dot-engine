@@ -1,0 +1,12 @@
+# planning survey: base bd5ddf75 vs cf (base + counterfactual.patch), native 16.1.1, 2026-11-16
+# bash native-compare.sh <base.mjs> <cf.mjs> survey-ids.txt <out>
+2759 svg base=head:n base~native:58 head~native:0
+2759 xdot base=head:n base~native:64 head~native:0
+2759 plain base=head:n base~native:11 head~native:0
+2759 json base=head:n base~native:605 head~native:31 toward:FAIL a=1 b=0
+2759 cmapx base=head:n base~native:3 head~native:0
+2759_1 svg base=head:n base~native:58 head~native:0
+2759_1 xdot base=head:n base~native:57 head~native:0
+2759_1 plain base=head:n base~native:11 head~native:0
+2759_1 json base=head:n base~native:581 head~native:31 toward:FAIL a=1 b=0
+2759_1 cmapx base=head:n base~native:3 head~native:0

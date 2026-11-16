@@ -1,0 +1,3 @@
+# gate 6 ids: every applicable id the planning detector hit (detector.sh --all)
+2759
+2759_1

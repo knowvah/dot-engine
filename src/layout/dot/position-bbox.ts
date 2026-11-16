@@ -82,7 +82,20 @@ export function dotComputeBb(g: Graph, root: Graph): void {
   }
   const rankArr = root.info.rank!;
   const lly = rankArr[graphMaxrank(g)].v[0].info.coord.y - graphHt1(g);
-  const ury = rankArr[graphMinrank(g)].v[0].info.coord.y + graphHt2(g);
+  // 16.1.1 takes UR.y from the first rank that is not empty, where 16.1.0 read
+  // the min rank's leader outright. C leaves UR.y uninitialised when no rank
+  // qualifies; that cannot be read here, because LL.y above has already
+  // dereferenced the max rank's leader, so at least the max rank qualifies
+  // whenever its `n` is nonzero. NaN marks the value as never meant to be used.
+  // @see lib/dotgen/position.c:dot_compute_bb (16.1.1 :885-894, 8e06a6261
+  //   "anticipate min rank being empty")
+  let ury = Number.NaN;
+  for (let r = graphMinrank(g); r <= graphMaxrank(g); ++r) {
+    if (rankArr[r].n === 0) continue;
+    if (rankArr[r].v[0] == null) continue;
+    ury = rankArr[r].v[0].info.coord.y + graphHt2(g);
+    break;
+  }
   g.info.bb = { ll: { x: llx, y: lly }, ur: { x: urx, y: ury } };
 }
 
