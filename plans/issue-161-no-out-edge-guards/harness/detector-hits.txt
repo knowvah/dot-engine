@@ -1,0 +1,27 @@
+# Planning detector hits, base c55b4c66, all 982 applicable ids, -Kdot -Tplain, 60 s cap.
+# native = detector-native.sh (16.1.1 + detector-native.patch); port = detector.sh (cf + markers).
+# <id> <count> <marker>
+## native
+2765    1 P161CLB
+2765    1 P161MRE null sl=0
+2765    1 P161MRE out0 smode=0
+2765    1 P161RS b
+2765    1 P161SL
+2765_1    1 P161CLB
+2765_1    1 P161MRE null sl=0
+2765_1    1 P161MRE out0 smode=0
+2765_1    1 P161RS b
+2765_1    1 P161SL
+## port
+2765    1 P161CLB
+2765    1 P161MR deadend
+2765    1 P161MRE null
+2765    1 P161MRE out0
+2765    1 P161RS b
+2765    1 P161SL
+2765_1    1 P161CLB
+2765_1    1 P161MR deadend
+2765_1    1 P161MRE null
+2765_1    1 P161MRE out0
+2765_1    1 P161RS b
+2765_1    1 P161SL

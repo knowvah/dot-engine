@@ -13,7 +13,7 @@
 
 import type { Graph } from '../../model/graph.js';
 import type { Edge as GraphEdge } from '../../model/edge.js';
-import type { Point, Box, Port } from '../../model/geom.js';
+import type { Point, Box } from '../../model/geom.js';
 import type { Node } from '../../model/node.js';
 import { VIRTUAL, NORMAL } from './fastgr.js';
 import type { NodeBox } from './edge-route-geom.js';
@@ -24,10 +24,13 @@ import { beginPath } from '../../common/splines-path-begin.js';
 import { endPath } from '../../common/splines-path-end.js';
 import { routeRegularByType } from './splines-route-type.js';
 import { edgeType, EDGETYPE_LINE, resolveOrigEdge, swapEndsP, swapEdgeSpline } from './splines.js';
+import { chainEnds, makeFwdEdge } from './edge-route-chain-views.js';
 import { clipAndInstall } from '../../common/splines-clip.js';
 import { buildDotSinfo } from './self-loop.js';
 import { TOP, BOTTOM, REGULAREDGE } from '../../common/splines-constants.js';
-import { splineMerge, makeLineEdge, resizeVn, straightLen, straightPath } from './splines-route.js';
+import {
+  splineMerge, makeLineEdge, resizeVn, straightLen, straightPath, nodeOutSize,
+} from './splines-route.js';
 import { EDGE_LABEL } from './rank.js';
 import type { RankEntry } from '../../model/rankEntry.js';
 import { rankHt } from './edge-route-rank.js';
@@ -36,6 +39,9 @@ import {
   maximalBbox, appendRegularEnd, freshEndp, rankBox, completeRegularPath,
   type BboxCtx,
 } from './edge-route-faithful.js';
+
+// Re-export so callers that imported the forward view from this module keep working.
+export { makeFwdEdge } from './edge-route-chain-views.js';
 
 // ---------------------------------------------------------------------------
 // Faithful multi-rank side-port routing (make_regular_edge hackflag path)
@@ -83,6 +89,27 @@ function chainPathArgs(P: Path, e: GraphEdge, endp: PathendT, merge: boolean, ra
 /** True when n is a non-merged virtual chain node (the C while-loop guard). */
 function isChainVirtual(n: Node): boolean {
   return (n.info.node_type ?? NORMAL) === VIRTUAL && !splineMerge(n);
+}
+
+/**
+ * True when n is a chain vnode with no out edge: where graphviz 16.1.1's
+ * make_regular_edge closes the path and drops the edge. `concentrate` leaves
+ * such a node at the end of an edge's `ED_to_virt` chain when it orphans the
+ * chain's first vnode (upstream issue 2765).
+ * @see lib/dotgen/dotsplines.c:make_regular_edge (16.1.1, 4f9ef1d9e)
+ */
+function isChainDeadEnd(n: Node): boolean {
+  return isChainVirtual(n) && nodeOutSize(n) === 0;
+}
+
+/**
+ * True when the collected chain is one C routes: it reaches `end`, the real
+ * node at its far side, or it stops at a dead end. A chain that stops anywhere
+ * else is declined.
+ */
+function chainEndsAt(segs: GraphEdge[], end: Node): boolean {
+  const tip = segs[segs.length - 1].head;
+  return tip === end || isChainDeadEnd(tip);
 }
 
 /**
@@ -186,6 +213,27 @@ function closeSmodeSeg(w: ChainWalk, segs: GraphEdge[], ci: number, sl: number, 
   return next;
 }
 
+/**
+ * Close the path at `segs[ei].head`, a chain vnode with no out edge, and drop
+ * the edge. 16.1.1 fails the loop body's `ND_out(hn).size > 0` test there and
+ * falls into the segment close with `ND_out(hn).list[0]` NULL: maximal_bbox
+ * (cl_bound takes the node's own cluster), endpath on the current edge with
+ * the end slope constrained, then the route. `straight_path(NULL, sl)` gives
+ * no next edge, so after recover_slack make_regular_edge returns before any
+ * clip_and_install. `sl` is always 0 here: straight_len of a node with no out
+ * edge is 0, so smode is never entered at a dead end. C's current edge is the
+ * one beginpath took until the walk has advanced. Always null: the route is
+ * discarded, and a failed route returns before recover_slack (C's `pn == 0`).
+ * @see lib/dotgen/dotsplines.c:make_regular_edge (16.1.1, 4f9ef1d9e, a79e42588)
+ */
+function closeDeadEnd(
+  w: ChainWalk, beginEdge: GraphEdge, segs: GraphEdge[], ei: number, segFirst: number,
+): null {
+  if (!endSeg(w, ei === 0 ? beginEdge : segs[ei], segs[ei], undefined, true)) return null;
+  recoverSlack(segs.slice(segFirst), w.P);
+  return null;
+}
+
 /** Route the final (post-loop) chain segment, ending at the real head node. */
 function finishChain(
   w: ChainWalk, portEdge: GraphEdge, lastEdge: GraphEdge, segFirst: number, segs: GraphEdge[],
@@ -203,7 +251,8 @@ function finishChain(
  * collinear vnode run is split into spline-top + straight-middle + spline-bottom
  * via successive beginpath/endpath/routesplines calls, hugging the corridor.
  * `e` carries the real end ports (first beginpath, final endpath); the chain
- * edges drive the box geometry.
+ * edges drive the box geometry. A chain that stops at a vnode with no out edge
+ * is routed to it and dropped (closeDeadEnd): null, as for a failed route.
  * @see lib/dotgen/dotsplines.c:make_regular_edge (1771-1873 smode loop)
  */
 function routeChainSegmented(
@@ -222,75 +271,13 @@ function routeChainSegmented(
       segFirst = ei; smode = false;
       continue;
     }
+    // 16.1.1 walks on only while hn has an out edge (`ND_out(hn).size > 0`).
+    if (nodeOutSize(segs[ei].head) === 0) return closeDeadEnd(w, beginEdge, segs, ei, segFirst);
     si = false;
     w.boxes.push(maximalBbox(w.ctx, segs[ei].head, segs[ei], segs[ei + 1]));
     ei++;
   }
   return finishChain(w, endEdge, segs[ei], segFirst, segs) ? w.pts : null;
-}
-
-// ---------------------------------------------------------------------------
-// Hackflag views for an edge routed on another edge's chain
-// @see lib/dotgen/dotsplines.c:make_regular_edge (abs(rank diff) > 1)
-// ---------------------------------------------------------------------------
-
-/** A port copied by value, as C's struct assignment copies `port`. */
-function copyPort(p: Port): Port {
-  return { ...p, p: { ...p.p } };
-}
-
-/**
- * C's `fwdedgea`: a copy of `e` from its rank-low end to the first vnode of the
- * chain, head port undefined at (0,0), VIRTUAL with `to_orig = e`. beginpath's
- * side-port clip reset therefore lands on `e` itself.
- */
-function hackflagBeginView(e: GraphEdge, back: boolean, firstVnode: Node): GraphEdge {
-  const tailPort = back ? e.info.head_port : e.info.tail_port;
-  return {
-    ...e,
-    tail: back ? e.head : e.tail,
-    head: firstVnode,
-    info: {
-      ...e.info,
-      tail_port: copyPort(tailPort),
-      head_port: { ...copyPort(e.info.head_port), defined: false, p: { x: 0, y: 0 } },
-      edge_type: VIRTUAL,
-      to_orig: e,
-    },
-  } as GraphEdge;
-}
-
-/**
- * C's `fwdedgeb`: for a back edge, `makefwdedge(e)` (VIRTUAL, `to_orig = e`);
- * otherwise a plain struct copy of `e` that stays NORMAL, so endpath's
- * side-port clip reset lands on the copy and `e` keeps its head clip.
- */
-function hackflagEndView(e: GraphEdge, back: boolean): GraphEdge {
-  if (back) return makeFwdEdge(e);
-  return {
-    ...e,
-    info: { ...e.info, tail_port: copyPort(e.info.tail_port), head_port: copyPort(e.info.head_port) },
-  } as GraphEdge;
-}
-
-/**
- * The edges that drive the chain's first beginpath and last endpath. A chain
- * owned by `e` itself is C's ordinary walk from the first to the last fast
- * edge. A chain owned by another edge means class2 merged `e` into it
- * (`merge_chain`), so `e` sits in ND_other and C's group loop hands the real
- * edge to make_regular_edge, which takes the hackflag branch: beginpath on
- * `fwdedgea`, endpath on `fwdedgeb`. Driving those calls with the owner's
- * segments reset the owner's clip flags instead of `e`'s (plantuml-ts 41).
- * @see lib/dotgen/dotsplines.c:make_regular_edge (hackflag)
- * @see lib/dotgen/class2.c:class2 (merge_chain, other_edge)
- */
-function chainEnds(e: GraphEdge, segs: GraphEdge[]): [GraphEdge, GraphEdge] {
-  const first = segs[0];
-  const last = segs[segs.length - 1];
-  const orig = resolveOrigEdge(e);
-  if (resolveOrigEdge(first) === orig) return [first, last];
-  const back = (orig.head.info.rank ?? 0) < (orig.tail.info.rank ?? 0);
-  return [hackflagBeginView(orig, back, first.head), hackflagEndView(orig, back)];
 }
 
 /** True when `e` runs forward across two or more ranks of a ranked graph. */
@@ -305,9 +292,10 @@ function spansRanksForward(g: Graph, e: GraphEdge): boolean {
  * faithful pipeline (REGULAREDGE side boxes steer the port, routeSplines over
  * the chain; adjustregularpath inter-rank widening finally fires). Returns
  * control points in graphviz-internal y-up, null when the edge is not a
- * multi-rank chain, or 'lost' when the chain walk was attempted and failed
- * (completeregularpath / routesplines failure): C's make_regular_edge returns
- * with no spline and the edge is never routed again.
+ * multi-rank chain, or 'lost' when the chain walk was attempted and gave no
+ * spline (a completeregularpath / routesplines failure, or a chain that ends
+ * at a vnode with no out edge): C's make_regular_edge returns with no spline
+ * and the edge is never routed again.
  * @see lib/dotgen/dotsplines.c:make_regular_edge (hackflag forward path)
  */
 export function routeMultiRankEdgeFaithful(g: Graph, e: GraphEdge): Point[] | null | 'lost' {
@@ -321,11 +309,12 @@ export function routeMultiRankEdgeFaithful(g: Graph, e: GraphEdge): Point[] | nu
     if (line !== null) return line;
   }
   const segs = chainSegments(e);
-  // Route only a COMPLETE chain (last segment reaches e.head). segs.length===1 is
-  // valid (concentrate may merge the whole chain to a direct tail->head segment);
-  // a chain ending at a virtual node is broken — bail, don't crash the loop.
+  // Route a COMPLETE chain (last segment reaches e.head). segs.length===1 is
+  // valid (concentrate may merge the whole chain to a direct tail->head segment).
+  // A chain that stops at a vnode with no out edge is routed too, to that dead
+  // end, as 16.1.1 does; one that stops at any other virtual node is declined.
   // @see dotsplines.c:make_regular_edge
-  if (segs.length === 0 || segs[segs.length - 1].head !== e.head) return null;
+  if (segs.length === 0 || !chainEndsAt(segs, e.head)) return null;
   // C's make_regular_edge drives beginpath with the FIRST chain fast edge and
   // endpath with the LAST (each carries the orig's copied port, so a dyna
   // record port resolves toward the adjacent-rank vnode, not the far real
@@ -339,17 +328,19 @@ export function routeMultiRankEdgeFaithful(g: Graph, e: GraphEdge): Point[] | nu
 /**
  * The merge-bounded run owned by one collected entry: the entry followed by
  * `out.list[0]` successors while the head is a plain (non-merge) virtual node —
- * C make_regular_edge's chain walk. Returns null when the entry is NOT a
- * partial run (neither end at a splineMerge node): plain single-chain entries
- * belong to the caller's whole-chain routers.
+ * C make_regular_edge's chain walk. The run also stops at a vnode with no out
+ * edge, 16.1.1's dead end. Returns null when the entry is NOT a partial run
+ * (neither end at a splineMerge node): plain single-chain entries belong to
+ * the caller's whole-chain routers.
  * @see lib/dotgen/dotsplines.c:make_regular_edge (while !splineMerge(hn) walk)
+ * @see lib/dotgen/dotsplines.c:make_regular_edge (16.1.1, 4f9ef1d9e)
  */
 function entryRunSegments(e: GraphEdge): GraphEdge[] | null {
   const segs: GraphEdge[] = [e];
   let hn = e.head;
   while ((hn.info.node_type ?? NORMAL) === VIRTUAL && !splineMerge(hn)) {
-    const nxt = hn.info.out?.list[0];
-    if (nxt === undefined) return null; // broken chain — leave to the caller
+    if (nodeOutSize(hn) === 0) break; // dead end: routeChainSegmented closes there
+    const nxt = hn.info.out!.list[0];
     segs.push(nxt);
     hn = nxt.head;
   }
@@ -369,8 +360,9 @@ function entryRunSegments(e: GraphEdge): GraphEdge[] | null {
  * orig) with the walk's final head node, exactly as C.
  *
  * Returns the resolved original edge when the entry was a partial run
- * (consumed — even if routing declined, so the caller never re-routes the
- * whole chain), or null when the entry is a plain full chain.
+ * (consumed — even if routing declined or the run stopped at a dead end, so
+ * the caller never re-routes the whole chain), or null when the entry is a
+ * plain full chain.
  * @see lib/dotgen/dotsplines.c:dot_splines_ (group loop), make_regular_edge
  */
 export function routeEntryRun(g: Graph, entry: GraphEdge): GraphEdge | null {
@@ -387,21 +379,35 @@ export function routeEntryRun(g: Graph, entry: GraphEdge): GraphEdge | null {
  * contains it (boxes run high-y to low-y). Label vnodes are anchored to the
  * box's right edge (center = box.ur.x + rw); plain vnodes are centred. This is
  * what aligns a flat-adj aux label vnode onto its spline so the label lands at
- * the dot position (DOT-12). @see lib/dotgen/dotsplines.c:recover_slack
+ * the dot position (DOT-12). @see lib/dotgen/dotsplines.c:recover_slack (resize_vn calls)
  */
 function resizeVnInBox(vn: Node, box: Box): void {
   if (vn.info.label != null) resizeVn(vn, box.ll.x, box.ur.x, box.ur.x + vn.info.rw);
   else resizeVn(vn, box.ll.x, (box.ll.x + box.ur.x) / 2, box.ur.x);
 }
 
-function recoverSlack(segs: GraphEdge[], P: Path): void {
+/**
+ * Walk the routed segment's chain vnodes (`segs[i].head`, C's
+ * `vn = aghead(ND_out(vn).list[0])` step) and resize each into its box. The
+ * walk ends at a vnode with no out edge, whether or not a box reached it:
+ * 16.1.1's two `ND_out(vn).size == 0` exits, where 16.1.0 stepped through a
+ * NULL `list[0]` (upstream issue 2765). Exported for tests only: not part of
+ * the package's entry points.
+ * @see lib/dotgen/dotsplines.c:recover_slack (16.1.1, f3da7c569)
+ */
+export function recoverSlack(segs: GraphEdge[], P: Path): void {
   let b = 0; // skip first rank box
   for (let i = 0; i < segs.length; i++) {
     const vn = segs[i].head;
-    if ((vn.info.node_type ?? NORMAL) !== VIRTUAL || splineMerge(vn)) break;
+    if (!isChainVirtual(vn)) break;
     while (b < P.nbox && P.boxes[b].ll.y > vn.info.coord.y) b++;
     if (b >= P.nbox) break;
-    if (P.boxes[b].ur.y >= vn.info.coord.y) resizeVnInBox(vn, P.boxes[b]);
+    if (P.boxes[b].ur.y < vn.info.coord.y) {
+      if (nodeOutSize(vn) === 0) break;
+      continue;
+    }
+    resizeVnInBox(vn, P.boxes[b]);
+    if (nodeOutSize(vn) === 0) break;
   }
 }
 
@@ -427,38 +433,16 @@ function backChainSegments(e: GraphEdge): GraphEdge[] {
 }
 
 /**
- * Forward view of any edge (C `makefwdedge`): tail/head swapped when the edge
- * runs high→low rank (a back edge), fresh portless ends. `beginPath`/`endPath`
- * read `e.tail`/`e.head`, so the chain must be driven by an edge that runs
- * low→high rank. Sets `to_orig`/`edge_type=VIRTUAL` so `clipAndInstall`→
- * `newSpline` installs the spline on the ORIGINAL edge (its `to_orig` loop) and
- * the post-routing `swapSpline` pass reverses it back to tail→head. Shares
- * `attrs`/`root`/`to_virt` with `e`. Consumed by T3 for parallel back-members.
- * @see lib/dotgen/dotsplines.c:makefwdedge
- * @see lib/common/splines.c:clip_and_install (to_orig install loop)
+ * True when routeBackEdge routes the collected chain: one of two or more
+ * segments that reaches `end` (the back edge's tail), or one of any length
+ * that stops at a dead end, which 16.1.1 routes to and drops.
+ * @see lib/dotgen/dotsplines.c:make_regular_edge (16.1.1, 4f9ef1d9e)
  */
-export function makeFwdEdge(e: GraphEdge): GraphEdge {
-  const back = (e.head.info.rank ?? 0) < (e.tail.info.rank ?? 0);
-  const [tail, head] = back ? [e.head, e.tail] : [e.tail, e.head];
-  return {
-    ...e,
-    tail,
-    head,
-    info: {
-      ...e.info,
-      // C makefwdedge SWAPS the ports (does not strip them): a back edge keeps
-      // its corner ports across the forward view so make_regular_edge curls it
-      // (e.g. #241_0 aux back-edge clone sw/se → size 7). Stripping to an empty
-      // Center port straightened every port-bearing back edge (size 4).
-      // @see lib/dotgen/dotsplines.c:makefwdedge (ED_tail_port(new)=ED_head_port(old))
-      tail_port: e.info.head_port ?? makePort(),
-      head_port: e.info.tail_port ?? makePort(),
-      to_orig: e,
-      edge_type: VIRTUAL,
-    },
-  } as GraphEdge;
+function isRoutableBackChain(segs: GraphEdge[], end: Node): boolean {
+  if (segs.length === 0) return false;
+  const tip = segs[segs.length - 1].head;
+  return tip === end ? segs.length >= 2 : isChainDeadEnd(tip);
 }
-
 
 /**
  * Route a multi-rank back-edge via its virtual node chain, mirroring C exactly:
@@ -471,11 +455,13 @@ export function makeFwdEdge(e: GraphEdge): GraphEdge {
  * opposite parameter end), landing the 0.5-tolerance crossing ~0.26-0.33 off
  * (1644, dfa family). clipAndInstall resolves the spline onto `e` via the
  * fwdEdge's to_orig and gates arrows by ED_dir, so this also drops the bespoke
- * reverse/arrow code. @see lib/dotgen/dotsplines.c:make_regular_edge (hackflag)
+ * reverse/arrow code. A chain that stops at a vnode with no out edge is routed
+ * to that dead end and the edge is lost, as 16.1.1 does.
+ * @see lib/dotgen/dotsplines.c:make_regular_edge (hackflag)
  */
 export function routeBackEdge(e: GraphEdge, _tailBox: NodeBox, _headBox: NodeBox, g: Graph): void {
   const segs = backChainSegments(e);
-  if (segs.length < 2 || segs[segs.length - 1].head !== e.tail) return;
+  if (!isRoutableBackChain(segs, e.tail)) return;
   const fwdEdge = makeFwdEdge(e);
   // C's make_regular_edge routes the collected FAST SEGMENT view: beginpath's
   // edge head is the adjacent chain vnode, so a dyna record port resolves

@@ -43,7 +43,7 @@ import { edgeType } from './splines.js';
 import { addBox } from '../../common/splines-path-shared.js';
 import { TOP, BOTTOM, REGULAREDGE } from '../../common/splines-constants.js';
 import { VIRTUAL, NORMAL } from './fastgr.js';
-import { neighbor, topBound, botBound, nodeType, splineMerge } from './splines-route.js';
+import { neighbor, topBound, botBound, nodeType, splineMerge, nodeOutSize } from './splines-route.js';
 import { getSplineBounds, rankHt } from './edge-route-rank.js';
 import { graphRanksep } from './position-aux.js';
 
@@ -90,10 +90,12 @@ function isLabeledVirtual(n: Node): boolean {
   return nodeType(n) === VIRTUAL && n.info.label != null;
 }
 
-/** Tail/head clusters behind node n: its own cluster when NORMAL, else the
- *  original edge's endpoint clusters. @see cl_bound (dotsplines.c:2135-2140) */
+/** Tail/head clusters behind node n: its own cluster when NORMAL or when it
+ *  has no out edge (a virtual node concentrate orphaned, upstream issue 2765),
+ *  else the original edge's endpoint clusters.
+ *  @see lib/dotgen/dotsplines.c:cl_bound (16.1.1, f8e3f2100) */
 function endpointClusters(n: Node): [Graph | undefined, Graph | undefined] {
-  if (nodeType(n) === NORMAL) return [n.info.clust, n.info.clust];
+  if (nodeType(n) === NORMAL || nodeOutSize(n) === 0) return [n.info.clust, n.info.clust];
   const orig = n.info.out?.list[0]?.info.to_orig;
   return [orig?.tail.info.clust, orig?.head.info.clust];
 }

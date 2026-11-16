@@ -1,0 +1,13 @@
+# Execution survey, head d5a0d297 (T1) against base c55b4c66: native-compare.sh over survey-ids.txt,
+# run at load 11.63 after the oracle preflight (config8 present, 16.1.1). Equals planning-survey.txt.
+2765 svg base=head:y base~native:0 head~native:0
+2765 xdot base=head:y base~native:0 head~native:0
+2765 plain base=head:y base~native:0 head~native:0
+2765 json base=head:y base~native:2 head~native:2
+2765 cmapx base=head:y base~native:0 head~native:0
+2765_1 svg base=head:y base~native:0 head~native:0
+2765_1 xdot base=head:y base~native:0 head~native:0
+2765_1 plain base=head:y base~native:0 head~native:0
+2765_1 json base=head:y base~native:2 head~native:2
+2765_1 cmapx base=head:y base~native:0 head~native:0
+# stderr, base vs head (bd-job.ts after --stderr--), svg xdot plain json cmapx: identical on both ids.
