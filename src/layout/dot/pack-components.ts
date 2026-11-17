@@ -216,9 +216,10 @@ export function initSubg(sg: Graph, root: Graph): void {
  * ranking reads them. Node sizing in `dotPhaseInit` reads `sg.root.info.flip`
  * (the real root), so it is correct regardless of this ordering.
  *
- * Returns the component's dot_splines status (non-zero = C's dotLayout(sg)
- * failing, which makes doDot return before packing). The mincross/position
- * statuses are not consulted on this arm.
+ * Returns the component's dot_position status when it is non-zero (16.1.1: an
+ * aux edge longer than INT_MAX, issue #162), else its dot_splines status. A
+ * non-zero status is C's dotLayout(sg) failing, which makes doDot return
+ * before packing. The mincross status is not consulted on this arm (#235).
  * @see lib/dotgen/dotinit.c:dotLayout (static)
  */
 export function dotLayoutComponent(sg: Graph, root: Graph): number {
@@ -248,7 +249,8 @@ export function dotLayoutComponent(sg: Graph, root: Graph): number {
   sg.info.has_labels = 0;
   dotRank(sg);
   dotMincross(sg);
-  dotPosition(sg);
+  const posRc = dotPosition(sg);
+  if (posRc !== 0) return posRc;
   return dotPhasePostNoFinish(sg);
 }
 

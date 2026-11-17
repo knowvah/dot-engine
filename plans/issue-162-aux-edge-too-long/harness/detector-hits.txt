@@ -1,0 +1,25 @@
+# Reach of #162 over 982 applicable dot ids (-Kdot -Tplain, 60 s cap).
+# Base 31f9122f. Port = base + detector.patch (detector.sh); native = 16.1.1 (detector-native.sh).
+# Format: <id> <count> <line>.
+## port
+1314    1 Error: Edge length 272931242864.483337 larger than maximum 2147483647 allowed.
+1314    1 P162 fail dotPosition
+1314    1 P162 reject lrRankPair
+2758    1 Error: Edge length 2147483701.000000 larger than maximum 2147483647 allowed.
+2758    1 P162 fail dotPosition
+2758    1 P162 reject lrRankPair
+2776_1    1 Error: Edge length 300000000000000000.000000 larger than maximum 2147483647 allowed.
+2776_1    1 P162 fail dotPosition
+2776_1    1 P162 reject lrRankPair
+2781    1 Error: Edge length 71999999999999994497073152.000000 larger than maximum 2147483647 allowed.
+2781    1 P162 fail dotPosition
+2781    1 P162 reject lrRankPair
+2781_1    1 Error: Edge length 71999999999999994497073152.000000 larger than maximum 2147483647 allowed.
+2781_1    1 P162 fail dotPosition
+2781_1    1 P162 reject lrRankPair
+## native
+1314    1 Error: Edge length 272931242864.483337 larger than maximum 2147483647 allowed.
+2758    1 Error: Edge length 2147483701.000000 larger than maximum 2147483647 allowed.
+2776_1    1 Error: Edge length 300000000000000000.000000 larger than maximum 2147483647 allowed.
+2781    1 Error: Edge length 71999999999999994497073152.000000 larger than maximum 2147483647 allowed.
+2781_1    1 Error: Edge length 71999999999999994497073152.000000 larger than maximum 2147483647 allowed.

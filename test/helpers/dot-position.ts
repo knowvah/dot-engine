@@ -15,13 +15,11 @@ import { dotMincross } from '../../src/layout/dot/mincross.js';
 import { dotPosition } from '../../src/layout/dot/position.js';
 
 /**
- * Parse `src` and run init, rank, mincross and position. Composed from the
- * phase functions rather than the `phase` attribute: C's `phase=3` is a
- * success stop, so `dot_layout` still runs dotneato_postprocess after it and
- * the coordinates come back translated.
- * @see lib/dotgen/dotinit.c:dot_layout
+ * Parse `src` and run init, rank and mincross: the graph as `dot_position`
+ * receives it, for tests that read `dotPosition`'s status.
+ * @see lib/dotgen/dotinit.c:dotLayout
  */
-export function layoutToPosition(src: string): Graph {
+export function layoutToMincross(src: string): Graph {
   const g = parse(src);
   const ctx = new GvcContext(createMeasurer());
   ctx.register(DOT_LAYOUT_ENGINE);
@@ -29,6 +27,18 @@ export function layoutToPosition(src: string): Graph {
   dotPhaseInit(g);
   dotRank(g);
   dotMincross(g);
+  return g;
+}
+
+/**
+ * Parse `src` and run init, rank, mincross and position. Composed from the
+ * phase functions rather than the `phase` attribute: C's `phase=3` is a
+ * success stop, so `dot_layout` still runs dotneato_postprocess after it and
+ * the coordinates come back translated.
+ * @see lib/dotgen/dotinit.c:dot_layout
+ */
+export function layoutToPosition(src: string): Graph {
+  const g = layoutToMincross(src);
   dotPosition(g);
   return g;
 }

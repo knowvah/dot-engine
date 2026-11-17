@@ -26,8 +26,8 @@ describe('makeAuxEdge — ports (make_aux_edge zeroes them inline)', () => {
   const v = mkNode(g, 1);
 
   it('gives both ends of every aux edge the one shared default port', () => {
-    const e1 = makeAuxEdge(u, v, 3, 7);
-    const e2 = makeAuxEdge(v, u, 1, 0);
+    const e1 = makeAuxEdge(u, v, 3, 7)!;
+    const e2 = makeAuxEdge(v, u, 1, 0)!;
     expect(e1.info.tail_port).toBe(AUX_EDGE_PORT);
     expect(e1.info.head_port).toBe(AUX_EDGE_PORT);
     expect(e2.info.tail_port).toBe(AUX_EDGE_PORT);
@@ -43,7 +43,7 @@ describe('makeAuxEdge — ports (make_aux_edge zeroes them inline)', () => {
   });
 
   it('a write to the shared port or its point throws instead of leaking', () => {
-    const e = makeAuxEdge(u, v, 1, 0);
+    const e = makeAuxEdge(u, v, 1, 0)!;
     expect(() => { e.info.tail_port.p.x = 4; }).toThrow(TypeError);
     expect(() => { e.info.head_port.clip = false; }).toThrow(TypeError);
     expect(AUX_EDGE_PORT.p.x).toBe(0);
@@ -53,7 +53,7 @@ describe('makeAuxEdge — ports (make_aux_edge zeroes them inline)', () => {
   it('keeps the edge data make_aux_edge sets, and the fast-graph links', () => {
     const a = mkNode(g, 2);
     const b = mkNode(g, 3);
-    const e = makeAuxEdge(a, b, 2.5, 9);
+    const e = makeAuxEdge(a, b, 2.5, 9)!;
     expect(e.tail).toBe(a);
     expect(e.head).toBe(b);
     expect(e.info.minlen).toBe(3); // C ROUND(2.5), half away from zero
@@ -80,8 +80,8 @@ describe('makeAuxEdge — attributes (an aux edge has no attribute record)', () 
   const v = mkNode(g, 1);
 
   it('starts every aux edge on the shared empty attribute map', () => {
-    const e1 = makeAuxEdge(u, v, 1, 0);
-    const e2 = makeAuxEdge(v, u, 1, 0);
+    const e1 = makeAuxEdge(u, v, 1, 0)!;
+    const e2 = makeAuxEdge(v, u, 1, 0)!;
     expect(e1.attrs).toBe(EMPTY_ATTRS);
     expect(e2.attrs).toBe(EMPTY_ATTRS);
     expect(e1.attrs.size).toBe(0);
@@ -90,8 +90,8 @@ describe('makeAuxEdge — attributes (an aux edge has no attribute record)', () 
   });
 
   it('a write goes to a private map of that edge only', () => {
-    const e1 = makeAuxEdge(u, v, 1, 0);
-    const e2 = makeAuxEdge(u, v, 1, 0);
+    const e1 = makeAuxEdge(u, v, 1, 0)!;
+    const e2 = makeAuxEdge(u, v, 1, 0)!;
     expect(() => e1.attrs.set('k', 'v')).toThrow(/ownAttrs/);
     ownAttrs(e1).set('k', 'v');
     expect(e1.attrs.get('k')).toBe('v');

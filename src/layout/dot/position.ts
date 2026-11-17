@@ -188,7 +188,10 @@ export function dotPosition(g: Graph): number {
   }
   expandLeaves(g);
   if (flatEdges(g)) setYcoords(g);
-  createAuxEdges(g, posClusters, compressGraph);
+  // 16.1.1 (upstream f444e5192): an aux edge longer than INT_MAX fails the
+  // layout here, ahead of the x-coordinate network simplex.
+  const auxRc = createAuxEdges(g, posClusters, compressGraph);
+  if (auxRc !== 0) return auxRc;
   g.info.rankIsXCoord = true;
   if (rank(g, 2, nsiter2(g))) {
     connectGraph(g);

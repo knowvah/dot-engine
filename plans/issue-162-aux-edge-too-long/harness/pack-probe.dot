@@ -1,0 +1,5 @@
+// Pack-arm probe for #162. Two components; {a, b} share a rank, so the
+// adjacent-pair aux edge (lw + rw of 1e24-inch nodes under rankdir=LR) exceeds
+// INT_MAX and the first component's dot_position fails. Native 16.1.1 prints the
+// error once, then segfaults (exit 139); see decisions.md AD-2.
+digraph{pack=true; rankdir=LR; node[height="1000000000000000000000000"]; {rank=same; a->b} c}

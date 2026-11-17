@@ -29,6 +29,7 @@ import type { RatioKind } from '../model/layoutParams.js';
 import { doGraphLabel } from '../layout/dot/graph-label.js';
 import { mapbool, setClType, LOCAL, GLOBAL, NOCLUST } from '../layout/dot/rank.js';
 import { cround } from './arith.js';
+import { d2i } from '../util/math.js';
 import { agwarningf } from './agerr.js';
 import { setImageHooks, setImagePath } from './safefile.js';
 
@@ -119,10 +120,19 @@ function maptoken(p: string | undefined, names: string[], vals: number[]): numbe
  * `nodesep` is a plain late_double; `ranksep` additionally honours the
  * `equally` keyword (→ exact_ranksep) and a bare number that may be followed
  * by text. Absent attrs yield POINTS(DEFAULT_*) = 18 / 36.
+ *
+ * GD_nodesep is an `int` (types.h), and POINTS is `(int)(f + .5)`: past
+ * INT_MAX that conversion is undefined in C, and the oracle's arm64 build
+ * saturates it (scalar fcvtzs). `d2i` is that saturation. Evidence: corpus
+ * 2758 (`nodesep=40000000`, 2.88e9 pt) makes native 16.1.1 report an aux
+ * edge of `2147483701.000000`, INT_MAX plus two 27-pt half widths (issue
+ * #162). Only nodesep is saturated here: the other POINTS sites (ranksep,
+ * size, page) have no such evidence.
  * @see lib/common/input.c:665-681
  */
 function parseSepAttrs(g: Graph): void {
-  g.info.nodesep = points(lateDouble(g.attrs.get('nodesep'), DEFAULT_NODESEP, MIN_NODESEP));
+  // `points` already rounded, so d2i's truncation changes nothing below INT_MAX.
+  g.info.nodesep = d2i(points(lateDouble(g.attrs.get('nodesep'), DEFAULT_NODESEP, MIN_NODESEP)));
   const p = g.attrs.get('ranksep');
   let xf = DEFAULT_RANKSEP;
   if (p !== undefined && p !== '') {
