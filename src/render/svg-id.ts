@@ -5,8 +5,10 @@
 // (plugin/core/gvrender_core_svg.c). A non-empty DOT `id` attribute wins
 // verbatim; otherwise the generated `<pfx><seq>` id is used, with a `<gid>_`
 // prefix on non-root objects when the root graph carries an `id` attribute
-// (job.drawingId). The DOT `class` attribute, when present, is appended to the
-// SVG class string. Attribute reads use C's `agget` semantics (defaults
+// (job.drawingId, from drawingIdOf). That prefix belongs to the graph, not to
+// the svg plugin: every renderer that prints an object id (svg, the imagemaps)
+// gets the same one. The DOT `class` attribute, when present, is appended to
+// the SVG class string. Attribute reads use C's `agget` semantics (defaults
 // inherited) via nodeAttr / clusterAttr.
 
 import type { Node } from '../model/node.js';
@@ -16,6 +18,20 @@ import type { RenderJob } from '../gvc/job.js';
 import { escapeXmlTitle } from './xml-escape.js';
 import { nodeAttr } from '../common/poly-init.js';
 import { clusterAttr } from '../gvc/device-cluster.js';
+import { substObjAnchor } from '../common/subst.js';
+
+/**
+ * C's `GD_drawing(root)->id`: the root graph's `id` attribute with its `\`
+ * escapes substituted (`\G` and the like), or '' when it is unset or empty.
+ * graph_init sets it once for every renderer; getObjId prefixes each non-root
+ * object id with it.
+ * @see lib/common/input.c:graph_init (786-788)
+ * @see lib/common/emit.c:getObjId
+ */
+export function drawingIdOf(g: Graph): string {
+  const id = g.attrs.get('id');
+  return id !== undefined && id.length > 0 ? substObjAnchor(id, g) : '';
+}
 
 /**
  * `class="<kind>"`, with the DOT `class` attribute appended (` <class>`,

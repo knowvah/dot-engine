@@ -309,8 +309,9 @@ export class RenderJob {
   /** GD_fontnames of the root graph — selects which PostScript-alias fields the
    *  SVG emitter uses. @see plugin/core/gvrender_core_svg.c:464 */
   fontnames: FontnameKind = FontnameKind.NativeFonts;
-  /** Root graph's `id` attribute (GD_drawing(root)->id), '' if unset. Used as
-   * the `<gid>_` prefix for non-root object ids. @see lib/common/emit.c:getObjId */
+  /** GD_drawing(root)->id: the root graph's `id`, substituted, '' if unset. Set
+   * by render() for every renderer (drawingIdOf); the `<gid>_` prefix of
+   * non-root object ids. @see lib/common/emit.c:getObjId */
   drawingId: string = '';
 
   /**

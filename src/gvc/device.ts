@@ -56,7 +56,7 @@ import { gvrenderSetStyle, edgeStyleResets } from './gvrender-set-style.js';
 import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
 export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
 export { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
-import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId } from '../render/svg-id.js';
+import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId, drawingIdOf } from '../render/svg-id.js';
 import { nodeInBox, emitNodeComments, emitEdgeComments } from './emit-gates.js';
 
 // ---------------------------------------------------------------------------
@@ -497,12 +497,12 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   const dpiScale = jobDpi / POINTS_PER_INCH;
   job.scale = { x: z * dpiScale, y: z * dpiScale };
   // init_job_viewport: job->rotation = gvc->rotation (= 90 for landscape, set in
-  // emit_graph from GD_drawing->landscape). Emit-only — drives the SVG group
-  // transform + dim swap (T2), never layout/routing (ADR-1). transformPoint is
-  // guarded against the ptf rotation branch (ADR-2).
+  // emit_graph from GD_drawing->landscape). Emit-only: drives the SVG group
+  // transform + dim swap (T2), never layout/routing (ADR-1; ptf guard: ADR-2).
   // @see lib/common/emit.c:3260 (gvc->rotation=90); :3390 (job->rotation)
   job.rotation = parseLandscape(g) ? 90 : 0;
   job.renderer = renderer;
+  job.drawingId = drawingIdOf(g); // GD_drawing(g)->id. @see lib/common/input.c:graph_init
   setRendererKnownColors(renderer.type === 'svg'); // svg_knowncolors; others have none
   resetHtmlAnchorIds(); // C: fresh anchorId per dot invocation
   for (const n of g.nodes.values()) polyInit(n, g, job.measurer);

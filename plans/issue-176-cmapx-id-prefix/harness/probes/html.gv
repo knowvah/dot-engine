@@ -1,0 +1,1 @@
+digraph G { id="R"; a [shape=plain label=<<table><tr><td href="t1">x</td><td href="t2">y</td></tr></table>>]; }
