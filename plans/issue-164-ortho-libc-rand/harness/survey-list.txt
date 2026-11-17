@@ -1,0 +1,21 @@
+# Gate 6 native survey for #164: the (input, engine) pairs whose output the
+# change moves (planning bytediff over reach-ids.txt: 39 changed jobs), plus
+# dot controls: one unchanged ortho corpus id and the 8 ortho goldens.
+1447 circo
+1658 circo
+1880 circo
+1990 circo
+2168_5 twopi
+2183 twopi
+2643 twopi
+2783 dot,osage
+2784 dot
+144_ortho dot
+test/golden/inputs/dot-ortho-branch.dot dot
+test/golden/inputs/dot-ortho-chain.dot dot
+test/golden/inputs/dot-ortho-label.dot dot
+test/golden/inputs/dot-ortho-multirank.dot dot
+test/golden/inputs/dot-ortho-parallel.dot dot
+test/golden/inputs/pt-issue-29-pair.dot dot
+test/golden/inputs/pt-issue-29-xagonu.dot dot
+test/golden/inputs/pt-issue-29.dot dot

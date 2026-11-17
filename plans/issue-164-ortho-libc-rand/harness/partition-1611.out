@@ -1,0 +1,107 @@
+f2pair hperm: 12 6 11 5 10 1 7 9 3 4 2 8
+f2pair vperm: 7 12 4 5 9 2 10 8 1 3 11 6
+f2pair rects=13 null=0 next-rand=1264817709
+  box(-63, -36, -27, 0)
+  box(-63, 0, -27, 36)
+  box(-63, 36, -27, 72)
+  box(-63, 72, -27, 108)
+  box(-63, 108, -27, 144)
+  box(-27, -36, 27, 0)
+  box(-27, 36, 27, 72)
+  box(-27, 108, 27, 144)
+  box(27, -36, 63, 0)
+  box(27, 0, 63, 36)
+  box(27, 36, 63, 72)
+  box(27, 72, 63, 108)
+  box(27, 108, 63, 144)
+f3chain hperm: 16 7 3 14 6 1 2 12 9 15 4 13 11 10 5 8
+f3chain vperm: 9 11 15 3 13 4 2 6 1 10 7 5 14 12 16 8
+f3chain rects=18 null=0 next-rand=1954899097
+  box(-63, -36, -27, 0)
+  box(-63, 0, -27, 36)
+  box(-63, 36, -27, 72)
+  box(-63, 72, -27, 108)
+  box(-63, 108, -27, 144)
+  box(-63, 144, -27, 180)
+  box(-63, 180, -27, 216)
+  box(-27, -36, 27, 0)
+  box(-27, 36, 27, 72)
+  box(-27, 108, 27, 144)
+  box(-27, 180, 27, 216)
+  box(27, -36, 63, 0)
+  box(27, 0, 63, 36)
+  box(27, 36, 63, 72)
+  box(27, 72, 63, 108)
+  box(27, 108, 63, 144)
+  box(27, 144, 63, 180)
+  box(27, 180, 63, 216)
+f3branch hperm: 16 7 3 14 6 1 2 12 9 15 4 13 11 10 5 8
+f3branch vperm: 9 11 15 3 13 4 2 6 1 10 7 5 14 12 16 8
+f3branch rects=24 null=0 next-rand=1954899097
+  box(-99, -36, -63, 0)
+  box(-99, 0, -63, 36)
+  box(-99, 36, -63, 72)
+  box(-99, 72, -63, 108)
+  box(-99, 108, -63, 144)
+  box(-63, -36, -9, 0)
+  box(-63, 36, -27, 72)
+  box(-63, 72, -27, 108)
+  box(-63, 108, -27, 144)
+  box(-27, 36, -9, 72)
+  box(-27, 108, 27, 144)
+  box(-9, -36, 9, 0)
+  box(-9, 0, 9, 36)
+  box(-9, 36, 9, 72)
+  box(9, -36, 63, 0)
+  box(9, 36, 27, 72)
+  box(27, 36, 63, 72)
+  box(27, 72, 63, 108)
+  box(27, 108, 63, 144)
+  box(63, -36, 99, 0)
+  box(63, 0, 99, 36)
+  box(63, 36, 99, 72)
+  box(63, 72, 99, 108)
+  box(63, 108, 99, 144)
+c2784 hperm: 5 21 7 10 15 20 24 12 2 16 26 14 18 27 22 17 13 1 19 4 23 3 25 11 9 6 28 8
+c2784 vperm: 21 22 15 5 10 18 7 13 24 16 11 20 4 17 25 26 1 19 2 14 27 12 8 28 23 6 9 3
+trapezoid segment construction failed
+horizontal trapezoid construction failed
+c2784 rects=0 null=1 next-rand=1404280278
+point hperm: 2 7 5 3 4 6 1 8
+point vperm: 4 3 5 6 1 8 2 7
+point rects=4 null=0 next-rand=114807987
+  box(-36, -26, 0, 10)
+  box(-36, 10, 0, 46)
+  box(0, -26, 36, 10)
+  box(0, 10, 36, 46)
+vertonly hperm: 12 6 11 5 10 1 7 9 3 4 2 8
+vertonly vperm: 7 12 4 5 9 2 10 8 1 3 11 6
+trapezoid segment construction failed
+vertical trapezoid construction failed
+vertonly rects=0 null=1 next-rand=1264817709
+emptyrects hperm: 2 7 5 3 4 6 1 8
+emptyrects vperm: 4 3 5 6 1 8 2 7
+emptyrects rects=6 null=0 next-rand=114807987
+  box(-26, -16, 10, 20)
+  box(-26, 20, 10, 30)
+  box(-26, 30, 10, 66)
+  box(10, -16, 46, 20)
+  box(10, 20, 46, 30)
+  box(10, 30, 46, 66)
+wellformed hperm: 2 7 5 3 4 6 1 8
+wellformed vperm: 4 3 5 6 1 8 2 7
+wellformed rects=8 null=0 next-rand=114807987
+  box(-36, -36, 0, 0)
+  box(-36, 0, 0, 10)
+  box(-36, 10, 0, 46)
+  box(0, -36, 10, 0)
+  box(0, 10, 10, 46)
+  box(10, -36, 46, 0)
+  box(10, 0, 46, 10)
+  box(10, 10, 46, 46)
+silentA hperm: 12 6 11 5 10 1 7 9 3 4 2 8
+silentA vperm: 7 12 4 5 9 2 10 8 1 3 11 6
+silentA rects=0 null=1 next-rand=1264817709
+silentB hperm: 12 6 11 5 10 1 7 9 3 4 2 8
+silentB vperm: 7 12 4 5 9 2 10 8 1 3 11 6
+silentB rects=0 null=1 next-rand=1264817709

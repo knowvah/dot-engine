@@ -16,12 +16,16 @@
  * are zero-height. Native 16.1 prints exactly the two lines asserted below
  * on that input (stderr captured from `dot -Tsvg tests/2784.dot`).
  *
- * Every partition expectation (NULL vs rectangle count, and the exact stderr
- * lines) was captured from a C harness linking the 16.1 build's libortho.a
- * and calling `partition()` with these exact cells and BB. The small
- * single/double-cell cases came from fuzzing that harness. The silent-NULL case
- * is partition's final `LIST_DETACH(&rs, &ret, nrects)`: an empty list has a
- * NULL base, so mkMaze's new `rects == NULL` check fails it too.
+ * Every partition expectation (NULL vs rectangle set, and the exact stderr
+ * lines) was captured from a C harness linking the 16.1.1 build's libortho.a
+ * and libutil.a and calling `partition()` with these exact cells and BB, each
+ * case from `srand(1)` (plans/issue-164-ortho-libc-rand/harness/
+ * partition-1611.c). 16.1.1 (b99490ece) orders the segments from the
+ * process-global libc rand() stream, so each test starts from `csrand(1)`.
+ * The small single/double-cell cases came from fuzzing that harness. The
+ * silent-NULL case is partition's final `LIST_DETACH(&rs, &ret, nrects)`: an
+ * empty list has a NULL base, so mkMaze's new `rects == NULL` check fails it
+ * too.
  *
  * @see lib/ortho/trapezoid.c:add_segment
  * @see lib/ortho/trapezoid.c:construct_trapezoids
@@ -30,8 +34,9 @@
  * @see lib/ortho/ortho.c:orthoEdges
  */
 
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { partition } from "./partition.js";
+import { csrand } from "../common/crand.js";
 import { mkMaze } from "./maze.js";
 import { orthoEdges } from "./index.js";
 import type { Cell, OrthoBox, OrthoGraph, OrthoNode } from "./types.js";
@@ -83,6 +88,20 @@ function stderrLines(spy: { mock: { calls: unknown[][] } }): unknown[] {
   return spy.mock.calls.map((c) => c[0]);
 }
 
+/** Normalize a box list to a sorted key set for order-independent equality. */
+function boxKeys(boxes: OrthoBox[]): string[] {
+  return boxes
+    .map((b) => `${b.LL.x},${b.LL.y},${b.UR.x},${b.UR.y}`)
+    .sort();
+}
+
+/** Unseeded libc rand() behaves as srand(1): a fresh native process. */
+const UNSEEDED = 1;
+
+beforeEach(() => {
+  csrand(UNSEEDED);
+});
+
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -94,10 +113,17 @@ describe("partition — trapezoid construction failure (057e8779d, 3c01aaeb4, 36
     expect(stderrLines(err)).toEqual([TRAP_SEG_FAILED, HOR_TRAPS_FAILED]);
   });
 
-  it("returns null and reports the horizontal failure for a single point cell", () => {
+  it("partitions a single point cell into four rectangles, silently (b99490ece)", () => {
     const err = vi.spyOn(console, "error").mockImplementation(() => {});
-    expect(partition([cell(box(0, 10, 0, 10))], box(-36, -26, 36, 46))).toBeNull();
-    expect(stderrLines(err)).toEqual([TRAP_SEG_FAILED, HOR_TRAPS_FAILED]);
+    const rects = partition([cell(box(0, 10, 0, 10))], box(-36, -26, 36, 46));
+    expect(rects).not.toBeNull();
+    expect(boxKeys(rects!)).toEqual(boxKeys([
+      box(-36, -26, 0, 10),
+      box(-36, 10, 0, 46),
+      box(0, -26, 36, 10),
+      box(0, 10, 36, 46),
+    ]));
+    expect(err).not.toHaveBeenCalled();
   });
 
   it("returns null and reports the vertical failure when only the vertical pass fails (67bacf48e)", () => {
@@ -109,7 +135,8 @@ describe("partition — trapezoid construction failure (057e8779d, 3c01aaeb4, 36
 
   it("returns null silently when no rectangle survives (LIST_DETACH of an empty list)", () => {
     const err = vi.spyOn(console, "error").mockImplementation(() => {});
-    expect(partition([cell(box(10, 20, 10, 30))], box(-26, -16, 46, 66))).toBeNull();
+    const cells = [cell(box(10, 40, 20, 60)), cell(box(40, 0, 40, 10))];
+    expect(partition(cells, box(-26, -36, 76, 96))).toBeNull();
     expect(err).not.toHaveBeenCalled();
   });
 

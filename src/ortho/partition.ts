@@ -7,22 +7,18 @@
  * (via perp()). Intersection of the two decompositions yields cells
  * bounded on all four sides.
  *
- * SEED is fixed at 173 — matches lib/ortho/partition.c:srand48(173).
+ * The segment permutation draws from the process-global libc rand() stream
+ * (graphviz 16.1.1, b99490ece): partition no longer seeds srand48(173).
  *
  * @see lib/ortho/partition.c
  */
 
-import { srand48, drand48 } from "../common/random.js";
+import { gvPermutation } from "../common/crand.js";
 import type { OrthoBox, OrthoPoint, Cell } from "./types.js";
 import {
   constructTrapezoids, fpEqual, greaterThan, isValidTrap, C_EPS, equalTo,
 } from "./trapezoid.js";
 import type { SegmentT, TrapT } from "./trapezoid.js";
-
-/** Fixed RNG seed — matches lib/ortho/partition.c:srand48(173) */
-const SEED = 173;
-
-export { SEED };
 
 const NPOINTS = 4;
 
@@ -86,20 +82,14 @@ class PartitionHelper {
   }
 
   /**
-   * Generate a random permutation of the segments 1..n, drawing from the
-   * process-global POSIX drand48 stream (seeded by partition's srand48).
+   * Generate a random permutation of the segments 1..n: gv_permutation's
+   * Fisher-Yates shuffle over the global libc rand() stream, made 1-based.
    * @see lib/ortho/partition.c:generateRandomOrdering
    */
   static generateRandomOrdering(n: number): number[] {
-    const permute: number[] = [];
-    for (let i = 0; i < n; i++) permute.push(i + 1);
-    for (let i = 0; i < n; i++) {
-      // C: j = (size_t)((double)i + drand48() * (double)(n - i));
-      const j = Math.floor(i + drand48() * (n - i));
-      if (j !== i) {
-        const tmp = permute[i]; permute[i] = permute[j]; permute[j] = tmp;
-      }
-    }
+    const permute = gvPermutation(n);
+    // make indexing 1-based
+    for (let i = 0; i < n; i++) permute[i]!++;
     return permute;
   }
 
@@ -271,10 +261,8 @@ export function partition(cells: Cell[], bb: OrthoBox): OrthoBox[] | null {
   const h = PartitionHelper;
   const nsegs = 4 * (cells.length + 1);
 
-  // C: srand48(173) once, then two generateRandomOrdering calls share the
-  // continuing drand48 stream (partition.c:737-763).
-  srand48(SEED);
-
+  // C: the two generateRandomOrdering calls share the continuing rand()
+  // stream (partition.c:677, :693).
   const hSeg = h.genSegments(cells, bb, false);
   const hPerm = h.generateRandomOrdering(nsegs);
   const hTr = constructTrapezoids(nsegs, hSeg, hPerm);
