@@ -15,7 +15,8 @@ interface LineCoeff { xc0: number; xc1: number; yc0: number; yc1: number; }
 interface RootAccum { roots: number[]; n: number; }
 interface RouteState { ops: Point[]; barriers: Edge[]; }
 
-class RouteHelper {
+/** @internal — exported for route.branch.test.ts */
+export class RouteHelper {
   static B0(t: number): number { const u = 1-t; return u*u*u; }
   static B1(t: number): number { const u = 1-t; return 3*t*u*u; }
   static B2(t: number): number { const u = 1-t; return 3*t*t*u; }
@@ -71,6 +72,15 @@ class RouteHelper {
     c[0] = v0;
   }
 
+  /**
+   * `a == b` within a tolerance (16.1.1 `d3ab9ba47`; the same 1e-7 as solve3).
+   * @see lib/pathplan/route.c:eq
+   */
+  static eq(a: number, b: number): boolean {
+    const EPS = 1e-7;
+    return Math.abs(a - b) < EPS;
+  }
+
   static addRoot(root: number, acc: RootAccum): void {
     if (root >= 0 && root <= 1) { acc.roots[acc.n] = root; acc.n++; }
   }
@@ -91,7 +101,7 @@ class RouteHelper {
     } else {
       for (let i = 0; i < xn; i++)
         for (let j = 0; j < yn; j++)
-          if (xr[i] === yr[j]) RouteHelper.addRoot(xr[i], acc);
+          if (RouteHelper.eq(xr[i], yr[j])) RouteHelper.addRoot(xr[i], acc);
     }
     return acc.n;
   }
@@ -144,8 +154,8 @@ class RouteHelper {
       yc0: lps[0].y, yc1: lps[1].y - lps[0].y,
     };
     const acc: RootAccum = { roots, n: 0 };
-    if (lc.xc1 === 0) {
-      if (lc.yc1 === 0) return RouteHelper.silBothZero(sps, lc, acc);
+    if (RouteHelper.eq(lc.xc1, 0)) {
+      if (RouteHelper.eq(lc.yc1, 0)) return RouteHelper.silBothZero(sps, lc, acc);
       return RouteHelper.silXzeroYnonzero(sps, lc, acc);
     }
     return RouteHelper.silGeneral(sps, lc, acc);
