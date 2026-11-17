@@ -2,8 +2,9 @@
 # Compare two sil outputs: names and root counts exactly, roots to 1e-15
 # (solve3's acos/cos/cbrt are libm; V8 and Apple libm differ in the last bit).
 import sys
-a = [l.split() for l in open(sys.argv[1])]
-b = [l.split() for l in open(sys.argv[2])]
+with open(sys.argv[1]) as fa, open(sys.argv[2]) as fb:
+    a = [l.split() for l in fa]
+    b = [l.split() for l in fb]
 bad = 0
 for x, y in zip(a, b):
     ok = x[:2] == y[:2] and len(x) == len(y) and all(
