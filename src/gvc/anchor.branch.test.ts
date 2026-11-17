@@ -39,12 +39,12 @@ const measurer: TextMeasurer = { measure: () => ({ w: 0, h: 0 }) };
 // Local helpers (test/helpers/ is T3c's territory — kept self-contained)
 // ---------------------------------------------------------------------------
 
-/** unitCtx: origin bb, no pad/margin, identity scale — mapTransform reduces
- *  to x unchanged, y flipped as (72 - y). */
+/** unitCtx: bb 0,0,144,72, no pad/margin, unit scale (y negated) —
+ *  mapTransform reduces to x unchanged, y flipped as (y - 72) * -1. */
 function unitCtx(overrides: Partial<MapCtx> = {}): MapCtx {
   return {
-    bb: { ll: { x: 0, y: 0 }, ur: { x: 144, y: 72 } },
-    pad: { x: 0, y: 0 }, scale: 1, marginOff: { x: 0, y: 0 }, mapPolygon: true,
+    pageBox: { ll: { x: 0, y: 0 }, ur: { x: 144, y: 72 } },
+    translation: { x: 0, y: -72 }, scale: { x: 1, y: -1 }, mapPolygon: true,
     ...overrides,
   };
 }

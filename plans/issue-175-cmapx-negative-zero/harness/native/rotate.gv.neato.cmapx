@@ -1,0 +1,5 @@
+<map id="%1" name="%1">
+<area shape="poly" id="node1" href="a" title="a" alt="" coords="29,100,22,102,15,107,10,115,7,125,5,136,7,147,10,157,15,165,22,171,29,172,37,171,43,165,49,157,52,147,53,136,52,125,49,115,43,107,37,102"/>
+<area shape="poly" id="edge1" href="e" alt="" coords="32,101,35,89,36,95,37,101"/>
+<area shape="rect" id="graph0" href="g" alt="" coords="73,-0,-0,178"/>
+</map>

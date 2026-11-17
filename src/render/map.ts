@@ -27,14 +27,13 @@ import type { RendererPlugin } from '../gvc/context.js';
 import type { ObjState, RenderJob } from '../gvc/job.js';
 import { MapShape, EMIT_CLUSTERS_LAST } from '../gvc/job.js';
 import {
-  type MapCtx,
-  computeNodeUrlMap,
-  computeGraphUrlMap,
-  computeClusterUrlMap,
-  computeLabelRectMap,
-  computeEdgeSplineMaps,
+  type MapCtx, computeNodeUrlMap, computeGraphUrlMap, computeClusterUrlMap,
+  computeLabelRectMap, computeEdgeSplineMaps,
 } from '../gvc/anchor.js';
-import { initJobViewportZoom, parseDrawingSize } from '../gvc/viewport.js';
+import { printfFixed0 } from '../util/printf-round.js';
+import {
+  initJobViewportZoom, parseDrawingSize, setupPageBox, setupPageClip, setupPageSize,
+} from '../gvc/viewport.js';
 import { escapeXml } from './svg-helpers.js';
 import { escapeXmlTitle } from './xml-escape.js';
 import { maxOutputline } from './dot/agwrite-linelength.js';
@@ -466,23 +465,22 @@ export function cmapxShape(shape: MapShape): string {
   return 'poly';
 }
 
-/** CMAPX coords for a rectangle (UL→LR in Y-down space). */
+/** CMAPX coords for a rectangle (UL→LR in Y-down space), each printed "%.0f"
+ * (`-0` at the page top, ties to even). @see gvrender_core_map.c:map_output_shape */
 export function cmapxCoordsRect(pts: Point[]): string {
-  return String(Math.round(pts[0]!.x)) + ',' + String(Math.round(pts[1]!.y))
-    + ',' + String(Math.round(pts[1]!.x)) + ',' + String(Math.round(pts[0]!.y));
+  return printfFixed0(pts[0]!.x) + ',' + printfFixed0(pts[1]!.y)
+    + ',' + printfFixed0(pts[1]!.x) + ',' + printfFixed0(pts[0]!.y);
 }
 
-/** CMAPX coords for a circle: `cx,cy,r`. */
+/** CMAPX coords for a circle: `cx,cy,r`, "%.0f". @see map_output_shape */
 export function cmapxCoordsCircle(pts: Point[]): string {
-  const cx = Math.round(pts[0]!.x);
-  const cy = Math.round(pts[0]!.y);
-  const r = Math.round(pts[1]!.x - pts[0]!.x);
-  return String(cx) + ',' + String(cy) + ',' + String(r);
+  return printfFixed0(pts[0]!.x) + ',' + printfFixed0(pts[0]!.y)
+    + ',' + printfFixed0(pts[1]!.x - pts[0]!.x);
 }
 
-/** CMAPX coords for a polygon: `x0,y0,x1,y1,...`. */
+/** CMAPX coords for a polygon: `x0,y0,x1,y1,...`, "%.0f". @see map_output_shape */
 export function cmapxCoordsPoly(pts: Point[]): string {
-  return pts.map(p => String(Math.round(p.x)) + ',' + String(Math.round(p.y))).join(',');
+  return pts.map(p => printfFixed0(p.x) + ',' + printfFixed0(p.y)).join(',');
 }
 
 /** Dispatch to the correct CMAPX coordinate formatter. */
@@ -513,21 +511,19 @@ export function mapOutputCmapx(
   out.push(isXml ? '/>\n' : '>\n');
 }
 
-/** Write one IMAP shape line; skipped when url is empty. */
-export function mapOutputImap(
-  shape: MapShape, pts: Point[], url: string, out: string[],
-): void {
+/** Write one IMAP shape line ("%.0f" coordinates); skipped when url is empty.
+ * @see plugin/core/gvrender_core_map.c:map_output_shape (FORMAT_IMAP) */
+export function mapOutputImap(shape: MapShape, pts: Point[], url: string, out: string[]): void {
   if (!url) return;
   if (shape === MapShape.Rectangle) {
     out.push('rect ' + url + ' '
-      + Math.round(pts[0]!.x) + ',' + Math.round(pts[1]!.y)
-      + ' ' + Math.round(pts[1]!.x) + ',' + Math.round(pts[0]!.y) + '\n');
+      + printfFixed0(pts[0]!.x) + ',' + printfFixed0(pts[1]!.y)
+      + ' ' + printfFixed0(pts[1]!.x) + ',' + printfFixed0(pts[0]!.y) + '\n');
   } else if (shape === MapShape.Circle) {
-    const r = Math.round(pts[1]!.x - pts[0]!.x);
-    out.push('circle ' + url + ' '
-      + Math.round(pts[0]!.x) + ',' + Math.round(pts[0]!.y) + ',' + String(r) + '\n');
+    out.push('circle ' + url + ' ' + printfFixed0(pts[0]!.x) + ',' + printfFixed0(pts[0]!.y)
+      + ',' + printfFixed0(pts[1]!.x - pts[0]!.x) + '\n');
   } else {
-    const pairs = pts.map(p => Math.round(p.x) + ',' + Math.round(p.y)).join(' ');
+    const pairs = pts.map(p => printfFixed0(p.x) + ',' + printfFixed0(p.y)).join(' ');
     out.push('poly ' + url + ' ' + pairs + '\n');
   }
 }
@@ -606,18 +602,21 @@ export function graphMapUrl(g: Graph): string | null {
   return raw === undefined ? null : substObjAnchor(raw, g);
 }
 
-/** Build the imagemap coordinate context. The map device's default dpi is 96
- * (dpi/resolution attrs override); zoom fits the drawing into `size=` exactly
- * as the SVG path (initJobViewportZoom). @see gvrender_core_map.c device_features_map */
+/** Build the imagemap coordinate context: setup_page's pageBox and translation
+ * (non-rotated, GVRENDER_Y_GOES_DOWN; canvasBox.LL is the graph `margin=`, the
+ * map device having no default page size to centre in) and emit_graph's
+ * devscale, negated on y. The map device's default dpi is 96 (dpi/resolution
+ * attrs override); zoom fits the drawing into `size=` (initJobViewportZoom).
+ * @see lib/common/emit.c:setup_page (1515-1555) ; emit_graph (3631-3633) */
 export function buildMapCtx(g: Graph, job: RenderJob, mapPolygon: boolean): MapCtx {
   const drawingDpi = lateDouble(g.attrs.get('dpi'), lateDouble(g.attrs.get('resolution'), 0, 0), 0);
-  const mapDpi = drawingDpi > 0 ? drawingDpi : 96;
-  const devscale = mapDpi / POINTS_PER_INCH;
-  const z = initJobViewportZoom(job.bb, parseDrawingSize(g.attrs.get('size')), job.pad);
-  // The graph `margin=` enters device space as `margin * dpi/72` (independent
-  // of zoom), added after the scaled transform. @see emit.c:setup_page.
-  const marginOff = { x: job.margin.x * devscale, y: job.margin.y * devscale };
-  return { bb: job.bb, pad: job.pad, scale: z * devscale, marginOff, mapPolygon };
+  const devscale = (drawingDpi > 0 ? drawingDpi : 96) / POINTS_PER_INCH;
+  const size = parseDrawingSize(g.attrs.get('size'));
+  const z = initJobViewportZoom(job.bb, size, job.pad);
+  const clip = setupPageClip(job.bb, size, job.pad, z);
+  const pageBox = setupPageBox(setupPageSize(job.bb, size, job.pad, z), job.pad);
+  const translation = { x: -clip.ll.x + job.margin.x / z, y: -clip.ur.y - job.margin.y / z };
+  return { pageBox, translation, scale: { x: z * devscale, y: z * -devscale }, mapPolygon };
 }
 
 /** Head/tail/center label anchor bundle. */

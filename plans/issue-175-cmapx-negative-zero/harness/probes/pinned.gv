@@ -1,0 +1,1 @@
+graph{dpi=72; pad=0; inputscale=72; node[shape=box fixedsize=true width=0.5 height=0.5 URL="u"]; a [pos="10.5,10.5!"]; b [pos="100.5,90.5!"]; c [pos="51.5,23.5!" shape=circle]; d [pos="70,60!" shape=box width=0.25 height=0.25]}

@@ -1,0 +1,7 @@
+<map id="%1" name="%1">
+<area shape="rect" id="node1" href="u" title="a" alt="" coords="6,49,60,85"/>
+<area shape="rect" id="node2" href="u" title="wide label" alt="" coords="65,4,139,40"/>
+<area shape="rect" id="edge1-label" href="e" title="x" alt="" coords="58,34,65,51"/>
+<area shape="rect" id="node3" href="u" title="c" alt="" coords="4,101,58,137"/>
+<area shape="rect" id="edge2-label" href="f" title="ab" alt="" coords="19,88,32,105"/>
+</map>

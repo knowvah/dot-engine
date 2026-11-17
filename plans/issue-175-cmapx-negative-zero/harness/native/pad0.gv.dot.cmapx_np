@@ -1,0 +1,5 @@
+<map id="%1" name="%1">
+<area shape="rect" id="node1" href="a" title="a" alt="" coords="21,54,93,102"/>
+<area shape="rect" id="clust1" href="c" title="C" alt="" coords="11,11,104,113"/>
+<area shape="rect" id="graph0" href="g" alt="" coords="0,-0,115,198"/>
+</map>

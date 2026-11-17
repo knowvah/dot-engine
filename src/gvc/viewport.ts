@@ -190,6 +190,22 @@ export function initJobViewportZoom(bb: Box, size: DrawingSize | null, pad: Poin
  * @see lib/common/emit.c:init_job_viewport, init_job_pagination, setup_page
  */
 export function setupPageClip(bb: Box, size: DrawingSize | null, pad: Point, z: number): Box {
+  const focus = { x: 0.5 * (bb.ll.x + bb.ur.x), y: 0.5 * (bb.ll.y + bb.ur.y) };
+  const pageSize = setupPageSize(bb, size, pad, z);
+  const ll = {
+    x: focus.x + pageSize.x * (0 - 1 / 2.0),
+    y: focus.y + pageSize.y * (0 - 1 / 2.0),
+  };
+  return { ll, ur: { x: ll.x + pageSize.x, y: ll.y + pageSize.y } };
+}
+
+/**
+ * job->pageSize, the size of one page in graph units: imageSize / zoom, where
+ * imageSize = view = Z * sz and sz is the padded bb's extent (see
+ * setupPageClip). Not always sz: (Z * sz) / Z can round one ulp away from it.
+ * @see lib/common/emit.c:init_job_viewport, init_job_pagination
+ */
+export function setupPageSize(bb: Box, size: DrawingSize | null, pad: Point, z: number): Point {
   const jbLL = { x: bb.ll.x - pad.x, y: bb.ll.y - pad.y };
   const jbUR = { x: bb.ur.x + pad.x, y: bb.ur.y + pad.y };
   const sz = { x: jbUR.x - jbLL.x, y: jbUR.y - jbLL.y };
@@ -197,11 +213,16 @@ export function setupPageClip(bb: Box, size: DrawingSize | null, pad: Point, z: 
     if (sz.x <= 0.001) sz.x = size.x;
     if (sz.y <= 0.001) sz.y = size.y;
   }
-  const focus = { x: 0.5 * (bb.ll.x + bb.ur.x), y: 0.5 * (bb.ll.y + bb.ur.y) };
-  const pageSize = { x: (z * sz.x) / z, y: (z * sz.y) / z };
-  const ll = {
-    x: focus.x + pageSize.x * (0 - 1 / 2.0),
-    y: focus.y + pageSize.y * (0 - 1 / 2.0),
-  };
+  return { x: (z * sz.x) / z, y: (z * sz.y) / z };
+}
+
+/**
+ * job->pageBox for the single page (pagesArrayElem 0): LL = elem * pageSize -
+ * pad, UR = LL + pageSize. Its origin is -pad whatever the bb's is, and it is
+ * derived apart from job->clip, so the two can differ in their last bits.
+ * @see lib/common/emit.c:setup_page (1515-1518)
+ */
+export function setupPageBox(pageSize: Point, pad: Point): Box {
+  const ll = { x: 0 * pageSize.x - pad.x, y: 0 * pageSize.y - pad.y };
   return { ll, ur: { x: ll.x + pageSize.x, y: ll.y + pageSize.y } };
 }

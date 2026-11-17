@@ -1,0 +1,5 @@
+base referer
+default g
+rect a 12,61 66,97
+rect b 65,4 101,40
+rect c 4,130 26,166

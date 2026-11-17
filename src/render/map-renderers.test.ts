@@ -240,11 +240,13 @@ describe('CmapxNpRenderer', () => {
 // Imagemap geometry (url_map_p) — anchor.ts + map.ts helpers
 // ---------------------------------------------------------------------------
 
-/** MapCtx: origin bb, pad 4, scale 1, no margin, polygon-capable. */
+/** MapCtx: bb 0,0,144,72, pad 4, scale 1 (y negated), no margin,
+ * polygon-capable: pageBox = bb ± pad, translation = (-(0 - 4), -(72 + 4)), as
+ * buildMapCtx fills it. */
 function unitCtx(overrides: Partial<MapCtx> = {}): MapCtx {
   return {
-    bb: { ll: { x: 0, y: 0 }, ur: { x: 144, y: 72 } },
-    pad: { x: 4, y: 4 }, scale: 1, marginOff: { x: 0, y: 0 }, mapPolygon: true,
+    pageBox: { ll: { x: -4, y: -4 }, ur: { x: 148, y: 76 } },
+    translation: { x: 4, y: -76 }, scale: { x: 1, y: -1 }, mapPolygon: true,
     ...overrides,
   };
 }
@@ -271,8 +273,10 @@ describe('mapGraphName', () => {
 
 describe('mapTransform', () => {
   it('applies pad, Y-flip, scale and margin offset', () => {
-    const ctx = unitCtx({ scale: 2, marginOff: { x: 5, y: 7 } });
-    // x = (10 + 4 - 0)*2 + 5 = 33 ; y = (72 + 4 - 20)*2 + 7 = 119
+    // Zoom 2 and a device margin of (5, 7): the margin enters the translation
+    // pre-unscaled (margin / zoom), as setup_page does.
+    const ctx = unitCtx({ translation: { x: 4 + 5 / 2, y: -76 - 7 / 2 }, scale: { x: 2, y: -2 } });
+    // x = (10 + 4 + 2.5)*2 = 33 ; y = (20 - 76 - 3.5)*-2 = 119
     expect(mapTransform({ x: 10, y: 20 }, ctx)).toEqual({ x: 33, y: 119 });
   });
 });
@@ -283,7 +287,8 @@ describe('buildMapCtx', () => {
     const job = makeJob();
     job.pad = { x: 4, y: 4 };
     const ctx = buildMapCtx(g, job, true);
-    expect(ctx.scale).toBeCloseTo(96 / 72, 6);
+    expect(ctx.scale.x).toBeCloseTo(96 / 72, 6);
+    expect(ctx.scale.y).toBeCloseTo(-96 / 72, 6);
     expect(ctx.mapPolygon).toBe(true);
   });
 });
@@ -314,9 +319,10 @@ describe('computeGraphUrlMap + computeLabelRectMap', () => {
   it('graph hot spot is the padded drawing rectangle', () => {
     const obj = makeObjState();
     computeGraphUrlMap(obj, unitCtx());
-    // clip = [-4,-4]..[148,76] → transform → (0,80),(152,0)
+    // pageBox = [-4,-4]..[148,76] → transform → (0,80),(152,-0): the page top
+    // is +0 times the negative y scale (gvrender_ptf_A), so -0.0 as in C.
     expect(obj.urlMapShape).toBe(MapShape.Rectangle);
-    expect(obj.urlMapPts).toEqual([{ x: 0, y: 80 }, { x: 152, y: 0 }]);
+    expect(obj.urlMapPts).toEqual([{ x: 0, y: 80 }, { x: 152, y: -0 }]);
   });
   it('label hot spot is the pos ± dimen/2 rectangle', () => {
     const obj = makeObjState();

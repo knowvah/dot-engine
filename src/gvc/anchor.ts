@@ -24,6 +24,7 @@ import { bezier } from '../common/bezier.js';
 import { ptToLine2 } from '../common/splines-geom.js';
 import type { RendererPlugin } from './context.js';
 import { MapShape, type ObjState, type RenderJob } from './job.js';
+import { applyScale } from './device-transform.js';
 
 /** Non-empty attr value, or undefined. C: `(s = agget(o, k)) && s[0]`. */
 function attr(attrs: Map<string, string>, key: string): string | undefined {
@@ -234,28 +235,21 @@ const DFLT_SAMPLE = 20;
 const MAP_HW = 2.0;
 
 /**
- * Coordinate-transform context for the imagemap device. `bb` is the unpadded
- * graph bounding box (GD_bb), `pad` the graph padding, `scale` the device
- * scale (`zoom * dpi / 72`). The imagemap device is GVRENDER_Y_GOES_DOWN with
- * no GVRENDER_DOES_TRANSFORM, so emit.c runs every map point through
- * gvrender_ptf.
+ * Coordinate-transform context for the imagemap device. `pageBox` is
+ * job->pageBox (the root graph's area). `translation` and `scale` are
+ * gvrender_ptf_A's: job->translation, and zoom * devscale with `scale.y`
+ * negative, because the map device is GVRENDER_Y_GOES_DOWN.
  */
-export interface MapCtx { bb: Box; pad: Point; scale: number; marginOff: Point; mapPolygon: boolean; }
+export interface MapCtx { pageBox: Box; translation: Point; scale: Point; mapPolygon: boolean; }
 
 /**
- * gvrender_ptf for the imagemap device (single page, no rotation): the clip box
- * is the padded drawing, so translation.x = -(bb.ll.x - pad.x) and
- * translation.y = -(bb.ur.y + pad.y); devscale.y is negated for Y_GOES_DOWN.
- * setup_page also folds `canvasBox.LL / zoom` (the graph `margin=`) into the
- * translation, which after the `* scale` becomes `margin * dpi/72` in device
- * units (`marginOff`) — matching svgBeginPage's `+ margin / z` term.
- * @see lib/gvc/gvrender.c:gvrender_ptf ; lib/common/emit.c:setup_page (1566-1581)
+ * gvrender_ptf_A's no-rotation branch: (p + translation) * scale. The negative
+ * y scale makes the page top -0.0, which "%.0f" prints as `-0` (issue #175).
+ * buildMapCtx fills the context; rotate=90 is not ported for maps (#247).
+ * @see lib/gvc/gvrender.c:gvrender_ptf_A ; lib/common/emit.c:setup_page (1548-1555)
  */
 export function mapTransform(p: Point, ctx: MapCtx): Point {
-  return {
-    x: (p.x + ctx.pad.x - ctx.bb.ll.x) * ctx.scale + ctx.marginOff.x,
-    y: (ctx.bb.ur.y + ctx.pad.y - p.y) * ctx.scale + ctx.marginOff.y,
-  };
+  return applyScale(p, ctx.translation.x, ctx.translation.y, ctx.scale.x, ctx.scale.y);
 }
 
 /** isFilled: node style contains "filled". @see lib/common/emit.c:705 */
@@ -388,21 +382,15 @@ export function computeNodeUrlMap(n: Node, obj: ObjState, ctx: MapCtx): void {
 }
 
 /**
- * Graph-level (root) hot spot: the padded drawing rectangle (pageBox), matching
- * emit_page's map computation for GVRENDER_DOES_MAP_RECTANGLE devices.
- * @see lib/common/emit.c:emit_page (3623-3642)
+ * Graph-level (root) hot spot: job->pageBox, as emit_page maps it for
+ * GVRENDER_DOES_MAP_RECTANGLE devices. The page box starts at -pad (not at
+ * bb.LL - pad: fdp graph labels keep a negative bb.LL, and native url.gv fdp
+ * emits 0,-33,539,374), and the translation is built from job->clip, so under
+ * `size=` the corner can land a few ulps below zero and print `-0`.
+ * @see lib/common/emit.c:emit_page (3570-3589)
  */
 export function computeGraphUrlMap(obj: ObjState, ctx: MapCtx): void {
-  // C uses job->clip — the 0-BASED page window ([-pad, (UR-LL)+pad] in graph
-  // coords), not bb±pad. Identical when bb.LL is the origin, but engines that
-  // keep a negative bb.LL (fdp graph labels: bb "0,-24.8,...") shift the root
-  // rect: native url.gv fdp emits 0,-33,539,374 where bb±pad would give
-  // 0,0,539,407. @see lib/common/emit.c:3652 emit_map_rect(job, job->clip)
-  const ll = { x: -ctx.pad.x, y: -ctx.pad.y };
-  const ur = {
-    x: ctx.bb.ur.x - ctx.bb.ll.x + ctx.pad.x,
-    y: ctx.bb.ur.y - ctx.bb.ll.y + ctx.pad.y,
-  };
+  const { ll, ur } = ctx.pageBox;
   obj.urlMapShape = MapShape.Rectangle;
   obj.urlMapPts = [mapTransform(ll, ctx), mapTransform(ur, ctx)];
 }
