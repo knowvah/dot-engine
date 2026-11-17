@@ -1,0 +1,1 @@
+digraph G { a -> b [label=<<b>bold</b>>, labelURL="lu"]; b -> c [label=<<table><tr><td href="cell">x</td></tr></table>>, URL="u"]; }

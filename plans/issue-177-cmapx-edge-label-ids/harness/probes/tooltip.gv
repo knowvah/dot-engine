@@ -1,0 +1,1 @@
+digraph G { a -> b [label="l", labeltooltip="tl"]; b -> c [headlabel="h", headtooltip="th"]; c -> d [taillabel="t", tailtooltip="tt"]; d -> e [label="e", tooltip="whole"]; }

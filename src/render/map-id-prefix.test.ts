@@ -16,13 +16,9 @@
 // captured 2026-11-17 by harness/rowcheck.mjs (NATIVE_DIR). They are not
 // inlined because the area lines run to 230 columns.
 //
-// Three probes are compared on the lines this change owns only (AD-3):
+// Two probes are compared on the lines this change owns only (AD-3):
 //   clust   the cluster area: native prints `id="R"` (a subgraph opened after
 //           the root's `id` inherits it in cgraph, #242), the port `R_clust1`.
-//   elabel  the edge-label areas: native `R_edge1-label` and
-//           `R_edge1-headlabel` (the suffix is #177), the port `R_edge1`.
-//           cmapx only: cmapx_np prints no edge polyline, so every area of
-//           that row is a label area.
 //   subst2  the node whose own id is `i\N`: native substitutes it to `ia`
 //           (initMapData, #249), the port prints it raw.
 // @see lib/common/emit.c:getObjId
@@ -42,7 +38,7 @@ const ENGINES: readonly EngineName[] = ['dot', 'neato', 'fdp'];
 const FORMATS = ['cmapx', 'cmapx-np'] as const;
 
 /** Probes whose cmapx and cmapx_np output equals native byte for byte. */
-const EQUAL_PROBES = ['repro', 'html', 'ownid', 'glabel', 'clust-late', 'subst'] as const;
+const EQUAL_PROBES = ['repro', 'html', 'ownid', 'glabel', 'clust-late', 'subst', 'elabel'] as const;
 
 /** A probe with one kind of line owned by another issue: that line's mark in
  * native's output, the issue, and the formats that have a line left to compare.
@@ -56,7 +52,6 @@ interface PartialProbe {
 
 const PARTIAL_PROBES: readonly PartialProbe[] = [
   { probe: 'clust', leftOut: / href="c" /, issue: '#242', formats: FORMATS },
-  { probe: 'elabel', leftOut: / id="R_edge1-(head)?label" /, issue: '#177', formats: ['cmapx'] },
   { probe: 'subst2', leftOut: / id="ia" /, issue: '#249', formats: FORMATS },
 ];
 

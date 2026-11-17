@@ -1,0 +1,1 @@
+digraph G { a -> b [label="garf", URL="garf"]; b -> c [headlabel="size", headURL="headsize"]; c -> d [taillabel="size", tailURL="tailsize"]; }

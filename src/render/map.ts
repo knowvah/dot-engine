@@ -619,8 +619,9 @@ export function buildMapCtx(g: Graph, job: RenderJob, mapPolygon: boolean): MapC
   return { pageBox, translation, scale: { x: z * devscale, y: z * -devscale }, mapPolygon };
 }
 
-/** Head/tail/center label anchor bundle. */
-interface EdgeLabelAnchor { url: string | null; tooltip: string | null; target: string | null; explicit: boolean; }
+/** Head/tail/center label anchor bundle; `suffix` is emit_edge_label's `type` (from lkind). */
+interface EdgeLabelAnchor { url: string | null; tooltip: string | null; target: string | null; explicit: boolean;
+  suffix: 'label' | 'headlabel' | 'taillabel'; }
 
 /** Coalesce nullable anchor fields to '' (gvrender_begin_anchor passes ""). */
 function anchorOf(url: string | null, tooltip: string | null, target: string | null, id: string | null): AnchorCtx {
@@ -731,26 +732,24 @@ abstract class MapRendererBase implements RendererPlugin {
         this.emitShape(MapShape.Polygon, poly, anchor, job);
       }
     }
-    const centerA: EdgeLabelAnchor = {
-      url: obj.labelUrl, tooltip: obj.labelTooltip, target: obj.labelTarget, explicit: obj.explicitLabelTooltip,
-    };
+    const centerA: EdgeLabelAnchor = { url: obj.labelUrl, tooltip: obj.labelTooltip,
+      target: obj.labelTarget, explicit: obj.explicitLabelTooltip, suffix: 'label' };
     this.emitEdgeLabel(e.info.label, centerA, obj, job);
     this.emitEdgeLabel(e.info.xlabel, centerA, obj, job);
-    this.emitEdgeLabel(e.info.head_label,
-      { url: obj.headUrl, tooltip: obj.headTooltip, target: obj.headTarget, explicit: obj.explicitHeadTooltip },
-      obj, job);
-    this.emitEdgeLabel(e.info.tail_label,
-      { url: obj.tailUrl, tooltip: obj.tailTooltip, target: obj.tailTarget, explicit: obj.explicitTailTooltip },
-      obj, job);
+    this.emitEdgeLabel(e.info.head_label, { url: obj.headUrl, tooltip: obj.headTooltip,
+      target: obj.headTarget, explicit: obj.explicitHeadTooltip, suffix: 'headlabel' }, obj, job);
+    this.emitEdgeLabel(e.info.tail_label, { url: obj.tailUrl, tooltip: obj.tailTooltip,
+      target: obj.tailTarget, explicit: obj.explicitTailTooltip, suffix: 'taillabel' }, obj, job);
   }
 
-  /** One edge label hot spot (map_label rect), if placed and url/explicit-tip.
-   * @see lib/common/emit.c:emit_edge_label */
+  /** One edge label hot spot (map_label rect), if placed and url/explicit-tip; its id is
+   * `<obj.id>-<suffix>` (C: `if (id)`, else NULL). @see lib/common/emit.c:emit_edge_label (2851-2876) */
   private emitEdgeLabel(lab: TextlabelT | undefined, la: EdgeLabelAnchor, obj: ObjState, job: RenderJob): void {
     const placed = lab !== undefined && lab.set && this.mapCtx !== null;
     if (!placed || (la.url === null && !la.explicit)) return;
     computeLabelRectMap(lab, obj, this.mapCtx!);
-    this.emitShape(MapShape.Rectangle, obj.urlMapPts, anchorOf(la.url, la.tooltip, la.target, obj.id), job);
+    const id = obj.id === null ? null : `${obj.id}-${la.suffix}`;
+    this.emitShape(MapShape.Rectangle, obj.urlMapPts, anchorOf(la.url, la.tooltip, la.target, id), job);
   }
 }
 

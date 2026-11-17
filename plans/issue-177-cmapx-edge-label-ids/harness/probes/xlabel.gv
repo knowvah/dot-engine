@@ -1,0 +1,1 @@
+digraph G { a -> b [xlabel="x", labelURL="lx"]; b -> c [label="l", xlabel="x", labelURL="both"]; }

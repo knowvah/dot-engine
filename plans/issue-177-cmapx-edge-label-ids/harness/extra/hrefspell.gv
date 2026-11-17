@@ -1,0 +1,1 @@
+digraph G { a -> b [headlabel="h", headhref="hh", taillabel="t", tailhref="th", label="l", labelhref="lh"]; b -> c [label="m", href="e"]; }
