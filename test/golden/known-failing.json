@@ -1,7 +1,4 @@
 {
-  "goldens": [
-    "dot-newrank-compact-three",
-    "dot-newrank-compact-weak"
-  ],
+  "goldens": [],
   "ptIssue": []
 }

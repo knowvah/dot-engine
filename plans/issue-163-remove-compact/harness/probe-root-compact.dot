@@ -1,0 +1,8 @@
+// compact set on the root graph is inherited by every cluster through agget;
+// 16.1.0 treated both clusters as strong, 16.1.1 ignores the attribute.
+digraph G {
+  newrank=true; compact=true;
+  subgraph cluster0 { a -> b [minlen=0]; b -> c; }
+  subgraph cluster1 { p -> q; }
+  c -> p; a -> q [minlen=0]; q -> z;
+}

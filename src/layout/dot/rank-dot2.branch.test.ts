@@ -5,7 +5,7 @@
  *
  * Mixed mode (D1): most branches are small pure helpers building the Xg
  * (level-assignment constraint) graph, unit-tested directly against
- * hand-built Graph/Node/Edge fixtures. A few branches (real strong clusters,
+ * hand-built Graph/Node/Edge fixtures. A few branches (clusters, the
  * multi-component readout) are driven end-to-end via dot2Rank and asserted
  * on concrete rank values. Each describe block stays under 30 physical
  * lines (lizard -L 30).
@@ -22,9 +22,8 @@ import {
   gLevel, gParentOrSelf, d2find, d2unionOne, d2unionAll, xgFindEdge,
   xgAddEdge, xgDeleteEdge, xgMerge, csRanksetKind, csSetupCluster,
   csProcessClusterNodes, csProcessRankset, csCheckDegenerate, compileSamerank,
-  compileNodes, xgStrong, xgWeakExists, xgWeakSetWeights, xgWeak,
-  isNonConstraint, isAStrongCluster, dotLca, isInternalToCluster,
-  ceShouldSwap, ceInternal, compileEdgeItem, compileEdges, ccProcessNode,
+  compileNodes, makeXnode, xgStrong, isNonConstraint, dotLca,
+  isInternalToCluster, ceShouldSwap, ceInternal, compileEdgeItem, compileEdges,
   reverseEdge2, dfsNode, dfsStep, connectComponents, addFastEdges,
   setMinMax2, readoutCopyRank, readoutUpdateMinrk, readoutApplyMinrk,
   readoutShiftAll, readoutScanNodes, readoutNormalize, dot2Rank,
@@ -54,7 +53,7 @@ function addRankEdge(g: Graph, tail: Node, head: Node): Edge {
 }
 
 function makeSt(): XgState {
-  return { lastNode: undefined, weakId: 0 };
+  return { lastNode: undefined };
 }
 
 function makeXg(): Graph {
@@ -367,7 +366,7 @@ describe('compileNodes', () => {
 });
 
 // ---------------------------------------------------------------------------
-// xgStrong / xgWeakExists / xgWeakSetWeights / xgWeak
+// xgStrong  @see rank.c:strong
 // ---------------------------------------------------------------------------
 
 describe('xgStrong', () => {
@@ -384,64 +383,8 @@ describe('xgStrong', () => {
   });
 });
 
-describe('xgWeakExists', () => {
-  it('finds a v->t, v->h diamond', () => {
-    const Xg = makeXg();
-    const t = new Node(0, 't', Xg);
-    const h = new Node(1, 'h', Xg);
-    const v = new Node(2, 'v', Xg);
-    xgAddEdge(Xg, v, t); xgAddEdge(Xg, v, h);
-    expect(xgWeakExists(Xg, t, h)).toBe(true);
-  });
-  it('returns false with no diamond', () => {
-    const Xg = makeXg();
-    const t = new Node(0, 't', Xg);
-    const h = new Node(1, 'h', Xg);
-    expect(xgWeakExists(Xg, t, h)).toBe(false);
-  });
-});
-
-describe('xgWeakSetWeights', () => {
-  it('applies the BACKWARD_PENALTY to e, the raw weight to f', () => {
-    const Xg = makeXg();
-    const v = new Node(0, 'v', Xg);
-    const t = new Node(1, 't', Xg);
-    const h = new Node(2, 'h', Xg);
-    const e = xgAddEdge(Xg, v, t);
-    const f = xgAddEdge(Xg, v, h);
-    xgWeakSetWeights(e, f, 2, 5);
-    expect(e.info.weight).toBe(2000); // 2 * BACKWARD_PENALTY
-    expect(f.info.minlen).toBe(5);
-    expect(f.info.weight).toBe(2);
-  });
-});
-
-describe('xgWeak', () => {
-  it('creates a weak node with two edges on first call', () => {
-    const Xg = makeXg();
-    const st = makeSt();
-    const t = new Node(0, 't', Xg);
-    const h = new Node(1, 'h', Xg);
-    const orig = new Edge(t, h, '');
-    xgWeak(Xg, t, h, orig, st);
-    expect(st.weakId).toBe(1);
-    expect(Xg.nodes.has('_weak_0')).toBe(true);
-  });
-  it('is a no-op when a v->t,v->h diamond already exists', () => {
-    const Xg = makeXg();
-    const st = makeSt();
-    const t = new Node(0, 't', Xg);
-    const h = new Node(1, 'h', Xg);
-    const v = new Node(2, 'v', Xg);
-    xgAddEdge(Xg, v, t); xgAddEdge(Xg, v, h);
-    const orig = new Edge(t, h, '');
-    xgWeak(Xg, t, h, orig, st);
-    expect(st.weakId).toBe(0); // no new weak node created
-  });
-});
-
 // ---------------------------------------------------------------------------
-// isNonConstraint / isAStrongCluster  @see rank.c:is_nonconstraint / is_a_strong_cluster
+// isNonConstraint  @see rank.c:is_nonconstraint
 // ---------------------------------------------------------------------------
 
 describe('isNonConstraint', () => {
@@ -461,16 +404,6 @@ describe('isNonConstraint', () => {
     const e = new Edge(new Node(0, 'a', g), new Node(1, 'b', g), '');
     e.attrs.set('constraint', 'true');
     expect(isNonConstraint(e)).toBe(false);
-  });
-});
-
-describe('isAStrongCluster', () => {
-  it('false when compact is unset, true when compact=true', () => {
-    const root = new Graph('root', 'directed');
-    const g = makeSubg(root, 'cluster0');
-    expect(isAStrongCluster(g)).toBe(false);
-    g.attrs.set('compact', 'true');
-    expect(isAStrongCluster(g)).toBe(true);
   });
 });
 
@@ -550,34 +483,32 @@ describe('compileEdgeItem', () => {
     const [g] = makeRankGraph(2);
     const [a, b] = [...g.nodes.values()];
     const Xg = makeXg();
-    const st = makeSt();
     a.info.rep = new Node(0, 'Xa', Xg); b.info.rep = new Node(1, 'Xb', Xg);
     const e = new Edge(a, b, ''); e.attrs.set('constraint', 'false');
-    compileEdgeItem(Xg, e, a.info.rep, st);
+    compileEdgeItem(Xg, e, a.info.rep);
     expect(Xg.edges.length).toBe(0);
   });
   it('skips when the head has no rep', () => {
     const [g] = makeRankGraph(2);
     const [a, b] = [...g.nodes.values()];
     const Xg = makeXg();
-    const st = makeSt();
     a.info.rep = new Node(0, 'Xa', Xg); // b has no rep
     const e = new Edge(a, b, '');
-    expect(() => compileEdgeItem(Xg, e, a.info.rep!, st)).not.toThrow();
+    expect(() => compileEdgeItem(Xg, e, a.info.rep!)).not.toThrow();
     expect(Xg.edges.length).toBe(0);
   });
   it('skips a self-collapsed edge (Xt === Xh)', () => {
     const [g] = makeRankGraph(2);
     const [a, b] = [...g.nodes.values()];
     const Xg = makeXg();
-    const st = makeSt();
     const shared = new Node(0, 'shared', Xg);
     a.info.rep = shared; b.info.rep = shared;
     const e = new Edge(a, b, '');
-    compileEdgeItem(Xg, e, a.info.rep, st);
+    compileEdgeItem(Xg, e, a.info.rep);
     expect(Xg.edges.length).toBe(0);
   });
-  it('routes through xgWeak when either endpoint is in a strong cluster', () => {
+  it('adds one strong Xg edge for an edge leaving a compact=true cluster', () => {
+    // 16.1.1 dropped weak(): compile_edges ends in strong() for every edge.
     const root = new Graph('root', 'directed');
     const a = new Node(0, 'a', root);
     const b = new Node(1, 'b', root);
@@ -586,10 +517,15 @@ describe('compileEdgeItem', () => {
     a.info.clust = clust; // b has no cluster -> not internal
     const Xg = makeXg();
     const st = makeSt();
-    a.info.rep = new Node(0, 'Xa', Xg); b.info.rep = new Node(1, 'Xb', Xg);
-    const e = new Edge(a, b, '');
-    compileEdgeItem(Xg, e, a.info.rep, st);
-    expect(Xg.nodes.has('_weak_0')).toBe(true);
+    const Xa = makeXnode(Xg, 'a', st); const Xb = makeXnode(Xg, 'b', st);
+    a.info.rep = Xa; b.info.rep = Xb;
+    const e = new Edge(a, b, ''); e.info.minlen = 3; e.info.weight = 7;
+    compileEdgeItem(Xg, e, Xa);
+    expect([...Xg.nodes.keys()]).toEqual(['a', 'b']); // no _weak_* node
+    expect(Xg.edges.length).toBe(1);
+    const x = xgFindEdge(Xg, Xa, Xb);
+    expect(x?.info.minlen).toBe(3);
+    expect(x?.info.weight).toBe(7);
   });
 });
 
@@ -598,42 +534,8 @@ describe('compileEdges', () => {
     const [g, [a, b]] = makeRankGraph(2);
     addRankEdge(g, a, b); // a has no .info.rep -> Xt undefined -> continue
     const Xg = makeXg();
-    const st = makeSt();
-    expect(() => compileEdges(g, Xg, st)).not.toThrow();
+    expect(() => compileEdges(g, Xg)).not.toThrow();
     expect(Xg.edges.length).toBe(0);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// ccProcessNode  @see rank.c:compile_clusters (TOP/BOT wiring)
-// ---------------------------------------------------------------------------
-
-describe('ccProcessNode', () => {
-  it('skips a node with no Xg representative', () => {
-    const root = new Graph('root', 'directed');
-    const g = makeSubg(root, 'cluster0');
-    const n = new Node(0, 'n', root);
-    g.nodes.set('n', n);
-    const Xg = makeXg();
-    const st = makeSt();
-    expect(() => ccProcessNode(g, Xg, st, n, { top: undefined, bot: undefined })).not.toThrow();
-  });
-  it('creates TOP on first no-in-edge node, reuses it on the second', () => {
-    const root = new Graph('root', 'directed');
-    const g = makeSubg(root, 'cluster0');
-    const a = new Node(0, 'a', root);
-    const b = new Node(1, 'b', root);
-    g.nodes.set('a', a); g.nodes.set('b', b);
-    const Xg = makeXg();
-    const st = makeSt();
-    a.info.rep = new Node(0, 'Xa', Xg);
-    b.info.rep = new Node(1, 'Xb', Xg);
-    const bounds: { top: Node | undefined; bot: Node | undefined } = { top: undefined, bot: undefined };
-    ccProcessNode(g, Xg, st, a, bounds);
-    expect(bounds.top).toBeDefined();
-    const firstTop = bounds.top;
-    ccProcessNode(g, Xg, st, b, bounds);
-    expect(bounds.top).toBe(firstTop); // reused, not recreated
   });
 });
 
@@ -878,7 +780,7 @@ describe('readoutNormalize', () => {
 });
 
 // ---------------------------------------------------------------------------
-// dot2Rank end-to-end — constraint=false, strong cluster, multi-component
+// dot2Rank end-to-end — constraint=false, compact ignored, multi-component
 // ---------------------------------------------------------------------------
 
 describe('dot2Rank — constraint=false edge is excluded from leveling', () => {
@@ -891,19 +793,32 @@ describe('dot2Rank — constraint=false edge is excluded from leveling', () => {
   });
 });
 
-describe('dot2Rank — strong cluster (compact=true) pulls members together', () => {
-  it('ranks a chain containing one compact cluster', () => {
-    const [g, [a, b, c]] = makeRankGraph(3);
-    addRankEdge(g, a, b);
-    addRankEdge(g, b, c);
-    const clust = makeSubg(g, 'cluster0');
+/** Golden dot-newrank-compact-three: three compact=true clusters in a chain. */
+function makeCompactThree(): [Graph, Node[]] {
+  const [g, n] = makeRankGraph(7); // a b c d e f z
+  const [a, b, c, d, e, f, z] = n;
+  [[a, b], [c, d], [e, f]].forEach(([t, h], i) => {
+    const clust = makeSubg(g, `cluster${i}`);
     clust.attrs.set('compact', 'true');
-    clust.nodes.set('b', b);
-    g.subgraphs.set('cluster0', clust);
+    clust.nodes.set(t.name, t); clust.nodes.set(h.name, h);
+    g.subgraphs.set(clust.name, clust);
+  });
+  addRankEdge(g, a, b).info.minlen = 0;
+  addRankEdge(g, c, d);
+  addRankEdge(g, e, f).info.minlen = 0;
+  addRankEdge(g, b, c);
+  addRankEdge(g, d, e);
+  addRankEdge(g, a, e).info.minlen = 0;
+  addRankEdge(g, f, z);
+  return [g, n];
+}
+
+describe('dot2Rank — compact=true is ignored, as graphviz 16.1.1 does', () => {
+  it('ranks golden dot-newrank-compact-three as native 16.1.1 does', () => {
+    const [g, n] = makeCompactThree();
     dot2Rank(g);
-    expect(a.info.rank).toBe(0);
-    expect(b.info.rank).toBe(1);
-    expect(c.info.rank).toBe(2);
+    // native 16.1.1 -Tplain: a 0, b 0, c 1, d 2, e 3, f 3, z 4
+    expect(n.map(v => v.info.rank)).toEqual([0, 0, 1, 2, 3, 3, 4]);
   });
 });
 

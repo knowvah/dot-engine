@@ -1,0 +1,8 @@
+// Stephen North's example from upstream d5061e47c: with compact=true the
+// 16.1.0 cluster kept a -> z two ranks apart; 16.1.1 ignores compact, so the
+// long path stretches the cluster.
+digraph G {
+  newrank=true;
+  subgraph cluster_0 { compact=true; a -> z; }
+  a -> b -> c -> d -> e -> f -> z;
+}
