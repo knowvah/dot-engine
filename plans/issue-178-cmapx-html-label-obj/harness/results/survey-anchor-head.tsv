@@ -1,0 +1,104 @@
+input	engine	format	lines	baseDiff	headDiff	verdict
+1425.dot	dot	cmapx_np	4	0	0	unchanged
+1425.dot	dot	imap	1	0	0	unchanged
+1425.dot	neato	cmapx_np	4	0	0	unchanged
+1425.dot	neato	imap	1	0	0	unchanged
+1425.dot	fdp	cmapx_np	4	0	0	unchanged
+1425.dot	fdp	imap	1	0	0	unchanged
+1425_1.dot	dot	cmapx_np	9	0	0	unchanged
+1425_1.dot	dot	imap	2	0	0	unchanged
+1425_1.dot	neato	cmapx_np	9	0	0	unchanged
+1425_1.dot	neato	imap	2	0	0	unchanged
+1425_1.dot	fdp	cmapx_np	9	0	0	unchanged
+1425_1.dot	fdp	imap	2	0	0	unchanged
+1879.dot	dot	cmapx_np	539	0	0	unchanged
+1879.dot	dot	imap	538	0	0	unchanged
+1879.dot	neato	cmapx_np	539	0	0	unchanged
+1879.dot	neato	imap	538	0	0	unchanged
+1879.dot	fdp	cmapx_np	539	18	18	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:58070
+  port       throw new RenderError(
+  port             ^
+  port RenderError: splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet
+  port     at fdpSplines (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:58070:13)
+  port     at fdpLayoutEngine (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:58095:29)
+  port     at Object.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:58102:5)
+  port     at GvcContext.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:6581:12)
+  port     at Module.render2 (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:62868:9)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:40:28)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:96:3 {
+  port   type: 'semantic',
+  port   code: 'UNSUPPORTED_FEATURE',
+  port   friendlyMessage: 'The graph uses a Graphviz feature that dot-engine does not support yet.'
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+1879.dot	fdp	imap	538	18	18	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:58070
+  port       throw new RenderError(
+  port             ^
+  port RenderError: splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet
+  port     at fdpSplines (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:58070:13)
+  port     at fdpLayoutEngine (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:58095:29)
+  port     at Object.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:58102:5)
+  port     at GvcContext.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:6581:12)
+  port     at Module.render2 (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:62868:9)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:40:28)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:96:3 {
+  port   type: 'semantic',
+  port   code: 'UNSUPPORTED_FEATURE',
+  port   friendlyMessage: 'The graph uses a Graphviz feature that dot-engine does not support yet.'
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+2295.dot	dot	cmapx_np	3	0	0	unchanged
+2295.dot	dot	imap	2	0	0	unchanged
+2295.dot	neato	cmapx_np	3	0	0	unchanged
+2295.dot	neato	imap	2	0	0	unchanged
+2295.dot	fdp	cmapx_np	3	0	0	unchanged
+2295.dot	fdp	imap	2	0	0	unchanged
+2497.dot	dot	cmapx_np	2	0	0	unchanged
+2497.dot	dot	imap	1	0	0	unchanged
+2497.dot	neato	cmapx_np	2	0	0	unchanged
+2497.dot	neato	imap	1	0	0	unchanged
+2497.dot	fdp	cmapx_np	2	0	0	unchanged
+2497.dot	fdp	imap	1	0	0	unchanged
+2619_1.dot	dot	cmapx_np	11	0	0	unchanged
+2619_1.dot	dot	imap	10	0	0	unchanged
+2619_1.dot	neato	cmapx_np	11	0	0	unchanged
+2619_1.dot	neato	imap	10	0	0	unchanged
+2619_1.dot	fdp	cmapx_np	11	0	0	unchanged
+2619_1.dot	fdp	imap	10	0	0	unchanged
+2619_2.dot	dot	cmapx_np	11	0	0	unchanged
+2619_2.dot	dot	imap	10	0	0	unchanged
+2619_2.dot	neato	cmapx_np	11	0	0	unchanged
+2619_2.dot	neato	imap	10	0	0	unchanged
+2619_2.dot	fdp	cmapx_np	11	0	0	unchanged
+2619_2.dot	fdp	imap	10	0	0	unchanged
+html2.gv	dot	cmapx_np	8	0	0	unchanged
+html2.gv	dot	imap	7	0	0	unchanged
+html2.gv	neato	cmapx_np	8	0	0	unchanged
+html2.gv	neato	imap	7	0	0	unchanged
+html2.gv	fdp	cmapx_np	8	0	0	unchanged
+html2.gv	fdp	imap	7	0	0	unchanged
+url.gv	dot	cmapx_np	15	0	0	unchanged
+url.gv	dot	imap	20	0	0	unchanged
+url.gv	neato	cmapx_np	15	0	0	unchanged
+url.gv	neato	imap	20	0	0	unchanged
+url.gv	fdp	cmapx_np	15	0	0	unchanged
+url.gv	fdp	imap	20	0	0	unchanged
+html2_dot.gv	dot	cmapx_np	8	0	0	unchanged
+html2_dot.gv	dot	imap	7	0	0	unchanged
+html2_dot.gv	neato	cmapx_np	8	0	0	unchanged
+html2_dot.gv	neato	imap	7	0	0	unchanged
+html2_dot.gv	fdp	cmapx_np	8	0	0	unchanged
+html2_dot.gv	fdp	imap	7	0	0	unchanged
+html2_dot.gv	dot	cmapx_np	8	0	0	unchanged
+html2_dot.gv	dot	imap	7	0	0	unchanged
+html2_dot.gv	neato	cmapx_np	8	0	0	unchanged
+html2_dot.gv	neato	imap	7	0	0	unchanged
+html2_dot.gv	fdp	cmapx_np	8	0	0	unchanged
+html2_dot.gv	fdp	imap	7	0	0	unchanged
+unchanged=64 AWAY=2

@@ -4,7 +4,8 @@
  * HTML label rendering: emits a positioned HTML label (cell borders,
  * text runs, table border) through the renderer plugin.
  *
- * emitHtmlLabel is the port of emit_html_tbl.
+ * emitHtmlLabel is the port of emit_html_label (its obj push and pop).
+ * emitHtmlTbl   is the port of emit_html_tbl.
  * emitHtmlCell  is the port of emit_html_cell.
  *
  * Decoration (bgcolor fill, per-side borders, anchors, rules) fires
@@ -12,6 +13,9 @@
  * PlacedCell / PlacedHtml — mirroring C's conditional structure.
  * Undecorated tables emit identically to before T6.
  *
+ * @see lib/common/htmltable.c:emit_html_label
+ * @see lib/common/htmltable.c:allocObj
+ * @see lib/common/htmltable.c:freeObj
  * @see lib/common/htmltable.c:emit_html_tbl
  * @see lib/common/htmltable.c:emit_html_cell
  * @see lib/common/htmltable.c:emit_htextspans
@@ -23,8 +27,8 @@
  */
 
 import type { Point, Box } from '../model/geom.js';
-import type { RenderJob } from '../gvc/job.js';
-import { EMIT_CLUSTERS_LAST } from '../gvc/job.js';
+import type { RenderJob, ObjState } from '../gvc/job.js';
+import { EMIT_CLUSTERS_LAST, createObjState } from '../gvc/job.js';
 import type { RendererPlugin } from '../gvc/context.js';
 import type { TextSpan } from './emit-types.js';
 import type { PlacedHtml, PlacedCell, PlacedLine, PlacedImage } from './htmltable-pos.js';
@@ -244,7 +248,7 @@ export function emitHtmlCell(
   if (cell.nested !== undefined) {
     // C: emit_html_cell recurses emit_html_tbl for an HTML_TBL child.
     // @see lib/common/htmltable.c:emit_html_cell
-    emitHtmlLabel(cell.nested, pos, renderer, job);
+    emitHtmlTbl(cell.nested, pos, renderer, job);
   } else if (cell.image !== undefined) {
     emitHtmlImg(cell.image, pos, renderer, job);
   } else {
@@ -254,7 +258,7 @@ export function emitHtmlCell(
 }
 
 // ---------------------------------------------------------------------------
-// emitHtmlLabel — port of emit_html_tbl
+// emitHtmlTbl — port of emit_html_tbl
 // ---------------------------------------------------------------------------
 
 /** Emit vrule/hrule rules for all ruled cells. */
@@ -276,14 +280,15 @@ function emitTableRules(
 }
 
 /**
- * Emit a fully positioned HTML table label.
+ * Emit a fully positioned HTML table: a label's top-level table, or one
+ * nested in a cell.
  *
  * Draw order mirrors C emit_html_tbl:
  *   1. Open anchor   2. Table BGCOLOR   3. Rules   4. Border   5. Cells   6. Close anchor
  *
  * @see lib/common/htmltable.c:emit_html_tbl
  */
-export function emitHtmlLabel(
+function emitHtmlTbl(
   placed: PlacedHtml,
   pos: Point,
   renderer: RendererPlugin,
@@ -320,5 +325,80 @@ export function emitHtmlLabel(
   if (inAnchor) endHtmlAnchor(renderer, job);
   if (clustersLast && initHtmlAnchor(anchorData, tblBox, renderer, job)) {
     endHtmlAnchor(renderer, job);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// emitHtmlLabel — port of emit_html_label
+// ---------------------------------------------------------------------------
+
+/**
+ * Push a new obj on the stack, used in common by all the label's html
+ * elements with anchors. It takes the paint fields push_obj_state defaults to
+ * the parent's, and inherits the parent's type, emit_state and object, and its
+ * url, tooltip, target and explicit_tooltip. Not its id, label or map points:
+ * a cell's emit_map_rect writes this obj's points, never the owner's.
+ * `parent` is job.obj (C reads it back as obj->parent), narrowed by the caller.
+ *
+ * @see lib/common/htmltable.c:allocObj
+ * @see lib/common/emit.c:push_obj_state
+ */
+function allocObj(job: RenderJob, parent: ObjState): void {
+  const obj = createObjState(parent.type);
+  obj.parent = parent;
+  obj.penColor = parent.penColor;
+  obj.fillColor = parent.fillColor;
+  obj.pen = parent.pen;
+  obj.fill = parent.fill;
+  obj.penWidth = parent.penWidth;
+  obj.gradientAngle = parent.gradientAngle;
+  obj.stopColor = parent.stopColor;
+  obj.emitState = parent.emitState;
+  obj.graphObj = parent.graphObj;
+  obj.url = parent.url;
+  obj.tooltip = parent.tooltip;
+  obj.target = parent.target;
+  obj.explicitTooltip = parent.explicitTooltip;
+  job.pushObj(obj);
+}
+
+/**
+ * Pop the label's obj. C clears url, tooltip, target and id first so that
+ * pop_obj_state does not free the parent's strings; nothing to do here.
+ *
+ * @see lib/common/htmltable.c:freeObj
+ */
+function freeObj(job: RenderJob): void {
+  job.popObj();
+}
+
+/**
+ * Emit a fully positioned HTML table label in its own obj state, so nothing
+ * the label writes on the obj (a cell's map rect) reaches the label's owner.
+ * The obj stack is as deep on return as on entry, even when the label throws.
+ *
+ * @see lib/common/htmltable.c:emit_html_label
+ */
+export function emitHtmlLabel(
+  placed: PlacedHtml,
+  pos: Point,
+  renderer: RendererPlugin,
+  job: RenderJob,
+): void {
+  const parent = job.obj;
+  if (parent === null) {
+    // C always has an enclosing obj here (root, cluster, node or edge). The
+    // port's label emitters also run on a bare job with an empty obj stack
+    // (withLabelEmitState and gvrenderTextspan take `job.obj === null`; the
+    // renderOneLabel and renderClusterLabel cases of device.test.ts): with no
+    // owner there is nothing to shield, so emit without a push.
+    emitHtmlTbl(placed, pos, renderer, job);
+    return;
+  }
+  allocObj(job, parent);
+  try {
+    emitHtmlTbl(placed, pos, renderer, job);
+  } finally {
+    freeObj(job);
   }
 }

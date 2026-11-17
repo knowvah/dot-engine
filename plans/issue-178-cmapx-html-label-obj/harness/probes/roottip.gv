@@ -1,0 +1,1 @@
+digraph G { tooltip="rt"; label=<<table><tr><td href="http://cell">L</td><td title="t">M</td></tr></table>>; a -> b }

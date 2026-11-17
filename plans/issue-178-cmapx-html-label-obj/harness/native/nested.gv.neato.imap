@@ -1,0 +1,3 @@
+base referer
+rect http://in 70,85 84,115
+rect http://out 95,77 116,123

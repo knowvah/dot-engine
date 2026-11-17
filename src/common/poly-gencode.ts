@@ -536,24 +536,16 @@ export function polyGencode(rawJob: unknown, rawNode: unknown): void {
   if (ctx === null) return;
   // EMIT_CLUSTERS_LAST (map device): the node's own anchor <area> is emitted
   // AFTER its shape and label, so an inner HTML cell's area precedes the
-  // node's. Save the node hot spot first — HTML cells overwrite obj.urlMapPts
-  // via emit_map_rect — and restore it for the deferred anchor.
+  // node's. The hot spot is still emit_begin_node's: the label's cells write
+  // their map rects on the label's own obj (allocObj), not on the node's.
   // @see lib/common/shapes.c:poly_gencode (2936, 3087-3092)
   const clustersLast = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
-  const savedShape = job.obj?.urlMapShape;
-  const savedPts = job.obj?.urlMapPts;
   let inAnchor = clustersLast ? false : beginNodeAnchor(n, renderer, job);
   renderPeripheries(ctx.poly, ctx.coord, ctx.filled, ctx.ringCtx);
   // point_gencode has no usershape branch.
   if (!isPointNode(n)) renderUsershape(n, ctx);
   // point_gencode never emits a label (AD-3).
   if (!isPointNode(n)) renderNodeLabel(n, ctx.coord, renderer, job);
-  if (clustersLast) {
-    if (job.obj && savedPts !== undefined && savedShape !== undefined) {
-      job.obj.urlMapShape = savedShape;
-      job.obj.urlMapPts = savedPts;
-    }
-    inAnchor = beginNodeAnchor(n, renderer, job);
-  }
+  if (clustersLast) inAnchor = beginNodeAnchor(n, renderer, job);
   if (inAnchor) renderer.endAnchor?.(job);
 }

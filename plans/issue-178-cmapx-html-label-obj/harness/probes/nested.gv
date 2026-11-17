@@ -1,0 +1,1 @@
+digraph G { label=<<table><tr><td><table><tr><td href="http://in">I</td></tr></table></td><td href="http://out">O</td></tr></table>>; a -> b }

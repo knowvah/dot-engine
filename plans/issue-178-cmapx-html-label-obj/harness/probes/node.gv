@@ -1,0 +1,1 @@
+digraph G { a [URL="http://a", shape=box, label=<<table><tr><td href="http://cell">A</td><td>B</td></tr></table>>]; b [shape=plaintext, label=<<table><tr><td href="http://nb">X</td></tr></table>>]; a -> b }

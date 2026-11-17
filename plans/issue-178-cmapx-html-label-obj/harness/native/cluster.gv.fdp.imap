@@ -1,0 +1,4 @@
+base referer
+rect http://cell 42,15 62,45
+rect http://cy 152,31 174,62
+rect http://y 117,22 210,140

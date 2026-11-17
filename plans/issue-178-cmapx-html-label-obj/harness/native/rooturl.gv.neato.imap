@@ -1,0 +1,3 @@
+base referer
+default http://root
+rect http://cell 65,77 85,107

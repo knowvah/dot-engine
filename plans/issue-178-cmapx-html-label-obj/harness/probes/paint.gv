@@ -1,0 +1,1 @@
+digraph G { color=red; fontcolor=blue; bgcolor=lightyellow; label=<<table color="green" bgcolor="pink"><tr><td href="http://p" bgcolor="cyan">P</td></tr></table>>; subgraph cluster_z { style=dashed; color=purple; label=<<table border="2"><tr><td>Z</td></tr></table>>; a [style=filled] } a -> b [label=<<font color="red">x</font>>] }
