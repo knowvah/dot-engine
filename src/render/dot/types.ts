@@ -23,8 +23,13 @@ export interface SerCtx {
   preorder: Map<Graph, number>;
   /** node → preorder of the subgraph it was last written in (node_last_written). */
   nodeLW: Map<Node, number>;
-  /** edge → preorder of the subgraph it was last written in (edge_last_written). */
-  edgeLW: Map<Edge, number>;
+  /** Edges the current body has pended, keyed on `Edge.seq` (AGSEQ), which dedupes as the C's
+   *  ordered dictionary does. Empty at the start of every body's node walk.
+   *  @see lib/cgraph/write.c:info_t (edges_todo) */
+  edgesTodo: Map<number, Edge>;
+  /** `Edge.seq` of every edge already written in this agwrite.
+   *  @see lib/cgraph/write.c:info_t (edges_done) */
+  edgesDone: Set<number>;
   /** objects whose attributes have already been emitted (AGATTRWF/attrs_written). */
   attrsWritten: Set<Node | Edge>;
   /** current indentation depth. */

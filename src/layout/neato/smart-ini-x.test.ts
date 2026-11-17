@@ -20,7 +20,7 @@ describe('imdsGivenDim', () => {
     expect(Array.from(out)).toEqual(c.y);
   });
 
-  it('returns 0 whenever conjugate_gradient_f does (its < 0 test can never fire)', () => {
+  it('returns 0 whenever conjugate_gradient_d does (its < 0 test can never fire)', () => {
     for (const name of NAMES) {
       const c = IMDS_CASES[name];
       const graph = buildGraph(c.n, c.edges, c.haveLen, c.haveDir);

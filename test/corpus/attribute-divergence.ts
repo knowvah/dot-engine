@@ -42,8 +42,8 @@ import {
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
-import { homedir, tmpdir } from 'node:os';
-import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
+import { tmpdir } from 'node:os';
+import { ORACLE_CORPUS_ROOT, ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
 import type { XdotDiff } from '../golden/compare-xdot.js';
@@ -117,7 +117,7 @@ export interface AttributionReport {
 // ---------------------------------------------------------------------------
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
-const CORPUS = process.env['CORPUS_ROOT'] ?? join(homedir(), 'git/graphviz/tests');
+const CORPUS = process.env['CORPUS_ROOT'] ?? ORACLE_CORPUS_ROOT;
 const DOT_BIN = process.env['DOT_BIN'] ?? ORACLE_DOT_BIN;
 const GVBINDIR = process.env['GVBINDIR'] ?? ORACLE_GVBINDIR;
 

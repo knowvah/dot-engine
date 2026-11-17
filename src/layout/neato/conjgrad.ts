@@ -8,11 +8,11 @@ import {
   maxAbs,
   orthog1,
   rightMultWithVector,
-  rightMultWithVectorF,
   vectorsAddition,
   vectorsScalarMult,
   vectorsSubtraction,
 } from './matrix-ops.js';
+import { rightMultWithVectorD } from './matrix-ops-dense.js';
 
 /**
  * Conjugate gradient solvers for packed symmetric float matrices.
@@ -174,7 +174,7 @@ export function conjugateGradientMkernel(
 }
 
 // ---------------------------------------------------------------------------
-// Double-precision solvers (conjugate_gradient, conjugate_gradient_f)
+// Double-precision solvers (conjugate_gradient, conjugate_gradient_d)
 // ---------------------------------------------------------------------------
 
 /**
@@ -268,19 +268,21 @@ export function conjugateGradient(
 }
 
 /**
- * Block widths of conjugate_gradient_f's inlined sites in the same build:
- * the initial `A x` and the in-loop `A p` row reductions and the initial
- * `r.r` are blocks of 4, `p.Ap` blocks of 8, the in-loop `r.r` scalar.
- * Verified bit for bit against the oracle's own libneatogen.a over random
- * float matrices (n = 5..40, ortho1 on and off).
+ * Block widths of conjugate_gradient_d's reductions in the 16.1.1 arm64
+ * `-O3 -flto=thin` build, where the function is out of line (one copy serves
+ * IMDS_given_dim and the subspace loop): the initial `r.r` is blocks of 4,
+ * `p.Ap` blocks of 8, the in-loop `r.r` scalar. The rows of `A x` and `A p`
+ * are blocks of 8, which is `rightMultWithVectorD`'s own width. Calibrated
+ * bit for bit against the oracle's libneatogen.a on 288 random systems
+ * (n = 5..40, ortho1 on and off): x after every iteration count, `r.r`, `p.Ap`
+ * and `alpha`; no other choice of widths in {1, 4, 8, 16} per site matches
+ * (plans/issue-156-neato-double-laplacian/harness/native/calibrate.mts).
  */
-const CGF_BLOCK_AX = 4;
-const CGF_BLOCK_AP = 4;
-const CGF_BLOCK_INITIAL_RR = 4;
-const CGF_BLOCK_P_AP = 8;
+const CGD_BLOCK_INITIAL_RR = 4;
+const CGD_BLOCK_P_AP = 8;
 
-/** Work vectors of one conjugate_gradient_f call. @internal */
-interface CgfState {
+/** Work vectors of one conjugate_gradient_d call. @internal */
+interface CgdState {
   r: Float64Array;
   p: Float64Array;
   Ap: Float64Array;
@@ -290,11 +292,11 @@ interface CgfState {
 
 /**
  * Residual setup: r = orth_b - A x, p = r. `x` is centred when `ortho1`.
- * @see lib/neatogen/conjgrad.c:conjugate_gradient_f
+ * @see lib/neatogen/conjgrad.c:conjugate_gradient_d
  */
-function cgfInit(
-  A: readonly Float32Array[], x: Float64Array, b: Float64Array, n: number, ortho1: boolean,
-): CgfState {
+function cgdInit(
+  A: readonly Float64Array[], x: Float64Array, b: Float64Array, n: number, ortho1: boolean,
+): CgdState {
   const orthB = new Float64Array(n);
   copyVector(n, b, orthB);
   if (ortho1) {
@@ -302,25 +304,25 @@ function cgfInit(
     orthog1(n, x);
   }
   const Ax = new Float64Array(n);
-  rightMultWithVectorF(A, n, x, Ax, CGF_BLOCK_AX);
+  rightMultWithVectorD(A, n, n, x, Ax);
   const r = new Float64Array(n);
   vectorsSubtraction(n, orthB, Ax, r);
   const p = new Float64Array(n);
   copyVector(n, r, p);
   return {
     r, p, Ap: new Float64Array(n), alphap: new Float64Array(n),
-    rr: innerProduct(n, r, r, CGF_BLOCK_INITIAL_RR),
+    rr: innerProduct(n, r, r, CGD_BLOCK_INITIAL_RR),
   };
 }
 
 /**
  * Residual and direction update of a non-last iteration; returns C's `rv`
  * (1 after reporting a zero-length residual).
- * @see lib/neatogen/conjgrad.c:conjugate_gradient_f
+ * @see lib/neatogen/conjgrad.c:conjugate_gradient_d
  */
-function cgfUpdate(n: number, alpha: number, st: CgfState): number {
+function cgdUpdate(n: number, alpha: number, st: CgdState): number {
   vectorsScalarMult(n, st.Ap, alpha, st.Ap);
-  vectorsSubtraction(n, st.r, st.Ap, st.r);
+  vectorsSubtraction(n, st.r, st.Ap, st.r); // fast computation of r, the residual
   const rrNew = innerProduct(n, st.r, st.r, BLOCK_NONE);
   if (st.rr === 0) {
     agerrorf('conjugate_gradient: unexpected length 0 vector');
@@ -333,35 +335,36 @@ function cgfUpdate(n: number, alpha: number, st: CgfState): number {
   return 0;
 }
 
-/** Stopping rule and centring of {@link conjugateGradientF} (C's trailing parameters). */
-export interface CgfOptions {
+/** Stopping rule and centring of {@link conjugateGradientD} (C's trailing parameters). */
+export interface CgdOptions {
   tol: number;
   maxIterations: number;
   ortho1: boolean;
 }
 
 /**
- * Solves A x = b for a float** matrix with double x, b (x, b centred when
- * `ortho1`). Returns 0, or 1 after a zero-length residual (callers test `< 0`).
- * @see lib/neatogen/conjgrad.c:conjugate_gradient_f
+ * Solves A x = b for a dense double** matrix (x, b centred when `ortho1`).
+ * Returns 0, or 1 after a zero-length residual (IMDS_given_dim tests `< 0`,
+ * the subspace loop tests non-zero, as C does).
+ * @see lib/neatogen/conjgrad.c:conjugate_gradient_d
  */
-export function conjugateGradientF(
-  A: readonly Float32Array[],
+export function conjugateGradientD(
+  A: readonly Float64Array[],
   x: Float64Array,
   b: Float64Array,
   n: number,
-  opts: CgfOptions,
+  opts: CgdOptions,
 ): number {
   const { tol, maxIterations, ortho1 } = opts;
-  const st = cgfInit(A, x, b, n, ortho1);
+  const st = cgdInit(A, x, b, n, ortho1);
   for (let i = 0; i < maxIterations && maxAbs(n, st.r) > tol; i++) {
-    rightMultWithVectorF(A, n, st.p, st.Ap, CGF_BLOCK_AP);
-    const pAp = innerProduct(n, st.p, st.Ap, CGF_BLOCK_P_AP);
+    rightMultWithVectorD(A, n, n, st.p, st.Ap);
+    const pAp = innerProduct(n, st.p, st.Ap, CGD_BLOCK_P_AP);
     if (pAp === 0) break;
     const alpha = st.rr / pAp;
-    vectorsScalarMult(n, st.p, alpha, st.alphap);
+    vectorsScalarMult(n, st.p, alpha, st.alphap); // derive new x
     vectorsAddition(n, x, st.alphap, x);
-    if (i < maxIterations - 1 && cgfUpdate(n, alpha, st) === 1) return 1;
+    if (i < maxIterations - 1 && cgdUpdate(n, alpha, st) === 1) return 1; // not last iteration
   }
   return 0;
 }

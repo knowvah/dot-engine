@@ -23,7 +23,6 @@ import { gvQsort } from "../util/bsd-qsort.js";
 import { agwarningf } from '../common/agerr.js';
 
 export type { OrthoGraph, OrthoEdge, OrthoNode, OrthoPoint, ClipAndInstallFn };
-export { SEED } from "./partition.js";
 
 // ─── Edge length / sorting ────────────────────────────────────────────────────
 

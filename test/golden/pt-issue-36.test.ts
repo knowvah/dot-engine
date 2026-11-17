@@ -6,6 +6,9 @@
  * dot-engine 2.4.0 ended that spline 0.1-0.3 px off native; refs are the native
  * graphviz 16.1.0 output. The case was fixed by an unidentified change after
  * 2.4.0, and these tests pin it.
+ * refs/pt-issue-36-cimare.native.dot is native 16.1.1's (edges after nodes, in
+ * creation order), re-captured by #149
+ * (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
  *
  * @see lib/dotgen/dotsplines.c:makeSimpleFlat
  * @see lib/common/splines.c:clip_and_install

@@ -1,0 +1,97 @@
+# Ids that did not finish with exit 0 in the planning detector runs (rc=124: 60 s cap).
+## native
+1213-1 rc=1 hits=0
+1213-2 rc=1 hits=0
+1314 rc=1 hits=0
+1323 rc=1 hits=0
+1323_1 rc=1 hits=0
+1328 rc=1 hits=0
+1332 rc=1 hits=0
+1411 rc=1 hits=0
+1581 rc=1 hits=0
+1652 rc=124 hits=0
+1783 rc=1 hits=0
+1864 rc=124 hits=0
+1879 rc=1 hits=0
+1939 rc=1 hits=0
+2064 rc=124 hits=0
+2095_1 rc=124 hits=0
+2343 rc=124 hits=0
+2371 rc=124 hits=0
+2470 rc=1 hits=0
+2471 rc=1 hits=0
+2475_1 rc=124 hits=0
+2516 rc=1 hits=0
+2593 rc=124 hits=0
+2619 rc=1 hits=0
+2619_1 rc=1 hits=0
+2619_2 rc=1 hits=0
+2621 rc=124 hits=0
+2646 rc=124 hits=0
+2723 rc=1 hits=0
+2758 rc=1 hits=0
+2773 rc=1 hits=0
+2773_1 rc=1 hits=0
+2774 rc=1 hits=0
+2774_1 rc=1 hits=0
+2776 rc=1 hits=0
+2776_1 rc=1 hits=0
+2778 rc=1 hits=0
+2780 rc=1 hits=0
+2781 rc=1 hits=0
+2781_1 rc=1 hits=0
+2796 rc=1 hits=0
+2821_0 rc=1 hits=0
+2821_1 rc=1 hits=0
+2821_2 rc=1 hits=0
+2825 rc=1 hits=0
+2834 rc=124 hits=0
+graphs-structs rc=1 hits=0
+imagepath_test-base rc=1 hits=0
+share-b545 rc=1 hits=0
+tree-share-examples-4elt rc=124 hits=0
+tree-share-examples-world rc=124 hits=0
+## port
+1652 rc=124 hits=0
+1718 rc=124 hits=0
+1864 rc=1 hits=0
+2064 rc=124 hits=0
+2095_1 rc=124 hits=0
+2108 rc=124 hits=0
+2343 rc=124 hits=0
+2371 rc=124 hits=0
+2475_1 rc=124 hits=0
+2593 rc=124 hits=0
+2621 rc=124 hits=0
+2646 rc=124 hits=0
+2834 rc=124 hits=0
+tree-share-examples-4elt rc=124 hits=0
+tree-share-examples-world rc=124 hits=0
+## rerun at a 300 s cap, 2 lanes (stopped at a 10-minute limit; ids not listed were not re-run)
+### native
+1652 rc=124 hits=0
+1864 rc=124 hits=0
+2064 rc=124 hits=0
+2095_1 rc=0 hits=0
+2343 rc=0 hits=0
+2371 rc=0 hits=0
+2475_1 rc=124 hits=0
+tree-share-examples-4elt rc=124 hits=0
+tree-share-examples-world rc=124 hits=0
+### port
+1652 rc=124 hits=0
+1718 rc=0 hits=0
+1864 rc=1 hits=0
+2064 rc=124 hits=0
+2095_1 rc=0 hits=0
+2108 rc=0 hits=0
+2343 rc=0 hits=0
+2371 rc=124 hits=0
+tree-share-examples-4elt rc=124 hits=0
+tree-share-examples-world rc=124 hits=0
+## never measured to the end: 1652 1864 2064 2371 2475_1 2593 2621 2646 2834
+## tree-share-examples-4elt tree-share-examples-world (native and port alike, or one side).
+## None has a concentrate attribute (the dead end comes from concentration's
+## orphaned vnode), none is a smoke id, all are 0.24-16 MB inputs.
+## Native exit 1 (38 ids, incl. smoke 1328, 1581) stops before splines;
+## the port detector covers those ids (rc=0, no hits).

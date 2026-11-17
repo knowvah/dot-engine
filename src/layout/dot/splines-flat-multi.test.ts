@@ -26,6 +26,7 @@ import { DOT_LAYOUT_ENGINE } from './index.js';
 import { EDGETYPE_SPLINE, EDGETYPE_LINE, EDGETYPE_PLINE } from './splines.js';
 import { createSvgRenderer } from '../../render/svg.js';
 import { render } from '../../gvc/device.js';
+import { render as renderFormat } from '../../render/index.js';
 import {
   collectNonAdjacentFlatGroup, routeFlatEdgeGroupFaithful,
 } from './splines-flat-multi.js';
@@ -119,5 +120,69 @@ describe('routeFlatEdgeGroupFaithful — cnt>=2 non-adjacent flats (conformant w
 
   it('et=LINE cnt=2: makeSimpleFlat fan, conformant with the oracle', () => {
     expect(renderGroupSplines(SRC_TOP2, TITLE_TOP, EDGETYPE_LINE)).toEqual(ORACLE_TOP2_LINE);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Issue #158: the group is routed in C's edgecmp order, which inside one
+// make_flat_edge run reduces to AGSEQ, whichever node is on the left.
+//
+// tests/700813.dot with its comments dropped. Under rankdir=LR, 16.1.1's
+// flat_reorder (valid_rank) leaves `C` at order 0 and `B` at order 2, so the
+// lower-seq edge `B -> C` has its tail on the right. C still routes it first
+// (the inner route); "left tail first" gave that route to `C -> B`.
+// NATIVE_700813_PLAIN is native graphviz 16.1.1 `dot -Tplain` (exit 0, empty
+// stderr, `GVBINDIR=/tmp/ghl1611`), captured by issue #158; it is the same
+// for the file with its comments.
+// @see lib/dotgen/dotsplines.c:edgecmp, make_flat_edge
+// ---------------------------------------------------------------------------
+
+const SRC_700813 = `digraph g {
+	rankdir="LR"
+	B -> C
+	C -> B
+	B -> E
+	E -> F
+	A -> D
+	subgraph {rank="same"; B; C}
+	subgraph {rank="same"; A -> C}
+	subgraph {rank="same"; F -> D}
+}
+`;
+
+const NATIVE_700813_PLAIN = `graph 1 3.6449 2
+node B 0.76987 1.75 0.75 0.5 B solid ellipse black lightgrey
+node C 0.76987 0.25 0.75 0.5 C solid ellipse black lightgrey
+node E 2.0199 1.75 0.75 0.5 E solid ellipse black lightgrey
+node F 3.2699 1.75 0.75 0.5 F solid ellipse black lightgrey
+node A 0.76987 1 0.75 0.5 A solid ellipse black lightgrey
+node D 3.2699 1 0.75 0.5 D solid ellipse black lightgrey
+edge B C 10 0.48648 1.5843 0.38545 1.5091 0.28314 1.4101 0.2282 1.2917 0.11912 1.0565 0.11912 0.94353 0.2282 0.70833 0.26082 0.638 0.31014 0.57455 0.36598 0.51884 solid black
+edge B E 4 1.1505 1.75 1.2544 1.75 1.3696 1.75 1.481 1.75 solid black
+edge C B 10 0.46327 0.39846 0.31271 0.48924 0.14589 0.62096 0.061532 0.79167 -0.020511 0.95769 -0.020511 1.0423 0.061532 1.2083 0.12151 1.3297 0.22316 1.4314 0.33101 1.5126 solid black
+edge E F 4 2.4005 1.75 2.5044 1.75 2.6196 1.75 2.731 1.75 solid black
+edge F D 4 3.2699 1.4932 3.2699 1.4656 3.2699 1.4379 3.2699 1.4103 solid black
+edge A C 4 0.76987 0.74319 0.76987 0.71555 0.76987 0.68791 0.76987 0.66027 solid black
+edge A D 4 1.1485 1 1.5667 1 2.2554 1 2.7311 1 solid black
+stop
+`;
+
+/** The lines of a plain output that draw an edge `tail -> head`. */
+function plainEdgeLines(plain: string, tail: string, head: string): string[] {
+  return plain.split('\n').filter(l => l.startsWith(`edge ${tail} ${head} `));
+}
+
+describe('non-adjacent flat group order: edgecmp (seq), not left tail first (#158)', () => {
+  const plain = renderFormat(parse(SRC_700813), 'plain', { engine: 'dot' });
+
+  it('gives the lower-seq edge B -> C the inner route though its tail is the right node', () => {
+    expect(plainEdgeLines(plain, 'B', 'C')).toEqual(plainEdgeLines(NATIVE_700813_PLAIN, 'B', 'C'));
+    expect(plainEdgeLines(plain, 'C', 'B')).toEqual(plainEdgeLines(NATIVE_700813_PLAIN, 'C', 'B'));
+    expect(plainEdgeLines(NATIVE_700813_PLAIN, 'B', 'C')).toHaveLength(1);
+    expect(plainEdgeLines(NATIVE_700813_PLAIN, 'C', 'B')).toHaveLength(1);
+  });
+
+  it('700813 -Tplain equals native 16.1.1', () => {
+    expect(plain).toBe(NATIVE_700813_PLAIN);
   });
 });

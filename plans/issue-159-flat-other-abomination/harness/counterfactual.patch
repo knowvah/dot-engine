@@ -1,0 +1,65 @@
+diff --git a/src/layout/dot/flat.ts b/src/layout/dot/flat.ts
+index 1d69e6e2..bc740142 100644
+--- a/src/layout/dot/flat.ts
++++ b/src/layout/dot/flat.ts
+@@ -363,11 +363,10 @@ export function checkFlatAdjacent(g: Graph, e: Edge): void {
+   const hOrd = nodeOrder(e.head);
+   const lo = Math.min(tOrd, hOrd);
+   const hi = Math.max(tOrd, hOrd);
+-  let adjacent = hi - lo <= 1;
+-  if (!adjacent) {
+-    adjacent = !hasInterveningNode(g.info.rank![nodeRank(e.tail)], lo, hi);
+-  }
+-  if (!adjacent) return;
++  // C: `for (i = lo + 1; i < hi; i++) ...; if (i == hi)`: a self-loop
++  // (lo == hi) leaves the loop at i = lo + 1 != hi, so it is never adjacent.
++  if (hi <= lo) return;
++  if (hasInterveningNode(g.info.rank![nodeRank(e.tail)], lo, hi)) return;
+   for (let le: Edge | undefined = e; le; le = le.info.to_virt) le.info.adjacent = 1;
+ }
+ 
+@@ -401,13 +400,19 @@ export function markAdjacent(g: Graph): void {
+   }
+ }
+ 
++function hasNonAdjacentLabel(edges: EdgeList | undefined): boolean {
++  if (!edges) return false;
++  for (let j = 0; j < edges.size; j++) {
++    if (isLabeledFlat(edges.list[j]) && !edges.list[j].info.adjacent) return true;
++  }
++  return false;
++}
++
+ export function rankHasNonAdjacentLabel(rk: RankEntry): boolean {
+   for (let i = 0; i < rk.n; i++) {
+-    const fo = rk.v[i].info.flat_out;
+-    if (!fo) continue;
+-    for (let j = 0; j < fo.size; j++) {
+-      if (isLabeledFlat(fo.list[j]) && !fo.list[j].info.adjacent) return true;
+-    }
++    const n = rk.v[i];
++    if (hasNonAdjacentLabel(n.info.flat_in)) return true;
++    if (hasNonAdjacentLabel(n.info.other)) return true;
+   }
+   return false;
+ }
+@@ -425,6 +430,7 @@ export function needsAbomination(g: Graph): boolean {
+   const mn = graphMinrank(g);
+   const rank = g.info.rank;
+   if (!rank || rank[mn] === undefined) return false;
++  if (rank[mn].flat === undefined && (g.info.n_cluster ?? 0) <= 0) return false;
+   return rankHasNonAdjacentLabel(rank[mn]);
+ }
+ 
+diff --git a/src/layout/dot/mincross.ts b/src/layout/dot/mincross.ts
+index 7e140b8e..f143ff5c 100644
+--- a/src/layout/dot/mincross.ts
++++ b/src/layout/dot/mincross.ts
+@@ -248,7 +248,6 @@ export function cleanup2Ranks(g: Graph): void {
+       rank[r].v[i].info.order = i;
+       removeFlatorderEdges(rank[r].v[i]);
+     }
+-    rank[r].flat = undefined;
+   }
+ }
+ 

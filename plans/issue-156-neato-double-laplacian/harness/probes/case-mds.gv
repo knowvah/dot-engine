@@ -1,0 +1,1 @@
+digraph{mode=hier; model=mds; a->b [len=2]; b->c; a->c [len=3]; c->d}

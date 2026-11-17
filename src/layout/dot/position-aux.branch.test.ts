@@ -158,16 +158,18 @@ describe('makeAuxEdge', () => {
   it('rounds len half-away-from-zero and links tail/head fast edges', () => {
     const g = new Graph('g', 'directed');
     const u = new Node(0, 'u', g); const v = new Node(1, 'v', g);
-    const e = makeAuxEdge(u, v, 4.5, 7);
+    const e = makeAuxEdge(u, v, 4.5, 7)!;
     expect(e.info.minlen).toBe(5); // half away from zero
     expect(e.info.weight).toBe(7);
     expect(u.info.out?.list).toContain(e);
     expect(v.info.in?.list).toContain(e);
   });
-  it('clamps len to INT32_MAX before rounding', () => {
+  // 16.1.0 clamped a longer length to INT_MAX; 16.1.1 refuses it (issue #162).
+  // The refusal and its callers are covered in position-aux.too-long.test.ts.
+  it('keeps a length of exactly INT_MAX, the longest it accepts', () => {
     const g = new Graph('g', 'directed');
     const u = new Node(0, 'u', g); const v = new Node(1, 'v', g);
-    const e = makeAuxEdge(u, v, 1e20, 0);
+    const e = makeAuxEdge(u, v, 2147483647, 0)!;
     expect(e.info.minlen).toBe(2147483647);
   });
 });
@@ -561,7 +563,29 @@ describe('makeLrRankConstraints', () => {
     g.root = g;
     const rk = makeRankEntry([]);
     g.info.rank = [rk];
-    expect(() => makeLrRankConstraints(g, 0)).not.toThrow();
+    makeLrRankConstraints(g, 0);
+    // v[0] is absent: the 16.1.1 guard returns before anything is touched.
+    expect(g.info.rank[0]).toEqual(makeRankEntry([]));
+  });
+  // Graphviz 16.1.1 (upstream d49e3a529 "make_LR_constraints: anticipate
+  // empty ranks", issue #160) skips a rank whose leader is NULL before it
+  // reads anything else of it.
+  // @see lib/dotgen/position.c:make_LR_constraints (16.1.1, :240-243)
+  it('skips a rank whose leader is null, whatever n says (16.1.1)', () => {
+    const g = new Graph('g', 'directed');
+    g.root = g;
+    g.info.nodesep = 10;
+    const b = new Node(1, 'b', g);
+    b.info.rw = 7;
+    b.info.rank = 3;
+    const rk = makeRankEntry([null as unknown as Node, b]);
+    g.info.rank = [rk];
+    makeLrRankConstraints(g, 0);
+    expect(b.info.mval).toBeUndefined(); // ND_mval(u) = ND_rw(u) never ran
+    expect(b.info.rw).toBe(7);
+    expect(b.info.rank).toBe(3);
+    expect(b.info.out?.size ?? 0).toBe(0); // no aux edge
+    expect(b.info.in?.size ?? 0).toBe(0);
   });
   it('chains multiple nodes, calling lrRankPair for each adjacent v', () => {
     const g = new Graph('g', 'directed');

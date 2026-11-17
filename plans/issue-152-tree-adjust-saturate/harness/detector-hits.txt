@@ -1,0 +1,9 @@
+# DETECT152 lines per id from harness/detector.sh at planning (base ca32ce6a).
+# "pre": the port's rank or delta was already outside int32 when treeAdjust
+# ran (a value C's int cannot hold). No id logged "sat" (an in-range rank +
+# in-range delta leaving int32). All 49 smoke ids and probes/chain-4.gv: none.
+2758    pre x1  rank=0 delta=270783759217                         -> head clamps to INT_MAX
+2781    pre x3  rank=1.44e26 delta=-7.2e25 (x1); rank=7.2e25 delta=-7.2e25 (x2) -> unchanged
+2781_1  pre x3  same as 2781                                      -> unchanged
+2776_1  pre x1  rank=300000000000000000 delta=-299999997852516350 -> unchanged (sum 2147483650, the formula passes it)
+1314    pre x1  rank=2880000054 delta=732516407                   -> head clamps to INT_MAX

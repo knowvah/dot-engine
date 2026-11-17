@@ -4,14 +4,14 @@
 // renderSvg calls), but takes an engine: bench.mjs is dot-only. Output: { id: ms }.
 // Each id: one untimed warm-up, then best of TIMING_RUNS (default 3).
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { ORACLE_CORPUS_ROOT } from '../corpus/oracle-paths.mjs';
 
 const [bundle = '', engine = '', idsFile = '', outFile = ''] = process.argv.slice(2);
 const RUNS = Number(process.env.TIMING_RUNS ?? 3);
-const ROOT = path.join(os.homedir(), 'git/graphviz/tests');
+const ROOT = ORACLE_CORPUS_ROOT;
 const REPO = process.env.BD_REPO ?? path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 interface ManifestEntry {
   id: string;

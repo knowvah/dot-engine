@@ -42,7 +42,7 @@ describe('lrRankPair — make_LR_constraints integer position (honda x-coord NS)
     for (const w of widths) {
       const u = mkNode(g, ranks.length * 2, w, 0);
       const v = mkNode(g, ranks.length * 2 + 1, 0, 0);
-      last = lrRankPair(g, 0, u, v, last);
+      last = lrRankPair(g, 0, u, v, last)!;
       ranks.push(v.info.rank ?? NaN);
     }
     // trunc(0+10.7)=10, trunc(10+10.7)=20, trunc(20+10.7)=30 — every value integer.

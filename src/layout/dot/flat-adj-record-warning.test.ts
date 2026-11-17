@@ -9,7 +9,9 @@
  * `plans/issue-171-flat-adj-record-warning/harness/probes/`, and each `err` is
  * the stderr of native graphviz 16.1.0 (`~/git/graphviz/build/cmd/dot/dot
  * -Tdot`, `GVBINDIR=/tmp/ghl`) on it, from `harness/native/*.err`, captured
- * 2026-11-11. `SRC_1323` is upstream `tests/1323.gv` whole.
+ * 2026-11-11. `SRC_1323` is upstream `tests/1323.gv` whole. The `rankdir-lr`
+ * probe's `err` is native 16.1.1's (`~/git/graphviz-16.1.1/build/cmd/dot/dot
+ * -Tdot`, `GVBINDIR=/tmp/ghl1611`), re-captured by issue #158.
  *
  * @see lib/dotgen/dotsplines.c:make_flat_adj_edges (1143-1152)
  */
@@ -101,7 +103,10 @@ interface Probe {
 }
 
 /**
- * `rankdir-lr`: the source edge is `b -> a`; C names makefwdedge's `a -> b`.
+ * `rankdir-lr`: the source edge is `b -> a`. 16.1.1's flat_reorder leaves the
+ * rank as mincross ordered it (valid_rank, issue #158), `b` before `a`, so the
+ * edge is already forward and C names `b -> a` (16.1.0 put `a` first and
+ * named makefwdedge's `a -> b`).
  * `quoted-name`: raw `agnameof` names, no `agstrcanon` quoting.
  * `two-pairs`: two record pairs, one warning. `splines-none` and
  * `splines-ortho` never reach the exit, and native prints nothing.
@@ -128,7 +133,7 @@ Error: lost a b edge
   { name: 'quoted-name', src: String.raw`digraph { {rank=same; "x y" [shape=record]; "p\"q"; "x y" -> "p\"q";} }`, err: `${WARN}  Edge x y -> p"q
 Error: lost x y p"q edge
 ` },
-  { name: 'rankdir-lr', src: String.raw`digraph { rankdir=LR; {rank=same; a [shape=record]; b; b -> a;} }`, err: `${WARN}  Edge a -> b
+  { name: 'rankdir-lr', src: String.raw`digraph { rankdir=LR; {rank=same; a [shape=record]; b; b -> a;} }`, err: `${WARN}  Edge b -> a
 Error: lost b a edge
 ` },
   { name: 'single-head-record', src: String.raw`digraph { {rank=same; a; b [shape=record, label="{x|y}"]; a -> b;} }`, err: `${WARN}  Edge a -> b

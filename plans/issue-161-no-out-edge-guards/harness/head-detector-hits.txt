@@ -1,0 +1,34 @@
+# Port detector on the head (worktree src at d5a0d297 plus P161 markers and value prints),
+# detector.sh --all, 6 lanes, 60 s cap: 982 ids. <id> <count> <marker>
+2765    1 P161CLB
+2765    1 P161MRE null
+2765    1 P161MRE out0
+2765    1 P161PTS pn=4 92.25,145.5 92.25,98.98370788531435 2.0000000000000027,139.01629211468565 2,92.5
+2765    1 P161RS b x=5.342592592592591 lw=3.342592592592591 rw=3.342592592592591 b=2 nbox=3
+2765    1 P161SL
+2765_1    1 P161CLB
+2765_1    1 P161MRE null
+2765_1    1 P161MRE out0
+2765_1    1 P161PTS pn=4 92.25,145.5 92.25,98.98370788531435 2.0000000000000027,139.01629211468565 2,92.5
+2765_1    1 P161RS b x=5.342592592592591 lw=3.342592592592591 rw=3.342592592592591 b=2 nbox=3
+2765_1    1 P161SL
+# Not finished (rc != 0): the planning port list plus graphs-b100 and graphs-b104, which
+# were capped under load and finish with rc=0, hits=0 at a 280 s cap.
+1652 rc=124 hits=0
+1718 rc=124 hits=0
+1864 rc=1 hits=0
+2064 rc=124 hits=0
+2095_1 rc=124 hits=0
+2108 rc=124 hits=0
+2343 rc=124 hits=0
+2371 rc=124 hits=0
+2475_1 rc=124 hits=0
+2593 rc=124 hits=0
+2621 rc=124 hits=0
+2646 rc=124 hits=0
+2834 rc=124 hits=0
+graphs-b100 rc=124 hits=0
+graphs-b104 rc=124 hits=0
+tree-share-examples-4elt rc=124 hits=0
+tree-share-examples-world rc=124 hits=0
+# No P161BK or P161ER line on any id: no corpus back edge or entry run meets a dead end.

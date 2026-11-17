@@ -91,21 +91,39 @@ function expandByPoints(bb: Box, cp: Point[]): void {
 }
 
 /**
- * Expands bb to contain the cubic Bezier segment cp by adaptively refining the
- * segment to its true curve extent (not the control hull).
- * @see lib/common/emit.c:update_bb_bz
+ * How many times update_bb_bz attempts refinement of the control points.
+ * @see lib/common/emit.c:update_bb_bz (ATTEMPTS)
  */
-export function updateBbBz(bb: Box, cp: Point[]): void {
+const UPDATE_BB_BZ_ATTEMPTS = 10;
+
+/**
+ * Expands bb by the segment cp, halving it until it is sufficiently refined.
+ * A segment still unrefined when `recurse` reaches 0 leaves bb as it is
+ * (graphviz 16.1.1, upstream issue 2780: huge coordinates never refine).
+ * @see lib/common/emit.c:update_bb_bz_core
+ */
+function updateBbBzCore(bb: Box, cp: Point[], recurse: number): void {
   if (!anyOutside(bb, cp)) return;
   if (checkControlPoints(cp)) {
     expandByPoints(bb, cp);
     return;
   }
+  if (recurse === 0) return;
   const left: Point[] = [];
   const right: Point[] = [];
   evalBezier(cp, 0.5, left, right);
-  updateBbBz(bb, left);
-  updateBbBz(bb, right);
+  updateBbBzCore(bb, left, recurse - 1);
+  updateBbBzCore(bb, right, recurse - 1);
+}
+
+/**
+ * Expands bb to contain the cubic Bezier segment cp by adaptively refining the
+ * segment to its true curve extent (not the control hull). Refinement stops
+ * after UPDATE_BB_BZ_ATTEMPTS levels (upstream issue 2780).
+ * @see lib/common/emit.c:update_bb_bz
+ */
+export function updateBbBz(bb: Box, cp: Point[]): void {
+  updateBbBzCore(bb, cp, UPDATE_BB_BZ_ATTEMPTS);
 }
 
 // ---------------------------------------------------------------------------

@@ -30,7 +30,7 @@ import {
   appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync,
 } from 'node:fs';
 import { homedir } from 'node:os';
-import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
+import { ORACLE_CORPUS_ROOT, ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareXdot, type XdotDiff } from '../golden/compare-xdot.js';
@@ -39,7 +39,7 @@ import {
 } from './oracle-env.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
-const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
+const ROOT = process.env.CORPUS_ROOT ?? ORACLE_CORPUS_ROOT;
 const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
 const GVBINDIR = process.env.GVBINDIR ?? ORACLE_GVBINDIR;
 const RENDER_ONE = join(REPO, 'test/corpus/render-one-xdot.ts');

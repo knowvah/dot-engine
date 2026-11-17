@@ -699,38 +699,105 @@ describe('checkFlatAdjacent: marks the full to_virt chain (flat.c:checkFlatAdjac
     checkFlatAdjacent(g, e);
     expect(e.info.adjacent).toBeUndefined();
   });
+
+  // C: `for (i = lo + 1; i < hi; i++)` leaves i = lo + 1 when lo == hi, so
+  // `i == hi` is false and a loop is never marked (flat.c:224-236, 16.1.1).
+  it('never marks a self-loop or its to_virt chain (issue #159)', () => {
+    const [g, nodes] = makeTestGraph(1);
+    setupRanks(g, [0]);
+    nodes[0].info.order = 0;
+    const rep = addTestEdge(g, nodes[0], nodes[0]);
+    const loop = addTestEdge(g, nodes[0], nodes[0]);
+    loop.info.to_virt = rep;
+    checkFlatAdjacent(g, loop);
+    expect([loop.info.adjacent, rep.info.adjacent]).toEqual([undefined, undefined]);
+  });
 });
 
 // ---------------------------------------------------------------------------
-// rankHasNonAdjacentLabel / needsAbomination  @see lib/dotgen/flat.c:flat_edges 279
+// rankHasNonAdjacentLabel / needsAbomination  @see lib/dotgen/flat.c:flat_edges 274-291
 // ---------------------------------------------------------------------------
 
-describe('rankHasNonAdjacentLabel (flat.c:flat_edges gate)', () => {
-  it('skips a node with no flat_out list', () => {
-    const rk = emptyRank([fakeNode({ flat_out: undefined })]);
+describe('rankHasNonAdjacentLabel (flat.c:flat_edges 276-289, 16.1.1)', () => {
+  const labelled = (info: Record<string, unknown> = {}): Edge =>
+    fakeEdge(fakeNode({}), fakeNode({}), { label: {}, ...info });
+
+  it('skips a node with no flat_in and no other list', () => {
+    const rk = emptyRank([fakeNode({ flat_in: undefined, other: undefined })]);
     expect(rankHasNonAdjacentLabel(rk)).toBe(false);
   });
 
-  it('returns false when the labeled flat edge is already adjacent', () => {
-    const e = fakeEdge(fakeNode({}), fakeNode({}), { label: {}, adjacent: 1 });
-    const rk = emptyRank([fakeNode({ flat_out: { size: 1, list: [e] } })]);
+  it('returns false when the labeled flat_in edge is already adjacent', () => {
+    const e = labelled({ adjacent: 1 });
+    const rk = emptyRank([fakeNode({ flat_in: { size: 1, list: [e] } })]);
     expect(rankHasNonAdjacentLabel(rk)).toBe(false);
   });
 
-  it('returns false when the flat edge has no label', () => {
+  it('returns false when the flat_in edge has no label', () => {
     const e = fakeEdge(fakeNode({}), fakeNode({}), { label: undefined });
-    const rk = emptyRank([fakeNode({ flat_out: { size: 1, list: [e] } })]);
+    const rk = emptyRank([fakeNode({ flat_in: { size: 1, list: [e] } })]);
     expect(rankHasNonAdjacentLabel(rk)).toBe(false);
   });
 
-  it('returns true for a labeled, non-adjacent flat edge', () => {
-    const e = fakeEdge(fakeNode({}), fakeNode({}), { label: {}, adjacent: undefined });
-    const rk = emptyRank([fakeNode({ flat_out: { size: 1, list: [e] } })]);
+  it('returns true for a labeled, non-adjacent edge in flat_in', () => {
+    const rk = emptyRank([fakeNode({ flat_in: { size: 1, list: [labelled()] } })]);
+    expect(rankHasNonAdjacentLabel(rk)).toBe(true);
+  });
+
+  // C reads ND_flat_in, never ND_flat_out, at this point (flat.c:277).
+  it('returns false when the only labeled non-adjacent edge is in flat_out', () => {
+    const rk = emptyRank([fakeNode({ flat_out: { size: 1, list: [labelled()] } })]);
+    expect(rankHasNonAdjacentLabel(rk)).toBe(false);
+  });
+
+  // The ND_other scan upstream 4e50c9abd added (flat.c:283-289). It has no
+  // rank filter and no loop filter.
+  it('returns true for a labeled self-loop in other', () => {
+    const n = fakeNode({ rank: 0 });
+    const loop = fakeEdge(n, n, { label: {} });
+    n.info.other = { size: 1, list: [loop] };
+    expect(rankHasNonAdjacentLabel(emptyRank([n]))).toBe(true);
+  });
+
+  it('returns true for a labeled cross-rank edge in other', () => {
+    const n = fakeNode({ rank: 0 });
+    const e = fakeEdge(n, fakeNode({ rank: 1 }), { label: {} });
+    n.info.other = { size: 1, list: [e] };
+    expect(rankHasNonAdjacentLabel(emptyRank([n]))).toBe(true);
+  });
+
+  it('returns false when the labeled other edge is adjacent', () => {
+    const rk = emptyRank([fakeNode({ other: { size: 1, list: [labelled({ adjacent: 1 })] } })]);
+    expect(rankHasNonAdjacentLabel(rk)).toBe(false);
+  });
+
+  it('finds an other edge on a later node of the rank', () => {
+    const rk = emptyRank([
+      fakeNode({ flat_in: { size: 1, list: [labelled({ adjacent: 1 })] } }),
+      fakeNode({ other: { size: 1, list: [labelled()] } }),
+    ]);
     expect(rankHasNonAdjacentLabel(rk)).toBe(true);
   });
 });
 
-describe('needsAbomination (flat.c:flat_edges 279)', () => {
+describe('needsAbomination (flat.c:flat_edges 274-291, 16.1.1)', () => {
+  /** Rank 0 with one labeled non-adjacent edge in a node's ND_other. */
+  function rankWithOtherLabel(): RankEntry {
+    const e = fakeEdge(fakeNode({}), fakeNode({}), { label: {}, adjacent: undefined });
+    return emptyRank([fakeNode({ other: { size: 1, list: [e] } })]);
+  }
+  /** Rank 0 with one labeled non-adjacent flat edge, in the tail's
+   *  ND_flat_out and the head's ND_flat_in as fast_edge leaves it. */
+  function rankWithFlatLabel(): RankEntry {
+    const tail = fakeNode({});
+    const head = fakeNode({});
+    const e = fakeEdge(tail, head, { label: {}, adjacent: undefined });
+    tail.info.flat_out = { size: 1, list: [e] };
+    head.info.flat_in = { size: 1, list: [e] };
+    return emptyRank([tail, head]);
+  }
+  const MATRIX = { nrows: 1, ncols: 1, data: new Uint8Array(1) };
+
   it('returns false when g.info.rank is undefined', () => {
     const g = { info: { minrank: 0, rank: undefined } } as unknown as Graph;
     expect(needsAbomination(g)).toBe(false);
@@ -741,11 +808,41 @@ describe('needsAbomination (flat.c:flat_edges 279)', () => {
     expect(needsAbomination(g)).toBe(false);
   });
 
-  it('returns true when rank[minrank] has a labeled non-adjacent flat edge', () => {
-    const e = fakeEdge(fakeNode({}), fakeNode({}), { label: {}, adjacent: undefined });
-    const rk = emptyRank([fakeNode({ flat_out: { size: 1, list: [e] } })]);
+  // C's gate: `GD_rank(g)[0].flat || GD_n_cluster(g) > 0` (flat.c:274).
+  it('returns false with the gate closed: no matrix, n_cluster absent', () => {
+    const g = { info: { minrank: 0, rank: [rankWithFlatLabel()] } } as unknown as Graph;
+    expect(needsAbomination(g)).toBe(false);
+  });
+
+  it('returns false with the gate closed: no matrix, n_cluster 0', () => {
+    const g = { info: { minrank: 0, n_cluster: 0, rank: [rankWithFlatLabel()] } } as unknown as Graph;
+    expect(needsAbomination(g)).toBe(false);
+  });
+
+  it('returns true for a flat_in edge when rank[minrank].flat is set', () => {
+    const rk = rankWithFlatLabel();
+    rk.flat = MATRIX;
     const g = { info: { minrank: 0, rank: [rk] } } as unknown as Graph;
     expect(needsAbomination(g)).toBe(true);
+  });
+
+  it('returns true for an other edge when rank[minrank].flat is set', () => {
+    const rk = rankWithOtherLabel();
+    rk.flat = MATRIX;
+    const g = { info: { minrank: 0, rank: [rk] } } as unknown as Graph;
+    expect(needsAbomination(g)).toBe(true);
+  });
+
+  it('returns true with a cluster and no matrix', () => {
+    const g = { info: { minrank: 0, n_cluster: 1, rank: [rankWithOtherLabel()] } } as unknown as Graph;
+    expect(needsAbomination(g)).toBe(true);
+  });
+
+  it('returns false with the gate open and no labeled non-adjacent edge', () => {
+    const rk = emptyRank([fakeNode({})]);
+    rk.flat = MATRIX;
+    const g = { info: { minrank: 0, n_cluster: 1, rank: [rk] } } as unknown as Graph;
+    expect(needsAbomination(g)).toBe(false);
   });
 });
 

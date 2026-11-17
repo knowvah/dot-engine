@@ -1,0 +1,4 @@
+digraph ipsepdir {
+  mode=ipsep; diredgeconstraints=true; levelsgap=2;
+  a -> b -> c -> d; a -> c; b -> e; e -> d; f -> a; f -> e;
+}

@@ -1,0 +1,8 @@
+graph ipsep {
+  mode=ipsep; overlap=ipsep; sep="+4";
+  node [shape=box];
+  a -- b -- c -- d -- a;
+  a -- c; e -- a; e -- b; f -- e; f -- d;
+  subgraph cluster_x { g; h; g -- h; }
+  h -- a;
+}

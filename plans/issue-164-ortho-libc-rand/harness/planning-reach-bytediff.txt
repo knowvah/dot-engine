@@ -1,0 +1,93 @@
+# planning bytediff base 208b8b84 vs counterfactual over reach-ids.txt
+# jobs 805: identical 716, diffs 39, capped 50
+## diffs
+1447|circo|json
+1447|circo|plain
+1447|circo|svg
+1447|circo|xdot
+1658|circo|json
+1658|circo|plain
+1658|circo|svg
+1658|circo|xdot
+1880|circo|cmapx
+1880|circo|json
+1880|circo|plain
+1880|circo|svg
+1880|circo|xdot
+1990|circo|json
+1990|circo|plain
+1990|circo|svg
+1990|circo|xdot
+2168_5|twopi|json
+2168_5|twopi|plain
+2168_5|twopi|svg
+2168_5|twopi|xdot
+2183|twopi|json
+2183|twopi|plain
+2183|twopi|svg
+2183|twopi|xdot
+2643|twopi|json
+2643|twopi|plain
+2643|twopi|svg
+2643|twopi|xdot
+2783|dot|cmapx
+2783|dot|json
+2783|dot|plain
+2783|dot|svg
+2783|dot|xdot
+2783|osage|cmapx
+2783|osage|json
+2783|osage|plain
+2783|osage|svg
+2783|osage|xdot
+## capped (both sides)
+2783|circo|cmapx OOM OOM
+2783|circo|json OOM OOM
+2783|circo|plain OOM OOM
+2783|circo|svg OOM OOM
+2783|circo|xdot OOM OOM
+2783|fdp|cmapx OOM OOM
+2783|fdp|json OOM OOM
+2783|fdp|plain OOM OOM
+2783|fdp|svg OOM OOM
+2783|fdp|xdot OOM OOM
+2783|neato|cmapx OOM OOM
+2783|neato|json OOM OOM
+2783|neato|plain OOM OOM
+2783|neato|svg OOM OOM
+2783|neato|xdot OOM OOM
+2783|sfdp|cmapx OOM OOM
+2783|sfdp|json OOM OOM
+2783|sfdp|plain OOM OOM
+2783|sfdp|svg OOM OOM
+2783|sfdp|xdot OOM OOM
+2783|twopi|cmapx OOM OOM
+2783|twopi|json OOM OOM
+2783|twopi|plain OOM OOM
+2783|twopi|svg OOM OOM
+2783|twopi|xdot OOM OOM
+2784|circo|cmapx OOM OOM
+2784|circo|json OOM OOM
+2784|circo|plain OOM OOM
+2784|circo|svg OOM OOM
+2784|circo|xdot OOM OOM
+2784|fdp|cmapx OOM OOM
+2784|fdp|json OOM OOM
+2784|fdp|plain OOM OOM
+2784|fdp|svg OOM OOM
+2784|fdp|xdot OOM OOM
+2784|neato|cmapx OOM OOM
+2784|neato|json OOM OOM
+2784|neato|plain OOM OOM
+2784|neato|svg OOM OOM
+2784|neato|xdot OOM OOM
+2784|sfdp|cmapx OOM OOM
+2784|sfdp|json OOM OOM
+2784|sfdp|plain OOM OOM
+2784|sfdp|svg OOM OOM
+2784|sfdp|xdot OOM OOM
+2784|twopi|cmapx OOM OOM
+2784|twopi|json OOM OOM
+2784|twopi|plain OOM OOM
+2784|twopi|svg OOM OOM
+2784|twopi|xdot OOM OOM

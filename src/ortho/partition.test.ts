@@ -3,29 +3,32 @@
 /**
  * Oracle-pin test for partition.ts (ortho P2, T1).
  *
- * Ground truth captured from instrumented native graphviz `dot` via the
- * gvmine plugin oracle (ADR-1): `partition.c` was instrumented to dump, for
- * `splines=ortho` fixtures, the gcell obstacle boxes, the bounding box BB
- * (node coords ± size/2, expanded by MARGIN=36), the two drand48-generated
- * segment permutations, and the output rectangle set. C reverted after mint.
+ * The fixtures' gcell obstacle boxes and bounding box BB (node coords ±
+ * size/2, expanded by MARGIN=36) were dumped from instrumented native
+ * graphviz `dot` on `splines=ortho` inputs. Each fixture drives `partition`
+ * with those exact gcells + BB (ADR-2: isolate pipeline logic from layout).
  *
- * Each fixture drives `partition` with the EXACT C-dumped gcells + BB
- * (ADR-2: isolate pipeline logic from layout). The drand48 permute is
- * reproduced internally by partition's srand48(173) — verified equal to the
- * C-dumped permute below.
+ * The two segment permutations, the rectangle sets and the stream position
+ * after `partition` come from graphviz 16.1.1's own `partition()` and
+ * `gv_permutation`, linked from the oracle build's libortho.a and libutil.a
+ * (plans/issue-164-ortho-libc-rand/harness/partition-1611.c), each case
+ * starting from `srand(1)`. 16.1.1 (b99490ece) draws the permutations from
+ * the process-global libc rand() stream, so every `partition` call here is
+ * preceded by `csrand(1)`: the result depends on the stream position.
  *
  * Comparison is order-normalized by (LL.x, LL.y, UR.x, UR.y): C emits boxes
  * in monotonate_trapezoids DFS order; the TS port emits in trapezoid-index
  * order. The SET must match exactly.
  *
  * @see lib/ortho/partition.c:partition
+ * @see lib/util/random.c:gv_permutation
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import {
-  partition, SEED, traverseChildOrderForTest, TR_FROM_UP, TR_FROM_DN,
+  partition, traverseChildOrderForTest, TR_FROM_UP, TR_FROM_DN,
 } from "./partition.js";
-import { srand48, drand48 } from "../common/random.js";
+import { crand, csrand, gvPermutation } from "../common/crand.js";
 import type { Cell, OrthoBox } from "./types.js";
 import type { SegmentT, TrapT } from "./trapezoid.js";
 
@@ -52,19 +55,12 @@ function boxKeys(boxes: OrthoBox[]): string[] {
     .sort();
 }
 
-/** Reproduce C generateRandomOrdering for permute verification. */
+/** Unseeded libc rand() behaves as srand(1): a fresh native process. */
+const UNSEEDED = 1;
+
+/** C generateRandomOrdering (16.1.1): gv_permutation made 1-based. */
 function genOrder(n: number): number[] {
-  const p: number[] = [];
-  for (let i = 0; i < n; i++) p.push(i + 1);
-  for (let i = 0; i < n; i++) {
-    const j = Math.floor(i + drand48() * (n - i));
-    if (j !== i) {
-      const t = p[i]!;
-      p[i] = p[j]!;
-      p[j] = t;
-    }
-  }
-  return p;
+  return gvPermutation(n).map((v) => v + 1);
 }
 
 interface Fixture {
@@ -73,18 +69,22 @@ interface Fixture {
   cells: Cell[];
   hperm: number[];
   vperm: number[];
+  /** The next rand() after partition, from srand(1). */
+  nextRand: number;
   rects: OrthoBox[];
 }
 
-// --- C-dumped fixtures (ORTHO_DUMP from instrumented native dot) -------------
+// --- C-dumped fixtures (gcells + BB from instrumented native dot; orderings,
+// rectangles and nextRand from the 16.1.1 partition() harness) ---------------
 
 const FIXTURES: Fixture[] = [
   {
     name: "f2pair: a -> b (2-node chain)",
     bb: box(-63, -36, 63, 144),
     cells: [mkCell(-27, 72, 27, 108), mkCell(-27, 0, 27, 36)],
-    hperm: [10, 9, 11, 7, 2, 4, 5, 12, 3, 1, 6, 8],
-    vperm: [12, 5, 9, 1, 11, 3, 6, 8, 7, 2, 10, 4],
+    hperm: [12, 6, 11, 5, 10, 1, 7, 9, 3, 4, 2, 8],
+    vperm: [7, 12, 4, 5, 9, 2, 10, 8, 1, 3, 11, 6],
+    nextRand: 1264817709,
     rects: [
       box(-63, -36, -27, 0),
       box(-63, 0, -27, 36),
@@ -109,8 +109,9 @@ const FIXTURES: Fixture[] = [
       mkCell(-27, 72, 27, 108),
       mkCell(-27, 0, 27, 36),
     ],
-    hperm: [14, 11, 1, 9, 2, 7, 10, 16, 13, 5, 6, 4, 8, 15, 12, 3],
-    vperm: [13, 8, 9, 4, 7, 12, 10, 16, 1, 2, 5, 15, 6, 11, 3, 14],
+    hperm: [16, 7, 3, 14, 6, 1, 2, 12, 9, 15, 4, 13, 11, 10, 5, 8],
+    vperm: [9, 11, 15, 3, 13, 4, 2, 6, 1, 10, 7, 5, 14, 12, 16, 8],
+    nextRand: 1954899097,
     rects: [
       box(27, -36, 63, 0),
       box(27, 36, 63, 72),
@@ -140,8 +141,9 @@ const FIXTURES: Fixture[] = [
       mkCell(-63, 0, -9, 36),
       mkCell(9, 0, 63, 36),
     ],
-    hperm: [14, 11, 1, 9, 2, 7, 10, 16, 13, 5, 6, 4, 8, 15, 12, 3],
-    vperm: [13, 8, 9, 4, 7, 12, 10, 16, 1, 2, 5, 15, 6, 11, 3, 14],
+    hperm: [16, 7, 3, 14, 6, 1, 2, 12, 9, 15, 4, 13, 11, 10, 5, 8],
+    vperm: [9, 11, 15, 3, 13, 4, 2, 6, 1, 10, 7, 5, 14, 12, 16, 8],
+    nextRand: 1954899097,
     rects: [
       box(63, -36, 99, 0),
       box(63, 36, 99, 72),
@@ -172,16 +174,15 @@ const FIXTURES: Fixture[] = [
 ];
 
 describe("ortho partition — oracle-pinned vs native C", () => {
-  it("SEED matches C srand48(173)", () => {
-    expect(SEED).toBe(173);
+  beforeEach(() => {
+    csrand(UNSEEDED);
   });
 
   for (const fx of FIXTURES) {
     describe(fx.name, () => {
       const nsegs = 4 * (fx.cells.length + 1);
 
-      it("reproduces the C drand48 permutes (hperm, vperm)", () => {
-        srand48(SEED);
+      it("reproduces the C gv_permutation orderings (hperm, vperm)", () => {
         expect(genOrder(nsegs)).toEqual(fx.hperm);
         expect(genOrder(nsegs)).toEqual(fx.vperm);
       });
@@ -192,8 +193,14 @@ describe("ortho partition — oracle-pinned vs native C", () => {
         expect(boxKeys(got)).toEqual(boxKeys(fx.rects));
       });
 
-      it("is deterministic run-to-run", () => {
+      it("draws both orderings from the shared rand() stream, unseeded", () => {
+        partition(fx.cells, fx.bb);
+        expect(crand()).toBe(fx.nextRand);
+      });
+
+      it("is deterministic from the same stream position", () => {
         const a = partition(fx.cells, fx.bb)!;
+        csrand(UNSEEDED);
         const b = partition(fx.cells, fx.bb)!;
         expect(boxKeys(a)).toEqual(boxKeys(b));
       });

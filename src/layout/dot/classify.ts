@@ -112,8 +112,11 @@ function interclust1(g: Graph, t: Node, h: Node, e: Edge): void {
   const t0 = ufFind(t);
   const h0 = ufFind(h);
   const w = e.info.weight ?? 1;
-  const rt = makeAuxEdge(v, t0, tLen, CL_BACK * w);
-  const rh = makeAuxEdge(v, h0, hLen, w);
+  // C writes ED_to_orig on both results without a NULL test. make_aux_edge
+  // refuses only a length above INT_MAX (16.1.1), and these lengths are C
+  // `int`s (`offset = ED_minlen(e) + t_rank - h_rank`), so neither is null.
+  const rt = makeAuxEdge(v, t0, tLen, CL_BACK * w)!;
+  const rh = makeAuxEdge(v, h0, hLen, w)!;
   rt.info.to_orig = e;
   rh.info.to_orig = e;
 }

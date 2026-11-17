@@ -1,0 +1,25 @@
+# Reach of #164: every applicable corpus id whose file sets splines=ortho (23),
+# under every engine that routes edges (patchwork does not). Port-only bytediff.
+1408 dot,neato,fdp,sfdp,circo,twopi,osage
+1447 dot,neato,fdp,sfdp,circo,twopi,osage
+1447_1 dot,neato,fdp,sfdp,circo,twopi,osage
+144_ortho dot,neato,fdp,sfdp,circo,twopi,osage
+1658 dot,neato,fdp,sfdp,circo,twopi,osage
+1856 dot,neato,fdp,sfdp,circo,twopi,osage
+1880 dot,neato,fdp,sfdp,circo,twopi,osage
+1990 dot,neato,fdp,sfdp,circo,twopi,osage
+2082 dot,neato,fdp,sfdp,circo,twopi,osage
+2168_5 dot,neato,fdp,sfdp,circo,twopi,osage
+2183 dot,neato,fdp,sfdp,circo,twopi,osage
+2361 dot,neato,fdp,sfdp,circo,twopi,osage
+2620 dot,neato,fdp,sfdp,circo,twopi,osage
+2643 dot,neato,fdp,sfdp,circo,twopi,osage
+2783 dot,neato,fdp,sfdp,circo,twopi,osage
+2784 dot,neato,fdp,sfdp,circo,twopi,osage
+56 dot,neato,fdp,sfdp,circo,twopi,osage
+graphs-radius dot,neato,fdp,sfdp,circo,twopi,osage
+linux.i386-radius_dot dot,neato,fdp,sfdp,circo,twopi,osage
+linux.x86-radius_dot dot,neato,fdp,sfdp,circo,twopi,osage
+macosx-radius_dot dot,neato,fdp,sfdp,circo,twopi,osage
+nshare-radius_dot dot,neato,fdp,sfdp,circo,twopi,osage
+windows-radius_dot dot,neato,fdp,sfdp,circo,twopi,osage

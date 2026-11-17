@@ -13,6 +13,9 @@
 // rank at x 0; the cluster margins put its box 2 pt above the bb (near), on it
 // (touch) or 16 pt above it (far). The refs under
 // plans/issue-141-nodeinbox-pad/harness are native 16.1.0's (regen.sh).
+// out/abort-*.xdot are native 16.1.1's (edges after nodes, in creation order),
+// re-captured by #149
+// (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 // @see lib/common/emit.c:3290-3304 init_job_pad
 // @see lib/common/emit.c:1550-1564 setup_page
 // @see lib/common/emit.c:1808 emit_node (node_in_box)

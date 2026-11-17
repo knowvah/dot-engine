@@ -6,16 +6,23 @@
 // On an oracle bump this is the ONLY file to change, plus the two default
 // literals in gen-headless-gvbindir.sh (a shell script cannot import this).
 // test/corpus/gvbindir-defaults.test.ts enforces both, and that no other file
-// under test/ hardcodes an oracle path.
+// under test/ hardcodes an oracle path or defaults the corpus root elsewhere.
 
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 
 /** The oracle version every sweep is pinned to. */
 export const ORACLE_VERSION = '16.1.1';
 
 /** The oracle's CMake build tree. */
 export const ORACLE_GRAPHVIZ_BUILD = join(homedir(), 'git/graphviz-16.1.1/build');
+
+/**
+ * The corpus: the oracle checkout's own `tests/` directory, so the inputs and
+ * the reference binary always come from the same graphviz version (override
+ * per script with CORPUS_ROOT, or `enumerate.ts` argv).
+ */
+export const ORACLE_CORPUS_ROOT = join(dirname(ORACLE_GRAPHVIZ_BUILD), 'tests');
 
 /** The oracle `dot` binary (override per script with DOT_BIN). */
 export const ORACLE_DOT_BIN = join(ORACLE_GRAPHVIZ_BUILD, 'cmd/dot/dot');

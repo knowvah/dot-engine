@@ -1,3 +1,7 @@
+> **Superseded (2026-11-16, #163):** graphviz 16.1.1 removed `compact` and the
+> weak/strong cluster machinery; the port deleted it too. See
+> `.agent-notes/issue-163.md`. What follows is history against 16.1.0.
+
 # Observation: `newrank` + `compact=true` cluster (C's weak()/strong-cluster path) — FIXED
 
 - **Context**: While fixing the newrank/minlen=0 aux-edge calloc bug

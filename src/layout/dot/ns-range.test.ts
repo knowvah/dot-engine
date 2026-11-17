@@ -181,6 +181,44 @@ describe('treeAdjust — iterative equals recursive reference', () => {
   }
 });
 
+describe('treeAdjust — saturates at int32 (ns.c:599)', () => {
+  const INT_MAX = 2_147_483_647;
+  const INT_MIN = -2_147_483_648;
+  // Node 0 is the root; 1 hangs off it by a tree_in edge, 2 by a tree_out
+  // edge, and 3 off 2, so the walk crosses both edge lists.
+  const EDGES: [number, number][] = [[1, 0], [0, 2], [2, 3]];
+
+  function adjusted(ranks: readonly number[], delta: number): number[] {
+    const nodes = buildTree(ranks.length, EDGES);
+    nodes.forEach((nd, i) => { nd.info.rank = ranks[i]; });
+    treeAdjust(nodes[0], undefined, delta);
+    return nodes.map((nd) => nd.info.rank ?? 0);
+  }
+
+  it('clamps every node of a tree whose ranks sit 7..4 below INT_MAX', () => {
+    const ranks = [2_147_483_640, 2_147_483_641, 2_147_483_642, 2_147_483_643];
+    expect(adjusted(ranks, 10)).toEqual([INT_MAX, INT_MAX, INT_MAX, INT_MAX]);
+  });
+
+  it('clamps every node of a tree whose ranks sit 8..5 above INT_MIN', () => {
+    const ranks = [-2_147_483_640, -2_147_483_641, -2_147_483_642, -2_147_483_643];
+    expect(adjusted(ranks, -10)).toEqual([INT_MIN, INT_MIN, INT_MIN, INT_MIN]);
+  });
+
+  it('clamps only the nodes past the edge; INT_MAX - delta passes through', () => {
+    // 2147483637 + 10 is exactly INT_MAX (no clamp); 2147483638 + 10 clamps.
+    expect(adjusted([0, 5, 2_147_483_637, 2_147_483_638], 10))
+      .toEqual([10, 15, INT_MAX, INT_MAX]);
+  });
+
+  it('leaves ranks one inside each edge unclamped', () => {
+    expect(adjusted([INT_MAX - 11, 0, INT_MIN, -3], 10))
+      .toEqual([INT_MAX - 1, 10, INT_MIN + 10, 7]);
+    expect(adjusted([INT_MIN + 11, 0, INT_MAX, 3], -10))
+      .toEqual([INT_MIN + 1, -10, INT_MAX - 10, -7]);
+  });
+});
+
 describe('treeAdjust — deep tight tree does not overflow the stack', () => {
   it('walks a 50k-deep chain iteratively (regression: corpus 2646)', () => {
     // A recursive tree_adjust overflows the JS call stack here; the iterative

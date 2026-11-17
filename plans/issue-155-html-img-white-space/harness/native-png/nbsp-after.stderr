@@ -1,0 +1,3 @@
+Error: Syntax error: non-space string used after <IMG> in line 1 
+... &#160;</TD> ...
+in label of node Q

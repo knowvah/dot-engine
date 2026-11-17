@@ -3,6 +3,9 @@
 // sfdp under `dim`/`dimen` against native graphviz 16.1.0 fixtures: every
 // coordinate within 0.5 pt (part-10 AD-3, sfdp's solver differs from native in
 // the last bit of pow) and `pos` carries native's coordinate count.
+// {dim3,dim3-dimen3,dim4-dimen4,overlap-prism-dim3}.dot are native 16.1.1's
+// (edges after nodes, in creation order), re-captured by #149
+// (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 // @see lib/sfdpgen/sfdpinit.c:sfdp_init_graph, sfdpLayout, getPos
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';

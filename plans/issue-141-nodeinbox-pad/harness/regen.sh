@@ -7,6 +7,8 @@
 # it (touch) or is 16 pt above it (far). Native exits 1 on each; the output is
 # still complete. Run from the repo root, after oraclePreflight on the plugin dir:
 #   GVBINDIR=/tmp/ghl bash plans/issue-141-nodeinbox-pad/harness/regen.sh
+# out/abort-*.xdot are native 16.1.1's, re-captured by #149
+# (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 set -uo pipefail
 DOT=${DOT_BIN:-$HOME/git/graphviz/build/cmd/dot/dot}
 H=$(cd "$(dirname "$0")" && pwd)

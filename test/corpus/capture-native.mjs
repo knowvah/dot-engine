@@ -15,12 +15,12 @@
 
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { homedir, hostname, cpus } from 'node:os';
-import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
+import { hostname, cpus } from 'node:os';
+import { ORACLE_CORPUS_ROOT, ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { performance } from 'node:perf_hooks';
 
-const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
+const ROOT = process.env.CORPUS_ROOT ?? ORACLE_CORPUS_ROOT;
 const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
 const GVBINDIR = process.env.GVBINDIR ?? ORACLE_GVBINDIR;
 const MANIFEST = new URL('./corpus-manifest.json', import.meta.url);

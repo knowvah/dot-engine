@@ -6,14 +6,12 @@
  * before implementation and must not be changed to match code output.
  *
  * Acceptance criteria:
- *   1. SEED constant equals 173.
  *   2. Two calls on identical graphs produce identical routing results.
  *   3. Maze Dijkstra finds shortest orthogonal path in a simple two-node graph.
  *   4. useLbls=true triggers console.warn and does not throw.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { SEED } from "./partition.js";
 import { orthoEdges } from "./index.js";
 import type { OrthoGraph, OrthoEdge, OrthoPoint, ClipAndInstallFn } from "./index.js";
 
@@ -30,11 +28,6 @@ function makeTwoNodeGraph(): OrthoGraph {
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
 describe("ortho acceptance", () => {
-  // ── AC1: SEED constant ────────────────────────────────────────────────────
-  it("SEED constant equals 173", () => {
-    expect(SEED).toBe(173);
-  });
-
   // ── AC2: Determinism ─────────────────────────────────────────────────────
   it("two identical calls produce identical routing results", () => {
     const paths1: OrthoPoint[][] = [];

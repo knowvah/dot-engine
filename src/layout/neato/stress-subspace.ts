@@ -21,11 +21,11 @@
 
 import { crand } from '../../common/crand.js';
 import { fma } from '../../common/fma.js';
-import { conjugateGradientF } from './conjgrad.js';
+import { conjugateGradientD } from './conjgrad.js';
 import type { VtxData } from './dijkstra.js';
 import { centerCoordinate, embedGraph, pivotDistances, saveWeights } from './embed-graph.js';
 import { computeNewWeights, restoreOldWeights } from './kkutils.js';
-import { multDenseMat, multSparseDenseMatTranspose, rightMultWithVectorD, rightMultWithVectorTranspose } from './matrix-ops-dense.js';
+import { multDenseMatD, multSparseDenseMatTranspose, rightMultWithVectorD, rightMultWithVectorTranspose } from './matrix-ops-dense.js';
 import { iterativePCA1D, pcaAlloc } from './pca.js';
 import { TOLERANCE_CG } from './stress.js';
 
@@ -255,7 +255,7 @@ interface SubspaceState {
   readonly subspace: readonly Float64Array[];
   readonly distances: readonly DistData[];
   readonly lap: readonly VtxData[];
-  readonly matrix: readonly Float32Array[];
+  readonly matrix: readonly Float64Array[];
   readonly directions: readonly Float64Array[];
   readonly coords: readonly Float64Array[];
   readonly b: Float64Array;
@@ -294,7 +294,7 @@ function optimizeAxes(st: SubspaceState): boolean {
   for (let k = 0; k < dim; k++) {
     computeB(st, k);
     rightMultWithVectorD(subspace, subspaceDim, n, b, bRestricted);
-    const rc = conjugateGradientF(matrix, directions[k]!, bRestricted, subspaceDim, {
+    const rc = conjugateGradientD(matrix, directions[k]!, bRestricted, subspaceDim, {
       tol: TOLERANCE_CG, maxIterations: subspaceDim, ortho1: false,
     });
     if (rc !== 0) return true;
@@ -360,7 +360,7 @@ export function sparseStressSubspaceMajorizationKD(
 
   // the restriction of the Laplacian to the subspace
   const tmpMat = multSparseDenseMatTranspose(lap, subspace, n, subspaceDim);
-  const matrix = multDenseMat(subspace, tmpMat, subspaceDim, n, subspaceDim);
+  const matrix = multDenseMatD(subspace, tmpMat, subspaceDim, n, subspaceDim);
 
   const iterations = optimizeLayout({
     n, dim, subspaceDim, subspace, distances, lap, matrix, directions, coords,

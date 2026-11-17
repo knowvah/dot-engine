@@ -5,6 +5,9 @@
 // __fixtures__/ipsep/ are the oracle's own output (GVBINDIR=ghl16-all), with
 // `<case>.xdot.stderr` and the `-v` stress trace as `<case>.trace`. C has no
 // ipsep tests, so these probes are the specification (part-7 AD-4).
+// The 7 unconstrained probes' `<case>.xdot` are native 16.1.1's (edges after
+// nodes, in creation order), re-captured by #149
+// (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 //
 // The 7 unconstrained probes are byte-identical (part-7 AD-2); the constrained
 // ones are held to 0.01 through compareXdot. Each runs the whole neato pipeline

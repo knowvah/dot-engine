@@ -89,19 +89,18 @@ export function isStraightContinuation(v: Node, n: Node): boolean {
   return nodeCoordX(v) === nodeCoordX(n);
 }
 
-/** Advance one step along the straight chain; return undefined if done. */
-export function straightNext(v: Node): Node | undefined {
-  const e = v.info.out?.list[0];
-  return e ? e.head : undefined;
-}
-
-/** @see lib/dotgen/dotsplines.c:straight_len */
+/**
+ * Count of vertically aligned edges starting at n. The walk stops at a node
+ * with no out edge: 16.1.1 loops on `ND_out(v).size > 0`, where 16.1.0 read
+ * `ND_out(v).list[0]` of a virtual node that has none (upstream issue 2765).
+ * @see lib/dotgen/dotsplines.c:straight_len (16.1.1, 5649d079c)
+ */
 export function straightLen(n: Node): number {
   let cnt = 0;
-  let v: Node | undefined = n;
-  for (;;) {
-    v = straightNext(v);
-    if (!v || !isStraightContinuation(v, n)) break;
+  let v: Node = n;
+  while (nodeOutSize(v) > 0) {
+    v = v.info.out!.list[0].head;
+    if (!isStraightContinuation(v, n)) break;
     cnt++;
   }
   return cnt;

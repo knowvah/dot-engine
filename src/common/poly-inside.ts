@@ -20,6 +20,7 @@ import type { PolygonT } from './types.js';
 import type { InsideContext } from './splines-geom.js';
 import { polygonOutlineRing } from './poly-sizing.js';
 import { ccwrotatepf } from '../model/geom.js';
+import { fdivOverflow } from '../util/overflow.js';
 
 /** Test if p0 and p1 are on the same side of the line L0-L1. @see shapes.c:same_side */
 export function sameSide(p0: Point, p1: Point, L0: Point, L1: Point): boolean {
@@ -60,7 +61,12 @@ function insideDims(n: Node, xsize: number, ysize: number):
   return { w, h, ow: 72 * n.info.outline_width || w, oh: 72 * n.info.outline_height || h };
 }
 
-/** @see lib/common/shapes.c:poly_inside (scale setup) */
+/**
+ * C assigns `scalex = n_width` and then lets `fdiv_overflow` overwrite it
+ * with `n_width / xsize` when that quotient is finite (likewise `scaley`):
+ * `fdivOverflow(w, xsize) ?? w`.
+ * @see lib/common/shapes.c:poly_inside (scale setup, 2465-2469)
+ */
 function insideScale(n: Node, poly: PolygonT): InsideScale {
   // C swaps the node extents for flipped (LR/RL) layouts. @see poly_inside (GD_flip)
   const flip = n.root.info.flip === true;
@@ -74,8 +80,8 @@ function insideScale(n: Node, poly: PolygonT): InsideScale {
     const xsize = flip ? h : w;
     const ysize = flip ? w : h;
     return {
-      scalex: xsize !== 0 ? w / xsize : w,
-      scaley: ysize !== 0 ? h / ysize : h,
+      scalex: fdivOverflow(w, xsize) ?? w,
+      scaley: fdivOverflow(h, ysize) ?? h,
       boxURx: w / 2,
       boxURy: h / 2,
     };
@@ -85,8 +91,8 @@ function insideScale(n: Node, poly: PolygonT): InsideScale {
   const ysize = flip ? lwrw : n.info.ht;
   const { w, h, ow, oh } = insideDims(n, xsize, ysize);
   return {
-    scalex: xsize !== 0 ? w / xsize : w,
-    scaley: ysize !== 0 ? h / ysize : h,
+    scalex: fdivOverflow(w, xsize) ?? w,
+    scaley: fdivOverflow(h, ysize) ?? h,
     boxURx: ow / 2,
     boxURy: oh / 2,
   };

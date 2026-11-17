@@ -4,6 +4,8 @@
 # <case>.dot and <case>.stderr per <case>.gv. Engine sfdp. The .stderr is the -Txdot run's;
 # regen reports a case whose -Tdot stderr differs. Inputs come from
 # plans/post-16-1-followups-10/harness/T0/gen-fixtures.py.
+# {dim3,dim3-dimen3,dim4-dimen4,overlap-prism-dim3}.dot are native 16.1.1's, re-captured by
+# #149 (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 #
 # Usage: GVBINDIR=<full plugin dir> bash regen.sh
 set -u

@@ -16,24 +16,11 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import type { SurveyResult, Verdict } from './survey.js';
 import type { CorpusEntry, QuarantineReason } from './enumerate.js';
 import { loadAccepted, matchAccepted, type AcceptedEntry } from './accepted.js';
-import { testIdLink, scrubLocalPaths } from './corpus-links.js';
+import { corpusRootMd, testIdLink, scrubLocalPaths } from './corpus-links.js';
 
 const PARITY = new URL('./parity.json', import.meta.url);
 const MANIFEST = new URL('./corpus-manifest.json', import.meta.url);
 const OUT = new URL('./PARITY-dot.md', import.meta.url);
-/** Upstream source of the corpus — graphviz's own `tests/` tree. */
-const CORPUS_GITLAB = 'https://gitlab.com/graphviz/graphviz/-/tree/main/tests';
-
-/**
- * Render the corpus root for the summary. The default corpus is a local clone
- * of graphviz's `tests/` directory, so link readers to its gitlab source; a
- * custom CORPUS_ROOT (not ending in graphviz/tests) is shown verbatim.
- */
-function corpusRootMd(root: string): string {
-  return /graphviz\/tests\/?$/.test(root)
-    ? `[graphviz \`tests/\`](${CORPUS_GITLAB}) (local clone \`${root}\`)`
-    : `\`${root}\``;
-}
 const DIVERGED_TABLE_CAP = 60; // full set is in parity.json + the buckets below.
 
 interface ParityReport {

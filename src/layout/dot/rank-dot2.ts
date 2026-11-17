@@ -17,15 +17,11 @@ import { nodesInSeq } from './decomp.js';
 // Constants  @see lib/dotgen/rank.c
 // ---------------------------------------------------------------------------
 
-const BACKWARD_PENALTY = 1000;
-const STRONG_CLUSTER_WEIGHT = 1000;
 const NORANK = 6;
 const ROOT_NAME = '\x7froot';
-const TOPNODE_NAME = '\x7ftop';
-const BOTNODE_NAME = '\x7fbot';
 
-/** Mutable state replacing C statics Last_node and id in weak(). */
-export interface XgState { lastNode: Node | undefined; weakId: number; }
+/** Mutable state replacing the C static Last_node. */
+export interface XgState { lastNode: Node | undefined; }
 
 // ---------------------------------------------------------------------------
 // Accessor helpers — extract ?? and ?. so callers stay within CCN ≤ 10
@@ -79,17 +75,15 @@ export function d2unionAll(g: Graph): Node | undefined {
 // could later widen a node's membership out of creation order (the exact
 // precondition that makes `g.nodes.values()` diverge from AGSEQ elsewhere).
 // Xg's node-creation order is itself already driven by `nodesInSeq(g)`
-// (compileNodes/compileEdges/compileClusters, converted above), so
+// (compileNodes, converted above; connectComponents adds ROOT last), so
 // `Xg.nodes.values()` is provably already AGSEQ-equivalent order.
 // ---------------------------------------------------------------------------
 
 /** @see lib/dotgen/rank.c:makeXnode — C's `agnode(G, name, 1)` returns the
- *  existing node when one with `name` is present, so the fixed-name helper nodes
- *  TOP/BOT are a single shared node across all strong clusters (compile_clusters
- *  calls makeXnode(Xg, TOPNODE) once per cluster). Creating a fresh node per call
- *  gives each cluster its own TOP/BOT, splitting the STRONG_CLUSTER_WEIGHT
- *  constraint and derailing the rank solve. Real/weak node names are unique, so
- *  this dedup only affects TOP/BOT/ROOT — exactly as in C. */
+ *  existing node when one with `name` is present. Since graphviz 16.1.1 removed
+ *  compile_clusters and its shared TOP/BOT nodes, the callers are compile_nodes
+ *  (one call per set leader, each name unique) and connect_components (ROOT, at
+ *  most once per Xg), so the dedup matters only for ROOT. */
 export function makeXnode(Xg: Graph, name: string, st: XgState): Node {
   const existing = Xg.nodes.get(name);
   if (existing) return existing;
@@ -212,40 +206,11 @@ export function xgStrong(Xg: Graph, t: Node, h: Node, orig: Edge): void {
   xgMerge(e, eMinlen(orig), eWeight(orig));
 }
 
-/** @see lib/dotgen/rank.c:weak — find existing weak diamond v→t, v→h */
-export function xgWeakExists(Xg: Graph, t: Node, h: Node): boolean {
-  for (const e of Xg.edges) {
-    if (e.head !== t) continue;
-    const v = e.tail;
-    for (const f of Xg.edges) { if (f.tail === v && f.head === h) return true; }
-  }
-  return false;
-}
-
-export function xgWeakSetWeights(e: Edge, f: Edge, origW: number, origML: number): void {
-  e.info.minlen = Math.max(eMinlen(e), 0);
-  e.info.weight = eWeight(e) + origW * BACKWARD_PENALTY;
-  f.info.minlen = Math.max(eMinlen(f), origML);
-  f.info.weight = eWeight(f) + origW;
-}
-
-/** @see lib/dotgen/rank.c:weak */
-export function xgWeak(Xg: Graph, t: Node, h: Node, orig: Edge, st: XgState): void {
-  if (xgWeakExists(Xg, t, h)) return;
-  const v = makeXnode(Xg, `_weak_${st.weakId++}`, st);
-  xgWeakSetWeights(xgAddEdge(Xg, v, t), xgAddEdge(Xg, v, h), eWeight(orig), eMinlen(orig));
-}
-
 /** @see lib/dotgen/rank.c:is_nonconstraint */
 export function isNonConstraint(e: Edge): boolean {
   const v = e.attrs.get('constraint');
   if (!v) return false;
   return !mapbool(v);
-}
-
-/** @see lib/dotgen/rank.c:is_a_strong_cluster */
-export function isAStrongCluster(g: Graph): boolean {
-  return mapbool(g.attrs.get('compact') ?? '');
 }
 
 /** @see lib/dotgen/rank.c:dot_lca */
@@ -283,66 +248,21 @@ export function ceInternal(Xg: Graph, e: Edge, Xt: Node, Xh: Node): void {
 }
 
 /** @see lib/dotgen/rank.c:compile_edges inner body */
-export function compileEdgeItem(Xg: Graph, e: Edge, Xt: Node, st: XgState): void {
+export function compileEdgeItem(Xg: Graph, e: Edge, Xt: Node): void {
   if (isNonConstraint(e)) return;
   const Xh = d2find(e.head).info.rep;
   if (!Xh || Xt === Xh) return;
   if (isInternalToCluster(e)) { ceInternal(Xg, e, Xt, Xh); return; }
-  const tc = e.tail.info.clust; const hc = e.head.info.clust;
-  if ((tc && isAStrongCluster(tc)) || (hc && isAStrongCluster(hc))) xgWeak(Xg, Xt, Xh, e, st);
-  else xgStrong(Xg, Xt, Xh, e);
+  xgStrong(Xg, Xt, Xh, e);
 }
 
 /** @see lib/dotgen/rank.c:compile_edges */
-export function compileEdges(g: Graph, Xg: Graph, st: XgState): void {
+export function compileEdges(g: Graph, Xg: Graph): void {
   for (const n of nodesInSeq(g)) {
     const Xt = n.info.rep;
     if (!Xt) continue;
-    for (const e of n.outEdges(g)) compileEdgeItem(Xg, e, Xt, st);
+    for (const e of n.outEdges(g)) compileEdgeItem(Xg, e, Xt);
   }
-}
-
-// ---------------------------------------------------------------------------
-// compile_clusters helpers
-// ---------------------------------------------------------------------------
-
-interface ClusterBounds { top: Node | undefined; bot: Node | undefined; }
-
-export function ccProcessNode(g: Graph, Xg: Graph, st: XgState, n: Node, b: ClusterBounds): void {
-  const rep = d2find(n).info.rep;
-  if (!rep) return;
-  if (n.inEdges(g).length === 0) {
-    if (!b.top) b.top = makeXnode(Xg, TOPNODE_NAME, st);
-    xgAddEdge(Xg, b.top, rep);
-  }
-  if (n.outEdges(g).length === 0) {
-    if (!b.bot) b.bot = makeXnode(Xg, BOTNODE_NAME, st);
-    xgAddEdge(Xg, rep, b.bot);
-  }
-}
-
-export function ccStrongCluster(
-  g: Graph, Xg: Graph, st: XgState, top: Node | undefined, bot: Node | undefined
-): ClusterBounds {
-  const b: ClusterBounds = { top, bot };
-  for (const n of nodesInSeq(g)) ccProcessNode(g, Xg, st, n, b);
-  // Xg is Agstrictdirected, so C's `agedge(Xg, top, bot)` returns the one shared
-  // TOP->BOT edge (TOP/BOT dedup in makeXnode) and merge() accumulates onto it.
-  // Mirror strict agedge with find-or-add so the weight sums instead of forking.
-  if (b.top && b.bot) xgMerge(xgFindEdge(Xg, b.top, b.bot) ?? xgAddEdge(Xg, b.top, b.bot), 0, STRONG_CLUSTER_WEIGHT);
-  return b;
-}
-
-/** @see lib/dotgen/rank.c:compile_clusters */
-export function compileClusters(
-  g: Graph, Xg: Graph, st: XgState, top: Node | undefined, bot: Node | undefined
-): void {
-  let t = top; let b = bot;
-  if (isACluster(g) && isAStrongCluster(g)) {
-    const bounds = ccStrongCluster(g, Xg, st, t, b);
-    t = bounds.top; b = bounds.bot;
-  }
-  for (const sub of g.subgraphs.values()) compileClusters(sub, Xg, st, t, b);
 }
 
 // ---------------------------------------------------------------------------
@@ -507,7 +427,7 @@ export function readoutLevels(g: Graph, Xg: Graph, ncc: number): void {
 
 /** @see lib/dotgen/rank.c:dot2_rank */
 export function dot2Rank(g: Graph): void {
-  const st: XgState = { lastNode: undefined, weakId: 0 };
+  const st: XgState = { lastNode: undefined };
   const Xg = new Graph('level assignment constraints', 'strict-directed');
   edgelabelRanks(g);
   const nslimit1 = g.attrs.get('nslimit1');
@@ -518,8 +438,7 @@ export function dot2Rank(g: Graph): void {
   const ssize = ssStr ? parseInt(ssStr, 10) : -1;
   compileSamerank(g, undefined);
   compileNodes(g, Xg, st);
-  compileEdges(g, Xg, st);
-  compileClusters(g, Xg, st, undefined, undefined);
+  compileEdges(g, Xg);
   breakCycles(Xg);
   const ncc = connectComponents(Xg, st);
   addFastEdges(Xg);

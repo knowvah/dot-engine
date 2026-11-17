@@ -4,8 +4,8 @@
 // source and scrubbing the author's local machine paths out of generated
 // dashboard tables (AD-4, plans/docs-overhaul/decisions.md#gitlab-links).
 //
-// `test/corpus/dashboard.ts` already gitlab-links the corpus ROOT
-// (`CORPUS_GITLAB` / `corpusRootMd`), but per-id rows and embedded
+// `test/corpus/dashboard.ts` gitlab-links the corpus ROOT through
+// `corpusRootMd` (below), but per-id rows and embedded
 // oracle/port error messages were emitted verbatim, leaking paths like
 // `/Users/<name>/git/graphviz/...`. Every dashboard generator
 // (dashboard.ts, parity-report.ts, json-dashboard.ts, map-dashboard.ts,
@@ -17,6 +17,24 @@ import { homedir } from 'node:os';
 
 /** Upstream source of individual corpus test files (graphviz's own repo). */
 export const CORPUS_GITLAB_BLOB = 'https://gitlab.com/graphviz/graphviz/-/blob/main/tests';
+
+/** Upstream source of the corpus: graphviz's own `tests/` tree. */
+export const CORPUS_GITLAB_TREE = 'https://gitlab.com/graphviz/graphviz/-/tree/main/tests';
+
+/** A graphviz checkout's `tests/` directory, versioned (`graphviz-16.1.1`) or not. */
+const GRAPHVIZ_TESTS_ROOT = /(^|\/)graphviz[^/]*\/tests\/?$/;
+
+/**
+ * Render the corpus root for a dashboard summary. The default corpus is a
+ * local clone of graphviz's `tests/` directory (the oracle checkout,
+ * `ORACLE_CORPUS_ROOT`), so link readers to its gitlab source; a custom
+ * CORPUS_ROOT (not a graphviz checkout's `tests/`) is shown verbatim.
+ */
+export function corpusRootMd(root: string): string {
+  return GRAPHVIZ_TESTS_ROOT.test(root)
+    ? `[graphviz \`tests/\`](${CORPUS_GITLAB_TREE}) (local clone \`${root}\`)`
+    : `\`${root}\``;
+}
 
 /** Escape a string for literal (non-metacharacter) use inside a `RegExp`. */
 function escapeRegExp(s: string): string {

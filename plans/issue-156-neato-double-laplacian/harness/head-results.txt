@@ -1,0 +1,25 @@
+EQUAL c1554-corpus plain
+EQUAL c1554-corpus xdot
+EQUAL case-cycle plain
+EQUAL case-cycle xdot
+EQUAL case-dirnone plain
+EQUAL case-dirnone xdot
+EQUAL case-mds plain
+EQUAL case-mds xdot
+EQUAL case-startrandom plain
+EQUAL case-startrandom xdot
+EQUAL case-tdist plain
+EQUAL case-tdist xdot
+EQUAL hier-probe plain
+EQUAL hier-probe xdot
+EQUAL hier12 plain
+EQUAL hier12 xdot
+EQUAL hier40 plain
+EQUAL hier40 xdot
+EQUAL hier80 plain
+EQUAL hier80 xdot
+EQUAL rtest-mode-hier-lg1 plain
+EQUAL rtest-mode-hier-lg1 xdot
+EQUAL rtest-mode-hier plain
+EQUAL rtest-mode-hier xdot
+equal=24 differ=0

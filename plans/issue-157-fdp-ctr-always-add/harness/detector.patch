@@ -1,0 +1,17 @@
+--- src/layout/fdp/tlayout.ts	2026-11-11 10:46:40
++++ src/layout/fdp/tlayout.ts	2026-11-16 14:18:26
+@@ -308,6 +308,14 @@
+     }
+   }
+ 
++  if (!(ctr.x !== 0.0 || ctr.y !== 0.0)) {
++    for (const n of g.nodes.values()) {
++      const p = n.info.pos!;
++      if (!Object.is(p[0]! + ctr.x, p[0]) || !Object.is(p[1]! + ctr.y, p[1])) {
++        console.error(`P157HIT ${n.name} ${Object.is(p[0], -0)} ${Object.is(p[1], -0)} ctr=${Object.is(ctr.x,-0)},${Object.is(ctr.y,-0)}`);
++      }
++    }
++  }
+   if (ctr.x !== 0.0 || ctr.y !== 0.0) {
+     for (const n of g.nodes.values()) {
+       n.info.pos![0]! += ctr.x;

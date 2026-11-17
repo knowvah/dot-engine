@@ -5,6 +5,9 @@
 // what an earlier render, or the input, stored. A subgraph that was a render
 // root keeps its own _draw_ and xdotversion. Native refs:
 // plans/post-16-1-followups-11/harness/T7b (regen.sh).
+// stored-draws.<e>.<fmt> and noaddr/subg-<e>.<s>.{root,nofree}.xdot are native
+// 16.1.1's (edges after nodes, in creation order), re-captured by #149
+// (plans/issue-149-agwrite-edge-order/harness/recapture.sh).
 // @see plugin/core/gvrender_core_dot.c:237 xdot_end_node, :251 xdot_end_edge
 // @see plugin/core/gvrender_core_dot.c:280 xdot_end_cluster, :427 xdot_end_graph
 // @see lib/cgraph/write.c:write_dict, write_nondefault_attrs

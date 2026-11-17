@@ -1,0 +1,50 @@
+--- orig/dotsplines.c	2026-11-16 16:48:25
++++ src/dotsplines.c	2026-11-16 16:48:36
+@@ -1786,6 +1786,7 @@
+         si = true;
+         sl -= 2;
+       }
++      if ((!smode || si) && ND_out(hn).size == 0) fprintf(stderr, "P161MRE out0 smode=%d\n", (int)smode);
+       if ((!smode || si) && ND_out(hn).size > 0) {
+         si = false;
+         LIST_APPEND(&boxes, maximal_bbox(g, *sp, hn, e, ND_out(hn).list[0]));
+@@ -1828,6 +1829,7 @@
+       free(ps);
+       e = straight_path(ND_out(hn).list[0], sl, &pointfs);
+       recover_slack(segfirst, P);
++      if (e == NULL) fprintf(stderr, "P161MRE null sl=%d\n", sl);
+       if (e == NULL) {
+         LIST_FREE(&boxes);
+         LIST_FREE(&pointfs);
+@@ -2040,6 +2042,7 @@
+   node_t *v;
+ 
+   v = n;
++  if (ND_out(n).size == 0) fprintf(stderr, "P161SL\n");
+   while (ND_out(v).size > 0) {
+     v = aghead(ND_out(v).list[0]);
+     if (ND_node_type(v) != VIRTUAL)
+@@ -2077,6 +2080,7 @@
+       break;
+     if (p->boxes[b].UR.y < ND_coord(vn).y) {
+       if (ND_out(vn).size == 0) {
++        fprintf(stderr, "P161RS a\n");
+         break;
+       }
+       continue;
+@@ -2088,6 +2092,7 @@
+       resize_vn(vn, p->boxes[b].LL.x, (p->boxes[b].LL.x + p->boxes[b].UR.x) / 2,
+                 p->boxes[b].UR.x);
+     if (ND_out(vn).size == 0) {
++      fprintf(stderr, "P161RS b\n");
+       break;
+     }
+   }
+@@ -2152,6 +2157,7 @@
+   edge_t *orig;
+ 
+   rv = NULL;
++  if (ND_node_type(n) != NORMAL && ND_out(n).size == 0) fprintf(stderr, "P161CLB\n");
+   if (ND_node_type(n) == NORMAL || ND_out(n).size == 0)
+     tcl = hcl = ND_clust(n);
+   else {

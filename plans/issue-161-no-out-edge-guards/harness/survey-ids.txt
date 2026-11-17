@@ -1,0 +1,4 @@
+# Gate 6 ids: every id where a detector marker fires (native and port agree;
+# detector-hits.txt). No smoke id is among them.
+2765
+2765_1

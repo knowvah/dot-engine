@@ -1,0 +1,59 @@
+# Dead ends beyond the corpus: hand-made variants of 2765_1 (execution, head d5a0d297).
+# Native = 16.1.1 with detector-native.patch plus %.17g prints (scratch plugin, stdout
+# checked byte-equal to the oracle's on each input). Port = the head plus the same
+# markers (JS shortest repr of the same doubles). -Kdot -Tplain; base, head and native
+# stdout are byte-equal on D, E and F.
+#
+# D: forward, the chain's real head three ranks down.
+#   digraph { concentrate=true; node [shape=record]
+#     subgraph cluster{ Top [label="|<Target>"] }  Light; Mid
+#     Top:n -> Est:n  Top:Target -> Est:n  Top:n -> Light:n  Top:Target -> Est:n
+#     Light -> Mid -> Est }
+# E: back edges across two ranks (the input of edge-route-chain.dead-end.test.ts).
+#   ... Top -> Light [weight=10]  Light -> Est [weight=10]
+#     Est:n -> Top:n  Est:n -> Top:Target  Light:n -> Top:n  Est:n -> Top:Target }
+# F: E with Top -> Light -> Mid -> Est [weight=10] (back edges across three ranks).
+## D native
+P161SL
+P161MRE out0 smode=0
+P161CLB
+P161PTS pn=4 69.25,218.5 69.25,180.44464720248661 2.0000000000000022,203.55535279751339 2,165.5
+P161RS b x=5.4969999999999981 lw=3.4969999999999981 rw=3.4969999999999981 b=2 nbox=3
+P161MRE null sl=0
+## D port (head)
+P161SL
+P161MRE out0
+P161CLB
+P161PTS pn=4 69.25,218.5 69.25,180.4446472024866 2.000000000000002,203.5553527975134 2,165.5
+P161RS b x=5.496999999999998 lw=3.496999999999998 rw=3.496999999999998 b=2 nbox=3
+P161MRE null
+## E native
+P161SL
+P161MRE out0 smode=0
+P161CLB
+P161PTS pn=4 69.25,145.5 69.25,116.77826134084258 15.250000000000002,138.72173865915744 15.25,110
+P161MRE null sl=0
+## E port (head)
+P161BK deadend len=1
+P161SL
+P161MRE out0
+P161CLB
+P161PTS pn=4 69.25,145.5 69.25,116.77826134084258 15.250000000000002,138.72173865915744 15.25,110
+P161MRE null
+## F native
+P161SL
+P161MRE out0 smode=0
+P161CLB
+P161PTS pn=4 69.25,218.5 69.25,189.77826134084256 15.250000000000002,211.72173865915744 15.25,183
+P161MRE null sl=0
+## F port (head)
+P161BK deadend len=1
+P161SL
+P161MRE out0
+P161CLB
+P161PTS pn=4 69.25,218.5 69.25,189.77826134084256 15.250000000000002,211.72173865915744 15.25,183
+P161MRE null
+# On E and F the port's chain is one segment (Top -> orphan) of a back edge. The planning
+# counterfactual kept routeBackEdge's `segs.length < 2` return, which declines it; the head
+# routes it (isRoutableBackChain), which is what prints the lines above. recover_slack
+# leaves through `b >= p->nbox` on both sides there (no P161RS line).

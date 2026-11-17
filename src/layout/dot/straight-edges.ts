@@ -30,6 +30,7 @@ import { midPointf } from './compound-geom.js';
 import { placePortlabel, updateBB } from './splines-label.js';
 import { dotRoot } from './mincross-utils.js';
 import { nodesInSeq } from './decomp.js';
+import { fdivOverflow } from '../../util/overflow.js';
 
 // Edge-type values, mirroring the constants in splines.ts. Defined locally to
 // avoid a straight-edges ↔ splines import cycle (splines.ts imports
@@ -174,10 +175,10 @@ function getCycleCentroid(g: Graph, edge: Edge): Point {
 
 // ---------------------------------------------------------------------------
 // bend — pull the two interior control points toward the centroid
-// @see lib/common/routespl.c:933-952
+// @see lib/common/routespl.c:937-951
 // ---------------------------------------------------------------------------
 
-/** @see lib/common/routespl.c:933-952 (bend) */
+/** @see lib/common/routespl.c:937-951 (bend) */
 function bend(spl: Point[], centroid: Point): void {
   const midpt = midPointf(spl[0], spl[3]);
   const distVal = dist(spl[3], spl[0]); // DIST(spl[3], spl[0])
@@ -185,7 +186,8 @@ function bend(spl: Point[], centroid: Point): void {
   const vX = centroid.x - midpt.x;
   const vY = centroid.y - midpt.y;
   const magV = Math.hypot(vX, vY);
-  if (magV === 0) return; // midpoint == centroid: don't divide by zero
+  // avoid out of range division results
+  if (fdivOverflow(vX, magV) === null || fdivOverflow(vY, magV) === null) return;
   const ax = midpt.x - (vX / magV) * r; // + would be closest point
   const ay = midpt.y - (vY / magV) * r;
   // this can be improved

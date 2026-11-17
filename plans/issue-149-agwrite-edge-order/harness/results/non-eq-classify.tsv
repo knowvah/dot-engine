@@ -1,0 +1,81 @@
+id	engine	format	struct	pureMove	nat	head	fields	registry
+1581	fdp	dot	yes	yes	1	1	169/169/0/0	parity-fdp=pass
+1581	fdp	xdot	yes	yes	1	1	246/246/0/0	parity-fdp=pass
+1767	sfdp	dot	yes	yes	19	19	81/81/0/0	parity-sfdp=diverged(187) attribution=drift-exonerated
+1767	sfdp	xdot	yes	yes	56	56	90/90/0/0	parity-sfdp=diverged(187) attribution=drift-exonerated
+2521	dot	dot	yes	yes	21	19	63/63/0/0	parity=diverged
+2521	dot	xdot	yes	yes	57	53	68/68/0/0	parity=diverged
+2521	sfdp	dot	yes	yes	18	18	68/68/0/0	-
+2521	sfdp	xdot	yes	yes	53	53	69/69/0/0	-
+2592	circo	dot	yes	yes	1	1	154/154/0/0	-
+2592	circo	xdot	yes	yes	7	7	171/171/0/0	-
+2592	dot	dot	yes	yes	1	1	154/154/0/0	parity=structural-match
+2592	dot	xdot	yes	yes	7	7	171/171/0/0	parity=structural-match
+2592	fdp	dot	yes	yes	1	1	154/154/0/0	-
+2592	fdp	xdot	yes	yes	7	7	171/171/0/0	-
+2592	neato	dot	yes	yes	1	1	154/154/0/0	-
+2592	neato	xdot	yes	yes	7	7	171/171/0/0	-
+2592	osage	dot	yes	yes	1	1	154/154/0/0	-
+2592	osage	xdot	yes	yes	7	7	171/171/0/0	-
+2592	patchwork	dot	yes	yes	1	1	154/154/0/0	-
+2592	patchwork	xdot	yes	yes	7	7	171/171/0/0	-
+2592	sfdp	dot	yes	yes	1	1	154/154/0/0	-
+2592	sfdp	xdot	yes	yes	7	7	171/171/0/0	-
+2592	twopi	dot	yes	yes	1	1	154/154/0/0	-
+2592	twopi	xdot	yes	yes	7	7	171/171/0/0	-
+2643	twopi	dot	yes	yes	2	2	19/19/0/0	parity-twopi=diverged(12) attribution=not-cleared
+2643	twopi	xdot	yes	yes	4	4	29/29/0/0	parity-twopi=diverged(12) attribution=not-cleared
+graphs-b56	circo	dot	yes	yes	7	7	183/183/0/0	parity-circo=pass
+graphs-b56	circo	xdot	yes	yes	7	7	224/224/0/0	parity-circo=pass
+graphs-b56	dot	dot	yes	yes	7	7	183/183/0/0	parity=conformant xdot-parity=conformant dot-parity-dot=pass
+graphs-b56	dot	xdot	yes	yes	7	7	224/224/0/0	parity=conformant xdot-parity=conformant dot-parity-dot=pass
+graphs-b56	fdp	dot	yes	yes	7	7	183/183/0/0	parity-fdp=pass
+graphs-b56	fdp	xdot	yes	yes	7	7	224/224/0/0	parity-fdp=pass
+graphs-b56	neato	dot	yes	yes	7	7	183/183/0/0	parity-neato=pass
+graphs-b56	neato	xdot	yes	yes	7	7	224/224/0/0	parity-neato=pass
+graphs-b56	osage	dot	yes	yes	7	7	183/183/0/0	parity-osage=pass
+graphs-b56	osage	xdot	yes	yes	7	7	224/224/0/0	parity-osage=pass
+graphs-b56	patchwork	dot	yes	yes	7	7	165/165/0/0	parity-patchwork=pass
+graphs-b56	patchwork	xdot	yes	yes	7	7	197/197/0/0	parity-patchwork=pass
+graphs-b56	sfdp	dot	yes	yes	24	24	166/166/0/0	parity-sfdp=diverged(173) attribution=drift-exonerated
+graphs-b56	sfdp	xdot	yes	yes	49	49	182/182/0/0	parity-sfdp=diverged(173) attribution=drift-exonerated
+graphs-b56	twopi	dot	yes	yes	7	7	183/183/0/0	parity-twopi=pass
+graphs-b56	twopi	xdot	yes	yes	7	7	224/224/0/0	parity-twopi=pass
+graphs-b	sfdp	dot	yes	yes	16	16	32/32/0/0	parity-sfdp=diverged(176) attribution=drift-exonerated
+graphs-b	sfdp	xdot	yes	yes	41	41	34/34/0/0	parity-sfdp=diverged(176) attribution=drift-exonerated
+graphs-ctext	sfdp	dot	yes	yes	10	10	50/50/0/0	parity-sfdp=pass
+graphs-ctext	sfdp	xdot	yes	yes	30	30	60/60/0/0	parity-sfdp=pass
+graphs-fdp	fdp	dot	yes	yes	1	1	58/58/0/0	parity-fdp=pass
+graphs-fdp	fdp	xdot	yes	yes	1	1	83/83/0/0	parity-fdp=pass
+graphs-flatedge	sfdp	dot	yes	yes	9	9	36/36/0/0	parity-sfdp=diverged(79) attribution=drift-exonerated
+graphs-flatedge	sfdp	xdot	yes	yes	26	26	46/46/0/0	parity-sfdp=diverged(79) attribution=drift-exonerated
+graphs-grdshapes	sfdp	dot	yes	yes	62	62	195/195/0/0	parity-sfdp=diverged(1466) attribution=drift-exonerated
+graphs-grdshapes	sfdp	xdot	yes	yes	227	227	196/196/0/0	parity-sfdp=diverged(1466) attribution=drift-exonerated
+graphs-in	dot	dot	yes	yes	3	3	18/18/0/0	parity=structural-match
+graphs-in	dot	xdot	yes	yes	13	13	20/20/0/0	parity=structural-match
+graphs-longflat	dot	dot	yes	yes	3	3	19/19/0/0	parity=structural-match
+graphs-longflat	dot	xdot	yes	yes	13	13	22/22/0/0	parity=structural-match
+graphs-pack	sfdp	dot	yes	yes	18	18	136/136/0/0	parity-sfdp=diverged(25) attribution=drift-exonerated
+graphs-pack	sfdp	xdot	yes	yes	45	45	179/179/0/0	parity-sfdp=diverged(25) attribution=drift-exonerated
+graphs-polypoly	osage	dot	yes	yes	0	0	755/755/0/0	parity-osage=diverged(24) accepted-engines
+graphs-polypoly	osage	xdot	yes	yes	2	2	969/969/0/0	parity-osage=diverged(24) accepted-engines
+graphs-shells	dot	dot	yes	yes	52	51	243/243/0/0	parity=diverged
+graphs-shells	dot	xdot	yes	yes	140	138	272/272/0/0	parity=diverged
+graphs-shells	sfdp	dot	yes	yes	67	67	225/225/0/0	-
+graphs-shells	sfdp	xdot	yes	yes	178	178	228/228/0/0	-
+graphs-style	sfdp	dot	yes	yes	39	39	116/116/0/0	parity-sfdp=diverged(671) attribution=drift-exonerated
+graphs-style	sfdp	xdot	yes	yes	122	122	117/117/0/0	parity-sfdp=diverged(671) attribution=drift-exonerated
+graphs-url	sfdp	dot	yes	yes	16	16	84/84/0/0	parity-sfdp=diverged(90) attribution=drift-exonerated
+graphs-url	sfdp	xdot	yes	yes	45	45	96/96/0/0	parity-sfdp=diverged(90) attribution=drift-exonerated
+linux.x86-pack_neato1	sfdp	dot	yes	yes	41	41	114/114/0/0	parity-sfdp=diverged(131) attribution=drift-exonerated
+linux.x86-pack_neato1	sfdp	xdot	yes	yes	103	103	122/122/0/0	parity-sfdp=diverged(131) attribution=drift-exonerated
+linux.x86-pack_neato2	sfdp	dot	yes	yes	41	41	114/114/0/0	parity-sfdp=diverged(131) attribution=drift-exonerated
+linux.x86-pack_neato2	sfdp	xdot	yes	yes	103	103	122/122/0/0	parity-sfdp=diverged(131) attribution=drift-exonerated
+nshare-pack_neato1	sfdp	dot	yes	yes	41	41	114/114/0/0	parity-sfdp=diverged(131) attribution=drift-exonerated
+nshare-pack_neato1	sfdp	xdot	yes	yes	103	103	122/122/0/0	parity-sfdp=diverged(131) attribution=drift-exonerated
+nshare-pack_neato2	sfdp	dot	yes	yes	41	41	114/114/0/0	parity-sfdp=diverged(131) attribution=drift-exonerated
+nshare-pack_neato2	sfdp	xdot	yes	yes	103	103	122/122/0/0	parity-sfdp=diverged(131) attribution=drift-exonerated
+tree-doc-neato-inet	sfdp	dot	yes	yes	61	61	182/182/0/0	parity-sfdp=diverged(63) attribution=drift-exonerated
+tree-doc-neato-inet	sfdp	xdot	yes	yes	146	146	183/183/0/0	parity-sfdp=diverged(63) attribution=drift-exonerated
+tree-graphs-directed-longflat	dot	dot	yes	yes	3	3	19/19/0/0	parity=structural-match
+tree-graphs-directed-longflat	dot	xdot	yes	yes	13	13	22/22/0/0	parity=structural-match

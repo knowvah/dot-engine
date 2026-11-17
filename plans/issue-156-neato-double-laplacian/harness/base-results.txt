@@ -1,0 +1,29 @@
+# compare-native.sh on base 55bb3ef4 (2026-11-16), native 16.1.1 -Kneato, /tmp/ghl1611-all
+EQUAL c1554-corpus plain
+EQUAL c1554-corpus xdot
+EQUAL case-cycle plain
+EQUAL case-cycle xdot
+DIFF  case-dirnone plain (10 lines; stderr equal)
+DIFF  case-dirnone xdot (28 lines; stderr equal)
+EQUAL case-mds plain
+EQUAL case-mds xdot
+EQUAL case-startrandom plain
+EQUAL case-startrandom xdot
+DIFF  case-tdist plain (12 lines; stderr equal)
+DIFF  case-tdist xdot (35 lines; stderr equal)
+DIFF  hier-probe plain (1 lines; stderr equal)
+DIFF  hier-probe xdot (1 lines; stderr equal)
+EQUAL hier12 plain
+EQUAL hier12 xdot
+DIFF  hier40 plain (2 lines; stderr equal)
+DIFF  hier40 xdot (1 lines; stderr equal)
+DIFF  hier80 plain (12 lines; stderr equal)
+DIFF  hier80 xdot (23 lines; stderr equal)
+DIFF  rtest-mode-hier-lg1 plain (27 lines; stderr equal)
+DIFF  rtest-mode-hier-lg1 xdot (77 lines; stderr equal)
+DIFF  rtest-mode-hier plain (483 lines; stderr equal)
+DIFF  rtest-mode-hier xdot (1347 lines; stderr equal)
+equal=10 differ=14
+
+# base port -Tplain vs native 16.1.0 -Kneato (symlinked 16.1.0 plugin dir): diff lines
+all 12 probes: 0

@@ -47,52 +47,54 @@ beforeEach(() => { seen.auxEdges.length = 0; });
 
 interface Probe { name: string; src: string; native: string }
 
-// Native 16.1.0 `dot -Tplain` (plans/issue-170-aux-ordering-mincross/harness/
-// native/*.plain; exit 0, empty stderr).
+// Native 16.1.1 `dot -Tplain` (exit 0, empty stderr), re-captured by issue
+// #158: 16.1.1's flat_reorder leaves the aux rank with the constraining flat
+// edge as mincross ordered it, which moved all four from their 16.1.0 values
+// (plans/issue-170-aux-ordering-mincross/harness/native/*.plain).
 const ORDERING_PROBES: readonly Probe[] = [
   {
     name: 'node-out.gv: a node `ordering=out` on the tail',
     src: 'digraph { a [ordering=out]; {rank=same; a; b} a:n -> b:n [label=x]; a:s -> b:s [label=y]; }',
-    native: `graph 1 2 1.3318
-node a 0.375 0.36971 0.75 0.5 a solid ellipse black lightgrey
-node b 1.625 0.36971 0.75 0.5 b solid ellipse black lightgrey
-edge a b 4 0.375 0.63805 0.375 0.74765 1.1533 0.77076 1.4816 0.7074 x 1 0.85889 solid black
-edge a b 16 0.375 0.10137 0.375 -0.065414 0.62253 0.0077091 0.75 0.11526 1.0841 0.39716 0.61209 0.80238 0.95139 1.078 0.98493 1.1053 1.0151 1.1053 1.0486 1.078 1.3879 0.80238 0.91586 0.39716 1.25 0.11526 1.3177 0.058121 1.4193 0.010703 1.4997 0.003807 y 1 1.2151 solid black
+    native: `graph 1 2 1.6054
+node a 0.375 0.68705 0.75 0.5 a solid ellipse black lightgrey
+node b 1.625 0.68705 0.75 0.5 b solid ellipse black lightgrey
+edge a b 4 0.375 0.95539 0.375 1.4545 1.384 1.5052 1.5889 1.1075 x 1 1.4887 solid black
+edge a b 4 0.375 0.41871 0.375 -0.080427 1.384 -0.13112 1.5889 0.26663 y 1 0.11937 solid black
 stop
 `,
   },
   {
     name: 'node-out-plain-edge.gv: the same with a port-less edge in the group',
     src: 'digraph { a [ordering=out]; {rank=same; a; b} a:n -> b:n [label=x]; a:s -> b:s [label=y]; a -> b; }',
-    native: `graph 1 2 1.3318
-node a 0.375 0.36971 0.75 0.5 a solid ellipse black lightgrey
-node b 1.625 0.36971 0.75 0.5 b solid ellipse black lightgrey
-edge a b 4 0.375 0.63805 0.375 0.74765 1.1533 0.77076 1.4816 0.7074 x 1 0.85889 solid black
-edge a b 16 0.375 0.10137 0.375 -0.065414 0.62253 0.0077091 0.75 0.11526 1.0841 0.39716 0.61209 0.80238 0.95139 1.078 0.98493 1.1053 1.0151 1.1053 1.0486 1.078 1.3879 0.80238 0.91586 0.39716 1.25 0.11526 1.3177 0.058121 1.4193 0.010703 1.4997 0.003807 y 1 1.2151 solid black
-edge a b 4 0.7556 0.36971 0.85953 0.36971 0.97476 0.36971 1.0861 0.36971 solid black
+    native: `graph 1 2 1.6054
+node a 0.375 0.68705 0.75 0.5 a solid ellipse black lightgrey
+node b 1.625 0.68705 0.75 0.5 b solid ellipse black lightgrey
+edge a b 4 0.375 0.95539 0.375 1.4545 1.384 1.5052 1.5889 1.1075 x 1 1.4887 solid black
+edge a b 4 0.375 0.41871 0.375 -0.080427 1.384 -0.13112 1.5889 0.26663 y 1 0.11937 solid black
+edge a b 4 0.7556 0.68705 0.85953 0.68705 0.97476 0.68705 1.0861 0.68705 solid black
 stop
 `,
   },
   {
     name: 'node-in-plain-edge.gv: a node `ordering=in` on the head, port-less edge in the group',
     src: 'digraph { b [ordering=in]; {rank=same; a; b} a:n -> b:n [label=x]; a:s -> b:s [label=y]; a -> b; }',
-    native: `graph 1 2 1.3318
-node b 1.625 0.36971 0.75 0.5 b solid ellipse black lightgrey
-node a 0.375 0.36971 0.75 0.5 a solid ellipse black lightgrey
-edge a b 4 0.375 0.63805 0.375 0.74765 1.1533 0.77076 1.4816 0.7074 x 1 0.85889 solid black
-edge a b 16 0.375 0.10137 0.375 -0.065414 0.62253 0.0077091 0.75 0.11526 1.0841 0.39716 0.61209 0.80238 0.95139 1.078 0.98493 1.1053 1.0151 1.1053 1.0486 1.078 1.3879 0.80238 0.91586 0.39716 1.25 0.11526 1.3177 0.058121 1.4193 0.010703 1.4997 0.003807 y 1 1.2151 solid black
-edge a b 4 0.7556 0.36971 0.85953 0.36971 0.97476 0.36971 1.0861 0.36971 solid black
+    native: `graph 1 2 1.6054
+node b 0.375 0.68705 0.75 0.5 b solid ellipse black lightgrey
+node a 1.625 0.68705 0.75 0.5 a solid ellipse black lightgrey
+edge a b 4 1.625 0.95539 1.625 1.4545 0.61601 1.5052 0.41106 1.1075 x 1 1.4887 solid black
+edge a b 4 1.625 0.41871 1.625 -0.080427 0.61601 -0.13112 0.41106 0.26663 y 1 0.11937 solid black
+edge a b 4 1.2447 0.68705 1.1407 0.68705 1.0255 0.68705 0.91418 0.68705 solid black
 stop
 `,
   },
   {
     name: "node-default-out.gv: a `node [ordering=out]` default (#169's aux-flat-adj.gv)",
     src: 'digraph { node [ordering=out]; {rank=same; a; b} a:n -> b:n [label=x]; a:s -> b:s [label=y]; }',
-    native: `graph 1 2 1.3318
-node a 0.375 0.36971 0.75 0.5 a solid ellipse black lightgrey
-node b 1.625 0.36971 0.75 0.5 b solid ellipse black lightgrey
-edge a b 4 0.375 0.63805 0.375 0.74765 1.1533 0.77076 1.4816 0.7074 x 1 0.85889 solid black
-edge a b 16 0.375 0.10137 0.375 -0.065414 0.62253 0.0077091 0.75 0.11526 1.0841 0.39716 0.61209 0.80238 0.95139 1.078 0.98493 1.1053 1.0151 1.1053 1.0486 1.078 1.3879 0.80238 0.91586 0.39716 1.25 0.11526 1.3177 0.058121 1.4193 0.010703 1.4997 0.003807 y 1 1.2151 solid black
+    native: `graph 1 2 1.6054
+node a 0.375 0.68705 0.75 0.5 a solid ellipse black lightgrey
+node b 1.625 0.68705 0.75 0.5 b solid ellipse black lightgrey
+edge a b 4 0.375 0.95539 0.375 1.4545 1.384 1.5052 1.5889 1.1075 x 1 1.4887 solid black
+edge a b 4 0.375 0.41871 0.375 -0.080427 1.384 -0.13112 1.5889 0.26663 y 1 0.11937 solid black
 stop
 `,
   },

@@ -150,15 +150,25 @@ export function postorder(g: Graph, v: Node, list: Node[], r: number): void {
   list.push(v);
 }
 
-// flat_reorder — @see lib/dotgen/mincross.c:flat_reorder
-export function flatReorderBuildTemprank(g: Graph, rk: RankEntry, temprank: Node[], flip: boolean): void {
+/**
+ * Builds the reverse topological sort order of one rank in `temprank` and
+ * returns C's `valid_rank`: false as soon as the walk meets a node that is
+ * neither free of constraining flat edges nor an unmarked source (C's
+ * `break`), which tells the caller to leave the rank as mincross ordered it.
+ * Graphviz 16.1.1, upstream 9fb21f570.
+ *
+ * @see lib/dotgen/mincross.c:flat_reorder
+ */
+export function flatReorderBuildTemprank(g: Graph, rk: RankEntry, temprank: Node[], flip: boolean): boolean {
   for (let i = 0; i < rk.n; i++) {
     const v = flip ? rankGet(rk, i) : rankGet(rk, rk.n - i - 1);
     const inCnt = v.info.flat_in !== undefined ? countConstraining(g, v.info.flat_in) : 0;
     const outCnt = v.info.flat_out !== undefined ? countConstraining(g, v.info.flat_out) : 0;
     if (inCnt === 0 && outCnt === 0) { temprank.push(v); continue; }
-    if (!v.info.mark && inCnt === 0) postorder(g, v, temprank, v.info.rank !== undefined ? v.info.rank! : 0);
+    if (!v.info.mark && inCnt === 0) { postorder(g, v, temprank, v.info.rank !== undefined ? v.info.rank! : 0); continue; }
+    return false;
   }
+  return true;
 }
 
 export function flatReorderFixEdges(g: Graph, rk: RankEntry, flip: boolean): void {
@@ -188,8 +198,8 @@ export function flatReorderRank(g: Graph, rk: RankEntry, rootRank: RankEntry[], 
   const baseOrder = rankGet(rk, 0).info.order !== undefined ? rankGet(rk, 0).info.order! : 0;
   for (let i = 0; i < rk.n; i++) rankGet(rk, i).info.mark = 0;
   const temprank: Node[] = [];
-  flatReorderBuildTemprank(g, rk, temprank, flip);
-  if (temprank.length > 0) {
+  const validRank = flatReorderBuildTemprank(g, rk, temprank, flip);
+  if (validRank && temprank.length > 0) {
     if (!flip) temprank.reverse();
     for (let i = 0; i < rk.n; i++) {
       rankSet(rk, i, temprank[i]!);

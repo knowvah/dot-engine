@@ -1,0 +1,13 @@
+# The dead-end close on 2765 (2765_1 prints the same lines), planning, base c55b4c66.
+# Native: graphviz 16.1.1 dotsplines.c with detector-native.patch plus value prints
+# (%.17g) at the recover_slack exit and after routesplines; GVBINDIR=<scratch>/gv.
+P161MRE out0 smode=0 e=Ho0er0tra0eTo0top->%0 hn rank=1 in=0 fe=Ho0er0tra0eTo0top->%0 orig=Ho0er0tra0eTo0top->Ho0er0est
+P161PTS pn=4 92.25,145.5 92.25,98.983707885314345 2.0000000000000027,139.01629211468565 2,92.5
+P161RS b vn=%0 x=5.3425925925925908 lw=3.3425925925925908 rw=3.3425925925925908 box=2,91.5,8.6851851851851816,110 b=2 nbox=3
+P161MRE null sl=0
+# Port cf (counterfactual.patch plus prints at the dead-end close; JS shortest repr,
+# the same doubles):
+P161PTS pn=4 92.25,145.5 92.25,98.98370788531435 2.0000000000000027,139.01629211468565 2,92.5
+P161RS vn x=5.342592592592591 lw=3.342592592592591 rw=3.342592592592591 nbox=3 boxes=[{"ll":{"x":91.95585185185185,"y":138},"ur":{"x":92.25,"y":191}},{"ll":{"x":11.385999999999997,"y":110},"ur":{"x":91.10014814814815,"y":138}},{"ll":{"x":2,"y":91.5},"ur":{"x":8.685185185185182,"y":110}}]
+# Port base: the orphan (rank 1, order 2, not in rank 1's v[0..n), n = 2) keeps
+# x=2 lw=19 rw=19; routeMultiRankEdgeFaithful returns null (chain incomplete).

@@ -1,0 +1,95 @@
+1447 circo cmapx base=head:y base~native:38 head~native:38 native-rc=139 native-err=0 base-err=0 head-err=0 head-err=native:y
+1447 circo json base=head:n base~native:6095 head~native:6095 native-rc=139 toward:FAIL a=118 b=0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1447 circo plain base=head:n base~native:94 head~native:94 native-rc=139 toward:FAIL a=7 b=0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1447 circo svg base=head:n base~native:630 head~native:630 native-rc=139 toward:FAIL a=14 b=0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1447 circo xdot base=head:n base~native:565 head~native:565 native-rc=139 toward:FAIL a=21 b=0 native-err=0 base-err=0 head-err=0 head-err=native:y
+144_ortho dot cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+144_ortho dot json base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+144_ortho dot plain base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+144_ortho dot svg base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+144_ortho dot xdot base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1658 circo cmapx base=head:y base~native:2 head~native:2 native-rc=139 native-err=0 base-err=0 head-err=0 head-err=native:y
+1658 circo json base=head:n base~native:2515 head~native:2515 native-rc=139 toward:FAIL a=8 b=0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1658 circo plain base=head:n base~native:52 head~native:52 native-rc=139 toward:FAIL a=1 b=0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1658 circo svg base=head:n base~native:271 head~native:271 native-rc=139 toward:FAIL a=1 b=0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1658 circo xdot base=head:n base~native:194 head~native:194 native-rc=139 toward:FAIL a=2 b=0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1880 circo cmapx base=head:n base~native:22 head~native:2 toward:ok native-err=0 base-err=0 head-err=0 head-err=native:y
+1880 circo json base=head:n base~native:290 head~native:2 toward:ok native-err=0 base-err=0 head-err=0 head-err=native:y
+1880 circo plain base=head:n base~native:20 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1880 circo svg base=head:n base~native:40 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1880 circo xdot base=head:n base~native:66 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+1990 circo cmapx base=head:y base~native:0 head~native:0 native-err=106 base-err=106 head-err=106 head-err=native:y
+1990 circo json base=head:n base~native:142 head~native:0 native-err=106 base-err=106 head-err=106 head-err=native:y
+1990 circo plain base=head:n base~native:8 head~native:0 native-err=106 base-err=106 head-err=106 head-err=native:y
+1990 circo svg base=head:n base~native:16 head~native:0 native-err=106 base-err=106 head-err=106 head-err=native:y
+1990 circo xdot base=head:n base~native:24 head~native:0 native-err=106 base-err=106 head-err=106 head-err=native:y
+2168_5 twopi cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2168_5 twopi json base=head:n base~native:10 head~native:2 toward:ok native-err=0 base-err=0 head-err=0 head-err=native:y
+2168_5 twopi plain base=head:n base~native:2 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2168_5 twopi svg base=head:n base~native:2 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2168_5 twopi xdot base=head:n base~native:4 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2183 twopi cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2183 twopi json base=head:n base~native:186 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2183 twopi plain base=head:n base~native:12 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2183 twopi svg base=head:n base~native:24 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2183 twopi xdot base=head:n base~native:38 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2643 twopi cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2643 twopi json base=head:n base~native:18 head~native:2 toward:ok native-err=0 base-err=0 head-err=0 head-err=native:y
+2643 twopi plain base=head:n base~native:4 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2643 twopi svg base=head:n base~native:4 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2643 twopi xdot base=head:n base~native:8 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+2783 dot cmapx base=head:y base~native:0 head~native:0 native-err=79 base-err=0 head-err=79 head-err=native:y
+2783 dot json base=head:n base~native:24 head~native:2 toward:ok native-err=79 base-err=0 head-err=79 head-err=native:y
+2783 dot plain base=head:n base~native:6 head~native:0 native-err=79 base-err=0 head-err=79 head-err=native:y
+2783 dot svg base=head:n base~native:12 head~native:0 native-err=79 base-err=0 head-err=79 head-err=native:y
+2783 dot xdot base=head:n base~native:16 head~native:0 native-err=79 base-err=0 head-err=79 head-err=native:y
+2783 osage cmapx base=head:y base~native:0 head~native:0 native-err=79 base-err=0 head-err=79 head-err=native:y
+2783 osage json base=head:y base~native:2 head~native:2 native-err=79 base-err=0 head-err=79 head-err=native:y
+2783 osage plain base=head:y base~native:0 head~native:0 native-err=79 base-err=0 head-err=79 head-err=native:y
+2783 osage svg base=head:y base~native:0 head~native:0 native-err=79 base-err=0 head-err=79 head-err=native:y
+2783 osage xdot base=head:y base~native:0 head~native:0 native-err=79 base-err=0 head-err=79 head-err=native:y
+2784 dot cmapx base=head:y base~native:0 head~native:0 native-err=370 base-err=276 head-err=276 head-err=native:n
+2784 dot json base=head:y base~native:2 head~native:2 native-err=370 base-err=276 head-err=276 head-err=native:n
+2784 dot plain base=head:y base~native:0 head~native:0 native-err=370 base-err=276 head-err=276 head-err=native:n
+2784 dot svg base=head:y base~native:0 head~native:0 native-err=370 base-err=276 head-err=276 head-err=native:n
+2784 dot xdot base=head:y base~native:0 head~native:0 native-err=370 base-err=276 head-err=276 head-err=native:n
+test/golden/inputs/dot-ortho-branch.dot dot cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-branch.dot dot json base=head:y base~native:2 head~native:2 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-branch.dot dot plain base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-branch.dot dot svg base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-branch.dot dot xdot base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-chain.dot dot cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-chain.dot dot json base=head:y base~native:2 head~native:2 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-chain.dot dot plain base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-chain.dot dot svg base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-chain.dot dot xdot base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-label.dot dot cmapx base=head:y base~native:0 head~native:0 native-err=82 base-err=82 head-err=82 head-err=native:y
+test/golden/inputs/dot-ortho-label.dot dot json base=head:y base~native:2 head~native:2 native-err=82 base-err=82 head-err=82 head-err=native:y
+test/golden/inputs/dot-ortho-label.dot dot plain base=head:y base~native:0 head~native:0 native-err=82 base-err=82 head-err=82 head-err=native:y
+test/golden/inputs/dot-ortho-label.dot dot svg base=head:y base~native:0 head~native:0 native-err=82 base-err=82 head-err=82 head-err=native:y
+test/golden/inputs/dot-ortho-label.dot dot xdot base=head:y base~native:0 head~native:0 native-err=82 base-err=82 head-err=82 head-err=native:y
+test/golden/inputs/dot-ortho-multirank.dot dot cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-multirank.dot dot json base=head:y base~native:2 head~native:2 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-multirank.dot dot plain base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-multirank.dot dot svg base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-multirank.dot dot xdot base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-parallel.dot dot cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-parallel.dot dot json base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-parallel.dot dot plain base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-parallel.dot dot svg base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/dot-ortho-parallel.dot dot xdot base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29-pair.dot dot cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29-pair.dot dot json base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29-pair.dot dot plain base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29-pair.dot dot svg base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29-pair.dot dot xdot base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29-xagonu.dot dot cmapx base=head:y base~native:0 head~native:0 native-err=279 base-err=279 head-err=279 head-err=native:y
+test/golden/inputs/pt-issue-29-xagonu.dot dot json base=head:y base~native:150 head~native:150 native-err=279 base-err=279 head-err=279 head-err=native:y
+test/golden/inputs/pt-issue-29-xagonu.dot dot plain base=head:y base~native:0 head~native:0 native-err=279 base-err=279 head-err=279 head-err=native:y
+test/golden/inputs/pt-issue-29-xagonu.dot dot svg base=head:y base~native:0 head~native:0 native-err=279 base-err=279 head-err=279 head-err=native:y
+test/golden/inputs/pt-issue-29-xagonu.dot dot xdot base=head:y base~native:109 head~native:109 native-err=279 base-err=279 head-err=279 head-err=native:y
+test/golden/inputs/pt-issue-29.dot dot cmapx base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29.dot dot json base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29.dot dot plain base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29.dot dot svg base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y
+test/golden/inputs/pt-issue-29.dot dot xdot base=head:y base~native:0 head~native:0 native-err=0 base-err=0 head-err=0 head-err=native:y

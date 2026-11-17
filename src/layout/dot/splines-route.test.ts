@@ -39,8 +39,8 @@ function makeNode(id: number, spec: NodeSpec, g: Graph): Node {
 }
 
 /**
- * Wire a→b as a single edge, appending to a.out and b.in so `straightNext`
- * and the size==1 continuation checks see exactly one in/out edge per node.
+ * Wire a→b as a single edge, appending to a.out and b.in so `straightLen`'s
+ * walk and the size==1 continuation checks see exactly one in/out edge per node.
  */
 function link(tail: Node, head: Node, g: Graph): Edge {
   const e = new Edge(tail, head, '');
@@ -99,6 +99,21 @@ it('straightLen stops at a node that is not single-in/single-out', () => {
 
 it('straightLen returns 0 when the immediate successor is a normal node', () => {
   const { nodes } = buildChain([V('v0', 82), N('head', 82)]);
+  expect(straightLen(nodes[0])).toBe(0);
+});
+
+it('straightLen stops at a node with no out edge, whatever list[0] holds (16.1.1)', () => {
+  // 16.1.1 loops on `ND_out(v).size > 0` (upstream 5649d079c), where 16.1.0
+  // read `ND_out(v).list[0]`. Empty the anchor's out list by size alone, so
+  // list[0] still names the edge to v1: the count must come from the size.
+  const { nodes } = buildChain([V('v0', 82), V('v1', 82), V('v2', 82), N('head', 82)]);
+  nodes[0].info.out!.size = 0;
+  expect(straightLen(nodes[0])).toBe(0);
+});
+
+it('straightLen returns 0 on a node that never had an out list (16.1.1)', () => {
+  const { nodes } = buildChain([V('orphan', 82)]);
+  expect(nodes[0].info.out).toBeUndefined();
   expect(straightLen(nodes[0])).toBe(0);
 });
 

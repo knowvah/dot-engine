@@ -1,0 +1,11 @@
+digraph shapescale {
+  rankdir=LR;
+  node [fixedsize=shape, width=0.3, height=0.3];
+  a [shape=hexagon, label="long label here"];
+  b [shape=box, label="wide box label"];
+  node [fixedsize=false];
+  c [shape=box, width=0, height=0, label=""];
+  d [shape=diamond, width=0, height=0, label=""];
+  e [shape=box, width=0, height=0, label="", peripheries=0];
+  a -> b -> c -> d -> e; a -> c; b -> e;
+}

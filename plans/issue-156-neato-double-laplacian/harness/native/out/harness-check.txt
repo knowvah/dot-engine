@@ -1,0 +1,33 @@
+# T1 harness check (2026-11-16), plugin sha256 prefix aa9e9c6fee4cfb42
+# harness = build.sh against ~/git/graphviz-16.1.1/build/lib/neatogen/libneatogen.a
+
+conjugate_gradient_d: out of line in the harness (nm: t _conjugate_gradient_d),
+  758 instructions, as the plugin's. With branch targets masked, 6 instructions
+  differ, all of them literal-pool / GOT / string offsets (ldr q0 [x17,#..],
+  add x0 #.., ldr x8 [x8,#..]); every floating-point instruction is the same.
+  FP opcodes, both: 48 fadd, 25 fmul.2d, 16 fsub.2d, 8 fadd.2d, 5 fmul,
+  5 fmadd, 4 fsub, 4 fdiv.
+h_conjugate_gradient_d (traced copy): same FP opcode counts; its x equals the
+  untraced function's x on all 288 calibration cases.
+IMDS_given_dim balance loops: fcsel d2,d4,d5,lt + fmadd (initial balance),
+  fmadd / fmsub (in-loop b), as harness/disasm/IMDS_given_dim-balance.s.
+
+calibrate.mts: 288 systems (n = 5..40, Laplacian and dense SPD, ortho1 on and
+  off, tol 1e-9 and 1e-3, 4..40 iterations). Widths A x / initial r.r / A p /
+  p.Ap / in-loop r.r = 8/4/8/8/1 match all 288 (x after every iteration count,
+  r.r, p.Ap, alpha, rv). No other tuple of {1,4,8,16}^5 matches all; the best
+  other is 8/8/8/8/1 with 262.
+
+capture.mts, 16.1.0 control (build.sh <bin> ~/git/graphviz): all 10
+  hier-imds.ts cases and all 14 hier-majorization.ts cases equal the stored
+  16.1.0 vectors bit for bit, so the harness builds its inputs as the
+  uncommitted T17/T22 harnesses did.
+capture.mts, 16.1.1: differ from the stored vectors
+  imds (9 of 10): probe probe_nowgt probe_frac disc dag32 dag32_tight dag9
+    dag17 dag24 (c1554 unchanged: its x is all zero)
+  hier (9 of 14): probe smart; probe smart levelsgap; probe smart one
+    iteration; probe smart no iterations; rdag smart; rdag smart levelsgap;
+    rdag smart negative levelsgap; rdag plain init tight epsilon (opts 5 has
+    the smart bit); g40 smart levelsgap
+  unchanged: c1554 smart, c1554 plain init, rdag plain init levelsgap,
+    rdag plain init 3-D, g40 plain init

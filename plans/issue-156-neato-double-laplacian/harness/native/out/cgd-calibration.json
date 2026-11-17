@@ -1,0 +1,18 @@
+{
+  "cases": 288,
+  "nRange": [
+    5,
+    40
+  ],
+  "iterationsMin": 4,
+  "iterationsMax": 40,
+  "untracedEqualsTraced": true,
+  "ad1Matches": 288,
+  "tuplesMatchingAll": [
+    "8/4/8/8/1"
+  ],
+  "runnerUp": {
+    "widths": "8/8/8/8/1",
+    "matches": 262
+  }
+}

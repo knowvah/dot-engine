@@ -7,29 +7,32 @@
  * pathplan.test.ts exercises routeSpline with ordinary (non-axis-aligned,
  * non-degenerate) barriers, which always lands in silXzeroYnonzero or
  * silGeneral with a genuinely-solvable cubic. This file targets
- * silBothZero's degenerate-cubic branches: only reachable when a barrier
- * edge is a single point (zero-length: a === b), which drives
- * splineIntersectsLine's `lc.xc1 === 0 && lc.yc1 === 0` case, AND the
- * resulting per-axis cubic coefficients are ALL zero (solve3 returns 4,
- * meaning "every t satisfies").
+ * silBothZero's degenerate-cubic branches. Since graphviz 16.1.1
+ * (d3ab9ba47) splineIntersectsLine sends a barrier edge there when both its
+ * x-extent and its y-extent are within 1e-7 of 0 (`eq`), a single point
+ * (a === b) included; the degenerate branches also need the resulting
+ * per-axis cubic coefficients to be ALL zero (solve3 returns 4, meaning
+ * "every t satisfies"). The last describe pins that tolerance at its three
+ * sites with values from native 16.1.1, the x-root/y-root coincidence of
+ * silBothZero among them: it now holds within 1e-7, so it no longer needs
+ * two independently solved cubics to agree bit for bit.
  *
  * Residue (not pursued — see mission report): silBothZero's `yn === 4`
  * branch requires BOTH axes degenerate simultaneously, which for a real
  * spline means a zero-length route (start === end), a configuration that
  * hits division-by-zero elsewhere (initTnas's total-distance normalization,
- * normv) before reaching this code path. silGeneral's exact-root-coincidence
- * branch (xr[i] === yr[j]) needs two independently-solved cubics (via
- * distinct trig/algebraic solvers) to agree bit-for-bit — impractical to
- * construct deterministically. reallyRoute's recursive-failure branches
- * (route.ts ~231, 247-248) require a spline-fit failure deep enough to
- * force a second level of recursive splitting, which no available fixture
- * reliably reproduces without also changing the fit tolerance.
+ * normv) before reaching this code path. reallyRoute's recursive-failure
+ * branches (route.ts ~231, 247-248) require a spline-fit failure deep
+ * enough to force a second level of recursive splitting, which no
+ * available fixture reliably reproduces without also changing the fit
+ * tolerance.
  *
  * @see lib/pathplan/route.c
  */
 
 import { describe, it, expect } from 'vitest';
 import { routeSpline, polyBarriers } from './index.js';
+import { RouteHelper } from './route.js';
 import type { Point, Edge } from './index.js';
 
 function pt(x: number, y: number): Point { return { x, y }; }
@@ -177,5 +180,103 @@ describe('routeSpline — degenerate zero-length barrier (silBothZero)', () => {
     const result = routeSpline([barrier], route, slopes);
     expect(result.length).toBeGreaterThan(0);
     for (const p of result) expect(p.y).toBeCloseTo(0, 6);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// graphviz 16.1.1 (upstream d3ab9ba47): splineintersectsline compares a
+// barrier's x-extent and y-extent against 0, and a point barrier's x-root
+// against its y-root, with eq(a, b) = fabs(a - b) < 1e-7 instead of ==
+// (route.c:306-346). Expected values are native 16.1.1's own output: its
+// Proutespline (plans/issue-165-sil-tolerance/harness/route-1611.out) and its
+// splineintersectsline, from route.c #included into a harness built with the
+// oracle's flags (harness/sil-1611.out). Roots come out of solve3's libm
+// acos/cos/cbrt, where V8 and Apple's libm differ in the last bit, so roots
+// are compared to 15 digits and counts exactly.
+// ---------------------------------------------------------------------------
+
+/** A bulge up from (0,0) to (10,0), and its mirror image. */
+const ROUTE_165 = [pt(0, 0), pt(10, 0)];
+const SLOPES_UP: [Point, Point] = [pt(0, 1), pt(0, -1)];
+const SLOPES_DOWN: [Point, Point] = [pt(0, -1), pt(0, 1)];
+/** Control-point height of the first candidate that clears the barrier. */
+const CLEAR_Y = 1.1111111111111112;
+/** The arch every Q case of sil-cases.c intersects. */
+const ARCH = [pt(0, 0), pt(0, 4), pt(10, 4), pt(10, 0)];
+const ROOT_DIGITS = 15;
+
+/** splineIntersectsLine's root count and the roots it stored. */
+function silRoots(sps: Point[], lps: Point[]): number[] {
+  const roots = [0, 0, 0, 0];
+  const n = RouteHelper.splineIntersectsLine(sps, lps, roots);
+  return roots.slice(0, n);
+}
+
+describe('routeSpline — near-vertical barrier within 1e-7 (16.1.1 d3ab9ba47)', () => {
+  it('A[dx=1e-15]: the barrier above the route is vertical, not general', () => {
+    // route-1611.out:2. 16.1.0 took the general branch, reported crossings
+    // that are not there, and the spline collapsed to its chord
+    // (0,0 0,0 10,0 10,0).
+    const out = routeSpline([{ a: pt(5, 1), b: pt(5 + 1e-15, 100) }], ROUTE_165, SLOPES_UP);
+    expect(out).toEqual([pt(0, 0), pt(0, CLEAR_Y), pt(10, CLEAR_Y), pt(10, 0)]);
+  });
+
+  it('A[dx=-1e-15]: the crossing 16.1.0 missed is found', () => {
+    // route-1611.out:9. 16.1.0 kept the first bulge (y 4.4444444444444446),
+    // which crosses the barrier.
+    const out = routeSpline([{ a: pt(5, 1), b: pt(5 - 1e-15, 100) }], ROUTE_165, SLOPES_UP);
+    expect(out).toEqual([pt(0, 0), pt(0, CLEAR_Y), pt(10, CLEAR_Y), pt(10, 0)]);
+  });
+
+  it('C[dx=1e-14]: the same below the route', () => {
+    // route-1611.out:35. 16.1.0 kept y -4.4444444444444446.
+    const out = routeSpline([{ a: pt(5, -100), b: pt(5 + 1e-14, -1) }], ROUTE_165, SLOPES_DOWN);
+    expect(out).toEqual([pt(0, 0), pt(0, -CLEAR_Y), pt(10, -CLEAR_Y), pt(10, 0)]);
+  });
+
+  it('A[dx=2e-07] (control): outside the tolerance, still the general branch', () => {
+    // route-1611.out:7, equal to route-1610.out:7.
+    const out = routeSpline([{ a: pt(5, 1), b: pt(5 + 2e-7, 100) }], ROUTE_165, SLOPES_UP);
+    expect(out).toEqual([pt(0, 0), pt(0, CLEAR_Y), pt(10, CLEAR_Y), pt(10, 0)]);
+  });
+});
+
+describe('splineIntersectsLine — eq at its three sites (16.1.1 d3ab9ba47)', () => {
+  it('P[k=1.7]: a point barrier on the spline, x-root and y-root one ulp apart', () => {
+    // sil-1611.out:1 (16.1.0: n=0). The points are built as sil-cases.c
+    // builds them: 3*1.7 is not the double 5.1.
+    const k = 1.7;
+    const b = pt(3, 3 * k);
+    const roots = silRoots([pt(0, 0), pt(2, 2 * k), pt(7, 7 * k), pt(10, 10 * k)], [b, b]);
+    expect(roots).toHaveLength(1);
+    expect(roots[0]).toBeCloseTo(0.35113454531210514, ROOT_DIGITS);
+  });
+
+  it('Qp[d=0]: a point barrier on the arch', () => {
+    // sil-1611.out:7 (16.1.0: n=0).
+    const roots = silRoots(ARCH, [pt(5, 3), pt(5, 3)]);
+    expect(roots).toHaveLength(1);
+    expect(roots[0]).toBeCloseTo(0.50000000000000011, ROOT_DIGITS);
+  });
+
+  it('Qv[dx=-1e-15]: a near-vertical barrier takes the vertical branch', () => {
+    // sil-1611.out:10 (16.1.0: n=0, from the general branch).
+    const roots = silRoots(ARCH, [pt(5, 1), pt(5 - 1e-15, 100)]);
+    expect(roots).toHaveLength(1);
+    expect(roots[0]).toBeCloseTo(0.50000000000000011, ROOT_DIGITS);
+  });
+
+  it('Qv[dx=1e-09]: the vertical branch gives the vertical root', () => {
+    // sil-1611.out:12 (16.1.0: 0.50000000000134703, the slanted crossing).
+    const roots = silRoots(ARCH, [pt(5, 1), pt(5 + 1e-9, 100)]);
+    expect(roots).toHaveLength(1);
+    expect(roots[0]).toBeCloseTo(0.50000000000000011, ROOT_DIGITS);
+  });
+
+  it('Qv[dx=2e-07] (control): outside the tolerance, the slanted crossing', () => {
+    // sil-1611.out:16, equal to sil-1610.out:16.
+    const roots = silRoots(ARCH, [pt(5, 1), pt(5 + 2e-7, 100)]);
+    expect(roots).toHaveLength(1);
+    expect(roots[0]).toBeCloseTo(0.50000000026936064, ROOT_DIGITS);
   });
 });

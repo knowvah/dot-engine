@@ -32,26 +32,26 @@ digraph CrashPOC {
 			A	[height=0.5,
 				pos="0,322",
 				width=0.75];
-			C -> D;
-			C -> F;
 			P	[height=0.05,
 				pos="1,466",
 				shape=point,
 				style=invis,
 				width=0.05];
-			C -> P	[constraint=false,
-				style=invis];
 			G	[height=0.5,
 				pos="0,34",
 				width=0.75];
+			I	[height=0.5,
+				pos="0,466",
+				width=0.75];
+			C -> D;
+			C -> F;
 			D -> G;
+			C -> P	[constraint=false,
+				style=invis];
 			D -> P	[constraint=false,
 				style=invis];
 			E -> P	[constraint=false,
 				style=invis];
-			I	[height=0.5,
-				pos="0,466",
-				width=0.75];
 			F -> P	[constraint=false,
 				style=invis];
 		}
@@ -67,10 +67,10 @@ digraph CrashPOC {
 		A -> B;
 		B -> C;
 		B -> E;
+		I -> H;
+		H -> C;
 		B -> P	[constraint=false,
 			style=invis];
-		I -> H;
 		H -> A;
-		H -> C;
 	}
 }

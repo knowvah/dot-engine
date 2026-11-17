@@ -1,0 +1,13 @@
+# Gate 6 ids (planning detector, all 982 applicable ids; harness/detector-hits.txt)
+# P159ABOM new: abomination fires on the head only (a labelled rank-0 self-loop)
+2759
+2759_1
+2870_0
+2870_1
+# P159ABOM both: abomination on base and head (controls)
+2368_1
+2723
+2851
+# P159GATED: a labelled rank-0 self-loop with the gate closed (controls; 27 such ids)
+graphs-sl_box
+graphs-train11

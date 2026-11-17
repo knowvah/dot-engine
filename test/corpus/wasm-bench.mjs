@@ -47,10 +47,10 @@
 
 import { performance } from 'node:perf_hooks';
 import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
-import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { ORACLE_CORPUS_ROOT } from './oracle-paths.mjs';
 
 // Ensure a controllable GC so a long serial sweep stays bounded (see header).
 if (!global.gc) {
@@ -60,7 +60,7 @@ if (!global.gc) {
 }
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
-const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
+const ROOT = process.env.CORPUS_ROOT ?? ORACLE_CORPUS_ROOT;
 const HEAVY_MS = Number(process.env.HEAVY_MS ?? 2000);
 const WARMUP = Number(process.env.WARMUP ?? 1);
 const TRIALS = Number(process.env.TRIALS ?? 3);

@@ -1,0 +1,41 @@
+# Execution survey for #162: base 31f9122f vs head (pre-squash fe2af686) vs native 16.1.1,
+# by native-compare.sh over survey-ids.txt. Equal to planning-survey.txt line for line.
+1314 svg base=head:n base~native:14 head~native:0 native-rc=1
+1314 xdot base=head:n base~native:16 head~native:0 native-rc=1
+1314 plain base=head:n base~native:6 head~native:0 native-rc=1
+1314 json base=head:n base~native:58 head~native:2 native-rc=1 toward:ok
+1314 cmapx base=head:y base~native:0 head~native:0 native-rc=1
+2758 svg base=head:n base~native:26 head~native:0 native-rc=1
+2758 xdot base=head:n base~native:32 head~native:0 native-rc=1
+2758 plain base=head:n base~native:12 head~native:0 native-rc=1
+2758 json base=head:n base~native:98 head~native:2 native-rc=1 toward:ok
+2758 cmapx base=head:y base~native:0 head~native:0 native-rc=1
+2776_1 svg base=head:n base~native:27 head~native:0 native-rc=1
+2776_1 xdot base=head:n base~native:31 head~native:0 native-rc=1
+2776_1 plain base=head:n base~native:12 head~native:0 native-rc=1
+2776_1 json base=head:n base~native:160 head~native:2 native-rc=1 toward:ok
+2776_1 cmapx base=head:y base~native:0 head~native:0 native-rc=1
+2781 svg base=head:n base~native:48 head~native:2 native-rc=1 toward:FAIL a=1 b=0
+2781 xdot base=head:n base~native:74 head~native:2 native-rc=1 toward:FAIL a=1 b=0
+2781 plain base=head:n base~native:20 head~native:0 native-rc=1
+2781 json base=head:n base~native:494 head~native:4 native-rc=1 toward:FAIL a=1 b=0
+2781 cmapx base=head:y base~native:0 head~native:0 native-rc=1
+2781_1 svg base=head:n base~native:48 head~native:2 native-rc=1 toward:FAIL a=1 b=0
+2781_1 xdot base=head:n base~native:74 head~native:2 native-rc=1 toward:FAIL a=1 b=0
+2781_1 plain base=head:n base~native:20 head~native:0 native-rc=1
+2781_1 json base=head:n base~native:494 head~native:4 native-rc=1 toward:FAIL a=1 b=0
+2781_1 cmapx base=head:y base~native:0 head~native:0 native-rc=1
+2776 svg base=head:y base~native:0 head~native:0 native-rc=1
+2776 xdot base=head:y base~native:0 head~native:0 native-rc=1
+2776 plain base=head:y base~native:0 head~native:0 native-rc=1
+2776 json base=head:y base~native:2 head~native:2 native-rc=1
+2776 cmapx base=head:y base~native:0 head~native:0 native-rc=1
+# Stderr (-Tsvg), native's input path rewritten to `input`:
+1314 stderr head~native:equal base~native:differs edge-length(native)=272931242864.483337 edge-length(head)=272931242864.483337
+2758 stderr head~native:equal base~native:differs edge-length(native)=2147483701.000000 edge-length(head)=2147483701.000000
+2776_1 stderr head~native:equal base~native:differs edge-length(native)=300000000000000000.000000 edge-length(head)=300000000000000000.000000
+2781 stderr head~native:equal base~native:differs edge-length(native)=71999999999999994497073152.000000 edge-length(head)=71999999999999994497073152.000000
+2781_1 stderr head~native:equal base~native:differs edge-length(native)=71999999999999994497073152.000000 edge-length(head)=71999999999999994497073152.000000
+2776 stderr head~native:differs base~native:differs edge-length(native)= edge-length(head)=
+# 2776 (control): head stderr == base stderr; equals native once native's
+# `lib/pathplan/...shortest.c:NNN: ` prefixes are stripped.

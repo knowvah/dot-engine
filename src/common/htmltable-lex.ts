@@ -161,11 +161,14 @@ const SYNTAX_ERROR = 'syntax error';
  */
 export class HtmlLexError extends HtmlParseError {
   readonly diagnostics: readonly string[];
+  /** Printed by `lexerror`, which unlike htmlerror and the expat path prints even when `ctx->error` is set. */
+  readonly unguarded: boolean;
 
-  constructor(tag: string, message: string, diagnostics: readonly string[]) {
+  constructor(tag: string, message: string, diagnostics: readonly string[], unguarded = false) {
     super(tag);
     this.message = message;
     this.diagnostics = diagnostics;
+    this.unguarded = unguarded;
   }
 }
 
@@ -260,7 +263,7 @@ function checkTagToken(site: TokenSite): void {
   }
   if (KNOWN_TAGS.has(tag.name.toUpperCase())) return;
   const text = `Unknown HTML element <${tag.name}> on line ${lineAt(src, tok.start)} `;
-  throw new HtmlLexError(tag.name.toUpperCase(), text, [`Error: ${text}`]);
+  throw new HtmlLexError(tag.name.toUpperCase(), text, [`Error: ${text}`], true);
 }
 
 /** The tokens one expat event gives the parser, after the errors C would hit. */

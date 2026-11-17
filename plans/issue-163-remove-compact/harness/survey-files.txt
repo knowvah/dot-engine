@@ -1,0 +1,9 @@
+# Gate 6 inputs: every input that sets compact (no corpus id does; see README).
+test/golden/inputs/dot-newrank-compact-mixed.dot
+test/golden/inputs/dot-newrank-compact-nested.dot
+test/golden/inputs/dot-newrank-compact-single.dot
+test/golden/inputs/dot-newrank-compact-three.dot
+test/golden/inputs/dot-newrank-compact-weak.dot
+plans/issue-163-remove-compact/harness/probe-north.dot
+plans/issue-163-remove-compact/harness/probe-root-compact.dot
+plans/issue-163-remove-compact/harness/probe-no-newrank.dot

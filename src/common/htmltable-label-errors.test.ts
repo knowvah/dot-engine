@@ -9,6 +9,9 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { renderSvg } from '../index.js';
 import { parseHtmlLabel, sizeHtmlLabel } from './htmltable.js';
+import { makeHtmlLabelRv } from './htmltable-label.js';
+import type { PlacedHtml } from './htmltable-pos.js';
+import type { TextlabelT } from './types.js';
 import type { TextMeasurer } from './htmltable.js';
 
 const measurer: TextMeasurer = {
@@ -246,5 +249,38 @@ describe('size_html_* return values', () => {
     expect(sizeHtmlLabel(lbl, measurer)).toBe(1);
     expect(sizeHtmlLabel(lbl, measurer)).toBe(1);
     expect(console.warn).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('parseHTML rv 3 with a label (htmlerror without YYABORT)', () => {
+  const finfo = { fontname: 'Times-Roman', fontsize: 14, fontcolor: 'black', imageSizer: () => ({ w: 1, h: 1 }) };
+  const cell = (content: string): string => `<TABLE><TR><TD>${content}</TD></TR></TABLE>`;
+  /** The image source of each placed cell of a table label. */
+  const imageSrcs = (label: TextlabelT): (string | undefined)[] =>
+    label.u.kind === 'html' ? (label.u.html as PlacedHtml).cells.map((c) => c.image?.src) : [];
+
+  it('keeps the label and its image, and returns 3, for text after an IMG', () => {
+    const lines: string[] = [];
+    vi.spyOn(console, 'error').mockImplementation((...a: unknown[]) => { lines.push(a.map(String).join(' ')); });
+    const { label, rv } = makeHtmlLabelRv(cell('<IMG SRC="2821.png"/> y'), finfo, measurer);
+    expect(rv).toBe(3);
+    expect(label.html).toBe(true);
+    expect(imageSrcs(label)).toEqual(['2821.png']);
+    expect(lines).toEqual(['Error: Syntax error: non-space string used after <IMG> in line 1 ', '...  y</TD> ...']);
+  });
+
+  it('returns 0 and prints nothing for a blank after an IMG', () => {
+    vi.spyOn(console, 'error');
+    const { label, rv } = makeHtmlLabelRv(cell('<IMG SRC="2821.png"/> '), finfo, measurer);
+    expect(rv).toBe(0);
+    expect(imageSrcs(label)).toEqual(['2821.png']);
+    expect(console.error).not.toHaveBeenCalled();
+  });
+
+  it('ORs the sizing rv into 3 (a missing image leaves 3)', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { rv } = makeHtmlLabelRv(cell('x<IMG SRC="missing-155.png"/>'), { ...finfo, imageSizer: undefined }, measurer);
+    expect(rv).toBe(3);
   });
 });

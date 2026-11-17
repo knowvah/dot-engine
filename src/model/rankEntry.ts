@@ -73,8 +73,10 @@ export interface RankEntry {
 
   /**
    * Flat-edge adjacency matrix for cycle-breaking. Allocated per-rank by
-   * flatBreakcycles when any flat edges exist; freed in cleanup2.
+   * flatBreakcycles when any flat edges exist. Left set after cleanup2, as
+   * C's free_matrix leaves the pointer: flat_edges reads it as a flag.
    * @see lib/dotgen/mincross.c:GD_rank(g)[r].flat
+   * @see lib/dotgen/flat.c:flat_edges (16.1.1) 274
    */
   flat?: AdjMatrix;
 

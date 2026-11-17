@@ -43,7 +43,7 @@ import { edgeType } from './splines.js';
 import { addBox } from '../../common/splines-path-shared.js';
 import { TOP, BOTTOM, REGULAREDGE } from '../../common/splines-constants.js';
 import { VIRTUAL, NORMAL } from './fastgr.js';
-import { neighbor, topBound, botBound, nodeType, splineMerge } from './splines-route.js';
+import { neighbor, topBound, botBound, nodeType, splineMerge, nodeOutSize } from './splines-route.js';
 import { getSplineBounds, rankHt } from './edge-route-rank.js';
 import { graphRanksep } from './position-aux.js';
 
@@ -90,10 +90,12 @@ function isLabeledVirtual(n: Node): boolean {
   return nodeType(n) === VIRTUAL && n.info.label != null;
 }
 
-/** Tail/head clusters behind node n: its own cluster when NORMAL, else the
- *  original edge's endpoint clusters. @see cl_bound (dotsplines.c:2135-2140) */
+/** Tail/head clusters behind node n: its own cluster when NORMAL or when it
+ *  has no out edge (a virtual node concentrate orphaned, upstream issue 2765),
+ *  else the original edge's endpoint clusters.
+ *  @see lib/dotgen/dotsplines.c:cl_bound (16.1.1, f8e3f2100) */
 function endpointClusters(n: Node): [Graph | undefined, Graph | undefined] {
-  if (nodeType(n) === NORMAL) return [n.info.clust, n.info.clust];
+  if (nodeType(n) === NORMAL || nodeOutSize(n) === 0) return [n.info.clust, n.info.clust];
   const orig = n.info.out?.list[0]?.info.to_orig;
   return [orig?.tail.info.clust, orig?.head.info.clust];
 }
@@ -281,9 +283,22 @@ function pathBoundsReady(first: Edge, last: Edge): boolean {
     && !boundMissing(botBound(last, -1)) && !boundMissing(botBound(last, 1));
 }
 
-/** Grow rank boxes (even slots) / inter-rank boxes (odd) to a minimum width. */
+/**
+ * Grow rank boxes (even slots) / inter-rank boxes (odd) to a minimum width.
+ *
+ * C runs `fb - 1 .. lb` whatever `P->nbox` is: when `add_box` dropped boxes,
+ * the loop reaches slots at or past `nbox` of the array dot_splines_
+ * preallocates (dotsplines.c:338) and widens them. Those writes are dead:
+ * every reader of a path's boxes stops at `nbox` (routesplines_, checkpath,
+ * printpath, recover_slack, this function's second loop), and `add_box`
+ * overwrites slot `nbox` before it counts it. The port's array holds no such
+ * slot (or a stale reference to a box that is live elsewhere, which C's
+ * struct copies cannot reach), so it skips them.
+ * @see lib/dotgen/dotsplines.c:adjustregularpath (first loop)
+ */
 function widenPathBoxes(P: Path, fb: number, lb: number): void {
   for (let i = fb - 1; i < lb + 1; i++) {
+    if (i >= P.nbox) continue;
     const bp = P.boxes[i];
     const even = (i - fb) % 2 === 0;
     const tooNarrow = even ? bp.ll.x >= bp.ur.x : bp.ll.x + MINW > bp.ur.x;

@@ -22,8 +22,7 @@ import { readFileSync, statSync, appendFileSync, writeFileSync, existsSync, mkdi
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
-import { defaultGvbindir, ORACLE_DOT_BIN } from './oracle-paths.mjs';
+import { defaultGvbindir, ORACLE_CORPUS_ROOT, ORACLE_DOT_BIN } from './oracle-paths.mjs';
 import { fileURLToPath } from 'node:url';
 import { compareXdot } from '../golden/compare-xdot.js';
 import { preventIdleSleep, startClock, sleepInflated } from './keep-awake.js';
@@ -110,7 +109,7 @@ export interface EngineParityReport {
 }
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
-const CORPUS = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
+const CORPUS = process.env.CORPUS_ROOT ?? ORACLE_CORPUS_ROOT;
 const DOT_BIN = process.env.DOT_BIN ?? ORACLE_DOT_BIN;
 /** Engine under sweep: first non-flag CLI arg (`dot` when absent). */
 const GVBINDIR = defaultGvbindir(process.argv.slice(2).find((a) => !a.startsWith('--')) ?? 'dot');

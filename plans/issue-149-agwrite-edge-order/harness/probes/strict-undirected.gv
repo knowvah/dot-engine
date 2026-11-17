@@ -1,0 +1,7 @@
+strict graph G {
+	{ rank=same; x -- y; }
+	y -- z;
+	z -- x;
+	x -- y;
+	w;
+}

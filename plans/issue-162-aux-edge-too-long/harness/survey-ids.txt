@@ -1,0 +1,10 @@
+# Gate 6 ids for #162 (see T2 "How the ids were chosen").
+# Reach: native 16.1.1 and the counterfactual both print the Edge length error
+# on exactly these five ids, out of 982 applicable dot ids (detector-hits.txt).
+1314
+2758
+2776_1
+2781
+2781_1
+# Control: same upstream family (2776), fails in pathplan, not in make_aux_edge.
+2776

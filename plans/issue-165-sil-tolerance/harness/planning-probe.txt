@@ -1,0 +1,5 @@
+# instrumented probe (base bundle vs head+instrument.patch bundle), BD_FORMATS=svg, probe-ids.txt
+jobs 602 identical 599 capped 0
+2168_2|fdp|svg
+2168|circo|svg
+2168|fdp|svg

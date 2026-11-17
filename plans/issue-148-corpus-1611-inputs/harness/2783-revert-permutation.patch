@@ -1,0 +1,34 @@
+--- a/lib/ortho/partition.c	2026-11-09 16:25:26
++++ b/lib/ortho/partition.c	2026-11-16 09:44:46
+@@ -132,13 +132,18 @@
+ 
+ /* Generate a random permutation of the segments 1..n */
+ static size_t *generateRandomOrdering(size_t n) {
+-  size_t *const permute = gv_permutation(n);
+-
+-  // make indexing 1-based
++  /* #148 revert test: the 16.1.0 permutation (drand48 stream seeded with
++   * srand48(173) in partition()), 1-based, in 16.1.1's size_t array. */
++  size_t *const permute = gv_calloc(n, sizeof(size_t));
+   for (size_t i = 0; i < n; i++) {
+-    ++permute[i];
++    permute[i] = i + 1;
++  }
++  for (size_t i = 0; i < n; i++) {
++    const size_t j = (size_t)((double)i + drand48() * (double)(n - i));
++    if (j != i) {
++      SWAP(&permute[i], &permute[j]);
++    }
+   }
+-
+   return permute;
+ }
+ 
+@@ -674,6 +679,7 @@
+         fprintf(stderr, "\n");
+     }
+   }
++  srand48(173);
+   size_t *permute = generateRandomOrdering(nsegs);
+   traps_t hor_traps = construct_trapezoids(nsegs, segs, permute);
+   free(permute);

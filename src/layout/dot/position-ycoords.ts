@@ -175,7 +175,13 @@ export function setYcoordsInitial(g: Graph, lbl: boolean): void {
     const d1 = rankArr[r + 1].ht2 + rankArr[r].ht1 + CL_OFFSET;
     const delta = Math.max(d0, d1);
     if (rankArr[r].n > 0) {
-      rankArr[r].v[0].info.coord.y = rankArr[r + 1].v[0].info.coord.y + delta;
+      // 16.1.1: assign only when the rank below has a leader (`!= NULL`; the
+      // port's empty ranks hold null or nothing at v[0], hence `!= null`).
+      // @see lib/dotgen/position.c:set_ycoords (16.1.1 :793-797, 9fca64d0f
+      //   "anticipate empty ranks")
+      if (rankArr[r + 1].v[0] != null) {
+        rankArr[r].v[0].info.coord.y = rankArr[r + 1].v[0].info.coord.y + delta;
+      }
     }
     maxht = Math.max(maxht, delta);
   }

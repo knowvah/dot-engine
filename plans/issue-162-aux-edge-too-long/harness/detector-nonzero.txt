@@ -1,0 +1,94 @@
+# Ids that did not finish or exited non-zero in the #162 planning detectors.
+# 60 s cap over 982 ids; ids that timed out on either side re-ran with a 180 s
+# cap on the port only (the native re-run was stopped: load 20-28, above the
+# queue rule's 12). No timed-out id is a smoke id. The smoke ids listed at the
+# end exit 1 in native for other reasons, without an Edge length line; the port
+# detector finished on both with no P162 marker. 1864 exits 1 on the port at
+# both caps with no marker (a pre-existing port error, not this change).
+## native rc != 0 (60 s): id rc hits
+1213-1 rc=1 hits=0
+1213-2 rc=1 hits=0
+1314 rc=1 hits=1
+1323 rc=1 hits=0
+1323_1 rc=1 hits=0
+1328 rc=1 hits=0
+1332 rc=1 hits=0
+1411 rc=1 hits=0
+1581 rc=1 hits=0
+1652 rc=124 hits=0
+1783 rc=1 hits=0
+1864 rc=124 hits=0
+1879 rc=1 hits=0
+1939 rc=1 hits=0
+2064 rc=124 hits=0
+2095_1 rc=124 hits=0
+2343 rc=124 hits=0
+2371 rc=124 hits=0
+2470 rc=1 hits=0
+2471 rc=1 hits=0
+2475_1 rc=124 hits=0
+2516 rc=1 hits=0
+2593 rc=124 hits=0
+2619 rc=1 hits=0
+2619_1 rc=1 hits=0
+2619_2 rc=1 hits=0
+2621 rc=124 hits=0
+2646 rc=124 hits=0
+2723 rc=1 hits=0
+2758 rc=1 hits=1
+2773 rc=1 hits=0
+2773_1 rc=1 hits=0
+2774 rc=1 hits=0
+2774_1 rc=1 hits=0
+2776 rc=1 hits=0
+2776_1 rc=1 hits=1
+2778 rc=1 hits=0
+2780 rc=1 hits=0
+2781 rc=1 hits=1
+2781_1 rc=1 hits=1
+2796 rc=1 hits=0
+2821_0 rc=1 hits=0
+2821_1 rc=1 hits=0
+2821_2 rc=1 hits=0
+2825 rc=1 hits=0
+2834 rc=124 hits=0
+graphs-structs rc=1 hits=0
+imagepath_test-base rc=1 hits=0
+share-b545 rc=1 hits=0
+tree-share-examples-4elt rc=124 hits=0
+tree-share-examples-world rc=124 hits=0
+## port rc != 0 (60 s): id rc hits
+tree-share-examples-4elt rc=124 hits=0
+tree-share-examples-world rc=124 hits=0
+1652 rc=124 hits=0
+1864 rc=1 hits=0
+1718 rc=124 hits=0
+2064 rc=124 hits=0
+2095_1 rc=124 hits=0
+2108 rc=124 hits=0
+2343 rc=124 hits=0
+2371 rc=124 hits=0
+2475_1 rc=124 hits=0
+2593 rc=124 hits=0
+2621 rc=124 hits=0
+2646 rc=124 hits=0
+2834 rc=124 hits=0
+## port re-run (180 s): id rc hits
+tree-share-examples-world rc=124 hits=0
+tree-share-examples-4elt rc=124 hits=0
+1718 rc=0 hits=0
+1864 rc=1 hits=0
+1652 rc=124 hits=0
+2064 rc=124 hits=0
+2095_1 rc=0 hits=0
+2108 rc=0 hits=0
+2343 rc=124 hits=0
+2371 rc=124 hits=0
+2475_1 rc=124 hits=0
+2593 rc=124 hits=0
+2621 rc=124 hits=0
+2646 rc=124 hits=0
+2834 rc=124 hits=0
+## smoke ids among the above
+1328
+1581

@@ -265,4 +265,17 @@ describe('constrainedMajorizationVpsc', () => {
     // g = 2b, place -= alpha * g with alpha = 1
     expect(Array.from(place)).toEqual([0, -0.5]);
   });
+
+  it('takes alpha = 1 when the float quotient overflows (16.1.1 fdivf_overflow)', () => {
+    // As the zero-matrix case, with a diagonal of -1e-39 (a float subnormal).
+    // g = 2b - 2A.place is [1, -0.5] to float precision, numerator = 1.25,
+    // denominator = -sum(2 * A[i][i] * g[i]^2), about 2.5e-39. The float
+    // quotient, about 5e38, is past FLT_MAX: 16.1.1 takes alpha = 1. 16.1.0
+    // tested `denominator != 0` and stepped by inf, to [-inf, inf].
+    const packed = Float32Array.from([-1e-39, 0, -1e-39]);
+    const e = initCMajVPSC(2, packed, null, optionsOf(VPSC_CASES[0]!), 0)!;
+    const place = Float32Array.from([1, -1]);
+    expect(constrainedMajorizationVpsc(e, Float32Array.from([0.5, -0.25]), place, 1)).toBe(1);
+    expect(Array.from(place)).toEqual([0, -0.5]);
+  });
 });

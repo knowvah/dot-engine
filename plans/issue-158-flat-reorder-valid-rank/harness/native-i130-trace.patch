@@ -1,0 +1,16 @@
+--- a/lib/dotgen/dotsplines.c
++++ b/lib/dotgen/dotsplines.c
+@@ -1284,6 +1284,13 @@
+     }
+   }
+ 
++  if (getenv("GVTS_I130"))
++    fprintf(stderr, "I130 auxt=%s %d auxh=%s %d max=%d minset=%s minrank=%d hasflat=%d\n",
++            agnameof(auxt), ND_rank(auxt), agnameof(auxh), ND_rank(auxh),
++            GD_maxrank(auxg),
++            GD_minset(auxg) ? agnameof(GD_minset(auxg)) : "-",
++            GD_minrank(auxg), GD_has_flat_edges(auxg) ? 1 : 0);
++
+   cleanupCloneGraph(auxg, &attrs);
+   return 0;
+ }

@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: EPL-2.0
 //
 // neato `model=` (shortpath, subset, circuit, mds) on the major, KK and hier
-// paths against native graphviz 16.1.0 `-Kneato -Txdot`. Fixtures under
-// __fixtures__/models/ are the oracle's own output and stderr (part-8 AD-5);
+// paths against native graphviz `-Kneato -Txdot`. Fixtures under
+// __fixtures__/models/ are the oracle's own output and stderr (part-8 AD-5):
+// 16.1.0 captures, except the `hier-*` cases whose output 16.1.1 changed (the
+// double Laplacian and conjugate_gradient_d, #156), which are 16.1.1 captures;
 // inputs come from plans/post-16-1-followups-8/harness/T0/gen-models.py.
 //
 // Native facts these cases pin down:

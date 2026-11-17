@@ -15,9 +15,14 @@ import { SLACKNODE, EDGE_LABEL } from './rank.js';
 import { selfRightSpace } from '../../common/splines-selfedge.js';
 import { lateInt } from '../../common/nodeinit.js';
 import { cround } from '../../common/arith.js';
+import { agerrorf } from '../../common/agerr.js';
+import { printfFixed } from '../../util/printf-round.js';
 
 /** @see lib/common/const.h:CL_OFFSET */
 export const CL_OFFSET = 8;
+
+/** C `INT_MAX`: the longest aux edge `make_aux_edge` accepts. */
+const INT_MAX = 2147483647;
 
 /**
  * Cluster margin = `late_int(g, G_margin, CL_OFFSET, 0)`. The `margin` attribute
@@ -104,12 +109,27 @@ export function graphRanksep(g: Graph): number { return g.info.ranksep ?? 0; }
  * Agedgeinfo_t it allocates here and never writes them. Its attributes are the
  * shared empty map: C binds no attribute record to an aux edge, only the
  * Agedgeinfo_t (issue #145).
+ *
+ * A length above INT_MAX is refused: the error prints and the result is null,
+ * with no edge linked into the fast lists (graphviz 16.1.1, upstream
+ * f86899fcc; 16.1.0 clamped the length). make_LR_constraints and
+ * make_edge_pairs test the result and fail the layout; every other caller
+ * ignores it, as C does, and simply has no edge there. The `%f` is
+ * `printfFixed`: `toFixed` goes exponential at 1e21, and corpus 2781's length
+ * is 7.2e25.
  * @see lib/dotgen/position.c:make_aux_edge
  */
-export function makeAuxEdge(u: Node, v: Node, len: number, wt: number): Edge {
+export function makeAuxEdge(u: Node, v: Node, len: number, wt: number): Edge | null {
+  if (len > INT_MAX) {
+    agerrorf(
+      `Edge length ${printfFixed(len, 6)} larger than maximum ${INT_MAX} allowed.\n`
+      + 'Check for overwide node(s).',
+    );
+    return null;
+  }
   const e = new EdgeClass(u, v, '', true, true);
   // C ROUND() is half away from zero. @see lib/dotgen/position.c:195
-  e.info.minlen = cround(Math.min(len, 2147483647));
+  e.info.minlen = cround(len);
   e.info.weight = wt;
   fastEdge(e);
   return e;
@@ -154,8 +174,11 @@ export function lrSep(g: Graph, rankIdx: number): number {
   return (rankIdx + (g.info.abomShift ?? 0)) & 1 ? 5 : nodesep;
 }
 
-/** @see lib/dotgen/position.c:make_LR_constraints (single flat-edge constraint) */
-export function processFlatEdge(g: Graph, u: Node, e: Edge): void {
+/**
+ * Returns -1 when the aux edge is refused (16.1.1, upstream e62e35be5), else 0.
+ * @see lib/dotgen/position.c:make_LR_constraints (single flat-edge constraint)
+ */
+export function processFlatEdge(g: Graph, u: Node, e: Edge): number {
   const nodesep = graphNodesep(g);
   const isOrdered = nodeOrder(u) < nodeOrder(e.head);
   const t0 = isOrdered ? e.tail : e.head;
@@ -175,44 +198,61 @@ export function processFlatEdge(g: Graph, u: Node, e: Edge): void {
     ex.info.minlen = Math.max(ex.info.minlen ?? 1, m0);
     ex.info.weight = Math.max(ex.info.weight ?? 0, edgeWeight(e));
   } else if (!e.info.label) {
-    makeAuxEdge(t0, h0, m0, edgeWeight(e));
+    if (makeAuxEdge(t0, h0, m0, edgeWeight(e)) === null) return -1;
   }
+  return 0;
 }
 
-/** @see lib/dotgen/position.c:make_LR_constraints (flat-edge endpoint loop) */
-export function makeFlatEdgeConstraints(g: Graph, u: Node): void {
+/**
+ * Returns -1 at the first refused aux edge, else 0.
+ * @see lib/dotgen/position.c:make_LR_constraints (flat-edge endpoint loop)
+ */
+export function makeFlatEdgeConstraints(g: Graph, u: Node): number {
   const flatOut = u.info.flat_out;
-  if (!flatOut) return;
+  if (!flatOut) return 0;
   for (let k = 0; k < flatOut.size; k++) {
-    processFlatEdge(g, u, flatOut.list[k]);
+    if (processFlatEdge(g, u, flatOut.list[k]) !== 0) return -1;
   }
+  return 0;
 }
 
-/** @see lib/dotgen/position.c:make_LR_constraints (flat-label constraint body) */
+/**
+ * Returns -1 when either aux edge is refused (16.1.1, upstream e62e35be5); the
+ * second is not tried after the first fails. Else 0.
+ * @see lib/dotgen/position.c:make_LR_constraints (flat-label constraint body)
+ */
 export function applyFlatLabel(
   g: Graph,
   e: Edge,
   e0raw: Edge,
   e1raw: Edge,
-): void {
+): number {
   const nodesep = graphNodesep(g);
   const e0 = nodeOrder(e0raw.head) <= nodeOrder(e1raw.head) ? e0raw : e1raw;
   const e1 = e0 === e0raw ? e1raw : e0raw;
   // C: int m0 (position.c:222,276), so the half truncates
   const m0 = Math.trunc(edgeMinlen(e) * nodesep / 2);
   const m1a = m0 + nodeRw(e0.head) + nodeLw(e0.tail);
-  if (!canReach(e0.tail, e0.head)) makeAuxEdge(e0.head, e0.tail, m1a, edgeWeight(e));
+  if (!canReach(e0.tail, e0.head)) {
+    if (makeAuxEdge(e0.head, e0.tail, m1a, edgeWeight(e)) === null) return -1;
+  }
   const m1b = m0 + nodeRw(e1.tail) + nodeLw(e1.head);
-  if (!canReach(e1.head, e1.tail)) makeAuxEdge(e1.tail, e1.head, m1b, edgeWeight(e));
+  if (!canReach(e1.head, e1.tail)) {
+    if (makeAuxEdge(e1.tail, e1.head, m1b, edgeWeight(e)) === null) return -1;
+  }
+  return 0;
 }
 
-/** @see lib/dotgen/position.c:make_LR_constraints (flat-label constraints via ND_alg) */
-export function makeFlatLabelConstraints(g: Graph, u: Node): void {
+/**
+ * Returns -1 when a label aux edge is refused, else 0.
+ * @see lib/dotgen/position.c:make_LR_constraints (flat-label constraints via ND_alg)
+ */
+export function makeFlatLabelConstraints(g: Graph, u: Node): number {
   const e = u.info.posAlg;
-  if (!e) return;
+  if (!e) return 0;
   const so = u.info.save_out;
-  if (!so || so.size < 2) return;
-  applyFlatLabel(g, e, so.list[0], so.list[1]);
+  if (!so || so.size < 2) return 0;
+  return applyFlatLabel(g, e, so.list[0], so.list[1]);
 }
 
 /** @see lib/dotgen/position.c:go */
@@ -243,11 +283,16 @@ export function selfWidth(u: Node): number {
   return sw;
 }
 
-/** @see lib/dotgen/position.c:make_LR_constraints (per-rank inner loop, one node pair) */
-export function lrRankPair(g: Graph, r: number, u: Node, v: Node, last: number): number {
+/**
+ * Returns the next `last`, or null when the adjacent-pair aux edge is refused
+ * (16.1.1, upstream e62e35be5, 92ef8d508). C tests the edge before the
+ * `ND_rank(v)` assignment, so `v`'s rank is not written on failure.
+ * @see lib/dotgen/position.c:make_LR_constraints (per-rank inner loop, one node pair)
+ */
+export function lrRankPair(g: Graph, r: number, u: Node, v: Node, last: number): number | null {
   const nodesep = lrSep(g, r);
   const width = nodeRw(u) + nodeLw(v) + nodesep;
-  makeAuxEdge(u, v, width, 0);
+  if (makeAuxEdge(u, v, width, 0) === null) return null;
   /* C: `last = (ND_rank(v) = last + width)`. ND_rank is an int, so the
    * double `last + width` truncates toward zero on assignment, and the
    * truncated *integer* flows back into `last` — positions accumulate as
@@ -261,10 +306,16 @@ export function lrRankPair(g: Graph, r: number, u: Node, v: Node, last: number):
   return next;
 }
 
-/** @see lib/dotgen/position.c:make_LR_constraints (per-rank inner loop) */
-export function makeLrRankConstraints(g: Graph, r: number): void {
+/**
+ * 16.1.1 skips a rank with no leader (`rank[i].v[0] == NULL` → `continue`).
+ * The per-rank body is its own function here, so C's `continue` is a `return`.
+ * @see lib/dotgen/position.c:make_LR_constraints (per-rank inner loop;
+ *   16.1.1 :240-243, d49e3a529 "anticipate empty ranks")
+ */
+export function makeLrRankConstraints(g: Graph, r: number): number {
   const rank = g.info.rank!;
   const rk = rank[r];
+  if (rk.v[0] == null) return 0;
   let last = 0;
   for (let j = 0; j < rk.n; j++) {
     const u = rk.v[j];
@@ -272,26 +323,40 @@ export function makeLrRankConstraints(g: Graph, r: number): void {
     u.info.rw = nodeRw(u) + selfWidth(u);
     if (rk.v[0]) u.info.rank = last;
     const v = rk.v[j + 1];
-    if (v) last = lrRankPair(g, r, u, v, last);
-    makeFlatLabelConstraints(g, u);
-    makeFlatEdgeConstraints(g, u);
+    if (v) {
+      const next = lrRankPair(g, r, u, v, last);
+      if (next === null) return -1;
+      last = next;
+    }
+    if (makeFlatLabelConstraints(g, u) !== 0) return -1;
+    if (makeFlatEdgeConstraints(g, u) !== 0) return -1;
   }
   if (rk.n > 0) rk.v[0].info.rank = 0;
+  return 0;
 }
 
-/** @see lib/dotgen/position.c:make_LR_constraints */
-export function makeLrConstraints(g: Graph): void {
+/**
+ * Returns -1 at the first refused aux edge (C's `return -1` from inside the
+ * rank loops), else 0.
+ * @see lib/dotgen/position.c:make_LR_constraints
+ */
+export function makeLrConstraints(g: Graph): number {
   for (let i = (g.info.minrank ?? 0); i <= (g.info.maxrank ?? 0); i++) {
-    makeLrRankConstraints(g, i);
+    if (makeLrRankConstraints(g, i) !== 0) return -1;
   }
+  return 0;
 }
 
 // ---------------------------------------------------------------------------
 // make_edge_pairs — @see lib/dotgen/position.c:make_edge_pairs
 // ---------------------------------------------------------------------------
 
-/** @see lib/dotgen/position.c:make_edge_pairs (per-edge) */
-export function addEdgePair(g: Graph, e: Edge): void {
+/**
+ * Returns -1 when either aux edge is refused (16.1.1, upstream 73c1fd4d1,
+ * f0d837f19), leaving the slack node unranked. Else 0.
+ * @see lib/dotgen/position.c:make_edge_pairs (per-edge)
+ */
+export function addEdgePair(g: Graph, e: Edge): number {
   const sn = makeSlackNode(g);
   const hp = e.info.head_port.p;
   const tp = e.info.tail_port.p;
@@ -303,20 +368,25 @@ export function addEdgePair(g: Graph, e: Edge): void {
   const d = Math.trunc(hp.x - tp.x);
   const m0 = Math.max(0, d);
   const m1 = Math.max(0, -d);
-  makeAuxEdge(sn, e.tail, m0 + 1, edgeWeight(e));
-  makeAuxEdge(sn, e.head, m1 + 1, edgeWeight(e));
+  if (makeAuxEdge(sn, e.tail, m0 + 1, edgeWeight(e)) === null) return -1;
+  if (makeAuxEdge(sn, e.head, m1 + 1, edgeWeight(e)) === null) return -1;
   sn.info.rank = Math.min(nodeRank(e.tail) - m0 - 1, nodeRank(e.head) - m1 - 1);
+  return 0;
 }
 
-/** @see lib/dotgen/position.c:make_edge_pairs */
-export function makeEdgePairs(g: Graph): void {
+/**
+ * Returns -1 at the first refused aux edge, else 0.
+ * @see lib/dotgen/position.c:make_edge_pairs
+ */
+export function makeEdgePairs(g: Graph): number {
   for (let n = g.info.nlist; n !== undefined; n = n.info.next) {
     const so = n.info.save_out;
     if (!so) continue;
     for (let i = 0; i < so.size; i++) {
-      addEdgePair(g, so.list[i]);
+      if (addEdgePair(g, so.list[i]) !== 0) return -1;
     }
   }
+  return 0;
 }
 
 /** Create a SLACKNODE virtual node and prepend to nlist. */
@@ -340,12 +410,15 @@ export function createAuxEdges(
   g: Graph,
   posClusters: (g: Graph) => void,
   compressGraph: (g: Graph) => void,
-): void {
+): number {
   allocateAuxEdges(g);
-  makeLrConstraints(g);
-  makeEdgePairs(g);
+  const lrRc = makeLrConstraints(g);
+  if (lrRc !== 0) return lrRc;
+  const pairRc = makeEdgePairs(g);
+  if (pairRc !== 0) return pairRc;
   posClusters(g);
   compressGraph(g);
+  return 0;
 }
 
 /** @see lib/dotgen/position.c:remove_aux_edges (SLACKNODE removal loop) */

@@ -1,0 +1,14 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 28.8 27 28.8 27 0 ",
+		bb="0,0,27,28.8",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	Q	[_ldraw_="S 5 -solid c 7 -#000000 p 4 0 0 0 28.8 27 28.8 27 0 S 5 -solid c 7 -#000000 p 4 3 3 3 25.8 16 25.8 16 3 F 14 11 -Times-Roman c 7 \
+-#000000 T 6 8.8 -1 7 1 -x S 5 -solid c 7 -#000000 p 4 18 3 18 25.8 24 25.8 24 3 ",
+		height=0.4,
+		label=<<TABLE><TR><TD><![CDATA[x]]></TD><TD><IMG SRC="2821.png"/></TD></TR></TABLE>>,
+		pos="13.5,14.4",
+		shape=plain,
+		width=0.375];
+}

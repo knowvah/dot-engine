@@ -102,6 +102,11 @@ describe('collectResources: images', () => {
     expect([...r.bytesSrcs].sort()).toEqual(['a.png', 'b.png']);
   });
 
+  it('lists the IMG of a label the image rule reported but kept (text next to the IMG)', () => {
+    const r = collect('digraph { c [label=<<TABLE><TR><TD>x <IMG SRC="kept.png"/> y</TD></TR></TABLE>>] }');
+    expect(r.sizeSrcs).toEqual(['kept.png']);
+  });
+
   it('dedupes repeated sources', () => {
     const r = collect('digraph { a [image="x.png"]; b [image="x.png"] }', true);
     expect(r.bytesSrcs).toEqual(['x.png']);

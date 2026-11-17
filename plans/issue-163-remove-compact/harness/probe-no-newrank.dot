@@ -1,0 +1,5 @@
+// Control: without newrank, dot1_rank never read compact in either version.
+digraph G {
+  subgraph cluster_0 { compact=true; a -> z; }
+  a -> b -> c -> d -> e -> f -> z;
+}

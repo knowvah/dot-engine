@@ -61,19 +61,22 @@ export abstract class DotWriterBase {
   /**
    * Serialize the whole laid-out graph to xdot DOT text — a faithful port of
    * cgraph's agwrite (lib/cgraph/write.c). Recurses the subgraph tree
-   * (write_subgs/write_body), scoping each node/edge to the subgraph(s) it
-   * belongs to via preorder numbers (write_node_test/write_edge_test), and
-   * re-emits an object bare (no attrs) on any scope after the first
-   * (attrs_written). This reproduces native's per-subgraph edge re-declarations
-   * — e.g. an edge in a rank=same subgraph is drawn once, then re-declared bare.
+   * (write_subgs/write_body). A node is scoped to the subgraph(s) it belongs
+   * to via preorder numbers (write_node_test), and is re-emitted bare (no
+   * attrs) on any scope after the first (attrs_written). An edge is written
+   * once: each body pends its out-edges during the node walk and writes them
+   * after it in creation order (write_edges), and an edge already written is
+   * never pended again, so no later scope re-declares it (graphviz 16.1.1).
    * @see lib/cgraph/write.c:agwrite
+   * @see lib/cgraph/write.c:before_write
    */
   protected serialize(g: Graph): string {
     const ctx: SerCtx = {
       out: [],
       preorder: new Map<Graph, number>(),
       nodeLW: new Map<Node, number>(),
-      edgeLW: new Map<Edge, number>(),
+      edgesTodo: new Map<number, Edge>(),
+      edgesDone: new Set<number>(),
       attrsWritten: new Set<Node | Edge>(),
       level: 0,
     };
@@ -260,7 +263,10 @@ export abstract class DotWriterBase {
     }
   }
 
-  /** @see write.c:write_body — subgraphs, then this scope's nodes and edges. */
+  /** Subgraphs, then this scope's nodes, then the edges the node walk pended.
+   *  The walk still writes an out-edge's head node right after its tail, but
+   *  the edge itself waits for writeEdges unless an earlier body wrote it.
+   *  @see lib/cgraph/write.c:write_body */
   private writeBody(g: Graph, ctx: SerCtx): void {
     this.writeSubgs(g, ctx);
     // agfstnode/agnxtnode walk a subgraph's node set in AGSEQ (root creation)
@@ -275,9 +281,24 @@ export abstract class DotWriterBase {
           this.writeNode(g, e.head, ctx);
           prev = e.head;
         }
-        if (this.writeEdgeTest(g, e, ctx)) this.writeEdge(g, e, ctx);
+        // pend this edge to be emitted later
+        if (!ctx.edgesDone.has(e.seq)) ctx.edgesTodo.set(e.seq, e);
       }
     }
+    // flush pending edges to the output
+    this.writeEdges(g, ctx);
+  }
+
+  /** Write the pending edges in ascending `Edge.seq` (the C walks a Dtoset
+   *  keyed on AGSEQ), mark each done, and empty the set for the next body.
+   *  @see lib/cgraph/write.c:write_edges */
+  private writeEdges(g: Graph, ctx: SerCtx): void {
+    const seqs = [...ctx.edgesTodo.keys()].sort((a, b) => a - b);
+    for (const seq of seqs) {
+      this.writeEdge(g, ctx.edgesTodo.get(seq)!, ctx);
+      ctx.edgesDone.add(seq);
+    }
+    ctx.edgesTodo.clear();
   }
 
   /** @see write.c:write_node_test — every xdot node carries pos/size, so it is
@@ -299,11 +320,6 @@ export abstract class DotWriterBase {
     return n.name;
   }
 
-  /** @see write.c:write_edge_test */
-  private writeEdgeTest(g: Graph, e: Edge, ctx: SerCtx): boolean {
-    return (ctx.edgeLW.get(e) ?? 0) < ctx.preorder.get(g)!;
-  }
-
   /** @see write.c:write_node */
   private writeNode(g: Graph, n: Node, ctx: SerCtx): void {
     let s = this.indent(ctx) + xdotId(this.emitNodeName(n));
@@ -315,7 +331,6 @@ export abstract class DotWriterBase {
     ctx.nodeLW.set(n, ctx.preorder.get(g)!);
   }
 
-  /** @see write.c:write_edge — attrs only on first emission, bare thereafter. */
   /**
    * The `:port` / `:port:compass` suffix C writes after an endpoint name.
    *
@@ -341,6 +356,12 @@ export abstract class DotWriterBase {
     return ':' + agstrcanonText(val.slice(0, i)) + ':' + agstrcanonText(val.slice(i + 1));
   }
 
+  /** One edge statement. The C's `else` arm (write_edge_name: a bare `[key=…]`
+   *  for an edge whose attributes were already written) is not ported: since
+   *  16.1.1 edges_done makes write_body write each edge once per agwrite, and
+   *  before_write's set_attrwf clears every flag first, so the arm cannot run.
+   *  The attrsWritten gate stays, as the C's `if (!attrs_written(e))` does.
+   *  @see lib/cgraph/write.c:write_edge */
   private writeEdge(g: Graph, e: Edge, ctx: SerCtx): void {
     const conn = edgeConnector(isDirected(g));
     let s = this.indent(ctx) + xdotId(this.emitNodeName(e.tail)) +
@@ -351,7 +372,6 @@ export abstract class DotWriterBase {
       ctx.attrsWritten.add(e);
     }
     ctx.out.push(s + ';\n');
-    ctx.edgeLW.set(e, ctx.preorder.get(g)!);
   }
 
   /** Root-graph attribute block: `_draw_`, `_ldraw_`, `bb`, `xdotversion`. */

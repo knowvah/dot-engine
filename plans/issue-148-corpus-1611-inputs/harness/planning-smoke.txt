@@ -1,0 +1,38 @@
+/opt/homebrew/bin/bash: line 1: 63334 Segmentation fault: 11     GVBINDIR=/tmp/ghl1611 timeout 60 $D -Tsvg $T/$id.dot > $O/$id.n.svg 2> $O/$id.n.err
+2746 native=139 port=1 difflines~0 nerr=Warning: syntax ambiguity - badly delimited number '300800000000000000000000000l perr=Warning: syntax ambiguity - badly delimited number '300800000000000000000000000l
+2756 native=0 port=1 difflines~53 nerr= perr=__RENDER_ERROR__ Cannot read properties of undefined (reading 'v')|InternalError
+2756_1 native=0 port=1 difflines~47 nerr= perr=__RENDER_ERROR__ Cannot read properties of undefined (reading 'v')|InternalError
+2758 native=1 port=0 difflines~26 nerr=Warning: syntax ambiguity - badly delimited number '40000000d' in line 1 of /Use perr=Warning: syntax ambiguity - badly delimited number '40000000d' in line 1 of inpu
+2759 native=0 port=1 difflines~57 nerr=Warning: Act000 was already in a rankset, deleted from cluster %1|Warning: Act00 perr=Warning: Act000 was already in a rankset, deleted from cluster |Warning: Act004 
+2759_1 native=0 port=1 difflines~57 nerr=Warning: Act000 was already in a rankset, deleted from cluster %1|Warning: Act00 perr=Warning: Act000 was already in a rankset, deleted from cluster |Warning: Act004 
+/opt/homebrew/bin/bash: line 1: 63680 Segmentation fault: 11     GVBINDIR=/tmp/ghl1611 timeout 60 $D -Tsvg $T/$id.dot > $O/$id.n.svg 2> $O/$id.n.err
+2761 native=139 port=1 difflines~0 nerr=Warning: Act000 was already in a rankset, deleted from cluster _cc_0|Warning: Ac perr=Warning: Act000 was already in a rankset, deleted from cluster _cc_1|Warning: Ac
+/opt/homebrew/bin/bash: line 1: 63742 Segmentation fault: 11     GVBINDIR=/tmp/ghl1611 timeout 60 $D -Tsvg $T/$id.dot > $O/$id.n.svg 2> $O/$id.n.err
+2761_1 native=139 port=1 difflines~0 nerr=Warning: Act000 was already in a rankset, deleted from cluster _cc_0|Warning: Ac perr=Warning: Act000 was already in a rankset, deleted from cluster _cc_0|Warning: Ac
+2765 native=0 port=0 difflines~0 nerr=Warning: syntax ambiguity - badly delimited number '0H' in line 1 of /Users/scot perr=Warning: syntax ambiguity - badly delimited number '0H' in line 1 of input split
+2765_1 native=0 port=0 difflines~0 nerr= perr=
+2768 native=0 port=0 difflines~0 nerr=Warning: syntax ambiguity - badly delimited number '0p' in line 1 of /Users/scot perr=Warning: syntax ambiguity - badly delimited number '0p' in line 1 of input split
+2768_1 native=0 port=0 difflines~0 nerr= perr=
+2768_2 native=0 port=0 difflines~0 nerr= perr=
+2769 native=0 port=0 difflines~0 nerr= perr=
+2769_1 native=0 port=0 difflines~0 nerr= perr=
+2769_2 native=0 port=0 difflines~0 nerr= perr=
+2773 native=1 port=1 difflines~41 nerr=Warning: syntax ambiguity - badly delimited number '1d' in line 9 of /Users/scot perr=Warning: syntax ambiguity - badly delimited number '1d' in line 9 of input split
+2773_1 native=1 port=1 difflines~29 nerr=Error: in checkpath, all bounding boxes are below threshold|0 boxes:|start port: perr=__RENDER_ERROR__ Cannot read properties of undefined (reading 'll')|InternalErro
+2774 native=1 port=1 difflines~27 nerr=Warning: syntax ambiguity - badly delimited number '600000000000000000e' in line perr=Warning: syntax ambiguity - badly delimited number '600000000000000000e' in line
+2774_1 native=1 port=1 difflines~27 nerr=Warning: syntax ambiguity - badly delimited number '600000000000000000e' in line perr=Warning: syntax ambiguity - badly delimited number '600000000000000000e' in line
+2776 native=1 port=1 difflines~33 nerr=Warning: syntax ambiguity - badly delimited number '0f' in line 1 of /Users/scot perr=Warning: syntax ambiguity - badly delimited number '0f' in line 1 of input split
+2776_1 native=1 port=1 difflines~14 nerr=Error: Edge length 300000000000000000.000000 larger than maximum 2147483647 allo perr=__RENDER_ERROR__ Cannot read properties of undefined (reading 'll')|InternalErro
+2780 native=1 port=1 difflines~83 nerr=Warning: syntax ambiguity - badly delimited number '1d' in line 5 of /Users/scot perr=Warning: syntax ambiguity - badly delimited number '1d' in line 5 of input split
+2781 native=1 port=0 difflines~48 nerr=Warning: syntax ambiguity - badly delimited number '0h' in line 1 of /Users/scot perr=Warning: syntax ambiguity - badly delimited number '0h' in line 1 of input split
+2781_1 native=1 port=0 difflines~48 nerr=Error: Edge length 71999999999999994497073152.000000 larger than maximum 2147483 perr=
+2783 native=0 port=0 difflines~12 nerr=trapezoid segment construction failed|horizontal trapezoid construction failed| perr=
+2821_0 native=1 port=0 difflines~0 nerr=Warning: No such file or directory while opening 2821.png|Error: No or improper  perr=Warning: No such file or directory while opening 2821.png|Error: No or improper 
+2821_1 native=1 port=0 difflines~13 nerr=Warning: No such file or directory while opening 2821.png|Error: No or improper  perr=Error: syntax error in line 1 |... <IMG SRC="2821.png"/>  ...|in label of edge B
+2821_2 native=1 port=0 difflines~5 nerr=Warning: No such file or directory while opening 2821.png|Error: No or improper  perr=Error: syntax error in line 1 |... <IMG SRC="2821.png"/>  ...|in label of node Q
+2860 native=0 port=0 difflines~0 nerr= perr=
+2860_1 native=0 port=0 difflines~0 nerr= perr=
+2866 native=0 port=0 difflines~0 nerr= perr=
+2870_0 native=0 port=0 difflines~0 nerr= perr=
+2870_1 native=0 port=0 difflines~0 nerr= perr=
+2870_2 native=0 port=0 difflines~0 nerr= perr=

@@ -24,7 +24,7 @@
  * @see lib/pathplan/route.c:reallyroutespline (the max-deviation tie-break)
  */
 
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import { makePort } from '../model/edgeInfo.js';
 import type { Box } from '../model/geom.js';
 import type { Path } from './types.js';
@@ -180,4 +180,69 @@ describe('limitBoxes samples with clang\'s fused lerp', () => {
       expect(boxes.map((b) => [b.ll.x, b.ur.x])).toEqual(expected[delta]);
     });
   }
+});
+
+// ---------------------------------------------------------------------------
+// checkPath: every box degenerate (#151, upstream 2773/2774/2776/2778)
+//
+// Graphviz 16.1.1 fails a path whose boxes all drop out of the degenerate-box
+// filter: `agerrorf`, then `printpath` (plain `fprintf(stderr)`), then return
+// 1. The expected lines of the empty case are native 16.1.1's stderr on
+// tests/2773_1.dot. @see lib/common/routespl.c:648-652, :763-775
+// ---------------------------------------------------------------------------
+
+const ALL_DEGENERATE = 'Error: in checkpath, all bounding boxes are below threshold';
+
+describe('checkPath rejects an all-degenerate path (#151)', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  /** Run checkPath over pp and return [result, the console.error lines]. */
+  function rejected(pp: Path): [boolean, string[]] {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const failed = checkPath(pp.nbox, pp.boxes, pp);
+    return [failed, err.mock.calls.map((call) => String(call[0]))];
+  }
+
+  it('fails a path with no boxes, printing native\'s lines', () => {
+    const start = makePort();
+    start.p = { x: 0, y: 7.286e17 };
+    const end = makePort();
+    end.p = { x: 0, y: 7.286e17 };
+    const [failed, lines] = rejected({ start, end, nbox: 0, boxes: [], data: null });
+    expect(failed).toBe(true);
+    expect(lines).toEqual([
+      ALL_DEGENERATE,
+      '0 boxes:',
+      'start port: (0, 7.286e+17), tangent angle: 0, not constrained',
+      'end port: (0, 7.286e+17), tangent angle: 0, not constrained',
+    ]);
+  });
+
+  it('fails a path whose boxes are all under the 0.01 threshold', () => {
+    const boxes: Box[] = [
+      { ll: { x: 0, y: 0 }, ur: { x: 10, y: 0.005 } },
+      { ll: { x: 3, y: 1 }, ur: { x: 3.004, y: 9 } },
+    ];
+    const start = makePort();
+    start.p = { x: 1.5, y: 2.25 };
+    start.theta = -Math.PI / 2;
+    start.constrained = true;
+    const end = makePort();
+    end.p = { x: 3, y: 9 };
+    const pp: Path = { start, end, nbox: 2, boxes, data: null };
+    const [failed, lines] = rejected(pp);
+    expect(failed).toBe(true);
+    expect(lines).toEqual([
+      ALL_DEGENERATE,
+      '2 boxes:',
+      '0 (0, 0), (10, 0.005)',
+      '1 (3, 1), (3.004, 9)',
+      'start port: (1.5, 2.25), tangent angle: -1.5708, constrained',
+      'end port: (3, 9), tangent angle: 0, not constrained',
+    ]);
+    // C takes the count by value and never writes it back.
+    expect(pp.nbox).toBe(2);
+  });
 });

@@ -1,0 +1,4 @@
+Error: Syntax error: non-space string used before <IMG> in line 1 
+... x <IMG SRC="2821.png"/> ...
+Warning: Illegal attribute BOGUS in <TD> - ignored
+in label of node Q

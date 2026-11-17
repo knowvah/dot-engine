@@ -1,0 +1,12 @@
+# Planning survey: native-compare.sh base.mjs (c55b4c66) cf.mjs (counterfactual.patch) survey-ids.txt
+# json's 2 lines on both sides are the root "name" (#185). stderr base vs cf: identical on both ids.
+2765 svg base=head:y base~native:0 head~native:0
+2765 xdot base=head:y base~native:0 head~native:0
+2765 plain base=head:y base~native:0 head~native:0
+2765 json base=head:y base~native:2 head~native:2
+2765 cmapx base=head:y base~native:0 head~native:0
+2765_1 svg base=head:y base~native:0 head~native:0
+2765_1 xdot base=head:y base~native:0 head~native:0
+2765_1 plain base=head:y base~native:0 head~native:0
+2765_1 json base=head:y base~native:2 head~native:2
+2765_1 cmapx base=head:y base~native:0 head~native:0

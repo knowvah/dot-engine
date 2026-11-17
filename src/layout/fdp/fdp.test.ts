@@ -25,6 +25,7 @@ import {
 } from './tlayout-parms.js';
 import { deriveGraph, type LayoutInfo } from './derive.js';
 import { findCComp } from './comp.js';
+import { fdpTLayout } from './tlayout.js';
 import { initInfo, mkClusters } from './layout.js';
 import { fdpInitGraph, fdpLayoutEngine } from './index.js';
 import { fdpInitNodeEdge } from './init.js';
@@ -181,6 +182,45 @@ describe('findCComp', () => {
     expect([...comps[0]!.nodes.keys()]).toEqual(['A', 'B']);
     expect([...comps[1]!.nodes.keys()]).toEqual(['C', 'D']);
     expect(comps[0]!.edges.length).toBe(1);
+  });
+});
+
+describe('fdpTLayout — adds ctr unconditionally (tlayout.c:593-596)', () => {
+  /** The xpms layoutComponents passes (layout.c:layout). */
+  const ZERO_XPMS = { numIters: 0, T0: 0, K: 0, C: 0, loopcnt: 0 };
+
+  /** parse, init, derive, and lay out the first component, as layout does. */
+  function tLayoutFirstComponent(src: string): Graph {
+    const g = parse(src);
+    fdpInitGraph(g);
+    const dg = deriveGraph(g, freshInfo(g))!;
+    const { comps } = findCComp(dg, { value: 0 });
+    fdpTLayout(comps[0]!, ZERO_XPMS);
+    return comps[0]!;
+  }
+
+  it('turns a pinned -0 into +0 when ctr is (+0, +0)', () => {
+    // the pinned nodes centre on the origin: ctr = (-1 + -0 + 1) / 3 = +0
+    const cg = tLayoutFirstComponent(`graph G {
+      a [pos="-1,-1!"]; b [pos="-0,0!"]; c [pos="1,1!"];
+      a -- b; b -- c;
+    }`);
+    const b = cg.nodes.get('b')!.info.pos!;
+    // -0 + +0 is +0 (16.1.1); the 16.1.0 guard skipped the add and kept -0
+    expect(Object.is(b[0], 0)).toBe(true);
+    expect(Object.is(b[1], 0)).toBe(true);
+    // pinned nodes do not move: (x - 0) + 0 is x, bit for bit
+    expect([...cg.nodes.get('a')!.info.pos!]).toEqual([-1, -1]);
+    expect([...cg.nodes.get('c')!.info.pos!]).toEqual([1, 1]);
+  });
+
+  it('restores a pinned node exactly when ctr is non-zero', () => {
+    const cg = tLayoutFirstComponent(
+      'graph G { a [pos="1,2!"]; z; a -- z; }');
+    // ctr = a's pos; (x - x) + x is x
+    expect([...cg.nodes.get('a')!.info.pos!]).toEqual([1, 2]);
+    const z = cg.nodes.get('z')!.info.pos!;
+    expect(Number.isFinite(z[0]!) && Number.isFinite(z[1]!)).toBe(true);
   });
 });
 

@@ -1,0 +1,13 @@
+# native-i130.sh at planning (2026-11-16): unpatched rebuild byte-identical to the oracle (-Tdot) on V1-V11;
+# I130 lines from the patched plugin (graphviz 16.1.1).
+V1 I130 auxt=a 0 auxh=b 1 max=1 minset=a minrank=0 hasflat=0 
+V2 I130 auxt=a 0 auxh=b 1 max=1 minset=a minrank=0 hasflat=0 
+V3 I130 auxt=a 0 auxh=b 1 max=1 minset=a minrank=0 hasflat=0 
+V4 I130 auxt=a 0 auxh=b 1 max=1 minset=a minrank=0 hasflat=0 
+V5 I130 auxt=a 0 auxh=b 2 max=2 minset=a minrank=0 hasflat=0 
+V6 I130 auxt=a 0 auxh=b 1 max=1 minset=a minrank=0 hasflat=0 
+V7 I130 auxt=a 0 auxh=b 1 max=1 minset=a minrank=0 hasflat=0 
+V8 I130 auxt=a 0 auxh=b 1 max=1 minset=a minrank=0 hasflat=0 
+V9 I130 auxt=a 0 auxh=b 1 max=1 minset=a minrank=0 hasflat=0 
+V10 I130 auxt=a 0 auxh=b 2 max=2 minset=a minrank=0 hasflat=1 
+V11 I130 auxt=b 0 auxh=a 2 max=2 minset=b minrank=0 hasflat=0 

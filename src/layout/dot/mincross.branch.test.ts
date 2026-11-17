@@ -466,15 +466,18 @@ describe('cleanup2Ranks', () => {
     const g = mkGraph();
     expect(() => cleanup2Ranks(g)).not.toThrow();
   });
-  it('defaults minrank/maxrank to 0, assigns order, clears rank.flat', () => {
+  // C's free_matrix (mincross.c:415-420) frees without nulling the field, and
+  // flat_edges reads the pointer as a flag (flat.c:274, issue #159).
+  it('defaults minrank/maxrank to 0, assigns order, keeps rank.flat', () => {
     const g = mkGraph();
     const a = mkNode(g, 0);
     const entry = mkRankEntry([a]);
-    entry.flat = { nrows: 1, ncols: 1, data: new Uint8Array(1) };
+    const matrix = { nrows: 1, ncols: 1, data: new Uint8Array(1) };
+    entry.flat = matrix;
     g.info.rank = [entry];
     cleanup2Ranks(g);
     expect(a.info.order).toBe(0);
-    expect(entry.flat).toBeUndefined();
+    expect(entry.flat).toBe(matrix);
   });
   it('uses explicit minrank/maxrank when defined', () => {
     const g = mkGraph();

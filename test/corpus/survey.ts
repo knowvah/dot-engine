@@ -17,7 +17,7 @@ import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
+import { ORACLE_CORPUS_ROOT, ORACLE_DOT_BIN, ORACLE_GVBINDIR } from './oracle-paths.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareSvg, type Diff } from '../golden/compare.js';
@@ -29,7 +29,7 @@ import {
 import type { CorpusEntry } from './enumerate.js';
 
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
-const ROOT = process.env.CORPUS_ROOT ?? join(homedir(), 'git/graphviz/tests');
+const ROOT = process.env.CORPUS_ROOT ?? ORACLE_CORPUS_ROOT;
 
 /**
  * Replace an absolute home-directory prefix with `~` so the committed survey

@@ -16,6 +16,7 @@ import type { Poly } from '../pathplan/types.js';
 import { INIT_DELTA, LOOP_TRIES, ROUTESPL_FUDGE } from './splines-constants.js';
 import { fma } from './fma.js';
 import { agerrorf } from './agerr.js';
+import { gfmt5 } from '../render/dot/xdot-ops.js';
 
 // ---------------------------------------------------------------------------
 // Stage-dump hook (diagnosis only; null in production — same pattern as
@@ -158,15 +159,46 @@ function clampPoint(p: Point, box: Box): void {
 // checkPath
 // ---------------------------------------------------------------------------
 
+/** One port line of printpath: `(%.5g, %.5g), tangent angle: %.5g, %s`. */
+function portText(port: Path['start']): string {
+  const constrained = port.constrained ? 'constrained' : 'not constrained';
+  return `(${gfmt5(port.p.x)}, ${gfmt5(port.p.y)}), tangent angle: ${gfmt5(port.theta)}, ${constrained}`;
+}
+
+/**
+ * Dump a path: its box count, each box, and both ports. C writes these with
+ * plain `fprintf(stderr)`, not agerr, so they go straight to `console.error`
+ * (the channel of the `Error:` line checkpath prints just before them) and a
+ * caller-set `agseterrf` function does not receive them.
+ * @see lib/common/routespl.c:printpath
+ */
+function printPath(pp: Path): void {
+  console.error(`${pp.nbox} boxes:`);
+  for (let bi = 0; bi < pp.nbox; bi++) {
+    const { ll, ur } = pp.boxes[bi];
+    console.error(`${bi} (${gfmt5(ll.x)}, ${gfmt5(ll.y)}), (${gfmt5(ur.x)}, ${gfmt5(ur.y)})`);
+  }
+  console.error(`start port: ${portText(pp.start)}`);
+  console.error(`end port: ${portText(pp.end)}`);
+}
+
 /**
  * Repairs minor errors in the box path (gaps, slight overlaps).
  * Returns true on hard failure; false on success.
  * Mutates boxes[] and pp in place.
  *
+ * A path with no box left after the degenerate-box filter is a hard failure
+ * that reports the path (graphviz 16.1.1, upstream 2773, 2774, 2776, 2778).
+ *
  * @see lib/common/routespl.c:checkpath
  */
 export function checkPath(boxn: number, boxes: Box[], pp: Path): boolean {
   const bn = removeDegenerateBoxes(boxes, boxn);
+  if (bn === 0) {
+    agerrorf('in checkpath, all bounding boxes are below threshold');
+    printPath(pp);
+    return true;
+  }
   if (boxes[0].ll.x > boxes[0].ur.x || boxes[0].ll.y > boxes[0].ur.y) return true;
 
   for (let bi = 0; bi + 1 < bn; bi++) {
