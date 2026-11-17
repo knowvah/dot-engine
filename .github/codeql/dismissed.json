@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "rule": "js/useless-comparison-test",
+    "path": "src/layout/dot/edge-route-routing.ts",
+    "message": "The condition 'endp > startp' is always false.",
+    "reason": "Faithful port of lib/common/arrows.c:292 (arrowEndClip's back-up branch) specialised to a single-segment spline, where startp = endp = 0. CLAUDE.md: port every branch; do not simplify the C."
+  },
+  {
+    "rule": "js/implicit-operand-conversion",
+    "path": "src/xdot/parse.ts",
+    "message": "This expression will be implicitly converted from undefined to number or string.",
+    "reason": "Extractor false positive: CodeQL 2.27.4 reads a hex BigInt literal (ULONG_MAX = 0xffff_ffff_ffff_ffffn, line 18) as undefined. A probe flags `m > U` for 0xffff_ffff_ffff_ffffn, 0xffffffffffffffffn and 0xffff_ffffn, but not for 18446744073709551615n or 1n. Covers lines 73 and 74."
+  }
+]

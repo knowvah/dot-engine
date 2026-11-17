@@ -98,6 +98,7 @@ out.append('export const MATINV_CASES: readonly MatinvCase[] = [')
 for r in mats:
     out.append('  {' + ', '.join(f'{k}: {js(r[k])}' for k in ['name','a','rv','inv']) + '},')
 out.append('];')
-open('../wt/T7/src/layout/neato/__fixtures__/stress-models.ts','w').write('\n'.join(out)+'\n')
+with open('../wt/T7/src/layout/neato/__fixtures__/stress-models.ts','w') as f:
+    f.write('\n'.join(out)+'\n')
 for r in models: print(r['name'], 'null' if r['dij'] is None else len(r['dij']), r['ewgts0Null'])
 for r in mats: print(r['name'], r['rv'])
