@@ -20,6 +20,7 @@ import { gvrenderSetStyle, checkClusterStyleTokens } from './gvrender-set-style.
 import { resolveFillColorName, resolveRenderColor, reportColorNames } from '../render/color-resolve.js';
 import { parseSegs } from '../common/multicolor.js';
 import { graphAttrInherited } from '../common/attr-get.js';
+import { beginAnchorIf } from './anchor.js';
 
 /**
  * Copy gradient fields from a linear/radial ResolvedFill onto obj.
@@ -187,4 +188,19 @@ function applyClusterFill(obj: ObjState, fillRes: ResolvedFill): boolean {
   }
   applyClusterGradient(obj, fillRes);
   return true;
+}
+
+/**
+ * `if (doAnchor) { emit_map_rect(job, GD_bb(sg)); gvrender_begin_anchor(...) }`:
+ * record the cluster box as the pending hot spot, then open the anchor.
+ * Drawing devices run it before the box, the map device (EMIT_CLUSTERS_LAST)
+ * after the label. Returns doAnchor (obj->url || obj->explicit_tooltip); when
+ * true the caller closes the anchor with renderer.endAnchor.
+ * @see lib/common/emit.c:emit_clusters:3743-3747, 3861-3868
+ */
+export function beginClusterAnchor(sg: Graph, renderer: RendererPlugin, job: RenderJob): boolean {
+  const obj = job.obj;
+  if (obj === null || (obj.url === null && !obj.explicitTooltip)) return false;
+  renderer.emitMapRect?.(sg.info.bb!, job);
+  return beginAnchorIf(renderer, job);
 }

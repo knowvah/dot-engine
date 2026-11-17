@@ -1,0 +1,1 @@
+graph G { URL="r"; subgraph cluster_k { URL="k"; label=<<table><tr><td href="http://cell">L</td></tr></table>>; c -- e } subgraph cluster_m { tooltip="m"; f } a -- c; a -- f }

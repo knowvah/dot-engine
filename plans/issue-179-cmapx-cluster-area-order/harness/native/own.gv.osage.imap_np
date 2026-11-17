@@ -1,0 +1,5 @@
+base referer
+rect http://cell 21,15 40,45
+rect http://c2 43,15 67,45
+rect http://t 17,11 71,49
+rect k 5,5 83,108

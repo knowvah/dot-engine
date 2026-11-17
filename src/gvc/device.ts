@@ -49,7 +49,7 @@ import {
   setRendererKnownColors,
 } from '../render/color-resolve.js';
 import { emitRoundedBezier } from '../common/poly-shapes.js';
-import { applyClusterObjState, clusterAttr, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
+import { applyClusterObjState, clusterAttr, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox, beginClusterAnchor } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
 import { deviceClip, emitXdot } from './emit-xdot.js';
 import { gvrenderSetStyle, edgeStyleResets } from './gvrender-set-style.js';
@@ -279,12 +279,12 @@ function drawClusterInScheme(sg: Graph, renderer: RendererPlugin, job: RenderJob
   if (job.obj !== null) job.obj.id = svgClusterId(sg, job);
   // @see lib/common/emit.c:emit_begin_cluster / getObjId
   setHtmlAnchorObj(svgClusterId(sg, job), labelTextOf(sg.info.label), job.obj ?? undefined);
-  // Resolve and open the cluster anchor around the box + label (closed before
-  // the cluster's child nodes — sibling of them). @see emit.c:3803.
-  if (job.obj !== null) {
-    resolveObjAnchor(sg, labelTextOf(sg.info.label), svgClusterId(sg, job), job.obj);
-  }
-  const anchored = beginAnchorIf(renderer, job);
+  // Resolve the cluster anchor. Drawing devices open it around the box + label;
+  // the map device (EMIT_CLUSTERS_LAST) opens it after the label, so the
+  // cluster's <area> follows its label's cell areas. @see emit.c:3743, 3861
+  if (job.obj !== null) resolveObjAnchor(sg, labelTextOf(sg.info.label), svgClusterId(sg, job), job.obj);
+  const late = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
+  const anchored = !late && beginClusterAnchor(sg, renderer, job);
   // C draws the boundary box only when peripheries != 0, or (peripheries == 0
   // and the cluster is filled). peripheries=0 + unfilled emits nothing.
   // style=invis sets PEN_NONE and gvrender_polygon skips the whole box
@@ -294,7 +294,7 @@ function drawClusterInScheme(sg: Graph, renderer: RendererPlugin, job: RenderJob
     renderClusterBox(sg, filled, renderer, job);
   }
   renderClusterLabel(sg, renderer, job);
-  if (anchored) renderer.endAnchor?.(job);
+  if (anchored || (late && beginClusterAnchor(sg, renderer, job))) renderer.endAnchor?.(job);
   renderer.endCluster?.(sg, job);
 }
 

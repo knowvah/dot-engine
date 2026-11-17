@@ -18,11 +18,11 @@
 // fdp, captured 2026-11-17 by harness/rowcheck.mjs (NATIVE_DIR). They are not
 // inlined because the area lines run past 100 columns.
 //
-// Two probes are compared on the lines this change owns only:
-//   cluster  without line order: native writes a cluster's area after its
-//            label's cell areas, the port before (#179).
+// One probe is compared on the lines this change owns only:
 //   edge     without the cell areas of an HTML edge label (`edge1_0`,
 //            `edge2_1`), which the map renderer does not write yet (#252).
+// The `cluster` probe was compared without line order until #179 moved the
+// cluster's area after its label's cell areas; it is byte-equal now.
 // @see lib/common/htmltable.c:emit_html_label
 // @see lib/common/htmltable.c:allocObj
 // @see lib/common/htmltable.c:freeObj
@@ -48,10 +48,10 @@ const ENGINES: readonly EngineName[] = ['dot', 'neato', 'fdp'];
 const FORMATS = ['cmapx', 'cmapx-np'] as const;
 
 /** Probes whose cmapx and cmapx_np output equals native byte for byte. The
- * first four printed a stray graph area before the fix; the rest guard the
+ * first five printed a stray graph area before the fix; the rest guard the
  * graph area of a root URL or tooltip and the node hot spot. */
 const EQUAL_PROBES = [
-  'repro', 'tblhref', 'nested', 'paint',
+  'repro', 'tblhref', 'nested', 'paint', 'cluster',
   'rooturl', 'roottip', 'node', 'text',
 ] as const;
 
@@ -84,17 +84,6 @@ describe('an html label emits in its own obj state, as allocObj/freeObj do', () 
           expect(portOf(probe, engine, fmt)).toBe(nativeOf(probe, engine, fmt));
         });
       }
-    }
-  }
-
-  for (const engine of ENGINES) {
-    for (const fmt of FORMATS) {
-      it(`cluster -K${engine} -T${fmt} has native's lines and no graph area`, () => {
-        const native = nativeOf('cluster', engine, fmt).split('\n');
-        const port = portOf('cluster', engine, fmt).split('\n');
-        expect(port.filter((l) => GRAPH_AREA.test(l))).toEqual([]);
-        expect([...port].sort()).toEqual([...native].sort());
-      });
     }
   }
 

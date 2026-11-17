@@ -678,13 +678,6 @@ abstract class MapRendererBase implements RendererPlugin {
     if (this.mapCtx !== null && job.obj !== null) computeNodeUrlMap(n, job.obj, this.mapCtx);
   }
 
-  beginCluster(sg: Graph, job: RenderJob): void {
-    const bb = sg.info.bb;
-    if (this.mapCtx !== null && job.obj !== null && bb !== undefined) {
-      computeClusterUrlMap(bb, job.obj, this.mapCtx);
-    }
-  }
-
   endEdge(e: Edge, job: RenderJob): void {
     if (this.mapCtx !== null && job.obj !== null) this.emitEdge(e, job.obj, job);
   }

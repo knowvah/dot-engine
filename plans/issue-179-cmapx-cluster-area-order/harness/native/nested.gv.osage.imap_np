@@ -1,0 +1,5 @@
+base referer
+rect http://ic 40,66 54,97
+rect i 8,57 85,159
+rect http://oc 75,15 96,45
+rect o 5,5 165,162

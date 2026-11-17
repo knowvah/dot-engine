@@ -1,0 +1,316 @@
+input	engine	format	lines	baseDiff	headDiff	verdict
+deep.gv	dot	cmapx	9	3	1	AWAY
+  port <area shape="rect" id="clust3_0" href="http://ct" title="&lt;TABLE&gt;" alt="" coords="70,125,98,163"/>
+deep.gv	dot	cmapx_np	9	3	1	AWAY
+  port <area shape="rect" id="clust3_0" href="http://ct" title="&lt;TABLE&gt;" alt="" coords="70,125,98,163"/>
+deep.gv	dot	imap	8	3	0	native
+deep.gv	dot	imap_np	8	3	0	native
+deep.gv	dot	svg	102	4	4	unchanged
+deep.gv	fdp	cmapx	9	3	1	AWAY
+  port <area shape="rect" id="clust3_0" href="http://ct" title="&lt;TABLE&gt;" alt="" coords="59,265,88,304"/>
+deep.gv	fdp	cmapx_np	9	3	1	AWAY
+  port <area shape="rect" id="clust3_0" href="http://ct" title="&lt;TABLE&gt;" alt="" coords="59,265,88,304"/>
+deep.gv	fdp	imap	8	3	0	native
+deep.gv	fdp	imap_np	8	3	0	native
+deep.gv	fdp	svg	102	4	4	unchanged
+deep.gv	osage	cmapx	9	3	1	AWAY
+  port <area shape="rect" id="clust3_0" href="http://ct" title="&lt;TABLE&gt;" alt="" coords="35,98,64,137"/>
+deep.gv	osage	cmapx_np	9	3	1	AWAY
+  port <area shape="rect" id="clust3_0" href="http://ct" title="&lt;TABLE&gt;" alt="" coords="35,98,64,137"/>
+deep.gv	osage	imap	8	3	0	native
+deep.gv	osage	imap_np	8	3	0	native
+deep.gv	osage	svg	102	4	4	unchanged
+deep.gv	neato	cmapx	4	1	0	native
+deep.gv	neato	cmapx_np	4	1	0	native
+deep.gv	neato	imap	3	1	0	native
+deep.gv	neato	imap_np	3	1	0	native
+deep.gv	neato	svg	68	3	3	unchanged
+deep.gv	circo	cmapx	2	0	0	unchanged
+deep.gv	circo	cmapx_np	2	0	0	unchanged
+deep.gv	circo	imap	1	0	0	unchanged
+deep.gv	circo	imap_np	1	0	0	unchanged
+deep.gv	circo	svg	55	3	3	unchanged
+deep.gv	twopi	cmapx	2	0	0	unchanged
+deep.gv	twopi	cmapx_np	2	0	0	unchanged
+deep.gv	twopi	imap	1	0	0	unchanged
+deep.gv	twopi	imap_np	1	0	0	unchanged
+deep.gv	twopi	svg	55	3	3	unchanged
+deep.gv	sfdp	cmapx	2	0	0	unchanged
+deep.gv	sfdp	cmapx_np	2	0	0	unchanged
+deep.gv	sfdp	imap	1	0	0	unchanged
+deep.gv	sfdp	imap_np	1	0	0	unchanged
+deep.gv	sfdp	svg	55	3	3	unchanged
+deep.gv	patchwork	cmapx	6	0	0	unchanged
+deep.gv	patchwork	cmapx_np	6	0	0	unchanged
+deep.gv	patchwork	imap	5	0	0	unchanged
+deep.gv	patchwork	imap_np	5	0	0	unchanged
+deep.gv	patchwork	svg	65	3	3	unchanged
+invis.gv	dot	cmapx	4	1	0	native
+invis.gv	dot	cmapx_np	4	1	0	native
+invis.gv	dot	imap	3	1	0	native
+invis.gv	dot	imap_np	3	1	0	native
+invis.gv	dot	svg	43	3	3	unchanged
+invis.gv	fdp	cmapx	4	1	0	native
+invis.gv	fdp	cmapx_np	4	1	0	native
+invis.gv	fdp	imap	3	1	0	native
+invis.gv	fdp	imap_np	3	1	0	native
+invis.gv	fdp	svg	43	3	3	unchanged
+invis.gv	osage	cmapx	4	1	0	native
+invis.gv	osage	cmapx_np	4	1	0	native
+invis.gv	osage	imap	3	1	0	native
+invis.gv	osage	imap_np	3	1	0	native
+invis.gv	osage	svg	43	3	3	unchanged
+invis.gv	neato	cmapx	4	1	0	native
+invis.gv	neato	cmapx_np	4	1	0	native
+invis.gv	neato	imap	3	1	0	native
+invis.gv	neato	imap_np	3	1	0	native
+invis.gv	neato	svg	43	3	3	unchanged
+invis.gv	circo	cmapx	2	0	0	unchanged
+invis.gv	circo	cmapx_np	2	0	0	unchanged
+invis.gv	circo	imap	1	0	0	unchanged
+invis.gv	circo	imap_np	1	0	0	unchanged
+invis.gv	circo	svg	31	3	3	unchanged
+invis.gv	twopi	cmapx	2	0	0	unchanged
+invis.gv	twopi	cmapx_np	2	0	0	unchanged
+invis.gv	twopi	imap	1	0	0	unchanged
+invis.gv	twopi	imap_np	1	0	0	unchanged
+invis.gv	twopi	svg	31	3	3	unchanged
+invis.gv	sfdp	cmapx	2	0	0	unchanged
+invis.gv	sfdp	cmapx_np	2	0	0	unchanged
+invis.gv	sfdp	imap	1	0	0	unchanged
+invis.gv	sfdp	imap_np	1	0	0	unchanged
+invis.gv	sfdp	svg	31	3	3	unchanged
+invis.gv	patchwork	cmapx	3	0	0	unchanged
+invis.gv	patchwork	cmapx_np	3	0	0	unchanged
+invis.gv	patchwork	imap	2	0	0	unchanged
+invis.gv	patchwork	imap_np	2	0	0	unchanged
+invis.gv	patchwork	svg	31	3	3	unchanged
+layers.gv	dot	cmapx	6	2	0	native
+layers.gv	dot	cmapx_np	6	2	0	native
+layers.gv	dot	imap	5	2	0	native
+layers.gv	dot	imap_np	5	2	0	native
+layers.gv	dot	svg	95	31	31	unchanged
+layers.gv	fdp	cmapx	6	3	2	AWAY
+  port <area shape="rect" id="clust2_1" href="http://m" title="&lt;TABLE&gt;" alt="" coords="236,17,260,47"/>
+  port <area shape="rect" id="clust2" href="m" title="&lt;TABLE&gt;" alt="" coords="201,7,295,126"/>
+layers.gv	fdp	cmapx_np	6	3	2	AWAY
+  port <area shape="rect" id="clust2_1" href="http://m" title="&lt;TABLE&gt;" alt="" coords="236,17,260,47"/>
+  port <area shape="rect" id="clust2" href="m" title="&lt;TABLE&gt;" alt="" coords="201,7,295,126"/>
+layers.gv	fdp	imap	5	3	2	AWAY
+  port rect http://m 236,17 260,47
+  port rect m 201,7 295,126
+layers.gv	fdp	imap_np	5	2	0	native
+layers.gv	fdp	svg	95	60	60	unchanged
+layers.gv	osage	cmapx	6	2	0	native
+layers.gv	osage	cmapx_np	6	2	0	native
+layers.gv	osage	imap	5	2	0	native
+layers.gv	osage	imap_np	5	2	0	native
+layers.gv	osage	svg	95	31	31	unchanged
+layers.gv	neato	cmapx	6	2	0	native
+layers.gv	neato	cmapx_np	6	2	0	native
+layers.gv	neato	imap	5	2	0	native
+layers.gv	neato	imap_np	5	2	0	native
+layers.gv	neato	svg	95	31	31	unchanged
+layers.gv	circo	cmapx	2	0	0	unchanged
+layers.gv	circo	cmapx_np	2	0	0	unchanged
+layers.gv	circo	imap	1	0	0	unchanged
+layers.gv	circo	imap_np	1	0	0	unchanged
+layers.gv	circo	svg	69	3	3	unchanged
+layers.gv	twopi	cmapx	2	0	0	unchanged
+layers.gv	twopi	cmapx_np	2	0	0	unchanged
+layers.gv	twopi	imap	1	0	0	unchanged
+layers.gv	twopi	imap_np	1	0	0	unchanged
+layers.gv	twopi	svg	69	3	3	unchanged
+layers.gv	sfdp	cmapx	2	0	0	unchanged
+layers.gv	sfdp	cmapx_np	2	0	0	unchanged
+layers.gv	sfdp	imap	1	0	0	unchanged
+layers.gv	sfdp	imap_np	1	0	0	unchanged
+layers.gv	sfdp	svg	69	3	3	unchanged
+layers.gv	patchwork	cmapx	4	0	0	unchanged
+layers.gv	patchwork	cmapx_np	4	0	0	unchanged
+layers.gv	patchwork	imap	3	0	0	unchanged
+layers.gv	patchwork	imap_np	3	0	0	unchanged
+layers.gv	patchwork	svg	59	18	18	unchanged
+periph0.gv	dot	cmapx	5	1	0	native
+periph0.gv	dot	cmapx_np	5	1	0	native
+periph0.gv	dot	imap	4	1	0	native
+periph0.gv	dot	imap_np	4	1	0	native
+periph0.gv	dot	svg	62	3	3	unchanged
+periph0.gv	fdp	cmapx	5	1	0	native
+periph0.gv	fdp	cmapx_np	5	1	0	native
+periph0.gv	fdp	imap	4	1	0	native
+periph0.gv	fdp	imap_np	4	1	0	native
+periph0.gv	fdp	svg	62	3	3	unchanged
+periph0.gv	osage	cmapx	5	1	0	native
+periph0.gv	osage	cmapx_np	5	1	0	native
+periph0.gv	osage	imap	4	1	0	native
+periph0.gv	osage	imap_np	4	1	0	native
+periph0.gv	osage	svg	62	3	3	unchanged
+periph0.gv	neato	cmapx	5	1	0	native
+periph0.gv	neato	cmapx_np	5	1	0	native
+periph0.gv	neato	imap	4	1	0	native
+periph0.gv	neato	imap_np	4	1	0	native
+periph0.gv	neato	svg	62	3	3	unchanged
+periph0.gv	circo	cmapx	2	0	0	unchanged
+periph0.gv	circo	cmapx_np	2	0	0	unchanged
+periph0.gv	circo	imap	1	0	0	unchanged
+periph0.gv	circo	imap_np	1	0	0	unchanged
+periph0.gv	circo	svg	43	3	3	unchanged
+periph0.gv	twopi	cmapx	2	0	0	unchanged
+periph0.gv	twopi	cmapx_np	2	0	0	unchanged
+periph0.gv	twopi	imap	1	0	0	unchanged
+periph0.gv	twopi	imap_np	1	0	0	unchanged
+periph0.gv	twopi	svg	43	3	3	unchanged
+periph0.gv	sfdp	cmapx	2	0	0	unchanged
+periph0.gv	sfdp	cmapx_np	2	0	0	unchanged
+periph0.gv	sfdp	imap	1	0	0	unchanged
+periph0.gv	sfdp	imap_np	1	0	0	unchanged
+periph0.gv	sfdp	svg	43	3	3	unchanged
+periph0.gv	patchwork	cmapx	4	0	0	unchanged
+periph0.gv	patchwork	cmapx_np	4	0	0	unchanged
+periph0.gv	patchwork	imap	3	0	0	unchanged
+periph0.gv	patchwork	imap_np	3	0	0	unchanged
+periph0.gv	patchwork	svg	44	3	3	unchanged
+rounded.gv	dot	cmapx	6	2	0	native
+rounded.gv	dot	cmapx_np	6	2	0	native
+rounded.gv	dot	imap	5	2	0	native
+rounded.gv	dot	imap_np	5	2	0	native
+rounded.gv	dot	svg	77	3	3	unchanged
+rounded.gv	fdp	cmapx	6	3	2	AWAY
+  port <area shape="rect" id="clust2_1" href="http://s" title="&lt;TABLE&gt;" alt="" coords="239,17,257,47"/>
+  port <area shape="rect" id="clust2" href="s" title="&lt;TABLE&gt;" alt="" coords="201,7,295,126"/>
+rounded.gv	fdp	cmapx_np	6	3	2	AWAY
+  port <area shape="rect" id="clust2_1" href="http://s" title="&lt;TABLE&gt;" alt="" coords="239,17,257,47"/>
+  port <area shape="rect" id="clust2" href="s" title="&lt;TABLE&gt;" alt="" coords="201,7,295,126"/>
+rounded.gv	fdp	imap	5	3	2	AWAY
+  port rect http://s 239,17 257,47
+  port rect s 201,7 295,126
+rounded.gv	fdp	imap_np	5	2	0	native
+rounded.gv	fdp	svg	77	27	27	unchanged
+rounded.gv	osage	cmapx	6	2	0	native
+rounded.gv	osage	cmapx_np	6	2	0	native
+rounded.gv	osage	imap	5	2	0	native
+rounded.gv	osage	imap_np	5	2	0	native
+rounded.gv	osage	svg	77	3	3	unchanged
+rounded.gv	neato	cmapx	6	2	0	native
+rounded.gv	neato	cmapx_np	6	2	0	native
+rounded.gv	neato	imap	5	2	0	native
+rounded.gv	neato	imap_np	5	2	0	native
+rounded.gv	neato	svg	77	3	3	unchanged
+rounded.gv	circo	cmapx	2	0	0	unchanged
+rounded.gv	circo	cmapx_np	2	0	0	unchanged
+rounded.gv	circo	imap	1	0	0	unchanged
+rounded.gv	circo	imap_np	1	0	0	unchanged
+rounded.gv	circo	svg	43	3	3	unchanged
+rounded.gv	twopi	cmapx	2	0	0	unchanged
+rounded.gv	twopi	cmapx_np	2	0	0	unchanged
+rounded.gv	twopi	imap	1	0	0	unchanged
+rounded.gv	twopi	imap_np	1	0	0	unchanged
+rounded.gv	twopi	svg	43	3	3	unchanged
+rounded.gv	sfdp	cmapx	2	0	0	unchanged
+rounded.gv	sfdp	cmapx_np	2	0	0	unchanged
+rounded.gv	sfdp	imap	1	0	0	unchanged
+rounded.gv	sfdp	imap_np	1	0	0	unchanged
+rounded.gv	sfdp	svg	43	3	3	unchanged
+rounded.gv	patchwork	cmapx	4	0	0	unchanged
+rounded.gv	patchwork	cmapx_np	4	0	0	unchanged
+rounded.gv	patchwork	imap	3	0	0	unchanged
+rounded.gv	patchwork	imap_np	3	0	0	unchanged
+rounded.gv	patchwork	svg	53	3	3	unchanged
+target.gv	dot	cmapx	5	2	2	AWAY
+  port <area shape="rect" id="clust1_0" href="http://cell" title="&lt;TABLE&gt;" alt="" coords="53,73,72,104"/>
+  port <area shape="rect" id="clust1_1" href="http://t" target="_blank" title="&lt;TABLE&gt;" alt="" coords="49,69,76,108"/>
+target.gv	dot	cmapx_np	5	2	2	AWAY
+  port <area shape="rect" id="clust1_0" href="http://cell" title="&lt;TABLE&gt;" alt="" coords="53,73,72,104"/>
+  port <area shape="rect" id="clust1_1" href="http://t" target="_blank" title="&lt;TABLE&gt;" alt="" coords="49,69,76,108"/>
+target.gv	dot	imap	4	1	0	native
+target.gv	dot	imap_np	4	1	0	native
+target.gv	dot	svg	47	5	5	unchanged
+target.gv	fdp	cmapx	5	2	2	AWAY
+  port <area shape="rect" id="clust1_0" href="http://cell" title="&lt;TABLE&gt;" alt="" coords="42,15,62,45"/>
+  port <area shape="rect" id="clust1_1" href="http://t" target="_blank" title="&lt;TABLE&gt;" alt="" coords="38,11,66,49"/>
+target.gv	fdp	cmapx_np	5	2	2	AWAY
+  port <area shape="rect" id="clust1_0" href="http://cell" title="&lt;TABLE&gt;" alt="" coords="42,15,62,45"/>
+  port <area shape="rect" id="clust1_1" href="http://t" target="_blank" title="&lt;TABLE&gt;" alt="" coords="38,11,66,49"/>
+target.gv	fdp	imap	4	1	0	native
+target.gv	fdp	imap_np	4	1	0	native
+target.gv	fdp	svg	47	5	5	unchanged
+target.gv	osage	cmapx	5	2	2	AWAY
+  port <area shape="rect" id="clust1_0" href="http://cell" title="&lt;TABLE&gt;" alt="" coords="34,15,54,45"/>
+  port <area shape="rect" id="clust1_1" href="http://t" target="_blank" title="&lt;TABLE&gt;" alt="" coords="30,11,58,49"/>
+target.gv	osage	cmapx_np	5	2	2	AWAY
+  port <area shape="rect" id="clust1_0" href="http://cell" title="&lt;TABLE&gt;" alt="" coords="34,15,54,45"/>
+  port <area shape="rect" id="clust1_1" href="http://t" target="_blank" title="&lt;TABLE&gt;" alt="" coords="30,11,58,49"/>
+target.gv	osage	imap	4	1	0	native
+target.gv	osage	imap_np	4	1	0	native
+target.gv	osage	svg	47	5	5	unchanged
+target.gv	neato	cmapx	5	2	2	AWAY
+  port <area shape="rect" id="clust1_0" href="http://cell" title="&lt;TABLE&gt;" alt="" coords="32,15,51,45"/>
+  port <area shape="rect" id="clust1_1" href="http://t" target="_blank" title="&lt;TABLE&gt;" alt="" coords="28,11,55,49"/>
+target.gv	neato	cmapx_np	5	2	2	AWAY
+  port <area shape="rect" id="clust1_0" href="http://cell" title="&lt;TABLE&gt;" alt="" coords="32,15,51,45"/>
+  port <area shape="rect" id="clust1_1" href="http://t" target="_blank" title="&lt;TABLE&gt;" alt="" coords="28,11,55,49"/>
+target.gv	neato	imap	4	1	0	native
+target.gv	neato	imap_np	4	1	0	native
+target.gv	neato	svg	47	5	5	unchanged
+target.gv	circo	cmapx	2	0	0	unchanged
+target.gv	circo	cmapx_np	2	0	0	unchanged
+target.gv	circo	imap	1	0	0	unchanged
+target.gv	circo	imap_np	1	0	0	unchanged
+target.gv	circo	svg	31	3	3	unchanged
+target.gv	twopi	cmapx	2	0	0	unchanged
+target.gv	twopi	cmapx_np	2	0	0	unchanged
+target.gv	twopi	imap	1	0	0	unchanged
+target.gv	twopi	imap_np	1	0	0	unchanged
+target.gv	twopi	svg	31	3	3	unchanged
+target.gv	sfdp	cmapx	2	0	0	unchanged
+target.gv	sfdp	cmapx_np	2	0	0	unchanged
+target.gv	sfdp	imap	1	0	0	unchanged
+target.gv	sfdp	imap_np	1	0	0	unchanged
+target.gv	sfdp	svg	31	3	3	unchanged
+target.gv	patchwork	cmapx	3	0	0	unchanged
+target.gv	patchwork	cmapx_np	3	0	0	unchanged
+target.gv	patchwork	imap	2	0	0	unchanged
+target.gv	patchwork	imap_np	2	0	0	unchanged
+target.gv	patchwork	svg	32	3	3	unchanged
+undirected.gv	dot	cmapx	6	1	0	native
+undirected.gv	dot	cmapx_np	6	1	0	native
+undirected.gv	dot	imap	5	1	0	native
+undirected.gv	dot	imap_np	5	1	0	native
+undirected.gv	dot	svg	75	3	3	unchanged
+undirected.gv	fdp	cmapx	6	1	0	native
+undirected.gv	fdp	cmapx_np	6	1	0	native
+undirected.gv	fdp	imap	5	1	0	native
+undirected.gv	fdp	imap_np	5	1	0	native
+undirected.gv	fdp	svg	75	3	3	unchanged
+undirected.gv	osage	cmapx	6	1	0	native
+undirected.gv	osage	cmapx_np	6	1	0	native
+undirected.gv	osage	imap	5	1	0	native
+undirected.gv	osage	imap_np	5	1	0	native
+undirected.gv	osage	svg	75	3	3	unchanged
+undirected.gv	neato	cmapx	6	1	0	native
+undirected.gv	neato	cmapx_np	6	1	0	native
+undirected.gv	neato	imap	5	1	0	native
+undirected.gv	neato	imap_np	5	1	0	native
+undirected.gv	neato	svg	75	3	3	unchanged
+undirected.gv	circo	cmapx	3	0	0	unchanged
+undirected.gv	circo	cmapx_np	3	0	0	unchanged
+undirected.gv	circo	imap	2	0	0	unchanged
+undirected.gv	circo	imap_np	2	0	0	unchanged
+undirected.gv	circo	svg	55	3	3	unchanged
+undirected.gv	twopi	cmapx	3	0	0	unchanged
+undirected.gv	twopi	cmapx_np	3	0	0	unchanged
+undirected.gv	twopi	imap	2	0	0	unchanged
+undirected.gv	twopi	imap_np	2	0	0	unchanged
+undirected.gv	twopi	svg	55	3	3	unchanged
+undirected.gv	sfdp	cmapx	3	0	0	unchanged
+undirected.gv	sfdp	cmapx_np	3	0	0	unchanged
+undirected.gv	sfdp	imap	2	0	0	unchanged
+undirected.gv	sfdp	imap_np	2	0	0	unchanged
+undirected.gv	sfdp	svg	55	3	3	unchanged
+undirected.gv	patchwork	cmapx	5	0	0	unchanged
+undirected.gv	patchwork	cmapx_np	5	0	0	unchanged
+undirected.gv	patchwork	imap	4	0	0	unchanged
+undirected.gv	patchwork	imap_np	4	0	0	unchanged
+undirected.gv	patchwork	svg	54	3	3	unchanged
+AWAY=20 native=92 unchanged=168

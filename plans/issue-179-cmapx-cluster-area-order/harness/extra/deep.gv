@@ -1,0 +1,1 @@
+digraph G { subgraph cluster_a { URL="a"; label=<<table><tr><td href="http://a">A</td></tr></table>>; subgraph cluster_b { tooltip="b"; label="B"; subgraph cluster_c { URL="c"; label=<<table href="http://ct"><tr><td>C</td></tr></table>>; x } y } subgraph cluster_d { label=<<table><tr><td href="http://d">D</td></tr></table>>; z } w } x -> y -> z -> w }

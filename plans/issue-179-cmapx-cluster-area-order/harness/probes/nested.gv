@@ -1,0 +1,1 @@
+digraph G { subgraph cluster_o { URL="o"; label=<<table><tr><td href="http://oc">O</td></tr></table>>; subgraph cluster_i { URL="i"; label=<<table><tr><td href="http://ic">I</td></tr></table>>; c } d } a -> c; a -> d }

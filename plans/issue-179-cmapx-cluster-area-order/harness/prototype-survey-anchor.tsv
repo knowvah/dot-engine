@@ -1,0 +1,171 @@
+input	engine	format	lines	baseDiff	headDiff	verdict
+1879.dot	dot	cmapx	539	0	0	unchanged
+1879.dot	dot	cmapx_np	539	0	0	unchanged
+1879.dot	dot	imap	538	0	0	unchanged
+1879.dot	dot	imap_np	538	0	0	unchanged
+1879.dot	dot	svg	9239	3	3	unchanged
+1879.dot	fdp	cmapx	539	18	18	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069
+  port       throw new RenderError(
+  port             ^
+  port RenderError: splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet
+  port     at fdpSplines (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069:13)
+  port     at fdpLayoutEngine (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58094:29)
+  port     at Object.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58101:5)
+  port     at GvcContext.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:6581:12)
+  port     at Module.render2 (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:62867:9)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:40:28)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:96:3 {
+  port   type: 'semantic',
+  port   code: 'UNSUPPORTED_FEATURE',
+  port   friendlyMessage: 'The graph uses a Graphviz feature that dot-engine does not support yet.'
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+1879.dot	fdp	cmapx_np	539	18	18	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069
+  port       throw new RenderError(
+  port             ^
+  port RenderError: splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet
+  port     at fdpSplines (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069:13)
+  port     at fdpLayoutEngine (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58094:29)
+  port     at Object.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58101:5)
+  port     at GvcContext.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:6581:12)
+  port     at Module.render2 (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:62867:9)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:40:28)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:96:3 {
+  port   type: 'semantic',
+  port   code: 'UNSUPPORTED_FEATURE',
+  port   friendlyMessage: 'The graph uses a Graphviz feature that dot-engine does not support yet.'
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+1879.dot	fdp	imap	538	18	18	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069
+  port       throw new RenderError(
+  port             ^
+  port RenderError: splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet
+  port     at fdpSplines (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069:13)
+  port     at fdpLayoutEngine (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58094:29)
+  port     at Object.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58101:5)
+  port     at GvcContext.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:6581:12)
+  port     at Module.render2 (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:62867:9)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:40:28)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:96:3 {
+  port   type: 'semantic',
+  port   code: 'UNSUPPORTED_FEATURE',
+  port   friendlyMessage: 'The graph uses a Graphviz feature that dot-engine does not support yet.'
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+1879.dot	fdp	imap_np	538	18	18	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069
+  port       throw new RenderError(
+  port             ^
+  port RenderError: splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet
+  port     at fdpSplines (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069:13)
+  port     at fdpLayoutEngine (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58094:29)
+  port     at Object.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58101:5)
+  port     at GvcContext.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:6581:12)
+  port     at Module.render2 (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:62867:9)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:40:28)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:96:3 {
+  port   type: 'semantic',
+  port   code: 'UNSUPPORTED_FEATURE',
+  port   friendlyMessage: 'The graph uses a Graphviz feature that dot-engine does not support yet.'
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+1879.dot	fdp	svg	9239	18	18	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069
+  port       throw new RenderError(
+  port             ^
+  port RenderError: splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet
+  port     at fdpSplines (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58069:13)
+  port     at fdpLayoutEngine (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58094:29)
+  port     at Object.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:58101:5)
+  port     at GvcContext.layout (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:6581:12)
+  port     at Module.render2 (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i179/proto.mjs:62867:9)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:40:28)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-179-cmapx-cluster-area-order/harness/rowcheck.mjs:96:3 {
+  port   type: 'semantic',
+  port   code: 'UNSUPPORTED_FEATURE',
+  port   friendlyMessage: 'The graph uses a Graphviz feature that dot-engine does not support yet.'
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+1879.dot	osage	cmapx	539	0	0	unchanged
+1879.dot	osage	cmapx_np	539	0	0	unchanged
+1879.dot	osage	imap	538	0	0	unchanged
+1879.dot	osage	imap_np	538	0	0	unchanged
+1879.dot	osage	svg	9239	3	3	unchanged
+1880.dot	dot	cmapx	44	0	0	unchanged
+1880.dot	dot	cmapx_np	21	0	0	unchanged
+1880.dot	dot	imap	1	0	0	unchanged
+1880.dot	dot	imap_np	1	0	0	unchanged
+1880.dot	dot	svg	382	3	3	unchanged
+1880.dot	fdp	cmapx	44	0	0	unchanged
+1880.dot	fdp	cmapx_np	21	0	0	unchanged
+1880.dot	fdp	imap	1	0	0	unchanged
+1880.dot	fdp	imap_np	1	0	0	unchanged
+1880.dot	fdp	svg	382	3	3	unchanged
+1880.dot	osage	cmapx	44	0	0	unchanged
+1880.dot	osage	cmapx_np	21	0	0	unchanged
+1880.dot	osage	imap	1	0	0	unchanged
+1880.dot	osage	imap_np	1	0	0	unchanged
+1880.dot	osage	svg	382	3	3	unchanged
+2497.dot	dot	cmapx	2	0	0	unchanged
+2497.dot	dot	cmapx_np	2	0	0	unchanged
+2497.dot	dot	imap	1	0	0	unchanged
+2497.dot	dot	imap_np	1	0	0	unchanged
+2497.dot	dot	svg	35	3	3	unchanged
+2497.dot	fdp	cmapx	2	0	0	unchanged
+2497.dot	fdp	cmapx_np	2	0	0	unchanged
+2497.dot	fdp	imap	1	0	0	unchanged
+2497.dot	fdp	imap_np	1	0	0	unchanged
+2497.dot	fdp	svg	35	3	3	unchanged
+2497.dot	osage	cmapx	2	0	0	unchanged
+2497.dot	osage	cmapx_np	2	0	0	unchanged
+2497.dot	osage	imap	1	0	0	unchanged
+2497.dot	osage	imap_np	1	0	0	unchanged
+2497.dot	osage	svg	35	3	3	unchanged
+2621.dot	dot	cmapx	0	-	-	timeout
+2621.dot	dot	cmapx_np	0	-	-	timeout
+2621.dot	dot	imap	0	-	-	timeout
+2621.dot	dot	imap_np	0	-	-	timeout
+b155.gv	dot	cmapx	3	0	0	unchanged
+b155.gv	dot	cmapx_np	3	0	0	unchanged
+b155.gv	dot	imap	2	0	0	unchanged
+b155.gv	dot	imap_np	2	0	0	unchanged
+b155.gv	dot	svg	28	3	3	unchanged
+b155.gv	fdp	cmapx	3	0	0	unchanged
+b155.gv	fdp	cmapx_np	3	0	0	unchanged
+b155.gv	fdp	imap	2	0	0	unchanged
+b155.gv	fdp	imap_np	2	0	0	unchanged
+b155.gv	fdp	svg	28	3	3	unchanged
+b155.gv	osage	cmapx	3	0	0	unchanged
+b155.gv	osage	cmapx_np	3	0	0	unchanged
+b155.gv	osage	imap	2	0	0	unchanged
+b155.gv	osage	imap_np	2	0	0	unchanged
+b155.gv	osage	svg	28	3	3	unchanged
+url.gv	dot	cmapx	21	0	0	unchanged
+url.gv	dot	cmapx_np	15	0	0	unchanged
+url.gv	dot	imap	20	0	0	unchanged
+url.gv	dot	imap_np	14	0	0	unchanged
+url.gv	dot	svg	175	3	3	unchanged
+url.gv	fdp	cmapx	21	0	0	unchanged
+url.gv	fdp	cmapx_np	15	0	0	unchanged
+url.gv	fdp	imap	20	0	0	unchanged
+url.gv	fdp	imap_np	14	0	0	unchanged
+url.gv	fdp	svg	175	3	3	unchanged
+url.gv	osage	cmapx	21	0	0	unchanged
+url.gv	osage	cmapx_np	15	0	0	unchanged
+url.gv	osage	imap	20	0	0	unchanged
+url.gv	osage	imap_np	14	0	0	unchanged
+url.gv	osage	svg	175	3	3	unchanged
+unchanged=30
