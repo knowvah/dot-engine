@@ -1,0 +1,30 @@
+graph {
+	graph [bb="0,0,313.06,101.22",
+		forcelabels=false
+	];
+	node [label="\N",
+		shape=box,
+		xlabel="a very long exterior label"
+	];
+	a	[height=0.43921,
+		pos="167.72,66.423",
+		width=0.43921,
+		xlp="70.359,92.823"];
+	b	[height=0.43921,
+		pos="199.34,66.423",
+		width=0.43921,
+		xlp="242.7,92.823"];
+	c	[height=0.43921,
+		pos="167.72,34.8",
+		width=0.43921,
+		xlp="70.359,61.2"];
+	d	[height=0.43921,
+		pos="199.34,34.8",
+		width=0.43921,
+		xlp="101.98,8.4"];
+	a -- b;
+	a -- c;
+	b -- c;
+	c -- d;
+	a -- d;
+}

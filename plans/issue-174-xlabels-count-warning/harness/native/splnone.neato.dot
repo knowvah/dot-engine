@@ -1,0 +1,18 @@
+digraph {
+	graph [bb="0,0,122.13,161.48",
+		splines=none
+	];
+	node [label="\N"];
+	edge [xlabel=xl];
+	a	[height=0.5,
+		pos="27,143.48",
+		width=0.75];
+	b	[height=0.5,
+		pos="71.021,86.155",
+		width=0.75];
+	c	[height=0.5,
+		pos="95.125,18",
+		width=0.75];
+	a -> b;
+	b -> c	[label=lab];
+}

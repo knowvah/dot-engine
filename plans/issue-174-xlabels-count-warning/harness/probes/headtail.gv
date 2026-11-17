@@ -1,0 +1,1 @@
+digraph { forcelabels=false; edge [headlabel="hhhhhhhhhhhh" taillabel="tttttttttttt" xlabel="xxxxxxxxxxxx"]; a -> b; a -> b; a -> b; b -> a; }

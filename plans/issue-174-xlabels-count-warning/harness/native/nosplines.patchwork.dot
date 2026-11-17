@@ -1,0 +1,19 @@
+digraph {
+	graph [bb="0,0,44.722,44.722",
+		forcelabels=false,
+		splines=false
+	];
+	node [label="\N",
+		shape=box
+	];
+	edge [xlabel=xl];
+	a	[height=0.62113,
+		pos="11.181,22.361",
+		width=0.31056];
+	b	[height=0.62113,
+		pos="33.542,22.361",
+		width=0.31056];
+	a -> b;
+	a -> b;
+	a -> b;
+}
