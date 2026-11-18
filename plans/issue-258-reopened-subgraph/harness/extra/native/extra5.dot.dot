@@ -1,0 +1,18 @@
+graph G {
+	graph [bb="0,0,54,180"];
+	node [label="\N"];
+	subgraph p {
+		edge [color=red];
+		a	[height=0.5,
+			pos="27,162",
+			width=0.75];
+		b	[height=0.5,
+			pos="27,90",
+			width=0.75];
+		c	[height=0.5,
+			pos="27,18",
+			width=0.75];
+		a -- b	[pos="27,143.7 27,132.85 27,118.92 27,108.1"];
+		b -- c	[pos="27,71.697 27,60.846 27,46.917 27,36.104"];
+	}
+}

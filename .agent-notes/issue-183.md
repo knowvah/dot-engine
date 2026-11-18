@@ -39,7 +39,7 @@
   `attrs` (seeded), or the projection must copy the snapshot.
 - **Confidence**: High (`harness/prototype-a.diff` against `harness/prototype.diff`)
 
-## Observation: a re-opened subgraph is replaced, with a fresh snapshot
+## Observation: a re-opened subgraph was replaced, with a fresh snapshot (fixed by #258)
 - **Context**: extra probes for the path `unviewsubgraphsattr` covers
   (`harness/extra/probes/reopen{1..5}.gv`).
 - **Finding**: `subgraph p {..} .. subgraph p {..}` in one parent: cgraph's `agsubg` returns the
@@ -49,7 +49,10 @@
   native on the base. With `cluster` seeded, `reopen1` and `reopen3` also gain a cluster native
   does not have. No corpus input re-opens a named subgraph (`harness/extra/reopen-count.ts`: 0 of
   1320). Filed as #258; the rows as #259.
-- **Impact**: do not trust any seeded or snapshot-read value on a re-opened subgraph until #258.
+- **Impact**: fixed by #258 (2026-11-18): `processSubgraph` now builds a re-opened subgraph's
+  body into the existing `Graph`, so its seeded and snapshot-read values are the first-open ones,
+  as native's. See `.agent-notes/issue-258.md`. What stays off native on the re-open probes is
+  the non-empty pin line (#262), which reproduces with no re-open.
 - **Confidence**: High
 
 ## Observation: `irrelevant_subgraph` compares attribute strings, `bb` included

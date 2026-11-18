@@ -1,0 +1,1 @@
+graph G { subgraph p { a } subgraph { b } subgraph p { c } subgraph { d } }

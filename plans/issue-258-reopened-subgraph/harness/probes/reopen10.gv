@@ -1,0 +1,1 @@
+graph G { subgraph p { color=red; subgraph q {a} } subgraph p { color=blue; b } }

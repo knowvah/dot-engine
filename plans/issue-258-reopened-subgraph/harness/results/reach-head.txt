@@ -1,0 +1,30 @@
+# files 1320, model differs 0
+# probes
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen1.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen10.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen11.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen12.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen14.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen15.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen2.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen3.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen4.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen5.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen6.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen7.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen8.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen9.gv
+# files 15, model differs 14
+# extra probes
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra1.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra10.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra11.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra2.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra3.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra4.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra5.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra6.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra7.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra8.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/extra/probes/extra9.gv
+# files 11, model differs 11

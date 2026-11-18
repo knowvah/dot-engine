@@ -1,0 +1,23 @@
+graph G {
+	graph [bb="0,0,158,117.6",
+		label=M,
+		lheight=0.23,
+		lp="79,12.4",
+		lwidth=0.17
+	];
+	node [label="\N"];
+	subgraph cluster_p {
+		graph [bb="8,32.8,150,109.6",
+			label=L,
+			lheight=0.23,
+			lp="79,97.2",
+			lwidth=0.12
+		];
+		a	[height=0.5,
+			pos="43,58.8",
+			width=0.75];
+		b	[height=0.5,
+			pos="115,58.8",
+			width=0.75];
+	}
+}

@@ -1,0 +1,1 @@
+graph G { subgraph p { a } node [shape=box]; subgraph p { b } c }

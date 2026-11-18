@@ -1,0 +1,1 @@
+digraph G { x -> subgraph p { a } ; subgraph p { b } -> y [color=blue] }

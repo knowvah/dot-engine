@@ -1,0 +1,1 @@
+graph G { label=L; subgraph cluster_p { a } subgraph cluster_p { label=M; b } }

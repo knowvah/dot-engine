@@ -1,0 +1,1 @@
+graph G { cluster=true; subgraph p { subgraph q { a } } cluster=false; subgraph p { subgraph r { b } } }
