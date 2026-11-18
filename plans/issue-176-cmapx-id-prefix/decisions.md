@@ -1,6 +1,10 @@
 # Decisions: issue #176
 
-## Auto-confirmed (unattended)
+## Confirmed (planned unattended)
+
+Confirmed by the maintainer on 2026-11-18, after review against native 16.1.1:
+the probe re-run of #178-#180 and the 6f593c50..9336a55c bytediff
+classification.
 
 Planned by `/plan-mission --unattended next --branch chore/issue-queue` on
 2026-11-17. No issue was labelled `queue:planned`. #176 was the
