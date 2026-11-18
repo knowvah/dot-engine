@@ -258,3 +258,54 @@ describe('subgraph as edge endpoint is registered (rank-set + AGSEQ)', () => {
     expect(g.edges.map((e) => e.graphSeq)).toEqual([1, 2, 3]);
   });
 });
+
+// cgraph copies every graph attribute in effect in the parent into a subgraph
+// when it opens, so is_a_cluster's agget(g, "cluster") returns an inherited
+// value. The builder seeds it from the open-time snapshot into the subgraph's
+// own attrs. Cluster counts behind each case: native 16.1.1 on
+// plans/issue-183-inherited-cluster/harness/probes (r1, off, late, nestlate).
+// @see lib/cgraph/attr.c:agmakeattrs
+// @see lib/common/utils.c:is_a_cluster
+describe('graph attribute `cluster` is inherited', () => {
+  const CLUSTER = 'cluster';
+  const seeded = (g: Graph): boolean => g.seededAttrs?.has(CLUSTER) ?? false;
+
+  it("seeds the root's cluster=true into a subgraph and its nested subgraph", () => {
+    const g = parse('graph G { cluster=true; subgraph p { subgraph q { a } } }');
+    const p = g.subgraphs.get('p')!;
+    const q = p.subgraphs.get('q')!;
+    expect(p.attrs.get(CLUSTER)).toBe('true');
+    expect(seeded(p)).toBe(true);
+    expect(q.attrs.get(CLUSTER)).toBe('true');
+    expect(seeded(q)).toBe(true);
+  });
+
+  it("a subgraph's own cluster=false wins and is not marked seeded", () => {
+    const g = parse('graph G { cluster=true; subgraph p { cluster=false; subgraph q { a } } }');
+    const p = g.subgraphs.get('p')!;
+    expect(p.attrs.get(CLUSTER)).toBe('false');
+    expect(seeded(p)).toBe(false);
+  });
+
+  it("a nested subgraph takes its parent's own value, not the root's", () => {
+    const g = parse('graph G { cluster=true; subgraph p { cluster=false; subgraph q { a } } }');
+    const q = g.subgraphs.get('p')!.subgraphs.get('q')!;
+    expect(q.attrs.get(CLUSTER)).toBe('false');
+    expect(seeded(q)).toBe(true);
+  });
+
+  it('a root value set after the subgraph opened is not seeded', () => {
+    const g = parse('graph G { subgraph p { a } cluster=true; subgraph r { b } }');
+    const p = g.subgraphs.get('p')!;
+    expect(p.attrs.has(CLUSTER)).toBe(false);
+    expect(seeded(p)).toBe(false);
+  });
+
+  it('a value set mid-body reaches only the subgraphs opened after it', () => {
+    const g = parse('graph G { subgraph p { subgraph q { a } cluster=true; subgraph s { b } } }');
+    const p = g.subgraphs.get('p')!;
+    expect(p.subgraphs.get('q')!.attrs.has(CLUSTER)).toBe(false);
+    expect(p.subgraphs.get('s')!.attrs.get(CLUSTER)).toBe('true');
+    expect(seeded(p.subgraphs.get('s')!)).toBe(true);
+  });
+});

@@ -1,0 +1,1 @@
+digraph G { compound=true; cluster=true; subgraph p { a } subgraph r { b } a -> b [lhead=r, ltail=p] }

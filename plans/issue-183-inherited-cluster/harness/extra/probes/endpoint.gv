@@ -1,0 +1,1 @@
+digraph G { cluster=true; a -> { b c } }

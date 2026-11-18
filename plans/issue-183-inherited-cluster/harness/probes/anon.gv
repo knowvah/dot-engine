@@ -1,0 +1,1 @@
+graph G { cluster=yes; { a b } { c } a -- c }

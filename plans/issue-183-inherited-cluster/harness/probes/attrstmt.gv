@@ -1,0 +1,1 @@
+digraph G { graph [cluster=true, label="L"]; subgraph p { a -> b; label="P" } subgraph r { c } b -> c }

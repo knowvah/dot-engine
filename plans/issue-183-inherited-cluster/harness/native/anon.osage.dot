@@ -1,0 +1,22 @@
+graph G {
+	graph [bb="0,0,178,40",
+		cluster=yes
+	];
+	node [label="\N"];
+	{
+		graph [bb="0,0,116,40"];
+		a	[height=0.5,
+			pos="29,20",
+			width=0.75];
+		b	[height=0.5,
+			pos="87,20",
+			width=0.75];
+	}
+	{
+		graph [bb="120,0,178,40"];
+		c	[height=0.5,
+			pos="149,20",
+			width=0.75];
+	}
+	a -- c	[pos="56.23,20 75.869,20 102.26,20 121.88,20"];
+}

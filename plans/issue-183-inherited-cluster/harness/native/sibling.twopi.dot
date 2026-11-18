@@ -1,0 +1,25 @@
+digraph G {
+	graph [bb="0,0,54,180"];
+	node [label="\N"];
+	subgraph p {
+		graph [cluster=true];
+		a	[height=0.5,
+			pos="27,18",
+			width=0.75];
+	}
+	subgraph r {
+		b	[height=0.5,
+			pos="27,90",
+			width=0.75];
+	}
+	subgraph s {
+		graph [cluster=true];
+		subgraph t {
+			c	[height=0.5,
+				pos="27,162",
+				width=0.75];
+		}
+	}
+	a -> b	[pos="e,27,71.587 27,36.169 27,43.446 27,52.024 27,60.168"];
+	b -> c	[pos="e,27,143.59 27,108.17 27,115.45 27,124.02 27,132.17"];
+}

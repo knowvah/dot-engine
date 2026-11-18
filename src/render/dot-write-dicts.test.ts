@@ -193,7 +193,7 @@ describe('write_dict — local declaration vs inheritance (provenance)', () => {
   });
 
   it('keeps builder-seeded label-family inheritance invisible', () => {
-    // The builder seeds GRAPH_LABEL_INHERIT_KEYS into a subgraph's own attrs so
+    // The builder seeds GRAPH_INHERIT_SEED_KEYS into a subgraph's own attrs so
     // label inheritance survives the layout's cluster rebuilds; those carry no
     // dict symbol in C and must not print. Only `seededAttrs` distinguishes
     // them from the re-declaration above, which has the identical value.
@@ -204,6 +204,20 @@ describe('write_dict — local declaration vs inheritance (provenance)', () => {
   it('emits a locally re-declared label-family key', () => {
     const out = dot('digraph G { fontcolor="white"; { rank=same; fontcolor="white"; a; b } c; }');
     expect(subgGraphStmt(out)).toContain('fontcolor=white');
+  });
+
+  it('keeps a builder-seeded cluster invisible while the subgraph is a cluster', () => {
+    // Native 16.1.1 `dot -Tdot`: the root prints `cluster=true`, and the
+    // anonymous subgraph that inherits it prints only its cluster `bb`
+    // (`graph [bb="8,8,150,60"];`).
+    const out = dot('digraph G { cluster=true; { a; b } c; }');
+    expect(stmt(out, 'graph').join('\n')).toContain('cluster=true');
+    expect(subgGraphStmt(out)).toBe('\t\tgraph [bb="8,8,150,60"];');
+  });
+
+  it('emits a locally re-declared cluster', () => {
+    const out = dot('digraph G { cluster=true; { cluster=true; a; b } c; }');
+    expect(subgGraphStmt(out)).toContain('cluster=true');
   });
 });
 

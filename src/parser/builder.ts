@@ -74,11 +74,20 @@ function effectiveNodeDefaults(scope: Graph): Map<string, string> {
   return eff;
 }
 
-/** Graph-attr keys do_graph_label inherits; seeded into subgraph attrs so the
- *  inherited value survives the layout's cluster rebuilds (which copy attrs but
- *  not the snapshot). `labelloc`/`labeljust` drive cluster label position and
- *  inherit via C `agget` just like label/font — @see input.c:858-877. */
-const GRAPH_LABEL_INHERIT_KEYS = ['label', 'fontname', 'fontsize', 'fontcolor', 'labelloc', 'labeljust'] as const;
+/** Graph-attr keys seeded from the open-time snapshot into a subgraph's own
+ *  attrs, where C reads the inherited value through `agget`:
+ *  - the label family, for do_graph_label. `labelloc`/`labeljust` drive cluster
+ *    label position and inherit just like label/font — @see input.c:858-877;
+ *  - `cluster`, for is_a_cluster: a subgraph is a cluster when the value it
+ *    took from its parent at open is true.
+ *  Seeding, unlike a read of the snapshot, survives every copy that takes
+ *  `attrs` alone: the layout's cluster rebuilds and dot's pack projection
+ *  (C's agcopyattr copies the effective values there).
+ *  @see lib/common/utils.c:is_a_cluster
+ *  @see lib/cgraph/attr.c:agmakeattrs */
+const GRAPH_INHERIT_SEED_KEYS = [
+  'label', 'fontname', 'fontsize', 'fontcolor', 'labelloc', 'labeljust', 'cluster',
+] as const;
 
 /**
  * Collect the graph-attribute defaults in effect at `scope`: walk scope -> root,
@@ -310,16 +319,18 @@ export class StmtProcessor {
     // subgraph — matching cgraph's parse-time defval copy (order-sensitive).
     sg.graphDefaultsSnapshot = effectiveGraphDefaults(graph);
     buildGraph(stmt.stmts, sg, root, directed, this);
-    // Seed the order-correct inherited label-family defaults into the subgraph's
-    // OWN attrs (body wins) so they survive the layout's cluster rebuilds, which
-    // copy attrs but not the snapshot. Mirrors cgraph's agsubg defval copy; kept
-    // to the keys do_graph_label reads so the blast radius stays in label render.
+    // Seed the order-correct inherited defaults into the subgraph's OWN attrs
+    // (body wins) so they survive the copies that take attrs but not the
+    // snapshot (cluster rebuilds, dot's pack projection). Mirrors cgraph's
+    // agsubg defval copy; kept to the keys do_graph_label and is_a_cluster
+    // read, so the blast radius stays in label render and cluster membership.
     // @see lib/common/input.c:do_graph_label (agget label/font*)
+    // @see lib/common/utils.c:is_a_cluster (agget cluster)
     // The seeded keys are recorded so the -Tdot serializer can tell them from a
     // genuine local declaration: cgraph gives a local declaration its own dict
     // symbol (printed by write_dict) even when the value equals the inherited
     // one, whereas a seeded value must stay invisible. @see src/render/dot.ts
-    for (const key of GRAPH_LABEL_INHERIT_KEYS) {
+    for (const key of GRAPH_INHERIT_SEED_KEYS) {
       const v = sg.graphDefaultsSnapshot.get(key);
       if (v !== undefined && !sg.attrs.has(key)) {
         sg.attrs.set(key, v);

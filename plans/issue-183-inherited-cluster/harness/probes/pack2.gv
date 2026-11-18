@@ -1,0 +1,1 @@
+digraph G { pack=true; subgraph p { cluster=true; subgraph q { a -> b } e } subgraph r { c -> d } }
