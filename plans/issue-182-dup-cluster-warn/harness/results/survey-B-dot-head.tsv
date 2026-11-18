@@ -1,0 +1,18 @@
+input	native	natWarn	baseWarn	headWarn	stdout	baseErr	headErr
+../doc/dotguide/compound.dot	ok	0	0	0	same	same	same
+../share/examples/world.gv	TIMEOUT	0	0	0	same(PORT TIMEOUT)	same	same
+1332.dot	exit1	0	0	0	same	DIFF	DIFF
+1435.dot	ok	0	0	0	same	DIFF	DIFF
+1453.dot	ok	0	0	0	same	same	same
+1879-2.dot	ok	0	0	0	same	same	same
+1879.dot	ok	0	0	0	same	DIFF	DIFF
+1896.dot	ok	0	0	0	same	same	same
+1949.dot	ok	0	0	0	same	same	same
+2242.dot	ok	0	0	0	same	same	same
+2592.dot	ok	0	0	0	same	same	same
+graphs/b145.gv	ok	0	0	0	same	DIFF	DIFF
+graphs/compound.gv	ok	0	0	0	same	same	same
+graphs/decorate.gv	ok	0	0	0	same	same	same
+linux.x86/compound_dot.gv	ok	0	0	0	same	same	same
+macosx/compound_dot.gv	ok	0	0	0	same	same	same
+nshare/compound_dot.gv	ok	0	0	0	same	same	same

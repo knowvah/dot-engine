@@ -1,0 +1,9 @@
+digraph G {
+  compound=true pack=true
+  subgraph cluster_a { subgraph cluster_x { a } }
+  subgraph cluster_b { subgraph cluster_x { b } }
+  a -> b
+  subgraph cluster_c { subgraph cluster_y { c } }
+  subgraph cluster_d { subgraph cluster_y { d } }
+  c -> d
+}

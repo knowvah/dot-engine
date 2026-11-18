@@ -26,8 +26,6 @@ const DOT_FIXTURES = ['dup', 'dup3', 'attr', 'lay'] as const;
 /** The neato plugin's engines whose stderr is the json writer's alone. */
 const OTHER_ENGINES: readonly EngineName[] = ['neato', 'circo', 'twopi', 'osage', 'patchwork', 'sfdp'];
 const DUPLICATE = (name: string): string => `Warning: Duplicate cluster name "${name}"`;
-/** fillMap's warning, which the port does not print yet (issue #182). */
-const FILLMAP_PREFIX = 'Warning: Two clusters named ';
 
 /** Native's stderr lines for one harness case (trailing empty line dropped). */
 function nativeLines(fixture: string, engine: string, format: string): string[] {
@@ -103,12 +101,13 @@ describe('json duplicate cluster name warning (other engines)', () => {
     expect(stderrOf('dup', format, engine).lines).toEqual(native);
   });
 
-  it.each(JSON_FORMATS)('dup -Kfdp -T%s prints native\'s stderr minus the fillMap line', (format) => {
-    // Native's fdp layout first prints fillMap's `Two clusters named cluster_x -
-    // the second will be ignored`; the port lacks that warning (issue #182).
+  it.each(JSON_FORMATS)('dup -Kfdp -T%s prints native\'s stderr', (format) => {
+    // fdp's layout prints fillMap's `Two clusters named cluster_x - the second
+    // will be ignored` before the json writer's own warning.
     const native = nativeLines('dup', 'fdp', format);
-    expect(native[0]!.startsWith(FILLMAP_PREFIX)).toBe(true);
-    expect(stderrOf('dup', format, 'fdp').lines).toEqual(native.slice(1));
+    expect(native).toHaveLength(2);
+    expect(native[1]).toBe(DUPLICATE('cluster_x'));
+    expect(stderrOf('dup', format, 'fdp').lines).toEqual(native);
   });
 });
 

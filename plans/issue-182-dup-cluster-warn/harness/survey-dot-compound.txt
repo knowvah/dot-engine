@@ -1,0 +1,17 @@
+../doc/dotguide/compound.dot
+../share/examples/world.gv
+1332.dot
+1435.dot
+1453.dot
+1879-2.dot
+1879.dot
+1896.dot
+1949.dot
+2242.dot
+2592.dot
+graphs/b145.gv
+graphs/compound.gv
+graphs/decorate.gv
+linux.x86/compound_dot.gv
+macosx/compound_dot.gv
+nshare/compound_dot.gv

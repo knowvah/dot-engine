@@ -1,0 +1,26 @@
+graph G {
+	graph [bb="0,0,196,132"];
+	node [label="\N"];
+	subgraph cluster_a {
+		graph [bb="8,56,94,124"];
+		subgraph cluster_x {
+			graph [bb="16,64,86,116"];
+			a	[height=0.5,
+				pos="51,90",
+				width=0.75];
+		}
+	}
+	subgraph cluster_b {
+		graph [bb="102,56,188,124"];
+		subgraph cluster_x {
+			graph [bb="110,64,180,116"];
+			b	[height=0.5,
+				pos="145,90",
+				width=0.75];
+		}
+	}
+	cluster_x	[height=0.5,
+		pos="51,18",
+		width=1.2898];
+	a -- cluster_x	[pos="51,71.697 51,60.846 51,46.917 51,36.104"];
+}

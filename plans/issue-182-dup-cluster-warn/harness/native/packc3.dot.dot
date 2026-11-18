@@ -1,0 +1,45 @@
+digraph G {
+	graph [bb="0,0,226,144",
+		compound=true,
+		pack=true
+	];
+	node [label="\N"];
+	subgraph cluster_a {
+		graph [bb="0,76,86,144"];
+		subgraph cluster_x {
+			graph [bb="8,84,78,136"];
+			a	[height=0.5,
+				pos="43,110",
+				width=0.75];
+		}
+	}
+	subgraph cluster_b {
+		graph [bb="0,0,86,68"];
+		subgraph cluster_x {
+			graph [bb="8,8,78,60"];
+			b	[height=0.5,
+				pos="43,34",
+				width=0.75];
+		}
+	}
+	subgraph cluster_c {
+		graph [bb="140,76,226,144"];
+		subgraph cluster_y {
+			graph [bb="148,84,218,136"];
+			c	[height=0.5,
+				pos="183,110",
+				width=0.75];
+		}
+	}
+	subgraph cluster_d {
+		graph [bb="140,0,226,68"];
+		subgraph cluster_y {
+			graph [bb="148,8,218,60"];
+			d	[height=0.5,
+				pos="183,34",
+				width=0.75];
+		}
+	}
+	a -> b	[pos="e,43,52.326 43,91.837 43,83.491 43,73.234 43,63.741"];
+	c -> d	[pos="e,183,52.326 183,91.837 183,83.491 183,73.234 183,63.741"];
+}

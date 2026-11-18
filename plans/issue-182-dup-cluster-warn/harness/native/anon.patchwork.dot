@@ -1,0 +1,48 @@
+strict digraph {
+	graph [bb="0,0,83.667,83.667"];
+	node [label="\N",
+		shape=box
+	];
+	{
+		graph [bb="0.00029881,0.00029881,55.778,35.857",
+			cluster=true,
+			label=x
+		];
+		a	[height=0.49801,
+			pos="13.945,17.929",
+			width=0.38734];
+		b	[height=0.49801,
+			pos="41.833,17.929",
+			width=0.38734];
+		a -> b;
+	}
+	{
+		graph [bb="0.00029881,35.857,83.666,83.666",
+			cluster=true,
+			label=y
+		];
+		c	[height=0.33201,
+			pos="20.917,71.714",
+			width=0.58101];
+		d	[height=0.33201,
+			pos="20.917,47.809",
+			width=0.58101];
+		e	[height=0.33201,
+			pos="62.75,71.714",
+			width=0.58101];
+		f	[height=0.33201,
+			pos="62.75,47.809",
+			width=0.58101];
+		c -> d;
+		e -> f;
+	}
+	{
+		graph [bb="55.778,0.00029881,83.666,35.857",
+			cluster=true,
+			label=z
+		];
+		g	[height=0.49801,
+			pos="69.722,17.929",
+			width=0.38734];
+	}
+}

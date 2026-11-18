@@ -1,0 +1,141 @@
+diff --git a/src/common/clust-map.ts b/src/common/clust-map.ts
+new file mode 100644
+index 00000000..dcc10c09
+--- /dev/null
++++ b/src/common/clust-map.ts
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: EPL-2.0
++
++/**
++ * The flat cluster-name map dot's compound edges and fdp's cluster edges look
++ * cluster endpoints up in. cgraph keeps subgraph names per parent, so two
++ * clusters in the tree can share a name; C keeps the first and warns.
++ *
++ * @see lib/common/utils.c:fillMap, mkClustMap (1498-1525)
++ */
++
++import type { Graph } from '../model/graph.js';
++import { LOCALNAMEPREFIX } from '../model/cgraph-ops.js';
++import { agwarningf } from './agerr.js';
++
++/**
++ * fillMap's state across the recursion. `anonKeyed` stands for C's key alias:
++ * agnameof returns one static buffer for every anonymous graph, and fillMap
++ * stores that pointer as the key, so once an anonymous cluster is in the map,
++ * every later anonymous cluster's dtmatch finds it.
++ * @see lib/cgraph/id.c:agnameof (static buf, 161-164)
++ */
++interface ClustMapState { map: Map<string, Graph>; anonKeyed: boolean }
++
++/**
++ * Map every cluster's name to its subgraph, preorder over the cluster tree
++ * (info.clust, 0-based here for C's GD_clust[1..n]). A second cluster with a
++ * name already in the map is ignored, with a warning.
++ * @see lib/common/utils.c:fillMap
++ */
++function fillMap(g: Graph, st: ClustMapState): void {
++  const n = g.info.n_cluster ?? 0;
++  for (let c = 0; c < n; c++) {
++    const cl = g.info.clust![c]!;
++    const s = cl.name;
++    const anon = s.startsWith(LOCALNAMEPREFIX);
++    if (st.map.has(s) || (anon && st.anonKeyed)) {
++      agwarningf(`Two clusters named ${s} - the second will be ignored`);
++    } else {
++      st.map.set(s, cl);
++      if (anon) st.anonKeyed = true;
++    }
++    fillMap(cl, st);
++  }
++}
++
++/**
++ * Build the name-to-cluster map for g's cluster tree. Assumes g's cluster
++ * tree (info.n_cluster, info.clust) is already built.
++ * @see lib/common/utils.c:mkClustMap
++ */
++export function mkClustMap(g: Graph): Map<string, Graph> {
++  const st: ClustMapState = { map: new Map<string, Graph>(), anonKeyed: false };
++  fillMap(g, st);
++  return st.map;
++}
+diff --git a/src/layout/dot/compound.ts b/src/layout/dot/compound.ts
+index 03e4cfa1..e66065a2 100644
+--- a/src/layout/dot/compound.ts
++++ b/src/layout/dot/compound.ts
+@@ -15,6 +15,7 @@ import {
+ import { arrowEndClip, tailArrowEndClip, arrowClipLength, distFused } from './edge-route-clip.js';
+ import { arrowDrawOpsForEnd, edgeArrowName, edgeArrowsize } from './edge-route-arrow.js';
+ import { edgePenwidthAttr, edgeRenderPenwidth } from './edge-route-helpers.js';
++import { mkClustMap } from '../../common/clust-map.js';
+ 
+ // Re-export geometry helpers so existing callers (tests) import from one place.
+ export {
+@@ -24,27 +25,6 @@ export {
+   tryLeftSide, tryRightSide, tryBottomSide, tryTopSide, boxIntersectf,
+ } from './compound-clip.js';
+ 
+-// ---------------------------------------------------------------------------
+-// Cluster map
+-// ---------------------------------------------------------------------------
+-
+-/** Recursively populate name→cluster map. @see lib/common/utils.c:fillMap */
+-export function fillClustMap(g: Graph, map: Map<string, Graph>): void {
+-  const nc = g.info.n_cluster ?? 0;
+-  for (let c = 1; c <= nc; c++) {
+-    const cl = g.info.clust![c - 1];
+-    if (!map.has(cl.name)) map.set(cl.name, cl);
+-    fillClustMap(cl, map);
+-  }
+-}
+-
+-/** Build a name→cluster map for all clusters reachable from g. @see lib/common/utils.c:mkClustMap */
+-export function mkClustMap(g: Graph): Map<string, Graph> {
+-  const map = new Map<string, Graph>();
+-  fillClustMap(g, map);
+-  return map;
+-}
+-
+ // ---------------------------------------------------------------------------
+ // ClipState — shared between head/tail clip helpers
+ // ---------------------------------------------------------------------------
+diff --git a/src/layout/fdp/cluster-edges.ts b/src/layout/fdp/cluster-edges.ts
+index a337eaf4..a2d7d39b 100644
+--- a/src/layout/fdp/cluster-edges.ts
++++ b/src/layout/fdp/cluster-edges.ts
+@@ -27,33 +27,12 @@ import type { Graph } from '../../model/graph.js';
+ import type { Node } from '../../model/node.js';
+ import { Edge } from '../../model/edge.js';
+ import { agnode, agsubnode } from '../../model/cgraph-ops.js';
++import { mkClustMap } from '../../common/clust-map.js';
+ 
+ // ---------------------------------------------------------------------------
+-// Cluster name map (mkClustMap / fillMap / findCluster)
++// Cluster name lookup (mapc); the map is common/clust-map.ts
+ // ---------------------------------------------------------------------------
+ 
+-/**
+- * Map every cluster's name to its subgraph, recursing the cluster tree
+- * (info.clust, built by mkClusters). A duplicate name keeps the first.
+- * @see lib/common/utils.c:fillMap
+- */
+-function fillMap(g: Graph, map: Map<string, Graph>): void {
+-  const n = g.info.n_cluster ?? 0;
+-  for (let c = 0; c < n; c++) {
+-    const cl = g.info.clust![c]!;
+-    const s = cl.name;
+-    if (!map.has(s)) map.set(s, cl);
+-    fillMap(cl, map);
+-  }
+-}
+-
+-/** @see lib/common/utils.c:mkClustMap */
+-function mkClustMap(g: Graph): Map<string, Graph> {
+-  const map = new Map<string, Graph>();
+-  fillMap(g, map);
+-  return map;
+-}
+-
+ /**
+  * A node maps to a cluster iff its name starts with "cluster" AND a cluster of
+  * that exact name exists. @see lib/common/utils.c:mapc
