@@ -44,8 +44,9 @@
 - **Finding**: native `-Tjson0` runs `attach_attrs` in `json_begin_graph` and prints `bb` on the
   graph and each cluster and `pos` on each edge; the port's json0 prints neither, on a root render
   too (`digraph{a->b}`), on the queue's merge base with main as well. Filed as #184, not diagnosed.
-- **Impact**: json0 has no corpus or golden comparison that would have shown this; do not use a
-  json0 `compareJson` against native as a pass/fail check until #184 is done.
+- **Impact**: json0 has no corpus or golden comparison that would have shown this. Fixed by #184
+  (2026-11-17): json0 attaches before it writes, and a json0 `compareJson` against native is a
+  usable pass/fail check again (`src/render/json0-attach.test.ts`; see `.agent-notes/issue-184.md`).
 - **Confidence**: High (native and port output of `digraph{a->b}`)
 
 ## Observation: `isACluster` ignores an inherited `cluster` attribute

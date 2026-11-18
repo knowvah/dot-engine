@@ -1,0 +1,5 @@
+digraph G {
+  subgraph cluster_o { o1; subgraph cluster_i { i1; i2 } subgraph plain { p1 } }
+  subgraph s { s1 -> s2 }
+  o1 -> i1; i2 -> p1; p1 -> s1
+}

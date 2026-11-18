@@ -1,0 +1,7 @@
+graph G {
+  compound=true
+  subgraph cluster_a { a1; a2 }
+  subgraph cluster_b { b1 }
+  cluster_a -- cluster_b
+  a1 -- b1
+}

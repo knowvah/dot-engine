@@ -6,8 +6,11 @@
  * proxy nodes `__<i>:<cluster>` never print. The port's writers otherwise read
  * the proxies as they print and undo at the next layout (`layout-reset.ts`);
  * json prints from the graph itself, so it takes the undo at C's point, through
- * the same helper. A graph with no cluster edges keeps the usual order (attach
- * after the write): nothing there can differ.
+ * the same helper. json0 attaches before it writes on every graph: it prints
+ * what the write-back stored (`bb`, an edge's `pos`) and has nothing else to
+ * take them from. json, on a graph with no cluster edges, defers its held
+ * write-back until after the write: its xdot draw lookup overlays the same
+ * values, so nothing there can differ.
  *
  * Also the json cluster map: write_graph's top pass numbers the subgraphs and
  * maps each cluster's name to its gid (label_subgs, insert), which is where a
@@ -27,8 +30,9 @@ import type { Node } from '../model/node.js';
 
 /**
  * With cluster edges on `g`: runs `attach` (attach_attrs' write-back) and the
- * undo now, and returns a no-op. Otherwise returns `attach`, for the caller to
- * run after the write.
+ * undo now, and returns a no-op. Otherwise returns `attach` uncalled: json runs
+ * it after the write (its draw lookup overlays the values), and json0 runs it
+ * at once, before the write.
  * @see lib/common/output.c:416 attach_attrs
  */
 export function attachBeforeWriteWithClusterEdges(g: Graph, attach: () => void): () => void {

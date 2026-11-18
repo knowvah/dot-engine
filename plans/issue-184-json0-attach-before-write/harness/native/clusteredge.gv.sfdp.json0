@@ -1,0 +1,80 @@
+{
+  "name": "G",
+  "directed": false,
+  "strict": false,
+  "bb": "0,0,483.62,120",
+  "compound": "true",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "cluster_a",
+      "compound": "true",
+      "_gvid": 0,
+      "nodes": [
+        2,3
+      ]
+    },
+    {
+      "name": "cluster_b",
+      "compound": "true",
+      "_gvid": 1,
+      "nodes": [
+        4
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "a1",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "267,102",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "a2",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "171,78",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 4,
+      "name": "b1",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "456.62,102",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 5,
+      "name": "cluster_a",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "45.892,18",
+      "width": "1.2748"
+    },
+    {
+      "_gvid": 6,
+      "name": "cluster_b",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "304.07,18",
+      "width": "1.2898"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 1,
+      "tail": 5,
+      "head": 6,
+      "pos": "92.049,18 138.75,18 210.57,18 257.44,18"
+    },
+    {
+      "_gvid": 0,
+      "tail": 2,
+      "head": 4,
+      "pos": "294.17,102 330.11,102 393.12,102 429.19,102"
+    }
+  ]
+}

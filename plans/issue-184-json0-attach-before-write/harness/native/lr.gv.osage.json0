@@ -1,0 +1,70 @@
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "bb": "0,0,174,64.8",
+  "label": "",
+  "rankdir": "LR",
+  "rotate": "90",
+  "_subgraph_cnt": 1,
+  "objects": [
+    {
+      "name": "cluster_x",
+      "bb": "0,0,116,64.8",
+      "label": "X",
+      "lheight": "0.23",
+      "lp": "58,52.4",
+      "lwidth": "0.14",
+      "rankdir": "LR",
+      "rotate": "90",
+      "_gvid": 0,
+      "nodes": [
+        1,2
+      ],
+      "edges": [
+        0
+      ]
+    },
+    {
+      "_gvid": 1,
+      "name": "a",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "29,20",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 2,
+      "name": "b",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "87,20",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "c",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "147,32",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 1,
+      "head": 2,
+      "label": "",
+      "pos": "e,59.831,20 56.302,20 56.449,20 56.596,20 56.743,20"
+    },
+    {
+      "_gvid": 1,
+      "tail": 2,
+      "head": 3,
+      "label": "bc",
+      "lp": "116.68,16.876",
+      "pos": "e,120.76,26.752 113.14,25.228 113.3,25.26 113.46,25.292 113.62,25.323"
+    }
+  ]
+}

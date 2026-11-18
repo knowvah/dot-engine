@@ -1,0 +1,4 @@
+digraph G {
+  splines=ortho
+  a -> b; a -> c; b -> d; c -> d [label=cd]
+}

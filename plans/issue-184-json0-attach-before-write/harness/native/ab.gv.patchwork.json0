@@ -1,0 +1,34 @@
+{
+  "name": "%1",
+  "directed": true,
+  "strict": false,
+  "bb": "0,0,44.722,44.722",
+  "_subgraph_cnt": 0,
+  "objects": [
+    {
+      "_gvid": 0,
+      "name": "a",
+      "height": "0.62113",
+      "label": "\\N",
+      "pos": "11.181,22.361",
+      "shape": "box",
+      "width": "0.31056"
+    },
+    {
+      "_gvid": 1,
+      "name": "b",
+      "height": "0.62113",
+      "label": "\\N",
+      "pos": "33.542,22.361",
+      "shape": "box",
+      "width": "0.31056"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 0,
+      "head": 1
+    }
+  ]
+}

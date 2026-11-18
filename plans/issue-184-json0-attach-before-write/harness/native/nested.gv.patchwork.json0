@@ -1,0 +1,122 @@
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "bb": "0,0,77.46,77.46",
+  "_subgraph_cnt": 4,
+  "objects": [
+    {
+      "name": "cluster_o",
+      "bb": "0.00032275,25.82,77.46,77.46",
+      "_gvid": 0,
+      "subgraphs": [
+        1,
+2
+      ],
+      "nodes": [
+        4,5,6,7
+      ]
+    },
+    {
+      "name": "cluster_i",
+      "bb": "0.00032275,25.82,38.73,77.46",
+      "_gvid": 1,
+      "nodes": [
+        5,6
+      ]
+    },
+    {
+      "name": "plain",
+      "_gvid": 2,
+      "nodes": [
+        7
+      ]
+    },
+    {
+      "name": "s",
+      "_gvid": 3,
+      "nodes": [
+        8,9
+      ],
+      "edges": [
+        3
+      ]
+    },
+    {
+      "_gvid": 4,
+      "name": "o1",
+      "height": "0.35861",
+      "label": "\\N",
+      "pos": "58.095,64.55",
+      "shape": "box",
+      "width": "0.53791"
+    },
+    {
+      "_gvid": 5,
+      "name": "i1",
+      "height": "0.35861",
+      "label": "\\N",
+      "pos": "19.365,64.55",
+      "shape": "box",
+      "width": "0.53791"
+    },
+    {
+      "_gvid": 6,
+      "name": "i2",
+      "height": "0.35861",
+      "label": "\\N",
+      "pos": "19.365,38.73",
+      "shape": "box",
+      "width": "0.53791"
+    },
+    {
+      "_gvid": 7,
+      "name": "p1",
+      "height": "0.35861",
+      "label": "\\N",
+      "pos": "58.095,38.73",
+      "shape": "box",
+      "width": "0.53791"
+    },
+    {
+      "_gvid": 8,
+      "name": "s1",
+      "height": "0.35861",
+      "label": "\\N",
+      "pos": "19.365,12.91",
+      "shape": "box",
+      "width": "0.53791"
+    },
+    {
+      "_gvid": 9,
+      "name": "s2",
+      "height": "0.35861",
+      "label": "\\N",
+      "pos": "58.095,12.91",
+      "shape": "box",
+      "width": "0.53791"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 3,
+      "tail": 8,
+      "head": 9
+    },
+    {
+      "_gvid": 0,
+      "tail": 4,
+      "head": 5
+    },
+    {
+      "_gvid": 1,
+      "tail": 6,
+      "head": 7
+    },
+    {
+      "_gvid": 2,
+      "tail": 7,
+      "head": 8
+    }
+  ]
+}

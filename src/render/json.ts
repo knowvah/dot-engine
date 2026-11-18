@@ -518,8 +518,9 @@ function buildNodeObject(n: Node, ctx: BuildCtx): JObj {
   const eff = nodeEffectiveAttrs(n);
   const xd = ctx.draws?.node.get(n.name);
   if (xd === undefined) {
-    // Fallback (json0 / hand-built graph): no xdot render supplies the layout
-    // attrs, so take the strings attach_attrs writes (output.c:296-309).
+    // Fallback for a json render whose xdot re-render failed (a hand-built
+    // graph): take the strings attach_attrs writes (output.c:296-309). json0
+    // has no draw lookup either, so it repeats what attachAttrs just stored.
     const layout = nodeLayoutAttrs(n);
     eff.set('pos', layout.pos).set('width', layout.width).set('height', layout.height);
   }
@@ -682,10 +683,16 @@ export class Json0Renderer extends JsonRendererBase implements RendererPlugin {
 
   beginGraph(_g: Graph, _job: RenderJob): void { /* no-op */ }
 
-  /** C's json_begin_graph runs attach_attrs; buildJson overlays the same values. */
+  /**
+   * Attach, then write: C's json_begin_graph runs attach_attrs (which ends by
+   * undoing cluster edges) before json_end_graph writes, and json0 prints what
+   * that stored. Nothing overlays `bb` or an edge's `pos` here, as json's xdot
+   * draw lookup does, so the write-back cannot wait until after the write.
+   * @see plugin/core/gvrender_core_json.c:json_begin_graph
+   */
   endGraph(g: Graph, job: RenderJob): void {
-    const later = attachFirst(g, () => attachAttrs(g));
-    job.write(buildJson(g, false)); later();
+    attachFirst(g, () => attachAttrs(g))();
+    job.write(buildJson(g, false));
   }
 }
 

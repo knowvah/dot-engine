@@ -192,8 +192,8 @@ describe('a subgraph render numbers the rendered subgraph too', () => {
     expect(lines).toEqual([DUPLICATE('cluster_x')]);
   });
 
-  it('sub -Tjson of subgraph s equals native (json0 lacks bb and pos there: issue #184)', () => {
-    const { out } = subgraphStderrOf('sub', 's', 'json');
-    expect(compareJson(out, read('out/sub.s.json')).diffs).toEqual([]);
+  it.each(JSON_FORMATS)('sub -T%s of subgraph s equals native', (format) => {
+    const { out } = subgraphStderrOf('sub', 's', format);
+    expect(compareJson(out, read(`out/sub.s.${format}`)).diffs).toEqual([]);
   });
 });

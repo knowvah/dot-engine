@@ -1,0 +1,67 @@
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "bb": "0,0,54.773,54.773",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "s",
+      "bb": "0,0,1,1",
+      "_gvid": 0,
+      "nodes": [
+        2,3
+      ],
+      "edges": [
+        0
+      ]
+    },
+    {
+      "name": "cluster_c",
+      "bb": "0.00045643,18.258,27.387,54.773",
+      "_gvid": 1,
+      "nodes": [
+        4
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "a",
+      "height": "0.50715",
+      "label": "\\N",
+      "pos": "41.08,36.515",
+      "shape": "box",
+      "width": "0.38036"
+    },
+    {
+      "_gvid": 3,
+      "name": "b",
+      "height": "0.25358",
+      "label": "\\N",
+      "pos": "27.387,9.1292",
+      "shape": "box",
+      "width": "0.76073"
+    },
+    {
+      "_gvid": 4,
+      "name": "c",
+      "height": "0.50715",
+      "label": "\\N",
+      "pos": "13.694,36.515",
+      "shape": "box",
+      "width": "0.38036"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 2,
+      "head": 3
+    },
+    {
+      "_gvid": 1,
+      "tail": 3,
+      "head": 4
+    }
+  ]
+}

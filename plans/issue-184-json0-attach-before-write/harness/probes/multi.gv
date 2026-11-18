@@ -1,0 +1,4 @@
+digraph G {
+  a -> b; a -> b; b -> a; a -> a
+  subgraph cluster_q { label="Q"; labelloc=b; b }
+}

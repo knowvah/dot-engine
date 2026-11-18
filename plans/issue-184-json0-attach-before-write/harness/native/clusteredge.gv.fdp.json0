@@ -1,0 +1,66 @@
+{
+  "name": "G",
+  "directed": false,
+  "strict": false,
+  "bb": "0,0,215.63,106.49",
+  "compound": "true",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "cluster_a",
+      "bb": "1.5987e-14,0,135.43,106.49",
+      "compound": "true",
+      "_gvid": 0,
+      "nodes": [
+        2,3
+      ]
+    },
+    {
+      "name": "cluster_b",
+      "bb": "145.63,10.375,215.63,62.375",
+      "compound": "true",
+      "_gvid": 1,
+      "nodes": [
+        4
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "a1",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "35,26",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "a2",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "100.43,80.489",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 4,
+      "name": "b1",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "180.63,36.375",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 2,
+      "head": 4,
+      "pos": "62.051,27.927 88.208,29.791 127.62,32.598 153.73,34.458"
+    },
+    {
+      "_gvid": 1,
+      "tail": 0,
+      "head": 1,
+      "pos": "135.68,43.091 138.95,42.602 142.17,42.122 145.28,41.656"
+    }
+  ]
+}
