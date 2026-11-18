@@ -1,0 +1,214 @@
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "_draw_": 
+  [
+    {
+      "op": "c",
+      "grad": "none",
+      "color": "#fffffe00"
+    },
+    {
+      "op": "C",
+      "grad": "none",
+      "color": "#ffffff"
+    },
+    {
+      "op": "P",
+      "points": [[0.000,0.000],[0.000,86.000],[243.620,86.000],[243.620,0.000]]
+    }
+  ],
+  "bb": "0,0,243.62,86",
+  "label": "",
+  "layers": "l1:l2:l3",
+  "layerselect": "l1",
+  "xdotversion": "1.7",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "cluster_c",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#ff0000"
+        },
+        {
+          "op": "p",
+          "points": [[0.000,0.000],[0.000,1.000],[1.000,1.000],[1.000,0.000]]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times"
+        }
+      ],
+      "label": "C",
+      "layers": "l1:l2:l3",
+      "layerselect": "l1",
+      "_gvid": 0,
+      "nodes": [
+        3
+      ]
+    },
+    {
+      "name": "cluster_d",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#00ff00"
+        },
+        {
+          "op": "p",
+          "points": [[0.000,0.000],[0.000,1.000],[1.000,1.000],[1.000,0.000]]
+        }
+      ],
+      "label": "",
+      "layers": "l1:l2:l3",
+      "layerselect": "l1",
+      "_gvid": 1,
+      "nodes": [
+        4
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "a",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [27.000,18.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [27.000,13.800],
+          "align": "c",
+          "width": 6.210,
+          "text": "a"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "layer": "l1",
+      "pos": "27,18",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "b",
+      "height": "0.5",
+      "label": "\\N",
+      "layer": "l2",
+      "pos": "216.62,18",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 4,
+      "name": "c",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [137.000,68.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [137.000,63.800],
+          "align": "c",
+          "width": 6.210,
+          "text": "c"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "layer": "l1",
+      "pos": "137,68",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 2,
+      "head": 3,
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "b",
+          "points": [[54.170,18.000],[86.600,18.000],[141.070,18.000],[177.910,18.000]]
+        }
+      ],
+      "_hdraw_": 
+      [
+        {
+          "op": "S",
+          "style": "solid"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "C",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "P",
+          "points": [[177.680,21.500],[187.680,18.000],[177.680,14.500]]
+        }
+      ],
+      "pos": "e,189.19,18 54.168,18 86.602,18 141.07,18 177.91,18"
+    }
+  ]
+}

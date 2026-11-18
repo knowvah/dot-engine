@@ -25,7 +25,7 @@ import { resolveEdgeAnchor, resolveObjAnchor, beginAnchorIf } from './anchor.js'
 import type { ShapeDesc, TextlabelT } from '../common/types.js';
 import { type LayerInfo, parseLayers } from '../common/layers.js';
 import { RenderJob, EMIT_CLUSTERS_LAST, createObjState, ObjType, EmitState } from './job.js';
-import { walkNodesAndEdges } from './emit-walk.js';
+import { walkNodesAndEdges, clusterShown } from './emit-walk.js';
 import { initBb } from '../common/emit-bb.js';
 import { firstLayer, nextLayer, numPhysicalLayers, validLayer } from './first-layer.js';
 import { polyInit } from '../common/poly-init.js';
@@ -305,13 +305,13 @@ function drawClusterInScheme(sg: Graph, renderer: RendererPlugin, job: RenderJob
  * completes before recursing; sub-clusters are separate pushes on a clean stack.
  * @see lib/common/emit.c:emit_clusters:3777
  */
-function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): void {
+function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob, info?: LayerInfo): void {
   // EMIT_CLUSTERS_LAST (map device): recurse into sub-clusters BEFORE emitting
   // this cluster's anchor, so an inner cluster's <area> precedes its parent's
   // (child-first). Drawing devices recurse AFTER (parent-first), below.
   // @see lib/common/emit.c:emit_clusters (3795 vs 3940)
   const clustersLast = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
-  if (clustersLast) renderClusters(sg, renderer, job);
+  if (clustersLast) renderClusters(sg, renderer, job, info);
   // push_obj_state in emit_begin_cluster (line 3762), before beginCluster
   const obj = createObjState(ObjType.Cluster);
   obj.emitState = EmitState.CDraw;
@@ -328,7 +328,7 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): 
   // C recurses AFTER emit_end_cluster (line 3940-3941): sub-clusters are drawn
   // with the parent already popped — each has its own independent push/pop.
   // The map device recursed first (child-first), above.
-  if (!clustersLast) renderClusters(sg, renderer, job);
+  if (!clustersLast) renderClusters(sg, renderer, job, info);
 }
 
 /**
@@ -337,13 +337,13 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): 
  * @see lib/gvc/gvrender.c:gvrender_box
  * @see lib/common/emit.c:emit_clusters
  */
-export function renderClusters(g: Graph, renderer: RendererPlugin, job: RenderJob): void {
+export function renderClusters(g: Graph, renderer: RendererPlugin, job: RenderJob, info?: LayerInfo): void {
   const nClust = g.info.n_cluster ?? 0;
   const clust = g.info.clust;
   if (nClust === 0 || !clust) return;
   for (let c = 0; c < nClust; c++) {
     const sg = clust[c];
-    if (sg) renderOneCluster(sg, renderer, job);
+    if (sg && clusterShown(info, job, sg)) renderOneCluster(sg, renderer, job, info);
   }
 }
 
@@ -404,9 +404,9 @@ function renderPage(g: Graph, renderer: RendererPlugin, job: RenderJob, info: La
   // device (EMIT_CLUSTERS_LAST) emits their <area> AFTER, so a node/edge area
   // precedes its enclosing cluster's. @see lib/common/emit.c:emit_view (3513-3565)
   const clustersLast = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
-  if (!clustersLast) renderClusters(g, renderer, job);
+  if (!clustersLast) renderClusters(g, renderer, job, info);
   walkNodesAndEdges(g, renderer, job, info);
-  if (clustersLast) renderClusters(g, renderer, job);
+  if (clustersLast) renderClusters(g, renderer, job, info);
   renderer.endPage?.(g, job);
 }
 

@@ -1,0 +1,1 @@
+digraph G { layersep="|"; layers="one|two|three"; URL="x"; subgraph cluster_c { URL="c"; label=<<table><tr><td href="cell">k</td></tr></table>>; a; b } a [layer=one URL="na"]; b [layer="two|three" URL="nb"]; a -> b [URL="e" layer=three] }

@@ -43,13 +43,11 @@ const CMAPX_FORMATS = ['cmapx', 'cmapx-np'] as const;
 /** Probes whose svg body equals native byte for byte. `nolayers` guards the
  * ids that must not gain a prefix (no `layers`, so layerNum stays 1). */
 const BODY_EQUAL_PROBES = [
-  'html', 'gradient', 'explicitid', 'gid', 'edgelabels', 'select', 'list', 'nolayers',
+  'html', 'gradient', 'explicitid', 'gid', 'edgelabels', 'select', 'list', 'nolayers', 'repro',
 ] as const;
 
 /** `layerselect=l3`: a layer-less device starts at layer 3. */
 const SELECT_PROBE = 'select';
-/** #181: the cluster's layer-1 anchor, which only the port writes. */
-const LAYER1_CLUSTER_ANCHOR_181 = 'a_clust1';
 const BODY_START = '<g id=';
 const ANCHOR_ID = / id="(a_[^"]*)"/g;
 const AREA_ID = /^<area [^>]* id="([^"]*)"/gm;
@@ -75,19 +73,15 @@ describe('svg ids on a layer after the first carry the layer prefix, as getObjId
     }
   }
 
-  // Ids, not bytes: the port draws the cluster on layer 1 as well (#181), so
-  // layer 1 holds an `a_clust1` that native does not write. It is left out
-  // of the comparison rather than asserted.
+  // The cluster (`layer=l2`) is drawn on l2 only (#181, clust_in_layer), so
+  // layer 1 holds no `a_clust1`.
   it('writes the issue input\'s anchors with the layer prefix inside l2', () => {
-    const ids = idsOf(portOf('repro', 'dot', 'svg'), ANCHOR_ID);
-    expect(ids.filter((id) => id !== LAYER1_CLUSTER_ANCHOR_181)).toEqual([
+    const NATIVE_ANCHORS = [
       'a_graph0', 'a_node1',
       'a_l2_graph0', 'a_l2_clust1', 'a_l2_node2', 'a_l2_edge1',
-    ]);
-    expect(idsOf(nativeOf('repro', 'dot', 'svg'), ANCHOR_ID)).toEqual([
-      'a_graph0', 'a_node1',
-      'a_l2_graph0', 'a_l2_clust1', 'a_l2_node2', 'a_l2_edge1',
-    ]);
+    ];
+    expect(idsOf(portOf('repro', 'dot', 'svg'), ANCHOR_ID)).toEqual(NATIVE_ANCHORS);
+    expect(idsOf(nativeOf('repro', 'dot', 'svg'), ANCHOR_ID)).toEqual(NATIVE_ANCHORS);
   });
 
   it('leaves the issue input\'s group ids with one prefix', () => {

@@ -1,0 +1,7 @@
+graph 1 0.76074 0.76074
+node c 0.19019 0.50716 0.75 0.5 c solid box black lightgrey
+node d 0.57055 0.50716 0.75 0.5 d solid box black lightgrey
+node a 0.38037 0.12679 0.75 0.5 a solid box black lightgrey
+ solid black
+ solid black
+stop

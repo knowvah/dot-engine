@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: EPL-2.0
 //
 // Output-layer support, ported from lib/common/emit.c (parse_layers,
-// layer_index, selectedLayer, node_in_layer, edge_in_layer). A graph with a
-// `layers="a:b:c"` attribute renders once per layer; each node/edge appears
-// only in the layers it belongs to (its `layer` attribute, or all layers when
-// it has none). All of this is inert unless numLayers > 1.
+// layer_index, selectedLayer, node_in_layer, edge_in_layer, clust_in_layer).
+// A graph with a `layers="a:b:c"` attribute renders once per layer; each
+// node/edge/cluster appears only in the layers it belongs to (its `layer`
+// attribute, or all layers when it has none; a cluster with none follows its
+// nodes). All of this is inert unless numLayers > 1.
 
 import { agwarningf } from './agerr.js';
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
+import { graphAttrInherited } from './attr-get.js';
 
 /** @see lib/common/const.h:82-83 */
 const DEFAULT_LAYERSEP = ':\t ';
@@ -119,6 +121,25 @@ export function edgeInLayer(info: LayerInfo, layerNum: number, e: Edge): boolean
     const pn = n.attrs.get('layer') ?? '';
     return pn === '' || selectedLayer(info, layerNum, pn);
   });
+}
+
+/**
+ * Whether cluster `sg` is drawn in layer `layerNum`. Its own `layer` decides
+ * when it has one (C reads it with `agattr_text(sg, AGRAPH, "layer", 0)`: the
+ * cluster's value, or the default it was created under). With none, the
+ * cluster is in the layer when any of its nodes is, and `node_in_layer` is
+ * handed `sg`, so only the edges of the cluster itself count.
+ * @see lib/common/emit.c:1593 clust_in_layer
+ */
+export function clustInLayer(info: LayerInfo, layerNum: number, sg: Graph): boolean {
+  if (info.numLayers <= 1) return true;
+  const pg = graphAttrInherited(sg, 'layer') ?? '';
+  if (selectedLayer(info, layerNum, pg)) return true;
+  if (pg !== '') return false;
+  for (const n of sg.nodes.values()) {
+    if (nodeInLayer(info, layerNum, n, sg)) return true;
+  }
+  return false;
 }
 
 /**

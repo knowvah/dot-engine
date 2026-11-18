@@ -1,0 +1,1171 @@
+input	engine	format	lines	baseDiff	headDiff	verdict
+all.gv	dot	cmapx	2	0	0	unchanged
+all.gv	dot	cmapx_np	2	0	0	unchanged
+all.gv	dot	imap	1	0	0	unchanged
+all.gv	dot	imap_np	1	0	0	unchanged
+all.gv	dot	xdot	54	0	0	unchanged
+all.gv	dot	json	306	188	188	unchanged
+all.gv	dot	plain	7	0	0	unchanged
+all.gv	neato	cmapx	2	0	0	unchanged
+all.gv	neato	cmapx_np	2	0	0	unchanged
+all.gv	neato	imap	1	0	0	unchanged
+all.gv	neato	imap_np	1	0	0	unchanged
+all.gv	neato	xdot	54	0	0	unchanged
+all.gv	neato	json	306	188	188	unchanged
+all.gv	neato	plain	7	0	0	unchanged
+all.gv	fdp	cmapx	2	0	0	unchanged
+all.gv	fdp	cmapx_np	2	0	0	unchanged
+all.gv	fdp	imap	1	0	0	unchanged
+all.gv	fdp	imap_np	1	0	0	unchanged
+all.gv	fdp	xdot	54	0	0	unchanged
+all.gv	fdp	json	306	188	188	unchanged
+all.gv	fdp	plain	7	0	0	unchanged
+all.gv	sfdp	cmapx	2	0	0	unchanged
+all.gv	sfdp	cmapx_np	2	0	0	unchanged
+all.gv	sfdp	imap	1	0	0	unchanged
+all.gv	sfdp	imap_np	1	0	0	unchanged
+all.gv	sfdp	xdot	45	0	0	unchanged
+all.gv	sfdp	json	267	125	125	unchanged
+all.gv	sfdp	plain	7	0	0	unchanged
+all.gv	circo	cmapx	2	0	0	unchanged
+all.gv	circo	cmapx_np	2	0	0	unchanged
+all.gv	circo	imap	1	0	0	unchanged
+all.gv	circo	imap_np	1	0	0	unchanged
+all.gv	circo	xdot	45	0	0	unchanged
+all.gv	circo	json	267	125	125	unchanged
+all.gv	circo	plain	7	0	0	unchanged
+all.gv	twopi	cmapx	2	0	0	unchanged
+all.gv	twopi	cmapx_np	2	0	0	unchanged
+all.gv	twopi	imap	1	0	0	unchanged
+all.gv	twopi	imap_np	1	0	0	unchanged
+all.gv	twopi	xdot	45	0	0	unchanged
+all.gv	twopi	json	267	125	125	unchanged
+all.gv	twopi	plain	7	0	0	unchanged
+all.gv	osage	cmapx	2	0	0	unchanged
+all.gv	osage	cmapx_np	2	0	0	unchanged
+all.gv	osage	imap	1	0	0	unchanged
+all.gv	osage	imap_np	1	0	0	unchanged
+all.gv	osage	xdot	54	0	0	unchanged
+all.gv	osage	json	306	188	188	unchanged
+all.gv	osage	plain	7	0	0	unchanged
+all.gv	patchwork	cmapx	2	0	0	unchanged
+all.gv	patchwork	cmapx_np	2	0	0	unchanged
+all.gv	patchwork	imap	1	0	0	unchanged
+all.gv	patchwork	imap_np	1	0	0	unchanged
+all.gv	patchwork	xdot	54	0	0	unchanged
+all.gv	patchwork	json	276	206	206	unchanged
+all.gv	patchwork	plain	7	0	0	unchanged
+clusterlayer.gv	dot	cmapx	2	0	0	unchanged
+clusterlayer.gv	dot	cmapx_np	2	0	0	unchanged
+clusterlayer.gv	dot	imap	1	0	0	unchanged
+clusterlayer.gv	dot	imap_np	1	0	0	unchanged
+clusterlayer.gv	dot	xdot	29	0	0	unchanged
+clusterlayer.gv	dot	json	173	107	107	unchanged
+clusterlayer.gv	dot	plain	5	0	0	unchanged
+clusterlayer.gv	neato	cmapx	2	0	0	unchanged
+clusterlayer.gv	neato	cmapx_np	2	0	0	unchanged
+clusterlayer.gv	neato	imap	1	0	0	unchanged
+clusterlayer.gv	neato	imap_np	1	0	0	unchanged
+clusterlayer.gv	neato	xdot	29	0	0	unchanged
+clusterlayer.gv	neato	json	173	107	107	unchanged
+clusterlayer.gv	neato	plain	5	0	0	unchanged
+clusterlayer.gv	fdp	cmapx	2	0	0	unchanged
+clusterlayer.gv	fdp	cmapx_np	2	0	0	unchanged
+clusterlayer.gv	fdp	imap	1	0	0	unchanged
+clusterlayer.gv	fdp	imap_np	1	0	0	unchanged
+clusterlayer.gv	fdp	xdot	29	0	0	unchanged
+clusterlayer.gv	fdp	json	173	107	107	unchanged
+clusterlayer.gv	fdp	plain	5	0	0	unchanged
+clusterlayer.gv	sfdp	cmapx	2	0	0	unchanged
+clusterlayer.gv	sfdp	cmapx_np	2	0	0	unchanged
+clusterlayer.gv	sfdp	imap	1	0	0	unchanged
+clusterlayer.gv	sfdp	imap_np	1	0	0	unchanged
+clusterlayer.gv	sfdp	xdot	26	0	0	unchanged
+clusterlayer.gv	sfdp	json	160	87	87	unchanged
+clusterlayer.gv	sfdp	plain	5	0	0	unchanged
+clusterlayer.gv	circo	cmapx	2	0	0	unchanged
+clusterlayer.gv	circo	cmapx_np	2	0	0	unchanged
+clusterlayer.gv	circo	imap	1	0	0	unchanged
+clusterlayer.gv	circo	imap_np	1	0	0	unchanged
+clusterlayer.gv	circo	xdot	26	0	0	unchanged
+clusterlayer.gv	circo	json	160	87	87	unchanged
+clusterlayer.gv	circo	plain	5	0	0	unchanged
+clusterlayer.gv	twopi	cmapx	2	0	0	unchanged
+clusterlayer.gv	twopi	cmapx_np	2	0	0	unchanged
+clusterlayer.gv	twopi	imap	1	0	0	unchanged
+clusterlayer.gv	twopi	imap_np	1	0	0	unchanged
+clusterlayer.gv	twopi	xdot	26	0	0	unchanged
+clusterlayer.gv	twopi	json	160	87	87	unchanged
+clusterlayer.gv	twopi	plain	5	0	0	unchanged
+clusterlayer.gv	osage	cmapx	2	0	0	unchanged
+clusterlayer.gv	osage	cmapx_np	2	0	0	unchanged
+clusterlayer.gv	osage	imap	1	0	0	unchanged
+clusterlayer.gv	osage	imap_np	1	0	0	unchanged
+clusterlayer.gv	osage	xdot	29	0	0	unchanged
+clusterlayer.gv	osage	json	173	107	107	unchanged
+clusterlayer.gv	osage	plain	5	0	0	unchanged
+clusterlayer.gv	patchwork	cmapx	2	0	0	unchanged
+clusterlayer.gv	patchwork	cmapx_np	2	0	0	unchanged
+clusterlayer.gv	patchwork	imap	1	0	0	unchanged
+clusterlayer.gv	patchwork	imap_np	1	0	0	unchanged
+clusterlayer.gv	patchwork	xdot	28	0	0	unchanged
+clusterlayer.gv	patchwork	json	141	98	98	unchanged
+clusterlayer.gv	patchwork	plain	5	0	0	unchanged
+inherit.gv	dot	cmapx	2	0	0	unchanged
+inherit.gv	dot	cmapx_np	2	0	0	unchanged
+inherit.gv	dot	imap	1	0	0	unchanged
+inherit.gv	dot	imap_np	1	0	0	unchanged
+inherit.gv	dot	xdot	27	0	0	unchanged
+inherit.gv	dot	json	172	106	106	unchanged
+inherit.gv	dot	plain	5	0	0	unchanged
+inherit.gv	neato	cmapx	2	0	0	unchanged
+inherit.gv	neato	cmapx_np	2	0	0	unchanged
+inherit.gv	neato	imap	1	0	0	unchanged
+inherit.gv	neato	imap_np	1	0	0	unchanged
+inherit.gv	neato	xdot	27	0	0	unchanged
+inherit.gv	neato	json	172	106	106	unchanged
+inherit.gv	neato	plain	5	0	0	unchanged
+inherit.gv	fdp	cmapx	2	0	0	unchanged
+inherit.gv	fdp	cmapx_np	2	0	0	unchanged
+inherit.gv	fdp	imap	1	0	0	unchanged
+inherit.gv	fdp	imap_np	1	0	0	unchanged
+inherit.gv	fdp	xdot	27	0	0	unchanged
+inherit.gv	fdp	json	172	106	106	unchanged
+inherit.gv	fdp	plain	5	0	0	unchanged
+inherit.gv	sfdp	cmapx	2	0	0	unchanged
+inherit.gv	sfdp	cmapx_np	2	0	0	unchanged
+inherit.gv	sfdp	imap	1	0	0	unchanged
+inherit.gv	sfdp	imap_np	1	0	0	unchanged
+inherit.gv	sfdp	xdot	24	0	0	unchanged
+inherit.gv	sfdp	json	159	86	86	unchanged
+inherit.gv	sfdp	plain	5	0	0	unchanged
+inherit.gv	circo	cmapx	2	0	0	unchanged
+inherit.gv	circo	cmapx_np	2	0	0	unchanged
+inherit.gv	circo	imap	1	0	0	unchanged
+inherit.gv	circo	imap_np	1	0	0	unchanged
+inherit.gv	circo	xdot	24	0	0	unchanged
+inherit.gv	circo	json	159	86	86	unchanged
+inherit.gv	circo	plain	5	0	0	unchanged
+inherit.gv	twopi	cmapx	2	0	0	unchanged
+inherit.gv	twopi	cmapx_np	2	0	0	unchanged
+inherit.gv	twopi	imap	1	0	0	unchanged
+inherit.gv	twopi	imap_np	1	0	0	unchanged
+inherit.gv	twopi	xdot	24	0	0	unchanged
+inherit.gv	twopi	json	159	86	86	unchanged
+inherit.gv	twopi	plain	5	0	0	unchanged
+inherit.gv	osage	cmapx	2	0	0	unchanged
+inherit.gv	osage	cmapx_np	2	0	0	unchanged
+inherit.gv	osage	imap	1	0	0	unchanged
+inherit.gv	osage	imap_np	1	0	0	unchanged
+inherit.gv	osage	xdot	27	0	0	unchanged
+inherit.gv	osage	json	172	106	106	unchanged
+inherit.gv	osage	plain	5	0	0	unchanged
+inherit.gv	patchwork	cmapx	2	0	0	unchanged
+inherit.gv	patchwork	cmapx_np	2	0	0	unchanged
+inherit.gv	patchwork	imap	1	0	0	unchanged
+inherit.gv	patchwork	imap_np	1	0	0	unchanged
+inherit.gv	patchwork	xdot	27	0	0	unchanged
+inherit.gv	patchwork	json	140	98	98	unchanged
+inherit.gv	patchwork	plain	5	0	0	unchanged
+inneredge.gv	dot	cmapx	2	0	0	unchanged
+inneredge.gv	dot	cmapx_np	2	0	0	unchanged
+inneredge.gv	dot	imap	1	0	0	unchanged
+inneredge.gv	dot	imap_np	1	0	0	unchanged
+inneredge.gv	dot	xdot	47	0	0	unchanged
+inneredge.gv	dot	json	316	193	193	unchanged
+inneredge.gv	dot	plain	8	0	0	unchanged
+inneredge.gv	neato	cmapx	2	0	0	unchanged
+inneredge.gv	neato	cmapx_np	2	0	0	unchanged
+inneredge.gv	neato	imap	1	0	0	unchanged
+inneredge.gv	neato	imap_np	1	0	0	unchanged
+inneredge.gv	neato	xdot	47	0	0	unchanged
+inneredge.gv	neato	json	316	193	193	unchanged
+inneredge.gv	neato	plain	8	0	0	unchanged
+inneredge.gv	fdp	cmapx	2	0	0	unchanged
+inneredge.gv	fdp	cmapx_np	2	0	0	unchanged
+inneredge.gv	fdp	imap	1	0	0	unchanged
+inneredge.gv	fdp	imap_np	1	0	0	unchanged
+inneredge.gv	fdp	xdot	47	0	0	unchanged
+inneredge.gv	fdp	json	316	193	193	unchanged
+inneredge.gv	fdp	plain	8	0	0	unchanged
+inneredge.gv	sfdp	cmapx	2	0	0	unchanged
+inneredge.gv	sfdp	cmapx_np	2	0	0	unchanged
+inneredge.gv	sfdp	imap	1	0	0	unchanged
+inneredge.gv	sfdp	imap_np	1	0	0	unchanged
+inneredge.gv	sfdp	xdot	41	0	0	unchanged
+inneredge.gv	sfdp	json	290	153	153	unchanged
+inneredge.gv	sfdp	plain	8	0	0	unchanged
+inneredge.gv	circo	cmapx	2	0	0	unchanged
+inneredge.gv	circo	cmapx_np	2	0	0	unchanged
+inneredge.gv	circo	imap	1	0	0	unchanged
+inneredge.gv	circo	imap_np	1	0	0	unchanged
+inneredge.gv	circo	xdot	41	0	0	unchanged
+inneredge.gv	circo	json	290	153	153	unchanged
+inneredge.gv	circo	plain	8	0	0	unchanged
+inneredge.gv	twopi	cmapx	2	0	0	unchanged
+inneredge.gv	twopi	cmapx_np	2	0	0	unchanged
+inneredge.gv	twopi	imap	1	0	0	unchanged
+inneredge.gv	twopi	imap_np	1	0	0	unchanged
+inneredge.gv	twopi	xdot	41	0	0	unchanged
+inneredge.gv	twopi	json	290	153	153	unchanged
+inneredge.gv	twopi	plain	8	0	0	unchanged
+inneredge.gv	osage	cmapx	2	0	0	unchanged
+inneredge.gv	osage	cmapx_np	2	0	0	unchanged
+inneredge.gv	osage	imap	1	0	0	unchanged
+inneredge.gv	osage	imap_np	1	0	0	unchanged
+inneredge.gv	osage	xdot	47	0	0	unchanged
+inneredge.gv	osage	json	316	193	193	unchanged
+inneredge.gv	osage	plain	8	0	0	unchanged
+inneredge.gv	patchwork	cmapx	2	0	0	unchanged
+inneredge.gv	patchwork	cmapx_np	2	0	0	unchanged
+inneredge.gv	patchwork	imap	1	0	0	unchanged
+inneredge.gv	patchwork	imap_np	1	0	0	unchanged
+inneredge.gv	patchwork	xdot	43	0	0	unchanged
+inneredge.gv	patchwork	json	252	175	175	unchanged
+inneredge.gv	patchwork	plain	8	0	0	unchanged
+issue.gv	dot	cmapx	2	0	0	unchanged
+issue.gv	dot	cmapx_np	2	0	0	unchanged
+issue.gv	dot	imap	1	0	0	unchanged
+issue.gv	dot	imap_np	1	0	0	unchanged
+issue.gv	dot	xdot	29	0	0	unchanged
+issue.gv	dot	json	173	107	107	unchanged
+issue.gv	dot	plain	5	0	0	unchanged
+issue.gv	neato	cmapx	2	0	0	unchanged
+issue.gv	neato	cmapx_np	2	0	0	unchanged
+issue.gv	neato	imap	1	0	0	unchanged
+issue.gv	neato	imap_np	1	0	0	unchanged
+issue.gv	neato	xdot	29	0	0	unchanged
+issue.gv	neato	json	173	107	107	unchanged
+issue.gv	neato	plain	5	0	0	unchanged
+issue.gv	fdp	cmapx	2	0	0	unchanged
+issue.gv	fdp	cmapx_np	2	0	0	unchanged
+issue.gv	fdp	imap	1	0	0	unchanged
+issue.gv	fdp	imap_np	1	0	0	unchanged
+issue.gv	fdp	xdot	29	0	0	unchanged
+issue.gv	fdp	json	173	107	107	unchanged
+issue.gv	fdp	plain	5	0	0	unchanged
+issue.gv	sfdp	cmapx	2	0	0	unchanged
+issue.gv	sfdp	cmapx_np	2	0	0	unchanged
+issue.gv	sfdp	imap	1	0	0	unchanged
+issue.gv	sfdp	imap_np	1	0	0	unchanged
+issue.gv	sfdp	xdot	26	0	0	unchanged
+issue.gv	sfdp	json	160	87	87	unchanged
+issue.gv	sfdp	plain	5	0	0	unchanged
+issue.gv	circo	cmapx	2	0	0	unchanged
+issue.gv	circo	cmapx_np	2	0	0	unchanged
+issue.gv	circo	imap	1	0	0	unchanged
+issue.gv	circo	imap_np	1	0	0	unchanged
+issue.gv	circo	xdot	26	0	0	unchanged
+issue.gv	circo	json	160	87	87	unchanged
+issue.gv	circo	plain	5	0	0	unchanged
+issue.gv	twopi	cmapx	2	0	0	unchanged
+issue.gv	twopi	cmapx_np	2	0	0	unchanged
+issue.gv	twopi	imap	1	0	0	unchanged
+issue.gv	twopi	imap_np	1	0	0	unchanged
+issue.gv	twopi	xdot	26	0	0	unchanged
+issue.gv	twopi	json	160	87	87	unchanged
+issue.gv	twopi	plain	5	0	0	unchanged
+issue.gv	osage	cmapx	2	0	0	unchanged
+issue.gv	osage	cmapx_np	2	0	0	unchanged
+issue.gv	osage	imap	1	0	0	unchanged
+issue.gv	osage	imap_np	1	0	0	unchanged
+issue.gv	osage	xdot	29	0	0	unchanged
+issue.gv	osage	json	173	107	107	unchanged
+issue.gv	osage	plain	5	0	0	unchanged
+issue.gv	patchwork	cmapx	2	0	0	unchanged
+issue.gv	patchwork	cmapx_np	2	0	0	unchanged
+issue.gv	patchwork	imap	1	0	0	unchanged
+issue.gv	patchwork	imap_np	1	0	0	unchanged
+issue.gv	patchwork	xdot	28	0	0	unchanged
+issue.gv	patchwork	json	141	98	98	unchanged
+issue.gv	patchwork	plain	5	0	0	unchanged
+layersep-all.gv	dot	cmapx	8	0	0	unchanged
+layersep-all.gv	dot	cmapx_np	7	0	0	unchanged
+layersep-all.gv	dot	imap	7	0	0	unchanged
+layersep-all.gv	dot	imap_np	6	0	0	unchanged
+layersep-all.gv	dot	xdot	41	0	0	unchanged
+layersep-all.gv	dot	json	234	156	156	unchanged
+layersep-all.gv	dot	plain	5	0	0	unchanged
+layersep-all.gv	neato	cmapx	8	0	0	unchanged
+layersep-all.gv	neato	cmapx_np	7	0	0	unchanged
+layersep-all.gv	neato	imap	7	0	0	unchanged
+layersep-all.gv	neato	imap_np	6	0	0	unchanged
+layersep-all.gv	neato	xdot	41	0	0	unchanged
+layersep-all.gv	neato	json	231	156	156	unchanged
+layersep-all.gv	neato	plain	5	0	0	unchanged
+layersep-all.gv	fdp	cmapx	8	0	0	unchanged
+layersep-all.gv	fdp	cmapx_np	7	0	0	unchanged
+layersep-all.gv	fdp	imap	7	0	0	unchanged
+layersep-all.gv	fdp	imap_np	6	0	0	unchanged
+layersep-all.gv	fdp	xdot	41	0	0	unchanged
+layersep-all.gv	fdp	json	231	156	156	unchanged
+layersep-all.gv	fdp	plain	5	0	0	unchanged
+layersep-all.gv	sfdp	cmapx	6	0	0	unchanged
+layersep-all.gv	sfdp	cmapx_np	5	0	0	unchanged
+layersep-all.gv	sfdp	imap	5	0	0	unchanged
+layersep-all.gv	sfdp	imap_np	4	0	0	unchanged
+layersep-all.gv	sfdp	xdot	34	0	0	unchanged
+layersep-all.gv	sfdp	json	169	94	94	unchanged
+layersep-all.gv	sfdp	plain	5	0	0	unchanged
+layersep-all.gv	circo	cmapx	6	0	0	unchanged
+layersep-all.gv	circo	cmapx_np	5	0	0	unchanged
+layersep-all.gv	circo	imap	5	0	0	unchanged
+layersep-all.gv	circo	imap_np	4	0	0	unchanged
+layersep-all.gv	circo	xdot	34	0	0	unchanged
+layersep-all.gv	circo	json	169	94	94	unchanged
+layersep-all.gv	circo	plain	5	0	0	unchanged
+layersep-all.gv	twopi	cmapx	6	0	0	unchanged
+layersep-all.gv	twopi	cmapx_np	5	0	0	unchanged
+layersep-all.gv	twopi	imap	5	0	0	unchanged
+layersep-all.gv	twopi	imap_np	4	0	0	unchanged
+layersep-all.gv	twopi	xdot	34	0	0	unchanged
+layersep-all.gv	twopi	json	169	94	94	unchanged
+layersep-all.gv	twopi	plain	5	0	0	unchanged
+layersep-all.gv	osage	cmapx	8	0	0	unchanged
+layersep-all.gv	osage	cmapx_np	7	0	0	unchanged
+layersep-all.gv	osage	imap	7	0	0	unchanged
+layersep-all.gv	osage	imap_np	6	0	0	unchanged
+layersep-all.gv	osage	xdot	41	0	0	unchanged
+layersep-all.gv	osage	json	231	156	156	unchanged
+layersep-all.gv	osage	plain	5	0	0	unchanged
+layersep-all.gv	patchwork	cmapx	6	0	0	unchanged
+layersep-all.gv	patchwork	cmapx_np	6	0	0	unchanged
+layersep-all.gv	patchwork	imap	5	0	0	unchanged
+layersep-all.gv	patchwork	imap_np	5	0	0	unchanged
+layersep-all.gv	patchwork	xdot	35	0	0	unchanged
+layersep-all.gv	patchwork	json	150	104	104	unchanged
+layersep-all.gv	patchwork	plain	5	0	0	unchanged
+layersep.gv	dot	cmapx	8	0	0	unchanged
+layersep.gv	dot	cmapx_np	7	0	0	unchanged
+layersep.gv	dot	imap	7	0	0	unchanged
+layersep.gv	dot	imap_np	6	0	0	unchanged
+layersep.gv	dot	xdot	41	0	0	unchanged
+layersep.gv	dot	json	231	154	154	unchanged
+layersep.gv	dot	plain	5	0	0	unchanged
+layersep.gv	neato	cmapx	8	0	0	unchanged
+layersep.gv	neato	cmapx_np	7	0	0	unchanged
+layersep.gv	neato	imap	7	0	0	unchanged
+layersep.gv	neato	imap_np	6	0	0	unchanged
+layersep.gv	neato	xdot	41	0	0	unchanged
+layersep.gv	neato	json	231	154	154	unchanged
+layersep.gv	neato	plain	5	0	0	unchanged
+layersep.gv	fdp	cmapx	8	0	0	unchanged
+layersep.gv	fdp	cmapx_np	7	0	0	unchanged
+layersep.gv	fdp	imap	7	0	0	unchanged
+layersep.gv	fdp	imap_np	6	0	0	unchanged
+layersep.gv	fdp	xdot	41	0	0	unchanged
+layersep.gv	fdp	json	231	154	154	unchanged
+layersep.gv	fdp	plain	5	0	0	unchanged
+layersep.gv	sfdp	cmapx	6	0	0	unchanged
+layersep.gv	sfdp	cmapx_np	5	0	0	unchanged
+layersep.gv	sfdp	imap	5	0	0	unchanged
+layersep.gv	sfdp	imap_np	4	0	0	unchanged
+layersep.gv	sfdp	xdot	34	0	0	unchanged
+layersep.gv	sfdp	json	169	92	92	unchanged
+layersep.gv	sfdp	plain	5	0	0	unchanged
+layersep.gv	circo	cmapx	6	0	0	unchanged
+layersep.gv	circo	cmapx_np	5	0	0	unchanged
+layersep.gv	circo	imap	5	0	0	unchanged
+layersep.gv	circo	imap_np	4	0	0	unchanged
+layersep.gv	circo	xdot	34	0	0	unchanged
+layersep.gv	circo	json	169	92	92	unchanged
+layersep.gv	circo	plain	5	0	0	unchanged
+layersep.gv	twopi	cmapx	6	0	0	unchanged
+layersep.gv	twopi	cmapx_np	5	0	0	unchanged
+layersep.gv	twopi	imap	5	0	0	unchanged
+layersep.gv	twopi	imap_np	4	0	0	unchanged
+layersep.gv	twopi	xdot	34	0	0	unchanged
+layersep.gv	twopi	json	169	92	92	unchanged
+layersep.gv	twopi	plain	5	0	0	unchanged
+layersep.gv	osage	cmapx	8	0	0	unchanged
+layersep.gv	osage	cmapx_np	7	0	0	unchanged
+layersep.gv	osage	imap	7	0	0	unchanged
+layersep.gv	osage	imap_np	6	0	0	unchanged
+layersep.gv	osage	xdot	41	0	0	unchanged
+layersep.gv	osage	json	231	154	154	unchanged
+layersep.gv	osage	plain	5	0	0	unchanged
+layersep.gv	patchwork	cmapx	6	0	0	unchanged
+layersep.gv	patchwork	cmapx_np	6	0	0	unchanged
+layersep.gv	patchwork	imap	5	0	0	unchanged
+layersep.gv	patchwork	imap_np	5	0	0	unchanged
+layersep.gv	patchwork	xdot	35	0	0	unchanged
+layersep.gv	patchwork	json	150	102	102	unchanged
+layersep.gv	patchwork	plain	5	0	0	unchanged
+nested.gv	dot	cmapx	2	0	0	unchanged
+nested.gv	dot	cmapx_np	2	0	0	unchanged
+nested.gv	dot	imap	1	0	0	unchanged
+nested.gv	dot	imap_np	1	0	0	unchanged
+nested.gv	dot	xdot	64	0	0	unchanged
+nested.gv	dot	json	392	232	232	unchanged
+nested.gv	dot	plain	8	0	0	unchanged
+nested.gv	neato	cmapx	2	0	0	unchanged
+nested.gv	neato	cmapx_np	2	0	0	unchanged
+nested.gv	neato	imap	1	0	0	unchanged
+nested.gv	neato	imap_np	1	0	0	unchanged
+nested.gv	neato	xdot	57	0	0	unchanged
+nested.gv	neato	json	353	204	204	unchanged
+nested.gv	neato	plain	8	0	0	unchanged
+nested.gv	fdp	cmapx	2	0	0	unchanged
+nested.gv	fdp	cmapx_np	2	0	0	unchanged
+nested.gv	fdp	imap	1	0	0	unchanged
+nested.gv	fdp	imap_np	1	0	0	unchanged
+nested.gv	fdp	xdot	64	0	0	unchanged
+nested.gv	fdp	json	389	232	232	unchanged
+nested.gv	fdp	plain	8	0	0	unchanged
+nested.gv	sfdp	cmapx	2	0	0	unchanged
+nested.gv	sfdp	cmapx_np	2	0	0	unchanged
+nested.gv	sfdp	imap	1	0	0	unchanged
+nested.gv	sfdp	imap_np	1	0	0	unchanged
+nested.gv	sfdp	xdot	47	0	0	unchanged
+nested.gv	sfdp	json	304	158	158	unchanged
+nested.gv	sfdp	plain	8	0	0	unchanged
+nested.gv	circo	cmapx	2	0	0	unchanged
+nested.gv	circo	cmapx_np	2	0	0	unchanged
+nested.gv	circo	imap	1	0	0	unchanged
+nested.gv	circo	imap_np	1	0	0	unchanged
+nested.gv	circo	xdot	47	0	0	unchanged
+nested.gv	circo	json	304	158	158	unchanged
+nested.gv	circo	plain	8	0	0	unchanged
+nested.gv	twopi	cmapx	2	0	0	unchanged
+nested.gv	twopi	cmapx_np	2	0	0	unchanged
+nested.gv	twopi	imap	1	0	0	unchanged
+nested.gv	twopi	imap_np	1	0	0	unchanged
+nested.gv	twopi	xdot	47	0	0	unchanged
+nested.gv	twopi	json	304	158	158	unchanged
+nested.gv	twopi	plain	8	0	0	unchanged
+nested.gv	osage	cmapx	2	0	0	unchanged
+nested.gv	osage	cmapx_np	2	0	0	unchanged
+nested.gv	osage	imap	1	0	0	unchanged
+nested.gv	osage	imap_np	1	0	0	unchanged
+nested.gv	osage	xdot	64	0	0	unchanged
+nested.gv	osage	json	389	232	232	unchanged
+nested.gv	osage	plain	8	0	0	unchanged
+nested.gv	patchwork	cmapx	2	0	0	unchanged
+nested.gv	patchwork	cmapx_np	2	0	0	unchanged
+nested.gv	patchwork	imap	1	0	0	unchanged
+nested.gv	patchwork	imap_np	1	0	0	unchanged
+nested.gv	patchwork	xdot	54	0	0	unchanged
+nested.gv	patchwork	json	279	202	202	unchanged
+nested.gv	patchwork	plain	8	0	0	unchanged
+nolayers.gv	dot	cmapx	2	0	0	unchanged
+nolayers.gv	dot	cmapx_np	2	0	0	unchanged
+nolayers.gv	dot	imap	1	0	0	unchanged
+nolayers.gv	dot	imap_np	1	0	0	unchanged
+nolayers.gv	dot	xdot	27	0	0	unchanged
+nolayers.gv	dot	json	170	104	104	unchanged
+nolayers.gv	dot	plain	5	0	0	unchanged
+nolayers.gv	neato	cmapx	2	0	0	unchanged
+nolayers.gv	neato	cmapx_np	2	0	0	unchanged
+nolayers.gv	neato	imap	1	0	0	unchanged
+nolayers.gv	neato	imap_np	1	0	0	unchanged
+nolayers.gv	neato	xdot	27	0	0	unchanged
+nolayers.gv	neato	json	170	104	104	unchanged
+nolayers.gv	neato	plain	5	0	0	unchanged
+nolayers.gv	fdp	cmapx	2	0	0	unchanged
+nolayers.gv	fdp	cmapx_np	2	0	0	unchanged
+nolayers.gv	fdp	imap	1	0	0	unchanged
+nolayers.gv	fdp	imap_np	1	0	0	unchanged
+nolayers.gv	fdp	xdot	27	0	0	unchanged
+nolayers.gv	fdp	json	170	104	104	unchanged
+nolayers.gv	fdp	plain	5	0	0	unchanged
+nolayers.gv	sfdp	cmapx	2	0	0	unchanged
+nolayers.gv	sfdp	cmapx_np	2	0	0	unchanged
+nolayers.gv	sfdp	imap	1	0	0	unchanged
+nolayers.gv	sfdp	imap_np	1	0	0	unchanged
+nolayers.gv	sfdp	xdot	24	0	0	unchanged
+nolayers.gv	sfdp	json	157	84	84	unchanged
+nolayers.gv	sfdp	plain	5	0	0	unchanged
+nolayers.gv	circo	cmapx	2	0	0	unchanged
+nolayers.gv	circo	cmapx_np	2	0	0	unchanged
+nolayers.gv	circo	imap	1	0	0	unchanged
+nolayers.gv	circo	imap_np	1	0	0	unchanged
+nolayers.gv	circo	xdot	24	0	0	unchanged
+nolayers.gv	circo	json	157	84	84	unchanged
+nolayers.gv	circo	plain	5	0	0	unchanged
+nolayers.gv	twopi	cmapx	2	0	0	unchanged
+nolayers.gv	twopi	cmapx_np	2	0	0	unchanged
+nolayers.gv	twopi	imap	1	0	0	unchanged
+nolayers.gv	twopi	imap_np	1	0	0	unchanged
+nolayers.gv	twopi	xdot	24	0	0	unchanged
+nolayers.gv	twopi	json	157	84	84	unchanged
+nolayers.gv	twopi	plain	5	0	0	unchanged
+nolayers.gv	osage	cmapx	2	0	0	unchanged
+nolayers.gv	osage	cmapx_np	2	0	0	unchanged
+nolayers.gv	osage	imap	1	0	0	unchanged
+nolayers.gv	osage	imap_np	1	0	0	unchanged
+nolayers.gv	osage	xdot	27	0	0	unchanged
+nolayers.gv	osage	json	170	104	104	unchanged
+nolayers.gv	osage	plain	5	0	0	unchanged
+nolayers.gv	patchwork	cmapx	2	0	0	unchanged
+nolayers.gv	patchwork	cmapx_np	2	0	0	unchanged
+nolayers.gv	patchwork	imap	1	0	0	unchanged
+nolayers.gv	patchwork	imap_np	1	0	0	unchanged
+nolayers.gv	patchwork	xdot	27	0	0	unchanged
+nolayers.gv	patchwork	json	138	96	96	unchanged
+nolayers.gv	patchwork	plain	5	0	0	unchanged
+repro.gv	dot	cmapx	7	0	0	unchanged
+repro.gv	dot	cmapx_np	6	0	0	unchanged
+repro.gv	dot	imap	6	0	0	unchanged
+repro.gv	dot	imap_np	5	0	0	unchanged
+repro.gv	dot	xdot	35	0	0	unchanged
+repro.gv	dot	json	179	108	108	unchanged
+repro.gv	dot	plain	5	0	0	unchanged
+repro.gv	neato	cmapx	7	0	0	unchanged
+repro.gv	neato	cmapx_np	6	0	0	unchanged
+repro.gv	neato	imap	6	0	0	unchanged
+repro.gv	neato	imap_np	5	0	0	unchanged
+repro.gv	neato	xdot	35	0	0	unchanged
+repro.gv	neato	json	179	108	108	unchanged
+repro.gv	neato	plain	5	0	0	unchanged
+repro.gv	fdp	cmapx	7	0	0	unchanged
+repro.gv	fdp	cmapx_np	6	0	0	unchanged
+repro.gv	fdp	imap	6	0	0	unchanged
+repro.gv	fdp	imap_np	5	0	0	unchanged
+repro.gv	fdp	xdot	35	0	0	unchanged
+repro.gv	fdp	json	179	108	108	unchanged
+repro.gv	fdp	plain	5	0	0	unchanged
+repro.gv	sfdp	cmapx	6	0	0	unchanged
+repro.gv	sfdp	cmapx_np	5	0	0	unchanged
+repro.gv	sfdp	imap	5	0	0	unchanged
+repro.gv	sfdp	imap_np	4	0	0	unchanged
+repro.gv	sfdp	xdot	33	0	0	unchanged
+repro.gv	sfdp	json	166	88	88	unchanged
+repro.gv	sfdp	plain	5	0	0	unchanged
+repro.gv	circo	cmapx	6	0	0	unchanged
+repro.gv	circo	cmapx_np	5	0	0	unchanged
+repro.gv	circo	imap	5	0	0	unchanged
+repro.gv	circo	imap_np	4	0	0	unchanged
+repro.gv	circo	xdot	33	0	0	unchanged
+repro.gv	circo	json	166	88	88	unchanged
+repro.gv	circo	plain	5	0	0	unchanged
+repro.gv	twopi	cmapx	6	0	0	unchanged
+repro.gv	twopi	cmapx_np	5	0	0	unchanged
+repro.gv	twopi	imap	5	0	0	unchanged
+repro.gv	twopi	imap_np	4	0	0	unchanged
+repro.gv	twopi	xdot	33	0	0	unchanged
+repro.gv	twopi	json	166	88	88	unchanged
+repro.gv	twopi	plain	5	0	0	unchanged
+repro.gv	osage	cmapx	7	0	0	unchanged
+repro.gv	osage	cmapx_np	6	0	0	unchanged
+repro.gv	osage	imap	6	0	0	unchanged
+repro.gv	osage	imap_np	5	0	0	unchanged
+repro.gv	osage	xdot	35	0	0	unchanged
+repro.gv	osage	json	179	108	108	unchanged
+repro.gv	osage	plain	5	0	0	unchanged
+repro.gv	patchwork	cmapx	6	0	0	unchanged
+repro.gv	patchwork	cmapx_np	6	0	0	unchanged
+repro.gv	patchwork	imap	5	0	0	unchanged
+repro.gv	patchwork	imap_np	5	0	0	unchanged
+repro.gv	patchwork	xdot	34	0	0	unchanged
+repro.gv	patchwork	json	147	99	99	unchanged
+repro.gv	patchwork	plain	5	0	0	unchanged
+select.gv	dot	cmapx	5	1	0	native
+select.gv	dot	cmapx_np	5	1	0	native
+select.gv	dot	imap	4	1	0	native
+select.gv	dot	imap_np	4	1	0	native
+select.gv	dot	xdot	42	1	1	AWAY
+  port 		graph [URL=c];
+select.gv	dot	json	198	140	111	AWAY
+  port   "layers": "l1:l2:l3",
+  port   "layerselect": "l1",
+  port   "_draw_": [
+  port       "points": [
+  port         [
+  port           0,
+  port           0
+  port         ],
+  port         [
+  port           0,
+  port           140
+  port         ],
+  port         [
+  port           158,
+  port           140
+  port         ],
+  port         [
+  port           158,
+  port           0
+  port         ]
+  port       ]
+  port       "URL": "c",
+  port       "layers": "l1:l2:l3",
+  port       "layerselect": "l1",
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               80,
+  port               80
+  port             ],
+  port             [
+  port               80,
+  port               132
+  port             ],
+  port             [
+  port               150,
+  port               132
+  port             ],
+  port             [
+  port               150,
+  port               80
+  port             ]
+  port           ]
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "rect": [
+  port             43,
+  port             106,
+  port             27,
+  port             18
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             43,
+  port             101.8
+  port           ],
+  port           "width": 6.21,
+  port       "layer": "l2",
+  port       "height": "0.5",
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "rect": [
+  port             115,
+  port             106,
+  port             27,
+  port             18
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             115,
+  port             101.8
+  port           ],
+  port           "width": 6.21,
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               43,
+  port               87.7
+  port             ],
+  port             [
+  port               43,
+  port               80.41
+  port             ],
+  port             [
+  port               43,
+  port               71.73
+  port             ],
+  port             [
+  port               43,
+  port               63.54
+  port             ]
+  port           ]
+  port       "_hdraw_": [
+  port           "points": [
+  port             [
+  port               46.5,
+  port               63.62
+  port             ],
+  port             [
+  port               43,
+  port               53.62
+  port             ],
+  port             [
+  port               39.5,
+  port               63.62
+  port             ]
+  port           ]
+select.gv	dot	plain	6	0	0	unchanged
+select.gv	neato	cmapx	5	1	0	native
+select.gv	neato	cmapx_np	5	1	0	native
+select.gv	neato	imap	4	1	0	native
+select.gv	neato	imap_np	4	1	0	native
+select.gv	neato	xdot	42	1	1	AWAY
+  port 		graph [URL=c];
+select.gv	neato	json	198	140	111	AWAY
+  port   "layers": "l1:l2:l3",
+  port   "layerselect": "l1",
+  port   "_draw_": [
+  port       "points": [
+  port         [
+  port           0,
+  port           0
+  port         ],
+  port         [
+  port           0,
+  port           108
+  port         ],
+  port         [
+  port           166,
+  port           108
+  port         ],
+  port         [
+  port           166,
+  port           0
+  port         ]
+  port       ]
+  port       "URL": "c",
+  port       "layers": "l1:l2:l3",
+  port       "layerselect": "l1",
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               112,
+  port               72
+  port             ],
+  port             [
+  port               112,
+  port               108
+  port             ],
+  port             [
+  port               166,
+  port               108
+  port             ],
+  port             [
+  port               166,
+  port               72
+  port             ]
+  port           ]
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "rect": [
+  port             27,
+  port             28.64,
+  port             27,
+  port             18
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             27,
+  port             24.44
+  port           ],
+  port           "width": 6.21,
+  port       "layer": "l2",
+  port       "height": "0.5",
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "rect": [
+  port             139,
+  port             90,
+  port             27,
+  port             18
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             139,
+  port             85.8
+  port           ],
+  port           "width": 6.21,
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               53.52,
+  port               24.68
+  port             ],
+  port             [
+  port               55.71,
+  port               24.35
+  port             ],
+  port             [
+  port               57.95,
+  port               24.01
+  port             ],
+  port             [
+  port               60.21,
+  port               23.68
+  port             ]
+  port           ]
+  port       "_hdraw_": [
+  port           "points": [
+  port             [
+  port               60.56,
+  port               27.16
+  port             ],
+  port             [
+  port               69.94,
+  port               22.22
+  port             ],
+  port             [
+  port               59.53,
+  port               20.24
+  port             ]
+  port           ]
+select.gv	neato	plain	6	0	0	unchanged
+select.gv	fdp	cmapx	5	1	0	native
+select.gv	fdp	cmapx_np	5	1	0	native
+select.gv	fdp	imap	4	1	0	native
+select.gv	fdp	imap_np	4	1	0	native
+select.gv	fdp	xdot	42	1	1	AWAY
+  port 		graph [URL=c];
+select.gv	fdp	json	198	140	111	AWAY
+  port   "layers": "l1:l2:l3",
+  port   "layerselect": "l1",
+  port   "_draw_": [
+  port       "points": [
+  port         [
+  port           0,
+  port           0
+  port         ],
+  port         [
+  port           0,
+  port           105.53
+  port         ],
+  port         [
+  port           168.84,
+  port           105.53
+  port         ],
+  port         [
+  port           168.84,
+  port           0
+  port         ]
+  port       ]
+  port       "URL": "c",
+  port       "layers": "l1:l2:l3",
+  port       "layerselect": "l1",
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               98.84,
+  port               53.53
+  port             ],
+  port             [
+  port               98.84,
+  port               105.53
+  port             ],
+  port             [
+  port               168.84,
+  port               105.53
+  port             ],
+  port             [
+  port               168.84,
+  port               53.53
+  port             ]
+  port           ]
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "rect": [
+  port             106.46,
+  port             18,
+  port             27,
+  port             18
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             106.46,
+  port             13.8
+  port           ],
+  port           "width": 6.21,
+  port       "layer": "l2",
+  port       "height": "0.5",
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "rect": [
+  port             133.84,
+  port             79.53,
+  port             27,
+  port             18
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             133.84,
+  port             75.33
+  port           ],
+  port           "width": 6.21,
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               79.85,
+  port               21.98
+  port             ],
+  port             [
+  port               77.5,
+  port               22.33
+  port             ],
+  port             [
+  port               75.08,
+  port               22.69
+  port             ],
+  port             [
+  port               72.66,
+  port               23.05
+  port             ]
+  port           ]
+  port       "_hdraw_": [
+  port           "points": [
+  port             [
+  port               72.26,
+  port               19.57
+  port             ],
+  port             [
+  port               62.89,
+  port               24.51
+  port             ],
+  port             [
+  port               73.3,
+  port               26.49
+  port             ]
+  port           ]
+select.gv	fdp	plain	6	0	0	unchanged
+select.gv	sfdp	cmapx	4	0	0	unchanged
+select.gv	sfdp	cmapx_np	4	0	0	unchanged
+select.gv	sfdp	imap	3	0	0	unchanged
+select.gv	sfdp	imap_np	3	0	0	unchanged
+select.gv	sfdp	xdot	37	0	0	unchanged
+select.gv	sfdp	json	184	91	91	unchanged
+select.gv	sfdp	plain	6	0	0	unchanged
+select.gv	circo	cmapx	4	0	0	unchanged
+select.gv	circo	cmapx_np	4	0	0	unchanged
+select.gv	circo	imap	3	0	0	unchanged
+select.gv	circo	imap_np	3	0	0	unchanged
+select.gv	circo	xdot	37	0	0	unchanged
+select.gv	circo	json	184	91	91	unchanged
+select.gv	circo	plain	6	0	0	unchanged
+select.gv	twopi	cmapx	4	0	0	unchanged
+select.gv	twopi	cmapx_np	4	0	0	unchanged
+select.gv	twopi	imap	3	0	0	unchanged
+select.gv	twopi	imap_np	3	0	0	unchanged
+select.gv	twopi	xdot	37	0	0	unchanged
+select.gv	twopi	json	184	91	91	unchanged
+select.gv	twopi	plain	6	0	0	unchanged
+select.gv	osage	cmapx	5	1	0	native
+select.gv	osage	cmapx_np	5	1	0	native
+select.gv	osage	imap	4	1	0	native
+select.gv	osage	imap_np	4	1	0	native
+select.gv	osage	xdot	42	1	1	AWAY
+  port 		graph [URL=c];
+select.gv	osage	json	198	140	111	AWAY
+  port   "layers": "l1:l2:l3",
+  port   "layerselect": "l1",
+  port   "_draw_": [
+  port       "points": [
+  port         [
+  port           0,
+  port           0
+  port         ],
+  port         [
+  port           0,
+  port           80
+  port         ],
+  port         [
+  port           120,
+  port           80
+  port         ],
+  port         [
+  port           120,
+  port           0
+  port         ]
+  port       ]
+  port       "URL": "c",
+  port       "layers": "l1:l2:l3",
+  port       "layerselect": "l1",
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               62,
+  port               40
+  port             ],
+  port             [
+  port               62,
+  port               80
+  port             ],
+  port             [
+  port               120,
+  port               80
+  port             ],
+  port             [
+  port               120,
+  port               40
+  port             ]
+  port           ]
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "rect": [
+  port             29,
+  port             18,
+  port             27,
+  port             18
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             29,
+  port             13.8
+  port           ],
+  port           "width": 6.21,
+  port       "layer": "l2",
+  port       "height": "0.5",
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "rect": [
+  port             91,
+  port             60,
+  port             27,
+  port             18
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             91,
+  port             55.8
+  port           ],
+  port           "width": 6.21,
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               29,
+  port               36.06
+  port             ],
+  port             [
+  port               29,
+  port               36.17
+  port             ],
+  port             [
+  port               29,
+  port               36.29
+  port             ],
+  port             [
+  port               29,
+  port               36.41
+  port             ]
+  port           ]
+  port       "_hdraw_": [
+  port           "points": [
+  port             [
+  port               25.5,
+  port               30.18
+  port             ],
+  port             [
+  port               29,
+  port               40.18
+  port             ],
+  port             [
+  port               32.5,
+  port               30.18
+  port             ]
+  port           ]
+select.gv	osage	plain	6	0	0	unchanged
+select.gv	patchwork	cmapx	5	1	0	native
+select.gv	patchwork	cmapx_np	5	1	0	native
+select.gv	patchwork	imap	4	1	0	native
+select.gv	patchwork	imap_np	4	1	0	native
+select.gv	patchwork	xdot	42	1	1	AWAY
+  port 		graph [URL=c];
+select.gv	patchwork	json	167	133	104	AWAY
+  port   "layers": "l1:l2:l3",
+  port   "layerselect": "l1",
+  port   "_draw_": [
+  port       "points": [
+  port         [
+  port           0,
+  port           0
+  port         ],
+  port         [
+  port           0,
+  port           54.77
+  port         ],
+  port         [
+  port           54.77,
+  port           54.77
+  port         ],
+  port         [
+  port           54.77,
+  port           0
+  port         ]
+  port       ]
+  port       "URL": "c",
+  port       "layers": "l1:l2:l3",
+  port       "layerselect": "l1",
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               27.39,
+  port               18.26
+  port             ],
+  port             [
+  port               27.39,
+  port               54.77
+  port             ],
+  port             [
+  port               54.77,
+  port               54.77
+  port             ],
+  port             [
+  port               54.77,
+  port               18.26
+  port             ]
+  port           ]
+  port       "shape": "box",
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               54.77,
+  port               18.26
+  port             ],
+  port             [
+  port               0,
+  port               18.26
+  port             ],
+  port             [
+  port               0,
+  port               0
+  port             ],
+  port             [
+  port               54.77,
+  port               0
+  port             ]
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             27.39,
+  port             4.93
+  port           ],
+  port           "width": 6.21,
+  port       "shape": "box",
+  port       "layer": "l2",
+  port       "height": "0.50715",
+  port       "shape": "box",
+  port       "layer": "l1",
+  port       "label": "\\N",
+  port       "_draw_": [
+  port           "points": [
+  port             [
+  port               54.77,
+  port               54.77
+  port             ],
+  port             [
+  port               27.39,
+  port               54.77
+  port             ],
+  port             [
+  port               27.39,
+  port               18.26
+  port             ],
+  port             [
+  port               54.77,
+  port               18.26
+  port             ]
+  port           ]
+  port       "_ldraw_": [
+  port           "size": 14,
+  port           "pt": [
+  port             41.08,
+  port             32.32
+  port           ],
+  port           "width": 6.21,
+select.gv	patchwork	plain	6	0	0	unchanged
+unchanged=586 native=20 AWAY=10

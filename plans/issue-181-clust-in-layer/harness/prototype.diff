@@ -1,0 +1,189 @@
+diff --git a/src/common/layers.ts b/src/common/layers.ts
+index b2ad1193..eab4826a 100644
+--- a/src/common/layers.ts
++++ b/src/common/layers.ts
+@@ -10,6 +10,7 @@ import { agwarningf } from './agerr.js';
+ import type { Graph } from '../model/graph.js';
+ import type { Node } from '../model/node.js';
+ import type { Edge } from '../model/edge.js';
++import { graphAttrInherited } from './attr-get.js';
+ 
+ /** @see lib/common/const.h:82-83 */
+ const DEFAULT_LAYERSEP = ':\t ';
+@@ -121,6 +122,23 @@ export function edgeInLayer(info: LayerInfo, layerNum: number, e: Edge): boolean
+   });
+ }
+ 
++/**
++ * Whether cluster `sg` is drawn in layer `layerNum`: its own `layer` selects
++ * it, else (no `layer`) any of its nodes is in the layer, judged by the edges
++ * of `sg` only.
++ * @see lib/common/emit.c:1593 clust_in_layer
++ */
++export function clustInLayer(info: LayerInfo, layerNum: number, sg: Graph): boolean {
++  if (info.numLayers <= 1) return true;
++  const pg = graphAttrInherited(sg, 'layer') ?? '';
++  if (selectedLayer(info, layerNum, pg)) return true;
++  if (pg !== '') return false;
++  for (const n of sg.nodes.values()) {
++    if (nodeInLayer(info, layerNum, n, sg)) return true;
++  }
++  return false;
++}
++
+ /**
+  * Walk each layer index and keep those `selectedLayer` matches against `p`.
+  * Returns `[n, l1..ln, numLayers + 1]`, or null (after a warning) when nothing
+diff --git a/src/gvc/device.ts b/src/gvc/device.ts
+index 2947ecff..c97b63ba 100644
+--- a/src/gvc/device.ts
++++ b/src/gvc/device.ts
+@@ -25,7 +25,7 @@ import { resolveEdgeAnchor, resolveObjAnchor, beginAnchorIf } from './anchor.js'
+ import type { ShapeDesc, TextlabelT } from '../common/types.js';
+ import { type LayerInfo, parseLayers } from '../common/layers.js';
+ import { RenderJob, EMIT_CLUSTERS_LAST, createObjState, ObjType, EmitState } from './job.js';
+-import { walkNodesAndEdges } from './emit-walk.js';
++import { walkNodesAndEdges, clusterShown } from './emit-walk.js';
+ import { initBb } from '../common/emit-bb.js';
+ import { firstLayer, nextLayer, numPhysicalLayers, validLayer } from './first-layer.js';
+ import { polyInit } from '../common/poly-init.js';
+@@ -305,13 +305,13 @@ function drawClusterInScheme(sg: Graph, renderer: RendererPlugin, job: RenderJob
+  * completes before recursing; sub-clusters are separate pushes on a clean stack.
+  * @see lib/common/emit.c:emit_clusters:3777
+  */
+-function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): void {
++function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob, info?: LayerInfo): void {
+   // EMIT_CLUSTERS_LAST (map device): recurse into sub-clusters BEFORE emitting
+   // this cluster's anchor, so an inner cluster's <area> precedes its parent's
+   // (child-first). Drawing devices recurse AFTER (parent-first), below.
+   // @see lib/common/emit.c:emit_clusters (3795 vs 3940)
+   const clustersLast = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
+-  if (clustersLast) renderClusters(sg, renderer, job);
++  if (clustersLast) renderClusters(sg, renderer, job, info);
+   // push_obj_state in emit_begin_cluster (line 3762), before beginCluster
+   const obj = createObjState(ObjType.Cluster);
+   obj.emitState = EmitState.CDraw;
+@@ -328,7 +328,7 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob):
+   // C recurses AFTER emit_end_cluster (line 3940-3941): sub-clusters are drawn
+   // with the parent already popped — each has its own independent push/pop.
+   // The map device recursed first (child-first), above.
+-  if (!clustersLast) renderClusters(sg, renderer, job);
++  if (!clustersLast) renderClusters(sg, renderer, job, info);
+ }
+ 
+ /**
+@@ -337,13 +337,13 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob):
+  * @see lib/gvc/gvrender.c:gvrender_box
+  * @see lib/common/emit.c:emit_clusters
+  */
+-export function renderClusters(g: Graph, renderer: RendererPlugin, job: RenderJob): void {
++export function renderClusters(g: Graph, renderer: RendererPlugin, job: RenderJob, info?: LayerInfo): void {
+   const nClust = g.info.n_cluster ?? 0;
+   const clust = g.info.clust;
+   if (nClust === 0 || !clust) return;
+   for (let c = 0; c < nClust; c++) {
+     const sg = clust[c];
+-    if (sg) renderOneCluster(sg, renderer, job);
++    if (sg && clusterShown(info, job, sg)) renderOneCluster(sg, renderer, job, info);
+   }
+ }
+ 
+@@ -404,9 +404,9 @@ function renderPage(g: Graph, renderer: RendererPlugin, job: RenderJob, info: La
+   // device (EMIT_CLUSTERS_LAST) emits their <area> AFTER, so a node/edge area
+   // precedes its enclosing cluster's. @see lib/common/emit.c:emit_view (3513-3565)
+   const clustersLast = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
+-  if (!clustersLast) renderClusters(g, renderer, job);
++  if (!clustersLast) renderClusters(g, renderer, job, info);
+   walkNodesAndEdges(g, renderer, job, info);
+-  if (clustersLast) renderClusters(g, renderer, job);
++  if (clustersLast) renderClusters(g, renderer, job, info);
+   renderer.endPage?.(g, job);
+ }
+ 
+diff --git a/src/gvc/emit-walk.ts b/src/gvc/emit-walk.ts
+index 215aed99..6ea82aa8 100644
+--- a/src/gvc/emit-walk.ts
++++ b/src/gvc/emit-walk.ts
+@@ -19,7 +19,7 @@ import type { Edge } from '../model/edge.js';
+ import { buildOutEdgeIndex } from '../model/node.js';
+ import type { RendererPlugin } from './context.js';
+ import type { RenderJob } from './job.js';
+-import { type LayerInfo, nodeInLayer, edgeInLayer } from '../common/layers.js';
++import { type LayerInfo, nodeInLayer, edgeInLayer, clustInLayer } from '../common/layers.js';
+ import { renderNode, renderEdge } from './device.js';
+ 
+ /** Whether a node is shown in the current layer (always true off-layer). */
+@@ -32,6 +32,11 @@ function edgeShown(info: LayerInfo | undefined, job: RenderJob, e: Edge): boolea
+   return info === undefined || job.numLayers <= 1 || edgeInLayer(info, job.layerNum, e);
+ }
+ 
++/** Whether a cluster is drawn in the current layer. @see emit.c:emit_clusters */
++export function clusterShown(info: LayerInfo | undefined, job: RenderJob, sg: Graph): boolean {
++  return info === undefined || job.numLayers <= 1 || clustInLayer(info, job.layerNum, sg);
++}
++
+ /**
+  * Output order from the `outputorder` graph attr, mirroring C's chkOrder:
+  * `nodesfirst` → EMIT_SORTED, `edgesfirst` → EMIT_EDGE_SORTED, else breadth-first.
+diff --git a/src/render/dot/agwrite.ts b/src/render/dot/agwrite.ts
+index 1839a371..02082118 100644
+--- a/src/render/dot/agwrite.ts
++++ b/src/render/dot/agwrite.ts
+@@ -26,7 +26,7 @@ import {
+   COMPUTED_EDGE_ATTRS, COMPUTED_NODE_ATTRS, appendRecordRects, computedPart, dictParts,
+   echoAttr, echoGraphAttr, edgeAttrsAttached, edgeConnector, edgePosRaw,
+   effectiveEdgeDefaults, effectiveNodeDefaults, graphInputParts, graphLabelAttrs,
+-  isDirected, nodeDictParts, nodePosRaw, nodeRecord, objInputParts,
++  inClusterTree, isDirected, nodeDictParts, nodePosRaw, nodeRecord, objInputParts,
+ } from './attrs.js';
+ import { withLinelength } from './agwrite-linelength.js';
+ import { nodesInSeq } from '../../layout/dot/decomp.js';
+@@ -112,7 +112,7 @@ export abstract class DotWriterBase {
+    *  a boxed graph and an unboxed child — the driver that makes an anon subgraph
+    *  under the root or a cluster "relevant". @see lib/common/output.c:safe_dcl */
+   private hasBb(g: Graph): boolean {
+-    return g === g.root || this.clusters.includes(g);
++    return g === g.root || inClusterTree(g);
+   }
+ 
+   /** Anonymous subgraph with no own node/edge defaults and no graph attrs
+@@ -121,7 +121,7 @@ export abstract class DotWriterBase {
+    *  the parent, empty on the child) and `rank`. @see write.c:irrelevant_subgraph */
+   private irrelevantSubgraph(g: Graph): boolean {
+     if (!this.isAnonymous(g)) return false;
+-    if (this.clusters.includes(g)) return false;
++    if (inClusterTree(g)) return false;
+     if (g.nodeDefaults.size > 0 || g.edgeDefaults.size > 0) return false;
+     if (g.parent) {
+       if (this.hasBb(g) !== this.hasBb(g.parent)) return false;
+@@ -183,7 +183,7 @@ export abstract class DotWriterBase {
+   private writeDicts(g: Graph, top: boolean, ctx: SerCtx): void {
+     const graphParts = top
+       ? this.graphAttrs(g)
+-      : this.clusters.includes(g)
++      : inClusterTree(g)
+         ? this.clusterAttrs(g)
+         : this.subgGraphAttrs(g);
+     this.writeDict('graph', graphParts, ctx);
+@@ -397,7 +397,7 @@ export abstract class DotWriterBase {
+    *  @see plugin/core/gvrender_core_dot.c:284 xdot_end_cluster */
+   private clusterAttrs(sg: Graph): string[] {
+     const d = this.drawsOf(sg);
+-    const parts: string[] = this.emitDraws || d?.draw ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
++    const parts: string[] = (this.emitDraws && this.clusters.includes(sg)) || d?.draw ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
+     if (d?.ldraw) parts.push(this.drawAttr('_ldraw_', d.ldraw));
+     if (sg.info.bb) parts.push('bb="' + this.bbStr(sg) + '"');
+     // rec_attach_bb recurses into GD_clust, so a labelled cluster carries the
+diff --git a/src/render/dot/attrs.ts b/src/render/dot/attrs.ts
+index 5c2cb29e..05c27596 100644
+--- a/src/render/dot/attrs.ts
++++ b/src/render/dot/attrs.ts
+@@ -241,7 +241,7 @@ function ownComputedAttrs(g: Graph, top: boolean, computed: Set<string>): Readon
+ 
+ /** Whether an ancestor's GD_clust holds `g` (a cluster inside an anonymous
+  *  subgraph belongs to the nearest cluster or root above it). */
+-function inClusterTree(g: Graph): boolean {
++export function inClusterTree(g: Graph): boolean {
+   for (let a = g.parent; a !== null; a = a.parent) {
+     if ((a.info.clust ?? []).slice(0, a.info.n_cluster ?? 0).includes(g)) return true;
+   }

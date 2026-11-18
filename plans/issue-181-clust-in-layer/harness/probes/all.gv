@@ -1,0 +1,1 @@
+digraph G { layers="l1:l2:l3"; layersep=":"; layerlistsep=","; a [layer=l1]; subgraph cluster_a { layer=all; b [layer=l3] } subgraph cluster_b { layer="l1,l3"; c [layer=l2] } subgraph cluster_c { layer="2"; d } a -> b }
