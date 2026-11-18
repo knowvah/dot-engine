@@ -406,6 +406,8 @@ export function writeDictSkips(v: string, inherited: string | undefined): boolea
 export function echoGraphAttr(g: Graph, key: string): string[] {
   const v = g.attrs.get(key);
   if (v === undefined) return [];
+  // A seeded value has no local dict symbol: write_dict does not print it.
+  if (g.seededAttrs?.has(key) === true) return [];
   if (writeDictSkips(v, g.graphDefaultsSnapshot?.get(key))) return [];
   return [`${key}=${agstrcanon(v)}`];
 }

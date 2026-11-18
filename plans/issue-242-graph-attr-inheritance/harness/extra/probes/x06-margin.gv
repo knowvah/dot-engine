@@ -1,0 +1,1 @@
+graph G { K=2; margin=1; pad=1; sep=1; subgraph cluster_a { a -- b } c -- a }

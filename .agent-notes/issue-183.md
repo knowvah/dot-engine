@@ -23,9 +23,10 @@
   (`src/parser/builder.ts`, `effectiveGraphDefaults`) gives the same result for every subgraph
   that is opened once. Probes `late`, `nestlate`, `off` in
   `plans/issue-183-inherited-cluster/harness/probes/` are byte-equal to native.
-- **Impact**: any graph attribute C reads with `agget` on a subgraph is inherited this way; the
-  port sees it only for keys in `GRAPH_INHERIT_SEED_KEYS` or through `graphAttrInherited`
-  (#242 is the general case).
+- **Impact**: any graph attribute C reads with `agget` on a subgraph is inherited this way. Since
+  #242 (2026-11-18) the builder seeds every such key into a parsed subgraph's `attrs`
+  (`GRAPH_INHERIT_SEED_KEYS` is gone), and the snapshot is the nearest local symbol's value, pins
+  included. See `.agent-notes/issue-242.md`.
 - **Confidence**: High (C read, 13 probes x 8 engines against native)
 
 ## Observation: dot's pack projection copies `attrs`, not the snapshot

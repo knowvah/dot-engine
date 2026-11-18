@@ -193,8 +193,8 @@ describe('write_dict — local declaration vs inheritance (provenance)', () => {
   });
 
   it('keeps builder-seeded label-family inheritance invisible', () => {
-    // The builder seeds GRAPH_INHERIT_SEED_KEYS into a subgraph's own attrs so
-    // label inheritance survives the layout's cluster rebuilds; those carry no
+    // The builder seeds every inherited graph attribute into a subgraph's own
+    // attrs so inheritance survives the layout's cluster rebuilds; those carry no
     // dict symbol in C and must not print. Only `seededAttrs` distinguishes
     // them from the re-declaration above, which has the identical value.
     const out = dot('digraph G { fontcolor="white"; { rank=same; a; b } c; }');

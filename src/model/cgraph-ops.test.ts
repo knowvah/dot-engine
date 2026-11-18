@@ -12,6 +12,7 @@ import {
   agdelsubg,
   agGraphAttr,
   agNameOf,
+  localGraphAttrs,
 } from './cgraph-ops.js';
 
 const NEW_RANK = '_new_rank';
@@ -176,5 +177,26 @@ describe('agNameOf', () => {
     const g = new Graph('', 'directed', true);
     expect(agNameOf(g)).toBe('%1');
     expect(g.name).toBe('');
+  });
+});
+
+describe('localGraphAttrs — the attributes with a local dict symbol', () => {
+  it('drops the keys the builder seeded from the parent', () => {
+    const g = makeRoot();
+    g.attrs.set('a', '1');
+    g.attrs.set('b', '2');
+    g.seededAttrs = new Set(['b']);
+    expect([...localGraphAttrs(g)]).toEqual([['a', '1']]);
+    // The graph's own map is untouched.
+    expect([...g.attrs]).toEqual([['a', '1'], ['b', '2']]);
+  });
+
+  it('returns a copy of attrs when nothing was seeded', () => {
+    const g = makeRoot();
+    g.attrs.set('a', '1');
+    g.attrs.set('b', '2');
+    const local = localGraphAttrs(g);
+    expect([...local]).toEqual([['a', '1'], ['b', '2']]);
+    expect(local).not.toBe(g.attrs);
   });
 });

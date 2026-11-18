@@ -47,7 +47,7 @@ import { gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
 import { attachAttrs, nodeLayoutAttrs } from './dot/write-back.js';
 import { attachBeforeWriteWithClusterEdges as attachFirst, jsonNodes, labelSubgs, lookupCluster } from './json-cluster-edge.js';
 import { attrsWithoutLayoutBb } from '../gvc/layout-bb.js';
-import { agNameOf } from '../model/cgraph-ops.js';
+import { agNameOf, localGraphAttrs } from '../model/cgraph-ops.js';
 import { CHAR_LATIN1 } from '../common/graph-init.js';
 import { parse } from '../parser/index.js';
 import { render as deviceRender } from '../gvc/device.js';
@@ -277,7 +277,7 @@ function collectDrawLookup(g: Graph): DrawLookup | undefined {
     for (const [nm, gChild] of gSub.subgraphs) {
       const xgChild = xgSub.subgraphs.get(nm);
       if (xgChild !== undefined) {
-        cluster.set(gChild, new Map(xgChild.attrs));
+        cluster.set(gChild, localGraphAttrs(xgChild));
         correlate(gChild, xgChild);
       } else {
         correlate(gChild, xgSub);

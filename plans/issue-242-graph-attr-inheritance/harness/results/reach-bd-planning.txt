@@ -1,0 +1,19 @@
+# Reach bytediff at planning: base 27110d7d vs prototype, 225 reach ids (all but
+# 2475_1, 2475_2), 8 engines, 5 formats. jobs 9000: identical 8952, diffs 8,
+# capped 40 (every capped job capped on base AND head: TIMEOUT or OOM).
+# diff key            native verdict
+1472|dot|json         native json invalid (control byte); judged by the UTF-8 control
+1472|dot|plain        toward native (236 -> 213 native lines missing); UTF-8 control equal to native
+1472|dot|svg          toward native; UTF-8 control 3 lines (header floor)
+1472|dot|xdot         toward native (830 -> 754); UTF-8 control equal to native
+2242|fdp|json         equal to native (compare-json: 754 diffs on base, 0 on head)
+2242|fdp|plain        equal to native
+2242|fdp|svg          3 lines (header floor), base 99
+2242|fdp|xdot         equal to native
+# capped on both sides (unchanged class, no verdict):
+# 2621 x {circo,dot,fdp} x 5 formats: TIMEOUT at 120 s
+# 2781_1 x {circo,fdp,neato,sfdp,twopi} x 5 formats: OOM
+# not run at planning (each job about 2 minutes per side): 2475_1, 2475_2.
+# They seed only rankdir=BT into anonymous clusters; rankdir is read only on the
+# root (src/common/graph-init.ts:308). Analogue extra/2475-shape.gv: 40 of 40
+# jobs identical.

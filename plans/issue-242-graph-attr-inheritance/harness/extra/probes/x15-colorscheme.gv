@@ -1,0 +1,1 @@
+digraph G { colorscheme=blues9; peripheries=0; subgraph cluster_a { color=3; a } subgraph cluster_b { peripheries=1; b } a -> b }

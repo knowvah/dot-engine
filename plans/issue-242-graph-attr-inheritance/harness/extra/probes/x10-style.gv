@@ -1,0 +1,1 @@
+digraph G { style="rounded,filled"; fillcolor=lightblue; gradientangle=90; bgcolor="red:blue"; subgraph cluster_a { a } { rank=same; b; c } a -> b }

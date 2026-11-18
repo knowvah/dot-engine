@@ -1,0 +1,1 @@
+digraph G { bgcolor=yellow; style=filled; color=red; penwidth=3; peripheries=2; subgraph cluster_a { a -> b } subgraph cluster_b { pencolor=blue; c } }

@@ -1,0 +1,1 @@
+digraph G { subgraph cluster_a { x } ordering=out; subgraph cluster_a { subgraph cluster_b { r -> c0; r -> c1; r -> c2 } } s -> o0; s -> o1; s -> o2; c0 -> o1; c1 -> o0; c1 -> o0 }

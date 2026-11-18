@@ -1,0 +1,43 @@
+diff --git a/src/parser/builder.ts b/src/parser/builder.ts
+index 3e9b9396..5aa70c98 100644
+--- a/src/parser/builder.ts
++++ b/src/parser/builder.ts
+@@ -320,9 +320,8 @@ export class StmtProcessor {
+     // genuine local declaration: cgraph gives a local declaration its own dict
+     // symbol (printed by write_dict) even when the value equals the inherited
+     // one, whereas a seeded value must stay invisible. @see src/render/dot.ts
+-    for (const key of GRAPH_INHERIT_SEED_KEYS) {
+-      const v = sg.graphDefaultsSnapshot.get(key);
+-      if (v !== undefined && !sg.attrs.has(key)) {
++    for (const [key, v] of sg.graphDefaultsSnapshot) {
++      if (!sg.attrs.has(key)) {
+         sg.attrs.set(key, v);
+         (sg.seededAttrs ??= new Set()).add(key);
+       }
+diff --git a/src/render/dot/attrs.ts b/src/render/dot/attrs.ts
+index b27025ae..89510bbc 100644
+--- a/src/render/dot/attrs.ts
++++ b/src/render/dot/attrs.ts
+@@ -406,6 +406,7 @@ export function writeDictSkips(v: string, inherited: string | undefined): boolea
+ export function echoGraphAttr(g: Graph, key: string): string[] {
+   const v = g.attrs.get(key);
+   if (v === undefined) return [];
++  if (g.seededAttrs?.has(key) === true) return [];
+   if (writeDictSkips(v, g.graphDefaultsSnapshot?.get(key))) return [];
+   return [`${key}=${agstrcanon(v)}`];
+ }
+diff --git a/src/render/json.ts b/src/render/json.ts
+index 376d53c7..50c20a9c 100644
+--- a/src/render/json.ts
++++ b/src/render/json.ts
+@@ -277,7 +277,9 @@ function collectDrawLookup(g: Graph): DrawLookup | undefined {
+     for (const [nm, gChild] of gSub.subgraphs) {
+       const xgChild = xgSub.subgraphs.get(nm);
+       if (xgChild !== undefined) {
+-        cluster.set(gChild, new Map(xgChild.attrs));
++        const own = new Map(xgChild.attrs);
++        for (const k of xgChild.seededAttrs ?? []) own.delete(k);
++        cluster.set(gChild, own);
+         correlate(gChild, xgChild);
+       } else {
+         correlate(gChild, xgSub);

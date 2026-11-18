@@ -8,7 +8,7 @@
   no new seq, no new `graphDefaultsSnapshot`, no seeding pass. The subgraph keeps its nodes,
   edges, child subgraphs, `nodeDefaults`, `edgeDefaults` and local attributes across bodies. A
   same name under another parent is a different subgraph. A named re-open takes no anonymous id.
-- **Impact**: seeding (`GRAPH_INHERIT_SEED_KEYS`) runs once, after the FIRST body. Code that adds
+- **Impact**: seeding (every snapshot key since #242) runs once, after the FIRST body. Code that adds
   a seeded key must not assume the body it follows is the only one. A graph-attribute statement
   in a later body goes through `declareGraphAttr`, which removes the key from `seededAttrs` (C
   gives it a local symbol, `lib/cgraph/attr.c:setattr`); a new path that sets `attrs` on a

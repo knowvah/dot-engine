@@ -108,8 +108,8 @@ export class Graph {
 
   /**
    * Keys in `attrs` the BUILDER seeded from `graphDefaultsSnapshot` rather than
-   * the input declaring them in this scope (see builder.ts GRAPH_LABEL_INHERIT_
-   * KEYS). cgraph distinguishes these structurally — a seeded value is inherited
+   * the input declaring them in this scope: every key of the snapshot the
+   * scope did not set (agmakeattrs). cgraph distinguishes these structurally — a seeded value is inherited
    * through the dict view and has no local symbol, while a local declaration
    * creates one even when its value equals the inherited value — so the
    * serializer needs the provenance to decide what write_dict would print.
@@ -117,6 +117,17 @@ export class Graph {
    * @see lib/cgraph/write.c:262 write_dict
    */
   seededAttrs?: Set<string>;
+
+  /**
+   * Graph-attribute keys this subgraph holds a local symbol for without having
+   * declared them: `unviewsubgraphsattr` gives each direct subgraph one, with
+   * its current value, when the parent updates its own symbol. The value is
+   * the `attrs` entry (absent for the empty default). A subgraph opened in
+   * this one later copies that value, not a nearer ancestor's newer one.
+   * Undefined on the root and on a subgraph that was never pinned.
+   * @see lib/cgraph/attr.c:232 unviewsubgraphsattr
+   */
+  pinnedAttrs?: Set<string>;
 
   /**
    * Graph-attribute keys whose declaration in THIS scope was the first anywhere

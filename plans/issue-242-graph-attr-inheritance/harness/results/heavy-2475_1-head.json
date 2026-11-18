@@ -1,0 +1,24 @@
+{
+ "bundleA": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T//i242/base.mjs",
+ "bundleB": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T//i242/head.mjs",
+ "jobs": 7,
+ "identical": 4,
+ "diffs": [],
+ "capped": [
+  {
+   "key": "2475_1|circo|xdot",
+   "a": "TIMEOUT",
+   "b": "CRASH SIGKILL "
+  },
+  {
+   "key": "2475_1|fdp|xdot",
+   "a": "TIMEOUT",
+   "b": "CRASH SIGKILL "
+  },
+  {
+   "key": "2475_1|sfdp|xdot",
+   "a": "TIMEOUT",
+   "b": "CRASH SIGKILL "
+  }
+ ]
+}
