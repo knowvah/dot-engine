@@ -1,0 +1,6 @@
+base referer
+default x
+rect na 88,33 160,81
+rect nb 8,57 80,105
+rect cell 35,15 53,45
+rect c 5,5 83,108

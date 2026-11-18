@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="poly" id="edge1" href="eu" title="et" alt="" coords="78,145,160,146,156,150,78,150"/>
+<area shape="rect" id="edge1-label" href="lu" title="L" alt="" coords="106,125,118,148"/>
+<area shape="rect" id="edge1-label" href="lu" title="L" alt="" coords="104,148,118,170"/>
+<area shape="rect" id="edge1-headlabel" href="hu" title="H" alt="" coords="159,125,173,148"/>
+<area shape="rect" id="edge1-taillabel" href="tu" title="T" alt="" coords="78,125,89,148"/>
+<area shape="poly" id="node3" href="cu" title="c" alt="" coords="269,52,268,44,262,38,254,32,244,29,233,28,222,29,212,32,204,38,199,44,197,52,199,59,204,66,212,71,222,75,233,76,244,75,254,71,262,66,268,59"/>
+</map>

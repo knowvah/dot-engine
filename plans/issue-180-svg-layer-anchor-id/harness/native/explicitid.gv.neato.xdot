@@ -1,0 +1,48 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 46.64 125.21 46.64 125.21 0 ",
+		bb="0,0,125.21,46.639",
+		id=root,
+		layer=all,
+		layers="l1:l2:l3",
+		tooltip=rt,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_k {
+		graph [URL=k,
+			_draw_="c 7 -#000000 p 4 0 10.64 0 46.64 54 46.64 54 10.64 ",
+			bb="0,10.639,54,46.639",
+			id=ck
+		];
+		a	[URL=u,
+			_draw_="c 7 -#000000 e 27 28.64 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 24.44 0 6.21 1 -a ",
+			height=0.5,
+			id=na,
+			pos="27,28.639",
+			width=0.75];
+	}
+	b	[_draw_="c 7 -#000000 e 98.21 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 98.21 13.8 0 7 1 -b ",
+		height=0.5,
+		pos="98.21,18",
+		tooltip=tb,
+		width=0.75];
+	a -> b	[URL=ue,
+		_draw_="c 7 -#000000 B 4 53.52 24.68 55.71 24.35 57.95 24.01 60.21 23.68 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 60.56 27.16 69.94 22.22 59.53 20.24 ",
+		_hldraw_="F 14 11 -Times-Roman c 7 -#000000 T 66.38 9.4 0 10.11 1 -H ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 61.14 28.38 0 8.55 1 -L ",
+		_tldraw_="F 14 11 -Times-Roman c 7 -#000000 T 57.79 12.08 0 8.55 1 -T ",
+		headURL=hu,
+		head_lp="66.379,13.6",
+		headlabel=H,
+		id=ea,
+		label=L,
+		labelURL=lu,
+		lp="61.139,32.577",
+		pos="e,71.434,22 53.516,24.677 55.71,24.35 57.954,24.014 60.211,23.677",
+		tailURL=tu,
+		tail_lp="57.792,16.277",
+		taillabel=T];
+}

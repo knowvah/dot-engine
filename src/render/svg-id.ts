@@ -2,9 +2,11 @@
 //
 // SVG object id + class resolution, faithful to C's getObjId
 // (lib/common/emit.c:209) and svg_print_id_class
-// (plugin/core/gvrender_core_svg.c). A non-empty DOT `id` attribute wins
-// verbatim; otherwise the generated `<pfx><seq>` id is used, with a `<gid>_`
-// prefix on non-root objects when the root graph carries an `id` attribute
+// (plugin/core/gvrender_core_svg.c). Every id starts with `<layer>_` on a
+// layer after the first (layerPagePrefix, in job.objId). Then a non-empty DOT
+// `id` attribute wins; otherwise the generated `<pfx><seq>` id is used, with a
+// `<gid>_` prefix on non-root objects when the root graph carries an `id`
+// attribute
 // (job.drawingId, from drawingIdOf). That prefix belongs to the graph, not to
 // the svg plugin: every renderer that prints an object id (svg, the imagemaps)
 // gets the same one. The DOT `class` attribute, when present, is appended to

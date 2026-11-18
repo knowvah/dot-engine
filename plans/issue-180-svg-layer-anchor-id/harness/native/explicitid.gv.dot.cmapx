@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="poly" id="na" href="u" title="a" alt="" coords="99,51,97,43,92,37,84,31,74,28,63,27,52,28,42,31,34,37,28,43,27,51,28,58,34,65,42,70,52,73,63,75,74,73,84,70,92,65,97,58"/>
+<area shape="poly" id="root_node2" title="tb" alt="" coords="99,169,97,162,92,155,84,150,74,146,63,145,52,146,42,150,34,155,28,162,27,169,28,176,34,183,42,188,52,192,63,193,74,192,84,188,92,183,97,176"/>
+<area shape="poly" id="ea" href="ue" title="L" alt="" coords="64,73,65,130,60,129,61,77"/>
+<area shape="rect" id="ea-label" href="lu" title="L" alt="" coords="63,99,74,121"/>
+<area shape="rect" id="ea-headlabel" href="hu" title="H" alt="" coords="49,122,63,145"/>
+<area shape="rect" id="ea-taillabel" href="tu" title="T" alt="" coords="51,75,63,97"/>
+<area shape="rect" id="ck" href="k" title="rt" alt="" coords="16,16,109,85"/>
+<area shape="rect" id="root" title="rt" alt="" coords="0,-0,125,198"/>
+</map>

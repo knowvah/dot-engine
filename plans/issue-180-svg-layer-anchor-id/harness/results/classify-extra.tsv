@@ -1,0 +1,204 @@
+probe	engine	format	baseLines	headLines	baseDiff	headDiff	changed	nowNative	lostNative	notNative
+layersep-all.gv	dot	svg	104	104	18	0	9	9	0	0
+layersep-all.gv	neato	svg	104	104	18	0	9	9	0	0
+layersep-all.gv	fdp	svg	104	104	18	0	9	9	0	0
+layersep-all.gv	sfdp	svg	65	65	10	0	5	5	0	0
+layersep-all.gv	circo	svg	65	65	10	0	5	5	0	0
+layersep-all.gv	twopi	svg	65	65	10	0	5	5	0	0
+layersep-all.gv	osage	svg	104	104	18	0	9	9	0	0
+layersep-all.gv	patchwork	svg	77	77	12	0	6	6	0	0
+layersep-all.gv	dot	cmapx	9	9	0	0	0	0	0	0
+layersep-all.gv	neato	cmapx	9	9	0	0	0	0	0	0
+layersep-all.gv	fdp	cmapx	9	9	0	0	0	0	0	0
+layersep-all.gv	sfdp	cmapx	7	7	0	0	0	0	0	0
+layersep-all.gv	circo	cmapx	7	7	0	0	0	0	0	0
+layersep-all.gv	twopi	cmapx	7	7	0	0	0	0	0	0
+layersep-all.gv	osage	cmapx	9	9	0	0	0	0	0	0
+layersep-all.gv	patchwork	cmapx	7	7	0	0	0	0	0	0
+layersep-all.gv	dot	cmapx_np	8	8	0	0	0	0	0	0
+layersep-all.gv	neato	cmapx_np	8	8	0	0	0	0	0	0
+layersep-all.gv	fdp	cmapx_np	8	8	0	0	0	0	0	0
+layersep-all.gv	sfdp	cmapx_np	6	6	0	0	0	0	0	0
+layersep-all.gv	circo	cmapx_np	6	6	0	0	0	0	0	0
+layersep-all.gv	twopi	cmapx_np	6	6	0	0	0	0	0	0
+layersep-all.gv	osage	cmapx_np	8	8	0	0	0	0	0	0
+layersep-all.gv	patchwork	cmapx_np	7	7	0	0	0	0	0	0
+layersep.gv	dot	svg	104	104	31	17	9	7	0	2
+    <g id="a_clust1_1"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_two_clust1_1"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+    <g id="a_clust1_2"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_three_clust1_2"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+layersep.gv	neato	svg	104	104	31	17	9	7	0	2
+    <g id="a_clust1_1"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_two_clust1_1"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+    <g id="a_clust1_2"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_three_clust1_2"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+layersep.gv	fdp	svg	104	104	31	17	9	7	0	2
+    <g id="a_clust1_1"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_two_clust1_1"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+    <g id="a_clust1_2"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_three_clust1_2"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+layersep.gv	sfdp	svg	65	65	10	0	5	5	0	0
+layersep.gv	circo	svg	65	65	10	0	5	5	0	0
+layersep.gv	twopi	svg	65	65	10	0	5	5	0	0
+layersep.gv	osage	svg	104	104	31	17	9	7	0	2
+    <g id="a_clust1_1"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_two_clust1_1"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+    <g id="a_clust1_2"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_three_clust1_2"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+layersep.gv	patchwork	svg	77	77	19	7	6	6	0	0
+layersep.gv	dot	cmapx	9	9	0	0	0	0	0	0
+layersep.gv	neato	cmapx	9	9	0	0	0	0	0	0
+layersep.gv	fdp	cmapx	9	9	0	0	0	0	0	0
+layersep.gv	sfdp	cmapx	7	7	0	0	0	0	0	0
+layersep.gv	circo	cmapx	7	7	0	0	0	0	0	0
+layersep.gv	twopi	cmapx	7	7	0	0	0	0	0	0
+layersep.gv	osage	cmapx	9	9	0	0	0	0	0	0
+layersep.gv	patchwork	cmapx	7	7	0	0	0	0	0	0
+layersep.gv	dot	cmapx_np	8	8	0	0	0	0	0	0
+layersep.gv	neato	cmapx_np	8	8	0	0	0	0	0	0
+layersep.gv	fdp	cmapx_np	8	8	0	0	0	0	0	0
+layersep.gv	sfdp	cmapx_np	6	6	0	0	0	0	0	0
+layersep.gv	circo	cmapx_np	6	6	0	0	0	0	0	0
+layersep.gv	twopi	cmapx_np	6	6	0	0	0	0	0	0
+layersep.gv	osage	cmapx_np	8	8	0	0	0	0	0	0
+layersep.gv	patchwork	cmapx_np	7	7	0	0	0	0	0	0
+record.gv	dot	svg	47	47	12	6	3	3	0	0
+record.gv	neato	svg	47	47	12	6	3	3	0	0
+record.gv	fdp	svg	47	47	12	6	3	3	0	0
+record.gv	sfdp	svg	47	47	12	6	3	3	0	0
+record.gv	circo	svg	47	47	12	6	3	3	0	0
+record.gv	twopi	svg	47	47	12	6	3	3	0	0
+record.gv	osage	svg	47	47	12	6	3	3	0	0
+record.gv	patchwork	svg	32	32	2	0	1	1	0	0
+record.gv	dot	cmapx	6	6	2	2	0	0	0	0
+record.gv	neato	cmapx	6	6	2	2	0	0	0	0
+record.gv	fdp	cmapx	6	6	2	2	0	0	0	0
+record.gv	sfdp	cmapx	6	6	2	2	0	0	0	0
+record.gv	circo	cmapx	6	6	2	2	0	0	0	0
+record.gv	twopi	cmapx	6	6	2	2	0	0	0	0
+record.gv	osage	cmapx	6	6	2	2	0	0	0	0
+record.gv	patchwork	cmapx	5	5	0	0	0	0	0	0
+record.gv	dot	cmapx_np	5	5	2	2	0	0	0	0
+record.gv	neato	cmapx_np	5	5	2	2	0	0	0	0
+record.gv	fdp	cmapx_np	5	5	2	2	0	0	0	0
+record.gv	sfdp	cmapx_np	5	5	2	2	0	0	0	0
+record.gv	circo	cmapx_np	5	5	2	2	0	0	0	0
+record.gv	twopi	cmapx_np	5	5	2	2	0	0	0	0
+record.gv	osage	cmapx_np	5	5	2	2	0	0	0	0
+record.gv	patchwork	cmapx_np	5	5	0	0	0	0	0	0
+selectmap-inherit.gv	dot	svg	53	53	16	6	7	5	0	2
+    <g id="a_R_clust1"><a xlink:href="c" xlink:title="&lt;TABLE&gt;"> => <g id="a_l2_R_clust1"><a xlink:href="c" xlink:title="&lt;TABLE&gt;">
+    <g id="a_R_clust1_0"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_l2_R_clust1_0"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+selectmap-inherit.gv	neato	svg	53	53	16	6	7	5	0	2
+    <g id="a_R_clust1"><a xlink:href="c" xlink:title="&lt;TABLE&gt;"> => <g id="a_l2_R_clust1"><a xlink:href="c" xlink:title="&lt;TABLE&gt;">
+    <g id="a_R_clust1_0"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_l2_R_clust1_0"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+selectmap-inherit.gv	fdp	svg	53	53	16	6	7	5	0	2
+    <g id="a_R_clust1"><a xlink:href="c" xlink:title="&lt;TABLE&gt;"> => <g id="a_l2_R_clust1"><a xlink:href="c" xlink:title="&lt;TABLE&gt;">
+    <g id="a_R_clust1_0"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_l2_R_clust1_0"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+selectmap-inherit.gv	sfdp	svg	40	40	10	0	5	5	0	0
+selectmap-inherit.gv	circo	svg	40	40	10	0	5	5	0	0
+selectmap-inherit.gv	twopi	svg	40	40	10	0	5	5	0	0
+selectmap-inherit.gv	osage	svg	53	53	16	6	7	5	0	2
+    <g id="a_R_clust1"><a xlink:href="c" xlink:title="&lt;TABLE&gt;"> => <g id="a_l2_R_clust1"><a xlink:href="c" xlink:title="&lt;TABLE&gt;">
+    <g id="a_R_clust1_0"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;"> => <g id="a_l2_R_clust1_0"><a xlink:href="cell" xlink:title="&lt;TABLE&gt;">
+selectmap-inherit.gv	patchwork	svg	34	34	10	4	4	3	0	1
+    <g id="a_R_clust1"><a xlink:href="c"> => <g id="a_l2_R_clust1"><a xlink:href="c">
+selectmap-inherit.gv	dot	cmapx	10	10	14	4	7	5	0	2
+    <area shape="rect" id="R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="54,120,71,150"/> => <area shape="rect" id="l2_R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="54,120,71,150"/>
+    <area shape="rect" id="R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="16,110,109,229"/> => <area shape="rect" id="l2_R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="16,110,109,229"/>
+selectmap-inherit.gv	neato	cmapx	10	10	14	4	7	5	0	2
+    <area shape="rect" id="R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="33,15,50,45"/> => <area shape="rect" id="l2_R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="33,15,50,45"/>
+    <area shape="rect" id="R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,77,53"/> => <area shape="rect" id="l2_R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,77,53"/>
+selectmap-inherit.gv	fdp	cmapx	10	10	14	4	7	5	0	2
+    <area shape="rect" id="R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="43,15,61,45"/> => <area shape="rect" id="l2_R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="43,15,61,45"/>
+    <area shape="rect" id="R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,99,124"/> => <area shape="rect" id="l2_R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,99,124"/>
+selectmap-inherit.gv	sfdp	cmapx	8	8	10	0	5	5	0	0
+selectmap-inherit.gv	circo	cmapx	8	8	10	0	5	5	0	0
+selectmap-inherit.gv	twopi	cmapx	8	8	10	0	5	5	0	0
+selectmap-inherit.gv	osage	cmapx	10	10	14	4	7	5	0	2
+    <area shape="rect" id="R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="35,15,53,45"/> => <area shape="rect" id="l2_R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="35,15,53,45"/>
+    <area shape="rect" id="R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,83,108"/> => <area shape="rect" id="l2_R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,83,108"/>
+selectmap-inherit.gv	patchwork	cmapx	7	7	8	2	4	3	0	1
+    <area shape="rect" id="R_clust1" href="c" alt="" coords="5,5,35,65"/> => <area shape="rect" id="l2_R_clust1" href="c" alt="" coords="5,5,35,65"/>
+selectmap-inherit.gv	dot	cmapx_np	9	9	12	4	6	4	0	2
+    <area shape="rect" id="R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="54,120,71,150"/> => <area shape="rect" id="l2_R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="54,120,71,150"/>
+    <area shape="rect" id="R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="16,110,109,229"/> => <area shape="rect" id="l2_R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="16,110,109,229"/>
+selectmap-inherit.gv	neato	cmapx_np	9	9	12	4	6	4	0	2
+    <area shape="rect" id="R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="33,15,50,45"/> => <area shape="rect" id="l2_R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="33,15,50,45"/>
+    <area shape="rect" id="R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,77,53"/> => <area shape="rect" id="l2_R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,77,53"/>
+selectmap-inherit.gv	fdp	cmapx_np	9	9	12	4	6	4	0	2
+    <area shape="rect" id="R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="43,15,61,45"/> => <area shape="rect" id="l2_R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="43,15,61,45"/>
+    <area shape="rect" id="R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,99,124"/> => <area shape="rect" id="l2_R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,99,124"/>
+selectmap-inherit.gv	sfdp	cmapx_np	7	7	8	0	4	4	0	0
+selectmap-inherit.gv	circo	cmapx_np	7	7	8	0	4	4	0	0
+selectmap-inherit.gv	twopi	cmapx_np	7	7	8	0	4	4	0	0
+selectmap-inherit.gv	osage	cmapx_np	9	9	12	4	6	4	0	2
+    <area shape="rect" id="R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="35,15,53,45"/> => <area shape="rect" id="l2_R_clust1_0" href="cell" title="&lt;TABLE&gt;" alt="" coords="35,15,53,45"/>
+    <area shape="rect" id="R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,83,108"/> => <area shape="rect" id="l2_R_clust1" href="c" title="&lt;TABLE&gt;" alt="" coords="5,5,83,108"/>
+selectmap-inherit.gv	patchwork	cmapx_np	7	7	8	2	4	3	0	1
+    <area shape="rect" id="R_clust1" href="c" alt="" coords="5,5,35,65"/> => <area shape="rect" id="l2_R_clust1" href="c" alt="" coords="5,5,35,65"/>
+selectmap.gv	dot	svg	53	53	14	0	7	7	0	0
+selectmap.gv	neato	svg	53	53	14	0	7	7	0	0
+selectmap.gv	fdp	svg	53	53	14	0	7	7	0	0
+selectmap.gv	sfdp	svg	40	40	10	0	5	5	0	0
+selectmap.gv	circo	svg	40	40	10	0	5	5	0	0
+selectmap.gv	twopi	svg	40	40	10	0	5	5	0	0
+selectmap.gv	osage	svg	53	53	14	0	7	7	0	0
+selectmap.gv	patchwork	svg	34	34	8	0	4	4	0	0
+selectmap.gv	dot	cmapx	10	10	14	0	7	7	0	0
+selectmap.gv	neato	cmapx	10	10	14	0	7	7	0	0
+selectmap.gv	fdp	cmapx	10	10	14	0	7	7	0	0
+selectmap.gv	sfdp	cmapx	8	8	10	0	5	5	0	0
+selectmap.gv	circo	cmapx	8	8	10	0	5	5	0	0
+selectmap.gv	twopi	cmapx	8	8	10	0	5	5	0	0
+selectmap.gv	osage	cmapx	10	10	14	0	7	7	0	0
+selectmap.gv	patchwork	cmapx	7	7	8	0	4	4	0	0
+selectmap.gv	dot	cmapx_np	9	9	12	0	6	6	0	0
+selectmap.gv	neato	cmapx_np	9	9	12	0	6	6	0	0
+selectmap.gv	fdp	cmapx_np	9	9	12	0	6	6	0	0
+selectmap.gv	sfdp	cmapx_np	7	7	8	0	4	4	0	0
+selectmap.gv	circo	cmapx_np	7	7	8	0	4	4	0	0
+selectmap.gv	twopi	cmapx_np	7	7	8	0	4	4	0	0
+selectmap.gv	osage	cmapx_np	9	9	12	0	6	6	0	0
+selectmap.gv	patchwork	cmapx_np	7	7	8	0	4	4	0	0
+textpath.gv	dot	svg	46	46	12	8	2	2	0	0
+textpath.gv	neato	svg	46	46	12	8	2	2	0	0
+textpath.gv	fdp	svg	46	46	12	8	2	2	0	0
+textpath.gv	sfdp	svg	46	46	12	8	2	2	0	0
+textpath.gv	circo	svg	46	46	12	8	2	2	0	0
+textpath.gv	twopi	svg	46	46	12	8	2	2	0	0
+textpath.gv	osage	svg	46	46	12	8	2	2	0	0
+textpath.gv	patchwork	svg	26	26	0	0	0	0	0	0
+textpath.gv	dot	cmapx	5	5	0	0	0	0	0	0
+textpath.gv	neato	cmapx	5	5	0	0	0	0	0	0
+textpath.gv	fdp	cmapx	5	5	0	0	0	0	0	0
+textpath.gv	sfdp	cmapx	5	5	0	0	0	0	0	0
+textpath.gv	circo	cmapx	5	5	0	0	0	0	0	0
+textpath.gv	twopi	cmapx	5	5	0	0	0	0	0	0
+textpath.gv	osage	cmapx	5	5	0	0	0	0	0	0
+textpath.gv	patchwork	cmapx	3	3	0	0	0	0	0	0
+textpath.gv	dot	cmapx_np	4	4	0	0	0	0	0	0
+textpath.gv	neato	cmapx_np	4	4	0	0	0	0	0	0
+textpath.gv	fdp	cmapx_np	4	4	0	0	0	0	0	0
+textpath.gv	sfdp	cmapx_np	4	4	0	0	0	0	0	0
+textpath.gv	circo	cmapx_np	4	4	0	0	0	0	0	0
+textpath.gv	twopi	cmapx_np	4	4	0	0	0	0	0	0
+textpath.gv	osage	cmapx_np	4	4	0	0	0	0	0	0
+textpath.gv	patchwork	cmapx_np	3	3	0	0	0	0	0	0
+xmlesc.gv	dot	svg	84	84	18	0	9	9	0	0
+xmlesc.gv	neato	svg	84	84	18	0	9	9	0	0
+xmlesc.gv	fdp	svg	84	84	18	0	9	9	0	0
+xmlesc.gv	sfdp	svg	84	84	18	0	9	9	0	0
+xmlesc.gv	circo	svg	84	84	18	0	9	9	0	0
+xmlesc.gv	twopi	svg	84	84	18	0	9	9	0	0
+xmlesc.gv	osage	svg	84	84	18	0	9	9	0	0
+xmlesc.gv	patchwork	svg	62	62	12	0	6	6	0	0
+xmlesc.gv	dot	cmapx	10	10	0	0	0	0	0	0
+xmlesc.gv	neato	cmapx	10	10	0	0	0	0	0	0
+xmlesc.gv	fdp	cmapx	10	10	0	0	0	0	0	0
+xmlesc.gv	sfdp	cmapx	10	10	0	0	0	0	0	0
+xmlesc.gv	circo	cmapx	10	10	0	0	0	0	0	0
+xmlesc.gv	twopi	cmapx	10	10	0	0	0	0	0	0
+xmlesc.gv	osage	cmapx	10	10	0	0	0	0	0	0
+xmlesc.gv	patchwork	cmapx	7	7	0	0	0	0	0	0
+xmlesc.gv	dot	cmapx_np	8	8	0	0	0	0	0	0
+xmlesc.gv	neato	cmapx_np	8	8	0	0	0	0	0	0
+xmlesc.gv	fdp	cmapx_np	8	8	0	0	0	0	0	0
+xmlesc.gv	sfdp	cmapx_np	8	8	0	0	0	0	0	0
+xmlesc.gv	circo	cmapx_np	8	8	0	0	0	0	0	0
+xmlesc.gv	twopi	cmapx_np	8	8	0	0	0	0	0	0
+xmlesc.gv	osage	cmapx_np	8	8	0	0	0	0	0	0
+xmlesc.gv	patchwork	cmapx_np	7	7	0	0	0	0	0	0

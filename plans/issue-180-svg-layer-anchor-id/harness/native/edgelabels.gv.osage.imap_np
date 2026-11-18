@@ -1,0 +1,6 @@
+base referer
+rect lu 96,7 107,29
+rect lu 86,29 99,52
+rect hu 87,7 100,29
+rect tu 95,29 107,52
+rect cu 23,59 95,107

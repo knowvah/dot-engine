@@ -407,7 +407,7 @@ export function svgBeginPage(g: Graph, job: RenderJob): void {
     : -clip.ll.x + job.margin.x / z;
   const ty = clip.ur.y + job.margin.y / z;
   emitGraphGroupOpen(
-    job.idLayerPrefix() + svgGraphId(g, job),
+    svgGraphId(g, job),
     svgGraphClass(g),
     tx, ty, job,
   );

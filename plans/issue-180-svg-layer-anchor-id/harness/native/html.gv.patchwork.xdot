@@ -1,0 +1,36 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 81.52 44.72 81.52 44.72 0 ",
+		_ldraw_="S 5 -solid c 7 -#000000 p 4 11.31 4 11.31 32.8 33.42 32.8 33.42 4 S 5 -solid c 7 -#000000 p 4 14.31 7 14.31 29.8 30.42 29.8 30.42 \
+7 F 14 11 -Times-Roman c 7 -#000000 T 17.31 12.8 -1 10.11 1 -G ",
+		bb="0,0,44.722,81.522",
+		label=<<table href="http://g"><tr><td href="http://gc">G</td></tr></table>>,
+		layer=all,
+		layers="l1:l2",
+		lheight=0.40,
+		lp="22.361,18.4",
+		lwidth=0.31,
+		xdotversion=1.7
+	];
+	node [label="\N",
+		shape=box
+	];
+	subgraph cluster_k {
+		graph [_draw_="c 7 -#000000 p 4 0 36.8 0 81.52 22.36 81.52 22.36 36.8 ",
+			bb="0.00055901,36.801,22.361,81.522",
+			label=<<table href="http://k"><tr><td href="http://kc">K</td></tr></table>>
+		];
+		n	[_draw_="c 7 -#000000 p 4 22.36 81.52 0 81.52 0 36.8 22.36 36.8 ",
+			_ldraw_="S 5 -solid c 7 -#000000 p 4 0.13 44.76 0.13 73.56 22.24 73.56 22.24 44.76 S 5 -solid c 7 -#000000 p 4 3.13 47.76 3.13 70.56 19.24 \
+70.56 19.24 47.76 F 14 11 -Times-Roman c 7 -#000000 T 6.13 53.56 -1 10.11 1 -N ",
+			height=0.62113,
+			label=<<table href="http://n"><tr><td href="http://nc" title="t">N</td></tr></table>>,
+			pos="11.181,59.161",
+			width=0.31056];
+	}
+	m	[_draw_="c 7 -#000000 p 4 44.72 81.52 22.36 81.52 22.36 36.8 44.72 36.8 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 33.54 54.96 0 10.89 1 -m ",
+		height=0.62113,
+		pos="33.542,59.161",
+		width=0.31056];
+	m -> n	[label=<<table href="http://e"><tr><td href="http://ec">E</td></tr></table>>];
+}

@@ -1,0 +1,9 @@
+<map id="G" name="G">
+<area shape="poly" id="node1" href="na" title="a" alt="" coords="77,29,76,22,70,15,62,10,52,7,41,5,30,7,20,10,12,15,7,22,5,29,7,37,12,43,20,49,30,52,41,53,52,52,62,49,70,43,76,37"/>
+<area shape="poly" id="node2" href="nb" title="b" alt="" coords="77,148,76,140,70,134,62,128,52,125,41,124,30,125,20,128,12,134,7,140,5,148,7,155,12,162,20,167,30,171,41,172,52,171,62,167,70,162,76,155"/>
+<area shape="poly" id="edge1" href="e" title="L" alt="" coords="42,51,44,108,39,108,41,56"/>
+<area shape="rect" id="edge1-label" href="e" title="L" alt="" coords="41,77,53,100"/>
+<area shape="poly" id="node3" href="nc" title="c" alt="" coords="77,245,76,238,70,231,62,226,52,222,41,221,30,222,20,226,12,231,7,238,5,245,7,252,12,259,20,264,30,268,41,269,52,268,62,264,70,259,76,252"/>
+<area shape="poly" id="edge2" href="f" alt="" coords="42,170,44,206,39,205,40,174"/>
+<area shape="rect" id="graph0" href="x" alt="" coords="0,-0,83,274"/>
+</map>

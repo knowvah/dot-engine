@@ -1,0 +1,1 @@
+digraph G { layers="l1:l2"; node [shape=record]; a [layer=l1 URL="na" label="{x|<p>y}"]; b [layer=l2 URL="nb" label="{<q>u|v}" tooltip="tb"]; a:p -> b:q [layer=l2 URL="e" headURL="h" tailURL="t" headlabel="H" taillabel="T"] }

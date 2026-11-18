@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="edge1-label" href="lu" title="L" alt="" coords="106,125,118,148"/>
+<area shape="rect" id="edge1-label" href="lu" title="L" alt="" coords="104,148,118,170"/>
+<area shape="rect" id="edge1-headlabel" href="hu" title="H" alt="" coords="159,125,173,148"/>
+<area shape="rect" id="edge1-taillabel" href="tu" title="T" alt="" coords="78,125,89,148"/>
+<area shape="rect" id="node3" href="cu" title="c" alt="" coords="197,28,269,76"/>
+</map>

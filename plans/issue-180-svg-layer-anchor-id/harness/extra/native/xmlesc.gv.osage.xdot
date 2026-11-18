@@ -1,0 +1,45 @@
+digraph G {
+	graph [URL=x,
+		_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 76 112 76 112 0 ",
+		bb="0,0,112,76",
+		layers="a&b:c<d:e\"f",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	a	[URL=na,
+		_draw_="c 7 -#000000 e 27 58 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 53.8 0 6.21 1 -a ",
+		height=0.5,
+		layer="a&b",
+		pos="27,58",
+		width=0.75];
+	b	[URL=nb,
+		_draw_="c 7 -#000000 C 42 -[58 58 112 58 2 0 7 -#ff0000 1 7 -#0000ff] E 85 58 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 85 53.8 0 7 1 -b ",
+		fillcolor="red:blue",
+		height=0.5,
+		layer="c<d",
+		pos="85,58",
+		style=filled,
+		width=0.75];
+	c	[URL=nc,
+		_draw_="c 7 -#000000 e 27 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 6.21 1 -c ",
+		height=0.5,
+		layer="e\"f",
+		pos="27,18",
+		width=0.75];
+	a -> b	[URL=e,
+		_draw_="c 7 -#000000 B 4 54.3 58 54.45 58 54.6 58 54.74 58 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 46.32 61.5 56.32 58 46.32 54.5 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 58.8 62.2 0 8.55 1 -L ",
+		label=L,
+		layer="c<d",
+		lp="58.798,66.4",
+		pos="e,57.831,58 54.302,58 54.449,58 54.596,58 54.743,58"];
+	b -> c	[URL=f,
+		_draw_="c 7 -#000000 B 4 66.01 44.9 62.57 42.53 58.91 40.01 55.28 37.5 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 57.3 34.65 47.08 31.85 53.33 40.41 ",
+		layer="e\"f",
+		pos="e,45.836,30.99 66.009,44.903 62.569,42.53 58.914,40.01 55.275,37.5"];
+}

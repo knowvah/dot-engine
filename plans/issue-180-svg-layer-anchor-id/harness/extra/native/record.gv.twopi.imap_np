@@ -1,0 +1,5 @@
+base referer
+rect na 101,11 173,78
+rect nb 5,11 77,78
+rect h 77,5 91,28
+rect t 90,38 101,61
