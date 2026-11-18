@@ -30,7 +30,8 @@
   The port lists them in `attrs` insertion order: a node now reads `pos, height, width, label`
   (`attachNode`'s set order, then the `\N` default); before #184 it read
   `label, pos, width, height`. Neither is native's. No test pins the order; the json bar is
-  structural (`compareJson`, #136 AD-2). The root `name` also differs (`%1`, #185).
+  structural (`compareJson`, #136 AD-2). The root `name` of a nameless graph
+  differed too (`%1`) until #185 fixed it.
 - **Impact**: json0 can never be byte-compared with native; use `compareJson`. The queue's
   bytediff default formats leave json0 out for the same reason.
 - **Confidence**: High (`plans/issue-184-json0-attach-before-write/harness/native/ab.gv.dot.json0`)
