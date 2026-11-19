@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: EPL-2.0
 //
-// Fitness test (issue #147, docs/adr/0002-graphviz-16.1.1-oracle.md): the
-// oracle location lives in ONE module, test/corpus/oracle-paths.mjs. No other
-// file under test/ may hardcode the oracle binary or a plugin dir as a code
-// default, and the one shell script that cannot import the module must carry
-// the same two literals. Retired pango plugin dir check: it added ~55 ms per
+// Fitness test (issue #147, docs/adr/0002-graphviz-16.1.1-oracle.md,
+// docs/adr/0003-upstream-fix-forward.md): the oracle location lives in ONE
+// module, test/corpus/oracle-paths.mjs. No other file under test/ may hardcode
+// the oracle binary or a plugin dir as a code default. The two shell scripts
+// that cannot import the module (gen-headless-gvbindir.sh: pristine defaults;
+// build-carried-oracle.sh: carried dirs + worktree + pristine build default)
+// are exempt but must carry literals that agree with it. Retired pango plugin dir check: it added ~55 ms per
 // native render and inflated PERF.md.
 //
 // The corpus root moved with the oracle (issue #148): it is the oracle
@@ -24,23 +26,28 @@ import {
   ORACLE_GRAPHVIZ_BUILD,
   ORACLE_GVBINDIR,
   ORACLE_GVBINDIR_ALL,
+  ORACLE_PRISTINE_GRAPHVIZ_BUILD,
+  ORACLE_PRISTINE_GVBINDIR,
+  ORACLE_PRISTINE_GVBINDIR_ALL,
 } from './oracle-paths.mjs';
 import { corpusRoot } from './enumerate.js';
 
 const TEST_DIR = fileURLToPath(new URL('../', import.meta.url));
 const GENERATOR = 'test/corpus/gen-headless-gvbindir.sh';
+const CARRIED_BUILDER = 'test/corpus/build-carried-oracle.sh';
 const EXEMPT = new Set([
   'test/corpus/oracle-paths.mjs',
   'test/corpus/oracle-paths.d.mts',
   'test/corpus/gvbindir-defaults.test.ts',
   GENERATOR,
+  CARRIED_BUILDER,
 ]);
 const SOURCE_RE = /\.(ts|mts|mjs|js|sh)$/;
 const RETIRED_GVBINDIR = ['/tmp', 'gvplugins'].join('/');
 /** A quoted literal (', ", or `) that contains an oracle path: a code default. */
-const HARDCODED_RE = /['"`][^'"`\n]*(git\/graphviz\/build|git\/graphviz-16|\/tmp\/ghl)/;
+const HARDCODED_RE = /['"`][^'"`\n]*(git\/graphviz\/build|git\/graphviz-16|git\/sseely\/graphviz-carried|\/tmp\/ghl)/;
 /** A script command line is shell, not a quoted literal: any oracle path is a default. */
-const SCRIPT_RE = /git\/graphviz\/build|git\/graphviz-16|\/tmp\/ghl/;
+const SCRIPT_RE = /git\/graphviz\/build|git\/graphviz-16|git\/sseely\/graphviz-carried|\/tmp\/ghl/;
 /** The 16.1.0 checkout's corpus root, relative to the home dir (retired by #148). */
 const RETIRED_CORPUS_ROOT = ['git', 'graphviz', 'tests'].join('/');
 /** A home-dir join of the retired corpus root: a code default, not message data. */
@@ -49,6 +56,10 @@ const ROOT_DEFAULT_RE = new RegExp(`homedir\\(\\).*${RETIRED_CORPUS_ROOT}|${RETI
 const COMMENT_RE = /^\s*(\/\/|\/\*|\*|#)/;
 const SH_BUILD_RE = /GRAPHVIZ_BUILD:-\$HOME\/([^}]*)\}/;
 const SH_OUT_RE = /OUT="\$\{1:-([^}]*)\}"/;
+const SH_CARRIED_DIR_RE = /CARRIED_DIR="\$\{CARRIED_DIR:-\$HOME\/([^}]*)\}"/;
+const SH_PRISTINE_RE = /PRISTINE_BUILD="\$\{PRISTINE_BUILD:-\$HOME\/([^}]*)\}"/;
+const SH_GVBINDIR_DOT_RE = /^GVBINDIR_DOT="([^"]*)"/m;
+const SH_GVBINDIR_ALL_RE = /^GVBINDIR_ALL="([^"]*)"/m;
 const SH_ALL_RE = /ALL_OUT="\$\{2:-([^}]*)\}"/;
 const PACKAGE_JSON = 'package.json';
 
@@ -138,8 +149,8 @@ function withRootInputs<T>(argvRoot: string | undefined, envRoot: string | undef
 describe('defaultGvbindir', () => {
   it('uses the dot-only dir for dot and the all-engines dir otherwise', () => {
     withGvbindir(undefined, () => {
-      expect(defaultGvbindir('dot')).toBe('/tmp/ghl1611');
-      expect(defaultGvbindir('neato')).toBe('/tmp/ghl1611-all');
+      expect(defaultGvbindir('dot')).toBe('/tmp/ghl1611-carried');
+      expect(defaultGvbindir('neato')).toBe('/tmp/ghl1611-carried-all');
       expect(defaultGvbindir('circo')).toBe(ORACLE_GVBINDIR_ALL);
       expect(defaultGvbindir('dot')).toBe(ORACLE_GVBINDIR);
     });
@@ -175,14 +186,28 @@ describe('oracle location', () => {
     expect(hardcodedLines("const A = '/tmp/ghl1611';")).toEqual([1]);
     expect(hardcodedLines("join(homedir(), 'git/graphviz/build/cmd/dot/dot')")).toEqual([1]);
     expect(hardcodedLines('const D = `${h}/git/graphviz-16.1.1/build`;')).toEqual([1]);
+    expect(hardcodedLines("const C = '/tmp/ghl1611-carried-all';")).toEqual([1]);
+    expect(hardcodedLines("join(homedir(), 'git/sseely/graphviz-carried/build')")).toEqual([1]);
     expect(hardcodedLines("// 'GVBINDIR=/tmp/ghl1611' dot -Tsvg")).toEqual([]);
     expect(hardcodedLines(' * Refs (`GVBINDIR=/tmp/ghl dot -Tsvg`);')).toEqual([]);
   });
 
-  it('the shell generator carries the same literals as oracle-paths.mjs', () => {
+  it('the shell generator carries the pristine literals of oracle-paths.mjs', () => {
     const sh = readFileSync(join(TEST_DIR, '..', GENERATOR), 'utf8');
-    expect(`${homedir()}/${SH_BUILD_RE.exec(sh)?.[1]}`).toBe(ORACLE_GRAPHVIZ_BUILD);
-    expect(SH_OUT_RE.exec(sh)?.[1]).toBe(ORACLE_GVBINDIR);
+    expect(`${homedir()}/${SH_BUILD_RE.exec(sh)?.[1]}`).toBe(ORACLE_PRISTINE_GRAPHVIZ_BUILD);
+    expect(SH_OUT_RE.exec(sh)?.[1]).toBe(ORACLE_PRISTINE_GVBINDIR);
+  });
+
+  it('the carried builder carries the carried literals of oracle-paths.mjs', () => {
+    const sh = readFileSync(join(TEST_DIR, '..', CARRIED_BUILDER), 'utf8');
+    expect(`${homedir()}/${SH_CARRIED_DIR_RE.exec(sh)?.[1]}/build`).toBe(ORACLE_GRAPHVIZ_BUILD);
+    expect(SH_GVBINDIR_DOT_RE.exec(sh)?.[1]).toBe(ORACLE_GVBINDIR);
+    expect(SH_GVBINDIR_ALL_RE.exec(sh)?.[1]).toBe(ORACLE_GVBINDIR_ALL);
+  });
+
+  it('the carried builder defaults its pristine build to ORACLE_PRISTINE_GRAPHVIZ_BUILD', () => {
+    const sh = readFileSync(join(TEST_DIR, '..', CARRIED_BUILDER), 'utf8');
+    expect(`${homedir()}/${SH_PRISTINE_RE.exec(sh)?.[1]}`).toBe(ORACLE_PRISTINE_GRAPHVIZ_BUILD);
   });
 
   it('no script references the retired pango plugin dir', () => {
@@ -191,13 +216,14 @@ describe('oracle location', () => {
 
   it('the shell generator carries the all-engines default of oracle-paths.mjs', () => {
     const sh = readFileSync(join(TEST_DIR, '..', GENERATOR), 'utf8');
-    expect(SH_ALL_RE.exec(sh)?.[1]).toBe(ORACLE_GVBINDIR_ALL);
+    expect(SH_ALL_RE.exec(sh)?.[1]).toBe(ORACLE_PRISTINE_GVBINDIR_ALL);
   });
 });
 
 describe('corpus root', () => {
-  it('is the oracle checkout\'s tests directory', () => {
-    expect(ORACLE_CORPUS_ROOT).toBe(join(dirname(ORACLE_GRAPHVIZ_BUILD), 'tests'));
+  it('is the pristine checkout\'s tests directory, independent of the carried build', () => {
+    expect(ORACLE_CORPUS_ROOT).toBe(join(dirname(ORACLE_PRISTINE_GRAPHVIZ_BUILD), 'tests'));
+    expect(ORACLE_CORPUS_ROOT.startsWith(dirname(ORACLE_GRAPHVIZ_BUILD))).toBe(false);
   });
 
   it('enumerate.ts resolves argv, then CORPUS_ROOT, then the constant', () => {
