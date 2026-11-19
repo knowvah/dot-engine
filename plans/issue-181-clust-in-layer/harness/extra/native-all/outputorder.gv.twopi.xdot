@@ -1,0 +1,42 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 108 243 108 243 0 ",
+		bb="0,0,243,108",
+		layers="l1:l2",
+		outputorder=edgesfirst,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_c {
+		b	[_draw_="c 7 -#000000 e 27 18 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 7 1 -b ",
+			height=0.5,
+			layer=l2,
+			pos="27,18",
+			width=0.75];
+	}
+	subgraph cluster_d {
+		c	[_draw_="c 7 -#000000 e 216 90 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 216 85.8 0 6.21 1 -c ",
+			height=0.5,
+			pos="216,90",
+			width=0.75];
+		d	[_draw_="c 7 -#000000 e 144 90 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 144 85.8 0 7 1 -d ",
+			height=0.5,
+			pos="144,90",
+			width=0.75];
+		c -> d	[_draw_="c 7 -#000000 B 4 188.78 90 186.72 90 184.62 90 182.5 90 ",
+			_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 182.77 86.5 172.77 90 182.77 93.5 ",
+			layer=l1,
+			pos="e,171.26,90 188.78,90 186.72,90 184.62,90 182.5,90"];
+	}
+	a	[_draw_="c 7 -#000000 e 99 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 99 13.8 0 6.21 1 -a ",
+		height=0.5,
+		layer=l1,
+		pos="99,18",
+		width=0.75];
+	a -> b	[_draw_="c 7 -#000000 B 4 71.78 18 69.72 18 67.62 18 65.5 18 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 65.77 14.5 55.77 18 65.77 21.5 ",
+		pos="e,54.259,18 71.78,18 69.719,18 67.617,18 65.504,18"];
+}

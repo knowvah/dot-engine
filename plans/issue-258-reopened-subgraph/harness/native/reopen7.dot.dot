@@ -1,0 +1,12 @@
+graph G {
+	graph [bb="0,0,126,36"];
+	node [label="\N"];
+	subgraph p {
+		x	[height=0.5,
+			pos="27,18",
+			width=0.75];
+		y	[height=0.5,
+			pos="99,18",
+			width=0.75];
+	}
+}

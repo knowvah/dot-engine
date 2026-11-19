@@ -1,0 +1,1 @@
+graph { forcelabels=false; node [xlabel="a very long exterior label"]; a -- b; a -- c; b -- c; c -- d; a -- d; }

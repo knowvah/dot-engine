@@ -1,0 +1,6 @@
+digraph G {
+  subgraph cluster_a { subgraph cluster_x { a } subgraph s { subgraph cluster_x2 {c} } }
+  subgraph cluster_b { subgraph cluster_x { b } }
+  subgraph cluster_c { subgraph cluster_x { d } subgraph cluster_x2 { e } }
+  subgraph x { subgraph cluster_a { f } }
+}

@@ -1,0 +1,1 @@
+digraph G { layers="a;b;c;d"; layersep=";"; layerlistsep="+"; subgraph cluster_r { layer="a;b+d"; x } subgraph cluster_s { y [layer="b;c"] } subgraph cluster_t { layer="3"; z [layer=a] } x -> y; y -> z }

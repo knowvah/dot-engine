@@ -1,0 +1,20 @@
+graph G {
+	graph [bb="0,0,243.62,86",
+		cluster=yes
+	];
+	node [label="\N"];
+	{
+		a	[height=0.5,
+			pos="27,18",
+			width=0.75];
+		b	[height=0.5,
+			pos="137,68",
+			width=0.75];
+	}
+	{
+		c	[height=0.5,
+			pos="216.62,18",
+			width=0.75];
+	}
+	a -- c	[pos="54.168,18 90.112,18 153.12,18 189.19,18"];
+}

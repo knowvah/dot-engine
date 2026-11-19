@@ -1,0 +1,56 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 240 142 240 142 0 ",
+		_ldraw_="F 20 7 -Courier c 7 -#ff0000 T 128 10 0 12 1 -L ",
+		bb="0,0,142,240",
+		fontcolor=red,
+		fontname=Courier,
+		fontsize=20,
+		label=L,
+		labeljust=r,
+		labelloc=b,
+		lheight=0.33,
+		lp="128,16",
+		lwidth=0.17,
+		nojustify=true,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_a {
+		graph [_draw_="c 7 -#000000 p 4 8 76 8 232 78 232 78 76 ",
+			_ldraw_="F 20 7 -Courier c 7 -#ff0000 T 64 86 0 12 1 -L ",
+			bb="8,76,78,232",
+			lheight=0.33,
+			lp="63.999,92",
+			lwidth=0.17
+		];
+		a	[_draw_="c 7 -#000000 e 43 206 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 201.8 0 6.21 1 -a ",
+			height=0.5,
+			pos="43,206",
+			width=0.75];
+		b	[_draw_="c 7 -#000000 e 43 134 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 129.8 0 7 1 -b ",
+			height=0.5,
+			pos="43,134",
+			width=0.75];
+		a -> b	[_draw_="c 7 -#000000 B 4 43 187.7 43 180.41 43 171.73 43 163.54 ",
+			_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 46.5 163.62 43 153.62 39.5 163.62 ",
+			pos="e,43,152.1 43,187.7 43,180.41 43,171.73 43,163.54"];
+	}
+	{
+		graph [rank=same];
+		c	[_draw_="c 7 -#000000 e 43 50 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 45.8 0 6.21 1 -c ",
+			height=0.5,
+			pos="43,50",
+			width=0.75];
+		d	[_draw_="c 7 -#000000 e 115 50 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 115 45.8 0 7 1 -d ",
+			height=0.5,
+			pos="115,50",
+			width=0.75];
+	}
+	b -> c	[_draw_="c 7 -#000000 B 4 43 115.61 43 105.17 43 91.64 43 79.66 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 46.5 79.88 43 69.88 39.5 79.88 ",
+		pos="e,43,68.365 43,115.61 43,105.17 43,91.64 43,79.658"];
+}

@@ -468,7 +468,7 @@ describe('buildMapCtx — dpi/resolution override', () => {
     const job = makeJob();
     job.pad = { x: 4, y: 4 };
     const ctx = buildMapCtx(g, job, true);
-    expect(ctx.scale).toBeCloseTo(150 / 72, 6);
+    expect([ctx.scale.x, -ctx.scale.y]).toEqual([150 / 72, 150 / 72]);
   });
 
   it('resolution attr is used when dpi is absent', () => {
@@ -477,7 +477,7 @@ describe('buildMapCtx — dpi/resolution override', () => {
     const job = makeJob();
     job.pad = { x: 4, y: 4 };
     const ctx = buildMapCtx(g, job, true);
-    expect(ctx.scale).toBeCloseTo(150 / 72, 6);
+    expect([ctx.scale.x, -ctx.scale.y]).toEqual([150 / 72, 150 / 72]);
   });
 
   it('mapPolygon=false is threaded through', () => {

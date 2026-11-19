@@ -1,0 +1,1 @@
+digraph G { compound=true; newrank=true; rank=same; subgraph cluster_a { a; b } subgraph cluster_b { c } a -> c [lhead=cluster_b] }

@@ -1,0 +1,42 @@
+digraph G {
+	graph [URL=g,
+		_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 88.8 133.46 88.8 133.46 0 ",
+		bb="0,0,133.46,88.8",
+		id=G,
+		layer=all,
+		layers="l1:l2",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_k {
+		graph [URL=k,
+			_draw_="c 7 -#000000 p 4 0 0 0 88.8 70 88.8 70 0 ",
+			_ldraw_="S 5 -solid c 7 -#000000 p 4 23.94 56 23.94 84.8 46.06 84.8 46.06 56 S 5 -solid c 7 -#000000 p 4 26.94 59 26.94 81.8 43.06 81.8 43.06 \
+59 F 14 11 -Times-Roman c 7 -#000000 T 29.94 64.8 -1 10.11 1 -K ",
+			bb="3.9968e-15,0,70,88.8",
+			id="",
+			label=<<table><tr><td href="http://kc">K</td></tr></table>>,
+			lheight=0.40,
+			lp="35,70.4",
+			lwidth=0.31
+		];
+		a	[URL=na,
+			_draw_="c 7 -#000000 C 40 -[8 26 62 26 2 0 7 -#ff0000 1 7 -#0000ff] E 35 26 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 35 21.8 0 6.21 1 -a ",
+			fillcolor="red:blue",
+			height=0.5,
+			pos="35,26",
+			style=filled,
+			width=0.75];
+	}
+	b	[_draw_="c 7 -#000000 e 106.46 33.72 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 106.46 29.52 0 7 1 -b ",
+		height=0.5,
+		pos="106.46,33.723",
+		width=0.75];
+	a -> b	[URL=e,
+		_draw_="c 7 -#000000 B 4 62.02 28.92 63.97 29.13 65.97 29.35 67.97 29.56 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 67.58 33.04 77.9 30.64 68.34 26.08 ",
+		pos="e,79.408,30.799 62.017,28.92 63.974,29.131 65.967,29.347 67.973,29.563",
+		tooltip=te];
+}

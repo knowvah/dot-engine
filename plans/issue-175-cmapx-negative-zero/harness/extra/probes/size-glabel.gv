@@ -1,0 +1,1 @@
+graph{size="1.5,1.5"; label="L"; URL="g"; a [URL="a"]; a--b [URL="e"]; b--c; c--a}

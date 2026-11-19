@@ -15,6 +15,7 @@ import {
 import { arrowEndClip, tailArrowEndClip, arrowClipLength, distFused } from './edge-route-clip.js';
 import { arrowDrawOpsForEnd, edgeArrowName, edgeArrowsize } from './edge-route-arrow.js';
 import { edgePenwidthAttr, edgeRenderPenwidth } from './edge-route-helpers.js';
+import { mkClustMap } from '../../common/clust-map.js';
 
 // Re-export geometry helpers so existing callers (tests) import from one place.
 export {
@@ -23,27 +24,6 @@ export {
   splineIntersectf,
   tryLeftSide, tryRightSide, tryBottomSide, tryTopSide, boxIntersectf,
 } from './compound-clip.js';
-
-// ---------------------------------------------------------------------------
-// Cluster map
-// ---------------------------------------------------------------------------
-
-/** Recursively populate name→cluster map. @see lib/common/utils.c:fillMap */
-export function fillClustMap(g: Graph, map: Map<string, Graph>): void {
-  const nc = g.info.n_cluster ?? 0;
-  for (let c = 1; c <= nc; c++) {
-    const cl = g.info.clust![c - 1];
-    if (!map.has(cl.name)) map.set(cl.name, cl);
-    fillClustMap(cl, map);
-  }
-}
-
-/** Build a name→cluster map for all clusters reachable from g. @see lib/common/utils.c:mkClustMap */
-export function mkClustMap(g: Graph): Map<string, Graph> {
-  const map = new Map<string, Graph>();
-  fillClustMap(g, map);
-  return map;
-}
 
 // ---------------------------------------------------------------------------
 // ClipState — shared between head/tail clip helpers

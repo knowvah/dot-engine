@@ -1,0 +1,16 @@
+graph G {
+	graph [bb="0,0,126,36"];
+	node [label="\N"];
+	subgraph p {
+		a	[height=0.5,
+			pos="27,18",
+			width=0.75];
+	}
+	subgraph x {
+		subgraph p {
+			b	[height=0.5,
+				pos="99,18",
+				width=0.75];
+		}
+	}
+}

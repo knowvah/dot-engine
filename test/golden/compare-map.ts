@@ -9,16 +9,17 @@
 // formatting is `%.0f` in every branch (rect/circle/poly, all three of
 // IMAP/CMAP/CMAPX) — i.e. the C oracle NEVER emits a fractional coordinate;
 // every AF[i].x/y is rounded to the nearest integer by printf before it
-// reaches the page. The port mirrors this with `Math.round` (src/render/
-// map.ts:cmapxCoords*/mapOutputImap). Both sides are therefore ALREADY
-// integer-rounded text by the time this comparator sees them — the
-// "coords numerically" instruction reduces to comparing the parsed integers
-// for EXACT equality (MAP_TOLERANCE = 0), not a ±epsilon window. A delta of
-// exactly 1 at a `.5` decision boundary would mean the two sides used
-// different round-half rules (JS `Math.round` = half-up; C `printf %.0f` =
-// current FP rounding mode, normally round-half-to-even) — kept visible as a
+// reaches the page. The port prints with the same `%.0f` (printfFixed0, in
+// src/render/map.ts:cmapxCoords*/mapOutputImap), ties to even and `-0`
+// included (issue #175). Both sides are therefore ALREADY integer-rounded
+// text by the time this comparator sees them — the "coords numerically"
+// instruction reduces to comparing the parsed integers for EXACT equality
+// (MAP_TOLERANCE = 0), not a ±epsilon window. A delta of exactly 1 would
+// mean the two sides computed different coordinates — kept visible as a
 // `numeric` diff rather than silently tolerated, so a real occurrence shows
-// up as its own dashboard bucket instead of being masked.
+// up as its own dashboard bucket instead of being masked. The comparison is
+// numeric, so `-0` equals `0` here; the sign of zero is pinned byte for byte
+// by src/render/map-coords-sign.test.ts.
 //
 // cmapx is XML (`<map><area .../></map>`): parsed with the SAME
 // `@xmldom/xmldom` DOMParser test/golden/normalize.ts already uses for SVG,

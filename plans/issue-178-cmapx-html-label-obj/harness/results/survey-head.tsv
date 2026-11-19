@@ -1,0 +1,1012 @@
+input	engine	format	lines	baseDiff	headDiff	verdict
+1425.dot	dot	svg	26	3	3	unchanged
+1425.dot	dot	xdot	18	0	0	unchanged
+1425.dot	dot	cmapx	4	0	0	unchanged
+1425_1.dot	dot	svg	75	3	3	unchanged
+1425_1.dot	dot	xdot	53	0	0	unchanged
+1425_1.dot	dot	cmapx	9	0	0	unchanged
+1494.dot	dot	svg	270	226	226	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952
+  port       throw new ParseError(
+  port             ^
+  port ParseError: Expected "#", "-", ".", "/*", "//", ":", ";", "<", "[", "\"", "{", "}", [ \t\r\n], [0-9], [A-Za-z_0-9\x80-\u{FFFF}], [A-Za-z_\x80-\u{FFFF}], [Ee], [
+  port     at Module.parse (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952:13)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:40:39)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:96:3 {
+  port   type: 'syntax',
+  port   code: 'SYNTAX_ERROR',
+  port   friendlyMessage: 'There is a syntax error in the DOT source.',
+  port   location: { line: 4, column: 100, offset: 167 },
+  port   expected: [
+  port     {
+  port       type: 'class',
+  port       parts: [
+  port         [ 'A', 'Z' ],
+  port         [ 'a', 'z' ],
+  port         '_',
+  port         [ '0', '9' ],
+  port         [ '\x80', '￿' ]
+  port       ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: ':', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [
+  port         [ 'A', 'Z' ],
+  port         [ 'a', 'z' ],
+  port         '_',
+  port         [ '0', '9' ],
+  port         [ '\x80', '￿' ]
+  port       ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'other', description: 'edge operator' },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: '[', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: ';', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'G', 'g' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'N', 'n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'E', 'e' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'S', 's' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'S', 's' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '{', ignoreCase: false },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: '}', ignoreCase: false }
+  port   ]
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+1494.dot	dot	xdot	267	225	225	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952
+  port       throw new ParseError(
+  port             ^
+  port 
+  port ParseError: Expected "#", "-", ".", "/*", "//", ":", ";", "<", "[", "\"", "{", "}", [ \t\r\n], [0-9], [A-Za-z_0-9\x80-\u{FFFF}], [A-Za-z_\x80-\u{FFFF}], [Ee], [
+  port     at Module.parse (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952:13)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:40:39)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:96:3 {
+  port   type: 'syntax',
+  port   code: 'SYNTAX_ERROR',
+  port   friendlyMessage: 'There is a syntax error in the DOT source.',
+  port   location: { line: 4, column: 100, offset: 167 },
+  port   expected: [
+  port     {
+  port       type: 'class',
+  port       parts: [
+  port         [ 'A', 'Z' ],
+  port         [ 'a', 'z' ],
+  port         '_',
+  port         [ '0', '9' ],
+  port         [ '\x80', '￿' ]
+  port       ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: ':', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [
+  port         [ 'A', 'Z' ],
+  port         [ 'a', 'z' ],
+  port         '_',
+  port         [ '0', '9' ],
+  port         [ '\x80', '￿' ]
+  port       ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'other', description: 'edge operator' },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: '[', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: ';', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'G', 'g' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'N', 'n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'E', 'e' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'S', 's' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'S', 's' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '{', ignoreCase: false },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: '}', ignoreCase: false }
+  port   ]
+  port Node.js v26.3.1
+  port 
+1494.dot	dot	cmapx	2	226	226	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952
+  port       throw new ParseError(
+  port             ^
+  port ParseError: Expected "#", "-", ".", "/*", "//", ":", ";", "<", "[", "\"", "{", "}", [ \t\r\n], [0-9], [A-Za-z_0-9\x80-\u{FFFF}], [A-Za-z_\x80-\u{FFFF}], [Ee], [
+  port     at Module.parse (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952:13)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:40:39)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:96:3 {
+  port   type: 'syntax',
+  port   code: 'SYNTAX_ERROR',
+  port   friendlyMessage: 'There is a syntax error in the DOT source.',
+  port   location: { line: 4, column: 100, offset: 167 },
+  port   expected: [
+  port     {
+  port       type: 'class',
+  port       parts: [
+  port         [ 'A', 'Z' ],
+  port         [ 'a', 'z' ],
+  port         '_',
+  port         [ '0', '9' ],
+  port         [ '\x80', '￿' ]
+  port       ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: ':', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [
+  port         [ 'A', 'Z' ],
+  port         [ 'a', 'z' ],
+  port         '_',
+  port         [ '0', '9' ],
+  port         [ '\x80', '￿' ]
+  port       ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'other', description: 'edge operator' },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: '[', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: ';', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'G', 'g' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'N', 'n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'E', 'e' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'S', 's' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ 'S', 's' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '{', ignoreCase: false },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '"', ignoreCase: false },
+  port     { type: 'literal', text: '<', ignoreCase: false },
+  port     { type: 'literal', text: '-', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ '0', '9' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '.', ignoreCase: false },
+  port     {
+  port       type: 'class',
+  port       parts: [ [ 'A', 'Z' ], [ 'a', 'z' ], '_', [ '\x80', '￿' ] ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: '}', ignoreCase: false }
+  port   ]
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+1622_0.dot	dot	svg	20	3	3	unchanged
+1622_0.dot	dot	xdot	24	0	0	unchanged
+1622_0.dot	dot	cmapx	2	0	0	unchanged
+1622_1.dot	dot	svg	24	3	3	unchanged
+1622_1.dot	dot	xdot	25	0	0	unchanged
+1622_1.dot	dot	cmapx	2	0	0	unchanged
+1622_2.dot	dot	svg	25	3	3	unchanged
+1622_2.dot	dot	xdot	101	0	0	unchanged
+1622_2.dot	dot	cmapx	2	0	0	unchanged
+1622_3.dot	dot	svg	22	3	3	unchanged
+1622_3.dot	dot	xdot	25	0	0	unchanged
+1622_3.dot	dot	cmapx	2	0	0	unchanged
+1864.dot	dot	svg	0	-	-	timeout
+1864.dot	dot	xdot	0	-	-	timeout
+1864.dot	dot	cmapx	0	-	-	timeout
+1879.dot	dot	svg	9239	3	3	unchanged
+1879.dot	dot	xdot	13361	0	0	unchanged
+1879.dot	dot	cmapx	539	0	0	unchanged
+1898.dot	dot	svg	459	3	3	unchanged
+1898.dot	dot	xdot	547	0	0	unchanged
+1898.dot	dot	cmapx	2	0	0	unchanged
+1949.dot	dot	svg	198	3	3	unchanged
+1949.dot	dot	xdot	326	0	0	unchanged
+1949.dot	dot	cmapx	2	0	0	unchanged
+2159.dot	dot	svg	46	3	3	unchanged
+2159.dot	dot	xdot	51	0	0	unchanged
+2159.dot	dot	cmapx	2	0	0	unchanged
+2242.dot	dot	svg	229	3	3	unchanged
+2242.dot	dot	xdot	340	0	0	unchanged
+2242.dot	dot	cmapx	2	0	0	unchanged
+2295.dot	dot	svg	22	3	3	unchanged
+2295.dot	dot	xdot	16	0	0	unchanged
+2295.dot	dot	cmapx	3	0	0	unchanged
+2470.dot	dot	svg	7759	3	3	unchanged
+2470.dot	dot	xdot	20217	0	0	unchanged
+2470.dot	dot	cmapx	2	0	0	unchanged
+2471.dot	dot	svg	13822	3	3	unchanged
+2471.dot	dot	xdot	36951	0	0	unchanged
+2471.dot	dot	cmapx	2	0	0	unchanged
+2475_1.dot	dot	svg	0	-	-	timeout
+2475_1.dot	dot	xdot	0	-	-	timeout
+2475_1.dot	dot	cmapx	0	-	-	timeout
+2475_2.dot	dot	svg	132251	3	3	unchanged
+2475_2.dot	dot	xdot	106131	77	77	unchanged
+2475_2.dot	dot	cmapx	2	0	0	unchanged
+2497.dot	dot	svg	35	3	3	unchanged
+2497.dot	dot	xdot	51	0	0	unchanged
+2497.dot	dot	cmapx	2	0	0	unchanged
+2516.dot	dot	svg	18	3	3	unchanged
+2516.dot	dot	xdot	23	0	0	unchanged
+2516.dot	dot	cmapx	2	0	0	unchanged
+2538.dot	dot	svg	0	165	165	unchanged
+2538.dot	dot	xdot	0	213	213	unchanged
+2538.dot	dot	cmapx	0	2	2	unchanged
+2592.dot	dot	svg	72	3	3	unchanged
+2592.dot	dot	xdot	140	0	0	unchanged
+2592.dot	dot	cmapx	2	0	0	unchanged
+2619.dot	dot	svg	19	3	3	unchanged
+2619.dot	dot	xdot	13	0	0	unchanged
+2619.dot	dot	cmapx	2	0	0	unchanged
+2619_1.dot	dot	svg	142	3	3	unchanged
+2619_1.dot	dot	xdot	122	0	0	unchanged
+2619_1.dot	dot	cmapx	11	0	0	unchanged
+2619_2.dot	dot	svg	142	3	3	unchanged
+2619_2.dot	dot	xdot	122	0	0	unchanged
+2619_2.dot	dot	cmapx	11	0	0	unchanged
+2727.dot	dot	svg	24	3	3	unchanged
+2727.dot	dot	xdot	19	0	0	unchanged
+2727.dot	dot	cmapx	2	1	1	unchanged
+2782.dot	dot	svg	72	3	3	unchanged
+2782.dot	dot	xdot	80	0	0	unchanged
+2782.dot	dot	cmapx	2	0	0	unchanged
+2821_0.dot	dot	svg	32	3	3	unchanged
+2821_0.dot	dot	xdot	24	0	0	unchanged
+2821_0.dot	dot	cmapx	2	0	0	unchanged
+2821_1.dot	dot	svg	32	3	3	unchanged
+2821_1.dot	dot	xdot	24	0	0	unchanged
+2821_1.dot	dot	cmapx	2	0	0	unchanged
+2821_2.dot	dot	svg	18	3	3	unchanged
+2821_2.dot	dot	xdot	13	0	0	unchanged
+2821_2.dot	dot	cmapx	2	0	0	unchanged
+2841.dot	dot	svg	0	54	54	unchanged
+2841.dot	dot	xdot	0	67	67	unchanged
+2841.dot	dot	cmapx	0	2	2	unchanged
+358.dot	dot	svg	67	3	3	unchanged
+358.dot	dot	xdot	62	0	0	unchanged
+358.dot	dot	cmapx	2	0	0	unchanged
+56.dot	dot	svg	211	3	3	unchanged
+56.dot	dot	xdot	270	0	0	unchanged
+56.dot	dot	cmapx	2	0	0	unchanged
+894589.dot	dot	svg	1314	3	3	unchanged
+894589.dot	dot	xdot	1272	0	0	unchanged
+894589.dot	dot	cmapx	2	1	1	unchanged
+AvantGarde.gv	dot	svg	82	3	3	unchanged
+AvantGarde.gv	dot	xdot	88	0	0	unchanged
+AvantGarde.gv	dot	cmapx	2	0	0	unchanged
+Bookman.gv	dot	svg	82	3	3	unchanged
+Bookman.gv	dot	xdot	88	0	0	unchanged
+Bookman.gv	dot	cmapx	2	0	0	unchanged
+Helvetica.gv	dot	svg	158	3	3	unchanged
+Helvetica.gv	dot	xdot	176	0	0	unchanged
+Helvetica.gv	dot	cmapx	2	0	0	unchanged
+NewCenturySchlbk.gv	dot	svg	82	3	3	unchanged
+NewCenturySchlbk.gv	dot	xdot	89	0	0	unchanged
+NewCenturySchlbk.gv	dot	cmapx	2	0	0	unchanged
+Palatino.gv	dot	svg	82	3	3	unchanged
+Palatino.gv	dot	xdot	88	0	0	unchanged
+Palatino.gv	dot	cmapx	2	0	0	unchanged
+Times.gv	dot	svg	82	3	3	unchanged
+Times.gv	dot	xdot	88	0	0	unchanged
+Times.gv	dot	cmapx	2	0	0	unchanged
+ZapfChancery.gv	dot	svg	25	3	3	unchanged
+ZapfChancery.gv	dot	xdot	25	0	0	unchanged
+ZapfChancery.gv	dot	cmapx	2	0	0	unchanged
+ZapfDingbats.gv	dot	svg	25	3	3	unchanged
+ZapfDingbats.gv	dot	xdot	25	0	0	unchanged
+ZapfDingbats.gv	dot	cmapx	2	0	0	unchanged
+grdfillcolor.gv	dot	svg	723	3	3	unchanged
+grdfillcolor.gv	dot	xdot	287	0	0	unchanged
+grdfillcolor.gv	dot	cmapx	2	0	0	unchanged
+grdlinear.gv	dot	svg	725	3	3	unchanged
+grdlinear.gv	dot	xdot	299	0	0	unchanged
+grdlinear.gv	dot	cmapx	2	0	0	unchanged
+grdlinear_angle.gv	dot	svg	725	3	3	unchanged
+grdlinear_angle.gv	dot	xdot	302	0	0	unchanged
+grdlinear_angle.gv	dot	cmapx	2	0	0	unchanged
+grdradial.gv	dot	svg	725	3	3	unchanged
+grdradial.gv	dot	xdot	306	0	0	unchanged
+grdradial.gv	dot	cmapx	2	0	0	unchanged
+grdradial_angle.gv	dot	svg	725	3	3	unchanged
+grdradial_angle.gv	dot	xdot	308	0	0	unchanged
+grdradial_angle.gv	dot	cmapx	2	0	0	unchanged
+html.gv	dot	svg	64	3	3	unchanged
+html.gv	dot	xdot	62	0	0	unchanged
+html.gv	dot	cmapx	2	0	0	unchanged
+html2.gv	dot	svg	111	3	3	unchanged
+html2.gv	dot	xdot	99	0	0	unchanged
+html2.gv	dot	cmapx	8	0	0	unchanged
+inv_inv.gv	dot	svg	25	3	3	unchanged
+inv_inv.gv	dot	xdot	30	0	0	unchanged
+inv_inv.gv	dot	cmapx	2	0	0	unchanged
+inv_nul.gv	dot	svg	25	3	3	unchanged
+inv_nul.gv	dot	xdot	30	0	0	unchanged
+inv_nul.gv	dot	cmapx	2	0	0	unchanged
+inv_val.gv	dot	svg	25	3	3	unchanged
+inv_val.gv	dot	xdot	30	0	0	unchanged
+inv_val.gv	dot	cmapx	2	0	0	unchanged
+nul_inv.gv	dot	svg	25	3	3	unchanged
+nul_inv.gv	dot	xdot	30	0	0	unchanged
+nul_inv.gv	dot	cmapx	2	0	0	unchanged
+nul_nul.gv	dot	svg	25	3	3	unchanged
+nul_nul.gv	dot	xdot	30	0	0	unchanged
+nul_nul.gv	dot	cmapx	2	0	0	unchanged
+nul_val.gv	dot	svg	25	3	3	unchanged
+nul_val.gv	dot	xdot	31	0	0	unchanged
+nul_val.gv	dot	cmapx	2	0	0	unchanged
+ports.gv	dot	svg	219	3	3	unchanged
+ports.gv	dot	xdot	160	0	0	unchanged
+ports.gv	dot	cmapx	2	0	0	unchanged
+rd_rules.gv	dot	svg	210	3	3	unchanged
+rd_rules.gv	dot	xdot	189	0	0	unchanged
+rd_rules.gv	dot	cmapx	2	0	0	unchanged
+sides.gv	dot	svg	47	3	3	unchanged
+sides.gv	dot	xdot	42	0	0	unchanged
+sides.gv	dot	cmapx	2	0	0	unchanged
+sq_rules.gv	dot	svg	210	3	3	unchanged
+sq_rules.gv	dot	xdot	181	0	0	unchanged
+sq_rules.gv	dot	cmapx	2	0	0	unchanged
+url.gv	dot	svg	175	3	3	unchanged
+url.gv	dot	xdot	136	0	0	unchanged
+url.gv	dot	cmapx	21	0	0	unchanged
+val_inv.gv	dot	svg	25	3	3	unchanged
+val_inv.gv	dot	xdot	30	0	0	unchanged
+val_inv.gv	dot	cmapx	2	0	0	unchanged
+val_nul.gv	dot	svg	25	3	3	unchanged
+val_nul.gv	dot	xdot	30	0	0	unchanged
+val_nul.gv	dot	cmapx	2	0	0	unchanged
+val_val.gv	dot	svg	25	3	3	unchanged
+val_val.gv	dot	xdot	30	0	0	unchanged
+val_val.gv	dot	cmapx	2	0	0	unchanged
+base.gv	dot	svg	0	41	41	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952
+  port       throw new ParseError(
+  port             ^
+  port ParseError: Expected "#", "/*", "//", "=", [ \t\r\n], or [A-Za-z_0-9\x80-\u{FFFF}] but "]" found.
+  port     at Module.parse (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952:13)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:40:39)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:96:3 {
+  port   type: 'syntax',
+  port   code: 'SYNTAX_ERROR',
+  port   friendlyMessage: 'There is a syntax error in the DOT source.',
+  port   location: { line: 8, column: 74, offset: 302 },
+  port   expected: [
+  port     {
+  port       type: 'class',
+  port       parts: [
+  port         [ 'A', 'Z' ],
+  port         [ 'a', 'z' ],
+  port         '_',
+  port         [ '0', '9' ],
+  port         [ '\x80', '￿' ]
+  port       ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: '=', ignoreCase: false }
+  port   ]
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+base.gv	dot	xdot	0	41	41	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952
+  port       throw new ParseError(
+  port             ^
+  port ParseError: Expected "#", "/*", "//", "=", [ \t\r\n], or [A-Za-z_0-9\x80-\u{FFFF}] but "]" found.
+  port     at Module.parse (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952:13)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:40:39)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:96:3 {
+  port   type: 'syntax',
+  port   code: 'SYNTAX_ERROR',
+  port   friendlyMessage: 'There is a syntax error in the DOT source.',
+  port   location: { line: 8, column: 74, offset: 302 },
+  port   expected: [
+  port     {
+  port       type: 'class',
+  port       parts: [
+  port         [ 'A', 'Z' ],
+  port         [ 'a', 'z' ],
+  port         '_',
+  port         [ '0', '9' ],
+  port         [ '\x80', '￿' ]
+  port       ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: '=', ignoreCase: false }
+  port   ]
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+base.gv	dot	cmapx	0	41	41	AWAY
+  port PORT FAILED: file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952
+  port       throw new ParseError(
+  port             ^
+  port ParseError: Expected "#", "/*", "//", "=", [ \t\r\n], or [A-Za-z_0-9\x80-\u{FFFF}] but "]" found.
+  port     at Module.parse (file:///private/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T/i178/head.mjs:4952:13)
+  port     at renderChild (file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:40:39)
+  port     at async file:///Users/scottseely/git/knowvah/dot-engine-queue/plans/issue-178-cmapx-html-label-obj/harness/rowcheck.mjs:96:3 {
+  port   type: 'syntax',
+  port   code: 'SYNTAX_ERROR',
+  port   friendlyMessage: 'There is a syntax error in the DOT source.',
+  port   location: { line: 8, column: 74, offset: 302 },
+  port   expected: [
+  port     {
+  port       type: 'class',
+  port       parts: [
+  port         [ 'A', 'Z' ],
+  port         [ 'a', 'z' ],
+  port         '_',
+  port         [ '0', '9' ],
+  port         [ '\x80', '￿' ]
+  port       ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     {
+  port       type: 'class',
+  port       parts: [ ' ', '\t', '\r', '\n' ],
+  port       inverted: false,
+  port       ignoreCase: false,
+  port       unicode: false
+  port     },
+  port     { type: 'literal', text: '/*', ignoreCase: false },
+  port     { type: 'literal', text: '//', ignoreCase: false },
+  port     { type: 'literal', text: '#', ignoreCase: false },
+  port     { type: 'literal', text: '=', ignoreCase: false }
+  port   ]
+  port }
+  port 
+  port Node.js v26.3.1
+  port 
+html2_dot.gv	dot	svg	111	3	3	unchanged
+html2_dot.gv	dot	xdot	99	0	0	unchanged
+html2_dot.gv	dot	cmapx	8	0	0	unchanged
+html_dot.gv	dot	svg	64	3	3	unchanged
+html_dot.gv	dot	xdot	62	0	0	unchanged
+html_dot.gv	dot	cmapx	2	0	0	unchanged
+ports_dot.gv	dot	svg	219	3	3	unchanged
+ports_dot.gv	dot	xdot	160	0	0	unchanged
+ports_dot.gv	dot	cmapx	2	0	0	unchanged
+html2_dot.gv	dot	svg	111	3	3	unchanged
+html2_dot.gv	dot	xdot	99	0	0	unchanged
+html2_dot.gv	dot	cmapx	8	0	0	unchanged
+html_dot.gv	dot	svg	64	3	3	unchanged
+html_dot.gv	dot	xdot	63	0	0	unchanged
+html_dot.gv	dot	cmapx	2	0	0	unchanged
+ports_dot.gv	dot	svg	219	3	3	unchanged
+ports_dot.gv	dot	xdot	160	0	0	unchanged
+ports_dot.gv	dot	cmapx	2	0	0	unchanged
+unchanged=198 AWAY=6 timeout=6

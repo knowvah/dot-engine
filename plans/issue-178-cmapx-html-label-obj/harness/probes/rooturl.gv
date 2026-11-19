@@ -1,0 +1,1 @@
+digraph G { URL="http://root"; label=<<table><tr><td href="http://cell">L</td><td>M</td></tr></table>>; a -> b }

@@ -1,0 +1,1 @@
+digraph G { layers="l1:l2"; layerselect=l2; a [layer=l1]; { rank=same; subgraph cluster_c { b [layer=l1]; subgraph cluster_i { c [layer=l2] } } } a -> b; a -> c }

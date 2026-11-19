@@ -1,0 +1,1 @@
+digraph { splines=none; edge [xlabel=xl]; a -> b; b -> c [label=lab]; }

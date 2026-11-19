@@ -1,0 +1,38 @@
+graph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 158 185 158 185 0 ",
+		bb="0,0,185,158",
+		cluster=true,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph p {
+		graph [_draw_="c 7 -#000000 p 4 0 0 0 68 86 68 86 0 ",
+			bb="-7.9936e-15,-3.9968e-15,86,68"
+		];
+		subgraph q {
+			graph [_draw_="c 7 -#000000 p 4 8 8 8 60 78 60 78 8 ",
+				bb="8,8,78,60"
+			];
+			a	[_draw_="c 7 -#000000 e 43 34 27 18 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 29.8 0 6.21 1 -a ",
+				height=0.5,
+				pos="43,34",
+				width=0.75];
+		}
+	}
+	subgraph r {
+		graph [_draw_="c 7 -#000000 p 4 99 90 99 158 185 158 185 90 ",
+			bb="99,90,185,158"
+		];
+		subgraph q {
+			graph [_draw_="c 7 -#000000 p 4 107 98 107 150 177 150 177 98 ",
+				bb="107,98,177,150"
+			];
+			b	[_draw_="c 7 -#000000 e 142 124 27 18 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 142 119.8 0 7 1 -b ",
+				height=0.5,
+				pos="142,124",
+				width=0.75];
+		}
+	}
+}

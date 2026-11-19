@@ -1,0 +1,28 @@
+graph G {
+	graph [bb="0,0,54.773,54.773"];
+	node [label="\N",
+		shape=box
+	];
+	subgraph cluster_a {
+		graph [bb="0.00045643,18.258,27.387,54.773"];
+		subgraph cluster_x {
+			graph [bb="0.00045643,18.258,27.387,54.773"];
+			a	[height=0.50715,
+				pos="13.694,36.515",
+				width=0.38036];
+		}
+	}
+	subgraph cluster_b {
+		graph [bb="27.387,18.258,54.773,54.773"];
+		subgraph cluster_x {
+			graph [bb="27.387,18.258,54.773,54.773"];
+			b	[height=0.50715,
+				pos="41.08,36.515",
+				width=0.38036];
+		}
+	}
+	cluster_x	[height=0.25358,
+		pos="27.387,9.1292",
+		width=0.76073];
+	a -- cluster_x;
+}

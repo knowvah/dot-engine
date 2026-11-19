@@ -193,3 +193,15 @@ export function agGraphAttr(g: Graph, name: string): string | undefined {
   if (own !== undefined) return own;
   return g.root.declaredGraphAttrs.has(name) ? '' : undefined;
 }
+
+/**
+ * The graph attributes of `g` that have a local dict symbol: `attrs` without
+ * the keys the builder seeded from the parent. Writers that copy a subgraph's
+ * own attributes use it, as `write_dict` prints local symbols only.
+ * @see lib/cgraph/attr.c:aglocaldictsym
+ */
+export function localGraphAttrs(g: Graph): Map<string, string> {
+  const local = new Map(g.attrs);
+  for (const key of g.seededAttrs ?? []) local.delete(key);
+  return local;
+}

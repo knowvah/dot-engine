@@ -10,16 +10,17 @@
  * @see lib/common/utils.c:processClusterEdges / checkCompound
  */
 
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect } from 'vitest';
 import { parse } from '../../parser/index.js';
 import { fdpInitGraph } from './index.js';
 import { processClusterEdges } from './cluster-edges.js';
+import { agseterrf } from '../../common/agerr.js';
 
 describe('processClusterEdges — no clusters', () => {
   it('is a no-op when the graph has zero clusters (n_cluster ?? 0 fallback)', () => {
     const g = parse('graph G { a -- b; }');
     // Deliberately skip fdpInitGraph (mkClusters), so g.info.n_cluster is
-    // never set -> fillMap's `?? 0` fallback -> cmap stays empty.
+    // never set -> fillMap's `?? 0` fallback (common/clust-map.ts) -> cmap stays empty.
     expect(g.info.n_cluster).toBeUndefined();
     expect(() => processClusterEdges(g)).not.toThrow();
     expect(g.info.n_cluster_edges).toBeUndefined();
@@ -137,6 +138,8 @@ describe('processClusterEdges — cluster self-edge (tg === hg)', () => {
 });
 
 describe('processClusterEdges — duplicate cluster name (fillMap keeps the first)', () => {
+  afterEach(() => { agseterrf(null); });
+
   it('keeps the first-seen cluster when a nested subgraph reuses an ancestor\'s name', () => {
     const g = parse(`graph G {
       subgraph clusterDup {
@@ -144,10 +147,12 @@ describe('processClusterEdges — duplicate cluster name (fillMap keeps the firs
         subgraph clusterDup { y }
       }
     }`);
+    const pieces: string[] = [];
+    agseterrf((s) => { pieces.push(s); return 0; });
     fdpInitGraph(g);
-    // fillMap's `!map.has(s)` guard must not throw / must not overwrite —
-    // exercised structurally: init completes and the outer cluster is the
-    // one recorded under the shared name.
+    // The shared mkClustMap (common/clust-map.ts) warns for the nested
+    // cluster and leaves the outer one recorded under the shared name.
+    expect(pieces.join('')).toBe('Warning: Two clusters named clusterDup - the second will be ignored\n');
     expect(g.info.n_cluster).toBeGreaterThanOrEqual(1);
     expect(g.info.clust![0]!.name).toBe('clusterDup');
   });

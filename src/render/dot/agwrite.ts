@@ -26,7 +26,7 @@ import {
   COMPUTED_EDGE_ATTRS, COMPUTED_NODE_ATTRS, appendRecordRects, computedPart, dictParts,
   echoAttr, echoGraphAttr, edgeAttrsAttached, edgeConnector, edgePosRaw,
   effectiveEdgeDefaults, effectiveNodeDefaults, graphInputParts, graphLabelAttrs,
-  isDirected, nodeDictParts, nodePosRaw, nodeRecord, objInputParts,
+  inClusterTree, isDirected, nodeDictParts, nodePosRaw, nodeRecord, objInputParts,
 } from './attrs.js';
 import { withLinelength } from './agwrite-linelength.js';
 import { nodesInSeq } from '../../layout/dot/decomp.js';
@@ -36,7 +36,7 @@ import type { XdotDraws, SerCtx } from './types.js';
 export abstract class DotWriterBase {
   /** @see dot.ts XdotRenderer.emitDraws */
   protected abstract readonly emitDraws: boolean;
-  /** Clusters in render order (GD_clust); filled by the renderer's endCluster. */
+  /** The clusters xdot_end_cluster ran for (not all of GD_clust: inClusterTree). */
   protected clusters: Graph[] = [];
   /** Draw strings for `obj`, or undefined in a format that emits none. */
   protected abstract drawsOf(obj: Node | Edge | Graph): XdotDraws | undefined;
@@ -112,7 +112,7 @@ export abstract class DotWriterBase {
    *  a boxed graph and an unboxed child — the driver that makes an anon subgraph
    *  under the root or a cluster "relevant". @see lib/common/output.c:safe_dcl */
   private hasBb(g: Graph): boolean {
-    return g === g.root || this.clusters.includes(g);
+    return g === g.root || inClusterTree(g);
   }
 
   /** Anonymous subgraph with no own node/edge defaults and no graph attrs
@@ -121,7 +121,7 @@ export abstract class DotWriterBase {
    *  the parent, empty on the child) and `rank`. @see write.c:irrelevant_subgraph */
   private irrelevantSubgraph(g: Graph): boolean {
     if (!this.isAnonymous(g)) return false;
-    if (this.clusters.includes(g)) return false;
+    if (inClusterTree(g)) return false;
     if (g.nodeDefaults.size > 0 || g.edgeDefaults.size > 0) return false;
     if (g.parent) {
       if (this.hasBb(g) !== this.hasBb(g.parent)) return false;
@@ -140,9 +140,8 @@ export abstract class DotWriterBase {
    *  `rec_attach_bb` walks the ROOT and then `GD_clust` recursively, so a
    *  subgraph the layout did not box is attached NEITHER `bb` NOR the label
    *  triple — both keep the INPUT's values, which agwrite echoes. circo and
-   *  twopi lay out no clusters at all (`GD_clust` empty — mirrored here by
-   *  `this.clusters`, filled from endCluster), so on a re-fed dot output their
-   *  `cluster0` comes back carrying the *previous* run's `bb` and `lp`.
+   *  twopi lay out no clusters (`GD_clust` empty, `inClusterTree` false), so on a
+   *  re-fed dot output `cluster0` carries the *previous* run's `bb` and `lp`.
    *  @see lib/common/output.c:249 rec_attach_bb */
   private subgGraphAttrs(sg: Graph): string[] {
     // `rank` is not special-cased here: it is an ordinary input attribute and
@@ -183,7 +182,7 @@ export abstract class DotWriterBase {
   private writeDicts(g: Graph, top: boolean, ctx: SerCtx): void {
     const graphParts = top
       ? this.graphAttrs(g)
-      : this.clusters.includes(g)
+      : inClusterTree(g)
         ? this.clusterAttrs(g)
         : this.subgGraphAttrs(g);
     this.writeDict('graph', graphParts, ctx);
@@ -391,13 +390,14 @@ export abstract class DotWriterBase {
     return parts;
   }
 
-  /** Cluster attribute block. C's xdot_end_cluster ALWAYS agsets `_draw_` when
-   *  the graph has clusters (even empty, e.g. peripheries=0), so emit it
-   *  unconditionally; `_ldraw_` only when the cluster has a label.
+  /** Cluster attribute block. C's xdot_end_cluster ALWAYS agsets `_draw_` for a
+   *  cluster it ran for (even empty, e.g. peripheries=0); one that emit_clusters
+   *  skipped (clust_in_layer) keeps only a stored one. `_ldraw_` only with a label.
    *  @see plugin/core/gvrender_core_dot.c:284 xdot_end_cluster */
   private clusterAttrs(sg: Graph): string[] {
     const d = this.drawsOf(sg);
-    const parts: string[] = this.emitDraws || d?.draw ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
+    const drawn = this.emitDraws && this.clusters.includes(sg);
+    const parts: string[] = drawn || d?.draw ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
     if (d?.ldraw) parts.push(this.drawAttr('_ldraw_', d.ldraw));
     if (sg.info.bb) parts.push('bb="' + this.bbStr(sg) + '"');
     // rec_attach_bb recurses into GD_clust, so a labelled cluster carries the

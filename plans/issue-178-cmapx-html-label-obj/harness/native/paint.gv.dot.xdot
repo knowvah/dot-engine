@@ -1,0 +1,47 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffe0 P 4 0 0 0 218.4 86 218.4 86 0 ",
+		_ldraw_="S 5 -solid c 9 -#fffffe00 C 7 -#ffc0cb P 4 33.11 4 33.11 32.8 52.89 32.8 52.89 4 S 5 -solid c 7 -#00ff00 p 4 33.11 4 33.11 32.8 \
+52.89 32.8 52.89 4 S 5 -solid c 9 -#fffffe00 C 7 -#00ffff P 4 36.11 7 36.11 29.8 49.89 29.8 49.89 7 S 5 -solid c 7 -#00ff00 p 4 \
+36.11 7 36.11 29.8 49.89 29.8 49.89 7 F 14 11 -Times-Roman c 7 -#0000ff T 39.11 12.8 -1 7.79 1 -P ",
+		bb="0,0,86,218.4",
+		bgcolor=lightyellow,
+		color=red,
+		fontcolor=blue,
+		label=<<table color="green" bgcolor="pink"><tr><td href="http://p" bgcolor="cyan">P</td></tr></table>>,
+		lheight=0.40,
+		lp="43,18.4",
+		lwidth=0.27,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_z {
+		graph [_draw_="S 6 -dashed c 7 -#a020f0 C 7 -#ffffe0 P 4 8 117.6 8 210.4 78 210.4 78 117.6 ",
+			_ldraw_="S 15 -setlinewidth(2) S 5 -solid c 7 -#a020f0 p 4 31.72 174.6 31.72 205.4 54.28 205.4 54.28 174.6 S 5 -solid c 7 -#a020f0 p 4 35.72 \
+178.6 35.72 201.4 50.28 201.4 50.28 178.6 F 14 11 -Times-Roman c 7 -#0000ff T 38.72 184.4 -1 8.55 1 -Z ",
+			bb="8,117.6,78,210.4",
+			color=purple,
+			label=<<table border="2"><tr><td>Z</td></tr></table>>,
+			lheight=0.46,
+			lp="43,190",
+			lwidth=0.34,
+			style=dashed
+		];
+		a	[_draw_="c 7 -#000000 C 7 -#d3d3d3 E 43 143.6 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 139.4 0 6.21 1 -a ",
+			height=0.5,
+			pos="43,143.6",
+			style=filled,
+			width=0.75];
+	}
+	b	[_draw_="c 7 -#000000 e 43 54.8 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 50.6 0 7 1 -b ",
+		height=0.5,
+		pos="43,54.8",
+		width=0.75];
+	a -> b	[_draw_="c 7 -#000000 B 4 43 125.45 43 113.76 43 97.99 43 84.42 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 46.5 84.72 43 74.72 39.5 84.72 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#ff0000 T 43 93.6 -1 7 1 -x ",
+		label=<<font color="red">x</font>>,
+		lp="46.5,99.2",
+		pos="e,43,73.21 43,125.45 43,113.76 43,97.992 43,84.418"];
+}

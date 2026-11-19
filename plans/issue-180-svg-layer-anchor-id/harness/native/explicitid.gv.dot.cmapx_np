@@ -1,0 +1,9 @@
+<map id="G" name="G">
+<area shape="rect" id="na" href="u" title="a" alt="" coords="27,27,99,75"/>
+<area shape="rect" id="root_node2" title="tb" alt="" coords="27,145,99,193"/>
+<area shape="rect" id="ea-label" href="lu" title="L" alt="" coords="63,99,74,121"/>
+<area shape="rect" id="ea-headlabel" href="hu" title="H" alt="" coords="49,122,63,145"/>
+<area shape="rect" id="ea-taillabel" href="tu" title="T" alt="" coords="51,75,63,97"/>
+<area shape="rect" id="ck" href="k" title="rt" alt="" coords="16,16,109,85"/>
+<area shape="rect" id="root" title="rt" alt="" coords="0,-0,125,198"/>
+</map>

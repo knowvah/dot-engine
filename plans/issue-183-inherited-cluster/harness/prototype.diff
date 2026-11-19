@@ -1,0 +1,13 @@
+diff --git a/src/parser/builder.ts b/src/parser/builder.ts
+index 71a9b48d..ce9f564d 100644
+--- a/src/parser/builder.ts
++++ b/src/parser/builder.ts
+@@ -78,7 +78,7 @@ function effectiveNodeDefaults(scope: Graph): Map<string, string> {
+  *  inherited value survives the layout's cluster rebuilds (which copy attrs but
+  *  not the snapshot). `labelloc`/`labeljust` drive cluster label position and
+  *  inherit via C `agget` just like label/font — @see input.c:858-877. */
+-const GRAPH_LABEL_INHERIT_KEYS = ['label', 'fontname', 'fontsize', 'fontcolor', 'labelloc', 'labeljust'] as const;
++const GRAPH_LABEL_INHERIT_KEYS = ['label', 'fontname', 'fontsize', 'fontcolor', 'labelloc', 'labeljust', 'cluster'] as const;
+ 
+ /**
+  * Collect the graph-attribute defaults in effect at `scope`: walk scope -> root,

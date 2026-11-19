@@ -1,0 +1,18 @@
+# base 286912a4 bundle vs prototype.diff bundle; roots: graphviz-16.1.1 tests graphs share doc, repo test docs
+# files 1320, model differs 0
+# probes
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen1.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen10.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen11.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen12.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen14.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen15.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen2.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen3.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen4.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen5.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen6.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen7.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen8.gv
+DIFF	plans/issue-258-reopened-subgraph/harness/probes/reopen9.gv
+# files 15, model differs 14

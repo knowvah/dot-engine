@@ -1,0 +1,1 @@
+digraph G { color=red; subgraph cluster_p { a } color=blue; subgraph cluster_p { color=green; subgraph cluster_c { b } } subgraph cluster_p { subgraph cluster_d { c } } }

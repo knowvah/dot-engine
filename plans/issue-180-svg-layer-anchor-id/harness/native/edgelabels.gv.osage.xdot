@@ -1,0 +1,47 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 76 125.21 76 125.21 0 ",
+		bb="0,0,125.21,76",
+		layer=all,
+		layers="l1:l2",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	a	[_draw_="c 7 -#000000 e 40.21 58 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 40.21 53.8 0 6.21 1 -a ",
+		height=0.5,
+		pos="40.214,58",
+		width=0.75];
+	b	[_draw_="c 7 -#000000 e 98.21 58 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 98.21 53.8 0 7 1 -b ",
+		height=0.5,
+		pos="98.214,58",
+		width=0.75];
+	c	[URL=cu,
+		_draw_="c 7 -#000000 e 40.21 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 40.21 13.8 0 6.21 1 -c F 14 11 -Times-Roman c 7 -#000000 T 6.61 40.2 0 13.21 2 -cx ",
+		height=0.5,
+		pos="40.214,18",
+		width=0.75,
+		xlabel=cx,
+		xlp="6.6069,44.4"];
+	a -> b	[URL=e,
+		_draw_="c 7 -#000000 B 4 67.52 58 67.66 58 67.81 58 67.96 58 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 59.53 61.5 69.53 58 59.53 54.5 ",
+		_hldraw_="F 14 11 -Times-Roman c 7 -#000000 T 65.99 62.2 0 10.11 1 -H ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 72.01 62.2 0 8.55 1 -L F 14 11 -Times-Roman c 7 -#000000 T 65.21 45.4 0 10.11 1 -X ",
+		_tldraw_="F 14 11 -Times-Roman c 7 -#000000 T 71.79 45.4 0 8.55 1 -T ",
+		edgeURL=eu,
+		edgetooltip=et,
+		headURL=hu,
+		head_lp="65.99,66.4",
+		headlabel=H,
+		label=L,
+		labelURL=lu,
+		lp="72.012,66.4",
+		pos="e,71.045,58 67.516,58 67.662,58 67.809,58 67.956,58",
+		tailURL=tu,
+		tail_lp="71.791,49.6",
+		taillabel=T,
+		xlabel=X,
+		xlp="65.208,49.6"];
+}

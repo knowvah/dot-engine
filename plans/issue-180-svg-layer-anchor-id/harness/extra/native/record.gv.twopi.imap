@@ -1,0 +1,6 @@
+base referer
+rect na 101,11 173,78
+rect nb 5,11 77,78
+poly e 99,61 85,42 88,38 104,61
+rect h 77,5 91,28
+rect t 90,38 101,61

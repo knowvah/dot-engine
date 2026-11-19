@@ -1,0 +1,63 @@
+diff --git a/src/layout/dot/rank.ts b/src/layout/dot/rank.ts
+index 03e11571..7bda2ac2 100644
+--- a/src/layout/dot/rank.ts
++++ b/src/layout/dot/rank.ts
+@@ -4,6 +4,7 @@ import type { Node } from '../../model/node.js';
+ import type { Edge } from '../../model/edge.js';
+ import type { Graph } from '../../model/graph.js';
+ import { doGraphLabel } from './graph-label.js';
++import { graphAttrInherited } from '../../common/attr-get.js';
+ import { ufFind, ufUnion, ufSingleton } from './decomp.js';
+ import { decompose, nodesInSeq } from './decomp.js';
+ import { acyclic } from './acyclic.js';
+@@ -89,7 +90,7 @@ export function scaleClamp(nnodes: number, scale: number): number {
+ export function isACluster(g: Graph): boolean {
+   if (g === g.root) return true;
+   if (g.name.toLowerCase().startsWith('cluster')) return true;
+-  return mapbool(g.attrs.get('cluster'));
++  return mapbool(graphAttrInherited(g, 'cluster'));
+ }
+ 
+ export { class1 };
+diff --git a/src/layout/osage/index.ts b/src/layout/osage/index.ts
+index 00de16b1..41f70376 100644
+--- a/src/layout/osage/index.ts
++++ b/src/layout/osage/index.ts
+@@ -32,6 +32,7 @@ import { setEdgeTypeFromAttr } from '../dot/index.js';
+ import { doGraphLabel } from '../dot/graph-label.js';
+ import { graphInit } from '../../common/graph-init.js';
+ import { mapbool } from '../dot/rank.js';
++import { graphAttrInherited } from '../../common/attr-get.js';
+ import { BOTTOM_IX, TOP_IX } from '../dot/position-aux.js';
+ import { placeGraphLabel } from '../dot/position-bbox.js';
+ import { gvPostprocess } from '../../common/postproc.js';
+@@ -86,7 +87,7 @@ export function PARENT(n: Node): Graph | null {
+ export function isCluster(g: Graph): boolean {
+   if (g === g.root) return true;
+   if (g.name.toLowerCase().startsWith('cluster')) return true;
+-  return mapbool(g.attrs.get('cluster'));
++  return mapbool(graphAttrInherited(g, 'cluster'));
+ }
+ 
+ // ---------------------------------------------------------------------------
+diff --git a/src/layout/patchwork/index.ts b/src/layout/patchwork/index.ts
+index 48d6aa83..fb95715d 100644
+--- a/src/layout/patchwork/index.ts
++++ b/src/layout/patchwork/index.ts
+@@ -25,6 +25,7 @@ import { commonInitNode } from '../../common/nodeinit.js';
+ import { nodeAttr } from '../../common/poly-init.js';
+ import { graphInit } from '../../common/graph-init.js';
+ import { mapbool } from '../dot/rank.js';
++import { graphAttrInherited } from '../../common/attr-get.js';
+ import { placeGraphLabel } from '../dot/position-bbox.js';
+ import { gvPostprocess } from '../../common/postproc.js';
+ 
+@@ -307,7 +308,7 @@ export function walkTree(tree: TreeNode): void {
+ export function isCluster(g: Graph): boolean {
+   if (g === g.root) return true;
+   if (g.name.toLowerCase().startsWith('cluster')) return true;
+-  return mapbool(g.attrs.get('cluster'));
++  return mapbool(graphAttrInherited(g, 'cluster'));
+ }
+ 
+ /** @see lib/patchwork/patchworkinit.c:mkClusters */

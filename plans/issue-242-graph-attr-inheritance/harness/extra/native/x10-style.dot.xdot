@@ -1,0 +1,38 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 41 -[71 0 71 124 2 0 7 -#ff0000 1 7 -#0000ff] P 4 0 0 0 124 142 124 142 0 ",
+		bb="0,0,142,124",
+		bgcolor="red:blue",
+		fillcolor=lightblue,
+		gradientangle=90,
+		style="rounded,filled",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_a {
+		graph [_draw_="c 7 -#000000 C 7 -#add8e6 b 25 20 64 20 64 66 64 66 64 72 64 78 70 78 76 78 76 78 104 78 104 78 110 72 116 66 116 66 116 20 116 \
+20 116 14 116 8 110 8 104 8 104 8 76 8 76 8 70 14 64 20 64 ",
+			bb="8,64,78,116"
+		];
+		a	[_draw_="c 7 -#000000 e 43 90 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 85.8 0 6.21 1 -a ",
+			height=0.5,
+			pos="43,90",
+			width=0.75];
+	}
+	{
+		graph [rank=same];
+		b	[_draw_="c 7 -#000000 e 43 18 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 13.8 0 7 1 -b ",
+			height=0.5,
+			pos="43,18",
+			width=0.75];
+		c	[_draw_="c 7 -#000000 e 115 18 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 115 13.8 0 6.21 1 -c ",
+			height=0.5,
+			pos="115,18",
+			width=0.75];
+	}
+	a -> b	[_draw_="c 7 -#000000 B 4 43 71.7 43 64.41 43 55.73 43 47.54 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 46.5 47.62 43 37.62 39.5 47.62 ",
+		pos="e,43,36.104 43,71.697 43,64.407 43,55.726 43,47.536"];
+}

@@ -1,0 +1,1 @@
+digraph G { label=L; labelloc=b; labeljust=r; fontsize=20; fontname=Courier; fontcolor=red; nojustify=true; subgraph cluster_a { a -> b } { rank=same; c; d } b -> c }

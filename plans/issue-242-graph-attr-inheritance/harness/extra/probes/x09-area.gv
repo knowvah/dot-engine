@@ -1,0 +1,1 @@
+graph G { area=4; inset=0.2; subgraph cluster_a { a; b } subgraph cluster_b { c } }

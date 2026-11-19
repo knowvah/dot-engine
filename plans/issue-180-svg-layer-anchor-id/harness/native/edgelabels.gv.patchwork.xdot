@@ -1,0 +1,39 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 63.64 67.6 63.64 67.6 0 ",
+		bb="0,0,67.6,63.644",
+		layer=all,
+		layers="l1:l2",
+		xdotversion=1.7
+	];
+	node [label="\N",
+		shape=box
+	];
+	a	[_draw_="c 7 -#000000 p 4 40.21 63.64 12.83 63.64 12.83 27.13 40.21 27.13 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 26.52 41.19 0 6.21 1 -a ",
+		height=0.50715,
+		pos="26.521,45.386",
+		width=0.38036];
+	b	[_draw_="c 7 -#000000 p 4 67.6 63.64 40.21 63.64 40.21 27.13 67.6 27.13 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 53.91 41.19 0 7 1 -b ",
+		height=0.50715,
+		pos="53.907,45.386",
+		width=0.38036];
+	c	[URL=cu,
+		_draw_="c 7 -#000000 p 4 67.6 27.13 12.83 27.13 12.83 8.87 67.6 8.87 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 40.21 13.8 0 6.21 1 -c F 14 11 -Times-Roman c 7 -#000000 T 6.61 4.2 0 13.21 2 -cx ",
+		height=0.25358,
+		pos="40.214,18",
+		width=0.76073,
+		xlabel=cx,
+		xlp="6.6069,8.4"];
+	a -> b	[URL=e,
+		edgeURL=eu,
+		edgetooltip=et,
+		headURL=hu,
+		headlabel=H,
+		label=L,
+		labelURL=lu,
+		tailURL=tu,
+		taillabel=T,
+		xlabel=X];
+}

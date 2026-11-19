@@ -25,7 +25,7 @@ import { resolveEdgeAnchor, resolveObjAnchor, beginAnchorIf } from './anchor.js'
 import type { ShapeDesc, TextlabelT } from '../common/types.js';
 import { type LayerInfo, parseLayers } from '../common/layers.js';
 import { RenderJob, EMIT_CLUSTERS_LAST, createObjState, ObjType, EmitState } from './job.js';
-import { walkNodesAndEdges } from './emit-walk.js';
+import { walkNodesAndEdges, clusterShown } from './emit-walk.js';
 import { initBb } from '../common/emit-bb.js';
 import { firstLayer, nextLayer, numPhysicalLayers, validLayer } from './first-layer.js';
 import { polyInit } from '../common/poly-init.js';
@@ -49,14 +49,14 @@ import {
   setRendererKnownColors,
 } from '../render/color-resolve.js';
 import { emitRoundedBezier } from '../common/poly-shapes.js';
-import { applyClusterObjState, clusterAttr, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox } from './device-cluster.js';
+import { applyClusterObjState, clusterAttr, clusterStyle, clusterPeripheries, isStripedCluster, renderStripedClusterBox, beginClusterAnchor } from './device-cluster.js';
 import { transformPoint } from './device-transform.js';
 import { deviceClip, emitXdot } from './emit-xdot.js';
 import { gvrenderSetStyle, edgeStyleResets } from './gvrender-set-style.js';
 import { renderOneLabel, renderNodeXLabel, renderClusterLabel, reportEdgeLabelColors } from './device-labels.js';
 export { transformPoint, applyRotation, applyScale, buildPoint } from './device-transform.js';
 export { renderOneLabel, renderNodeXLabel, renderClusterLabel } from './device-labels.js';
-import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId } from '../render/svg-id.js';
+import { svgNodeId, svgEdgeId, svgClusterId, svgGraphId, drawingIdOf } from '../render/svg-id.js';
 import { nodeInBox, emitNodeComments, emitEdgeComments } from './emit-gates.js';
 
 // ---------------------------------------------------------------------------
@@ -279,12 +279,12 @@ function drawClusterInScheme(sg: Graph, renderer: RendererPlugin, job: RenderJob
   if (job.obj !== null) job.obj.id = svgClusterId(sg, job);
   // @see lib/common/emit.c:emit_begin_cluster / getObjId
   setHtmlAnchorObj(svgClusterId(sg, job), labelTextOf(sg.info.label), job.obj ?? undefined);
-  // Resolve and open the cluster anchor around the box + label (closed before
-  // the cluster's child nodes — sibling of them). @see emit.c:3803.
-  if (job.obj !== null) {
-    resolveObjAnchor(sg, labelTextOf(sg.info.label), svgClusterId(sg, job), job.obj);
-  }
-  const anchored = beginAnchorIf(renderer, job);
+  // Resolve the cluster anchor. Drawing devices open it around the box + label;
+  // the map device (EMIT_CLUSTERS_LAST) opens it after the label, so the
+  // cluster's <area> follows its label's cell areas. @see emit.c:3743, 3861
+  if (job.obj !== null) resolveObjAnchor(sg, labelTextOf(sg.info.label), svgClusterId(sg, job), job.obj);
+  const late = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
+  const anchored = !late && beginClusterAnchor(sg, renderer, job);
   // C draws the boundary box only when peripheries != 0, or (peripheries == 0
   // and the cluster is filled). peripheries=0 + unfilled emits nothing.
   // style=invis sets PEN_NONE and gvrender_polygon skips the whole box
@@ -294,7 +294,7 @@ function drawClusterInScheme(sg: Graph, renderer: RendererPlugin, job: RenderJob
     renderClusterBox(sg, filled, renderer, job);
   }
   renderClusterLabel(sg, renderer, job);
-  if (anchored) renderer.endAnchor?.(job);
+  if (anchored || (late && beginClusterAnchor(sg, renderer, job))) renderer.endAnchor?.(job);
   renderer.endCluster?.(sg, job);
 }
 
@@ -305,13 +305,13 @@ function drawClusterInScheme(sg: Graph, renderer: RendererPlugin, job: RenderJob
  * completes before recursing; sub-clusters are separate pushes on a clean stack.
  * @see lib/common/emit.c:emit_clusters:3777
  */
-function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): void {
+function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob, info?: LayerInfo): void {
   // EMIT_CLUSTERS_LAST (map device): recurse into sub-clusters BEFORE emitting
   // this cluster's anchor, so an inner cluster's <area> precedes its parent's
   // (child-first). Drawing devices recurse AFTER (parent-first), below.
   // @see lib/common/emit.c:emit_clusters (3795 vs 3940)
   const clustersLast = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
-  if (clustersLast) renderClusters(sg, renderer, job);
+  if (clustersLast) renderClusters(sg, renderer, job, info);
   // push_obj_state in emit_begin_cluster (line 3762), before beginCluster
   const obj = createObjState(ObjType.Cluster);
   obj.emitState = EmitState.CDraw;
@@ -328,7 +328,7 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): 
   // C recurses AFTER emit_end_cluster (line 3940-3941): sub-clusters are drawn
   // with the parent already popped — each has its own independent push/pop.
   // The map device recursed first (child-first), above.
-  if (!clustersLast) renderClusters(sg, renderer, job);
+  if (!clustersLast) renderClusters(sg, renderer, job, info);
 }
 
 /**
@@ -337,13 +337,13 @@ function renderOneCluster(sg: Graph, renderer: RendererPlugin, job: RenderJob): 
  * @see lib/gvc/gvrender.c:gvrender_box
  * @see lib/common/emit.c:emit_clusters
  */
-export function renderClusters(g: Graph, renderer: RendererPlugin, job: RenderJob): void {
+export function renderClusters(g: Graph, renderer: RendererPlugin, job: RenderJob, info?: LayerInfo): void {
   const nClust = g.info.n_cluster ?? 0;
   const clust = g.info.clust;
   if (nClust === 0 || !clust) return;
   for (let c = 0; c < nClust; c++) {
     const sg = clust[c];
-    if (sg) renderOneCluster(sg, renderer, job);
+    if (sg && clusterShown(info, job, sg)) renderOneCluster(sg, renderer, job, info);
   }
 }
 
@@ -404,9 +404,9 @@ function renderPage(g: Graph, renderer: RendererPlugin, job: RenderJob, info: La
   // device (EMIT_CLUSTERS_LAST) emits their <area> AFTER, so a node/edge area
   // precedes its enclosing cluster's. @see lib/common/emit.c:emit_view (3513-3565)
   const clustersLast = (job.flags & EMIT_CLUSTERS_LAST) !== 0;
-  if (!clustersLast) renderClusters(g, renderer, job);
+  if (!clustersLast) renderClusters(g, renderer, job, info);
   walkNodesAndEdges(g, renderer, job, info);
-  if (clustersLast) renderClusters(g, renderer, job);
+  if (clustersLast) renderClusters(g, renderer, job, info);
   renderer.endPage?.(g, job);
 }
 
@@ -497,12 +497,12 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   const dpiScale = jobDpi / POINTS_PER_INCH;
   job.scale = { x: z * dpiScale, y: z * dpiScale };
   // init_job_viewport: job->rotation = gvc->rotation (= 90 for landscape, set in
-  // emit_graph from GD_drawing->landscape). Emit-only — drives the SVG group
-  // transform + dim swap (T2), never layout/routing (ADR-1). transformPoint is
-  // guarded against the ptf rotation branch (ADR-2).
+  // emit_graph from GD_drawing->landscape). Emit-only: drives the SVG group
+  // transform + dim swap (T2), never layout/routing (ADR-1; ptf guard: ADR-2).
   // @see lib/common/emit.c:3260 (gvc->rotation=90); :3390 (job->rotation)
   job.rotation = parseLandscape(g) ? 90 : 0;
   job.renderer = renderer;
+  job.drawingId = drawingIdOf(g); // GD_drawing(g)->id. @see lib/common/input.c:graph_init
   setRendererKnownColors(renderer.type === 'svg'); // svg_knowncolors; others have none
   resetHtmlAnchorIds(); // C: fresh anchorId per dot invocation
   for (const n of g.nodes.values()) polyInit(n, g, job.measurer);

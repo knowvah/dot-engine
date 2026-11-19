@@ -1,0 +1,1 @@
+digraph G { label=R; subgraph cluster_q { subgraph cluster_p { a } label=B; subgraph cluster_p { subgraph cluster_c { b } } } }

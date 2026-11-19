@@ -1,0 +1,1 @@
+digraph{dpi=72; node[URL="u"]; a->b [label="x" URL="e"]; a->c [label="ab" URL="f"]; b [label="wide label" shape=box]}

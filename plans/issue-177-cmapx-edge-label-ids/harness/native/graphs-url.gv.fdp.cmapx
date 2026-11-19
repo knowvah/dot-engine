@@ -1,0 +1,21 @@
+<map id="G" name="G">
+<area shape="poly" id="node1" href="http://www.graphviz.org/doc/info/lang.html" title="lang" alt="" coords="320,157,318,150,313,143,305,138,295,135,283,133,272,135,262,138,253,143,248,150,246,157,248,165,253,172,262,177,272,180,283,181,295,180,305,177,313,172,318,165"/>
+<area shape="rect" id="node2_0" href="http://www.graphviz.org/doc/info/colors.html" title="&lt;TABLE&gt;" alt="" coords="317,261,379,299"/>
+<area shape="poly" id="node2" href="http://www.graphviz.org/doc/info/output.html" title="&lt;TABLE&gt;" alt="" coords="407,280,404,269,396,259,383,252,366,247,348,245,330,247,314,252,301,259,293,269,290,280,293,290,301,300,314,308,330,313,348,314,366,313,383,308,396,300,404,290"/>
+<area shape="poly" id="edge2" href="lang-&gt;colors" title="self" alt="" coords="297,178,326,233,321,232,294,183"/>
+<area shape="poly" id="node3" href="http://www.graphviz.org/doc/info/command.html" title="command" alt="" coords="147,334,144,327,134,320,120,315,102,311,81,310,61,311,43,315,29,320,19,327,16,334,19,342,29,348,43,354,61,357,81,358,102,357,120,354,134,348,144,342"/>
+<area shape="poly" id="edge1" href="http://www.graphviz.org/doc/info/shapes.html" alt="" coords="263,179,120,304,116,300,259,175"/>
+<area shape="poly" id="edge3" href="headurl" title="headurl" alt="" coords="286,132,291,110,294,105,290,134"/>
+<area shape="rect" id="edge3-headlabel" href="headsize" title="size" alt="" coords="267,93,296,115"/>
+<area shape="poly" id="node4" href="G name" title="name" alt="" coords="221,255,219,248,213,241,204,236,192,232,179,231,165,232,154,236,144,241,138,248,136,255,138,262,144,269,154,274,165,278,179,279,192,278,204,274,213,269,219,262"/>
+<area shape="poly" id="edge4" href="tailurl" alt="" coords="207,38,255,53,250,55,209,43"/>
+<area shape="rect" id="edge4-taillabel" href="tailsize" title="size" alt="" coords="208,40,237,63"/>
+<area shape="poly" id="edge5" href="labelurl" title="garf" alt="" coords="139,49,97,74,94,70,143,44"/>
+<area shape="rect" id="edge5-label" href="garf" title="garf" alt="" coords="88,37,118,59"/>
+<area shape="poly" id="edge6" href="labelurl" title="edgetooltip" alt="" coords="446,182,450,185,444,185,446,187"/>
+<area shape="rect" id="edge6-label" href="garf" title="garf" alt="" coords="446,163,476,185"/>
+<area shape="rect" id="edge6-headlabel" href="headURL" title="headtooltip" alt="" coords="462,187,533,210"/>
+<area shape="rect" id="edge6-taillabel" href="tailURL" title="tailtooltip" alt="" coords="401,185,461,207"/>
+<area shape="rect" id="clust1" href="http://www.graphviz.org/doc/info/arrows.html" title="arrows" alt="" coords="5,187,232,369"/>
+<area shape="rect" id="graph0" href="http://www.graphviz.org/doc/info/output.html" title="output" alt="" coords="0,-33,539,374"/>
+</map>

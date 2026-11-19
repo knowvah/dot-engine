@@ -19,7 +19,7 @@ import type { Edge } from '../model/edge.js';
 import { buildOutEdgeIndex } from '../model/node.js';
 import type { RendererPlugin } from './context.js';
 import type { RenderJob } from './job.js';
-import { type LayerInfo, nodeInLayer, edgeInLayer } from '../common/layers.js';
+import { type LayerInfo, nodeInLayer, edgeInLayer, clustInLayer } from '../common/layers.js';
 import { renderNode, renderEdge } from './device.js';
 
 /** Whether a node is shown in the current layer (always true off-layer). */
@@ -30,6 +30,16 @@ function nodeShown(info: LayerInfo | undefined, job: RenderJob, n: Node, g: Grap
 /** Whether an edge is shown in the current layer (always true off-layer). */
 function edgeShown(info: LayerInfo | undefined, job: RenderJob, e: Edge): boolean {
   return info === undefined || job.numLayers <= 1 || edgeInLayer(info, job.layerNum, e);
+}
+
+/**
+ * Whether a cluster is drawn in the current layer (always true off-layer).
+ * C tests this in emit_clusters' loop, before drawing the cluster or
+ * recursing into it, so a skipped cluster's sub-clusters are skipped too.
+ * @see lib/common/emit.c:emit_clusters
+ */
+export function clusterShown(info: LayerInfo | undefined, job: RenderJob, sg: Graph): boolean {
+  return info === undefined || job.numLayers <= 1 || clustInLayer(info, job.layerNum, sg);
 }
 
 /**

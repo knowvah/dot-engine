@@ -1,0 +1,1 @@
+digraph G { subgraph cluster_x { cluster=true; subgraph p { a -> b } } subgraph y { c } b -> c; a -> c }

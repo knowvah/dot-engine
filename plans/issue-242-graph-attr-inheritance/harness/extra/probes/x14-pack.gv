@@ -1,0 +1,1 @@
+digraph G { pack=8; packmode=array_c2; sortv=1; subgraph cluster_a { a -> b } subgraph cluster_b { c -> d } e }

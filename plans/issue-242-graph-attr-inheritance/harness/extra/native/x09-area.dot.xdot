@@ -1,0 +1,34 @@
+graph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 68 236 68 236 0 ",
+		area=4,
+		bb="0,0,236,68",
+		inset=0.2,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_a {
+		graph [_draw_="c 7 -#000000 p 4 8 8 8 60 150 60 150 8 ",
+			bb="8,8,150,60"
+		];
+		a	[_draw_="c 7 -#000000 e 43 34 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 29.8 0 6.21 1 -a ",
+			height=0.5,
+			pos="43,34",
+			width=0.75];
+		b	[_draw_="c 7 -#000000 e 115 34 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 115 29.8 0 7 1 -b ",
+			height=0.5,
+			pos="115,34",
+			width=0.75];
+	}
+	subgraph cluster_b {
+		graph [_draw_="c 7 -#000000 p 4 158 8 158 60 228 60 228 8 ",
+			bb="158,8,228,60"
+		];
+		c	[_draw_="c 7 -#000000 e 193 34 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 193 29.8 0 6.21 1 -c ",
+			height=0.5,
+			pos="193,34",
+			width=0.75];
+	}
+}

@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node1" href="na" title="{x|&lt;p&gt;y}" alt="" coords="5,5,77,73"/>
+<area shape="rect" id="node2" href="nb" title="tb" alt="" coords="93,18,165,86"/>
+<area shape="rect" id="edge1-headlabel" href="h" title="H" alt="" coords="79,13,93,36"/>
+<area shape="rect" id="edge1-taillabel" href="t" title="T" alt="" coords="77,33,89,56"/>
+</map>

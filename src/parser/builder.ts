@@ -11,6 +11,7 @@ import { Node } from '../model/node.js';
 import { Edge } from '../model/edge.js';
 import { assignSubgSeq } from '../model/cgraph-ops.js';
 import { htmlValueContent, isHtmlValue } from '../common/html-string.js';
+import { effectiveGraphDefaults, hasLocalGraphSym, pinSubgraphsAttr } from './graph-attr-syms.js';
 import type {
   AttrPair,
   NodeId,
@@ -74,28 +75,6 @@ function effectiveNodeDefaults(scope: Graph): Map<string, string> {
   return eff;
 }
 
-/** Graph-attr keys do_graph_label inherits; seeded into subgraph attrs so the
- *  inherited value survives the layout's cluster rebuilds (which copy attrs but
- *  not the snapshot). `labelloc`/`labeljust` drive cluster label position and
- *  inherit via C `agget` just like label/font — @see input.c:858-877. */
-const GRAPH_LABEL_INHERIT_KEYS = ['label', 'fontname', 'fontsize', 'fontcolor', 'labelloc', 'labeljust'] as const;
-
-/**
- * Collect the graph-attribute defaults in effect at `scope`: walk scope -> root,
- * inner overriding outer (first-found wins), reading each graph's own `attrs`.
- * Snapshotted when a subgraph opens so an ancestor attribute set LATER in
- * statement order does not retroactively apply (DOT's order-sensitive defaults).
- */
-function effectiveGraphDefaults(scope: Graph): Map<string, string> {
-  const eff = new Map<string, string>();
-  for (let g: Graph | null = scope; g !== null; g = g.parent) {
-    for (const [k, v] of g.attrs) {
-      if (!eff.has(k)) eff.set(k, v);
-    }
-  }
-  return eff;
-}
-
 /** Manages the per-parse node ID counter and node creation. */
 export class NodeRegistry {
   private nextId = 0;
@@ -114,35 +93,6 @@ export class NodeRegistry {
     node.nodeDefaultsSnapshot = effectiveNodeDefaults(scope);
     root.nodes.set(name, node);
     return node;
-  }
-}
-
-// ── Endpoint / name collection ────────────────────────────────────────────────
-
-/** Collects node names from AST statement lists (for edge endpoint expansion). */
-export class NameCollector {
-  static fromStmts(stmts: ParsedStmt[]): string[] {
-    const out: string[] = [];
-    for (const s of stmts) NameCollector.fromStmt(s, out);
-    return out;
-  }
-
-  static fromStmt(stmt: ParsedStmt, out: string[]): void {
-    if (stmt.type === 'node') {
-      out.push(stmt.id.id);
-    } else if (stmt.type === 'edge') {
-      for (const item of stmt.nodes) NameCollector.fromEndpoint(item, out);
-    } else if (stmt.type === 'subgraph') {
-      out.push(...NameCollector.fromStmts(stmt.stmts));
-    }
-  }
-
-  static fromEndpoint(item: NodeId | SubgraphStmt, out: string[]): void {
-    if ('type' in item && item.type === 'subgraph') {
-      out.push(...NameCollector.fromStmts(item.stmts));
-    } else {
-      out.push((item as NodeId).id);
-    }
   }
 }
 
@@ -226,26 +176,36 @@ export class StmtProcessor {
   }
 
   processAssign(stmt: AssignStmt, graph: Graph): void {
-    graph.attrs.set(stmt.key, normaliseAttrValue(stmt.value));
     // cgraph: assigning a graph attr on any (sub)graph declares it graph-wide
     // with an empty default → the root sees "" for it. @see agattr declaration.
     this.declareGraphAttr(graph, stmt.key);
+    graph.attrs.set(stmt.key, normaliseAttrValue(stmt.value));
   }
 
-  /** Record a graph-attribute declaration, noting whether THIS scope was the
-   *  first to declare the key anywhere — the branch selector in cgraph's
-   *  setattr. @see lib/cgraph/attr.c:257 · model/graph.ts firstGraphDecl */
+  /** Record a graph-attribute declaration, BEFORE its value is stored, noting
+   *  whether THIS scope was the first to declare the key anywhere — the branch
+   *  selector in cgraph's setattr. @see model/graph.ts firstGraphDecl
+   *  A scope that already holds a symbol for the key (the root always; the
+   *  first declarer, through bindattrs' empty declaration) updates it, which
+   *  first pins its direct subgraphs; a new local definition pins nothing.
+   *  A key declared in a re-opened subgraph's later body gets a local symbol,
+   *  so it is no longer a seeded one. @see lib/cgraph/attr.c:setattr */
   private declareGraphAttr(graph: Graph, key: string): void {
-    if (!graph.root.declaredGraphAttrs.has(key)) {
+    const first = !graph.root.declaredGraphAttrs.has(key);
+    if (first) {
       (graph.firstGraphDecl ??= new Set()).add(key);
       graph.root.declaredGraphAttrs.add(key);
     }
+    if (first || hasLocalGraphSym(graph, key)) pinSubgraphsAttr(graph, key);
+    graph.seededAttrs?.delete(key);
   }
 
   processAttr(stmt: AttrStmt, graph: Graph): void {
     if (stmt.target === 'graph') {
-      applyAttrs(stmt.attrs, graph.attrs);
-      for (const a of stmt.attrs) this.declareGraphAttr(graph, a.key);
+      for (const a of stmt.attrs) {
+        this.declareGraphAttr(graph, a.key);
+        applyAttrs([a], graph.attrs);
+      }
     } else if (stmt.target === 'node') {
       applyAttrs(stmt.attrs, graph.nodeDefaults);
     } else {
@@ -269,9 +229,20 @@ export class StmtProcessor {
     // (A -> {S} -> B) appears in two adjacent pairs, so resolving once avoids
     // double-creating it. Endpoints (incl. subgraphs) open before any edge of the
     // statement is built — matching cgraph's grammar. @see lib/cgraph/grammar.y
-    const ends = stmt.nodes.map((item) => ({
-      nodes: this.resolveEndpoint(item, root, graph, directed),
+    const refs = stmt.nodes.map((item) => ({
+      ref: this.resolveEndpoint(item, root, graph, directed),
       port: portStringOf(item),
+    }));
+    // A subgraph endpoint expands to the nodes the subgraph holds once the
+    // WHOLE statement is parsed, walked in sequence (node id) order: an earlier
+    // body of a re-opened subgraph and a later endpoint naming the same
+    // subgraph both count. Walking the node dictionary rather than the written
+    // order gives graphs-world `37 -> {39;41;38;40}` heads 38,40,39,41, and
+    // makes a name written twice in the endpoint one member (1902 drew a1->a3
+    // twice). @see lib/cgraph/grammar.y:endedge, edgerhs (agfstnode/agnxtnode)
+    const ends = refs.map(({ ref, port }) => ({
+      nodes: ref instanceof Graph ? [...ref.nodes.values()].sort((a, b) => a.id - b.id) : ref,
+      port,
     }));
     for (let i = 0; i < ends.length - 1; i++) {
       this.connectEndpoints(ends[i], ends[i + 1], stmt.attrs, graph, root);
@@ -294,34 +265,45 @@ export class StmtProcessor {
     // enclosing scope have already advanced it — matching native's %N exactly.
     // @see lib/cgraph/graph.c:agsubg, lib/cgraph/id.c:idmap
     const sgName = stmt.id ?? `%${this.nextAnonId()}`;
-    // AGSEQ is assigned when the subgraph opens, before its body — matching C's
-    // agopen, which calls agnextseq before processing the subgraph contents.
-    // A reopened named subgraph (`subgraph X {…} … subgraph X {…}`) consumes no
-    // new AGSEQ in cgraph, so reuse the prior seq rather than re-incrementing.
-    // (Content still overwrites; merge semantics are unchanged and out of scope.)
+    // A re-opened named subgraph (`subgraph X {…} … subgraph X {…}`) is the one
+    // the parent already holds: agsubg finds it by name among the parent's OWN
+    // subgraphs and returns it. The body adds to it; it takes no new AGSEQ, and
+    // the attribute values it copied when it first opened stay as they were.
+    // @see lib/cgraph/subg.c:agsubg, lib/cgraph/grammar.y:opensubg
     const prior = graph.subgraphs.get(sgName);
+    if (prior !== undefined) {
+      buildGraph(stmt.stmts, prior, root, directed, this);
+      return prior;
+    }
     const sg = new Graph(sgName, graph.kind);
     sg.parent = graph;
     sg.root = root;
-    if (prior !== undefined) sg.seq = prior.seq;
-    else assignSubgSeq(graph, sg);
+    // AGSEQ is assigned when the subgraph opens, before its body — matching C's
+    // agopen, which calls agnextseq before processing the subgraph contents.
+    assignSubgSeq(graph, sg);
     // Snapshot the enclosing graph-attribute defaults at OPEN time (before the
     // body) so a later ancestor `graph [label=…]` does not apply to this
     // subgraph — matching cgraph's parse-time defval copy (order-sensitive).
     sg.graphDefaultsSnapshot = effectiveGraphDefaults(graph);
     buildGraph(stmt.stmts, sg, root, directed, this);
-    // Seed the order-correct inherited label-family defaults into the subgraph's
-    // OWN attrs (body wins) so they survive the layout's cluster rebuilds, which
-    // copy attrs but not the snapshot. Mirrors cgraph's agsubg defval copy; kept
-    // to the keys do_graph_label reads so the blast radius stays in label render.
-    // @see lib/common/input.c:do_graph_label (agget label/font*)
-    // The seeded keys are recorded so the -Tdot serializer can tell them from a
-    // genuine local declaration: cgraph gives a local declaration its own dict
-    // symbol (printed by write_dict) even when the value equals the inherited
-    // one, whereas a seeded value must stay invisible. @see src/render/dot.ts
-    for (const key of GRAPH_LABEL_INHERIT_KEYS) {
-      const v = sg.graphDefaultsSnapshot.get(key);
-      if (v !== undefined && !sg.attrs.has(key)) {
+    // Seed every inherited value into the subgraph's OWN attrs (body wins):
+    // agmakeattrs copies each graph attribute in effect in the parent into a
+    // new subgraph's record, and every agget(subg, …) reads that copy — the
+    // label family (do_graph_label; labelloc/labeljust too, input.c:858-877),
+    // `cluster` (is_a_cluster), `ordering`, `rank`, and the rest. Seeding,
+    // unlike a read of the snapshot, survives every copy that takes `attrs`
+    // alone: the layout's cluster rebuilds and dot's pack projection (C's
+    // agcopyattr copies the effective values there).
+    // @see lib/cgraph/attr.c:agmakeattrs
+    // @see lib/common/input.c:do_graph_label
+    // @see lib/common/utils.c:is_a_cluster
+    // The seeded keys are recorded so the writers can tell them from a local
+    // declaration: cgraph gives a local declaration its own dict symbol
+    // (printed by write_dict) even when the value equals the inherited one,
+    // whereas a seeded value has none and must stay invisible.
+    // @see src/render/dot/attrs.ts, src/model/cgraph-ops.ts:localGraphAttrs
+    for (const [key, v] of sg.graphDefaultsSnapshot) {
+      if (!sg.attrs.has(key)) {
         sg.attrs.set(key, v);
         (sg.seededAttrs ??= new Set()).add(key);
       }
@@ -360,35 +342,20 @@ export class StmtProcessor {
     }
   }
 
+  /** One endpoint of an edge statement: a node item's node, or a subgraph
+   *  item's subgraph, which the caller expands after the whole statement. */
   private resolveEndpoint(
     item: NodeId | SubgraphStmt,
     root: Graph,
     scope: Graph,
     directed: boolean,
-  ): Node[] {
+  ): Node[] | Graph {
     if ('type' in item && item.type === 'subgraph') {
       // Create the subgraph as a first-class object so its rank-set attr
       // (rank=same/min/max/source/sink), node membership, and anon-id/AGSEQ are
-      // registered for collapse_sets; then expand the edge over its node names.
-      this.processSubgraph(item, scope, root, directed);
-      // Ensure (create/look-up) the member nodes in written order, so NEW nodes
-      // take their AGSEQ in source order — then iterate them in AGSEQ (node id)
-      // order for edge creation. C builds `tail -> {set}` edges by walking the
-      // endpoint subgraph's node dictionary (sequence-ordered), not the written
-      // order; iterating out of order assigns the wrong graphSeq (SVG edge id)
-      // when the set lists pre-existing nodes out of creation order (graphs-world
-      // `37 -> {39;41;38;40}`: heads 38,40,39,41 by AGSEQ, not 39,41,38,40).
-      // @see lib/cgraph/edge.c:agedge — edges follow agfstnode/agnxtnode order
-      // Dedup by node identity: a name appearing in several statements of the
-      // endpoint subgraph (e.g. a1 in both `a1->a2` and `b2->a1`) is ONE member
-      // in cgraph's node dictionary, so `subg -> x` expands to a single a1->x —
-      // not one per textual occurrence (1902 drew a1->a3 twice).
-      // @see lib/cgraph/edge.c:agedge (walks agfstnode/agnxtnode — unique nodes)
-      const seen = new Set<number>();
-      const nodes = NameCollector.fromStmts(item.stmts)
-        .map((n) => this.registry.ensure(n, root, scope))
-        .filter((nd) => (seen.has(nd.id) ? false : (seen.add(nd.id), true)));
-      return nodes.sort((a, b) => a.id - b.id);
+      // registered for collapse_sets. Its body creates the member nodes in
+      // written order, so NEW nodes take their AGSEQ in source order.
+      return this.processSubgraph(item, scope, root, directed);
     }
     return [this.registry.ensure((item as NodeId).id, root, scope)];
   }

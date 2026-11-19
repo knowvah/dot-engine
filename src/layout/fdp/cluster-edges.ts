@@ -27,32 +27,11 @@ import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import { Edge } from '../../model/edge.js';
 import { agnode, agsubnode } from '../../model/cgraph-ops.js';
+import { mkClustMap } from '../../common/clust-map.js';
 
 // ---------------------------------------------------------------------------
-// Cluster name map (mkClustMap / fillMap / findCluster)
+// Cluster name lookup (mapc); the map is common/clust-map.ts
 // ---------------------------------------------------------------------------
-
-/**
- * Map every cluster's name to its subgraph, recursing the cluster tree
- * (info.clust, built by mkClusters). A duplicate name keeps the first.
- * @see lib/common/utils.c:fillMap
- */
-function fillMap(g: Graph, map: Map<string, Graph>): void {
-  const n = g.info.n_cluster ?? 0;
-  for (let c = 0; c < n; c++) {
-    const cl = g.info.clust![c]!;
-    const s = cl.name;
-    if (!map.has(s)) map.set(s, cl);
-    fillMap(cl, map);
-  }
-}
-
-/** @see lib/common/utils.c:mkClustMap */
-function mkClustMap(g: Graph): Map<string, Graph> {
-  const map = new Map<string, Graph>();
-  fillMap(g, map);
-  return map;
-}
 
 /**
  * A node maps to a cluster iff its name starts with "cluster" AND a cluster of

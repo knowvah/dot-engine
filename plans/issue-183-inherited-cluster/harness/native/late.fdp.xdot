@@ -1,0 +1,26 @@
+graph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 108 132 108 132 0 ",
+		bb="0,0,132,108",
+		cluster=true,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph p {
+		graph [cluster=""];
+		a	[_draw_="c 7 -#000000 e 105 90 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 105 85.8 0 6.21 1 -a ",
+			height=0.5,
+			pos="105,90",
+			width=0.75];
+	}
+	subgraph r {
+		graph [_draw_="c 7 -#000000 p 4 0 0 0 52 70 52 70 0 ",
+			bb="-3.9968e-15,0,70,52"
+		];
+		b	[_draw_="c 7 -#000000 e 35 26 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 35 21.8 0 7 1 -b ",
+			height=0.5,
+			pos="35,26",
+			width=0.75];
+	}
+}

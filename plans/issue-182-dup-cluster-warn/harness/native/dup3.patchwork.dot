@@ -1,0 +1,55 @@
+digraph G {
+	graph [bb="0,0,77.46,77.46"];
+	node [label="\N",
+		shape=box
+	];
+	subgraph cluster_a {
+		graph [bb="0.00032275,25.82,38.73,77.46"];
+		subgraph cluster_x {
+			graph [bb="0.00032275,51.64,38.73,77.46"];
+			a	[height=0.35861,
+				pos="19.365,64.55",
+				width=0.53791];
+		}
+		subgraph s {
+			subgraph cluster_x2 {
+				graph [bb="0.00032275,25.82,38.73,51.64"];
+				c	[height=0.35861,
+					pos="19.365,38.73",
+					width=0.53791];
+			}
+		}
+	}
+	subgraph cluster_b {
+		graph [bb="0.00032275,0.00032275,38.73,25.82"];
+		subgraph cluster_x {
+			graph [bb="0.00032275,0.00032275,38.73,25.82"];
+			b	[height=0.35861,
+				pos="19.365,12.91",
+				width=0.53791];
+		}
+	}
+	subgraph cluster_c {
+		graph [bb="38.73,25.82,77.46,77.46"];
+		subgraph cluster_x {
+			graph [bb="38.73,51.64,77.46,77.46"];
+			d	[height=0.35861,
+				pos="58.095,64.55",
+				width=0.53791];
+		}
+		subgraph cluster_x2 {
+			graph [bb="38.73,25.82,77.46,51.64"];
+			e	[height=0.35861,
+				pos="58.095,38.73",
+				width=0.53791];
+		}
+	}
+	subgraph x {
+		subgraph cluster_a {
+			graph [bb="38.73,0.00032275,77.46,25.82"];
+			f	[height=0.35861,
+				pos="58.095,12.91",
+				width=0.53791];
+		}
+	}
+}

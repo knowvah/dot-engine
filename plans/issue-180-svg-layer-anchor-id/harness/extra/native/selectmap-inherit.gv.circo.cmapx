@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="poly" id="l2_R_node1" href="nb" title="b" alt="" coords="77,29,76,22,70,15,62,10,52,7,41,5,30,7,20,10,12,15,7,22,5,29,7,37,12,43,20,49,30,52,41,53,52,52,62,49,70,43,76,37"/>
+<area shape="poly" id="l2_N1" href="na" title="a" alt="" coords="245,29,244,22,238,15,230,10,220,7,209,5,198,7,188,10,180,15,175,22,173,29,175,37,180,43,188,49,198,52,209,53,220,52,230,49,238,43,244,37"/>
+<area shape="poly" id="l2_R_edge1" href="e" title="L" alt="" coords="171,31,93,32,93,27,175,28"/>
+<area shape="rect" id="l2_R_edge1-label" href="e" title="L" alt="" coords="121,7,133,29"/>
+<area shape="rect" id="l2_R" href="x" alt="" coords="0,-0,251,59"/>
+</map>

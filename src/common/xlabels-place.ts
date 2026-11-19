@@ -12,6 +12,7 @@
 import type { Graph } from '../model/graph.js';
 import type { Point } from '../model/geom.js';
 import type { TextlabelT } from './types.js';
+import { agwarningf } from './agerr.js';
 import {
   EDGE_LABEL, HEAD_LABEL, TAIL_LABEL, NODE_XLABEL, EDGE_XLABEL, mapbool,
 } from '../layout/dot/rank.js';
@@ -418,17 +419,25 @@ function buildArrays(
   return { ctx };
 }
 
-/** Write placed label positions back to the graph; update bb. */
-function writeBackLabels(gp: Graph, lbls: XLabelT[], nLbls: number): void {
+/**
+ * Write placed label positions back to the graph; update bb. Returns C's
+ * `cnt`, the number of labels placed.
+ *
+ * @see lib/common/postproc.c:addXLabels (569-580)
+ */
+function writeBackLabels(gp: Graph, lbls: XLabelT[], nLbls: number): number {
+  let cnt = 0;
   for (let i = 0; i < nLbls; i++) {
     const xlp = lbls[i];
     if (xlp.set) {
+      cnt++;
       const lp = xlp.lbl as TextlabelT;
       lp.set = true;
       lp.pos = centerPt(xlp);
       updateBBForLabel(gp, lp);
     }
   }
+  return cnt;
 }
 
 // ---------------------------------------------------------------------------
@@ -444,7 +453,13 @@ function needsXLabelWork(gp: Graph): boolean {
   return !!(h & EDGE_LABEL) && !(gp.info.edgeLabelsDone ?? false);
 }
 
-/** Run one placeLabels pass: count slots, build arrays, place, write back. */
+/**
+ * Run one placeLabels pass: count slots, build arrays, place, write back, and
+ * warn when a label is left unplaced. Not ported: the `Verbose`
+ * `labels positioned` line; the port has no `Verbose`.
+ *
+ * @see lib/common/postproc.c:addXLabels (569-587)
+ */
 function runPlacement(gp: Graph): void {
   const hasLabels = gp.info.has_labels ?? 0;
   const et = edgeType(gp);
@@ -460,7 +475,10 @@ function runPlacement(gp: Graph): void {
   const force = forceStr === undefined ? true : mapbool(forceStr);
   const params: LabelParamsT = { bb: { ll: ctx.bb.ll, ur: ctx.bb.ur }, force };
   placeLabels(ctx.objs, ctx.lbls, params);
-  writeBackLabels(gp, ctx.lbls, nLbls);
+  const cnt = writeBackLabels(gp, ctx.lbls, nLbls);
+  if (cnt !== nLbls) {
+    agwarningf(`${cnt} out of ${nLbls} exterior labels positioned.`);
+  }
 }
 
 /**

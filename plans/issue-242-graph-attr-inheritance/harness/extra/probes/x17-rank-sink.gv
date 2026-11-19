@@ -1,0 +1,1 @@
+digraph G { rank=sink; subgraph s { a } subgraph u { rank=source; b } c -> a; b -> c; a -> d }

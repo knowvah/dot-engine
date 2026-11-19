@@ -1,0 +1,9 @@
+digraph G {
+  label="root label"
+  subgraph cluster_a { label="cluster a"; a; b }
+  a -> b [label="ab", headlabel="h", taillabel="t"]
+  b -> c [xlabel="bx"]
+  c [xlabel="cx"]
+  r [shape=record, label="{x|y|<p> z}"]
+  c -> r:p
+}

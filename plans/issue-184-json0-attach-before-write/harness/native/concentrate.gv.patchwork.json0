@@ -1,0 +1,73 @@
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "bb": "0,0,63.246,63.246",
+  "concentrate": "true",
+  "_subgraph_cnt": 0,
+  "objects": [
+    {
+      "_gvid": 0,
+      "name": "a",
+      "height": "0.43921",
+      "label": "\\N",
+      "pos": "15.812,47.435",
+      "shape": "box",
+      "width": "0.43921"
+    },
+    {
+      "_gvid": 1,
+      "name": "c",
+      "height": "0.43921",
+      "label": "\\N",
+      "pos": "47.435,47.435",
+      "shape": "box",
+      "width": "0.43921"
+    },
+    {
+      "_gvid": 2,
+      "name": "d",
+      "height": "0.43921",
+      "label": "\\N",
+      "pos": "15.812,15.812",
+      "shape": "box",
+      "width": "0.43921"
+    },
+    {
+      "_gvid": 3,
+      "name": "b",
+      "height": "0.43921",
+      "label": "\\N",
+      "pos": "47.435,15.812",
+      "shape": "box",
+      "width": "0.43921"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 0,
+      "head": 1
+    },
+    {
+      "_gvid": 2,
+      "tail": 0,
+      "head": 2
+    },
+    {
+      "_gvid": 3,
+      "tail": 3,
+      "head": 1
+    },
+    {
+      "_gvid": 4,
+      "tail": 3,
+      "head": 2
+    },
+    {
+      "_gvid": 1,
+      "tail": 0,
+      "head": 1
+    }
+  ]
+}

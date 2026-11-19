@@ -1,0 +1,1 @@
+digraph G { subgraph cluster_p { a } ordering=out; subgraph cluster_p { a -> x; a -> y } s -> y; s -> x }

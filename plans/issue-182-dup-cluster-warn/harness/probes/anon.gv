@@ -1,0 +1,5 @@
+strict digraph {
+subgraph { a -> b  cluster=true label=x }
+subgraph { c -> d  e -> f cluster=true label=y }
+subgraph { g cluster=true label=z }
+}

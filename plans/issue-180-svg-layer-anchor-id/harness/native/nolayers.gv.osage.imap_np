@@ -1,0 +1,6 @@
+base referer
+default x
+rect na 8,57 80,105
+rect http://kc 33,15 55,45
+rect http://k 29,11 59,49
+rect c 5,5 83,108

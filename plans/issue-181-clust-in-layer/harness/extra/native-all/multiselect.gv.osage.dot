@@ -1,0 +1,38 @@
+digraph G {
+	graph [URL=x,
+		bb="0,0,120,104.8",
+		layers="l1:l2:l3",
+		layerselect="l1,l3"
+	];
+	node [label="\N"];
+	subgraph cluster_c {
+		graph [URL=c,
+			bb="62,52,120,92"
+		];
+		b	[URL=nb,
+			height=0.5,
+			layer=l2,
+			pos="91,72",
+			width=0.75];
+	}
+	subgraph cluster_d {
+		graph [URL=d,
+			bb="0,40,58,104.8",
+			label=D,
+			lheight=0.23,
+			lp="29,92.4",
+			lwidth=0.14
+		];
+		c	[URL=nc,
+			height=0.5,
+			layer=l3,
+			pos="29,60",
+			width=0.75];
+	}
+	a	[URL=na,
+		height=0.5,
+		pos="29,18",
+		width=0.75];
+	a -> b	[pos="e,74.339,57.489 45.615,32.471 51.87,37.919 59.128,44.241 65.981,50.21"];
+	a -> c	[pos="e,29,41.693 29,36.056 29,36.172 29,36.289 29,36.406"];
+}

@@ -92,11 +92,10 @@ describe('json names equal native', () => {
     expect(jsonNames(renderRef(name, 'json'))).toEqual(jsonNames(ref(name, 'json')));
   });
 
-  // The json root name of a nameless graph (`%1` natively) is issue #185.
-  it('root-anon: subgraph names', () => {
-    const want = jsonNames(ref(ROOT_ANON, 'json')).subgraphs;
-    expect(want).toEqual(['%3', 'cluster_q']);
-    expect(jsonNames(renderRef(ROOT_ANON, 'json')).subgraphs).toEqual(want);
+  it('root-anon: root and subgraph names', () => {
+    const want = jsonNames(ref(ROOT_ANON, 'json'));
+    expect(want).toEqual({ root: '%1', subgraphs: ['%3', 'cluster_q'] });
+    expect(jsonNames(renderRef(ROOT_ANON, 'json'))).toEqual(want);
   });
 
   it('numbers the anonymous subgraph of a root named "" from %1', () => {

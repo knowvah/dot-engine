@@ -1,0 +1,6 @@
+digraph G {
+  compound=true
+  subgraph cluster_a { subgraph cluster_x { a } }
+  subgraph cluster_b { subgraph cluster_y { b } }
+  a -> b [lhead=cluster_y ltail=cluster_x]
+}

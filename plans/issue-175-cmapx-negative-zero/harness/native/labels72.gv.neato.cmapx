@@ -1,0 +1,9 @@
+<map id="%1" name="%1">
+<area shape="poly" id="node1" href="u" title="a" alt="" coords="82,79,81,74,77,69,71,65,63,62,55,61,47,62,39,65,33,69,29,74,28,79,29,85,33,90,39,94,47,97,55,97,63,97,71,94,77,90,81,85"/>
+<area shape="rect" id="node2" href="u" title="wide label" alt="" coords="62,4,136,40"/>
+<area shape="poly" id="edge1" href="e" title="x" alt="" coords="66,62,79,47,77,51,69,64"/>
+<area shape="rect" id="edge1-label" href="e" title="x" alt="" coords="66,39,73,56"/>
+<area shape="poly" id="node3" href="u" title="c" alt="" coords="58,148,57,142,53,137,47,133,39,131,31,130,23,131,15,133,9,137,5,142,4,148,5,153,9,158,15,162,23,165,31,166,39,165,47,162,53,158,57,153"/>
+<area shape="poly" id="edge2" href="f" title="ab" alt="" coords="50,96,43,120,39,118,48,99"/>
+<area shape="rect" id="edge2-label" href="f" title="ab" alt="" coords="32,108,45,125"/>
+</map>

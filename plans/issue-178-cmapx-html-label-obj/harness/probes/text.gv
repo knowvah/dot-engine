@@ -1,0 +1,1 @@
+digraph G { label=<<b>bold</b> text>; tooltip="t"; a [label=<<i>it</i>>, URL="http://a"]; a -> b }

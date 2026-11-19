@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 import { describe, it, expect, vi } from 'vitest';
-import { parseLayers, selectedLayer, type LayerInfo } from './layers.js';
-import { renderSvg } from '../index.js';
+import { clustInLayer, parseLayers, selectedLayer, type LayerInfo } from './layers.js';
+import { parse, renderSvg } from '../index.js';
 
 function infoFor(layers: string): LayerInfo {
   return parseLayers({ attrs: new Map([['layers', layers]]) } as never);
@@ -83,5 +83,51 @@ describe('layers — parseLayerselect list shape', () => {
   });
   it('absent layerselect leaves layerList null', () => {
     expect(infoFor('a:b:c').layerList).toBeNull();
+  });
+});
+
+// @see lib/common/emit.c:1593 clust_in_layer
+describe('layers — clustInLayer', () => {
+  const CLUSTER = 'cluster_c';
+  const TWO_LAYERS = 'layers="l1:l2";';
+
+  /** `[in l1, in l2]` for `cluster_c` of a graph with the given body. */
+  function inLayers(body: string): boolean[] {
+    const g = parse(`digraph G { ${body} }`);
+    const info = parseLayers(g);
+    const sg = g.subgraphs.get(CLUSTER)!;
+    return [1, 2].map((layerNum) => clustInLayer(info, layerNum, sg));
+  }
+
+  it('the cluster\'s own layer selects it', () => {
+    expect(inLayers(`${TWO_LAYERS} subgraph ${CLUSTER} { layer=l2; b }`)).toEqual([false, true]);
+  });
+
+  it('a non-matching layer rejects it even when a node of it is in the layer', () => {
+    expect(inLayers(`${TWO_LAYERS} subgraph ${CLUSTER} { layer=l2; b [layer=l1] }`)).toEqual([false, true]);
+  });
+
+  it('with no layer, a node\'s layer decides', () => {
+    expect(inLayers(`${TWO_LAYERS} subgraph ${CLUSTER} { b [layer=l2] }`)).toEqual([false, true]);
+  });
+
+  it('a node with no layer and no edge in the cluster is in every layer', () => {
+    expect(inLayers(`${TWO_LAYERS} subgraph ${CLUSTER} { b }`)).toEqual([true, true]);
+  });
+
+  it('an edge declared inside the cluster puts its unlayered nodes in its layer only', () => {
+    expect(inLayers(`${TWO_LAYERS} subgraph ${CLUSTER} { b; c; b -> c [layer=l2] }`)).toEqual([false, true]);
+  });
+
+  it('an edge declared at the root does not count', () => {
+    expect(inLayers(`${TWO_LAYERS} subgraph ${CLUSTER} { b } a -> b [layer=l2]`)).toEqual([true, true]);
+  });
+
+  it('a root layer declared before the cluster is the cluster\'s default', () => {
+    expect(inLayers(`${TWO_LAYERS} layer=l2; subgraph ${CLUSTER} { b }`)).toEqual([false, true]);
+  });
+
+  it('is true for every cluster when there is one layer', () => {
+    expect(inLayers(`subgraph ${CLUSTER} { layer=l2; b [layer=l1] }`)).toEqual([true, true]);
   });
 });

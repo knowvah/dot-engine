@@ -1,0 +1,22 @@
+digraph {
+	graph [bb="0,0,112,53.121",
+		forcelabels=false,
+		rankdir=LR
+	];
+	node [label="\N"];
+	edge [xlabel=xl];
+	{
+		graph [rank=same];
+		a	[height=0.5,
+			pos="27,18",
+			width=0.75];
+		b	[height=0.5,
+			pos="85,18",
+			width=0.75];
+	}
+	a:n -> b:n	[pos="e,85,36.321 27,36.321 27,36.321 56.638,36.321 73.541,36.321",
+		xlp="44.826,44.721"];
+	a -> b	[label=x,
+		lp="0,0",
+		pos="e,57.831,18 54.302,18 54.449,18 54.596,18 54.743,18"];
+}

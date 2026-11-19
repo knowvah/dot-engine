@@ -119,6 +119,17 @@ export function printfFixed(v: number, decimals: number): string {
 }
 
 /**
+ * Format `v` as C's `%.0f` would: `printfFixed(v, 0)`, except that an exact
+ * negative zero keeps its sign and prints `-0`, as printf does. A negative
+ * value that rounds to zero already prints `-0` in both.
+ *
+ * @see plugin/core/gvrender_core_map.c:map_output_shape ("%.0f")
+ */
+export function printfFixed0(v: number): string {
+  return Object.is(v, -0) ? '-0' : printfFixed(v, 0);
+}
+
+/**
  * Format `v` with `sig` significant digits, using the same notational
  * contract as `Number.prototype.toPrecision(sig)` — fixed form when the
  * decimal exponent `e` (0-indexed power of ten of the leading digit)

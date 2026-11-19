@@ -338,8 +338,6 @@ export function svgBeginGraph(g: Graph, job: RenderJob): void {
   // C reads GD_fontnames(job->gvc->g) at each span; the port carries it on the
   // job, set here alongside the other root-graph-derived fields.
   job.fontnames = g.info.fontnames ?? FontnameKind.NativeFonts;
-  // GD_drawing(root)->id — used as the `<gid>_` prefix for non-root object ids.
-  job.drawingId = g.attrs.get('id') ?? '';
   job.write(SVG_XML_DECL);
   // C svg_begin_job emits the stylesheet PI (raw href) between the XML
   // declaration and the DOCTYPE when the graph has a `stylesheet` attribute.
@@ -409,7 +407,7 @@ export function svgBeginPage(g: Graph, job: RenderJob): void {
     : -clip.ll.x + job.margin.x / z;
   const ty = clip.ur.y + job.margin.y / z;
   emitGraphGroupOpen(
-    job.idLayerPrefix() + svgGraphId(g, job),
+    svgGraphId(g, job),
     svgGraphClass(g),
     tx, ty, job,
   );

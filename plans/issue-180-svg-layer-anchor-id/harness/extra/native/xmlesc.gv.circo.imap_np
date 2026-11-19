@@ -1,0 +1,6 @@
+base referer
+default x
+rect na 5,5 77,53
+rect nb 173,5 245,53
+rect e 106,7 118,29
+rect nc 341,5 413,53

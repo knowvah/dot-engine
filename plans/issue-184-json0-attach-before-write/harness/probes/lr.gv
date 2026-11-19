@@ -1,0 +1,5 @@
+digraph G {
+  rankdir=LR; rotate=90
+  subgraph cluster_x { label=X; a -> b }
+  b -> c [label=bc]
+}

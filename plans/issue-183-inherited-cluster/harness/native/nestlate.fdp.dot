@@ -1,0 +1,21 @@
+graph G {
+	graph [bb="0,0,148,124"];
+	node [label="\N"];
+	subgraph p {
+		graph [bb="0,-7.9936e-15,148,124",
+			cluster=true
+		];
+		subgraph q {
+			graph [cluster=""];
+			a	[height=0.5,
+				pos="113,98",
+				width=0.75];
+		}
+		subgraph s {
+			graph [bb="8,8,78,60"];
+			b	[height=0.5,
+				pos="43,34",
+				width=0.75];
+		}
+	}
+}

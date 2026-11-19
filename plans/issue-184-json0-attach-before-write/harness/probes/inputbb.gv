@@ -1,0 +1,6 @@
+digraph G {
+  bb="0,0,1,1"
+  subgraph s { a -> b }
+  subgraph cluster_c { bb="9,9,9,9"; c }
+  b -> c
+}

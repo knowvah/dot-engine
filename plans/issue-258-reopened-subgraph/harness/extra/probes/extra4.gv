@@ -1,0 +1,1 @@
+digraph G { subgraph p { rank=same; a } b -> a; subgraph p { b } }

@@ -1,0 +1,47 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffe0 P 4 0 -36.8 0 92.8 133.46 92.8 133.46 -36.8 ",
+		_ldraw_="S 5 -solid c 9 -#fffffe00 C 7 -#ffc0cb P 4 56.84 -32.8 56.84 -4 76.62 -4 76.62 -32.8 S 5 -solid c 7 -#00ff00 p 4 56.84 -32.8 56.84 \
+-4 76.62 -4 76.62 -32.8 S 5 -solid c 9 -#fffffe00 C 7 -#00ffff P 4 59.84 -29.8 59.84 -7 73.62 -7 73.62 -29.8 S 5 -solid c 7 -#00ff00 \
+p 4 59.84 -29.8 59.84 -7 73.62 -7 73.62 -29.8 F 14 11 -Times-Roman c 7 -#0000ff T 62.84 -24 -1 7.79 1 -P ",
+		bb="0,-36.8,133.46,92.8",
+		bgcolor=lightyellow,
+		color=red,
+		fontcolor=blue,
+		label=<<table color="green" bgcolor="pink"><tr><td href="http://p" bgcolor="cyan">P</td></tr></table>>,
+		lheight=0.40,
+		lp="66.732,-18.4",
+		lwidth=0.27,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_z {
+		graph [_draw_="S 6 -dashed c 7 -#a020f0 C 7 -#ffffe0 P 4 0 0 0 92.8 70 92.8 70 0 ",
+			_ldraw_="S 15 -setlinewidth(2) S 5 -solid c 7 -#a020f0 p 4 23.72 57 23.72 87.8 46.28 87.8 46.28 57 S 5 -solid c 7 -#a020f0 p 4 27.72 61 27.72 \
+83.8 42.28 83.8 42.28 61 F 14 11 -Times-Roman c 7 -#0000ff T 30.72 66.8 -1 8.55 1 -Z ",
+			bb="3.9968e-15,-7.9936e-15,70,92.8",
+			color=purple,
+			label=<<table border="2"><tr><td>Z</td></tr></table>>,
+			lheight=0.46,
+			lp="35,72.4",
+			lwidth=0.34,
+			style=dashed
+		];
+		a	[_draw_="c 7 -#000000 C 7 -#d3d3d3 E 35 26 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 35 21.8 0 6.21 1 -a ",
+			height=0.5,
+			pos="35,26",
+			style=filled,
+			width=0.75];
+	}
+	b	[_draw_="c 7 -#000000 e 106.46 35.72 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 106.46 31.52 0 7 1 -b ",
+		height=0.5,
+		pos="106.46,35.723",
+		width=0.75];
+	a -> b	[_draw_="c 7 -#000000 B 4 61.61 29.62 63.81 29.92 66.06 30.23 68.33 30.53 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 67.71 33.98 78.09 31.86 68.66 27.05 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#ff0000 T 64.97 32.88 -1 7 1 -x ",
+		label=<<font color="red">x</font>>,
+		lp="68.47,38.478",
+		pos="e,79.592,32.067 61.61,29.62 63.813,29.92 66.065,30.227 68.33,30.535"];
+}

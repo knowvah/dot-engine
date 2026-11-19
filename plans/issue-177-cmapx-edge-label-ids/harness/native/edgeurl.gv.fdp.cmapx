@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="poly" id="edge1" href="u" title="l" alt="" coords="76,32,80,34,75,35,77,37"/>
+<area shape="rect" id="edge1-label" href="lu" title="l" alt="" coords="77,12,83,35"/>
+<area shape="rect" id="edge1-headlabel" href="hu" title="h" alt="" coords="84,15,93,37"/>
+<area shape="rect" id="edge1-taillabel" href="tu" title="t" alt="" coords="77,35,82,57"/>
+</map>

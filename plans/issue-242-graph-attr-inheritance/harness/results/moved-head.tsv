@@ -1,0 +1,13 @@
+input	engine	format	native	lines	base	head	baseErr	headErr	headEqBase	headEqNative
+1472.dot	dot	plain	ok	291	236	213	DIFF	DIFF	no	no
+1472.dot	dot	xdot	ok	1695	830	754	DIFF	DIFF	no	no
+1472.dot	dot	dot	ok	1027	321	288	DIFF	DIFF	no	no
+1472.dot	dot	svg	ok	1777	489	438	DIFF	DIFF	no	no
+1472-utf8.gv	dot	plain	ok	291	86	0	same	same	no	yes
+1472-utf8.gv	dot	xdot	ok	1695	286	0	same	same	no	yes
+1472-utf8.gv	dot	dot	ok	1027	110	0	same	same	no	yes
+1472-utf8.gv	dot	svg	ok	1777	173	3	same	same	no	no
+2242.dot	fdp	plain	ok	92	31	0	same	same	no	yes
+2242.dot	fdp	xdot	ok	344	108	0	same	same	no	yes
+2242.dot	fdp	dot	ok	263	38	0	same	same	no	yes
+2242.dot	fdp	svg	ok	229	99	3	same	same	no	no

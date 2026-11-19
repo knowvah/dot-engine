@@ -1,0 +1,1 @@
+digraph G { graph [bb="0,0,200,200", lp="10,10", lwidth=1, lheight=1]; { rank=same; a; b } subgraph cluster_x { c } a -> c }

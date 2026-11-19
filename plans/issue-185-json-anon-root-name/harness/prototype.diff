@@ -1,0 +1,21 @@
+diff --git a/src/render/json.ts b/src/render/json.ts
+index 4d1b0754..df97c556 100644
+--- a/src/render/json.ts
++++ b/src/render/json.ts
+@@ -47,6 +47,7 @@ import { gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
+ import { attachAttrs, nodeLayoutAttrs } from './dot/write-back.js';
+ import { attachBeforeWriteWithClusterEdges as attachFirst, jsonNodes, labelSubgs, lookupCluster } from './json-cluster-edge.js';
+ import { attrsWithoutLayoutBb } from '../gvc/layout-bb.js';
++import { agNameOf } from '../model/cgraph-ops.js';
+ import { CHAR_LATIN1 } from '../common/graph-init.js';
+ import { parse } from '../parser/index.js';
+ import { render as deviceRender } from '../gvc/device.js';
+@@ -579,7 +580,7 @@ function buildEdgesArray(g: Graph, ctx: BuildCtx): JObj[] {
+ function buildGraphObject(g: Graph, top: boolean, ctx: BuildCtx): JObj {
+   const o: JObj = {};
+   // write_hdr
+-  o.name = g.name;
++  o.name = agNameOf(g);
+   if (top) {
+     o.directed = g.kind === 'directed' || g.kind === 'strict-directed';
+     o.strict = g.kind === 'strict-directed' || g.kind === 'strict-undirected';

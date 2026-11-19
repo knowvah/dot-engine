@@ -463,8 +463,7 @@ describe('rendering writes layout attributes back', () => {
     render(g, 'json');
     const second = JSON.parse(render(g, 'json')) as Record<string, unknown>;
     const native = JSON.parse(nativeSeq('filing', 'dot', 'json-json', 2)) as Record<string, unknown>;
-    // An unnamed graph prints '' here and native's internal %1: a first-render gap.
-    expect({ ...second, name: '' }).toEqual({ ...native, name: '' });
+    expect(second).toEqual(native);
   });
 
   it('_background replays over the canvas on a first render, as native does', () => {

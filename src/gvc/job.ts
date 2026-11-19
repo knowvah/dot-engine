@@ -309,20 +309,28 @@ export class RenderJob {
   /** GD_fontnames of the root graph — selects which PostScript-alias fields the
    *  SVG emitter uses. @see plugin/core/gvrender_core_svg.c:464 */
   fontnames: FontnameKind = FontnameKind.NativeFonts;
-  /** Root graph's `id` attribute (GD_drawing(root)->id), '' if unset. Used as
-   * the `<gid>_` prefix for non-root object ids. @see lib/common/emit.c:getObjId */
+  /** GD_drawing(root)->id: the root graph's `id`, substituted, '' if unset. Set
+   * by render() for every renderer (drawingIdOf); the `<gid>_` prefix of
+   * non-root object ids. @see lib/common/emit.c:getObjId */
   drawingId: string = '';
 
   /**
-   * Resolve an object's SVG id like C's getObjId (steps after layerPagePrefix):
-   * a non-empty DOT `id` attr wins verbatim; otherwise non-root objects are
-   * prefixed with `<drawingId>_` when the root graph has an id.
-   * @see lib/common/emit.c:getObjId:209
+   * Resolve an object's id like C's getObjId. The layer half of
+   * layerPagePrefix comes first (`<layer>_` after the first layer), ahead of
+   * every other step. Then a non-empty DOT `id` attr wins verbatim; otherwise
+   * non-root objects are prefixed with `<drawingId>_` when the root graph has
+   * an id. The root's id gets the same prefix in emit_page (NotFirstPage).
+   * The page half (`page<x>,<y>_`) is left out: only ps and quartz page, and
+   * neither prints an id.
+   * @see lib/common/emit.c:getObjId
+   * @see lib/common/emit.c:layerPagePrefix
+   * @see lib/common/emit.c:emit_page
    */
   objId(idAttr: string | undefined, defaultId: string, isRoot = false): string {
-    if (idAttr !== undefined && idAttr.length > 0) return idAttr;
-    if (!isRoot && this.drawingId.length > 0) return this.drawingId + '_' + defaultId;
-    return defaultId;
+    const pfx = this.idLayerPrefix();
+    if (idAttr !== undefined && idAttr.length > 0) return pfx + idAttr;
+    if (!isRoot && this.drawingId.length > 0) return pfx + this.drawingId + '_' + defaultId;
+    return pfx + defaultId;
   }
 
   /** Active renderer plugin; set by render() before walkNodes. */

@@ -1,0 +1,1 @@
+digraph G { label=<<table><tr><td href="http://cell" id="cellid">L</td><td title="t">M</td><td href="http://c2">N</td></tr></table>>; a -> b }

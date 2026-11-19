@@ -1,0 +1,1 @@
+graph{size="0.7,0.7"; pad=0; URL="g"; node [URL="n" shape=box]; a--b; b--c; c--d; d--a; a--c}

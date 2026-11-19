@@ -1,0 +1,36 @@
+digraph G {
+	graph [bb="0,0,54.773,54.773",
+		layerlistsep="+",
+		layers="a;b;c;d",
+		layersep=";"
+	];
+	node [label="\N",
+		shape=box
+	];
+	subgraph cluster_r {
+		graph [bb="0.00045643,18.258,27.387,54.773",
+			layer="a;b+d"
+		];
+		x	[height=0.50715,
+			pos="13.694,36.515",
+			width=0.38036];
+	}
+	subgraph cluster_s {
+		graph [bb="27.387,18.258,54.773,54.773"];
+		y	[height=0.50715,
+			layer="b;c",
+			pos="41.08,36.515",
+			width=0.38036];
+	}
+	subgraph cluster_t {
+		graph [bb="0.00045643,0.00045643,54.773,18.258",
+			layer=3
+		];
+		z	[height=0.25358,
+			layer=a,
+			pos="27.387,9.1292",
+			width=0.76073];
+	}
+	x -> y;
+	y -> z;
+}

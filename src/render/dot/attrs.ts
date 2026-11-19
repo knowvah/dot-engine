@@ -240,8 +240,10 @@ function ownComputedAttrs(g: Graph, top: boolean, computed: Set<string>): Readon
 }
 
 /** Whether an ancestor's GD_clust holds `g` (a cluster inside an anonymous
- *  subgraph belongs to the nearest cluster or root above it). */
-function inClusterTree(g: Graph): boolean {
+ *  subgraph belongs to the nearest cluster or root above it). This is the set
+ *  rec_attach_bb walks: every cluster the layout made, drawn or not.
+ *  @see lib/common/output.c:rec_attach_bb */
+export function inClusterTree(g: Graph): boolean {
   for (let a = g.parent; a !== null; a = a.parent) {
     if ((a.info.clust ?? []).slice(0, a.info.n_cluster ?? 0).includes(g)) return true;
   }
@@ -404,6 +406,8 @@ export function writeDictSkips(v: string, inherited: string | undefined): boolea
 export function echoGraphAttr(g: Graph, key: string): string[] {
   const v = g.attrs.get(key);
   if (v === undefined) return [];
+  // A seeded value has no local dict symbol: write_dict does not print it.
+  if (g.seededAttrs?.has(key) === true) return [];
   if (writeDictSkips(v, g.graphDefaultsSnapshot?.get(key))) return [];
   return [`${key}=${agstrcanon(v)}`];
 }

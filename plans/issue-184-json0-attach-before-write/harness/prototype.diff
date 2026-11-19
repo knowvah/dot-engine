@@ -1,0 +1,15 @@
+diff --git a/src/render/json.ts b/src/render/json.ts
+index 3d993e7e..e7a9e860 100644
+--- a/src/render/json.ts
++++ b/src/render/json.ts
+@@ -684,8 +684,8 @@ export class Json0Renderer extends JsonRendererBase implements RendererPlugin {
+ 
+   /** C's json_begin_graph runs attach_attrs; buildJson overlays the same values. */
+   endGraph(g: Graph, job: RenderJob): void {
+-    const later = attachFirst(g, () => attachAttrs(g));
+-    job.write(buildJson(g, false)); later();
++    attachFirst(g, () => attachAttrs(g))();
++    job.write(buildJson(g, false));
+   }
+ }
+ 

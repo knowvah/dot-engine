@@ -1,0 +1,95 @@
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "bb": "0,0,89.214,375.8",
+  "label": "root label",
+  "lheight": "0.23",
+  "lp": "44.607,12.4",
+  "lwidth": "0.74",
+  "_subgraph_cnt": 1,
+  "objects": [
+    {
+      "name": "cluster_a",
+      "bb": "8,202.2,78,367.8",
+      "label": "cluster a",
+      "lheight": "0.23",
+      "lp": "43,355.4",
+      "lwidth": "0.65",
+      "_gvid": 0,
+      "nodes": [
+        1,2
+      ],
+      "edges": [
+        0
+      ]
+    },
+    {
+      "_gvid": 1,
+      "name": "a",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "43,317",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 2,
+      "name": "b",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "43,228.2",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "c",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "43,155.2",
+      "width": "0.75",
+      "xlabel": "cx",
+      "xlp": "9.3931,181.6"
+    },
+    {
+      "_gvid": 4,
+      "name": "r",
+      "height": "1.0472",
+      "label": "{x|y|<p> z}",
+      "pos": "43,62.5",
+      "rects": "16,74.9,70,99.7 16,50.1,70,74.9 16,25.3,70,50.1",
+      "shape": "record",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 1,
+      "head": 2,
+      "head_lp": "39.5,255.01",
+      "headlabel": "h",
+      "label": "ab",
+      "lp": "49.607,272.6",
+      "pos": "e,43,246.61 43,298.85 43,287.16 43,271.39 43,257.82",
+      "tail_lp": "41.055,290.45",
+      "taillabel": "t"
+    },
+    {
+      "_gvid": 1,
+      "tail": 2,
+      "head": 3,
+      "label": "",
+      "pos": "e,43,173.23 43,210.01 43,202.43 43,193.3 43,184.74",
+      "xlabel": "bx",
+      "xlp": "36,200.04"
+    },
+    {
+      "_gvid": 2,
+      "tail": 3,
+      "head": 4,
+      "headport": "p",
+      "label": "",
+      "pos": "e,71,37.7 53.306,138.49 71.042,110.29 103.46,52.853 82.003,40.202"
+    }
+  ]
+}
