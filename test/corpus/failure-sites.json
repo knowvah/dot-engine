@@ -1,0 +1,7274 @@
+{
+  "generatedFrom": {
+    "cRoot": "graphviz-16.1.1/lib",
+    "oracle": "16.1.1"
+  },
+  "rows": [
+    {
+      "id": "lib/ast/error.c#errorv#graphviz_exit#1",
+      "c": {
+        "file": "lib/ast/error.c",
+        "function": "errorv",
+        "kind": "graphviz_exit",
+        "line": 79,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/apply.c#agapply#agerrorf#1",
+      "c": {
+        "file": "lib/cgraph/apply.c",
+        "function": "agapply",
+        "kind": "agerrorf",
+        "line": 80,
+        "message": "agapply: unknown object type %d\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/attr.c#agdictof#agerrorf#1",
+      "c": {
+        "file": "lib/cgraph/attr.c",
+        "function": "agdictof",
+        "kind": "agerrorf",
+        "line": 71,
+        "message": "agdictof: unknown kind %d\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/attr.c#setattr#UNREACHABLE#1",
+      "c": {
+        "file": "lib/cgraph/attr.c",
+        "function": "setattr",
+        "kind": "UNREACHABLE",
+        "line": 300,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/node.c#node_set_add#UNREACHABLE#1",
+      "c": {
+        "file": "lib/cgraph/node.c",
+        "function": "node_set_add",
+        "kind": "UNREACHABLE",
+        "line": 480,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/obj.c#agdelete#agerrorf#1",
+      "c": {
+        "file": "lib/cgraph/obj.c",
+        "function": "agdelete",
+        "kind": "agerrorf",
+        "line": 25,
+        "message": "agdelete on wrong graph"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/obj.c#agdelete#agerrorf#2",
+      "c": {
+        "file": "lib/cgraph/obj.c",
+        "function": "agdelete",
+        "kind": "agerrorf",
+        "line": 38,
+        "message": "agdelete on bad object"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/obj.c#agraphof#agerrorf#1",
+      "c": {
+        "file": "lib/cgraph/obj.c",
+        "function": "agraphof",
+        "kind": "agerrorf",
+        "line": 198,
+        "message": "agraphof a bad object"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/obj.c#agrename#UNREACHABLE#1",
+      "c": {
+        "file": "lib/cgraph/obj.c",
+        "function": "agrename",
+        "kind": "UNREACHABLE",
+        "line": 71,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/obj.c#agroot#agerrorf#1",
+      "c": {
+        "file": "lib/cgraph/obj.c",
+        "function": "agroot",
+        "kind": "agerrorf",
+        "line": 182,
+        "message": "agroot of a bad object"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/rec.c#agdelrec#UNREACHABLE#1",
+      "c": {
+        "file": "lib/cgraph/rec.c",
+        "function": "agdelrec",
+        "kind": "UNREACHABLE",
+        "line": 158,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/rec.c#aggetrec#agerrorf#1",
+      "c": {
+        "file": "lib/cgraph/rec.c",
+        "function": "aggetrec",
+        "kind": "agerrorf",
+        "line": 60,
+        "message": "move to front lock inconsistency"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/cgraph/refstr.c#strdict_add#UNREACHABLE#1",
+      "c": {
+        "file": "lib/cgraph/refstr.c",
+        "function": "strdict_add",
+        "kind": "UNREACHABLE",
+        "line": 218,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/args.c#neato_extra_args#agerrorf#1",
+      "c": {
+        "file": "lib/common/args.c",
+        "function": "neato_extra_args",
+        "kind": "agerrorf",
+        "line": 53,
+        "message": "Invalid parameter \\\"%s\\\" for -n flag\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/args.c#setDouble#agerrorf#1",
+      "c": {
+        "file": "lib/common/args.c",
+        "function": "setDouble",
+        "kind": "agerrorf",
+        "line": 129,
+        "message": "bad value in flag -L%s - ignored\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/args.c#setInt#agerrorf#1",
+      "c": {
+        "file": "lib/common/args.c",
+        "function": "setInt",
+        "kind": "agerrorf",
+        "line": 145,
+        "message": "bad value in flag -L%s - ignored\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/colxlate.c#colorxlate#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/colxlate.c",
+        "function": "colorxlate",
+        "kind": "UNREACHABLE",
+        "line": 264,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/color.ts",
+        "symbol": "scanHexGroups",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/colxlate.c#colorxlate#UNREACHABLE#2",
+      "c": {
+        "file": "lib/common/colxlate.c",
+        "function": "colorxlate",
+        "kind": "UNREACHABLE",
+        "line": 316,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/color.ts",
+        "symbol": "scanHexGroups",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/colxlate.c#colorxlate#UNREACHABLE#3",
+      "c": {
+        "file": "lib/common/colxlate.c",
+        "function": "colorxlate",
+        "kind": "UNREACHABLE",
+        "line": 363,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/color.ts",
+        "symbol": "scanHexGroups",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/colxlate.c#colorxlate#UNREACHABLE#4",
+      "c": {
+        "file": "lib/common/colxlate.c",
+        "function": "colorxlate",
+        "kind": "UNREACHABLE",
+        "line": 392,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/color.ts",
+        "symbol": "scanHexGroups",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/colxlate.c#hsv2rgb#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/colxlate.c",
+        "function": "hsv2rgb",
+        "kind": "UNREACHABLE",
+        "line": 88,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/color.ts",
+        "symbol": "hsv2rgb",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#emit_background#native-crash#1",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "emit_background",
+        "kind": "native-crash",
+        "line": 1518,
+        "message": null
+      },
+      "port": {
+        "file": "src/gvc/emit-xdot.ts",
+        "symbol": "applyBackgroundState",
+        "behaviour": "renders"
+      },
+      "class": "graceful",
+      "status": "none",
+      "links": {
+        "divergence": "docs/known-divergences.md#a13-freed-fill-in-the-background-replay"
+      },
+      "note": "emit_background frees clrs[0] (emit.c:1518) while svg fill state still points at it, so native prints freed memory (fill=\"\" in 8 of 8 runs). Port prints the colour C meant. Site proven (A13)."
+    },
+    {
+      "id": "lib/common/emit.c#emit_edge_label#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "emit_edge_label",
+        "kind": "UNREACHABLE",
+        "line": 2874,
+        "message": null
+      },
+      "port": {
+        "file": "src/api/geometry.ts",
+        "symbol": "placedLabelPos",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#emit_xdot#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "emit_xdot",
+        "kind": "UNREACHABLE",
+        "line": 1442,
+        "message": null
+      },
+      "port": {
+        "file": "src/gvc/emit-xdot.test.ts",
+        "symbol": "<module>",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#emit_xdot#native-crash#1",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "emit_xdot",
+        "kind": "native-crash",
+        "line": 1386,
+        "message": null
+      },
+      "port": {
+        "file": "src/gvc/emit-xdot.ts",
+        "symbol": "emitXdot",
+        "behaviour": "renders"
+      },
+      "class": "graceful",
+      "status": "none",
+      "links": {
+        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10"
+      },
+      "note": "A T op in a graph _draw_ or _background: op->span is NULL outside neato -n (only xdotBB, emit.c:3106, builds it), and emit_xdot passes it to gvrender_textspan (emit.c:1386); native segfaults (exit 139). Doc cites neatoinit.c:560 (the xdotBB call site in init_nop); the dereference site is emit_xdot. Port draws no text. Site proven by source read."
+    },
+    {
+      "id": "lib/common/emit.c#gvRenderJobs#agerrorf#1",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "gvRenderJobs",
+        "kind": "agerrorf",
+        "line": 4140,
+        "message": "Layout was not done.  Missing layout plugins? \\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#gvRenderJobs#agerrorf#2",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "gvRenderJobs",
+        "kind": "agerrorf",
+        "line": 4163,
+        "message": "layout was not done\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#gvRenderJobs#agerrorf#3",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "gvRenderJobs",
+        "kind": "agerrorf",
+        "line": 4171,
+        "message": "renderer for %s is unavailable\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#parseSegs#agerrorf#1",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "parseSegs",
+        "kind": "agerrorf",
+        "line": 479,
+        "message": "Illegal value in \\\"%s\\\" color attribute; float expected "
+      },
+      "port": {
+        "file": "src/common/stop-color-diag.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#parse_style#agerrorf#1",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "parse_style",
+        "kind": "agerrorf",
+        "line": 3966,
+        "message": "nesting not allowed in style: %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#parse_style#agerrorf#2",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "parse_style",
+        "kind": "agerrorf",
+        "line": 3975,
+        "message": "unmatched ')' in style: %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#parse_style#agerrorf#3",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "parse_style",
+        "kind": "agerrorf",
+        "line": 3998,
+        "message": "unmatched '(' in style: %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/emit.c#textBB#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/emit.c",
+        "function": "textBB",
+        "kind": "UNREACHABLE",
+        "line": 3093,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/geom.c#ccwrotatepf#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/geom.c",
+        "function": "ccwrotatepf",
+        "kind": "UNREACHABLE",
+        "line": 161,
+        "message": null
+      },
+      "port": {
+        "file": "src/model/geom.ts",
+        "symbol": "ccwrotatepf",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/geom.c#cwrotatepf#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/geom.c",
+        "function": "cwrotatepf",
+        "kind": "UNREACHABLE",
+        "line": 143,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/compass-port.ts",
+        "symbol": "cwrotatepf",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/htmllex.c#htmlerror#agerrorf#1",
+      "c": {
+        "file": "lib/common/htmllex.c",
+        "function": "htmlerror",
+        "kind": "agerrorf",
+        "line": 57,
+        "message": "%s in line %"
+      },
+      "port": {
+        "file": "src/common/htmltable-lex.ts",
+        "symbol": "htmlErrorInLine",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/htmllex.c#htmllex#agerrorf#1",
+      "c": {
+        "file": "lib/common/htmllex.c",
+        "function": "htmllex",
+        "kind": "agerrorf",
+        "line": 1100,
+        "message": "%s in line %"
+      },
+      "port": {
+        "file": "src/common/htmltable-lex.ts",
+        "symbol": "XML_ERROR_TAG_MISMATCH",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/htmllex.c#lexerror#agerrorf#1",
+      "c": {
+        "file": "lib/common/htmllex.c",
+        "function": "lexerror",
+        "kind": "agerrorf",
+        "line": 68,
+        "message": "Unknown HTML element <%s> on line %"
+      },
+      "port": {
+        "file": "src/common/htmltable-lex.ts",
+        "symbol": "checkTag",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/htmltable.c#allocObj#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/htmltable.c",
+        "function": "allocObj",
+        "kind": "UNREACHABLE",
+        "line": 687,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/htmltable.c#heightOfLbl#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/htmltable.c",
+        "function": "heightOfLbl",
+        "kind": "UNREACHABLE",
+        "line": 719,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/htmltable.c#size_html_img#agerrorf#1",
+      "c": {
+        "file": "lib/common/htmltable.c",
+        "function": "size_html_img",
+        "kind": "agerrorf",
+        "line": 1053,
+        "message": "No or improper image file=\\\"%s\\\"\\n"
+      },
+      "port": {
+        "file": "src/common/htmltable.ts",
+        "symbol": "missingImages",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#charsetToStr#agerrorf#1",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "charsetToStr",
+        "kind": "agerrorf",
+        "line": 822,
+        "message": "Unsupported charset value %d\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#dotneato_args_initialize#agerrorf#1",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "dotneato_args_initialize",
+        "kind": "agerrorf",
+        "line": 419,
+        "message": "%s: option -%c unrecognized\\n\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#dotneato_args_initialize#graphviz_exit#1",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "dotneato_args_initialize",
+        "kind": "graphviz_exit",
+        "line": 235,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#dotneato_args_initialize#graphviz_exit#2",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "dotneato_args_initialize",
+        "kind": "graphviz_exit",
+        "line": 250,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#dotneato_args_initialize#graphviz_exit#3",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "dotneato_args_initialize",
+        "kind": "graphviz_exit",
+        "line": 270,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#dotneato_args_initialize#graphviz_exit#4",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "dotneato_args_initialize",
+        "kind": "graphviz_exit",
+        "line": 330,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#dotneato_args_initialize#graphviz_exit#5",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "dotneato_args_initialize",
+        "kind": "graphviz_exit",
+        "line": 356,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#dotneato_args_initialize#graphviz_exit#6",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "dotneato_args_initialize",
+        "kind": "graphviz_exit",
+        "line": 452,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#dotneato_usage#graphviz_exit#1",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "dotneato_usage",
+        "kind": "graphviz_exit",
+        "line": 100,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/input.c#gvNextInputGraph#agerrorf#1",
+      "c": {
+        "file": "lib/common/input.c",
+        "function": "gvNextInputGraph",
+        "kind": "agerrorf",
+        "line": 529,
+        "message": "%s: can't open %s: %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#add_tree_edge#agerrorf#1",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "add_tree_edge",
+        "kind": "agerrorf",
+        "line": 60,
+        "message": "add_tree_edge: missing tree edge\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/ns-core.ts",
+        "symbol": "addTreeEdge",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#add_tree_edge#agerrorf#2",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "add_tree_edge",
+        "kind": "agerrorf",
+        "line": 71,
+        "message": "add_tree_edge: empty outedge list\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/ns-core.ts",
+        "symbol": "addTreeEdge",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#add_tree_edge#agerrorf#3",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "add_tree_edge",
+        "kind": "agerrorf",
+        "line": 79,
+        "message": "add_tree_edge: empty inedge list\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/ns-core.ts",
+        "symbol": "addTreeEdge",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#checkdfs#abort#1",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "checkdfs",
+        "kind": "abort",
+        "line": 1461,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#init_rank#agerrorf#1",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "init_rank",
+        "kind": "agerrorf",
+        "line": 169,
+        "message": "trouble in init_rank\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/ns.ts",
+        "symbol": "initRank",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#invalidate_path#agerrorf#1",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "invalidate_path",
+        "kind": "agerrorf",
+        "line": 103,
+        "message": "invalidate_path: skipped over LCA\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/ns-core.ts",
+        "symbol": "invalidatePath",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#update#agerrorf#1",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "update",
+        "kind": "agerrorf",
+        "line": 806,
+        "message": "update: mismatched lca in treeupdates\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/ns.ts",
+        "symbol": "nsUpdate",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#x_cutval#agerrorf#1",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "x_cutval",
+        "kind": "agerrorf",
+        "line": 1134,
+        "message": "overflow when computing edge weight sum\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/ns-range.ts",
+        "symbol": "xCutval",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#x_cutval#agerrorf#2",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "x_cutval",
+        "kind": "agerrorf",
+        "line": 1139,
+        "message": "overflow when computing edge weight sum\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/ns-range.ts",
+        "symbol": "xCutval",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#x_cutval#graphviz_exit#1",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "x_cutval",
+        "kind": "graphviz_exit",
+        "line": 1135,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/dot/ns-range.ts",
+        "symbol": "xCutval",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/ns.c#x_cutval#graphviz_exit#2",
+      "c": {
+        "file": "lib/common/ns.c",
+        "function": "x_cutval",
+        "kind": "graphviz_exit",
+        "line": 1140,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/dot/ns-range.ts",
+        "symbol": "xCutval",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/output.c#canon#native-crash#1",
+      "c": {
+        "file": "lib/common/output.c",
+        "function": "canon",
+        "kind": "native-crash",
+        "line": 107,
+        "message": null
+      },
+      "port": {
+        "file": "src/render/map.ts",
+        "symbol": "plainNodeLabel",
+        "behaviour": "renders"
+      },
+      "class": "graceful",
+      "status": "none",
+      "links": {
+        "divergence": "https://github.com/knowvah/dot-engine/issues/266",
+        "dotEngineIssue": "https://github.com/knowvah/dot-engine/issues/266"
+      },
+      "note": "-Tplain: canon() agstrdups the label, agstrcanon returns the same pointer when no quoting is needed, agstrfree frees it, printstring reads freed memory (output.c:103-108; graphviz#2876, upstream MR graphviz!5152 filed). Port prints the right text. Site proven (#266)."
+    },
+    {
+      "id": "lib/common/postproc.c#gv_postprocess#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/postproc.c",
+        "function": "gv_postprocess",
+        "kind": "UNREACHABLE",
+        "line": 671,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/postproc.ts",
+        "symbol": "gvPostprocess",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/postproc.c#map_edge#agerrorf#1",
+      "c": {
+        "file": "lib/common/postproc.c",
+        "function": "map_edge",
+        "kind": "agerrorf",
+        "line": 104,
+        "message": "lost %s %s edge\\n"
+      },
+      "port": {
+        "file": "src/common/postproc.ts",
+        "symbol": "translateDrawing",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#checkpath#agerrorf#1",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "checkpath",
+        "kind": "agerrorf",
+        "line": 649,
+        "message": "in checkpath, all bounding boxes are below threshold\\n"
+      },
+      "port": {
+        "file": "src/common/splines-routespl.ts",
+        "symbol": "checkPath",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#checkpath#agerrorf#2",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "checkpath",
+        "kind": "agerrorf",
+        "line": 656,
+        "message": "in checkpath, box 0 has LL coord > UR coord\\n"
+      },
+      "port": {
+        "file": "src/common/splines-routespl.ts",
+        "symbol": "checkPath",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#checkpath#agerrorf#3",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "checkpath",
+        "kind": "agerrorf",
+        "line": 663,
+        "message": "in checkpath, box %"
+      },
+      "port": {
+        "file": "src/common/splines-routespl.ts",
+        "symbol": "checkPath",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#routesplines_#agerrorf#1",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "routesplines_",
+        "kind": "agerrorf",
+        "line": 310,
+        "message": "in routesplines, cannot find NORMAL edge\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/edge-route-poly.ts",
+        "symbol": "fwdDirs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#routesplines_#agerrorf#2",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "routesplines_",
+        "kind": "agerrorf",
+        "line": 373,
+        "message": "in routesplines, illegal values of prev %d and next %d, "
+      },
+      "port": {
+        "file": "src/layout/dot/edge-route-poly.ts",
+        "symbol": "fwdDirs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#routesplines_#agerrorf#3",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "routesplines_",
+        "kind": "agerrorf",
+        "line": 407,
+        "message": "in routesplines, illegal values of prev %d and next %d, "
+      },
+      "port": {
+        "file": "src/layout/dot/edge-route-poly.ts",
+        "symbol": "fwdDirs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#routesplines_#agerrorf#4",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "routesplines_",
+        "kind": "agerrorf",
+        "line": 424,
+        "message": "in routesplines, edge is a loop at %s\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/edge-route-poly.ts",
+        "symbol": "fwdDirs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#routesplines_#agerrorf#5",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "routesplines_",
+        "kind": "agerrorf",
+        "line": 450,
+        "message": "in routesplines, Pshortestpath failed\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/edge-route-poly.ts",
+        "symbol": "fwdDirs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#routesplines_#agerrorf#6",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "routesplines_",
+        "kind": "agerrorf",
+        "line": 481,
+        "message": "in routesplines, Proutespline failed\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/edge-route-poly.ts",
+        "symbol": "fwdDirs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#routesplines_#agerrorf#7",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "routesplines_",
+        "kind": "agerrorf",
+        "line": 495,
+        "message": "cannot allocate ps\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/edge-route-poly.ts",
+        "symbol": "fwdDirs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/routespl.c#simpleSplineRoute#agerrorf#1",
+      "c": {
+        "file": "lib/common/routespl.c",
+        "function": "simpleSplineRoute",
+        "kind": "agerrorf",
+        "line": 199,
+        "message": "cannot allocate ps\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/splines-flat-labeled.ts",
+        "symbol": "simpleSplineRoute",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/shapes.c#closestSide#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/shapes.c",
+        "function": "closestSide",
+        "kind": "UNREACHABLE",
+        "line": 4309,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/splines-path-shared.ts",
+        "symbol": "nodeBoxLocal",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/shapes.c#cvtPt#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/shapes.c",
+        "function": "cvtPt",
+        "kind": "UNREACHABLE",
+        "line": 4243,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/splines-path-shared.ts",
+        "symbol": "cvtPt",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/shapes.c#invflip_angle#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/shapes.c",
+        "function": "invflip_angle",
+        "kind": "UNREACHABLE",
+        "line": 2632,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/compass-port.ts",
+        "symbol": "invflipAngleRL",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/shapes.c#invflip_side#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/shapes.c",
+        "function": "invflip_side",
+        "kind": "UNREACHABLE",
+        "line": 2600,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/compass-port.ts",
+        "symbol": "invflipSideBT",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/shapes.c#record_init#agerrorf#1",
+      "c": {
+        "file": "lib/common/shapes.c",
+        "function": "record_init",
+        "kind": "agerrorf",
+        "line": 3682,
+        "message": "bad label format %s\\n"
+      },
+      "port": {
+        "file": "src/common/record.ts",
+        "symbol": "recordInit",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/shapes.c#round_corners#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/shapes.c",
+        "function": "round_corners",
+        "kind": "UNREACHABLE",
+        "line": 732,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/splines.c#getsplinepoints#agerrorf#1",
+      "c": {
+        "file": "lib/common/splines.c",
+        "function": "getsplinepoints",
+        "kind": "agerrorf",
+        "line": 1324,
+        "message": "getsplinepoints: no spline points available for edge (%s,%s)\\n"
+      },
+      "port": {
+        "file": "src/common/xlabels-place.ts",
+        "symbol": "getSplinePoints",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/common/splines.c#polylineMidpoint#UNREACHABLE#1",
+      "c": {
+        "file": "lib/common/splines.c",
+        "function": "polylineMidpoint",
+        "kind": "UNREACHABLE",
+        "line": 1236,
+        "message": null
+      },
+      "port": {
+        "file": "src/common/spline-midpoint.ts",
+        "symbol": "polylineMidpoint",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/compound.c#boxIntersectf#agerrorf#1",
+      "c": {
+        "file": "lib/dotgen/compound.c",
+        "function": "boxIntersectf",
+        "kind": "agerrorf",
+        "line": 65,
+        "message": "segment [(%.5g, %.5g),(%.5g,%.5g)] does not intersect box "
+      },
+      "port": {
+        "file": "src/layout/dot/compound-clip.ts",
+        "symbol": "boxIntersectf",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/conc.c#rebuild_vlists#agerrorf#1",
+      "c": {
+        "file": "lib/dotgen/conc.c",
+        "function": "rebuild_vlists",
+        "kind": "agerrorf",
+        "line": 160,
+        "message": "rebuild_vlists: lead is null for rank %d\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/conc.ts",
+        "symbol": "fillRankVlist",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/conc.c#rebuild_vlists#agerrorf#2",
+      "c": {
+        "file": "lib/dotgen/conc.c",
+        "function": "rebuild_vlists",
+        "kind": "agerrorf",
+        "line": 164,
+        "message": "rebuild_vlists: rank lead %s not in order %d of rank %d\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/conc.ts",
+        "symbol": "fillRankVlist",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/mincross.c#do_ordering_for_nodes#agerrorf#1",
+      "c": {
+        "file": "lib/dotgen/mincross.c",
+        "function": "do_ordering_for_nodes",
+        "kind": "agerrorf",
+        "line": 500,
+        "message": "ordering '%s' not recognized for node '%s'.\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/mincross-build.ts",
+        "symbol": "doOrderingForNodes",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/mincross.c#install_in_rank#agerrorf#1",
+      "c": {
+        "file": "lib/dotgen/mincross.c",
+        "function": "install_in_rank",
+        "kind": "agerrorf",
+        "line": 1156,
+        "message": "install_in_rank, line %d: %s %s rank %d i = %d an = 0\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/mincross-build.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/mincross.c#install_in_rank#agerrorf#2",
+      "c": {
+        "file": "lib/dotgen/mincross.c",
+        "function": "install_in_rank",
+        "kind": "agerrorf",
+        "line": 1176,
+        "message": "install_in_rank, line %d: ND_order(%s) [%d] > "
+      },
+      "port": {
+        "file": "src/layout/dot/mincross-build.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/mincross.c#install_in_rank#agerrorf#3",
+      "c": {
+        "file": "lib/dotgen/mincross.c",
+        "function": "install_in_rank",
+        "kind": "agerrorf",
+        "line": 1182,
+        "message": "install_in_rank, line %d: rank %d not in rank range [%d,%d]\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/mincross-build.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/mincross.c#install_in_rank#agerrorf#4",
+      "c": {
+        "file": "lib/dotgen/mincross.c",
+        "function": "install_in_rank",
+        "kind": "agerrorf",
+        "line": 1187,
+        "message": "install_in_rank, line %d: GD_rank(g)[%d].v + ND_order(%s) [%d] > "
+      },
+      "port": {
+        "file": "src/layout/dot/mincross-build.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/mincross.c#node_in_root_vlist#abort#1",
+      "c": {
+        "file": "lib/dotgen/mincross.c",
+        "function": "node_in_root_vlist",
+        "kind": "abort",
+        "line": 1793,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/mincross.c#ordered_edges#agerrorf#1",
+      "c": {
+        "file": "lib/dotgen/mincross.c",
+        "function": "ordered_edges",
+        "kind": "agerrorf",
+        "line": 523,
+        "message": "ordering '%s' not recognized.\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/mincross-build.ts",
+        "symbol": "orderedEdges",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/mincross.c#virtual_weight#agerrorf#1",
+      "c": {
+        "file": "lib/dotgen/mincross.c",
+        "function": "virtual_weight",
+        "kind": "agerrorf",
+        "line": 1727,
+        "message": "overflow when calculating virtual weight of edge\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/classify.ts",
+        "symbol": "applyVirtualWeight",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/mincross.c#virtual_weight#graphviz_exit#1",
+      "c": {
+        "file": "lib/dotgen/mincross.c",
+        "function": "virtual_weight",
+        "kind": "graphviz_exit",
+        "line": 1728,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/dot/classify.ts",
+        "symbol": "applyVirtualWeight",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/position.c#contain_nodes#agerrorf#1",
+      "c": {
+        "file": "lib/dotgen/position.c",
+        "function": "contain_nodes",
+        "kind": "agerrorf",
+        "line": 1105,
+        "message": "contain_nodes clust %s rank %d missing node\\n"
+      },
+      "port": {
+        "file": "src/layout/dot/position-cluster.ts",
+        "symbol": "containNodesRank",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/position.c#make_aux_edge#agerrorf#1",
+      "c": {
+        "file": "lib/dotgen/position.c",
+        "function": "make_aux_edge",
+        "kind": "agerrorf",
+        "line": 189,
+        "message": "Edge length %f larger than maximum %d allowed.\\nCheck for overwide "
+      },
+      "port": {
+        "file": "src/layout/dot/position-aux.ts",
+        "symbol": "makeAuxEdge",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/dotgen/rank.c#strong#agerrorf#1",
+      "c": {
+        "file": "lib/dotgen/rank.c",
+        "function": "strong",
+        "kind": "agerrorf",
+        "line": 716,
+        "message": "ranking: failure to create strong constraint edge between nodes "
+      },
+      "port": {
+        "file": "src/layout/dot/rank-dot2.ts",
+        "symbol": "xgStrong",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/expr/exeval.c#eval#UNREACHABLE#1",
+      "c": {
+        "file": "lib/expr/exeval.c",
+        "function": "eval",
+        "kind": "UNREACHABLE",
+        "line": 1135,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/expr/exeval.c#eval#UNREACHABLE#2",
+      "c": {
+        "file": "lib/expr/exeval.c",
+        "function": "eval",
+        "kind": "UNREACHABLE",
+        "line": 1164,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/expr/exeval.c#eval#graphviz_exit#1",
+      "c": {
+        "file": "lib/expr/exeval.c",
+        "function": "eval",
+        "kind": "graphviz_exit",
+        "line": 1134,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/expr/exeval.c#eval#graphviz_exit#2",
+      "c": {
+        "file": "lib/expr/exeval.c",
+        "function": "eval",
+        "kind": "graphviz_exit",
+        "line": 1389,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/expr/exeval.c#eval#graphviz_exit#3",
+      "c": {
+        "file": "lib/expr/exeval.c",
+        "function": "eval",
+        "kind": "graphviz_exit",
+        "line": 1396,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/expr/exeval.c#eval#graphviz_exit#4",
+      "c": {
+        "file": "lib/expr/exeval.c",
+        "function": "eval",
+        "kind": "graphviz_exit",
+        "line": 1401,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/expr/extoken.c#extoken_fn#UNREACHABLE#1",
+      "c": {
+        "file": "lib/expr/extoken.c",
+        "function": "extoken_fn",
+        "kind": "UNREACHABLE",
+        "line": 446,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/expr/extoken.c#extoken_fn#UNREACHABLE#2",
+      "c": {
+        "file": "lib/expr/extoken.c",
+        "function": "extoken_fn",
+        "kind": "UNREACHABLE",
+        "line": 777,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/fdpgen/dbg.c#dumpG#graphviz_exit#1",
+      "c": {
+        "file": "lib/fdpgen/dbg.c",
+        "function": "dumpG",
+        "kind": "graphviz_exit",
+        "line": 127,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/fdpgen/layout.c#deriveGraph#agerrorf#1",
+      "c": {
+        "file": "lib/fdpgen/layout.c",
+        "function": "deriveGraph",
+        "kind": "agerrorf",
+        "line": 432,
+        "message": "node \\\"%s\\\" is contained in two non-comparable clusters \\\"%s\\\" and \\\"%s\\\"\\n"
+      },
+      "port": {
+        "file": "src/layout/fdp/derive.ts",
+        "symbol": "deriveClusterNodes",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/fdpgen/layout.c#deriveGraph#native-crash#1",
+      "c": {
+        "file": "lib/fdpgen/layout.c",
+        "function": "deriveGraph",
+        "kind": "native-crash",
+        "line": 466,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/fdp/derive.ts",
+        "symbol": "deriveGraph",
+        "behaviour": "renders"
+      },
+      "class": "graceful",
+      "status": "none",
+      "links": {
+        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10"
+      },
+      "note": "fdp layouts vary with heap addresses: deriveGraph and genPorts compare node pointers (layout.c:466,501,637). Row is keyed on deriveGraph; genPorts (port src/layout/fdp/ports.ts) shares the cause. Port is deterministic. Site proven (part 10, item 3)."
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvLayout#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvLayout",
+        "kind": "agerrorf",
+        "line": 59,
+        "message": "Layout type: \\\"%s\\\" not recognized. Use one of:%s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvRender#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvRender",
+        "kind": "agerrorf",
+        "line": 93,
+        "message": "Format: \\\"%s\\\" not recognized. Use one of:%s\\n"
+      },
+      "port": {
+        "file": "src/render/public.ts",
+        "symbol": "render",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvRender#agerrorf#2",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvRender",
+        "kind": "agerrorf",
+        "line": 100,
+        "message": "Layout was not done\\n"
+      },
+      "port": {
+        "file": "src/render/public.ts",
+        "symbol": "render",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvRenderContext#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvRenderContext",
+        "kind": "agerrorf",
+        "line": 152,
+        "message": "Format: \\\"%s\\\" not recognized. Use one of:%s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvRenderContext#agerrorf#2",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvRenderContext",
+        "kind": "agerrorf",
+        "line": 159,
+        "message": "Layout was not done\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvRenderData#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvRenderData",
+        "kind": "agerrorf",
+        "line": 184,
+        "message": "Format: \\\"%s\\\" not recognized. Use one of:%s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvRenderData#agerrorf#2",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvRenderData",
+        "kind": "agerrorf",
+        "line": 191,
+        "message": "Layout was not done\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvRenderData#agerrorf#3",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvRenderData",
+        "kind": "agerrorf",
+        "line": 199,
+        "message": "failure malloc'ing for result string"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvRenderFilename#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvRenderFilename",
+        "kind": "agerrorf",
+        "line": 123,
+        "message": "Format: \\\"%s\\\" not recognized. Use one of:%s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvc.c#gvRenderFilename#agerrorf#2",
+      "c": {
+        "file": "lib/gvc/gvc.c",
+        "function": "gvRenderFilename",
+        "kind": "agerrorf",
+        "line": 130,
+        "message": "Layout was not done\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#config_rescan#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "config_rescan",
+        "kind": "agerrorf",
+        "line": 474,
+        "message": "failed to open %s for write.\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#config_rescan#graphviz_exit#1",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "config_rescan",
+        "kind": "graphviz_exit",
+        "line": 475,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#gvconfig#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "gvconfig",
+        "kind": "agerrorf",
+        "line": 587,
+        "message": "failed to open %s for read.\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#gvconfig#agerrorf#2",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "gvconfig",
+        "kind": "agerrorf",
+        "line": 590,
+        "message": "%s is zero sized.\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#gvconfig#agerrorf#3",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "gvconfig",
+        "kind": "agerrorf",
+        "line": 595,
+        "message": "%s read error.\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#gvconfig_libdir#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "gvconfig_libdir",
+        "kind": "agerrorf",
+        "line": 294,
+        "message": "failed to get handle for executable.\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#gvconfig_libdir#agerrorf#2",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "gvconfig_libdir",
+        "kind": "agerrorf",
+        "line": 301,
+        "message": "failed to get path for executable.\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#gvconfig_libdir#agerrorf#3",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "gvconfig_libdir",
+        "kind": "agerrorf",
+        "line": 306,
+        "message": "no slash in path %s.\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#gvconfig_plugin_install_from_config#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "gvconfig_plugin_install_from_config",
+        "kind": "agerrorf",
+        "line": 187,
+        "message": "config error: %s %s not found\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvconfig.c#gvconfig_plugin_install_from_config#agerrorf#2",
+      "c": {
+        "file": "lib/gvc/gvconfig.c",
+        "function": "gvconfig_plugin_install_from_config",
+        "kind": "agerrorf",
+        "line": 196,
+        "message": "config error: %s %s %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvdevice_finalize#graphviz_exit#1",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvdevice_finalize",
+        "kind": "graphviz_exit",
+        "line": 364,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvdevice_finalize#graphviz_exit#2",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvdevice_finalize",
+        "kind": "graphviz_exit",
+        "line": 371,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvdevice_finalize#graphviz_exit#3",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvdevice_finalize",
+        "kind": "graphviz_exit",
+        "line": 384,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvprintf#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvprintf",
+        "kind": "agerrorf",
+        "line": 411,
+        "message": "gvprintf: %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvwrite#graphviz_exit#1",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvwrite",
+        "kind": "graphviz_exit",
+        "line": 199,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvwrite#graphviz_exit#2",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvwrite",
+        "kind": "graphviz_exit",
+        "line": 227,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvwrite#graphviz_exit#3",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvwrite",
+        "kind": "graphviz_exit",
+        "line": 234,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvwrite#graphviz_exit#4",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvwrite",
+        "kind": "graphviz_exit",
+        "line": 243,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvwrite#graphviz_exit#5",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvwrite",
+        "kind": "graphviz_exit",
+        "line": 250,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#gvwrite_no_z#graphviz_exit#1",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "gvwrite_no_z",
+        "kind": "graphviz_exit",
+        "line": 73,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvdevice.c#main#graphviz_exit#1",
+      "c": {
+        "file": "lib/gvc/gvdevice.c",
+        "function": "main",
+        "kind": "graphviz_exit",
+        "line": 485,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvlayout.c#gvLayoutJobs#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvlayout.c",
+        "function": "gvLayoutJobs",
+        "kind": "agerrorf",
+        "line": 70,
+        "message": "Layout type: \\\"%s\\\" not recognized. Use one of:%s\\n"
+      },
+      "port": {
+        "file": "src/gvc/context.ts",
+        "symbol": "GvcContext.layout",
+        "behaviour": "throws-render"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvc/gvrender.c#gvrender_resolve_color#agerrorf#1",
+      "c": {
+        "file": "lib/gvc/gvrender.c",
+        "function": "gvrender_resolve_color",
+        "kind": "agerrorf",
+        "line": 209,
+        "message": "error in colorxlate()\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvpr/actions.c#cloneO#UNREACHABLE#1",
+      "c": {
+        "file": "lib/gvpr/actions.c",
+        "function": "cloneO",
+        "kind": "UNREACHABLE",
+        "line": 360,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvpr/actions.c#copy#UNREACHABLE#1",
+      "c": {
+        "file": "lib/gvpr/actions.c",
+        "function": "copy",
+        "kind": "UNREACHABLE",
+        "line": 167,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvpr/compile.c#getval#UNREACHABLE#1",
+      "c": {
+        "file": "lib/gvpr/compile.c",
+        "function": "getval",
+        "kind": "UNREACHABLE",
+        "line": 776,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvpr/gvpr.c#gverrorf#graphviz_exit#1",
+      "c": {
+        "file": "lib/gvpr/gvpr.c",
+        "function": "gverrorf",
+        "kind": "graphviz_exit",
+        "line": 910,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvpr/gvpr.c#traverse#UNREACHABLE#1",
+      "c": {
+        "file": "lib/gvpr/gvpr.c",
+        "function": "traverse",
+        "kind": "UNREACHABLE",
+        "line": 839,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvpr/parse.c#parseCase#UNREACHABLE#1",
+      "c": {
+        "file": "lib/gvpr/parse.c",
+        "function": "parseCase",
+        "kind": "UNREACHABLE",
+        "line": 335,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/gvpr/parse.c#parseProg#UNREACHABLE#1",
+      "c": {
+        "file": "lib/gvpr/parse.c",
+        "function": "parseProg",
+        "kind": "UNREACHABLE",
+        "line": 479,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/label/rectangle.c#RectArea#agerrorf#1",
+      "c": {
+        "file": "lib/label/rectangle.c",
+        "function": "RectArea",
+        "kind": "agerrorf",
+        "line": 73,
+        "message": "label: area too large for rtree\\n"
+      },
+      "port": {
+        "file": "src/label/rectangle.ts",
+        "symbol": "rectArea",
+        "behaviour": "throws-render"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/label/rectangle.c#RectArea#graphviz_exit#1",
+      "c": {
+        "file": "lib/label/rectangle.c",
+        "function": "RectArea",
+        "kind": "graphviz_exit",
+        "line": 74,
+        "message": null
+      },
+      "port": {
+        "file": "src/label/rectangle.ts",
+        "symbol": "rectArea",
+        "behaviour": "throws-render"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/label/xlabels.c#xlnew#graphviz_exit#1",
+      "c": {
+        "file": "lib/label/xlabels.c",
+        "function": "xlnew",
+        "kind": "graphviz_exit",
+        "line": 56,
+        "message": null
+      },
+      "port": {
+        "file": "src/label/xlabels.ts",
+        "symbol": "xlnew",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/conjgrad.c#conjugate_gradient#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/conjgrad.c",
+        "function": "conjugate_gradient",
+        "kind": "agerrorf",
+        "line": 65,
+        "message": "conjugate_gradient: unexpected length 0 vector\\n"
+      },
+      "port": {
+        "file": "src/layout/neato/conjgrad.ts",
+        "symbol": "cgNextDirection",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/conjgrad.c#conjugate_gradient_d#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/conjgrad.c",
+        "function": "conjugate_gradient_d",
+        "kind": "agerrorf",
+        "line": 140,
+        "message": "conjugate_gradient: unexpected length 0 vector\\n"
+      },
+      "port": {
+        "file": "src/layout/neato/conjgrad.ts",
+        "symbol": "cgdUpdate",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/conjgrad.c#conjugate_gradient_mkernel#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/conjgrad.c",
+        "function": "conjugate_gradient_mkernel",
+        "kind": "agerrorf",
+        "line": 216,
+        "message": "conjugate_gradient: unexpected length 0 vector\\n"
+      },
+      "port": {
+        "file": "src/layout/neato/conjgrad-mkernel.ts",
+        "symbol": "cgIteration",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/delaunay.c#delaunay_tri#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/delaunay.c",
+        "function": "delaunay_tri",
+        "kind": "agerrorf",
+        "line": 543,
+        "message": "delaunay_tri: %s\\n"
+      },
+      "port": {
+        "file": "src/layout/neato/delaunay.ts",
+        "symbol": "delaunayTri",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/delaunay.c#delaunay_triangulation#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/delaunay.c",
+        "function": "delaunay_triangulation",
+        "kind": "agerrorf",
+        "line": 533,
+        "message": "delaunay_triangulation: %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/delaunay.c#freeSurface#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/delaunay.c",
+        "function": "freeSurface",
+        "kind": "agerrorf",
+        "line": 563,
+        "message": "freeSurface: %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/delaunay.c#get_triangles#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/delaunay.c",
+        "function": "get_triangles",
+        "kind": "agerrorf",
+        "line": 525,
+        "message": "get_triangles: %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/delaunay.c#mkSurface#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/delaunay.c",
+        "function": "mkSurface",
+        "kind": "agerrorf",
+        "line": 555,
+        "message": "mkSurface: %s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/legal.c#find_ints#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/legal.c",
+        "function": "find_ints",
+        "kind": "agerrorf",
+        "line": 300,
+        "message": "trying to delete a non-line\\n"
+      },
+      "port": {
+        "file": "src/layout/neato/legal.ts",
+        "symbol": "findInts",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/neatoinit.c#init_nop#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/neatoinit.c",
+        "function": "init_nop",
+        "kind": "agerrorf",
+        "line": 529,
+        "message": "node %s in graph %s has no position\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/neatoinit.c#neato_layout#native-crash#1",
+      "c": {
+        "file": "lib/neatogen/neatoinit.c",
+        "function": "neato_layout",
+        "kind": "native-crash",
+        "line": 0,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/neato/index.ts",
+        "symbol": "neatoLayout",
+        "behaviour": "renders"
+      },
+      "class": "graceful",
+      "status": "none",
+      "links": {
+        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10"
+      },
+      "note": "neato on a subgraph (plain subgraph or cluster): native exited 139 on the one graph tested. Site not proven: no stack or instrumented run exists, so c.line is 0 and neato_layout is the entry point only. Port returns output."
+    },
+    {
+      "id": "lib/neatogen/neatoinit.c#user_pos#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/neatoinit.c",
+        "function": "user_pos",
+        "kind": "agerrorf",
+        "line": 122,
+        "message": "node %s, position %s, expected two doubles\\n"
+      },
+      "port": {
+        "file": "src/common/utils-inputscale.ts",
+        "symbol": "inputscaleDivisor",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/neatosplines.c#makeObstacle#UNREACHABLE#1",
+      "c": {
+        "file": "lib/neatogen/neatosplines.c",
+        "function": "makeObstacle",
+        "kind": "UNREACHABLE",
+        "line": 420,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/neato/splines.ts",
+        "symbol": "makeObstacle",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/neatosplines.c#makeSpline#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/neatosplines.c",
+        "function": "makeSpline",
+        "kind": "agerrorf",
+        "line": 561,
+        "message": "makeSpline: failed to make spline edge (%s,%s)\\n"
+      },
+      "port": {
+        "file": "src/layout/neato/splines.ts",
+        "symbol": "makeSplineEdge",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/overlap.c#remove_overlap#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/overlap.c",
+        "function": "remove_overlap",
+        "kind": "agerrorf",
+        "line": 606,
+        "message": "remove_overlap: Graphviz not built with triangulation library\\n"
+      },
+      "port": {
+        "file": "src/layout/sfdp/init.ts",
+        "symbol": "assertEdgeLabelSchemeSupported",
+        "behaviour": "throws-render"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/poly.c#makeAddPoly#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/poly.c",
+        "function": "makeAddPoly",
+        "kind": "agerrorf",
+        "line": 189,
+        "message": "makeAddPoly: unknown shape type %s\\n"
+      },
+      "port": {
+        "file": "src/layout/neato/poly.ts",
+        "symbol": "makeAddPoly",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/poly.c#makePoly#agerrorf#1",
+      "c": {
+        "file": "lib/neatogen/poly.c",
+        "function": "makePoly",
+        "kind": "agerrorf",
+        "line": 258,
+        "message": "makePoly: unknown shape type %s\\n"
+      },
+      "port": {
+        "file": "src/layout/neato/poly.ts",
+        "symbol": "makePoly",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/sgd.c#extract_adjacency#UNREACHABLE#1",
+      "c": {
+        "file": "lib/neatogen/sgd.c",
+        "function": "extract_adjacency",
+        "kind": "UNREACHABLE",
+        "line": 127,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/neato/sgd.ts",
+        "symbol": "assignNodeIds",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/neatogen/stress.c#sparse_stress_subspace_majorization_kD#native-crash#1",
+      "c": {
+        "file": "lib/neatogen/stress.c",
+        "function": "sparse_stress_subspace_majorization_kD",
+        "kind": "native-crash",
+        "line": 514,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/neato/stress-subspace.ts",
+        "symbol": "initialDirections",
+        "behaviour": "renders"
+      },
+      "class": "graceful",
+      "status": "none",
+      "links": {
+        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10"
+      },
+      "note": "mode=hier dim=4 on two nodes: native writes past directions (stress.c:514) and aborts in 5 of 16 runs (exit 133). Port renders. Site proven (part 10, item 1)."
+    },
+    {
+      "id": "lib/neatogen/stress.c#stress_majorization_kD_mkernel#native-crash#1",
+      "c": {
+        "file": "lib/neatogen/stress.c",
+        "function": "stress_majorization_kD_mkernel",
+        "kind": "native-crash",
+        "line": 0,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/neato/stress.ts",
+        "symbol": "stressMajorizationKD",
+        "behaviour": "renders"
+      },
+      "class": "graceful",
+      "status": "none",
+      "links": {
+        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10"
+      },
+      "note": "mode=hier dim=3 len=0.001: native dies by signal (SIGBUS/SIGSEGV/SIGTRAP), stack is mfm_alloc under stress_majorization_kD_mkernel, i.e. heap corruption. Site not proven: the doc states the exact site is not proven, so c.line is 0. Port renders."
+    },
+    {
+      "id": "lib/ortho/fPQ.c#PQ_insert#agerrorf#1",
+      "c": {
+        "file": "lib/ortho/fPQ.c",
+        "function": "PQ_insert",
+        "kind": "agerrorf",
+        "line": 68,
+        "message": "Heap overflow\\n"
+      },
+      "port": {
+        "file": "src/ortho/fpq.ts",
+        "symbol": "pqInsert",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/ortho/ortho.c#coordOf#agerrorf#1",
+      "c": {
+        "file": "lib/ortho/ortho.c",
+        "function": "coordOf",
+        "kind": "agerrorf",
+        "line": 1341,
+        "message": "Node not adjacent to cell -- Aborting\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/ortho/ortho.c#coordOf#graphviz_exit#1",
+      "c": {
+        "file": "lib/ortho/ortho.c",
+        "function": "coordOf",
+        "kind": "graphviz_exit",
+        "line": 1342,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/ortho/ortho.c#seg_cmp#agerrorf#1",
+      "c": {
+        "file": "lib/ortho/ortho.c",
+        "function": "seg_cmp",
+        "kind": "agerrorf",
+        "line": 648,
+        "message": "incomparable segments !! -- Aborting\\n"
+      },
+      "port": {
+        "file": "src/ortho/ortho-route.ts",
+        "symbol": "segCmp",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/ortho/trapezoid.c#locate_endpoint#UNREACHABLE#1",
+      "c": {
+        "file": "lib/ortho/trapezoid.c",
+        "function": "locate_endpoint",
+        "kind": "UNREACHABLE",
+        "line": 305,
+        "message": null
+      },
+      "port": {
+        "file": "src/ortho/trap-query.ts",
+        "symbol": "locateEndpoint",
+        "behaviour": "throws-internal"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sfdpgen/post_process.c#StressMajorizationSmoother2_new#graphviz_exit#1",
+      "c": {
+        "file": "lib/sfdpgen/post_process.c",
+        "function": "StressMajorizationSmoother2_new",
+        "kind": "graphviz_exit",
+        "line": 211,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sfdpgen/post_process.c#StressMajorizationSmoother2_new#graphviz_exit#2",
+      "c": {
+        "file": "lib/sfdpgen/post_process.c",
+        "function": "StressMajorizationSmoother2_new",
+        "kind": "graphviz_exit",
+        "line": 254,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/DotIO.c#Import_coord_clusters_from_dot#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/DotIO.c",
+        "function": "Import_coord_clusters_from_dot",
+        "kind": "UNREACHABLE",
+        "line": 434,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/DotIO.c#SparseMatrix_import_dot#agerrorf#1",
+      "c": {
+        "file": "lib/sparse/DotIO.c",
+        "function": "SparseMatrix_import_dot",
+        "kind": "agerrorf",
+        "line": 157,
+        "message": "Node \\\"%s\\\" pos has %d < 2 values"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/DotIO.c#SparseMatrix_import_dot#agerrorf#2",
+      "c": {
+        "file": "lib/sparse/DotIO.c",
+        "function": "SparseMatrix_import_dot",
+        "kind": "agerrorf",
+        "line": 163,
+        "message": "Node \\\"%s\\\" lacks position info"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/DotIO.c#SparseMatrix_import_dot#agerrorf#3",
+      "c": {
+        "file": "lib/sparse/DotIO.c",
+        "function": "SparseMatrix_import_dot",
+        "kind": "agerrorf",
+        "line": 171,
+        "message": "Error: graph %s has missing \\\"pos\\\" information"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/DotIO.c#attached_clustering#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/DotIO.c",
+        "function": "attached_clustering",
+        "kind": "UNREACHABLE",
+        "line": 597,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_add#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_add",
+        "kind": "UNREACHABLE",
+        "line": 610,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smAdd",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_divide_row_by_degree#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_divide_row_by_degree",
+        "kind": "UNREACHABLE",
+        "line": 1096,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smDivideRowByDegree",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_divide_row_by_degree#UNREACHABLE#2",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_divide_row_by_degree",
+        "kind": "UNREACHABLE",
+        "line": 1101,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smDivideRowByDegree",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_export#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_export",
+        "kind": "UNREACHABLE",
+        "line": 375,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_export#abort#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_export",
+        "kind": "abort",
+        "line": 373,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_export_csr#abort#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_export_csr",
+        "kind": "abort",
+        "line": 351,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_from_coordinate_arrays_internal#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_from_coordinate_arrays_internal",
+        "kind": "UNREACHABLE",
+        "line": 445,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smFromCoordinateArrays",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_from_coordinate_arrays_internal#UNREACHABLE#2",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_from_coordinate_arrays_internal",
+        "kind": "UNREACHABLE",
+        "line": 463,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smFromCoordinateArrays",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_from_coordinate_arrays_internal#UNREACHABLE#3",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_from_coordinate_arrays_internal",
+        "kind": "UNREACHABLE",
+        "line": 479,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smFromCoordinateArrays",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_from_coordinate_arrays_internal#UNREACHABLE#4",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_from_coordinate_arrays_internal",
+        "kind": "UNREACHABLE",
+        "line": 491,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smFromCoordinateArrays",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_get_submatrix#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_get_submatrix",
+        "kind": "UNREACHABLE",
+        "line": 1552,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_is_symmetric#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_is_symmetric",
+        "kind": "UNREACHABLE",
+        "line": 221,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smIsSymmetric",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_multiply_vector#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_multiply_vector",
+        "kind": "UNREACHABLE",
+        "line": 679,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_remove_diagonal#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_remove_diagonal",
+        "kind": "UNREACHABLE",
+        "line": 1005,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smRemoveDiagonal",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_remove_upper#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_remove_upper",
+        "kind": "UNREACHABLE",
+        "line": 1066,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_to_square_matrix#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_to_square_matrix",
+        "kind": "UNREACHABLE",
+        "line": 1432,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#SparseMatrix_transpose#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "SparseMatrix_transpose",
+        "kind": "UNREACHABLE",
+        "line": 118,
+        "message": null
+      },
+      "port": {
+        "file": "src/layout/sfdp/sparse-matrix.ts",
+        "symbol": "smTranspose",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/sparse/SparseMatrix.c#size_of_matrix_type#UNREACHABLE#1",
+      "c": {
+        "file": "lib/sparse/SparseMatrix.c",
+        "function": "size_of_matrix_type",
+        "kind": "UNREACHABLE",
+        "line": 41,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/twopigen/circle.c#circleLayout#agerrorf#1",
+      "c": {
+        "file": "lib/twopigen/circle.c",
+        "function": "circleLayout",
+        "kind": "agerrorf",
+        "line": 330,
+        "message": "twopi: use of weight=0 creates disconnected component.\\n"
+      },
+      "port": {
+        "file": "src/layout/twopi/circle.ts",
+        "symbol": "circleLayout",
+        "behaviour": "agerr"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/list.c#gv_list_reserve_#graphviz_exit#1",
+      "c": {
+        "file": "lib/util/list.c",
+        "function": "gv_list_reserve_",
+        "kind": "graphviz_exit",
+        "line": 270,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/xml.c#main#graphviz_exit#1",
+      "c": {
+        "file": "lib/util/xml.c",
+        "function": "main",
+        "kind": "graphviz_exit",
+        "line": 223,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/xml.c#main#graphviz_exit#2",
+      "c": {
+        "file": "lib/util/xml.c",
+        "function": "main",
+        "kind": "graphviz_exit",
+        "line": 234,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/xml.c#main#graphviz_exit#3",
+      "c": {
+        "file": "lib/util/xml.c",
+        "function": "main",
+        "kind": "graphviz_exit",
+        "line": 246,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/xml.c#main#graphviz_exit#4",
+      "c": {
+        "file": "lib/util/xml.c",
+        "function": "main",
+        "kind": "graphviz_exit",
+        "line": 255,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/xml.c#main#graphviz_exit#5",
+      "c": {
+        "file": "lib/util/xml.c",
+        "function": "main",
+        "kind": "graphviz_exit",
+        "line": 263,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/xml.c#main#graphviz_exit#6",
+      "c": {
+        "file": "lib/util/xml.c",
+        "function": "main",
+        "kind": "graphviz_exit",
+        "line": 270,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/xml.c#main#graphviz_exit#7",
+      "c": {
+        "file": "lib/util/xml.c",
+        "function": "main",
+        "kind": "graphviz_exit",
+        "line": 273,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/xml.c#xml_core#UNREACHABLE#1",
+      "c": {
+        "file": "lib/util/xml.c",
+        "function": "xml_core",
+        "kind": "UNREACHABLE",
+        "line": 165,
+        "message": null
+      },
+      "port": {
+        "file": "src/util/xml.ts",
+        "symbol": "XmlEscaper.decodeUtf8",
+        "behaviour": "throws-render"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/util/xml.c#xml_core#graphviz_exit#1",
+      "c": {
+        "file": "lib/util/xml.c",
+        "function": "xml_core",
+        "kind": "graphviz_exit",
+        "line": 136,
+        "message": null
+      },
+      "port": {
+        "file": "src/util/xml.ts",
+        "symbol": "XmlEscaper.decodeUtf8",
+        "behaviour": "throws-render"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "lib/xdot/xdot.c#printAlign#UNREACHABLE#1",
+      "c": {
+        "file": "lib/xdot/xdot.c",
+        "function": "printAlign",
+        "kind": "UNREACHABLE",
+        "line": 455,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/ascii/gvplugin_ascii.c#process#agerrorf#1",
+      "c": {
+        "file": "plugin/ascii/gvplugin_ascii.c",
+        "function": "process",
+        "kind": "agerrorf",
+        "line": 66,
+        "message": "failed to initialized AA-lib\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_dot.c#dot_begin_graph#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_dot.c",
+        "function": "dot_begin_graph",
+        "kind": "UNREACHABLE",
+        "line": 423,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_dot.c#dot_end_graph#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_dot.c",
+        "function": "dot_end_graph",
+        "kind": "UNREACHABLE",
+        "line": 483,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_fig.c#fig_resolve_color#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_fig.c",
+        "function": "fig_resolve_color",
+        "kind": "UNREACHABLE",
+        "line": 132,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_json.c#write_xdot#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_json.c",
+        "function": "write_xdot",
+        "kind": "UNREACHABLE",
+        "line": 302,
+        "message": null
+      },
+      "port": {
+        "file": "src/render/json.ts",
+        "symbol": "opPoints",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_map.c#map_output_shape#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_map.c",
+        "function": "map_output_shape",
+        "kind": "UNREACHABLE",
+        "line": 59,
+        "message": null
+      },
+      "port": {
+        "file": "src/render/map.ts",
+        "symbol": "mapCmapxAttrs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_map.c#map_output_shape#UNREACHABLE#2",
+      "c": {
+        "file": "plugin/core/gvrender_core_map.c",
+        "function": "map_output_shape",
+        "kind": "UNREACHABLE",
+        "line": 70,
+        "message": null
+      },
+      "port": {
+        "file": "src/render/map.ts",
+        "symbol": "mapCmapxAttrs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_map.c#map_output_shape#UNREACHABLE#3",
+      "c": {
+        "file": "plugin/core/gvrender_core_map.c",
+        "function": "map_output_shape",
+        "kind": "UNREACHABLE",
+        "line": 85,
+        "message": null
+      },
+      "port": {
+        "file": "src/render/map.ts",
+        "symbol": "mapCmapxAttrs",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_pic.c#picfontname#agerrorf#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_pic.c",
+        "function": "picfontname",
+        "kind": "agerrorf",
+        "line": 155,
+        "message": "%s%.*s is not a troff font\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_svg.c#svg_print_gradient_color#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_svg.c",
+        "function": "svg_print_gradient_color",
+        "kind": "UNREACHABLE",
+        "line": 161,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_svg.c#svg_print_paint#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_svg.c",
+        "function": "svg_print_paint",
+        "kind": "UNREACHABLE",
+        "line": 136,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_svg.c#svg_textspan#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_svg.c",
+        "function": "svg_textspan",
+        "kind": "UNREACHABLE",
+        "line": 542,
+        "message": null
+      },
+      "port": {
+        "file": "src/render/svg-helpers.ts",
+        "symbol": "textDecorationValue",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_tk.c#tkgen_print_color#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_tk.c",
+        "function": "tkgen_print_color",
+        "kind": "UNREACHABLE",
+        "line": 44,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/core/gvrender_core_tk.c#tkgen_print_tags#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/core/gvrender_core_tk.c",
+        "function": "tkgen_print_tags",
+        "kind": "UNREACHABLE",
+        "line": 101,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/gd/gvrender_gd.c#gdgen_end_page#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/gd/gvrender_gd.c",
+        "function": "gdgen_end_page",
+        "kind": "UNREACHABLE",
+        "line": 221,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/gd/gvrender_gd_vrml.c#vrml_begin_node#agerrorf#1",
+      "c": {
+        "file": "plugin/gd/gvrender_gd_vrml.c",
+        "function": "vrml_begin_node",
+        "kind": "agerrorf",
+        "line": 249,
+        "message": "failed to open file for writing PNG node image\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/gd/gvrender_gd_vrml.c#vrml_ellipse#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/gd/gvrender_gd_vrml.c",
+        "function": "vrml_ellipse",
+        "kind": "UNREACHABLE",
+        "line": 772,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/gd/gvrender_gd_vrml.c#vrml_polygon#UNREACHABLE#1",
+      "c": {
+        "file": "plugin/gd/gvrender_gd_vrml.c",
+        "function": "vrml_polygon",
+        "kind": "UNREACHABLE",
+        "line": 663,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/gd/gvtextlayout_gd.c#gd_textlayout#agerrorf#1",
+      "c": {
+        "file": "plugin/gd/gvtextlayout_gd.c",
+        "function": "gd_textlayout",
+        "kind": "agerrorf",
+        "line": 156,
+        "message": "%s\\n"
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/pango/gvrender_pango.c#cairogen_begin_page#exit#1",
+      "c": {
+        "file": "plugin/pango/gvrender_pango.c",
+        "function": "cairogen_begin_page",
+        "kind": "exit",
+        "line": 143,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/pango/gvrender_pango.c#cairogen_begin_page#exit#2",
+      "c": {
+        "file": "plugin/pango/gvrender_pango.c",
+        "function": "cairogen_begin_page",
+        "kind": "exit",
+        "line": 151,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "plugin/xlib/gvdevice_xlib.c#handle_client_message#graphviz_exit#1",
+      "c": {
+        "file": "plugin/xlib/gvdevice_xlib.c",
+        "function": "handle_client_message",
+        "kind": "graphviz_exit",
+        "line": 101,
+        "message": null
+      },
+      "port": null,
+      "class": "not-ported",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/api/builder.ts#GraphBuilder.addSubgraph#1",
+      "c": null,
+      "port": {
+        "file": "src/api/builder.ts",
+        "symbol": "GraphBuilder.addSubgraph",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/api/builder.ts#addNodeToContext#1",
+      "c": null,
+      "port": {
+        "file": "src/api/builder.ts",
+        "symbol": "addNodeToContext",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/api/builder.ts#resolveNode#1",
+      "c": null,
+      "port": {
+        "file": "src/api/builder.ts",
+        "symbol": "resolveNode",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/api/edge-ops.test.ts#getNode#1",
+      "c": null,
+      "port": {
+        "file": "src/api/edge-ops.test.ts",
+        "symbol": "getNode",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/api/edge-ops.test.ts#makeSg#1",
+      "c": null,
+      "port": {
+        "file": "src/api/edge-ops.test.ts",
+        "symbol": "makeSg",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/api/errors.test.ts#catchErr#1",
+      "c": null,
+      "port": {
+        "file": "src/api/errors.test.ts",
+        "symbol": "catchErr",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/api/geometry.labels-after-render.test.ts#subgraphNamed#1",
+      "c": null,
+      "port": {
+        "file": "src/api/geometry.labels-after-render.test.ts",
+        "symbol": "subgraphNamed",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/async/fonts.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/async/fonts.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/async/fonts.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/async/fonts.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/async/render-async.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/async/render-async.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/async/render-async.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/async/render-async.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/async/render-into.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/async/render-into.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/async/render-into.test.ts#rejection#1",
+      "c": null,
+      "port": {
+        "file": "src/async/render-into.test.ts",
+        "symbol": "rejection",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/async/render-into.ts#parseSvg#1",
+      "c": null,
+      "port": {
+        "file": "src/async/render-into.ts",
+        "symbol": "parseSvg",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/async/render-into.ts#parseSvg#2",
+      "c": null,
+      "port": {
+        "file": "src/async/render-into.ts",
+        "symbol": "parseSvg",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#10",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#11",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#12",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#13",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#14",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#15",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#16",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#17",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#18",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#19",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#20",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#21",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#22",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#23",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#24",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#25",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#26",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#27",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#3",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#4",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#5",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#6",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#7",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#8",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.test.ts#<module>#9",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.test.ts",
+        "symbol": "<module>",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.ts#agerrFinished#1",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.ts",
+        "symbol": "agerrFinished",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.ts#agerrorf#1",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.ts",
+        "symbol": "agerrorf",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/agerr.ts#agwarningf#1",
+      "c": null,
+      "port": {
+        "file": "src/common/agerr.ts",
+        "symbol": "agwarningf",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/arrows-curve-fusion.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/common/arrows-curve-fusion.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/arrows-shapes.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/common/arrows-shapes.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/arrows-shapes.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/common/arrows-shapes.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/arrows-shapes.test.ts#<module>#3",
+      "c": null,
+      "port": {
+        "file": "src/common/arrows-shapes.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/arrows-shapes.test.ts#<module>#4",
+      "c": null,
+      "port": {
+        "file": "src/common/arrows-shapes.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/arrows-shapes.test.ts#<module>#5",
+      "c": null,
+      "port": {
+        "file": "src/common/arrows-shapes.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/arrows-shapes.test.ts#<module>#6",
+      "c": null,
+      "port": {
+        "file": "src/common/arrows-shapes.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/arrows-shapes.test.ts#<module>#7",
+      "c": null,
+      "port": {
+        "file": "src/common/arrows-shapes.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/arrows-shapes.test.ts#<module>#8",
+      "c": null,
+      "port": {
+        "file": "src/common/arrows-shapes.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/color.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/common/color.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/color.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/common/color.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/color.test.ts#<module>#3",
+      "c": null,
+      "port": {
+        "file": "src/common/color.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/color.test.ts#<module>#4",
+      "c": null,
+      "port": {
+        "file": "src/common/color.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/color.test.ts#<module>#5",
+      "c": null,
+      "port": {
+        "file": "src/common/color.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/color.test.ts#<module>#6",
+      "c": null,
+      "port": {
+        "file": "src/common/color.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/color.test.ts#<module>#7",
+      "c": null,
+      "port": {
+        "file": "src/common/color.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/color.test.ts#<module>#8",
+      "c": null,
+      "port": {
+        "file": "src/common/color.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/color.test.ts#<module>#9",
+      "c": null,
+      "port": {
+        "file": "src/common/color.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/css-font.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/common/css-font.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/css-font.test.ts#parse#1",
+      "c": null,
+      "port": {
+        "file": "src/common/css-font.test.ts",
+        "symbol": "parse",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-attr-warn.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-attr-warn.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-attr-warn.test.ts#tableOf#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-attr-warn.test.ts",
+        "symbol": "tableOf",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-attr-warn.ts#consoleLine#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-attr-warn.ts",
+        "symbol": "consoleLine",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-findcol.test.ts#placements#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-findcol.test.ts",
+        "symbol": "placements",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-fonttable.test.ts#tableOf#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-fonttable.test.ts",
+        "symbol": "tableOf",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-lex.test.ts#lexFailure#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-lex.test.ts",
+        "symbol": "lexFailure",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.branch.test.ts#diagnosticsOf#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.branch.test.ts",
+        "symbol": "diagnosticsOf",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.branch.test.ts#firstCell#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.branch.test.ts",
+        "symbol": "firstCell",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.branch.test.ts#firstTable#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.branch.test.ts",
+        "symbol": "firstTable",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.branch.test.ts#imgParse#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.branch.test.ts",
+        "symbol": "imgParse",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.test.ts#<module>#3",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.test.ts#<module>#4",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.test.ts#<module>#5",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.test.ts#firstCell#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.test.ts",
+        "symbol": "firstCell",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-parse.test.ts#firstTable#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-parse.test.ts",
+        "symbol": "firstTable",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-pos.branch.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-pos.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-pos.branch.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-pos.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-pos.branch.test.ts#<module>#3",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-pos.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-pos.branch.test.ts#<module>#4",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-pos.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-pos.branch.test.ts#<module>#5",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-pos.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-pos.branch.test.ts#<module>#6",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-pos.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-pos.branch.test.ts#<module>#7",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-pos.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable-pos.branch.test.ts#sizedTable#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable-pos.branch.test.ts",
+        "symbol": "sizedTable",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable.ts#fixedCellCheck#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable.ts",
+        "symbol": "fixedCellCheck",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable.ts#fixedCellCheck#2",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable.ts",
+        "symbol": "fixedCellCheck",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable.ts#sizeHtmlImg#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable.ts",
+        "symbol": "sizeHtmlImg",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable.ts#sizeHtmlImg#2",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable.ts",
+        "symbol": "sizeHtmlImg",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable.ts#warnFixedTable#1",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable.ts",
+        "symbol": "warnFixedTable",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/htmltable.ts#warnFixedTable#2",
+      "c": null,
+      "port": {
+        "file": "src/common/htmltable.ts",
+        "symbol": "warnFixedTable",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/multicolor.ts#parseSegs#1",
+      "c": null,
+      "port": {
+        "file": "src/common/multicolor.ts",
+        "symbol": "parseSegs",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/multicolor.ts#parseSegs#2",
+      "c": null,
+      "port": {
+        "file": "src/common/multicolor.ts",
+        "symbol": "parseSegs",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/multicolor.ts#parseSegs#3",
+      "c": null,
+      "port": {
+        "file": "src/common/multicolor.ts",
+        "symbol": "parseSegs",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/multicolor.ts#parseSegs#4",
+      "c": null,
+      "port": {
+        "file": "src/common/multicolor.ts",
+        "symbol": "parseSegs",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/node-labelloc.test.ts#labelY#1",
+      "c": null,
+      "port": {
+        "file": "src/common/node-labelloc.test.ts",
+        "symbol": "labelY",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/poly-shapes.ts#drawSpecialShape#1",
+      "c": null,
+      "port": {
+        "file": "src/common/poly-shapes.ts",
+        "symbol": "drawSpecialShape",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/splines-routespl.ts#routeSplinesInternal#1",
+      "c": null,
+      "port": {
+        "file": "src/common/splines-routespl.ts",
+        "symbol": "routeSplinesInternal",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/style-resolve.ts#reportStyleFault#1",
+      "c": null,
+      "port": {
+        "file": "src/common/style-resolve.ts",
+        "symbol": "reportStyleFault",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/style-resolve.ts#reportStyleFault#2",
+      "c": null,
+      "port": {
+        "file": "src/common/style-resolve.ts",
+        "symbol": "reportStyleFault",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/style-resolve.ts#reportStyleFault#3",
+      "c": null,
+      "port": {
+        "file": "src/common/style-resolve.ts",
+        "symbol": "reportStyleFault",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/common/textmeasure-factory.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/common/textmeasure-factory.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/error-contract.test.ts#thrownBy#1",
+      "c": null,
+      "port": {
+        "file": "src/error-contract.test.ts",
+        "symbol": "thrownBy",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/errors.ts#rethrowAtBoundary#1",
+      "c": null,
+      "port": {
+        "file": "src/errors.ts",
+        "symbol": "rethrowAtBoundary",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/gvc/__fixtures__/subg-renders/subg-renders.ts#portSubgRenders#1",
+      "c": null,
+      "port": {
+        "file": "src/gvc/__fixtures__/subg-renders/subg-renders.ts",
+        "symbol": "portSubgRenders",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/gvc/context-args.test.ts#codeOf#1",
+      "c": null,
+      "port": {
+        "file": "src/gvc/context-args.test.ts",
+        "symbol": "codeOf",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/gvc/device-styling.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/gvc/device-styling.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/gvc/free-layout.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/gvc/free-layout.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/gvc/init-xdot.ts#initXdot#1",
+      "c": null,
+      "port": {
+        "file": "src/gvc/init-xdot.ts",
+        "symbol": "initXdot",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/gvc/job.ts#RenderJob.popObj#1",
+      "c": null,
+      "port": {
+        "file": "src/gvc/job.ts",
+        "symbol": "RenderJob.popObj",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/gvc/layout-reset.edges.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/gvc/layout-reset.edges.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/gvc/layout-reset.edges.test.ts#parseCase#1",
+      "c": null,
+      "port": {
+        "file": "src/gvc/layout-reset.edges.test.ts",
+        "symbol": "parseCase",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/label/index.ts#validateRect#1",
+      "c": null,
+      "port": {
+        "file": "src/label/index.ts",
+        "symbol": "validateRect",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/label/node.ts#_splitNodeImpl#1",
+      "c": null,
+      "port": {
+        "file": "src/label/node.ts",
+        "symbol": "_splitNodeImpl",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/cluster-label-flip-rank.test.ts#dims#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/cluster-label-flip-rank.test.ts",
+        "symbol": "dims",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/conc.ts#dotConcentrate#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/conc.ts",
+        "symbol": "dotConcentrate",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/edge-bbox-clip.test.ts#svgWidth#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/edge-bbox-clip.test.ts",
+        "symbol": "svgWidth",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/edge-route-faithful-oracle.test.ts#arrowTip#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/edge-route-faithful-oracle.test.ts",
+        "symbol": "arrowTip",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/edge-route-faithful-oracle.test.ts#pathPoints#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/edge-route-faithful-oracle.test.ts",
+        "symbol": "pathPoints",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/edge-route-faithful-wired.test.ts#firstEdgePathD#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/edge-route-faithful-wired.test.ts",
+        "symbol": "firstEdgePathD",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/edge-route-port.test.ts#edgeStart#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/edge-route-port.test.ts",
+        "symbol": "edgeStart",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/edge-route-port.test.ts#edgeStart#2",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/edge-route-port.test.ts",
+        "symbol": "edgeStart",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/edge-type-oracle.test.ts#edgePoints#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/edge-type-oracle.test.ts",
+        "symbol": "edgePoints",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/flat-adj-record.ts#lostFlatAdjRecordEdge#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/flat-adj-record.ts",
+        "symbol": "lostFlatAdjRecordEdge",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/mincross-flat.test.ts#orderOf#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/mincross-flat.test.ts",
+        "symbol": "orderOf",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/pack-components.ts#mapClust#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/pack-components.ts",
+        "symbol": "mapClust",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/self-loop-bbox.test.ts#extent#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/self-loop-bbox.test.ts",
+        "symbol": "extent",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/self-loop-oracle.test.ts#arrowTip#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/self-loop-oracle.test.ts",
+        "symbol": "arrowTip",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/dot/self-loop-oracle.test.ts#pathPoints#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/dot/self-loop-oracle.test.ts",
+        "symbol": "pathPoints",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/fdp/index.ts#fdpSplines#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/fdp/index.ts",
+        "symbol": "fdpSplines",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/fdp/ports.ts#expandCluster#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/fdp/ports.ts",
+        "symbol": "expandCluster",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/fdp/ports.ts#getEdgeList#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/fdp/ports.ts",
+        "symbol": "getEdgeList",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/fdp/xlayout.ts#removeOverlapAs#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/fdp/xlayout.ts",
+        "symbol": "removeOverlapAs",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/cdt-surface.crossing.test.ts#sortedFaces#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/cdt-surface.crossing.test.ts",
+        "symbol": "sortedFaces",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/cdt-surface.face-order.test.ts#portFaces#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/cdt-surface.face-order.test.ts",
+        "symbol": "portFaces",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/cdt-surface.ts#Cdt.removeIntersectedEdge#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/cdt-surface.ts",
+        "symbol": "Cdt.removeIntersectedEdge",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/cdt-surface.ts#Cdt.removeIntersectedEdge#2",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/cdt-surface.ts",
+        "symbol": "Cdt.removeIntersectedEdge",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/cdt-surface.ts#Cdt.removeIntersectedEdge#3",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/cdt-surface.ts",
+        "symbol": "Cdt.removeIntersectedEdge",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/cdt-surface.ts#Cdt.removeIntersectedVertex#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/cdt-surface.ts",
+        "symbol": "Cdt.removeIntersectedVertex",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/cdt-surface.ts#Cdt.removeIntersectedVertex#2",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/cdt-surface.ts",
+        "symbol": "Cdt.removeIntersectedVertex",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/cdt-surface.ts#Cdt.ringFrom#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/cdt-surface.ts",
+        "symbol": "Cdt.ringFrom",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/constraint-adjust.ts#cnodeOf#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/constraint-adjust.ts",
+        "symbol": "cnodeOf",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/constraint-adjust.ts#listOf#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/constraint-adjust.ts",
+        "symbol": "listOf",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/fdp-adjust.ts#adjustVoronoi#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/fdp-adjust.ts",
+        "symbol": "adjustVoronoi",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/index.ts#parseModel#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/index.ts",
+        "symbol": "parseModel",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/init.ts#runMajorization#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/init.ts",
+        "symbol": "runMajorization",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/kk.ts#kkModel#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/kk.ts",
+        "symbol": "kkModel",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/kk.ts#kkModel#2",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/kk.ts",
+        "symbol": "kkModel",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/kk.ts#kkModel#3",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/kk.ts",
+        "symbol": "kkModel",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/lu.test.ts#caseNamed#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/lu.test.ts",
+        "symbol": "caseNamed",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/make-graph-data.ts#reverseBackEdge#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/make-graph-data.ts",
+        "symbol": "reverseBackEdge",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/multispline-router.ts#edgeToSeg#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/multispline-router.ts",
+        "symbol": "edgeToSeg",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/multispline-router.ts#findMap#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/multispline-router.ts",
+        "symbol": "findMap",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/multispline-router.ts#mkRouter#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/multispline-router.ts",
+        "symbol": "mkRouter",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/multispline.warn.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/multispline.warn.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/multispline.warn.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/multispline.warn.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/poly.test.ts#poly#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/poly.test.ts",
+        "symbol": "poly",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/poly.ts#baseShape#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/poly.ts",
+        "symbol": "baseShape",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/poly.ts#polygonOf#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/poly.ts",
+        "symbol": "polygonOf",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/quad-prog-vpsc.test.ts#RunLines.nums#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/quad-prog-vpsc.test.ts",
+        "symbol": "RunLines.nums",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/quad-prog-vpsc.test.ts#env#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/quad-prog-vpsc.test.ts",
+        "symbol": "env",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/quad-prog-vpsc.ts#digcolaConstraints#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/quad-prog-vpsc.ts",
+        "symbol": "digcolaConstraints",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/start.ts#unsupported#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/start.ts",
+        "symbol": "unsupported",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/stress-cola.ts#modelDistances#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/stress-cola.ts",
+        "symbol": "modelDistances",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/stress-models.test.ts#caseNamed#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/stress-models.test.ts",
+        "symbol": "caseNamed",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/neato/stress-models.ts#modelDistances#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/neato/stress-models.ts",
+        "symbol": "modelDistances",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/sfdp/init.ts#tuneControl#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/sfdp/init.ts",
+        "symbol": "tuneControl",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/sfdp/init.ts#tuneControl#2",
+      "c": null,
+      "port": {
+        "file": "src/layout/sfdp/init.ts",
+        "symbol": "tuneControl",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/sfdp/spring-driver.ts#embedLevel#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/sfdp/spring-driver.ts",
+        "symbol": "embedLevel",
+        "behaviour": "throws-render"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/layout/twopi/circle.ts#rdata#1",
+      "c": null,
+      "port": {
+        "file": "src/layout/twopi/circle.ts",
+        "symbol": "rdata",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/model/lazy-attrs.ts#SharedEmptyAttrs.clear#1",
+      "c": null,
+      "port": {
+        "file": "src/model/lazy-attrs.ts",
+        "symbol": "SharedEmptyAttrs.clear",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/model/lazy-attrs.ts#SharedEmptyAttrs.delete#1",
+      "c": null,
+      "port": {
+        "file": "src/model/lazy-attrs.ts",
+        "symbol": "SharedEmptyAttrs.delete",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/model/lazy-attrs.ts#SharedEmptyAttrs.set#1",
+      "c": null,
+      "port": {
+        "file": "src/model/lazy-attrs.ts",
+        "symbol": "SharedEmptyAttrs.set",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/ortho/ortho-parallel.ts#decidePoint#1",
+      "c": null,
+      "port": {
+        "file": "src/ortho/ortho-parallel.ts",
+        "symbol": "decidePoint",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/parser/index.ts#parse#1",
+      "c": null,
+      "port": {
+        "file": "src/parser/index.ts",
+        "symbol": "parse",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/parser/index.ts#parse#2",
+      "c": null,
+      "port": {
+        "file": "src/parser/index.ts",
+        "symbol": "parse",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/parser/index.ts#warnNumberAmbiguities#1",
+      "c": null,
+      "port": {
+        "file": "src/parser/index.ts",
+        "symbol": "warnNumberAmbiguities",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/parser/parser.test.ts#parseErr#1",
+      "c": null,
+      "port": {
+        "file": "src/parser/parser.test.ts",
+        "symbol": "parseErr",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/color-resolve.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/render/color-resolve.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/color-resolve.ts#reportColorxlate#1",
+      "c": null,
+      "port": {
+        "file": "src/render/color-resolve.ts",
+        "symbol": "reportColorxlate",
+        "behaviour": "agerr"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/dot/long-string-wrap.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/render/dot/long-string-wrap.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/json-stored-draws.test.ts#at#1",
+      "c": null,
+      "port": {
+        "file": "src/render/json-stored-draws.test.ts",
+        "symbol": "at",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/json-stored-draws.test.ts#keyed#1",
+      "c": null,
+      "port": {
+        "file": "src/render/json-stored-draws.test.ts",
+        "symbol": "keyed",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/json-stored-draws.test.ts#named#1",
+      "c": null,
+      "port": {
+        "file": "src/render/json-stored-draws.test.ts",
+        "symbol": "named",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/json-stored-draws.test.ts#subnofreeRenders#1",
+      "c": null,
+      "port": {
+        "file": "src/render/json-stored-draws.test.ts",
+        "symbol": "subnofreeRenders",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/json.branch.test.ts#findByName#1",
+      "c": null,
+      "port": {
+        "file": "src/render/json.branch.test.ts",
+        "symbol": "findByName",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/svg-graph.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/render/svg-graph.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/svg-graph.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/render/svg-graph.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/svg-subgraph-id.test.ts#nativeSubRender#1",
+      "c": null,
+      "port": {
+        "file": "src/render/svg-subgraph-id.test.ts",
+        "symbol": "nativeSubRender",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/svg-subgraph-id.test.ts#subgraph#1",
+      "c": null,
+      "port": {
+        "file": "src/render/svg-subgraph-id.test.ts",
+        "symbol": "subgraph",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/xdot-public.branch.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/render/xdot-public.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/util/bsd-qsort.test.ts#edgePathNums#1",
+      "c": null,
+      "port": {
+        "file": "src/util/bsd-qsort.test.ts",
+        "symbol": "edgePathNums",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/util/bsd-qsort.test.ts#nodeCy#1",
+      "c": null,
+      "port": {
+        "file": "src/util/bsd-qsort.test.ts",
+        "symbol": "nodeCy",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/vpsc/Solver.ts#IncVPSC.satisfy#1",
+      "c": null,
+      "port": {
+        "file": "src/vpsc/Solver.ts",
+        "symbol": "IncVPSC.satisfy",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/vpsc/Solver.ts#IncVPSC.satisfy#2",
+      "c": null,
+      "port": {
+        "file": "src/vpsc/Solver.ts",
+        "symbol": "IncVPSC.satisfy",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/vpsc/Solver.ts#VPSC.verifyConstraints#1",
+      "c": null,
+      "port": {
+        "file": "src/vpsc/Solver.ts",
+        "symbol": "VPSC.verifyConstraints",
+        "behaviour": "throws-internal"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/vpsc/SweepLine.test.ts#layoutRect#1",
+      "c": null,
+      "port": {
+        "file": "src/vpsc/SweepLine.test.ts",
+        "symbol": "layoutRect",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/parse.branch.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/xdot/parse.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/parse.branch.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/xdot/parse.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/parse.branch.test.ts#<module>#3",
+      "c": null,
+      "port": {
+        "file": "src/xdot/parse.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/parse.branch.test.ts#<module>#4",
+      "c": null,
+      "port": {
+        "file": "src/xdot/parse.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/parse.branch.test.ts#<module>#5",
+      "c": null,
+      "port": {
+        "file": "src/xdot/parse.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/parse.branch.test.ts#<module>#6",
+      "c": null,
+      "port": {
+        "file": "src/xdot/parse.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/parse.branch.test.ts#<module>#7",
+      "c": null,
+      "port": {
+        "file": "src/xdot/parse.branch.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#10",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#11",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#12",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#13",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#14",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#15",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#16",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#17",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#18",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#19",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#20",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#21",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#22",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#23",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#24",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#25",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#3",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#4",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#5",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#6",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#7",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#8",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-parse.test.ts#<module>#9",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-parse.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#10",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#11",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#12",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#13",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#14",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#15",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#16",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#17",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#18",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#2",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#3",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#4",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#5",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#6",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#7",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#8",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/xdot/xdot-serial.test.ts#<module>#9",
+      "c": null,
+      "port": {
+        "file": "src/xdot/xdot-serial.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    }
+  ]
+}
