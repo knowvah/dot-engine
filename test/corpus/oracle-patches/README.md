@@ -38,3 +38,9 @@ manifest entry (`patch`, `slug`, `forkBranch: "carried/<slug>"`, `upstreamMr`,
 
 Patch files are regenerated from the `carried/<slug>` branch, never
 hand-edited. To change one, amend the branch and re-run `format-patch`.
+
+A carried commit leaves out its `CHANGELOG.md` hunk. An `Unreleased`
+heading makes `gen_version.py` report a development version, and the build
+script refuses it. The script stamps the patched tree as stable 16.1.1 with a
+tree-identical merge on the release commit, so `dot -V` still reports 16.1.1
+and `oraclePreflight` passes.

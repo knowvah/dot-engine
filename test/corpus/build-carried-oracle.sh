@@ -71,6 +71,28 @@ apply_patches() {
   done < <(patch_files)
 }
 
+# gen_version.py calls a build stable only when a parent of HEAD added the
+# CHANGELOG release line; `git am` moves HEAD off the tag, so a patched build
+# would report <next>~dev. Add a tree-identical merge whose second parent is
+# the release commit (the pristine oracle's local commit does the same), with
+# the tag's dates so the commit and the version string stay deterministic.
+stamp_stable() {
+  [ -n "$(patch_files)" ] || return 0
+  local log="$CARRIED_DIR/CHANGELOG.md" heading line release tree date new
+  heading="$(grep -n -m1 '^## \[' "$log")" || die "no version heading in $log"
+  case "$heading" in
+    *'## [Unreleased'*) die "a carried patch adds an Unreleased CHANGELOG heading; drop its CHANGELOG hunk" ;;
+  esac
+  line="${heading%%:*}"
+  release="$(git -C "$CARRIED_DIR" blame -l -L"$line,$line" HEAD -- CHANGELOG.md | cut -d' ' -f1 | tr -d '^')"
+  tree="$(git -C "$CARRIED_DIR" rev-parse 'HEAD^{tree}')"
+  date="$(git -C "$CARRIED_DIR" log -1 --format=%cI "$TAG")"
+  new="$(GIT_AUTHOR_DATE="$date" GIT_COMMITTER_DATE="$date" git "${GIT_IDENT[@]}" -C "$CARRIED_DIR" \
+    commit-tree "$tree" -p HEAD -p "$release" -m "carried: mark as stable $TAG for gen_version.py")"
+  git -C "$CARRIED_DIR" checkout --detach --quiet "$new"
+  echo "stamped stable $TAG (second parent $release)"
+}
+
 copy_cache_keys() {
   local cache="$PRISTINE_BUILD/CMakeCache.txt"
   [ -f "$cache" ] || die "pristine CMakeCache.txt not found: $cache"
@@ -114,6 +136,7 @@ main() {
   [ -x "$FLEX" ] || die "flex not executable: $FLEX"
   prepare_worktree
   apply_patches
+  stamp_stable
   copy_cache_keys
   build
   gen_gvbindirs
