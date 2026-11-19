@@ -3,9 +3,11 @@
 // Carried-oracle self-check (ADR-0003, stop condition 5). With an empty patch
 // series the carried build must be byte-identical to the pristine 16.1.1
 // build. Renders every entry of carried-selfcheck-sample.json with both and
-// compares stdout, stderr and exit status. The ONE normalization: the build
-// date token in the version string, `16.1.1 (YYYYMMDD.HHMM)`, which differs
-// because the builds were compiled at different times.
+// compares stdout, stderr and exit status. Two normalizations, both build
+// artifacts the port never emits: the build date token in the version string,
+// `16.1.1 (YYYYMMDD.HHMM)` (the builds were compiled at different times), and
+// each checkout's absolute source root in stderr (C `__FILE__` in messages such
+// as `lib/pathplan/<root>/lib/pathplan/shortest.c:338: triangulation failed`).
 //
 //   npx tsx test/corpus/carried-selfcheck.ts
 //
@@ -14,13 +16,15 @@
 
 import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import {
   ORACLE_CORPUS_ROOT,
   ORACLE_DOT_BIN,
+  ORACLE_GRAPHVIZ_BUILD,
   ORACLE_GVBINDIR,
   ORACLE_GVBINDIR_ALL,
   ORACLE_PRISTINE_DOT_BIN,
+  ORACLE_PRISTINE_GRAPHVIZ_BUILD,
   ORACLE_PRISTINE_GVBINDIR,
   ORACLE_PRISTINE_GVBINDIR_ALL,
   ORACLE_VERSION,
@@ -56,6 +60,9 @@ const PRISTINE: Oracle = {
   gvbindirDot: ORACLE_PRISTINE_GVBINDIR,
   gvbindirAll: ORACLE_PRISTINE_GVBINDIR_ALL,
 };
+const PRISTINE_SRC = dirname(ORACLE_PRISTINE_GRAPHVIZ_BUILD);
+const CARRIED_SRC = dirname(ORACLE_GRAPHVIZ_BUILD);
+const SOURCE_ROOT_PLACEHOLDER = '<graphviz-src>';
 const CARRIED: Oracle = { dotBin: ORACLE_DOT_BIN, gvbindirDot: ORACLE_GVBINDIR, gvbindirAll: ORACLE_GVBINDIR_ALL };
 
 /** The only normalization: blank the build date after the pinned version. Returns the text and how many tokens it replaced. */
@@ -66,6 +73,11 @@ export function normalizeVersionDate(text: string): { text: string; fired: numbe
     return `${v} ${DATE_PLACEHOLDER}`;
   });
   return { text: out, fired };
+}
+
+/** Replace one checkout's absolute source root with a placeholder (C `__FILE__` in stderr). */
+export function normalizeSourceRoot(text: string, root: string): string {
+  return text.split(`${root}/`).join(`${SOURCE_ROOT_PLACEHOLDER}/`);
 }
 
 /** Offset of the first differing char (latin1, so one char = one byte), or -1 when equal. */
@@ -93,8 +105,11 @@ function context(text: string, at: number): string {
 
 /** Compare one stream after normalization; the message of the first difference, else null. */
 function compareStream(label: string, p: string, c: string, firedByFormat: Map<string, number>, format: string): string | null {
-  const np = normalizeVersionDate(p);
-  const nc = normalizeVersionDate(c);
+  const isErr = label === 'stderr';
+  // Both roots on both sides: the corpus inputs live under the pristine root.
+  const roots = (t: string): string => normalizeSourceRoot(normalizeSourceRoot(t, PRISTINE_SRC), CARRIED_SRC);
+  const np = normalizeVersionDate(isErr ? roots(p) : p);
+  const nc = normalizeVersionDate(isErr ? roots(c) : c);
   if (np.fired > 0) firedByFormat.set(format, (firedByFormat.get(format) ?? 0) + np.fired);
   const at = firstDifference(np.text, nc.text);
   if (at < 0) return null;

@@ -1,5 +1,5 @@
 {
-  "rule": "Deterministic. Candidates: corpus-manifest.json ids with status=applicable, id not in the nondeterminism/crasher/Latin1 denylist (graphs-Latin1, graphs-Symbol, graphs-b34, graphs-b56, graphs-b60, share-Latin1, any id containing Latin1, fdp 1652/1879/2108/2470/2621/graphs-b143, sfdp neatosplines, twopi newarrows/arrows), input file <= 15000 bytes, not in engine-exclusions.json for that engine; sorted by id (codepoint order). Pass 1: every 12th candidate (index 0,12,24,...), n-th pick gets engine engines[n%8] and format formats[n%6] (engines dot neato fdp sfdp circo twopi osage patchwork; formats svg xdot plain json map dot). Top-up from index 1 step 12 (then 7 step 12) assigning the first engine/format below 5 uses, then fill to 60. Every kept (id,engine,format) was rendered twice on pristine 16.1.1 (-K<engine> -T<format>, GVBINDIR dot-only for dot else all) and kept only if both runs are byte-equal in stdout, stderr and exit status, with no signal/timeout and exit status <= 1. Entries sorted by id, engine, format.",
+  "rule": "Deterministic. Candidates: corpus-manifest.json ids with status=applicable, id not in the nondeterminism/crasher/Latin1 denylist (graphs-Latin1, graphs-Symbol, graphs-b34, graphs-b56, graphs-b60, share-Latin1, any id containing Latin1, fdp 1652/1879/2108/2470/2621/graphs-b143, sfdp neatosplines, twopi newarrows/arrows), input file <= 15000 bytes, not in engine-exclusions.json for that engine; sorted by id (codepoint order). Pass 1: every 12th candidate (index 0,12,24,...), n-th pick gets engine engines[n%8] and format formats[n%6] (engines dot neato fdp sfdp circo twopi osage patchwork; formats svg xdot plain json map dot). Top-up from index 1 step 12 (then 7 step 12) assigning the first engine/format below 5 uses, then fill to 60. Every kept (id,engine,format) was rendered twice on pristine 16.1.1 (-K<engine> -T<format>, GVBINDIR dot-only for dot else all) and kept only if both runs are byte-equal in stdout, stderr and exit status, with no signal/timeout and exit status <= 1. Entries sorted by id, engine, format. Guard (added 2026-11-19): 2470, 2471 and graphs-b81 under dot as plain and svg, inputs with quoted or HTML strings longer than 2048 bytes, which catch a flex scanner-buffer change (flex 2.6.16 sets YY_BUF_SIZE to 2048).",
   "samples": [
     {
       "id": "121",
@@ -40,6 +40,26 @@
       "id": "2458",
       "engine": "dot",
       "format": "plain"
+    },
+    {
+      "id": "2470",
+      "engine": "dot",
+      "format": "plain"
+    },
+    {
+      "id": "2470",
+      "engine": "dot",
+      "format": "svg"
+    },
+    {
+      "id": "2471",
+      "engine": "dot",
+      "format": "plain"
+    },
+    {
+      "id": "2471",
+      "engine": "dot",
+      "format": "svg"
     },
     {
       "id": "2563",
@@ -90,6 +110,16 @@
       "id": "graphs-b73a",
       "engine": "sfdp",
       "format": "xdot"
+    },
+    {
+      "id": "graphs-b81",
+      "engine": "dot",
+      "format": "plain"
+    },
+    {
+      "id": "graphs-b81",
+      "engine": "dot",
+      "format": "svg"
     },
     {
       "id": "graphs-biglabel",

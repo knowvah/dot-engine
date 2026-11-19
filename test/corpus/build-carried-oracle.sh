@@ -24,7 +24,12 @@ PRISTINE_BUILD="${PRISTINE_BUILD:-$HOME/git/graphviz-16.1.1/build}"
 JOBS="${JOBS:-6}"
 TAG="16.1.1"
 BISON="${BISON_EXECUTABLE:-/opt/homebrew/opt/bison/bin/bison}"
-FLEX="${FLEX_EXECUTABLE:-/opt/homebrew/opt/flex/bin/flex}"
+# flex must be 2.6.4, as for the pristine oracle's scanner: flex 2.6.16 sets
+# YY_BUF_SIZE to 2*BUFSIZ (2048 on macOS), so cgraph rejects quoted and HTML
+# strings that pristine parses. Homebrew moved to 2.6.16 on 2026-11-18; Apple's
+# /usr/bin/flex is 2.6.4.
+FLEX="${FLEX_EXECUTABLE:-/usr/bin/flex}"
+FLEX_VERSION="2.6.4"
 GVBINDIR_DOT="/tmp/ghl1611-carried"
 GVBINDIR_ALL="/tmp/ghl1611-carried-all"
 GIT_IDENT=(-c user.name=dot-engine-carried-oracle -c user.email=carried@invalid)
@@ -107,6 +112,8 @@ build() {
   while IFS= read -r line; do
     args+=("-D${line%%:*}=${line#*=}")
   done <"$CARRIED_DIR/carried-cmake-keys.txt"
+  # Regenerate the scanners every build so a flex change cannot leave a stale one.
+  rm -f "$CARRIED_DIR/build/lib/cgraph/scan.c" "$CARRIED_DIR/build/cmd/tools/gmlscan.c"
   cmake -S "$CARRIED_DIR" -B "$CARRIED_DIR/build" "${args[@]}" \
     "-DBISON_EXECUTABLE=$BISON" "-DFLEX_EXECUTABLE=$FLEX"
   cmake --build "$CARRIED_DIR/build" -j "$JOBS"
@@ -134,6 +141,7 @@ main() {
   for t in git cmake shasum; do command -v "$t" >/dev/null 2>&1 || die "'$t' not found on PATH"; done
   [ -x "$BISON" ] || die "bison not executable: $BISON"
   [ -x "$FLEX" ] || die "flex not executable: $FLEX"
+  "$FLEX" --version | grep -q " $FLEX_VERSION\$" || die "flex must be $FLEX_VERSION: $FLEX is $("$FLEX" --version)"
   prepare_worktree
   apply_patches
   stamp_stable
