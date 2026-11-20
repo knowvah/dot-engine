@@ -258,10 +258,10 @@
         "symbol": "scanHexGroups",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/colxlate.c#colorxlate#UNREACHABLE#2",
@@ -277,10 +277,10 @@
         "symbol": "scanHexGroups",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/colxlate.c#colorxlate#UNREACHABLE#3",
@@ -296,10 +296,10 @@
         "symbol": "scanHexGroups",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/colxlate.c#colorxlate#UNREACHABLE#4",
@@ -315,10 +315,10 @@
         "symbol": "scanHexGroups",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/colxlate.c#hsv2rgb#UNREACHABLE#1",
@@ -334,10 +334,10 @@
         "symbol": "hsv2rgb",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/emit.c#emit_background#native-crash#1",
@@ -374,10 +374,10 @@
         "symbol": "placedLabelPos",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/emit.c#emit_xdot#UNREACHABLE#1",
@@ -393,10 +393,10 @@
         "symbol": "<module>",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/emit.c#emit_xdot#native-crash#1",
@@ -478,10 +478,10 @@
         "symbol": "<module>",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable (non-float in gradient/stop colour list): C agerr then recovers; port emits the same agerr (stop-color-diag.test.ts)."
     },
     {
       "id": "lib/common/emit.c#parse_style#agerrorf#1",
@@ -557,10 +557,10 @@
         "symbol": "ccwrotatepf",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/geom.c#cwrotatepf#UNREACHABLE#1",
@@ -576,10 +576,10 @@
         "symbol": "cwrotatepf",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/htmllex.c#htmlerror#agerrorf#1",
@@ -595,10 +595,10 @@
         "symbol": "htmlErrorInLine",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable (bad HTML label, e.g. <<b>x>, <<foo>x</foo>>, missing <img>): C agerr then falls back to the plain label; port emits the same agerr and renders (verified). No throw."
     },
     {
       "id": "lib/common/htmllex.c#htmllex#agerrorf#1",
@@ -614,10 +614,10 @@
         "symbol": "XML_ERROR_TAG_MISMATCH",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable (bad HTML label, e.g. <<b>x>, <<foo>x</foo>>, missing <img>): C agerr then falls back to the plain label; port emits the same agerr and renders (verified). No throw."
     },
     {
       "id": "lib/common/htmllex.c#lexerror#agerrorf#1",
@@ -633,10 +633,10 @@
         "symbol": "checkTag",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable (bad HTML label, e.g. <<b>x>, <<foo>x</foo>>, missing <img>): C agerr then falls back to the plain label; port emits the same agerr and renders (verified). No throw."
     },
     {
       "id": "lib/common/htmltable.c#allocObj#UNREACHABLE#1",
@@ -682,10 +682,10 @@
         "symbol": "missingImages",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable (bad HTML label, e.g. <<b>x>, <<foo>x</foo>>, missing <img>): C agerr then falls back to the plain label; port emits the same agerr and renders (verified). No throw."
     },
     {
       "id": "lib/common/input.c#charsetToStr#agerrorf#1",
@@ -851,10 +851,10 @@
         "symbol": "addTreeEdge",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: network-simplex tree bookkeeping; agerr in C, port has no counterpart message."
     },
     {
       "id": "lib/common/ns.c#add_tree_edge#agerrorf#2",
@@ -870,10 +870,10 @@
         "symbol": "addTreeEdge",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: network-simplex tree bookkeeping; agerr in C, port has no counterpart message."
     },
     {
       "id": "lib/common/ns.c#add_tree_edge#agerrorf#3",
@@ -889,10 +889,10 @@
         "symbol": "addTreeEdge",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: network-simplex tree bookkeeping; agerr in C, port has no counterpart message."
     },
     {
       "id": "lib/common/ns.c#checkdfs#abort#1",
@@ -923,10 +923,10 @@
         "symbol": "initRank",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: network-simplex tree bookkeeping; agerr in C, port has no counterpart message."
     },
     {
       "id": "lib/common/ns.c#invalidate_path#agerrorf#1",
@@ -942,10 +942,10 @@
         "symbol": "invalidatePath",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: network-simplex tree bookkeeping; agerr in C, port has no counterpart message."
     },
     {
       "id": "lib/common/ns.c#update#agerrorf#1",
@@ -961,10 +961,10 @@
         "symbol": "nsUpdate",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: network-simplex tree bookkeeping; agerr in C, port has no counterpart message."
     },
     {
       "id": "lib/common/ns.c#x_cutval#agerrorf#1",
@@ -980,10 +980,10 @@
         "symbol": "xCutval",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: edge weights summing past INT_MAX at one node, e.g. digraph{a->b[weight=2147483647]; a->c[weight=2147483647]}. Native (carried) exits 1 \"overflow when computing edge weight sum\"; port renders (JS sum has no int32 overflow). Port should throw."
     },
     {
       "id": "lib/common/ns.c#x_cutval#agerrorf#2",
@@ -999,10 +999,10 @@
         "symbol": "xCutval",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: edge weights summing past INT_MAX at one node, e.g. digraph{a->b[weight=2147483647]; a->c[weight=2147483647]}. Native (carried) exits 1 \"overflow when computing edge weight sum\"; port renders (JS sum has no int32 overflow). Port should throw."
     },
     {
       "id": "lib/common/ns.c#x_cutval#graphviz_exit#1",
@@ -1018,10 +1018,10 @@
         "symbol": "xCutval",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: edge weights summing past INT_MAX at one node, e.g. digraph{a->b[weight=2147483647]; a->c[weight=2147483647]}. Native (carried) exits 1 \"overflow when computing edge weight sum\"; port renders (JS sum has no int32 overflow). Port should throw."
     },
     {
       "id": "lib/common/ns.c#x_cutval#graphviz_exit#2",
@@ -1037,10 +1037,10 @@
         "symbol": "xCutval",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: edge weights summing past INT_MAX at one node, e.g. digraph{a->b[weight=2147483647]; a->c[weight=2147483647]}. Native (carried) exits 1 \"overflow when computing edge weight sum\"; port renders (JS sum has no int32 overflow). Port should throw."
     },
     {
       "id": "lib/common/output.c#canon#native-crash#1",
@@ -1078,10 +1078,10 @@
         "symbol": "gvPostprocess",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/postproc.c#map_edge#agerrorf#1",
@@ -1097,10 +1097,10 @@
         "symbol": "translateDrawing",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr+recover in C when an edge has no mapped drawing; port agerr; no known input."
     },
     {
       "id": "lib/common/routespl.c#checkpath#agerrorf#1",
@@ -1116,10 +1116,10 @@
         "symbol": "checkPath",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr, return 1: C drops the edge route; port agerr. Degenerate-box geometry; no known input."
     },
     {
       "id": "lib/common/routespl.c#checkpath#agerrorf#2",
@@ -1135,10 +1135,10 @@
         "symbol": "checkPath",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr, return 1: C drops the edge route; port agerr. Degenerate-box geometry; no known input."
     },
     {
       "id": "lib/common/routespl.c#checkpath#agerrorf#3",
@@ -1154,10 +1154,10 @@
         "symbol": "checkPath",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr, return 1: C drops the edge route; port agerr. Degenerate-box geometry; no known input."
     },
     {
       "id": "lib/common/routespl.c#routesplines_#agerrorf#1",
@@ -1173,10 +1173,10 @@
         "symbol": "fwdDirs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr, return NULL: C leaves the edge unrouted; internal geometry/box-chain failure; no known input."
     },
     {
       "id": "lib/common/routespl.c#routesplines_#agerrorf#2",
@@ -1192,10 +1192,10 @@
         "symbol": "fwdDirs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr, return NULL: C leaves the edge unrouted; internal geometry/box-chain failure; no known input."
     },
     {
       "id": "lib/common/routespl.c#routesplines_#agerrorf#3",
@@ -1211,10 +1211,10 @@
         "symbol": "fwdDirs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr, return NULL: C leaves the edge unrouted; internal geometry/box-chain failure; no known input."
     },
     {
       "id": "lib/common/routespl.c#routesplines_#agerrorf#4",
@@ -1230,10 +1230,10 @@
         "symbol": "fwdDirs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: loop edges are routed elsewhere."
     },
     {
       "id": "lib/common/routespl.c#routesplines_#agerrorf#5",
@@ -1249,10 +1249,10 @@
         "symbol": "fwdDirs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr, return NULL: C leaves the edge unrouted; internal geometry/box-chain failure; no known input."
     },
     {
       "id": "lib/common/routespl.c#routesplines_#agerrorf#6",
@@ -1268,10 +1268,10 @@
         "symbol": "fwdDirs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr, return NULL: C leaves the edge unrouted; internal geometry/box-chain failure; no known input."
     },
     {
       "id": "lib/common/routespl.c#routesplines_#agerrorf#7",
@@ -1287,10 +1287,10 @@
         "symbol": "fwdDirs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Allocation failure only; no input reaches it."
     },
     {
       "id": "lib/common/routespl.c#simpleSplineRoute#agerrorf#1",
@@ -1306,10 +1306,10 @@
         "symbol": "simpleSplineRoute",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Allocation failure only; no input reaches it."
     },
     {
       "id": "lib/common/shapes.c#closestSide#UNREACHABLE#1",
@@ -1325,10 +1325,10 @@
         "symbol": "nodeBoxLocal",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/shapes.c#cvtPt#UNREACHABLE#1",
@@ -1344,10 +1344,10 @@
         "symbol": "cvtPt",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/shapes.c#invflip_angle#UNREACHABLE#1",
@@ -1363,10 +1363,10 @@
         "symbol": "invflipAngleRL",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/shapes.c#invflip_side#UNREACHABLE#1",
@@ -1382,10 +1382,10 @@
         "symbol": "invflipSideBT",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/common/shapes.c#record_init#agerrorf#1",
@@ -1401,10 +1401,10 @@
         "symbol": "recordInit",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "port-bug",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Port-bug (stderr parity): C prints \"Error: bad label format {a|b\" for digraph{a [shape=record label=\"{a|b\"]} and re-parses the label as \\N; the port matches the drawing but prints no stderr line (no such message in src/). Repro: that DOT, -Kdot -Tsvg, compare stderr."
     },
     {
       "id": "lib/common/shapes.c#round_corners#UNREACHABLE#1",
@@ -1435,10 +1435,10 @@
         "symbol": "getSplinePoints",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr+recover in C when an edge has no spline for xlabel placement; no known input."
     },
     {
       "id": "lib/common/splines.c#polylineMidpoint#UNREACHABLE#1",
@@ -1454,10 +1454,10 @@
         "symbol": "polylineMidpoint",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/dotgen/compound.c#boxIntersectf#agerrorf#1",
@@ -1473,10 +1473,10 @@
         "symbol": "boxIntersectf",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr+recover in C when a lhead/ltail segment misses the cluster box; no known input (verified simple compound edge is silent)."
     },
     {
       "id": "lib/dotgen/conc.c#rebuild_vlists#agerrorf#1",
@@ -1492,10 +1492,10 @@
         "symbol": "fillRankVlist",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr in C and port (concentrate=true rank list inconsistency); no known input."
     },
     {
       "id": "lib/dotgen/conc.c#rebuild_vlists#agerrorf#2",
@@ -1511,10 +1511,10 @@
         "symbol": "fillRankVlist",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr in C and port (concentrate=true rank list inconsistency); no known input."
     },
     {
       "id": "lib/dotgen/mincross.c#do_ordering_for_nodes#agerrorf#1",
@@ -1530,10 +1530,10 @@
         "symbol": "doOrderingForNodes",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: ordering=bogus. C agerr then continues unordered; port emits the same agerr and renders (verified)."
     },
     {
       "id": "lib/dotgen/mincross.c#install_in_rank#agerrorf#1",
@@ -1549,10 +1549,10 @@
         "symbol": "<module>",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: rank-array consistency checks."
     },
     {
       "id": "lib/dotgen/mincross.c#install_in_rank#agerrorf#2",
@@ -1568,10 +1568,10 @@
         "symbol": "<module>",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: rank-array consistency checks."
     },
     {
       "id": "lib/dotgen/mincross.c#install_in_rank#agerrorf#3",
@@ -1587,10 +1587,10 @@
         "symbol": "<module>",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: rank-array consistency checks."
     },
     {
       "id": "lib/dotgen/mincross.c#install_in_rank#agerrorf#4",
@@ -1606,10 +1606,10 @@
         "symbol": "<module>",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: rank-array consistency checks."
     },
     {
       "id": "lib/dotgen/mincross.c#node_in_root_vlist#abort#1",
@@ -1640,10 +1640,10 @@
         "symbol": "orderedEdges",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: ordering=bogus. C agerr then continues unordered; port emits the same agerr and renders (verified)."
     },
     {
       "id": "lib/dotgen/mincross.c#virtual_weight#agerrorf#1",
@@ -1659,10 +1659,10 @@
         "symbol": "applyVirtualWeight",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: virtual-chain weight*4 past INT_MAX, e.g. digraph{a->b->c->d; a->d[weight=600000000]}. Native (carried) exits 1 \"overflow when calculating virtual weight of edge\"; port renders. Port should throw."
     },
     {
       "id": "lib/dotgen/mincross.c#virtual_weight#graphviz_exit#1",
@@ -1678,10 +1678,10 @@
         "symbol": "applyVirtualWeight",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: virtual-chain weight*4 past INT_MAX, e.g. digraph{a->b->c->d; a->d[weight=600000000]}. Native (carried) exits 1 \"overflow when calculating virtual weight of edge\"; port renders. Port should throw."
     },
     {
       "id": "lib/dotgen/position.c#contain_nodes#agerrorf#1",
@@ -1697,10 +1697,10 @@
         "symbol": "containNodesRank",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: cluster rank has no node."
     },
     {
       "id": "lib/dotgen/position.c#make_aux_edge#agerrorf#1",
@@ -1716,10 +1716,10 @@
         "symbol": "makeAuxEdge",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable only with an edge length > INT_MAX (overwide nodes). C agerr then returns NULL to callers; port agerr. Callers dereferencing NULL is a hypothesis (unverified)."
     },
     {
       "id": "lib/dotgen/rank.c#strong#agerrorf#1",
@@ -1735,10 +1735,10 @@
         "symbol": "xgStrong",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: newrank constraint edge; agedge(...,create) cannot fail here."
     },
     {
       "id": "lib/expr/exeval.c#eval#UNREACHABLE#1",
@@ -1889,10 +1889,10 @@
         "symbol": "deriveClusterNodes",
         "behaviour": "renders"
       },
-      "class": "unclassified",
-      "status": "none",
+      "class": "upstream-fix",
+      "status": "proposed",
       "links": {},
-      "note": ""
+      "note": "Hypothesis, instrumented by render: graph{subgraph cluster0{a b} subgraph cluster1{b c}} with fdp. C agerr then deriveGraph returns NULL and C still emits a degenerate 8x8pt drawing (zero-size clusters) with exit 1 rather than failing cleanly. Port matches the output but prints no stderr line."
     },
     {
       "id": "lib/fdpgen/layout.c#deriveGraph#native-crash#1",
@@ -1944,10 +1944,10 @@
         "symbol": "render",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable (unknown format). Port throws TypeError ERR_INVALID_ARG_VALUE from checkRenderArgs (API contract, verified); no DotEngineError change needed."
     },
     {
       "id": "lib/gvc/gvc.c#gvRender#agerrorf#2",
@@ -1963,10 +1963,10 @@
         "symbol": "render",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: render() always lays out first."
     },
     {
       "id": "lib/gvc/gvc.c#gvRenderContext#agerrorf#1",
@@ -2402,10 +2402,10 @@
         "symbol": "GvcContext.layout",
         "behaviour": "throws-render"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: graph{layout=nope}. Port already throws RenderError UNKNOWN_LAYOUT \"Layout type: \\\"nope\\\" not recognized\" (verified); only message/context can improve."
     },
     {
       "id": "lib/gvc/gvrender.c#gvrender_resolve_color#agerrorf#1",
@@ -2541,10 +2541,10 @@
         "symbol": "rectArea",
         "behaviour": "throws-render"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Resource limit (area > UINT64_MAX in label rtree); port already throws RenderError RENDER_ERROR (rectangle.ts); no known input."
     },
     {
       "id": "lib/label/rectangle.c#RectArea#graphviz_exit#1",
@@ -2560,10 +2560,10 @@
         "symbol": "rectArea",
         "behaviour": "throws-render"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Resource limit (area > UINT64_MAX in label rtree); port already throws RenderError RENDER_ERROR (rectangle.ts); no known input."
     },
     {
       "id": "lib/label/xlabels.c#xlnew#graphviz_exit#1",
@@ -2579,10 +2579,10 @@
         "symbol": "xlnew",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Out-of-memory only; no input reaches it."
     },
     {
       "id": "lib/neatogen/conjgrad.c#conjugate_gradient#agerrorf#1",
@@ -2598,10 +2598,10 @@
         "symbol": "cgNextDirection",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr in C and port (zero-length CG vector); numerical degeneracy; no known input."
     },
     {
       "id": "lib/neatogen/conjgrad.c#conjugate_gradient_d#agerrorf#1",
@@ -2617,10 +2617,10 @@
         "symbol": "cgdUpdate",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr in C and port (zero-length CG vector); numerical degeneracy; no known input."
     },
     {
       "id": "lib/neatogen/conjgrad.c#conjugate_gradient_mkernel#agerrorf#1",
@@ -2636,10 +2636,10 @@
         "symbol": "cgIteration",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr in C and port (zero-length CG vector); numerical degeneracy; no known input."
     },
     {
       "id": "lib/neatogen/delaunay.c#delaunay_tri#agerrorf#1",
@@ -2655,10 +2655,10 @@
         "symbol": "delaunayTri",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Site is the #else stub for builds without triangulation; the carried oracle has it, so only the built path matters. Not reachable."
     },
     {
       "id": "lib/neatogen/delaunay.c#delaunay_triangulation#agerrorf#1",
@@ -2734,10 +2734,10 @@
         "symbol": "findInts",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: polygon-intersection bookkeeping."
     },
     {
       "id": "lib/neatogen/neatoinit.c#init_nop#agerrorf#1",
@@ -2789,10 +2789,10 @@
         "symbol": "inputscaleDivisor",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "port-bug",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Port-bug (stderr parity): C prints \"Error: node a, position 1,x, expected two doubles\" for graph{a [pos=\"1,x\"]} with neato and ignores the pos; the port matches the drawing but prints no stderr line (no such message in src/). Repro: that DOT, -Kneato -Tsvg, compare stderr."
     },
     {
       "id": "lib/neatogen/neatosplines.c#makeObstacle#UNREACHABLE#1",
@@ -2808,10 +2808,10 @@
         "symbol": "makeObstacle",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/neatogen/neatosplines.c#makeSpline#agerrorf#1",
@@ -2827,10 +2827,10 @@
         "symbol": "makeSplineEdge",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr+recover in C when Proutespline fails; no known input."
     },
     {
       "id": "lib/neatogen/overlap.c#remove_overlap#agerrorf#1",
@@ -2846,10 +2846,10 @@
         "symbol": "assertEdgeLabelSchemeSupported",
         "behaviour": "throws-render"
       },
-      "class": "unclassified",
+      "class": "port-bug",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "The C site is the no-triangulation stub; the oracle build runs the edge-label scheme. C: graph{\"|edgelabel|1\"--b; label_scheme=3} with sfdp renders (exit 0, verified native). Port: throws RenderError UNSUPPORTED_FEATURE \"label_scheme=3: edge-label node handling is not supported yet\" (sfdp/init.ts)."
     },
     {
       "id": "lib/neatogen/poly.c#makeAddPoly#agerrorf#1",
@@ -2865,10 +2865,10 @@
         "symbol": "makeAddPoly",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr+recover in C for an unknown poly shape type; shape names are validated earlier, so no known input (neato shape=bogus gives the separate \"using box\" warning)."
     },
     {
       "id": "lib/neatogen/poly.c#makePoly#agerrorf#1",
@@ -2884,10 +2884,10 @@
         "symbol": "makePoly",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "agerr+recover in C for an unknown poly shape type; shape names are validated earlier, so no known input (neato shape=bogus gives the separate \"using box\" warning)."
     },
     {
       "id": "lib/neatogen/sgd.c#extract_adjacency#UNREACHABLE#1",
@@ -2903,10 +2903,10 @@
         "symbol": "assignNodeIds",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/neatogen/stress.c#sparse_stress_subspace_majorization_kD#native-crash#1",
@@ -2964,10 +2964,10 @@
         "symbol": "pqInsert",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: heap sized to the node count."
     },
     {
       "id": "lib/ortho/ortho.c#coordOf#agerrorf#1",
@@ -3013,10 +3013,10 @@
         "symbol": "segCmp",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: agerr then sentinel -2; segments are compared per channel."
     },
     {
       "id": "lib/ortho/trapezoid.c#locate_endpoint#UNREACHABLE#1",
@@ -3032,10 +3032,10 @@
         "symbol": "locateEndpoint",
         "behaviour": "throws-internal"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sfdpgen/post_process.c#StressMajorizationSmoother2_new#graphviz_exit#1",
@@ -3156,10 +3156,10 @@
         "symbol": "smAdd",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#SparseMatrix_divide_row_by_degree#UNREACHABLE#1",
@@ -3175,10 +3175,10 @@
         "symbol": "smDivideRowByDegree",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#SparseMatrix_divide_row_by_degree#UNREACHABLE#2",
@@ -3194,10 +3194,10 @@
         "symbol": "smDivideRowByDegree",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#SparseMatrix_export#UNREACHABLE#1",
@@ -3258,10 +3258,10 @@
         "symbol": "smFromCoordinateArrays",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#SparseMatrix_from_coordinate_arrays_internal#UNREACHABLE#2",
@@ -3277,10 +3277,10 @@
         "symbol": "smFromCoordinateArrays",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#SparseMatrix_from_coordinate_arrays_internal#UNREACHABLE#3",
@@ -3296,10 +3296,10 @@
         "symbol": "smFromCoordinateArrays",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#SparseMatrix_from_coordinate_arrays_internal#UNREACHABLE#4",
@@ -3315,10 +3315,10 @@
         "symbol": "smFromCoordinateArrays",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#SparseMatrix_get_submatrix#UNREACHABLE#1",
@@ -3349,10 +3349,10 @@
         "symbol": "smIsSymmetric",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#SparseMatrix_multiply_vector#UNREACHABLE#1",
@@ -3383,10 +3383,10 @@
         "symbol": "smRemoveDiagonal",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#SparseMatrix_remove_upper#UNREACHABLE#1",
@@ -3432,10 +3432,10 @@
         "symbol": "smTranspose",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/sparse/SparseMatrix.c#size_of_matrix_type#UNREACHABLE#1",
@@ -3466,10 +3466,10 @@
         "symbol": "circleLayout",
         "behaviour": "agerr"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable: digraph{a->b[weight=0]; b->c[weight=0]} with twopi. C agerr then continues; port emits the same agerr and renders (verified)."
     },
     {
       "id": "lib/util/list.c#gv_list_reserve_#graphviz_exit#1",
@@ -3605,10 +3605,10 @@
         "symbol": "XmlEscaper.decodeUtf8",
         "behaviour": "throws-render"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "lib/util/xml.c#xml_core#graphviz_exit#1",
@@ -3624,10 +3624,10 @@
         "symbol": "XmlEscaper.decodeUtf8",
         "behaviour": "throws-render"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "Reachable only with malformed UTF-8 bytes (not expressible in a JS string; lone surrogate tested, renders). Port throws RenderError RENDER_ERROR in decodeUtf8."
     },
     {
       "id": "lib/xdot/xdot.c#printAlign#UNREACHABLE#1",
@@ -3718,10 +3718,10 @@
         "symbol": "opPoints",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "plugin/core/gvrender_core_map.c#map_output_shape#UNREACHABLE#1",
@@ -3737,10 +3737,10 @@
         "symbol": "mapCmapxAttrs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "plugin/core/gvrender_core_map.c#map_output_shape#UNREACHABLE#2",
@@ -3756,10 +3756,10 @@
         "symbol": "mapCmapxAttrs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "plugin/core/gvrender_core_map.c#map_output_shape#UNREACHABLE#3",
@@ -3775,10 +3775,10 @@
         "symbol": "mapCmapxAttrs",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "plugin/core/gvrender_core_pic.c#picfontname#agerrorf#1",
@@ -3839,10 +3839,10 @@
         "symbol": "textDecorationValue",
         "behaviour": "renders"
       },
-      "class": "unclassified",
+      "class": "mirror",
       "status": "none",
       "links": {},
-      "note": ""
+      "note": "invariant only: switch default after a closed enum or table; no user input reaches it."
     },
     {
       "id": "plugin/core/gvrender_core_tk.c#tkgen_print_color#UNREACHABLE#1",
