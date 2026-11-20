@@ -226,3 +226,20 @@ describe('isGvError', () => {
     expect(isGvError(v)).toBe(false);
   });
 });
+
+describe('GvError context', () => {
+  it('RenderError carries the context option and forwards cause', () => {
+    const cause = new Error('c');
+    const e = new RenderError('m', 'RENDER_ERROR', { context: { node: 'a' }, cause });
+    expect(e.context).toEqual({ node: 'a' });
+    expect(e.cause).toBe(cause);
+  });
+
+  it('InternalError carries the context option', () => {
+    expect(new InternalError('m', { context: { k: 'v' } }).context).toEqual({ k: 'v' });
+  });
+
+  it('has no own context property when none is given', () => {
+    expect(Object.hasOwn(new RenderError('m'), 'context')).toBe(false);
+  });
+});

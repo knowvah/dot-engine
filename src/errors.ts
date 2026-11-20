@@ -45,6 +45,8 @@ export interface GvError {
   location?: { line: number; column: number; offset?: number };
   /** Peggy's discriminated union, passed through unmapped; SYNTAX_* only. */
   expected?: GvExpectation[];
+  /** Named values the message refers to (e.g. `{ node }`); string-valued. */
+  context?: Record<string, string>;
 }
 
 /** Result of a result-style render: `svg` XOR `errors` for v1. */
@@ -91,6 +93,11 @@ const SEMANTIC_RENDER_CODES: ReadonlySet<GvErrorCode> = new Set<GvErrorCode>([
   'UNSUPPORTED_FEATURE',
 ]);
 
+/** `ErrorOptions` plus the optional structured {@link GvError.context}. */
+export interface DotEngineErrorOptions extends ErrorOptions {
+  context?: Record<string, string>;
+}
+
 /**
  * Abstract base of every library-originated error: `instanceof
  * DotEngineError` means dot-engine failed on this input (bad input, a fatal
@@ -101,9 +108,12 @@ export abstract class DotEngineError extends Error implements GvError {
   abstract readonly type: GvErrorType;
   abstract readonly code: GvErrorCode;
   abstract readonly friendlyMessage: string;
+  /** `declare`: no own property unless the caller supplied a context. */
+  declare context?: Record<string, string>;
 
-  constructor(message: string, options?: ErrorOptions) {
+  constructor(message: string, options?: DotEngineErrorOptions) {
     super(message, options);
+    if (options?.context !== undefined) this.context = options.context;
   }
 }
 
@@ -113,7 +123,7 @@ export class InternalError extends DotEngineError {
   readonly code = 'INTERNAL_ERROR';
   readonly friendlyMessage = friendlyMessageFor('INTERNAL_ERROR');
 
-  constructor(message: string, options?: ErrorOptions) {
+  constructor(message: string, options?: DotEngineErrorOptions) {
     super(message, options);
     this.name = 'InternalError';
   }
@@ -131,7 +141,7 @@ export class RenderError extends DotEngineError {
   constructor(
     message: string,
     code: GvErrorCode = 'RENDER_ERROR',
-    options?: ErrorOptions,
+    options?: DotEngineErrorOptions,
   ) {
     super(message, options);
     this.name = 'RenderError';

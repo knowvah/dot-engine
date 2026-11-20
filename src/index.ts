@@ -52,6 +52,7 @@ function classifyError(err: unknown): GvError {
   };
   if (gv.location !== undefined) out.location = gv.location;
   if (gv.expected !== undefined) out.expected = gv.expected;
+  if (gv.context !== undefined) out.context = { ...gv.context };
   return out;
 }
 

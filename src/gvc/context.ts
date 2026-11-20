@@ -27,6 +27,7 @@ import type { ImageSizer } from '../common/htmltable-types.js';
 import type { ImageResolver } from './image-resolver.js';
 import type { RenderJob } from './job.js';  // scaffold in T25; full class in T26
 import { resetRenderState } from '../common/render-state.js';
+import { agerrorf } from '../common/agerr.js';
 import { RenderError, invalidArgType, invalidArgValue } from '../errors.js';
 import { bindDotRoot, resetFreedLayouts, undoRenderedClusterEdges } from './layout-reset.js';
 import { initXdot } from './init-xdot.js';
@@ -326,12 +327,7 @@ export class GvcContext {
     let engine = selected;
     if (attr !== undefined && attr !== '') {
       const override = this.layouts.get(attr);
-      if (override === undefined) {
-        throw new RenderError(
-          `Layout type: "${attr}" not recognized`,
-          'UNKNOWN_LAYOUT',
-        );
-      }
+      if (override === undefined) throw this.unknownLayout(attr);
       engine = override;
     }
     undoRenderedClusterEdges(g);
@@ -350,6 +346,25 @@ export class GvcContext {
     // Mark the graph laid-out so the public getLayout can reject a graph that
     // still carries calloc-zero geometry defaults.
     if (g.info) g.info.laidOut = true;
+  }
+
+  /**
+   * C's `agerrorf("Layout type: \"%s\" not recognized. Use one of:%s\n", ...)`
+   * (`gvplugin_list` writes each type as a leading space + name), then the
+   * structured error. The thrown wording may differ from the agerr text.
+   * @see lib/gvc/gvlayout.c:gvLayoutJobs
+   */
+  private unknownLayout(attr: string): RenderError {
+    const list = [...this.layouts.keys()]
+      .sort()
+      .map((name: string) => ` ${name}`)
+      .join('');
+    agerrorf(`Layout type: "${attr}" not recognized. Use one of:${list}`);
+    return new RenderError(
+      `Layout type: "${attr}" not recognized. Use one of:${list}.`,
+      'UNKNOWN_LAYOUT',
+      { context: { layout: attr } },
+    );
   }
 
   /**

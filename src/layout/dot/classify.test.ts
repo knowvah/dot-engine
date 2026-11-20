@@ -15,7 +15,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { renderSvg } from '../../index.js';
+import { renderSvg, tryRenderSvg } from '../../index.js';
 
 /** Map node title → ellipse centre (SVG frame) from rendered output. */
 function nodeCenters(svg: string): Map<string, { cx: string; cy: string }> {
@@ -65,5 +65,30 @@ describe('label_vnode lw uses ROOT nodesep, not subgraph (oracle: dot -Tsvg)', (
     expect(c.get('n0')).toEqual({ cx: '70', cy: '-180' });
     expect(c.get('n1')).toEqual({ cx: '98', cy: '-107' });
     expect(c.get('n2')).toEqual({ cx: '70', cy: '-34' });
+  });
+});
+
+// virtual_weight overflow boundary  @see lib/dotgen/mincross.c:virtual_weight
+// The a->d chain's virtual-to-virtual edges multiply the weight by 4, so
+// INT_MAX / 4 = 536870911 is the largest weight that does not overflow.
+describe('virtual weight overflow boundary', () => {
+  const dotWith = (w: number): string => `digraph{a->b->c->d; a->d[weight=${w}]}`;
+
+  it('passes the virtual-weight check at the largest weight whose product fits', () => {
+    // Native then overflows later, in x_cutval (verified on the carried
+    // oracle), so the render still fails, but not at virtual_weight.
+    const e = tryRenderSvg(dotWith(536870911), 'dot').errors?.[0];
+    expect(e?.message).toMatch(/^Edge weights at node/);
+    expect(e?.context?.edge).toBeUndefined();
+  });
+
+  it('renders a large weight that overflows nowhere', () => {
+    expect(tryRenderSvg(dotWith(100000000), 'dot').errors).toBeUndefined();
+  });
+
+  it('fails one past it, naming the original edge', () => {
+    const e = tryRenderSvg(dotWith(536870912), 'dot').errors?.[0];
+    expect(e?.code).toBe('RENDER_ERROR');
+    expect(e?.context).toEqual({ edge: 'a->d' });
   });
 });

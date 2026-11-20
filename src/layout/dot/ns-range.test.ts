@@ -14,7 +14,8 @@ import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { NsCtx } from './ns-core.js';
 import { addTreeEdge } from './ns-core.js';
-import { dfsRangeInit, dfsRange } from './ns-range.js';
+import { dfsRangeInit, dfsRange, xCutval } from './ns-range.js';
+import { RenderError } from '../../errors.js';
 import { rerank } from './ns.js';
 import { treeAdjust } from './ns-subtree.js';
 
@@ -231,5 +232,59 @@ describe('treeAdjust — deep tight tree does not overflow the stack', () => {
     expect(() => treeAdjust(nodes[0], undefined, 3)).not.toThrow();
     expect(nodes[0].info.rank).toBe(3);
     expect(nodes[n - 1].info.rank).toBe(3);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// xCutval int32 overflow  @see lib/common/ns.c:x_cutval (sadd_overflow)
+// ---------------------------------------------------------------------------
+
+const INT_MAX = 2147483647;
+
+/**
+ * v (name "v") is the searched side of tree edge f; every other edge lies
+ * outside v's subtree (x_val: f=1, rv=weight). `heads` weights are in-edges
+ * of v (contribute -w); `tails` weights are out-edges of v (contribute +w).
+ */
+function cutvalFixture(tails: number[], heads: number[]): Edge {
+  const v = { name: 'v', info: { low: 1, lim: 1 } } as unknown as Node;
+  const root = { name: 'r', info: { lim: 9 } } as unknown as Node;
+  const f = { tail: v, head: root, info: {} } as unknown as Edge;
+  v.info.par = f;
+  const other = (w: number, t: Node, h: Node): Edge =>
+    ({ tail: t, head: h, info: { weight: w } }) as unknown as Edge;
+  const out = tails.map((w) => other(w, v, root));
+  const inn = heads.map((w) => other(w, root, v));
+  v.info.out = { list: out, size: out.length } as unknown as Node['info']['out'];
+  v.info.in = { list: inn, size: inn.length } as unknown as Node['info']['in'];
+  return f;
+}
+
+describe('xCutval overflow', () => {
+  it('stores a sum that lands exactly on INT_MAX', () => {
+    const f = cutvalFixture([INT_MAX, 0], []);
+    xCutval(f);
+    expect(f.info.cutvalue).toBe(INT_MAX);
+  });
+
+  it('stores a sum that lands exactly on INT_MIN', () => {
+    const f = cutvalFixture([], [INT_MAX, 1]);
+    xCutval(f);
+    expect(f.info.cutvalue).toBe(-INT_MAX - 1);
+  });
+
+  it('throws RENDER_ERROR with node context past INT_MAX, leaving cutvalue unset', () => {
+    const f = cutvalFixture([INT_MAX, 1], []);
+    let thrown: unknown;
+    try { xCutval(f); } catch (e) { thrown = e; }
+    expect(thrown).toBeInstanceOf(RenderError);
+    expect((thrown as RenderError).code).toBe('RENDER_ERROR');
+    expect((thrown as RenderError).context).toEqual({ node: 'v' });
+    expect(f.info.cutvalue).toBeUndefined();
+  });
+
+  it('throws past INT_MIN, checking the in-edge list after the out-edge list', () => {
+    const f = cutvalFixture([], [INT_MAX, 2]);
+    expect(() => xCutval(f)).toThrow(/sum past the 32-bit integer limit/);
   });
 });
