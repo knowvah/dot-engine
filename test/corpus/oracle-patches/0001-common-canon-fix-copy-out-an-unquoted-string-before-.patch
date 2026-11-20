@@ -1,0 +1,77 @@
+From b04f4cfe690eceea01bf1d795345b3f523d45545 Mon Sep 17 00:00:00 2001
+From: Scott Seely <scott@seely.io>
+Date: Thu, 19 Nov 2026 14:31:43 -0600
+Subject: [PATCH] common canon: fix: copy out an unquoted string before
+ releasing it
+
+`agstrcanon` returns its argument unchanged when the string needs no quoting.
+`canon` passed it a string it had just `agstrdup`ed and released that
+reference before returning. When nothing else referenced the same text, for
+example a label built from `\N` followed by other text, the caller of `canon`
+printed freed memory. AddressSanitizer reports this as a heap-use-after-free in
+`write_plain`, reading the label freed in `canon`.
+
+Includes the regression test "add a test case for #2876".
+
+Gitlab: fixes #2876
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+(cherry picked from commit f9d1cc145efb87fdd9f6f87bd0148637dc8b7d1e)
+(cherry picked from commit c5960b0b7c676204d135b6ec9991f708e4c808f4)
+---
+ lib/common/output.c      |  8 +++++++-
+ tests/test_regression.py | 19 +++++++++++++++++++
+ 2 files changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/lib/common/output.c b/lib/common/output.c
+index 5e9ee3681..e1665f278 100644
+--- a/lib/common/output.c
++++ b/lib/common/output.c
+@@ -102,7 +102,13 @@ static offsets_t setYInvert(graph_t *g) {
+  */
+ static char *canon(graph_t *g, char *s, char *buffer) {
+     char* ns = agstrdup (g, s);
+-    char *const cs = agstrcanon(ns, buffer);
++    char *cs = agstrcanon(ns, buffer);
++    // `agstrcanon` returns its input when no quoting is needed. Our reference
++    // may be the last one to `ns`, so copy it out before releasing it.
++    if (cs == ns) {
++	memcpy(buffer, ns, strlen(ns) + 1);
++	cs = buffer;
++    }
+     agstrfree(g, ns, false);
+     return cs;
+ }
+diff --git a/tests/test_regression.py b/tests/test_regression.py
+index 5d860f9fc..9f526dda1 100644
+--- a/tests/test_regression.py
++++ b/tests/test_regression.py
+@@ -7197,6 +7197,25 @@ def test_2870(src: str):
+             raise
+ 
+ 
++def test_2876():
++    """
++    `-Tplain` should not read a label after it has been freed
++    https://gitlab.com/graphviz/graphviz/-/issues/2876
++    """
++
++    # `\N` and `\T` expand to label text that is not otherwise in the string
++    # dictionary, and that needs no quoting
++    source = 'digraph { ab [label="\\Nx"]; ab -> cd [label="\\Ty"]; }'
++    output = dot("plain", source=source).decode("utf-8")
++
++    assert re.search(
++        r"^node ab( \S+){4} abx ", output, flags=re.MULTILINE
++    ), "node label missing or corrupted"
++    assert re.search(
++        r"^edge ab cd .* aby( \S+){2} solid black$", output, flags=re.MULTILINE
++    ), "edge label missing or corrupted"
++
++
+ @pytest.mark.parametrize(
+     "image",
+     (
+-- 
+2.54.0 (Apple Git-157)
+

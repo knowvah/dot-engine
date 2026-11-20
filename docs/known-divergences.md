@@ -14,7 +14,7 @@ treated as a defect, not accepted behavior.
 > "conformant" refer to that tolerance verdict. Full definition:
 > [Conformance](./conformance.md).
 
-Where the output *does* differ, it falls into exactly one of three classes:
+Where the output *does* differ, it falls into exactly one of four classes:
 
 1. **Accepted deltas** — differences we have investigated, understand to the root
    cause, and have **deliberately chosen not to make conformant**. Each is bounded,
@@ -25,6 +25,10 @@ Where the output *does* differ, it falls into exactly one of three classes:
    [`test/corpus/PARITY-dot.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-dot.md).
 3. **Non-goals** — intentional scope boundaries (formats and mechanics we never
    set out to reproduce).
+4. **Upstream fixes carried (U-series)** — an upstream defect in the oracle that
+   we have fixed and filed as a graphviz merge request. The oracle build carries
+   the fix as a patch, so the port and the oracle agree. See
+   [Upstream fixes carried](#u-series).
 
 The authoritative, continuously-updated records are
 [`PARITY-dot.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-dot.md)
@@ -1270,6 +1274,30 @@ stale. Evidence:
 Evidence: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
+
+## Upstream fixes carried (U-series) {#u-series}
+
+The conformance oracle is graphviz 16.1.1 plus the patches in
+`test/corpus/oracle-patches/`
+([ADR-0003](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0003-upstream-fix-forward.md)).
+A patch is carried once its upstream merge request is filed, and the port
+follows the C fix from that point. A U-series entry is not an accepted delta:
+the port and the carried oracle agree, and the patch is dropped when the fix
+reaches a release we pin.
+
+| U# | Fix | Upstream (MR/issue) | Patch | Status | Drop when |
+|---|---|---|---|---|---|
+| U1 {#u1} | `canon` in `-Tplain` and `-Tplain-ext` no longer reads freed memory when it prints a label that needs no quoting ([#266](https://github.com/knowvah/dot-engine/issues/266)) | [graphviz!5152](https://gitlab.com/graphviz/graphviz/-/merge_requests/5152) / [graphviz#2876](https://gitlab.com/graphviz/graphviz/-/issues/2876) | `0001-common-canon-fix-copy-out-an-unquoted-string-before-.patch` | filed (MR open) | after the MR merges, at the next pin move |
+
+**U1 history.** Until patch 0001 the freed label was an accepted oracle bug
+(class A4, "canon() use-after-free"). `canon` (`lib/common/output.c`) released
+the `agstrdup`ed reference before it returned the string, so native printed an
+empty or garbage label for text such as `\N` followed by other text. The port
+printed the correct text. The carried oracle prints that text too. Of the 64
+accepted `plain` entries that rested on it, 57 are retired: every id on every
+engine except `graphs-b56`. The 7 `graphs-b56` entries stay, with a new reason:
+native writes that label's raw Latin-1 byte under `charset=latin1`, and the port
+prints UTF-8.
 
 ## Pending 16.1.1 ports {#pending-16-1-1-ports}
 
