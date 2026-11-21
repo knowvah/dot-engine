@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-11-13T02:49:29.618Z",
+  "generatedAt": "2026-11-21T03:14:39.031Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "fdp",
   "oracleVersion": "dot 16.1.1",
-  "corpusRoot": "~/git/graphviz/tests",
+  "corpusRoot": "~/git/graphviz-16.1.1/tests",
   "total": 898,
   "counts": {
-    "conformant": 861,
+    "conformant": 862,
     "diverged": 2,
-    "accepted": 17,
+    "accepted": 18,
     "port-error": 2,
     "oracle-error": 5,
     "timeout": 0,
-    "oracle-nondeterministic": 11
+    "oracle-nondeterministic": 9
   },
   "results": [
     {
@@ -4841,9 +4841,9 @@
       "size": 8959,
       "verdict": "oracle-nondeterministic",
       "nDraws": 4,
-      "diffCount": 7030,
+      "diffCount": 6902,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
-      "maxDelta": 168.94999999999993,
+      "maxDelta": 179.63999999999987,
       "maxDeltaPath": "edge:14->48#0/_ldraw_/op[2].T[0]"
     },
     {
@@ -4935,7 +4935,7 @@
       "path": "windows/proc3d.gv",
       "size": 10446,
       "verdict": "oracle-nondeterministic",
-      "nDraws": 4,
+      "nDraws": 3,
       "diffCount": 20,
       "firstDiff": "edge:22316->22324#0/pos[1]",
       "maxDelta": 1,
@@ -4987,11 +4987,12 @@
       "id": "tree-doc-infosrc-plugins",
       "path": "../doc/infosrc/plugins.gv",
       "size": 11343,
-      "verdict": "diverged",
-      "diffCount": 4790,
+      "verdict": "oracle-nondeterministic",
+      "nDraws": 2,
+      "diffCount": 4807,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
-      "maxDelta": 654.4000000000001,
-      "maxDeltaPath": "node:o-tga/pos[0]"
+      "maxDelta": 944.5300000000002,
+      "maxDeltaPath": "node:o-tga/_draw_/op[1].e[0]"
     },
     {
       "id": "share-ldbxtried",
@@ -5097,12 +5098,7 @@
       "id": "894589",
       "path": "894589.dot",
       "size": 13020,
-      "verdict": "oracle-nondeterministic",
-      "nDraws": 2,
-      "diffCount": 4643,
-      "firstDiff": "[graph]/_draw_/op[2].P[3]",
-      "maxDelta": 1113.28,
-      "maxDeltaPath": "edge:deepin-icon-theme->papirus-icon-theme#0/pos[5]"
+      "verdict": "conformant"
     },
     {
       "id": "1332",
@@ -5190,8 +5186,7 @@
       "id": "graphs-b51",
       "path": "graphs/b51.gv",
       "size": 19886,
-      "verdict": "oracle-nondeterministic",
-      "nDraws": 2,
+      "verdict": "accepted",
       "diffCount": 3760,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
       "maxDelta": 18.300000000000182,
@@ -5291,10 +5286,10 @@
       "size": 64908,
       "verdict": "oracle-nondeterministic",
       "nDraws": 3,
-      "diffCount": 11286,
-      "firstDiff": "edge:auditlog->auditlog_data_reads#0/_draw_/op[1].b[ptCount]",
-      "maxDelta": 3656.84,
-      "maxDeltaPath": "edge:crm_person_created->kerne_moneyin#0/pos[18]"
+      "diffCount": 10926,
+      "firstDiff": "edge:advisor->cct_create_case#0/_draw_/op[1].b[ptCount]",
+      "maxDelta": 3398.52,
+      "maxDeltaPath": "edge:crm_person_updated_dead->kerne_life#0/_draw_/op[2].b[10]"
     },
     {
       "id": "linux.i386-b106",
@@ -5330,12 +5325,7 @@
       "id": "2095_1",
       "path": "2095_1.dot",
       "size": 105083,
-      "verdict": "oracle-nondeterministic",
-      "nDraws": 2,
-      "diffCount": 1007,
-      "firstDiff": "edge:1573->1570#0/_ldraw_/op[2].T[1]",
-      "maxDelta": 159.02999999999997,
-      "maxDeltaPath": "node:1659/_draw_/op[1].p[0]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-root",
@@ -5446,18 +5436,17 @@
       "path": "2475_2.dot",
       "size": 641284,
       "verdict": "oracle-nondeterministic",
-      "nDraws": 3,
-      "diffCount": 331955,
+      "nDraws": 4,
+      "diffCount": 331540,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
-      "maxDelta": 18328.517,
+      "maxDelta": 18328.43,
       "maxDeltaPath": "edge:124_1578->124_1577#0/pos[0]"
     },
     {
       "id": "2621",
       "path": "2621.dot",
       "size": 721934,
-      "verdict": "oracle-nondeterministic",
-      "nDraws": 2,
+      "verdict": "diverged",
       "diffCount": 79629,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
       "maxDelta": 34127.5,
@@ -5468,11 +5457,11 @@
       "path": "2470.dot",
       "size": 734358,
       "verdict": "oracle-nondeterministic",
-      "nDraws": 2,
-      "diffCount": 20002,
+      "nDraws": 3,
+      "diffCount": 20426,
       "firstDiff": "edge:n100->n99#0/_draw_/op[1].b[ptCount]",
-      "maxDelta": 35107.37,
-      "maxDeltaPath": "cluster:cluster_364/bb[0]"
+      "maxDelta": 34258.43,
+      "maxDeltaPath": "edge:n73->n72#0/_hdraw_/op[3].P[0]"
     },
     {
       "id": "graphs-b100",
@@ -5492,16 +5481,21 @@
       "size": 1174310,
       "verdict": "oracle-nondeterministic",
       "nDraws": 4,
-      "diffCount": 38456,
+      "diffCount": 38317,
       "firstDiff": "edge:n1->n0#0/_draw_/op[1].b[ptCount]",
-      "maxDelta": 3188100,
-      "maxDeltaPath": "node:n158/pos[0]"
+      "maxDelta": 2797902.33,
+      "maxDeltaPath": "node:n158/_draw_/op[2].P[0]"
     },
     {
       "id": "2371",
       "path": "2371.dot",
       "size": 1705517,
-      "verdict": "conformant"
+      "verdict": "oracle-nondeterministic",
+      "nDraws": 4,
+      "diffCount": 376964,
+      "firstDiff": "[graph]/_draw_/op[2].P[3]",
+      "maxDelta": 8589000,
+      "maxDeltaPath": "edge:r180st->r180ed#0/pos[0]"
     },
     {
       "id": "2646",
@@ -5516,10 +5510,10 @@
       "size": 3136769,
       "verdict": "oracle-nondeterministic",
       "nDraws": 4,
-      "diffCount": 1047262,
+      "diffCount": 1022915,
       "firstDiff": "[graph]/_draw_/op[2].P[3]",
-      "maxDelta": 57149.3,
-      "maxDeltaPath": "edge:MV_40607-at-SITE_47-69818->ITEM_4132-at-SITE_47#0/pos[1]"
+      "maxDelta": 33334,
+      "maxDeltaPath": "edge:ITEM_4604-at-SITE_90->Deliver-ITEM_4604-from-SITE_90-4524#0/pos[5]"
     },
     {
       "id": "2475_1",

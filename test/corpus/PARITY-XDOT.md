@@ -11,33 +11,29 @@ canonicalized — see `test/golden/compare-xdot.ts`). Regenerate:
 
 ## Summary
 
-- **Oracle:** dot 16.1.1 · **corpus:** `~/git/graphviz/tests`
+- **Oracle:** dot 16.1.1 · **corpus:** `~/git/graphviz-16.1.1/tests`
 - **Walked (conformant SVG set):** 899
-- **xdot-conformant:** 893 (99.8%)
-- **diverged (tracked, will-fix):** 2 · **accepted (documented, won't-fix):** 0
+- **xdot-conformant:** 895 (100.0%)
+- **diverged (tracked, will-fix):** 0 · **accepted (documented, won't-fix):** 0
 - **port-error:** 0 · **timeout:** 0 · **oracle-error:** 4 (excluded from pass %)
 
-## xdot-conformant (893)
+## xdot-conformant (895)
 
 Port xdot is *conformant* with the oracle: every draw-op stream matches
 op-for-op with numeric payloads within ±0.01 and canonicalized
 colors/fonts/text equal.
 
-_Conformant ids (893) are omitted for brevity — the full roster is in
+_Conformant ids (895) are omitted for brevity — the full roster is in
 [xdot-parity.json](xdot-parity.json)._
 
-## Tracked diverged (2) — worst-first
+## Tracked diverged (0) — worst-first
 
 | id | size | maxΔ | #diffs | firstDiff |
 |---|---:|---:|---:|---|
-| [`1514`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1514.dot) | 168 | 0.00 | 1 | `edge:Act_21->Act_22#2[missing-object]` |
-| [`1581`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1581.dot) | 695 | 0.00 | 1 | `edge:Act_23->Act_24#2[missing-object]` |
 
 ### Diverged buckets — by (object · attr · shape)
 
-| bucket | count | examples | hypothesis |
-|---|---:|---|---|
-| `edge · <object> · missing-object` | 2 | `1514`, `1581` | the port omits this object entirely (e.g. graph background, cluster box) |
+_(none)_
 
 ## Accepted divergences (0) — documented, not chased
 

@@ -187,7 +187,10 @@ describe('registry errors: layout= attribute', () => {
     expect(e).toBeInstanceOf(RenderError);
     expect((e as RenderError).code).toBe('UNKNOWN_LAYOUT');
     expect((e as RenderError).type).toBe('semantic');
-    expect((e as RenderError).message).toBe('Layout type: "nope" not recognized');
+    expect((e as RenderError).message).toBe(
+      'Layout type: "nope" not recognized. Use one of: dot.',
+    );
+    expect((e as RenderError).context).toEqual({ layout: 'nope' });
   });
 
   it('a valid attribute still overrides the selected engine', () => {

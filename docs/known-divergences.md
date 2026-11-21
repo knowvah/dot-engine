@@ -14,7 +14,7 @@ treated as a defect, not accepted behavior.
 > "conformant" refer to that tolerance verdict. Full definition:
 > [Conformance](./conformance.md).
 
-Where the output *does* differ, it falls into exactly one of three classes:
+Where the output *does* differ, it falls into exactly one of four classes:
 
 1. **Accepted deltas** — differences we have investigated, understand to the root
    cause, and have **deliberately chosen not to make conformant**. Each is bounded,
@@ -25,6 +25,10 @@ Where the output *does* differ, it falls into exactly one of three classes:
    [`test/corpus/PARITY-dot.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-dot.md).
 3. **Non-goals** — intentional scope boundaries (formats and mechanics we never
    set out to reproduce).
+4. **Upstream fixes carried (U-series)** — an upstream defect in the oracle that
+   we have fixed and filed as a graphviz merge request. The oracle build carries
+   the fix as a patch, so the port and the oracle agree. See
+   [Upstream fixes carried](#u-series).
 
 The authoritative, continuously-updated records are
 [`PARITY-dot.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-dot.md)
@@ -1252,6 +1256,8 @@ stale. Evidence:
 
 **Why accepted.** `emit_background` frees `clrs[0]` (`lib/common/emit.c:1518`) while svg's fill state still points at it (`gvrender_resolve_color` keeps `color->u.string = name`, `lib/gvc/gvrender.c:193`), so native's output is freed memory, not a colour; it was `fill=""` in 8 of 8 measured runs. The port prints the colour C meant. No corpus input reaches this; `src/gvc/emit-xdot.test.ts` pins it.
 
+Fork issue: https://gitlab.com/sseely/graphviz/-/work_items/2 (branch `fix/background-freed-fill`).
+
 ### A14. One auxiliary edge per pair of sibling clusters (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
 
 **Affected:** `2475_1` on `dot`, a graph of 5,711 sibling clusters. Under V8's default heap (4,192 MB on the reference host) the port's render ends in `JavaScript heap out of memory`, so the dot survey gives this one id a larger heap (`PORT_HEAP_MB` in `test/corpus/survey.ts`).
@@ -1270,6 +1276,32 @@ stale. Evidence:
 Evidence: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ---
+
+## Upstream fixes carried (U-series) {#u-series}
+
+The conformance oracle is graphviz 16.1.1 plus the patches in
+`test/corpus/oracle-patches/`
+([ADR-0003](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0003-upstream-fix-forward.md)).
+A row joins the U-series only once its upstream merge request is filed
+(ADR-0003, D2); the patch is carried from then on, and the port follows the C
+fix. A fix that exists only as a fork branch or fork issue stays where it is
+(for example under A13 or part 10). A U-series entry is not an accepted delta:
+the port and the carried oracle agree, and the patch is dropped when the fix
+reaches a release we pin.
+
+| U# | Fix | Upstream (MR/issue) | Patch | Status | Drop when |
+|---|---|---|---|---|---|
+| U1 {#u1} | `canon` in `-Tplain` and `-Tplain-ext` no longer reads freed memory when it prints a label that needs no quoting ([#266](https://github.com/knowvah/dot-engine/issues/266)) | [graphviz!5152](https://gitlab.com/graphviz/graphviz/-/merge_requests/5152) / [graphviz#2876](https://gitlab.com/graphviz/graphviz/-/issues/2876) | `0001-common-canon-fix-copy-out-an-unquoted-string-before-.patch` | filed (MR open) | after the MR merges, at the next pin move |
+
+**U1 history.** Until patch 0001 the freed label was an accepted oracle bug
+(class A4, "canon() use-after-free"). `canon` (`lib/common/output.c`) released
+the `agstrdup`ed reference before it returned the string, so native printed an
+empty or garbage label for text such as `\N` followed by other text. The port
+printed the correct text. The carried oracle prints that text too. Of the 64
+accepted `plain` entries that rested on it, 57 are retired: every id on every
+engine except `graphs-b56`. The 7 `graphs-b56` entries stay, with a new reason:
+native writes that label's raw Latin-1 byte under `charset=latin1`, and the port
+prints UTF-8.
 
 ## Pending 16.1.1 ports {#pending-16-1-1-ports}
 
@@ -1454,6 +1486,7 @@ Each item states what native does and what the port does.
 
 - **`mode=hier dim=4` on two nodes.** Native writes past `directions`
   (`lib/neatogen/stress.c:514`) and, in some runs, aborts (exit 133 in 5 of 16 runs). The port renders.
+  Fork issue: https://gitlab.com/sseely/graphviz/-/work_items/3 (branch `fix/stress-directions-oob`).
 - **`mode=hier dim=3` with `len=0.001`.** Native dies by signal: 3 of 8 runs at
   19 nodes (SIGBUS) and 8 of 8 at 27 nodes (SIGBUS, SIGSEGV, SIGTRAP). The
   stack is `mfm_alloc` under `stress_majorization_kD_mkernel`, which shows heap
@@ -1470,9 +1503,12 @@ Each item states what native does and what the port does.
   (`lib/common/output.c:403-404`). The port's `json` and `json0` writers undo
   the proxies before writing, as C does; its `dot` and `xdot` writers read the
   `__0:` proxies, so for them the undo runs at the next layout, not at render.
+  Fork issue: https://gitlab.com/sseely/graphviz/-/work_items/4 (branch `fix/fdp-pointer-compare`).
 - **A `T` op in a graph `_draw_` or `_background`.** Native segfaults (exit
-  139): `op->span` is NULL outside neato `-n` (`xdotBB`,
-  `lib/neatogen/neatoinit.c:560`). The port draws no text for it.
+  139): `op->span` is NULL outside neato `-n`, where only `xdotBB` builds it,
+  and `emit_xdot` passes it to `gvrender_textspan` (`lib/common/emit.c:1386`,
+  shown under ASan). The port draws no text for it.
+  Fork issue: https://gitlab.com/sseely/graphviz/-/work_items/1 (branch `fix/xdotbb-null-span`).
 - **neato on a subgraph.** Native exited 139 laying out either subgraph of the one graph tested, a plain
   subgraph and a cluster. The port returns output.
 

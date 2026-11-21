@@ -13,15 +13,12 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 - **Surveyed:** 899
 - **Oracle:** dot 16.1.1
-- **pass:** 893 (99.8%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 0
+- **pass:** 895 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 4
 
-## Diverged (2)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`1514`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1514.dot) | 168 | 1 | `[extra] subgraph:<anon>/edge:Act_21->Act_22#0: port=declared native=<absent>` |
-| [`1581`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1581.dot) | 695 | 1 | `[extra] subgraph:<anon>/edge:Act_23->Act_24#0: port=declared native=<absent>` |
+_(none)_
 
 ## Accepted (0) — documented, not chased
 
@@ -36,5 +33,5 @@ _(none)_
 | [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) |  |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) |  |
 
-_Passing ids (893) are omitted for brevity — the full roster is in
+_Passing ids (895) are omitted for brevity — the full roster is in
 `dot-parity-dot.json`._

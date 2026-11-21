@@ -12,10 +12,10 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 898 (generated 2026-11-13T11:53:41.163Z)
+- **Surveyed:** 898 (generated 2026-11-21T01:18:29.269Z)
 - **Oracle:** dot 16.1.1
-- **pass:** 866 (98.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 16
-- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 3 (excluded from pass %) · **oracle-nondeterministic:** 11 (native output varies run to run; excluded from pass %, not a regression)
+- **pass:** 863 (97.8%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 16
+- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 3 (excluded from pass %) · **oracle-nondeterministic:** 13 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (1) — documented, not chased
 
@@ -38,9 +38,11 @@ outright leaves the class silently on the next report regen.
 
 - **A1-drift**: **16** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 721934 | 79629 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 26408.03 vs 22950.76` |
 
 ## Errors and timeouts (4)
 
@@ -52,5 +54,5 @@ _(none)_
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | port-error | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
 
 **oracle errors:** 3 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (866) are omitted for brevity — the full roster is in
+_Passing ids (863) are omitted for brevity — the full roster is in
 `parity-fdp.json`._

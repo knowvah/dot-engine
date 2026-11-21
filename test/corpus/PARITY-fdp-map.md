@@ -13,14 +13,13 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 - **Surveyed:** 898
 - **Oracle:** dot 16.1.1
-- **pass:** 885 (99.2%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 4
-- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 6
+- **pass:** 887 (99.3%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 4
+- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 5
 
-## Diverged (2)
+## Diverged (1)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | 782464 | 5837 | `imap/line[1].coords[0]` |
 | [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 721934 | 5044 | `area[0].coords[0]` |
 
 ## Accepted (4) — documented, not chased
@@ -32,17 +31,16 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`linux.x86-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_circo.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`nshare-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_circo.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 
-## Errors and timeouts (7)
+## Errors and timeouts (6)
 
 | id | message |
 |---|---|
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
 | [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | Warning: Two clusters named %9 - the second will be ignored |
-| [`2620`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2620.dot) | Warning: Warning: no hard-coded metrics for 'Times-Bold'.  Falling back to 'Times' metrics |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle exit null |
 | [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle exit null |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (885) are omitted for brevity — the full roster is in
+_Passing ids (887) are omitted for brevity — the full roster is in
 `map-parity-fdp.json`._

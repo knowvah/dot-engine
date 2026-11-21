@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-11-12T23:52:10.858Z",
+  "generatedAt": "2026-11-21T02:51:20.032Z",
   "generatedWith": "test/corpus/xdot-walk.ts --survey",
   "oracleVersion": "dot 16.1.1",
-  "corpusRoot": "~/git/graphviz/tests",
+  "corpusRoot": "~/git/graphviz-16.1.1/tests",
   "total": 899,
   "counts": {
-    "conformant": 893,
-    "diverged": 2,
+    "conformant": 895,
+    "diverged": 0,
     "accepted": 0,
     "port-error": 0,
     "oracle-error": 4,
@@ -1361,9 +1361,7 @@
       "id": "1514",
       "path": "1514.dot",
       "size": 168,
-      "verdict": "diverged",
-      "diffCount": 1,
-      "firstDiff": "edge:Act_21->Act_22#2[missing-object]"
+      "verdict": "conformant"
     },
     {
       "id": "2436",
@@ -3193,9 +3191,7 @@
       "id": "1581",
       "path": "1581.dot",
       "size": 695,
-      "verdict": "diverged",
-      "diffCount": 1,
-      "firstDiff": "edge:Act_23->Act_24#2[missing-object]"
+      "verdict": "conformant"
     },
     {
       "id": "share-structs",

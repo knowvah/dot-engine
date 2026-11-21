@@ -13,16 +13,14 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 - **Surveyed:** 898
 - **Oracle:** dot 16.1.1
-- **pass:** 610 (68.0%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 285
+- **pass:** 610 (68.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 286
 - **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 1
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | 9735186 | 4502193 | `[graph]/_draw_/op[2].P[3]` |
+_(none)_
 
-## Accepted (285) — documented, not chased
+## Accepted (286) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
@@ -56,6 +54,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`2413_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_2.dot) | 2655 | `[graph]/_draw_/op[2].P[3]` | A1 iterative-solver drift (class) — membership computed from `attribution-sfdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`2470`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2470.dot) | 20258 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 728 | `edge:n262->n264#0/_draw_/op[1].b[0]` | A1 iterative-solver drift (class) — membership computed from `attribution-sfdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
+| [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | 4502193 | `[graph]/_draw_/op[2].P[3]` | A1 iterative-solver drift (class) — membership computed from `attribution-sfdp.json`: injecting the oracle's pre-routing node positions makes the port reproduce the oracle with zero diffs, so the residual is the solver's fp-chaotic positions alone. See known-divergences.md#a1-drift-iterative-engines. |
 | [`2475_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_2.dot) | 309794 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2476`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2476.dot) | 669 | `[graph]/_draw_/op[2].P[3]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2521_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2521_1.dot) | 60 | `edge:TL 1 event 2->TL 1 event 3#0/_draw_/op[1].b[5]` | layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |

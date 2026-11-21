@@ -14,7 +14,7 @@ numeric-tolerant — see `test/golden/compare-json.ts`). Regenerate:
 
 ## Summary
 
-- **Oracle:** dot 16.1.1 (`-Tjson`) · **corpus:** `~/git/graphviz/tests`
+- **Oracle:** dot 16.1.1 (`-Tjson`) · **corpus:** `~/git/graphviz-16.1.1/tests`
 - **Walked (conformant SVG set):** 899
 - **json-conformant:** 892 (99.7%)
 - **diverged (tracked, will-fix):** 1 · **accepted (documented, won't-fix):** 2

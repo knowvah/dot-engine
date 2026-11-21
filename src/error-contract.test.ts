@@ -199,3 +199,54 @@ describe('graph objects reach render/getDrawOps unchanged', () => {
     expect(getDrawOps(parse(VALID)).length).toBeGreaterThan(0);
   });
 });
+
+// ── Mirror pilot sites (structured, contextual throws) ──────────────────────
+
+const OVERFLOW_SUM_DOT = 'digraph{a->b[weight=2147483647]; a->c[weight=2147483647]}';
+const OVERFLOW_VIRTUAL_DOT = 'digraph{a->b->c->d; a->d[weight=600000000]}';
+const AGERR_SUM = 'Error: overflow when computing edge weight sum';
+const AGERR_VIRTUAL = 'Error: overflow when calculating virtual weight of edge';
+const AGERR_LAYOUT =
+  'Error: Layout type: "nope" not recognized. Use one of: circo dot fdp neato osage patchwork sfdp twopi';
+
+describe('mirror pilot sites via tryRenderSvg', () => {
+  it('x_cutval overflow: RENDER_ERROR with node context and the C agerr line', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const e = tryRenderSvg(OVERFLOW_SUM_DOT, 'dot').errors?.[0];
+    expect(e?.code).toBe('RENDER_ERROR');
+    expect(e?.type).toBe('render');
+    expect(e?.message).toBe(
+      'Edge weights at node "b" sum past the 32-bit integer limit; lower the weight attribute values.',
+    );
+    expect(e?.context).toEqual({ node: 'b' });
+    expect(err.mock.calls).toEqual([[AGERR_SUM]]);
+  });
+
+  it('virtual_weight overflow: RENDER_ERROR with edge context and the C agerr line', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const e = tryRenderSvg(OVERFLOW_VIRTUAL_DOT, 'dot').errors?.[0];
+    expect(e?.code).toBe('RENDER_ERROR');
+    expect(e?.message).toBe(
+      'Edge "a->d" has a weight too large for the layout (weight x 4 exceeds the 32-bit integer limit); lower its weight attribute.',
+    );
+    expect(e?.context).toEqual({ edge: 'a->d' });
+    expect(err.mock.calls).toEqual([[AGERR_VIRTUAL]]);
+  });
+
+  it('gvLayoutJobs: UNKNOWN_LAYOUT with layout context and the C agerr line', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const e = tryRenderSvg(UNKNOWN_LAYOUT, 'dot').errors?.[0];
+    expect(e?.code).toBe('UNKNOWN_LAYOUT');
+    expect(e?.type).toBe('semantic');
+    expect(e?.message).toBe(
+      'Layout type: "nope" not recognized. Use one of: circo dot fdp neato osage patchwork sfdp twopi.',
+    );
+    expect(e?.context).toEqual({ layout: 'nope' });
+    expect(err.mock.calls).toEqual([[AGERR_LAYOUT]]);
+  });
+
+  it('errors without context carry no context key', () => {
+    const e = tryRenderSvg('digraph{', 'dot').errors?.[0];
+    expect(e !== undefined && 'context' in e).toBe(false);
+  });
+});

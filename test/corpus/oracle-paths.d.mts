@@ -7,4 +7,8 @@ export const ORACLE_CORPUS_ROOT: string;
 export const ORACLE_DOT_BIN: string;
 export const ORACLE_GVBINDIR: string;
 export const ORACLE_GVBINDIR_ALL: string;
+export const ORACLE_PRISTINE_GRAPHVIZ_BUILD: string;
+export const ORACLE_PRISTINE_DOT_BIN: string;
+export const ORACLE_PRISTINE_GVBINDIR: string;
+export const ORACLE_PRISTINE_GVBINDIR_ALL: string;
 export function defaultGvbindir(engine: string): string;

@@ -3,6 +3,8 @@
 import type { Node } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
 import type { EdgeList } from '../../model/nodeInfo.js';
+import { agerrorf } from '../../common/agerr.js';
+import { RenderError } from '../../errors.js';
 import { seq, isTreeEdge } from './ns-core.js';
 import type { NsCtx } from './ns-core.js';
 
@@ -77,15 +79,49 @@ export function xVal(e: Edge, v: Node, dir: number): number {
   return d < 0 ? -rv : rv;
 }
 
+const INT_MAX = 2147483647;
+const INT_MIN = -2147483648;
+
+/**
+ * `sadd_overflow` as x_cutval uses it: add in int32 range, report overflow.
+ * @see lib/common/ns.c:x_cutval
+ */
+function sumOverflows(sum: number, add: number): boolean {
+  const s = sum + add;
+  return s > INT_MAX || s < INT_MIN;
+}
+
+/**
+ * C `agerrorf` + `graphviz_exit(EXIT_FAILURE)`: the stderr line verbatim,
+ * then the structured throw.
+ * @see lib/common/ns.c:x_cutval
+ */
+function cutvalOverflow(v: Node): RenderError {
+  agerrorf('overflow when computing edge weight sum');
+  return new RenderError(
+    `Edge weights at node "${v.name}" sum past the 32-bit integer limit; lower the weight attribute values.`,
+    'RENDER_ERROR',
+    { context: { node: v.name } },
+  );
+}
+
+/** Add one edge list's x_val terms to `sum`, in C order. @see x_cutval */
+function sumXVals(list: EdgeList | undefined, v: Node, dir: number, sum: number): number {
+  if (!list) return sum;
+  for (let i = 0; i < list.size; i++) {
+    const add = xVal(list.list[i], v, dir);
+    if (sumOverflows(sum, add)) throw cutvalOverflow(v);
+    sum += add;
+  }
+  return sum;
+}
+
 /** @see lib/common/ns.c:x_cutval */
 export function xCutval(f: Edge): void {
   const v = f.tail.info.par === f ? f.tail : f.head;
   const dir = f.tail.info.par === f ? 1 : -1;
-  let sum = 0;
-  const out = v.info.out;
-  if (out) for (let i = 0; i < out.size; i++) sum += xVal(out.list[i], v, dir);
-  const inp = v.info.in;
-  if (inp) for (let i = 0; i < inp.size; i++) sum += xVal(inp.list[i], v, dir);
+  let sum = sumXVals(v.info.out, v, dir, 0);
+  sum = sumXVals(v.info.in, v, dir, sum);
   f.info.cutvalue = sum;
 }
 

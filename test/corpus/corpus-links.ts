@@ -37,7 +37,7 @@ export function corpusRootMd(root: string): string {
 }
 
 /** Escape a string for literal (non-metacharacter) use inside a `RegExp`. */
-function escapeRegExp(s: string): string {
+export function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 

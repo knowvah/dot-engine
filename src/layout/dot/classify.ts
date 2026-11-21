@@ -17,6 +17,8 @@ import type { Graph } from '../../model/graph.js';
 import type { Node } from '../../model/node.js';
 import { buildOutEdgeIndex } from '../../model/node.js';
 import type { Edge } from '../../model/edge.js';
+import { agerrorf } from '../../common/agerr.js';
+import { RenderError } from '../../errors.js';
 import {
   VIRTUAL,
   virtualNode, virtualEdge, fastNode, flatEdge,
@@ -68,6 +70,7 @@ export function nonconstraintEdge(e: Edge): boolean {
 const WNODE_ORDINARY = 0;
 const WNODE_SINGLETON = 1;
 const WNODE_VIRTUAL = 2;
+const INT_MAX = 2147483647;
 const CLASSIFY_WEIGHT_TABLE = [[1, 1, 1], [1, 2, 2], [1, 2, 4]];
 
 function epClass(n: Node): number {
@@ -79,7 +82,26 @@ function epClass(n: Node): number {
 /** @see lib/dotgen/mincross.c:virtual_weight (inlined to avoid cycle) */
 function applyVirtualWeight(e: Edge): void {
   const t = CLASSIFY_WEIGHT_TABLE[epClass(e.tail)][epClass(e.head)];
-  e.info.weight = (e.info.weight ?? 1) * t;
+  const w = e.info.weight ?? 1;
+  // C: INT_MAX / t < ED_weight(e), int division, before the multiply.
+  if (Math.trunc(INT_MAX / t) < w) throw virtualWeightOverflow(e, t);
+  e.info.weight = w * t;
+}
+
+/**
+ * C `agerrorf` + `graphviz_exit(EXIT_FAILURE)`: the stderr line verbatim,
+ * then the structured throw naming the original edge.
+ * @see lib/dotgen/mincross.c:virtual_weight
+ */
+function virtualWeightOverflow(e: Edge, t: number): RenderError {
+  agerrorf('overflow when calculating virtual weight of edge');
+  const o = e.info.to_orig ?? e;
+  const name = `${o.tail.name}->${o.head.name}`;
+  return new RenderError(
+    `Edge "${name}" has a weight too large for the layout (weight x ${t} exceeds the 32-bit integer limit); lower its weight attribute.`,
+    'RENDER_ERROR',
+    { context: { edge: name } },
+  );
 }
 
 // ---------------------------------------------------------------------------

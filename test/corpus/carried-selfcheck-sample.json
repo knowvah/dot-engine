@@ -1,0 +1,335 @@
+{
+  "rule": "Deterministic. Candidates: corpus-manifest.json ids with status=applicable, id not in the nondeterminism/crasher/Latin1 denylist (graphs-Latin1, graphs-Symbol, graphs-b34, graphs-b56, graphs-b60, share-Latin1, any id containing Latin1, fdp 1652/1879/2108/2470/2621/graphs-b143, sfdp neatosplines, twopi newarrows/arrows), input file <= 15000 bytes, not in engine-exclusions.json for that engine; sorted by id (codepoint order). Pass 1: every 12th candidate (index 0,12,24,...), n-th pick gets engine engines[n%8] and format formats[n%6] (engines dot neato fdp sfdp circo twopi osage patchwork; formats svg xdot plain json map dot). Top-up from index 1 step 12 (then 7 step 12) assigning the first engine/format below 5 uses, then fill to 60. Every kept (id,engine,format) was rendered twice on pristine 16.1.1 (-K<engine> -T<format>, GVBINDIR dot-only for dot else all) and kept only if both runs are byte-equal in stdout, stderr and exit status, with no signal/timeout and exit status <= 1. Entries sorted by id, engine, format. Guard (added 2026-11-19): 2470, 2471 and graphs-b81 under dot as plain and svg, inputs with quoted or HTML strings longer than 2048 bytes, which catch a flex scanner-buffer change (flex 2.6.16 sets YY_BUF_SIZE to 2048).",
+  "samples": [
+    {
+      "id": "121",
+      "engine": "dot",
+      "format": "svg"
+    },
+    {
+      "id": "1411",
+      "engine": "neato",
+      "format": "xdot"
+    },
+    {
+      "id": "165",
+      "engine": "sfdp",
+      "format": "json"
+    },
+    {
+      "id": "1879-2",
+      "engine": "circo",
+      "format": "map"
+    },
+    {
+      "id": "2095",
+      "engine": "twopi",
+      "format": "dot"
+    },
+    {
+      "id": "2242",
+      "engine": "osage",
+      "format": "svg"
+    },
+    {
+      "id": "2368_1",
+      "engine": "patchwork",
+      "format": "xdot"
+    },
+    {
+      "id": "2458",
+      "engine": "dot",
+      "format": "plain"
+    },
+    {
+      "id": "2470",
+      "engine": "dot",
+      "format": "plain"
+    },
+    {
+      "id": "2470",
+      "engine": "dot",
+      "format": "svg"
+    },
+    {
+      "id": "2471",
+      "engine": "dot",
+      "format": "plain"
+    },
+    {
+      "id": "2471",
+      "engine": "dot",
+      "format": "svg"
+    },
+    {
+      "id": "2563",
+      "engine": "neato",
+      "format": "json"
+    },
+    {
+      "id": "2636",
+      "engine": "fdp",
+      "format": "map"
+    },
+    {
+      "id": "2727",
+      "engine": "sfdp",
+      "format": "dot"
+    },
+    {
+      "id": "2768_2",
+      "engine": "circo",
+      "format": "svg"
+    },
+    {
+      "id": "2852",
+      "engine": "osage",
+      "format": "plain"
+    },
+    {
+      "id": "698066",
+      "engine": "patchwork",
+      "format": "json"
+    },
+    {
+      "id": "graphs-NaN",
+      "engine": "dot",
+      "format": "map"
+    },
+    {
+      "id": "graphs-awilliams",
+      "engine": "neato",
+      "format": "dot"
+    },
+    {
+      "id": "graphs-b33",
+      "engine": "fdp",
+      "format": "svg"
+    },
+    {
+      "id": "graphs-b73a",
+      "engine": "sfdp",
+      "format": "xdot"
+    },
+    {
+      "id": "graphs-b81",
+      "engine": "dot",
+      "format": "plain"
+    },
+    {
+      "id": "graphs-b81",
+      "engine": "dot",
+      "format": "svg"
+    },
+    {
+      "id": "graphs-biglabel",
+      "engine": "circo",
+      "format": "plain"
+    },
+    {
+      "id": "graphs-color",
+      "engine": "twopi",
+      "format": "json"
+    },
+    {
+      "id": "graphs-edgeclip",
+      "engine": "osage",
+      "format": "map"
+    },
+    {
+      "id": "graphs-grdlinear_node",
+      "engine": "patchwork",
+      "format": "dot"
+    },
+    {
+      "id": "graphs-inv_val",
+      "engine": "dot",
+      "format": "svg"
+    },
+    {
+      "id": "graphs-labelclust-ftc",
+      "engine": "neato",
+      "format": "xdot"
+    },
+    {
+      "id": "graphs-labelclust-ntc",
+      "engine": "fdp",
+      "format": "plain"
+    },
+    {
+      "id": "graphs-labelroot-ftc",
+      "engine": "sfdp",
+      "format": "json"
+    },
+    {
+      "id": "graphs-labelroot-ntc",
+      "engine": "circo",
+      "format": "map"
+    },
+    {
+      "id": "graphs-mike",
+      "engine": "twopi",
+      "format": "dot"
+    },
+    {
+      "id": "graphs-p",
+      "engine": "osage",
+      "format": "svg"
+    },
+    {
+      "id": "graphs-ps",
+      "engine": "patchwork",
+      "format": "xdot"
+    },
+    {
+      "id": "graphs-sb_box",
+      "engine": "dot",
+      "format": "plain"
+    },
+    {
+      "id": "graphs-sq_rules",
+      "engine": "neato",
+      "format": "json"
+    },
+    {
+      "id": "graphs-train11",
+      "engine": "fdp",
+      "format": "map"
+    },
+    {
+      "id": "graphs-val_nul",
+      "engine": "sfdp",
+      "format": "dot"
+    },
+    {
+      "id": "linux.i386-trivial_dot",
+      "engine": "circo",
+      "format": "svg"
+    },
+    {
+      "id": "linux.x86-ordering_dot",
+      "engine": "twopi",
+      "format": "xdot"
+    },
+    {
+      "id": "linux.x86-record_dot",
+      "engine": "osage",
+      "format": "plain"
+    },
+    {
+      "id": "macosx-radius_dot",
+      "engine": "patchwork",
+      "format": "json"
+    },
+    {
+      "id": "nshare-html_dot",
+      "engine": "dot",
+      "format": "map"
+    },
+    {
+      "id": "nshare-radius_dot",
+      "engine": "neato",
+      "format": "dot"
+    },
+    {
+      "id": "regression_tests-shapes-reference-Mdiamond",
+      "engine": "fdp",
+      "format": "svg"
+    },
+    {
+      "id": "regression_tests-shapes-reference-egg",
+      "engine": "sfdp",
+      "format": "xdot"
+    },
+    {
+      "id": "regression_tests-shapes-reference-none",
+      "engine": "circo",
+      "format": "plain"
+    },
+    {
+      "id": "regression_tests-shapes-reference-promoter",
+      "engine": "twopi",
+      "format": "json"
+    },
+    {
+      "id": "regression_tests-shapes-reference-square",
+      "engine": "osage",
+      "format": "map"
+    },
+    {
+      "id": "share-KW91",
+      "engine": "patchwork",
+      "format": "dot"
+    },
+    {
+      "id": "share-clust1",
+      "engine": "dot",
+      "format": "svg"
+    },
+    {
+      "id": "share-hashtable",
+      "engine": "neato",
+      "format": "xdot"
+    },
+    {
+      "id": "share-labelclust-ftd",
+      "engine": "fdp",
+      "format": "plain"
+    },
+    {
+      "id": "share-labelclust-ntd",
+      "engine": "sfdp",
+      "format": "json"
+    },
+    {
+      "id": "share-labelroot-ftd",
+      "engine": "circo",
+      "format": "map"
+    },
+    {
+      "id": "share-labelroot-ntd",
+      "engine": "twopi",
+      "format": "dot"
+    },
+    {
+      "id": "share-polypoly",
+      "engine": "osage",
+      "format": "svg"
+    },
+    {
+      "id": "share-triedds",
+      "engine": "patchwork",
+      "format": "xdot"
+    },
+    {
+      "id": "tree-contrib-sdlshapes-sdlshapes",
+      "engine": "dot",
+      "format": "plain"
+    },
+    {
+      "id": "tree-doc-dotguide-constraint",
+      "engine": "neato",
+      "format": "json"
+    },
+    {
+      "id": "tree-doc-dotguide-graph2",
+      "engine": "fdp",
+      "format": "map"
+    },
+    {
+      "id": "tree-doc-dotguide-no_arrow",
+      "engine": "sfdp",
+      "format": "dot"
+    },
+    {
+      "id": "tree-doc-dotguide-recordex",
+      "engine": "circo",
+      "format": "svg"
+    },
+    {
+      "id": "tree-doc-infosrc-fill",
+      "engine": "twopi",
+      "format": "xdot"
+    }
+  ]
+}

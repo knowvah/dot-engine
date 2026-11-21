@@ -12,10 +12,10 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 898 (generated 2026-11-13T15:21:11.422Z)
+- **Surveyed:** 898 (generated 2026-11-21T04:56:58.233Z)
 - **Oracle:** dot 16.1.1
-- **pass:** 612 (68.2%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 280
-- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %) · **oracle-nondeterministic:** 0 (native output varies run to run; excluded from pass %, not a regression)
+- **pass:** 611 (68.1%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6 · **accepted (A1-drift class):** 280
+- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 0 (excluded from pass %) · **oracle-nondeterministic:** 1 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (6) — documented, not chased
 
@@ -51,5 +51,5 @@ _(none)_
 
 _(none)_
 
-_Passing ids (612) are omitted for brevity — the full roster is in
+_Passing ids (611) are omitted for brevity — the full roster is in
 `parity-sfdp.json`._

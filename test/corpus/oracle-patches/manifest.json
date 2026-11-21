@@ -1,0 +1,13 @@
+{
+  "patches": [
+    {
+      "patch": "0001-common-canon-fix-copy-out-an-unquoted-string-before-.patch",
+      "slug": "plain-canon-use-after-free",
+      "forkBranch": "carried/plain-canon-use-after-free",
+      "upstreamMr": 5152,
+      "upstreamIssue": 2876,
+      "status": "filed",
+      "dotEngineIssue": 266
+    }
+  ]
+}

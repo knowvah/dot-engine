@@ -25,17 +25,27 @@ When in doubt, read the C. Still in doubt: keep the C behavior and document the
 question. On any divergence, instrument the C and dump actual values before
 hypothesizing — the default stance is "my port differs — find where."
 
+Carve-out ([ADR-0003](docs/adr/0003-upstream-fix-forward.md)): only a fix whose
+upstream MR has been filed, and which is carried in
+`test/corpus/oracle-patches/`, may change port behaviour. Until then keep the
+C behavior. The maintainer reads every line and files every MR.
+
 ## Verification
 
-- Oracle = **graphviz 16.1.1**, the native build binary
-  `~/git/graphviz-16.1.1/build/cmd/dot/dot` (branch `oracle/16.1.1`) with
-  `GVBINDIR=/tmp/ghl1611` for dot and `/tmp/ghl1611-all` for the other
-  engines (never WASM; homebrew dot is only a cross-check, never the oracle —
-  ABI mismatch). Locations live in `test/corpus/oracle-paths.mjs`. See
-  `docs/adr/0002-graphviz-16.1.1-oracle.md`. The 16.1.0 build
-  `~/git/graphviz/build/cmd/dot/dot` (`GVBINDIR=/tmp/ghl`) is kept only
-  for bisecting a 16.1.0 → 16.1.1 change (the move is complete, #166); the
-  15.x reference build is
+- Oracle = the **carried build**: graphviz 16.1.1 plus
+  `test/corpus/oracle-patches/*.patch`, binary
+  `/Users/scottseely/git/sseely/graphviz-carried/build/cmd/dot/dot` with
+  `GVBINDIR=/tmp/ghl1611-carried` for dot and `/tmp/ghl1611-carried-all` for
+  the other engines, built by `test/corpus/build-carried-oracle.sh` (never
+  WASM; homebrew dot is only a cross-check, never the oracle — ABI mismatch).
+  Locations live in `test/corpus/oracle-paths.mjs`. See
+  `docs/adr/0003-upstream-fix-forward.md`, which replaces the "pristine
+  16.1.1" clause of `docs/adr/0002-graphviz-16.1.1-oracle.md`. Pristine
+  16.1.1, `~/git/graphviz-16.1.1/build/cmd/dot/dot` (branch `oracle/16.1.1`,
+  `GVBINDIR=/tmp/ghl1611` and `/tmp/ghl1611-all`), is the bisect build for a
+  suspected patch effect. The 16.1.0 build `~/git/graphviz/build/cmd/dot/dot`
+  (`GVBINDIR=/tmp/ghl`) is kept only for bisecting a 16.1.0 → 16.1.1 change
+  (the move is complete, #166); the 15.x reference build is
   `~/git/graphviz-15` with `GVBINDIR=/tmp/ghl15`.
 - Conformance bar = xdot/SVG comparison at 0.01 tolerance (deterministic
   engines). Byte-exactness is not required; structural match is progress.

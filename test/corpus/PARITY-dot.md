@@ -16,7 +16,7 @@ PARITY-dot.md; the cross-engine [PARITY.md](./PARITY.md) summary comes from
 - **conformant\*:** 899 (95.6%) · structural-match: 14 → 913/940 structurally equal (97.1%)
 - **Accepted deltas (documented, won't-fix):** 4 · **Tracked gaps (unaccepted, will-fix):** 35 → of 39 non-conformant graphs
 - **errored:** 2 · **timeout:** 0 · **oracle-error:** 10 (excluded from pass %)
-- **Quarantined (not surveyed, from corpus-manifest.json):** oracle-crash 3, not-a-layout-test 2, malformed 6, engine-deferred 6, multi-graph 3, perf 1
+- **Quarantined (not surveyed, from corpus-manifest.json):** oracle-crash 6, not-a-layout-test 2, malformed 6, engine-deferred 7, multi-graph 3, perf 1
 
 \* **conformant** is a *deterministic-tolerance* verdict, not literal byte equality: numeric coordinates/paths agree within ±0.01 and all non-numeric content (tags, colors, text) is exactly equal (`compareSvg(…, 'deterministic')`). Full definition: [docs/conformance.md](../../docs/conformance.md).
 
