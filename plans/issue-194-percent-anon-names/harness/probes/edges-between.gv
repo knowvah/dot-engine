@@ -1,0 +1,1 @@
+digraph "%r" { a -> b; subgraph "%s" { c } d -> e; subgraph { f } }

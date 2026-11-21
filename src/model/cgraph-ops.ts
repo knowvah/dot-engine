@@ -17,6 +17,7 @@
 import type { Graph } from './graph.js';
 import { Graph as GraphClass } from './graph.js';
 import { Node } from './node.js';
+import { htmlValueContent, isHtmlValue } from '../common/html-string.js';
 
 /**
  * The C anonymous-name prefix LOCALNAMEPREFIX ('%'); an object with no
@@ -25,6 +26,16 @@ import { Node } from './node.js';
  * @see lib/cgraph/id.c:aginternalmapprint
  */
 export const LOCALNAMEPREFIX = '%';
+
+/**
+ * True when cgraph maps `name` as a local (anonymous) name: its text, html or
+ * not, starts with LOCALNAMEPREFIX.
+ * @see lib/cgraph/id.c:agmapnametoid (`str[0] != LOCALNAMEPREFIX`)
+ */
+export function isLocalName(name: string): boolean {
+  const text = isHtmlValue(name) ? htmlValueContent(name) : name;
+  return text.startsWith(LOCALNAMEPREFIX);
+}
 
 /**
  * cgraph's id for the first anonymous object, which an anonymous root graph is

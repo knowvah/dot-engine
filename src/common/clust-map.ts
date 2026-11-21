@@ -19,7 +19,8 @@ import { agwarningf } from './agerr.js';
  * stores that pointer as the key, so once an anonymous cluster is in the map,
  * every later anonymous cluster's dtmatch finds it. A cluster is anonymous
  * here when its name starts with LOCALNAMEPREFIX, the test the dot writer
- * uses; a source name `"%x"` is stored by cgraph and not aliased in C (#194).
+ * uses. A parsed `"%x"` is anonymous too: the parser gives it a `%<id>` name,
+ * as endgraph's aginternalmapclearlocalnames leaves agnameof the static buffer.
  * @see lib/cgraph/id.c:agnameof (static buf, 161-164)
  */
 interface ClustMapState { map: Map<string, Graph>; anonKeyed: boolean }

@@ -8,6 +8,8 @@
   written would have printed `digraph "%foo" {`. The writer now tests `agNameOf(g)` for the prefix,
   for root and subgraph alike, which is `write_hdr`'s own test. The parser still stores `%foo` as the
   name (cmapx `<map id="%foo">`, json names): #194.
+  Since #194 (2026-11-21) the parser half is fixed: a `%` graph name takes cgraph's anonymous id
+  and is stored as `%<id>` (a root as `''`, `anonymous`); see `.agent-notes/issue-194.md`.
 - **Impact**: an anonymity test in a writer is "`agnameof` starts with `%`", never "name is empty"
   and never the `anonymous` flag alone. No corpus input has a `%`-prefixed graph name, so only
   `harness/root-percent.gv` pins it.
