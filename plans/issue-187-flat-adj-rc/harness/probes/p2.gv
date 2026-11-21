@@ -1,0 +1,1 @@
+digraph { {rank=same; a [width=40000000]; b [width=40000000]} a:s -> b:n }

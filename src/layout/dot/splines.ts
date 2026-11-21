@@ -481,9 +481,7 @@ function curvedTop(g: Graph): void {
   }
 }
 
-/**
- * Post-loop: labels, normalize, port labels. @see c:422-471
- */
+/** Post-loop: labels, normalize, port labels. @see dotsplines.c:430-481 */
 function finalizeSplines(g: Graph, normalize: boolean): void {
   placeRegularEdgeLabels(g);
   if (normalize) edgeNormalize(g);
@@ -501,10 +499,9 @@ export function dotSplines_(g: Graph, normalize: boolean): number {
   markLowclusters(g);
   // C computes `spline_info_t sd` fresh here, once per call (dotsplines.c:248,
   // 270-282), then threads it through every routing helper for this pass.
-  // Force the next getSplineBounds(g) access to recompute so this pass sees
-  // a frozen snapshot immune to recoverSlack/resizeVn vnode mutations from
-  // edges routed earlier in THIS SAME pass. @see edge-route-rank.ts:getSplineBounds
-  beginRoutingPass(g);
+  // Force the next getSplineBounds(g) to recompute: a frozen snapshot, immune to
+  // the vnode moves (recoverSlack/resizeVn) of edges routed earlier in THIS pass.
+  beginRoutingPass(g); // @see edge-route-rank.ts:getSplineBounds
   const edges: Edge[] = [];
   collectRankEdges(g, edges);
   // C sorts with libc qsort (LIST_SORT → gv_list_sort_ → qsort), which is
@@ -518,7 +515,10 @@ export function dotSplines_(g: Graph, normalize: boolean): number {
   // C places line-edge labels BEFORE the routing loop (dotsplines.c:334-340) so
   // the line router reads final label positions; lone edges now route in-loop.
   if (et === EDGETYPE_LINE) placeRegularEdgeLabels(g);
-  const runOrigs = routeEdgeGroups(g, edges, g.info.nodesep ?? 18, et);
+  const { rc, runOrigs } = routeEdgeGroups(g, edges, g.info.nodesep ?? 18, et);
+  // A failed make_flat_edge (#187): C returns its rc here, skipping vnode labels,
+  // edge_normalize, port labels, State, EdgeLabelsDone. @see dotsplines.c:418-481
+  if (rc !== 0) return rc;
   if (normalize) normalizeRunOrigs(runOrigs);
   finalizeSplines(g, normalize);
   return 0;

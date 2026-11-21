@@ -92,13 +92,30 @@ export function dedupByOrig(group: Edge[]): Edge[] {
 }
 
 /**
+ * Route one flat group HERE at its edgecmp position, as C's make_flat_edge call
+ * does, so it reads vnodes before later regular edges' recover_slack moves
+ * them. Each member carries the run (C's `edges + ind`, `cnt`): the
+ * flat-adjacent router takes its group from it, in this order, and the other
+ * flat routers gather their own group; all skip routed members. Returns the
+ * first non-zero rc at once, as C returns make_flat_edge's (issue #187).
+ * @see lib/dotgen/dotsplines.c:dot_splines_ (418-424)
+ */
+function routeFlatGroup(g: Graph, uniq: Edge[]): number {
+  for (const e of uniq) {
+    const rc = routeLoneEdge(e, g, uniq);
+    if (rc !== 0) return rc;
+  }
+  return 0;
+}
+
+/**
  * Dispatch one edgecmp group: self-loop → routeSelfEdgeGroup; cross-rank cnt>1 →
  * routeParallelEdgeGroup (Multisep offsets); cross-rank cnt==1 → per-run or
  * whole-chain lone routing in-place (C order); same-rank flat → routed in place
- * at its edgecmp position.
+ * at its edgecmp position. Returns 0, or a failed flat group's rc.
  * @see lib/dotgen/dotsplines.c:367-419
  */
-function dispatchEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): void {
+function dispatchEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): number {
   const e0 = group[0];
   if (e0.tail === e0.head) {
     routeSelfEdgeGroup(g, group, group.length, ctx.multisep, buildDotSinfo());
@@ -110,19 +127,10 @@ function dispatchEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): void {
       const l = e.info.label as TextlabelT | undefined;
       if (l) updateBB(g, l);
     }
-    return;
+    return 0;
   }
   const uniq = dedupByOrig(group);
-  // Flat group: route HERE at its edgecmp position, as C's make_flat_edge call
-  // does, so it reads vnodes before later regular edges' recover_slack moves
-  // them. Each member carries the run (C's `edges + ind`, `cnt`): the
-  // flat-adjacent router takes its group from it, in this order, and the other
-  // flat routers gather their own group; all skip routed members.
-  // @see lib/dotgen/dotsplines.c:dot_splines_ (410-411)
-  if (nodeRankOf(e0.tail) === nodeRankOf(e0.head)) {
-    for (const e of uniq) routeLoneEdge(e, g, uniq);
-    return;
-  }
+  if (nodeRankOf(e0.tail) === nodeRankOf(e0.head)) return routeFlatGroup(g, uniq);
   // Lone edge: route HERE at its edgecmp position (interleaved with groups), as C
   // does, so it reads recover_slack-moved vnodes correctly. @see root-cause.md
   if (uniq.length <= 1) {
@@ -136,13 +144,12 @@ function dispatchEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): void {
     const runOrig = routeEntryRun(g, e0);
     if (runOrig !== null) {
       ctx.runOrigs.add(runOrig);
-      return;
+      return 0;
     }
     const lone = resolveOrigEdge(uniq[0]);
     // Plain chains (no interior splineMerge boundary) keep the whole-chain
     // routers. @see dotsplines.c:make_regular_edge (spline_merge)
-    routeLoneEdge(lone, g, uniq);
-    return;
+    return routeLoneEdge(lone, g, uniq);
   }
   // Lane offsets follow the edgecmp collected order — C passes the sorted list
   // slice straight into make_regular_edge with NO re-sort, so the MAINGRAPH
@@ -150,6 +157,7 @@ function dispatchEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): void {
   // (including an opposing 2-cycle's reversed member) follow, regardless of
   // original creation seq. @see dotsplines.c:419, make_regular_edge:1885-1907
   routeParallelEdgeGroup(g, uniq, ctx.multisep);
+  return 0;
 }
 
 /**
@@ -172,28 +180,36 @@ function routeCurvedGroup(g: Graph, group: Edge[]): void {
 }
 
 /**
- * Route one parallel-edge group from the sorted edge list.
- * Returns the number of edges consumed (cnt). For `splines=curved` the group is
- * routed via `makeStraightEdges` instead of the normal per-group router.
+ * Route one parallel-edge group of the sorted edge list. For `splines=curved`
+ * the group is routed via `makeStraightEdges` instead of the normal per-group
+ * router. Returns 0, or the rc of a failed flat group ({@link routeFlatGroup}).
  * @see lib/dotgen/dotsplines.c:343-419
  */
-function routeEdgeGroup(g: Graph, edges: Edge[], ind: number, ctx: GroupRouteCtx): number {
-  const cnt = groupSize(edges, ind);
+function routeEdgeGroup(g: Graph, group: Edge[], ctx: GroupRouteCtx): number {
   if (ctx.et === EDGETYPE_CURVED) {
-    routeCurvedGroup(g, edges.slice(ind, ind + cnt));
-    return cnt;
+    routeCurvedGroup(g, group);
+    return 0;
   }
-  dispatchEdgeGroup(g, edges.slice(ind, ind + cnt), ctx);
-  return cnt;
+  return dispatchEdgeGroup(g, group, ctx);
 }
 
 /**
- * Run the whole group-routing loop over the sorted edge list; returns the set
- * of originals that received per-run bezier appends, for the caller's
- * post-loop normalize pass. @see lib/dotgen/dotsplines.c:dot_splines_ (343-419)
+ * Run the whole group-routing loop over the sorted edge list. `runOrigs` is the
+ * set of originals that received per-run bezier appends, for the caller's
+ * post-loop normalize pass. The loop stops at the first group whose rc is
+ * non-zero and returns it: C's dot_splines_ returns make_flat_edge's rc at once,
+ * leaving every later group unrouted (issue #187).
+ * @see lib/dotgen/dotsplines.c:dot_splines_ (343-419; the return, 418-424)
  */
-export function routeEdgeGroups(g: Graph, edges: Edge[], multisep: number, et: number): Set<Edge> {
+export function routeEdgeGroups(
+  g: Graph, edges: Edge[], multisep: number, et: number,
+): { rc: number; runOrigs: Set<Edge> } {
   const ctx: GroupRouteCtx = { multisep, et, runOrigs: new Set<Edge>() };
-  for (let l = 0; l < edges.length;) l += routeEdgeGroup(g, edges, l, ctx);
-  return ctx.runOrigs;
+  for (let l = 0; l < edges.length;) {
+    const cnt = groupSize(edges, l);
+    const rc = routeEdgeGroup(g, edges.slice(l, l + cnt), ctx);
+    if (rc !== 0) return { rc, runOrigs: ctx.runOrigs };
+    l += cnt;
+  }
+  return { rc: 0, runOrigs: ctx.runOrigs };
 }

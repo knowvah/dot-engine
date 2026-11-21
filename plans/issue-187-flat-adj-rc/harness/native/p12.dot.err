@@ -1,0 +1,2 @@
+Error: Edge length 2147483648.000000 larger than maximum 2147483647 allowed.
+Check for overwide node(s).

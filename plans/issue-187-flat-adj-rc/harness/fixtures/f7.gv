@@ -1,0 +1,1 @@
+digraph { splines=line; {rank=same; a; b} a:e -> b:w [label="line"]; b:s -> a:s [label="back"]; }

@@ -1,0 +1,1 @@
+digraph { {rank=same; a [height=40000000]; b} a:e -> b:w }

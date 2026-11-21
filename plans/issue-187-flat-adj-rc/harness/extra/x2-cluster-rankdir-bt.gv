@@ -1,0 +1,1 @@
+digraph { rankdir=BT; subgraph cluster0 { {rank=same; a [height=40000000]; b [height=40000000]} a:s -> b:n } c -> a; d -> c }
