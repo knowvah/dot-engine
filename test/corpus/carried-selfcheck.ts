@@ -17,6 +17,7 @@
 import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { escapeRegExp } from './corpus-links.js';
 import {
   ORACLE_CORPUS_ROOT,
   ORACLE_DOT_BIN,
@@ -33,7 +34,7 @@ import {
 const RENDER_TIMEOUT_MS = 60_000;
 const EXIT_DIFF = 1;
 const EXIT_FAULT = 2;
-const DATE_TOKEN_RE = new RegExp(`(${ORACLE_VERSION.replace(/\./g, '\\.')}) \\(\\d{8}\\.\\d{4}\\)`, 'g');
+const DATE_TOKEN_RE = new RegExp(`(${escapeRegExp(ORACLE_VERSION)}) \\(\\d{8}\\.\\d{4}\\)`, 'g');
 const DATE_PLACEHOLDER = '(BUILD-DATE)';
 const CONTEXT_BYTES = 60;
 
