@@ -14,7 +14,7 @@ EXACTLY, coords compared exact-after-round — both sides are already
 
 ## Summary
 
-- **Oracle:** dot 16.1.1 · **corpus:** `~/git/graphviz/tests`
+- **Oracle:** dot 16.1.1 · **corpus:** `~/git/graphviz-16.1.1/tests`
 - **Walked (conformant SVG set):** 899
 - **map-conformant (overall, worst-of-both-formats):** 895 (100.0%)
 - **cmapx-conformant:** 895 (100.0%) · **imap-conformant:** 895 (100.0%)

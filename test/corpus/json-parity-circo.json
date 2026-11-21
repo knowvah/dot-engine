@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-13T00:44:39.592Z",
+  "generatedAt": "2026-11-20T12:30:31.836Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "circo",
   "oracleVersion": "dot 16.1.1",
-  "corpusRoot": "~/git/graphviz/tests",
+  "corpusRoot": "~/git/graphviz-16.1.1/tests",
   "total": 898,
   "counts": {
-    "conformant": 882,
-    "diverged": 4,
-    "accepted": 3,
+    "conformant": 885,
+    "diverged": 2,
+    "accepted": 4,
     "port-error": 0,
-    "oracle-error": 9,
+    "oracle-error": 7,
     "timeout": 0,
     "oracle-nondeterministic": 0
   },
@@ -349,8 +349,8 @@
       "id": "2784",
       "path": "2784.dot",
       "size": 78,
-      "verdict": "oracle-error",
-      "errMsg": "Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz/tests/2784.dot splits into two tokens"
+      "verdict": "accepted",
+      "errMsg": "Map maximum size exceeded"
     },
     {
       "id": "graphs-clustlabel",
@@ -2526,11 +2526,7 @@
       "id": "1990",
       "path": "1990.dot",
       "size": 610,
-      "verdict": "diverged",
-      "diffCount": 36,
-      "firstDiff": "edge:1⋯7 ❰A❱->2⋯7 ❰A❱#0/_draw_/op[1].b[ptCount]",
-      "maxDelta": 53.039999999999964,
-      "maxDeltaPath": "edge:1⋯7 ❰A❱->2⋯7 ❰A❱#0/_hdraw_/op[3].P[4]"
+      "verdict": "conformant"
     },
     {
       "id": "share-labelclust-nbd",
@@ -4293,11 +4289,7 @@
       "id": "1880",
       "path": "1880.dot",
       "size": 3451,
-      "verdict": "diverged",
-      "diffCount": 214,
-      "firstDiff": "edge:4564932->4564952#0/_draw_/op[2].b[ptCount]",
-      "maxDelta": 841.653,
-      "maxDeltaPath": "edge:4564918->4564920#0/pos[3]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-pmpipe",
@@ -5413,8 +5405,7 @@
       "id": "2108",
       "path": "2108.dot",
       "size": 3136769,
-      "verdict": "oracle-error",
-      "errMsg": "oracle exit null"
+      "verdict": "conformant"
     },
     {
       "id": "2475_1",

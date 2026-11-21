@@ -356,7 +356,9 @@
       "class": "graceful",
       "status": "none",
       "links": {
-        "divergence": "docs/known-divergences.md#a13-freed-fill-in-the-background-replay"
+        "divergence": "docs/known-divergences.md#a13-freed-fill-in-the-background-replay",
+        "forkIssue": "https://gitlab.com/sseely/graphviz/-/work_items/2",
+        "forkBranch": "https://gitlab.com/sseely/graphviz/-/tree/fix/background-freed-fill"
       },
       "note": "emit_background frees clrs[0] (emit.c:1518) while svg fill state still points at it, so native prints freed memory (fill=\"\" in 8 of 8 runs). Port prints the colour C meant. Site proven (A13)."
     },
@@ -415,7 +417,9 @@
       "class": "graceful",
       "status": "none",
       "links": {
-        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10"
+        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10",
+        "forkIssue": "https://gitlab.com/sseely/graphviz/-/work_items/1",
+        "forkBranch": "https://gitlab.com/sseely/graphviz/-/tree/fix/xdotbb-null-span"
       },
       "note": "A T op in a graph _draw_ or _background: op->span is NULL outside neato -n (only xdotBB, emit.c:3106, builds it), and emit_xdot passes it to gvrender_textspan (emit.c:1386); native segfaults (exit 139). Doc cites neatoinit.c:560 (the xdotBB call site in init_nop); the dereference site is emit_xdot. Port draws no text. Site proven by source read."
     },
@@ -977,8 +981,8 @@
       },
       "port": {
         "file": "src/layout/dot/ns-range.ts",
-        "symbol": "xCutval",
-        "behaviour": "renders"
+        "symbol": "cutvalOverflow",
+        "behaviour": "agerr"
       },
       "class": "mirror",
       "status": "none",
@@ -996,8 +1000,8 @@
       },
       "port": {
         "file": "src/layout/dot/ns-range.ts",
-        "symbol": "xCutval",
-        "behaviour": "renders"
+        "symbol": "cutvalOverflow",
+        "behaviour": "agerr"
       },
       "class": "mirror",
       "status": "none",
@@ -1015,8 +1019,8 @@
       },
       "port": {
         "file": "src/layout/dot/ns-range.ts",
-        "symbol": "xCutval",
-        "behaviour": "renders"
+        "symbol": "cutvalOverflow",
+        "behaviour": "agerr"
       },
       "class": "mirror",
       "status": "none",
@@ -1034,8 +1038,8 @@
       },
       "port": {
         "file": "src/layout/dot/ns-range.ts",
-        "symbol": "xCutval",
-        "behaviour": "renders"
+        "symbol": "cutvalOverflow",
+        "behaviour": "agerr"
       },
       "class": "mirror",
       "status": "none",
@@ -1060,9 +1064,11 @@
       "status": "none",
       "links": {
         "divergence": "https://github.com/knowvah/dot-engine/issues/266",
-        "dotEngineIssue": "https://github.com/knowvah/dot-engine/issues/266"
+        "dotEngineIssue": "https://github.com/knowvah/dot-engine/issues/266",
+        "upstreamMr": "https://gitlab.com/graphviz/graphviz/-/merge_requests/5152",
+        "forkBranch": "https://gitlab.com/sseely/graphviz/-/tree/carried/plain-canon-use-after-free"
       },
-      "note": "-Tplain: canon() agstrdups the label, agstrcanon returns the same pointer when no quoting is needed, agstrfree frees it, printstring reads freed memory (output.c:103-108; graphviz#2876, upstream MR graphviz!5152 filed). Port prints the right text. Site proven (#266)."
+      "note": "-Tplain: canon() agstrdups the label, agstrcanon returns the same pointer when no quoting is needed, agstrfree frees it, printstring reads freed memory (output.c:103-108; graphviz#2876, upstream MR graphviz!5152 filed). Port prints the right text. Site proven (#266). Carried as oracle patch 0001 (U1, docs/known-divergences.md#u1); the MR is open, so status stays at the seeded value until the maintainer rules."
     },
     {
       "id": "lib/common/postproc.c#gv_postprocess#UNREACHABLE#1",
@@ -1403,7 +1409,9 @@
       },
       "class": "port-bug",
       "status": "none",
-      "links": {},
+      "links": {
+        "dotEngineIssue": "https://github.com/knowvah/dot-engine/issues/269"
+      },
       "note": "Port-bug (stderr parity): C prints \"Error: bad label format {a|b\" for digraph{a [shape=record label=\"{a|b\"]} and re-parses the label as \\N; the port matches the drawing but prints no stderr line (no such message in src/). Repro: that DOT, -Kdot -Tsvg, compare stderr."
     },
     {
@@ -1656,8 +1664,8 @@
       },
       "port": {
         "file": "src/layout/dot/classify.ts",
-        "symbol": "applyVirtualWeight",
-        "behaviour": "renders"
+        "symbol": "virtualWeightOverflow",
+        "behaviour": "agerr"
       },
       "class": "mirror",
       "status": "none",
@@ -1675,8 +1683,8 @@
       },
       "port": {
         "file": "src/layout/dot/classify.ts",
-        "symbol": "applyVirtualWeight",
-        "behaviour": "renders"
+        "symbol": "virtualWeightOverflow",
+        "behaviour": "agerr"
       },
       "class": "mirror",
       "status": "none",
@@ -1911,7 +1919,9 @@
       "class": "graceful",
       "status": "none",
       "links": {
-        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10"
+        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10",
+        "forkIssue": "https://gitlab.com/sseely/graphviz/-/work_items/4",
+        "forkBranch": "https://gitlab.com/sseely/graphviz/-/tree/fix/fdp-pointer-compare"
       },
       "note": "fdp layouts vary with heap addresses: deriveGraph and genPorts compare node pointers (layout.c:466,501,637). Row is keyed on deriveGraph; genPorts (port src/layout/fdp/ports.ts) shares the cause. Port is deterministic. Site proven (part 10, item 3)."
     },
@@ -2399,8 +2409,8 @@
       },
       "port": {
         "file": "src/gvc/context.ts",
-        "symbol": "GvcContext.layout",
-        "behaviour": "throws-render"
+        "symbol": "GvcContext.unknownLayout",
+        "behaviour": "agerr"
       },
       "class": "mirror",
       "status": "none",
@@ -2791,8 +2801,10 @@
       },
       "class": "port-bug",
       "status": "none",
-      "links": {},
-      "note": "Port-bug (stderr parity): C prints \"Error: node a, position 1,x, expected two doubles\" for graph{a [pos=\"1,x\"]} with neato and ignores the pos; the port matches the drawing but prints no stderr line (no such message in src/). Repro: that DOT, -Kneato -Tsvg, compare stderr."
+      "links": {
+        "dotEngineIssue": "https://github.com/knowvah/dot-engine/issues/270"
+      },
+      "note": "Port-bug (stderr parity): C prints \"Error: node a, position 1,x, expected two doubles\" for graph{a [pos=\"1,x\"]} with neato and ignores the pos; the port matches the drawing but prints no stderr line (no such message in src/). Repro: that DOT, -Kneato -Tsvg, compare stderr. Port of user_pos itself: src/layout/neato/init-dim.ts#userPos (the scanner links inputscaleDivisor from a shared @see; a hand edit of port would be reverted on re-scan)."
     },
     {
       "id": "lib/neatogen/neatosplines.c#makeObstacle#UNREACHABLE#1",
@@ -2848,8 +2860,10 @@
       },
       "class": "port-bug",
       "status": "none",
-      "links": {},
-      "note": "The C site is the no-triangulation stub; the oracle build runs the edge-label scheme. C: graph{\"|edgelabel|1\"--b; label_scheme=3} with sfdp renders (exit 0, verified native). Port: throws RenderError UNSUPPORTED_FEATURE \"label_scheme=3: edge-label node handling is not supported yet\" (sfdp/init.ts)."
+      "links": {
+        "dotEngineIssue": "https://github.com/knowvah/dot-engine/issues/271"
+      },
+      "note": "The C site is the no-triangulation stub; the oracle build runs the edge-label scheme. C: graph{\"|edgelabel|1\"--b; label_scheme=3} with sfdp renders (exit 0, verified native). Port: throws RenderError UNSUPPORTED_FEATURE \"label_scheme=3: edge-label node handling is not supported yet\" (sfdp/init.ts). Loose fit for #271: the port guard is sfdp init.ts assertEdgeLabelSchemeSupported; the C edge-label scheme lives in edge_labeling_scheme / ELSCHEME_* (spring_electrical.c, overlap.c, post_process.c, adjust.c:getSizes), which have no fatal site of their own."
     },
     {
       "id": "lib/neatogen/poly.c#makeAddPoly#agerrorf#1",
@@ -2925,7 +2939,9 @@
       "class": "graceful",
       "status": "none",
       "links": {
-        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10"
+        "divergence": "docs/known-divergences.md#native-crashes-and-heap-address-variation-part-10",
+        "forkIssue": "https://gitlab.com/sseely/graphviz/-/work_items/3",
+        "forkBranch": "https://gitlab.com/sseely/graphviz/-/tree/fix/stress-directions-oob"
       },
       "note": "mode=hier dim=4 on two nodes: native writes past directions (stress.c:514) and aborts in 5 of 16 runs (exit 133). Port renders. Site proven (part 10, item 1)."
     },

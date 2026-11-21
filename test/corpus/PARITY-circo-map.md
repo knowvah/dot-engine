@@ -13,14 +13,12 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 - **Surveyed:** 898
 - **Oracle:** dot 16.1.1
-- **pass:** 889 (99.8%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 1
+- **pass:** 890 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 7
 
-## Diverged (1)
+## Diverged (0)
 
-| id | size | #diffs | firstDiff |
-|---|---:|---:|---|
-| [`1880`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1880.dot) | 3451 | 56 | `area[25].coords[count]` |
+_(none)_
 
 ## Accepted (1) — documented, not chased
 
@@ -40,5 +38,5 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle exit null |
 | [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle exit null |
 
-_Passing ids (889) are omitted for brevity — the full roster is in
+_Passing ids (890) are omitted for brevity — the full roster is in
 `map-parity-circo.json`._

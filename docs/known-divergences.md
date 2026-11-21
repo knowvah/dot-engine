@@ -1256,6 +1256,8 @@ stale. Evidence:
 
 **Why accepted.** `emit_background` frees `clrs[0]` (`lib/common/emit.c:1518`) while svg's fill state still points at it (`gvrender_resolve_color` keeps `color->u.string = name`, `lib/gvc/gvrender.c:193`), so native's output is freed memory, not a colour; it was `fill=""` in 8 of 8 measured runs. The port prints the colour C meant. No corpus input reaches this; `src/gvc/emit-xdot.test.ts` pins it.
 
+Fork issue: https://gitlab.com/sseely/graphviz/-/work_items/2 (branch `fix/background-freed-fill`).
+
 ### A14. One auxiliary edge per pair of sibling clusters (`2475_1`, dot) {#a14-one-auxiliary-edge-per-pair-of-sibling-clusters}
 
 **Affected:** `2475_1` on `dot`, a graph of 5,711 sibling clusters. Under V8's default heap (4,192 MB on the reference host) the port's render ends in `JavaScript heap out of memory`, so the dot survey gives this one id a larger heap (`PORT_HEAP_MB` in `test/corpus/survey.ts`).
@@ -1280,8 +1282,10 @@ Evidence: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 The conformance oracle is graphviz 16.1.1 plus the patches in
 `test/corpus/oracle-patches/`
 ([ADR-0003](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0003-upstream-fix-forward.md)).
-A patch is carried once its upstream merge request is filed, and the port
-follows the C fix from that point. A U-series entry is not an accepted delta:
+A row joins the U-series only once its upstream merge request is filed
+(ADR-0003, D2); the patch is carried from then on, and the port follows the C
+fix. A fix that exists only as a fork branch or fork issue stays where it is
+(for example under A13 or part 10). A U-series entry is not an accepted delta:
 the port and the carried oracle agree, and the patch is dropped when the fix
 reaches a release we pin.
 
@@ -1482,6 +1486,7 @@ Each item states what native does and what the port does.
 
 - **`mode=hier dim=4` on two nodes.** Native writes past `directions`
   (`lib/neatogen/stress.c:514`) and, in some runs, aborts (exit 133 in 5 of 16 runs). The port renders.
+  Fork issue: https://gitlab.com/sseely/graphviz/-/work_items/3 (branch `fix/stress-directions-oob`).
 - **`mode=hier dim=3` with `len=0.001`.** Native dies by signal: 3 of 8 runs at
   19 nodes (SIGBUS) and 8 of 8 at 27 nodes (SIGBUS, SIGSEGV, SIGTRAP). The
   stack is `mfm_alloc` under `stress_majorization_kD_mkernel`, which shows heap
@@ -1498,9 +1503,12 @@ Each item states what native does and what the port does.
   (`lib/common/output.c:403-404`). The port's `json` and `json0` writers undo
   the proxies before writing, as C does; its `dot` and `xdot` writers read the
   `__0:` proxies, so for them the undo runs at the next layout, not at render.
+  Fork issue: https://gitlab.com/sseely/graphviz/-/work_items/4 (branch `fix/fdp-pointer-compare`).
 - **A `T` op in a graph `_draw_` or `_background`.** Native segfaults (exit
-  139): `op->span` is NULL outside neato `-n` (`xdotBB`,
-  `lib/neatogen/neatoinit.c:560`). The port draws no text for it.
+  139): `op->span` is NULL outside neato `-n`, where only `xdotBB` builds it,
+  and `emit_xdot` passes it to `gvrender_textspan` (`lib/common/emit.c:1386`,
+  shown under ASan). The port draws no text for it.
+  Fork issue: https://gitlab.com/sseely/graphviz/-/work_items/1 (branch `fix/xdotbb-null-span`).
 - **neato on a subgraph.** Native exited 139 laying out either subgraph of the one graph tested, a plain
   subgraph and a cluster. The port returns output.
 

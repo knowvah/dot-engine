@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-07-30T01:53:20.669Z",
+  "generatedAt": "2026-11-20T10:30:07.581Z",
   "generatedWith": "test/corpus/survey.ts",
-  "oracleVersion": "dot 15.1.0",
-  "corpusRoot": "~/git/graphviz/tests",
-  "total": 939,
+  "oracleVersion": "dot 16.1.1",
+  "corpusRoot": "~/git/graphviz-16.1.1/tests",
+  "total": 982,
   "counts": {
-    "conformant": 910,
-    "structural-match": 15,
-    "diverged": 2,
+    "conformant": 966,
+    "structural-match": 5,
+    "diverged": 1,
     "errored": 0,
     "timeout": 0,
-    "oracle-error": 12
+    "oracle-error": 10
   },
   "results": [
     {
@@ -749,8 +749,7 @@
     {
       "id": "tree-share-examples-world",
       "path": "../share/examples/world.gv",
-      "verdict": "oracle-error",
-      "errMsg": "oracle exit null"
+      "verdict": "conformant"
     },
     {
       "id": "tree-tclpkg-gv-hello",
@@ -795,10 +794,7 @@
     {
       "id": "1314",
       "path": "1314.dot",
-      "verdict": "structural-match",
-      "maxDelta": 1683625618000,
-      "maxDeltaPath": "svg/@height",
-      "clipOverflow": 270783759142
+      "verdict": "conformant"
     },
     {
       "id": "1323",
@@ -836,7 +832,7 @@
       "id": "1411",
       "path": "1411.dot",
       "verdict": "oracle-error",
-      "errMsg": "Error: ~/git/graphviz/tests/1411.dot: syntax error in line 17 near '\\'"
+      "errMsg": "Error: ~/git/graphviz-16.1.1/tests/1411.dot: syntax error in line 17 near '\\'"
     },
     {
       "id": "1425",
@@ -899,7 +895,7 @@
       "id": "1472",
       "path": "1472.dot",
       "verdict": "oracle-error",
-      "errMsg": "oracle not well-formed XML: 102068B"
+      "errMsg": "oracle not well-formed XML: 101887B"
     },
     {
       "id": "1514",
@@ -909,9 +905,7 @@
     {
       "id": "1581",
       "path": "1581.dot",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiffPath": "svg/g[1][childCount]"
+      "verdict": "conformant"
     },
     {
       "id": "1585_0",
@@ -1249,9 +1243,7 @@
     {
       "id": "2368",
       "path": "2368.dot",
-      "verdict": "structural-match",
-      "maxDelta": 10.220000000000027,
-      "maxDeltaPath": "svg/g[1]/g[13]/path[1]/@d[6]"
+      "verdict": "conformant"
     },
     {
       "id": "2368_1",
@@ -1261,9 +1253,7 @@
     {
       "id": "2371",
       "path": "2371.dot",
-      "verdict": "structural-match",
-      "maxDelta": 16.799999999999955,
-      "maxDeltaPath": "svg/g[1]/g[9263]/path[1]/@d[7]"
+      "verdict": "conformant"
     },
     {
       "id": "2391",
@@ -1283,16 +1273,12 @@
     {
       "id": "2413_1",
       "path": "2413_1.dot",
-      "verdict": "structural-match",
-      "maxDelta": 67.65000000000009,
-      "maxDeltaPath": "svg/g[1]/g[10]/path[1]/@d[6]"
+      "verdict": "conformant"
     },
     {
       "id": "2413_2",
       "path": "2413_2.dot",
-      "verdict": "structural-match",
-      "maxDelta": 99.55000000000018,
-      "maxDeltaPath": "svg/g[1]/g[94]/path[1]/@d[6]"
+      "verdict": "conformant"
     },
     {
       "id": "241_0",
@@ -1302,9 +1288,7 @@
     {
       "id": "241_1",
       "path": "241_1.dot",
-      "verdict": "structural-match",
-      "maxDelta": 2.3599999999999994,
-      "maxDeltaPath": "svg/g[1]/g[3]/path[1]/@d[2]"
+      "verdict": "conformant"
     },
     {
       "id": "2436",
@@ -1344,15 +1328,12 @@
     {
       "id": "2471",
       "path": "2471.dot",
-      "verdict": "structural-match",
-      "maxDelta": 6906.5999999999985,
-      "maxDeltaPath": "svg/g[1]/g[1200]/path[1]/@d[0]"
+      "verdict": "conformant"
     },
     {
       "id": "2475_1",
       "path": "2475_1.dot",
-      "verdict": "oracle-error",
-      "errMsg": "oracle exit null"
+      "verdict": "conformant"
     },
     {
       "id": "2475_2",
@@ -1513,9 +1494,7 @@
     {
       "id": "2646",
       "path": "2646.dot",
-      "verdict": "structural-match",
-      "maxDelta": 42.08999999999992,
-      "maxDeltaPath": "svg/g[1]/g[30201]/path[1]/@d[21]"
+      "verdict": "conformant"
     },
     {
       "id": "2669",
@@ -1550,8 +1529,7 @@
     {
       "id": "2723",
       "path": "2723.dot",
-      "verdict": "oracle-error",
-      "errMsg": "oracle exit null"
+      "verdict": "conformant"
     },
     {
       "id": "2727",
@@ -1569,11 +1547,138 @@
       "verdict": "conformant"
     },
     {
+      "id": "2756",
+      "path": "2756.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2756_1",
+      "path": "2756_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2758",
+      "path": "2758.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2759",
+      "path": "2759.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2759_1",
+      "path": "2759_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2765",
+      "path": "2765.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2765_1",
+      "path": "2765_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2768",
+      "path": "2768.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2768_1",
+      "path": "2768_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2768_2",
+      "path": "2768_2.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2769",
+      "path": "2769.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2769_1",
+      "path": "2769_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2769_2",
+      "path": "2769_2.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2773",
+      "path": "2773.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2773_1",
+      "path": "2773_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2774",
+      "path": "2774.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2774_1",
+      "path": "2774_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2776",
+      "path": "2776.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2776_1",
+      "path": "2776_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2778",
+      "path": "2778.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2780",
+      "path": "2780.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2781",
+      "path": "2781.dot",
+      "verdict": "structural-match",
+      "maxDelta": 2147480000,
+      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cx"
+    },
+    {
+      "id": "2781_1",
+      "path": "2781_1.dot",
+      "verdict": "structural-match",
+      "maxDelta": 2147480000,
+      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cx"
+    },
+    {
+      "id": "2783",
+      "path": "2783.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2784",
+      "path": "2784.dot",
+      "verdict": "conformant"
+    },
+    {
       "id": "2796",
       "path": "2796.dot",
-      "verdict": "structural-match",
-      "maxDelta": 11.110000000000014,
-      "maxDeltaPath": "svg/g[1]/g[186]/path[1]/@d[11]"
+      "verdict": "conformant"
     },
     {
       "id": "2801",
@@ -1581,8 +1686,84 @@
       "verdict": "conformant"
     },
     {
+      "id": "2821_0",
+      "path": "2821_0.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2821_1",
+      "path": "2821_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2821_2",
+      "path": "2821_2.dot",
+      "verdict": "conformant"
+    },
+    {
       "id": "2825",
       "path": "2825.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2834",
+      "path": "2834.dot",
+      "verdict": "oracle-error",
+      "errMsg": "oracle exit null"
+    },
+    {
+      "id": "2849",
+      "path": "2849.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2851",
+      "path": "2851.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2852",
+      "path": "2852.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2854_1",
+      "path": "2854_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2855",
+      "path": "2855.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2860",
+      "path": "2860.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2860_1",
+      "path": "2860_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2866",
+      "path": "2866.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2870_0",
+      "path": "2870_0.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2870_1",
+      "path": "2870_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2870_2",
+      "path": "2870_2.dot",
       "verdict": "conformant"
     },
     {
@@ -1601,6 +1782,16 @@
       "verdict": "conformant"
     },
     {
+      "id": "698066",
+      "path": "698066.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "700813",
+      "path": "700813.dot",
+      "verdict": "conformant"
+    },
+    {
       "id": "705",
       "path": "705.dot",
       "verdict": "conformant"
@@ -1608,6 +1799,11 @@
     {
       "id": "813",
       "path": "813.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "894589",
+      "path": "894589.dot",
       "verdict": "conformant"
     },
     {
@@ -1728,9 +1924,7 @@
     {
       "id": "graphs-b100",
       "path": "graphs/b100.gv",
-      "verdict": "structural-match",
-      "maxDelta": 20,
-      "maxDeltaPath": "svg/g[1]/g[7045]/path[1]/@d[7]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-b102",
@@ -1745,9 +1939,7 @@
     {
       "id": "graphs-b104",
       "path": "graphs/b104.gv",
-      "verdict": "structural-match",
-      "maxDelta": 20,
-      "maxDeltaPath": "svg/g[1]/g[7045]/path[1]/@d[7]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-b106",
@@ -2072,9 +2264,7 @@
     {
       "id": "graphs-decorate",
       "path": "graphs/decorate.gv",
-      "verdict": "structural-match",
-      "maxDelta": 43.539999999999964,
-      "maxDeltaPath": "svg/g[1]/g[25]/polyline[1]/@points[5]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-dfa",
@@ -2922,7 +3112,7 @@
       "id": "imagepath_test-base",
       "path": "imagepath_test/base.gv",
       "verdict": "oracle-error",
-      "errMsg": "Error: ~/git/graphviz/tests/imagepath_test/base.gv: syntax error in line 8 near ']'"
+      "errMsg": "Error: ~/git/graphviz-16.1.1/tests/imagepath_test/base.gv: syntax error in line 8 near ']'"
     },
     {
       "id": "linux.i386-ER",
@@ -3733,7 +3923,7 @@
       "id": "share-b545",
       "path": "share/b545.gv",
       "verdict": "oracle-error",
-      "errMsg": "Error: ~/git/graphviz/tests/share/b545.gv: syntax error in line 1 near '3.583'"
+      "errMsg": "Error: ~/git/graphviz-16.1.1/tests/share/b545.gv: syntax error in line 1 near '3.583'"
     },
     {
       "id": "share-b786",

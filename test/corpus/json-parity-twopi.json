@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-11-13T08:56:55.480Z",
+  "generatedAt": "2026-11-20T21:01:14.126Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "twopi",
   "oracleVersion": "dot 16.1.1",
-  "corpusRoot": "~/git/graphviz/tests",
+  "corpusRoot": "~/git/graphviz-16.1.1/tests",
   "total": 898,
   "counts": {
-    "conformant": 877,
-    "diverged": 6,
-    "accepted": 8,
+    "conformant": 880,
+    "diverged": 3,
+    "accepted": 7,
     "port-error": 1,
     "oracle-error": 1,
     "timeout": 0,
-    "oracle-nondeterministic": 5
+    "oracle-nondeterministic": 6
   },
   "results": [
     {
@@ -566,11 +566,7 @@
       "id": "2643",
       "path": "2643.dot",
       "size": 91,
-      "verdict": "diverged",
-      "diffCount": 12,
-      "firstDiff": "edge:l_stop->l_run#0/_draw_/op[1].b[2]",
-      "maxDelta": 43.18000000000001,
-      "maxDeltaPath": "edge:null->l_stop#0/_draw_/op[1].b[4]"
+      "verdict": "conformant"
     },
     {
       "id": "1644",
@@ -3274,11 +3270,7 @@
       "id": "2168_5",
       "path": "2168_5.dot",
       "size": 777,
-      "verdict": "diverged",
-      "diffCount": 6,
-      "firstDiff": "edge:node1->node2#0/_draw_/op[1].b[2]",
-      "maxDelta": 0.3919999999999959,
-      "maxDeltaPath": "edge:node1->node2#0/pos[6]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-train11",
@@ -3804,11 +3796,7 @@
       "id": "2183",
       "path": "2183.dot",
       "size": 1601,
-      "verdict": "diverged",
-      "diffCount": 120,
-      "firstDiff": "edge:g->n#0/_draw_/op[2].b[ptCount]",
-      "maxDelta": 187,
-      "maxDeltaPath": "edge:m->e#0/_draw_/op[2].b[5]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-triedds",
@@ -3982,7 +3970,8 @@
       "id": "tree-graphs-directed-oldarrows",
       "path": "../graphs/directed/oldarrows.gv",
       "size": 1998,
-      "verdict": "accepted",
+      "verdict": "oracle-nondeterministic",
+      "nDraws": 2,
       "diffCount": 40,
       "firstDiff": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
       "maxDelta": 42.50999999999999,
@@ -4010,12 +3999,11 @@
       "id": "graphs-arrows",
       "path": "graphs/arrows.gv",
       "size": 2029,
-      "verdict": "oracle-nondeterministic",
-      "nDraws": 2,
-      "diffCount": 29,
-      "firstDiff": "edge:i->Z#0/_draw_/op[1].b[0]",
-      "maxDelta": 131.27,
-      "maxDeltaPath": "edge:i->Z#0/_draw_/op[1].b[8]"
+      "verdict": "accepted",
+      "diffCount": 40,
+      "firstDiff": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
+      "maxDelta": 42.50999999999999,
+      "maxDeltaPath": "edge:Z->I#0/_hldraw_/op[2].T[0]"
     },
     {
       "id": "graphs-arrowsize",
@@ -4023,9 +4011,9 @@
       "size": 2039,
       "verdict": "oracle-nondeterministic",
       "nDraws": 2,
-      "diffCount": 72,
-      "firstDiff": "edge:Z->I#0/_draw_/op[1].b[0]",
-      "maxDelta": 60.55000000000001,
+      "diffCount": 23,
+      "firstDiff": "edge:i->Z#0/_draw_/op[1].b[0]",
+      "maxDelta": 121.10000000000002,
       "maxDeltaPath": "edge:i->Z#0/_draw_/op[1].b[2]"
     },
     {
@@ -4038,8 +4026,7 @@
       "id": "graphs-newarrows",
       "path": "graphs/newarrows.gv",
       "size": 2045,
-      "verdict": "oracle-nondeterministic",
-      "nDraws": 2,
+      "verdict": "accepted",
       "diffCount": 40,
       "firstDiff": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
       "maxDelta": 42.50999999999999,
@@ -4627,11 +4614,12 @@
       "id": "windows-newarrows",
       "path": "windows/newarrows.gv",
       "size": 6364,
-      "verdict": "accepted",
-      "diffCount": 20,
-      "firstDiff": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
-      "maxDelta": 45.14000000000004,
-      "maxDeltaPath": "edge:i->Z#0/_tldraw_/op[2].T[0]"
+      "verdict": "oracle-nondeterministic",
+      "nDraws": 2,
+      "diffCount": 22,
+      "firstDiff": "edge:i->Z#0/_draw_/op[1].b[0]",
+      "maxDelta": 131.27,
+      "maxDeltaPath": "edge:i->Z#0/_draw_/op[1].b[8]"
     },
     {
       "id": "2193",
@@ -4713,7 +4701,8 @@
       "id": "nshare-arrows_dot",
       "path": "nshare/arrows_dot.gv",
       "size": 7235,
-      "verdict": "accepted",
+      "verdict": "oracle-nondeterministic",
+      "nDraws": 2,
       "diffCount": 40,
       "firstDiff": "edge:Z->I#0/_draw_/op[1].b[ptCount]",
       "maxDelta": 42.50999999999999,

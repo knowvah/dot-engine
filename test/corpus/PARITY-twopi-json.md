@@ -13,44 +13,41 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 - **Surveyed:** 898
 - **Oracle:** dot 16.1.1
-- **pass:** 877 (98.3%) · **diverged (tracked):** 6 · **accepted (documented, won't-fix):** 8
+- **pass:** 880 (98.8%) · **diverged (tracked):** 3 · **accepted (documented, won't-fix):** 7
 - **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 1
 
-## Diverged (6)
+## Diverged (3)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`2183`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2183.dot) | 1601 | 120 | `edge:g->n#0/_draw_/op[2].b[ptCount]` |
-| [`2643`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2643.dot) | 91 | 12 | `edge:l_stop->l_run#0/_draw_/op[1].b[2]` |
 | [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 10 | `edge:n89->n100#0/_ldraw_/op[2].T[0]` |
-| [`2168_5`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2168_5.dot) | 777 | 6 | `edge:node1->node2#0/_draw_/op[1].b[2]` |
 | [`tree-graphs-directed-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/arrows.gv) | 4766 | 6 | `edge:lcrow->lcrowlcrow#0/_ldraw_/op[2].T[0]` |
 | [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | 9735186 | 1 | `edge:5657_543949->5657_543942#0/_draw_/op[1].b[1]` |
 
-## Accepted (8) — documented, not chased
+## Accepted (7) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
 | [`1855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1855.dot) | 842 | `edge:10->1#0/_draw_/op[1].b[0]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`2470`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2470.dot) | 596 | `edge:n13->n12#0/_ldraw_/op[2].T[0]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`nshare-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/arrows_dot.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`graphs-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrows.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
+| [`graphs-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/newarrows.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 1 | `node:a/label` | Input is Latin-1 with NO `charset` declaration, so the bytes are invalid UTF-8. Native dot's -Tjson then emits a MIXED-ENCODING document: attribute values (e.g. node `label`) are echoed as RAW Latin-1 bytes (0xe1 0xe2 ... unconverted), while the DRAWN label text (_ldraw_ T op, via make_label) is UTF-8 (0xc3 0xa1 ...). No single decode reads both halves correctly: Latin-1 recovers the attribute but mojibakes the text, UTF-8 does the reverse (and the attribute bytes are not valid UTF-8). The port decodes the input once (utils.c latin1ToUTF8 fallback) and is internally consistent valid UTF-8 on BOTH surfaces, so it cannot reproduce the oracle's split encoding. A4 class: the oracle output is an encoding bug; the port declines to emit invalid/mixed-encoding JSON. The DECLARED charset=latin1 case (graphs-Latin1/b60) IS handled via the stoj double-encode fix; only the UNDECLARED-charset case is irreducible. |
 | [`share-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/newarrows.gv) | 20 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 40 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (A1 arrows family, injection A/B 40-&gt;0 diffs; engine registry + decision journal); json re-emits the same layout. Journal 2026-07-28. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
-| [`windows-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/newarrows.gv) | 20 | `edge:Z->I#0/_draw_/op[1].b[ptCount]` | layout drift inherited from the twopi xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (7)
+## Errors and timeouts (8)
 
 | id | message |
 |---|---|
 | [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
-| [`graphs-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrows.gv) |  |
 | [`graphs-arrowsize`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrowsize.gv) |  |
-| [`graphs-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/newarrows.gv) |  |
 | [`linux.x86-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/arrows_dot.gv) |  |
 | [`macosx-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/macosx/arrows_dot.gv) |  |
+| [`nshare-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/arrows_dot.gv) |  |
+| [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) |  |
+| [`windows-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/newarrows.gv) |  |
 
-_Passing ids (877) are omitted for brevity — the full roster is in
+_Passing ids (880) are omitted for brevity — the full roster is in
 `json-parity-twopi.json`._
