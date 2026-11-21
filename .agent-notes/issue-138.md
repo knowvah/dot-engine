@@ -15,6 +15,9 @@
   turns the question into one run. On every N probe the port's stderr then equalled native's. Three
   differences stayed with the resets off, so they are not reset matters: the stale node label (#190),
   the anchor ids (#191, a second reset at `src/gvc/device.ts:507`) and the neato KK bb (#193).
+  #193 is fixed: the port recomputed the graph bb after routing on neato's `Pack < 0` path
+  (`mode=KK`, no pack), where C keeps the bb `spline_edges` made, stale beziers included
+  (`neatoinit.c:1416` against `:1431-1436`; `.agent-notes/issue-193.md`).
   Registration order (the index) is module evaluation order; print `resets.map(String)` to read it.
 - **Impact**: use it before reading a no-free delta as a static. Revert the edit with
   `git checkout src/common/render-state.ts` before any gate.

@@ -1,0 +1,23 @@
+diff --git a/src/layout/neato/index.ts b/src/layout/neato/index.ts
+index 2f269874..e0ed9d39 100644
+--- a/src/layout/neato/index.ts
++++ b/src/layout/neato/index.ts
+@@ -203,7 +203,8 @@ export function neatoLayout(g: Graph): void {
+ 
+   // C uses pccomps (pin-aware): components with a pinned node are collected
+   // first (index 0) so the packer can hold them fixed. @see neatoinit.c:1391
+-  const { graphs: comps, pinned } = neatoPack(g, mode) >= 0
++  const pack = neatoPack(g, mode);
++  const { graphs: comps, pinned } = pack >= 0
+     ? pccomps(g, '_neato_cc')
+     : { graphs: [g], pinned: false };
+   if (comps.length > 1) {
+@@ -219,7 +220,7 @@ export function neatoLayout(g: Graph): void {
+   // C: addCluster registers top-level clusters (label + compute_bb)
+   // after layout; gv_postprocess then places the cluster labels.
+   addClusters(g);
+-  g.info.bb = computeSubgraphBB(g, 0);
++  if (pack >= 0) g.info.bb = computeSubgraphBB(g, 0);
+   // C: gv_postprocess(g, !noTranslate) — place_graph_label (cluster labels),
+   // then addXLabels, which is what positions the *edge* labels under neato:
+   // neato never sets ED_label(e)->pos during routing (unlike dot's

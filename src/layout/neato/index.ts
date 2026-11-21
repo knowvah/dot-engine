@@ -203,7 +203,8 @@ export function neatoLayout(g: Graph): void {
 
   // C uses pccomps (pin-aware): components with a pinned node are collected
   // first (index 0) so the packer can hold them fixed. @see neatoinit.c:1391
-  const { graphs: comps, pinned } = neatoPack(g, mode) >= 0
+  const pack = neatoPack(g, mode);
+  const { graphs: comps, pinned } = pack >= 0
     ? pccomps(g, '_neato_cc')
     : { graphs: [g], pinned: false };
   if (comps.length > 1) {
@@ -219,7 +220,12 @@ export function neatoLayout(g: Graph): void {
   // C: addCluster registers top-level clusters (label + compute_bb)
   // after layout; gv_postprocess then places the cluster labels.
   addClusters(g);
-  g.info.bb = computeSubgraphBB(g, 0);
+  // C runs compute_bb after routing only in its Pack >= 0 branch. The Pack < 0
+  // branch (mode=KK with no pack) keeps the bb spline_edges made, which counts
+  // a no-free relayout's stale beziers and carries neato_set_aspect's scale.
+  // @see lib/neatogen/neatoinit.c:1416
+  // @see lib/neatogen/neatoinit.c:1431-1436
+  if (pack >= 0) g.info.bb = computeSubgraphBB(g, 0);
   // C: gv_postprocess(g, !noTranslate) — place_graph_label (cluster labels),
   // then addXLabels, which is what positions the *edge* labels under neato:
   // neato never sets ED_label(e)->pos during routing (unlike dot's

@@ -14,6 +14,8 @@
 # (plans/issue-158-flat-reorder-valid-rank/harness/recapture-rerender.sh).
 # relabel.gv and relabel.{dot,neato}.plain.relabel.{1,2} are the carried oracle's, captured by #190
 # (plans/issue-190-node-relabel/harness/recapture.sh): this script cannot set an attribute between layouts.
+# kk-tri.* and kk-ratio.* are the carried oracle's, captured by #193
+# (plans/issue-193-neato-kk-bb/harness/recapture.sh).
 #
 # Usage: GVBINDIR=<full plugin dir> bash regen.sh
 set -eu
