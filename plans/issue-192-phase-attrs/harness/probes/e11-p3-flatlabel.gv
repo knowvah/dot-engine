@@ -1,0 +1,1 @@
+digraph { phase=3; { rank=same; a; b } a -> b [label=flat]; a -> c }

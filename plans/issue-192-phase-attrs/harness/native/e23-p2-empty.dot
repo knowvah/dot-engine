@@ -1,0 +1,6 @@
+digraph {
+	graph [bb="0,0,0,0",
+		phase=2
+	];
+	node [label="\N"];
+}

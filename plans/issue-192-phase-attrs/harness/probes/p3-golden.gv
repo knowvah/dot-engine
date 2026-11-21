@@ -1,0 +1,6 @@
+digraph G {
+    phase=3;
+    a -> b -> c;
+    a -> c;
+    b -> d;
+}

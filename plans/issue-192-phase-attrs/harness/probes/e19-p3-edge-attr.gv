@@ -1,0 +1,1 @@
+digraph { phase=3; edge [rank=3, order=4]; a -> b }

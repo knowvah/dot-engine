@@ -1,0 +1,1 @@
+digraph { phase=2; concentrate=true; a -> b; a -> c; b -> d; c -> d; a -> d }

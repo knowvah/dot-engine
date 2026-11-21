@@ -1,0 +1,1 @@
+digraph { phase=1; subgraph cluster_x { b; c } a -> b; a -> c; c -> d }

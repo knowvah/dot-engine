@@ -1,0 +1,8 @@
+graph 1 3.25 0.81944
+node a 0.375 0.25 0.75 0.5 a solid ellipse black lightgrey
+node b 1.625 0.56944 0.75 0.5 b solid ellipse black lightgrey
+node c 2.875 0.25 0.75 0.5 c solid ellipse black lightgrey
+ solid black
+ solid black
+ solid black
+stop

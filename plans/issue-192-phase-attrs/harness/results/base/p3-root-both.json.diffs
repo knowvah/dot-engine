@@ -1,0 +1,4 @@
+node:a/order: port=y native=0
+node:a/rank: port=x native=0
+node:b/order: port=y native=0
+node:b/rank: port=x native=1

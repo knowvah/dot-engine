@@ -1,0 +1,9 @@
+graph 1 0 0
+node a 0 0 0.75 0.5 a solid ellipse black lightgrey
+node b 0 0 0.75 0.5 b solid ellipse black lightgrey
+node c 0 0 0.75 0.5 c solid ellipse black lightgrey
+node d 0 0 0.75 0.5 d solid ellipse black lightgrey
+node e 0 0 0.75 0.5 e solid ellipse black lightgrey
+ solid black
+ solid black
+stop

@@ -1,0 +1,1 @@
+digraph { phase=2; rankdir=BT; a -> b; a -> c }

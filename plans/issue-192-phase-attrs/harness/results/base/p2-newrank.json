@@ -1,0 +1,361 @@
+{
+  "name": "%1",
+  "directed": true,
+  "strict": false,
+  "newrank": "true",
+  "phase": "2",
+  "_draw_": [
+    {
+      "op": "c",
+      "grad": "none",
+      "color": "#fffffe00"
+    },
+    {
+      "op": "C",
+      "grad": "none",
+      "color": "#ffffff"
+    },
+    {
+      "op": "P",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    }
+  ],
+  "bb": "0,0,0,0",
+  "xdotversion": "1.7",
+  "_subgraph_cnt": 3,
+  "objects": [
+    {
+      "name": "cluster_a",
+      "newrank": "true",
+      "phase": "2",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "p",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "bb": "0,0,0,0",
+      "_gvid": 0,
+      "nodes": [
+        3,
+        4
+      ]
+    },
+    {
+      "name": "cluster_b",
+      "newrank": "true",
+      "phase": "2",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "p",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "bb": "0,0,0,0",
+      "_gvid": 1,
+      "nodes": [
+        5
+      ]
+    },
+    {
+      "name": "cluster_c",
+      "newrank": "true",
+      "phase": "2",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "p",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "bb": "0,0,0,0",
+      "_gvid": 2,
+      "nodes": [
+        6
+      ]
+    },
+    {
+      "_gvid": 3,
+      "name": "a1",
+      "label": "\\N",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [
+            0,
+            0,
+            27,
+            18
+          ]
+        }
+      ],
+      "_ldraw_": [
+        {
+          "op": "F",
+          "size": 14,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [
+            0,
+            -4.2
+          ],
+          "align": "c",
+          "width": 13.21,
+          "text": "a1"
+        }
+      ],
+      "height": "0.5",
+      "pos": "0,0",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 4,
+      "name": "a2",
+      "label": "\\N",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [
+            0,
+            0,
+            27,
+            18
+          ]
+        }
+      ],
+      "_ldraw_": [
+        {
+          "op": "F",
+          "size": 14,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [
+            0,
+            -4.2
+          ],
+          "align": "c",
+          "width": 13.21,
+          "text": "a2"
+        }
+      ],
+      "height": "0.5",
+      "pos": "0,0",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 5,
+      "name": "b1",
+      "label": "\\N",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [
+            1,
+            0,
+            27,
+            18
+          ]
+        }
+      ],
+      "_ldraw_": [
+        {
+          "op": "F",
+          "size": 14,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [
+            1,
+            -4.2
+          ],
+          "align": "c",
+          "width": 14,
+          "text": "b1"
+        }
+      ],
+      "height": "0.5",
+      "pos": "1,0",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 6,
+      "name": "c1",
+      "label": "\\N",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [
+            0,
+            0,
+            27,
+            18
+          ]
+        }
+      ],
+      "_ldraw_": [
+        {
+          "op": "F",
+          "size": 14,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [
+            0,
+            -4.2
+          ],
+          "align": "c",
+          "width": 13.21,
+          "text": "c1"
+        }
+      ],
+      "height": "0.5",
+      "pos": "0,0",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 3,
+      "head": 5
+    },
+    {
+      "_gvid": 1,
+      "tail": 4,
+      "head": 6
+    },
+    {
+      "_gvid": 2,
+      "tail": 5,
+      "head": 6
+    }
+  ]
+}

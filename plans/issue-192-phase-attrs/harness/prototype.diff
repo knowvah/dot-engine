@@ -1,0 +1,64 @@
+diff --git a/src/layout/dot/index.ts b/src/layout/dot/index.ts
+index 219b2820..5122b01b 100644
+--- a/src/layout/dot/index.ts
++++ b/src/layout/dot/index.ts
+@@ -39,6 +39,7 @@ import {
+ } from '../pack/index.js';
+ import type { PackInfo } from '../pack/index.js';
+ import { ratioIsNone, layoutAndPack, cccompsWithClusters } from './pack-components.js';
++import { ownAttrs } from '../../model/lazy-attrs.js';
+ 
+ // Re-export init helpers for external consumers.
+ export {
+@@ -217,6 +218,33 @@ function graphPhase(g: Graph): number {
+   return n < 1 ? 1 : n;
+ }
+ 
++/**
++ * Declare a node attribute with an empty default, as `agattr_text(g, AGNODE,
++ * name, "")` does. An existing root definition has its default reset to "",
++ * and stays printed (write.c prints a declared default even when empty); with
++ * none, the port's convention for an empty default is a missing key, so
++ * nothing is stored. Subgraph definitions are local symbols and keep theirs.
++ * @see lib/cgraph/attr.c:setattr (update old local definition)
++ */
++function declareEmptyNodeAttr(g: Graph, name: string): void {
++  if (g.nodeDefaults.has(name)) g.nodeDefaults.set(name, '');
++}
++
++/**
++ * Write each node's rank, and from phase 2 its order, as node attributes when
++ * a `phase` stop ends the layout early.
++ * @see lib/dotgen/dotinit.c:attach_phase_attrs
++ */
++function attachPhaseAttrs(g: Graph, maxphase: number): void {
++  declareEmptyNodeAttr(g, 'rank');
++  declareEmptyNodeAttr(g, 'order');
++  for (const n of g.nodes.values()) {
++    // ITOS of calloc'd ints: an unset field is 0.
++    if (maxphase >= 1) ownAttrs(n).set('rank', String(n.info.rank ?? 0));
++    if (maxphase >= 2) ownAttrs(n).set('order', String(n.info.order ?? 0));
++  }
++}
++
+ /**
+  * Runs the full dot layout pipeline on graph g.
+  *
+@@ -259,13 +287,14 @@ export function dotLayoutPipeline(g: Graph): void {
+   // (dotinit.c:512-517). So the postprocess still runs on every phase stop —
+   // without it the drawing keeps raw layout coordinates and is translated off
+   // the origin. The rc/posRc paths below are the error paths and stay bare.
+-  if (maxphase === 1) { gvPostprocess(g); return; }
++  if (maxphase === 1) { attachPhaseAttrs(g, 1); gvPostprocess(g); return; }
+   const rc = dotMincross(g);
+   if (rc !== 0) return;
+-  if (maxphase === 2) { gvPostprocess(g); return; }
++  if (maxphase === 2) { attachPhaseAttrs(g, 2); gvPostprocess(g); return; }
+   const posRc = dotPosition(g);
+   if (posRc !== 0) return;
+-  if (maxphase === 3) { gvPostprocess(g); return; }
++  // C passes 2 here too: positions are attached on output.
++  if (maxphase === 3) { attachPhaseAttrs(g, 2); gvPostprocess(g); return; }
+   dotPhasePost(g);
+ }
+ 

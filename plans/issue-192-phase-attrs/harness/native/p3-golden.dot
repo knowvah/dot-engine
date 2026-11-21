@@ -1,0 +1,30 @@
+digraph G {
+	graph [bb="0,0,126,180",
+		phase=3
+	];
+	node [label="\N"];
+	a	[height=0.5,
+		order=0,
+		pos="54,162",
+		rank=0,
+		width=0.75];
+	b	[height=0.5,
+		order=1,
+		pos="82,90",
+		rank=1,
+		width=0.75];
+	c	[height=0.5,
+		order=0,
+		pos="27,18",
+		rank=2,
+		width=0.75];
+	d	[height=0.5,
+		order=1,
+		pos="99,18",
+		rank=2,
+		width=0.75];
+	a -> b;
+	b -> c;
+	a -> c;
+	b -> d;
+}

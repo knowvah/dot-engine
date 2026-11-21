@@ -1,0 +1,1 @@
+digraph { newrank=true; phase=2; subgraph cluster_a { a1 a2 } subgraph cluster_b { b1 } subgraph cluster_c { c1 } a1 -> b1; a2 -> c1; b1 -> c1 }

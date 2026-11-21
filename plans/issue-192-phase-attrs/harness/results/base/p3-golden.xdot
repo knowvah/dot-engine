@@ -1,0 +1,32 @@
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 180 126 180 126 0 ",
+		bb="0,0,126,180",
+		phase=3,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	a	[_draw_="c 7 -#000000 e 54 162 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 54 157.8 0 6.21 1 -a ",
+		height=0.5,
+		pos="54,162",
+		width=0.75];
+	b	[_draw_="c 7 -#000000 e 82 90 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 82 85.8 0 7 1 -b ",
+		height=0.5,
+		pos="82,90",
+		width=0.75];
+	c	[_draw_="c 7 -#000000 e 27 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 27 13.8 0 6.21 1 -c ",
+		height=0.5,
+		pos="27,18",
+		width=0.75];
+	d	[_draw_="c 7 -#000000 e 99 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 99 13.8 0 7 1 -d ",
+		height=0.5,
+		pos="99,18",
+		width=0.75];
+	a -> b;
+	b -> c;
+	a -> c;
+	b -> d;
+}

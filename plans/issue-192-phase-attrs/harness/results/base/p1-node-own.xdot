@@ -1,0 +1,20 @@
+digraph {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 0 0 0 0 0 ",
+		bb="0,0,0,0",
+		phase=1,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	a	[_draw_="c 7 -#000000 e 0 0 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 0 -4.2 0 6.21 1 -a ",
+		height=0.5,
+		pos="0,0",
+		rank=5,
+		width=0.75];
+	b	[_draw_="c 7 -#000000 e 0 0 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 0 -4.2 0 7 1 -b ",
+		height=0.5,
+		pos="0,0",
+		width=0.75];
+	a -> b;
+}
