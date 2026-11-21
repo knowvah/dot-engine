@@ -1,0 +1,1 @@
+digraph { a [shape=plaintext label=<<TABLE><TR><TD FIXEDSIZE="TRUE" WIDTH="10" HEIGHT="10">much too long</TD></TR></TABLE>>]; a -> b }

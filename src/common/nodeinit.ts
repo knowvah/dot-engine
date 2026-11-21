@@ -15,7 +15,7 @@ import type { TextMeasurer } from './textmeasure.js';
 import type { PolygonT, ShapeDesc, TextlabelT } from './types.js';
 import { ShapeKind } from './types.js';
 import { bindShape } from './shapes.js';
-import { assignShapeInfo, buildNodeLabel, nodeAttr, nodeImageSize, readFontAttrs, warnPolyInitImages } from './poly-init.js';
+import { assignShapeInfo, makeNodeLabel, nodeAttr, nodeImageSize, readFontAttrs, warnPolyInitImages } from './poly-init.js';
 import { makeAnyLabel } from './make-label.js';
 import { isHtmlValue, htmlValueContent } from './html-string.js';
 import { NODE_XLABEL } from '../layout/dot/rank.js';
@@ -258,7 +258,7 @@ function initNodeFromLabel(n: Node, g: Graph, measurer: TextMeasurer, syms: Node
     recordInit(n, g, measurer); // initfn: sets lw/rw/ht from the field tree
     return true;
   }
-  buildNodeLabel(n, g, measurer);
+  makeNodeLabel(n, g, measurer);
   initNodeXLabel(n, g, measurer, syms);
   // Layout-time poly_init warnings (once per layout; render-time polyInit is silent).
   if (shape.kind !== ShapeKind.SH_POINT) warnPolyInitImages(n, g);

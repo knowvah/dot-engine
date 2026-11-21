@@ -1,0 +1,1 @@
+digraph { a [shape=box label="short" xlabel="xl"]; a -> b }
