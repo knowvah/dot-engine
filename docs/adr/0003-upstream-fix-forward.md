@@ -9,6 +9,11 @@ and D7 in `plans/graceful-failure/decisions.md`). Replaces one clause of
 ADR-0002, decision 1: "oracle = pristine native 16.1.1". The rest of ADR-0002
 (build, `oracle-paths.mjs`, `rand()`, order of work, fixtures) is unchanged.
 
+Amended 2026-11-21: decision 4 requires the repro to work on Ubuntu's latest
+LTS. On graphviz#2876 an upstream maintainer on Ubuntu 24.04 could not
+reproduce a use-after-free that shows on macOS only because libmalloc zeroes
+freed blocks.
+
 ## Context
 
 CLAUDE.md treats the C source as sacred. That rule has no answer for a bug in
@@ -68,6 +73,12 @@ every MR.
    meets the elk-engine fork-issue standard:
    - a check of graphviz/graphviz for a duplicate;
    - a minimal `.dot` repro, run on the oracle and shrunk;
+   - the repro's exact command shows the bug on Ubuntu's latest LTS, against
+     upstream `main` built from source (a container is enough). If plain
+     output looks correct there, as for a memory error under glibc, the
+     command that does show it (valgrind, or `MALLOC_PERTURB_` with tcache
+     off) is the repro. The issue states that system: release, architecture,
+     glibc, and the `dot -V` line;
    - the mechanism at `file:line` with instrumented values;
    - history from `git log -S`;
    - what was and was not checked.
