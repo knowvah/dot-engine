@@ -32,7 +32,6 @@ import { polyInit } from '../common/poly-init.js';
 import {
   setHtmlAnchorObj,
   setHtmlObjImgscale,
-  resetHtmlAnchorIds,
 } from '../common/htmltable-emit-rules.js';
 import { nodeAttr } from '../common/poly-init.js';
 import {
@@ -504,7 +503,6 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   job.renderer = renderer;
   job.drawingId = drawingIdOf(g); // GD_drawing(g)->id. @see lib/common/input.c:graph_init
   setRendererKnownColors(renderer.type === 'svg'); // svg_knowncolors; others have none
-  resetHtmlAnchorIds(); // C: fresh anchorId per dot invocation
   for (const n of g.nodes.values()) polyInit(n, g, job.measurer);
   return renderGraph(g, job, renderer);
 }

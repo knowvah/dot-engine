@@ -1,0 +1,10 @@
+# corpus inputs with an HTML-like TABLE or TD carrying href/url/title/tooltip/target (initAnchor sites)
+1425
+1425_1
+2295
+2619_1
+2619_2
+graphs-html2
+graphs-url
+linux.x86-html2_dot
+nshare-html2_dot

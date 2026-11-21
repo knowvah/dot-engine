@@ -1,0 +1,1 @@
+digraph { a [label=<<table><tr><td title="t">1</td><td href="y" id="mine">2</td></tr></table>>]; b [shape=none label=<<table href="z"><tr><td href="w">3</td></tr></table>>]; a -> b }
