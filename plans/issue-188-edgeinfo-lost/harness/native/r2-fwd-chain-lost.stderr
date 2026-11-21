@@ -1,0 +1,9 @@
+lib/pathplan/~/git/sseely/graphviz-carried/lib/pathplan/shortest.c:338: triangulation failed
+lib/pathplan/~/git/sseely/graphviz-carried/lib/pathplan/shortest.c:194: destination point not in any triangle
+Error: in routesplines, Pshortestpath failed
+lib/pathplan/~/git/sseely/graphviz-carried/lib/pathplan/shortest.c:338: triangulation failed
+lib/pathplan/~/git/sseely/graphviz-carried/lib/pathplan/shortest.c:194: destination point not in any triangle
+Error: in routesplines, Pshortestpath failed
+Error: lost a m edge
+Error: lost a m edge
+Error: lost a b edge

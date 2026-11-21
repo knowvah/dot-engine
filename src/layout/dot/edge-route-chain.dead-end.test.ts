@@ -151,7 +151,6 @@ describe('corpus 2765: a chain that ends at a vnode with no out edge', () => {
   });
 
   it('the splines pass resizes the orphan to native\'s values and draws neither edge', () => {
-    // Only the merged edge is routed, so only it is marked lost.
     const g = parse(SRC_2765);
     render(g, 'plain', { engine: 'dot' });
     const dead = targetEdges(g);
@@ -161,7 +160,6 @@ describe('corpus 2765: a chain that ends at a vnode with no out edge', () => {
     expect(orphan.info.lw).toBeCloseTo(NATIVE_ORPHAN.lw, DIGITS);
     expect(orphan.info.rw).toBeCloseTo(NATIVE_ORPHAN.rw, DIGITS);
     expect(dead.map(e => e.info.spl)).toEqual([undefined, undefined]);
-    expect(dead.map(e => e.info.lost)).toEqual([undefined, true]);
   });
 });
 
@@ -221,8 +219,6 @@ describe('a back edge whose chain ends at a vnode with no out edge', () => {
     expect(render(g, 'plain', { engine: 'dot' })).toBe(NATIVE_BACK_PLAIN);
     const dead = backTargetEdges(g);
     expect(dead.map(e => e.info.spl)).toEqual([undefined, undefined]);
-    // As on 2765: only the edge merged into the other's chain is ever routed.
-    expect(dead.map(e => e.info.lost)).toEqual([undefined, true]);
   });
 });
 

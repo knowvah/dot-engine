@@ -123,14 +123,12 @@ const staleBeziersByEdge = new WeakMap<Edge, number>();
  * what an earlier layout left on each edge. C routes each edge once per
  * `dot_splines_` and `new_spline` appends to whatever `ED_spl` holds, so stale
  * beziers neither stop this pass routing an edge nor count as this pass's route.
- * A stale `lost` is the same: this pass has not lost the edge yet.
  * @see lib/dotgen/dotsplines.c:dot_splines_
  * @see lib/common/splines.c:new_spline
  */
 export function beginRoutingPass(g: Graph): void {
   resetSplineBounds(g);
   for (const e of g.edges) {
-    e.info.lost = undefined;
     if (e.info.spl === undefined) staleBeziersByEdge.delete(e);
     else staleBeziersByEdge.set(e, e.info.spl.size);
   }

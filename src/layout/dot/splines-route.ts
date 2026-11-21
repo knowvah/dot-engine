@@ -385,15 +385,11 @@ export function routeParallelEdgeGroup(
     return o.info.head_port?.defined || o.info.tail_port?.defined;
   }) ?? edges[0]!;
   const base = baseSplineForGroup(g, baseEdge);
-  // A lost group base consumes every member: C's dot_splines_ calls
-  // make_regular_edge once per group and never re-routes its edges, so no
-  // later group may re-attempt (and re-report) them.
+  // A lost group base installs no spline on any member: C's dot_splines_ calls
+  // make_regular_edge once per group, and it returns when routesplines fails.
   // @see lib/dotgen/dotsplines.c:dot_splines_ (group loop, one call per group)
-  if (base === 'lost') {
-    for (const e of edges) resolveOrigEdge(e).info.lost = true;
-    return;
-  }
-  if (base === null) return;
+  // @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0 return)
+  if (base === 'lost' || base === null) return;
   if (cnt === 1) { installShiftedEdge(edges[0]!, base); return; }
   // dx = Multisep * (cnt-1) / 2 centres the fan on the base path.
   // @see lib/dotgen/dotsplines.c:make_regular_edge:1885

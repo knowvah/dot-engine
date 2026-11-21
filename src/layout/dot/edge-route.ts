@@ -222,7 +222,7 @@ function routeFaithfulRegularPlain(e: GraphEdge, g: Graph): boolean {
   // routesplines failed after a full corridor attempt: C installs no spline
   // and the edge is LOST (postproc warns, emit skips) — never straight-line
   // synthesized. @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0)
-  if (pts === 'lost') { e.info.lost = true; return true; }
+  if (pts === 'lost') return true;
   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
   return true;
 }
@@ -244,7 +244,7 @@ function routeFaithfulAdjacentBack(e: GraphEdge, g: Graph): boolean {
   const fwd = makeFwdEdge(e);
   const pts = routeRegularEdgeFaithful(g, fwd);
   if (pts === null) return false;
-  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
+  if (pts === 'lost') return true; // C: edge lost, no spline
   clipAndInstall(fwd, fwd.head, pts, pts.length, buildDotSinfo());
   if (swapEndsP(e)) swapEdgeSpline(e);
   return true;
@@ -279,7 +279,7 @@ export function routeOneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]):
 function routeFaithfulMultiRank(e: GraphEdge, g: Graph): boolean {
   const pts = routeMultiRankEdgeFaithful(g, e);
   if (pts === null) return false;
-  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
+  if (pts === 'lost') return true; // C: edge lost, no spline
   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
   return true;
 }
@@ -398,7 +398,7 @@ function routeFaithfulSidePort(e: GraphEdge, g: Graph, run: readonly GraphEdge[]
   }
   const pts = routeRegularEdgeFaithful(g, e);
   if (pts === null) return null;
-  if (pts === 'lost') { e.info.lost = true; return 0; } // C: edge lost, no spline
+  if (pts === 'lost') return 0; // C: edge lost, no spline
   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
   return 0;
 }
@@ -474,9 +474,7 @@ function routeForwardEdge(
  * @see lib/dotgen/dotsplines.c:dot_splines_ (per-edge dispatch + 295 skip)
  */
 export function routeLoneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): number {
-  // A lost edge (routesplines failure, C semantics) is consumed: C routes each
-  // edge exactly once, so a later group must not re-attempt it.
-  if (routedThisPass(e) || e.info.lost === true) return 0;
+  if (routedThisPass(e)) return 0;
   // C dot_splines_ skips FLATORDER/IGNORED edges when building the route list;
   // an IGNORED edge (e.g. a concentrate-merged parallel duplicate) must get no
   // spline so emit draws only the representative. @see dotsplines.c:295

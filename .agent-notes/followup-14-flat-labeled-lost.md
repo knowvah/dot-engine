@@ -11,6 +11,10 @@
 - **2026-11-10 (issue #137)**: the `routeDotEdges` backstop is gone (part 11 T8). The
   re-route risk is now inside the flat group loop, which calls `routeLoneEdge` for every
   member (`splines-groups.ts:121`); its `lost` skip is the only reader.
+- **2026-11-21 (issue #188)**: superseded. `EdgeInfo.lost` is removed with its writers and the
+  skip: the flat group loop is deduplicated by original, so no member is offered twice. A router
+  branch that consumes an edge without a spline now just returns "handled"; the Impact line above
+  no longer applies (`.agent-notes/issue-188.md`).
 
 ## Observation: survey verdicts ignore warning counts
 - **Context**: Deciding whether a stderr-only fix needs the 3 h survey.

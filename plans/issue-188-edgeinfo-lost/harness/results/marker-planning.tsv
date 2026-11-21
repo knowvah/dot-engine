@@ -1,0 +1,35 @@
+1323	none
+1323_1	none
+1332	   1 ISSUE188_LOSTWRITE sidePort c4251->c4253;
+2470	   1 ISSUE188_LOSTWRITE flatLabeled n96->n36;
+2471	   1 ISSUE188_LOSTWRITE flatLabeled n204->n32;   1 ISSUE188_LOSTWRITE flatLabeled n207->n33;   1 ISSUE188_LOSTWRITE flatLabeled n207->n42;   1 ISSUE188_LOSTWRITE flatLabeled n231->n3;   1 ISSUE188_LOSTWRITE flatLabeled n232->n3;   1 ISSUE188_LOSTWRITE flatLabeled n288->n30;
+2723	   1 ISSUE188_LOSTWRITE flatLabeled 415->407;
+2773	   1 ISSUE188_LOSTWRITE multiRank 0->Se3ffa81011d69e3db000538bf02fa1d0;
+2773_1	   1 ISSUE188_LOSTWRITE multiRank 0->Se3ffa81011d69e3db000538bf02fa1d0;
+2774	   1 ISSUE188_LOSTWRITE multiRank 0->Se0ffa00000d60e0db000000bf00fa0d0;   1 ISSUE188_LOSTWRITE multiRank Se0ffa00000d60e0db000000bf00fa0d0->a;
+2774_1	   1 ISSUE188_LOSTWRITE multiRank 0->Se0ffa00000d60e0db000000bf00fa0d0;   1 ISSUE188_LOSTWRITE multiRank Se0ffa00000d60e0db000000bf00fa0d0->a;
+2776	   1 ISSUE188_LOSTWRITE multiRank 0->Ie0ffa00600d60e0db000000bf00fa0d0;   1 ISSUE188_LOSTWRITE multiRank Ie0ffa00600d60e0db000000bf00fa0d0->Se0ffa00d00d60e0db000000bf00fa0d0;   1 ISSUE188_LOSTWRITE multiRank S->Se0ffa00d00d60e0db000000bf00fa0d0;
+2778	   1 ISSUE188_LOSTWRITE multiRank Se3ffa81011d69e3db000538bf02fa1d0->Se3fd0;   1 ISSUE188_LOSTWRITE multiRank d0->Se3ffa81011d69e3db000538bf02fa1d0;
+2780	   1 ISSUE188_LOSTWRITE multiRank d0->Se3ffa81011d69e3db000538bf02fa1d0;
+2796	   1 ISSUE188_LOSTWRITE flatLabeled 3->16;
+graphs-structs	   1 ISSUE188_LOSTWRITE sidePort struct1->struct3;
+2765	   1 ISSUE188_LOSTWRITE multiRank Ho0er0tra0eTo0top->Ho0er0est;
+2765_1	   1 ISSUE188_LOSTWRITE multiRank Ho0er0tra0eTo0top->Ho0er0est;
+c1-conc-parallel-lost	none
+c2-conc-parallel-lost-merge	none
+c3-conc-parallel-lost-fanout	none
+c4-parallel-lost-plain	   3 ISSUE188_LOSTWRITE parallelGroup a->b;
+d1-dead-end-back	   1 ISSUE188_LOSTWRITE chainBack Est->Top;
+r1-parallel-lost	   2 ISSUE188_LOSTWRITE parallelGroup a->b;
+r2-fwd-chain-lost	   1 ISSUE188_LOSTWRITE multiRank a->b;   2 ISSUE188_LOSTWRITE parallelGroup a->m;
+r3-back-chain-lost	   1 ISSUE188_LOSTWRITE chainBack b->a;   1 ISSUE188_LOSTWRITE parallelGroup a->m;   1 ISSUE188_LOSTWRITE parallelGroup m->a;
+r4-flat-labeled-lost	   1 ISSUE188_LOSTWRITE flatLabeled 39->43;
+s1-structs-sideport-lost	   1 ISSUE188_LOSTWRITE sidePort struct1->struct3;
+f1	none
+f2	none
+f3	none
+f4	none
+f5	none
+f6	none
+f7	none
+f8	none

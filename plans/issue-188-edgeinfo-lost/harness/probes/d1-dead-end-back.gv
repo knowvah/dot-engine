@@ -1,0 +1,14 @@
+digraph {
+  concentrate=true;
+  node [shape=record]
+  subgraph cluster{
+    Top [label="|<Target>"]
+  }
+  Light
+  Top -> Light [weight=10]
+  Light -> Est [weight=10]
+  Est:n -> Top:n
+  Est:n -> Top:Target
+  Light:n -> Top:n
+  Est:n -> Top:Target
+}

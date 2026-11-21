@@ -23,6 +23,8 @@
 - **Impact**: `lost` is unpinned by any corpus id; removing or changing it needs a fixture that
   takes one of those paths and a stderr comparison.
 - **Confidence**: High for the count; the reachability claim is from reading the code.
+- **2026-11-21 (issue #188)**: superseded. The field is gone. The reader was not reachable after
+  all: no original edge is offered to `routeLoneEdge` twice in a pass (`.agent-notes/issue-188.md`).
 
 ## Observation: 13 corpus ids do not finish a dot svg render inside bytediff's caps
 - **Context**: marker run, one process per id, 120 s and `--max-old-space-size=1536`.

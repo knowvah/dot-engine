@@ -1,0 +1,10 @@
+digraph g {
+concentrate=true;
+a [height=1.416667];
+a -> m -> x -> y -> b;
+a -> b [sametail=t];
+a -> b [sametail=t];
+a -> c [sametail=t];
+m -> c;
+x -> c;
+}

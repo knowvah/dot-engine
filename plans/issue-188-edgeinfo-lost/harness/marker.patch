@@ -1,0 +1,102 @@
+diff --git a/src/layout/dot/edge-route-chain.ts b/src/layout/dot/edge-route-chain.ts
+index f816b2f8..f2cde8d2 100644
+--- a/src/layout/dot/edge-route-chain.ts
++++ b/src/layout/dot/edge-route-chain.ts
+@@ -368,6 +368,7 @@ function entryRunSegments(e: GraphEdge): GraphEdge[] | null {
+ export function routeEntryRun(g: Graph, entry: GraphEdge): GraphEdge | null {
+   const segs = entryRunSegments(entry);
+   if (segs === null) return null;
++  { const o188 = resolveOrigEdge(entry); if (o188.info.lost === true) console.error(`ISSUE188_LOSTREOFFER entryRun ${o188.tail.name}->${o188.head.name}`); }
+   const last = segs[segs.length - 1];
+   const pts = routeChainSegmented(g, segs[0], last, segs);
+   if (pts !== null) clipAndInstall(entry, last.head, pts, pts.length, buildDotSinfo());
+@@ -478,7 +479,7 @@ export function routeBackEdge(e: GraphEdge, _tailBox: NodeBox, _headBox: NodeBox
+   // dot_splines_ never revisits the edge — mark it consumed so the backstop
+   // sweep does not re-route (and re-report) it.
+   // @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0 return)
+-  if (fwd === null) { e.info.lost = true; return; }
++  if (fwd === null) { console.error(`ISSUE188_LOSTWRITE chainBack ${e.tail.name}->${e.head.name}`); e.info.lost = true; return; }
+   clipAndInstall(fwdEdge, fwdEdge.head, fwd, fwd.length, buildDotSinfo());
+   if (swapEndsP(e)) swapEdgeSpline(e);
+ }
+diff --git a/src/layout/dot/edge-route.ts b/src/layout/dot/edge-route.ts
+index 827a80e5..1ae28541 100644
+--- a/src/layout/dot/edge-route.ts
++++ b/src/layout/dot/edge-route.ts
+@@ -222,7 +222,7 @@ function routeFaithfulRegularPlain(e: GraphEdge, g: Graph): boolean {
+   // routesplines failed after a full corridor attempt: C installs no spline
+   // and the edge is LOST (postproc warns, emit skips) — never straight-line
+   // synthesized. @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0)
+-  if (pts === 'lost') { e.info.lost = true; return true; }
++  if (pts === 'lost') { console.error(`ISSUE188_LOSTWRITE regularPlain ${e.tail.name}->${e.head.name}`); e.info.lost = true; return true; }
+   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
+   return true;
+ }
+@@ -244,7 +244,7 @@ function routeFaithfulAdjacentBack(e: GraphEdge, g: Graph): boolean {
+   const fwd = makeFwdEdge(e);
+   const pts = routeRegularEdgeFaithful(g, fwd);
+   if (pts === null) return false;
+-  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
++  if (pts === 'lost') { console.error(`ISSUE188_LOSTWRITE adjBack ${e.tail.name}->${e.head.name}`); e.info.lost = true; return true; } // C: edge lost, no spline
+   clipAndInstall(fwd, fwd.head, pts, pts.length, buildDotSinfo());
+   if (swapEndsP(e)) swapEdgeSpline(e);
+   return true;
+@@ -279,7 +279,7 @@ export function routeOneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]):
+ function routeFaithfulMultiRank(e: GraphEdge, g: Graph): boolean {
+   const pts = routeMultiRankEdgeFaithful(g, e);
+   if (pts === null) return false;
+-  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
++  if (pts === 'lost') { console.error(`ISSUE188_LOSTWRITE multiRank ${e.tail.name}->${e.head.name}`); e.info.lost = true; return true; } // C: edge lost, no spline
+   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
+   return true;
+ }
+@@ -398,7 +398,7 @@ function routeFaithfulSidePort(e: GraphEdge, g: Graph, run: readonly GraphEdge[]
+   }
+   const pts = routeRegularEdgeFaithful(g, e);
+   if (pts === null) return null;
+-  if (pts === 'lost') { e.info.lost = true; return 0; } // C: edge lost, no spline
++  if (pts === 'lost') { console.error(`ISSUE188_LOSTWRITE sidePort ${e.tail.name}->${e.head.name}`); e.info.lost = true; return 0; } // C: edge lost, no spline
+   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
+   return 0;
+ }
+@@ -476,6 +476,7 @@ function routeForwardEdge(
+ export function routeLoneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): number {
+   // A lost edge (routesplines failure, C semantics) is consumed: C routes each
+   // edge exactly once, so a later group must not re-attempt it.
++  if (!routedThisPass(e) && e.info.lost === true) console.error(`ISSUE188_LOSTSKIP ${e.tail.name}->${e.head.name}`);
+   if (routedThisPass(e) || e.info.lost === true) return 0;
+   // C dot_splines_ skips FLATORDER/IGNORED edges when building the route list;
+   // an IGNORED edge (e.g. a concentrate-merged parallel duplicate) must get no
+diff --git a/src/layout/dot/splines-flat-labeled.ts b/src/layout/dot/splines-flat-labeled.ts
+index 5719f3e8..8d555185 100644
+--- a/src/layout/dot/splines-flat-labeled.ts
++++ b/src/layout/dot/splines-flat-labeled.ts
+@@ -153,7 +153,7 @@ export function makeFlatLabeledEdge(g: Graph, e: Edge): boolean {
+   // C's dot_splines_ visits the edge once, so mark it lost: the flat group loop
+   // calls routeLoneEdge per member, and its `lost` skip keeps a later call from
+   // routing (and reporting the failure) a second time.
+-  if (ps === null || ps.length === 0) { e.info.lost = true; return true; }
++  if (ps === null || ps.length === 0) { console.error(`ISSUE188_LOSTWRITE flatLabeled ${e.tail.name}->${e.head.name}`); e.info.lost = true; return true; }
+   if (!tailIsLeft) ps.reverse();
+   clipAndInstall(e, e.head, ps, ps.length, { ...buildDotSinfo(), ignoreSwap: true });
+   return true;
+diff --git a/src/layout/dot/splines-route.ts b/src/layout/dot/splines-route.ts
+index 861697de..538cca3a 100644
+--- a/src/layout/dot/splines-route.ts
++++ b/src/layout/dot/splines-route.ts
+@@ -384,13 +384,14 @@ export function routeParallelEdgeGroup(
+     const o = resolveOrigEdge(e);
+     return o.info.head_port?.defined || o.info.tail_port?.defined;
+   }) ?? edges[0]!;
++  for (const e of edges) { const o188 = resolveOrigEdge(e); if (o188.info.lost === true) console.error(`ISSUE188_LOSTREOFFER parallel ${o188.tail.name}->${o188.head.name}`); }
+   const base = baseSplineForGroup(g, baseEdge);
+   // A lost group base consumes every member: C's dot_splines_ calls
+   // make_regular_edge once per group and never re-routes its edges, so no
+   // later group may re-attempt (and re-report) them.
+   // @see lib/dotgen/dotsplines.c:dot_splines_ (group loop, one call per group)
+   if (base === 'lost') {
+-    for (const e of edges) resolveOrigEdge(e).info.lost = true;
++    for (const e of edges) { const o188 = resolveOrigEdge(e); console.error(`ISSUE188_LOSTWRITE parallelGroup ${o188.tail.name}->${o188.head.name}`); o188.info.lost = true; }
+     return;
+   }
+   if (base === null) return;
