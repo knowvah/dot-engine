@@ -1,0 +1,13 @@
+digraph G {
+	graph [bb="0,0,86,68"];
+	node [label="\N"];
+	subgraph s {
+		graph [_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -t "];
+		subgraph cluster_k {
+			graph [bb="8,8,78,60"];
+			a	[height=0.5,
+				pos="43,34",
+				width=0.75];
+		}
+	}
+}

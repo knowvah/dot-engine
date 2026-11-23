@@ -212,8 +212,10 @@ export class StmtProcessor {
    *  first declarer, through bindattrs' empty declaration) updates it, which
    *  first pins its direct subgraphs; a new local definition pins nothing.
    *  A key declared in a re-opened subgraph's later body gets a local symbol,
-   *  so it is no longer a seeded one. @see lib/cgraph/attr.c:setattr */
+   *  so it is no longer a seeded one. @see lib/cgraph/attr.c:setattr
+   *  In the root's own body the symbol also gets `print`. @see grammar.y:388 attrstmt */
   private declareGraphAttr(graph: Graph, key: string): void {
+    if (graph.parent === null) (graph.printGraphAttrs ??= new Set()).add(key);
     const first = !graph.root.declaredGraphAttrs.has(key);
     if (first) {
       (graph.firstGraphDecl ??= new Set()).add(key);

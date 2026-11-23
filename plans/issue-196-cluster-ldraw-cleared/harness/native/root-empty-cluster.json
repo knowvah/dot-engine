@@ -1,0 +1,134 @@
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "_draw_": 
+  [
+    {
+      "op": "c",
+      "grad": "none",
+      "color": "#fffffe00"
+    },
+    {
+      "op": "C",
+      "grad": "none",
+      "color": "#ffffff"
+    },
+    {
+      "op": "P",
+      "points": [[0.000,0.000],[0.000,92.800],[164.000,92.800],[164.000,0.000]]
+    }
+  ],
+  "bb": "0,0,164,92.8",
+  "label": "",
+  "xdotversion": "1.7",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "cluster_x",
+      "bb": "8,8,78,84.8",
+      "label": "L",
+      "lheight": "0.23",
+      "lp": "43,72.4",
+      "lwidth": "0.12",
+      "style": "invis",
+      "_gvid": 0,
+      "nodes": [
+        2
+      ]
+    },
+    {
+      "name": "cluster_w",
+      "bb": "86,8,156,84.8",
+      "label": "W",
+      "lheight": "0.23",
+      "lp": "121,72.4",
+      "lwidth": "0.18",
+      "style": "invis",
+      "_gvid": 1,
+      "nodes": [
+        3
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "p",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [43.000,34.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [43.000,29.800],
+          "align": "c",
+          "width": 7.000,
+          "text": "p"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "43,34",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "q",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [121.000,34.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [121.000,29.800],
+          "align": "c",
+          "width": 7.000,
+          "text": "q"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "121,34",
+      "width": "0.75"
+    }
+  ]
+}

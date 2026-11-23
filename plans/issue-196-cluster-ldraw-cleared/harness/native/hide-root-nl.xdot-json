@@ -1,0 +1,202 @@
+== render 1
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 172.8 86 172.8 86 0 ",
+		bb="0,0,86,172.8",
+		label="\n",
+		lheight=0.22,
+		lp="43,12",
+		lwidth=0.00,
+		style="",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_n {
+		graph [_draw_="c 7 -#000000 p 4 8 88 8 164.8 78 164.8 78 88 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 148.2 0 10.11 1 -N ",
+			bb="8,88,78,164.8",
+			label=N,
+			lheight=0.23,
+			lp="43,152.4",
+			lwidth=0.14
+		];
+		a	[_draw_="c 7 -#000000 e 43 114 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 109.8 0 6.21 1 -a ",
+			height=0.5,
+			pos="43,114",
+			width=0.75];
+	}
+	b	[_draw_="c 7 -#000000 e 43 42 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 37.8 0 7 1 -b ",
+		height=0.5,
+		pos="43,42",
+		width=0.75];
+	a -> b	[_draw_="c 7 -#000000 B 4 43 95.7 43 88.41 43 79.73 43 71.54 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 46.5 71.62 43 61.62 39.5 71.62 ",
+		pos="e,43,60.104 43,95.697 43,88.407 43,79.726 43,71.536"];
+}
+== render 2
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "_draw_": 
+  [
+    {
+      "op": "c",
+      "grad": "none",
+      "color": "#fffffe00"
+    },
+    {
+      "op": "C",
+      "grad": "none",
+      "color": "#ffffff"
+    },
+    {
+      "op": "P",
+      "points": [[0.000,0.000],[0.000,172.800],[86.000,172.800],[86.000,0.000]]
+    }
+  ],
+  "bb": "0,0,86,172.8",
+  "label": "\\n",
+  "lheight": "0.22",
+  "lp": "43,12",
+  "lwidth": "0.00",
+  "xdotversion": "1.7",
+  "_subgraph_cnt": 1,
+  "objects": [
+    {
+      "name": "cluster_n",
+      "bb": "8,88,78,164.8",
+      "label": "N",
+      "lheight": "0.23",
+      "lp": "43,152.4",
+      "lwidth": "0.14",
+      "style": "invis",
+      "_gvid": 0,
+      "nodes": [
+        1
+      ]
+    },
+    {
+      "_gvid": 1,
+      "name": "a",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [43.000,114.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [43.000,109.800],
+          "align": "c",
+          "width": 6.210,
+          "text": "a"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "43,114",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 2,
+      "name": "b",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [43.000,42.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [43.000,37.800],
+          "align": "c",
+          "width": 7.000,
+          "text": "b"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "43,42",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 1,
+      "head": 2,
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "b",
+          "points": [[43.000,95.700],[43.000,88.410],[43.000,79.730],[43.000,71.540]]
+        }
+      ],
+      "_hdraw_": 
+      [
+        {
+          "op": "S",
+          "style": "solid"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "C",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "P",
+          "points": [[46.500,71.620],[43.000,61.620],[39.500,71.620]]
+        }
+      ],
+      "pos": "e,43,60.104 43,95.697 43,88.407 43,79.726 43,71.536"
+    }
+  ]
+}

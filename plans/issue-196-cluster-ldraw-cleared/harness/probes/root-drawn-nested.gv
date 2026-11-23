@@ -1,0 +1,1 @@
+digraph G { label="R"; fontcolor=red; subgraph cluster_x { style=invis; label="L"; _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -h "; subgraph cluster_y { label="Y"; style=invis; p } } q; p -> q }

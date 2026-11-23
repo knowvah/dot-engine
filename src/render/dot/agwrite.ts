@@ -31,6 +31,7 @@ import {
 import { withLinelength } from './agwrite-linelength.js';
 import { nodesInSeq } from '../../layout/dot/decomp.js';
 import type { XdotDraws, SerCtx } from './types.js';
+import { clusterLdraw, rootLdraw } from './write-back.js';
 
 /** write.c's serializer half of the dot/xdot renderer. @see lib/cgraph/write.c */
 export abstract class DotWriterBase {
@@ -373,12 +374,12 @@ export abstract class DotWriterBase {
     ctx.out.push(s + ';\n');
   }
 
-  /** Root-graph attribute block: `_draw_`, `_ldraw_`, `bb`, `xdotversion`. */
+  /** Root-graph attribute block: `_draw_`, `_ldraw_` (rootLdraw: empty only under `print`), `bb`, `xdotversion`. */
   private graphAttrs(g: Graph): string[] {
     const d = this.drawsOf(g);
-    const parts: string[] = [];
-    if (d?.draw) parts.push(this.drawAttr('_draw_', d.draw));
-    if (d?.ldraw) parts.push(this.drawAttr('_ldraw_', d.ldraw));
+    const parts: string[] = d?.draw ? [this.drawAttr('_draw_', d.draw)] : [];
+    const ld = rootLdraw(g, d?.ldraw);
+    if (ld !== undefined) parts.push(this.drawAttr('_ldraw_', ld));
     parts.push('bb="' + this.bbStr(g) + '"');
     parts.push(...graphLabelAttrs(g));
     // xdot_begin_graph agsets xdotversion; FORMAT_DOT never does.
@@ -390,15 +391,14 @@ export abstract class DotWriterBase {
     return parts;
   }
 
-  /** Cluster attribute block. C's xdot_end_cluster ALWAYS agsets `_draw_` for a
-   *  cluster it ran for (even empty, e.g. peripheries=0); one that emit_clusters
-   *  skipped (clust_in_layer) keeps only a stored one. `_ldraw_` only with a label.
-   *  @see plugin/core/gvrender_core_dot.c:284 xdot_end_cluster */
+  /** Cluster attrs: xdot_end_cluster agsets `_draw_` for every cluster it ran for (empty too); one
+   *  clust_in_layer skipped keeps a stored one. `_ldraw_`: clusterLdraw. @see gvrender_core_dot.c:284 */
   private clusterAttrs(sg: Graph): string[] {
     const d = this.drawsOf(sg);
-    const drawn = this.emitDraws && this.clusters.includes(sg);
-    const parts: string[] = drawn || d?.draw ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
-    if (d?.ldraw) parts.push(this.drawAttr('_ldraw_', d.ldraw));
+    const ran = this.emitDraws ? this.clusters : [];
+    const parts: string[] = ran.includes(sg) || d?.draw ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
+    const ld = clusterLdraw(sg, d?.ldraw, ran, (p) => this.drawsOf(p)?.ldraw);
+    if (ld !== undefined) parts.push(this.drawAttr('_ldraw_', ld));
     if (sg.info.bb) parts.push('bb="' + this.bbStr(sg) + '"');
     // rec_attach_bb recurses into GD_clust, so a labelled cluster carries the
     // same lp/lwidth/lheight triple as the root. @see lib/common/output.c:249

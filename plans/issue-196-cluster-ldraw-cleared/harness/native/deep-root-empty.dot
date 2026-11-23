@@ -1,0 +1,24 @@
+digraph G {
+	graph [_ldraw_="",
+		bb="0,0,156,108.8"
+	];
+	node [label="\N"];
+	subgraph cluster_a {
+		graph [bb="8,8,94,100.8"];
+		subgraph cluster_b {
+			graph [bb="16,16,86,92.8",
+				label=B,
+				lheight=0.23,
+				lp="51,80.4",
+				lwidth=0.13,
+				style=invis
+			];
+			p	[height=0.5,
+				pos="51,42",
+				width=0.75];
+		}
+	}
+	q	[height=0.5,
+		pos="129,42",
+		width=0.75];
+}

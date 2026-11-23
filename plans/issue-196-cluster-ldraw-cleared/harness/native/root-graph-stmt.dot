@@ -1,0 +1,21 @@
+digraph G {
+	graph [_ldraw_="",
+		bb="0,0,142,92.8"
+	];
+	node [label="\N"];
+	subgraph cluster_x {
+		graph [bb="8,8,78,84.8",
+			label=L,
+			lheight=0.23,
+			lp="43,72.4",
+			lwidth=0.12,
+			style=invis
+		];
+		p	[height=0.5,
+			pos="43,34",
+			width=0.75];
+	}
+	q	[height=0.5,
+		pos="115,34",
+		width=0.75];
+}

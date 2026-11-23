@@ -1,0 +1,362 @@
+diff --git a/src/render/dot.ts b/src/render/dot.ts
+index ccdecdab..7841499e 100644
+--- a/src/render/dot.ts
++++ b/src/render/dot.ts
+@@ -116,11 +116,11 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
+     // Flush GDRAW/GLABEL (canvas background + graph label) onto the root, then serialize.
+     // @see gvrender_core_dot.c:427 xdot_end_graph
+     const gd = this.flush(EmitState.GDraw);
+-    const gl = this.flush(EmitState.GLabel);
+-    if (this.emitDraws && (gd || gl)) {
++    const gl = this.flush(EmitState.GLabel); // `_ldraw_` whenever GD_label is, empty too (:436)
++    if (this.emitDraws && (gd || g.info.label != null)) {
+       const set = this.drawsFor(g);
+       if (gd) set.draw = gd;
+-      if (gl) set.ldraw = escBackslash(gl);
++      if (g.info.label != null) set.ldraw = escBackslash(gl);
+     }
+     job.write(this.serialize(g));
+     this.writeBack(g); // C writes before agwrite; the serializer overlaid the same values
+@@ -298,14 +298,14 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
+   endCluster(sg: Graph, _job: RenderJob): void {
+         const draw = this.flush(EmitState.CDraw);
+     const ldraw = this.flush(EmitState.CLabel);
+-    if (draw || ldraw) {
++    if (draw || sg.info.label != null) {
+       const set = this.drawsFor(sg);
+       if (draw) set.draw = draw;
+-      // Cluster labels are stored via plain agxset (xdot_end_cluster:286), NOT
+-      // put_escaping_backslashes like node/edge/graph labels — so NO escBackslash.
+-      // The source `\"`/`\\` in the label survive as-is through agstrcanonText on
+-      // serialize (drawAttr). @see gvrender_core_dot.c:286
+-      if (ldraw) set.ldraw = ldraw;
++      // Set whenever GD_label is, from an empty buffer too (an invisible cluster, a "\n"
++      // label), by plain agxset, NOT put_escaping_backslashes like node/edge/graph labels:
++      // no escBackslash. The source `\"`/`\\` survive as-is through agstrcanonText on
++      // serialize (drawAttr). @see gvrender_core_dot.c:285-286 xdot_end_cluster
++      if (sg.info.label != null) set.ldraw = ldraw;
+     }
+     this.clusters.push(sg);
+     this.resetState(EmitState.CDraw, EmitState.CLabel);
+diff --git a/src/render/dot/agwrite.ts b/src/render/dot/agwrite.ts
+index 95edf0bc..ec006690 100644
+--- a/src/render/dot/agwrite.ts
++++ b/src/render/dot/agwrite.ts
+@@ -31,6 +31,7 @@ import {
+ import { withLinelength } from './agwrite-linelength.js';
+ import { nodesInSeq } from '../../layout/dot/decomp.js';
+ import type { XdotDraws, SerCtx } from './types.js';
++import { clusterLdraw } from './write-back.js';
+ 
+ /** write.c's serializer half of the dot/xdot renderer. @see lib/cgraph/write.c */
+ export abstract class DotWriterBase {
+@@ -373,12 +374,12 @@ export abstract class DotWriterBase {
+     ctx.out.push(s + ';\n');
+   }
+ 
+-  /** Root-graph attribute block: `_draw_`, `_ldraw_`, `bb`, `xdotversion`. */
++  /** Root-graph attribute block: `_draw_`, `_ldraw_` (its own empty value too), `bb`, `xdotversion`. */
+   private graphAttrs(g: Graph): string[] {
+     const d = this.drawsOf(g);
+     const parts: string[] = [];
+     if (d?.draw) parts.push(this.drawAttr('_draw_', d.draw));
+-    if (d?.ldraw) parts.push(this.drawAttr('_ldraw_', d.ldraw));
++    if (d?.ldraw !== undefined) parts.push(this.drawAttr('_ldraw_', d.ldraw));
+     parts.push('bb="' + this.bbStr(g) + '"');
+     parts.push(...graphLabelAttrs(g));
+     // xdot_begin_graph agsets xdotversion; FORMAT_DOT never does.
+@@ -390,15 +391,14 @@ export abstract class DotWriterBase {
+     return parts;
+   }
+ 
+-  /** Cluster attribute block. C's xdot_end_cluster ALWAYS agsets `_draw_` for a
+-   *  cluster it ran for (even empty, e.g. peripheries=0); one that emit_clusters
+-   *  skipped (clust_in_layer) keeps only a stored one. `_ldraw_` only with a label.
+-   *  @see plugin/core/gvrender_core_dot.c:284 xdot_end_cluster */
++  /** Cluster attrs: xdot_end_cluster agsets `_draw_` for every cluster it ran for (empty too); one
++   *  clust_in_layer skipped keeps a stored one. `_ldraw_`: clusterLdraw. @see gvrender_core_dot.c:284 */
+   private clusterAttrs(sg: Graph): string[] {
+     const d = this.drawsOf(sg);
+-    const drawn = this.emitDraws && this.clusters.includes(sg);
+-    const parts: string[] = drawn || d?.draw ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
+-    if (d?.ldraw) parts.push(this.drawAttr('_ldraw_', d.ldraw));
++    const ran = this.emitDraws ? this.clusters : [];
++    const parts: string[] = ran.includes(sg) || d?.draw ? [this.drawAttr('_draw_', d?.draw ?? '')] : [];
++    const ld = clusterLdraw(sg, d?.ldraw, ran, (p) => this.drawsOf(p)?.ldraw);
++    if (ld !== undefined) parts.push(this.drawAttr('_ldraw_', ld));
+     if (sg.info.bb) parts.push('bb="' + this.bbStr(sg) + '"');
+     // rec_attach_bb recurses into GD_clust, so a labelled cluster carries the
+     // same lp/lwidth/lheight triple as the root. @see lib/common/output.c:249
+diff --git a/src/render/dot/write-back.ts b/src/render/dot/write-back.ts
+index 7df1f533..1f583977 100644
+--- a/src/render/dot/write-back.ts
++++ b/src/render/dot/write-back.ts
+@@ -23,6 +23,7 @@ import type { FieldT, ShapeDesc, TextlabelT } from '../../common/types.js';
+ import { appendRecordRects, edgeAttrsAttached, edgePosRaw, nodePosRaw } from './attrs.js';
+ import { gfmt2, gfmt5, lpStr, XDOT_VERSION } from './xdot-ops.js';
+ import type { XdotDraws } from './types.js';
++import { hasLocalGraphSym } from '../../parser/graph-attr-syms.js';
+ 
+ const POINTS_PER_INCH = 72;
+ 
+@@ -130,6 +131,8 @@ export function storedDraws(attrs: Map<string, string>): XdotDraws {
+  * non-empty buffers, so an object this render did not draw (outside the clip,
+  * invisible, or outside a subgraph render) prints what an earlier render or the
+  * input stored; xdot_end_cluster sets a drawn cluster's `_draw_` even when empty.
++ * A labelled cluster's or root's `_ldraw_` is set even when empty: the renderer
++ * records `''` for it, and only for it, so `??` keeps that empty string.
+  * @see plugin/core/gvrender_core_dot.c:237 xdot_end_node, :251 xdot_end_edge
+  * @see plugin/core/gvrender_core_dot.c:280 xdot_end_cluster, :427 xdot_end_graph
+  */
+@@ -137,7 +140,7 @@ export function renderedDraws(obj: Node | Edge | Graph, d: XdotDraws | undefined
+   const st = storedDraws(obj.attrs);
+   return {
+     draw: cluster ? (d?.draw ?? '') : d?.draw || st.draw,
+-    ldraw: d?.ldraw || st.ldraw,
++    ldraw: d?.ldraw ?? st.ldraw,
+     hdraw: d?.hdraw || st.hdraw,
+     tdraw: d?.tdraw || st.tdraw,
+     hldraw: d?.hldraw || st.hldraw,
+@@ -145,6 +148,30 @@ export function renderedDraws(obj: Node | Edge | Graph, d: XdotDraws | undefined
+   };
+ }
+ 
++/**
++ * The `_ldraw_` agwrite prints for a cluster whose value is `ld`, or undefined.
++ * A non-empty value prints. An empty one prints only when the cluster holds it
++ * itself (xdot_end_cluster ran with GD_label, or a local symbol), and write_dict
++ * skips it when the value it would inherit is the root's own and empty; a
++ * non-root ancestor's empty value does not skip it. Observed on the carried
++ * oracle (#196 probes), as for writeDictSkips: the C's `psym->print` guard
++ * cannot be read literally.
++ * @see lib/cgraph/write.c:271-282 write_dict
++ */
++export function clusterLdraw(
++  sg: Graph, ld: string | undefined, drawn: readonly Graph[], ldrawOf: (g: Graph) => string | undefined,
++): string | undefined {
++  if (ld !== '') return ld || undefined;
++  const owns = (g: Graph): boolean =>
++    (drawn.includes(g) && g.info.label != null) || hasLocalGraphSym(g, '_ldraw_');
++  if (!owns(sg)) return undefined;
++  for (let p = sg.parent; p !== null; p = p.parent) {
++    if (p.parent === null) return ldrawOf(p) === '' ? undefined : ld;
++    if (owns(p)) return ld;
++  }
++  return ld;
++}
++
+ /** One object's non-empty draw strings; an empty buffer leaves the slot alone. */
+ function attachDraws(attrs: Map<string, string>, d: XdotDraws | undefined): void {
+   if (d?.draw) attrs.set('_draw_', d.draw);
+@@ -160,11 +187,19 @@ function attachClusterDraws(g: Graph, drawsOf: DrawsOf): void {
+   for (const sg of clustersOf(g)) {
+     const d = drawsOf(sg);
+     sg.attrs.set('_draw_', d?.draw ?? '');
+-    if (d?.ldraw) sg.attrs.set('_ldraw_', d.ldraw);
++    if (d?.ldraw !== undefined) sg.attrs.set('_ldraw_', d.ldraw);
+     attachClusterDraws(sg, drawsOf);
+   }
+ }
+ 
++/** The render root's draw strings: `_draw_` from a non-empty buffer, `_ldraw_`
++ *  whenever GD_label is set, empty or not.
++ *  @see plugin/core/gvrender_core_dot.c:427 xdot_end_graph */
++function attachRootDraws(g: Graph, d: XdotDraws | undefined): void {
++  if (d?.draw) g.attrs.set('_draw_', d.draw);
++  if (d?.ldraw !== undefined) g.attrs.set('_ldraw_', d.ldraw);
++}
++
+ /**
+  * `attach_attrs`, then for the xdot writer the draw strings it stored on every
+  * object, and `xdotversion`. `-Tdot` passes no `drawsOf` and leaves those alone.
+@@ -176,7 +211,7 @@ export function attachXdotAttrs(g: Graph, drawsOf: DrawsOf | undefined): void {
+   if (drawsOf === undefined) return;
+   for (const n of g.nodes.values()) attachDraws(ownAttrs(n), drawsOf(n));
+   for (const e of g.edges) attachDraws(ownAttrs(e), drawsOf(e));
+-  attachDraws(g.attrs, drawsOf(g));
++  attachRootDraws(g, drawsOf(g));
+   attachClusterDraws(g, drawsOf);
+   g.attrs.set('xdotversion', XDOT_VERSION);
+ }
+diff --git a/src/render/json-stored-draws.test.ts b/src/render/json-stored-draws.test.ts
+index 2dcbd01e..69df10e0 100644
+--- a/src/render/json-stored-draws.test.ts
++++ b/src/render/json-stored-draws.test.ts
+@@ -250,27 +250,24 @@ describe('json prints stored draw strings on objects a render does not draw (nat
+ });
+ 
+ /**
+- * The rows issue #196 leaves open. C's xdot_end_cluster and xdot_end_graph set
++ * The rows issue #196 closed: C's xdot_end_cluster and xdot_end_graph set
+  * `_ldraw_` whenever the cluster or root has a label, from an empty buffer too
+- * (an invisible cluster, a `"\n"` label), so the stored string goes; the port
+- * keeps it. Each list is every row that differs from native: when #196 lands,
+- * the lists become empty.
++ * (an invisible cluster, a `"\n"` label), so the stored string goes and json,
++ * which skips an empty value, prints none. Each list of rows that differ from
++ * native is empty.
+  * @see plugin/core/gvrender_core_dot.c:xdot_end_cluster
+  * @see plugin/core/gvrender_core_dot.c:xdot_end_graph
+  */
+-describe('open rows: the stored _ldraw_ of a labelled cluster or root that draws no text (#196)', () => {
+-  it.each([
+-    { fixture: 'ldraw-cleared', open: ['o:cluster_x:0._ldraw_', 'o:cluster_zz:3._ldraw_'] },
+-    { fixture: 'ldraw-newline', open: ['<root>._ldraw_', 'o:cluster_n:0._ldraw_'] },
+-  ])('$fixture: differs from native in the #196 rows only', ({ fixture, open }) => {
+-    expect(diffRows(renderOnce(`${fixture}.gv`), read(`out/${fixture}.json`))).toEqual(open);
++describe('the stored _ldraw_ of a labelled cluster or root that draws no text goes (#196)', () => {
++  it.each(['ldraw-cleared', 'ldraw-newline'])('%s: no row differs from native', (fixture) => {
++    expect(diffRows(renderOnce(`${fixture}.gv`), read(`out/${fixture}.json`))).toEqual([]);
+   });
+ 
+-  it('hide-cluster.gv: render 2 differs from native in cluster_l._ldraw_ only', () => {
++  it('hide-cluster.gv: render 2 equals native, cluster_l._ldraw_ included', () => {
+     const port = hideClusterRenders();
+     const native = rendersOf('out/hide-cluster.xdot-json');
+-    expect(diffRows(at(port, 1), at(native, 1))).toEqual(['o:cluster_l:0._ldraw_']);
+-    // The unlabelled cluster and both clusters' `_draw_` already follow xdot_end_cluster.
++    expect(diffRows(at(port, 1), at(native, 1))).toEqual([]);
++    expect(named(at(port, 1), 'cluster_l')['_ldraw_']).toBeUndefined();
+     expect(named(at(port, 1), 'cluster_l')['_draw_']).toBeUndefined();
+     expect(named(at(port, 1), 'cluster_u')['_ldraw_']).toBeUndefined();
+   });
+diff --git a/src/render/dot/cluster-ldraw.test.ts b/src/render/dot/cluster-ldraw.test.ts
+new file mode 100644
+index 00000000..3ee3dc8a
+--- /dev/null
++++ b/src/render/dot/cluster-ldraw.test.ts
+@@ -0,0 +1,134 @@
++// SPDX-License-Identifier: EPL-2.0
++/**
++ * A labelled cluster's or render root's `_ldraw_` is set whenever it has a
++ * label (issue #196). xdot_end_cluster and xdot_end_graph agxset it from the
++ * label buffer even when that buffer is empty (an invisible cluster, a `"\n"`
++ * label), so a stored string goes and agwrite prints `_ldraw_=""`. agwrite
++ * skips a cluster's empty value only when it would inherit the root's own empty
++ * value. json skips the empty value.
++ *
++ * Every native ref is the carried oracle's own output (ADR-0003), written by
++ * the harness's `recapture.sh`.
++ * @see plugin/core/gvrender_core_dot.c:280 xdot_end_cluster
++ * @see plugin/core/gvrender_core_dot.c:427 xdot_end_graph
++ * @see lib/cgraph/write.c:271 write_dict
++ */
++import { readdirSync, readFileSync } from 'node:fs';
++import { describe, expect, it } from 'vitest';
++import { renderFormat } from '../../../test/helpers/render-format.js';
++import { createDefaultContext } from '../../gvc/default-context.js';
++import { render as deviceRender } from '../../gvc/device.js';
++import type { Graph } from '../../model/graph.js';
++import { parse } from '../../parser/index.js';
++import { clusterLdraw } from './write-back.js';
++
++const HARNESS_196 = new URL('../../../plans/issue-196-cluster-ldraw-cleared/harness/', import.meta.url);
++const read = (name: string): string => readFileSync(new URL(name, HARNESS_196), 'utf8');
++
++const OUT_OF_SCOPE_PREFIX = 'oos-';
++/** The two-render API case: its own test below. */
++const TWO_RENDER = 'hide-cluster';
++/** `-Tdot` prints a seeded (inherited) draw string as a cluster's own: #293. */
++const DOT_OPEN = new Set(['plain-parent', 'root-drawn-nested']);
++const PROBE_COUNT = 14;
++const PROBES = readdirSync(new URL('probes/', HARNESS_196))
++  .filter((f) => f.endsWith('.gv') && !f.startsWith(OUT_OF_SCOPE_PREFIX))
++  .map((f) => f.replace(/\.gv$/, ''))
++  .filter((p) => p !== TWO_RENDER)
++  .sort();
++const STORED = 'F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -s ';
++
++/** json parsed with every object's keys sorted: the port's key order is #184's. */
++function sortedJson(text: string): string {
++  return JSON.stringify(JSON.parse(text), (_k, v: unknown) => {
++    if (v === null || typeof v !== 'object' || Array.isArray(v)) return v;
++    const o = v as Record<string, unknown>;
++    return Object.fromEntries(Object.keys(o).sort().map((k) => [k, o[k]]));
++  });
++}
++
++const port = (probe: string, format: string): string =>
++  renderFormat(parse(read(`probes/${probe}.gv`)), format, 'dot');
++
++describe('a labelled cluster or root that draws no text sets an empty _ldraw_ (#196)', () => {
++  it('reads every in-scope probe', () => {
++    expect(PROBES).toHaveLength(PROBE_COUNT);
++  });
++
++  it.each(PROBES)('%s: -Txdot equals native byte for byte', (probe) => {
++    expect(port(probe, 'xdot')).toBe(read(`native/${probe}.xdot`));
++  });
++
++  it.each(PROBES)('%s: -Tjson equals native once keys are sorted', (probe) => {
++    expect(sortedJson(port(probe, 'json'))).toBe(sortedJson(read(`native/${probe}.json`)));
++  });
++
++  it.each(PROBES.filter((p) => !DOT_OPEN.has(p)))('%s: -Tdot equals native byte for byte', (probe) => {
++    expect(port(probe, 'dot')).toBe(read(`native/${probe}.dot`));
++  });
++
++  it('hide-cluster.c: a second render after style=invis clears the labelled cluster _ldraw_', () => {
++    for (const fmt2 of ['xdot', 'json'] as const) {
++      const g = parse(read(`probes/${TWO_RENDER}.gv`));
++      const ctx = createDefaultContext();
++      ctx.layout(g, 'dot');
++      const first = deviceRender(ctx, g, 'xdot');
++      // agsafeset gives each subgraph a local `style` symbol: no longer a seeded value.
++      for (const sg of g.subgraphs.values()) {
++        sg.attrs.set('style', 'invis');
++        sg.seededAttrs?.delete('style');
++      }
++      const second = deviceRender(ctx, g, fmt2);
++      ctx.freeLayout(g, 'dot');
++      const native = read(`native/${TWO_RENDER}.xdot-${fmt2}`).split(/^== render \d+\n/m).slice(1);
++      expect(native).toHaveLength(2);
++      expect(first).toBe(native[0]);
++      expect(fmt2 === 'json' ? sortedJson(second) : second)
++        .toBe(fmt2 === 'json' ? sortedJson(native[1] ?? '') : native[1]);
++    }
++  });
++});
++
++/** A root `G` with `cluster_a` holding `cluster_b`; `label` on the named ones. */
++function tree(labelled: readonly string[]): { root: Graph; a: Graph; b: Graph } {
++  const root = parse('digraph G { subgraph cluster_a { subgraph cluster_b { x } } }');
++  const a = root.subgraphs.get('cluster_a');
++  const b = a?.subgraphs.get('cluster_b');
++  if (a === undefined || b === undefined) throw new Error('fixture lost a cluster');
++  for (const g of [a, b]) if (labelled.includes(g.name)) g.info.label = { text: 'L' };
++  return { root, a, b };
++}
++
++describe('clusterLdraw: which _ldraw_ value agwrite prints for a cluster', () => {
++  it('prints a non-empty value and nothing for a missing one', () => {
++    const { a } = tree([]);
++    expect(clusterLdraw(a, STORED, [], () => undefined)).toBe(STORED);
++    expect(clusterLdraw(a, undefined, [a], () => '')).toBeUndefined();
++  });
++
++  it('drops an empty value the cluster does not hold itself', () => {
++    const { a } = tree([]);
++    expect(clusterLdraw(a, '', [a], () => undefined)).toBeUndefined();
++  });
++
++  it("skips an empty value whose inherited value is the root's own empty one", () => {
++    const { root, a, b } = tree(['cluster_a', 'cluster_b']);
++    const ldrawOf = (g: Graph): string | undefined => (g === root ? '' : undefined);
++    expect(clusterLdraw(a, '', [a, b], ldrawOf)).toBeUndefined();
++    expect(clusterLdraw(b, '', [b], ldrawOf)).toBeUndefined();
++  });
++
++  it("prints an empty value under a non-root ancestor's empty one, or a non-empty root", () => {
++    const { root, a, b } = tree(['cluster_a', 'cluster_b']);
++    expect(clusterLdraw(b, '', [a, b], (g) => (g === root ? '' : undefined))).toBe('');
++    expect(clusterLdraw(a, '', [a], (g) => (g === root ? STORED : undefined))).toBe('');
++    expect(clusterLdraw(a, '', [a], () => undefined)).toBe('');
++  });
++
++  it('counts a local symbol as held, whether or not the cluster was drawn', () => {
++    const root = parse('digraph G { subgraph cluster_c { _ldraw_=""; a } }');
++    const c = root.subgraphs.get('cluster_c');
++    if (c === undefined) throw new Error('fixture lost cluster_c');
++    expect(clusterLdraw(c, '', [], () => undefined)).toBe('');
++  });
++});

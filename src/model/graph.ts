@@ -144,6 +144,18 @@ export class Graph {
   firstGraphDecl?: Set<string>;
 
   /**
+   * Graph-attribute keys whose root dict symbol carries `print`: the keys an
+   * attribute statement in the ROOT graph's own body listed. write_dict prints
+   * the root's empty value only for such a key, and drops a subgraph's empty
+   * value only when the symbol it would inherit is such a root symbol, itself
+   * empty. No other symbol ever carries the flag. Root only; undefined when
+   * the root's body declared no graph attribute.
+   * @see lib/cgraph/grammar.y:388 attrstmt (`if (S->g == G) sym->print = true`)
+   * @see lib/cgraph/write.c:275 write_dict
+   */
+  printGraphAttrs?: Set<string>;
+
+  /**
    * Layout-engine info; replaces GD_* macros via agbindrec (AD-1).
    * @see lib/cgraph/cgraph.h:agbindrec
    */

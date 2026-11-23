@@ -1,0 +1,210 @@
+== render 1
+digraph G {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 164.8 86 164.8 86 0 ",
+		bb="0,0,86,164.8",
+		style="",
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_l {
+		graph [_draw_="c 7 -#000000 p 4 8 80 8 156.8 78 156.8 78 80 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 140.2 0 8.55 1 -L ",
+			bb="8,80,78,156.8",
+			label=L,
+			lheight=0.23,
+			lp="43,144.4",
+			lwidth=0.12
+		];
+		a	[_draw_="c 7 -#000000 e 43 106 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 101.8 0 6.21 1 -a ",
+			height=0.5,
+			pos="43,106",
+			width=0.75];
+	}
+	subgraph cluster_u {
+		graph [_draw_="c 7 -#000000 p 4 8 8 8 60 78 60 78 8 ",
+			bb="8,8,78,60"
+		];
+		b	[_draw_="c 7 -#000000 e 43 34 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 29.8 0 7 1 -b ",
+			height=0.5,
+			pos="43,34",
+			width=0.75];
+	}
+	a -> b	[_draw_="c 7 -#000000 B 4 43 87.7 43 80.41 43 71.73 43 63.54 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 46.5 63.62 43 53.62 39.5 63.62 ",
+		pos="e,43,52.104 43,87.697 43,80.407 43,71.726 43,63.536"];
+}
+== render 2
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "_draw_": 
+  [
+    {
+      "op": "c",
+      "grad": "none",
+      "color": "#fffffe00"
+    },
+    {
+      "op": "C",
+      "grad": "none",
+      "color": "#ffffff"
+    },
+    {
+      "op": "P",
+      "points": [[0.000,0.000],[0.000,164.800],[86.000,164.800],[86.000,0.000]]
+    }
+  ],
+  "bb": "0,0,86,164.8",
+  "label": "",
+  "xdotversion": "1.7",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "cluster_l",
+      "bb": "8,80,78,156.8",
+      "label": "L",
+      "lheight": "0.23",
+      "lp": "43,144.4",
+      "lwidth": "0.12",
+      "style": "invis",
+      "_gvid": 0,
+      "nodes": [
+        2
+      ]
+    },
+    {
+      "name": "cluster_u",
+      "bb": "8,8,78,60",
+      "label": "",
+      "style": "invis",
+      "_gvid": 1,
+      "nodes": [
+        3
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "a",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [43.000,106.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [43.000,101.800],
+          "align": "c",
+          "width": 6.210,
+          "text": "a"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "43,106",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "b",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [43.000,34.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [43.000,29.800],
+          "align": "c",
+          "width": 7.000,
+          "text": "b"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "43,34",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 2,
+      "head": 3,
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "b",
+          "points": [[43.000,87.700],[43.000,80.410],[43.000,71.730],[43.000,63.540]]
+        }
+      ],
+      "_hdraw_": 
+      [
+        {
+          "op": "S",
+          "style": "solid"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "C",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "P",
+          "points": [[46.500,63.620],[43.000,53.620],[39.500,63.620]]
+        }
+      ],
+      "pos": "e,43,52.104 43,87.697 43,80.407 43,71.726 43,63.536"
+    }
+  ]
+}
