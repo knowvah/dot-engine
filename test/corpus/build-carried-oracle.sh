@@ -1,28 +1,40 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: EPL-2.0
 #
-# Build the CARRIED oracle: graphviz tag 16.1.1 plus test/corpus/oracle-patches/
+# Build the CARRIED oracle: graphviz tag $TAG (16.1.1 live) plus test/corpus/oracle-patches/
 # *.patch (lexical order, `git am --3way`), in a detached worktree of the
 # maintainer's fork. The pristine 16.1.1 build stays as the bisect build.
 # @see docs/adr/0003-upstream-fix-forward.md, test/corpus/oracle-patches/README.md
 #
 # Env:  CARRIED_SRC   fork checkout (default ~/git/sseely/graphviz); never has a
 #                     branch moved, only `git worktree add --detach`
+#       ORACLE_TAG    graphviz tag to build (default: the live oracle's tag)
 #       CARRIED_DIR   worktree + build (default ~/git/sseely/graphviz-carried)
+#       CARRIED_GVBINDIR_DOT, CARRIED_GVBINDIR_ALL  plugin dirs (default
+#                     /tmp/ghl1611-carried and /tmp/ghl1611-carried-all)
 #       PRISTINE_BUILD  pristine oracle build whose CMakeCache.txt is mirrored
 #       JOBS          parallel build jobs (default 6)
-# Output: $CARRIED_DIR/build, GVBINDIRs /tmp/ghl1611-carried and
-#         /tmp/ghl1611-carried-all, $CARRIED_DIR/carried-build.json,
+# A build of any tag other than the live one (issue #296) must override
+# CARRIED_DIR and both plugin dirs, or the script refuses before touching
+# anything: a queue or survey may be reading the live oracle.
+# Output: $CARRIED_DIR/build, the two GVBINDIRs, $CARRIED_DIR/carried-build.json,
 #         $CARRIED_DIR/carried-cmake-keys.txt (the cache keys copied).
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PATCH_DIR="$HERE/oracle-patches"
 CARRIED_SRC="${CARRIED_SRC:-$HOME/git/sseely/graphviz}"
-CARRIED_DIR="${CARRIED_DIR:-$HOME/git/sseely/graphviz-carried}"
+# The live oracle (oracle-paths.mjs; gvbindir-defaults.test.ts checks these).
+LIVE_TAG="16.1.1"
+LIVE_CARRIED_DIR="$HOME/git/sseely/graphviz-carried"
+LIVE_GVBINDIR_DOT="/tmp/ghl1611-carried"
+LIVE_GVBINDIR_ALL="/tmp/ghl1611-carried-all"
+TAG="${ORACLE_TAG:-$LIVE_TAG}"
+CARRIED_DIR="${CARRIED_DIR:-$LIVE_CARRIED_DIR}"
+GVBINDIR_DOT="${CARRIED_GVBINDIR_DOT:-$LIVE_GVBINDIR_DOT}"
+GVBINDIR_ALL="${CARRIED_GVBINDIR_ALL:-$LIVE_GVBINDIR_ALL}"
 PRISTINE_BUILD="${PRISTINE_BUILD:-$HOME/git/graphviz-16.1.1/build}"
 JOBS="${JOBS:-6}"
-TAG="16.1.1"
 BISON="${BISON_EXECUTABLE:-/opt/homebrew/opt/bison/bin/bison}"
 # flex must be 2.6.4, as for the pristine oracle's scanner: flex 2.6.16 sets
 # YY_BUF_SIZE to 2*BUFSIZ (2048 on macOS), so cgraph rejects quoted and HTML
@@ -30,13 +42,20 @@ BISON="${BISON_EXECUTABLE:-/opt/homebrew/opt/bison/bin/bison}"
 # /usr/bin/flex is 2.6.4.
 FLEX="${FLEX_EXECUTABLE:-/usr/bin/flex}"
 FLEX_VERSION="2.6.4"
-GVBINDIR_DOT="/tmp/ghl1611-carried"
-GVBINDIR_ALL="/tmp/ghl1611-carried-all"
 GIT_IDENT=(-c user.name=dot-engine-carried-oracle -c user.email=carried@invalid)
 # Feature options mirrored from the pristine cache (not the -STRINGS metadata).
 KEY_RE='^(CMAKE_BUILD_TYPE|ENABLE_[A-Z_]+|WITH_[A-Z_]+|use_[a-z_]+|with_[a-z_]+):(STRING|BOOL)='
 
 die() { echo "error: $1" >&2; exit 1; }
+
+# Refuse a build of another tag that would reuse a live worktree or plugin dir.
+guard_next_tag() {
+  [ "$TAG" = "$LIVE_TAG" ] && return 0
+  if [ "$CARRIED_DIR" = "$LIVE_CARRIED_DIR" ] || [ "$GVBINDIR_DOT" = "$LIVE_GVBINDIR_DOT" ] ||
+    [ "$GVBINDIR_ALL" = "$LIVE_GVBINDIR_ALL" ]; then
+    die "ORACLE_TAG=$TAG would overwrite the live $LIVE_TAG oracle; set CARRIED_DIR, CARRIED_GVBINDIR_DOT and CARRIED_GVBINDIR_ALL"
+  fi
+}
 
 patch_files() {
   local f
@@ -138,6 +157,7 @@ write_record() {
 
 main() {
   local start="$SECONDS"
+  guard_next_tag
   for t in git cmake shasum; do command -v "$t" >/dev/null 2>&1 || die "'$t' not found on PATH"; done
   [ -x "$BISON" ] || die "bison not executable: $BISON"
   [ -x "$FLEX" ] || die "flex not executable: $FLEX"

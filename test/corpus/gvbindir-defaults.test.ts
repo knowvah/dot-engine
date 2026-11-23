@@ -13,7 +13,7 @@
 // checkout's tests/ directory, ORACLE_CORPUS_ROOT, and no file under test/ may
 // default to the 16.1.0 checkout's tests/ again.
 
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, rmSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -29,6 +29,7 @@ import {
   ORACLE_PRISTINE_GRAPHVIZ_BUILD,
   ORACLE_PRISTINE_GVBINDIR,
   ORACLE_PRISTINE_GVBINDIR_ALL,
+  ORACLE_VERSION,
 } from './oracle-paths.mjs';
 import { corpusRoot } from './enumerate.js';
 
@@ -56,11 +57,14 @@ const ROOT_DEFAULT_RE = new RegExp(`homedir\\(\\).*${RETIRED_CORPUS_ROOT}|${RETI
 const COMMENT_RE = /^\s*(\/\/|\/\*|\*|#)/;
 const SH_BUILD_RE = /GRAPHVIZ_BUILD:-\$HOME\/([^}]*)\}/;
 const SH_OUT_RE = /OUT="\$\{1:-([^}]*)\}"/;
-const SH_CARRIED_DIR_RE = /CARRIED_DIR="\$\{CARRIED_DIR:-\$HOME\/([^}]*)\}"/;
+const SH_CARRIED_DIR_RE = /^LIVE_CARRIED_DIR="\$HOME\/([^"]*)"/m;
 const SH_PRISTINE_RE = /PRISTINE_BUILD="\$\{PRISTINE_BUILD:-\$HOME\/([^}]*)\}"/;
-const SH_GVBINDIR_DOT_RE = /^GVBINDIR_DOT="([^"]*)"/m;
-const SH_GVBINDIR_ALL_RE = /^GVBINDIR_ALL="([^"]*)"/m;
+const SH_GVBINDIR_DOT_RE = /^LIVE_GVBINDIR_DOT="([^"]*)"/m;
+const SH_GVBINDIR_ALL_RE = /^LIVE_GVBINDIR_ALL="([^"]*)"/m;
 const SH_ALL_RE = /ALL_OUT="\$\{2:-([^}]*)\}"/;
+const SH_TAG_RE = /^LIVE_TAG="([^"]*)"/m;
+/** A tag no checkout has, for the next-version guard tests. */
+const FOREIGN_TAG = '99.0.0';
 const PACKAGE_JSON = 'package.json';
 
 function sourcesUnder(dir: string): string[] {
@@ -208,6 +212,32 @@ describe('oracle location', () => {
   it('the carried builder defaults its pristine build to ORACLE_PRISTINE_GRAPHVIZ_BUILD', () => {
     const sh = readFileSync(join(TEST_DIR, '..', CARRIED_BUILDER), 'utf8');
     expect(`${homedir()}/${SH_PRISTINE_RE.exec(sh)?.[1]}`).toBe(ORACLE_PRISTINE_GRAPHVIZ_BUILD);
+  });
+
+  it('the carried builder defaults its tag to ORACLE_VERSION', () => {
+    const sh = readFileSync(join(TEST_DIR, '..', CARRIED_BUILDER), 'utf8');
+    expect(SH_TAG_RE.exec(sh)?.[1]).toBe(ORACLE_VERSION);
+  });
+
+  // Issue #296: a next-version build must never reset the live oracle's
+  // worktree or plugin dirs while a queue or survey reads them. HOME is an
+  // empty temp dir, so even a builder without the guard dies on a missing
+  // CARRIED_SRC and never reaches the real worktree.
+  it.each([
+    ['no overrides', {}],
+    ['only CARRIED_DIR', { CARRIED_DIR: 'next-carried' }],
+    ['GVBINDIRs but not CARRIED_DIR', { CARRIED_GVBINDIR_DOT: 'next-dot', CARRIED_GVBINDIR_ALL: 'next-all' }],
+  ])('the carried builder refuses a non-default tag aimed at the live oracle (%s)', (_name, extra) => {
+    const home = mkdtempSync(join(tmpdir(), 'carried-guard-'));
+    try {
+      const rel = Object.fromEntries(Object.entries(extra).map(([k, v]) => [k, join(home, v)]));
+      const env = { PATH: process.env.PATH, HOME: home, ORACLE_TAG: FOREIGN_TAG, ...rel };
+      const r = spawnSync('bash', [join(TEST_DIR, '..', CARRIED_BUILDER)], { env, encoding: 'utf8' });
+      expect(r.stderr).toContain(`error: ORACLE_TAG=${FOREIGN_TAG} would overwrite the live ${ORACLE_VERSION} oracle`);
+      expect(r.status).toBe(1);
+    } finally {
+      rmSync(home, { recursive: true, force: true });
+    }
   });
 
   it('no script references the retired pango plugin dir', () => {
