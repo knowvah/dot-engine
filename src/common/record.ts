@@ -18,11 +18,11 @@ import type { Point } from '../model/geom.js';
 import type { RenderJob } from '../gvc/job.js';
 import type { FieldT, TextlabelT } from './types.js';
 import type { TextMeasurer } from './textmeasure.js';
-import { makeLabel, makeAnyLabel } from './make-label.js';
+import { makeRecordLabel, makeAnyLabel } from './make-label.js';
 import { nodeAttr, readFontAttrs } from './poly-init.js';
 import { gvNodesize } from './poly-sizing.js';
-import { renderLabel, applyNodeStyle } from './poly-gencode.js';
-import { transformPoint } from '../gvc/device.js';
+import { applyNodeStyle } from './poly-gencode.js';
+import { transformPoint, renderOneLabel } from '../gvc/device.js';
 import { emitRoundedBezier } from './poly-shapes.js';
 import { parseStyleFlags } from './style-resolve.js';
 import { mapbool } from '../layout/dot/rank.js';
@@ -144,7 +144,7 @@ function recFlushText(p: RecScan, st: RecState): void {
     // C: fp->lp = make_label(n, text, ...) — the node enables \N etc.
     // substitution in field text. @see lib/common/shapes.c:parse_reclbl
     st.fp!.lp = makeAnyLabel(
-      t.join(''), false,
+      t.join(''), p.lbl.html,
       { fontname: p.lbl.fontname, fontsize: p.lbl.fontsize, fontcolor: p.lbl.fontcolor },
       p.measurer, p.obj,
     );
@@ -415,10 +415,9 @@ export function recordInit(n: Node, g: Graph, measurer: TextMeasurer): void {
  * @see lib/common/utils.c:441 (make_label with shapeOf(n) == SH_RECORD)
  * @see lib/common/labels.c:139 (is_record branch: rv->text = gv_strdup(str))
  */
-export function recordMakeLabel(n: Node, g: Graph, measurer: TextMeasurer): void {
+export function recordMakeLabel(n: Node, g: Graph, _measurer: TextMeasurer): void {
   const labelText = nodeAttr(n, g, 'label') ?? n.name;
-  const { fontname, fontsize, fontcolor } = readFontAttrs(n, g);
-  n.info.label = makeLabel(labelText, fontname, fontsize, fontcolor, measurer);
+  n.info.label = makeRecordLabel(labelText, readFontAttrs(n, g));
 }
 
 /**
@@ -447,11 +446,11 @@ export function genFields(job: RenderJob, n: Node, f: FieldT): void {
   const renderer = job.renderer!;
   const coord = n.info.coord ?? { x: 0, y: 0 };
   if (f.lp) {
-    const mid = {
+    f.lp.pos = {
       x: (f.b.ll.x + f.b.ur.x) / 2 + coord.x,
       y: (f.b.ll.y + f.b.ur.y) / 2 + coord.y,
     };
-    renderLabel(f.lp, mid, renderer, job);
+    renderOneLabel(f.lp, renderer, job, false); // emit_label(job, EMIT_NLABEL, f->lp)
   }
   for (let i = 0; i < f.n_flds; i++) {
     if (i > 0) genFieldSeparator(job, coord, f, f.fld![i]);

@@ -1,0 +1,1 @@
+digraph { node [shape=record, fontname="Helvetica", fontsize=20, fontcolor=blue]; a [label=<<I>it</I>|<FONT POINT-SIZE="8">sm</FONT>>]; a -> b }

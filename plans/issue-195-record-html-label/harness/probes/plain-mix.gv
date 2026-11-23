@@ -1,0 +1,1 @@
+digraph { node [shape=record]; a [label="<p0>x|<p1>y"]; b [label=<x|y>]; a:p0 -> b; a:p1 -> b }

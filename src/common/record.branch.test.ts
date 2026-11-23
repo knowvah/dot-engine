@@ -254,9 +254,9 @@ describe('parseReclbl — backslash escapes in text', () => {
 });
 
 describe('parseReclbl — HTML mode passes "<" and ">" through as literal text', () => {
-  it('"<a>" is literal text, not port syntax, when lbl.html is true', () => {
-    const info = parseReclbl(scan('<a>', true), 0, true)!;
-    expect(fieldText(info.fld![0]!)).toBe('<a>');
+  it('"<B>a</B>" is html field text, not port syntax, when lbl.html is true', () => {
+    const info = parseReclbl(scan('<B>a</B>', true), 0, true)!;
+    expect(fieldText(info.fld![0]!)).toBe('<B>a</B>');
     expect(info.fld![0]!.id).toBeNull();
   });
 });

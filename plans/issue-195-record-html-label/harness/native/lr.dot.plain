@@ -1,0 +1,5 @@
+graph 1 2.0446 0.86944
+node n 0.39732 0.43472 0.79464 0.86944 <{ <TABLE><TR><TD>a</TD></TR></TABLE>|b }|c> solid record black lightgrey
+node m 1.6696 0.43472 0.75 0.51389 "\N" solid record black lightgrey
+edge n m 4 0.79817 0.43472 0.90364 0.43472 1.0197 0.43472 1.1314 0.43472 solid black
+stop

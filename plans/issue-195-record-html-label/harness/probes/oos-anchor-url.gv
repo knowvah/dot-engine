@@ -1,0 +1,1 @@
+digraph { n [shape=record, URL="http://n", label=<<TABLE HREF="http://t"><TR><TD HREF="http://d">x</TD></TR></TABLE>|<f1> y>]; m [shape=record label="<p>a|b"]; n -> m:p }

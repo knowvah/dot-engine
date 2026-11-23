@@ -1,0 +1,1 @@
+digraph { n [shape=Mrecord, label=<{ <TABLE BORDER="0"><TR><TD>abc</TD><TD>defgh</TD></TR></TABLE>|<TABLE BORDER="0"><TR><TD>second</TD></TR></TABLE> }>] }

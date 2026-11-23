@@ -1,0 +1,5 @@
+graph 1 0.75 1.5278
+node a 0.375 1.2708 0.75 0.51389 <<I>it</I>|<FONT POINT-SIZE="8">sm</FONT>> solid record black lightgrey
+node b 0.375 0.25694 0.75 0.51389 "\N" solid record black lightgrey
+edge a b 4 0.375 1.0182 0.375 0.91285 0.375 0.78613 0.375 0.66721 solid black
+stop

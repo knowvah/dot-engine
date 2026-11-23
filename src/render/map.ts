@@ -284,7 +284,7 @@ export function plainNodeFill(n: Node, g: Graph): string {
 function plainNodeLabel(n: Node, g: Graph): string {
   const lbl = n.info.label as TextlabelT | undefined;
   const attr = nodeAttr(n, g, 'label');
-  if (lbl !== undefined && lbl.u.kind === 'html') {
+  if (lbl !== undefined && lbl.html) {
     const a = attr ?? '';
     return '<' + (isHtmlValue(a) ? htmlValueContent(a) : a) + '>';
   }
