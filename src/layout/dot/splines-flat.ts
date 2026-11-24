@@ -353,22 +353,22 @@ function normalizeCopiedFlatSpline(orig: Edge, auxe: Edge): void {
 /**
  * Route adjacent flat edges (with ports) via a rotated auxiliary layout, then
  * transform the resulting splines back onto the original edges. Installs splines
- * directly on the originals (returns 0 on success). Records and the no-port
+ * directly on the originals and returns 0, or returns the first non-zero rc of
+ * the aux dot_mincross, dot_position or dot_splines_ at once, as C does: no
+ * postprocess, no copy, no cleanup (issue #187). Records and the no-port
  * makeSimpleFlat branch are out of scope (callers gate on a side port).
- * @see lib/dotgen/dotsplines.c:make_flat_adj_edges
+ * @see lib/dotgen/dotsplines.c:make_flat_adj_edges (1211-1240)
  */
 export function makeFlatAdjEdges(g: Graph, edges: Edge[], cnt: number, et: number): number {
   const aux = buildFlatAux(g, edges, cnt);
   // C setEdgeType(auxg, et); inlined (index.ts's setEdgeType would be an import cycle).
-  // @see lib/dotgen/dotsplines.c:make_flat_adj_edges
   aux.auxg.info.flags = (aux.auxg.info.flags & ~0xf) | (et & 0xf);
   dotInitNodeEdge(aux.auxg, AUX_INIT_SYMS);
-  dotRank(aux.auxg);
-  if (dotMincross(aux.auxg) !== 0) return 1;
-  if (dotPosition(aux.auxg) !== 0) return 1;
+  const rc = runAuxPipeline(aux.auxg);
+  if (rc !== 0) return rc;
   repositionFlatAux(g, edges, aux);
-  dotSameports(aux.auxg);
-  dotSplines_(aux.auxg, false);
+  const splinesRc = runAuxSplines(aux.auxg);
+  if (splinesRc !== 0) return splinesRc;
   gvPostprocess(aux.auxg);
   copyFlatSplines(g, edges, aux);
   cleanupCloneGraph(aux.auxg);

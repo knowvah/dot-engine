@@ -1,0 +1,5 @@
+graph 1 0 0
+node x 0 0 0.75 0.5 x solid ellipse black lightgrey
+node a 0 0 0.75 0.5 a solid ellipse black lightgrey
+ solid black
+stop

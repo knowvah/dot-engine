@@ -1,0 +1,1 @@
+digraph { pack=true; {rank=same; a; b} a:s -> b:n; c -> d }

@@ -1,0 +1,3 @@
+graph 1 1.1292 0.925
+node n 0.56461 0.4625 1.1292 0.925 <{ <TABLE BORDER="0"><TR><TD>abc</TD><TD>defgh</TD></TR></TABLE>|<TABLE BORDER="0"><TR><TD>second</TD></TR></TABLE> }> solid record black lightgrey
+stop

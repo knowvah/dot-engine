@@ -82,16 +82,22 @@ export function assignShapeInfo(n: Node, polyDesc: PolygonT): void {
 }
 
 /**
- * Initialise shape descriptor and label for a node before rendering.
- * Record nodes are initialised during layout (their size depends on the
- * field tree); only build them here if layout did not.
- * @see lib/common/shapes.c:poly_init
+ * Render-time (polyInit) only: build the label when layout made none (no
+ * layout measurer). C has no render-time make_label; a second render of one
+ * layout keeps the layout's label (and any position it acquired).
  */
-/** Build the node's label via the unified C make_label boundary. */
-export function buildNodeLabel(n: Node, g: Graph, measurer: TextMeasurer): void {
-  // Layout init may already have built the label; keep it (and any
-  // position it acquired) rather than re-measuring at render time.
+function buildNodeLabel(n: Node, g: Graph, measurer: TextMeasurer): void {
   if ((n.info.label as TextlabelT | undefined) !== undefined) return;
+  makeNodeLabel(n, g, measurer);
+}
+
+/**
+ * common_init_node's make_label, via the unified C make_label boundary: runs
+ * on every layout, so a no-free relayout rebuilds the label from the current
+ * attributes.
+ * @see lib/common/utils.c:common_init_node
+ */
+export function makeNodeLabel(n: Node, g: Graph, measurer: TextMeasurer): void {
   const labelAttr = nodeAttr(n, g, 'label');
   const font = readFontAttrs(n, g);
   const isHtml = labelAttr !== undefined && isHtmlValue(labelAttr);
@@ -170,6 +176,12 @@ export function nodeImageSize(n: Node, g: Graph): { x: number; y: number } | und
   return { x: sz.x + 2, y: sz.y + 2 }; // some fixed padding
 }
 
+/**
+ * Initialise shape descriptor and label for a node before rendering.
+ * Record nodes are initialised during layout (their size depends on the
+ * field tree); only build them here if layout did not.
+ * @see lib/common/shapes.c:poly_init
+ */
 export function polyInit(n: Node, g: Graph, measurer: TextMeasurer): void {
   const shapeName = nodeAttr(n, g, 'shape') ?? 'ellipse';
   const shapefile = nodeAttr(n, g, 'shapefile');

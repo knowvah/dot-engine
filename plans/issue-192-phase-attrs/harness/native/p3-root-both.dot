@@ -1,0 +1,20 @@
+digraph {
+	graph [bb="0,0,54,108",
+		phase=3
+	];
+	node [label="\N",
+		order="",
+		rank=""
+	];
+	a	[height=0.5,
+		order=0,
+		pos="27,90",
+		rank=0,
+		width=0.75];
+	b	[height=0.5,
+		order=0,
+		pos="27,18",
+		rank=1,
+		width=0.75];
+	a -> b;
+}

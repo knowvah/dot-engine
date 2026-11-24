@@ -2,14 +2,19 @@
 
 /**
  * A routesplines failure consumes the edge: C's dot_splines_ calls
- * make_regular_edge exactly once per edge group and never revisits it, so each
- * failing group/chain reports `in routesplines, Pshortestpath failed` once. The
- * port's routers must skip edges whose routing already failed — a parallel group whose shared base was lost, a multi-rank forward
- * chain, a multi-rank back chain (makefwdedge view), and a labeled flat edge
- * whose make_flat_labeled_edge route is degenerate (pn == 0).
+ * make_regular_edge (or make_flat_edge) exactly once per edge group and never
+ * revisits it, so each failing group/chain reports `in routesplines,
+ * Pshortestpath failed` once and leaves its edges with no spline. The cases: a
+ * parallel group whose shared base was lost, a multi-rank forward chain, a
+ * multi-rank back chain (makefwdedge view), a labeled flat edge whose
+ * make_flat_labeled_edge route is degenerate (pn == 0), and an adjacent-rank
+ * record-port edge routed by the side-port router.
  *
- * Expected counts and lost-edge sets are native graphviz 16.1.0 stderr
- * (`dot -Tsvg`, GVBINDIR=/tmp/ghl) for the same inputs.
+ * Expected counts and lost-edge sets are native stderr (`dot -Tsvg`) for the
+ * same inputs. The first four cases are graphviz 16.1.0 values
+ * (GVBINDIR=/tmp/ghl; #278 tracks the fourth, which takes another path under
+ * 16.1.1). The side-port case is the carried 16.1.1 oracle's
+ * (GVBINDIR=/tmp/ghl1611-carried), captured 2026-11-21.
  *
  * @see lib/dotgen/dotsplines.c:dot_splines_ (one make_regular_edge per group)
  * @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0 return)
@@ -58,6 +63,15 @@ const CASES: Case[] = [
     ),
     failures: 1,
     lost: ['39 43'],
+  },
+  {
+    name: 'lost side-port edge (routeFaithfulSidePort)',
+    dot: readFileSync(
+      join(process.cwd(), 'src/layout/dot/__fixtures__/structs-sideport-lost.dot'),
+      'utf8',
+    ),
+    failures: 1,
+    lost: ['struct1 struct3'],
   },
 ];
 

@@ -14,7 +14,7 @@
 
 import { POINTS_PER_INCH } from '../model/geom.js';
 import { lateDouble } from '../common/nodeinit.js';
-import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin, DEFAULT_GRAPH_PAD } from './viewport.js';
+import { parseDrawingSize, jobViewport, parseLandscape, parseGraphPad, parseGraphMargin, DEFAULT_GRAPH_PAD } from './viewport.js';
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
 import type { Edge } from '../model/edge.js';
@@ -32,7 +32,6 @@ import { polyInit } from '../common/poly-init.js';
 import {
   setHtmlAnchorObj,
   setHtmlObjImgscale,
-  resetHtmlAnchorIds,
 } from '../common/htmltable-emit-rules.js';
 import { nodeAttr } from '../common/poly-init.js';
 import {
@@ -476,8 +475,8 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   // altering the ptf path, carry Z in job.scale instead — which is exactly what
   // C's SVG group emits (svg_begin_page prints job->scale.x/y = zoom*dpi/72),
   // not job->zoom. job.scale is read only by the SVG group/dims.
-  const drawingSize = parseDrawingSize(g.attrs.get('size'));
-  const z = initJobViewportZoom(job.bb, drawingSize, job.pad);
+  const { zoom: z, view } = jobViewport(g, job.bb, parseDrawingSize(g.attrs.get('size')), job.pad);
+  job.view = view; // init_job_viewport: the size= fit, then viewport=
   job.clip = deviceClip(g, job); // @see lib/common/emit.c:1550-1564 setup_page
   // init_job_dpi (emit.c:3333): GD_drawing->dpi = late_double(dpi, resolution, 0)
   // (input.c:713). When >0 it becomes job->dpi; otherwise the SVG device's
@@ -504,7 +503,6 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
   job.renderer = renderer;
   job.drawingId = drawingIdOf(g); // GD_drawing(g)->id. @see lib/common/input.c:graph_init
   setRendererKnownColors(renderer.type === 'svg'); // svg_knowncolors; others have none
-  resetHtmlAnchorIds(); // C: fresh anchorId per dot invocation
   for (const n of g.nodes.values()) polyInit(n, g, job.measurer);
   return renderGraph(g, job, renderer);
 }

@@ -15,6 +15,9 @@
   turns the question into one run. On every N probe the port's stderr then equalled native's. Three
   differences stayed with the resets off, so they are not reset matters: the stale node label (#190),
   the anchor ids (#191, a second reset at `src/gvc/device.ts:507`) and the neato KK bb (#193).
+  #193 is fixed: the port recomputed the graph bb after routing on neato's `Pack < 0` path
+  (`mode=KK`, no pack), where C keeps the bb `spline_edges` made, stale beziers included
+  (`neatoinit.c:1416` against `:1431-1436`; `.agent-notes/issue-193.md`).
   Registration order (the index) is module evaluation order; print `resets.map(String)` to read it.
 - **Impact**: use it before reading a no-free delta as a static. Revert the edit with
   `git checkout src/common/render-state.ts` before any gate.
@@ -39,14 +42,17 @@
   (`nestedclust.gv` is an exception). Pick inputs without clusters, or check native finishes first.
 - **Confidence**: High for the counts; native's crash sites were not traced.
 
-## Observation: a node label is not made again on a no-free relayout
+## Observation: a node label is not made again on a no-free relayout (fixed by #190)
 - **Context**: stderr probes of label-time warnings (HTML cell size, missing image, font metrics).
-- **Finding**: `buildNodeLabel` (`src/common/poly-init.ts:94`) returns early when `n.info.label` is
-  set, and `commonInitNode` calls it at layout time, so layouts 2 and 3 keep the stale label and
-  print none of its warnings; C's `common_init_node` (`utils.c:441`) makes it again. Edge labels are
-  made again. Filed as #190 with a native label-change repro.
-- **Impact**: probe label-time warnings with an edge label until #190 lands; a node label reports
-  "once" whatever the static under test does.
+- **Finding**: on the base of #190, `buildNodeLabel` (`src/common/poly-init.ts:94`) returned early
+  when `n.info.label` was set, and `commonInitNode` called it at layout time, so layouts 2 and 3
+  kept the stale label and printed none of its warnings; C's `common_init_node` (`utils.c:400`)
+  makes it again. #190 fixed it: layout calls the unguarded `makeNodeLabel`, and the guard stays
+  for the render-time `polyInit` call only.
+- **Impact**: node labels are now usable for label-time warning probes (HTML sizing warnings
+  repeat per layout as native's do; `src/gvc/rerender-relabel.test.ts` pins it). A once-per-process
+  warning on a node label (`nonascii`) now prints per layout, the accepted N class of
+  `docs/process-statics.md`.
 - **Confidence**: High
 
 ## Observation: process-killing wrappers around `npx tsx` and `xargs`

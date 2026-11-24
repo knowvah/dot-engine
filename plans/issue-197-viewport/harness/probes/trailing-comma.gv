@@ -1,0 +1,1 @@
+digraph G { viewport="60,60,1,"; a -> b -> c -> d }

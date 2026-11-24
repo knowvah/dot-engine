@@ -1,0 +1,6 @@
+graph 1 0.75 1.5278
+node a 0.375 1.2708 0.75 0.51389 "<p0>x|<p1>y" solid record black lightgrey
+node b 0.375 0.25694 0.75 0.51389 <x|y> solid record black lightgrey
+edge a b 4 0.1875 1.0139 0.1875 0.89633 0.20984 0.7714 0.23909 0.6582 solid black
+edge a b 4 0.5625 1.0139 0.5625 0.89633 0.54016 0.7714 0.51091 0.6582 solid black
+stop

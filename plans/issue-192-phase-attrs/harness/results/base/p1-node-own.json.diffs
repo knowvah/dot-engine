@@ -1,0 +1,2 @@
+node:a/rank: port=5 native=0
+node:b/rank[missing]: port=<absent> native=<present>

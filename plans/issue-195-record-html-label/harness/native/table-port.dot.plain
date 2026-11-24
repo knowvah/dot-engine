@@ -1,0 +1,6 @@
+graph 1 0.80556 1.525
+node a 0.40278 1.2625 0.80556 0.525 <<TABLE PORT="p"><TR><TD PORT="q">x</TD></TR></TABLE>|y> solid record black lightgrey
+node b 0.40278 0.25 0.75 0.5 b solid ellipse black lightgrey
+edge a b 4 0.32011 1.0001 0.30968 0.89479 0.30661 0.76953 0.3109 0.65248 solid black
+edge b a 4 0.48369 0.49538 0.49491 0.59847 0.49878 0.72301 0.49529 0.84087 solid black
+stop

@@ -1,0 +1,23 @@
+digraph {
+	graph [bb="0,-8,158,2.88e+09",
+		compound=true
+	];
+	node [label="\N"];
+	subgraph cluster0 {
+		graph [bb="8,0,150,2.88e+09"];
+		{
+			graph [rank=same];
+			a	[height="4e+07",
+				pos="43,1.44e+09",
+				width=0.75];
+			b	[height="4e+07",
+				pos="115,1.44e+09",
+				width=0.75];
+		}
+		a:s -> b:n;
+	}
+	c	[height=0.5,
+		pos="43,2.88e+09",
+		width=0.75];
+	c -> a	[lhead=cluster0];
+}

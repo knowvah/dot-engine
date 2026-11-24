@@ -1,0 +1,18 @@
+graph {
+	graph [bb="-27,0,99,2.88e+09"];
+	node [label="\N"];
+	{
+		graph [rank=same];
+		a	[height="4e+07",
+			pos="0,1.44e+09",
+			width=0.75];
+		b	[height="4e+07",
+			pos="72,1.44e+09",
+			width=0.75];
+	}
+	c	[height=0.5,
+		pos="0,18",
+		width=0.75];
+	a:s -- b:n;
+	a -- c;
+}

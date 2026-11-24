@@ -19,7 +19,7 @@ import { transformPoint } from './device-transform.js';
 import { graphXdots } from './init-xdot.js';
 import { gvrenderSetStyle } from './gvrender-set-style.js';
 import type { ObjState, RenderJob } from './job.js';
-import { initJobViewportZoom, parseDrawingSize, setupPageClip } from './viewport.js';
+import { jobViewport, parseDrawingSize, setupPageClip } from './viewport.js';
 
 /** @see lib/common/const.h:48 */
 const DEFAULT_COLOR = 'black';
@@ -30,16 +30,15 @@ const DEFAULT_FILL = 'lightgrey';
 const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
 
 /**
- * job->clip, computed in C's order, rounding included, from the bb and
- * `job.pad`. init_job_pad has already made that pad the device's: with no
+ * job->clip, computed in C's order, rounding included, from the bb, `job.pad`
+ * and the graph's `viewport=`. init_job_pad has already made that pad the device's: with no
  * `pad=` it is 4 on svg and map, and 0 on dot, xdot, plain and json, whose clip
  * is then the bb.
  * @see lib/common/emit.c:3290-3304 init_job_pad
  * @see lib/common/emit.c:1550-1564 setup_page
  */
 export function deviceClip(g: Graph, job: RenderJob): Box {
-  const size = parseDrawingSize(g.attrs.get('size'));
-  return setupPageClip(job.bb, size, job.pad, initJobViewportZoom(job.bb, size, job.pad));
+  return setupPageClip(jobViewport(g, job.bb, parseDrawingSize(g.attrs.get('size')), job.pad));
 }
 
 /**

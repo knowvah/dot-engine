@@ -224,6 +224,8 @@ describe('ctx.layout with no freeLayout keeps stale records and appends its rout
     ['abom-shift-parity', 'dot'],
     ['abom-shift-pack', 'dot'],
     ['flat-rev-stale', 'dot'],
+    ['kk-tri', 'neato'],
+    ['kk-ratio', 'neato'],
   ];
 
   it.each(NOFREE_CASES)('%s on %s equals native on renders 1 to 3', (id, engine) => {

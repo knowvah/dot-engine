@@ -1,0 +1,28 @@
+digraph {
+	graph [bb="0,0,0,0",
+		phase=1
+	];
+	node [label="\N"];
+	subgraph cluster_x {
+		graph [bb="0,0,0,0"];
+		b	[height=0.5,
+			pos="0,0",
+			rank=1,
+			width=0.75];
+		c	[height=0.5,
+			pos="0,0",
+			rank=1,
+			width=0.75];
+	}
+	d	[height=0.5,
+		pos="0,0",
+		rank=2,
+		width=0.75];
+	a	[height=0.5,
+		pos="0,0",
+		rank=0,
+		width=0.75];
+	a -> b;
+	a -> c;
+	c -> d;
+}

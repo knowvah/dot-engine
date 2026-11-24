@@ -1,0 +1,1 @@
+digraph { label=<<table><tr><td href="g">G</td></tr></table>>; a [label=<<table><tr><td href="x">1</td></tr></table>>]; a -> b [label=<<table><tr><td href="e" target="_top">E</td></tr></table>>] }

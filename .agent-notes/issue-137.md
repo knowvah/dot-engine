@@ -23,6 +23,8 @@
 - **Impact**: `lost` is unpinned by any corpus id; removing or changing it needs a fixture that
   takes one of those paths and a stderr comparison.
 - **Confidence**: High for the count; the reachability claim is from reading the code.
+- **2026-11-21 (issue #188)**: superseded. The field is gone. The reader was not reachable after
+  all: no original edge is offered to `routeLoneEdge` twice in a pass (`.agent-notes/issue-188.md`).
 
 ## Observation: 13 corpus ids do not finish a dot svg render inside bytediff's caps
 - **Context**: marker run, one process per id, 120 s and `--max-old-space-size=1536`.
@@ -34,12 +36,13 @@
   need a static argument. Budget about 7 minutes at 5 lanes for the run.
 - **Confidence**: High
 
-## Observation: a failed aux layout does not stop the port's spline pass
+## Observation: a failed aux layout did not stop the port's spline pass (fixed by #187)
 - **Context**: the brief's `rc` check on `makeFlatAdjEdges`.
-- **Finding**: the port's `dotSplines_` returns non-zero only from `orthoDispatch`, never for
-  an aux graph. C's `dot_splines_` also returns `make_flat_edge`'s `rc`
-  (`dotsplines.c:418-423`); the port's group loop has no result code and
-  `routeFaithfulSidePort` treats a non-zero `makeFlatAdjEdges` as "declined". Filed as #187.
-- **Impact**: #162 (16.1.1: fail the layout when an aux edge is too long) has no path to
-  travel yet.
+- **Finding**: at the time, the port's `dotSplines_` returned non-zero only from
+  `orthoDispatch`, never for an aux graph. C's `dot_splines_` also returns `make_flat_edge`'s
+  `rc` (`dotsplines.c:418-423`); the port's group loop had no result code and
+  `routeFaithfulSidePort` treated a non-zero `makeFlatAdjEdges` as "declined". Filed as #187.
+- **Impact**: superseded. #187 (2026-11-21) carries the rc from `makeFlatAdjEdges` through the
+  group loop to `dotSplines_`, so #162's aux-edge failure now fails the layout as native does.
+  See `.agent-notes/issue-187.md` for the `number | null` contract of the flat routers.
 - **Confidence**: High (read; no corpus input takes the path)

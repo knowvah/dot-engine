@@ -196,7 +196,7 @@ för dessa tre och `parity-report.ts` återger dem i ett separat avsnitt,
 ”Iterative engines (±0.5 characterization)”, i
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 uttryckligen **inte** jämförbart med de deterministiska godkännandegraderna på ±0.01 på andra ställen
-i det här dokumentet. Aktuella antal mot graphviz 16.1.1 (universum på 898 poster; godkändandeprocenten
+i det här dokumentet. Aktuella antal mot graphviz 16.1.1 (universum på 898 poster; godkännandeprocenten
 utelämnar indata som C-oraklet inte kan rendera och indata där nativ utdata varierar från körning
 till körning, enligt [Överensstämmelse](./conformance.md)):
 

@@ -91,10 +91,12 @@ export function doGraphLabel(sg: Graph, measurer: TextMeasurer | undefined): voi
   // @see lib/cgraph/attr.c:165 agmakeattrs — copies parent defvals at creation
   const str = graphAttrInherited(sg, 'label');
   if (!str) return;
-
-  const { fontsize, fontname, fontcolor } = readFontParams(sg);
   const isHtml = isHtmlValue(str);
   const content = isHtml ? htmlValueContent(str) : str;
+  // `*str != '\0'` tests the text: `label=<>` is an html string with none. @see input.c:836
+  if (content === '') return;
+
+  const { fontsize, fontname, fontcolor } = readFontParams(sg);
   const label = makeAnyLabel(content, isHtml, { fontname, fontsize, fontcolor }, measurer, sg);
   sg.info.label = label;
   sg.root.info.has_labels |= GRAPH_LABEL;

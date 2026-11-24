@@ -8,7 +8,7 @@
  * lookup, same defaults and fallbacks), so a prefetch loads the faces the
  * measurer will actually measure.
  *
- * @see src/common/nodeinit.ts:initNodeXLabel / src/common/poly-init.ts:buildNodeLabel
+ * @see src/common/nodeinit.ts:initNodeXLabel / src/common/poly-init.ts:makeNodeLabel
  * @see src/common/edge-label-init.ts (edge, xlabel, head/tail labels)
  * @see src/layout/dot/graph-label.ts:doGraphLabel (root and cluster labels)
  * @see src/common/htmltable.ts / htmltable-pos-runs.ts (HTML item fonts)

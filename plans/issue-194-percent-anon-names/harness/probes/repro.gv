@@ -1,0 +1,1 @@
+digraph "%foo" { subgraph "%bar" { a } subgraph "%baz" { node [color=red]; b } }

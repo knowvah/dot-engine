@@ -9,7 +9,7 @@
 import { Graph, type GraphKind } from '../model/graph.js';
 import { Node } from '../model/node.js';
 import { Edge } from '../model/edge.js';
-import { assignSubgSeq } from '../model/cgraph-ops.js';
+import { assignSubgSeq, isLocalName, LOCALNAMEPREFIX } from '../model/cgraph-ops.js';
 import { htmlValueContent, isHtmlValue } from '../common/html-string.js';
 import { effectiveGraphDefaults, hasLocalGraphSym, pinSubgraphsAttr } from './graph-attr-syms.js';
 import type {
@@ -160,6 +160,29 @@ export class StmtProcessor {
     if (headPort && !setByStmt('headport')) target.set('headport', headPort);
   }
 
+  /**
+   * cgraph's internal AGRAPH name map, one for the root and all subgraphs: a
+   * LOCALNAMEPREFIX name gets an anonymous id, recorded under the raw name (an
+   * html `<%x>` keeps its marker: native gives `"%x"` and `<%x>` two ids; only
+   * the root's name is recorded as text, see buildFromAst).
+   * @see lib/cgraph/imap.c:aginternalmaplookup, aginternalmapinsert
+   */
+  private readonly localGraphIds = new Map<string, number>();
+
+  /**
+   * The id of a LOCALNAMEPREFIX graph name: the recorded one, else a fresh
+   * anonymous id. endgraph drops the names when the parse ends, so agnameof
+   * prints `%<id>`. @see lib/cgraph/id.c:agmapnametoid, grammar.y:endgraph
+   */
+  localGraphId(name: string): number {
+    let id = this.localGraphIds.get(name);
+    if (id === undefined) {
+      id = this.nextAnonId();
+      this.localGraphIds.set(name, id);
+    }
+    return id;
+  }
+
   /** Consume one anonymous id, returning cgraph's `2*counter+1`. */
   private nextAnonId(): number {
     return this.anonCounter++ * 2 + 1;
@@ -189,8 +212,10 @@ export class StmtProcessor {
    *  first declarer, through bindattrs' empty declaration) updates it, which
    *  first pins its direct subgraphs; a new local definition pins nothing.
    *  A key declared in a re-opened subgraph's later body gets a local symbol,
-   *  so it is no longer a seeded one. @see lib/cgraph/attr.c:setattr */
+   *  so it is no longer a seeded one. @see lib/cgraph/attr.c:setattr
+   *  In the root's own body the symbol also gets `print`. @see grammar.y:388 attrstmt */
   private declareGraphAttr(graph: Graph, key: string): void {
+    if (graph.parent === null) (graph.printGraphAttrs ??= new Set()).add(key);
     const first = !graph.root.declaredGraphAttrs.has(key);
     if (first) {
       (graph.firstGraphDecl ??= new Set()).add(key);
@@ -264,7 +289,12 @@ export class StmtProcessor {
     // subgraph opens (before its body), so keyless edges parsed earlier in the
     // enclosing scope have already advanced it — matching native's %N exactly.
     // @see lib/cgraph/graph.c:agsubg, lib/cgraph/id.c:idmap
-    const sgName = stmt.id ?? `%${this.nextAnonId()}`;
+    // A name that starts with LOCALNAMEPREFIX is anonymous in cgraph too: it
+    // takes (or finds) an anonymous id and prints as `%<id>` after the parse.
+    let sgName: string;
+    if (stmt.id === null) sgName = `${LOCALNAMEPREFIX}${this.nextAnonId()}`;
+    else if (isLocalName(stmt.id)) sgName = `${LOCALNAMEPREFIX}${this.localGraphId(stmt.id)}`;
+    else sgName = stmt.id;
     // A re-opened named subgraph (`subgraph X {…} … subgraph X {…}`) is the one
     // the parent already holds: agsubg finds it by name among the parent's OWN
     // subgraphs and returns it. The body adds to it; it takes no new AGSEQ, and
@@ -448,15 +478,22 @@ export function buildFromAst(ast: ParsedGraph): Graph {
   // html ref in the new graph's dictionary and copies it as text. Node and
   // subgraph names are interned in the graph and keep the flag.
   // @see lib/cgraph/scan.l:233, lib/cgraph/id.c:52, lib/cgraph/refstr.c:agstrdup
-  const id = ast.id ?? '';
-  const graph = new Graph(isHtmlValue(id) ? htmlValueContent(id) : id, kind, ast.id == null);
+  // A root name that starts with LOCALNAMEPREFIX is anonymous as well
+  // (agmapnametoid), so it is stored as a nameless root is.
+  const rootName = ast.id != null && isHtmlValue(ast.id) ? htmlValueContent(ast.id) : ast.id;
+  const local = rootName != null && isLocalName(rootName);
+  const graph = new Graph(local ? '' : rootName ?? '', kind, rootName == null || local);
   // An unnamed root graph is itself anonymous in cgraph (agopen with no name),
   // consuming anon id 1 before any statement — so the first anonymous subgraph is
   // %3, not %1 (a named root leaves the counter at 0 → first subgraph %1). A root
   // named `""` is named: idmap maps the string and leaves the counter alone, so
   // the test is for null, not for a falsy id.
   // @see lib/cgraph/graph.c:agopen, lib/cgraph/id.c:idmap
-  if (ast.id == null) processor.advanceAnonId();
+  // A LOCALNAMEPREFIX root takes the same id 1, recorded under its name as
+  // text (aginternalmapinsert's agstrdup finds no html ref either): a later
+  // `subgraph "%x"` finds the id of a root `<%x>`, and `subgraph <%x>` does not.
+  if (rootName == null) processor.advanceAnonId();
+  else if (local) processor.localGraphId(rootName);
   buildGraph(ast.stmts, graph, graph, ast.directed, processor);
   return graph;
 }

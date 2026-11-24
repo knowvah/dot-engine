@@ -1,0 +1,18 @@
+# Issue #190 no-free probe matrix, one case per line: <probe> <engines> <format> <n> [<attr> <value>]
+# n layouts with no free; with <attr> <value>, node a gets that attribute after render 1.
+# A value of - means the empty string. An <attr> of renders=<r> sets no attribute and renders each
+# layout r times (I190_RENDERS). Every line runs on each listed engine (comma separated).
+relabel dot,neato,fdp,sfdp,circo,twopi,osage,patchwork plain 2 label a_much_longer_label_than_before
+relabel-record dot,neato,fdp,sfdp,circo,twopi,osage,patchwork plain 2 label a_much_longer_label_than_before
+relabel-xlabel dot,neato,fdp,sfdp,circo,twopi,osage,patchwork plain 2 label a_much_longer_label_than_before
+relabel dot,neato xdot 2 label a_much_longer_label_than_before
+relabel dot,neato svg 2 label a_much_longer_label_than_before
+relabel dot,neato plain 2 fontsize 30
+relabel dot,neato plain 2 shape record
+relabel-record dot,neato plain 2 shape box
+relabel-record dot,neato plain 2 label {x|y|zzzzzzzzzzzz}
+html-cell-small dot,neato plain 3
+html-img-missing dot,neato plain 3
+nonascii dot,neato plain 3
+html-cell-small dot,neato plain 1 renders=3
+html-img-missing dot,neato plain 1 renders=3

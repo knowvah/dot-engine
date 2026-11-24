@@ -63,8 +63,7 @@ describe('an explicit empty graph name is written as native writes it', () => {
     expect(renderRef(name, fmt)).toBe(ref(name, fmt));
   });
 
-  // Its cmapx and json names differ from native on the base too: the parser keeps `%foo` as the
-  // name where cgraph hands out `%1` (issue #194).
+  // Its cmapx and json names equal native since #194: src/parser/builder-local-names.test.ts.
   it.each(WRITER_FORMATS)('root-percent, %s: a name starting with %% is not printed', (fmt) => {
     const out = renderRef(ROOT_PERCENT, fmt);
     expect(out).toBe(ref(ROOT_PERCENT, fmt));

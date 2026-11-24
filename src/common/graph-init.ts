@@ -340,7 +340,7 @@ export function graphInit(g: Graph, useRankdir: boolean): void {
   // render time from the same attrs — gvc/viewport.ts:163-169 (parseLandscape
   // applies C's exact precedence: rotate=90, else orientation[0] in {l,L}, else
   // mapbool(landscape)), parseGraphPad/parseGraphMargin, and
-  // initJobViewportZoom (size + `!` filled flag). Storing them in GD_drawing
+  // jobViewport (size + `!` filled flag). Storing them in GD_drawing
   // here would require allocating `drawing` unconditionally (see above).
 
   // clusterrank → CL_type. @see input.c:706-707

@@ -1,0 +1,1 @@
+digraph { phase=2; a; node [order=7]; b; a -> b }

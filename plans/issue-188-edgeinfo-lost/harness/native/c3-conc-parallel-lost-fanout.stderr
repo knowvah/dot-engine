@@ -1,0 +1,3 @@
+lib/pathplan/~/git/sseely/graphviz-carried/lib/pathplan/shortest.c:338: triangulation failed
+lib/pathplan/~/git/sseely/graphviz-carried/lib/pathplan/shortest.c:194: destination point not in any triangle
+Error: in routesplines, Pshortestpath failed

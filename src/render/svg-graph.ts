@@ -13,6 +13,7 @@
 
 import type { Graph } from '../model/graph.js';
 import type { Box, Point } from '../model/geom.js';
+import { POINTS_PER_INCH } from '../model/geom.js';
 import type { RenderJob } from '../gvc/job.js';
 import { createObjState, ObjType } from '../gvc/job.js';
 import { FillType } from '../gvc/context.js';
@@ -22,6 +23,7 @@ import { svgGraphClass, svgGraphId } from './svg-id.js';
 import { parseGradientSpec } from '../common/htmltable-emit-fill.js';
 import { findStopColor, parseStyleFlags } from '../common/style-resolve.js';
 import { croundNarrow32 } from '../common/arith.js';
+import { fmax } from '../common/emit-bb.js';
 import { FontnameKind } from '../model/layoutParams.js';
 import {
   emitLinearGradient,
@@ -67,17 +69,15 @@ function formatG(n: number): string {
  * (0,0) only in the common no-margin case.
  */
 export function emitSvgTag(job: RenderJob, svgid: string | undefined = ''): void {
-  const bb = job.bb;
   // Size-fitted, UNROUNDED page-oriented view extent (init_job_pagination's
-  // local `imageSize`/`pageSize`, emit.c:1198-1246): sz = bb extent plus pad,
-  // scaled by Z (job.scale, D4). Kept unrounded here so the later
+  // local `imageSize`/`pageSize`, emit.c:1198-1246): job->view (the bb extent
+  // plus pad, scaled by Z, or `viewport=`'s W,H), times dpi / 72 as C's
+  // `* job->dpi.x / POINTS_PER_INCH`. Kept unrounded here so the later
   // "+ 2*margin" / "+ margin" sums round ONCE, matching C's single
   // `ROUND((pageSize + 2*margin) * dpi/72)` -- rounding szx/szy first would
   // double-round and diverge from C at half-integer boundaries.
-  const szx = bb.ur.x - bb.ll.x + 2 * job.pad.x;
-  const szy = bb.ur.y - bb.ll.y + 2 * job.pad.y;
-  const viewX = szx * job.scale.x;
-  const viewY = szy * job.scale.y;
+  const viewX = job.view.x * job.dpi.x / POINTS_PER_INCH;
+  const viewY = job.view.y * job.dpi.y / POINTS_PER_INCH;
   // Landscape rotation swaps the view into page orientation (init_job_pagination's
   // early `imageSize = exch_xyf(imageSize)`, emit.c:1201-1202); job.margin is
   // read UNSWAPPED in both the width/height and viewBox-UR formulas below,
@@ -90,8 +90,12 @@ export function emitSvgTag(job: RenderJob, svgid: string | undefined = ''): void
   // The native build vectorises these ROUNDs (fcvtzs.2d + xtn: low 32 bits of
   // an int64), so an out-of-range page size wraps exactly as native prints it
   // (2784: 2.16e18 -> 1255669760). @see croundNarrow32
-  const w = croundNarrow32(pageX + 2 * job.margin.x);
-  const h = croundNarrow32(pageY + 2 * job.margin.y);
+  // pageSize is the device's default page (0 x 0 on svg) less the margins,
+  // floored at 0, or the image when that is larger (emit.c:1209-1220): a
+  // negative `viewport=` W or H prints a 0pt page, and the viewBox below keeps
+  // the image's own extent.
+  const w = croundNarrow32(fmax(fmax(0 - 2 * job.margin.x, 0), pageX) + 2 * job.margin.x);
+  const h = croundNarrow32(fmax(fmax(0 - 2 * job.margin.y, 0), pageY) + 2 * job.margin.y);
   job.write('<svg width="' + String(w) + 'pt" height="' + String(h) + 'pt"\n');
   // job->pageBoundingBox (canvasBox.LL = margin+centering, canvasBox.UR = LL +
   // imageSize, then ROUND -- emit.c:1282-1293). C's rotation-branch double

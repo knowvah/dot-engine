@@ -1,0 +1,97 @@
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "_draw_": 
+  [
+    {
+      "op": "c",
+      "grad": "none",
+      "color": "#fffffe00"
+    },
+    {
+      "op": "C",
+      "grad": "none",
+      "color": "#ffffff"
+    },
+    {
+      "op": "P",
+      "points": [[0.000,0.000],[0.000,133.600],[102.000,133.600],[102.000,0.000]]
+    }
+  ],
+  "bb": "0,0,102,133.6",
+  "label": "",
+  "xdotversion": "1.7",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "cluster_p",
+      "bb": "8,8,94,125.6",
+      "label": "P",
+      "lheight": "0.23",
+      "lp": "51,113.2",
+      "lwidth": "0.11",
+      "style": "invis",
+      "_gvid": 0,
+      "subgraphs": [
+        1
+      ],
+      "nodes": [
+        2
+      ]
+    },
+    {
+      "name": "cluster_k",
+      "bb": "16,16,86,92.8",
+      "label": "P",
+      "lheight": "0.23",
+      "lp": "51,80.4",
+      "lwidth": "0.11",
+      "style": "invis",
+      "_gvid": 1,
+      "nodes": [
+        2
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "a",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [51.000,42.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [51.000,37.800],
+          "align": "c",
+          "width": 6.210,
+          "text": "a"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "51,42",
+      "width": "0.75"
+    }
+  ]
+}

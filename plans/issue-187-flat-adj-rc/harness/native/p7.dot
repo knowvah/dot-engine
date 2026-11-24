@@ -1,0 +1,25 @@
+digraph {
+	graph [bb="-27,0,99,2.88e+09"];
+	node [label="\N"];
+	{
+		graph [rank=same];
+		x	[height=0.5,
+			pos="0,2.88e+09",
+			width=0.75];
+		y	[height=0.5,
+			pos="72,2.88e+09",
+			width=0.75];
+	}
+	{
+		graph [rank=same];
+		a	[height="4e+07",
+			pos="0,1.44e+09",
+			width=0.75];
+		b	[height="4e+07",
+			pos="72,1.44e+09",
+			width=0.75];
+	}
+	x:s -> y:n;
+	a:s -> b:n;
+	x -> a;
+}

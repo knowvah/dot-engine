@@ -1,0 +1,11 @@
+// Copied from graphviz tests/graphs/structs.gv: struct1:f2 -> struct3:here
+// fails routesplines through the side-port router (make_regular_edge,
+// pn == 0). The carried 16.1.1 oracle reports the failure once.
+digraph structs {
+node [shape=record];
+    struct1 [shape=record,label="<f0> left|<f1> middle|<f2> right"];
+    struct2 [shape=record,label="<f0> one|<f1> two"];
+    struct3 [shape=record,label="hello\nworld |{ b |{c|<here> d|e}| f}| g | h"];
+    struct1:f1 -> struct2:f0;
+    struct1:f2 -> struct3:here;
+}

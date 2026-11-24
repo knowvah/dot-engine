@@ -38,6 +38,14 @@ describe('doGraphLabel — no label attr', () => {
     doGraphLabel(g, undefined);
     expect(g.info.label).toBeUndefined();
   });
+
+  // `label=<>`: agget returns an html string with no text, and `*str != '\0'` fails (#292).
+  it('makes no label, and sets no GRAPH_LABEL bit, for an html value with no text', () => {
+    const g = makeGraph({ label: HTML_STRING_MARK });
+    doGraphLabel(g, stubMeasurer);
+    expect(g.info.label).toBeUndefined();
+    expect((g.root.info.has_labels ?? 0) & GRAPH_LABEL).toBe(0);
+  });
 });
 
 // ---------------------------------------------------------------------------

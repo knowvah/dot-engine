@@ -1,0 +1,30 @@
+digraph {
+	graph [bb="0,0,0,0",
+		phase=2
+	];
+	node [label="\N",
+		rank=""
+	];
+	subgraph s {
+		node [order=8,
+			rank=9
+		];
+		x	[height=0.5,
+			order=0,
+			pos="0,0",
+			rank=1,
+			width=0.75];
+		y	[height=0.5,
+			order=0,
+			pos="0,0",
+			rank=2,
+			width=0.75];
+	}
+	a	[height=0.5,
+		order=0,
+		pos="0,0",
+		rank=0,
+		width=0.75];
+	a -> x;
+	x -> y;
+}

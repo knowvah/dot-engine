@@ -1,0 +1,16 @@
+input	format	native	lines	baseMiss	headMiss	baseExtra	headExtra	baseErr	headErr	headErrNum	headEqBase	headEqNative
+x1-pack.gv	dot	SEGV	0	0	0	23	23	DIFF	DIFF	DIFF	yes	no
+x1-pack.gv	xdot	SEGV	0	0	0	37	37	DIFF	DIFF	DIFF	yes	no
+x1-pack.gv	svg	SEGV	0	0	0	48	48	DIFF	DIFF	DIFF	yes	no
+x1b-pack-nofail.gv	dot	ok	24	8	8	7	7	DIFF	DIFF	DIFF	yes	no
+x1b-pack-nofail.gv	xdot	ok	39	22	22	20	20	DIFF	DIFF	DIFF	yes	no
+x1b-pack-nofail.gv	svg	ok	48	18	18	18	18	DIFF	DIFF	DIFF	yes	no
+x1c-pack-small.gv	dot	ok	23	7	7	8	8	same	same	same	yes	no
+x1c-pack-small.gv	xdot	ok	37	20	20	21	21	same	same	same	yes	no
+x1c-pack-small.gv	svg	ok	48	18	18	18	18	same	same	same	yes	no
+x2-cluster-rankdir-bt.gv	dot	exit1	27	7	0	7	0	DIFF	DIFF	same	no	yes
+x2-cluster-rankdir-bt.gv	xdot	exit1	39	17	0	23	0	DIFF	DIFF	same	no	yes
+x2-cluster-rankdir-bt.gv	svg	exit1	40	14	3	32	3	DIFF	DIFF	same	no	no
+x3-two-failing.gv	dot	exit1	25	8	0	8	0	DIFF	DIFF	same	no	yes
+x3-two-failing.gv	xdot	exit1	36	17	0	23	0	DIFF	DIFF	same	no	yes
+x3-two-failing.gv	svg	exit1	36	13	3	31	3	DIFF	DIFF	same	no	no

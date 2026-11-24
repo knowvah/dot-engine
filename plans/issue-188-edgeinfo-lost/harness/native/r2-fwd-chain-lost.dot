@@ -1,0 +1,17 @@
+digraph g {
+	graph [bb="0,0,81,246"];
+	node [label="\N"];
+	a	[height=1.4167,
+		pos="27,195",
+		width=0.75];
+	m	[height=0.5,
+		pos="27,90",
+		width=0.75];
+	b	[height=0.5,
+		pos="54,18",
+		width=0.75];
+	a -> m;
+	m -> b	[pos="e,47.524,35.789 33.536,72.055 36.521,64.317 40.131,54.957 43.483,46.266"];
+	a -> b	[sametail=t];
+	a -> m	[sametail=t];
+}

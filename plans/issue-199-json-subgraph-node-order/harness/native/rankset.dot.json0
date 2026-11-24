@@ -1,0 +1,111 @@
+{
+  "name": "%1",
+  "directed": true,
+  "strict": false,
+  "bb": "0,0,486,180",
+  "_subgraph_cnt": 1,
+  "objects": [
+    {
+      "name": "%3",
+      "rank": "same",
+      "_gvid": 0,
+      "nodes": [
+        2,8
+      ]
+    },
+    {
+      "_gvid": 1,
+      "name": "A",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "27,162",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 2,
+      "name": "B",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "99,90",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "C",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "99,162",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 4,
+      "name": "D",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "171,162",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 5,
+      "name": "E",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "243,162",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 6,
+      "name": "F",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "315,162",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 7,
+      "name": "G",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "387,162",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 8,
+      "name": "H",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "27,90",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 9,
+      "name": "I",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "459,162",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 10,
+      "name": "J",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "99,18",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 1,
+      "head": 8,
+      "pos": "e,27,108.1 27,143.7 27,136.41 27,127.73 27,119.54"
+    },
+    {
+      "_gvid": 1,
+      "tail": 2,
+      "head": 10,
+      "pos": "e,99,36.104 99,71.697 99,64.407 99,55.726 99,47.536"
+    }
+  ]
+}

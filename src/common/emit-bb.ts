@@ -17,7 +17,7 @@ import { ARROW_LENGTH, EPSILON } from './arrows-constants.js';
 import { libmHypot } from './libm-hypot.js';
 
 /** C `fmax`: a NaN operand yields the other operand. */
-function fmax(a: number, b: number): number {
+export function fmax(a: number, b: number): number {
   if (Number.isNaN(a)) return b;
   if (Number.isNaN(b)) return a;
   return a > b ? a : b;

@@ -29,6 +29,7 @@ import { POINTS_PER_INCH } from '../model/geom.js';
 import { SVG_MARGIN } from '../render/svg-helpers.js';
 import type { Graph } from '../model/graph.js';
 import { cround } from '../common/arith.js';
+import { scanStrtod } from '../xdot/strtod.js';
 
 /** Parsed `size=` drawing size in points, plus the *filled* flag. */
 export interface DrawingSize {
@@ -158,62 +159,148 @@ function drawingNeedsFit(size: DrawingSize, szx: number, szy: number): boolean {
 }
 
 /**
- * Port of init_job_viewport's zoom factor Z (emit.c:3375-3384). When the user
- * gave a `size=`, fit the drawing (size `sz` = bb plus pad, in points) into it.
- * Z stays 1.0 otherwise, leaving every non-`size` byte unchanged (D5). SVG
- * carries Z via the group transform, not the coordinates (D4). `pad` is the
- * resolved `job.pad` (parseGraphPad), matching C's `job->bb = bb ± job->pad`
- * before `sz = job->bb.UR - job->bb.LL` (emit.c:3363-3368).
- * @see lib/common/emit.c:3356 init_job_viewport
+ * What init_job_viewport leaves on the job: the port's size in points, scaled
+ * but not rotated (`view`), the scaling factor (`zoom`), and the point of the
+ * graph at the port's centre (`focus`).
+ * @see lib/common/emit.c:init_job_viewport (job->view, job->zoom, job->focus)
  */
-export function initJobViewportZoom(bb: Box, size: DrawingSize | null, pad: Point): number {
-  if (size === null || size.x <= 0.001 || size.y <= 0.001) return 1.0;
-  // sz = bb extent including the pad the SVG emit adds on every side.
-  let szx = bb.ur.x - bb.ll.x + 2 * pad.x;
-  let szy = bb.ur.y - bb.ll.y + 2 * pad.y;
-  if (szx <= 0.001) szx = size.x;
-  if (szy <= 0.001) szy = size.y;
-  if (drawingNeedsFit(size, szx, szy)) return Math.min(size.x / szx, size.y / szy);
-  return 1.0;
+export interface JobViewport {
+  view: Point;
+  zoom: number;
+  focus: Point;
 }
 
 /**
- * job->clip for the single-page devices this port drives, evaluated in C's
- * order: init_job_viewport pads the bb (job->bb = bb ± pad, sz = job->bb.UR -
- * job->bb.LL, size= substituting a degenerate sz axis), takes the focus as the
- * centre of the UNPADDED bb and view = Z * sz; init_job_pagination sets
- * pageSize = imageSize / zoom (imageSize = view, rotated to page orientation
- * and back); setup_page sets clip.LL = focus + pageSize * (elem - size / 2.)
- * with pagesArrayElem 0 / pagesArraySize 1 and clip.UR = clip.LL + pageSize.
- * Algebraically bb ± pad, but not in floating point: where the pad is below the
- * double spacing (corpus 2784, y = 2.16e18) clip.LL.y is 0, not -pad.
- * @see lib/common/emit.c:init_job_viewport, init_job_pagination, setup_page
+ * init_job_viewport up to the user override: sz is the bb padded by `pad`
+ * (job->bb = bb ± pad, sz = job->bb.UR - job->bb.LL), a `size=` substitutes a
+ * degenerate sz axis and fits the drawing into it (Z), the focus is the centre
+ * of the UNPADDED bb and the view is Z * sz. Split from applyViewportAttr only
+ * for the function-size limit; C runs the two in one body.
+ * @see lib/common/emit.c:init_job_viewport
  */
-export function setupPageClip(bb: Box, size: DrawingSize | null, pad: Point, z: number): Box {
+export function initJobViewport(bb: Box, size: DrawingSize | null, pad: Point): JobViewport {
+  const jbLL = { x: bb.ll.x - pad.x, y: bb.ll.y - pad.y };
+  const jbUR = { x: bb.ur.x + pad.x, y: bb.ur.y + pad.y };
+  const sz = { x: jbUR.x - jbLL.x, y: jbUR.y - jbLL.y };
+  let z = 1.0;
+  if (size !== null && size.x > 0.001 && size.y > 0.001) {
+    if (sz.x <= 0.001) sz.x = size.x;
+    if (sz.y <= 0.001) sz.y = size.y;
+    if (drawingNeedsFit(size, sz.x, sz.y)) z = Math.min(size.x / sz.x, size.y / sz.y);
+  }
   const focus = { x: 0.5 * (bb.ll.x + bb.ur.x), y: 0.5 * (bb.ll.y + bb.ur.y) };
-  const pageSize = setupPageSize(bb, size, pad, z);
+  return { view: { x: z * sz.x, y: z * sz.y }, zoom: z, focus };
+}
+
+/**
+ * sscanf's `%lf` conversions joined by the literal `,`, from the start of `s`:
+ * the values read, in order, and the offset after the last one. A conversion
+ * that fails ends the scan, as sscanf returns at the first mismatch.
+ * @see lib/common/emit.c:init_job_viewport (the three sscanf formats)
+ */
+function scanCommaDoubles(s: string, max: number): { vals: number[]; pos: number } {
+  const vals: number[] = [];
+  let pos = 0;
+  while (vals.length < max) {
+    if (vals.length > 0) {
+      if (s[pos] !== ',') break;
+      pos++;
+    }
+    const r = scanStrtod(s, pos);
+    if (r === null) break;
+    vals.push(r.val);
+    pos = r.pos;
+  }
+  return { vals, pos };
+}
+
+/**
+ * The node name `%[^<stop>]` reads at `pos` after the literal `lead`, or null
+ * when the literal does not match or the set matches no character.
+ */
+function scanSet(s: string, pos: number, lead: string, stop: string): { name: string; pos: number } | null {
+  if (!s.startsWith(lead, pos)) return null;
+  const from = pos + lead.length;
+  let end = from;
+  while (end < s.length && s[end] !== stop) end++;
+  return end === from ? null : { name: s.slice(from, end), pos: end };
+}
+
+/**
+ * The node name the viewport names, as init_job_viewport's first two sscanf
+ * formats read it: `W,H,Z,'name'` (rv == 4: the closing quote is not needed),
+ * else `W,H,Z,name` with nothing after the name (rv == 4: `%c` finds no
+ * character). Null when neither returns 4.
+ */
+function viewportNodeName(s: string): string | null {
+  const head = scanCommaDoubles(s, 3);
+  if (head.vals.length < 3) return null;
+  const quoted = scanSet(s, head.pos, ",'", "'");
+  if (quoted !== null) return quoted.name;
+  const bare = scanSet(s, head.pos, ',', ',');
+  return bare !== null && bare.pos === s.length ? bare.name : null;
+}
+
+/**
+ * The user override of init_job_viewport: `viewport="W,H,Z,x,y"` or
+ * `"W,H,Z,node"` (the node quoted or bare). Each sscanf assigns the values it
+ * reads before a mismatch, so a short value overrides only its leading fields
+ * (`"W,H"` keeps the size= fit's Z). A named node found in the root graph
+ * moves the focus to its coord; a name that is not a node keeps the default
+ * focus, a fourth number included (`"W,H,Z,x"` reads x as a name).
+ * @see lib/common/emit.c:init_job_viewport
+ */
+export function applyViewportAttr(vp: JobViewport, g: Graph): JobViewport {
+  const str = g.attrs.get('viewport');
+  if (str === undefined) return vp;
+  const name = viewportNodeName(str);
+  // XY.x, XY.y, Z, xy.x, xy.y: each keeps its value when sscanf stops before it.
+  const v = [vp.view.x, vp.view.y, vp.zoom, vp.focus.x, vp.focus.y];
+  scanCommaDoubles(str, name === null ? 5 : 3).vals.forEach((d, i) => { v[i] = d; });
+  let focus = { x: v[3], y: v[4] };
+  if (name !== null) {
+    const n = g.root.nodes.get(name);
+    if (n !== undefined) focus = { x: n.info.coord.x, y: n.info.coord.y };
+  }
+  return { view: { x: v[0], y: v[1] }, zoom: v[2], focus };
+}
+
+/**
+ * init_job_viewport for the job's graph: the default viewport, then the
+ * graph's `viewport=` override.
+ * @see lib/common/emit.c:init_job_viewport
+ */
+export function jobViewport(g: Graph, bb: Box, size: DrawingSize | null, pad: Point): JobViewport {
+  return applyViewportAttr(initJobViewport(bb, size, pad), g);
+}
+
+/**
+ * job->clip for the single-page devices this port drives: init_job_pagination
+ * sets pageSize = imageSize / zoom (imageSize = view, rotated to page
+ * orientation and back) and setup_page sets clip.LL = focus + pageSize *
+ * (elem - size / 2.) with pagesArrayElem 0 / pagesArraySize 1 and clip.UR =
+ * clip.LL + pageSize. With no viewport= this is the bb ± pad, but not in
+ * floating point: where the pad is below the double spacing (corpus 2784,
+ * y = 2.16e18) clip.LL.y is 0, not -pad.
+ * @see lib/common/emit.c:init_job_pagination, setup_page
+ */
+export function setupPageClip(vp: JobViewport): Box {
+  const pageSize = setupPageSize(vp);
   const ll = {
-    x: focus.x + pageSize.x * (0 - 1 / 2.0),
-    y: focus.y + pageSize.y * (0 - 1 / 2.0),
+    x: vp.focus.x + pageSize.x * (0 - 1 / 2.0),
+    y: vp.focus.y + pageSize.y * (0 - 1 / 2.0),
   };
   return { ll, ur: { x: ll.x + pageSize.x, y: ll.y + pageSize.y } };
 }
 
 /**
  * job->pageSize, the size of one page in graph units: imageSize / zoom, where
- * imageSize = view = Z * sz and sz is the padded bb's extent (see
- * setupPageClip). Not always sz: (Z * sz) / Z can round one ulp away from it.
- * @see lib/common/emit.c:init_job_viewport, init_job_pagination
+ * imageSize is the view. Not always sz: (Z * sz) / Z can round one ulp away
+ * from it.
+ * @see lib/common/emit.c:init_job_pagination
  */
-export function setupPageSize(bb: Box, size: DrawingSize | null, pad: Point, z: number): Point {
-  const jbLL = { x: bb.ll.x - pad.x, y: bb.ll.y - pad.y };
-  const jbUR = { x: bb.ur.x + pad.x, y: bb.ur.y + pad.y };
-  const sz = { x: jbUR.x - jbLL.x, y: jbUR.y - jbLL.y };
-  if (size !== null && size.x > 0.001 && size.y > 0.001) {
-    if (sz.x <= 0.001) sz.x = size.x;
-    if (sz.y <= 0.001) sz.y = size.y;
-  }
-  return { x: (z * sz.x) / z, y: (z * sz.y) / z };
+export function setupPageSize(vp: JobViewport): Point {
+  return { x: vp.view.x / vp.zoom, y: vp.view.y / vp.zoom };
 }
 
 /**

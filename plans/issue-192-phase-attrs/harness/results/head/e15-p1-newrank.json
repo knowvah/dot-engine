@@ -1,0 +1,275 @@
+{
+  "name": "%1",
+  "directed": true,
+  "strict": false,
+  "phase": "1",
+  "newrank": "true",
+  "_draw_": [
+    {
+      "op": "c",
+      "grad": "none",
+      "color": "#fffffe00"
+    },
+    {
+      "op": "C",
+      "grad": "none",
+      "color": "#ffffff"
+    },
+    {
+      "op": "P",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    }
+  ],
+  "bb": "0,0,0,0",
+  "xdotversion": "1.7",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "cluster_a",
+      "phase": "1",
+      "newrank": "true",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "p",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "bb": "0,0,0,0",
+      "_gvid": 0,
+      "nodes": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "cluster_b",
+      "phase": "1",
+      "newrank": "true",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "p",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "bb": "0,0,0,0",
+      "_gvid": 1,
+      "nodes": [
+        4
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "a1",
+      "rank": "0",
+      "label": "\\N",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [
+            0,
+            0,
+            27,
+            18
+          ]
+        }
+      ],
+      "_ldraw_": [
+        {
+          "op": "F",
+          "size": 14,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [
+            0,
+            -4.2
+          ],
+          "align": "c",
+          "width": 13.21,
+          "text": "a1"
+        }
+      ],
+      "height": "0.5",
+      "pos": "0,0",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "a2",
+      "rank": "0",
+      "label": "\\N",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [
+            0,
+            0,
+            27,
+            18
+          ]
+        }
+      ],
+      "_ldraw_": [
+        {
+          "op": "F",
+          "size": 14,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [
+            0,
+            -4.2
+          ],
+          "align": "c",
+          "width": 13.21,
+          "text": "a2"
+        }
+      ],
+      "height": "0.5",
+      "pos": "0,0",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 4,
+      "name": "b1",
+      "rank": "1",
+      "label": "\\N",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [
+            0,
+            0,
+            27,
+            18
+          ]
+        }
+      ],
+      "_ldraw_": [
+        {
+          "op": "F",
+          "size": 14,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [
+            0,
+            -4.2
+          ],
+          "align": "c",
+          "width": 14,
+          "text": "b1"
+        }
+      ],
+      "height": "0.5",
+      "pos": "0,0",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 2,
+      "head": 4
+    },
+    {
+      "_gvid": 1,
+      "tail": 3,
+      "head": 4
+    }
+  ]
+}

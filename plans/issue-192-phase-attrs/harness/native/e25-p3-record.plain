@@ -1,0 +1,5 @@
+graph 1 0.93056 1.5278
+node a 0.55556 1.2708 0.75 0.51389 "<p>x|y" solid record black lightgrey
+node b 0.375 0.25694 0.75 0.51389 "\N" solid record black lightgrey
+ solid black
+stop

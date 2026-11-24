@@ -1,0 +1,1 @@
+digraph G { graph [style=""]; label="\n"; subgraph cluster_n { label="N"; a } a -> b }

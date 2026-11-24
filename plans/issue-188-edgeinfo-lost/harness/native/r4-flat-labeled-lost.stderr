@@ -1,0 +1,16 @@
+Error: trouble in init_rank
+	%0 2
+	%0 1
+	%0 4
+	%0 2
+	%0 1
+	26 1
+	57 3
+	%0 1
+	12 1
+	%0 2
+	%0 2
+lib/pathplan/~/git/sseely/graphviz-carried/lib/pathplan/shortest.c:338: triangulation failed
+lib/pathplan/~/git/sseely/graphviz-carried/lib/pathplan/shortest.c:182: source point not in any triangle
+Error: in routesplines, Pshortestpath failed
+Error: lost 39 43 edge

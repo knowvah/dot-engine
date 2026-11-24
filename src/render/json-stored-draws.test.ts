@@ -250,27 +250,24 @@ describe('json prints stored draw strings on objects a render does not draw (nat
 });
 
 /**
- * The rows issue #196 leaves open. C's xdot_end_cluster and xdot_end_graph set
+ * The rows issue #196 closed: C's xdot_end_cluster and xdot_end_graph set
  * `_ldraw_` whenever the cluster or root has a label, from an empty buffer too
- * (an invisible cluster, a `"\n"` label), so the stored string goes; the port
- * keeps it. Each list is every row that differs from native: when #196 lands,
- * the lists become empty.
+ * (an invisible cluster, a `"\n"` label), so the stored string goes and json,
+ * which skips an empty value, prints none. Each list of rows that differ from
+ * native is empty.
  * @see plugin/core/gvrender_core_dot.c:xdot_end_cluster
  * @see plugin/core/gvrender_core_dot.c:xdot_end_graph
  */
-describe('open rows: the stored _ldraw_ of a labelled cluster or root that draws no text (#196)', () => {
-  it.each([
-    { fixture: 'ldraw-cleared', open: ['o:cluster_x:0._ldraw_', 'o:cluster_zz:3._ldraw_'] },
-    { fixture: 'ldraw-newline', open: ['<root>._ldraw_', 'o:cluster_n:0._ldraw_'] },
-  ])('$fixture: differs from native in the #196 rows only', ({ fixture, open }) => {
-    expect(diffRows(renderOnce(`${fixture}.gv`), read(`out/${fixture}.json`))).toEqual(open);
+describe('the stored _ldraw_ of a labelled cluster or root that draws no text goes (#196)', () => {
+  it.each(['ldraw-cleared', 'ldraw-newline'])('%s: no row differs from native', (fixture) => {
+    expect(diffRows(renderOnce(`${fixture}.gv`), read(`out/${fixture}.json`))).toEqual([]);
   });
 
-  it('hide-cluster.gv: render 2 differs from native in cluster_l._ldraw_ only', () => {
+  it('hide-cluster.gv: render 2 equals native, cluster_l._ldraw_ included', () => {
     const port = hideClusterRenders();
     const native = rendersOf('out/hide-cluster.xdot-json');
-    expect(diffRows(at(port, 1), at(native, 1))).toEqual(['o:cluster_l:0._ldraw_']);
-    // The unlabelled cluster and both clusters' `_draw_` already follow xdot_end_cluster.
+    expect(diffRows(at(port, 1), at(native, 1))).toEqual([]);
+    expect(named(at(port, 1), 'cluster_l')['_ldraw_']).toBeUndefined();
     expect(named(at(port, 1), 'cluster_l')['_draw_']).toBeUndefined();
     expect(named(at(port, 1), 'cluster_u')['_ldraw_']).toBeUndefined();
   });

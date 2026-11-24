@@ -1,0 +1,18 @@
+== render 1
+graph 1 0.75 1.5
+node a 0.375 1.25 0.75 0.5 <<TABLE><TR><TD FIXEDSIZE="TRUE" WIDTH="10" HEIGHT="10">much too long</TD></TR></TABLE>> solid plaintext black lightgrey
+node b 0.375 0.25 0.75 0.5 b solid ellipse black lightgrey
+edge a b 4 0.375 1.0008 0.375 0.8984 0.375 0.7756 0.375 0.65986 solid black
+stop
+== render 2
+graph 1 1.75 0.5
+node a 0.375 0.25 0.75 0.5 <<TABLE><TR><TD FIXEDSIZE="TRUE" WIDTH="10" HEIGHT="10">much too long</TD></TR></TABLE>> solid plaintext black lightgrey
+node b 1.375 0.25 0.75 0.5 b solid ellipse black lightgrey
+edge a b 8 0.75 1.0008 0.75 0.8984 0.75 0.7756 0.75 0.65986 0.75 0.25 0.77925 0.25 0.80849 0.25 0.83774 0.25 solid black
+stop
+== render 3
+graph 1 0.75 1.5
+node a 0.375 1.25 0.75 0.5 <<TABLE><TR><TD FIXEDSIZE="TRUE" WIDTH="10" HEIGHT="10">much too long</TD></TR></TABLE>> solid plaintext black lightgrey
+node b 0.375 0.25 0.75 0.5 b solid ellipse black lightgrey
+edge a b 12 1.125 1.0008 1.125 0.8984 1.125 0.7756 1.125 0.65986 1.125 0.25 1.1542 0.25 1.1835 0.25 1.2127 0.25 0.375 1.0008 0.375 0.8984 0.375 0.7756 0.375 0.65986 solid black
+stop

@@ -1,0 +1,1 @@
+digraph G { subgraph cluster_c { _ldraw_=""; a } subgraph cluster_d { label="D"; _ldraw_=""; b } }

@@ -171,15 +171,6 @@ export interface EdgeInfo {
    */
   to_virt?: Edge;
 
-  /**
-   * Routing attempted and routesplines failed: the edge is LOST exactly as in
-   * C (no spline installed, map_edge warns, emit skips). Port-only bookkeeping:
-   * routeLoneEdge skips a lost edge, so a later call in the same routing pass
-   * does not re-attempt an edge C routes once; beginRoutingPass clears it.
-   * @see lib/common/routespl.c:routesplines (NULL), lib/common/postproc.c:map_edge
-   */
-  lost?: boolean;
-
   // -------------------------------------------------------------------------
   // Engine scratch
   // -------------------------------------------------------------------------
@@ -436,7 +427,7 @@ export function makeEdgeInfo(tailPort: Port, headPort: Port): EdgeInfo {
     xlabel: undefined, headArrowOps: undefined, tailArrowOps: undefined,
     constraint: undefined, edge_type: undefined, compound: undefined,
     adjacent: undefined, label_ontop: undefined, gui_state: undefined,
-    to_orig: undefined, to_virt: undefined, lost: undefined, alg: undefined,
+    to_orig: undefined, to_virt: undefined, alg: undefined,
     weight: undefined, minlen: undefined, cutvalue: undefined, tree_index: undefined,
     xpenalty: undefined, count: undefined, conc_opp_flag: undefined,
     showboxes: undefined, stale_arrow_attrs: undefined,

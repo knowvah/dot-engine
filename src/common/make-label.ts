@@ -21,6 +21,7 @@ import { nodeAttr, graphAttrInherited } from './attr-get.js';
 import { Graph } from '../model/graph.js';
 import { htmlEntityUTF8 } from './html-entities.js';
 import { usershapeDpi } from '../gvc/usershape.js';
+import { isHtmlValue, htmlValueContent } from './html-string.js';
 
 export const DEFAULT_FONTSIZE = 14.0;
 /** C's default fontname (non-Windows); renderers alias it, e.g. SVG
@@ -185,6 +186,22 @@ export function makeLabel(
   measurer: TextMeasurer,
 ): TextlabelT {
   return makePlainLabel(text, { fontname, fontsize, fontcolor }, measurer);
+}
+
+/**
+ * make_label's is_record branch: keep the raw text for record_init to parse
+ * and set html, measuring nothing; parse_reclbl measures each field.
+ * @see lib/common/labels.c:make_label (119, 139-144)
+ */
+export function makeRecordLabel(str: string, font: FontInfo): TextlabelT {
+  const text = isHtmlValue(str) ? htmlValueContent(str) : str;
+  return {
+    text, ...font, charset: 0,
+    dimen: { x: 0, y: 0 }, space: { x: 0, y: 0 }, pos: { x: 0, y: 0 },
+    u: { kind: 'txt', span: [], nspans: 0 },
+    valign: 'c'.charCodeAt(0), set: false,
+    html: isHtmlValue(str) && text !== '', // labels.c:119
+  };
 }
 
 /**

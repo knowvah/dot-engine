@@ -1,0 +1,1 @@
+digraph { compound=true; subgraph "%c1" { cluster=true; label=A; a } subgraph "%c2" { cluster=true; label=B; b } subgraph cluster_n { label=N; c } a -> c [lhead="%c2"]; a -> b }

@@ -358,7 +358,7 @@ narrowing a font-metric gap.
 because text measurement is a deliberate seam, not hard-wired into either
 engine. `TextMeasurer` is a one-method interface (`measure(text, font, size,
 flags) → {w, h, …}`) dependency-injected into every label-sizing call site —
-`polyInit`, `recordInit`, `initEdgeLabels`, and `buildNodeLabel` each take the
+`polyInit`, `recordInit`, `initEdgeLabels`, and `makeNodeLabel` each take the
 measurer as a parameter; nothing measures text through a global. It is
 pinned for tests/CI via `setTextMeasurer(...)` or `GV_TEXT_MEASURER=estimate`.
 The seam also lets a residual be *proven* measurement-only: feed the port the

@@ -1,0 +1,4 @@
+graph 1 1.9741 0.51389
+node a 0.45982 0.25694 0.91964 0.51389 <x   y |  z  > solid record black lightgrey
+node b 1.5709 0.25694 0.80627 0.51389 <p\ q|r> solid record black lightgrey
+stop

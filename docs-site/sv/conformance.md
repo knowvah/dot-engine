@@ -103,7 +103,7 @@ sammanfattar varje spår av motor × yta (både deterministiska och iterativa);
 | **`errored` / `timeout`** | Porteringen kunde inte rendera indatan (`errored`; `port-error` i spåren per motor) eller överskred sin tidsbudget (`timeout`). Räknas som ett misslyckande: ingår i nämnaren för godkännandegraden, aldrig som godkänd. |
 | **`oracle-error`** | C-oraklet kunde inte rendera indatan, så det finns ingen referens att jämföra mot. Utanför omfånget: utesluten ur nämnaren för godkännandegraden. |
 
-**Godkändandegraden** på varje instrumentpanel är `conformant / (surveyed − oracle-error)`.
+**Godkännandegraden** på varje instrumentpanel är `conformant / (surveyed − oracle-error)`.
 
 ”Conformant” är ribban; ”structural-match” är betydande framsteg (rätt form,
 koordinaterna driver fortfarande); ”diverged”, ”errored” och ”timeout” är verkliga luckor.

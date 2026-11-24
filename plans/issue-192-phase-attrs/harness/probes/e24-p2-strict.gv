@@ -1,0 +1,1 @@
+strict graph { phase=2; a -- b; a -- b; b -- c }

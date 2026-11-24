@@ -23,6 +23,7 @@ import type { FieldT, ShapeDesc, TextlabelT } from '../../common/types.js';
 import { appendRecordRects, edgeAttrsAttached, edgePosRaw, nodePosRaw } from './attrs.js';
 import { gfmt2, gfmt5, lpStr, XDOT_VERSION } from './xdot-ops.js';
 import type { XdotDraws } from './types.js';
+import { hasLocalGraphSym } from '../../parser/graph-attr-syms.js';
 
 const POINTS_PER_INCH = 72;
 
@@ -130,6 +131,8 @@ export function storedDraws(attrs: Map<string, string>): XdotDraws {
  * non-empty buffers, so an object this render did not draw (outside the clip,
  * invisible, or outside a subgraph render) prints what an earlier render or the
  * input stored; xdot_end_cluster sets a drawn cluster's `_draw_` even when empty.
+ * A labelled cluster's or root's `_ldraw_` is set even when empty: the renderer
+ * records `''` for it, and only for it, so `??` keeps that empty string.
  * @see plugin/core/gvrender_core_dot.c:237 xdot_end_node, :251 xdot_end_edge
  * @see plugin/core/gvrender_core_dot.c:280 xdot_end_cluster, :427 xdot_end_graph
  */
@@ -137,12 +140,51 @@ export function renderedDraws(obj: Node | Edge | Graph, d: XdotDraws | undefined
   const st = storedDraws(obj.attrs);
   return {
     draw: cluster ? (d?.draw ?? '') : d?.draw || st.draw,
-    ldraw: d?.ldraw || st.ldraw,
+    ldraw: d?.ldraw ?? st.ldraw,
     hdraw: d?.hdraw || st.hdraw,
     tdraw: d?.tdraw || st.tdraw,
     hldraw: d?.hldraw || st.hldraw,
     tldraw: d?.tldraw || st.tldraw,
   };
+}
+
+/** Whether the root's `_ldraw_` symbol carries `print`. @see lib/cgraph/grammar.y:388 attrstmt */
+const rootPrintsLdraw = (root: Graph): boolean => root.printGraphAttrs?.has('_ldraw_') === true;
+
+/**
+ * The `_ldraw_` agwrite prints for the graph it writes, whose value is `ld`, or
+ * undefined. write_dict drops an empty value unless the symbol carries `print`
+ * (the input's root body declared `_ldraw_`): a root whose label draws no text
+ * prints `_ldraw_=""` only then.
+ * @see lib/cgraph/write.c:275-278 write_dict (`EMPTY(sym->defval) && !sym->print`, no view)
+ */
+export function rootLdraw(g: Graph, ld: string | undefined): string | undefined {
+  return ld || (rootPrintsLdraw(g) ? '' : undefined);
+}
+
+/**
+ * The `_ldraw_` agwrite prints for a cluster whose value is `ld`, or undefined.
+ * A non-empty value prints. An empty one prints only when the cluster holds a
+ * symbol of its own (xdot_end_cluster ran with GD_label, or a local symbol),
+ * and write_dict drops it when the symbol it would inherit, the nearest one up
+ * the dict view, is empty and carries `print`. Only a root symbol the input's
+ * root body declared carries it, so a non-root ancestor's empty value, or a
+ * root value this render alone set, leaves the cluster's `_ldraw_=""` printed.
+ * @see lib/cgraph/write.c:275-283 write_dict
+ * @see lib/cgraph/attr.c:agxset (a graph's agxset makes or updates its local symbol)
+ */
+export function clusterLdraw(
+  sg: Graph, ld: string | undefined, drawn: readonly Graph[], ldrawOf: (g: Graph) => string | undefined,
+): string | undefined {
+  if (ld !== '') return ld || undefined;
+  const owns = (g: Graph): boolean =>
+    (drawn.includes(g) && g.info.label != null) || hasLocalGraphSym(g, '_ldraw_');
+  if (!owns(sg)) return undefined;
+  for (let p = sg.parent; p !== null; p = p.parent) {
+    if (p.parent === null) return !ldrawOf(p) && rootPrintsLdraw(p) ? undefined : ld;
+    if (owns(p)) return ld;
+  }
+  return ld;
 }
 
 /** One object's non-empty draw strings; an empty buffer leaves the slot alone. */
@@ -160,9 +202,17 @@ function attachClusterDraws(g: Graph, drawsOf: DrawsOf): void {
   for (const sg of clustersOf(g)) {
     const d = drawsOf(sg);
     sg.attrs.set('_draw_', d?.draw ?? '');
-    if (d?.ldraw) sg.attrs.set('_ldraw_', d.ldraw);
+    if (d?.ldraw !== undefined) sg.attrs.set('_ldraw_', d.ldraw);
     attachClusterDraws(sg, drawsOf);
   }
+}
+
+/** The render root's draw strings: `_draw_` from a non-empty buffer, `_ldraw_`
+ *  whenever GD_label is set, empty or not.
+ *  @see plugin/core/gvrender_core_dot.c:427 xdot_end_graph */
+function attachRootDraws(g: Graph, d: XdotDraws | undefined): void {
+  if (d?.draw) g.attrs.set('_draw_', d.draw);
+  if (d?.ldraw !== undefined) g.attrs.set('_ldraw_', d.ldraw);
 }
 
 /**
@@ -176,7 +226,7 @@ export function attachXdotAttrs(g: Graph, drawsOf: DrawsOf | undefined): void {
   if (drawsOf === undefined) return;
   for (const n of g.nodes.values()) attachDraws(ownAttrs(n), drawsOf(n));
   for (const e of g.edges) attachDraws(ownAttrs(e), drawsOf(e));
-  attachDraws(g.attrs, drawsOf(g));
+  attachRootDraws(g, drawsOf(g));
   attachClusterDraws(g, drawsOf);
   g.attrs.set('xdotversion', XDOT_VERSION);
 }

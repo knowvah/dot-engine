@@ -1,0 +1,1 @@
+digraph { A; B; C; D; E; F; G; H; I; J; {rank=same; H; B} A -> H; B -> J }

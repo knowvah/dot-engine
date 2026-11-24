@@ -1,0 +1,3 @@
+base=eq head=eq	48
+base=out head=eq	108
+base=out head=out	4

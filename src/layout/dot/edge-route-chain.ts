@@ -474,11 +474,9 @@ export function routeBackEdge(e: GraphEdge, _tailBox: NodeBox, _headBox: NodeBox
   // @see lib/dotgen/dotsplines.c:make_regular_edge (segfirst/tn/hn walk)
   const [beginEdge, endEdge] = chainEnds(e, segs);
   const fwd = routeChainSegmented(g, beginEdge, endEdge, segs);
-  // Chain routing failed: C's make_regular_edge returns with no spline and
-  // dot_splines_ never revisits the edge — mark it consumed so the backstop
-  // sweep does not re-route (and re-report) it.
+  // Chain routing failed: C's make_regular_edge returns with no spline.
   // @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0 return)
-  if (fwd === null) { e.info.lost = true; return; }
+  if (fwd === null) return;
   clipAndInstall(fwdEdge, fwdEdge.head, fwd, fwd.length, buildDotSinfo());
   if (swapEndsP(e)) swapEdgeSpline(e);
 }

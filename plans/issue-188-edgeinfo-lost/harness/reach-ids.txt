@@ -1,0 +1,22 @@
+# Issue #188 gate 6 reach set. Corpus ids whose native 16.1.1 (carried) run
+# loses an edge (results/native-scan.tsv, exit1 rows), and the corpus inputs
+# whose chain ends at a dead end (2765, 2765_1; issue #161). The scan's 12
+# TIMEOUT rows (no native output in 60 s) are left out: the smoke bytediff
+# and the maintainer's full bytediff cover them.
+1323
+1323_1
+1332
+2470
+2471
+2723
+2773
+2773_1
+2774
+2774_1
+2776
+2778
+2780
+2796
+graphs-structs
+2765
+2765_1

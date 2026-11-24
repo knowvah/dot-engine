@@ -1,0 +1,1 @@
+digraph { phase=2; node [rank=4]; subgraph s { node [rank=9, order=8]; x; y [order=3] } a -> x -> y }

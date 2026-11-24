@@ -1,0 +1,44 @@
+digraph {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 180 158 180 158 0 ",
+		bb="0,0,158,180",
+		phase=3,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_x {
+		graph [_draw_="c 7 -#000000 p 4 8 64 8 116 150 116 150 64 ",
+			bb="8,64,150,116"
+		];
+		b	[_draw_="c 7 -#000000 e 43 90 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 43 85.8 0 7 1 -b ",
+			height=0.5,
+			order=0,
+			pos="43,90",
+			rank=1,
+			width=0.75];
+		c	[_draw_="c 7 -#000000 e 115 90 27 18 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 115 85.8 0 6.21 1 -c ",
+			height=0.5,
+			order=1,
+			pos="115,90",
+			rank=1,
+			width=0.75];
+	}
+	d	[_draw_="c 7 -#000000 e 115 18 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 115 13.8 0 7 1 -d ",
+		height=0.5,
+		order=0,
+		pos="115,18",
+		rank=2,
+		width=0.75];
+	a	[_draw_="c 7 -#000000 e 79 162 27 18 ",
+		_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 79 157.8 0 6.21 1 -a ",
+		height=0.5,
+		order=0,
+		pos="79,162",
+		rank=0,
+		width=0.75];
+	a -> b;
+	a -> c;
+	c -> d;
+}

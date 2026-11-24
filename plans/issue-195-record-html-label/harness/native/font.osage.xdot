@@ -1,0 +1,28 @@
+digraph {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 37 112 37 112 0 ",
+		bb="0,0,112,37",
+		xdotversion=1.7
+	];
+	node [fontcolor=blue,
+		fontname=Helvetica,
+		fontsize=20,
+		label="\N",
+		shape=record
+	];
+	a	[_draw_="c 7 -#000000 p 4 0 0.5 0 36.5 54 36.5 54 0.5 c 7 -#000000 L 2 26 0.5 26 36.5 ",
+		_ldraw_="F 20 9 -Helvetica c 7 -#0000ff t 2 T 8 13.5 -1 10 2 -it F 8 9 -Helvetica c 7 -#0000ff t 0 T 34.5 15.3 -1 10.66 2 -sm ",
+		height=0.51389,
+		label=<<I>it</I>|<FONT POINT-SIZE="8">sm</FONT>>,
+		pos="27,18.5",
+		rects="0,0.5,26,36.5 26,0.5,53.664,36.5",
+		width=0.75];
+	b	[_draw_="c 7 -#000000 p 4 58 0.5 58 36.5 112 36.5 112 0.5 ",
+		_ldraw_="F 20 9 -Helvetica c 7 -#0000ff T 84.56 12.5 0 11.12 1 -b ",
+		height=0.51389,
+		pos="85,18.5",
+		rects="58,0.5,111.12,36.5",
+		width=0.75];
+	a -> b	[_draw_="c 7 -#000000 B 4 54.3 18.5 54.45 18.5 54.6 18.5 54.74 18.5 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 46.32 22 56.32 18.5 46.32 15 ",
+		pos="e,57.831,18.5 54.302,18.5 54.449,18.5 54.596,18.5 54.743,18.5"];
+}

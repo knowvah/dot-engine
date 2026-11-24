@@ -176,7 +176,12 @@ function anchorTop(): AnchorFrame {
   return anchorStack.length > 0 ? anchorStack[anchorStack.length - 1] : anchorBase;
 }
 
-/** Anchor id counter — C's `static int anchorId` in initAnchor, reset per render job (each dot invocation is one process). */
+/**
+ * Anchor id counter: C's `static int anchorId`, which a process never resets.
+ * Renders on one layout continue the count as native does (issue #191); only
+ * the registered reset restarts it, at each public entry and each layout.
+ * @see lib/common/htmltable.c:initAnchor
+ */
 let anchorSeq = 0;
 
 /** Set the current object context for anchor id/tooltip resolution.
@@ -211,7 +216,11 @@ export function htmlObjImgscale(): string {
   return anchorEnv.imgscale;
 }
 
-/** Reset the per-render anchor id counter. Call at render start. */
+/**
+ * Restart the anchor id counter and clear the object context. Runs as the
+ * registered render-state reset (each public entry, each layout), never per
+ * render: C's anchorId counts on from one render to the next.
+ */
 export function resetHtmlAnchorIds(): void {
   anchorSeq = 0;
   anchorEnv.objId = '';

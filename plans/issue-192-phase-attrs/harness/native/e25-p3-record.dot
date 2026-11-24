@@ -1,0 +1,22 @@
+digraph {
+	graph [bb="0,0,67,110",
+		phase=3
+	];
+	node [label="\N",
+		shape=record
+	];
+	a	[height=0.51389,
+		label="<p>x|y",
+		order=0,
+		pos="40,91.5",
+		rank=0,
+		rects="13,73.5,40,109.5 40,73.5,67,109.5",
+		width=0.75];
+	b	[height=0.51389,
+		order=0,
+		pos="27,18.5",
+		rank=1,
+		rects="0,0.5,54,36.5",
+		width=0.75];
+	a:p -> b;
+}

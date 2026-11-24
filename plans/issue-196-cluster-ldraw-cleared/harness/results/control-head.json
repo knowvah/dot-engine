@@ -1,0 +1,19 @@
+{
+ "bundleA": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T//i196/base.mjs",
+ "bundleB": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T//i196/head.mjs",
+ "jobs": 460,
+ "identical": 458,
+ "diffs": [],
+ "capped": [
+  {
+   "key": "2475_1|dot|json",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "2475_1|dot|xdot",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  }
+ ]
+}

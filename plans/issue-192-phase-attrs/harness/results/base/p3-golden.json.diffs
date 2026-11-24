@@ -1,0 +1,8 @@
+node:a/order[missing]: port=<absent> native=<present>
+node:a/rank[missing]: port=<absent> native=<present>
+node:b/order[missing]: port=<absent> native=<present>
+node:b/rank[missing]: port=<absent> native=<present>
+node:c/order[missing]: port=<absent> native=<present>
+node:c/rank[missing]: port=<absent> native=<present>
+node:d/order[missing]: port=<absent> native=<present>
+node:d/rank[missing]: port=<absent> native=<present>

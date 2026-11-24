@@ -116,11 +116,11 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
     // Flush GDRAW/GLABEL (canvas background + graph label) onto the root, then serialize.
     // @see gvrender_core_dot.c:427 xdot_end_graph
     const gd = this.flush(EmitState.GDraw);
-    const gl = this.flush(EmitState.GLabel);
-    if (this.emitDraws && (gd || gl)) {
+    const gl = this.flush(EmitState.GLabel); // `_ldraw_` whenever GD_label is, empty too (:436)
+    if (this.emitDraws && (gd || g.info.label != null)) {
       const set = this.drawsFor(g);
       if (gd) set.draw = gd;
-      if (gl) set.ldraw = escBackslash(gl);
+      if (g.info.label != null) set.ldraw = escBackslash(gl);
     }
     job.write(this.serialize(g));
     this.writeBack(g); // C writes before agwrite; the serializer overlaid the same values
@@ -298,14 +298,14 @@ export class XdotRenderer extends EdgeDrawBase implements RendererPlugin {
   endCluster(sg: Graph, _job: RenderJob): void {
         const draw = this.flush(EmitState.CDraw);
     const ldraw = this.flush(EmitState.CLabel);
-    if (draw || ldraw) {
+    if (draw || sg.info.label != null) {
       const set = this.drawsFor(sg);
       if (draw) set.draw = draw;
-      // Cluster labels are stored via plain agxset (xdot_end_cluster:286), NOT
-      // put_escaping_backslashes like node/edge/graph labels — so NO escBackslash.
-      // The source `\"`/`\\` in the label survive as-is through agstrcanonText on
-      // serialize (drawAttr). @see gvrender_core_dot.c:286
-      if (ldraw) set.ldraw = ldraw;
+      // Set whenever GD_label is, from an empty buffer too (an invisible cluster, a "\n"
+      // label), by plain agxset, NOT put_escaping_backslashes like node/edge/graph labels:
+      // no escBackslash. The source `\"`/`\\` survive as-is through agstrcanonText on
+      // serialize (drawAttr). @see gvrender_core_dot.c:285-286 xdot_end_cluster
+      if (sg.info.label != null) set.ldraw = ldraw;
     }
     this.clusters.push(sg);
     this.resetState(EmitState.CDraw, EmitState.CLabel);

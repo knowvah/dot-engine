@@ -1,0 +1,1 @@
+digraph { a [shape=record, label=<{a|b>]; b [shape=record, label=<a}|b>] }

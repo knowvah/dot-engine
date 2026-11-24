@@ -174,17 +174,20 @@ function dispatchMultiRankNonForward(
  * adjacent regular via make_regular_edge. clipAndInstall gates head/tail arrows
  * by the dir attribute. @see lib/dotgen/dotsplines.c:make_regular_edge
  */
-function routeEdgeNonForward(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): void {
-  if (routeFaithfulAdjacentBack(e, g)) return; // T1 (AD-1): faithful adjacent back edge
+function routeEdgeNonForward(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): number {
+  if (routeFaithfulAdjacentBack(e, g)) return 0; // T1 (AD-1): faithful adjacent back edge
   const tailBox = nodeBoxOf(e.tail, g);
   const headBox = nodeBoxOf(e.head, g);
-  if (dispatchMultiRankNonForward(e, tailBox, headBox, g)) return;
+  if (dispatchMultiRankNonForward(e, tailBox, headBox, g)) return 0;
   // Same-rank (flat) edges dispatch by topology regardless of ED_dir; the flat
   // routers otherwise live only in the forward path, so reach them here too —
   // e.g. a dir=both flat adjacent side-port edge (2437: AA3:se -> AA4:sw).
-  if (e.tail.info.rank !== undefined && e.tail.info.rank === e.head.info.rank
-    && routeFlatEdge(e, g, run)) return;
+  if (e.tail.info.rank !== undefined && e.tail.info.rank === e.head.info.rank) {
+    const rc = routeFlatEdge(e, g, run);
+    if (rc !== null) return rc;
+  }
   routeFaithfulRegularPlain(e, g);
+  return 0;
 }
 
 /**
@@ -219,7 +222,7 @@ function routeFaithfulRegularPlain(e: GraphEdge, g: Graph): boolean {
   // routesplines failed after a full corridor attempt: C installs no spline
   // and the edge is LOST (postproc warns, emit skips) — never straight-line
   // synthesized. @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0)
-  if (pts === 'lost') { e.info.lost = true; return true; }
+  if (pts === 'lost') return true;
   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
   return true;
 }
@@ -241,32 +244,30 @@ function routeFaithfulAdjacentBack(e: GraphEdge, g: Graph): boolean {
   const fwd = makeFwdEdge(e);
   const pts = routeRegularEdgeFaithful(g, fwd);
   if (pts === null) return false;
-  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
+  if (pts === 'lost') return true; // C: edge lost, no spline
   clipAndInstall(fwd, fwd.head, pts, pts.length, buildDotSinfo());
   if (swapEndsP(e)) swapEdgeSpline(e);
   return true;
 }
 
 /** Route and install spline + arrowhead(s) for a single edge. `run` is the
- *  edgecmp run the dispatch loop found `e` in ({@link routeLoneEdge}). */
-export function routeOneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): void {
+ *  edgecmp run the dispatch loop found `e` in ({@link routeLoneEdge}). Returns
+ *  0, or the non-zero rc of a failed make_flat_edge ({@link routeFlatEdge}). */
+export function routeOneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): number {
   const dirAttr = e.attrs.get('dir') ?? defaultEdgeDir(g);
-  if (dirAttr !== 'forward') {
-    routeEdgeNonForward(e, g, run);
-    return;
-  }
-  if (routeFaithfulAdjacentBack(e, g)) return; // T1 (AD-1): faithful adjacent back edge
+  if (dirAttr !== 'forward') return routeEdgeNonForward(e, g, run);
+  if (routeFaithfulAdjacentBack(e, g)) return 0; // T1 (AD-1): faithful adjacent back edge
   const tailBox = nodeBoxOf(e.tail, g);
   const headBox = nodeBoxOf(e.head, g);
   if (isMultiRankBackEdge(e)) {
     routeBackEdge(e, tailBox, headBox, g);
-    return;
+    return 0;
   }
   if (isMultiRankFwdEdge(e)) {
     routeFaithfulMultiRank(e, g); // T3 (AD-2): faithful chain pipeline
-    return;
+    return 0;
   }
-  routeForwardEdge(e, g, tailBox, headBox, run);
+  return routeForwardEdge(e, g, tailBox, headBox, run);
 }
 
 /**
@@ -278,7 +279,7 @@ export function routeOneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]):
 function routeFaithfulMultiRank(e: GraphEdge, g: Graph): boolean {
   const pts = routeMultiRankEdgeFaithful(g, e);
   if (pts === null) return false;
-  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
+  if (pts === 'lost') return true; // C: edge lost, no spline
   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
   return true;
 }
@@ -355,27 +356,36 @@ function collectAdjacentFlatGroup(
 }
 
 /**
+ * Route `e`'s flat-adjacent group via the rotated-aux pipeline
+ * (make_flat_adj_edges), which installs the splines directly. C groups ALL
+ * adjacent flats between a node pair into ONE aux call (cnt=N); route the whole
+ * group so the reversed back edge clones auxh->auxt and curls. A failed aux
+ * layout is not a decline: its non-zero rc is returned as make_flat_edge
+ * returns it (issue #187). `null` when the aux layout ran and left `e` unrouted.
+ * @see lib/dotgen/dotsplines.c:make_flat_edge (1535-1536), dot_splines_ (group loop)
+ */
+function routeFlatAdjGroup(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): number | null {
+  const group = collectAdjacentFlatGroup(e, g, run);
+  const rc = makeFlatAdjEdges(g, group, group.length, edgeType(g));
+  if (rc !== 0) return rc;
+  return routedThisPass(e) ? 0 : null;
+}
+
+/**
  * Route a side-port edge through the faithful `beginPath → routeSplines →
  * endPath → clipAndInstall` pipeline. A same-rank edge routes via the flat
  * pipeline (make_flat_edge); an adjacent-rank regular edge via
- * make_regular_edge. Returns false when the faithful path declines the edge,
- * so the caller falls back to the simplified fitter. clipAndInstall installs
- * the spline and stashes arrow polygons — do not also call
- * installEdgeSpline/arrowheadPolygon here.
+ * make_regular_edge. Returns `0` when the edge was consumed, `null` when the
+ * faithful path declines it (the caller falls back to the simplified fitter),
+ * or the non-zero rc of a failed make_flat_edge ({@link routeFlatAdjGroup}).
+ * clipAndInstall installs the spline and stashes arrow polygons — do not also
+ * call installEdgeSpline/arrowheadPolygon here.
  * @see lib/dotgen/dotsplines.c:make_flat_edge, make_regular_edge
  */
-function routeFaithfulSidePort(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): boolean {
+function routeFaithfulSidePort(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): number | null {
   const sameRank = e.tail.info.rank !== undefined && e.tail.info.rank === e.head.info.rank;
-  // Adjacent flat endpoints route via the rotated-aux pipeline (make_flat_adj_edges),
-  // which installs the spline directly; the box channel handles non-adjacent flats.
-  // C groups ALL adjacent flats between a node pair into ONE aux call (cnt=N);
-  // route the whole group so the reversed back edge clones auxh->auxt and curls.
-  // @see lib/dotgen/dotsplines.c:dot_splines_ (ED_adjacent edge-group loop)
-  if (sameRank && isFlatAdjacent(g, e)) {
-    const group = collectAdjacentFlatGroup(e, g, run);
-    return makeFlatAdjEdges(g, group, group.length, edgeType(g)) === 0
-      && routedThisPass(e);
-  }
+  // Adjacent flats take the aux pipeline; the box channel handles the others.
+  if (sameRank && isFlatAdjacent(g, e)) return routeFlatAdjGroup(e, g, run);
   // Non-adjacent flats: C groups identical-port siblings into ONE make_flat_edge
   // call and nests their splines (cnt-loop). Collect the group and route once;
   // the group router clip-installs every sibling, so the main loop skips them.
@@ -383,34 +393,42 @@ function routeFaithfulSidePort(e: GraphEdge, g: Graph, run: readonly GraphEdge[]
   // @see lib/dotgen/dotsplines.c:make_flat_edge, make_flat_bottom_edges
   if (sameRank) {
     const group = collectNonAdjacentFlatGroup(e, g);
-    return routeFlatEdgeGroupFaithful(g, group, group.length, edgeType(g)) && routedThisPass(e);
+    return routeFlatEdgeGroupFaithful(g, group, group.length, edgeType(g)) && routedThisPass(e)
+      ? 0 : null;
   }
   const pts = routeRegularEdgeFaithful(g, e);
-  if (pts === null) return false;
-  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
+  if (pts === null) return null;
+  if (pts === 'lost') return 0; // C: edge lost, no spline
   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
-  return true;
+  return 0;
 }
 
 /**
  * Dispatch a same-rank (flat) edge to its faithful router. C routes flat edges
  * by topology in `dot_splines_` independent of ED_dir (only the arrowheads
  * differ by direction), so this is reachable from both the forward and the
- * non-forward (dir=both/back/none) paths. Returns true when the edge was
- * consumed (routed, or intentionally left unrouted per #1323); false to let the
- * caller fall through to the regular/fitter path.
- * @see lib/dotgen/dotsplines.c:dot_splines_ (flat edge group dispatch)
+ * non-forward (dir=both/back/none) paths. Returns `0` when the edge was
+ * consumed (routed, or intentionally left unrouted per #1323); `null` (declined,
+ * a port idea) to let the caller fall through to the regular/fitter path; a
+ * non-zero value is C's make_flat_edge rc, on which dot_splines_ fails (#187).
+ * @see lib/dotgen/dotsplines.c:dot_splines_ (flat edge group dispatch, 418-424)
  */
-function routeFlatEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): boolean {
-  if (lostFlatAdjRecordEdge(g, e)) return true; // #1323: lost edge, leave unrouted
+function routeFlatEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): number | null {
+  if (lostFlatAdjRecordEdge(g, e)) return 0; // #1323: lost edge, leave unrouted
   // Labeled same-rank edges: non-adjacent routes around the flat label vnode
   // (make_flat_labeled_edge); adjacent no-port routes straight with the label
   // above (make_flat_adj_edges → makeSimpleFlatLabels). Both decline for every
   // other edge, so only labeled flats are diverted. @see dotsplines.c:1527-1533
-  if (makeFlatLabeledEdge(g, e)) return true;
-  if (joinsPortedFlatGroup(e, g, run) && routeFaithfulSidePort(e, g, run)) return true;
-  if (makeAdjFlatNoPortEdge(g, e)) return true;
-  if ((hasSidePort(e) || isAdjacentPortFlat(e, g)) && routeFaithfulSidePort(e, g, run)) return true;
+  if (makeFlatLabeledEdge(g, e)) return 0;
+  if (joinsPortedFlatGroup(e, g, run)) {
+    const rc = routeFaithfulSidePort(e, g, run);
+    if (rc !== null) return rc;
+  }
+  if (makeAdjFlatNoPortEdge(g, e)) return 0;
+  if (hasSidePort(e) || isAdjacentPortFlat(e, g)) {
+    const rc = routeFaithfulSidePort(e, g, run);
+    if (rc !== null) return rc;
+  }
   // Non-adjacent unlabeled flat with no side port (e.g. a same-rank cross-cluster
   // edge with an intervening node): C make_flat_edge routes it UP through the box
   // corridor, not straight through. @see lib/dotgen/dotsplines.c:make_flat_edge
@@ -419,20 +437,21 @@ function routeFlatEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): boole
     const group = collectNonAdjacentFlatGroup(e, g);
     if (group.length > 0
         && routeFlatEdgeGroupFaithful(g, group, group.length, edgeType(g))
-        && routedThisPass(e)) return true;
+        && routedThisPass(e)) return 0;
   }
-  return false;
+  return null;
 }
 
 /** Route + install a plain forward edge, attaching declared ports if any. */
 function routeForwardEdge(
   e: GraphEdge, g: Graph, tailBox: NodeBox, headBox: NodeBox, run: readonly GraphEdge[],
-): void {
-  if (routeFlatEdge(e, g, run)) return;
+): number {
+  const rc = routeFlatEdge(e, g, run);
+  if (rc !== null) return rc;
   // T2 (AD-1/AD-2): plain adjacent-rank forward edges route through the faithful
   // pathplan path (make_regular_edge). routeRegularEdgeFaithful declines (null)
   // for anything not adjacent-rank, so the fitter below only handles declines.
-  if (routeFaithfulRegularPlain(e, g)) return;
+  if (routeFaithfulRegularPlain(e, g)) return 0;
   const rankInfo = rankEdgeInfoOf(g, e.tail, e.head);
   const result = straightEdgeSplineWithRank(
     tailBox, headBox, rankInfo, edgePenwidthAttr(e), portRouteOf(e),
@@ -440,6 +459,7 @@ function routeForwardEdge(
   installEdgeSpline(e, result.bezierPts, result.arrowTip);
   e.info.headArrowOps = arrowDrawOpsForEnd(
     e, 'head', result.arrowTip, result.arrowDir, edgeRenderPenwidth(e));
+  return 0;
 }
 
 /**
@@ -450,18 +470,16 @@ function routeForwardEdge(
  * edge it did not collect keeps the route it had, as `ED_spl` does in C.
  * `run` is the edgecmp run `e` belongs to, in list order: what C passes
  * make_flat_edge as `edges + ind`, `cnt`. A flat-adjacent group is taken from
- * it, so the aux edges are cloned in C's order.
+ * it, so the aux edges are cloned in C's order. Returns routeOneEdge's rc.
  * @see lib/dotgen/dotsplines.c:dot_splines_ (per-edge dispatch + 295 skip)
  */
-export function routeLoneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): void {
-  // A lost edge (routesplines failure, C semantics) is consumed: C routes each
-  // edge exactly once, so a later group must not re-attempt it.
-  if (routedThisPass(e) || e.info.lost === true) return;
+export function routeLoneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): number {
+  if (routedThisPass(e)) return 0;
   // C dot_splines_ skips FLATORDER/IGNORED edges when building the route list;
   // an IGNORED edge (e.g. a concentrate-merged parallel duplicate) must get no
   // spline so emit draws only the representative. @see dotsplines.c:295
   const et = e.info.edge_type ?? 0;
-  if (et === FLATORDER || et === IGNORED) return;
+  if (et === FLATORDER || et === IGNORED) return 0;
   // A *labeled* flat edge merged into a same-rank representative (flat_rev: the
   // cycle back-edge of an opposing flat pair `a->b`/`b->a`) is routed by
   // make_flat_labeled_edge like any other labeled flat. Its label node resolves
@@ -473,7 +491,7 @@ export function routeLoneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[])
   // faithful edge_in_box gate (svg.ts) governs emission, matching C for both
   // 2368 (on-canvas → drawn) and 2368_1 (off-canvas → suppressed).
   // @see lib/dotgen/dotsplines.c:make_flat_labeled_edge, lib/common/emit.c:edge_in_box
-  if (e.tail === e.head) return;
-  if (!hasValidCoords(e)) return;
-  routeOneEdge(e, g, run);
+  if (e.tail === e.head) return 0;
+  if (!hasValidCoords(e)) return 0;
+  return routeOneEdge(e, g, run);
 }

@@ -1,0 +1,6 @@
+--- a/src/common/poly-init.ts
++++ b/src/common/poly-init.ts
+@@
+ export function makeNodeLabel(n: Node, g: Graph, measurer: TextMeasurer): void {
++  if ((n.info.label as TextlabelT | undefined) !== undefined) console.error(`ISSUE190_REMAKE ${n.name}`);
+   const labelAttr = nodeAttr(n, g, 'label');

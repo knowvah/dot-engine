@@ -1,0 +1,31 @@
+a render of subgraph s alone numbers its nodes and edges in sequence order (-Tjson)
+a render of subgraph s alone numbers its nodes and edges in sequence order (-Tjson0)
+cluster-edges -Kdot -Tjson
+cluster-edges -Kdot -Tjson0
+cluster-edges -Kneato -Tjson
+cluster-edges -Kneato -Tjson0
+edge-order -Kdot -Tjson
+edge-order -Kdot -Tjson0
+edge-order -Kneato -Tjson
+edge-order -Kneato -Tjson0
+fdp-cluster-edge -Kdot -Tjson
+fdp-cluster-edge -Kdot -Tjson0
+fdp-cluster-edge -Kneato -Tjson
+fdp-cluster-edge -Kneato -Tjson0
+nested -Kdot -Tjson
+nested -Kdot -Tjson0
+nested -Kneato -Tjson
+nested -Kneato -Tjson0
+rankset -Kdot -Tjson
+rankset -Kdot -Tjson0
+rankset -Kneato -Tjson
+rankset -Kneato -Tjson0
+repro -Kdot -Tjson
+repro -Kdot -Tjson0
+repro -Kneato -Tjson
+repro -Kneato -Tjson0
+the issue repro lists subgraph s as [1, 2]
+undirected-cluster -Kdot -Tjson
+undirected-cluster -Kdot -Tjson0
+undirected-cluster -Kneato -Tjson
+undirected-cluster -Kneato -Tjson0

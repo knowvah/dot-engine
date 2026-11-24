@@ -1,0 +1,1 @@
+graph { mode=KK; label=G; a -- b -- c -- a }

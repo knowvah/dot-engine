@@ -1,0 +1,151 @@
+{
+  "name": "G",
+  "directed": true,
+  "strict": false,
+  "_draw_": 
+  [
+    {
+      "op": "c",
+      "grad": "none",
+      "color": "#fffffe00"
+    },
+    {
+      "op": "C",
+      "grad": "none",
+      "color": "#ffffff"
+    },
+    {
+      "op": "P",
+      "points": [[0.000,0.000],[0.000,156.800],[156.000,156.800],[156.000,0.000]]
+    }
+  ],
+  "bb": "0,0,156,156.8",
+  "label": "\\n",
+  "lheight": "0.22",
+  "lp": "78,12",
+  "lwidth": "0.00",
+  "xdotversion": "1.7",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "cluster_a",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "p",
+          "points": [[8.000,32.000],[8.000,148.800],[94.000,148.800],[94.000,32.000]]
+        }
+      ],
+      "bb": "8,32,94,148.8",
+      "label": "\\n",
+      "lheight": "0.22",
+      "lp": "51,136.8",
+      "lwidth": "0.00",
+      "_gvid": 0,
+      "subgraphs": [
+        1
+      ],
+      "nodes": [
+        2
+      ]
+    },
+    {
+      "name": "cluster_b",
+      "bb": "16,40,86,116.8",
+      "label": "B",
+      "lheight": "0.23",
+      "lp": "51,104.4",
+      "lwidth": "0.13",
+      "style": "invis",
+      "_gvid": 1,
+      "nodes": [
+        2
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "p",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [51.000,66.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [51.000,61.800],
+          "align": "c",
+          "width": 7.000,
+          "text": "p"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "51,66",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "q",
+      "_draw_": 
+      [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [129.000,66.000,27.000,18.000]
+        }
+      ],
+      "_ldraw_": 
+      [
+        {
+          "op": "F",
+          "size": 14.000,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [129.000,61.800],
+          "align": "c",
+          "width": 7.000,
+          "text": "q"
+        }
+      ],
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "129,66",
+      "width": "0.75"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+digraph { a [shape=Mrecord, label=<a|b>, xlabel=<<I>x</I>>]; a -> b [label=<e>] }

@@ -1,0 +1,1 @@
+digraph { pad=abc; size="1,1"; a -> b }

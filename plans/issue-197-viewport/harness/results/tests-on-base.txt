@@ -1,0 +1,119 @@
+     × bigger -Tsvg
+     × bigger -Txdot
+     × bigger -Tjson
+     × clusters -Tsvg
+     × clusters -Txdot
+     × clusters -Tjson
+     × edge-color-warn -Tsvg
+     × edge-color-warn -Txdot
+     × edge-color-warn -Tjson
+     × edge-label -Tsvg
+     × edge-label -Txdot
+     × edge-label -Tjson
+     × empty-quotes -Tsvg
+     × empty-quotes -Txdot
+     × empty-quotes -Tjson
+     × focus-missing-node -Tsvg
+     × focus-missing-node -Txdot
+     × focus-missing-node -Tjson
+     × focus-node -Tsvg
+     × focus-node -Txdot
+     × focus-node -Tjson
+     × focus-quoted -Tsvg
+     × focus-quoted -Txdot
+     × focus-quoted -Tjson
+     × focus-xy -Tsvg
+     × focus-xy -Txdot
+     × focus-xy -Tjson
+     × four-numbers -Tsvg
+     × four-numbers -Txdot
+     × four-numbers -Tjson
+     × hex-float -Tsvg
+     × hex-float -Txdot
+     × hex-float -Tjson
+     × landscape -Tsvg
+     × landscape -Txdot
+     × landscape -Tjson
+     × layers -Tsvg
+     × layers -Txdot
+     × layers -Tjson
+     × name-then-number -Tsvg
+     × name-then-number -Txdot
+     × name-then-number -Tjson
+     × neg-focus -Tsvg
+     × neg-focus -Txdot
+     × neg-focus -Tjson
+     × rtest-viewport-300_300 -Tsvg
+     × rtest-viewport-300_300 -Txdot
+     × rtest-viewport-300_300 -Tjson
+     × rtest-viewport-300_300_1_200_620 -Tsvg
+     × rtest-viewport-300_300_1_200_620 -Txdot
+     × rtest-viewport-300_300_1_200_620 -Tjson
+     × rtest-viewport-300_300_2_200_620 -Tsvg
+     × rtest-viewport-300_300_2_200_620 -Txdot
+     × rtest-viewport-300_300_2_200_620 -Tjson
+     × rtest-viewport-300_300_2_200_620 -Tplain
+     × space-before-comma -Tsvg
+     × space-before-comma -Txdot
+     × space-before-comma -Tjson
+     × spaces -Tsvg
+     × spaces -Txdot
+     × spaces -Tjson
+     × trailing -Tsvg
+     × trailing -Txdot
+     × trailing -Tjson
+     × unclosed-quote -Tsvg
+     × unclosed-quote -Txdot
+     × unclosed-quote -Tjson
+     × undirected-node-focus -Tsvg
+     × undirected-node-focus -Txdot
+     × undirected-node-focus -Tjson
+     × undirected-node-focus -Tplain
+     × urls -Tsvg
+     × urls -Txdot
+     × urls -Tjson
+     × urls -Tcmapx
+     × wh-only -Tsvg
+     × wh-only -Txdot
+     × wh-only -Tjson
+     × whz -Tsvg
+     × whz -Txdot
+     × whz -Tjson
+     × whz -Tplain
+     × with-dpi -Tsvg
+     × with-dpi -Txdot
+     × with-dpi -Tjson
+     × with-margin -Tsvg
+     × with-margin -Txdot
+     × with-margin -Tjson
+     × with-pad -Tsvg
+     × with-pad -Txdot
+     × with-pad -Tjson
+     × with-size -Tsvg
+     × with-size -Txdot
+     × with-size -Tjson
+     × with-size-z -Tsvg
+     × with-size-z -Txdot
+     × with-size-z -Tjson
+     × with-size-z -Tplain
+     × zoom2 -Tsvg
+     × zoom2 -Txdot
+     × zoom2 -Tjson
+     × zoom2 -Tplain
+     × starts from the bb centre, Z = 1 and the bb as the view
+     × viewport="60,60,1,30,30"
+     × viewport="60,60,2,c"
+     × viewport="60,60,1,'c'"
+     × viewport="60,60,1,'c"
+     × viewport="60,60,1,nosuch"
+     × viewport="60,60,1,30"
+     × viewport="60,60,1,c,5"
+     × viewport="100,80"
+     × viewport="100,80,0.5"
+     × viewport=" 60, 60,1,30,30"
+     × viewport="60 ,60,1,30,30"
+     × viewport="0x3Cp0,60,1,30,30"
+     × viewport="60,60,1,30,30,99"
+     × centres the clip on the focus, a view / zoom wide
+⎯⎯⎯⎯⎯⎯ Failed Tests 117 ⎯⎯⎯⎯⎯⎯
+      Tests  117 failed | 72 passed (189)

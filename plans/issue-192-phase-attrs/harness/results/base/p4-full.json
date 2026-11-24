@@ -1,0 +1,205 @@
+{
+  "name": "%1",
+  "directed": true,
+  "strict": false,
+  "phase": "4",
+  "_draw_": [
+    {
+      "op": "c",
+      "grad": "none",
+      "color": "#fffffe00"
+    },
+    {
+      "op": "C",
+      "grad": "none",
+      "color": "#ffffff"
+    },
+    {
+      "op": "P",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          108
+        ],
+        [
+          54,
+          108
+        ],
+        [
+          54,
+          0
+        ]
+      ]
+    }
+  ],
+  "bb": "0,0,54,108",
+  "xdotversion": "1.7",
+  "_subgraph_cnt": 0,
+  "objects": [
+    {
+      "_gvid": 0,
+      "name": "a",
+      "label": "\\N",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [
+            27,
+            90,
+            27,
+            18
+          ]
+        }
+      ],
+      "_ldraw_": [
+        {
+          "op": "F",
+          "size": 14,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [
+            27,
+            85.8
+          ],
+          "align": "c",
+          "width": 6.21,
+          "text": "a"
+        }
+      ],
+      "height": "0.5",
+      "pos": "27,90",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 1,
+      "name": "b",
+      "label": "\\N",
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "e",
+          "rect": [
+            27,
+            18,
+            27,
+            18
+          ]
+        }
+      ],
+      "_ldraw_": [
+        {
+          "op": "F",
+          "size": 14,
+          "face": "Times-Roman"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "T",
+          "pt": [
+            27,
+            13.8
+          ],
+          "align": "c",
+          "width": 7,
+          "text": "b"
+        }
+      ],
+      "height": "0.5",
+      "pos": "27,18",
+      "width": "0.75"
+    }
+  ],
+  "edges": [
+    {
+      "_gvid": 0,
+      "tail": 0,
+      "head": 1,
+      "_draw_": [
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "b",
+          "points": [
+            [
+              27,
+              71.7
+            ],
+            [
+              27,
+              64.41
+            ],
+            [
+              27,
+              55.73
+            ],
+            [
+              27,
+              47.54
+            ]
+          ]
+        }
+      ],
+      "_hdraw_": [
+        {
+          "op": "S",
+          "style": "solid"
+        },
+        {
+          "op": "c",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "C",
+          "grad": "none",
+          "color": "#000000"
+        },
+        {
+          "op": "P",
+          "points": [
+            [
+              30.5,
+              47.62
+            ],
+            [
+              27,
+              37.62
+            ],
+            [
+              23.5,
+              47.62
+            ]
+          ]
+        }
+      ],
+      "pos": "e,27,36.104 27,71.697 27,64.407 27,55.726 27,47.536"
+    }
+  ]
+}

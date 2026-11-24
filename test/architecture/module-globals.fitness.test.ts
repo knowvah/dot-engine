@@ -62,7 +62,7 @@ const ALLOWLIST: Readonly<Record<string, string>> = {
   'src/layout/dot/mincross-build.ts::fillSeq':
     'registered render-state reset to 0 (mincross-build.ts:103 registerRenderState); fillRanks also resets it to 0 on entry (mincross-build.ts:184)',
   'src/common/htmltable-emit-rules.ts::anchorSeq':
-    'anchor id counter; registered render-state reset via resetHtmlAnchorIds (htmltable-emit-rules.ts:221 registerRenderState)',
+    'anchor id counter; registered render-state reset via resetHtmlAnchorIds (htmltable-emit-rules.ts:230 registerRenderState)',
   'src/common/htmltable-emit-fill.ts::htmlFillPen':
     'gvrender penwidth leak for bgcolor fills; registered render-state reset via resetHtmlFillPenWidth (htmltable-emit-fill.ts:141 registerRenderState)',
 

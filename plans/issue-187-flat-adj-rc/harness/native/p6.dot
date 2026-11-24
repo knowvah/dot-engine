@@ -1,0 +1,16 @@
+digraph {
+	graph [bb="-18,0,72,2.88e+09",
+		rankdir=LR
+	];
+	node [label="\N"];
+	{
+		graph [rank=same];
+		a	[height="4e+07",
+			pos="54,1.44e+09",
+			width=0.5];
+		b	[height="4e+07",
+			pos="0,1.44e+09",
+			width=0.5];
+	}
+	a:e -> b:w;
+}

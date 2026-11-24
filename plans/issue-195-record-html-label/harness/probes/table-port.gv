@@ -1,0 +1,1 @@
+digraph { a [shape=record, label=<<TABLE PORT="p"><TR><TD PORT="q">x</TD></TR></TABLE>|y>]; b; a -> b; b -> a }

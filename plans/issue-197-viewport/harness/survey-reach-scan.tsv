@@ -1,0 +1,181 @@
+tree-contrib-java-dot-uml	10213	 size rot
+tree-doc-dotguide-asde91	3383	 size
+tree-doc-dotguide-clust2	1407	 size
+tree-doc-dotguide-constraint	93	 size
+tree-doc-dotguide-graph2	434	 size
+tree-doc-dotguide-smlred	14247	 size
+tree-doc-neato-ER	665	 size
+tree-doc-neato-G4_lenwt	83	 size
+tree-doc-neato-G4_orig	76	 size
+tree-doc-neato-G4_pinned	131	 size
+tree-doc-neato-fancy	617	 size
+tree-doc-neato-inet	349	 size
+tree-doc-neato-jho	14828	 size
+tree-doc-neato-process	274	 size
+tree-doc-neato-typeshar	4584	 size
+tree-graphs-directed-NaN	2672	 size rot
+tree-graphs-directed-abstract	770	 size
+tree-graphs-directed-alf	958	 size
+tree-graphs-directed-clust5	238	 size
+tree-graphs-directed-crazy	5572	 size rot
+tree-graphs-directed-fig6	835	 size
+tree-graphs-directed-grammar	1302	 size
+tree-graphs-directed-jcctree	778	 size
+tree-graphs-directed-jsort	6189	 size
+tree-graphs-directed-mike	381	 size
+tree-graphs-directed-nhg	339	 size
+tree-graphs-directed-pgram	2614	 size
+tree-graphs-directed-polypoly	5155	 size rot
+tree-graphs-directed-proc3d	6121	 size rot
+tree-graphs-directed-rowe	765	 size
+tree-graphs-directed-sdh	5428	 size
+tree-graphs-directed-shells	1102	 size
+tree-graphs-directed-states	492	 size
+tree-graphs-directed-train11	777	 size
+tree-graphs-directed-trapeziumlr	1484	 size
+tree-graphs-directed-unix	1433	 size
+tree-graphs-directed-unix2	1719	 size
+tree-graphs-directed-world	980	 size
+tree-tclpkg-tcldot-examples-data-demo	295	 url
+tree-tclpkg-tcldot-examples-data-poly	305	 url
+1425_1	544	 url
+1435	2204	 dpi
+1447	6707	 url
+1447_1	14827	 size url
+1652	240391	 dpi
+1658	711	 rot
+1855	1335	 size
+1879	287816	 size pad url
+2082	3033	 pad
+2258	460	 url
+2295	221	 url
+2413_1	1076	 url
+2413_2	9721	 url
+2592	3001	 pad
+2613	411	 size
+2619_1	6721	 dpi url
+2619_2	7596	 dpi url
+2621	721934	 url
+42	11978	 dpi
+56	4247	 size
+894589	13020	 size
+graphs-NaN	2672	 size rot
+graphs-abstract	770	 size
+graphs-alf	958	 size
+graphs-b	338	 size
+graphs-b100	782464	 url
+graphs-b102	102329	 url
+graphs-b103	377525	 url
+graphs-b104	782464	 url
+graphs-b106	48933	 url
+graphs-b117	338	 size
+graphs-b143	62055	 url
+graphs-b155	542	 url
+graphs-b22	488	 size
+graphs-b29	62931	 url
+graphs-b36	10388	 size
+graphs-b68	595	 size rot
+graphs-b69	33033	 size rot
+graphs-b71	2748	 size
+graphs-b79	82	 size
+graphs-b85	668	 url
+graphs-clust5	238	 size
+graphs-crazy	5556	 size rot
+graphs-fig6	835	 size
+graphs-grammar	1302	 size
+graphs-html2	1414	 url
+graphs-jcctree	778	 size
+graphs-jsort	6189	 size
+graphs-lsunix1	1456	 size
+graphs-lsunix2	1456	 size
+graphs-lsunix3	1465	 size
+graphs-mike	381	 size
+graphs-nhg	339	 size
+graphs-pgram	2614	 size
+graphs-polypoly	6617	 size rot
+graphs-proc3d	6121	 size rot
+graphs-record	958	 size
+graphs-root	128221	 url
+graphs-rowe	765	 size
+graphs-shells	1102	 size
+graphs-states	492	 size
+graphs-train11	777	 size
+graphs-trapeziumlr	1484	 size
+graphs-unix	1433	 size
+graphs-unix2	1719	 size
+graphs-unix2k	1719	 size
+graphs-url	1242	 url
+graphs-world	980	 size
+graphs-xx	102329	 url
+linux.i386-b102	161479	 url
+linux.i386-b106	92005	 url
+linux.i386-b29	136753	 url
+linux.i386-b36	15051	 size
+linux.i386-crazy	10433	 size rot
+linux.x86-html2_dot	1945	 url
+linux.x86-rankdir_dot	12792	 size rot
+linux.x86-rankdir_dot1	12673	 size rot
+linux.x86-rankdir_dot2	12815	 size rot
+linux.x86-record_dot	4541	 size
+linux.x86-root_circo	313168	 url
+linux.x86-root_twopi	287907	 url
+negative-dpi	33	 dpi
+nshare-html2_dot	1946	 url
+nshare-rankdir_dot	12803	 size rot
+nshare-rankdir_dot1	12675	 size rot
+nshare-rankdir_dot2	12795	 size rot
+nshare-record_dot	4632	 size
+nshare-root_circo	313126	 url
+nshare-root_twopi	287916	 url
+share-NaN	16328	 size rot
+share-abstract	7614	 size
+share-alf	3629	 size
+share-b102	161479	 url
+share-b106	92301	 url
+share-b29	137802	 url
+share-b36	15051	 size
+share-clust5	1698	 size
+share-crazy	10433	 size rot
+share-fig6	7553	 size
+share-grammar	5613	 size
+share-jsort	14030	 size
+share-mike	4090	 size
+share-nhg	938	 size
+share-pgram	10942	 size
+share-polypoly	8872	 size rot
+share-proc3d	10429	 size rot
+share-rowe	7448	 size
+share-shells	5493	 size
+share-states	858	 size
+share-train11	3220	 size
+share-trapeziumlr	7233	 size
+share-unix	6603	 size
+share-unix2	7421	 size
+share-unix2k	7421	 size
+share-world	8062	 size
+windows-NaN	17050	 size rot
+windows-abstract	7664	 size
+windows-alf	3605	 size
+windows-b102	184125	 url
+windows-b106	95634	 url
+windows-b29	149114	 url
+windows-b36	15050	 size
+windows-clust5	1695	 size
+windows-crazy	10433	 size rot
+windows-fig6	7553	 size
+windows-grammar	5612	 size
+windows-jsort	14425	 size
+windows-mike	4090	 size
+windows-nhg	926	 size
+windows-pgram	11001	 size
+windows-polypoly	8872	 size rot
+windows-proc3d	10446	 size rot
+windows-rowe	7506	 size
+windows-shells	5589	 size
+windows-states	878	 size
+windows-train11	3257	 size
+windows-trapeziumlr	7229	 size
+windows-unix	6603	 size
+windows-unix2	7421	 size
+windows-unix2k	7421	 size
+windows-world	8172	 size

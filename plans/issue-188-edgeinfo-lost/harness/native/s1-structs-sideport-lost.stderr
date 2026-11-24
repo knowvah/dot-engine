@@ -1,0 +1,3 @@
+lib/pathplan/~/git/sseely/graphviz-carried/lib/pathplan/shortest.c:194: destination point not in any triangle
+Error: in routesplines, Pshortestpath failed
+Error: lost struct1 struct3 edge

@@ -1,0 +1,29 @@
+{
+ "bundleA": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T//i196/base.mjs",
+ "bundleB": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T//i196/head.mjs",
+ "jobs": 336,
+ "identical": 332,
+ "diffs": [],
+ "capped": [
+  {
+   "key": "2621|dot|dot",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "2621|dot|json",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "2621|dot|svg",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "2621|dot|xdot",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  }
+ ]
+}

@@ -1,0 +1,5 @@
+graph 1 1.6171 1.7167
+node a 0.80857 1.4597 1.6171 0.51389 <left|<B>mid</B>|right> solid record black lightgrey
+node b 0.80857 0.35139 1.1138 0.70278 <one|{two|three}> solid Mrecord black lightgrey
+edge a b 4 0.80857 1.206 0.80857 1.1043 0.80857 0.98171 0.80857 0.862 solid black
+stop

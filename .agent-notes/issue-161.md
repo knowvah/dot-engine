@@ -11,8 +11,9 @@
   splines pass; C routes it (hackflag) to the orphan, resizes the orphan, and
   drops it. The first is never routed, by C or the port.
 - **Impact**: "No spline" has two causes on such an input: an edge routed to a
-  dead end (`info.lost === true`) and an edge nothing collects (`lost`
-  unset). A test that expects `lost` on every unsplined edge is wrong.
+  dead end (`routeMultiRankEdgeFaithful` returns `'lost'`) and an edge nothing
+  collects. The port-only `info.lost` flag that told them apart is gone (#188);
+  both edges simply have `info.spl === undefined`, as in C.
 - **Confidence**: High (probe of the port's graph; native markers fire once).
 
 ## Observation: the orphan is not translated by postprocess

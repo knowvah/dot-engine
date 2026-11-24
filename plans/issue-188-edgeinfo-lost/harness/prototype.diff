@@ -1,0 +1,185 @@
+diff --git a/src/layout/dot/edge-route-chain.dead-end.test.ts b/src/layout/dot/edge-route-chain.dead-end.test.ts
+index 321ccda3..798ac3fe 100644
+--- a/src/layout/dot/edge-route-chain.dead-end.test.ts
++++ b/src/layout/dot/edge-route-chain.dead-end.test.ts
+@@ -151,7 +151,6 @@ describe('corpus 2765: a chain that ends at a vnode with no out edge', () => {
+   });
+ 
+   it('the splines pass resizes the orphan to native\'s values and draws neither edge', () => {
+-    // Only the merged edge is routed, so only it is marked lost.
+     const g = parse(SRC_2765);
+     render(g, 'plain', { engine: 'dot' });
+     const dead = targetEdges(g);
+@@ -161,7 +160,6 @@ describe('corpus 2765: a chain that ends at a vnode with no out edge', () => {
+     expect(orphan.info.lw).toBeCloseTo(NATIVE_ORPHAN.lw, DIGITS);
+     expect(orphan.info.rw).toBeCloseTo(NATIVE_ORPHAN.rw, DIGITS);
+     expect(dead.map(e => e.info.spl)).toEqual([undefined, undefined]);
+-    expect(dead.map(e => e.info.lost)).toEqual([undefined, true]);
+   });
+ });
+ 
+@@ -221,8 +219,6 @@ describe('a back edge whose chain ends at a vnode with no out edge', () => {
+     expect(render(g, 'plain', { engine: 'dot' })).toBe(NATIVE_BACK_PLAIN);
+     const dead = backTargetEdges(g);
+     expect(dead.map(e => e.info.spl)).toEqual([undefined, undefined]);
+-    // As on 2765: only the edge merged into the other's chain is ever routed.
+-    expect(dead.map(e => e.info.lost)).toEqual([undefined, true]);
+   });
+ });
+ 
+diff --git a/src/layout/dot/edge-route-chain.ts b/src/layout/dot/edge-route-chain.ts
+index f816b2f8..3d23d4ed 100644
+--- a/src/layout/dot/edge-route-chain.ts
++++ b/src/layout/dot/edge-route-chain.ts
+@@ -474,11 +474,9 @@ export function routeBackEdge(e: GraphEdge, _tailBox: NodeBox, _headBox: NodeBox
+   // @see lib/dotgen/dotsplines.c:make_regular_edge (segfirst/tn/hn walk)
+   const [beginEdge, endEdge] = chainEnds(e, segs);
+   const fwd = routeChainSegmented(g, beginEdge, endEdge, segs);
+-  // Chain routing failed: C's make_regular_edge returns with no spline and
+-  // dot_splines_ never revisits the edge — mark it consumed so the backstop
+-  // sweep does not re-route (and re-report) it.
++  // Chain routing failed: C's make_regular_edge returns with no spline.
+   // @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0 return)
+-  if (fwd === null) { e.info.lost = true; return; }
++  if (fwd === null) return;
+   clipAndInstall(fwdEdge, fwdEdge.head, fwd, fwd.length, buildDotSinfo());
+   if (swapEndsP(e)) swapEdgeSpline(e);
+ }
+diff --git a/src/layout/dot/edge-route-rank.ts b/src/layout/dot/edge-route-rank.ts
+index d1decbe8..6916915d 100644
+--- a/src/layout/dot/edge-route-rank.ts
++++ b/src/layout/dot/edge-route-rank.ts
+@@ -123,14 +123,12 @@ const staleBeziersByEdge = new WeakMap<Edge, number>();
+  * what an earlier layout left on each edge. C routes each edge once per
+  * `dot_splines_` and `new_spline` appends to whatever `ED_spl` holds, so stale
+  * beziers neither stop this pass routing an edge nor count as this pass's route.
+- * A stale `lost` is the same: this pass has not lost the edge yet.
+  * @see lib/dotgen/dotsplines.c:dot_splines_
+  * @see lib/common/splines.c:new_spline
+  */
+ export function beginRoutingPass(g: Graph): void {
+   resetSplineBounds(g);
+   for (const e of g.edges) {
+-    e.info.lost = undefined;
+     if (e.info.spl === undefined) staleBeziersByEdge.delete(e);
+     else staleBeziersByEdge.set(e, e.info.spl.size);
+   }
+diff --git a/src/layout/dot/edge-route.ts b/src/layout/dot/edge-route.ts
+index 827a80e5..75cb2d2d 100644
+--- a/src/layout/dot/edge-route.ts
++++ b/src/layout/dot/edge-route.ts
+@@ -222,7 +222,7 @@ function routeFaithfulRegularPlain(e: GraphEdge, g: Graph): boolean {
+   // routesplines failed after a full corridor attempt: C installs no spline
+   // and the edge is LOST (postproc warns, emit skips) — never straight-line
+   // synthesized. @see lib/dotgen/dotsplines.c:make_regular_edge (pn == 0)
+-  if (pts === 'lost') { e.info.lost = true; return true; }
++  if (pts === 'lost') return true;
+   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
+   return true;
+ }
+@@ -244,7 +244,7 @@ function routeFaithfulAdjacentBack(e: GraphEdge, g: Graph): boolean {
+   const fwd = makeFwdEdge(e);
+   const pts = routeRegularEdgeFaithful(g, fwd);
+   if (pts === null) return false;
+-  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
++  if (pts === 'lost') return true; // C: edge lost, no spline
+   clipAndInstall(fwd, fwd.head, pts, pts.length, buildDotSinfo());
+   if (swapEndsP(e)) swapEdgeSpline(e);
+   return true;
+@@ -279,7 +279,7 @@ export function routeOneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]):
+ function routeFaithfulMultiRank(e: GraphEdge, g: Graph): boolean {
+   const pts = routeMultiRankEdgeFaithful(g, e);
+   if (pts === null) return false;
+-  if (pts === 'lost') { e.info.lost = true; return true; } // C: edge lost, no spline
++  if (pts === 'lost') return true; // C: edge lost, no spline
+   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
+   return true;
+ }
+@@ -398,7 +398,7 @@ function routeFaithfulSidePort(e: GraphEdge, g: Graph, run: readonly GraphEdge[]
+   }
+   const pts = routeRegularEdgeFaithful(g, e);
+   if (pts === null) return null;
+-  if (pts === 'lost') { e.info.lost = true; return 0; } // C: edge lost, no spline
++  if (pts === 'lost') return 0; // C: edge lost, no spline
+   clipAndInstall(e, e.head, pts, pts.length, buildDotSinfo());
+   return 0;
+ }
+@@ -474,9 +474,7 @@ function routeForwardEdge(
+  * @see lib/dotgen/dotsplines.c:dot_splines_ (per-edge dispatch + 295 skip)
+  */
+ export function routeLoneEdge(e: GraphEdge, g: Graph, run: readonly GraphEdge[]): number {
+-  // A lost edge (routesplines failure, C semantics) is consumed: C routes each
+-  // edge exactly once, so a later group must not re-attempt it.
+-  if (routedThisPass(e) || e.info.lost === true) return 0;
++  if (routedThisPass(e)) return 0;
+   // C dot_splines_ skips FLATORDER/IGNORED edges when building the route list;
+   // an IGNORED edge (e.g. a concentrate-merged parallel duplicate) must get no
+   // spline so emit draws only the representative. @see dotsplines.c:295
+diff --git a/src/layout/dot/splines-flat-labeled.ts b/src/layout/dot/splines-flat-labeled.ts
+index 5719f3e8..ba73ff04 100644
+--- a/src/layout/dot/splines-flat-labeled.ts
++++ b/src/layout/dot/splines-flat-labeled.ts
+@@ -150,10 +150,7 @@ export function makeFlatLabeledEdge(g: Graph, e: Edge): boolean {
+   // Degenerate route (routesplines pn=0): label set, no spline installed — C's
+   // make_flat_labeled_edge returns the same way; emit's edge_in_box then decides
+   // whether the (untranslated) label overlaps the clip. Still HANDLED → true.
+-  // C's dot_splines_ visits the edge once, so mark it lost: the flat group loop
+-  // calls routeLoneEdge per member, and its `lost` skip keeps a later call from
+-  // routing (and reporting the failure) a second time.
+-  if (ps === null || ps.length === 0) { e.info.lost = true; return true; }
++  if (ps === null || ps.length === 0) return true;
+   if (!tailIsLeft) ps.reverse();
+   clipAndInstall(e, e.head, ps, ps.length, { ...buildDotSinfo(), ignoreSwap: true });
+   return true;
+diff --git a/src/layout/dot/splines-route.ts b/src/layout/dot/splines-route.ts
+index 861697de..688a263c 100644
+--- a/src/layout/dot/splines-route.ts
++++ b/src/layout/dot/splines-route.ts
+@@ -385,15 +385,9 @@ export function routeParallelEdgeGroup(
+     return o.info.head_port?.defined || o.info.tail_port?.defined;
+   }) ?? edges[0]!;
+   const base = baseSplineForGroup(g, baseEdge);
+-  // A lost group base consumes every member: C's dot_splines_ calls
+-  // make_regular_edge once per group and never re-routes its edges, so no
+-  // later group may re-attempt (and re-report) them.
+-  // @see lib/dotgen/dotsplines.c:dot_splines_ (group loop, one call per group)
+-  if (base === 'lost') {
+-    for (const e of edges) resolveOrigEdge(e).info.lost = true;
+-    return;
+-  }
+-  if (base === null) return;
++  // A lost group base installs no spline on any member: C's make_regular_edge
++  // returns once routesplines fails. @see lib/dotgen/dotsplines.c:make_regular_edge
++  if (base === 'lost' || base === null) return;
+   if (cnt === 1) { installShiftedEdge(edges[0]!, base); return; }
+   // dx = Multisep * (cnt-1) / 2 centres the fan on the base path.
+   // @see lib/dotgen/dotsplines.c:make_regular_edge:1885
+diff --git a/src/model/edgeInfo.ts b/src/model/edgeInfo.ts
+index 7ef00eaf..ba07313f 100644
+--- a/src/model/edgeInfo.ts
++++ b/src/model/edgeInfo.ts
+@@ -171,15 +171,6 @@ export interface EdgeInfo {
+    */
+   to_virt?: Edge;
+ 
+-  /**
+-   * Routing attempted and routesplines failed: the edge is LOST exactly as in
+-   * C (no spline installed, map_edge warns, emit skips). Port-only bookkeeping:
+-   * routeLoneEdge skips a lost edge, so a later call in the same routing pass
+-   * does not re-attempt an edge C routes once; beginRoutingPass clears it.
+-   * @see lib/common/routespl.c:routesplines (NULL), lib/common/postproc.c:map_edge
+-   */
+-  lost?: boolean;
+-
+   // -------------------------------------------------------------------------
+   // Engine scratch
+   // -------------------------------------------------------------------------
+@@ -436,7 +427,7 @@ export function makeEdgeInfo(tailPort: Port, headPort: Port): EdgeInfo {
+     xlabel: undefined, headArrowOps: undefined, tailArrowOps: undefined,
+     constraint: undefined, edge_type: undefined, compound: undefined,
+     adjacent: undefined, label_ontop: undefined, gui_state: undefined,
+-    to_orig: undefined, to_virt: undefined, lost: undefined, alg: undefined,
++    to_orig: undefined, to_virt: undefined, alg: undefined,
+     weight: undefined, minlen: undefined, cutvalue: undefined, tree_index: undefined,
+     xpenalty: undefined, count: undefined, conc_opp_flag: undefined,
+     showboxes: undefined, stale_arrow_attrs: undefined,

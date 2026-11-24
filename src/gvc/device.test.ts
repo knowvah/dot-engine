@@ -107,6 +107,9 @@ describe('AC3: renderGraph — callback ordering', () => {
     g.nodes.set('n2', n2);
     const e = new Edge(n1, n2, 'e1');
     e.info = makeEdgeInfo(makePort(), makePort());
+    // A spline whose bb meets the job's (zero) clip: emit_edge draws only an
+    // edge that passes edge_in_box.
+    e.info.spl = { list: [], size: 0, bb: { ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } } };
     g.edges.push(e);
     const renderer = new RecordingRenderer();
     const job = new RenderJob('svg', stubMeasurer);

@@ -1,0 +1,1 @@
+digraph G { subgraph s { _ldraw_=""; subgraph cluster_k { label="K"; style=invis; a } } subgraph t { _ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 3 3 0 5 1 -t "; subgraph cluster_m { label="M"; style=invis; b } } }
