@@ -9,7 +9,7 @@ a walk reads the registries being staged.
 
 | ID | Description | Writes | Depends On | Done |
 |---|---|---|---|---|
-| T6 | [Native timings](T6-native-timings.md) | `test/corpus/native-timings.json` | T5 | [ ] |
+| T6 | [Native timings](T6-native-timings.md) | `test/corpus/native-timings.json` | T5 | [x] |
 | T7 | [Dot survey](T7-dot-survey.md) | `test/corpus/parity.json`, `PARITY-dot.md` | T6 | [ ] |
 | T8 | [Dot formats](T8-dot-formats.md) | `dot-parity-dot.*`, `xdot-parity.*`, `json-parity.*`, `map-parity*.*`, `plain-parity-dot.*`, `PARITY-{XDOT,JSON,MAP}.md` | T6 | [ ] |
 | T9 | [Engine walks](T9-engine-walks.md) | `parity-{circo,fdp,neato,osage,patchwork,sfdp,twopi}.*` | T6 | [ ] |
