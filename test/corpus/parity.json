@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-12T21:57:48.074Z",
+  "generatedAt": "2026-11-24T23:40:42.259Z",
   "generatedWith": "test/corpus/survey.ts",
-  "oracleVersion": "dot 16.1.1",
-  "corpusRoot": "~/git/graphviz/tests",
-  "total": 950,
+  "oracleVersion": "dot 16.1.2",
+  "corpusRoot": "~/git/graphviz-16.1.2/tests",
+  "total": 982,
   "counts": {
-    "conformant": 899,
-    "structural-match": 14,
-    "diverged": 25,
-    "errored": 2,
+    "conformant": 934,
+    "structural-match": 3,
+    "diverged": 1,
+    "errored": 0,
     "timeout": 0,
-    "oracle-error": 10
+    "oracle-error": 44
   },
   "results": [
     {
@@ -578,9 +578,7 @@
     {
       "id": "tree-graphs-directed-longflat",
       "path": "../graphs/directed/longflat.gv",
-      "verdict": "structural-match",
-      "maxDelta": 72,
-      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cy"
+      "verdict": "conformant"
     },
     {
       "id": "tree-graphs-directed-mike",
@@ -650,18 +648,12 @@
     {
       "id": "tree-graphs-directed-sdh",
       "path": "../graphs/directed/sdh.gv",
-      "verdict": "diverged",
-      "maxDelta": 236.1500000000001,
-      "firstDiffPath": "svg/g[1]/g[33]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[94]/path[1]/@d[8]"
+      "verdict": "conformant"
     },
     {
       "id": "tree-graphs-directed-shells",
       "path": "../graphs/directed/shells.gv",
-      "verdict": "diverged",
-      "maxDelta": 264,
-      "firstDiffPath": "svg/g[1]/g[27]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[47]/path[1]/@d[4]"
+      "verdict": "conformant"
     },
     {
       "id": "tree-graphs-directed-states",
@@ -777,20 +769,19 @@
     {
       "id": "121",
       "path": "121.dot",
-      "verdict": "diverged",
-      "maxDelta": 72,
-      "firstDiffPath": "svg/g[1]/g[7]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[3]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "1213-1",
       "path": "1213-1.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Error: trouble in init_rank"
     },
     {
       "id": "1213-2",
       "path": "1213-2.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Error: trouble in init_rank"
     },
     {
       "id": "1221",
@@ -805,30 +796,32 @@
     {
       "id": "1314",
       "path": "1314.dot",
-      "verdict": "diverged",
-      "maxDelta": 1683199999996,
-      "firstDiffPath": "svg/g[1][childCount]",
-      "maxDeltaPath": "svg/g[1]/@transform[2].param[1]"
+      "verdict": "oracle-error",
+      "errMsg": "Error: Edge length 272931242864.483337 larger than maximum 2147483647 allowed."
     },
     {
       "id": "1323",
       "path": "1323.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: flat edge between adjacent nodes one of which has a record shape - replace records with HTML-like labels"
     },
     {
       "id": "1323_1",
       "path": "1323_1.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: flat edge between adjacent nodes one of which has a record shape - replace records with HTML-like labels"
     },
     {
       "id": "1328",
       "path": "1328.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Error: trouble in init_rank"
     },
     {
       "id": "1332",
       "path": "1332.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: Warning: no value for width of non-ASCII character 195. Falling back to width of space character"
     },
     {
       "id": "1367",
@@ -846,7 +839,7 @@
       "id": "1411",
       "path": "1411.dot",
       "verdict": "oracle-error",
-      "errMsg": "Error: ~/git/graphviz/tests/1411.dot: syntax error in line 17 near '\\'"
+      "errMsg": "Error: ~/git/graphviz-16.1.2/tests/1411.dot: syntax error in line 17 near '\\'"
     },
     {
       "id": "1425",
@@ -873,16 +866,12 @@
     {
       "id": "1444-2",
       "path": "1444-2.dot",
-      "verdict": "structural-match",
-      "maxDelta": 72,
-      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "1444",
       "path": "1444.dot",
-      "verdict": "structural-match",
-      "maxDelta": 72,
-      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "1447",
@@ -907,9 +896,7 @@
     {
       "id": "1453",
       "path": "1453.dot",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiffPath": "svg/g[1][childCount]"
+      "verdict": "conformant"
     },
     {
       "id": "1472",
@@ -925,7 +912,8 @@
     {
       "id": "1581",
       "path": "1581.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: Act_23 was already in a rankset, deleted from cluster G"
     },
     {
       "id": "1585_0",
@@ -1057,7 +1045,8 @@
     {
       "id": "1879",
       "path": "1879.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: Warning: no value for width of non-ASCII character 195. Falling back to width of space character"
     },
     {
       "id": "1880",
@@ -1092,7 +1081,8 @@
     {
       "id": "1939",
       "path": "1939.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Error: trouble in init_rank"
     },
     {
       "id": "1949",
@@ -1198,10 +1188,7 @@
     {
       "id": "2239",
       "path": "2239.dot",
-      "verdict": "diverged",
-      "maxDelta": 165.5,
-      "firstDiffPath": "svg/g[1]/g[165]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[204]/path[1]/@d[6]"
+      "verdict": "conformant"
     },
     {
       "id": "2242",
@@ -1266,17 +1253,12 @@
     {
       "id": "2368",
       "path": "2368.dot",
-      "verdict": "diverged",
-      "maxDelta": 213.65000000000003,
-      "firstDiffPath": "svg/g[1]/g[5]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[9]/text[1]/@x"
+      "verdict": "conformant"
     },
     {
       "id": "2368_1",
       "path": "2368_1.dot",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiffPath": "svg/g[1][childCount]"
+      "verdict": "conformant"
     },
     {
       "id": "2371",
@@ -1351,12 +1333,14 @@
     {
       "id": "2470",
       "path": "2470.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: Warning: no hard-coded metrics for 'Menlo'.  Falling back to 'Times' metrics"
     },
     {
       "id": "2471",
       "path": "2471.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: Warning: no hard-coded metrics for 'Menlo'.  Falling back to 'Times' metrics"
     },
     {
       "id": "2475_1",
@@ -1396,15 +1380,13 @@
     {
       "id": "2516",
       "path": "2516.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Error: Syntax error: non-space string used before <TABLE> in line 1"
     },
     {
       "id": "2521",
       "path": "2521.dot",
-      "verdict": "diverged",
-      "maxDelta": 114,
-      "firstDiffPath": "svg/g[1]/g[8]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[9]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "2521_1",
@@ -1439,17 +1421,12 @@
     {
       "id": "258",
       "path": "258.dot",
-      "verdict": "diverged",
-      "maxDelta": 72,
-      "firstDiffPath": "svg/g[1]/g[7]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[3]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "2592",
       "path": "2592.dot",
-      "verdict": "structural-match",
-      "maxDelta": 540,
-      "maxDeltaPath": "svg/g[1]/g[7]/polygon[1]/@points[0]"
+      "verdict": "conformant"
     },
     {
       "id": "2593",
@@ -1480,17 +1457,20 @@
     {
       "id": "2619",
       "path": "2619.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: No such file or directory while opening 2619.jpg"
     },
     {
       "id": "2619_1",
       "path": "2619_1.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: cell size too small for content"
     },
     {
       "id": "2619_2",
       "path": "2619_2.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: cell size too small for content"
     },
     {
       "id": "2620",
@@ -1565,8 +1545,8 @@
     {
       "id": "2723",
       "path": "2723.dot",
-      "verdict": "errored",
-      "errMsg": "Cannot read properties of undefined (reading 'v')"
+      "verdict": "oracle-error",
+      "errMsg": "Error: in routesplines, illegal values of prev 1 and next 1, line 340"
     },
     {
       "id": "2727",
@@ -1584,10 +1564,135 @@
       "verdict": "conformant"
     },
     {
+      "id": "2756",
+      "path": "2756.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2756_1",
+      "path": "2756_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2758",
+      "path": "2758.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: syntax ambiguity - badly delimited number '40000000d' in line 1 of ~/git/graphviz-16.1.2/tests/2758.dot splits into two tokens"
+    },
+    {
+      "id": "2759",
+      "path": "2759.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2759_1",
+      "path": "2759_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2765",
+      "path": "2765.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2765_1",
+      "path": "2765_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2768",
+      "path": "2768.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2768_1",
+      "path": "2768_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2768_2",
+      "path": "2768_2.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2769",
+      "path": "2769.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2769_1",
+      "path": "2769_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2769_2",
+      "path": "2769_2.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2773",
+      "path": "2773.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: syntax ambiguity - badly delimited number '1d' in line 9 of ~/git/graphviz-16.1.2/tests/2773.dot splits into two tokens"
+    },
+    {
+      "id": "2773_1",
+      "path": "2773_1.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Error: in checkpath, all bounding boxes are below threshold"
+    },
+    {
+      "id": "2774",
+      "path": "2774.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: syntax ambiguity - badly delimited number '600000000000000000e' in line 1 of ~/git/graphviz-16.1.2/tests/2774.dot splits into two tokens"
+    },
+    {
+      "id": "2774_1",
+      "path": "2774_1.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: syntax ambiguity - badly delimited number '600000000000000000e' in line 9 of ~/git/graphviz-16.1.2/tests/2774_1.dot splits into two tokens"
+    },
+    {
+      "id": "2776",
+      "path": "2776.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: syntax ambiguity - badly delimited number '0f' in line 1 of ~/git/graphviz-16.1.2/tests/2776.dot splits into two tokens"
+    },
+    {
+      "id": "2776_1",
+      "path": "2776_1.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Error: Edge length 300000000000000000.000000 larger than maximum 2147483647 allowed."
+    },
+    {
       "id": "2778",
       "path": "2778.dot",
-      "verdict": "errored",
-      "errMsg": "Cannot read properties of undefined (reading 'll')"
+      "verdict": "oracle-error",
+      "errMsg": "Error: in checkpath, all bounding boxes are below threshold"
+    },
+    {
+      "id": "2780",
+      "path": "2780.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: syntax ambiguity - badly delimited number '1d' in line 5 of ~/git/graphviz-16.1.2/tests/2780.dot splits into two tokens"
+    },
+    {
+      "id": "2781",
+      "path": "2781.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: syntax ambiguity - badly delimited number '0h' in line 1 of ~/git/graphviz-16.1.2/tests/2781.dot splits into two tokens"
+    },
+    {
+      "id": "2781_1",
+      "path": "2781_1.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Error: Edge length 71999999999999994497073152.000000 larger than maximum 2147483647 allowed."
+    },
+    {
+      "id": "2783",
+      "path": "2783.dot",
+      "verdict": "conformant"
     },
     {
       "id": "2784",
@@ -1597,7 +1702,8 @@
     {
       "id": "2796",
       "path": "2796.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Error: trouble in init_rank"
     },
     {
       "id": "2801",
@@ -1605,9 +1711,28 @@
       "verdict": "conformant"
     },
     {
+      "id": "2821_0",
+      "path": "2821_0.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: No such file or directory while opening 2821.png"
+    },
+    {
+      "id": "2821_1",
+      "path": "2821_1.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: No such file or directory while opening 2821.png"
+    },
+    {
+      "id": "2821_2",
+      "path": "2821_2.dot",
+      "verdict": "oracle-error",
+      "errMsg": "Warning: No such file or directory while opening 2821.png"
+    },
+    {
       "id": "2825",
       "path": "2825.dot",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "Warning: B was already in a rankset, deleted from cluster cluster_outer"
     },
     {
       "id": "2834",
@@ -1641,6 +1766,36 @@
       "verdict": "conformant"
     },
     {
+      "id": "2860",
+      "path": "2860.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2860_1",
+      "path": "2860_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2866",
+      "path": "2866.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2870_0",
+      "path": "2870_0.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2870_1",
+      "path": "2870_1.dot",
+      "verdict": "conformant"
+    },
+    {
+      "id": "2870_2",
+      "path": "2870_2.dot",
+      "verdict": "conformant"
+    },
+    {
       "id": "358",
       "path": "358.dot",
       "verdict": "conformant"
@@ -1663,10 +1818,7 @@
     {
       "id": "700813",
       "path": "700813.dot",
-      "verdict": "diverged",
-      "maxDelta": 108,
-      "firstDiffPath": "svg/g[1]/g[3]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cy"
+      "verdict": "conformant"
     },
     {
       "id": "705",
@@ -1931,10 +2083,7 @@
     {
       "id": "graphs-b58",
       "path": "graphs/b58.gv",
-      "verdict": "diverged",
-      "maxDelta": 144,
-      "firstDiffPath": "svg/g[1]/g[12]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-b60",
@@ -2266,16 +2415,12 @@
     {
       "id": "graphs-html2",
       "path": "graphs/html2.gv",
-      "verdict": "structural-match",
-      "maxDelta": 209.92000000000002,
-      "maxDeltaPath": "svg/g[1]/g[4]/text[2]/@y"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-in",
       "path": "graphs/in.gv",
-      "verdict": "structural-match",
-      "maxDelta": 72,
-      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-inv_inv",
@@ -2570,9 +2715,7 @@
     {
       "id": "graphs-longflat",
       "path": "graphs/longflat.gv",
-      "verdict": "structural-match",
-      "maxDelta": 72,
-      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cy"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-lsunix1",
@@ -2697,10 +2840,7 @@
     {
       "id": "graphs-ports",
       "path": "graphs/ports.gv",
-      "verdict": "diverged",
-      "maxDelta": 292.64,
-      "firstDiffPath": "svg/g[1]/g[7]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[6]/polygon[1]/@points[0]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-proc3d",
@@ -2805,10 +2945,7 @@
     {
       "id": "graphs-shells",
       "path": "graphs/shells.gv",
-      "verdict": "diverged",
-      "maxDelta": 264,
-      "firstDiffPath": "svg/g[1]/g[27]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[47]/path[1]/@d[4]"
+      "verdict": "conformant"
     },
     {
       "id": "graphs-sides",
@@ -2893,7 +3030,8 @@
     {
       "id": "graphs-structs",
       "path": "graphs/structs.gv",
-      "verdict": "conformant"
+      "verdict": "oracle-error",
+      "errMsg": "lib/pathplan/~/git/sseely/graphviz-carried-1612/lib/pathplan/shortest.c:194: destination point not in any triangle"
     },
     {
       "id": "graphs-style",
@@ -3004,7 +3142,7 @@
       "id": "imagepath_test-base",
       "path": "imagepath_test/base.gv",
       "verdict": "oracle-error",
-      "errMsg": "Error: ~/git/graphviz/tests/imagepath_test/base.gv: syntax error in line 8 near ']'"
+      "errMsg": "Error: ~/git/graphviz-16.1.2/tests/imagepath_test/base.gv: syntax error in line 8 near ']'"
     },
     {
       "id": "linux.i386-ER",
@@ -3089,9 +3227,7 @@
     {
       "id": "linux.x86-html2_dot",
       "path": "linux.x86/html2_dot.gv",
-      "verdict": "structural-match",
-      "maxDelta": 209.92000000000002,
-      "maxDeltaPath": "svg/g[1]/g[2]/text[2]/@y"
+      "verdict": "conformant"
     },
     {
       "id": "linux.x86-html_dot",
@@ -3116,18 +3252,12 @@
     {
       "id": "linux.x86-ordering_dot",
       "path": "linux.x86/ordering_dot.gv",
-      "verdict": "diverged",
-      "maxDelta": 72,
-      "firstDiffPath": "svg/g[1]/g[25]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[8]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "linux.x86-ordering_dot1",
       "path": "linux.x86/ordering_dot1.gv",
-      "verdict": "diverged",
-      "maxDelta": 72,
-      "firstDiffPath": "svg/g[1]/g[25]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[8]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "linux.x86-overlap_neato",
@@ -3157,10 +3287,7 @@
     {
       "id": "linux.x86-ports_dot",
       "path": "linux.x86/ports_dot.gv",
-      "verdict": "diverged",
-      "maxDelta": 292.64,
-      "firstDiffPath": "svg/g[1]/g[5]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[13]/polygon[1]/@points[0]"
+      "verdict": "conformant"
     },
     {
       "id": "linux.x86-radius_dot",
@@ -3245,18 +3372,12 @@
     {
       "id": "macosx-ordering_dot",
       "path": "macosx/ordering_dot.gv",
-      "verdict": "diverged",
-      "maxDelta": 72,
-      "firstDiffPath": "svg/g[1]/g[25]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[8]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "macosx-ordering_dot1",
       "path": "macosx/ordering_dot1.gv",
-      "verdict": "diverged",
-      "maxDelta": 72,
-      "firstDiffPath": "svg/g[1]/g[25]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[8]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "macosx-radius_dot",
@@ -3316,9 +3437,7 @@
     {
       "id": "nshare-html2_dot",
       "path": "nshare/html2_dot.gv",
-      "verdict": "structural-match",
-      "maxDelta": 209.92000000000002,
-      "maxDeltaPath": "svg/g[1]/g[2]/text[2]/@y"
+      "verdict": "conformant"
     },
     {
       "id": "nshare-html_dot",
@@ -3343,18 +3462,12 @@
     {
       "id": "nshare-ordering_dot",
       "path": "nshare/ordering_dot.gv",
-      "verdict": "diverged",
-      "maxDelta": 72,
-      "firstDiffPath": "svg/g[1]/g[25]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[8]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "nshare-ordering_dot1",
       "path": "nshare/ordering_dot1.gv",
-      "verdict": "diverged",
-      "maxDelta": 72,
-      "firstDiffPath": "svg/g[1]/g[25]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[8]/ellipse[1]/@cx"
+      "verdict": "conformant"
     },
     {
       "id": "nshare-overlap_neato",
@@ -3384,10 +3497,7 @@
     {
       "id": "nshare-ports_dot",
       "path": "nshare/ports_dot.gv",
-      "verdict": "diverged",
-      "maxDelta": 292.64,
-      "firstDiffPath": "svg/g[1]/g[5]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[13]/polygon[1]/@points[0]"
+      "verdict": "conformant"
     },
     {
       "id": "nshare-radius_dot",
@@ -3843,7 +3953,7 @@
       "id": "share-b545",
       "path": "share/b545.gv",
       "verdict": "oracle-error",
-      "errMsg": "Error: ~/git/graphviz/tests/share/b545.gv: syntax error in line 1 near '3.583'"
+      "errMsg": "Error: ~/git/graphviz-16.1.2/tests/share/b545.gv: syntax error in line 1 near '3.583'"
     },
     {
       "id": "share-b786",
@@ -4183,9 +4293,7 @@
     {
       "id": "share-longflat",
       "path": "share/longflat.gv",
-      "verdict": "structural-match",
-      "maxDelta": 72,
-      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cy"
+      "verdict": "conformant"
     },
     {
       "id": "share-mike",
@@ -4255,10 +4363,7 @@
     {
       "id": "share-shells",
       "path": "share/shells.gv",
-      "verdict": "diverged",
-      "maxDelta": 342,
-      "firstDiffPath": "svg/g[1]/g[9]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[4]/polygon[1]/@points[0]"
+      "verdict": "conformant"
     },
     {
       "id": "share-states",
@@ -4728,9 +4833,7 @@
     {
       "id": "windows-longflat",
       "path": "windows/longflat.gv",
-      "verdict": "structural-match",
-      "maxDelta": 72,
-      "maxDeltaPath": "svg/g[1]/g[1]/ellipse[1]/@cy"
+      "verdict": "conformant"
     },
     {
       "id": "windows-mike",
@@ -4805,10 +4908,7 @@
     {
       "id": "windows-shells",
       "path": "windows/shells.gv",
-      "verdict": "diverged",
-      "maxDelta": 342,
-      "firstDiffPath": "svg/g[1]/g[9]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[4]/polygon[1]/@points[0]"
+      "verdict": "conformant"
     },
     {
       "id": "windows-states",
