@@ -39,7 +39,12 @@ export type QuarantineReason =
   /** DOT used as a config/settings format, not a layout input (smyrna GUI). */
   | 'not-a-layout-test'
   /** The native oracle itself aborts, so there is no reference to compare. */
-  | 'oracle-crash';
+  | 'oracle-crash'
+  /**
+   * An input upstream added in a newer oracle, waiting for its port issue:
+   * 16.1.2's seven are #298.
+   */
+  | 'pending-input';
 
 /** Non-dot engines: an explicit `layout=` to one of these defers the input. */
 const FORCE_ENGINES = ['neato', 'fdp', 'sfdp', 'circo', 'twopi', 'osage', 'patchwork'];
@@ -198,6 +203,16 @@ const MANUAL_QUARANTINE: Record<string, QuarantineReason> = {
   '1494.dot': 'malformed',
   '1676.dot': 'malformed',
   '2854.dot': 'perf',
+
+  // --- added by graphviz 16.1.2's tests/, quarantined until #298 admits them
+  // (ADR-0004 decision 4). #298 removes these seven lines.
+  '2745.dot': 'pending-input',
+  '2760.dot': 'pending-input',
+  '2762.dot': 'pending-input',
+  '2762_1.dot': 'pending-input',
+  '2764.dot': 'pending-input',
+  '2764_1.dot': 'pending-input',
+  '2870_3.dot': 'pending-input',
 
   // --- sibling root (outside tests/), added 2026-07-27 -------------------
   // smyrna GUI settings files: DOT used as a CONFIG format (check_box_*,

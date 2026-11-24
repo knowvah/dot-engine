@@ -24,6 +24,9 @@ const ADDED_AT_16_1_1 = [
 /** Native 16.1.1 dies on SIGSEGV (exit 139) on these; upstream marks them xfail. */
 const ORACLE_CRASH_AT_16_1_1 = ['2746', '2761', '2761_1'];
 
+/** Inputs graphviz 16.1.2's tests/ adds over 16.1.1's (all `<id>.dot`); #298 admits them. */
+const ADDED_AT_16_1_2 = ['2745', '2760', '2762', '2762_1', '2764', '2764_1', '2870_3'];
+
 function committedManifest(): CorpusEntry[] {
   return JSON.parse(readFileSync(MANIFEST, 'utf8')) as CorpusEntry[];
 }
@@ -40,6 +43,18 @@ describe('corpus-manifest.json', () => {
   it('quarantines the inputs the oracle crashes on as oracle-crash', () => {
     for (const id of ORACLE_CRASH_AT_16_1_1) {
       expect(byId.get(id), id).toMatchObject({ status: 'quarantined', reason: 'oracle-crash' });
+    }
+  });
+
+  it('sets graphviz 16.1.2\'s added inputs aside as pending-input', () => {
+    for (const id of ADDED_AT_16_1_2) {
+      expect(byId.get(id), id).toEqual({
+        id,
+        path: `${id}.dot`,
+        engine: 'dot',
+        status: 'quarantined',
+        reason: 'pending-input',
+      });
     }
   });
 

@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: EPL-2.0
 #
-# Build the CARRIED oracle: graphviz tag $TAG (16.1.1 live) plus test/corpus/oracle-patches/
+# Build the CARRIED oracle: graphviz tag $TAG (16.1.2 live) plus test/corpus/oracle-patches/
 # *.patch (lexical order, `git am --3way`), in a detached worktree of the
-# maintainer's fork. The pristine 16.1.1 build stays as the bisect build.
+# maintainer's fork. The pristine 16.1.2 build stays as the bisect build.
 # @see docs/adr/0003-upstream-fix-forward.md, test/corpus/oracle-patches/README.md
 #
 # Env:  CARRIED_SRC   fork checkout (default ~/git/sseely/graphviz); never has a
 #                     branch moved, only `git worktree add --detach`
 #       ORACLE_TAG    graphviz tag to build (default: the live oracle's tag)
-#       CARRIED_DIR   worktree + build (default ~/git/sseely/graphviz-carried)
+#       CARRIED_DIR   worktree + build (default ~/git/sseely/graphviz-carried-1612)
 #       CARRIED_GVBINDIR_DOT, CARRIED_GVBINDIR_ALL  plugin dirs (default
-#                     /tmp/ghl1611-carried and /tmp/ghl1611-carried-all)
+#                     /tmp/ghl1612-carried and /tmp/ghl1612-carried-all)
 #       PRISTINE_BUILD  pristine oracle build whose CMakeCache.txt is mirrored
 #       JOBS          parallel build jobs (default 6)
 # A build of any tag other than the live one (issue #296) must override
@@ -25,15 +25,15 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PATCH_DIR="$HERE/oracle-patches"
 CARRIED_SRC="${CARRIED_SRC:-$HOME/git/sseely/graphviz}"
 # The live oracle (oracle-paths.mjs; gvbindir-defaults.test.ts checks these).
-LIVE_TAG="16.1.1"
-LIVE_CARRIED_DIR="$HOME/git/sseely/graphviz-carried"
-LIVE_GVBINDIR_DOT="/tmp/ghl1611-carried"
-LIVE_GVBINDIR_ALL="/tmp/ghl1611-carried-all"
+LIVE_TAG="16.1.2"
+LIVE_CARRIED_DIR="$HOME/git/sseely/graphviz-carried-1612"
+LIVE_GVBINDIR_DOT="/tmp/ghl1612-carried"
+LIVE_GVBINDIR_ALL="/tmp/ghl1612-carried-all"
 TAG="${ORACLE_TAG:-$LIVE_TAG}"
 CARRIED_DIR="${CARRIED_DIR:-$LIVE_CARRIED_DIR}"
 GVBINDIR_DOT="${CARRIED_GVBINDIR_DOT:-$LIVE_GVBINDIR_DOT}"
 GVBINDIR_ALL="${CARRIED_GVBINDIR_ALL:-$LIVE_GVBINDIR_ALL}"
-PRISTINE_BUILD="${PRISTINE_BUILD:-$HOME/git/graphviz-16.1.1/build}"
+PRISTINE_BUILD="${PRISTINE_BUILD:-$HOME/git/graphviz-16.1.2/build}"
 JOBS="${JOBS:-6}"
 BISON="${BISON_EXECUTABLE:-/opt/homebrew/opt/bison/bin/bison}"
 # flex must be 2.6.4, as for the pristine oracle's scanner: flex 2.6.16 sets

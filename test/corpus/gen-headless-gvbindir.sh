@@ -10,8 +10,8 @@
 # Usage:  sh test/corpus/gen-headless-gvbindir.sh [outDir]
 #         sh test/corpus/gen-headless-gvbindir.sh all [outDir]
 # `all` also links neato_layout (circo/twopi/osage/patchwork/neato/fdp/sfdp)
-# and writes ORACLE_GVBINDIR_ALL (default /tmp/ghl1611-all).
-# Env:    GRAPHVIZ_BUILD (default ~/git/graphviz-16.1.1/build), DOT_BIN
+# and writes ORACLE_GVBINDIR_ALL (default /tmp/ghl1612-all).
+# Env:    GRAPHVIZ_BUILD (default ~/git/graphviz-16.1.2/build), DOT_BIN
 #
 # @see plans/fix-xcoord-position/DESIGN.md (headless oracle)
 # @see plans/fix-xcoord-position/batch-0/T0.2-headless-corpus.md
@@ -20,10 +20,10 @@ set -eu
 # Defaults mirror ORACLE_GRAPHVIZ_BUILD and ORACLE_GVBINDIR in
 # test/corpus/oracle-paths.mjs (the single source of truth; a shell script
 # cannot import it). gvbindir-defaults.test.ts fails if they drift apart.
-BUILD="${GRAPHVIZ_BUILD:-$HOME/git/graphviz-16.1.1/build}"
+BUILD="${GRAPHVIZ_BUILD:-$HOME/git/graphviz-16.1.2/build}"
 PLUGINS="core dot_layout"
-OUT="${1:-/tmp/ghl1611}"
-ALL_OUT="${2:-/tmp/ghl1611-all}"
+OUT="${1:-/tmp/ghl1612}"
+ALL_OUT="${2:-/tmp/ghl1612-all}"
 if [ "${1:-}" = all ]; then
   PLUGINS="core dot_layout neato_layout"
   OUT="$ALL_OUT"

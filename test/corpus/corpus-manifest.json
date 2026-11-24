@@ -1943,6 +1943,13 @@
     "status": "applicable"
   },
   {
+    "id": "2745",
+    "path": "2745.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "pending-input"
+  },
+  {
     "id": "2746",
     "path": "2746.dot",
     "engine": "dot",
@@ -1980,6 +1987,13 @@
     "status": "applicable"
   },
   {
+    "id": "2760",
+    "path": "2760.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "pending-input"
+  },
+  {
     "id": "2761",
     "path": "2761.dot",
     "engine": "dot",
@@ -1992,6 +2006,34 @@
     "engine": "dot",
     "status": "quarantined",
     "reason": "oracle-crash"
+  },
+  {
+    "id": "2762",
+    "path": "2762.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "pending-input"
+  },
+  {
+    "id": "2762_1",
+    "path": "2762_1.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "pending-input"
+  },
+  {
+    "id": "2764",
+    "path": "2764.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "pending-input"
+  },
+  {
+    "id": "2764_1",
+    "path": "2764_1.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "pending-input"
   },
   {
     "id": "2765",
@@ -2248,6 +2290,13 @@
     "path": "2870_2.dot",
     "engine": "dot",
     "status": "applicable"
+  },
+  {
+    "id": "2870_3",
+    "path": "2870_3.dot",
+    "engine": "dot",
+    "status": "quarantined",
+    "reason": "pending-input"
   },
   {
     "id": "358",

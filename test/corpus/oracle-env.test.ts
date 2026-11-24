@@ -20,7 +20,7 @@ const scratch = mkdtempSync(join(tmpdir(), 'oracle-env-test-'));
 afterAll(() => rmSync(scratch, { recursive: true, force: true }));
 
 const GVBINDIR = '/tmp/some-gvbindir';
-const GOOD_V = `echo 'dot - graphviz version 16.1.1 (16.1.1)' >&2`;
+const GOOD_V = `echo 'dot - graphviz version 16.1.2 (16.1.2)' >&2`;
 const GOOD_SVG = `cat >/dev/null; echo '<svg width="1"></svg>'`;
 
 /** Write a fake `dot`: `-V` runs `vBody`, anything else runs `renderBody`. */
@@ -83,7 +83,7 @@ describe('oraclePreflight', () => {
 
   it('rejects a binary that does not report the oracle version, quoting what it reported', () => {
     const dot = fakeDot(`echo 'dot - graphviz version 15.1.0~dev' >&2`, GOOD_SVG);
-    expect(() => oraclePreflight(dot, GVBINDIR, 'dot')).toThrow(/16\.1\.1.*15\.1\.0~dev/s);
+    expect(() => oraclePreflight(dot, GVBINDIR, 'dot')).toThrow(/16\.1\.2.*15\.1\.0~dev/s);
   });
 
   it('throws when the binary cannot be spawned', () => {

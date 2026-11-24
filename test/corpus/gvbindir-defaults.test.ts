@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EPL-2.0
 //
 // Fitness test (issue #147, docs/adr/0002-graphviz-16.1.1-oracle.md,
-// docs/adr/0003-upstream-fix-forward.md): the oracle location lives in ONE
+// docs/adr/0003-upstream-fix-forward.md, docs/adr/0004-graphviz-16.1.2-oracle.md): the oracle location lives in ONE
 // module, test/corpus/oracle-paths.mjs. No other file under test/ may hardcode
 // the oracle binary or a plugin dir as a code default. The two shell scripts
 // that cannot import the module (gen-headless-gvbindir.sh: pristine defaults;
@@ -65,6 +65,8 @@ const SH_ALL_RE = /ALL_OUT="\$\{2:-([^}]*)\}"/;
 const SH_TAG_RE = /^LIVE_TAG="([^"]*)"/m;
 /** A tag no checkout has, for the next-version guard tests. */
 const FOREIGN_TAG = '99.0.0';
+/** The previous live tag: with no overrides it must not overwrite the new live dirs. */
+const RETIRED_LIVE_TAG = '16.1.1';
 const PACKAGE_JSON = 'package.json';
 
 function sourcesUnder(dir: string): string[] {
@@ -153,10 +155,11 @@ function withRootInputs<T>(argvRoot: string | undefined, envRoot: string | undef
 describe('defaultGvbindir', () => {
   it('uses the dot-only dir for dot and the all-engines dir otherwise', () => {
     withGvbindir(undefined, () => {
-      expect(defaultGvbindir('dot')).toBe('/tmp/ghl1611-carried');
-      expect(defaultGvbindir('neato')).toBe('/tmp/ghl1611-carried-all');
+      expect(defaultGvbindir('dot')).toBe('/tmp/ghl1612-carried');
+      expect(defaultGvbindir('neato')).toBe('/tmp/ghl1612-carried-all');
       expect(defaultGvbindir('circo')).toBe(ORACLE_GVBINDIR_ALL);
       expect(defaultGvbindir('dot')).toBe(ORACLE_GVBINDIR);
+      expect(ORACLE_VERSION).toBe('16.1.2');
     });
   });
 
@@ -234,6 +237,20 @@ describe('oracle location', () => {
       const env = { PATH: process.env.PATH, HOME: home, ORACLE_TAG: FOREIGN_TAG, ...rel };
       const r = spawnSync('bash', [join(TEST_DIR, '..', CARRIED_BUILDER)], { env, encoding: 'utf8' });
       expect(r.stderr).toContain(`error: ORACLE_TAG=${FOREIGN_TAG} would overwrite the live ${ORACLE_VERSION} oracle`);
+      expect(r.status).toBe(1);
+    } finally {
+      rmSync(home, { recursive: true, force: true });
+    }
+  });
+
+  it('the carried builder refuses the retired live tag with no overrides', () => {
+    const home = mkdtempSync(join(tmpdir(), 'carried-guard-'));
+    try {
+      const env = { PATH: process.env.PATH, HOME: home, ORACLE_TAG: RETIRED_LIVE_TAG };
+      const r = spawnSync('bash', [join(TEST_DIR, '..', CARRIED_BUILDER)], { env, encoding: 'utf8' });
+      expect(r.stderr).toContain(
+        `error: ORACLE_TAG=${RETIRED_LIVE_TAG} would overwrite the live ${ORACLE_VERSION} oracle`,
+      );
       expect(r.status).toBe(1);
     } finally {
       rmSync(home, { recursive: true, force: true });

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: EPL-2.0
 //
 // Carried-oracle self-check (ADR-0003, stop condition 5). With an empty patch
-// series the carried build must be byte-identical to the pristine 16.1.1
-// build. Renders every entry of carried-selfcheck-sample.json with both and
-// compares stdout, stderr and exit status. Two normalizations, both build
+// series the carried build must be byte-identical to the pristine build of
+// ORACLE_VERSION (16.1.2). Renders every entry of carried-selfcheck-sample.json
+// with both and compares stdout, stderr and exit status. Two normalizations, both build
 // artifacts the port never emits: the build date token in the version string,
-// `16.1.1 (YYYYMMDD.HHMM)` (the builds were compiled at different times), and
+// `16.1.2 (YYYYMMDD.HHMM)` (the builds were compiled at different times), and
 // each checkout's absolute source root in stderr (C `__FILE__` in messages such
 // as `lib/pathplan/<root>/lib/pathplan/shortest.c:338: triangulation failed`).
 //
