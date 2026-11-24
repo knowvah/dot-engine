@@ -1,0 +1,1 @@
+digraph { a; b; subgraph s { b; a } }

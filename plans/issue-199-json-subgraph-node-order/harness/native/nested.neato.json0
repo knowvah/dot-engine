@@ -1,0 +1,58 @@
+{
+  "name": "%1",
+  "directed": true,
+  "strict": false,
+  "bb": "0,0,138,120",
+  "_subgraph_cnt": 2,
+  "objects": [
+    {
+      "name": "s1",
+      "_gvid": 0,
+      "subgraphs": [
+        1
+      ],
+      "nodes": [
+        2,3,4,5
+      ]
+    },
+    {
+      "name": "s2",
+      "_gvid": 1,
+      "nodes": [
+        2,3,5
+      ]
+    },
+    {
+      "_gvid": 2,
+      "name": "a",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "33,36",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 3,
+      "name": "b",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "105,96",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 4,
+      "name": "c",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "111,18",
+      "width": "0.75"
+    },
+    {
+      "_gvid": 5,
+      "name": "d",
+      "height": "0.5",
+      "label": "\\N",
+      "pos": "27,102",
+      "width": "0.75"
+    }
+  ]
+}

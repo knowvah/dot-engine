@@ -24,6 +24,7 @@
 
 import { agwarningf } from '../common/agerr.js';
 import { undoRenderedClusterEdges } from '../gvc/layout-reset.js';
+import { nodesInSeq } from '../layout/dot/decomp.js';
 import { isACluster } from '../layout/dot/rank.js';
 import type { Graph } from '../model/graph.js';
 import type { Node } from '../model/node.js';
@@ -43,12 +44,23 @@ export function attachBeforeWriteWithClusterEdges(g: Graph, attach: () => void):
 }
 
 /**
- * The nodes json writes: C's write_nodes skips every IS_CLUST_NODE, the stand-in
- * node `mapN` makes for a cluster an edge points at.
+ * json's agfstnode/agnxtnode walks (write_graph's ND_gid and ED_gid numbering,
+ * write_nodes) go in AGSEQ order; json.ts takes the walk from here with its
+ * other node helpers.
+ * @see plugin/core/gvrender_core_json.c:write_graph
+ */
+export { nodesInSeq };
+
+/**
+ * The nodes json writes, in agfstnode/agnxtnode (AGSEQ) order: a subgraph's
+ * node map is in the order the subgraph first named its nodes, not sequence
+ * order. C's write_nodes skips every IS_CLUST_NODE, the stand-in node `mapN`
+ * makes for a cluster an edge points at.
+ * @see plugin/core/gvrender_core_json.c:write_nodes
  * @see plugin/core/gvrender_core_json.c:571 (if (IS_CLUST_NODE(n)) continue)
  */
 export function jsonNodes(g: Graph): Node[] {
-  return [...g.nodes.values()].filter((n) => !n.info.clustnode);
+  return nodesInSeq(g).filter((n) => !n.info.clustnode);
 }
 
 /**

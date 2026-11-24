@@ -45,7 +45,7 @@ import type { XdotOp, XdotColor } from '../xdot/types.js';
 import type { TextlabelT, FieldT } from '../common/types.js';
 import { gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
 import { attachAttrs, nodeLayoutAttrs } from './dot/write-back.js';
-import { attachBeforeWriteWithClusterEdges as attachFirst, jsonNodes, labelSubgs, lookupCluster } from './json-cluster-edge.js';
+import { attachBeforeWriteWithClusterEdges as attachFirst, jsonNodes, labelSubgs, lookupCluster, nodesInSeq } from './json-cluster-edge.js';
 import { attrsWithoutLayoutBb } from '../gvc/layout-bb.js';
 import { agNameOf, localGraphAttrs } from '../model/cgraph-ops.js';
 import { CHAR_LATIN1 } from '../common/graph-init.js';
@@ -221,7 +221,7 @@ class HeldXdotRenderer extends XdotRenderer {
 function canonicalRootEdges(g: Graph): Array<{ e: Edge; key: string }> {
   const out: Array<{ e: Edge; key: string }> = [];
   const counter = new Map<string, number>();
-  for (const [, n] of g.nodes) {
+  for (const n of nodesInSeq(g)) {
     for (const e of n.outEdges(g)) {
       const base = e.tail.name + '\0' + e.head.name;
       const occ = counter.get(base) ?? 0;
@@ -374,7 +374,7 @@ function assignIds(g: Graph, doXDot: boolean, draws?: DrawLookup): BuildCtx {
   if (dfsSubs[0] === g) dfsSubs.shift(); // a subgraph render: label_subgs numbers g, write_subgs lists below it
   const nodeGid = new Map<Node, number>();
   let ncnt = 0;
-  for (const [, n] of g.nodes) nodeGid.set(n, n.info.clustnode ? lookupCluster(clusters, n.name) : sgcnt + ncnt++);
+  for (const n of nodesInSeq(g)) nodeGid.set(n, n.info.clustnode ? lookupCluster(clusters, n.name) : sgcnt + ncnt++);
   const edgeGid = new Map<Edge, number>();
   let ecnt = 0;
   for (const { e } of canonicalRootEdges(g)) edgeGid.set(e, ecnt++);

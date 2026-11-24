@@ -1,0 +1,7 @@
+key	verdict	base	head	members-base	members-head	note
+2621|fdp|json	toward	56079	55236	ne	eq	
+2621|fdp|json0	toward	4819	3976	ne	eq	
+2621|circo|json	native	843	0	ne	eq	
+2621|circo|json0	native	843	0	ne	eq	
+2621|dot|json	SHAPE	1686	386	ne	ne	counts are diff lines with keys sorted; the 386 are 382 null members and 4 commas (#308), same on base and head
+2621|dot|json0	SHAPE	1686	386	ne	ne	as above

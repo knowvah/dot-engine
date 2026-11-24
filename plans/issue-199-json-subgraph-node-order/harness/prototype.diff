@@ -1,0 +1,175 @@
+diff --git a/src/render/json-cluster-edge.ts b/src/render/json-cluster-edge.ts
+index b51172f8..82be3e17 100644
+--- a/src/render/json-cluster-edge.ts
++++ b/src/render/json-cluster-edge.ts
+@@ -24,6 +24,7 @@
+ 
+ import { agwarningf } from '../common/agerr.js';
+ import { undoRenderedClusterEdges } from '../gvc/layout-reset.js';
++import { nodesInSeq } from '../layout/dot/decomp.js';
+ import { isACluster } from '../layout/dot/rank.js';
+ import type { Graph } from '../model/graph.js';
+ import type { Node } from '../model/node.js';
+@@ -43,12 +44,23 @@ export function attachBeforeWriteWithClusterEdges(g: Graph, attach: () => void):
+ }
+ 
+ /**
+- * The nodes json writes: C's write_nodes skips every IS_CLUST_NODE, the stand-in
+- * node `mapN` makes for a cluster an edge points at.
++ * json's agfstnode/agnxtnode walks (write_graph's ND_gid and ED_gid numbering,
++ * write_nodes) go in AGSEQ order; json.ts takes the walk from here with its
++ * other node helpers.
++ * @see plugin/core/gvrender_core_json.c:write_graph
++ */
++export { nodesInSeq };
++
++/**
++ * The nodes json writes, in agfstnode/agnxtnode (AGSEQ) order: a subgraph's
++ * node map is in the order the subgraph first named its nodes, not sequence
++ * order. C's write_nodes skips every IS_CLUST_NODE, the stand-in node `mapN`
++ * makes for a cluster an edge points at.
++ * @see plugin/core/gvrender_core_json.c:write_nodes
+  * @see plugin/core/gvrender_core_json.c:571 (if (IS_CLUST_NODE(n)) continue)
+  */
+ export function jsonNodes(g: Graph): Node[] {
+-  return [...g.nodes.values()].filter((n) => !n.info.clustnode);
++  return nodesInSeq(g).filter((n) => !n.info.clustnode);
+ }
+ 
+ /**
+diff --git a/src/render/json-node-seq.test.ts b/src/render/json-node-seq.test.ts
+new file mode 100644
+index 00000000..ee5e99d7
+--- /dev/null
++++ b/src/render/json-node-seq.test.ts
+@@ -0,0 +1,99 @@
++// SPDX-License-Identifier: EPL-2.0
++/**
++ * json walks a graph's nodes in agfstnode/agnxtnode (AGSEQ) order (issue
++ * #199): write_nodes lists a subgraph's `nodes` that way, and write_graph's
++ * top pass numbers the nodes (ND_gid) and edges (ED_gid) that way. A
++ * subgraph's node map holds its nodes in the order the subgraph first named
++ * them, so `subgraph s { b; a }` after `a; b` must still list a before b.
++ *
++ * Every native ref is the carried oracle's own output (ADR-0003): root renders
++ * from the harness's `recapture.sh`, under dot and neato; the render of
++ * subgraph `s` alone from `subrender/build.sh` (part 10 T15's program).
++ * @see plugin/core/gvrender_core_json.c:write_nodes
++ * @see plugin/core/gvrender_core_json.c:write_graph
++ */
++import { readdirSync, readFileSync } from 'node:fs';
++import { afterEach, describe, expect, it } from 'vitest';
++import { renderFormat } from '../../test/helpers/render-format.js';
++import { agseterrf } from '../common/agerr.js';
++import type { EngineName } from '../gvc/context.js';
++import { createDefaultContext } from '../gvc/default-context.js';
++import { render as deviceRender } from '../gvc/device.js';
++import { parse } from '../parser/index.js';
++
++const HARNESS_199 = new URL('../../plans/issue-199-json-subgraph-node-order/harness/', import.meta.url);
++const read = (name: string): string => readFileSync(new URL(name, HARNESS_199), 'utf8');
++const PROBE_COUNT = 10;
++const ENGINES: readonly EngineName[] = ['dot', 'neato'];
++const FORMATS = ['json', 'json0'] as const;
++const PROBES = readdirSync(new URL('probes/', HARNESS_199))
++  .filter((f) => f.endsWith('.gv'))
++  .map((f) => f.replace(/\.gv$/, ''))
++  .sort();
++
++interface JsonObject { _gvid: number; name: string; subgraphs?: number[]; nodes?: number[]; edges?: number[] }
++interface JsonDoc {
++  _subgraph_cnt: number;
++  objects?: JsonObject[];
++  edges?: Array<{ _gvid: number; tail: number; head: number }>;
++}
++
++/** Every id json prints, in printed order: the count, each object's gid, name and member lists, each edge's ends. */
++function ids(text: string): unknown {
++  const doc = JSON.parse(text) as JsonDoc;
++  return {
++    sgcnt: doc._subgraph_cnt,
++    objects: (doc.objects ?? []).map((o) => [o._gvid, o.name, o.subgraphs ?? [], o.nodes ?? [], o.edges ?? []]),
++    edges: (doc.edges ?? []).map((e) => [e._gvid, e.tail, e.head]),
++  };
++}
++
++/** The port's output and everything it reported through agerr. */
++function port(probe: string, format: string, engine: EngineName): { out: string; err: string } {
++  const errs: string[] = [];
++  agseterrf((m) => { errs.push(m); return 0; });
++  const out = renderFormat(parse(read(`probes/${probe}.gv`)), format, engine);
++  return { out, err: errs.join('') };
++}
++
++/** The port's render of `file`'s subgraph `s` alone (the root is never laid out). */
++function portSubgraph(file: string, format: string): string {
++  const sg = parse(read(file)).subgraphs.get('s')!;
++  const ctx = createDefaultContext();
++  ctx.layout(sg, 'dot');
++  const out = deviceRender(ctx, sg, format);
++  ctx.freeLayout(sg, 'dot');
++  return out;
++}
++
++afterEach(() => { agseterrf(null); });
++
++describe('json lists and numbers nodes in sequence order, as native (#199)', () => {
++  it('reads every probe', () => {
++    expect(PROBES).toHaveLength(PROBE_COUNT);
++  });
++
++  it('the issue repro lists subgraph s as [1, 2]', () => {
++    const doc = JSON.parse(port('repro', 'json', 'dot').out) as JsonDoc;
++    expect(doc.objects?.[0]).toMatchObject({ name: 's', nodes: [1, 2] });
++  });
++
++  for (const probe of PROBES) {
++    for (const engine of ENGINES) {
++      for (const format of FORMATS) {
++        it(`${probe} -K${engine} -T${format}`, () => {
++          const got = port(probe, format, engine);
++          expect(ids(got.out)).toEqual(ids(read(`native/${probe}.${engine}.${format}`)));
++          if (format === 'json') expect(got.err).toBe(read(`native/${probe}.${engine}.err`));
++        });
++      }
++    }
++  }
++
++  for (const format of FORMATS) {
++    it(`a render of subgraph s alone numbers its nodes and edges in sequence order (-T${format})`, () => {
++      const out = portSubgraph('subrender/subrev.gv', format);
++      expect(ids(out)).toEqual(ids(read(`subrender/native/subrev.s.${format}`)));
++    });
++  }
++});
+diff --git a/src/render/json.ts b/src/render/json.ts
+index a1c401d0..4b3d9eaa 100644
+--- a/src/render/json.ts
++++ b/src/render/json.ts
+@@ -45,7 +45,7 @@ import type { XdotOp, XdotColor } from '../xdot/types.js';
+ import type { TextlabelT, FieldT } from '../common/types.js';
+ import { gfmt5, XdotRenderer, type XdotDraws } from './dot.js';
+ import { attachAttrs, nodeLayoutAttrs } from './dot/write-back.js';
+-import { attachBeforeWriteWithClusterEdges as attachFirst, jsonNodes, labelSubgs, lookupCluster } from './json-cluster-edge.js';
++import { attachBeforeWriteWithClusterEdges as attachFirst, jsonNodes, labelSubgs, lookupCluster, nodesInSeq } from './json-cluster-edge.js';
+ import { attrsWithoutLayoutBb } from '../gvc/layout-bb.js';
+ import { agNameOf, localGraphAttrs } from '../model/cgraph-ops.js';
+ import { CHAR_LATIN1 } from '../common/graph-init.js';
+@@ -221,7 +221,7 @@ class HeldXdotRenderer extends XdotRenderer {
+ function canonicalRootEdges(g: Graph): Array<{ e: Edge; key: string }> {
+   const out: Array<{ e: Edge; key: string }> = [];
+   const counter = new Map<string, number>();
+-  for (const [, n] of g.nodes) {
++  for (const n of nodesInSeq(g)) {
+     for (const e of n.outEdges(g)) {
+       const base = e.tail.name + '\0' + e.head.name;
+       const occ = counter.get(base) ?? 0;
+@@ -374,7 +374,7 @@ function assignIds(g: Graph, doXDot: boolean, draws?: DrawLookup): BuildCtx {
+   if (dfsSubs[0] === g) dfsSubs.shift(); // a subgraph render: label_subgs numbers g, write_subgs lists below it
+   const nodeGid = new Map<Node, number>();
+   let ncnt = 0;
+-  for (const [, n] of g.nodes) nodeGid.set(n, n.info.clustnode ? lookupCluster(clusters, n.name) : sgcnt + ncnt++);
++  for (const n of nodesInSeq(g)) nodeGid.set(n, n.info.clustnode ? lookupCluster(clusters, n.name) : sgcnt + ncnt++);
+   const edgeGid = new Map<Edge, number>();
+   let ecnt = 0;
+   for (const { e } of canonicalRootEdges(g)) edgeGid.set(e, ecnt++);
