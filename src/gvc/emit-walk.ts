@@ -21,14 +21,21 @@ import type { RendererPlugin } from './context.js';
 import type { RenderJob } from './job.js';
 import { type LayerInfo, nodeInLayer, edgeInLayer, clustInLayer } from '../common/layers.js';
 import { renderNode, renderEdge } from './device.js';
+import { edgeHasDrawableContent } from '../common/edge-in-box.js';
 
 /** Whether a node is shown in the current layer (always true off-layer). */
 function nodeShown(info: LayerInfo | undefined, job: RenderJob, n: Node, g: Graph): boolean {
   return info === undefined || job.numLayers <= 1 || nodeInLayer(info, job.layerNum, n, g);
 }
 
-/** Whether an edge is shown in the current layer (always true off-layer). */
+/**
+ * emit_edge's gate: the edge has content in the page clip (edge_in_box) and is
+ * in the current layer (always true off-layer). The renderers' own re-tests of
+ * edge_in_box (svg.ts, dot.ts) now always pass.
+ * @see lib/common/emit.c:emit_edge
+ */
 function edgeShown(info: LayerInfo | undefined, job: RenderJob, e: Edge): boolean {
+  if (!edgeHasDrawableContent(e, job.clip)) return false; // edge_in_box
   return info === undefined || job.numLayers <= 1 || edgeInLayer(info, job.layerNum, e);
 }
 

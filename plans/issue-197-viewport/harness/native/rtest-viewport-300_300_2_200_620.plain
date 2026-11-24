@@ -1,0 +1,484 @@
+graph 2 19.034 15.635
+node fcfpr1_1_2t_17 18.1 6.6128 0.12 0.12 "" solid circle black lightgrey
+node 341411 17.584 7.6974 0.83 0.38 341411 solid ellipse black lightgrey
+node fcfpr1_1t_1 18.749 7.6791 0.12 0.12 "" solid circle black lightgrey
+node rdlfpr2_0_rdlt_4 17.771 6.4447 0.12 0.12 "" solid circle black lightgrey
+node fpfpr1_0_1t_1 18.789 8.0958 0.12 0.12 "" solid circle black lightgrey
+node fpfpr1_1_2t_11 18.366 6.9149 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_1_2t_28 18.603 7.2675 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_1_3t_6 16.773 8.7889 0.12 0.12 "" solid circle black lightgrey
+node rdlfpr1_1t_1 18.921 8.6966 0.12 0.12 "" solid circle black lightgrey
+node 358866 17.665 8.705 0.82202 0.38 358866 solid ellipse black lightgrey
+node tmfpr1_1_3t_5 15.951 7.8658 0.12 0.12 "" solid circle black lightgrey
+node 358930 15.368 8.9517 0.82202 0.38 358930 solid ellipse black lightgrey
+node fcfpr1_1_3t_9 14.151 9.7748 0.12 0.12 "" solid circle black lightgrey
+node pcfpr1_1_3t_7 16.22 8.8049 0.12 0.12 "" solid circle black lightgrey
+node fpfpr1_1_3g_1 15.693 8.096 0.12 0.12 "" solid circle black lightgrey
+node fpfpr1_1_3t_1 14.067 8.4928 0.12 0.12 "" solid circle black lightgrey
+node aufpr1_1_3t_1 16.138 8.2959 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_0_3g_1 16.285 9.3611 0.12 0.12 "" solid circle black lightgrey
+node msgfpr1_1_1g_12 18.957 9.7707 0.12 0.12 "" solid circle black lightgrey
+node 371943 17.849 9.626 0.83 0.38 371943 solid ellipse black lightgrey
+node rtafpr1_1_1g_8 18.805 10.28 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_1_1t_35 18.568 10.698 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_1_1t_45 18.974 9.2404 0.12 0.12 "" solid circle black lightgrey
+node tlfpr2_0_rdlg_2 16.447 10.175 0.12 0.12 "" solid circle black lightgrey
+node 374300 15.532 9.4944 0.83 0.38 374300 solid ellipse black lightgrey
+node fcfpr1_1_3t_8 16.496 9.7296 0.12 0.12 "" solid circle black lightgrey
+node fcfpr1_0_5g_1 15.685 11.486 0.12 0.12 "" solid circle black lightgrey
+node 371942 14.913 10.505 0.82202 0.38 371942 solid ellipse black lightgrey
+node fcfpr1_1_1t_19 16.109 10.938 0.12 0.12 "" solid circle black lightgrey
+node 374700 12.835 8.6982 0.83 0.38 374700 solid ellipse black lightgrey
+node tymsgfpr1_1_3t_3 11.837 7.7515 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_1_3t_7 12.726 9.5159 0.12 0.12 "" solid circle black lightgrey
+node fcfpr1_1_3g_2 14.858 8.1136 0.12 0.12 "" solid circle black lightgrey
+node 374741 13.667 9.0873 0.83 0.38 374741 solid ellipse black lightgrey
+node fcfpr1_1_1t_18 14.8 11.81 0.12 0.12 "" solid circle black lightgrey
+node 374886 14.079 10.228 0.83 0.38 374886 solid ellipse black lightgrey
+node 375039 14.187 9.0049 0.82202 0.38 375039 solid ellipse black lightgrey
+node fcfpr1_1_3t_42 13.176 11.884 0.12 0.12 "" solid circle black lightgrey
+node 375507 13.215 10.555 0.82202 0.38 375507 solid ellipse black lightgrey
+node rdlfpr2_0_rdlt_158 12.445 11.444 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_1_3t_71 12.771 11.896 0.12 0.12 "" solid circle black lightgrey
+node dbfpr1_1_3t_2 12.521 11.066 0.12 0.12 "" solid circle black lightgrey
+node 375508 13.308 10.343 0.82202 0.38 375508 solid ellipse black lightgrey
+node rdlfpr1_1g_13 12.857 11.526 0.12 0.12 "" solid circle black lightgrey
+node rtafpr2_1_rdlg_1 13.541 11.611 0.12 0.12 "" solid circle black lightgrey
+node 375519 14.785 8.9207 0.82202 0.38 375519 solid ellipse black lightgrey
+node 377380 15.105 10.214 0.83 0.38 377380 solid ellipse black lightgrey
+node rdlfpr1_1g_16 16.261 10.619 0.12 0.12 "" solid circle black lightgrey
+node rdlfpr1_1t_100 15.917 11.214 0.12 0.12 "" solid circle black lightgrey
+node fcfpr1_0_2g_1 15.03 11.993 0.12 0.12 "" solid circle black lightgrey
+node 377719 14.18 11.128 0.83 0.38 377719 solid ellipse black lightgrey
+node fcfpr1_1_3t_10 14.63 12.18 0.12 0.12 "" solid circle black lightgrey
+node fcfpr1_1_3t_7 13.949 12.363 0.12 0.12 "" solid circle black lightgrey
+node rdlfpr2_0_rdlg_12 13.261 12.215 0.12 0.12 "" solid circle black lightgrey
+node rdlfpr2_0_rdlt_108 14.256 12.189 0.12 0.12 "" solid circle black lightgrey
+node rdlfpr2_0_rdlt_27 15.317 11.692 0.12 0.12 "" solid circle black lightgrey
+node rdlfpr2_0_rdlt_30 13.615 12.263 0.12 0.12 "" solid circle black lightgrey
+node 377763 13.975 10.568 0.83 0.38 377763 solid ellipse black lightgrey
+node 379848 14.758 9.3864 0.83 0.38 379848 solid ellipse black lightgrey
+node 380571 13.695 10.202 0.82202 0.38 380571 solid ellipse black lightgrey
+node 380604 13.97 9.2033 0.83 0.38 380604 solid ellipse black lightgrey
+node 381211 14.481 9.3237 0.82202 0.38 381211 solid ellipse black lightgrey
+node 381835 13.287 9.9749 0.82202 0.38 381835 solid ellipse black lightgrey
+node 381897 14.459 10.452 0.83 0.38 381897 solid ellipse black lightgrey
+node 381901 14.495 8.9776 0.83 0.38 381901 solid ellipse black lightgrey
+node 382103 13.373 9.6843 0.82202 0.38 382103 solid ellipse black lightgrey
+node 382161 14.751 9.9973 0.82202 0.38 382161 solid ellipse black lightgrey
+node 383174 13.507 9.3391 0.83 0.38 383174 solid ellipse black lightgrey
+node 352010 14.868 7.6325 0.82202 0.38 352010 solid ellipse black lightgrey
+node 382409 14.145 7.5713 0.82202 0.38 382409 solid ellipse black lightgrey
+node 382827 14.504 7.5121 0.82202 0.38 382827 solid ellipse black lightgrey
+node 382928 13.199 8.6782 0.82202 0.38 382928 solid ellipse black lightgrey
+node tlfpr1_1_1t_5 9.7755 8.317 0.12 0.12 "" solid circle black lightgrey
+node 358224 10.311 8.0819 0.82202 0.38 358224 solid ellipse black lightgrey
+node tymsgfpr1_1_1t_23 9.6955 7.049 0.12 0.12 "" solid circle black lightgrey
+node rcfpr0_0_1t_9 8.9392 8.4877 0.12 0.12 "" solid circle black lightgrey
+node rcfpr1_1_1t_5 9.8318 9.0918 0.12 0.12 "" solid circle black lightgrey
+node odfpr0_0_1t_8 8.8744 8.1134 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_1_1t_6 9.6571 7.6067 0.12 0.12 "" solid circle black lightgrey
+node ecdsgfpr1_1_1t_4 9.8725 7.3328 0.12 0.12 "" solid circle black lightgrey
+node tymsgfpr1_1_1t_18 10.943 7.1254 0.12 0.12 "" solid circle black lightgrey
+node 358900 11.261 8.1233 0.82202 0.38 358900 solid ellipse black lightgrey
+node rcfpr1_1_1t_100 10.462 9.0541 0.12 0.12 "" solid circle black lightgrey
+node rcfpr1_1_1t_22 10.527 8.6933 0.12 0.12 "" solid circle black lightgrey
+node rcfpr1_1_1t_37 10.75 9.1974 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_1_1t_21 10.642 7.4359 0.12 0.12 "" solid circle black lightgrey
+node 372568 12.174 6.1954 0.82202 0.38 372568 solid ellipse black lightgrey
+node rcfpr1_1_1t_30 12.219 4.7515 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_1_1t_31 12.411 5.1621 0.12 0.12 "" solid circle black lightgrey
+node tlfpr1_1_1t_20 11.981 6.4209 0.12 0.12 "" solid circle black lightgrey
+node 375557 11.495 7.0981 0.82202 0.38 375557 solid ellipse black lightgrey
+node tymsgfpr1_1_1t_24 11.51 6.1885 0.12 0.12 "" solid circle black lightgrey
+node rcfpr1_1_1t_11 10.454 6.3825 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_1_1t_9 10.603 6.0643 0.12 0.12 "" solid circle black lightgrey
+node ecdsgfpr1_1_1t_19 11.071 6.2777 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_1_1g_14 14.109 6.8576 0.12 0.12 "" solid circle black lightgrey
+node 376956 13.446 8.0334 0.82202 0.38 376956 solid ellipse black lightgrey
+node rtafpr1_1_1t_64 14.615 6.8674 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_1_2t_18 15.009 7.1358 0.12 0.12 "" solid circle black lightgrey
+node rtafpr1_1_3t_30 13.553 7.0144 0.12 0.12 "" solid circle black lightgrey
+node 379339 11.935 10.073 0.83 0.38 379339 solid ellipse black lightgrey
+node rtafpr1_1_1t_14 11.476 12.097 0.12 0.12 "" solid circle black lightgrey
+node 379422 11.845 10.632 0.82202 0.38 379422 solid ellipse black lightgrey
+node rtafpr1_1_1t_20 11.176 11.752 0.12 0.12 "" solid circle black lightgrey
+node 383039 11.935 9.7269 0.83 0.38 383039 solid ellipse black lightgrey
+node 359471 15.233 13.266 0.82202 0.38 359471 solid ellipse black lightgrey
+node fcfpr2_0_1t_1 14.868 14.212 0.12 0.12 "" solid circle black lightgrey
+node fcfpr2_0_1t_2 14.334 14.357 0.12 0.12 "" solid circle black lightgrey
+node ccsfpr2_0_1t_99 16.081 14.248 0.12 0.12 "" solid circle black lightgrey
+node 384096 12.773 13.175 0.83 0.38 384096 solid ellipse black lightgrey
+node tlfpr1_0_4g_4 6.5904 8.5785 0.12 0.12 "" solid circle black lightgrey
+node 354290 7.7734 8.5053 0.82202 0.38 354290 solid ellipse black lightgrey
+node pagfpr1_1_1t_23 7.8227 9.7369 0.12 0.12 "" solid circle black lightgrey
+node 379864 9.4175 10.335 0.83 0.38 379864 solid ellipse black lightgrey
+node 382574 9.9853 10.053 0.82202 0.38 382574 solid ellipse black lightgrey
+node 370706 11.533 4.6402 0.83 0.38 370706 solid ellipse black lightgrey
+node 377908 11.098 4.5506 0.83 0.38 377908 solid ellipse black lightgrey
+node 377924 11.803 4.1057 0.82202 0.38 377924 solid ellipse black lightgrey
+node 377971 12.315 3.7981 0.83 0.38 377971 solid ellipse black lightgrey
+node 377980 12.598 4.2758 0.83 0.38 377980 solid ellipse black lightgrey
+node 378362 11.156 3.8471 0.82202 0.38 378362 solid ellipse black lightgrey
+node 378656 11.478 3.6809 0.82202 0.38 378656 solid ellipse black lightgrey
+node 378666 13.051 3.968 0.83 0.38 378666 solid ellipse black lightgrey
+node 379169 12.984 4.5206 0.83 0.38 379169 solid ellipse black lightgrey
+node rcfpr1_1_1t_110 12.845 2.2335 0.12 0.12 "" solid circle black lightgrey
+node 379341 12.763 3.4679 0.83 0.38 379341 solid ellipse black lightgrey
+node rcfpr1_1_1t_62 13.802 2.8504 0.12 0.12 "" solid circle black lightgrey
+node 379972 11.895 3.6148 0.82202 0.38 379972 solid ellipse black lightgrey
+node 380298 13.453 4.1622 0.82202 0.38 380298 solid ellipse black lightgrey
+node 380448 10.943 4.1526 0.83 0.38 380448 solid ellipse black lightgrey
+node 380475 13.154 4.8 0.82202 0.38 380475 solid ellipse black lightgrey
+node 380526 13.567 4.4993 0.82202 0.38 380526 solid ellipse black lightgrey
+node 357430 11.239 4.3064 0.82202 0.38 357430 solid ellipse black lightgrey
+node 379968 9.8677 5.1769 0.83 0.38 379968 solid ellipse black lightgrey
+node 359100 15.61 15.434 0.82202 0.38 359100 solid ellipse black lightgrey
+node 376529 16.834 14.962 0.82202 0.38 376529 solid ellipse black lightgrey
+node 377801 17.161 14.27 0.83 0.38 377801 solid ellipse black lightgrey
+node 379126 17.249 14.686 0.82202 0.38 379126 solid ellipse black lightgrey
+node 379212 15.223 15.445 0.82202 0.38 379212 solid ellipse black lightgrey
+node 380285 16.449 15.236 0.82202 0.38 380285 solid ellipse black lightgrey
+node 380963 16.02 15.382 0.83 0.38 380963 solid ellipse black lightgrey
+node 384909 17.511 14.065 0.83 0.38 384909 solid ellipse black lightgrey
+node 358471 5.3458 8.3053 0.82202 0.38 358471 solid ellipse black lightgrey
+node odfpr0_0_1t_7 4.9941 6.806 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_0_1t_36 5.5222 7.4003 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_0_3t_18 3.9315 9.2067 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_0_3t_21 4.9529 8.6746 0.12 0.12 "" solid circle black lightgrey
+node 375024 6.8032 9.3739 0.82202 0.38 375024 solid ellipse black lightgrey
+node 375027 6.7819 10.002 0.82202 0.38 375027 solid ellipse black lightgrey
+node 381710 14.218 1.9051 0.83 0.38 381710 solid ellipse black lightgrey
+node 381775 13.873 1.7423 0.82202 0.38 381775 solid ellipse black lightgrey
+node 382436 11.819 1.4692 0.82202 0.38 382436 solid ellipse black lightgrey
+node fcfpr1_1_3t_34 11.909 0.072025 0.12 0.12 "" solid circle black lightgrey
+node 382528 12.395 1.0658 0.82202 0.38 382528 solid ellipse black lightgrey
+node rtafpr1_1_3t_48 13.103 0.06 0.12 0.12 "" solid circle black lightgrey
+node 382566 12.815 1.3467 0.82202 0.38 382566 solid ellipse black lightgrey
+node 382572 13.493 1.362 0.82202 0.38 382572 solid ellipse black lightgrey
+node 353506 5.0519 5.8033 0.82202 0.38 353506 solid ellipse black lightgrey
+node rcfpr1_0_1t_35 3.8394 4.4759 0.12 0.12 "" solid circle black lightgrey
+node 370509 4.2281 5.7083 0.82202 0.38 370509 solid ellipse black lightgrey
+node 370510 4.5301 5.5928 0.82202 0.38 370510 solid ellipse black lightgrey
+node odfpr1_0_1t_38 3.5643 4.6146 0.12 0.12 "" solid circle black lightgrey
+node tlfpr1_0_4g_5 2.2245 11.064 0.12 0.12 "" solid circle black lightgrey
+node 354546 3.4377 10.434 0.82202 0.38 354546 solid ellipse black lightgrey
+node rcfpr1_1_1t_61 3.0675 11.723 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_0_3t_20 4.0264 11.507 0.12 0.12 "" solid circle black lightgrey
+node 354757 4.5211 10.451 0.82202 0.38 354757 solid ellipse black lightgrey
+node 354766 4.2686 10.426 0.82202 0.38 354766 solid ellipse black lightgrey
+node 354771 3.9898 10.288 0.82202 0.38 354771 solid ellipse black lightgrey
+node 354785 2.9038 8.7095 0.82202 0.38 354785 solid ellipse black lightgrey
+node odfpr1_0_3t_23 1.9007 8.2737 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_0_3t_24 2.0786 7.8943 0.12 0.12 "" solid circle black lightgrey
+node 354878 2.8352 8.9198 0.82202 0.38 354878 solid ellipse black lightgrey
+node 355080 3.0377 8.5059 0.82202 0.38 355080 solid ellipse black lightgrey
+node 355288 3.0392 8.1959 0.82202 0.38 355288 solid ellipse black lightgrey
+node odfpr2_0_03t_13 2.3807 7.0458 0.12 0.12 "" solid circle black lightgrey
+node 355800 4.1098 8.6156 0.82202 0.38 355800 solid ellipse black lightgrey
+node 356116 4.9041 9.2777 0.82202 0.38 356116 solid ellipse black lightgrey
+node 356741 4.4117 8.3592 0.82202 0.38 356741 solid ellipse black lightgrey
+node 357340 4.8573 9.5304 0.82202 0.38 357340 solid ellipse black lightgrey
+node 357538 4.3256 9.5894 0.82202 0.38 357538 solid ellipse black lightgrey
+node 357769 4.4984 9.8622 0.82202 0.38 357769 solid ellipse black lightgrey
+node 357793 3.682 8.6762 0.82202 0.38 357793 solid ellipse black lightgrey
+node 358155 4.9327 9.7799 0.82202 0.38 358155 solid ellipse black lightgrey
+node 358157 4.7789 10.013 0.82202 0.38 358157 solid ellipse black lightgrey
+node 358159 4.3941 8.0783 0.82202 0.38 358159 solid ellipse black lightgrey
+node 358584 3.8056 8.3161 0.82202 0.38 358584 solid ellipse black lightgrey
+node 360104 3.9046 9.6673 0.83 0.38 360104 solid ellipse black lightgrey
+node 360144 3.5173 9.1355 0.83 0.38 360144 solid ellipse black lightgrey
+node 360672 3.8556 7.8866 0.82202 0.38 360672 solid ellipse black lightgrey
+node odfpr1_0_3t_5 3.1497 6.7548 0.12 0.12 "" solid circle black lightgrey
+node 360839 4.109 8.0827 0.83 0.38 360839 solid ellipse black lightgrey
+node 371187 4.5535 9.1078 0.83 0.38 371187 solid ellipse black lightgrey
+node tlfpr1_0_3g_5 2.7322 6.7974 0.12 0.12 "" solid circle black lightgrey
+node 373300 3.3302 7.9311 0.83 0.38 373300 solid ellipse black lightgrey
+node odfpr1_0_3t_12 2.1286 7.3069 0.12 0.12 "" solid circle black lightgrey
+node 375134 2.9901 9.4903 0.82202 0.38 375134 solid ellipse black lightgrey
+node odfpr1_0_5t_18 1.6538 9.8135 0.12 0.12 "" solid circle black lightgrey
+node rcfpr0_0_1t_10 4.2401 11.899 0.12 0.12 "" solid circle black lightgrey
+node 375319 3.7655 10.668 0.82202 0.38 375319 solid ellipse black lightgrey
+node odfpr1_0_3t_36 2.3396 10.763 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_0_5t_17 3.7548 11.944 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_0_5t_19 3.3104 11.843 0.12 0.12 "" solid circle black lightgrey
+node 375499 4.6208 8.731 0.82202 0.38 375499 solid ellipse black lightgrey
+node 377220 3.1379 9.9294 0.82202 0.38 377220 solid ellipse black lightgrey
+node odfpr1_0_5t_21 2.4242 11.203 0.12 0.12 "" solid circle black lightgrey
+node tlfpr1_0_3g_7 1.51 9.436 0.12 0.12 "" solid circle black lightgrey
+node 377562 2.638 9.5014 0.82202 0.38 377562 solid ellipse black lightgrey
+node tlfpr1_1_1t_3 1.6771 10.219 0.12 0.12 "" solid circle black lightgrey
+node odfpr1_0_5t_20 1.4822 8.8001 0.12 0.12 "" solid circle black lightgrey
+node 378108 3.424 10.094 0.83 0.38 378108 solid ellipse black lightgrey
+node odfpr1_0_3t_6 2.8079 11.461 0.12 0.12 "" solid circle black lightgrey
+node 354221 0.41101 8.4243 0.82202 0.38 354221 solid ellipse black lightgrey
+edge fcfpr1_1_2t_17 341411 4 18.072 6.6711 18.011 6.8001 17.86 7.1178 17.742 7.3659 solid black
+edge fcfpr1_1t_1 341411 4 18.687 7.68 18.585 7.6816 18.374 7.685 18.164 7.6883 solid black
+edge rdlfpr2_0_rdlt_4 341411 4 17.762 6.5051 17.74 6.6553 17.68 7.0549 17.636 7.3503 solid black
+edge fpfpr1_0_1t_1 341411 4 18.73 8.0766 18.612 8.0373 18.33 7.9443 18.076 7.8602 solid black
+edge fpfpr1_1_2t_11 341411 4 18.32 6.9615 18.232 7.0492 18.037 7.245 17.869 7.4126 solid black
+edge rtafpr1_1_2t_28 341411 4 18.543 7.2932 18.443 7.3352 18.236 7.4225 18.04 7.5053 solid black
+edge rtafpr1_1_3t_6 341411 4 16.812 8.7362 16.908 8.607 17.162 8.266 17.352 8.0097 solid black
+edge rtafpr1_1_3t_6 358866 4 16.837 8.7828 16.898 8.7772 16.994 8.7681 17.1 8.7582 solid black
+edge rtafpr1_1_3t_6 358930 4 16.709 8.7963 16.571 8.8123 16.232 8.8516 15.93 8.8866 solid black
+edge rtafpr1_1_3t_6 371943 4 16.825 8.8292 16.947 8.9244 17.262 9.1691 17.51 9.3624 solid black
+edge rtafpr1_1_3t_6 374300 4 16.72 8.8192 16.586 8.8955 16.224 9.1009 15.935 9.2653 solid black
+edge rdlfpr1_1t_1 358866 4 18.857 8.697 18.74 8.6978 18.483 8.6995 18.237 8.7012 solid black
+edge tmfpr1_1_3t_5 358930 4 15.919 7.9242 15.85 8.054 15.678 8.3745 15.544 8.6233 solid black
+edge fcfpr1_1_3t_9 358930 4 14.203 9.7394 14.339 9.6475 14.713 9.3947 15.001 9.2001 solid black
+edge fcfpr1_1_3t_9 374300 4 14.214 9.762 14.351 9.734 14.691 9.665 14.992 9.6041 solid black
+edge fcfpr1_1_3t_9 371942 4 14.196 9.8182 14.278 9.8965 14.456 10.067 14.614 10.219 solid black
+edge fcfpr1_1_3t_9 374700 4 14.101 9.7339 13.949 9.6098 13.485 9.2298 13.163 8.9664 solid black
+edge fcfpr1_1_3t_9 374741 4 14.113 9.7208 14.064 9.6511 13.974 9.5241 13.889 9.402 solid black
+edge fcfpr1_1_3t_9 374886 4 14.141 9.8378 14.139 9.8505 14.136 9.8646 14.134 9.8798 solid black
+edge fcfpr1_1_3t_9 375039 4 14.154 9.7091 14.158 9.6295 14.164 9.4892 14.17 9.3546 solid black
+edge fcfpr1_1_3t_9 375507 4 14.1 9.8167 13.996 9.9038 13.748 10.11 13.542 10.283 solid black
+edge fcfpr1_1_3t_9 375508 4 14.095 9.812 14.01 9.8699 13.838 9.986 13.676 10.095 solid black
+edge fcfpr1_1_3t_9 375519 4 14.188 9.7239 14.26 9.628 14.419 9.4135 14.555 9.2302 solid black
+edge fcfpr1_1_3t_9 377380 4 14.208 9.8009 14.299 9.8429 14.486 9.9291 14.666 10.012 solid black
+edge fcfpr1_1_3t_9 377719 4 14.152 9.84 14.156 10.007 14.165 10.457 14.172 10.778 solid black
+edge fcfpr1_1_3t_9 377763 4 14.137 9.837 14.119 9.9198 14.085 10.073 14.053 10.217 solid black
+edge fcfpr1_1_3t_9 379848 4 14.207 9.7389 14.249 9.7119 14.311 9.6723 14.378 9.6292 solid black
+edge fcfpr1_1_3t_9 380571 4 14.102 9.8205 14.074 9.847 14.035 9.8829 13.994 9.9221 solid black
+edge fcfpr1_1_3t_9 380604 4 14.131 9.7136 14.118 9.6715 14.099 9.6118 14.079 9.548 solid black
+edge fcfpr1_1_3t_9 381211 4 14.189 9.723 14.207 9.6983 14.23 9.6665 14.255 9.6316 solid black
+edge fcfpr1_1_3t_9 381835 4 14.089 9.7892 14.026 9.8036 13.924 9.8273 13.813 9.853 solid black
+edge fcfpr1_1_3t_9 381897 4 14.177 9.8325 14.207 9.8984 14.259 10.011 14.309 10.123 solid black
+edge fcfpr1_1_3t_9 381901 4 14.175 9.7174 14.212 9.6328 14.283 9.468 14.349 9.3154 solid black
+edge fcfpr1_1_3t_9 382103 4 14.084 9.767 14.046 9.7626 13.993 9.7564 13.934 9.7495 solid black
+edge fcfpr1_1_3t_9 382161 4 14.21 9.7969 14.23 9.8042 14.254 9.8129 14.28 9.8226 solid black
+edge fcfpr1_1_3t_9 383174 4 14.096 9.7376 14.043 9.7022 13.96 9.6456 13.872 9.5861 solid black
+edge pcfpr1_1_3t_7 358930 4 16.158 8.8155 16.103 8.8251 16.015 8.8402 15.918 8.857 solid black
+edge fpfpr1_1_3g_1 358930 4 15.67 8.1576 15.634 8.2526 15.562 8.442 15.497 8.612 solid black
+edge fpfpr1_1_3g_1 375519 4 15.645 8.1404 15.541 8.2343 15.292 8.46 15.089 8.6447 solid black
+edge fpfpr1_1_3g_1 352010 4 15.639 8.0656 15.563 8.0226 15.416 7.94 15.27 7.8584 solid black
+edge fpfpr1_1_3t_1 358930 4 14.129 8.5149 14.266 8.5632 14.602 8.6817 14.89 8.7831 solid black
+edge fpfpr1_1_3t_1 374700 4 14.007 8.5027 13.894 8.5216 13.635 8.5647 13.39 8.6056 solid black
+edge fpfpr1_1_3t_1 374741 4 14.03 8.5477 13.995 8.5997 13.939 8.6825 13.882 8.7677 solid black
+edge fpfpr1_1_3t_1 374886 4 14.067 8.5587 14.069 8.772 14.073 9.4543 14.076 9.8779 solid black
+edge fpfpr1_1_3t_1 375039 4 14.081 8.5556 14.088 8.5846 14.097 8.6216 14.106 8.6618 solid black
+edge fpfpr1_1_3t_1 375519 4 14.123 8.5264 14.184 8.5629 14.288 8.6248 14.396 8.6889 solid black
+edge fpfpr1_1_3t_1 379848 4 14.104 8.5408 14.182 8.6413 14.367 8.881 14.521 9.0796 solid black
+edge fpfpr1_1_3t_1 380604 4 14.058 8.5584 14.048 8.6275 14.033 8.7418 14.017 8.8552 solid black
+edge fpfpr1_1_3t_1 381211 4 14.096 8.5525 14.142 8.6449 14.234 8.8287 14.316 8.9938 solid black
+edge fpfpr1_1_3t_1 381901 4 14.109 8.541 14.14 8.5754 14.183 8.6247 14.23 8.678 solid black
+edge fpfpr1_1_3t_1 383174 4 14.03 8.5483 13.967 8.6435 13.834 8.8445 13.718 9.0201 solid black
+edge fpfpr1_1_3t_1 352010 4 14.11 8.4465 14.201 8.3488 14.419 8.1147 14.598 7.9224 solid black
+edge fpfpr1_1_3t_1 382409 4 14.072 8.4265 14.081 8.3212 14.099 8.1084 14.115 7.9214 solid black
+edge fpfpr1_1_3t_1 382827 4 14.093 8.4344 14.143 8.3209 14.258 8.063 14.354 7.8487 solid black
+edge fpfpr1_1_3t_1 382928 4 14.004 8.5061 13.942 8.5194 13.841 8.5411 13.73 8.5647 solid black
+edge aufpr1_1_3t_1 358930 4 16.088 8.3389 16.005 8.4091 15.836 8.5535 15.682 8.6844 solid black
+edge rtafpr1_0_3g_1 358930 4 16.225 9.3342 16.139 9.2961 15.975 9.2228 15.813 9.1505 solid black
+edge msgfpr1_1_1g_12 371943 4 18.891 9.7621 18.794 9.7493 18.601 9.7241 18.407 9.6989 solid black
+edge rtafpr1_1_1g_8 371943 4 18.753 10.245 18.652 10.175 18.417 10.014 18.212 9.8741 solid black
+edge rtafpr1_1_1t_35 371943 4 18.533 10.646 18.449 10.521 18.228 10.191 18.06 9.9404 solid black
+edge rtafpr1_1_1t_45 371943 4 18.913 9.2611 18.803 9.2991 18.558 9.3831 18.33 9.461 solid black
+edge tlfpr2_0_rdlg_2 374300 4 16.397 10.138 16.3 10.066 16.075 9.8982 15.879 9.7523 solid black
+edge fcfpr1_1_3t_8 374300 4 16.433 9.7142 16.352 9.6946 16.206 9.6588 16.053 9.6217 solid black
+edge fcfpr1_0_5g_1 371942 4 15.648 11.438 15.56 11.326 15.332 11.037 15.154 10.81 solid black
+edge fcfpr1_1_1t_19 371942 4 16.051 10.917 15.932 10.873 15.647 10.77 15.392 10.678 solid black
+edge tymsgfpr1_1_3t_3 374700 4 11.885 7.7972 12.001 7.9072 12.304 8.1945 12.537 8.4153 solid black
+edge tymsgfpr1_1_3t_3 358224 4 11.775 7.7649 11.619 7.7988 11.193 7.891 10.841 7.9672 solid black
+edge tymsgfpr1_1_3t_3 358900 4 11.784 7.7858 11.747 7.8095 11.695 7.8434 11.637 7.8806 solid black
+edge tymsgfpr1_1_3t_3 372568 4 11.851 7.6886 11.892 7.4984 12.017 6.9194 12.1 6.5407 solid black
+edge tymsgfpr1_1_3t_3 375557 4 11.808 7.6958 11.775 7.6338 11.72 7.5286 11.665 7.4235 solid black
+edge rtafpr1_1_3t_7 374700 4 12.735 9.4518 12.746 9.3644 12.768 9.2014 12.788 9.0493 solid black
+edge rtafpr1_1_3t_7 374741 4 12.782 9.4904 12.871 9.4501 13.051 9.3683 13.225 9.2887 solid black
+edge rtafpr1_1_3t_7 374886 4 12.784 9.5466 12.934 9.6256 13.345 9.8418 13.664 10.01 solid black
+edge rtafpr1_1_3t_7 375507 4 12.753 9.5718 12.809 9.6929 12.948 9.9874 13.059 10.223 solid black
+edge rtafpr1_1_3t_7 375508 4 12.764 9.5702 12.83 9.6626 12.967 9.8572 13.087 10.028 solid black
+edge rtafpr1_1_3t_7 382103 4 12.791 9.5327 12.811 9.5379 12.835 9.5442 12.861 9.5511 solid black
+edge rtafpr1_1_3t_7 383174 4 12.787 9.5021 12.833 9.4917 12.901 9.4763 12.977 9.459 solid black
+edge rtafpr1_1_3t_7 382928 4 12.757 9.461 12.81 9.3683 12.919 9.1741 13.016 9.0024 solid black
+edge rtafpr1_1_3t_7 376956 4 12.755 9.456 12.843 9.2749 13.111 8.724 13.286 8.3632 solid black
+edge rtafpr1_1_3t_7 379339 4 12.674 9.5525 12.597 9.607 12.445 9.7143 12.298 9.8174 solid black
+edge rtafpr1_1_3t_7 379422 4 12.688 9.5639 12.586 9.6937 12.296 10.06 12.085 10.328 solid black
+edge rtafpr1_1_3t_7 383039 4 12.664 9.5325 12.613 9.5462 12.535 9.5671 12.448 9.5902 solid black
+edge fcfpr1_1_3g_2 374741 4 14.807 8.1554 14.67 8.2678 14.284 8.5835 13.999 8.8164 solid black
+edge fcfpr1_1_1t_18 374886 4 14.773 11.75 14.685 11.557 14.407 10.947 14.23 10.561 solid black
+edge fcfpr1_1_1t_18 359471 4 14.819 11.872 14.872 12.05 15.026 12.567 15.13 12.919 solid black
+edge fcfpr1_1_3t_42 375507 4 13.178 11.819 13.183 11.657 13.196 11.219 13.205 10.904 solid black
+edge fcfpr1_1_3t_42 384096 4 13.157 11.946 13.108 12.103 12.976 12.525 12.881 12.83 solid black
+edge rdlfpr2_0_rdlt_158 375507 4 12.486 11.397 12.574 11.295 12.786 11.051 12.958 10.851 solid black
+edge rtafpr1_1_3t_71 375507 4 12.792 11.835 12.846 11.672 12.996 11.217 13.102 10.896 solid black
+edge rtafpr1_1_3t_71 384096 4 12.772 11.961 12.772 12.118 12.772 12.524 12.773 12.823 solid black
+edge dbfpr1_1_3t_2 375507 4 12.571 11.03 12.634 10.983 12.749 10.899 12.864 10.814 solid black
+edge dbfpr1_1_3t_2 375508 4 12.568 11.023 12.653 10.945 12.84 10.773 13.005 10.622 solid black
+edge rdlfpr1_1g_13 375508 4 12.878 11.469 12.932 11.329 13.074 10.958 13.18 10.68 solid black
+edge rtafpr2_1_rdlg_1 375508 4 13.529 11.546 13.501 11.391 13.427 10.989 13.372 10.692 solid black
+edge rdlfpr1_1g_16 377380 4 16.199 10.597 16.083 10.557 15.826 10.467 15.59 10.384 solid black
+edge rdlfpr1_1t_100 377380 4 15.878 11.165 15.784 11.05 15.539 10.748 15.35 10.515 solid black
+edge fcfpr1_0_2g_1 377719 4 14.984 11.946 14.888 11.848 14.656 11.613 14.466 11.42 solid black
+edge fcfpr1_1_3t_10 377719 4 14.606 12.124 14.554 12.001 14.426 11.703 14.324 11.465 solid black
+edge fcfpr1_1_3t_7 377719 4 13.96 12.303 13.987 12.157 14.06 11.769 14.114 11.479 solid black
+edge rdlfpr2_0_rdlg_12 377719 4 13.301 12.168 13.407 12.043 13.706 11.689 13.926 11.429 solid black
+edge rdlfpr2_0_rdlt_108 377719 4 14.252 12.126 14.243 12.001 14.222 11.715 14.205 11.48 solid black
+edge rdlfpr2_0_rdlt_27 377719 4 15.262 11.665 15.144 11.607 14.857 11.464 14.608 11.341 solid black
+edge rdlfpr2_0_rdlt_30 377719 4 13.642 12.208 13.708 12.075 13.882 11.726 14.014 11.46 solid black
+edge tlfpr1_1_1t_5 358224 4 9.8328 8.2918 9.8425 8.2876 9.8531 8.2829 9.8646 8.2779 solid black
+edge tymsgfpr1_1_1t_23 358224 4 9.7286 7.1045 9.801 7.226 9.978 7.5232 10.118 7.7582 solid black
+edge rcfpr0_0_1t_9 358224 4 9.0017 8.4692 9.1443 8.4271 9.5049 8.3204 9.8117 8.2296 solid black
+edge rcfpr0_0_1t_9 354290 4 8.8765 8.4887 8.773 8.4902 8.5564 8.4935 8.3423 8.4967 solid black
+edge rcfpr1_1_1t_5 358224 4 9.8603 9.0316 9.917 8.9123 10.047 8.6377 10.153 8.4143 solid black
+edge rcfpr1_1_1t_5 379864 4 9.8118 9.1517 9.7619 9.3015 9.6287 9.7009 9.5309 9.9944 solid black
+edge odfpr0_0_1t_8 358224 4 8.9398 8.112 9.0819 8.1088 9.4308 8.1012 9.7411 8.0944 solid black
+edge odfpr0_0_1t_8 354290 4 8.8152 8.1345 8.7078 8.1727 8.4714 8.2568 8.2509 8.3353 solid black
+edge odfpr1_1_1t_6 358224 4 9.7084 7.644 9.7652 7.6852 9.8617 7.7554 9.9611 7.8277 solid black
+edge ecdsgfpr1_1_1t_4 358224 4 9.904 7.3867 9.9499 7.4652 10.039 7.6172 10.122 7.759 solid black
+edge tymsgfpr1_1_1t_18 358900 4 10.962 7.1848 10.999 7.3003 11.083 7.5628 11.152 7.7809 solid black
+edge rcfpr1_1_1t_100 358900 4 10.505 9.004 10.598 8.8954 10.825 8.631 11.006 8.42 solid black
+edge rcfpr1_1_1t_100 382574 4 10.433 9.1136 10.377 9.231 10.249 9.5003 10.144 9.7206 solid black
+edge rcfpr1_1_1t_22 358900 4 10.58 8.6523 10.652 8.5958 10.79 8.4893 10.922 8.3866 solid black
+edge rcfpr1_1_1t_22 382574 4 10.502 8.7552 10.436 8.9223 10.249 9.3911 10.119 9.717 solid black
+edge rcfpr1_1_1t_37 358900 4 10.778 9.1396 10.838 9.0126 10.986 8.7008 11.103 8.4558 solid black
+edge rcfpr1_1_1t_37 382574 4 10.709 9.2434 10.624 9.3391 10.421 9.5664 10.251 9.756 solid black
+edge odfpr1_1_1t_21 358900 4 10.687 7.4853 10.752 7.5579 10.879 7.699 10.997 7.83 solid black
+edge rcfpr1_1_1t_30 372568 4 12.217 4.8173 12.212 4.9956 12.196 5.4977 12.185 5.8439 solid black
+edge rcfpr1_1_1t_30 370706 4 12.156 4.7413 12.136 4.738 12.111 4.734 12.084 4.7295 solid black
+edge rcfpr1_1_1t_30 377908 4 12.159 4.7407 12.06 4.7229 11.852 4.6858 11.647 4.6489 solid black
+edge rcfpr1_1_1t_30 377924 4 12.184 4.6965 12.144 4.6346 12.076 4.5288 12.008 4.4238 solid black
+edge rcfpr1_1_1t_30 377971 4 12.226 4.689 12.237 4.5802 12.26 4.3488 12.28 4.1491 solid black
+edge rcfpr1_1_1t_30 377980 4 12.26 4.7006 12.284 4.6701 12.317 4.6284 12.354 4.583 solid black
+edge rcfpr1_1_1t_30 378362 4 12.174 4.7127 12.054 4.611 11.724 4.33 11.472 4.1155 solid black
+edge rcfpr1_1_1t_30 378656 4 12.184 4.6999 12.097 4.5744 11.869 4.2455 11.696 3.9949 solid black
+edge rcfpr1_1_1t_30 378666 4 12.264 4.7094 12.355 4.6234 12.57 4.4211 12.752 4.2495 solid black
+edge rcfpr1_1_1t_30 379169 4 12.279 4.7334 12.328 4.7188 12.401 4.6967 12.482 4.6722 solid black
+edge rcfpr1_1_1t_30 379341 4 12.244 4.6931 12.31 4.5385 12.491 4.1102 12.621 3.8036 solid black
+edge rcfpr1_1_1t_30 379972 4 12.202 4.6904 12.163 4.5551 12.068 4.2216 11.994 3.9616 solid black
+edge rcfpr1_1_1t_30 380298 4 12.279 4.7231 12.412 4.6596 12.743 4.5012 13.02 4.3689 solid black
+edge rcfpr1_1_1t_30 380448 4 12.161 4.7243 12.024 4.66 11.672 4.4945 11.381 4.358 solid black
+edge rcfpr1_1_1t_30 380475 4 12.281 4.7547 12.347 4.7582 12.46 4.764 12.583 4.7704 solid black
+edge rcfpr1_1_1t_30 380526 4 12.284 4.7394 12.419 4.7141 12.741 4.6539 13.029 4.6001 solid black
+edge odfpr1_1_1t_31 372568 4 12.397 5.2237 12.369 5.3446 12.306 5.6214 12.254 5.8487 solid black
+edge odfpr1_1_1t_31 377980 4 12.424 5.0984 12.445 4.9993 12.487 4.8014 12.524 4.6245 solid black
+edge odfpr1_1_1t_31 379169 4 12.452 5.116 12.509 5.052 12.617 4.9311 12.721 4.8149 solid black
+edge odfpr1_1_1t_31 379341 4 12.424 5.0978 12.467 4.8906 12.605 4.2303 12.691 3.8165 solid black
+edge odfpr1_1_1t_31 380475 4 12.469 5.1337 12.527 5.1054 12.622 5.0591 12.723 5.0099 solid black
+edge odfpr1_1_1t_31 357430 4 12.361 5.1253 12.23 5.0297 11.869 4.7663 11.592 4.5639 solid black
+edge tlfpr1_1_1t_20 375557 4 11.943 6.474 11.894 6.542 11.806 6.6652 11.72 6.7843 solid black
+edge tymsgfpr1_1_1t_24 375557 4 11.509 6.2539 11.507 6.3568 11.504 6.5637 11.501 6.747 solid black
+edge rcfpr1_1_1t_11 375557 4 10.504 6.417 10.616 6.4941 10.895 6.6858 11.129 6.8463 solid black
+edge rcfpr1_1_1t_11 379968 4 10.426 6.3244 10.355 6.1792 10.167 5.7923 10.029 5.5077 solid black
+edge odfpr1_1_1t_9 375557 4 10.646 6.1142 10.751 6.2364 11.03 6.5589 11.239 6.8016 solid black
+edge odfpr1_1_1t_9 379968 4 10.563 6.0166 10.481 5.9168 10.284 5.6788 10.12 5.4816 solid black
+edge ecdsgfpr1_1_1t_19 375557 4 11.101 6.3367 11.148 6.4267 11.24 6.6049 11.323 6.7663 solid black
+edge rtafpr1_1_1g_14 376956 4 14.077 6.9143 13.998 7.0551 13.787 7.4291 13.63 7.7062 solid black
+edge rtafpr1_1_1t_64 376956 4 14.571 6.9116 14.435 7.0469 14.018 7.4629 13.732 7.7484 solid black
+edge rtafpr1_1_2t_18 376956 4 14.953 7.1677 14.778 7.268 14.23 7.5828 13.846 7.8037 solid black
+edge rtafpr1_1_3t_30 376956 4 13.547 7.0751 13.534 7.1925 13.506 7.4589 13.483 7.6811 solid black
+edge rtafpr1_1_1t_14 379422 4 11.492 12.034 11.537 11.855 11.668 11.335 11.757 10.981 solid black
+edge rtafpr1_1_1t_20 379422 4 11.209 11.698 11.287 11.566 11.495 11.219 11.651 10.956 solid black
+edge fcfpr2_0_1t_1 359471 4 14.892 14.15 14.935 14.04 15.026 13.803 15.103 13.602 solid black
+edge fcfpr2_0_1t_2 359471 4 14.373 14.31 14.476 14.184 14.766 13.832 14.981 13.571 solid black
+edge ccsfpr2_0_1t_99 359471 4 16.04 14.2 15.943 14.087 15.689 13.794 15.492 13.565 solid black
+edge ccsfpr2_0_1t_99 359100 4 16.059 14.305 16.003 14.446 15.855 14.818 15.745 15.096 solid black
+edge ccsfpr2_0_1t_99 376529 4 16.126 14.29 16.207 14.367 16.383 14.534 16.539 14.682 solid black
+edge ccsfpr2_0_1t_99 377801 4 16.146 14.249 16.235 14.251 16.408 14.255 16.585 14.258 solid black
+edge ccsfpr2_0_1t_99 379126 4 16.138 14.269 16.254 14.313 16.53 14.416 16.778 14.509 solid black
+edge ccsfpr2_0_1t_99 379212 4 16.044 14.299 15.943 14.441 15.654 14.844 15.447 15.132 solid black
+edge ccsfpr2_0_1t_99 380285 4 16.103 14.307 16.146 14.421 16.242 14.681 16.323 14.897 solid black
+edge ccsfpr2_0_1t_99 380963 4 16.078 14.309 16.071 14.443 16.053 14.774 16.039 15.033 solid black
+edge ccsfpr2_0_1t_99 384909 4 16.146 14.24 16.289 14.221 16.64 14.177 16.95 14.137 solid black
+edge tlfpr1_0_4g_4 354290 4 6.654 8.5746 6.7606 8.568 6.9853 8.5541 7.2057 8.5404 solid black
+edge tlfpr1_0_4g_4 358471 4 6.5304 8.5654 6.4113 8.5392 6.1348 8.4785 5.8788 8.4223 solid black
+edge tlfpr1_0_4g_4 375024 4 6.6071 8.641 6.6298 8.7259 6.6722 8.8845 6.7118 9.0324 solid black
+edge tlfpr1_0_4g_4 375027 4 6.5991 8.6434 6.6227 8.8184 6.6888 9.3098 6.7347 9.6509 solid black
+edge pagfpr1_1_1t_23 354290 4 7.82 9.6707 7.814 9.5202 7.7989 9.1435 7.7875 8.8588 solid black
+edge rcfpr1_1_1t_110 379341 4 12.84 2.2999 12.83 2.4507 12.805 2.8283 12.787 3.1137 solid black
+edge rcfpr1_1_1t_110 381710 4 12.907 2.2185 13.046 2.1854 13.39 2.1031 13.691 2.0312 solid black
+edge rcfpr1_1_1t_110 381775 4 12.9 2.2071 13.002 2.1582 13.23 2.0494 13.44 1.9494 solid black
+edge rcfpr1_1_1t_110 382436 4 12.795 2.1966 12.682 2.1121 12.394 1.8981 12.161 1.724 solid black
+edge rcfpr1_1_1t_110 382528 4 12.823 2.1772 12.77 2.0401 12.632 1.6802 12.526 1.4068 solid black
+edge rcfpr1_1_1t_110 382566 4 12.842 2.1697 12.839 2.0716 12.832 1.8766 12.827 1.701 solid black
+edge rcfpr1_1_1t_110 382572 4 12.883 2.1816 12.957 2.0822 13.124 1.8579 13.264 1.6691 solid black
+edge rcfpr1_1_1t_62 379341 4 13.746 2.8836 13.635 2.9496 13.378 3.1023 13.155 3.235 solid black
+edge rcfpr1_1_1t_62 381710 4 13.827 2.7941 13.874 2.6871 13.98 2.4466 14.07 2.2428 solid black
+edge rcfpr1_1_1t_62 381775 4 13.806 2.7844 13.815 2.6512 13.835 2.3416 13.851 2.0943 solid black
+edge odfpr0_0_1t_7 358471 4 5.0092 6.8704 5.0525 7.0551 5.1795 7.5965 5.2645 7.9588 solid black
+edge odfpr0_0_1t_7 353506 4 4.9979 6.7402 5.0046 6.6233 5.0191 6.3717 5.0314 6.1586 solid black
+edge odfpr0_0_1t_7 370509 4 4.9572 6.7531 4.8665 6.6231 4.6272 6.2802 4.4473 6.0224 solid black
+edge odfpr0_0_1t_7 370510 4 4.9717 6.7475 4.9161 6.6021 4.7683 6.2157 4.6589 5.9297 solid black
+edge odfpr1_0_1t_36 358471 4 5.5095 7.4654 5.4897 7.5672 5.4499 7.7712 5.4145 7.9526 solid black
+edge odfpr1_0_3t_18 358471 4 3.9853 9.1724 4.144 9.0712 4.6215 8.7669 4.9659 8.5474 solid black
+edge odfpr1_0_3t_18 354546 4 3.9077 9.2659 3.8486 9.4129 3.6913 9.8039 3.5748 10.093 solid black
+edge odfpr1_0_3t_18 354757 4 3.96 9.2667 4.0317 9.418 4.224 9.8241 4.3636 10.119 solid black
+edge odfpr1_0_3t_18 354766 4 3.9478 9.2655 3.988 9.411 4.0946 9.7966 4.1739 10.084 solid black
+edge odfpr1_0_3t_18 354771 4 3.935 9.2711 3.942 9.3997 3.958 9.6968 3.9709 9.9368 solid black
+edge odfpr1_0_3t_18 354785 4 3.8763 9.1799 3.7733 9.1301 3.5434 9.0189 3.3329 8.9171 solid black
+edge odfpr1_0_3t_18 354878 4 3.8726 9.1912 3.7717 9.1648 3.5564 9.1085 3.348 9.054 solid black
+edge odfpr1_0_3t_18 355080 4 3.8835 9.169 3.7877 9.0939 3.5656 8.9198 3.3731 8.7688 solid black
+edge odfpr1_0_3t_18 355288 4 3.8885 9.1579 3.7836 9.039 3.5078 8.7266 3.2987 8.4898 solid black
+edge odfpr1_0_3t_18 355800 4 3.9506 9.1434 3.9649 9.096 3.9857 9.0271 4.0076 8.9546 solid black
+edge odfpr1_0_3t_18 356116 4 3.9954 9.2113 4.069 9.2167 4.198 9.2261 4.3359 9.2362 solid black
+edge odfpr1_0_3t_18 356741 4 3.963 9.1511 4.0162 9.0573 4.1275 8.8609 4.2259 8.6871 solid black
+edge odfpr1_0_3t_18 357340 4 3.9923 9.2279 4.0725 9.256 4.2216 9.3081 4.3736 9.3612 solid black
+edge odfpr1_0_3t_18 357538 4 3.9737 9.2476 3.9905 9.2639 4.0113 9.2841 4.0344 9.3066 solid black
+edge odfpr1_0_3t_18 357769 4 3.9723 9.2538 4.0288 9.3192 4.1357 9.4428 4.2384 9.5616 solid black
+edge odfpr1_0_3t_18 357793 4 3.9048 9.1499 3.888 9.1141 3.8647 9.0647 3.8396 9.0111 solid black
+edge odfpr1_0_3t_18 358155 4 3.9854 9.2375 4.0893 9.297 4.3261 9.4325 4.5369 9.5532 solid black
+edge odfpr1_0_3t_18 358157 4 3.9771 9.25 4.0707 9.3392 4.2916 9.5495 4.4779 9.7268 solid black
+edge odfpr1_0_3t_18 358159 4 3.9564 9.146 4.012 9.0104 4.1498 8.6744 4.256 8.4152 solid black
+edge odfpr1_0_3t_18 358584 4 3.9225 9.1426 3.9084 9.0431 3.8803 8.8442 3.8551 8.6664 solid black
+edge odfpr1_0_3t_18 360104 4 3.9278 9.2707 3.927 9.2838 3.9262 9.2985 3.9253 9.3142 solid black
+edge odfpr1_0_3t_18 360144 4 3.8668 9.1955 3.8659 9.1954 3.865 9.1952 3.8641 9.1951 solid black
+edge odfpr1_0_3t_18 360672 4 3.9279 9.143 3.9186 8.9822 3.8938 8.5504 3.8758 8.2379 solid black
+edge odfpr1_0_3t_18 360839 4 3.9411 9.1462 3.962 9.0138 4.0132 8.6895 4.0536 8.4335 solid black
+edge odfpr1_0_3t_18 371187 4 3.9934 9.1968 3.9961 9.1964 3.9987 9.196 4.0015 9.1955 solid black
+edge odfpr1_0_3t_18 373300 4 3.9041 9.1485 3.8318 8.9951 3.6314 8.5701 3.4878 8.2654 solid black
+edge odfpr1_0_3t_18 375134 4 3.8698 9.2253 3.7894 9.2495 3.6411 9.2941 3.4889 9.34 solid black
+edge odfpr1_0_3t_18 375319 4 3.9244 9.2694 3.9042 9.4468 3.8457 9.9619 3.8056 10.315 solid black
+edge odfpr1_0_3t_18 375499 4 3.9856 9.1693 4.047 9.127 4.1526 9.0541 4.2603 8.9798 solid black
+edge odfpr1_0_3t_18 377220 4 3.8843 9.2497 3.7984 9.328 3.6101 9.4994 3.4441 9.6506 solid black
+edge odfpr1_0_3t_18 377562 4 3.8692 9.2209 3.7417 9.2499 3.4407 9.3185 3.1681 9.3806 solid black
+edge odfpr1_0_3t_18 378108 4 3.9013 9.2595 3.8445 9.3589 3.7178 9.5806 3.6092 9.7706 solid black
+edge odfpr1_0_3t_21 358471 4 5.0011 8.6293 5.0136 8.6175 5.0281 8.6039 5.0439 8.5891 solid black
+edge odfpr1_0_3t_21 355800 4 4.8867 8.67 4.8363 8.6664 4.7613 8.6612 4.6776 8.6553 solid black
+edge odfpr1_0_3t_21 356116 4 4.9477 8.7391 4.9439 8.7862 4.9384 8.8541 4.9326 8.926 solid black
+edge odfpr1_0_3t_21 356741 4 4.899 8.6432 4.8748 8.6291 4.8439 8.6111 4.8094 8.591 solid black
+edge odfpr1_0_3t_21 357340 4 4.946 8.7361 4.9357 8.8287 4.9153 9.0106 4.8968 9.1771 solid black
+edge odfpr1_0_3t_21 357538 4 4.9155 8.7291 4.8431 8.8347 4.6786 9.0745 4.5417 9.2742 solid black
+edge odfpr1_0_3t_21 357769 4 4.931 8.7319 4.877 8.8727 4.7346 9.2449 4.6278 9.524 solid black
+edge odfpr1_0_3t_21 357793 4 4.8881 8.6747 4.7689 8.6748 4.5038 8.6752 4.2524 8.6755 solid black
+edge odfpr1_0_3t_21 358155 4 4.9517 8.7404 4.9493 8.8733 4.9436 9.1821 4.9391 9.4288 solid black
+edge odfpr1_0_3t_21 358157 4 4.9445 8.7392 4.9232 8.903 4.8659 9.3443 4.8246 9.6616 solid black
+edge odfpr1_0_3t_21 358159 4 4.909 8.6278 4.8558 8.571 4.7614 8.4703 4.6679 8.3705 solid black
+edge odfpr1_0_3t_21 358584 4 4.8912 8.6553 4.7782 8.62 4.5282 8.5419 4.2966 8.4695 solid black
+edge odfpr1_0_3t_21 360104 4 4.9078 8.7172 4.7879 8.8308 4.4531 9.1479 4.2031 9.3847 solid black
+edge odfpr1_0_3t_21 360144 4 4.8912 8.6944 4.7402 8.7429 4.3401 8.8714 4.0104 8.9772 solid black
+edge odfpr1_0_3t_21 360672 4 4.9 8.6366 4.776 8.5476 4.4583 8.3194 4.2056 8.1379 solid black
+edge odfpr1_0_3t_21 360839 4 4.9026 8.6393 4.8175 8.5796 4.6379 8.4537 4.4711 8.3367 solid black
+edge fcfpr1_1_3t_34 382528 4 11.938 0.13121 11.995 0.248 12.126 0.51578 12.233 0.73489 solid black
+edge rtafpr1_1_3t_48 382528 4 13.065 0.11407 12.981 0.23277 12.777 0.52381 12.615 0.75304 solid black
+edge rcfpr1_0_1t_35 370509 4 3.8582 4.5354 3.9047 4.683 4.0286 5.0756 4.1202 5.3661 solid black
+edge odfpr1_0_1t_38 370510 4 3.6109 4.6618 3.7238 4.7762 4.0196 5.0757 4.2454 5.3044 solid black
+edge tlfpr1_0_4g_5 354546 4 2.283 11.033 2.4146 10.965 2.7438 10.794 3.0172 10.652 solid black
+edge rcfpr1_1_1t_61 354546 4 3.0854 11.661 3.1304 11.504 3.2514 11.083 3.339 10.778 solid black
+edge odfpr1_0_3t_20 354546 4 3.9947 11.449 3.9244 11.321 3.751 11.005 3.6161 10.759 solid black
+edge odfpr1_0_3t_20 354757 4 4.053 11.45 4.1111 11.326 4.2535 11.022 4.3661 10.782 solid black
+edge odfpr1_0_3t_20 354766 4 4.0408 11.442 4.0698 11.313 4.1368 11.014 4.1907 10.774 solid black
+edge odfpr1_0_3t_20 354771 4 4.0244 11.441 4.0199 11.292 4.0088 10.919 4.0003 10.638 solid black
+edge odfpr1_0_3t_23 354785 4 1.9604 8.2996 2.0586 8.3423 2.2623 8.4308 2.4555 8.5147 solid black
+edge odfpr1_0_3t_23 354878 4 1.9509 8.3084 2.0489 8.3761 2.2731 8.5312 2.4713 8.6682 solid black
+edge odfpr1_0_3t_23 355080 4 1.9618 8.2862 2.0657 8.3074 2.2865 8.3525 2.5012 8.3963 solid black
+edge odfpr1_0_3t_23 355288 4 1.9619 8.2695 2.0613 8.2627 2.2674 8.2486 2.4729 8.2346 solid black
+edge odfpr1_0_3t_24 354785 4 2.123 7.9381 2.2147 8.0287 2.4319 8.2432 2.614 8.4231 solid black
+edge odfpr1_0_3t_24 354878 4 2.1151 7.9437 2.2028 8.0626 2.431 8.372 2.6073 8.6109 solid black
+edge odfpr1_0_3t_24 355080 4 2.1302 7.9272 2.2295 7.9905 2.4551 8.1344 2.6566 8.2629 solid black
+edge odfpr1_0_3t_24 355288 4 2.1417 7.9141 2.2258 7.9405 2.3828 7.9898 2.5423 8.0399 solid black
+edge odfpr2_0_03t_13 355288 4 2.4124 7.1012 2.4908 7.2382 2.6984 7.6007 2.8534 7.8713 solid black
+edge odfpr1_0_3t_5 360672 4 3.1838 6.8093 3.2678 6.9441 3.4903 7.3009 3.6564 7.5672 solid black
+edge tlfpr1_0_3g_5 373300 4 2.761 6.8521 2.8312 6.9851 3.0152 7.334 3.1552 7.5993 solid black
+edge odfpr1_0_3t_12 373300 4 2.1865 7.337 2.3169 7.4047 2.6429 7.5741 2.9136 7.7147 solid black
+edge odfpr1_0_5t_18 375134 4 1.7182 9.7979 1.8537 9.7652 2.1793 9.6864 2.4672 9.6168 solid black
+edge rcfpr0_0_1t_10 375319 4 4.2172 11.84 4.1604 11.692 4.0092 11.3 3.8973 11.009 solid black
+edge odfpr1_0_3t_36 375319 4 2.4046 10.758 2.5456 10.749 2.8919 10.726 3.1999 10.705 solid black
+edge odfpr1_0_3t_36 377562 4 2.3548 10.698 2.3913 10.544 2.486 10.144 2.5559 9.8482 solid black
+edge odfpr1_0_5t_17 375319 4 3.7553 11.879 3.7566 11.723 3.7601 11.318 3.7626 11.019 solid black
+edge odfpr1_0_5t_19 375319 4 3.3323 11.787 3.386 11.648 3.5274 11.283 3.6341 11.007 solid black
+edge odfpr1_0_5t_21 377220 4 2.4567 11.145 2.5434 10.99 2.7852 10.559 2.9559 10.254 solid black
+edge tlfpr1_0_3g_7 377562 4 1.5707 9.4395 1.6675 9.4451 1.8664 9.4567 2.0665 9.4683 solid black
+edge tlfpr1_1_1t_3 377562 4 1.7288 10.18 1.834 10.102 2.0811 9.9172 2.2911 9.7604 solid black
+edge odfpr1_0_5t_20 377562 4 1.5379 8.8339 1.6656 8.9114 1.9884 9.1073 2.2516 9.267 solid black
+edge odfpr1_0_5t_20 354221 4 1.4246 8.7799 1.3225 8.7441 1.1006 8.6662 0.89043 8.5925 solid black
+edge odfpr1_0_3t_6 378108 4 2.8344 11.402 2.9087 11.237 3.1238 10.76 3.2725 10.431 solid black
+stop

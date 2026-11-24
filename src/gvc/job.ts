@@ -286,6 +286,10 @@ export class RenderJob {
    * from node/cluster label margin. @see lib/common/emit.c:3309-3331 */
   margin: Point = { x: 0, y: 0 };
   zoom: number = 1.0;
+  /** init_job_viewport's port size in points, scaled by Z, not rotated (the
+   * size= fit or `viewport=`). The SVG dims read it.
+   * @see lib/gvc/gvcjob.h:GVJ_s.view; lib/common/emit.c:init_job_viewport */
+  view: Point = { x: 0, y: 0 };
   dpi: Point = { x: 96, y: 96 };
   rotation: number = 0;
   scale: Point = { x: 1, y: 1 };

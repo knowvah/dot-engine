@@ -1,0 +1,16 @@
+probe	engine	format	base	head	moved
+rtest-viewport-300_300	neato	svg	out	eq	y
+rtest-viewport-300_300	neato	xdot	out	eq	y
+rtest-viewport-300_300	neato	json	out	eq	y
+rtest-viewport-300_300	neato	cmapx	eq	eq	n
+rtest-viewport-300_300	neato	plain	eq	eq	n
+rtest-viewport-300_300_1_200_620	neato	svg	out	eq	y
+rtest-viewport-300_300_1_200_620	neato	xdot	out	eq	y
+rtest-viewport-300_300_1_200_620	neato	json	out	eq	y
+rtest-viewport-300_300_1_200_620	neato	cmapx	eq	eq	n
+rtest-viewport-300_300_1_200_620	neato	plain	eq	eq	n
+rtest-viewport-300_300_2_200_620	neato	svg	out	eq	y
+rtest-viewport-300_300_2_200_620	neato	xdot	out	eq	y
+rtest-viewport-300_300_2_200_620	neato	json	out	eq	y
+rtest-viewport-300_300_2_200_620	neato	cmapx	eq	eq	n
+rtest-viewport-300_300_2_200_620	neato	plain	out	eq	y

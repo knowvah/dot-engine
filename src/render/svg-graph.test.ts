@@ -19,7 +19,7 @@ import {
 } from './svg-graph.js';
 import { renderSvg } from '../index.js';
 import { createSvgRenderer } from './svg.js';
-import { setupPageClip } from '../gvc/viewport.js';
+import { initJobViewport, setupPageClip } from '../gvc/viewport.js';
 import { Graph as GraphClass } from '../model/graph.js';
 import type { Graph } from '../model/graph.js';
 
@@ -32,7 +32,7 @@ function makeJob(): RenderJob {
   const j = new RenderJob('svg', measurer);
   j.bb = { ll: { x: 0, y: 0 }, ur: { x: 100, y: 80 } };
   j.pad = { x: SVG_PAD, y: SVG_PAD };
-  j.clip = setupPageClip(j.bb, null, j.pad, 1);
+  j.clip = setupPageClip(initJobViewport(j.bb, null, j.pad));
   return j;
 }
 
@@ -188,7 +188,11 @@ function b68Job(rotation: number): RenderJob {
   job.rotation = rotation;
   job.bb = { ll: { x: 0, y: 0 }, ur: { x: 630, y: 204.5 } };
   job.pad = { x: SVG_PAD, y: SVG_PAD };
-  job.clip = setupPageClip(job.bb, null, job.pad, 1);
+  // What render() sets: the viewport's clip and view, at the svg device's dpi.
+  const vp = initJobViewport(job.bb, null, job.pad);
+  job.clip = setupPageClip(vp);
+  job.view = vp.view;
+  job.dpi = { x: 72, y: 72 };
   job.renderer = createSvgRenderer();
   return job;
 }
@@ -208,6 +212,57 @@ describe('emitSvgTag — landscape dim swap', () => {
     const o = job.output.join('');
     expect(o).toContain('<svg width="213pt" height="638pt"');
     expect(o).toContain('viewBox="0.00 0.00 213.00 638.00"');
+  });
+});
+
+/** Job whose view is `view`, at the svg device's 72 dpi, with `margin` on each side. */
+function viewJob(view: { x: number; y: number }, margin: number, rotation = 0): RenderJob {
+  const job = b68Job(rotation);
+  job.view = view;
+  job.margin = { x: margin, y: margin };
+  return job;
+}
+
+// init_job_pagination: pageSize = fmax(fmax(default_pagesize - 2 * margin, 0),
+// imageSize), and the svg device's default page is 0 x 0. Native values from
+// the carried oracle. @see lib/common/emit.c:init_job_pagination
+describe('emitSvgTag — the page size floor', () => {
+  it('a negative view prints a 0pt page; the viewBox keeps the view (viewport="-60,-60,1,30,30")', () => {
+    const job = viewJob({ x: -60, y: -60 }, 0);
+    emitSvgTag(job);
+    const o = job.output.join('');
+    expect(o).toContain('<svg width="0pt" height="0pt"');
+    expect(o).toContain('viewBox="0.00 0.00 -60.00 -60.00"');
+  });
+
+  it('the margins still widen a floored page (margin=0.5 with the same viewport)', () => {
+    const job = viewJob({ x: -60, y: -60 }, 36);
+    emitSvgTag(job);
+    const o = job.output.join('');
+    expect(o).toContain('<svg width="72pt" height="72pt"');
+    expect(o).toContain('viewBox="36.00 36.00 -24.00 -24.00"');
+  });
+
+  it('floors the page axis after the landscape swap (rotate=90, viewport="60,-40,...")', () => {
+    const job = viewJob({ x: 60, y: -40 }, 0, 90);
+    emitSvgTag(job);
+    const o = job.output.join('');
+    expect(o).toContain('<svg width="0pt" height="60pt"');
+    expect(o).toContain('viewBox="0.00 0.00 -40.00 60.00"');
+  });
+
+  it('a negative margin makes the default page larger than the image (margin=-1; a -> b)', () => {
+    const job = viewJob({ x: 62, y: 116 }, -72);
+    emitSvgTag(job);
+    const o = job.output.join('');
+    expect(o).toContain('<svg width="0pt" height="0pt"');
+    expect(o).toContain('viewBox="-72.00 -72.00 -10.00 44.00"');
+  });
+
+  it('a NaN view axis reads as the 0 page (fmax drops the NaN)', () => {
+    const job = viewJob({ x: NaN, y: 60 }, 36);
+    emitSvgTag(job);
+    expect(job.output.join('')).toContain('<svg width="72pt" height="132pt"');
   });
 });
 
@@ -239,7 +294,7 @@ describe('svgBeginPage — un-postprocessed bb (setup_page translation.x = pad -
     const g = new GraphClass('simple', 'directed') as unknown as Graph;
     const job = makeJob();
     job.bb = { ll: { x: -27, y: 0 }, ur: { x: 387, y: 80 } };
-    job.clip = setupPageClip(job.bb, null, job.pad, 1);
+    job.clip = setupPageClip(initJobViewport(job.bb, null, job.pad));
     svgBeginPage(g, job);
     expect(job.output.join('')).toContain(
       'transform="scale(1 1) rotate(0) translate(31 84)"',

@@ -1,0 +1,1 @@
+digraph G { rotate=90; viewport="60,100,1,27,126"; a -> b -> c; d; c -> d }

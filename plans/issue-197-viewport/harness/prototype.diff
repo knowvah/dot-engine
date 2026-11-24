@@ -1,0 +1,723 @@
+diff --git a/src/common/graph-init.ts b/src/common/graph-init.ts
+index 9c67fdc0..600d34ef 100644
+--- a/src/common/graph-init.ts
++++ b/src/common/graph-init.ts
+@@ -340,7 +340,7 @@ export function graphInit(g: Graph, useRankdir: boolean): void {
+   // render time from the same attrs — gvc/viewport.ts:163-169 (parseLandscape
+   // applies C's exact precedence: rotate=90, else orientation[0] in {l,L}, else
+   // mapbool(landscape)), parseGraphPad/parseGraphMargin, and
+-  // initJobViewportZoom (size + `!` filled flag). Storing them in GD_drawing
++  // jobViewport (size + `!` filled flag). Storing them in GD_drawing
+   // here would require allocating `drawing` unconditionally (see above).
+ 
+   // clusterrank → CL_type. @see input.c:706-707
+diff --git a/src/gvc/device.test.ts b/src/gvc/device.test.ts
+index f9249537..6c35c14e 100644
+--- a/src/gvc/device.test.ts
++++ b/src/gvc/device.test.ts
+@@ -107,6 +107,9 @@ describe('AC3: renderGraph — callback ordering', () => {
+     g.nodes.set('n2', n2);
+     const e = new Edge(n1, n2, 'e1');
+     e.info = makeEdgeInfo(makePort(), makePort());
++    // A spline whose bb meets the job's (zero) clip: emit_edge draws only an
++    // edge that passes edge_in_box.
++    e.info.spl = { list: [], size: 0, bb: { ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } } };
+     g.edges.push(e);
+     const renderer = new RecordingRenderer();
+     const job = new RenderJob('svg', stubMeasurer);
+diff --git a/src/gvc/device.ts b/src/gvc/device.ts
+index d0aebda2..eb2e6c26 100644
+--- a/src/gvc/device.ts
++++ b/src/gvc/device.ts
+@@ -14,7 +14,7 @@
+ 
+ import { POINTS_PER_INCH } from '../model/geom.js';
+ import { lateDouble } from '../common/nodeinit.js';
+-import { parseDrawingSize, initJobViewportZoom, parseLandscape, parseGraphPad, parseGraphMargin, DEFAULT_GRAPH_PAD } from './viewport.js';
++import { parseDrawingSize, jobViewport, parseLandscape, parseGraphPad, parseGraphMargin, DEFAULT_GRAPH_PAD } from './viewport.js';
+ import type { Graph } from '../model/graph.js';
+ import type { Node } from '../model/node.js';
+ import type { Edge } from '../model/edge.js';
+@@ -475,8 +475,8 @@ export function render(ctx: GvcContext, g: Graph, format: string, inlineImages =
+   // altering the ptf path, carry Z in job.scale instead — which is exactly what
+   // C's SVG group emits (svg_begin_page prints job->scale.x/y = zoom*dpi/72),
+   // not job->zoom. job.scale is read only by the SVG group/dims.
+-  const drawingSize = parseDrawingSize(g.attrs.get('size'));
+-  const z = initJobViewportZoom(job.bb, drawingSize, job.pad);
++  const { zoom: z, view } = jobViewport(g, job.bb, parseDrawingSize(g.attrs.get('size')), job.pad);
++  job.view = view; // init_job_viewport: the size= fit, then viewport=
+   job.clip = deviceClip(g, job); // @see lib/common/emit.c:1550-1564 setup_page
+   // init_job_dpi (emit.c:3333): GD_drawing->dpi = late_double(dpi, resolution, 0)
+   // (input.c:713). When >0 it becomes job->dpi; otherwise the SVG device's
+diff --git a/src/gvc/emit-gates.ts b/src/gvc/emit-gates.ts
+index 55922c96..05158819 100644
+--- a/src/gvc/emit-gates.ts
++++ b/src/gvc/emit-gates.ts
+@@ -15,7 +15,6 @@ import type { Edge } from '../model/edge.js';
+ import type { RendererPlugin } from './context.js';
+ import type { RenderJob } from './job.js';
+ import { nodeAttr } from '../common/poly-init.js';
+-import { edgeHasDrawableContent } from '../common/edge-in-box.js';
+ 
+ /**
+  * A node's own layout bounding box: coord ± (lw/rw, ht/2).
+@@ -66,13 +65,12 @@ export function emitNodeComments(n: Node, renderer: RendererPlugin, job: RenderJ
+ }
+ 
+ /**
+- * When edge_in_box passes: the `tail->head` name (`--` when the head's graph
++ * Once emit-walk's edgeShown has passed edge_in_box: the `tail->head` name (`--` when the head's graph
+  * is undirected) and the `comment` attribute, before the invis shortcircuit.
+  * The renderers re-test the same gate for the edge group.
+  * @see lib/common/emit.c:emit_edge (gvrender_comment x2)
+  */
+ export function emitEdgeComments(e: Edge, renderer: RendererPlugin, job: RenderJob): void {
+-  if (!edgeHasDrawableContent(e, job.clip)) return;
+   const kind = e.head.root.kind; // agisdirected(agraphof(aghead(e)))
+   const op = kind === 'directed' || kind === 'strict-directed' ? '->' : '--';
+   gvrenderComment(renderer, job, e.tail.name + op + e.head.name);
+diff --git a/src/gvc/emit-walk.ts b/src/gvc/emit-walk.ts
+index aaec8c56..87b8c2b2 100644
+--- a/src/gvc/emit-walk.ts
++++ b/src/gvc/emit-walk.ts
+@@ -21,14 +21,21 @@ import type { RendererPlugin } from './context.js';
+ import type { RenderJob } from './job.js';
+ import { type LayerInfo, nodeInLayer, edgeInLayer, clustInLayer } from '../common/layers.js';
+ import { renderNode, renderEdge } from './device.js';
++import { edgeHasDrawableContent } from '../common/edge-in-box.js';
+ 
+ /** Whether a node is shown in the current layer (always true off-layer). */
+ function nodeShown(info: LayerInfo | undefined, job: RenderJob, n: Node, g: Graph): boolean {
+   return info === undefined || job.numLayers <= 1 || nodeInLayer(info, job.layerNum, n, g);
+ }
+ 
+-/** Whether an edge is shown in the current layer (always true off-layer). */
++/**
++ * emit_edge's gate: the edge has content in the page clip (edge_in_box) and is
++ * in the current layer (always true off-layer). The renderers' own re-tests of
++ * edge_in_box (svg.ts, dot.ts) now always pass.
++ * @see lib/common/emit.c:emit_edge
++ */
+ function edgeShown(info: LayerInfo | undefined, job: RenderJob, e: Edge): boolean {
++  if (!edgeHasDrawableContent(e, job.clip)) return false; // edge_in_box
+   return info === undefined || job.numLayers <= 1 || edgeInLayer(info, job.layerNum, e);
+ }
+ 
+diff --git a/src/gvc/emit-xdot.ts b/src/gvc/emit-xdot.ts
+index 7ed2f231..9ef2ffa8 100644
+--- a/src/gvc/emit-xdot.ts
++++ b/src/gvc/emit-xdot.ts
+@@ -19,7 +19,7 @@ import { transformPoint } from './device-transform.js';
+ import { graphXdots } from './init-xdot.js';
+ import { gvrenderSetStyle } from './gvrender-set-style.js';
+ import type { ObjState, RenderJob } from './job.js';
+-import { initJobViewportZoom, parseDrawingSize, setupPageClip } from './viewport.js';
++import { jobViewport, parseDrawingSize, setupPageClip } from './viewport.js';
+ 
+ /** @see lib/common/const.h:48 */
+ const DEFAULT_COLOR = 'black';
+@@ -30,16 +30,15 @@ const DEFAULT_FILL = 'lightgrey';
+ const DEFAULT_LINE_STYLE: readonly string[] = ['solid', 'setlinewidth(1)'];
+ 
+ /**
+- * job->clip, computed in C's order, rounding included, from the bb and
+- * `job.pad`. init_job_pad has already made that pad the device's: with no
++ * job->clip, computed in C's order, rounding included, from the bb, `job.pad`
++ * and the graph's `viewport=`. init_job_pad has already made that pad the device's: with no
+  * `pad=` it is 4 on svg and map, and 0 on dot, xdot, plain and json, whose clip
+  * is then the bb.
+  * @see lib/common/emit.c:3290-3304 init_job_pad
+  * @see lib/common/emit.c:1550-1564 setup_page
+  */
+ export function deviceClip(g: Graph, job: RenderJob): Box {
+-  const size = parseDrawingSize(g.attrs.get('size'));
+-  return setupPageClip(job.bb, size, job.pad, initJobViewportZoom(job.bb, size, job.pad));
++  return setupPageClip(jobViewport(g, job.bb, parseDrawingSize(g.attrs.get('size')), job.pad));
+ }
+ 
+ /**
+diff --git a/src/gvc/job.ts b/src/gvc/job.ts
+index ed6362a6..648179aa 100644
+--- a/src/gvc/job.ts
++++ b/src/gvc/job.ts
+@@ -286,6 +286,10 @@ export class RenderJob {
+    * from node/cluster label margin. @see lib/common/emit.c:3309-3331 */
+   margin: Point = { x: 0, y: 0 };
+   zoom: number = 1.0;
++  /** init_job_viewport's port size in points, scaled by Z, not rotated (the
++   * size= fit or `viewport=`). The SVG dims read it.
++   * @see lib/gvc/gvcjob.h:GVJ_s.view; lib/common/emit.c:init_job_viewport */
++  view: Point = { x: 0, y: 0 };
+   dpi: Point = { x: 96, y: 96 };
+   rotation: number = 0;
+   scale: Point = { x: 1, y: 1 };
+diff --git a/src/gvc/viewport-attr.test.ts b/src/gvc/viewport-attr.test.ts
+new file mode 100644
+index 00000000..04d5c4ee
+--- /dev/null
++++ b/src/gvc/viewport-attr.test.ts
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: EPL-2.0
++/**
++ * The `viewport` graph attribute (issue #197). init_job_viewport reads
++ * `W,H,Z,x,y` or `W,H,Z,node` (the node quoted or bare) with three sscanf
++ * formats and sets the job's view, zoom and focus. The view fixes the page
++ * size and job->clip, so a node or edge outside it is not drawn; plain prints
++ * the zoom.
++ *
++ * Every native ref is the carried oracle's own output (ADR-0003), written by
++ * the harness's `recapture.sh`. The `rtest-*` probes port tests.txt's
++ * `viewport` cases: graphs/viewport.gv with each `-Gviewport` value set in the
++ * file, under neato without `-n2` (the port has no `-n`).
++ * @see lib/common/emit.c:init_job_viewport
++ * @see lib/common/emit.c:emit_edge (edge_in_box gate)
++ */
++import { readdirSync, readFileSync } from 'node:fs';
++import { afterEach, describe, expect, it } from 'vitest';
++import { renderFormat } from '../../test/helpers/render-format.js';
++import { agseterrf } from '../common/agerr.js';
++import { parse } from '../parser/index.js';
++import type { Graph } from '../model/graph.js';
++import { applyViewportAttr, initJobViewport, setupPageClip, type JobViewport } from './viewport.js';
++
++const HARNESS_197 = new URL('../../plans/issue-197-viewport/harness/', import.meta.url);
++const read = (name: string): string => readFileSync(new URL(name, HARNESS_197), 'utf8');
++const PROBE_COUNT = 34;
++/** tests.txt's `viewport` cases (graphs/viewport.gv), run under neato as there. */
++const RTEST_PREFIX = 'rtest-';
++const PROBES = readdirSync(new URL('probes/', HARNESS_197))
++  .filter((f) => f.endsWith('.gv'))
++  .map((f) => f.replace(/\.gv$/, ''))
++  .sort();
++const FORMATS = ['svg', 'xdot', 'json', 'cmapx', 'plain'] as const;
++
++/** json parsed with every object's keys sorted: the port's key order is #184's. */
++function sortedJson(text: string): string {
++  return JSON.stringify(JSON.parse(text), (_k, v: unknown) => {
++    if (v === null || typeof v !== 'object' || Array.isArray(v)) return v;
++    const o = v as Record<string, unknown>;
++    return Object.fromEntries(Object.keys(o).sort().map((k) => [k, o[k]]));
++  });
++}
++
++/** svg from `<svg` on, the tag's whitespace collapsed: the header comments and line breaks differ. */
++function svgBody(text: string): string {
++  const at = text.indexOf('<svg');
++  const end = text.indexOf('>', at);
++  return text.slice(at, end + 1).replace(/\s+/g, ' ') + text.slice(end + 1);
++}
++
++function norm(format: string, text: string): string {
++  if (format === 'json') return sortedJson(text);
++  return format === 'svg' ? svgBody(text) : text;
++}
++
++/** The port's output and everything it reported through agerr. */
++function port(probe: string, format: string): { out: string; err: string } {
++  const errs: string[] = [];
++  agseterrf((m) => { errs.push(m); return 0; });
++  const engine = probe.startsWith(RTEST_PREFIX) ? 'neato' : 'dot';
++  const out = renderFormat(parse(read(`probes/${probe}.gv`)), format, engine);
++  return { out, err: errs.join('') };
++}
++
++afterEach(() => { agseterrf(null); });
++
++describe('viewport= matches native (#197)', () => {
++  it('reads every probe', () => {
++    expect(PROBES).toHaveLength(PROBE_COUNT);
++  });
++
++  for (const probe of PROBES) {
++    for (const format of FORMATS) {
++      it(`${probe} -T${format}`, () => {
++        const got = port(probe, format);
++        expect(norm(format, got.out)).toBe(norm(format, read(`native/${probe}.${format}`)));
++        if (format === 'svg') expect(got.err).toBe(read(`native/${probe}.err`));
++      });
++    }
++  }
++});
++
++/** A graph whose root has `viewport` set to `value` and a node `c` at (27, 90). */
++function graphWith(value: string): Graph {
++  const g = parse(`digraph G { viewport="${value}"; c }`);
++  g.nodes.get('c')!.info.coord = { x: 27, y: 90 };
++  return g;
++}
++
++/** The default viewport of a 54 x 252 bb with no pad and no size=. */
++const DEFAULT: JobViewport = initJobViewport({ ll: { x: 0, y: 0 }, ur: { x: 54, y: 252 } }, null, { x: 0, y: 0 });
++
++describe('applyViewportAttr: init_job_viewport\'s three sscanf formats', () => {
++  it('starts from the bb centre, Z = 1 and the bb as the view', () => {
++    expect(DEFAULT).toEqual({ view: { x: 54, y: 252 }, zoom: 1, focus: { x: 27, y: 126 } });
++  });
++
++  const cases: [string, JobViewport][] = [
++    ['60,60,1,30,30', { view: { x: 60, y: 60 }, zoom: 1, focus: { x: 30, y: 30 } }],
++    ['60,60,2,c', { view: { x: 60, y: 60 }, zoom: 2, focus: { x: 27, y: 90 } }],
++    ["60,60,1,'c'", { view: { x: 60, y: 60 }, zoom: 1, focus: { x: 27, y: 90 } }],
++    // rv == 4 needs no closing quote.
++    ["60,60,1,'c", { view: { x: 60, y: 60 }, zoom: 1, focus: { x: 27, y: 90 } }],
++    // A name that is no node keeps the default focus; a lone fourth number is a name.
++    ['60,60,1,nosuch', { view: { x: 60, y: 60 }, zoom: 1, focus: { x: 27, y: 126 } }],
++    ['60,60,1,30', { view: { x: 60, y: 60 }, zoom: 1, focus: { x: 27, y: 126 } }],
++    // A name with a comma after it: %c reads it (rv 5), then %lf fails on the name.
++    ['60,60,1,c,5', { view: { x: 60, y: 60 }, zoom: 1, focus: { x: 27, y: 126 } }],
++    // Short values override only their leading fields.
++    ['100,80', { view: { x: 100, y: 80 }, zoom: 1, focus: { x: 27, y: 126 } }],
++    ['100,80,0.5', { view: { x: 100, y: 80 }, zoom: 0.5, focus: { x: 27, y: 126 } }],
++    ['abc', DEFAULT],
++    ['', DEFAULT],
++    // %lf skips leading whitespace; the literal comma does not.
++    [' 60, 60,1,30,30', { view: { x: 60, y: 60 }, zoom: 1, focus: { x: 30, y: 30 } }],
++    ['60 ,60,1,30,30', { view: { x: 60, y: 252 }, zoom: 1, focus: { x: 27, y: 126 } }],
++    ['0x3Cp0,60,1,30,30', { view: { x: 60, y: 60 }, zoom: 1, focus: { x: 30, y: 30 } }],
++    ['60,60,1,30,30,99', { view: { x: 60, y: 60 }, zoom: 1, focus: { x: 30, y: 30 } }],
++  ];
++  for (const [value, want] of cases) {
++    it(`viewport="${value}"`, () => {
++      expect(applyViewportAttr(DEFAULT, graphWith(value))).toEqual(want);
++    });
++  }
++
++  it('leaves the viewport alone when the attribute is unset', () => {
++    const g = parse('digraph G { c }');
++    expect(applyViewportAttr(DEFAULT, g)).toBe(DEFAULT);
++  });
++
++  it('centres the clip on the focus, a view / zoom wide', () => {
++    const vp = applyViewportAttr(DEFAULT, graphWith('100,100,2,27,126'));
++    expect(setupPageClip(vp)).toEqual({ ll: { x: 2, y: 101 }, ur: { x: 52, y: 151 } });
++  });
++});
+diff --git a/src/gvc/viewport.branch.test.ts b/src/gvc/viewport.branch.test.ts
+index 775fb458..c8dda1c8 100644
+--- a/src/gvc/viewport.branch.test.ts
++++ b/src/gvc/viewport.branch.test.ts
+@@ -1,11 +1,11 @@
+ // SPDX-License-Identifier: EPL-2.0
+ //
+ // Branch coverage for viewport.ts (T4d): parseDrawingSize's lone-x (square,
+-// no comma) fallback path, and initJobViewportZoom's fillsUp binary-expr
++// no comma) fallback path, and initJobViewport's fillsUp binary-expr
+ // (both operands reached) plus the degenerate-bb szx/szy floor.
+ 
+ import { describe, it, expect } from "vitest";
+-import { parseDrawingSize, initJobViewportZoom } from "./viewport.js";
++import { parseDrawingSize, initJobViewport } from "./viewport.js";
+ 
+ describe("parseDrawingSize — lone-x (square) fallback", () => {
+   it("a single positive number with no comma yields a square size", () => {
+@@ -19,22 +19,22 @@ describe("parseDrawingSize — lone-x (square) fallback", () => {
+   });
+ });
+ 
+-describe("initJobViewportZoom — fillsUp (filled, drawing smaller than size in both axes)", () => {
++describe("initJobViewport — fillsUp (filled, drawing smaller than size in both axes)", () => {
+   it("zooms up to fill the requested size when filled=true and the drawing is smaller", () => {
+     const bb = { ll: { x: 0, y: 0 }, ur: { x: 100, y: 100 } };
+     const pad = { x: 0, y: 0 };
+     const size = { x: 400, y: 400, filled: true };
+-    const z = initJobViewportZoom(bb, size, pad);
++    const z = initJobViewport(bb, size, pad).zoom;
+     expect(z).toBe(4); // min(400/100, 400/100)
+   });
+ });
+ 
+-describe("initJobViewportZoom — degenerate bb floors szx/szy to size", () => {
++describe("initJobViewport — degenerate bb floors szx/szy to size", () => {
+   it("a zero-extent bb (szx<=0.001) falls back to size.x, keeping zoom=1", () => {
+     const bb = { ll: { x: 0, y: 0 }, ur: { x: 0, y: 0 } };
+     const pad = { x: 0, y: 0 };
+     const size = { x: 200, y: 200, filled: false };
+-    const z = initJobViewportZoom(bb, size, pad);
++    const z = initJobViewport(bb, size, pad).zoom;
+     // szx=szy=0 -> floored to size.x/size.y -> drawingNeedsFit: tooBig false
+     // (size.x<szx false since szx now ==size.x), fillsUp false -> zoom=1.
+     expect(z).toBe(1.0);
+diff --git a/src/gvc/viewport.test.ts b/src/gvc/viewport.test.ts
+index 7b28b354..4cbe1b5f 100644
+--- a/src/gvc/viewport.test.ts
++++ b/src/gvc/viewport.test.ts
+@@ -9,7 +9,7 @@
+  */
+ 
+ import { describe, it, expect } from 'vitest';
+-import { parseLandscape, parseGraphPad, parseGraphMargin, initJobViewportZoom } from './viewport.js';
++import { parseLandscape, parseGraphPad, parseGraphMargin, initJobViewport } from './viewport.js';
+ import { SVG_PAD, SVG_MARGIN } from '../render/svg-helpers.js';
+ import { Graph as GraphClass } from '../model/graph.js';
+ import type { Graph } from '../model/graph.js';
+@@ -112,28 +112,28 @@ describe('parseGraphPad — sscanf("%lf,%lf") + init_job_pad fallback', () => {
+ });
+ 
+ // ---------------------------------------------------------------------------
+-// initJobViewportZoom — pad threaded into the size= fit (F2 regression)
++// initJobViewport — pad threaded into the size= fit (F2 regression)
+ // @see lib/common/emit.c:3363-3368 (job->bb = bb ± job->pad before sz)
+ // ---------------------------------------------------------------------------
+ 
+-describe('initJobViewportZoom — pad affects the size= fit', () => {
++describe('initJobViewport — pad affects the size= fit', () => {
+   const bb = { ll: { x: 0, y: 0 }, ur: { x: 100, y: 100 } };
+   const size = { x: 100, y: 100, filled: false };
+ 
+   it('default pad (4,4): sz = 108x108, Z = 100/108', () => {
+-    const z = initJobViewportZoom(bb, size, { x: 4, y: 4 });
++    const z = initJobViewport(bb, size, { x: 4, y: 4 }).zoom;
+     expect(z).toBeCloseTo(100 / 108, 10);
+   });
+ 
+   it('larger pad (144,144, i.e. pad=2) shrinks Z further', () => {
+-    const zDefault = initJobViewportZoom(bb, size, { x: 4, y: 4 });
+-    const zPadded = initJobViewportZoom(bb, size, { x: 144, y: 144 });
++    const zDefault = initJobViewport(bb, size, { x: 4, y: 4 }).zoom;
++    const zPadded = initJobViewport(bb, size, { x: 144, y: 144 }).zoom;
+     expect(zPadded).toBeLessThan(zDefault);
+     expect(zPadded).toBeCloseTo(100 / 388, 10);
+   });
+ 
+   it('no size= (null) → Z stays 1 regardless of pad', () => {
+-    expect(initJobViewportZoom(bb, null, { x: 144, y: 144 })).toBe(1.0);
++    expect(initJobViewport(bb, null, { x: 144, y: 144 }).zoom).toBe(1.0);
+   });
+ });
+ 
+diff --git a/src/gvc/viewport.ts b/src/gvc/viewport.ts
+index bcb98f3b..d6a09d9c 100644
+--- a/src/gvc/viewport.ts
++++ b/src/gvc/viewport.ts
+@@ -29,6 +29,7 @@ import { POINTS_PER_INCH } from '../model/geom.js';
+ import { SVG_MARGIN } from '../render/svg-helpers.js';
+ import type { Graph } from '../model/graph.js';
+ import { cround } from '../common/arith.js';
++import { scanStrtod } from '../xdot/strtod.js';
+ 
+ /** Parsed `size=` drawing size in points, plus the *filled* flag. */
+ export interface DrawingSize {
+@@ -158,62 +159,148 @@ function drawingNeedsFit(size: DrawingSize, szx: number, szy: number): boolean {
+ }
+ 
+ /**
+- * Port of init_job_viewport's zoom factor Z (emit.c:3375-3384). When the user
+- * gave a `size=`, fit the drawing (size `sz` = bb plus pad, in points) into it.
+- * Z stays 1.0 otherwise, leaving every non-`size` byte unchanged (D5). SVG
+- * carries Z via the group transform, not the coordinates (D4). `pad` is the
+- * resolved `job.pad` (parseGraphPad), matching C's `job->bb = bb ± job->pad`
+- * before `sz = job->bb.UR - job->bb.LL` (emit.c:3363-3368).
+- * @see lib/common/emit.c:3356 init_job_viewport
++ * What init_job_viewport leaves on the job: the port's size in points, scaled
++ * but not rotated (`view`), the scaling factor (`zoom`), and the point of the
++ * graph at the port's centre (`focus`).
++ * @see lib/common/emit.c:init_job_viewport (job->view, job->zoom, job->focus)
+  */
+-export function initJobViewportZoom(bb: Box, size: DrawingSize | null, pad: Point): number {
+-  if (size === null || size.x <= 0.001 || size.y <= 0.001) return 1.0;
+-  // sz = bb extent including the pad the SVG emit adds on every side.
+-  let szx = bb.ur.x - bb.ll.x + 2 * pad.x;
+-  let szy = bb.ur.y - bb.ll.y + 2 * pad.y;
+-  if (szx <= 0.001) szx = size.x;
+-  if (szy <= 0.001) szy = size.y;
+-  if (drawingNeedsFit(size, szx, szy)) return Math.min(size.x / szx, size.y / szy);
+-  return 1.0;
++export interface JobViewport {
++  view: Point;
++  zoom: number;
++  focus: Point;
+ }
+ 
+ /**
+- * job->clip for the single-page devices this port drives, evaluated in C's
+- * order: init_job_viewport pads the bb (job->bb = bb ± pad, sz = job->bb.UR -
+- * job->bb.LL, size= substituting a degenerate sz axis), takes the focus as the
+- * centre of the UNPADDED bb and view = Z * sz; init_job_pagination sets
+- * pageSize = imageSize / zoom (imageSize = view, rotated to page orientation
+- * and back); setup_page sets clip.LL = focus + pageSize * (elem - size / 2.)
+- * with pagesArrayElem 0 / pagesArraySize 1 and clip.UR = clip.LL + pageSize.
+- * Algebraically bb ± pad, but not in floating point: where the pad is below the
+- * double spacing (corpus 2784, y = 2.16e18) clip.LL.y is 0, not -pad.
+- * @see lib/common/emit.c:init_job_viewport, init_job_pagination, setup_page
++ * init_job_viewport up to the user override: sz is the bb padded by `pad`
++ * (job->bb = bb ± pad, sz = job->bb.UR - job->bb.LL), a `size=` substitutes a
++ * degenerate sz axis and fits the drawing into it (Z), the focus is the centre
++ * of the UNPADDED bb and the view is Z * sz. Split from applyViewportAttr only
++ * for the function-size limit; C runs the two in one body.
++ * @see lib/common/emit.c:init_job_viewport
+  */
+-export function setupPageClip(bb: Box, size: DrawingSize | null, pad: Point, z: number): Box {
++export function initJobViewport(bb: Box, size: DrawingSize | null, pad: Point): JobViewport {
++  const jbLL = { x: bb.ll.x - pad.x, y: bb.ll.y - pad.y };
++  const jbUR = { x: bb.ur.x + pad.x, y: bb.ur.y + pad.y };
++  const sz = { x: jbUR.x - jbLL.x, y: jbUR.y - jbLL.y };
++  let z = 1.0;
++  if (size !== null && size.x > 0.001 && size.y > 0.001) {
++    if (sz.x <= 0.001) sz.x = size.x;
++    if (sz.y <= 0.001) sz.y = size.y;
++    if (drawingNeedsFit(size, sz.x, sz.y)) z = Math.min(size.x / sz.x, size.y / sz.y);
++  }
+   const focus = { x: 0.5 * (bb.ll.x + bb.ur.x), y: 0.5 * (bb.ll.y + bb.ur.y) };
+-  const pageSize = setupPageSize(bb, size, pad, z);
++  return { view: { x: z * sz.x, y: z * sz.y }, zoom: z, focus };
++}
++
++/**
++ * sscanf's `%lf` conversions joined by the literal `,`, from the start of `s`:
++ * the values read, in order, and the offset after the last one. A conversion
++ * that fails ends the scan, as sscanf returns at the first mismatch.
++ * @see lib/common/emit.c:init_job_viewport (the three sscanf formats)
++ */
++function scanCommaDoubles(s: string, max: number): { vals: number[]; pos: number } {
++  const vals: number[] = [];
++  let pos = 0;
++  while (vals.length < max) {
++    if (vals.length > 0) {
++      if (s[pos] !== ',') break;
++      pos++;
++    }
++    const r = scanStrtod(s, pos);
++    if (r === null) break;
++    vals.push(r.val);
++    pos = r.pos;
++  }
++  return { vals, pos };
++}
++
++/**
++ * The node name `%[^<stop>]` reads at `pos` after the literal `lead`, or null
++ * when the literal does not match or the set matches no character.
++ */
++function scanSet(s: string, pos: number, lead: string, stop: string): { name: string; pos: number } | null {
++  if (!s.startsWith(lead, pos)) return null;
++  const from = pos + lead.length;
++  let end = from;
++  while (end < s.length && s[end] !== stop) end++;
++  return end === from ? null : { name: s.slice(from, end), pos: end };
++}
++
++/**
++ * The node name the viewport names, as init_job_viewport's first two sscanf
++ * formats read it: `W,H,Z,'name'` (rv == 4: the closing quote is not needed),
++ * else `W,H,Z,name` with nothing after the name (rv == 4: `%c` finds no
++ * character). Null when neither returns 4.
++ */
++function viewportNodeName(s: string): string | null {
++  const head = scanCommaDoubles(s, 3);
++  if (head.vals.length < 3) return null;
++  const quoted = scanSet(s, head.pos, ",'", "'");
++  if (quoted !== null) return quoted.name;
++  const bare = scanSet(s, head.pos, ',', ',');
++  return bare !== null && bare.pos === s.length ? bare.name : null;
++}
++
++/**
++ * The user override of init_job_viewport: `viewport="W,H,Z,x,y"` or
++ * `"W,H,Z,node"` (the node quoted or bare). Each sscanf assigns the values it
++ * reads before a mismatch, so a short value overrides only its leading fields
++ * (`"W,H"` keeps the size= fit's Z). A named node found in the root graph
++ * moves the focus to its coord; a name that is not a node keeps the default
++ * focus, a fourth number included (`"W,H,Z,x"` reads x as a name).
++ * @see lib/common/emit.c:init_job_viewport
++ */
++export function applyViewportAttr(vp: JobViewport, g: Graph): JobViewport {
++  const str = g.attrs.get('viewport');
++  if (str === undefined) return vp;
++  const name = viewportNodeName(str);
++  // XY.x, XY.y, Z, xy.x, xy.y: each keeps its value when sscanf stops before it.
++  const v = [vp.view.x, vp.view.y, vp.zoom, vp.focus.x, vp.focus.y];
++  scanCommaDoubles(str, name === null ? 5 : 3).vals.forEach((d, i) => { v[i] = d; });
++  let focus = { x: v[3], y: v[4] };
++  if (name !== null) {
++    const n = g.root.nodes.get(name);
++    if (n !== undefined) focus = { x: n.info.coord.x, y: n.info.coord.y };
++  }
++  return { view: { x: v[0], y: v[1] }, zoom: v[2], focus };
++}
++
++/**
++ * init_job_viewport for the job's graph: the default viewport, then the
++ * graph's `viewport=` override.
++ * @see lib/common/emit.c:init_job_viewport
++ */
++export function jobViewport(g: Graph, bb: Box, size: DrawingSize | null, pad: Point): JobViewport {
++  return applyViewportAttr(initJobViewport(bb, size, pad), g);
++}
++
++/**
++ * job->clip for the single-page devices this port drives: init_job_pagination
++ * sets pageSize = imageSize / zoom (imageSize = view, rotated to page
++ * orientation and back) and setup_page sets clip.LL = focus + pageSize *
++ * (elem - size / 2.) with pagesArrayElem 0 / pagesArraySize 1 and clip.UR =
++ * clip.LL + pageSize. With no viewport= this is the bb ± pad, but not in
++ * floating point: where the pad is below the double spacing (corpus 2784,
++ * y = 2.16e18) clip.LL.y is 0, not -pad.
++ * @see lib/common/emit.c:init_job_pagination, setup_page
++ */
++export function setupPageClip(vp: JobViewport): Box {
++  const pageSize = setupPageSize(vp);
+   const ll = {
+-    x: focus.x + pageSize.x * (0 - 1 / 2.0),
+-    y: focus.y + pageSize.y * (0 - 1 / 2.0),
++    x: vp.focus.x + pageSize.x * (0 - 1 / 2.0),
++    y: vp.focus.y + pageSize.y * (0 - 1 / 2.0),
+   };
+   return { ll, ur: { x: ll.x + pageSize.x, y: ll.y + pageSize.y } };
+ }
+ 
+ /**
+  * job->pageSize, the size of one page in graph units: imageSize / zoom, where
+- * imageSize = view = Z * sz and sz is the padded bb's extent (see
+- * setupPageClip). Not always sz: (Z * sz) / Z can round one ulp away from it.
+- * @see lib/common/emit.c:init_job_viewport, init_job_pagination
++ * imageSize is the view. Not always sz: (Z * sz) / Z can round one ulp away
++ * from it.
++ * @see lib/common/emit.c:init_job_pagination
+  */
+-export function setupPageSize(bb: Box, size: DrawingSize | null, pad: Point, z: number): Point {
+-  const jbLL = { x: bb.ll.x - pad.x, y: bb.ll.y - pad.y };
+-  const jbUR = { x: bb.ur.x + pad.x, y: bb.ur.y + pad.y };
+-  const sz = { x: jbUR.x - jbLL.x, y: jbUR.y - jbLL.y };
+-  if (size !== null && size.x > 0.001 && size.y > 0.001) {
+-    if (sz.x <= 0.001) sz.x = size.x;
+-    if (sz.y <= 0.001) sz.y = size.y;
+-  }
+-  return { x: (z * sz.x) / z, y: (z * sz.y) / z };
++export function setupPageSize(vp: JobViewport): Point {
++  return { x: vp.view.x / vp.zoom, y: vp.view.y / vp.zoom };
+ }
+ 
+ /**
+diff --git a/src/render/map.ts b/src/render/map.ts
+index 902b51fe..61b0a6de 100644
+--- a/src/render/map.ts
++++ b/src/render/map.ts
+@@ -32,7 +32,7 @@ import {
+ } from '../gvc/anchor.js';
+ import { printfFixed0 } from '../util/printf-round.js';
+ import {
+-  initJobViewportZoom, parseDrawingSize, setupPageBox, setupPageClip, setupPageSize,
++  jobViewport, parseDrawingSize, setupPageBox, setupPageClip, setupPageSize,
+ } from '../gvc/viewport.js';
+ import { escapeXml } from './svg-helpers.js';
+ import { escapeXmlTitle } from './xml-escape.js';
+@@ -410,15 +410,15 @@ export function writePlainEdge(e: Edge, extend: boolean, out: string[]): void {
+ 
+ /** Write the full plain output: graph header, nodes, edges, stop.
+  * Node iteration is agfstnode/agnxtnode (AGSEQ) order, not insertion-Map
+- * order; the graph line's scale is job->zoom — the size= fit factor, computed
+- * with the dot renderer's pad of 0 (render_features_dot).
++ * order; the graph line's scale is job->zoom — the size= fit factor or the
++ * `viewport=` Z, computed with the dot renderer's pad of 0 (render_features_dot).
+  * @see lib/common/output.c:write_plain
+  * @see plugin/core/gvrender_core_dot.c:render_features_dot */
+ export function writePlain(g: Graph, job: RenderJob, extend: boolean): void {
+   const w = plainCoord(g.info.bb.ur.x);
+   const h = plainCoord(g.info.bb.ur.y);
+-  const zoom = initJobViewportZoom(
+-    job.bb, parseDrawingSize(g.attrs.get('size')), { x: 0, y: 0 });
++  const zoom = jobViewport(
++    g, job.bb, parseDrawingSize(g.attrs.get('size')), { x: 0, y: 0 }).zoom;
+   job.write('graph ' + printG5(zoom) + ' ' + w + ' ' + h + '\n');
+   const nodes = nodesInSeq(g);
+   for (const n of nodes) {
+@@ -606,15 +606,15 @@ export function graphMapUrl(g: Graph): string | null {
+  * (non-rotated, GVRENDER_Y_GOES_DOWN; canvasBox.LL is the graph `margin=`, the
+  * map device having no default page size to centre in) and emit_graph's
+  * devscale, negated on y. The map device's default dpi is 96 (dpi/resolution
+- * attrs override); zoom fits the drawing into `size=` (initJobViewportZoom).
++ * attrs override); zoom fits the drawing into `size=`, or is viewport='s Z.
+  * @see lib/common/emit.c:setup_page (1515-1555) ; emit_graph (3631-3633) */
+ export function buildMapCtx(g: Graph, job: RenderJob, mapPolygon: boolean): MapCtx {
+   const drawingDpi = lateDouble(g.attrs.get('dpi'), lateDouble(g.attrs.get('resolution'), 0, 0), 0);
+   const devscale = (drawingDpi > 0 ? drawingDpi : 96) / POINTS_PER_INCH;
+-  const size = parseDrawingSize(g.attrs.get('size'));
+-  const z = initJobViewportZoom(job.bb, size, job.pad);
+-  const clip = setupPageClip(job.bb, size, job.pad, z);
+-  const pageBox = setupPageBox(setupPageSize(job.bb, size, job.pad, z), job.pad);
++  const vp = jobViewport(g, job.bb, parseDrawingSize(g.attrs.get('size')), job.pad);
++  const z = vp.zoom;
++  const clip = setupPageClip(vp);
++  const pageBox = setupPageBox(setupPageSize(vp), job.pad);
+   const translation = { x: -clip.ll.x + job.margin.x / z, y: -clip.ur.y - job.margin.y / z };
+   return { pageBox, translation, scale: { x: z * devscale, y: z * -devscale }, mapPolygon };
+ }
+diff --git a/src/render/svg-graph.test.ts b/src/render/svg-graph.test.ts
+index bdd6b475..ace50cfa 100644
+--- a/src/render/svg-graph.test.ts
++++ b/src/render/svg-graph.test.ts
+@@ -19,7 +19,7 @@ import {
+ } from './svg-graph.js';
+ import { renderSvg } from '../index.js';
+ import { createSvgRenderer } from './svg.js';
+-import { setupPageClip } from '../gvc/viewport.js';
++import { initJobViewport, setupPageClip } from '../gvc/viewport.js';
+ import { Graph as GraphClass } from '../model/graph.js';
+ import type { Graph } from '../model/graph.js';
+ 
+@@ -32,7 +32,7 @@ function makeJob(): RenderJob {
+   const j = new RenderJob('svg', measurer);
+   j.bb = { ll: { x: 0, y: 0 }, ur: { x: 100, y: 80 } };
+   j.pad = { x: SVG_PAD, y: SVG_PAD };
+-  j.clip = setupPageClip(j.bb, null, j.pad, 1);
++  j.clip = setupPageClip(initJobViewport(j.bb, null, j.pad));
+   return j;
+ }
+ 
+@@ -188,7 +188,11 @@ function b68Job(rotation: number): RenderJob {
+   job.rotation = rotation;
+   job.bb = { ll: { x: 0, y: 0 }, ur: { x: 630, y: 204.5 } };
+   job.pad = { x: SVG_PAD, y: SVG_PAD };
+-  job.clip = setupPageClip(job.bb, null, job.pad, 1);
++  // What render() sets: the viewport's clip and view, at the svg device's dpi.
++  const vp = initJobViewport(job.bb, null, job.pad);
++  job.clip = setupPageClip(vp);
++  job.view = vp.view;
++  job.dpi = { x: 72, y: 72 };
+   job.renderer = createSvgRenderer();
+   return job;
+ }
+@@ -239,7 +243,7 @@ describe('svgBeginPage — un-postprocessed bb (setup_page translation.x = pad -
+     const g = new GraphClass('simple', 'directed') as unknown as Graph;
+     const job = makeJob();
+     job.bb = { ll: { x: -27, y: 0 }, ur: { x: 387, y: 80 } };
+-    job.clip = setupPageClip(job.bb, null, job.pad, 1);
++    job.clip = setupPageClip(initJobViewport(job.bb, null, job.pad));
+     svgBeginPage(g, job);
+     expect(job.output.join('')).toContain(
+       'transform="scale(1 1) rotate(0) translate(31 84)"',
+diff --git a/src/render/svg-graph.ts b/src/render/svg-graph.ts
+index 49e7036e..83b5976a 100644
+--- a/src/render/svg-graph.ts
++++ b/src/render/svg-graph.ts
+@@ -13,6 +13,7 @@
+ 
+ import type { Graph } from '../model/graph.js';
+ import type { Box, Point } from '../model/geom.js';
++import { POINTS_PER_INCH } from '../model/geom.js';
+ import type { RenderJob } from '../gvc/job.js';
+ import { createObjState, ObjType } from '../gvc/job.js';
+ import { FillType } from '../gvc/context.js';
+@@ -67,17 +68,15 @@ function formatG(n: number): string {
+  * (0,0) only in the common no-margin case.
+  */
+ export function emitSvgTag(job: RenderJob, svgid: string | undefined = ''): void {
+-  const bb = job.bb;
+   // Size-fitted, UNROUNDED page-oriented view extent (init_job_pagination's
+-  // local `imageSize`/`pageSize`, emit.c:1198-1246): sz = bb extent plus pad,
+-  // scaled by Z (job.scale, D4). Kept unrounded here so the later
++  // local `imageSize`/`pageSize`, emit.c:1198-1246): job->view (the bb extent
++  // plus pad, scaled by Z, or `viewport=`'s W,H), times dpi / 72 as C's
++  // `* job->dpi.x / POINTS_PER_INCH`. Kept unrounded here so the later
+   // "+ 2*margin" / "+ margin" sums round ONCE, matching C's single
+   // `ROUND((pageSize + 2*margin) * dpi/72)` -- rounding szx/szy first would
+   // double-round and diverge from C at half-integer boundaries.
+-  const szx = bb.ur.x - bb.ll.x + 2 * job.pad.x;
+-  const szy = bb.ur.y - bb.ll.y + 2 * job.pad.y;
+-  const viewX = szx * job.scale.x;
+-  const viewY = szy * job.scale.y;
++  const viewX = job.view.x * job.dpi.x / POINTS_PER_INCH;
++  const viewY = job.view.y * job.dpi.y / POINTS_PER_INCH;
+   // Landscape rotation swaps the view into page orientation (init_job_pagination's
+   // early `imageSize = exch_xyf(imageSize)`, emit.c:1201-1202); job.margin is
+   // read UNSWAPPED in both the width/height and viewBox-UR formulas below,

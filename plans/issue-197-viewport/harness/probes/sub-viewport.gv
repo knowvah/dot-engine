@@ -1,0 +1,1 @@
+digraph G { subgraph cluster_x { viewport="60,60,1,30,30"; c -> d } a -> b -> c }

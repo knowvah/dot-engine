@@ -15,7 +15,6 @@ import type { Edge } from '../model/edge.js';
 import type { RendererPlugin } from './context.js';
 import type { RenderJob } from './job.js';
 import { nodeAttr } from '../common/poly-init.js';
-import { edgeHasDrawableContent } from '../common/edge-in-box.js';
 
 /**
  * A node's own layout bounding box: coord ± (lw/rw, ht/2).
@@ -66,13 +65,12 @@ export function emitNodeComments(n: Node, renderer: RendererPlugin, job: RenderJ
 }
 
 /**
- * When edge_in_box passes: the `tail->head` name (`--` when the head's graph
+ * Once emit-walk's edgeShown has passed edge_in_box: the `tail->head` name (`--` when the head's graph
  * is undirected) and the `comment` attribute, before the invis shortcircuit.
  * The renderers re-test the same gate for the edge group.
  * @see lib/common/emit.c:emit_edge (gvrender_comment x2)
  */
 export function emitEdgeComments(e: Edge, renderer: RendererPlugin, job: RenderJob): void {
-  if (!edgeHasDrawableContent(e, job.clip)) return;
   const kind = e.head.root.kind; // agisdirected(agraphof(aghead(e)))
   const op = kind === 'directed' || kind === 'strict-directed' ? '->' : '--';
   gvrenderComment(renderer, job, e.tail.name + op + e.head.name);

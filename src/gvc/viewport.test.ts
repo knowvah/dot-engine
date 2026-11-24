@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { parseLandscape, parseGraphPad, parseGraphMargin, initJobViewportZoom } from './viewport.js';
+import { parseLandscape, parseGraphPad, parseGraphMargin, initJobViewport } from './viewport.js';
 import { SVG_PAD, SVG_MARGIN } from '../render/svg-helpers.js';
 import { Graph as GraphClass } from '../model/graph.js';
 import type { Graph } from '../model/graph.js';
@@ -112,28 +112,28 @@ describe('parseGraphPad — sscanf("%lf,%lf") + init_job_pad fallback', () => {
 });
 
 // ---------------------------------------------------------------------------
-// initJobViewportZoom — pad threaded into the size= fit (F2 regression)
+// initJobViewport — pad threaded into the size= fit (F2 regression)
 // @see lib/common/emit.c:3363-3368 (job->bb = bb ± job->pad before sz)
 // ---------------------------------------------------------------------------
 
-describe('initJobViewportZoom — pad affects the size= fit', () => {
+describe('initJobViewport — pad affects the size= fit', () => {
   const bb = { ll: { x: 0, y: 0 }, ur: { x: 100, y: 100 } };
   const size = { x: 100, y: 100, filled: false };
 
   it('default pad (4,4): sz = 108x108, Z = 100/108', () => {
-    const z = initJobViewportZoom(bb, size, { x: 4, y: 4 });
+    const z = initJobViewport(bb, size, { x: 4, y: 4 }).zoom;
     expect(z).toBeCloseTo(100 / 108, 10);
   });
 
   it('larger pad (144,144, i.e. pad=2) shrinks Z further', () => {
-    const zDefault = initJobViewportZoom(bb, size, { x: 4, y: 4 });
-    const zPadded = initJobViewportZoom(bb, size, { x: 144, y: 144 });
+    const zDefault = initJobViewport(bb, size, { x: 4, y: 4 }).zoom;
+    const zPadded = initJobViewport(bb, size, { x: 144, y: 144 }).zoom;
     expect(zPadded).toBeLessThan(zDefault);
     expect(zPadded).toBeCloseTo(100 / 388, 10);
   });
 
   it('no size= (null) → Z stays 1 regardless of pad', () => {
-    expect(initJobViewportZoom(bb, null, { x: 144, y: 144 })).toBe(1.0);
+    expect(initJobViewport(bb, null, { x: 144, y: 144 }).zoom).toBe(1.0);
   });
 });
 

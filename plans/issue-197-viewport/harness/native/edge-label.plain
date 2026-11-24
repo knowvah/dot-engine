@@ -1,0 +1,9 @@
+graph 1 1.0497 3.9806
+node a 0.375 3.7306 0.75 0.5 a solid ellipse black lightgrey
+node b 0.375 2.4972 0.75 0.5 b solid ellipse black lightgrey
+node c 0.375 1.2639 0.75 0.5 c solid ellipse black lightgrey
+node d 0.375 0.25 0.75 0.5 d solid ellipse black lightgrey
+edge a b 4 0.375 3.4785 0.375 3.3161 0.375 3.0971 0.375 2.9086 lab 0.49377 3.1139 solid black
+edge b c 4 0.375 2.2452 0.375 2.0827 0.375 1.8638 0.375 1.6752 "far away" 0.71233 1.8806 solid black
+edge c d 4 0.375 1.0113 0.375 0.90591 0.375 0.77919 0.375 0.66027 solid black
+stop

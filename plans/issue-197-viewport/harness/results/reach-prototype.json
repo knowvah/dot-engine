@@ -1,0 +1,59 @@
+{
+ "bundleA": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T//i197/base.mjs",
+ "bundleB": "/var/folders/f_/f2qfy7gj5mg3w6nh3csypddr0000gn/T//i197/head.mjs",
+ "jobs": 995,
+ "identical": 985,
+ "diffs": [],
+ "capped": [
+  {
+   "key": "1652|dot|cmapx",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "1652|dot|json",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "1652|dot|plain",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "1652|dot|svg",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "1652|dot|xdot",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "2621|dot|cmapx",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "2621|dot|json",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "2621|dot|plain",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "2621|dot|svg",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  },
+  {
+   "key": "2621|dot|xdot",
+   "a": "TIMEOUT",
+   "b": "TIMEOUT"
+  }
+ ]
+}

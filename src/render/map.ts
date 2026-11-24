@@ -32,7 +32,7 @@ import {
 } from '../gvc/anchor.js';
 import { printfFixed0 } from '../util/printf-round.js';
 import {
-  initJobViewportZoom, parseDrawingSize, setupPageBox, setupPageClip, setupPageSize,
+  jobViewport, parseDrawingSize, setupPageBox, setupPageClip, setupPageSize,
 } from '../gvc/viewport.js';
 import { escapeXml } from './svg-helpers.js';
 import { escapeXmlTitle } from './xml-escape.js';
@@ -410,15 +410,15 @@ export function writePlainEdge(e: Edge, extend: boolean, out: string[]): void {
 
 /** Write the full plain output: graph header, nodes, edges, stop.
  * Node iteration is agfstnode/agnxtnode (AGSEQ) order, not insertion-Map
- * order; the graph line's scale is job->zoom — the size= fit factor, computed
- * with the dot renderer's pad of 0 (render_features_dot).
+ * order; the graph line's scale is job->zoom — the size= fit factor or the
+ * `viewport=` Z, computed with the dot renderer's pad of 0 (render_features_dot).
  * @see lib/common/output.c:write_plain
  * @see plugin/core/gvrender_core_dot.c:render_features_dot */
 export function writePlain(g: Graph, job: RenderJob, extend: boolean): void {
   const w = plainCoord(g.info.bb.ur.x);
   const h = plainCoord(g.info.bb.ur.y);
-  const zoom = initJobViewportZoom(
-    job.bb, parseDrawingSize(g.attrs.get('size')), { x: 0, y: 0 });
+  const zoom = jobViewport(
+    g, job.bb, parseDrawingSize(g.attrs.get('size')), { x: 0, y: 0 }).zoom;
   job.write('graph ' + printG5(zoom) + ' ' + w + ' ' + h + '\n');
   const nodes = nodesInSeq(g);
   for (const n of nodes) {
@@ -606,15 +606,15 @@ export function graphMapUrl(g: Graph): string | null {
  * (non-rotated, GVRENDER_Y_GOES_DOWN; canvasBox.LL is the graph `margin=`, the
  * map device having no default page size to centre in) and emit_graph's
  * devscale, negated on y. The map device's default dpi is 96 (dpi/resolution
- * attrs override); zoom fits the drawing into `size=` (initJobViewportZoom).
+ * attrs override); zoom fits the drawing into `size=`, or is viewport='s Z.
  * @see lib/common/emit.c:setup_page (1515-1555) ; emit_graph (3631-3633) */
 export function buildMapCtx(g: Graph, job: RenderJob, mapPolygon: boolean): MapCtx {
   const drawingDpi = lateDouble(g.attrs.get('dpi'), lateDouble(g.attrs.get('resolution'), 0, 0), 0);
   const devscale = (drawingDpi > 0 ? drawingDpi : 96) / POINTS_PER_INCH;
-  const size = parseDrawingSize(g.attrs.get('size'));
-  const z = initJobViewportZoom(job.bb, size, job.pad);
-  const clip = setupPageClip(job.bb, size, job.pad, z);
-  const pageBox = setupPageBox(setupPageSize(job.bb, size, job.pad, z), job.pad);
+  const vp = jobViewport(g, job.bb, parseDrawingSize(g.attrs.get('size')), job.pad);
+  const z = vp.zoom;
+  const clip = setupPageClip(vp);
+  const pageBox = setupPageBox(setupPageSize(vp), job.pad);
   const translation = { x: -clip.ll.x + job.margin.x / z, y: -clip.ur.y - job.margin.y / z };
   return { pageBox, translation, scale: { x: z * devscale, y: z * -devscale }, mapPolygon };
 }
