@@ -411,14 +411,14 @@ export function writePlainEdge(e: Edge, extend: boolean, out: string[]): void {
 /** Write the full plain output: graph header, nodes, edges, stop.
  * Node iteration is agfstnode/agnxtnode (AGSEQ) order, not insertion-Map
  * order; the graph line's scale is job->zoom — the size= fit factor or the
- * `viewport=` Z, computed with the dot renderer's pad of 0 (render_features_dot).
- * @see lib/common/output.c:write_plain
+ * `viewport=` Z, fitted with job.pad: `pad=`, else render_features_dot's 0.
+ * @see lib/common/output.c:write_plain ; lib/common/emit.c:init_job_viewport
  * @see plugin/core/gvrender_core_dot.c:render_features_dot */
 export function writePlain(g: Graph, job: RenderJob, extend: boolean): void {
   const w = plainCoord(g.info.bb.ur.x);
   const h = plainCoord(g.info.bb.ur.y);
   const zoom = jobViewport(
-    g, job.bb, parseDrawingSize(g.attrs.get('size')), { x: 0, y: 0 }).zoom;
+    g, job.bb, parseDrawingSize(g.attrs.get('size')), job.pad).zoom;
   job.write('graph ' + printG5(zoom) + ' ' + w + ' ' + h + '\n');
   const nodes = nodesInSeq(g);
   for (const n of nodes) {
