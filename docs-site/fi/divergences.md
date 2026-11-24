@@ -97,7 +97,7 @@ säilytetty alla historiana.
 > (`GVBINDIR`-riippumaton — kukin käynnistää `dot -K <engine> -Txdot`in
 > suoraan), kahdella eri tarkkuustasolla, jotka on dokumentoitu erikseen
 > alla: `circo`/`twopi`/`osage` ajetaan samalla **±0.01:n deterministisellä**
-> toleranssilla kuin dot-kartoitus ja syykohtaisella juurisyyluokittelulla
+> toleranssilla kuin dot-kartoitus ja tunnistekohtaisella juurisyyluokittelulla
 > (”Moottoriraidan hyväksyntä” alla); `neato`/`fdp`/`sfdp` ajetaan
 > väljemmällä **±0.5:n luonnehdinta**-toleranssilla, ja jokainen poikkeama
 > selitetään tunnistekohtaisesti (”Iteratiivisten moottorien luonnehdinta” alla).
@@ -236,7 +236,7 @@ aiemmin hyväksytty id-kohtainen jäänne `2619_2`, jonka hyväksyntä on perutt
 
 (Ensimmäinen ajo, 2026-07-11 762 kohteella, mittasi 263/311/260 ±0.5 pt:n
 sisällä — hyppy nykyisiin lukemiin tuli sittemmin toteutetuista
-syykohtaisista korjauksista, pääasiassa neaton porttaamattoman `user_pos`/`P_SET`-käsittelyn,
+tunnistekohtaisista korjauksista, pääasiassa neaton porttaamattoman `user_pos`/`P_SET`-käsittelyn,
 moottorin alustuksen yhdistämisen ja `setEdgeType`-makro-vs-funktio-korjauksen ansiosta.)
 
 Toisin kuin ensimmäisellä ajolla, 898 kohteen joukon jokainen poikkeava rivi on
@@ -244,7 +244,7 @@ selitetty yksitellen graphviz 16.1.1:aa vasten: injektiotyökalu
 (`test/corpus/attribute-divergence.ts`) syöttää natiivin oraakkelin reititystä
 edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja jokainen nykyinen
 poikkeava tunniste on `drift-exonerated` (porttauksen reititys ja emissio
-toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) sfdp:n `2556`:ta lukuun ottamatta. Kaksi on erikseen hyväksyttyjä syykohtaisia jäännöksiä:
+toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) sfdp:n `2556`:ta lukuun ottamatta. Kaksi on erikseen hyväksyttyjä tunnistekohtaisia jäännöksiä:
 sfdp:n `241_0`:n isäntä-libm:n `pow`-ajelehtiminen (T28 diagnosoi uudelleen; sen injektiorivi on `12dddc48`:stä lähtien `drift-exonerated`) sekä sfdp:n `2556`:n NaN-asettelu. fdp:n `241_0` läpäisee
 testin korjauksesta `fix(T9): start swapped cdt faces at the new diagonal as gts does` lähtien (katso fdp-kappale kohdassa A9). fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`)
 poikkesivat aiemmin injektion jälkeen, eli xlabel-sijoittaja valitsi eri ehdokkaan.
@@ -266,8 +266,8 @@ moottorikohtaisilla kojelaudoilla
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
 sisältää yhden `"A1-drift"`-**luokka**merkinnän iteratiivista moottoria kohti (`neato`,
 `fdp`, `sfdp`) — `{ class: true, attributionFile, ref }` — erillään
-`circo`/`twopi`/`osage`-raidoilla yllä käytetyistä syykohtaisista merkinnöistä (D2,
-`plans/iterative-parity-campaign/decisions.md`). Toisin kuin syykohtaisessa merkinnässä,
+`circo`/`twopi`/`osage`-raidoilla yllä käytetyistä tunnistekohtaisista merkinnöistä (D2,
+`plans/iterative-parity-campaign/decisions.md`). Toisin kuin tunnistekohtaisessa merkinnässä,
 luokan jäsenyyttä ei koskaan luetella käsin rekisterissä: `parity-report.ts`
 laskee sen raportointihetkellä vastaavasta `attribution-<engine>.json`ista
 (T1:n injektioselitystyökalu, `test/corpus/attribute-divergence.ts`)
@@ -276,7 +276,7 @@ porttaukseen ja vertailu uudelleen on yhdenmukainen ±0.5:llä, saa
 `verdict: 'drift-exonerated'` tuossa tiedostossa, mikä tarkoittaa, että kahden moottorin
 iteratiiviset ratkaisijat suppenivat numeerisesti erilaisiin mutta kumpikin sisäisesti
 johdonmukaisiin asetteluihin (liukulukujen kertymäero yllä olevan A1-luonnehdinnan mukaan,
-ei porttauksen reitityksen tai emission virhe). Syykohtainen näyttö — ämpärin muoto, perus- vs. injektoitu eromäärä,
+ei porttauksen reitityksen tai emission virhe). Tunnistekohtainen näyttö — ämpärin muoto, perus- vs. injektoitu eromäärä,
 tasaisen siirron/peilin tunnistus — on itse selitetiedostossa,
 ei kopioituna tähän dokumenttiin tai rekisteriin (D2). Tunniste,
 joka myöhemmin alkaa läpäistä suoraan tai jonka uudelleenselityksen arvio muuttuu,
@@ -1131,7 +1131,7 @@ natiivilla sfdp:llä:
 > koskaan injektoitu ja se veti mukanaan kaksi siihen liittyvää kaarta. Kun injektori korjattiin
 > täsmäämään tyhjiin nimiin (`(.+)`→`(.*)`, `src/layout/neato/splines.ts`), sfdp `2095`
 > injektoituu **0 jäännökseen** — puhdasta voima-ajelehtimista, jonka laskettu A1-drift-
-> luokka kattaa, ei reititys-FP-tasapeli. Sen syykohtainen hyväksyntä poistettiin tiedostosta
+> luokka kattaa, ei reititys-FP-tasapeli. Sen tunnistekohtainen hyväksyntä poistettiin tiedostosta
 > `accepted-divergences-engines.json`. (Sama havainto kuin fdp `2095` alla.)
 
 **Tuore kontrolloitu koe (2026-07-21).** Natiivi-vs-V8-`hypot`-luotain
