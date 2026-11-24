@@ -93,7 +93,7 @@ new inputs (#298, AD-1); `perf.json`/`PERF.md` (#222, AD-10); `wasm-perf.json`; 
 
 | Batch | Tasks | Mode | Done |
 |---|---|---|---|
-| [1](batch-1/overview.md) | T1 ADR-0004 · T2+T3 oracle defaults and pending inputs · T4 failure sites · T5 preflight | sequential | [ ] |
+| [1](batch-1/overview.md) | T1 ADR-0004 · T2+T3 oracle defaults and pending inputs · T4 failure sites · T5 preflight | sequential | [x] |
 | [2a](batch-2a/overview.md) | T6 native timings (alone, first) · T7 dot survey · T8 dot formats · T9 engine walks · T10 engine formats | ≤2 runs at once | [ ] |
 | [2b](batch-2b/overview.md) | T11 attribution + oracle errors | after T9 | [ ] |
 | [3](batch-3/overview.md) | T12a classify dot · T12b classify engines | parallel, read-only | [ ] |

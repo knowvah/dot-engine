@@ -11,6 +11,8 @@
 // Scope notes: the lexer does not understand TS regex literals, K&R is handled
 // for plain identifier lists only, and only .c files are scanned (no C++).
 
+import { ORACLE_VERSION } from '../../corpus/oracle-paths.mjs';
+
 export type CKind =
   | 'exit'
   | 'graphviz_exit'
@@ -51,7 +53,7 @@ export interface FailureSiteRow {
   note: string;
 }
 export interface FailureSiteRegistry {
-  generatedFrom: { cRoot: string; oracle: '16.1.1' };
+  generatedFrom: { cRoot: string; oracle: string };
   rows: FailureSiteRow[];
 }
 
@@ -80,7 +82,7 @@ export interface SeeTag {
   cFunctions: string[];
 }
 
-const ORACLE = '16.1.1';
+const ORACLE: string = ORACLE_VERSION;
 const MODULE_SYMBOL = '<module>';
 
 // ---------------------------------------------------------------- lexing

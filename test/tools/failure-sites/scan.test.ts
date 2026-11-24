@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: EPL-2.0
 import { describe, expect, it } from 'vitest';
+import { ORACLE_VERSION } from '../../corpus/oracle-paths.mjs';
 import {
   buildRegistry,
   countUnparsedSee,
@@ -471,17 +472,18 @@ describe('mergeRows / buildRegistry', () => {
   });
 
   it('wraps rows in a machine-independent registry header', () => {
-    const reg = buildRegistry(null, 'graphviz-16.1.1/lib', scanned);
-    expect(reg.generatedFrom).toEqual({ cRoot: 'graphviz-16.1.1/lib', oracle: '16.1.1' });
+    const C_ROOT = 'graphviz-x/lib';
+    const reg = buildRegistry(null, C_ROOT, scanned);
+    expect(reg.generatedFrom).toEqual({ cRoot: C_ROOT, oracle: ORACLE_VERSION });
     expect(reg.rows.map((r) => r.id)).toEqual(['a', 'b', 'c']);
-    const again = buildRegistry(reg, 'graphviz-16.1.1/lib', scanned);
+    const again = buildRegistry(reg, C_ROOT, scanned);
     expect(again).toEqual(reg);
   });
 });
 
 describe('parseRegistry', () => {
   const valid = {
-    generatedFrom: { cRoot: 'r', oracle: '16.1.1' },
+    generatedFrom: { cRoot: 'r', oracle: ORACLE_VERSION },
     rows: [row({ id: 'a' })],
   };
 

@@ -6,6 +6,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { ORACLE_VERSION } from './oracle-paths.mjs';
 import {
   parseRegistry,
   scanPort,
@@ -84,7 +85,7 @@ describe('unregisteredThrows', () => {
 
 describe('failure-sites.json', () => {
   it('is accepted by parseRegistry', () => {
-    expect(registry.generatedFrom.oracle).toBe('16.1.1');
+    expect(registry.generatedFrom.oracle).toBe(ORACLE_VERSION);
     expect(rows.length).toBeGreaterThan(SEEDED.length);
   });
 

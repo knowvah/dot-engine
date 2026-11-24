@@ -1,7 +1,7 @@
 {
   "generatedFrom": {
-    "cRoot": "graphviz-16.1.1/lib",
-    "oracle": "16.1.1"
+    "cRoot": "graphviz-16.1.2/lib",
+    "oracle": "16.1.2"
   },
   "rows": [
     {
@@ -58,8 +58,12 @@
         "line": 300,
         "message": null
       },
-      "port": null,
-      "class": "not-ported",
+      "port": {
+        "file": "src/layout/dot/index.ts",
+        "symbol": "declareEmptyNodeAttr",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
       "status": "none",
       "links": {},
       "note": ""
@@ -429,7 +433,7 @@
         "file": "lib/common/emit.c",
         "function": "gvRenderJobs",
         "kind": "agerrorf",
-        "line": 4140,
+        "line": 4131,
         "message": "Layout was not done.  Missing layout plugins? \\n"
       },
       "port": null,
@@ -444,7 +448,7 @@
         "file": "lib/common/emit.c",
         "function": "gvRenderJobs",
         "kind": "agerrorf",
-        "line": 4163,
+        "line": 4154,
         "message": "layout was not done\\n"
       },
       "port": null,
@@ -459,7 +463,7 @@
         "file": "lib/common/emit.c",
         "function": "gvRenderJobs",
         "kind": "agerrorf",
-        "line": 4171,
+        "line": 4162,
         "message": "renderer for %s is unavailable\\n"
       },
       "port": null,
@@ -651,8 +655,12 @@
         "line": 687,
         "message": null
       },
-      "port": null,
-      "class": "not-ported",
+      "port": {
+        "file": "src/common/htmltable-emit.ts",
+        "symbol": "allocObj",
+        "behaviour": "renders"
+      },
+      "class": "unclassified",
       "status": "none",
       "links": {},
       "note": ""
@@ -1076,7 +1084,7 @@
         "file": "lib/common/postproc.c",
         "function": "gv_postprocess",
         "kind": "UNREACHABLE",
-        "line": 671,
+        "line": 637,
         "message": null
       },
       "port": {
@@ -1095,7 +1103,7 @@
         "file": "lib/common/postproc.c",
         "function": "map_edge",
         "kind": "agerrorf",
-        "line": 104,
+        "line": 102,
         "message": "lost %s %s edge\\n"
       },
       "port": {
@@ -1114,7 +1122,7 @@
         "file": "lib/common/routespl.c",
         "function": "checkpath",
         "kind": "agerrorf",
-        "line": 649,
+        "line": 614,
         "message": "in checkpath, all bounding boxes are below threshold\\n"
       },
       "port": {
@@ -1133,7 +1141,7 @@
         "file": "lib/common/routespl.c",
         "function": "checkpath",
         "kind": "agerrorf",
-        "line": 656,
+        "line": 621,
         "message": "in checkpath, box 0 has LL coord > UR coord\\n"
       },
       "port": {
@@ -1152,7 +1160,7 @@
         "file": "lib/common/routespl.c",
         "function": "checkpath",
         "kind": "agerrorf",
-        "line": 663,
+        "line": 628,
         "message": "in checkpath, box %"
       },
       "port": {
@@ -1171,7 +1179,7 @@
         "file": "lib/common/routespl.c",
         "function": "routesplines_",
         "kind": "agerrorf",
-        "line": 310,
+        "line": 275,
         "message": "in routesplines, cannot find NORMAL edge\\n"
       },
       "port": {
@@ -1190,7 +1198,7 @@
         "file": "lib/common/routespl.c",
         "function": "routesplines_",
         "kind": "agerrorf",
-        "line": 373,
+        "line": 338,
         "message": "in routesplines, illegal values of prev %d and next %d, "
       },
       "port": {
@@ -1209,7 +1217,7 @@
         "file": "lib/common/routespl.c",
         "function": "routesplines_",
         "kind": "agerrorf",
-        "line": 407,
+        "line": 372,
         "message": "in routesplines, illegal values of prev %d and next %d, "
       },
       "port": {
@@ -1228,7 +1236,7 @@
         "file": "lib/common/routespl.c",
         "function": "routesplines_",
         "kind": "agerrorf",
-        "line": 424,
+        "line": 389,
         "message": "in routesplines, edge is a loop at %s\\n"
       },
       "port": {
@@ -1247,7 +1255,7 @@
         "file": "lib/common/routespl.c",
         "function": "routesplines_",
         "kind": "agerrorf",
-        "line": 450,
+        "line": 415,
         "message": "in routesplines, Pshortestpath failed\\n"
       },
       "port": {
@@ -1266,7 +1274,7 @@
         "file": "lib/common/routespl.c",
         "function": "routesplines_",
         "kind": "agerrorf",
-        "line": 481,
+        "line": 446,
         "message": "in routesplines, Proutespline failed\\n"
       },
       "port": {
@@ -1285,7 +1293,7 @@
         "file": "lib/common/routespl.c",
         "function": "routesplines_",
         "kind": "agerrorf",
-        "line": 495,
+        "line": 460,
         "message": "cannot allocate ps\\n"
       },
       "port": {
@@ -1304,7 +1312,7 @@
         "file": "lib/common/routespl.c",
         "function": "simpleSplineRoute",
         "kind": "agerrorf",
-        "line": 199,
+        "line": 165,
         "message": "cannot allocate ps\\n"
       },
       "port": {
@@ -1435,7 +1443,7 @@
         "file": "lib/common/splines.c",
         "function": "getsplinepoints",
         "kind": "agerrorf",
-        "line": 1324,
+        "line": 1312,
         "message": "getsplinepoints: no spline points available for edge (%s,%s)\\n"
       },
       "port": {
@@ -1454,7 +1462,7 @@
         "file": "lib/common/splines.c",
         "function": "polylineMidpoint",
         "kind": "UNREACHABLE",
-        "line": 1236,
+        "line": 1224,
         "message": null
       },
       "port": {
@@ -1530,7 +1538,7 @@
         "file": "lib/dotgen/mincross.c",
         "function": "do_ordering_for_nodes",
         "kind": "agerrorf",
-        "line": 500,
+        "line": 497,
         "message": "ordering '%s' not recognized for node '%s'.\\n"
       },
       "port": {
@@ -1549,7 +1557,7 @@
         "file": "lib/dotgen/mincross.c",
         "function": "install_in_rank",
         "kind": "agerrorf",
-        "line": 1156,
+        "line": 1140,
         "message": "install_in_rank, line %d: %s %s rank %d i = %d an = 0\\n"
       },
       "port": {
@@ -1568,7 +1576,7 @@
         "file": "lib/dotgen/mincross.c",
         "function": "install_in_rank",
         "kind": "agerrorf",
-        "line": 1176,
+        "line": 1160,
         "message": "install_in_rank, line %d: ND_order(%s) [%d] > "
       },
       "port": {
@@ -1587,7 +1595,7 @@
         "file": "lib/dotgen/mincross.c",
         "function": "install_in_rank",
         "kind": "agerrorf",
-        "line": 1182,
+        "line": 1166,
         "message": "install_in_rank, line %d: rank %d not in rank range [%d,%d]\\n"
       },
       "port": {
@@ -1606,7 +1614,7 @@
         "file": "lib/dotgen/mincross.c",
         "function": "install_in_rank",
         "kind": "agerrorf",
-        "line": 1187,
+        "line": 1171,
         "message": "install_in_rank, line %d: GD_rank(g)[%d].v + ND_order(%s) [%d] > "
       },
       "port": {
@@ -1625,7 +1633,7 @@
         "file": "lib/dotgen/mincross.c",
         "function": "node_in_root_vlist",
         "kind": "abort",
-        "line": 1793,
+        "line": 1777,
         "message": null
       },
       "port": null,
@@ -1640,7 +1648,7 @@
         "file": "lib/dotgen/mincross.c",
         "function": "ordered_edges",
         "kind": "agerrorf",
-        "line": 523,
+        "line": 520,
         "message": "ordering '%s' not recognized.\\n"
       },
       "port": {
@@ -1659,7 +1667,7 @@
         "file": "lib/dotgen/mincross.c",
         "function": "virtual_weight",
         "kind": "agerrorf",
-        "line": 1727,
+        "line": 1711,
         "message": "overflow when calculating virtual weight of edge\\n"
       },
       "port": {
@@ -1678,7 +1686,7 @@
         "file": "lib/dotgen/mincross.c",
         "function": "virtual_weight",
         "kind": "graphviz_exit",
-        "line": 1728,
+        "line": 1712,
         "message": null
       },
       "port": {
@@ -1697,7 +1705,7 @@
         "file": "lib/dotgen/position.c",
         "function": "contain_nodes",
         "kind": "agerrorf",
-        "line": 1105,
+        "line": 1107,
         "message": "contain_nodes clust %s rank %d missing node\\n"
       },
       "port": {
@@ -1889,8 +1897,8 @@
         "file": "lib/fdpgen/layout.c",
         "function": "deriveGraph",
         "kind": "agerrorf",
-        "line": 432,
-        "message": "node \\\"%s\\\" is contained in two non-comparable clusters \\\"%s\\\" and \\\"%s\\\"\\n"
+        "line": 418,
+        "message": "node \\\"%s\\\" is contained in two non-comparable clusters "
       },
       "port": {
         "file": "src/layout/fdp/derive.ts",
@@ -3750,7 +3758,7 @@
       },
       "port": {
         "file": "src/render/map.ts",
-        "symbol": "mapCmapxAttrs",
+        "symbol": "cmapxCoordsRect",
         "behaviour": "renders"
       },
       "class": "mirror",
@@ -3769,7 +3777,7 @@
       },
       "port": {
         "file": "src/render/map.ts",
-        "symbol": "mapCmapxAttrs",
+        "symbol": "cmapxCoordsRect",
         "behaviour": "renders"
       },
       "class": "mirror",
@@ -3788,7 +3796,7 @@
       },
       "port": {
         "file": "src/render/map.ts",
-        "symbol": "mapCmapxAttrs",
+        "symbol": "cmapxCoordsRect",
         "behaviour": "renders"
       },
       "class": "mirror",
@@ -5532,6 +5540,19 @@
       "note": ""
     },
     {
+      "id": "port#src/gvc/rerender-relabel.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/gvc/rerender-relabel.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
       "id": "port#src/label/index.ts#validateRect#1",
       "c": null,
       "port": {
@@ -6338,6 +6359,45 @@
       "note": ""
     },
     {
+      "id": "port#src/parser/builder-inherit.test.ts#subg#1",
+      "c": null,
+      "port": {
+        "file": "src/parser/builder-inherit.test.ts",
+        "symbol": "subg",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/parser/builder-local-names.test.ts#subg#1",
+      "c": null,
+      "port": {
+        "file": "src/parser/builder-local-names.test.ts",
+        "symbol": "subg",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/parser/builder-reopen.test.ts#subg#1",
+      "c": null,
+      "port": {
+        "file": "src/parser/builder-reopen.test.ts",
+        "symbol": "subg",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
       "id": "port#src/parser/index.ts#parse#1",
       "c": null,
       "port": {
@@ -6416,6 +6476,32 @@
       "note": ""
     },
     {
+      "id": "port#src/render/dot/cluster-ldraw.test.ts#<module>#1",
+      "c": null,
+      "port": {
+        "file": "src/render/dot/cluster-ldraw.test.ts",
+        "symbol": "<module>",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/dot/cluster-ldraw.test.ts#tree#1",
+      "c": null,
+      "port": {
+        "file": "src/render/dot/cluster-ldraw.test.ts",
+        "symbol": "tree",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
       "id": "port#src/render/dot/long-string-wrap.test.ts#<module>#1",
       "c": null,
       "port": {
@@ -6486,6 +6572,19 @@
       "port": {
         "file": "src/render/json.branch.test.ts",
         "symbol": "findByName",
+        "behaviour": "throws-error"
+      },
+      "class": "port-only",
+      "status": "none",
+      "links": {},
+      "note": ""
+    },
+    {
+      "id": "port#src/render/map-html-label-obj.test.ts#ObjCapture.textspan#1",
+      "c": null,
+      "port": {
+        "file": "src/render/map-html-label-obj.test.ts",
+        "symbol": "ObjCapture.textspan",
         "behaviour": "throws-error"
       },
       "class": "port-only",
