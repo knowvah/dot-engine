@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-11-20T17:12:42.350Z",
+  "generatedAt": "2026-11-25T04:57:16.512Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "osage",
-  "oracleVersion": "dot 16.1.1",
-  "corpusRoot": "~/git/graphviz-16.1.1/tests",
-  "total": 899,
+  "oracleVersion": "dot 16.1.2",
+  "corpusRoot": "~/git/graphviz-16.1.2/tests",
+  "total": 934,
   "counts": {
-    "conformant": 891,
-    "diverged": 1,
+    "conformant": 925,
+    "diverged": 2,
     "accepted": 7,
     "port-error": 0,
     "oracle-error": 0,
@@ -154,6 +154,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2860_1",
+      "path": "2860_1.dot",
+      "size": 48,
+      "verdict": "conformant"
+    },
+    {
       "id": "1702",
       "path": "1702.dot",
       "size": 49,
@@ -202,6 +208,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "graphs-in",
+      "path": "graphs/in.gv",
+      "size": 55,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-ps",
       "path": "graphs/ps.gv",
       "size": 55,
@@ -211,6 +223,12 @@
       "id": "tree-contrib-prune-test",
       "path": "../contrib/prune/test.gv",
       "size": 56,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2783",
+      "path": "2783.dot",
+      "size": 59,
       "verdict": "conformant"
     },
     {
@@ -226,6 +244,18 @@
       "verdict": "conformant"
     },
     {
+      "id": "2860",
+      "path": "2860.dot",
+      "size": 62,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2756",
+      "path": "2756.dot",
+      "size": 64,
+      "verdict": "conformant"
+    },
+    {
       "id": "tree-doc-dotguide-plaintext",
       "path": "../doc/dotguide/plaintext.dot",
       "size": 64,
@@ -234,6 +264,12 @@
     {
       "id": "2743",
       "path": "2743.dot",
+      "size": 66,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2870_0",
+      "path": "2870_0.dot",
       "size": 66,
       "verdict": "conformant"
     },
@@ -264,6 +300,12 @@
     {
       "id": "2490",
       "path": "2490.dot",
+      "size": 70,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2870_1",
+      "path": "2870_1.dot",
       "size": 70,
       "verdict": "conformant"
     },
@@ -346,6 +388,18 @@
       "verdict": "conformant"
     },
     {
+      "id": "2768_2",
+      "path": "2768_2.dot",
+      "size": 78,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2769_2",
+      "path": "2769_2.dot",
+      "size": 78,
+      "verdict": "conformant"
+    },
+    {
       "id": "2784",
       "path": "2784.dot",
       "size": 78,
@@ -394,12 +448,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "2619",
-      "path": "2619.dot",
-      "size": 79,
-      "verdict": "conformant"
-    },
-    {
       "id": "tree-doc-dotguide-invhouse",
       "path": "../doc/dotguide/invhouse.dot",
       "size": 80,
@@ -433,12 +481,6 @@
       "id": "graphs-b80",
       "path": "graphs/b80.gv",
       "size": 81,
-      "verdict": "conformant"
-    },
-    {
-      "id": "1328",
-      "path": "1328.dot",
-      "size": 82,
       "verdict": "conformant"
     },
     {
@@ -508,6 +550,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "graphs-longflat",
+      "path": "graphs/longflat.gv",
+      "size": 86,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-rowcolsep",
       "path": "graphs/rowcolsep.gv",
       "size": 86,
@@ -517,6 +565,24 @@
       "id": "tree-doc-dotguide-invtriangle",
       "path": "../doc/dotguide/invtriangle.dot",
       "size": 86,
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-longflat",
+      "path": "../graphs/directed/longflat.gv",
+      "size": 86,
+      "verdict": "conformant"
+    },
+    {
+      "id": "1444",
+      "path": "1444.dot",
+      "size": 87,
+      "verdict": "conformant"
+    },
+    {
+      "id": "1444-2",
+      "path": "1444-2.dot",
+      "size": 87,
       "verdict": "conformant"
     },
     {
@@ -610,12 +676,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "2516",
-      "path": "2516.dot",
-      "size": 97,
-      "verdict": "conformant"
-    },
-    {
       "id": "2437",
       "path": "2437.dot",
       "size": 98,
@@ -700,6 +760,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2768",
+      "path": "2768.dot",
+      "size": 104,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-b545",
       "path": "graphs/b545.gv",
       "size": 104,
@@ -769,6 +835,12 @@
       "id": "tree-doc-dotguide-normal",
       "path": "../doc/dotguide/normal.dot",
       "size": 106,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2870_2",
+      "path": "2870_2.dot",
+      "size": 107,
       "verdict": "conformant"
     },
     {
@@ -854,6 +926,14 @@
       "path": "reference/test_reference/001.001.gv",
       "size": 126,
       "verdict": "conformant"
+    },
+    {
+      "id": "2759",
+      "path": "2759.dot",
+      "size": 128,
+      "verdict": "diverged",
+      "diffCount": 2,
+      "firstDiff": "cluster:cluster/_draw_[missing]"
     },
     {
       "id": "regression_tests-shapes-reference-box",
@@ -1222,6 +1302,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2756_1",
+      "path": "2756_1.dot",
+      "size": 141,
+      "verdict": "conformant"
+    },
+    {
       "id": "regression_tests-shapes-reference-star",
       "path": "regression_tests/shapes/reference/star.gv",
       "size": 141,
@@ -1412,6 +1498,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "graphs-b58",
+      "path": "graphs/b58.gv",
+      "size": 194,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-labelclust-fdd",
       "path": "graphs/labelclust-fdd.gv",
       "size": 202,
@@ -1421,6 +1513,12 @@
       "id": "graphs-labelclust-ntd",
       "path": "graphs/labelclust-ntd.gv",
       "size": 206,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2866",
+      "path": "2866.dot",
+      "size": 207,
       "verdict": "conformant"
     },
     {
@@ -1466,6 +1564,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "258",
+      "path": "258.dot",
+      "size": 218,
+      "verdict": "conformant"
+    },
+    {
       "id": "1879-2",
       "path": "1879-2.dot",
       "size": 221,
@@ -1500,6 +1604,14 @@
       "path": "graphs/labelclust-fdl.gv",
       "size": 224,
       "verdict": "conformant"
+    },
+    {
+      "id": "2759_1",
+      "path": "2759_1.dot",
+      "size": 225,
+      "verdict": "diverged",
+      "diffCount": 2,
+      "firstDiff": "cluster:cluster/_draw_[missing]"
     },
     {
       "id": "graphs-labelclust-fbd",
@@ -1694,6 +1806,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "121",
+      "path": "121.dot",
+      "size": 249,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-labelclust-fbc",
       "path": "graphs/labelclust-fbc.gv",
       "size": 249,
@@ -1880,6 +1998,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2769_1",
+      "path": "2769_1.dot",
+      "size": 277,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-labelroot-ftl",
       "path": "graphs/labelroot-ftl.gv",
       "size": 281,
@@ -1970,15 +2094,9 @@
       "verdict": "conformant"
     },
     {
-      "id": "1939",
-      "path": "1939.dot",
-      "size": 307,
-      "verdict": "conformant"
-    },
-    {
-      "id": "graphs-structs",
-      "path": "graphs/structs.gv",
-      "size": 308,
+      "id": "2768_1",
+      "path": "2768_1.dot",
+      "size": 306,
       "verdict": "conformant"
     },
     {
@@ -1994,9 +2112,21 @@
       "verdict": "conformant"
     },
     {
-      "id": "2825",
-      "path": "2825.dot",
-      "size": 312,
+      "id": "2765",
+      "path": "2765.dot",
+      "size": 313,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2521",
+      "path": "2521.dot",
+      "size": 320,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2769",
+      "path": "2769.dot",
+      "size": 320,
       "verdict": "conformant"
     },
     {
@@ -2060,6 +2190,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "700813",
+      "path": "700813.dot",
+      "size": 351,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-ZapfDingbats",
       "path": "graphs/ZapfDingbats.gv",
       "size": 360,
@@ -2093,6 +2229,12 @@
       "id": "2184",
       "path": "2184.dot",
       "size": 393,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2765_1",
+      "path": "2765_1.dot",
+      "size": 394,
       "verdict": "conformant"
     },
     {
@@ -2135,6 +2277,24 @@
       "id": "graphs-xlabels",
       "path": "graphs/xlabels.gv",
       "size": 404,
+      "verdict": "conformant"
+    },
+    {
+      "id": "2368_1",
+      "path": "2368_1.dot",
+      "size": 405,
+      "verdict": "conformant"
+    },
+    {
+      "id": "share-longflat",
+      "path": "share/longflat.gv",
+      "size": 405,
+      "verdict": "conformant"
+    },
+    {
+      "id": "windows-longflat",
+      "path": "windows/longflat.gv",
+      "size": 409,
       "verdict": "conformant"
     },
     {
@@ -2252,12 +2412,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "1213-1",
-      "path": "1213-1.dot",
-      "size": 481,
-      "verdict": "conformant"
-    },
-    {
       "id": "share-b491",
       "path": "share/b491.gv",
       "size": 486,
@@ -2327,12 +2481,6 @@
       "id": "graphs-grdlinear_node",
       "path": "graphs/grdlinear_node.gv",
       "size": 523,
-      "verdict": "conformant"
-    },
-    {
-      "id": "1213-2",
-      "path": "1213-2.dot",
-      "size": 530,
       "verdict": "conformant"
     },
     {
@@ -3182,6 +3330,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "graphs-ports",
+      "path": "graphs/ports.gv",
+      "size": 677,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-val_val",
       "path": "graphs/val_val.gv",
       "size": 678,
@@ -3192,14 +3346,6 @@
       "path": "graphs/sides.gv",
       "size": 680,
       "verdict": "conformant"
-    },
-    {
-      "id": "1581",
-      "path": "1581.dot",
-      "size": 695,
-      "verdict": "diverged",
-      "diffCount": 3,
-      "firstDiff": "cluster:cluster_inner/_draw_[missing]"
     },
     {
       "id": "share-structs",
@@ -3442,6 +3588,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2368",
+      "path": "2368.dot",
+      "size": 960,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-world",
       "path": "graphs/world.gv",
       "size": 980,
@@ -3493,6 +3645,18 @@
       "id": "graphs-grdangles",
       "path": "graphs/grdangles.gv",
       "size": 1076,
+      "verdict": "conformant"
+    },
+    {
+      "id": "graphs-shells",
+      "path": "graphs/shells.gv",
+      "size": 1102,
+      "verdict": "conformant"
+    },
+    {
+      "id": "tree-graphs-directed-shells",
+      "path": "../graphs/directed/shells.gv",
+      "size": 1102,
       "verdict": "conformant"
     },
     {
@@ -3662,6 +3826,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "graphs-html2",
+      "path": "graphs/html2.gv",
+      "size": 1414,
+      "verdict": "conformant"
+    },
+    {
       "id": "windows-records",
       "path": "windows/records.gv",
       "size": 1416,
@@ -3785,12 +3955,6 @@
       "id": "graphs-NewCenturySchlbk",
       "path": "graphs/NewCenturySchlbk.gv",
       "size": 1526,
-      "verdict": "conformant"
-    },
-    {
-      "id": "1323_1",
-      "path": "1323_1.dot",
-      "size": 1588,
       "verdict": "conformant"
     },
     {
@@ -3956,6 +4120,18 @@
       "verdict": "conformant"
     },
     {
+      "id": "linux.x86-html2_dot",
+      "path": "linux.x86/html2_dot.gv",
+      "size": 1945,
+      "verdict": "conformant"
+    },
+    {
+      "id": "nshare-html2_dot",
+      "path": "nshare/html2_dot.gv",
+      "size": 1946,
+      "verdict": "conformant"
+    },
+    {
       "id": "share-pm2way",
       "path": "share/pm2way.gv",
       "size": 1974,
@@ -4004,6 +4180,24 @@
       "verdict": "conformant"
     },
     {
+      "id": "linux.x86-ordering_dot1",
+      "path": "linux.x86/ordering_dot1.gv",
+      "size": 2042,
+      "verdict": "conformant"
+    },
+    {
+      "id": "macosx-ordering_dot1",
+      "path": "macosx/ordering_dot1.gv",
+      "size": 2042,
+      "verdict": "conformant"
+    },
+    {
+      "id": "nshare-ordering_dot1",
+      "path": "nshare/ordering_dot1.gv",
+      "size": 2042,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-rd_rules",
       "path": "graphs/rd_rules.gv",
       "size": 2043,
@@ -4043,6 +4237,24 @@
       "id": "share-ER",
       "path": "share/ER.gv",
       "size": 2072,
+      "verdict": "conformant"
+    },
+    {
+      "id": "linux.x86-ordering_dot",
+      "path": "linux.x86/ordering_dot.gv",
+      "size": 2097,
+      "verdict": "conformant"
+    },
+    {
+      "id": "macosx-ordering_dot",
+      "path": "macosx/ordering_dot.gv",
+      "size": 2097,
+      "verdict": "conformant"
+    },
+    {
+      "id": "nshare-ordering_dot",
+      "path": "nshare/ordering_dot.gv",
+      "size": 2097,
       "verdict": "conformant"
     },
     {
@@ -4088,12 +4300,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "1323",
-      "path": "1323.dot",
-      "size": 2164,
-      "verdict": "conformant"
-    },
-    {
       "id": "share-b786",
       "path": "share/b786.gv",
       "size": 2198,
@@ -4115,6 +4321,12 @@
       "id": "windows-Heawood",
       "path": "windows/Heawood.gv",
       "size": 2340,
+      "verdict": "conformant"
+    },
+    {
+      "id": "1453",
+      "path": "1453.dot",
+      "size": 2446,
       "verdict": "conformant"
     },
     {
@@ -4232,6 +4444,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2592",
+      "path": "2592.dot",
+      "size": 3001,
+      "verdict": "conformant"
+    },
+    {
       "id": "2082",
       "path": "2082.dot",
       "size": 3033,
@@ -4289,6 +4507,18 @@
       "id": "1880",
       "path": "1880.dot",
       "size": 3451,
+      "verdict": "conformant"
+    },
+    {
+      "id": "linux.x86-ports_dot",
+      "path": "linux.x86/ports_dot.gv",
+      "size": 3470,
+      "verdict": "conformant"
+    },
+    {
+      "id": "nshare-ports_dot",
+      "path": "nshare/ports_dot.gv",
+      "size": 3493,
       "verdict": "conformant"
     },
     {
@@ -4506,6 +4736,18 @@
       "verdict": "conformant"
     },
     {
+      "id": "tree-graphs-directed-sdh",
+      "path": "../graphs/directed/sdh.gv",
+      "size": 5428,
+      "verdict": "conformant"
+    },
+    {
+      "id": "share-shells",
+      "path": "share/shells.gv",
+      "size": 5493,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-crazy",
       "path": "graphs/crazy.gv",
       "size": 5556,
@@ -4515,6 +4757,12 @@
       "id": "tree-graphs-directed-crazy",
       "path": "../graphs/directed/crazy.gv",
       "size": 5572,
+      "verdict": "conformant"
+    },
+    {
+      "id": "windows-shells",
+      "path": "windows/shells.gv",
+      "size": 5589,
       "verdict": "conformant"
     },
     {
@@ -4630,12 +4878,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "2619_1",
-      "path": "2619_1.dot",
-      "size": 6721,
-      "verdict": "conformant"
-    },
-    {
       "id": "graphs-grdradial_angle",
       "path": "graphs/grdradial_angle.gv",
       "size": 6918,
@@ -4738,12 +4980,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "2619_2",
-      "path": "2619_2.dot",
-      "size": 7596,
-      "verdict": "conformant"
-    },
-    {
       "id": "share-abstract",
       "path": "share/abstract.gv",
       "size": 7614,
@@ -4816,12 +5052,6 @@
       "firstDiff": "node:9002/_draw_/op[1].p[0]",
       "maxDelta": 393.00000000000006,
       "maxDeltaPath": "node:9004/_draw_/op[1].p[4]"
-    },
-    {
-      "id": "2796",
-      "path": "2796.dot",
-      "size": 8959,
-      "verdict": "conformant"
     },
     {
       "id": "linux.x86-dotsplines_dot1",
@@ -5064,12 +5294,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "1332",
-      "path": "1332.dot",
-      "size": 13890,
-      "verdict": "conformant"
-    },
-    {
       "id": "share-jsort",
       "path": "share/jsort.gv",
       "size": 14030,
@@ -5208,6 +5432,12 @@
       "verdict": "conformant"
     },
     {
+      "id": "2239",
+      "path": "2239.dot",
+      "size": 48090,
+      "verdict": "conformant"
+    },
+    {
       "id": "graphs-b106",
       "path": "graphs/b106.gv",
       "size": 48933,
@@ -5328,12 +5558,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "1879",
-      "path": "1879.dot",
-      "size": 287816,
-      "verdict": "conformant"
-    },
-    {
       "id": "linux.x86-root_twopi",
       "path": "linux.x86/root_twopi.gv",
       "size": 287907,
@@ -5376,12 +5600,6 @@
       "verdict": "conformant"
     },
     {
-      "id": "2470",
-      "path": "2470.dot",
-      "size": 734358,
-      "verdict": "conformant"
-    },
-    {
       "id": "graphs-b100",
       "path": "graphs/b100.gv",
       "size": 782464,
@@ -5391,12 +5609,6 @@
       "id": "graphs-b104",
       "path": "graphs/b104.gv",
       "size": 782464,
-      "verdict": "conformant"
-    },
-    {
-      "id": "2471",
-      "path": "2471.dot",
-      "size": 1174310,
       "verdict": "conformant"
     },
     {

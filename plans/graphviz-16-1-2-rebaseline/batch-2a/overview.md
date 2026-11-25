@@ -13,7 +13,7 @@ a walk reads the registries being staged.
 | T7 | [Dot survey](T7-dot-survey.md) | `test/corpus/parity.json`, `PARITY-dot.md` | T6 | [x] |
 | T8 | [Dot formats](T8-dot-formats.md) | `dot-parity-dot.*`, `xdot-parity.*`, `json-parity.*`, `map-parity*.*`, `plain-parity-dot.*`, `PARITY-{XDOT,JSON,MAP}.md` | T6 | [x] |
 | T9 | [Engine walks](T9-engine-walks.md) | `parity-{circo,fdp,neato,osage,patchwork,sfdp,twopi}.*` | T6 | [ ] |
-| T10 | [Engine formats](T10-engine-formats.md) | `{json,map,plain}-parity-<engine>.*` (7 engines) | T6 | [ ] |
+| T10 | [Engine formats](T10-engine-formats.md) | `{json,map,plain}-parity-<engine>.*` (7 engines) | T6 | [x] |
 
 ## Every task's acceptance criteria (plus its own)
 - Given the regenerated summary, then its oracle version field reads 16.1.2.
