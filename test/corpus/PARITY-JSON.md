@@ -14,32 +14,33 @@ numeric-tolerant — see `test/golden/compare-json.ts`). Regenerate:
 
 ## Summary
 
-- **Oracle:** dot 16.1.1 (`-Tjson`) · **corpus:** `~/git/graphviz-16.1.1/tests`
-- **Walked (conformant SVG set):** 899
-- **json-conformant:** 892 (99.7%)
-- **diverged (tracked, will-fix):** 1 · **accepted (documented, won't-fix):** 2
+- **Oracle:** dot 16.1.2 (`-Tjson`) · **corpus:** `~/git/graphviz-16.1.2/tests`
+- **Walked (conformant SVG set):** 934
+- **json-conformant:** 926 (99.6%)
+- **diverged (tracked, will-fix):** 2 · **accepted (documented, won't-fix):** 2
 - **port-error:** 0 · **timeout:** 0 · **oracle-error:** 4 (excluded from pass %) · **oracle-nondeterministic:** 0 (excluded from pass %, not a regression)
 
-## json-conformant (892)
+## json-conformant (926)
 
 Port json is *conformant* with the oracle: every object/attr/draw-op
 matches, numeric payloads within ±0.01 and canonicalized
 colors/fonts/text equal.
 
-_Conformant ids (892) are omitted for brevity — the full roster is in
+_Conformant ids (926) are omitted for brevity — the full roster is in
 [json-parity.json](json-parity.json)._
 
-## Tracked diverged (1) — worst-first
+## Tracked diverged (2) — worst-first
 
 | id | size | maxΔ | #diffs | firstDiff |
 |---|---:|---:|---:|---|
-| [`1581`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1581.dot) | 695 | 0.00 | 3 | `cluster:cluster_inner/_draw_[missing]` |
+| [`2759`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2759.dot) | 128 | 0.00 | 2 | `cluster:cluster/_draw_[missing]` |
+| [`2759_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2759_1.dot) | 225 | 0.00 | 2 | `cluster:cluster/_draw_[missing]` |
 
 ### Diverged buckets — by (object · attr · shape)
 
 | bucket | count | examples | hypothesis |
 |---|---:|---|---|
-| `cluster · _draw_ · missing-attr` | 1 | `1581` | an attribute is present on one side only (graph attrs, xdotversion, ...) |
+| `cluster · _draw_ · missing-attr` | 2 | `2759`, `2759_1` | an attribute is present on one side only (graph attrs, xdotversion, ...) |
 
 ## Accepted divergences (2) — documented, not chased
 
@@ -64,7 +65,6 @@ mission decision journal with its mechanism.
 | `graphs-viewport` | [graph]/_draw_/op[2].P[3] | 8500.029999999999 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `nshare-root_circo` | [graph]/_draw_/op[2].P[3] | 76396429.32 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `linux.x86-root_circo` | [graph]/_draw_/op[2].P[3] | 75388750.42999999 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
-| `2095_1` | [graph]/_draw_/op[2].P[3] | 4187.2300000000005 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `2470` | edge:n100-&gt;n99#0/_draw_/op[1].b[ptCount] | 38763.420000000006 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `2475_2` | [graph]/_draw_/op[2].P[3] | 18275.62 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |
 | `graphs-b103` | [graph]/_draw_/op[2].P[3] | 2659.61 | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism (iterative drift / engine tail classes, engine registry + decision journal); json re-emits the same layout. Journal 2026-07-24. |

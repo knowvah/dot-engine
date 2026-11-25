@@ -14,10 +14,10 @@ EXACTLY, coords compared exact-after-round — both sides are already
 
 ## Summary
 
-- **Oracle:** dot 16.1.1 · **corpus:** `~/git/graphviz-16.1.1/tests`
-- **Walked (conformant SVG set):** 899
-- **map-conformant (overall, worst-of-both-formats):** 895 (100.0%)
-- **cmapx-conformant:** 895 (100.0%) · **imap-conformant:** 895 (100.0%)
+- **Oracle:** dot 16.1.2 · **corpus:** `~/git/graphviz-16.1.2/tests`
+- **Walked (conformant SVG set):** 934
+- **map-conformant (overall, worst-of-both-formats):** 930 (100.0%)
+- **cmapx-conformant:** 930 (100.0%) · **imap-conformant:** 930 (100.0%)
 - **diverged (tracked, will-fix, either format):** 0 · **accepted (documented, won't-fix):** 0
 - **port-error:** 0 · **timeout:** 0 · **oracle-error:** 4 (excluded from pass %)
 - **href-bearing ids in the surveyed set:** 37 — the substantive
@@ -36,13 +36,10 @@ reader does not have to cross-reference `map-parity.json`.
 | [`1425_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1425_1.dot) | `1425_1.dot` | conformant | conformant | conformant |
 | [`1447`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447.dot) | `1447.dot` | conformant | conformant | conformant |
 | [`1447_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1447_1.dot) | `1447_1.dot` | conformant | conformant | conformant |
-| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | `1879.dot` | conformant | conformant | conformant |
 | [`2258`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2258.dot) | `2258.dot` | conformant | conformant | conformant |
 | [`2295`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2295.dot) | `2295.dot` | conformant | conformant | conformant |
 | [`2413_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_1.dot) | `2413_1.dot` | conformant | conformant | conformant |
 | [`2413_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2413_2.dot) | `2413_2.dot` | conformant | conformant | conformant |
-| [`2619_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_1.dot) | `2619_1.dot` | conformant | conformant | conformant |
-| [`2619_2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2619_2.dot) | `2619_2.dot` | conformant | conformant | conformant |
 | [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | `graphs/b100.gv` | conformant | conformant | conformant |
 | [`graphs-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b102.gv) | `graphs/b102.gv` | conformant | conformant | conformant |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | `graphs/b103.gv` | conformant | conformant | conformant |
@@ -52,14 +49,17 @@ reader does not have to cross-reference `map-parity.json`.
 | [`graphs-b155`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b155.gv) | `graphs/b155.gv` | conformant | conformant | conformant |
 | [`graphs-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b29.gv) | `graphs/b29.gv` | conformant | conformant | conformant |
 | [`graphs-b85`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b85.gv) | `graphs/b85.gv` | conformant | conformant | conformant |
+| [`graphs-html2`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/html2.gv) | `graphs/html2.gv` | conformant | conformant | conformant |
 | [`graphs-root`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/root.gv) | `graphs/root.gv` | conformant | conformant | conformant |
 | [`graphs-url`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/url.gv) | `graphs/url.gv` | conformant | conformant | conformant |
 | [`graphs-xx`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/xx.gv) | `graphs/xx.gv` | conformant | conformant | conformant |
 | [`linux.i386-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b102.gv) | `linux.i386/b102.gv` | conformant | conformant | conformant |
 | [`linux.i386-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b106.gv) | `linux.i386/b106.gv` | conformant | conformant | conformant |
 | [`linux.i386-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.i386/b29.gv) | `linux.i386/b29.gv` | conformant | conformant | conformant |
+| [`linux.x86-html2_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/html2_dot.gv) | `linux.x86/html2_dot.gv` | conformant | conformant | conformant |
 | [`linux.x86-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_circo.gv) | `linux.x86/root_circo.gv` | conformant | conformant | conformant |
 | [`linux.x86-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_twopi.gv) | `linux.x86/root_twopi.gv` | conformant | conformant | conformant |
+| [`nshare-html2_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/html2_dot.gv) | `nshare/html2_dot.gv` | conformant | conformant | conformant |
 | [`nshare-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_circo.gv) | `nshare/root_circo.gv` | conformant | conformant | conformant |
 | [`nshare-root_twopi`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_twopi.gv) | `nshare/root_twopi.gv` | conformant | conformant | conformant |
 | [`share-b102`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/b102.gv) | `share/b102.gv` | conformant | conformant | conformant |
@@ -71,13 +71,13 @@ reader does not have to cross-reference `map-parity.json`.
 | [`windows-b106`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b106.gv) | `windows/b106.gv` | conformant | conformant | conformant |
 | [`windows-b29`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/b29.gv) | `windows/b29.gv` | conformant | conformant | conformant |
 
-## map-conformant (895)
+## map-conformant (930)
 
 Port output is *conformant* with the oracle in BOTH cmapx and imap: every
 area/line matches exactly (shape/href/title/alt/target) with coords equal
 after rounding.
 
-_Conformant ids (895) are omitted for brevity — the full roster is in
+_Conformant ids (930) are omitted for brevity — the full roster is in
 [map-parity.json](map-parity.json)._
 
 ## Tracked diverged (0 format-rows) — worst-first

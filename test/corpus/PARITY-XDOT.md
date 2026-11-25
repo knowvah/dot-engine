@@ -11,19 +11,19 @@ canonicalized — see `test/golden/compare-xdot.ts`). Regenerate:
 
 ## Summary
 
-- **Oracle:** dot 16.1.1 · **corpus:** `~/git/graphviz-16.1.1/tests`
-- **Walked (conformant SVG set):** 899
-- **xdot-conformant:** 895 (100.0%)
+- **Oracle:** dot 16.1.2 · **corpus:** `~/git/graphviz-16.1.2/tests`
+- **Walked (conformant SVG set):** 934
+- **xdot-conformant:** 930 (100.0%)
 - **diverged (tracked, will-fix):** 0 · **accepted (documented, won't-fix):** 0
 - **port-error:** 0 · **timeout:** 0 · **oracle-error:** 4 (excluded from pass %)
 
-## xdot-conformant (895)
+## xdot-conformant (930)
 
 Port xdot is *conformant* with the oracle: every draw-op stream matches
 op-for-op with numeric payloads within ±0.01 and canonicalized
 colors/fonts/text equal.
 
-_Conformant ids (895) are omitted for brevity — the full roster is in
+_Conformant ids (930) are omitted for brevity — the full roster is in
 [xdot-parity.json](xdot-parity.json)._
 
 ## Tracked diverged (0) — worst-first
