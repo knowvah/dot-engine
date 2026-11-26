@@ -11,14 +11,16 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 898
-- **Oracle:** dot 16.1.1
-- **pass:** 889 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
-- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 7
+- **Surveyed:** 933
+- **Oracle:** dot 16.1.2
+- **pass:** 919 (99.8%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 1
+- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 12
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | 325 | 1 | `[extra] domestic_cats/node: port=present native=<absent>` |
 
 ## Accepted (1) — documented, not chased
 
@@ -26,18 +28,22 @@ _(none)_
 |---|---:|---|---|
 | [`graphs-b56`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b56.gv) | 2 | `[node] creation/label: port=<f0>genPräfix\|<f1>legennStamm\|<f2>heitnSuffix native=<f0>genPr�fix\|<f1>legennStamm\|<f2>heitnSuffix; [node] creation1/label: port=<f0>genPräfix\|<f1>DiebnStamm\|<f2>heitnSuffix native=<f0>genPr�fix\|<f1>DiebnStamm\|<f2>heitnSuffix` | native writes the label's raw Latin-1 byte (0xE4 for the a-umlaut in 'genPräfix') under charset=latin1, so the oracle text is not valid UTF-8 and decodes to U+FFFD; the port prints the UTF-8 character. Not the canon() use-after-free: the carried oracle (graphviz-16.1.1 plus patch 0001, U1) prints the label intact and this label still differs. Re-measured 2026-11-19 on the fresh walk. Previously accepted as oracle bug (A4) canon() use-after-free. |
 
-## Errors and timeouts (8)
+## Errors and timeouts (12)
 
 | id | message |
 |---|---|
+| [`1221`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1221.dot) | Error: node "1" is contained in two non-comparable clusters "cluster_2" and "cluster_1" |
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
-| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
+| [`1767`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1767.dot) | Error: node "a" is contained in two non-comparable clusters "cluster_1" and "cluster_0" |
+| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | Warning: Warning: no hard-coded metrics for 'sans'.  Falling back to 'Times' metrics |
 | [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
 | [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | Warning: Two clusters named %9 - the second will be ignored |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle exit null |
-| [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle exit null |
+| [`2721`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2721.dot) | Error: node "622" is contained in two non-comparable clusters "cluster_uni" and "cluster_std" |
+| [`2783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2783.dot) | oracle exit null |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Warning: syntax ambiguity - badly delimited number '00s' in line 1 of https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot splits into two tokens |
+| [`graphs-b53`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b53.gv) | Error: node "node_50" is contained in two non-comparable clusters "cluster_node_43" and "cluster_node_57" |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (889) are omitted for brevity — the full roster is in
+_Passing ids (919) are omitted for brevity — the full roster is in
 `plain-parity-fdp.json`._

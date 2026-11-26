@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -63,7 +63,7 @@ A2、A3 與 A8 已結案，作為歷史保留；A10 作為各引擎登錄檔中�
 
 > **範圍，歷史上是一項未量測的但書——現在已部分量測。**
 > **主要的 dot 引擎 SVG 調查**（`test/corpus/survey.ts`）仍然**只涵蓋 dot**：
-> 原生參照程式在 `GVBINDIR=/tmp/ghl1611` 下執行，該目錄**只**以符號連結
+> 原生參照程式在 `GVBINDIR=/tmp/ghl1612-carried` 下執行，該目錄**只**以符號連結
 > `core` + `dot_layout` 外掛
 > （`test/corpus/gen-headless-gvbindir.sh` 只迴圈處理 `core dot_layout`
 > ——不存在 `neato`／`fdp`／`circo`／`twopi`／`osage`／`sfdp` 的版面配置外掛），
@@ -96,10 +96,10 @@ A2、A3 與 A8 已結案，作為歷史保留；A10 作為各引擎登錄檔中�
 以每個輸入自己的引擎而非 `dot` 進行調查。這項工作誠實的上限，是把 A1
 **縮小**為「在參考平台上沒有現行差異」，而絕不是消除跨平台的但書；
 目前的結果（見下）都守住了這個上限：`circo`／`twopi`／`osage` 各自揭露並找出了
-少數真正的 A1／A9 案例的根本原因，而 `neato`／`fdp`／`sfdp` 如今在 898 項的範圍（graphviz 16.1.1）內，
-與原生版相差 0.5pt 以內的比例分別為 99.8／98.0／68.2%，
+少數真正的 A1／A9 案例的根本原因，而 `neato`／`fdp`／`sfdp` 如今在 933 項的範圍（graphviz 16.1.2）內，
+與原生版相差 0.5pt 以內的比例分別為 99.7／97.2／68.6%，
 意味著移植的算術（`fma.ts`、`arm-pow.ts`、相符的 PRNG）對大多數圖成立——
-而且 898 項範圍中每個差異 id 都是透過注入個別歸因（求解器漂移 vs. 移植缺陷），
+而且 933 項範圍中每個差異 id 都是透過注入個別歸因（求解器漂移 vs. 移植缺陷），
 而不是留作未分級處理的漂移。請見下方迭代式引擎的特徵描述。
 
 **引擎軌道接受：twopi 箭頭家族。** <a id="a1-twopi-arrows-family"></a>
@@ -157,17 +157,25 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 欄位，而 `parity-report.ts` 將它們呈現於
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 中獨立的「Iterative engines (±0.5 characterization)」章節，
-明確**不可**與本文件其他地方 ±0.01 決定性的通過率相比較。針對 graphviz 16.1.1 的目前計數
-（898 項範圍；通過率排除 C 參照程式無法轉譯的輸入以及原生輸出每次執行都會變化的輸入，
+明確**不可**與本文件其他地方 ±0.01 決定性的通過率相比較。針對 graphviz 16.1.2 的目前計數
+（933 項範圍；通過率排除 C 參照程式無法轉譯的輸入以及原生輸出每次執行都會變化的輸入，
 依據[一致性](./conformance.md)）：
 
 | 引擎 | 調查數 | ±0.5pt 內 | 不一致 | 移植版錯誤／逾時 | 參照程式錯誤 | 參照程式非確定 |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
-`fdp` 的 11 個非確定輸入（原生輸出每次執行都會變化）不計入其通過率；它唯一的移植版錯誤是 `1879`，該輸入需要移植版不支援的 `splines=compound` 路由。
+`fdp` 的 8 個非確定輸入（原生輸出每次執行都會變化）不計入其通過率。每個引擎唯一的移植版錯誤都是 `2783`
+（[A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)）。
+`1879` 原本是 `fdp` 的移植版錯誤，現在不再被掃描：它是 graphviz 16.1.2 的 `dot` 不再轉譯的 id 之一
+（[16.1.2 轉譯略過](#render-skip-16-1-2)），而每個引擎掃描的 id 都取自 `dot` 調查的 conformant 集合。
+`fdp` 的七個參照程式錯誤中，有四個就是 `fdp` 自身上的這項轉譯略過。
+
+（範圍在 graphviz 16.1.2 中從 898 增至 933，移植版並無改動：
+先前的移植修復已使 53 個 id 變為 conformant，它們在重新執行 `dot` 調查時進入了掃描，
+而 18 個轉譯略過的 id 則離開了。）
 
 （`fdp` 的通過率自 77.5% 上升，是因為先前提交的那次掃描早於上一個任務的移植狀態。`neato` 的通過率自 90.5% 上升，是因為 16.1 反組譯得到的融合 stress 核心進入了正式環境的 kD 路徑（16.1 後續跟進第 5 部分，T15）：先前因求解器漂移而有差異的 83 個 id 現已通過，其中包括先前被接受的逐 id 殘餘 `2619_2`，該接受已撤銷；±0.5pt 之外的兩個 `neato` id 是 `2784`（A10）和 `2371`（A1 漂移）。）
 
@@ -176,10 +184,11 @@ C 彎曲 `Z->I`（節點 `i` 的軸頂點落入其區間），移植版彎曲 `i
 主要是 neato 未移植的 `user_pos`／`P_SET` 處理、引擎初始化的整併，
 以及 `setEdgeType` 巨集與函式的修正。）
 
-與第一次掃描時不同，898 項範圍中每一列差異都已針對 graphviz 16.1.1 個別歸因：
+與第一次掃描時不同，933 項範圍中每一列差異都已針對 graphviz 16.1.2 個別歸因：
 注入工具（`test/corpus/attribute-divergence.ts`）將原生參照程式繞線前的
-`ND_pos` 餵給移植版並重新比對，而目前每個差異 id 除了 sfdp `2556` 之外，都是
+`ND_pos` 餵給移植版並重新比對，而目前每個差異 id 除了 sfdp `2556`、fdp `2717`（一項[待處理的 16.1.2 移植](#pending-16-1-2-ports)）、fdp `1436`（[#211](https://github.com/knowvah/dot-engine/issues/211)：它的七個子圖共用同一個名稱，所以該工具無法擺放它們的方框）與 sfdp `graphs-clustlabel`（[#315](https://github.com/knowvah/dot-engine/issues/315)）之外，都是
 `drift-exonerated`（一旦移除求解器漂移，移植版的繞線與輸出就能精確重現參照程式）。
+fdp 的六列 `2768`、`2768_1`、`2768_2`、`2769`、`2769_1` 與 `2769_2` 顯示為 `drift-exonerated`，但它們是確定性缺陷 [#224](https://github.com/knowvah/dot-engine/issues/224)；它們並未在 A1 下被接受。
 其中兩個是另行接受的逐 id 殘留項：sfdp `241_0` 的宿主 libm `pow` 漂移（由 T28 重新診斷；自 `12dddc48` 起其注入列為 `drift-exonerated`），以及 sfdp `2556` 的 NaN 版面。自 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 起，fdp `241_0` 已通過（見 A9 下的 fdp 段落）。
 fdp `2471` 與 sfdp `2371` 先前在注入之後保留的邊標籤位置（`lp`）仍不相同，亦即 xlabel 放置器挑選了不同的候選。移植版的 `dotneato_closest` 改為依 clang 融合後的 de Casteljau 求值與 DIST2 方式捨入後，`2471` 已經消除：先前邊標籤錨點相差 1–2 ULP，使放置器的嚴格包含判斷翻轉。
 移植版的 R 樹像 C 一樣以值複製矩形之後，`2371` 已經消除。
@@ -246,7 +255,7 @@ fdp `2471` 與 sfdp `2371` 先前在注入之後保留的邊標籤位置（`lp`�
 
 **調查的兩側都執行同一個估算器——量測已被化解。**
 原生 `dot` 參照程式在無頭（headless）的 `GVBINDIR`
-（`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`）下執行，該目錄只以符號連結
+（`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`）下執行，該目錄只以符號連結
 `core` 與 `dot_layout` 外掛——沒有 `gd`／`pango`／`quartz` 文字版面配置外掛。
 該位置為空時，graphviz 會退回其內建的
 `estimate_textspan_size`。TypeScript 移植版的 `EstimateTextMeasurer`
@@ -262,7 +271,7 @@ FreeType／pango 字形前進寬度從未進入比對。這就是為什麼此處
 是因為文字量測是一個刻意設計的替換點，而不是寫死在任一引擎之中。
 `TextMeasurer` 是一個只有單一方法的介面（`measure(text, font, size,
 flags) → {w, h, …}`），以相依性注入的方式傳入每一個標籤尺寸計算的呼叫點——
-`polyInit`、`recordInit`、`initEdgeLabels` 與 `buildNodeLabel` 都以參數接收量測器；
+`polyInit`、`recordInit`、`initEdgeLabels` 與 `makeNodeLabel` 都以參數接收量測器；
 沒有任何東西透過全域變數量測文字。在測試／CI 中，可透過 `setTextMeasurer(...)`
 或 `GV_TEXT_MEASURER=estimate` 固定它。
 這個替換點也讓殘留差異可以被*證明*純屬量測所致：把 C 實際量到的精確寬度
@@ -416,6 +425,11 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. 參照程式處於已知損壞狀態（init_rank／pathplan 家族） {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **在 graphviz 16.1.2 中，參照程式對這個家族不寫出任何內容。** 版面回報錯誤時，`dot` 現在會略過轉譯，
+> 所以 `1581`、`1939`、`2470`、`2471`、`2796`、`2825` 與 `graphs-structs` 在調查中是參照程式錯誤，
+> 而不是 conformant 或 diverged 列；`1435` 不受影響。移植版仍照下文所述轉譯它們。
+> 請見 [16.1.2 轉譯略過](#render-skip-16-1-2)。下文描述的是直到 graphviz 16.1.1 的狀態。
 
 **受影響（graphviz 16.1 掃描）：** `1435`（structural-match，一個樣條控制點上的 maxΔ 0.39；
 對 15.x 參照程式時為 503——該下降未經二分定位）與 `1581`（diverged：頂層子元素數為 39 對 22，maxΔ 0）。
@@ -787,6 +801,8 @@ libm 的 `hypot` 對該距離的捨入相差 2 ULP，這翻轉了嚴格的 `<`�
 `.agent-notes/circo-b81-2475-rca.md`。
 
 **twopi `2470`——被 xlabel R-tree 放大的放射座標 ULP。**
+（自 graphviz 16.1.2 起的歷史：`2470` 隨[轉譯略過](#render-skip-16-1-2)離開了所有引擎掃描，它的登錄檔條目已退役。
+原生 `twopi` 仍然會轉譯它。）
 2470 是一張 140 條邊的圖，其 HTML `<table>` 邊標籤聚集在
 幾乎重合的放射錨點上。在 neato 家族中，邊標籤是由貪婪 xlabel 擺放器（`label/xlabels.c`）
 作為外部標籤擺放，該擺放器透過 Hilbert 排序的 R-tree 選出重疊最少的候選角點。
@@ -942,7 +958,9 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
 
 ### A10. 多米諾塊打包中的 V8 `Map` 大小上限（`2784`，五個以打包為基礎的引擎） {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**受影響：** `circo`、`twopi`、`neato`、`fdp` 與 `sfdp` 上的 `2784`。移植版在全部五個引擎的 xdot 與 imagemap 掃描中，以及 `circo` 的 `json` 掃描中擲出錯誤。在 `twopi`、`neato`、`fdp` 與 `sfdp` 的 `json` 掃描中，以及全部五個引擎的 `plain` 掃描中，原生參照程式本身無法在掃描的時間預算內完成，所以這些列是參照程式錯誤。在 `dot`、`osage` 與 `patchwork` 上它會通過。
+**受影響：** `circo`、`twopi`、`neato`、`fdp` 與 `sfdp` 上的 `2784` 和 `2783`。移植版在全部五個引擎的 xdot、`json` 與 imagemap 掃描中擲出錯誤。在 `plain` 掃描中，原生參照程式本身無法在掃描 300 秒的預算內完成，所以這些列是參照程式錯誤（`sfdp` `plain-ext` 上的 `2783` 是例外：原生版完成，而移植版擲出錯誤）。原生版在這些輸入上需要 180 到 410 秒，所以機器負載較高時，`json` 或 imagemap 列也可能表現為參照程式錯誤。在 `dot`、`osage` 與 `patchwork` 上兩者都會通過。
+
+`2783` 與 `2784` 形態相同，在 graphviz 16.1.2 中進入掃描。它的 15 個移植版錯誤列尚無登錄檔條目，所以儀表板把它們顯示為未被接受的移植版錯誤；`2784` 在 `twopi`、`neato`、`fdp` 與 `sfdp` 上的 `json` 列也是如此。
 
 **發生了什麼。** `lib/pack/pack.c` 將一個元件佔用的儲存格記錄在一個 `PointSet` 中。對於 `2784`（一個高 3e16 pt 的單一節點，`splines="ortho"`），忠實的整數 `step`／擺放算術需要 2,011,656,764 個儲存格；原生 16.1.0 以 482 秒完成，常駐記憶體 67.3 GB（峰值 101 GB）。移植版的 `PointSet` 是一個 JavaScript `Map`，V8 將它限制在 2^24 個項目，所以它擲出 `Map maximum size exceeded`。
 
@@ -1007,6 +1025,60 @@ conformant，plain 與 stderr 相同），其在 `accepted-divergences-engines.j
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | 16.1.1 其餘的行為變更 | 語料庫和 golden 中均沒有 | — |
 
 觸及每項變更的輸入記錄在 [#148](https://github.com/knowvah/dot-engine/issues/148) 中。
+
+**graphviz 16.1.2 中的狀態：** 此表中的每個 issue 都已關閉，其變更均已移植。該表作為歷史保留。
+#158 的 34 個 id、#160 的 4 個、`2783`（#164）以及 16.1.1 新增的 14 個輸入在 `dot` 上再次為 conformant，並已回到每個掃描中。
+
+## 待處理的 16.1.2 移植 {#pending-16-1-2-ports}
+
+參照程式已從 graphviz 16.1.1 遷移到 16.1.2（[ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)）。重新建立基線時的分類（`plans/graphviz-16-1-2-rebaseline/classification/`）把每個發生變化的結果都追溯到了原因。只有兩項上游變更會改變語料庫結果：下一節描述的轉譯略過，以及下面的 `mapc` 變更。這些不是已接受的差異：每一項都是其 issue 上尚未完成的工作。
+
+| issue | 上游變更 | 在 16.1.2 中發生變動的 id | 引擎 |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc` 用 `is_a_cluster` 判斷子圖是否為 cluster，而不是依 `cluster` 名稱前綴 | 1: `2717`。原生版在 16.1.1 當機，在 16.1.2 能轉譯；移植版仍會多加一個節點 `domestic_cats`，並在 xdot、`json` 與 `plain` 掃描中 diverged（imagemap 為 conformant） | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | 版面回報錯誤時，`dot` 略過轉譯 | 34 個調查 id、5 個引擎 id 與 3 個 golden：請見 [16.1.2 轉譯略過](#render-skip-16-1-2) | 全部 |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges` 在 `other` 掃描中略過自環 | 已掃描語料庫中沒有 | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | 節點沒有入邊或出邊時，`conc_slope` 退回 | 已掃描語料庫中沒有 | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | 找不到分割點時，`reallyroutespline` 失敗 | 已掃描語料庫中沒有（被隔離的輸入 `2746` 在原生版中不再當機；它現在是一項轉譯略過） | 全部 |
+
+16.1.2 新增的七個輸入（`2745`、`2760`、`2762`、`2762_1`、`2764`、`2764_1`、`2870_3`）作為 `pending-input` 被隔離，在 [#298](https://github.com/knowvah/dot-engine/issues/298) 接納它們之前不會被掃描。
+
+## 16.1.2 轉譯略過（待 #299） {#render-skip-16-1-2}
+
+自 graphviz 16.1.2 起，版面回報錯誤時 `dot` 命令不再轉譯（上游提交 `19b33b581`，`cmd/dot/dot.c:main`）：它以結束碼 1 結束，且不寫出任何內容。Graphviz 16.1.1 同樣以 1 結束，但會寫出版面做到一半的文件。移植版仍像 16.1.1 那樣轉譯這些輸入。
+移植版是否跟進由 [#299](https://github.com/knowvah/dot-engine/issues/299) 決定，它在等待維護者裁決；在此之前，函式庫中不會為此改動任何內容。
+
+沒有原生文件就無從比較，所以下面每一列都是參照程式錯誤，不是差異，也不是已接受的差異。
+
+**`dot` 調查，34 個 id**（除 `2781` 與 `2781_1` 是 structural-match 外，它們在 16.1.1 中全部為 conformant），依版面回報的第一個錯誤分組：
+
+| 第一個錯誤 | id |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2`，以及 `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+最後五個（`1879` 到 `2821_2`）失敗僅僅是因為掃描從儲存庫根目錄執行原生版，而它們的標籤所指的影像檔在那裡找不到（[#314](https://github.com/knowvah/dot-engine/issues/314)）；從它們自己的目錄執行時，兩個 graphviz 版本都能轉譯它們。
+
+**其他所有掃描。** `-Tdot`、xdot、`json`、imagemap 與 `plain` 掃描，以及全部七個引擎掃描，都從調查的 conformant 集合中取 id，所以其中屬於該集合的 18 個 id 不再在任何引擎或格式上被掃描：`1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`, `1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` 與 `graphs-structs`。它們在各引擎登錄檔中的已接受條目已退役。其中大多數在其他引擎上仍能原生轉譯（126 個 id 與引擎的組合中有 89 個），所以引擎失去了本可保留的涵蓋範圍。
+
+**引擎自身，5 個 id**（xdot、`json`、imagemap 與 `plain` 列，在 16.1.1 中全部通過）：
+
+| 引擎 | id | 錯誤 |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters`（移植版尚未輸出這一條，[#256](https://github.com/knowvah/dot-engine/issues/256)） |
+
+參照程式錯誤登錄檔把這五個標為 `native-crash`，因為分類器對「每次嘗試都失敗」沒有別的類別；原生版以 1 結束且沒有輸出，並不當機。
+
+**Golden，3 個：** `pt-issue-31-inline`、`pt-issue-31-rubebe` 與 `pt-issue-31-zuduxu` 保留其 graphviz 16.1.1 的參考，因為 16.1.2 沒有寫出任何內容（`test/golden/inputs/PROVENANCE.md`）。
 
 ## 持續追蹤的長尾（`dot` 屬性與邊界案例） {#tracked-long-tail-dot-attribute-edge-case}
 

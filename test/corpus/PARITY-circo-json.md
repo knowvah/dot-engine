@@ -11,17 +11,18 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 898
-- **Oracle:** dot 16.1.1
-- **pass:** 885 (99.3%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 4
-- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 7
+- **Surveyed:** 933
+- **Oracle:** dot 16.1.2
+- **pass:** 918 (99.1%) · **diverged (tracked):** 3 · **accepted (documented, won't-fix):** 4
+- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 7
 
-## Diverged (2)
+## Diverged (3)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | 16326502 | 533 | `edge:100476->100486#0/_draw_/op[1].b[1]` |
 | [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | 9735186 | 1 | `edge:1242_589985->1242_589980#0/_hdraw_/op[3].P[2]` |
+| [`2759`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2759.dot) | 128 | 1 | `cluster:%7/rank[missing]` |
 
 ## Accepted (4) — documented, not chased
 
@@ -32,7 +33,7 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 1 | `node:a/label` | Input is Latin-1 with NO `charset` declaration, so the bytes are invalid UTF-8. Native dot's -Tjson then emits a MIXED-ENCODING document: attribute values (e.g. node `label`) are echoed as RAW Latin-1 bytes (0xe1 0xe2 ... unconverted), while the DRAWN label text (_ldraw_ T op, via make_label) is UTF-8 (0xc3 0xa1 ...). No single decode reads both halves correctly: Latin-1 recovers the attribute but mojibakes the text, UTF-8 does the reverse (and the attribute bytes are not valid UTF-8). The port decodes the input once (utils.c latin1ToUTF8 fallback) and is internally consistent valid UTF-8 on BOTH surfaces, so it cannot reproduce the oracle's split encoding. A4 class: the oracle output is an encoding bug; the port declines to emit invalid/mixed-encoding JSON. The DECLARED charset=latin1 case (graphs-Latin1/b60) IS handled via the stoj double-encode fix; only the UNDECLARED-charset case is irreducible. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
 
-## Errors and timeouts (7)
+## Errors and timeouts (8)
 
 | id | message |
 |---|---|
@@ -40,9 +41,10 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`1658`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1658.dot) | oracle exit null |
 | [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | oracle exit null |
+| [`2783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2783.dot) | Map maximum size exceeded |
 | [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | oracle exit null |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle exit null |
 | [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle exit null |
 
-_Passing ids (885) are omitted for brevity — the full roster is in
+_Passing ids (918) are omitted for brevity — the full roster is in
 `json-parity-circo.json`._

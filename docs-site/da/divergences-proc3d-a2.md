@@ -1,5 +1,5 @@
 ---
-sourceHash: 108900a6526f9e995c80f6640cba948df61fe8bc937f8c32e4df82dd8d902cd1
+sourceHash: d8cad6b446eeaef59797097e9905f579ed5de5d9317562bd50552d98c504fde2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -87,7 +87,7 @@ som en levende sammenligning.
 
 ## Reproducér {#reproduce}
 
-Det native orakel kører under den headless `GVBINDIR` (`/tmp/ghl1611`, fra
+Det native orakel kører under den headless `GVBINDIR` (`/tmp/ghl1612-carried`, fra
 `test/corpus/gen-headless-gvbindir.sh`), så begge sider bruger den samme måler,
 `estimate_textspan_size` — se
 [§A2 „Isolér algoritmen fra skrifttypebackenden“](/da/divergences#a2-text-measurement-font-metrics-label-driven-layout).
@@ -98,8 +98,8 @@ GV_TEXT_MEASURER=estimate \
   npx tsx test/corpus/render-one.ts ~/git/graphviz/tests/graphs/proc3d.gv dot
 
 # native C oracle (headless, estimate measurer)
-GVBINDIR=/tmp/ghl1611 \
-  ~/git/graphviz-16.1.1/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
+GVBINDIR=/tmp/ghl1612-carried \
+  ~/git/sseely/graphviz-carried-1612/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
 ```
 
 Kører man det i dag, får man matchende SVG'er (0 forskelle ved `deterministic`-tolerancen

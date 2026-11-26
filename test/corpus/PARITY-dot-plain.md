@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 899
-- **Oracle:** dot 16.1.1
-- **pass:** 894 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
+- **Surveyed:** 934
+- **Oracle:** dot 16.1.2
+- **pass:** 929 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 4
 
 ## Diverged (0)
@@ -35,5 +35,5 @@ _(none)_
 | [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | oracle exit null |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (894) are omitted for brevity — the full roster is in
+_Passing ids (929) are omitted for brevity — the full roster is in
 `plain-parity-dot.json`._

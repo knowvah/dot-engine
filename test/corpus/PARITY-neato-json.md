@@ -11,14 +11,16 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 898
-- **Oracle:** dot 16.1.1
-- **pass:** 892 (99.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 2
-- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 3
+- **Surveyed:** 933
+- **Oracle:** dot 16.1.2
+- **pass:** 925 (99.5%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 2
+- **port-error / timeout (scored as failures):** 2 · **oracle-error (excluded from pass %):** 3
 
-## Diverged (0)
+## Diverged (1)
 
-_(none)_
+| id | size | #diffs | firstDiff |
+|---|---:|---:|---|
+| [`2759`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2759.dot) | 128 | 1 | `cluster:%7/rank[missing]` |
 
 ## Accepted (2) — documented, not chased
 
@@ -27,14 +29,15 @@ _(none)_
 | [`share-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/Latin1.gv) | 1 | `node:a/label` | Input is Latin-1 with NO `charset` declaration, so the bytes are invalid UTF-8. Native dot's -Tjson then emits a MIXED-ENCODING document: attribute values (e.g. node `label`) are echoed as RAW Latin-1 bytes (0xe1 0xe2 ... unconverted), while the DRAWN label text (_ldraw_ T op, via make_label) is UTF-8 (0xc3 0xa1 ...). No single decode reads both halves correctly: Latin-1 recovers the attribute but mojibakes the text, UTF-8 does the reverse (and the attribute bytes are not valid UTF-8). The port decodes the input once (utils.c latin1ToUTF8 fallback) and is internally consistent valid UTF-8 on BOTH surfaces, so it cannot reproduce the oracle's split encoding. A4 class: the oracle output is an encoding bug; the port declines to emit invalid/mixed-encoding JSON. The DECLARED charset=latin1 case (graphs-Latin1/b60) IS handled via the stoj double-encode fix; only the UNDECLARED-charset case is irreducible. |
 | [`windows-Latin1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/Latin1.gv) | 1 | `node:a/label` | Identical mechanism to share-Latin1: undeclared-charset Latin-1 input makes native -Tjson emit raw-Latin-1 attribute bytes alongside UTF-8 drawn text (mixed, invalid). The port's consistent-UTF-8 output cannot match both halves. A4 class. |
 
-## Errors and timeouts (4)
+## Errors and timeouts (5)
 
 | id | message |
 |---|---|
 | [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle exit null |
+| [`2783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2783.dot) | Map maximum size exceeded |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Map maximum size exceeded |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (892) are omitted for brevity — the full roster is in
+_Passing ids (925) are omitted for brevity — the full roster is in
 `json-parity-neato.json`._

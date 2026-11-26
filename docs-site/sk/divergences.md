@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -75,7 +75,7 @@ desatinnej čiarky pri vedení splinov v `dot` (A3, A8) sú uzavreté a ponechan
 
 > **Rozsah, historicky nezmeraná výhrada — teraz čiastočne zmeraná.**
 > **Hlavný prieskum SVG pre modul dot** (`test/corpus/survey.ts`) je stále
-> **iba pre dot**: natívne orákulum beží pod `GVBINDIR=/tmp/ghl1611`, ktorý
+> **iba pre dot**: natívne orákulum beží pod `GVBINDIR=/tmp/ghl1612-carried`, ktorý
 > symbolicky prepája **iba** pluginy `core` + `dot_layout`
 > (`test/corpus/gen-headless-gvbindir.sh` prechádza presne `core dot_layout`
 > — nie je prítomný žiadny plugin rozloženia `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp`),
@@ -114,10 +114,10 @@ vstup pod jeho vlastným modulom namiesto `dot`. Úprimným stropom tejto práce
 **zúžiť** A1 na „žiadna aktívna odchýlka na referenčnej platforme“, nikdy neodstrániť
 medziplatformovú výhradu; doterajšie výsledky (nižšie) tento
 strop spĺňajú: `circo`/`twopi`/`osage` odhalili a vyriešili po koreňovú príčinu niekoľko
-skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 99.8/98.0/68.2 %
-v rámci 0.5pt od natívneho na univerze 898 položiek (graphviz 16.1.1), čo znamená, že
+skutočných prípadov A1/A9 a `neato`/`fdp`/`sfdp` sú teraz na 99.7/97.2/68.6 %
+v rámci 0.5pt od natívneho na univerze 933 položiek (graphviz 16.1.2), čo znamená, že
 portovaná aritmetika (`fma.ts`, `arm-pow.ts`, zhodný PRNG) pre väčšinu grafov drží —
-a každé odchýlené id z univerza 898 položiek je individuálne priradené injekciou (drift
+a každé odchýlené id z univerza 933 položiek je individuálne priradené injekciou (drift
 solvera vs. chyba portu), a nie ponechané ako netriedený drift. Pozri charakterizáciu iteratívnych modulov nižšie.
 
 **Akceptácia na úrovni stopy modulu: rodina šípok twopi.** <a id="a1-twopi-arrows-family"></a>
@@ -195,17 +195,27 @@ ako je opísané nižšie — `engine-walk.ts` zaznamenáva pre tieto tri pole
 sekcii „Iterative engines (±0.5 characterization)“ súboru
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 výslovne **nie je porovnateľná** s deterministickou mierou úspešnosti ±0.01 inde
-v tomto dokumente. Aktuálne počty voči graphviz 16.1.1 (univerzum 898 položiek; percento úspešnosti vynecháva
+v tomto dokumente. Aktuálne počty voči graphviz 16.1.2 (univerzum 933 položiek; percento úspešnosti vynecháva
 vstupy, ktoré orákulum v C nedokáže vykresliť, a vstupy, pri ktorých sa natívny výstup medzi behmi
 mení, podľa [Zhody](./conformance.md)):
 
 | modul | preskúmané | v rámci ±0.5pt | nezhodné | chyba portu / timeout | chyba orákula | orákulum nedeterministické |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
-11 nedeterministických vstupov `fdp`, pri ktorých sa natívny výstup medzi behmi mení, je vynechaných z jeho percenta úspešnosti; jedinou chybou portu je `1879`, ktoré vyžaduje smerovanie `splines=compound`, ktoré port nepodporuje.
+8 nedeterministických vstupov `fdp`, pri ktorých sa natívny výstup medzi behmi mení, je vynechaných z jeho percenta úspešnosti. Jedinou chybou portu pri každom module je `2783`
+([A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)).
+`1879`, predtým chyba portu `fdp`, sa už neprechádza: je jedným z id, ktoré `dot`
+z graphviz 16.1.2 už nevykresľuje
+([preskočenie vykreslenia v 16.1.2](#render-skip-16-1-2)), a každý prechod modulov
+berie svoje id z conformant množiny prieskumu `dot`. Štyri zo siedmich chýb orákula `fdp` sú
+toto preskočenie vykreslenia pri samotnom `fdp`.
+
+(Univerzum vzrástlo z 898 na 933 pri graphviz 16.1.2 bez zmeny portu:
+53 id, ktoré skoršie opravy portu už urobili conformant, vstúpilo do prechodov,
+keď sa prieskum `dot` znova spustil, a 18 id s preskočeným vykreslením odišlo.)
 
 (Miera úspešnosti `fdp` vzrástla zo 77.5 %, pretože skorší commitnutý prechod
 predchádzal stavu portu z predchádzajúcej misie.
@@ -219,11 +229,15 @@ jednotlivé id `2619_2`, ktorého akceptácia je zrušená; dve id `neato` mimo 
 najmä neportované spracovanie `user_pos`/`P_SET` v neato, konsolidácia
 inicializácie modulov a oprava `setEdgeType` makro-vs-funkcia.)
 
-Na rozdiel od prvého prieskumu je každý odchýlený riadok univerza 898 položiek individuálne
-priradený voči graphviz 16.1.1: injekčný nástroj (`test/corpus/attribute-divergence.ts`) vkladá
+Na rozdiel od prvého prieskumu je každý odchýlený riadok univerza 933 položiek individuálne
+priradený voči graphviz 16.1.2: injekčný nástroj (`test/corpus/attribute-divergence.ts`) vkladá
 `ND_pos` z natívneho orákula pred vedením hrán do portu a znovu porovnáva, a každé súčasné odchýlené
 id je `drift-exonerated` (vedenie a emisia portu reprodukujú orákulum presne, keď sa drift solvera
-odstráni), okrem sfdp `2556`. Dva sú samostatne akceptované zvyšky po jednotlivých id: drift `pow` z libm hostiteľa pri
+odstráni), okrem sfdp `2556`, fdp `2717` ([čakajúci port z 16.1.2](#pending-16-1-2-ports)), fdp `1436`
+([#211](https://github.com/knowvah/dot-engine/issues/211): sedem jeho podgrafov má rovnaký názov, takže nástroj nevie umiestniť
+ich boxy) a sfdp `graphs-clustlabel` ([#315](https://github.com/knowvah/dot-engine/issues/315)). Šesť riadkov fdp `2768`,
+`2768_1`, `2768_2`, `2769`, `2769_1` a `2769_2` znie `drift-exonerated`, ale
+sú deterministickou chybou [#224](https://github.com/knowvah/dot-engine/issues/224); pod A1 nie sú akceptované. Dva sú samostatne akceptované zvyšky po jednotlivých id: drift `pow` z libm hostiteľa pri
 sfdp `241_0` (znovu diagnostikovaný v T28; jeho injekčný riadok znie `drift-exonerated` od `12dddc48`) a NaN rozloženie sfdp `2556`. fdp `241_0` prechádza od
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` (pozri odsek
 o fdp v A9). fdp `2471` a sfdp `2371` si
@@ -309,7 +323,7 @@ uzavrel `42`, `clust2`, `ngk10_4` (structural-match → conformant) a posunul
 
 **Obe strany prieskumu používajú ten istý odhadca — meranie je neutralizované.**
 Natívne orákulum `dot` beží pod bezhlavým `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`), ktorý symbolicky prepája iba
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`), ktorý symbolicky prepája iba
 pluginy `core` a `dot_layout` — žiadny textový plugin `gd`/`pango`/`quartz`.
 Keď je tento slot prázdny, graphviz sa vráti k svojmu vstavanému
 `estimate_textspan_size`. `EstimateTextMeasurer` v porte v TypeScripte
@@ -326,7 +340,7 @@ zúžila medzeru vo fontových metrikách.
 že meranie textu je zámerný zásuvný bod, nie pevne zadrôtované do žiadneho
 z modulov. `TextMeasurer` je rozhranie s jednou metódou (`measure(text, font, size,
 flags) → {w, h, …}`) vstrekované závislosťou do každého miesta, ktoré určuje veľkosť popiskov —
-`polyInit`, `recordInit`, `initEdgeLabels` a `buildNodeLabel` preberajú
+`polyInit`, `recordInit`, `initEdgeLabels` a `makeNodeLabel` preberajú
 merač ako parameter; nič nemeria text cez globál. Pre testy/CI sa pripína cez
 `setTextMeasurer(...)` alebo `GV_TEXT_MEASURER=estimate`.
 Zásuvný bod tiež umožňuje *dokázať*, že zvyšok je čisto meraním: podajte portu
@@ -460,7 +474,7 @@ možno reprodukovať. Commit `cdf597bc`
 (459), `normv` (413), `B01` (488) a `B23` (494). Tolerantné rozhodovanie remízy
 je preč; uzol `241_0` je pripnutý v smerovacom rámci C, pretože C nie je
 ekvivariantné voči posunu pri takýchto remízach. Tým sa uzavreli `2368`, `2371`,
-`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` a `graphs-decorate`. V graphviz 16.1.1 sa `2368` znova rozchádza z nesúvisiaceho dôvodu: kvôli zmene `flat_reorder` v natívnej verzii ([#158](#pending-16-1-1-ports)).
+`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` a `graphs-decorate`. V graphviz 16.1.1 sa `2368` znova rozchádzal z nesúvisiaceho dôvodu, kvôli zmene `flat_reorder` v natívnej verzii ([#158](#pending-16-1-1-ports)); teraz je znova conformant, keďže je zmena naportovaná.
 
 `241_1` nebola remíza `hypot`: uzavrel ju `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
@@ -523,6 +537,13 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. Orákulum v uznanom pokazenom stave (rodina init_rank / pathplan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **V graphviz 16.1.2 orákulum pre túto rodinu nezapíše nič.** `dot` teraz
+> preskočí vykreslenie, keď rozloženie hlási chybu, takže `1581`, `1939`, `2470`,
+> `2471`, `2796`, `2825` a `graphs-structs` sú v prieskume chyby orákula,
+> nie riadky conformant ani diverged; `1435` sa to netýka. Port ich stále vykresľuje
+> tak, ako je opísané nižšie. Pozri [preskočenie vykreslenia v 16.1.2](#render-skip-16-1-2). Text
+> nižšie opisuje stav do graphviz 16.1.1.
 
 **Dotknuté (prechod graphviz 16.1):** `1435` (structural-match, maxΔ 0.39 na
 jednom riadiacom bode splinu; oproti orákulu 15.x to bolo 503 — pokles nebol
@@ -972,6 +993,9 @@ oba vyhovujú. Samostatná reprodukcia: `.agent-notes/circo-2475-590-repro.dot`;
 úplná RCA: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP radiálnej súradnice zosilnený R-stromom xlabelov.**
+(História od graphviz 16.1.2: `2470` opustilo každý prechod modulov spolu s
+[preskočením vykreslenia](#render-skip-16-1-2) a jeho záznamy v registri sú zrušené.
+Natívny `twopi` ho stále vykresľuje.)
 2470 je graf so 140 hranami, ktorého popisky hrán v HTML `<table>` sa zhlukujú na
 takmer zhodných radiálnych kotvách. V rodine neato sa popisky hrán umiestňujú
 ako externé popisky chamtivým umiestňovačom xlabelov (`label/xlabels.c`),
@@ -1150,12 +1174,18 @@ poznámku o preklasifikovaní `2095` vyššie).
 
 ### A10. Limit veľkosti `Map` vo V8 pri balení polyomín (`2784`, päť modulov založených na balení) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Dotknuté:** `2784` pri `circo`, `twopi`, `neato`, `fdp` a `sfdp`. Port vyhodí chybu
-pri prechodoch xdot a imagemap všetkých piatich modulov a pri prechode `json`
-pre `circo`. Pri prechodoch `json` pre `twopi`, `neato`, `fdp` a `sfdp` a pri
-prechodoch `plain` všetkých piatich samotné natívne orákulum neskončí v rámci časového
-rozpočtu prechodu, takže tieto riadky sú chyby orákula. Pri `dot`, `osage` a
-`patchwork` prechádza.
+**Dotknuté:** `2784` a `2783` pri `circo`, `twopi`, `neato`, `fdp` a `sfdp`.
+Port vyhodí chybu pri prechodoch xdot, `json` a imagemap všetkých piatich modulov. Pri
+prechodoch `plain` samotné natívne orákulum neskončí v rámci 300 s rozpočtu prechodu,
+takže tieto riadky sú chyby orákula (výnimkou je `2783` pri `sfdp` `plain-ext`:
+natívna verzia skončí a port vyhodí chybu). Natívna verzia potrebuje na týchto vstupoch 180 až 410 s,
+takže riadok `json` alebo imagemap môže pri zaťaženom stroji tiež znieť ako chyba orákula.
+Pri `dot`, `osage` a `patchwork` prechádzajú obe.
+
+`2783` má rovnaký tvar ako `2784` a do prechodov vstúpilo pri graphviz 16.1.2. Jeho
+15 riadkov s chybou portu zatiaľ nemá záznam v registri, takže ich dashboardy ukazujú
+ako neakceptované chyby portu; rovnako aj riadky `json` pre `2784` pri `twopi`, `neato`, `fdp` a
+`sfdp`.
 
 **Čo sa deje.** `lib/pack/pack.c` zaznamenáva bunky, ktoré komponent zaberá, do
 `PointSet`. Pre `2784` (jediný uzol vysoký 3e16 pt, `splines="ortho"`) verná
@@ -1234,6 +1264,89 @@ Orákulum sa presunulo z graphviz 16.1.0 na 16.1.1 ([ADR-0002](https://github.co
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | zvyšok behaviorálnych zmien 16.1.1 | žiadne v korpuse ani v golden súboroch | — |
 
 Vstupy, ktoré sa dotýkajú každej zmeny, sleduje [#148](https://github.com/knowvah/dot-engine/issues/148).
+
+**Stav pri graphviz 16.1.2:** každé issue v tejto tabuľke je uzavreté a jeho zmena je
+naportovaná. Tabuľka sa ponecháva ako história. 34 id z #158, 4 z #160, `2783` (#164) a
+14 vstupov, ktoré pridala verzia 16.1.1, je opäť conformant pri `dot` a späť v každom prechode.
+
+## Čakajúce porty z 16.1.2 {#pending-16-1-2-ports}
+
+Orákulum sa presunulo z graphviz 16.1.1 na 16.1.2
+([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)).
+Klasifikácia nového základu
+(`plans/graphviz-16-1-2-rebaseline/classification/`) vysledovala k príčine každý výsledok, ktorý
+sa zmenil. Výsledok korpusu posúvajú iba dve zmeny upstreamu: preskočenie vykreslenia, opísané
+v nasledujúcej časti, a zmena `mapc` nižšie. Nejde o akceptované odchýlky: každá je otvorenou
+prácou v príslušnom issue.
+
+| issue | zmena upstreamu | id, ktoré sa posunuli v 16.1.2 | enginy |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc` rozhoduje, či je podgraf klaster, pomocou `is_a_cluster`, nie podľa predpony názvu `cluster` | 1: `2717`. Natívna verzia v 16.1.1 spadla a v 16.1.2 vykresľuje; port stále pridáva uzol `domestic_cats` a odchyľuje sa pri prechodoch xdot, `json` a `plain` (imagemap je conformant) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | `dot` preskočí vykreslenie, keď rozloženie hlási chybu | 34 id prieskumu, 5 id modulov a 3 golden súbory: pozri [preskočenie vykreslenia v 16.1.2](#render-skip-16-1-2) | všetky |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges` pri skenovaní `other` preskakuje slučky | žiadne v prechádzanom korpuse | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | `conc_slope` použije náhradu, keď uzol nemá vstupné alebo výstupné hrany | žiadne v prechádzanom korpuse | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | `reallyroutespline` zlyhá, keď sa nenájde bod delenia | žiadne v prechádzanom korpuse (karanténovaný vstup `2746` už natívne nespadne; je teraz preskočením vykreslenia) | všetky |
+
+Sedem vstupov, ktoré pridáva 16.1.2 (`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`), je v karanténe ako `pending-input` a neprechádzajú sa, kým ich
+[#298](https://github.com/knowvah/dot-engine/issues/298) nepripustí.
+
+## Preskočenie vykreslenia v 16.1.2 (čaká #299) {#render-skip-16-1-2}
+
+Od graphviz 16.1.2 príkaz `dot` nevykresľuje, keď rozloženie hlásilo chybu
+(upstreamový commit `19b33b581`, `cmd/dot/dot.c:main`): skončí s kódom 1 a nezapíše nič.
+Graphviz 16.1.1 tiež skončil s kódom 1, ale zapísal napoly rozložený dokument. Port tieto
+vstupy stále vykresľuje, tak ako 16.1.1.
+Či ich port nasleduje, rieši [#299](https://github.com/knowvah/dot-engine/issues/299), ktoré čaká na rozhodnutie správcu; dovtedy sa
+v knižnici kvôli tomu nič nemení.
+
+Bez natívneho dokumentu nie je čo porovnávať, takže každý riadok nižšie je chyba
+orákula, nie odchýlka ani akceptovaná odchýlka.
+
+**Prieskum `dot`, 34 id** (všetky boli v 16.1.1 conformant okrem `2781` a
+`2781_1`, ktoré boli structural-match), podľa prvej chyby, ktorú rozloženie hlási:
+
+| prvá chyba | id |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2` a `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+Posledných päť (`1879` až `2821_2`) zlyháva iba preto, že prechody spúšťajú natívnu verziu
+z koreňa repozitára, kde sa súbory obrázkov pomenované v ich popiskách nenájdu
+([#314](https://github.com/knowvah/dot-engine/issues/314)); spustené z vlastného adresára ich vykreslia obe verzie graphviz.
+
+**Každý ďalší prechod.** Prechody `-Tdot`, xdot, `json`, imagemap a `plain` a
+všetkých sedem prechodov modulov berie svoje id z conformant množiny prieskumu, takže
+18 z týchto id, ktoré v tej množine boli, sa už neprechádza pri žiadnom module ani
+formáte: `1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`,
+`1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` a
+`graphs-structs`. Ich akceptované záznamy v registroch jednotlivých modulov sú
+zrušené. Väčšina z nich sa pri ostatných moduloch stále vykresľuje natívne (89 zo
+126 dvojíc id a modulu), takže moduly strácajú pokrytie, ktoré by mohli zachovať.
+
+**Pri samotnom module, 5 id** (riadky xdot, `json`, imagemap a `plain`, všetky
+prechádzali v 16.1.1):
+
+| modul | id | chyba |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (port túto chybu zatiaľ nevypisuje, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+Registre chýb orákula označujú týchto päť ako `native-crash`, pretože klasifikátor
+nemá inú triedu pre „zlyhal každý pokus“; natívna verzia skončí s kódom 1 bez
+výstupu a nespadne.
+
+**Golden súbory, 3:** `pt-issue-31-inline`, `pt-issue-31-rubebe` a
+`pt-issue-31-zuduxu` si ponechávajú svoju referenciu z graphviz 16.1.1, pretože 16.1.2
+žiadnu nezapisuje (`test/golden/inputs/PROVENANCE.md`).
 
 ## Sledovaný dlhý chvost (atribúty a hraničné prípady v `dot`) {#tracked-long-tail-dot-attribute-edge-case}
 

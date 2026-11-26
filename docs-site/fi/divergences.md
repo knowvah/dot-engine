@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -81,7 +81,7 @@ säilytetty alla historiana.
 
 > **Soveltamisala, historiallisesti mittaamaton varaus — nyt osittain mitattu.**
 > **Pää-dot-moottorin SVG-kartoitus** (`test/corpus/survey.ts`) on yhä
-> **vain dot**: natiivi oraakkeli ajetaan `GVBINDIR=/tmp/ghl1611`-asetuksella, joka
+> **vain dot**: natiivi oraakkeli ajetaan `GVBINDIR=/tmp/ghl1612-carried`-asetuksella, joka
 > linkittää symbolisesti **vain** `core`- ja `dot_layout`-liitännäiset
 > (`test/corpus/gen-headless-gvbindir.sh` käy läpi täsmälleen `core dot_layout`
 > — yhtään `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp`-asettelutiedostoliitännäistä
@@ -126,10 +126,10 @@ katto tälle työlle on **kaventaa** A1 muotoon ”ei aktiivista poikkeamaa
 vertailualustalla”, ei koskaan poistaa alustojen välistä varausta; tähänastiset
 tulokset (alla) pysyvät tuossa katossa: `circo`/`twopi`/`osage` ovat kukin
 tuoneet esiin ja juurisyyanalysoineet kourallisen aitoja A1/A9-tapauksia, ja
-`neato`/`fdp`/`sfdp` ovat nyt 99.8/98.0/68.2 %:ssa 0.5 pt:n sisällä natiivista
-898 kohteen joukossa (graphviz 16.1.1), mikä tarkoittaa, että porttattu aritmetiikka
+`neato`/`fdp`/`sfdp` ovat nyt 99.7/97.2/68.6 %:ssa 0.5 pt:n sisällä natiivista
+933 kohteen joukossa (graphviz 16.1.2), mikä tarkoittaa, että porttattu aritmetiikka
 (`fma.ts`, `arm-pow.ts`, vastaava PRNG) pitää useimmilla graafeilla — ja
-jokainen 898 kohteen joukon poikkeava tunniste on yksitellen selitetty injektiolla
+jokainen 933 kohteen joukon poikkeava tunniste on yksitellen selitetty injektiolla
 (ratkaisijan ajelehtiminen vs. porttauksen vika) eikä jätetty luokittelemattomaksi
 ajelehtimiseksi. Katso iteratiivisten
 moottorien luonnehdinta alla.
@@ -214,16 +214,15 @@ kentän `tolerance: 0.5`, ja `parity-report.ts` renderöi ne erilliseen
 ”Iteratiiviset moottorit (±0.5 luonnehdinta)” -osioon tiedostossa
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 nimenomaisesti **ei** vertailukelpoisina muualla tässä dokumentissa esiintyviin
-±0.01:n deterministisiin läpäisyprosentteihin. Nykyiset lukumäärät graphviz 16.1.1:aa
-vasten (898 kohteen joukko; läpäisyprosentti jättää pois syötteet, joita C-oraakkeli ei
+±0.01:n deterministisiin läpäisyprosentteihin. Nykyiset lukumäärät graphviz 16.1.2:ta vasten (933 kohteen joukko; läpäisyprosentti jättää pois syötteet, joita C-oraakkeli ei
 pysty renderöimään, ja syötteet, joiden natiivituloste vaihtelee ajosta toiseen, kohdan
 [Yhdenmukaisuus](./conformance.md) mukaisesti):
 
 | moottori | kartoitettu | ±0.5 pt:n sisällä | ei-yhdenmukainen | porttausvirhe / aikakatkaisu | oraakkelivirhe | oraakkeli epädeterministinen |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
 `fdp`:n 11 epädeterminististä syötettä, joiden natiivituloste vaihtelee ajosta toiseen, on jätetty pois sen läpäisyprosentista; sen ainoa porttausvirhe on `1879`, joka vaatii `splines=compound`-reitityksen, jota portti ei tue.
 
@@ -239,12 +238,11 @@ sisällä — hyppy nykyisiin lukemiin tuli sittemmin toteutetuista
 tunnistekohtaisista korjauksista, pääasiassa neaton porttaamattoman `user_pos`/`P_SET`-käsittelyn,
 moottorin alustuksen yhdistämisen ja `setEdgeType`-makro-vs-funktio-korjauksen ansiosta.)
 
-Toisin kuin ensimmäisellä ajolla, 898 kohteen joukon jokainen poikkeava rivi on
-selitetty yksitellen graphviz 16.1.1:aa vasten: injektiotyökalu
+Toisin kuin ensimmäisellä ajolla, 933 kohteen joukon jokainen poikkeava rivi on selitetty yksitellen graphviz 16.1.2:ta vasten: injektiotyökalu
 (`test/corpus/attribute-divergence.ts`) syöttää natiivin oraakkelin reititystä
 edeltävän `ND_pos`in porttaukseen ja vertaa uudelleen, ja jokainen nykyinen
 poikkeava tunniste on `drift-exonerated` (porttauksen reititys ja emissio
-toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) sfdp:n `2556`:ta lukuun ottamatta. Kaksi on erikseen hyväksyttyjä tunnistekohtaisia jäännöksiä:
+toistavat oraakkelin täsmälleen, kun ratkaisijan ajelehtiminen poistetaan) sfdp:n `2556`:ta, fdp:n `2717`:ää ([odottava 16.1.2-porttaus](#pending-16-1-2-ports)), fdp:n `1436`:ta ([#211](https://github.com/knowvah/dot-engine/issues/211): seitsemällä sen aligraafilla on sama nimi, joten työkalu ei pysty sijoittamaan niiden laatikoita) ja sfdp:n `graphs-clustlabel`:ia ([#315](https://github.com/knowvah/dot-engine/issues/315)) lukuun ottamatta. Kuusi fdp-riviä `2768`, `2768_1`, `2768_2`, `2769`, `2769_1` ja `2769_2` ovat `drift-exonerated`, mutta ne ovat deterministinen vika [#224](https://github.com/knowvah/dot-engine/issues/224); niitä ei hyväksytä A1:n alla. Kaksi on erikseen hyväksyttyjä tunnistekohtaisia jäännöksiä:
 sfdp:n `241_0`:n isäntä-libm:n `pow`-ajelehtiminen (T28 diagnosoi uudelleen; sen injektiorivi on `12dddc48`:stä lähtien `drift-exonerated`) sekä sfdp:n `2556`:n NaN-asettelu. fdp:n `241_0` läpäisee
 testin korjauksesta `fix(T9): start swapped cdt faces at the new diagonal as gts does` lähtien (katso fdp-kappale kohdassa A9). fdp:n `2471` ja sfdp:n `2371` kaarten nimiöiden sijainnit (`lp`)
 poikkesivat aiemmin injektion jälkeen, eli xlabel-sijoittaja valitsi eri ehdokkaan.
@@ -260,7 +258,7 @@ moottorikohtaisilla kojelaudoilla
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Missä sfdp:n ratkaisijan ajautuma alkaa (osa 10, T2).** Instrumentoitu natiivi sfdp, jota seurattiin porttia vastaan pienillä id:illä, poikkeaa ensimmäisen kerran hylkimisvoiman `pow(dist, 1-p)` viimeisessä bitissä (`lib/sfdpgen/spring_electrical.c:625,617`; portti `spring-electrical.ts:260`). Kohteessa `flatedge` `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` antaa natiivisti `...8811p+2` ja portissa `...8812p+2`; `graphs-p` ja `1767` alkavat samoin. Mukautuva jäähdytys vahvistaa bitin: se yltää arvoon `x[0]` iteraatiolla 5, `max|dx|` on 2.4e-9 iteraatiolla 100 ja 3.9e-5 iteraatiolla 200, ja askel kääntyy iteraatiolla 244. Kaksi kontrolloitua ajoa vahvistaa tämän. Kun natiivin bitit asetetaan täsmälleen näille 8 kutsulle, `flatedge`n 62090-rivinen jälki on identtinen, ja macOS:n oikealla `pow`:lla Node-API-lisäosan takana 288:lla 292:sta läpäisemättömästä id:stä on bitti bitiltä identtinen jälki (loput 4, kaikki `overlap=false`, eroavat vain kohdassa `xfinal`). Operaatiojärjestys ja fuusio ratkaisijassa, monitasossa, quadtreessa ja harvassa koodissa suljettiin pois. Tämä on isännän libm, hyväksytty luokassa A1 (ks. `pow`-kohta alla olevassa tunnettujen aukkojen luettelossa); `src/` ei muuttunut, joten luvut pysyvät 632:ssa 929:stä. Vain macOS:llä tehty koe yltää noin 923:een 929:stä; se mittaa oraakkelin `pow`:ia eikä ole jotain, minkä kirjasto osaa kaikilla isänteillä. `Math.pow` hylkimisvoimassa läpäisee 153 näistä 292:sta mutta heikentää 6 tänään läpäisevää id:tä, joten sitä ei otettu käyttöön. Taulukon sfdp-rivi vastaa [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md):n riviä: 0 poikkeavaa plus 286 hyväksyttyä antaa 286 graphviz 16.1.1:llä, eikä yhtään id:tä ole siellä merkitty oraakkelin ei-deterministiseksi.
+**Missä sfdp:n ratkaisijan ajautuma alkaa (osa 10, T2).** Instrumentoitu natiivi sfdp, jota seurattiin porttia vastaan pienillä id:illä, poikkeaa ensimmäisen kerran hylkimisvoiman `pow(dist, 1-p)` viimeisessä bitissä (`lib/sfdpgen/spring_electrical.c:625,617`; portti `spring-electrical.ts:260`). Kohteessa `flatedge` `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` antaa natiivisti `...8811p+2` ja portissa `...8812p+2`; `graphs-p` ja `1767` alkavat samoin. Mukautuva jäähdytys vahvistaa bitin: se yltää arvoon `x[0]` iteraatiolla 5, `max|dx|` on 2.4e-9 iteraatiolla 100 ja 3.9e-5 iteraatiolla 200, ja askel kääntyy iteraatiolla 244. Kaksi kontrolloitua ajoa vahvistaa tämän. Kun natiivin bitit asetetaan täsmälleen näille 8 kutsulle, `flatedge`n 62090-rivinen jälki on identtinen, ja macOS:n oikealla `pow`:lla Node-API-lisäosan takana 288:lla 292:sta läpäisemättömästä id:stä on bitti bitiltä identtinen jälki (loput 4, kaikki `overlap=false`, eroavat vain kohdassa `xfinal`). Operaatiojärjestys ja fuusio ratkaisijassa, monitasossa, quadtreessa ja harvassa koodissa suljettiin pois. Tämä on isännän libm, hyväksytty luokassa A1 (ks. `pow`-kohta alla olevassa tunnettujen aukkojen luettelossa); `src/` ei muuttunut, joten luvut pysyvät 632:ssa 929:stä. Vain macOS:llä tehty koe yltää noin 923:een 929:stä; se mittaa oraakkelin `pow`:ia eikä ole jotain, minkä kirjasto osaa kaikilla isänteillä. `Math.pow` hylkimisvoimassa läpäisee 153 näistä 292:sta mutta heikentää 6 tänään läpäisevää id:tä, joten sitä ei otettu käyttöön. Taulukon sfdp-rivi vastaa [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md):n riviä: 1 poikkeava plus 291 hyväksyttyä antaa 292 graphviz 16.1.2:lla, ja yksi id (`linux.x86-neatosplines_neato`) on siellä merkitty oraakkelin ei-deterministiseksi.
 
 **A1-drift-luokkahyväksyntä (iteratiiviset moottorit, laskettu jäsenyys).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -327,7 +325,7 @@ sulki tunnisteet `42`, `clust2`, `ngk10_4` (structural-match → conformant) ja 
 
 **Molemmat kartoituspuolet käyttävät samaa estimaattoria — mittaus on neutraloitu.**
 Natiivi `dot`-oraakkeli ajetaan headless-`GVBINDIR`:llä
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`), joka linkittää symbolisesti vain
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`), joka linkittää symbolisesti vain
 `core`- ja `dot_layout`-liitännäiset — ei `gd`/`pango`/`quartz`-tekstiasetteluliitännäistä.
 Kun tuo paikka on tyhjä, graphviz turvautuu sisäänrakennettuun
 `estimate_textspan_size`en. TypeScript-porttauksen `EstimateTextMeasurer`
@@ -344,7 +342,7 @@ suurimman osan tästä luokasta kokonaan eikä vain kaventanut fonttimetriikkaer
 että tekstinmittaus on tietoinen liitäntäkohta, ei kovakoodattu kumpaankaan
 moottoriin. `TextMeasurer` on yhden metodin rajapinta (`measure(text, font, size,
 flags) → {w, h, …}`), joka injektoidaan jokaiseen nimiön koon laskentakohtaan —
-`polyInit`, `recordInit`, `initEdgeLabels` ja `buildNodeLabel` ottavat kukin
+`polyInit`, `recordInit`, `initEdgeLabels` ja `makeNodeLabel` ottavat kukin
 mittaajan parametrina; mikään ei mittaa tekstiä globaalin kautta. Se kiinnitetään
 testeille/CI:lle kutsulla `setTextMeasurer(...)` tai `GV_TEXT_MEASURER=estimate`.
 Liitäntäkohta mahdollistaa myös sen *todistamisen*, että jäännös on pelkkää mittausta: syötä
@@ -478,7 +476,7 @@ clangin `fp-contract`-yhdistäminen bezier-arvioinnissa (`route.c:137-138`),
 ja `B23` (494). Sietävä tasapelin ratkaisu on poistettu; `241_0`:n splinen solmupiste
 on lukittu C:n reititysruudukkoon, koska C ei ole siirtoekvariantti tällaisilla
 tasapeleillä. Tämä sulki `2368`:n, `2371`:n, `2413_1`:n, `2413_2`:n, `graphs-b100`:n,
-`graphs-b104`:n ja `graphs-decorate`:n. Graphviz 16.1.1:ssä `2368` poikkeaa jälleen asiaan liittymättömästä syystä: natiiviversion `flat_reorder`-muutoksen vuoksi ([#158](#pending-16-1-1-ports)).
+`graphs-b104`:n ja `graphs-decorate`:n. Graphviz 16.1.1:ssä `2368` poikkesi jälleen asiaan liittymättömästä syystä, natiiviversion `flat_reorder`-muutoksen vuoksi ([#158](#pending-16-1-1-ports)); se on taas conformant, kun muutos on porttattu.
 
 `241_1` ei ollut `hypot`-tasapeli: sen sulki `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C ryhmittelee
@@ -541,6 +539,15 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 ```
 
 ### A4. Oraakkeli tunnustetusti rikkinäisessä tilassa (init_rank / pathplan -perhe) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **Graphviz 16.1.2:ssa oraakkeli ei kirjoita tälle perheelle mitään.** `dot`
+> ohittaa nyt renderöinnin, kun asettelu ilmoittaa virheestä, joten `1581`,
+> `1939`, `2470`, `2471`, `2796`, `2825` ja `graphs-structs` ovat kartoituksessa
+> oraakkelivirheitä eivätkä conformant- tai diverged-rivejä; `1435` ei muutu.
+> Porttaus renderöi ne yhä alla kuvatulla tavalla. Katso
+> [16.1.2:n renderöinnin ohitus](#render-skip-16-1-2). Alla oleva teksti kuvaa
+> tilaa graphviz 16.1.1:een asti.
+
 
 **Koskee (graphviz 16.1 -ajo):** `1435` (structural-match, maxΔ 0.39 yhdellä
 splinen ohjauspisteellä; oli 503 15.x-oraakkelia vasten — pudotusta ei bisektoitu) ja
@@ -989,6 +996,10 @@ toisto: `.agent-notes/circo-2475-590-repro.dot`; täysi juurisyyanalyysi:
 `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — xlabel-R-puun vahvistama säteittäiskoordinaatin ULP.**
+(Historiaa graphviz 16.1.2:sta alkaen: `2470` poistui kaikista moottoriläpikäynneistä
+[renderöinnin ohituksen](#render-skip-16-1-2) mukana, ja sen rekisterimerkinnät on
+poistettu. Natiivi `twopi` renderöi sen yhä.)
+
 2470 on 140 kaaren graafi, jonka HTML-`<table>`-kaarinimiöt kasautuvat
 lähes yhtenevien säteittäisten ankkureiden ympärille. Neato-perheessä kaarinimiöt sijoitetaan
 ulkoisina nimiöinä ahneella xlabel-sijoittajalla (`label/xlabels.c`),
@@ -1173,12 +1184,19 @@ yllä oleva `2095`:n uudelleenluokitusta koskeva huomautus).
 
 ### A10. V8:n `Map`-kokoraja polyomino-pakkauksessa (`2784`, viisi pakkaukseen perustuvaa moottoria) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Koskee:** `2784` moottoreilla `circo`, `twopi`, `neato`, `fdp` ja `sfdp`.
-Porttaus heittää virheen kaikkien viiden moottorin xdot- ja imagemap-läpikäynneissä
-sekä `circo`n `json`-läpikäynnissä. Moottorien `twopi`, `neato`, `fdp` ja `sfdp`
-`json`-läpikäynneissä sekä kaikkien viiden `plain`-läpikäynneissä natiivi oraakkeli
-itse ei valmistu läpikäynnin aikabudjetin puitteissa, joten nuo rivit ovat
-oraakkelivirheitä. Moottoreilla `dot`, `osage` ja `patchwork` se läpäisee.
+**Koskee:** `2784` ja `2783` moottoreilla `circo`, `twopi`, `neato`, `fdp` ja `sfdp`.
+Porttaus heittää virheen kaikkien viiden moottorin xdot-, `json`- ja
+imagemap-läpikäynneissä. `plain`-läpikäynneissä natiivi oraakkeli itse ei valmistu
+läpikäynnin 300 sekunnin budjetin puitteissa, joten nuo rivit ovat oraakkelivirheitä
+(poikkeus on `2783` moottorilla `sfdp` `plain-ext`: natiivi valmistuu ja porttaus
+heittää virheen). Natiivilta kestää näillä syötteillä 180–410 sekuntia, joten
+`json`- tai imagemap-rivi voi kuormitetulla koneella näkyä myös oraakkelivirheenä.
+Moottoreilla `dot`, `osage` ja `patchwork` molemmat läpäisevät.
+
+`2783`:lla on sama muoto kuin `2784`:llä, ja se tuli läpikäynteihin graphviz 16.1.2:ssa.
+Sen 15 porttausvirherivillä ei ole vielä rekisterimerkintää, joten kojelaudat näyttävät
+ne hyväksymättöminä porttausvirheinä; samoin `2784`:n `json`-rivit moottoreilla
+`twopi`, `neato`, `fdp` ja `sfdp`.
 
 **Mitä tapahtuu.** `lib/pack/pack.c` tallentaa komponentin varaamat solut
 `PointSet`iin. Tiedostossa `2784` (yksi 3e16 pt korkea solmu, `splines="ortho"`)
@@ -1257,7 +1275,67 @@ Oraakkeli siirtyi graphviz 16.1.0:sta versioon 16.1.1 ([ADR-0002](https://github
 | [#163](https://github.com/knowvah/dot-engine/issues/163) | dokumentoimaton `compact`-attribuutti poistetaan | ei korpuksen id:tä; goldenit `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | loput 16.1.1:n käyttäytymismuutoksista | ei yhtään korpuksessa tai goldeneissa | — |
 
+
 Syötteitä, jotka osuvat kuhunkin muutokseen, seurataan kohdassa [#148](https://github.com/knowvah/dot-engine/issues/148).
+
+**Tila graphviz 16.1.2:ssa:** jokainen tämän taulukon issue on suljettu ja sen muutos porttattu. Taulukko säilytetään historiana. #158:n 34 id:tä, #160:n 4, `2783` (#164) ja 14 syötettä, jotka 16.1.1 lisäsi, ovat taas conformant moottorilla `dot` ja takaisin jokaisessa läpikäynnissä.
+
+## Odottavat 16.1.2-porttaukset {#pending-16-1-2-ports}
+
+Oraakkeli siirtyi graphviz 16.1.1:stä versioon 16.1.2 ([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)). Uuden perustason luokittelu (`plans/graphviz-16-1-2-rebaseline/classification/`) jäljitti jokaisen muuttuneen tuloksen syyhyn. Vain kaksi upstream-muutosta siirtää korpuksen tulosta: renderöinnin ohitus, jota kuvataan seuraavassa osiossa, ja alla oleva `mapc`-muutos. Nämä eivät ole hyväksyttyjä eroja: kukin on avointa työtä omassa issuessaan.
+
+| issue | upstream-muutos | id:t, jotka siirtyivät versiossa 16.1.2 | moottorit |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc` päättää `is_a_cluster`illa, onko aligraafi klusteri, eikä nimen etuliitteen `cluster` perusteella | 1: `2717`. Natiivi kaatui versiossa 16.1.1 ja renderöi versiossa 16.1.2; porttaus lisää yhä solmun `domestic_cats` ja poikkeaa xdot-, `json`- ja `plain`-läpikäynneissä (imagemap on conformant) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | `dot` ohittaa renderöinnin, kun asettelu ilmoittaa virheestä | 34 kartoituksen id:tä, 5 moottorin id:tä ja 3 goldenia: katso [16.1.2:n renderöinnin ohitus](#render-skip-16-1-2) | kaikki |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges` ohittaa silmukat `other`-läpikäynnissä | ei yhtään läpikäydyssä korpuksessa | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | `conc_slope` käyttää varavaihtoehtoa, kun solmulla ei ole tulevia tai lähteviä kaaria | ei yhtään läpikäydyssä korpuksessa | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | `reallyroutespline` epäonnistuu, kun jakopistettä ei löydy | ei yhtään läpikäydyssä korpuksessa (karanteenissa oleva syöte `2746` ei enää kaadu natiivina; se on nyt renderöinnin ohitus) | kaikki |
+
+Seitsemän syötettä, jotka 16.1.2 lisää (`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`), ovat karanteenissa tilassa `pending-input`, eikä niitä käydä läpi, ennen kuin
+[#298](https://github.com/knowvah/dot-engine/issues/298) ottaa ne mukaan.
+
+## 16.1.2:n renderöinnin ohitus (odottaa #299:ää) {#render-skip-16-1-2}
+
+Graphviz 16.1.2:sta alkaen komento `dot` ei renderöi, kun asettelu on ilmoittanut virheestä
+(upstream-commit `19b33b581`, `cmd/dot/dot.c:main`): se päättyy koodiin 1 eikä kirjoita mitään.
+Graphviz 16.1.1 päättyi myös koodiin 1, mutta kirjoitti puolivalmiiksi asetellun dokumentin.
+Porttaus renderöi nämä syötteet yhä, kuten 16.1.1 teki.
+Seuraako porttaus, ratkaisee [#299](https://github.com/knowvah/dot-engine/issues/299), joka odottaa ylläpitäjän ratkaisua; siihen asti kirjastossa ei muutu sen vuoksi mitään.
+
+Ilman natiivia dokumenttia ei ole mitään vertailtavaa, joten jokainen alla oleva rivi on oraakkelivirhe, ei poikkeama eikä hyväksytty delta.
+
+**`dot`-kartoitus, 34 id:tä** (kaikki olivat versiossa 16.1.1 conformant paitsi `2781` ja `2781_1`, jotka olivat structural-match), ensimmäisen asettelun ilmoittaman virheen mukaan:
+
+| ensimmäinen virhe | id:t |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2` sekä `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+Viimeiset viisi (`1879`–`2821_2`) epäonnistuvat vain siksi, että läpikäynnit ajavat natiivin repositorion juuresta, jossa niiden nimiöissä mainittuja kuvatiedostoja ei löydy ([#314](https://github.com/knowvah/dot-engine/issues/314)); omasta hakemistostaan ajettuina molemmat graphviz-versiot renderöivät ne.
+
+**Jokainen muu läpikäynti.** Läpikäynnit `-Tdot`, xdot, `json`, imagemap ja `plain` sekä kaikki seitsemän moottoriläpikäyntiä ottavat id:nsä kartoituksen conformant-joukosta, joten 18 niistä id:istä, jotka olivat tuossa joukossa, ei enää käydä läpi millään moottorilla tai formaatilla: `1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`, `1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` ja `graphs-structs`. Niiden hyväksytyt merkinnät moottorikohtaisissa rekistereissä on poistettu. Useimmat niistä renderöityvät yhä natiivisti muilla moottoreilla (89 id- ja moottoriparista 126:sta), joten moottorit menettävät kattavuutta, jonka ne voisivat säilyttää.
+
+**Itse moottorilla, 5 id:tä** (xdot-, `json`-, imagemap- ja `plain`-rivit, kaikki läpäisivät versiossa 16.1.1):
+
+| moottori | id:t | virhe |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (porttaus ei tulosta tätä vielä, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+Oraakkelivirherekisterit merkitsevät nämä viisi tilalla `native-crash`, koska luokittelijalla ei ole muuta luokkaa tilanteelle ”jokainen yritys epäonnistui”; natiivi päättyy koodiin 1 ilman tulostetta eikä kaadu.
+
+**Goldenit, 3:** `pt-issue-31-inline`, `pt-issue-31-rubebe` ja `pt-issue-31-zuduxu` säilyttävät graphviz 16.1.1 -viitteensä, koska 16.1.2 ei kirjoita yhtään (`test/golden/inputs/PROVENANCE.md`).
+
 
 ## Seurattu pitkä häntä (`dot`-attribuutit ja reunatapaukset) {#tracked-long-tail-dot-attribute-edge-case}
 

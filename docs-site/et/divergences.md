@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -75,7 +75,7 @@ determinism **ei** mõjuta; endised `dot` splaini marsruutimise ujukomadeltad
 
 > **Ulatus, ajalooliselt mõõtmata reservatsioon — nüüd osaliselt mõõdetud.**
 > **Põhiline dot-mootori SVG-uuring** (`test/corpus/survey.ts`) on endiselt
-> **ainult dot**: natiivne oraakel töötab keskkonnas `GVBINDIR=/tmp/ghl1611`, mis
+> **ainult dot**: natiivne oraakel töötab keskkonnas `GVBINDIR=/tmp/ghl1612-carried`, mis
 > lingib sümboolselt **ainult** `core` + `dot_layout` pluginad
 > (`test/corpus/gen-headless-gvbindir.sh` käib läbi täpselt `core dot_layout`
 > — ühtegi `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` paigutuspluginat ei ole),
@@ -114,10 +114,10 @@ sisendit selle enda mootoriga `dot`-i asemel. Selle töö aus lagi on
 A1 **kitsendamine** tasemele „aktiivset erinevust pole võrdlusplatvormil“, mitte kunagi
 platvormideülese reservatsiooni kõrvaldamine; senised tulemused (allpool) jäävad sellesse
 lakke: `circo`/`twopi`/`osage` on igaüks toonud päevavalgele ja algpõhjuseni
-jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 99.8/98.0/68.2%
-natiivsest 0.5pt piires 898-kirjelise universumi ulatuses (graphviz 16.1.1), mis tähendab, et portitud
+jälitanud käputäie tõelisi A1/A9 eksemplare, ja `neato`/`fdp`/`sfdp` on nüüd tasemel 99.7/97.2/68.6%
+natiivsest 0.5pt piires 933-kirjelise universumi ulatuses (graphviz 16.1.2), mis tähendab, et portitud
 aritmeetika (`fma.ts`, `arm-pow.ts`, sobitatud PRNG) peab enamiku graafide puhul vastu —
-ning iga 898-kirjelise universumi lahknev id on eraldi omistatud süstimise teel (lahendaja
+ning iga 933-kirjelise universumi lahknev id on eraldi omistatud süstimise teel (lahendaja
 triiv vs pordi viga), mitte jäetud sorteerimata triiviks. Vt iteratiivsete mootorite iseloomustust allpool.
 
 **Mootoriraja aktsepteerimine: twopi nooltepere.** <a id="a1-twopi-arrows-family"></a>
@@ -194,17 +194,19 @@ ja `parity-report.ts` kuvab need eraldi
 jaotises „Iteratiivsed mootorid (±0.5 iseloomustus)“ failis
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 sõnaselgelt **mitte** võrreldavana ±0.01 deterministlike läbimismääradega mujal
-selles dokumendis. Praegused arvud graphviz 16.1.1 vastu (898-kirjeline universum;
+selles dokumendis. Praegused arvud graphviz 16.1.2 vastu (933-kirjeline universum;
 läbimise % jätab välja sisendid, mida C-oraakel ei suuda renderdada, ja sisendid,
 mille natiivne väljund erineb jooksult jooksule, vt [Vastavus](./conformance.md)):
 
 | mootor | uuritud | ±0.5pt piires | mittevastav | pordi viga / ajalõpp | oraakli viga | oraakel mittedeterministlik |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
-`fdp` 11 mittedeterministlikku sisendit, mille natiivne väljund erineb jooksult jooksule, on selle läbimisprotsendist välja jäetud; selle ainus pordi viga on `1879`, mis vajab `splines=compound` marsruutimist, mida port ei toeta.
+`fdp` 8 mittedeterministlikku sisendit, mille natiivne väljund erineb jooksult jooksule, on selle läbimisprotsendist välja jäetud. Iga mootori ainus pordi viga on `2783` ([A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)). `1879`, varem `fdp` pordi viga, ei ole enam läbimisel: see on üks neist id-dest, mida graphviz 16.1.2 `dot` enam ei renderda ([renderdamise vahelejätmine versioonis 16.1.2](#render-skip-16-1-2)), ja iga mootori läbimine võtab oma id-d `dot` uuringu conformant-hulgast. Neli `fdp` seitsmest oraakli veast on see renderdamise vahelejätmine `fdp` enda peal.
+
+(Universum kasvas graphviz 16.1.2 puhul 898-lt 933-le ilma pordi muudatuseta: 53 id-d, mille varasemad pordi parandused olid juba conformant'iks teinud, jõudsid läbimistesse, kui `dot` uuring uuesti käivitati, ning 18 renderdamise vahelejätmise id-d lahkusid.)
 
 (`fdp` läbimismäär tõusis 77.5%-st, sest varasem sisseviidud läbimine
 eelnes eelmise missiooni pordi seisule.
@@ -218,12 +220,11 @@ lahendi triivi tõttu, läbivad nüüd, nende hulgas varem aktsepteeritud id-põ
 peamiselt neato portimata `user_pos`/`P_SET` käsitlusest, mootori init-i
 konsolideerimisest ja `setEdgeType` makro-vs-funktsiooni parandusest.)
 
-Erinevalt esimesest pühkimisest on 898-kirjelise universumi iga lahknev rida
-eraldi omistatud graphviz 16.1.1 vastu: süstimiskoormus
+Erinevalt esimesest pühkimisest on 933-kirjelise universumi iga lahknev rida eraldi omistatud graphviz 16.1.2 vastu: süstimiskoormus
 (`test/corpus/attribute-divergence.ts`) söödab natiivse oraakli marsruutimiseelse
 `ND_pos` porti ja võrdleb uuesti, ning iga praegune lahknev id on
 `drift-exonerated` (pordi marsruutimine ja väljastus reprodutseerivad oraakli
-täpselt, kui lahendaja triiv on eemaldatud), välja arvatud sfdp `2556`. Kaks on eraldi
+täpselt, kui lahendaja triiv on eemaldatud), välja arvatud sfdp `2556`, fdp `2717` ([ootel 16.1.2 portimine](#pending-16-1-2-ports)), fdp `1436` ([#211](https://github.com/knowvah/dot-engine/issues/211): seitse selle alamgraafi jagavad üht nime, seega ei suuda koormus nende kaste paigutada) ja sfdp `graphs-clustlabel` ([#315](https://github.com/knowvah/dot-engine/issues/315)). Kuus fdp rida `2768`, `2768_1`, `2768_2`, `2769`, `2769_1` ja `2769_2` on `drift-exonerated`, kuid need on deterministlik viga [#224](https://github.com/knowvah/dot-engine/issues/224); neid ei aktsepteerita A1 all. Kaks on eraldi
 aktsepteeritud id-põhised jäägid: sfdp `241_0` hosti libm-i `pow` triiv (T28 diagnoosis uuesti; selle injektsioonirida on alates `12dddc48` `drift-exonerated`) ning sfdp `2556` NaN-paigutus.
 fdp `241_0` läbib alates `fix(T9): start swapped cdt faces at the new diagonal as gts does` (vt fdp lõiku A9 all). fdp `2471` ja sfdp `2371` säilitasid varem pärast süstimist
 erinevad servasiltide asukohad (`lp`), st xlabel-paigutaja valis teise kandidaadi.
@@ -239,7 +240,7 @@ mootoripõhistel töölaudadel
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Kus algab sfdp lahendaja triiv (10. osa, T2).** Instrumenteeritud natiivne sfdp, mida jälgiti pordi vastu väikestel id-del, erineb esimest korda tõukejõu `pow(dist, 1-p)` viimases bitis (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). Juhul `flatedge` annab `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` natiivselt `...8811p+2` ja pordis `...8812p+2`; `graphs-p` ja `1767` algavad samamoodi. Adaptiivne jahutus võimendab bitti: see jõuab `x[0]`-ni iteratsioonil 5, `max|dx|` on 2.4e-9 iteratsioonil 100 ja 3.9e-5 iteratsioonil 200, ning samm pöördub iteratsioonil 244. Seda kinnitavad kaks kontrollitud jooksu. Natiivi bittidega täpselt nendel 8 kutsel on `flatedge`-i 62090-realine jälg identne ning macOS-i päris `pow`-iga Node-API lisandmooduli taga on 288-l 292-st läbi kukkunud id-st bitt-bitilt identne jälg (ülejäänud 4, kõik `overlap=false`, erinevad ainult kohal `xfinal`). Operatsioonide järjekord ja liitmine lahendajas, mitmetasemelises osas, quadtree'is ja hõredas koodis on välistatud. See on hosti libm, aktsepteeritud klassis A1 (vt allpool teadaolevate lünkade loendi `pow`-punkti); `src/` ei muutunud, seega arvud jäävad 632-ks 929-st. Ainult macOS-il tehtud katse jõudis umbes 923-ni 929-st; see mõõdab oraakli `pow`-i ega ole midagi, mida teek suudab igal hostil. `Math.pow` tõukejõus läbib 153 neist 292-st, kuid halvendab 6 täna läbivat id-d, mistõttu seda ei rakendatud. Tabeli sfdp rida on võrdne [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) reaga: 0 erinevat pluss 286 aktsepteeritud annab 286 graphviz 16.1.1 puhul ning ühtegi id-d ei ole seal oraakli mittedeterministlikuna.
+**Kus algab sfdp lahendaja triiv (10. osa, T2).** Instrumenteeritud natiivne sfdp, mida jälgiti pordi vastu väikestel id-del, erineb esimest korda tõukejõu `pow(dist, 1-p)` viimases bitis (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). Juhul `flatedge` annab `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` natiivselt `...8811p+2` ja pordis `...8812p+2`; `graphs-p` ja `1767` algavad samamoodi. Adaptiivne jahutus võimendab bitti: see jõuab `x[0]`-ni iteratsioonil 5, `max|dx|` on 2.4e-9 iteratsioonil 100 ja 3.9e-5 iteratsioonil 200, ning samm pöördub iteratsioonil 244. Seda kinnitavad kaks kontrollitud jooksu. Natiivi bittidega täpselt nendel 8 kutsel on `flatedge`-i 62090-realine jälg identne ning macOS-i päris `pow`-iga Node-API lisandmooduli taga on 288-l 292-st läbi kukkunud id-st bitt-bitilt identne jälg (ülejäänud 4, kõik `overlap=false`, erinevad ainult kohal `xfinal`). Operatsioonide järjekord ja liitmine lahendajas, mitmetasemelises osas, quadtree'is ja hõredas koodis on välistatud. See on hosti libm, aktsepteeritud klassis A1 (vt allpool teadaolevate lünkade loendi `pow`-punkti); `src/` ei muutunud, seega arvud jäävad 632-ks 929-st. Ainult macOS-il tehtud katse jõudis umbes 923-ni 929-st; see mõõdab oraakli `pow`-i ega ole midagi, mida teek suudab igal hostil. `Math.pow` tõukejõus läbib 153 neist 292-st, kuid halvendab 6 täna läbivat id-d, mistõttu seda ei rakendatud. Tabeli sfdp rida on võrdne [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) reaga: 1 erinev pluss 291 aktsepteeritud annab 292 graphviz 16.1.2 puhul ning üks id (`linux.x86-neatosplines_neato`) on seal oraakli mittedeterministlikuna.
 
 **A1-drift klassi aktsepteerimine (iteratiivsed mootorid, arvutatud liikmelisus).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -306,7 +307,7 @@ sulges `42`, `clust2`, `ngk10_4` (structural-match → conformant) ja viis
 
 **Mõlemad uuringupooled kasutavad sama hindajat — mõõtmine on neutraliseeritud.**
 Natiivne `dot` oraakel töötab peata `GVBINDIR` all
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`), mis lingib sümboolselt ainult
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`), mis lingib sümboolselt ainult
 `core` ja `dot_layout` pluginad — ühtegi `gd`/`pango`/`quartz` teksti paigutuse pluginat pole.
 Kui see pesa on tühi, langeb graphviz tagasi oma sisseehitatud
 `estimate_textspan_size`-ile. TypeScripti pordi `EstimateTextMeasurer`
@@ -323,7 +324,7 @@ fonditeadlikkus) suure osa sellest klassist täielikult, mitte ei kitsendanud pe
 seetõttu, et tekstimõõtmine on tahtlik liidespunkt, mitte kummagi
 mootorisse kõvasti seotud. `TextMeasurer` on ühemeetodiline liides (`measure(text, font, size,
 flags) → {w, h, …}`), mis on sõltuvussüstina antud igale sildi suuruse arvutamise
-kutsekohale — `polyInit`, `recordInit`, `initEdgeLabels` ja `buildNodeLabel` võtavad
+kutsekohale — `polyInit`, `recordInit`, `initEdgeLabels` ja `makeNodeLabel` võtavad
 kõik mõõtja parameetrina; miski ei mõõda teksti globaalse kaudu. See kinnistatakse
 testide/CI jaoks `setTextMeasurer(...)` või `GV_TEXT_MEASURER=estimate` kaudu.
 Liidespunkt võimaldab ka jääki *tõestada* pelgalt mõõtmisest tulenevaks: söötke porti
@@ -456,7 +457,7 @@ clangi `fp-contract` liitmine bézier' arvutuses (`route.c:137-138`), `mkspline`
 determinandid (`route.c:181-183`), `dot` (459), `normv` (413), `B01` (488) ja `B23`
 (494). Salliv viigilahendus on kadunud; `241_0` sõlmpunkt on C marsruutimisraamistikus
 fikseeritud, sest C ei ole sellistel viikidel nihkeekvivariantne. See sulges `2368`,
-`2371`, `2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` ja `graphs-decorate`. Graphviz 16.1.1 puhul erineb `2368` taas, sellega mitteseotud põhjusel: natiivse versiooni `flat_reorder` muudatuse tõttu ([#158](#pending-16-1-1-ports)).
+`2371`, `2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` ja `graphs-decorate`. Graphviz 16.1.1 puhul erines `2368` taas, sellega mitteseotud põhjusel, natiivse versiooni `flat_reorder` muudatuse tõttu ([#158](#pending-16-1-1-ports)); see on jälle conformant, kuna muudatus on portitud.
 
 `241_1` ei olnud `hypot` viik: selle sulges `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C rühmitab
@@ -518,6 +519,15 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 ```
 
 ### A4. Oraakel tunnistatult rikutud olekus (init_rank / pathplani pere) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **Graphviz 16.1.2 puhul ei kirjuta oraakel selle pere kohta midagi.** `dot`
+> jätab nüüd renderdamise vahele, kui paigutus teatab veast, seega on `1581`,
+> `1939`, `2470`, `2471`, `2796`, `2825` ja `graphs-structs` uuringus oraakli
+> vead, mitte conformant- ega diverged-read; `1435` seda ei puuduta. Port
+> renderdab neid endiselt allpool kirjeldatud viisil. Vt
+> [renderdamise vahelejätmine versioonis 16.1.2](#render-skip-16-1-2). Allolev
+> tekst kirjeldab olekut kuni graphviz 16.1.1-ni.
+
 
 **Mõjutatud (graphviz 16.1 pühkimine):** `1435` (structural-match, maxΔ 0.39 ühel
 splaini kontrollpunktil; oli 503 15.x oraakli vastu — langust ei bisekteeritud) ja
@@ -961,6 +971,10 @@ mõlemad nõuetele. Eraldiseisev reprodutseerimine:
 `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — radiaalkoordinaadi ULP, mida võimendab xlabel R-puu.**
+(Ajalugu alates graphviz 16.1.2-st: `2470` lahkus kõigist mootorite läbimistest koos
+[renderdamise vahelejätmisega](#render-skip-16-1-2) ja selle registrikirjed on
+kõrvaldatud. Natiivne `twopi` renderdab selle endiselt.)
+
 2470 on 140-servaline graaf, mille HTML `<table>` serva sildid klastrisse
 peaaegu kokkulangevatel radiaalsetel ankrutel. Neato peres paigutatakse serva sildid
 välissiltidena ahne xlabel paigutaja (`label/xlabels.c`) poolt,
@@ -1138,11 +1152,18 @@ süstijaga kinnitas, et ka see süstib 0 jäägini, ja selle aktsepteerimine eem
 
 ### A10. V8 `Map` suuruspiirang polüomino pakkimisel (`2784`, viis pakkimispõhist mootorit) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Mõjutatud:** `2784` mootoritel `circo`, `twopi`, `neato`, `fdp` ja `sfdp`. Port
-viskab vea kõigi viie mootori xdot- ja imagemap-läbimistel ning `circo` `json`
-läbimisel. `twopi`, `neato`, `fdp` ja `sfdp` `json` läbimistel ning kõigi viie `plain`
-läbimistel ei jõua natiivne oraakel ise läbimise ajaeelarve piires lõpuni, seega on
-need read oraakli vead. Mootoritel `dot`, `osage` ja `patchwork` on see edukas.
+**Mõjutatud:** `2784` ja `2783` mootoritel `circo`, `twopi`, `neato`, `fdp` ja `sfdp`.
+Port viskab vea kõigi viie mootori xdot-, `json`- ja imagemap-läbimistel. `plain`
+läbimistel ei jõua natiivne oraakel ise läbimise 300 s eelarve piires lõpuni, seega on
+need read oraakli vead (erand on `2783` mootoril `sfdp` `plain-ext`: natiivne jõuab
+lõpuni ja port viskab vea). Natiivne vajab nendel sisenditel 180 kuni 410 s, seega
+võib `json`- või imagemap-rida koormatud masinal samuti paista oraakli veana.
+Mootoritel `dot`, `osage` ja `patchwork` on mõlemad edukad.
+
+`2783` on sama kujuga kui `2784` ja jõudis läbimistesse graphviz 16.1.2 puhul. Selle 15
+pordi vea rida ei oma veel registrikirjet, seega näitavad töölauad neid
+aktsepteerimata pordi vigadena; nii ka `2784` `json` ridu mootoritel `twopi`, `neato`,
+`fdp` ja `sfdp`.
 
 **Mis juhtub.** `lib/pack/pack.c` salvestab komponendi hõivatud lahtrid `PointSet`-i.
 Failis `2784` (üks 3e16 pt kõrgune sõlm, `splines="ortho"`) vajab ustav täisarvuline
@@ -1219,7 +1240,67 @@ Oraakel liikus graphviz 16.1.0-lt versioonile 16.1.1 ([ADR-0002](https://github.
 | [#163](https://github.com/knowvah/dot-engine/issues/163) | dokumenteerimata atribuut `compact` eemaldatakse | korpuse id-d pole; goldenid `dot-newrank-compact-three`, `dot-newrank-compact-weak` | `dot` |
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | ülejäänud 16.1.1 käitumismuudatused | ühtegi korpuses ega goldenites | — |
 
+
 Sisendeid, mis iga muudatuseni jõuavad, jälgitakse teemas [#148](https://github.com/knowvah/dot-engine/issues/148).
+
+**Olek graphviz 16.1.2 puhul:** iga selle tabeli issue on suletud ja selle muudatus portitud. Tabel jääb ajaloona alles. #158 34 id-d, #160 4 id-d, `2783` (#164) ja 14 sisendit, mille 16.1.1 lisas, on `dot` peal jälle conformant ja tagasi igas läbimises.
+
+## Ootel 16.1.2 portimised {#pending-16-1-2-ports}
+
+Oraakel liikus graphviz 16.1.1-lt versioonile 16.1.2 ([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)). Uue baasjoone klassifikatsioon (`plans/graphviz-16-1-2-rebaseline/classification/`) jälgis iga muutunud tulemuse põhjuseni. Korpuse tulemust nihutab ainult kaks upstreami muudatust: renderdamise vahelejätmine, mida kirjeldab järgmine jaotis, ja allolev `mapc` muudatus. Need ei ole aktsepteeritud erinevused: igaüks on lahtine töö oma issue all.
+
+| issue | upstreami muudatus | id-d, mis 16.1.2 puhul nihkusid | mootorid |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc` otsustab, kas alamgraaf on klaster, funktsiooniga `is_a_cluster`, mitte nimeprefiksi `cluster` järgi | 1: `2717`. Natiivne jooksis 16.1.1 puhul kokku ja renderdab 16.1.2 puhul; port lisab endiselt sõlme `domestic_cats` ja lahkneb xdot-, `json`- ja `plain`-läbimistel (imagemap on conformant) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | `dot` jätab renderdamise vahele, kui paigutus teatab veast | 34 uuringu id-d, 5 mootori id-d ja 3 golden'it: vt [renderdamise vahelejätmine versioonis 16.1.2](#render-skip-16-1-2) | kõik |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges` jätab `other` skannimisel silmused vahele | ühtegi läbitud korpuses | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | `conc_slope` kasutab varuvarianti, kui sõlmel pole sisse- ega väljuvaid servi | ühtegi läbitud korpuses | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | `reallyroutespline` ebaõnnestub, kui jagamispunkti ei leita | ühtegi läbitud korpuses (karantiinis olev sisend `2746` enam natiivselt kokku ei jookse; see on nüüd renderdamise vahelejätmine) | kõik |
+
+Seitse sisendit, mille 16.1.2 lisab (`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`), on karantiinis kui `pending-input` ja neid ei läbita, kuni
+[#298](https://github.com/knowvah/dot-engine/issues/298) need lubab.
+
+## Renderdamise vahelejätmine versioonis 16.1.2 (ootel #299) {#render-skip-16-1-2}
+
+Alates graphviz 16.1.2-st ei renderda käsk `dot`, kui paigutus on veast teatanud
+(upstreami commit `19b33b581`, `cmd/dot/dot.c:main`): see lõpeb koodiga 1 ja ei kirjuta
+midagi. Graphviz 16.1.1 lõpetas samuti koodiga 1, kuid kirjutas poolik-paigutatud
+dokumendi. Port renderdab neid sisendeid endiselt, nagu 16.1.1.
+Kas port järgib, selgub teemas [#299](https://github.com/knowvah/dot-engine/issues/299), mis ootab hooldaja otsust; seni ei muutu selle pärast teegis midagi.
+
+Natiivse dokumendita pole midagi võrrelda, seega on iga allolev rida oraakli viga, mitte erinevus ega aktsepteeritud delta.
+
+**`dot` uuring, 34 id-d** (kõik olid 16.1.1 puhul conformant peale `2781` ja `2781_1`, mis olid structural-match), esimese vea järgi, millest paigutus teatab:
+
+| esimene viga | id-d |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2` ning `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+Viimased viis (`1879` kuni `2821_2`) ebaõnnestuvad ainult seetõttu, et läbimised käivitavad natiivse versiooni repositooriumi juurkataloogist, kus nende siltides nimetatud pildifaile ei leita ([#314](https://github.com/knowvah/dot-engine/issues/314)); oma kataloogist käivitatuna renderdavad need mõlemad graphvizi versioonid.
+
+**Kõik teised läbimised.** Läbimised `-Tdot`, xdot, `json`, imagemap ja `plain` ning kõik seitse mootoriläbimist võtavad oma id-d uuringu conformant-hulgast, seega ei läbita neist id-dest 18, mis selles hulgas olid, enam ühelgi mootoril ega formaadis: `1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`, `1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` ja `graphs-structs`. Nende aktsepteeritud kirjed iga mootori registrites on kõrvaldatud. Enamik neist renderdub natiivselt teistel mootoritel endiselt (89 paarist 126-st id ja mootor), seega kaotavad mootorid kattuvuse, mida nad võiksid säilitada.
+
+**Mootoril endal, 5 id-d** (xdot-, `json`-, imagemap- ja `plain`-read, kõik 16.1.1 puhul edukad):
+
+| mootor | id-d | viga |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (port ei väljasta seda veel, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+Oraakli vigade registrid märgivad need viis kui `native-crash`, sest klassifikaatoril pole muud klassi sõnastusele „iga katse ebaõnnestus“; natiivne lõpeb koodiga 1 ilma väljundita ega jookse kokku.
+
+**Golden'id, 3:** `pt-issue-31-inline`, `pt-issue-31-rubebe` ja `pt-issue-31-zuduxu` säilitavad oma graphviz 16.1.1 viite, kuna 16.1.2 ei kirjuta ühtegi (`test/golden/inputs/PROVENANCE.md`).
+
 
 ## Jälgitav pikk saba (`dot` atribuudid ja äärejuhtumid) {#tracked-long-tail-dot-attribute-edge-case}
 

@@ -11,41 +11,42 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 898
-- **Oracle:** dot 16.1.1
-- **pass:** 882 (98.4%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 12
-- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 2
+- **Surveyed:** 933
+- **Oracle:** dot 16.1.2
+- **pass:** 916 (98.6%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 11
+- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 4
 
 ## Diverged (2)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`2471`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2471.dot) | 1174310 | 5 | `[edge] n89->n100#0/lx: port=124.77 native=125.63; [edge] n91->n90#0/lx: port=125.28 native=126.13; [edge] n91->n90#0/ly: port=8.3724 native=8.6058; [edge] n97->n98#0/lx: port=125.02 native=125.88; [edge] n97->n98#0/ly: port=8.5218 native=8.7551` |
 | [`tree-graphs-directed-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/arrows.gv) | 4766 | 3 | `[edge] lcrow->lcrowlcrow#0/lx: port=9.3395 native=9.6557; [edge] lcrow->lcrowlcrow#0/ly: port=5.2154 native=5.0487; [edge] onormal->onormalonormal#0/ly: port=6.3083 native=6.1417` |
+| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | 48090 | 1 | `[edge] srtpdec1_0x5641244e6b50_rtcp_src_0x7f06a000ebd0->_proxypad10_0x5641244e58c0#0/ly: port=2.5912 native=2.4412` |
 
-## Accepted (12) — documented, not chased
+## Accepted (11) — documented, not chased
 
 | id | #diffs | firstDiff | reason |
 |---|---:|---|---|
 | [`1855`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1855.dot) | 200 | `[node] 1/y: port=3.9982 native=3.9853; [node] 10/x: port=5.4496 native=5.4665; [node] 11/x: port=4.2919 native=4.3084; [node] 11/y: port=7.4968 native=7.48; [node] 12/x: port=3.1333 native=3.1506` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
-| [`2470`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2470.dot) | 298 | `[edge] n13->n12#0/lx: port=101.52 native=100.44; [edge] n13->n12#0/ly: port=9.1604 native=9.3937; [edge] n135->n101#0/ly: port=7.9819 native=8.2152; [edge] n135->n102#0/ly: port=7.9303 native=8.1636; [edge] n135->n103#0/lx: port=97.685 native=96.604` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-arrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrows.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-arrowsize`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/arrowsize.gv) | 16 | `[edge] Z->I#0/point[0].x: port=4.0216 native=4.1278; [edge] Z->I#0/point[0].y: port=4.2709 native=4.2512; [edge] Z->I#0/point[1].x: port=4.0216 native=4.3433; [edge] Z->I#0/point[1].y: port=4.8152 native=4.7564; [edge] Z->I#0/point[2].x: port=4.0216 native=4.7935` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`graphs-b56`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b56.gv) | 2 | `[node] creation/label: port=<f0>genPräfix\|<f1>legennStamm\|<f2>heitnSuffix native=<f0>genPr�fix\|<f1>legennStamm\|<f2>heitnSuffix; [node] creation1/label: port=<f0>genPräfix\|<f1>DiebnStamm\|<f2>heitnSuffix native=<f0>genPr�fix\|<f1>DiebnStamm\|<f2>heitnSuffix` | native writes the label's raw Latin-1 byte (0xE4 for the a-umlaut in 'genPräfix') under charset=latin1, so the oracle text is not valid UTF-8 and decodes to U+FFFD; the port prints the UTF-8 character. Not the canon() use-after-free: the carried oracle (graphviz-16.1.1 plus patch 0001, U1) prints the label intact and this label still differs. Re-measured 2026-11-19 on the fresh walk. Previously accepted as oracle bug (A4) canon() use-after-free. |
 | [`graphs-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/newarrows.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
-| [`linux.x86-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/arrows_dot.gv) | 7 | `[edge] i->Z#0/point[0].x: port=3.683 native=4.3602; [edge] i->Z#0/point[1].x: port=3.6589 native=4.3842; [edge] i->Z#0/point[2].x: port=3.6384 native=4.4047; [edge] i->Z#0/point[3].x: port=3.6239 native=4.4193; [edge] i->Z#0/point[4].x: port=3.11 native=4.9332` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
-| [`macosx-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/macosx/arrows_dot.gv) | 1 | `[edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
+| [`linux.x86-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/arrows_dot.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
+| [`macosx-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/macosx/arrows_dot.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`nshare-arrows_dot`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/arrows_dot.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`share-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/share/newarrows.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 | [`tree-graphs-directed-oldarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../graphs/directed/oldarrows.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (A1 arrows family, injection A/B 40-&gt;0 diffs; engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-28. |
 | [`windows-newarrows`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/windows/newarrows.gv) | 2 | `[edge] Z->I#0/pointCount: port=4 native=7; [edge] i->Z#0/pointCount: port=7 native=4` | layout geometry inherited from the twopi xdot engine track: id already diverged there with an accepted mechanism (engine acceptance registry / decision journal); plain re-emits the same layout. Journal 2026-07-24. |
 
-## Errors and timeouts (2)
+## Errors and timeouts (4)
 
 | id | message |
 |---|---|
+| [`2095`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095.dot) | Error: twopi: use of weight=0 creates disconnected component. |
 | [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2783.dot) | oracle exit null |
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | Warning: syntax ambiguity - badly delimited number '00s' in line 1 of https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot splits into two tokens |
 
-_Passing ids (882) are omitted for brevity — the full roster is in
+_Passing ids (916) are omitted for brevity — the full roster is in
 `plain-parity-twopi.json`._

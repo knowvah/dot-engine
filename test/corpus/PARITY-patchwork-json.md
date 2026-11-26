@@ -11,16 +11,17 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 899
-- **Oracle:** dot 16.1.1
-- **pass:** 896 (99.7%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 2
+- **Surveyed:** 934
+- **Oracle:** dot 16.1.2
+- **pass:** 930 (99.6%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 2
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 0
 
-## Diverged (1)
+## Diverged (2)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`1581`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1581.dot) | 695 | 2 | `cluster:cluster_inner/_draw_[missing]` |
+| [`2759`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2759.dot) | 128 | 2 | `cluster:cluster/_draw_[missing]` |
+| [`2759_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2759_1.dot) | 225 | 2 | `cluster:cluster/_draw_[missing]` |
 
 ## Accepted (2) — documented, not chased
 
@@ -33,5 +34,5 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 _(none)_
 
-_Passing ids (896) are omitted for brevity — the full roster is in
+_Passing ids (930) are omitted for brevity — the full roster is in
 `json-parity-patchwork.json`._

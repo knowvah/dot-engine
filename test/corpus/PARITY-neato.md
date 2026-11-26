@@ -12,10 +12,10 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 898 (generated 2026-11-20T20:30:17.913Z)
-- **Oracle:** dot 16.1.1
-- **pass:** 894 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 1
-- **port-error:** 0 · **timeout:** 0 (scored as failures) · **oracle-error:** 1 (excluded from pass %) · **oracle-nondeterministic:** 1 (native output varies run to run; excluded from pass %, not a regression)
+- **Surveyed:** 933 (generated 2026-11-25T15:05:44.429Z)
+- **Oracle:** dot 16.1.2
+- **pass:** 929 (99.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 1
+- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 1 (excluded from pass %) · **oracle-nondeterministic:** 0 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (1) — documented, not chased
 
@@ -42,12 +42,13 @@ outright leaves the class silently on the next report regen.
 
 _(none)_
 
-## Errors and timeouts (1)
+## Errors and timeouts (2)
 
 | id | status | message |
 |---|---|---|
-| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle-error | Command failed: dot -K neato -Txdot git/graphviz-16.1.1/share/examples/world.gv |
+| [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle-error | Command failed: dot -K neato -Txdot git/graphviz-16.1.2/share/examples/world. |
+| [`2783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2783.dot) | port-error | Map maximum size exceeded |
 
 **oracle errors:** 1 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (894) are omitted for brevity — the full roster is in
+_Passing ids (929) are omitted for brevity — the full roster is in
 `parity-neato.json`._

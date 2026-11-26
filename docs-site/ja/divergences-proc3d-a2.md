@@ -1,5 +1,5 @@
 ---
-sourceHash: 108900a6526f9e995c80f6640cba948df61fe8bc937f8c32e4df82dd8d902cd1
+sourceHash: d8cad6b446eeaef59797097e9905f579ed5de5d9317562bd50552d98c504fde2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -83,7 +83,7 @@ x 方向のネットワーク単体法によるレイアウトは忠実でした
 
 ## 再現 {#reproduce}
 
-ネイティブオラクルはヘッドレスの `GVBINDIR`（`/tmp/ghl1611`、`test/corpus/gen-headless-gvbindir.sh` で生成）の下で実行されるため、
+ネイティブオラクルはヘッドレスの `GVBINDIR`（`/tmp/ghl1612-carried`、`test/corpus/gen-headless-gvbindir.sh` で生成）の下で実行されるため、
 両側が同じ `estimate_textspan_size` 計測器を使います —
 [§A2「アルゴリズムをフォントバックエンドから切り離す」](/ja/divergences#a2-text-measurement-font-metrics-label-driven-layout)
 を参照してください。
@@ -94,8 +94,8 @@ GV_TEXT_MEASURER=estimate \
   npx tsx test/corpus/render-one.ts ~/git/graphviz/tests/graphs/proc3d.gv dot
 
 # native C oracle (headless, estimate measurer)
-GVBINDIR=/tmp/ghl1611 \
-  ~/git/graphviz-16.1.1/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
+GVBINDIR=/tmp/ghl1612-carried \
+  ~/git/sseely/graphviz-carried-1612/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
 ```
 
 現在これを実行すると、上で述べた 3.55pt の差ではなく、一致する SVG が得られます

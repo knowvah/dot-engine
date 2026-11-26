@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -74,7 +74,7 @@ zmiennoprzecinkowe w prowadzeniu splajnów `dot` (A3, A8) są zamknięte i zacho
 
 > **Zakres — historycznie niezmierzone zastrzeżenie, obecnie częściowo zmierzone.**
 > **Główny przegląd SVG silnika dot** (`test/corpus/survey.ts`) nadal jest
-> **tylko dla dot**: natywna wyrocznia działa pod `GVBINDIR=/tmp/ghl1611`, który
+> **tylko dla dot**: natywna wyrocznia działa pod `GVBINDIR=/tmp/ghl1612-carried`, który
 > linkuje symbolicznie **wyłącznie** wtyczki `core` + `dot_layout`
 > (`test/corpus/gen-headless-gvbindir.sh` przechodzi dokładnie po `core dot_layout`
 > — nie ma wtyczki układu `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp`),
@@ -113,10 +113,10 @@ wejście pod jego własnym silnikiem zamiast `dot`. Uczciwy pułap tej pracy to
 **zawężenie** A1 do „braku aktywnej rozbieżności na platformie referencyjnej”, nigdy
 wyeliminowanie zastrzeżenia o różnicach między platformami; dotychczasowe wyniki (poniżej) mieszczą się w tym
 pułapie: `circo`/`twopi`/`osage` ujawniły i rozłożyły na przyczyny źródłowe garstkę
-prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 99.8/98.0/68.2%
-w granicach 0.5pt od natywnego na zbiorze 898 pozycji (graphviz 16.1.1), co oznacza, że przeportowana
+prawdziwych przypadków A1/A9, a `neato`/`fdp`/`sfdp` mieszczą się obecnie na poziomie 99.7/97.2/68.6%
+w granicach 0.5pt od natywnego na zbiorze 933 pozycji (graphviz 16.1.2), co oznacza, że przeportowana
 arytmetyka (`fma.ts`, `arm-pow.ts`, dopasowany PRNG) działa dla większości grafów —
-a każdy rozbieżny id ze zbioru 898 pozycji jest indywidualnie przypisany przez wstrzyknięcie (dryf
+a każdy rozbieżny id ze zbioru 933 pozycji jest indywidualnie przypisany przez wstrzyknięcie (dryf
 solvera vs. defekt portu), zamiast zostać nieprzeanalizowanym dryfem. Zob. charakteryzację silników iteracyjnych poniżej.
 
 **Akceptacja ścieżki silnika: rodzina strzałek twopi.** <a id="a1-twopi-arrows-family"></a>
@@ -193,17 +193,28 @@ a `parity-report.ts` renderuje je w osobnej sekcji
 „Iterative engines (±0.5 characterization)” w
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 wyraźnie **nieporównywalnej** ze wskaźnikami zaliczeń deterministycznych ±0.01 w innych miejscach
-tego dokumentu. Aktualne liczby względem graphviz 16.1.1 (zbiór 898 pozycji; wskaźnik zaliczeń pomija
+tego dokumentu. Aktualne liczby względem graphviz 16.1.2 (zbiór 933 pozycji; wskaźnik zaliczeń pomija
 wejścia, których wyrocznia w C nie potrafi wyrenderować, oraz wejścia, dla których natywne wyjście
 zmienia się między uruchomieniami, zgodnie z [Zgodnością](./conformance.md)):
 
 | silnik | zbadano | w granicach ±0.5pt | niezgodne | błąd portu / timeout | błąd wyroczni | wyrocznia niedeterministyczna |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
-11 niedeterministycznych wejść `fdp`, dla których natywne wyjście zmienia się między uruchomieniami, pominięto w jego odsetku zaliczeń; jedyny błąd portu to `1879`, które wymaga trasowania `splines=compound`, nieobsługiwanego przez port.
+8 niedeterministycznych wejść `fdp`, dla których natywne wyjście zmienia się między uruchomieniami,
+pominięto w jego odsetku zaliczeń. Jedyny błąd portu w każdym silniku to `2783`
+([A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)).
+`1879`, dawniej błąd portu `fdp`, nie jest już uwzględniany w przebiegach: należy do id, których
+`dot` z graphviz 16.1.2 już nie renderuje
+([pominięcie renderowania w 16.1.2](#render-skip-16-1-2)), a każde przejście silnika bierze
+id ze zbioru conformant z przeglądu `dot`. Cztery z siedmiu błędów wyroczni `fdp` to
+to pominięcie renderowania w samym `fdp`.
+
+(Zbiór urósł z 898 do 933 w graphviz 16.1.2 bez zmiany w porcie:
+53 id, które wcześniejsze poprawki portu już uczyniły conformant, weszły do przebiegów,
+gdy przegląd `dot` uruchomiono ponownie, a 18 id z pominięciem renderowania odpadło.)
 
 (Wskaźnik zaliczeń `fdp` wzrósł z 77.5%, ponieważ wcześniejszy zatwierdzony przebieg
 przedstawiał stan portu sprzed poprzedniej misji.
@@ -217,12 +228,16 @@ reszta dla pojedynczego id `2619_2`, której akceptacja jest wycofana; dwa id `n
 głównie nieprzeportowanej obsługi `user_pos`/`P_SET` w neato, konsolidacji
 inicjalizacji silników i poprawki `setEdgeType` makro-vs-funkcja.)
 
-W odróżnieniu od pierwszego przebiegu każdy rozbieżny wiersz ze zbioru 898 pozycji został
-indywidualnie przypisany względem graphviz 16.1.1: narzędzie wstrzykiwania
+W odróżnieniu od pierwszego przebiegu każdy rozbieżny wiersz ze zbioru 933 pozycji został
+indywidualnie przypisany względem graphviz 16.1.2: narzędzie wstrzykiwania
 (`test/corpus/attribute-divergence.ts`) podaje przedroutingowy `ND_pos` natywnej wyroczni
 do portu i porównuje ponownie, a każdy obecny rozbieżny id jest `drift-exonerated`
 (prowadzenie i emisja w porcie odtwarzają wyrocznię dokładnie po usunięciu dryfu solvera)
-z wyjątkiem sfdp `2556`. Dwa to osobno zaakceptowane residua dla poszczególnych id: dryf `pow` w libm hosta dla sfdp `241_0`
+z wyjątkiem sfdp `2556`, fdp `2717` ([oczekujący port 16.1.2](#pending-16-1-2-ports)),
+fdp `1436` ([#211](https://github.com/knowvah/dot-engine/issues/211): siedem jego podgrafów ma tę samą nazwę, więc narzędzie nie może
+umieścić ich ramek) i sfdp `graphs-clustlabel` ([#315](https://github.com/knowvah/dot-engine/issues/315)). Sześć wierszy fdp `2768`,
+`2768_1`, `2768_2`, `2769`, `2769_1` i `2769_2` brzmi `drift-exonerated`, ale
+to deterministyczny defekt [#224](https://github.com/knowvah/dot-engine/issues/224); nie są akceptowane w ramach A1. Dwa to osobno zaakceptowane residua dla poszczególnych id: dryf `pow` w libm hosta dla sfdp `241_0`
 (ponownie zdiagnozowany przez T28; jego wiersz wstrzykiwania brzmi `drift-exonerated` od `12dddc48`) oraz układ NaN w sfdp `2556`. fdp `241_0` przechodzi od
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` (zob. akapit o fdp
 pod A9). fdp `2471` i sfdp
@@ -241,7 +256,7 @@ panelach poszczególnych silników
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Gdzie zaczyna się dryf solvera sfdp (część 10, T2).** Zinstrumentowany natywny sfdp, śledzony względem portu na małych idach, po raz pierwszy różni się na ostatnim bicie `pow(dist, 1-p)` w sile odpychania (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). W `flatedge` `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` daje natywnie `...8811p+2`, a w porcie `...8812p+2`; `graphs-p` i `1767` zaczynają się tak samo. Adaptacyjne chłodzenie wzmacnia ten bit: dociera do `x[0]` w iteracji 5, `max|dx|` wynosi 2.4e-9 w iteracji 100 i 3.9e-5 w 200, a krok się przełącza w iteracji 244. Potwierdzają to dwa kontrolowane przebiegi. Przy bitach natywnych dla dokładnie tych 8 wywołań 62090-wierszowy ślad `flatedge` jest identyczny, a z prawdziwym `pow` z macOS za dodatkiem Node-API 288 z 292 idów, które nie przechodziły, ma ślady identyczne co do bitu (pozostałe 4, wszystkie `overlap=false`, różnią się tylko przy `xfinal`). Wykluczono kolejność operacji i fuzję w solverze, multilevel, quadtree i kodzie rzadkim. To libm hosta, zaakceptowana w ramach A1 (zob. pozycję `pow` na liście znanych luk poniżej); `src/` się nie zmienił, więc liczby pozostają 632 z 929. Eksperyment tylko na macOS osiągnął około 923 z 929; mierzy `pow` wyroczni i nie jest czymś, co biblioteka potrafi na każdym hoście. `Math.pow` w sile odpychania przechodzi 153 z 292, ale pogarsza 6 idów, które dziś przechodzą, więc nie został zastosowany. Wiersz sfdp w tabeli jest równy wierszowi z [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 0 rozbieżnych plus 286 zaakceptowanych daje 286 w graphviz 16.1.1, a żaden id nie jest tam wykazany jako niedeterministyczny u wyroczni.
+**Gdzie zaczyna się dryf solvera sfdp (część 10, T2).** Zinstrumentowany natywny sfdp, śledzony względem portu na małych idach, po raz pierwszy różni się na ostatnim bicie `pow(dist, 1-p)` w sile odpychania (`lib/sfdpgen/spring_electrical.c:625,617`; port `spring-electrical.ts:260`). W `flatedge` `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` daje natywnie `...8811p+2`, a w porcie `...8812p+2`; `graphs-p` i `1767` zaczynają się tak samo. Adaptacyjne chłodzenie wzmacnia ten bit: dociera do `x[0]` w iteracji 5, `max|dx|` wynosi 2.4e-9 w iteracji 100 i 3.9e-5 w 200, a krok się przełącza w iteracji 244. Potwierdzają to dwa kontrolowane przebiegi. Przy bitach natywnych dla dokładnie tych 8 wywołań 62090-wierszowy ślad `flatedge` jest identyczny, a z prawdziwym `pow` z macOS za dodatkiem Node-API 288 z 292 idów, które nie przechodziły, ma ślady identyczne co do bitu (pozostałe 4, wszystkie `overlap=false`, różnią się tylko przy `xfinal`). Wykluczono kolejność operacji i fuzję w solverze, multilevel, quadtree i kodzie rzadkim. To libm hosta, zaakceptowana w ramach A1 (zob. pozycję `pow` na liście znanych luk poniżej); `src/` się nie zmienił, więc liczby pozostają 632 z 929. Eksperyment tylko na macOS osiągnął około 923 z 929; mierzy `pow` wyroczni i nie jest czymś, co biblioteka potrafi na każdym hoście. `Math.pow` w sile odpychania przechodzi 153 z 292, ale pogarsza 6 idów, które dziś przechodzą, więc nie został zastosowany. Wiersz sfdp w tabeli jest równy wierszowi z [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 rozbieżny plus 291 zaakceptowanych daje 292 w graphviz 16.1.2, a jeden id (`linux.x86-neatosplines_neato`) jest tam wykazany jako niedeterministyczny u wyroczni.
 
 **Akceptacja klasy A1-drift (silniki iteracyjne, członkostwo wyliczane).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -308,7 +323,7 @@ zamknął `42`, `clust2`, `ngk10_4` (structural-match → conformant) i przesun�
 
 **Obie strony przeglądu uruchamiają ten sam estymator — pomiar jest zneutralizowany.**
 Natywna wyrocznia `dot` działa pod bezgłowym `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`), który linkuje symbolicznie tylko wtyczki
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`), który linkuje symbolicznie tylko wtyczki
 `core` i `dot_layout` — bez wtyczki układu tekstu `gd`/`pango`/`quartz`.
 Przy pustym slocie graphviz wraca do wbudowanego
 `estimate_textspan_size`. `EstimateTextMeasurer` portu w TypeScript
@@ -325,7 +340,7 @@ zawęziła lukę w metrykach czcionki.
 dlatego, że pomiar tekstu jest celowym punktem rozszerzeń, a nie zaszyty na stałe w żadnym
 silniku. `TextMeasurer` to interfejs z jedną metodą (`measure(text, font, size,
 flags) → {w, h, …}`) wstrzykiwany jako zależność do każdego miejsca wywołania ustalającego rozmiar etykiety —
-`polyInit`, `recordInit`, `initEdgeLabels` i `buildNodeLabel` przyjmują
+`polyInit`, `recordInit`, `initEdgeLabels` i `makeNodeLabel` przyjmują
 miernik jako parametr; nic nie mierzy tekstu przez zmienną globalną. Jest
 przypinany dla testów/CI przez `setTextMeasurer(...)` lub `GV_TEXT_MEASURER=estimate`.
 Ten punkt rozszerzeń pozwala też *udowodnić*, że residuum dotyczy wyłącznie pomiaru: podaj portowi
@@ -459,7 +474,7 @@ przeportował: `hypot` z libm dla odległości (`route.c:448`), ścisłe porówn
 (459), `normv` (413), `B01` (488) i `B23` (494). Tolerancyjne rozstrzyganie remisów
 zniknęło; węzeł `241_0` jest przypięty w układzie prowadzenia C, ponieważ C nie jest
 ekwiwariantne względem translacji przy takich remisach. To zamknęło `2368`, `2371`, `2413_1`,
-`2413_2`, `graphs-b100`, `graphs-b104` i `graphs-decorate`. W graphviz 16.1.1 `2368` znów jest rozbieżny z niezwiązanego powodu: zmiany `flat_reorder` w wersji natywnej ([#158](#pending-16-1-1-ports)).
+`2413_2`, `graphs-b100`, `graphs-b104` i `graphs-decorate`. W graphviz 16.1.1 `2368` znów był rozbieżny z niezwiązanego powodu, zmiany `flat_reorder` w wersji natywnej ([#158](#pending-16-1-1-ports)); jest znów conformant, odkąd zmiana została przeportowana.
 
 `241_1` nie było remisem `hypot`: zamknęło je `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
@@ -523,6 +538,13 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. Wyrocznia w uznanym za zepsuty stanie (rodzina init_rank / pathplan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **W graphviz 16.1.2 wyrocznia nie zapisuje nic dla tej rodziny.** `dot` pomija teraz
+> renderowanie, gdy układ zgłasza błąd, więc `1581`, `1939`, `2470`, `2471`, `2796`,
+> `2825` i `graphs-structs` są w przeglądzie błędami wyroczni, a nie wierszami conformant
+> ani diverged; `1435` nie jest dotknięte. Port nadal renderuje je tak, jak opisano
+> poniżej. Zob. [pominięcie renderowania w 16.1.2](#render-skip-16-1-2). Tekst poniżej
+> opisuje stan do graphviz 16.1.1 włącznie.
 
 **Dotyczy (przebieg graphviz 16.1):** `1435` (structural-match, maxΔ 0.39 na
 jednym punkcie kontrolnym splajnu; było 503 względem wyroczni 15.x — spadek nie został
@@ -953,6 +975,9 @@ teraz oba są zgodne. Samodzielna reprodukcja:
 `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP współrzędnej radialnej wzmocniony przez R-drzewo xlabel.**
+(Historia od graphviz 16.1.2: `2470` opuścił każde przejście silnika wraz z
+[pominięciem renderowania](#render-skip-16-1-2), a jego wpisy w rejestrach zostały wycofane.
+Natywny `twopi` nadal go renderuje.)
 2470 to graf ze 140 krawędziami, którego etykiety krawędzi z HTML `<table>` skupiają się
 na niemal pokrywających się kotwicach radialnych. W rodzinie neato etykiety krawędzi są umieszczane
 jako etykiety zewnętrzne przez zachłanny placer xlabel (`label/xlabels.c`), który
@@ -1135,12 +1160,18 @@ notę `2095 reclassified` powyżej).
 
 ### A10. Limit rozmiaru `Map` w V8 przy pakowaniu poliomin (`2784`, pięć silników opartych na pakowaniu) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Dotyczy:** `2784` w `circo`, `twopi`, `neato`, `fdp` i `sfdp`. Port
-rzuca błąd w przebiegach xdot i imagemap wszystkich pięciu silników oraz w przebiegu `json`
-dla `circo`. W przebiegach `json` dla `twopi`, `neato`, `fdp` i `sfdp` oraz w
-przebiegach `plain` wszystkich pięciu sama natywna wyrocznia nie kończy pracy w budżecie
-czasu przebiegu, więc te wiersze są błędami wyroczni. W `dot`, `osage` i `patchwork`
-przechodzi.
+**Dotyczy:** `2784` i `2783` w `circo`, `twopi`, `neato`, `fdp` i `sfdp`. Port
+rzuca błąd w przebiegach xdot, `json` i imagemap wszystkich pięciu silników. W
+przebiegach `plain` sama natywna wyrocznia nie kończy pracy w 300-sekundowym budżecie
+przebiegu, więc te wiersze są błędami wyroczni (wyjątek to `2783` w `sfdp` `plain-ext`:
+natywna wersja kończy, a port rzuca błąd). Natywna wersja potrzebuje na tych wejściach
+od 180 do 410 s, więc wiersz `json` lub imagemap może też brzmieć jak błąd wyroczni,
+gdy maszyna jest obciążona. W `dot`, `osage` i `patchwork` oba przechodzą.
+
+`2783` ma ten sam kształt co `2784` i weszło do przebiegów w graphviz 16.1.2. Jego 15
+wierszy z błędem portu nie ma jeszcze wpisu w rejestrze, więc dashboardy pokazują je jako
+niezaakceptowane błędy portu; tak samo wiersze `json` dla `2784` w `twopi`, `neato`, `fdp`
+i `sfdp`.
 
 **Co się dzieje.** `lib/pack/pack.c` zapisuje komórki zajmowane przez komponent w
 `PointSet`. Dla `2784` (pojedynczy węzeł o wysokości 3e16 pt, `splines="ortho"`) wierna
@@ -1219,6 +1250,87 @@ Wyrocznia przeszła z graphviz 16.1.0 na 16.1.1 ([ADR-0002](https://github.com/k
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | reszta zmian zachowania w 16.1.1 | brak w korpusie i w golden | — |
 
 Wejścia, które docierają do każdej zmiany, śledzi [#148](https://github.com/knowvah/dot-engine/issues/148).
+
+**Stan w graphviz 16.1.2:** każde zgłoszenie z tej tabeli jest zamknięte, a jego zmiana
+przeportowana. Tabela pozostaje jako historia. 34 id z #158, 4 z #160, `2783` (#164)
+i 14 wejść dodanych w 16.1.1 jest znów conformant w `dot` i wróciło do każdego przebiegu.
+
+## Oczekujące porty z 16.1.2 {#pending-16-1-2-ports}
+
+Wyrocznia przeszła z graphviz 16.1.1 na 16.1.2 ([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)).
+Klasyfikacja nowej linii bazowej (`plans/graphviz-16-1-2-rebaseline/classification/`)
+sprowadziła każdy zmieniony wynik do przyczyny. Tylko dwie zmiany upstreamu przesuwają
+wynik korpusu: pominięcie renderowania, opisane w następnej sekcji, oraz zmiana `mapc`
+poniżej. To nie są zaakceptowane różnice: każda jest otwartą pracą w swoim zgłoszeniu.
+
+| zgłoszenie | zmiana upstreamu | id, które przesunęły się w 16.1.2 | silniki |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc` decyduje, czy podgraf jest klastrem, przez `is_a_cluster`, a nie po prefiksie nazwy `cluster` | 1: `2717`. Natywna wersja ulegała awarii w 16.1.1, a w 16.1.2 renderuje; port nadal dodaje węzeł `domestic_cats` i rozjeżdża się w przebiegach xdot, `json` i `plain` (imagemap jest conformant) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | `dot` pomija renderowanie, gdy układ zgłasza błąd | 34 id przeglądu, 5 id silników i 3 golden: zob. [pominięcie renderowania w 16.1.2](#render-skip-16-1-2) | wszystkie |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges` pomija pętle własne w skanie `other` | brak w korpusie objętym przebiegami | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | `conc_slope` ma wariant zapasowy, gdy węzeł nie ma krawędzi wchodzących lub wychodzących | brak w korpusie objętym przebiegami | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | `reallyroutespline` kończy się niepowodzeniem, gdy nie znaleziono punktu podziału | brak w korpusie objętym przebiegami (wejście `2746` w kwarantannie nie powoduje już awarii natywnej wersji; jest teraz pominięciem renderowania) | wszystkie |
+
+Siedem wejść dodanych w 16.1.2 (`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`) jest w kwarantannie jako `pending-input` i nie jest uwzględnione w przebiegach, dopóki
+[#298](https://github.com/knowvah/dot-engine/issues/298) ich nie dopuści.
+
+## Pominięcie renderowania w 16.1.2 (oczekuje na #299) {#render-skip-16-1-2}
+
+Od graphviz 16.1.2 polecenie `dot` nie renderuje, gdy układ zgłosił błąd
+(commit upstreamu `19b33b581`, `cmd/dot/dot.c:main`): kończy z kodem 1 i nic nie zapisuje.
+Graphviz 16.1.1 też kończył z kodem 1, ale zapisywał na wpół ułożony dokument. Port
+nadal renderuje te wejścia, tak jak 16.1.1.
+Czy port pójdzie w ślad za tym, rozstrzyga [#299](https://github.com/knowvah/dot-engine/issues/299), które czeka na decyzję opiekuna; do tego czasu
+nic w bibliotece się dla tego nie zmienia.
+
+Bez natywnego dokumentu nie ma czego porównywać, więc każdy poniższy wiersz to
+błąd wyroczni, a nie rozbieżność ani zaakceptowana różnica.
+
+**Przegląd `dot`, 34 id** (wszystkie były conformant w 16.1.1 poza `2781` i
+`2781_1`, które były structural match), według pierwszego błędu zgłoszonego przez układ:
+
+| pierwszy błąd | id |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2` oraz `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+Ostatnie pięć (`1879` do `2821_2`) zawodzi tylko dlatego, że przebiegi uruchamiają
+natywną wersję z katalogu głównego repozytorium, gdzie nie znajduje się plików obrazów
+nazwanych w ich etykietach ([#314](https://github.com/knowvah/dot-engine/issues/314)); uruchomione z własnego katalogu, renderują je obie wersje graphviz.
+
+**Każdy inny przebieg.** Przebiegi `-Tdot`, xdot, `json`, imagemap i `plain` oraz
+wszystkie siedem przebiegów silników biorą id ze zbioru conformant z przeglądu, więc
+18 z tych id, które należały do tego zbioru, nie jest już uwzględnianych w żadnym silniku
+ani formacie: `1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`,
+`1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` oraz
+`graphs-structs`. Ich zaakceptowane wpisy w rejestrach poszczególnych silników zostały
+wycofane. Większość z nich nadal renderuje się natywnie w innych silnikach (89 ze 126
+par id i silnika), więc silniki tracą pokrycie, które mogłyby zachować.
+
+**W samym silniku, 5 id** (wiersze xdot, `json`, imagemap i `plain`, wszystkie
+przechodzące w 16.1.1):
+
+| silnik | id | błąd |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (port jeszcze go nie wypisuje, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+Rejestry błędów wyroczni oznaczają tych pięć jako `native-crash`, ponieważ klasyfikator
+nie ma innej klasy dla „każda próba zawiodła”; natywna wersja kończy z kodem 1 bez
+wyjścia i nie ulega awarii.
+
+**Golden, 3:** `pt-issue-31-inline`, `pt-issue-31-rubebe` i
+`pt-issue-31-zuduxu` zachowują referencję z graphviz 16.1.1, ponieważ 16.1.2
+żadnej nie zapisuje (`test/golden/inputs/PROVENANCE.md`).
 
 ## Śledzony długi ogon (atrybuty `dot` i przypadki brzegowe) {#tracked-long-tail-dot-attribute-edge-case}
 

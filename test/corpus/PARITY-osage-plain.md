@@ -11,9 +11,9 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 899
-- **Oracle:** dot 16.1.1
-- **pass:** 893 (99.3%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6
+- **Surveyed:** 934
+- **Oracle:** dot 16.1.2
+- **pass:** 928 (99.4%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 6
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 0
 
 ## Diverged (0)
@@ -35,5 +35,5 @@ _(none)_
 
 _(none)_
 
-_Passing ids (893) are omitted for brevity — the full roster is in
+_Passing ids (928) are omitted for brevity — the full roster is in
 `plain-parity-osage.json`._

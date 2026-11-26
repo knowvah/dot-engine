@@ -9,6 +9,8 @@ Accepted 2026-11-14 (issue #147, re-baseline mission
 ADR-0001's decision 1; ADR-0001's decisions 2–5 and its cache and preflight
 rules carry over unchanged.
 
+Version clause superseded by ADR-0004 (graphviz 16.1.2).
+
 ## Context
 
 The oracle is graphviz 16.1.0 (ADR-0001). Graphviz 16.1.1 was released on

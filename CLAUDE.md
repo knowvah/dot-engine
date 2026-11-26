@@ -32,21 +32,24 @@ C behavior. The maintainer reads every line and files every MR.
 
 ## Verification
 
-- Oracle = the **carried build**: graphviz 16.1.1 plus
+- Oracle = the **carried build**: graphviz 16.1.2 plus
   `test/corpus/oracle-patches/*.patch`, binary
-  `/Users/scottseely/git/sseely/graphviz-carried/build/cmd/dot/dot` with
-  `GVBINDIR=/tmp/ghl1611-carried` for dot and `/tmp/ghl1611-carried-all` for
+  `/Users/scottseely/git/sseely/graphviz-carried-1612/build/cmd/dot/dot` with
+  `GVBINDIR=/tmp/ghl1612-carried` for dot and `/tmp/ghl1612-carried-all` for
   the other engines, built by `test/corpus/build-carried-oracle.sh` (never
   WASM; homebrew dot is only a cross-check, never the oracle — ABI mismatch).
   Locations live in `test/corpus/oracle-paths.mjs`. See
-  `docs/adr/0003-upstream-fix-forward.md`, which replaces the "pristine
-  16.1.1" clause of `docs/adr/0002-graphviz-16.1.1-oracle.md`. Pristine
-  16.1.1, `~/git/graphviz-16.1.1/build/cmd/dot/dot` (branch `oracle/16.1.1`,
-  `GVBINDIR=/tmp/ghl1611` and `/tmp/ghl1611-all`), is the bisect build for a
-  suspected patch effect. The 16.1.0 build `~/git/graphviz/build/cmd/dot/dot`
-  (`GVBINDIR=/tmp/ghl`) is kept only for bisecting a 16.1.0 → 16.1.1 change
-  (the move is complete, #166); the 15.x reference build is
-  `~/git/graphviz-15` with `GVBINDIR=/tmp/ghl15`.
+  `docs/adr/0004-graphviz-16.1.2-oracle.md` (the version) and
+  `docs/adr/0003-upstream-fix-forward.md` (the carried patches). Pristine
+  16.1.2, `~/git/graphviz-16.1.2/build/cmd/dot/dot` (branch `oracle/16.1.2`,
+  `GVBINDIR=/tmp/ghl1612` and `/tmp/ghl1612-all`), is the bisect build for a
+  suspected patch effect, and the build attribution runs against. The 16.1.1
+  builds are kept only for bisecting a 16.1.1 → 16.1.2 change: carried
+  `~/git/sseely/graphviz-carried` (`/tmp/ghl1611-carried`,
+  `/tmp/ghl1611-carried-all`) and pristine `~/git/graphviz-16.1.1`
+  (`/tmp/ghl1611`, `/tmp/ghl1611-all`). The 16.1.0 build
+  `~/git/graphviz/build/cmd/dot/dot` (`GVBINDIR=/tmp/ghl`) and the 15.x
+  build `~/git/graphviz-15` (`GVBINDIR=/tmp/ghl15`) are older references.
 - Conformance bar = xdot/SVG comparison at 0.01 tolerance (deterministic
   engines). Byte-exactness is not required; structural match is progress.
 - Gates before any commit: `tsc --noEmit` clean, `npm test` green, golden

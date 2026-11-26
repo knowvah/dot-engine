@@ -76,7 +76,7 @@ deltas (A3, A8) are closed and kept below as history.
 
 > **Scope, historically an unmeasured caveat — now partially measured.** The
 > **main dot-engine SVG survey** (`test/corpus/survey.ts`) is still
-> **dot-only**: the native oracle runs under `GVBINDIR=/tmp/ghl1611`, which
+> **dot-only**: the native oracle runs under `GVBINDIR=/tmp/ghl1612-carried`, which
 > symlinks **only** the `core` + `dot_layout` plugins
 > (`test/corpus/gen-headless-gvbindir.sh` loops over exactly `core dot_layout`
 > — no `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` layout plugin is present),
@@ -115,10 +115,10 @@ input under its own engine instead of `dot`. The honest ceiling on that work is
 to **narrow** A1 to "no active divergence on the reference platform," never to
 eliminate the cross-platform caveat; the results so far (below) hold to that
 ceiling: `circo`/`twopi`/`osage` have each surfaced and root-caused a handful of
-genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 99.8/98.0/68.2%
-within 0.5pt of native over the 898-item universe (graphviz 16.1.1), meaning
+genuine A1/A9 instances, and `neato`/`fdp`/`sfdp` now sit at 99.7/97.2/68.6%
+within 0.5pt of native over the 933-item universe (graphviz 16.1.2), meaning
 the ported arithmetic (`fma.ts`, `arm-pow.ts`, matched PRNG) holds for most
-graphs — and every diverged id of the 898-item universe is individually
+graphs — and every diverged id of the 933-item universe is individually
 attributed by injection (solver drift vs. port defect) rather than left as
 untriaged drift. See the iterative-engine characterization below.
 
@@ -197,19 +197,28 @@ field for these three and `parity-report.ts` renders them in a separate
 "Iterative engines (±0.5 characterization)" section of
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 explicitly **not** comparable to the ±0.01 deterministic pass rates elsewhere
-in this document. Current counts against graphviz 16.1.1 (898-item
+in this document. Current counts against graphviz 16.1.2 (933-item
 universe; pass % leaves out inputs the C oracle cannot render and inputs whose
 native output varies from run to run, per [Conformance](./conformance.md)):
 
 | engine | surveyed | within ±0.5pt | non-conformant | port error / timeout | oracle error | oracle nondeterministic |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
-`fdp`'s 11 nondeterministic inputs, where native output varies from run to run,
-are left out of its pass %; its one port error is `1879`, which needs
-`splines=compound` routing that the port does not support.
+`fdp`'s 8 nondeterministic inputs, where native output varies from run to run,
+are left out of its pass %. The one port error on each engine is `2783`
+([A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)).
+`1879`, formerly `fdp`'s port error, is no longer walked: it is one of the ids
+graphviz 16.1.2's `dot` no longer renders
+([16.1.2 render skip](#render-skip-16-1-2)), and every engine walk takes its ids
+from the `dot` survey's conformant set. Four of `fdp`'s seven oracle errors are
+that render skip on `fdp` itself.
+
+(The universe grew from 898 to 933 at graphviz 16.1.2 without a port change:
+53 ids that earlier port fixes had already made conformant entered the walks
+when the `dot` survey was re-run, and the 18 render-skip ids left.)
 
 (The `fdp` pass rate rose from 77.5% because the earlier committed walk
 predated the port state of the previous mission. The `neato` rate rose from
@@ -224,13 +233,17 @@ outside ±0.5pt are `2784` (A10) and `2371` (A1 drift).)
 chiefly neato's unported `user_pos`/`P_SET` handling, the engine-init
 consolidation, and the `setEdgeType` macro-vs-function fix.)
 
-Unlike at first sweep, every diverged row of the 898-item universe is
-individually attributed against graphviz 16.1.1: the injection harness
+Unlike at first sweep, every diverged row of the 933-item universe is
+individually attributed against graphviz 16.1.2: the injection harness
 (`test/corpus/attribute-divergence.ts`) feeds the native oracle's
 pre-routing `ND_pos` into the port and re-compares, and every current
 diverged id is `drift-exonerated` (the port's routing and emission
 reproduce the oracle exactly once the solver drift is removed) except sfdp
-`2556`. Two are separately accepted per-id residuals: sfdp `241_0`'s host-libm `pow`
+`2556`, fdp `2717` (a [pending 16.1.2 port](#pending-16-1-2-ports)), fdp `1436`
+([#211](https://github.com/knowvah/dot-engine/issues/211): seven of its subgraphs share one name, so the harness cannot place
+their boxes) and sfdp `graphs-clustlabel` ([#315](https://github.com/knowvah/dot-engine/issues/315)). The six fdp rows `2768`,
+`2768_1`, `2768_2`, `2769`, `2769_1` and `2769_2` read `drift-exonerated` but
+are the deterministic defect [#224](https://github.com/knowvah/dot-engine/issues/224); they are not accepted under A1. Two are separately accepted per-id residuals: sfdp `241_0`'s host-libm `pow`
 drift (re-diagnosed by T28; its injection row reads `drift-exonerated` since
 `12dddc48`) and sfdp `2556`'s NaN layout. fdp `241_0` passes since `fix(T9): start
 swapped cdt faces at the new diagonal as gts does` (see the fdp paragraph
@@ -264,8 +277,8 @@ measures the oracle's `pow` and is not something the library can do on every
 host. `Math.pow` in the repulsive force passes 153 of the 292 but regresses 6
 ids that pass today, so it was not applied. The table's sfdp row equals
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)'s:
-0 diverged plus 286 accepted gives the 286 at graphviz 16.1.1, and no id is
-listed there as oracle-nondeterministic.
+1 diverged plus 291 accepted gives the 292 at graphviz 16.1.2, and one id
+(`linux.x86-neatosplines_neato`) is listed there as oracle-nondeterministic.
 
 The class acceptance below formalizes the exonerated set; live counts in
 the per-engine dashboards
@@ -340,7 +353,7 @@ closed `42`, `clust2`, `ngk10_4` (structural-match → conformant) and moved
 
 **Both survey sides run the same estimator — measurement is neutralized.**
 The native `dot` oracle runs under a headless `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`) that symlinks only the
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`) that symlinks only the
 `core` and `dot_layout` plugins — no `gd`/`pango`/`quartz` text-layout plugin.
 With that slot empty, graphviz falls back to its built-in
 `estimate_textspan_size`. The TypeScript port's `EstimateTextMeasurer`
@@ -494,8 +507,9 @@ it: libm `hypot` for the distance (`route.c:448`), C's strict `>` comparison
 gone; the `241_0` knot is pinned in C's routing frame, because C is not
 translation-equivariant on such ties. This closed `2368`, `2371`, `2413_1`,
 `2413_2`, `graphs-b100`, `graphs-b104` and `graphs-decorate`. At graphviz 16.1.1
-`2368` diverges again for an unrelated reason: native's `flat_reorder` change
-([#158](#pending-16-1-1-ports)).
+`2368` diverged again for an unrelated reason, native's `flat_reorder` change
+([#158](#pending-16-1-1-ports)); it is conformant again now that the change is
+ported.
 
 `241_1` was not a `hypot` tie: it was closed by `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
@@ -559,6 +573,13 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. Oracle in an acknowledged-broken state (the init_rank / pathplan family)
+
+> **At graphviz 16.1.2 the oracle writes nothing for this family.** `dot` now
+> skips rendering when layout reports an error, so `1581`, `1939`, `2470`,
+> `2471`, `2796`, `2825` and `graphs-structs` are oracle errors in the survey,
+> not conformant or diverged rows; `1435` is unaffected. The port still renders
+> them as described below. See [16.1.2 render skip](#render-skip-16-1-2). The
+> text below describes the state up to graphviz 16.1.1.
 
 **Affected (graphviz 16.1 sweep):** `1435` (structural-match, maxΔ 0.39 on
 one spline control point; was 503 against the 15.x oracle — the drop was not
@@ -1024,6 +1045,9 @@ conform. Standalone repro: `.agent-notes/circo-2475-590-repro.dot`; full RCA:
 `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — radial-coordinate ULP amplified by the xlabel R-tree.**
+(History since graphviz 16.1.2: `2470` left every engine walk with
+[the render skip](#render-skip-16-1-2), and its registry entries are retired.
+Native `twopi` still renders it.)
 2470 is a 140-edge graph whose HTML `<table>` edge labels cluster on
 near-coincident radial anchors. In the neato family, edge labels are placed
 as external labels by the greedy xlabel placer (`label/xlabels.c`), which
@@ -1206,12 +1230,18 @@ injector confirmed it also injects to 0, and its accept was removed (see the
 
 ### A10. V8 `Map` size limit in polyomino packing (`2784`, five pack-based engines)
 
-**Affected:** `2784` on `circo`, `twopi`, `neato`, `fdp` and `sfdp`. The port
-throws on the xdot and imagemap walks of all five engines and on the `json` walk
-for `circo`. On the `json` walks for `twopi`, `neato`, `fdp` and `sfdp`, and on the
-`plain` walks of all five, the native oracle itself does not finish within the
-walk's time budget, so those rows are oracle errors. On `dot`, `osage` and
-`patchwork` it passes.
+**Affected:** `2784` and `2783` on `circo`, `twopi`, `neato`, `fdp` and `sfdp`.
+The port throws on the xdot, `json` and imagemap walks of all five engines. On
+the `plain` walks the native oracle itself does not finish within the walk's
+300 s budget, so those rows are oracle errors (`2783` on `sfdp` `plain-ext` is
+the exception: native finishes and the port throws). Native takes 180 to 410 s
+on these inputs, so a `json` or imagemap row can also read as an oracle error
+when the machine is loaded. On `dot`, `osage` and `patchwork` both pass.
+
+`2783` has the same shape as `2784` and entered the walks at graphviz 16.1.2. Its
+15 port-error rows have no registry entry yet, so the dashboards show them as
+unaccepted port errors; so do `2784`'s `json` rows on `twopi`, `neato`, `fdp` and
+`sfdp`.
 
 **What happens.** `lib/pack/pack.c` records the cells a component occupies in
 a `PointSet`. For `2784` (a single node 3e16 pt tall, `splines="ortho"`) the
@@ -1279,9 +1309,12 @@ Evidence: [issue #145](https://github.com/knowvah/dot-engine/issues/145).
 
 ## Upstream fixes carried (U-series) {#u-series}
 
-The conformance oracle is graphviz 16.1.1 plus the patches in
+The conformance oracle is graphviz 16.1.2 plus the patches in
 `test/corpus/oracle-patches/`
-([ADR-0003](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0003-upstream-fix-forward.md)).
+([ADR-0003](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0003-upstream-fix-forward.md),
+[ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)).
+Graphviz 16.1.2 does not contain U1's fix; the patch applies unchanged to the
+16.1.2 tag and is still carried.
 A row joins the U-series only once its upstream merge request is filed
 (ADR-0003, D2); the patch is carried from then on, and the port follows the C
 fix. A fix that exists only as a fork branch or fork issue stays where it is
@@ -1326,6 +1359,90 @@ deltas: each is open work on its issue.
 
 Inputs that reach each change are tracked in
 [#148](https://github.com/knowvah/dot-engine/issues/148).
+
+**Status at graphviz 16.1.2:** every issue in this table is closed and its
+change is ported. The table is kept as history. The 34 ids of #158, the 4 of
+#160, `2783` (#164) and 14 inputs that 16.1.1 added are conformant on `dot`
+again and back in every walk.
+
+## Pending 16.1.2 ports {#pending-16-1-2-ports}
+
+The oracle moved from graphviz 16.1.1 to 16.1.2
+([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)).
+The re-baseline's classification
+(`plans/graphviz-16-1-2-rebaseline/classification/`) traced every result that
+changed to a cause. Only two upstream changes move a corpus result: the render
+skip, described in the next section, and the `mapc` change below. These are not
+accepted deltas: each is open work on its issue.
+
+| issue | upstream change | ids that moved at 16.1.2 | engines |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc` decides whether a subgraph is a cluster with `is_a_cluster`, not by the `cluster` name prefix | 1: `2717`. Native crashed at 16.1.1 and renders at 16.1.2; the port still adds a node `domestic_cats` and diverges on the xdot, `json` and `plain` walks (the imagemap is conformant) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | `dot` skips rendering when layout reports an error | 34 survey ids, 5 engine ids and 3 goldens: see [16.1.2 render skip](#render-skip-16-1-2) | all |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges` skips self loops in the `other` scan | none in the walked corpus | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | `conc_slope` falls back when a node has no in or out edges | none in the walked corpus | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | `reallyroutespline` fails when no split point is found | none in the walked corpus (the quarantined input `2746` no longer crashes natively; it is now a render skip) | all |
+
+The seven inputs 16.1.2 adds (`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`) are quarantined as `pending-input` and are not walked until
+[#298](https://github.com/knowvah/dot-engine/issues/298) admits them.
+
+## 16.1.2 render skip (pending #299) {#render-skip-16-1-2}
+
+Since graphviz 16.1.2 the `dot` command does not render when layout reported an
+error (upstream commit `19b33b581`, `cmd/dot/dot.c:main`): it exits 1 and writes
+nothing. Graphviz 16.1.1 exited 1 too, but wrote the half-laid-out document. The
+port still renders these inputs, as 16.1.1 did.
+Whether the port follows is [#299](https://github.com/knowvah/dot-engine/issues/299), which waits on a maintainer ruling; until
+then nothing in the library changes for it.
+
+With no native document there is nothing to compare, so each row below is an
+oracle error, not a divergence and not an accepted delta.
+
+**`dot` survey, 34 ids** (all were conformant at 16.1.1 except `2781` and
+`2781_1`, which were structural matches), by the first error layout reports:
+
+| first error | ids |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2`, and `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+The last five (`1879` to `2821_2`) fail only because the walks run native from
+the repository root, where the image files their labels name are not found
+([#314](https://github.com/knowvah/dot-engine/issues/314)); run from their own directory, both graphviz versions render them.
+
+**Every other walk.** The `-Tdot`, xdot, `json`, imagemap and `plain` walks and
+all seven engine walks take their ids from the survey's conformant set, so the
+18 of these ids that were in that set are no longer walked on any engine or
+format: `1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`,
+`1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` and
+`graphs-structs`. Their accepted entries in the per-engine registries are
+retired. Most of them still render natively on the other engines (89 of the
+126 id and engine pairs), so the engines lose coverage they could keep.
+
+**On the engine itself, 5 ids** (xdot, `json`, imagemap and `plain` rows, all
+passing at 16.1.1):
+
+| engine | ids | error |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (the port does not print this one yet, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+The oracle-error registries label these five `native-crash`, because the
+classifier has no other class for "every attempt failed"; native exits 1 with
+no output and does not crash.
+
+**Goldens, 3:** `pt-issue-31-inline`, `pt-issue-31-rubebe` and
+`pt-issue-31-zuduxu` keep their graphviz 16.1.1 reference, because 16.1.2
+writes none (`test/golden/inputs/PROVENANCE.md`).
 
 ## Tracked long tail (`dot` attribute & edge-case)
 

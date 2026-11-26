@@ -1,5 +1,5 @@
 ---
-sourceHash: 108900a6526f9e995c80f6640cba948df61fe8bc937f8c32e4df82dd8d902cd1
+sourceHash: d8cad6b446eeaef59797097e9905f579ed5de5d9317562bd50552d98c504fde2
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -86,7 +86,7 @@ sem lifandi samanburður.
 
 ## Endurskapa {#reproduce}
 
-Innbyggða véfréttin keyrir undir ósýnilega (headless) `GVBINDIR` (`/tmp/ghl1611`, úr
+Innbyggða véfréttin keyrir undir ósýnilega (headless) `GVBINDIR` (`/tmp/ghl1612-carried`, úr
 `test/corpus/gen-headless-gvbindir.sh`) svo báðar hliðar nota sama
 mæli, `estimate_textspan_size` — sjá
 [§A2 „Isolating the algorithm from the font backend“](/is/divergences#a2-text-measurement-font-metrics-label-driven-layout).
@@ -97,8 +97,8 @@ GV_TEXT_MEASURER=estimate \
   npx tsx test/corpus/render-one.ts ~/git/graphviz/tests/graphs/proc3d.gv dot
 
 # native C oracle (headless, estimate measurer)
-GVBINDIR=/tmp/ghl1611 \
-  ~/git/graphviz-16.1.1/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
+GVBINDIR=/tmp/ghl1612-carried \
+  ~/git/sseely/graphviz-carried-1612/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
 ```
 
 Að keyra þetta í dag gefur samsvarandi SVG (0 mismunir við `deterministic`

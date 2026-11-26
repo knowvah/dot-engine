@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -76,7 +76,7 @@ lebegőpontos eltérések (A3, A8) lezártak, és alább történetként maradta
 
 > **Hatókör, történetileg meg nem mért fenntartás — mára részben megmérve.** A
 > **fő dot-motoros SVG-felmérés** (`test/corpus/survey.ts`) továbbra is
-> **csak dot**: a natív orákulum a `GVBINDIR=/tmp/ghl1611` alatt fut, amely
+> **csak dot**: a natív orákulum a `GVBINDIR=/tmp/ghl1612-carried` alatt fut, amely
 > **csak** a `core` + `dot_layout` bővítményeket linkeli
 > (a `test/corpus/gen-headless-gvbindir.sh` pontosan a `core dot_layout`-on
 > megy végig — nincs jelen `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` elrendezés-bővítmény),
@@ -115,10 +115,10 @@ minden bemenetet a saját motorjával mér fel a `dot` helyett. A munka őszinte
 hogy az A1-et „nincs aktív eltérés a referenciaplatformon” szintre **szűkítsük**, és a
 platformok közötti fenntartást soha ne szüntessük meg; az eddigi eredmények (alább) tartják ezt a
 plafont: a `circo`/`twopi`/`osage` mindegyike felszínre hozott és gyökérokig elemzett néhány
-valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 898 elemes univerzumon (graphviz 16.1.1) 99.8/98.0/68.2%-ban
+valódi A1/A9 esetet, a `neato`/`fdp`/`sfdp` pedig most a 933 elemes univerzumon (graphviz 16.1.2) 99.7/97.2/68.6%-ban
 van 0.5 pt-on belül a natívtól, vagyis a portolt
 aritmetika (`fma.ts`, `arm-pow.ts`, összehangolt PRNG) a legtöbb gráfnál tartja magát — és
-a 898 elemes univerzum minden eltérő azonosítója egyenként injektálással van tulajdonítva (megoldó-
+a 933 elemes univerzum minden eltérő azonosítója egyenként injektálással van tulajdonítva (megoldó-
 sodródás vs. portolási hiba), nem pedig osztályozatlan sodródásként hagyva. Lásd az alábbi iteratív motorok jellemzését.
 
 **Motorsáv-elfogadás: a twopi nyílcsalád.** <a id="a1-twopi-arrows-family"></a>
@@ -197,17 +197,19 @@ tulajdonítva van, ahogy alább olvasható — az `engine-walk.ts` ezekhez a há
 „Iteratív motorok (±0.5 jellemzés)” szakaszban jeleníti meg őket a
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) fájlban,
 kifejezetten **nem** összevethetően a dokumentum többi részében szereplő ±0.01-es determinisztikus
-átmenési arányokkal. Jelenlegi számok a graphviz 16.1.1 ellen (898 elemes univerzum; az átmenési arány kihagyja
+átmenési arányokkal. Jelenlegi számok a graphviz 16.1.2 ellen (933 elemes univerzum; az átmenési arány kihagyja
 azokat a bemeneteket, amelyeket a C orákulum nem tud renderelni, és azokat, amelyeknél a natív kimenet
 futásról futásra változik, a [Megfelelőség](./conformance.md) szerint):
 
 | motor | felmért | ±0.5 pt-on belül | nem megfelelő | portolási hiba / időtúllépés | orákulumhiba | orákulum nem determinisztikus |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
-Az `fdp` 11 nem determinisztikus bemenete, amelyeknél a natív kimenet futásról futásra változik, kimarad az átmenési arányából; egyetlen portolási hibája az `1879`, amelyhez `splines=compound` útvonalvezetés kell, és ezt a port nem támogatja.
+Az `fdp` 8 nem determinisztikus bemenete, amelyeknél a natív kimenet futásról futásra változik, kimarad az átmenési arányából. Minden motor egyetlen portolási hibája a `2783` ([A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)). Az `1879`, korábban az `fdp` portolási hibája, már nincs végigfuttatva: ez azon id-k egyike, amelyeket a graphviz 16.1.2 `dot`-ja már nem renderel ([16.1.2 renderelési kihagyás](#render-skip-16-1-2)), és minden motor-végigfuttatás a `dot` felmérés conformant halmazából veszi az id-it. Az `fdp` hét orákulumhibájából négy ez a renderelési kihagyás magán az `fdp`-n.
+
+(Az univerzum 898-ról 933-ra nőtt a graphviz 16.1.2-nél portolási változás nélkül: 53 id, amelyet korábbi portolási javítások már conformant-tá tettek, akkor került a végigfuttatásokba, amikor a `dot` felmérést újrafuttatták, a 18 renderelési kihagyásos id pedig kikerült.)
 
 (Az `fdp` átmenési aránya azért nőtt a korábbi
 77.5%-ról, mert a korábbi rögzített végigfuttatás az előző küldetés portolási
@@ -222,13 +224,17 @@ elfogadott azonosítónkénti maradék `2619_2`, amelynek elfogadását visszavo
 javítások hozták, főként a neato portolatlan `user_pos`/`P_SET` kezelése, a motorinicializálás
 összevonása és a `setEdgeType` makró-vs-függvény javítás.)
 
-Az első végigfuttatással ellentétben a 898 elemes univerzum minden eltérő sora
-egyenként tulajdonítva van a graphviz 16.1.1 ellenében: az injektáló eszköz
+Az első végigfuttatással ellentétben a 933 elemes univerzum minden eltérő sora
+egyenként tulajdonítva van a graphviz 16.1.2 ellenében: az injektáló eszköz
 (`test/corpus/attribute-divergence.ts`) a natív orákulum útvonalvezetés előtti
 `ND_pos` értékét a portolt változatba táplálja, és újra összehasonlít, és minden
 jelenlegi eltérő azonosító `drift-exonerated` (a portolt változat útvonalvezetése
 és kibocsátása pontosan reprodukálja az orákulumot, amint a megoldósodródást
-eltávolítjuk), az sfdp `2556` kivételével. Kettő külön elfogadott, azonosítónkénti maradék: az sfdp `241_0`
+eltávolítjuk), az sfdp `2556`, az fdp `2717` (egy [függő 16.1.2-portolás](#pending-16-1-2-ports)), az fdp `1436`
+([#211](https://github.com/knowvah/dot-engine/issues/211): hét részgráfja ugyanazt a nevet viseli, ezért az eszköz nem tudja elhelyezni
+a dobozaikat) és az sfdp `graphs-clustlabel` ([#315](https://github.com/knowvah/dot-engine/issues/315)) kivételével. A hat fdp sor, a `2768`,
+`2768_1`, `2768_2`, `2769`, `2769_1` és `2769_2`, `drift-exonerated`-nek látszik, de
+a [#224](https://github.com/knowvah/dot-engine/issues/224) determinisztikus hiba; ezek nincsenek elfogadva az A1 alatt. Kettő külön elfogadott, azonosítónkénti maradék: az sfdp `241_0`
 hoszt-libm `pow` sodródása (a T28 újradiagnosztizálta; injekciós sora `12dddc48` óta `drift-exonerated`), valamint az sfdp `2556` NaN elrendezése. Az fdp `241_0` átmegy a(z)
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` óta (lásd az fdp bekezdést az A9 alatt). Az fdp `2471` és az sfdp `2371` élfeliratainak pozíciói (`lp`) korábban
 injektálás után is eltértek, vagyis az xlabel-elhelyező másik jelöltet választott. A
@@ -245,7 +251,7 @@ motoronkénti irányítópultokon találhatók
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Hol kezdődik az sfdp megoldójának eltérése (10. rész, T2).** Egy műszerezett natív sfdp, kis id-kön a porttal szemben nyomon követve, először a taszítóerő `pow(dist, 1-p)` kifejezésének utolsó bitjén tér el (`lib/sfdpgen/spring_electrical.c:625,617`; port: `spring-electrical.ts:260`). A `flatedge` esetén a `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` natívan `...8811p+2`-t, a portban `...8812p+2`-t ad; a `graphs-p` és az `1767` ugyanígy kezdődik. Az adaptív hűtés felerősíti a bitet: az 5. iterációban eléri `x[0]`-t, `max|dx|` a 100. iterációban 2.4e-9, a 200.-ban 3.9e-5, a lépés pedig a 244. iterációban átbillen. Ezt két ellenőrzött futás igazolja. A natív bitjeivel pontosan ennél a 8 hívásnál a `flatedge` 62090 soros nyoma azonos, a macOS valódi `pow`-jával egy Node-API-bővítmény mögött pedig a 292 nem teljesítő id közül 288 bitazonos nyomot ad (a másik 4, mind `overlap=false`, csak `xfinal`-nál tér el). A műveletsorrendet és a fúziót a megoldóban, a multilevelben, a quadtree-ben és a ritka kódban kizártuk. Ez a gazdagép libm-je, az A1 alatt elfogadva (lásd a `pow` pontot az alábbi ismert hiányok listájában); a `src/` nem változott, így a számok 632 a 929-ből maradnak. A csak macOS-en futó kísérlet nagyjából 923-ig jutott 929-ből; ez az orákulum `pow`-ját méri, nem olyasmi, amit a könyvtár minden gazdagépen meg tud tenni. A `Math.pow` a taszítóerőben a 292-ből 153-at teljesít, de 6 ma teljesítő id-t visszavet, ezért nem alkalmaztuk. A táblázat sfdp sora megegyezik a [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) soráéval: 0 eltérő plusz 286 elfogadott adja a 286-ot a graphviz 16.1.1-nél, és egyetlen id sem szerepel ott nemdeterminisztikusként az orákulumnál.
+**Hol kezdődik az sfdp megoldójának eltérése (10. rész, T2).** Egy műszerezett natív sfdp, kis id-kön a porttal szemben nyomon követve, először a taszítóerő `pow(dist, 1-p)` kifejezésének utolsó bitjén tér el (`lib/sfdpgen/spring_electrical.c:625,617`; port: `spring-electrical.ts:260`). A `flatedge` esetén a `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` natívan `...8811p+2`-t, a portban `...8812p+2`-t ad; a `graphs-p` és az `1767` ugyanígy kezdődik. Az adaptív hűtés felerősíti a bitet: az 5. iterációban eléri `x[0]`-t, `max|dx|` a 100. iterációban 2.4e-9, a 200.-ban 3.9e-5, a lépés pedig a 244. iterációban átbillen. Ezt két ellenőrzött futás igazolja. A natív bitjeivel pontosan ennél a 8 hívásnál a `flatedge` 62090 soros nyoma azonos, a macOS valódi `pow`-jával egy Node-API-bővítmény mögött pedig a 292 nem teljesítő id közül 288 bitazonos nyomot ad (a másik 4, mind `overlap=false`, csak `xfinal`-nál tér el). A műveletsorrendet és a fúziót a megoldóban, a multilevelben, a quadtree-ben és a ritka kódban kizártuk. Ez a gazdagép libm-je, az A1 alatt elfogadva (lásd a `pow` pontot az alábbi ismert hiányok listájában); a `src/` nem változott, így a számok 632 a 929-ből maradnak. A csak macOS-en futó kísérlet nagyjából 923-ig jutott 929-ből; ez az orákulum `pow`-ját méri, nem olyasmi, amit a könyvtár minden gazdagépen meg tud tenni. A `Math.pow` a taszítóerőben a 292-ből 153-at teljesít, de 6 ma teljesítő id-t visszavet, ezért nem alkalmaztuk. A táblázat sfdp sora megegyezik a [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) soráéval: 1 eltérő plusz 291 elfogadott adja a 292-t a graphviz 16.1.2-nél, és egy id (`linux.x86-neatosplines_neato`) szerepel ott nemdeterminisztikusként az orákulumnál.
 
 **Az A1-drift osztályelfogadás (iteratív motorok, számított tagság).**
 <a id="a1-drift-iterative-engines"></a> A `test/corpus/accepted-divergences-engines.json`
@@ -311,7 +317,7 @@ lezárta a `42`, `clust2`, `ngk10_4` eseteket (structural-match → conformant),
 
 **A felmérés mindkét oldala ugyanazt a becslőt futtatja — a mérés semlegesítve van.**
 A natív `dot` orákulum fej nélküli `GVBINDIR` alatt fut
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`), amely csak a
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`), amely csak a
 `core` és a `dot_layout` bővítményeket linkeli — nincs `gd`/`pango`/`quartz` szövegelrendezési bővítmény.
 Ha ez a hely üres, a graphviz a beépített
 `estimate_textspan_size` függvényre esik vissza. A TypeScript portolás `EstimateTextMeasurer`
@@ -329,7 +335,7 @@ szűkített volna egy betűmetrikai rést.
 mert a szövegmérés tudatos bővítési pont, nem pedig valamelyik motorba beledrótozva.
 A `TextMeasurer` egy egymetódusú interfész (`measure(text, font, size,
 flags) → {w, h, …}`), amelyet függőségbefecskendezéssel kap minden címkeméretező hívási hely —
-a `polyInit`, a `recordInit`, az `initEdgeLabels` és a `buildNodeLabel` mind paraméterként veszi át a
+a `polyInit`, a `recordInit`, az `initEdgeLabels` és a `makeNodeLabel` mind paraméterként veszi át a
 mérőt; semmi sem mér szöveget globálison keresztül. Teszteknél/CI-ban a `setTextMeasurer(...)` vagy a
 `GV_TEXT_MEASURER=estimate` rögzíti.
 A bővítési pont azt is lehetővé teszi, hogy egy maradékról *bebizonyítsuk*, hogy csak mérési eredetű: a portolt változatnak
@@ -465,7 +471,7 @@ bezier-kiértékelés (`route.c:137-138`), a `mkspline` determinánsai
 (494) clang-féle `fp-contract` összevonása. A tűrő döntetlenfeloldás megszűnt; a
 `241_0` csomópont a C útvonalvezetési keretében van rögzítve, mert a C az ilyen
 döntetlenek esetén nem eltolás-ekvivariáns. Ez zárta le a `2368`, `2371`,
-`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` és `graphs-decorate` eseteket. A graphviz 16.1.1-nél a `2368` ismét eltér, egy független okból: a natív `flat_reorder` változása miatt ([#158](#pending-16-1-1-ports)).
+`2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` és `graphs-decorate` eseteket. A graphviz 16.1.1-nél a `2368` ismét eltért, egy független okból, a natív `flat_reorder` változása miatt ([#158](#pending-16-1-1-ports)); azóta ismét conformant, mióta a változást átportolták.
 
 Az `241_1` nem `hypot` döntetlen volt: a `87347711` zárta le (`fix(dot): match
 port-less edge endpoints in flat-adjacent aux layout`). A C minden, főélen osztozó
@@ -528,6 +534,14 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. Elismerten hibás állapotú orákulum (az init_rank / pathplan család) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **A graphviz 16.1.2-nél az orákulum semmit sem ír ehhez a családhoz.** A `dot`
+> már nem renderel, ha az elrendezés hibát jelez, ezért az `1581`, `1939`, `2470`,
+> `2471`, `2796`, `2825` és `graphs-structs` orákulumhibák a felmérésben, nem
+> conformant vagy diverged sorok; az `1435` érintetlen. A portolt változat ezeket
+> továbbra is az alábbiak szerint rendereli. Lásd [16.1.2 renderelési
+> kihagyás](#render-skip-16-1-2). Az alábbi szöveg a graphviz 16.1.1-ig tartó
+> állapotot írja le.
 
 **Érintett (graphviz 16.1 végigfuttatás):** `1435` (structural-match, maxΔ 0.39
 egyetlen spline-kontrollponton; a 15.x orákulummal szemben 503 volt — a csökkenést
@@ -980,6 +994,8 @@ bitre pontos modelljére (`src/common/libm-hypot.ts`); most mindkettő megfelel.
 gyökérokelemzés: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — az xlabel R-fa által felerősített sugárkoordináta-ULP.**
+(Előzmény a graphviz 16.1.2 óta: a `2470` [a renderelési kihagyással](#render-skip-16-1-2) kikerült minden motor-végigfuttatásból, és a nyilvántartási bejegyzései megszűntek.
+A natív `twopi` továbbra is rendereli.)
 A 2470 egy 140 élű gráf, amelynek HTML `<table>` élcímkéi
 közel egybeeső sugárirányú horgonyokon csoportosulnak. A neato családban az élcímkéket
 külső címkékként a mohó xlabel-elhelyező (`label/xlabels.c`) helyezi el,
@@ -1161,12 +1177,18 @@ fenti `2095 reclassified` megjegyzést).
 
 ### A10. V8 `Map` méretkorlát a poliominó-pakolásban (`2784`, öt pakoláson alapuló motor) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Érintett:** a `2784` a `circo`, `twopi`, `neato`, `fdp` és `sfdp` motoron. A
-portolt változat hibát dob mind az öt motor xdot és imagemap végigfuttatásán, valamint
-a `circo` `json` végigfuttatásán. A `twopi`, `neato`, `fdp` és `sfdp` `json`
-végigfuttatásain, valamint mind az öt `plain` végigfuttatásán maga a natív orákulum
-sem fut le a végigfuttatás időkeretén belül, így ezek a sorok orákulumhibák. A `dot`,
-`osage` és `patchwork` motoron átmegy.
+**Érintett:** a `2784` és a `2783` a `circo`, `twopi`, `neato`, `fdp` és `sfdp` motoron.
+A portolt változat hibát dob mind az öt motor xdot, `json` és imagemap végigfuttatásán.
+A `plain` végigfuttatásokon maga a natív orákulum sem fut le a végigfuttatás 300 s-os
+időkeretén belül, így ezek a sorok orákulumhibák (kivétel a `2783` az `sfdp` `plain-ext`
+végigfuttatásán: a natív lefut, a portolt változat hibát dob). A natív 180–410 s-ig tart
+ezeken a bemeneteken, így egy `json` vagy imagemap sor is orákulumhibának látszhat, ha a
+gép terhelt. A `dot`, `osage` és `patchwork` motoron mindkettő átmegy.
+
+A `2783` ugyanolyan szerkezetű, mint a `2784`, és a graphviz 16.1.2-nél került a végigfuttatásokba. A
+15 portolási hibasorának még nincs nyilvántartási bejegyzése, ezért a vezérlőpultok elfogadatlan portolási
+hibákként mutatják őket; ugyanígy a `2784` `json` sorait a `twopi`, `neato`, `fdp` és
+`sfdp` motoron.
 
 **Mi történik.** A `lib/pack/pack.c` egy `PointSet`-ben jegyzi fel az összetevő
 által elfoglalt cellákat. A `2784` esetén (egyetlen 3e16 pt magas csúcs,
@@ -1245,6 +1267,90 @@ Az orákulum a graphviz 16.1.0-ról a 16.1.1-re váltott ([ADR-0002](https://git
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | a 16.1.1 többi viselkedésváltozása | egy sincs a korpuszban vagy a golden fájlokban | — |
 
 Az egyes változásokat elérő bemeneteket a [#148](https://github.com/knowvah/dot-engine/issues/148) követi.
+
+**Állapot a graphviz 16.1.2-nél:** ennek a táblázatnak minden issue-ja le van zárva, és a
+változása át van portolva. A táblázat történeti anyagként marad meg. A #158 34 id-je, a
+#160 4 id-je, a `2783` (#164) és 14, a 16.1.1 által hozzáadott bemenet ismét conformant a `dot` motoron, és
+újra szerepel minden végigfuttatásban.
+
+## Függő 16.1.2-portolások {#pending-16-1-2-ports}
+
+Az orákulum a graphviz 16.1.1-ről a 16.1.2-re váltott
+([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)).
+Az újraalapozás osztályozása
+(`plans/graphviz-16-1-2-rebaseline/classification/`) minden megváltozott eredményt
+egy okra vezetett vissza. A korpusz eredményei közül csak két upstream-változás mozdít el
+valamit: a renderelési kihagyás, amelyet a következő szakasz ír le, és az alábbi `mapc`-változás.
+Ezek nem elfogadott eltérések: mindegyik nyitott munka a saját issue-jában.
+
+| issue | upstream-változás | a 16.1.2-nél elmozdult id-k | motorok |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | a `mapc` az `is_a_cluster` segítségével dönti el, hogy egy részgráf klaszter-e, nem a `cluster` névelőtag alapján | 1: `2717`. A natív a 16.1.1-nél összeomlott, a 16.1.2-nél renderel; a portolt változat még mindig hozzáad egy `domestic_cats` csúcsot, és eltér az xdot, `json` és `plain` végigfuttatásokon (az imagemap conformant) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | a `dot` nem renderel, ha az elrendezés hibát jelez | 34 felmérési id, 5 motor-id és 3 golden: lásd [16.1.2 renderelési kihagyás](#render-skip-16-1-2) | mind |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | a `flat_edges` kihagyja a hurokéleket az `other` bejárásban | nincs a végigfuttatott korpuszban | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | a `conc_slope` tartalékértékre vált, ha egy csúcsnak nincs be- vagy kimenő éle | nincs a végigfuttatott korpuszban | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | a `reallyroutespline` hibázik, ha nem talál felosztási pontot | nincs a végigfuttatott korpuszban (a karanténba tett `2746` bemenet natívan már nem omlik össze; most renderelési kihagyás) | mind |
+
+A 16.1.2 által hozzáadott hét bemenet (`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`) `pending-input`-ként karanténban van, és nincs végigfuttatva, amíg a
+[#298](https://github.com/knowvah/dot-engine/issues/298) be nem engedi őket.
+
+## 16.1.2 renderelési kihagyás (a #299-re vár) {#render-skip-16-1-2}
+
+A graphviz 16.1.2 óta a `dot` parancs nem renderel, ha az elrendezés hibát jelzett
+(upstream commit `19b33b581`, `cmd/dot/dot.c:main`): 1-es kóddal kilép, és semmit
+sem ír. A graphviz 16.1.1 is 1-gyel lépett ki, de kiírta a félig elrendezett
+dokumentumot. A portolt változat ezeket a bemeneteket továbbra is rendereli, ahogy a 16.1.1.
+Hogy a portolt változat követi-e, az a [#299](https://github.com/knowvah/dot-engine/issues/299), amely karbantartói döntésre vár; addig
+a könyvtárban semmi sem változik emiatt.
+
+Natív dokumentum nélkül nincs mit összehasonlítani, ezért az alábbi sorok mindegyike
+orákulumhiba, nem eltérés és nem elfogadott eltérés.
+
+**`dot` felmérés, 34 id** (mind conformant volt a 16.1.1-nél, kivéve a `2781` és a
+`2781_1` azonosítót, amelyek structural-match voltak), az elrendezés által jelzett első hiba szerint:
+
+| első hiba | id-k |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2`, valamint `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+Az utolsó öt (`1879`-től `2821_2`-ig) csak azért hibázik, mert a végigfuttatások a natívat
+a tároló gyökeréből indítják, ahol a címkéik által megnevezett képfájlok nem találhatók
+([#314](https://github.com/knowvah/dot-engine/issues/314)); a saját könyvtárukból indítva a graphviz mindkét verziója rendereli őket.
+
+**Minden más végigfuttatás.** A `-Tdot`, xdot, `json`, imagemap és `plain` végigfuttatások, valamint
+mind a hét motor-végigfuttatás az id-iket a felmérés conformant halmazából veszik, így ezek közül a
+18 id, amely ebben a halmazban volt, többé egyetlen motoron vagy formátumon sincs végigfuttatva:
+`1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`,
+`1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` és
+`graphs-structs`. Az elfogadott bejegyzéseik a motononkénti nyilvántartásokban
+megszűntek. Legtöbbjüket a natív a többi motoron még rendereli (a 126 id–motor párból 89-et),
+így a motorok olyan lefedettséget veszítenek, amelyet megtarthatnának.
+
+**Magán a motoron, 5 id** (xdot, `json`, imagemap és `plain` sorok, mind
+átmentek a 16.1.1-nél):
+
+| motor | id-k | hiba |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (a portolt változat ezt még nem írja ki, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+Az orákulumhiba-nyilvántartások ezt az ötöt `native-crash`-nek címkézik, mert az
+osztályozónak nincs más osztálya a „minden kísérlet meghiúsult" esetre; a natív 1-gyel lép ki
+kimenet nélkül, és nem omlik össze.
+
+**Golden, 3:** a `pt-issue-31-inline`, `pt-issue-31-rubebe` és
+`pt-issue-31-zuduxu` megtartja a graphviz 16.1.1-es referenciáját, mert a 16.1.2
+nem ír ilyet (`test/golden/inputs/PROVENANCE.md`).
 
 ## Nyomon követett hosszú farok (`dot` attribútumok és szélső esetek) {#tracked-long-tail-dot-attribute-edge-case}
 

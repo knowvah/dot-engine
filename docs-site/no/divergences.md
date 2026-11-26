@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -75,7 +75,7 @@ spline-ruting (A3, A8) er lukket og beholdt nedenfor som historikk.
 
 > **Omfang, historisk et uttestet forbehold — nå delvis målt.** Den
 > **viktigste SVG-undersøkelsen for dot-motoren** (`test/corpus/survey.ts`) er fortsatt
-> **kun for dot**: det innebygde orakelet kjøres under `GVBINDIR=/tmp/ghl1611`, som
+> **kun for dot**: det innebygde orakelet kjøres under `GVBINDIR=/tmp/ghl1612-carried`, som
 > lenker **bare** pluginene `core` + `dot_layout`
 > (`test/corpus/gen-headless-gvbindir.sh` går gjennom nøyaktig `core dot_layout`
 > — ingen layoutplugin for `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` er til stede),
@@ -114,10 +114,10 @@ inndata under sin egen motor i stedet for `dot`. Det ærlige taket for dette arb
 å **innsnevre** A1 til «ingen aktivt avvik på referanseplattformen», aldri å
 fjerne forbeholdet om tvers av plattformer; resultatene så langt (nedenfor) holder seg til
 det taket: `circo`/`twopi`/`osage` har hver avdekket og rotårsaksanalysert en håndfull
-ekte A1/A9-tilfeller, og `neato`/`fdp`/`sfdp` ligger nå på 99.8/98.0/68.2 %
-innenfor 0.5pt av innebygd over universet på 898 elementer (graphviz 16.1.1), noe som betyr at den portede
+ekte A1/A9-tilfeller, og `neato`/`fdp`/`sfdp` ligger nå på 99.7/97.2/68.6 %
+innenfor 0.5pt av innebygd over universet på 933 elementer (graphviz 16.1.2), noe som betyr at den portede
 aritmetikken (`fma.ts`, `arm-pow.ts`, samsvarende PRNG) holder for de fleste grafer — og
-hver avvikende id i universet på 898 elementer er individuelt tilskrevet ved injeksjon (løserdrift
+hver avvikende id i universet på 933 elementer er individuelt tilskrevet ved injeksjon (løserdrift
 mot portfeil) i stedet for å bli stående som uanalysert drift. Se karakteriseringen av iterative motorer nedenfor.
 
 **Godkjenning på motorsporet: twopi-pilfamilien.** <a id="a1-twopi-arrows-family"></a>
@@ -195,17 +195,28 @@ for disse tre, og `parity-report.ts` viser dem i en egen seksjon,
 «Iterative engines (±0.5 characterization)», i
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 uttrykkelig **ikke** sammenlignbar med de deterministiske ±0.01-beståttandelene ellers
-i dette dokumentet. Gjeldende tall mot graphviz 16.1.1 (univers på 898 elementer; beståttprosenten utelater
+i dette dokumentet. Gjeldende tall mot graphviz 16.1.2 (univers på 933 elementer; beståttprosenten utelater
 inndata C-orakelet ikke kan rendere, og inndata der nativ utdata varierer fra kjøring til
 kjøring, jf. [Samsvar](./conformance.md)):
 
 | motor | undersøkt | innenfor ±0.5pt | ikke samsvarende | portfeil / tidsavbrudd | orakelfeil | orakel ikke-deterministisk |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8 %) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0 %) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2 %) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7 %) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2 %) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6 %) | 292 | 1 | 0 | 1 |
 
-De 11 ikke-deterministiske inndataene til `fdp`, der nativ utdata varierer fra kjøring til kjøring, er utelatt fra beståttprosenten; den ene portfeilen er `1879`, som trenger `splines=compound`-ruting som porten ikke støtter.
+De 8 ikke-deterministiske inndataene til `fdp`, der nativ utdata varierer fra kjøring til kjøring,
+er utelatt fra beståttprosenten. Den ene portfeilen på hver motor er `2783`
+([A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)).
+`1879`, tidligere portfeilen til `fdp`, kjøres ikke lenger: det er en av id-ene som
+`dot` i graphviz 16.1.2 ikke lenger renderer
+([renderhopp i 16.1.2](#render-skip-16-1-2)), og hver motorgjennomgang tar id-ene sine fra
+conformant-mengden i `dot`-undersøkelsen. Fire av de sju orakelfeilene til `fdp` er
+dette renderhoppet på `fdp` selv.
+
+(Universet vokste fra 898 til 933 ved graphviz 16.1.2 uten portendring:
+53 id-er som tidligere portrettinger allerede hadde gjort conformant, kom med i
+kjøringene da `dot`-undersøkelsen ble kjørt på nytt, og de 18 id-ene med renderhopp falt bort.)
 
 (Beståttprosenten for `fdp` økte fra 77.5 % fordi den tidligere innsjekkede kjøringen
 var eldre enn portstatusen fra det forrige oppdraget.
@@ -219,12 +230,16 @@ godtatte resten per id `2619_2`, hvis godkjenning er trukket tilbake; de to `nea
 først og fremst neatos uportede håndtering av `user_pos`/`P_SET`, konsolideringen av motorinitialisering,
 og rettelsen av `setEdgeType` (makro mot funksjon).)
 
-I motsetning til ved første kjøring ble hver avvikende rad i universet på 898 elementer
-individuelt tilskrevet mot graphviz 16.1.1: injeksjonsverktøyet
+I motsetning til ved første kjøring ble hver avvikende rad i universet på 933 elementer
+individuelt tilskrevet mot graphviz 16.1.2: injeksjonsverktøyet
 (`test/corpus/attribute-divergence.ts`) mater det innebygde orakelets `ND_pos` før ruting
 inn i porten og sammenligner på nytt, og hver gjeldende avvikende id er `drift-exonerated`
 (portens ruting og emisjon reproduserer orakelet nøyaktig så snart løserdriften er
-fjernet), bortsett fra sfdp `2556`. To er separat godkjente rester per id: sfdp `241_0`s
+fjernet), bortsett fra sfdp `2556`, fdp `2717` (en [ventende 16.1.2-portering](#pending-16-1-2-ports)),
+fdp `1436` ([#211](https://github.com/knowvah/dot-engine/issues/211): sju av undergrafene har samme navn, så verktøyet kan ikke
+plassere boksene deres) og sfdp `graphs-clustlabel` ([#315](https://github.com/knowvah/dot-engine/issues/315)). De seks fdp-radene `2768`,
+`2768_1`, `2768_2`, `2769`, `2769_1` og `2769_2` lyder `drift-exonerated`, men
+er den deterministiske feilen [#224](https://github.com/knowvah/dot-engine/issues/224); de godkjennes ikke under A1. To er separat godkjente rester per id: sfdp `241_0`s
 host-libm-`pow`-drift (rediagnostisert av T28; injeksjonsraden lyder `drift-exonerated` siden `12dddc48`), og sfdp `2556`s NaN-layout. fdp `241_0` består siden
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` (se fdp-avsnittet
 under A9). fdp `2471` og sfdp
@@ -241,7 +256,7 @@ dashbordene per motor
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Hvor sfdps solverdrift begynner (del 10, T2).** En instrumentert nativ sfdp, sporet mot porten på små id-er, avviker først i siste bit av `pow(dist, 1-p)` i frastøtingskraften (`lib/sfdpgen/spring_electrical.c:625,617`; porten `spring-electrical.ts:260`). På `flatedge` gir `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` `...8811p+2` nativt og `...8812p+2` i porten; `graphs-p` og `1767` begynner på samme måte. Adaptiv kjøling forsterker biten: den når `x[0]` i iterasjon 5, `max|dx|` er 2.4e-9 i iterasjon 100 og 3.9e-5 i 200, og steget snur i iterasjon 244. To kontrollerte kjøringer bekrefter det. Med nativets biter ved nøyaktig disse 8 kallene blir `flatedge`s spor på 62090 linjer identisk, og med macOS' ekte `pow` bak et Node-API-tillegg har 288 av de 292 id-ene som ikke besto, bitidentiske spor (de øvrige 4, alle `overlap=false`, skiller seg bare ved `xfinal`). Rekkefølgen på operasjoner og fusjon i solveren, multilevel, quadtree og sparse-kode er utelukket. Dette er vertens libm, akseptert under A1 (se `pow`-punktet i listen over kjente hull nedenfor); `src/` ble ikke endret, så tallene forblir 632 av 929. Eksperimentet som bare kjørte på macOS nådde omtrent 923 av 929; det måler orakelets `pow` og er ikke noe biblioteket kan gjøre på enhver vert. `Math.pow` i frastøtingskraften består 153 av de 292, men får 6 id-er som består i dag til å gå tilbake, så den ble ikke tatt i bruk. Tabellens sfdp-rad er lik den i [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 0 avvikende pluss 286 akseptert gir de 286 ved graphviz 16.1.1, og ingen id står der som ikke-deterministisk hos oraklet.
+**Hvor sfdps solverdrift begynner (del 10, T2).** En instrumentert nativ sfdp, sporet mot porten på små id-er, avviker først i siste bit av `pow(dist, 1-p)` i frastøtingskraften (`lib/sfdpgen/spring_electrical.c:625,617`; porten `spring-electrical.ts:260`). På `flatedge` gir `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` `...8811p+2` nativt og `...8812p+2` i porten; `graphs-p` og `1767` begynner på samme måte. Adaptiv kjøling forsterker biten: den når `x[0]` i iterasjon 5, `max|dx|` er 2.4e-9 i iterasjon 100 og 3.9e-5 i 200, og steget snur i iterasjon 244. To kontrollerte kjøringer bekrefter det. Med nativets biter ved nøyaktig disse 8 kallene blir `flatedge`s spor på 62090 linjer identisk, og med macOS' ekte `pow` bak et Node-API-tillegg har 288 av de 292 id-ene som ikke besto, bitidentiske spor (de øvrige 4, alle `overlap=false`, skiller seg bare ved `xfinal`). Rekkefølgen på operasjoner og fusjon i solveren, multilevel, quadtree og sparse-kode er utelukket. Dette er vertens libm, akseptert under A1 (se `pow`-punktet i listen over kjente hull nedenfor); `src/` ble ikke endret, så tallene forblir 632 av 929. Eksperimentet som bare kjørte på macOS nådde omtrent 923 av 929; det måler orakelets `pow` og er ikke noe biblioteket kan gjøre på enhver vert. `Math.pow` i frastøtingskraften består 153 av de 292, men får 6 id-er som består i dag til å gå tilbake, så den ble ikke tatt i bruk. Tabellens sfdp-rad er lik den i [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 avvikende pluss 291 akseptert gir de 292 ved graphviz 16.1.2, og én id (`linux.x86-neatosplines_neato`) står der som ikke-deterministisk hos oraklet.
 
 **Klassegodkjenning av A1-drift (iterative motorer, beregnet medlemskap).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -308,7 +323,7 @@ lukket `42`, `clust2`, `ngk10_4` (structural-match → conformant) og flyttet
 
 **Begge undersøkelsessider kjører den samme estimatoren — målingen er nøytralisert.**
 Det innebygde `dot`-orakelet kjøres under en hodeløs `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`) som bare lenker
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`) som bare lenker
 pluginene `core` og `dot_layout` — ingen tekstlayoutplugin for `gd`/`pango`/`quartz`.
 Når den plassen er tom, faller graphviz tilbake på sin innebygde
 `estimate_textspan_size`. TypeScript-portens `EstimateTextMeasurer`
@@ -326,7 +341,7 @@ innsnevre et skriftmetrikkgap.
 fordi tekstmåling er et bevisst koblingspunkt, ikke fastkodet i noen av
 motorene. `TextMeasurer` er et grensesnitt med én metode (`measure(text, font, size,
 flags) → {w, h, …}`) som injiseres i hvert kallsted som størrelsesbestemmer etiketter —
-`polyInit`, `recordInit`, `initEdgeLabels` og `buildNodeLabel` tar hver
+`polyInit`, `recordInit`, `initEdgeLabels` og `makeNodeLabel` tar hver
 måleren som parameter; ingenting måler tekst gjennom en global. Den
 låses for tester/CI via `setTextMeasurer(...)` eller `GV_TEXT_MEASURER=estimate`.
 Koblingspunktet lar oss også *bevise* at en rest bare skyldes måling: mat porten med de
@@ -461,7 +476,7 @@ den: libm-`hypot` for avstanden (`route.c:448`), Cs strenge `>`-sammenligning
 (459), `normv` (413), `B01` (488) og `B23` (494). Den toleranse-baserte likhetsavgjørelsen er
 borte; knuten i `241_0` er festet i Cs ruteramme, fordi C ikke er
 translasjonsekvariant på slike likheter. Dette lukket `2368`, `2371`, `2413_1`,
-`2413_2`, `graphs-b100`, `graphs-b104` og `graphs-decorate`. Ved graphviz 16.1.1 avviker `2368` igjen av en urelatert grunn: nativets endring av `flat_reorder` ([#158](#pending-16-1-1-ports)).
+`2413_2`, `graphs-b100`, `graphs-b104` og `graphs-decorate`. Ved graphviz 16.1.1 avvek `2368` igjen av en urelatert grunn, nativets endring av `flat_reorder` ([#158](#pending-16-1-1-ports)); den er conformant igjen nå som endringen er portert.
 
 `241_1` var ikke en `hypot`-likhet: den ble lukket av `87347711`
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C
@@ -525,6 +540,13 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. Orakel i en erkjent ødelagt tilstand (init_rank-/pathplan-familien) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **Ved graphviz 16.1.2 skriver oraklet ingenting for denne familien.** `dot` hopper nå
+> over renderingen når layouten melder en feil, så `1581`, `1939`, `2470`, `2471`, `2796`,
+> `2825` og `graphs-structs` er orakelfeil i undersøkelsen, ikke conformant- eller
+> diverged-rader; `1435` er upåvirket. Porten renderer dem fortsatt som beskrevet
+> nedenfor. Se [renderhopp i 16.1.2](#render-skip-16-1-2). Teksten nedenfor beskriver
+> tilstanden til og med graphviz 16.1.1.
 
 **Berørt (graphviz 16.1-kjøring):** `1435` (structural-match, maxΔ 0.39 på
 ett spline-kontrollpunkt; var 503 mot 15.x-orakelet — nedgangen ble ikke
@@ -972,6 +994,9 @@ Frittstående repro: `.agent-notes/circo-2475-590-repro.dot`; full RCA:
 `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — radialkoordinat-ULP forsterket av R-treet for xlabel.**
+(Historikk siden graphviz 16.1.2: `2470` forlot hver motorgjennomgang med
+[renderhoppet](#render-skip-16-1-2), og registeroppføringene er trukket tilbake.
+Nativ `twopi` renderer den fortsatt.)
 2470 er en graf med 140 kanter der HTML-`<table>`-kantetiketter klynger seg
 på nesten sammenfallende radiale ankre. I neato-familien plasseres kantetiketter
 som eksterne etiketter av den grådige xlabel-plasseringen (`label/xlabels.c`),
@@ -1151,12 +1176,18 @@ merknaden om `2095` omklassifisert ovenfor).
 
 ### A10. V8 `Map`-størrelsesgrense i polyomino-pakking (`2784`, fem pakkebaserte motorer) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Berørt:** `2784` på `circo`, `twopi`, `neato`, `fdp` og `sfdp`. Porten
-kaster feil i xdot- og imagemap-kjøringene for alle fem motorene og i `json`-kjøringen
-for `circo`. I `json`-kjøringene for `twopi`, `neato`, `fdp` og `sfdp`, og i
-`plain`-kjøringene for alle fem, blir det innebygde orakelet selv ikke ferdig innenfor
-kjøringens tidsbudsjett, så disse radene er orakelfeil. På `dot`, `osage` og
-`patchwork` består den.
+**Berørt:** `2784` og `2783` på `circo`, `twopi`, `neato`, `fdp` og `sfdp`. Porten
+kaster feil i xdot-, `json`- og imagemap-kjøringene for alle fem motorene. I
+`plain`-kjøringene blir det innebygde orakelet selv ikke ferdig innenfor kjøringens
+budsjett på 300 s, så disse radene er orakelfeil (`2783` på `sfdp` `plain-ext` er
+unntaket: nativ blir ferdig og porten kaster feil). Nativ bruker 180 til 410 s på
+disse inndataene, så en `json`- eller imagemap-rad kan også lyde som en orakelfeil
+når maskinen er belastet. På `dot`, `osage` og `patchwork` består begge.
+
+`2783` har samme form som `2784` og kom med i kjøringene ved graphviz 16.1.2. Dets 15
+portfeilrader har ennå ingen registeroppføring, så dashbordene viser dem som
+ikke godkjente portfeil; det samme gjelder `json`-radene til `2784` på `twopi`, `neato`,
+`fdp` og `sfdp`.
 
 **Hva som skjer.** `lib/pack/pack.c` registrerer cellene en komponent opptar i
 et `PointSet`. For `2784` (én enkelt node på 3e16 pt i høyden, `splines="ortho"`) trenger den
@@ -1235,6 +1266,87 @@ Oraklet har flyttet seg fra graphviz 16.1.0 til 16.1.1 ([ADR-0002](https://githu
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | resten av 16.1.1s atferdsendringer | ingen i korpuset eller goldens | — |
 
 Input som når hver endring, spores i [#148](https://github.com/knowvah/dot-engine/issues/148).
+
+**Status ved graphviz 16.1.2:** hver issue i denne tabellen er lukket og endringen er
+portert. Tabellen beholdes som historikk. De 34 id-ene i #158, de 4 i #160, `2783`
+(#164) og 14 inndata som 16.1.1 la til er conformant på `dot` igjen og tilbake i hver
+kjøring.
+
+## Ventende 16.1.2-porteringer {#pending-16-1-2-ports}
+
+Oraklet har flyttet seg fra graphviz 16.1.1 til 16.1.2 ([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)).
+Klassifiseringen av re-baselinen (`plans/graphviz-16-1-2-rebaseline/classification/`)
+sporet hvert resultat som endret seg til en årsak. Bare to upstream-endringer flytter et
+korpusresultat: renderhoppet, beskrevet i neste avsnitt, og `mapc`-endringen nedenfor.
+Dette er ikke godkjente avvik: hvert av dem er åpent arbeid i sin issue.
+
+| issue | upstream-endring | id-er som flyttet seg ved 16.1.2 | motorer |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc` avgjør med `is_a_cluster` om en undergraf er en klynge, ikke ut fra navneprefikset `cluster` | 1: `2717`. Nativ krasjet ved 16.1.1 og renderer ved 16.1.2; porten legger fortsatt til en node `domestic_cats` og avviker i xdot-, `json`- og `plain`-kjøringene (imagemap er conformant) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | `dot` hopper over renderingen når layouten melder en feil | 34 undersøkelses-id-er, 5 motor-id-er og 3 goldens: se [renderhopp i 16.1.2](#render-skip-16-1-2) | alle |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges` hopper over selvløkker i `other`-skanningen | ingen i det kjørte korpuset | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | `conc_slope` faller tilbake når en node ikke har inn- eller utkanter | ingen i det kjørte korpuset | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | `reallyroutespline` feiler når det ikke finnes noe delepunkt | ingen i det kjørte korpuset (den karantenesatte inndataen `2746` krasjer ikke lenger nativt; den er nå et renderhopp) | alle |
+
+De sju inndataene som 16.1.2 legger til (`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`) er satt i karantene som `pending-input` og kjøres ikke før
+[#298](https://github.com/knowvah/dot-engine/issues/298) slipper dem inn.
+
+## Renderhopp i 16.1.2 (venter på #299) {#render-skip-16-1-2}
+
+Siden graphviz 16.1.2 renderer ikke `dot`-kommandoen når layouten meldte en feil
+(upstream-commit `19b33b581`, `cmd/dot/dot.c:main`): den avslutter med 1 og skriver
+ingenting. Graphviz 16.1.1 avsluttet også med 1, men skrev det halvferdig utlagte
+dokumentet. Porten renderer fortsatt disse inndataene, slik 16.1.1 gjorde.
+Om porten følger etter, er [#299](https://github.com/knowvah/dot-engine/issues/299), som venter på en avgjørelse fra vedlikeholderen; inntil videre
+endres ingenting i biblioteket for dette.
+
+Uten et nativt dokument er det ingenting å sammenligne, så hver rad nedenfor er en
+orakelfeil, ikke et avvik og ikke et godkjent avvik.
+
+**`dot`-undersøkelsen, 34 id-er** (alle var conformant ved 16.1.1 unntatt `2781` og
+`2781_1`, som var structural matches), etter den første feilen layouten melder:
+
+| første feil | id-er |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2`, og `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+De fem siste (`1879` til `2821_2`) feiler bare fordi kjøringene kjører nativ fra
+depotets rotkatalog, der bildefilene etikettene deres nevner ikke blir funnet
+([#314](https://github.com/knowvah/dot-engine/issues/314)); kjørt fra sin egen katalog renderer begge graphviz-versjonene dem.
+
+**Hver annen kjøring.** Kjøringene `-Tdot`, xdot, `json`, imagemap og `plain` og alle sju
+motorkjøringene tar id-ene sine fra conformant-mengden i undersøkelsen, så de 18 av disse
+id-ene som var i den mengden kjøres ikke lenger på noen motor eller i noe format:
+`1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`,
+`1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` og
+`graphs-structs`. De godkjente oppføringene deres i registrene per motor er
+trukket tilbake. De fleste av dem renderer fortsatt nativt på de andre motorene (89 av de
+126 parene av id og motor), så motorene mister dekning de kunne beholdt.
+
+**På selve motoren, 5 id-er** (xdot-, `json`-, imagemap- og `plain`-rader, alle bestått
+ved 16.1.1):
+
+| motor | id-er | feil |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (porten skriver ikke ut denne ennå, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+Orakelfeilregistrene merker disse fem `native-crash`, fordi klassifisereren ikke har noen
+annen klasse for «hvert forsøk feilet»; nativ avslutter med 1 uten utdata og krasjer ikke.
+
+**Goldens, 3:** `pt-issue-31-inline`, `pt-issue-31-rubebe` og
+`pt-issue-31-zuduxu` beholder graphviz 16.1.1-referansen sin, fordi 16.1.2
+ikke skriver noen (`test/golden/inputs/PROVENANCE.md`).
 
 ## Sporet lang hale (`dot`-attributter og kanttilfeller) {#tracked-long-tail-dot-attribute-edge-case}
 

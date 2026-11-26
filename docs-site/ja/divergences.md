@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -73,7 +73,7 @@ C のソースが仕様であり、一覧にない差異は、受け入れられ
 
 > **スコープ。以前は未測定の注意書きだったが、現在は部分的に測定済み。**
 > **dot エンジンのメイン SVG 調査** (`test/corpus/survey.ts`) は依然として
-> **dot のみ**です。ネイティブオラクルは `GVBINDIR=/tmp/ghl1611` の下で動作し、これは
+> **dot のみ**です。ネイティブオラクルは `GVBINDIR=/tmp/ghl1612-carried` の下で動作し、これは
 > `core` と `dot_layout` のプラグイン**のみ**をシンボリックリンクします
 > （`test/corpus/gen-headless-gvbindir.sh` はちょうど `core dot_layout` をループします
 > — `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` のレイアウトプラグインは存在しません）。
@@ -110,9 +110,9 @@ C のソースが仕様であり、一覧にない差異は、受け入れられ
 現役の差異なし」まで**狭める**ことであり、プラットフォーム間の注意書きを取り除くことでは決してありません。
 これまでの結果（後述）はその上限を守っています。`circo`/`twopi`/`osage` は、それぞれ
 少数の本物の A1/A9 の事例を発見して根本原因を特定しました。また `neato`/`fdp`/`sfdp` は
-898 件の母集団（graphviz 16.1.1）でネイティブの 0.5pt 以内にそれぞれ 99.8/98.0/68.2% が入っており、
+933 件の母集団（graphviz 16.1.2）でネイティブの 0.5pt 以内にそれぞれ 99.7/97.2/68.6% が入っており、
 これは移植された演算（`fma.ts`、`arm-pow.ts`、一致させた PRNG）がほとんどのグラフで
-成り立っていることを意味します。そして 898 件の母集団に含まれる残るすべての diverged ID は、未分類のずれとして放置されるのではなく、
+成り立っていることを意味します。そして 933 件の母集団に含まれる残るすべての diverged ID は、未分類のずれとして放置されるのではなく、
 （ソルバーのずれかポートの欠陥かを）注入によって個別に原因が特定されています。
 後述の反復型エンジンの特性評価を参照してください。
 
@@ -177,16 +177,18 @@ pathplan の `directVis` の `intersect()` は、障害物の頂点が線分の�
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 の別の「Iterative engines (±0.5 characterization)」セクションに表示します。これは
 この文書の他の箇所の ±0.01 の決定的な合格率とは、明示的に**比較できません**。
-graphviz 16.1.1 に対する現在の件数（898 件の母集団。合格率は、[適合性](./conformance.md)に従い、
+graphviz 16.1.2 に対する現在の件数（933 件の母集団。合格率は、[適合性](./conformance.md)に従い、
 C のオラクルがレンダリングできない入力と、ネイティブの出力が実行ごとに変わる入力を除く）：
 
 | エンジン | 調査数 | ±0.5pt 以内 | 非適合 | ポートエラー / タイムアウト | オラクルエラー | オラクル非決定的 |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
-`fdp` の非決定的な 11 件の入力は、ネイティブの出力が実行ごとに変わるもので、合格率から除外しています。ポートエラーの 1 件は `1879` で、ポートが対応していない `splines=compound` のルーティングを必要とします。
+`fdp` の非決定的な 8 件の入力は、ネイティブの出力が実行ごとに変わるもので、合格率から除外しています。各エンジンで 1 件のポートエラーは `2783` です（[A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)）。以前は `fdp` のポートエラーだった `1879` は、もうスイープされません。graphviz 16.1.2 の `dot` がレンダリングしなくなった id の 1 つであり（[16.1.2 のレンダリングスキップ](#render-skip-16-1-2)）、すべてのエンジンのスイープは `dot` の調査で conformant だった集合から id を取るためです。`fdp` の 7 件のオラクルエラーのうち 4 件は、`fdp` 自体でのこのレンダリングスキップです。
+
+（graphviz 16.1.2 では、ポートを変更しないまま母集団が 898 件から 933 件に増えました。以前のポート修正ですでに conformant になっていた 53 件の id が、`dot` の調査を再実行したときにスイープへ加わり、レンダリングスキップの 18 件の id が外れました。）
 
 （`fdp` の合格率が
 77.5% から上がったのは、以前にコミットされたスイープが、前回のミッション時点のポートの状態より
@@ -198,11 +200,15 @@ C のオラクルがレンダリングできない入力と、ネイティブの
 neato の未移植だった `user_pos`/`P_SET` の処理、エンジン初期化の統合、
 そして `setEdgeType` のマクロと関数の修正です。）
 
-最初のスイープの時点と違い、898 件の母集団の diverged のすべての行が graphviz 16.1.1 に対して
+最初のスイープの時点と違い、933 件の母集団の diverged のすべての行が graphviz 16.1.2 に対して
 個別に原因特定されています。注入ハーネス (`test/corpus/attribute-divergence.ts`) が、
 ネイティブオラクルのルーティング前の `ND_pos` をポートに与えて再比較します。現在の
-diverged な ID は、sfdp の `2556` を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
-ポートのルーティングと出力がオラクルを正確に再現する）です。そのうち 2 件は個別に
+diverged な ID は、sfdp の `2556`、fdp の `2717`（[保留中の 16.1.2 ポート](#pending-16-1-2-ports)）、fdp の `1436`
+（[#211](https://github.com/knowvah/dot-engine/issues/211)：7 つのサブグラフが同じ名前を共有しているため、ハーネスはそれらのボックスを配置できません）、
+sfdp の `graphs-clustlabel`（[#315](https://github.com/knowvah/dot-engine/issues/315)）を除いてすべて `drift-exonerated`（ソルバーのずれを取り除けば、
+ポートのルーティングと出力がオラクルを正確に再現する）です。fdp の 6 行 `2768`、
+`2768_1`、`2768_2`、`2769`、`2769_1`、`2769_2` は `drift-exonerated` と表示されますが、
+決定的な欠陥 [#224](https://github.com/knowvah/dot-engine/issues/224) であり、A1 では受け入れていません。そのうち 2 件は個別に
 受け入れられた ID ごとの残差で、sfdp の `241_0` のホスト libm `pow` のずれ（T28 で再診断。`12dddc48` 以降、その注入行は `drift-exonerated` です）と、
 sfdp `2556` の NaN レイアウトです。fdp の `241_0` は
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 以降パスしています（A9 の下の fdp の段落を参照）。fdp `2471` と sfdp `2371` は、以前は注入後もエッジラベルの位置 (`lp`) が一致せず、xlabel 配置器が別の候補を選んでいました。`2471` は、ポートの `dotneato_closest` が clang の融合された de Casteljau 評価および DIST2 と同じ丸めをするようになって解消しました。それまではエッジラベルのアンカーが 1〜2 ULP ずれ、配置器の厳密な包含判定が反転していました。`2371` は、ポートの R 木が C と同様に矩形を値としてコピーするようになって解消しました。`2471` のネイティブの fdp レイアウトは実行ごとに変わるため、その行は 1 回の実行を記録したものです。（sfdp の `42` は A1 のずれです。
@@ -212,7 +218,7 @@ sfdp `2556` の NaN レイアウトです。fdp の `241_0` は
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md)、
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md))。
 
-**sfdp ソルバーのずれが始まる場所（パート 10、T2）。** 計装したネイティブの sfdp を小さな id でポートと突き合わせて追跡すると、反発力の `pow(dist, 1-p)` の最下位ビットで初めて食い違います（`lib/sfdpgen/spring_electrical.c:625,617`、ポートは `spring-electrical.ts:260`）。`flatedge` では、`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` はネイティブで `...8811p+2`、ポートで `...8812p+2` になり、`graphs-p` と `1767` も同じ形で始まります。適応冷却がこのビットを増幅します。反復 5 で `x[0]` に達し、`max|dx|` は反復 100 で 2.4e-9、200 で 3.9e-5 となり、ステップは反復 244 で反転します。2 つの制御実験がこれを裏付けます。ちょうどこの 8 回の呼び出しにネイティブのビットを与えると `flatedge` の 62090 行のトレースが一致し、Node-API アドオン越しに macOS の本物の `pow` を使うと、通らなかった 292 件の id のうち 288 件でトレースがビット単位で一致します（残り 4 件はすべて `overlap=false` で、`xfinal` でのみ異なります）。ソルバー、マルチレベル、クアッドツリー、疎コードの演算順序と融合は除外されました。これはホストの libm であり、A1 の下で受け入れられます（下の既知の欠落の一覧の `pow` の項を参照）。`src/` は変更されていないので、件数は 929 件中 632 件のままです。macOS のみの実験は 929 件中約 923 件に達しましたが、これはオラクルの `pow` を測ったものであり、ライブラリがあらゆるホストでできることではありません。反発力に `Math.pow` を使うと 292 件中 153 件が通りますが、現在通っている 6 件の id が退行するため、適用しませんでした。表の sfdp 行は [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) の行と一致します。graphviz 16.1.1 では乖離 0 件と受容 286 件で 286 件になり、オラクル非決定として同ファイルに載っている id はありません。
+**sfdp ソルバーのずれが始まる場所（パート 10、T2）。** 計装したネイティブの sfdp を小さな id でポートと突き合わせて追跡すると、反発力の `pow(dist, 1-p)` の最下位ビットで初めて食い違います（`lib/sfdpgen/spring_electrical.c:625,617`、ポートは `spring-electrical.ts:260`）。`flatedge` では、`pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` はネイティブで `...8811p+2`、ポートで `...8812p+2` になり、`graphs-p` と `1767` も同じ形で始まります。適応冷却がこのビットを増幅します。反復 5 で `x[0]` に達し、`max|dx|` は反復 100 で 2.4e-9、200 で 3.9e-5 となり、ステップは反復 244 で反転します。2 つの制御実験がこれを裏付けます。ちょうどこの 8 回の呼び出しにネイティブのビットを与えると `flatedge` の 62090 行のトレースが一致し、Node-API アドオン越しに macOS の本物の `pow` を使うと、通らなかった 292 件の id のうち 288 件でトレースがビット単位で一致します（残り 4 件はすべて `overlap=false` で、`xfinal` でのみ異なります）。ソルバー、マルチレベル、クアッドツリー、疎コードの演算順序と融合は除外されました。これはホストの libm であり、A1 の下で受け入れられます（下の既知の欠落の一覧の `pow` の項を参照）。`src/` は変更されていないので、件数は 929 件中 632 件のままです。macOS のみの実験は 929 件中約 923 件に達しましたが、これはオラクルの `pow` を測ったものであり、ライブラリがあらゆるホストでできることではありません。反発力に `Math.pow` を使うと 292 件中 153 件が通りますが、現在通っている 6 件の id が退行するため、適用しませんでした。表の sfdp 行は [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md) の行と一致します。graphviz 16.1.2 では乖離 1 件と受容 291 件で 292 件になり、オラクル非決定として同ファイルに載っている id は 1 件（`linux.x86-neatosplines_neato`）です。
 
 **A1-drift クラスの受け入れ（反復型エンジン、メンバーシップは算出）。**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json` は、
@@ -278,7 +284,7 @@ bbox は一致し、パスデータの差分はゼロ、ラベルアンカーの
 
 **調査の両側が同じ推定器を実行する — 計測は無力化されている。**
 ネイティブの `dot` オラクルは、ヘッドレスの `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`) の下で動作し、これは
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`) の下で動作し、これは
 `core` と `dot_layout` のプラグインのみをシンボリックリンクします — `gd`/`pango`/`quartz` の
 テキストレイアウトプラグインはありません。そのスロットが空だと、graphviz は組み込みの
 `estimate_textspan_size` にフォールバックします。TypeScript ポートの `EstimateTextMeasurer`
@@ -294,7 +300,7 @@ bbox は一致し、パスデータの差分はゼロ、ラベルアンカーの
 テキスト計測がどちらのエンジンにも直接組み込まれておらず、意図的なシームになっているからにほかなりません。
 `TextMeasurer` は 1 メソッドのインターフェース (`measure(text, font, size,
 flags) → {w, h, …}`) で、ラベルのサイズを決めるすべての呼び出し箇所に依存性注入されます —
-`polyInit`、`recordInit`、`initEdgeLabels`、`buildNodeLabel` はそれぞれ計測器を引数として受け取り、
+`polyInit`、`recordInit`、`initEdgeLabels`、`makeNodeLabel` はそれぞれ計測器を引数として受け取り、
 グローバルを通してテキストを計測するものはありません。テストや CI では
 `setTextMeasurer(...)` または `GV_TEXT_MEASURER=estimate` で固定されます。
 このシームにより、残差が計測のみによるものであることを*証明*することもできます。
@@ -418,7 +424,7 @@ C を正確に再現し（node-x のずれ 53/76→0/76、スプライン 7→4 
 `normv`（413）、`B01`（488）、`B23`（494）に対する clang の `fp-contract` の融合です。
 許容的な同順位解決は廃止されました。C はそのような同順位で平行移動不変ではないため、`241_0` の
 結節点は C のルーティング座標系に固定されています。これにより `2368`、`2371`、`2413_1`、
-`2413_2`、`graphs-b100`、`graphs-b104`、`graphs-decorate` がクローズされました。 graphviz 16.1.1 では、無関係な理由で `2368` が再び diverge します。ネイティブ側の `flat_reorder` の変更です（[#158](#pending-16-1-1-ports)）。
+`2413_2`、`graphs-b100`、`graphs-b104`、`graphs-decorate` がクローズされました。 graphviz 16.1.1 では、無関係な理由で `2368` が再び diverge していました。ネイティブ側の `flat_reorder` の変更です（[#158](#pending-16-1-1-ports)）。その変更をポートした現在は、再び conformant です。
 
 `241_1` は `hypot` の同順位ではありませんでした。`87347711`（`fix(dot): match port-less edge
 endpoints in flat-adjacent aux layout`）でクローズされました。C は、メインエッジを共有する
@@ -480,6 +486,13 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. 既知の壊れた状態にあるオラクル（init_rank / pathplan ファミリー） {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **graphviz 16.1.2 では、このファミリーについてオラクルは何も書き出しません。**
+> `dot` は、レイアウトがエラーを報告するとレンダリングをスキップするようになったため、
+> `1581`、`1939`、`2470`、`2471`、`2796`、`2825`、`graphs-structs` は調査ではオラクルエラーであり、
+> conformant や diverged の行ではありません。`1435` は影響を受けません。ポートは以下に述べるとおり、
+> 引き続きこれらをレンダリングします。[16.1.2 のレンダリングスキップ](#render-skip-16-1-2)を参照してください。
+> 以下の文章は graphviz 16.1.1 までの状態を述べています。
 
 **影響を受けるもの（graphviz 16.1 のスイープ）：** `1435`（structural-match、スプラインの
 制御点 1 点で maxΔ 0.39。15.x のオラクルに対しては 503 でした — この低下は bisect して
@@ -893,6 +906,8 @@ filed」エントリー。**2026-10-23 に退役** — ポートが障害物の 
 `.agent-notes/circo-b81-2475-rca.md`。
 
 **twopi `2470` — xlabel R 木によって増幅された放射座標の ULP。**
+（graphviz 16.1.2 以降の経緯：`2470` は[レンダリングスキップ](#render-skip-16-1-2)によりすべてのエンジンのスイープから外れ、そのレジストリのエントリーは撤回されました。
+ネイティブの `twopi` は今もこれをレンダリングします。）
 2470 は 140 本のエッジを持つグラフで、その HTML `<table>` のエッジラベルは、
 ほぼ重なる放射状のアンカー上に集まります。neato ファミリーでは、エッジラベルは
 貪欲な xlabel 配置器 (`label/xlabels.c`) によって外部ラベルとして配置され、これは
@@ -1065,11 +1080,17 @@ plain と stderr は一致）、`accepted-divergences-engines.json` と
 
 ### A10. ポリオミノパッキングにおける V8 の `Map` サイズ上限（`2784`、パックベースの 5 エンジン） {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**影響を受けるもの：** `circo`、`twopi`、`neato`、`fdp`、`sfdp` での `2784`。ポートは、
-5 つのエンジンすべての xdot と imagemap のスイープ、および `circo` の `json` スイープでエラーを
-投げます。`twopi`、`neato`、`fdp`、`sfdp` の `json` スイープと、5 つすべての `plain` スイープでは、
-ネイティブオラクル自体がスイープの制限時間内に完了しないため、それらの行はオラクルエラーです。
-`dot`、`osage`、`patchwork` では合格します。
+**影響を受けるもの：** `circo`、`twopi`、`neato`、`fdp`、`sfdp` での `2784` と `2783`。
+ポートは、5 つのエンジンすべての xdot、`json`、imagemap のスイープでエラーを投げます。
+`plain` スイープでは、ネイティブオラクル自体がスイープの制限時間 300 秒以内に完了しないため、
+それらの行はオラクルエラーです（`sfdp` の `plain-ext` での `2783` は例外で、ネイティブは完了し、
+ポートがエラーを投げます）。ネイティブはこれらの入力に 180〜410 秒かかるため、マシンの負荷が高いときは
+`json` や imagemap の行もオラクルエラーに見えることがあります。`dot`、`osage`、`patchwork` では
+どちらも合格します。
+
+`2783` は `2784` と同じ形をしており、graphviz 16.1.2 でスイープに加わりました。
+そのポートエラーの 15 行にはまだレジストリのエントリーがないため、ダッシュボードでは受容されていない
+ポートエラーとして表示されます。`twopi`、`neato`、`fdp`、`sfdp` での `2784` の `json` の行も同様です。
 
 **何が起きるか。** `lib/pack/pack.c` は、コンポーネントが占めるセルを `PointSet` に記録します。
 `2784`（高さ 3e16 pt の単一ノード、`splines="ortho"`）では、忠実な整数の `step`/配置の演算に
@@ -1146,6 +1167,88 @@ plain と stderr は一致）、`accepted-divergences-engines.json` と
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | 16.1.1 のその他の挙動変更 | コーパスにもゴールデンにもなし | — |
 
 各変更に到達する入力は [#148](https://github.com/knowvah/dot-engine/issues/148) で追跡しています。
+
+**graphviz 16.1.2 時点の状況：** この表のすべての issue はクローズされ、変更はポート済みです。
+この表は履歴として残しています。#158 の 34 件の id、#160 の 4 件、`2783`（#164）、
+および 16.1.1 で加わった 14 件の入力は、`dot` で再び conformant になり、すべてのスイープに戻りました。
+
+## 保留中の 16.1.2 ポート {#pending-16-1-2-ports}
+
+オラクルは graphviz 16.1.1 から 16.1.2 に移りました
+（[ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)）。
+再ベースラインの分類（`plans/graphviz-16-1-2-rebaseline/classification/`）は、
+変化したすべての結果を原因まで追跡しました。コーパスの結果を動かす上流の変更は 2 つだけです。
+次のセクションで述べるレンダリングスキップと、以下の `mapc` の変更です。
+これらは受容済みの差分ではありません。いずれも、それぞれの issue で進行中の作業です。
+
+| issue | 上流の変更 | 16.1.2 で動いた id | エンジン |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc` は、サブグラフがクラスターかどうかを `cluster` という名前の接頭辞ではなく `is_a_cluster` で判定する | 1 件：`2717`。ネイティブは 16.1.1 ではクラッシュし、16.1.2 ではレンダリングする。ポートは今もノード `domestic_cats` を追加し、xdot、`json`、`plain` のスイープで diverge する（imagemap は conformant） | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | レイアウトがエラーを報告すると `dot` はレンダリングをスキップする | 調査の id 34 件、エンジンの id 5 件、ゴールデン 3 件：[16.1.2 のレンダリングスキップ](#render-skip-16-1-2)を参照 | すべて |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges` は `other` の走査で自己ループをスキップする | スイープ対象のコーパスには該当なし | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | ノードに入るエッジも出るエッジもないとき、`conc_slope` は代替処理に切り替える | スイープ対象のコーパスには該当なし | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | 分割点が見つからないとき、`reallyroutespline` は失敗する | スイープ対象のコーパスには該当なし（隔離中の入力 `2746` はネイティブでクラッシュしなくなり、現在はレンダリングスキップ） | すべて |
+
+16.1.2 が加えた 7 件の入力（`2745`、`2760`、`2762`、`2762_1`、`2764`、`2764_1`、
+`2870_3`）は `pending-input` として隔離されており、
+[#298](https://github.com/knowvah/dot-engine/issues/298) が受け入れるまでスイープされません。
+
+## 16.1.2 のレンダリングスキップ（#299 待ち） {#render-skip-16-1-2}
+
+graphviz 16.1.2 以降、`dot` コマンドはレイアウトがエラーを報告するとレンダリングを行いません
+（上流のコミット `19b33b581`、`cmd/dot/dot.c:main`）。終了コード 1 で終了し、何も書き出しません。
+graphviz 16.1.1 も 1 で終了しましたが、レイアウトが途中までのドキュメントは書き出していました。
+ポートは 16.1.1 のときと同じく、今もこれらの入力をレンダリングします。
+ポートが追従するかどうかは [#299](https://github.com/knowvah/dot-engine/issues/299) の扱いで、メンテナーの判断待ちです。それまでは、
+この件でライブラリに変更はありません。
+
+ネイティブのドキュメントがないため比較するものがなく、以下の各行は
+オラクルエラーであり、diverge でも受容済みの差分でもありません。
+
+**`dot` の調査、id 34 件**（`2781` と `2781_1` を除いて、すべて 16.1.1 では conformant でした。
+この 2 件は structural-match でした）。レイアウトが最初に報告するエラー別：
+
+| 最初のエラー | id |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2`、および `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+最後の 5 件（`1879` から `2821_2`）が失敗するのは、スイープがネイティブをリポジトリのルートから実行し、
+ラベルが指す画像ファイルが見つからないためだけです
+（[#314](https://github.com/knowvah/dot-engine/issues/314)）。それぞれのディレクトリから実行すれば、どちらの graphviz バージョンでもレンダリングできます。
+
+**ほかのすべてのスイープ。** `-Tdot`、xdot、`json`、imagemap、`plain` のスイープと
+7 つすべてのエンジンのスイープは、調査で conformant だった集合から id を取ります。そのため、その集合にいた
+これらの id のうち 18 件は、どのエンジンでもどの形式でももうスイープされません：
+`1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`,
+`1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825`,
+`graphs-structs`。エンジンごとのレジストリにあった受容済みのエントリーは
+撤回されました。これらの多くは、ほかのエンジンではネイティブで今もレンダリングできる
+（id とエンジンの組 126 件のうち 89 件）ため、エンジンは維持できたはずのカバレッジを失います。
+
+**エンジン自体で、id 5 件**（xdot、`json`、imagemap、`plain` の行。いずれも
+16.1.1 では合格していました）：
+
+| エンジン | id | エラー |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters`（ポートはこれをまだ出力しません。[#256](https://github.com/knowvah/dot-engine/issues/256)） |
+
+オラクルエラーのレジストリは、この 5 件を `native-crash` とラベル付けしています。
+分類器には「すべての試行が失敗した」ための別のクラスがないためです。ネイティブは何も出力せずに 1 で終了するだけで、
+クラッシュはしません。
+
+**ゴールデン 3 件：** `pt-issue-31-inline`、`pt-issue-31-rubebe`、
+`pt-issue-31-zuduxu` は graphviz 16.1.1 の参照を保持します。16.1.2 は
+参照を書き出さないためです（`test/golden/inputs/PROVENANCE.md`）。
 
 ## 追跡中のロングテール（`dot` の属性とエッジケース） {#tracked-long-tail-dot-attribute-edge-case}
 

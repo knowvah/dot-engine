@@ -11,10 +11,10 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 898
-- **Oracle:** dot 16.1.1
-- **pass:** 895 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
-- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 1
+- **Surveyed:** 933
+- **Oracle:** dot 16.1.2
+- **pass:** 928 (99.7%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
+- **port-error / timeout (scored as failures):** 2 · **oracle-error (excluded from pass %):** 2
 
 ## Diverged (0)
 
@@ -26,12 +26,14 @@ _(none)_
 |---|---:|---|---|
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | 0 | `` | A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md. |
 
-## Errors and timeouts (2)
+## Errors and timeouts (4)
 
 | id | message |
 |---|---|
+| [`2095`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2095.dot) | Error: twopi: use of weight=0 creates disconnected component. |
 | [`2371`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2371.dot) | oracle exit null |
+| [`2783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2783.dot) | Map maximum size exceeded |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) |  |
 
-_Passing ids (895) are omitted for brevity — the full roster is in
+_Passing ids (928) are omitted for brevity — the full roster is in
 `map-parity-twopi.json`._

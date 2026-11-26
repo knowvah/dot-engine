@@ -12,10 +12,10 @@ test/corpus/parity-report.ts`.
 
 ## Summary
 
-- **Surveyed:** 898 (generated 2026-11-21T01:18:29.269Z)
-- **Oracle:** dot 16.1.1
-- **pass:** 863 (97.8%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 16
-- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 3 (excluded from pass %) · **oracle-nondeterministic:** 13 (native output varies run to run; excluded from pass %, not a regression)
+- **Surveyed:** 933 (generated 2026-11-25T19:40:18.124Z)
+- **Oracle:** dot 16.1.2
+- **pass:** 892 (97.2%) · **diverged (tracked):** 2 · **accepted (documented, won't-fix):** 1 · **accepted (A1-drift class):** 22
+- **port-error:** 1 · **timeout:** 0 (scored as failures) · **oracle-error:** 7 (excluded from pass %) · **oracle-nondeterministic:** 8 (native output varies run to run; excluded from pass %, not a regression)
 
 ## Accepted deltas (1) — documented, not chased
 
@@ -36,23 +36,28 @@ exonerates it (`verdict: drift-exonerated`) is subtracted from the
 Diverged table below and counted in Summary; an id that starts passing
 outright leaves the class silently on the next report regen.
 
-- **A1-drift**: **16** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
+- **A1-drift**: **22** members — full per-id evidence in [`attribution-fdp.json`](./attribution-fdp.json). Rationale: [Known divergences](../../docs/known-divergences.md#a1-drift-iterative-engines).
 
-## Diverged (1)
+## Diverged (2)
 
 | id | size | #diffs | firstDiff |
 |---|---:|---:|---|
-| [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | 721934 | 79629 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 26408.03 vs 22950.76` |
+| [`1436`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1436.dot) | 2599 | 528 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 684.09 vs 637.69` |
+| [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | 325 | 119 | `[graph] _draw_ [graph]/_draw_/op[2].filled_polygon[3]: 251.27 vs 290.12` |
 
-## Errors and timeouts (4)
+## Errors and timeouts (8)
 
 | id | status | message |
 |---|---|---|
+| [`1221`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1221.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1221.dot |
+| [`1767`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1767.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1767.dot |
+| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot |
+| [`2721`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2721.dot) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2721.dot |
+| [`graphs-b53`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b53.gv) | oracle-error | Command failed: dot -K fdp -Txdot https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b53.gv |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle-error | spawnSync dot ETIMEDOUT |
-| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | port-error | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
+| [`2783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2783.dot) | port-error | Map maximum size exceeded |
 
-**oracle errors:** 3 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
-_Passing ids (863) are omitted for brevity — the full roster is in
+**oracle errors:** 7 native-crash (documented, excluded) / 0 timeout-flake (excluded this run, note to retry)
+_Passing ids (892) are omitted for brevity — the full roster is in
 `parity-fdp.json`._

@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -75,7 +75,7 @@ C 소스가 곧 명세이며, 목록에 없는 차이는 수용된 동작이 아
 > **범위 — 과거에는 측정되지 않은 단서였으나 지금은 부분적으로 측정됨.**
 > **주 dot 엔진 SVG 조사**(`test/corpus/survey.ts`)는 여전히
 > **dot 전용**입니다. 네이티브 오라클은 `core`와 `dot_layout` 플러그인**만**
-> 심볼릭 링크한 `GVBINDIR=/tmp/ghl1611`에서 실행되며
+> 심볼릭 링크한 `GVBINDIR=/tmp/ghl1612-carried`에서 실행되며
 > (`test/corpus/gen-headless-gvbindir.sh`는 정확히 `core dot_layout`만 순회하므로
 > `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` 레이아웃 플러그인은 없습니다),
 > 오라클과 포팅 모두 `dot` 엔진으로 호출됩니다. 따라서 `*_neato` / `*_circo` /
@@ -111,9 +111,9 @@ C 소스가 곧 명세이며, 목록에 없는 차이는 수용된 동작이 아
 '기준 플랫폼에서는 활성 차이 없음'으로 **좁히는** 것이지, 플랫폼 간 단서를 없애는
 것이 아닙니다. 지금까지의 결과(아래)는 그 한계 안에 있습니다. `circo`/`twopi`/`osage`는
 각각 실제 A1/A9 사례 몇 건을 찾아 근본 원인을 규명했고, `neato`/`fdp`/`sfdp`는
-898개 항목 전체(graphviz 16.1.1)에서 네이티브와 0.5pt 이내인 비율이 각각 99.8/98.0/68.2%입니다. 이는
+933개 항목 전체(graphviz 16.1.2)에서 네이티브와 0.5pt 이내인 비율이 각각 99.7/97.2/68.6%입니다. 이는
 포팅된 산술(`fma.ts`, `arm-pow.ts`, 일치시킨 PRNG)이 대부분의 그래프에서 유지된다는
-뜻이며, 898개 항목 전체에서 남은 어긋난 id도 모두 분류되지 않은 드리프트로 방치되지 않고 주입(솔버
+뜻이며, 933개 항목 전체에서 남은 어긋난 id도 모두 분류되지 않은 드리프트로 방치되지 않고 주입(솔버
 드리프트 대 포팅 결함)으로 개별 귀속되어 있습니다. 아래 반복형 엔진 특성화를
 참고하십시오.
 
@@ -181,17 +181,19 @@ PRISM 풀이에서 나온 명목상 같은 세 x 값의 마지막 ULP 순서에 
 필드를 기록하고, `parity-report.ts`는 이를
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)의
 별도 '반복형 엔진(±0.5 특성화)' 섹션에 표시하며, 이는 이 문서 다른 곳의 ±0.01
-결정적 통과율과 명시적으로 비교할 수 **없습니다**. graphviz 16.1.1 기준 현재 집계(898개 항목 전체; 통과
+결정적 통과율과 명시적으로 비교할 수 **없습니다**. graphviz 16.1.2 기준 현재 집계(933개 항목 전체; 통과
 %는 [적합성](./conformance.md)에 따라 C 오라클이 렌더링할 수 없는 입력과 네이티브 출력이
 실행마다 달라지는 입력을 제외):
 
 | 엔진 | 조사 | ±0.5pt 이내 | 부적합 | 포팅 오류 / 타임아웃 | 오라클 오류 | 오라클 비결정적 |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
-`fdp`의 비결정적 입력 11개는 네이티브 출력이 실행마다 달라지므로 통과율에서 제외합니다. 포팅 오류 1개는 `1879`로, 포트가 지원하지 않는 `splines=compound` 라우팅이 필요합니다.
+`fdp`의 비결정적 입력 8개는 네이티브 출력이 실행마다 달라지므로 통과율에서 제외합니다. 각 엔진의 포팅 오류 1개는 `2783`입니다([A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)). 예전 `fdp`의 포팅 오류였던 `1879`는 더 이상 조사하지 않습니다. graphviz 16.1.2의 `dot`이 더는 렌더링하지 않는 id 중 하나이며([16.1.2 렌더링 건너뜀](#render-skip-16-1-2)), 모든 엔진 조사는 `dot` 조사에서 conformant였던 집합에서 id를 가져오기 때문입니다. `fdp`의 오라클 오류 7개 중 4개는 `fdp` 자체에서의 이 렌더링 건너뜀입니다.
+
+(graphviz 16.1.2에서 포팅 변경 없이 전체 항목이 898개에서 933개로 늘었습니다. 앞선 포팅 수정으로 이미 conformant가 된 id 53개가 `dot` 조사를 다시 실행하면서 조사에 들어왔고, 렌더링 건너뜀 id 18개는 빠졌습니다.)
 
 (`fdp` 통과율이 77.5%에서
 오른 것은 이전에 커밋된 조사가 직전 미션의 포팅 상태보다 앞선 것이었기 때문입니다.
@@ -202,11 +204,15 @@ PRISM 풀이에서 나온 명목상 같은 세 x 값의 마지막 ULP 순서에 
 `user_pos`/`P_SET` 처리, 엔진 초기화 통합, `setEdgeType` 매크로 대 함수 수정에서
 나왔습니다.)
 
-첫 조사 때와 달리 898개 항목 전체의 어긋난 행은 모두 graphviz 16.1.1 기준으로 개별
+첫 조사 때와 달리 933개 항목 전체의 어긋난 행은 모두 graphviz 16.1.2 기준으로 개별
 귀속되었습니다. 주입 도구(`test/corpus/attribute-divergence.ts`)가 네이티브 오라클의
-라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 sfdp `2556`을 제외하고
+라우팅 이전 `ND_pos`를 포팅에 넣고 다시 비교하며, 현재 어긋난 모든 id는 sfdp `2556`, fdp `2717`([보류 중인 16.1.2 포팅](#pending-16-1-2-ports)),
+fdp `1436`([#211](https://github.com/knowvah/dot-engine/issues/211): 서브그래프 일곱 개가 이름이 같아 도구가 상자를 배치할 수 없음),
+sfdp `graphs-clustlabel`([#315](https://github.com/knowvah/dot-engine/issues/315))을 제외하고
 `drift-exonerated`(솔버 드리프트를 제거하면 포팅의 라우팅과 출력이 오라클을 정확히
-재현함)입니다. 두 건은 별도로 수용된 id별 잔여분으로, sfdp `241_0`의 호스트 libm `pow`
+재현함)입니다. fdp의 여섯 행 `2768`,
+`2768_1`, `2768_2`, `2769`, `2769_1`, `2769_2`는 `drift-exonerated`로 표시되지만
+결정적 결함 [#224](https://github.com/knowvah/dot-engine/issues/224)이며, A1에서 수용하지 않습니다. 두 건은 별도로 수용된 id별 잔여분으로, sfdp `241_0`의 호스트 libm `pow`
 드리프트(T28이 재진단; `12dddc48` 이후 주입 행은 `drift-exonerated`)와 sfdp `2556`의 NaN 레이아웃입니다. fdp `241_0`은
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` 이후 통과합니다(A9의 fdp 문단 참고). fdp `2471`과 sfdp `2371`은 이전에는 주입 후에도 엣지 레이블 위치(`lp`)가 달라져, xlabel 배치기가 다른 후보를 골랐습니다. `2471`은 포팅의 `dotneato_closest`가 clang의 융합된 de Casteljau 계산 및 DIST2와 같은 방식으로 반올림하게 되자 해소되었습니다. 그전에는 엣지 레이블 앵커가 1~2 ULP 달라져 배치기의 엄격한 포함 검사가 뒤집혔습니다. `2371`은 포팅의 R-트리가 C처럼 사각형을 값으로 복사하게 되자 해소되었습니다. `2471`의 네이티브 fdp 레이아웃은 실행마다 달라지므로 해당 행은 한 번의 실행을 기록한 것입니다. (sfdp `42`는
 A1 드리프트이며 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-engine/blob/main/comparisons/sfdp-42.md) 참고.) 아래 클래스 수용은 면책된 집합을 공식화하며, 최신 집계는
@@ -216,7 +222,7 @@ A1 드리프트이며 [`comparisons/sfdp-42.md`](https://github.com/knowvah/dot-
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md))에
 있습니다.
 
-**sfdp 솔버 드리프트가 시작되는 곳(파트 10, T2).** 계측한 네이티브 sfdp를 작은 id에서 포트와 맞대어 추적하면, 반발력의 `pow(dist, 1-p)`의 마지막 비트에서 처음으로 달라집니다(`lib/sfdpgen/spring_electrical.c:625,617`, 포트는 `spring-electrical.ts:260`). `flatedge`에서 `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)`은 네이티브에서 `...8811p+2`, 포트에서 `...8812p+2`가 되며, `graphs-p`와 `1767`도 같은 방식으로 시작합니다. 적응형 냉각이 이 비트를 증폭합니다. 반복 5에서 `x[0]`에 도달하고, `max|dx|`는 반복 100에서 2.4e-9, 200에서 3.9e-5이며, 스텝은 반복 244에서 뒤집힙니다. 통제된 실행 두 가지가 이를 확인합니다. 정확히 이 8번의 호출에 네이티브의 비트를 주면 `flatedge`의 62090줄 트레이스가 동일해지고, Node-API 애드온 뒤의 macOS 실제 `pow`로는 통과하지 못한 292개 id 중 288개의 트레이스가 비트 단위로 같습니다(나머지 4개는 모두 `overlap=false`이며 `xfinal`에서만 다릅니다). 솔버, 멀티레벨, 쿼드트리, 희소 코드의 연산 순서와 융합은 배제되었습니다. 이는 호스트 libm이며 A1 아래에서 수용됩니다(아래 알려진 공백 목록의 `pow` 항목 참조). `src/`는 바뀌지 않았으므로 개수는 929개 중 632개로 유지됩니다. macOS 전용 실험은 929개 중 약 923개에 도달했지만, 이는 오라클의 `pow`를 측정한 것이지 라이브러리가 모든 호스트에서 할 수 있는 일이 아닙니다. 반발력에 `Math.pow`를 쓰면 292개 중 153개가 통과하지만 현재 통과하는 6개 id가 퇴행하므로 적용하지 않았습니다. 표의 sfdp 행은 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)의 행과 같습니다. graphviz 16.1.1에서는 이탈 0개와 수용 286개가 286이 되며, 오라클 비결정으로 그곳에 기재된 id는 없습니다.
+**sfdp 솔버 드리프트가 시작되는 곳(파트 10, T2).** 계측한 네이티브 sfdp를 작은 id에서 포트와 맞대어 추적하면, 반발력의 `pow(dist, 1-p)`의 마지막 비트에서 처음으로 달라집니다(`lib/sfdpgen/spring_electrical.c:625,617`, 포트는 `spring-electrical.ts:260`). `flatedge`에서 `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)`은 네이티브에서 `...8811p+2`, 포트에서 `...8812p+2`가 되며, `graphs-p`와 `1767`도 같은 방식으로 시작합니다. 적응형 냉각이 이 비트를 증폭합니다. 반복 5에서 `x[0]`에 도달하고, `max|dx|`는 반복 100에서 2.4e-9, 200에서 3.9e-5이며, 스텝은 반복 244에서 뒤집힙니다. 통제된 실행 두 가지가 이를 확인합니다. 정확히 이 8번의 호출에 네이티브의 비트를 주면 `flatedge`의 62090줄 트레이스가 동일해지고, Node-API 애드온 뒤의 macOS 실제 `pow`로는 통과하지 못한 292개 id 중 288개의 트레이스가 비트 단위로 같습니다(나머지 4개는 모두 `overlap=false`이며 `xfinal`에서만 다릅니다). 솔버, 멀티레벨, 쿼드트리, 희소 코드의 연산 순서와 융합은 배제되었습니다. 이는 호스트 libm이며 A1 아래에서 수용됩니다(아래 알려진 공백 목록의 `pow` 항목 참조). `src/`는 바뀌지 않았으므로 개수는 929개 중 632개로 유지됩니다. macOS 전용 실험은 929개 중 약 923개에 도달했지만, 이는 오라클의 `pow`를 측정한 것이지 라이브러리가 모든 호스트에서 할 수 있는 일이 아닙니다. 반발력에 `Math.pow`를 쓰면 292개 중 153개가 통과하지만 현재 통과하는 6개 id가 퇴행하므로 적용하지 않았습니다. 표의 sfdp 행은 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)의 행과 같습니다. graphviz 16.1.2에서는 이탈 1개와 수용 291개가 292가 되며, 오라클 비결정으로 그곳에 기재된 id는 1개(`linux.x86-neatosplines_neato`)입니다.
 
 **A1-drift 클래스 수용(반복형 엔진, 계산된 멤버십).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`은
@@ -273,7 +279,7 @@ id는 그 파일에서 `verdict: 'drift-exonerated'`를 받습니다. 이는 두
 
 **조사의 양쪽이 같은 추정기를 실행합니다 — 측정은 무력화되었습니다.**
 네이티브 `dot` 오라클은 `core`와 `dot_layout` 플러그인만 심볼릭 링크한 헤드리스
-`GVBINDIR`(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`)에서 실행되며,
+`GVBINDIR`(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`)에서 실행되며,
 `gd`/`pango`/`quartz` 텍스트 레이아웃 플러그인은 없습니다. 그 자리가 비어 있으면
 graphviz는 내장된 `estimate_textspan_size`로 되돌아갑니다. TypeScript 포팅의
 `EstimateTextMeasurer`(`src/common/textmeasure.ts`)는 같은 루틴을 충실히 포팅한 것이며
@@ -288,7 +294,7 @@ FreeType/pango 글리프 진행 폭은 비교에 전혀 들어오지 않습니�
 엔진에도 하드와이어링되지 않은, 의도된 교체 지점이기 때문입니다. `TextMeasurer`는
 메서드가 하나인 인터페이스(`measure(text, font, size, flags) → {w, h, …}`)로,
 레이블 크기를 계산하는 모든 호출 지점 — `polyInit`, `recordInit`, `initEdgeLabels`,
-`buildNodeLabel` — 에 매개변수로 의존성 주입됩니다. 전역으로 텍스트를 측정하는 곳은
+`makeNodeLabel` — 에 매개변수로 의존성 주입됩니다. 전역으로 텍스트를 측정하는 곳은
 없습니다. 테스트/CI에서는 `setTextMeasurer(...)` 또는 `GV_TEXT_MEASURER=estimate`로
 고정합니다. 이 교체 지점 덕분에 잔여분이 측정 때문임을 *증명*할 수도 있습니다.
 C가 측정한 정확한 너비(오라클에서 캡처)를 포팅에 주고 레이아웃이 C를 정확히
@@ -402,7 +408,7 @@ x 이동 −3..−5 pt로 드러났습니다. 그 이동이 `Target<->TThread` �
 `normv`(413), `B01`(488), `B23`(494)에 대한 clang의 `fp-contract` 융합입니다. 허용 오차를 둔
 동점 처리는 사라졌고, C는 그런 동점에서 평행이동 등변이 아니므로 `241_0` 매듭은 C의 라우팅
 좌표계에 고정됩니다. 이로써 `2368`, `2371`, `2413_1`, `2413_2`, `graphs-b100`,
-`graphs-b104`, `graphs-decorate`가 종결되었습니다. graphviz 16.1.1에서는 무관한 이유로 `2368`이 다시 어긋납니다. 네이티브의 `flat_reorder` 변경 때문입니다([#158](#pending-16-1-1-ports)).
+`graphs-b104`, `graphs-decorate`가 종결되었습니다. graphviz 16.1.1에서는 무관한 이유로 `2368`이 다시 어긋났습니다. 네이티브의 `flat_reorder` 변경 때문입니다([#158](#pending-16-1-1-ports)). 그 변경을 포팅한 지금은 다시 conformant입니다.
 
 `241_1`은 `hypot` 동점이 아니었고, `87347711`(`fix(dot): match port-less edge endpoints in
 flat-adjacent aux layout`)로 종결되었습니다. C는 주 에지를 공유하는 인접 flat 에지를 모두 하나의
@@ -462,6 +468,13 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. 오라클이 알려진 고장 상태에 있음(init_rank / pathplan 계열) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **graphviz 16.1.2에서 오라클은 이 계열에 대해 아무것도 쓰지 않습니다.** `dot`은
+> 레이아웃이 오류를 보고하면 렌더링을 건너뛰므로, `1581`, `1939`, `2470`, `2471`,
+> `2796`, `2825`, `graphs-structs`는 조사에서 오라클 오류이며 conformant나 diverged
+> 행이 아닙니다. `1435`는 영향이 없습니다. 포팅은 아래 설명대로 이들을 여전히
+> 렌더링합니다. [16.1.2 렌더링 건너뜀](#render-skip-16-1-2)을 참고하십시오. 아래
+> 본문은 graphviz 16.1.1까지의 상태를 설명합니다.
 
 **영향받는 대상(graphviz 16.1 조사):** `1435`(structural-match, 스플라인 제어점 하나에서
 maxΔ 0.39. 15.x 오라클에서는 503이었으며, 이 감소의 원인은 이분 탐색으로 규명하지
@@ -842,6 +855,8 @@ GTS port; 2168_3 outline-ring obstacle; 56/osage bb clobber; A9 filed' 항목, *
 `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — xlabel R-트리가 증폭한 방사 좌표 ULP.**
+(graphviz 16.1.2 이후의 경과: `2470`은 [렌더링 건너뜀](#render-skip-16-1-2)과 함께 모든 엔진 조사에서 빠졌고, 레지스트리 항목은 퇴출되었습니다.
+네이티브 `twopi`는 여전히 이를 렌더링합니다.)
 2470은 140개 에지 그래프로, HTML `<table>` 에지 레이블이 거의 일치하는 방사 앵커에
 몰려 있습니다. neato 계열에서 에지 레이블은 탐욕적 xlabel 배치기(`label/xlabels.c`)가
 외부 레이블로 배치하며, 힐베르트 순서 R-트리를 통해 겹침이 가장 적은 후보 모서리를
@@ -989,10 +1004,17 @@ fdp `241_0`은 모든 트랙에서 네이티브와 일치하며(xdot 통과, jso
 
 ### A10. 폴리오미노 패킹에서의 V8 `Map` 크기 한계(`2784`, 패킹 기반 다섯 엔진) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**영향받는 대상:** `circo`, `twopi`, `neato`, `fdp`, `sfdp`에서의 `2784`. 포팅은 다섯 엔진 모두의
-xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니다. `twopi`, `neato`, `fdp`, `sfdp`의
-`json` 조사와 다섯 엔진 모두의 `plain` 조사에서는 네이티브 오라클 자체가 조사의 시간 예산 안에 끝나지
-않으므로 해당 행은 오라클 오류입니다. `dot`, `osage`, `patchwork`에서는 통과합니다.
+**영향받는 대상:** `circo`, `twopi`, `neato`, `fdp`, `sfdp`에서의 `2784`와 `2783`.
+포팅은 다섯 엔진 모두의 xdot, `json`, imagemap 조사에서 오류를 던집니다.
+`plain` 조사에서는 네이티브 오라클 자체가 조사의 시간 예산 300초 안에 끝나지 않으므로
+해당 행은 오라클 오류입니다(`sfdp`의 `plain-ext`에서의 `2783`은 예외로, 네이티브는 끝나고
+포팅이 오류를 던집니다). 네이티브는 이 입력들에 180초에서 410초가 걸리므로, 머신에 부하가 있으면
+`json`이나 imagemap 행도 오라클 오류로 보일 수 있습니다. `dot`, `osage`, `patchwork`에서는
+둘 다 통과합니다.
+
+`2783`은 `2784`와 같은 형태이며 graphviz 16.1.2에서 조사에 들어왔습니다. 포팅 오류 15개 행에는
+아직 레지스트리 항목이 없으므로, 대시보드는 이를 수용되지 않은 포팅 오류로 표시합니다.
+`twopi`, `neato`, `fdp`, `sfdp`에서의 `2784`의 `json` 행도 마찬가지입니다.
 
 **무슨 일이 일어나는가.** `lib/pack/pack.c`는 컴포넌트가 차지하는 셀을 `PointSet`에 기록합니다.
 `2784`(높이 3e16 pt의 단일 노드, `splines="ortho"`)에서는 충실한 정수 `step`/배치 산술에
@@ -1067,6 +1089,88 @@ xdot 및 imagemap 조사와 `circo`의 `json` 조사에서 오류를 던집니�
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | 16.1.1의 나머지 동작 변경 | 코퍼스와 골든 모두 없음 | — |
 
 각 변경에 도달하는 입력은 [#148](https://github.com/knowvah/dot-engine/issues/148)에서 추적합니다.
+
+**graphviz 16.1.2 기준 상태:** 이 표의 모든 이슈는 닫혀 있고 변경은 포팅되었습니다.
+이 표는 이력으로 남겨 둡니다. #158의 id 34개, #160의 4개, `2783`(#164), 그리고 16.1.1이 추가한
+입력 14개는 `dot`에서 다시 conformant이며 모든 조사에 되돌아왔습니다.
+
+## 보류 중인 16.1.2 포팅 {#pending-16-1-2-ports}
+
+오라클은 graphviz 16.1.1에서 16.1.2로 옮겨 갔습니다
+([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)).
+재기준선의 분류(`plans/graphviz-16-1-2-rebaseline/classification/`)는 바뀐 모든 결과를
+원인까지 추적했습니다. 코퍼스 결과를 움직이는 업스트림 변경은 둘뿐입니다.
+다음 절에서 설명하는 렌더링 건너뜀과 아래의 `mapc` 변경입니다.
+이들은 수용된 차이가 아닙니다. 각각은 해당 이슈에서 진행 중인 작업입니다.
+
+| 이슈 | 업스트림 변경 | 16.1.2에서 이동한 id | 엔진 |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc`가 서브그래프가 클러스터인지를 `cluster` 이름 접두어가 아니라 `is_a_cluster`로 판단함 | 1개: `2717`. 네이티브는 16.1.1에서 충돌했고 16.1.2에서는 렌더링함. 포팅은 여전히 노드 `domestic_cats`를 추가하며 xdot, `json`, `plain` 조사에서 어긋남(imagemap은 conformant) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | 레이아웃이 오류를 보고하면 `dot`이 렌더링을 건너뜀 | 조사 id 34개, 엔진 id 5개, 골든 3개: [16.1.2 렌더링 건너뜀](#render-skip-16-1-2) 참고 | 전체 |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges`가 `other` 탐색에서 자기 루프를 건너뜀 | 조사한 코퍼스에는 없음 | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | 노드에 들어오거나 나가는 에지가 없을 때 `conc_slope`가 대체 동작으로 전환함 | 조사한 코퍼스에는 없음 | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | 분할점을 찾지 못하면 `reallyroutespline`이 실패함 | 조사한 코퍼스에는 없음(격리된 입력 `2746`은 네이티브에서 더 이상 충돌하지 않으며, 지금은 렌더링 건너뜀) | 전체 |
+
+16.1.2가 추가한 입력 7개(`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`)는 `pending-input`으로 격리되어 있으며,
+[#298](https://github.com/knowvah/dot-engine/issues/298)이 받아들이기 전까지는 조사하지 않습니다.
+
+## 16.1.2 렌더링 건너뜀(#299 대기 중) {#render-skip-16-1-2}
+
+graphviz 16.1.2부터 `dot` 명령은 레이아웃이 오류를 보고하면 렌더링하지 않습니다
+(업스트림 커밋 `19b33b581`, `cmd/dot/dot.c:main`). 종료 코드 1로 끝나며 아무것도 쓰지 않습니다.
+graphviz 16.1.1도 1로 끝났지만 레이아웃이 반쯤 된 문서는 썼습니다.
+포팅은 16.1.1과 마찬가지로 이 입력들을 여전히 렌더링합니다.
+포팅이 따라갈지는 [#299](https://github.com/knowvah/dot-engine/issues/299)의 문제이며, 메인테이너의 판단을 기다리고 있습니다. 그때까지
+이 건으로 라이브러리에서 바뀌는 것은 없습니다.
+
+네이티브 문서가 없으면 비교할 대상이 없으므로, 아래의 각 행은
+오라클 오류이며 어긋남도 수용된 차이도 아닙니다.
+
+**`dot` 조사, id 34개**(`2781`과 `2781_1`을 제외하고 모두 16.1.1에서 conformant였습니다.
+이 둘은 structural-match였습니다). 레이아웃이 처음 보고한 오류별:
+
+| 처음 오류 | id |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2`, 그리고 `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+마지막 다섯 개(`1879`부터 `2821_2`까지)가 실패하는 것은 조사가 네이티브를 저장소 루트에서
+실행해, 레이블이 가리키는 이미지 파일을 찾지 못하기 때문일 뿐입니다
+([#314](https://github.com/knowvah/dot-engine/issues/314)). 각자의 디렉터리에서 실행하면 두 graphviz 버전 모두 렌더링합니다.
+
+**그 밖의 모든 조사.** `-Tdot`, xdot, `json`, imagemap, `plain` 조사와
+일곱 엔진 조사는 모두 `dot` 조사에서 conformant였던 집합에서 id를 가져오므로, 그 집합에 있던
+이 id들 중 18개는 어떤 엔진이나 형식에서도 더는 조사하지 않습니다:
+`1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`,
+`1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825`,
+`graphs-structs`. 엔진별 레지스트리에 있던 이들의 수용 항목은
+퇴출되었습니다. 이들 대부분은 다른 엔진에서 네이티브로 여전히 렌더링되므로
+(id와 엔진 쌍 126개 중 89개), 엔진들은 유지할 수 있었던 커버리지를 잃습니다.
+
+**엔진 자체에서, id 5개**(xdot, `json`, imagemap, `plain` 행이며 모두
+16.1.1에서는 통과했습니다):
+
+| 엔진 | id | 오류 |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (포팅은 아직 이를 출력하지 않습니다, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+오라클 오류 레지스트리는 이 다섯 개를 `native-crash`로 표시합니다.
+분류기에 '모든 시도가 실패함'을 위한 다른 클래스가 없기 때문이며, 네이티브는 아무것도 출력하지 않고 1로 끝날 뿐
+충돌하지 않습니다.
+
+**골든 3개:** `pt-issue-31-inline`, `pt-issue-31-rubebe`,
+`pt-issue-31-zuduxu`는 graphviz 16.1.1 참조를 유지합니다. 16.1.2는
+참조를 쓰지 않기 때문입니다(`test/golden/inputs/PROVENANCE.md`).
 
 ## 추적 중인 롱테일(`dot` 속성 및 예외 사례) {#tracked-long-tail-dot-attribute-edge-case}
 

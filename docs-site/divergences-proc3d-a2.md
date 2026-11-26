@@ -83,7 +83,7 @@ as a live comparison.
 
 ## Reproduce
 
-The native oracle runs under the headless `GVBINDIR` (`/tmp/ghl1611`, from
+The native oracle runs under the headless `GVBINDIR` (`/tmp/ghl1612-carried`, from
 `test/corpus/gen-headless-gvbindir.sh`) so both sides use the same
 `estimate_textspan_size` measurer — see
 [§A2 “Isolating the algorithm from the font backend”](/divergences#a2-text-measurement-font-metrics-label-driven-layout).
@@ -94,8 +94,8 @@ GV_TEXT_MEASURER=estimate \
   npx tsx test/corpus/render-one.ts ~/git/graphviz/tests/graphs/proc3d.gv dot
 
 # native C oracle (headless, estimate measurer)
-GVBINDIR=/tmp/ghl1611 \
-  ~/git/graphviz-16.1.1/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
+GVBINDIR=/tmp/ghl1612-carried \
+  ~/git/sseely/graphviz-carried-1612/build/cmd/dot/dot -Tsvg ~/git/graphviz/tests/graphs/proc3d.gv
 ```
 
 Running this today produces matching SVGs (0 diffs at the `deterministic`

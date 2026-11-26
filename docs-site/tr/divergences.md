@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -77,7 +77,7 @@ farkları (A3, A8) kapatılmıştır ve aşağıda geçmiş olarak saklanır.
 > **Kapsam; tarihsel olarak ölçülmemiş bir uyarıydı — şimdi kısmen ölçülüyor.**
 > **Ana dot motoru SVG taraması** (`test/corpus/survey.ts`) hâlâ
 > **yalnızca dot içindir**: yerel kâhin, yalnızca `core` + `dot_layout`
-> eklentilerini sembolik bağlayan `GVBINDIR=/tmp/ghl1611` altında çalışır
+> eklentilerini sembolik bağlayan `GVBINDIR=/tmp/ghl1612-carried` altında çalışır
 > (`test/corpus/gen-headless-gvbindir.sh` tam olarak `core dot_layout` üzerinde
 > döner — `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` yerleşim eklentisi yoktur)
 > ve hem kâhin hem port `dot` motoruyla çağrılır. Dolayısıyla `*_neato` /
@@ -117,9 +117,9 @@ Bu çalışmanın dürüst tavanı, A1'i “başvuru platformunda etkin fark yok
 **daraltmaktır**; platformlar arası uyarıyı asla ortadan kaldırmak değil; şimdiye
 kadarki sonuçlar (aşağıda) bu tavana uyar: `circo`/`twopi`/`osage` her biri bir
 avuç gerçek A1/A9 örneği ortaya çıkarıp kök nedenine indirdi; `neato`/`fdp`/`sfdp`
-ise 898 öğelik evrende (graphviz 16.1.1) yerel çıktının 0.5pt içinde sırasıyla
-%99,8/%98,0/%68,1 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
-eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 898 öğelik evrenin her
+ise 933 öğelik evrende (graphviz 16.1.2) yerel çıktının 0.5pt içinde sırasıyla
+%99,7/%97,2/%68,6 düzeyinde — yani taşınan aritmetik (`fma.ts`, `arm-pow.ts`,
+eşleştirilmiş PRNG) graflarının çoğu için geçerli — ve 933 öğelik evrenin her
 farklılaşan kimliği, triyajsız bir sürüklenme olarak bırakılmak yerine enjeksiyonla
 (çözücü sürüklenmesi ile port kusuru) tek tek nedene bağlanmıştır. Aşağıdaki yinelemeli motor nitelendirmesine
 bakın.
@@ -199,17 +199,27 @@ aşağıda anlatıldığı gibi, nedene bağlanmıştır — `engine-walk.ts` bu
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md)
 içinde ayrı bir “Iterative engines (±0.5 characterization)” bölümünde işler;
 bu bölüm bu belgedeki başka yerlerde geçen ±0.01 belirlenimci geçme oranlarıyla
-açıkça **karşılaştırılamaz**. graphviz 16.1.1'e karşı güncel sayılar (898 öğelik evren; geçme yüzdesi, C
+açıkça **karşılaştırılamaz**. graphviz 16.1.2'ye karşı güncel sayılar (933 öğelik evren; geçme yüzdesi, C
 kâhininin işleyemediği girdileri ve yerel çıktısı çalıştırmadan çalıştırmaya değişen girdileri
 dışarıda bırakır, bkz. [Uygunluk](./conformance.md)):
 
 | motor | taranan | ±0.5pt içinde | uyumlu olmayan | port hatası / zaman aşımı | kâhin hatası | kâhin belirlenimsiz |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (%99,8) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (%98,0) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (%68,2) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (%99,7) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (%97,2) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (%68,6) | 292 | 1 | 0 | 1 |
 
-`fdp`'nin yerel çıktısı çalıştırmadan çalıştırmaya değişen 11 belirlenimsiz girdisi geçme oranının dışında bırakılmıştır; tek port hatası, portun desteklemediği `splines=compound` yönlendirmesini gerektiren `1879`'dur.
+`fdp`'nin yerel çıktısı çalıştırmadan çalıştırmaya değişen 8 belirlenimsiz girdisi geçme oranının dışında bırakılmıştır. Her motordaki tek port hatası `2783`'tür
+([A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)).
+`1879`, eskiden `fdp`'nin port hatasıydı, artık taranmaz: graphviz 16.1.2'nin `dot`'unun
+artık işlemediği kimliklerden biridir
+([16.1.2 işleme atlama](#render-skip-16-1-2)) ve her motor taraması kimliklerini `dot`
+taramasının conformant kümesinden alır. `fdp`'nin yedi kâhin hatasından dördü,
+`fdp`'nin kendisindeki bu işleme atlamadır.
+
+(Evren, graphviz 16.1.2'de port değişikliği olmadan 898'den 933'e büyüdü:
+önceki port düzeltmelerinin zaten conformant yaptığı 53 kimlik, `dot` taraması yeniden
+çalıştırıldığında taramalara girdi ve işlemesi atlanan 18 kimlik çıktı.)
 
 (`fdp` geçme oranı %77,5'ten yükseldi, çünkü daha önceki işlenmiş
 tarama bir önceki görevin port durumundan önceye aitti.
@@ -223,10 +233,12 @@ güncel oranlara sıçrama, o tarihten beri girilen kimlik başına düzeltmeler
 geldi; başlıcaları neato'nun taşınmamış `user_pos`/`P_SET` işlenişi, motor
 başlatma birleştirmesi ve `setEdgeType` makro-işlev düzeltmesidir.)
 
-İlk taramanın aksine, 898 öğelik evrenin ayrışan her satırı graphviz 16.1.1'e karşı tek tek nedene
+İlk taramanın aksine, 933 öğelik evrenin ayrışan her satırı graphviz 16.1.2'ye karşı tek tek nedene
 bağlanmıştır: enjeksiyon düzeneği (`test/corpus/attribute-divergence.ts`) yerel kâhinin yönlendirme
-öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, sfdp `2556` dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
-üretimi kâhini tam olarak yeniden üretir). İkisi ayrıca kabul edilmiş kimlik başına artıklardır:
+öncesi `ND_pos` değerini porta besler ve yeniden karşılaştırır; güncel her ayrışan kimlik, sfdp `2556`, fdp `2717` ([bekleyen bir 16.1.2 portu](#pending-16-1-2-ports)), fdp `1436` ([#211](https://github.com/knowvah/dot-engine/issues/211): alt graflarından yedisi aynı adı paylaşır, bu yüzden düzenek kutularını yerleştiremez) ve sfdp `graphs-clustlabel` ([#315](https://github.com/knowvah/dot-engine/issues/315)) dışında, `drift-exonerated`'dır (çözücü sürüklenmesi kaldırılınca portun yönlendirmesi ve
+üretimi kâhini tam olarak yeniden üretir). fdp'nin `2768`,
+`2768_1`, `2768_2`, `2769`, `2769_1` ve `2769_2` satırları `drift-exonerated` olarak okunur, ancak
+belirlenimci [#224](https://github.com/knowvah/dot-engine/issues/224) hatasıdır; A1 altında kabul edilmemiştir. İkisi ayrıca kabul edilmiş kimlik başına artıklardır:
 sfdp `241_0`'ın ana makine libm `pow` sürüklenmesi (T28 tarafından yeniden teşhis edildi; enjeksiyon satırı `12dddc48`'den beri `drift-exonerated` olarak okunur) ile sfdp `2556`'nın NaN yerleşimi. fdp `241_0`,
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` değişikliğinden beri
 geçer (bkz. A9 altındaki fdp paragrafı). fdp `2471` ve sfdp `2371` önceden enjeksiyondan sonra farklı kalan kenar etiketi
@@ -309,7 +321,7 @@ structural-match'e taşıdı — hepsi 2-döngü/paralel çiftlerde.
 **Anket yapılan her iki taraf da aynı kestiriciyi çalıştırır — ölçüm etkisiz kılınmıştır.**
 Yerel `dot` kâhini, yalnızca `core` ve `dot_layout` eklentilerini sembolik bağlayan
 başsız bir `GVBINDIR` altında çalışır (`test/corpus/gen-headless-gvbindir.sh` →
-`/tmp/ghl1611`) — `gd`/`pango`/`quartz` metin yerleşimi eklentisi yoktur. Bu yuva boş
+`/tmp/ghl1612-carried`) — `gd`/`pango`/`quartz` metin yerleşimi eklentisi yoktur. Bu yuva boş
 olduğunda graphviz, yerleşik `estimate_textspan_size` işlevine geri döner.
 TypeScript portunun `EstimateTextMeasurer`'ı (`src/common/textmeasure.ts`) aynı
 yordamın sadık bir portudur ve `createMeasurer()`
@@ -326,7 +338,7 @@ yalnızca, metin ölçümünün iki motora da sabit bağlanmamış, bilinçli bi
 noktası olması sayesinde mümkündür. `TextMeasurer`, her etiket boyutlandırma çağrı
 noktasına bağımlılık enjeksiyonuyla verilen tek yöntemli bir arayüzdür
 (`measure(text, font, size, flags) → {w, h, …}`) —
-`polyInit`, `recordInit`, `initEdgeLabels` ve `buildNodeLabel` ölçücüyü bir parametre
+`polyInit`, `recordInit`, `initEdgeLabels` ve `makeNodeLabel` ölçücüyü bir parametre
 olarak alır; hiçbir şey metni genel bir değişken üzerinden ölçmez. Testler/CI için
 `setTextMeasurer(...)` veya `GV_TEXT_MEASURER=estimate` ile sabitlenir. Genişletme
 noktası ayrıca bir artığın yalnızca ölçüme bağlı olduğunun *kanıtlanmasına* olanak
@@ -461,7 +473,7 @@ uzaklık için libm `hypot` (`route.c:448`), C'nin katı `>` karşılaştırmas�
 (459), `normv` (413), `B01` (488) ve `B23` (494). Toleranslı beraberlik çözümü
 kalktı; `241_0` düğümü C'nin yönlendirme çerçevesinde sabitlenmiştir, çünkü C
 bu tür beraberliklerde öteleme-eşdeğişkenli değildir. Bu, `2368`, `2371`, `2413_1`,
-`2413_2`, `graphs-b100`, `graphs-b104` ve `graphs-decorate`'i kapattı. graphviz 16.1.1'de `2368` ilgisiz bir nedenle yeniden ayrışır: yerelin `flat_reorder` değişikliği ([#158](#pending-16-1-1-ports)).
+`2413_2`, `graphs-b100`, `graphs-b104` ve `graphs-decorate`'i kapattı. graphviz 16.1.1'de `2368` ilgisiz bir nedenle yeniden ayrıştı, yerelin `flat_reorder` değişikliği ([#158](#pending-16-1-1-ports)); değişiklik taşındığı için artık yine conformant.
 
 `241_1` bir `hypot` beraberliği değildi: `87347711` ile kapatıldı
 (`fix(dot): match port-less edge endpoints in flat-adjacent aux layout`). C,
@@ -524,6 +536,13 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. Kâhin kabul edilmiş bozuk bir durumda (init_rank / pathplan ailesi) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **graphviz 16.1.2'de kâhin bu aile için hiçbir şey yazmaz.** `dot` artık yerleşim
+> bir hata bildirdiğinde işlemeyi atlar; bu yüzden `1581`, `1939`, `2470`,
+> `2471`, `2796`, `2825` ve `graphs-structs` taramada kâhin hatasıdır,
+> conformant veya diverged satırı değildir; `1435` etkilenmez. Port bunları
+> aşağıda anlatıldığı gibi hâlâ işler. Bkz. [16.1.2 işleme atlama](#render-skip-16-1-2). Aşağıdaki
+> metin, graphviz 16.1.1'e kadarki durumu anlatır.
 
 **Etkilenenler (graphviz 16.1 taraması):** `1435` (structural-match, bir spline
 kontrol noktasında maxΔ 0.39; 15.x kâhinine karşı 503'tü — düşüş ikili aramayla
@@ -959,6 +978,9 @@ artık ikisi de uyumlu. Bağımsız yeniden üretim:
 `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — xlabel R-ağacı tarafından yükseltilen radyal koordinat ULP'si.**
+(graphviz 16.1.2'den beri geçmiş: `2470`, [işleme atlama](#render-skip-16-1-2) ile
+her motor taramasından çıktı ve kayıt girdileri kaldırıldı.
+Yerel `twopi` onu hâlâ işler.)
 2470, HTML `<table>` kenar etiketleri neredeyse çakışık radyal çapalarda toplanan
 140 kenarlı bir graftır. neato ailesinde kenar etiketleri, Hilbert sıralı bir R-ağacı
 üzerinden en az çakışan aday köşeyi seçen açgözlü xlabel yerleştiricisi
@@ -1134,12 +1156,18 @@ onun da 0'a enjekte edildiğini doğruladı ve kabulü kaldırıldı (yukarıdak
 
 ### A10. Poliomino paketlemede V8 `Map` boyut sınırı (`2784`, paketleme tabanlı beş motor) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Etkilenenler:** `2784`, `circo`, `twopi`, `neato`, `fdp` ve `sfdp` üzerinde. Port,
-beş motorun tümünün xdot ve imagemap taramalarında ve `circo` için `json` taramasında
-hata fırlatır. `twopi`, `neato`, `fdp` ve `sfdp` için `json` taramalarında ve beşinin
-de `plain` taramalarında yerel kâhinin kendisi taramanın zaman bütçesi içinde
-tamamlanmaz; bu yüzden o satırlar kâhin hatasıdır. `dot`, `osage` ve `patchwork`
-üzerinde geçer.
+**Etkilenenler:** `2784` ve `2783`, `circo`, `twopi`, `neato`, `fdp` ve `sfdp` üzerinde.
+Port, beş motorun tümünün xdot, `json` ve imagemap taramalarında hata fırlatır.
+`plain` taramalarında yerel kâhinin kendisi taramanın 300 sn'lik bütçesi içinde
+tamamlanmaz; bu yüzden o satırlar kâhin hatasıdır (`sfdp` `plain-ext` üzerindeki `2783`
+istisnadır: yerel tamamlanır ve port hata fırlatır). Yerel, bu girdilerde 180 ila 410 sn
+sürer; bu yüzden makine yüklüyken bir `json` veya imagemap satırı da kâhin hatası olarak
+okunabilir. `dot`, `osage` ve `patchwork` üzerinde ikisi de geçer.
+
+`2783`, `2784` ile aynı biçimdedir ve taramalara graphviz 16.1.2'de girdi. Onun
+15 port hatası satırının henüz kayıt girdisi yoktur; bu yüzden panolar bunları
+kabul edilmemiş port hataları olarak gösterir; `2784`'ün `twopi`, `neato`, `fdp` ve
+`sfdp` üzerindeki `json` satırları da öyle.
 
 **Ne olur.** `lib/pack/pack.c`, bir bileşenin kapladığı hücreleri bir `PointSet`
 içinde tutar. `2784` için (3e16 pt yüksekliğinde tek bir düğüm, `splines="ortho"`)
@@ -1219,6 +1247,89 @@ Kâhin graphviz 16.1.0'dan 16.1.1'e geçti ([ADR-0002](https://github.com/knowva
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | 16.1.1'in davranışsal değişikliklerinin geri kalanı | korpusta veya goldens içinde yok | — |
 
 Her değişikliğe ulaşan girdiler [#148](https://github.com/knowvah/dot-engine/issues/148) içinde izlenir.
+
+**graphviz 16.1.2'deki durum:** bu tablodaki her issue kapalıdır ve değişikliği
+taşınmıştır. Tablo geçmiş olarak tutulur. #158'in 34 kimliği, #160'ın 4'ü, `2783` (#164) ve
+16.1.1'in eklediği 14 girdi `dot` üzerinde yine conformant'tır ve her taramaya geri döndü.
+
+## Bekleyen 16.1.2 portları {#pending-16-1-2-ports}
+
+Kâhin graphviz 16.1.1'den 16.1.2'ye geçti
+([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)).
+Yeniden temel çizgisinin sınıflandırması
+(`plans/graphviz-16-1-2-rebaseline/classification/`) değişen her sonucu bir nedene
+bağladı. Bir korpus sonucunu yalnızca iki yukarı akış değişikliği oynatır: bir sonraki bölümde
+anlatılan işleme atlama ve aşağıdaki `mapc` değişikliği. Bunlar kabul edilmiş farklar
+değildir: her biri kendi issue'sunda açık iştir.
+
+| issue | yukarı akış değişikliği | 16.1.2'de kayan kimlikler | motorlar |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc`, bir alt grafın küme olup olmadığına `cluster` ad önekiyle değil `is_a_cluster` ile karar verir | 1: `2717`. Yerel 16.1.1'de çöktü ve 16.1.2'de işler; port hâlâ `domestic_cats` düğümünü ekler ve xdot, `json` ve `plain` taramalarında ayrışır (imagemap conformant'tır) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | `dot`, yerleşim bir hata bildirdiğinde işlemeyi atlar | 34 tarama kimliği, 5 motor kimliği ve 3 golden: bkz. [16.1.2 işleme atlama](#render-skip-16-1-2) | tümü |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges`, `other` taramasında kendi kendine döngüleri atlar | taranan korpusta yok | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | `conc_slope`, bir düğümün gelen veya giden kenarı olmadığında geri çekilir | taranan korpusta yok | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | `reallyroutespline`, bölme noktası bulunamadığında başarısız olur | taranan korpusta yok (karantinadaki `2746` girdisi artık yerelde çökmez; şimdi bir işleme atlamadır) | tümü |
+
+16.1.2'nin eklediği yedi girdi (`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`) `pending-input` olarak karantinadadır ve
+[#298](https://github.com/knowvah/dot-engine/issues/298) onları kabul edene kadar taranmaz.
+
+## 16.1.2 işleme atlama (#299 bekliyor) {#render-skip-16-1-2}
+
+graphviz 16.1.2'den beri `dot` komutu, yerleşim bir hata bildirdiğinde işlemez
+(yukarı akış commit'i `19b33b581`, `cmd/dot/dot.c:main`): 1 koduyla çıkar ve hiçbir şey
+yazmaz. graphviz 16.1.1 de 1 koduyla çıkıyordu, ancak yarım yerleşmiş belgeyi yazıyordu. Port
+bu girdileri 16.1.1'in yaptığı gibi hâlâ işler.
+Portun bunu izleyip izlemeyeceği, bakımcının kararını bekleyen [#299](https://github.com/knowvah/dot-engine/issues/299)'dur; o zamana kadar
+kütüphanede bunun için hiçbir şey değişmez.
+
+Yerel belge olmadığı için karşılaştırılacak bir şey yoktur; bu yüzden aşağıdaki her satır
+bir kâhin hatasıdır, ayrışma değildir ve kabul edilmiş fark değildir.
+
+**`dot` taraması, 34 kimlik** (`2781` ve `2781_1` dışında hepsi 16.1.1'de conformant'tı;
+bu ikisi structural-match'ti), yerleşimin bildirdiği ilk hataya göre:
+
+| ilk hata | kimlikler |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2` ve `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+Son beşi (`1879` ile `2821_2` arası) yalnızca taramalar yereli depo kökünden
+çalıştırdığı için başarısız olur; etiketlerinin adını verdiği görüntü dosyaları orada bulunmaz
+([#314](https://github.com/knowvah/dot-engine/issues/314)); kendi dizininden çalıştırıldığında iki graphviz sürümü de bunları işler.
+
+**Diğer her tarama.** `-Tdot`, xdot, `json`, imagemap ve `plain` taramaları ile
+yedi motor taramasının tümü kimliklerini taramanın conformant kümesinden alır; bu yüzden
+o kümede olan bu kimliklerden 18'i artık hiçbir motorda veya biçimde taranmaz:
+`1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`,
+`1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` ve
+`graphs-structs`. Bunların motor başına kayıtlardaki kabul girdileri
+kaldırıldı. Çoğu diğer motorlarda hâlâ yerelde işlenir (126 kimlik ve motor
+çiftinin 89'u); bu yüzden motorlar, koruyabilecekleri kapsamı yitirir.
+
+**Motorun kendisinde, 5 kimlik** (xdot, `json`, imagemap ve `plain` satırları, hepsi
+16.1.1'de geçiyordu):
+
+| motor | kimlikler | hata |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (port bunu henüz yazdırmaz, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+Kâhin hatası kayıtları bu beşini `native-crash` diye etiketler, çünkü sınıflandırıcıda
+"her deneme başarısız oldu" için başka sınıf yoktur; yerel, çıktı vermeden 1 koduyla
+çıkar ve çökmez.
+
+**Golden'lar, 3:** `pt-issue-31-inline`, `pt-issue-31-rubebe` ve
+`pt-issue-31-zuduxu` graphviz 16.1.1 referanslarını korur, çünkü 16.1.2
+hiçbirini yazmaz (`test/golden/inputs/PROVENANCE.md`).
 
 ## Takip edilen uzun kuyruk (`dot` öznitelikleri ve uç durumlar) {#tracked-long-tail-dot-attribute-edge-case}
 

@@ -9,6 +9,8 @@ and D7 in `plans/graceful-failure/decisions.md`). Replaces one clause of
 ADR-0002, decision 1: "oracle = pristine native 16.1.1". The rest of ADR-0002
 (build, `oracle-paths.mjs`, `rand()`, order of work, fixtures) is unchanged.
 
+Version clause superseded by ADR-0004 (graphviz 16.1.2).
+
 Amended 2026-11-21: decision 4 requires the repro to work on Ubuntu's latest
 LTS. On graphviz#2876 an upstream maintainer on Ubuntu 24.04 could not
 reproduce a use-after-free that shows on macOS only because libmalloc zeroes

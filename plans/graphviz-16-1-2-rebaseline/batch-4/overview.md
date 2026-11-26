@@ -8,4 +8,4 @@ registries.
 |---|---|---|---|---|---|
 | T13 | [Hand registries](T13-registries.md) | typescript-pro | `test/corpus/accepted-divergences*.json`, `test/corpus/engine-exclusions.json` | T12a, T12b | [x] |
 | T14 | [Goldens](T14-goldens.md) | typescript-pro | `test/golden/{refs/,refs-xdot/,known-failing.json,inputs/PROVENANCE.md}` | T12a, T12b | [x] |
-| T15 | [Docs](T15-docs.md) | orchestrator + documentation-engineer | `test/corpus/PARITY*.md`, `docs/known-divergences.md`, `docs-site/**/divergences*.md`, `docs/adr/000{2,3}-*.md`, `CLAUDE.md` | T13 | [ ] |
+| T15 | [Docs](T15-docs.md) | orchestrator + documentation-engineer | `test/corpus/PARITY*.md`, `docs/known-divergences.md`, `docs-site/**/divergences*.md`, `docs/adr/000{2,3}-*.md`, `CLAUDE.md` | T13 | [x] |

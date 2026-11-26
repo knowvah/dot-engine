@@ -11,10 +11,10 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 898
-- **Oracle:** dot 16.1.1
-- **pass:** 890 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
-- **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 7
+- **Surveyed:** 933
+- **Oracle:** dot 16.1.2
+- **pass:** 924 (99.8%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
+- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 7
 
 ## Diverged (0)
 
@@ -26,7 +26,7 @@ _(none)_
 |---|---:|---|---|
 | [`2784`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2784.dot) | 0 | `` | A10: faithful pack.c int step/placement arithmetic (97fcccd8) needs 2,011,656,764 PointSet cells for this 3e16pt-tall node (native 16.1.0 completes in 482 s at 67.3 GB resident); the port's PointSet is a V8 Map capped at 2^24 entries, so the render throws. A runtime limit below the code, not a logic gap; accepted as a port-error row (verdict/errIncludes). Evidence: comparisons/2784-pack-cells.md. |
 
-## Errors and timeouts (7)
+## Errors and timeouts (8)
 
 | id | message |
 |---|---|
@@ -34,9 +34,10 @@ _(none)_
 | [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
 | [`1658`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1658.dot) | oracle exit null |
 | [`2621`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2621.dot) | oracle exit null |
+| [`2783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2783.dot) | Map maximum size exceeded |
 | [`graphs-b100`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b100.gv) | oracle exit null |
 | [`graphs-b103`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b103.gv) | oracle exit null |
 | [`graphs-b104`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b104.gv) | oracle exit null |
 
-_Passing ids (890) are omitted for brevity — the full roster is in
+_Passing ids (924) are omitted for brevity — the full roster is in
 `map-parity-circo.json`._

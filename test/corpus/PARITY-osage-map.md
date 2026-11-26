@@ -11,24 +11,22 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 899
-- **Oracle:** dot 16.1.1
-- **pass:** 898 (99.9%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 1
+- **Surveyed:** 934
+- **Oracle:** dot 16.1.2
+- **pass:** 934 (100.0%) · **diverged (tracked):** 0 · **accepted (documented, won't-fix):** 0
 - **port-error / timeout (scored as failures):** 0 · **oracle-error (excluded from pass %):** 0
 
 ## Diverged (0)
 
 _(none)_
 
-## Accepted (1) — documented, not chased
+## Accepted (0) — documented, not chased
 
-| id | #diffs | firstDiff | reason |
-|---|---:|---|---|
-| [`graphs-xx`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/xx.gv) | 1 | `area[271].coords[2]` | A8 rounding-boundary dust: 1 of 272 hotspot coords sits within the sub-0.01pt model tolerance of the integer rounding boundary (port 2654.5x vs native 2654.4x -&gt; 2655 vs 2654); osage xdot track passes at 0.01. Irreducible print amplification. Journal 2026-07-24. |
+_(none)_
 
 ## Errors and timeouts (0)
 
 _(none)_
 
-_Passing ids (898) are omitted for brevity — the full roster is in
+_Passing ids (934) are omitted for brevity — the full roster is in
 `map-parity-osage.json`._

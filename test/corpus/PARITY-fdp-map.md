@@ -11,10 +11,10 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 
 ## Summary
 
-- **Surveyed:** 898
-- **Oracle:** dot 16.1.1
-- **pass:** 887 (99.3%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 4
-- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 5
+- **Surveyed:** 933
+- **Oracle:** dot 16.1.2
+- **pass:** 919 (99.4%) · **diverged (tracked):** 1 · **accepted (documented, won't-fix):** 4
+- **port-error / timeout (scored as failures):** 1 · **oracle-error (excluded from pass %):** 8
 
 ## Diverged (1)
 
@@ -31,16 +31,19 @@ deterministic tolerance, ±0.5 for the iterative engines). Regenerate:
 | [`linux.x86-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/linux.x86/root_circo.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 | [`nshare-root_circo`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/nshare/root_circo.gv) | 16 | `area[0].coords[0]` | layout drift inherited from the fdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24. |
 
-## Errors and timeouts (6)
+## Errors and timeouts (9)
 
 | id | message |
 |---|---|
-| [`1652`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1652.dot) | oracle exit null |
-| [`1879`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1879.dot) | splines=compound: cluster-avoiding edge routing (compoundEdges) is not supported yet |
+| [`1221`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1221.dot) | Error: node "1" is contained in two non-comparable clusters "cluster_2" and "cluster_1" |
+| [`1767`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/1767.dot) | Error: node "a" is contained in two non-comparable clusters "cluster_1" and "cluster_0" |
+| [`2239`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2239.dot) | Warning: Warning: no hard-coded metrics for 'sans'.  Falling back to 'Times' metrics |
 | [`2475_1`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2475_1.dot) | Warning: Two clusters named %9 - the second will be ignored |
 | [`2646`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2646.dot) | oracle exit null |
-| [`2717`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2717.dot) | oracle exit null |
+| [`2721`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2721.dot) | Error: node "622" is contained in two non-comparable clusters "cluster_uni" and "cluster_std" |
+| [`2783`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/2783.dot) | Map maximum size exceeded |
+| [`graphs-b53`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/graphs/b53.gv) | Error: node "node_50" is contained in two non-comparable clusters "cluster_node_43" and "cluster_node_57" |
 | [`tree-share-examples-world`](https://gitlab.com/graphviz/graphviz/-/blob/main/tests/../share/examples/world.gv) | oracle exit null |
 
-_Passing ids (887) are omitted for brevity — the full roster is in
+_Passing ids (919) are omitted for brevity — the full roster is in
 `map-parity-fdp.json`._

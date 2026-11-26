@@ -1,5 +1,5 @@
 ---
-sourceHash: e063e284d178f394ca31a4bce4852eef7c185d4f3c281815063dcde164efb2fa
+sourceHash: d827d054bdac6941f96afae64ef619ea803c176351dad86fe94bf16454bf3777
 ---
 
 <!-- SPDX-License-Identifier: EPL-2.0 -->
@@ -77,7 +77,7 @@ gormalíkansvélarnar). *Uppsetning* `dot`-vélarinnar verður **ekki** fyrir á
 
 > **Umfang, sögulega óunnin fyrirvari — nú að hluta mældur.** **Aðal-SVG-könnunin fyrir dot-vélina**
 > (`test/corpus/survey.ts`) er enn
-> **eingöngu dot**: innbyggða véfréttin keyrir undir `GVBINDIR=/tmp/ghl1611`, sem
+> **eingöngu dot**: innbyggða véfréttin keyrir undir `GVBINDIR=/tmp/ghl1612-carried`, sem
 > tengir með táknrænum tenglum **aðeins** íbótirnar `core` + `dot_layout`
 > (`test/corpus/gen-headless-gvbindir.sh` fer í gegnum nákvæmlega `core dot_layout`
 > — engin uppsetningaríbót fyrir `neato`/`fdp`/`circo`/`twopi`/`osage`/`sfdp` er til staðar),
@@ -116,10 +116,10 @@ inntak undir sinni eigin vél í stað `dot`. Hreinskilið þak þeirrar vinnu e
 að **þrengja** A1 í „ekkert virkt frávik á viðmiðunarkerfinu“, aldrei að
 útrýma fyrirvaranum um mismunandi kerfi; niðurstöðurnar hingað til (hér á eftir) standast það
 þak: `circo`/`twopi`/`osage` hafa hver um sig afhjúpað og rótargreint nokkur
-raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 99.8/98.0/68.2%
-innan 0.5pt frá innbyggðu á 898 atriða heildinni (graphviz 16.1.1), sem þýðir að yfirfærða
+raunveruleg A1/A9-tilvik, og `neato`/`fdp`/`sfdp` eru nú í 99.7/97.2/68.6%
+innan 0.5pt frá innbyggðu á 933 atriða heildinni (graphviz 16.1.2), sem þýðir að yfirfærða
 reikningsaðferðin (`fma.ts`, `arm-pow.ts`, samstilltur slembitölugjafi) heldur fyrir flest graf —
-og hvert eitt afgangsfráviksauðkenni á 898 atriða heildinni er rakið sérstaklega með innsprautun (rek lausnara
+og hvert eitt afgangsfráviksauðkenni á 933 atriða heildinni er rakið sérstaklega með innsprautun (rek lausnara
 á móti galla í yfirfærslu) í stað þess að vera skilið eftir sem óflokkað rek. Sjá einkenni ítrekandi véla hér á eftir.
 
 **Samþykki ferils vélar: twopi-örvafjölskyldan.** <a id="a1-twopi-arrows-family"></a>
@@ -198,17 +198,19 @@ fyrir þessar þrjár og `parity-report.ts` birtir þær í sérstökum kafla
 „Iterative engines (±0.5 characterization)“ í
 [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md),
 sem er beinlínis **ekki** sambærilegur við ±0.01 ákvarðandi árangurshlutföll annars staðar
-í þessu skjali. Núverandi talningar gegn graphviz 16.1.1 (898 atriða heild; árangurshlutfall sleppir
+í þessu skjali. Núverandi talningar gegn graphviz 16.1.2 (933 atriða heild; árangurshlutfall sleppir
 inntaki sem C-véfréttin getur ekki teiknað og inntaki þar sem úttak upprunalega forritsins
 breytist milli keyrslna, samkvæmt [Samræmi](./conformance.md)):
 
 | vél | könnuð | innan ±0.5pt | ósamræmd | villa í yfirfærslu / tímamörk | villa í véfrétt | véfrétt ekki ákvörðuð |
 |---|---:|---:|---:|---:|---:|---:|
-| `neato` | 898 | 895 (99.8%) | 2 | 0 | 1 | 0 |
-| `fdp`   | 898 | 866 (98.0%) | 17 | 1 | 3 | 11 |
-| `sfdp`  | 898 | 612 (68.2%) | 286 | 0 | 0 | 0 |
+| `neato` | 933 | 929 (99.7%) | 2 | 1 | 1 | 0 |
+| `fdp`   | 933 | 892 (97.2%) | 25 | 1 | 7 | 8 |
+| `sfdp`  | 933 | 639 (68.6%) | 292 | 1 | 0 | 1 |
 
-11 óákvörðuðu inntök `fdp`, þar sem úttak upprunalega forritsins breytist milli keyrslna, eru ekki talin með í árangurshlutfalli þess; eina yfirfærsluvillan er `1879`, sem þarf `splines=compound` leiðarval sem yfirfærslan styður ekki.
+8 óákvörðuðu inntök `fdp`, þar sem úttak upprunalega forritsins breytist milli keyrslna, eru ekki talin með í árangurshlutfalli þess. Eina yfirfærsluvillan á hverri vél er `2783` ([A10](#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines)). `1879`, áður yfirfærsluvilla `fdp`, er ekki lengur yfirfarið: það er eitt þeirra id sem `dot` í graphviz 16.1.2 teiknar ekki lengur ([teiknunarsleppa í 16.1.2](#render-skip-16-1-2)), og hver yfirferð vélar sækir id sín í conformant-mengi `dot`-könnunarinnar. Fjórar af sjö villum `fdp` í véfrétt eru þessi teiknunarsleppa á `fdp` sjálfu.
+
+(Heildin stækkaði úr 898 í 933 í graphviz 16.1.2 án breytingar á yfirfærslunni: 53 id sem fyrri lagfæringar á yfirfærslunni höfðu þegar gert conformant komu inn í yfirferðirnar þegar `dot`-könnunin var keyrð aftur, og 18 id teiknunarsleppunnar fóru út.)
 
 (Árangurshlutfall `fdp` hækkaði frá 77.5%
 vegna þess að fyrri innsetta yfirferðin var á undan stöðu yfirfærslunnar í fyrra
@@ -224,11 +226,15 @@ auðkennin tvö í `neato` utan ±0.5pt eru `2784` (A10) og `2371` (A1-rek).)
 einkum óyfirfærðri meðhöndlun `user_pos`/`P_SET` í neato, sameiningu
 vélarræsingar og lagfæringunni á `setEdgeType` (fjölvi á móti falli).)
 
-Ólíkt fyrstu yfirferð er hver fráviksröð á 898 atriða heildinni rakin sérstaklega
-gagnvart graphviz 16.1.1: innsprautunarverkfærið (`test/corpus/attribute-divergence.ts`)
+Ólíkt fyrstu yfirferð er hver fráviksröð á 933 atriða heildinni rakin sérstaklega
+gagnvart graphviz 16.1.2: innsprautunarverkfærið (`test/corpus/attribute-divergence.ts`)
 matar yfirfærsluna á `ND_pos` véfréttarinnar fyrir leiðingu og ber saman á ný, og
 hvert núverandi fráviksauðkenni er `drift-exonerated` (leiðing og úttak yfirfærslunnar
-endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt) nema sfdp `2556`.
+endurskapa véfréttina nákvæmlega þegar rek lausnarans er fjarlægt) nema sfdp `2556`, fdp `2717` ([yfirfærsla fyrir 16.1.2 í bið](#pending-16-1-2-ports)), fdp `1436`
+([#211](https://github.com/knowvah/dot-engine/issues/211): sjö undirgraf þess bera sama nafn, svo verkfærið getur ekki staðsett
+kassa þeirra) og sfdp `graphs-clustlabel` ([#315](https://github.com/knowvah/dot-engine/issues/315)). Raðirnar sex í fdp, `2768`,
+`2768_1`, `2768_2`, `2769`, `2769_1` og `2769_2`, sýna `drift-exonerated` en
+eru ákvarðandi gallinn [#224](https://github.com/knowvah/dot-engine/issues/224); þær eru ekki samþykktar undir A1.
 Tvö eru sérstaklega samþykktir afgangar fyrir einstök auðkenni: libm-`pow`-rek hýsilsins í sfdp
 `241_0` (endurgreint í T28; inndælingarlína þess er `drift-exonerated` frá `12dddc48`) og NaN-útlit sfdp `2556`. fdp `241_0` stenst síðan
 `fix(T9): start swapped cdt faces at the new diagonal as gts does` (sjá málsgreinina um
@@ -247,7 +253,7 @@ mælaborðum hverrar vélar
 [`PARITY-fdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-fdp.md),
 [`PARITY-sfdp.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY-sfdp.md)).
 
-**Hvar rek sfdp-lausnarans byrjar (hluti 10, T2).** Tækjabúin innfædd útgáfa af sfdp, rakin á móti portinu á litlum id-um, víkur fyrst í síðasta bita `pow(dist, 1-p)` í fráhrindikraftinum (`lib/sfdpgen/spring_electrical.c:625,617`; portið `spring-electrical.ts:260`). Í `flatedge` gefur `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` `...8811p+2` í innfædda og `...8812p+2` í portinu; `graphs-p` og `1767` byrja eins. Aðlögunarkæling magnar bitann: hann nær `x[0]` í ítrun 5, `max|dx|` er 2.4e-9 í ítrun 100 og 3.9e-5 í 200, og skrefið snýst í ítrun 244. Tvær stýrðar keyrslur staðfesta þetta. Með bitum innfædda nákvæmlega í þessum 8 köllum er 62090 lína rakning `flatedge` eins, og með raunverulegu `pow` macOS á bak við Node-API viðbót hafa 288 af 292 id-um sem stóðust ekki bita-eins rakningar (hin 4, öll `overlap=false`, eru aðeins ólík við `xfinal`). Röð aðgerða og samruni í lausnaranum, margþrepa hlutanum, quadtree og gisnum kóða voru útilokuð. Þetta er libm gestgjafans, samþykkt undir A1 (sjá `pow`-liðinn í lista yfir þekktar eyður hér á eftir); `src/` breyttist ekki, svo tölurnar haldast 632 af 929. Tilraunin sem aðeins keyrði á macOS náði um 923 af 929; hún mælir `pow` véfréttarinnar og er ekki eitthvað sem bókasafnið getur gert á hverjum gestgjafa. `Math.pow` í fráhrindikraftinum stenst 153 af þessum 292 en lætur 6 id sem standast í dag versna, svo hún var ekki tekin í notkun. Sfdp-röð töflunnar er jöfn röðinni í [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 0 frábrugðin plús 286 samþykkt gefur 286 hjá graphviz 16.1.1, og ekkert id er þar skráð sem óákvarðandi hjá véfréttinni.
+**Hvar rek sfdp-lausnarans byrjar (hluti 10, T2).** Tækjabúin innfædd útgáfa af sfdp, rakin á móti portinu á litlum id-um, víkur fyrst í síðasta bita `pow(dist, 1-p)` í fráhrindikraftinum (`lib/sfdpgen/spring_electrical.c:625,617`; portið `spring-electrical.ts:260`). Í `flatedge` gefur `pow(0x1.e82070708b236p+0, 0x1.6666666666666p+1)` `...8811p+2` í innfædda og `...8812p+2` í portinu; `graphs-p` og `1767` byrja eins. Aðlögunarkæling magnar bitann: hann nær `x[0]` í ítrun 5, `max|dx|` er 2.4e-9 í ítrun 100 og 3.9e-5 í 200, og skrefið snýst í ítrun 244. Tvær stýrðar keyrslur staðfesta þetta. Með bitum innfædda nákvæmlega í þessum 8 köllum er 62090 lína rakning `flatedge` eins, og með raunverulegu `pow` macOS á bak við Node-API viðbót hafa 288 af 292 id-um sem stóðust ekki bita-eins rakningar (hin 4, öll `overlap=false`, eru aðeins ólík við `xfinal`). Röð aðgerða og samruni í lausnaranum, margþrepa hlutanum, quadtree og gisnum kóða voru útilokuð. Þetta er libm gestgjafans, samþykkt undir A1 (sjá `pow`-liðinn í lista yfir þekktar eyður hér á eftir); `src/` breyttist ekki, svo tölurnar haldast 632 af 929. Tilraunin sem aðeins keyrði á macOS náði um 923 af 929; hún mælir `pow` véfréttarinnar og er ekki eitthvað sem bókasafnið getur gert á hverjum gestgjafa. `Math.pow` í fráhrindikraftinum stenst 153 af þessum 292 en lætur 6 id sem standast í dag versna, svo hún var ekki tekin í notkun. Sfdp-röð töflunnar er jöfn röðinni í [`PARITY.md`](https://github.com/knowvah/dot-engine/blob/main/test/corpus/PARITY.md): 1 frábrugðið plús 291 samþykkt gefur 292 hjá graphviz 16.1.2, og eitt id (`linux.x86-neatosplines_neato`) er þar skráð sem óákvarðandi hjá véfréttinni.
 
 **Flokkssamþykki A1-rek (ítrekandi vélar, reiknuð aðild).**
 <a id="a1-drift-iterative-engines"></a> `test/corpus/accepted-divergences-engines.json`
@@ -314,7 +320,7 @@ lokaði `42`, `clust2`, `ngk10_4` (structural-match → conformant) og færði
 
 **Báðar hliðar könnunarinnar keyra sama matskerfið — mælingin er gerð óvirk.**
 Innbyggða `dot`-véfréttin keyrir undir ósýnilegu (headless) `GVBINDIR`
-(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1611`) sem tengir aðeins
+(`test/corpus/gen-headless-gvbindir.sh` → `/tmp/ghl1612-carried`) sem tengir aðeins
 íbæturnar `core` og `dot_layout` — engin textauppsetningaríbót `gd`/`pango`/`quartz`.
 Þegar það hólf er tómt hverfur graphviz aftur í innbyggða
 `estimate_textspan_size`. `EstimateTextMeasurer` í TypeScript-yfirfærslunni
@@ -331,7 +337,7 @@ hluta þessa flokks fyrir fullt og allt í stað þess að þrengja aðeins bil 
 vegna þess að textamæling er viljandi tengipunktur, ekki fastvírað inn í hvora
 vélina. `TextMeasurer` er viðmót með einni aðferð (`measure(text, font, size,
 flags) → {w, h, …}`) sem er sprautað inn sem ósjálfstæði í hvern stað sem stærðarákvarðar texta —
-`polyInit`, `recordInit`, `initEdgeLabels` og `buildNodeLabel` taka hvert um sig
+`polyInit`, `recordInit`, `initEdgeLabels` og `makeNodeLabel` taka hvert um sig
 mælinn sem færibreytu; ekkert mælir texta í gegnum altæka breytu. Hann er
 festur fyrir próf/CI með `setTextMeasurer(...)` eða `GV_TEXT_MEASURER=estimate`.
 Tengipunkturinn gerir líka kleift að *sanna* að afgangur sé eingöngu mæling: mata yfirfærsluna á
@@ -466,7 +472,7 @@ fjarlægðina (`route.c:448`), stranga `>`-samanburðinn í C (`route.c:139`) og
 og `B23` (494). Umburðarlynda jafnteflisúrlausnin er farin; hnúturinn í `241_0` er
 festur í leiðingaramma C, því C er ekki færslujafnstæð við slík jafntefli. Þetta
 lokaði `2368`, `2371`, `2413_1`, `2413_2`, `graphs-b100`, `graphs-b104` og
-`graphs-decorate`. Í graphviz 16.1.1 víkur `2368` aftur frá af óskyldri ástæðu: breytingu upprunalega forritsins á `flat_reorder` ([#158](#pending-16-1-1-ports)).
+`graphs-decorate`. Í graphviz 16.1.1 vék `2368` aftur frá af óskyldri ástæðu, breytingu upprunalega forritsins á `flat_reorder` ([#158](#pending-16-1-1-ports)); það er aftur conformant núna þegar breytingin hefur verið yfirfærð.
 
 `241_1` var ekki `hypot`-jafntefli: það var lokað með `87347711` (`fix(dot): match
 port-less edge endpoints in flat-adjacent aux layout`). C flokkar alla aðliggjandi
@@ -529,6 +535,13 @@ port 376->76 : M277.29,-4.51 C268.27,-1.69 257.65,0.32  247.89,-1.15 244.92,-1.5
 
 
 ### A4. Véfrétt í viðurkenndu biluðu ástandi (init_rank-/pathplan-fjölskyldan) {#a4-oracle-in-an-acknowledged-broken-state-the-init-rank-pathplan-family}
+
+> **Í graphviz 16.1.2 skrifar véfréttin ekkert fyrir þessa fjölskyldu.** `dot`
+> sleppir nú teiknun þegar umbrotið tilkynnir villu, svo `1581`, `1939`, `2470`,
+> `2471`, `2796`, `2825` og `graphs-structs` eru villur í véfrétt í könnuninni,
+> ekki conformant- eða diverged-raðir; `1435` er óbreytt. Yfirfærslan teiknar þau
+> enn eins og lýst er hér á eftir. Sjá [teiknunarsleppa í
+> 16.1.2](#render-skip-16-1-2). Textinn hér á eftir lýsir ástandinu fram að graphviz 16.1.1.
 
 **Fyrir áhrifum (graphviz 16.1 yfirferð):** `1435` (structural-match, maxΔ 0.39 á
 einum stýripunkti splínu; var 503 gegn 15.x véfréttinni — lækkunin var ekki rakin
@@ -976,6 +989,9 @@ samræmdir. Sjálfstæð endurgerð: `.agent-notes/circo-2475-590-repro.dot`; fu
 rótargreining: `.agent-notes/circo-b81-2475-rca.md`.
 
 **twopi `2470` — ULP í geislahnitum magnaður af R-tré xlabel.**
+(Saga frá graphviz 16.1.2: `2470` fór úr öllum vélayfirferðum með
+[teiknunarsleppunni](#render-skip-16-1-2) og færslur þess í skrám hafa verið felldar niður.
+Innbyggt `twopi` teiknar það enn.)
 2470 er graf með 140 leggjum þar sem HTML-`<table>`-leggjamerkimiðar þyrpast á
 nærri samfallandi geislafestingum. Í neato-fjölskyldunni eru leggjamerkimiðar settir
 sem ytri merkimiðar af gráðuga xlabel-staðsetjaranum (`label/xlabels.c`), sem
@@ -1155,12 +1171,19 @@ athugasemdina um `2095` endurflokkað hér að ofan).
 
 ### A10. Stærðarmörk V8 `Map` í pökkun marghyrningasamsetninga (`2784`, fimm vélar sem byggja á pökkun) {#a10-v8-map-size-limit-in-polyomino-packing-2784-five-pack-based-engines}
 
-**Fyrir áhrifum:** `2784` á `circo`, `twopi`, `neato`, `fdp` og `sfdp`. Yfirfærslan
-kastar villu í xdot- og imagemap-yfirferðum allra fimm vélanna og í `json`-yfirferðinni
-fyrir `circo`. Í `json`-yfirferðunum fyrir `twopi`, `neato`, `fdp` og `sfdp`, og í
-`plain`-yfirferðum allra fimm, lýkur innbyggða véfréttin sjálf ekki innan tímaramma
-yfirferðarinnar, svo þær línur eru villur í véfrétt. Á `dot`, `osage` og
-`patchwork` stenst það.
+**Fyrir áhrifum:** `2784` og `2783` á `circo`, `twopi`, `neato`, `fdp` og `sfdp`.
+Yfirfærslan kastar villu í xdot-, `json`- og imagemap-yfirferðum allra fimm vélanna.
+Í `plain`-yfirferðunum lýkur innbyggða véfréttin sjálf ekki innan 300 s tímaramma
+yfirferðarinnar, svo þær línur eru villur í véfrétt (`2783` á `sfdp` `plain-ext`
+er undantekningin: innbyggða forritið lýkur en yfirfærslan kastar villu).
+Innbyggða forritið er 180 til 410 s með þessi inntök, svo `json`- eða
+imagemap-lína getur einnig birst sem villa í véfrétt þegar vélin er undir álagi.
+Á `dot`, `osage` og `patchwork` standast bæði.
+
+`2783` hefur sömu gerð og `2784` og kom inn í yfirferðirnar í graphviz 16.1.2. Þær
+15 yfirfærsluvillulínur hafa enga færslu í skrá enn, svo mælaborðin sýna þær sem
+ósamþykktar yfirfærsluvillur; það gera líka `json`-línur `2784` á `twopi`, `neato`, `fdp` og
+`sfdp`.
 
 **Hvað gerist.** `lib/pack/pack.c` skráir reitina sem hluti tekur upp í `PointSet`.
 Fyrir `2784` (einn hnútur sem er 3e16 pt hár, `splines="ortho"`) þarf trúr
@@ -1239,6 +1262,89 @@ Véfréttin færðist úr graphviz 16.1.0 í 16.1.1 ([ADR-0002](https://github.c
 | [#150](https://github.com/knowvah/dot-engine/issues/150), [#152](https://github.com/knowvah/dot-engine/issues/152)–[#157](https://github.com/knowvah/dot-engine/issues/157), [#160](https://github.com/knowvah/dot-engine/issues/160), [#161](https://github.com/knowvah/dot-engine/issues/161), [#165](https://github.com/knowvah/dot-engine/issues/165) | afgangurinn af hegðunarbreytingum 16.1.1 | engin í safninu eða golden-skrám | — |
 
 Inntök sem ná til hverrar breytingar eru rakin í [#148](https://github.com/knowvah/dot-engine/issues/148).
+
+**Staða í graphviz 16.1.2:** hvert issue í þessari töflu er lokað og breytingin
+yfirfærð. Taflan er varðveitt sem saga. 34 id úr #158, 4 úr #160, `2783` (#164) og 14
+inntök sem 16.1.1 bætti við eru aftur conformant á `dot` og komin aftur í allar yfirferðir.
+
+## Yfirfærslur fyrir 16.1.2 í bið {#pending-16-1-2-ports}
+
+Véfréttin færðist úr graphviz 16.1.1 í 16.1.2
+([ADR-0004](https://github.com/knowvah/dot-engine/blob/main/docs/adr/0004-graphviz-16.1.2-oracle.md)).
+Flokkun endurgrunnlínunnar
+(`plans/graphviz-16-1-2-rebaseline/classification/`) rakti hverja niðurstöðu sem
+breyttist til orsakar. Aðeins tvær upstream-breytingar hreyfa niðurstöðu í safninu:
+teiknunarsleppan, sem lýst er í næsta hluta, og `mapc`-breytingin hér að neðan. Þetta eru ekki
+samþykkt frávik: hvert þeirra er opið verk í sínu issue.
+
+| issue | upstream-breyting | id sem færðust í 16.1.2 | vélar |
+|---|---|---|---|
+| [#303](https://github.com/knowvah/dot-engine/issues/303) | `mapc` ákveður hvort undirgraf er klasi með `is_a_cluster`, ekki eftir `cluster`-nafnforskeytinu | 1: `2717`. Innbyggða forritið hrundi í 16.1.1 og teiknar í 16.1.2; yfirfærslan bætir enn við hnútnum `domestic_cats` og víkur frá í xdot-, `json`- og `plain`-yfirferðum (imagemap er conformant) | `fdp` |
+| [#299](https://github.com/knowvah/dot-engine/issues/299) | `dot` sleppir teiknun þegar umbrotið tilkynnir villu | 34 id í könnun, 5 id véla og 3 golden: sjá [teiknunarsleppa í 16.1.2](#render-skip-16-1-2) | allar |
+| [#300](https://github.com/knowvah/dot-engine/issues/300) | `flat_edges` sleppir lykkjum í `other`-skönnuninni | ekkert í yfirfarna safninu | `dot` |
+| [#301](https://github.com/knowvah/dot-engine/issues/301) | `conc_slope` grípur til varagildis þegar hnútur hefur enga inn- eða útleggi | ekkert í yfirfarna safninu | `dot` |
+| [#302](https://github.com/knowvah/dot-engine/issues/302) | `reallyroutespline` mistekst þegar enginn skiptipunktur finnst | ekkert í yfirfarna safninu (inntakið `2746` í sóttkví hrynur ekki lengur í innbyggða forritinu; nú er það teiknunarsleppa) | allar |
+
+Inntökin sjö sem 16.1.2 bætir við (`2745`, `2760`, `2762`, `2762_1`, `2764`, `2764_1`,
+`2870_3`) eru í sóttkví sem `pending-input` og eru ekki yfirfarin fyrr en
+[#298](https://github.com/knowvah/dot-engine/issues/298) tekur þau inn.
+
+## Teiknunarsleppa í 16.1.2 (bíður #299) {#render-skip-16-1-2}
+
+Frá og með graphviz 16.1.2 teiknar skipunin `dot` ekki þegar umbrotið tilkynnti
+villu (upstream-commit `19b33b581`, `cmd/dot/dot.c:main`): hún hættir með kóðann 1 og skrifar
+ekkert. Graphviz 16.1.1 hætti líka með 1 en skrifaði hálfumbrotna skjalið.
+Yfirfærslan teiknar þessi inntök enn, eins og 16.1.1 gerði.
+Hvort yfirfærslan fylgir er [#299](https://github.com/knowvah/dot-engine/issues/299), sem bíður úrskurðar umsjónarmanns; þangað til
+breytist ekkert í bókasafninu vegna þess.
+
+Án innbyggðs skjals er ekkert til að bera saman, svo hver lína hér að neðan er
+villa í véfrétt, ekki frávik og ekki samþykkt frávik.
+
+**`dot`-könnun, 34 id** (öll voru conformant í 16.1.1 nema `2781` og
+`2781_1`, sem voru structural-match), eftir fyrstu villu sem umbrotið tilkynnir:
+
+| fyrsta villa | id |
+|---|---|
+| `trouble in init_rank` | `1213-1`, `1213-2`, `1328`, `1939`, `2471`, `2796` |
+| `in checkpath, all bounding boxes are below threshold` | `2773`, `2773_1`, `2774`, `2774_1`, `2776`, `2778`, `2780` |
+| `Edge length … larger than maximum … allowed` | `1314`, `2758`, `2776_1`, `2781`, `2781_1` |
+| `in routesplines, Pshortestpath failed` | `1332`, `2470`, `graphs-structs` |
+| `in routesplines, illegal values of prev … and next …` | `2723` |
+| `lost … edge` | `1323`, `1323_1` |
+| `install_in_rank` | `1581` |
+| `rebuild_vlists: lead is null for rank 1` | `2825` |
+| `Syntax error: non-space string used before <TABLE>` | `2516` |
+| `No or improper image file` | `2619_1`, `2619_2`, og `1879`, `2619`, `2821_0`, `2821_1`, `2821_2` |
+
+Síðustu fimm (`1879` til `2821_2`) mistakast aðeins vegna þess að yfirferðirnar keyra
+innbyggða forritið úr rót hugbúnaðarsafnsins, þar sem myndskrárnar sem merkimiðar þeirra nefna finnast ekki
+([#314](https://github.com/knowvah/dot-engine/issues/314)); keyrð úr eigin möppu teikna báðar útgáfur graphviz þau.
+
+**Allar aðrar yfirferðir.** Yfirferðirnar `-Tdot`, xdot, `json`, imagemap og `plain` og
+allar sjö vélayfirferðirnar sækja id sín í conformant-mengi könnunarinnar, svo
+18 þessara id sem voru í menginu eru ekki lengur yfirfarin á neinni vél eða
+sniði: `1213-1`, `1213-2`, `1323`, `1323_1`, `1328`, `1332`, `1581`, `1879`,
+`1939`, `2470`, `2471`, `2516`, `2619`, `2619_1`, `2619_2`, `2796`, `2825` og
+`graphs-structs`. Samþykktar færslur þeirra í skrám hverrar vélar hafa verið
+felldar niður. Flest þeirra teiknast enn í innbyggða forritinu á hinum vélunum (89 af
+126 pörum id og vélar), svo vélarnar missa þekju sem þær gætu haldið.
+
+**Á vélinni sjálfri, 5 id** (xdot-, `json`-, imagemap- og `plain`-línur, öll
+stóðust í 16.1.1):
+
+| vél | id | villa |
+|---|---|---|
+| `twopi` | `2095` | `use of weight=0 creates disconnected component` |
+| `fdp` | `1221`, `1767`, `2721`, `graphs-b53` | `node … is contained in two non-comparable clusters` (yfirfærslan prentar þessa ekki enn, [#256](https://github.com/knowvah/dot-engine/issues/256)) |
+
+Skrár yfir villur í véfrétt merkja þessi fimm `native-crash`, vegna þess að
+flokkarinn hefur engan annan flokk fyrir „allar tilraunir mistókust"; innbyggða forritið hættir með 1 án
+úttaks og hrynur ekki.
+
+**Golden, 3:** `pt-issue-31-inline`, `pt-issue-31-rubebe` og
+`pt-issue-31-zuduxu` halda tilvísun sinni úr graphviz 16.1.1, því 16.1.2
+skrifar enga (`test/golden/inputs/PROVENANCE.md`).
 
 ## Rakinn langur hali (eigindir og jaðartilvik í `dot`) {#tracked-long-tail-dot-attribute-edge-case}
 
