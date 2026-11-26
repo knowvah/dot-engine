@@ -926,8 +926,8 @@
 {"id":"2475_2","path":"2475_2.dot","size":641284,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2646","path":"2646.dot","size":2975897,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2783","path":"2783.dot","size":59,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"oracle exit null"},"imap":{"verdict":"oracle-error","errMsg":"oracle exit null"},"hasHref":false}
-{"id":"2784","path":"2784.dot","size":78,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"},"imap":{"verdict":"oracle-error","errMsg":"Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"},"hasHref":false}
 {"id":"2371","path":"2371.dot","size":1705517,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"oracle exit null"},"imap":{"verdict":"oracle-error","errMsg":"oracle exit null"},"hasHref":false}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2475_1","path":"2475_1.dot","size":9735186,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
+{"id":"2784","path":"2784.dot","size":78,"verdict":"accepted","cmapx":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"imap":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"hasHref":false}

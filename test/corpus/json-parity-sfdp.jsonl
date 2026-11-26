@@ -926,8 +926,8 @@
 {"id":"2475_2","path":"2475_2.dot","size":641284,"verdict":"accepted","diffCount":309794,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":14336.44,"maxDeltaPath":"edge:39_145817->39_144736#0/pos[6]"}
 {"id":"2646","path":"2646.dot","size":2975897,"verdict":"accepted","diffCount":1979265,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":629.94,"maxDeltaPath":"edge:n0x7fd5dca0fc00->n0x7fd5dca0fcc0#0/_hdraw_/op[3].P[1]"}
 {"id":"2783","path":"2783.dot","size":59,"verdict":"oracle-error","errMsg":"oracle exit null"}
-{"id":"2784","path":"2784.dot","size":78,"verdict":"oracle-error","errMsg":"Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"}
 {"id":"2371","path":"2371.dot","size":1705517,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"accepted","diffCount":1044748,"firstDiff":"[graph]/_draw_/op[2].P[4]","maxDelta":67424.47,"maxDeltaPath":"edge:RT_35563-at-SITE_18-29986->ITEM_2317-at-SITE_18#0/pos[0]"}
 {"id":"2475_1","path":"2475_1.dot","size":9735186,"verdict":"accepted","diffCount":4502193,"firstDiff":"[graph]/_draw_/op[2].P[3]","maxDelta":43029.5,"maxDeltaPath":"edge:1659_1927535->1659_1927533#0/pos[0]"}
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"accepted","diffCount":3198828,"firstDiff":"[graph]/_draw_/op[2].P[4]","maxDelta":205,"maxDeltaPath":"node:34980/_ldraw_/op[2].T[1]"}
+{"id":"2784","path":"2784.dot","size":78,"verdict":"port-error","errMsg":"Map maximum size exceeded"}

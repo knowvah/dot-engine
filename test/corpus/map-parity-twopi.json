@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T08:23:24.305Z",
+  "generatedAt": "2026-11-26T03:50:12.375Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "twopi",
   "oracleVersion": "dot 16.1.2",
@@ -8,9 +8,9 @@
   "counts": {
     "conformant": 928,
     "diverged": 0,
-    "accepted": 0,
+    "accepted": 1,
     "port-error": 0,
-    "oracle-error": 4,
+    "oracle-error": 3,
     "timeout": 1
   },
   "results": [
@@ -12083,21 +12083,6 @@
       "hasHref": false
     },
     {
-      "id": "2784",
-      "path": "2784.dot",
-      "size": 78,
-      "verdict": "oracle-error",
-      "cmapx": {
-        "verdict": "oracle-error",
-        "errMsg": "Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"
-      },
-      "imap": {
-        "verdict": "oracle-error",
-        "errMsg": "Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"
-      },
-      "hasHref": false
-    },
-    {
       "id": "2371",
       "path": "2371.dot",
       "size": 1705517,
@@ -12150,6 +12135,21 @@
       "imap": {
         "verdict": "timeout",
         "errMsg": ""
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2784",
+      "path": "2784.dot",
+      "size": 78,
+      "verdict": "accepted",
+      "cmapx": {
+        "verdict": "accepted",
+        "errMsg": "Map maximum size exceeded"
+      },
+      "imap": {
+        "verdict": "accepted",
+        "errMsg": "Map maximum size exceeded"
       },
       "hasHref": false
     }

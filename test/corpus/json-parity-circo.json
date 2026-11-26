@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T14:42:42.068Z",
+  "generatedAt": "2026-11-26T03:33:59.014Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "circo",
   "oracleVersion": "dot 16.1.2",
@@ -8,9 +8,9 @@
   "counts": {
     "conformant": 918,
     "diverged": 3,
-    "accepted": 3,
+    "accepted": 4,
     "port-error": 0,
-    "oracle-error": 9,
+    "oracle-error": 8,
     "timeout": 0,
     "oracle-nondeterministic": 0
   },
@@ -404,8 +404,8 @@
       "id": "2784",
       "path": "2784.dot",
       "size": 78,
-      "verdict": "oracle-error",
-      "errMsg": "Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"
+      "verdict": "accepted",
+      "errMsg": "Map maximum size exceeded"
     },
     {
       "id": "graphs-clustlabel",

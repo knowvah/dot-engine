@@ -898,7 +898,6 @@
 {"id":"2783","path":"2783.dot","size":59,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"graphs-b143","path":"graphs/b143.gv","size":62055,"verdict":"conformant"}
 {"id":"2620","path":"2620.dot","size":64908,"verdict":"conformant"}
-{"id":"2784","path":"2784.dot","size":78,"verdict":"oracle-error","errMsg":"Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"}
 {"id":"linux.i386-b106","path":"linux.i386/b106.gv","size":92005,"verdict":"conformant"}
 {"id":"share-b106","path":"share/b106.gv","size":92301,"verdict":"conformant"}
 {"id":"windows-b106","path":"windows/b106.gv","size":95634,"verdict":"conformant"}
@@ -931,3 +930,4 @@
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"diverged","diffCount":533,"firstDiff":"edge:100476->100486#0/_draw_/op[1].b[1]","maxDelta":0.41015625,"maxDeltaPath":"edge:3413->3407#0/_draw_/op[1].b[2]"}
 {"id":"2475_1","path":"2475_1.dot","size":9735186,"verdict":"diverged","diffCount":1,"firstDiff":"edge:1242_589985->1242_589980#0/_hdraw_/op[3].P[2]","maxDelta":0.010000020265579224,"maxDeltaPath":"edge:1242_589985->1242_589980#0/_hdraw_/op[3].P[2]"}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant"}
+{"id":"2784","path":"2784.dot","size":78,"verdict":"accepted","errMsg":"Map maximum size exceeded"}

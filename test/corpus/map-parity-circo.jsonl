@@ -907,7 +907,6 @@
 {"id":"graphs-root","path":"graphs/root.gv","size":128221,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
 {"id":"2783","path":"2783.dot","size":59,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"oracle exit null"},"imap":{"verdict":"oracle-error","errMsg":"oracle exit null"},"hasHref":false}
 {"id":"graphs-xx","path":"graphs/xx.gv","size":102329,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
-{"id":"2784","path":"2784.dot","size":78,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"},"imap":{"verdict":"oracle-error","errMsg":"Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"},"hasHref":false}
 {"id":"linux.i386-b29","path":"linux.i386/b29.gv","size":136753,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
 {"id":"share-b29","path":"share/b29.gv","size":137802,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
 {"id":"windows-b29","path":"windows/b29.gv","size":149114,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
@@ -931,3 +930,4 @@
 {"id":"tree-share-examples-world","path":"../share/examples/world.gv","size":16326502,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2475_1","path":"2475_1.dot","size":9735186,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
+{"id":"2784","path":"2784.dot","size":78,"verdict":"accepted","cmapx":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"imap":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"hasHref":false}

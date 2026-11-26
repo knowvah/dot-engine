@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-25T12:02:28.732Z",
+  "generatedAt": "2026-11-26T04:14:04.647Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "fdp",
   "oracleVersion": "dot 16.1.2",
   "corpusRoot": "~/git/graphviz-16.1.2/tests",
   "total": 933,
   "counts": {
-    "conformant": 917,
-    "diverged": 3,
-    "accepted": 3,
+    "conformant": 919,
+    "diverged": 1,
+    "accepted": 4,
     "port-error": 0,
-    "oracle-error": 10,
+    "oracle-error": 9,
     "timeout": 0
   },
   "results": [
@@ -11699,23 +11699,6 @@
       "hasHref": true
     },
     {
-      "id": "graphs-b29",
-      "path": "graphs/b29.gv",
-      "size": 62931,
-      "verdict": "diverged",
-      "cmapx": {
-        "verdict": "diverged",
-        "diffCount": 436,
-        "firstDiff": "area[0].coords[0]",
-        "maxDelta": 2475,
-        "maxDeltaPath": "area[91].coords[0]"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": true
-    },
-    {
       "id": "2620",
       "path": "2620.dot",
       "size": 64908,
@@ -11939,21 +11922,6 @@
       "hasHref": false
     },
     {
-      "id": "2784",
-      "path": "2784.dot",
-      "size": 78,
-      "verdict": "oracle-error",
-      "cmapx": {
-        "verdict": "oracle-error",
-        "errMsg": "Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"
-      },
-      "imap": {
-        "verdict": "oracle-error",
-        "errMsg": "Warning: syntax ambiguity - badly delimited number '00s' in line 1 of ~/git/graphviz-16.1.2/tests/2784.dot splits into two tokens"
-      },
-      "hasHref": false
-    },
-    {
       "id": "nshare-root_circo",
       "path": "nshare/root_circo.gv",
       "size": 313126,
@@ -12028,23 +11996,6 @@
       "verdict": "conformant",
       "cmapx": {
         "verdict": "conformant"
-      },
-      "imap": {
-        "verdict": "conformant"
-      },
-      "hasHref": true
-    },
-    {
-      "id": "nshare-root_twopi",
-      "path": "nshare/root_twopi.gv",
-      "size": 287916,
-      "verdict": "diverged",
-      "cmapx": {
-        "verdict": "diverged",
-        "diffCount": 16,
-        "firstDiff": "area[0].coords[0]",
-        "maxDelta": 267,
-        "maxDeltaPath": "area[0].coords[6]"
       },
       "imap": {
         "verdict": "conformant"
@@ -12202,6 +12153,47 @@
         "verdict": "conformant"
       },
       "hasHref": false
+    },
+    {
+      "id": "2784",
+      "path": "2784.dot",
+      "size": 78,
+      "verdict": "accepted",
+      "cmapx": {
+        "verdict": "accepted",
+        "errMsg": "Map maximum size exceeded"
+      },
+      "imap": {
+        "verdict": "accepted",
+        "errMsg": "Map maximum size exceeded"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "graphs-b29",
+      "path": "graphs/b29.gv",
+      "size": 62931,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": true
+    },
+    {
+      "id": "nshare-root_twopi",
+      "path": "nshare/root_twopi.gv",
+      "size": 287916,
+      "verdict": "conformant",
+      "cmapx": {
+        "verdict": "conformant"
+      },
+      "imap": {
+        "verdict": "conformant"
+      },
+      "hasHref": true
     }
   ]
 }
