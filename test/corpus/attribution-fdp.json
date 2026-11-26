@@ -1,8 +1,85 @@
 {
-  "generatedAt": "2026-11-13T16:49:05.374Z",
-  "oracleSha1": "43f37451c166faa1b308d502c65140b88c238e54",
+  "generatedAt": "2026-11-26T00:52:03.179Z",
+  "oracleSha1": "1834aa729b0d51f3bea9e33b9bcb2fdf24da4b29",
   "tolerance": 0.5,
   "results": [
+    {
+      "id": "2768_2",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 30,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2769_2",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 30,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2768",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 42,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2769_1",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 36,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2768_1",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 48,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2769",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 60,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2717",
+      "verdict": "not-cleared",
+      "baseDiffs": 119,
+      "injectedDiffs": 29,
+      "bucket": {
+        "shape": "edge/_draw_/numeric",
+        "kind": "count",
+        "signature": "edge/_draw_/numeric+edge/_hdraw_/numeric+edge/pos/numeric+node/_draw_/structural+node/_ldraw_/structural+node/height/structural+…(8)"
+      }
+    },
     {
       "id": "tree-doc-dotguide-clust2",
       "verdict": "drift-exonerated",
@@ -26,25 +103,14 @@
       }
     },
     {
-      "id": "2242",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 754,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "graph/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
       "id": "1436",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 432,
-      "injectedDiffs": 0,
+      "verdict": "not-cleared",
+      "baseDiffs": 528,
+      "injectedDiffs": 66,
       "bucket": {
-        "shape": "graph/_draw_/unknown",
+        "shape": "cluster/_draw_/numeric",
         "kind": "position",
-        "signature": "none"
+        "signature": "cluster/_draw_/numeric+cluster/bb/numeric"
       }
     },
     {
@@ -103,6 +169,17 @@
       }
     },
     {
+      "id": "tree-doc-infosrc-plugins",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 5058,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
       "id": "share-ldbxtried",
       "verdict": "drift-exonerated",
       "baseDiffs": 2070,
@@ -127,7 +204,7 @@
     {
       "id": "graphs-b51",
       "verdict": "drift-exonerated",
-      "baseDiffs": 3856,
+      "baseDiffs": 3760,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",
@@ -172,6 +249,17 @@
       "id": "graphs-b103",
       "verdict": "drift-exonerated",
       "baseDiffs": 14727,
+      "injectedDiffs": 0,
+      "bucket": {
+        "shape": "graph/_draw_/unknown",
+        "kind": "position",
+        "signature": "none"
+      }
+    },
+    {
+      "id": "2621",
+      "verdict": "drift-exonerated",
+      "baseDiffs": 80517,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "graph/_draw_/unknown",

@@ -1,67 +1,23 @@
 {
-  "generatedAt": "2026-11-13T16:46:25.359Z",
-  "oracleSha1": "43f37451c166faa1b308d502c65140b88c238e54",
+  "generatedAt": "2026-11-26T00:46:35.220Z",
+  "oracleSha1": "1834aa729b0d51f3bea9e33b9bcb2fdf24da4b29",
   "tolerance": 0.01,
   "results": [
     {
-      "id": "2643",
+      "id": "graphs-clustlabel",
       "verdict": "not-cleared",
-      "baseDiffs": 12,
-      "injectedDiffs": 12,
+      "baseDiffs": 1,
+      "injectedDiffs": 1,
       "bucket": {
-        "shape": "edge/_draw_/numeric",
-        "kind": "position",
-        "signature": "edge/_draw_/numeric+edge/pos/numeric"
-      }
-    },
-    {
-      "id": "2168_5",
-      "verdict": "not-cleared",
-      "baseDiffs": 6,
-      "injectedDiffs": 6,
-      "bucket": {
-        "shape": "edge/_draw_/numeric",
-        "kind": "position",
-        "signature": "edge/_draw_/numeric+edge/pos/numeric"
+        "shape": "cluster/<object>/structural",
+        "kind": "count",
+        "signature": "cluster/<object>/structural"
       }
     },
     {
       "id": "1855",
       "verdict": "drift-exonerated",
       "baseDiffs": 842,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2183",
-      "verdict": "not-cleared",
-      "baseDiffs": 120,
-      "injectedDiffs": 120,
-      "bucket": {
-        "shape": "edge/_draw_/numeric",
-        "kind": "count",
-        "signature": "edge/_draw_/numeric+edge/_draw_/structural+edge/_hdraw_/numeric+edge/pos/numeric+edge/pos/structural"
-      }
-    },
-    {
-      "id": "tree-graphs-directed-oldarrows",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 40,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_draw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "graphs-arrowsize",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 72,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_draw_/unknown",
@@ -92,7 +48,7 @@
       }
     },
     {
-      "id": "linux.x86-arrows_dot",
+      "id": "macosx-arrows_dot",
       "verdict": "drift-exonerated",
       "baseDiffs": 40,
       "injectedDiffs": 0,
@@ -114,20 +70,9 @@
       }
     },
     {
-      "id": "2470",
+      "id": "2239",
       "verdict": "drift-exonerated",
-      "baseDiffs": 596,
-      "injectedDiffs": 0,
-      "bucket": {
-        "shape": "edge/_ldraw_/unknown",
-        "kind": "position",
-        "signature": "none"
-      }
-    },
-    {
-      "id": "2471",
-      "verdict": "drift-exonerated",
-      "baseDiffs": 10,
+      "baseDiffs": 2,
       "injectedDiffs": 0,
       "bucket": {
         "shape": "edge/_ldraw_/unknown",

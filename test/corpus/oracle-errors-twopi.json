@@ -1,5 +1,12 @@
 {
-  "generatedAt": "2026-11-13T17:05:35.305Z",
+  "generatedAt": "2026-11-26T00:30:55.333Z",
   "engine": "twopi",
-  "results": []
+  "results": [
+    {
+      "id": "2095",
+      "classification": "native-crash",
+      "attempts": 3,
+      "lastErr": "Command failed: /Users/scottseely/git/sseely/graphviz-carried-1612/build/cmd/dot/dot -K twopi -Txdot /Users/scottseely/git/graphviz-16.1.2/tests/2095.dot"
+    }
+  ]
 }
