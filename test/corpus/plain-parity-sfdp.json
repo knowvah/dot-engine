@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T14:32:56.544Z",
+  "generatedAt": "2026-11-26T05:41:54.346Z",
   "generatedWith": "test/corpus/plain-walk.ts",
   "engine": "sfdp",
   "oracleVersion": "dot 16.1.2",
@@ -12989,22 +12989,6 @@
       }
     },
     {
-      "id": "2783",
-      "path": "2783.dot",
-      "size": 59,
-      "verdict": "oracleError",
-      "formats": {
-        "plain": {
-          "verdict": "oracleError",
-          "errMsg": "oracle exit null"
-        },
-        "plain-ext": {
-          "verdict": "oracleError",
-          "errMsg": "oracle exit null"
-        }
-      }
-    },
-    {
       "id": "2784",
       "path": "2784.dot",
       "size": 78,
@@ -13089,6 +13073,22 @@
         },
         "plain-ext": {
           "verdict": "pass"
+        }
+      }
+    },
+    {
+      "id": "2783",
+      "path": "2783.dot",
+      "size": 59,
+      "verdict": "oracleError",
+      "formats": {
+        "plain": {
+          "verdict": "oracleError",
+          "errMsg": "oracle exit null"
+        },
+        "plain-ext": {
+          "verdict": "portError",
+          "errMsg": "Map maximum size exceeded"
         }
       }
     }

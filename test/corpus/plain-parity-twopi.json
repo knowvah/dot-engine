@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T15:06:48.994Z",
+  "generatedAt": "2026-11-26T04:59:44.595Z",
   "generatedWith": "test/corpus/plain-walk.ts",
   "engine": "twopi",
   "oracleVersion": "dot 16.1.2",
@@ -13140,22 +13140,6 @@
       }
     },
     {
-      "id": "2783",
-      "path": "2783.dot",
-      "size": 59,
-      "verdict": "oracleError",
-      "formats": {
-        "plain": {
-          "verdict": "oracleError",
-          "errMsg": "oracle exit null"
-        },
-        "plain-ext": {
-          "verdict": "oracleError",
-          "errMsg": "oracle exit null"
-        }
-      }
-    },
-    {
       "id": "2784",
       "path": "2784.dot",
       "size": 78,
@@ -13226,6 +13210,22 @@
         },
         "plain-ext": {
           "verdict": "pass"
+        }
+      }
+    },
+    {
+      "id": "2783",
+      "path": "2783.dot",
+      "size": 59,
+      "verdict": "oracleError",
+      "formats": {
+        "plain": {
+          "verdict": "oracleError",
+          "errMsg": "oracle exit null"
+        },
+        "plain-ext": {
+          "verdict": "oracleError",
+          "errMsg": "oracle exit null"
         }
       }
     }

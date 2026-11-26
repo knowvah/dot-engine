@@ -910,7 +910,6 @@
 {"id":"windows-b29","path":"windows/b29.gv","size":149114,"verdict":"conformant"}
 {"id":"linux.i386-b102","path":"linux.i386/b102.gv","size":161479,"verdict":"conformant"}
 {"id":"share-b102","path":"share/b102.gv","size":161479,"verdict":"conformant"}
-{"id":"2783","path":"2783.dot","size":59,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"windows-b102","path":"windows/b102.gv","size":184125,"verdict":"conformant"}
 {"id":"graphs-b81","path":"graphs/b81.gv","size":191024,"verdict":"conformant"}
 {"id":"graphs-root","path":"graphs/root.gv","size":128221,"verdict":"conformant"}
@@ -931,3 +930,4 @@
 {"id":"graphs-b100","path":"graphs/b100.gv","size":782464,"verdict":"conformant"}
 {"id":"graphs-b104","path":"graphs/b104.gv","size":782464,"verdict":"conformant"}
 {"id":"2784","path":"2784.dot","size":78,"verdict":"port-error","errMsg":"Map maximum size exceeded"}
+{"id":"2783","path":"2783.dot","size":59,"verdict":"port-error","errMsg":"Map maximum size exceeded"}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T04:14:04.647Z",
+  "generatedAt": "2026-11-26T05:22:56.667Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "fdp",
   "oracleVersion": "dot 16.1.2",
@@ -9,8 +9,8 @@
     "conformant": 919,
     "diverged": 1,
     "accepted": 4,
-    "port-error": 0,
-    "oracle-error": 9,
+    "port-error": 1,
+    "oracle-error": 8,
     "timeout": 0
   },
   "results": [
@@ -11907,21 +11907,6 @@
       "hasHref": true
     },
     {
-      "id": "2783",
-      "path": "2783.dot",
-      "size": 59,
-      "verdict": "oracle-error",
-      "cmapx": {
-        "verdict": "oracle-error",
-        "errMsg": "oracle exit null"
-      },
-      "imap": {
-        "verdict": "oracle-error",
-        "errMsg": "oracle exit null"
-      },
-      "hasHref": false
-    },
-    {
       "id": "nshare-root_circo",
       "path": "nshare/root_circo.gv",
       "size": 313126,
@@ -12194,6 +12179,21 @@
         "verdict": "conformant"
       },
       "hasHref": true
+    },
+    {
+      "id": "2783",
+      "path": "2783.dot",
+      "size": 59,
+      "verdict": "port-error",
+      "cmapx": {
+        "verdict": "port-error",
+        "errMsg": "Map maximum size exceeded"
+      },
+      "imap": {
+        "verdict": "port-error",
+        "errMsg": "Map maximum size exceeded"
+      },
+      "hasHref": false
     }
   ]
 }

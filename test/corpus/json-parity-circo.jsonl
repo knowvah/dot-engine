@@ -895,7 +895,6 @@
 {"id":"2239","path":"2239.dot","size":48090,"verdict":"conformant"}
 {"id":"graphs-b106","path":"graphs/b106.gv","size":48933,"verdict":"conformant"}
 {"id":"graphs-badvoro","path":"graphs/badvoro.gv","size":33949,"verdict":"conformant"}
-{"id":"2783","path":"2783.dot","size":59,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"graphs-b143","path":"graphs/b143.gv","size":62055,"verdict":"conformant"}
 {"id":"2620","path":"2620.dot","size":64908,"verdict":"conformant"}
 {"id":"linux.i386-b106","path":"linux.i386/b106.gv","size":92005,"verdict":"conformant"}
@@ -931,3 +930,4 @@
 {"id":"2475_1","path":"2475_1.dot","size":9735186,"verdict":"diverged","diffCount":1,"firstDiff":"edge:1242_589985->1242_589980#0/_hdraw_/op[3].P[2]","maxDelta":0.010000020265579224,"maxDeltaPath":"edge:1242_589985->1242_589980#0/_hdraw_/op[3].P[2]"}
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant"}
 {"id":"2784","path":"2784.dot","size":78,"verdict":"accepted","errMsg":"Map maximum size exceeded"}
+{"id":"2783","path":"2783.dot","size":59,"verdict":"port-error","errMsg":"Map maximum size exceeded"}

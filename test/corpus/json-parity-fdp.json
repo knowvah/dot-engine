@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T04:03:04.200Z",
+  "generatedAt": "2026-11-26T05:16:58.674Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "fdp",
   "oracleVersion": "dot 16.1.2",
@@ -9,8 +9,8 @@
     "conformant": 888,
     "diverged": 10,
     "accepted": 17,
-    "port-error": 1,
-    "oracle-error": 10,
+    "port-error": 2,
+    "oracle-error": 9,
     "timeout": 0,
     "oracle-nondeterministic": 7
   },
@@ -229,8 +229,8 @@
       "id": "2783",
       "path": "2783.dot",
       "size": 59,
-      "verdict": "oracle-error",
-      "errMsg": "oracle exit null"
+      "verdict": "port-error",
+      "errMsg": "Map maximum size exceeded"
     },
     {
       "id": "graphs-b123",

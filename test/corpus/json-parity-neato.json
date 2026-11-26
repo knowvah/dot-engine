@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T03:53:24.011Z",
+  "generatedAt": "2026-11-26T05:02:52.310Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "neato",
   "oracleVersion": "dot 16.1.2",
@@ -9,8 +9,8 @@
     "conformant": 925,
     "diverged": 1,
     "accepted": 2,
-    "port-error": 1,
-    "oracle-error": 4,
+    "port-error": 2,
+    "oracle-error": 3,
     "timeout": 0,
     "oracle-nondeterministic": 0
   },
@@ -229,8 +229,8 @@
       "id": "2783",
       "path": "2783.dot",
       "size": 59,
-      "verdict": "oracle-error",
-      "errMsg": "oracle exit null"
+      "verdict": "port-error",
+      "errMsg": "Map maximum size exceeded"
     },
     {
       "id": "graphs-b123",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T03:40:27.821Z",
+  "generatedAt": "2026-11-26T04:40:34.786Z",
   "generatedWith": "test/corpus/map-walk.ts <engine>",
   "engine": "circo",
   "oracleVersion": "dot 16.1.2",
@@ -9,8 +9,8 @@
     "conformant": 924,
     "diverged": 0,
     "accepted": 1,
-    "port-error": 0,
-    "oracle-error": 8,
+    "port-error": 1,
+    "oracle-error": 7,
     "timeout": 0
   },
   "results": [
@@ -11810,21 +11810,6 @@
       "hasHref": true
     },
     {
-      "id": "2783",
-      "path": "2783.dot",
-      "size": 59,
-      "verdict": "oracle-error",
-      "cmapx": {
-        "verdict": "oracle-error",
-        "errMsg": "oracle exit null"
-      },
-      "imap": {
-        "verdict": "oracle-error",
-        "errMsg": "oracle exit null"
-      },
-      "hasHref": false
-    },
-    {
       "id": "graphs-xx",
       "path": "graphs/xx.gv",
       "size": 102329,
@@ -12157,6 +12142,21 @@
       },
       "imap": {
         "verdict": "accepted",
+        "errMsg": "Map maximum size exceeded"
+      },
+      "hasHref": false
+    },
+    {
+      "id": "2783",
+      "path": "2783.dot",
+      "size": 59,
+      "verdict": "port-error",
+      "cmapx": {
+        "verdict": "port-error",
+        "errMsg": "Map maximum size exceeded"
+      },
+      "imap": {
+        "verdict": "port-error",
         "errMsg": "Map maximum size exceeded"
       },
       "hasHref": false

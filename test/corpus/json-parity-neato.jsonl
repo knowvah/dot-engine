@@ -919,7 +919,6 @@
 {"id":"nshare-root_circo","path":"nshare/root_circo.gv","size":313126,"verdict":"conformant"}
 {"id":"linux.x86-root_circo","path":"linux.x86/root_circo.gv","size":313168,"verdict":"conformant"}
 {"id":"2475_2","path":"2475_2.dot","size":641284,"verdict":"conformant"}
-{"id":"2783","path":"2783.dot","size":59,"verdict":"oracle-error","errMsg":"oracle exit null"}
 {"id":"graphs-b103","path":"graphs/b103.gv","size":377525,"verdict":"conformant"}
 {"id":"2621","path":"2621.dot","size":721934,"verdict":"conformant"}
 {"id":"graphs-b100","path":"graphs/b100.gv","size":782464,"verdict":"conformant"}
@@ -931,3 +930,4 @@
 {"id":"2108","path":"2108.dot","size":3136769,"verdict":"conformant"}
 {"id":"2475_1","path":"2475_1.dot","size":9735186,"verdict":"conformant"}
 {"id":"2784","path":"2784.dot","size":78,"verdict":"port-error","errMsg":"Map maximum size exceeded"}
+{"id":"2783","path":"2783.dot","size":59,"verdict":"port-error","errMsg":"Map maximum size exceeded"}

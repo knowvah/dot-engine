@@ -912,7 +912,6 @@
 {"id":"windows-b102","path":"windows/b102.gv","size":184125,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
 {"id":"graphs-b81","path":"graphs/b81.gv","size":191024,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
 {"id":"graphs-root","path":"graphs/root.gv","size":128221,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
-{"id":"2783","path":"2783.dot","size":59,"verdict":"oracle-error","cmapx":{"verdict":"oracle-error","errMsg":"oracle exit null"},"imap":{"verdict":"oracle-error","errMsg":"oracle exit null"},"hasHref":false}
 {"id":"nshare-root_circo","path":"nshare/root_circo.gv","size":313126,"verdict":"accepted","cmapx":{"verdict":"accepted","diffCount":16,"firstDiff":"area[0].coords[0]","maxDelta":48414506,"maxDeltaPath":"area[0].coords[1]"},"imap":{"verdict":"accepted","diffCount":16,"firstDiff":"imap/line[1].coords[0]","maxDelta":48414506,"maxDeltaPath":"imap/line[1].coords[1]"},"hasHref":true}
 {"id":"linux.x86-root_circo","path":"linux.x86/root_circo.gv","size":313168,"verdict":"accepted","cmapx":{"verdict":"accepted","diffCount":16,"firstDiff":"area[0].coords[0]","maxDelta":47792182,"maxDeltaPath":"area[0].coords[1]"},"imap":{"verdict":"accepted","diffCount":16,"firstDiff":"imap/line[1].coords[0]","maxDelta":47792182,"maxDeltaPath":"imap/line[1].coords[1]"},"hasHref":true}
 {"id":"graphs-badvoro","path":"graphs/badvoro.gv","size":33949,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":false}
@@ -931,3 +930,4 @@
 {"id":"2784","path":"2784.dot","size":78,"verdict":"accepted","cmapx":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"imap":{"verdict":"accepted","errMsg":"Map maximum size exceeded"},"hasHref":false}
 {"id":"graphs-b29","path":"graphs/b29.gv","size":62931,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
 {"id":"nshare-root_twopi","path":"nshare/root_twopi.gv","size":287916,"verdict":"conformant","cmapx":{"verdict":"conformant"},"imap":{"verdict":"conformant"},"hasHref":true}
+{"id":"2783","path":"2783.dot","size":59,"verdict":"port-error","cmapx":{"verdict":"port-error","errMsg":"Map maximum size exceeded"},"imap":{"verdict":"port-error","errMsg":"Map maximum size exceeded"},"hasHref":false}

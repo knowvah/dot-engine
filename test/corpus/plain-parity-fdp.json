@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T12:23:18.293Z",
+  "generatedAt": "2026-11-26T05:28:00.210Z",
   "generatedWith": "test/corpus/plain-walk.ts",
   "engine": "fdp",
   "oracleVersion": "dot 16.1.2",
@@ -12727,22 +12727,6 @@
       }
     },
     {
-      "id": "2783",
-      "path": "2783.dot",
-      "size": 59,
-      "verdict": "oracleError",
-      "formats": {
-        "plain": {
-          "verdict": "oracleError",
-          "errMsg": "oracle exit null"
-        },
-        "plain-ext": {
-          "verdict": "oracleError",
-          "errMsg": "oracle exit null"
-        }
-      }
-    },
-    {
       "id": "linux.i386-b29",
       "path": "linux.i386/b29.gv",
       "size": 136753,
@@ -13106,6 +13090,22 @@
       "id": "tree-share-examples-world",
       "path": "../share/examples/world.gv",
       "size": 16326502,
+      "verdict": "oracleError",
+      "formats": {
+        "plain": {
+          "verdict": "oracleError",
+          "errMsg": "oracle exit null"
+        },
+        "plain-ext": {
+          "verdict": "oracleError",
+          "errMsg": "oracle exit null"
+        }
+      }
+    },
+    {
+      "id": "2783",
+      "path": "2783.dot",
+      "size": 59,
       "verdict": "oracleError",
       "formats": {
         "plain": {

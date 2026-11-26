@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T03:33:59.014Z",
+  "generatedAt": "2026-11-26T04:34:28.152Z",
   "generatedWith": "test/corpus/json-walk.ts --survey",
   "engine": "circo",
   "oracleVersion": "dot 16.1.2",
@@ -9,8 +9,8 @@
     "conformant": 918,
     "diverged": 3,
     "accepted": 4,
-    "port-error": 0,
-    "oracle-error": 8,
+    "port-error": 1,
+    "oracle-error": 7,
     "timeout": 0,
     "oracle-nondeterministic": 0
   },
@@ -229,8 +229,8 @@
       "id": "2783",
       "path": "2783.dot",
       "size": 59,
-      "verdict": "oracle-error",
-      "errMsg": "oracle exit null"
+      "verdict": "port-error",
+      "errMsg": "Map maximum size exceeded"
     },
     {
       "id": "graphs-b123",
