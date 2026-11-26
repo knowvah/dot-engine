@@ -96,7 +96,7 @@ new inputs (#298, AD-1); `perf.json`/`PERF.md` (#222, AD-10); `wasm-perf.json`; 
 | [1](batch-1/overview.md) | T1 ADR-0004 · T2+T3 oracle defaults and pending inputs · T4 failure sites · T5 preflight | sequential | [x] |
 | [2a](batch-2a/overview.md) | T6 native timings (alone, first) · T7 dot survey · T8 dot formats · T9 engine walks · T10 engine formats | ≤2 runs at once | [x] |
 | [2b](batch-2b/overview.md) | T11 attribution + oracle errors | after T9 | [x] |
-| [3](batch-3/overview.md) | T12a classify dot · T12b classify engines | parallel, read-only | [ ] |
+| [3](batch-3/overview.md) | T12a classify dot · T12b classify engines | parallel, read-only | [x] |
 | [4](batch-4/overview.md) | T13 hand registries · T14 goldens · T15 docs | T13 ∥ T14, then T15 | [ ] |
 | [5](batch-5/overview.md) | T16 close-out, issue comments, planned stop | orchestrator | [ ] |
 

@@ -6,8 +6,8 @@ land, before T9–T11 finish (#147 precedent: it is read-only and renders lightl
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| T12a | [Classify dot](T12a-classify-dot.md) | debugger | `plans/graphviz-16-1-2-rebaseline/classification/dot.md` | T7, T8 | [ ] |
-| T12b | [Classify engines](T12b-classify-engines.md) | debugger | `plans/graphviz-16-1-2-rebaseline/classification/engines.md` | T9, T10, T11 | [ ] |
+| T12a | [Classify dot](T12a-classify-dot.md) | debugger | `plans/graphviz-16-1-2-rebaseline/classification/dot.md` | T7, T8 | [x] |
+| T12b | [Classify engines](T12b-classify-engines.md) | debugger | `plans/graphviz-16-1-2-rebaseline/classification/engines.md` | T9, T10, T11 | [x] |
 
 ## Method (both, AD-2, AD-4)
 1. Input: `$BASE/diff/*.tsv` (every id whose result changed, either direction).
