@@ -51,11 +51,6 @@
       "bound": "842 xdot draw-op diffs; whole radial layout is the exact x-axis mirror of the oracle's (y->-y, ring relabel k<->34-k), max node displacement 6.04pt. Mechanism: 1-ULP V8-vs-libm cos/sin in circleLayout setAbsolutePos, amplified by the symmetry-unstable PRISM overlap-removal equilibrium on the cocircular star. Injection A/B: feeding C's exact circleLayout pos into the port's PRISM reproduces the oracle node-for-node (3e-14).",
       "ref": "known-divergences.md#a1-twopi-arrows-family"
     },
-    "2470": {
-      "class": "A9",
-      "bound": "298 draw-op diffs, ALL edge-label _ldraw_ text positions (HTML <td align=left>LOOKBACK labels); every diff = one xlabel candidate step (+label width x, -16.8 line-height y). Splines/nodes/bboxes bit-identical to oracle (0 _draw_/pos/bb diffs even @1e-7). Mechanism: ~140 near-coincident HTML edge-label anchors are placed by the neato-family xlabel placer (postproc.c:addXLabels -> label/xlabels.c). Patient-zero seq=8: node ND_coord.y differs 1.3e-13 (~2 ULP, twopi radial libm sin/cos vs V8 Math) while ND_height/sz.y/2 are bit-identical; floor(coord.y - sz.y/2) straddles exactly 0, flipping objplpmks rect y-low -1<->0 -> Hilbert key -> R-tree insertion order -> node grouping (C root 19 branches vs port 22) -> RTreeSearch pruning -> xlabel candidate flip. xladjust/AGSEQ order/CombineRect(min-min quirk)/PickBranch u64/int32 Hilbert key all faithful. No deterministic rewrite reproduces the libm coordinate. Same class as twopi/1855 and the b29 placeLabels-tie A9 family. Full RCA: .agent-notes/twopi-2470-rca.md.",
-      "ref": "known-divergences.md#a9-engine-track-twopi-circo"
-    },
     "tree-graphs-directed-arrows": {
       "class": "A9",
       "bound": "6 draw-op diffs, ALL edge-label placement on 2 of ~50 labelled edges: lcrow->lcrowlcrow lp/_ldraw_ text by (+22.77 x, -12.00 y) and onormal->onormalonormal by (-12.00 y). Each delta is exactly ONE xlabel candidate step - 22.77 = half the 45.54pt label width, 12.00 = 1.2 x fontsize 10 line height (cf. 2470 16.8 at fontsize 14). Label WIDTH field identical (45.54) on both sides and zero node/spline/bbox diffs in 54KB of xdot, so layout is unchanged and only the candidate choice flips. Knife edge DEMONSTRATED 2026-07-30: nudging the point-node width by 0.0001in (0.0072pt) flips the port OWN placement onto the oracle candidate (695.22,360.51 vs oracle 695.21,360.51), so the placement algorithm agrees and only the boundary side differs.",
@@ -163,16 +158,6 @@
       "class": "A6",
       "bound": "degenerate NaN layout: repulsiveforce=100 drives the spring-electrical solver to NaN in BOTH engines (the native oracle emits all-nan positions). Residual 54 diffs are NaN-garbage serialization only - C rounds NaN->int (bb -4.295e9 vs port 0) and suppresses NaN-spline edge draws (port emits them). No real layout exists on either side. The armPow throw + bezierClip NaN-hang that previously blocked rendering are fixed (C-faithful, NaN-only).",
       "ref": "known-divergences.md#a6b-degenerate-nan-layout"
-    },
-    "2619_1": {
-      "class": "A1",
-      "bound": "0.7-1.3pt on 6 nodes",
-      "ref": "plans/decision-journal.md 2026-07-24 T5: sfdp spring drift regime"
-    },
-    "1879": {
-      "class": "A1",
-      "bound": "up to 7.6kpt (whole-layout basin)",
-      "ref": "plans/decision-journal.md 2026-07-24 T5: sfdp chaos regime, same family as fdp 1879"
     },
     "2784": {
       "class": "A10",

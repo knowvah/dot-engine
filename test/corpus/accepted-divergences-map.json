@@ -22,13 +22,6 @@
   ],
   "divergences": [
     {
-      "id": "graphs-xx",
-      "engine": "osage",
-      "opClass": "area[271].coords[2]",
-      "delta": 1,
-      "rationale": "A8 rounding-boundary dust: 1 of 272 hotspot coords sits within the sub-0.01pt model tolerance of the integer rounding boundary (port 2654.5x vs native 2654.4x -> 2655 vs 2654); osage xdot track passes at 0.01. Irreducible print amplification. Journal 2026-07-24."
-    },
-    {
       "id": "nshare-root_circo",
       "engine": "fdp",
       "opClass": "area[0].coords[0]",
@@ -55,13 +48,6 @@
       "opClass": "area[0].coords[1]",
       "delta": 4,
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "2619_1",
-      "engine": "sfdp",
-      "opClass": "area[1].coords[0]",
-      "delta": 2,
-      "rationale": "A1 sfdp spring drift (diagnosed 2026-07-24): 6 nodes, positional drift 0.7-1.3pt \u2014 the documented chaotic-engine regime, mildly above the 0.5 bar on a small graph. Same class as the sfdp engine track's 232-id tail."
     },
     {
       "id": "1447",
@@ -174,13 +160,6 @@
       "opClass": "area[0].coords[0]",
       "delta": 525,
       "rationale": "layout drift inherited from the sfdp xdot engine track: id diverged there with the documented accepted mechanism; imagemap re-emits the same layout as rounded hotspot coords. Journal 2026-07-24."
-    },
-    {
-      "id": "1879",
-      "engine": "sfdp",
-      "opClass": "area[0].coords[0]",
-      "delta": 10044,
-      "rationale": "A1 sfdp chaotic drift (2026-07-24): whole-layout basin divergence on a huge graph (maxDelta 7.6kpt), the documented sfdp spring chaos regime \u2014 same class as fdp 1879 (chaos proven by perturbation A/B on the fdp family; sfdp is the measured chaotic engine)."
     },
     {
       "id": "graphs-root",
