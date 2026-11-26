@@ -36,8 +36,8 @@ const DOC_CLAIMS_CONFORMANT = [
   'graphs-proc3d', 'share-proc3d', 'windows-proc3d',
   // A2 closed 2026-07-01 (fix/nan-a2-retire): NaN family now conformant
   'graphs-NaN', 'share-NaN', 'windows-NaN',
-  // A4 sibling 2470 collapsed 2026-07-11 (ortho adj-spill/chancmpid + tie-rounding wave)
-  '2470',
+  // A4 sibling `2470` (collapsed 2026-07-11) left this list at 16.1.2: native
+  // `dot` no longer renders it (the render skip, #299), so it is an oracle error.
   // A8 ortho instance 2620 collapsed 2026-07-11 (faithful sgraph adjacency-spill + chancmpid)
   '2620',
   // A3 (hypot tie) and A8 (Proutespline FMA) members, closed: conformant at

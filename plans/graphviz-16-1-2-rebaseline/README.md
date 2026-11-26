@@ -98,7 +98,85 @@ new inputs (#298, AD-1); `perf.json`/`PERF.md` (#222, AD-10); `wasm-perf.json`; 
 | [2b](batch-2b/overview.md) | T11 attribution + oracle errors | after T9 | [x] |
 | [3](batch-3/overview.md) | T12a classify dot · T12b classify engines | parallel, read-only | [x] |
 | [4](batch-4/overview.md) | T13 hand registries · T14 goldens · T15 docs | T13 ∥ T14, then T15 | [x] |
-| [5](batch-5/overview.md) | T16 close-out, issue comments, planned stop | orchestrator | [ ] |
+| [5](batch-5/overview.md) | T16 close-out, issue comments, planned stop | orchestrator | [x] |
+
+## Mission summary (2026-11-26)
+
+Done: T0–T16. The oracle is the 16.1.2 carried build; `src/` is unchanged (`dist/index.js` sha256
+`8c41a87d…5ae4a18f`, `api.js` and `render.js` equal too, on `c6d794a9` and on head; `git diff c6d794a9 HEAD -- src`
+empty). Gates on head: typecheck 0; `npm test` 15790 / 15790; goldens 5 / 5 (253 fixtures); corpus + docs
+2893 / 2893; `docs:i18n-status` 0 stale × 23; coverage 97.26 / 93.23 / 98.46 / 98.25 (statements, branches,
+functions, lines).
+
+**Dot survey** (baseline: queue survey `9007464d`, AD-4): conformant 966 → 934, structural-match 5 → 3, diverged
+1 → 1, oracle-error 10 → 44. All 34 moves are the 16.1.2 render skip (#299).
+
+**What 16.1.2 itself changed** (native 16.1.1 vs 16.1.2 identical everywhere else: 929 dot ids, 894–921 ids per
+other engine): the render skip (#299: 34 dot ids, 5 on-engine ids, 3 goldens kept at 16.1.1) and fdp `2717`
+(#303). #300, #301 and #302 reach no walked id.
+
+**Everything else that moved** is not 16.1.2: the walk rosters were stale (53 ids that port commits on main had
+already fixed entered every table: #158 34, #160 4, #164 1, #148 14; the 18 render-skip ids left), port commits
+on main (#242, #175), open port gaps that the new ids expose (#231, #224, #315), a native crash on both versions
+(#316), native timing at the 300 s cap (`2783` plain), and native run-to-run variance. Detail:
+[classification/dot.md](classification/dot.md) (460 rows), [classification/engines.md](classification/engines.md)
+(2089 rows).
+
+**Registries, before → after** (row count: verdict counts; "before" is the committed file at `c6d794a9`; the old
+`parity.json` was a stale 2026-11-12 survey, see the dot survey line above):
+
+| registry | before | after |
+|---|---|---|
+| `dot-parity-dot.json` | 899: oracleError 4, pass 895 | 934: oracleError 4, pass 930 |
+| `json-parity-circo.json` | 898: accepted 4, conformant 885, diverged 2, oracle-error 7 | 933: accepted 4, conformant 918, diverged 3, oracle-error 7, port-error 1 |
+| `json-parity-fdp.json` | 898: accepted 18, conformant 862, diverged 2, oracle-error 5, oracle-nondeterministic 9, port-error 2 | 933: accepted 17, conformant 888, diverged 10, oracle-error 9, oracle-nondeterministic 7, port-error 2 |
+| `json-parity-neato.json` | 898: accepted 2, conformant 892, oracle-error 3, port-error 1 | 933: accepted 2, conformant 925, diverged 1, oracle-error 3, port-error 2 |
+| `json-parity-osage.json` | 899: accepted 7, conformant 891, diverged 1 | 934: accepted 7, conformant 925, diverged 2 |
+| `json-parity-patchwork.json` | 899: accepted 2, conformant 896, diverged 1 | 934: accepted 2, conformant 930, diverged 2 |
+| `json-parity-sfdp.json` | 898: accepted 286, conformant 610, oracle-error 1, port-error 1 | 933: accepted 278, conformant 638, diverged 14, oracle-error 1, port-error 2 |
+| `json-parity-twopi.json` | 898: accepted 7, conformant 880, diverged 3, oracle-error 1, oracle-nondeterministic 6, port-error 1 | 933: accepted 7, conformant 913, diverged 4, oracle-error 2, oracle-nondeterministic 5, port-error 2 |
+| `json-parity.json` | 899: accepted 2, conformant 892, diverged 1, oracle-error 4 | 934: accepted 2, conformant 926, diverged 2, oracle-error 4 |
+| `map-parity-circo.json` | 898: accepted 1, conformant 890, oracle-error 7 | 933: accepted 1, conformant 924, oracle-error 7, port-error 1 |
+| `map-parity-dot.json` | 899: conformant 895, oracle-error 4 | 934: conformant 930, oracle-error 4 |
+| `map-parity-fdp.json` | 898: accepted 4, conformant 887, diverged 1, oracle-error 5, port-error 1 | 933: accepted 4, conformant 919, diverged 1, oracle-error 8, port-error 1 |
+| `map-parity-neato.json` | 898: accepted 1, conformant 894, oracle-error 3 | 933: accepted 1, conformant 928, oracle-error 3, port-error 1 |
+| `map-parity-osage.json` | 899: accepted 1, conformant 898 | 934: conformant 934 |
+| `map-parity-patchwork.json` | 899: conformant 899 | 934: conformant 934 |
+| `map-parity-sfdp.json` | 898: accepted 31, conformant 866, oracle-error 1 | 933: accepted 29, conformant 900, diverged 2, oracle-error 1, port-error 1 |
+| `map-parity-twopi.json` | 898: accepted 1, conformant 895, oracle-error 1, timeout 1 | 933: accepted 1, conformant 928, oracle-error 2, port-error 1, timeout 1 |
+| `map-parity.json` | 899: conformant 895, oracle-error 4 | 934: conformant 930, oracle-error 4 |
+| `parity-circo.json` | 898: diverged 3, oracle-error 5, pass 889, port-error 1 | 933: diverged 4, oracle-error 5, pass 922, port-error 2 |
+| `parity-fdp.json` | 898: diverged 17, oracle-error 3, oracle-nondeterministic 13, pass 863, port-error 2 | 933: diverged 24, oracle-error 7, oracle-nondeterministic 8, pass 892, port-error 2 |
+| `parity-neato.json` | 898: diverged 1, oracle-error 1, oracle-nondeterministic 1, pass 894, port-error 1 | 933: diverged 1, oracle-error 1, pass 929, port-error 2 |
+| `parity-osage.json` | 899: diverged 5, pass 894 | 934: diverged 5, pass 929 |
+| `parity-patchwork.json` | 899: pass 899 | 934: pass 934 |
+| `parity-sfdp.json` | 898: diverged 285, oracle-nondeterministic 1, pass 611, port-error 1 | 933: diverged 291, oracle-nondeterministic 1, pass 639, port-error 2 |
+| `parity-twopi.json` | 898: diverged 12, oracle-nondeterministic 2, pass 883, port-error 1 | 933: diverged 8, oracle-error 1, oracle-nondeterministic 6, pass 916, port-error 2 |
+| `parity.json` | 950: conformant 899, diverged 25, errored 2, oracle-error 10, structural-match 14 | 982: conformant 934, diverged 1, oracle-error 44, structural-match 3 |
+| `plain-parity-circo.json` | 898: accepted 1, oracleError 9, pass 888 | 933: accepted 1, oracleError 10, pass 922 |
+| `plain-parity-dot.json` | 899: accepted 1, oracleError 4, pass 894 | 934: accepted 1, oracleError 4, pass 929 |
+| `plain-parity-fdp.json` | 898: accepted 1, oracleError 7, pass 889, portError 1 | 933: accepted 1, diverged 1, oracleError 12, pass 919 |
+| `plain-parity-neato.json` | 898: accepted 1, oracleError 4, pass 893 | 933: accepted 1, oracleError 5, pass 927 |
+| `plain-parity-osage.json` | 899: accepted 6, pass 893 | 934: accepted 6, pass 928 |
+| `plain-parity-patchwork.json` | 899: pass 899 | 934: pass 934 |
+| `plain-parity-sfdp.json` | 898: accepted 1, oracleError 2, pass 895 | 933: accepted 1, oracleError 3, pass 929 |
+| `plain-parity-twopi.json` | 898: accepted 12, diverged 2, oracleError 2, pass 882 | 933: accepted 11, diverged 2, oracleError 4, pass 916 |
+| `xdot-parity.json` | 899: conformant 895, oracle-error 4 | 934: conformant 930, oracle-error 4 |
+
+Accepted registries: 16 entries retired (14 for ids that left with the render skip, 2 fixed by port commits),
+none added.
+
+**Open for the maintainer:**
+- #299 ruling (render skip), including whether engine walks should keep the 18 ids native still renders there.
+- `2783` has no accepted entry (same class A10 port error as `2784`, 15 rows on 5 engines); `2784`'s json rows
+  on twopi, neato, fdp, sfdp have none either.
+- #313 (native timing recapture, the maintainer's), then #222.
+- New issues filed: #313, #314, #315, #316, #317. #210 can close. #311 is fixed here; the locale pages still
+  lack the U-series section.
+- The T8 commit body says the 53 entered ids came from port commits after the registries; they came from a stale
+  roster (journal, T12a). The body can be corrected at re-sign.
+- Two `unclassified` rows in `failure-sites.json` (`lib/cgraph/attr.c#setattr#UNREACHABLE#1`,
+  `lib/common/htmltable.c#allocObj#UNREACHABLE#1`).
 
 ## Documents
 
